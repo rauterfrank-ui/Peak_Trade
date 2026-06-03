@@ -566,6 +566,61 @@ This governed repo-reflection block records scoped acceptance of external bounde
 
 Evidence acceptance is not runtime authorization. The Gap 6 Dry-Run Proof Criteria Contract v0 block above remains criteria-only and unchanged.
 
+## Gap 6 Governed Bounded Dry-Run RC0 Observed Evidence Reflection v0
+
+GAP6_BOUNDED_DRY_RUN_RC0_OBSERVED_GOVERNED_REFLECTION_V0=true
+GAP6_DRY_RUN_RC0_OBSERVED=true
+ACCEPTED_MODE=BOUNDED_TIER2_TAG_FILTERED_DRY_RUN_RC0
+EXIT_CODE=0
+DRY_RUN_EXECUTED=true
+DRY_RUN_ONCE=true
+INCLUDE_TAGS=paper_shadow_247,preflight,readonly
+UNEXPECTED_EXECUTION_OBSERVED=false
+LEGACY_JOBS_EXCLUDED=true
+CANONICAL_JOB_SCOPE_RESPECTED=true
+GAP6_DRY_RUN_PROOF_VERIFIED=false
+GAP6_SCHEDULER_EXECUTION_AUTHORIZED=false
+EXTERNAL_EVIDENCE_BUNDLE_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/evidence/gap6_bounded_dry_run_evidence_capture_operator_authorized_v0_20260603T153911Z/
+GOVERNED_REPO_REFLECTION_CHARTER_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/section5_breakthrough_unlock_strategy_no_run_v0_20260603T153035Z/
+NO_REPO_FLAG_LIFT_FROM_EXTERNAL_ACCEPTANCE=true
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+PATH_B_LIFT_DISCUSSION_READY=false
+
+This governed repo-reflection block records operator-authorized bounded Tier-2 tag-filtered dry-run RC=0 observed evidence only. It does not adopt external-only tokens as repo SSOT. External evidence bundles remain pointer-based and subordinate to repo governance.
+
+### Observed evidence facts (2026-06-03 capture GO)
+
+Command (Tier-2, observed RC=0):
+
+`uv run python scripts/run_scheduler.py --config config/scheduler/jobs.toml --dry-run --once --verbose --include-tags paper_shadow_247,preflight,readonly`
+
+| Fact | Value |
+|------|-------|
+| External bundle MANIFEST_VERIFY_RC | 0 |
+| Due/dispatched (dry-run simulate) | `paper_shadow_247_paper_only_preflight_status_v0` only |
+| Tag-filtered jobs in plan | 5 (all `PAPER_PLUS_BOUNDED_SHADOW_NON_24_7`) |
+| Legacy/autonomous jobs in plan | excluded |
+| Gap 2/3 bounded scope | accepted per PR #3963 |
+| Live/Testnet/Shadow/Paper/Broker/Network/AWS | not observed |
+
+### Non-authority boundary (scoped reflection does not imply)
+
+- does not modify Final Machine Lines
+- does not set `GAP6_DRY_RUN_PROOF_VERIFIED=true` in criteria or Final Machine Lines
+- does not verify Gap-4 output evidence paths
+- does not verify Gap-7 risk boundaries
+- does not enforce Gap-2a.1 primary evidence
+- does not authorize scheduler execution
+- does not enable operator arming
+- does not open Path-B lift discussion
+- does not set `ALL_GAPS_CLOSED=true`
+- does not lift preflight
+- does not start or authorize Runtime, Paper, Shadow, Testnet, or Live
+- does not modify the existing Gap-6 criteria block or May-2026 acceptance reflection block
+
+Evidence observation is not runtime authorization. The Gap 6 Dry-Run Proof Criteria Contract v0 block above remains criteria-only and unchanged.
+
 ## Gap 4 Governed Output Evidence Acceptance Reflection v0
 
 GAP4_REQ_A_PAPER_HOLD_BINDING_PROFILE_V0=true
