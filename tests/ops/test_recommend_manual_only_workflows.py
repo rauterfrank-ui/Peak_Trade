@@ -267,9 +267,7 @@ def test_pru_required_checks_drift_detector_manual_only_yaml_shape() -> None:
     assert ".github/workflows/**" in text
 
 
-PRCC_AWS_EXPORT_SMOKE_WORKFLOW = (
-    REPO_ROOT / ".github" / "workflows" / "prcc-aws-export-smoke.yml"
-)
+PRCC_AWS_EXPORT_SMOKE_WORKFLOW = REPO_ROOT / ".github" / "workflows" / "prcc-aws-export-smoke.yml"
 
 
 def test_prcc_aws_export_smoke_manual_only_yaml_shape() -> None:
