@@ -24,6 +24,9 @@ BOUNDARY_OWNER = ROOT / "tests" / "ops" / "test_scheduler_boundary_hard_block_co
 FINAL_MACHINE_LINES_HEADER = "## Final Machine Lines"
 GAP7_SECTION_HEADER = "## Gap 7 Risk Boundary Criteria Contract v0"
 GAP7_GOVERNED_REFLECTION_HEADER = "## Gap 7 Governed Risk Boundary Acceptance Reflection v0"
+GAP7_VERIFIED_FINAL_LINE_REFLECTION_HEADER = (
+    "## Gap 7 Governed Risk Boundary Verified Final-Line Reflection v0"
+)
 GAP5_GOVERNED_REFLECTION_HEADER = "## Gap 5 Governed Stop Proof Acceptance Reflection v0"
 _MARKER_TRUE = "=true"
 
@@ -49,7 +52,7 @@ DRIFT_GUARD_REQUIRED_FINAL_LINES = (
     "READY_FOR_OPERATOR_ARMING=false",
     "PATH_B_LIFT_DISCUSSION_READY=false",
     "ALL_GAPS_CLOSED=false",
-    "GAP7_RISK_BOUNDARY_VERIFIED=false",
+    "GAP7_RISK_BOUNDARY_VERIFIED=true",
     "GAP7_RISK_KILLSWITCH_AUTHORITY_CHANGED=false",
     "GAP7_RISK_KILLSWITCH_RUNTIME_CHANGED=false",
     "GAP7_MASTER_V2_DOUBLE_PLAY_CHANGED=false",
@@ -66,7 +69,6 @@ DRIFT_GUARD_REQUIRED_FINAL_LINES = (
 )
 
 DRIFT_GUARD_FORBIDDEN_GAP7_REPO_TOKENS = (
-    "GAP7_RISK_BOUNDARY_VERIFIED=true",
     "GAP7_RISK_KILLSWITCH_AUTHORITY_CHANGED=true",
     "GAP7_RISK_KILLSWITCH_RUNTIME_CHANGED=true",
     "GAP7_MASTER_V2_DOUBLE_PLAY_CHANGED=true",
@@ -112,7 +114,6 @@ CONFLATION_SAMPLE_LINES_MUST_NOT_LIFT_GAP7_VERIFIED = (
     "SCHEDULER_BOUNDARY_MARKER_PRESENT=true",
     "PREFLIGHT_STATUS_OBSERVED=true",
     "MANIFEST_VERIFY_RC=0",
-    "GAP7_RISK_BOUNDARY_VERIFIED=true",
 )
 
 
@@ -125,7 +126,15 @@ def _gap7_criteria_section(text: str) -> str:
 
 
 def _gap7_governed_reflection_section(text: str) -> str:
-    return text.split(GAP7_GOVERNED_REFLECTION_HEADER, 1)[1].split(FINAL_MACHINE_LINES_HEADER, 1)[0]
+    return text.split(GAP7_GOVERNED_REFLECTION_HEADER, 1)[1].split(
+        GAP7_VERIFIED_FINAL_LINE_REFLECTION_HEADER, 1
+    )[0]
+
+
+def _gap7_verified_final_line_reflection_section(text: str) -> str:
+    return text.split(GAP7_VERIFIED_FINAL_LINE_REFLECTION_HEADER, 1)[1].split(
+        FINAL_MACHINE_LINES_HEADER, 1
+    )[0]
 
 
 def _gap7_section(text: str) -> str:
@@ -220,9 +229,9 @@ def test_gap7_drift_guard_risk_visibility_not_verification_v0() -> None:
     section = _gap7_section(_section5_text())
     assert RISK_VISIBILITY_NOT_VERIFICATION is True
     assert "GAP7_RISK_BOUNDARY_VERIFIED=false" in section
-    assert "GAP7_RISK_BOUNDARY_VERIFIED=false" in block
+    assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in block
     lines = {line.strip() for line in block.splitlines()}
-    assert "GAP7_RISK_BOUNDARY_VERIFIED=true" not in lines
+    assert "GAP7_RISK_BOUNDARY_VERIFIED=false" not in lines
 
 
 def test_gap7_drift_guard_live_gate_criteria_not_authorization_v0() -> None:
@@ -248,14 +257,14 @@ def test_gap7_drift_guard_gap6_gap2a1_orthogonal_v0() -> None:
     assert "GAP6_DRY_RUN_PROOF_VERIFIED=false" in block
     assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in block
     assert "GAP2A1_ENFORCEMENT_DEFAULT_ON=false" in block
-    assert "GAP7_RISK_BOUNDARY_VERIFIED=false" in block
+    assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in block
 
 
 def test_gap7_drift_guard_gap5_stop_orthogonal_v0() -> None:
     block = _final_machine_lines(_section5_text())
     assert "GAP5_STOP_REHEARSAL_EXECUTED=false" in block
     assert "GAP5_STOP_PROOF_ACCEPTED=false" in block
-    assert "GAP7_RISK_BOUNDARY_VERIFIED=false" in block
+    assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in block
 
 
 def test_gap7_drift_guard_criteria_complete_does_not_close_gaps_v0() -> None:
@@ -263,7 +272,8 @@ def test_gap7_drift_guard_criteria_complete_does_not_close_gaps_v0() -> None:
     assert "SECTION5_OWNER_MAP_CONTRACT_V0_COMPLETE=true" in text
     assert "ALL_GAPS_CLOSED=false" in text
     assert "GAP7_RISK_BOUNDARY_CRITERIA_CONTRACT_V0=true" in text
-    assert "GAP7_RISK_BOUNDARY_VERIFIED=false" in text
+    assert "GAP7_RISK_BOUNDARY_VERIFIED=false" in _gap7_criteria_section(text)
+    assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in _final_machine_lines(text)
 
 
 def test_gap7_drift_guard_external_checklist_not_repo_ssot_v0() -> None:
@@ -345,7 +355,7 @@ def test_gap7_drift_guard_governed_reflection_scoped_acceptance_v0() -> None:
     assert "GAP7_RISK_BOUNDARY_VERIFIED=false" in criteria
     assert "criteria-only" in criteria
     assert "not verified" in criteria
-    assert "GAP7_RISK_BOUNDARY_VERIFIED=false" in block
+    assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in block
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in block
     assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in block
     assert "READY_FOR_OPERATOR_ARMING=false" in block
@@ -357,4 +367,56 @@ def test_gap7_drift_guard_governed_reflection_scoped_acceptance_v0() -> None:
     assert "GAP7_RISK_BOUNDARY_ACCEPTED=true" in reflection_lines
     assert "GAP7_RISK_BOUNDARY_ACCEPTED=true" not in criteria_lines
     assert "GAP7_RISK_BOUNDARY_ACCEPTED=true" not in block_lines
-    assert "GAP7_RISK_BOUNDARY_VERIFIED=true" not in block_lines
+    assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in block_lines
+    assert "GAP7_RISK_BOUNDARY_VERIFIED=true" not in criteria_lines
+
+
+def test_gap7_verified_final_line_governed_reflection_scoped_verification_v0() -> None:
+    text = _section5_text()
+    reflection = _gap7_verified_final_line_reflection_section(text)
+    acceptance = _gap7_governed_reflection_section(text)
+    criteria = _gap7_criteria_section(text)
+    block = _final_machine_lines(text)
+
+    assert "GAP7_RISK_BOUNDARY_VERIFIED_FINAL_LINE_GOVERNED_REFLECTION_V0=true" in reflection
+    assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in reflection
+    assert (
+        "ACCEPTED_MODE=GAP7_RISK_BOUNDARY_SCOPED_EXTERNAL_CHECKLIST_WALKTHROUGH_FINAL_LINE_VERIFIED"
+        in reflection
+    )
+    assert "GOVERNED_ACCEPTANCE_BASIS=GAP7_RISK_BOUNDARY_ACCEPTED=true" in reflection
+    assert "EXTERNAL_ACCEPTANCE_RECORD_POINTER=" in reflection
+    assert (
+        "gap7_risk_boundary_operator_walkthrough_external_acceptance_record_v0_20260531T202750Z"
+        in reflection
+    )
+    assert "INPUT_STRATEGY_POINTER=" in reflection
+    assert (
+        "section5_remaining_gaps_closure_strategy_no_lift_v0_20260603T160500Z" in reflection
+    )
+    assert (
+        "OPERATOR_GO=GO_GAP7_RISK_BOUNDARY_VERIFIED_FINAL_LINE_REPO_REFLECTION_DOCS_TESTS_V0"
+        in reflection
+    )
+    assert "NO_RUNTIME_AUTHORITY=true" in reflection
+    assert "NO_REPO_FLAG_LIFT_FROM_EXTERNAL_ACCEPTANCE=true" in reflection
+    assert "does not modify Gap-7 criteria block verification posture" in reflection
+    assert "does not change Risk/KillSwitch authority or runtime behavior" in reflection
+    assert "does not authorize scheduler execution" in reflection
+    assert "does not enable operator arming" in reflection
+    assert "does not set `ALL_GAPS_CLOSED=true`" in reflection
+    assert "does not lift preflight" in reflection
+    assert "Evidence verification is not runtime authorization" in reflection
+    assert "GAP7_RISK_BOUNDARY_ACCEPTED=true" in acceptance
+    assert "GAP7_RISK_BOUNDARY_VERIFIED=false" in criteria
+    assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in block
+    assert "ALL_GAPS_CLOSED=false" in block
+    assert "READY_FOR_OPERATOR_ARMING=false" in block
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in block
+    reflection_lines = {line.strip() for line in reflection.splitlines()}
+    criteria_lines = {line.strip() for line in criteria.splitlines()}
+    block_lines = {line.strip() for line in block.splitlines()}
+    assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in reflection_lines
+    assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in block_lines
+    assert "GAP7_RISK_BOUNDARY_VERIFIED=true" not in criteria_lines
+    assert "GAP7_RISK_BOUNDARY_VERIFIED=false" not in block_lines

@@ -368,7 +368,7 @@ def test_gap4_output_evidence_paths_drift_guard_governed_reflection_scoped_accep
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in criteria
     assert "contract-only, not verified" in criteria
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in block
-    assert "GAP7_RISK_BOUNDARY_VERIFIED=false" in block
+    assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in block
     assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in block
     assert "GAP1_SCHEDULER_EXECUTION_AUTHORIZED=false" in block
     assert "GAP3_SCHEDULER_EXECUTION_AUTHORIZED=false" in block
