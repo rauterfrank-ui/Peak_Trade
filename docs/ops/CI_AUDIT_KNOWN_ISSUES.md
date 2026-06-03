@@ -228,6 +228,62 @@ DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=true
 
 **Non-authorizing:** Explicit histogram reuse-owner crosslinks for `artifact_retention_or_evidence_gap`, `workflow_secrets_visibility`, `manual_dispatch_sensitive_surface`, `scheduler_or_runtime_boundary`, `branch_or_environment_authority`, and `paid_ai_eval_gate` are **visibility-only**; they do **not** authorize artifact retention remediation, retention-policy changes, evidence-gap remediation, secrets availability or access, workflow manual-dispatch execution, scheduler/daemon/runtime start, workflow write-permission approval, paid Promptfoo/OpenAI eval execution, secret-injection approval, PR/push paid-eval paths, Testnet/Live, broker/exchange, or definitive R-001/R-002/R-007 mapping while `INPUT_JSONL_PROVIDED=false`.
 
+### CSC-RCHAIN histogram defensive closure v0 (SLICE-CV-3a)
+
+**Operator-GO:** `GO_SLICE_CV3A_CSC_RCHAIN_HISTOGRAM_DEFENSIVE_CLOSURE_V0` · **Workstream:** `CYBERSECURITY_DEFENSIVE_VISIBILITY_CV3_PLUS_RC_V0` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/next_larger_release_candidate_after_pe_rc_core_complete_v0_20260603T031800Z/`
+
+**Purpose:** Defensively **close** repo-static **interim classification histogram** visibility for CSC-RCHAIN/Cyber — distinguishing **complete** bucket crosslinks from **blocked/deferred** remainder; **no** definitive R-001/R-002/R-007 mapping; **no** INPUT_JSONL fabrication; **no** new parallel surfaces.
+
+**Histogram closure routing (complete vs blocked/deferred):**
+
+| Classification | Posture | Static guard owner |
+|----------------|---------|-------------------|
+| `manual_dispatch_sensitive_surface` | **complete** (crosslink) | `tests/ci/test_cybersecurity_visibility_repo_static_histogram_manual_dispatch_sensitive_surface_crosslink_v0.py` |
+| `workflow_secrets_visibility` | **complete** (crosslink) | `tests/ci/test_workflow_secrets_reference_visibility_contract_v0.py` |
+| `scheduler_or_runtime_boundary` | **complete** (crosslink) | `tests/ci/test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_crosslink_v0.py` |
+| `branch_or_environment_authority` | **complete** (crosslink) | `tests/ci/test_cybersecurity_visibility_repo_static_histogram_branch_environment_authority_crosslink_v0.py` |
+| `artifact_retention_or_evidence_gap` | **complete** (crosslink) | `tests/ci/test_cybersecurity_visibility_repo_static_histogram_artifact_retention_or_evidence_gap_crosslink_v0.py` |
+| `paid_ai_eval_gate` | **complete** (crosslink) | `tests/ci/test_cybersecurity_visibility_repo_static_histogram_paid_ai_eval_gate_crosslink_v0.py` |
+| `docs_drift_or_pointer_integrity` | **deferred** (review-input only) | none — by design; not CSC-RCHAIN histogram bucket closure |
+
+**CSC-RCHAIN blocked clusters (no ACCEPT / no implementation mapping implied):**
+
+| Group | Posture | Notes |
+|-------|---------|-------|
+| `CSC-RCHAIN-v1-003a` | **BLOCKED** | live cluster — no governed reflection; no repo ACCEPT |
+| `CSC-RCHAIN-v1-003e` | **BLOCKED** | master_v2 cluster — no governed reflection; no repo ACCEPT |
+
+**Non-authorizing:** Tests/docs-only; defensive/derived/static visibility only; does **not** authorize runtime/scheduler/daemon execution, workflow dispatch, Testnet/Live, Preflight lift, `READY_FOR_OPERATOR_ARMING=true`, enforcement activation, exploit/offensive automation, definitive R-001/R-002/R-007 mapping, or CSC **003a**/**003e** touch. `CSC_RCHAIN_V1_ACCEPT_REPO_REFLECTED_COUNT=258` and `CSC_RCHAIN_V1_PARK_COUNT=413` unchanged.
+
+```text
+CSC_RCHAIN_HISTOGRAM_DEFENSIVE_CLOSURE_V0=true
+CYBERSECURITY_DEFENSIVE_VISIBILITY_CV3_PLUS_RC_V0_STARTED=true
+CSC_RCHAIN_HISTOGRAM_DEFENSIVE_CLOSURE_COMPLETE=true
+DEFENSIVE_CYBER_ONLY=true
+DEFINITIVE_CYBER_MAPPING_PERFORMED=false
+INPUT_JSONL_REQUIRED=false
+INPUT_JSONL_PROVIDED=false
+DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=true
+CSC_RCHAIN_V1_003A_BLOCKED=true
+CSC_RCHAIN_V1_003E_BLOCKED=true
+DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
+HISTOGRAM_BUCKET_CROSSLINKS_COMPLETE=true
+REUSE_DRIFT_GUARD=REUSE_OK
+NO_PARALLEL_DOCS=true
+NO_PARALLEL_BUILDS=true
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+RUNTIME_STARTED=false
+SCHEDULER_STARTED=false
+LIVE_TOUCHED=false
+ENFORCEMENT_ACTIVATED=false
+EXPLOIT_CODE_ADDED=false
+OFFENSIVE_AUTOMATION_ADDED=false
+SLICE_CV3A_DOCS_TESTS_ONLY=true
+```
+
+Static guards: `tests/ci/test_csc_rchain_v1_grouping_reflection_contract_v0.py`, `tests/ci/test_cybersecurity_visibility_repo_static_histogram_artifact_retention_or_evidence_gap_crosslink_v0.py`.
+
 Operators may use this histogram for **CI/Ops visibility triage** until a lossless row exists for each pending retained risk. **Do not** treat any `CSC-STATIC-v0-*` `candidate_id` as a substitute mapping for R-001/R-002/R-007 without restored lossless inventory or operator-approved triage.
 
 **Lossless recovery still required for definitive R-001/R-002/R-007 mapping:**
@@ -2672,6 +2728,7 @@ LIVE_TOUCHED=false
 | SLICE-CV-1 docs-only start (this slice) | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_visibility_release_rc_v0_slice_cv1_docs_only_20260602T175506Z/` |
 | Wave-1 batch closure plan | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_derived_only_mapping_wave1_batch_closure_plan_readonly_v0_20260601T182957Z` |
 | OE final release closeout | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/operator_experience_release_rc_v0_final_release_closeout_handoff_20260602T174916Z/` |
+| CV3+ release train planning (post-PE) | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/next_larger_release_candidate_after_pe_rc_core_complete_v0_20260603T031800Z/` |
 
 **Planned slice decomposition (reference — not authorized until merged):**
 
@@ -2679,7 +2736,8 @@ LIVE_TOUCHED=false
 |-------|----------|-------|
 | 1 | **SLICE-CV-1** | Docs-only: this release index + post-wave-1 status reflection (**this PR**) |
 | 2 | **SLICE-CV-2** | Tests-ci: static guard coherence — extend existing `tests&#47;ci&#47;test_cybersecurity_visibility_*` modules only |
-| 3 | **SLICE-CV-3** (optional) | Docs/tests: CSC-RCHAIN PR15 finalization reflection OR remaining histogram bucket closure |
+| 3 | **SLICE-CV-3a** | Docs/tests: CSC-RCHAIN histogram defensive closure — extend existing `tests&#47;ci&#47;test_csc_rchain_*` and `tests&#47;ci&#47;test_cybersecurity_visibility_repo_static_histogram_*` only (**this PR**) |
+| 4 | **SLICE-CV-3** (optional follow-up) | Docs/tests: CSC-RCHAIN PR15 finalization reflection OR `docs_drift_or_pointer_integrity` bucket |
 
 **Operational rules:**
 

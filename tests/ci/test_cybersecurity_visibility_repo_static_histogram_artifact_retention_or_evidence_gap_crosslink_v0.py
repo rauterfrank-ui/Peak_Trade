@@ -283,3 +283,80 @@ def test_pe6_cyber_er_crosslink_module_is_static_no_subprocess_v0() -> None:
                 assert alias.name != "subprocess"
         elif isinstance(node, ast.ImportFrom):
             assert node.module != "subprocess"
+
+
+HISTOGRAM_DEFENSIVE_CLOSURE_HEADING = "### CSC-RCHAIN histogram defensive closure v0 (SLICE-CV-3a)"
+GROUPING_REFLECTION_GUARD_MODULE = "tests/ci/test_csc_rchain_v1_grouping_reflection_contract_v0.py"
+CV3A_PLANNING_BUNDLE = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/next_larger_release_candidate_after_pe_rc_core_complete_v0_20260603T031800Z/"
+)
+HISTOGRAM_COMPLETE_CLASSIFICATIONS: tuple[str, ...] = (
+    "manual_dispatch_sensitive_surface",
+    "workflow_secrets_visibility",
+    "scheduler_or_runtime_boundary",
+    "branch_or_environment_authority",
+    "artifact_retention_or_evidence_gap",
+    "paid_ai_eval_gate",
+)
+CV3A_CLOSURE_MARKERS: tuple[str, ...] = (
+    "CSC_RCHAIN_HISTOGRAM_DEFENSIVE_CLOSURE_V0=true",
+    "CYBERSECURITY_DEFENSIVE_VISIBILITY_CV3_PLUS_RC_V0_STARTED=true",
+    "CSC_RCHAIN_HISTOGRAM_DEFENSIVE_CLOSURE_COMPLETE=true",
+    "HISTOGRAM_BUCKET_CROSSLINKS_COMPLETE=true",
+    "CSC_RCHAIN_V1_003A_BLOCKED=true",
+    "CSC_RCHAIN_V1_003E_BLOCKED=true",
+    "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true",
+)
+CV3A_FORBIDDEN_OFFENSIVE_PHRASES: tuple[str, ...] = (
+    "exploit payload added",
+    "offensive_automation_enabled=true",
+    "penetration test automation enabled",
+)
+
+
+def _histogram_defensive_closure_block(text: str) -> str:
+    start = text.index(HISTOGRAM_DEFENSIVE_CLOSURE_HEADING)
+    end = text.index("**Lossless recovery still required", start)
+    return text[start:end]
+
+
+def test_cybersecurity_visibility_histogram_defensive_closure_crosslink_v0() -> None:
+    text = _ci_audit_text()
+    block = _histogram_defensive_closure_block(text)
+    collapsed = block.lower()
+    histogram = _histogram_section(text)
+
+    for marker in CV3A_CLOSURE_MARKERS:
+        assert marker in block
+
+    assert "GO_SLICE_CV3A_CSC_RCHAIN_HISTOGRAM_DEFENSIVE_CLOSURE_V0" in block
+    assert CV3A_PLANNING_BUNDLE in block
+    assert GROUPING_REFLECTION_GUARD_MODULE in block
+    assert THIS_MODULE in block
+    assert "INPUT_JSONL_PROVIDED=false" in block
+    assert "DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=true" in block
+    assert "defensive/derived/static" in collapsed or "defensive" in collapsed
+    assert "non-authorizing" in collapsed
+
+    for classification in HISTOGRAM_COMPLETE_CLASSIFICATIONS:
+        assert f"`{classification}`" in block
+        assert "**complete**" in block or "complete" in collapsed
+        assert classification in histogram
+
+    assert "`docs_drift_or_pointer_integrity`" in block
+    assert "**deferred**" in block or "deferred" in collapsed
+    assert "Review-input only" in histogram
+
+    assert_retained_r001_r002_r007_pending_or_derived_evidence(_risk_table_rows(text))
+
+    for phrase in CV3A_FORBIDDEN_OFFENSIVE_PHRASES:
+        assert phrase not in collapsed
+
+    for phrase in FORBIDDEN_AUTHORIZATION_PHRASES:
+        assert phrase not in collapsed
+
+    for marker in FORBIDDEN_MACHINE_LINES:
+        assert marker not in {line.strip() for line in text.splitlines()}
+
+    assert "CYBERSECURITY_VISIBILITY_CHAIN_PARALLEL_ANCHOR" not in text
