@@ -21,7 +21,16 @@ HARDENING_OWNER = ROOT / "tests" / "ops" / "test_scheduler_dry_run_hardening_sou
 FINAL_MACHINE_LINES_HEADER = "## Final Machine Lines"
 GAP6_SECTION_HEADER = "## Gap 6 Dry-Run Proof Criteria Contract v0"
 GAP6_GOVERNED_REFLECTION_HEADER = "## Gap 6 Governed Dry-Run Proof Acceptance Reflection v0"
+GAP6_RC0_OBSERVED_REFLECTION_HEADER = (
+    "## Gap 6 Governed Bounded Dry-Run RC0 Observed Evidence Reflection v0"
+)
+GAP4_GOVERNED_REFLECTION_HEADER = "## Gap 4 Governed Output Evidence Acceptance Reflection v0"
 _MARKER_TRUE = "=true"
+
+CANONICAL_BOUNDED_DRY_RUN_COMMAND_TIER2 = (
+    "uv run python scripts/run_scheduler.py --config config/scheduler/jobs.toml "
+    "--dry-run --once --verbose --include-tags paper_shadow_247,preflight,readonly"
+)
 
 DRIFT_GUARD_REQUIRED_FINAL_LINES = (
     "PREFLIGHT_REMAINS_BLOCKED=true",
@@ -61,7 +70,15 @@ def _gap6_criteria_section(text: str) -> str:
 
 
 def _gap6_governed_reflection_section(text: str) -> str:
-    return text.split(GAP6_GOVERNED_REFLECTION_HEADER, 1)[1].split(FINAL_MACHINE_LINES_HEADER, 1)[0]
+    return text.split(GAP6_GOVERNED_REFLECTION_HEADER, 1)[1].split(
+        GAP6_RC0_OBSERVED_REFLECTION_HEADER, 1
+    )[0]
+
+
+def _gap6_rc0_observed_reflection_section(text: str) -> str:
+    return text.split(GAP6_RC0_OBSERVED_REFLECTION_HEADER, 1)[1].split(
+        GAP4_GOVERNED_REFLECTION_HEADER, 1
+    )[0]
 
 
 def _section5_text() -> str:
@@ -168,3 +185,44 @@ def test_gap6_external_repo_drift_guard_governed_reflection_scoped_acceptance_v0
     assert "READY_FOR_OPERATOR_ARMING=false" in block
     assert "PATH_B_LIFT_DISCUSSION_READY=false" in block
     assert "PREFLIGHT_REMAINS_BLOCKED=true" in block
+
+
+def test_gap6_rc0_observed_governed_reflection_scoped_evidence_v0() -> None:
+    text = _section5_text()
+    reflection = _gap6_rc0_observed_reflection_section(text)
+    criteria = _gap6_criteria_section(text)
+    block = _final_machine_lines(text)
+
+    assert "GAP6_BOUNDED_DRY_RUN_RC0_OBSERVED_GOVERNED_REFLECTION_V0=true" in reflection
+    assert "GAP6_DRY_RUN_RC0_OBSERVED=true" in reflection
+    assert "ACCEPTED_MODE=BOUNDED_TIER2_TAG_FILTERED_DRY_RUN_RC0" in reflection
+    assert "EXIT_CODE=0" in reflection
+    assert "DRY_RUN_EXECUTED=true" in reflection
+    assert "DRY_RUN_ONCE=true" in reflection
+    assert "INCLUDE_TAGS=paper_shadow_247,preflight,readonly" in reflection
+    assert CANONICAL_BOUNDED_DRY_RUN_COMMAND_TIER2 in reflection
+    assert "UNEXPECTED_EXECUTION_OBSERVED=false" in reflection
+    assert "LEGACY_JOBS_EXCLUDED=true" in reflection
+    assert "CANONICAL_JOB_SCOPE_RESPECTED=true" in reflection
+    assert "paper_shadow_247_paper_only_preflight_status_v0" in reflection
+    assert "EXTERNAL_EVIDENCE_BUNDLE_POINTER=" in reflection
+    assert (
+        "gap6_bounded_dry_run_evidence_capture_operator_authorized_v0_20260603T153911Z"
+        in reflection
+    )
+    assert "NO_REPO_FLAG_LIFT_FROM_EXTERNAL_ACCEPTANCE=true" in reflection
+    assert "does not modify Final Machine Lines" in reflection
+    assert "does not lift preflight" in reflection
+    assert "Evidence observation is not runtime authorization" in reflection
+    assert "GAP6_DRY_RUN_RC0_OBSERVED=false" in criteria
+    assert "GAP6_DRY_RUN_RC0_OBSERVED=false" in block
+    assert "ALL_GAPS_CLOSED=false" in block
+    assert "READY_FOR_OPERATOR_ARMING=false" in block
+    assert "GAP7_RISK_BOUNDARY_VERIFIED=false" in block
+    reflection_lines = {line.strip() for line in reflection.splitlines()}
+    criteria_lines = {line.strip() for line in criteria.splitlines()}
+    block_lines = {line.strip() for line in block.splitlines()}
+    assert "GAP6_DRY_RUN_RC0_OBSERVED=true" in reflection_lines
+    assert "GAP6_DRY_RUN_RC0_OBSERVED=true" not in criteria_lines
+    assert "GAP6_DRY_RUN_RC0_OBSERVED=true" not in block_lines
+    assert "GAP6_DRY_RUN_RC0_OBSERVED_EXTERNAL=true" not in text
