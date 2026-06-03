@@ -99,7 +99,9 @@ def bounds_from_planned_duration(
 ) -> dict[str, int]:
     return {
         "planned_duration_seconds": planned_duration_seconds,
-        "min_required_wall_clock_seconds": max(0, planned_duration_seconds - wall_clock_slack_seconds),
+        "min_required_wall_clock_seconds": max(
+            0, planned_duration_seconds - wall_clock_slack_seconds
+        ),
         "max_acceptable_wall_clock_seconds": planned_duration_seconds + wall_clock_slack_seconds,
         "wall_clock_slack_seconds": wall_clock_slack_seconds,
     }
@@ -130,9 +132,7 @@ class WallClockSessionTracker:
             wall_clock_slack_seconds=wall_clock_slack_seconds,
             start_wall_clock_iso=start_wall_clock_iso or _utc_iso_now(),
             start_monotonic_seconds=(
-                start_monotonic_seconds
-                if start_monotonic_seconds is not None
-                else time.monotonic()
+                start_monotonic_seconds if start_monotonic_seconds is not None else time.monotonic()
             ),
         )
 
