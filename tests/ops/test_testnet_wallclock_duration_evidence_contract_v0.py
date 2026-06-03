@@ -18,20 +18,17 @@ SECTION5_GAP_OWNER_MAP = (
     REPO_ROOT / "docs" / "ops" / "planning" / "SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md"
 )
 ENTRYPOINT_FAIL_CLOSED_TEST = (
-    REPO_ROOT
-    / "tests"
-    / "ops"
-    / "test_run_testnet_session_entrypoint_fail_closed_contract_v0.py"
+    REPO_ROOT / "tests" / "ops" / "test_run_testnet_session_entrypoint_fail_closed_contract_v0.py"
 )
 CLOSEOUT_MACHINE_LINES_TEST = (
     REPO_ROOT / "tests" / "ops" / "test_closeout_final_machine_lines_contract_v0.py"
 )
 
 PACKAGE_MARKER = "TESTNET_WALLCLOCK_DURATION_EVIDENCE_CONTRACT_V0=true"
-_CLASS4_SCOPED_EXCEPTION_MARKER = (
-    "TESTNET_WALLCLOCK_DURATION_GUARD_CLASS4_SCOPED_EXCEPTION_V0=true"
+_CLASS4_SCOPED_EXCEPTION_MARKER = "TESTNET_WALLCLOCK_DURATION_GUARD_CLASS4_SCOPED_EXCEPTION_V0=true"
+CHARTER_BUNDLE_SUFFIX = (
+    "testnet_wallclock_duration_guard_external_charter_no_run_v0_20260603T182859Z"
 )
-CHARTER_BUNDLE_SUFFIX = "testnet_wallclock_duration_guard_external_charter_no_run_v0_20260603T182859Z"
 
 # Charter-required fields (closeout FINAL_MACHINE_LINES + durable JSON).
 REQUIRED_WALLCLOCK_FIELD_NAMES: tuple[str, ...] = (
@@ -107,7 +104,9 @@ def evaluate_wallclock_duration_evidence(evidence: dict[str, Any]) -> dict[str, 
         result["fail_reasons"].append("missing start/end wall-clock timestamps (R2)")
 
     if planned is None or elapsed_wall is None:
-        result["fail_reasons"].append("planned_duration_seconds and elapsed_wall_clock_seconds required (R7)")
+        result["fail_reasons"].append(
+            "planned_duration_seconds and elapsed_wall_clock_seconds required (R7)"
+        )
     elif planned > 0 and min_required is not None and elapsed_wall < min_required:
         result["fail_reasons"].append("elapsed below min_required_wall_clock_seconds (R1)")
 
@@ -135,11 +134,7 @@ def evaluate_wallclock_duration_evidence(evidence: dict[str, Any]) -> dict[str, 
     if simulation_forbidden is True and real_sleep_used is False:
         result["fail_reasons"].append("simulation_forbidden but real_sleep_used=false (R6)")
 
-    if (
-        max_acceptable is not None
-        and elapsed_wall is not None
-        and elapsed_wall > max_acceptable
-    ):
+    if max_acceptable is not None and elapsed_wall is not None and elapsed_wall > max_acceptable:
         result["fail_reasons"].append("elapsed exceeds max_acceptable_wall_clock_seconds (R8)")
 
     if not result["fail_reasons"]:
@@ -153,7 +148,8 @@ def _valid_thirty_min_evidence() -> dict[str, Any]:
     return {
         "planned_duration_seconds": THIRTY_MIN_PLANNED_SECONDS,
         "min_required_wall_clock_seconds": THIRTY_MIN_MIN_REQUIRED_SECONDS,
-        "max_acceptable_wall_clock_seconds": THIRTY_MIN_PLANNED_SECONDS + DEFAULT_WALL_CLOCK_SLACK_SECONDS,
+        "max_acceptable_wall_clock_seconds": THIRTY_MIN_PLANNED_SECONDS
+        + DEFAULT_WALL_CLOCK_SLACK_SECONDS,
         "wall_clock_slack_seconds": DEFAULT_WALL_CLOCK_SLACK_SECONDS,
         "start_wall_clock_iso": "2026-06-03T07:00:51Z",
         "end_wall_clock_iso": "2026-06-03T07:30:52Z",
@@ -195,7 +191,10 @@ def test_contract_governance_tokens_map_to_repo_native_markers() -> None:
 
 def test_external_harness_field_map_documents_archive_to_charter_mapping() -> None:
     assert EXTERNAL_HARNESS_FIELD_MAP["DURATION_PROVEN"] == "duration_proven"
-    assert EXTERNAL_HARNESS_FIELD_MAP["REQUIRED_WALL_CLOCK_DURATION_SECONDS"] == "planned_duration_seconds"
+    assert (
+        EXTERNAL_HARNESS_FIELD_MAP["REQUIRED_WALL_CLOCK_DURATION_SECONDS"]
+        == "planned_duration_seconds"
+    )
 
 
 def test_entrypoint_fail_closed_guard_crosslink_present() -> None:
@@ -283,7 +282,9 @@ def test_missing_planned_or_elapsed_invalidates_future_testnet_evidence() -> Non
         (1801.0, 1700.0, False),
     ],
 )
-def test_monotonic_cross_check_tolerance(elapsed_wall: float, elapsed_mono: float, valid: bool) -> None:
+def test_monotonic_cross_check_tolerance(
+    elapsed_wall: float, elapsed_mono: float, valid: bool
+) -> None:
     evidence = _valid_thirty_min_evidence()
     evidence["elapsed_wall_clock_seconds"] = elapsed_wall
     evidence["elapsed_monotonic_seconds"] = elapsed_mono
