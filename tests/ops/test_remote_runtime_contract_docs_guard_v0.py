@@ -110,6 +110,7 @@ RECIPROCAL_OWNER_TESTS = (
     "test_notion_post_closeout_sync_projection_spec_v0.py",
     "test_market_dashboard_readonly_run_projection_spec_v0.py",
     "test_ops_cockpit_payload_top_level_contract.py",
+    "test_master_v2_double_play_pure_stack_readiness_map_static_crosslink_contract_v0.py",
 )
 
 OPS_COCKPIT_OPERATOR_SUMMARY_SPEC = (
@@ -143,6 +144,36 @@ OC_RELEASE_RC_EXPECTED: dict[str, str] = {
     "DOUBLE_PLAY_LOGIC_CHANGED": "false",
     "PARALLEL_OPERATOR_STATUS_INDEX_CREATED": "false",
 }
+
+MV2_READONLY_ALIGNMENT_RC_HEADING = (
+    "## Master V2 / Double Play Read-only Alignment Inventory RC v0 — docs reflection v0"
+)
+MV2_READONLY_ALIGNMENT_RC_BLOCK_ANCHOR = (
+    "MASTER_V2_DOUBLE_PLAY_READONLY_ALIGNMENT_INVENTORY_RC_V0=true"
+)
+MV2_READONLY_ALIGNMENT_RC_EXPECTED: dict[str, str] = {
+    "MASTER_V2_DOUBLE_PLAY_READONLY_ALIGNMENT_INVENTORY_RC_V0": "true",
+    "SLICE_MV2_1_DOCS_REFLECTION_ONLY": "true",
+    "RUNTIME_PRODUCER_PARKING_LIFTED": "false",
+    "PREFLIGHT_REMAINS_BLOCKED": "true",
+    "STOP_IDLE_PRESERVED": "true",
+    "NO_RUNTIME": "true",
+    "MASTER_V2_LOGIC_CHANGED": "false",
+    "DOUBLE_PLAY_LOGIC_CHANGED": "false",
+    "TRADING_AUTHORITY_CHANGED": "false",
+    "PARALLEL_MASTER_V2_ALIGNMENT_INDEX_CREATED": "false",
+    "FOLLOWUP_DOCS_SLICE_NEEDED": "false",
+    "FOLLOWUP_TEST_GUARD_NEEDED": "true",
+}
+PURE_STACK_READINESS_MAP = (
+    REPO_ROOT / "docs" / "ops" / "specs" / "MASTER_V2_DOUBLE_PLAY_PURE_STACK_READINESS_MAP_V0.md"
+)
+MV2_PURE_STACK_GUARD = (
+    REPO_ROOT
+    / "tests"
+    / "ops"
+    / "test_master_v2_double_play_pure_stack_readiness_map_static_crosslink_contract_v0.py"
+)
 
 FORBIDDEN_PARALLEL_DOC_FRAGMENTS = (
     "REMOTE_RUNTIME_HOST_CONTRACT_V0.md",
@@ -317,3 +348,32 @@ def test_ci_audit_ops_cockpit_operator_status_index_slice_oc2_guard_owner_v0() -
     assert "test_ops_cockpit_" in section
     assert "test_ops_cockpit_" in section
     assert "extend existing" in section.lower() or "Tests-ops" in section
+
+
+def _mv2_readonly_alignment_rc_section(text: str) -> str:
+    start = text.find(MV2_READONLY_ALIGNMENT_RC_HEADING)
+    assert start != -1, "missing Master V2 readonly alignment RC v0 section"
+    return text[start:]
+
+
+def test_ci_audit_mv2_readonly_alignment_rc_section_present_v0() -> None:
+    text = _ci_audit_text()
+    section = _mv2_readonly_alignment_rc_section(text)
+    assert "SLICE-MV2-1" in section
+    assert "SLICE-MV2-2" in section
+    assert PURE_STACK_READINESS_MAP.is_file()
+    assert "MASTER_V2_REUSE_REWIRE_INVENTORY_V1.md" in section
+    assert "MARKET_SURFACE_V0.md" in section
+    assert "parallel alignment index" in section.lower()
+    assert "test_master_v2_" in section
+    assert THIS_MODULE not in section
+
+
+def test_ci_audit_mv2_readonly_alignment_rc_machine_lines_v0() -> None:
+    text = _ci_audit_text()
+    block = _block_containing(text, MV2_READONLY_ALIGNMENT_RC_BLOCK_ANCHOR)
+    values = _machine_line_values(block)
+    missing = set(MV2_READONLY_ALIGNMENT_RC_EXPECTED) - values.keys()
+    assert not missing, f"missing MV2 readonly alignment RC keys: {sorted(missing)}"
+    for key, expected in MV2_READONLY_ALIGNMENT_RC_EXPECTED.items():
+        assert values[key] == expected, f"{key}={values[key]!r} expected {expected!r}"
