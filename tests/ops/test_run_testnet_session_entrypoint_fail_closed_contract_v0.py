@@ -114,6 +114,15 @@ def test_legacy_smoke_tests_still_reference_dry_run() -> None:
     assert "test_main_dry_run" in LEGACY_SMOKE_TESTS.read_text(encoding="utf-8")
 
 
+def test_pe2_hard_gate_uses_line_based_gap2a1_forbidden_tokens_v0() -> None:
+    """Align with test_gap2a1_primary_evidence_enforcement_contract_v0 (prose may mention =true)."""
+    hard_gate = (
+        REPO_ROOT / "tests/ops/test_run_primary_evidence_retention_hard_gate_v0.py"
+    ).read_text(encoding="utf-8")
+    assert "gap2a1_lines" in hard_gate
+    assert '"READY_FOR_OPERATOR_ARMING=true" not in gap2a1_lines' in hard_gate
+
+
 @patch("scripts.run_testnet_session.create_kraken_testnet_client_from_config")
 @patch("scripts.run_testnet_session.load_config")
 def test_main_execute_rejects_missing_duration_and_credentials(

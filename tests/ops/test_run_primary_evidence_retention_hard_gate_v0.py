@@ -217,8 +217,9 @@ def test_pe2_run_type_primary_evidence_guard_matrix_row_v0(row: Pe2RunTypeGuardR
     for marker in PE2_ENFORCEMENT_CONTRACT_ONLY_MARKERS:
         assert marker in gap2a1
 
-    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" not in gap2a1
-    assert "READY_FOR_OPERATOR_ARMING=true" not in gap2a1
+    gap2a1_lines = {line.strip() for line in gap2a1.splitlines()}
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" not in gap2a1_lines
+    assert "READY_FOR_OPERATOR_ARMING=true" not in gap2a1_lines
 
 
 def test_pe2_run_type_primary_evidence_guard_matrix_enforcement_not_activated_v0() -> None:
