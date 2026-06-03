@@ -46,7 +46,11 @@ MV2_READONLY_ALIGNMENT_RC_EXPECTED: dict[str, str] = {
     "TRADING_AUTHORITY_CHANGED": "false",
     "PARALLEL_MASTER_V2_ALIGNMENT_INDEX_CREATED": "false",
     "FOLLOWUP_DOCS_SLICE_NEEDED": "false",
-    "FOLLOWUP_TEST_GUARD_NEEDED": "true",
+    "FOLLOWUP_TEST_GUARD_NEEDED": "false",
+    "RUNTIME_STARTED": "false",
+    "SCHEDULER_STARTED": "false",
+    "LIVE_TOUCHED": "false",
+    "READY_FOR_OPERATOR_ARMING": "false",
 }
 FENCED_BLOCK_RX = re.compile(r"```[^\n]*\n(.*?)```", re.DOTALL)
 
@@ -280,7 +284,8 @@ def test_ci_audit_mv2_readonly_alignment_slice_mv2_2_guard_owner_v0() -> None:
     section = _mv2_readonly_alignment_rc_section(_ci_audit_text())
     assert "SLICE-MV2-2" in section
     assert "Tests-ops" in section or "tests-ops" in section.lower()
-    assert "extend existing" in section.lower()
+    assert "complete" in section.lower()
+    assert "#3937" in section or "3937" in section
     assert "test_master_v2_" in section
     assert "MASTER_V2_LOGIC_IMPLEMENTATION" in section
     assert "BLOCKED" in section
