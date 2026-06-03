@@ -661,7 +661,12 @@ OPERATOR_ACCEPT_005C_SCHEDULER_000253_SC_G = (
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
     "planning/create_operator_accept_artifact_bundle_000253_scheduler_governed_reflection_v0_20260603T000815Z"
 )
+OPERATOR_ACCEPT_005B_FIXTURES_SLICE1 = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/create_operator_accept_artifact_bundle_005b_fixtures_remainder_v0_20260603T003057Z"
+)
 GOVERNED_REFLECTION_SUBGROUP_005A = "CSC-RCHAIN-v1-005a"
+GOVERNED_REFLECTION_SUBGROUP_005B = "CSC-RCHAIN-v1-005b"
 NARROWING_BASENAMES_005A_BUNDLE_A_WF_PRB_SCORECARD: tuple[str, ...] = (
     "prbc-stability-gate.yml",
     "prbd-live-readiness-scorecard.yml",
@@ -787,6 +792,35 @@ FORBIDDEN_AUTHORIZATION_PHRASES_005C_SCHEDULER_000253_SC_G: tuple[str, ...] = (
     "cli invocation approved",
     "script execution authorized",
 )
+NARROWING_BASENAMES_005B_FIXTURES_SLICE1: tuple[str, ...] = (
+    "fail_closed_missing_evidence_v0.json",
+    "forbidden_stop_idle_to_running_v0.json",
+    "ACTIVATION_AUTHORIZATION_OPERATOR_RECORD_V0.md",
+    "paper_only_adapter_stage3_approval_sample.md",
+    "preflight_remote_paper_planning_pass_v0.json",
+    "BOUNDED_ADAPTER_24H_EXECUTE_APPROVAL_RECORD_V0.md",
+    "execution_events.valid.jsonl",
+    "capsule_high_vol_no_trade_v0.json",
+)
+CANDIDATE_IDS_005B_FIXTURES_SLICE1: tuple[str, ...] = tuple(
+    f"CSC-LOSSLESS-v1-{candidate_id:06d}" for candidate_id in range(384, 420)
+)
+FORBIDDEN_AUTHORIZATION_PHRASES_005B_FIXTURES_SLICE1: tuple[str, ...] = (
+    "fixture content change authorized",
+    "fixtures runtime authorized",
+    "paper trading authorized",
+    "shadow execution authorized",
+    "testnet execution authorized",
+    "live trading authorized",
+    "scheduler start authorized",
+    "runtime authority granted",
+    "control plane transition authorized",
+    "activation authorized",
+    "preflight pass authorized",
+    "adapter execute authorized",
+    "execution authorized",
+    "trade authorized",
+)
 
 
 def _csc_rchain_005a_bundle_a_wf_prb_scorecard_guard_block(text: str) -> str:
@@ -831,6 +865,16 @@ def _csc_rchain_005c_scheduler_000253_sc_g_guard_block(text: str) -> str:
     start = text.index(
         "### CSC-RCHAIN-v1-005c governed reflection guard v0 (Scheduler 000253 SC-G)"
     )
+    end_marker = "### CSC-RCHAIN-v1-005b governed reflection guard v0 (Slice-1)"
+    if end_marker in text[start:]:
+        end = text.index(end_marker, start)
+    else:
+        end = text.index("### Static visibility contract owners", start)
+    return text[start:end]
+
+
+def _csc_rchain_005b_fixtures_slice1_guard_block(text: str) -> str:
+    start = text.index("### CSC-RCHAIN-v1-005b governed reflection guard v0 (Slice-1)")
     end = text.index("### Static visibility contract owners", start)
     return text[start:end]
 
@@ -1801,6 +1845,63 @@ def test_csc_rchain_v1_005c_governed_reflection_scheduler_000253_sc_g_scheduler_
     assert "CSC_RCHAIN_V1_ACCEPT_REPO_REFLECTED_COUNT=258" in text
     assert "CSC_RCHAIN_V1_PARK_COUNT=413" in text
     assert "CSC_RCHAIN_V1_005A_GOVERNED_REFLECTION_BUNDLE_C_INACTIVE_PARK_MARKER_V0=true" in text
+
+
+def test_csc_rchain_v1_005b_governed_reflection_fixtures_slice1_scheduler_boundary_crosslink_v0() -> (
+    None
+):
+    text = _ci_audit_text()
+    collapsed = text.lower()
+    block = _csc_rchain_005b_fixtures_slice1_guard_block(text)
+
+    assert "CSC_RCHAIN_V1_005B_GOVERNED_REFLECTION_SLICE1_V0=true" in block
+    assert "CSC_RCHAIN_V1_005B_REFLECTION_DOCS_TESTS_ONLY=true" in block
+    assert "CSC_RCHAIN_V1_005B_CANDIDATE_COUNT=36" in block
+    assert "CSC_RCHAIN_V1_005B_NARROWING_REQUIRED_COUNT=8" in block
+    assert "CSC_RCHAIN_V1_005B_FINAL_FIXTURE_SLICE=true" in block
+    assert "CSC_RCHAIN_V1_005B_PARK_RETAINED=true" in block
+    assert "BATCH_ALL_NARROWING=true" in block
+    assert "FIXTURE_REFERENCE_ONLY_STATIC_CONTEXT=true" in block
+    assert "NO_FIXTURE_CONTENT_TOUCH=true" in block
+    assert "CSC_PARENT005A_EXCLUDED=true" in block
+    assert "CSC_PARENT005C_EXCLUDED=true" in block
+    assert "005A_BUNDLE_A_B_C_NOT_REOPENED=true" in block
+    assert "005C_SLICE1_THROUGH_000253_NOT_REOPENED=true" in block
+    assert "CSC_PARENT005_WHOLESALE_ACCEPT=false" in block
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in block
+    assert "STOP_IDLE_PRESERVED=true" in block
+    assert "REUSE_DRIFT_GUARD=REUSE_OK" in block
+    assert "NO_PARALLEL_DOCS=true" in block
+    assert "NO_PARALLEL_BUILDS=true" in block
+    assert (
+        "REPO_GO_TOKEN=REPO_GO_CSC_RCHAIN_005B_FIXTURES_GOVERNED_REFLECTION_V0" in block
+    )
+    assert "NO_FIXTURES_TREE_TARGET_EDIT=true" in block
+    assert "FIXTURE_BEHAVIOR_CHANGED=false" in block
+    assert OPERATOR_ACCEPT_005B_FIXTURES_SLICE1 in block
+    assert GOVERNED_REFLECTION_SUBGROUP_005B in block
+    assert THIS_MODULE in block
+    assert GROUPING_REFLECTION_GUARD_MODULE in block
+    assert "scheduler_or_runtime_boundary" in block
+    assert "reference-only static context" in block.lower()
+
+    for basename in NARROWING_BASENAMES_005B_FIXTURES_SLICE1:
+        assert basename in block
+    assert len(CANDIDATE_IDS_005B_FIXTURES_SLICE1) == 36
+    assert "CSC-LOSSLESS-v1-000384" in block
+    assert "000419" in block
+    assert "36/36" in block
+
+    for phrase in FORBIDDEN_AUTHORIZATION_PHRASES:
+        assert phrase not in collapsed
+    for phrase in FORBIDDEN_AUTHORIZATION_PHRASES_005B_FIXTURES_SLICE1:
+        assert phrase not in collapsed
+
+    assert "CSC_RCHAIN_V1_ACCEPT_REPO_REFLECTED_COUNT=258" in text
+    assert "CSC_RCHAIN_V1_PARK_COUNT=413" in text
+    assert (
+        "CSC_RCHAIN_V1_005C_GOVERNED_REFLECTION_SCHEDULER_000253_SC_G_V0=true" in text
+    )
 
 
 def test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_truth_map_crosslink_v0() -> (
