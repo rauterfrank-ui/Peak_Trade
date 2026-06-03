@@ -138,39 +138,42 @@ AI-adjacent workflows (`infostream-automation`, `market_outlook_automation`) may
 
 ## GH Schedule Governance Minimal RC v0 — SLICE-GH-0 / SLICE-GH-001
 
-**Release:** `GH_SCHEDULE_GOVERNANCE_MINIMAL_RC_V0` · **Status index:** `docs/ops/CI_AUDIT_KNOWN_ISSUES.md` — **§ GH Schedule Governance Minimal RC v0 — index v0** (reuse — no parallel hub).
+**Release:** `GH_SCHEDULE_GOVERNANCE_MINIMAL_RC_V0` · **Status:** **CORE COMPLETE** · **Status index:** `docs/ops/CI_AUDIT_KNOWN_ISSUES.md` — **§ GH Schedule Governance Minimal RC v0 — index v0** (reuse — no parallel hub).
 
-**Slice separation:**
+**Slice separation (historical reference + status):**
 
-| Slice | Scope | This document |
-|-------|-------|---------------|
-| **SLICE-GH-0** | Docs-only governance start | This section documents boundaries only — **no** YAML change |
-| **SLICE-GH-001** | Possible later single-workflow manual-only | **Not** authorized from SLICE-GH-0; requires **separate explicit Sub-GO** |
+| Slice | Scope | Status |
+|-------|-------|--------|
+| **SLICE-GH-0** | Docs-only governance start | **complete** (#3910) |
+| **SLICE-GH-001** | Single-workflow manual-only: `.github&#47;workflows&#47;pro-prk-nightly-selfcheck.yml` | **complete** (#3911) |
 
-**SLICE-GH-001 candidate (only):** `.github&#47;workflows&#47;pro-prk-nightly-selfcheck.yml` — currently retains active `schedule:` (daily cron) among **13 residual scheduled workflows** documented in `scripts&#47;ops&#47;recommend_manual_only_workflows.py` (`RESIDUAL_SCHEDULE_WORKFLOW_FILES`). **All other 12 residuals remain unchanged** in this release line; **no batch YAML wave.**
+**Post #3911 schedule posture:** `.github&#47;workflows&#47;pro-prk-nightly-selfcheck.yml` has **no** active `schedule:`; **`workflow_dispatch`** retained. Among workflows listed in `scripts&#47;ops&#47;recommend_manual_only_workflows.py` (`RESIDUAL_SCHEDULE_WORKFLOW_FILES`), **12** retain active `schedule:` and **1** (`pro-prk-nightly-selfcheck.yml`) is manual-only. **All other 11 active residuals remain unchanged** beyond GH-001; **no batch YAML wave.**
 
 **Governance boundaries:**
 
-- **YAML change** — forbidden in SLICE-GH-0; SLICE-GH-001 may remove `schedule:` on the candidate file only after explicit Sub-GO; **`workflow_dispatch` must not be executed** from agent/CI automation.
+- **Further YAML change** — requires **per-workflow Sub-GO**; not part of this completed release line; **`workflow_dispatch` must not be executed** from agent/CI automation.
 - **Manual-only recommender** — `scripts/ops/recommend_manual_only_workflows.py` remains **read-only**; printed `gh workflow run` lines are **text only**; recommendation **≠** schedule deactivation or workflow disablement.
 - **Schedule reactivation** — restoring `schedule:` on PR #3896 manual-only workflows or batch-editing residual schedules requires a **separate PR** and explicit operator-GO — not this release line.
 - **Variable gates above** — unchanged; this section does not add new repository variables or new workflow surfaces.
 - **Authority** — no runtime, paper/shadow/testnet/live, Notion writes, trading/execution/risk/governance/live-gate changes, or Master V2 / Double Play logic changes.
 
-**Recommender + test owners (reference only in SLICE-GH-0):**
+**Recommender + test owners:**
 
 | Owner | Path |
 |-------|------|
 | Read-only CLI | `scripts/ops/recommend_manual_only_workflows.py` |
-| Static tests | `tests/ops/test_recommend_manual_only_workflows.py` |
-| Optional post-GH-001 guard | `tests/ci/test_workflow_manual_dispatch_sensitive_surface_contract_v0.py` (SLICE-GH-2 only if needed) |
+| Static tests | `tests/ops/test_recommend_manual_only_workflows.py` (GH-001 manual-only contract merged #3911) |
 
-**Planning bundle (archive — not repo-ingested):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/next_larger_theme_ranking_after_ops_cockpit_status_index_rc_v0_20260602T201200Z/`
+**Planning bundle (archive — not repo-ingested):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/gh_schedule_governance_minimal_rc_v0_final_closeout_handoff_20260602T204000Z/`
 
 ```text
 GH_SCHEDULE_GOVERNANCE_MINIMAL_RC_V0=true
+GH_SCHEDULE_GOVERNANCE_MINIMAL_RC_V0_CORE_DONE=true
 SLICE_GH0_DOCS_ONLY=true
-SLICE_GH_001_SEPARATE_SUB_GO=true
+SLICE_GH001_COMPLETE=true
+GH001_MANUAL_ONLY=true
+RESIDUAL_ACTIVE_SCHEDULE_COUNT=12
+RESIDUAL_SCHEDULE_INVENTORY_COUNT=13
 GH001_CANDIDATE_WORKFLOW=pro-prk-nightly-selfcheck.yml
 WORKFLOW_DISPATCH_EXECUTED=false
 BATCH_SCHEDULE_CHANGES=false
