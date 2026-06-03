@@ -128,7 +128,10 @@ def test_gap1_rc0_observed_governed_reflection_present_and_non_authorizing_v0() 
     assert "GAP1_EXECUTE_ENTRYPOINT_OBSERVED_GOVERNED_REFLECTION_V0=true" in reflection
     assert "GAP1_EXECUTE_ENTRYPOINT_RC0_OBSERVED=true" in reflection
     assert "scripts/run_scheduler.py" in reflection
-    assert "gap6_bounded_dry_run_evidence_capture_operator_authorized_v0_20260603T153911Z" in reflection
+    assert (
+        "gap6_bounded_dry_run_evidence_capture_operator_authorized_v0_20260603T153911Z"
+        in reflection
+    )
     assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=false" in reflection
     assert "PREFLIGHT_REMAINS_BLOCKED=true" in reflection
     assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=false" in block
