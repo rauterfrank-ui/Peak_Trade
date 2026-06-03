@@ -545,6 +545,7 @@ MARKET_AIRPORT_TOUCHED=false
 - **Charakter:** rein **Template-/Darstellungs**-Polish auf bestehenden SSR-/Payload-/JSON-Pfaden — **keine** `src/`-, API-, Route-, Provider-, Runtime-, Scheduler-, Paper-/Testnet-/Live-, Trading-, Execution-, Risk-, Governance-, Scope/Capital-, KillSwitch- oder Master-V2-/Double-Play-**Entscheidlogik**-Änderung.
 - **Dashboard zeigt/reflektiert nur:** alle Status-, „ready“-, Label- und Rail-Felder bleiben **display-only** / **non-authorizing** (siehe Safety banner, Double-Play v1.2/v1.3, Lane taxonomy §7h).
 - **Ops-/Status-Pointer:** kompakter Operator-Experience-Index in [CI Audit — Known Issues](../ops/CI_AUDIT_KNOWN_ISSUES.md) (**§ Operator Experience Release RC v0 — index v0**).
+- **Post-trilogy operator-status pointer (SLICE-OC-3, docs-only):** Auf `main` sind `OPERATOR_EXPERIENCE_RELEASE_RC_V0`, `CYBERSECURITY_VISIBILITY_RELEASE_RC_V0` und `EVIDENCE_DURABLE_CLOSEOUT_RETENTION_RC_V0` **CORE COMPLETE**; konsolidierte Operator-Status-Reflection — [CI Audit § Ops Cockpit / Operator Status Index RC v0](../ops/CI_AUDIT_KNOWN_ISSUES.md) und [Ops Cockpit post-trilogy reflection](../ops/specs/OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md). **Nur Pointer** — **keine** Runtime/Scheduler/Paper/Shadow/Testnet/Live, kein Provider-Polling, keine Trading-/Preflight-Autorität, kein Market-Airport; SLICE-OC-1/OC-2 complete; OC-3 navigational closeout only.
 
 ```text
 OPERATOR_EXPERIENCE_RELEASE_RC_V0=true

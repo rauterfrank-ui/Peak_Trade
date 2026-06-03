@@ -128,7 +128,7 @@ Maps vNext **Session / Run State** and parts of **Health / Drift** to existing p
 
 ## Ops Cockpit — post-trilogy operator status reflection v0
 
-**Release:** `OPS_COCKPIT_OR_OPERATOR_STATUS_INDEX_RC_V0` · **Status:** **CORE COMPLETE** (SLICE-OC-1 + SLICE-OC-2; OC-3 optional deferred) · **UTC:** 2026-06-02 · **Repo-SSOT for meta-index:** [`CI_AUDIT_KNOWN_ISSUES.md`](../CI_AUDIT_KNOWN_ISSUES.md) — **§ Ops Cockpit / Operator Status Index RC v0 — meta-index v0** (no parallel status hub).
+**Release:** `OPS_COCKPIT_OR_OPERATOR_STATUS_INDEX_RC_V0` · **Status:** **CORE COMPLETE** (SLICE-OC-1 + SLICE-OC-2 + SLICE-OC-3 pointer-only) · **UTC:** 2026-06-02 · **Repo-SSOT for meta-index:** [`CI_AUDIT_KNOWN_ISSUES.md`](../CI_AUDIT_KNOWN_ISSUES.md) — **§ Ops Cockpit / Operator Status Index RC v0 — meta-index v0** (no parallel status hub).
 
 **Purpose:** The Operator Summary Surface may **display or reflect** post-trilogy release status (OE/CV/ER core-complete) for operator visibility. Reflection is **read-only**; it does **not** create authority, approvals, runtime clearance, preflight lift, retention enforcement, or trading/Master V2/Double Play decisions.
 
@@ -146,7 +146,7 @@ Maps vNext **Session / Run State** and parts of **Health / Drift** to existing p
 - **No auto-writes or auto-sync** without explicit operator GO.
 - **Preflight** remains **BLOCKED**; **STOP_IDLE** preserved; no paper/shadow/testnet/live implication from displayed status.
 - **SLICE-OC-2 complete (#3909):** tests-only static guard for these reflection tokens in `tests/ops/test_ops_cockpit_payload_top_level_contract.py` (reciprocal crosslink in `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`); **no** new payload keys or `src/webui/ops_cockpit.py` changes without separate GO.
-- **Optional follow slice (deferred):** `SLICE-OC-3` — one-line trilogy pointer in `docs/webui/MARKET_SURFACE_V0.md`.
+- **SLICE-OC-3 complete (pointer-only):** one-line post-trilogy crosslink in [`MARKET_SURFACE_V0.md`](../../webui/MARKET_SURFACE_V0.md) — **§ Operator Experience Release RC v0 — SLICE-OE-1 Status-Reflexion**; **docs-only** navigational closeout; **no** UI/template/`src` change in this slice.
 
 **Durable planning pointer (archive only):**
 
