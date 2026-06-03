@@ -1874,9 +1874,7 @@ def test_csc_rchain_v1_005b_governed_reflection_fixtures_slice1_contract_v0() ->
     assert "REUSE_DRIFT_GUARD=REUSE_OK" in block
     assert "NO_PARALLEL_DOCS=true" in block
     assert "NO_PARALLEL_BUILDS=true" in block
-    assert (
-        "REPO_GO_TOKEN=REPO_GO_CSC_RCHAIN_005B_FIXTURES_GOVERNED_REFLECTION_V0" in block
-    )
+    assert "REPO_GO_TOKEN=REPO_GO_CSC_RCHAIN_005B_FIXTURES_GOVERNED_REFLECTION_V0" in block
     assert "NO_FIXTURES_TREE_TARGET_EDIT=true" in block
     assert "FIXTURE_BEHAVIOR_CHANGED=false" in block
     for basename in NARROWING_BASENAMES_005B_FIXTURES_SLICE1:

@@ -1873,9 +1873,7 @@ def test_csc_rchain_v1_005b_governed_reflection_fixtures_slice1_scheduler_bounda
     assert "REUSE_DRIFT_GUARD=REUSE_OK" in block
     assert "NO_PARALLEL_DOCS=true" in block
     assert "NO_PARALLEL_BUILDS=true" in block
-    assert (
-        "REPO_GO_TOKEN=REPO_GO_CSC_RCHAIN_005B_FIXTURES_GOVERNED_REFLECTION_V0" in block
-    )
+    assert "REPO_GO_TOKEN=REPO_GO_CSC_RCHAIN_005B_FIXTURES_GOVERNED_REFLECTION_V0" in block
     assert "NO_FIXTURES_TREE_TARGET_EDIT=true" in block
     assert "FIXTURE_BEHAVIOR_CHANGED=false" in block
     assert OPERATOR_ACCEPT_005B_FIXTURES_SLICE1 in block
@@ -1899,9 +1897,7 @@ def test_csc_rchain_v1_005b_governed_reflection_fixtures_slice1_scheduler_bounda
 
     assert "CSC_RCHAIN_V1_ACCEPT_REPO_REFLECTED_COUNT=258" in text
     assert "CSC_RCHAIN_V1_PARK_COUNT=413" in text
-    assert (
-        "CSC_RCHAIN_V1_005C_GOVERNED_REFLECTION_SCHEDULER_000253_SC_G_V0=true" in text
-    )
+    assert "CSC_RCHAIN_V1_005C_GOVERNED_REFLECTION_SCHEDULER_000253_SC_G_V0=true" in text
 
 
 def test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_truth_map_crosslink_v0() -> (
