@@ -64,6 +64,8 @@ RUN_COMPLETION_INVALID_WITHOUT_DURABLE_PRIMARY_EVIDENCE=true
 PE4_BOUNDED_OBSERVATION_MANDATORY_CLOSEOUT_WIRING_GUARD_V0=true
 SLICE_PE4_TESTS_ONLY=true
 MANDATORY_DURABLE_CLOSEOUT_REQUIRED=true
+PE5_GAP4_GAP2A1_DEPENDENCY_GUARD_V0=true
+GAP4_OUTPUT_EVIDENCE_DEPENDS_ON_GAP2A1_PRIMARY_EVIDENCE_V0=true
 
 This contract records the primary-evidence enforcement posture for future run-like actions. It is intentionally non-authorizing and opt-in only.
 
@@ -72,6 +74,8 @@ This contract records the primary-evidence enforcement posture for future run-li
 Preflight §2a.1 documents run-type applicability for **run completion**: Paper, Shadow, Testnet, Live/Canary, bounded trial (bounded observation/pilot), Scheduler completion closeout, Supervisor evidence-pack closeout. Requirements: durable primary evidence outside `/tmp`, `MANIFEST.sha256` verified, closeout reference when applicable; `/tmp`-only insufficient; run completion invalid without durable primary evidence. Contract-backed static guard: `tests/ops/test_run_primary_evidence_retention_hard_gate_v0.py` (`PE2_RUN_TYPE_GUARD_MATRIX`). Canonical prose: `docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md` §2a.1. **Does not** enable default enforcement, **does not** lift preflight, **does not** approve runtime or arming.
 
 **Bounded observation mandatory closeout wiring (PE-4 guard) v0:** Shadow/Testnet bounded observation review (`review_*_bounded_observation_evidence_v0.py`, `--durable-run-root`, `validate_durable_primary_evidence_root()`), Paper bounded adapter (`run_paper_only_bounded_observation_adapter_v0.py`), and Scheduler completion closeout reference (`scheduler_completion_closeout_v0.json`) must satisfy §2a.1 durable primary evidence + manifest/checksum verify; `/tmp`-only insufficient; material closeout may reference `durable_closeout_copy_verify_v0.py`. Static guard: `tests/ops/test_bounded_observation_review_durable_primary_evidence_contract_v0.py` (`PE4_BOUNDED_CLOSEOUT_LANE_MATRIX`). **Tests-only**; **does not** activate enforcement.
+
+**Gap4 ↔ Gap2a.1 dependency (PE-5 guard) v0:** Gap 4 output-evidence completion is invalid without §2a.1 durable primary evidence and manifest/checksum verification (`GAP4_OUTPUT_EVIDENCE_DEPENDS_ON_GAP2A1_PRIMARY_EVIDENCE_V0`). See Gap 4 output/evidence paths criteria below. Static guard: `tests/ops/test_gap4_gap2a1_primary_evidence_dependency_contract_v0.py`. **Tests-only**; **does not** activate enforcement.
 
 ### Reuse-first owner surfaces
 
@@ -83,6 +87,8 @@ Preflight §2a.1 documents run-type applicability for **run completion**: Paper,
 - `tests/ops/test_section5_preflight_gap_owner_map_contract_v0.py`
 - `tests/ops/test_bounded_observation_review_durable_primary_evidence_contract_v0.py`
 - `tests/ops/test_mandatory_durable_closeout_contract_v0.py`
+- `tests/ops/test_gap4_gap2a1_primary_evidence_dependency_contract_v0.py`
+- `tests/ops/test_gap4_output_evidence_paths_contract_v0.py`
 - existing preflight contract §2a/§2a.1 surfaces
 - existing docs truth map / reference / token-policy checks
 
@@ -167,6 +173,12 @@ GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false
 GAP4_OUTPUT_EVIDENCE_DEFAULT_ON=false
 GAP4_OUTPUT_EVIDENCE_OPT_IN_ONLY=true
 GAP4_DURABLE_OUTPUT_REQUIRED_FOR_FUTURE_RUNS=true
+PE5_GAP4_GAP2A1_DEPENDENCY_GUARD_V0=true
+GAP4_OUTPUT_EVIDENCE_DEPENDS_ON_GAP2A1_PRIMARY_EVIDENCE_V0=true
+GAP4_COMPLETION_INVALID_WITHOUT_DURABLE_PRIMARY_EVIDENCE=true
+GAP4_COMPLETION_INVALID_WITHOUT_MANIFEST_VERIFY=true
+SLICE_PE4_COMPLETE=true
+SLICE_PE5_TESTS_ONLY=true
 PATH_B_LIFT_DISCUSSION_READY=false
 PREFLIGHT_REMAINS_BLOCKED=true
 READY_FOR_OPERATOR_ARMING=false
@@ -180,12 +192,15 @@ This is a docs/tests-only contract. It records the durable output/evidence path 
 - `scripts/ops/durable_closeout_copy_verify_v0.py`
 - `scripts/run_scheduler.py`
 - `tests/ops/test_run_primary_evidence_retention_hard_gate_v0.py`
+- `tests/ops/test_gap4_gap2a1_primary_evidence_dependency_contract_v0.py`
 - existing preflight contract §2a/§2a.1 surfaces
 - existing docs truth map / reference / token-policy checks
 
 ### Durable output contract
 
 Future runs are not considered complete unless primary evidence artifacts are durable, archived outside `/tmp`, checksummed, verified, and available for later use. This contract reuses existing durable evidence and closeout surfaces instead of creating parallel docs.
+
+**Gap4 ↔ Gap2a.1 dependency (PE-5 guard) v0:** Gap 4 output-evidence path criteria **depend on** Preflight §2a.1 / §2a.1 primary-evidence completion contract (`GAP2A1_PRIMARY_EVIDENCE_ENFORCEMENT_CONTRACT_V0`, `RUN_INCOMPLETE_WITHOUT_PRIMARY_EVIDENCE`, `TMP_ONLY_EVIDENCE_INVALID`, `MANIFEST_VERIFY_REQUIRED`). Gap 4 output-evidence completion is **invalid** without durable primary evidence and manifest/checksum verification; `/tmp`-only cannot satisfy the durable chain. `GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false` and `GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false` remain unchanged. Static guard: `tests/ops/test_gap4_gap2a1_primary_evidence_dependency_contract_v0.py`.
 
 ### Non-authorization
 

@@ -541,6 +541,22 @@ def test_pe4_hard_gate_crosslinks_bounded_closeout_lane_matrix_owner_v0() -> Non
     )
 
 
+def test_pe5_hard_gate_crosslinks_gap4_gap2a1_dependency_owner_v0() -> None:
+    gap4_gap2a1 = (
+        REPO_ROOT / "tests" / "ops" / "test_gap4_gap2a1_primary_evidence_dependency_contract_v0.py"
+    )
+    assert gap4_gap2a1.is_file()
+    section = _section_2a1()
+    for token in (
+        "PE5_GAP4_GAP2A1_DEPENDENCY_GUARD_V0=true",
+        "GAP4_OUTPUT_EVIDENCE_DEPENDS_ON_GAP2A1_PRIMARY_EVIDENCE_V0=true",
+        "TMP_ONLY_EVIDENCE_INVALID=true",
+        "MANIFEST_VERIFY_REQUIRED=true",
+    ):
+        assert token in section
+    assert gap4_gap2a1.name in section or "gap4_gap2a1" in section.lower()
+
+
 @pytest.mark.skipif(not COPY_CHECK.is_file(), reason="operator archive copy-check not present")
 def test_operator_copy_check_confirms_missing_source_when_present() -> None:
     text = COPY_CHECK.read_text(encoding="utf-8")

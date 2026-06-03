@@ -188,6 +188,13 @@ def test_gap4_output_evidence_paths_drift_guard_gap4_section_preserves_criteria_
     assert "contract-only, not verified" in section
     assert "not enforcement-on" in section
     assert "archived outside `/tmp`" in section
+    for token in (
+        "PE5_GAP4_GAP2A1_DEPENDENCY_GUARD_V0=true",
+        "GAP4_OUTPUT_EVIDENCE_DEPENDS_ON_GAP2A1_PRIMARY_EVIDENCE_V0=true",
+        "GAP4_COMPLETION_INVALID_WITHOUT_DURABLE_PRIMARY_EVIDENCE=true",
+        "GAP4_COMPLETION_INVALID_WITHOUT_MANIFEST_VERIFY=true",
+    ):
+        assert token in section
     lines = {line.strip() for line in section.splitlines()}
     for token in DRIFT_GUARD_FORBIDDEN_GAP4_REPO_TOKENS:
         assert token not in lines

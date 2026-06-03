@@ -86,3 +86,31 @@ def test_section5_gap2a1_pe3_run_type_applicability_contract_v0() -> None:
     assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in section
     collapsed = section.replace("**", "")
     assert "does not enable default enforcement" in collapsed.lower()
+
+
+def _gap4_section(text: str) -> str:
+    return text.split("## Gap 4 Output/Evidence Paths Contract v0", 1)[1].split(
+        "## Gap 6 Dry-Run Proof Criteria Contract v0", 1
+    )[0]
+
+
+def test_section5_gap4_pe5_dependency_guard_v0() -> None:
+    text = DOC.read_text(encoding="utf-8")
+    gap4 = _gap4_section(text)
+    gap2a1 = _gap2a1_section(text)
+    for token in (
+        "PE5_GAP4_GAP2A1_DEPENDENCY_GUARD_V0=true",
+        "GAP4_OUTPUT_EVIDENCE_DEPENDS_ON_GAP2A1_PRIMARY_EVIDENCE_V0=true",
+        "GAP4_COMPLETION_INVALID_WITHOUT_DURABLE_PRIMARY_EVIDENCE=true",
+        "GAP4_COMPLETION_INVALID_WITHOUT_MANIFEST_VERIFY=true",
+        "SLICE_PE5_TESTS_ONLY=true",
+    ):
+        assert token in gap4
+    for token in (
+        "PE5_GAP4_GAP2A1_DEPENDENCY_GUARD_V0=true",
+        "GAP4_OUTPUT_EVIDENCE_DEPENDS_ON_GAP2A1_PRIMARY_EVIDENCE_V0=true",
+    ):
+        assert token in gap2a1
+    assert "test_gap4_gap2a1_primary_evidence_dependency_contract_v0.py" in gap4
+    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in gap4
+    assert "READY_FOR_OPERATOR_ARMING=false" in gap4
