@@ -55,7 +55,7 @@ MANUAL_ONLY_WORKFLOW_FILES: frozenset[str] = frozenset(
 # Related downstream workflow (dispatch-only; schedule commented in YAML).
 PAPER_TEST_EVIDENCE_FILE = "paper_tests_audit_evidence.yml"
 
-# Residual schedule inventory (13 files): 8 active schedule + 5 manual-only (GH-001..004 + GH-CI).
+# Residual schedule inventory (13 files): 7 active schedule + 6 manual-only (GH-001..004 + GH-CI + PRCC).
 RESIDUAL_SCHEDULE_WORKFLOW_FILES: frozenset[str] = frozenset(
     {
         "audit.yml",
@@ -78,7 +78,7 @@ RESIDUAL_INTENT_LABELS: dict[str, str] = {
     "residual_ci_ops": "Residual scheduled CI core / audit / PR-U drift (do not batch-remove)",
     "residual_scorecard_chain": "Residual PR-B / PR-K nightly scorecard and evidence chain",
     "residual_data_smoke": "Residual high-frequency market forward evidence smoke",
-    "residual_all": "13 inventory workflows (8 active schedule + 5 manual-only; read-only)",
+    "residual_all": "13 inventory workflows (7 active schedule + 6 manual-only; read-only)",
 }
 
 RESIDUAL_INTENT_TO_FILES: dict[str, tuple[str, ...]] = {
@@ -333,7 +333,7 @@ RESIDUAL_STATIC_META: dict[str, dict[str, Any]] = {
         "residual_schedule": True,
     },
     "prcc-aws-export-smoke.yml": {
-        "why": "Daily AWS export smoke (rclone/S3 read).",
+        "why": "AWS export smoke (dispatch-only; schedule removed per signed AWS policy).",
         "risk": "BLOCKED — AWS_READ secrets surface.",
         "variable_gates": "PT_* export secrets",
         "ai": False,
