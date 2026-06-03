@@ -240,7 +240,7 @@ Cross-reference: [Runtime Lane Taxonomy + Authority Levels Contract v0](../specs
 
 ### Evidence Durable Closeout Retention RC v0 — index v0
 
-**Release:** `EVIDENCE_DURABLE_CLOSEOUT_RETENTION_RC_V0` · **Slice:** `SLICE-ER-1` (docs-only start) · **UTC:** 2026-06-02 · **Recommended next larger release candidate** after `CYBERSECURITY_VISIBILITY_RELEASE_RC_V0` (CORE COMPLETE on `main` @ `f4be4e4848c1205d1f88d54bc76fe26ad0eff84d`). **Canonical repo owners (reuse — no parallel index):**
+**Release:** `EVIDENCE_DURABLE_CLOSEOUT_RETENTION_RC_V0` · **Status:** **CORE COMPLETE** (SLICE-ER-1 + SLICE-ER-2; ER-3 optional deferred) · **UTC:** 2026-06-02 · **Recommended next larger release candidate** after `CYBERSECURITY_VISIBILITY_RELEASE_RC_V0` (CORE COMPLETE on `main` @ `f4be4e4848c1205d1f88d54bc76fe26ad0eff84d`). **Canonical repo owners (reuse — no parallel index):**
 
 | Concern | Owner |
 |---------|-------|
@@ -252,9 +252,9 @@ Cross-reference: [Runtime Lane Taxonomy + Authority Levels Contract v0](../specs
 | Primary evidence hard gate guard | `tests&#47;ops&#47;test_run_primary_evidence_retention_hard_gate_v0.py` |
 | Durable closeout copy/verify guard | `tests&#47;ops&#47;test_durable_closeout_copy_verify_v0.py` |
 | Mandatory durable closeout contract guard | `tests&#47;ops&#47;test_mandatory_durable_closeout_contract_v0.py` |
-| CI audit reciprocal retention crosslink (read-only pointer) | `docs&#47;ops&#47;CI_AUDIT_KNOWN_ISSUES.md` — artifact_retention_or_evidence_gap histogram |
+| CI audit reciprocal retention crosslink (read-only pointer) | `docs&#47;ops&#47;CI_AUDIT_KNOWN_ISSUES.md` — artifact_retention_or_evidence_gap histogram (**pointer only — no ER SSOT duplication**) |
 
-**Release scope (planned):** **2–3 PRs**, **docs/tests/tooling-only** — consolidate primary evidence retention (§2a/§2a.1), mandatory durable closeout (§2b.1), and existing helper/guard ownership without runtime, S3/rclone, or new parallel evidence surfaces.
+**Release scope (complete):** **2 PRs** merged (**docs/tests/tooling-only**) — primary evidence retention (§2a/§2a.1), mandatory durable closeout (§2b.1), and existing helper/guard ownership consolidated without runtime, S3/rclone, or new parallel evidence surfaces.
 
 **Prior releases complete (reference):**
 
@@ -266,35 +266,43 @@ Cross-reference: [Runtime Lane Taxonomy + Authority Levels Contract v0](../specs
 | Token | Durable path |
 |-------|--------------|
 | Release planning bundle | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/evidence_durable_closeout_retention_rc_v0_planning_20260602T180921Z/` |
-| SLICE-ER-1 docs-only start (this slice) | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/evidence_durable_closeout_retention_rc_v0_slice_er1_docs_only_20260602T181115Z/` |
+| SLICE-ER-1 docs-only start | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/evidence_durable_closeout_retention_rc_v0_slice_er1_docs_only_20260602T181115Z/` |
+| ER final release closeout | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/evidence_durable_closeout_retention_rc_v0_final_closeout_handoff_20260602T182534Z/` |
 | Cyber final release closeout | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/cybersecurity_visibility_release_rc_v0_final_closeout_handoff_20260602T180735Z/` |
 | OE final release closeout | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/operator_experience_release_rc_v0_final_release_closeout_handoff_20260602T174916Z/` |
 
-**Planned slice decomposition (reference — not authorized until merged):**
+**Slice decomposition (historical reference + status):**
 
-| Order | Slice ID | Scope |
-|-------|----------|-------|
-| 1 | **SLICE-ER-1** | Docs-only: this release index in Preflight §2a/§2b.1 owner (**this PR**) |
-| 2 | **SLICE-ER-2** | Tests-only: extend existing `tests&#47;ops&#47;test_*retention*` and `tests&#47;ops&#47;test_*closeout*` guards only |
-| 3 | **SLICE-ER-3** (optional) | Docs/tests: lightweight CI audit crosslink pointer only if ER-2 proves drift |
+| Order | Slice ID | Scope | Status |
+|-------|----------|-------|--------|
+| 1 | **SLICE-ER-1** | Docs-only: this release index in Preflight §2a/§2b.1 owner | **complete** (#3906) |
+| 2 | **SLICE-ER-2** | Tests-only: extend existing `tests&#47;ops&#47;test_*retention*` and `tests&#47;ops&#47;test_*closeout*` guards only | **complete** (#3907) |
+| 3 | **SLICE-ER-3** (optional) | Docs/tests: lightweight CI audit crosslink pointer only if ER-2 proves Preflight↔CI drift | **deferred** |
 
 **Operational rules:**
 
 - **No runtime** — no paper/shadow/testnet/live, no scheduler/daemon, no workflow dispatch from automation.
-- **No retention enforcement activation** — this slice adds a release index only; it does **not** enable default-on primary evidence enforcement, does **not** activate closeout copy/verify, and does **not** claim retention is fully enforced repo-wide.
+- **No retention enforcement activation** — ER-1 + ER-2 merged; this release index does **not** enable default-on primary evidence enforcement, does **not** activate closeout copy/verify, and does **not** claim retention is fully enforced repo-wide.
 - **No AWS/S3/rclone/Notion** — no archive export, no Notion write, no external cloud mutation.
 - **No trading authority** — no Master V2 / Double Play / execution / risk / governance / live gate changes.
-- **Preflight remains BLOCKED** — `PRE_FLIGHT_BLOCKED_LIFTED=false`; this release index does **not** authorize future runs or clear **STOP_IDLE**.
+- **Preflight remains BLOCKED** — `PRE_FLIGHT_BLOCKED_LIFTED=false`; `PREFLIGHT_REMAINS_BLOCKED=true`; this release index does **not** authorize future runs, does **not** set `READY_FOR_OPERATOR_ARMING`, and does **not** clear **STOP_IDLE**.
 - **Reuse-before-new** — extend this Preflight owner and existing helper/guard modules; **no** parallel evidence index, readiness map, or handoff surface.
 - **Canonical remains repo + durable Evidence Archive** — external archive paths are operator pointers only.
+- **Do not start SLICE-ER-3** without proven Preflight↔CI histogram drift; CI audit carries pointer-only crosslinks by design.
 
 ```text
 EVIDENCE_DURABLE_CLOSEOUT_RETENTION_RC_V0=true
-SLICE_ER1_DOCS_ONLY=true
+SLICE_ER1_COMPLETE=true
+SLICE_ER2_COMPLETE=true
+SLICE_ER3_DEFERRED=true
 RETENTION_ENFORCEMENT_ACTIVATED=false
 CLOSEOUT_ENFORCEMENT_ACTIVATED=false
 PRE_FLIGHT_BLOCKED_LIFTED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
 READY_FOR_START=false
+NO_PREFLIGHT_LIFT=true
+NO_ENFORCEMENT_ACTIVATION=true
 NO_RUNTIME=true
 NO_PAPER_SHADOW_TESTNET_LIVE=true
 NO_AWS_S3_RCLONE=true
@@ -304,6 +312,7 @@ NO_TRADING_AUTHORITY_CHANGE=true
 MASTER_V2_LOGIC_CHANGED=false
 PARALLEL_EVIDENCE_INDEX_CREATED=false
 REUSE_BEFORE_NEW_PASS=true
+STOP_IDLE_VALID=true
 ```
 
 ## 2b.2 Closeout Enforcement Planning Contract v0
