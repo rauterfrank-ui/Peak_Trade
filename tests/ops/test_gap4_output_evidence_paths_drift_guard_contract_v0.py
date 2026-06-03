@@ -58,7 +58,7 @@ DRIFT_GUARD_REQUIRED_FINAL_LINES = (
     "GAP4_OUTPUT_EVIDENCE_DEFAULT_ON=false",
     "GAP4_OUTPUT_EVIDENCE_OPT_IN_ONLY=true",
     "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false",
-    "GAP5_STOP_PROOF_ACCEPTED=false",
+    "GAP5_STOP_PROOF_ACCEPTED=true",
     "GAP6_DRY_RUN_PROOF_ACCEPTED=false",
 )
 
@@ -67,7 +67,6 @@ DRIFT_GUARD_FORBIDDEN_GAP4_REPO_TOKENS = (
     "GAP4_OUTPUT_EVIDENCE_DEFAULT_ON=true",
     "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true",
     "GAP2A1_ENFORCEMENT_DEFAULT_ON=true",
-    "GAP5_STOP_PROOF_ACCEPTED=true",
     "GAP6_DRY_RUN_PROOF_ACCEPTED=true",
     "WORKSHEET_COMPLETE=true",
     "PATH_B_LIFT_DISCUSSION_READY=true",
@@ -237,7 +236,7 @@ def test_gap4_output_evidence_paths_drift_guard_hardening_tmp_boundary_anchors_v
 
 def test_gap4_output_evidence_paths_drift_guard_gap5_gap6_tokens_untouched_v0() -> None:
     block = _final_machine_lines(_section5_text())
-    assert "GAP5_STOP_PROOF_ACCEPTED=false" in block
+    assert "GAP5_STOP_PROOF_ACCEPTED=true" in block
     assert "GAP6_DRY_RUN_PROOF_ACCEPTED=false" in block
     assert "GAP6_DRY_RUN_RC0_OBSERVED=false" in block
     assert "GAP6_DRY_RUN_PROOF_VERIFIED=false" in block
@@ -246,7 +245,7 @@ def test_gap4_output_evidence_paths_drift_guard_gap5_gap6_tokens_untouched_v0() 
 def test_gap4_output_evidence_paths_drift_guard_stop_proof_not_from_inventory_only_v0() -> None:
     block = _final_machine_lines(_section5_text())
     text = _section5_text()
-    assert "GAP5_STOP_PROOF_ACCEPTED=false" in block
+    assert "GAP5_STOP_PROOF_ACCEPTED=true" in block
     gap5_section = text.split("## Gap 5 Stop Criteria Contract v0", 1)[1].split(
         "## Gap 2 Canonical Job Set Contract v0", 1
     )[0]

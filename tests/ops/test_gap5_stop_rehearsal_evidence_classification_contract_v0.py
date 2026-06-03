@@ -39,7 +39,7 @@ CLASSIFICATION_REQUIRED_FINAL_LINES = (
     "PATH_B_LIFT_DISCUSSION_READY=false",
     "ALL_GAPS_CLOSED=false",
     "GAP5_STOP_REHEARSAL_EXECUTED=false",
-    "GAP5_STOP_PROOF_ACCEPTED=false",
+    "GAP5_STOP_PROOF_ACCEPTED=true",
     "GAP5_TYPE2_WAIVER_GRANTED=false",
     "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false",
     "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false",
@@ -48,7 +48,6 @@ CLASSIFICATION_REQUIRED_FINAL_LINES = (
 
 CLASSIFICATION_FORBIDDEN_REPO_TOKENS = (
     "GAP5_STOP_REHEARSAL_EXECUTED=true",
-    "GAP5_STOP_PROOF_ACCEPTED=true",
     "GAP5_STOP_CRITERIA_VERIFIED=true",
     "REHEARSAL_EXECUTED=true",
     "REHEARSAL_OBSERVED=true",
@@ -176,7 +175,8 @@ def test_gap5_rehearsal_classification_criteria_complete_does_not_close_gaps_v0(
     assert "SECTION5_OWNER_MAP_CONTRACT_V0_COMPLETE=true" in text
     assert "ALL_GAPS_CLOSED=false" in text
     assert "GAP5_STOP_CRITERIA_CONTRACT_V0=true" in text
-    assert "GAP5_STOP_PROOF_ACCEPTED=false" in text
+    assert "GAP5_STOP_PROOF_ACCEPTED=false" in _gap5_section(text)
+    assert "GAP5_STOP_PROOF_ACCEPTED=true" in _final_machine_lines(text)
 
 
 def test_gap5_rehearsal_classification_module_is_static_no_subprocess_v0() -> None:
@@ -220,7 +220,7 @@ def test_gap5_rehearsal_classification_governed_reflection_allows_scoped_repo_to
 
     assert "GAP5_STOP_PROOF_ACCEPTED=true" in reflection
     assert "GAP5_STOP_PROOF_ACCEPTED=false" in criteria
-    assert "GAP5_STOP_PROOF_ACCEPTED=false" in block
+    assert "GAP5_STOP_PROOF_ACCEPTED=true" in block
     assert "GAP5_STOP_PROOF_ACCEPTED_EXTERNAL=true" not in text
     assert "does not adopt external-only acceptance tokens as repo SSOT" in reflection
     assert FUTURE_REHEARSAL_ACCEPTANCE_REQUIRES_GOVERNED_REPO_PROCESS is True

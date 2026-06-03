@@ -536,6 +536,51 @@ This governed repo-reflection block records scoped acceptance of external READ_O
 
 Evidence acceptance is not runtime authorization. The Gap 5 Stop Criteria Contract v0 block above remains criteria-only and unchanged.
 
+## Gap 5 Governed Stop Proof Accepted Final-Line Reflection v0
+
+GAP5_STOP_PROOF_ACCEPTED_FINAL_LINE_GOVERNED_REFLECTION_V0=true
+GAP5_STOP_PROOF_ACCEPTED=true
+GAP5_STOP_REHEARSAL_EXECUTED=false
+ACCEPTED_MODE=READ_ONLY_SNAPSHOT_FINAL_LINE_ACCEPTED
+GOVERNED_ACCEPTANCE_BASIS=GAP5_STOP_PROOF_ACCEPTED=true
+EXTERNAL_ACCEPTANCE_RECORD_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/proof/gap5_stop_rehearsal_read_only_snapshot_proof_accepted_external_v0_20260531T194049Z/
+GOVERNED_REPO_REFLECTION_CHARTER_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/external_gap5_stop_proof_governed_repo_reflection_charter_v0_20260531T194205Z/
+INPUT_STRATEGY_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/section5_remaining_gaps_closure_strategy_no_lift_v0_20260603T160500Z/
+INPUT_GAP7_CLOSEOUT_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/pr3966_gap7_risk_boundary_final_line_reflection_post_merge_closeout_v0_20260603T161613Z/
+OPERATOR_GO=GO_GAP5_STOP_PROOF_ACCEPTED_FINAL_LINE_REPO_REFLECTION_DOCS_TESTS_V0
+NO_RUNTIME_AUTHORITY=true
+NO_REPO_FLAG_LIFT_FROM_EXTERNAL_ACCEPTANCE=true
+PREFLIGHT_REMAINS_BLOCKED=true
+ALL_GAPS_CLOSED=false
+READY_FOR_OPERATOR_ARMING=false
+PATH_B_LIFT_DISCUSSION_READY=false
+
+This governed repo-reflection block records operator-authorized Gap-5 stop-proof **final-line acceptance** only. It propagates `GAP5_STOP_PROOF_ACCEPTED=true` to Final Machine Lines based on existing scoped external READ_ONLY_SNAPSHOT acceptance. External acceptance records remain pointer-based and subordinate to repo governance. `GAP5_STOP_REHEARSAL_EXECUTED=false` remains unchanged — snapshot acceptance is not live rehearsal execution.
+
+### Accepted final-line scope (allowed only)
+
+- external stop-proof bundle MANIFEST_VERIFY_RC=0 per acceptance record
+- READ_ONLY_SNAPSHOT mode; no stop-tool rehearsal executed
+- `GAP5_STOP_PROOF_ACCEPTED=true` in **Final Machine Lines only**
+- Gap 5 Stop Criteria Contract v0 block remains criteria-only with `GAP5_STOP_PROOF_ACCEPTED=false`
+
+### Non-authority boundary (accepted final-line reflection does not imply)
+
+- does not claim stop-tool rehearsal was executed
+- does not modify Gap-5 criteria block acceptance posture (`GAP5_STOP_PROOF_ACCEPTED=false` in criteria unchanged)
+- does not change Risk/KillSwitch authority or runtime stop behavior
+- does not verify Gap-4 output evidence paths in criteria or Final Machine Lines
+- does not verify Gap-7 risk boundaries (remains `GAP7_RISK_BOUNDARY_VERIFIED=true` from PR #3966)
+- does not enforce Gap-2a.1 primary evidence
+- does not authorize scheduler execution
+- does not enable operator arming
+- does not open Path-B lift discussion
+- does not set `ALL_GAPS_CLOSED=true`
+- does not lift preflight
+- does not start or authorize Runtime, Paper, Shadow, Testnet, or Live
+
+Evidence acceptance is not runtime authorization. The Gap 5 Governed Stop Proof Acceptance Reflection v0 block above remains scoped acceptance only and unchanged.
+
 ## Gap 6 Governed Dry-Run Proof Acceptance Reflection v0
 
 GAP6_DRY_RUN_PROOF_GOVERNED_REFLECTION_V0=true
@@ -1177,7 +1222,7 @@ GAP5_STOP_CRITERIA_CONTRACT_V0=true
 GAP5_CRITERIA_ONLY=true
 GAP5_TYPE2_WAIVER_GRANTED=false
 GAP5_STOP_REHEARSAL_EXECUTED=false
-GAP5_STOP_PROOF_ACCEPTED=false
+GAP5_STOP_PROOF_ACCEPTED=true
 GAP5_RUNTIME_STOP_AUTHORITY_CHANGED=false
 GAP5_SCHEDULER_EXECUTION_AUTHORIZED=false
 GAP5_STOP_CRITERIA_DEFAULT_ON=false
