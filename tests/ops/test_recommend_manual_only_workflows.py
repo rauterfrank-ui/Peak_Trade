@@ -9,6 +9,12 @@ from pathlib import Path
 
 import pytest
 
+from scripts.ops.recommend_manual_only_workflows import (
+    RESIDUAL_SCHEDULE_WORKFLOW_FILES,
+    WORKFLOWS_DIR,
+    _parse_workflow_file,
+)
+
 REPO_ROOT = Path(__file__).resolve().parents[2]
 SCRIPT = REPO_ROOT / "scripts" / "ops" / "recommend_manual_only_workflows.py"
 DOC = REPO_ROOT / "docs" / "ops" / "CI_SCHEDULED_WORKFLOW_VARIABLE_GATES.md"
@@ -70,6 +76,17 @@ PAPER_SHADOW_FILES = frozenset(
         "prj-scheduled-shadow-paper-features-smoke.yml",
     }
 )
+
+RESIDUAL_ACTIVE_SCHEDULE_ALLOWLIST = (
+    RESIDUAL_SCHEDULE_WORKFLOW_FILES - GH001_MANUAL_ONLY_FORMER_RESIDUAL
+)
+
+
+def _all_workflow_filenames() -> frozenset[str]:
+    names: list[str] = []
+    for pattern in ("*.yml", "*.yaml"):
+        names.extend(p.name for p in WORKFLOWS_DIR.glob(pattern))
+    return frozenset(names)
 
 
 def _run_cli(*args: str) -> subprocess.CompletedProcess[str]:
@@ -279,3 +296,38 @@ def test_recommender_opds1_ci_audit_crosslink_reciprocal_v0() -> None:
     assert "test_recommend_manual_only_workflows.py" in audit
     owner = Path(__file__).read_text(encoding="utf-8")
     assert "test_ci_audit_opds1_lists_manual_only_recommender_owner_v0" in owner
+
+
+def test_residual_schedule_files_match_script_inventory_v0() -> None:
+    """SSOT: test mirror must match recommender RESIDUAL_SCHEDULE_WORKFLOW_FILES."""
+    assert RESIDUAL_SCHEDULE_FILES == frozenset(RESIDUAL_SCHEDULE_WORKFLOW_FILES)
+
+
+def test_github_workflows_active_schedule_allowlist_drift_guard_v0() -> None:
+    """Repo-wide: only GH residual allowlist workflows may have active on.schedule."""
+    pytest.importorskip("yaml")
+    on_disk = _all_workflow_filenames()
+    missing_inventory = RESIDUAL_SCHEDULE_WORKFLOW_FILES - on_disk
+    assert not missing_inventory, f"inventory workflow missing on disk: {sorted(missing_inventory)}"
+
+    active: set[str] = set()
+    for fname in sorted(on_disk):
+        rec = _parse_workflow_file(fname)
+        if rec.has_active_schedule:
+            active.add(fname)
+
+    allowlist = set(RESIDUAL_ACTIVE_SCHEDULE_ALLOWLIST)
+    extra = active - allowlist
+    missing_active = allowlist - active
+    assert not extra, f"unexpected active schedule workflows: {sorted(extra)}"
+    assert not missing_active, (
+        f"allowlisted workflow lost active schedule (rename/remove?): {sorted(missing_active)}"
+    )
+
+
+def test_residual_active_schedule_allowlist_each_has_schedule_v0() -> None:
+    """Each of the 12 residual cron workflows must still expose schedule in on block."""
+    pytest.importorskip("yaml")
+    for fname in sorted(RESIDUAL_ACTIVE_SCHEDULE_ALLOWLIST):
+        rec = _parse_workflow_file(fname)
+        assert rec.has_active_schedule, fname
