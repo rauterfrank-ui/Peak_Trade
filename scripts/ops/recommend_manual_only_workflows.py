@@ -55,7 +55,7 @@ MANUAL_ONLY_WORKFLOW_FILES: frozenset[str] = frozenset(
 # Related downstream workflow (dispatch-only; schedule commented in YAML).
 PAPER_TEST_EVIDENCE_FILE = "paper_tests_audit_evidence.yml"
 
-# Workflows that retain active schedule: post #3896 residuals (GH review v0, 13 files).
+# Residual schedule inventory (13 files): 12 active schedule + 1 manual-only (GH-001).
 RESIDUAL_SCHEDULE_WORKFLOW_FILES: frozenset[str] = frozenset(
     {
         "audit.yml",
@@ -78,7 +78,7 @@ RESIDUAL_INTENT_LABELS: dict[str, str] = {
     "residual_ci_ops": "Residual scheduled CI core / audit / PR-U drift (do not batch-remove)",
     "residual_scorecard_chain": "Residual PR-B / PR-K nightly scorecard and evidence chain",
     "residual_data_smoke": "Residual high-frequency market forward evidence smoke",
-    "residual_all": "All 13 workflows with active schedule (read-only inventory)",
+    "residual_all": "13 inventory workflows (12 active schedule + 1 manual-only; read-only)",
 }
 
 RESIDUAL_INTENT_TO_FILES: dict[str, tuple[str, ...]] = {

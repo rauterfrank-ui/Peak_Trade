@@ -2796,6 +2796,7 @@ PARALLEL_OPERATOR_STATUS_INDEX_CREATED=false
 
 - **SLICE-GH-0 / SLICE-GH-001 complete** — **no** further YAML in this release line without **per-workflow Sub-GO**; **no** `workflow_dispatch` execution from agent/CI automation; **no** batch cron removal on the **12** remaining active residual workflows.
 - **Manual-only recommender output** is **read-only** and **not** equivalent to schedule deactivation.
+- **`residual_all` intent** — **13** inventory entries (`RESIDUAL_SCHEDULE_WORKFLOW_FILES`); **12** active `schedule:` + **1** manual-only (`pro-prk-nightly-selfcheck.yml`); CLI label must not imply “13 active schedules”.
 - **STOP_IDLE preserved** — `PREFLIGHT_REMAINS_BLOCKED=true`; no paper/shadow/testnet/live, no scheduler/daemon execution, no runtime.
 - **Notion** remains mirror/status only — **no** Notion writes.
 - **No trading / execution / risk / governance / live-gate authority** — no Master V2 / Double Play logic changes.
