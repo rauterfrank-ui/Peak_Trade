@@ -34,6 +34,8 @@ WICHTIG:
     - Nur Testnet-Environment ist erlaubt!
     - Default: validate_only=true (Orders werden validiert, nicht ausgefuehrt)
     - Keine echten Live-Trades in Phase 35!
+    - RUN_TESTNET_SESSION_ALLOWED_NOW=false (defense-in-depth; kein normaler Testnet-Run)
+    - Session-Execute erfordert --duration oder explizites --allow-unbounded-session
 
 Zum Beenden: Ctrl+C (SIGINT) oder SIGTERM
 """
@@ -852,6 +854,45 @@ def build_testnet_session(
 
 
 # =============================================================================
+# Entrypoint fail-closed guards (defense-in-depth v0)
+# =============================================================================
+
+EXIT_FAIL_CLOSED_ENTRYPOINT = 2
+
+
+def _testnet_credentials_present() -> bool:
+    """True when both testnet credential env vars are set (values not inspected)."""
+    return bool(os.environ.get("KRAKEN_TESTNET_API_KEY") and os.environ.get("KRAKEN_TESTNET_API_SECRET"))
+
+
+def _enforce_fail_closed_entrypoint(args: argparse.Namespace, logger: logging.Logger) -> Optional[int]:
+    """
+    Fail-closed checks before any session execute (warmup/network).
+
+    Dry-run skips credential and duration requirements (config validation only).
+    Does not authorize NORMAL_TESTNET_RUN or operator arming.
+    """
+    if args.dry_run:
+        return None
+    if not _testnet_credentials_present():
+        logger.error(
+            "Testnet credentials required for session execute. "
+            "Set KRAKEN_TESTNET_API_KEY and KRAKEN_TESTNET_API_SECRET."
+        )
+        return EXIT_FAIL_CLOSED_ENTRYPOINT
+    if args.duration is None and not args.allow_unbounded_session:
+        logger.error(
+            "Bounded session required: pass --duration MINUTES "
+            "or explicit --allow-unbounded-session (unsafe)."
+        )
+        return EXIT_FAIL_CLOSED_ENTRYPOINT
+    if args.duration is not None and args.duration <= 0:
+        logger.error("--duration must be a positive integer (minutes).")
+        return EXIT_FAIL_CLOSED_ENTRYPOINT
+    return None
+
+
+# =============================================================================
 # Main Entry Point
 # =============================================================================
 
@@ -916,7 +957,12 @@ WICHTIG: Nur Testnet-Trading! Keine echten Live-Trades!
         "--duration",
         type=int,
         default=None,
-        help="Laufzeit in Minuten (default: unbegrenzt)",
+        help="Laufzeit in Minuten (Pflicht fuer Execute, ausser --allow-unbounded-session)",
+    )
+    parser.add_argument(
+        "--allow-unbounded-session",
+        action="store_true",
+        help="EXPLICIT unsafe opt-in: run until Ctrl+C without --duration (not operator-approved)",
     )
     parser.add_argument(
         "--log-level",
@@ -959,13 +1005,9 @@ WICHTIG: Nur Testnet-Trading! Keine echten Live-Trades!
     logger.info("WICHTIG: Nur Testnet-Trading! Keine echten Live-Trades!")
     logger.info("=" * 60)
 
-    # API-Key-Check
-    api_key = os.environ.get("KRAKEN_TESTNET_API_KEY")
-    api_secret = os.environ.get("KRAKEN_TESTNET_API_SECRET")
-    if not api_key or not api_secret:
-        logger.warning(
-            "WARNUNG: KRAKEN_TESTNET_API_KEY und/oder KRAKEN_TESTNET_API_SECRET nicht gesetzt!"
-        )
+    fail_closed_rc = _enforce_fail_closed_entrypoint(args, logger)
+    if fail_closed_rc is not None:
+        return fail_closed_rc
 
     try:
         # Config laden
@@ -997,14 +1039,22 @@ WICHTIG: Nur Testnet-Trading! Keine echten Live-Trades!
         logger.info("Starte Warmup...")
         session.warmup()
 
-        # Session starten
+        # Session starten (bounded default; unbounded only with explicit unsafe flag)
         if args.duration:
             logger.info(f"Starte Session fuer {args.duration} Minuten...")
             results = session.run_for_duration(args.duration)
             logger.info(f"Session beendet. {len(results)} Orders ausgefuehrt.")
-        else:
-            logger.info("Starte Session (Ctrl+C zum Beenden)...")
+        elif args.allow_unbounded_session:
+            logger.warning(
+                "Unbounded session (--allow-unbounded-session): Ctrl+C zum Beenden."
+            )
             session.run_forever()
+        else:
+            logger.error(
+                "Bounded session required: --duration MINUTES "
+                "or --allow-unbounded-session."
+            )
+            return EXIT_FAIL_CLOSED_ENTRYPOINT
 
         # Zusammenfassung
         summary = session.get_execution_summary()
