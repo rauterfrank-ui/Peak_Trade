@@ -12,6 +12,8 @@ import pytest
 REPO_ROOT = Path(__file__).resolve().parents[2]
 SCRIPT = REPO_ROOT / "scripts" / "ops" / "recommend_manual_only_workflows.py"
 DOC = REPO_ROOT / "docs" / "ops" / "CI_SCHEDULED_WORKFLOW_VARIABLE_GATES.md"
+CI_AUDIT = REPO_ROOT / "docs" / "ops" / "CI_AUDIT_KNOWN_ISSUES.md"
+OPDS1_HEADING = "## Post-Release Operator Package Decision Contract v0"
 
 EXPECTED_INTENTS = frozenset(
     {
@@ -236,3 +238,44 @@ def test_residual_intents_listed_with_manual_only_intents() -> None:
     ):
         assert intent in intent_ids
     assert payload["residual_schedule_count"] == 13
+
+
+def test_ci_audit_opds1_lists_manual_only_recommender_owner_v0() -> None:
+    text = CI_AUDIT.read_text(encoding="utf-8")
+    start = text.find(OPDS1_HEADING)
+    assert start != -1
+    end = text.find("## Master V2", start)
+    section = text[start:end]
+    assert "test_recommend_manual_only_workflows.py" in section
+    assert "schedule_reactivation" not in section.lower() or "does not" in section.lower()
+
+
+@pytest.mark.parametrize(
+    "intent",
+    [
+        "paper_shadow_evidence",
+        "health_suite",
+        "market_info_daily",
+        "ops_hygiene",
+        "residual_all",
+        "residual_ci_ops",
+    ],
+)
+def test_recommender_json_never_sets_schedule_reactivation_opds1_guard(intent: str) -> None:
+    """OPDS1: recommender must not auto-force micro-churn via schedule reactivation."""
+    proc = _run_cli("--intent", intent, "--json")
+    assert proc.returncode == 0, proc.stderr
+    payload = json.loads(proc.stdout)
+    assert payload["schedule_reactivation"] is False
+    assert payload["executes_workflows"] is False
+    guard = payload.get("guard", "")
+    lowered = guard.lower()
+    assert "micro-churn" not in lowered
+    assert "next pr" not in lowered or "does not" in lowered or "read-only" in lowered
+
+
+def test_recommender_opds1_ci_audit_crosslink_reciprocal_v0() -> None:
+    audit = CI_AUDIT.read_text(encoding="utf-8")
+    assert "test_recommend_manual_only_workflows.py" in audit
+    owner = Path(__file__).read_text(encoding="utf-8")
+    assert "test_ci_audit_opds1_lists_manual_only_recommender_owner_v0" in owner
