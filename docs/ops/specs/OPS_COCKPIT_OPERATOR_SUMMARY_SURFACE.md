@@ -128,7 +128,7 @@ Maps vNext **Session / Run State** and parts of **Health / Drift** to existing p
 
 ## Ops Cockpit — post-trilogy operator status reflection v0
 
-**Release:** `OPS_COCKPIT_OR_OPERATOR_STATUS_INDEX_RC_V0` · **Slice:** `SLICE-OC-1` (docs-only) · **UTC:** 2026-06-02 · **Repo-SSOT for meta-index:** [`CI_AUDIT_KNOWN_ISSUES.md`](../CI_AUDIT_KNOWN_ISSUES.md) — **§ Ops Cockpit / Operator Status Index RC v0 — meta-index v0** (no parallel status hub).
+**Release:** `OPS_COCKPIT_OR_OPERATOR_STATUS_INDEX_RC_V0` · **Status:** **CORE COMPLETE** (SLICE-OC-1 + SLICE-OC-2; OC-3 optional deferred) · **UTC:** 2026-06-02 · **Repo-SSOT for meta-index:** [`CI_AUDIT_KNOWN_ISSUES.md`](../CI_AUDIT_KNOWN_ISSUES.md) — **§ Ops Cockpit / Operator Status Index RC v0 — meta-index v0** (no parallel status hub).
 
 **Purpose:** The Operator Summary Surface may **display or reflect** post-trilogy release status (OE/CV/ER core-complete) for operator visibility. Reflection is **read-only**; it does **not** create authority, approvals, runtime clearance, preflight lift, retention enforcement, or trading/Master V2/Double Play decisions.
 
@@ -145,7 +145,8 @@ Maps vNext **Session / Run State** and parts of **Health / Drift** to existing p
 - **No PII, raw logs, or secrets** in operator-summary reflection rows for this release line.
 - **No auto-writes or auto-sync** without explicit operator GO.
 - **Preflight** remains **BLOCKED**; **STOP_IDLE** preserved; no paper/shadow/testnet/live implication from displayed status.
-- **Follow slice (expected):** `SLICE-OC-2` — tests-only static guard for these reflection tokens; **no** new payload keys or `src/webui/ops_cockpit.py` changes without separate GO.
+- **SLICE-OC-2 complete (#3909):** tests-only static guard for these reflection tokens in `tests/ops/test_ops_cockpit_payload_top_level_contract.py` (reciprocal crosslink in `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`); **no** new payload keys or `src/webui/ops_cockpit.py` changes without separate GO.
+- **Optional follow slice (deferred):** `SLICE-OC-3` — one-line trilogy pointer in `docs/webui/MARKET_SURFACE_V0.md`.
 
 **Durable planning pointer (archive only):**
 
@@ -153,7 +154,9 @@ Maps vNext **Session / Run State** and parts of **Health / Drift** to existing p
 
 ```text
 OPS_COCKPIT_OR_OPERATOR_STATUS_INDEX_RC_V0=true
+OPS_COCKPIT_OR_OPERATOR_STATUS_INDEX_RC_V0_CORE_DONE=true
 SLICE_OC1_DOCS_ONLY_REFLECTION=true
+SLICE_OC2_GUARD_COMPLETE=true
 OPS_COCKPIT_DISPLAY_REFLECTION_ONLY=true
 OPS_COCKPIT_AUTHORITY_CHANGED=false
 OPERATOR_EXPERIENCE_RELEASE_RC_V0_CORE_DONE=true
