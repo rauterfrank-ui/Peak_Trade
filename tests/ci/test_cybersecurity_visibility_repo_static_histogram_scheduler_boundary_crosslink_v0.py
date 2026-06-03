@@ -657,6 +657,10 @@ OPERATOR_ACCEPT_005A_BUNDLE_C_INACTIVE_PARK_MARKER = (
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
     "planning/create_operator_accept_artifact_bundle_005a_bundle_c_inactive_park_marker_v0_20260602T235307Z"
 )
+OPERATOR_ACCEPT_005C_SCHEDULER_000253_SC_G = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/create_operator_accept_artifact_bundle_000253_scheduler_governed_reflection_v0_20260603T000815Z"
+)
 GOVERNED_REFLECTION_SUBGROUP_005A = "CSC-RCHAIN-v1-005a"
 NARROWING_BASENAMES_005A_BUNDLE_A_WF_PRB_SCORECARD: tuple[str, ...] = (
     "prbc-stability-gate.yml",
@@ -768,6 +772,21 @@ FORBIDDEN_AUTHORIZATION_PHRASES_005A_BUNDLE_C_INACTIVE_PARK_MARKER: tuple[str, .
     "workflow dispatch authorized",
     "gh yaml change authorized",
 )
+NARROWING_BASENAMES_005C_SCHEDULER_000253_SC_G: tuple[str, ...] = ("run_scheduler.py",)
+CANDIDATE_IDS_005C_SCHEDULER_000253_SC_G: tuple[str, ...] = ("CSC-LOSSLESS-v1-000253",)
+FORBIDDEN_AUTHORIZATION_PHRASES_005C_SCHEDULER_000253_SC_G: tuple[str, ...] = (
+    "scheduler start authorized",
+    "scheduler execution authorized",
+    "scheduler daemon authorized",
+    "job execution authorized",
+    "scheduler enabled",
+    "daemon loop authorized",
+    "workflow dispatch approved",
+    "workflow dispatch authorized",
+    "runtime authority granted",
+    "cli invocation approved",
+    "script execution authorized",
+)
 
 
 def _csc_rchain_005a_bundle_a_wf_prb_scorecard_guard_block(text: str) -> str:
@@ -799,6 +818,18 @@ def _csc_rchain_005a_bundle_b_active_non_prb_guard_block(text: str) -> str:
 def _csc_rchain_005a_bundle_c_inactive_park_marker_guard_block(text: str) -> str:
     start = text.index(
         "### CSC-RCHAIN-v1-005a governed reflection guard v0 (Bundle-C Inactive PARK-Marker Remainder)"
+    )
+    end_marker = "### CSC-RCHAIN-v1-005c governed reflection guard v0 (Scheduler 000253 SC-G)"
+    if end_marker in text[start:]:
+        end = text.index(end_marker, start)
+    else:
+        end = text.index("### Static visibility contract owners", start)
+    return text[start:end]
+
+
+def _csc_rchain_005c_scheduler_000253_sc_g_guard_block(text: str) -> str:
+    start = text.index(
+        "### CSC-RCHAIN-v1-005c governed reflection guard v0 (Scheduler 000253 SC-G)"
     )
     end = text.index("### Static visibility contract owners", start)
     return text[start:end]
@@ -1719,6 +1750,57 @@ def test_csc_rchain_v1_005a_governed_reflection_bundle_c_inactive_park_marker_sc
     assert (
         "CSC_RCHAIN_V1_005A_GOVERNED_REFLECTION_BUNDLE_B_ACTIVE_NON_PRB_REMAINDER_V0=true" in text
     )
+
+
+def test_csc_rchain_v1_005c_governed_reflection_scheduler_000253_sc_g_scheduler_boundary_crosslink_v0() -> (
+    None
+):
+    text = _ci_audit_text()
+    collapsed = text.lower()
+    block = _csc_rchain_005c_scheduler_000253_sc_g_guard_block(text)
+
+    assert "CSC_RCHAIN_V1_005C_GOVERNED_REFLECTION_SCHEDULER_000253_SC_G_V0=true" in block
+    assert "CSC_RCHAIN_V1_005C_REFLECTION_DOCS_TESTS_ONLY=true" in block
+    assert "CSC_RCHAIN_V1_005C_SCHEDULER_000253_CANDIDATE_COUNT=1" in block
+    assert "CSC_RCHAIN_V1_005C_SCHEDULER_000253_EXTERNAL_ACCEPT_READY_COUNT=0" in block
+    assert "CSC_RCHAIN_V1_005C_SCHEDULER_000253_NARROWING_REQUIRED_COUNT=1" in block
+    assert "CSC_RCHAIN_V1_005C_SCHEDULER_000253_FINAL_SCRIPT_REMAINDER=true" in block
+    assert "CSC_RCHAIN_V1_005C_PARK_RETAINED=true" in block
+    assert "REPO_GO_TOKEN=REPO_GO_CSC_RCHAIN_000253_SCHEDULER_GOVERNED_REFLECTION_V0" in block
+    assert "SCHEDULER_CLI_VISIBILITY_ONLY=true" in block
+    assert "NO_SCHEDULER_START_AUTHORITY=true" in block
+    assert "NO_SCHEDULER_EXECUTION_AUTHORITY=true" in block
+    assert "NO_SCHEDULER_DAEMON_AUTHORITY=true" in block
+    assert "NO_JOB_EXECUTION_AUTHORITY=true" in block
+    assert "RUN_SCHEDULER_000253_BLOCKED=false" in block
+    assert "RUN_SCHEDULER_000253_REFLECTED_IN_GUARDS_V0=true" in block
+    assert "RUN_SCHEDULER_PY_TOUCHED=false" in block
+    assert "CSC_RCHAIN_V1_005C_SLICE1_REOPENED=false" in block
+    assert "CSC_RCHAIN_V1_005C_SLICE7_REOPENED=false" in block
+    assert "005A_BUNDLE_A_NOT_REOPENED=true" in block
+    assert "005A_BUNDLE_B_NOT_REOPENED=true" in block
+    assert "005A_BUNDLE_C_NOT_REOPENED=true" in block
+    assert "PARENT005A_WORKFLOW_ARC_COMPLETE=true" in block
+    assert OPERATOR_ACCEPT_005C_SCHEDULER_000253_SC_G in block
+    assert GOVERNED_REFLECTION_SUBGROUP_005C in block
+    assert THIS_MODULE in block
+    assert GROUPING_REFLECTION_GUARD_MODULE in block
+    assert "scheduler" in block.lower()
+
+    for basename in NARROWING_BASENAMES_005C_SCHEDULER_000253_SC_G:
+        assert basename in block
+    assert len(CANDIDATE_IDS_005C_SCHEDULER_000253_SC_G) == 1
+    assert "CSC-LOSSLESS-v1-000253" in block
+    assert "37/37" in block
+
+    for phrase in FORBIDDEN_AUTHORIZATION_PHRASES:
+        assert phrase not in collapsed
+    for phrase in FORBIDDEN_AUTHORIZATION_PHRASES_005C_SCHEDULER_000253_SC_G:
+        assert phrase not in collapsed
+
+    assert "CSC_RCHAIN_V1_ACCEPT_REPO_REFLECTED_COUNT=258" in text
+    assert "CSC_RCHAIN_V1_PARK_COUNT=413" in text
+    assert "CSC_RCHAIN_V1_005A_GOVERNED_REFLECTION_BUNDLE_C_INACTIVE_PARK_MARKER_V0=true" in text
 
 
 def test_cybersecurity_visibility_repo_static_histogram_scheduler_boundary_truth_map_crosslink_v0() -> (
