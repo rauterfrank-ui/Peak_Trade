@@ -3,6 +3,10 @@
 Machine-anchors the canonical pure-stack module/test inventory and non-authorizing
 boundaries from the readiness map. Protects inventory legibility without importing
 trading runtime modules or authorizing execution — static file-content tests only.
+
+SLICE-MV2-2: static crosslink guard for
+``docs/ops/CI_AUDIT_KNOWN_ISSUES.md`` Master V2 / Double Play Read-only Alignment
+Inventory RC v0 meta-index (read-only; non-authorizing).
 """
 
 from __future__ import annotations
@@ -12,8 +16,39 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 SPECS = REPO_ROOT / "docs" / "ops" / "specs"
+CI_AUDIT = REPO_ROOT / "docs" / "ops" / "CI_AUDIT_KNOWN_ISSUES.md"
+REMOTE_RUNTIME_DOCS_GUARD = (
+    REPO_ROOT / "tests" / "ops" / "test_remote_runtime_contract_docs_guard_v0.py"
+)
+THIS_MODULE = Path(__file__).name
 SRC_MASTER_V2 = REPO_ROOT / "src" / "trading" / "master_v2"
 TESTS_MASTER_V2 = REPO_ROOT / "tests" / "trading" / "master_v2"
+
+MV2_READONLY_ALIGNMENT_RC_HEADING = (
+    "## Master V2 / Double Play Read-only Alignment Inventory RC v0 — docs reflection v0"
+)
+MV2_READONLY_ALIGNMENT_RC_BLOCK_ANCHOR = (
+    "MASTER_V2_DOUBLE_PLAY_READONLY_ALIGNMENT_INVENTORY_RC_V0=true"
+)
+MV2_READONLY_ALIGNMENT_RC_EXPECTED: dict[str, str] = {
+    "MASTER_V2_DOUBLE_PLAY_READONLY_ALIGNMENT_INVENTORY_RC_V0": "true",
+    "SLICE_MV2_0_EXTERNAL_INVENTORY_COMPLETE": "true",
+    "SLICE_MV2_1_DOCS_REFLECTION_ONLY": "true",
+    "COMPLETED_ARCS_MASTER_V2_COMPATIBLE": "true",
+    "MASTER_V2_PRIORITY_PRESERVED": "true",
+    "RUNTIME_PRODUCER_PARKING_LIFTED": "false",
+    "PREFLIGHT_REMAINS_BLOCKED": "true",
+    "STOP_IDLE_PRESERVED": "true",
+    "NO_RUNTIME": "true",
+    "NO_PAPER_SHADOW_TESTNET_LIVE": "true",
+    "MASTER_V2_LOGIC_CHANGED": "false",
+    "DOUBLE_PLAY_LOGIC_CHANGED": "false",
+    "TRADING_AUTHORITY_CHANGED": "false",
+    "PARALLEL_MASTER_V2_ALIGNMENT_INDEX_CREATED": "false",
+    "FOLLOWUP_DOCS_SLICE_NEEDED": "false",
+    "FOLLOWUP_TEST_GUARD_NEEDED": "true",
+}
+FENCED_BLOCK_RX = re.compile(r"```[^\n]*\n(.*?)```", re.DOTALL)
 
 PURE_STACK_MAP = SPECS / "MASTER_V2_DOUBLE_PLAY_PURE_STACK_READINESS_MAP_V0.md"
 TRADING_LOGIC_MANIFEST = SPECS / "MASTER_V2_DOUBLE_PLAY_TRADING_LOGIC_MANIFEST_V0.md"
@@ -181,3 +216,78 @@ def test_pure_stack_map_does_not_duplicate_decision_authority_map_owner_v0() -> 
     map_text = _read(PURE_STACK_MAP)
     assert "MASTER_V2_DECISION_AUTHORITY_MAP_V1.md" not in map_text
     assert "inventory" in map_text.lower()
+
+
+def _ci_audit_text() -> str:
+    assert CI_AUDIT.is_file()
+    return CI_AUDIT.read_text(encoding="utf-8")
+
+
+def _fenced_blocks(text: str) -> list[str]:
+    return [block.strip() for block in FENCED_BLOCK_RX.findall(text)]
+
+
+def _block_containing(text: str, anchor: str) -> str:
+    for block in _fenced_blocks(text):
+        if anchor in block:
+            return block
+    raise AssertionError(f"missing fenced machine-line block containing {anchor!r}")
+
+
+def _machine_line_values(block: str) -> dict[str, str]:
+    values: dict[str, str] = {}
+    for line in block.splitlines():
+        stripped = line.strip()
+        if "=" not in stripped or stripped.startswith("#"):
+            continue
+        key, _, value = stripped.partition("=")
+        if key and value:
+            values[key.strip()] = value.strip()
+    return values
+
+
+def _mv2_readonly_alignment_rc_section(text: str) -> str:
+    start = text.find(MV2_READONLY_ALIGNMENT_RC_HEADING)
+    assert start != -1, "missing Master V2 readonly alignment RC v0 section"
+    return text[start:]
+
+
+def test_ci_audit_mv2_readonly_alignment_rc_section_present_v0() -> None:
+    text = _ci_audit_text()
+    section = _mv2_readonly_alignment_rc_section(text)
+    assert "SLICE-MV2-1" in section
+    assert "SLICE-MV2-2" in section
+    assert "Docs-only reflection" in section or "docs-only reflection" in section.lower()
+    assert "MASTER_V2_REUSE_REWIRE_INVENTORY_V1.md" in section
+    assert "MARKET_SURFACE_V0.md" in section
+    assert "parallel alignment index" in section.lower()
+    assert "this PR" in section or "SLICE-MV2-1" in section
+    assert "test_master_v2_" in section
+    assert THIS_MODULE not in section
+
+
+def test_ci_audit_mv2_readonly_alignment_rc_machine_lines_v0() -> None:
+    text = _ci_audit_text()
+    block = _block_containing(text, MV2_READONLY_ALIGNMENT_RC_BLOCK_ANCHOR)
+    values = _machine_line_values(block)
+    missing = set(MV2_READONLY_ALIGNMENT_RC_EXPECTED) - values.keys()
+    assert not missing, f"missing MV2 readonly alignment RC keys: {sorted(missing)}"
+    for key, expected in MV2_READONLY_ALIGNMENT_RC_EXPECTED.items():
+        assert values[key] == expected, f"{key}={values[key]!r} expected {expected!r}"
+
+
+def test_ci_audit_mv2_readonly_alignment_slice_mv2_2_guard_owner_v0() -> None:
+    section = _mv2_readonly_alignment_rc_section(_ci_audit_text())
+    assert "SLICE-MV2-2" in section
+    assert "Tests-ops" in section or "tests-ops" in section.lower()
+    assert "extend existing" in section.lower()
+    assert "test_master_v2_" in section
+    assert "MASTER_V2_LOGIC_IMPLEMENTATION" in section
+    assert "BLOCKED" in section
+
+
+def test_pure_stack_map_reciprocal_remote_runtime_docs_guard_v0() -> None:
+    guard_text = REMOTE_RUNTIME_DOCS_GUARD.read_text(encoding="utf-8")
+    assert THIS_MODULE in guard_text
+    owner_text = Path(__file__).read_text(encoding="utf-8")
+    assert "test_remote_runtime_contract_docs_guard_v0.py" in owner_text
