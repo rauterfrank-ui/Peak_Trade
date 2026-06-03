@@ -3259,6 +3259,92 @@ NO_ENFORCEMENT_ACTIVATION=true
 PARALLEL_EVIDENCE_ENFORCEMENT_READINESS_INDEX_CREATED=false
 ```
 
+## Post-Release Operator Package Decision Contract v0
+
+**Release:** `POST_RELEASE_OPERATOR_DECISION_SYSTEM_PACKAGE_V1` · **Slice:** `SLICE-OPDS-1` (`OPDS1_PACKAGE_DECISION_CONTRACT_V0`) · **Operator-GO:** `GO_SLICE_OPDS1_POST_RELEASE_OPERATOR_PACKAGE_DECISION_CONTRACT_V0` · **UTC:** 2026-06-03 · **Docs/tests-only decision contract** — normative rules for choosing the next **1–3 PR package** after major RC closeouts; **does not** authorize runtime, **does not** lift Preflight, **does not** set `READY_FOR_OPERATOR_ARMING=true`. **Canonical repo owners (reuse — no parallel index):**
+
+| Concern | Owner |
+|---------|-------|
+| Post-release package decision contract (this section) | `docs/ops/CI_AUDIT_KNOWN_ISSUES.md` (this document) |
+| Ops Cockpit payload / operator summary reflection guards | `tests/ops/test_ops_cockpit_payload_top_level_contract.py` |
+| Manual-only workflow recommender guard (read-only CLI) | `tests/ops/test_recommend_manual_only_workflows.py` |
+| Future-run operator decision worksheet (orthogonal — runtime scoped) | `docs/ops/runbooks/SHADOW_247_GOVERNANCE_CHARTER_V0.md` — **Future-run operator decision worksheet v0** |
+| Completed RC context (input only — not next-action authorization) | this document — § Evidence Durable Enforcement Readiness Review …; § Ops Cockpit …; § GH Schedule Governance … |
+
+**Post-release decision mode (after major RC close):**
+
+When defensive/docs release trains (for example PE run-completion, CV3+, EER, OE, OC, GH, ER, MV2-readonly) reach **CORE COMPLETE**, the default is **not** micro-slice churn, pointer/handoff/ledger sync, or blind STOP_IDLE. Operators and agents must apply this contract before authorizing the next repo slice.
+
+**Package-first rule:**
+
+- **Package-first when safe larger package exists** — if a **substantive** 1–3 PR package can be defined with real guard/contract value (not pointer-only), prefer that package over isolated micro-slices.
+- **Hard cap:** `PACKAGE_SIZE_HARD_CAP_MAX=3` — no package may exceed three PRs without a new explicit Operator-GO and fresh planning bundle.
+- **Post-slice review required** — after **each** PR merge within a package, run a read-only stop/review: continue only if the next PR adds proven guard/contract value; otherwise **close the package** (cosmetic remainder gaps are closed/stopped, not auto-converted to PRs).
+
+**Rejected next-action classes:**
+
+- **Pointer-only PRs** — status sync, chronik-only, handoff/ledger lines without new invariants.
+- **Handoff/ledger/crosslink-only PRs** — navigation without guard value.
+- **Micro-churn slices** — single-token or single-line diffs that do not change enforceable posture.
+
+**STOP_IDLE bar (explicit only):**
+
+- STOP_IDLE is **allowed** only with an **explicit no-package / no-guard** reason documented in external planning (not repo-ingested by default).
+- Completed RC status **does not** imply the next action is STOP_IDLE or runtime work.
+- Cosmetic remainder gaps (for example missing status label in a non-SSOT surface) **do not** automatically become PRs.
+
+**Durable operator pointers (archive only — not repo-ingested):**
+
+| Token | Durable path |
+|-------|--------------|
+| OPDS planning bundle | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/forced_next_larger_pr_package_after_eer_no_stop_default_v0_20260603T035043Z/` |
+| EER final closeout | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/evidence_durable_enforcement_readiness_review_rc_v0_core_complete_after_eer1_v0_20260603T034527Z/` |
+| SLICE-OPDS-1 docs/tests contract (this slice) | repo: `docs/ops/CI_AUDIT_KNOWN_ISSUES.md` — this section only |
+
+**Operational rules:**
+
+- **Decision contract only** — **no** runtime, scheduler, daemon, Paper, Shadow, Testnet, or Live start from this slice.
+- **No enforcement activation** — `ENFORCEMENT_ACTIVATED=false`; `GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false`; `RETENTION_ENFORCEMENT_ACTIVATED=false`.
+- **No Preflight lift** — `PREFLIGHT_REMAINS_BLOCKED=true`; `READY_FOR_OPERATOR_ARMING=false`.
+- **Protected areas remain no-touch** — no `src/**`, `scripts/**` semantics change, `.github/workflows/**` batch edits, `config/**`, `templates/**`, Master V2 / Double Play logic, or Paper/Test data without separate explicit GO.
+- **Reuse-before-new** — extend this CI audit anchor and existing test surfaces; **no** parallel decision index, handoff hub, or readiness map.
+
+**Hard stop after PR1 (OPDS-2 gate):**
+
+After SLICE-OPDS-1 merges, re-run read-only assessment before authorizing SLICE-OPDS-2. **Do not** auto-continue the package if static guards already encode the full decision contract.
+
+```text
+POST_RELEASE_OPERATOR_DECISION_SYSTEM_PACKAGE_V1_STARTED=true
+OPDS1_PACKAGE_DECISION_CONTRACT_COMPLETE=true
+POST_RELEASE_OPERATOR_PACKAGE_DECISION_CONTRACT_V0=true
+SLICE_OPDS1_DOCS_TESTS_ONLY=true
+PACKAGE_FIRST_WHEN_SAFE_PACKAGE_EXISTS=true
+PACKAGE_SIZE_HARD_CAP_MAX=3
+POINTER_ONLY_PR_REJECTED=true
+HANDOFF_LEDGER_ONLY_PR_REJECTED=true
+MICRO_CHURN_SLICE_REJECTED=true
+STOP_IDLE_REQUIRES_EXPLICIT_NO_PACKAGE_REASON=true
+POST_SLICE_REVIEW_REQUIRED=true
+COMPLETED_RC_DOES_NOT_IMPLY_NEXT_RUNTIME=true
+COSMETIC_GAP_DOES_NOT_AUTO_BECOME_PR=true
+ENFORCEMENT_ACTIVATED=false
+GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false
+RETENTION_ENFORCEMENT_ACTIVATED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+PRE_FLIGHT_BLOCKED_LIFTED=false
+RUNTIME_STARTED=false
+SCHEDULER_STARTED=false
+LIVE_TOUCHED=false
+NO_RUNTIME=true
+NO_PREFLIGHT_LIFT=true
+NO_ENFORCEMENT_ACTIVATION=true
+PROTECTED_AREAS_NO_TOUCH=true
+REUSE_DRIFT_GUARD=REUSE_OK
+NO_PARALLEL_DOCS=true
+PARALLEL_OPERATOR_DECISION_INDEX_CREATED=false
+```
+
 ## Master V2 / Double Play Read-only Alignment Inventory RC v0 — docs reflection v0
 
 **Release:** `MASTER_V2_DOUBLE_PLAY_READONLY_ALIGNMENT_INVENTORY_RC_V0` · **Slice:** `SLICE-MV2-1` (`MASTER_V2_DOUBLE_PLAY_READONLY_ALIGNMENT_DOCS_REFLECTION_SLICE_V0`) · **UTC:** 2026-06-02 · **Docs-only reflection** of the external Master V2 / Double Play read-only alignment inventory (inventory body remains in the durable archive — **not** repo-ingested). **Canonical repo owners (reuse — no parallel index):**
