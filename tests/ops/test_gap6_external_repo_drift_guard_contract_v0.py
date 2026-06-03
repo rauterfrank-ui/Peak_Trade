@@ -206,7 +206,10 @@ def test_gap6_rc0_observed_governed_reflection_scoped_evidence_v0() -> None:
     assert "CANONICAL_JOB_SCOPE_RESPECTED=true" in reflection
     assert "paper_shadow_247_paper_only_preflight_status_v0" in reflection
     assert "EXTERNAL_EVIDENCE_BUNDLE_POINTER=" in reflection
-    assert "gap6_bounded_dry_run_evidence_capture_operator_authorized_v0_20260603T153911Z" in reflection
+    assert (
+        "gap6_bounded_dry_run_evidence_capture_operator_authorized_v0_20260603T153911Z"
+        in reflection
+    )
     assert "NO_REPO_FLAG_LIFT_FROM_EXTERNAL_ACCEPTANCE=true" in reflection
     assert "does not modify Final Machine Lines" in reflection
     assert "does not lift preflight" in reflection
