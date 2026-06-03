@@ -5,6 +5,9 @@ ROOT = Path(__file__).resolve().parents[2]
 DOC = ROOT / "docs" / "ops" / "planning" / "SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md"
 GAP5_SECTION_HEADER = "## Gap 5 Stop Criteria Contract v0"
 GAP5_GOVERNED_REFLECTION_HEADER = "## Gap 5 Governed Stop Proof Acceptance Reflection v0"
+GAP5_ACCEPTED_FINAL_LINE_REFLECTION_HEADER = (
+    "## Gap 5 Governed Stop Proof Accepted Final-Line Reflection v0"
+)
 FINAL_MACHINE_LINES_HEADER = "## Final Machine Lines"
 GAP5_PARALLEL_MARKERS = (
     "GAP5_STOP_CRITERIA_CONTRACT_V0=true",
@@ -28,7 +31,15 @@ def _gap5_criteria_section(text: str) -> str:
 
 
 def _gap5_governed_reflection_section(text: str) -> str:
-    return text.split(GAP5_GOVERNED_REFLECTION_HEADER, 1)[1].split(FINAL_MACHINE_LINES_HEADER, 1)[0]
+    return text.split(GAP5_GOVERNED_REFLECTION_HEADER, 1)[1].split(
+        GAP5_ACCEPTED_FINAL_LINE_REFLECTION_HEADER, 1
+    )[0]
+
+
+def _gap5_accepted_final_line_reflection_section(text: str) -> str:
+    return text.split(GAP5_ACCEPTED_FINAL_LINE_REFLECTION_HEADER, 1)[1].split(
+        "## Gap 6 Governed Dry-Run Proof Acceptance Reflection v0", 1
+    )[0]
 
 
 def test_gap5_stop_criteria_contract_is_present_and_non_authorizing():
@@ -178,3 +189,25 @@ def test_gap5_stop_criteria_contract_governed_reflection_non_authorizing_v0():
     assert "GAP5_STOP_PROOF_ACCEPTED=false" in criteria
     assert "does not accept or verify stop proof" in criteria
     assert "GAP5_STOP_PROOF_ACCEPTED_EXTERNAL=true" not in text
+
+
+def test_gap5_stop_proof_accepted_final_line_reflection_non_authorizing_v0():
+    text = DOC.read_text(encoding="utf-8")
+    reflection = _gap5_accepted_final_line_reflection_section(text)
+    criteria = _gap5_criteria_section(text)
+    block = text.split(FINAL_MACHINE_LINES_HEADER, 1)[1]
+
+    assert "GAP5_STOP_PROOF_ACCEPTED_FINAL_LINE_GOVERNED_REFLECTION_V0=true" in reflection
+    assert "GAP5_STOP_PROOF_ACCEPTED=true" in reflection
+    assert "GAP5_STOP_REHEARSAL_EXECUTED=false" in reflection
+    assert "NO_RUNTIME_AUTHORITY=true" in reflection
+    assert "Evidence acceptance is not runtime authorization" in reflection
+    assert "does not lift preflight" in reflection
+    assert "does not set `ALL_GAPS_CLOSED=true`" in reflection
+    assert "GAP5_STOP_PROOF_ACCEPTED=false" in criteria
+    assert "GAP5_STOP_PROOF_ACCEPTED=true" in block
+    assert "GAP5_STOP_REHEARSAL_EXECUTED=false" in block
+    assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in block
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in block
+    assert "ALL_GAPS_CLOSED=false" in block
+    assert "READY_FOR_OPERATOR_ARMING=false" in block

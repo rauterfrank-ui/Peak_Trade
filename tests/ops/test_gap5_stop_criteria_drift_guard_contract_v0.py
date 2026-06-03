@@ -27,6 +27,9 @@ HARDENING_OWNER = ROOT / "tests" / "ops" / "test_scheduler_dry_run_hardening_sou
 FINAL_MACHINE_LINES_HEADER = "## Final Machine Lines"
 GAP5_SECTION_HEADER = "## Gap 5 Stop Criteria Contract v0"
 GAP5_GOVERNED_REFLECTION_HEADER = "## Gap 5 Governed Stop Proof Acceptance Reflection v0"
+GAP5_ACCEPTED_FINAL_LINE_REFLECTION_HEADER = (
+    "## Gap 5 Governed Stop Proof Accepted Final-Line Reflection v0"
+)
 _MARKER_TRUE = "=true"
 
 # External planning posture only — must not appear as verified/rehearsed/proof in repo SSOT.
@@ -43,7 +46,7 @@ DRIFT_GUARD_REQUIRED_FINAL_LINES = (
     "PATH_B_LIFT_DISCUSSION_READY=false",
     "ALL_GAPS_CLOSED=false",
     "GAP5_STOP_REHEARSAL_EXECUTED=false",
-    "GAP5_STOP_PROOF_ACCEPTED=false",
+    "GAP5_STOP_PROOF_ACCEPTED=true",
     "GAP5_TYPE2_WAIVER_GRANTED=false",
     "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false",
     "GAP6_DRY_RUN_PROOF_ACCEPTED=false",
@@ -51,7 +54,6 @@ DRIFT_GUARD_REQUIRED_FINAL_LINES = (
 
 DRIFT_GUARD_FORBIDDEN_GAP5_REPO_TOKENS = (
     "GAP5_STOP_REHEARSAL_EXECUTED=true",
-    "GAP5_STOP_PROOF_ACCEPTED=true",
     "GAP5_TYPE2_WAIVER_GRANTED=true",
     "GAP5_RUNTIME_STOP_AUTHORITY_CHANGED=true",
     "GAP5_SCHEDULER_EXECUTION_AUTHORIZED=true",
@@ -92,7 +94,15 @@ def _gap5_section(text: str) -> str:
 
 
 def _gap5_governed_reflection_section(text: str) -> str:
-    return text.split(GAP5_GOVERNED_REFLECTION_HEADER, 1)[1].split(FINAL_MACHINE_LINES_HEADER, 1)[0]
+    return text.split(GAP5_GOVERNED_REFLECTION_HEADER, 1)[1].split(
+        GAP5_ACCEPTED_FINAL_LINE_REFLECTION_HEADER, 1
+    )[0]
+
+
+def _gap5_accepted_final_line_reflection_section(text: str) -> str:
+    return text.split(GAP5_ACCEPTED_FINAL_LINE_REFLECTION_HEADER, 1)[1].split(
+        "## Gap 6 Governed Dry-Run Proof Acceptance Reflection v0", 1
+    )[0]
 
 
 def _section5_text() -> str:
@@ -152,7 +162,60 @@ def test_gap5_stop_criteria_drift_guard_f5_approval_not_rehearsal_or_proof_v0() 
     block = _final_machine_lines(text)
     assert "F5_EXACT_PROCEDURE_APPROVED=true" not in text
     assert "GAP5_STOP_REHEARSAL_EXECUTED=false" in block
-    assert "GAP5_STOP_PROOF_ACCEPTED=false" in block
+    assert "GAP5_STOP_PROOF_ACCEPTED=true" in block
+    assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in block
+
+
+def test_gap5_accepted_final_line_governed_reflection_scoped_acceptance_v0() -> None:
+    text = _section5_text()
+    reflection = _gap5_accepted_final_line_reflection_section(text)
+    acceptance = _gap5_governed_reflection_section(text)
+    criteria = _gap5_section(text)
+    block = _final_machine_lines(text)
+
+    assert "GAP5_STOP_PROOF_ACCEPTED_FINAL_LINE_GOVERNED_REFLECTION_V0=true" in reflection
+    assert "GAP5_STOP_PROOF_ACCEPTED=true" in reflection
+    assert "GAP5_STOP_REHEARSAL_EXECUTED=false" in reflection
+    assert "ACCEPTED_MODE=READ_ONLY_SNAPSHOT_FINAL_LINE_ACCEPTED" in reflection
+    assert "GOVERNED_ACCEPTANCE_BASIS=GAP5_STOP_PROOF_ACCEPTED=true" in reflection
+    assert "EXTERNAL_ACCEPTANCE_RECORD_POINTER=" in reflection
+    assert (
+        "gap5_stop_rehearsal_read_only_snapshot_proof_accepted_external_v0_20260531T194049Z"
+        in reflection
+    )
+    assert "INPUT_STRATEGY_POINTER=" in reflection
+    assert "section5_remaining_gaps_closure_strategy_no_lift_v0_20260603T160500Z" in reflection
+    assert "INPUT_GAP7_CLOSEOUT_POINTER=" in reflection
+    assert (
+        "pr3966_gap7_risk_boundary_final_line_reflection_post_merge_closeout_v0_20260603T161613Z"
+        in reflection
+    )
+    assert (
+        "OPERATOR_GO=GO_GAP5_STOP_PROOF_ACCEPTED_FINAL_LINE_REPO_REFLECTION_DOCS_TESTS_V0"
+        in reflection
+    )
+    assert "NO_RUNTIME_AUTHORITY=true" in reflection
+    assert "does not claim stop-tool rehearsal was executed" in reflection
+    assert "does not modify Gap-5 criteria block acceptance posture" in reflection
+    assert "does not enable operator arming" in reflection
+    assert "does not set `ALL_GAPS_CLOSED=true`" in reflection
+    assert "does not lift preflight" in reflection
+    assert "Evidence acceptance is not runtime authorization" in reflection
+    assert "GAP5_STOP_PROOF_ACCEPTED=true" in acceptance
+    assert "GAP5_STOP_PROOF_ACCEPTED=false" in criteria
+    assert "GAP5_STOP_PROOF_ACCEPTED=true" in block
+    assert "GAP5_STOP_REHEARSAL_EXECUTED=false" in block
+    assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in block
+    assert "ALL_GAPS_CLOSED=false" in block
+    assert "READY_FOR_OPERATOR_ARMING=false" in block
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in block
+    reflection_lines = {line.strip() for line in reflection.splitlines()}
+    criteria_lines = {line.strip() for line in criteria.splitlines()}
+    block_lines = {line.strip() for line in block.splitlines()}
+    assert "GAP5_STOP_PROOF_ACCEPTED=true" in reflection_lines
+    assert "GAP5_STOP_PROOF_ACCEPTED=true" in block_lines
+    assert "GAP5_STOP_PROOF_ACCEPTED=true" not in criteria_lines
+    assert "GAP5_STOP_PROOF_ACCEPTED=false" not in block_lines
 
 
 def test_gap5_stop_criteria_drift_guard_preflight_contract_remains_blocked_v0() -> None:
@@ -186,7 +249,8 @@ def test_gap5_stop_criteria_drift_guard_criteria_complete_does_not_close_gaps_v0
     assert "SECTION5_OWNER_MAP_CONTRACT_V0_COMPLETE=true" in text
     assert "ALL_GAPS_CLOSED=false" in text
     assert "GAP5_CRITERIA_ONLY=true" in text
-    assert "GAP5_STOP_PROOF_ACCEPTED=false" in text
+    assert "GAP5_STOP_PROOF_ACCEPTED=false" in _gap5_section(text)
+    assert "GAP5_STOP_PROOF_ACCEPTED=true" in _final_machine_lines(text)
 
 
 def test_gap5_stop_criteria_drift_guard_evidence_not_approval_language_v0() -> None:
@@ -261,4 +325,5 @@ def test_gap5_stop_criteria_drift_guard_governed_reflection_scoped_acceptance_v0
     assert "does not start or authorize Runtime, Paper, Shadow, Testnet, or Live" in reflection
     assert "Evidence acceptance is not runtime authorization" in reflection
     assert "GAP5_STOP_PROOF_ACCEPTED=false" in criteria
-    assert "GAP5_STOP_PROOF_ACCEPTED=false" in block
+    assert "GAP5_STOP_PROOF_ACCEPTED=true" in block
+    assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in block

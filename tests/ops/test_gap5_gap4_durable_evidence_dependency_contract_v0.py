@@ -47,7 +47,7 @@ DEPENDENCY_REQUIRED_FINAL_LINES = (
     "GAP4_OUTPUT_EVIDENCE_DEFAULT_ON=false",
     "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false",
     "GAP5_STOP_REHEARSAL_EXECUTED=false",
-    "GAP5_STOP_PROOF_ACCEPTED=false",
+    "GAP5_STOP_PROOF_ACCEPTED=true",
     "GAP5_TYPE2_WAIVER_GRANTED=false",
     "GAP6_DRY_RUN_PROOF_ACCEPTED=false",
 )
@@ -56,7 +56,6 @@ DEPENDENCY_FORBIDDEN_REPO_TOKENS = (
     "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true",
     "GAP5_STOP_CRITERIA_VERIFIED=true",
     "GAP5_STOP_REHEARSAL_EXECUTED=true",
-    "GAP5_STOP_PROOF_ACCEPTED=true",
     "GAP5_TYPE2_WAIVER_GRANTED=true",
     "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true",
     "GAP6_DRY_RUN_PROOF_ACCEPTED=true",
@@ -145,7 +144,7 @@ def test_gap5_gap4_durable_evidence_dependency_gap5_cannot_prove_while_gap4_unve
     assert "GAP5_STOP_PROOF_ACCEPTED=false" in gap5
     assert "GAP5_STOP_REHEARSAL_EXECUTED=false" in gap5
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in block
-    assert "GAP5_STOP_PROOF_ACCEPTED=false" in block
+    assert "GAP5_STOP_PROOF_ACCEPTED=true" in block
     assert "GAP5_STOP_CRITERIA_VERIFIED=true" not in text
 
 
@@ -181,7 +180,7 @@ def test_gap5_gap4_durable_evidence_dependency_stop_proof_not_from_planning_only
     block = _final_machine_lines(_section5_text())
     assert "criteria-only" in gap5
     assert "not proof-accepted" in gap5
-    assert "GAP5_STOP_PROOF_ACCEPTED=false" in block
+    assert "GAP5_STOP_PROOF_ACCEPTED=true" in block
     preflight = PREFLIGHT_CONTRACT.read_text(encoding="utf-8")
     assert "Evidence ≠ approval" in preflight
 
