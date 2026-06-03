@@ -401,3 +401,39 @@ def test_cybersecurity_visibility_cv3b_histogram_readout_reciprocal_crosslink_v0
     mapping_text = (REPO_ROOT / MAPPING_GUARD_MODULE).read_text(encoding="utf-8")
     assert CV3B_BLOCK_ANCHOR in derived_text or CV3B_READOUT_HEADING in derived_text
     assert CV3B_BLOCK_ANCHOR in mapping_text or CV3B_READOUT_HEADING in mapping_text
+
+
+CV3C_REPORT_HEADING = "### Static defensive visibility report contract v0 (SLICE-CV-3c)"
+CV3C_BLOCK_ANCHOR = "CV3C_STATIC_DEFENSIVE_VISIBILITY_REPORT_CONTRACT_V0=true"
+INPUT_ARTIFACT_MODULE = (
+    "tests/ci/test_cybersecurity_visibility_r_pending_input_artifact_contract_v0.py"
+)
+
+
+def _cv3c_report_block(text: str) -> str:
+    start = text.index(CV3C_REPORT_HEADING)
+    end = text.index("Operators may use this histogram", start)
+    return text[start:end]
+
+
+def test_cybersecurity_visibility_cv3c_histogram_report_reciprocal_crosslink_v0() -> None:
+    text = _ci_audit_text()
+    block = _cv3c_report_block(text)
+    collapsed = block.lower()
+
+    assert CV3C_BLOCK_ANCHOR in block
+    assert THIS_MODULE in block
+    assert INPUT_ARTIFACT_MODULE in block
+    assert DERIVED_MAPPING_PLAN_MODULE in block
+    assert MAPPING_GUARD_MODULE in block
+    assert "docs_drift_or_pointer_integrity" in collapsed
+    assert "deferred" in collapsed
+    assert "not falsely closed" in collapsed
+    assert "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true" in block
+    assert "complete" in collapsed
+    assert "INPUT_JSONL_FABRICATED=false" in block
+    assert "RUNTIME_AUTHORITY_ADDED=false" in block
+    assert "non-authorizing" in collapsed
+
+    input_text = (REPO_ROOT / INPUT_ARTIFACT_MODULE).read_text(encoding="utf-8")
+    assert CV3C_BLOCK_ANCHOR in input_text or CV3C_REPORT_HEADING in input_text

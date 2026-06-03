@@ -525,3 +525,37 @@ def test_cybersecurity_visibility_cv3b_mapping_guard_readout_crosslink_v0() -> N
         assert status_cell.strip() != "mapped"
 
     assert "CYBERSECURITY_VISIBILITY_CHAIN_PARALLEL_ANCHOR" not in text
+
+
+CV3C_REPORT_HEADING = "### Static defensive visibility report contract v0 (SLICE-CV-3c)"
+CV3C_BLOCK_ANCHOR = "CV3C_STATIC_DEFENSIVE_VISIBILITY_REPORT_CONTRACT_V0=true"
+INPUT_ARTIFACT_MODULE = (
+    "tests/ci/test_cybersecurity_visibility_r_pending_input_artifact_contract_v0.py"
+)
+
+
+def _cv3c_report_block(text: str) -> str:
+    start = text.index(CV3C_REPORT_HEADING)
+    end = text.index("Operators may use this histogram", start)
+    return text[start:end]
+
+
+def test_cybersecurity_visibility_cv3c_mapping_guard_report_crosslink_v0() -> None:
+    text = _ci_audit_text()
+    block = _cv3c_report_block(text)
+    collapsed = block.lower()
+
+    assert CV3C_BLOCK_ANCHOR in block
+    assert THIS_MODULE in block
+    assert INPUT_ARTIFACT_MODULE in block
+    assert DERIVED_MAPPING_PLAN_PROGRESS_MODULE in block
+    assert "definitive" in collapsed
+    assert "blocked" in collapsed
+    assert "INPUT_JSONL_PROVIDED=false" in block
+    assert "DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=true" in block
+    assert "static/derived/read-only only" in collapsed
+    assert "non-authorizing" in collapsed
+
+    artifact_text = (REPO_ROOT / INPUT_ARTIFACT_MODULE).read_text(encoding="utf-8")
+    assert CV3C_BLOCK_ANCHOR in artifact_text or CV3C_REPORT_HEADING in artifact_text
+    assert "CYBERSECURITY_VISIBILITY_CHAIN_PARALLEL_ANCHOR" not in text
