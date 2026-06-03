@@ -306,52 +306,6 @@ This contract records criteria only. It does not execute `scripts/run_scheduler.
 
 This contract does not execute `scripts/run_scheduler.py`, does not authorize scheduler execution, does not enable or modify `config/scheduler/jobs.toml`, and does not authorize runtime, Paper, Shadow, Testnet, Live, AWS, broker, or exchange activity. It does not change default-on enforcement, does not mark `READY_FOR_OPERATOR_ARMING=true`, does not lift Path B, does not lift preflight, and does not approve runtime.
 
-## Gap 5 Stop Criteria Contract v0
-
-GAP5_STOP_CRITERIA_CONTRACT_V0=true
-GAP5_CRITERIA_ONLY=true
-GAP5_TYPE2_WAIVER_GRANTED=false
-GAP5_STOP_REHEARSAL_EXECUTED=false
-GAP5_STOP_PROOF_ACCEPTED=false
-GAP5_RUNTIME_STOP_AUTHORITY_CHANGED=false
-GAP5_SCHEDULER_EXECUTION_AUTHORIZED=false
-GAP5_STOP_CRITERIA_DEFAULT_ON=false
-PATH_B_LIFT_DISCUSSION_READY=false
-PREFLIGHT_REMAINS_BLOCKED=true
-READY_FOR_OPERATOR_ARMING=false
-RUNTIME_APPROVED=false
-
-This is a docs/tests-only criteria contract. It prepares future stop / Type-2 / rehearsal readiness criteria only. It does not grant a Type-2 waiver, does not execute or claim a stop-tool rehearsal, does not accept or verify stop proof, and does not change Risk/KillSwitch or runtime stop authority. Current status remains criteria-only, not waiver-granted, not rehearsal-executed, not proof-accepted, and not runtime-stop-authority-changed.
-
-Gap 1 remains the entrypoint boundary. Gap 3 remains the canonical command-text contract. Gap 4 remains the durable output/evidence path contract. Gap 6 remains the dry-run proof criteria-only contract.
-
-### Reuse-first owner surfaces
-
-- `scripts/ops/snapshot_operator_stop_signals.py`
-- `scripts/run_scheduler.py`
-- `config/scheduler/jobs.toml`
-- `scripts/ops/primary_evidence_retention_v0.py`
-- `scripts/ops/durable_closeout_copy_verify_v0.py`
-- `docs/ops/runbooks/incident_stop_freeze_rollback.md`
-- existing preflight contract stop/emergency-stop surfaces
-- existing docs truth map / reference / token-policy checks
-
-### Future stop / Type-2 / rehearsal criteria (planning only; not executed or accepted in this contract)
-
-Any future stop, Type-2 scoped-exception discussion, or stop-tool rehearsal readiness considered for preflight stop/rehearsal dimensions must satisfy criteria through existing reuse-first surfaces:
-
-1. **Stop visibility (read-only)** — operator can identify canonical stop surfaces via `snapshot_operator_stop_signals.py` and incident-stop runbooks without claiming stop was invoked or rehearsed.
-2. **Type-2 eligibility (planning text only)** — criteria for when a **future separate** operator charter might discuss Type-2 scoped exceptions; **no waiver granted** in this contract.
-3. **Rehearsal readiness (planning only)** — criteria for evidence that would be required before any future stop-tool rehearsal charter; **no rehearsal executed** here.
-4. **Orthogonality to Gap 6** — dry-run proof acceptance remains Gap 6 criteria-only; this contract does not accept dry-run proof or RC=0 for stop paths.
-5. **Durable evidence** — any future stop/rehearsal evidence must be durable, archived outside `/tmp`, checksummed, manifest-verified, and linked through Gap 4 and existing closeout surfaces (`primary_evidence_retention_v0.py`, `durable_closeout_copy_verify_v0.py`).
-
-This contract records criteria only. It does not execute `scripts/run_scheduler.py`, does not execute stop tools, and does not treat any archive or prior stop rehearsal as proof accepted here.
-
-### Non-authorization
-
-This contract does not grant a Type-2 waiver, does not execute or claim a stop-tool rehearsal, does not accept or verify stop proof, and does not change Risk/KillSwitch or runtime stop authority. It does not execute `scripts/run_scheduler.py`, does not authorize scheduler execution, does not enable or modify `config/scheduler/jobs.toml`, and does not authorize runtime, Paper, Shadow, Testnet, Live, AWS, broker, or exchange activity. It does not change default-on enforcement, does not mark `READY_FOR_OPERATOR_ARMING=true`, does not lift Path B, does not lift preflight, and does not approve runtime.
-
 ## Gap 7 Risk Boundary Criteria Contract v0
 
 GAP7_RISK_BOUNDARY_CRITERIA_CONTRACT_V0=true
@@ -1324,6 +1278,52 @@ Static guard: `tests/ops/test_tier_c_shadow_durable_evidence_crosslink_contract_
 - does not set `PREFLIGHT_REMAINS_BLOCKED=false` or lift Shadow-HOLD
 - does not recommend or start Testnet, Paper 24/7, Shadow 24/7, scheduler loops, or Live
 - does not touch paper test data, `src/`, `jobs.toml`, workflows, or risk configs
+
+## Gap 5 Stop Criteria Contract v0
+
+GAP5_STOP_CRITERIA_CONTRACT_V0=true
+GAP5_CRITERIA_ONLY=true
+GAP5_TYPE2_WAIVER_GRANTED=false
+GAP5_STOP_REHEARSAL_EXECUTED=false
+GAP5_STOP_PROOF_ACCEPTED=false
+GAP5_RUNTIME_STOP_AUTHORITY_CHANGED=false
+GAP5_SCHEDULER_EXECUTION_AUTHORIZED=false
+GAP5_STOP_CRITERIA_DEFAULT_ON=false
+PATH_B_LIFT_DISCUSSION_READY=false
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+RUNTIME_APPROVED=false
+
+This is a docs/tests-only criteria contract. It prepares future stop / Type-2 / rehearsal readiness criteria only. It does not grant a Type-2 waiver, does not execute or claim a stop-tool rehearsal, does not accept or verify stop proof, and does not change Risk/KillSwitch or runtime stop authority. Current status remains criteria-only, not waiver-granted, not rehearsal-executed, not proof-accepted, and not runtime-stop-authority-changed.
+
+Gap 1 remains the entrypoint boundary. Gap 3 remains the canonical command-text contract. Gap 4 remains the durable output/evidence path contract. Gap 6 remains the dry-run proof criteria-only contract.
+
+### Reuse-first owner surfaces
+
+- `scripts/ops/snapshot_operator_stop_signals.py`
+- `scripts/run_scheduler.py`
+- `config/scheduler/jobs.toml`
+- `scripts/ops/primary_evidence_retention_v0.py`
+- `scripts/ops/durable_closeout_copy_verify_v0.py`
+- `docs/ops/runbooks/incident_stop_freeze_rollback.md`
+- existing preflight contract stop/emergency-stop surfaces
+- existing docs truth map / reference / token-policy checks
+
+### Future stop / Type-2 / rehearsal criteria (planning only; not executed or accepted in this contract)
+
+Any future stop, Type-2 scoped-exception discussion, or stop-tool rehearsal readiness considered for preflight stop/rehearsal dimensions must satisfy criteria through existing reuse-first surfaces:
+
+1. **Stop visibility (read-only)** — operator can identify canonical stop surfaces via `snapshot_operator_stop_signals.py` and incident-stop runbooks without claiming stop was invoked or rehearsed.
+2. **Type-2 eligibility (planning text only)** — criteria for when a **future separate** operator charter might discuss Type-2 scoped exceptions; **no waiver granted** in this contract.
+3. **Rehearsal readiness (planning only)** — criteria for evidence that would be required before any future stop-tool rehearsal charter; **no rehearsal executed** here.
+4. **Orthogonality to Gap 6** — dry-run proof acceptance remains Gap 6 criteria-only; this contract does not accept dry-run proof or RC=0 for stop paths.
+5. **Durable evidence** — any future stop/rehearsal evidence must be durable, archived outside `/tmp`, checksummed, manifest-verified, and linked through Gap 4 and existing closeout surfaces (`primary_evidence_retention_v0.py`, `durable_closeout_copy_verify_v0.py`).
+
+This contract records criteria only. It does not execute `scripts/run_scheduler.py`, does not execute stop tools, and does not treat any archive or prior stop rehearsal as proof accepted here.
+
+### Non-authorization
+
+This contract does not grant a Type-2 waiver, does not execute or claim a stop-tool rehearsal, does not accept or verify stop proof, and does not change Risk/KillSwitch or runtime stop authority. It does not execute `scripts/run_scheduler.py`, does not authorize scheduler execution, does not enable or modify `config/scheduler/jobs.toml`, and does not authorize runtime, Paper, Shadow, Testnet, Live, AWS, broker, or exchange activity. It does not change default-on enforcement, does not mark `READY_FOR_OPERATOR_ARMING=true`, does not lift Path B, does not lift preflight, and does not approve runtime.
 
 ## Gap 2 Canonical Job Set Contract v0
 
