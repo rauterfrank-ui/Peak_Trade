@@ -140,3 +140,80 @@ def test_section5_eer1_readiness_review_index_crosslink_v0() -> None:
     gap2a1_lines = {line.strip() for line in gap2a1.splitlines()}
     assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" not in gap2a1_lines
     assert "READY_FOR_OPERATOR_ARMING=true" not in gap2a1_lines
+
+
+PREFLIGHT_SYNTHESIS_DOCS_BLOCK_REFLECTION_HEADER = "## Preflight Synthesis Docs Block Reflection v0"
+FINAL_MACHINE_LINES_HEADER = "## Final Machine Lines"
+
+
+def _preflight_synthesis_reflection_section(text: str) -> str:
+    return text.split(PREFLIGHT_SYNTHESIS_DOCS_BLOCK_REFLECTION_HEADER, 1)[1].split(
+        FINAL_MACHINE_LINES_HEADER, 1
+    )[0]
+
+
+def _final_machine_lines(text: str) -> str:
+    return text.split(FINAL_MACHINE_LINES_HEADER, 1)[1]
+
+
+def test_section5_preflight_synthesis_docs_block_reflection_non_authorizing_v0() -> None:
+    text = DOC.read_text(encoding="utf-8")
+    synthesis = _preflight_synthesis_reflection_section(text)
+    block = _final_machine_lines(text)
+
+    assert "PREFLIGHT_SYNTHESIS_GOVERNED_REFLECTION_V0=true" in synthesis
+    assert "PREFLIGHT_SYNTHESIS_DOCS_BLOCKED=true" in synthesis
+    assert "ACCEPTED_MODE=SECTION5_FINALS_CONSOLIDATED_PREFLIGHT_REMAINS_BLOCKED" in synthesis
+    assert "EXTERNAL_GAP2A1_TIER0_ACCEPTANCE_POINTER=" in synthesis
+    assert "gap2a1_tier0_closure_operator_acceptance_external_only_v0_20260603T164021Z" in synthesis
+    assert "INPUT_GAP4_CLOSEOUT_POINTER=" in synthesis
+    assert (
+        "pr3968_gap4_output_evidence_paths_final_line_reflection_post_merge_closeout_v0"
+        in synthesis
+    )
+    assert (
+        "OPERATOR_GO=GO_PREFLIGHT_SYNTHESIS_DOCS_BLOCK_REPO_REFLECTION_DOCS_TESTS_V0" in synthesis
+    )
+    assert "NO_RUNTIME_AUTHORITY=true" in synthesis
+    assert "does not set `PREFLIGHT_REMAINS_BLOCKED=false`" in synthesis
+    assert "does not set `ALL_GAPS_CLOSED=true`" in synthesis
+    assert "does not set `READY_FOR_OPERATOR_ARMING=true`" in synthesis
+    assert "does not set `GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true`" in synthesis
+    assert "Evidence synthesis is not runtime authorization" in synthesis
+
+    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" in synthesis
+    assert "GAP5_STOP_PROOF_ACCEPTED=true" in synthesis
+    assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in synthesis
+    assert "GAP2A1_TIER0_OPERATOR_ACCEPTED=true" in synthesis
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in synthesis
+    assert "GAP2A1_TIER1_ENFORCEMENT_LIFTED=false" in synthesis
+    assert "FULL_SCOPE_GAP4_VERIFIED=false" in synthesis
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in synthesis
+    assert "ALL_GAPS_CLOSED=false" in synthesis
+    assert "READY_FOR_OPERATOR_ARMING=false" in synthesis
+
+    assert "PREFLIGHT_SYNTHESIS_DOCS_BLOCKED=true" in block
+    assert "GAP2A1_TIER0_OPERATOR_ACCEPTED=true" in block
+    assert "GAP2A1_TIER1_ENFORCEMENT_LIFTED=false" in block
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in block
+    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" in block
+    assert "GAP5_STOP_PROOF_ACCEPTED=true" in block
+    assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in block
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in block
+    assert "ALL_GAPS_CLOSED=false" in block
+    assert "READY_FOR_OPERATOR_ARMING=false" in block
+    assert "PREFLIGHT_LIFT_EXECUTED=false" in block
+    assert "ACTUAL_PREFLIGHT_LIFT_EXECUTED=false" in block
+
+    synthesis_lines = {line.strip() for line in synthesis.splitlines()}
+    block_lines = {line.strip() for line in block.splitlines()}
+    assert "PREFLIGHT_SYNTHESIS_DOCS_BLOCKED=true" in synthesis_lines
+    assert "PREFLIGHT_SYNTHESIS_DOCS_BLOCKED=true" in block_lines
+    assert "GAP2A1_TIER0_OPERATOR_ACCEPTED=true" in synthesis_lines
+    assert "GAP2A1_TIER0_OPERATOR_ACCEPTED=true" in block_lines
+    assert "FULL_SCOPE_GAP4_VERIFIED=true" not in block_lines
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" not in block_lines
+    assert "GAP2A1_TIER1_ENFORCEMENT_LIFTED=true" not in block_lines
+    assert "PREFLIGHT_REMAINS_BLOCKED=false" not in block_lines
+    assert "ALL_GAPS_CLOSED=true" not in block_lines
+    assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
