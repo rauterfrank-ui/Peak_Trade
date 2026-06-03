@@ -106,6 +106,44 @@ Preflight §2a.1 documents run-type applicability for **run completion**: Paper,
 | Bounded dry-run | manifest + closeout required; enforcement remains optional |
 | Non-dry-run execute | explicit operator GO + durable root + opt-in enforce flag required |
 
+### Tier-1 activation contract v0 (docs/tests only)
+
+TIER1_PRIMARY_EVIDENCE_ENFORCEMENT_CONTRACT_V0=true
+TIER1_PRIMARY_EVIDENCE_ENFORCEMENT_CONTRACTED=true
+TIER1_PRIMARY_EVIDENCE_ENFORCEMENT_CHARTERED=true
+GAP2A1_TIER1_ENFORCEMENT_LIFTED=false
+GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false
+GAP2A1_ENFORCEMENT_OPT_IN_ONLY=true
+GAP2A1_ENFORCEMENT_DEFAULT_ON=false
+PREFLIGHT_REMAINS_BLOCKED=true
+ALL_GAPS_CLOSED=false
+READY_FOR_OPERATOR_ARMING=false
+TIER1_FAIL_CLOSED_ON_MISSING_PRIMARY_EVIDENCE=true
+TIER1_NO_RETROACTIVE_ENFORCEMENT=true
+TIER1_NO_LEGACY_EVIDENCE_MIGRATION_REQUIRED=true
+TIER1_OPT_IN_FLAG_REQUIRED_PER_ENTRYPOINT=true
+SLICE_TIER1_DOCS_TESTS_ONLY=true
+EXTERNAL_TIER1_CHARTER_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/tier1_primary_evidence_enforcement_charter_v0_20260603T165209Z/
+OPERATOR_GO=GO_TIER1_PRIMARY_EVIDENCE_ENFORCEMENT_CONTRACT_SLICE_DOCS_TESTS_V0
+
+This block defines **Tier-1 Primary Evidence Enforcement ON** as a future **opt-in, fail-closed** run-completion invariant. It reflects the external Tier-1 charter only; it **does not** activate enforcement, lift preflight, or authorize runtime, scheduler, Paper, Shadow, Testnet, Live, operator arming, Path-B, or Shadow-HOLD.
+
+**When Tier-1 is activated** (future separate operator GO only — not this slice), every run type under `PE2_RUN_TYPE_GUARD_MATRIX` that participates in an enforced completion path must:
+
+1. **Durable primary evidence** — bytes under a root **outside `/tmp`** (operator `ARCHIVE_ROOT` or equivalent).
+2. **Manifest discipline** — `MANIFEST.sha256` written and verified (`MANIFEST_VERIFY_REQUIRED`; verify failure is fail-closed).
+3. **Closeout reference** — lane-appropriate closeout when applicable (`scheduler_completion_closeout_v0.json`, supervisor closeout, bounded observation review bundle, or material closeout via `durable_closeout_copy_verify_v0.py`).
+4. **Explicit opt-in per entrypoint** — e.g. scheduler `--primary-evidence-enforce` requires `--evidence-dir`; adapters require equivalent contract flags when wired (reuse existing owners; no default-on).
+5. **Fail-closed completion** — missing or `/tmp`-only primary evidence must yield **non-success** completion semantics (`RUN_INCOMPLETE_WITHOUT_PRIMARY_EVIDENCE`, `TMP_ONLY_EVIDENCE_INVALID`).
+
+**Explicit non-goals (Tier-1 contract; always):**
+
+- No retroactive enforcement on historical runs; no mandatory migration of legacy evidence trees.
+- No reconstruction of old runs; no conflation of external archive `MANIFEST_VERIFY_RC=0` with repo enforcement-lift tokens.
+- No Live/trading/broker/exchange authority; **evidence ≠ approval**.
+
+Static guards: existing §2a.1 gap2a1 contract and drift-guard tests (reuse-first). Crosslink: `docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md` §2a.1 hard-gate prose (unchanged enforcement posture).
+
 ### Non-authorization
 
 This contract does not enable default enforcement, does not lift preflight, does not approve runtime, does not start Paper/Shadow/Testnet/Live, and does not mutate AWS/Notion/broker/exchange surfaces.
@@ -1301,6 +1339,7 @@ GAP2A1_PRIMARY_EVIDENCE_ENFORCEMENT_CONTRACT_V0=true
 GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false
 GAP2A1_TIER0_OPERATOR_ACCEPTED=true
 GAP2A1_TIER1_ENFORCEMENT_LIFTED=false
+TIER1_PRIMARY_EVIDENCE_ENFORCEMENT_CONTRACTED=true
 GAP2A1_ENFORCEMENT_DEFAULT_ON=false
 GAP2A1_ENFORCEMENT_OPT_IN_ONLY=true
 GAP4_OUTPUT_EVIDENCE_PATHS_CONTRACT_V0=true

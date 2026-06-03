@@ -143,16 +143,60 @@ def test_gap2a1_pe6_cyber_er_artifact_retention_crosslink_v0() -> None:
 def test_gap2a1_primary_evidence_enforcement_contract_is_not_default_on():
     text = DOC.read_text(encoding="utf-8")
     section = text.split("## §2a.1 Primary Evidence Enforcement Contract v0", 1)[1].split(
-        "## Final Machine Lines", 1
+        "## Gap 1 Execute Entrypoint Contract v0", 1
     )[0]
+    lines = {line.strip() for line in section.splitlines()}
 
     forbidden = [
         "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true",
         "GAP2A1_ENFORCEMENT_DEFAULT_ON=true",
+        "GAP2A1_TIER1_ENFORCEMENT_LIFTED=true",
     ]
 
     for marker in forbidden:
-        assert marker not in section
+        assert marker not in lines
+
+
+def test_gap2a1_tier1_activation_contract_present_and_blocked_v0() -> None:
+    section5 = DOC.read_text(encoding="utf-8")
+    gap2a1 = section5.split("## §2a.1 Primary Evidence Enforcement Contract v0", 1)[1].split(
+        "## Gap 1 Execute Entrypoint Contract v0", 1
+    )[0]
+    final_lines = section5.split("## Final Machine Lines", 1)[1]
+
+    required = (
+        "TIER1_PRIMARY_EVIDENCE_ENFORCEMENT_CONTRACT_V0=true",
+        "TIER1_PRIMARY_EVIDENCE_ENFORCEMENT_CONTRACTED=true",
+        "TIER1_PRIMARY_EVIDENCE_ENFORCEMENT_CHARTERED=true",
+        "GAP2A1_TIER1_ENFORCEMENT_LIFTED=false",
+        "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false",
+        "PREFLIGHT_REMAINS_BLOCKED=true",
+        "ALL_GAPS_CLOSED=false",
+        "READY_FOR_OPERATOR_ARMING=false",
+        "TIER1_FAIL_CLOSED_ON_MISSING_PRIMARY_EVIDENCE=true",
+        "TIER1_NO_RETROACTIVE_ENFORCEMENT=true",
+        "TIER1_NO_LEGACY_EVIDENCE_MIGRATION_REQUIRED=true",
+        "TIER1_OPT_IN_FLAG_REQUIRED_PER_ENTRYPOINT=true",
+        "SLICE_TIER1_DOCS_TESTS_ONLY=true",
+        "EXTERNAL_TIER1_CHARTER_POINTER=",
+        "PE2_RUN_TYPE_GUARD_MATRIX",
+        "fail-closed",
+    )
+    for token in required:
+        assert token in gap2a1
+
+    assert "TIER1_PRIMARY_EVIDENCE_ENFORCEMENT_CONTRACTED=true" in final_lines
+    assert "GAP2A1_TIER1_ENFORCEMENT_LIFTED=false" in final_lines
+    forbidden = (
+        "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true",
+        "GAP2A1_TIER1_ENFORCEMENT_LIFTED=true",
+        "PREFLIGHT_REMAINS_BLOCKED=false",
+        "ALL_GAPS_CLOSED=true",
+        "READY_FOR_OPERATOR_ARMING=true",
+    )
+    gap2a1_lines = {line.strip() for line in gap2a1.splitlines()}
+    for token in forbidden:
+        assert token not in gap2a1_lines
 
 
 def test_gap2a1_eer1_readiness_review_index_crosslink_v0() -> None:
