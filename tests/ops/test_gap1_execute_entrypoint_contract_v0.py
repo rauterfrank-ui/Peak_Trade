@@ -4,6 +4,11 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[2]
 DOC = ROOT / "docs" / "ops" / "planning" / "SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md"
 GAP1_SECTION_HEADER = "## Gap 1 Execute Entrypoint Contract v0"
+GAP1_RC0_OBSERVED_REFLECTION_HEADER = (
+    "## Gap 1 Governed Execute Entrypoint Observed Evidence Reflection v0"
+)
+GAP4_GOVERNED_REFLECTION_HEADER = "## Gap 4 Governed Output Evidence Acceptance Reflection v0"
+FINAL_MACHINE_LINES_HEADER = "## Final Machine Lines"
 GAP1_PARALLEL_MARKERS = (
     "GAP1_EXECUTE_ENTRYPOINT_CONTRACT_V0=true",
     "Gap 1 Execute Entrypoint Contract v0",
@@ -15,6 +20,16 @@ _MARKER_TRUE = "=true"
 
 def _gap1_section(text: str) -> str:
     return text.split(GAP1_SECTION_HEADER, 1)[1].split("## Gap 3 Execute Command Contract v0", 1)[0]
+
+
+def _gap1_rc0_observed_reflection_section(text: str) -> str:
+    return text.split(GAP1_RC0_OBSERVED_REFLECTION_HEADER, 1)[1].split(
+        GAP4_GOVERNED_REFLECTION_HEADER, 1
+    )[0]
+
+
+def _final_machine_lines(text: str) -> str:
+    return text.split(FINAL_MACHINE_LINES_HEADER, 1)[1]
 
 
 def test_gap1_execute_entrypoint_contract_is_present_and_non_authorizing():
@@ -102,3 +117,21 @@ def test_gap1_execute_entrypoint_contract_owner_crosslinks_drift_guard_v0() -> N
     text = drift_guard.read_text(encoding="utf-8")
     assert "test_gap1_execute_entrypoint_contract_v0.py" in text
     assert "GAP1_RUNTIME_APPROVED=false" in text
+
+
+def test_gap1_rc0_observed_governed_reflection_present_and_non_authorizing_v0() -> None:
+    text = DOC.read_text(encoding="utf-8")
+    reflection = _gap1_rc0_observed_reflection_section(text)
+    block = _final_machine_lines(text)
+    block_lines = {line.strip() for line in block.splitlines()}
+
+    assert "GAP1_EXECUTE_ENTRYPOINT_OBSERVED_GOVERNED_REFLECTION_V0=true" in reflection
+    assert "GAP1_EXECUTE_ENTRYPOINT_RC0_OBSERVED=true" in reflection
+    assert "scripts/run_scheduler.py" in reflection
+    assert "gap6_bounded_dry_run_evidence_capture_operator_authorized_v0_20260603T153911Z" in reflection
+    assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=false" in reflection
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in reflection
+    assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=false" in block
+    assert "GAP1_EXECUTE_ENTRYPOINT_RC0_OBSERVED=true" not in block_lines
+    assert "ALL_GAPS_CLOSED=false" in block
+    assert "READY_FOR_OPERATOR_ARMING=false" in block

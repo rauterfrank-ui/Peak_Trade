@@ -621,6 +621,64 @@ Command (Tier-2, observed RC=0):
 
 Evidence observation is not runtime authorization. The Gap 6 Dry-Run Proof Criteria Contract v0 block above remains criteria-only and unchanged.
 
+## Gap 1 Governed Execute Entrypoint Observed Evidence Reflection v0
+
+GAP1_EXECUTE_ENTRYPOINT_OBSERVED_GOVERNED_REFLECTION_V0=true
+GAP1_EXECUTE_ENTRYPOINT_RC0_OBSERVED=true
+ACCEPTED_MODE=BOUNDED_TIER2_TAG_FILTERED_ENTRYPOINT_DRY_RUN_RC0
+ENTRYPOINT=scripts/run_scheduler.py
+EXIT_CODE=0
+DRY_RUN_OBSERVED=true
+DRY_RUN_ONCE=true
+INCLUDE_TAGS=paper_shadow_247,preflight,readonly
+UNEXPECTED_EXECUTION_OBSERVED=false
+GAP1_EXECUTE_ENTRYPOINT_VERIFIED=false
+GAP1_RUNTIME_APPROVED=false
+GAP1_SCHEDULER_EXECUTION_AUTHORIZED=false
+GAP6_EVIDENCE_SOURCE=true
+EXTERNAL_EVIDENCE_BUNDLE_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/evidence/gap6_bounded_dry_run_evidence_capture_operator_authorized_v0_20260603T153911Z/
+GOVERNED_REPO_REFLECTION_CHARTER_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/gap1_execute_entrypoint_bounded_evidence_adoption_or_capture_strategy_v0_20260603T154906Z/
+NO_REPO_FLAG_LIFT_FROM_EXTERNAL_ACCEPTANCE=true
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+PATH_B_LIFT_DISCUSSION_READY=false
+
+This governed repo-reflection block records operator-authorized bounded execute entrypoint observed evidence for Gap 1 only. Entrypoint proof is derived from the existing Gap 6 bounded dry-run capture bundle (same command, same RC=0 run). It does not adopt external-only tokens as repo SSOT. External evidence bundles remain pointer-based and subordinate to repo governance.
+
+### Observed evidence facts (2026-06-03 Gap 6 capture; Gap 1 entrypoint proof)
+
+Command (Tier-2, observed RC=0 on canonical entrypoint `scripts/run_scheduler.py`):
+
+`uv run python scripts/run_scheduler.py --config config/scheduler/jobs.toml --dry-run --once --verbose --include-tags paper_shadow_247,preflight,readonly`
+
+| Fact | Value |
+|------|-------|
+| Entrypoint observed | `scripts/run_scheduler.py` |
+| External bundle MANIFEST_VERIFY_RC | 0 |
+| Exit code | 0 (RC=0) |
+| Mode | dry-run only (`--dry-run --once`) |
+| Gap 6 evidence source | same bundle; Gap 1 entrypoint boundary only |
+| Unexpected execution | not observed |
+| Live/Testnet/Shadow/Paper/Broker/Network/AWS | not observed |
+| Repo post-capture | clean (no mutation) |
+
+### Non-authority boundary (scoped reflection does not imply)
+
+- does not modify Final Machine Lines
+- does not set `GAP1_EXECUTE_ENTRYPOINT_VERIFIED=true` in criteria or Final Machine Lines
+- does not verify Gap-4 output evidence paths
+- does not verify Gap-7 risk boundaries
+- does not enforce Gap-2a.1 primary evidence
+- does not authorize scheduler execution
+- does not enable operator arming
+- does not open Path-B lift discussion
+- does not set `ALL_GAPS_CLOSED=true`
+- does not lift preflight
+- does not start or authorize Runtime, Paper, Shadow, Testnet, or Live
+- does not modify the existing Gap-1 criteria block
+
+Evidence observation is not runtime authorization. The Gap 1 Execute Entrypoint Contract v0 block above remains contract-only and unchanged.
+
 ## Gap 4 Governed Output Evidence Acceptance Reflection v0
 
 GAP4_REQ_A_PAPER_HOLD_BINDING_PROFILE_V0=true
