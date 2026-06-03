@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 from pathlib import Path
+from typing import NamedTuple
 
 import pytest
 
@@ -62,6 +63,63 @@ HARD_GATE_TOKENS = (
     "EVIDENCE_DOES_NOT_AUTHORIZE_RUNTIME=true",
 )
 
+SECTION5_GAP_OWNER = (
+    REPO_ROOT / "docs" / "ops" / "planning" / "SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md"
+)
+
+# SLICE-PE-2: static run-type guard matrix (contract/guard only; no runtime enforcement).
+class Pe2RunTypeGuardRow(NamedTuple):
+    run_type_id: str
+    doc_label: str
+    implementation_anchor: str | None = None
+    extra_doc_phrase: str | None = None
+
+
+PE2_RUN_TYPE_GUARD_MATRIX: tuple[Pe2RunTypeGuardRow, ...] = (
+    Pe2RunTypeGuardRow(
+        "paper",
+        "Paper",
+        "run_paper_only_bounded_observation_adapter_v0.py",
+        "bounded observation",
+    ),
+    Pe2RunTypeGuardRow(
+        "shadow",
+        "Shadow",
+        "review_shadow_bounded_observation_evidence_v0.py",
+        "bounded observation",
+    ),
+    Pe2RunTypeGuardRow(
+        "testnet",
+        "Testnet",
+        "review_testnet_bounded_observation_evidence_v0.py",
+        "bounded observation",
+    ),
+    Pe2RunTypeGuardRow("live", "Live/Canary"),
+    Pe2RunTypeGuardRow(
+        "bounded_observation",
+        "bounded trial",
+        extra_doc_phrase="bounded observation",
+    ),
+    Pe2RunTypeGuardRow("scheduler", "Scheduler", "run_scheduler.py"),
+    Pe2RunTypeGuardRow(
+        "supervisor",
+        "Supervisor",
+        "pack_online_readiness_supervisor_evidence_v0.py",
+    ),
+)
+
+PE2_REQUIRED_RUN_TYPE_IDS = frozenset(
+    row.run_type_id for row in PE2_RUN_TYPE_GUARD_MATRIX
+)
+
+PE2_ENFORCEMENT_CONTRACT_ONLY_MARKERS = (
+    "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false",
+    "GAP2A1_ENFORCEMENT_DEFAULT_ON=false",
+    "GAP2A1_ENFORCEMENT_OPT_IN_ONLY=true",
+    "PREFLIGHT_REMAINS_BLOCKED=true",
+    "READY_FOR_OPERATOR_ARMING=false",
+)
+
 
 def _owner_text() -> str:
     return CANONICAL_OWNER.read_text(encoding="utf-8")
@@ -69,6 +127,19 @@ def _owner_text() -> str:
 
 def _section_2a1() -> str:
     return _owner_text().split("## 2a.1", 1)[1].split("## 2b.", 1)[0]
+
+
+def _section_2a() -> str:
+    return _owner_text().split("## 2a. Primary evidence retention invariant v0", 1)[1].split(
+        "## 2a.1", 1
+    )[0]
+
+
+def _section5_gap2a1() -> str:
+    text = SECTION5_GAP_OWNER.read_text(encoding="utf-8")
+    return text.split("## §2a.1 Primary Evidence Enforcement Contract v0", 1)[1].split(
+        "## Gap 1 Execute Entrypoint Contract v0", 1
+    )[0]
 
 
 def test_canonical_owner_section_2a1_exists_with_hard_gate_tokens() -> None:
@@ -80,7 +151,7 @@ def test_canonical_owner_section_2a1_exists_with_hard_gate_tokens() -> None:
 
 
 def test_section_2a1_applies_to_all_run_types() -> None:
-    section = _owner_text().split("## 2a.1", 1)[1].split("## 2b.", 1)[0]
+    section = _section_2a1()
     for run_type in (
         "Paper",
         "Shadow",
@@ -94,6 +165,68 @@ def test_section_2a1_applies_to_all_run_types() -> None:
         "runtime adapter",
     ):
         assert run_type in section
+
+
+def test_pe2_run_type_primary_evidence_guard_matrix_covers_required_lanes_v0() -> None:
+    assert PE2_REQUIRED_RUN_TYPE_IDS >= frozenset(
+        {
+            "paper",
+            "shadow",
+            "testnet",
+            "live",
+            "bounded_observation",
+            "scheduler",
+            "supervisor",
+        }
+    )
+
+
+@pytest.mark.parametrize(
+    "row",
+    PE2_RUN_TYPE_GUARD_MATRIX,
+    ids=lambda row: row.run_type_id,
+)
+def test_pe2_run_type_primary_evidence_guard_matrix_row_v0(row: Pe2RunTypeGuardRow) -> None:
+    section_2a = _section_2a()
+    section_2a1 = _section_2a1()
+    owner = _owner_text()
+    gap2a1 = _section5_gap2a1()
+
+    assert row.doc_label in section_2a
+    assert row.doc_label in section_2a1
+    if row.extra_doc_phrase:
+        assert row.extra_doc_phrase in section_2a.lower() or row.extra_doc_phrase in owner.lower()
+    if row.implementation_anchor:
+        assert row.implementation_anchor in owner
+
+    assert "PRIMARY_EVIDENCE_REQUIRED_FOR_EVERY_RUN=true" in section_2a
+    assert "durable archive outside `/tmp`" in section_2a or "outside `/tmp`" in section_2a1
+    assert "`/tmp`-only" in section_2a or "/tmp`-only" in section_2a1
+    assert "MANIFEST.sha256" in section_2a
+    assert "shasum -a 256 -c" in section_2a or "verify_manifest_sha256" in section_2a1
+    assert "A run is **not complete** until **archive verification passes**" in section_2a
+
+    for token in HARD_GATE_TOKENS:
+        assert token in section_2a1
+
+    assert "not complete" in section_2a1.lower()
+    assert "TMP_ONLY_EVIDENCE_INVALID" in section_2a1
+    assert "incomplete and invalid" in section_2a1
+
+    for marker in PE2_ENFORCEMENT_CONTRACT_ONLY_MARKERS:
+        assert marker in gap2a1
+
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" not in gap2a1
+    assert "READY_FOR_OPERATOR_ARMING=true" not in gap2a1
+
+
+def test_pe2_run_type_primary_evidence_guard_matrix_enforcement_not_activated_v0() -> None:
+    gap2a1 = _section5_gap2a1()
+    section_2a1 = _section_2a1()
+    assert "default off" in section_2a1.lower() or "opt-in" in section_2a1.lower()
+    assert "EVIDENCE_DOES_NOT_AUTHORIZE_RUNTIME=true" in section_2a1
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in gap2a1
+    assert "GAP2A1_ENFORCEMENT_DEFAULT_ON=false" in gap2a1
 
 
 def test_section_2a1_references_may_2026_testnet_missing_source_context() -> None:
