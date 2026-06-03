@@ -471,7 +471,10 @@ class TestCLIIntegration:
         """Test: CLI mit nicht gefundener Config schlaegt fehl."""
         from scripts.run_testnet_session import main
 
-        with patch("sys.argv", ["run_testnet_session.py", "--config", "nonexistent.toml"]):
+        with patch(
+            "sys.argv",
+            ["run_testnet_session.py", "--config", "nonexistent.toml", "--dry-run"],
+        ):
             with patch("pathlib.Path.exists", return_value=False):
                 result = main()
 
