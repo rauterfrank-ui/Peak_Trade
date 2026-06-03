@@ -391,9 +391,7 @@ def test_gap7_verified_final_line_governed_reflection_scoped_verification_v0() -
         in reflection
     )
     assert "INPUT_STRATEGY_POINTER=" in reflection
-    assert (
-        "section5_remaining_gaps_closure_strategy_no_lift_v0_20260603T160500Z" in reflection
-    )
+    assert "section5_remaining_gaps_closure_strategy_no_lift_v0_20260603T160500Z" in reflection
     assert (
         "OPERATOR_GO=GO_GAP7_RISK_BOUNDARY_VERIFIED_FINAL_LINE_REPO_REFLECTION_DOCS_TESTS_V0"
         in reflection
