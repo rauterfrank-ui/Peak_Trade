@@ -3041,7 +3041,7 @@ PARALLEL_PRIMARY_EVIDENCE_ENFORCEMENT_INDEX_CREATED=false
 | 0 | **SLICE-MV2-0** | External read-only alignment inventory (**complete** — see archive bundle above) |
 | 1 | **SLICE-MV2-1** | Docs-only: this reflection (**this PR**) |
 | 2 | **SLICE-OC-2** | Tests-ops: ops cockpit post-trilogy reflection static guard in `tests&#47;ops&#47;test_ops_cockpit_payload_top_level_contract.py` | **complete** (#3909) |
-| 3 | **SLICE-MV2-2** (optional) | Tests-ops: extend existing `tests&#47;ops&#47;test_master_v2_*` crosslink guards only |
+| 3 | **SLICE-MV2-2** | Tests-ops: extend existing `tests&#47;ops&#47;test_master_v2_*` crosslink guards only | **complete** (#3937) |
 | — | **MASTER_V2_LOGIC_IMPLEMENTATION** | Trading-logic / runtime-producer lift / authority change — **BLOCKED** without separate explicit Operator-GO |
 
 **Operational rules:**
@@ -3053,6 +3053,7 @@ PARALLEL_PRIMARY_EVIDENCE_ENFORCEMENT_INDEX_CREATED=false
 - **Dashboard / Notion / Ops status ≠ approval** — `DASHBOARD_AUTHORITY_CHANGED=false`; `NOTION_AUTHORITY_CHANGED=false`; `OPS_STATUS_AUTHORITY_CHANGED=false`; Notion **mirror only**.
 - **No** archive/evidence mutation, AWS/S3/rclone, Notion API/MCP/writes, `workflow_dispatch` from agent/CI automation, Market-Airport, or cyber real-data/PII.
 - **Reuse-before-new** — extend this CI audit anchor and existing Master V2 / Double Play spec owners; **no** parallel alignment index, evidence hub, readiness map, registry handoff, or pointer hub in repo.
+- **SLICE-MV2-2 complete (#3937)** — reciprocal test guard coverage merged in existing `tests&#47;ops&#47;test_master_v2_*` crosslink guards and reciprocal docs guard; post-closeout status sync sets `FOLLOWUP_TEST_GUARD_NEEDED=false` — **no** further MV2 readonly alignment guard slice without separate Operator-GO.
 
 ```text
 MASTER_V2_DOUBLE_PLAY_READONLY_ALIGNMENT_INVENTORY_RC_V0=true
@@ -3082,6 +3083,10 @@ MASTER_V2_LOGIC_CHANGED=false
 DOUBLE_PLAY_LOGIC_CHANGED=false
 CYBER_REAL_DATA_PII_BLOCKED=true
 PARALLEL_MASTER_V2_ALIGNMENT_INDEX_CREATED=false
+RUNTIME_STARTED=false
+SCHEDULER_STARTED=false
+LIVE_TOUCHED=false
+READY_FOR_OPERATOR_ARMING=false
 FOLLOWUP_DOCS_SLICE_NEEDED=false
-FOLLOWUP_TEST_GUARD_NEEDED=true
+FOLLOWUP_TEST_GUARD_NEEDED=false
 ```
