@@ -40,6 +40,7 @@ GAP4_FULL_SCOPE_GAP4_VERIFIED_REFLECTION_HEADER = "## Gap 4 Full-Scope Gap4 Veri
 GAP4_VERIFIED_FINAL_LINE_REFLECTION_HEADER = (
     "## Gap 4 Governed Output Evidence Paths Verified Final-Line Reflection v0"
 )
+PREFLIGHT_SYNTHESIS_DOCS_BLOCK_REFLECTION_HEADER = "## Preflight Synthesis Docs Block Reflection v0"
 GAP7_GOVERNED_REFLECTION_HEADER = "## Gap 7 Governed Risk Boundary Acceptance Reflection v0"
 GAP2A1_SECTION_HEADER = "## §2a.1 Primary Evidence Enforcement Contract v0"
 _MARKER_TRUE = "=true"
@@ -138,7 +139,7 @@ def _gap4_full_scope_gap4_verified_reflection_section(text: str) -> str:
 
 def _gap4_verified_final_line_reflection_section(text: str) -> str:
     return text.split(GAP4_VERIFIED_FINAL_LINE_REFLECTION_HEADER, 1)[1].split(
-        FINAL_MACHINE_LINES_HEADER, 1
+        PREFLIGHT_SYNTHESIS_DOCS_BLOCK_REFLECTION_HEADER, 1
     )[0]
 
 

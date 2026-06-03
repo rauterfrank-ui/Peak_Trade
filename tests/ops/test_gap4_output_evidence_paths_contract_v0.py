@@ -8,6 +8,7 @@ GAP4_GOVERNED_REFLECTION_HEADER = "## Gap 4 Governed Output Evidence Acceptance 
 GAP4_VERIFIED_FINAL_LINE_REFLECTION_HEADER = (
     "## Gap 4 Governed Output Evidence Paths Verified Final-Line Reflection v0"
 )
+PREFLIGHT_SYNTHESIS_DOCS_BLOCK_REFLECTION_HEADER = "## Preflight Synthesis Docs Block Reflection v0"
 FINAL_MACHINE_LINES_HEADER = "## Final Machine Lines"
 GAP4_PARALLEL_MARKERS = (
     "GAP4_OUTPUT_EVIDENCE_PATHS_CONTRACT_V0=true",
@@ -39,7 +40,7 @@ def _gap4_governed_reflection_section(text: str) -> str:
 
 def _gap4_verified_final_line_reflection_section(text: str) -> str:
     return text.split(GAP4_VERIFIED_FINAL_LINE_REFLECTION_HEADER, 1)[1].split(
-        FINAL_MACHINE_LINES_HEADER, 1
+        PREFLIGHT_SYNTHESIS_DOCS_BLOCK_REFLECTION_HEADER, 1
     )[0]
 
 

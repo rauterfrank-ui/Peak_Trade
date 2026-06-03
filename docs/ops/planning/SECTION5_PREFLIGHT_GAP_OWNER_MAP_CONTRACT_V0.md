@@ -1218,6 +1218,62 @@ This governed repo-reflection block records operator-authorized Gap-4 output-evi
 
 Evidence verification is not runtime authorization. The Gap 4 Full-Scope Evidence Completeness Reflection v0 and Gap 4 Governed Output Evidence Acceptance Reflection v0 blocks above remain scoped acceptance only and unchanged.
 
+## Preflight Synthesis Docs Block Reflection v0
+
+PREFLIGHT_SYNTHESIS_GOVERNED_REFLECTION_V0=true
+PREFLIGHT_SYNTHESIS_DOCS_BLOCKED=true
+ACCEPTED_MODE=SECTION5_FINALS_CONSOLIDATED_PREFLIGHT_REMAINS_BLOCKED
+GOVERNED_SYNTHESIS_BASIS=GAP4_GAP5_GAP7_FINAL_LINE_ALIGNED+GAP2A1_TIER0_EXTERNAL_ACCEPTANCE
+EXTERNAL_GAP2A1_TIER0_ACCEPTANCE_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/gap2a1_tier0_closure_operator_acceptance_external_only_v0_20260603T164021Z/
+INPUT_STRATEGY_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/section5_remaining_gaps_closure_strategy_no_lift_v0_20260603T160500Z/
+INPUT_GAP7_CLOSEOUT_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/pr3966_gap7_risk_boundary_final_line_reflection_post_merge_closeout_v0_20260603T161613Z/
+INPUT_GAP5_CLOSEOUT_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/pr3967_gap5_stop_proof_final_line_reflection_post_merge_closeout_v0_20260603T162700Z/
+INPUT_GAP4_CLOSEOUT_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/pr3968_gap4_output_evidence_paths_final_line_reflection_post_merge_closeout_v0_20260603T163730Z/
+OPERATOR_GO=GO_PREFLIGHT_SYNTHESIS_DOCS_BLOCK_REPO_REFLECTION_DOCS_TESTS_V0
+NO_RUNTIME_AUTHORITY=true
+NO_REPO_FLAG_LIFT_FROM_EXTERNAL_ACCEPTANCE=true
+GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true
+FULL_SCOPE_GAP4_VERIFIED=false
+GAP5_STOP_PROOF_ACCEPTED=true
+GAP5_STOP_REHEARSAL_EXECUTED=false
+GAP7_RISK_BOUNDARY_VERIFIED=true
+GAP2A1_TIER0_OPERATOR_ACCEPTED=true
+GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false
+GAP2A1_TIER1_ENFORCEMENT_LIFTED=false
+GAP2A1_ENFORCEMENT_OPT_IN_ONLY=true
+PREFLIGHT_REMAINS_BLOCKED=true
+ALL_GAPS_CLOSED=false
+READY_FOR_OPERATOR_ARMING=false
+PATH_B_LIFT_DISCUSSION_READY=false
+PREFLIGHT_LIFT_EXECUTED=false
+ACTUAL_PREFLIGHT_LIFT_EXECUTED=false
+
+This governed repo-reflection block consolidates Section-5 **final-line aligned** gap status and external Gap-2a.1 tier-0 acceptance into an explicit **preflight-synthesis docs block** that records preflight as **remains blocked**. It does not lift preflight, does not enable operator arming, and does not grant runtime/scheduler/trading authority.
+
+### Synthesis scope (consolidated finals — allowed only)
+
+- `GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true` in Final Machine Lines (PR #3968)
+- `GAP5_STOP_PROOF_ACCEPTED=true` in Final Machine Lines (PR #3967); `GAP5_STOP_REHEARSAL_EXECUTED=false` unchanged
+- `GAP7_RISK_BOUNDARY_VERIFIED=true` in Final Machine Lines (PR #3966)
+- `GAP2A1_TIER0_OPERATOR_ACCEPTED=true` from external acceptance bundle (pointer-based; not enforcement ON)
+- `GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false` by design (tier-0 contract complete; tier-1 enforcement closed lane)
+- `FULL_SCOPE_GAP4_VERIFIED=false` — not propagated to Final Machine Lines (reflection-only)
+- `PREFLIGHT_SYNTHESIS_DOCS_BLOCKED=true` in **this synthesis block and Final Machine Lines**
+- Gap criteria blocks for Gaps 4/5/7 remain criteria-only with verified/accepted=false where unchanged
+
+### Non-authority boundary (synthesis block does not imply)
+
+- does not set `PREFLIGHT_REMAINS_BLOCKED=false` or lift global preflight
+- does not set `ALL_GAPS_CLOSED=true` (Section-5 wedge docs complete ≠ all gaps operationally closed)
+- does not set `READY_FOR_OPERATOR_ARMING=true` or approve runtime
+- does not set `GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true` or `GAP2A1_TIER1_ENFORCEMENT_LIFTED=true`
+- does not set `FULL_SCOPE_GAP4_VERIFIED=true` in criteria or Final Machine Lines
+- does not open Path-B lift discussion or modify BL002/Shadow-HOLD posture
+- does not authorize scheduler execution or Paper/Shadow/Testnet/Live
+- does not change Risk/KillSwitch authority, execution/live gates, Master V2, or Double Play
+
+Evidence synthesis is not runtime authorization. Prior governed reflection blocks above remain scoped acceptance only and unchanged.
+
 ## Final Machine Lines
 
 SECTION5_OWNER_MAP_CONTRACT_V0_COMPLETE=true
@@ -1239,9 +1295,12 @@ PARALLEL_DOCS_CREATED=false
 REUSE_BEFORE_NEW_CHECKED=true
 REUSE_DRIFT_GUARD_CHECKED=true
 PREFLIGHT_REMAINS_BLOCKED=true
+PREFLIGHT_SYNTHESIS_DOCS_BLOCKED=true
 STOP_IDLE_PRESERVED=true
 GAP2A1_PRIMARY_EVIDENCE_ENFORCEMENT_CONTRACT_V0=true
 GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false
+GAP2A1_TIER0_OPERATOR_ACCEPTED=true
+GAP2A1_TIER1_ENFORCEMENT_LIFTED=false
 GAP2A1_ENFORCEMENT_DEFAULT_ON=false
 GAP2A1_ENFORCEMENT_OPT_IN_ONLY=true
 GAP4_OUTPUT_EVIDENCE_PATHS_CONTRACT_V0=true
