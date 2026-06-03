@@ -862,10 +862,14 @@ EXIT_FAIL_CLOSED_ENTRYPOINT = 2
 
 def _testnet_credentials_present() -> bool:
     """True when both testnet credential env vars are set (values not inspected)."""
-    return bool(os.environ.get("KRAKEN_TESTNET_API_KEY") and os.environ.get("KRAKEN_TESTNET_API_SECRET"))
+    return bool(
+        os.environ.get("KRAKEN_TESTNET_API_KEY") and os.environ.get("KRAKEN_TESTNET_API_SECRET")
+    )
 
 
-def _enforce_fail_closed_entrypoint(args: argparse.Namespace, logger: logging.Logger) -> Optional[int]:
+def _enforce_fail_closed_entrypoint(
+    args: argparse.Namespace, logger: logging.Logger
+) -> Optional[int]:
     """
     Fail-closed checks before any session execute (warmup/network).
 
@@ -1045,14 +1049,11 @@ WICHTIG: Nur Testnet-Trading! Keine echten Live-Trades!
             results = session.run_for_duration(args.duration)
             logger.info(f"Session beendet. {len(results)} Orders ausgefuehrt.")
         elif args.allow_unbounded_session:
-            logger.warning(
-                "Unbounded session (--allow-unbounded-session): Ctrl+C zum Beenden."
-            )
+            logger.warning("Unbounded session (--allow-unbounded-session): Ctrl+C zum Beenden.")
             session.run_forever()
         else:
             logger.error(
-                "Bounded session required: --duration MINUTES "
-                "or --allow-unbounded-session."
+                "Bounded session required: --duration MINUTES or --allow-unbounded-session."
             )
             return EXIT_FAIL_CLOSED_ENTRYPOINT
 
