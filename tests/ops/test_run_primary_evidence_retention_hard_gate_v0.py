@@ -67,6 +67,7 @@ SECTION5_GAP_OWNER = (
     REPO_ROOT / "docs" / "ops" / "planning" / "SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md"
 )
 
+
 # SLICE-PE-2: static run-type guard matrix (contract/guard only; no runtime enforcement).
 class Pe2RunTypeGuardRow(NamedTuple):
     run_type_id: str
@@ -108,9 +109,7 @@ PE2_RUN_TYPE_GUARD_MATRIX: tuple[Pe2RunTypeGuardRow, ...] = (
     ),
 )
 
-PE2_REQUIRED_RUN_TYPE_IDS = frozenset(
-    row.run_type_id for row in PE2_RUN_TYPE_GUARD_MATRIX
-)
+PE2_REQUIRED_RUN_TYPE_IDS = frozenset(row.run_type_id for row in PE2_RUN_TYPE_GUARD_MATRIX)
 
 PE2_ENFORCEMENT_CONTRACT_ONLY_MARKERS = (
     "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false",
@@ -130,9 +129,11 @@ def _section_2a1() -> str:
 
 
 def _section_2a() -> str:
-    return _owner_text().split("## 2a. Primary evidence retention invariant v0", 1)[1].split(
-        "## 2a.1", 1
-    )[0]
+    return (
+        _owner_text()
+        .split("## 2a. Primary evidence retention invariant v0", 1)[1]
+        .split("## 2a.1", 1)[0]
+    )
 
 
 def _section5_gap2a1() -> str:
