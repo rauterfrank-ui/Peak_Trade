@@ -55,7 +55,7 @@ MANUAL_ONLY_WORKFLOW_FILES: frozenset[str] = frozenset(
 # Related downstream workflow (dispatch-only; schedule commented in YAML).
 PAPER_TEST_EVIDENCE_FILE = "paper_tests_audit_evidence.yml"
 
-# Residual schedule inventory (13 files): 7 active schedule + 6 manual-only (GH-001..004 + GH-CI + PRCC).
+# Residual schedule inventory (13 files): 6 active schedule + 7 manual-only (GH-001..004 + GH-CI + PRCC + PRK).
 RESIDUAL_SCHEDULE_WORKFLOW_FILES: frozenset[str] = frozenset(
     {
         "audit.yml",
@@ -78,7 +78,7 @@ RESIDUAL_INTENT_LABELS: dict[str, str] = {
     "residual_ci_ops": "Residual scheduled CI core / audit / PR-U drift (do not batch-remove)",
     "residual_scorecard_chain": "Residual PR-B / PR-K nightly scorecard and evidence chain",
     "residual_data_smoke": "Residual high-frequency market forward evidence smoke",
-    "residual_all": "13 inventory workflows (7 active schedule + 6 manual-only; read-only)",
+    "residual_all": "13 inventory workflows (6 active schedule + 7 manual-only; read-only)",
 }
 
 RESIDUAL_INTENT_TO_FILES: dict[str, tuple[str, ...]] = {
@@ -284,7 +284,7 @@ RESIDUAL_STATIC_META: dict[str, dict[str, Any]] = {
         "residual_schedule": True,
     },
     "prk-prj-status-report.yml": {
-        "why": "Daily PR-J status report; feeds scorecard chain.",
+        "why": "PR-J status report (dispatch-only; schedule removed per signed PRK/PRBD Option B).",
         "risk": "MEDIUM — GitHub API read.",
         "variable_gates": "",
         "ai": False,

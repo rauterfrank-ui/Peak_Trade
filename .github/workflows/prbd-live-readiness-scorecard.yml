@@ -30,10 +30,10 @@ jobs:
           gh run download "${RUN_ID}" --dir out/tmp
           find out/tmp -type f -name stability_gate.json -exec cp -f {} reports/status/ \;
 
-      - name: Fetch latest PR-K artifact (schedule success)
+      - name: Fetch latest PR-K artifact (schedule or workflow_dispatch success)
         run: |
-          RUN_ID="$(gh run list --workflow prk-prj-status-report.yml --branch main --limit 60 --json databaseId,status,conclusion,event --jq '.[] | select(.status=="completed" and .conclusion=="success" and .event=="schedule") | .databaseId' | head -n 1)"
-          test -n "${RUN_ID}" || { echo "No successful PR-K schedule run found"; exit 1; }
+          RUN_ID="$(gh run list --workflow prk-prj-status-report.yml --branch main --limit 60 --json databaseId,status,conclusion,event --jq '.[] | select(.status=="completed" and .conclusion=="success" and (.event=="schedule" or .event=="workflow_dispatch")) | .databaseId' | head -n 1)"
+          test -n "${RUN_ID}" || { echo "No successful PR-K schedule or workflow_dispatch run found"; exit 1; }
           gh run download "${RUN_ID}" --dir out/tmp
           find out/tmp -type f \( -name prj_status_latest.json -o -name prj_health_summary.json \) -exec cp -f {} reports/status/ \;
 

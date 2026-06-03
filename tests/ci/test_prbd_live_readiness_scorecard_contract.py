@@ -4,6 +4,14 @@ import sys
 from pathlib import Path
 
 
+def test_prbd_workflow_accepts_prk_schedule_or_dispatch_events() -> None:
+    """PRK/PRBD Option2 B1: PRBD must not filter PRK runs to schedule-only."""
+    text = Path(".github/workflows/prbd-live-readiness-scorecard.yml").read_text(encoding="utf-8")
+    assert "prk-prj-status-report.yml" in text
+    assert '.event=="schedule" or .event=="workflow_dispatch"' in text
+    assert 'and .event=="schedule")' not in text
+
+
 def test_go(tmp_path: Path):
     stab = {
         "overall_ok": True,
