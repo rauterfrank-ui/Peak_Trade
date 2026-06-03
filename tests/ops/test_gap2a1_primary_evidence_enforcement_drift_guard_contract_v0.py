@@ -46,6 +46,8 @@ DRIFT_GUARD_REQUIRED_FINAL_LINES = (
     "PATH_B_LIFT_DISCUSSION_READY=false",
     "ALL_GAPS_CLOSED=false",
     "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false",
+    "GAP2A1_TIER1_ENFORCEMENT_LIFTED=false",
+    "TIER1_PRIMARY_EVIDENCE_ENFORCEMENT_CONTRACTED=true",
     "GAP2A1_ENFORCEMENT_DEFAULT_ON=false",
     "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true",
     "GAP5_STOP_REHEARSAL_EXECUTED=false",
@@ -53,8 +55,23 @@ DRIFT_GUARD_REQUIRED_FINAL_LINES = (
     "GAP6_DRY_RUN_PROOF_ACCEPTED=false",
 )
 
+TIER1_CONTRACT_SLICE_FILE_ALLOWLIST = (
+    "docs/ops/planning/SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md",
+    "tests/ops/test_gap2a1_primary_evidence_enforcement_contract_v0.py",
+    "tests/ops/test_gap2a1_primary_evidence_enforcement_drift_guard_contract_v0.py",
+)
+
+TIER1_CONTRACT_SLICE_FORBIDDEN_PATH_PREFIXES = (
+    "src/",
+    "config/scheduler/jobs.toml",
+    ".github/workflows/",
+    "scripts/run_scheduler.py",
+)
+
 DRIFT_GUARD_FORBIDDEN_GAP2A1_REPO_TOKENS = (
     "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true",
+    "GAP2A1_TIER1_ENFORCEMENT_LIFTED=true",
+    "TIER1_PRIMARY_EVIDENCE_ENFORCEMENT_ACTIVATED=true",
     "GAP2A1_ENFORCEMENT_DEFAULT_ON=true",
     "GAP2A1_ENFORCEMENT_ACCEPTED=true",
     "GAP2A1_TIER_COMPLETE=true",
@@ -128,13 +145,38 @@ def test_gap2a1_drift_guard_gap2a1_section_preserves_opt_in_not_enforced_v0() ->
     section = _gap2a1_section(_section5_text())
     lines = {line.strip() for line in section.splitlines()}
     assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in section
+    assert "GAP2A1_TIER1_ENFORCEMENT_LIFTED=false" in section
+    assert "TIER1_PRIMARY_EVIDENCE_ENFORCEMENT_CONTRACTED=true" in section
     assert "GAP2A1_ENFORCEMENT_DEFAULT_ON=false" in section
     assert "GAP2A1_ENFORCEMENT_OPT_IN_ONLY=true" in section
     assert "opt-in only" in section
     assert "intentionally non-authorizing" in section
+    assert "### Tier-1 activation contract v0 (docs/tests only)" in section
     for token in (
         "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true",
+        "GAP2A1_TIER1_ENFORCEMENT_LIFTED=true",
         "GAP2A1_ENFORCEMENT_DEFAULT_ON=true",
+    ):
+        assert token not in lines
+
+
+def test_gap2a1_tier1_contract_slice_file_allowlist_v0() -> None:
+    assert SECTION5_DOC.is_file()
+    assert GAP2A1_CONTRACT.is_file()
+    for rel in TIER1_CONTRACT_SLICE_FILE_ALLOWLIST:
+        assert (ROOT / rel).is_file(), rel
+    for prefix in TIER1_CONTRACT_SLICE_FORBIDDEN_PATH_PREFIXES:
+        assert prefix not in TIER1_CONTRACT_SLICE_FILE_ALLOWLIST
+
+
+def test_gap2a1_tier1_drift_guard_forbids_lift_in_final_lines_v0() -> None:
+    block = _final_machine_lines(_section5_text())
+    lines = {line.strip() for line in block.splitlines()}
+    assert "GAP2A1_TIER1_ENFORCEMENT_LIFTED=false" in block
+    assert "TIER1_PRIMARY_EVIDENCE_ENFORCEMENT_CONTRACTED=true" in block
+    for token in (
+        "GAP2A1_TIER1_ENFORCEMENT_LIFTED=true",
+        "TIER1_PRIMARY_EVIDENCE_ENFORCEMENT_ACTIVATED=true",
     ):
         assert token not in lines
 
