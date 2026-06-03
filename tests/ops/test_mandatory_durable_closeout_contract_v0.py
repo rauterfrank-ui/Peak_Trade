@@ -19,6 +19,13 @@ PRIMARY_EVIDENCE_INVARIANT_TESTS = (
 DOCS_TRUTH_MAP = REPO_ROOT / "docs" / "ops" / "registry" / "DOCS_TRUTH_MAP.md"
 ER_RELEASE_RC_INDEX_HEADING = "### Evidence Durable Closeout Retention RC v0 — index v0"
 THIS_MODULE = Path(__file__).name
+BOUNDED_REVIEW_TESTS = (
+    REPO_ROOT
+    / "tests"
+    / "ops"
+    / "test_bounded_observation_review_durable_primary_evidence_contract_v0.py"
+)
+MANDATORY_CLOSEOUT_WIRING_TOKEN = "DURABLE_PRIMARY_EVIDENCE_MANDATORY_CLOSEOUT_WIRING_V0=true"
 
 MANDATORY_MARKERS = (
     "MANDATORY_DURABLE_CLOSEOUT_CONTRACT_V0=true",
@@ -154,6 +161,33 @@ def test_adjacent_section_ordering() -> None:
     assert text.index("## 2b.2 Closeout Enforcement Planning Contract v0") < text.index(
         "## 3. Non-authority"
     )
+
+
+def _section_2a1() -> str:
+    text = PREFLIGHT.read_text(encoding="utf-8")
+    return text.split("## 2a.1", 1)[1].split("## 2b.", 1)[0]
+
+
+def test_pe4_section_2a1_mandatory_closeout_wiring_crosslink_v0() -> None:
+    section = _section_2a1()
+    for token in (
+        "PE4_BOUNDED_OBSERVATION_MANDATORY_CLOSEOUT_WIRING_GUARD_V0=true",
+        "MANDATORY_DURABLE_CLOSEOUT_REQUIRED=true",
+        MANDATORY_CLOSEOUT_WIRING_TOKEN,
+    ):
+        assert token in section
+    assert "durable_closeout_copy_verify_v0.py" in section
+    assert "TMP_ONLY_CLOSEOUT_INCOMPLETE=true" in _section_2b1()
+    assert "MANIFEST_SHA256_REQUIRED=true" in _section_2b1()
+
+
+def test_pe4_mandatory_closeout_reciprocal_bounded_review_owner_v0() -> None:
+    owner_text = Path(__file__).read_text(encoding="utf-8")
+    bounded_text = BOUNDED_REVIEW_TESTS.read_text(encoding="utf-8")
+    assert BOUNDED_REVIEW_TESTS.name in owner_text
+    assert "PE4_BOUNDED_CLOSEOUT_LANE_MATRIX" in bounded_text
+    assert MANDATORY_CLOSEOUT_WIRING_TOKEN in bounded_text
+    assert "CLOSEOUT_DOES_NOT_AUTHORIZE_RUNTIME=true" in _section_2b1()
 
 
 def test_evidence_durable_closeout_retention_rc_v0_slice_er1_closeout_guard_crosslink_v0() -> None:

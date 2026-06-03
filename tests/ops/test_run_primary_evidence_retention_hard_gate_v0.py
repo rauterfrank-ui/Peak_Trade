@@ -531,6 +531,16 @@ def test_hard_gate_owner_covers_mandatory_wiring_adapter_review_chain() -> None:
         assert anchor in owner_text
 
 
+def test_pe4_hard_gate_crosslinks_bounded_closeout_lane_matrix_owner_v0() -> None:
+    bounded_text = BOUNDED_REVIEW_CONTRACT_TESTS.read_text(encoding="utf-8")
+    section = _section_2a1()
+    assert "PE4_BOUNDED_CLOSEOUT_LANE_MATRIX" in bounded_text
+    assert "PE4_BOUNDED_OBSERVATION_MANDATORY_CLOSEOUT_WIRING_GUARD_V0=true" in section
+    assert "test_pe4_bounded_observation_mandatory_closeout_completion_contract_row_v0" in (
+        bounded_text
+    )
+
+
 @pytest.mark.skipif(not COPY_CHECK.is_file(), reason="operator archive copy-check not present")
 def test_operator_copy_check_confirms_missing_source_when_present() -> None:
     text = COPY_CHECK.read_text(encoding="utf-8")

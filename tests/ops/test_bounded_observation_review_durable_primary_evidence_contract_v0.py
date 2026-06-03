@@ -7,6 +7,7 @@ import json
 import shutil
 import sys
 from pathlib import Path
+from typing import NamedTuple
 
 import pytest
 
@@ -18,6 +19,65 @@ TESTNET_REVIEW = REPO_ROOT / "scripts" / "ops" / "review_testnet_bounded_observa
 SHADOW_ADAPTER = REPO_ROOT / "scripts" / "ops" / "run_shadow_bounded_observation_adapter_v0.py"
 TESTNET_ADAPTER = REPO_ROOT / "scripts" / "ops" / "run_testnet_bounded_observation_adapter_v0.py"
 MANDATORY_CLOSEOUT_WIRING_TOKEN = "DURABLE_PRIMARY_EVIDENCE_MANDATORY_CLOSEOUT_WIRING_V0=true"
+CLOSEOUT_HELPER = REPO_ROOT / "scripts" / "ops" / "durable_closeout_copy_verify_v0.py"
+PAPER_ADAPTER = REPO_ROOT / "scripts" / "ops" / "run_paper_only_bounded_observation_adapter_v0.py"
+MANDATORY_CLOSEOUT_TESTS = (
+    REPO_ROOT / "tests" / "ops" / "test_mandatory_durable_closeout_contract_v0.py"
+)
+HARD_GATE_TESTS = (
+    REPO_ROOT / "tests" / "ops" / "test_run_primary_evidence_retention_hard_gate_v0.py"
+)
+
+
+# SLICE-PE-4: bounded observation / pilot / scheduler-completion closeout wiring guard matrix.
+class Pe4BoundedCloseoutLane(NamedTuple):
+    lane_id: str
+    anchor: str
+    bounded_observation: bool
+
+
+PE4_BOUNDED_CLOSEOUT_LANE_MATRIX: tuple[Pe4BoundedCloseoutLane, ...] = (
+    Pe4BoundedCloseoutLane(
+        "shadow",
+        "review_shadow_bounded_observation_evidence_v0.py",
+        True,
+    ),
+    Pe4BoundedCloseoutLane(
+        "testnet",
+        "review_testnet_bounded_observation_evidence_v0.py",
+        True,
+    ),
+    Pe4BoundedCloseoutLane(
+        "paper_bounded",
+        "run_paper_only_bounded_observation_adapter_v0.py",
+        True,
+    ),
+    Pe4BoundedCloseoutLane(
+        "bounded_pilot",
+        "bounded observation/pilot",
+        True,
+    ),
+    Pe4BoundedCloseoutLane(
+        "scheduler_completion",
+        "scheduler_completion_closeout_v0.json",
+        False,
+    ),
+)
+
+PE4_COMPLETION_CONTRACT_MARKERS = (
+    "PE4_BOUNDED_OBSERVATION_MANDATORY_CLOSEOUT_WIRING_GUARD_V0=true",
+    "MANDATORY_DURABLE_CLOSEOUT_REQUIRED=true",
+    "CHECKSUM_VERIFY_REQUIRED=true",
+    "PRIMARY_EVIDENCE_REQUIRED_FOR_RUN_COMPLETION=true",
+    "RUN_COMPLETION_INVALID_WITHOUT_DURABLE_PRIMARY_EVIDENCE=true",
+    "TMP_ONLY_EVIDENCE_INVALID=true",
+    "MANIFEST_VERIFY_REQUIRED=true",
+    "RUN_INCOMPLETE_WITHOUT_PRIMARY_EVIDENCE=true",
+    "PREFLIGHT_REMAINS_BLOCKED=true",
+    "READY_FOR_OPERATOR_ARMING=false",
+    "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false",
+)
+
 INVARIANT_CONTRACT_TESTS = (
     REPO_ROOT / "tests" / "ops" / "test_primary_evidence_retention_invariant_contract_v0.py"
 )
@@ -383,3 +443,48 @@ def test_bounded_review_u3_reciprocal_chain_preserves_durable_run_root_opt_in_de
     assert "default off" in section or "opt-in (default off)" in section
     assert SHADOW_ADAPTER.name in u3_text
     assert "does not start scheduler" in section
+
+
+def test_pe4_bounded_closeout_lane_matrix_covers_required_lanes_v0() -> None:
+    lane_ids = {row.lane_id for row in PE4_BOUNDED_CLOSEOUT_LANE_MATRIX}
+    assert lane_ids >= frozenset(
+        {"shadow", "testnet", "paper_bounded", "bounded_pilot", "scheduler_completion"}
+    )
+
+
+@pytest.mark.parametrize(
+    "row",
+    PE4_BOUNDED_CLOSEOUT_LANE_MATRIX,
+    ids=lambda row: row.lane_id,
+)
+def test_pe4_bounded_observation_mandatory_closeout_completion_contract_row_v0(
+    row: Pe4BoundedCloseoutLane,
+) -> None:
+    section = _preflight_section_2a1()
+    owner = PREFLIGHT.read_text(encoding="utf-8")
+
+    assert row.anchor in section or row.anchor in owner
+    for token in PE4_COMPLETION_CONTRACT_MARKERS:
+        assert token in section
+    assert MANDATORY_CLOSEOUT_WIRING_TOKEN in section
+    assert "durable_closeout_copy_verify_v0.py" in section
+    assert "/tmp`-only" in section or "TMP_ONLY_EVIDENCE_INVALID" in section
+    assert "MANIFEST.sha256" in section
+    assert "verify_manifest_sha256" in section or "checksum" in section.lower()
+    assert "not complete" in section.lower() or "incomplete" in section.lower()
+    collapsed = section.replace("**", "").lower()
+    assert "does not authorize runtime" in collapsed
+    assert "enforcement remains opt-in" in collapsed or "default off" in collapsed
+    if row.bounded_observation:
+        assert "bounded" in collapsed or "observation" in collapsed
+
+
+def test_pe4_bounded_observation_mandatory_closeout_wiring_guard_reciprocal_owners_v0() -> None:
+    owner_text = Path(__file__).read_text(encoding="utf-8")
+    mandatory_text = MANDATORY_CLOSEOUT_TESTS.read_text(encoding="utf-8")
+    hard_gate_text = HARD_GATE_TESTS.read_text(encoding="utf-8")
+    assert "PE4_BOUNDED_CLOSEOUT_LANE_MATRIX" in owner_text
+    assert MANDATORY_CLOSEOUT_WIRING_TOKEN in mandatory_text
+    assert Path(__file__).name in hard_gate_text or "bounded_observation_review" in hard_gate_text
+    assert CLOSEOUT_HELPER.is_file()
+    assert "durable_closeout_copy_verify_v0.py" in _preflight_section_2a1()

@@ -10,6 +10,7 @@ from pathlib import Path
 import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
+PREFLIGHT = REPO_ROOT / "docs" / "ops" / "runbooks" / "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md"
 HELPER = REPO_ROOT / "scripts/ops/durable_closeout_copy_verify_v0.py"
 FIXTURE_SOURCE = REPO_ROOT / "tests/fixtures/ops/durable_closeout_copy_verify_source_v0"
 POST_MERGE_CLOSEOUT = REPO_ROOT / "scripts/governance/post_merge_closeout.sh"
@@ -556,3 +557,13 @@ def test_helper_no_forbidden_imports():
 def test_governance_scripts_unchanged():
     assert POST_MERGE_CLOSEOUT.is_file()
     assert APPEND_CLOSEOUT_INDEX.is_file()
+
+
+def test_pe4_preflight_references_durable_closeout_helper_for_mandatory_wiring_v0() -> None:
+    section = PREFLIGHT.read_text(encoding="utf-8").split("## 2a.1", 1)[1].split("## 2b.", 1)[0]
+    assert "PE4_BOUNDED_OBSERVATION_MANDATORY_CLOSEOUT_WIRING_GUARD_V0=true" in section
+    assert "durable_closeout_copy_verify_v0.py" in section
+    assert "DURABLE_CLOSEOUT_ATTACH_HOOK_V0_NON_AUTHORIZING=true" in PREFLIGHT.read_text(
+        encoding="utf-8"
+    )
+    assert HELPER.is_file()
