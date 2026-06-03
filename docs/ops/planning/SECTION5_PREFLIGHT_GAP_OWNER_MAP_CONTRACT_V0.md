@@ -1312,6 +1312,65 @@ This governed repo-reflection block consolidates Section-5 **final-line aligned*
 
 Evidence synthesis is not runtime authorization. Prior governed reflection blocks above remain scoped acceptance only and unchanged.
 
+## Tier-C + Shadow durable evidence archive crosslink v0
+
+TIER_C_SHADOW_DURABLE_EVIDENCE_REPO_STATIC_CROSSLINK_V0=true
+OPERATOR_GO=GO_PREPARE_TIER_C_SHADOW_DURABLE_EVIDENCE_REPO_STATIC_CROSSLINK_DOCS_TESTS_PR_V0
+EVIDENCE_ARCHIVE_ANCHOR_NOT_RUNTIME_AUTHORITY=true
+NO_REPO_FLAG_LIFT_FROM_ARCHIVE_CONFIRMATION=true
+TIER_C_POSITIVE_MANIFEST_FINALIZE_CONFIRMED=true
+TIER_A_FAIL_CLOSED_CONFIRMED=true
+TIER_B_PREFLIGHT_BLOCK_FAIL_CLOSED_CONFIRMED=true
+JOBS_DISPATCHED_ZERO_CONFIRMED=true
+SHADOW_DRYRUN_REHEARSAL_CONFIRMED=true
+SHADOW_PRIMARY_EVIDENCE_DURABLE_CONFIRMED=true
+SHADOW_HOLD_READINESS_HOLD=true
+SHADOW_HOLD_LIFTED=false
+PREFLIGHT_LIFT_DIRECTLY_ALLOWED=false
+BL002_PATH_B_DIRECTLY_ALLOWED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+TESTNET_NOW_RECOMMENDED=false
+TRADING_ACTION=false
+ORDERS_CREATED=false
+NETWORK_USED=false
+PAPER_TEST_DATA_TOUCHED=false
+
+Read-only **archive anchors** (operator durable root; `MANIFEST_VERIFY_RC=0` where logged) for the 2026-06-03 Tier-C scheduler probe and Shadow bounded dry-run rehearsal chain. These pointers record **confirmed probe evidence only** — they **do not** lift preflight, Shadow-HOLD, BL002/Path-B, arming, or Testnet authority.
+
+| Role | Archive bundle (suffix under durable root) |
+|------|---------------------------------------------|
+| Repo-wide ranking (operator GO) | `planning/repo_wide_next_system_step_ranking_after_class4_stop_idle_v0_20260603T175350Z/` |
+| Tier-C execute retry | `runtime/gap2a1_tier1_scheduler_tier_c_positive_manifest_execute_retry_v0_20260603T172211Z/` |
+| Tier-C post-execute closeout | `closeout/gap2a1_tier1_scheduler_tier_c_positive_manifest_post_execute_closeout_and_non_stop_ranking_v0_20260603T172509Z/` |
+| Shadow dry-run execute | `runtime/shadow_bounded_dryrun_rehearsal_execute_v0_20260603T172859Z/` |
+| Shadow primary evidence (durable run root) | `runs/shadow/shadow_bounded_dryrun_rehearsal_20260603T172859Z/` |
+| Shadow post-execute closeout | `closeout/shadow_bounded_dryrun_rehearsal_post_execute_closeout_and_non_stop_ranking_v0_20260603T173011Z/` |
+| Class-4 final matrix | `closeout/class4_external_final_decision_matrix_no_run_v0_20260603T174338Z/` |
+| Section-5 final closeout | `closeout/section5_no_lift_sequence_final_closeout_and_class4_decision_menu_v0_20260603T164910Z/` |
+
+Durable archive root (operator environment):
+
+`EXTERNAL_TIER_C_SHADOW_DURABLE_EVIDENCE_ARCHIVE_ROOT=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/`
+
+EXTERNAL_REPO_WIDE_RANKING_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/repo_wide_next_system_step_ranking_after_class4_stop_idle_v0_20260603T175350Z/
+EXTERNAL_TIER_C_EXECUTE_RETRY_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/gap2a1_tier1_scheduler_tier_c_positive_manifest_execute_retry_v0_20260603T172211Z/
+EXTERNAL_TIER_C_POST_EXECUTE_CLOSEOUT_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/gap2a1_tier1_scheduler_tier_c_positive_manifest_post_execute_closeout_and_non_stop_ranking_v0_20260603T172509Z/
+EXTERNAL_SHADOW_DRYRUN_EXECUTE_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/shadow_bounded_dryrun_rehearsal_execute_v0_20260603T172859Z/
+EXTERNAL_SHADOW_PRIMARY_EVIDENCE_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runs/shadow/shadow_bounded_dryrun_rehearsal_20260603T172859Z/
+EXTERNAL_SHADOW_POST_EXECUTE_CLOSEOUT_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/shadow_bounded_dryrun_rehearsal_post_execute_closeout_and_non_stop_ranking_v0_20260603T173011Z/
+EXTERNAL_CLASS4_FINAL_MATRIX_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/class4_external_final_decision_matrix_no_run_v0_20260603T174338Z/
+EXTERNAL_SECTION5_FINAL_CLOSEOUT_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/section5_no_lift_sequence_final_closeout_and_class4_decision_menu_v0_20260603T164910Z/
+
+Static guard: `tests/ops/test_tier_c_shadow_durable_evidence_crosslink_contract_v0.py`. Crosslink: `docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md` §2a.1 anchors (same tokens). Reuse-first: `scripts/ops/primary_evidence_retention_v0.py`, `tests/ops/test_gap2a1_primary_evidence_enforcement_contract_v0.py`, `tests/ops/test_bounded_observation_review_durable_primary_evidence_contract_v0.py` — **no** parallel evidence index or registry handoff.
+
+**Non-authorization (this crosslink block):**
+
+- does not set `GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true` or `GAP2A1_TIER1_ENFORCEMENT_LIFTED=true`
+- does not set `PREFLIGHT_REMAINS_BLOCKED=false` or lift Shadow-HOLD
+- does not recommend or start Testnet, Paper 24/7, Shadow 24/7, scheduler loops, or Live
+- does not touch paper test data, `src/`, `jobs.toml`, workflows, or risk configs
+
 ## Final Machine Lines
 
 SECTION5_OWNER_MAP_CONTRACT_V0_COMPLETE=true
@@ -1392,3 +1451,10 @@ GAP7_EXECUTION_LIVE_GATES_CHANGED=false
 GAP7_SCHEDULER_EXECUTION_AUTHORIZED=false
 GAP7_RUNTIME_APPROVED=false
 GAP7_RISK_BOUNDARY_DEFAULT_ON=false
+TIER_C_SHADOW_DURABLE_EVIDENCE_REPO_STATIC_CROSSLINK_V0=true
+TIER_C_POSITIVE_MANIFEST_CROSSLINKED=true
+SHADOW_DRYRUN_EVIDENCE_CROSSLINKED=true
+SHADOW_PRIMARY_EVIDENCE_DURABLE_CROSSLINKED=true
+SHADOW_HOLD_READINESS_HOLD=true
+SHADOW_HOLD_LIFTED=false
+TESTNET_NOW_RECOMMENDED=false

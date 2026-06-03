@@ -135,6 +135,44 @@ Future bounded **Shadow** and **Testnet** closeout paths that treat a run as **c
 
 **Non-authorizing:** this wiring contract is **review/retention material only** — **Evidence ≠ approval**. It **does not** authorize runtime, scheduler, supervisor, daemon, Paper, Shadow, Testnet, Live, broker, exchange, or gate progression; **does not** clear Preflight **BLOCKED**, global **HOLD**, or GLB blockers.
 
+### Tier-C + Shadow durable evidence archive anchors (non-authorizing) v0
+
+```
+TIER_C_SHADOW_DURABLE_EVIDENCE_REPO_STATIC_CROSSLINK_V0=true
+EVIDENCE_ARCHIVE_ANCHOR_NOT_RUNTIME_AUTHORITY=true
+TIER_C_POSITIVE_MANIFEST_FINALIZE_CONFIRMED=true
+TIER_A_FAIL_CLOSED_CONFIRMED=true
+TIER_B_PREFLIGHT_BLOCK_FAIL_CLOSED_CONFIRMED=true
+SHADOW_DRYRUN_REHEARSAL_CONFIRMED=true
+SHADOW_PRIMARY_EVIDENCE_DURABLE_CONFIRMED=true
+SHADOW_HOLD_READINESS_HOLD=true
+SHADOW_HOLD_LIFTED=false
+PREFLIGHT_LIFT_DIRECTLY_ALLOWED=false
+BL002_PATH_B_DIRECTLY_ALLOWED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+TESTNET_NOW_RECOMMENDED=false
+TRADING_ACTION=false
+ORDERS_CREATED=false
+NETWORK_USED=false
+PAPER_TEST_DATA_TOUCHED=false
+```
+
+`EXTERNAL_TIER_C_SHADOW_DURABLE_EVIDENCE_ARCHIVE_ROOT=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/`
+
+Operator-verified durable archive bundles (2026-06-03 probe chain; read-only pointers):
+
+- `EXTERNAL_REPO_WIDE_RANKING_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/repo_wide_next_system_step_ranking_after_class4_stop_idle_v0_20260603T175350Z/`
+- `EXTERNAL_TIER_C_EXECUTE_RETRY_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/gap2a1_tier1_scheduler_tier_c_positive_manifest_execute_retry_v0_20260603T172211Z/`
+- `EXTERNAL_TIER_C_POST_EXECUTE_CLOSEOUT_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/gap2a1_tier1_scheduler_tier_c_positive_manifest_post_execute_closeout_and_non_stop_ranking_v0_20260603T172509Z/`
+- `EXTERNAL_SHADOW_DRYRUN_EXECUTE_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/shadow_bounded_dryrun_rehearsal_execute_v0_20260603T172859Z/`
+- `EXTERNAL_SHADOW_PRIMARY_EVIDENCE_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runs/shadow/shadow_bounded_dryrun_rehearsal_20260603T172859Z/` (durable primary evidence run root; `MANIFEST.sha256` present)
+- `EXTERNAL_SHADOW_POST_EXECUTE_CLOSEOUT_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/shadow_bounded_dryrun_rehearsal_post_execute_closeout_and_non_stop_ranking_v0_20260603T173011Z/`
+- `EXTERNAL_CLASS4_FINAL_MATRIX_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/class4_external_final_decision_matrix_no_run_v0_20260603T174338Z/`
+- `EXTERNAL_SECTION5_FINAL_CLOSEOUT_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/section5_no_lift_sequence_final_closeout_and_class4_decision_menu_v0_20260603T164910Z/`
+
+Crosslink: `docs/ops/planning/SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md` — **Tier-C + Shadow durable evidence archive crosslink v0**. Static guard: `tests/ops/test_tier_c_shadow_durable_evidence_crosslink_contract_v0.py`. **Does not** activate §2a.1 default enforcement, **does not** lift preflight or Shadow-HOLD, **does not** authorize Testnet session execute (`TESTNET_NOW_RECOMMENDED=false`).
+
 **Readiness ledger and gate snapshot (review-input-only):** offline outputs from `build_readiness_evidence_ledger_v0.py` and `report_readiness_gate_snapshot_v0.py` may report `READINESS_EVIDENCE_LEDGER_PASS_BLOCKED_SAFE`, `READINESS_GATE_SNAPSHOT_PASS_BLOCKED_SAFE`, and `triple_lane_primary_evidence=true` when primary evidence manifests and reviews verify under durable archive roots. Those verdicts are **completeness and consistency signals only** — they **do not** authorize runtime, **do not** clear Preflight **BLOCKED**, **do not** lift **HOLD**, **do not** close GLB-014/GLB-015, and **do not** grant Paper/Shadow/Testnet/Live/broker/exchange activation. See GLB-015 clarification in [Master V2 Go-Live Blocker Register v0](../specs/MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md) §6.5.
 
 **Scoped preflight exception (U3 pattern) v0:**
