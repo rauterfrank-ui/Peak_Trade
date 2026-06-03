@@ -74,7 +74,6 @@ DRIFT_GUARD_FORBIDDEN_GAP1_REPO_TOKENS = (
     "CONTRACT_PRESENT_IMPLIES_VERIFIED=true",
     "PREFLIGHT_MARKER_IMPLIES_RUNTIME_APPROVED=true",
     "GAP6_DRY_RUN_PROOF_ACCEPTED=true",
-    "GAP7_RISK_BOUNDARY_VERIFIED=true",
     "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true",
     "WORKSHEET_COMPLETE=true",
     "PATH_B_LIFT_DISCUSSION_READY=true",
@@ -210,7 +209,7 @@ def test_gap1_drift_guard_gap6_gap7_gap2a1_orthogonal_v0() -> None:
     block = _final_machine_lines(_section5_text())
     assert "GAP6_DRY_RUN_PROOF_ACCEPTED=false" in block
     assert "GAP6_DRY_RUN_RC0_OBSERVED=false" in block
-    assert "GAP7_RISK_BOUNDARY_VERIFIED=false" in block
+    assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in block
     assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in block
 
 
@@ -284,7 +283,7 @@ def test_gap1_rc0_observed_governed_reflection_scoped_evidence_v0() -> None:
     assert "ALL_GAPS_CLOSED=false" in block
     assert "READY_FOR_OPERATOR_ARMING=false" in block
     assert "PREFLIGHT_REMAINS_BLOCKED=true" in block
-    assert "GAP7_RISK_BOUNDARY_VERIFIED=false" in block
+    assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in block
     reflection_lines = {line.strip() for line in reflection.splitlines()}
     criteria_lines = {line.strip() for line in criteria.splitlines()}
     block_lines = {line.strip() for line in block.splitlines()}

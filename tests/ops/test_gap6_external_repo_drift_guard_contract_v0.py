@@ -178,7 +178,7 @@ def test_gap6_external_repo_drift_guard_governed_reflection_scoped_acceptance_v0
     assert "GAP6_DRY_RUN_PROOF_ACCEPTED=false" in block
     assert "GAP6_DRY_RUN_RC0_OBSERVED=false" in block
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in block
-    assert "GAP7_RISK_BOUNDARY_VERIFIED=false" in block
+    assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in block
     assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in block
     assert "GAP1_SCHEDULER_EXECUTION_AUTHORIZED=false" in block
     assert "GAP3_SCHEDULER_EXECUTION_AUTHORIZED=false" in block
@@ -218,7 +218,7 @@ def test_gap6_rc0_observed_governed_reflection_scoped_evidence_v0() -> None:
     assert "GAP6_DRY_RUN_RC0_OBSERVED=false" in block
     assert "ALL_GAPS_CLOSED=false" in block
     assert "READY_FOR_OPERATOR_ARMING=false" in block
-    assert "GAP7_RISK_BOUNDARY_VERIFIED=false" in block
+    assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in block
     reflection_lines = {line.strip() for line in reflection.splitlines()}
     criteria_lines = {line.strip() for line in criteria.splitlines()}
     block_lines = {line.strip() for line in block.splitlines()}

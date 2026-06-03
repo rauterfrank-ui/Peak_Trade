@@ -1082,6 +1082,48 @@ This governed repo-reflection block records scoped acceptance of external Gap-7 
 
 Evidence acceptance is not runtime authorization. The Gap 7 Risk Boundary Criteria Contract v0 block above remains criteria-only and unchanged.
 
+## Gap 7 Governed Risk Boundary Verified Final-Line Reflection v0
+
+GAP7_RISK_BOUNDARY_VERIFIED_FINAL_LINE_GOVERNED_REFLECTION_V0=true
+GAP7_RISK_BOUNDARY_VERIFIED=true
+ACCEPTED_MODE=GAP7_RISK_BOUNDARY_SCOPED_EXTERNAL_CHECKLIST_WALKTHROUGH_FINAL_LINE_VERIFIED
+GOVERNED_ACCEPTANCE_BASIS=GAP7_RISK_BOUNDARY_ACCEPTED=true
+EXTERNAL_ACCEPTANCE_RECORD_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/gap7_risk_boundary_operator_walkthrough_external_acceptance_record_v0_20260531T202750Z/
+GOVERNED_REPO_REFLECTION_CHARTER_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/gap7_risk_boundary_governed_repo_reflection_charter_v0_after_external_acceptance_20260531T202930Z/
+INPUT_STRATEGY_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/section5_remaining_gaps_closure_strategy_no_lift_v0_20260603T160500Z/
+OPERATOR_GO=GO_GAP7_RISK_BOUNDARY_VERIFIED_FINAL_LINE_REPO_REFLECTION_DOCS_TESTS_V0
+NO_RUNTIME_AUTHORITY=true
+NO_REPO_FLAG_LIFT_FROM_EXTERNAL_ACCEPTANCE=true
+PREFLIGHT_REMAINS_BLOCKED=true
+ALL_GAPS_CLOSED=false
+READY_FOR_OPERATOR_ARMING=false
+PATH_B_LIFT_DISCUSSION_READY=false
+
+This governed repo-reflection block records operator-authorized Gap-7 risk-boundary **final-line verification** only. It propagates `GAP7_RISK_BOUNDARY_VERIFIED=true` to Final Machine Lines based on existing scoped external checklist walkthrough acceptance (`GAP7_RISK_BOUNDARY_ACCEPTED=true`). External acceptance records remain pointer-based and subordinate to repo governance.
+
+### Verified final-line scope (allowed only)
+
+- external walkthrough bundle MANIFEST_VERIFY_RC=0; sections A–H PASS per acceptance record
+- read-only checklist walkthrough; no Risk/KillSwitch runtime change observed
+- `GAP7_RISK_BOUNDARY_VERIFIED=true` in **Final Machine Lines only**
+- Gap 7 Risk Boundary Criteria Contract v0 block remains criteria-only with `GAP7_RISK_BOUNDARY_VERIFIED=false`
+
+### Non-authority boundary (verified final-line reflection does not imply)
+
+- does not modify Gap-7 criteria block verification posture (`GAP7_RISK_BOUNDARY_VERIFIED=false` in criteria unchanged)
+- does not change Risk/KillSwitch authority or runtime behavior
+- does not change execution/live gates
+- does not verify Gap-4 output evidence paths in criteria or Final Machine Lines
+- does not enforce Gap-2a.1 primary evidence
+- does not authorize scheduler execution
+- does not enable operator arming
+- does not open Path-B lift discussion
+- does not set `ALL_GAPS_CLOSED=true`
+- does not lift preflight
+- does not start or authorize Runtime, Paper, Shadow, Testnet, or Live
+
+Evidence verification is not runtime authorization. The Gap 7 Governed Risk Boundary Acceptance Reflection v0 block above remains scoped acceptance only and unchanged.
+
 ## Final Machine Lines
 
 SECTION5_OWNER_MAP_CONTRACT_V0_COMPLETE=true
@@ -1149,7 +1191,7 @@ GAP2_RUNTIME_APPROVED=false
 GAP2_JOB_SET_DEFAULT_ON=false
 GAP7_RISK_BOUNDARY_CRITERIA_CONTRACT_V0=true
 GAP7_CRITERIA_ONLY=true
-GAP7_RISK_BOUNDARY_VERIFIED=false
+GAP7_RISK_BOUNDARY_VERIFIED=true
 GAP7_RISK_KILLSWITCH_AUTHORITY_CHANGED=false
 GAP7_RISK_KILLSWITCH_RUNTIME_CHANGED=false
 GAP7_MASTER_V2_DOUBLE_PLAY_CHANGED=false
