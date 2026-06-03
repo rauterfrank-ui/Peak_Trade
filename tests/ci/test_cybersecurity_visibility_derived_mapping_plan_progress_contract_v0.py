@@ -979,3 +979,51 @@ def test_cybersecurity_visibility_cv3b_readout_slice_guard_owner_crosslink_v0() 
         "extend existing" in release_section.lower()
         or "test_cybersecurity_visibility_" in release_section
     )
+
+
+CV3C_REPORT_HEADING = "### Static defensive visibility report contract v0 (SLICE-CV-3c)"
+CV3C_BLOCK_ANCHOR = "CV3C_STATIC_DEFENSIVE_VISIBILITY_REPORT_CONTRACT_V0=true"
+CV3C_PLANNING_BUNDLE = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/cv3_next_slice_decision_after_cv3b_v0_20260603T032809Z/"
+)
+CV3B_CLOSEOUT_BUNDLE = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "closeout/after_cv3b_defensive_visibility_readout_owner_triage_guard_merge_closeout_v0_20260603T032809Z/"
+)
+INPUT_ARTIFACT_MODULE = (
+    "tests/ci/test_cybersecurity_visibility_r_pending_input_artifact_contract_v0.py"
+)
+
+
+def _cv3c_report_block(text: str) -> str:
+    start = text.index(CV3C_REPORT_HEADING)
+    end = text.index("Operators may use this histogram", start)
+    return text[start:end]
+
+
+def test_cybersecurity_visibility_cv3c_report_contract_reciprocal_crosslink_v0() -> None:
+    text = _ci_audit_text()
+    block = _cv3c_report_block(text)
+    collapsed = block.lower()
+    release_section = _release_rc_index_section(text)
+
+    assert "GO_SLICE_CV3C_STATIC_DEFENSIVE_VISIBILITY_REPORT_CONTRACT_V0" in block
+    assert CV3C_PLANNING_BUNDLE in block
+    assert CV3B_CLOSEOUT_BUNDLE in block
+    assert CV3C_BLOCK_ANCHOR in block
+    assert INPUT_ARTIFACT_MODULE in block
+    assert MAPPING_GUARD_MODULE in block
+    assert ARTIFACT_RETENTION_MODULE in block
+    assert f"tests/ci/{THIS_MODULE}" in block
+    assert "SLICE-CV-3c" in release_section
+    assert "static/derived/read-only only" in collapsed
+    assert "CV3B_COMPLETE=true" in block
+    assert "STATIC_DERIVED_VISIBILITY_ONLY=true" in block
+    assert "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true" in block
+    assert "INPUT_JSONL_FABRICATED=false" in block
+    assert "non-authorizing" in collapsed
+
+    assert (REPO_ROOT / INPUT_ARTIFACT_MODULE).is_file()
+    assert CV3C_BLOCK_ANCHOR in (REPO_ROOT / INPUT_ARTIFACT_MODULE).read_text(encoding="utf-8")
+    assert "CYBERSECURITY_VISIBILITY_CHAIN_PARALLEL_ANCHOR" not in text

@@ -336,6 +336,58 @@ SLICE_CV3B_TESTS_ONLY=true
 
 Static guards: `tests/ci/test_cybersecurity_visibility_derived_mapping_plan_progress_contract_v0.py`, `tests/ci/test_cybersecurity_visibility_r_pending_mapping_guard_v0.py`, `tests/ci/test_cybersecurity_visibility_r_pending_inventory_charter_v0.py`, `tests/ci/test_cybersecurity_visibility_repo_static_histogram_artifact_retention_or_evidence_gap_crosslink_v0.py`.
 
+### Static defensive visibility report contract v0 (SLICE-CV-3c)
+
+**Operator-GO:** `GO_SLICE_CV3C_STATIC_DEFENSIVE_VISIBILITY_REPORT_CONTRACT_V0` · **Workstream:** `CYBERSECURITY_DEFENSIVE_VISIBILITY_CV3_PLUS_RC_V0` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cv3_next_slice_decision_after_cv3b_v0_20260603T032809Z/` · **CV3B closeout (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/after_cv3b_defensive_visibility_readout_owner_triage_guard_merge_closeout_v0_20260603T032809Z/`
+
+**Purpose:** Consolidated static defensive visibility **report contract** — defensive visibility reports/readouts are **static/derived/read-only only** and must not be confused with definitive mapping, INPUT_JSONL fabrication, offensive security automation, or runtime/scheduler/live authority. Ties CV3A histogram closure, CV3B readout/owner-triage guard, and § Static visibility contract owners to non-authorizing readout semantics; **no** new parallel surfaces.
+
+**Report routing (static/derived only — not authorization):**
+
+| Report surface | Posture | Static guard owner |
+|----------------|---------|-------------------|
+| INPUT_JSONL input-artifact contract readout | **input-artifact contract only**; `INPUT_JSONL_PROVIDED=false`; no fabrication | `tests/ci/test_cybersecurity_visibility_r_pending_input_artifact_contract_v0.py` |
+| Defensive visibility readout / owner-triage (CV3B) | **static/derived only**; non-authorizing | `tests/ci/test_cybersecurity_visibility_derived_mapping_plan_progress_contract_v0.py` |
+| Pending mapping guard | definitive **`mapped`** **blocked** without authoritative INPUT_JSONL | `tests/ci/test_cybersecurity_visibility_r_pending_mapping_guard_v0.py` |
+| Repo-static histogram artifact retention (CV3A) | **complete** vs **deferred** preserved | `tests/ci/test_cybersecurity_visibility_repo_static_histogram_artifact_retention_or_evidence_gap_crosslink_v0.py` |
+| `docs_drift_or_pointer_integrity` histogram bucket | **deferred** by design — not falsely closed | none — review-input only |
+
+**Static visibility contract owners:** All surfaces in § Static visibility contract owners (reuse — do not duplicate) remain **non-authorizing** defensive visibility guards; they do **not** authorize definitive mapping, runtime/scheduler/live execution, INPUT_JSONL fabrication, or exploit/offensive automation.
+
+**Non-authorizing:** Tests-only; static/derived/read-only report contract only; does **not** authorize runtime/scheduler/daemon execution, workflow dispatch, Testnet/Live, Preflight lift, `READY_FOR_OPERATOR_ARMING=true`, enforcement activation, exploit/offensive automation, secret scanning against real secrets, INPUT_JSONL fabrication, definitive R-001/R-002/R-007 mapping, or CSC **003a**/**003e** touch. `docs_drift_or_pointer_integrity` remains **deferred** — not closed by this slice.
+
+```text
+CV3C_STATIC_DEFENSIVE_VISIBILITY_REPORT_CONTRACT_V0=true
+CYBERSECURITY_DEFENSIVE_VISIBILITY_CV3_PLUS_RC_V0_STARTED=true
+CV3A_COMPLETE=true
+CV3B_COMPLETE=true
+CV3C_STATIC_DEFENSIVE_VISIBILITY_REPORT_CONTRACT_COMPLETE=true
+DEFENSIVE_CYBER_ONLY=true
+STATIC_DERIVED_VISIBILITY_ONLY=true
+DEFINITIVE_CYBER_MAPPING_PERFORMED=false
+INPUT_JSONL_REQUIRED=false
+INPUT_JSONL_FABRICATED=false
+INPUT_JSONL_PROVIDED=false
+DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=true
+DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
+RUNTIME_AUTHORITY_ADDED=false
+SECRET_SCANNING_REAL_SECRETS=false
+REUSE_DRIFT_GUARD=REUSE_OK
+NO_PARALLEL_DOCS=true
+NO_PARALLEL_BUILDS=true
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+RUNTIME_STARTED=false
+SCHEDULER_STARTED=false
+LIVE_TOUCHED=false
+ENFORCEMENT_ACTIVATED=false
+EXPLOIT_CODE_ADDED=false
+OFFENSIVE_AUTOMATION_ADDED=false
+SLICE_CV3C_TESTS_ONLY=true
+```
+
+Static guards: `tests/ci/test_cybersecurity_visibility_r_pending_input_artifact_contract_v0.py`, `tests/ci/test_cybersecurity_visibility_derived_mapping_plan_progress_contract_v0.py`, `tests/ci/test_cybersecurity_visibility_r_pending_mapping_guard_v0.py`, `tests/ci/test_cybersecurity_visibility_repo_static_histogram_artifact_retention_or_evidence_gap_crosslink_v0.py`.
+
 Operators may use this histogram for **CI/Ops visibility triage** until a lossless row exists for each pending retained risk. **Do not** treat any `CSC-STATIC-v0-*` `candidate_id` as a substitute mapping for R-001/R-002/R-007 without restored lossless inventory or operator-approved triage.
 
 **Lossless recovery still required for definitive R-001/R-002/R-007 mapping:**
@@ -2558,6 +2610,8 @@ CSC_RCHAIN_V1_003E_MASTER_V2_EXCLUDED=true
 | Workflow permission boundary | `tests/ops/test_workflow_permission_boundary_visibility_v1.py` |
 | WebUI API security-header routes | `tests/webui/test_webui_api_security_headers_visibility_contract_v0.py` |
 | No `pull_request_target` + checkout v5 pin | `tests/ci/test_workflows_no_pull_request_target_contract_v0.py` |
+| R pending INPUT_JSONL input-artifact contract | `tests/ci/test_cybersecurity_visibility_r_pending_input_artifact_contract_v0.py` |
+| Static defensive visibility report contract (SLICE-CV-3c hub) | `tests/ci/test_cybersecurity_visibility_r_pending_input_artifact_contract_v0.py` |
 
 ## Remote Runtime Contract — external charter reflection v0
 
@@ -2789,8 +2843,9 @@ LIVE_TOUCHED=false
 | 1 | **SLICE-CV-1** | Docs-only: this release index + post-wave-1 status reflection (**this PR**) |
 | 2 | **SLICE-CV-2** | Tests-ci: static guard coherence — extend existing `tests&#47;ci&#47;test_cybersecurity_visibility_*` modules only |
 | 3 | **SLICE-CV-3a** | Docs/tests: CSC-RCHAIN histogram defensive closure — extend existing `tests&#47;ci&#47;test_csc_rchain_*` and `tests&#47;ci&#47;test_cybersecurity_visibility_repo_static_histogram_*` only (**this PR**) |
-| 4 | **SLICE-CV-3b** | Tests-ci: defensive visibility readout / owner-triage guard coverage — extend existing `tests&#47;ci&#47;test_cybersecurity_visibility_*` only (**next PR**) |
-| 5 | **SLICE-CV-3** (optional follow-up) | Docs/tests: CSC-RCHAIN PR15 finalization reflection OR `docs_drift_or_pointer_integrity` bucket |
+| 4 | **SLICE-CV-3b** | Tests-ci: defensive visibility readout / owner-triage guard coverage — extend existing `tests&#47;ci&#47;test_cybersecurity_visibility_*` only (**merged** #3949) |
+| 5 | **SLICE-CV-3c** | Tests-ci: static defensive visibility report contract — extend existing `tests&#47;ci&#47;test_cybersecurity_visibility_*` only (**this PR**) |
+| 6 | **SLICE-CV-3** (optional follow-up) | Docs/tests: CSC-RCHAIN PR15 finalization reflection OR `docs_drift_or_pointer_integrity` bucket |
 
 **Operational rules:**
 
