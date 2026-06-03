@@ -3180,6 +3180,85 @@ CYBER_REAL_DATA_PII_BLOCKED=true
 PARALLEL_PRIMARY_EVIDENCE_ENFORCEMENT_INDEX_CREATED=false
 ```
 
+## Evidence Durable Enforcement Readiness Review RC v0 — index v0
+
+**Release:** `EVIDENCE_DURABLE_ENFORCEMENT_READINESS_REVIEW_RC_V0` · **Slice:** `SLICE-EER-1` (`EER1_READINESS_REVIEW_INDEX_V0`) · **Operator-GO:** `GO_SLICE_EER1_EVIDENCE_ENFORCEMENT_READINESS_REVIEW_INDEX_V0` · **UTC:** 2026-06-03 · **Docs/tests-only readiness review index** — consolidates completed prerequisite arcs (PE run-completion RC, ER RC, CV3+ RC) with existing Gap-2a.1 / Preflight §2b.2 / SECTION5 §2a.1 owners for gap coherence review; **does not** activate enforcement, **does not** lift Preflight, **does not** set `READY_FOR_OPERATOR_ARMING=true`. **Canonical repo owners (reuse — no parallel index):**
+
+| Concern | Owner |
+|---------|-------|
+| Preflight primary evidence / closeout / §2b.2 enforcement planning (**SSOT — pointer only**) | `docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md` — **§2a**, **§2a.1**, **§2b.2** |
+| Gap-2a.1 contract tokens | `docs/ops/planning/SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md` — **§2a.1 Primary Evidence Enforcement Contract v0** |
+| ER RC index (**ER SSOT in Preflight only**) | `PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md` — **§ Evidence Durable Closeout Retention RC v0 — index v0** |
+| PE Runtime-GO charter reflection (prerequisite input — not enforcement) | this document — **§ Primary Evidence Enforcement Runtime-GO Charter RC v0** |
+| EER readiness review meta-index (this section) | `docs/ops/CI_AUDIT_KNOWN_ISSUES.md` (this document) |
+| Primary evidence retention invariant guard | `tests/ops/test_primary_evidence_retention_invariant_contract_v0.py` |
+| Gap-2a.1 enforcement contract guard | `tests/ops/test_gap2a1_primary_evidence_enforcement_contract_v0.py` |
+| SECTION5 gap owner map guard | `tests/ops/test_section5_preflight_gap_owner_map_contract_v0.py` |
+| Preflight contract guard | `tests/ops/test_paper_shadow_247_preflight_contract_v0.py` |
+
+**Prerequisite arcs complete (review input — not enforcement authorization):**
+
+| Prerequisite | Status | Repo / archive pointer |
+|--------------|--------|------------------------|
+| `PRIMARY_EVIDENCE_RUN_COMPLETION_CONTRACT_RC_V0` | **CORE COMPLETE** (`CORE_COMPLETE_AFTER_PE6`; PE-2..PE-6) | this document — § Primary Evidence …; archive closeout below |
+| `EVIDENCE_DURABLE_CLOSEOUT_RETENTION_RC_V0` | **CORE COMPLETE** (ER-1 + ER-2; ER-3 deferred) | Preflight — § Evidence Durable … |
+| `CYBERSECURITY_DEFENSIVE_VISIBILITY_CV3_PLUS_RC_V0` | **CORE COMPLETE** (`CORE_COMPLETE_AFTER_CV3C`) | this document — § Cybersecurity Visibility …; CV3A/CV3B/CV3C blocks |
+
+**Readiness review scope (planning/docs/tests only):**
+
+- **PE-RC complete is prerequisite input** — run-completion guards (PE-2..PE-6) document durable primary evidence, manifest/checksum verification, Gap4↔Gap2a.1 dependency, and Cyber↔ER crosslink; **does not** grant enforcement activation.
+- **Gap-2a.1 tier 0 effective** — `GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false`; `GAP2A1_ENFORCEMENT_DEFAULT_ON=false`; `RETENTION_ENFORCEMENT_ACTIVATED=false`; `CLOSEOUT_ENFORCEMENT_ACTIVATED=false`.
+- **Durable primary evidence + manifest/checksum verification** remain contract requirements (`MANIFEST_VERIFY_REQUIRED=true`; `/tmp`-only insufficient).
+- **Preflight §2b.2 closeout enforcement** remains planning-only + non-authorizing helper; helper **PASS** does not lift gates.
+- **Preflight remains BLOCKED** — `PREFLIGHT_REMAINS_BLOCKED=true`; `READY_FOR_OPERATOR_ARMING=false`.
+
+**Durable operator pointers (archive only — not repo-ingested):**
+
+| Token | Durable path |
+|-------|--------------|
+| EER planning bundle | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/next_larger_release_candidate_after_cv3_plus_core_complete_v0_20260603T033708Z/` |
+| CV3+ final closeout | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/cybersecurity_defensive_visibility_cv3_plus_rc_v0_core_complete_after_cv3c_v0_20260603T033708Z/` |
+| PE run-completion final closeout | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/primary_evidence_run_completion_contract_rc_v0_core_complete_after_pe6_v0_20260603T031800Z/` |
+| SLICE-EER-1 docs/tests index (this slice) | repo: `docs/ops/CI_AUDIT_KNOWN_ISSUES.md` — this section; crosslinks in Preflight §2b.2 and SECTION5 §2a.1 |
+
+**Operational rules:**
+
+- **Readiness review only** — **no** runtime, scheduler, daemon, Paper, Shadow, Testnet, or Live start from this slice.
+- **No enforcement activation** — `ENFORCEMENT_ACTIVATED=false`; `GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false`; `RETENTION_ENFORCEMENT_ACTIVATED=false`; `CLOSEOUT_ENFORCEMENT_ACTIVATED=false`; tier **0** effective.
+- **No Preflight lift** — `PREFLIGHT_REMAINS_BLOCKED=true`; `READY_FOR_OPERATOR_ARMING=false`; `PRE_FLIGHT_BLOCKED_LIFTED=false`.
+- **Evidence ≠ approval** — completed prerequisite RCs and readiness review **do not** authorize runtime or arming.
+- **Reuse-before-new** — extend this CI audit anchor and existing Preflight/SECTION5/gap2a1 test surfaces; **no** parallel enforcement index, readiness map, registry handoff, or pointer hub in repo.
+
+```text
+EVIDENCE_DURABLE_ENFORCEMENT_READINESS_REVIEW_RC_V0_STARTED=true
+EER1_READINESS_REVIEW_INDEX_COMPLETE=true
+PRIMARY_EVIDENCE_RUN_COMPLETION_CONTRACT_RC_V0_STATUS=CORE_COMPLETE_AFTER_PE6
+CYBERSECURITY_DEFENSIVE_VISIBILITY_CV3_PLUS_RC_V0_STATUS=CORE_COMPLETE_AFTER_CV3C
+EVIDENCE_DURABLE_CLOSEOUT_RETENTION_RC_V0_CORE_DONE=true
+SLICE_EER1_DOCS_TESTS_ONLY=true
+GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false
+GAP2A1_ENFORCEMENT_DEFAULT_ON=false
+GAP2A1_ENFORCEMENT_TIER_EFFECTIVE=0
+RETENTION_ENFORCEMENT_ACTIVATED=false
+CLOSEOUT_ENFORCEMENT_ACTIVATED=false
+ENFORCEMENT_ACTIVATED=false
+MANIFEST_VERIFY_REQUIRED=true
+TMP_ONLY_EVIDENCE_INVALID=true
+REUSE_DRIFT_GUARD=REUSE_OK
+NO_PARALLEL_DOCS=true
+NO_PARALLEL_BUILDS=true
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+PRE_FLIGHT_BLOCKED_LIFTED=false
+RUNTIME_STARTED=false
+SCHEDULER_STARTED=false
+LIVE_TOUCHED=false
+NO_RUNTIME=true
+NO_PREFLIGHT_LIFT=true
+NO_ENFORCEMENT_ACTIVATION=true
+PARALLEL_EVIDENCE_ENFORCEMENT_READINESS_INDEX_CREATED=false
+```
+
 ## Master V2 / Double Play Read-only Alignment Inventory RC v0 — docs reflection v0
 
 **Release:** `MASTER_V2_DOUBLE_PLAY_READONLY_ALIGNMENT_INVENTORY_RC_V0` · **Slice:** `SLICE-MV2-1` (`MASTER_V2_DOUBLE_PLAY_READONLY_ALIGNMENT_DOCS_REFLECTION_SLICE_V0`) · **UTC:** 2026-06-02 · **Docs-only reflection** of the external Master V2 / Double Play read-only alignment inventory (inventory body remains in the durable archive — **not** repo-ingested). **Canonical repo owners (reuse — no parallel index):**

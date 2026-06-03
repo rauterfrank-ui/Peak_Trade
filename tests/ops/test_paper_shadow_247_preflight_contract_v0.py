@@ -173,3 +173,49 @@ def test_preflight_section_2a1_run_completion_requires_durable_primary_evidence_
     assert "MANIFEST_VERIFY_REQUIRED=true" in section
     assert "FUTURE_RUNS_REQUIRE_DURABLE_ARCHIVE_ROOT=true" in section
     assert "incomplete and invalid" in section
+
+
+def _section_2b2_eer1(text: str) -> str:
+    return text.split(
+        "### Evidence Durable Enforcement Readiness Review RC v0 — EER1 crosslink v0", 1
+    )[1].split("## 3. Non-authority", 1)[0]
+
+
+def test_preflight_section_2b2_eer1_readiness_review_index_v0() -> None:
+    text = _read_contract()
+    ci_audit = (REPO_ROOT / "docs" / "ops" / "CI_AUDIT_KNOWN_ISSUES.md").read_text(encoding="utf-8")
+    section = _section_2b2_eer1(text)
+    for token in (
+        "EVIDENCE_DURABLE_ENFORCEMENT_READINESS_REVIEW_RC_V0_STARTED=true",
+        "EER1_READINESS_REVIEW_INDEX_COMPLETE=true",
+        "PRIMARY_EVIDENCE_RUN_COMPLETION_CONTRACT_RC_V0_STATUS=CORE_COMPLETE_AFTER_PE6",
+        "CYBERSECURITY_DEFENSIVE_VISIBILITY_CV3_PLUS_RC_V0_STATUS=CORE_COMPLETE_AFTER_CV3C",
+        "CLOSEOUT_ENFORCEMENT_PLANNING_ONLY=true",
+        "CLOSEOUT_ENFORCEMENT_ACTIVATED=false",
+        "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false",
+        "RETENTION_ENFORCEMENT_ACTIVATED=false",
+        "ENFORCEMENT_ACTIVATED=false",
+        "MANIFEST_VERIFY_REQUIRED=true",
+        "PREFLIGHT_REMAINS_BLOCKED=true",
+        "READY_FOR_OPERATOR_ARMING=false",
+    ):
+        assert token in section
+    for token in (
+        "EVIDENCE_DURABLE_ENFORCEMENT_READINESS_REVIEW_RC_V0_STARTED=true",
+        "EER1_READINESS_REVIEW_INDEX_COMPLETE=true",
+        "PRIMARY_EVIDENCE_RUN_COMPLETION_CONTRACT_RC_V0_STATUS=CORE_COMPLETE_AFTER_PE6",
+        "CYBERSECURITY_DEFENSIVE_VISIBILITY_CV3_PLUS_RC_V0_STATUS=CORE_COMPLETE_AFTER_CV3C",
+        "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false",
+        "ENFORCEMENT_ACTIVATED=false",
+        "PREFLIGHT_REMAINS_BLOCKED=true",
+        "READY_FOR_OPERATOR_ARMING=false",
+    ):
+        assert token in ci_audit
+    assert "SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md" in text or "§2a.1" in section
+    assert "test_paper_shadow_247_preflight_contract_v0.py" in section
+    assert "Evidence Durable Enforcement Readiness Review RC v0" in ci_audit
+    collapsed = section.replace("**", "")
+    assert "does not activate enforcement" in collapsed.lower()
+    section_lines = {line.strip() for line in section.splitlines()}
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" not in section_lines
+    assert "READY_FOR_OPERATOR_ARMING=true" not in section_lines

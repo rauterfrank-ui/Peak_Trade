@@ -153,3 +153,35 @@ def test_gap2a1_primary_evidence_enforcement_contract_is_not_default_on():
 
     for marker in forbidden:
         assert marker not in section
+
+
+def test_gap2a1_eer1_readiness_review_index_crosslink_v0() -> None:
+    section5 = DOC.read_text(encoding="utf-8")
+    ci_audit = (ROOT / "docs" / "ops" / "CI_AUDIT_KNOWN_ISSUES.md").read_text(encoding="utf-8")
+    preflight = PREFLIGHT.read_text(encoding="utf-8")
+    gap2a1 = section5.split("## §2a.1 Primary Evidence Enforcement Contract v0", 1)[1].split(
+        "## Gap 1 Execute Entrypoint Contract v0", 1
+    )[0]
+    eer1_preflight = preflight.split(
+        "### Evidence Durable Enforcement Readiness Review RC v0 — EER1 crosslink v0", 1
+    )[1].split("## 3. Non-authority", 1)[0]
+    for token in (
+        "EVIDENCE_DURABLE_ENFORCEMENT_READINESS_REVIEW_RC_V0_STARTED=true",
+        "EER1_READINESS_REVIEW_INDEX_COMPLETE=true",
+        "PRIMARY_EVIDENCE_RUN_COMPLETION_CONTRACT_RC_V0_STATUS=CORE_COMPLETE_AFTER_PE6",
+        "CYBERSECURITY_DEFENSIVE_VISIBILITY_CV3_PLUS_RC_V0_STATUS=CORE_COMPLETE_AFTER_CV3C",
+        "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false",
+        "ENFORCEMENT_ACTIVATED=false",
+        "PREFLIGHT_REMAINS_BLOCKED=true",
+        "READY_FOR_OPERATOR_ARMING=false",
+    ):
+        assert token in gap2a1
+        assert token in ci_audit
+        assert token in eer1_preflight
+    assert "Evidence Durable Enforcement Readiness Review index (EER1 guard)" in gap2a1
+    assert "MANIFEST" in gap2a1 or "manifest" in gap2a1.lower()
+    assert "test_gap2a1_primary_evidence_enforcement_contract_v0.py" not in gap2a1
+    assert Path(__file__).name in ci_audit or "gap2a1" in ci_audit.lower()
+    gap2a1_lines = {line.strip() for line in gap2a1.splitlines()}
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" not in gap2a1_lines
+    assert "READY_FOR_OPERATOR_ARMING=true" not in gap2a1_lines
