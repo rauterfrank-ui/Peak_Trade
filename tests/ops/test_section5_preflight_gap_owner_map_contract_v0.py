@@ -114,3 +114,29 @@ def test_section5_gap4_pe5_dependency_guard_v0() -> None:
     assert "test_gap4_gap2a1_primary_evidence_dependency_contract_v0.py" in gap4
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in gap4
     assert "READY_FOR_OPERATOR_ARMING=false" in gap4
+
+
+def test_section5_eer1_readiness_review_index_crosslink_v0() -> None:
+    text = DOC.read_text(encoding="utf-8")
+    ci_audit = (ROOT / "docs" / "ops" / "CI_AUDIT_KNOWN_ISSUES.md").read_text(encoding="utf-8")
+    gap2a1 = _gap2a1_section(text)
+    for token in (
+        "EVIDENCE_DURABLE_ENFORCEMENT_READINESS_REVIEW_RC_V0_STARTED=true",
+        "EER1_READINESS_REVIEW_INDEX_COMPLETE=true",
+        "PRIMARY_EVIDENCE_RUN_COMPLETION_CONTRACT_RC_V0_STATUS=CORE_COMPLETE_AFTER_PE6",
+        "CYBERSECURITY_DEFENSIVE_VISIBILITY_CV3_PLUS_RC_V0_STATUS=CORE_COMPLETE_AFTER_CV3C",
+        "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false",
+        "ENFORCEMENT_ACTIVATED=false",
+        "PREFLIGHT_REMAINS_BLOCKED=true",
+        "READY_FOR_OPERATOR_ARMING=false",
+    ):
+        assert token in gap2a1
+        assert token in ci_audit
+    assert "Evidence Durable Enforcement Readiness Review RC v0" in ci_audit
+    assert "Evidence Durable Enforcement Readiness Review index (EER1 guard)" in gap2a1
+    assert "planning/docs/tests readiness review only" in gap2a1.lower()
+    assert "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md" in gap2a1
+    assert "MANIFEST" in gap2a1 or "manifest" in gap2a1.lower()
+    gap2a1_lines = {line.strip() for line in gap2a1.splitlines()}
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" not in gap2a1_lines
+    assert "READY_FOR_OPERATOR_ARMING=true" not in gap2a1_lines

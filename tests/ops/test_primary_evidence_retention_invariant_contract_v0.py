@@ -824,3 +824,75 @@ def test_evidence_durable_closeout_retention_rc_v0_slice_er2_guard_owner_crossli
     )
     assert THIS_MODULE in section
     assert MANDATORY_CLOSEOUT_CONTRACT_TESTS.is_file()
+
+
+EER1_PLANNING_BUNDLE_PATH = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/next_larger_release_candidate_after_cv3_plus_core_complete_v0_20260603T033708Z/"
+)
+EER1_CV3_PLUS_CLOSEOUT_PATH = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "closeout/cybersecurity_defensive_visibility_cv3_plus_rc_v0_core_complete_after_cv3c_v0_20260603T033708Z/"
+)
+EER1_PE_CLOSEOUT_PATH = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "closeout/primary_evidence_run_completion_contract_rc_v0_core_complete_after_pe6_v0_20260603T031800Z/"
+)
+EER1_CI_INDEX_HEADING = "## Evidence Durable Enforcement Readiness Review RC v0 — index v0"
+EER1_PREFLIGHT_CROSSLINK_HEADING = (
+    "### Evidence Durable Enforcement Readiness Review RC v0 — EER1 crosslink v0"
+)
+
+
+def _eer1_ci_index_section(text: str) -> str:
+    return text.split(EER1_CI_INDEX_HEADING, 1)[1].split("## Master V2", 1)[0]
+
+
+def _eer1_preflight_crosslink_section(text: str) -> str:
+    return text.split(EER1_PREFLIGHT_CROSSLINK_HEADING, 1)[1].split("## 3. Non-authority", 1)[0]
+
+
+def test_eer1_readiness_review_index_v0() -> None:
+    owner = _owner_text()
+    ci_audit = (REPO_ROOT / "docs" / "ops" / "CI_AUDIT_KNOWN_ISSUES.md").read_text(encoding="utf-8")
+    section5 = (
+        REPO_ROOT / "docs" / "ops" / "planning" / "SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md"
+    ).read_text(encoding="utf-8")
+    gap2a1 = section5.split("## §2a.1 Primary Evidence Enforcement Contract v0", 1)[1].split(
+        "## Gap 1 Execute Entrypoint Contract v0", 1
+    )[0]
+    ci_section = _eer1_ci_index_section(ci_audit)
+    preflight_eer1 = _eer1_preflight_crosslink_section(owner)
+
+    for token in (
+        "EVIDENCE_DURABLE_ENFORCEMENT_READINESS_REVIEW_RC_V0_STARTED=true",
+        "EER1_READINESS_REVIEW_INDEX_COMPLETE=true",
+        "PRIMARY_EVIDENCE_RUN_COMPLETION_CONTRACT_RC_V0_STATUS=CORE_COMPLETE_AFTER_PE6",
+        "CYBERSECURITY_DEFENSIVE_VISIBILITY_CV3_PLUS_RC_V0_STATUS=CORE_COMPLETE_AFTER_CV3C",
+        "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false",
+        "ENFORCEMENT_ACTIVATED=false",
+        "PREFLIGHT_REMAINS_BLOCKED=true",
+        "READY_FOR_OPERATOR_ARMING=false",
+    ):
+        assert token in ci_section
+        assert token in gap2a1
+        assert token in preflight_eer1
+    for token in (
+        "RETENTION_ENFORCEMENT_ACTIVATED=false",
+        "CLOSEOUT_ENFORCEMENT_ACTIVATED=false",
+        "MANIFEST_VERIFY_REQUIRED=true",
+    ):
+        assert token in ci_section
+        assert token in preflight_eer1
+
+    assert EER1_PLANNING_BUNDLE_PATH in ci_section
+    assert EER1_CV3_PLUS_CLOSEOUT_PATH in ci_section
+    assert EER1_PE_CLOSEOUT_PATH in ci_section
+    assert "SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md" in ci_section
+    assert "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md" in ci_section
+    assert THIS_MODULE in ci_section
+    assert "prerequisite input" in ci_section.lower() or "prerequisite" in ci_section.lower()
+    assert "no parallel" in ci_section.lower()
+    ci_lines = {line.strip() for line in ci_section.splitlines()}
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" not in ci_lines
+    assert "READY_FOR_OPERATOR_ARMING=true" not in ci_lines

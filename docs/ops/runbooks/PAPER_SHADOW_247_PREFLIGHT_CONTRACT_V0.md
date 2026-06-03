@@ -438,6 +438,25 @@ This §2b.2 contract slice **does not** modify [post_merge_closeout.sh](../../..
 
 Cross-reference: [Runtime Lane Taxonomy + Authority Levels Contract v0](../specs/RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md) §2 index; §6a.0.5 dry-template gate; §6a.0.7 dry-template non-invocation of helper; [test_closeout_enforcement_planning_contract_v0.py](../../../tests/ops/test_closeout_enforcement_planning_contract_v0.py); [test_durable_closeout_copy_verify_v0.py](../../../tests/ops/test_durable_closeout_copy_verify_v0.py).
 
+### Evidence Durable Enforcement Readiness Review RC v0 — EER1 crosslink v0
+
+**Release:** `EVIDENCE_DURABLE_ENFORCEMENT_READINESS_REVIEW_RC_V0` · **Slice:** `SLICE-EER-1` · **Operator-GO:** `GO_SLICE_EER1_EVIDENCE_ENFORCEMENT_READINESS_REVIEW_INDEX_V0` · **Readiness review index only** — binds this §2b.2 closeout enforcement planning posture with §2a.1 durable primary evidence / manifest verification, SECTION5 §2a.1 Gap-2a.1 contract, and completed prerequisite RCs (PE run-completion **CORE COMPLETE** after PE-6; ER **CORE COMPLETE**; CV3+ **CORE COMPLETE** after CV3C). Meta-index: `docs/ops/CI_AUDIT_KNOWN_ISSUES.md` — **§ Evidence Durable Enforcement Readiness Review RC v0 — index v0**. Static guards: `tests/ops/test_paper_shadow_247_preflight_contract_v0.py`, `tests/ops/test_primary_evidence_retention_invariant_contract_v0.py`. **Does not** activate enforcement, **does not** lift Preflight **BLOCKED**, **does not** set `READY_FOR_OPERATOR_ARMING=true`.
+
+```text
+EVIDENCE_DURABLE_ENFORCEMENT_READINESS_REVIEW_RC_V0_STARTED=true
+EER1_READINESS_REVIEW_INDEX_COMPLETE=true
+PRIMARY_EVIDENCE_RUN_COMPLETION_CONTRACT_RC_V0_STATUS=CORE_COMPLETE_AFTER_PE6
+CYBERSECURITY_DEFENSIVE_VISIBILITY_CV3_PLUS_RC_V0_STATUS=CORE_COMPLETE_AFTER_CV3C
+CLOSEOUT_ENFORCEMENT_PLANNING_ONLY=true
+CLOSEOUT_ENFORCEMENT_ACTIVATED=false
+GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false
+RETENTION_ENFORCEMENT_ACTIVATED=false
+ENFORCEMENT_ACTIVATED=false
+MANIFEST_VERIFY_REQUIRED=true
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+```
+
 ## 3. Non-authority
 
 The following are **not** trading authority, readiness approval, evidence approval, promotion, Master V2 / Double Play approval, or Live/Testnet approval:
