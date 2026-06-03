@@ -185,17 +185,17 @@ CYBERSECURITY_VISIBILITY_ARCHIVE_FULL_LOSSLESS_ADOPTION_DOCS_TESTS_ONLY=true
 | SHA256 | `eff5698370a8cd38cacf02325d81223ca667d4995bda8cfcb6435b5de5327f26` |
 | Retained-risk rows | R-001, R-002, R-007 (`3` lines) |
 | `redaction_status` | `operator_attested_redacted` |
-| Provenance notes | `recovery_status` + `not_original_tmp_lossless` (recreated; not original `/tmp`) |
+| Provenance notes | `recovery_status` + `not_original_tmp_lossless` (recreated; not original `&#47;tmp`) |
 
 **Archive evidence chain (manifest-verified bundles):**
 
 | Step | Durable archive bundle |
 |------|------------------------|
-| Recreate charter | `…/planning/recreate_full_lossless_risk_candidates_jsonl_charter_no_run_v0_20260603T142931Z` |
-| Recreate execution | `…/planning/recreate_full_lossless_risk_candidates_jsonl_from_authorized_evidence_no_repo_touch_v0_20260603T143157Z` |
-| Intake PASS | `…/planning/cyber_input_jsonl_operator_intake_precheck_no_run_v0_20260603T143326Z` |
-| Mapping charter | `…/planning/cyber_lossless_risk_jsonl_mapping_charter_no_run_v0_20260603T143519Z` |
-| Mapping external PASS | `…/planning/cyber_lossless_risk_jsonl_mapping_external_no_repo_touch_v0_20260603T143658Z` |
+| Recreate charter | `…&#47;planning&#47;recreate_full_lossless_risk_candidates_jsonl_charter_no_run_v0_20260603T142931Z` |
+| Recreate execution | `…&#47;planning&#47;recreate_full_lossless_risk_candidates_jsonl_from_authorized_evidence_no_repo_touch_v0_20260603T143157Z` |
+| Intake PASS | `…&#47;planning&#47;cyber_input_jsonl_operator_intake_precheck_no_run_v0_20260603T143326Z` |
+| Mapping charter | `…&#47;planning&#47;cyber_lossless_risk_jsonl_mapping_charter_no_run_v0_20260603T143519Z` |
+| Mapping external PASS | `…&#47;planning&#47;cyber_lossless_risk_jsonl_mapping_external_no_repo_touch_v0_20260603T143658Z` |
 
 **Non-authorizing:** Docs/tests governance reflection only; no mapping wave, no workflow dispatch, no runtime/scheduler/daemon, no Testnet/Live, no broker/exchange, no Master V2 / Double Play authority changes.
 

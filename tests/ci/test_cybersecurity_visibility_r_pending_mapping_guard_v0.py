@@ -33,9 +33,7 @@ ADOPTION_BLOCK_ANCHOR = (
 ADOPTION_HEADING = (
     "Pending R-001/R-002/R-007 — operator-accepted archive FULL_LOSSLESS governance adoption v0"
 )
-ARCHIVE_FULL_LOSSLESS_SHA256 = (
-    "eff5698370a8cd38cacf02325d81223ca667d4995bda8cfcb6435b5de5327f26"
-)
+ARCHIVE_FULL_LOSSLESS_SHA256 = "eff5698370a8cd38cacf02325d81223ca667d4995bda8cfcb6435b5de5327f26"
 CHARTER_BLOCK_ANCHOR = "CYBERSECURITY_VISIBILITY_R_PENDING_REPO_STATIC_INVENTORY_CHARTER_V0=true"
 INPUT_ARTIFACT_BLOCK_ANCHOR = "CYBERSECURITY_VISIBILITY_R_PENDING_INPUT_ARTIFACT_CONTRACT_V0=true"
 MAPPING_GUARD_BLOCK_ANCHOR = "CYBERSECURITY_VISIBILITY_R_PENDING_MAPPING_GUARD_V0=true"
@@ -599,4 +597,7 @@ def test_cybersecurity_visibility_archive_adoption_mapping_guard_crosslink_v0() 
         )
 
     assert "original recovered" not in collapsed.replace("not be claimed recovered", "")
-    assert "does not** use `DERIVED_LOSSLESS_RISK_CANDIDATES_FROM_CSC_RCHAIN_EVIDENCE.jsonl` as authority" in text
+    assert (
+        "does not** use `DERIVED_LOSSLESS_RISK_CANDIDATES_FROM_CSC_RCHAIN_EVIDENCE.jsonl` as authority"
+        in text
+    )
