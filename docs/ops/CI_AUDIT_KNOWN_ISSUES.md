@@ -156,6 +156,49 @@ NO_PERFORMANCE_REGRESSION=true
 
 > R-001/R-002/R-007 IDs here are the **post-HOLD lossless-inventory** set (see Source artifacts above), not `docs/ops/RISK_REGISTER.md` ops-register IDs.
 
+### Pending R-001/R-002/R-007 — operator-accepted archive FULL_LOSSLESS governance adoption v0
+
+```
+CYBERSECURITY_VISIBILITY_OPERATOR_ACCEPTED_ARCHIVE_FULL_LOSSLESS_ADOPTION_V0=true
+ORIGINAL_TMP_FULL_LOSSLESS_AVAILABLE=false
+NOT_ORIGINAL_TMP_FULL_LOSSLESS=true
+ARCHIVE_RECREATE_FULL_LOSSLESS_GOVERNANCE_ACCEPTED=true
+OPERATOR_ACCEPTED_ARCHIVE_EVIDENCE_CHAIN_MANIFEST_VERIFY_RC=0
+FULL_LOSSLESS_RISK_CANDIDATES_JSONL_NOT_FOUND=false
+ORIGINAL_TMP_FULL_LOSSLESS_NOT_FOUND=true
+INPUT_JSONL_PROVIDED=false
+LOSSLESS_JSONL_RECOVERY=false
+DERIVED_ONLY_USED_AS_AUTHORITY=false
+DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=true
+FORBIDS_ORIGINAL_TMP_RECOVERY_CLAIM=true
+OLD_R_ID_RECONSTRUCTION_ATTEMPTED=false
+CYBERSECURITY_VISIBILITY_ARCHIVE_FULL_LOSSLESS_ADOPTION_DOCS_TESTS_ONLY=true
+```
+
+**Purpose:** Record operator acceptance (Frank Rauter; `GO_SLICE_CYBER_FULL_LOSSLESS_ARCHIVE_EVIDENCE_GOVERNANCE_ADOPTION_V0`) that the **durable archive** Recreate → Intake PASS → Mapping PASS chain is **governance truth** for retained risks **R-001**, **R-002**, and **R-007** while the original 20260508 `/tmp` `FULL_LOSSLESS_RISK_CANDIDATES.jsonl` remains **unavailable** and must **not** be claimed recovered. The recreated file is **operator-accepted archive evidence** — **not** byte-equivalent to the lost `/tmp` original (`NOT_ORIGINAL_TMP_FULL_LOSSLESS=true`). This section **does not** ingest JSONL into the repo, **does not** set `INPUT_JSONL_PROVIDED=true`, **does not** set `LOSSLESS_JSONL_RECOVERY=true`, **does not** use `DERIVED_LOSSLESS_RISK_CANDIDATES_FROM_CSC_RCHAIN_EVIDENCE.jsonl` as authority, and **does not** flip R-001/R-002/R-007 to definitive **`mapped`** (retain **mapped-by-derived-evidence** in the table above).
+
+**Operator-accepted archive FULL_LOSSLESS (external; not repo-ingested):**
+
+| Field | Value |
+|-------|-------|
+| Intake path | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_input_jsonl_operator_intake_readonly_v0_20260601T164324Z/operator_artifacts_pending/FULL_LOSSLESS_RISK_CANDIDATES.jsonl` |
+| SHA256 | `eff5698370a8cd38cacf02325d81223ca667d4995bda8cfcb6435b5de5327f26` |
+| Retained-risk rows | R-001, R-002, R-007 (`3` lines) |
+| `redaction_status` | `operator_attested_redacted` |
+| Provenance notes | `recovery_status` + `not_original_tmp_lossless` (recreated; not original `&#47;tmp`) |
+
+**Archive evidence chain (manifest-verified bundles):**
+
+| Step | Durable archive bundle |
+|------|------------------------|
+| Recreate charter | `…&#47;planning&#47;recreate_full_lossless_risk_candidates_jsonl_charter_no_run_v0_20260603T142931Z` |
+| Recreate execution | `…&#47;planning&#47;recreate_full_lossless_risk_candidates_jsonl_from_authorized_evidence_no_repo_touch_v0_20260603T143157Z` |
+| Intake PASS | `…&#47;planning&#47;cyber_input_jsonl_operator_intake_precheck_no_run_v0_20260603T143326Z` |
+| Mapping charter | `…&#47;planning&#47;cyber_lossless_risk_jsonl_mapping_charter_no_run_v0_20260603T143519Z` |
+| Mapping external PASS | `…&#47;planning&#47;cyber_lossless_risk_jsonl_mapping_external_no_repo_touch_v0_20260603T143658Z` |
+
+**Non-authorizing:** Docs/tests governance reflection only; no mapping wave, no workflow dispatch, no runtime/scheduler/daemon, no Testnet/Live, no broker/exchange, no Master V2 / Double Play authority changes.
+
 ### Pending R-001/R-002/R-007 — repo-static successor inventory charter v0
 
 ```
@@ -163,7 +206,9 @@ CYBERSECURITY_VISIBILITY_R_PENDING_REPO_STATIC_INVENTORY_CHARTER_V0=true
 LOSSLESS_JSONL_RECOVERY=false
 REPO_STATIC_SUCCESSOR_INVENTORY=true
 ORIGINAL_DURABLE_JSONL_REQUIRED_FOR_LOSSLESS_RECOVERY=true
-FULL_LOSSLESS_RISK_CANDIDATES_JSONL_NOT_FOUND=true
+ORIGINAL_TMP_FULL_LOSSLESS_NOT_FOUND=true
+FULL_LOSSLESS_RISK_CANDIDATES_JSONL_NOT_FOUND=false
+ARCHIVE_RECREATE_FULL_LOSSLESS_GOVERNANCE_ACCEPTED=true
 REPO_STATIC_SUCCESSOR_DOES_NOT_CONTAIN_R001_R002_R007=true
 REPO_STATIC_SUCCESSOR_DOES_NOT_CLAIM_LOSSLESS_EQUIVALENCE=true
 R001_REPO_STATIC_CANDIDATE_ID_ASSIGNED=false
@@ -172,7 +217,7 @@ R007_REPO_STATIC_CANDIDATE_ID_ASSIGNED=false
 CYBERSECURITY_VISIBILITY_R_PENDING_INVENTORY_CHARTER_DOCS_TESTS_ONLY=true
 ```
 
-**Purpose:** Record interim visibility for retained risks **R-001**, **R-002**, and **R-007** while the missing 20260508 lossless inventory remains unavailable. Repo-static successor rows have **no `candidate_id` assigned** for R-001/R-002/R-007. The canonical retained-risk table above may record **mapped-by-derived-evidence** (with reciprocal test owners) — distinct from definitive **`mapped`** while `INPUT_JSONL_PROVIDED=false`. This charter **does not** recover, regenerate, or claim equivalence to `FULL_LOSSLESS_RISK_CANDIDATES.jsonl` or `CYBERSECURITY_POST_HOLD_OWNER_TRIAGE.md`.
+**Purpose:** Record interim visibility for retained risks **R-001**, **R-002**, and **R-007** while the original 20260508 `/tmp` lossless inventory remains **unavailable** (`ORIGINAL_TMP_FULL_LOSSLESS_NOT_FOUND=true`). Operator-accepted **archive** recreated `FULL_LOSSLESS_RISK_CANDIDATES.jsonl` is governed in § operator-accepted archive FULL_LOSSLESS governance adoption v0 above — **external only**, **not** repo-ingested, **not** original recovery. Repo-static successor rows have **no `candidate_id` assigned** for R-001/R-002/R-007. The canonical retained-risk table above may record **mapped-by-derived-evidence** (with reciprocal test owners) — distinct from definitive **`mapped`** while `INPUT_JSONL_PROVIDED=false`. This charter **does not** ingest archive JSONL into the repo, **does not** claim equivalence to the lost `/tmp` original, and **does not** claim equivalence to `CYBERSECURITY_POST_HOLD_OWNER_TRIAGE.md`.
 
 **Non-authorizing:** This section does not authorize workflow dispatches, runtime/scheduler/daemon/adapter execution, hooks, launchctl, Notion write/MCP/API, Market overlay enablement, S3/AWS/rclone, broker/exchange, Testnet/Live, or Master V2 / Double Play authority changes.
 
@@ -388,16 +433,19 @@ SLICE_CV3C_TESTS_ONLY=true
 
 Static guards: `tests/ci/test_cybersecurity_visibility_r_pending_input_artifact_contract_v0.py`, `tests/ci/test_cybersecurity_visibility_derived_mapping_plan_progress_contract_v0.py`, `tests/ci/test_cybersecurity_visibility_r_pending_mapping_guard_v0.py`, `tests/ci/test_cybersecurity_visibility_repo_static_histogram_artifact_retention_or_evidence_gap_crosslink_v0.py`.
 
-Operators may use this histogram for **CI/Ops visibility triage** until a lossless row exists for each pending retained risk. **Do not** treat any `CSC-STATIC-v0-*` `candidate_id` as a substitute mapping for R-001/R-002/R-007 without restored lossless inventory or operator-approved triage.
+Operators may use this histogram for **CI/Ops visibility triage**. Retained risks **R-001/R-002/R-007** have operator-accepted **archive** `FULL_LOSSLESS` governance evidence (see § operator-accepted archive FULL_LOSSLESS governance adoption v0); definitive repo **`mapped`** remains blocked while `INPUT_JSONL_PROVIDED=false`. **Do not** treat any `CSC-STATIC-v0-*` `candidate_id` as a substitute mapping for R-001/R-002/R-007.
 
 **Lossless recovery still required for definitive R-001/R-002/R-007 mapping:**
 
+**Original `/tmp` vs operator-accepted archive evidence (definitive mapping posture):**
+
 | Artifact | Status |
 |----------|--------|
-| `/tmp/peak_trade_full_lossless_risk_inventory_readonly_20260508T163523Z/FULL_LOSSLESS_RISK_CANDIDATES.jsonl` | **Not found** at charter time |
+| `/tmp/peak_trade_full_lossless_risk_inventory_readonly_20260508T163523Z/FULL_LOSSLESS_RISK_CANDIDATES.jsonl` | **Unavailable** — original lost; **not** recovered |
 | `/tmp/peak_trade_cybersecurity_post_hold_owner_triage_20260510T150908Z/CYBERSECURITY_POST_HOLD_OWNER_TRIAGE.md` | **Not found** at charter time |
+| Operator-accepted archive `FULL_LOSSLESS_RISK_CANDIDATES.jsonl` (intake path; SHA `eff5698370a8cd38cacf02325d81223ca667d4995bda8cfcb6435b5de5327f26`) | **Accepted governance evidence** (external); Recreate → Intake PASS → Mapping PASS; `NOT_ORIGINAL_TMP_FULL_LOSSLESS=true` |
 
-**Approved recovery input (future slice only; not authorized here):** operator supplies durable `INPUT_JSONL=<absolute path>` to `FULL_LOSSLESS_RISK_CANDIDATES.jsonl` or equivalent approved triage artifact, then a separate read-only mapping slice may assign repo test owners — reusing this anchor and existing visibility contract modules only.
+**Approved repo-ingest / definitive mapping input (future slice only; not authorized here):** operator supplies durable `INPUT_JSONL=<absolute path>` with authorized mapping slice and `INPUT_JSONL_PROVIDED=true` — reusing this anchor and existing visibility contract modules only. Archive adoption v0 **does not** satisfy that gate.
 
 **Relationship to mapped risks R-003–R-006:** R-003 through R-006 retain their repo-mapped static test owners in the table above. This charter **does not** remap them.
 

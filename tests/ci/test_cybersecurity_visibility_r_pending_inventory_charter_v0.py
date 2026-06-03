@@ -14,6 +14,19 @@ CI_AUDIT_KNOWN_ISSUES = REPO_ROOT / "docs" / "ops" / "CI_AUDIT_KNOWN_ISSUES.md"
 DOCS_TRUTH_MAP = REPO_ROOT / "docs" / "ops" / "registry" / "DOCS_TRUTH_MAP.md"
 THIS_MODULE = Path(__file__).name
 
+ADOPTION_HEADING = (
+    "Pending R-001/R-002/R-007 — operator-accepted archive FULL_LOSSLESS governance adoption v0"
+)
+ADOPTION_BLOCK_ANCHOR = (
+    "CYBERSECURITY_VISIBILITY_OPERATOR_ACCEPTED_ARCHIVE_FULL_LOSSLESS_ADOPTION_V0=true"
+)
+ARCHIVE_FULL_LOSSLESS_SHA256 = "eff5698370a8cd38cacf02325d81223ca667d4995bda8cfcb6435b5de5327f26"
+ARCHIVE_FULL_LOSSLESS_INTAKE_PATH = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/cybersecurity_input_jsonl_operator_intake_readonly_v0_20260601T164324Z/"
+    "operator_artifacts_pending/FULL_LOSSLESS_RISK_CANDIDATES.jsonl"
+)
+
 REPO_STATIC_JSONL = (
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
     "inventory/repo_static_cybersecurity_risk_candidates/"
@@ -22,17 +35,42 @@ REPO_STATIC_JSONL = (
 )
 
 
+def test_cybersecurity_visibility_archive_full_lossless_governance_adoption_v0() -> None:
+    text = CI_AUDIT_KNOWN_ISSUES.read_text(encoding="utf-8")
+    collapsed = text.lower()
+
+    assert ADOPTION_HEADING in text
+    assert ADOPTION_BLOCK_ANCHOR in text
+    assert ARCHIVE_FULL_LOSSLESS_SHA256 in text
+    assert ARCHIVE_FULL_LOSSLESS_INTAKE_PATH in text
+    assert "NOT_ORIGINAL_TMP_FULL_LOSSLESS=true" in text
+    assert "ORIGINAL_TMP_FULL_LOSSLESS_AVAILABLE=false" in text
+    assert "DERIVED_ONLY_USED_AS_AUTHORITY=false" in text
+    assert "ARCHIVE_RECREATE_FULL_LOSSLESS_GOVERNANCE_ACCEPTED=true" in text
+    assert "FORBIDS_ORIGINAL_TMP_RECOVERY_CLAIM=true" in text
+    assert "Recreate → Intake PASS → Mapping PASS" in text
+    for risk_id in ("R-001", "R-002", "R-007"):
+        assert risk_id in text
+    assert "INPUT_JSONL_PROVIDED=false" in text
+    assert "LOSSLESS_JSONL_RECOVERY=false" in text
+    assert "FORBIDS_ORIGINAL_TMP_RECOVERY_CLAIM=true" in text
+    assert "must **not** be claimed recovered" in text
+
+
 def test_cybersecurity_visibility_r_pending_repo_static_inventory_charter_v0() -> None:
     text = CI_AUDIT_KNOWN_ISSUES.read_text(encoding="utf-8")
     collapsed = text.lower()
 
+    assert ADOPTION_HEADING in text
     assert "Cybersecurity Visibility Chain" in text
     assert "Pending R-001/R-002/R-007 — repo-static successor inventory charter v0" in text
     assert "CYBERSECURITY_VISIBILITY_R_PENDING_REPO_STATIC_INVENTORY_CHARTER_V0=true" in text
     assert "LOSSLESS_JSONL_RECOVERY=false" in text
     assert "REPO_STATIC_SUCCESSOR_INVENTORY=true" in text
     assert "ORIGINAL_DURABLE_JSONL_REQUIRED_FOR_LOSSLESS_RECOVERY=true" in text
-    assert "FULL_LOSSLESS_RISK_CANDIDATES_JSONL_NOT_FOUND=true" in text
+    assert "ORIGINAL_TMP_FULL_LOSSLESS_NOT_FOUND=true" in text
+    assert "FULL_LOSSLESS_RISK_CANDIDATES_JSONL_NOT_FOUND=false" in text
+    assert "ARCHIVE_RECREATE_FULL_LOSSLESS_GOVERNANCE_ACCEPTED=true" in text
     assert "REPO_STATIC_SUCCESSOR_DOES_NOT_CONTAIN_R001_R002_R007=true" in text
     assert "R001_REPO_STATIC_CANDIDATE_ID_ASSIGNED=false" in text
     assert "R002_REPO_STATIC_CANDIDATE_ID_ASSIGNED=false" in text
@@ -43,8 +81,8 @@ def test_cybersecurity_visibility_r_pending_repo_static_inventory_charter_v0() -
         assert "repo-static successor charter v0" in collapsed
         assert "no `candidate_id` assigned" in collapsed
 
-    assert "lossless inventory row" in collapsed
-    assert "This charter **does not** recover, regenerate, or claim equivalence" in text
+    assert "lossless inventory row" in collapsed or "archive" in collapsed
+    assert "This charter **does not** ingest archive JSONL into the repo" in text
     assert REPO_STATIC_JSONL in text
     assert "repo_static_cybersecurity_risk_candidates_jsonl_generation_v0" in text
     assert "Candidate rows | `162`" in text or "Candidate rows | 162" in text
