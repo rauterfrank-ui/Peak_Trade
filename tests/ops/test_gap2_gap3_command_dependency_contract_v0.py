@@ -23,13 +23,31 @@ FINAL_MACHINE_LINES_HEADER = "## Final Machine Lines"
 GAP2_SECTION_HEADER = "## Gap 2 Canonical Job Set Contract v0"
 GAP3_SECTION_HEADER = "## Gap 3 Execute Command Contract v0"
 GAP7_SECTION_HEADER = "## Gap 7 Risk Boundary Criteria Contract v0"
+GAP2_GOVERNED_REFLECTION_HEADER = (
+    "## Gap 2 Governed Canonical Job Set Scoped Criteria Acceptance Reflection v0"
+)
+GAP3_GOVERNED_REFLECTION_HEADER = (
+    "## Gap 3 Governed Tier-2 Command Scoped Criteria Acceptance Reflection v0"
+)
+GAP5_GOVERNED_REFLECTION_HEADER = "## Gap 5 Governed Stop Proof Acceptance Reflection v0"
 _MARKER_TRUE = "=true"
 
 CANONICAL_BOUNDED_DRY_RUN_COMMAND = (
     "uv run python scripts/run_scheduler.py --config config/scheduler/jobs.toml "
     "--dry-run --once --verbose"
 )
+CANONICAL_BOUNDED_DRY_RUN_COMMAND_TIER2 = (
+    "uv run python scripts/run_scheduler.py --config config/scheduler/jobs.toml "
+    "--dry-run --once --verbose --include-tags paper_shadow_247,preflight,readonly"
+)
 BOUNDED_PATH_B_CANDIDATE_SCOPE = "PAPER_PLUS_BOUNDED_SHADOW_NON_24_7"
+BOUNDED_PAPER_JOBS = (
+    "paper_shadow_247_paper_only_preflight_status_v0",
+    "paper_shadow_247_paper_only_runtime_min_v0",
+    "paper_shadow_247_paper_only_runtime_high_vol_no_trade_v0",
+)
+BOUNDED_SHADOW_JOB = "p7_shadow_high_vol_no_trade_runner_manual_v0"
+EXCLUDED_PLACEHOLDER = "shadow_247_futures_prestart_evidence_drycheck_placeholder_v0"
 
 DEPENDENCY_REQUIRED_FINAL_LINES = (
     "PREFLIGHT_REMAINS_BLOCKED=true",
@@ -48,6 +66,7 @@ DEPENDENCY_FORBIDDEN_REPO_TOKENS = (
     "GAP2_JOB_SET_ENABLED=true",
     "GAP3_EXECUTE_COMMAND_VERIFIED=true",
     "GAP3_SCHEDULER_EXECUTION_AUTHORIZED=true",
+    "GAP6_DRY_RUN_RC0_OBSERVED=true",
     "SHADOW_24_7_AUTHORIZED=true",
     "PATH_B_LIFT_DISCUSSION_READY=true",
     "ALL_GAPS_CLOSED=true",
@@ -64,7 +83,11 @@ def _final_machine_lines(text: str) -> str:
 
 
 def _gap2_section(text: str) -> str:
-    return text.split(GAP2_SECTION_HEADER, 1)[1].split(GAP3_SECTION_HEADER, 1)[0]
+    return text.split(GAP2_SECTION_HEADER, 1)[1].split(GAP7_SECTION_HEADER, 1)[0]
+
+
+def _gap2_criteria_section(text: str) -> str:
+    return _gap2_section(text)
 
 
 def _gap3_section(text: str) -> str:
@@ -74,7 +97,19 @@ def _gap3_section(text: str) -> str:
 
 
 def _gap7_section(text: str) -> str:
-    return text.split(GAP7_SECTION_HEADER, 1)[1].split(FINAL_MACHINE_LINES_HEADER, 1)[0]
+    return text.split(GAP7_SECTION_HEADER, 1)[1].split(GAP2_GOVERNED_REFLECTION_HEADER, 1)[0]
+
+
+def _gap2_governed_reflection_section(text: str) -> str:
+    return text.split(GAP2_GOVERNED_REFLECTION_HEADER, 1)[1].split(
+        GAP3_GOVERNED_REFLECTION_HEADER, 1
+    )[0]
+
+
+def _gap3_governed_reflection_section(text: str) -> str:
+    return text.split(GAP3_GOVERNED_REFLECTION_HEADER, 1)[1].split(
+        GAP5_GOVERNED_REFLECTION_HEADER, 1
+    )[0]
 
 
 def _section5_text() -> str:
@@ -124,11 +159,9 @@ def test_gap2_gap3_dependency_gap3_cannot_verify_while_gap2_unverified_v0() -> N
     assert "GAP2_CANONICAL_JOB_SET_VERIFIED=false" in gap2
     assert "GAP2_JOB_SET_ENABLED=false" in gap2
     assert "GAP3_EXECUTE_COMMAND_VERIFIED=false" in gap3
-    for scope in (gap2, gap3, block):
-        assert "GAP3_EXECUTE_COMMAND_VERIFIED=false" in scope
-    for scope in (gap2, block):
-        assert "GAP2_CANONICAL_JOB_SET_VERIFIED=false" in scope
-        assert "GAP2_JOB_SET_ENABLED=false" in scope
+    assert "GAP3_EXECUTE_COMMAND_VERIFIED=false" in block
+    assert "GAP2_CANONICAL_JOB_SET_VERIFIED=false" in block
+    assert "GAP2_JOB_SET_ENABLED=false" in block
 
 
 def test_gap2_gap3_dependency_gap3_command_is_dry_run_planning_only_v0() -> None:
@@ -208,3 +241,63 @@ def test_gap2_gap3_dependency_owner_crosslinks_hardening_source_contract_v0() ->
     assert HARDENING_OWNER.is_file()
     text = HARDENING_OWNER.read_text(encoding="utf-8")
     assert "test_gap2_gap3_command_dependency_contract_v0.py" in text
+
+
+def test_gap2_governed_reflection_scoped_acceptance_v0() -> None:
+    text = _section5_text()
+    reflection = _gap2_governed_reflection_section(text)
+    criteria = _gap2_criteria_section(text)
+    block = _final_machine_lines(text)
+
+    assert "GAP2_CANONICAL_JOB_SET_GOVERNED_REFLECTION_V0=true" in reflection
+    assert "GAP2_ACCEPTED_SCOPED_CRITERIA=true" in reflection
+    assert f"ACCEPTED_MODE={BOUNDED_PATH_B_CANDIDATE_SCOPE}" in reflection
+    assert "NO_REPO_FLAG_LIFT_FROM_EXTERNAL_ACCEPTANCE=true" in reflection
+    assert "EXTERNAL_ACCEPTANCE_RECORD_POINTER=" in reflection
+    assert "GOVERNED_REPO_REFLECTION_CHARTER_POINTER=" in reflection
+    assert "EXECUTED=false" in reflection
+    for job in BOUNDED_PAPER_JOBS:
+        assert job in reflection
+    assert BOUNDED_SHADOW_JOB in reflection
+    assert EXCLUDED_PLACEHOLDER in reflection
+    assert "Evidence acceptance is not runtime authorization" in reflection
+    assert "does not modify Final Machine Lines" in reflection
+    assert "GAP2_CANONICAL_JOB_SET_VERIFIED=false" in criteria
+    assert "GAP2_CANONICAL_JOB_SET_VERIFIED=false" in block
+    reflection_lines = {line.strip() for line in reflection.splitlines()}
+    assert "GAP2_CANONICAL_JOB_SET_VERIFIED=true" not in reflection_lines
+    assert "GAP2_ACCEPTED_SCOPED_CRITERIA=true" not in criteria
+
+
+def test_gap3_governed_reflection_tier2_command_v0() -> None:
+    text = _section5_text()
+    reflection = _gap3_governed_reflection_section(text)
+    criteria = _gap3_section(text)
+    block = _final_machine_lines(text)
+
+    assert "GAP3_EXECUTE_COMMAND_GOVERNED_REFLECTION_V0=true" in reflection
+    assert "GAP3_ACCEPTED_SCOPED_CRITERIA=true" in reflection
+    assert "ACCEPTED_MODE=BOUNDED_DRY_RUN_COMMAND_TIER2" in reflection
+    assert CANONICAL_BOUNDED_DRY_RUN_COMMAND in reflection
+    assert CANONICAL_BOUNDED_DRY_RUN_COMMAND_TIER2 in reflection
+    assert "--include-tags paper_shadow_247,preflight,readonly" in reflection
+    assert "does not observe or record `GAP6_DRY_RUN_RC0_OBSERVED=true`" in reflection
+    assert "separate operator-authorized bounded execute GO" in reflection
+    assert "NO_REPO_FLAG_LIFT_FROM_EXTERNAL_ACCEPTANCE=true" in reflection
+    assert "EXECUTED=false" in reflection
+    assert "GAP3_EXECUTE_COMMAND_VERIFIED=false" in criteria
+    assert "GAP3_EXECUTE_COMMAND_VERIFIED=false" in block
+    reflection_lines = {line.strip() for line in reflection.splitlines()}
+    assert "GAP3_EXECUTE_COMMAND_VERIFIED=true" not in reflection_lines
+    assert "GAP3_ACCEPTED_SCOPED_CRITERIA=true" not in criteria
+
+
+def test_gap2_gap3_reflection_final_lines_no_verified_or_rc0_flip_v0() -> None:
+    block = _final_machine_lines(_section5_text())
+    lines = {line.strip() for line in block.splitlines()}
+    for token in DEPENDENCY_FORBIDDEN_REPO_TOKENS:
+        assert token not in lines
+    assert "GAP6_DRY_RUN_RC0_OBSERVED=false" in block
+    assert "GAP6_DRY_RUN_PROOF_VERIFIED=false" in block
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in block
+    assert "ALL_GAPS_CLOSED=false" in block

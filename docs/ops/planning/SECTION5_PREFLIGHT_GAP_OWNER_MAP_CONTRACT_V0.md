@@ -413,6 +413,99 @@ This contract records criteria only. It does not execute `scripts/run_scheduler.
 
 This contract does not verify or activate Risk Boundaries, does not change Risk/KillSwitch authority, does not change Risk/KillSwitch runtime behavior, does not change Master V2 / Double Play logic, does not change Bull/Bear side-switching or Scope/Capital behavior, and does not change execution/live gates. It does not modify `config/scheduler/jobs.toml`, does not enable any scheduler job, does not execute `scripts/run_scheduler.py`, does not authorize scheduler execution, does not approve runtime execution, and does not authorize Paper, Shadow, Testnet, Live, AWS, broker, or exchange activity. It does not change default-on enforcement, does not mark `READY_FOR_OPERATOR_ARMING=true`, does not lift Path B, does not lift preflight, and does not approve runtime.
 
+## Gap 2 Governed Canonical Job Set Scoped Criteria Acceptance Reflection v0
+
+GAP2_CANONICAL_JOB_SET_GOVERNED_REFLECTION_V0=true
+GAP2_ACCEPTED_SCOPED_CRITERIA=true
+ACCEPTED_MODE=PAPER_PLUS_BOUNDED_SHADOW_NON_24_7
+GAP2_CANONICAL_JOB_SET_VERIFIED=false
+GAP2_JOB_SET_ENABLED=false
+GAP2_JOBS_TOML_CHANGED=false
+GAP2_SCHEDULER_EXECUTION_AUTHORIZED=false
+EXECUTED=false
+EXTERNAL_ACCEPTANCE_RECORD_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/gap2_canonical_job_set_bounded_scoping_readonly_no_run_v0_20260603T152117Z/
+GOVERNED_REPO_REFLECTION_CHARTER_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/section5_breakthrough_unlock_strategy_no_run_v0_20260603T153035Z/
+NO_REPO_FLAG_LIFT_FROM_EXTERNAL_ACCEPTANCE=true
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+PATH_B_LIFT_DISCUSSION_READY=false
+
+This governed repo-reflection block records operator-accepted scoped criteria for the bounded canonical job set only. It does not adopt external-only acceptance tokens as repo SSOT. External acceptance records remain pointer-based and subordinate to repo governance.
+
+### Operator-accepted bounded canonical job set (scoped criteria only; not verified or enabled)
+
+| Class | Job names |
+|-------|-----------|
+| Paper | `paper_shadow_247_paper_only_preflight_status_v0`, `paper_shadow_247_paper_only_runtime_min_v0`, `paper_shadow_247_paper_only_runtime_high_vol_no_trade_v0` |
+| Shadow | `p7_shadow_high_vol_no_trade_runner_manual_v0` |
+| Excluded placeholder | `shadow_247_futures_prestart_evidence_drycheck_placeholder_v0` |
+
+Twelve legacy/research/autonomous jobs in `config/scheduler/jobs.toml` remain **out-of-scope** for this bounded candidate set. Without tag filtering at dry-run time, seven jobs may appear enabled in the file; only one canonical job is enabled among the bounded set.
+
+### Non-authority boundary (scoped reflection does not imply)
+
+- does not set `GAP2_CANONICAL_JOB_SET_VERIFIED=true` in criteria or Final Machine Lines
+- does not enable any scheduler job or mutate `config/scheduler/jobs.toml`
+- does not verify Gap-4 output evidence paths
+- does not accept Gap-6 dry-run RC=0 proof in repo SSOT
+- does not verify Gap-7 risk boundaries
+- does not enforce Gap-2a.1 primary evidence
+- does not authorize scheduler execution
+- does not enable operator arming
+- does not open Path-B lift discussion
+- does not start or authorize Runtime, Paper, Shadow, Testnet, or Live
+- does not modify the existing Gap-2 criteria block
+- does not modify Final Machine Lines
+- does not lift preflight
+
+Evidence acceptance is not runtime authorization. The Gap 2 Canonical Job Set Contract v0 block above remains criteria-only and unchanged.
+
+## Gap 3 Governed Tier-2 Command Scoped Criteria Acceptance Reflection v0
+
+GAP3_EXECUTE_COMMAND_GOVERNED_REFLECTION_V0=true
+GAP3_ACCEPTED_SCOPED_CRITERIA=true
+ACCEPTED_MODE=BOUNDED_DRY_RUN_COMMAND_TIER2
+GAP3_EXECUTE_COMMAND_VERIFIED=false
+GAP3_SCHEDULER_EXECUTION_AUTHORIZED=false
+EXECUTED=false
+EXTERNAL_ACCEPTANCE_RECORD_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/gap3_execute_command_contract_readonly_no_run_v0_20260603T152336Z/
+GOVERNED_REPO_REFLECTION_CHARTER_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/section5_breakthrough_unlock_strategy_no_run_v0_20260603T153035Z/
+NO_REPO_FLAG_LIFT_FROM_EXTERNAL_ACCEPTANCE=true
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+PATH_B_LIFT_DISCUSSION_READY=false
+
+This governed repo-reflection block records operator-accepted scoped criteria for Gap-3 Tier-1 and Tier-2 bounded dry-run command text only. It does not adopt external-only acceptance tokens as repo SSOT. External acceptance records remain pointer-based and subordinate to repo governance.
+
+### Operator-accepted command contracts (planning text only; not executed)
+
+Tier-1 canonical (repo SSOT — unchanged):
+
+`uv run python scripts/run_scheduler.py --config config/scheduler/jobs.toml --dry-run --once --verbose`
+
+Tier-2 bounded (operator-accepted scoped criteria for future Gap-6 dry-run evidence capture):
+
+`uv run python scripts/run_scheduler.py --config config/scheduler/jobs.toml --dry-run --once --verbose --include-tags paper_shadow_247,preflight,readonly`
+
+Without the Tier-2 tag filter, an unfiltered dry-run may plan against seven enabled jobs in `jobs.toml`, of which only one is canonical. Gap-6 RC=0 proof requires a **separate operator-authorized bounded execute GO**; this reflection does not claim RC=0 was observed or that any dry-run was executed.
+
+### Non-authority boundary (scoped reflection does not imply)
+
+- does not set `GAP3_EXECUTE_COMMAND_VERIFIED=true` in criteria or Final Machine Lines
+- does not authorize scheduler execution
+- does not observe or record `GAP6_DRY_RUN_RC0_OBSERVED=true`
+- does not verify Gap-4 output evidence paths
+- does not verify Gap-7 risk boundaries
+- does not enforce Gap-2a.1 primary evidence
+- does not enable operator arming
+- does not open Path-B lift discussion
+- does not start or authorize Runtime, Paper, Shadow, Testnet, or Live
+- does not modify the existing Gap-3 criteria block
+- does not modify Final Machine Lines
+- does not lift preflight
+
+Evidence acceptance is not runtime authorization. The Gap 3 Execute Command Contract v0 block above remains contract-only and unchanged.
+
 ## Gap 5 Governed Stop Proof Acceptance Reflection v0
 
 GAP5_STOP_PROOF_GOVERNED_REFLECTION_V0=true
