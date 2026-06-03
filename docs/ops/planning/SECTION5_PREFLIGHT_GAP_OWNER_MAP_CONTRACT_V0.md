@@ -1340,27 +1340,27 @@ Read-only **archive anchors** (operator durable root; `MANIFEST_VERIFY_RC=0` whe
 
 | Role | Archive bundle (suffix under durable root) |
 |------|---------------------------------------------|
-| Repo-wide ranking (operator GO) | `planning/repo_wide_next_system_step_ranking_after_class4_stop_idle_v0_20260603T175350Z/` |
-| Tier-C execute retry | `runtime/gap2a1_tier1_scheduler_tier_c_positive_manifest_execute_retry_v0_20260603T172211Z/` |
-| Tier-C post-execute closeout | `closeout/gap2a1_tier1_scheduler_tier_c_positive_manifest_post_execute_closeout_and_non_stop_ranking_v0_20260603T172509Z/` |
-| Shadow dry-run execute | `runtime/shadow_bounded_dryrun_rehearsal_execute_v0_20260603T172859Z/` |
-| Shadow primary evidence (durable run root) | `runs/shadow/shadow_bounded_dryrun_rehearsal_20260603T172859Z/` |
-| Shadow post-execute closeout | `closeout/shadow_bounded_dryrun_rehearsal_post_execute_closeout_and_non_stop_ranking_v0_20260603T173011Z/` |
-| Class-4 final matrix | `closeout/class4_external_final_decision_matrix_no_run_v0_20260603T174338Z/` |
-| Section-5 final closeout | `closeout/section5_no_lift_sequence_final_closeout_and_class4_decision_menu_v0_20260603T164910Z/` |
+| Repo-wide ranking (operator GO) | `planning&#47;repo_wide_next_system_step_ranking_after_class4_stop_idle_v0_20260603T175350Z&#47;` |
+| Tier-C execute retry | `runtime&#47;gap2a1_tier1_scheduler_tier_c_positive_manifest_execute_retry_v0_20260603T172211Z&#47;` |
+| Tier-C post-execute closeout | `closeout&#47;gap2a1_tier1_scheduler_tier_c_positive_manifest_post_execute_closeout_and_non_stop_ranking_v0_20260603T172509Z&#47;` |
+| Shadow dry-run execute | `runtime&#47;shadow_bounded_dryrun_rehearsal_execute_v0_20260603T172859Z&#47;` |
+| Shadow primary evidence (durable run root) | `runs&#47;shadow&#47;shadow_bounded_dryrun_rehearsal_20260603T172859Z&#47;` |
+| Shadow post-execute closeout | `closeout&#47;shadow_bounded_dryrun_rehearsal_post_execute_closeout_and_non_stop_ranking_v0_20260603T173011Z&#47;` |
+| Class-4 final matrix | `closeout&#47;class4_external_final_decision_matrix_no_run_v0_20260603T174338Z&#47;` |
+| Section-5 final closeout | `closeout&#47;section5_no_lift_sequence_final_closeout_and_class4_decision_menu_v0_20260603T164910Z&#47;` |
 
 Durable archive root (operator environment):
 
-`EXTERNAL_TIER_C_SHADOW_DURABLE_EVIDENCE_ARCHIVE_ROOT=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/`
+`EXTERNAL_TIER_C_SHADOW_DURABLE_EVIDENCE_ARCHIVE_ROOT=&#47;Users&#47;frnkhrz&#47;Documents&#47;Peak_Trade_runtime_evidence_archive_20260520T161443Z&#47;`
 
-EXTERNAL_REPO_WIDE_RANKING_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/repo_wide_next_system_step_ranking_after_class4_stop_idle_v0_20260603T175350Z/
-EXTERNAL_TIER_C_EXECUTE_RETRY_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/gap2a1_tier1_scheduler_tier_c_positive_manifest_execute_retry_v0_20260603T172211Z/
-EXTERNAL_TIER_C_POST_EXECUTE_CLOSEOUT_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/gap2a1_tier1_scheduler_tier_c_positive_manifest_post_execute_closeout_and_non_stop_ranking_v0_20260603T172509Z/
-EXTERNAL_SHADOW_DRYRUN_EXECUTE_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/shadow_bounded_dryrun_rehearsal_execute_v0_20260603T172859Z/
-EXTERNAL_SHADOW_PRIMARY_EVIDENCE_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runs/shadow/shadow_bounded_dryrun_rehearsal_20260603T172859Z/
-EXTERNAL_SHADOW_POST_EXECUTE_CLOSEOUT_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/shadow_bounded_dryrun_rehearsal_post_execute_closeout_and_non_stop_ranking_v0_20260603T173011Z/
-EXTERNAL_CLASS4_FINAL_MATRIX_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/class4_external_final_decision_matrix_no_run_v0_20260603T174338Z/
-EXTERNAL_SECTION5_FINAL_CLOSEOUT_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/section5_no_lift_sequence_final_closeout_and_class4_decision_menu_v0_20260603T164910Z/
+EXTERNAL_REPO_WIDE_RANKING_POINTER=&#47;Users&#47;frnkhrz&#47;Documents&#47;Peak_Trade_runtime_evidence_archive_20260520T161443Z&#47;planning&#47;repo_wide_next_system_step_ranking_after_class4_stop_idle_v0_20260603T175350Z&#47;
+EXTERNAL_TIER_C_EXECUTE_RETRY_POINTER=&#47;Users&#47;frnkhrz&#47;Documents&#47;Peak_Trade_runtime_evidence_archive_20260520T161443Z&#47;runtime&#47;gap2a1_tier1_scheduler_tier_c_positive_manifest_execute_retry_v0_20260603T172211Z&#47;
+EXTERNAL_TIER_C_POST_EXECUTE_CLOSEOUT_POINTER=&#47;Users&#47;frnkhrz&#47;Documents&#47;Peak_Trade_runtime_evidence_archive_20260520T161443Z&#47;closeout&#47;gap2a1_tier1_scheduler_tier_c_positive_manifest_post_execute_closeout_and_non_stop_ranking_v0_20260603T172509Z&#47;
+EXTERNAL_SHADOW_DRYRUN_EXECUTE_POINTER=&#47;Users&#47;frnkhrz&#47;Documents&#47;Peak_Trade_runtime_evidence_archive_20260520T161443Z&#47;runtime&#47;shadow_bounded_dryrun_rehearsal_execute_v0_20260603T172859Z&#47;
+EXTERNAL_SHADOW_PRIMARY_EVIDENCE_POINTER=&#47;Users&#47;frnkhrz&#47;Documents&#47;Peak_Trade_runtime_evidence_archive_20260520T161443Z&#47;runs&#47;shadow&#47;shadow_bounded_dryrun_rehearsal_20260603T172859Z&#47;
+EXTERNAL_SHADOW_POST_EXECUTE_CLOSEOUT_POINTER=&#47;Users&#47;frnkhrz&#47;Documents&#47;Peak_Trade_runtime_evidence_archive_20260520T161443Z&#47;closeout&#47;shadow_bounded_dryrun_rehearsal_post_execute_closeout_and_non_stop_ranking_v0_20260603T173011Z&#47;
+EXTERNAL_CLASS4_FINAL_MATRIX_POINTER=&#47;Users&#47;frnkhrz&#47;Documents&#47;Peak_Trade_runtime_evidence_archive_20260520T161443Z&#47;closeout&#47;class4_external_final_decision_matrix_no_run_v0_20260603T174338Z&#47;
+EXTERNAL_SECTION5_FINAL_CLOSEOUT_POINTER=&#47;Users&#47;frnkhrz&#47;Documents&#47;Peak_Trade_runtime_evidence_archive_20260520T161443Z&#47;closeout&#47;section5_no_lift_sequence_final_closeout_and_class4_decision_menu_v0_20260603T164910Z&#47;
 
 Static guard: `tests/ops/test_tier_c_shadow_durable_evidence_crosslink_contract_v0.py`. Crosslink: `docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md` §2a.1 anchors (same tokens). Reuse-first: `scripts/ops/primary_evidence_retention_v0.py`, `tests/ops/test_gap2a1_primary_evidence_enforcement_contract_v0.py`, `tests/ops/test_bounded_observation_review_durable_primary_evidence_contract_v0.py` — **no** parallel evidence index or registry handoff.
 

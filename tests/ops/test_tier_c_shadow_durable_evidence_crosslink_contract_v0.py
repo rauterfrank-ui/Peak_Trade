@@ -10,13 +10,13 @@ from __future__ import annotations
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-SECTION5 = REPO_ROOT / "docs" / "ops" / "planning" / "SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md"
+SECTION5 = (
+    REPO_ROOT / "docs" / "ops" / "planning" / "SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md"
+)
 PREFLIGHT = REPO_ROOT / "docs" / "ops" / "runbooks" / "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md"
 SELF = Path(__file__).resolve()
 
-ARCHIVE_ROOT = (
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
-)
+ARCHIVE_ROOT = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
 
 PACKAGE_MARKER = "TIER_C_SHADOW_DURABLE_EVIDENCE_REPO_STATIC_CROSSLINK_V0=true"
 
@@ -67,12 +67,16 @@ def _read(path: Path) -> str:
     return path.read_text(encoding="utf-8")
 
 
+def _plain(path: Path) -> str:
+    return _read(path).replace("&#47;", "/")
+
+
 def test_package_marker_present_v0() -> None:
     assert PACKAGE_MARKER in _read(SELF)
 
 
 def test_section5_tier_c_shadow_crosslink_block_v0() -> None:
-    text = _read(SECTION5)
+    text = _plain(SECTION5)
     assert "## Tier-C + Shadow durable evidence archive crosslink v0" in text
     for suffix in ARCHIVE_BUNDLE_SUFFIXES:
         assert f"{ARCHIVE_ROOT}/{suffix}" in text
@@ -82,7 +86,7 @@ def test_section5_tier_c_shadow_crosslink_block_v0() -> None:
 
 
 def test_preflight_tier_c_shadow_crosslink_block_v0() -> None:
-    text = _read(PREFLIGHT)
+    text = _plain(PREFLIGHT)
     assert "### Tier-C + Shadow durable evidence archive anchors (non-authorizing) v0" in text
     for suffix in ARCHIVE_BUNDLE_SUFFIXES:
         assert f"{ARCHIVE_ROOT}/{suffix}" in text
@@ -92,7 +96,7 @@ def test_preflight_tier_c_shadow_crosslink_block_v0() -> None:
 
 
 def test_crosslink_docs_do_not_claim_runtime_authority_v0() -> None:
-    combined = _read(SECTION5) + _read(PREFLIGHT)
+    combined = _plain(SECTION5) + _plain(PREFLIGHT)
     lower = combined.lower()
     for claim in FORBIDDEN_AUTHORITY_CLAIMS:
         assert claim not in lower, f"forbidden authority claim found: {claim!r}"
