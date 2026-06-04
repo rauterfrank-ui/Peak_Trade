@@ -187,8 +187,17 @@ def test_section5_preflight_synthesis_docs_block_reflection_non_authorizing_v0()
         "pr3968_gap4_output_evidence_paths_final_line_reflection_post_merge_closeout_v0"
         in synthesis
     )
+    assert "INPUT_GAP5_CLOSEOUT_POINTER=" in synthesis
     assert (
-        "OPERATOR_GO=GO_SECTION5_PREFLIGHT_SYNTHESIS_VERIFIED_BAR_CHAIN_CONSOLIDATION_DOCS_TESTS_V0"
+        "gap5_stop_rehearsal_verified_bar_reflection_post_merge_closeout_no_run_v0_20260604T220658Z"
+        in synthesis
+    )
+    assert (
+        "pr3967_gap5_stop_proof_final_line_reflection_post_merge_closeout_v0_20260603T162700Z"
+        not in synthesis
+    )
+    assert (
+        "OPERATOR_GO=GO_SECTION5_PREFLIGHT_SYNTHESIS_GAP5_REHEARSAL_VERIFIED_BAR_CLOSEOUT_SYNC_DOCS_TESTS_V0"
         in synthesis
     )
     assert "NO_RUNTIME_AUTHORITY=true" in synthesis
@@ -210,6 +219,7 @@ def test_section5_preflight_synthesis_docs_block_reflection_non_authorizing_v0()
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" in synthesis
     assert "GAP5_STOP_PROOF_ACCEPTED=true" in synthesis
     assert "GAP5_STOP_REHEARSAL_EXECUTED=true" in synthesis
+    assert "GAP5_STOP_REHEARSAL_EXECUTED_SOURCE=external_archive_bundle_t2" in synthesis
     assert (
         "GAP5_VERIFIED_BAR_TIER=T0_CHARTER_PRECHECK_PLUS_T1_READONLY_SIGNAL_PLUS_T2_ISOLATED_REHEARSAL"
         in synthesis
