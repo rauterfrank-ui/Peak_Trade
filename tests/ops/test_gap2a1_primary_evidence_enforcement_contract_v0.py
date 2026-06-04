@@ -202,12 +202,23 @@ def test_gap2a1_tier1_activation_contract_present_and_blocked_v0() -> None:
 TIER1_ZERO_DISPATCH_MANIFEST_OBSERVED_FINAL_LINE_REFLECTION_HEADER = (
     "## Tier-1 Governed Zero-Dispatch Manifest Observed Final-Line Reflection v0"
 )
+TIER1_CANONICAL_TAG_BOUNDED_ENFORCE_OBSERVED_FINAL_LINE_REFLECTION_HEADER = (
+    "## Tier-1 Governed Canonical-Tag Bounded Enforce Observed Final-Line Reflection v0"
+)
 
 
 def _tier1_zero_dispatch_manifest_observed_final_line_reflection_section(text: str) -> str:
     return text.split(TIER1_ZERO_DISPATCH_MANIFEST_OBSERVED_FINAL_LINE_REFLECTION_HEADER, 1)[
         1
-    ].split("## Final Machine Lines", 1)[0]
+    ].split(TIER1_CANONICAL_TAG_BOUNDED_ENFORCE_OBSERVED_FINAL_LINE_REFLECTION_HEADER, 1)[0]
+
+
+def _tier1_canonical_tag_bounded_enforce_observed_final_line_reflection_section(
+    text: str,
+) -> str:
+    return text.split(TIER1_CANONICAL_TAG_BOUNDED_ENFORCE_OBSERVED_FINAL_LINE_REFLECTION_HEADER, 1)[
+        1
+    ].split("## Preflight Synthesis Docs Block Reflection v0", 1)[0]
 
 
 def test_gap2a1_tier1_zero_dispatch_manifest_observed_final_line_reflection_v0() -> None:
@@ -234,6 +245,40 @@ def test_gap2a1_tier1_zero_dispatch_manifest_observed_final_line_reflection_v0()
     gap2a1_lines = {line.strip() for line in gap2a1.splitlines()}
     assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" not in gap2a1_lines
     assert "PRIMARY_EVIDENCE_ENFORCED=true" not in gap2a1_lines
+
+
+def test_gap2a1_tier1_canonical_tag_bounded_enforce_observed_final_line_reflection_v0() -> None:
+    section5 = DOC.read_text(encoding="utf-8")
+    section = _tier1_canonical_tag_bounded_enforce_observed_final_line_reflection_section(section5)
+    final_lines = section5.split("## Final Machine Lines", 1)[1]
+    gap2a1 = section5.split("## §2a.1 Primary Evidence Enforcement Contract v0", 1)[1].split(
+        "## Gap 1 Execute Entrypoint Contract v0", 1
+    )[0]
+
+    for token in (
+        "TIER1_CANONICAL_TAG_BOUNDED_ENFORCE_OBSERVED=true",
+        "TIER1_CANONICAL_TAG_PRIMARY_EVIDENCE_MANIFEST_CREATED=true",
+        "TIER1_CANONICAL_TAG_PRIMARY_EVIDENCE_MANIFEST_VERIFY_RC=0",
+        "PRIMARY_EVIDENCE_ENFORCED_SCOPE=canonical_tag_local_readonly_preflight_once",
+        "OBSERVED_TAG_MATCH_COUNT=5",
+        "OBSERVED_DUE_JOB_COUNT=1",
+        "OBSERVED_JOBS_DISPATCHED=1",
+        "OBSERVED_JOB_STARTED=paper_shadow_247_paper_only_preflight_status_v0",
+        "UNEXPECTED_JOB_STARTED=false",
+        "GAP2A1_TIER1_ENFORCEMENT_LIFTED_REPO=false",
+        "SECTION5_GAP2A1_REPO_LIFTED=false",
+    ):
+        assert token in section
+
+    assert "TIER1_CANONICAL_TAG_BOUNDED_ENFORCE_OBSERVED=true" in final_lines
+    assert (
+        "PRIMARY_EVIDENCE_ENFORCED_SCOPE=canonical_tag_local_readonly_preflight_once" in final_lines
+    )
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in final_lines
+    assert "GAP2A1_TIER1_ENFORCEMENT_LIFTED=false" in final_lines
+    gap2a1_lines = {line.strip() for line in gap2a1.splitlines()}
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" not in gap2a1_lines
+    assert "TIER1_CANONICAL_TAG_BOUNDED_ENFORCE_OBSERVED=true" not in gap2a1_lines
 
 
 def test_gap2a1_eer1_readiness_review_index_crosslink_v0() -> None:
