@@ -209,7 +209,7 @@ def test_gap2a1_drift_guard_gap5_gap6_orthogonal_v0() -> None:
     assert "GAP5_STOP_REHEARSAL_EXECUTED=false" in block
     assert "GAP5_STOP_PROOF_ACCEPTED=true" in block
     assert "GAP6_DRY_RUN_PROOF_ACCEPTED=false" in block
-    assert "GAP6_DRY_RUN_RC0_OBSERVED=false" in block
+    assert "GAP6_DRY_RUN_RC0_OBSERVED=true" in block
     assert "GAP6_DRY_RUN_PROOF_VERIFIED=false" in block
 
 

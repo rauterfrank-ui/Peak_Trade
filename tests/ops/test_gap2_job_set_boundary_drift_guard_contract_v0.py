@@ -181,7 +181,7 @@ def test_gap2_job_set_boundary_shadow_24_7_not_authorized_in_repo_ssot_v0() -> N
 def test_gap2_job_set_boundary_gap6_tokens_untouched_by_gap2_slice_v0() -> None:
     block = _final_machine_lines(_section5_text())
     assert "GAP6_DRY_RUN_PROOF_ACCEPTED=false" in block
-    assert "GAP6_DRY_RUN_RC0_OBSERVED=false" in block
+    assert "GAP6_DRY_RUN_RC0_OBSERVED=true" in block
     assert "GAP6_DRY_RUN_PROOF_VERIFIED=false" in block
 
 

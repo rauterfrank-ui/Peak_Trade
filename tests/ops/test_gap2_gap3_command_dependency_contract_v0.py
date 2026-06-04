@@ -59,6 +59,7 @@ DEPENDENCY_REQUIRED_FINAL_LINES = (
     "GAP3_EXECUTE_COMMAND_VERIFIED=false",
     "GAP3_SCHEDULER_EXECUTION_AUTHORIZED=false",
     "GAP6_DRY_RUN_PROOF_ACCEPTED=false",
+    "GAP6_DRY_RUN_RC0_OBSERVED=true",
 )
 
 DEPENDENCY_FORBIDDEN_REPO_TOKENS = (
@@ -66,7 +67,7 @@ DEPENDENCY_FORBIDDEN_REPO_TOKENS = (
     "GAP2_JOB_SET_ENABLED=true",
     "GAP3_EXECUTE_COMMAND_VERIFIED=true",
     "GAP3_SCHEDULER_EXECUTION_AUTHORIZED=true",
-    "GAP6_DRY_RUN_RC0_OBSERVED=true",
+    "GAP6_DRY_RUN_PROOF_VERIFIED=true",
     "SHADOW_24_7_AUTHORIZED=true",
     "PATH_B_LIFT_DISCUSSION_READY=true",
     "ALL_GAPS_CLOSED=true",
@@ -194,7 +195,7 @@ def test_gap2_gap3_dependency_shadow_24_7_not_authorized_in_repo_ssot_v0() -> No
 def test_gap2_gap3_dependency_gap6_tokens_untouched_v0() -> None:
     block = _final_machine_lines(_section5_text())
     assert "GAP6_DRY_RUN_PROOF_ACCEPTED=false" in block
-    assert "GAP6_DRY_RUN_RC0_OBSERVED=false" in block
+    assert "GAP6_DRY_RUN_RC0_OBSERVED=true" in block
     assert "GAP6_DRY_RUN_PROOF_VERIFIED=false" in block
 
 
@@ -297,7 +298,7 @@ def test_gap2_gap3_reflection_final_lines_no_verified_or_rc0_flip_v0() -> None:
     lines = {line.strip() for line in block.splitlines()}
     for token in DEPENDENCY_FORBIDDEN_REPO_TOKENS:
         assert token not in lines
-    assert "GAP6_DRY_RUN_RC0_OBSERVED=false" in block
+    assert "GAP6_DRY_RUN_RC0_OBSERVED=true" in block
     assert "GAP6_DRY_RUN_PROOF_VERIFIED=false" in block
     assert "PREFLIGHT_REMAINS_BLOCKED=true" in block
     assert "ALL_GAPS_CLOSED=false" in block
