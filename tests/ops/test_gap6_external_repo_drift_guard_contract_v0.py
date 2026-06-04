@@ -21,6 +21,9 @@ HARDENING_OWNER = ROOT / "tests" / "ops" / "test_scheduler_dry_run_hardening_sou
 FINAL_MACHINE_LINES_HEADER = "## Final Machine Lines"
 GAP6_SECTION_HEADER = "## Gap 6 Dry-Run Proof Criteria Contract v0"
 GAP6_GOVERNED_REFLECTION_HEADER = "## Gap 6 Governed Dry-Run Proof Acceptance Reflection v0"
+GAP6_ACCEPTED_FINAL_LINE_REFLECTION_HEADER = (
+    "## Gap 6 Governed Dry-Run Proof Accepted Final-Line Reflection v0"
+)
 GAP6_RC0_OBSERVED_REFLECTION_HEADER = (
     "## Gap 6 Governed Bounded Dry-Run RC0 Observed Evidence Reflection v0"
 )
@@ -42,7 +45,7 @@ DRIFT_GUARD_REQUIRED_FINAL_LINES = (
     "PATH_B_LIFT_DISCUSSION_READY=false",
     "ALL_GAPS_CLOSED=false",
     "GAP6_DRY_RUN_RC0_OBSERVED=true",
-    "GAP6_DRY_RUN_PROOF_ACCEPTED=false",
+    "GAP6_DRY_RUN_PROOF_ACCEPTED=true",
     "GAP6_DRY_RUN_PROOF_VERIFIED=false",
     "GAP2_CANONICAL_JOB_SET_VERIFIED=false",
     "GAP2_JOB_SET_ENABLED=false",
@@ -51,7 +54,6 @@ DRIFT_GUARD_REQUIRED_FINAL_LINES = (
 
 DRIFT_GUARD_FORBIDDEN_REPO_TOKENS = (
     "GAP6_DRY_RUN_RC0_OBSERVED_EXTERNAL=true",
-    "GAP6_DRY_RUN_PROOF_ACCEPTED=true",
     "GAP6_DRY_RUN_PROOF_VERIFIED=true",
     "WORKSHEET_COMPLETE=true",
     "SHADOW_24_7_AUTHORIZED=true",
@@ -76,7 +78,7 @@ def _gap6_criteria_section(text: str) -> str:
 
 def _gap6_governed_reflection_section(text: str) -> str:
     return text.split(GAP6_GOVERNED_REFLECTION_HEADER, 1)[1].split(
-        GAP6_RC0_OBSERVED_REFLECTION_HEADER, 1
+        GAP6_ACCEPTED_FINAL_LINE_REFLECTION_HEADER, 1
     )[0]
 
 
@@ -180,7 +182,7 @@ def test_gap6_external_repo_drift_guard_governed_reflection_scoped_acceptance_v0
     assert "does not modify Final Machine Lines" in reflection
     assert "Evidence acceptance is not runtime authorization" in reflection
     assert "GAP6_DRY_RUN_PROOF_ACCEPTED=false" in criteria
-    assert "GAP6_DRY_RUN_PROOF_ACCEPTED=false" in block
+    assert "GAP6_DRY_RUN_PROOF_ACCEPTED=true" in block
     assert "GAP6_DRY_RUN_RC0_OBSERVED=true" in block
     assert "GAP6_DRY_RUN_PROOF_VERIFIED=false" in block
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" in block

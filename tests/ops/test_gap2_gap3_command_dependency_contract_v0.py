@@ -64,7 +64,7 @@ DEPENDENCY_REQUIRED_FINAL_LINES = (
     "GAP2_JOB_SET_ENABLED=false",
     "GAP3_EXECUTE_COMMAND_VERIFIED=false",
     "GAP3_SCHEDULER_EXECUTION_AUTHORIZED=false",
-    "GAP6_DRY_RUN_PROOF_ACCEPTED=false",
+    "GAP6_DRY_RUN_PROOF_ACCEPTED=true",
     "GAP6_DRY_RUN_RC0_OBSERVED=true",
 )
 
@@ -79,7 +79,6 @@ DEPENDENCY_FORBIDDEN_REPO_TOKENS = (
     "ALL_GAPS_CLOSED=true",
     "READY_FOR_OPERATOR_ARMING=true",
     "PREFLIGHT_REMAINS_BLOCKED=false",
-    "GAP6_DRY_RUN_PROOF_ACCEPTED=true",
 )
 
 GAP2_BEFORE_GAP3_DEPENDENCY = "Gap 2 job-set boundary, Gap 3 command text"
@@ -212,7 +211,7 @@ def test_gap2_gap3_dependency_shadow_24_7_not_authorized_in_repo_ssot_v0() -> No
 
 def test_gap2_gap3_dependency_gap6_tokens_untouched_v0() -> None:
     block = _final_machine_lines(_section5_text())
-    assert "GAP6_DRY_RUN_PROOF_ACCEPTED=false" in block
+    assert "GAP6_DRY_RUN_PROOF_ACCEPTED=true" in block
     assert "GAP6_DRY_RUN_RC0_OBSERVED=true" in block
     assert "GAP6_DRY_RUN_PROOF_VERIFIED=false" in block
 

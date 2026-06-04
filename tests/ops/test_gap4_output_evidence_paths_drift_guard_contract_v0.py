@@ -63,14 +63,13 @@ DRIFT_GUARD_REQUIRED_FINAL_LINES = (
     "GAP4_OUTPUT_EVIDENCE_OPT_IN_ONLY=true",
     "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false",
     "GAP5_STOP_PROOF_ACCEPTED=true",
-    "GAP6_DRY_RUN_PROOF_ACCEPTED=false",
+    "GAP6_DRY_RUN_PROOF_ACCEPTED=true",
 )
 
 DRIFT_GUARD_FORBIDDEN_GAP4_REPO_TOKENS = (
     "GAP4_OUTPUT_EVIDENCE_DEFAULT_ON=true",
     "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true",
     "GAP2A1_ENFORCEMENT_DEFAULT_ON=true",
-    "GAP6_DRY_RUN_PROOF_ACCEPTED=true",
     "WORKSHEET_COMPLETE=true",
     "PATH_B_LIFT_DISCUSSION_READY=true",
     "ALL_GAPS_CLOSED=true",
@@ -246,7 +245,7 @@ def test_gap4_output_evidence_paths_drift_guard_hardening_tmp_boundary_anchors_v
 def test_gap4_output_evidence_paths_drift_guard_gap5_gap6_tokens_untouched_v0() -> None:
     block = _final_machine_lines(_section5_text())
     assert "GAP5_STOP_PROOF_ACCEPTED=true" in block
-    assert "GAP6_DRY_RUN_PROOF_ACCEPTED=false" in block
+    assert "GAP6_DRY_RUN_PROOF_ACCEPTED=true" in block
     assert "GAP6_DRY_RUN_RC0_OBSERVED=true" in block
     assert "GAP6_DRY_RUN_PROOF_VERIFIED=false" in block
 

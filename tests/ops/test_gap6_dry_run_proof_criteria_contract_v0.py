@@ -5,6 +5,9 @@ ROOT = Path(__file__).resolve().parents[2]
 DOC = ROOT / "docs" / "ops" / "planning" / "SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md"
 GAP6_SECTION_HEADER = "## Gap 6 Dry-Run Proof Criteria Contract v0"
 GAP6_GOVERNED_REFLECTION_HEADER = "## Gap 6 Governed Dry-Run Proof Acceptance Reflection v0"
+GAP6_ACCEPTED_FINAL_LINE_REFLECTION_HEADER = (
+    "## Gap 6 Governed Dry-Run Proof Accepted Final-Line Reflection v0"
+)
 GAP6_RC0_OBSERVED_REFLECTION_HEADER = (
     "## Gap 6 Governed Bounded Dry-Run RC0 Observed Evidence Reflection v0"
 )
@@ -28,6 +31,12 @@ def _gap6_criteria_section(text: str) -> str:
 
 def _gap6_governed_reflection_section(text: str) -> str:
     return text.split(GAP6_GOVERNED_REFLECTION_HEADER, 1)[1].split(
+        GAP6_ACCEPTED_FINAL_LINE_REFLECTION_HEADER, 1
+    )[0]
+
+
+def _gap6_accepted_final_line_reflection_section(text: str) -> str:
+    return text.split(GAP6_ACCEPTED_FINAL_LINE_REFLECTION_HEADER, 1)[1].split(
         GAP6_RC0_OBSERVED_REFLECTION_HEADER, 1
     )[0]
 
@@ -171,8 +180,9 @@ def test_gap6_dry_run_proof_criteria_contract_governed_reflection_non_authorizin
     assert "does not modify Final Machine Lines" in reflection
     assert "GAP6_DRY_RUN_PROOF_ACCEPTED=false" in criteria
     assert "does not accept or verify any proof" in criteria
-    assert "GAP6_DRY_RUN_PROOF_ACCEPTED=false" in block
+    assert "GAP6_DRY_RUN_PROOF_ACCEPTED=true" in block
     assert "GAP6_DRY_RUN_RC0_OBSERVED=true" in block
+    assert "GAP6_DRY_RUN_PROOF_VERIFIED=false" in block
     assert "GAP6_DRY_RUN_PROOF_ACCEPTED_EXTERNAL=true" not in text
     assert "GAP6_DRY_RUN_RC0_OBSERVED_EXTERNAL=true" not in text
     reflection_lines = {line.strip() for line in reflection.splitlines()}
@@ -180,4 +190,34 @@ def test_gap6_dry_run_proof_criteria_contract_governed_reflection_non_authorizin
     block_lines = {line.strip() for line in block.splitlines()}
     assert "GAP6_DRY_RUN_PROOF_ACCEPTED=true" in reflection_lines
     assert "GAP6_DRY_RUN_PROOF_ACCEPTED=true" not in criteria_lines
-    assert "GAP6_DRY_RUN_PROOF_ACCEPTED=true" not in block_lines
+    assert "GAP6_DRY_RUN_PROOF_ACCEPTED=true" in block_lines
+
+
+def test_gap6_dry_run_proof_accepted_final_line_governed_reflection_v0() -> None:
+    text = DOC.read_text(encoding="utf-8")
+    reflection = _gap6_accepted_final_line_reflection_section(text)
+    acceptance = _gap6_governed_reflection_section(text)
+    criteria = _gap6_criteria_section(text)
+    block = _final_machine_lines(text)
+
+    assert "GAP6_DRY_RUN_PROOF_ACCEPTED_FINAL_LINE_GOVERNED_REFLECTION_V0=true" in reflection
+    assert "GAP6_DRY_RUN_PROOF_ACCEPTED=true" in reflection
+    assert "ACCEPTED_NOT_VERIFIED_NOT_OBSERVED_SEMANTIC_PRESERVED=true" in reflection
+    assert "GOVERNED_ACCEPTANCE_BASIS=GAP6_DRY_RUN_PROOF_ACCEPTED=true" in reflection
+    assert (
+        "OPERATOR_GO=GO_PREPARE_SECTION5_GAP6_DRY_RUN_PROOF_ACCEPTED_FINAL_LINE_REPO_REFLECTION_DOCS_TESTS_V0"
+        in reflection
+    )
+    assert "does not set `GAP6_DRY_RUN_PROOF_VERIFIED=true`" in reflection
+    assert "does not modify Gap-6 criteria block RC0 posture" in reflection
+    assert "NO_RUNTIME_AUTHORITY=true" in reflection
+    assert "GAP6_DRY_RUN_PROOF_ACCEPTED=true" in acceptance
+    assert "GAP6_DRY_RUN_PROOF_ACCEPTED=false" in criteria
+    assert "GAP6_DRY_RUN_RC0_OBSERVED=false" in criteria
+    assert "GAP6_DRY_RUN_PROOF_ACCEPTED=true" in block
+    assert "GAP6_DRY_RUN_RC0_OBSERVED=true" in block
+    assert "GAP6_DRY_RUN_PROOF_VERIFIED=false" in block
+    criteria_lines = {line.strip() for line in criteria.splitlines()}
+    block_lines = {line.strip() for line in block.splitlines()}
+    assert "GAP6_DRY_RUN_PROOF_ACCEPTED=true" not in criteria_lines
+    assert "GAP6_DRY_RUN_PROOF_ACCEPTED=true" in block_lines

@@ -43,7 +43,7 @@ CLASSIFICATION_REQUIRED_FINAL_LINES = (
     "GAP5_TYPE2_WAIVER_GRANTED=false",
     "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true",
     "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false",
-    "GAP6_DRY_RUN_PROOF_ACCEPTED=false",
+    "GAP6_DRY_RUN_PROOF_ACCEPTED=true",
 )
 
 CLASSIFICATION_FORBIDDEN_REPO_TOKENS = (
@@ -60,7 +60,6 @@ CLASSIFICATION_FORBIDDEN_REPO_TOKENS = (
     "ALL_GAPS_CLOSED=true",
     "READY_FOR_OPERATOR_ARMING=true",
     "PREFLIGHT_REMAINS_BLOCKED=false",
-    "GAP6_DRY_RUN_PROOF_ACCEPTED=true",
     "SHADOW_24_7_AUTHORIZED=true",
 )
 
@@ -164,7 +163,7 @@ def test_gap5_rehearsal_classification_dependency_is_not_proof_acceptance_v0() -
 def test_gap5_rehearsal_classification_gap4_gap6_tokens_untouched_v0() -> None:
     block = _final_machine_lines(_section5_text())
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" in block
-    assert "GAP6_DRY_RUN_PROOF_ACCEPTED=false" in block
+    assert "GAP6_DRY_RUN_PROOF_ACCEPTED=true" in block
     assert "GAP6_DRY_RUN_RC0_OBSERVED=true" in block
     assert "GAP6_DRY_RUN_PROOF_VERIFIED=false" in block
 

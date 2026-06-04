@@ -52,7 +52,7 @@ DRIFT_GUARD_REQUIRED_FINAL_LINES = (
     "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true",
     "GAP5_STOP_REHEARSAL_EXECUTED=false",
     "GAP5_STOP_PROOF_ACCEPTED=true",
-    "GAP6_DRY_RUN_PROOF_ACCEPTED=false",
+    "GAP6_DRY_RUN_PROOF_ACCEPTED=true",
 )
 
 TIER1_CONTRACT_SLICE_FILE_ALLOWLIST = (
@@ -80,7 +80,6 @@ DRIFT_GUARD_FORBIDDEN_GAP2A1_REPO_TOKENS = (
     "EXTERNAL_MANIFEST_VERIFY_RC0_IMPLIES_ENFORCED=true",
     "DURABLE_ARCHIVE_EXISTS_IMPLIES_ENFORCED=true",
     "EVIDENCE_PRESENCE_IMPLIES_ENFORCED=true",
-    "GAP6_DRY_RUN_PROOF_ACCEPTED=true",
     "WORKSHEET_COMPLETE=true",
     "PATH_B_LIFT_DISCUSSION_READY=true",
     "ALL_GAPS_CLOSED=true",
@@ -208,7 +207,7 @@ def test_gap2a1_drift_guard_gap5_gap6_orthogonal_v0() -> None:
     block = _final_machine_lines(_section5_text())
     assert "GAP5_STOP_REHEARSAL_EXECUTED=false" in block
     assert "GAP5_STOP_PROOF_ACCEPTED=true" in block
-    assert "GAP6_DRY_RUN_PROOF_ACCEPTED=false" in block
+    assert "GAP6_DRY_RUN_PROOF_ACCEPTED=true" in block
     assert "GAP6_DRY_RUN_RC0_OBSERVED=true" in block
     assert "GAP6_DRY_RUN_PROOF_VERIFIED=false" in block
 

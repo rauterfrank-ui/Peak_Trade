@@ -52,7 +52,7 @@ BOUNDARY_REQUIRED_FINAL_LINES = (
     "GAP2_CANONICAL_JOB_SET_VERIFIED=false",
     "GAP2_JOB_SET_ENABLED=false",
     "GAP2_JOBS_TOML_CHANGED=false",
-    "GAP6_DRY_RUN_PROOF_ACCEPTED=false",
+    "GAP6_DRY_RUN_PROOF_ACCEPTED=true",
 )
 
 BOUNDARY_FORBIDDEN_REPO_TOKENS = (
@@ -65,7 +65,6 @@ BOUNDARY_FORBIDDEN_REPO_TOKENS = (
     "ALL_GAPS_CLOSED=true",
     "READY_FOR_OPERATOR_ARMING=true",
     "PREFLIGHT_REMAINS_BLOCKED=false",
-    "GAP6_DRY_RUN_PROOF_ACCEPTED=true",
 )
 
 
@@ -180,7 +179,7 @@ def test_gap2_job_set_boundary_shadow_24_7_not_authorized_in_repo_ssot_v0() -> N
 
 def test_gap2_job_set_boundary_gap6_tokens_untouched_by_gap2_slice_v0() -> None:
     block = _final_machine_lines(_section5_text())
-    assert "GAP6_DRY_RUN_PROOF_ACCEPTED=false" in block
+    assert "GAP6_DRY_RUN_PROOF_ACCEPTED=true" in block
     assert "GAP6_DRY_RUN_RC0_OBSERVED=true" in block
     assert "GAP6_DRY_RUN_PROOF_VERIFIED=false" in block
 

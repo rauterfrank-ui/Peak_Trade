@@ -673,6 +673,51 @@ This governed repo-reflection block records scoped acceptance of external bounde
 
 Evidence acceptance is not runtime authorization. The Gap 6 Dry-Run Proof Criteria Contract v0 block above remains criteria-only and unchanged.
 
+## Gap 6 Governed Dry-Run Proof Accepted Final-Line Reflection v0
+
+GAP6_DRY_RUN_PROOF_ACCEPTED_FINAL_LINE_GOVERNED_REFLECTION_V0=true
+GAP6_DRY_RUN_PROOF_ACCEPTED=true
+ACCEPTED_MODE=BOUNDED_DRY_RUN_PROOF_FINAL_LINE_ACCEPTED
+GOVERNED_ACCEPTANCE_BASIS=GAP6_DRY_RUN_PROOF_ACCEPTED=true
+EXTERNAL_ACCEPTANCE_RECORD_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/proof/gap6_dry_run_proof_accepted_external_v0_20260531T195813Z/
+GOVERNED_REPO_REFLECTION_CHARTER_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/external_gap6_dry_run_proof_governed_repo_reflection_charter_v0_20260531T195943Z/
+INPUT_RANKING_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/repo_wide_next_safe_slice_ranking_after_gap2_gap3_accepted_scoped_closeout_v0_20260604T191607Z/
+OPERATOR_GO=GO_PREPARE_SECTION5_GAP6_DRY_RUN_PROOF_ACCEPTED_FINAL_LINE_REPO_REFLECTION_DOCS_TESTS_V0
+NO_RUNTIME_AUTHORITY=true
+NO_REPO_FLAG_LIFT_FROM_EXTERNAL_ACCEPTANCE=true
+GAP6_DRY_RUN_PROOF_VERIFIED=false
+GAP6_DRY_RUN_RC0_OBSERVED=false
+ACCEPTED_NOT_VERIFIED_NOT_OBSERVED_SEMANTIC_PRESERVED=true
+PREFLIGHT_REMAINS_BLOCKED=true
+ALL_GAPS_CLOSED=false
+READY_FOR_OPERATOR_ARMING=false
+PATH_B_LIFT_DISCUSSION_READY=false
+
+This governed repo-reflection block records operator-authorized Gap-6 dry-run proof **accepted final-line propagation** only. It propagates `GAP6_DRY_RUN_PROOF_ACCEPTED=true` to Final Machine Lines based on existing scoped external bounded dry-run proof acceptance. External acceptance records remain pointer-based and subordinate to repo governance.
+
+### Accepted final-line scope (allowed only)
+
+- external bounded dry-run proof bundle referenced by governed acceptance reflection
+- `GAP6_DRY_RUN_PROOF_ACCEPTED=true` in **Final Machine Lines only**
+- Gap 6 Dry-Run Proof Criteria Contract v0 block remains criteria-only with `GAP6_DRY_RUN_PROOF_ACCEPTED=false`, `GAP6_DRY_RUN_RC0_OBSERVED=false`, and `GAP6_DRY_RUN_PROOF_VERIFIED=false`
+- accepted proof ≠ proof verified; accepted ≠ RC0 observed in criteria; observation remains separate via `GAP6_DRY_RUN_RC0_OBSERVED=true` in Final Machine Lines only
+
+### Non-authority boundary (accepted final-line reflection does not imply)
+
+- does not set `GAP6_DRY_RUN_PROOF_VERIFIED=true` in criteria or Final Machine Lines
+- does not modify Gap-6 criteria block RC0 posture (`GAP6_DRY_RUN_RC0_OBSERVED=false` in criteria unchanged)
+- does not conflate accepted proof with `GAP6_DRY_RUN_RC0_OBSERVED=true` in criteria blocks
+- does not verify Gap-4 output evidence paths or Gap-7 risk boundaries beyond existing finals
+- does not enforce Gap-2a.1 primary evidence
+- does not authorize scheduler execution
+- does not enable operator arming
+- does not open Path-B lift discussion
+- does not set `ALL_GAPS_CLOSED=true`
+- does not lift preflight
+- does not start or authorize Runtime, Paper, Shadow, Testnet, or Live
+
+Evidence acceptance is not runtime authorization. The Gap 6 Governed Dry-Run Proof Acceptance Reflection v0 block above remains scoped acceptance only and unchanged.
+
 ## Gap 6 Governed Bounded Dry-Run RC0 Observed Evidence Reflection v0
 
 GAP6_BOUNDED_DRY_RUN_RC0_OBSERVED_GOVERNED_REFLECTION_V0=true
@@ -1681,7 +1726,7 @@ GAP1_EXECUTE_ENTRYPOINT_DEFAULT_ON=false
 GAP1_ENTRYPOINT_DRY_RUN_ONLY=true
 GAP6_DRY_RUN_PROOF_CRITERIA_CONTRACT_V0=true
 GAP6_CRITERIA_ONLY=true
-GAP6_DRY_RUN_PROOF_ACCEPTED=false
+GAP6_DRY_RUN_PROOF_ACCEPTED=true
 GAP6_DRY_RUN_PROOF_VERIFIED=false
 GAP6_DRY_RUN_RC0_OBSERVED=true
 GAP6_SCHEDULER_EXECUTION_AUTHORIZED=false
