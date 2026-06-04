@@ -362,7 +362,9 @@ def test_section5_preflight_lift_class4_reflection_non_authorizing_v0() -> None:
     assert "PREFLIGHT_LIFT_EXECUTED=true" not in block_lines
 
 
-def test_section5_all_gaps_closed_final_reflection_after_preflight_lift_non_authorizing_v0() -> None:
+def test_section5_all_gaps_closed_final_reflection_after_preflight_lift_non_authorizing_v0() -> (
+    None
+):
     text = DOC.read_text(encoding="utf-8")
     reflection = _all_gaps_closed_final_reflection_section(text)
     preflight_lift = _preflight_lift_class4_reflection_section(text)
@@ -392,7 +394,9 @@ def test_section5_all_gaps_closed_final_reflection_after_preflight_lift_non_auth
         "ALL_GAPS_CLOSED=true ≠ READY_FOR_OPERATOR_ARMING=true ≠ NEXT_EXECUTE_ALLOWED=true"
         in reflection
     )
-    assert "does not set `READY_FOR_OPERATOR_ARMING=true` or `NEXT_EXECUTE_ALLOWED=true`" in reflection
+    assert (
+        "does not set `READY_FOR_OPERATOR_ARMING=true` or `NEXT_EXECUTE_ALLOWED=true`" in reflection
+    )
     assert "does not set `SECTION5_GAP_CLOSURE_EXECUTED=true`" in reflection
     assert "PREFLIGHT_LIFT_DOES_NOT_CLOSE_ALL_GAPS=true" in preflight_lift
     block_lines = {line.strip() for line in block.splitlines()}
