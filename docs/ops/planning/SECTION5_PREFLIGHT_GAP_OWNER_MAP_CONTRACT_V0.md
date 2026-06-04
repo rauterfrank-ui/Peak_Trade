@@ -88,7 +88,7 @@ Preflight §2a.1 documents run-type applicability for **run completion**: Paper,
 
 **Bounded Futures Testnet harness/adapter contract (PE-9 guard) v0:** Addresses `futures_testnet_execute_harness_and_exchange_adapter_missing` at offline harness/adapter contract layer only. Canonical surfaces: `src/ops/bounded_futures_testnet_adapter_contract_v0.py` (`BOUNDED_FUTURES_TESTNET_ADAPTER_CONTRACT_V0=true`), `src/ops/bounded_futures_testnet_harness_contract_v0.py` (`BOUNDED_FUTURES_TESTNET_HARNESS_CONTRACT_V0=true`). Static guards: `tests/ops/test_bounded_futures_testnet_adapter_contract_v0.py`, `tests/ops/test_bounded_futures_testnet_harness_contract_v0.py`. `HARNESS_EXECUTE_AUTHORIZED_NOW=false`; `ADAPTER_NETWORK_CALLS_ALLOWED=false`; `FUTURES_TESTNET_INSTRUMENT_EXCHANGE_PROVEN=false`; **does not** authorize Futures execute, exchange calls, credentials, or Master-V2 / Double-Play authority.
 
-**Bounded Futures Testnet runtime harness / exchange impl descriptor contract (PE-10 guard) v0:** Addresses `futures_testnet_runtime_harness_and_exchange_impl_residual` at offline descriptor layer only (reuses PE-8/PE-9). Canonical surfaces: `src/ops/bounded_futures_testnet_exchange_impl_contract_v0.py` (`BOUNDED_FUTURES_TESTNET_EXCHANGE_IMPL_CONTRACT_V0=true`), `src/ops/bounded_futures_testnet_runtime_harness_contract_v0.py` (`BOUNDED_FUTURES_TESTNET_RUNTIME_HARNESS_CONTRACT_V0=true`). Static guards: `tests/ops/test_bounded_futures_testnet_exchange_impl_contract_v0.py`, `tests/ops/test_bounded_futures_testnet_runtime_harness_contract_v0.py`. `RUNTIME_HARNESS_EXECUTE_ALLOWED=false`; `EXCHANGE_IMPL_NETWORK_CALLS_ALLOWED=false`; `ARCHIVE_HARNESS_SCRIPT_PRESENT=false`; `ARCHIVE_EXCHANGE_CLIENT_PRESENT=false`; **does not** authorize Futures execute, archive harness script, network I/O, credentials, or Master-V2 / Double-Play authority. Residual after PE-10: governed archive harness script + live exchange client (out of scope).
+**Bounded Futures Testnet runtime harness / exchange impl descriptor contract (PE-10 guard) v0:** Addresses `futures_testnet_runtime_harness_and_exchange_impl_residual` at offline descriptor layer only (reuses PE-8/PE-9). Canonical surfaces: `src/ops/bounded_futures_testnet_exchange_impl_contract_v0.py` (`BOUNDED_FUTURES_TESTNET_EXCHANGE_IMPL_CONTRACT_V0=true`), `src/ops/bounded_futures_testnet_runtime_harness_contract_v0.py` (`BOUNDED_FUTURES_TESTNET_RUNTIME_HARNESS_CONTRACT_V0=true`). Governed archive harness entrypoint: `scripts/ops/archive_futures_testnet_harness_v0.py` (`ARCHIVE_FUTURES_TESTNET_HARNESS_V0=true`); static guard: `tests/ops/test_archive_futures_testnet_harness_v0.py`. `RUNTIME_HARNESS_EXECUTE_ALLOWED=false`; `EXCHANGE_IMPL_NETWORK_CALLS_ALLOWED=false`; `ARCHIVE_HARNESS_SCRIPT_PRESENT=true`; `ARCHIVE_HARNESS_SCRIPT_EXECUTE_AUTHORIZED_NOW=false`; `ARCHIVE_EXCHANGE_CLIENT_PRESENT=false`; **does not** authorize Futures execute, harness network I/O by default, credentials, orders, or Master-V2 / Double-Play authority. Residual after PE-10: live exchange client + operator-confirmed network execute path (out of scope).
 
 ### Reuse-first owner surfaces
 
@@ -109,12 +109,14 @@ Preflight §2a.1 documents run-type applicability for **run completion**: Paper,
 - `src/ops/bounded_futures_testnet_harness_contract_v0.py`
 - `src/ops/bounded_futures_testnet_exchange_impl_contract_v0.py`
 - `src/ops/bounded_futures_testnet_runtime_harness_contract_v0.py`
+- `scripts/ops/archive_futures_testnet_harness_v0.py`
 - `tests/ops/test_repo_native_bounded_order_cap_contract_v0.py`
 - `tests/ops/test_bounded_futures_testnet_contract_v0.py`
 - `tests/ops/test_bounded_futures_testnet_adapter_contract_v0.py`
 - `tests/ops/test_bounded_futures_testnet_harness_contract_v0.py`
 - `tests/ops/test_bounded_futures_testnet_exchange_impl_contract_v0.py`
 - `tests/ops/test_bounded_futures_testnet_runtime_harness_contract_v0.py`
+- `tests/ops/test_archive_futures_testnet_harness_v0.py`
 - existing preflight contract §2a/§2a.1 surfaces
 - existing docs truth map / reference / token-policy checks
 
