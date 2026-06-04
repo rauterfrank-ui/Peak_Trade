@@ -40,6 +40,9 @@ GAP4_FULL_SCOPE_GAP4_VERIFIED_REFLECTION_HEADER = "## Gap 4 Full-Scope Gap4 Veri
 GAP4_VERIFIED_FINAL_LINE_REFLECTION_HEADER = (
     "## Gap 4 Governed Output Evidence Paths Verified Final-Line Reflection v0"
 )
+GAP4_FULL_SCOPE_CLASS4_POLICY_FINAL_LINE_REFLECTION_HEADER = (
+    "## Gap 4 Full-Scope Gap4 CLASS_4 Policy Final-Line Propagation Reflection v0"
+)
 PREFLIGHT_SYNTHESIS_DOCS_BLOCK_REFLECTION_HEADER = "## Preflight Synthesis Docs Block Reflection v0"
 GAP7_GOVERNED_REFLECTION_HEADER = "## Gap 7 Governed Risk Boundary Acceptance Reflection v0"
 GAP2A1_SECTION_HEADER = "## §2a.1 Primary Evidence Enforcement Contract v0"
@@ -355,7 +358,7 @@ def test_gap4_output_evidence_paths_drift_guard_governed_reflection_scoped_accep
     assert "EXTERNAL_ACCEPTANCE_RECORD_POINTER=" in reflection
     assert "GAP4_OUTPUT_EVIDENCE_ACCEPTED_EXTERNAL=true" not in text
     block_lines = {line.strip() for line in block.splitlines()}
-    assert "FULL_SCOPE_GAP4_VERIFIED=true" not in block_lines
+    assert "FULL_SCOPE_GAP4_VERIFIED=true" in block_lines
     assert (
         "does not verify Gap-4 output evidence paths in criteria or Final Machine Lines"
         in reflection
@@ -701,7 +704,8 @@ def test_gap4_full_scope_gap4_verified_reflection_drift_guard_scoped_v0() -> Non
     assert "FULL_SCOPE_GAP4_VERIFIED=true" in verified_lines
     assert "FULL_SCOPE_GAP4_VERIFIED=true" not in completeness_lines
     assert "FULL_SCOPE_GAP4_VERIFIED=true" not in criteria_lines
-    assert "FULL_SCOPE_GAP4_VERIFIED=true" not in block_lines
+    assert "FULL_SCOPE_GAP4_VERIFIED=true" in block_lines
+    assert "FULL_SCOPE_GAP4_POLICY_SPLIT_RESOLVED=true" in block_lines
     assert "FULL_SCOPE_GAP4_VERIFIED=false" in completeness_lines
     assert "PREFLIGHT_REMAINS_BLOCKED=true" in verified_lines
     assert "GLOBAL_PREFLIGHT_LIFTED=true" not in verified_lines
@@ -773,4 +777,53 @@ def test_gap4_verified_final_line_governed_reflection_scoped_verification_v0() -
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" in block_lines
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" not in criteria_lines
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" not in block_lines
-    assert "FULL_SCOPE_GAP4_VERIFIED=true" not in block_lines
+    assert "FULL_SCOPE_GAP4_VERIFIED=true" in block_lines
+
+
+def _gap4_full_scope_class4_policy_final_line_reflection_section(text: str) -> str:
+    return text.split(GAP4_FULL_SCOPE_CLASS4_POLICY_FINAL_LINE_REFLECTION_HEADER, 1)[1].split(
+        PREFLIGHT_SYNTHESIS_DOCS_BLOCK_REFLECTION_HEADER, 1
+    )[0]
+
+
+def test_gap4_full_scope_class4_policy_final_line_propagation_non_authorizing_v0() -> None:
+    text = _section5_text()
+    reflection = _gap4_full_scope_class4_policy_final_line_reflection_section(text)
+    criteria = _gap4_criteria_section(text)
+    block = _final_machine_lines(text)
+    verified = _gap4_full_scope_gap4_verified_reflection_section(text)
+
+    for token in (
+        "FULL_SCOPE_GAP4_FINAL_LINE_GOVERNED_REFLECTION_V0=true",
+        "FULL_SCOPE_GAP4_CLASS4_POLICY_OVERRIDE_V0=true",
+        "ACCEPTED_MODE=GAP4_FULL_SCOPE_GAP4_VERIFIED_CLASS4_FINAL_LINE_POLICY_OVERRIDE",
+        "OPERATOR_GO=GO_FULL_SCOPE_GAP4_CLASS4_POLICY_FINAL_LINE_PROPAGATION_DOCS_TESTS_V0",
+        "CLASS4_OPERATOR_GO_ACCEPTED=true",
+        "POLICY_OVERRIDE_NOT_OPERATIONAL_AUTHORIZATION=true",
+        "FULL_SCOPE_FML_PROPAGATION_DOES_NOT_CLOSE_ALL_GAPS=true",
+        "FULL_SCOPE_FML_PROPAGATION_DOES_NOT_LIFT_PREFLIGHT=true",
+        "FULL_SCOPE_GAP4_POLICY_SPLIT_RESOLVED=true",
+        "PREFLIGHT_REMAINS_BLOCKED=true",
+        "ALL_GAPS_CLOSED=false",
+        "READY_FOR_OPERATOR_ARMING=false",
+        "NEXT_EXECUTE_ALLOWED=false",
+    ):
+        assert token in reflection
+
+    assert "does not set `ALL_GAPS_CLOSED=true`" in reflection
+    assert "does not lift global preflight" in reflection
+    assert "Policy reflection is not runtime authorization" in reflection
+    assert "FULL_SCOPE_GAP4_VERIFIED=true" in verified
+    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in criteria
+    assert "FULL_SCOPE_GAP4_VERIFIED=true" in block
+    assert "FULL_SCOPE_GAP4_POLICY_SPLIT_RESOLVED=true" in block
+    block_lines = {line.strip() for line in block.splitlines()}
+    criteria_lines = {line.strip() for line in criteria.splitlines()}
+    assert "FULL_SCOPE_GAP4_VERIFIED=true" in block_lines
+    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" in block_lines
+    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" not in block_lines
+    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in criteria_lines
+    assert "ALL_GAPS_CLOSED=true" not in block_lines
+    assert "PREFLIGHT_REMAINS_BLOCKED=false" not in block_lines
+    assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
+    assert "NEXT_EXECUTE_ALLOWED=true" not in block_lines

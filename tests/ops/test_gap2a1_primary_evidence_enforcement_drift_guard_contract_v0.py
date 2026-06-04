@@ -275,7 +275,7 @@ def test_gap2a1_drift_guard_repo_lift_class4_reflection_v0() -> None:
     block = _final_machine_lines(text)
     section = text.split(
         "## Gap-2a.1 Governed Primary Evidence Repo-Lift CLASS_4 Reflection v0", 1
-    )[1].split("## Preflight Synthesis Docs Block Reflection v0", 1)[0]
+    )[1].split("## Gap 4 Full-Scope Gap4 CLASS_4 Policy Final-Line Propagation Reflection v0", 1)[0]
     gap2a1 = _gap2a1_section(text)
 
     assert "GAP2A1_REPO_LIFT_CLASS4_GOVERNED_REFLECTION_V0=true" in section

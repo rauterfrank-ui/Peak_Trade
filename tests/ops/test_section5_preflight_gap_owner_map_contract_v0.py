@@ -234,7 +234,9 @@ def test_section5_preflight_synthesis_docs_block_reflection_non_authorizing_v0()
     assert (
         "PRIMARY_EVIDENCE_ENFORCED_SCOPE=canonical_tag_local_readonly_preflight_once" in synthesis
     )
-    assert "FULL_SCOPE_GAP4_VERIFIED=false" in synthesis
+    assert "FULL_SCOPE_GAP4_VERIFIED=true" in synthesis
+    assert "FULL_SCOPE_GAP4_POLICY_SPLIT_RESOLVED=true" in synthesis
+    assert "CLASS_4 policy propagation complete" in synthesis
     assert "PREFLIGHT_REMAINS_BLOCKED=true" in synthesis
     assert "ALL_GAPS_CLOSED=false" in synthesis
     assert "NEXT_EXECUTE_ALLOWED=false" in synthesis
@@ -252,6 +254,8 @@ def test_section5_preflight_synthesis_docs_block_reflection_non_authorizing_v0()
     assert "GAP2A1_TIER1_ENFORCEMENT_LIFTED_REPO=true" in block
     assert "SECTION5_GAP2A1_REPO_LIFTED=true" in block
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" in block
+    assert "FULL_SCOPE_GAP4_VERIFIED=true" in block
+    assert "FULL_SCOPE_GAP4_POLICY_SPLIT_RESOLVED=true" in block
     assert "GAP5_STOP_PROOF_ACCEPTED=true" in block
     assert "GAP5_STOP_REHEARSAL_EXECUTED=true" in block
     assert (
@@ -282,7 +286,8 @@ def test_section5_preflight_synthesis_docs_block_reflection_non_authorizing_v0()
     assert "GAP6_DRY_RUN_PROOF_VERIFIED=true" in block_lines
     assert "GAP2A1_TIER0_OPERATOR_ACCEPTED=true" in synthesis_lines
     assert "GAP2A1_TIER0_OPERATOR_ACCEPTED=true" in block_lines
-    assert "FULL_SCOPE_GAP4_VERIFIED=true" not in block_lines
+    assert "FULL_SCOPE_GAP4_VERIFIED=true" in block_lines
+    assert "FULL_SCOPE_GAP4_POLICY_SPLIT_RESOLVED=true" in block_lines
     assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" in block_lines
     assert "GAP2A1_TIER1_ENFORCEMENT_LIFTED_REPO=true" in block_lines
     assert "GAP5_STOP_REHEARSAL_EXECUTED=true" in block_lines

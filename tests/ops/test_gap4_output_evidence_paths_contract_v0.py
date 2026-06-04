@@ -168,7 +168,7 @@ def test_gap4_output_evidence_paths_contract_governed_reflection_non_authorizing
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" in block
     block_lines = {line.strip() for line in block.splitlines()}
     assert "GAP4_OUTPUT_EVIDENCE_ACCEPTED_EXTERNAL=true" not in text
-    assert "FULL_SCOPE_GAP4_VERIFIED=true" not in block_lines
+    assert "FULL_SCOPE_GAP4_VERIFIED=true" in block_lines
     reflection_lines = {line.strip() for line in reflection.splitlines()}
     criteria_lines = {line.strip() for line in criteria.splitlines()}
     assert "GAP4_OUTPUT_EVIDENCE_ACCEPTED=true" in reflection_lines
@@ -200,7 +200,7 @@ def test_gap4_output_evidence_paths_verified_final_line_reflection_non_authorizi
     block_lines = {line.strip() for line in block.splitlines()}
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" in block_lines
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" not in block_lines
-    assert "FULL_SCOPE_GAP4_VERIFIED=true" not in block_lines
+    assert "FULL_SCOPE_GAP4_VERIFIED=true" in block_lines
 
 
 def test_gap4_pe5_output_evidence_depends_on_gap2a1_primary_evidence_v0() -> None:
