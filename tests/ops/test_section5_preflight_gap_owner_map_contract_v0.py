@@ -342,10 +342,10 @@ def test_section5_gap6_gap1_rc0_observed_final_line_reflection_non_authorizing_v
     assert "GAP6_DRY_RUN_RC0_OBSERVED=true" in block
     assert "GAP1_EXECUTE_ENTRYPOINT_RC0_OBSERVED=true" in block
     assert "GAP6_DRY_RUN_PROOF_VERIFIED=true" in block
-    assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=false" in block
+    assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=true" in block
     block_lines = {line.strip() for line in block.splitlines()}
     assert "GAP6_DRY_RUN_PROOF_VERIFIED=true" in block_lines
-    assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=true" not in block_lines
+    assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=true" in block_lines
     assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
 
 
@@ -582,7 +582,48 @@ def test_section5_gap6_verified_final_line_reflection_non_authorizing_v0() -> No
     assert "GAP6_DRY_RUN_PROOF_VERIFIED=false" in gap6
     block_lines = {line.strip() for line in block.splitlines()}
     assert "GAP6_DRY_RUN_PROOF_VERIFIED=true" in block_lines
-    assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=true" not in block_lines
+    assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
+
+
+GAP1_VERIFIED_FINAL_LINE_REFLECTION_HEADER = (
+    "## Gap 1 Governed Execute Entrypoint Verified Final-Line Reflection v0"
+)
+
+
+def _gap1_verified_final_line_reflection_section(text: str) -> str:
+    return text.split(GAP1_VERIFIED_FINAL_LINE_REFLECTION_HEADER, 1)[1].split(
+        "## Tier-1 Governed Zero-Dispatch Manifest Observed Final-Line Reflection v0", 1
+    )[0]
+
+
+def test_section5_gap1_verified_final_line_reflection_non_authorizing_v0() -> None:
+    text = DOC.read_text(encoding="utf-8")
+    section = _gap1_verified_final_line_reflection_section(text)
+    block = _final_machine_lines(text)
+    gap1 = text.split("## Gap 1 Execute Entrypoint Contract v0", 1)[1].split(
+        "## Gap 3 Execute Command Contract v0", 1
+    )[0]
+
+    for token in (
+        "GAP1_EXECUTE_ENTRYPOINT_VERIFIED_FINAL_LINE_GOVERNED_REFLECTION_V0=true",
+        "GAP1_VERIFIED_BAR_TIER=T1_PLUS_T2_ENTRYPOINT_BOUNDARY",
+        "T1_STATIC_READONLY_SUFFICIENT_FOR_GAP1_VERIFIED=false",
+        "T2_ENTRYPOINT_DRY_RUN_RC0_SUFFICIENT_FOR_GAP1_VERIFIED=true",
+        "T3_BOUNDED_EXECUTE_REQUIRED_FOR_GAP1_VERIFIED=false",
+        "GAP1_VERIFIED_REQUIRES_RUNTIME_EXECUTE=false",
+        "VERIFIED_NOT_OBSERVED_SEMANTIC_PRESERVED=true",
+        "GAP1_EXECUTE_ENTRYPOINT_RC0_OBSERVED=true",
+        "GAP6_DRY_RUN_PROOF_VERIFIED=true",
+        "PREFLIGHT_REMAINS_BLOCKED=true",
+        "ALL_GAPS_CLOSED=false",
+    ):
+        assert token in section
+
+    assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=true" in block
+    assert "GAP1_VERIFIED_BAR_TIER=T1_PLUS_T2_ENTRYPOINT_BOUNDARY" in block
+    assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=false" in gap1
+    block_lines = {line.strip() for line in block.splitlines()}
+    assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=true" in block_lines
     assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
 
 

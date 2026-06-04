@@ -70,6 +70,10 @@ DEPENDENCY_REQUIRED_FINAL_LINES = (
     "GAP6_DRY_RUN_RC0_OBSERVED=true",
     "GAP6_DRY_RUN_PROOF_VERIFIED=true",
     "GAP6_VERIFIED_BAR_TIER=T1_PLUS_T2_DRY_RUN_PROOF",
+    "GAP1_EXECUTE_ENTRYPOINT_RC0_OBSERVED=true",
+    "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=true",
+    "GAP1_VERIFIED_BAR_TIER=T1_PLUS_T2_ENTRYPOINT_BOUNDARY",
+    "GAP1_SCHEDULER_EXECUTION_AUTHORIZED=false",
 )
 
 DEPENDENCY_FORBIDDEN_REPO_TOKENS = (
@@ -241,6 +245,13 @@ def test_gap2_gap3_dependency_gap6_tokens_untouched_v0() -> None:
     assert "GAP6_DRY_RUN_PROOF_ACCEPTED=true" in block
     assert "GAP6_DRY_RUN_RC0_OBSERVED=true" in block
     assert "GAP6_DRY_RUN_PROOF_VERIFIED=true" in block
+
+
+def test_gap2_gap3_dependency_gap1_verified_tokens_present_v0() -> None:
+    block = _final_machine_lines(_section5_text())
+    assert "GAP1_EXECUTE_ENTRYPOINT_RC0_OBSERVED=true" in block
+    assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=true" in block
+    assert "GAP1_VERIFIED_BAR_TIER=T1_PLUS_T2_ENTRYPOINT_BOUNDARY" in block
 
 
 def test_gap2_gap3_dependency_criteria_complete_does_not_close_gaps_v0() -> None:

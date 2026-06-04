@@ -235,7 +235,6 @@ def test_gap6_verified_final_line_governed_reflection_v0() -> None:
     assert "GAP6_DRY_RUN_PROOF_VERIFIED=false" in criteria_lines
     assert "GAP6_DRY_RUN_PROOF_VERIFIED=true" in block_lines
     assert "GAP6_SCHEDULER_EXECUTION_AUTHORIZED=true" not in block_lines
-    assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=true" not in block_lines
 
 
 def test_gap6_dry_run_proof_accepted_final_line_governed_reflection_v0() -> None:
