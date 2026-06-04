@@ -7,10 +7,15 @@ Entrypoint CLI wiring is a separate follow-up slice.
 
 from __future__ import annotations
 
+import argparse
+import json
 from dataclasses import dataclass
 from typing import Any
 
+from src.ops.wallclock_session_evidence_v0 import bounds_from_planned_duration
+
 PACKAGE_MARKER = "BOUNDED_TESTNET_ORDER_CAP_CONTRACT_V0=true"
+CLI_WIRING_COMPLETE_MARKER = "REPO_NATIVE_BOUNDED_ORDER_CAP_CLI_WIRING_COMPLETE=true"
 DEFAULT_SESSION_CLASS = "bounded-normal-testnet-v0"
 DEFAULT_ORDER_POLICY = "normal-testnet-bounded"
 EVIDENCE_SOURCE_REPO_NATIVE = "repo_native_session"
@@ -64,6 +69,141 @@ def default_bounded_normal_v0_spec() -> BoundedTestnetOrderCapSpec:
         max_position_hold_seconds=60,
         position_must_be_flattened=True,
     )
+
+
+def add_bounded_order_cap_cli_arguments(parser: argparse.ArgumentParser) -> None:
+    """Register repo-native bounded order-cap CLI flags (defaults: bounded-normal-v0 charter)."""
+    defaults = default_bounded_normal_v0_spec()
+    parser.add_argument(
+        "--session-class",
+        type=str,
+        default=defaults.session_class,
+        help=f"Bounded session class (default: {defaults.session_class})",
+    )
+    parser.add_argument(
+        "--order-policy",
+        type=str,
+        default=defaults.order_policy,
+        help=f"Bounded order policy (default: {defaults.order_policy})",
+    )
+    parser.add_argument(
+        "--max-real-orders",
+        type=int,
+        default=defaults.max_real_orders,
+        help=f"Max real orders created (default: {defaults.max_real_orders})",
+    )
+    parser.add_argument(
+        "--max-order-attempts",
+        type=int,
+        default=defaults.max_order_attempts,
+        help=f"Max order attempts (default: {defaults.max_order_attempts})",
+    )
+    parser.add_argument(
+        "--max-cancel-attempts",
+        type=int,
+        default=defaults.max_cancel_attempts,
+        help=f"Max cancel/close attempts (default: {defaults.max_cancel_attempts})",
+    )
+    parser.add_argument(
+        "--max-order-notional-eur",
+        type=float,
+        default=defaults.max_notional_eur,
+        help=f"Max order notional EUR (default: {defaults.max_notional_eur})",
+    )
+    parser.add_argument(
+        "--max-position-hold-seconds",
+        type=int,
+        default=defaults.max_position_hold_seconds,
+        help=f"Max position hold seconds (default: {defaults.max_position_hold_seconds})",
+    )
+    parser.add_argument(
+        "--require-position-flat-by-end",
+        action=argparse.BooleanOptionalAction,
+        default=defaults.position_must_be_flattened,
+        help="Require position flattened by session end (default: true)",
+    )
+
+
+def bounded_cap_spec_from_namespace(args: argparse.Namespace) -> BoundedTestnetOrderCapSpec:
+    return BoundedTestnetOrderCapSpec(
+        session_class=str(args.session_class),
+        order_policy=str(args.order_policy),
+        max_real_orders=int(args.max_real_orders),
+        max_order_attempts=int(args.max_order_attempts),
+        max_cancel_attempts=int(args.max_cancel_attempts),
+        max_notional_eur=float(args.max_order_notional_eur),
+        max_position_hold_seconds=int(args.max_position_hold_seconds),
+        position_must_be_flattened=bool(args.require_position_flat_by_end),
+    )
+
+
+def validate_bounded_cap_cli_namespace(args: argparse.Namespace) -> list[str]:
+    """Fail-closed validation for bounded cap CLI values (offline, no I/O)."""
+    reasons: list[str] = []
+    spec = bounded_cap_spec_from_namespace(args)
+    if spec.session_class == DEFAULT_SESSION_CLASS:
+        for name, value in (
+            ("max_real_orders", spec.max_real_orders),
+            ("max_order_attempts", spec.max_order_attempts),
+            ("max_cancel_attempts", spec.max_cancel_attempts),
+            ("max_position_hold_seconds", spec.max_position_hold_seconds),
+        ):
+            if value <= 0:
+                reasons.append(f"{name} must be positive for {DEFAULT_SESSION_CLASS}")
+        if spec.max_notional_eur <= 0:
+            reasons.append("max_order_notional_eur must be positive")
+    duration = getattr(args, "duration", None)
+    if duration is not None and duration <= 0:
+        reasons.append("--duration must be a positive integer (minutes)")
+    return reasons
+
+
+def planned_duration_seconds_from_args(args: argparse.Namespace) -> int | None:
+    duration = getattr(args, "duration", None)
+    if duration is None:
+        return None
+    return int(duration) * 60
+
+
+def build_entrypoint_bounded_cap_config_evidence(
+    spec: BoundedTestnetOrderCapSpec,
+    *,
+    planned_duration_seconds: int | None = None,
+) -> dict[str, Any]:
+    """Pre-session bounded cap + wall-clock config evidence (no runtime counters)."""
+    evidence: dict[str, Any] = {
+        "evidence_source": EVIDENCE_SOURCE_REPO_NATIVE,
+        "session_class": spec.session_class,
+        "order_policy": spec.order_policy,
+        "max_real_orders": spec.max_real_orders,
+        "max_order_attempts": spec.max_order_attempts,
+        "max_cancel_attempts": spec.max_cancel_attempts,
+        "max_order_notional_eur": spec.max_notional_eur,
+        "max_position_hold_seconds": spec.max_position_hold_seconds,
+        "position_must_be_flattened_by_end": spec.position_must_be_flattened,
+        "order_attempt_count": 0,
+        "real_orders_created_count": 0,
+        "cancel_or_close_attempt_count": 0,
+        "cancel_or_close_attempted": False,
+        "cancel_or_close_evidence_valid": False,
+        "order_notional_eur": 0.0,
+        "order_notional_within_cap": True,
+        "position_flattened_by_end": False,
+        "risk_killswitch_scope_active": True,
+        "risk_killswitch_scope_pass": True,
+        "scheduler_started": False,
+        "runtime_started": False,
+        "live_env_present": False,
+        "bounded_order_cap_config_emitted": True,
+    }
+    if planned_duration_seconds is not None:
+        evidence.update(bounds_from_planned_duration(planned_duration_seconds))
+        evidence["planned_duration_seconds"] = planned_duration_seconds
+    return evidence
+
+
+def emit_entrypoint_bounded_cap_config_json(evidence: dict[str, Any]) -> str:
+    return json.dumps(evidence, sort_keys=True)
 
 
 def evaluate_bounded_order_cap_evidence(

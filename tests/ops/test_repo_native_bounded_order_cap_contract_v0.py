@@ -11,6 +11,7 @@ from pathlib import Path
 import pytest
 
 from src.ops.bounded_testnet_order_cap_contract_v0 import (
+    CLI_WIRING_COMPLETE_MARKER,
     DEFAULT_ORDER_POLICY,
     DEFAULT_SESSION_CLASS,
     PACKAGE_MARKER,
@@ -41,7 +42,7 @@ CLOSEOUT_BUNDLE_SUFFIX = "bounded_normal_testnet_session_closeout_review_v0_2026
 
 CONTRACT_GOVERNANCE_TOKEN_MAP: dict[str, str] = {
     "NORMAL_TESTNET_RUN_AUTHORIZED_NOW": "RUN_TESTNET_SESSION_ALLOWED_NOW=false",
-    "REPO_NATIVE_ENTRYPOINT_CAP_WIRING_PENDING": "REPO_NATIVE_BOUNDED_ORDER_CAP_CLI_WIRING_PENDING=true",
+    "REPO_NATIVE_ENTRYPOINT_CAP_WIRING_COMPLETE": CLI_WIRING_COMPLETE_MARKER,
     "BOUNDED_ORDER_CAP_CONTRACT_DEFINED": PACKAGE_MARKER,
 }
 
@@ -105,17 +106,20 @@ def test_wallclock_emitter_guard_still_present() -> None:
     assert WALLCLOCK_EMITTER_TEST.is_file()
 
 
-def test_bounded_order_cap_cli_flags_not_yet_on_entrypoint() -> None:
-    """Entrypoint wiring deferred; contract module defines required flags."""
-    source = _run_testnet_source()
+def test_bounded_order_cap_cli_flags_present_on_entrypoint() -> None:
+    """Repo-native entrypoint wires contract-required bounded cap CLI flags."""
+    entrypoint = _run_testnet_source()
+    contract_source = CONTRACT_MODULE.read_text(encoding="utf-8")
+    assert "add_bounded_order_cap_cli_arguments(parser)" in entrypoint
     for flag in REQUIRED_BOUNDED_ORDER_CAP_CLI_FLAGS:
-        assert flag not in source, f"unexpected early wiring: {flag}"
+        assert flag in contract_source, f"missing CLI flag definition: {flag}"
 
 
-def test_run_testnet_session_declares_entrypoint_cap_wiring_incomplete() -> None:
+def test_run_testnet_session_declares_entrypoint_cap_wiring_complete() -> None:
     source = _run_testnet_source()
     assert "RUN_TESTNET_SESSION_ALLOWED_NOW=false" in source
-    assert "REPO_NATIVE_BOUNDED_ORDER_CAP_CLI_WIRING_PENDING=true" in source
+    assert CLI_WIRING_COMPLETE_MARKER in source
+    assert "REPO_NATIVE_BOUNDED_ORDER_CAP_CLI_WIRING_PENDING=true" not in source
 
 
 def test_default_spec_matches_bounded_normal_v0_charter() -> None:

@@ -35,7 +35,7 @@ WICHTIG:
     - Default: validate_only=true (Orders werden validiert, nicht ausgefuehrt)
     - Keine echten Live-Trades in Phase 35!
     - RUN_TESTNET_SESSION_ALLOWED_NOW=false (defense-in-depth; kein normaler Testnet-Run)
-    - REPO_NATIVE_BOUNDED_ORDER_CAP_CLI_WIRING_PENDING=true (bounded order-cap CLI deferred)
+    - REPO_NATIVE_BOUNDED_ORDER_CAP_CLI_WIRING_COMPLETE=true (bounded order-cap CLI wired; execute still blocked)
     - Session-Execute erfordert --duration oder explizites --allow-unbounded-session
 
 Zum Beenden: Ctrl+C (SIGINT) oder SIGTERM
@@ -76,6 +76,15 @@ from src.live.run_logging import (
     generate_run_id,
 )
 from src.orders.base import OrderRequest, OrderExecutionResult
+from src.ops.bounded_testnet_order_cap_contract_v0 import (
+    CLI_WIRING_COMPLETE_MARKER,
+    add_bounded_order_cap_cli_arguments,
+    bounded_cap_spec_from_namespace,
+    build_entrypoint_bounded_cap_config_evidence,
+    emit_entrypoint_bounded_cap_config_json,
+    planned_duration_seconds_from_args,
+    validate_bounded_cap_cli_namespace,
+)
 from src.ops.wallclock_session_evidence_v0 import (
     WALLCLOCK_EVIDENCE_FILENAME,
     WallClockSessionTracker,
@@ -896,6 +905,37 @@ def _testnet_credentials_present() -> bool:
     )
 
 
+def _enforce_bounded_order_cap_cli(
+    args: argparse.Namespace, logger: logging.Logger
+) -> Optional[int]:
+    """
+    Validate bounded order-cap CLI values (fail-closed).
+
+    Does not authorize NORMAL_TESTNET_RUN or operator arming.
+    """
+    fail_reasons = validate_bounded_cap_cli_namespace(args)
+    if fail_reasons:
+        for reason in fail_reasons:
+            logger.error(f"Bounded order-cap CLI invalid: {reason}")
+        return EXIT_FAIL_CLOSED_ENTRYPOINT
+    return None
+
+
+def _emit_bounded_order_cap_config(
+    args: argparse.Namespace, logger: logging.Logger
+) -> None:
+    """Emit pre-session bounded cap + wall-clock config evidence (no orders/runtime)."""
+    spec = bounded_cap_spec_from_namespace(args)
+    evidence = build_entrypoint_bounded_cap_config_evidence(
+        spec,
+        planned_duration_seconds=planned_duration_seconds_from_args(args),
+    )
+    logger.info(
+        "Bounded order-cap config evidence: %s",
+        emit_entrypoint_bounded_cap_config_json(evidence),
+    )
+
+
 def _enforce_fail_closed_entrypoint(
     args: argparse.Namespace, logger: logging.Logger
 ) -> Optional[int]:
@@ -905,6 +945,9 @@ def _enforce_fail_closed_entrypoint(
     Dry-run skips credential and duration requirements (config validation only).
     Does not authorize NORMAL_TESTNET_RUN or operator arming.
     """
+    cap_rc = _enforce_bounded_order_cap_cli(args, logger)
+    if cap_rc is not None:
+        return cap_rc
     if args.dry_run:
         return None
     if not _testnet_credentials_present():
@@ -1026,6 +1069,7 @@ WICHTIG: Nur Testnet-Trading! Keine echten Live-Trades!
         default=None,
         help="Alternatives Verzeichnis fuer Run-Logs",
     )
+    add_bounded_order_cap_cli_arguments(parser)
 
     args = parser.parse_args()
 
@@ -1036,6 +1080,7 @@ WICHTIG: Nur Testnet-Trading! Keine echten Live-Trades!
     logger.info("Peak_Trade Testnet Session (Phase 35)")
     logger.info("=" * 60)
     logger.info("WICHTIG: Nur Testnet-Trading! Keine echten Live-Trades!")
+    logger.info("%s", CLI_WIRING_COMPLETE_MARKER)
     logger.info("=" * 60)
 
     fail_closed_rc = _enforce_fail_closed_entrypoint(args, logger)
@@ -1065,6 +1110,7 @@ WICHTIG: Nur Testnet-Trading! Keine echten Live-Trades!
         )
 
         if args.dry_run:
+            _emit_bounded_order_cap_config(args, logger)
             logger.info("Dry-Run: Session erfolgreich konfiguriert, keine Ausfuehrung.")
             return 0
 
