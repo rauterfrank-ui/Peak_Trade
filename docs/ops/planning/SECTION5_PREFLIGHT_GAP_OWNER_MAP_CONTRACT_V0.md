@@ -2413,6 +2413,80 @@ This governed repo-reflection block records operator-authorized **Section-5 guar
 
 Guard-gap closure is not operator arming, runtime authorization, execute authorization, live authorization, or futures authority. Prior governed reflection blocks above remain scoped acceptance/verification only and unchanged except Final Machine Lines propagation recorded here.
 
+## Operator Arming Explicit Authorization CLASS_4 Reflection v0
+
+READY_FOR_OPERATOR_ARMING_CLASS4_GOVERNED_REFLECTION_V0=true
+READY_FOR_OPERATOR_ARMING=true
+ACCEPTED_MODE=OPERATOR_ARMING_EXPLICIT_AUTHORIZATION_CLASS4_DOCS_TESTS_ONLY
+OPERATOR_GO=GO_OPERATOR_ARMING_EXPLICIT_AUTHORIZATION_CLASS4_DOCS_TESTS_V0
+CLASS4_OPERATOR_GO_ACCEPTED=true
+DOCS_TESTS_ONLY=true
+GOVERNED_ACCEPTANCE_BASIS=SECTION5_WEDGE_COMPLETE+ALL_GAPS_CLOSED+PREFLIGHT_LIFT_CLASS4+OPERATOR_ARMING_DECISION_RECORD
+INPUT_OPERATOR_ARMING_DECISION_RECORD_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/operator_arming_decision_record_no_run_v0_20260604T232934Z/
+INPUT_OPERATOR_ARMING_DECISION_PACKET_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/operator_arming_decision_packet_no_run_v0_20260604T232800Z/
+INPUT_OPERATOR_ARMING_CHARTER_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/operator_arming_class4_decision_charter_no_run_v0_20260604T232555Z/
+INPUT_ALL_GAPS_CLOSEOUT_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/section5_all_gaps_closed_final_reflection_post_merge_closeout_no_run_v0_20260604T232221Z/
+INPUT_RANKING_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/repo_wide_next_safe_slice_ranking_after_section5_all_gaps_closed_reflection_closeout_no_run_v0_20260604T232346Z/
+ALL_GAPS_CLOSED=true
+PREFLIGHT_REMAINS_BLOCKED=false
+PREFLIGHT_LIFTED_BY_CLASS4_POLICY=true
+OPERATOR_ARMING_DECISION_RECORD_REFLECTED=true
+OPERATOR_NAME=Frank Rauter
+OPERATOR_DECISION_SCOPE=OPERATOR_ARMING_AUTHORIZATION_PACKET_ONLY
+OPERATOR_CONFIRMS_ALL_GAPS_CLOSED=CONFIRMED
+OPERATOR_CONFIRMS_PREFLIGHT_LIFTED=CONFIRMED
+OPERATOR_CONFIRMS_ARMING_SCOPE=CONFIRMED
+OPERATOR_CONFIRMS_ARMING_IS_NOT_EXECUTE=CONFIRMED
+OPERATOR_CONFIRMS_NO_RUNTIME=CONFIRMED
+OPERATOR_CONFIRMS_NO_SCHEDULER=CONFIRMED
+OPERATOR_CONFIRMS_NO_ORDERS=CONFIRMED
+OPERATOR_CONFIRMS_NO_LIVE=CONFIRMED
+OPERATOR_CONFIRMS_NO_FUTURES_AUTHORITY=CONFIRMED
+OPERATOR_CONFIRMS_NEXT_EXECUTE_REMAINS_FALSE=CONFIRMED
+OPERATOR_CONFIRMS_SEPARATE_BOUNDED_EXECUTE_CHARTER_REQUIRED=CONFIRMED
+OPERATOR_CONFIRMS_ROLLBACK_AND_ABORT_CRITERIA=CONFIRMED
+GUARD_ARMING_NOT_AUTHORITY_LIFT=true
+ARMING_NOT_EXECUTE=true
+ARMING_NOT_RUNTIME=true
+ARMING_NOT_LIVE=true
+ARMING_NOT_FUTURES_AUTHORITY=true
+ARMING_NOT_ORDERS=true
+POLICY_ARMING_NOT_OPERATIONAL_AUTHORIZATION=true
+MINIMAL_REMAINING_BLOCKER_CLASS=INTENTIONAL_AUTHORITY_ONLY
+NEXT_EXECUTE_ALLOWED=false
+RUNTIME_APPROVED=false
+PREFLIGHT_LIFT_EXECUTED=false
+ACTUAL_PREFLIGHT_LIFT_EXECUTED=false
+FUTURES_EXECUTE_AUTHORIZED=false
+FUTURES_PRIVATE_API_AUTHORIZED=false
+FUTURES_VALIDATE_ONLY_AUTHORIZED=false
+FUTURES_SESSION_AUTHORIZED_NOW=false
+
+This governed repo-reflection block records operator-authorized **arming policy lift** to Final Machine Lines only, under explicit CLASS_4 Operator-GO `GO_OPERATOR_ARMING_EXPLICIT_AUTHORIZATION_CLASS4_DOCS_TESTS_V0`, after Operator Arming Decision Record fulfilment (Frank Rauter, 2026-06-04T23:29:34Z). **READY_FOR_OPERATOR_ARMING=true ≠ NEXT_EXECUTE_ALLOWED=true ≠ Execute ≠ Live ≠ futures authority.** Docs/tests policy reflection only — not runtime authorization, execute authorization, live authorization, or futures authority.
+
+### Arming-policy scope (Final Machine Lines only)
+
+- `READY_FOR_OPERATOR_ARMING=true` in **Final Machine Lines only** — documents seven preflight dimensions reviewed under operator attestation; not automatic activation
+- Prior ALL_GAPS_CLOSED and Preflight-Lift CLASS_4 reflection blocks remain unchanged — historical `READY_FOR_OPERATOR_ARMING=false` posture preserved in those blocks
+- Gap criteria blocks, Status block, Tier-C crosslink, synthesis block, and individual governed reflection blocks above remain unchanged where they record `READY_FOR_OPERATOR_ARMING=false` as historical scoped non-arming posture
+
+### Why execute and runtime gates remain false (arming-policy record only)
+
+- `NEXT_EXECUTE_ALLOWED=false`, `RUNTIME_APPROVED=false` — bounded execute requires separate CLASS_4 scope
+- `PREFLIGHT_LIFT_EXECUTED=false`, `ACTUAL_PREFLIGHT_LIFT_EXECUTED=false` — no runtime preflight lift
+- Arming policy at FML ≠ execute authorization ≠ runtime authorization ≠ live authorization
+
+### Non-authority boundary (arming-policy reflection does not imply)
+
+- does not set `NEXT_EXECUTE_ALLOWED=true` or `RUNTIME_APPROVED=true`
+- does not set `PREFLIGHT_LIFT_EXECUTED=true` or `ACTUAL_PREFLIGHT_LIFT_EXECUTED=true`
+- does not authorize scheduler execution, Paper, Shadow, Testnet, Live, orders, validate-only, private API, or unscoped runtime loops
+- does not grant futures authority (`FUTURES_EXECUTE_AUTHORIZED`, `FUTURES_PRIVATE_API_AUTHORIZED`, `FUTURES_VALIDATE_ONLY_AUTHORIZED`, `FUTURES_SESSION_AUTHORIZED_NOW` remain false)
+- does not modify `scripts/run_scheduler.py`, `config/scheduler/jobs.toml`, or production code in this slice
+- does not start or authorize Runtime, Paper 24/7, Shadow 24/7, or Live
+
+Policy arming lift is not execute authorization, runtime authorization, live authorization, or futures authority. Prior governed reflection blocks above remain scoped acceptance/verification only and unchanged except Final Machine Lines propagation recorded here.
+
 ## Tier-C + Shadow durable evidence archive crosslink v0
 
 TIER_C_SHADOW_DURABLE_EVIDENCE_REPO_STATIC_CROSSLINK_V0=true
@@ -2573,7 +2647,14 @@ ALL_GAPS_CLOSED_CLASS4_GOVERNED_REFLECTION_V0=true
 PATH_B_LIFT_DISCUSSION_READY=false
 ACTUAL_PREFLIGHT_LIFT_EXECUTED=false
 PREFLIGHT_LIFT_EXECUTED=false
-READY_FOR_OPERATOR_ARMING=false
+READY_FOR_OPERATOR_ARMING=true
+READY_FOR_OPERATOR_ARMING_CLASS4_GOVERNED_REFLECTION_V0=true
+OPERATOR_ARMING_DECISION_RECORD_REFLECTED=true
+ARMING_NOT_EXECUTE=true
+ARMING_NOT_RUNTIME=true
+ARMING_NOT_LIVE=true
+ARMING_NOT_FUTURES_AUTHORITY=true
+ARMING_NOT_ORDERS=true
 RUNTIME_APPROVED=false
 RUNTIME_STARTED=false
 PAPER_STARTED=false

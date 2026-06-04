@@ -143,7 +143,7 @@ def test_gap1_rc0_observed_governed_reflection_present_and_non_authorizing_v0() 
     assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=true" in block
     assert "GAP1_EXECUTE_ENTRYPOINT_RC0_OBSERVED=true" in block_lines
     assert "ALL_GAPS_CLOSED=true" in block
-    assert "READY_FOR_OPERATOR_ARMING=false" in block
+    assert "READY_FOR_OPERATOR_ARMING=true" in block
 
 
 def _gap1_rc0_observed_final_line_section(text: str) -> str:

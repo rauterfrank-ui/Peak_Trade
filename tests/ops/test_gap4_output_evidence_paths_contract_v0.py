@@ -195,7 +195,7 @@ def test_gap4_output_evidence_paths_verified_final_line_reflection_non_authorizi
     assert "GAP5_STOP_PROOF_ACCEPTED=true" in block
     assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in block
     assert "ALL_GAPS_CLOSED=true" in block
-    assert "READY_FOR_OPERATOR_ARMING=false" in block
+    assert "READY_FOR_OPERATOR_ARMING=true" in block
     assert "PREFLIGHT_REMAINS_BLOCKED=false" in block
     block_lines = {line.strip() for line in block.splitlines()}
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" in block_lines

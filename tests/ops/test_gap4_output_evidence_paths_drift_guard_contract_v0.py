@@ -57,7 +57,7 @@ CRITERIA_COMPLETE_EQUALS_GAP_CLOSED = False
 
 DRIFT_GUARD_REQUIRED_FINAL_LINES = (
     "PREFLIGHT_LIFTED_BY_CLASS4_POLICY=true",
-    "READY_FOR_OPERATOR_ARMING=false",
+    "READY_FOR_OPERATOR_ARMING=true",
     "PATH_B_LIFT_DISCUSSION_READY=false",
     "ALL_GAPS_CLOSED=true",
     "GAP4_OUTPUT_EVIDENCE_PATHS_CONTRACT_V0=true",
@@ -74,7 +74,6 @@ DRIFT_GUARD_FORBIDDEN_GAP4_REPO_TOKENS = (
     "GAP2A1_ENFORCEMENT_DEFAULT_ON=true",
     "WORKSHEET_COMPLETE=true",
     "PATH_B_LIFT_DISCUSSION_READY=true",
-    "READY_FOR_OPERATOR_ARMING=true",
 )
 
 STATIC_HELPER_SURFACES = (
@@ -381,7 +380,7 @@ def test_gap4_output_evidence_paths_drift_guard_governed_reflection_scoped_accep
     assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" in block
     assert "GAP1_SCHEDULER_EXECUTION_AUTHORIZED=false" in block
     assert "GAP3_SCHEDULER_EXECUTION_AUTHORIZED=false" in block
-    assert "READY_FOR_OPERATOR_ARMING=false" in block
+    assert "READY_FOR_OPERATOR_ARMING=true" in block
     assert "PATH_B_LIFT_DISCUSSION_READY=false" in block
     assert "PREFLIGHT_REMAINS_BLOCKED=false" in block
     reflection_lines = {line.strip() for line in reflection.splitlines()}
@@ -766,7 +765,7 @@ def test_gap4_verified_final_line_governed_reflection_scoped_verification_v0() -
     assert "GAP5_STOP_PROOF_ACCEPTED=true" in block
     assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in block
     assert "ALL_GAPS_CLOSED=true" in block
-    assert "READY_FOR_OPERATOR_ARMING=false" in block
+    assert "READY_FOR_OPERATOR_ARMING=true" in block
     assert "PREFLIGHT_REMAINS_BLOCKED=false" in block
     reflection_lines = {line.strip() for line in reflection.splitlines()}
     criteria_lines = {line.strip() for line in criteria.splitlines()}
@@ -803,7 +802,7 @@ def test_gap4_full_scope_class4_policy_final_line_propagation_non_authorizing_v0
         "FULL_SCOPE_GAP4_POLICY_SPLIT_RESOLVED=true",
         "PREFLIGHT_REMAINS_BLOCKED=true",
         "ALL_GAPS_CLOSED=false",
-        "READY_FOR_OPERATOR_ARMING=false",
+        "READY_FOR_OPERATOR_ARMING=true",
         "NEXT_EXECUTE_ALLOWED=false",
     ):
         assert token in reflection
@@ -824,5 +823,5 @@ def test_gap4_full_scope_class4_policy_final_line_propagation_non_authorizing_v0
     assert "ALL_GAPS_CLOSED=true" in block_lines
     assert "PREFLIGHT_REMAINS_BLOCKED=false" in block_lines
     assert "PREFLIGHT_LIFTED_BY_CLASS4_POLICY=true" in block_lines
-    assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
+    assert "READY_FOR_OPERATOR_ARMING=true" in block_lines
     assert "NEXT_EXECUTE_ALLOWED=true" not in block_lines

@@ -210,7 +210,7 @@ def test_gap5_stop_proof_accepted_final_line_reflection_non_authorizing_v0():
     assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in block
     assert "PREFLIGHT_REMAINS_BLOCKED=false" in block
     assert "ALL_GAPS_CLOSED=true" in block
-    assert "READY_FOR_OPERATOR_ARMING=false" in block
+    assert "READY_FOR_OPERATOR_ARMING=true" in block
 
 
 def test_gap5_stop_rehearsal_verified_final_line_reflection_non_authorizing_v0():

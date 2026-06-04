@@ -52,7 +52,7 @@ FUTURE_VERIFICATION_REQUIRES_EXPLICIT_OPERATOR_GO = True
 
 DRIFT_GUARD_REQUIRED_FINAL_LINES = (
     "PREFLIGHT_LIFTED_BY_CLASS4_POLICY=true",
-    "READY_FOR_OPERATOR_ARMING=false",
+    "READY_FOR_OPERATOR_ARMING=true",
     "PATH_B_LIFT_DISCUSSION_READY=false",
     "ALL_GAPS_CLOSED=true",
     "GAP7_RISK_BOUNDARY_VERIFIED=true",
@@ -80,7 +80,6 @@ DRIFT_GUARD_FORBIDDEN_GAP7_REPO_TOKENS = (
     "GAP7_SCHEDULER_EXECUTION_AUTHORIZED=true",
     "GAP7_RUNTIME_APPROVED=true",
     "GAP7_RISK_BOUNDARY_DEFAULT_ON=true",
-    "READY_FOR_OPERATOR_ARMING=true",
     "PATH_B_LIFT_DISCUSSION_READY=true",
     "SHADOW_24_7_AUTHORIZED=true",
     "WORKSHEET_COMPLETE=true",
@@ -356,7 +355,7 @@ def test_gap7_drift_guard_governed_reflection_scoped_acceptance_v0() -> None:
     assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in block
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" in block
     assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" in block
-    assert "READY_FOR_OPERATOR_ARMING=false" in block
+    assert "READY_FOR_OPERATOR_ARMING=true" in block
     assert "PATH_B_LIFT_DISCUSSION_READY=false" in block
     assert "PREFLIGHT_REMAINS_BLOCKED=false" in block
     reflection_lines = {line.strip() for line in reflection.splitlines()}
@@ -407,7 +406,7 @@ def test_gap7_verified_final_line_governed_reflection_scoped_verification_v0() -
     assert "GAP7_RISK_BOUNDARY_VERIFIED=false" in criteria
     assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in block
     assert "ALL_GAPS_CLOSED=true" in block
-    assert "READY_FOR_OPERATOR_ARMING=false" in block
+    assert "READY_FOR_OPERATOR_ARMING=true" in block
     assert "PREFLIGHT_REMAINS_BLOCKED=false" in block
     reflection_lines = {line.strip() for line in reflection.splitlines()}
     criteria_lines = {line.strip() for line in criteria.splitlines()}
