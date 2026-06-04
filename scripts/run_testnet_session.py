@@ -921,9 +921,7 @@ def _enforce_bounded_order_cap_cli(
     return None
 
 
-def _emit_bounded_order_cap_config(
-    args: argparse.Namespace, logger: logging.Logger
-) -> None:
+def _emit_bounded_order_cap_config(args: argparse.Namespace, logger: logging.Logger) -> None:
     """Emit pre-session bounded cap + wall-clock config evidence (no orders/runtime)."""
     spec = bounded_cap_spec_from_namespace(args)
     evidence = build_entrypoint_bounded_cap_config_evidence(
