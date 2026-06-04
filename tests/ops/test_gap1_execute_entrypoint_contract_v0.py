@@ -7,6 +7,12 @@ GAP1_SECTION_HEADER = "## Gap 1 Execute Entrypoint Contract v0"
 GAP1_RC0_OBSERVED_REFLECTION_HEADER = (
     "## Gap 1 Governed Execute Entrypoint Observed Evidence Reflection v0"
 )
+GAP1_RC0_OBSERVED_FINAL_LINE_REFLECTION_HEADER = (
+    "## Gap 1 Governed Execute Entrypoint RC0 Observed Final-Line Reflection v0"
+)
+GAP1_VERIFIED_FINAL_LINE_REFLECTION_HEADER = (
+    "## Gap 1 Governed Execute Entrypoint Verified Final-Line Reflection v0"
+)
 GAP4_GOVERNED_REFLECTION_HEADER = "## Gap 4 Governed Output Evidence Acceptance Reflection v0"
 FINAL_MACHINE_LINES_HEADER = "## Final Machine Lines"
 GAP1_PARALLEL_MARKERS = (
@@ -134,7 +140,46 @@ def test_gap1_rc0_observed_governed_reflection_present_and_non_authorizing_v0() 
     )
     assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=false" in reflection
     assert "PREFLIGHT_REMAINS_BLOCKED=true" in reflection
-    assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=false" in block
+    assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=true" in block
     assert "GAP1_EXECUTE_ENTRYPOINT_RC0_OBSERVED=true" in block_lines
     assert "ALL_GAPS_CLOSED=false" in block
     assert "READY_FOR_OPERATOR_ARMING=false" in block
+
+
+def _gap1_rc0_observed_final_line_section(text: str) -> str:
+    return text.split(GAP1_RC0_OBSERVED_FINAL_LINE_REFLECTION_HEADER, 1)[1].split(
+        GAP1_VERIFIED_FINAL_LINE_REFLECTION_HEADER, 1
+    )[0]
+
+
+def _gap1_verified_final_line_section(text: str) -> str:
+    return text.split(GAP1_VERIFIED_FINAL_LINE_REFLECTION_HEADER, 1)[1].split(
+        "## Tier-1 Governed Zero-Dispatch Manifest Observed Final-Line Reflection v0", 1
+    )[0]
+
+
+def test_gap1_verified_final_line_governed_reflection_v0() -> None:
+    text = DOC.read_text(encoding="utf-8")
+    section = _gap1_verified_final_line_section(text)
+    observed = _gap1_rc0_observed_final_line_section(text)
+    criteria = _gap1_section(text)
+    block = _final_machine_lines(text)
+
+    assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED_FINAL_LINE_GOVERNED_REFLECTION_V0=true" in section
+    assert "GAP1_VERIFIED_BAR_TIER=T1_PLUS_T2_ENTRYPOINT_BOUNDARY" in section
+    assert "T1_STATIC_READONLY_SUFFICIENT_FOR_GAP1_VERIFIED=false" in section
+    assert "T2_ENTRYPOINT_DRY_RUN_RC0_SUFFICIENT_FOR_GAP1_VERIFIED=true" in section
+    assert "T3_BOUNDED_EXECUTE_REQUIRED_FOR_GAP1_VERIFIED=false" in section
+    assert "GAP1_VERIFIED_REQUIRES_RUNTIME_EXECUTE=false" in section
+    assert "VERIFIED_NOT_OBSERVED_SEMANTIC_PRESERVED=true" in section
+    assert "GAP1_EXECUTE_ENTRYPOINT_RC0_OBSERVED=true" in observed
+    assert "does not modify Gap-1 criteria block verification posture" in section
+    assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=false" in criteria
+    assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=true" in block
+    assert "GAP1_VERIFIED_BAR_TIER=T1_PLUS_T2_ENTRYPOINT_BOUNDARY" in block
+    assert "GAP1_EXECUTE_ENTRYPOINT_RC0_OBSERVED=true" in block
+    criteria_lines = {line.strip() for line in criteria.splitlines()}
+    block_lines = {line.strip() for line in block.splitlines()}
+    assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=false" in criteria_lines
+    assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=true" in block_lines
+    assert "GAP1_SCHEDULER_EXECUTION_AUTHORIZED=true" not in block_lines

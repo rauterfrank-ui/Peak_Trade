@@ -1799,6 +1799,68 @@ This governed repo-reflection block records operator-authorized Gap-1 execute en
 
 Evidence observation is not runtime authorization. The Gap 1 Governed Execute Entrypoint Observed Evidence Reflection v0 block above remains scoped observation only and unchanged.
 
+## Gap 1 Governed Execute Entrypoint Verified Final-Line Reflection v0
+
+GAP1_EXECUTE_ENTRYPOINT_VERIFIED_FINAL_LINE_GOVERNED_REFLECTION_V0=true
+GAP1_EXECUTE_ENTRYPOINT_VERIFIED=true
+ACCEPTED_MODE=GAP1_ENTRYPOINT_BOUNDARY_VERIFIED_SCOPED_EVIDENCE_FINAL_LINE
+GOVERNED_VERIFICATION_BASIS=GAP1_T1_STATIC_ENTRYPOINT_CONTRACT_PLUS_T2_DRY_RUN_RC0_OBSERVED
+GAP1_VERIFIED_BAR_TIER=T1_PLUS_T2_ENTRYPOINT_BOUNDARY
+T1_STATIC_READONLY_SUFFICIENT_FOR_GAP1_VERIFIED=false
+T2_ENTRYPOINT_DRY_RUN_RC0_SUFFICIENT_FOR_GAP1_VERIFIED=true
+T3_BOUNDED_EXECUTE_REQUIRED_FOR_GAP1_VERIFIED=false
+GAP1_VERIFIED_REQUIRES_RUNTIME_EXECUTE=false
+GAP1_VERIFIED_REQUIRES_CONTRACT_LIFT=true
+ENTRYPOINT=scripts/run_scheduler.py
+EXTERNAL_DRY_RUN_EVIDENCE_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/evidence/gap6_bounded_dry_run_evidence_capture_operator_authorized_v0_20260603T153911Z/
+EXTERNAL_CROSSREF_EVIDENCE_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/gap2_bounded_scheduler_dry_run_once_no_network_no_credentials_v0_20260604T193701Z/
+EXTERNAL_PRECHECK_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/gap1_verified_bar_precheck_no_execute_v0_20260604T213021Z/
+OPERATOR_GO=GO_PREPARE_SECTION5_GAP1_VERIFIED_BAR_CONTRACT_DOCS_TESTS_V0
+NO_RUNTIME_AUTHORITY=true
+NO_REPO_FLAG_LIFT_FROM_EXTERNAL_EVIDENCE=true
+VERIFIED_NOT_OBSERVED_SEMANTIC_PRESERVED=true
+GAP1_EXECUTE_ENTRYPOINT_RC0_OBSERVED=true
+GAP1_RUNTIME_APPROVED=false
+GAP1_SCHEDULER_EXECUTION_AUTHORIZED=false
+GAP1_EXECUTE_ENTRYPOINT_DEFAULT_ON=false
+GAP1_ENTRYPOINT_DRY_RUN_ONLY=true
+GAP6_DRY_RUN_PROOF_VERIFIED=true
+GAP6_VERIFIED_BAR_TIER=T1_PLUS_T2_DRY_RUN_PROOF
+GAP2_CANONICAL_JOB_SET_VERIFIED=true
+GAP3_EXECUTE_COMMAND_VERIFIED=true
+PREFLIGHT_REMAINS_BLOCKED=true
+ALL_GAPS_CLOSED=false
+READY_FOR_OPERATOR_ARMING=false
+NEXT_EXECUTE_ALLOWED=false
+
+This governed repo-reflection block records operator-authorized Gap-1 execute entrypoint **verified final-line propagation** only. Verified means **entrypoint-boundary verification** (T1 static entrypoint contract + T2 Tier-2 bounded dry-run RC=0 observed on canonical entrypoint `scripts/run_scheduler.py`), not scheduler execution authorization or non-dry-run dispatch. External evidence bundles remain pointer-based and subordinate to repo governance.
+
+Command (Tier-2 primary observed RC=0 on entrypoint):
+
+`uv run python scripts/run_scheduler.py --config config/scheduler/jobs.toml --dry-run --once --verbose --include-tags paper_shadow_247,preflight,readonly`
+
+### Verified final-line scope (allowed only)
+
+- T1 static entrypoint contract via existing drift-guard tests; T2 Tier-2 bounded dry-run RC=0 observed on primary bundle `20260603T153911Z` via `scripts/run_scheduler.py`
+- `GAP1_EXECUTE_ENTRYPOINT_VERIFIED=true` in **Final Machine Lines only**
+- `GAP1_VERIFIED_BAR_TIER=T1_PLUS_T2_ENTRYPOINT_BOUNDARY` in **this block and Final Machine Lines**
+- Gap 1 Execute Entrypoint Contract v0 criteria block remains criteria-only with `GAP1_EXECUTE_ENTRYPOINT_VERIFIED=false`
+- `GAP1_EXECUTE_ENTRYPOINT_RC0_OBSERVED=true` in Final Machine Lines unchanged
+- verified entrypoint boundary ≠ RC0 observed alone; verified ≠ scheduler execution authorization
+
+### Non-authority boundary (verified final-line reflection does not imply)
+
+- does not modify Gap-1 criteria block verification posture (`GAP1_EXECUTE_ENTRYPOINT_VERIFIED=false` in criteria unchanged)
+- does not modify Gap-1 observed posture in criteria (`GAP1_EXECUTE_ENTRYPOINT_RC0_OBSERVED` not in criteria block)
+- does not set `GAP1_SCHEDULER_EXECUTION_AUTHORIZED=true` or `GAP1_RUNTIME_APPROVED=true`
+- does not modify Gap-2, Gap-3, Gap-6, Tier-1, or Gap-2a.1 enforcement posture beyond existing finals
+- does not lift preflight (`PREFLIGHT_REMAINS_BLOCKED=true` unchanged)
+- does not set `READY_FOR_OPERATOR_ARMING=true` or `NEXT_EXECUTE_ALLOWED=true`
+- does not set `ALL_GAPS_CLOSED=true`
+- does not authorize Live, Testnet, orders, validate-only, private API, or unscoped scheduler loops
+
+Evidence verification is not runtime authorization. The Gap 1 Governed Execute Entrypoint RC0 Observed Final-Line Reflection v0 block above remains scoped observation only and unchanged.
+
 ## Tier-1 Governed Zero-Dispatch Manifest Observed Final-Line Reflection v0
 
 TIER1_ZERO_DISPATCH_MANIFEST_OBSERVED_FINAL_LINE_GOVERNED_REFLECTION_V0=true
@@ -2181,7 +2243,14 @@ GAP3_SCHEDULER_EXECUTION_AUTHORIZED=false
 GAP3_EXECUTE_COMMAND_DEFAULT_ON=false
 GAP3_EXECUTE_COMMAND_DRY_RUN_ONLY=true
 GAP1_EXECUTE_ENTRYPOINT_CONTRACT_V0=true
-GAP1_EXECUTE_ENTRYPOINT_VERIFIED=false
+GAP1_EXECUTE_ENTRYPOINT_VERIFIED=true
+GAP1_EXECUTE_ENTRYPOINT_VERIFIED_FINAL_LINE_GOVERNED_REFLECTION_V0=true
+GAP1_VERIFIED_BAR_TIER=T1_PLUS_T2_ENTRYPOINT_BOUNDARY
+T1_STATIC_READONLY_SUFFICIENT_FOR_GAP1_VERIFIED=false
+T2_ENTRYPOINT_DRY_RUN_RC0_SUFFICIENT_FOR_GAP1_VERIFIED=true
+T3_BOUNDED_EXECUTE_REQUIRED_FOR_GAP1_VERIFIED=false
+GAP1_VERIFIED_REQUIRES_RUNTIME_EXECUTE=false
+GAP1_VERIFIED_REQUIRES_CONTRACT_LIFT=true
 GAP1_EXECUTE_ENTRYPOINT_RC0_OBSERVED=true
 GAP1_RUNTIME_APPROVED=false
 GAP1_SCHEDULER_EXECUTION_AUTHORIZED=false
