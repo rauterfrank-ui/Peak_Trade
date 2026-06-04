@@ -88,7 +88,7 @@ Preflight §2a.1 documents run-type applicability for **run completion**: Paper,
 
 **Bounded Futures Testnet harness/adapter contract (PE-9 guard) v0:** Addresses `futures_testnet_execute_harness_and_exchange_adapter_missing` at offline harness/adapter contract layer only. Canonical surfaces: `src/ops/bounded_futures_testnet_adapter_contract_v0.py` (`BOUNDED_FUTURES_TESTNET_ADAPTER_CONTRACT_V0=true`), `src/ops/bounded_futures_testnet_harness_contract_v0.py` (`BOUNDED_FUTURES_TESTNET_HARNESS_CONTRACT_V0=true`). Static guards: `tests/ops/test_bounded_futures_testnet_adapter_contract_v0.py`, `tests/ops/test_bounded_futures_testnet_harness_contract_v0.py`. `HARNESS_EXECUTE_AUTHORIZED_NOW=false`; `ADAPTER_NETWORK_CALLS_ALLOWED=false`; `FUTURES_TESTNET_INSTRUMENT_EXCHANGE_PROVEN=false`; **does not** authorize Futures execute, exchange calls, credentials, or Master-V2 / Double-Play authority.
 
-**Bounded Futures Testnet runtime harness / exchange impl descriptor contract (PE-10 guard) v0:** Addresses `futures_testnet_runtime_harness_and_exchange_impl_residual` at offline descriptor layer only (reuses PE-8/PE-9). Canonical surfaces: `src/ops/bounded_futures_testnet_exchange_impl_contract_v0.py` (`BOUNDED_FUTURES_TESTNET_EXCHANGE_IMPL_CONTRACT_V0=true`), `src/ops/bounded_futures_testnet_runtime_harness_contract_v0.py` (`BOUNDED_FUTURES_TESTNET_RUNTIME_HARNESS_CONTRACT_V0=true`). Governed archive harness entrypoint: `scripts/ops/archive_futures_testnet_harness_v0.py` (`ARCHIVE_FUTURES_TESTNET_HARNESS_V0=true`); static guard: `tests/ops/test_archive_futures_testnet_harness_v0.py`. `RUNTIME_HARNESS_EXECUTE_ALLOWED=false`; `EXCHANGE_IMPL_NETWORK_CALLS_ALLOWED=false`; `ARCHIVE_HARNESS_SCRIPT_PRESENT=true`; `ARCHIVE_HARNESS_SCRIPT_EXECUTE_AUTHORIZED_NOW=false`; `ARCHIVE_EXCHANGE_CLIENT_PRESENT=false`; **does not** authorize Futures execute, harness network I/O by default, credentials, orders, or Master-V2 / Double-Play authority. Residual after PE-10: live exchange client + operator-confirmed network execute path (out of scope).
+**Bounded Futures Testnet runtime harness / exchange impl descriptor contract (PE-10 guard) v0:** Addresses `futures_testnet_runtime_harness_and_exchange_impl_residual` at offline descriptor layer only (reuses PE-8/PE-9). Canonical surfaces: `src/ops/bounded_futures_testnet_exchange_impl_contract_v0.py` (`BOUNDED_FUTURES_TESTNET_EXCHANGE_IMPL_CONTRACT_V0=true`), `src/ops/bounded_futures_testnet_runtime_harness_contract_v0.py` (`BOUNDED_FUTURES_TESTNET_RUNTIME_HARNESS_CONTRACT_V0=true`). Governed archive harness entrypoint: `scripts/ops/archive_futures_testnet_harness_v0.py` (`ARCHIVE_FUTURES_TESTNET_HARNESS_V0=true`); static guard: `tests/ops/test_archive_futures_testnet_harness_v0.py`. `RUNTIME_HARNESS_EXECUTE_ALLOWED=false`; `EXCHANGE_IMPL_NETWORK_CALLS_ALLOWED=false`; `ARCHIVE_HARNESS_SCRIPT_PRESENT=true`; `ARCHIVE_HARNESS_SCRIPT_EXECUTE_AUTHORIZED_NOW=false`; `ARCHIVE_EXCHANGE_CLIENT_PRESENT=false`; **does not** authorize Futures execute, harness network I/O by default, credentials, orders, or Master-V2 / Double-Play authority. **PE-10 residual (precise):** operator-confirmed **reachability-only** network execute is proven for zero-order public and private-readonly modes (see PE-11 governed reflection); **order execute**, **validate-order**, **live exchange client for trading**, and **preflight lift** remain out of scope and unauthorized.
 
 ### Reuse-first owner surfaces
 
@@ -110,6 +110,10 @@ Preflight §2a.1 documents run-type applicability for **run completion**: Paper,
 - `src/ops/bounded_futures_testnet_exchange_impl_contract_v0.py`
 - `src/ops/bounded_futures_testnet_runtime_harness_contract_v0.py`
 - `scripts/ops/archive_futures_testnet_harness_v0.py`
+- `src/ops/bounded_futures_private_readonly_contract_v0.py`
+- `src/ops/kraken_futures_demo_credential_presence_contract_v0.py`
+- `tests/ops/test_bounded_futures_private_readonly_contract_v0.py`
+- `tests/ops/test_kraken_futures_demo_credentials_presence_readonly_v0.py`
 - `tests/ops/test_repo_native_bounded_order_cap_contract_v0.py`
 - `tests/ops/test_bounded_futures_testnet_contract_v0.py`
 - `tests/ops/test_bounded_futures_testnet_adapter_contract_v0.py`
@@ -1186,6 +1190,64 @@ This governed repo-reflection block records operator-authorized Gap-4 output-evi
 
 Evidence verification is not runtime authorization. The Gap 4 Full-Scope Evidence Completeness Reflection v0 and Gap 4 Governed Output Evidence Acceptance Reflection v0 blocks above remain scoped acceptance only and unchanged.
 
+## PE-11 Governed Bounded Futures Reachability Reflection v0
+
+PE11_BOUNDED_FUTURES_REACHABILITY_GOVERNED_REFLECTION_V0=true
+ACCEPTED_MODE=BOUNDED_FUTURES_REACHABILITY_EVIDENCE_POINTER_REFLECTION_ONLY
+ZERO_ORDER_PUBLIC_FUTURES_REACHABILITY_PROVEN=true
+CREDENTIAL_PRESENCE_PRESENT_REFLECTED=true
+PRIVATE_READONLY_WIRE_REACHABILITY_PROVEN=true
+PRIVATE_READONLY_SUCCESS_TIER=private_readonly_wire_reachability_proven_no_order_no_mutation
+REACHABILITY_PROVEN_NOT_ORDER_AUTHORIZED=true
+INPUT_ZERO_ORDER_PUBLIC_REVIEW_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/futures_network_reachability_post_run_evidence_review_v0_20260604T154641Z
+INPUT_ZERO_ORDER_PUBLIC_RUNTIME_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/bounded_futures_zero_order_operator_network_reachability_Frank_Rauter_20260604T154502Z_20260604T154511Z
+INPUT_CREDENTIAL_PRESENCE_CLOSEOUT_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/kraken_futures_demo_credential_presence_present_env_file_closeout_v0_20260604T165811Z
+INPUT_PRIVATE_READONLY_REVIEW_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/private_readonly_futures_final_retry_post_run_evidence_review_v0_20260604T183919Z
+INPUT_PRIVATE_READONLY_RUNTIME_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/bounded_futures_private_readonly_private_readonly_final_retry_Frank_Rauter_20260604T183718Z_20260604T183725Z
+GOVERNED_REPO_REFLECTION_CHARTER_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/section5_preflight_gap_progression_no_run_v0_20260604T184334Z
+OPERATOR_GO=GO_PREPARE_SECTION5_PE11_BOUNDED_FUTURES_REACHABILITY_GOVERNED_REFLECTION_PR_NO_RUN_V0
+NO_RUNTIME_AUTHORITY=true
+NO_REPO_FLAG_LIFT_FROM_EXTERNAL_ACCEPTANCE=true
+ARCHIVE_HARNESS_SCRIPT_EXECUTE_AUTHORIZED_NOW=false
+FUTURES_EXECUTE_AUTHORIZED=false
+FUTURES_PRIVATE_API_AUTHORIZED=false
+FUTURES_VALIDATE_ONLY_AUTHORIZED=false
+FUTURES_SESSION_AUTHORIZED_NOW=false
+NEXT_EXECUTE_ALLOWED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+ALL_GAPS_CLOSED=false
+READY_FOR_OPERATOR_ARMING=false
+PATH_B_LIFT_DISCUSSION_READY=false
+
+This governed repo-reflection block records operator-authorized **bounded futures reachability evidence** only. It propagates proven reachability facts to Final Machine Lines based on existing durable archive runtime/closeout bundles (zero-order public, credential presence, private-readonly 3/3 HTTP 200). External evidence bundles remain pointer-based and subordinate to repo governance.
+
+### Reachability scope (allowed reflection only)
+
+| Stage | Evidence | Reflected fact |
+|-------|----------|----------------|
+| Zero-order public | `bounded_futures_zero_order_operator_network_reachability_Frank_Rauter_20260604T154502Z_*` | Public GET reachability on demo-futures; no credentials |
+| Credential presence | `kraken_futures_demo_credential_presence_present_env_file_closeout_v0_20260604T165811Z` | Keys present; presence-only; no network |
+| Private-readonly | `private_readonly_final_retry_Frank_Rauter_20260604T183718Z_*` | 3/3 private GET HTTP 200; redacted evidence |
+
+### Reachability proven ≠ authorization
+
+- **Reachability proven** does **not** authorize order execute, validate-order, live trading, preflight lift, operator arming, or scheduler/runtime start.
+- `ARCHIVE_HARNESS_SCRIPT_EXECUTE_AUTHORIZED_NOW=false` in repo contracts remains unchanged.
+- PE-8/9/10 criteria blocks remain offline contract guards; PE-11 does not set `FUTURES_SESSION_AUTHORIZED_NOW=true`.
+
+### Non-authority boundary (PE-11 reflection does not imply)
+
+- does not set `PREFLIGHT_REMAINS_BLOCKED=false` or lift global preflight
+- does not set `ALL_GAPS_CLOSED=true`
+- does not set `READY_FOR_OPERATOR_ARMING=true`
+- does not set `ARCHIVE_HARNESS_SCRIPT_EXECUTE_AUTHORIZED_NOW=true`
+- does not set `FUTURES_EXECUTE_AUTHORIZED=true`, `FUTURES_PRIVATE_API_AUTHORIZED=true`, or `FUTURES_VALIDATE_ONLY_AUTHORIZED=true`
+- does not verify or close Gap 1/2/3/4/5/6/7 criteria blocks beyond existing finals
+- does not authorize scheduler execution, orders, validate-only, live host, or Master-V2 / Double-Play authority
+- does not start or authorize Runtime, Paper, Shadow, Testnet, or Live
+
+Evidence reflection is not runtime authorization. The PE-8/9/10 contract blocks above remain offline guards unchanged.
+
 ## Preflight Synthesis Docs Block Reflection v0
 
 PREFLIGHT_SYNTHESIS_GOVERNED_REFLECTION_V0=true
@@ -1480,3 +1542,14 @@ SHADOW_PRIMARY_EVIDENCE_DURABLE_CROSSLINKED=true
 SHADOW_HOLD_READINESS_HOLD=true
 SHADOW_HOLD_LIFTED=false
 TESTNET_NOW_RECOMMENDED=false
+PE11_BOUNDED_FUTURES_REACHABILITY_GOVERNED_REFLECTION_V0=true
+ZERO_ORDER_PUBLIC_FUTURES_REACHABILITY_PROVEN=true
+CREDENTIAL_PRESENCE_PRESENT_REFLECTED=true
+PRIVATE_READONLY_WIRE_REACHABILITY_PROVEN=true
+REACHABILITY_PROVEN_NOT_ORDER_AUTHORIZED=true
+FUTURES_EXECUTE_AUTHORIZED=false
+FUTURES_PRIVATE_API_AUTHORIZED=false
+FUTURES_VALIDATE_ONLY_AUTHORIZED=false
+FUTURES_SESSION_AUTHORIZED_NOW=false
+ARCHIVE_HARNESS_SCRIPT_EXECUTE_AUTHORIZED_NOW=false
+NEXT_EXECUTE_ALLOWED=false

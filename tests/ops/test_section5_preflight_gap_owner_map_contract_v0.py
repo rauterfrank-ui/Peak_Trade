@@ -217,3 +217,65 @@ def test_section5_preflight_synthesis_docs_block_reflection_non_authorizing_v0()
     assert "PREFLIGHT_REMAINS_BLOCKED=false" not in block_lines
     assert "ALL_GAPS_CLOSED=true" not in block_lines
     assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
+
+
+PE11_BOUNDED_FUTURES_REACHABILITY_REFLECTION_HEADER = (
+    "## PE-11 Governed Bounded Futures Reachability Reflection v0"
+)
+
+
+def _pe11_reflection_section(text: str) -> str:
+    return text.split(PE11_BOUNDED_FUTURES_REACHABILITY_REFLECTION_HEADER, 1)[1].split(
+        "## Preflight Synthesis Docs Block Reflection v0", 1
+    )[0]
+
+
+def test_section5_pe11_bounded_futures_reachability_reflection_non_authorizing_v0() -> None:
+    text = DOC.read_text(encoding="utf-8")
+    pe11 = _pe11_reflection_section(text)
+    block = _final_machine_lines(text)
+
+    for token in (
+        "PE11_BOUNDED_FUTURES_REACHABILITY_GOVERNED_REFLECTION_V0=true",
+        "ZERO_ORDER_PUBLIC_FUTURES_REACHABILITY_PROVEN=true",
+        "CREDENTIAL_PRESENCE_PRESENT_REFLECTED=true",
+        "PRIVATE_READONLY_WIRE_REACHABILITY_PROVEN=true",
+        "REACHABILITY_PROVEN_NOT_ORDER_AUTHORIZED=true",
+        "ARCHIVE_HARNESS_SCRIPT_EXECUTE_AUTHORIZED_NOW=false",
+        "FUTURES_EXECUTE_AUTHORIZED=false",
+        "FUTURES_PRIVATE_API_AUTHORIZED=false",
+        "FUTURES_VALIDATE_ONLY_AUTHORIZED=false",
+        "FUTURES_SESSION_AUTHORIZED_NOW=false",
+        "NEXT_EXECUTE_ALLOWED=false",
+        "PREFLIGHT_REMAINS_BLOCKED=true",
+        "ALL_GAPS_CLOSED=false",
+        "READY_FOR_OPERATOR_ARMING=false",
+    ):
+        assert token in pe11
+
+    assert "bounded_futures_private_readonly_contract_v0.py" in text
+    assert "kraken_futures_demo_credential_presence_contract_v0.py" in text
+    assert "private_readonly_final_retry_Frank_Rauter_20260604T183718Z" in pe11
+    assert "futures_network_reachability_post_run_evidence_review_v0_20260604T154641Z" in pe11
+    assert "Reachability proven ≠ authorization" in pe11 or "Reachability proven" in pe11
+    assert "does not set `PREFLIGHT_REMAINS_BLOCKED=false`" in pe11
+    assert "does not set `ALL_GAPS_CLOSED=true`" in pe11
+    assert "does not set `FUTURES_EXECUTE_AUTHORIZED=true`" in pe11
+    assert "Evidence reflection is not runtime authorization" in pe11
+
+    for token in (
+        "PE11_BOUNDED_FUTURES_REACHABILITY_GOVERNED_REFLECTION_V0=true",
+        "ZERO_ORDER_PUBLIC_FUTURES_REACHABILITY_PROVEN=true",
+        "PRIVATE_READONLY_WIRE_REACHABILITY_PROVEN=true",
+        "REACHABILITY_PROVEN_NOT_ORDER_AUTHORIZED=true",
+        "FUTURES_EXECUTE_AUTHORIZED=false",
+        "ARCHIVE_HARNESS_SCRIPT_EXECUTE_AUTHORIZED_NOW=false",
+    ):
+        assert token in block
+
+    pe11_lines = {line.strip() for line in pe11.splitlines()}
+    block_lines = {line.strip() for line in block.splitlines()}
+    assert "FUTURES_EXECUTE_AUTHORIZED=true" not in pe11_lines
+    assert "ARCHIVE_HARNESS_SCRIPT_EXECUTE_AUTHORIZED_NOW=true" not in block_lines
+    assert "ALL_GAPS_CLOSED=true" not in block_lines
+    assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
