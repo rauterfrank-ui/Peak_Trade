@@ -68,12 +68,13 @@ DEPENDENCY_REQUIRED_FINAL_LINES = (
     "GAP3_SCHEDULER_EXECUTION_AUTHORIZED=false",
     "GAP6_DRY_RUN_PROOF_ACCEPTED=true",
     "GAP6_DRY_RUN_RC0_OBSERVED=true",
+    "GAP6_DRY_RUN_PROOF_VERIFIED=true",
+    "GAP6_VERIFIED_BAR_TIER=T1_PLUS_T2_DRY_RUN_PROOF",
 )
 
 DEPENDENCY_FORBIDDEN_REPO_TOKENS = (
     "GAP2_JOB_SET_ENABLED=true",
     "GAP3_SCHEDULER_EXECUTION_AUTHORIZED=true",
-    "GAP6_DRY_RUN_PROOF_VERIFIED=true",
     "SHADOW_24_7_AUTHORIZED=true",
     "PATH_B_LIFT_DISCUSSION_READY=true",
     "ALL_GAPS_CLOSED=true",
@@ -239,7 +240,7 @@ def test_gap2_gap3_dependency_gap6_tokens_untouched_v0() -> None:
     block = _final_machine_lines(_section5_text())
     assert "GAP6_DRY_RUN_PROOF_ACCEPTED=true" in block
     assert "GAP6_DRY_RUN_RC0_OBSERVED=true" in block
-    assert "GAP6_DRY_RUN_PROOF_VERIFIED=false" in block
+    assert "GAP6_DRY_RUN_PROOF_VERIFIED=true" in block
 
 
 def test_gap2_gap3_dependency_criteria_complete_does_not_close_gaps_v0() -> None:
@@ -473,6 +474,6 @@ def test_gap2_gap3_reflection_final_lines_gap3_verified_without_authority_lift_v
     assert "GAP3_EXECUTE_COMMAND_VERIFIED=true" in block
     assert "GAP3_EXECUTE_COMMAND_DRY_RUN_RC0_OBSERVED=true" in block
     assert "GAP6_DRY_RUN_RC0_OBSERVED=true" in block
-    assert "GAP6_DRY_RUN_PROOF_VERIFIED=false" in block
+    assert "GAP6_DRY_RUN_PROOF_VERIFIED=true" in block
     assert "PREFLIGHT_REMAINS_BLOCKED=true" in block
     assert "ALL_GAPS_CLOSED=false" in block

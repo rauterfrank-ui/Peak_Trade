@@ -239,7 +239,7 @@ def test_gap5_stop_criteria_drift_guard_gap4_gap6_tokens_untouched_v0() -> None:
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" in block
     assert "GAP6_DRY_RUN_PROOF_ACCEPTED=true" in block
     assert "GAP6_DRY_RUN_RC0_OBSERVED=true" in block
-    assert "GAP6_DRY_RUN_PROOF_VERIFIED=false" in block
+    assert "GAP6_DRY_RUN_PROOF_VERIFIED=true" in block
 
 
 def test_gap5_stop_criteria_drift_guard_criteria_complete_does_not_close_gaps_v0() -> None:

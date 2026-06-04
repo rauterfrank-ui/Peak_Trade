@@ -11,6 +11,9 @@ GAP6_ACCEPTED_FINAL_LINE_REFLECTION_HEADER = (
 GAP6_RC0_OBSERVED_REFLECTION_HEADER = (
     "## Gap 6 Governed Bounded Dry-Run RC0 Observed Evidence Reflection v0"
 )
+GAP6_VERIFIED_FINAL_LINE_HEADER = (
+    "## Gap 6 Governed Dry-Run Proof Verified Final-Line Reflection v0"
+)
 GAP5_GOVERNED_STOP_PROOF_REFLECTION_HEADER = "## Gap 5 Governed Stop Proof Acceptance Reflection v0"
 FINAL_MACHINE_LINES_HEADER = "## Final Machine Lines"
 GAP6_PARALLEL_MARKERS = (
@@ -182,7 +185,7 @@ def test_gap6_dry_run_proof_criteria_contract_governed_reflection_non_authorizin
     assert "does not accept or verify any proof" in criteria
     assert "GAP6_DRY_RUN_PROOF_ACCEPTED=true" in block
     assert "GAP6_DRY_RUN_RC0_OBSERVED=true" in block
-    assert "GAP6_DRY_RUN_PROOF_VERIFIED=false" in block
+    assert "GAP6_DRY_RUN_PROOF_VERIFIED=true" in block
     assert "GAP6_DRY_RUN_PROOF_ACCEPTED_EXTERNAL=true" not in text
     assert "GAP6_DRY_RUN_RC0_OBSERVED_EXTERNAL=true" not in text
     reflection_lines = {line.strip() for line in reflection.splitlines()}
@@ -191,6 +194,48 @@ def test_gap6_dry_run_proof_criteria_contract_governed_reflection_non_authorizin
     assert "GAP6_DRY_RUN_PROOF_ACCEPTED=true" in reflection_lines
     assert "GAP6_DRY_RUN_PROOF_ACCEPTED=true" not in criteria_lines
     assert "GAP6_DRY_RUN_PROOF_ACCEPTED=true" in block_lines
+
+
+def _gap6_rc0_observed_final_line_reflection_section(text: str) -> str:
+    return text.split("## Gap 6 Governed Dry-Run RC0 Observed Final-Line Reflection v0", 1)[
+        1
+    ].split(GAP6_VERIFIED_FINAL_LINE_HEADER, 1)[0]
+
+
+def _gap6_verified_final_line_section(text: str) -> str:
+    return text.split(GAP6_VERIFIED_FINAL_LINE_HEADER, 1)[1].split(
+        "## Gap 1 Governed Execute Entrypoint RC0 Observed Final-Line Reflection v0", 1
+    )[0]
+
+
+def test_gap6_verified_final_line_governed_reflection_v0() -> None:
+    text = DOC.read_text(encoding="utf-8")
+    section = _gap6_verified_final_line_section(text)
+    observed_final = _gap6_rc0_observed_final_line_reflection_section(text)
+    criteria = _gap6_criteria_section(text)
+    block = _final_machine_lines(text)
+
+    assert "GAP6_DRY_RUN_PROOF_VERIFIED_FINAL_LINE_GOVERNED_REFLECTION_V0=true" in section
+    assert "GAP6_VERIFIED_BAR_TIER=T1_PLUS_T2_DRY_RUN_PROOF" in section
+    assert "T1_STATIC_READONLY_SUFFICIENT_FOR_GAP6_VERIFIED=false" in section
+    assert "T2_DRY_RUN_PROOF_RC0_SUFFICIENT_FOR_GAP6_VERIFIED=true" in section
+    assert "T3_BOUNDED_EXECUTE_REQUIRED_FOR_GAP6_VERIFIED=false" in section
+    assert "GAP6_VERIFIED_REQUIRES_RUNTIME_EXECUTE=false" in section
+    assert "VERIFIED_NOT_OBSERVED_NOT_ACCEPTED_SEMANTIC_PRESERVED=true" in section
+    assert "GAP6_DRY_RUN_RC0_OBSERVED=true" in observed_final
+    assert "GAP6_DRY_RUN_PROOF_ACCEPTED=true" in block
+    assert "does not modify Gap-6 criteria block verification posture" in section
+    assert "does not set `GAP1_EXECUTE_ENTRYPOINT_VERIFIED=true`" in section
+    assert "GAP6_DRY_RUN_PROOF_VERIFIED=false" in criteria
+    assert "GAP6_DRY_RUN_PROOF_VERIFIED=true" in block
+    assert "GAP6_VERIFIED_BAR_TIER=T1_PLUS_T2_DRY_RUN_PROOF" in block
+    assert "GAP6_DRY_RUN_RC0_OBSERVED=true" in block
+    criteria_lines = {line.strip() for line in criteria.splitlines()}
+    block_lines = {line.strip() for line in block.splitlines()}
+    assert "GAP6_DRY_RUN_PROOF_VERIFIED=false" in criteria_lines
+    assert "GAP6_DRY_RUN_PROOF_VERIFIED=true" in block_lines
+    assert "GAP6_SCHEDULER_EXECUTION_AUTHORIZED=true" not in block_lines
+    assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=true" not in block_lines
 
 
 def test_gap6_dry_run_proof_accepted_final_line_governed_reflection_v0() -> None:
@@ -216,7 +261,7 @@ def test_gap6_dry_run_proof_accepted_final_line_governed_reflection_v0() -> None
     assert "GAP6_DRY_RUN_RC0_OBSERVED=false" in criteria
     assert "GAP6_DRY_RUN_PROOF_ACCEPTED=true" in block
     assert "GAP6_DRY_RUN_RC0_OBSERVED=true" in block
-    assert "GAP6_DRY_RUN_PROOF_VERIFIED=false" in block
+    assert "GAP6_DRY_RUN_PROOF_VERIFIED=true" in block
     criteria_lines = {line.strip() for line in criteria.splitlines()}
     block_lines = {line.strip() for line in block.splitlines()}
     assert "GAP6_DRY_RUN_PROOF_ACCEPTED=true" not in criteria_lines
