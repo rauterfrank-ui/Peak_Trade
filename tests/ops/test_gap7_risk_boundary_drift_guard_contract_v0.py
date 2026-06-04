@@ -64,7 +64,7 @@ DRIFT_GUARD_REQUIRED_FINAL_LINES = (
     "GAP7_SCHEDULER_EXECUTION_AUTHORIZED=false",
     "GAP7_RUNTIME_APPROVED=false",
     "GAP7_RISK_BOUNDARY_DEFAULT_ON=false",
-    "GAP5_STOP_REHEARSAL_EXECUTED=false",
+    "GAP5_STOP_REHEARSAL_EXECUTED=true",
     "GAP5_STOP_PROOF_ACCEPTED=true",
     "GAP6_DRY_RUN_PROOF_ACCEPTED=true",
     "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false",
@@ -263,7 +263,7 @@ def test_gap7_drift_guard_gap6_gap2a1_orthogonal_v0() -> None:
 
 def test_gap7_drift_guard_gap5_stop_orthogonal_v0() -> None:
     block = _final_machine_lines(_section5_text())
-    assert "GAP5_STOP_REHEARSAL_EXECUTED=false" in block
+    assert "GAP5_STOP_REHEARSAL_EXECUTED=true" in block
     assert "GAP5_STOP_PROOF_ACCEPTED=true" in block
     assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in block
 

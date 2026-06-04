@@ -38,7 +38,7 @@ CLASSIFICATION_REQUIRED_FINAL_LINES = (
     "READY_FOR_OPERATOR_ARMING=false",
     "PATH_B_LIFT_DISCUSSION_READY=false",
     "ALL_GAPS_CLOSED=false",
-    "GAP5_STOP_REHEARSAL_EXECUTED=false",
+    "GAP5_STOP_REHEARSAL_EXECUTED=true",
     "GAP5_STOP_PROOF_ACCEPTED=true",
     "GAP5_TYPE2_WAIVER_GRANTED=false",
     "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true",
@@ -47,7 +47,6 @@ CLASSIFICATION_REQUIRED_FINAL_LINES = (
 )
 
 CLASSIFICATION_FORBIDDEN_REPO_TOKENS = (
-    "GAP5_STOP_REHEARSAL_EXECUTED=true",
     "GAP5_STOP_CRITERIA_VERIFIED=true",
     "REHEARSAL_EXECUTED=true",
     "REHEARSAL_OBSERVED=true",
@@ -105,7 +104,7 @@ def test_gap5_rehearsal_classification_forbids_lift_and_external_tokens_v0() -> 
 
 
 def test_gap5_rehearsal_classification_repo_ssot_forbids_external_rehearsal_tokens_v0() -> None:
-    text = _section5_text()
+    lines = {line.strip() for line in _section5_text().splitlines()}
     external_tokens = (
         "REHEARSAL_EXECUTED=true",
         "REHEARSAL_OBSERVED=true",
@@ -115,7 +114,7 @@ def test_gap5_rehearsal_classification_repo_ssot_forbids_external_rehearsal_toke
         "EXTERNAL_REHEARSAL_EVIDENCE_ACCEPTED=true",
     )
     for token in external_tokens:
-        assert token not in text
+        assert token not in lines
 
 
 def test_gap5_rehearsal_classification_gap5_section_preserves_not_rehearsed_not_proof_v0() -> None:
@@ -141,7 +140,7 @@ def test_gap5_rehearsal_classification_preflight_evidence_not_approval_v0() -> N
 def test_gap5_rehearsal_classification_drift_guard_is_not_rehearsal_executed_v0() -> None:
     assert GAP5_DRIFT_GUARD.is_file()
     text = GAP5_DRIFT_GUARD.read_text(encoding="utf-8")
-    assert "GAP5_STOP_REHEARSAL_EXECUTED=false" in text
+    assert "GAP5_STOP_REHEARSAL_EXECUTED=true" in text
     assert "DRIFT_GUARD_FORBIDDEN_GAP5_REPO_TOKENS" in text
     assert "GAP5_STOP_PROOF_ACCEPTED=false" in text
     assert "never treats external F5 approval or planning" in text
@@ -208,6 +207,22 @@ def test_gap5_rehearsal_classification_owner_crosslinks_hardening_source_contrac
     lines = {line.strip() for line in text.splitlines()}
     assert ("GAP5_STOP_REHEARSAL_EXECUTED" + _MARKER_TRUE) not in lines
     assert ("GAP5_STOP_PROOF_ACCEPTED" + _MARKER_TRUE) not in lines
+
+
+def test_gap5_rehearsal_classification_verified_final_line_scoped_repo_token_v0() -> None:
+    text = _section5_text()
+    reflection = text.split(
+        "## Gap 5 Governed Stop Rehearsal Verified Final-Line Reflection v0", 1
+    )[1].split("## Gap 6 Governed Dry-Run Proof Acceptance Reflection v0", 1)[0]
+    criteria = _gap5_section(text)
+    block = _final_machine_lines(text)
+
+    assert "GAP5_STOP_REHEARSAL_VERIFIED_FINAL_LINE_GOVERNED_REFLECTION_V0=true" in reflection
+    assert "GAP5_STOP_REHEARSAL_EXECUTED=true" in reflection
+    assert "GAP5_STOP_REHEARSAL_EXECUTED=false" in criteria
+    assert "GAP5_STOP_REHEARSAL_EXECUTED=true" in block
+    assert "STOP_REHEARSAL_EXECUTED_EXTERNAL_BUNDLE=true" in reflection
+    assert "GAP5_STOP_REHEARSAL_EXECUTED_EXTERNAL=true" not in text
 
 
 def test_gap5_rehearsal_classification_governed_reflection_allows_scoped_repo_token_v0() -> None:

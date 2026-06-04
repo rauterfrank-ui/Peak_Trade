@@ -914,6 +914,63 @@ This governed repo-reflection block records operator-authorized Gap-5 stop-proof
 
 Evidence acceptance is not runtime authorization. The Gap 5 Governed Stop Proof Acceptance Reflection v0 block above remains scoped acceptance only and unchanged.
 
+## Gap 5 Governed Stop Rehearsal Verified Final-Line Reflection v0
+
+GAP5_STOP_REHEARSAL_VERIFIED_FINAL_LINE_GOVERNED_REFLECTION_V0=true
+GAP5_STOP_REHEARSAL_EXECUTED=true
+ACCEPTED_MODE=GAP5_ISOLATED_REHEARSAL_VERIFIED_SCOPED_EVIDENCE_FINAL_LINE
+GOVERNED_VERIFICATION_BASIS=GAP5_T0_CHARTER_PRECHECK_PLUS_T1_READONLY_SIGNAL_PLUS_T2_ISOLATED_REHEARSAL_EVIDENCE
+GAP5_VERIFIED_BAR_TIER=T0_CHARTER_PRECHECK_PLUS_T1_READONLY_SIGNAL_PLUS_T2_ISOLATED_REHEARSAL
+T0_CHARTER_PRECHECK_SUFFICIENT_FOR_GAP5_VERIFIED=false
+T1_READONLY_SIGNAL_SUFFICIENT_FOR_GAP5_VERIFIED=false
+T2_ISOLATED_REHEARSAL_EVIDENCE_SUFFICIENT_FOR_GAP5_VERIFIED=true
+T3_BOUNDED_EXECUTE_REQUIRED_FOR_GAP5_VERIFIED=false
+GAP5_VERIFIED_REQUIRES_RUNTIME_EXECUTE=false
+GAP5_VERIFIED_REQUIRES_CONTRACT_LIFT=true
+EXTERNAL_CHARTER_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/gap5_stop_rehearsal_bounded_charter_precheck_no_execute_no_run_v0_20260604T215023Z/
+EXTERNAL_T1_READONLY_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/gap5_stop_rehearsal_readonly_signal_baseline_no_execute_v0_20260604T215202Z/
+EXTERNAL_T2_REHEARSAL_EVIDENCE_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/gap5_stop_rehearsal_bounded_execute_v0_20260604T215341Z/
+ISOLATED_REHEARSAL_CONTEXT_USED=true
+STOP_REHEARSAL_EXECUTED_EXTERNAL_BUNDLE=true
+REAL_PROCESS_SIGNAL_SENT=false
+REAL_PROCESS_KILLED=false
+GAP5_STOP_PROOF_ACCEPTED=true
+OPERATOR_GO=GO_GAP5_STOP_REHEARSAL_VERIFIED_BAR_REFLECTION_DOCS_TESTS_V0
+NO_RUNTIME_AUTHORITY=true
+NO_REPO_FLAG_LIFT_FROM_EXTERNAL_EVIDENCE=true
+VERIFIED_NOT_OBSERVED_NOT_ACCEPTED_SEMANTIC_PRESERVED=true
+GAP5_RUNTIME_STOP_AUTHORITY_CHANGED=false
+GAP5_SCHEDULER_EXECUTION_AUTHORIZED=false
+GAP5_STOP_CRITERIA_DEFAULT_ON=false
+PREFLIGHT_REMAINS_BLOCKED=true
+ALL_GAPS_CLOSED=false
+READY_FOR_OPERATOR_ARMING=false
+NEXT_EXECUTE_ALLOWED=false
+
+This governed repo-reflection block records operator-authorized Gap-5 stop-rehearsal **verified final-line propagation** only. Verified means **isolated external rehearsal evidence** (T0 charter precheck + T1 readonly stop-signal baseline + T2 bounded execute bundle with `ISOLATED_REHEARSAL_CONTEXT_USED=true`, `STOP_REHEARSAL_EXECUTED_EXTERNAL_BUNDLE=true`, and no real process signal/kill), not runtime stop authority, live rehearsal in repo, or preflight lift. External evidence bundles remain pointer-based and subordinate to repo governance.
+
+### Verified final-line scope (allowed only)
+
+- T0 charter MANIFEST_VERIFY_RC=0; T1 readonly snapshot MANIFEST_VERIFY_RC=0; T2 isolated rehearsal MANIFEST_VERIFY_RC=0 with `ABORTED=false`, `REPO_MUTATED=false`, `NETWORK_USED=false`
+- `GAP5_STOP_REHEARSAL_EXECUTED=true` in **Final Machine Lines only**
+- `GAP5_VERIFIED_BAR_TIER=T0_CHARTER_PRECHECK_PLUS_T1_READONLY_SIGNAL_PLUS_T2_ISOLATED_REHEARSAL` in **this block and Final Machine Lines**
+- Gap 5 Stop Criteria Contract v0 block remains criteria-only with `GAP5_STOP_REHEARSAL_EXECUTED=false`
+- `GAP5_STOP_PROOF_ACCEPTED=true` in Final Machine Lines unchanged (PR #3967)
+- isolated external rehearsal ≠ repo runtime stop execution; verified ≠ operator arming or next execute
+
+### Non-authority boundary (verified final-line reflection does not imply)
+
+- does not modify Gap-5 criteria block rehearsal posture (`GAP5_STOP_REHEARSAL_EXECUTED=false` in criteria unchanged)
+- does not modify Gap-5 stop-proof accepted final-line reflection (`GAP5_STOP_REHEARSAL_EXECUTED=false` in that block unchanged — snapshot acceptance ≠ rehearsal verified-bar)
+- does not set `GAP5_RUNTIME_STOP_AUTHORITY_CHANGED=true` or `GAP5_SCHEDULER_EXECUTION_AUTHORIZED=true`
+- does not send real process signals or kill live processes (`REAL_PROCESS_SIGNAL_SENT=false`, `REAL_PROCESS_KILLED=false` per T2 bundle)
+- does not lift preflight (`PREFLIGHT_REMAINS_BLOCKED=true` unchanged)
+- does not set `READY_FOR_OPERATOR_ARMING=true` or `NEXT_EXECUTE_ALLOWED=true`
+- does not set `ALL_GAPS_CLOSED=true`
+- does not authorize Live, Testnet, Futures execute, orders, validate-only, private API, or unscoped scheduler loops
+
+Evidence verification is not runtime authorization. The Gap 5 Governed Stop Proof Accepted Final-Line Reflection v0 block above remains scoped acceptance only and unchanged.
+
 ## Gap 6 Governed Dry-Run Proof Acceptance Reflection v0
 
 GAP6_DRY_RUN_PROOF_GOVERNED_REFLECTION_V0=true
@@ -2019,7 +2076,8 @@ GAP6_VERIFIED_REQUIRES_RUNTIME_EXECUTE=false
 GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true
 FULL_SCOPE_GAP4_VERIFIED=false
 GAP5_STOP_PROOF_ACCEPTED=true
-GAP5_STOP_REHEARSAL_EXECUTED=false
+GAP5_STOP_REHEARSAL_EXECUTED=true
+GAP5_VERIFIED_BAR_TIER=T0_CHARTER_PRECHECK_PLUS_T1_READONLY_SIGNAL_PLUS_T2_ISOLATED_REHEARSAL
 GAP7_RISK_BOUNDARY_VERIFIED=true
 GAP2A1_TIER0_OPERATOR_ACCEPTED=true
 GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false
@@ -2051,7 +2109,7 @@ This governed repo-reflection block consolidates Section-5 **final-line aligned*
 - `GAP6_DRY_RUN_PROOF_VERIFIED=true` in Final Machine Lines (PR #4004); `GAP6_VERIFIED_BAR_TIER=T1_PLUS_T2_DRY_RUN_PROOF`; Gap-6 criteria block remains `GAP6_DRY_RUN_PROOF_VERIFIED=false`
 - `SECTION5_VERIFIED_BAR_CHAIN_GAPS_1_2_3_6_COMPLETE=true` in **this synthesis block only** — documents verified-bar chain alignment; does not set `ALL_GAPS_CLOSED=true`
 - `GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true` in Final Machine Lines (PR #3968)
-- `GAP5_STOP_PROOF_ACCEPTED=true` in Final Machine Lines (PR #3967); `GAP5_STOP_REHEARSAL_EXECUTED=false` unchanged — no Gap-5 verified-bar or rehearsal lift
+- `GAP5_STOP_PROOF_ACCEPTED=true` in Final Machine Lines (PR #3967); `GAP5_STOP_REHEARSAL_EXECUTED=true` in Final Machine Lines (Gap-5 rehearsal verified-bar reflection); Gap-5 criteria block remains `GAP5_STOP_REHEARSAL_EXECUTED=false`
 - `GAP7_RISK_BOUNDARY_VERIFIED=true` in Final Machine Lines (PR #3966)
 - `GAP2A1_TIER0_OPERATOR_ACCEPTED=true` from external acceptance bundle (pointer-based; not enforcement ON)
 - `GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false`, `GAP2A1_TIER1_ENFORCEMENT_LIFTED_REPO=false`, `SECTION5_GAP2A1_REPO_LIFTED=false` by design
@@ -2061,7 +2119,7 @@ This governed repo-reflection block consolidates Section-5 **final-line aligned*
 
 ### Why ALL_GAPS_CLOSED remains false (synthesis record only)
 
-- `GAP5_STOP_REHEARSAL_EXECUTED=false` — stop rehearsal not executed; snapshot acceptance ≠ rehearsal verified-bar
+- Gap-5 criteria block remains `GAP5_STOP_REHEARSAL_EXECUTED=false` — criteria-only rehearsal posture unchanged; `GAP5_STOP_REHEARSAL_EXECUTED=true` in Final Machine Lines reflects isolated external T2 evidence only, not live repo stop execution
 - `GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false` and `GAP2A1_TIER1_ENFORCEMENT_LIFTED_REPO=false` — tier-1 repo enforcement not lifted
 - `PREFLIGHT_REMAINS_BLOCKED=true`, `NEXT_EXECUTE_ALLOWED=false`, `READY_FOR_OPERATOR_ARMING=false` — global preflight and arming gates unchanged
 - Gap criteria blocks for Gaps 1/2/3/4/5/6/7 remain criteria-only with verified/accepted=false where unchanged (governed reflection pattern)
@@ -2073,7 +2131,7 @@ This governed repo-reflection block consolidates Section-5 **final-line aligned*
 - does not set `READY_FOR_OPERATOR_ARMING=true` or approve runtime
 - does not set `NEXT_EXECUTE_ALLOWED=true`
 - does not set `GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true`, `GAP2A1_TIER1_ENFORCEMENT_LIFTED_REPO=true`, or `SECTION5_GAP2A1_REPO_LIFTED=true`
-- does not set `GAP5_STOP_REHEARSAL_EXECUTED=true` or claim Gap-5 verified-bar
+- does not modify Gap-5 Stop Criteria Contract rehearsal posture (`GAP5_STOP_REHEARSAL_EXECUTED=false` in criteria unchanged); synthesis does not add Gap-5 verified-bar machine lines beyond consolidation record
 - does not modify Gap-1/2/3/6 criteria block verification posture
 - does not set `FULL_SCOPE_GAP4_VERIFIED=true` in criteria or Final Machine Lines
 - does not authorize scheduler execution, orders, validate-only, private API, or Paper/Shadow/Testnet/Live
@@ -2313,7 +2371,8 @@ GAP6_DRY_RUN_PROOF_DEFAULT_ON=false
 GAP5_STOP_CRITERIA_CONTRACT_V0=true
 GAP5_CRITERIA_ONLY=true
 GAP5_TYPE2_WAIVER_GRANTED=false
-GAP5_STOP_REHEARSAL_EXECUTED=false
+GAP5_STOP_REHEARSAL_EXECUTED=true
+GAP5_VERIFIED_BAR_TIER=T0_CHARTER_PRECHECK_PLUS_T1_READONLY_SIGNAL_PLUS_T2_ISOLATED_REHEARSAL
 GAP5_STOP_PROOF_ACCEPTED=true
 GAP5_RUNTIME_STOP_AUTHORITY_CHANGED=false
 GAP5_SCHEDULER_EXECUTION_AUTHORIZED=false
