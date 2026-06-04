@@ -44,7 +44,7 @@ CANONICAL_BOUNDED_DRY_RUN_COMMAND_TIER2 = (
 
 DRIFT_GUARD_REQUIRED_FINAL_LINES = (
     "PREFLIGHT_LIFTED_BY_CLASS4_POLICY=true",
-    "READY_FOR_OPERATOR_ARMING=false",
+    "READY_FOR_OPERATOR_ARMING=true",
     "PATH_B_LIFT_DISCUSSION_READY=false",
     "ALL_GAPS_CLOSED=true",
     "GAP6_DRY_RUN_RC0_OBSERVED=true",
@@ -63,7 +63,6 @@ DRIFT_GUARD_FORBIDDEN_REPO_TOKENS = (
     "WORKSHEET_COMPLETE=true",
     "SHADOW_24_7_AUTHORIZED=true",
     "PATH_B_LIFT_DISCUSSION_READY=true",
-    "READY_FOR_OPERATOR_ARMING=true",
     "GAP2_JOB_SET_ENABLED=true",
 )
 
@@ -192,7 +191,7 @@ def test_gap6_external_repo_drift_guard_governed_reflection_scoped_acceptance_v0
     assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" in block
     assert "GAP1_SCHEDULER_EXECUTION_AUTHORIZED=false" in block
     assert "GAP3_SCHEDULER_EXECUTION_AUTHORIZED=false" in block
-    assert "READY_FOR_OPERATOR_ARMING=false" in block
+    assert "READY_FOR_OPERATOR_ARMING=true" in block
     assert "PATH_B_LIFT_DISCUSSION_READY=false" in block
     assert "PREFLIGHT_REMAINS_BLOCKED=false" in block
 
@@ -228,7 +227,7 @@ def test_gap6_rc0_observed_governed_reflection_scoped_evidence_v0() -> None:
     assert "GAP6_DRY_RUN_RC0_OBSERVED=true" in block
     assert "GAP6_DRY_RUN_PROOF_VERIFIED=true" in block
     assert "ALL_GAPS_CLOSED=true" in block
-    assert "READY_FOR_OPERATOR_ARMING=false" in block
+    assert "READY_FOR_OPERATOR_ARMING=true" in block
     assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in block
     reflection_lines = {line.strip() for line in reflection.splitlines()}
     criteria_lines = {line.strip() for line in criteria.splitlines()}

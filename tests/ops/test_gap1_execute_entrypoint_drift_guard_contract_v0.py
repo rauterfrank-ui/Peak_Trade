@@ -47,7 +47,7 @@ FUTURE_EXECUTION_REQUIRES_EXPLICIT_OPT_IN_GO = True
 
 DRIFT_GUARD_REQUIRED_FINAL_LINES = (
     "PREFLIGHT_LIFTED_BY_CLASS4_POLICY=true",
-    "READY_FOR_OPERATOR_ARMING=false",
+    "READY_FOR_OPERATOR_ARMING=true",
     "PATH_B_LIFT_DISCUSSION_READY=false",
     "ALL_GAPS_CLOSED=true",
     "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=true",
@@ -77,7 +77,6 @@ DRIFT_GUARD_FORBIDDEN_GAP1_REPO_TOKENS = (
     "PREFLIGHT_MARKER_IMPLIES_RUNTIME_APPROVED=true",
     "WORKSHEET_COMPLETE=true",
     "PATH_B_LIFT_DISCUSSION_READY=true",
-    "READY_FOR_OPERATOR_ARMING=true",
     "SHADOW_24_7_AUTHORIZED=true",
 )
 
@@ -280,7 +279,7 @@ def test_gap1_rc0_observed_governed_reflection_scoped_evidence_v0() -> None:
     assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=true" in block
     assert "GAP1_EXECUTE_ENTRYPOINT_RC0_OBSERVED=true" in block
     assert "ALL_GAPS_CLOSED=true" in block
-    assert "READY_FOR_OPERATOR_ARMING=false" in block
+    assert "READY_FOR_OPERATOR_ARMING=true" in block
     assert "PREFLIGHT_REMAINS_BLOCKED=false" in block
     assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in block
     reflection_lines = {line.strip() for line in reflection.splitlines()}

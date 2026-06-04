@@ -149,6 +149,9 @@ PREFLIGHT_LIFT_CLASS4_REFLECTION_HEADER = (
 ALL_GAPS_CLOSED_FINAL_REFLECTION_HEADER = (
     "## Section-5 ALL_GAPS_CLOSED Final Reflection After Preflight Lift v0"
 )
+OPERATOR_ARMING_CLASS4_REFLECTION_HEADER = (
+    "## Operator Arming Explicit Authorization CLASS_4 Reflection v0"
+)
 TIER_C_SHADOW_CROSSLINK_HEADER = "## Tier-C + Shadow durable evidence archive crosslink v0"
 FINAL_MACHINE_LINES_HEADER = "## Final Machine Lines"
 
@@ -167,6 +170,12 @@ def _preflight_lift_class4_reflection_section(text: str) -> str:
 
 def _all_gaps_closed_final_reflection_section(text: str) -> str:
     return text.split(ALL_GAPS_CLOSED_FINAL_REFLECTION_HEADER, 1)[1].split(
+        OPERATOR_ARMING_CLASS4_REFLECTION_HEADER, 1
+    )[0]
+
+
+def _operator_arming_class4_reflection_section(text: str) -> str:
+    return text.split(OPERATOR_ARMING_CLASS4_REFLECTION_HEADER, 1)[1].split(
         TIER_C_SHADOW_CROSSLINK_HEADER, 1
     )[0]
 
@@ -286,7 +295,8 @@ def test_section5_preflight_synthesis_docs_block_reflection_non_authorizing_v0()
     assert "PREFLIGHT_LIFTED_BY_CLASS4_POLICY=true" in block
     assert "ALL_GAPS_CLOSED=true" in block
     assert "NEXT_EXECUTE_ALLOWED=false" in block
-    assert "READY_FOR_OPERATOR_ARMING=false" in block
+    assert "READY_FOR_OPERATOR_ARMING=true" in block
+    assert "ARMING_NOT_EXECUTE=true" in block
     assert "PREFLIGHT_LIFT_EXECUTED=false" in block
     assert "ACTUAL_PREFLIGHT_LIFT_EXECUTED=false" in block
 
@@ -315,7 +325,8 @@ def test_section5_preflight_synthesis_docs_block_reflection_non_authorizing_v0()
     assert "PREFLIGHT_LIFTED_BY_CLASS4_POLICY=true" in block_lines
     assert "ALL_GAPS_CLOSED=true" in block_lines
     assert "ALL_GAPS_CLOSED_CLASS4_GOVERNED_REFLECTION_V0=true" in block_lines
-    assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
+    assert "READY_FOR_OPERATOR_ARMING=true" in block_lines
+    assert "ARMING_NOT_EXECUTE=true" in block_lines
     assert "NEXT_EXECUTE_ALLOWED=true" not in synthesis_lines
 
 
@@ -357,7 +368,7 @@ def test_section5_preflight_lift_class4_reflection_non_authorizing_v0() -> None:
     assert "PREFLIGHT_LIFTED_BY_CLASS4_POLICY=true" in block_lines
     assert "G1_OPERATOR_DECISION_RECORD_FULFILLED=true" in block_lines
     assert "ALL_GAPS_CLOSED=true" in block_lines
-    assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
+    assert "READY_FOR_OPERATOR_ARMING=true" in block_lines
     assert "NEXT_EXECUTE_ALLOWED=true" not in block_lines
     assert "PREFLIGHT_LIFT_EXECUTED=true" not in block_lines
 
@@ -402,7 +413,46 @@ def test_section5_all_gaps_closed_final_reflection_after_preflight_lift_non_auth
     block_lines = {line.strip() for line in block.splitlines()}
     assert "ALL_GAPS_CLOSED=true" in block_lines
     assert "ALL_GAPS_CLOSED_CLASS4_GOVERNED_REFLECTION_V0=true" in block_lines
-    assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
+    assert "READY_FOR_OPERATOR_ARMING=true" in block_lines
+    assert "NEXT_EXECUTE_ALLOWED=true" not in block_lines
+    assert "FUTURES_EXECUTE_AUTHORIZED=true" not in block_lines
+
+
+def test_section5_operator_arming_explicit_authorization_class4_non_authorizing_v0() -> None:
+    text = DOC.read_text(encoding="utf-8")
+    reflection = _operator_arming_class4_reflection_section(text)
+    all_gaps = _all_gaps_closed_final_reflection_section(text)
+    block = _final_machine_lines(text)
+
+    for token in (
+        "READY_FOR_OPERATOR_ARMING_CLASS4_GOVERNED_REFLECTION_V0=true",
+        "READY_FOR_OPERATOR_ARMING=true",
+        "ACCEPTED_MODE=OPERATOR_ARMING_EXPLICIT_AUTHORIZATION_CLASS4_DOCS_TESTS_ONLY",
+        "OPERATOR_GO=GO_OPERATOR_ARMING_EXPLICIT_AUTHORIZATION_CLASS4_DOCS_TESTS_V0",
+        "CLASS4_OPERATOR_GO_ACCEPTED=true",
+        "OPERATOR_ARMING_DECISION_RECORD_REFLECTED=true",
+        "GUARD_ARMING_NOT_AUTHORITY_LIFT=true",
+        "ARMING_NOT_EXECUTE=true",
+        "ARMING_NOT_RUNTIME=true",
+        "ARMING_NOT_LIVE=true",
+        "ARMING_NOT_FUTURES_AUTHORITY=true",
+        "ARMING_NOT_ORDERS=true",
+        "ALL_GAPS_CLOSED=true",
+        "PREFLIGHT_REMAINS_BLOCKED=false",
+        "PREFLIGHT_LIFTED_BY_CLASS4_POLICY=true",
+        "NEXT_EXECUTE_ALLOWED=false",
+        "RUNTIME_APPROVED=false",
+        "FUTURES_EXECUTE_AUTHORIZED=false",
+    ):
+        assert token in reflection
+
+    assert "READY_FOR_OPERATOR_ARMING=true ≠ NEXT_EXECUTE_ALLOWED=true" in reflection
+    assert "does not set `NEXT_EXECUTE_ALLOWED=true`" in reflection
+    assert "READY_FOR_OPERATOR_ARMING=false" in all_gaps
+    block_lines = {line.strip() for line in block.splitlines()}
+    assert "READY_FOR_OPERATOR_ARMING=true" in block_lines
+    assert "READY_FOR_OPERATOR_ARMING_CLASS4_GOVERNED_REFLECTION_V0=true" in block_lines
+    assert "ARMING_NOT_EXECUTE=true" in block_lines
     assert "NEXT_EXECUTE_ALLOWED=true" not in block_lines
     assert "FUTURES_EXECUTE_AUTHORIZED=true" not in block_lines
 
@@ -466,7 +516,7 @@ def test_section5_pe11_bounded_futures_reachability_reflection_non_authorizing_v
     assert "FUTURES_EXECUTE_AUTHORIZED=true" not in pe11_lines
     assert "ARCHIVE_HARNESS_SCRIPT_EXECUTE_AUTHORIZED_NOW=true" not in block_lines
     assert "ALL_GAPS_CLOSED=true" in block_lines
-    assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
+    assert "READY_FOR_OPERATOR_ARMING=true" in block_lines
 
 
 GAP6_ACCEPTED_FINAL_LINE_REFLECTION_HEADER = (
@@ -499,7 +549,7 @@ def test_section5_gap6_dry_run_proof_accepted_final_line_reflection_non_authoriz
     assert "GAP6_DRY_RUN_RC0_OBSERVED=true" in block
     block_lines = {line.strip() for line in block.splitlines()}
     assert "GAP6_DRY_RUN_PROOF_VERIFIED=true" in block_lines
-    assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
+    assert "READY_FOR_OPERATOR_ARMING=true" in block_lines
 
 
 GAP6_GAP1_FINAL_LINE_REFLECTION_HEADER = (
@@ -534,7 +584,7 @@ def test_section5_gap6_gap1_rc0_observed_final_line_reflection_non_authorizing_v
     block_lines = {line.strip() for line in block.splitlines()}
     assert "GAP6_DRY_RUN_PROOF_VERIFIED=true" in block_lines
     assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=true" in block_lines
-    assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
+    assert "READY_FOR_OPERATOR_ARMING=true" in block_lines
 
 
 GAP2_GAP3_ACCEPTED_FINAL_LINE_REFLECTION_HEADER = (
@@ -573,7 +623,7 @@ def test_section5_gap2_gap3_accepted_scoped_criteria_final_line_reflection_non_a
     block_lines = {line.strip() for line in block.splitlines()}
     assert "GAP2_CANONICAL_JOB_SET_VERIFIED=true" in block_lines
     assert "GAP3_EXECUTE_COMMAND_VERIFIED=true" in block_lines
-    assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
+    assert "READY_FOR_OPERATOR_ARMING=true" in block_lines
 
 
 GAP2_DRY_RUN_OBSERVED_FINAL_LINE_REFLECTION_HEADER = (
@@ -625,7 +675,7 @@ def test_section5_gap2_dry_run_observed_final_line_reflection_non_authorizing_v0
     assert "GAP2_CANONICAL_JOB_SET_VERIFIED=true" in block
     block_lines = {line.strip() for line in block.splitlines()}
     assert "GAP2_CANONICAL_JOB_SET_VERIFIED=true" in block_lines
-    assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
+    assert "READY_FOR_OPERATOR_ARMING=true" in block_lines
 
 
 def test_section5_gap2_verified_final_line_reflection_non_authorizing_v0() -> None:
@@ -659,7 +709,7 @@ def test_section5_gap2_verified_final_line_reflection_non_authorizing_v0() -> No
     block_lines = {line.strip() for line in block.splitlines()}
     assert "GAP2_CANONICAL_JOB_SET_VERIFIED=true" in block_lines
     assert "GAP3_EXECUTE_COMMAND_VERIFIED=true" in block_lines
-    assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
+    assert "READY_FOR_OPERATOR_ARMING=true" in block_lines
 
 
 def _gap3_dry_run_rc0_observed_final_line_reflection_section(text: str) -> str:
@@ -696,7 +746,7 @@ def test_section5_gap3_dry_run_rc0_observed_final_line_reflection_non_authorizin
     assert "GAP3_EXECUTE_COMMAND_VERIFIED=false" in gap3
     block_lines = {line.strip() for line in block.splitlines()}
     assert "GAP3_EXECUTE_COMMAND_DRY_RUN_RC0_OBSERVED=true" in block_lines
-    assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
+    assert "READY_FOR_OPERATOR_ARMING=true" in block_lines
 
 
 def test_section5_gap3_verified_final_line_reflection_non_authorizing_v0() -> None:
@@ -727,7 +777,7 @@ def test_section5_gap3_verified_final_line_reflection_non_authorizing_v0() -> No
     assert "GAP3_EXECUTE_COMMAND_VERIFIED=false" in gap3
     block_lines = {line.strip() for line in block.splitlines()}
     assert "GAP3_EXECUTE_COMMAND_VERIFIED=true" in block_lines
-    assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
+    assert "READY_FOR_OPERATOR_ARMING=true" in block_lines
 
 
 GAP6_VERIFIED_FINAL_LINE_REFLECTION_HEADER = (
@@ -770,7 +820,7 @@ def test_section5_gap6_verified_final_line_reflection_non_authorizing_v0() -> No
     assert "GAP6_DRY_RUN_PROOF_VERIFIED=false" in gap6
     block_lines = {line.strip() for line in block.splitlines()}
     assert "GAP6_DRY_RUN_PROOF_VERIFIED=true" in block_lines
-    assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
+    assert "READY_FOR_OPERATOR_ARMING=true" in block_lines
 
 
 GAP1_VERIFIED_FINAL_LINE_REFLECTION_HEADER = (
@@ -812,7 +862,7 @@ def test_section5_gap1_verified_final_line_reflection_non_authorizing_v0() -> No
     assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=false" in gap1
     block_lines = {line.strip() for line in block.splitlines()}
     assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=true" in block_lines
-    assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
+    assert "READY_FOR_OPERATOR_ARMING=true" in block_lines
 
 
 GAP5_REHEARSAL_VERIFIED_FINAL_LINE_REFLECTION_HEADER = (
@@ -852,7 +902,7 @@ def test_section5_gap5_rehearsal_verified_final_line_reflection_non_authorizing_
     assert "GAP5_STOP_REHEARSAL_EXECUTED=false" in gap5
     block_lines = {line.strip() for line in block.splitlines()}
     assert "GAP5_STOP_REHEARSAL_EXECUTED=true" in block_lines
-    assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
+    assert "READY_FOR_OPERATOR_ARMING=true" in block_lines
 
 
 TIER1_ZERO_DISPATCH_MANIFEST_OBSERVED_FINAL_LINE_REFLECTION_HEADER = (
@@ -910,7 +960,7 @@ def test_section5_tier1_zero_dispatch_manifest_observed_final_line_reflection_v0
     block_lines = {line.strip() for line in block.splitlines()}
     assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" in block_lines
     assert "GAP2A1_TIER1_ENFORCEMENT_LIFTED=true" in block_lines
-    assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
+    assert "READY_FOR_OPERATOR_ARMING=true" in block_lines
 
 
 def test_section5_tier1_canonical_tag_bounded_enforce_observed_final_line_reflection_v0() -> None:
@@ -951,4 +1001,4 @@ def test_section5_tier1_canonical_tag_bounded_enforce_observed_final_line_reflec
     block_lines = {line.strip() for line in block.splitlines()}
     assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" in block_lines
     assert "GAP2A1_TIER1_ENFORCEMENT_LIFTED=true" in block_lines
-    assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
+    assert "READY_FOR_OPERATOR_ARMING=true" in block_lines
