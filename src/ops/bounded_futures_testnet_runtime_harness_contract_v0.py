@@ -29,7 +29,9 @@ from src.ops.bounded_futures_testnet_harness_contract_v0 import (
 PACKAGE_MARKER = "BOUNDED_FUTURES_TESTNET_RUNTIME_HARNESS_CONTRACT_V0=true"
 RUNTIME_HARNESS_EXECUTE_ALLOWED = False
 RUNTIME_HARNESS_NETWORK_ALLOWED = False
-ARCHIVE_HARNESS_SCRIPT_PRESENT = False
+ARCHIVE_HARNESS_SCRIPT_REL_PATH = "scripts/ops/archive_futures_testnet_harness_v0.py"
+ARCHIVE_HARNESS_SCRIPT_PRESENT = True
+ARCHIVE_HARNESS_SCRIPT_EXECUTE_AUTHORIZED_NOW = False
 
 
 @dataclass(frozen=True)
@@ -97,8 +99,10 @@ def validate_futures_testnet_runtime_harness_impl_descriptor(
         result["fail_reasons"].append("runtime_started_allowed must be false")
     if descriptor.scheduler_started_allowed:
         result["fail_reasons"].append("scheduler_started_allowed must be false")
-    if ARCHIVE_HARNESS_SCRIPT_PRESENT:
-        result["fail_reasons"].append("ARCHIVE_HARNESS_SCRIPT_PRESENT must be false")
+    if not ARCHIVE_HARNESS_SCRIPT_PRESENT:
+        result["fail_reasons"].append("ARCHIVE_HARNESS_SCRIPT_PRESENT must be true")
+    if ARCHIVE_HARNESS_SCRIPT_EXECUTE_AUTHORIZED_NOW:
+        result["fail_reasons"].append("ARCHIVE_HARNESS_SCRIPT_EXECUTE_AUTHORIZED_NOW must be false")
     if ARCHIVE_EXCHANGE_CLIENT_PRESENT:
         result["fail_reasons"].append("ARCHIVE_EXCHANGE_CLIENT_PRESENT must be false")
 
@@ -114,6 +118,7 @@ def validate_futures_testnet_runtime_harness_impl_descriptor(
     if not harness_result["harness_contract_pass"]:
         result["fail_reasons"].extend(harness_result["fail_reasons"])
 
+    result["archive_script_present_pass"] = ARCHIVE_HARNESS_SCRIPT_PRESENT
     result["archive_script_absent_pass"] = not descriptor.archive_script_required
     result["runtime_scheduler_guard_pass"] = (
         not descriptor.runtime_started_allowed and not descriptor.scheduler_started_allowed

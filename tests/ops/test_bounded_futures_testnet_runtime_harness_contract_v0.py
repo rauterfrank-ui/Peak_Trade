@@ -26,6 +26,7 @@ EXCHANGE_IMPL_TEST = (
     REPO_ROOT / "tests" / "ops" / "test_bounded_futures_testnet_exchange_impl_contract_v0.py"
 )
 HARNESS_TEST = REPO_ROOT / "tests" / "ops" / "test_bounded_futures_testnet_harness_contract_v0.py"
+ARCHIVE_HARNESS_TEST = REPO_ROOT / "tests" / "ops" / "test_archive_futures_testnet_harness_v0.py"
 
 TEST_PACKAGE_MARKER = "BOUNDED_FUTURES_TESTNET_RUNTIME_HARNESS_CONTRACT_GUARD_V0=true"
 _CLASS4_SCOPED_EXCEPTION_MARKER = (
@@ -43,7 +44,7 @@ def test_package_marker_present() -> None:
 def test_runtime_harness_guards_not_authorized() -> None:
     assert RUNTIME_HARNESS_EXECUTE_ALLOWED is False
     assert RUNTIME_HARNESS_NETWORK_ALLOWED is False
-    assert ARCHIVE_HARNESS_SCRIPT_PRESENT is False
+    assert ARCHIVE_HARNESS_SCRIPT_PRESENT is True
     assert FUTURES_SESSION_AUTHORIZED_NOW is False
 
 
@@ -89,3 +90,10 @@ def test_runtime_started_allowed_fails() -> None:
 def test_pe9_and_exchange_impl_tests_crosslink() -> None:
     assert EXCHANGE_IMPL_TEST.is_file()
     assert HARNESS_TEST.is_file()
+    assert ARCHIVE_HARNESS_TEST.is_file()
+
+
+def test_runtime_harness_module_declares_archive_script_path() -> None:
+    text = RUNTIME_HARNESS_MODULE.read_text(encoding="utf-8")
+    assert "archive_futures_testnet_harness_v0.py" in text
+    assert "ARCHIVE_HARNESS_SCRIPT_PRESENT = True" in text
