@@ -191,9 +191,7 @@ def test_gap2a1_tier1_drift_guard_forbids_lift_in_final_lines_v0() -> None:
     lines = {line.strip() for line in block.splitlines()}
     assert "GAP2A1_TIER1_ENFORCEMENT_LIFTED=true" in block
     assert "TIER1_PRIMARY_EVIDENCE_ENFORCEMENT_CONTRACTED=true" in block
-    for token in (
-        "TIER1_PRIMARY_EVIDENCE_ENFORCEMENT_ACTIVATED=true",
-    ):
+    for token in ("TIER1_PRIMARY_EVIDENCE_ENFORCEMENT_ACTIVATED=true",):
         assert token not in lines
 
 
