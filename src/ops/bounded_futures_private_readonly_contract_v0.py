@@ -621,9 +621,7 @@ def build_private_readonly_evidence_from_network(
     harness_version: str,
 ) -> dict[str, Any]:
     evidence = build_private_readonly_plan_evidence_skeleton(run_id=run_id)
-    policy_accepted = (
-        result.private_readonly_reachability_proven and not result.fetch_failure
-    )
+    policy_accepted = result.private_readonly_reachability_proven and not result.fetch_failure
     updates: dict[str, Any] = {
         "harness_version": harness_version,
         "monotonic_elapsed_seconds": timing.monotonic_elapsed_seconds,
