@@ -56,7 +56,7 @@ EVIDENCE_EQUALS_APPROVAL = False
 CRITERIA_COMPLETE_EQUALS_GAP_CLOSED = False
 
 DRIFT_GUARD_REQUIRED_FINAL_LINES = (
-    "PREFLIGHT_REMAINS_BLOCKED=true",
+    "PREFLIGHT_LIFTED_BY_CLASS4_POLICY=true",
     "READY_FOR_OPERATOR_ARMING=false",
     "PATH_B_LIFT_DISCUSSION_READY=false",
     "ALL_GAPS_CLOSED=false",
@@ -76,7 +76,6 @@ DRIFT_GUARD_FORBIDDEN_GAP4_REPO_TOKENS = (
     "PATH_B_LIFT_DISCUSSION_READY=true",
     "ALL_GAPS_CLOSED=true",
     "READY_FOR_OPERATOR_ARMING=true",
-    "PREFLIGHT_REMAINS_BLOCKED=false",
 )
 
 STATIC_HELPER_SURFACES = (
@@ -385,7 +384,7 @@ def test_gap4_output_evidence_paths_drift_guard_governed_reflection_scoped_accep
     assert "GAP3_SCHEDULER_EXECUTION_AUTHORIZED=false" in block
     assert "READY_FOR_OPERATOR_ARMING=false" in block
     assert "PATH_B_LIFT_DISCUSSION_READY=false" in block
-    assert "PREFLIGHT_REMAINS_BLOCKED=true" in block
+    assert "PREFLIGHT_REMAINS_BLOCKED=false" in block
     reflection_lines = {line.strip() for line in reflection.splitlines()}
     criteria_lines = {line.strip() for line in criteria.splitlines()}
     assert "GAP4_OUTPUT_EVIDENCE_ACCEPTED=true" in reflection_lines
@@ -711,7 +710,7 @@ def test_gap4_full_scope_gap4_verified_reflection_drift_guard_scoped_v0() -> Non
     assert "GLOBAL_PREFLIGHT_LIFTED=true" not in verified_lines
     assert "PATH_B_LIFT_DISCUSSION_READY=true" not in verified_lines
     assert "READY_FOR_OPERATOR_ARMING=true" not in verified_lines
-    assert "PREFLIGHT_REMAINS_BLOCKED=true" in block
+    assert "PREFLIGHT_REMAINS_BLOCKED=false" in block
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in criteria
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" in block
 
@@ -769,7 +768,7 @@ def test_gap4_verified_final_line_governed_reflection_scoped_verification_v0() -
     assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in block
     assert "ALL_GAPS_CLOSED=false" in block
     assert "READY_FOR_OPERATOR_ARMING=false" in block
-    assert "PREFLIGHT_REMAINS_BLOCKED=true" in block
+    assert "PREFLIGHT_REMAINS_BLOCKED=false" in block
     reflection_lines = {line.strip() for line in reflection.splitlines()}
     criteria_lines = {line.strip() for line in criteria.splitlines()}
     block_lines = {line.strip() for line in block.splitlines()}
@@ -824,6 +823,7 @@ def test_gap4_full_scope_class4_policy_final_line_propagation_non_authorizing_v0
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" not in block_lines
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in criteria_lines
     assert "ALL_GAPS_CLOSED=true" not in block_lines
-    assert "PREFLIGHT_REMAINS_BLOCKED=false" not in block_lines
+    assert "PREFLIGHT_REMAINS_BLOCKED=false" in block_lines
+    assert "PREFLIGHT_LIFTED_BY_CLASS4_POLICY=true" in block_lines
     assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
     assert "NEXT_EXECUTE_ALLOWED=true" not in block_lines

@@ -143,12 +143,22 @@ def test_section5_eer1_readiness_review_index_crosslink_v0() -> None:
 
 
 PREFLIGHT_SYNTHESIS_DOCS_BLOCK_REFLECTION_HEADER = "## Preflight Synthesis Docs Block Reflection v0"
+PREFLIGHT_LIFT_CLASS4_REFLECTION_HEADER = (
+    "## Preflight Lift Explicit Operator Authorization CLASS_4 Reflection v0"
+)
+TIER_C_SHADOW_CROSSLINK_HEADER = "## Tier-C + Shadow durable evidence archive crosslink v0"
 FINAL_MACHINE_LINES_HEADER = "## Final Machine Lines"
 
 
 def _preflight_synthesis_reflection_section(text: str) -> str:
     return text.split(PREFLIGHT_SYNTHESIS_DOCS_BLOCK_REFLECTION_HEADER, 1)[1].split(
-        FINAL_MACHINE_LINES_HEADER, 1
+        PREFLIGHT_LIFT_CLASS4_REFLECTION_HEADER, 1
+    )[0]
+
+
+def _preflight_lift_class4_reflection_section(text: str) -> str:
+    return text.split(PREFLIGHT_LIFT_CLASS4_REFLECTION_HEADER, 1)[1].split(
+        TIER_C_SHADOW_CROSSLINK_HEADER, 1
     )[0]
 
 
@@ -263,7 +273,8 @@ def test_section5_preflight_synthesis_docs_block_reflection_non_authorizing_v0()
         in block
     )
     assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in block
-    assert "PREFLIGHT_REMAINS_BLOCKED=true" in block
+    assert "PREFLIGHT_REMAINS_BLOCKED=false" in block
+    assert "PREFLIGHT_LIFTED_BY_CLASS4_POLICY=true" in block
     assert "ALL_GAPS_CLOSED=false" in block
     assert "NEXT_EXECUTE_ALLOWED=false" in block
     assert "READY_FOR_OPERATOR_ARMING=false" in block
@@ -291,10 +302,54 @@ def test_section5_preflight_synthesis_docs_block_reflection_non_authorizing_v0()
     assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" in block_lines
     assert "GAP2A1_TIER1_ENFORCEMENT_LIFTED_REPO=true" in block_lines
     assert "GAP5_STOP_REHEARSAL_EXECUTED=true" in block_lines
-    assert "PREFLIGHT_REMAINS_BLOCKED=false" not in block_lines
+    assert "PREFLIGHT_REMAINS_BLOCKED=false" in block_lines
+    assert "PREFLIGHT_LIFTED_BY_CLASS4_POLICY=true" in block_lines
     assert "ALL_GAPS_CLOSED=true" not in block_lines
     assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
     assert "NEXT_EXECUTE_ALLOWED=true" not in synthesis_lines
+
+
+def test_section5_preflight_lift_class4_reflection_non_authorizing_v0() -> None:
+    text = DOC.read_text(encoding="utf-8")
+    reflection = _preflight_lift_class4_reflection_section(text)
+    synthesis = _preflight_synthesis_reflection_section(text)
+    block = _final_machine_lines(text)
+
+    for token in (
+        "PREFLIGHT_LIFT_CLASS4_GOVERNED_REFLECTION_V0=true",
+        "PREFLIGHT_LIFTED_BY_CLASS4_POLICY=true",
+        "ACCEPTED_MODE=PREFLIGHT_LIFT_EXPLICIT_OPERATOR_AUTHORIZATION_CLASS4_DOCS_TESTS_ONLY",
+        "OPERATOR_GO=GO_PREFLIGHT_LIFT_EXPLICIT_OPERATOR_AUTHORIZATION_CLASS4_DOCS_TESTS_V0",
+        "CLASS4_OPERATOR_GO_ACCEPTED=true",
+        "G1_OPERATOR_DECISION_RECORD_FULFILLED=true",
+        "POLICY_LIFT_NOT_OPERATIONAL_AUTHORIZATION=true",
+        "PREFLIGHT_LIFT_DOES_NOT_CLOSE_ALL_GAPS=true",
+        "PREFLIGHT_LIFT_NOT_ARMING=true",
+        "PREFLIGHT_LIFT_NOT_EXECUTE=true",
+        "PREFLIGHT_LIFT_NOT_LIVE=true",
+        "PREFLIGHT_LIFT_NOT_FUTURES_AUTHORITY=true",
+        "PREFLIGHT_REMAINS_BLOCKED=false",
+        "ALL_GAPS_CLOSED=false",
+        "READY_FOR_OPERATOR_ARMING=false",
+        "NEXT_EXECUTE_ALLOWED=false",
+        "PREFLIGHT_LIFT_EXECUTED=false",
+        "ACTUAL_PREFLIGHT_LIFT_EXECUTED=false",
+    ):
+        assert token in reflection
+
+    assert "Preflight lift ≠ operator arming ≠ execute ≠ live ≠ futures authority" in reflection
+    assert "does not set `ALL_GAPS_CLOSED=true`" in reflection
+    assert "does not set `READY_FOR_OPERATOR_ARMING=true`" in reflection
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in synthesis
+    assert "does not set `PREFLIGHT_REMAINS_BLOCKED=false`" in synthesis
+    block_lines = {line.strip() for line in block.splitlines()}
+    assert "PREFLIGHT_REMAINS_BLOCKED=false" in block_lines
+    assert "PREFLIGHT_LIFTED_BY_CLASS4_POLICY=true" in block_lines
+    assert "G1_OPERATOR_DECISION_RECORD_FULFILLED=true" in block_lines
+    assert "ALL_GAPS_CLOSED=true" not in block_lines
+    assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
+    assert "NEXT_EXECUTE_ALLOWED=true" not in block_lines
+    assert "PREFLIGHT_LIFT_EXECUTED=true" not in block_lines
 
 
 PE11_BOUNDED_FUTURES_REACHABILITY_REFLECTION_HEADER = (

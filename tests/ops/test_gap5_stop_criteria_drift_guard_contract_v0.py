@@ -44,7 +44,7 @@ EVIDENCE_EQUALS_APPROVAL = False
 CRITERIA_COMPLETE_EQUALS_GAP_CLOSED = False
 
 DRIFT_GUARD_REQUIRED_FINAL_LINES = (
-    "PREFLIGHT_REMAINS_BLOCKED=true",
+    "PREFLIGHT_LIFTED_BY_CLASS4_POLICY=true",
     "READY_FOR_OPERATOR_ARMING=false",
     "PATH_B_LIFT_DISCUSSION_READY=false",
     "ALL_GAPS_CLOSED=false",
@@ -66,7 +66,6 @@ DRIFT_GUARD_FORBIDDEN_GAP5_REPO_TOKENS = (
     "PATH_B_LIFT_DISCUSSION_READY=true",
     "ALL_GAPS_CLOSED=true",
     "READY_FOR_OPERATOR_ARMING=true",
-    "PREFLIGHT_REMAINS_BLOCKED=false",
 )
 
 PREFLIGHT_AUTHORIZATION_KEYS = (
@@ -214,7 +213,7 @@ def test_gap5_accepted_final_line_governed_reflection_scoped_acceptance_v0() -> 
     assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in block
     assert "ALL_GAPS_CLOSED=false" in block
     assert "READY_FOR_OPERATOR_ARMING=false" in block
-    assert "PREFLIGHT_REMAINS_BLOCKED=true" in block
+    assert "PREFLIGHT_REMAINS_BLOCKED=false" in block
     reflection_lines = {line.strip() for line in reflection.splitlines()}
     criteria_lines = {line.strip() for line in criteria.splitlines()}
     block_lines = {line.strip() for line in block.splitlines()}

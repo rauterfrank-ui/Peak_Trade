@@ -2269,6 +2269,88 @@ This governed repo-reflection block consolidates Section-5 **final-line aligned*
 
 Evidence synthesis is not runtime authorization. Prior governed reflection blocks above remain scoped acceptance/verification only and unchanged.
 
+## Preflight Lift Explicit Operator Authorization CLASS_4 Reflection v0
+
+PREFLIGHT_LIFT_CLASS4_GOVERNED_REFLECTION_V0=true
+PREFLIGHT_LIFTED_BY_CLASS4_POLICY=true
+ACCEPTED_MODE=PREFLIGHT_LIFT_EXPLICIT_OPERATOR_AUTHORIZATION_CLASS4_DOCS_TESTS_ONLY
+OPERATOR_GO=GO_PREFLIGHT_LIFT_EXPLICIT_OPERATOR_AUTHORIZATION_CLASS4_DOCS_TESTS_V0
+CLASS4_OPERATOR_GO_ACCEPTED=true
+DOCS_TESTS_ONLY=true
+GOVERNED_ACCEPTANCE_BASIS=SECTION5_WEDGE_COMPLETE+G1_OPERATOR_DECISION_RECORD+CLASS4_AUTHORITY_CHARTER+ALL_GAPS_POST_GAP4_PRECHECK
+G1_OPERATOR_DECISION_RECORD_FULFILLED=true
+INPUT_OPERATOR_DECISION_RECORD_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/preflight_lift_operator_decision_record_no_run_v0_20260604T225729Z/
+INPUT_OPERATOR_DECISION_PACKET_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/preflight_lift_operator_decision_packet_no_run_v0_20260604T225547Z/
+INPUT_PREFLIGHT_CHARTER_REFRESH_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/preflight_lift_explicit_operator_authorization_charter_refresh_no_run_v0_20260604T225345Z/
+INPUT_AUTHORITY_CHARTER_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/preflight_authority_class4_decision_charter_no_run_v0_20260604T225114Z/
+INPUT_ALL_GAPS_POST_GAP4_CLASS4_PRECHECK_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/section5_all_gaps_final_consistency_closure_precheck_after_full_scope_gap4_class4_policy_propagation_no_run_v0_20260604T224803Z/
+INPUT_GAP4_CLASS4_CLOSEOUT_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/full_scope_gap4_class4_policy_final_line_propagation_post_merge_closeout_no_run_v0_20260604T224429Z/
+INPUT_GAP2A1_CLASS4_CLOSEOUT_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/gap2a1_primary_evidence_repo_lift_class4_post_merge_closeout_no_run_v0_20260604T223407Z/
+OPERATOR_NAME=Frank Rauter
+OPERATOR_DECISION_SCOPE=PREFLIGHT_LIFT_AUTHORIZATION_PACKET_ONLY
+OPERATOR_CONFIRMS_SECTION5_WEDGE_COMPLETE=CONFIRMED
+OPERATOR_CONFIRMS_PREFLIGHT_LIFT_SCOPE=CONFIRMED
+OPERATOR_CONFIRMS_NO_ARMING=CONFIRMED
+OPERATOR_CONFIRMS_NO_EXECUTE=CONFIRMED
+OPERATOR_CONFIRMS_NO_LIVE=CONFIRMED
+OPERATOR_CONFIRMS_NO_FUTURES_AUTHORITY=CONFIRMED
+OPERATOR_CONFIRMS_PREFLIGHT_REMAINS_SEPARATE_FROM_ARMING=CONFIRMED
+OPERATOR_CONFIRMS_NEXT_EXECUTE_REMAINS_FALSE=CONFIRMED
+OPERATOR_CONFIRMS_ROLLBACK_AND_ABORT_CRITERIA=CONFIRMED
+NO_RUNTIME_AUTHORITY=true
+NO_EXECUTE_AUTHORITY=true
+NO_ARMING_AUTHORITY=true
+NO_LIVE_AUTHORITY=true
+NO_FUTURES_AUTHORITY=true
+PREFLIGHT_LIFT_NOT_ARMING=true
+PREFLIGHT_LIFT_NOT_EXECUTE=true
+PREFLIGHT_LIFT_NOT_LIVE=true
+PREFLIGHT_LIFT_NOT_FUTURES_AUTHORITY=true
+POLICY_LIFT_NOT_OPERATIONAL_AUTHORIZATION=true
+PREFLIGHT_LIFT_DOES_NOT_CLOSE_ALL_GAPS=true
+MINIMAL_BLOCKER_CLASS=INTENTIONAL_AUTHORITY_ONLY
+ALL_SECTION5_GAP_FINAL_TOKENS_TRUE=true
+PREFLIGHT_REMAINS_BLOCKED=false
+ALL_GAPS_CLOSED=false
+READY_FOR_OPERATOR_ARMING=false
+NEXT_EXECUTE_ALLOWED=false
+PATH_B_LIFT_DISCUSSION_READY=false
+PREFLIGHT_LIFT_EXECUTED=false
+ACTUAL_PREFLIGHT_LIFT_EXECUTED=false
+FUTURES_EXECUTE_AUTHORIZED=false
+FUTURES_PRIVATE_API_AUTHORIZED=false
+FUTURES_VALIDATE_ONLY_AUTHORIZED=false
+FUTURES_SESSION_AUTHORIZED_NOW=false
+
+This governed repo-reflection block records operator-authorized **preflight policy lift** to Final Machine Lines only, under explicit CLASS_4 Operator-GO `GO_PREFLIGHT_LIFT_EXPLICIT_OPERATOR_AUTHORIZATION_CLASS4_DOCS_TESTS_V0`, after G1 Operator Decision Record fulfilment (Frank Rauter, 2026-06-04T22:57:29Z). **Preflight lift ≠ operator arming ≠ execute ≠ live ≠ futures authority.** Docs/tests policy reflection only — not runtime preflight execution lift.
+
+### Preflight-lift scope (Final Machine Lines only)
+
+- `PREFLIGHT_REMAINS_BLOCKED=false` in **Final Machine Lines only**
+- `PREFLIGHT_LIFTED_BY_CLASS4_POLICY=true` in **Final Machine Lines only**
+- `PREFLIGHT_SYNTHESIS_DOCS_BLOCKED=true` unchanged in synthesis block and Final Machine Lines — synthesis historical posture preserved
+- Prior Preflight Synthesis Docs Block Reflection v0 remains unchanged except Final Machine Lines propagation recorded here
+- Gap criteria blocks, Status block, Tier-C crosslink, and individual governed reflection blocks above remain unchanged where they record `PREFLIGHT_REMAINS_BLOCKED=true` as historical scoped non-lift posture
+
+### Why ALL_GAPS_CLOSED remains false (preflight-lift record only)
+
+- Verified-bar finals and CLASS_4 policy propagations complete ≠ operational all-gaps closure
+- Gap criteria blocks remain criteria-only where unchanged
+- `READY_FOR_OPERATOR_ARMING=false`, `NEXT_EXECUTE_ALLOWED=false` — arming and execute gates unchanged
+- `PREFLIGHT_LIFT_EXECUTED=false`, `ACTUAL_PREFLIGHT_LIFT_EXECUTED=false` — no runtime preflight lift executed in this slice
+
+### Non-authority boundary (preflight-lift reflection does not imply)
+
+- does not set `READY_FOR_OPERATOR_ARMING=true` or `NEXT_EXECUTE_ALLOWED=true`
+- does not set `ALL_GAPS_CLOSED=true`
+- does not set `PREFLIGHT_LIFT_EXECUTED=true` or `ACTUAL_PREFLIGHT_LIFT_EXECUTED=true`
+- does not authorize scheduler execution, Paper, Shadow, Testnet, Live, orders, validate-only, private API, or unscoped runtime loops
+- does not grant futures authority (`FUTURES_EXECUTE_AUTHORIZED`, `FUTURES_PRIVATE_API_AUTHORIZED`, `FUTURES_VALIDATE_ONLY_AUTHORIZED`, `FUTURES_SESSION_AUTHORIZED_NOW` remain false)
+- does not modify `scripts/run_scheduler.py`, `config/scheduler/jobs.toml`, or production code in this slice
+- does not start or authorize Runtime, Paper 24/7, Shadow 24/7, or Live
+
+Policy preflight lift is not operator arming, runtime authorization, execute authorization, live authorization, or futures authority. Prior governed reflection blocks above remain scoped acceptance/verification only and unchanged except Final Machine Lines propagation recorded here.
+
 ## Tier-C + Shadow durable evidence archive crosslink v0
 
 TIER_C_SHADOW_DURABLE_EVIDENCE_REPO_STATIC_CROSSLINK_V0=true
@@ -2440,7 +2522,10 @@ NOTION_WRITE_USED=false
 PARALLEL_DOCS_CREATED=false
 REUSE_BEFORE_NEW_CHECKED=true
 REUSE_DRIFT_GUARD_CHECKED=true
-PREFLIGHT_REMAINS_BLOCKED=true
+PREFLIGHT_REMAINS_BLOCKED=false
+PREFLIGHT_LIFT_CLASS4_GOVERNED_REFLECTION_V0=true
+PREFLIGHT_LIFTED_BY_CLASS4_POLICY=true
+G1_OPERATOR_DECISION_RECORD_FULFILLED=true
 PREFLIGHT_SYNTHESIS_DOCS_BLOCKED=true
 STOP_IDLE_PRESERVED=true
 GAP2A1_PRIMARY_EVIDENCE_ENFORCEMENT_CONTRACT_V0=true
