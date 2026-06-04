@@ -15,6 +15,7 @@ from src.ops.bounded_futures_testnet_contract_v0 import (
     DEFAULT_SESSION_CLASS,
     FUTURES_SESSION_AUTHORIZED_NOW,
     PACKAGE_MARKER,
+    REJECTED_FUTURES_INSTRUMENT_PLACEHOLDERS,
     REQUIRED_FUTURES_EVIDENCE_FIELD_NAMES,
     SPOT_KRAKEN_ENDPOINT_PREFIXES,
     default_bounded_futures_normal_v0_spec,
@@ -150,11 +151,21 @@ def test_required_evidence_field_names_documented() -> None:
     assert "futures_endpoint_isolation_pass" in REQUIRED_FUTURES_EVIDENCE_FIELD_NAMES
 
 
-def test_default_spec_matches_review_instrument() -> None:
+def test_default_spec_uses_kraken_futures_operator_instrument() -> None:
     spec = default_bounded_futures_normal_v0_spec()
-    assert spec.instrument == "BTCUSDT"
+    assert spec.instrument == "PF_XBTUSD"
+    assert spec.instrument == DEFAULT_INSTRUMENT
+    assert spec.instrument not in REJECTED_FUTURES_INSTRUMENT_PLACEHOLDERS
     assert spec.max_leverage == 5.0
     assert spec.margin_mode == "isolated"
+
+
+def test_btcusdt_placeholder_rejected_in_futures_evidence() -> None:
+    evidence = _valid_futures_evidence()
+    evidence["instrument"] = "BTCUSDT"
+    assert spot_evidence_misclassified_as_futures(evidence)
+    result = evaluate_bounded_futures_testnet_evidence(evidence)
+    assert result["bounded_futures_testnet_pass"] is False
 
 
 def test_closeout_review_bundle_suffix_documented_in_test() -> None:
