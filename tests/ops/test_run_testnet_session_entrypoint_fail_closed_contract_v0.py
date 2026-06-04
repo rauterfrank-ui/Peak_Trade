@@ -108,7 +108,9 @@ def test_enforce_fail_closed_helper_is_non_authorizing() -> None:
     assert "operator arming" in helper
 
 
-def test_section5_preflight_policy_lift_does_not_authorize_execute_while_entrypoint_guarded() -> None:
+def test_section5_preflight_policy_lift_does_not_authorize_execute_while_entrypoint_guarded() -> (
+    None
+):
     gap_map = SECTION5_GAP_OWNER_MAP.read_text(encoding="utf-8")
     final_lines = gap_map.split("## Final Machine Lines", 1)[-1]
     assert "PREFLIGHT_REMAINS_BLOCKED=false" in final_lines
