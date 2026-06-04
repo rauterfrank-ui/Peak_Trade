@@ -19,6 +19,9 @@ CODE_TEST_GLOBS = (
     "tests/webui/!(test_*_structure_contract*).py",
 )
 STATIC_CONTRACT_WEBUI_GLOB = "tests/webui/test_*_structure_contract*.py"
+STATIC_OPS_CONTRACT_GLOB = "src/ops/*_contract_v0.py"
+SRC_OPS_NON_CONTRACT_GLOB = "src/ops/!(*_contract_v0.py)"
+SRC_NON_OPS_GLOB = "src/!(ops)/**"
 
 
 def _ci_text() -> str:
@@ -72,8 +75,18 @@ def _matches_static_contract_webui(path: str) -> bool:
     return fnmatch.fnmatch(path, STATIC_CONTRACT_WEBUI_GLOB)
 
 
+def _matches_static_contract_ops_src(path: str) -> bool:
+    return fnmatch.fnmatch(path, STATIC_OPS_CONTRACT_GLOB)
+
+
 def _matches_code_filter(path: str) -> bool:
-    if path.startswith("src/") or path.startswith("templates/"):
+    if path.startswith("templates/"):
+        return True
+    if _matches_static_contract_ops_src(path):
+        return False
+    if path.startswith("src/ops/"):
+        return True
+    if path.startswith("src/"):
         return True
     return _matches_code_tests_bucket(path)
 
@@ -101,9 +114,16 @@ def test_static_contract_includes_webui_structure_contract_whitelist() -> None:
     assert f"'{STATIC_CONTRACT_WEBUI_GLOB}'" in static_block
 
 
-def test_code_filter_still_requires_full_matrix_for_src_and_templates() -> None:
+def test_static_contract_includes_ops_offline_contract_modules() -> None:
+    static_block = _static_block()
+    assert f"'{STATIC_OPS_CONTRACT_GLOB}'" in static_block
+
+
+def test_code_filter_narrows_src_ops_contract_v0_modules() -> None:
     code_block = _code_block()
-    assert "'src/**'" in code_block
+    assert f"'{SRC_NON_OPS_GLOB}'" in code_block
+    assert f"'{SRC_OPS_NON_CONTRACT_GLOB}'" in code_block
+    assert "'src/**'" not in code_block
     assert "'templates/**'" in code_block
 
 
@@ -125,6 +145,8 @@ def test_code_filter_still_requires_full_matrix_for_src_and_templates() -> None:
         ("tests/ops/foo.py", False, False),
         ("tests/fixtures/foo.py", True, False),
         ("src/webui/app.py", True, False),
+        ("src/ops/bounded_futures_testnet_contract_v0.py", False, True),
+        ("src/ops/bounded_futures_testnet_runtime_module.py", True, False),
         ("templates/peak_trade_dashboard/market_v0.html", True, False),
     ],
 )
@@ -134,7 +156,8 @@ def test_code_and_static_contract_path_semantics_v0(
     expect_static: bool,
 ) -> None:
     assert _matches_code_filter(path) is expect_code
-    assert _matches_static_contract_webui(path) is expect_static
+    static_match = _matches_static_contract_webui(path) or _matches_static_contract_ops_src(path)
+    assert static_match is expect_static
 
 
 def test_matrix_jobs_keep_no_job_level_if_and_short_circuit_skip() -> None:
@@ -147,7 +170,7 @@ def test_matrix_jobs_keep_no_job_level_if_and_short_circuit_skip() -> None:
 
 def test_fast_lane_runs_static_contract_tests_when_applicable() -> None:
     text = _ci_text()
-    assert "Static contract tests (tests/ci, tests/ops, WebUI structure-contract)" in text
+    assert "Static contract tests (tests/ci, tests/ops, WebUI structure-contract" in text
     assert "needs.changes.outputs.static_contract_changed == 'true'" in text
     assert "pytest tests/ci tests/ops" in text
     assert "webui_structure_contract=(tests/webui/test_*structure_contract*.py)" in text

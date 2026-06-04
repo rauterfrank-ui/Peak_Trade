@@ -59,7 +59,9 @@ jobs:
         with:
           filters: |
             code:
-              - 'src/**'
+              # Picomatch extglob: offline ops contract modules use static_contract + Fast-Lane (PR #3984 lineage).
+              - 'src/!(ops)/**'
+              - 'src/ops/!(*_contract_v0.py)'
               - 'templates/**'
               # Picomatch extglob (dorny/paths-filter): separate `!` lines do not exclude
               # matched files from `tests/**` (see PR #3728 validation). Split buckets:
@@ -79,6 +81,7 @@ jobs:
               - 'tests/ci/**'
               - 'tests/ops/**'
               - 'tests/webui/test_*_structure_contract*.py'
+              - 'src/ops/*_contract_v0.py'
             docs:
               - 'docs/**'
               - 'out/**'
@@ -213,7 +216,7 @@ jobs:
         run: |
           pytest tests/test_stability_smoke.py tests/test_data_contracts.py tests/test_error_taxonomy.py tests/test_resilience.py -m smoke -v --tb=short
 
-      - name: Static contract tests (tests/ci, tests/ops, WebUI structure-contract)
+      - name: Static contract tests (tests/ci, tests/ops, WebUI structure-contract, src/ops contract modules via tests)
         if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.static_contract_changed == 'true' && needs.changes.outputs.code_changed != 'true' && needs.changes.outputs.workflow_only != 'true' }}
         run: |
           set -euo pipefail
