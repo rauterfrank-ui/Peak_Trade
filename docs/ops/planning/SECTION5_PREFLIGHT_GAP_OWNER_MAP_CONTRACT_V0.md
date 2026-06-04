@@ -88,6 +88,8 @@ Preflight §2a.1 documents run-type applicability for **run completion**: Paper,
 
 **Bounded Futures Testnet harness/adapter contract (PE-9 guard) v0:** Addresses `futures_testnet_execute_harness_and_exchange_adapter_missing` at offline harness/adapter contract layer only. Canonical surfaces: `src/ops/bounded_futures_testnet_adapter_contract_v0.py` (`BOUNDED_FUTURES_TESTNET_ADAPTER_CONTRACT_V0=true`), `src/ops/bounded_futures_testnet_harness_contract_v0.py` (`BOUNDED_FUTURES_TESTNET_HARNESS_CONTRACT_V0=true`). Static guards: `tests/ops/test_bounded_futures_testnet_adapter_contract_v0.py`, `tests/ops/test_bounded_futures_testnet_harness_contract_v0.py`. `HARNESS_EXECUTE_AUTHORIZED_NOW=false`; `ADAPTER_NETWORK_CALLS_ALLOWED=false`; `FUTURES_TESTNET_INSTRUMENT_EXCHANGE_PROVEN=false`; **does not** authorize Futures execute, exchange calls, credentials, or Master-V2 / Double-Play authority.
 
+**Bounded Futures Testnet runtime harness/exchange impl contract (PE-10 guard) v0:** Addresses `futures_testnet_runtime_harness_and_exchange_impl_residual` at offline runtime-harness + exchange-impl contract layer only. Canonical surfaces: `src/ops/bounded_futures_testnet_runtime_harness_contract_v0.py` (`BOUNDED_FUTURES_TESTNET_RUNTIME_HARNESS_CONTRACT_V0=true`), `src/exchange/bounded_futures_testnet_exchange_impl_contract_v0.py` (`BOUNDED_FUTURES_TESTNET_EXCHANGE_IMPL_CONTRACT_V0=true`). Static guards: `tests/ops/test_bounded_futures_testnet_runtime_harness_contract_v0.py`, `tests/ops/test_bounded_futures_testnet_exchange_impl_contract_v0.py`. `RUNTIME_HARNESS_EXECUTE_AUTHORIZED_NOW=false`; `EXCHANGE_IMPL_NETWORK_CALLS_ALLOWED=false`; archive harness filename contract-only (`bounded_futures_testnet_session_harness.py` not in repo); **does not** authorize Futures execute, network, credentials, or Master-V2 / Double-Play authority.
+
 ### Reuse-first owner surfaces
 
 - `scripts/ops/primary_evidence_retention_v0.py`
@@ -105,10 +107,14 @@ Preflight §2a.1 documents run-type applicability for **run completion**: Paper,
 - `src/ops/bounded_futures_testnet_contract_v0.py`
 - `src/ops/bounded_futures_testnet_adapter_contract_v0.py`
 - `src/ops/bounded_futures_testnet_harness_contract_v0.py`
+- `src/ops/bounded_futures_testnet_runtime_harness_contract_v0.py`
+- `src/exchange/bounded_futures_testnet_exchange_impl_contract_v0.py`
 - `tests/ops/test_repo_native_bounded_order_cap_contract_v0.py`
 - `tests/ops/test_bounded_futures_testnet_contract_v0.py`
 - `tests/ops/test_bounded_futures_testnet_adapter_contract_v0.py`
 - `tests/ops/test_bounded_futures_testnet_harness_contract_v0.py`
+- `tests/ops/test_bounded_futures_testnet_runtime_harness_contract_v0.py`
+- `tests/ops/test_bounded_futures_testnet_exchange_impl_contract_v0.py`
 - existing preflight contract §2a/§2a.1 surfaces
 - existing docs truth map / reference / token-policy checks
 
