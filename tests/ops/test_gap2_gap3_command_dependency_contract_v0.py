@@ -29,6 +29,12 @@ GAP2_GOVERNED_REFLECTION_HEADER = (
 GAP3_GOVERNED_REFLECTION_HEADER = (
     "## Gap 3 Governed Tier-2 Command Scoped Criteria Acceptance Reflection v0"
 )
+GAP2_ACCEPTED_FINAL_LINE_REFLECTION_HEADER = (
+    "## Gap 2 Governed Canonical Job Set Accepted Scoped-Criteria Final-Line Reflection v0"
+)
+GAP3_ACCEPTED_FINAL_LINE_REFLECTION_HEADER = (
+    "## Gap 3 Governed Tier-2 Command Accepted Scoped-Criteria Final-Line Reflection v0"
+)
 GAP5_GOVERNED_REFLECTION_HEADER = "## Gap 5 Governed Stop Proof Acceptance Reflection v0"
 _MARKER_TRUE = "=true"
 
@@ -84,7 +90,7 @@ def _final_machine_lines(text: str) -> str:
 
 
 def _gap2_section(text: str) -> str:
-    return text.split(GAP2_SECTION_HEADER, 1)[1].split(GAP7_SECTION_HEADER, 1)[0]
+    return text.split(GAP2_SECTION_HEADER, 1)[1].split(FINAL_MACHINE_LINES_HEADER, 1)[0]
 
 
 def _gap2_criteria_section(text: str) -> str:
@@ -109,6 +115,18 @@ def _gap2_governed_reflection_section(text: str) -> str:
 
 def _gap3_governed_reflection_section(text: str) -> str:
     return text.split(GAP3_GOVERNED_REFLECTION_HEADER, 1)[1].split(
+        GAP2_ACCEPTED_FINAL_LINE_REFLECTION_HEADER, 1
+    )[0]
+
+
+def _gap2_accepted_final_line_reflection_section(text: str) -> str:
+    return text.split(GAP2_ACCEPTED_FINAL_LINE_REFLECTION_HEADER, 1)[1].split(
+        GAP3_ACCEPTED_FINAL_LINE_REFLECTION_HEADER, 1
+    )[0]
+
+
+def _gap3_accepted_final_line_reflection_section(text: str) -> str:
+    return text.split(GAP3_ACCEPTED_FINAL_LINE_REFLECTION_HEADER, 1)[1].split(
         GAP5_GOVERNED_REFLECTION_HEADER, 1
     )[0]
 
@@ -270,6 +288,35 @@ def test_gap2_governed_reflection_scoped_acceptance_v0() -> None:
     assert "GAP2_ACCEPTED_SCOPED_CRITERIA=true" not in criteria
 
 
+def test_gap2_accepted_scoped_criteria_final_line_governed_reflection_v0() -> None:
+    text = _section5_text()
+    reflection = _gap2_accepted_final_line_reflection_section(text)
+    acceptance = _gap2_governed_reflection_section(text)
+    criteria = _gap2_criteria_section(text)
+    block = _final_machine_lines(text)
+
+    assert "GAP2_ACCEPTED_SCOPED_CRITERIA_FINAL_LINE_GOVERNED_REFLECTION_V0=true" in reflection
+    assert "GAP2_ACCEPTED_SCOPED_CRITERIA=true" in reflection
+    assert "ACCEPTED_NOT_VERIFIED_SEMANTIC_PRESERVED=true" in reflection
+    assert "GOVERNED_ACCEPTANCE_BASIS=GAP2_ACCEPTED_SCOPED_CRITERIA=true" in reflection
+    assert (
+        "OPERATOR_GO=GO_PREPARE_SECTION5_GAP2_GAP3_ACCEPTED_SCOPED_CRITERIA_FINAL_LINE_REPO_REFLECTION_DOCS_TESTS_V0"
+        in reflection
+    )
+    assert "does not set `GAP2_CANONICAL_JOB_SET_VERIFIED=true`" in reflection
+    assert "does not modify `config/scheduler/jobs.toml`" in reflection
+    assert "NO_RUNTIME_AUTHORITY=true" in reflection
+    assert "GAP2_ACCEPTED_SCOPED_CRITERIA=true" in acceptance
+    assert "GAP2_CANONICAL_JOB_SET_VERIFIED=false" in criteria
+    assert "GAP2_ACCEPTED_SCOPED_CRITERIA=true" not in criteria
+    assert "GAP2_ACCEPTED_SCOPED_CRITERIA=true" in block
+    assert "GAP2_CANONICAL_JOB_SET_VERIFIED=false" in block
+    criteria_lines = {line.strip() for line in criteria.splitlines()}
+    block_lines = {line.strip() for line in block.splitlines()}
+    assert "GAP2_ACCEPTED_SCOPED_CRITERIA=true" not in criteria_lines
+    assert "GAP2_ACCEPTED_SCOPED_CRITERIA=true" in block_lines
+
+
 def test_gap3_governed_reflection_tier2_command_v0() -> None:
     text = _section5_text()
     reflection = _gap3_governed_reflection_section(text)
@@ -293,11 +340,44 @@ def test_gap3_governed_reflection_tier2_command_v0() -> None:
     assert "GAP3_ACCEPTED_SCOPED_CRITERIA=true" not in criteria
 
 
+def test_gap3_accepted_scoped_criteria_final_line_governed_reflection_v0() -> None:
+    text = _section5_text()
+    reflection = _gap3_accepted_final_line_reflection_section(text)
+    acceptance = _gap3_governed_reflection_section(text)
+    criteria = _gap3_section(text)
+    block = _final_machine_lines(text)
+
+    assert "GAP3_ACCEPTED_SCOPED_CRITERIA_FINAL_LINE_GOVERNED_REFLECTION_V0=true" in reflection
+    assert "GAP3_ACCEPTED_SCOPED_CRITERIA=true" in reflection
+    assert "ACCEPTED_NOT_VERIFIED_SEMANTIC_PRESERVED=true" in reflection
+    assert "GOVERNED_ACCEPTANCE_BASIS=GAP3_ACCEPTED_SCOPED_CRITERIA=true" in reflection
+    assert (
+        "OPERATOR_GO=GO_PREPARE_SECTION5_GAP2_GAP3_ACCEPTED_SCOPED_CRITERIA_FINAL_LINE_REPO_REFLECTION_DOCS_TESTS_V0"
+        in reflection
+    )
+    assert "does not set `GAP3_EXECUTE_COMMAND_VERIFIED=true`" in reflection
+    assert "does not observe or record `GAP6_DRY_RUN_RC0_OBSERVED=true`" in reflection
+    assert "NO_RUNTIME_AUTHORITY=true" in reflection
+    assert "GAP3_ACCEPTED_SCOPED_CRITERIA=true" in acceptance
+    assert "GAP3_EXECUTE_COMMAND_VERIFIED=false" in criteria
+    assert "GAP3_ACCEPTED_SCOPED_CRITERIA=true" not in criteria
+    assert "GAP3_ACCEPTED_SCOPED_CRITERIA=true" in block
+    assert "GAP3_EXECUTE_COMMAND_VERIFIED=false" in block
+    criteria_lines = {line.strip() for line in criteria.splitlines()}
+    block_lines = {line.strip() for line in block.splitlines()}
+    assert "GAP3_ACCEPTED_SCOPED_CRITERIA=true" not in criteria_lines
+    assert "GAP3_ACCEPTED_SCOPED_CRITERIA=true" in block_lines
+
+
 def test_gap2_gap3_reflection_final_lines_no_verified_or_rc0_flip_v0() -> None:
     block = _final_machine_lines(_section5_text())
     lines = {line.strip() for line in block.splitlines()}
     for token in DEPENDENCY_FORBIDDEN_REPO_TOKENS:
         assert token not in lines
+    assert "GAP2_ACCEPTED_SCOPED_CRITERIA=true" in block
+    assert "GAP3_ACCEPTED_SCOPED_CRITERIA=true" in block
+    assert "GAP2_CANONICAL_JOB_SET_VERIFIED=false" in block
+    assert "GAP3_EXECUTE_COMMAND_VERIFIED=false" in block
     assert "GAP6_DRY_RUN_RC0_OBSERVED=true" in block
     assert "GAP6_DRY_RUN_PROOF_VERIFIED=false" in block
     assert "PREFLIGHT_REMAINS_BLOCKED=true" in block

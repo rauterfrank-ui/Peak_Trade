@@ -478,6 +478,96 @@ Without the Tier-2 tag filter, an unfiltered dry-run may plan against seven enab
 
 Evidence acceptance is not runtime authorization. The Gap 3 Execute Command Contract v0 block above remains contract-only and unchanged.
 
+## Gap 2 Governed Canonical Job Set Accepted Scoped-Criteria Final-Line Reflection v0
+
+GAP2_ACCEPTED_SCOPED_CRITERIA_FINAL_LINE_GOVERNED_REFLECTION_V0=true
+GAP2_ACCEPTED_SCOPED_CRITERIA=true
+ACCEPTED_MODE=PAPER_PLUS_BOUNDED_SHADOW_NON_24_7_SCOPED_CRITERIA_FINAL_LINE_ACCEPTED
+GOVERNED_ACCEPTANCE_BASIS=GAP2_ACCEPTED_SCOPED_CRITERIA=true
+EXTERNAL_ACCEPTANCE_RECORD_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/gap2_canonical_job_set_bounded_scoping_readonly_no_run_v0_20260603T152117Z/
+GOVERNED_REPO_REFLECTION_CHARTER_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/section5_breakthrough_unlock_strategy_no_run_v0_20260603T153035Z/
+INPUT_SCOPE_REVIEW_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/gap2_canonical_job_set_scope_review_no_run_v0_20260604T190850Z/
+OPERATOR_GO=GO_PREPARE_SECTION5_GAP2_GAP3_ACCEPTED_SCOPED_CRITERIA_FINAL_LINE_REPO_REFLECTION_DOCS_TESTS_V0
+NO_RUNTIME_AUTHORITY=true
+NO_REPO_FLAG_LIFT_FROM_EXTERNAL_ACCEPTANCE=true
+GAP2_CANONICAL_JOB_SET_VERIFIED=false
+GAP2_JOB_SET_ENABLED=false
+GAP2_JOBS_TOML_CHANGED=false
+ACCEPTED_NOT_VERIFIED_SEMANTIC_PRESERVED=true
+PREFLIGHT_REMAINS_BLOCKED=true
+ALL_GAPS_CLOSED=false
+READY_FOR_OPERATOR_ARMING=false
+PATH_B_LIFT_DISCUSSION_READY=false
+
+This governed repo-reflection block records operator-authorized Gap-2 canonical job-set **accepted scoped-criteria final-line propagation** only. It propagates `GAP2_ACCEPTED_SCOPED_CRITERIA=true` to Final Machine Lines based on existing bounded scoping acceptance in the Gap-2 governed reflection block. External acceptance records remain pointer-based and subordinate to repo governance.
+
+### Accepted scoped-criteria final-line scope (allowed only)
+
+- external bounded-scoping bundle referenced by governed acceptance reflection
+- `GAP2_ACCEPTED_SCOPED_CRITERIA=true` in **Final Machine Lines only**
+- Gap 2 Canonical Job Set Contract v0 block remains criteria-only with `GAP2_CANONICAL_JOB_SET_VERIFIED=false` and without `GAP2_ACCEPTED_SCOPED_CRITERIA=true`
+- accepted scoped criteria ≠ canonical job-set verified; acceptance ≠ scheduler execution authorization
+
+### Non-authority boundary (accepted final-line reflection does not imply)
+
+- does not set `GAP2_CANONICAL_JOB_SET_VERIFIED=true` in criteria or Final Machine Lines
+- does not set `GAP2_JOB_SET_ENABLED=true` or `GAP2_JOBS_TOML_CHANGED=true`
+- does not modify `config/scheduler/jobs.toml` or enable any scheduler job
+- does not verify Gap-4 output evidence paths or Gap-7 risk boundaries beyond existing finals
+- does not enforce Gap-2a.1 primary evidence
+- does not authorize scheduler execution
+- does not enable operator arming
+- does not open Path-B lift discussion
+- does not set `ALL_GAPS_CLOSED=true`
+- does not lift preflight
+- does not start or authorize Runtime, Paper, Shadow, Testnet, or Live
+
+Evidence acceptance is not runtime authorization. The Gap 2 Governed Canonical Job Set Scoped Criteria Acceptance Reflection v0 block above remains scoped acceptance only and unchanged.
+
+## Gap 3 Governed Tier-2 Command Accepted Scoped-Criteria Final-Line Reflection v0
+
+GAP3_ACCEPTED_SCOPED_CRITERIA_FINAL_LINE_GOVERNED_REFLECTION_V0=true
+GAP3_ACCEPTED_SCOPED_CRITERIA=true
+ACCEPTED_MODE=BOUNDED_DRY_RUN_COMMAND_TIER2_SCOPED_CRITERIA_FINAL_LINE_ACCEPTED
+GOVERNED_ACCEPTANCE_BASIS=GAP3_ACCEPTED_SCOPED_CRITERIA=true
+EXTERNAL_ACCEPTANCE_RECORD_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/gap3_execute_command_contract_readonly_no_run_v0_20260603T152336Z/
+GOVERNED_REPO_REFLECTION_CHARTER_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/section5_breakthrough_unlock_strategy_no_run_v0_20260603T153035Z/
+INPUT_SCOPE_REVIEW_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/gap2_canonical_job_set_scope_review_no_run_v0_20260604T190850Z/
+OPERATOR_GO=GO_PREPARE_SECTION5_GAP2_GAP3_ACCEPTED_SCOPED_CRITERIA_FINAL_LINE_REPO_REFLECTION_DOCS_TESTS_V0
+NO_RUNTIME_AUTHORITY=true
+NO_REPO_FLAG_LIFT_FROM_EXTERNAL_ACCEPTANCE=true
+GAP3_EXECUTE_COMMAND_VERIFIED=false
+GAP3_SCHEDULER_EXECUTION_AUTHORIZED=false
+ACCEPTED_NOT_VERIFIED_SEMANTIC_PRESERVED=true
+PREFLIGHT_REMAINS_BLOCKED=true
+ALL_GAPS_CLOSED=false
+READY_FOR_OPERATOR_ARMING=false
+PATH_B_LIFT_DISCUSSION_READY=false
+
+This governed repo-reflection block records operator-authorized Gap-3 Tier-2 command **accepted scoped-criteria final-line propagation** only. It propagates `GAP3_ACCEPTED_SCOPED_CRITERIA=true` to Final Machine Lines based on existing bounded command acceptance in the Gap-3 governed reflection block. External acceptance records remain pointer-based and subordinate to repo governance.
+
+### Accepted scoped-criteria final-line scope (allowed only)
+
+- external command-contract acceptance bundle referenced by governed acceptance reflection
+- `GAP3_ACCEPTED_SCOPED_CRITERIA=true` in **Final Machine Lines only**
+- Gap 3 Execute Command Contract v0 block remains criteria-only with `GAP3_EXECUTE_COMMAND_VERIFIED=false` and without `GAP3_ACCEPTED_SCOPED_CRITERIA=true`
+- accepted scoped criteria ≠ execute-command verified; acceptance ≠ scheduler execution authorization
+
+### Non-authority boundary (accepted final-line reflection does not imply)
+
+- does not set `GAP3_EXECUTE_COMMAND_VERIFIED=true` in criteria or Final Machine Lines
+- does not observe or record `GAP6_DRY_RUN_RC0_OBSERVED=true` in the Gap-3 criteria block
+- does not modify `config/scheduler/jobs.toml` or authorize scheduler execution
+- does not verify Gap-4 output evidence paths or Gap-7 risk boundaries beyond existing finals
+- does not enforce Gap-2a.1 primary evidence
+- does not enable operator arming
+- does not open Path-B lift discussion
+- does not set `ALL_GAPS_CLOSED=true`
+- does not lift preflight
+- does not start or authorize Runtime, Paper, Shadow, Testnet, or Live
+
+Evidence acceptance is not runtime authorization. The Gap 3 Governed Tier-2 Command Scoped Criteria Acceptance Reflection v0 block above remains scoped acceptance only and unchanged.
+
 ## Gap 5 Governed Stop Proof Acceptance Reflection v0
 
 GAP5_STOP_PROOF_GOVERNED_REFLECTION_V0=true
@@ -1578,6 +1668,7 @@ GAP4_OUTPUT_EVIDENCE_OPT_IN_ONLY=true
 GAP4_DURABLE_OUTPUT_REQUIRED_FOR_FUTURE_RUNS=true
 GAP3_EXECUTE_COMMAND_CONTRACT_V0=true
 GAP3_EXECUTE_COMMAND_VERIFIED=false
+GAP3_ACCEPTED_SCOPED_CRITERIA=true
 GAP3_SCHEDULER_EXECUTION_AUTHORIZED=false
 GAP3_EXECUTE_COMMAND_DEFAULT_ON=false
 GAP3_EXECUTE_COMMAND_DRY_RUN_ONLY=true
@@ -1606,6 +1697,7 @@ GAP5_STOP_CRITERIA_DEFAULT_ON=false
 GAP2_CANONICAL_JOB_SET_CONTRACT_V0=true
 GAP2_CRITERIA_ONLY=true
 GAP2_CANONICAL_JOB_SET_VERIFIED=false
+GAP2_ACCEPTED_SCOPED_CRITERIA=true
 GAP2_JOB_SET_ENABLED=false
 GAP2_JOBS_TOML_CHANGED=false
 GAP2_SCHEDULER_EXECUTION_AUTHORIZED=false

@@ -314,3 +314,40 @@ def test_section5_gap6_gap1_rc0_observed_final_line_reflection_non_authorizing_v
     assert "GAP6_DRY_RUN_PROOF_VERIFIED=true" not in block_lines
     assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=true" not in block_lines
     assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
+
+
+GAP2_GAP3_ACCEPTED_FINAL_LINE_REFLECTION_HEADER = (
+    "## Gap 2 Governed Canonical Job Set Accepted Scoped-Criteria Final-Line Reflection v0"
+)
+
+
+def _gap2_gap3_accepted_final_line_reflection_section(text: str) -> str:
+    return text.split(GAP2_GAP3_ACCEPTED_FINAL_LINE_REFLECTION_HEADER, 1)[1].split(
+        "## Gap 5 Governed Stop Proof Acceptance Reflection v0", 1
+    )[0]
+
+
+def test_section5_gap2_gap3_accepted_scoped_criteria_final_line_reflection_non_authorizing_v0() -> (
+    None
+):
+    text = DOC.read_text(encoding="utf-8")
+    section = _gap2_gap3_accepted_final_line_reflection_section(text)
+    block = _final_machine_lines(text)
+
+    for token in (
+        "GAP2_ACCEPTED_SCOPED_CRITERIA_FINAL_LINE_GOVERNED_REFLECTION_V0=true",
+        "GAP3_ACCEPTED_SCOPED_CRITERIA_FINAL_LINE_GOVERNED_REFLECTION_V0=true",
+        "ACCEPTED_NOT_VERIFIED_SEMANTIC_PRESERVED=true",
+        "PREFLIGHT_REMAINS_BLOCKED=true",
+        "ALL_GAPS_CLOSED=false",
+    ):
+        assert token in section
+
+    assert "GAP2_ACCEPTED_SCOPED_CRITERIA=true" in block
+    assert "GAP3_ACCEPTED_SCOPED_CRITERIA=true" in block
+    assert "GAP2_CANONICAL_JOB_SET_VERIFIED=false" in block
+    assert "GAP3_EXECUTE_COMMAND_VERIFIED=false" in block
+    block_lines = {line.strip() for line in block.splitlines()}
+    assert "GAP2_CANONICAL_JOB_SET_VERIFIED=true" not in block_lines
+    assert "GAP3_EXECUTE_COMMAND_VERIFIED=true" not in block_lines
+    assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
