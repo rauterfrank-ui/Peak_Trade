@@ -88,14 +88,18 @@ def test_contract_governance_tokens_map_to_repo_native_markers() -> None:
             assert repo_marker in source, f"{external_token} -> missing {repo_marker!r}"
 
 
-def test_section5_preflight_policy_lift_does_not_authorize_execute() -> None:
+def test_section5_next_execute_policy_lift_does_not_authorize_runtime() -> None:
     gap_map = SECTION5_GAP_OWNER_MAP.read_text(encoding="utf-8")
     final_lines = gap_map.split("## Final Machine Lines", 1)[-1]
     assert "PREFLIGHT_REMAINS_BLOCKED=false" in final_lines
     assert "PREFLIGHT_LIFTED_BY_CLASS4_POLICY=true" in final_lines
-    assert "NEXT_EXECUTE_ALLOWED=false" in final_lines
+    assert "NEXT_EXECUTE_ALLOWED=true" in final_lines
     assert "READY_FOR_OPERATOR_ARMING=true" in final_lines
     assert "ARMING_NOT_EXECUTE=true" in final_lines
+    assert "EXECUTE_IS_NOT_RUNTIME_START=true" in final_lines
+    assert "EXECUTE_NOT_ORDERS=true" in final_lines
+    assert "BOUNDED_EXECUTE_RUN_AUTHORIZED=false" in final_lines
+    assert "RUNTIME_STARTED=false" in final_lines
     assert "PREFLIGHT_LIFT_EXECUTED=false" in final_lines
 
 

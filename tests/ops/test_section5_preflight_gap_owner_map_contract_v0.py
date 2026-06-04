@@ -152,6 +152,9 @@ ALL_GAPS_CLOSED_FINAL_REFLECTION_HEADER = (
 OPERATOR_ARMING_CLASS4_REFLECTION_HEADER = (
     "## Operator Arming Explicit Authorization CLASS_4 Reflection v0"
 )
+NEXT_EXECUTE_CLASS4_REFLECTION_HEADER = (
+    "## NEXT_EXECUTE Explicit Authorization CLASS_4 Reflection v0"
+)
 TIER_C_SHADOW_CROSSLINK_HEADER = "## Tier-C + Shadow durable evidence archive crosslink v0"
 FINAL_MACHINE_LINES_HEADER = "## Final Machine Lines"
 
@@ -176,6 +179,12 @@ def _all_gaps_closed_final_reflection_section(text: str) -> str:
 
 def _operator_arming_class4_reflection_section(text: str) -> str:
     return text.split(OPERATOR_ARMING_CLASS4_REFLECTION_HEADER, 1)[1].split(
+        NEXT_EXECUTE_CLASS4_REFLECTION_HEADER, 1
+    )[0]
+
+
+def _next_execute_class4_reflection_section(text: str) -> str:
+    return text.split(NEXT_EXECUTE_CLASS4_REFLECTION_HEADER, 1)[1].split(
         TIER_C_SHADOW_CROSSLINK_HEADER, 1
     )[0]
 
@@ -294,7 +303,8 @@ def test_section5_preflight_synthesis_docs_block_reflection_non_authorizing_v0()
     assert "PREFLIGHT_REMAINS_BLOCKED=false" in block
     assert "PREFLIGHT_LIFTED_BY_CLASS4_POLICY=true" in block
     assert "ALL_GAPS_CLOSED=true" in block
-    assert "NEXT_EXECUTE_ALLOWED=false" in block
+    assert "NEXT_EXECUTE_ALLOWED=true" in block
+    assert "EXECUTE_IS_NOT_RUNTIME_START=true" in block
     assert "READY_FOR_OPERATOR_ARMING=true" in block
     assert "ARMING_NOT_EXECUTE=true" in block
     assert "PREFLIGHT_LIFT_EXECUTED=false" in block
@@ -327,7 +337,8 @@ def test_section5_preflight_synthesis_docs_block_reflection_non_authorizing_v0()
     assert "ALL_GAPS_CLOSED_CLASS4_GOVERNED_REFLECTION_V0=true" in block_lines
     assert "READY_FOR_OPERATOR_ARMING=true" in block_lines
     assert "ARMING_NOT_EXECUTE=true" in block_lines
-    assert "NEXT_EXECUTE_ALLOWED=true" not in synthesis_lines
+    assert "NEXT_EXECUTE_ALLOWED=true" in block_lines
+    assert "EXECUTE_IS_NOT_RUNTIME_START=true" in block_lines
 
 
 def test_section5_preflight_lift_class4_reflection_non_authorizing_v0() -> None:
@@ -369,7 +380,8 @@ def test_section5_preflight_lift_class4_reflection_non_authorizing_v0() -> None:
     assert "G1_OPERATOR_DECISION_RECORD_FULFILLED=true" in block_lines
     assert "ALL_GAPS_CLOSED=true" in block_lines
     assert "READY_FOR_OPERATOR_ARMING=true" in block_lines
-    assert "NEXT_EXECUTE_ALLOWED=true" not in block_lines
+    assert "NEXT_EXECUTE_ALLOWED=true" in block_lines
+    assert "EXECUTE_IS_NOT_RUNTIME_START=true" in block_lines
     assert "PREFLIGHT_LIFT_EXECUTED=true" not in block_lines
 
 
@@ -414,7 +426,8 @@ def test_section5_all_gaps_closed_final_reflection_after_preflight_lift_non_auth
     assert "ALL_GAPS_CLOSED=true" in block_lines
     assert "ALL_GAPS_CLOSED_CLASS4_GOVERNED_REFLECTION_V0=true" in block_lines
     assert "READY_FOR_OPERATOR_ARMING=true" in block_lines
-    assert "NEXT_EXECUTE_ALLOWED=true" not in block_lines
+    assert "NEXT_EXECUTE_ALLOWED=true" in block_lines
+    assert "EXECUTE_IS_NOT_RUNTIME_START=true" in block_lines
     assert "FUTURES_EXECUTE_AUTHORIZED=true" not in block_lines
 
 
@@ -453,7 +466,50 @@ def test_section5_operator_arming_explicit_authorization_class4_non_authorizing_
     assert "READY_FOR_OPERATOR_ARMING=true" in block_lines
     assert "READY_FOR_OPERATOR_ARMING_CLASS4_GOVERNED_REFLECTION_V0=true" in block_lines
     assert "ARMING_NOT_EXECUTE=true" in block_lines
-    assert "NEXT_EXECUTE_ALLOWED=true" not in block_lines
+    assert "NEXT_EXECUTE_ALLOWED=true" in block_lines
+    assert "EXECUTE_IS_NOT_RUNTIME_START=true" in block_lines
+    assert "FUTURES_EXECUTE_AUTHORIZED=true" not in block_lines
+
+
+def test_section5_next_execute_explicit_authorization_class4_non_authorizing_v0() -> None:
+    text = DOC.read_text(encoding="utf-8")
+    reflection = _next_execute_class4_reflection_section(text)
+    arming = _operator_arming_class4_reflection_section(text)
+    block = _final_machine_lines(text)
+
+    for token in (
+        "NEXT_EXECUTE_CLASS4_GOVERNED_REFLECTION_V0=true",
+        "NEXT_EXECUTE_ALLOWED=true",
+        "ACCEPTED_MODE=NEXT_EXECUTE_EXPLICIT_AUTHORIZATION_CLASS4_DOCS_TESTS_ONLY",
+        "OPERATOR_GO=GO_NEXT_EXECUTE_EXPLICIT_AUTHORIZATION_CLASS4_DOCS_TESTS_V0",
+        "CLASS4_OPERATOR_GO_ACCEPTED=true",
+        "NEXT_EXECUTE_OPERATOR_DECISION_RECORD_REFLECTED=true",
+        "GUARD_EXECUTE_NOT_AUTHORITY_LIFT=true",
+        "EXECUTE_IS_NOT_RUNTIME_START=true",
+        "EXECUTE_NOT_RUNTIME=true",
+        "EXECUTE_NOT_LIVE=true",
+        "EXECUTE_NOT_FUTURES_AUTHORITY=true",
+        "EXECUTE_NOT_ORDERS=true",
+        "READY_FOR_OPERATOR_ARMING=true",
+        "ARMING_NOT_EXECUTE=true",
+        "ALL_GAPS_CLOSED=true",
+        "PREFLIGHT_REMAINS_BLOCKED=false",
+        "PREFLIGHT_LIFTED_BY_CLASS4_POLICY=true",
+        "BOUNDED_EXECUTE_RUN_AUTHORIZED=false",
+        "RUNTIME_APPROVED=false",
+        "FUTURES_EXECUTE_AUTHORIZED=false",
+    ):
+        assert token in reflection
+
+    assert "NEXT_EXECUTE_ALLOWED=true ≠ Runtime start" in reflection
+    assert "does not set `RUNTIME_APPROVED=true`" in reflection
+    assert "NEXT_EXECUTE_ALLOWED=false" in arming
+    block_lines = {line.strip() for line in block.splitlines()}
+    assert "NEXT_EXECUTE_ALLOWED=true" in block_lines
+    assert "NEXT_EXECUTE_CLASS4_GOVERNED_REFLECTION_V0=true" in block_lines
+    assert "EXECUTE_IS_NOT_RUNTIME_START=true" in block_lines
+    assert "ARMING_NOT_EXECUTE=true" in block_lines
+    assert "BOUNDED_EXECUTE_RUN_AUTHORIZED=false" in block_lines
     assert "FUTURES_EXECUTE_AUTHORIZED=true" not in block_lines
 
 
