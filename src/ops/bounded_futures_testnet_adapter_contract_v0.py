@@ -119,7 +119,9 @@ def validate_futures_testnet_adapter_binding(
 
     host = binding.network_host.strip().rstrip("/")
     if any(host.startswith(prefix) for prefix in LIVE_FUTURES_HOST_PREFIXES):
-        result["fail_reasons"].append("live or spot Kraken host not allowed for bounded futures testnet")
+        result["fail_reasons"].append(
+            "live or spot Kraken host not allowed for bounded futures testnet"
+        )
     if host == "https://api.kraken.com":
         result["fail_reasons"].append("spot kraken.com host forbidden for futures bounded adapter")
 
@@ -136,7 +138,9 @@ def validate_futures_testnet_adapter_binding(
             result["fail_reasons"].append(f"endpoint not on futures testnet allowlist: {ep}")
 
     result["instrument_binding_pass"] = bool(binding.instrument)
-    result["spot_endpoint_isolation_pass"] = not any("spot endpoint" in r for r in result["fail_reasons"])
+    result["spot_endpoint_isolation_pass"] = not any(
+        "spot endpoint" in r for r in result["fail_reasons"]
+    )
     result["futures_endpoint_allowlist_pass"] = (
         binding.endpoint_allowlist.issubset(FUTURES_TESTNET_ENDPOINT_ALLOWLIST)
         and result["spot_endpoint_isolation_pass"]

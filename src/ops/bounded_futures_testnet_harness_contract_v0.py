@@ -76,7 +76,8 @@ def build_offline_harness_evidence_template(
         "market_type": binding.market_type,
         "margin_mode": binding.margin_mode,
         "max_leverage": binding.max_leverage,
-        "leverage_within_cap": binding.max_leverage <= default_bounded_futures_normal_v0_spec().max_leverage,
+        "leverage_within_cap": binding.max_leverage
+        <= default_bounded_futures_normal_v0_spec().max_leverage,
         "position_mode": binding.position_mode,
         "order_side_semantics": binding.order_side_semantics,
         "reduce_only_supported": binding.reduce_only_supported,
@@ -129,7 +130,9 @@ def evaluate_bounded_futures_testnet_harness_readiness(
     if ADAPTER_NETWORK_CALLS_ALLOWED:
         result["fail_reasons"].append("ADAPTER_NETWORK_CALLS_ALLOWED must be false")
     if config.operator_go_token:
-        result["fail_reasons"].append("operator_go_token must not be set without separate execute GO")
+        result["fail_reasons"].append(
+            "operator_go_token must not be set without separate execute GO"
+        )
 
     spec = default_bounded_futures_normal_v0_spec()
     if config.session_class != spec.session_class:
@@ -137,7 +140,9 @@ def evaluate_bounded_futures_testnet_harness_readiness(
     if config.order_policy != spec.order_policy:
         result["fail_reasons"].append(f"order_policy must be {spec.order_policy!r}")
     if config.evidence_source != EVIDENCE_SOURCE_FUTURES_HARNESS:
-        result["fail_reasons"].append(f"evidence_source must be {EVIDENCE_SOURCE_FUTURES_HARNESS!r}")
+        result["fail_reasons"].append(
+            f"evidence_source must be {EVIDENCE_SOURCE_FUTURES_HARNESS!r}"
+        )
     if config.max_real_orders > spec.max_real_orders:
         result["fail_reasons"].append("max_real_orders exceeds spec cap")
     if config.max_order_attempts > spec.max_order_attempts:
