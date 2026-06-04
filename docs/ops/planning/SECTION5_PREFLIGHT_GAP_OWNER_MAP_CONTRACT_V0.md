@@ -2106,6 +2106,69 @@ This governed repo-reflection block records operator-authorized Gap-2a.1 / Tier-
 
 Repo SSOT enforcement lift is not runtime authorization. Tier-1 zero-dispatch and canonical-tag observed final-line reflection v0 blocks above remain scoped observation only and unchanged.
 
+## Gap 4 Full-Scope Gap4 CLASS_4 Policy Final-Line Propagation Reflection v0
+
+FULL_SCOPE_GAP4_FINAL_LINE_GOVERNED_REFLECTION_V0=true
+FULL_SCOPE_GAP4_CLASS4_POLICY_OVERRIDE_V0=true
+ACCEPTED_MODE=GAP4_FULL_SCOPE_GAP4_VERIFIED_CLASS4_FINAL_LINE_POLICY_OVERRIDE
+OPERATOR_GO=GO_FULL_SCOPE_GAP4_CLASS4_POLICY_FINAL_LINE_PROPAGATION_DOCS_TESTS_V0
+CLASS4_OPERATOR_GO_ACCEPTED=true
+DOCS_TESTS_ONLY=true
+GOVERNED_ACCEPTANCE_BASIS=GAP4_FULL_SCOPE_GAP4_VERIFIED_REFLECTION+CLASS4_POLICY_DECISION_CHARTER+GAP2A1_REPO_LIFT_COMPLETE
+INPUT_CLASS4_POLICY_CHARTER_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/full_scope_gap4_policy_split_class4_decision_charter_no_run_v0_20260604T223849Z/
+INPUT_ALL_GAPS_CONSISTENCY_PRECHECK_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/section5_all_gaps_final_consistency_closure_precheck_after_gap2a1_class4_repo_lift_no_run_v0_20260604T223717Z/
+INPUT_GAP2A1_CLOSEOUT_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/gap2a1_primary_evidence_repo_lift_class4_post_merge_closeout_no_run_v0_20260604T223407Z/
+INPUT_GAP4_POLICY_SPLIT_PRECHECK_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/gap4_full_scope_verified_final_line_propagation_precheck_no_run_v0_20260604T222132Z/
+EXTERNAL_VERIFIED_READ_ONLY_VERIFICATION_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/full_scope_gap4_verified_read_only_verification_v0_20260601T011200Z/
+EXTERNAL_PR3845_MERGE_CLOSEOUT_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/after_pr3845_gap4_full_scope_evidence_complete_reflection_merge_closeout_v0_20260601T010700Z/
+EXTERNAL_COMPLETENESS_VERIFICATION_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/gap4_full_scope_evidence_completeness_verification_v0_20260601T010600Z/
+NO_RUNTIME_AUTHORITY=true
+NO_EXECUTE_AUTHORITY=true
+POLICY_OVERRIDE_NOT_OPERATIONAL_AUTHORIZATION=true
+FULL_SCOPE_FML_PROPAGATION_DOES_NOT_CLOSE_ALL_GAPS=true
+FULL_SCOPE_FML_PROPAGATION_DOES_NOT_LIFT_PREFLIGHT=true
+NO_REPO_FLAG_LIFT_FROM_EXTERNAL_ACCEPTANCE=true
+FULL_SCOPE_GAP4_VERIFIED=true
+GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true
+FULL_SCOPE_GAP4_POLICY_SPLIT_RESOLVED=true
+GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true
+GAP2A1_TIER1_ENFORCEMENT_LIFTED_REPO=true
+PREFLIGHT_REMAINS_BLOCKED=true
+ALL_GAPS_CLOSED=false
+READY_FOR_OPERATOR_ARMING=false
+NEXT_EXECUTE_ALLOWED=false
+PATH_B_LIFT_DISCUSSION_READY=false
+PREFLIGHT_LIFT_EXECUTED=false
+ACTUAL_PREFLIGHT_LIFT_EXECUTED=false
+FUTURES_EXECUTE_AUTHORIZED=false
+FUTURES_PRIVATE_API_AUTHORIZED=false
+FUTURES_VALIDATE_ONLY_AUTHORIZED=false
+FUTURES_SESSION_AUTHORIZED_NOW=false
+
+This governed repo-reflection block records operator-authorized **FULL_SCOPE Gap-4 policy-split resolution** via CLASS_4 final-line propagation only, under explicit Operator-GO `GO_FULL_SCOPE_GAP4_CLASS4_POLICY_FINAL_LINE_PROPAGATION_DOCS_TESTS_V0`. It propagates `FULL_SCOPE_GAP4_VERIFIED=true` to Final Machine Lines based on existing verified reflection block (`GAP4_FULL_SCOPE_GAP4_VERIFIED_REFLECTION_V0`), external read-only verification PASS (PR #3845), completeness chain, and CLASS_4 policy-decision charter. Prior PR #3968 deliberately excluded FULL_SCOPE from Final Machine Lines (scoped propagation only); this slice resolves that intentional policy split with explicit operator authorization. **Policy final-line propagation is not runtime execute authorization.**
+
+### Policy final-line scope (Final Machine Lines only)
+
+- `FULL_SCOPE_GAP4_VERIFIED=true` in **Final Machine Lines only**
+- `FULL_SCOPE_GAP4_POLICY_SPLIT_RESOLVED=true` in **Final Machine Lines only**
+- `GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true` in Final Machine Lines unchanged (PR #3968)
+- Gap 4 Full-Scope Gap4 Verified Reflection v0 block remains reflection-only with `FULL_SCOPE_GAP4_VERIFIED=true` (unchanged historical record)
+- Gap 4 Output/Evidence Paths Contract v0 criteria block remains criteria-only with `GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false`
+- Gap 4 Governed Output Evidence Paths Verified Final-Line Reflection v0 block remains historical scoped propagation record with `FULL_SCOPE_GAP4_VERIFIED=false` (PR #3968 posture preserved in that block)
+
+### Non-authority boundary (policy final-line propagation does not imply)
+
+- does not modify Gap-4 criteria block verification posture (`GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false` in criteria unchanged)
+- does not lift global preflight or set `PREFLIGHT_REMAINS_BLOCKED=false`
+- does not set `READY_FOR_OPERATOR_ARMING=true` or `NEXT_EXECUTE_ALLOWED=true`
+- does not set `ALL_GAPS_CLOSED=true` (preflight and other closure gates remain)
+- does not authorize scheduler execution, Paper, Shadow, Testnet, Live, orders, validate-only, private API, or unscoped runtime loops
+- does not change default-on enforcement or Risk/KillSwitch / execution/live gates / Master V2 / Double Play
+- does not modify `scripts/run_scheduler.py`, `config/scheduler/jobs.toml`, or production code in this slice
+- does not start or authorize Runtime, Paper 24/7, Shadow 24/7, or Live
+
+Policy reflection is not runtime authorization. Gap 4 Full-Scope Gap4 Verified Reflection v0 and prior governed reflection blocks above remain scoped acceptance/verification only and unchanged except Final Machine Lines propagation recorded here.
+
 ## Preflight Synthesis Docs Block Reflection v0
 
 PREFLIGHT_SYNTHESIS_GOVERNED_REFLECTION_V0=true
@@ -2138,7 +2201,7 @@ GAP6_DRY_RUN_PROOF_VERIFIED=true
 GAP6_VERIFIED_BAR_TIER=T1_PLUS_T2_DRY_RUN_PROOF
 GAP6_VERIFIED_REQUIRES_RUNTIME_EXECUTE=false
 GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true
-FULL_SCOPE_GAP4_VERIFIED=false
+FULL_SCOPE_GAP4_VERIFIED=true
 GAP5_STOP_PROOF_ACCEPTED=true
 GAP5_STOP_REHEARSAL_EXECUTED=true
 GAP5_STOP_REHEARSAL_EXECUTED_SOURCE=external_archive_bundle_t2
@@ -2174,18 +2237,19 @@ This governed repo-reflection block consolidates Section-5 **final-line aligned*
 - `GAP6_DRY_RUN_PROOF_VERIFIED=true` in Final Machine Lines (PR #4004); `GAP6_VERIFIED_BAR_TIER=T1_PLUS_T2_DRY_RUN_PROOF`; Gap-6 criteria block remains `GAP6_DRY_RUN_PROOF_VERIFIED=false`
 - `SECTION5_VERIFIED_BAR_CHAIN_GAPS_1_2_3_6_COMPLETE=true` in **this synthesis block only** — documents verified-bar chain alignment; does not set `ALL_GAPS_CLOSED=true`
 - `GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true` in Final Machine Lines (PR #3968)
+- `FULL_SCOPE_GAP4_VERIFIED=true` in Final Machine Lines (CLASS_4 policy final-line propagation; prior PR #3968 scoped-only exclusion superseded by explicit operator GO; verified reflection evidence unchanged)
 - `GAP5_STOP_PROOF_ACCEPTED=true` in Final Machine Lines (PR #3967); `GAP5_STOP_REHEARSAL_EXECUTED=true` in Final Machine Lines (PR #4007 rehearsal verified-bar reflection; `GAP5_STOP_REHEARSAL_EXECUTED_SOURCE=external_archive_bundle_t2`; `INPUT_GAP5_CLOSEOUT_POINTER` → `gap5_stop_rehearsal_verified_bar_reflection_post_merge_closeout_no_run_v0_20260604T220658Z&#47;`); Gap-5 criteria block remains `GAP5_STOP_REHEARSAL_EXECUTED=false`
 - `GAP7_RISK_BOUNDARY_VERIFIED=true` in Final Machine Lines (PR #3966)
 - `GAP2A1_TIER0_OPERATOR_ACCEPTED=true` from external acceptance bundle (pointer-based)
 - `GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true`, `GAP2A1_TIER1_ENFORCEMENT_LIFTED_REPO=true`, `SECTION5_GAP2A1_REPO_LIFTED=true`, `GAP2A1_TIER1_ENFORCEMENT_LIFTED=true` in Final Machine Lines (CLASS_4 repo-lift reflection; §2a.1 criteria blocks remain `GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false`)
 - `TIER1_CANONICAL_TAG_BOUNDED_ENFORCE_OBSERVED=true` with `PRIMARY_EVIDENCE_ENFORCED_SCOPE=canonical_tag_local_readonly_preflight_once` — scoped session-evidence; distinct from repo SSOT `GAP2A1_PRIMARY_EVIDENCE_ENFORCED`
-- `FULL_SCOPE_GAP4_VERIFIED=false` — not propagated to Final Machine Lines (reflection-only)
+- `FULL_SCOPE_GAP4_POLICY_SPLIT_RESOLVED=true` in Final Machine Lines — policy split resolved; does not imply operational closure
 - `PREFLIGHT_SYNTHESIS_DOCS_BLOCKED=true` in **this synthesis block and Final Machine Lines**
 
 ### Why ALL_GAPS_CLOSED remains false (synthesis record only)
 
 - Gap-5 criteria block remains `GAP5_STOP_REHEARSAL_EXECUTED=false` — criteria-only rehearsal posture unchanged; `GAP5_STOP_REHEARSAL_EXECUTED=true` in Final Machine Lines reflects isolated external T2 evidence only (`GAP5_STOP_REHEARSAL_EXECUTED_SOURCE=external_archive_bundle_t2`; PR #4007 closeout), not live repo stop execution
-- `FULL_SCOPE_GAP4_VERIFIED=false` in Final Machine Lines — not propagated from reflection-only blocks
+- `FULL_SCOPE_GAP4_VERIFIED=true` in Final Machine Lines — CLASS_4 policy propagation complete; **does not** satisfy all-gaps operational closure (preflight and authority gates remain)
 - `PREFLIGHT_REMAINS_BLOCKED=true`, `NEXT_EXECUTE_ALLOWED=false`, `READY_FOR_OPERATOR_ARMING=false` — global preflight and arming gates unchanged
 - Gap criteria blocks for Gaps 1/2/3/4/5/6/7 remain criteria-only with verified/accepted=false where unchanged (governed reflection pattern)
 
@@ -2199,8 +2263,8 @@ This governed repo-reflection block consolidates Section-5 **final-line aligned*
 - repo-lift tokens in Final Machine Lines do not authorize runtime execute without separate bounded execute GO
 - does not modify Gap-5 Stop Criteria Contract rehearsal posture (`GAP5_STOP_REHEARSAL_EXECUTED=false` in criteria unchanged); synthesis does not add Gap-5 verified-bar machine lines beyond consolidation record
 - does not modify Gap-1/2/3/6 criteria block verification posture
-- does not set `FULL_SCOPE_GAP4_VERIFIED=true` in criteria or Final Machine Lines
-- does not authorize scheduler execution, orders, validate-only, private API, or Paper/Shadow/Testnet/Live
+- does not modify Gap-4 criteria block verification posture (`GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false` in criteria unchanged)
+- FULL_SCOPE policy final-line propagation in Final Machine Lines does not authorize scheduler execution, orders, validate-only, private API, or Paper/Shadow/Testnet/Live
 - does not change Risk/KillSwitch authority, execution/live gates, Master V2, or Double Play
 
 Evidence synthesis is not runtime authorization. Prior governed reflection blocks above remain scoped acceptance/verification only and unchanged.
@@ -2392,6 +2456,10 @@ GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true
 GAP4_OUTPUT_EVIDENCE_DEFAULT_ON=false
 GAP4_OUTPUT_EVIDENCE_OPT_IN_ONLY=true
 GAP4_DURABLE_OUTPUT_REQUIRED_FOR_FUTURE_RUNS=true
+FULL_SCOPE_GAP4_VERIFIED=true
+FULL_SCOPE_GAP4_FINAL_LINE_GOVERNED_REFLECTION_V0=true
+FULL_SCOPE_GAP4_CLASS4_POLICY_OVERRIDE_V0=true
+FULL_SCOPE_GAP4_POLICY_SPLIT_RESOLVED=true
 GAP3_EXECUTE_COMMAND_CONTRACT_V0=true
 GAP3_EXECUTE_COMMAND_VERIFIED=true
 GAP3_EXECUTE_COMMAND_VERIFIED_FINAL_LINE_GOVERNED_REFLECTION_V0=true
