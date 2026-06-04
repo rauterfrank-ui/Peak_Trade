@@ -255,7 +255,7 @@ def test_gap2_owner_crosslinks_scheduler_dry_run_hardening_source_contract_v0() 
 def test_gap2_boundary_owner_crosslinks_scheduler_dry_run_hardening_source_contract_v0() -> None:
     text = GAP2_BOUNDARY_TESTS.read_text(encoding="utf-8")
     assert "test_scheduler_dry_run_hardening_source_contract_v0.py" in text
-    assert "GAP2_CANONICAL_JOB_SET_VERIFIED=false" in text
+    assert "GAP2_CANONICAL_JOB_SET_VERIFIED=true" in text
     assert "GAP2_JOB_SET_ENABLED=false" in text
     hardening_text = _this_module_source()
     assert "test_gap2_job_set_boundary_drift_guard_contract_v0.py" in hardening_text

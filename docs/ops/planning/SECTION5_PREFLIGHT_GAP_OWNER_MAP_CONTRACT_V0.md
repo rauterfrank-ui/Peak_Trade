@@ -635,6 +635,64 @@ This governed repo-reflection block records operator-authorized Gap-2 canonical 
 
 Evidence observation is not runtime authorization. The Gap 2 Governed Canonical Job Set Dry-Run Observed Evidence Reflection v0 block above remains scoped observation only and unchanged.
 
+## Gap 2 Governed Canonical Job Set Verified Final-Line Reflection v0
+
+GAP2_CANONICAL_JOB_SET_VERIFIED_FINAL_LINE_GOVERNED_REFLECTION_V0=true
+GAP2_CANONICAL_JOB_SET_VERIFIED=true
+ACCEPTED_MODE=GAP2_BOUNDARY_INVENTORY_VERIFIED_SCOPED_EVIDENCE_FINAL_LINE
+GOVERNED_VERIFICATION_BASIS=GAP2_T1_STATIC_CROSSWALK_PLUS_T2_TAG_FILTER_INVENTORY_OBSERVED
+VERIFIED_BAR_TIER=T1_PLUS_T2_BOUNDARY_INVENTORY
+T1_STATIC_READONLY_SUFFICIENT_FOR_VERIFIED=false
+T2_DRY_RUN_FULL_INVENTORY_SUFFICIENT_FOR_VERIFIED=true
+T3_BOUNDED_EXECUTE_REQUIRED_FOR_VERIFIED=false
+GAP2_VERIFIED_REQUIRES_RUNTIME_EXECUTE=false
+EXTERNAL_DRY_RUN_EVIDENCE_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/gap2_bounded_scheduler_dry_run_once_no_network_no_credentials_v0_20260604T193701Z/
+EXTERNAL_VERIFICATION_DECISION_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/gap2_canonical_job_set_verified_evidence_closeout_no_run_v0_20260604T193939Z/
+EXTERNAL_PRECHECK_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/gap2_canonical_job_set_verified_full_job_set_precheck_no_execute_v0_20260604T204107Z/
+OPERATOR_GO=GO_PREPARE_SECTION5_GAP2_VERIFIED_BAR_CONTRACT_DOCS_TESTS_V0
+NO_RUNTIME_AUTHORITY=true
+NO_REPO_FLAG_LIFT_FROM_EXTERNAL_EVIDENCE=true
+VERIFIED_NOT_OBSERVED_SEMANTIC_PRESERVED=true
+TAG_FILTERED_JOBS_IN_PLAN=5
+CANONICAL_JOBS_IN_SCOPE=4
+EXCLUDED_PLACEHOLDER_IN_PLAN=1
+NON_CANONICAL_ENABLED_EXCLUDED=true
+GAP2_CANONICAL_JOB_SET_DRY_RUN_OBSERVED=true
+GAP2_ACCEPTED_SCOPED_CRITERIA=true
+GAP2_JOB_SET_ENABLED=false
+GAP2_JOBS_TOML_CHANGED=false
+GAP2_SCHEDULER_EXECUTION_AUTHORIZED=false
+GAP3_EXECUTE_COMMAND_VERIFIED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+ALL_GAPS_CLOSED=false
+READY_FOR_OPERATOR_ARMING=false
+NEXT_EXECUTE_ALLOWED=false
+
+This governed repo-reflection block records operator-authorized Gap-2 canonical job-set **verified final-line propagation** only. Verified means **boundary inventory verification** (T1 static crosswalk + T2 tag-filter dry-run inventory observed), not per-canonical-job dispatch or job-set enablement. External evidence bundles remain pointer-based and subordinate to repo governance.
+
+### Verified final-line scope (allowed only)
+
+- external dry-run bundle MANIFEST_VERIFY_RC=0; T1 static crosswalk via existing drift-guard tests; T2 tag-filter inventory (5 jobs in plan, 4 canonical + 1 excluded placeholder, non-canonical enabled excluded)
+- `GAP2_CANONICAL_JOB_SET_VERIFIED=true` in **Final Machine Lines only**
+- `VERIFIED_BAR_TIER=T1_PLUS_T2_BOUNDARY_INVENTORY` in **this block and Final Machine Lines**
+- Gap 2 Canonical Job Set Contract v0 criteria block remains criteria-only with `GAP2_CANONICAL_JOB_SET_VERIFIED=false`
+- `GAP2_CANONICAL_JOB_SET_DRY_RUN_OBSERVED=true` and `GAP2_ACCEPTED_SCOPED_CRITERIA=true` in Final Machine Lines unchanged
+- verified boundary inventory ≠ dry-run observed alone; verified ≠ scheduler execution authorization; verified ≠ job-set enabled
+
+### Non-authority boundary (verified final-line reflection does not imply)
+
+- does not modify Gap-2 criteria block verification posture (`GAP2_CANONICAL_JOB_SET_VERIFIED=false` in criteria unchanged)
+- does not set `GAP2_JOB_SET_ENABLED=true` or `GAP2_JOBS_TOML_CHANGED=true`
+- does not set `GAP2_SCHEDULER_EXECUTION_AUTHORIZED=true` or `GAP2_RUNTIME_APPROVED=true`
+- does not set `GAP3_EXECUTE_COMMAND_VERIFIED=true` in criteria or Final Machine Lines
+- does not modify Tier-1 canonical-tag or Gap-2a.1 enforcement posture
+- does not lift preflight (`PREFLIGHT_REMAINS_BLOCKED=true` unchanged)
+- does not set `READY_FOR_OPERATOR_ARMING=true` or `NEXT_EXECUTE_ALLOWED=true`
+- does not set `ALL_GAPS_CLOSED=true`
+- does not authorize Live, Testnet, orders, validate-only, private API, or unscoped scheduler loops
+
+Evidence verification is not runtime authorization. The Gap 2 Governed Canonical Job Set Dry-Run Observed Final-Line Reflection v0 block above remains scoped observation only and unchanged.
+
 ## Gap 3 Governed Tier-2 Command Accepted Scoped-Criteria Final-Line Reflection v0
 
 GAP3_ACCEPTED_SCOPED_CRITERIA_FINAL_LINE_GOVERNED_REFLECTION_V0=true
@@ -1976,7 +2034,13 @@ GAP5_SCHEDULER_EXECUTION_AUTHORIZED=false
 GAP5_STOP_CRITERIA_DEFAULT_ON=false
 GAP2_CANONICAL_JOB_SET_CONTRACT_V0=true
 GAP2_CRITERIA_ONLY=true
-GAP2_CANONICAL_JOB_SET_VERIFIED=false
+GAP2_CANONICAL_JOB_SET_VERIFIED=true
+GAP2_CANONICAL_JOB_SET_VERIFIED_FINAL_LINE_GOVERNED_REFLECTION_V0=true
+VERIFIED_BAR_TIER=T1_PLUS_T2_BOUNDARY_INVENTORY
+T1_STATIC_READONLY_SUFFICIENT_FOR_VERIFIED=false
+T2_DRY_RUN_FULL_INVENTORY_SUFFICIENT_FOR_VERIFIED=true
+T3_BOUNDED_EXECUTE_REQUIRED_FOR_VERIFIED=false
+GAP2_VERIFIED_REQUIRES_RUNTIME_EXECUTE=false
 GAP2_ACCEPTED_SCOPED_CRITERIA=true
 GAP2_CANONICAL_JOB_SET_DRY_RUN_OBSERVED=true
 GAP2_JOB_SET_ENABLED=false

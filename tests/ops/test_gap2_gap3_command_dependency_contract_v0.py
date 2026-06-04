@@ -60,7 +60,7 @@ DEPENDENCY_REQUIRED_FINAL_LINES = (
     "READY_FOR_OPERATOR_ARMING=false",
     "PATH_B_LIFT_DISCUSSION_READY=false",
     "ALL_GAPS_CLOSED=false",
-    "GAP2_CANONICAL_JOB_SET_VERIFIED=false",
+    "GAP2_CANONICAL_JOB_SET_VERIFIED=true",
     "GAP2_JOB_SET_ENABLED=false",
     "GAP3_EXECUTE_COMMAND_VERIFIED=false",
     "GAP3_SCHEDULER_EXECUTION_AUTHORIZED=false",
@@ -69,7 +69,6 @@ DEPENDENCY_REQUIRED_FINAL_LINES = (
 )
 
 DEPENDENCY_FORBIDDEN_REPO_TOKENS = (
-    "GAP2_CANONICAL_JOB_SET_VERIFIED=true",
     "GAP2_JOB_SET_ENABLED=true",
     "GAP3_EXECUTE_COMMAND_VERIFIED=true",
     "GAP3_SCHEDULER_EXECUTION_AUTHORIZED=true",
@@ -130,6 +129,20 @@ def _gap3_accepted_final_line_reflection_section(text: str) -> str:
     )[0]
 
 
+def _gap2_dry_run_observed_final_line_section(text: str) -> str:
+    return text.split(
+        "## Gap 2 Governed Canonical Job Set Dry-Run Observed Final-Line Reflection v0", 1
+    )[1].split("## Gap 2 Governed Canonical Job Set Verified Final-Line Reflection v0", 1)[0]
+
+
+def _gap2_verified_final_line_section(text: str) -> str:
+    return text.split("## Gap 2 Governed Canonical Job Set Verified Final-Line Reflection v0", 1)[
+        1
+    ].split(
+        "## Gap 3 Governed Tier-2 Command Accepted Scoped-Criteria Final-Line Reflection v0", 1
+    )[0]
+
+
 def _section5_text() -> str:
     return SECTION5_DOC.read_text(encoding="utf-8")
 
@@ -178,7 +191,7 @@ def test_gap2_gap3_dependency_gap3_cannot_verify_while_gap2_unverified_v0() -> N
     assert "GAP2_JOB_SET_ENABLED=false" in gap2
     assert "GAP3_EXECUTE_COMMAND_VERIFIED=false" in gap3
     assert "GAP3_EXECUTE_COMMAND_VERIFIED=false" in block
-    assert "GAP2_CANONICAL_JOB_SET_VERIFIED=false" in block
+    assert "GAP2_CANONICAL_JOB_SET_VERIFIED=true" in block
     assert "GAP2_JOB_SET_ENABLED=false" in block
 
 
@@ -281,10 +294,32 @@ def test_gap2_governed_reflection_scoped_acceptance_v0() -> None:
     assert "Evidence acceptance is not runtime authorization" in reflection
     assert "does not modify Final Machine Lines" in reflection
     assert "GAP2_CANONICAL_JOB_SET_VERIFIED=false" in criteria
-    assert "GAP2_CANONICAL_JOB_SET_VERIFIED=false" in block
+    assert "GAP2_CANONICAL_JOB_SET_VERIFIED=true" in block
     reflection_lines = {line.strip() for line in reflection.splitlines()}
     assert "GAP2_CANONICAL_JOB_SET_VERIFIED=true" not in reflection_lines
     assert "GAP2_ACCEPTED_SCOPED_CRITERIA=true" not in criteria
+
+
+def test_gap2_verified_final_line_governed_reflection_scoped_verification_v0() -> None:
+    text = _section5_text()
+    reflection = _gap2_verified_final_line_section(text)
+    observed = _gap2_dry_run_observed_final_line_section(text)
+    criteria = _gap2_criteria_section(text)
+    block = _final_machine_lines(text)
+
+    assert "GAP2_CANONICAL_JOB_SET_VERIFIED_FINAL_LINE_GOVERNED_REFLECTION_V0=true" in reflection
+    assert "VERIFIED_BAR_TIER=T1_PLUS_T2_BOUNDARY_INVENTORY" in reflection
+    assert "GAP2_CANONICAL_JOB_SET_VERIFIED=true" in reflection
+    assert "VERIFIED_NOT_OBSERVED_SEMANTIC_PRESERVED=true" in reflection
+    assert "does not modify Gap-2 criteria block verification posture" in reflection
+    assert "GAP2_CANONICAL_JOB_SET_DRY_RUN_OBSERVED=true" in observed
+    assert "GAP2_CANONICAL_JOB_SET_VERIFIED=false" in criteria
+    assert "GAP2_CANONICAL_JOB_SET_VERIFIED=true" in block
+    assert "GAP3_EXECUTE_COMMAND_VERIFIED=false" in block
+    criteria_lines = {line.strip() for line in criteria.splitlines()}
+    block_lines = {line.strip() for line in block.splitlines()}
+    assert "GAP2_CANONICAL_JOB_SET_VERIFIED=false" in criteria_lines
+    assert "GAP2_CANONICAL_JOB_SET_VERIFIED=true" in block_lines
 
 
 def test_gap2_accepted_scoped_criteria_final_line_governed_reflection_v0() -> None:
@@ -309,7 +344,7 @@ def test_gap2_accepted_scoped_criteria_final_line_governed_reflection_v0() -> No
     assert "GAP2_CANONICAL_JOB_SET_VERIFIED=false" in criteria
     assert "GAP2_ACCEPTED_SCOPED_CRITERIA=true" not in criteria
     assert "GAP2_ACCEPTED_SCOPED_CRITERIA=true" in block
-    assert "GAP2_CANONICAL_JOB_SET_VERIFIED=false" in block
+    assert "GAP2_CANONICAL_JOB_SET_VERIFIED=true" in block
     criteria_lines = {line.strip() for line in criteria.splitlines()}
     block_lines = {line.strip() for line in block.splitlines()}
     assert "GAP2_ACCEPTED_SCOPED_CRITERIA=true" not in criteria_lines
@@ -375,7 +410,7 @@ def test_gap2_gap3_reflection_final_lines_no_verified_or_rc0_flip_v0() -> None:
         assert token not in lines
     assert "GAP2_ACCEPTED_SCOPED_CRITERIA=true" in block
     assert "GAP3_ACCEPTED_SCOPED_CRITERIA=true" in block
-    assert "GAP2_CANONICAL_JOB_SET_VERIFIED=false" in block
+    assert "GAP2_CANONICAL_JOB_SET_VERIFIED=true" in block
     assert "GAP3_EXECUTE_COMMAND_VERIFIED=false" in block
     assert "GAP6_DRY_RUN_RC0_OBSERVED=true" in block
     assert "GAP6_DRY_RUN_PROOF_VERIFIED=false" in block

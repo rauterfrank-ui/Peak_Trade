@@ -64,6 +64,8 @@ DRIFT_GUARD_REQUIRED_FINAL_LINES = (
     "TIER1_CANONICAL_TAG_PRIMARY_EVIDENCE_MANIFEST_CREATED=true",
     "TIER1_CANONICAL_TAG_PRIMARY_EVIDENCE_MANIFEST_VERIFY_RC=0",
     "PRIMARY_EVIDENCE_ENFORCED_SCOPE=canonical_tag_local_readonly_preflight_once",
+    "GAP2_CANONICAL_JOB_SET_VERIFIED=true",
+    "GAP2_CANONICAL_JOB_SET_DRY_RUN_OBSERVED=true",
     "UNEXPECTED_JOB_STARTED=false",
 )
 
@@ -266,7 +268,7 @@ def test_gap2a1_drift_guard_tier1_canonical_tag_bounded_enforce_observed_final_l
     assert "TIER1_CANONICAL_TAG_BOUNDED_ENFORCE_OBSERVED=true" not in gap2a1_lines
     block_lines = {line.strip() for line in block.splitlines()}
     assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" not in block_lines
-    assert "GAP2_CANONICAL_JOB_SET_VERIFIED=true" not in block_lines
+    assert "GAP2_CANONICAL_JOB_SET_VERIFIED=true" in block_lines
 
 
 def test_gap2a1_drift_guard_gap5_gap6_orthogonal_v0() -> None:
