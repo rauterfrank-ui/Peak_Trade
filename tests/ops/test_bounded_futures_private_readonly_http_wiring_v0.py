@@ -18,6 +18,7 @@ from src.ops.bounded_futures_private_readonly_contract_v0 import (
     build_private_readonly_get_request_plan,
     build_private_readonly_http_request,
     build_private_readonly_plan_evidence_skeleton,
+    compute_futures_private_authent,
     resolve_private_readonly_credentials_from_environ,
     run_private_readonly_reachability,
     summarize_private_response_for_evidence,
@@ -64,6 +65,50 @@ def test_request_plan_builds_exactly_three_gets() -> None:
         "/derivatives/api/v3/openpositions",
         "/derivatives/api/v3/openorders",
     ]
+
+
+@pytest.mark.parametrize(
+    ("full_endpoint_path", "signed_suffix", "expected_url_suffix"),
+    [
+        ("/derivatives/api/v3/accounts", "/accounts", "/accounts"),
+        (
+            "/derivatives/api/v3/openpositions",
+            "/openpositions",
+            "/openpositions",
+        ),
+        ("/derivatives/api/v3/openorders", "/openorders", "/openorders"),
+    ],
+)
+def test_request_builder_signs_suffix_paths(
+    full_endpoint_path: str,
+    signed_suffix: str,
+    expected_url_suffix: str,
+) -> None:
+    secret = base64.b64encode(b"test-secret-bytes-32chars-long!!").decode()
+    nonce = "1415957147987"
+    http_request = build_private_readonly_http_request(
+        rest_base_url=DEMO_FUTURES_REST_BASE_URL,
+        endpoint_path=full_endpoint_path,
+        api_key="demo-key",
+        api_secret_b64=secret,
+        nonce=nonce,
+    )
+    expected_authent = compute_futures_private_authent(
+        api_secret_b64=secret,
+        endpoint_path=signed_suffix,
+        post_data="",
+        nonce=nonce,
+    )
+    full_path_authent = compute_futures_private_authent(
+        api_secret_b64=secret,
+        endpoint_path=full_endpoint_path,
+        post_data="",
+        nonce=nonce,
+    )
+    assert http_request.headers["Authent"] == expected_authent
+    assert http_request.headers["Authent"] != full_path_authent
+    assert http_request.url == f"{DEMO_FUTURES_REST_BASE_URL}{expected_url_suffix}"
+    assert http_request.endpoint_path == full_endpoint_path
 
 
 def test_blocklisted_endpoint_cannot_be_built() -> None:
