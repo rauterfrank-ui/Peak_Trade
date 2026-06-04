@@ -279,3 +279,38 @@ def test_section5_pe11_bounded_futures_reachability_reflection_non_authorizing_v
     assert "ARCHIVE_HARNESS_SCRIPT_EXECUTE_AUTHORIZED_NOW=true" not in block_lines
     assert "ALL_GAPS_CLOSED=true" not in block_lines
     assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
+
+
+GAP6_GAP1_FINAL_LINE_REFLECTION_HEADER = (
+    "## Gap 6 Governed Dry-Run RC0 Observed Final-Line Reflection v0"
+)
+
+
+def _gap6_gap1_final_line_reflection_section(text: str) -> str:
+    return text.split(GAP6_GAP1_FINAL_LINE_REFLECTION_HEADER, 1)[1].split(
+        "## Preflight Synthesis Docs Block Reflection v0", 1
+    )[0]
+
+
+def test_section5_gap6_gap1_rc0_observed_final_line_reflection_non_authorizing_v0() -> None:
+    text = DOC.read_text(encoding="utf-8")
+    section = _gap6_gap1_final_line_reflection_section(text)
+    block = _final_machine_lines(text)
+
+    for token in (
+        "GAP6_DRY_RUN_RC0_OBSERVED_FINAL_LINE_GOVERNED_REFLECTION_V0=true",
+        "GAP1_EXECUTE_ENTRYPOINT_RC0_OBSERVED_FINAL_LINE_GOVERNED_REFLECTION_V0=true",
+        "OBSERVED_NOT_VERIFIED_SEMANTIC_PRESERVED=true",
+        "PREFLIGHT_REMAINS_BLOCKED=true",
+        "ALL_GAPS_CLOSED=false",
+    ):
+        assert token in section
+
+    assert "GAP6_DRY_RUN_RC0_OBSERVED=true" in block
+    assert "GAP1_EXECUTE_ENTRYPOINT_RC0_OBSERVED=true" in block
+    assert "GAP6_DRY_RUN_PROOF_VERIFIED=false" in block
+    assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=false" in block
+    block_lines = {line.strip() for line in block.splitlines()}
+    assert "GAP6_DRY_RUN_PROOF_VERIFIED=true" not in block_lines
+    assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=true" not in block_lines
+    assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines

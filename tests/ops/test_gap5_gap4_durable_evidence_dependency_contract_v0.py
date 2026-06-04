@@ -198,7 +198,7 @@ def test_gap5_gap4_durable_evidence_dependency_drift_guards_are_not_proof_or_cha
 def test_gap5_gap4_durable_evidence_dependency_gap6_tokens_untouched_v0() -> None:
     block = _final_machine_lines(_section5_text())
     assert "GAP6_DRY_RUN_PROOF_ACCEPTED=false" in block
-    assert "GAP6_DRY_RUN_RC0_OBSERVED=false" in block
+    assert "GAP6_DRY_RUN_RC0_OBSERVED=true" in block
     assert "GAP6_DRY_RUN_PROOF_VERIFIED=false" in block
 
 

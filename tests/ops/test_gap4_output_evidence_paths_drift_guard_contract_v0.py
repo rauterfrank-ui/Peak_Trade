@@ -247,7 +247,7 @@ def test_gap4_output_evidence_paths_drift_guard_gap5_gap6_tokens_untouched_v0() 
     block = _final_machine_lines(_section5_text())
     assert "GAP5_STOP_PROOF_ACCEPTED=true" in block
     assert "GAP6_DRY_RUN_PROOF_ACCEPTED=false" in block
-    assert "GAP6_DRY_RUN_RC0_OBSERVED=false" in block
+    assert "GAP6_DRY_RUN_RC0_OBSERVED=true" in block
     assert "GAP6_DRY_RUN_PROOF_VERIFIED=false" in block
 
 

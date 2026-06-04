@@ -172,7 +172,7 @@ def test_gap6_dry_run_proof_criteria_contract_governed_reflection_non_authorizin
     assert "GAP6_DRY_RUN_PROOF_ACCEPTED=false" in criteria
     assert "does not accept or verify any proof" in criteria
     assert "GAP6_DRY_RUN_PROOF_ACCEPTED=false" in block
-    assert "GAP6_DRY_RUN_RC0_OBSERVED=false" in block
+    assert "GAP6_DRY_RUN_RC0_OBSERVED=true" in block
     assert "GAP6_DRY_RUN_PROOF_ACCEPTED_EXTERNAL=true" not in text
     assert "GAP6_DRY_RUN_RC0_OBSERVED_EXTERNAL=true" not in text
     reflection_lines = {line.strip() for line in reflection.splitlines()}

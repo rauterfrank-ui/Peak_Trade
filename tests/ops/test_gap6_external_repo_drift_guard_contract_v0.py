@@ -24,6 +24,9 @@ GAP6_GOVERNED_REFLECTION_HEADER = "## Gap 6 Governed Dry-Run Proof Acceptance Re
 GAP6_RC0_OBSERVED_REFLECTION_HEADER = (
     "## Gap 6 Governed Bounded Dry-Run RC0 Observed Evidence Reflection v0"
 )
+GAP6_RC0_OBSERVED_FINAL_LINE_REFLECTION_HEADER = (
+    "## Gap 6 Governed Dry-Run RC0 Observed Final-Line Reflection v0"
+)
 GAP5_GOVERNED_STOP_PROOF_REFLECTION_HEADER = "## Gap 5 Governed Stop Proof Acceptance Reflection v0"
 GAP4_GOVERNED_REFLECTION_HEADER = "## Gap 4 Governed Output Evidence Acceptance Reflection v0"
 _MARKER_TRUE = "=true"
@@ -38,7 +41,7 @@ DRIFT_GUARD_REQUIRED_FINAL_LINES = (
     "READY_FOR_OPERATOR_ARMING=false",
     "PATH_B_LIFT_DISCUSSION_READY=false",
     "ALL_GAPS_CLOSED=false",
-    "GAP6_DRY_RUN_RC0_OBSERVED=false",
+    "GAP6_DRY_RUN_RC0_OBSERVED=true",
     "GAP6_DRY_RUN_PROOF_ACCEPTED=false",
     "GAP6_DRY_RUN_PROOF_VERIFIED=false",
     "GAP2_CANONICAL_JOB_SET_VERIFIED=false",
@@ -48,7 +51,6 @@ DRIFT_GUARD_REQUIRED_FINAL_LINES = (
 
 DRIFT_GUARD_FORBIDDEN_REPO_TOKENS = (
     "GAP6_DRY_RUN_RC0_OBSERVED_EXTERNAL=true",
-    "GAP6_DRY_RUN_RC0_OBSERVED=true",
     "GAP6_DRY_RUN_PROOF_ACCEPTED=true",
     "GAP6_DRY_RUN_PROOF_VERIFIED=true",
     "WORKSHEET_COMPLETE=true",
@@ -179,7 +181,8 @@ def test_gap6_external_repo_drift_guard_governed_reflection_scoped_acceptance_v0
     assert "Evidence acceptance is not runtime authorization" in reflection
     assert "GAP6_DRY_RUN_PROOF_ACCEPTED=false" in criteria
     assert "GAP6_DRY_RUN_PROOF_ACCEPTED=false" in block
-    assert "GAP6_DRY_RUN_RC0_OBSERVED=false" in block
+    assert "GAP6_DRY_RUN_RC0_OBSERVED=true" in block
+    assert "GAP6_DRY_RUN_PROOF_VERIFIED=false" in block
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" in block
     assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in block
     assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in block
@@ -218,7 +221,8 @@ def test_gap6_rc0_observed_governed_reflection_scoped_evidence_v0() -> None:
     assert "does not lift preflight" in reflection
     assert "Evidence observation is not runtime authorization" in reflection
     assert "GAP6_DRY_RUN_RC0_OBSERVED=false" in criteria
-    assert "GAP6_DRY_RUN_RC0_OBSERVED=false" in block
+    assert "GAP6_DRY_RUN_RC0_OBSERVED=true" in block
+    assert "GAP6_DRY_RUN_PROOF_VERIFIED=false" in block
     assert "ALL_GAPS_CLOSED=false" in block
     assert "READY_FOR_OPERATOR_ARMING=false" in block
     assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in block
@@ -227,5 +231,30 @@ def test_gap6_rc0_observed_governed_reflection_scoped_evidence_v0() -> None:
     block_lines = {line.strip() for line in block.splitlines()}
     assert "GAP6_DRY_RUN_RC0_OBSERVED=true" in reflection_lines
     assert "GAP6_DRY_RUN_RC0_OBSERVED=true" not in criteria_lines
-    assert "GAP6_DRY_RUN_RC0_OBSERVED=true" not in block_lines
+    assert "GAP6_DRY_RUN_RC0_OBSERVED=true" in block_lines
+    assert "GAP6_DRY_RUN_PROOF_VERIFIED=true" not in block_lines
     assert "GAP6_DRY_RUN_RC0_OBSERVED_EXTERNAL=true" not in text
+
+
+def _gap6_rc0_observed_final_line_reflection_section(text: str) -> str:
+    return text.split(GAP6_RC0_OBSERVED_FINAL_LINE_REFLECTION_HEADER, 1)[1].split(
+        "## Gap 1 Governed Execute Entrypoint RC0 Observed Final-Line Reflection v0", 1
+    )[0]
+
+
+def test_gap6_rc0_observed_final_line_reflection_non_authorizing_v0() -> None:
+    text = _section5_text()
+    final_line = _gap6_rc0_observed_final_line_reflection_section(text)
+    criteria = _gap6_criteria_section(text)
+    block = _final_machine_lines(text)
+
+    assert "GAP6_DRY_RUN_RC0_OBSERVED_FINAL_LINE_GOVERNED_REFLECTION_V0=true" in final_line
+    assert "GAP6_DRY_RUN_RC0_OBSERVED=true" in final_line
+    assert "OBSERVED_NOT_VERIFIED_SEMANTIC_PRESERVED=true" in final_line
+    assert "GAP6_DRY_RUN_PROOF_VERIFIED=false" in final_line
+    assert "does not set `GAP6_DRY_RUN_PROOF_VERIFIED=true`" in final_line
+    assert "GAP6_DRY_RUN_RC0_OBSERVED=false" in criteria
+    assert "GAP6_DRY_RUN_RC0_OBSERVED=true" in block
+    assert "GAP6_DRY_RUN_PROOF_VERIFIED=false" in block
+    assert "ALL_GAPS_CLOSED=false" in block
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in block

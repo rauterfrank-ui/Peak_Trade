@@ -51,6 +51,7 @@ DRIFT_GUARD_REQUIRED_FINAL_LINES = (
     "PATH_B_LIFT_DISCUSSION_READY=false",
     "ALL_GAPS_CLOSED=false",
     "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=false",
+    "GAP1_EXECUTE_ENTRYPOINT_RC0_OBSERVED=true",
     "GAP1_RUNTIME_APPROVED=false",
     "GAP1_SCHEDULER_EXECUTION_AUTHORIZED=false",
     "GAP1_EXECUTE_ENTRYPOINT_DEFAULT_ON=false",
@@ -59,10 +60,10 @@ DRIFT_GUARD_REQUIRED_FINAL_LINES = (
     "GAP5_STOP_REHEARSAL_EXECUTED=false",
     "GAP5_STOP_PROOF_ACCEPTED=true",
     "GAP6_DRY_RUN_PROOF_ACCEPTED=false",
+    "GAP6_DRY_RUN_RC0_OBSERVED=true",
 )
 
 DRIFT_GUARD_FORBIDDEN_GAP1_REPO_TOKENS = (
-    "GAP1_EXECUTE_ENTRYPOINT_RC0_OBSERVED=true",
     "GAP1_EXECUTE_ENTRYPOINT_RC0_OBSERVED_EXTERNAL=true",
     "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=true",
     "GAP1_RUNTIME_APPROVED=true",
@@ -208,7 +209,7 @@ def test_gap1_drift_guard_sample_conflation_lines_not_final_line_lifts_v0() -> N
 def test_gap1_drift_guard_gap6_gap7_gap2a1_orthogonal_v0() -> None:
     block = _final_machine_lines(_section5_text())
     assert "GAP6_DRY_RUN_PROOF_ACCEPTED=false" in block
-    assert "GAP6_DRY_RUN_RC0_OBSERVED=false" in block
+    assert "GAP6_DRY_RUN_RC0_OBSERVED=true" in block
     assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in block
     assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in block
 
@@ -280,6 +281,7 @@ def test_gap1_rc0_observed_governed_reflection_scoped_evidence_v0() -> None:
     assert "Evidence observation is not runtime authorization" in reflection
     assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=false" in criteria
     assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=false" in block
+    assert "GAP1_EXECUTE_ENTRYPOINT_RC0_OBSERVED=true" in block
     assert "ALL_GAPS_CLOSED=false" in block
     assert "READY_FOR_OPERATOR_ARMING=false" in block
     assert "PREFLIGHT_REMAINS_BLOCKED=true" in block
@@ -289,6 +291,36 @@ def test_gap1_rc0_observed_governed_reflection_scoped_evidence_v0() -> None:
     block_lines = {line.strip() for line in block.splitlines()}
     assert "GAP1_EXECUTE_ENTRYPOINT_RC0_OBSERVED=true" in reflection_lines
     assert "GAP1_EXECUTE_ENTRYPOINT_RC0_OBSERVED=true" not in criteria_lines
-    assert "GAP1_EXECUTE_ENTRYPOINT_RC0_OBSERVED=true" not in block_lines
+    assert "GAP1_EXECUTE_ENTRYPOINT_RC0_OBSERVED=true" in block_lines
+    assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=true" not in block_lines
     assert "GAP1_EXECUTE_ENTRYPOINT_RC0_OBSERVED_EXTERNAL=true" not in text
     assert "Live/Testnet/Shadow/Paper/Broker/Network/AWS" in reflection
+
+
+GAP1_RC0_OBSERVED_FINAL_LINE_REFLECTION_HEADER = (
+    "## Gap 1 Governed Execute Entrypoint RC0 Observed Final-Line Reflection v0"
+)
+
+
+def _gap1_rc0_observed_final_line_reflection_section(text: str) -> str:
+    return text.split(GAP1_RC0_OBSERVED_FINAL_LINE_REFLECTION_HEADER, 1)[1].split(
+        "## Preflight Synthesis Docs Block Reflection v0", 1
+    )[0]
+
+
+def test_gap1_rc0_observed_final_line_reflection_non_authorizing_v0() -> None:
+    text = _section5_text()
+    final_line = _gap1_rc0_observed_final_line_reflection_section(text)
+    criteria = _gap1_section(text)
+    block = _final_machine_lines(text)
+
+    assert "GAP1_EXECUTE_ENTRYPOINT_RC0_OBSERVED_FINAL_LINE_GOVERNED_REFLECTION_V0=true" in final_line
+    assert "GAP1_EXECUTE_ENTRYPOINT_RC0_OBSERVED=true" in final_line
+    assert "OBSERVED_NOT_VERIFIED_SEMANTIC_PRESERVED=true" in final_line
+    assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=false" in final_line
+    assert "does not set `GAP1_EXECUTE_ENTRYPOINT_VERIFIED=true`" in final_line
+    assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=false" in criteria
+    assert "GAP1_EXECUTE_ENTRYPOINT_RC0_OBSERVED=true" in block
+    assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=false" in block
+    assert "ALL_GAPS_CLOSED=false" in block
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in block
