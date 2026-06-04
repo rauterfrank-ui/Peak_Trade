@@ -4,7 +4,10 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import shutil
+import subprocess
+import sys
 from pathlib import Path
 
 import pytest
@@ -378,3 +381,83 @@ def test_private_readonly_execute_network_requires_confirm_token(tmp_path: Path)
         },
     )
     assert rc == harness.USAGE_EXIT
+
+
+def test_cli_entrypoint_forwards_process_environ(tmp_path: Path) -> None:
+    """CLI must pass os.environ so authority/credential namespace validation applies."""
+    archive = _durable_test_archive_root(tmp_path)
+    env = os.environ.copy()
+    env["FUTURES_EXECUTE_AUTHORIZED"] = "true"
+    result = subprocess.run(
+        [
+            sys.executable,
+            str(HARNESS_SCRIPT),
+            "--archive-root",
+            str(archive),
+            "--run-id",
+            "clienv",
+            "--mode",
+            PRIVATE_READONLY_MODE,
+        ],
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+        cwd=str(REPO_ROOT),
+    )
+    assert result.returncode == harness.USAGE_EXIT
+    assert "FUTURES_EXECUTE_AUTHORIZED" in result.stderr
+
+
+def test_cli_execute_network_does_not_log_credential_values(tmp_path: Path) -> None:
+    archive = _durable_test_archive_root(tmp_path)
+    secret_marker = "peak-trade-test-secret-marker-v0-not-a-real-secret"
+    env = os.environ.copy()
+    env["KRAKEN_FUTURES_DEMO_API_KEY"] = "test-key-marker"
+    env["KRAKEN_FUTURES_DEMO_API_SECRET"] = secret_marker
+    result = subprocess.run(
+        [
+            sys.executable,
+            str(HARNESS_SCRIPT),
+            "--archive-root",
+            str(archive),
+            "--run-id",
+            "clinosec",
+            "--mode",
+            PRIVATE_READONLY_MODE,
+            "--execute-network",
+        ],
+        env=env,
+        capture_output=True,
+        text=True,
+        check=False,
+        cwd=str(REPO_ROOT),
+    )
+    assert result.returncode == harness.USAGE_EXIT
+    combined = result.stdout + result.stderr
+    assert secret_marker not in combined
+    assert "test-key-marker" not in combined
+
+
+def test_credentials_in_environ_alone_do_not_authorize_execute(tmp_path: Path) -> None:
+    archive = _durable_test_archive_root(tmp_path)
+    rc = harness.main(
+        [
+            "--archive-root",
+            str(archive),
+            "--run-id",
+            "credonly",
+            "--mode",
+            PRIVATE_READONLY_MODE,
+        ],
+        environ={
+            "KRAKEN_FUTURES_DEMO_API_KEY": "k",
+            "KRAKEN_FUTURES_DEMO_API_SECRET": "c2VjcmV0LXNlY3JldC1zZWNyZXQtc2VjcmV0LXNlY3JldCE=",
+        },
+    )
+    assert rc == 0
+    bundle = list((archive / "runtime").iterdir())[0]
+    evidence = json.loads((bundle / "FUTURES_EVIDENCE.json").read_text(encoding="utf-8"))
+    assert evidence["request_count"] == 0
+    assert evidence["private_readonly_reachability_proven"] is False
+    assert evidence["futures_private_api_authorized"] is False
