@@ -49,7 +49,7 @@ def test_package_marker_present() -> None:
 def test_exchange_impl_not_authorized_and_no_network() -> None:
     assert FUTURES_SESSION_AUTHORIZED_NOW is False
     assert EXCHANGE_IMPL_NETWORK_CALLS_ALLOWED is False
-    assert ARCHIVE_EXCHANGE_CLIENT_PRESENT is False
+    assert ARCHIVE_EXCHANGE_CLIENT_PRESENT is True
     assert FUTURES_EXECUTE_AUTHORITY_ADDED is False
 
 

@@ -23,7 +23,7 @@ from src.ops.bounded_futures_testnet_contract_v0 import (
 
 PACKAGE_MARKER = "BOUNDED_FUTURES_TESTNET_EXCHANGE_IMPL_CONTRACT_V0=true"
 EXCHANGE_IMPL_NETWORK_CALLS_ALLOWED = False
-ARCHIVE_EXCHANGE_CLIENT_PRESENT = False
+ARCHIVE_EXCHANGE_CLIENT_PRESENT = True
 FUTURES_EXECUTE_AUTHORITY_ADDED = False
 
 ALLOWED_IMPL_KINDS: frozenset[str] = frozenset({"offline_contract_stub"})

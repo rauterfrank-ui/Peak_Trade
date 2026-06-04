@@ -103,8 +103,10 @@ def validate_futures_testnet_runtime_harness_impl_descriptor(
         result["fail_reasons"].append("ARCHIVE_HARNESS_SCRIPT_PRESENT must be true")
     if ARCHIVE_HARNESS_SCRIPT_EXECUTE_AUTHORIZED_NOW:
         result["fail_reasons"].append("ARCHIVE_HARNESS_SCRIPT_EXECUTE_AUTHORIZED_NOW must be false")
-    if ARCHIVE_EXCHANGE_CLIENT_PRESENT:
-        result["fail_reasons"].append("ARCHIVE_EXCHANGE_CLIENT_PRESENT must be false")
+    if ARCHIVE_EXCHANGE_CLIENT_PRESENT and EXCHANGE_IMPL_NETWORK_CALLS_ALLOWED:
+        result["fail_reasons"].append(
+            "ARCHIVE_EXCHANGE_CLIENT_PRESENT requires EXCHANGE_IMPL_NETWORK_CALLS_ALLOWED false"
+        )
 
     exchange_result = validate_futures_testnet_exchange_impl_descriptor(descriptor.exchange_impl)
     result["exchange_impl_pass"] = exchange_result["exchange_impl_pass"]
