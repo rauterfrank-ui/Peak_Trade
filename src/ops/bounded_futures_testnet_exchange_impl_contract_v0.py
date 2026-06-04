@@ -128,5 +128,7 @@ def validate_futures_testnet_exchange_impl_descriptor(
     )
     result["margin_leverage_command_model_pass"] = adapter_result.get("margin_leverage_pass", False)
     result["exchange_impl_pass"] = not result["fail_reasons"]
-    result["futures_testnet_instrument_exchange_proven"] = FUTURES_TESTNET_INSTRUMENT_EXCHANGE_PROVEN
+    result["futures_testnet_instrument_exchange_proven"] = (
+        FUTURES_TESTNET_INSTRUMENT_EXCHANGE_PROVEN
+    )
     return result
