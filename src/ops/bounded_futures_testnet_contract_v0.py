@@ -290,6 +290,9 @@ def evaluate_bounded_futures_testnet_evidence(
     if evidence.get("futures_session_authorized_now"):
         result["fail_reasons"].append("futures_session_authorized_now must be false")
 
+    if evidence.get("fetch_failure"):
+        result["fail_reasons"].append("private_readonly_fetch_failure")
+
     result["futures_instrument_pass"] = evidence.get("instrument") == spec.instrument
     result["futures_endpoint_isolation_pass"] = (
         evidence.get("futures_endpoint_isolation_pass") is True

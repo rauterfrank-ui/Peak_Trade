@@ -832,18 +832,35 @@ def main(
         )
     evaluation = evaluate_bounded_futures_testnet_evidence(evidence, spec=spec)
     evidence["bounded_futures_testnet_pass"] = evaluation["bounded_futures_testnet_pass"]
+    persist_runtime_bundle = evaluation["bounded_futures_testnet_pass"] or (
+        args.execute_network and args.mode == PRIVATE_READONLY_MODE
+    )
+    out: Path | None = None
+    if persist_runtime_bundle:
+        out = write_durable_evidence_bundle(
+            archive_root=archive_root,
+            run_id=args.run_id,
+            plan=plan,
+            timing=timing,
+            evidence=evidence,
+            evaluation=evaluation,
+        )
     if not evaluation["bounded_futures_testnet_pass"]:
         print(json.dumps(evaluation, indent=2), file=sys.stderr)
+        if out is not None:
+            print(
+                json.dumps(
+                    {
+                        "evidence_dir": str(out),
+                        "plan_only": False,
+                        "mode": args.mode,
+                        "bounded_futures_testnet_pass": False,
+                    },
+                    indent=2,
+                )
+            )
         return USAGE_EXIT
 
-    out = write_durable_evidence_bundle(
-        archive_root=archive_root,
-        run_id=args.run_id,
-        plan=plan,
-        timing=timing,
-        evidence=evidence,
-        evaluation=evaluation,
-    )
     plan_only = not args.execute_network
     print(
         json.dumps(
