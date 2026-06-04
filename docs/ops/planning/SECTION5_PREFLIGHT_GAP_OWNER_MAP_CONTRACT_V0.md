@@ -84,6 +84,8 @@ Preflight §2a.1 documents run-type applicability for **run completion**: Paper,
 
 **Repo-native bounded Testnet order-cap contract (PE-7 guard) v0:** Closes the documented `repo_native_bounded_order_cap_contract_residual` gap at contract/evaluator layer. Canonical offline evaluator: `src/ops/bounded_testnet_order_cap_contract_v0.py` (`BOUNDED_TESTNET_ORDER_CAP_CONTRACT_V0=true`). Static guards: `tests/ops/test_repo_native_bounded_order_cap_contract_v0.py`, `tests/ops/test_repo_native_entrypoint_cli_cap_wiring_contract_v0.py`. `scripts/run_testnet_session.py` exposes bounded cap CLI via `add_bounded_order_cap_cli_arguments` (`REPO_NATIVE_BOUNDED_ORDER_CAP_CLI_WIRING_COMPLETE=true`); **does not** authorize Testnet execute, **does not** lift preflight.
 
+**Bounded Futures Testnet contract (PE-8 guard) v0:** Addresses `futures_bounded_testnet_contract_adapter_and_evidence_path_missing` at offline contract layer only. Canonical evaluator: `src/ops/bounded_futures_testnet_contract_v0.py` (`BOUNDED_FUTURES_TESTNET_CONTRACT_V0=true`). Static guard: `tests/ops/test_bounded_futures_testnet_contract_v0.py`. Spot BTC/EUR bounded evidence **must not** satisfy this contract; `FUTURES_SESSION_AUTHORIZED_NOW=false`; **does not** authorize Futures execute, adapter binding, or Master-V2 / Double-Play authority.
+
 ### Reuse-first owner surfaces
 
 - `scripts/ops/primary_evidence_retention_v0.py`
@@ -98,7 +100,9 @@ Preflight §2a.1 documents run-type applicability for **run completion**: Paper,
 - `tests/ops/test_gap4_output_evidence_paths_contract_v0.py`
 - `tests/ci/test_cybersecurity_visibility_repo_static_histogram_artifact_retention_or_evidence_gap_crosslink_v0.py`
 - `src/ops/bounded_testnet_order_cap_contract_v0.py`
+- `src/ops/bounded_futures_testnet_contract_v0.py`
 - `tests/ops/test_repo_native_bounded_order_cap_contract_v0.py`
+- `tests/ops/test_bounded_futures_testnet_contract_v0.py`
 - existing preflight contract §2a/§2a.1 surfaces
 - existing docs truth map / reference / token-policy checks
 
