@@ -359,7 +359,7 @@ def test_private_readonly_mode_plan_only_writes_evidence(tmp_path: Path) -> None
     ]
 
 
-def test_private_readonly_execute_network_forbidden(tmp_path: Path) -> None:
+def test_private_readonly_execute_network_requires_confirm_token(tmp_path: Path) -> None:
     archive = _durable_test_archive_root(tmp_path)
     argv = [
         "--archive-root",
@@ -370,5 +370,11 @@ def test_private_readonly_execute_network_forbidden(tmp_path: Path) -> None:
         PRIVATE_READONLY_MODE,
         "--execute-network",
     ]
-    rc = harness.main(argv)
+    rc = harness.main(
+        argv,
+        environ={
+            "KRAKEN_FUTURES_DEMO_API_KEY": "k",
+            "KRAKEN_FUTURES_DEMO_API_SECRET": "c2VjcmV0LXNlY3JldC1zZWNyZXQtc2VjcmV0LXNlY3JldCE=",
+        },
+    )
     assert rc == harness.USAGE_EXIT

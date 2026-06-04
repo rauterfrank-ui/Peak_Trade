@@ -15,9 +15,12 @@ from src.ops.bounded_futures_private_readonly_contract_v0 import (
     FUTURES_PRIVATE_API_AUTHORIZED,
     PACKAGE_MARKER,
     PRIVATE_READONLY_EXECUTE_AUTHORIZED_NOW,
+    PRIVATE_READONLY_HTTP_WIRING_PRESENT,
     PRIVATE_READONLY_MODE,
     PRIVATE_READONLY_NETWORK_AUTHORIZED_NOW,
     build_private_readonly_checker_boundary,
+    build_private_readonly_get_request_plan,
+    build_private_readonly_http_request,
     build_private_readonly_plan_evidence_skeleton,
     evaluate_private_readonly_policy,
     summarize_private_response_for_evidence,
@@ -46,9 +49,17 @@ TEST_PACKAGE_MARKER = "BOUNDED_FUTURES_PRIVATE_READONLY_CONTRACT_GUARD_V0=true"
 def test_package_marker_and_harness_wires_mode() -> None:
     assert TEST_PACKAGE_MARKER
     assert PACKAGE_MARKER in CONTRACT_MODULE.read_text(encoding="utf-8")
+    assert PRIVATE_READONLY_HTTP_WIRING_PRESENT is True
     harness_text = HARNESS_SCRIPT.read_text(encoding="utf-8")
     assert PRIVATE_READONLY_MODE in harness_text
     assert "build_private_readonly_evidence_payload" in harness_text
+    assert "SafePrivateReadonlyUrllibRestFetcher" in harness_text
+    assert "run_private_readonly_reachability" in harness_text
+
+
+def test_get_request_plan_has_three_endpoints() -> None:
+    plan = build_private_readonly_get_request_plan()
+    assert len(plan) == 3
 
 
 def test_authority_flags_blocked() -> None:
@@ -119,15 +130,18 @@ def test_redaction_contract_no_raw_body() -> None:
     assert validate_redacted_network_call_record(record) == []
 
 
-def test_redaction_fails_if_order_id_fields_copied() -> None:
+def test_redaction_fails_if_raw_values_emitted_flag_set() -> None:
     bad = {
         "endpoint": "/derivatives/api/v3/openorders",
+        "http_method": "GET",
         "http_status": 200,
         "http_status_class": "2xx",
         "response_size_bytes": 1,
         "response_sha256": "a" * 64,
         "response_redacted": True,
-        "parsed_summary": {"order_id_fields_present": True},
+        "parsed_summary": {"raw_values_emitted": True},
+        "auth_header_names": [],
+        "credential_values_logged": False,
     }
     assert validate_redacted_network_call_record(bad)
 

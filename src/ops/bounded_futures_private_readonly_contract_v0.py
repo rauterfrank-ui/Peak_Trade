@@ -7,10 +7,13 @@ API execute, credentials read, or orders.
 
 from __future__ import annotations
 
+import base64
 import hashlib
+import hmac
 import json
-import re
-from typing import Any
+import time
+from dataclasses import dataclass
+from typing import Any, Mapping, Protocol, Sequence
 from urllib.parse import urlparse
 
 from src.ops.bounded_futures_testnet_adapter_contract_v0 import (
@@ -33,7 +36,11 @@ from src.ops.kraken_futures_demo_credential_presence_contract_v0 import (
 )
 
 PACKAGE_MARKER = "BOUNDED_FUTURES_PRIVATE_READONLY_CONTRACT_V0=true"
+PRIVATE_READONLY_HTTP_WIRING_PRESENT = True
+KRAKEN_FUTURES_DEMO_API_KEY_ENV_NAME = "KRAKEN_FUTURES_DEMO_API_KEY"
+KRAKEN_FUTURES_DEMO_API_SECRET_ENV_NAME = "KRAKEN_FUTURES_DEMO_API_SECRET"
 PRIVATE_READONLY_MODE = "private_readonly_reachability_only"
+DEFAULT_PRIVATE_READONLY_GET_TIMEOUT_SECONDS = 10.0
 PRIVATE_READONLY_SESSION_CLASS = "bounded-futures-private-readonly-reachability-v0"
 PRIVATE_READONLY_MAX_REQUEST_COUNT = 3
 
@@ -87,14 +94,60 @@ PRIVATE_READONLY_NETWORK_AUTHORIZED_NOW = False
 _REDACTED_NETWORK_CALL_KEYS = frozenset(
     {
         "endpoint",
+        "http_method",
         "http_status",
         "http_status_class",
         "response_size_bytes",
         "response_sha256",
         "response_redacted",
         "parsed_summary",
+        "auth_header_names",
+        "credential_values_logged",
     }
 )
+
+_SENSITIVE_JSON_KEY_FRAGMENTS: tuple[str, ...] = (
+    "balance",
+    "available",
+    "margin",
+    "pnl",
+    "position",
+    "order",
+    "account",
+    "wallet",
+    "key",
+    "secret",
+    "authent",
+)
+
+
+@dataclass(frozen=True)
+class PrivateReadonlyHttpRequest:
+    """Transport-ready GET request; header values must never appear in evidence."""
+
+    method: str
+    url: str
+    endpoint_path: str
+    headers: dict[str, str]
+    auth_header_names: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class PrivateReadonlyReachabilityResult:
+    endpoints_called: list[str]
+    request_count: int
+    network_calls: list[dict[str, Any]]
+    private_readonly_reachability_proven: bool
+
+
+class PrivateReadonlyRestFetcher(Protocol):
+    def fetch(
+        self,
+        http_request: PrivateReadonlyHttpRequest,
+        *,
+        timeout_seconds: float,
+    ) -> tuple[int, bytes]:
+        """Return HTTP status and body bytes (caller redacts before evidence)."""
 
 
 def assert_private_readonly_authority_unchanged() -> None:
@@ -161,6 +214,120 @@ def validate_private_readonly_rest_base_url(rest_base: str) -> list[str]:
     return reasons
 
 
+def compute_futures_private_authent(
+    *,
+    api_secret_b64: str,
+    endpoint_path: str,
+    post_data: str = "",
+    nonce: str = "",
+) -> str:
+    """Kraken Futures v3 Authent (offline helper; secret must not be logged)."""
+    sha = hashlib.sha256()
+    sha.update(post_data.encode())
+    sha.update(nonce.encode())
+    sha.update(endpoint_path.encode())
+    digest = sha.digest()
+    secret = base64.b64decode(api_secret_b64)
+    sig = hmac.new(secret, digest, hashlib.sha512).digest()
+    return base64.b64encode(sig).decode().strip()
+
+
+def _endpoint_path_suffix(full_path: str) -> str:
+    if full_path.startswith("/derivatives/api/v3"):
+        return full_path.split("/derivatives/api/v3", 1)[-1] or ""
+    return full_path
+
+
+def build_private_readonly_get_url(rest_base_url: str, endpoint_path: str) -> str:
+    reasons = validate_private_readonly_endpoint_path(endpoint_path)
+    if reasons:
+        raise ValueError(f"private-readonly endpoint not allowed: {'; '.join(reasons)}")
+    suffix = _endpoint_path_suffix(endpoint_path)
+    return f"{rest_base_url.rstrip('/')}{suffix}"
+
+
+def build_private_readonly_http_request(
+    *,
+    rest_base_url: str,
+    endpoint_path: str,
+    api_key: str,
+    api_secret_b64: str,
+    nonce: str | None = None,
+) -> PrivateReadonlyHttpRequest:
+    """Build a single authenticated GET request (fail-closed on blocklisted paths)."""
+    method_reasons = validate_private_readonly_http_method("GET")
+    if method_reasons:
+        raise ValueError(method_reasons[0])
+    url = build_private_readonly_get_url(rest_base_url, endpoint_path)
+    url_reasons = validate_private_readonly_url(url, rest_base_url=rest_base_url)
+    if url_reasons:
+        raise ValueError(url_reasons[0])
+    nonce_value = nonce if nonce is not None else str(int(time.time() * 1000))
+    authent = compute_futures_private_authent(
+        api_secret_b64=api_secret_b64,
+        endpoint_path=endpoint_path,
+        post_data="",
+        nonce=nonce_value,
+    )
+    headers = {
+        "APIKey": api_key,
+        "Authent": authent,
+        "Nonce": nonce_value,
+    }
+    return PrivateReadonlyHttpRequest(
+        method="GET",
+        url=url,
+        endpoint_path=endpoint_path,
+        headers=headers,
+        auth_header_names=("APIKey", "Authent", "Nonce"),
+    )
+
+
+def build_private_readonly_get_request_plan(
+    *,
+    rest_base_url: str = DEMO_FUTURES_REST_BASE_URL,
+) -> list[dict[str, str]]:
+    """Unauthenticated plan rows (method/url/endpoint only) for offline tests."""
+    plan: list[dict[str, str]] = []
+    for endpoint_path in PRIVATE_READONLY_ENDPOINT_ORDER:
+        plan.append(
+            {
+                "method": "GET",
+                "endpoint_path": endpoint_path,
+                "url": build_private_readonly_get_url(rest_base_url, endpoint_path),
+            }
+        )
+    return plan
+
+
+def _parsed_summary_without_sensitive_values(payload: Any) -> dict[str, Any]:
+    """Schema/count metadata only — never copy balances, positions, orders, or secrets."""
+    summary: dict[str, Any] = {
+        "top_level_type": "unknown",
+        "record_count": None,
+        "sensitive_field_names_detected": [],
+        "raw_values_emitted": False,
+    }
+    if isinstance(payload, dict):
+        summary["top_level_type"] = "object"
+        summary["top_level_keys"] = sorted(str(k) for k in payload.keys())
+        for key, value in payload.items():
+            key_l = str(key).lower()
+            if any(frag in key_l for frag in _SENSITIVE_JSON_KEY_FRAGMENTS):
+                summary["sensitive_field_names_detected"].append(str(key))
+            if isinstance(value, list):
+                summary["record_count"] = len(value)
+    elif isinstance(payload, list):
+        summary["top_level_type"] = "array"
+        summary["record_count"] = len(payload)
+    else:
+        summary["top_level_type"] = type(payload).__name__
+    summary["sensitive_field_names_detected"] = sorted(
+        set(summary.get("sensitive_field_names_detected", []))
+    )
+    return summary
+
+
 def validate_private_readonly_url(url: str, *, rest_base_url: str) -> list[str]:
     reasons: list[str] = []
     parsed = urlparse(url)
@@ -181,40 +348,99 @@ def summarize_private_response_for_evidence(
     endpoint: str,
     http_status: int,
     body: bytes,
+    http_method: str = "GET",
+    auth_header_names: Sequence[str] | None = None,
 ) -> dict[str, Any]:
-    """Redacted network call metadata — no raw body, balances, or order ids."""
+    """Redacted network call metadata — no raw body, balances, positions, orders, or secrets."""
     parsed_summary: dict[str, Any] = {
-        "top_level_type": "unknown",
+        "top_level_type": "unparseable",
         "record_count": None,
-        "order_id_fields_present": False,
+        "sensitive_field_names_detected": [],
+        "raw_values_emitted": False,
     }
     if body:
         try:
             payload = json.loads(body.decode("utf-8"))
         except (json.JSONDecodeError, UnicodeDecodeError):
-            parsed_summary["top_level_type"] = "unparseable"
+            pass
         else:
-            if isinstance(payload, dict):
-                parsed_summary["top_level_type"] = "object"
-                parsed_summary["top_level_keys"] = sorted(str(k) for k in payload.keys())
-                for key in ("accounts", "openPositions", "openOrders", "positions", "orders"):
-                    if key in payload and isinstance(payload[key], list):
-                        parsed_summary["record_count"] = len(payload[key])
-                dump = json.dumps(payload)
-                if re.search(r'"order[_-]?id"', dump, re.IGNORECASE):
-                    parsed_summary["order_id_fields_present"] = True
-            elif isinstance(payload, list):
-                parsed_summary["top_level_type"] = "array"
-                parsed_summary["record_count"] = len(payload)
-    return {
+            parsed_summary = _parsed_summary_without_sensitive_values(payload)
+    record = {
         "endpoint": endpoint,
+        "http_method": http_method,
         "http_status": http_status,
         "http_status_class": _http_status_class(http_status),
         "response_size_bytes": len(body),
         "response_sha256": hashlib.sha256(body).hexdigest(),
         "response_redacted": True,
         "parsed_summary": parsed_summary,
+        "auth_header_names": list(auth_header_names or ()),
+        "credential_values_logged": False,
     }
+    return record
+
+
+def run_private_readonly_reachability(
+    *,
+    rest_base_url: str,
+    api_key: str,
+    api_secret_b64: str,
+    fetcher: PrivateReadonlyRestFetcher,
+    duration_cap_seconds: int,
+) -> PrivateReadonlyReachabilityResult:
+    """Execute bounded private-readonly GET sequence via injectable fetcher."""
+    assert_private_readonly_authority_unchanged()
+    endpoints_called: list[str] = []
+    network_calls: list[dict[str, Any]] = []
+    deadline = time.monotonic() + float(duration_cap_seconds)
+    timeout = min(
+        DEFAULT_PRIVATE_READONLY_GET_TIMEOUT_SECONDS,
+        float(duration_cap_seconds),
+    )
+    for endpoint_path in PRIVATE_READONLY_ENDPOINT_ORDER:
+        if time.monotonic() > deadline:
+            break
+        http_request = build_private_readonly_http_request(
+            rest_base_url=rest_base_url,
+            endpoint_path=endpoint_path,
+            api_key=api_key,
+            api_secret_b64=api_secret_b64,
+        )
+        status, body = fetcher.fetch(http_request, timeout_seconds=timeout)
+        record = summarize_private_response_for_evidence(
+            endpoint=endpoint_path,
+            http_status=status,
+            body=body,
+            http_method=http_request.method,
+            auth_header_names=http_request.auth_header_names,
+        )
+        redact_reasons = validate_redacted_network_call_record(record)
+        if redact_reasons:
+            raise RuntimeError(
+                f"private-readonly evidence redaction failed: {'; '.join(redact_reasons)}"
+            )
+        network_calls.append(record)
+        endpoints_called.append(endpoint_path)
+    proven = bool(endpoints_called) and all(
+        200 <= int(call["http_status"]) < 300 for call in network_calls
+    )
+    return PrivateReadonlyReachabilityResult(
+        endpoints_called=endpoints_called,
+        request_count=len(endpoints_called),
+        network_calls=network_calls,
+        private_readonly_reachability_proven=proven,
+    )
+
+
+def resolve_private_readonly_credentials_from_environ(
+    environ: Mapping[str, str],
+) -> tuple[str, str] | None:
+    """Read demo key names from environ only (never log values; no env-file I/O)."""
+    api_key = (environ.get(KRAKEN_FUTURES_DEMO_API_KEY_ENV_NAME) or "").strip()
+    api_secret = (environ.get(KRAKEN_FUTURES_DEMO_API_SECRET_ENV_NAME) or "").strip()
+    if api_key and api_secret:
+        return api_key, api_secret
+    return None
 
 
 def _http_status_class(status: int) -> str:
@@ -237,6 +463,8 @@ def validate_redacted_network_call_record(record: dict[str, Any]) -> list[str]:
     if "response_body" in record or "raw_response" in record:
         reasons.append("raw response body forbidden in evidence")
     summary = record.get("parsed_summary")
+    if isinstance(summary, dict) and summary.get("raw_values_emitted"):
+        reasons.append("raw_values_emitted must be false")
     if isinstance(summary, dict) and summary.get("order_id_fields_present"):
         reasons.append("order id fields must not be copied into evidence summary")
     return reasons
@@ -304,7 +532,36 @@ def build_private_readonly_plan_evidence_skeleton(
         "network_calls": [],
         "manifest_verification_expected": True,
         "checker_boundary_v0": build_private_readonly_checker_boundary(),
+        "private_readonly_http_wiring_present": PRIVATE_READONLY_HTTP_WIRING_PRESENT,
+        "private_readonly_execute_wired": True,
     }
+
+
+def build_private_readonly_evidence_from_network(
+    *,
+    timing: Any,
+    run_id: str,
+    result: PrivateReadonlyReachabilityResult,
+    pe8_pass: bool,
+    harness_version: str,
+) -> dict[str, Any]:
+    evidence = build_private_readonly_plan_evidence_skeleton(run_id=run_id)
+    evidence.update(
+        {
+            "harness_version": harness_version,
+            "monotonic_elapsed_seconds": timing.monotonic_elapsed_seconds,
+            "wall_clock_elapsed_seconds": timing.wall_clock_elapsed_seconds,
+            "wall_clock_start_utc": timing.wall_clock_start_utc,
+            "wall_clock_end_utc": timing.wall_clock_end_utc,
+            "bounded_futures_testnet_pass": pe8_pass,
+            "endpoints_called": list(result.endpoints_called),
+            "request_count": result.request_count,
+            "network_calls": list(result.network_calls),
+            "private_readonly_reachability_proven": result.private_readonly_reachability_proven,
+            "network_private_readonly_proven": result.private_readonly_reachability_proven,
+        }
+    )
+    return evidence
 
 
 def evaluate_private_readonly_policy(
