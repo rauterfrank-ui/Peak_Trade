@@ -109,6 +109,26 @@ def default_bounded_futures_normal_v0_spec() -> BoundedFuturesTestnetSpec:
     )
 
 
+def default_bounded_futures_private_readonly_reachability_v0_spec() -> BoundedFuturesTestnetSpec:
+    """Private-readonly reachability profile: no order attempts, no notional."""
+    return BoundedFuturesTestnetSpec(
+        session_class="bounded-futures-private-readonly-reachability-v0",
+        order_policy=DEFAULT_ORDER_POLICY,
+        instrument=DEFAULT_INSTRUMENT,
+        market_type=DEFAULT_MARKET_TYPE,
+        margin_mode=DEFAULT_MARGIN_MODE,
+        position_mode=DEFAULT_POSITION_MODE,
+        max_leverage=DEFAULT_MAX_LEVERAGE,
+        max_real_orders=0,
+        max_order_attempts=0,
+        max_cancel_attempts=0,
+        max_notional_eur=0.0,
+        max_position_hold_seconds=300,
+        position_must_be_flattened=True,
+        require_reduce_only_support=True,
+    )
+
+
 def default_bounded_futures_zero_order_reachability_v0_spec() -> BoundedFuturesTestnetSpec:
     """Zero-order reachability profile: no order attempts, no notional."""
     return BoundedFuturesTestnetSpec(

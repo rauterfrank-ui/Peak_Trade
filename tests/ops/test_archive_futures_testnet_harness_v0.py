@@ -10,10 +10,12 @@ from pathlib import Path
 import pytest
 
 from scripts.ops import archive_futures_testnet_harness_v0 as harness
+from src.ops.bounded_futures_private_readonly_contract_v0 import PRIVATE_READONLY_MODE
 from src.ops.bounded_futures_testnet_contract_v0 import (
     DEFAULT_INSTRUMENT,
     FUTURES_SESSION_AUTHORIZED_NOW,
     REJECTED_FUTURES_INSTRUMENT_PLACEHOLDERS,
+    default_bounded_futures_private_readonly_reachability_v0_spec,
     default_bounded_futures_zero_order_reachability_v0_spec,
     evaluate_bounded_futures_testnet_evidence,
 )
@@ -328,3 +330,45 @@ def test_pe8_zero_order_spec_accepts_harness_evidence() -> None:
 def test_rejected_placeholder_set_unchanged() -> None:
     assert "BTCUSDT" in REJECTED_FUTURES_INSTRUMENT_PLACEHOLDERS
     assert DEFAULT_INSTRUMENT == "PF_XBTUSD"
+
+
+def test_private_readonly_mode_plan_only_writes_evidence(tmp_path: Path) -> None:
+    archive = _durable_test_archive_root(tmp_path)
+    rc = harness.main(
+        [
+            "--archive-root",
+            str(archive),
+            "--run-id",
+            "privro",
+            "--mode",
+            PRIVATE_READONLY_MODE,
+        ],
+    )
+    assert rc == 0
+    bundle = list((archive / "runtime").iterdir())[0]
+    assert bundle.name.startswith("bounded_futures_private_readonly_")
+    evidence = json.loads((bundle / "FUTURES_EVIDENCE.json").read_text(encoding="utf-8"))
+    assert evidence["harness_mode"] == PRIVATE_READONLY_MODE
+    assert evidence["request_count"] == 0
+    assert evidence["private_readonly_reachability_proven"] is False
+    assert evidence["futures_private_api_authorized"] is False
+    assert evidence["credential_values_logged"] is False
+    spec = default_bounded_futures_private_readonly_reachability_v0_spec()
+    assert evaluate_bounded_futures_testnet_evidence(evidence, spec=spec)[
+        "bounded_futures_testnet_pass"
+    ]
+
+
+def test_private_readonly_execute_network_forbidden(tmp_path: Path) -> None:
+    archive = _durable_test_archive_root(tmp_path)
+    argv = [
+        "--archive-root",
+        str(archive),
+        "--run-id",
+        "privroexec",
+        "--mode",
+        PRIVATE_READONLY_MODE,
+        "--execute-network",
+    ]
+    rc = harness.main(argv)
+    assert rc == harness.USAGE_EXIT
