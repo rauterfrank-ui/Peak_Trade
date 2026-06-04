@@ -65,7 +65,7 @@ DEPENDENCY_REQUIRED_FINAL_LINES = (
     "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true",
     "GAP4_OUTPUT_EVIDENCE_DEFAULT_ON=false",
     "GAP4_OUTPUT_EVIDENCE_OPT_IN_ONLY=true",
-    "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false",
+    "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true",
     "GAP2A1_ENFORCEMENT_DEFAULT_ON=false",
     "GAP5_STOP_REHEARSAL_EXECUTED=true",
     "GAP5_STOP_PROOF_ACCEPTED=true",
@@ -74,7 +74,6 @@ DEPENDENCY_REQUIRED_FINAL_LINES = (
 
 DEPENDENCY_FORBIDDEN_REPO_TOKENS = (
     "GAP4_OUTPUT_EVIDENCE_DEFAULT_ON=true",
-    "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true",
     "GAP2A1_ENFORCEMENT_DEFAULT_ON=true",
     "GAP4_VERIFIED_IMPLIES_GAP2A1_ENFORCED=true",
     "DURABLE_EVIDENCE_IMPLIES_ENFORCEMENT=true",
@@ -226,9 +225,10 @@ def test_gap4_gap2a1_dependency_gap4_verified_not_implies_gap2a1_enforced_v0() -
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in gap4
     assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in gap2a1
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" in block
-    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in block
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" in block
     lines = {line.strip() for line in block.splitlines()}
-    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" not in lines
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" in lines
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" not in gap2a1.splitlines()
 
 
 def test_gap4_gap2a1_dependency_durable_evidence_not_enforcement_v0() -> None:

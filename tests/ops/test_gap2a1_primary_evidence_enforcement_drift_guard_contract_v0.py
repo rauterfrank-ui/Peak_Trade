@@ -45,8 +45,8 @@ DRIFT_GUARD_REQUIRED_FINAL_LINES = (
     "READY_FOR_OPERATOR_ARMING=false",
     "PATH_B_LIFT_DISCUSSION_READY=false",
     "ALL_GAPS_CLOSED=false",
-    "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false",
-    "GAP2A1_TIER1_ENFORCEMENT_LIFTED=false",
+    "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true",
+    "GAP2A1_TIER1_ENFORCEMENT_LIFTED=true",
     "TIER1_PRIMARY_EVIDENCE_ENFORCEMENT_CONTRACTED=true",
     "GAP2A1_ENFORCEMENT_DEFAULT_ON=false",
     "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true",
@@ -58,8 +58,9 @@ DRIFT_GUARD_REQUIRED_FINAL_LINES = (
     "TIER1_PRIMARY_EVIDENCE_MANIFEST_VERIFY_RC=0",
     "PRIMARY_EVIDENCE_ENFORCED=true",
     "PRIMARY_EVIDENCE_ENFORCED_SCOPE=zero_dispatch_local_only",
-    "GAP2A1_TIER1_ENFORCEMENT_LIFTED_REPO=false",
-    "SECTION5_GAP2A1_REPO_LIFTED=false",
+    "GAP2A1_TIER1_ENFORCEMENT_LIFTED_REPO=true",
+    "SECTION5_GAP2A1_REPO_LIFTED=true",
+    "GAP2A1_REPO_LIFT_CLASS4_GOVERNED_REFLECTION_V0=true",
     "TIER1_CANONICAL_TAG_BOUNDED_ENFORCE_OBSERVED=true",
     "TIER1_CANONICAL_TAG_PRIMARY_EVIDENCE_MANIFEST_CREATED=true",
     "TIER1_CANONICAL_TAG_PRIMARY_EVIDENCE_MANIFEST_VERIFY_RC=0",
@@ -69,6 +70,24 @@ DRIFT_GUARD_REQUIRED_FINAL_LINES = (
     "GAP3_EXECUTE_COMMAND_VERIFIED=true",
     "GAP3_EXECUTE_COMMAND_DRY_RUN_RC0_OBSERVED=true",
     "UNEXPECTED_JOB_STARTED=false",
+)
+
+DRIFT_GUARD_FORBIDDEN_GAP2A1_REPO_TOKENS = (
+    "TIER1_PRIMARY_EVIDENCE_ENFORCEMENT_ACTIVATED=true",
+    "GAP2A1_ENFORCEMENT_DEFAULT_ON=true",
+    "GAP2A1_ENFORCEMENT_ACCEPTED=true",
+    "GAP2A1_TIER_COMPLETE=true",
+    "GAP2A1_TIER_5_SATISFIED=true",
+    "EXTERNAL_TIER_PLAN_COMPLETE=true",
+    "EXTERNAL_MANIFEST_VERIFY_RC0_IMPLIES_ENFORCED=true",
+    "DURABLE_ARCHIVE_EXISTS_IMPLIES_ENFORCED=true",
+    "EVIDENCE_PRESENCE_IMPLIES_ENFORCED=true",
+    "WORKSHEET_COMPLETE=true",
+    "PATH_B_LIFT_DISCUSSION_READY=true",
+    "ALL_GAPS_CLOSED=true",
+    "READY_FOR_OPERATOR_ARMING=true",
+    "PREFLIGHT_REMAINS_BLOCKED=false",
+    "SHADOW_24_7_AUTHORIZED=true",
 )
 
 TIER1_CONTRACT_SLICE_FILE_ALLOWLIST = (
@@ -85,24 +104,10 @@ TIER1_CONTRACT_SLICE_FORBIDDEN_PATH_PREFIXES = (
     "scripts/run_scheduler.py",
 )
 
-DRIFT_GUARD_FORBIDDEN_GAP2A1_REPO_TOKENS = (
+DRIFT_GUARD_FORBIDDEN_GAP2A1_CRITERIA_TOKENS = (
     "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true",
     "GAP2A1_TIER1_ENFORCEMENT_LIFTED=true",
-    "TIER1_PRIMARY_EVIDENCE_ENFORCEMENT_ACTIVATED=true",
     "GAP2A1_ENFORCEMENT_DEFAULT_ON=true",
-    "GAP2A1_ENFORCEMENT_ACCEPTED=true",
-    "GAP2A1_TIER_COMPLETE=true",
-    "GAP2A1_TIER_5_SATISFIED=true",
-    "EXTERNAL_TIER_PLAN_COMPLETE=true",
-    "EXTERNAL_MANIFEST_VERIFY_RC0_IMPLIES_ENFORCED=true",
-    "DURABLE_ARCHIVE_EXISTS_IMPLIES_ENFORCED=true",
-    "EVIDENCE_PRESENCE_IMPLIES_ENFORCED=true",
-    "WORKSHEET_COMPLETE=true",
-    "PATH_B_LIFT_DISCUSSION_READY=true",
-    "ALL_GAPS_CLOSED=true",
-    "READY_FOR_OPERATOR_ARMING=true",
-    "PREFLIGHT_REMAINS_BLOCKED=false",
-    "SHADOW_24_7_AUTHORIZED=true",
 )
 
 EXTERNAL_CONFLATION_FORBIDDEN_REPO_TOKENS = (
@@ -168,11 +173,7 @@ def test_gap2a1_drift_guard_gap2a1_section_preserves_opt_in_not_enforced_v0() ->
     assert "opt-in only" in section
     assert "intentionally non-authorizing" in section
     assert "### Tier-1 activation contract v0 (docs/tests only)" in section
-    for token in (
-        "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true",
-        "GAP2A1_TIER1_ENFORCEMENT_LIFTED=true",
-        "GAP2A1_ENFORCEMENT_DEFAULT_ON=true",
-    ):
+    for token in DRIFT_GUARD_FORBIDDEN_GAP2A1_CRITERIA_TOKENS:
         assert token not in lines
 
 
@@ -188,12 +189,9 @@ def test_gap2a1_tier1_contract_slice_file_allowlist_v0() -> None:
 def test_gap2a1_tier1_drift_guard_forbids_lift_in_final_lines_v0() -> None:
     block = _final_machine_lines(_section5_text())
     lines = {line.strip() for line in block.splitlines()}
-    assert "GAP2A1_TIER1_ENFORCEMENT_LIFTED=false" in block
+    assert "GAP2A1_TIER1_ENFORCEMENT_LIFTED=true" in block
     assert "TIER1_PRIMARY_EVIDENCE_ENFORCEMENT_CONTRACTED=true" in block
-    for token in (
-        "GAP2A1_TIER1_ENFORCEMENT_LIFTED=true",
-        "TIER1_PRIMARY_EVIDENCE_ENFORCEMENT_ACTIVATED=true",
-    ):
+    for token in ("TIER1_PRIMARY_EVIDENCE_ENFORCEMENT_ACTIVATED=true",):
         assert token not in lines
 
 
@@ -217,7 +215,7 @@ def test_gap2a1_drift_guard_gap4_verified_not_enforcement_v0() -> None:
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED = False" in text
     block = _final_machine_lines(_section5_text())
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" in block
-    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in block
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" in block
 
 
 def test_gap2a1_drift_guard_tier1_zero_dispatch_manifest_observed_final_line_v0() -> None:
@@ -234,11 +232,11 @@ def test_gap2a1_drift_guard_tier1_zero_dispatch_manifest_observed_final_line_v0(
     assert "OBSERVED_NOT_ENFORCED_REPO_SSOT_SEMANTIC_PRESERVED=true" in section
     assert "PRIMARY_EVIDENCE_ENFORCED=true" in block
     assert "PRIMARY_EVIDENCE_ENFORCED_SCOPE=zero_dispatch_local_only" in block
-    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in block
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" in block
     gap2a1_lines = {line.strip() for line in gap2a1.splitlines()}
     assert "PRIMARY_EVIDENCE_ENFORCED=true" not in gap2a1_lines
     block_lines = {line.strip() for line in block.splitlines()}
-    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" not in block_lines
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" in block_lines
 
 
 def test_gap2a1_drift_guard_tier1_canonical_tag_bounded_enforce_observed_final_line_v0() -> None:
@@ -246,7 +244,7 @@ def test_gap2a1_drift_guard_tier1_canonical_tag_bounded_enforce_observed_final_l
     block = _final_machine_lines(text)
     section = text.split(
         "## Tier-1 Governed Canonical-Tag Bounded Enforce Observed Final-Line Reflection v0", 1
-    )[1].split("## Preflight Synthesis Docs Block Reflection v0", 1)[0]
+    )[1].split("## Gap-2a.1 Governed Primary Evidence Repo-Lift CLASS_4 Reflection v0", 1)[0]
     gap2a1 = _gap2a1_section(text)
     gap2 = text.split("## Gap 2 Canonical Job Set Contract v0", 1)[1].split(
         "## Final Machine Lines", 1
@@ -263,14 +261,35 @@ def test_gap2a1_drift_guard_tier1_canonical_tag_bounded_enforce_observed_final_l
     assert "PRIMARY_EVIDENCE_ENFORCED_SCOPE=canonical_tag_local_readonly_preflight_once" in block
     assert "OBSERVED_JOB_STARTED=paper_shadow_247_paper_only_preflight_status_v0" in block
     assert "UNEXPECTED_JOB_STARTED=false" in block
-    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in block
-    assert "GAP2A1_TIER1_ENFORCEMENT_LIFTED_REPO=false" in block
+    assert "GAP2A1_TIER1_ENFORCEMENT_LIFTED_REPO=true" in block
     assert "TIER1_CANONICAL_TAG_BOUNDED_ENFORCE_OBSERVED=true" not in gap2
     gap2a1_lines = {line.strip() for line in gap2a1.splitlines()}
     assert "TIER1_CANONICAL_TAG_BOUNDED_ENFORCE_OBSERVED=true" not in gap2a1_lines
     block_lines = {line.strip() for line in block.splitlines()}
-    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" not in block_lines
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" in block_lines
     assert "GAP2_CANONICAL_JOB_SET_VERIFIED=true" in block_lines
+
+
+def test_gap2a1_drift_guard_repo_lift_class4_reflection_v0() -> None:
+    text = _section5_text()
+    block = _final_machine_lines(text)
+    section = text.split(
+        "## Gap-2a.1 Governed Primary Evidence Repo-Lift CLASS_4 Reflection v0", 1
+    )[1].split("## Preflight Synthesis Docs Block Reflection v0", 1)[0]
+    gap2a1 = _gap2a1_section(text)
+
+    assert "GAP2A1_REPO_LIFT_CLASS4_GOVERNED_REFLECTION_V0=true" in section
+    assert "OPERATOR_GO=GO_GAP2A1_PRIMARY_EVIDENCE_REPO_LIFT_CLASS4_DOCS_TESTS_V0" in section
+    assert "CLASS4_OPERATOR_GO_ACCEPTED=true" in section
+    assert "GAP2A1_TIER1_ENFORCEMENT_LIFTED_REPO=true" in section
+    assert "SECTION5_GAP2A1_REPO_LIFTED=true" in section
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" in section
+    assert "SESSION_SCOPE_NOT_REPO_SSOT=true" in section
+    assert "does not lift global preflight" in section
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" in block
+    assert "GAP2A1_TIER1_ENFORCEMENT_LIFTED=true" in block
+    gap2a1_lines = {line.strip() for line in gap2a1.splitlines()}
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" not in gap2a1_lines
 
 
 def test_gap2a1_drift_guard_gap5_gap6_orthogonal_v0() -> None:
@@ -299,7 +318,8 @@ def test_gap2a1_drift_guard_criteria_complete_does_not_close_gaps_v0() -> None:
     assert "SECTION5_OWNER_MAP_CONTRACT_V0_COMPLETE=true" in text
     assert "ALL_GAPS_CLOSED=false" in text
     assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCEMENT_CONTRACT_V0=true" in text
-    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in text
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" in _final_machine_lines(text)
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in _gap2a1_section(text)
 
 
 def test_gap2a1_drift_guard_external_signals_not_enforcement_language_v0() -> None:
