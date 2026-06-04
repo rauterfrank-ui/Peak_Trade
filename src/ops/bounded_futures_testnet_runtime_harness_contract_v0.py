@@ -9,7 +9,7 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any
 
-from src.exchange.bounded_futures_testnet_exchange_impl_contract_v0 import (
+from src.ops.bounded_futures_testnet_exchange_impl_contract_v0 import (
     BoundedFuturesTestnetExchangeImplDescriptor,
     EXCHANGE_IMPL_EXECUTE_AUTHORIZED_NOW,
     EXCHANGE_IMPL_NETWORK_CALLS_ALLOWED,

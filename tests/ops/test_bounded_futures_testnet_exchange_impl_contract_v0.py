@@ -10,7 +10,7 @@ from pathlib import Path
 
 import pytest
 
-from src.exchange.bounded_futures_testnet_exchange_impl_contract_v0 import (
+from src.ops.bounded_futures_testnet_exchange_impl_contract_v0 import (
     EXCHANGE_IMPL_EXECUTE_AUTHORIZED_NOW,
     EXCHANGE_IMPL_NETWORK_CALLS_ALLOWED,
     BoundedFuturesTestnetExchangeImplDescriptor,
@@ -23,7 +23,7 @@ from src.ops.bounded_futures_testnet_contract_v0 import FUTURES_SESSION_AUTHORIZ
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 EXCHANGE_IMPL_MODULE = (
-    REPO_ROOT / "src" / "exchange" / "bounded_futures_testnet_exchange_impl_contract_v0.py"
+    REPO_ROOT / "src" / "ops" / "bounded_futures_testnet_exchange_impl_contract_v0.py"
 )
 ADAPTER_MODULE = REPO_ROOT / "src" / "ops" / "bounded_futures_testnet_adapter_contract_v0.py"
 SECTION5_GAP_OWNER_MAP = (

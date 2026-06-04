@@ -22,7 +22,7 @@ from src.ops.bounded_futures_testnet_contract_v0 import FUTURES_SESSION_AUTHORIZ
 PACKAGE_MARKER = "BOUNDED_FUTURES_TESTNET_EXCHANGE_IMPL_CONTRACT_V0=true"
 EXCHANGE_IMPL_NETWORK_CALLS_ALLOWED = False
 EXCHANGE_IMPL_EXECUTE_AUTHORIZED_NOW = False
-DEFAULT_IMPL_MODULE = "src.exchange.bounded_futures_testnet_exchange_impl_contract_v0"
+DEFAULT_IMPL_MODULE = "src.ops.bounded_futures_testnet_exchange_impl_contract_v0"
 DEFAULT_IMPL_CLASS = "BoundedFuturesTestnetExchangeImplStub"
 
 
