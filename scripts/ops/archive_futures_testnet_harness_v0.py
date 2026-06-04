@@ -33,6 +33,21 @@ from scripts.ops.primary_evidence_retention_v0 import (
 from src.ops.bounded_futures_testnet_adapter_contract_v0 import (
     DEFAULT_FUTURES_TESTNET_NETWORK_HOST,
 )
+from src.ops.bounded_futures_private_readonly_contract_v0 import (
+    CONFIRM_TOKEN_PRIVATE_READONLY_REACHABILITY,
+    DEMO_FUTURES_REST_BASE_URL,
+    FUTURES_PRIVATE_READONLY_GET_ENDPOINTS,
+    PRIVATE_READONLY_HTTP_WIRING_PRESENT,
+    PRIVATE_READONLY_MODE,
+    PrivateReadonlyHttpRequest,
+    PrivateReadonlyRestFetcher,
+    assert_private_readonly_authority_unchanged,
+    build_private_readonly_evidence_from_network,
+    build_private_readonly_plan_evidence_skeleton,
+    resolve_private_readonly_credentials_from_environ,
+    run_private_readonly_reachability,
+    validate_private_readonly_url,
+)
 from src.ops.bounded_futures_testnet_contract_v0 import (
     DEFAULT_INSTRUMENT,
     DEFAULT_MARGIN_MODE,
@@ -43,6 +58,7 @@ from src.ops.bounded_futures_testnet_contract_v0 import (
     EVIDENCE_SOURCE_FUTURES_HARNESS,
     FUTURES_SESSION_AUTHORIZED_NOW,
     REJECTED_FUTURES_INSTRUMENT_PLACEHOLDERS,
+    default_bounded_futures_private_readonly_reachability_v0_spec,
     default_bounded_futures_zero_order_reachability_v0_spec,
     evaluate_bounded_futures_testnet_evidence,
 )
@@ -56,6 +72,7 @@ from src.ops.bounded_futures_testnet_runtime_harness_contract_v0 import (
 
 PACKAGE_MARKER = "ARCHIVE_FUTURES_TESTNET_HARNESS_V0=true"
 SAFE_PUBLIC_URLLIB_FETCHER_PRESENT = True
+SAFE_PRIVATE_READONLY_URLLIB_FETCHER_PRESENT = PRIVATE_READONLY_HTTP_WIRING_PRESENT
 HARNESS_VERSION = "archive_futures_testnet_harness_v0"
 
 DEFAULT_MODE = "zero_order_reachability_only"
@@ -234,12 +251,67 @@ def _reject_spot_lane_flags(args: argparse.Namespace) -> None:
             _die(f"ERR: forbidden spot entrypoint reference: {frag}")
 
 
+def _validate_private_readonly_harness_namespace(
+    args: argparse.Namespace,
+    *,
+    environ: Mapping[str, str] | None = None,
+) -> list[str]:
+    """Fail-closed validation for private_readonly_reachability_only (plan-only v0)."""
+    reasons: list[str] = []
+    env = environ if environ is not None else {}
+    assert_private_readonly_authority_unchanged()
+
+    if args.mode != PRIVATE_READONLY_MODE:
+        reasons.append(f"mode must be {PRIVATE_READONLY_MODE!r}")
+    if args.instrument in REJECTED_FUTURES_INSTRUMENT_PLACEHOLDERS:
+        reasons.append(f"instrument {args.instrument!r} is rejected placeholder")
+    if args.instrument != DEFAULT_FUTURES_SYMBOL:
+        reasons.append(f"instrument must default to {DEFAULT_FUTURES_SYMBOL!r}")
+    if args.order_cap != DEFAULT_ORDER_CAP or args.order_cap < 0:
+        reasons.append("order_cap must be 0")
+    if args.validate_only_order_cap != DEFAULT_VALIDATE_ONLY_ORDER_CAP:
+        reasons.append("validate_only_order_cap must be 0")
+    if args.duration_cap_seconds > DEFAULT_DURATION_CAP_SECONDS or args.duration_cap_seconds <= 0:
+        reasons.append("duration_cap_seconds must be in (0, 300]")
+    url_reason = _rest_base_url_fail_reason(args.rest_base_url)
+    if url_reason:
+        reasons.append(url_reason)
+    if args.scheduler_enabled or args.background_enabled:
+        reasons.append("scheduler/background must be disabled")
+    if args.allow_unbounded:
+        reasons.append("unbounded loops forbidden")
+    if (
+        args.execute_network
+        and (getattr(args, "confirm_futures_private_readonly_reachability", "") or "")
+        != CONFIRM_TOKEN_PRIVATE_READONLY_REACHABILITY
+    ):
+        reasons.append(
+            "confirm-futures-private-readonly-reachability token required when execute-network set"
+        )
+
+    for key in (
+        "FUTURES_EXECUTE_AUTHORIZED",
+        "FUTURES_PRIVATE_API_AUTHORIZED",
+        "FUTURES_SESSION_AUTHORIZED_NOW",
+        "NEXT_EXECUTE_ALLOWED",
+        "READY_FOR_OPERATOR_ARMING",
+    ):
+        if env.get(key, "").lower() in ("1", "true", "yes"):
+            reasons.append(f"{key} must not be true in environment")
+
+    _reject_spot_lane_flags(args)
+    return reasons
+
+
 def validate_harness_namespace(
     args: argparse.Namespace,
     *,
     environ: Mapping[str, str] | None = None,
 ) -> list[str]:
     """Fail-closed validation; returns fail reasons (empty = pass)."""
+    if args.mode == PRIVATE_READONLY_MODE:
+        return _validate_private_readonly_harness_namespace(args, environ=environ)
+
     reasons: list[str] = []
     env = environ if environ is not None else {}
 
@@ -391,6 +463,66 @@ def build_zero_order_evidence_payload(
     }
 
 
+def build_private_readonly_evidence_payload(
+    *,
+    timing: HarnessTiming,
+    run_id: str,
+    pe8_pass: bool,
+) -> dict[str, Any]:
+    """Plan-only private-readonly evidence (no network, no credential values)."""
+    evidence = build_private_readonly_plan_evidence_skeleton(run_id=run_id)
+    evidence.update(
+        {
+            "harness_version": HARNESS_VERSION,
+            "monotonic_elapsed_seconds": timing.monotonic_elapsed_seconds,
+            "wall_clock_elapsed_seconds": timing.wall_clock_elapsed_seconds,
+            "wall_clock_start_utc": timing.wall_clock_start_utc,
+            "wall_clock_end_utc": timing.wall_clock_end_utc,
+            "bounded_futures_testnet_pass": pe8_pass,
+            "network_target_allowlist": sorted(FUTURES_PRIVATE_READONLY_GET_ENDPOINTS),
+            "rest_base_url": DEMO_FUTURES_REST_BASE_URL,
+            "private_readonly_http_wiring_present": PRIVATE_READONLY_HTTP_WIRING_PRESENT,
+            "private_readonly_execute_wired": True,
+            "confirm_token_reserved": CONFIRM_TOKEN_PRIVATE_READONLY_REACHABILITY,
+        }
+    )
+    return evidence
+
+
+class SafePrivateReadonlyUrllibRestFetcher:
+    """Bounded stdlib urllib private GET client (demo allowlist + auth headers)."""
+
+    def fetch(
+        self,
+        http_request: PrivateReadonlyHttpRequest,
+        *,
+        timeout_seconds: float,
+    ) -> tuple[int, bytes]:
+        url_reasons = validate_private_readonly_url(
+            http_request.url,
+            rest_base_url=DEMO_FUTURES_REST_BASE_URL,
+        )
+        if url_reasons:
+            _die(f"ERR: private-readonly url blocked: {url_reasons[0]}")
+        if http_request.method != "GET":
+            _die(f"ERR: private-readonly method must be GET (got {http_request.method})")
+        bounded_timeout = min(
+            float(timeout_seconds),
+            float(DEFAULT_DURATION_CAP_SECONDS),
+        )
+        req = request.Request(http_request.url, method="GET", headers=dict(http_request.headers))
+        try:
+            with request.urlopen(req, timeout=bounded_timeout) as resp:
+                status = int(getattr(resp, "status", resp.getcode()))
+                return status, resp.read()
+        except error.HTTPError as exc:
+            return int(exc.code), exc.read() or b""
+
+
+def default_safe_private_readonly_rest_fetcher() -> SafePrivateReadonlyUrllibRestFetcher:
+    return SafePrivateReadonlyUrllibRestFetcher()
+
+
 def _assert_network_url_allowed(url: str, rest_base: str) -> None:
     parsed = urlparse(url)
     if parsed.scheme != "https" or parsed.netloc != "demo-futures.kraken.com":
@@ -461,7 +593,12 @@ def write_durable_evidence_bundle(
     evaluation: dict[str, Any],
 ) -> Path:
     ts = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
-    out = archive_root / "runtime" / f"bounded_futures_zero_order_{run_id}_{ts}"
+    runtime_prefix = (
+        "bounded_futures_private_readonly"
+        if plan.mode == PRIVATE_READONLY_MODE
+        else "bounded_futures_zero_order"
+    )
+    out = archive_root / "runtime" / f"{runtime_prefix}_{run_id}_{ts}"
     if is_under_tmp(out):
         _die("ERR: evidence root must not be under /tmp")
     out.mkdir(parents=True, exist_ok=True)
@@ -481,6 +618,7 @@ def write_durable_evidence_bundle(
         "\n".join(
             [
                 "FUTURES_EXECUTE_AUTHORIZED=false",
+                "FUTURES_PRIVATE_API_AUTHORIZED=false",
                 "FUTURES_SESSION_AUTHORIZED_NOW=false",
                 "NEXT_EXECUTE_ALLOWED=false",
                 "LIVE_NOT_AUTHORIZED=true",
@@ -504,8 +642,8 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--mode",
         default=DEFAULT_MODE,
-        choices=[DEFAULT_MODE],
-        help="Run mode (zero-order reachability only).",
+        choices=[DEFAULT_MODE, PRIVATE_READONLY_MODE],
+        help="Run mode: zero-order public or private-readonly plan-only (v0).",
     )
     parser.add_argument("--instrument", default=DEFAULT_FUTURES_SYMBOL)
     parser.add_argument("--rest-base-url", default=DEFAULT_REST_BASE_URL)
@@ -532,12 +670,17 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--execute-network",
         action="store_true",
-        help="Allow allowlisted public GET after confirm token (default: plan-only, no network).",
+        help="Allow allowlisted GET after mode-specific confirm token (default: plan-only).",
     )
     parser.add_argument(
         "--confirm-futures-zero-order-reachability",
         default="",
         help="Required exact token when --execute-network is set.",
+    )
+    parser.add_argument(
+        "--confirm-futures-private-readonly-reachability",
+        default="",
+        help="Required exact token when --execute-network is set in private_readonly mode.",
     )
     parser.add_argument("--scheduler-enabled", action="store_true")
     parser.add_argument("--background-enabled", action="store_true")
@@ -551,7 +694,13 @@ def build_parser() -> argparse.ArgumentParser:
     return parser
 
 
-def main(argv: list[str] | None = None, *, fetcher: PublicRestFetcher | None = None) -> int:
+def main(
+    argv: list[str] | None = None,
+    *,
+    fetcher: PublicRestFetcher | None = None,
+    private_fetcher: PrivateReadonlyRestFetcher | None = None,
+    environ: Mapping[str, str] | None = None,
+) -> int:
     if FUTURES_SESSION_AUTHORIZED_NOW:
         _die("ERR: FUTURES_SESSION_AUTHORIZED_NOW must be false")
     if RUNTIME_HARNESS_EXECUTE_ALLOWED or RUNTIME_HARNESS_NETWORK_ALLOWED:
@@ -563,7 +712,8 @@ def main(argv: list[str] | None = None, *, fetcher: PublicRestFetcher | None = N
     args = parser.parse_args(argv)
     _require_safe_run_id(args.run_id)
 
-    fail_reasons = validate_harness_namespace(args)
+    env = environ if environ is not None else {}
+    fail_reasons = validate_harness_namespace(args, environ=env)
     if fail_reasons:
         for r in fail_reasons:
             print(f"ERR: {r}", file=sys.stderr)
@@ -598,7 +748,31 @@ def main(argv: list[str] | None = None, *, fetcher: PublicRestFetcher | None = N
     request_count = 0
 
     network_result: NetworkReachabilityResult | None = None
-    if args.execute_network:
+    private_result = None
+    if args.execute_network and args.mode == PRIVATE_READONLY_MODE:
+        credentials = resolve_private_readonly_credentials_from_environ(env)
+        if credentials is None:
+            _die(
+                "ERR: KRAKEN_FUTURES_DEMO_API_KEY and KRAKEN_FUTURES_DEMO_API_SECRET required "
+                "for private-readonly execute-network"
+            )
+        api_key, api_secret = credentials
+        active_private_fetcher: PrivateReadonlyRestFetcher = (
+            private_fetcher
+            if private_fetcher is not None
+            else default_safe_private_readonly_rest_fetcher()
+        )
+        private_result = run_private_readonly_reachability(
+            rest_base_url=args.rest_base_url,
+            api_key=api_key,
+            api_secret_b64=api_secret,
+            fetcher=active_private_fetcher,
+            duration_cap_seconds=args.duration_cap_seconds,
+        )
+        endpoints_called = private_result.endpoints_called
+        request_count = private_result.request_count
+        plan = HarnessPlan(**{**asdict(plan), "network_enabled": True})
+    elif args.execute_network:
         if args.confirm_futures_zero_order_reachability != CONFIRM_TOKEN_ZERO_ORDER_REACHABILITY:
             _die("ERR: missing or invalid --confirm-futures-zero-order-reachability token")
         active_fetcher: PublicRestFetcher = (
@@ -622,22 +796,39 @@ def main(argv: list[str] | None = None, *, fetcher: PublicRestFetcher | None = N
         wall_clock_end_utc=wall_end,
     )
 
-    spec = default_bounded_futures_zero_order_reachability_v0_spec()
-    evidence = build_zero_order_evidence_payload(
-        timing=timing,
-        endpoints_called=endpoints_called,
-        request_count=request_count,
-        network_host=DEFAULT_FUTURES_TESTNET_NETWORK_HOST,
-        run_id=args.run_id,
-        pe8_pass=False,
-        network_reachability_proven=(
-            network_result.network_reachability_proven if network_result else False
-        ),
-        network_calls=network_result.network_calls if network_result else None,
-        pf_xbtusd_symbol_visibility=(
-            network_result.pf_xbtusd_symbol_visibility if network_result else "not_checked"
-        ),
-    )
+    if args.mode == PRIVATE_READONLY_MODE:
+        spec = default_bounded_futures_private_readonly_reachability_v0_spec()
+        if private_result is not None:
+            evidence = build_private_readonly_evidence_from_network(
+                timing=timing,
+                run_id=args.run_id,
+                result=private_result,
+                pe8_pass=False,
+                harness_version=HARNESS_VERSION,
+            )
+        else:
+            evidence = build_private_readonly_evidence_payload(
+                timing=timing,
+                run_id=args.run_id,
+                pe8_pass=False,
+            )
+    else:
+        spec = default_bounded_futures_zero_order_reachability_v0_spec()
+        evidence = build_zero_order_evidence_payload(
+            timing=timing,
+            endpoints_called=endpoints_called,
+            request_count=request_count,
+            network_host=DEFAULT_FUTURES_TESTNET_NETWORK_HOST,
+            run_id=args.run_id,
+            pe8_pass=False,
+            network_reachability_proven=(
+                network_result.network_reachability_proven if network_result else False
+            ),
+            network_calls=network_result.network_calls if network_result else None,
+            pf_xbtusd_symbol_visibility=(
+                network_result.pf_xbtusd_symbol_visibility if network_result else "not_checked"
+            ),
+        )
     evaluation = evaluate_bounded_futures_testnet_evidence(evidence, spec=spec)
     evidence["bounded_futures_testnet_pass"] = evaluation["bounded_futures_testnet_pass"]
     if not evaluation["bounded_futures_testnet_pass"]:
@@ -652,9 +843,10 @@ def main(argv: list[str] | None = None, *, fetcher: PublicRestFetcher | None = N
         evidence=evidence,
         evaluation=evaluation,
     )
+    plan_only = not args.execute_network
     print(
         json.dumps(
-            {"evidence_dir": str(out), "plan_only": not args.execute_network},
+            {"evidence_dir": str(out), "plan_only": plan_only, "mode": args.mode},
             indent=2,
         )
     )

@@ -29,6 +29,8 @@ FUTURES_TESTNET_INSTRUMENT_EXCHANGE_PROVEN = False
 DEFAULT_FUTURES_TESTNET_NETWORK_HOST = "https://demo-futures.kraken.com"
 
 # Futures REST paths — separate from spot SPOT_KRAKEN_ENDPOINT_PREFIXES.
+# Private-readonly GET subset (policy): bounded_futures_private_readonly_contract_v0.py
+# accounts, openpositions, openorders — not sendorder/cancel*.
 FUTURES_TESTNET_ENDPOINT_ALLOWLIST: frozenset[str] = frozenset(
     {
         "/derivatives/api/v3/tickers",
