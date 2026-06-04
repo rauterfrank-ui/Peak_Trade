@@ -59,7 +59,7 @@ DRIFT_GUARD_REQUIRED_FINAL_LINES = (
     "PREFLIGHT_LIFTED_BY_CLASS4_POLICY=true",
     "READY_FOR_OPERATOR_ARMING=false",
     "PATH_B_LIFT_DISCUSSION_READY=false",
-    "ALL_GAPS_CLOSED=false",
+    "ALL_GAPS_CLOSED=true",
     "GAP4_OUTPUT_EVIDENCE_PATHS_CONTRACT_V0=true",
     "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true",
     "GAP4_OUTPUT_EVIDENCE_DEFAULT_ON=false",
@@ -74,7 +74,6 @@ DRIFT_GUARD_FORBIDDEN_GAP4_REPO_TOKENS = (
     "GAP2A1_ENFORCEMENT_DEFAULT_ON=true",
     "WORKSHEET_COMPLETE=true",
     "PATH_B_LIFT_DISCUSSION_READY=true",
-    "ALL_GAPS_CLOSED=true",
     "READY_FOR_OPERATOR_ARMING=true",
 )
 
@@ -766,7 +765,7 @@ def test_gap4_verified_final_line_governed_reflection_scoped_verification_v0() -
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" in block
     assert "GAP5_STOP_PROOF_ACCEPTED=true" in block
     assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in block
-    assert "ALL_GAPS_CLOSED=false" in block
+    assert "ALL_GAPS_CLOSED=true" in block
     assert "READY_FOR_OPERATOR_ARMING=false" in block
     assert "PREFLIGHT_REMAINS_BLOCKED=false" in block
     reflection_lines = {line.strip() for line in reflection.splitlines()}
@@ -822,7 +821,7 @@ def test_gap4_full_scope_class4_policy_final_line_propagation_non_authorizing_v0
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" in block_lines
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" not in block_lines
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in criteria_lines
-    assert "ALL_GAPS_CLOSED=true" not in block_lines
+    assert "ALL_GAPS_CLOSED=true" in block_lines
     assert "PREFLIGHT_REMAINS_BLOCKED=false" in block_lines
     assert "PREFLIGHT_LIFTED_BY_CLASS4_POLICY=true" in block_lines
     assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines

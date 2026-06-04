@@ -146,6 +146,9 @@ PREFLIGHT_SYNTHESIS_DOCS_BLOCK_REFLECTION_HEADER = "## Preflight Synthesis Docs 
 PREFLIGHT_LIFT_CLASS4_REFLECTION_HEADER = (
     "## Preflight Lift Explicit Operator Authorization CLASS_4 Reflection v0"
 )
+ALL_GAPS_CLOSED_FINAL_REFLECTION_HEADER = (
+    "## Section-5 ALL_GAPS_CLOSED Final Reflection After Preflight Lift v0"
+)
 TIER_C_SHADOW_CROSSLINK_HEADER = "## Tier-C + Shadow durable evidence archive crosslink v0"
 FINAL_MACHINE_LINES_HEADER = "## Final Machine Lines"
 
@@ -158,6 +161,12 @@ def _preflight_synthesis_reflection_section(text: str) -> str:
 
 def _preflight_lift_class4_reflection_section(text: str) -> str:
     return text.split(PREFLIGHT_LIFT_CLASS4_REFLECTION_HEADER, 1)[1].split(
+        ALL_GAPS_CLOSED_FINAL_REFLECTION_HEADER, 1
+    )[0]
+
+
+def _all_gaps_closed_final_reflection_section(text: str) -> str:
+    return text.split(ALL_GAPS_CLOSED_FINAL_REFLECTION_HEADER, 1)[1].split(
         TIER_C_SHADOW_CROSSLINK_HEADER, 1
     )[0]
 
@@ -275,7 +284,7 @@ def test_section5_preflight_synthesis_docs_block_reflection_non_authorizing_v0()
     assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in block
     assert "PREFLIGHT_REMAINS_BLOCKED=false" in block
     assert "PREFLIGHT_LIFTED_BY_CLASS4_POLICY=true" in block
-    assert "ALL_GAPS_CLOSED=false" in block
+    assert "ALL_GAPS_CLOSED=true" in block
     assert "NEXT_EXECUTE_ALLOWED=false" in block
     assert "READY_FOR_OPERATOR_ARMING=false" in block
     assert "PREFLIGHT_LIFT_EXECUTED=false" in block
@@ -304,7 +313,8 @@ def test_section5_preflight_synthesis_docs_block_reflection_non_authorizing_v0()
     assert "GAP5_STOP_REHEARSAL_EXECUTED=true" in block_lines
     assert "PREFLIGHT_REMAINS_BLOCKED=false" in block_lines
     assert "PREFLIGHT_LIFTED_BY_CLASS4_POLICY=true" in block_lines
-    assert "ALL_GAPS_CLOSED=true" not in block_lines
+    assert "ALL_GAPS_CLOSED=true" in block_lines
+    assert "ALL_GAPS_CLOSED_CLASS4_GOVERNED_REFLECTION_V0=true" in block_lines
     assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
     assert "NEXT_EXECUTE_ALLOWED=true" not in synthesis_lines
 
@@ -346,10 +356,55 @@ def test_section5_preflight_lift_class4_reflection_non_authorizing_v0() -> None:
     assert "PREFLIGHT_REMAINS_BLOCKED=false" in block_lines
     assert "PREFLIGHT_LIFTED_BY_CLASS4_POLICY=true" in block_lines
     assert "G1_OPERATOR_DECISION_RECORD_FULFILLED=true" in block_lines
-    assert "ALL_GAPS_CLOSED=true" not in block_lines
+    assert "ALL_GAPS_CLOSED=true" in block_lines
     assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
     assert "NEXT_EXECUTE_ALLOWED=true" not in block_lines
     assert "PREFLIGHT_LIFT_EXECUTED=true" not in block_lines
+
+
+def test_section5_all_gaps_closed_final_reflection_after_preflight_lift_non_authorizing_v0() -> (
+    None
+):
+    text = DOC.read_text(encoding="utf-8")
+    reflection = _all_gaps_closed_final_reflection_section(text)
+    preflight_lift = _preflight_lift_class4_reflection_section(text)
+    block = _final_machine_lines(text)
+
+    for token in (
+        "ALL_GAPS_CLOSED_CLASS4_GOVERNED_REFLECTION_V0=true",
+        "ALL_GAPS_CLOSED=true",
+        "ACCEPTED_MODE=SECTION5_ALL_GAPS_CLOSED_FINAL_REFLECTION_DOCS_TESTS_ONLY",
+        "OPERATOR_GO=GO_SECTION5_ALL_GAPS_CLOSED_FINAL_REFLECTION_AFTER_PREFLIGHT_LIFT_DOCS_TESTS_V0",
+        "CLASS4_OPERATOR_GO_ACCEPTED=true",
+        "ALL_SECTION5_GAP_FINAL_TOKENS_TRUE=true",
+        "GUARD_GAP_CLOSURE_NOT_AUTHORITY_LIFT=true",
+        "ALL_GAPS_CLOSURE_NOT_ARMING=true",
+        "ALL_GAPS_CLOSURE_NOT_EXECUTE=true",
+        "ALL_GAPS_CLOSURE_NOT_LIVE=true",
+        "ALL_GAPS_CLOSURE_NOT_FUTURES_AUTHORITY=true",
+        "PREFLIGHT_REMAINS_BLOCKED=false",
+        "PREFLIGHT_LIFTED_BY_CLASS4_POLICY=true",
+        "READY_FOR_OPERATOR_ARMING=false",
+        "NEXT_EXECUTE_ALLOWED=false",
+        "SECTION5_GAP_CLOSURE_EXECUTED=false",
+    ):
+        assert token in reflection
+
+    assert (
+        "ALL_GAPS_CLOSED=true ≠ READY_FOR_OPERATOR_ARMING=true ≠ NEXT_EXECUTE_ALLOWED=true"
+        in reflection
+    )
+    assert (
+        "does not set `READY_FOR_OPERATOR_ARMING=true` or `NEXT_EXECUTE_ALLOWED=true`" in reflection
+    )
+    assert "does not set `SECTION5_GAP_CLOSURE_EXECUTED=true`" in reflection
+    assert "PREFLIGHT_LIFT_DOES_NOT_CLOSE_ALL_GAPS=true" in preflight_lift
+    block_lines = {line.strip() for line in block.splitlines()}
+    assert "ALL_GAPS_CLOSED=true" in block_lines
+    assert "ALL_GAPS_CLOSED_CLASS4_GOVERNED_REFLECTION_V0=true" in block_lines
+    assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
+    assert "NEXT_EXECUTE_ALLOWED=true" not in block_lines
+    assert "FUTURES_EXECUTE_AUTHORIZED=true" not in block_lines
 
 
 PE11_BOUNDED_FUTURES_REACHABILITY_REFLECTION_HEADER = (
@@ -410,7 +465,7 @@ def test_section5_pe11_bounded_futures_reachability_reflection_non_authorizing_v
     block_lines = {line.strip() for line in block.splitlines()}
     assert "FUTURES_EXECUTE_AUTHORIZED=true" not in pe11_lines
     assert "ARCHIVE_HARNESS_SCRIPT_EXECUTE_AUTHORIZED_NOW=true" not in block_lines
-    assert "ALL_GAPS_CLOSED=true" not in block_lines
+    assert "ALL_GAPS_CLOSED=true" in block_lines
     assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
 
 

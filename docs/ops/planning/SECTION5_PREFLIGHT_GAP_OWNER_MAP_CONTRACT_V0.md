@@ -2351,6 +2351,68 @@ This governed repo-reflection block records operator-authorized **preflight poli
 
 Policy preflight lift is not operator arming, runtime authorization, execute authorization, live authorization, or futures authority. Prior governed reflection blocks above remain scoped acceptance/verification only and unchanged except Final Machine Lines propagation recorded here.
 
+## Section-5 ALL_GAPS_CLOSED Final Reflection After Preflight Lift v0
+
+ALL_GAPS_CLOSED_CLASS4_GOVERNED_REFLECTION_V0=true
+ALL_GAPS_CLOSED=true
+ACCEPTED_MODE=SECTION5_ALL_GAPS_CLOSED_FINAL_REFLECTION_DOCS_TESTS_ONLY
+OPERATOR_GO=GO_SECTION5_ALL_GAPS_CLOSED_FINAL_REFLECTION_AFTER_PREFLIGHT_LIFT_DOCS_TESTS_V0
+CLASS4_OPERATOR_GO_ACCEPTED=true
+DOCS_TESTS_ONLY=true
+GOVERNED_ACCEPTANCE_BASIS=SECTION5_WEDGE_COMPLETE+PREFLIGHT_LIFT_CLASS4+ALL_GAPS_POST_PREFLIGHT_PRECHECK
+INPUT_PREFLIGHT_CONSISTENCY_PRECHECK_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/section5_preflight_final_consistency_precheck_after_preflight_lift_no_run_v0_20260604T231320Z/
+INPUT_PREFLIGHT_LIFT_CLOSEOUT_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/preflight_lift_explicit_operator_authorization_class4_post_merge_closeout_no_run_v0_20260604T230900Z/
+INPUT_RANKING_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/repo_wide_next_safe_slice_ranking_after_preflight_lift_class4_closeout_no_run_v0_20260604T231128Z/
+INPUT_OPERATOR_DECISION_RECORD_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/preflight_lift_operator_decision_record_no_run_v0_20260604T225729Z/
+ALL_SECTION5_GAP_FINAL_TOKENS_TRUE=true
+PREFLIGHT_REMAINS_BLOCKED=false
+PREFLIGHT_LIFTED_BY_CLASS4_POLICY=true
+OPERATOR_DECISION_RECORD_REFLECTED=true
+GUARD_GAP_CLOSURE_NOT_AUTHORITY_LIFT=true
+ALL_GAPS_CLOSURE_NOT_ARMING=true
+ALL_GAPS_CLOSURE_NOT_EXECUTE=true
+ALL_GAPS_CLOSURE_NOT_LIVE=true
+ALL_GAPS_CLOSURE_NOT_FUTURES_AUTHORITY=true
+ALL_GAPS_CLOSURE_NOT_RUNTIME_AUTHORIZATION=true
+MINIMAL_REMAINING_BLOCKER_CLASS=INTENTIONAL_AUTHORITY_ONLY
+READY_FOR_OPERATOR_ARMING=false
+NEXT_EXECUTE_ALLOWED=false
+SECTION5_GAP_CLOSURE_EXECUTED=false
+PREFLIGHT_LIFT_EXECUTED=false
+ACTUAL_PREFLIGHT_LIFT_EXECUTED=false
+FUTURES_EXECUTE_AUTHORIZED=false
+FUTURES_PRIVATE_API_AUTHORIZED=false
+FUTURES_VALIDATE_ONLY_AUTHORIZED=false
+FUTURES_SESSION_AUTHORIZED_NOW=false
+
+This governed repo-reflection block records operator-authorized **Section-5 guard-gap closure** to Final Machine Lines only, under explicit Operator-GO `GO_SECTION5_ALL_GAPS_CLOSED_FINAL_REFLECTION_AFTER_PREFLIGHT_LIFT_DOCS_TESTS_V0`, after CLASS_4 preflight policy lift (PR #4011) and post-preflight consistency precheck (`20260604T231320Z`). **ALL_GAPS_CLOSED=true ≠ READY_FOR_OPERATOR_ARMING=true ≠ NEXT_EXECUTE_ALLOWED=true ≠ Execute ≠ Live ≠ futures authority.** Docs/tests guard-gap closure reflection only — not operator arming, runtime authorization, execute authorization, live authorization, or futures authority.
+
+### ALL_GAPS closure scope (Final Machine Lines only)
+
+- `ALL_GAPS_CLOSED=true` in **Final Machine Lines only** — documents all Section-5 guard-gap final tokens complete at FML
+- `ALL_SECTION5_GAP_FINAL_TOKENS_TRUE=true` unchanged — wedge already complete before this slice
+- Prior Preflight-Lift CLASS_4 Reflection v0 remains unchanged — historical `PREFLIGHT_LIFT_DOES_NOT_CLOSE_ALL_GAPS=true` posture preserved in that block
+- Gap criteria blocks, Status block, Tier-C crosslink, synthesis block, and individual governed reflection blocks above remain unchanged where they record `ALL_GAPS_CLOSED=false` as historical scoped non-closure posture
+
+### Why authority gates remain false (ALL_GAPS closure record only)
+
+- `READY_FOR_OPERATOR_ARMING=false`, `NEXT_EXECUTE_ALLOWED=false` — arming and execute require separate CLASS_4 scopes
+- `SECTION5_GAP_CLOSURE_EXECUTED=false` — no operational closeout charter executed in this slice
+- `PREFLIGHT_LIFT_EXECUTED=false`, `ACTUAL_PREFLIGHT_LIFT_EXECUTED=false` — no runtime preflight lift
+- Guard-gap closure at FML ≠ operator arming ≠ execute authorization ≠ live authorization
+
+### Non-authority boundary (ALL_GAPS closure reflection does not imply)
+
+- does not set `READY_FOR_OPERATOR_ARMING=true` or `NEXT_EXECUTE_ALLOWED=true`
+- does not set `PREFLIGHT_LIFT_EXECUTED=true` or `ACTUAL_PREFLIGHT_LIFT_EXECUTED=true`
+- does not set `SECTION5_GAP_CLOSURE_EXECUTED=true`
+- does not authorize scheduler execution, Paper, Shadow, Testnet, Live, orders, validate-only, private API, or unscoped runtime loops
+- does not grant futures authority (`FUTURES_EXECUTE_AUTHORIZED`, `FUTURES_PRIVATE_API_AUTHORIZED`, `FUTURES_VALIDATE_ONLY_AUTHORIZED`, `FUTURES_SESSION_AUTHORIZED_NOW` remain false)
+- does not modify `scripts/run_scheduler.py`, `config/scheduler/jobs.toml`, or production code in this slice
+- does not start or authorize Runtime, Paper 24/7, Shadow 24/7, or Live
+
+Guard-gap closure is not operator arming, runtime authorization, execute authorization, live authorization, or futures authority. Prior governed reflection blocks above remain scoped acceptance/verification only and unchanged except Final Machine Lines propagation recorded here.
+
 ## Tier-C + Shadow durable evidence archive crosslink v0
 
 TIER_C_SHADOW_DURABLE_EVIDENCE_REPO_STATIC_CROSSLINK_V0=true
@@ -2506,7 +2568,8 @@ This contract does not modify `config/scheduler/jobs.toml`, does not enable any 
 
 SECTION5_OWNER_MAP_CONTRACT_V0_COMPLETE=true
 SECTION5_GAP_CLOSURE_EXECUTED=false
-ALL_GAPS_CLOSED=false
+ALL_GAPS_CLOSED=true
+ALL_GAPS_CLOSED_CLASS4_GOVERNED_REFLECTION_V0=true
 PATH_B_LIFT_DISCUSSION_READY=false
 ACTUAL_PREFLIGHT_LIFT_EXECUTED=false
 PREFLIGHT_LIFT_EXECUTED=false

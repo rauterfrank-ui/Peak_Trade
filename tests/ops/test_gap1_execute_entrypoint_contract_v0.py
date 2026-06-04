@@ -142,7 +142,7 @@ def test_gap1_rc0_observed_governed_reflection_present_and_non_authorizing_v0() 
     assert "PREFLIGHT_REMAINS_BLOCKED=true" in reflection
     assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=true" in block
     assert "GAP1_EXECUTE_ENTRYPOINT_RC0_OBSERVED=true" in block_lines
-    assert "ALL_GAPS_CLOSED=false" in block
+    assert "ALL_GAPS_CLOSED=true" in block
     assert "READY_FOR_OPERATOR_ARMING=false" in block
 
 
