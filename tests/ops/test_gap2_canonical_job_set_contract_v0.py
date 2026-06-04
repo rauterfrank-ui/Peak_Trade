@@ -297,7 +297,7 @@ def test_gap2_verified_final_line_governed_reflection_v0() -> None:
     assert "GAP2_CANONICAL_JOB_SET_DRY_RUN_OBSERVED=true" in block
     assert "GAP2_ACCEPTED_SCOPED_CRITERIA=true" in block
     assert "VERIFIED_BAR_TIER=T1_PLUS_T2_BOUNDARY_INVENTORY" in block
-    assert "GAP3_EXECUTE_COMMAND_VERIFIED=false" in block
+    assert "GAP3_EXECUTE_COMMAND_VERIFIED=true" in block
     criteria_lines = {line.strip() for line in criteria.splitlines()}
     block_lines = {line.strip() for line in block.splitlines()}
     assert "GAP2_CANONICAL_JOB_SET_VERIFIED=false" in criteria_lines
