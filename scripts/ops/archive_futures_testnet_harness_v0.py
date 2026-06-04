@@ -602,9 +602,7 @@ def main(argv: list[str] | None = None, *, fetcher: PublicRestFetcher | None = N
         if args.confirm_futures_zero_order_reachability != CONFIRM_TOKEN_ZERO_ORDER_REACHABILITY:
             _die("ERR: missing or invalid --confirm-futures-zero-order-reachability token")
         active_fetcher: PublicRestFetcher = (
-            fetcher
-            if fetcher is not None
-            else default_safe_public_rest_fetcher(args.rest_base_url)
+            fetcher if fetcher is not None else default_safe_public_rest_fetcher(args.rest_base_url)
         )
         network_result = run_zero_order_public_reachability(
             rest_base_url=args.rest_base_url,

@@ -294,9 +294,9 @@ def test_plan_only_network_reachability_not_proven(tmp_path: Path) -> None:
     archive = _durable_test_archive_root(tmp_path)
     harness.main(["--archive-root", str(archive), "--run-id", "planonly2"])
     evidence = json.loads(
-        list((archive / "runtime").iterdir())[0].joinpath("FUTURES_EVIDENCE.json").read_text(
-            encoding="utf-8"
-        )
+        list((archive / "runtime").iterdir())[0]
+        .joinpath("FUTURES_EVIDENCE.json")
+        .read_text(encoding="utf-8")
     )
     assert evidence["request_count"] == 0
     assert evidence["network_reachability_proven"] is False
