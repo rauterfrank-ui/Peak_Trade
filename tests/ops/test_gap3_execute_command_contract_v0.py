@@ -107,3 +107,88 @@ def test_gap3_owner_crosslinks_gap2_gap3_command_dependency_contract_v0():
     assert "GAP3_EXECUTE_COMMAND_VERIFIED=false" in text
     assert "GAP2_CANONICAL_JOB_SET_VERIFIED=false" in text
     assert "test_gap3_execute_command_contract_v0.py" in text
+
+
+FINAL_MACHINE_LINES_HEADER = "## Final Machine Lines"
+GAP3_DRY_RUN_RC0_OBSERVED_FINAL_LINE_HEADER = (
+    "## Gap 3 Governed Tier-2 Command Dry-Run RC0 Observed Final-Line Reflection v0"
+)
+GAP3_VERIFIED_FINAL_LINE_HEADER = (
+    "## Gap 3 Governed Execute Command Verified Final-Line Reflection v0"
+)
+GAP3_ACCEPTED_FINAL_LINE_HEADER = (
+    "## Gap 3 Governed Tier-2 Command Accepted Scoped-Criteria Final-Line Reflection v0"
+)
+CANONICAL_BOUNDED_DRY_RUN_COMMAND_TIER2 = (
+    "uv run python scripts/run_scheduler.py --config config/scheduler/jobs.toml "
+    "--dry-run --once --verbose --include-tags paper_shadow_247,preflight,readonly"
+)
+
+
+def _final_machine_lines(text: str) -> str:
+    return text.split(FINAL_MACHINE_LINES_HEADER, 1)[1]
+
+
+def _gap3_dry_run_rc0_observed_final_line_section(text: str) -> str:
+    return text.split(GAP3_DRY_RUN_RC0_OBSERVED_FINAL_LINE_HEADER, 1)[1].split(
+        GAP3_VERIFIED_FINAL_LINE_HEADER, 1
+    )[0]
+
+
+def _gap3_verified_final_line_section(text: str) -> str:
+    return text.split(GAP3_VERIFIED_FINAL_LINE_HEADER, 1)[1].split(
+        "## Gap 5 Governed Stop Proof Acceptance Reflection v0", 1
+    )[0]
+
+
+def test_gap3_dry_run_rc0_observed_final_line_governed_reflection_v0() -> None:
+    text = DOC.read_text(encoding="utf-8")
+    section = _gap3_dry_run_rc0_observed_final_line_section(text)
+    criteria = _gap3_section(text)
+    block = _final_machine_lines(text)
+
+    assert (
+        "GAP3_EXECUTE_COMMAND_DRY_RUN_RC0_OBSERVED_FINAL_LINE_GOVERNED_REFLECTION_V0=true"
+        in section
+    )
+    assert "GAP3_EXECUTE_COMMAND_DRY_RUN_RC0_OBSERVED=true" in section
+    assert "OBSERVED_NOT_VERIFIED_SEMANTIC_PRESERVED=true" in section
+    assert "--no-registry --no-alerts" in section
+    assert "does not set `GAP3_EXECUTE_COMMAND_VERIFIED=true`" in section
+    assert "GAP3_EXECUTE_COMMAND_VERIFIED=false" in criteria
+    assert "GAP3_EXECUTE_COMMAND_DRY_RUN_RC0_OBSERVED=true" in block
+    assert "GAP3_ACCEPTED_SCOPED_CRITERIA=true" in block
+    criteria_lines = {line.strip() for line in criteria.splitlines()}
+    block_lines = {line.strip() for line in block.splitlines()}
+    assert "GAP3_EXECUTE_COMMAND_DRY_RUN_RC0_OBSERVED=true" not in criteria_lines
+    assert "GAP3_EXECUTE_COMMAND_DRY_RUN_RC0_OBSERVED=true" in block_lines
+    assert "GAP3_EXECUTE_COMMAND_VERIFIED=false" in criteria_lines
+    assert "GAP3_EXECUTE_COMMAND_VERIFIED=true" in block_lines
+
+
+def test_gap3_verified_final_line_governed_reflection_v0() -> None:
+    text = DOC.read_text(encoding="utf-8")
+    section = _gap3_verified_final_line_section(text)
+    observed = _gap3_dry_run_rc0_observed_final_line_section(text)
+    criteria = _gap3_section(text)
+    block = _final_machine_lines(text)
+
+    assert "GAP3_EXECUTE_COMMAND_VERIFIED_FINAL_LINE_GOVERNED_REFLECTION_V0=true" in section
+    assert "GAP3_VERIFIED_BAR_TIER=T1_PLUS_T2_COMMAND_BOUNDARY" in section
+    assert "T1_STATIC_READONLY_SUFFICIENT_FOR_GAP3_VERIFIED=false" in section
+    assert "T2_DRY_RUN_COMMAND_RC0_SUFFICIENT_FOR_GAP3_VERIFIED=true" in section
+    assert "T3_BOUNDED_EXECUTE_REQUIRED_FOR_GAP3_VERIFIED=false" in section
+    assert "GAP3_VERIFIED_REQUIRES_RUNTIME_EXECUTE=false" in section
+    assert "VERIFIED_NOT_OBSERVED_SEMANTIC_PRESERVED=true" in section
+    assert "GAP3_EXECUTE_COMMAND_DRY_RUN_RC0_OBSERVED=true" in observed
+    assert "does not modify Gap-3 criteria block verification posture" in section
+    assert "GAP3_EXECUTE_COMMAND_VERIFIED=false" in criteria
+    assert "GAP3_EXECUTE_COMMAND_VERIFIED=true" in block
+    assert "GAP3_VERIFIED_BAR_TIER=T1_PLUS_T2_COMMAND_BOUNDARY" in block
+    assert "GAP3_EXECUTE_COMMAND_DRY_RUN_RC0_OBSERVED=true" in block
+    assert "GAP3_ACCEPTED_SCOPED_CRITERIA=true" in block
+    criteria_lines = {line.strip() for line in criteria.splitlines()}
+    block_lines = {line.strip() for line in block.splitlines()}
+    assert "GAP3_EXECUTE_COMMAND_VERIFIED=false" in criteria_lines
+    assert "GAP3_EXECUTE_COMMAND_VERIFIED=true" in block_lines
+    assert "GAP3_SCHEDULER_EXECUTION_AUTHORIZED=true" not in block_lines

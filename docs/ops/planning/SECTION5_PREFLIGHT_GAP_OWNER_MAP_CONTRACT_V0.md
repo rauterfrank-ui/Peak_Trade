@@ -737,6 +737,108 @@ This governed repo-reflection block records operator-authorized Gap-3 Tier-2 com
 
 Evidence acceptance is not runtime authorization. The Gap 3 Governed Tier-2 Command Scoped Criteria Acceptance Reflection v0 block above remains scoped acceptance only and unchanged.
 
+## Gap 3 Governed Tier-2 Command Dry-Run RC0 Observed Final-Line Reflection v0
+
+GAP3_EXECUTE_COMMAND_DRY_RUN_RC0_OBSERVED_FINAL_LINE_GOVERNED_REFLECTION_V0=true
+GAP3_EXECUTE_COMMAND_DRY_RUN_RC0_OBSERVED=true
+ACCEPTED_MODE=BOUNDED_TIER2_COMMAND_DRY_RUN_RC0_OBSERVED_FINAL_LINE
+GOVERNED_OBSERVATION_BASIS=GAP3_EXECUTE_COMMAND_DRY_RUN_RC0_OBSERVED=true
+EXTERNAL_EVIDENCE_BUNDLE_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/gap2_bounded_scheduler_dry_run_once_no_network_no_credentials_v0_20260604T193701Z/
+EXTERNAL_CLOSEOUT_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/gap2_bounded_scheduler_dry_run_once_no_network_no_credentials_closeout_v0_20260604T193738Z/
+EXTERNAL_PRECHECK_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/gap3_verified_bar_precheck_no_execute_v0_20260604T205555Z/
+OPERATOR_GO=GO_PREPARE_SECTION5_GAP3_VERIFIED_BAR_CONTRACT_DOCS_TESTS_V0
+NO_RUNTIME_AUTHORITY=true
+NO_REPO_FLAG_LIFT_FROM_EXTERNAL_EVIDENCE=true
+OBSERVED_NOT_VERIFIED_SEMANTIC_PRESERVED=true
+EXIT_CODE=0
+DRY_RUN_EXECUTED=true
+DRY_RUN_ONCE=true
+COMMAND_TIER=TIER2_BOUNDED
+GAP3_EXECUTE_COMMAND_VERIFIED=false
+GAP3_ACCEPTED_SCOPED_CRITERIA=true
+GAP3_SCHEDULER_EXECUTION_AUTHORIZED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+ALL_GAPS_CLOSED=false
+READY_FOR_OPERATOR_ARMING=false
+NEXT_EXECUTE_ALLOWED=false
+
+This governed repo-reflection block records operator-authorized Gap-3 Tier-2 command **dry-run RC0 observed final-line propagation** only. It propagates `GAP3_EXECUTE_COMMAND_DRY_RUN_RC0_OBSERVED=true` to Final Machine Lines based on existing bounded Tier-2 tag-filtered scheduler dry-run RC=0 capture. External evidence bundles remain pointer-based and subordinate to repo governance.
+
+Command (Tier-2 observed RC=0):
+
+`uv run python scripts/run_scheduler.py --config config/scheduler/jobs.toml --dry-run --once --verbose --include-tags paper_shadow_247,preflight,readonly --no-registry --no-alerts`
+
+### Observed final-line scope (allowed only)
+
+- external dry-run bundle MANIFEST_VERIFY_RC=0; Tier-2 bounded command RC=0
+- `GAP3_EXECUTE_COMMAND_DRY_RUN_RC0_OBSERVED=true` in **Final Machine Lines only**
+- Gap 3 Execute Command Contract v0 criteria block remains criteria-only with `GAP3_EXECUTE_COMMAND_VERIFIED=false`
+- `GAP3_ACCEPTED_SCOPED_CRITERIA=true` in Final Machine Lines unchanged
+- observed RC=0 ≠ command verified; observation ≠ scheduler execution authorization
+
+### Non-authority boundary (observed final-line reflection does not imply)
+
+- does not modify Gap-3 criteria block verification posture (`GAP3_EXECUTE_COMMAND_VERIFIED=false` in criteria unchanged)
+- does not set `GAP3_EXECUTE_COMMAND_VERIFIED=true` in criteria or Final Machine Lines
+- does not set `GAP3_SCHEDULER_EXECUTION_AUTHORIZED=true`
+- does not modify Gap-2, Tier-1, or Gap-2a.1 enforcement posture
+- does not lift preflight (`PREFLIGHT_REMAINS_BLOCKED=true` unchanged)
+- does not set `READY_FOR_OPERATOR_ARMING=true` or `NEXT_EXECUTE_ALLOWED=true`
+- does not set `ALL_GAPS_CLOSED=true`
+- does not authorize Live, Testnet, orders, validate-only, private API, or unscoped scheduler loops
+
+Evidence observation is not runtime authorization. The Gap 3 Governed Tier-2 Command Scoped Criteria Acceptance Reflection v0 block above remains scoped acceptance only and unchanged.
+
+## Gap 3 Governed Execute Command Verified Final-Line Reflection v0
+
+GAP3_EXECUTE_COMMAND_VERIFIED_FINAL_LINE_GOVERNED_REFLECTION_V0=true
+GAP3_EXECUTE_COMMAND_VERIFIED=true
+ACCEPTED_MODE=GAP3_COMMAND_BOUNDARY_VERIFIED_SCOPED_EVIDENCE_FINAL_LINE
+GOVERNED_VERIFICATION_BASIS=GAP3_T1_STATIC_COMMAND_CONTRACT_PLUS_T2_DRY_RUN_RC0_OBSERVED
+GAP3_VERIFIED_BAR_TIER=T1_PLUS_T2_COMMAND_BOUNDARY
+T1_STATIC_READONLY_SUFFICIENT_FOR_GAP3_VERIFIED=false
+T2_DRY_RUN_COMMAND_RC0_SUFFICIENT_FOR_GAP3_VERIFIED=true
+T3_BOUNDED_EXECUTE_REQUIRED_FOR_GAP3_VERIFIED=false
+GAP3_VERIFIED_REQUIRES_RUNTIME_EXECUTE=false
+GAP3_VERIFIED_REQUIRES_CONTRACT_LIFT=true
+EXTERNAL_DRY_RUN_EVIDENCE_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/gap2_bounded_scheduler_dry_run_once_no_network_no_credentials_v0_20260604T193701Z/
+EXTERNAL_PRECHECK_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/gap3_verified_bar_precheck_no_execute_v0_20260604T205555Z/
+OPERATOR_GO=GO_PREPARE_SECTION5_GAP3_VERIFIED_BAR_CONTRACT_DOCS_TESTS_V0
+NO_RUNTIME_AUTHORITY=true
+NO_REPO_FLAG_LIFT_FROM_EXTERNAL_EVIDENCE=true
+VERIFIED_NOT_OBSERVED_SEMANTIC_PRESERVED=true
+GAP3_EXECUTE_COMMAND_DRY_RUN_RC0_OBSERVED=true
+GAP3_ACCEPTED_SCOPED_CRITERIA=true
+GAP3_SCHEDULER_EXECUTION_AUTHORIZED=false
+GAP2_CANONICAL_JOB_SET_VERIFIED=true
+PREFLIGHT_REMAINS_BLOCKED=true
+ALL_GAPS_CLOSED=false
+READY_FOR_OPERATOR_ARMING=false
+NEXT_EXECUTE_ALLOWED=false
+
+This governed repo-reflection block records operator-authorized Gap-3 execute-command **verified final-line propagation** only. Verified means **command-boundary verification** (T1 static command contract + T2 Tier-2 bounded dry-run RC=0 observed), not scheduler execution authorization or non-dry-run dispatch. External evidence bundles remain pointer-based and subordinate to repo governance.
+
+### Verified final-line scope (allowed only)
+
+- T1 static command contract via existing drift-guard tests; T2 Tier-2 bounded dry-run RC=0 observed (`20260604T193701Z` bundle)
+- `GAP3_EXECUTE_COMMAND_VERIFIED=true` in **Final Machine Lines only**
+- `GAP3_VERIFIED_BAR_TIER=T1_PLUS_T2_COMMAND_BOUNDARY` in **this block and Final Machine Lines**
+- Gap 3 Execute Command Contract v0 criteria block remains criteria-only with `GAP3_EXECUTE_COMMAND_VERIFIED=false`
+- `GAP3_EXECUTE_COMMAND_DRY_RUN_RC0_OBSERVED=true` and `GAP3_ACCEPTED_SCOPED_CRITERIA=true` in Final Machine Lines unchanged
+- verified command boundary ≠ dry-run observed alone; verified ≠ scheduler execution authorization
+
+### Non-authority boundary (verified final-line reflection does not imply)
+
+- does not modify Gap-3 criteria block verification posture (`GAP3_EXECUTE_COMMAND_VERIFIED=false` in criteria unchanged)
+- does not set `GAP3_SCHEDULER_EXECUTION_AUTHORIZED=true`
+- does not modify Gap-2, Tier-1, or Gap-2a.1 enforcement posture beyond existing finals
+- does not lift preflight (`PREFLIGHT_REMAINS_BLOCKED=true` unchanged)
+- does not set `READY_FOR_OPERATOR_ARMING=true` or `NEXT_EXECUTE_ALLOWED=true`
+- does not set `ALL_GAPS_CLOSED=true`
+- does not authorize Live, Testnet, orders, validate-only, private API, or unscoped scheduler loops
+
+Evidence verification is not runtime authorization. The Gap 3 Governed Tier-2 Command Dry-Run RC0 Observed Final-Line Reflection v0 block above remains scoped observation only and unchanged.
+
 ## Gap 5 Governed Stop Proof Acceptance Reflection v0
 
 GAP5_STOP_PROOF_GOVERNED_REFLECTION_V0=true
@@ -2005,7 +2107,16 @@ GAP4_OUTPUT_EVIDENCE_DEFAULT_ON=false
 GAP4_OUTPUT_EVIDENCE_OPT_IN_ONLY=true
 GAP4_DURABLE_OUTPUT_REQUIRED_FOR_FUTURE_RUNS=true
 GAP3_EXECUTE_COMMAND_CONTRACT_V0=true
-GAP3_EXECUTE_COMMAND_VERIFIED=false
+GAP3_EXECUTE_COMMAND_VERIFIED=true
+GAP3_EXECUTE_COMMAND_VERIFIED_FINAL_LINE_GOVERNED_REFLECTION_V0=true
+GAP3_EXECUTE_COMMAND_DRY_RUN_RC0_OBSERVED=true
+GAP3_EXECUTE_COMMAND_DRY_RUN_RC0_OBSERVED_FINAL_LINE_GOVERNED_REFLECTION_V0=true
+GAP3_VERIFIED_BAR_TIER=T1_PLUS_T2_COMMAND_BOUNDARY
+T1_STATIC_READONLY_SUFFICIENT_FOR_GAP3_VERIFIED=false
+T2_DRY_RUN_COMMAND_RC0_SUFFICIENT_FOR_GAP3_VERIFIED=true
+T3_BOUNDED_EXECUTE_REQUIRED_FOR_GAP3_VERIFIED=false
+GAP3_VERIFIED_REQUIRES_RUNTIME_EXECUTE=false
+GAP3_VERIFIED_REQUIRES_CONTRACT_LIFT=true
 GAP3_ACCEPTED_SCOPED_CRITERIA=true
 GAP3_SCHEDULER_EXECUTION_AUTHORIZED=false
 GAP3_EXECUTE_COMMAND_DEFAULT_ON=false

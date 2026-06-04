@@ -380,10 +380,11 @@ def test_section5_gap2_gap3_accepted_scoped_criteria_final_line_reflection_non_a
     assert "GAP3_ACCEPTED_SCOPED_CRITERIA=true" in block
     assert "GAP2_CANONICAL_JOB_SET_DRY_RUN_OBSERVED=true" in block
     assert "GAP2_CANONICAL_JOB_SET_VERIFIED=true" in block
-    assert "GAP3_EXECUTE_COMMAND_VERIFIED=false" in block
+    assert "GAP3_EXECUTE_COMMAND_DRY_RUN_RC0_OBSERVED=true" in block
+    assert "GAP3_EXECUTE_COMMAND_VERIFIED=true" in block
     block_lines = {line.strip() for line in block.splitlines()}
     assert "GAP2_CANONICAL_JOB_SET_VERIFIED=true" in block_lines
-    assert "GAP3_EXECUTE_COMMAND_VERIFIED=true" not in block_lines
+    assert "GAP3_EXECUTE_COMMAND_VERIFIED=true" in block_lines
     assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
 
 
@@ -395,6 +396,12 @@ GAP2_VERIFIED_FINAL_LINE_REFLECTION_HEADER = (
 )
 GAP3_ACCEPTED_SCOPED_CRITERIA_FINAL_LINE_REFLECTION_HEADER = (
     "## Gap 3 Governed Tier-2 Command Accepted Scoped-Criteria Final-Line Reflection v0"
+)
+GAP3_DRY_RUN_RC0_OBSERVED_FINAL_LINE_REFLECTION_HEADER = (
+    "## Gap 3 Governed Tier-2 Command Dry-Run RC0 Observed Final-Line Reflection v0"
+)
+GAP3_VERIFIED_FINAL_LINE_REFLECTION_HEADER = (
+    "## Gap 3 Governed Execute Command Verified Final-Line Reflection v0"
 )
 
 
@@ -460,9 +467,78 @@ def test_section5_gap2_verified_final_line_reflection_non_authorizing_v0() -> No
     assert "GAP2_CANONICAL_JOB_SET_VERIFIED=true" in block
     assert "VERIFIED_BAR_TIER=T1_PLUS_T2_BOUNDARY_INVENTORY" in block
     assert "GAP2_CANONICAL_JOB_SET_VERIFIED=false" in gap2
+    assert "GAP3_EXECUTE_COMMAND_VERIFIED=true" in block
     block_lines = {line.strip() for line in block.splitlines()}
     assert "GAP2_CANONICAL_JOB_SET_VERIFIED=true" in block_lines
-    assert "GAP3_EXECUTE_COMMAND_VERIFIED=true" not in block_lines
+    assert "GAP3_EXECUTE_COMMAND_VERIFIED=true" in block_lines
+    assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
+
+
+def _gap3_dry_run_rc0_observed_final_line_reflection_section(text: str) -> str:
+    return text.split(GAP3_DRY_RUN_RC0_OBSERVED_FINAL_LINE_REFLECTION_HEADER, 1)[1].split(
+        GAP3_VERIFIED_FINAL_LINE_REFLECTION_HEADER, 1
+    )[0]
+
+
+def _gap3_verified_final_line_reflection_section(text: str) -> str:
+    return text.split(GAP3_VERIFIED_FINAL_LINE_REFLECTION_HEADER, 1)[1].split(
+        "## Gap 5 Governed Stop Proof Acceptance Reflection v0", 1
+    )[0]
+
+
+def test_section5_gap3_dry_run_rc0_observed_final_line_reflection_non_authorizing_v0() -> None:
+    text = DOC.read_text(encoding="utf-8")
+    section = _gap3_dry_run_rc0_observed_final_line_reflection_section(text)
+    block = _final_machine_lines(text)
+    gap3 = text.split("## Gap 3 Execute Command Contract v0", 1)[1].split(
+        "## Final Machine Lines", 1
+    )[0]
+
+    for token in (
+        "GAP3_EXECUTE_COMMAND_DRY_RUN_RC0_OBSERVED_FINAL_LINE_GOVERNED_REFLECTION_V0=true",
+        "OBSERVED_NOT_VERIFIED_SEMANTIC_PRESERVED=true",
+        "GAP3_EXECUTE_COMMAND_VERIFIED=false",
+        "PREFLIGHT_REMAINS_BLOCKED=true",
+        "ALL_GAPS_CLOSED=false",
+    ):
+        assert token in section
+
+    assert "GAP3_EXECUTE_COMMAND_DRY_RUN_RC0_OBSERVED=true" in block
+    assert "GAP3_EXECUTE_COMMAND_VERIFIED=true" in block
+    assert "GAP3_EXECUTE_COMMAND_VERIFIED=false" in gap3
+    block_lines = {line.strip() for line in block.splitlines()}
+    assert "GAP3_EXECUTE_COMMAND_DRY_RUN_RC0_OBSERVED=true" in block_lines
+    assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
+
+
+def test_section5_gap3_verified_final_line_reflection_non_authorizing_v0() -> None:
+    text = DOC.read_text(encoding="utf-8")
+    section = _gap3_verified_final_line_reflection_section(text)
+    block = _final_machine_lines(text)
+    gap3 = text.split("## Gap 3 Execute Command Contract v0", 1)[1].split(
+        "## Final Machine Lines", 1
+    )[0]
+
+    for token in (
+        "GAP3_EXECUTE_COMMAND_VERIFIED_FINAL_LINE_GOVERNED_REFLECTION_V0=true",
+        "GAP3_VERIFIED_BAR_TIER=T1_PLUS_T2_COMMAND_BOUNDARY",
+        "T1_STATIC_READONLY_SUFFICIENT_FOR_GAP3_VERIFIED=false",
+        "T2_DRY_RUN_COMMAND_RC0_SUFFICIENT_FOR_GAP3_VERIFIED=true",
+        "T3_BOUNDED_EXECUTE_REQUIRED_FOR_GAP3_VERIFIED=false",
+        "GAP3_VERIFIED_REQUIRES_RUNTIME_EXECUTE=false",
+        "VERIFIED_NOT_OBSERVED_SEMANTIC_PRESERVED=true",
+        "GAP3_EXECUTE_COMMAND_DRY_RUN_RC0_OBSERVED=true",
+        "GAP3_ACCEPTED_SCOPED_CRITERIA=true",
+        "PREFLIGHT_REMAINS_BLOCKED=true",
+        "ALL_GAPS_CLOSED=false",
+    ):
+        assert token in section
+
+    assert "GAP3_EXECUTE_COMMAND_VERIFIED=true" in block
+    assert "GAP3_VERIFIED_BAR_TIER=T1_PLUS_T2_COMMAND_BOUNDARY" in block
+    assert "GAP3_EXECUTE_COMMAND_VERIFIED=false" in gap3
+    block_lines = {line.strip() for line in block.splitlines()}
+    assert "GAP3_EXECUTE_COMMAND_VERIFIED=true" in block_lines
     assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
 
 
