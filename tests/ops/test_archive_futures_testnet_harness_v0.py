@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import shutil
 from pathlib import Path
 
 import pytest
@@ -29,6 +30,15 @@ HARNESS_SCRIPT = REPO_ROOT / "scripts" / "ops" / "archive_futures_testnet_harnes
 RUN_TESTNET_SESSION = REPO_ROOT / "scripts" / "run_testnet_session.py"
 
 TEST_PACKAGE_MARKER = "ARCHIVE_FUTURES_TESTNET_HARNESS_GUARD_V0=true"
+
+
+def _durable_test_archive_root(tmp_path: Path) -> Path:
+    """Repo-local archive root for harness tests (CI tmp_path is under /tmp)."""
+    root = REPO_ROOT / "tests" / ".pytest_archive_roots" / tmp_path.name
+    if root.exists():
+        shutil.rmtree(root)
+    root.mkdir(parents=True, exist_ok=True)
+    return root
 
 
 class _FakeFetcher:
@@ -116,9 +126,10 @@ def test_spot_lane_entrypoint_forbidden() -> None:
 
 
 def test_execute_network_without_confirm_token_fails(tmp_path: Path) -> None:
+    archive = _durable_test_archive_root(tmp_path)
     argv = [
         "--archive-root",
-        str(tmp_path),
+        str(archive),
         "--run-id",
         "testrun",
         "--execute-network",
@@ -131,9 +142,10 @@ def test_execute_network_without_confirm_token_fails(tmp_path: Path) -> None:
 
 
 def test_execute_network_without_fetcher_fails_even_with_confirm(tmp_path: Path) -> None:
+    archive = _durable_test_archive_root(tmp_path)
     argv = [
         "--archive-root",
-        str(tmp_path),
+        str(archive),
         "--run-id",
         "testrun2",
         "--execute-network",
@@ -146,11 +158,12 @@ def test_execute_network_without_fetcher_fails_even_with_confirm(tmp_path: Path)
 
 
 def test_plan_only_dry_run_writes_durable_evidence(tmp_path: Path) -> None:
+    archive = _durable_test_archive_root(tmp_path)
     rc = harness.main(
-        ["--archive-root", str(tmp_path), "--run-id", "planonly"],
+        ["--archive-root", str(archive), "--run-id", "planonly"],
     )
     assert rc == 0
-    runtime_dirs = list((tmp_path / "runtime").iterdir())
+    runtime_dirs = list((archive / "runtime").iterdir())
     assert len(runtime_dirs) == 1
     bundle = runtime_dirs[0]
     assert (bundle / "MANIFEST.sha256").is_file()
@@ -164,11 +177,12 @@ def test_plan_only_dry_run_writes_durable_evidence(tmp_path: Path) -> None:
 
 
 def test_fake_fetcher_network_path_no_sendorder(tmp_path: Path) -> None:
+    archive = _durable_test_archive_root(tmp_path)
     fetcher = _FakeFetcher()
     rc = harness.main(
         [
             "--archive-root",
-            str(tmp_path),
+            str(archive),
             "--run-id",
             "netfake",
             "--execute-network",
