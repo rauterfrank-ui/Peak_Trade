@@ -162,45 +162,85 @@ def test_section5_preflight_synthesis_docs_block_reflection_non_authorizing_v0()
     block = _final_machine_lines(text)
 
     assert "PREFLIGHT_SYNTHESIS_GOVERNED_REFLECTION_V0=true" in synthesis
+    assert "PREFLIGHT_SYNTHESIS_VERIFIED_BAR_CHAIN_CONSOLIDATION_V0=true" in synthesis
     assert "PREFLIGHT_SYNTHESIS_DOCS_BLOCKED=true" in synthesis
     assert "ACCEPTED_MODE=SECTION5_FINALS_CONSOLIDATED_PREFLIGHT_REMAINS_BLOCKED" in synthesis
+    assert "SECTION5_VERIFIED_BAR_CHAIN_GAPS_1_2_3_6_COMPLETE=true" in synthesis
+    assert "GOVERNED_SYNTHESIS_BASIS=GAP1_GAP2_GAP3_GAP6_VERIFIED_BAR_FINALS" in synthesis
     assert "EXTERNAL_GAP2A1_TIER0_ACCEPTANCE_POINTER=" in synthesis
     assert "gap2a1_tier0_closure_operator_acceptance_external_only_v0_20260603T164021Z" in synthesis
+    assert "INPUT_RANKING_POINTER=" in synthesis
+    assert (
+        "repo_wide_next_safe_slice_ranking_after_gap1_verified_bar_closeout_no_run_v0_20260604T214105Z"
+        in synthesis
+    )
+    assert "INPUT_GAP1_CLOSEOUT_POINTER=" in synthesis
+    assert "gap1_verified_bar_contract_post_merge_closeout_no_run_v0_20260604T213857Z" in synthesis
+    assert "INPUT_GAP2_CLOSEOUT_POINTER=" in synthesis
+    assert "gap2_verified_bar_contract_post_merge_closeout_no_run_v0_20260604T205001Z" in synthesis
+    assert "INPUT_GAP3_CLOSEOUT_POINTER=" in synthesis
+    assert "gap3_verified_bar_contract_post_merge_closeout_no_run_v0_20260604T210936Z" in synthesis
+    assert "INPUT_GAP6_CLOSEOUT_POINTER=" in synthesis
+    assert "gap6_verified_bar_contract_post_merge_closeout_no_run_v0_20260604T212643Z" in synthesis
     assert "INPUT_GAP4_CLOSEOUT_POINTER=" in synthesis
     assert (
         "pr3968_gap4_output_evidence_paths_final_line_reflection_post_merge_closeout_v0"
         in synthesis
     )
     assert (
-        "OPERATOR_GO=GO_PREFLIGHT_SYNTHESIS_DOCS_BLOCK_REPO_REFLECTION_DOCS_TESTS_V0" in synthesis
+        "OPERATOR_GO=GO_SECTION5_PREFLIGHT_SYNTHESIS_VERIFIED_BAR_CHAIN_CONSOLIDATION_DOCS_TESTS_V0"
+        in synthesis
     )
     assert "NO_RUNTIME_AUTHORITY=true" in synthesis
+    assert "### Why ALL_GAPS_CLOSED remains false" in synthesis
     assert "does not set `PREFLIGHT_REMAINS_BLOCKED=false`" in synthesis
     assert "does not set `ALL_GAPS_CLOSED=true`" in synthesis
     assert "does not set `READY_FOR_OPERATOR_ARMING=true`" in synthesis
+    assert "does not set `NEXT_EXECUTE_ALLOWED=true`" in synthesis
     assert "does not set `GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true`" in synthesis
+    assert "does not set `GAP5_STOP_REHEARSAL_EXECUTED=true`" in synthesis
     assert "Evidence synthesis is not runtime authorization" in synthesis
 
+    assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=true" in synthesis
+    assert "GAP1_VERIFIED_BAR_TIER=T1_PLUS_T2_ENTRYPOINT_BOUNDARY" in synthesis
+    assert "GAP2_CANONICAL_JOB_SET_VERIFIED=true" in synthesis
+    assert "GAP3_EXECUTE_COMMAND_VERIFIED=true" in synthesis
+    assert "GAP6_DRY_RUN_PROOF_VERIFIED=true" in synthesis
+    assert "GAP6_VERIFIED_BAR_TIER=T1_PLUS_T2_DRY_RUN_PROOF" in synthesis
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" in synthesis
     assert "GAP5_STOP_PROOF_ACCEPTED=true" in synthesis
+    assert "GAP5_STOP_REHEARSAL_EXECUTED=false" in synthesis
     assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in synthesis
     assert "GAP2A1_TIER0_OPERATOR_ACCEPTED=true" in synthesis
     assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in synthesis
-    assert "GAP2A1_TIER1_ENFORCEMENT_LIFTED=false" in synthesis
+    assert "GAP2A1_TIER1_ENFORCEMENT_LIFTED_REPO=false" in synthesis
+    assert "SECTION5_GAP2A1_REPO_LIFTED=false" in synthesis
+    assert "TIER1_CANONICAL_TAG_BOUNDED_ENFORCE_OBSERVED=true" in synthesis
+    assert (
+        "PRIMARY_EVIDENCE_ENFORCED_SCOPE=canonical_tag_local_readonly_preflight_once" in synthesis
+    )
     assert "FULL_SCOPE_GAP4_VERIFIED=false" in synthesis
     assert "PREFLIGHT_REMAINS_BLOCKED=true" in synthesis
     assert "ALL_GAPS_CLOSED=false" in synthesis
+    assert "NEXT_EXECUTE_ALLOWED=false" in synthesis
     assert "READY_FOR_OPERATOR_ARMING=false" in synthesis
+    assert "FUTURES_EXECUTE_AUTHORIZED=false" in synthesis
 
     assert "PREFLIGHT_SYNTHESIS_DOCS_BLOCKED=true" in block
+    assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=true" in block
+    assert "GAP2_CANONICAL_JOB_SET_VERIFIED=true" in block
+    assert "GAP3_EXECUTE_COMMAND_VERIFIED=true" in block
+    assert "GAP6_DRY_RUN_PROOF_VERIFIED=true" in block
     assert "GAP2A1_TIER0_OPERATOR_ACCEPTED=true" in block
     assert "GAP2A1_TIER1_ENFORCEMENT_LIFTED=false" in block
     assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in block
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" in block
     assert "GAP5_STOP_PROOF_ACCEPTED=true" in block
+    assert "GAP5_STOP_REHEARSAL_EXECUTED=false" in block
     assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in block
     assert "PREFLIGHT_REMAINS_BLOCKED=true" in block
     assert "ALL_GAPS_CLOSED=false" in block
+    assert "NEXT_EXECUTE_ALLOWED=false" in block
     assert "READY_FOR_OPERATOR_ARMING=false" in block
     assert "PREFLIGHT_LIFT_EXECUTED=false" in block
     assert "ACTUAL_PREFLIGHT_LIFT_EXECUTED=false" in block
@@ -209,14 +249,26 @@ def test_section5_preflight_synthesis_docs_block_reflection_non_authorizing_v0()
     block_lines = {line.strip() for line in block.splitlines()}
     assert "PREFLIGHT_SYNTHESIS_DOCS_BLOCKED=true" in synthesis_lines
     assert "PREFLIGHT_SYNTHESIS_DOCS_BLOCKED=true" in block_lines
+    assert "SECTION5_VERIFIED_BAR_CHAIN_GAPS_1_2_3_6_COMPLETE=true" in synthesis_lines
+    assert "SECTION5_VERIFIED_BAR_CHAIN_GAPS_1_2_3_6_COMPLETE=true" not in block_lines
+    assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=true" in synthesis_lines
+    assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=true" in block_lines
+    assert "GAP2_CANONICAL_JOB_SET_VERIFIED=true" in synthesis_lines
+    assert "GAP2_CANONICAL_JOB_SET_VERIFIED=true" in block_lines
+    assert "GAP3_EXECUTE_COMMAND_VERIFIED=true" in synthesis_lines
+    assert "GAP3_EXECUTE_COMMAND_VERIFIED=true" in block_lines
+    assert "GAP6_DRY_RUN_PROOF_VERIFIED=true" in synthesis_lines
+    assert "GAP6_DRY_RUN_PROOF_VERIFIED=true" in block_lines
     assert "GAP2A1_TIER0_OPERATOR_ACCEPTED=true" in synthesis_lines
     assert "GAP2A1_TIER0_OPERATOR_ACCEPTED=true" in block_lines
     assert "FULL_SCOPE_GAP4_VERIFIED=true" not in block_lines
     assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" not in block_lines
-    assert "GAP2A1_TIER1_ENFORCEMENT_LIFTED=true" not in block_lines
+    assert "GAP2A1_TIER1_ENFORCEMENT_LIFTED_REPO=true" not in block_lines
+    assert "GAP5_STOP_REHEARSAL_EXECUTED=true" not in block_lines
     assert "PREFLIGHT_REMAINS_BLOCKED=false" not in block_lines
     assert "ALL_GAPS_CLOSED=true" not in block_lines
     assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
+    assert "NEXT_EXECUTE_ALLOWED=true" not in synthesis_lines
 
 
 PE11_BOUNDED_FUTURES_REACHABILITY_REFLECTION_HEADER = (
