@@ -67,7 +67,7 @@ DEPENDENCY_REQUIRED_FINAL_LINES = (
     "GAP4_OUTPUT_EVIDENCE_OPT_IN_ONLY=true",
     "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false",
     "GAP2A1_ENFORCEMENT_DEFAULT_ON=false",
-    "GAP5_STOP_REHEARSAL_EXECUTED=false",
+    "GAP5_STOP_REHEARSAL_EXECUTED=true",
     "GAP5_STOP_PROOF_ACCEPTED=true",
     "GAP6_DRY_RUN_PROOF_ACCEPTED=true",
 )
@@ -285,7 +285,7 @@ def test_gap4_gap2a1_dependency_tier_plan_not_repo_ssot_v0() -> None:
 
 def test_gap4_gap2a1_dependency_gap5_gap6_orthogonal_v0() -> None:
     block = _final_machine_lines(_section5_text())
-    assert "GAP5_STOP_REHEARSAL_EXECUTED=false" in block
+    assert "GAP5_STOP_REHEARSAL_EXECUTED=true" in block
     assert "GAP5_STOP_PROOF_ACCEPTED=true" in block
     assert "GAP6_DRY_RUN_PROOF_ACCEPTED=true" in block
     assert "GAP6_DRY_RUN_RC0_OBSERVED=true" in block

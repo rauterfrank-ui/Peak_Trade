@@ -50,7 +50,7 @@ DRIFT_GUARD_REQUIRED_FINAL_LINES = (
     "TIER1_PRIMARY_EVIDENCE_ENFORCEMENT_CONTRACTED=true",
     "GAP2A1_ENFORCEMENT_DEFAULT_ON=false",
     "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true",
-    "GAP5_STOP_REHEARSAL_EXECUTED=false",
+    "GAP5_STOP_REHEARSAL_EXECUTED=true",
     "GAP5_STOP_PROOF_ACCEPTED=true",
     "GAP6_DRY_RUN_PROOF_ACCEPTED=true",
     "TIER1_PRIMARY_EVIDENCE_ENFORCEMENT_ZERO_DISPATCH_OBSERVED=true",
@@ -275,7 +275,7 @@ def test_gap2a1_drift_guard_tier1_canonical_tag_bounded_enforce_observed_final_l
 
 def test_gap2a1_drift_guard_gap5_gap6_orthogonal_v0() -> None:
     block = _final_machine_lines(_section5_text())
-    assert "GAP5_STOP_REHEARSAL_EXECUTED=false" in block
+    assert "GAP5_STOP_REHEARSAL_EXECUTED=true" in block
     assert "GAP5_STOP_PROOF_ACCEPTED=true" in block
     assert "GAP6_DRY_RUN_PROOF_ACCEPTED=true" in block
     assert "GAP6_DRY_RUN_RC0_OBSERVED=true" in block

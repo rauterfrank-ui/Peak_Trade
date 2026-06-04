@@ -30,6 +30,9 @@ GAP5_GOVERNED_REFLECTION_HEADER = "## Gap 5 Governed Stop Proof Acceptance Refle
 GAP5_ACCEPTED_FINAL_LINE_REFLECTION_HEADER = (
     "## Gap 5 Governed Stop Proof Accepted Final-Line Reflection v0"
 )
+GAP5_REHEARSAL_VERIFIED_FINAL_LINE_REFLECTION_HEADER = (
+    "## Gap 5 Governed Stop Rehearsal Verified Final-Line Reflection v0"
+)
 _MARKER_TRUE = "=true"
 
 # External planning posture only — must not appear as verified/rehearsed/proof in repo SSOT.
@@ -45,7 +48,7 @@ DRIFT_GUARD_REQUIRED_FINAL_LINES = (
     "READY_FOR_OPERATOR_ARMING=false",
     "PATH_B_LIFT_DISCUSSION_READY=false",
     "ALL_GAPS_CLOSED=false",
-    "GAP5_STOP_REHEARSAL_EXECUTED=false",
+    "GAP5_STOP_REHEARSAL_EXECUTED=true",
     "GAP5_STOP_PROOF_ACCEPTED=true",
     "GAP5_TYPE2_WAIVER_GRANTED=false",
     "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true",
@@ -53,7 +56,6 @@ DRIFT_GUARD_REQUIRED_FINAL_LINES = (
 )
 
 DRIFT_GUARD_FORBIDDEN_GAP5_REPO_TOKENS = (
-    "GAP5_STOP_REHEARSAL_EXECUTED=true",
     "GAP5_TYPE2_WAIVER_GRANTED=true",
     "GAP5_RUNTIME_STOP_AUTHORITY_CHANGED=true",
     "GAP5_SCHEDULER_EXECUTION_AUTHORIZED=true",
@@ -99,6 +101,12 @@ def _gap5_governed_reflection_section(text: str) -> str:
 
 def _gap5_accepted_final_line_reflection_section(text: str) -> str:
     return text.split(GAP5_ACCEPTED_FINAL_LINE_REFLECTION_HEADER, 1)[1].split(
+        GAP5_REHEARSAL_VERIFIED_FINAL_LINE_REFLECTION_HEADER, 1
+    )[0]
+
+
+def _gap5_rehearsal_verified_final_line_reflection_section(text: str) -> str:
+    return text.split(GAP5_REHEARSAL_VERIFIED_FINAL_LINE_REFLECTION_HEADER, 1)[1].split(
         "## Gap 6 Governed Dry-Run Proof Acceptance Reflection v0", 1
     )[0]
 
@@ -159,7 +167,7 @@ def test_gap5_stop_criteria_drift_guard_f5_approval_not_rehearsal_or_proof_v0() 
     text = _section5_text()
     block = _final_machine_lines(text)
     assert "F5_EXACT_PROCEDURE_APPROVED=true" not in text
-    assert "GAP5_STOP_REHEARSAL_EXECUTED=false" in block
+    assert "GAP5_STOP_REHEARSAL_EXECUTED=true" in block
     assert "GAP5_STOP_PROOF_ACCEPTED=true" in block
     assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in block
 
@@ -202,7 +210,7 @@ def test_gap5_accepted_final_line_governed_reflection_scoped_acceptance_v0() -> 
     assert "GAP5_STOP_PROOF_ACCEPTED=true" in acceptance
     assert "GAP5_STOP_PROOF_ACCEPTED=false" in criteria
     assert "GAP5_STOP_PROOF_ACCEPTED=true" in block
-    assert "GAP5_STOP_REHEARSAL_EXECUTED=false" in block
+    assert "GAP5_STOP_REHEARSAL_EXECUTED=true" in block
     assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in block
     assert "ALL_GAPS_CLOSED=false" in block
     assert "READY_FOR_OPERATOR_ARMING=false" in block
@@ -303,7 +311,42 @@ def test_gap5_stop_criteria_drift_guard_owner_crosslinks_rehearsal_classificatio
     assert classification.is_file()
     text = classification.read_text(encoding="utf-8")
     assert "test_gap5_stop_criteria_drift_guard_contract_v0.py" in text
-    assert "GAP5_STOP_REHEARSAL_EXECUTED=false" in text
+    assert "GAP5_STOP_REHEARSAL_EXECUTED=true" in text
+
+
+def test_gap5_rehearsal_verified_final_line_governed_reflection_non_authorizing_v0() -> None:
+    text = _section5_text()
+    reflection = _gap5_rehearsal_verified_final_line_reflection_section(text)
+    criteria = _gap5_section(text)
+    block = _final_machine_lines(text)
+
+    for token in (
+        "GAP5_STOP_REHEARSAL_VERIFIED_FINAL_LINE_GOVERNED_REFLECTION_V0=true",
+        "GAP5_VERIFIED_BAR_TIER=T0_CHARTER_PRECHECK_PLUS_T1_READONLY_SIGNAL_PLUS_T2_ISOLATED_REHEARSAL",
+        "T2_ISOLATED_REHEARSAL_EVIDENCE_SUFFICIENT_FOR_GAP5_VERIFIED=true",
+        "GAP5_VERIFIED_REQUIRES_RUNTIME_EXECUTE=false",
+        "ISOLATED_REHEARSAL_CONTEXT_USED=true",
+        "STOP_REHEARSAL_EXECUTED_EXTERNAL_BUNDLE=true",
+        "REAL_PROCESS_SIGNAL_SENT=false",
+        "REAL_PROCESS_KILLED=false",
+        "EXTERNAL_T2_REHEARSAL_EVIDENCE_POINTER=",
+        "gap5_stop_rehearsal_bounded_execute_v0_20260604T215341Z",
+        "PREFLIGHT_REMAINS_BLOCKED=true",
+        "ALL_GAPS_CLOSED=false",
+    ):
+        assert token in reflection
+
+    assert "GAP5_STOP_REHEARSAL_EXECUTED=true" in reflection
+    assert "GAP5_STOP_REHEARSAL_EXECUTED=false" in criteria
+    assert "GAP5_STOP_REHEARSAL_EXECUTED=true" in block
+    assert "GAP5_STOP_PROOF_ACCEPTED=true" in block
+    reflection_lines = {line.strip() for line in reflection.splitlines()}
+    criteria_lines = {line.strip() for line in criteria.splitlines()}
+    block_lines = {line.strip() for line in block.splitlines()}
+    assert "GAP5_STOP_REHEARSAL_EXECUTED=true" in reflection_lines
+    assert "GAP5_STOP_REHEARSAL_EXECUTED=true" in block_lines
+    assert "GAP5_STOP_REHEARSAL_EXECUTED=true" not in criteria_lines
+    assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
 
 
 def test_gap5_stop_criteria_drift_guard_governed_reflection_scoped_acceptance_v0() -> None:

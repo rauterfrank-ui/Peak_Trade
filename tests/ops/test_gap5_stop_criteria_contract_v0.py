@@ -38,7 +38,7 @@ def _gap5_governed_reflection_section(text: str) -> str:
 
 def _gap5_accepted_final_line_reflection_section(text: str) -> str:
     return text.split(GAP5_ACCEPTED_FINAL_LINE_REFLECTION_HEADER, 1)[1].split(
-        "## Gap 6 Governed Dry-Run Proof Acceptance Reflection v0", 1
+        "## Gap 5 Governed Stop Rehearsal Verified Final-Line Reflection v0", 1
     )[0]
 
 
@@ -206,8 +206,25 @@ def test_gap5_stop_proof_accepted_final_line_reflection_non_authorizing_v0():
     assert "does not set `ALL_GAPS_CLOSED=true`" in reflection
     assert "GAP5_STOP_PROOF_ACCEPTED=false" in criteria
     assert "GAP5_STOP_PROOF_ACCEPTED=true" in block
-    assert "GAP5_STOP_REHEARSAL_EXECUTED=false" in block
+    assert "GAP5_STOP_REHEARSAL_EXECUTED=true" in block
     assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in block
     assert "PREFLIGHT_REMAINS_BLOCKED=true" in block
     assert "ALL_GAPS_CLOSED=false" in block
     assert "READY_FOR_OPERATOR_ARMING=false" in block
+
+
+def test_gap5_stop_rehearsal_verified_final_line_reflection_non_authorizing_v0():
+    text = DOC.read_text(encoding="utf-8")
+    reflection = text.split(
+        "## Gap 5 Governed Stop Rehearsal Verified Final-Line Reflection v0", 1
+    )[1].split("## Gap 6 Governed Dry-Run Proof Acceptance Reflection v0", 1)[0]
+    criteria = _gap5_criteria_section(text)
+    block = text.split(FINAL_MACHINE_LINES_HEADER, 1)[1]
+
+    assert "GAP5_STOP_REHEARSAL_VERIFIED_FINAL_LINE_GOVERNED_REFLECTION_V0=true" in reflection
+    assert "GAP5_STOP_REHEARSAL_EXECUTED=true" in reflection
+    assert "EXTERNAL_T2_REHEARSAL_EVIDENCE_POINTER=" in reflection
+    assert "gap5_stop_rehearsal_bounded_execute_v0_20260604T215341Z" in reflection
+    assert "does not send real process signals" in reflection
+    assert "GAP5_STOP_REHEARSAL_EXECUTED=false" in criteria
+    assert "GAP5_STOP_REHEARSAL_EXECUTED=true" in block

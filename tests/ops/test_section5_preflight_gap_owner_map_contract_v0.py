@@ -198,7 +198,7 @@ def test_section5_preflight_synthesis_docs_block_reflection_non_authorizing_v0()
     assert "does not set `READY_FOR_OPERATOR_ARMING=true`" in synthesis
     assert "does not set `NEXT_EXECUTE_ALLOWED=true`" in synthesis
     assert "does not set `GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true`" in synthesis
-    assert "does not set `GAP5_STOP_REHEARSAL_EXECUTED=true`" in synthesis
+    assert "Gap-5 criteria block remains `GAP5_STOP_REHEARSAL_EXECUTED=false`" in synthesis
     assert "Evidence synthesis is not runtime authorization" in synthesis
 
     assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=true" in synthesis
@@ -209,7 +209,11 @@ def test_section5_preflight_synthesis_docs_block_reflection_non_authorizing_v0()
     assert "GAP6_VERIFIED_BAR_TIER=T1_PLUS_T2_DRY_RUN_PROOF" in synthesis
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" in synthesis
     assert "GAP5_STOP_PROOF_ACCEPTED=true" in synthesis
-    assert "GAP5_STOP_REHEARSAL_EXECUTED=false" in synthesis
+    assert "GAP5_STOP_REHEARSAL_EXECUTED=true" in synthesis
+    assert (
+        "GAP5_VERIFIED_BAR_TIER=T0_CHARTER_PRECHECK_PLUS_T1_READONLY_SIGNAL_PLUS_T2_ISOLATED_REHEARSAL"
+        in synthesis
+    )
     assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in synthesis
     assert "GAP2A1_TIER0_OPERATOR_ACCEPTED=true" in synthesis
     assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in synthesis
@@ -236,7 +240,11 @@ def test_section5_preflight_synthesis_docs_block_reflection_non_authorizing_v0()
     assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in block
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" in block
     assert "GAP5_STOP_PROOF_ACCEPTED=true" in block
-    assert "GAP5_STOP_REHEARSAL_EXECUTED=false" in block
+    assert "GAP5_STOP_REHEARSAL_EXECUTED=true" in block
+    assert (
+        "GAP5_VERIFIED_BAR_TIER=T0_CHARTER_PRECHECK_PLUS_T1_READONLY_SIGNAL_PLUS_T2_ISOLATED_REHEARSAL"
+        in block
+    )
     assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in block
     assert "PREFLIGHT_REMAINS_BLOCKED=true" in block
     assert "ALL_GAPS_CLOSED=false" in block
@@ -264,7 +272,7 @@ def test_section5_preflight_synthesis_docs_block_reflection_non_authorizing_v0()
     assert "FULL_SCOPE_GAP4_VERIFIED=true" not in block_lines
     assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" not in block_lines
     assert "GAP2A1_TIER1_ENFORCEMENT_LIFTED_REPO=true" not in block_lines
-    assert "GAP5_STOP_REHEARSAL_EXECUTED=true" not in block_lines
+    assert "GAP5_STOP_REHEARSAL_EXECUTED=true" in block_lines
     assert "PREFLIGHT_REMAINS_BLOCKED=false" not in block_lines
     assert "ALL_GAPS_CLOSED=true" not in block_lines
     assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
@@ -676,6 +684,46 @@ def test_section5_gap1_verified_final_line_reflection_non_authorizing_v0() -> No
     assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=false" in gap1
     block_lines = {line.strip() for line in block.splitlines()}
     assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=true" in block_lines
+    assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
+
+
+GAP5_REHEARSAL_VERIFIED_FINAL_LINE_REFLECTION_HEADER = (
+    "## Gap 5 Governed Stop Rehearsal Verified Final-Line Reflection v0"
+)
+
+
+def _gap5_rehearsal_verified_final_line_reflection_section(text: str) -> str:
+    return text.split(GAP5_REHEARSAL_VERIFIED_FINAL_LINE_REFLECTION_HEADER, 1)[1].split(
+        "## Gap 6 Governed Dry-Run Proof Acceptance Reflection v0", 1
+    )[0]
+
+
+def test_section5_gap5_rehearsal_verified_final_line_reflection_non_authorizing_v0() -> None:
+    text = DOC.read_text(encoding="utf-8")
+    section = _gap5_rehearsal_verified_final_line_reflection_section(text)
+    block = _final_machine_lines(text)
+    gap5 = text.split("## Gap 5 Stop Criteria Contract v0", 1)[1].split(
+        "## Gap 2 Canonical Job Set Contract v0", 1
+    )[0]
+
+    for token in (
+        "GAP5_STOP_REHEARSAL_VERIFIED_FINAL_LINE_GOVERNED_REFLECTION_V0=true",
+        "GAP5_VERIFIED_BAR_TIER=T0_CHARTER_PRECHECK_PLUS_T1_READONLY_SIGNAL_PLUS_T2_ISOLATED_REHEARSAL",
+        "ISOLATED_REHEARSAL_CONTEXT_USED=true",
+        "STOP_REHEARSAL_EXECUTED_EXTERNAL_BUNDLE=true",
+        "REAL_PROCESS_SIGNAL_SENT=false",
+        "REAL_PROCESS_KILLED=false",
+        "EXTERNAL_T2_REHEARSAL_EVIDENCE_POINTER=",
+        "gap5_stop_rehearsal_bounded_execute_v0_20260604T215341Z",
+        "PREFLIGHT_REMAINS_BLOCKED=true",
+        "ALL_GAPS_CLOSED=false",
+    ):
+        assert token in section
+
+    assert "GAP5_STOP_REHEARSAL_EXECUTED=true" in block
+    assert "GAP5_STOP_REHEARSAL_EXECUTED=false" in gap5
+    block_lines = {line.strip() for line in block.splitlines()}
+    assert "GAP5_STOP_REHEARSAL_EXECUTED=true" in block_lines
     assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
 
 
