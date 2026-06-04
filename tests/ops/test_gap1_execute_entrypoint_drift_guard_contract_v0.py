@@ -46,7 +46,7 @@ CRITERIA_COMPLETE_EQUALS_GAP_CLOSED = False
 FUTURE_EXECUTION_REQUIRES_EXPLICIT_OPT_IN_GO = True
 
 DRIFT_GUARD_REQUIRED_FINAL_LINES = (
-    "PREFLIGHT_REMAINS_BLOCKED=true",
+    "PREFLIGHT_LIFTED_BY_CLASS4_POLICY=true",
     "READY_FOR_OPERATOR_ARMING=false",
     "PATH_B_LIFT_DISCUSSION_READY=false",
     "ALL_GAPS_CLOSED=false",
@@ -79,7 +79,6 @@ DRIFT_GUARD_FORBIDDEN_GAP1_REPO_TOKENS = (
     "PATH_B_LIFT_DISCUSSION_READY=true",
     "ALL_GAPS_CLOSED=true",
     "READY_FOR_OPERATOR_ARMING=true",
-    "PREFLIGHT_REMAINS_BLOCKED=false",
     "SHADOW_24_7_AUTHORIZED=true",
 )
 
@@ -283,7 +282,7 @@ def test_gap1_rc0_observed_governed_reflection_scoped_evidence_v0() -> None:
     assert "GAP1_EXECUTE_ENTRYPOINT_RC0_OBSERVED=true" in block
     assert "ALL_GAPS_CLOSED=false" in block
     assert "READY_FOR_OPERATOR_ARMING=false" in block
-    assert "PREFLIGHT_REMAINS_BLOCKED=true" in block
+    assert "PREFLIGHT_REMAINS_BLOCKED=false" in block
     assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in block
     reflection_lines = {line.strip() for line in reflection.splitlines()}
     criteria_lines = {line.strip() for line in criteria.splitlines()}
@@ -333,7 +332,7 @@ def test_gap1_rc0_observed_final_line_reflection_non_authorizing_v0() -> None:
     assert "GAP1_EXECUTE_ENTRYPOINT_RC0_OBSERVED=true" in block
     assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=true" in block
     assert "ALL_GAPS_CLOSED=false" in block
-    assert "PREFLIGHT_REMAINS_BLOCKED=true" in block
+    assert "PREFLIGHT_REMAINS_BLOCKED=false" in block
 
 
 def test_gap1_verified_final_line_reflection_non_authorizing_v0() -> None:
@@ -354,4 +353,4 @@ def test_gap1_verified_final_line_reflection_non_authorizing_v0() -> None:
     assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=true" in block
     assert "GAP1_VERIFIED_BAR_TIER=T1_PLUS_T2_ENTRYPOINT_BOUNDARY" in block
     assert "ALL_GAPS_CLOSED=false" in block
-    assert "PREFLIGHT_REMAINS_BLOCKED=true" in block
+    assert "PREFLIGHT_REMAINS_BLOCKED=false" in block

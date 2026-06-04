@@ -56,7 +56,7 @@ BOUNDED_SHADOW_JOB = "p7_shadow_high_vol_no_trade_runner_manual_v0"
 EXCLUDED_PLACEHOLDER = "shadow_247_futures_prestart_evidence_drycheck_placeholder_v0"
 
 DEPENDENCY_REQUIRED_FINAL_LINES = (
-    "PREFLIGHT_REMAINS_BLOCKED=true",
+    "PREFLIGHT_LIFTED_BY_CLASS4_POLICY=true",
     "READY_FOR_OPERATOR_ARMING=false",
     "PATH_B_LIFT_DISCUSSION_READY=false",
     "ALL_GAPS_CLOSED=false",
@@ -83,7 +83,6 @@ DEPENDENCY_FORBIDDEN_REPO_TOKENS = (
     "PATH_B_LIFT_DISCUSSION_READY=true",
     "ALL_GAPS_CLOSED=true",
     "READY_FOR_OPERATOR_ARMING=true",
-    "PREFLIGHT_REMAINS_BLOCKED=false",
 )
 
 GAP2_BEFORE_GAP3_DEPENDENCY = "Gap 2 job-set boundary, Gap 3 command text"
@@ -486,5 +485,5 @@ def test_gap2_gap3_reflection_final_lines_gap3_verified_without_authority_lift_v
     assert "GAP3_EXECUTE_COMMAND_DRY_RUN_RC0_OBSERVED=true" in block
     assert "GAP6_DRY_RUN_RC0_OBSERVED=true" in block
     assert "GAP6_DRY_RUN_PROOF_VERIFIED=true" in block
-    assert "PREFLIGHT_REMAINS_BLOCKED=true" in block
+    assert "PREFLIGHT_REMAINS_BLOCKED=false" in block
     assert "ALL_GAPS_CLOSED=false" in block

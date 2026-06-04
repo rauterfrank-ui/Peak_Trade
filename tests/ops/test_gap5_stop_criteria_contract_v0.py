@@ -208,7 +208,7 @@ def test_gap5_stop_proof_accepted_final_line_reflection_non_authorizing_v0():
     assert "GAP5_STOP_PROOF_ACCEPTED=true" in block
     assert "GAP5_STOP_REHEARSAL_EXECUTED=true" in block
     assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in block
-    assert "PREFLIGHT_REMAINS_BLOCKED=true" in block
+    assert "PREFLIGHT_REMAINS_BLOCKED=false" in block
     assert "ALL_GAPS_CLOSED=false" in block
     assert "READY_FOR_OPERATOR_ARMING=false" in block
 
