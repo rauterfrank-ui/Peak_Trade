@@ -45,7 +45,7 @@ DEPENDENCY_REQUIRED_FINAL_LINES = (
     "ALL_GAPS_CLOSED=false",
     "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true",
     "GAP4_OUTPUT_EVIDENCE_DEFAULT_ON=false",
-    "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false",
+    "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true",
     "GAP5_STOP_REHEARSAL_EXECUTED=true",
     "GAP5_STOP_PROOF_ACCEPTED=true",
     "GAP5_TYPE2_WAIVER_GRANTED=false",
@@ -55,7 +55,6 @@ DEPENDENCY_REQUIRED_FINAL_LINES = (
 DEPENDENCY_FORBIDDEN_REPO_TOKENS = (
     "GAP5_STOP_CRITERIA_VERIFIED=true",
     "GAP5_TYPE2_WAIVER_GRANTED=true",
-    "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true",
     "WORKSHEET_COMPLETE=true",
     "PATH_B_LIFT_DISCUSSION_READY=true",
     "ALL_GAPS_CLOSED=true",
@@ -150,7 +149,7 @@ def test_gap5_gap4_durable_evidence_dependency_gap2a1_remains_not_enforced_v0() 
     block = _final_machine_lines(_section5_text())
     assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in section
     assert "GAP2A1_ENFORCEMENT_OPT_IN_ONLY=true" in section
-    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in block
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" in block
 
 
 def test_gap5_gap4_durable_evidence_dependency_tmp_not_canonical_proof_ready_v0() -> None:

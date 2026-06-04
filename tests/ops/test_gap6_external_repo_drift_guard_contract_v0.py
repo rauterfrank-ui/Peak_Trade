@@ -191,7 +191,7 @@ def test_gap6_external_repo_drift_guard_governed_reflection_scoped_acceptance_v0
     assert "GAP6_DRY_RUN_PROOF_VERIFIED=true" in block
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" in block
     assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in block
-    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in block
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" in block
     assert "GAP1_SCHEDULER_EXECUTION_AUTHORIZED=false" in block
     assert "GAP3_SCHEDULER_EXECUTION_AUTHORIZED=false" in block
     assert "READY_FOR_OPERATOR_ARMING=false" in block

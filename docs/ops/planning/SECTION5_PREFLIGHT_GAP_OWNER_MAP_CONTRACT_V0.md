@@ -2042,6 +2042,70 @@ This governed repo-reflection block records operator-authorized Tier-1 **canonic
 
 Evidence observation is not runtime authorization. The Tier-1 zero-dispatch manifest observed final-line reflection v0 block above remains scoped observation only and unchanged.
 
+## Gap-2a.1 Governed Primary Evidence Repo-Lift CLASS_4 Reflection v0
+
+GAP2A1_REPO_LIFT_CLASS4_GOVERNED_REFLECTION_V0=true
+ACCEPTED_MODE=GAP2A1_PRIMARY_EVIDENCE_REPO_LIFT_CLASS4_DOCS_TESTS_ONLY
+OPERATOR_GO=GO_GAP2A1_PRIMARY_EVIDENCE_REPO_LIFT_CLASS4_DOCS_TESTS_V0
+CLASS4_OPERATOR_GO_ACCEPTED=true
+DOCS_TESTS_ONLY=true
+GOVERNED_ACCEPTANCE_BASIS=TIER1_ZERO_DISPATCH+TIER1_CANONICAL_TAG_OBSERVED+CLASS4_OPERATOR_GO
+INPUT_CLASS4_CHARTER_PRECHECK_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/gap2a1_primary_evidence_repo_lift_class4_charter_precheck_no_run_v0_20260604T222411Z/
+INPUT_ALL_GAPS_PRECHECK_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/section5_all_gaps_closure_precheck_no_run_v0_20260604T221950Z/
+INPUT_GAP4_PRECHECK_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/gap4_full_scope_verified_final_line_propagation_precheck_no_run_v0_20260604T222132Z/
+INPUT_PR4008_CLOSEOUT_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/section5_gap5_rehearsal_closeout_pointer_sync_post_merge_closeout_no_run_v0_20260604T221641Z/
+EXTERNAL_TIER1_CHARTER_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/tier1_primary_evidence_enforcement_charter_v0_20260603T165209Z/
+EXTERNAL_GAP2A1_TIER0_ACCEPTANCE_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/gap2a1_tier0_closure_operator_acceptance_external_only_v0_20260603T164021Z/
+EXTERNAL_ATTESTATION_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/attestations/gap2a1_tier1_enforcement_lifted_explicit_external_only_v0_20260604T195840Z/
+NO_RUNTIME_AUTHORITY=true
+NO_EXECUTE_AUTHORITY=true
+SESSION_SCOPE_NOT_REPO_SSOT=true
+GAP2A1_TIER1_ENFORCEMENT_LIFTED_REPO=true
+SECTION5_GAP2A1_REPO_LIFTED=true
+GAP2A1_TIER1_ENFORCEMENT_LIFTED=true
+GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true
+GAP2A1_ENFORCEMENT_OPT_IN_ONLY=true
+GAP2A1_ENFORCEMENT_DEFAULT_ON=false
+FULL_SCOPE_GAP4_VERIFIED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+ALL_GAPS_CLOSED=false
+READY_FOR_OPERATOR_ARMING=false
+NEXT_EXECUTE_ALLOWED=false
+PATH_B_LIFT_DISCUSSION_READY=false
+PREFLIGHT_LIFT_EXECUTED=false
+ACTUAL_PREFLIGHT_LIFT_EXECUTED=false
+FUTURES_EXECUTE_AUTHORIZED=false
+FUTURES_PRIVATE_API_AUTHORIZED=false
+FUTURES_VALIDATE_ONLY_AUTHORIZED=false
+FUTURES_SESSION_AUTHORIZED_NOW=false
+
+This governed repo-reflection block records operator-authorized Gap-2a.1 / Tier-1 **primary evidence repo-lift** to Final Machine Lines only, under explicit CLASS_4 Operator-GO `GO_GAP2A1_PRIMARY_EVIDENCE_REPO_LIFT_CLASS4_DOCS_TESTS_V0`. It propagates repo SSOT enforcement-lift tokens based on completed Tier-0 acceptance, Tier-1 charter, Tier-1 activation contract, and bounded zero-dispatch + canonical-tag observed proofs. External evidence bundles remain pointer-based and subordinate to repo governance. **Docs/tests repo-lift is not runtime execute authorization.**
+
+### Repo-lift scope (Final Machine Lines only)
+
+- `GAP2A1_TIER1_ENFORCEMENT_LIFTED_REPO=true` in **Final Machine Lines only**
+- `SECTION5_GAP2A1_REPO_LIFTED=true` in **Final Machine Lines only**
+- `GAP2A1_TIER1_ENFORCEMENT_LIFTED=true` in **Final Machine Lines only**
+- `GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true` in **Final Machine Lines only**
+- §2a.1 Primary Evidence Enforcement Contract v0 criteria block remains criteria-only with `GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false` and `GAP2A1_TIER1_ENFORCEMENT_LIFTED=false`
+- Tier-1 activation contract subsection in §2a.1 remains docs/tests posture with `GAP2A1_TIER1_ENFORCEMENT_LIFTED=false` in criteria
+- `PRIMARY_EVIDENCE_ENFORCED=true` with scoped `PRIMARY_EVIDENCE_ENFORCED_SCOPE=…` in Final Machine Lines remains **session-evidence** — not conflated with repo `GAP2A1_PRIMARY_EVIDENCE_ENFORCED`
+- Prior Tier-1 zero-dispatch and canonical-tag observed reflection blocks remain historical scoped observation only and unchanged
+
+### Non-authority boundary (repo-lift reflection does not imply)
+
+- does not modify §2a.1 criteria to set enforcement tokens in criteria blocks
+- does not lift global preflight or set `PREFLIGHT_REMAINS_BLOCKED=false`
+- does not set `READY_FOR_OPERATOR_ARMING=true` or `NEXT_EXECUTE_ALLOWED=true`
+- does not set `ALL_GAPS_CLOSED=true` (preflight and other closure gates remain)
+- does not set `FULL_SCOPE_GAP4_VERIFIED=true` in criteria or Final Machine Lines
+- does not authorize scheduler execution, Paper, Shadow, Testnet, Live, orders, validate-only, private API, or unscoped runtime loops
+- does not change default-on enforcement (`GAP2A1_ENFORCEMENT_DEFAULT_ON=false` unchanged)
+- does not modify `scripts/run_scheduler.py`, `config/scheduler/jobs.toml`, or production code in this slice
+- does not start or authorize Runtime, Paper 24/7, Shadow 24/7, or Live
+
+Repo SSOT enforcement lift is not runtime authorization. Tier-1 zero-dispatch and canonical-tag observed final-line reflection v0 blocks above remain scoped observation only and unchanged.
+
 ## Preflight Synthesis Docs Block Reflection v0
 
 PREFLIGHT_SYNTHESIS_GOVERNED_REFLECTION_V0=true
@@ -2081,10 +2145,10 @@ GAP5_STOP_REHEARSAL_EXECUTED_SOURCE=external_archive_bundle_t2
 GAP5_VERIFIED_BAR_TIER=T0_CHARTER_PRECHECK_PLUS_T1_READONLY_SIGNAL_PLUS_T2_ISOLATED_REHEARSAL
 GAP7_RISK_BOUNDARY_VERIFIED=true
 GAP2A1_TIER0_OPERATOR_ACCEPTED=true
-GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false
-GAP2A1_TIER1_ENFORCEMENT_LIFTED_REPO=false
-SECTION5_GAP2A1_REPO_LIFTED=false
-GAP2A1_TIER1_ENFORCEMENT_LIFTED=false
+GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true
+GAP2A1_TIER1_ENFORCEMENT_LIFTED_REPO=true
+SECTION5_GAP2A1_REPO_LIFTED=true
+GAP2A1_TIER1_ENFORCEMENT_LIFTED=true
 GAP2A1_ENFORCEMENT_OPT_IN_ONLY=true
 TIER1_CANONICAL_TAG_BOUNDED_ENFORCE_OBSERVED=true
 PRIMARY_EVIDENCE_ENFORCED_SCOPE=canonical_tag_local_readonly_preflight_once
@@ -2112,16 +2176,16 @@ This governed repo-reflection block consolidates Section-5 **final-line aligned*
 - `GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true` in Final Machine Lines (PR #3968)
 - `GAP5_STOP_PROOF_ACCEPTED=true` in Final Machine Lines (PR #3967); `GAP5_STOP_REHEARSAL_EXECUTED=true` in Final Machine Lines (PR #4007 rehearsal verified-bar reflection; `GAP5_STOP_REHEARSAL_EXECUTED_SOURCE=external_archive_bundle_t2`; `INPUT_GAP5_CLOSEOUT_POINTER` → `gap5_stop_rehearsal_verified_bar_reflection_post_merge_closeout_no_run_v0_20260604T220658Z&#47;`); Gap-5 criteria block remains `GAP5_STOP_REHEARSAL_EXECUTED=false`
 - `GAP7_RISK_BOUNDARY_VERIFIED=true` in Final Machine Lines (PR #3966)
-- `GAP2A1_TIER0_OPERATOR_ACCEPTED=true` from external acceptance bundle (pointer-based; not enforcement ON)
-- `GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false`, `GAP2A1_TIER1_ENFORCEMENT_LIFTED_REPO=false`, `SECTION5_GAP2A1_REPO_LIFTED=false` by design
-- `TIER1_CANONICAL_TAG_BOUNDED_ENFORCE_OBSERVED=true` with `PRIMARY_EVIDENCE_ENFORCED_SCOPE=canonical_tag_local_readonly_preflight_once` — scoped observe-only; not repo enforcement lift
+- `GAP2A1_TIER0_OPERATOR_ACCEPTED=true` from external acceptance bundle (pointer-based)
+- `GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true`, `GAP2A1_TIER1_ENFORCEMENT_LIFTED_REPO=true`, `SECTION5_GAP2A1_REPO_LIFTED=true`, `GAP2A1_TIER1_ENFORCEMENT_LIFTED=true` in Final Machine Lines (CLASS_4 repo-lift reflection; §2a.1 criteria blocks remain `GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false`)
+- `TIER1_CANONICAL_TAG_BOUNDED_ENFORCE_OBSERVED=true` with `PRIMARY_EVIDENCE_ENFORCED_SCOPE=canonical_tag_local_readonly_preflight_once` — scoped session-evidence; distinct from repo SSOT `GAP2A1_PRIMARY_EVIDENCE_ENFORCED`
 - `FULL_SCOPE_GAP4_VERIFIED=false` — not propagated to Final Machine Lines (reflection-only)
 - `PREFLIGHT_SYNTHESIS_DOCS_BLOCKED=true` in **this synthesis block and Final Machine Lines**
 
 ### Why ALL_GAPS_CLOSED remains false (synthesis record only)
 
 - Gap-5 criteria block remains `GAP5_STOP_REHEARSAL_EXECUTED=false` — criteria-only rehearsal posture unchanged; `GAP5_STOP_REHEARSAL_EXECUTED=true` in Final Machine Lines reflects isolated external T2 evidence only (`GAP5_STOP_REHEARSAL_EXECUTED_SOURCE=external_archive_bundle_t2`; PR #4007 closeout), not live repo stop execution
-- `GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false` and `GAP2A1_TIER1_ENFORCEMENT_LIFTED_REPO=false` — tier-1 repo enforcement not lifted
+- `FULL_SCOPE_GAP4_VERIFIED=false` in Final Machine Lines — not propagated from reflection-only blocks
 - `PREFLIGHT_REMAINS_BLOCKED=true`, `NEXT_EXECUTE_ALLOWED=false`, `READY_FOR_OPERATOR_ARMING=false` — global preflight and arming gates unchanged
 - Gap criteria blocks for Gaps 1/2/3/4/5/6/7 remain criteria-only with verified/accepted=false where unchanged (governed reflection pattern)
 
@@ -2131,7 +2195,8 @@ This governed repo-reflection block consolidates Section-5 **final-line aligned*
 - does not set `ALL_GAPS_CLOSED=true` (verified-bar chain complete ≠ all gaps operationally closed)
 - does not set `READY_FOR_OPERATOR_ARMING=true` or approve runtime
 - does not set `NEXT_EXECUTE_ALLOWED=true`
-- does not set `GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true`, `GAP2A1_TIER1_ENFORCEMENT_LIFTED_REPO=true`, or `SECTION5_GAP2A1_REPO_LIFTED=true`
+- does not lift global preflight (`PREFLIGHT_REMAINS_BLOCKED=true` unchanged)
+- repo-lift tokens in Final Machine Lines do not authorize runtime execute without separate bounded execute GO
 - does not modify Gap-5 Stop Criteria Contract rehearsal posture (`GAP5_STOP_REHEARSAL_EXECUTED=false` in criteria unchanged); synthesis does not add Gap-5 verified-bar machine lines beyond consolidation record
 - does not modify Gap-1/2/3/6 criteria block verification posture
 - does not set `FULL_SCOPE_GAP4_VERIFIED=true` in criteria or Final Machine Lines
@@ -2315,12 +2380,13 @@ PREFLIGHT_REMAINS_BLOCKED=true
 PREFLIGHT_SYNTHESIS_DOCS_BLOCKED=true
 STOP_IDLE_PRESERVED=true
 GAP2A1_PRIMARY_EVIDENCE_ENFORCEMENT_CONTRACT_V0=true
-GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false
+GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true
 GAP2A1_TIER0_OPERATOR_ACCEPTED=true
-GAP2A1_TIER1_ENFORCEMENT_LIFTED=false
+GAP2A1_TIER1_ENFORCEMENT_LIFTED=true
 TIER1_PRIMARY_EVIDENCE_ENFORCEMENT_CONTRACTED=true
 GAP2A1_ENFORCEMENT_DEFAULT_ON=false
 GAP2A1_ENFORCEMENT_OPT_IN_ONLY=true
+GAP2A1_REPO_LIFT_CLASS4_GOVERNED_REFLECTION_V0=true
 GAP4_OUTPUT_EVIDENCE_PATHS_CONTRACT_V0=true
 GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true
 GAP4_OUTPUT_EVIDENCE_DEFAULT_ON=false
@@ -2429,8 +2495,8 @@ TIER1_PRIMARY_EVIDENCE_MANIFEST_VERIFY_RC=0
 PRIMARY_EVIDENCE_ENFORCED=true
 PRIMARY_EVIDENCE_ENFORCED_SCOPE=zero_dispatch_local_only
 GAP2A1_TIER1_ENFORCEMENT_LIFTED_EXTERNAL_SESSION_ONLY=true
-GAP2A1_TIER1_ENFORCEMENT_LIFTED_REPO=false
-SECTION5_GAP2A1_REPO_LIFTED=false
+GAP2A1_TIER1_ENFORCEMENT_LIFTED_REPO=true
+SECTION5_GAP2A1_REPO_LIFTED=true
 BOUNDED_ONCE_ENFORCEMENT_ZERO_DISPATCH_PASS=true
 TIER1_CANONICAL_TAG_BOUNDED_ENFORCE_OBSERVED_FINAL_LINE_GOVERNED_REFLECTION_V0=true
 TIER1_CANONICAL_TAG_BOUNDED_ENFORCE_OBSERVED=true

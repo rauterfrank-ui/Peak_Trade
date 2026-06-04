@@ -61,14 +61,13 @@ DRIFT_GUARD_REQUIRED_FINAL_LINES = (
     "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true",
     "GAP4_OUTPUT_EVIDENCE_DEFAULT_ON=false",
     "GAP4_OUTPUT_EVIDENCE_OPT_IN_ONLY=true",
-    "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false",
+    "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true",
     "GAP5_STOP_PROOF_ACCEPTED=true",
     "GAP6_DRY_RUN_PROOF_ACCEPTED=true",
 )
 
 DRIFT_GUARD_FORBIDDEN_GAP4_REPO_TOKENS = (
     "GAP4_OUTPUT_EVIDENCE_DEFAULT_ON=true",
-    "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true",
     "GAP2A1_ENFORCEMENT_DEFAULT_ON=true",
     "WORKSHEET_COMPLETE=true",
     "PATH_B_LIFT_DISCUSSION_READY=true",
@@ -215,8 +214,10 @@ def test_gap4_output_evidence_paths_drift_guard_gap2a1_remains_not_enforced_v0()
     assert "GAP2A1_ENFORCEMENT_DEFAULT_ON=false" in section
     assert "GAP2A1_ENFORCEMENT_OPT_IN_ONLY=true" in section
     assert "opt-in only" in section
-    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in block
-    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" not in section
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" in block
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" not in {
+        line.strip() for line in section.splitlines()
+    }
 
 
 def test_gap4_output_evidence_paths_drift_guard_preflight_contract_remains_blocked_v0() -> None:
@@ -376,7 +377,7 @@ def test_gap4_output_evidence_paths_drift_guard_governed_reflection_scoped_accep
     assert "contract-only, not verified" in criteria
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" in block
     assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in block
-    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in block
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" in block
     assert "GAP1_SCHEDULER_EXECUTION_AUTHORIZED=false" in block
     assert "GAP3_SCHEDULER_EXECUTION_AUTHORIZED=false" in block
     assert "READY_FOR_OPERATOR_ARMING=false" in block

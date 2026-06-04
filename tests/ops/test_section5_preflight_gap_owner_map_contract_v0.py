@@ -206,7 +206,7 @@ def test_section5_preflight_synthesis_docs_block_reflection_non_authorizing_v0()
     assert "does not set `ALL_GAPS_CLOSED=true`" in synthesis
     assert "does not set `READY_FOR_OPERATOR_ARMING=true`" in synthesis
     assert "does not set `NEXT_EXECUTE_ALLOWED=true`" in synthesis
-    assert "does not set `GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true`" in synthesis
+    assert "repo-lift tokens in Final Machine Lines do not authorize runtime execute" in synthesis
     assert "Gap-5 criteria block remains `GAP5_STOP_REHEARSAL_EXECUTED=false`" in synthesis
     assert "Evidence synthesis is not runtime authorization" in synthesis
 
@@ -226,9 +226,10 @@ def test_section5_preflight_synthesis_docs_block_reflection_non_authorizing_v0()
     )
     assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in synthesis
     assert "GAP2A1_TIER0_OPERATOR_ACCEPTED=true" in synthesis
-    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in synthesis
-    assert "GAP2A1_TIER1_ENFORCEMENT_LIFTED_REPO=false" in synthesis
-    assert "SECTION5_GAP2A1_REPO_LIFTED=false" in synthesis
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" in synthesis
+    assert "GAP2A1_TIER1_ENFORCEMENT_LIFTED_REPO=true" in synthesis
+    assert "SECTION5_GAP2A1_REPO_LIFTED=true" in synthesis
+    assert "GAP2A1_TIER1_ENFORCEMENT_LIFTED=true" in synthesis
     assert "TIER1_CANONICAL_TAG_BOUNDED_ENFORCE_OBSERVED=true" in synthesis
     assert (
         "PRIMARY_EVIDENCE_ENFORCED_SCOPE=canonical_tag_local_readonly_preflight_once" in synthesis
@@ -246,8 +247,10 @@ def test_section5_preflight_synthesis_docs_block_reflection_non_authorizing_v0()
     assert "GAP3_EXECUTE_COMMAND_VERIFIED=true" in block
     assert "GAP6_DRY_RUN_PROOF_VERIFIED=true" in block
     assert "GAP2A1_TIER0_OPERATOR_ACCEPTED=true" in block
-    assert "GAP2A1_TIER1_ENFORCEMENT_LIFTED=false" in block
-    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in block
+    assert "GAP2A1_TIER1_ENFORCEMENT_LIFTED=true" in block
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" in block
+    assert "GAP2A1_TIER1_ENFORCEMENT_LIFTED_REPO=true" in block
+    assert "SECTION5_GAP2A1_REPO_LIFTED=true" in block
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" in block
     assert "GAP5_STOP_PROOF_ACCEPTED=true" in block
     assert "GAP5_STOP_REHEARSAL_EXECUTED=true" in block
@@ -280,8 +283,8 @@ def test_section5_preflight_synthesis_docs_block_reflection_non_authorizing_v0()
     assert "GAP2A1_TIER0_OPERATOR_ACCEPTED=true" in synthesis_lines
     assert "GAP2A1_TIER0_OPERATOR_ACCEPTED=true" in block_lines
     assert "FULL_SCOPE_GAP4_VERIFIED=true" not in block_lines
-    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" not in block_lines
-    assert "GAP2A1_TIER1_ENFORCEMENT_LIFTED_REPO=true" not in block_lines
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" in block_lines
+    assert "GAP2A1_TIER1_ENFORCEMENT_LIFTED_REPO=true" in block_lines
     assert "GAP5_STOP_REHEARSAL_EXECUTED=true" in block_lines
     assert "PREFLIGHT_REMAINS_BLOCKED=false" not in block_lines
     assert "ALL_GAPS_CLOSED=true" not in block_lines
@@ -756,7 +759,7 @@ def _tier1_canonical_tag_bounded_enforce_observed_final_line_reflection_section(
 ) -> str:
     return text.split(TIER1_CANONICAL_TAG_BOUNDED_ENFORCE_OBSERVED_FINAL_LINE_REFLECTION_HEADER, 1)[
         1
-    ].split("## Preflight Synthesis Docs Block Reflection v0", 1)[0]
+    ].split("## Gap-2a.1 Governed Primary Evidence Repo-Lift CLASS_4 Reflection v0", 1)[0]
 
 
 def test_section5_tier1_zero_dispatch_manifest_observed_final_line_reflection_v0() -> None:
@@ -785,13 +788,13 @@ def test_section5_tier1_zero_dispatch_manifest_observed_final_line_reflection_v0
     assert "PRIMARY_EVIDENCE_ENFORCED=true" in block
     assert "PRIMARY_EVIDENCE_ENFORCED_SCOPE=zero_dispatch_local_only" in block
     assert "TIER1_PRIMARY_EVIDENCE_ENFORCEMENT_ZERO_DISPATCH_OBSERVED=true" in block
-    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in block
-    assert "GAP2A1_TIER1_ENFORCEMENT_LIFTED=false" in block
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" in block
+    assert "GAP2A1_TIER1_ENFORCEMENT_LIFTED=true" in block
     gap2a1_lines = {line.strip() for line in gap2a1.splitlines()}
     assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" not in gap2a1_lines
     block_lines = {line.strip() for line in block.splitlines()}
-    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" not in block_lines
-    assert "GAP2A1_TIER1_ENFORCEMENT_LIFTED=true" not in block_lines
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" in block_lines
+    assert "GAP2A1_TIER1_ENFORCEMENT_LIFTED=true" in block_lines
     assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
 
 
@@ -824,13 +827,13 @@ def test_section5_tier1_canonical_tag_bounded_enforce_observed_final_line_reflec
 
     assert "TIER1_CANONICAL_TAG_BOUNDED_ENFORCE_OBSERVED=true" in block
     assert "PRIMARY_EVIDENCE_ENFORCED_SCOPE=canonical_tag_local_readonly_preflight_once" in block
-    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in block
-    assert "GAP2A1_TIER1_ENFORCEMENT_LIFTED=false" in block
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" in block
+    assert "GAP2A1_TIER1_ENFORCEMENT_LIFTED=true" in block
     assert "TIER1_CANONICAL_TAG_BOUNDED_ENFORCE_OBSERVED=true" not in gap2
     gap2a1_lines = {line.strip() for line in gap2a1.splitlines()}
     assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" not in gap2a1_lines
     assert "TIER1_CANONICAL_TAG_BOUNDED_ENFORCE_OBSERVED=true" not in gap2a1_lines
     block_lines = {line.strip() for line in block.splitlines()}
-    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" not in block_lines
-    assert "GAP2A1_TIER1_ENFORCEMENT_LIFTED=true" not in block_lines
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" in block_lines
+    assert "GAP2A1_TIER1_ENFORCEMENT_LIFTED=true" in block_lines
     assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
