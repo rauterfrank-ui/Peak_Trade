@@ -419,3 +419,50 @@ def test_section5_gap2_dry_run_observed_final_line_reflection_non_authorizing_v0
     block_lines = {line.strip() for line in block.splitlines()}
     assert "GAP2_CANONICAL_JOB_SET_VERIFIED=true" not in block_lines
     assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
+
+
+TIER1_ZERO_DISPATCH_MANIFEST_OBSERVED_FINAL_LINE_REFLECTION_HEADER = (
+    "## Tier-1 Governed Zero-Dispatch Manifest Observed Final-Line Reflection v0"
+)
+
+
+def _tier1_zero_dispatch_manifest_observed_final_line_reflection_section(text: str) -> str:
+    return text.split(TIER1_ZERO_DISPATCH_MANIFEST_OBSERVED_FINAL_LINE_REFLECTION_HEADER, 1)[
+        1
+    ].split("## Final Machine Lines", 1)[0]
+
+
+def test_section5_tier1_zero_dispatch_manifest_observed_final_line_reflection_v0() -> None:
+    text = DOC.read_text(encoding="utf-8")
+    section = _tier1_zero_dispatch_manifest_observed_final_line_reflection_section(text)
+    block = _final_machine_lines(text)
+    gap2a1 = _gap2a1_section(text)
+
+    for token in (
+        "TIER1_ZERO_DISPATCH_MANIFEST_OBSERVED_FINAL_LINE_GOVERNED_REFLECTION_V0=true",
+        "TIER1_PRIMARY_EVIDENCE_ENFORCEMENT_ZERO_DISPATCH_OBSERVED=true",
+        "TIER1_PRIMARY_EVIDENCE_MANIFEST_CREATED=true",
+        "TIER1_PRIMARY_EVIDENCE_MANIFEST_VERIFY_RC=0",
+        "PRIMARY_EVIDENCE_ENFORCED_SCOPE=zero_dispatch_local_only",
+        "OBSERVED_NOT_ENFORCED_REPO_SSOT_SEMANTIC_PRESERVED=true",
+        "GAP2A1_TIER1_ENFORCEMENT_LIFTED_REPO=false",
+        "SECTION5_GAP2A1_REPO_LIFTED=false",
+        "GAP2A1_TIER1_ENFORCEMENT_LIFTED_EXTERNAL_SESSION_ONLY=true",
+        "GAP2_CANONICAL_JOB_SET_VERIFIED=false",
+        "GAP3_EXECUTE_COMMAND_VERIFIED=false",
+        "PREFLIGHT_REMAINS_BLOCKED=true",
+        "ALL_GAPS_CLOSED=false",
+    ):
+        assert token in section
+
+    assert "PRIMARY_EVIDENCE_ENFORCED=true" in block
+    assert "PRIMARY_EVIDENCE_ENFORCED_SCOPE=zero_dispatch_local_only" in block
+    assert "TIER1_PRIMARY_EVIDENCE_ENFORCEMENT_ZERO_DISPATCH_OBSERVED=true" in block
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in block
+    assert "GAP2A1_TIER1_ENFORCEMENT_LIFTED=false" in block
+    gap2a1_lines = {line.strip() for line in gap2a1.splitlines()}
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" not in gap2a1_lines
+    block_lines = {line.strip() for line in block.splitlines()}
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" not in block_lines
+    assert "GAP2A1_TIER1_ENFORCEMENT_LIFTED=true" not in block_lines
+    assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
