@@ -2058,9 +2058,9 @@ INPUT_GAP2_CLOSEOUT_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence
 INPUT_GAP3_CLOSEOUT_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/gap3_verified_bar_contract_post_merge_closeout_no_run_v0_20260604T210936Z/
 INPUT_GAP6_CLOSEOUT_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/gap6_verified_bar_contract_post_merge_closeout_no_run_v0_20260604T212643Z/
 INPUT_GAP7_CLOSEOUT_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/pr3966_gap7_risk_boundary_final_line_reflection_post_merge_closeout_v0_20260603T161613Z/
-INPUT_GAP5_CLOSEOUT_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/pr3967_gap5_stop_proof_final_line_reflection_post_merge_closeout_v0_20260603T162700Z/
+INPUT_GAP5_CLOSEOUT_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/gap5_stop_rehearsal_verified_bar_reflection_post_merge_closeout_no_run_v0_20260604T220658Z/
 INPUT_GAP4_CLOSEOUT_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/pr3968_gap4_output_evidence_paths_final_line_reflection_post_merge_closeout_v0_20260603T163730Z/
-OPERATOR_GO=GO_SECTION5_PREFLIGHT_SYNTHESIS_VERIFIED_BAR_CHAIN_CONSOLIDATION_DOCS_TESTS_V0
+OPERATOR_GO=GO_SECTION5_PREFLIGHT_SYNTHESIS_GAP5_REHEARSAL_VERIFIED_BAR_CLOSEOUT_SYNC_DOCS_TESTS_V0
 NO_RUNTIME_AUTHORITY=true
 NO_REPO_FLAG_LIFT_FROM_EXTERNAL_ACCEPTANCE=true
 GAP1_EXECUTE_ENTRYPOINT_VERIFIED=true
@@ -2077,6 +2077,7 @@ GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true
 FULL_SCOPE_GAP4_VERIFIED=false
 GAP5_STOP_PROOF_ACCEPTED=true
 GAP5_STOP_REHEARSAL_EXECUTED=true
+GAP5_STOP_REHEARSAL_EXECUTED_SOURCE=external_archive_bundle_t2
 GAP5_VERIFIED_BAR_TIER=T0_CHARTER_PRECHECK_PLUS_T1_READONLY_SIGNAL_PLUS_T2_ISOLATED_REHEARSAL
 GAP7_RISK_BOUNDARY_VERIFIED=true
 GAP2A1_TIER0_OPERATOR_ACCEPTED=true
@@ -2109,7 +2110,7 @@ This governed repo-reflection block consolidates Section-5 **final-line aligned*
 - `GAP6_DRY_RUN_PROOF_VERIFIED=true` in Final Machine Lines (PR #4004); `GAP6_VERIFIED_BAR_TIER=T1_PLUS_T2_DRY_RUN_PROOF`; Gap-6 criteria block remains `GAP6_DRY_RUN_PROOF_VERIFIED=false`
 - `SECTION5_VERIFIED_BAR_CHAIN_GAPS_1_2_3_6_COMPLETE=true` in **this synthesis block only** — documents verified-bar chain alignment; does not set `ALL_GAPS_CLOSED=true`
 - `GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true` in Final Machine Lines (PR #3968)
-- `GAP5_STOP_PROOF_ACCEPTED=true` in Final Machine Lines (PR #3967); `GAP5_STOP_REHEARSAL_EXECUTED=true` in Final Machine Lines (Gap-5 rehearsal verified-bar reflection); Gap-5 criteria block remains `GAP5_STOP_REHEARSAL_EXECUTED=false`
+- `GAP5_STOP_PROOF_ACCEPTED=true` in Final Machine Lines (PR #3967); `GAP5_STOP_REHEARSAL_EXECUTED=true` in Final Machine Lines (PR #4007 rehearsal verified-bar reflection; `GAP5_STOP_REHEARSAL_EXECUTED_SOURCE=external_archive_bundle_t2`; `INPUT_GAP5_CLOSEOUT_POINTER` → `gap5_stop_rehearsal_verified_bar_reflection_post_merge_closeout_no_run_v0_20260604T220658Z&#47;`); Gap-5 criteria block remains `GAP5_STOP_REHEARSAL_EXECUTED=false`
 - `GAP7_RISK_BOUNDARY_VERIFIED=true` in Final Machine Lines (PR #3966)
 - `GAP2A1_TIER0_OPERATOR_ACCEPTED=true` from external acceptance bundle (pointer-based; not enforcement ON)
 - `GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false`, `GAP2A1_TIER1_ENFORCEMENT_LIFTED_REPO=false`, `SECTION5_GAP2A1_REPO_LIFTED=false` by design
@@ -2119,7 +2120,7 @@ This governed repo-reflection block consolidates Section-5 **final-line aligned*
 
 ### Why ALL_GAPS_CLOSED remains false (synthesis record only)
 
-- Gap-5 criteria block remains `GAP5_STOP_REHEARSAL_EXECUTED=false` — criteria-only rehearsal posture unchanged; `GAP5_STOP_REHEARSAL_EXECUTED=true` in Final Machine Lines reflects isolated external T2 evidence only, not live repo stop execution
+- Gap-5 criteria block remains `GAP5_STOP_REHEARSAL_EXECUTED=false` — criteria-only rehearsal posture unchanged; `GAP5_STOP_REHEARSAL_EXECUTED=true` in Final Machine Lines reflects isolated external T2 evidence only (`GAP5_STOP_REHEARSAL_EXECUTED_SOURCE=external_archive_bundle_t2`; PR #4007 closeout), not live repo stop execution
 - `GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false` and `GAP2A1_TIER1_ENFORCEMENT_LIFTED_REPO=false` — tier-1 repo enforcement not lifted
 - `PREFLIGHT_REMAINS_BLOCKED=true`, `NEXT_EXECUTE_ALLOWED=false`, `READY_FOR_OPERATOR_ARMING=false` — global preflight and arming gates unchanged
 - Gap criteria blocks for Gaps 1/2/3/4/5/6/7 remain criteria-only with verified/accepted=false where unchanged (governed reflection pattern)
