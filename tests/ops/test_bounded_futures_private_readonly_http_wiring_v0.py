@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import base64
 import json
+from urllib import error
 
 import pytest
 
@@ -11,10 +12,12 @@ from scripts.ops import archive_futures_testnet_harness_v0 as harness
 from src.ops.bounded_futures_private_readonly_contract_v0 import (
     CONFIRM_TOKEN_PRIVATE_READONLY_REACHABILITY,
     DEMO_FUTURES_REST_BASE_URL,
+    FETCH_FAILURE_CLASS_NETWORK,
     FUTURES_PRIVATE_READONLY_GET_ENDPOINTS,
     PRIVATE_READONLY_ENDPOINT_ORDER,
     PRIVATE_READONLY_HTTP_WIRING_PRESENT,
     PrivateReadonlyHttpRequest,
+    build_private_readonly_evidence_from_network,
     build_private_readonly_get_request_plan,
     build_private_readonly_http_request,
     build_private_readonly_plan_evidence_skeleton,
@@ -47,6 +50,26 @@ class _FakePrivateFetcher:
         assert "sendorder" not in http_request.url
         assert set(http_request.headers.keys()) == {"APIKey", "Authent", "Nonce"}
         return 200, self._body
+
+
+class _TimeoutOnFirstGetFetcher:
+    def fetch(
+        self,
+        http_request: PrivateReadonlyHttpRequest,
+        *,
+        timeout_seconds: float,
+    ) -> tuple[int, bytes]:
+        raise TimeoutError("timed out")
+
+
+class _UrlErrorOnFirstGetFetcher:
+    def fetch(
+        self,
+        http_request: PrivateReadonlyHttpRequest,
+        *,
+        timeout_seconds: float,
+    ) -> tuple[int, bytes]:
+        raise error.URLError("connection reset")
 
 
 def test_package_marker_and_http_wiring_flag() -> None:
@@ -142,6 +165,39 @@ def test_auth_header_names_present_values_not_in_evidence() -> None:
     assert "999" not in json.dumps(record)
     assert "demo-key" not in json.dumps(record)
     assert validate_redacted_network_call_record(record) == []
+
+
+def test_fetch_timeout_returns_failure_result() -> None:
+    secret = base64.b64encode(b"test-secret-bytes-32chars-long!!").decode()
+    result = run_private_readonly_reachability(
+        rest_base_url=DEMO_FUTURES_REST_BASE_URL,
+        api_key="demo-key",
+        api_secret_b64=secret,
+        fetcher=_TimeoutOnFirstGetFetcher(),
+        duration_cap_seconds=60,
+    )
+    assert result.fetch_failure is True
+    assert result.failure_class == FETCH_FAILURE_CLASS_NETWORK
+    assert result.failed_endpoint == "/derivatives/api/v3/accounts"
+    assert result.request_count_attempted == 1
+    assert result.completed_request_count == 0
+    assert result.exception_type == "TimeoutError"
+    assert len(result.network_calls) == 1
+    assert "demo-key" not in json.dumps(result.network_calls)
+    assert result.network_calls[0]["http_status_class"] == "unknown"
+
+
+def test_fetch_urlerror_returns_failure_result() -> None:
+    secret = base64.b64encode(b"test-secret-bytes-32chars-long!!").decode()
+    result = run_private_readonly_reachability(
+        rest_base_url=DEMO_FUTURES_REST_BASE_URL,
+        api_key="demo-key",
+        api_secret_b64=secret,
+        fetcher=_UrlErrorOnFirstGetFetcher(),
+        duration_cap_seconds=60,
+    )
+    assert result.fetch_failure is True
+    assert result.exception_type == "URLError"
 
 
 def test_mocked_reachability_calls_three_endpoints() -> None:

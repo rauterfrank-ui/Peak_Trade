@@ -11,9 +11,11 @@ import base64
 import hashlib
 import hmac
 import json
+import socket
 import time
 from dataclasses import dataclass
 from typing import Any, Mapping, Protocol, Sequence
+from urllib import error
 from urllib.parse import urlparse
 
 from src.ops.bounded_futures_testnet_adapter_contract_v0 import (
@@ -43,6 +45,7 @@ PRIVATE_READONLY_MODE = "private_readonly_reachability_only"
 DEFAULT_PRIVATE_READONLY_GET_TIMEOUT_SECONDS = 10.0
 PRIVATE_READONLY_SESSION_CLASS = "bounded-futures-private-readonly-reachability-v0"
 PRIVATE_READONLY_MAX_REQUEST_COUNT = 3
+FETCH_FAILURE_CLASS_NETWORK = "network_timeout_or_fetch_exception"
 
 DEMO_FUTURES_HOST = "demo-futures.kraken.com"
 DEMO_FUTURES_REST_BASE_URL = f"{DEFAULT_FUTURES_TESTNET_NETWORK_HOST}/derivatives/api/v3"
@@ -138,6 +141,15 @@ class PrivateReadonlyReachabilityResult:
     request_count: int
     network_calls: list[dict[str, Any]]
     private_readonly_reachability_proven: bool
+    fetch_failure: bool = False
+    failure_class: str | None = None
+    failed_endpoint: str | None = None
+    failed_method: str = "GET"
+    failed_host: str = DEMO_FUTURES_HOST
+    request_count_attempted: int = 0
+    completed_request_count: int = 0
+    exception_type: str | None = None
+    partial_policy_accepted: bool = False
 
 
 class PrivateReadonlyRestFetcher(Protocol):
@@ -381,6 +393,41 @@ def summarize_private_response_for_evidence(
     return record
 
 
+def _is_private_readonly_fetch_exception(exc: BaseException) -> bool:
+    return isinstance(exc, (TimeoutError, error.URLError, socket.timeout))
+
+
+def build_private_readonly_fetch_failure_network_record(
+    *,
+    endpoint: str,
+    auth_header_names: Sequence[str],
+) -> dict[str, Any]:
+    """Redacted failure row when fetch raises before HTTP response (no secrets)."""
+    record = {
+        "endpoint": endpoint,
+        "http_method": "GET",
+        "http_status": 0,
+        "http_status_class": "unknown",
+        "response_size_bytes": 0,
+        "response_sha256": hashlib.sha256(b"").hexdigest(),
+        "response_redacted": True,
+        "parsed_summary": {
+            "top_level_type": "fetch_exception",
+            "record_count": None,
+            "sensitive_field_names_detected": [],
+            "raw_values_emitted": False,
+        },
+        "auth_header_names": list(auth_header_names),
+        "credential_values_logged": False,
+    }
+    redact_reasons = validate_redacted_network_call_record(record)
+    if redact_reasons:
+        raise RuntimeError(
+            f"private-readonly failure evidence redaction failed: {'; '.join(redact_reasons)}"
+        )
+    return record
+
+
 def run_private_readonly_reachability(
     *,
     rest_base_url: str,
@@ -407,7 +454,31 @@ def run_private_readonly_reachability(
             api_key=api_key,
             api_secret_b64=api_secret_b64,
         )
-        status, body = fetcher.fetch(http_request, timeout_seconds=timeout)
+        try:
+            status, body = fetcher.fetch(http_request, timeout_seconds=timeout)
+        except BaseException as exc:
+            if not _is_private_readonly_fetch_exception(exc):
+                raise
+            attempted = len(endpoints_called) + 1
+            failure_record = build_private_readonly_fetch_failure_network_record(
+                endpoint=endpoint_path,
+                auth_header_names=http_request.auth_header_names,
+            )
+            return PrivateReadonlyReachabilityResult(
+                endpoints_called=list(endpoints_called),
+                request_count=len(endpoints_called),
+                network_calls=network_calls + [failure_record],
+                private_readonly_reachability_proven=False,
+                fetch_failure=True,
+                failure_class=FETCH_FAILURE_CLASS_NETWORK,
+                failed_endpoint=endpoint_path,
+                failed_method=http_request.method,
+                failed_host=DEMO_FUTURES_HOST,
+                request_count_attempted=attempted,
+                completed_request_count=len(endpoints_called),
+                exception_type=type(exc).__name__,
+                partial_policy_accepted=True,
+            )
         record = summarize_private_response_for_evidence(
             endpoint=endpoint_path,
             http_status=status,
@@ -425,11 +496,14 @@ def run_private_readonly_reachability(
     proven = bool(endpoints_called) and all(
         200 <= int(call["http_status"]) < 300 for call in network_calls
     )
+    completed = len(endpoints_called)
     return PrivateReadonlyReachabilityResult(
         endpoints_called=endpoints_called,
-        request_count=len(endpoints_called),
+        request_count=completed,
         network_calls=network_calls,
         private_readonly_reachability_proven=proven,
+        request_count_attempted=completed,
+        completed_request_count=completed,
     )
 
 
@@ -547,21 +621,42 @@ def build_private_readonly_evidence_from_network(
     harness_version: str,
 ) -> dict[str, Any]:
     evidence = build_private_readonly_plan_evidence_skeleton(run_id=run_id)
-    evidence.update(
-        {
-            "harness_version": harness_version,
-            "monotonic_elapsed_seconds": timing.monotonic_elapsed_seconds,
-            "wall_clock_elapsed_seconds": timing.wall_clock_elapsed_seconds,
-            "wall_clock_start_utc": timing.wall_clock_start_utc,
-            "wall_clock_end_utc": timing.wall_clock_end_utc,
-            "bounded_futures_testnet_pass": pe8_pass,
-            "endpoints_called": list(result.endpoints_called),
-            "request_count": result.request_count,
-            "network_calls": list(result.network_calls),
-            "private_readonly_reachability_proven": result.private_readonly_reachability_proven,
-            "network_private_readonly_proven": result.private_readonly_reachability_proven,
-        }
-    )
+    policy_accepted = result.private_readonly_reachability_proven and not result.fetch_failure
+    updates: dict[str, Any] = {
+        "harness_version": harness_version,
+        "monotonic_elapsed_seconds": timing.monotonic_elapsed_seconds,
+        "wall_clock_elapsed_seconds": timing.wall_clock_elapsed_seconds,
+        "wall_clock_start_utc": timing.wall_clock_start_utc,
+        "wall_clock_end_utc": timing.wall_clock_end_utc,
+        "bounded_futures_testnet_pass": pe8_pass,
+        "endpoints_called": list(result.endpoints_called),
+        "request_count": result.request_count,
+        "network_calls": list(result.network_calls),
+        "private_readonly_reachability_proven": result.private_readonly_reachability_proven,
+        "network_private_readonly_proven": result.private_readonly_reachability_proven,
+        "private_readonly_policy_accepted": policy_accepted,
+        "request_count_attempted": result.request_count_attempted,
+        "completed_request_count": result.completed_request_count,
+        "order_attempted": False,
+        "order_created": False,
+        "position_mutation_attempted": False,
+        "balance_mutation_attempted": False,
+    }
+    if result.fetch_failure:
+        updates.update(
+            {
+                "fetch_failure": True,
+                "failure_class": result.failure_class,
+                "failed_endpoint": result.failed_endpoint,
+                "failed_method": result.failed_method,
+                "failed_host": result.failed_host,
+                "exception_type": result.exception_type,
+                "partial_policy_accepted": result.partial_policy_accepted,
+                "private_readonly_policy_accepted": False,
+                "http_status_unknown": True,
+            }
+        )
+    evidence.update(updates)
     return evidence
 
 

@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import base64
 import json
 import os
 import shutil
@@ -13,7 +14,10 @@ from pathlib import Path
 import pytest
 
 from scripts.ops import archive_futures_testnet_harness_v0 as harness
-from src.ops.bounded_futures_private_readonly_contract_v0 import PRIVATE_READONLY_MODE
+from src.ops.bounded_futures_private_readonly_contract_v0 import (
+    CONFIRM_TOKEN_PRIVATE_READONLY_REACHABILITY,
+    PRIVATE_READONLY_MODE,
+)
 from src.ops.bounded_futures_testnet_contract_v0 import (
     DEFAULT_INSTRUMENT,
     FUTURES_SESSION_AUTHORIZED_NOW,
@@ -54,6 +58,11 @@ class _FakeFetcher:
     def fetch(self, url: str, *, timeout_seconds: float) -> tuple[int, bytes]:
         self.urls.append(url)
         return 200, self._body
+
+
+class _PrivateTimeoutFetcher:
+    def fetch(self, http_request, *, timeout_seconds: float) -> tuple[int, bytes]:
+        raise TimeoutError("timed out")
 
 
 def _default_namespace(**overrides: object) -> argparse.Namespace:
@@ -360,6 +369,50 @@ def test_private_readonly_mode_plan_only_writes_evidence(tmp_path: Path) -> None
     assert evaluate_bounded_futures_testnet_evidence(evidence, spec=spec)[
         "bounded_futures_testnet_pass"
     ]
+
+
+def test_private_readonly_timeout_writes_durable_failure_evidence(tmp_path: Path) -> None:
+    archive = _durable_test_archive_root(tmp_path)
+    secret = base64.b64encode(b"test-secret-bytes-32chars-long!!").decode()
+    rc = harness.main(
+        [
+            "--archive-root",
+            str(archive),
+            "--run-id",
+            "privrotimeout",
+            "--mode",
+            PRIVATE_READONLY_MODE,
+            "--execute-network",
+            "--confirm-futures-private-readonly-reachability",
+            CONFIRM_TOKEN_PRIVATE_READONLY_REACHABILITY,
+        ],
+        private_fetcher=_PrivateTimeoutFetcher(),
+        environ={
+            "KRAKEN_FUTURES_DEMO_API_KEY": "k",
+            "KRAKEN_FUTURES_DEMO_API_SECRET": secret,
+        },
+    )
+    assert rc == harness.USAGE_EXIT
+    bundle = list((archive / "runtime").iterdir())[0]
+    assert bundle.name.startswith("bounded_futures_private_readonly_privrotimeout_")
+    evidence = json.loads((bundle / "FUTURES_EVIDENCE.json").read_text(encoding="utf-8"))
+    assert evidence["fetch_failure"] is True
+    assert evidence["failure_class"] == "network_timeout_or_fetch_exception"
+    assert evidence["failed_endpoint"] == "/derivatives/api/v3/accounts"
+    assert evidence["request_count_attempted"] == 1
+    assert evidence["completed_request_count"] == 0
+    assert evidence["private_readonly_reachability_proven"] is False
+    assert evidence["partial_policy_accepted"] is True
+    assert evidence["credential_values_logged"] is False
+    dumped = json.dumps(evidence)
+    assert "test-secret" not in dumped
+    assert "Authent" not in dumped or evidence["network_calls"][0].get("auth_header_names") == [
+        "APIKey",
+        "Authent",
+        "Nonce",
+    ]
+    assert "response_body" not in dumped
+    assert (bundle / "MANIFEST.sha256").exists()
 
 
 def test_private_readonly_execute_network_requires_confirm_token(tmp_path: Path) -> None:
