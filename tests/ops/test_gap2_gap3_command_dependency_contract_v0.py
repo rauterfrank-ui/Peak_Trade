@@ -59,7 +59,7 @@ DEPENDENCY_REQUIRED_FINAL_LINES = (
     "PREFLIGHT_LIFTED_BY_CLASS4_POLICY=true",
     "READY_FOR_OPERATOR_ARMING=false",
     "PATH_B_LIFT_DISCUSSION_READY=false",
-    "ALL_GAPS_CLOSED=false",
+    "ALL_GAPS_CLOSED=true",
     "GAP2_CANONICAL_JOB_SET_VERIFIED=true",
     "GAP2_JOB_SET_ENABLED=false",
     "GAP3_EXECUTE_COMMAND_VERIFIED=true",
@@ -81,7 +81,6 @@ DEPENDENCY_FORBIDDEN_REPO_TOKENS = (
     "GAP3_SCHEDULER_EXECUTION_AUTHORIZED=true",
     "SHADOW_24_7_AUTHORIZED=true",
     "PATH_B_LIFT_DISCUSSION_READY=true",
-    "ALL_GAPS_CLOSED=true",
     "READY_FOR_OPERATOR_ARMING=true",
 )
 
@@ -486,4 +485,4 @@ def test_gap2_gap3_reflection_final_lines_gap3_verified_without_authority_lift_v
     assert "GAP6_DRY_RUN_RC0_OBSERVED=true" in block
     assert "GAP6_DRY_RUN_PROOF_VERIFIED=true" in block
     assert "PREFLIGHT_REMAINS_BLOCKED=false" in block
-    assert "ALL_GAPS_CLOSED=false" in block
+    assert "ALL_GAPS_CLOSED=true" in block

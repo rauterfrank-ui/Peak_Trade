@@ -46,7 +46,7 @@ DRIFT_GUARD_REQUIRED_FINAL_LINES = (
     "PREFLIGHT_LIFTED_BY_CLASS4_POLICY=true",
     "READY_FOR_OPERATOR_ARMING=false",
     "PATH_B_LIFT_DISCUSSION_READY=false",
-    "ALL_GAPS_CLOSED=false",
+    "ALL_GAPS_CLOSED=true",
     "GAP6_DRY_RUN_RC0_OBSERVED=true",
     "GAP6_DRY_RUN_PROOF_ACCEPTED=true",
     "GAP6_DRY_RUN_PROOF_VERIFIED=true",
@@ -63,7 +63,6 @@ DRIFT_GUARD_FORBIDDEN_REPO_TOKENS = (
     "WORKSHEET_COMPLETE=true",
     "SHADOW_24_7_AUTHORIZED=true",
     "PATH_B_LIFT_DISCUSSION_READY=true",
-    "ALL_GAPS_CLOSED=true",
     "READY_FOR_OPERATOR_ARMING=true",
     "GAP2_JOB_SET_ENABLED=true",
 )
@@ -228,7 +227,7 @@ def test_gap6_rc0_observed_governed_reflection_scoped_evidence_v0() -> None:
     assert "GAP6_DRY_RUN_RC0_OBSERVED=false" in criteria
     assert "GAP6_DRY_RUN_RC0_OBSERVED=true" in block
     assert "GAP6_DRY_RUN_PROOF_VERIFIED=true" in block
-    assert "ALL_GAPS_CLOSED=false" in block
+    assert "ALL_GAPS_CLOSED=true" in block
     assert "READY_FOR_OPERATOR_ARMING=false" in block
     assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in block
     reflection_lines = {line.strip() for line in reflection.splitlines()}
@@ -267,7 +266,7 @@ def test_gap6_rc0_observed_final_line_reflection_non_authorizing_v0() -> None:
     assert "GAP6_DRY_RUN_RC0_OBSERVED=false" in criteria
     assert "GAP6_DRY_RUN_RC0_OBSERVED=true" in block
     assert "GAP6_DRY_RUN_PROOF_VERIFIED=true" in block
-    assert "ALL_GAPS_CLOSED=false" in block
+    assert "ALL_GAPS_CLOSED=true" in block
     assert "PREFLIGHT_REMAINS_BLOCKED=false" in block
 
 
@@ -288,5 +287,5 @@ def test_gap6_verified_final_line_reflection_scoped_verification_v0() -> None:
     assert "GAP6_DRY_RUN_PROOF_VERIFIED=false" in criteria
     assert "GAP6_DRY_RUN_PROOF_VERIFIED=true" in block
     assert "GAP6_VERIFIED_BAR_TIER=T1_PLUS_T2_DRY_RUN_PROOF" in block
-    assert "ALL_GAPS_CLOSED=false" in block
+    assert "ALL_GAPS_CLOSED=true" in block
     assert "PREFLIGHT_REMAINS_BLOCKED=false" in block

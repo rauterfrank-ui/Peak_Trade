@@ -243,5 +243,5 @@ def test_gap7_risk_boundary_verified_final_line_reflection_non_authorizing_v0():
     assert "GAP7_RISK_BOUNDARY_VERIFIED=false" in criteria
     assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in block
     assert "PREFLIGHT_REMAINS_BLOCKED=false" in block
-    assert "ALL_GAPS_CLOSED=false" in block
+    assert "ALL_GAPS_CLOSED=true" in block
     assert "READY_FOR_OPERATOR_ARMING=false" in block

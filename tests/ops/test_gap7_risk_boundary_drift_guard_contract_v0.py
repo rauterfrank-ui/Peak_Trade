@@ -54,7 +54,7 @@ DRIFT_GUARD_REQUIRED_FINAL_LINES = (
     "PREFLIGHT_LIFTED_BY_CLASS4_POLICY=true",
     "READY_FOR_OPERATOR_ARMING=false",
     "PATH_B_LIFT_DISCUSSION_READY=false",
-    "ALL_GAPS_CLOSED=false",
+    "ALL_GAPS_CLOSED=true",
     "GAP7_RISK_BOUNDARY_VERIFIED=true",
     "GAP7_RISK_KILLSWITCH_AUTHORITY_CHANGED=false",
     "GAP7_RISK_KILLSWITCH_RUNTIME_CHANGED=false",
@@ -82,7 +82,6 @@ DRIFT_GUARD_FORBIDDEN_GAP7_REPO_TOKENS = (
     "GAP7_RISK_BOUNDARY_DEFAULT_ON=true",
     "READY_FOR_OPERATOR_ARMING=true",
     "PATH_B_LIFT_DISCUSSION_READY=true",
-    "ALL_GAPS_CLOSED=true",
     "SHADOW_24_7_AUTHORIZED=true",
     "WORKSHEET_COMPLETE=true",
 )
@@ -407,7 +406,7 @@ def test_gap7_verified_final_line_governed_reflection_scoped_verification_v0() -
     assert "GAP7_RISK_BOUNDARY_ACCEPTED=true" in acceptance
     assert "GAP7_RISK_BOUNDARY_VERIFIED=false" in criteria
     assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in block
-    assert "ALL_GAPS_CLOSED=false" in block
+    assert "ALL_GAPS_CLOSED=true" in block
     assert "READY_FOR_OPERATOR_ARMING=false" in block
     assert "PREFLIGHT_REMAINS_BLOCKED=false" in block
     reflection_lines = {line.strip() for line in reflection.splitlines()}

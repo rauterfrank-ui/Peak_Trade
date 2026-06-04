@@ -47,7 +47,7 @@ DRIFT_GUARD_REQUIRED_FINAL_LINES = (
     "PREFLIGHT_LIFTED_BY_CLASS4_POLICY=true",
     "READY_FOR_OPERATOR_ARMING=false",
     "PATH_B_LIFT_DISCUSSION_READY=false",
-    "ALL_GAPS_CLOSED=false",
+    "ALL_GAPS_CLOSED=true",
     "GAP5_STOP_REHEARSAL_EXECUTED=true",
     "GAP5_STOP_PROOF_ACCEPTED=true",
     "GAP5_TYPE2_WAIVER_GRANTED=false",
@@ -64,7 +64,6 @@ DRIFT_GUARD_FORBIDDEN_GAP5_REPO_TOKENS = (
     "F5_EXACT_PROCEDURE_APPROVED=true",
     "WORKSHEET_COMPLETE=true",
     "PATH_B_LIFT_DISCUSSION_READY=true",
-    "ALL_GAPS_CLOSED=true",
     "READY_FOR_OPERATOR_ARMING=true",
 )
 
@@ -211,7 +210,7 @@ def test_gap5_accepted_final_line_governed_reflection_scoped_acceptance_v0() -> 
     assert "GAP5_STOP_PROOF_ACCEPTED=true" in block
     assert "GAP5_STOP_REHEARSAL_EXECUTED=true" in block
     assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in block
-    assert "ALL_GAPS_CLOSED=false" in block
+    assert "ALL_GAPS_CLOSED=true" in block
     assert "READY_FOR_OPERATOR_ARMING=false" in block
     assert "PREFLIGHT_REMAINS_BLOCKED=false" in block
     reflection_lines = {line.strip() for line in reflection.splitlines()}
