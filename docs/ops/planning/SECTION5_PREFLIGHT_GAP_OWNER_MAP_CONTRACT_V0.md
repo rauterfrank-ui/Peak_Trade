@@ -1640,6 +1640,70 @@ This governed repo-reflection block records operator-authorized Tier-1 **zero-di
 
 Evidence observation is not runtime authorization. The Tier-1 activation contract v0 block in §2a.1 remains docs/tests posture only and unchanged.
 
+## Tier-1 Governed Canonical-Tag Bounded Enforce Observed Final-Line Reflection v0
+
+TIER1_CANONICAL_TAG_BOUNDED_ENFORCE_OBSERVED_FINAL_LINE_GOVERNED_REFLECTION_V0=true
+TIER1_CANONICAL_TAG_BOUNDED_ENFORCE_OBSERVED=true
+TIER1_CANONICAL_TAG_PRIMARY_EVIDENCE_MANIFEST_CREATED=true
+TIER1_CANONICAL_TAG_PRIMARY_EVIDENCE_MANIFEST_VERIFY_RC=0
+PRIMARY_EVIDENCE_ENFORCED=true
+PRIMARY_EVIDENCE_ENFORCED_SCOPE=canonical_tag_local_readonly_preflight_once
+ACCEPTED_MODE=TIER1_CANONICAL_TAG_ENFORCE_MANIFEST_SCOPED_EVIDENCE_FINAL_LINE
+GOVERNED_ACCEPTANCE_BASIS=TIER1_CANONICAL_TAG_BOUNDED_ENFORCE_WITH_MANIFEST_CLOSEOUT_V0=true
+EXTERNAL_RUNTIME_BUNDLE_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/tier1_canonical_tag_bounded_enforce_with_manifest_v0_20260604T202537Z/
+EXTERNAL_CLOSEOUT_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/tier1_canonical_tag_bounded_enforce_with_manifest_closeout_v0_20260604T202644Z/
+EXTERNAL_ATTESTATION_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/attestations/gap2a1_tier1_enforcement_lifted_explicit_external_only_v0_20260604T195840Z/
+OPERATOR_GO=GO_PREPARE_SECTION5_TIER1_CANONICAL_TAG_BOUNDED_ENFORCE_OBSERVED_REPO_REFLECTION_DOCS_TESTS_V0
+NO_RUNTIME_AUTHORITY=true
+NO_REPO_FLAG_LIFT_FROM_EXTERNAL_EVIDENCE=true
+OBSERVED_NOT_ENFORCED_REPO_SSOT_SEMANTIC_PRESERVED=true
+OBSERVED_TAG_MATCH_COUNT=5
+OBSERVED_DUE_JOB_COUNT=1
+OBSERVED_JOBS_DISPATCHED=1
+OBSERVED_JOB_STARTED=paper_shadow_247_paper_only_preflight_status_v0
+UNEXPECTED_JOB_STARTED=false
+GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false
+GAP2A1_TIER1_ENFORCEMENT_LIFTED_REPO=false
+GAP2A1_TIER1_ENFORCEMENT_LIFTED_EXTERNAL_SESSION_ONLY=true
+SECTION5_GAP2A1_REPO_LIFTED=false
+BOUNDED_ONCE_ENFORCEMENT_CANONICAL_TAG_PASS=true
+GAP2_CANONICAL_JOB_SET_DRY_RUN_OBSERVED=true
+GAP2_CANONICAL_JOB_SET_VERIFIED=false
+GAP3_EXECUTE_COMMAND_VERIFIED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+ALL_GAPS_CLOSED=false
+READY_FOR_OPERATOR_ARMING=false
+PATH_B_LIFT_DISCUSSION_READY=false
+NEXT_EXECUTE_ALLOWED=false
+
+This governed repo-reflection block records operator-authorized Tier-1 **canonical-tag bounded primary evidence enforce + manifest observed** final-line propagation only. It propagates scoped session-evidence tokens to Final Machine Lines based on bounded non-dry-run execute with include-tags `paper_shadow_247,preflight,readonly`, exactly one due canonical preflight job dispatched (`paper_shadow_247_paper_only_preflight_status_v0`), local `MANIFEST.sha256` verify RC=0, and no unexpected job starts. External evidence bundles remain pointer-based and subordinate to repo governance.
+
+### Observed final-line scope (allowed only)
+
+- external runtime/closeout MANIFEST_VERIFY_RC=0; EXECUTE_RC=0; tag matches=5; due jobs=1; jobs dispatched=1; single expected preflight status job started
+- `TIER1_CANONICAL_TAG_BOUNDED_ENFORCE_OBSERVED=true` in **Final Machine Lines only**
+- `TIER1_CANONICAL_TAG_PRIMARY_EVIDENCE_MANIFEST_CREATED=true` and `TIER1_CANONICAL_TAG_PRIMARY_EVIDENCE_MANIFEST_VERIFY_RC=0` in **Final Machine Lines only**
+- `PRIMARY_EVIDENCE_ENFORCED=true` with `PRIMARY_EVIDENCE_ENFORCED_SCOPE=canonical_tag_local_readonly_preflight_once` in **Final Machine Lines only** (session-evidence; not repo `GAP2A1_PRIMARY_EVIDENCE_ENFORCED`)
+- dispatch observation finals: `OBSERVED_TAG_MATCH_COUNT=5`, `OBSERVED_DUE_JOB_COUNT=1`, `OBSERVED_JOBS_DISPATCHED=1`, `OBSERVED_JOB_STARTED=paper_shadow_247_paper_only_preflight_status_v0`, `UNEXPECTED_JOB_STARTED=false`
+- `GAP2A1_TIER1_ENFORCEMENT_LIFTED_EXTERNAL_SESSION_ONLY=true` documents external attestation input context only
+- §2a.1 Primary Evidence Enforcement Contract v0 block remains criteria-only with `GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false` and `GAP2A1_TIER1_ENFORCEMENT_LIFTED=false`
+- canonical-tag dispatch observed ≠ Gap-2 canonical job-set verified; observation ≠ scheduler execution authorization beyond scoped readonly preflight status
+
+### Non-authority boundary (observed final-line reflection does not imply)
+
+- does not modify §2a.1 criteria to set `GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true` or `GAP2A1_TIER1_ENFORCEMENT_LIFTED=true`
+- does not set `SECTION5_GAP2A1_REPO_LIFTED=true` or `GAP2A1_TIER1_ENFORCEMENT_LIFTED_REPO=true`
+- does not set `GAP2_CANONICAL_JOB_SET_VERIFIED=true` or enable canonical tagged jobs for general execution
+- does not set `GAP3_EXECUTE_COMMAND_VERIFIED=true` in criteria or Final Machine Lines
+- does not modify Tier-1 zero-dispatch observed finals or Gap-6 criteria beyond existing values
+- does not lift preflight (`PREFLIGHT_REMAINS_BLOCKED=true` unchanged)
+- does not set `READY_FOR_OPERATOR_ARMING=true` or `NEXT_EXECUTE_ALLOWED=true`
+- does not authorize Live, Testnet, orders, validate-only, private API, or unscoped scheduler loops
+- does not set `ALL_GAPS_CLOSED=true`
+- does not start or authorize Runtime, Paper 24/7, Shadow 24/7, or Live
+
+Evidence observation is not runtime authorization. The Tier-1 zero-dispatch manifest observed final-line reflection v0 block above remains scoped observation only and unchanged.
+
 ## Preflight Synthesis Docs Block Reflection v0
 
 PREFLIGHT_SYNTHESIS_GOVERNED_REFLECTION_V0=true
@@ -1958,4 +2022,15 @@ GAP2A1_TIER1_ENFORCEMENT_LIFTED_EXTERNAL_SESSION_ONLY=true
 GAP2A1_TIER1_ENFORCEMENT_LIFTED_REPO=false
 SECTION5_GAP2A1_REPO_LIFTED=false
 BOUNDED_ONCE_ENFORCEMENT_ZERO_DISPATCH_PASS=true
+TIER1_CANONICAL_TAG_BOUNDED_ENFORCE_OBSERVED_FINAL_LINE_GOVERNED_REFLECTION_V0=true
+TIER1_CANONICAL_TAG_BOUNDED_ENFORCE_OBSERVED=true
+TIER1_CANONICAL_TAG_PRIMARY_EVIDENCE_MANIFEST_CREATED=true
+TIER1_CANONICAL_TAG_PRIMARY_EVIDENCE_MANIFEST_VERIFY_RC=0
+PRIMARY_EVIDENCE_ENFORCED_SCOPE=canonical_tag_local_readonly_preflight_once
+OBSERVED_TAG_MATCH_COUNT=5
+OBSERVED_DUE_JOB_COUNT=1
+OBSERVED_JOBS_DISPATCHED=1
+OBSERVED_JOB_STARTED=paper_shadow_247_paper_only_preflight_status_v0
+UNEXPECTED_JOB_STARTED=false
+BOUNDED_ONCE_ENFORCEMENT_CANONICAL_TAG_PASS=true
 NEXT_EXECUTE_ALLOWED=false

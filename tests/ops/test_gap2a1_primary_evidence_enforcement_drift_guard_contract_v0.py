@@ -60,12 +60,18 @@ DRIFT_GUARD_REQUIRED_FINAL_LINES = (
     "PRIMARY_EVIDENCE_ENFORCED_SCOPE=zero_dispatch_local_only",
     "GAP2A1_TIER1_ENFORCEMENT_LIFTED_REPO=false",
     "SECTION5_GAP2A1_REPO_LIFTED=false",
+    "TIER1_CANONICAL_TAG_BOUNDED_ENFORCE_OBSERVED=true",
+    "TIER1_CANONICAL_TAG_PRIMARY_EVIDENCE_MANIFEST_CREATED=true",
+    "TIER1_CANONICAL_TAG_PRIMARY_EVIDENCE_MANIFEST_VERIFY_RC=0",
+    "PRIMARY_EVIDENCE_ENFORCED_SCOPE=canonical_tag_local_readonly_preflight_once",
+    "UNEXPECTED_JOB_STARTED=false",
 )
 
 TIER1_CONTRACT_SLICE_FILE_ALLOWLIST = (
     "docs/ops/planning/SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md",
     "tests/ops/test_gap2a1_primary_evidence_enforcement_contract_v0.py",
     "tests/ops/test_gap2a1_primary_evidence_enforcement_drift_guard_contract_v0.py",
+    "tests/ops/test_section5_preflight_gap_owner_map_contract_v0.py",
 )
 
 TIER1_CONTRACT_SLICE_FORBIDDEN_PATH_PREFIXES = (
@@ -215,7 +221,9 @@ def test_gap2a1_drift_guard_tier1_zero_dispatch_manifest_observed_final_line_v0(
     block = _final_machine_lines(text)
     section = text.split(
         "## Tier-1 Governed Zero-Dispatch Manifest Observed Final-Line Reflection v0", 1
-    )[1].split("## Final Machine Lines", 1)[0]
+    )[1].split(
+        "## Tier-1 Governed Canonical-Tag Bounded Enforce Observed Final-Line Reflection v0", 1
+    )[0]
     gap2a1 = _gap2a1_section(text)
 
     assert "TIER1_ZERO_DISPATCH_MANIFEST_OBSERVED_FINAL_LINE_GOVERNED_REFLECTION_V0=true" in section
@@ -227,6 +235,38 @@ def test_gap2a1_drift_guard_tier1_zero_dispatch_manifest_observed_final_line_v0(
     assert "PRIMARY_EVIDENCE_ENFORCED=true" not in gap2a1_lines
     block_lines = {line.strip() for line in block.splitlines()}
     assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" not in block_lines
+
+
+def test_gap2a1_drift_guard_tier1_canonical_tag_bounded_enforce_observed_final_line_v0() -> None:
+    text = _section5_text()
+    block = _final_machine_lines(text)
+    section = text.split(
+        "## Tier-1 Governed Canonical-Tag Bounded Enforce Observed Final-Line Reflection v0", 1
+    )[1].split("## Preflight Synthesis Docs Block Reflection v0", 1)[0]
+    gap2a1 = _gap2a1_section(text)
+    gap2 = text.split("## Gap 2 Canonical Job Set Contract v0", 1)[1].split(
+        "## Final Machine Lines", 1
+    )[0]
+
+    assert (
+        "TIER1_CANONICAL_TAG_BOUNDED_ENFORCE_OBSERVED_FINAL_LINE_GOVERNED_REFLECTION_V0=true"
+        in section
+    )
+    assert "OBSERVED_NOT_ENFORCED_REPO_SSOT_SEMANTIC_PRESERVED=true" in section
+    assert "TIER1_CANONICAL_TAG_BOUNDED_ENFORCE_OBSERVED=true" in block
+    assert "TIER1_CANONICAL_TAG_PRIMARY_EVIDENCE_MANIFEST_CREATED=true" in block
+    assert "TIER1_CANONICAL_TAG_PRIMARY_EVIDENCE_MANIFEST_VERIFY_RC=0" in block
+    assert "PRIMARY_EVIDENCE_ENFORCED_SCOPE=canonical_tag_local_readonly_preflight_once" in block
+    assert "OBSERVED_JOB_STARTED=paper_shadow_247_paper_only_preflight_status_v0" in block
+    assert "UNEXPECTED_JOB_STARTED=false" in block
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in block
+    assert "GAP2A1_TIER1_ENFORCEMENT_LIFTED_REPO=false" in block
+    assert "TIER1_CANONICAL_TAG_BOUNDED_ENFORCE_OBSERVED=true" not in gap2
+    gap2a1_lines = {line.strip() for line in gap2a1.splitlines()}
+    assert "TIER1_CANONICAL_TAG_BOUNDED_ENFORCE_OBSERVED=true" not in gap2a1_lines
+    block_lines = {line.strip() for line in block.splitlines()}
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" not in block_lines
+    assert "GAP2_CANONICAL_JOB_SET_VERIFIED=true" not in block_lines
 
 
 def test_gap2a1_drift_guard_gap5_gap6_orthogonal_v0() -> None:
