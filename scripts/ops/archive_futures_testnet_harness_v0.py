@@ -461,7 +461,9 @@ def main(argv: list[str] | None = None, *, fetcher: PublicRestFetcher | None = N
         if args.confirm_futures_zero_order_reachability != CONFIRM_TOKEN_ZERO_ORDER_REACHABILITY:
             _die("ERR: missing or invalid --confirm-futures-zero-order-reachability token")
         if fetcher is None:
-            _die("ERR: network execute requires injected fetcher in tests; no live urllib in CLI v0")
+            _die(
+                "ERR: network execute requires injected fetcher in tests; no live urllib in CLI v0"
+            )
         endpoints_called, request_count = run_zero_order_public_reachability(
             rest_base_url=args.rest_base_url,
             duration_cap_seconds=args.duration_cap_seconds,

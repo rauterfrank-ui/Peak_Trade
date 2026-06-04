@@ -78,9 +78,7 @@ def test_authority_flags_remain_blocked() -> None:
 def test_defaults_pf_xbtusd_and_demo_futures_rest_base() -> None:
     assert harness.DEFAULT_FUTURES_SYMBOL == "PF_XBTUSD"
     assert harness.DEFAULT_INSTRUMENT == "PF_XBTUSD"
-    assert harness.DEFAULT_REST_BASE_URL == (
-        "https://demo-futures.kraken.com/derivatives/api/v3"
-    )
+    assert harness.DEFAULT_REST_BASE_URL == ("https://demo-futures.kraken.com/derivatives/api/v3")
     assert _validate_harness_defaults_pass()
 
 
