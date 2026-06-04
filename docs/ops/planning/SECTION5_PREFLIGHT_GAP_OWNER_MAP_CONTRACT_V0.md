@@ -1988,17 +1988,34 @@ Evidence observation is not runtime authorization. The Tier-1 zero-dispatch mani
 ## Preflight Synthesis Docs Block Reflection v0
 
 PREFLIGHT_SYNTHESIS_GOVERNED_REFLECTION_V0=true
+PREFLIGHT_SYNTHESIS_VERIFIED_BAR_CHAIN_CONSOLIDATION_V0=true
 PREFLIGHT_SYNTHESIS_DOCS_BLOCKED=true
 ACCEPTED_MODE=SECTION5_FINALS_CONSOLIDATED_PREFLIGHT_REMAINS_BLOCKED
-GOVERNED_SYNTHESIS_BASIS=GAP4_GAP5_GAP7_FINAL_LINE_ALIGNED+GAP2A1_TIER0_EXTERNAL_ACCEPTANCE
+GOVERNED_SYNTHESIS_BASIS=GAP1_GAP2_GAP3_GAP6_VERIFIED_BAR_FINALS+GAP4_GAP5_GAP7_FINAL_LINE_ALIGNED+GAP2A1_TIER0_EXTERNAL_ACCEPTANCE
+SECTION5_VERIFIED_BAR_CHAIN_GAPS_1_2_3_6_COMPLETE=true
 EXTERNAL_GAP2A1_TIER0_ACCEPTANCE_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/gap2a1_tier0_closure_operator_acceptance_external_only_v0_20260603T164021Z/
 INPUT_STRATEGY_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/section5_remaining_gaps_closure_strategy_no_lift_v0_20260603T160500Z/
+INPUT_RANKING_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/repo_wide_next_safe_slice_ranking_after_gap1_verified_bar_closeout_no_run_v0_20260604T214105Z/
+INPUT_GAP1_CLOSEOUT_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/gap1_verified_bar_contract_post_merge_closeout_no_run_v0_20260604T213857Z/
+INPUT_GAP2_CLOSEOUT_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/gap2_verified_bar_contract_post_merge_closeout_no_run_v0_20260604T205001Z/
+INPUT_GAP3_CLOSEOUT_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/gap3_verified_bar_contract_post_merge_closeout_no_run_v0_20260604T210936Z/
+INPUT_GAP6_CLOSEOUT_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/gap6_verified_bar_contract_post_merge_closeout_no_run_v0_20260604T212643Z/
 INPUT_GAP7_CLOSEOUT_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/pr3966_gap7_risk_boundary_final_line_reflection_post_merge_closeout_v0_20260603T161613Z/
 INPUT_GAP5_CLOSEOUT_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/pr3967_gap5_stop_proof_final_line_reflection_post_merge_closeout_v0_20260603T162700Z/
 INPUT_GAP4_CLOSEOUT_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/pr3968_gap4_output_evidence_paths_final_line_reflection_post_merge_closeout_v0_20260603T163730Z/
-OPERATOR_GO=GO_PREFLIGHT_SYNTHESIS_DOCS_BLOCK_REPO_REFLECTION_DOCS_TESTS_V0
+OPERATOR_GO=GO_SECTION5_PREFLIGHT_SYNTHESIS_VERIFIED_BAR_CHAIN_CONSOLIDATION_DOCS_TESTS_V0
 NO_RUNTIME_AUTHORITY=true
 NO_REPO_FLAG_LIFT_FROM_EXTERNAL_ACCEPTANCE=true
+GAP1_EXECUTE_ENTRYPOINT_VERIFIED=true
+GAP1_VERIFIED_BAR_TIER=T1_PLUS_T2_ENTRYPOINT_BOUNDARY
+GAP1_VERIFIED_REQUIRES_RUNTIME_EXECUTE=false
+GAP2_CANONICAL_JOB_SET_VERIFIED=true
+VERIFIED_BAR_TIER=T1_PLUS_T2_BOUNDARY_INVENTORY
+GAP3_EXECUTE_COMMAND_VERIFIED=true
+GAP3_VERIFIED_BAR_TIER=T1_PLUS_T2_COMMAND_BOUNDARY
+GAP6_DRY_RUN_PROOF_VERIFIED=true
+GAP6_VERIFIED_BAR_TIER=T1_PLUS_T2_DRY_RUN_PROOF
+GAP6_VERIFIED_REQUIRES_RUNTIME_EXECUTE=false
 GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true
 FULL_SCOPE_GAP4_VERIFIED=false
 GAP5_STOP_PROOF_ACCEPTED=true
@@ -2006,40 +2023,63 @@ GAP5_STOP_REHEARSAL_EXECUTED=false
 GAP7_RISK_BOUNDARY_VERIFIED=true
 GAP2A1_TIER0_OPERATOR_ACCEPTED=true
 GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false
+GAP2A1_TIER1_ENFORCEMENT_LIFTED_REPO=false
+SECTION5_GAP2A1_REPO_LIFTED=false
 GAP2A1_TIER1_ENFORCEMENT_LIFTED=false
 GAP2A1_ENFORCEMENT_OPT_IN_ONLY=true
+TIER1_CANONICAL_TAG_BOUNDED_ENFORCE_OBSERVED=true
+PRIMARY_EVIDENCE_ENFORCED_SCOPE=canonical_tag_local_readonly_preflight_once
 PREFLIGHT_REMAINS_BLOCKED=true
 ALL_GAPS_CLOSED=false
+NEXT_EXECUTE_ALLOWED=false
 READY_FOR_OPERATOR_ARMING=false
 PATH_B_LIFT_DISCUSSION_READY=false
 PREFLIGHT_LIFT_EXECUTED=false
 ACTUAL_PREFLIGHT_LIFT_EXECUTED=false
+FUTURES_EXECUTE_AUTHORIZED=false
+FUTURES_PRIVATE_API_AUTHORIZED=false
+FUTURES_VALIDATE_ONLY_AUTHORIZED=false
+FUTURES_SESSION_AUTHORIZED_NOW=false
 
-This governed repo-reflection block consolidates Section-5 **final-line aligned** gap status and external Gap-2a.1 tier-0 acceptance into an explicit **preflight-synthesis docs block** that records preflight as **remains blocked**. It does not lift preflight, does not enable operator arming, and does not grant runtime/scheduler/trading authority.
+This governed repo-reflection block consolidates Section-5 **final-line aligned** gap status — including the **verified-bar chain for Gaps 1/2/3/6** — plus external Gap-2a.1 tier-0 acceptance into an explicit **preflight-synthesis docs block** that records preflight as **remains blocked**. It does not lift preflight, does not enable operator arming, and does not grant runtime/scheduler/trading authority. Verified-bar finals in synthesis mirror Final Machine Lines only; criteria blocks for Gaps 1/2/3/4/5/6/7 remain criteria-only where unchanged.
 
 ### Synthesis scope (consolidated finals — allowed only)
 
+- `GAP1_EXECUTE_ENTRYPOINT_VERIFIED=true` in Final Machine Lines (PR #4005); `GAP1_VERIFIED_BAR_TIER=T1_PLUS_T2_ENTRYPOINT_BOUNDARY`; Gap-1 criteria block remains `GAP1_EXECUTE_ENTRYPOINT_VERIFIED=false`
+- `GAP2_CANONICAL_JOB_SET_VERIFIED=true` in Final Machine Lines (PR #4002); `VERIFIED_BAR_TIER=T1_PLUS_T2_BOUNDARY_INVENTORY` in Final Machine Lines; Gap-2 criteria block remains `GAP2_CANONICAL_JOB_SET_VERIFIED=false`
+- `GAP3_EXECUTE_COMMAND_VERIFIED=true` in Final Machine Lines (PR #4003); `GAP3_VERIFIED_BAR_TIER=T1_PLUS_T2_COMMAND_BOUNDARY`; Gap-3 criteria block remains `GAP3_EXECUTE_COMMAND_VERIFIED=false`
+- `GAP6_DRY_RUN_PROOF_VERIFIED=true` in Final Machine Lines (PR #4004); `GAP6_VERIFIED_BAR_TIER=T1_PLUS_T2_DRY_RUN_PROOF`; Gap-6 criteria block remains `GAP6_DRY_RUN_PROOF_VERIFIED=false`
+- `SECTION5_VERIFIED_BAR_CHAIN_GAPS_1_2_3_6_COMPLETE=true` in **this synthesis block only** — documents verified-bar chain alignment; does not set `ALL_GAPS_CLOSED=true`
 - `GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true` in Final Machine Lines (PR #3968)
-- `GAP5_STOP_PROOF_ACCEPTED=true` in Final Machine Lines (PR #3967); `GAP5_STOP_REHEARSAL_EXECUTED=false` unchanged
+- `GAP5_STOP_PROOF_ACCEPTED=true` in Final Machine Lines (PR #3967); `GAP5_STOP_REHEARSAL_EXECUTED=false` unchanged — no Gap-5 verified-bar or rehearsal lift
 - `GAP7_RISK_BOUNDARY_VERIFIED=true` in Final Machine Lines (PR #3966)
 - `GAP2A1_TIER0_OPERATOR_ACCEPTED=true` from external acceptance bundle (pointer-based; not enforcement ON)
-- `GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false` by design (tier-0 contract complete; tier-1 enforcement closed lane)
+- `GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false`, `GAP2A1_TIER1_ENFORCEMENT_LIFTED_REPO=false`, `SECTION5_GAP2A1_REPO_LIFTED=false` by design
+- `TIER1_CANONICAL_TAG_BOUNDED_ENFORCE_OBSERVED=true` with `PRIMARY_EVIDENCE_ENFORCED_SCOPE=canonical_tag_local_readonly_preflight_once` — scoped observe-only; not repo enforcement lift
 - `FULL_SCOPE_GAP4_VERIFIED=false` — not propagated to Final Machine Lines (reflection-only)
 - `PREFLIGHT_SYNTHESIS_DOCS_BLOCKED=true` in **this synthesis block and Final Machine Lines**
-- Gap criteria blocks for Gaps 4/5/7 remain criteria-only with verified/accepted=false where unchanged
+
+### Why ALL_GAPS_CLOSED remains false (synthesis record only)
+
+- `GAP5_STOP_REHEARSAL_EXECUTED=false` — stop rehearsal not executed; snapshot acceptance ≠ rehearsal verified-bar
+- `GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false` and `GAP2A1_TIER1_ENFORCEMENT_LIFTED_REPO=false` — tier-1 repo enforcement not lifted
+- `PREFLIGHT_REMAINS_BLOCKED=true`, `NEXT_EXECUTE_ALLOWED=false`, `READY_FOR_OPERATOR_ARMING=false` — global preflight and arming gates unchanged
+- Gap criteria blocks for Gaps 1/2/3/4/5/6/7 remain criteria-only with verified/accepted=false where unchanged (governed reflection pattern)
 
 ### Non-authority boundary (synthesis block does not imply)
 
 - does not set `PREFLIGHT_REMAINS_BLOCKED=false` or lift global preflight
-- does not set `ALL_GAPS_CLOSED=true` (Section-5 wedge docs complete ≠ all gaps operationally closed)
+- does not set `ALL_GAPS_CLOSED=true` (verified-bar chain complete ≠ all gaps operationally closed)
 - does not set `READY_FOR_OPERATOR_ARMING=true` or approve runtime
-- does not set `GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true` or `GAP2A1_TIER1_ENFORCEMENT_LIFTED=true`
+- does not set `NEXT_EXECUTE_ALLOWED=true`
+- does not set `GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true`, `GAP2A1_TIER1_ENFORCEMENT_LIFTED_REPO=true`, or `SECTION5_GAP2A1_REPO_LIFTED=true`
+- does not set `GAP5_STOP_REHEARSAL_EXECUTED=true` or claim Gap-5 verified-bar
+- does not modify Gap-1/2/3/6 criteria block verification posture
 - does not set `FULL_SCOPE_GAP4_VERIFIED=true` in criteria or Final Machine Lines
-- does not open Path-B lift discussion or modify BL002/Shadow-HOLD posture
-- does not authorize scheduler execution or Paper/Shadow/Testnet/Live
+- does not authorize scheduler execution, orders, validate-only, private API, or Paper/Shadow/Testnet/Live
 - does not change Risk/KillSwitch authority, execution/live gates, Master V2, or Double Play
 
-Evidence synthesis is not runtime authorization. Prior governed reflection blocks above remain scoped acceptance only and unchanged.
+Evidence synthesis is not runtime authorization. Prior governed reflection blocks above remain scoped acceptance/verification only and unchanged.
 
 ## Tier-C + Shadow durable evidence archive crosslink v0
 
