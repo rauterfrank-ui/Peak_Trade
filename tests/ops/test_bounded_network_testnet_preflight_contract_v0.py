@@ -266,7 +266,8 @@ def test_section5_preflight_policy_lift_does_not_authorize_execute() -> None:
     assert "PREFLIGHT_REMAINS_BLOCKED=false" in final_lines
     assert "PREFLIGHT_LIFTED_BY_CLASS4_POLICY=true" in final_lines
     assert "NEXT_EXECUTE_ALLOWED=false" in final_lines
-    assert "READY_FOR_OPERATOR_ARMING=false" in final_lines
+    assert "READY_FOR_OPERATOR_ARMING=true" in final_lines
+    assert "ARMING_NOT_EXECUTE=true" in final_lines
     assert "PREFLIGHT_LIFT_EXECUTED=false" in final_lines
 
 
