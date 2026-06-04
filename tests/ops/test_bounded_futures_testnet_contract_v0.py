@@ -21,7 +21,9 @@ from src.ops.bounded_futures_testnet_contract_v0 import (
     evaluate_bounded_futures_testnet_evidence,
     spot_evidence_misclassified_as_futures,
 )
-from src.ops.bounded_testnet_order_cap_contract_v0 import DEFAULT_SESSION_CLASS as SPOT_SESSION_CLASS
+from src.ops.bounded_testnet_order_cap_contract_v0 import (
+    DEFAULT_SESSION_CLASS as SPOT_SESSION_CLASS,
+)
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 CONTRACT_MODULE = REPO_ROOT / "src" / "ops" / "bounded_futures_testnet_contract_v0.py"
@@ -34,9 +36,7 @@ FUTURES_TESTNET_PROOF_SPEC = (
 )
 
 TEST_PACKAGE_MARKER = "BOUNDED_FUTURES_TESTNET_CONTRACT_GUARD_V0=true"
-_CLASS4_SCOPED_EXCEPTION_MARKER = (
-    "BOUNDED_FUTURES_TESTNET_GUARD_CLASS4_SCOPED_EXCEPTION_V0=true"
-)
+_CLASS4_SCOPED_EXCEPTION_MARKER = "BOUNDED_FUTURES_TESTNET_GUARD_CLASS4_SCOPED_EXCEPTION_V0=true"
 REVIEW_BUNDLE_SUFFIX = (
     "futures_readiness_gap_review_after_spot_btc_eur_testnet_evidence_no_run_v0_20260604T122058Z"
 )

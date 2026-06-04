@@ -126,7 +126,10 @@ def spot_evidence_misclassified_as_futures(evidence: dict[str, Any]) -> list[str
         for ep in endpoints:
             if ep in SPOT_KRAKEN_ENDPOINT_PREFIXES:
                 reasons.append(f"spot endpoint not allowed in futures evidence: {ep}")
-    if evidence.get("network_host") == "https://api.kraken.com" and market_type == DEFAULT_MARKET_TYPE:
+    if (
+        evidence.get("network_host") == "https://api.kraken.com"
+        and market_type == DEFAULT_MARKET_TYPE
+    ):
         reasons.append("spot kraken.com host must not be used for futures bounded evidence")
     return reasons
 
