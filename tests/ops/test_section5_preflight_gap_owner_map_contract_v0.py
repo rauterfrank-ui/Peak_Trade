@@ -292,9 +292,7 @@ def _gap6_accepted_final_line_reflection_section(text: str) -> str:
     )[0]
 
 
-def test_section5_gap6_dry_run_proof_accepted_final_line_reflection_non_authorizing_v0() -> (
-    None
-):
+def test_section5_gap6_dry_run_proof_accepted_final_line_reflection_non_authorizing_v0() -> None:
     text = DOC.read_text(encoding="utf-8")
     section = _gap6_accepted_final_line_reflection_section(text)
     block = _final_machine_lines(text)
