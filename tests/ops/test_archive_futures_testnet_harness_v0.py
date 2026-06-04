@@ -42,12 +42,13 @@ def _durable_test_archive_root(tmp_path: Path) -> Path:
 
 
 class _FakeFetcher:
-    def __init__(self) -> None:
+    def __init__(self, *, body: bytes | None = None) -> None:
         self.urls: list[str] = []
+        self._body = body if body is not None else b'{"tickers":[{"symbol":"PF_XBTUSD"}]}'
 
     def fetch(self, url: str, *, timeout_seconds: float) -> tuple[int, bytes]:
         self.urls.append(url)
-        return 200, b"{}"
+        return 200, self._body
 
 
 def _default_namespace(**overrides: object) -> argparse.Namespace:
@@ -141,20 +142,42 @@ def test_execute_network_without_confirm_token_fails(tmp_path: Path) -> None:
     assert exc.value.code == harness.USAGE_EXIT
 
 
-def test_execute_network_without_fetcher_fails_even_with_confirm(tmp_path: Path) -> None:
+def test_safe_public_urllib_fetcher_marker_present() -> None:
+    assert harness.SAFE_PUBLIC_URLLIB_FETCHER_PRESENT is True
+    text = HARNESS_SCRIPT.read_text(encoding="utf-8")
+    assert "SafePublicUrllibRestFetcher" in text
+    assert "SAFE_PUBLIC_URLLIB_FETCHER_PRESENT" in text
+
+
+def test_execute_network_default_fetcher_without_live_network(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     archive = _durable_test_archive_root(tmp_path)
-    argv = [
-        "--archive-root",
-        str(archive),
-        "--run-id",
-        "testrun2",
-        "--execute-network",
-        "--confirm-futures-zero-order-reachability",
-        harness.CONFIRM_TOKEN_ZERO_ORDER_REACHABILITY,
-    ]
-    with pytest.raises(SystemExit) as exc:
-        harness.main(argv)
-    assert exc.value.code == harness.USAGE_EXIT
+    fake = _FakeFetcher()
+
+    def _factory(rest_base_url: str) -> _FakeFetcher:
+        assert rest_base_url == harness.DEFAULT_REST_BASE_URL
+        return fake
+
+    monkeypatch.setattr(harness, "default_safe_public_rest_fetcher", _factory)
+    rc = harness.main(
+        [
+            "--archive-root",
+            str(archive),
+            "--run-id",
+            "defaultfetcher",
+            "--execute-network",
+            "--confirm-futures-zero-order-reachability",
+            harness.CONFIRM_TOKEN_ZERO_ORDER_REACHABILITY,
+        ],
+    )
+    assert rc == 0
+    assert fake.urls
+    bundle = list((archive / "runtime").iterdir())[0]
+    evidence = json.loads((bundle / "FUTURES_EVIDENCE.json").read_text(encoding="utf-8"))
+    assert evidence["request_count"] == 2
+    assert evidence["network_reachability_proven"] is True
+    assert evidence["pf_xbtusd_symbol_visibility"] == "visible"
 
 
 def test_plan_only_dry_run_writes_durable_evidence(tmp_path: Path) -> None:
@@ -197,6 +220,87 @@ def test_fake_fetcher_network_path_no_sendorder(tmp_path: Path) -> None:
         assert "demo-futures.kraken.com" in url
         assert "sendorder" not in url
         assert "api.kraken.com" not in url
+    bundle = list((archive / "runtime").iterdir())[0]
+    evidence = json.loads((bundle / "FUTURES_EVIDENCE.json").read_text(encoding="utf-8"))
+    assert evidence["request_count"] == 2
+    assert "/derivatives/api/v3/tickers" in evidence["endpoints_called"]
+    assert evidence["order_attempted"] is False
+    assert evidence["fills"] == 0
+    assert evidence["pf_xbtusd_symbol_visibility"] == "visible"
+    evidence_dump = json.dumps(evidence)
+    assert '{"tickers"' not in evidence_dump
+    for call in evidence["network_calls"]:
+        assert "response_sha256" in call
+        assert call["response_size_bytes"] >= 0
+        assert set(call.keys()) == {
+            "endpoint",
+            "http_status",
+            "http_status_class",
+            "response_size_bytes",
+            "response_sha256",
+        }
+
+
+def test_assert_network_url_rejects_forbidden_host() -> None:
+    with pytest.raises(SystemExit):
+        harness._assert_network_url_allowed(
+            "https://api.kraken.com/derivatives/api/v3/tickers",
+            harness.DEFAULT_REST_BASE_URL,
+        )
+
+
+def test_assert_network_url_rejects_non_allowlisted_path() -> None:
+    with pytest.raises(SystemExit):
+        harness._assert_network_url_allowed(
+            "https://demo-futures.kraken.com/derivatives/api/v3/sendorder",
+            harness.DEFAULT_REST_BASE_URL,
+        )
+
+
+def test_tickers_path_increments_request_count_and_endpoints() -> None:
+    fetcher = _FakeFetcher(body=b'{"tickers":[{"symbol":"PF_XBTUSD"}]}')
+    result = harness.run_zero_order_public_reachability(
+        rest_base_url=harness.DEFAULT_REST_BASE_URL,
+        duration_cap_seconds=60,
+        fetcher=fetcher,
+    )
+    assert result.request_count == 2
+    assert "/derivatives/api/v3/tickers" in result.endpoints_called
+    assert result.pf_xbtusd_symbol_visibility == "visible"
+    assert result.network_reachability_proven is True
+
+
+def test_pf_xbtusd_not_visible_classification() -> None:
+    fetcher = _FakeFetcher(body=b'{"tickers":[{"symbol":"PF_ETHUSD"}]}')
+    result = harness.run_zero_order_public_reachability(
+        rest_base_url=harness.DEFAULT_REST_BASE_URL,
+        duration_cap_seconds=60,
+        fetcher=fetcher,
+    )
+    assert result.pf_xbtusd_symbol_visibility == "not_visible"
+
+
+def test_pf_xbtusd_unparseable_classification() -> None:
+    fetcher = _FakeFetcher(body=b"not-json")
+    result = harness.run_zero_order_public_reachability(
+        rest_base_url=harness.DEFAULT_REST_BASE_URL,
+        duration_cap_seconds=60,
+        fetcher=fetcher,
+    )
+    assert result.pf_xbtusd_symbol_visibility == "response_unparseable"
+
+
+def test_plan_only_network_reachability_not_proven(tmp_path: Path) -> None:
+    archive = _durable_test_archive_root(tmp_path)
+    harness.main(["--archive-root", str(archive), "--run-id", "planonly2"])
+    evidence = json.loads(
+        list((archive / "runtime").iterdir())[0].joinpath("FUTURES_EVIDENCE.json").read_text(
+            encoding="utf-8"
+        )
+    )
+    assert evidence["request_count"] == 0
+    assert evidence["network_reachability_proven"] is False
+    assert evidence["pf_xbtusd_symbol_visibility"] == "not_checked"
 
 
 def test_pe8_zero_order_spec_accepts_harness_evidence() -> None:
@@ -208,11 +312,13 @@ def test_pe8_zero_order_spec_accepts_harness_evidence() -> None:
     )
     evidence = harness.build_zero_order_evidence_payload(
         timing=timing,
-        endpoints_called=list(harness.ZERO_ORDER_PUBLIC_ENDPOINTS),
+        endpoints_called=list(harness.ZERO_ORDER_PUBLIC_ENDPOINT_ORDER),
         request_count=2,
         network_host="https://demo-futures.kraken.com",
         run_id="offline",
         pe8_pass=False,
+        network_reachability_proven=True,
+        pf_xbtusd_symbol_visibility="visible",
     )
     spec = default_bounded_futures_zero_order_reachability_v0_spec()
     result = evaluate_bounded_futures_testnet_evidence(evidence, spec=spec)

@@ -10,6 +10,7 @@ Does not authorize futures execute, orders, scheduler, live, preflight lift, or 
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import re
 import sys
@@ -17,7 +18,8 @@ import time
 from dataclasses import asdict, dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Callable, Mapping, Protocol, Sequence
+from typing import Any, Literal, Mapping, Protocol, Sequence
+from urllib import error, request
 from urllib.parse import urlparse
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -30,7 +32,6 @@ from scripts.ops.primary_evidence_retention_v0 import (
 )
 from src.ops.bounded_futures_testnet_adapter_contract_v0 import (
     DEFAULT_FUTURES_TESTNET_NETWORK_HOST,
-    FUTURES_TESTNET_ENDPOINT_ALLOWLIST,
 )
 from src.ops.bounded_futures_testnet_contract_v0 import (
     DEFAULT_INSTRUMENT,
@@ -54,6 +55,7 @@ from src.ops.bounded_futures_testnet_runtime_harness_contract_v0 import (
 )
 
 PACKAGE_MARKER = "ARCHIVE_FUTURES_TESTNET_HARNESS_V0=true"
+SAFE_PUBLIC_URLLIB_FETCHER_PRESENT = True
 HARNESS_VERSION = "archive_futures_testnet_harness_v0"
 
 DEFAULT_MODE = "zero_order_reachability_only"
@@ -76,6 +78,19 @@ ZERO_ORDER_PUBLIC_ENDPOINTS: frozenset[str] = frozenset(
         "/derivatives/api/v3/instruments",
     }
 )
+ZERO_ORDER_PUBLIC_ENDPOINT_ORDER: tuple[str, ...] = (
+    "/derivatives/api/v3/tickers",
+    "/derivatives/api/v3/instruments",
+)
+
+DEFAULT_PUBLIC_GET_TIMEOUT_SECONDS = 10.0
+
+SymbolVisibility = Literal[
+    "visible",
+    "not_visible",
+    "not_checked",
+    "response_unparseable",
+]
 
 FORBIDDEN_SPOT_ENTRYPOINT_SUBSTRINGS: tuple[str, ...] = (
     "run_testnet_session",
@@ -100,6 +115,50 @@ USAGE_EXIT = 2
 class PublicRestFetcher(Protocol):
     def fetch(self, url: str, *, timeout_seconds: float) -> tuple[int, bytes]:
         """Return HTTP status and body bytes."""
+
+
+@dataclass(frozen=True)
+class NetworkCallRecord:
+    endpoint: str
+    http_status: int
+    http_status_class: str
+    response_size_bytes: int
+    response_sha256: str
+
+
+@dataclass(frozen=True)
+class NetworkReachabilityResult:
+    endpoints_called: list[str]
+    request_count: int
+    network_calls: list[NetworkCallRecord]
+    pf_xbtusd_symbol_visibility: SymbolVisibility
+    network_reachability_proven: bool
+
+
+class SafePublicUrllibRestFetcher:
+    """Bounded stdlib urllib public GET client (demo futures allowlist only)."""
+
+    def __init__(self, rest_base_url: str) -> None:
+        self._rest_base_url = rest_base_url
+
+    def fetch(self, url: str, *, timeout_seconds: float) -> tuple[int, bytes]:
+        _assert_network_url_allowed(url, self._rest_base_url)
+        bounded_timeout = min(
+            float(timeout_seconds),
+            DEFAULT_PUBLIC_GET_TIMEOUT_SECONDS,
+            float(DEFAULT_DURATION_CAP_SECONDS),
+        )
+        req = request.Request(url, method="GET")
+        try:
+            with request.urlopen(req, timeout=bounded_timeout) as resp:
+                status = int(getattr(resp, "status", resp.getcode()))
+                return status, resp.read()
+        except error.HTTPError as exc:
+            return int(exc.code), exc.read() or b""
+
+
+def default_safe_public_rest_fetcher(rest_base_url: str) -> SafePublicUrllibRestFetcher:
+    return SafePublicUrllibRestFetcher(rest_base_url)
 
 
 @dataclass(frozen=True)
@@ -217,6 +276,46 @@ def validate_harness_namespace(
     return reasons
 
 
+def _http_status_class(status: int) -> str:
+    if 200 <= status < 300:
+        return "2xx"
+    if 300 <= status < 400:
+        return "3xx"
+    if 400 <= status < 500:
+        return "4xx"
+    if 500 <= status < 600:
+        return "5xx"
+    return "other"
+
+
+def _sha256_hex(body: bytes) -> str:
+    return hashlib.sha256(body).hexdigest()
+
+
+def classify_pf_xbtusd_symbol_visibility(
+    body: bytes,
+    *,
+    endpoint: str,
+) -> SymbolVisibility:
+    if endpoint != "/derivatives/api/v3/tickers":
+        return "not_checked"
+    if not body:
+        return "response_unparseable"
+    try:
+        payload = json.loads(body.decode("utf-8"))
+    except (json.JSONDecodeError, UnicodeDecodeError):
+        return "response_unparseable"
+    tickers: Any = payload.get("tickers") if isinstance(payload, dict) else None
+    if tickers is None and isinstance(payload, list):
+        tickers = payload
+    if not isinstance(tickers, list):
+        return "response_unparseable"
+    for entry in tickers:
+        if isinstance(entry, dict) and entry.get("symbol") == DEFAULT_FUTURES_SYMBOL:
+            return "visible"
+    return "not_visible"
+
+
 def build_zero_order_evidence_payload(
     *,
     timing: HarnessTiming,
@@ -225,8 +324,21 @@ def build_zero_order_evidence_payload(
     network_host: str,
     run_id: str,
     pe8_pass: bool,
+    network_reachability_proven: bool = False,
+    network_calls: Sequence[NetworkCallRecord] | None = None,
+    pf_xbtusd_symbol_visibility: SymbolVisibility = "not_checked",
 ) -> dict[str, Any]:
     """Evidence fields aligned with PE-8 zero-order spec."""
+    calls_payload = [
+        {
+            "endpoint": rec.endpoint,
+            "http_status": rec.http_status,
+            "http_status_class": rec.http_status_class,
+            "response_size_bytes": rec.response_size_bytes,
+            "response_sha256": rec.response_sha256,
+        }
+        for rec in (network_calls or [])
+    ]
     return {
         "session_class": DEFAULT_SESSION_CLASS,
         "order_policy": DEFAULT_ORDER_POLICY,
@@ -270,6 +382,9 @@ def build_zero_order_evidence_payload(
         "wall_clock_start_utc": timing.wall_clock_start_utc,
         "wall_clock_end_utc": timing.wall_clock_end_utc,
         "request_count": request_count,
+        "network_reachability_proven": network_reachability_proven,
+        "network_calls": calls_payload,
+        "pf_xbtusd_symbol_visibility": pf_xbtusd_symbol_visibility,
         "network_target_allowlist": sorted(ZERO_ORDER_PUBLIC_ENDPOINTS),
         "manifest_verification_expected": True,
         "bounded_futures_testnet_pass": pe8_pass,
@@ -295,20 +410,45 @@ def run_zero_order_public_reachability(
     rest_base_url: str,
     duration_cap_seconds: int,
     fetcher: PublicRestFetcher,
-) -> tuple[list[str], int]:
+) -> NetworkReachabilityResult:
     endpoints_called: list[str] = []
-    request_count = 0
+    network_calls: list[NetworkCallRecord] = []
+    symbol_visibility: SymbolVisibility = "not_checked"
     deadline = time.monotonic() + float(duration_cap_seconds)
-    for ep in sorted(ZERO_ORDER_PUBLIC_ENDPOINTS):
+    for ep in ZERO_ORDER_PUBLIC_ENDPOINT_ORDER:
+        if ep not in ZERO_ORDER_PUBLIC_ENDPOINTS:
+            continue
         if time.monotonic() > deadline:
             break
         suffix = ep.split("/derivatives/api/v3", 1)[-1]
         url = f"{rest_base_url.rstrip('/')}{suffix}"
         _assert_network_url_allowed(url, rest_base_url)
-        _ = fetcher.fetch(url, timeout_seconds=min(30.0, duration_cap_seconds))
-        request_count += 1
+        status, body = fetcher.fetch(
+            url,
+            timeout_seconds=min(DEFAULT_PUBLIC_GET_TIMEOUT_SECONDS, duration_cap_seconds),
+        )
+        visibility = classify_pf_xbtusd_symbol_visibility(body, endpoint=ep)
+        if visibility != "not_checked":
+            symbol_visibility = visibility
+        network_calls.append(
+            NetworkCallRecord(
+                endpoint=ep,
+                http_status=status,
+                http_status_class=_http_status_class(status),
+                response_size_bytes=len(body),
+                response_sha256=_sha256_hex(body),
+            )
+        )
         endpoints_called.append(ep)
-    return endpoints_called, request_count
+    request_count = len(endpoints_called)
+    proven = request_count > 0 and all(200 <= rec.http_status < 300 for rec in network_calls)
+    return NetworkReachabilityResult(
+        endpoints_called=endpoints_called,
+        request_count=request_count,
+        network_calls=network_calls,
+        pf_xbtusd_symbol_visibility=symbol_visibility,
+        network_reachability_proven=proven,
+    )
 
 
 def write_durable_evidence_bundle(
@@ -457,18 +597,22 @@ def main(argv: list[str] | None = None, *, fetcher: PublicRestFetcher | None = N
     endpoints_called: list[str] = []
     request_count = 0
 
+    network_result: NetworkReachabilityResult | None = None
     if args.execute_network:
         if args.confirm_futures_zero_order_reachability != CONFIRM_TOKEN_ZERO_ORDER_REACHABILITY:
             _die("ERR: missing or invalid --confirm-futures-zero-order-reachability token")
-        if fetcher is None:
-            _die(
-                "ERR: network execute requires injected fetcher in tests; no live urllib in CLI v0"
-            )
-        endpoints_called, request_count = run_zero_order_public_reachability(
+        active_fetcher: PublicRestFetcher = (
+            fetcher
+            if fetcher is not None
+            else default_safe_public_rest_fetcher(args.rest_base_url)
+        )
+        network_result = run_zero_order_public_reachability(
             rest_base_url=args.rest_base_url,
             duration_cap_seconds=args.duration_cap_seconds,
-            fetcher=fetcher,
+            fetcher=active_fetcher,
         )
+        endpoints_called = network_result.endpoints_called
+        request_count = network_result.request_count
         plan = HarnessPlan(**{**asdict(plan), "network_enabled": True})
 
     mono_end = time.monotonic()
@@ -488,6 +632,13 @@ def main(argv: list[str] | None = None, *, fetcher: PublicRestFetcher | None = N
         network_host=DEFAULT_FUTURES_TESTNET_NETWORK_HOST,
         run_id=args.run_id,
         pe8_pass=False,
+        network_reachability_proven=(
+            network_result.network_reachability_proven if network_result else False
+        ),
+        network_calls=network_result.network_calls if network_result else None,
+        pf_xbtusd_symbol_visibility=(
+            network_result.pf_xbtusd_symbol_visibility if network_result else "not_checked"
+        ),
     )
     evaluation = evaluate_bounded_futures_testnet_evidence(evidence, spec=spec)
     evidence["bounded_futures_testnet_pass"] = evaluation["bounded_futures_testnet_pass"]
