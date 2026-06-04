@@ -314,7 +314,9 @@ def test_gap1_rc0_observed_final_line_reflection_non_authorizing_v0() -> None:
     criteria = _gap1_section(text)
     block = _final_machine_lines(text)
 
-    assert "GAP1_EXECUTE_ENTRYPOINT_RC0_OBSERVED_FINAL_LINE_GOVERNED_REFLECTION_V0=true" in final_line
+    assert (
+        "GAP1_EXECUTE_ENTRYPOINT_RC0_OBSERVED_FINAL_LINE_GOVERNED_REFLECTION_V0=true" in final_line
+    )
     assert "GAP1_EXECUTE_ENTRYPOINT_RC0_OBSERVED=true" in final_line
     assert "OBSERVED_NOT_VERIFIED_SEMANTIC_PRESERVED=true" in final_line
     assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=false" in final_line
