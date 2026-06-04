@@ -2487,6 +2487,84 @@ This governed repo-reflection block records operator-authorized **arming policy 
 
 Policy arming lift is not execute authorization, runtime authorization, live authorization, or futures authority. Prior governed reflection blocks above remain scoped acceptance/verification only and unchanged except Final Machine Lines propagation recorded here.
 
+## NEXT_EXECUTE Explicit Authorization CLASS_4 Reflection v0
+
+NEXT_EXECUTE_CLASS4_GOVERNED_REFLECTION_V0=true
+NEXT_EXECUTE_ALLOWED=true
+ACCEPTED_MODE=NEXT_EXECUTE_EXPLICIT_AUTHORIZATION_CLASS4_DOCS_TESTS_ONLY
+OPERATOR_GO=GO_NEXT_EXECUTE_EXPLICIT_AUTHORIZATION_CLASS4_DOCS_TESTS_V0
+CLASS4_OPERATOR_GO_ACCEPTED=true
+DOCS_TESTS_ONLY=true
+GOVERNED_ACCEPTANCE_BASIS=SECTION5_WEDGE_COMPLETE+ALL_GAPS_CLOSED+PREFLIGHT_LIFT_CLASS4+OPERATOR_ARMING+NEXT_EXECUTE_OPERATOR_DECISION_RECORD
+INPUT_NEXT_EXECUTE_OPERATOR_DECISION_RECORD_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/next_execute_operator_decision_record_no_run_v0_20260604T235146Z/
+INPUT_NEXT_EXECUTE_DECISION_PACKET_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/next_execute_decision_packet_no_run_v0_20260604T235016Z/
+INPUT_NEXT_EXECUTE_CHARTER_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/next_execute_class4_decision_charter_no_run_v0_20260604T234843Z/
+INPUT_PR4014_CLOSEOUT_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/operator_arming_class4_fml_test_drift_guard_alignment_post_merge_closeout_no_run_v0_20260604T234509Z/
+INPUT_RANKING_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/repo_wide_next_safe_slice_ranking_after_operator_arming_drift_alignment_closeout_no_run_v0_20260604T234715Z/
+ALL_GAPS_CLOSED=true
+PREFLIGHT_REMAINS_BLOCKED=false
+PREFLIGHT_LIFTED_BY_CLASS4_POLICY=true
+READY_FOR_OPERATOR_ARMING=true
+ARMING_NOT_EXECUTE=true
+NEXT_EXECUTE_OPERATOR_DECISION_RECORD_REFLECTED=true
+OPERATOR_NAME=Frank Rauter
+OPERATOR_DECISION_SCOPE=NEXT_EXECUTE_AUTHORIZATION_PACKET_ONLY
+OPERATOR_CONFIRMS_READY_FOR_OPERATOR_ARMING=CONFIRMED
+OPERATOR_CONFIRMS_ARMING_NOT_EXECUTE=CONFIRMED
+OPERATOR_CONFIRMS_NEXT_EXECUTE_SCOPE=CONFIRMED
+OPERATOR_CONFIRMS_NEXT_EXECUTE_IS_NOT_RUNTIME_START=CONFIRMED
+OPERATOR_CONFIRMS_NO_SCHEDULER=CONFIRMED
+OPERATOR_CONFIRMS_NO_ORDERS=CONFIRMED
+OPERATOR_CONFIRMS_NO_LIVE=CONFIRMED
+OPERATOR_CONFIRMS_NO_FUTURES_AUTHORITY=CONFIRMED
+OPERATOR_CONFIRMS_NO_PRIVATE_API=CONFIRMED
+OPERATOR_CONFIRMS_NO_CREDENTIALS=CONFIRMED
+OPERATOR_CONFIRMS_NO_ENV_OPEN=CONFIRMED
+OPERATOR_CONFIRMS_SEPARATE_BOUNDED_EXECUTE_RUN_CHARTER_REQUIRED=CONFIRMED
+OPERATOR_CONFIRMS_PRIMARY_EVIDENCE_REQUIRED_FOR_ANY_FUTURE_RUN=CONFIRMED
+OPERATOR_CONFIRMS_ROLLBACK_AND_ABORT_CRITERIA=CONFIRMED
+GUARD_EXECUTE_NOT_AUTHORITY_LIFT=true
+EXECUTE_IS_NOT_RUNTIME_START=true
+EXECUTE_NOT_RUNTIME=true
+EXECUTE_NOT_LIVE=true
+EXECUTE_NOT_FUTURES_AUTHORITY=true
+EXECUTE_NOT_ORDERS=true
+POLICY_EXECUTE_NOT_OPERATIONAL_AUTHORIZATION=true
+MINIMAL_REMAINING_BLOCKER_CLASS=INTENTIONAL_BOUNDED_RUN_ONLY
+RUNTIME_APPROVED=false
+BOUNDED_EXECUTE_RUN_AUTHORIZED=false
+PREFLIGHT_LIFT_EXECUTED=false
+ACTUAL_PREFLIGHT_LIFT_EXECUTED=false
+FUTURES_EXECUTE_AUTHORIZED=false
+FUTURES_PRIVATE_API_AUTHORIZED=false
+FUTURES_VALIDATE_ONLY_AUTHORIZED=false
+FUTURES_SESSION_AUTHORIZED_NOW=false
+
+This governed repo-reflection block records operator-authorized **NEXT_EXECUTE policy lift** to Final Machine Lines only, under explicit CLASS_4 Operator-GO `GO_NEXT_EXECUTE_EXPLICIT_AUTHORIZATION_CLASS4_DOCS_TESTS_V0`, after NEXT_EXECUTE Operator Decision Record fulfilment (Frank Rauter, 2026-06-04T23:51:46Z). **NEXT_EXECUTE_ALLOWED=true ≠ Runtime start ≠ Scheduler start ≠ Orders ≠ Live ≠ futures authority ≠ bounded execute run.** Docs/tests policy reflection only — not runtime authorization, scheduler authorization, order authorization, live authorization, or futures authority.
+
+### NEXT_EXECUTE-policy scope (Final Machine Lines only)
+
+- `NEXT_EXECUTE_ALLOWED=true` in **Final Machine Lines only** — documents that a later separate bounded execute run charter may be prepared; not automatic activation or run authorization
+- Prior Operator Arming and ALL_GAPS_CLOSED reflection blocks remain unchanged — historical `NEXT_EXECUTE_ALLOWED=false` posture preserved in those blocks
+- Gap criteria blocks, Status block, Tier-C crosslink, synthesis block, and individual governed reflection blocks above remain unchanged where they record `NEXT_EXECUTE_ALLOWED=false` as historical scoped non-execute posture
+
+### Why runtime and run gates remain false (NEXT_EXECUTE-policy record only)
+
+- `RUNTIME_APPROVED=false`, `BOUNDED_EXECUTE_RUN_AUTHORIZED=false` — bounded execute run requires separate T3 run charter
+- `PREFLIGHT_LIFT_EXECUTED=false`, `ACTUAL_PREFLIGHT_LIFT_EXECUTED=false` — no runtime preflight lift
+- Execute policy at FML ≠ runtime start ≠ scheduler dispatch ≠ order authorization ≠ live authorization
+
+### Non-authority boundary (NEXT_EXECUTE-policy reflection does not imply)
+
+- does not set `RUNTIME_APPROVED=true` or `BOUNDED_EXECUTE_RUN_AUTHORIZED=true`
+- does not set `PREFLIGHT_LIFT_EXECUTED=true` or `ACTUAL_PREFLIGHT_LIFT_EXECUTED=true`
+- does not authorize scheduler execution, Paper, Shadow, Testnet, Live, orders, validate-only, private API, or unscoped runtime loops
+- does not grant futures authority (`FUTURES_EXECUTE_AUTHORIZED`, `FUTURES_PRIVATE_API_AUTHORIZED`, `FUTURES_VALIDATE_ONLY_AUTHORIZED`, `FUTURES_SESSION_AUTHORIZED_NOW` remain false)
+- does not modify `scripts/run_scheduler.py`, `config/scheduler/jobs.toml`, or production code in this slice
+- does not start or authorize Runtime, Paper 24/7, Shadow 24/7, or Live
+
+Policy execute lift is not runtime authorization, scheduler authorization, order authorization, live authorization, or futures authority. Prior governed reflection blocks above remain scoped acceptance/verification only and unchanged except Final Machine Lines propagation recorded here.
+
 ## Tier-C + Shadow durable evidence archive crosslink v0
 
 TIER_C_SHADOW_DURABLE_EVIDENCE_REPO_STATIC_CROSSLINK_V0=true
@@ -2655,6 +2733,15 @@ ARMING_NOT_RUNTIME=true
 ARMING_NOT_LIVE=true
 ARMING_NOT_FUTURES_AUTHORITY=true
 ARMING_NOT_ORDERS=true
+NEXT_EXECUTE_ALLOWED=true
+NEXT_EXECUTE_CLASS4_GOVERNED_REFLECTION_V0=true
+NEXT_EXECUTE_OPERATOR_DECISION_RECORD_REFLECTED=true
+EXECUTE_IS_NOT_RUNTIME_START=true
+EXECUTE_NOT_RUNTIME=true
+EXECUTE_NOT_LIVE=true
+EXECUTE_NOT_FUTURES_AUTHORITY=true
+EXECUTE_NOT_ORDERS=true
+BOUNDED_EXECUTE_RUN_AUTHORIZED=false
 RUNTIME_APPROVED=false
 RUNTIME_STARTED=false
 PAPER_STARTED=false
@@ -2806,4 +2893,3 @@ OBSERVED_JOBS_DISPATCHED=1
 OBSERVED_JOB_STARTED=paper_shadow_247_paper_only_preflight_status_v0
 UNEXPECTED_JOB_STARTED=false
 BOUNDED_ONCE_ENFORCEMENT_CANONICAL_TAG_PASS=true
-NEXT_EXECUTE_ALLOWED=false

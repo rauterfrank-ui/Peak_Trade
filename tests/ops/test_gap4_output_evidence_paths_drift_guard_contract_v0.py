@@ -824,4 +824,5 @@ def test_gap4_full_scope_class4_policy_final_line_propagation_non_authorizing_v0
     assert "PREFLIGHT_REMAINS_BLOCKED=false" in block_lines
     assert "PREFLIGHT_LIFTED_BY_CLASS4_POLICY=true" in block_lines
     assert "READY_FOR_OPERATOR_ARMING=true" in block_lines
-    assert "NEXT_EXECUTE_ALLOWED=true" not in block_lines
+    assert "NEXT_EXECUTE_ALLOWED=true" in block_lines
+    assert "EXECUTE_IS_NOT_RUNTIME_START=true" in block_lines
