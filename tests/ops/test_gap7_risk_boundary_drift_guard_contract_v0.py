@@ -255,7 +255,7 @@ def test_gap7_drift_guard_gap6_gap2a1_orthogonal_v0() -> None:
     block = _final_machine_lines(_section5_text())
     assert "GAP6_DRY_RUN_PROOF_ACCEPTED=true" in block
     assert "GAP6_DRY_RUN_RC0_OBSERVED=true" in block
-    assert "GAP6_DRY_RUN_PROOF_VERIFIED=false" in block
+    assert "GAP6_DRY_RUN_PROOF_VERIFIED=true" in block
     assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in block
     assert "GAP2A1_ENFORCEMENT_DEFAULT_ON=false" in block
     assert "GAP7_RISK_BOUNDARY_VERIFIED=true" in block

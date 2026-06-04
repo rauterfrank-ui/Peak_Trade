@@ -198,7 +198,7 @@ def test_gap5_gap4_durable_evidence_dependency_gap6_tokens_untouched_v0() -> Non
     block = _final_machine_lines(_section5_text())
     assert "GAP6_DRY_RUN_PROOF_ACCEPTED=true" in block
     assert "GAP6_DRY_RUN_RC0_OBSERVED=true" in block
-    assert "GAP6_DRY_RUN_PROOF_VERIFIED=false" in block
+    assert "GAP6_DRY_RUN_PROOF_VERIFIED=true" in block
 
 
 def test_gap5_gap4_durable_evidence_dependency_criteria_complete_does_not_close_gaps_v0() -> None:

@@ -307,10 +307,10 @@ def test_section5_gap6_dry_run_proof_accepted_final_line_reflection_non_authoriz
         assert token in section
 
     assert "GAP6_DRY_RUN_PROOF_ACCEPTED=true" in block
-    assert "GAP6_DRY_RUN_PROOF_VERIFIED=false" in block
+    assert "GAP6_DRY_RUN_PROOF_VERIFIED=true" in block
     assert "GAP6_DRY_RUN_RC0_OBSERVED=true" in block
     block_lines = {line.strip() for line in block.splitlines()}
-    assert "GAP6_DRY_RUN_PROOF_VERIFIED=true" not in block_lines
+    assert "GAP6_DRY_RUN_PROOF_VERIFIED=true" in block_lines
     assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
 
 
@@ -341,10 +341,10 @@ def test_section5_gap6_gap1_rc0_observed_final_line_reflection_non_authorizing_v
 
     assert "GAP6_DRY_RUN_RC0_OBSERVED=true" in block
     assert "GAP1_EXECUTE_ENTRYPOINT_RC0_OBSERVED=true" in block
-    assert "GAP6_DRY_RUN_PROOF_VERIFIED=false" in block
+    assert "GAP6_DRY_RUN_PROOF_VERIFIED=true" in block
     assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=false" in block
     block_lines = {line.strip() for line in block.splitlines()}
-    assert "GAP6_DRY_RUN_PROOF_VERIFIED=true" not in block_lines
+    assert "GAP6_DRY_RUN_PROOF_VERIFIED=true" in block_lines
     assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=true" not in block_lines
     assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
 
@@ -539,6 +539,50 @@ def test_section5_gap3_verified_final_line_reflection_non_authorizing_v0() -> No
     assert "GAP3_EXECUTE_COMMAND_VERIFIED=false" in gap3
     block_lines = {line.strip() for line in block.splitlines()}
     assert "GAP3_EXECUTE_COMMAND_VERIFIED=true" in block_lines
+    assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
+
+
+GAP6_VERIFIED_FINAL_LINE_REFLECTION_HEADER = (
+    "## Gap 6 Governed Dry-Run Proof Verified Final-Line Reflection v0"
+)
+
+
+def _gap6_verified_final_line_reflection_section(text: str) -> str:
+    return text.split(GAP6_VERIFIED_FINAL_LINE_REFLECTION_HEADER, 1)[1].split(
+        "## Gap 1 Governed Execute Entrypoint RC0 Observed Final-Line Reflection v0", 1
+    )[0]
+
+
+def test_section5_gap6_verified_final_line_reflection_non_authorizing_v0() -> None:
+    text = DOC.read_text(encoding="utf-8")
+    section = _gap6_verified_final_line_reflection_section(text)
+    block = _final_machine_lines(text)
+    gap6 = text.split("## Gap 6 Dry-Run Proof Criteria Contract v0", 1)[1].split(
+        "## Final Machine Lines", 1
+    )[0]
+
+    for token in (
+        "GAP6_DRY_RUN_PROOF_VERIFIED_FINAL_LINE_GOVERNED_REFLECTION_V0=true",
+        "GAP6_VERIFIED_BAR_TIER=T1_PLUS_T2_DRY_RUN_PROOF",
+        "T1_STATIC_READONLY_SUFFICIENT_FOR_GAP6_VERIFIED=false",
+        "T2_DRY_RUN_PROOF_RC0_SUFFICIENT_FOR_GAP6_VERIFIED=true",
+        "T3_BOUNDED_EXECUTE_REQUIRED_FOR_GAP6_VERIFIED=false",
+        "GAP6_VERIFIED_REQUIRES_RUNTIME_EXECUTE=false",
+        "VERIFIED_NOT_OBSERVED_NOT_ACCEPTED_SEMANTIC_PRESERVED=true",
+        "GAP6_DRY_RUN_RC0_OBSERVED=true",
+        "GAP6_DRY_RUN_PROOF_ACCEPTED=true",
+        "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=false",
+        "PREFLIGHT_REMAINS_BLOCKED=true",
+        "ALL_GAPS_CLOSED=false",
+    ):
+        assert token in section
+
+    assert "GAP6_DRY_RUN_PROOF_VERIFIED=true" in block
+    assert "GAP6_VERIFIED_BAR_TIER=T1_PLUS_T2_DRY_RUN_PROOF" in block
+    assert "GAP6_DRY_RUN_PROOF_VERIFIED=false" in gap6
+    block_lines = {line.strip() for line in block.splitlines()}
+    assert "GAP6_DRY_RUN_PROOF_VERIFIED=true" in block_lines
+    assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=true" not in block_lines
     assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
 
 
