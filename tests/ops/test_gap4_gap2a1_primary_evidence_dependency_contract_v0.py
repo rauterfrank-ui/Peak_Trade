@@ -69,7 +69,7 @@ DEPENDENCY_REQUIRED_FINAL_LINES = (
     "GAP2A1_ENFORCEMENT_DEFAULT_ON=false",
     "GAP5_STOP_REHEARSAL_EXECUTED=false",
     "GAP5_STOP_PROOF_ACCEPTED=true",
-    "GAP6_DRY_RUN_PROOF_ACCEPTED=false",
+    "GAP6_DRY_RUN_PROOF_ACCEPTED=true",
 )
 
 DEPENDENCY_FORBIDDEN_REPO_TOKENS = (
@@ -84,7 +84,6 @@ DEPENDENCY_FORBIDDEN_REPO_TOKENS = (
     "GAP2A1_TIER_COMPLETE=true",
     "GAP2A1_TIER_5_SATISFIED=true",
     "EXTERNAL_TIER_PLAN_COMPLETE=true",
-    "GAP6_DRY_RUN_PROOF_ACCEPTED=true",
     "WORKSHEET_COMPLETE=true",
     "PATH_B_LIFT_DISCUSSION_READY=true",
     "ALL_GAPS_CLOSED=true",
@@ -288,7 +287,7 @@ def test_gap4_gap2a1_dependency_gap5_gap6_orthogonal_v0() -> None:
     block = _final_machine_lines(_section5_text())
     assert "GAP5_STOP_REHEARSAL_EXECUTED=false" in block
     assert "GAP5_STOP_PROOF_ACCEPTED=true" in block
-    assert "GAP6_DRY_RUN_PROOF_ACCEPTED=false" in block
+    assert "GAP6_DRY_RUN_PROOF_ACCEPTED=true" in block
     assert "GAP6_DRY_RUN_RC0_OBSERVED=true" in block
 
 

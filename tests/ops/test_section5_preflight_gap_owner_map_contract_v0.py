@@ -281,6 +281,39 @@ def test_section5_pe11_bounded_futures_reachability_reflection_non_authorizing_v
     assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
 
 
+GAP6_ACCEPTED_FINAL_LINE_REFLECTION_HEADER = (
+    "## Gap 6 Governed Dry-Run Proof Accepted Final-Line Reflection v0"
+)
+
+
+def _gap6_accepted_final_line_reflection_section(text: str) -> str:
+    return text.split(GAP6_ACCEPTED_FINAL_LINE_REFLECTION_HEADER, 1)[1].split(
+        "## Gap 6 Governed Bounded Dry-Run RC0 Observed Evidence Reflection v0", 1
+    )[0]
+
+
+def test_section5_gap6_dry_run_proof_accepted_final_line_reflection_non_authorizing_v0() -> None:
+    text = DOC.read_text(encoding="utf-8")
+    section = _gap6_accepted_final_line_reflection_section(text)
+    block = _final_machine_lines(text)
+
+    for token in (
+        "GAP6_DRY_RUN_PROOF_ACCEPTED_FINAL_LINE_GOVERNED_REFLECTION_V0=true",
+        "ACCEPTED_NOT_VERIFIED_NOT_OBSERVED_SEMANTIC_PRESERVED=true",
+        "GAP6_DRY_RUN_PROOF_VERIFIED=false",
+        "PREFLIGHT_REMAINS_BLOCKED=true",
+        "ALL_GAPS_CLOSED=false",
+    ):
+        assert token in section
+
+    assert "GAP6_DRY_RUN_PROOF_ACCEPTED=true" in block
+    assert "GAP6_DRY_RUN_PROOF_VERIFIED=false" in block
+    assert "GAP6_DRY_RUN_RC0_OBSERVED=true" in block
+    block_lines = {line.strip() for line in block.splitlines()}
+    assert "GAP6_DRY_RUN_PROOF_VERIFIED=true" not in block_lines
+    assert "READY_FOR_OPERATOR_ARMING=true" not in block_lines
+
+
 GAP6_GAP1_FINAL_LINE_REFLECTION_HEADER = (
     "## Gap 6 Governed Dry-Run RC0 Observed Final-Line Reflection v0"
 )
