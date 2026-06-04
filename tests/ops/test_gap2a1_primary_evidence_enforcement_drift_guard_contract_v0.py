@@ -53,6 +53,13 @@ DRIFT_GUARD_REQUIRED_FINAL_LINES = (
     "GAP5_STOP_REHEARSAL_EXECUTED=false",
     "GAP5_STOP_PROOF_ACCEPTED=true",
     "GAP6_DRY_RUN_PROOF_ACCEPTED=true",
+    "TIER1_PRIMARY_EVIDENCE_ENFORCEMENT_ZERO_DISPATCH_OBSERVED=true",
+    "TIER1_PRIMARY_EVIDENCE_MANIFEST_CREATED=true",
+    "TIER1_PRIMARY_EVIDENCE_MANIFEST_VERIFY_RC=0",
+    "PRIMARY_EVIDENCE_ENFORCED=true",
+    "PRIMARY_EVIDENCE_ENFORCED_SCOPE=zero_dispatch_local_only",
+    "GAP2A1_TIER1_ENFORCEMENT_LIFTED_REPO=false",
+    "SECTION5_GAP2A1_REPO_LIFTED=false",
 )
 
 TIER1_CONTRACT_SLICE_FILE_ALLOWLIST = (
@@ -201,6 +208,25 @@ def test_gap2a1_drift_guard_gap4_verified_not_enforcement_v0() -> None:
     block = _final_machine_lines(_section5_text())
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true" in block
     assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in block
+
+
+def test_gap2a1_drift_guard_tier1_zero_dispatch_manifest_observed_final_line_v0() -> None:
+    text = _section5_text()
+    block = _final_machine_lines(text)
+    section = text.split(
+        "## Tier-1 Governed Zero-Dispatch Manifest Observed Final-Line Reflection v0", 1
+    )[1].split("## Final Machine Lines", 1)[0]
+    gap2a1 = _gap2a1_section(text)
+
+    assert "TIER1_ZERO_DISPATCH_MANIFEST_OBSERVED_FINAL_LINE_GOVERNED_REFLECTION_V0=true" in section
+    assert "OBSERVED_NOT_ENFORCED_REPO_SSOT_SEMANTIC_PRESERVED=true" in section
+    assert "PRIMARY_EVIDENCE_ENFORCED=true" in block
+    assert "PRIMARY_EVIDENCE_ENFORCED_SCOPE=zero_dispatch_local_only" in block
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in block
+    gap2a1_lines = {line.strip() for line in gap2a1.splitlines()}
+    assert "PRIMARY_EVIDENCE_ENFORCED=true" not in gap2a1_lines
+    block_lines = {line.strip() for line in block.splitlines()}
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" not in block_lines
 
 
 def test_gap2a1_drift_guard_gap5_gap6_orthogonal_v0() -> None:

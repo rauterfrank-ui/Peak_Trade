@@ -1787,6 +1787,66 @@ This contract records criteria only. It does not execute `scripts/run_scheduler.
 
 This contract does not modify `config/scheduler/jobs.toml`, does not enable any scheduler job, does not verify or activate a canonical job set, does not execute `scripts/run_scheduler.py`, does not authorize scheduler execution, does not approve runtime execution, and does not authorize Paper, Shadow, Testnet, Live, AWS, broker, or exchange activity. It does not change default-on enforcement, does not mark `READY_FOR_OPERATOR_ARMING=true`, does not lift Path B, does not lift preflight, and does not approve runtime.
 
+## Tier-1 Governed Zero-Dispatch Manifest Observed Final-Line Reflection v0
+
+TIER1_ZERO_DISPATCH_MANIFEST_OBSERVED_FINAL_LINE_GOVERNED_REFLECTION_V0=true
+TIER1_PRIMARY_EVIDENCE_ENFORCEMENT_ZERO_DISPATCH_OBSERVED=true
+TIER1_PRIMARY_EVIDENCE_MANIFEST_CREATED=true
+TIER1_PRIMARY_EVIDENCE_MANIFEST_VERIFY_RC=0
+PRIMARY_EVIDENCE_ENFORCED=true
+PRIMARY_EVIDENCE_ENFORCED_SCOPE=zero_dispatch_local_only
+ACCEPTED_MODE=TIER1_ZERO_DISPATCH_ENFORCE_MANIFEST_SCOPED_EVIDENCE_FINAL_LINE
+GOVERNED_ACCEPTANCE_BASIS=TIER1_ENFORCEMENT_BOUNDED_ONCE_ZERO_DISPATCH_WITH_MANIFEST_CLOSEOUT_V0=true
+EXTERNAL_RUNTIME_BUNDLE_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/tier1_enforcement_bounded_once_zero_dispatch_with_manifest_v0_20260604T200130Z/
+EXTERNAL_CLOSEOUT_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/tier1_enforcement_bounded_once_zero_dispatch_with_manifest_closeout_v0_20260604T200130Z/
+EXTERNAL_PRECHECK_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/tier1_enforcement_bounded_once_zero_dispatch_precheck_no_execute_v0_20260604T200024Z/
+EXTERNAL_ATTESTATION_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/attestations/gap2a1_tier1_enforcement_lifted_explicit_external_only_v0_20260604T195840Z/
+VARIANT_A_FAIL_CLOSED_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/tier1_primary_evidence_enforcement_bounded_a_fail_closed_closeout_v0_20260604T195435Z/
+OPERATOR_GO=GO_PREPARE_SECTION5_TIER1_ZERO_DISPATCH_MANIFEST_OBSERVED_REPO_REFLECTION_DOCS_TESTS_V0
+NO_RUNTIME_AUTHORITY=true
+NO_REPO_FLAG_LIFT_FROM_EXTERNAL_EVIDENCE=true
+OBSERVED_NOT_ENFORCED_REPO_SSOT_SEMANTIC_PRESERVED=true
+GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false
+GAP2A1_TIER1_ENFORCEMENT_LIFTED_REPO=false
+GAP2A1_TIER1_ENFORCEMENT_LIFTED_EXTERNAL_SESSION_ONLY=true
+SECTION5_GAP2A1_REPO_LIFTED=false
+BOUNDED_ONCE_ENFORCEMENT_ZERO_DISPATCH_PASS=true
+GAP2_CANONICAL_JOB_SET_DRY_RUN_OBSERVED=true
+GAP2_CANONICAL_JOB_SET_VERIFIED=false
+GAP3_EXECUTE_COMMAND_VERIFIED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+ALL_GAPS_CLOSED=false
+READY_FOR_OPERATOR_ARMING=false
+PATH_B_LIFT_DISCUSSION_READY=false
+NEXT_EXECUTE_ALLOWED=false
+
+This governed repo-reflection block records operator-authorized Tier-1 **zero-dispatch primary evidence enforce + manifest observed** final-line propagation only. It propagates scoped session-evidence tokens to Final Machine Lines based on bounded non-dry-run execute with impossible include-tag `__TIER1_ENFORCEMENT_ZERO_DISPATCH_V0__`, `jobs_dispatched=0`, and local `MANIFEST.sha256` verify RC=0. External evidence bundles remain pointer-based and subordinate to repo governance.
+
+### Observed final-line scope (allowed only)
+
+- external runtime/closeout MANIFEST_VERIFY_RC=0; EXECUTE_RC=0; zero tag matches; zero due jobs; zero jobs dispatched
+- `TIER1_PRIMARY_EVIDENCE_ENFORCEMENT_ZERO_DISPATCH_OBSERVED=true` in **Final Machine Lines only**
+- `TIER1_PRIMARY_EVIDENCE_MANIFEST_CREATED=true` and `TIER1_PRIMARY_EVIDENCE_MANIFEST_VERIFY_RC=0` in **Final Machine Lines only**
+- `PRIMARY_EVIDENCE_ENFORCED=true` with `PRIMARY_EVIDENCE_ENFORCED_SCOPE=zero_dispatch_local_only` in **Final Machine Lines only** (session-evidence; not repo `GAP2A1_PRIMARY_EVIDENCE_ENFORCED`)
+- `GAP2A1_TIER1_ENFORCEMENT_LIFTED_EXTERNAL_SESSION_ONLY=true` documents external attestation input context only
+- §2a.1 Primary Evidence Enforcement Contract v0 block remains criteria-only with `GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false` and `GAP2A1_TIER1_ENFORCEMENT_LIFTED=false`
+- manifest observed ≠ Gap-2a.1 repo enforcement activated; observation ≠ scheduler execution authorization for canonical jobs
+
+### Non-authority boundary (observed final-line reflection does not imply)
+
+- does not modify §2a.1 criteria to set `GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true` or `GAP2A1_TIER1_ENFORCEMENT_LIFTED=true`
+- does not set `SECTION5_GAP2A1_REPO_LIFTED=true` or `GAP2A1_TIER1_ENFORCEMENT_LIFTED_REPO=true`
+- does not set `GAP2_CANONICAL_JOB_SET_VERIFIED=true` or enable canonical tagged jobs
+- does not set `GAP3_EXECUTE_COMMAND_VERIFIED=true` in criteria or Final Machine Lines
+- does not modify Gap-6 criteria or finals beyond existing values
+- does not lift preflight (`PREFLIGHT_REMAINS_BLOCKED=true` unchanged)
+- does not set `READY_FOR_OPERATOR_ARMING=true` or `NEXT_EXECUTE_ALLOWED=true`
+- does not authorize Live, Testnet, orders, validate-only, private API, or unscoped scheduler loops
+- does not set `ALL_GAPS_CLOSED=true`
+- does not start or authorize Runtime, Paper 24/7, Shadow 24/7, or Live
+
+Evidence observation is not runtime authorization. The Tier-1 activation contract v0 block in §2a.1 remains docs/tests posture only and unchanged.
+
 ## Final Machine Lines
 
 SECTION5_OWNER_MAP_CONTRACT_V0_COMPLETE=true
@@ -1888,4 +1948,14 @@ FUTURES_PRIVATE_API_AUTHORIZED=false
 FUTURES_VALIDATE_ONLY_AUTHORIZED=false
 FUTURES_SESSION_AUTHORIZED_NOW=false
 ARCHIVE_HARNESS_SCRIPT_EXECUTE_AUTHORIZED_NOW=false
+TIER1_ZERO_DISPATCH_MANIFEST_OBSERVED_FINAL_LINE_GOVERNED_REFLECTION_V0=true
+TIER1_PRIMARY_EVIDENCE_ENFORCEMENT_ZERO_DISPATCH_OBSERVED=true
+TIER1_PRIMARY_EVIDENCE_MANIFEST_CREATED=true
+TIER1_PRIMARY_EVIDENCE_MANIFEST_VERIFY_RC=0
+PRIMARY_EVIDENCE_ENFORCED=true
+PRIMARY_EVIDENCE_ENFORCED_SCOPE=zero_dispatch_local_only
+GAP2A1_TIER1_ENFORCEMENT_LIFTED_EXTERNAL_SESSION_ONLY=true
+GAP2A1_TIER1_ENFORCEMENT_LIFTED_REPO=false
+SECTION5_GAP2A1_REPO_LIFTED=false
+BOUNDED_ONCE_ENFORCEMENT_ZERO_DISPATCH_PASS=true
 NEXT_EXECUTE_ALLOWED=false
