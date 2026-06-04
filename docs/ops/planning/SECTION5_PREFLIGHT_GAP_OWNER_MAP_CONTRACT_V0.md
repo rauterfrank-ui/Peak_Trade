@@ -2110,7 +2110,7 @@ This governed repo-reflection block consolidates Section-5 **final-line aligned*
 - `GAP6_DRY_RUN_PROOF_VERIFIED=true` in Final Machine Lines (PR #4004); `GAP6_VERIFIED_BAR_TIER=T1_PLUS_T2_DRY_RUN_PROOF`; Gap-6 criteria block remains `GAP6_DRY_RUN_PROOF_VERIFIED=false`
 - `SECTION5_VERIFIED_BAR_CHAIN_GAPS_1_2_3_6_COMPLETE=true` in **this synthesis block only** — documents verified-bar chain alignment; does not set `ALL_GAPS_CLOSED=true`
 - `GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=true` in Final Machine Lines (PR #3968)
-- `GAP5_STOP_PROOF_ACCEPTED=true` in Final Machine Lines (PR #3967); `GAP5_STOP_REHEARSAL_EXECUTED=true` in Final Machine Lines (PR #4007 rehearsal verified-bar reflection; `GAP5_STOP_REHEARSAL_EXECUTED_SOURCE=external_archive_bundle_t2`; `INPUT_GAP5_CLOSEOUT_POINTER` → `gap5_stop_rehearsal_verified_bar_reflection_post_merge_closeout_no_run_v0_20260604T220658Z/`); Gap-5 criteria block remains `GAP5_STOP_REHEARSAL_EXECUTED=false`
+- `GAP5_STOP_PROOF_ACCEPTED=true` in Final Machine Lines (PR #3967); `GAP5_STOP_REHEARSAL_EXECUTED=true` in Final Machine Lines (PR #4007 rehearsal verified-bar reflection; `GAP5_STOP_REHEARSAL_EXECUTED_SOURCE=external_archive_bundle_t2`; `INPUT_GAP5_CLOSEOUT_POINTER` → `gap5_stop_rehearsal_verified_bar_reflection_post_merge_closeout_no_run_v0_20260604T220658Z&#47;`); Gap-5 criteria block remains `GAP5_STOP_REHEARSAL_EXECUTED=false`
 - `GAP7_RISK_BOUNDARY_VERIFIED=true` in Final Machine Lines (PR #3966)
 - `GAP2A1_TIER0_OPERATOR_ACCEPTED=true` from external acceptance bundle (pointer-based; not enforcement ON)
 - `GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false`, `GAP2A1_TIER1_ENFORCEMENT_LIFTED_REPO=false`, `SECTION5_GAP2A1_REPO_LIFTED=false` by design
