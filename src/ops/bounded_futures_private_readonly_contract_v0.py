@@ -263,9 +263,10 @@ def build_private_readonly_http_request(
     if url_reasons:
         raise ValueError(url_reasons[0])
     nonce_value = nonce if nonce is not None else str(int(time.time() * 1000))
+    sign_path = _endpoint_path_suffix(endpoint_path)
     authent = compute_futures_private_authent(
         api_secret_b64=api_secret_b64,
-        endpoint_path=endpoint_path,
+        endpoint_path=sign_path,
         post_data="",
         nonce=nonce_value,
     )
