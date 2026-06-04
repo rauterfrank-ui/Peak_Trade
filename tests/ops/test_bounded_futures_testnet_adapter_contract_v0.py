@@ -21,7 +21,11 @@ from src.ops.bounded_futures_testnet_adapter_contract_v0 import (
     default_offline_adapter_binding,
     validate_futures_testnet_adapter_binding,
 )
-from src.ops.bounded_futures_testnet_contract_v0 import FUTURES_SESSION_AUTHORIZED_NOW
+from src.ops.bounded_futures_testnet_contract_v0 import (
+    DEFAULT_INSTRUMENT,
+    FUTURES_SESSION_AUTHORIZED_NOW,
+    REJECTED_FUTURES_INSTRUMENT_PLACEHOLDERS,
+)
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 ADAPTER_MODULE = REPO_ROOT / "src" / "ops" / "bounded_futures_testnet_adapter_contract_v0.py"
@@ -54,9 +58,31 @@ def test_futures_session_and_network_not_authorized() -> None:
 
 def test_default_binding_passes_offline_validation() -> None:
     binding = default_offline_adapter_binding()
+    assert binding.instrument == "PF_XBTUSD"
+    assert binding.instrument == DEFAULT_INSTRUMENT
     result = validate_futures_testnet_adapter_binding(binding)
     assert result["adapter_binding_pass"] is True
     assert result["fail_reasons"] == []
+
+
+def test_btcusdt_placeholder_instrument_fails_adapter_binding() -> None:
+    binding = default_offline_adapter_binding()
+    bad = BoundedFuturesTestnetAdapterBinding(
+        adapter_id=binding.adapter_id,
+        instrument="BTCUSDT",
+        market_type=binding.market_type,
+        margin_mode=binding.margin_mode,
+        max_leverage=binding.max_leverage,
+        position_mode=binding.position_mode,
+        network_host=binding.network_host,
+        endpoint_allowlist=binding.endpoint_allowlist,
+        reduce_only_supported=binding.reduce_only_supported,
+        testnet_scoped=binding.testnet_scoped,
+        order_side_semantics=binding.order_side_semantics,
+    )
+    assert "BTCUSDT" in REJECTED_FUTURES_INSTRUMENT_PLACEHOLDERS
+    result = validate_futures_testnet_adapter_binding(bad)
+    assert result["adapter_binding_pass"] is False
 
 
 def test_spot_endpoint_in_endpoints_called_fails() -> None:

@@ -14,8 +14,10 @@ PACKAGE_MARKER = "BOUNDED_FUTURES_TESTNET_CONTRACT_V0=true"
 FUTURES_SESSION_AUTHORIZED_NOW = False
 DEFAULT_SESSION_CLASS = "bounded-futures-normal-testnet-v0"
 DEFAULT_ORDER_POLICY = "normal-testnet-futures-bounded"
-DEFAULT_INSTRUMENT = "BTCUSDT"
+DEFAULT_INSTRUMENT = "PF_XBTUSD"
 DEFAULT_MARKET_TYPE = "futures"
+# Binance-style placeholder — must not be used as bounded futures testnet default.
+REJECTED_FUTURES_INSTRUMENT_PLACEHOLDERS: frozenset[str] = frozenset({"BTCUSDT"})
 DEFAULT_MARGIN_MODE = "isolated"
 DEFAULT_POSITION_MODE = "one_way"
 DEFAULT_MAX_LEVERAGE = 5.0
@@ -114,6 +116,10 @@ def spot_evidence_misclassified_as_futures(evidence: dict[str, Any]) -> list[str
     if session_class in SPOT_SESSION_CLASSES:
         reasons.append(f"session_class {session_class!r} is spot-tier, not futures")
     instrument = evidence.get("instrument")
+    if instrument in REJECTED_FUTURES_INSTRUMENT_PLACEHOLDERS:
+        reasons.append(
+            f"instrument {instrument!r} is a rejected futures placeholder (use Kraken-native symbol)"
+        )
     if instrument in SPOT_INSTRUMENTS:
         reasons.append(f"instrument {instrument!r} is spot, not futures perpetual")
     market_type = evidence.get("market_type")

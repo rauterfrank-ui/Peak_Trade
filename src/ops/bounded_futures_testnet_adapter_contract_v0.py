@@ -17,6 +17,7 @@ from src.ops.bounded_futures_testnet_contract_v0 import (
     DEFAULT_MAX_LEVERAGE,
     DEFAULT_POSITION_MODE,
     FUTURES_SESSION_AUTHORIZED_NOW,
+    REJECTED_FUTURES_INSTRUMENT_PLACEHOLDERS,
     SPOT_KRAKEN_ENDPOINT_PREFIXES,
 )
 
@@ -102,6 +103,10 @@ def validate_futures_testnet_adapter_binding(
         result["fail_reasons"].append(f"market_type must be {DEFAULT_MARKET_TYPE!r}")
     if not binding.instrument:
         result["fail_reasons"].append("instrument required")
+    if binding.instrument in REJECTED_FUTURES_INSTRUMENT_PLACEHOLDERS:
+        result["fail_reasons"].append(
+            f"instrument {binding.instrument!r} is a rejected futures placeholder"
+        )
     if binding.margin_mode != DEFAULT_MARGIN_MODE:
         result["fail_reasons"].append(f"margin_mode must be {DEFAULT_MARGIN_MODE!r}")
     if binding.margin_mode == "cross":
