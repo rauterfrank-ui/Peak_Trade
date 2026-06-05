@@ -411,8 +411,7 @@ def test_section5_preflight_lift_class4_reflection_non_authorizing_v0() -> None:
         assert token in reflection
 
     assert (
-        "INPUT_GO_RECORDING_POINTER="
-        in reflection
+        "INPUT_GO_RECORDING_POINTER=" in reflection
         and "preflight_lift_explicit_operator_authorization_class4_operator_go_recording_no_run_v0_20260605T155500Z"
         in reflection
     )
