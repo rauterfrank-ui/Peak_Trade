@@ -2277,8 +2277,16 @@ ACCEPTED_MODE=PREFLIGHT_LIFT_EXPLICIT_OPERATOR_AUTHORIZATION_CLASS4_DOCS_TESTS_O
 OPERATOR_GO=GO_PREFLIGHT_LIFT_EXPLICIT_OPERATOR_AUTHORIZATION_CLASS4_DOCS_TESTS_V0
 CLASS4_OPERATOR_GO_ACCEPTED=true
 DOCS_TESTS_ONLY=true
-GOVERNED_ACCEPTANCE_BASIS=SECTION5_WEDGE_COMPLETE+G1_OPERATOR_DECISION_RECORD+CLASS4_AUTHORITY_CHARTER+ALL_GAPS_POST_GAP4_PRECHECK
+CLASS4_DOCS_TESTS_SCOPE_AUTHORIZED=true
+OPERATOR_ACKNOWLEDGES_HIGH_AUTHORITY_RISK=true
+OPERATIONAL_PREFLIGHT_LIFT_AUTHORIZED=false
+GATE_AUTHORITY_LIFTED=false
+LIVE_AUTHORIZATION_REMAINS_FALSE=true
+PROVEN_VS_AUTHORIZED_SEPARATED=true
+GO_RECORDING_PASS=true
+GOVERNED_ACCEPTANCE_BASIS=SECTION5_WEDGE_COMPLETE+G1_OPERATOR_DECISION_RECORD+CLASS4_AUTHORITY_CHARTER+ALL_GAPS_POST_GAP4_PRECHECK+CLASS4_OPERATOR_GO_RECORDING
 G1_OPERATOR_DECISION_RECORD_FULFILLED=true
+INPUT_GO_RECORDING_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/preflight_lift_explicit_operator_authorization_class4_operator_go_recording_no_run_v0_20260605T155500Z/
 INPUT_OPERATOR_DECISION_RECORD_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/preflight_lift_operator_decision_record_no_run_v0_20260604T225729Z/
 INPUT_OPERATOR_DECISION_PACKET_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/preflight_lift_operator_decision_packet_no_run_v0_20260604T225547Z/
 INPUT_PREFLIGHT_CHARTER_REFRESH_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/preflight_lift_explicit_operator_authorization_charter_refresh_no_run_v0_20260604T225345Z/
@@ -2341,13 +2349,17 @@ This governed repo-reflection block records operator-authorized **preflight poli
 
 ### Non-authority boundary (preflight-lift reflection does not imply)
 
+- `CLASS4_DOCS_TESTS_SCOPE_AUTHORIZED=true` records operator GO recording and docs/tests policy reflection only — not operational authorization
+- `OPERATIONAL_PREFLIGHT_LIFT_AUTHORIZED=false`, `GATE_AUTHORITY_LIFTED=false` — no runtime or operational gate lift from this slice
+- `LIVE_AUTHORIZATION_REMAINS_FALSE=true`, `PROVEN_VS_AUTHORIZED_SEPARATED=true` — reachability/verified-bar proof does not imply live or execute authorization
 - does not set `READY_FOR_OPERATOR_ARMING=true` or `NEXT_EXECUTE_ALLOWED=true`
 - does not set `ALL_GAPS_CLOSED=true`
 - does not set `PREFLIGHT_LIFT_EXECUTED=true` or `ACTUAL_PREFLIGHT_LIFT_EXECUTED=true`
-- does not authorize scheduler execution, Paper, Shadow, Testnet, Live, orders, validate-only, private API, or unscoped runtime loops
+- does not authorize scheduler execution, Paper, Shadow, Testnet, Live, orders, validate-only, private API, credentials, network, endpoint/exchange calls, or unscoped runtime loops
 - does not grant futures authority (`FUTURES_EXECUTE_AUTHORIZED`, `FUTURES_PRIVATE_API_AUTHORIZED`, `FUTURES_VALIDATE_ONLY_AUTHORIZED`, `FUTURES_SESSION_AUTHORIZED_NOW` remain false)
 - does not modify `scripts/run_scheduler.py`, `config/scheduler/jobs.toml`, or production code in this slice
 - does not start or authorize Runtime, Paper 24/7, Shadow 24/7, or Live
+- any later operational lift requires separate CLASS_4 operator decision/recording — not derivable from this docs/tests slice alone
 
 Policy preflight lift is not operator arming, runtime authorization, execute authorization, live authorization, or futures authority. Prior governed reflection blocks above remain scoped acceptance/verification only and unchanged except Final Machine Lines propagation recorded here.
 
