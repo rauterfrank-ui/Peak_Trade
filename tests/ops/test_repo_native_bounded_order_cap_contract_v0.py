@@ -102,7 +102,10 @@ def test_section5_next_execute_policy_lift_does_not_authorize_runtime() -> None:
     assert "BOUNDED_EXECUTE_RUN_IS_NOT_LIVE=true" in final_lines
     assert "BOUNDED_EXECUTE_RUN_IS_NOT_RUNTIME_START=true" in final_lines
     assert "BOUNDED_EXECUTE_RUN_NOT_ORDERS=true" in final_lines
-    assert "T3_BOUNDED_EXECUTE_RUN_ATTEMPT_AUTHORIZED=false" in final_lines
+    assert "T3_BOUNDED_EXECUTE_RUN_ATTEMPT_AUTHORIZED=true" in final_lines
+    assert "T3_BOUNDED_EXECUTE_RUN_ATTEMPT_IS_NOT_RUNTIME_START=true" in final_lines
+    assert "CONCRETE_RUN_AUTHORIZED=false" in final_lines
+    assert "T3_RUN_ATTEMPT_EXECUTE_ALLOWED_NOW=false" in final_lines
     assert "RUNTIME_STARTED=false" in final_lines
     assert "PREFLIGHT_LIFT_EXECUTED=false" in final_lines
 
