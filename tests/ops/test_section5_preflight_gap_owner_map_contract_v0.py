@@ -164,6 +164,9 @@ T3_BOUNDED_EXECUTE_RUN_ATTEMPT_CLASS4_REFLECTION_HEADER = (
 T3_RUN_ATTEMPT_EXECUTE_CLASS4_REFLECTION_HEADER = (
     "## T3_RUN_ATTEMPT_EXECUTE Explicit Authorization CLASS_4 Reflection v0"
 )
+T3_PLAN_ONLY_CLOSEOUT_CLASS4_REFLECTION_HEADER = (
+    "## T3 Plan-only Closeout CLASS_4 Reflection v0"
+)
 TIER_C_SHADOW_CROSSLINK_HEADER = "## Tier-C + Shadow durable evidence archive crosslink v0"
 FINAL_MACHINE_LINES_HEADER = "## Final Machine Lines"
 
@@ -212,6 +215,12 @@ def _t3_bounded_execute_run_attempt_class4_reflection_section(text: str) -> str:
 
 def _t3_run_attempt_execute_class4_reflection_section(text: str) -> str:
     return text.split(T3_RUN_ATTEMPT_EXECUTE_CLASS4_REFLECTION_HEADER, 1)[1].split(
+        T3_PLAN_ONLY_CLOSEOUT_CLASS4_REFLECTION_HEADER, 1
+    )[0]
+
+
+def _t3_plan_only_closeout_class4_reflection_section(text: str) -> str:
+    return text.split(T3_PLAN_ONLY_CLOSEOUT_CLASS4_REFLECTION_HEADER, 1)[1].split(
         TIER_C_SHADOW_CROSSLINK_HEADER, 1
     )[0]
 
@@ -702,6 +711,57 @@ def test_section5_t3_run_attempt_execute_explicit_authorization_class4_non_autho
     assert "CONCRETE_RUN_AUTHORIZED=false" in block_lines
     assert "T3_CONCRETE_RUN_GO_REQUIRED=true" in block_lines
     assert "T3_RUN_ATTEMPT_EXECUTE_ALLOWED_NOW=false" in block_lines
+    assert "FUTURES_EXECUTE_AUTHORIZED=true" not in block_lines
+
+
+def test_section5_t3_plan_only_closeout_class4_non_authorizing_v0() -> None:
+    text = DOC.read_text(encoding="utf-8")
+    reflection = _t3_plan_only_closeout_class4_reflection_section(text)
+    execute_policy = _t3_run_attempt_execute_class4_reflection_section(text)
+    block = _final_machine_lines(text)
+
+    for token in (
+        "T3_PLAN_ONLY_CLOSEOUT_CLASS4_GOVERNED_REFLECTION_V0=true",
+        "T3_PLAN_ONLY_EXECUTE_CLOSEOUT_REFLECTED=true",
+        "T3_BOUNDED_EXECUTE_RUN_ATTEMPT_PLAN_ONLY_COMPLETED=true",
+        "PLAN_ONLY_EXECUTE_RC=0",
+        "T3_PLAN_ONLY_EXECUTE_CLOSEOUT_PASSED=true",
+        "ACCEPTED_MODE=T3_PLAN_ONLY_CLOSEOUT_DOCS_TESTS_ONLY",
+        "OPERATOR_GO=GO_T3_PLAN_ONLY_CLOSEOUT_DOCS_TESTS_POLICY_REFLECTION_V0",
+        "CLASS4_OPERATOR_GO_ACCEPTED=true",
+        "GUARD_T3_PLAN_ONLY_NOT_AUTHORITY_LIFT=true",
+        "T3_PLAN_ONLY_EXECUTE_IS_NOT_RUNTIME_START=true",
+        "T3_PLAN_ONLY_EXECUTE_IS_NOT_LIVE=true",
+        "T3_PLAN_ONLY_EXECUTE_NOT_RUNTIME=true",
+        "T3_PLAN_ONLY_EXECUTE_NOT_ORDERS=true",
+        "CONCRETE_RUN_AUTHORIZED=false",
+        "T3_RUN_ATTEMPT_EXECUTE_ALLOWED_NOW=false",
+        "NEXT_RUNTIME_STAGE_REQUIRES_SEPARATE_CHARTER=true",
+        "RUNTIME_STARTED=false",
+        "SCHEDULER_STARTED=false",
+        "ORDERS_ATTEMPTED=false",
+        "PRIVATE_API_USED=false",
+        "CREDENTIALS_READ=false",
+        "ENV_FILE_OPENED=false",
+        "FUTURES_EXECUTE_AUTHORIZED=false",
+        "FUTURES_PRIVATE_API_AUTHORIZED=false",
+        "FUTURES_VALIDATE_ONLY_AUTHORIZED=false",
+        "FUTURES_SESSION_AUTHORIZED_NOW=false",
+    ):
+        assert token in reflection
+
+    assert "INPUT_T3_PLAN_ONLY_CLOSEOUT_POINTER=" in reflection
+    assert "INPUT_T3_PLAN_ONLY_EVIDENCE_RUN_ROOT_POINTER=" in reflection
+    assert "T3_PLAN_ONLY_EXECUTE_CLOSEOUT_REFLECTED=true ≠ Runtime start" in reflection
+    assert "does not set `T3_RUN_ATTEMPT_EXECUTE_ALLOWED_NOW=true`" in reflection
+    assert "T3_PLAN_ONLY_EXECUTE_CLOSEOUT_REFLECTED=true" not in execute_policy
+    block_lines = {line.strip() for line in block.splitlines()}
+    assert "T3_PLAN_ONLY_EXECUTE_CLOSEOUT_REFLECTED=true" in block_lines
+    assert "T3_BOUNDED_EXECUTE_RUN_ATTEMPT_PLAN_ONLY_COMPLETED=true" in block_lines
+    assert "T3_PLAN_ONLY_EXECUTE_CLOSEOUT_PASSED=true" in block_lines
+    assert "NEXT_RUNTIME_STAGE_REQUIRES_SEPARATE_CHARTER=true" in block_lines
+    assert "T3_RUN_ATTEMPT_EXECUTE_ALLOWED_NOW=false" in block_lines
+    assert "CONCRETE_RUN_AUTHORIZED=false" in block_lines
     assert "FUTURES_EXECUTE_AUTHORIZED=true" not in block_lines
 
 

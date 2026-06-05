@@ -280,6 +280,9 @@ def test_section5_next_execute_policy_lift_does_not_authorize_runtime() -> None:
     assert "T3_RUN_ATTEMPT_READINESS_PREFLIGHT_REQUIRED=true" in final_lines
     assert "CONCRETE_RUN_AUTHORIZED=false" in final_lines
     assert "T3_RUN_ATTEMPT_EXECUTE_ALLOWED_NOW=false" in final_lines
+    assert "T3_PLAN_ONLY_EXECUTE_CLOSEOUT_REFLECTED=true" in final_lines
+    assert "T3_BOUNDED_EXECUTE_RUN_ATTEMPT_PLAN_ONLY_COMPLETED=true" in final_lines
+    assert "NEXT_RUNTIME_STAGE_REQUIRES_SEPARATE_CHARTER=true" in final_lines
     assert "RUNTIME_STARTED=false" in final_lines
     assert "PREFLIGHT_LIFT_EXECUTED=false" in final_lines
 
