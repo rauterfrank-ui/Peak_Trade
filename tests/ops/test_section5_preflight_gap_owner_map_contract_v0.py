@@ -387,6 +387,13 @@ def test_section5_preflight_lift_class4_reflection_non_authorizing_v0() -> None:
         "ACCEPTED_MODE=PREFLIGHT_LIFT_EXPLICIT_OPERATOR_AUTHORIZATION_CLASS4_DOCS_TESTS_ONLY",
         "OPERATOR_GO=GO_PREFLIGHT_LIFT_EXPLICIT_OPERATOR_AUTHORIZATION_CLASS4_DOCS_TESTS_V0",
         "CLASS4_OPERATOR_GO_ACCEPTED=true",
+        "CLASS4_DOCS_TESTS_SCOPE_AUTHORIZED=true",
+        "OPERATOR_ACKNOWLEDGES_HIGH_AUTHORITY_RISK=true",
+        "OPERATIONAL_PREFLIGHT_LIFT_AUTHORIZED=false",
+        "GATE_AUTHORITY_LIFTED=false",
+        "LIVE_AUTHORIZATION_REMAINS_FALSE=true",
+        "PROVEN_VS_AUTHORIZED_SEPARATED=true",
+        "GO_RECORDING_PASS=true",
         "G1_OPERATOR_DECISION_RECORD_FULFILLED=true",
         "POLICY_LIFT_NOT_OPERATIONAL_AUTHORIZATION=true",
         "PREFLIGHT_LIFT_DOES_NOT_CLOSE_ALL_GAPS=true",
@@ -403,7 +410,15 @@ def test_section5_preflight_lift_class4_reflection_non_authorizing_v0() -> None:
     ):
         assert token in reflection
 
+    assert (
+        "INPUT_GO_RECORDING_POINTER=" in reflection
+        and "preflight_lift_explicit_operator_authorization_class4_operator_go_recording_no_run_v0_20260605T155500Z"
+        in reflection
+    )
     assert "Preflight lift ≠ operator arming ≠ execute ≠ live ≠ futures authority" in reflection
+    assert "OPERATIONAL_PREFLIGHT_LIFT_AUTHORIZED=false" in reflection
+    assert "GATE_AUTHORITY_LIFTED=false" in reflection
+    assert "PROVEN_VS_AUTHORIZED_SEPARATED=true" in reflection
     assert "does not set `ALL_GAPS_CLOSED=true`" in reflection
     assert "does not set `READY_FOR_OPERATOR_ARMING=true`" in reflection
     assert "PREFLIGHT_REMAINS_BLOCKED=true" in synthesis
