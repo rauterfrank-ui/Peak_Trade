@@ -202,9 +202,9 @@ def _bounded_execute_run_class4_reflection_section(text: str) -> str:
 
 
 def _t3_bounded_execute_run_attempt_class4_reflection_section(text: str) -> str:
-    return text.split(T3_BOUNDED_EXECUTE_RUN_ATTEMPT_CLASS4_REFLECTION_HEADER, 1)[
-        1
-    ].split(TIER_C_SHADOW_CROSSLINK_HEADER, 1)[0]
+    return text.split(T3_BOUNDED_EXECUTE_RUN_ATTEMPT_CLASS4_REFLECTION_HEADER, 1)[1].split(
+        TIER_C_SHADOW_CROSSLINK_HEADER, 1
+    )[0]
 
 
 def _final_machine_lines(text: str) -> str:
