@@ -164,9 +164,7 @@ T3_BOUNDED_EXECUTE_RUN_ATTEMPT_CLASS4_REFLECTION_HEADER = (
 T3_RUN_ATTEMPT_EXECUTE_CLASS4_REFLECTION_HEADER = (
     "## T3_RUN_ATTEMPT_EXECUTE Explicit Authorization CLASS_4 Reflection v0"
 )
-T3_PLAN_ONLY_CLOSEOUT_CLASS4_REFLECTION_HEADER = (
-    "## T3 Plan-only Closeout CLASS_4 Reflection v0"
-)
+T3_PLAN_ONLY_CLOSEOUT_CLASS4_REFLECTION_HEADER = "## T3 Plan-only Closeout CLASS_4 Reflection v0"
 TIER_C_SHADOW_CROSSLINK_HEADER = "## Tier-C + Shadow durable evidence archive crosslink v0"
 FINAL_MACHINE_LINES_HEADER = "## Final Machine Lines"
 
