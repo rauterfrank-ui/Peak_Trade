@@ -49,6 +49,7 @@ jobs:
             --health reports/status/prj_health_summary.json
 
       - name: Upload artifact
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: live_readiness_scorecard
