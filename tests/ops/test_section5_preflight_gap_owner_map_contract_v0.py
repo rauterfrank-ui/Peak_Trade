@@ -161,6 +161,9 @@ BOUNDED_EXECUTE_RUN_CLASS4_REFLECTION_HEADER = (
 T3_BOUNDED_EXECUTE_RUN_ATTEMPT_CLASS4_REFLECTION_HEADER = (
     "## T3_BOUNDED_EXECUTE_RUN_ATTEMPT Explicit Authorization CLASS_4 Reflection v0"
 )
+T3_RUN_ATTEMPT_EXECUTE_CLASS4_REFLECTION_HEADER = (
+    "## T3_RUN_ATTEMPT_EXECUTE Explicit Authorization CLASS_4 Reflection v0"
+)
 TIER_C_SHADOW_CROSSLINK_HEADER = "## Tier-C + Shadow durable evidence archive crosslink v0"
 FINAL_MACHINE_LINES_HEADER = "## Final Machine Lines"
 
@@ -203,6 +206,12 @@ def _bounded_execute_run_class4_reflection_section(text: str) -> str:
 
 def _t3_bounded_execute_run_attempt_class4_reflection_section(text: str) -> str:
     return text.split(T3_BOUNDED_EXECUTE_RUN_ATTEMPT_CLASS4_REFLECTION_HEADER, 1)[1].split(
+        T3_RUN_ATTEMPT_EXECUTE_CLASS4_REFLECTION_HEADER, 1
+    )[0]
+
+
+def _t3_run_attempt_execute_class4_reflection_section(text: str) -> str:
+    return text.split(T3_RUN_ATTEMPT_EXECUTE_CLASS4_REFLECTION_HEADER, 1)[1].split(
         TIER_C_SHADOW_CROSSLINK_HEADER, 1
     )[0]
 
@@ -632,6 +641,64 @@ def test_section5_t3_bounded_execute_run_attempt_explicit_authorization_class4_n
     assert "T3_BOUNDED_EXECUTE_RUN_ATTEMPT_CLASS4_GOVERNED_REFLECTION_V0=true" in block_lines
     assert "T3_BOUNDED_EXECUTE_RUN_ATTEMPT_IS_NOT_RUNTIME_START=true" in block_lines
     assert "T3_BOUNDED_EXECUTE_RUN_ATTEMPT_IS_NOT_LIVE=true" in block_lines
+    assert "CONCRETE_RUN_AUTHORIZED=false" in block_lines
+    assert "T3_CONCRETE_RUN_GO_REQUIRED=true" in block_lines
+    assert "T3_RUN_ATTEMPT_EXECUTE_ALLOWED_NOW=false" in block_lines
+    assert "FUTURES_EXECUTE_AUTHORIZED=true" not in block_lines
+
+
+def test_section5_t3_run_attempt_execute_explicit_authorization_class4_non_authorizing_v0() -> None:
+    text = DOC.read_text(encoding="utf-8")
+    reflection = _t3_run_attempt_execute_class4_reflection_section(text)
+    t3_policy = _t3_bounded_execute_run_attempt_class4_reflection_section(text)
+    block = _final_machine_lines(text)
+
+    for token in (
+        "T3_RUN_ATTEMPT_EXECUTE_CLASS4_GOVERNED_REFLECTION_V0=true",
+        "T3_RUN_ATTEMPT_EXECUTE_AUTHORIZED=true",
+        "ACCEPTED_MODE=T3_RUN_ATTEMPT_EXECUTE_EXPLICIT_AUTHORIZATION_CLASS4_DOCS_TESTS_ONLY",
+        "OPERATOR_GO=GO_T3_RUN_ATTEMPT_EXECUTE_DOCS_TESTS_POLICY_REFLECTION_V0",
+        "CLASS4_OPERATOR_GO_ACCEPTED=true",
+        "T3_RUN_ATTEMPT_EXECUTE_OPERATOR_DECISION_RECORD_REFLECTED=true",
+        "GUARD_T3_EXECUTE_NOT_AUTHORITY_LIFT=true",
+        "T3_RUN_ATTEMPT_EXECUTE_IS_NOT_RUNTIME_START=true",
+        "T3_RUN_ATTEMPT_EXECUTE_NOT_RUNTIME=true",
+        "T3_RUN_ATTEMPT_EXECUTE_IS_NOT_LIVE=true",
+        "T3_RUN_ATTEMPT_EXECUTE_NOT_FUTURES_AUTHORITY=true",
+        "T3_RUN_ATTEMPT_EXECUTE_NOT_ORDERS=true",
+        "CONCRETE_RUN_AUTHORIZED=false",
+        "T3_CONCRETE_RUN_GO_REQUIRED=true",
+        "T3_RUN_ATTEMPT_READINESS_PREFLIGHT_REQUIRED=true",
+        "T3_RUN_ATTEMPT_EXECUTE_ALLOWED_NOW=false",
+        "T3_BOUNDED_EXECUTE_RUN_ATTEMPT_AUTHORIZED=true",
+        "T3_BOUNDED_EXECUTE_RUN_ATTEMPT_OPERATOR_DECISION_RECORD_REFLECTED=true",
+        "ALL_GAPS_CLOSED=true",
+        "PREFLIGHT_REMAINS_BLOCKED=false",
+        "PREFLIGHT_LIFTED_BY_CLASS4_POLICY=true",
+        "RUNTIME_APPROVED=false",
+        "RUNTIME_STARTED=false",
+        "SCHEDULER_STARTED=false",
+        "ORDERS_ATTEMPTED=false",
+        "PRIVATE_API_USED=false",
+        "CREDENTIALS_READ=false",
+        "ENV_FILE_OPENED=false",
+        "FUTURES_EXECUTE_AUTHORIZED=false",
+        "FUTURES_PRIVATE_API_AUTHORIZED=false",
+        "FUTURES_VALIDATE_ONLY_AUTHORIZED=false",
+        "FUTURES_SESSION_AUTHORIZED_NOW=false",
+    ):
+        assert token in reflection
+
+    assert "T3_RUN_ATTEMPT_EXECUTE_AUTHORIZED=true ≠ Runtime start" in reflection
+    assert "does not set `RUNTIME_APPROVED=true`" in reflection
+    assert "T3_RUN_ATTEMPT_EXECUTE_AUTHORIZED=false" not in t3_policy
+    block_lines = {line.strip() for line in block.splitlines()}
+    assert "T3_RUN_ATTEMPT_EXECUTE_AUTHORIZED=true" in block_lines
+    assert "T3_RUN_ATTEMPT_EXECUTE_CLASS4_GOVERNED_REFLECTION_V0=true" in block_lines
+    assert "T3_RUN_ATTEMPT_EXECUTE_OPERATOR_DECISION_RECORD_REFLECTED=true" in block_lines
+    assert "T3_RUN_ATTEMPT_EXECUTE_IS_NOT_RUNTIME_START=true" in block_lines
+    assert "T3_RUN_ATTEMPT_EXECUTE_IS_NOT_LIVE=true" in block_lines
+    assert "T3_RUN_ATTEMPT_READINESS_PREFLIGHT_REQUIRED=true" in block_lines
     assert "CONCRETE_RUN_AUTHORIZED=false" in block_lines
     assert "T3_CONCRETE_RUN_GO_REQUIRED=true" in block_lines
     assert "T3_RUN_ATTEMPT_EXECUTE_ALLOWED_NOW=false" in block_lines

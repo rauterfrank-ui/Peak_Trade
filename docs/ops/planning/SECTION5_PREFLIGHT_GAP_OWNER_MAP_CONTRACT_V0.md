@@ -2732,6 +2732,88 @@ This governed repo-reflection block records operator-authorized **T3_BOUNDED_EXE
 
 Policy T3 bounded execute run attempt lift is not runtime authorization, scheduler authorization, order authorization, live authorization, futures authority, or concrete run authorization. Prior governed reflection blocks above remain scoped acceptance/verification only and unchanged except Final Machine Lines propagation recorded here.
 
+## T3_RUN_ATTEMPT_EXECUTE Explicit Authorization CLASS_4 Reflection v0
+
+T3_RUN_ATTEMPT_EXECUTE_CLASS4_GOVERNED_REFLECTION_V0=true
+T3_RUN_ATTEMPT_EXECUTE_AUTHORIZED=true
+ACCEPTED_MODE=T3_RUN_ATTEMPT_EXECUTE_EXPLICIT_AUTHORIZATION_CLASS4_DOCS_TESTS_ONLY
+OPERATOR_GO=GO_T3_RUN_ATTEMPT_EXECUTE_DOCS_TESTS_POLICY_REFLECTION_V0
+CLASS4_OPERATOR_GO_ACCEPTED=true
+DOCS_TESTS_ONLY=true
+GOVERNED_ACCEPTANCE_BASIS=SECTION5_WEDGE_COMPLETE+ALL_GAPS_CLOSED+PREFLIGHT_LIFT_CLASS4+OPERATOR_ARMING+NEXT_EXECUTE+BOUNDED_EXECUTE_RUN+T3_BOUNDED_EXECUTE_RUN_ATTEMPT+T3_RUN_ATTEMPT_EXECUTE_OPERATOR_DECISION_RECORD
+INPUT_T3_RUN_ATTEMPT_EXECUTE_OPERATOR_DECISION_RECORD_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/t3_run_attempt_execute_operator_decision_record_no_run_v0_20260605T003415Z/
+INPUT_T3_RUN_ATTEMPT_EXECUTE_DECISION_PACKET_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/t3_run_attempt_execute_decision_packet_no_run_v0_20260605T003255Z/
+INPUT_T3_RUN_ATTEMPT_EXECUTE_CHARTER_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/t3_run_attempt_execute_charter_no_run_v0_20260605T003151Z/
+INPUT_PR4017_CLOSEOUT_POINTER=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/pr4017_t3_bounded_execute_run_attempt_policy_reflection_post_merge_closeout_no_run_v0_20260605T002829Z/
+ALL_GAPS_CLOSED=true
+PREFLIGHT_REMAINS_BLOCKED=false
+PREFLIGHT_LIFTED_BY_CLASS4_POLICY=true
+T3_BOUNDED_EXECUTE_RUN_ATTEMPT_AUTHORIZED=true
+T3_BOUNDED_EXECUTE_RUN_ATTEMPT_IS_NOT_RUNTIME_START=true
+T3_BOUNDED_EXECUTE_RUN_ATTEMPT_IS_NOT_LIVE=true
+T3_BOUNDED_EXECUTE_RUN_ATTEMPT_OPERATOR_DECISION_RECORD_REFLECTED=true
+T3_RUN_ATTEMPT_EXECUTE_OPERATOR_DECISION_RECORD_REFLECTED=true
+OPERATOR_NAME=Frank Rauter
+OPERATOR_DECISION_SCOPE=T3_RUN_ATTEMPT_EXECUTE_OPERATOR_DECISION_RECORD
+OP_T3_EXEC_01=CONFIRMED
+OP_T3_EXEC_02=CONFIRMED
+OP_T3_EXEC_03=CONFIRMED
+OP_T3_EXEC_04=CONFIRMED
+OP_T3_EXEC_05=CONFIRMED
+OP_T3_EXEC_06=CONFIRMED
+OPERATOR_CONFIRMATIONS_ALL_CONFIRMED=true
+GUARD_T3_EXECUTE_NOT_AUTHORITY_LIFT=true
+T3_RUN_ATTEMPT_EXECUTE_IS_NOT_RUNTIME_START=true
+T3_RUN_ATTEMPT_EXECUTE_NOT_RUNTIME=true
+T3_RUN_ATTEMPT_EXECUTE_IS_NOT_LIVE=true
+T3_RUN_ATTEMPT_EXECUTE_NOT_FUTURES_AUTHORITY=true
+T3_RUN_ATTEMPT_EXECUTE_NOT_ORDERS=true
+POLICY_T3_EXECUTE_NOT_OPERATIONAL_AUTHORIZATION=true
+CONCRETE_RUN_AUTHORIZED=false
+T3_CONCRETE_RUN_GO_REQUIRED=true
+T3_RUN_ATTEMPT_READINESS_PREFLIGHT_REQUIRED=true
+T3_RUN_ATTEMPT_EXECUTE_ALLOWED_NOW=false
+MINIMAL_REMAINING_BLOCKER_CLASS=T3_READINESS_PREFLIGHT_ONLY
+RUNTIME_APPROVED=false
+RUNTIME_STARTED=false
+SCHEDULER_STARTED=false
+ORDERS_ATTEMPTED=false
+PRIVATE_API_USED=false
+CREDENTIALS_READ=false
+ENV_FILE_OPENED=false
+PREFLIGHT_LIFT_EXECUTED=false
+ACTUAL_PREFLIGHT_LIFT_EXECUTED=false
+FUTURES_EXECUTE_AUTHORIZED=false
+FUTURES_PRIVATE_API_AUTHORIZED=false
+FUTURES_VALIDATE_ONLY_AUTHORIZED=false
+FUTURES_SESSION_AUTHORIZED_NOW=false
+
+This governed repo-reflection block records operator-authorized **T3_RUN_ATTEMPT_EXECUTE policy lift** to Final Machine Lines only, under explicit CLASS_4 Operator-GO `GO_T3_RUN_ATTEMPT_EXECUTE_DOCS_TESTS_POLICY_REFLECTION_V0`, after T3 Run Attempt Execute Operator Decision Record fulfilment (Frank Rauter, 2026-06-05T00:34:15Z). **T3_RUN_ATTEMPT_EXECUTE_AUTHORIZED=true ≠ Runtime start ≠ Scheduler start ≠ Orders ≠ Live ≠ futures authority ≠ concrete run authorization.** Docs/tests policy reflection only — not runtime authorization, scheduler authorization, order authorization, live authorization, futures authority, or concrete T3 bounded execute run attempt.
+
+### T3_RUN_ATTEMPT_EXECUTE-policy scope (Final Machine Lines only)
+
+- `T3_RUN_ATTEMPT_EXECUTE_AUTHORIZED=true` in **Final Machine Lines only** — documents that a later separate T3 run-attempt readiness preflight and scoped run GO may be prepared; not automatic activation or concrete run authorization
+- Prior NEXT_EXECUTE, Operator Arming, BOUNDED_EXECUTE_RUN, T3_BOUNDED_EXECUTE_RUN_ATTEMPT, and ALL_GAPS_CLOSED reflection blocks remain unchanged — historical `T3_RUN_ATTEMPT_EXECUTE_AUTHORIZED=false` posture preserved in those blocks
+- Gap criteria blocks, Status block, Tier-C crosslink, synthesis block, and individual governed reflection blocks above remain unchanged where they record `T3_RUN_ATTEMPT_EXECUTE_AUTHORIZED=false` as historical scoped non-run posture
+
+### Why runtime and concrete run gates remain false (T3_RUN_ATTEMPT_EXECUTE-policy record only)
+
+- `RUNTIME_APPROVED=false`, `CONCRETE_RUN_AUTHORIZED=false`, `T3_RUN_ATTEMPT_EXECUTE_ALLOWED_NOW=false` — concrete T3 bounded execute run attempt requires separate readiness preflight and explicit scoped GO
+- `PREFLIGHT_LIFT_EXECUTED=false`, `ACTUAL_PREFLIGHT_LIFT_EXECUTED=false` — no runtime preflight lift
+- T3 run attempt execute policy at FML ≠ runtime start ≠ scheduler dispatch ≠ order authorization ≠ live authorization ≠ concrete run execution
+
+### Non-authority boundary (T3_RUN_ATTEMPT_EXECUTE-policy reflection does not imply)
+
+- does not set `RUNTIME_APPROVED=true` or `CONCRETE_RUN_AUTHORIZED=true`
+- does not set `T3_RUN_ATTEMPT_EXECUTE_ALLOWED_NOW=true`
+- does not set `PREFLIGHT_LIFT_EXECUTED=true` or `ACTUAL_PREFLIGHT_LIFT_EXECUTED=true`
+- does not authorize scheduler execution, Paper, Shadow, Testnet, Live, orders, validate-only, tiny-order, private API, credentials, env-open, or unscoped runtime loops
+- does not grant futures authority (`FUTURES_EXECUTE_AUTHORIZED`, `FUTURES_PRIVATE_API_AUTHORIZED`, `FUTURES_VALIDATE_ONLY_AUTHORIZED`, `FUTURES_SESSION_AUTHORIZED_NOW` remain false)
+- does not modify `scripts/run_scheduler.py`, `config/scheduler/jobs.toml`, or production code in this slice
+- does not start or authorize Runtime, Paper 24/7, Shadow 24/7, or Live
+
+Policy T3 run attempt execute lift is not runtime authorization, scheduler authorization, order authorization, live authorization, futures authority, or concrete run authorization. Prior governed reflection blocks above remain scoped acceptance/verification only and unchanged except Final Machine Lines propagation recorded here.
+
 ## Tier-C + Shadow durable evidence archive crosslink v0
 
 TIER_C_SHADOW_DURABLE_EVIDENCE_REPO_STATIC_CROSSLINK_V0=true
@@ -2924,8 +3006,17 @@ T3_BOUNDED_EXECUTE_RUN_ATTEMPT_NOT_RUNTIME=true
 T3_BOUNDED_EXECUTE_RUN_ATTEMPT_IS_NOT_LIVE=true
 T3_BOUNDED_EXECUTE_RUN_ATTEMPT_NOT_FUTURES_AUTHORITY=true
 T3_BOUNDED_EXECUTE_RUN_ATTEMPT_NOT_ORDERS=true
+T3_RUN_ATTEMPT_EXECUTE_AUTHORIZED=true
+T3_RUN_ATTEMPT_EXECUTE_CLASS4_GOVERNED_REFLECTION_V0=true
+T3_RUN_ATTEMPT_EXECUTE_OPERATOR_DECISION_RECORD_REFLECTED=true
+T3_RUN_ATTEMPT_EXECUTE_IS_NOT_RUNTIME_START=true
+T3_RUN_ATTEMPT_EXECUTE_NOT_RUNTIME=true
+T3_RUN_ATTEMPT_EXECUTE_IS_NOT_LIVE=true
+T3_RUN_ATTEMPT_EXECUTE_NOT_FUTURES_AUTHORITY=true
+T3_RUN_ATTEMPT_EXECUTE_NOT_ORDERS=true
 CONCRETE_RUN_AUTHORIZED=false
 T3_CONCRETE_RUN_GO_REQUIRED=true
+T3_RUN_ATTEMPT_READINESS_PREFLIGHT_REQUIRED=true
 T3_RUN_ATTEMPT_EXECUTE_ALLOWED_NOW=false
 RUNTIME_APPROVED=false
 RUNTIME_STARTED=false
