@@ -119,7 +119,11 @@ def test_section5_next_execute_policy_lift_does_not_authorize_runtime_while_entr
     assert "READY_FOR_OPERATOR_ARMING=true" in final_lines
     assert "ARMING_NOT_EXECUTE=true" in final_lines
     assert "EXECUTE_IS_NOT_RUNTIME_START=true" in final_lines
-    assert "BOUNDED_EXECUTE_RUN_AUTHORIZED=false" in final_lines
+    assert "BOUNDED_EXECUTE_RUN_AUTHORIZED=true" in final_lines
+    assert "BOUNDED_EXECUTE_RUN_IS_NOT_LIVE=true" in final_lines
+    assert "BOUNDED_EXECUTE_RUN_IS_NOT_RUNTIME_START=true" in final_lines
+    assert "T3_BOUNDED_EXECUTE_RUN_ATTEMPT_AUTHORIZED=false" in final_lines
+    assert "RUNTIME_STARTED=false" in final_lines
     assert "PREFLIGHT_LIFT_EXECUTED=false" in final_lines
 
 
