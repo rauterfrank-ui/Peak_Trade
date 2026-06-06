@@ -90,3 +90,4 @@ This means:
 - implying model-final trade authority
 - implying autonomous self-improving live execution
 - weakening deterministic gated execution wording
+<!-- L1-G4-TRUTH-DOC-FRESHNESS-TOUCH: 2026-06-06T17:43:22.441114+00:00 operator=Frank_Rauter purpose=row12_bounded_refresh -->
