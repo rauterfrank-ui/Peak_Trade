@@ -27,3 +27,4 @@ It does not change runtime behavior.
 - `docs&#47;governance&#47;ai&#47;CRITIC_PROPOSER_BOUNDARY_SPEC_V1.md`
 - `docs&#47;governance&#47;ai&#47;RUNTIME_UNKNOWN_RESOLUTION_V1.md`
 - `out&#47;ops&#47;critic_runtime_resolution_v2_*`
+<!-- L1-G4-TRUTH-DOC-FRESHNESS-TOUCH: 2026-06-06T17:43:22.441114+00:00 operator=Frank_Rauter purpose=row12_bounded_refresh -->

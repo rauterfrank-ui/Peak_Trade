@@ -95,6 +95,48 @@ This subsection materializes **one** candidate-scoped **L1 dry-validation eviden
 
 **Next open gap:** operator/governance capture and archival of the three primary artifact classes (dry-validation Steps 1–3) under change control **outside** this index; a later slice may add repo-resolvable pointers **if and when** those artifacts become stable, reviewable references. Minimal field vocabulary for external pointer records (L1 only) lives in [`MASTER_V2_BOUNDED_PILOT_L1_EVIDENCE_POINTER_CONTRACT_V0.md`](MASTER_V2_BOUNDED_PILOT_L1_EVIDENCE_POINTER_CONTRACT_V0.md) and does not by itself close this gap.
 
+
+## 4.1.1) External durable evidence pointer record (Step-2 recapture chain)
+
+This subsection adds **one** repo-resolvable **pointer metadata record** for externally retained bounded Step-2 recapture / evidence-satisfaction / promotion-classification evidence. It is **not** a live authorization, **not** a gate closure, **not** a claim that `G4` is satisfied or complete, and **not** a substitute for operator-governed evidence retention.
+
+**Pointer discipline:** metadata and bundle-root references only — **no payloads**, **no secrets**, **no eval JSON bodies**, **no log dumps** in-repo. Vocabulary aligns with [`MASTER_V2_BOUNDED_PILOT_L1_EVIDENCE_POINTER_CONTRACT_V0.md`](MASTER_V2_BOUNDED_PILOT_L1_EVIDENCE_POINTER_CONTRACT_V0.md) where applicable.
+
+| field | value |
+|---|---|
+| `pointer_class` | `L1_BOUNDED_STEP2_RECAPTURE_EVIDENCE_CHAIN_POINTER` |
+| `bounded_pilot_scope` | first strictly bounded real-money pilot (see [`BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md`](BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md) title and §1–2) |
+| `artifact_summary` | manifest-verified durable archive bundles for bounded Step-2 recapture execute, result classification, evidence-satisfaction classification, and external-only promotion result classification |
+| `retrieval_reference` | durable archive roots under `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/` (bundle directory names only; operator-held archive) |
+| `git_head_at_capture` | `8269d5dfd0102eb4d25bb8532b710ec92e323852` |
+| `captured_at_utc` | `20260606T185548Z` (pointer-slice execute UTC) |
+| `retention_owner` | operator / governance steward (external archive) |
+
+**Representative bundle roots (pointer metadata only):**
+
+- `go_live_l1_g4_step2_recapture_execute_v1_20260606T182035Z`
+- `go_live_l1_g4_step2_recapture_result_classification_no_run_v1_20260606T182304Z`
+- `go_live_l1_g4_step2_evidence_satisfaction_classification_no_run_v1_20260606T182406Z`
+- `go_live_l1_g4_evidence_satisfaction_promotion_result_classification_no_run_v1_20260606T184457Z`
+- `go_live_l1_g4_repo_internal_evidence_gate_change_preparation_no_run_v1_20260606T185107Z`
+- `go_live_l1_g4_repo_internal_evidence_gate_change_preparation_review_no_run_v1_20260606T185235Z`
+- `go_live_l1_g4_repo_internal_evidence_gate_pointer_slice_command_review_no_run_v1_20260606T185418Z`
+
+**What this record makes visible:** where bounded Step-2 recapture and related external-only classification evidence is retained outside this repository for review orientation.
+
+**What this record explicitly does not claim:**
+
+- `L1_G4_EVIDENCE_SATISFIED=true` or global L1/G4 evidence satisfaction (`L1_G4_EVIDENCE_SATISFIED=false`)
+- repo-internal gate closure or gate-change authorization
+- global blocker lift or automatic blocker removal
+- Step-3 planning or Step-3 execute authorization
+- preflight-lift or live authorization
+- acceptable pilot verdict, live eligibility, or real-money entry permission
+- closure or upgrade of `G4` beyond `Partial`
+- that operator-held drill output, go/no-go JSON, or execution dry-run logs are now immutable in-repo objects
+
+**G4 status after this record:** remains `Partial` — this pointer slice documents external durable evidence locations only; it does not host artifact payloads or close the L1 dry-validation gate.
+
 ## 4.2) L2 candidate verdict pointer record (G5)
 
 This subsection materializes **one** candidate-scoped **L2 go/no-go verdict evidence pointer record** for review orientation. It is **not** a live authorization, **not** a gate closure, **not** a claim that any particular verdict occurred, and **not** a substitute for operator-governed evidence retention.
