@@ -698,6 +698,75 @@ Operator confirmation recorded in durable archive is **not** approval. §6.3 cla
 - Execute plan: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_008_009_risk_killswitch_repo_internal_status_reflection_execute_plan_no_run_v1_20260607T090102Z`
 - Execute confirmation: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_008_009_risk_killswitch_repo_internal_status_reflection_execute_confirmation_no_run_v1_20260607T090223Z`
 
+### 6.16 GLB-012/013 Execution/Live Gates Operator Confirmation Recorded Reflection v0
+
+GLB_012_013_EXECUTION_LIVE_GATES_OPERATOR_CONFIRMATION_RECORDED=true
+GLB012013_CONFIRM_01_09_CONFIRMED=true
+ARCHIVE_ONLY_OPERATOR_CONFIRMATION=true
+EXECUTION_LIVE_GATES_BOUNDARY_REVIEWED=true
+EXECUTION_LIVE_GATES_SURFACES_REVIEWED=true
+REPO_DOCS_DO_NOT_SELF_AUTHORIZE_EXECUTION_LIVE_GATES_PILOT_ARMING_LIVE_OR_LIFTS=true
+EXECUTION_LIVE_GATES_CONFIRMATION_DOES_NOT_VERIFY_GAP7=true
+EXECUTION_LIVE_GATES_CONFIRMATION_DOES_NOT_LIFT_PREFLIGHT_GLB_GAP7=true
+PREFLIGHT_ARMING_DRYRUN_LIVE_DRILLS_REQUIRE_SEPARATE_SCOPED_AUTHORIZATION=true
+DOCS_REFLECTION_SEPARATE_FROM_AUTHORIZATION=true
+NO_FAKE_AUTHORITY_EVIDENCE_CONFIRMED=true
+NO_FAKE_EXECUTION_LIVE_GATES_EVIDENCE_CONFIRMED=true
+NO_SECRET_LEAKAGE_CONFIRMED=true
+MASTER_V2_DOUBLE_PLAY_UNMODIFIED=true
+BULL_BEAR_LOGIC_UNMODIFIED=true
+SCOPE_CAPITAL_RISK_EXECUTION_LOGIC_UNMODIFIED=true
+EXECUTION_LIVE_GATES_LOGIC_UNMODIFIED=true
+RUNTIME_SCHEDULER_TRADING_UNMODIFIED=true
+RISK_KILLSWITCH_LOGIC_UNMODIFIED=true
+GLB_012_STATUS=BLOCKED
+GLB_013_STATUS=BLOCKED
+GLB_012_013_STATUS_CHANGED=false
+GLB_012_LIFTED=false
+GLB_013_LIFTED=false
+GLB_012_013_LIFTED=false
+EXECUTION_LIVE_GATE_LIFTED=false
+GLB_STATUS_LIFTED=false
+PREFLIGHT_GATE_LIFTED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+GAP7_RISK_BOUNDARY_VERIFIED=false
+GAP7_VERIFICATION_LIFTED=false
+PILOT_CHECKLIST_GO_AUTHORIZED=false
+READY_FOR_OPERATOR_ARMING=false
+LIVE_AUTHORIZED=false
+ALL_AUTHORITY_FLAGS_REMAIN_FALSE=true
+EVIDENCE_MARKED_PROVIDED=false
+EXECUTION_LIVE_GATES_EVIDENCE_MARKED_PROVIDED=false
+
+This reflection records a bounded archive-only operator confirmation for GLB-012 Live gates and GLB-013 Dry-run/live semantics only.
+It is not a Pilot-GO, not arming, not live authorization, not a GLB lift, not a Preflight lift, not a GAP7 lift, and not evidence-marking.
+It does not modify Master V2 / Double Play / Bull-Bear logic or Execution/Live-Gates implementation semantics.
+GLB-012 and GLB-013 remain BLOCKED.
+
+This criteria-reflection block records the bounded GLB-012/013 Execution/Live-Gates operator confirmation **recorded** posture for archive decision record reflection only. Register [§6](#6-blocker-register) **GLB-012** and **GLB-013** rows remain **BLOCKED**; this slice **does not** close **GLB-012** or **GLB-013**, **does not** set `GLB_012_LIFTED=true` or `GLB_013_LIFTED=true`, **does not** set `GLB_STATUS_LIFTED=true`, **does not** lift preflight, **does not** verify GAP7, **does not** authorize pilot GO, arming, or live, and **does not** authorize runtime, scheduler execution, Paper, Shadow, Testnet, Live, AWS, broker, or exchange activity.
+
+Operator confirmation recorded in durable archive is **not** approval. §6.4 clarification remains binding: repo Execution/Live-Gates specifications, runbooks, tests, and §6.6 evidence-satisfied classification do **not** close **GLB-012** or **GLB-013** by themselves. Readiness/boundary/confirmation visibility is **not** operative authorization; repo docs do not self-authorize.
+
+**Explicit prohibitions (this reflection must not imply or authorize):**
+
+- **Do not** execute preflight, arming, dry-run/live drills, or scheduler/trading activity under this reflection chain.
+- **Do not** set `GAP7_RISK_BOUNDARY_VERIFIED=true` or `GAP7_VERIFICATION_LIFTED=true`.
+- **Do not** mark execution/live-gate evidence as provided (`EXECUTION_LIVE_GATES_EVIDENCE_MARKED_PROVIDED` and `EVIDENCE_MARKED_PROVIDED` remain false).
+- **Do not** operationally use Execution/Live-Gates runbooks, gate index, or tests as authorization — they remain read/orientation surfaces only for this strand.
+- **Do not** derive any GLB lift, Preflight gate lift, or GAP7 verification lift from this reflection.
+- **Do not** change GLB-012 or GLB-013 from **BLOCKED** to OPEN, closed, or fulfilled by this reflection alone.
+- **Do not** modify §6.4, §6.6, or §6.7–§6.15 existing blocks.
+
+**Durable archive chain (read-only pointers; non-authorizing):**
+
+- Boundary review: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_012_013_execution_live_gates_boundary_review_no_run_v1_20260607T091136Z`
+- Operator confirmation prep: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_012_013_execution_live_gates_operator_confirmation_prep_no_run_v1_20260607T091248Z`
+- Operator confirmation record: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_012_013_execution_live_gates_operator_confirmation_record_no_run_v1_20260607T091355Z`
+- Reflection prep: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_012_013_execution_live_gates_repo_internal_status_reflection_prep_no_run_v1_20260607T091504Z`
+- Operator decision: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_012_013_execution_live_gates_repo_internal_status_reflection_operator_decision_no_run_v1_20260607T091612Z`
+- Execute plan: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_012_013_execution_live_gates_repo_internal_status_reflection_execute_plan_no_run_v1_20260607T091728Z`
+- Execute confirmation: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_012_013_execution_live_gates_repo_internal_status_reflection_execute_confirmation_no_run_v1_20260607T091852Z`
+
 ## 7. No-Green Claim Rule
 
 This register may show that a blocker is OPEN, BLOCKED, DEFERRED, ACCEPTED_BY_AUTHORITY, or CLOSED.
