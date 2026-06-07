@@ -3,21 +3,20 @@
 ## Activation Status (Operational)
 
 **Policy Decision:** ✅ ENFORCE (same-day, based on burn-in)  
-**Activation State:** ⚠️ NOT ACTIVE as a required check on `main` (operator action pending)  
-**Expected Required Check Context:** `CI &#47; Workflow Dispatch Guard &#47; dispatch-guard`  
-**Verification Evidence:** `docs/ops/ci/evidence/PHASE5C_DISPATCH_GUARD_ENFORCEMENT_VERIFICATION_2026-01-12.md`
+**Activation State:** ✅ ACTIVE as a required check on `main` (Phase 5C activation complete)  
+**Required Check Context (job name):** `dispatch-guard`  
+**JSON SSOT:** `config/ci/required_status_checks.json` — `dispatch-guard` in `required_contexts`  
+**Verification Evidence:** `docs/ops/ci/evidence/PHASE5C_DISPATCH_GUARD_ENFORCEMENT_VERIFICATION_2026-01-12.md`  
+**Closeout:** `docs/ops/PHASE5C_WORKFLOW_DISPATCH_GUARD_ENFORCEMENT_CLOSEOUT.md`
 
 **What this means:**
-- The guard is implemented and functional.
-- Enforcement is **not** effective until GitHub branch protection/ruleset includes the required check context above.
-
-**Operator Action Required (Summary):**
-- Add `CI &#47; Workflow Dispatch Guard &#47; dispatch-guard` to `main` required checks
-- Re-verify with a workflow-touching PR and append evidence addendum
+- The guard is implemented, functional, and listed in the repo JSON required-check SSOT.
+- Phase 5C branch-protection activation is **complete** (2026-01-12); merge to `main` requires a passing `dispatch-guard` check.
+- This policy doc describes CI governance only — **not** live, testnet, runtime, arming, or gate-lift authority.
 
 ## Status
 
-**Target:** ACTIVE as Required Check (after operator activation)
+**Current:** ACTIVE as Required Check (aligned with JSON SSOT and Phase 5C closeout)
 
 ## Check Details
 
@@ -35,7 +34,7 @@
 | 2026-01-12 | Burn-in Complete | 1 PR validated (no false positives) |
 | 2026-01-12 | Policy Decision | ✅ ENFORCE (same-day based on proven effectiveness) |
 | 2026-01-12 | Verification | Evidence captured, activation procedure documented |
-| TBD | Enforcement Activation | **PENDING**: Operator to add to required checks for `main` |
+| 2026-01-12 | Enforcement Activated | `dispatch-guard` added to `main` required checks (Phase 5C closeout) |
 
 ## Rationale
 
@@ -43,12 +42,8 @@
 - **Proven Effectiveness:** Found real bug (PR #664) on first run
 - **Low False Positive Rate:** 100% true positive in burn-in (1/1)
 - **Prevent Regressions:** Guards against Phase 5B-class bugs (workflow_dispatch input context errors)
-- **Minimal Disruption:** Path-filtered (only runs on workflow changes)
+- **Minimal Disruption:** Always-on PR check with internal change detection; no-op pass when no workflow files change
 - **Fast Execution:** Stdlib-only, no dependencies, <5s runtime
-
-**Why Not Yet Active (Operational):**
-- Operator action required to add check to GitHub branch protection settings
-- No technical blocker; purely an administrative/settings step
 
 **What It Prevents:**
 1. Using `github.event.inputs.<name>` without defining input under `on.workflow_dispatch.inputs`
@@ -57,20 +52,22 @@
 
 ## Enforcement Configuration
 
-**Current Status:** ⚠️ NOT CONFIGURED (awaiting operator action)
+**Current Status:** ✅ CONFIGURED — `dispatch-guard` in `config/ci/required_status_checks.json` and Phase 5C branch protection (see closeout).
 
 ### GitHub Settings → Branches → Branch Protection Rules
 
 **Branch:** `main`
 
-**Required Status Checks (TO BE ADDED):**
+**Required Status Checks (active since Phase 5C):**
 - Enable: ✅ Require status checks to pass before merging
-- Check: `CI &#47; Workflow Dispatch Guard &#47; dispatch-guard` ← **ADD THIS**
+- Check: `dispatch-guard` (job name; workflow display: `CI / Workflow Dispatch Guard`)
 
 **Alternative (Rulesets - Modern):**
 - GitHub → Settings → Rules → Rulesets
 - Target: `main` branch
-- Required checks: Add `CI &#47; Workflow Dispatch Guard &#47; dispatch-guard` ← **ADD THIS**
+- Required checks: include `dispatch-guard` per JSON SSOT
+
+**Reconciliation:** `scripts/ops/reconcile_required_checks_branch_protection.py --check` with `--required-config config/ci/required_status_checks.json`
 
 ## Bypass/Override Policy
 
@@ -132,9 +129,17 @@
 - Execution Time: ~3s (stdlib-only)
 
 **Post-Enforcement Metrics:**
-- ⚠️ N/A (enforcement not yet active)
-- Will be tracked after operator activation
+- Tracked post Phase 5C activation; see closeout and merge-log evidence for historical runs
+- Validator: `python scripts/ops/validate_workflow_dispatch_guards.py --paths .github/workflows --fail-on-warn`
+- Hygiene: `python scripts/ci/validate_required_checks_hygiene.py --config config/ci/required_status_checks.json --workflows .github/workflows --strict`
+
+## Non-authority boundary (docs sync)
+
+- Updating this enforcement policy **does not** authorize live, testnet, paper/shadow, scheduler, or runtime activity.
+- **No** workflow YAML change is implied by enforcement-status documentation alone.
+- Guard failure blocks merge of workflow changes — it does **not** grant execution or arming authority.
 
 ## Version
 
 - **v1.0** (2026-01-12) — Initial enforcement policy
+- **v1.1** (2026-06-07) — Status sync: ACTIVE aligned with JSON SSOT + Phase 5C closeout (docs-only; `GO_REPO_DOCS_TESTS_WORKFLOW_DISPATCH_GUARD_ENFORCEMENT_STATUS_SYNC_V0`)
