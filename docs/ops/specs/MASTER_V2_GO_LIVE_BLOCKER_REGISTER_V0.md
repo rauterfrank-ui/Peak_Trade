@@ -455,6 +455,62 @@ Operator confirmation recorded in durable archive is **not** approval. §6.5 GLB
 - Execute plan: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_016_preflight_packet_confirmation_repo_internal_status_reflection_execute_plan_no_run_v1_20260607T074522Z`
 - Execute confirmation: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_016_preflight_packet_confirmation_repo_internal_status_reflection_execute_confirmation_no_run_v1_20260607T074701Z`
 
+### 6.12 GLB-018 Closeout Path Operator Confirmation Recorded Reflection v0
+
+GLB_018_CLOSEOUT_PATH_OPERATOR_CONFIRMATION_RECORDED=true
+GLB018_CONFIRM_01_06_CONFIRMED=true
+ARCHIVE_ONLY_OPERATOR_CONFIRMATION=true
+CLOSEOUT_SURFACES_REVIEWED=true
+REPO_DOCS_DO_NOT_SELF_AUTHORIZE_PILOT_CLOSEOUT_COMPLETION_EVIDENCE_PILOT_ARMING_LIVE_OR_LIFTS=true
+PILOT_CLOSEOUT_EXECUTION_REQUIRES_EXPLICIT_SCOPED_OPERATOR_AUTHORIZATION=true
+DOCS_REFLECTION_SEPARATE_FROM_AUTHORIZATION=true
+NO_FAKE_AUTHORITY_EVIDENCE_CONFIRMED=true
+NO_SECRET_LEAKAGE_CONFIRMED=true
+MASTER_V2_DOUBLE_PLAY_UNMODIFIED=true
+BULL_BEAR_LOGIC_UNMODIFIED=true
+SCOPE_CAPITAL_RISK_EXECUTION_LOGIC_UNMODIFIED=true
+GLB_018_STATUS=OPEN
+GLB_018_STATUS_CHANGED=false
+GLB_018_LIFTED=false
+GLB_STATUS_LIFTED=false
+PREFLIGHT_GATE_LIFTED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+GAP7_RISK_BOUNDARY_VERIFIED=false
+GAP7_VERIFICATION_LIFTED=false
+PILOT_CHECKLIST_GO_AUTHORIZED=false
+READY_FOR_OPERATOR_ARMING=false
+LIVE_AUTHORIZED=false
+ALL_AUTHORITY_FLAGS_REMAIN_FALSE=true
+EVIDENCE_MARKED_PROVIDED=false
+CLOSEOUT_EVIDENCE_MARKED_PROVIDED=false
+
+This reflection records a bounded archive-only operator confirmation for GLB-018 Closeout Path only.
+It is not a Pilot-GO, not arming, not live authorization, not a GLB lift, not a Preflight lift, not a GAP7 lift, and not evidence-marking.
+It does not modify Master V2 / Double Play / Bull-Bear logic.
+GLB-018 remains OPEN.
+
+This criteria-reflection block records the bounded GLB-018 closeout path operator confirmation **recorded** posture for archive decision record reflection only. Register [§6](#6-blocker-register) **GLB-018** row remains **OPEN**; this slice **does not** close **GLB-018**, **does not** set `GLB_018_LIFTED=true`, **does not** set `GLB_STATUS_LIFTED=true`, **does not** lift preflight, **does not** authorize pilot GO, arming, or live, and **does not** authorize runtime, scheduler execution, Paper, Shadow, Testnet, Live, AWS, broker, or exchange activity.
+
+Operator confirmation recorded in durable archive is **not** approval. §6.5 GLB-015 clarification remains binding: repo docs, archive closeouts, and offline review outputs are review inputs only.
+
+**Explicit prohibitions (this reflection must not imply or authorize):**
+
+- **Do not** execute pilot closeout or mutate registry / `out/ops` under this reflection chain.
+- **Do not** mark closeout evidence or completion status as provided (`CLOSEOUT_EVIDENCE_MARKED_PROVIDED` and `EVIDENCE_MARKED_PROVIDED` remain false).
+- **Do not** operationally use closeout templates or closeout runbooks as authorization — they remain read/orientation surfaces only for this strand.
+- **Do not** derive any GLB lift, Preflight gate lift, or GAP7 verification lift from this reflection.
+- **Do not** change GLB-018 from **OPEN** to closed, blocked, or fulfilled by this reflection alone.
+
+**Durable archive chain (read-only pointers; non-authorizing):**
+
+- Boundary review: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_018_closeout_path_boundary_review_no_run_v1_20260607T075748Z`
+- Operator confirmation prep: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_018_closeout_path_operator_confirmation_prep_no_run_v1_20260607T080043Z`
+- Operator confirmation record: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_018_closeout_path_operator_confirmation_record_no_run_v1_20260607T080159Z`
+- Reflection prep: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_018_closeout_path_repo_internal_status_reflection_prep_no_run_v1_20260607T080337Z`
+- Operator decision: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_018_closeout_path_repo_internal_status_reflection_operator_decision_no_run_v1_20260607T080514Z`
+- Execute plan: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_018_closeout_path_repo_internal_status_reflection_execute_plan_no_run_v1_20260607T080644Z`
+- Execute confirmation: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_018_closeout_path_repo_internal_status_reflection_execute_confirmation_no_run_v1_20260607T080920Z`
+
 ## 7. No-Green Claim Rule
 
 This register may show that a blocker is OPEN, BLOCKED, DEFERRED, ACCEPTED_BY_AUTHORITY, or CLOSED.
