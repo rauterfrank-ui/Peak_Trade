@@ -33,6 +33,27 @@ Out of scope:
 
 For **suggested read order** and cluster grouping of the `MASTER_V2_FIRST_LIVE_PRE_LIVE_*_CONTRACT_V1.md` filename set, see [`MASTER_V2_FIRST_LIVE_PRE_LIVE_NAVIGATION_READ_MODEL_V0.md`](MASTER_V2_FIRST_LIVE_PRE_LIVE_NAVIGATION_READ_MODEL_V0.md). That document is a **navigation and read-order read model only**; it is **not** a gate schedule, not signoff, not evidence, not a live or First-Live go, and it does not change the meaning of any contract in this index.
 
+## 2.2) Section-5 Preflight criteria pointer (non-authority)
+
+SECTION5_CRITERIA_SSOT_REPO_CHANGE_PROPOSAL_V0=true
+SECTION5_CRITERIA_SSOT_REPO_CHANGE_PROPOSAL_GATE_INDEX_GOVERNED_REFLECTION_V0=true
+CHANGE_ATOM=A-07
+PROPOSAL_CANDIDATE=C-08
+CRITERIA_SSOT_LIFTED=false
+POST_REVIEW_LIFT_DECISION_REQUIRED=true
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+GATE_INDEX_STATUS_LIFT_FROM_CRITERIA_REFLECTION=false
+
+This subsection adds a **read-only** pointer to Section-5 preflight gap criteria surfaces for audit orientation. It **does not** change any gate status in [§4](#4-compact-gate-index-table), **does not** lift Criteria-SSOT, **does not** lift preflight, and **does not** authorize live progression.
+
+**Canonical Section-5 criteria owners (reuse-first):**
+
+- [`SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md`](../planning/SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md) — gap owner map and criteria-reflection blocks (Gap 1–6, §2a.1)
+- [`PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md`](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) — preflight contract §2a.1 primary-evidence posture (**BLOCKED**)
+
+**Static guards (docs/tests contract only):** `tests/ops/test_section5_preflight_gap_owner_map_contract_v0.py`, `tests/ops/test_gap2a1_primary_evidence_enforcement_drift_guard_contract_v0.py`.
+
 ## 3) Canonical Status Model
 
 Allowed status values for this index:

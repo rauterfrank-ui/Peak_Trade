@@ -82,6 +82,24 @@ Preflight §2a.1 documents run-type applicability for **run completion**: Paper,
 
 **Cyber ↔ ER artifact-retention crosslink (PE-6 guard) v0:** Cybersecurity visibility `artifact_retention_or_evidence_gap` histogram posture is linked to §2a.1 durable primary evidence / ER retention (`CYBER_VISIBILITY_ARTIFACTS_RETENTION_LINKED_TO_PRIMARY_EVIDENCE_V0`, `ER_ARTIFACT_RETENTION_LINKED_TO_CYBER_VISIBILITY_V0`). Defensive/derived/static only; no definitive cyber mapping without authoritative INPUT_JSONL. Crosslink: `docs/ops/CI_AUDIT_KNOWN_ISSUES.md` reciprocal histogram block. Static guard: `tests/ci/test_cybersecurity_visibility_repo_static_histogram_artifact_retention_or_evidence_gap_crosslink_v0.py`. **Tests-only**; **does not** activate enforcement.
 
+**Criteria-SSOT Repo-Change-Proposal §2a.1 bidirectional crosslink (A-04) v0:**
+
+```
+SECTION5_CRITERIA_SSOT_REPO_CHANGE_PROPOSAL_V0=true
+SECTION5_CRITERIA_SSOT_REPO_CHANGE_PROPOSAL_GAP2A1_GOVERNED_REFLECTION_V0=true
+CHANGE_ATOM=A-04
+PROPOSAL_CANDIDATE=C-04
+GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false
+GAP2A1_ENFORCEMENT_DEFAULT_ON=false
+GAP2A1_ENFORCEMENT_OPT_IN_ONLY=true
+CRITERIA_SSOT_LIFTED=false
+POST_REVIEW_LIFT_DECISION_REQUIRED=true
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+```
+
+Owner Map §2a.1 and Preflight §2a.1 remain aligned on durable primary-evidence criteria-only posture (opt-in enforcement; `/tmp`-only insufficient). Reciprocal crosslink: `docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md` §2a.1. Static guard: `tests/ops/test_gap2a1_primary_evidence_enforcement_drift_guard_contract_v0.py`. **Does not** activate default enforcement, **does not** lift Criteria-SSOT, **does not** lift preflight, **does not** set `READY_FOR_OPERATOR_ARMING=true`.
+
 **Repo-native bounded Testnet order-cap contract (PE-7 guard) v0:** Closes the documented `repo_native_bounded_order_cap_contract_residual` gap at contract/evaluator layer. Canonical offline evaluator: `src/ops/bounded_testnet_order_cap_contract_v0.py` (`BOUNDED_TESTNET_ORDER_CAP_CONTRACT_V0=true`). Static guards: `tests/ops/test_repo_native_bounded_order_cap_contract_v0.py`, `tests/ops/test_repo_native_entrypoint_cli_cap_wiring_contract_v0.py`. `scripts/run_testnet_session.py` exposes bounded cap CLI via `add_bounded_order_cap_cli_arguments` (`REPO_NATIVE_BOUNDED_ORDER_CAP_CLI_WIRING_COMPLETE=true`); **does not** authorize Testnet execute, **does not** lift preflight.
 
 **Bounded Futures Testnet contract (PE-8 guard) v0:** Addresses `futures_bounded_testnet_contract_adapter_and_evidence_path_missing` at offline contract layer only. Canonical evaluator: `src/ops/bounded_futures_testnet_contract_v0.py` (`BOUNDED_FUTURES_TESTNET_CONTRACT_V0=true`). Static guard: `tests/ops/test_bounded_futures_testnet_contract_v0.py`. Spot BTC/EUR bounded evidence **must not** satisfy this contract; `FUTURES_SESSION_AUTHORIZED_NOW=false`; **does not** authorize Futures execute, adapter binding, or Master-V2 / Double-Play authority.
@@ -216,6 +234,24 @@ Gap 3 remains the canonical command-text contract; Gap 1 only identifies the ent
 
 This contract does not execute `scripts/run_scheduler.py`, does not authorize runtime or scheduler execution, does not enable or modify `config/scheduler/jobs.toml`, and does not authorize Paper, Shadow, Testnet, Live, AWS, broker, or exchange activity. It does not change default-on enforcement, does not mark `READY_FOR_OPERATOR_ARMING=true`, and does not lift Path B.
 
+## Gap 1 Criteria-SSOT Repo-Change-Proposal Reflection v0
+
+SECTION5_CRITERIA_SSOT_REPO_CHANGE_PROPOSAL_V0=true
+SECTION5_CRITERIA_SSOT_REPO_CHANGE_PROPOSAL_GAP1_GOVERNED_REFLECTION_V0=true
+CHANGE_ATOM=A-01
+PROPOSAL_CANDIDATE=C-01
+DOCS_ONLY_EXECUTE_SLICE=true
+CRITERIA_SSOT_LIFTED=false
+POST_REVIEW_LIFT_DECISION_REQUIRED=true
+GAP1_EXECUTE_ENTRYPOINT_VERIFIED=false
+GAP1_RUNTIME_APPROVED=false
+GAP1_SCHEDULER_EXECUTION_AUTHORIZED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+PATH_B_LIFT_DISCUSSION_READY=false
+
+This criteria-reflection block records the bounded Section-5 Criteria-SSOT repo-change-proposal execute posture for Gap 1 (execute entrypoint) only. Criteria-reflection does not verify Gap 1, does not lift Criteria-SSOT, does not lift preflight, and does not authorize runtime, scheduler execution, Paper, Shadow, Testnet, Live, AWS, broker, or exchange activity.
+
 ## Gap 3 Execute Command Contract v0
 
 GAP3_EXECUTE_COMMAND_CONTRACT_V0=true
@@ -248,6 +284,23 @@ The canonical command is documentation/planning text only in this contract slice
 ### Non-authorization
 
 This PR does not authorize runtime, Paper, Shadow, Testnet, Live, AWS, broker, or exchange activity. It does not change default-on enforcement, does not mark `READY_FOR_OPERATOR_ARMING=true`, does not lift Path B, does not lift preflight, and does not approve runtime.
+
+## Gap 3 Criteria-SSOT Repo-Change-Proposal Reflection v0
+
+SECTION5_CRITERIA_SSOT_REPO_CHANGE_PROPOSAL_V0=true
+SECTION5_CRITERIA_SSOT_REPO_CHANGE_PROPOSAL_GAP3_GOVERNED_REFLECTION_V0=true
+CHANGE_ATOM=A-03
+PROPOSAL_CANDIDATE=C-03
+DOCS_ONLY_EXECUTE_SLICE=true
+CRITERIA_SSOT_LIFTED=false
+POST_REVIEW_LIFT_DECISION_REQUIRED=true
+GAP3_EXECUTE_COMMAND_VERIFIED=false
+GAP3_SCHEDULER_EXECUTION_AUTHORIZED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+PATH_B_LIFT_DISCUSSION_READY=false
+
+This criteria-reflection block records the bounded Section-5 Criteria-SSOT repo-change-proposal execute posture for Gap 3 (execute command contracts) only. Criteria-reflection does not verify Gap 3, does not lift Criteria-SSOT, does not lift preflight, and does not authorize runtime, scheduler execution, Paper, Shadow, Testnet, Live, AWS, broker, or exchange activity.
 
 ## Gap 4 Output/Evidence Paths Contract v0
 
@@ -288,6 +341,23 @@ Future runs are not considered complete unless primary evidence artifacts are du
 ### Non-authorization
 
 This contract does not authorize runtime, scheduler, Paper, Shadow, Testnet, Live, AWS, broker, or exchange activity. It does not change default-on enforcement, does not mark `READY_FOR_OPERATOR_ARMING=true`, does not lift Path B, does not lift preflight, and does not approve runtime.
+
+## Gap 4 Criteria-SSOT Repo-Change-Proposal Reflection v0
+
+SECTION5_CRITERIA_SSOT_REPO_CHANGE_PROPOSAL_V0=true
+SECTION5_CRITERIA_SSOT_REPO_CHANGE_PROPOSAL_GAP4_GOVERNED_REFLECTION_V0=true
+CHANGE_ATOM=A-05
+PROPOSAL_CANDIDATE=C-05
+DOCS_ONLY_EXECUTE_SLICE=true
+CRITERIA_SSOT_LIFTED=false
+POST_REVIEW_LIFT_DECISION_REQUIRED=true
+GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false
+GAP4_OUTPUT_EVIDENCE_DEFAULT_ON=false
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+PATH_B_LIFT_DISCUSSION_READY=false
+
+This criteria-reflection block records the bounded Section-5 Criteria-SSOT repo-change-proposal execute posture for Gap 4 (output/evidence paths) only. Criteria-reflection does not verify Gap 4 output paths, does not lift Criteria-SSOT, does not lift preflight, and does not authorize runtime, scheduler execution, Paper, Shadow, Testnet, Live, AWS, broker, or exchange activity.
 
 ## Gap 6 Dry-Run Proof Criteria Contract v0
 
@@ -331,6 +401,24 @@ This contract records criteria only. It does not execute `scripts/run_scheduler.
 ### Non-authorization
 
 This contract does not execute `scripts/run_scheduler.py`, does not authorize scheduler execution, does not enable or modify `config/scheduler/jobs.toml`, and does not authorize runtime, Paper, Shadow, Testnet, Live, AWS, broker, or exchange activity. It does not change default-on enforcement, does not mark `READY_FOR_OPERATOR_ARMING=true`, does not lift Path B, does not lift preflight, and does not approve runtime.
+
+## Gap 6 Criteria-SSOT Repo-Change-Proposal Reflection v0
+
+SECTION5_CRITERIA_SSOT_REPO_CHANGE_PROPOSAL_V0=true
+SECTION5_CRITERIA_SSOT_REPO_CHANGE_PROPOSAL_GAP6_GOVERNED_REFLECTION_V0=true
+CHANGE_ATOM=A-06
+PROPOSAL_CANDIDATE=C-06
+DOCS_ONLY_EXECUTE_SLICE=true
+CRITERIA_SSOT_LIFTED=false
+POST_REVIEW_LIFT_DECISION_REQUIRED=true
+GAP6_DRY_RUN_PROOF_VERIFIED=false
+GAP6_DRY_RUN_PROOF_ACCEPTED=false
+GAP6_SCHEDULER_EXECUTION_AUTHORIZED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+PATH_B_LIFT_DISCUSSION_READY=false
+
+This criteria-reflection block records the bounded Section-5 Criteria-SSOT repo-change-proposal execute posture for Gap 6 (dry-run proof criteria) only. Criteria-reflection does not accept or verify dry-run proof, does not lift Criteria-SSOT, does not lift preflight, and does not authorize runtime, scheduler execution, Paper, Shadow, Testnet, Live, AWS, broker, or exchange activity.
 
 ## Gap 7 Risk Boundary Criteria Contract v0
 
@@ -3048,6 +3136,25 @@ This contract records criteria only. It does not execute `scripts/run_scheduler.
 ### Non-authorization
 
 This contract does not modify `config/scheduler/jobs.toml`, does not enable any scheduler job, does not verify or activate a canonical job set, does not execute `scripts/run_scheduler.py`, does not authorize scheduler execution, does not approve runtime execution, and does not authorize Paper, Shadow, Testnet, Live, AWS, broker, or exchange activity. It does not change default-on enforcement, does not mark `READY_FOR_OPERATOR_ARMING=true`, does not lift Path B, does not lift preflight, and does not approve runtime.
+
+## Gap 2 Criteria-SSOT Repo-Change-Proposal Reflection v0
+
+SECTION5_CRITERIA_SSOT_REPO_CHANGE_PROPOSAL_V0=true
+SECTION5_CRITERIA_SSOT_REPO_CHANGE_PROPOSAL_GAP2_GOVERNED_REFLECTION_V0=true
+CHANGE_ATOM=A-02
+PROPOSAL_CANDIDATE=C-02
+DOCS_ONLY_EXECUTE_SLICE=true
+CRITERIA_SSOT_LIFTED=false
+POST_REVIEW_LIFT_DECISION_REQUIRED=true
+GAP2_CANONICAL_JOB_SET_VERIFIED=false
+GAP2_JOB_SET_ENABLED=false
+GAP2_JOBS_TOML_CHANGED=false
+GAP2_SCHEDULER_EXECUTION_AUTHORIZED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+PATH_B_LIFT_DISCUSSION_READY=false
+
+This criteria-reflection block records the bounded Section-5 Criteria-SSOT repo-change-proposal execute posture for Gap 2 (canonical job set) only. Criteria-reflection does not verify or enable the canonical job set, does not lift Criteria-SSOT, does not lift preflight, and does not authorize runtime, scheduler execution, Paper, Shadow, Testnet, Live, AWS, broker, or exchange activity.
 
 ## Final Machine Lines
 
