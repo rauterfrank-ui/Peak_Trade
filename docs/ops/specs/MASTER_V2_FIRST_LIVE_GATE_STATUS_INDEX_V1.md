@@ -37,15 +37,20 @@ For **suggested read order** and cluster grouping of the `MASTER_V2_FIRST_LIVE_P
 
 SECTION5_CRITERIA_SSOT_REPO_CHANGE_PROPOSAL_V0=true
 SECTION5_CRITERIA_SSOT_REPO_CHANGE_PROPOSAL_GATE_INDEX_GOVERNED_REFLECTION_V0=true
+SECTION5_CRITERIA_SSOT_REPO_INTERNAL_WRITE_LIFT_V0=true
+SECTION5_CRITERIA_SSOT_REPO_INTERNAL_WRITE_LIFT_GATE_INDEX_APPLIED_V0=true
 CHANGE_ATOM=A-07
+CHANGE_ATOM_APPLIED=true
 PROPOSAL_CANDIDATE=C-08
-CRITERIA_SSOT_LIFTED=false
-POST_REVIEW_LIFT_DECISION_REQUIRED=true
+C_01_C_06_C_08_APPLIED=true
+C_01_C_12_APPLIED=false
+CRITERIA_SSOT_LIFTED=true
+POST_REVIEW_LIFT_DECISION_REQUIRED=false
 PREFLIGHT_REMAINS_BLOCKED=true
 READY_FOR_OPERATOR_ARMING=false
-GATE_INDEX_STATUS_LIFT_FROM_CRITERIA_REFLECTION=false
+GATE_INDEX_STATUS_LIFT_FROM_CRITERIA_REFLECTION=true
 
-This subsection adds a **read-only** pointer to Section-5 preflight gap criteria surfaces for audit orientation. It **does not** change any gate status in [§4](#4-compact-gate-index-table), **does not** lift Criteria-SSOT, **does not** lift preflight, and **does not** authorize live progression.
+This subsection adds a **read-only** pointer to Section-5 preflight gap criteria surfaces for audit orientation. Criteria-SSOT repo-internal write/lift applied for gate-index slice (A-07/C-08). It **does not** change any gate status in [§4](#4-compact-gate-index-table), **does not** lift preflight, and **does not** authorize live progression.
 
 **Canonical Section-5 criteria owners (reuse-first):**
 
