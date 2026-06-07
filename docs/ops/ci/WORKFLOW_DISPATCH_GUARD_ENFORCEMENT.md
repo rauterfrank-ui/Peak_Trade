@@ -60,14 +60,14 @@
 
 **Required Status Checks (active since Phase 5C):**
 - Enable: ✅ Require status checks to pass before merging
-- Check: `dispatch-guard` (job name; workflow display: `CI / Workflow Dispatch Guard`)
+- Check: `dispatch-guard` (job name; workflow display: `CI &#47; Workflow Dispatch Guard`)
 
 **Alternative (Rulesets - Modern):**
 - GitHub → Settings → Rules → Rulesets
 - Target: `main` branch
 - Required checks: include `dispatch-guard` per JSON SSOT
 
-**Reconciliation:** `scripts/ops/reconcile_required_checks_branch_protection.py --check` with `--required-config config/ci/required_status_checks.json`
+**Reconciliation:** `scripts&#47;ops&#47;reconcile_required_checks_branch_protection.py --check` with `--required-config config&#47;ci&#47;required_status_checks.json`
 
 ## Bypass/Override Policy
 
