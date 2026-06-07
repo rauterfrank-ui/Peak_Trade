@@ -320,6 +320,47 @@ Operator delegated futures values recorded in durable archive are **not** approv
 - Durable decision record: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_010_011_futures_specific_delegated_operator_value_decision_record_no_run_v1_20260607T063900Z`
 - Execute confirmation: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_010_011_futures_repo_internal_status_reflection_execute_confirmation_no_run_v1_20260607T064646Z`
 
+### 6.9 GLB-017 Incident/Abort Route Operator Confirmation Recorded Reflection v0
+
+GLB_017_INCIDENT_ABORT_ROUTE_OPERATOR_CONFIRMATION_RECORDED=true
+GLB017_CONFIRM_01_06_CONFIRMED=true
+ARCHIVE_ONLY_OPERATOR_CONFIRMATION=true
+INCIDENT_ABORT_SURFACES_REVIEWED=true
+ABORT_ROUTE_PROCEDURAL_NOT_LIVE_AUTHORIZATION=true
+INCIDENT_PATH_DOES_NOT_LIFT_PREFLIGHT_GLB_GAP7=true
+REAL_RUN_REQUIRES_SEPARATE_SCOPE_AND_AUTHORIZATION=true
+NO_FAKE_INCIDENT_EVIDENCE_CONFIRMED=true
+NO_SECRET_LEAKAGE_CONFIRMED=true
+MASTER_V2_DOUBLE_PLAY_UNMODIFIED=true
+BULL_BEAR_LOGIC_UNMODIFIED=true
+SCOPE_CAPITAL_RISK_EXECUTION_LOGIC_UNMODIFIED=true
+GLB_017_STATUS=BLOCKED
+GLB_017_LIFTED=false
+GLB_STATUS_LIFTED=false
+PREFLIGHT_GATE_LIFTED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+GAP7_RISK_BOUNDARY_VERIFIED=false
+GAP7_VERIFICATION_LIFTED=false
+PILOT_CHECKLIST_GO_AUTHORIZED=false
+READY_FOR_OPERATOR_ARMING=false
+LIVE_AUTHORIZED=false
+ALL_AUTHORITY_FLAGS_REMAIN_FALSE=true
+EVIDENCE_MARKED_PROVIDED=false
+
+This reflection records a bounded archive-only operator confirmation for GLB-017 Incident/Abort Route only.
+It is not a Pilot-GO, not arming, not live authorization, not a GLB lift, not a Preflight lift, not a GAP7 lift, and not evidence-marking.
+It does not modify Master V2 / Double Play / Bull-Bear logic.
+GLB-017 remains BLOCKED.
+
+This criteria-reflection block records the bounded GLB-017 incident/abort route operator confirmation **recorded** posture for archive decision record reflection only. Register [§6](#6-blocker-register) **GLB-017** row remains **BLOCKED**; this slice **does not** close **GLB-017**, **does not** set `GLB_017_LIFTED=true`, **does not** set `GLB_STATUS_LIFTED=true`, **does not** lift preflight, **does not** authorize pilot GO, arming, or live, and **does not** authorize runtime, scheduler execution, Paper, Shadow, Testnet, Live, AWS, broker, or exchange activity.
+
+Operator confirmation recorded in durable archive is **not** approval. Incident/abort runbooks and triage compass remain procedural orientation only.
+
+**Durable archive chain (read-only pointers; non-authorizing):**
+
+- Operator confirmation record: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_017_incident_abort_route_operator_confirmation_record_no_run_v1_20260607T070358Z`
+- Execute confirmation: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_017_incident_abort_route_repo_internal_status_reflection_execute_confirmation_no_run_v1_20260607T071243Z`
+
 ## 7. No-Green Claim Rule
 
 This register may show that a blocker is OPEN, BLOCKED, DEFERRED, ACCEPTED_BY_AUTHORITY, or CLOSED.
