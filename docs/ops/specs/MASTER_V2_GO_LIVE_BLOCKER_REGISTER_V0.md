@@ -402,6 +402,59 @@ Operator confirmation recorded in durable archive is **not** approval. §6.5 GLB
 - Operator confirmation record: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_014_go_no_go_owner_authority_route_operator_confirmation_record_no_run_v1_20260607T072502Z`
 - Execute confirmation: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_014_go_no_go_owner_authority_route_repo_internal_status_reflection_execute_confirmation_no_run_v1_20260607T073027Z`
 
+### 6.11 GLB-016 Preflight Packet Confirmation Operator Confirmation Recorded Reflection v0
+
+GLB_016_PREFLIGHT_PACKET_CONFIRMATION_OPERATOR_CONFIRMATION_RECORDED=true
+GLB016_CONFIRM_01_06_CONFIRMED=true
+ARCHIVE_ONLY_OPERATOR_CONFIRMATION=true
+PREFLIGHT_PACKET_CONFIRMATION_SURFACES_REVIEWED=true
+REPO_DOCS_DO_NOT_SELF_AUTHORIZE_PREFLIGHT_PACKET_EXECUTION_PILOT_ARMING_LIVE_OR_LIFTS=true
+PREFLIGHT_PACKET_EXECUTION_REQUIRES_EXPLICIT_SCOPED_OPERATOR_AUTHORIZATION=true
+DOCS_REFLECTION_SEPARATE_FROM_AUTHORIZATION=true
+NO_FAKE_AUTHORITY_EVIDENCE_CONFIRMED=true
+NO_SECRET_LEAKAGE_CONFIRMED=true
+MASTER_V2_DOUBLE_PLAY_UNMODIFIED=true
+BULL_BEAR_LOGIC_UNMODIFIED=true
+SCOPE_CAPITAL_RISK_EXECUTION_LOGIC_UNMODIFIED=true
+GLB_016_STATUS=BLOCKED
+GLB_016_LIFTED=false
+GLB_STATUS_LIFTED=false
+PREFLIGHT_GATE_LIFTED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+GAP7_RISK_BOUNDARY_VERIFIED=false
+GAP7_VERIFICATION_LIFTED=false
+PILOT_CHECKLIST_GO_AUTHORIZED=false
+READY_FOR_OPERATOR_ARMING=false
+LIVE_AUTHORIZED=false
+ALL_AUTHORITY_FLAGS_REMAIN_FALSE=true
+EVIDENCE_MARKED_PROVIDED=false
+
+This reflection records a bounded archive-only operator confirmation for GLB-016 Preflight Packet Confirmation only.
+It is not a Pilot-GO, not arming, not live authorization, not a GLB lift, not a Preflight lift, not a GAP7 lift, and not evidence-marking.
+It does not modify Master V2 / Double Play / Bull-Bear logic.
+GLB-016 remains BLOCKED.
+
+This criteria-reflection block records the bounded GLB-016 preflight packet confirmation operator confirmation **recorded** posture for archive decision record reflection only. Register [§6](#6-blocker-register) **GLB-016** row remains **BLOCKED**; this slice **does not** close **GLB-016**, **does not** set `GLB_016_LIFTED=true`, **does not** set `GLB_STATUS_LIFTED=true`, **does not** lift preflight, **does not** authorize pilot GO, arming, or live, and **does not** authorize runtime, scheduler execution, Paper, Shadow, Testnet, Live, AWS, broker, or exchange activity.
+
+Operator confirmation recorded in durable archive is **not** approval. §6.5 GLB-015 clarification remains binding: repo docs, archive closeouts, and offline review outputs are review inputs only.
+
+**Explicit prohibitions (this reflection must not imply or authorize):**
+
+- **Do not** mark preflight packet output as provided evidence (`EVIDENCE_MARKED_PROVIDED` remains false).
+- **Do not** execute `scripts/ops/bounded_pilot_operator_preflight_packet.py` under this reflection chain.
+- **Do not** operationally use `docs/ops/runbooks/RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md` as authorization — it remains a read/orientation surface only for this strand.
+- **Do not** derive any GLB lift, Preflight gate lift, or GAP7 verification lift from this reflection.
+
+**Durable archive chain (read-only pointers; non-authorizing):**
+
+- Boundary review: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_016_preflight_packet_confirmation_boundary_review_no_run_v1_20260607T073835Z`
+- Operator confirmation prep: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_016_preflight_packet_confirmation_operator_confirmation_prep_no_run_v1_20260607T073959Z`
+- Operator confirmation record: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_016_preflight_packet_confirmation_operator_confirmation_record_no_run_v1_20260607T074147Z`
+- Reflection prep: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_016_preflight_packet_confirmation_repo_internal_status_reflection_prep_no_run_v1_20260607T074254Z`
+- Operator decision: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_016_preflight_packet_confirmation_repo_internal_status_reflection_operator_decision_no_run_v1_20260607T074407Z`
+- Execute plan: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_016_preflight_packet_confirmation_repo_internal_status_reflection_execute_plan_no_run_v1_20260607T074522Z`
+- Execute confirmation: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_016_preflight_packet_confirmation_repo_internal_status_reflection_execute_confirmation_no_run_v1_20260607T074701Z`
+
 ## 7. No-Green Claim Rule
 
 This register may show that a blocker is OPEN, BLOCKED, DEFERRED, ACCEPTED_BY_AUTHORITY, or CLOSED.
