@@ -767,6 +767,75 @@ Operator confirmation recorded in durable archive is **not** approval. §6.4 cla
 - Execute plan: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_012_013_execution_live_gates_repo_internal_status_reflection_execute_plan_no_run_v1_20260607T091728Z`
 - Execute confirmation: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_012_013_execution_live_gates_repo_internal_status_reflection_execute_confirmation_no_run_v1_20260607T091852Z`
 
+### 6.17 GLB-006 Source-Bound Session Selection Operator Confirmation Recorded Reflection v0
+
+GLB_006_SOURCE_BOUND_SESSION_SELECTION_OPERATOR_CONFIRMATION_RECORDED=true
+GLB006_CONFIRM_01_09_CONFIRMED=true
+ARCHIVE_ONLY_OPERATOR_CONFIRMATION=true
+SOURCE_BOUND_SESSION_SELECTION_BOUNDARY_REVIEWED=true
+SOURCE_BOUND_SESSION_SELECTION_SURFACES_REVIEWED=true
+REPO_DOCS_DO_NOT_SELF_AUTHORIZE_SOURCE_BOUND_SESSION_SELECTION_PILOT_ARMING_LIVE_OR_LIFTS=true
+SOURCE_BOUND_SESSION_SELECTION_CONFIRMATION_DOES_NOT_VERIFY_GAP7=true
+SOURCE_BOUND_SESSION_SELECTION_CONFIRMATION_DOES_NOT_LIFT_PREFLIGHT_GLB_GAP7=true
+SOURCE_BOUND_SELECTION_EXECUTED=false
+SESSION_FOCUS_PRIMARY_SOURCE_DOES_NOT_SATISFY_EXPLICIT_SESSION_ID_BINDING=true
+SOURCE_BOUND_SRP_CONSTRUCTION_REQUIRES_SEPARATE_SCOPED_AUTHORIZATION=true
+DOCS_REFLECTION_SEPARATE_FROM_AUTHORIZATION=true
+NO_FAKE_AUTHORITY_EVIDENCE_CONFIRMED=true
+NO_FAKE_SOURCE_BOUND_SESSION_SELECTION_EVIDENCE_CONFIRMED=true
+NO_SECRET_LEAKAGE_CONFIRMED=true
+MASTER_V2_DOUBLE_PLAY_UNMODIFIED=true
+BULL_BEAR_LOGIC_UNMODIFIED=true
+SCOPE_CAPITAL_RISK_EXECUTION_LOGIC_UNMODIFIED=true
+SOURCE_BOUND_SESSION_SELECTION_LOGIC_UNMODIFIED=true
+EXECUTION_LIVE_GATES_LOGIC_UNMODIFIED=true
+RISK_KILLSWITCH_LOGIC_UNMODIFIED=true
+RUNTIME_SCHEDULER_TRADING_UNMODIFIED=true
+GLB_006_STATUS=BLOCKED
+GLB_006_STATUS_CHANGED=false
+GLB_006_LIFTED=false
+GLB_STATUS_LIFTED=false
+PREFLIGHT_GATE_LIFTED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+GAP7_RISK_BOUNDARY_VERIFIED=false
+GAP7_VERIFICATION_LIFTED=false
+PILOT_CHECKLIST_GO_AUTHORIZED=false
+READY_FOR_OPERATOR_ARMING=false
+LIVE_AUTHORIZED=false
+ALL_AUTHORITY_FLAGS_REMAIN_FALSE=true
+EVIDENCE_MARKED_PROVIDED=false
+SOURCE_BOUND_SESSION_SELECTION_EVIDENCE_MARKED_PROVIDED=false
+
+This reflection records a bounded archive-only operator confirmation for GLB-006 Source-bound session selection only.
+It is not a Pilot-GO, not arming, not live authorization, not a GLB lift, not a Preflight lift, not a GAP7 lift, and not evidence-marking.
+It does not modify Master V2 / Double Play / Bull-Bear logic or source-bound session selection implementation semantics.
+No source-bound session selection was executed; no explicit session_id was bound or verified operatively.
+GLB-006 remains BLOCKED.
+
+This criteria-reflection block records the bounded GLB-006 source-bound session selection operator confirmation **recorded** posture for archive decision record reflection only. Register [§6](#6-blocker-register) **GLB-006** row remains **BLOCKED**; this slice **does not** close **GLB-006**, **does not** set `GLB_006_LIFTED=true`, **does not** set `GLB_STATUS_LIFTED=true`, **does not** lift preflight, **does not** verify GAP7, **does not** authorize pilot GO, arming, or live, and **does not** authorize runtime, scheduler execution, Paper, Shadow, Testnet, Live, AWS, broker, or exchange activity.
+
+Operator confirmation recorded in durable archive is **not** approval. §6.1 clarification remains binding: read-only triage `session_focus` / `primary_source` does **not** satisfy explicit binding `session_id` selection, and repo SRP/source-bound specifications and tests do **not** close **GLB-006** by themselves. Readiness/boundary/confirmation visibility is **not** operative authorization; repo docs do not self-authorize.
+
+**Explicit prohibitions (this reflection must not imply or authorize):**
+
+- **Do not** execute source-bound session selection, source-bound SRP construction, registry reads, or `out/ops` mutation under this reflection chain.
+- **Do not** set `GAP7_RISK_BOUNDARY_VERIFIED=true` or `GAP7_VERIFICATION_LIFTED=true`.
+- **Do not** mark session-selection or source-bound evidence as provided (`SOURCE_BOUND_SESSION_SELECTION_EVIDENCE_MARKED_PROVIDED` and `EVIDENCE_MARKED_PROVIDED` remain false).
+- **Do not** operationally use SRP contracts, source-bound implementation plans, or session overview snapshots as authorization — they remain read/orientation surfaces only for this strand.
+- **Do not** derive any GLB lift, Preflight gate lift, or GAP7 verification lift from this reflection.
+- **Do not** change GLB-006 from **BLOCKED** to OPEN, closed, or fulfilled by this reflection alone.
+- **Do not** modify §6.1, §6.4–§6.6, or §6.7–§6.16 existing blocks.
+
+**Durable archive chain (read-only pointers; non-authorizing):**
+
+- Boundary review: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_006_source_bound_session_selection_boundary_review_no_run_v1_20260607T092717Z`
+- Operator confirmation prep: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_006_source_bound_session_selection_operator_confirmation_prep_no_run_v1_20260607T092838Z`
+- Operator confirmation record: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_006_source_bound_session_selection_operator_confirmation_record_no_run_v1_20260607T092947Z`
+- Reflection prep: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_006_source_bound_session_selection_repo_internal_status_reflection_prep_no_run_v1_20260607T093050Z`
+- Operator decision: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_006_source_bound_session_selection_repo_internal_status_reflection_operator_decision_no_run_v1_20260607T093204Z`
+- Execute plan: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_006_source_bound_session_selection_repo_internal_status_reflection_execute_plan_no_run_v1_20260607T093322Z`
+- Execute confirmation: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_006_source_bound_session_selection_repo_internal_status_reflection_execute_confirmation_no_run_v1_20260607T093452Z`
+
 ## 7. No-Green Claim Rule
 
 This register may show that a blocker is OPEN, BLOCKED, DEFERRED, ACCEPTED_BY_AUTHORITY, or CLOSED.
