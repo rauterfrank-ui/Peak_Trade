@@ -267,6 +267,59 @@ Operator confirmation recorded in durable archive is **not** approval. §6.5 cla
 - Reflection operator decision: `glb_015_repo_internal_status_reflection_operator_decision_no_run_v1_20260607T061036Z`
 - Execute operator confirmation: `glb_015_repo_internal_status_reflection_execute_operator_confirmation_no_run_v1_20260607T061312Z`
 
+### 6.8 GLB-010/011 Futures-Specific Delegated Operator Value Decision Recorded Reflection v0
+
+GLB_010_011_FUTURES_SPECIFIC_DELEGATED_OPERATOR_VALUE_DECISION_RECORDED=true
+GLB010011_FUTURES_VALUE_01_12_CONFIRMED=true
+OPERATOR_VALUES_COMPLETE=true
+OPERATOR_FUTURES_INSTRUMENT=PF_XBTUSD
+OPERATOR_FUTURES_MARKET_TYPE=perpetual
+OPERATOR_EXCHANGE_OR_TESTNET_CONTEXT=bounded-futures-normal-testnet-v0 @ demo-futures.kraken.com
+OPERATOR_MARGIN_MODE=isolated
+OPERATOR_COLLATERAL_CURRENCY=EUR
+OPERATOR_LEVERAGE_LIMIT=1
+OPERATOR_DEPLOYABLE_MARGIN_VALUE=10
+OPERATOR_DEPLOYABLE_MARGIN_CURRENCY=EUR
+OPERATOR_MAX_POSITION_NOTIONAL_VALUE=10
+OPERATOR_MAX_POSITION_NOTIONAL_CURRENCY=EUR
+OPERATOR_MAX_LOSS_VALUE=10
+OPERATOR_MAX_LOSS_UNIT=EUR
+OPERATOR_MAX_LOSS_SCOPE=per_bounded_futures_testnet_session
+OPERATOR_LIQUIDATION_BUFFER_RULE=fail-closed liquidation_risk_acknowledged rule
+OPERATOR_ORDER_CAP=1
+OPERATOR_POSITION_CAP=1
+OPERATOR_TREASURY_SEPARATION_CONFIRMED=true
+OPERATOR_VALUES_ARE_NOT_PILOT_GO_CONFIRMED=true
+OPERATOR_SEPARATE_GO_REQUIRED_CONFIRMED=true
+GLB_010_STATUS=BLOCKED
+GLB_011_STATUS=BLOCKED
+GLB_010_LIFTED=false
+GLB_011_LIFTED=false
+GLB_STATUS_LIFTED=false
+PREFLIGHT_GATE_LIFTED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+GAP7_RISK_BOUNDARY_VERIFIED=false
+GAP7_VERIFICATION_LIFTED=false
+PILOT_CHECKLIST_VERDICT=CONDITIONAL
+PILOT_CHECKLIST_GO_AUTHORIZED=false
+READY_FOR_OPERATOR_ARMING=false
+LIVE_AUTHORIZED=false
+EVIDENCE_MARKED_PROVIDED=false
+ALL_AUTHORITY_FLAGS_REMAIN_FALSE=true
+
+This reflection records a bounded operator value decision for GLB-010/011 only.
+It is not a Pilot-GO, not arming, not live authorization, not a GLB lift, not a Preflight lift, and not evidence-marking.
+GLB-010 and GLB-011 remain BLOCKED.
+
+This criteria-reflection block records the bounded GLB-010/011 futures-specific delegated operator value decision **recorded** posture for archive decision record reflection only. Register [§6](#6-blocker-register) **GLB-010** and **GLB-011** rows remain **BLOCKED**; this slice **does not** close **GLB-010** or **GLB-011**, **does not** set `GLB_010_LIFTED=true` or `GLB_011_LIFTED=true`, **does not** set `GLB_STATUS_LIFTED=true`, **does not** lift preflight, **does not** authorize pilot GO, arming, or live, and **does not** authorize runtime, scheduler execution, Paper, Shadow, Testnet, Live, AWS, broker, or exchange activity.
+
+Operator delegated futures values recorded in durable archive are **not** approval. §6.2 clarification remains binding: repo contracts and tests do **not** close **GLB-010** or **GLB-011** by themselves.
+
+**Durable archive chain (read-only pointers; non-authorizing):**
+
+- Durable decision record: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_010_011_futures_specific_delegated_operator_value_decision_record_no_run_v1_20260607T063900Z`
+- Execute confirmation: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_010_011_futures_repo_internal_status_reflection_execute_confirmation_no_run_v1_20260607T064646Z`
+
 ## 7. No-Green Claim Rule
 
 This register may show that a blocker is OPEN, BLOCKED, DEFERRED, ACCEPTED_BY_AUTHORITY, or CLOSED.
