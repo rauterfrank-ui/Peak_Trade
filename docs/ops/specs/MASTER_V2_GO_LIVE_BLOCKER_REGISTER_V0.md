@@ -234,6 +234,39 @@ This criteria-reflection block records the bounded GLB-008/009/012/013 repo-inte
 
 Evidence-satisfied classification reflected here is **not** gate closure. §6.3 and §6.4 clarifications remain binding: repo artifacts and tests do **not** close **GLB-008**, **GLB-009**, **GLB-012**, or **GLB-013** by themselves.
 
+### 6.7 GLB-015 Operator Non-Authorizing Confirmation Recorded Reflection v0
+
+GLB_015_REPO_INTERNAL_STATUS_REFLECTION_V0=true
+GLB_015_OPERATOR_NON_AUTHORIZING_CONFIRMATION_RECORDED=true
+GLB015_CONFIRM_01_07_CONFIRMED=true
+GLB_015_APPLIED=true
+DOCS_ONLY_EXECUTE_SLICE=true
+GLB_015_APPROVAL_GRANTED=false
+GLB_015_LIFTED=false
+GLB_015_LIFT_AUTHORIZED=false
+GLB_015_STATUS=BLOCKED
+GLB_STATUS_LIFTED=false
+PREFLIGHT_GATE_LIFTED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+GAP7_RISK_BOUNDARY_VERIFIED=false
+GAP7_VERIFICATION_LIFTED=false
+PILOT_CHECKLIST_VERDICT=CONDITIONAL
+PILOT_CHECKLIST_GO_AUTHORIZED=false
+READY_FOR_OPERATOR_ARMING=false
+LIVE_AUTHORIZED=false
+EVIDENCE_MARKED_PROVIDED=false
+ALL_AUTHORITY_FLAGS_REMAIN_FALSE=true
+
+This criteria-reflection block records the bounded GLB-015 operator non-authorizing confirmation **applied** posture for archive decision record reflection only. Register [§6](#6-blocker-register) **GLB-015** row remains **BLOCKED**; this slice **does not** close **GLB-015**, **does not** set `GLB_015_LIFTED=true`, **does not** set `GLB_STATUS_LIFTED=true`, **does not** lift preflight, **does not** authorize pilot GO, arming, or live, and **does not** authorize runtime, scheduler execution, Paper, Shadow, Testnet, Live, AWS, broker, or exchange activity.
+
+Operator confirmation recorded in durable archive is **not** approval. §6.5 clarification remains binding: repo docs, archive closeouts, and offline review outputs are review inputs only.
+
+**Durable archive chain (read-only pointers; non-authorizing):**
+
+- Confirmation record: `glb_015_operator_non_authorizing_confirmation_record_no_run_v1_20260607T060730Z`
+- Reflection operator decision: `glb_015_repo_internal_status_reflection_operator_decision_no_run_v1_20260607T061036Z`
+- Execute operator confirmation: `glb_015_repo_internal_status_reflection_execute_operator_confirmation_no_run_v1_20260607T061312Z`
+
 ## 7. No-Green Claim Rule
 
 This register may show that a blocker is OPEN, BLOCKED, DEFERRED, ACCEPTED_BY_AUTHORITY, or CLOSED.
