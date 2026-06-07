@@ -2,7 +2,7 @@
 docs_token: DOCS_TOKEN_MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0
 status: draft
 scope: docs-only, non-authorizing Master V2 Go-Live blocker register
-last_updated: 2026-04-30
+last_updated: 2026-06-07
 ---
 
 # Master V2 Go-Live Blocker Register V0
@@ -203,6 +203,36 @@ The repository may contain **material planning, closeout, merge, and evidence-ch
 - `scripts/ops/build_readiness_evidence_ledger_v0.py` and `scripts/ops/report_readiness_gate_snapshot_v0.py` — offline convenience CLIs; non-authorizing
 
 Until explicit operator/reviewer confirmation exists, **BLOCKED** remains.
+
+### 6.6 GLB-008/009/012/013 Repo-Internal Status/Lift Applied Reflection v0
+
+GLB_STATUS_REPO_INTERNAL_WRITE_LIFT_V0=true
+GLB_STATUS_REPO_INTERNAL_WRITE_LIFT_008_009_012_013_APPLIED_V0=true
+GLB_008_EVIDENCE_SATISFIED=true
+GLB_009_EVIDENCE_SATISFIED=true
+GLB_012_EVIDENCE_SATISFIED=true
+GLB_013_EVIDENCE_SATISFIED=true
+GLB_STATUS_LIFT_DECISION_ACCEPTED=true
+GLB_008_APPLIED=true
+GLB_009_APPLIED=true
+GLB_012_APPLIED=true
+GLB_013_APPLIED=true
+DOCS_ONLY_EXECUTE_SLICE=true
+GLB_STATUS_LIFTED=false
+GLB_STATUS_LIFT_AUTHORIZED=false
+GLB_008_STATUS=BLOCKED
+GLB_009_STATUS=BLOCKED
+GLB_012_STATUS=BLOCKED
+GLB_013_STATUS=BLOCKED
+PREFLIGHT_REMAINS_BLOCKED=true
+PILOT_CHECKLIST_VERDICT=CONDITIONAL
+PILOT_CHECKLIST_GO_AUTHORIZED=false
+READY_FOR_OPERATOR_ARMING=false
+LIVE_AUTHORIZED=false
+
+This criteria-reflection block records the bounded GLB-008/009/012/013 repo-internal status/lift applied posture for evidence-satisfied and decision-accepted reflection only. **GLB-008**, **GLB-009**, **GLB-012**, and **GLB-013** register default states in [§6](#6-blocker-register) remain **BLOCKED**; this slice **does not** close those blockers, **does not** set `GLB_STATUS_LIFTED=true`, **does not** lift preflight, **does not** authorize pilot GO, arming, or live, and **does not** authorize runtime, scheduler execution, Paper, Shadow, Testnet, Live, AWS, broker, or exchange activity.
+
+Evidence-satisfied classification reflected here is **not** gate closure. §6.3 and §6.4 clarifications remain binding: repo artifacts and tests do **not** close **GLB-008**, **GLB-009**, **GLB-012**, or **GLB-013** by themselves.
 
 ## 7. No-Green Claim Rule
 
