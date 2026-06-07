@@ -511,6 +511,64 @@ Operator confirmation recorded in durable archive is **not** approval. §6.5 GLB
 - Execute plan: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_018_closeout_path_repo_internal_status_reflection_execute_plan_no_run_v1_20260607T080644Z`
 - Execute confirmation: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_018_closeout_path_repo_internal_status_reflection_execute_confirmation_no_run_v1_20260607T080920Z`
 
+### 6.13 GLB-019 Event Stream Operator Confirmation Recorded Reflection v0
+
+GLB_019_EVENT_STREAM_OPERATOR_CONFIRMATION_RECORDED=true
+GLB019_CONFIRM_01_07_CONFIRMED=true
+ARCHIVE_ONLY_OPERATOR_CONFIRMATION=true
+EVENT_STREAM_SURFACES_REVIEWED=true
+MISSING_OR_INCONSISTENT_EVENTS_MUST_BE_RECORDED_NOT_IGNORED=true
+REPO_DOCS_DO_NOT_SELF_AUTHORIZE_EVENT_STREAM_EXECUTION_EVIDENCE_PILOT_ARMING_LIVE_OR_LIFTS=true
+EVENT_STREAM_EXECUTION_REQUIRES_EXPLICIT_SCOPED_OPERATOR_AUTHORIZATION=true
+DOCS_REFLECTION_SEPARATE_FROM_AUTHORIZATION=true
+NO_FAKE_AUTHORITY_EVIDENCE_CONFIRMED=true
+NO_SECRET_LEAKAGE_CONFIRMED=true
+MASTER_V2_DOUBLE_PLAY_UNMODIFIED=true
+BULL_BEAR_LOGIC_UNMODIFIED=true
+SCOPE_CAPITAL_RISK_EXECUTION_LOGIC_UNMODIFIED=true
+GLB_019_STATUS=OPEN
+GLB_019_STATUS_CHANGED=false
+GLB_019_LIFTED=false
+GLB_STATUS_LIFTED=false
+PREFLIGHT_GATE_LIFTED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+GAP7_RISK_BOUNDARY_VERIFIED=false
+GAP7_VERIFICATION_LIFTED=false
+PILOT_CHECKLIST_GO_AUTHORIZED=false
+READY_FOR_OPERATOR_ARMING=false
+LIVE_AUTHORIZED=false
+ALL_AUTHORITY_FLAGS_REMAIN_FALSE=true
+EVIDENCE_MARKED_PROVIDED=false
+EVENT_STREAM_EVIDENCE_MARKED_PROVIDED=false
+
+This reflection records a bounded archive-only operator confirmation for GLB-019 Event Stream only.
+It is not a Pilot-GO, not arming, not live authorization, not a GLB lift, not a Preflight lift, not a GAP7 lift, and not evidence-marking.
+It does not modify Master V2 / Double Play / Bull-Bear logic.
+GLB-019 remains OPEN.
+
+This criteria-reflection block records the bounded GLB-019 event stream operator confirmation **recorded** posture for archive decision record reflection only. Register [§6](#6-blocker-register) **GLB-019** row remains **OPEN**; this slice **does not** close **GLB-019**, **does not** set `GLB_019_LIFTED=true`, **does not** set `GLB_STATUS_LIFTED=true`, **does not** lift preflight, **does not** authorize pilot GO, arming, or live, and **does not** authorize runtime, scheduler execution, Paper, Shadow, Testnet, Live, AWS, broker, or exchange activity.
+
+Operator confirmation recorded in durable archive is **not** approval. §6.5 GLB-015 clarification remains binding: repo docs, archive closeouts, and offline review outputs are review inputs only.
+
+**Explicit prohibitions (this reflection must not imply or authorize):**
+
+- **Do not** execute or generate event streams, run sync jobs, or mutate registry / `out/ops` under this reflection chain.
+- **Do not** mark event / telemetry / evidence status as provided (`EVENT_STREAM_EVIDENCE_MARKED_PROVIDED` and `EVIDENCE_MARKED_PROVIDED` remain false).
+- **Do not** operationally use event-stream / telemetry / audit read-models as authorization — they remain read/orientation surfaces only for this strand.
+- **Do not** ignore missing or inconsistent events — missing-event posture must be explicitly recorded (`present: false`, `review_state: needs_review`).
+- **Do not** derive any GLB lift, Preflight gate lift, or GAP7 verification lift from this reflection.
+- **Do not** change GLB-019 from **OPEN** to closed, blocked, or fulfilled by this reflection alone.
+
+**Durable archive chain (read-only pointers; non-authorizing):**
+
+- Boundary review: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_019_event_stream_boundary_review_no_run_v1_20260607T082142Z`
+- Operator confirmation prep: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_019_event_stream_operator_confirmation_prep_no_run_v1_20260607T082304Z`
+- Operator confirmation record: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_019_event_stream_operator_confirmation_record_no_run_v1_20260607T082439Z`
+- Reflection prep: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_019_event_stream_repo_internal_status_reflection_prep_no_run_v1_20260607T082602Z`
+- Operator decision: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_019_event_stream_repo_internal_status_reflection_operator_decision_no_run_v1_20260607T082718Z`
+- Execute plan: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_019_event_stream_repo_internal_status_reflection_execute_plan_no_run_v1_20260607T082827Z`
+- Execute confirmation: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_019_event_stream_repo_internal_status_reflection_execute_confirmation_no_run_v1_20260607T083032Z`
+
 ## 7. No-Green Claim Rule
 
 This register may show that a blocker is OPEN, BLOCKED, DEFERRED, ACCEPTED_BY_AUTHORITY, or CLOSED.
