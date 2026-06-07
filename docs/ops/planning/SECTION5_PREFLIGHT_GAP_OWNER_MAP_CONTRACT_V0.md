@@ -498,6 +498,35 @@ This contract records criteria only. It does not execute `scripts/run_scheduler.
 
 This contract does not verify or activate Risk Boundaries, does not change Risk/KillSwitch authority, does not change Risk/KillSwitch runtime behavior, does not change Master V2 / Double Play logic, does not change Bull/Bear side-switching or Scope/Capital behavior, and does not change execution/live gates. It does not modify `config/scheduler/jobs.toml`, does not enable any scheduler job, does not execute `scripts/run_scheduler.py`, does not authorize scheduler execution, does not approve runtime execution, and does not authorize Paper, Shadow, Testnet, Live, AWS, broker, or exchange activity. It does not change default-on enforcement, does not mark `READY_FOR_OPERATOR_ARMING=true`, does not lift Path B, does not lift preflight, and does not approve runtime.
 
+## Gap 7 Criteria-SSOT Repo-Internal Write/Lift Applied Reflection v0
+
+SECTION5_CRITERIA_SSOT_REPO_CHANGE_PROPOSAL_V0=true
+SECTION5_CRITERIA_SSOT_REPO_CHANGE_PROPOSAL_GAP7_GOVERNED_REFLECTION_V0=true
+SECTION5_CRITERIA_SSOT_REPO_INTERNAL_WRITE_LIFT_V0=true
+SECTION5_CRITERIA_SSOT_REPO_INTERNAL_WRITE_LIFT_GAP7_APPLIED_V0=true
+CHANGE_ATOM=A-08
+CHANGE_ATOM_APPLIED=true
+PROPOSAL_CANDIDATE=C-07
+DOCS_ONLY_EXECUTE_SLICE=true
+C_07_APPLIED=true
+C_01_C_07_C_08_APPLIED=true
+C_01_C_12_APPLIED=false
+CRITERIA_SSOT_LIFTED=true
+POST_REVIEW_LIFT_DECISION_REQUIRED=false
+GAP7_VERIFICATION_LIFT_DECISION_ACCEPTED=true
+GAP7_RISK_BOUNDARY_VERIFIED=false
+GAP7_VERIFICATION_LIFTED=false
+GAP7_RISK_KILLSWITCH_AUTHORITY_CHANGED=false
+GAP7_RISK_KILLSWITCH_RUNTIME_CHANGED=false
+GAP7_EXECUTION_LIVE_GATES_CHANGED=false
+GAP7_SCHEDULER_EXECUTION_AUTHORIZED=false
+GAP7_RUNTIME_APPROVED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+PATH_B_LIFT_DISCUSSION_READY=false
+
+This criteria-reflection block records the bounded Section-5 Criteria-SSOT repo-internal write/lift applied posture for Gap 7 (risk boundary criteria) only. Criteria-SSOT repo-internal write/lift applied for this slice (A-08/C-07). Criteria-reflection does not verify Gap 7 risk boundaries, does not lift preflight, and does not authorize runtime, scheduler execution, Paper, Shadow, Testnet, Live, AWS, broker, or exchange activity.
+
 ## Gap 2 Governed Canonical Job Set Scoped Criteria Acceptance Reflection v0
 
 GAP2_CANONICAL_JOB_SET_GOVERNED_REFLECTION_V0=true
