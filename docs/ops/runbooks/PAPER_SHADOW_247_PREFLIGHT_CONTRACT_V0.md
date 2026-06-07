@@ -495,6 +495,36 @@ PREFLIGHT_REMAINS_BLOCKED=true
 READY_FOR_OPERATOR_ARMING=false
 ```
 
+## 2c. Preflight Gate Repo-Internal Write/Lift Applied Reflection v0
+
+PREFLIGHT_GATE_REPO_INTERNAL_WRITE_LIFT_V0=true
+PREFLIGHT_GATE_REPO_INTERNAL_WRITE_LIFT_APPLIED_V0=true
+PREFLIGHT_GATE_DECISION_ACCEPTED=true
+PREFLIGHT_EVIDENCE_SATISFIED=true
+DOCS_ONLY_EXECUTE_SLICE=true
+PREFLIGHT_GATE_LIFTED=false
+PREFLIGHT_GATE_LIFT_AUTHORIZED=false
+PRE_FLIGHT_BLOCKED_LIFTED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+PILOT_CHECKLIST_VERDICT=CONDITIONAL
+PILOT_CHECKLIST_GO_AUTHORIZED=false
+READY_FOR_OPERATOR_ARMING=false
+LIVE_AUTHORIZED=false
+ALL_AUTHORITY_FLAGS_REMAIN_FALSE=true
+
+This criteria-reflection block records the bounded Preflight Umbrella Gate repo-internal write/lift applied posture for evidence-satisfied and decision-accepted reflection only. Contract [§2](#2-canonical-activation-status) canonical activation status and [§4](#4-status-model) status model remain **BLOCKED**; this slice **does not** set `PREFLIGHT_REMAINS_BLOCKED=false`, **does not** set `PREFLIGHT_GATE_LIFTED=true`, **does not** authorize Paper/Shadow 24/7 activation, scheduler execute, pilot GO, arming, or live, and **does not** authorize runtime, broker, exchange, or order activity.
+
+Evidence-satisfied classification reflected here is **not** Preflight lift. §4 status discipline and §5 mandatory preflight dimensions remain binding.
+
+**Durable archive chain (read-only pointers; non-authorizing):**
+
+- Prep: `preflight_gate_repo_internal_write_lift_prep_no_run_v1_20260607T054243Z`
+- Operator decision: `preflight_gate_repo_internal_write_lift_operator_decision_record_no_run_v1_20260607T054506Z`
+- Execute plan: `preflight_gate_repo_internal_write_lift_execute_plan_no_run_v1_20260607T054710Z`
+- Execute confirmation: `preflight_gate_repo_internal_write_lift_execute_operator_confirmation_no_run_v1_20260607T054854Z`
+
+Archive root: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/` (external durable evidence; not a runtime input).
+
 ## 3. Non-authority
 
 The following are **not** trading authority, readiness approval, evidence approval, promotion, Master V2 / Double Play approval, or Live/Testnet approval:
