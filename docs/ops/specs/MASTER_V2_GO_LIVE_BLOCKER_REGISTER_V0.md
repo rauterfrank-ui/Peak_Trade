@@ -631,6 +631,73 @@ Operator confirmation recorded in durable archive is **not** approval. §6.5 GLB
 - Execute plan: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_020_promotion_repo_internal_status_reflection_execute_plan_no_run_v1_20260607T084302Z`
 - Execute confirmation: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_020_promotion_repo_internal_status_reflection_execute_confirmation_no_run_v1_20260607T084405Z`
 
+### 6.15 GLB-008/009 Risk/KillSwitch Operator Confirmation Recorded Reflection v0
+
+GLB_008_009_RISK_KILLSWITCH_OPERATOR_CONFIRMATION_RECORDED=true
+GLB008009_CONFIRM_01_09_CONFIRMED=true
+ARCHIVE_ONLY_OPERATOR_CONFIRMATION=true
+RISK_KILLSWITCH_BOUNDARY_REVIEWED=true
+RISK_KILLSWITCH_SURFACES_REVIEWED=true
+REPO_DOCS_DO_NOT_SELF_AUTHORIZE_RISK_KILLSWITCH_PILOT_ARMING_LIVE_OR_LIFTS=true
+RISK_KILLSWITCH_CONFIRMATION_DOES_NOT_VERIFY_GAP7=true
+RISK_KILLSWITCH_CONFIRMATION_DOES_NOT_LIFT_PREFLIGHT_GLB_GAP7=true
+KILL_SWITCH_DRILLS_REQUIRE_SEPARATE_SCOPED_AUTHORIZATION=true
+DOCS_REFLECTION_SEPARATE_FROM_AUTHORIZATION=true
+NO_FAKE_AUTHORITY_EVIDENCE_CONFIRMED=true
+NO_FAKE_RISK_KILLSWITCH_EVIDENCE_CONFIRMED=true
+NO_SECRET_LEAKAGE_CONFIRMED=true
+MASTER_V2_DOUBLE_PLAY_UNMODIFIED=true
+BULL_BEAR_LOGIC_UNMODIFIED=true
+SCOPE_CAPITAL_RISK_EXECUTION_LOGIC_UNMODIFIED=true
+RISK_KILLSWITCH_LOGIC_UNMODIFIED=true
+RUNTIME_SCHEDULER_TRADING_UNMODIFIED=true
+GLB_008_STATUS=BLOCKED
+GLB_009_STATUS=BLOCKED
+GLB_008_009_STATUS_CHANGED=false
+GLB_008_LIFTED=false
+GLB_009_LIFTED=false
+GLB_008_009_LIFTED=false
+GLB_STATUS_LIFTED=false
+PREFLIGHT_GATE_LIFTED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+GAP7_RISK_BOUNDARY_VERIFIED=false
+GAP7_VERIFICATION_LIFTED=false
+PILOT_CHECKLIST_GO_AUTHORIZED=false
+READY_FOR_OPERATOR_ARMING=false
+LIVE_AUTHORIZED=false
+ALL_AUTHORITY_FLAGS_REMAIN_FALSE=true
+EVIDENCE_MARKED_PROVIDED=false
+RISK_KILLSWITCH_EVIDENCE_MARKED_PROVIDED=false
+
+This reflection records a bounded archive-only operator confirmation for GLB-008 KillSwitch and GLB-009 Risk limits only.
+It is not a Pilot-GO, not arming, not live authorization, not a GLB lift, not a Preflight lift, not a GAP7 lift, and not evidence-marking.
+It does not modify Master V2 / Double Play / Bull-Bear logic or Risk/KillSwitch implementation semantics.
+GLB-008 and GLB-009 remain BLOCKED.
+
+This criteria-reflection block records the bounded GLB-008/009 Risk/KillSwitch operator confirmation **recorded** posture for archive decision record reflection only. Register [§6](#6-blocker-register) **GLB-008** and **GLB-009** rows remain **BLOCKED**; this slice **does not** close **GLB-008** or **GLB-009**, **does not** set `GLB_008_LIFTED=true` or `GLB_009_LIFTED=true`, **does not** set `GLB_STATUS_LIFTED=true`, **does not** lift preflight, **does not** verify GAP7, **does not** authorize pilot GO, arming, or live, and **does not** authorize runtime, scheduler execution, Paper, Shadow, Testnet, Live, AWS, broker, or exchange activity.
+
+Operator confirmation recorded in durable archive is **not** approval. §6.3 clarification remains binding: repo KillSwitch/Risk specifications, tests, and §6.6 evidence-satisfied classification do **not** close **GLB-008** or **GLB-009** by themselves. Readiness/boundary/confirmation visibility is **not** operative authorization; repo docs do not self-authorize.
+
+**Explicit prohibitions (this reflection must not imply or authorize):**
+
+- **Do not** execute KillSwitch drills, runtime verification, or live risk-limit enforcement under this reflection chain.
+- **Do not** set `GAP7_RISK_BOUNDARY_VERIFIED=true` or `GAP7_VERIFICATION_LIFTED=true`.
+- **Do not** mark risk/KillSwitch evidence as provided (`RISK_KILLSWITCH_EVIDENCE_MARKED_PROVIDED` and `EVIDENCE_MARKED_PROVIDED` remain false).
+- **Do not** operationally use KillSwitch/Risk runbooks, contracts, or tests as authorization — they remain read/orientation surfaces only for this strand.
+- **Do not** derive any GLB lift, Preflight gate lift, or GAP7 verification lift from this reflection.
+- **Do not** change GLB-008 or GLB-009 from **BLOCKED** to OPEN, closed, or fulfilled by this reflection alone.
+- **Do not** modify §6.3, §6.6, or §6.7–§6.14 existing blocks.
+
+**Durable archive chain (read-only pointers; non-authorizing):**
+
+- Boundary review: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_008_009_risk_killswitch_boundary_review_no_run_v1_20260607T085420Z`
+- Operator confirmation prep: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_008_009_risk_killswitch_operator_confirmation_prep_no_run_v1_20260607T085543Z`
+- Operator confirmation record: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_008_009_risk_killswitch_operator_confirmation_record_no_run_v1_20260607T085700Z`
+- Reflection prep: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_008_009_risk_killswitch_repo_internal_status_reflection_prep_no_run_v1_20260607T085826Z`
+- Operator decision: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_008_009_risk_killswitch_repo_internal_status_reflection_operator_decision_no_run_v1_20260607T085950Z`
+- Execute plan: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_008_009_risk_killswitch_repo_internal_status_reflection_execute_plan_no_run_v1_20260607T090102Z`
+- Execute confirmation: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_008_009_risk_killswitch_repo_internal_status_reflection_execute_confirmation_no_run_v1_20260607T090223Z`
+
 ## 7. No-Green Claim Rule
 
 This register may show that a blocker is OPEN, BLOCKED, DEFERRED, ACCEPTED_BY_AUTHORITY, or CLOSED.
