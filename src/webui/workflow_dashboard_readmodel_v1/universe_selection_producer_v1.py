@@ -29,15 +29,27 @@ from .universe_selection_contract_v1 import (
 
 ENV_PRODUCER_V1_ENABLED = "PEAK_TRADE_UNIVERSE_SELECTION_PRODUCER_V1_ENABLED"
 ENV_UPSTREAM_FIXTURE_PATH = "PEAK_TRADE_UNIVERSE_SELECTION_UPSTREAM_FIXTURE_PATH"
+ENV_REAL_METADATA_LOADER_V1_ENABLED = (
+    "PEAK_TRADE_UNIVERSE_SELECTION_REAL_METADATA_LOADER_V1_ENABLED"
+)
+ENV_REAL_METADATA_SOURCE_PATH = "PEAK_TRADE_UNIVERSE_SELECTION_REAL_METADATA_SOURCE_PATH"
 
 REASON_UPSTREAM_FIXTURE_PATH_FORBIDDEN = "UPSTREAM_FIXTURE_PATH_FORBIDDEN"
 REASON_UPSTREAM_FIXTURE_PATH_INVALID = "UPSTREAM_FIXTURE_PATH_INVALID"
+REASON_REAL_METADATA_LOADER_PATH_FORBIDDEN = "REAL_METADATA_LOADER_PATH_FORBIDDEN"
+REASON_REAL_METADATA_LOADER_PATH_INVALID = "REAL_METADATA_LOADER_PATH_INVALID"
+REASON_UPSTREAM_SOURCE_PATH_CONFLICT = "UPSTREAM_SOURCE_PATH_CONFLICT"
 
 PRODUCER_CONTRACT = "universe_selection_producer.v1"
 READMODELS_DIRNAME = "readmodels"
 READMODEL_FILENAME = "universe_selection_readmodel.v1.json"
 MANIFEST_FILENAME = "MANIFEST.sha256"
 MANIFEST_VERIFY_LOG_FILENAME = "MANIFEST_VERIFY.log"
+
+OPTIONAL_PERSISTED_MARKER_FIELDS = (
+    "real_metadata_source_marked",
+    "observability_truth_allowed",
+)
 
 
 class ProducerWriteError(ValueError):
@@ -189,6 +201,17 @@ def build_missing_truth_universe_selection_readmodel(
     return contract_to_json_dict(contract)
 
 
+def _merge_optional_persisted_markers(
+    serialized: dict[str, Any],
+    payload: dict[str, Any],
+) -> dict[str, Any]:
+    merged = dict(serialized)
+    for key in OPTIONAL_PERSISTED_MARKER_FIELDS:
+        if key in payload:
+            merged[key] = payload[key]
+    return merged
+
+
 def write_universe_selection_readmodel(
     archive_root: str | Path,
     payload: dict[str, Any],
@@ -213,7 +236,7 @@ def write_universe_selection_readmodel(
     except UniverseSelectionContractError as exc:
         raise ProducerWriteError(str(exc)) from exc
 
-    serialized = contract_to_json_dict(contract)
+    serialized = _merge_optional_persisted_markers(contract_to_json_dict(contract), payload)
     readmodels_dir = _readmodels_dir(root)
     final_path = readmodels_dir / READMODEL_FILENAME
     manifest_path = readmodels_dir / MANIFEST_FILENAME
@@ -275,6 +298,10 @@ def _producer_v1_enabled() -> bool:
     return (os.environ.get(ENV_PRODUCER_V1_ENABLED) or "").strip() == "1"
 
 
+def _real_metadata_loader_v1_enabled() -> bool:
+    return (os.environ.get(ENV_REAL_METADATA_LOADER_V1_ENABLED) or "").strip() == "1"
+
+
 def _resolve_upstream_fixture_path_status() -> tuple[Path | None, str | None]:
     raw = (os.environ.get(ENV_UPSTREAM_FIXTURE_PATH) or "").strip()
     if not raw:
@@ -292,6 +319,120 @@ def _resolve_upstream_fixture_path_status() -> tuple[Path | None, str | None]:
     except ValueError:
         return None, f"{REASON_UPSTREAM_FIXTURE_PATH_FORBIDDEN}: path must be under tests/fixtures"
     return resolved, None
+
+
+def _resolve_real_metadata_source_path_status(
+    archive_root: Path,
+) -> tuple[Path | None, str | None]:
+    raw = (os.environ.get(ENV_REAL_METADATA_SOURCE_PATH) or "").strip()
+    if not raw:
+        return None, None
+    path = Path(raw).expanduser()
+    if not path.is_absolute():
+        return None, f"{REASON_REAL_METADATA_LOADER_PATH_INVALID}: path must be absolute"
+    try:
+        resolved = path.resolve(strict=True)
+    except OSError:
+        return None, f"{REASON_REAL_METADATA_LOADER_PATH_INVALID}: governed bundle path not found"
+    if not resolved.is_file():
+        return None, f"{REASON_REAL_METADATA_LOADER_PATH_INVALID}: governed bundle path not found"
+    root = archive_root.expanduser().resolve()
+    try:
+        resolved.relative_to(root)
+    except ValueError:
+        return (
+            None,
+            f"{REASON_REAL_METADATA_LOADER_PATH_FORBIDDEN}: path must be under archive root",
+        )
+    fixtures_root = (_repo_root() / "tests" / "fixtures").resolve()
+    try:
+        resolved.relative_to(fixtures_root)
+        return (
+            None,
+            f"{REASON_REAL_METADATA_LOADER_PATH_FORBIDDEN}: repo fixture paths forbidden for U2b",
+        )
+    except ValueError:
+        pass
+    return resolved, None
+
+
+def build_real_metadata_mapped_universe_selection_readmodel(
+    *,
+    archive_root: str | Path,
+    governed_bundle_path: str | Path,
+    run_bundle_path: str | None = None,
+    evidence_links: tuple[str, ...] | None = None,
+) -> dict[str, Any]:
+    """Build readmodel payload from U2b governed bundle → U1 adapter (dry-verification only)."""
+    from .futures_producer_packet_real_metadata_source_v1 import (
+        assert_governed_not_observability_truth,
+        bundle_to_upstream_input,
+        load_futures_producer_packet_governed,
+    )
+    from .futures_universe_upstream_adapter_v1 import (
+        map_futures_packets_to_universe_selection_readmodel,
+    )
+
+    root = Path(archive_root).expanduser().resolve()
+    path = Path(governed_bundle_path).expanduser().resolve()
+
+    bundle = load_futures_producer_packet_governed(path, archive_root=root)
+    assert_governed_not_observability_truth(bundle)
+    upstream = bundle_to_upstream_input(bundle)
+    adapter_result = map_futures_packets_to_universe_selection_readmodel(upstream)
+    payload = dict(adapter_result.payload)
+
+    payload["fixture_marked"] = False
+    payload["observability_truth_allowed"] = False
+    payload["real_metadata_source_marked"] = True
+    payload["non_authorizing"] = True
+
+    links = _build_evidence_links(
+        run_bundle_path=run_bundle_path,
+        run_bundle_uri=None,
+        extra_links=evidence_links,
+    )
+    for link in bundle.evidence_links:
+        if link not in links:
+            links.append(link)
+    bundle_link = str(path)
+    if bundle_link not in links:
+        links.append(bundle_link)
+    if bundle.metadata_table_ref not in links:
+        links.append(bundle.metadata_table_ref)
+
+    evidence = dict(payload.get("evidence") or {})
+    evidence["links"] = links
+    evidence["real_metadata_loader"] = "futures_producer_packet_real_metadata_source.v1"
+    evidence["metadata_table_ref"] = bundle.metadata_table_ref
+    evidence["metadata_refresh_utc"] = bundle.metadata_refresh_utc
+    payload["evidence"] = evidence
+
+    contract = validate_universe_selection_payload(payload)
+    serialized = contract_to_json_dict(contract)
+    serialized["fixture_marked"] = False
+    serialized["observability_truth_allowed"] = False
+    serialized["real_metadata_source_marked"] = True
+    serialized["non_authorizing"] = True
+    return serialized
+
+
+def write_real_metadata_mapped_universe_selection_readmodel(
+    archive_root: str | Path,
+    *,
+    governed_bundle_path: str | Path,
+    run_bundle_path: str | None = None,
+    evidence_links: tuple[str, ...] | None = None,
+    dry_run: bool = False,
+) -> ProducerWriteResult:
+    """Validate and persist U2b→U1 mapped readmodel (non-authorizing, not observability truth)."""
+    payload = build_real_metadata_mapped_universe_selection_readmodel(
+        archive_root=archive_root,
+        governed_bundle_path=governed_bundle_path,
+        run_bundle_path=run_bundle_path,
+        evidence_links=evidence_links,
+    )
+    return write_universe_selection_readmodel(archive_root, payload, dry_run=dry_run)
 
 
 def build_upstream_mapped_universe_selection_readmodel(
@@ -411,6 +552,39 @@ def maybe_write_missing_truth_after_bounded_closeout(
         )
 
     fixture_path, fixture_path_error = _resolve_upstream_fixture_path_status()
+    real_metadata_path, real_metadata_path_error = _resolve_real_metadata_source_path_status(root)
+    real_metadata_enabled = _real_metadata_loader_v1_enabled()
+
+    if fixture_path is not None and real_metadata_path is not None:
+        return CloseoutHookResult(
+            enabled=True,
+            skipped=False,
+            written=False,
+            reason="ERROR",
+            archive_root=str(root),
+            readmodel_path=None,
+            manifest_verify_rc=None,
+            error=(
+                f"{REASON_UPSTREAM_SOURCE_PATH_CONFLICT}: "
+                "fixture path and real metadata path are mutually exclusive"
+            ),
+        )
+
+    if real_metadata_enabled and fixture_path is not None:
+        return CloseoutHookResult(
+            enabled=True,
+            skipped=False,
+            written=False,
+            reason="ERROR",
+            archive_root=str(root),
+            readmodel_path=None,
+            manifest_verify_rc=None,
+            error=(
+                f"{REASON_UPSTREAM_SOURCE_PATH_CONFLICT}: "
+                "real metadata loader enabled while fixture path is set"
+            ),
+        )
+
     if fixture_path_error is not None:
         return CloseoutHookResult(
             enabled=True,
@@ -423,8 +597,41 @@ def maybe_write_missing_truth_after_bounded_closeout(
             error=fixture_path_error,
         )
 
+    if real_metadata_path_error is not None:
+        return CloseoutHookResult(
+            enabled=True,
+            skipped=False,
+            written=False,
+            reason="ERROR",
+            archive_root=str(root),
+            readmodel_path=None,
+            manifest_verify_rc=None,
+            error=real_metadata_path_error,
+        )
+
+    if real_metadata_enabled and real_metadata_path is None:
+        return CloseoutHookResult(
+            enabled=True,
+            skipped=False,
+            written=False,
+            reason="ERROR",
+            archive_root=str(root),
+            readmodel_path=None,
+            manifest_verify_rc=None,
+            error=(
+                f"{REASON_REAL_METADATA_LOADER_PATH_INVALID}: "
+                "real metadata source path required when loader enabled"
+            ),
+        )
+
     try:
-        if fixture_path is not None:
+        if real_metadata_enabled and real_metadata_path is not None:
+            write_result = write_real_metadata_mapped_universe_selection_readmodel(
+                root,
+                governed_bundle_path=real_metadata_path,
+                run_bundle_path=str(run_bundle_path),
+            )
+        elif fixture_path is not None:
             write_result = write_upstream_mapped_universe_selection_readmodel(
                 root,
                 fixture_path=fixture_path,

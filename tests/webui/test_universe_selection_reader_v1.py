@@ -23,6 +23,7 @@ from src.webui.workflow_dashboard_readmodel_v1.universe_selection_reader_v1 impo
     LOAD_ERROR_INVALID_JSON,
     LOAD_ERROR_MANIFEST_NOT_FOUND,
     LOAD_ERROR_MANIFEST_VERIFY_FAILED,
+    LOAD_ERROR_REAL_METADATA_NOT_OBSERVABILITY_TRUTH,
     try_load_universe_selection_for_dashboard,
 )
 
@@ -143,3 +144,22 @@ def test_contract_invalid_after_valid_manifest(archive_root: Path) -> None:
     result = try_load_universe_selection_for_dashboard(archive_root)
     assert result.loaded is False
     assert result.load_errors == (LOAD_ERROR_CONTRACT_INVALID,)
+
+
+def test_real_metadata_marked_without_observability_truth_not_ssr_truth(
+    archive_root: Path,
+) -> None:
+    path = _install_fixture(archive_root, "complete_minimal")
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    payload["fixture_marked"] = False
+    payload["real_metadata_source_marked"] = True
+    payload["observability_truth_allowed"] = False
+    path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    _write_manifest_sha256(path.parent)
+
+    result = try_load_universe_selection_for_dashboard(archive_root)
+    assert result.loaded is False
+    assert result.load_errors == (LOAD_ERROR_REAL_METADATA_NOT_OBSERVABILITY_TRUTH,)
+    assert result.universe == ()
+    assert result.selected_future is None
+    assert "BTC/USD" not in str(result)

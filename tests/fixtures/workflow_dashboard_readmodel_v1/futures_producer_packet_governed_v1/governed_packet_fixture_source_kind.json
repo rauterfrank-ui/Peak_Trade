@@ -1,0 +1,21 @@
+{
+  "schema_name": "futures_producer_packet_governed.v1",
+  "schema_version": 1,
+  "source_kind": "fixture",
+  "producer_id": "futures_producer_packet_real_metadata_source_v1",
+  "generated_at": "2026-06-08T18:00:00Z",
+  "source_run_id": "governed_u2b_fixture_source_kind",
+  "source_stage": "paper",
+  "fixture_only": false,
+  "observability_truth_allowed": false,
+  "non_authorizing": true,
+  "real_metadata_source_marked": true,
+  "metadata_table_ref": "__METADATA_TABLE_REF__",
+  "metadata_refresh_utc": "2026-06-08T18:00:00Z",
+  "evidence_links": ["__EVIDENCE_LINK__"],
+  "selected_candidate_id": "c-eth",
+  "universe": {"notes": "forbidden source_kind test"},
+  "ranking": {"notes": "forbidden source_kind test"},
+  "selected_future": {"candidate_id": "c-eth", "symbol": "ETHUSDT"},
+  "packets": []
+}
