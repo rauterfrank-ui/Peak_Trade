@@ -1,0 +1,103 @@
+{
+  "schema_name": "futures_producer_packet_fixture.v1",
+  "schema_version": 1,
+  "source_kind": "fixture",
+  "producer_id": "futures_producer_packet_fixture_source_v1",
+  "generated_at": "2026-06-08T17:03:00Z",
+  "source_run_id": "fixture_u2a_selected_not_in_universe",
+  "source_stage": "paper",
+  "fixture_only": true,
+  "observability_truth_allowed": false,
+  "non_authorizing": true,
+  "selected_candidate_id": "c-missing",
+  "universe": {
+    "conceptual_size": 50,
+    "eligible_packet_count": 1,
+    "notes": "selected id not present in universe packets"
+  },
+  "ranking": {
+    "selected_top_n": 20,
+    "notes": "non-authorizing internal ranking"
+  },
+  "selected_future": {
+    "candidate_id": "c-missing",
+    "symbol": "SOLUSDT",
+    "notes": "selected not in universe — U1 must reject selected truth"
+  },
+  "packets": [
+    {
+      "candidate": {
+        "candidate_id": "c-eth",
+        "instrument_id": "inst-eth-perp",
+        "symbol": "ETHUSDT",
+        "market_type": "perpetual",
+        "exchange": "binance_futures",
+        "base_currency": "ETH",
+        "quote_currency": "USDT",
+        "live_authorization": false
+      },
+      "ranking": {
+        "source_universe_size": 50,
+        "selected_top_n": 20,
+        "rank": 1,
+        "score": 0.91,
+        "score_components_complete": true,
+        "is_top_n_member": true
+      },
+      "instrument": {
+        "complete": true,
+        "contract_size_known": true,
+        "tick_size_known": true,
+        "step_size_known": true,
+        "min_qty_known": true,
+        "min_notional_known": true,
+        "margin_asset_known": true,
+        "settlement_asset_known": true,
+        "leverage_bounds_known": true,
+        "missing_fields": []
+      },
+      "provenance": {
+        "complete": true,
+        "freshness_state": "fresh",
+        "dataset_id": "ds-u2a-not-in-universe",
+        "source": "fixture",
+        "mark_available": true,
+        "index_available": true,
+        "last_available": true,
+        "ohlcv_available": true,
+        "funding_available": true,
+        "open_interest_available": true,
+        "missing_fields": []
+      },
+      "volatility": {
+        "realized_volatility": 0.4,
+        "atr_or_rolling_range": 100.0,
+        "volatility_regime": "medium",
+        "dynamic_scope_usable": true
+      },
+      "liquidity": {
+        "spread_bps": 1.2,
+        "average_spread_bps": 1.5,
+        "volume": 1000000.0,
+        "quote_volume": 40000000.0,
+        "liquidity_regime": "deep",
+        "spread_quality": "tight"
+      },
+      "derivatives": {
+        "funding_available": true,
+        "funding_rate": 0.0001,
+        "funding_regime": "neutral",
+        "open_interest_available": true,
+        "open_interest": 1000000000.0,
+        "open_interest_regime": "high"
+      },
+      "opportunity": {
+        "opportunity_score": 0.8,
+        "inactivity_score": 0.1,
+        "movement_above_fee_slippage_breakeven": true,
+        "chop_risk": "low",
+        "candidate_is_inactive": false
+      }
+    }
+  ]
+}
