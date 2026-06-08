@@ -69,3 +69,112 @@ def test_market_data_source_contract_links_u5b_probe_module() -> None:
     assert "probe_kraken_futures_public_market_data_v1.py" in doc
     assert "CONFIRM_VIEW_ONLY_PUBLIC_MARKET_DATA_PROBE_V1" in doc
     assert "test_probe_kraken_futures_public_market_data_v1.py" in doc
+
+
+GOVERNED_SNAPSHOT_TEMPLATE_DOC = (
+    PROJECT_ROOT
+    / "docs"
+    / "webui"
+    / "observability"
+    / "FUTURES_UNIVERSE_GOVERNED_METADATA_SNAPSHOT_TEMPLATE_V1.md"
+)
+
+
+def test_u5c_transform_contract_section_exists_and_markers() -> None:
+    doc = MARKET_DATA_SOURCE_DOC.read_text(encoding="utf-8")
+    assert "## 12. U5C Transform Contract to U2c Governed Snapshot Candidate" in doc
+    assert "TRANSFORM_EXECUTED=false" in doc
+    assert "U2C_SNAPSHOT_DIRECTLY_INTAKE_READY=false" in doc
+    assert "GOVERNED_SNAPSHOT_ACCEPTED=false" in doc
+    assert "SNAPSHOT_INTAKE_EXECUTED=false" in doc
+    assert "LOADER_RUN_EXECUTED=false" in doc
+    assert "READMODEL_WRITE_EXECUTED=false" in doc
+    assert "DASHBOARD_WIRING_EXECUTED=false" in doc
+    assert "kraken_futures_public_market_data_probe_report.v1.json" in doc
+    assert "kraken_futures_instruments_raw.v1.json" in doc
+    assert "kraken_futures_tickers_raw.v1.json" in doc
+    assert "futures_producer_packet_governed.v1.json" in doc
+    assert "FUTURES_UNIVERSE_GOVERNED_METADATA_SNAPSHOT_TEMPLATE_V1.md" in doc
+
+
+def test_u5b_probe_report_alone_not_u2c_intake_ready() -> None:
+    doc = MARKET_DATA_SOURCE_DOC.read_text(encoding="utf-8")
+    assert "U5b probe report alone is not U2c intake-ready" in doc
+    assert "U2C_SNAPSHOT_DIRECTLY_INTAKE_READY=false" in doc
+    assert "top20_candidate_preview" in doc
+    assert "insufficient" in doc.lower()
+
+
+def test_u5c_requires_raw_instruments_tickers_artifacts() -> None:
+    doc = MARKET_DATA_SOURCE_DOC.read_text(encoding="utf-8")
+    assert "Raw instruments payload artifact" in doc
+    assert "Raw tickers payload artifact" in doc
+    assert "kraken_futures_instruments_raw.v1.json" in doc
+    assert "kraken_futures_tickers_raw.v1.json" in doc
+    assert "report-only direct U2c intake" in doc
+
+
+def test_u5c_alphabetical_top20_preview_not_governed_top20() -> None:
+    doc = MARKET_DATA_SOURCE_DOC.read_text(encoding="utf-8")
+    assert "alphabetical preview only" in doc
+    assert "top20_ranking_candidate" in doc
+    assert "must **never** become governed" in doc
+
+
+def test_u5c_forbids_btc_usd_substitution() -> None:
+    doc = MARKET_DATA_SOURCE_DOC.read_text(encoding="utf-8")
+    assert "BTC&#47;USD" in doc
+    assert "INELIGIBLE_SPOT_SYMBOL" in doc
+    assert "no BTC&#47;USD substitution" in doc
+
+
+def test_u5c_forbids_dummy_ranking() -> None:
+    doc = MARKET_DATA_SOURCE_DOC.read_text(encoding="utf-8")
+    assert "Dummy ranking rows" in doc or "dummy ranking" in doc.lower()
+    assert "btc_usd_dummy_default" in doc
+    assert "Missing Truth" in doc
+
+
+def test_u5c_no_selected_tradable_future() -> None:
+    doc = MARKET_DATA_SOURCE_DOC.read_text(encoding="utf-8")
+    assert "no_selected_tradable_future" in doc
+    assert "Selected tradable future without operator acceptance" in doc
+    assert "no strategy score" in doc.lower() or "Strategy score" in doc
+
+
+def test_u5c_readmodel_dashboard_gates_separate() -> None:
+    doc = MARKET_DATA_SOURCE_DOC.read_text(encoding="utf-8")
+    assert "Readmodel write before U2b loader validation PASS" in doc
+    assert "Dashboard display from raw U5b evidence" in doc
+    assert "Readmodel Write GO" in doc
+    assert "Dashboard Wiring GO" in doc
+
+
+def test_u5c_trading_logic_no_touch_markers() -> None:
+    doc = MARKET_DATA_SOURCE_DOC.read_text(encoding="utf-8")
+    assert "src&#47;execution&#47;**" in doc
+    assert "src&#47;risk&#47;**" in doc
+    assert "src&#47;governance&#47;**" in doc
+    assert "Master V2" in doc
+    assert "Double Play" in doc
+    assert "Risk-KillSwitch" in doc
+    assert "Execution-Live-Gates" in doc
+    assert "TRANSFORM_EXECUTED=false" in doc
+
+
+def test_u5c_reuse_no_parallel_owner_markers() -> None:
+    doc = MARKET_DATA_SOURCE_DOC.read_text(encoding="utf-8")
+    assert "no parallel surfaces" in doc.lower() or "no parallel SSOT" in doc
+    assert "not** a second snapshot SSOT" in doc
+    assert "FUTURES_UNIVERSE_REAL_SOURCE_CONTRACT_V1.md" in doc
+    assert "UNIVERSE_SELECTION_READMODEL_V1.md" in doc
+    assert "futures_producer_packet_real_metadata_source_v1.py" in doc
+    template = GOVERNED_SNAPSHOT_TEMPLATE_DOC.read_text(encoding="utf-8")
+    assert "REAL_FUTURES_MARKET_DATA_SOURCE_CONTRACT_V1.md" in template
+    assert "U5c transform contract" in template
+
+
+def test_governed_snapshot_template_links_u5c_transform_contract() -> None:
+    doc = GOVERNED_SNAPSHOT_TEMPLATE_DOC.read_text(encoding="utf-8")
+    assert "U5c transform contract" in doc
+    assert "not** direct report-only intake" in doc

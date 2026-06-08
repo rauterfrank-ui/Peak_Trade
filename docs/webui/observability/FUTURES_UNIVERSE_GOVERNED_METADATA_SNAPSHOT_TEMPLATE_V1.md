@@ -61,8 +61,9 @@ MANIFEST_VERIFY_RC=0
 | Provenance (F2) | [FUTURES_MARKET_DATA_PROVENANCE_CONTRACT_V0.md](../../ops/specs/FUTURES_MARKET_DATA_PROVENANCE_CONTRACT_V0.md) |
 | U2b loader validation | `src/webui/workflow_dashboard_readmodel_v1/futures_producer_packet_real_metadata_source_v1.py` |
 | U1 upstream adapter | `src/webui/workflow_dashboard_readmodel_v1/futures_universe_upstream_adapter_v1.py` |
+| U5c transform contract (U5b → candidate) | [REAL_FUTURES_MARKET_DATA_SOURCE_CONTRACT_V1.md](REAL_FUTURES_MARKET_DATA_SOURCE_CONTRACT_V1.md) §12 |
 
-This template extends the U4b/U2b chain — **not** a second real-source system, evidence index, or handoff surface.
+This template extends the U4b/U2b chain — **not** a second real-source system, evidence index, or handoff surface. U5b raw evidence reaches this template only via the U5c transform contract — **not** direct report-only intake.
 
 ## 5. Future snapshot location (operator-supplied later)
 
@@ -240,6 +241,7 @@ All tests must pass. Docs preflight must pass if markdown changed.
 | U2b | Real metadata loader guard | on main |
 | **U2c Decision** | Operator Truth-GO readiness decision record | PASS (archive) |
 | **U2c Template** | This document (docs-only) | this document |
+| **U5c** | U5b → U2c transform contract (docs/tests-only) | [REAL_FUTURES_MARKET_DATA_SOURCE_CONTRACT_V1.md](REAL_FUTURES_MARKET_DATA_SOURCE_CONTRACT_V1.md) §12 |
 | U2c Truth-GO form | Inactive operator form prep | not started |
 | Truth enablement | Separate bounded slice | **not authorized** |
 
