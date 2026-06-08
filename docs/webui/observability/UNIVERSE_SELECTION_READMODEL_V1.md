@@ -252,3 +252,16 @@ No BTC/USD dummy truth, no synthetic ranking, no dashboard faking.
 | **2b** | Env-gated adapter closeout hooks (Paper/Shadow/Testnet) |
 | **3 (this slice)** | Dashboard readmodel integration (read-only reader) |
 | **4** | Bounded run verification (explicit operator GO) |
+| **U4b** | Real-source charter record (docs-only) — see below |
+
+## 12. Real-Source Charter (U4b — docs-only)
+
+**Charter doc:** [**Futures Universe Real-Source Contract v1**](FUTURES_UNIVERSE_REAL_SOURCE_CONTRACT_V1.md)
+
+- Defines governed Futures-Instrument-Metadata-Quelle requirements **before** U2b (real-source loader + offline table).
+- **`REAL_FUTURES_OBSERVABILITY_TRUTH_AVAILABLE=false`** at charter record time — no governed metadata table in repo yet.
+- **`U2B_IMPLEMENTABLE_IMMEDIATELY=false`** — U2b blocked until charter on main + explicit operator GO.
+- Reuses **`FuturesProducerPacket`**, U1 adapter, U2a governance pattern, U3 producer, Slice 4 manifest evidence path — **no parallel SSOT**.
+- Forbidden: `market_ranking_funnel_readmodel.v0`, fixture-only as real truth, `BTC&#47;USD` / spot slash pairs as selected truth, approval/lift/live semantics on truth rows.
+- Evidence: `MANIFEST_VERIFY_RC=0` integrity only — **Evidence ≠ Approval/Lift/Live**.
+- U2b implementation (loader, table, wiring) is a **separate bounded slice** — not part of U4b.
