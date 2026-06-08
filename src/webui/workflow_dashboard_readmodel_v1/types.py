@@ -103,6 +103,49 @@ class NextGoCardV1:
 
 
 @dataclass(frozen=True)
+class UniverseSelectionRowDisplayV1:
+    row_id: str
+    symbol: str
+    rank: int
+    exchange: str | None = None
+    display_score: float | None = None
+    notes: str | None = None
+
+
+@dataclass(frozen=True)
+class SelectedFutureDisplayV1:
+    row_id: str
+    symbol: str
+    rank: int
+    truth_status: str
+    selection_reason: str | None = None
+    notes: str | None = None
+
+
+@dataclass(frozen=True)
+class MarketSnapshotDisplayV1:
+    truth_status: str
+    source_kind: str | None = None
+    snapshot_id: str | None = None
+    exchange: str | None = None
+    captured_at: str | None = None
+
+
+@dataclass(frozen=True)
+class UniverseSelectionDashboardSliceV1:
+    loaded: bool
+    load_errors: tuple[str, ...]
+    source_run_id: str | None = None
+    source_stage: str | None = None
+    generated_at: str | None = None
+    universe: tuple[UniverseSelectionRowDisplayV1, ...] = ()
+    ranking: tuple[UniverseSelectionRowDisplayV1, ...] = ()
+    selected_future: SelectedFutureDisplayV1 | None = None
+    market_snapshot: MarketSnapshotDisplayV1 | None = None
+    evidence_links: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True)
 class WorkflowDashboardReadModelV1:
     schema_version: str
     readmodel_id: str
@@ -119,6 +162,7 @@ class WorkflowDashboardReadModelV1:
     top20_missing: MissingTruthCardV1
     selected_future_missing: MissingTruthCardV1
     future_detail_missing: MissingTruthCardV1
+    universe_selection: UniverseSelectionDashboardSliceV1
     pipeline: WorkflowPipelineAggregateV1
     orders_fills_pnl: OrdersFillsPnlCardV1
     evidence_explorer: EvidenceCardV1
@@ -169,6 +213,59 @@ def to_json_dict(model: WorkflowDashboardReadModelV1) -> dict[str, Any]:
             "truth_status": model.future_detail_missing.truth_status,
             "message": model.future_detail_missing.message,
             "producer_followup": model.future_detail_missing.producer_followup,
+        },
+        "universe_selection": {
+            "loaded": model.universe_selection.loaded,
+            "load_errors": list(model.universe_selection.load_errors),
+            "source_run_id": model.universe_selection.source_run_id,
+            "source_stage": model.universe_selection.source_stage,
+            "generated_at": model.universe_selection.generated_at,
+            "universe": [
+                {
+                    "row_id": row.row_id,
+                    "symbol": row.symbol,
+                    "rank": row.rank,
+                    "exchange": row.exchange,
+                    "display_score": row.display_score,
+                    "notes": row.notes,
+                }
+                for row in model.universe_selection.universe
+            ],
+            "ranking": [
+                {
+                    "row_id": row.row_id,
+                    "symbol": row.symbol,
+                    "rank": row.rank,
+                    "exchange": row.exchange,
+                    "display_score": row.display_score,
+                    "notes": row.notes,
+                }
+                for row in model.universe_selection.ranking
+            ],
+            "selected_future": (
+                None
+                if model.universe_selection.selected_future is None
+                else {
+                    "row_id": model.universe_selection.selected_future.row_id,
+                    "symbol": model.universe_selection.selected_future.symbol,
+                    "rank": model.universe_selection.selected_future.rank,
+                    "truth_status": model.universe_selection.selected_future.truth_status,
+                    "selection_reason": model.universe_selection.selected_future.selection_reason,
+                    "notes": model.universe_selection.selected_future.notes,
+                }
+            ),
+            "market_snapshot": (
+                None
+                if model.universe_selection.market_snapshot is None
+                else {
+                    "truth_status": model.universe_selection.market_snapshot.truth_status,
+                    "source_kind": model.universe_selection.market_snapshot.source_kind,
+                    "snapshot_id": model.universe_selection.market_snapshot.snapshot_id,
+                    "exchange": model.universe_selection.market_snapshot.exchange,
+                    "captured_at": model.universe_selection.market_snapshot.captured_at,
+                }
+            ),
+            "evidence_links": list(model.universe_selection.evidence_links),
         },
         "pipeline": {
             "readmodel_id": model.pipeline.readmodel_id,

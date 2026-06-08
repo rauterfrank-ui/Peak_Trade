@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import shutil
 import sys
 from pathlib import Path
 
@@ -33,6 +34,13 @@ LPR_FIXTURE = (
     / "last_paper_run_panel_readmodel_v0"
     / "p1_complete_minimal"
 ).resolve()
+UNIVERSE_FIXTURES = (
+    project_root
+    / "tests"
+    / "fixtures"
+    / "workflow_dashboard_readmodel_v1"
+    / "universe_selection_readmodel_v1"
+)
 
 
 @pytest.fixture()
@@ -127,6 +135,44 @@ def test_market_separation(client_off: TestClient) -> None:
     html = client_off.get("/market").text
     assert 'data-workflow-dashboard-v1="true"' not in html
     assert 'data-market-v0-paper-run-truth-separation-v0="true"' in html
+
+
+def test_persisted_readmodel_renders_futures_only_values(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    from scripts.ops.primary_evidence_retention_v0 import write_manifest_sha256
+
+    archive = tmp_path / "archive_with_universe"
+    shutil.copytree(FIXTURE_ARCHIVE, archive)
+    readmodels_dir = archive / "readmodels"
+    readmodels_dir.mkdir(parents=True, exist_ok=True)
+    src = UNIVERSE_FIXTURES / "complete_minimal" / "universe_selection_readmodel.v1.json"
+    shutil.copy2(src, readmodels_dir / "universe_selection_readmodel.v1.json")
+    write_manifest_sha256(readmodels_dir)
+
+    monkeypatch.setenv("PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ENABLED", "1")
+    monkeypatch.setenv("PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ARCHIVE_ROOT", str(archive))
+    monkeypatch.setenv("PEAK_TRADE_FIXED_GENERATED_AT_UTC", "2026-06-08T12:00:00+00:00")
+    client = TestClient(create_app())
+    html = client.get("/observability").text
+    start = html.index('data-workflow-dashboard-v1="true"')
+    end = html.index('data-observability-status-summary="true"')
+    section = html[start:end]
+    assert "SOLUSDT" in section
+    assert "ETHUSDT" in section
+    assert "PERSISTED" in section
+    assert (
+        "GET /market BTC/USD dummy is <strong>not</strong> Future or Paper runtime truth."
+        in section
+    )
+    assert "selected_symbol" not in section
+    for marker in (
+        'data-workflow-panel-universe-v1="true"',
+        'data-workflow-panel-top20-v1="true"',
+        'data-workflow-panel-selected-future-v1="true"',
+        'data-workflow-panel-future-detail-v1="true"',
+    ):
+        assert marker in section
 
 
 def test_last_paper_run_still_works_with_both_gates(monkeypatch: pytest.MonkeyPatch) -> None:

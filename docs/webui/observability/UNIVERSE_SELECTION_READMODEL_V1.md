@@ -8,7 +8,9 @@ This document defines the **normative persistence contract** for **`universe_sel
 
 **Slice 2 status:** Closeout-only **producer helper** (`universe_selection_producer_v1.py`) with Mode-B missing-truth write, atomic persistence, and manifest verify. **No adapter hooks** in Slice 2 (env-gated adapter wiring deferred to Slice 2b). **No dashboard population** until Slice 3. **No runtime start**.
 
-**Slice 2b status:** Env-gated **closeout-only adapter hooks** in Paper/Shadow/Testnet bounded observation adapters. Default off. Non-blocking write failure. **No dashboard population** until Slice 3. **No runtime start**. **Live forbidden**.
+**Slice 2b status:** Env-gated **closeout-only adapter hooks** in Paper/Shadow/Testnet bounded observation adapters. Default off. Non-blocking write failure. **No runtime start**. **Live forbidden**.
+
+**Slice 3 status:** Read-only **dashboard reader** in `workflow_dashboard_readmodel.v1` builder + `GET &#47;observability` template. Verify-before-trust. Missing Truth fallback. **No producer write**. **No runtime start**. **Live forbidden**.
 
 **Contract prep reference:** `planning&#47;universe_top20_selected_future_persistence_contract_prep_no_run_v1_20260608T133943Z` (durable archive).
 
@@ -217,12 +219,36 @@ No BTC/USD dummy truth, no synthetic ranking, no dashboard faking.
 
 **Tests:** `tests/webui/test_universe_selection_producer_closeout_hook_v1.py`
 
+### Dashboard reader (Slice 3)
+
+**Module:** `src/webui/workflow_dashboard_readmodel_v1/universe_selection_reader_v1.py`  
+**Consumer:** `src/webui/workflow_dashboard_readmodel_v1/builder.py`  
+**SSR gate:** `PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ENABLED=1` + `PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ARCHIVE_ROOT` (unchanged)  
+**Tests:** `tests/webui/test_universe_selection_reader_v1.py`
+
+**Storage path:** `{ARCHIVE_ROOT}&#47;readmodels&#47;universe_selection_readmodel.v1.json`
+
+**Verify-before-trust:**
+
+1. If readmodel file missing → Missing Truth fallback (no diagnostic; unchanged Slice 1 behavior).
+2. If `readmodels&#47;MANIFEST.sha256` missing → Missing Truth + `load_error=MANIFEST_NOT_FOUND`.
+3. If `verify_manifest_sha256(readmodels_dir)` RC ≠ 0 → Missing Truth + `load_error=MANIFEST_VERIFY_FAILED`.
+4. If JSON invalid → Missing Truth + `load_error=INVALID_JSON`.
+5. If contract validation fails (including BTC&#47;USD selected) → Missing Truth + `load_error=CONTRACT_INVALID`.
+6. On success → Universe/Top20/Selected Future/Future Detail panels show persisted futures-only values.
+
+**Read-only constraints:** No archive writes, no producer/adapter calls, no runtime/exchange/API calls, no forms/buttons/fetch/post in workflow dashboard section.
+
+**Futures-first:** Contract validator rejects spot/BTC dummy selected truth; UI never displays rejected payloads.
+
+**GET &#47;market** remains separate SSOT — must not backfill Observability Missing Truth.
+
 ## 11. Implementation slices
 
 | Slice | Scope |
 |-------|-------|
 | **1** | Contract docs + schema + fixtures + static tests |
 | **2** | Producer helper + Mode-B write + unit tests (no adapter hooks) |
-| **2b (this slice)** | Env-gated adapter closeout hooks (Paper/Shadow/Testnet) |
-| **3** | Dashboard readmodel integration |
+| **2b** | Env-gated adapter closeout hooks (Paper/Shadow/Testnet) |
+| **3 (this slice)** | Dashboard readmodel integration (read-only reader) |
 | **4** | Bounded run verification (explicit operator GO) |

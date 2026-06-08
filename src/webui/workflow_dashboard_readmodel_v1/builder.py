@@ -17,13 +17,22 @@ from .types import (
     NextGoCardV1,
     OrdersFillsPnlCardV1,
     SafetyCardV1,
+    UniverseSelectionDashboardSliceV1,
     WorkflowDashboardReadModelV1,
 )
+from .universe_selection_contract_v1 import (
+    MISSING_TRUTH_FUTURE_DETAIL,
+    MISSING_TRUTH_RANKING,
+    MISSING_TRUTH_SELECTED,
+    MISSING_TRUTH_UNIVERSE,
+)
+from .universe_selection_reader_v1 import try_load_universe_selection_for_dashboard
 
 _FIXED_GEN_ENV = "PEAK_TRADE_FIXED_GENERATED_AT_UTC"
 T2_NEXT_GO_FALLBACK = "GO_T3_LONGER_TESTNET_STAGE_READY_PACKAGE_NO_RUN_V1"
 
 _PRODUCER_FOLLOWUP = "Producer persistence contract (Slice 2) — no dashboard substitution."
+_READER_FOLLOWUP = "Loaded from universe_selection_readmodel.v1 (Slice 3 reader)."
 
 
 def _now_iso() -> str:
@@ -33,13 +42,88 @@ def _now_iso() -> str:
     return datetime.now(tz=timezone.utc).isoformat()
 
 
-def _missing_truth(panel_key: str, truth_status: str, message: str) -> MissingTruthCardV1:
+def _missing_truth(
+    panel_key: str,
+    truth_status: str,
+    message: str,
+    *,
+    producer_followup: str = _PRODUCER_FOLLOWUP,
+) -> MissingTruthCardV1:
     return MissingTruthCardV1(
         panel_key=panel_key,
         truth_status=truth_status,
         message=message,
-        producer_followup=_PRODUCER_FOLLOWUP,
+        producer_followup=producer_followup,
     )
+
+
+def _universe_selection_missing_cards(
+    selection: UniverseSelectionDashboardSliceV1,
+) -> tuple[MissingTruthCardV1, MissingTruthCardV1, MissingTruthCardV1, MissingTruthCardV1]:
+    followup = _READER_FOLLOWUP if selection.loaded else _PRODUCER_FOLLOWUP
+
+    if selection.loaded and selection.universe:
+        universe = _missing_truth(
+            "universe",
+            "PERSISTED",
+            f"Governed universe snapshot ({len(selection.universe)} futures rows).",
+            producer_followup=followup,
+        )
+    else:
+        universe = _missing_truth(
+            "universe",
+            MISSING_TRUTH_UNIVERSE,
+            "No governed universe snapshot (~50 futures) is persisted for this workflow view.",
+            producer_followup=followup,
+        )
+
+    if selection.loaded and selection.ranking:
+        top20 = _missing_truth(
+            "top20",
+            "PERSISTED",
+            f"Top-20 ranking snapshot ({len(selection.ranking)} rows).",
+            producer_followup=followup,
+        )
+    else:
+        top20 = _missing_truth(
+            "top20",
+            MISSING_TRUTH_RANKING,
+            "No Top-20 ranking snapshot is persisted for this workflow view.",
+            producer_followup=followup,
+        )
+
+    if selection.loaded and selection.selected_future is not None:
+        selected = _missing_truth(
+            "selected_future",
+            "PERSISTED",
+            f"Selected future: {selection.selected_future.symbol} (rank {selection.selected_future.rank}).",
+            producer_followup=followup,
+        )
+    else:
+        selected = _missing_truth(
+            "selected_future",
+            MISSING_TRUTH_SELECTED,
+            "No selected-future decision artifact is linked to pipeline runs.",
+            producer_followup=followup,
+        )
+
+    snapshot = selection.market_snapshot
+    if selection.loaded and snapshot is not None and snapshot.truth_status == "PERSISTED":
+        future_detail = _missing_truth(
+            "future_detail",
+            "AVAILABLE",
+            "Future detail metadata loaded from persisted market snapshot.",
+            producer_followup=followup,
+        )
+    else:
+        future_detail = _missing_truth(
+            "future_detail",
+            MISSING_TRUTH_FUTURE_DETAIL,
+            "Future detail requires a persisted selection and market snapshot — not available.",
+            producer_followup=followup,
+        )
+
+    return universe, top20, selected, future_detail
 
 
 def build_workflow_dashboard_readmodel_v1(archive_root: Path) -> WorkflowDashboardReadModelV1:
@@ -64,25 +148,12 @@ def build_workflow_dashboard_readmodel_v1(archive_root: Path) -> WorkflowDashboa
         current_mode_label="Research / Paper / Shadow / Testnet — Live blocked",
     )
 
-    universe_missing = _missing_truth(
-        "universe",
-        "UNIVERSE_SOURCE_NOT_PERSISTED",
-        "No governed universe snapshot (~50 futures) is persisted for this workflow view.",
-    )
-    top20_missing = _missing_truth(
-        "top20",
-        "TOP20_RANKING_NOT_PERSISTED",
-        "No Top-20 ranking snapshot is persisted for this workflow view.",
-    )
-    selected_future_missing = _missing_truth(
-        "selected_future",
-        "SELECTED_FUTURE_NOT_PERSISTED",
-        "No selected-future decision artifact is linked to pipeline runs.",
-    )
-    future_detail_missing = _missing_truth(
-        "future_detail",
-        "FUTURE_DETAIL_NOT_AVAILABLE",
-        "Future detail requires a persisted selection and market snapshot — not available.",
+    universe_selection = try_load_universe_selection_for_dashboard(root)
+    if universe_selection.load_errors:
+        errors.extend(universe_selection.load_errors)
+
+    universe_missing, top20_missing, selected_future_missing, future_detail_missing = (
+        _universe_selection_missing_cards(universe_selection)
     )
 
     max_real = 0
@@ -190,6 +261,7 @@ def build_workflow_dashboard_readmodel_v1(archive_root: Path) -> WorkflowDashboa
         top20_missing=top20_missing,
         selected_future_missing=selected_future_missing,
         future_detail_missing=future_detail_missing,
+        universe_selection=universe_selection,
         pipeline=pipeline,
         orders_fills_pnl=orders_fills,
         evidence_explorer=evidence_card,
