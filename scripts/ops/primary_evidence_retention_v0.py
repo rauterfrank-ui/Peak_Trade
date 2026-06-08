@@ -134,6 +134,32 @@ def finalize_primary_evidence_root(root: Path) -> tuple[bool, str]:
     return verify_manifest_sha256(root)
 
 
+def write_manifest_verify_log(root: Path, *, verify_ok: bool, verify_msg: str = "") -> int:
+    """Write MANIFEST_VERIFY.log with explicit MANIFEST_VERIFY_RC (U2b + template §6)."""
+    rc = 0 if verify_ok else 1
+    status = "OK" if verify_ok else "FAILED"
+    body = (
+        f"verify_ok={str(verify_ok).lower()}\n"
+        f"message={verify_msg}\n"
+        f"MANIFEST_VERIFY_RC={rc}\n"
+        f"STATUS={status}\n"
+    )
+    (root / MANIFEST_VERIFY_LOG_FILENAMES[0]).write_text(body, encoding="utf-8")
+    return rc
+
+
+def finalize_durable_bundle_manifest(root: Path) -> tuple[int, str]:
+    """Write MANIFEST.sha256, verify, persist MANIFEST_VERIFY.log with RC, re-hash."""
+    write_manifest_sha256(root)
+    verify_ok, verify_msg = verify_manifest_sha256(root)
+    rc = write_manifest_verify_log(root, verify_ok=verify_ok, verify_msg=verify_msg)
+    write_manifest_sha256(root)
+    final_ok, final_msg = verify_manifest_sha256(root)
+    if not final_ok:
+        return 1, final_msg
+    return rc, verify_msg
+
+
 def validate_durable_primary_evidence_root(
     root: Path,
     *,
