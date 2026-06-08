@@ -33,6 +33,10 @@ from scripts.ops.primary_evidence_retention_v0 import (
     verify_manifest_sha256,
     write_manifest_sha256 as _write_manifest_sha256,
 )
+from src.webui.workflow_dashboard_readmodel_v1.universe_selection_producer_v1 import (
+    emit_universe_selection_closeout_machine_lines,
+    maybe_write_missing_truth_after_bounded_closeout,
+)
 
 ADAPTER_VERSION = "cli_adapter_scheduler_composition_v0"
 ALLOWED_JOB = "paper_shadow_247_paper_only_runtime_high_vol_no_trade_v0"
@@ -1080,6 +1084,13 @@ def execute_plan(
         + "\n",
         encoding="utf-8",
     )
+    hook_result = maybe_write_missing_truth_after_bounded_closeout(
+        archive_root=ctx.archive_root,
+        run_bundle_path=archive_dest,
+        source_run_id=ctx.run_id,
+        source_stage="paper",
+    )
+    emit_universe_selection_closeout_machine_lines(hook_result)
     return maybe_invoke_durable_closeout_after_archive(
         ctx,
         archive_dest,

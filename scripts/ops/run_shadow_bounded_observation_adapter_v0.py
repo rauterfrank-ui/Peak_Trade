@@ -39,6 +39,10 @@ from scripts.ops.run_paper_only_bounded_observation_adapter_v0 import (
     maybe_invoke_durable_closeout_after_archive,
     validate_durable_closeout_invoke_cli_args,
 )
+from src.webui.workflow_dashboard_readmodel_v1.universe_selection_producer_v1 import (
+    emit_universe_selection_closeout_machine_lines,
+    maybe_write_missing_truth_after_bounded_closeout,
+)
 
 BOUNDED_ADAPTER_LANE_SHADOW = "shadow_bounded_observation_v0"
 
@@ -711,6 +715,13 @@ def execute_plan(
     if not ok:
         print(reason, file=sys.stderr)
         return VALIDATION_EXIT
+    hook_result = maybe_write_missing_truth_after_bounded_closeout(
+        archive_root=ctx.archive_root,
+        run_bundle_path=archive_dest,
+        source_run_id=ctx.run_id,
+        source_stage="shadow",
+    )
+    emit_universe_selection_closeout_machine_lines(hook_result)
     return maybe_invoke_durable_closeout_after_archive(
         ctx,
         archive_dest,

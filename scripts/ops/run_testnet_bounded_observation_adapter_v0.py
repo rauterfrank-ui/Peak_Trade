@@ -30,6 +30,10 @@ from scripts.ops.primary_evidence_retention_v0 import (
     verify_manifest_sha256,
     write_manifest_sha256 as _write_manifest_sha256,
 )
+from src.webui.workflow_dashboard_readmodel_v1.universe_selection_producer_v1 import (
+    emit_universe_selection_closeout_machine_lines,
+    maybe_write_missing_truth_after_bounded_closeout,
+)
 
 ADAPTER_VERSION = "cli_testnet_evidence_flow_composition_v0"
 STAGING_SCRIPT = "scripts/ops/run_testnet_bounded_evidence_staging_v0.sh"
@@ -520,6 +524,13 @@ def execute_plan(
     if not ok:
         print(reason, file=sys.stderr)
         return VALIDATION_EXIT
+    hook_result = maybe_write_missing_truth_after_bounded_closeout(
+        archive_root=ctx.archive_root,
+        run_bundle_path=archive_dest,
+        source_run_id=ctx.run_id,
+        source_stage="testnet",
+    )
+    emit_universe_selection_closeout_machine_lines(hook_result)
     return 0
 
 

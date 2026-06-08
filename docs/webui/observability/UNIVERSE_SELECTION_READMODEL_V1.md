@@ -6,7 +6,9 @@ This document defines the **normative persistence contract** for **`universe_sel
 
 **Slice 1 status:** Schema, validation helpers, fixtures, and static tests only.
 
-**Slice 2 status:** Closeout-only **producer helper** (`universe_selection_producer_v1.py`) with Mode-B missing-truth write, atomic persistence, and manifest verify. **No adapter hooks** in Slice 2 (env-gated adapter wiring deferred). **No dashboard population** until Slice 3. **No runtime start**.
+**Slice 2 status:** Closeout-only **producer helper** (`universe_selection_producer_v1.py`) with Mode-B missing-truth write, atomic persistence, and manifest verify. **No adapter hooks** in Slice 2 (env-gated adapter wiring deferred to Slice 2b). **No dashboard population** until Slice 3. **No runtime start**.
+
+**Slice 2b status:** Env-gated **closeout-only adapter hooks** in Paper/Shadow/Testnet bounded observation adapters. Default off. Non-blocking write failure. **No dashboard population** until Slice 3. **No runtime start**. **Live forbidden**.
 
 **Contract prep reference:** `planning&#47;universe_top20_selected_future_persistence_contract_prep_no_run_v1_20260608T133943Z` (durable archive).
 
@@ -185,18 +187,42 @@ No BTC/USD dummy truth, no synthetic ranking, no dashboard faking.
 3. Manifest: reuse `scripts/ops/primary_evidence_retention_v0.py` (`write_manifest_sha256`, `verify_manifest_sha256`) on `readmodels&#47;` subtree
 4. Fail closed: invalid payload or manifest verify failure → no partial final file
 
-### Adapter hooks (deferred)
+### Adapter hooks (Slice 2b)
 
-Slice 2 does **not** wire `run_*_bounded_observation_adapter_v0.py` closeout paths. Future slice: env-gated hook (`PEAK_TRADE_UNIVERSE_SELECTION_PRODUCER_V1_ENABLED=1`, default off) after separate operator GO.
+**Env gate:** `PEAK_TRADE_UNIVERSE_SELECTION_PRODUCER_V1_ENABLED=1` — only literal `1` enables; default **off** (unset, `0`, `false`, or any other value → no-op, no file).
 
-**Live remains forbidden.** `source_stage=live` is rejected by schema validation.
+**Hook placement:** After per-run `verify_manifest_sha256(archive_dest)` succeeds, before optional durable closeout (Paper/Shadow) or adapter `return 0` (Testnet). Closeout-only — not at run start, not in hot path.
+
+**Hook function:** `maybe_write_missing_truth_after_bounded_closeout(...)` in `universe_selection_producer_v1.py`.
+
+| Adapter | `source_stage` | `run_bundle_path` |
+|---------|----------------|-------------------|
+| `run_paper_only_bounded_observation_adapter_v0.py` | `paper` | `{archive_root}&#47;runs&#47;paper&#47;{run_id}` |
+| `run_shadow_bounded_observation_adapter_v0.py` | `shadow` | `{archive_root}&#47;runs&#47;shadow&#47;{run_id}` |
+| `run_testnet_bounded_observation_adapter_v0.py` | `testnet` | `{archive_root}&#47;runs&#47;testnet&#47;{run_id}` |
+
+**Machine lines (emitted on every successful per-run closeout):**
+
+- `UNIVERSE_SELECTION_PRODUCER_V1_ENABLED=true|false`
+- `UNIVERSE_SELECTION_READMODEL_WRITTEN=true|false`
+- `UNIVERSE_SELECTION_READMODEL_PATH=<path>|NOT_WRITTEN`
+- `UNIVERSE_SELECTION_READMODEL_MANIFEST_VERIFY_RC=<rc>|NOT_RUN`
+- `UNIVERSE_SELECTION_READMODEL_ERROR=<message>|` (empty when no error)
+
+**Failure semantics (non-blocking):** Primary per-run closeout success is unchanged. When gate is on and write/verify fails, adapter exit remains `0` but machine lines record `UNIVERSE_SELECTION_READMODEL_WRITTEN=false` and `UNIVERSE_SELECTION_READMODEL_ERROR=...`.
+
+**Futures-first:** Mode-B missing truth only — no BTC/USD, no spot dummy, no synthetic ranking. Repair/operator bundles out of initial 2b scope.
+
+**Live remains forbidden.** `source_stage=live` is rejected (no write).
+
+**Tests:** `tests/webui/test_universe_selection_producer_closeout_hook_v1.py`
 
 ## 11. Implementation slices
 
 | Slice | Scope |
 |-------|-------|
 | **1** | Contract docs + schema + fixtures + static tests |
-| **2 (this slice)** | Producer helper + Mode-B write + unit tests (no adapter hooks) |
-| **2b (future)** | Env-gated adapter closeout hooks (Paper/Shadow/Testnet) |
+| **2** | Producer helper + Mode-B write + unit tests (no adapter hooks) |
+| **2b (this slice)** | Env-gated adapter closeout hooks (Paper/Shadow/Testnet) |
 | **3** | Dashboard readmodel integration |
 | **4** | Bounded run verification (explicit operator GO) |
