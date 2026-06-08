@@ -12,6 +12,8 @@ from pathlib import Path
 from typing import Any
 
 from .universe_selection_contract_v1 import (
+    ALLOWED_SOURCE_STAGES,
+    FORBIDDEN_SOURCE_STAGES,
     MISSING_TRUTH_FUTURE_DETAIL,
     MISSING_TRUTH_PNL,
     MISSING_TRUTH_RANKING,
@@ -24,6 +26,8 @@ from .universe_selection_contract_v1 import (
     contract_to_json_dict,
     validate_universe_selection_payload,
 )
+
+ENV_PRODUCER_V1_ENABLED = "PEAK_TRADE_UNIVERSE_SELECTION_PRODUCER_V1_ENABLED"
 
 PRODUCER_CONTRACT = "universe_selection_producer.v1"
 READMODELS_DIRNAME = "readmodels"
@@ -45,6 +49,20 @@ class ProducerWriteResult:
     manifest_verify_message: str
     manifest_verify_rc: int
     dry_run: bool
+
+
+@dataclass(frozen=True)
+class CloseoutHookResult:
+    """Non-throwing result for env-gated closeout adapter hooks (Slice 2b)."""
+
+    enabled: bool
+    skipped: bool
+    written: bool
+    reason: str
+    archive_root: str
+    readmodel_path: str | None
+    manifest_verify_rc: int | None
+    error: str | None
 
 
 def _repo_root() -> Path:
@@ -215,6 +233,105 @@ def write_universe_selection_readmodel(
         manifest_verify_message=verify_msg,
         manifest_verify_rc=0 if verify_ok else 1,
         dry_run=False,
+    )
+
+
+def _producer_v1_enabled() -> bool:
+    return (os.environ.get(ENV_PRODUCER_V1_ENABLED) or "").strip() == "1"
+
+
+def emit_universe_selection_closeout_machine_lines(result: CloseoutHookResult) -> None:
+    """Emit deterministic machine lines for bounded adapter closeout hooks."""
+    print(f"UNIVERSE_SELECTION_PRODUCER_V1_ENABLED={'true' if result.enabled else 'false'}")
+    print(f"UNIVERSE_SELECTION_READMODEL_WRITTEN={'true' if result.written else 'false'}")
+    if result.readmodel_path:
+        print(f"UNIVERSE_SELECTION_READMODEL_PATH={result.readmodel_path}")
+    else:
+        print("UNIVERSE_SELECTION_READMODEL_PATH=NOT_WRITTEN")
+    if result.manifest_verify_rc is not None:
+        print(f"UNIVERSE_SELECTION_READMODEL_MANIFEST_VERIFY_RC={result.manifest_verify_rc}")
+    else:
+        print("UNIVERSE_SELECTION_READMODEL_MANIFEST_VERIFY_RC=NOT_RUN")
+    if result.error:
+        print(f"UNIVERSE_SELECTION_READMODEL_ERROR={result.error}")
+    else:
+        print("UNIVERSE_SELECTION_READMODEL_ERROR=")
+
+
+def maybe_write_missing_truth_after_bounded_closeout(
+    *,
+    archive_root: str | Path,
+    run_bundle_path: str | Path,
+    source_run_id: str,
+    source_stage: str,
+) -> CloseoutHookResult:
+    """Env-gated closeout hook: write Mode-B missing truth when enabled (default off)."""
+    root = Path(archive_root).expanduser().resolve()
+    if not _producer_v1_enabled():
+        return CloseoutHookResult(
+            enabled=False,
+            skipped=True,
+            written=False,
+            reason="DISABLED",
+            archive_root=str(root),
+            readmodel_path=None,
+            manifest_verify_rc=None,
+            error=None,
+        )
+
+    stage = source_stage.strip().lower()
+    if stage in FORBIDDEN_SOURCE_STAGES or stage not in ALLOWED_SOURCE_STAGES:
+        return CloseoutHookResult(
+            enabled=True,
+            skipped=True,
+            written=False,
+            reason="INVALID_STAGE",
+            archive_root=str(root),
+            readmodel_path=None,
+            manifest_verify_rc=None,
+            error=f"source_stage unsupported: {stage}",
+        )
+
+    try:
+        write_result = write_missing_truth_universe_selection_readmodel(
+            root,
+            source_run_id=source_run_id,
+            source_stage=stage,
+            run_bundle_path=str(run_bundle_path),
+        )
+    except (ProducerWriteError, UniverseSelectionContractError, OSError, ValueError) as exc:
+        return CloseoutHookResult(
+            enabled=True,
+            skipped=False,
+            written=False,
+            reason="ERROR",
+            archive_root=str(root),
+            readmodel_path=None,
+            manifest_verify_rc=None,
+            error=str(exc),
+        )
+
+    if not write_result.manifest_verify_ok:
+        return CloseoutHookResult(
+            enabled=True,
+            skipped=False,
+            written=False,
+            reason="VERIFY_FAILED",
+            archive_root=write_result.archive_root,
+            readmodel_path=write_result.readmodel_path,
+            manifest_verify_rc=write_result.manifest_verify_rc,
+            error=write_result.manifest_verify_message,
+        )
+
+    return CloseoutHookResult(
+        enabled=True,
+        skipped=False,
+        written=True,
+        reason="OK",
+        archive_root=write_result.archive_root,
+        readmodel_path=write_result.readmodel_path,
+        manifest_verify_rc=write_result.manifest_verify_rc,
+        error=None,
     )
 
 
