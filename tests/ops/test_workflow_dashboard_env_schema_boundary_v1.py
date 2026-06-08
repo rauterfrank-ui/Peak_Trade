@@ -49,6 +49,13 @@ REAL_SOURCE_CHARTER_DOC = (
     / "observability"
     / "FUTURES_UNIVERSE_REAL_SOURCE_CONTRACT_V1.md"
 )
+GOVERNED_SNAPSHOT_TEMPLATE_DOC = (
+    PROJECT_ROOT
+    / "docs"
+    / "webui"
+    / "observability"
+    / "FUTURES_UNIVERSE_GOVERNED_METADATA_SNAPSHOT_TEMPLATE_V1.md"
+)
 UNIVERSE_SELECTION_DOC = (
     PROJECT_ROOT / "docs" / "webui" / "observability" / "UNIVERSE_SELECTION_READMODEL_V1.md"
 )
@@ -74,3 +81,25 @@ def test_universe_selection_readmodel_links_real_source_charter() -> None:
     assert "FUTURES_UNIVERSE_REAL_SOURCE_CONTRACT_V1.md" in doc
     assert "Real-Source Charter" in doc
     assert "REAL_FUTURES_OBSERVABILITY_TRUTH_AVAILABLE=false" in doc
+
+
+def test_governed_metadata_snapshot_template_doc_exists_and_markers() -> None:
+    assert GOVERNED_SNAPSHOT_TEMPLATE_DOC.is_file()
+    doc = GOVERNED_SNAPSHOT_TEMPLATE_DOC.read_text(encoding="utf-8")
+    assert "OPERATOR_TRUTH_GO_GRANTED=false" in doc
+    assert "GOVERNED_SNAPSHOT_ACCEPTED=false" in doc
+    assert "SNAPSHOT_DATA_CREATED=false" in doc
+    assert "REAL_FUTURES_OBSERVABILITY_TRUTH_AVAILABLE=false" in doc
+    assert "LIVE_TRADING_AUTHORIZED=false" in doc
+    assert "Evidence != Approval/Lift/Live" in doc
+    assert "governed_metadata/{bundle_id}/" in doc
+    assert "MANIFEST_VERIFY_RC=0" in doc
+    assert "freshness_state=fresh" in doc
+    assert "futures_producer_packet_governed.v1" in doc
+    assert "market_ranking_funnel_readmodel.v0" in doc
+    assert "FUTURES_UNIVERSE_REAL_SOURCE_CONTRACT_V1.md" in doc
+
+
+def test_real_source_charter_links_governed_snapshot_template() -> None:
+    doc = REAL_SOURCE_CHARTER_DOC.read_text(encoding="utf-8")
+    assert "FUTURES_UNIVERSE_GOVERNED_METADATA_SNAPSHOT_TEMPLATE_V1.md" in doc

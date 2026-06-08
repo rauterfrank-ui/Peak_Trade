@@ -57,6 +57,7 @@ MANIFEST_VERIFY_RC=0
 | U2a fixture source (tests only) | `src/webui/workflow_dashboard_readmodel_v1/futures_producer_packet_fixture_source_v1.py` |
 | U3 producer / Slice 4 evidence | `src/webui/workflow_dashboard_readmodel_v1/universe_selection_producer_v1.py` |
 | U3 reader | `src/webui/workflow_dashboard_readmodel_v1/universe_selection_reader_v1.py` |
+| U2c governed snapshot template (docs-only) | [FUTURES_UNIVERSE_GOVERNED_METADATA_SNAPSHOT_TEMPLATE_V1.md](FUTURES_UNIVERSE_GOVERNED_METADATA_SNAPSHOT_TEMPLATE_V1.md) |
 
 U2b must extend this chain — **not** fork a second real-source system, evidence index, or handoff surface.
 
@@ -194,7 +195,8 @@ U2B_BLOCKED=true
 | U3 / Slice 4 | Producer + MANIFEST_VERIFY.log evidence path | on main |
 | **U4** | Real-source inventory prep (archive) | PASS |
 | **U4b** | This charter record (docs-only) | this document |
-| U2b | Real-source loader + governed table | **blocked** |
+| U2b | Real-source loader guard | on main |
+| **U2c Template** | Governed metadata snapshot template (docs-only) | [FUTURES_UNIVERSE_GOVERNED_METADATA_SNAPSHOT_TEMPLATE_V1.md](FUTURES_UNIVERSE_GOVERNED_METADATA_SNAPSHOT_TEMPLATE_V1.md) |
 
 ## 11. Tests
 
