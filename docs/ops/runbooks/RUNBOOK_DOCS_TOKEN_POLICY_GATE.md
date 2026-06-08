@@ -24,6 +24,33 @@ appear in inline-code spans, the `docs-reference-targets-gate` interprets them a
 
 ---
 
+## Pre-PR local changed-docs preflight
+
+Before pushing a branch that edits `*.md`, run:
+
+```bash
+bash scripts/ops/preflight_docs_token_policy_changed.sh
+```
+
+Equivalent direct call:
+
+```bash
+python3 scripts/ops/validate_docs_token_policy.py --base origin/main
+```
+
+**Common illustrative patterns** (encode `/` as `&#47;` inside single-backtick inline code):
+
+| Raw (violation) | Encoded (compliant) |
+|-----------------|---------------------|
+| `GET /observability` | `GET &#47;observability` |
+| `GET /market` | `GET &#47;market` |
+| `{ARCHIVE_ROOT}/readmodels/foo.json` | `{ARCHIVE_ROOT}&#47;readmodels&#47;foo.json` |
+| `BTC/USD` | `BTC&#47;USD` |
+
+Autofix v2 (`scripts/ops/autofix_docs_token_policy_inline_code_v2.py`) is **optional and conservative** — not run by the preflight wrapper.
+
+---
+
 ## When This Gate Triggers
 
 The gate scans changed Markdown files (`.md`) for inline-code tokens (single backticks: `` `token` ``) containing `/` and enforces:
