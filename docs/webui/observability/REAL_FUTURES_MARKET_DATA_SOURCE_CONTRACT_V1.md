@@ -245,7 +245,7 @@ A future bounded transform slice (operator GO required) must consume **all** of:
 
 ### 12.4 Outputs (future candidate — not created here)
 
-A future transform may emit under `{ARCHIVE_ROOT}/governed_metadata/{bundle_id}/`:
+A future transform may emit under `{ARCHIVE_ROOT}&#47;governed_metadata&#47;{bundle_id}&#47;`:
 
 | Output | Required | Rule |
 |--------|:--------:|------|
