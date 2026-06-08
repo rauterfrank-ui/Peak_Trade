@@ -456,3 +456,21 @@ def test_spot_symbol_excluded_from_universe_even_with_perpetual_market_type() ->
     assert any(
         item.reason == REASON_INELIGIBLE_SPOT_SYMBOL for item in result.eligibility_exclusions
     )
+
+
+def test_u2a_valid_fixture_chain_through_u1_adapter() -> None:
+    from src.webui.workflow_dashboard_readmodel_v1.futures_producer_packet_fixture_source_v1 import (
+        bundle_to_upstream_input,
+        fixture_root_under,
+        load_futures_producer_packet_fixture,
+    )
+
+    fixture_path = fixture_root_under(PROJECT_ROOT) / "futures_packet_valid_minimal.json"
+    bundle = load_futures_producer_packet_fixture(fixture_path)
+    result = map_futures_packets_to_universe_selection_readmodel(bundle_to_upstream_input(bundle))
+
+    assert result.status == "ok"
+    contract = validate_universe_selection_payload(result.payload)
+    assert contract.selected_future is not None
+    assert contract.selected_future.symbol == "ETHUSDT"
+    assert result.payload["fixture_marked"] is True
