@@ -62,3 +62,10 @@ def test_market_data_source_contract_no_runtime_wiring_claims() -> None:
     assert "DASHBOARD_PROVIDER_WIRING_AUTHORIZED=false" in doc
     assert "no daemon" in doc.lower() or "no daemon" in doc
     assert "scheduler" in doc.lower()
+
+
+def test_market_data_source_contract_links_u5b_probe_module() -> None:
+    doc = MARKET_DATA_SOURCE_DOC.read_text(encoding="utf-8")
+    assert "probe_kraken_futures_public_market_data_v1.py" in doc
+    assert "CONFIRM_VIEW_ONLY_PUBLIC_MARKET_DATA_PROBE_V1" in doc
+    assert "test_probe_kraken_futures_public_market_data_v1.py" in doc
