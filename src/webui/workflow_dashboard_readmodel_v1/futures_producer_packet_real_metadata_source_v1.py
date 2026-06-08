@@ -79,6 +79,7 @@ REASON_MANIFEST_VERIFY_RC_INVALID = "MANIFEST_VERIFY_RC_INVALID"
 REASON_INELIGIBLE_SPOT_SYMBOL = "INELIGIBLE_SPOT_SYMBOL"
 REASON_INELIGIBLE_MARKET_TYPE = "INELIGIBLE_MARKET_TYPE"
 REASON_INSTRUMENT_INCOMPLETE = "INSTRUMENT_INCOMPLETE"
+REASON_MISSING_PROVIDER_METADATA = "MISSING_PROVIDER_METADATA"
 REASON_PROVENANCE_INCOMPLETE = "PROVENANCE_INCOMPLETE"
 REASON_FRESHNESS_NOT_FRESH = "FRESHNESS_NOT_FRESH"
 REASON_PACKET_RUNTIME_HANDLE = "PACKET_RUNTIME_HANDLE"
@@ -241,6 +242,42 @@ def _validate_metadata_table_ref(
         raise FuturesProducerPacketRealMetadataSourceError(msg)
 
 
+def _parse_candidate_validation_policy(
+    data: dict[str, Any],
+) -> tuple[bool, frozenset[str]]:
+    """Return candidate-validation-only flag and allowed missing provider metadata fields."""
+    if not data.get("u2b_candidate_validation_only"):
+        return False, frozenset()
+    policy = data.get("missing_provider_metadata_policy")
+    if not isinstance(policy, dict):
+        msg = (
+            f"{REASON_GOVERNED_SCHEMA_INVALID}: missing_provider_metadata_policy "
+            "required when u2b_candidate_validation_only=true"
+        )
+        raise FuturesProducerPacketRealMetadataSourceError(msg)
+    allowed_raw = policy.get("allowed_missing_provider_metadata")
+    if not isinstance(allowed_raw, list) or not allowed_raw:
+        msg = (
+            f"{REASON_GOVERNED_SCHEMA_INVALID}: "
+            "allowed_missing_provider_metadata must be a non-empty array"
+        )
+        raise FuturesProducerPacketRealMetadataSourceError(msg)
+    allowed = frozenset(str(item) for item in allowed_raw if str(item))
+    if not allowed:
+        msg = (
+            f"{REASON_GOVERNED_SCHEMA_INVALID}: "
+            "allowed_missing_provider_metadata must contain non-empty strings"
+        )
+        raise FuturesProducerPacketRealMetadataSourceError(msg)
+    if data.get("instrument_completeness_mode") != "candidate_validation":
+        msg = (
+            f"{REASON_GOVERNED_SCHEMA_INVALID}: instrument_completeness_mode must be "
+            "candidate_validation when u2b_candidate_validation_only=true"
+        )
+        raise FuturesProducerPacketRealMetadataSourceError(msg)
+    return True, allowed
+
+
 def _validate_packet_eligibility(packet: FuturesProducerPacket) -> None:
     symbol = packet.candidate.symbol
     if _is_spot_symbol(symbol):
@@ -275,6 +312,103 @@ def _validate_packet_eligibility(packet: FuturesProducerPacket) -> None:
     if instrument.missing_fields:
         msg = f"{REASON_INSTRUMENT_INCOMPLETE}: missing_fields must be empty"
         raise FuturesProducerPacketRealMetadataSourceError(msg)
+    provenance = packet.provenance
+    if not provenance.complete:
+        msg = f"{REASON_PROVENANCE_INCOMPLETE}: provenance.complete must be true"
+        raise FuturesProducerPacketRealMetadataSourceError(msg)
+    if provenance.freshness_state != FuturesFreshnessState.FRESH:
+        msg = f"{REASON_FRESHNESS_NOT_FRESH}: freshness_state must be fresh"
+        raise FuturesProducerPacketRealMetadataSourceError(msg)
+    if provenance.missing_fields:
+        msg = f"{REASON_PROVENANCE_INCOMPLETE}: provenance missing_fields must be empty"
+        raise FuturesProducerPacketRealMetadataSourceError(msg)
+    if producer_packet_has_runtime_handles(packet):
+        msg = f"{REASON_PACKET_RUNTIME_HANDLE}: packet contains runtime handles"
+        raise FuturesProducerPacketRealMetadataSourceError(msg)
+
+
+def _validate_packet_candidate_validation_eligibility(
+    packet: FuturesProducerPacket,
+    raw_packet: dict[str, Any],
+    *,
+    allowed_missing_provider_metadata: frozenset[str],
+) -> None:
+    """Validate paper-stage candidate bundles without weakening loader-write strictness."""
+    symbol = packet.candidate.symbol
+    if _is_spot_symbol(symbol):
+        msg = f"{REASON_INELIGIBLE_SPOT_SYMBOL}: spot or slash symbol rejected: {symbol}"
+        raise FuturesProducerPacketRealMetadataSourceError(msg)
+    if packet.candidate.market_type not in ELIGIBLE_MARKET_TYPES:
+        msg = (
+            f"{REASON_INELIGIBLE_MARKET_TYPE}: market_type "
+            f"{packet.candidate.market_type} ineligible"
+        )
+        raise FuturesProducerPacketRealMetadataSourceError(msg)
+    if packet.candidate.live_authorization:
+        msg = f"{REASON_FORBIDDEN_GOVERNANCE_FIELD}: live_authorization forbidden"
+        raise FuturesProducerPacketRealMetadataSourceError(msg)
+
+    instrument_raw = raw_packet.get("instrument")
+    if not isinstance(instrument_raw, dict):
+        msg = f"{REASON_GOVERNED_SCHEMA_INVALID}: packet instrument must be object"
+        raise FuturesProducerPacketRealMetadataSourceError(msg)
+    if instrument_raw.get("candidate_validation_complete") is not True:
+        msg = f"{REASON_INSTRUMENT_INCOMPLETE}: candidate_validation_complete must be true"
+        raise FuturesProducerPacketRealMetadataSourceError(msg)
+
+    instrument = packet.instrument
+    provider_known_flags = (
+        instrument.contract_size_known,
+        instrument.tick_size_known,
+        instrument.step_size_known,
+        instrument.min_qty_known,
+        instrument.margin_asset_known,
+        instrument.settlement_asset_known,
+        instrument.leverage_bounds_known,
+    )
+    if not all(provider_known_flags):
+        msg = f"{REASON_INSTRUMENT_INCOMPLETE}: provider instrument *_known flags must be true"
+        raise FuturesProducerPacketRealMetadataSourceError(msg)
+    if instrument.missing_fields:
+        msg = f"{REASON_INSTRUMENT_INCOMPLETE}: missing_fields must be empty"
+        raise FuturesProducerPacketRealMetadataSourceError(msg)
+
+    missing_provider_raw = instrument_raw.get("missing_provider_metadata")
+    if not isinstance(missing_provider_raw, list):
+        msg = (
+            f"{REASON_GOVERNED_SCHEMA_INVALID}: instrument.missing_provider_metadata "
+            "must be an array"
+        )
+        raise FuturesProducerPacketRealMetadataSourceError(msg)
+    missing_provider = frozenset(str(item) for item in missing_provider_raw if str(item))
+    if not missing_provider.issubset(allowed_missing_provider_metadata):
+        extra = sorted(missing_provider - allowed_missing_provider_metadata)
+        msg = (
+            f"{REASON_MISSING_PROVIDER_METADATA}: unsupported missing provider metadata: "
+            f"{','.join(extra)}"
+        )
+        raise FuturesProducerPacketRealMetadataSourceError(msg)
+
+    if not instrument.min_notional_known:
+        if "min_notional" not in allowed_missing_provider_metadata:
+            msg = (
+                f"{REASON_INSTRUMENT_INCOMPLETE}: min_notional_known must be true "
+                "outside candidate validation policy"
+            )
+            raise FuturesProducerPacketRealMetadataSourceError(msg)
+        if "min_notional" not in missing_provider:
+            msg = (
+                f"{REASON_MISSING_PROVIDER_METADATA}: min_notional_known=false requires "
+                "explicit missing_provider_metadata entry"
+            )
+            raise FuturesProducerPacketRealMetadataSourceError(msg)
+    elif "min_notional" in missing_provider:
+        msg = (
+            f"{REASON_MISSING_PROVIDER_METADATA}: min_notional cannot be listed as missing "
+            "when min_notional_known=true"
+        )
+        raise FuturesProducerPacketRealMetadataSourceError(msg)
+
     provenance = packet.provenance
     if not provenance.complete:
         msg = f"{REASON_PROVENANCE_INCOMPLETE}: provenance.complete must be true"
@@ -416,6 +550,10 @@ def load_futures_producer_packet_governed(
         msg = f"{REASON_GOVERNED_SCHEMA_INVALID}: 'packets' must be a non-empty array"
         raise FuturesProducerPacketRealMetadataSourceError(msg)
 
+    candidate_validation_only, allowed_missing_provider_metadata = (
+        _parse_candidate_validation_policy(data)
+    )
+
     packets: list[FuturesProducerPacket] = []
     for item in packets_raw:
         if not isinstance(item, dict):
@@ -425,7 +563,14 @@ def load_futures_producer_packet_governed(
             packet = _parse_packet(item)
         except FuturesProducerPacketFixtureSourceError as exc:
             raise FuturesProducerPacketRealMetadataSourceError(str(exc)) from exc
-        _validate_packet_eligibility(packet)
+        if candidate_validation_only:
+            _validate_packet_candidate_validation_eligibility(
+                packet,
+                item,
+                allowed_missing_provider_metadata=allowed_missing_provider_metadata,
+            )
+        else:
+            _validate_packet_eligibility(packet)
         packets.append(packet)
 
     selected_candidate_id = data.get("selected_candidate_id")
@@ -466,6 +611,8 @@ def bundle_to_upstream_input(
     if bundle.observability_truth_allowed:
         msg = f"{REASON_OBSERVABILITY_TRUTH_CLAIMED}: observability truth not allowed"
         raise FuturesProducerPacketRealMetadataSourceError(msg)
+    for packet in bundle.packets:
+        _validate_packet_eligibility(packet)
     return FuturesUniverseUpstreamInputV1(
         source_run_id=bundle.source_run_id,
         source_stage=bundle.source_stage,

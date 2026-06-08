@@ -16,7 +16,10 @@ from pathlib import Path
 from typing import Any, Dict, List, Mapping, Optional, Sequence, Tuple
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
 _PROBE_SCRIPT = _REPO_ROOT / "scripts/ops/probe_kraken_futures_public_market_data_v1.py"
+from scripts.ops.u2c_packet_shape_v1 import extract_kraken_provider_instrument_fields
 
 
 def _load_probe_mod() -> Any:
@@ -123,7 +126,18 @@ def _map_instrument_row(
     if bid is not None and ask is not None:
         spread = ask - bid
 
-    return {
+    provider_fields = extract_kraken_provider_instrument_fields(inst)
+    instrument_missing: List[str] = []
+    if provider_fields.get("min_qty") is None:
+        instrument_missing.append("min_qty")
+    if provider_fields.get("margin_asset") is None:
+        instrument_missing.append("margin_asset")
+    if provider_fields.get("settlement_asset") is None:
+        instrument_missing.append("settlement_asset")
+    if provider_fields.get("max_leverage") is None:
+        instrument_missing.append("max_leverage")
+
+    row: Dict[str, Any] = {
         "provider": PROVIDER,
         "exchange": EXCHANGE,
         "instrument_id": symbol,
@@ -150,12 +164,30 @@ def _map_instrument_row(
         "open_interest": oi,
         "fetched_at": fetched_at,
         "missing_fields": missing,
+        "market_data_missing_fields": missing,
+        "instrument_missing_fields": instrument_missing,
+        "missing_provider_metadata": provider_fields.get("missing_provider_metadata") or [],
         "degraded_fields": degraded,
         "not_selected": True,
         "not_signal": True,
         "not_truth_go": True,
         "not_tradable_authority": True,
     }
+    for key in (
+        "min_qty",
+        "margin_asset",
+        "settlement_asset",
+        "max_leverage",
+        "initial_margin_rate",
+        "maintenance_margin_rate",
+        "min_qty_source",
+        "margin_asset_source",
+        "settlement_asset_source",
+        "leverage_bounds_source",
+    ):
+        if key in provider_fields:
+            row[key] = provider_fields[key]
+    return row
 
 
 def _rank_key(row: Mapping[str, Any]) -> Tuple[int, float, str]:

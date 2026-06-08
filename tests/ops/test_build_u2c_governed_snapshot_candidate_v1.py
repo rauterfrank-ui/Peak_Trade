@@ -137,6 +137,8 @@ def test_build_writes_manifest_verify_rc_zero(build_mod: Any, tmp_path: Path) ->
     assert "provenance" in packet
     assert governed["selected_future"]["symbol"] is None
     assert governed["GOVERNED_SNAPSHOT_ACCEPTED_FOR_INTAKE"] is False
+    assert governed["u2b_candidate_validation_only"] is True
+    assert governed["instrument_completeness_mode"] == "candidate_validation"
 
 
 def test_u2b_validate_only_parses_built_fixture_bundle(build_mod: Any, tmp_path: Path) -> None:
@@ -256,3 +258,38 @@ def test_build_from_u5d_minimal_fixture_nested_shape(build_mod: Any, tmp_path: P
     governed = json.loads((out_dir / "futures_producer_packet_governed.v1.json").read_text())
     assert all("candidate" in p for p in governed["packets"])
     assert "BTC/USD" not in json.dumps(governed)
+    assert governed["u2b_candidate_validation_only"] is True
+    assert all(p["instrument"]["candidate_validation_complete"] for p in governed["packets"])
+    assert all(p["instrument"]["complete"] is False for p in governed["packets"])
+
+    evidence = archive / "runs" / "paper" / "minimal_evidence"
+    evidence.mkdir(parents=True)
+    (evidence / "CLOSEOUT.md").write_text("# evidence\n", encoding="utf-8")
+    u5d_for_u2b = archive / "runtime" / "u5d_minimal_u2b"
+    u5d_for_u2b.mkdir(parents=True)
+    artifact = json.loads((u5d_out / "u5d_u2c_candidate_validation.v1.json").read_text())
+    artifact.pop("input_paths", None)
+    (u5d_for_u2b / "u5d_u2c_candidate_validation.v1.json").write_text(
+        json.dumps(artifact) + "\n",
+        encoding="utf-8",
+    )
+    out_dir2 = archive / "governed_metadata" / "from_minimal_u5d_u2b_v1"
+    build_mod.build_governed_snapshot_candidate_bundle(
+        confirm=_CONFIRM_BUILD,
+        u5d_validation_path=u5d_for_u2b / "u5d_u2c_candidate_validation.v1.json",
+        output_dir=out_dir2,
+        archive_root=archive,
+        bundle_id="from_minimal_u5d_u2b_v1",
+        evidence_links=(str(evidence.resolve()),),
+    )
+    bundle = load_futures_producer_packet_governed(
+        out_dir2 / "futures_producer_packet_governed.v1.json",
+        archive_root=archive,
+    )
+    assert len(bundle.packets) == 3
+    assert all(
+        raw["instrument"]["candidate_validation_complete"]
+        for raw in json.loads((out_dir2 / "futures_producer_packet_governed.v1.json").read_text())[
+            "packets"
+        ]
+    )

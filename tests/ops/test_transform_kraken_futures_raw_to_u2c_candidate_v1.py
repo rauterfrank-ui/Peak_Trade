@@ -134,10 +134,17 @@ def test_run_offline_transform_validation_success(
     assert eth["display_price"] == 3500.0
     assert eth["display_price_source"] == "markPrice"
     assert "last_missing_markPrice_fallback" in eth["degraded_fields"]
+    assert eth["min_qty"] == 5.1
+    assert eth["margin_asset"] == "USD"
+    assert eth["settlement_asset"] == "USD"
+    assert eth["max_leverage"] == 100.0
+    assert eth["missing_provider_metadata"] == ["min_notional"]
+    assert eth["instrument_missing_fields"] == []
 
     ada = next(p for p in artifact["packet_candidates"] if p["symbol"] == "PF_ADAUSD")
     assert ada["vol24h"] == 0.0
     assert "vol24h" in ada["missing_fields"]
+    assert "vol24h" not in ada.get("instrument_missing_fields", [])
 
     out_json = fixture_paths["output"] / "u5d_u2c_candidate_validation.v1.json"
     assert out_json.is_file()

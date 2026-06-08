@@ -22,6 +22,7 @@ from src.webui.workflow_dashboard_readmodel_v1.futures_producer_packet_real_meta
     REASON_FORBIDDEN_GOVERNANCE_FIELD,
     REASON_FORBIDDEN_UPSTREAM_SOURCE,
     REASON_FRESHNESS_NOT_FRESH,
+    REASON_INSTRUMENT_INCOMPLETE,
     REASON_INELIGIBLE_SPOT_SYMBOL,
     REASON_MANIFEST_VERIFY_RC_INVALID,
     REASON_PATH_UNDER_REPO_FIXTURES,
@@ -273,6 +274,37 @@ def test_tc11_no_forbidden_network_imports() -> None:
                 assert alias.name.split(".")[0] not in forbidden_import_roots
         elif isinstance(node, ast.ImportFrom) and node.module:
             assert node.module.split(".")[0] not in forbidden_import_roots
+
+
+def test_tc12_candidate_validation_bundle_rejects_upstream_write_path(
+    tmp_path: Path,
+) -> None:
+    archive_root = _durable_archive_root(tmp_path)
+    bundle_path = _install_governed_bundle(archive_root, "governed_packet_valid_minimal.json")
+    data = json.loads(bundle_path.read_text(encoding="utf-8"))
+    packet = data["packets"][0]
+    instrument = packet["instrument"]
+    instrument["complete"] = False
+    instrument["candidate_validation_complete"] = True
+    instrument["min_notional_known"] = False
+    instrument["missing_provider_metadata"] = ["min_notional"]
+    data["u2b_candidate_validation_only"] = True
+    data["instrument_completeness_mode"] = "candidate_validation"
+    data["missing_provider_metadata_policy"] = {
+        "allowed_missing_provider_metadata": ["min_notional"],
+        "reason": "fixture_only_candidate_validation",
+        "not_loader_write_eligible": True,
+        "not_observability_truth": True,
+    }
+    bundle_path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+
+    bundle = load_futures_producer_packet_governed(bundle_path, archive_root=archive_root)
+    assert bundle.packets[0].instrument.complete is False
+    with pytest.raises(
+        FuturesProducerPacketRealMetadataSourceError,
+        match=REASON_INSTRUMENT_INCOMPLETE,
+    ):
+        bundle_to_upstream_input(bundle)
 
 
 def test_tc12_spot_symbols_not_in_valid_bundle(tmp_path: Path) -> None:
