@@ -9,6 +9,10 @@
       "quote": "USD",
       "tickSize": 0.5,
       "contractSize": 1,
+      "impactMidSize": 0.01,
+      "retailMarginLevels": [
+        {"numNonContractUnits": 0.0, "initialMargin": 0.02, "maintenanceMargin": 0.01}
+      ],
       "isExpired": false
     },
     {
@@ -19,6 +23,10 @@
       "quote": "USD",
       "tickSize": 0.05,
       "contractSize": 1,
+      "impactMidSize": 5.1,
+      "retailMarginLevels": [
+        {"numNonContractUnits": 0.0, "initialMargin": 0.01, "maintenanceMargin": 0.005}
+      ],
       "isExpired": false
     },
     {
@@ -29,6 +37,10 @@
       "quote": "USD",
       "tickSize": 0.0001,
       "contractSize": 1,
+      "impactMidSize": 1000.0,
+      "retailMarginLevels": [
+        {"numNonContractUnits": 0.0, "initialMargin": 0.05, "maintenanceMargin": 0.025}
+      ],
       "isExpired": false
     },
     {

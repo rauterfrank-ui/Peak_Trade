@@ -21,7 +21,11 @@ if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
 from scripts.ops.primary_evidence_retention_v0 import finalize_durable_bundle_manifest
-from scripts.ops.u2c_packet_shape_v1 import flat_row_to_nested_packet
+from scripts.ops.u2c_packet_shape_v1 import (
+    CANDIDATE_VALIDATION_ALLOWED_MISSING_PROVIDER_METADATA,
+    flat_row_to_nested_packet,
+    summarize_instrument_completeness,
+)
 
 CONFIRM_TOKEN = "CONFIRM_U2C_GOVERNED_SNAPSHOT_CANDIDATE_BUILD_V1"
 GOVERNED_SCHEMA_NAME = "futures_producer_packet_governed.v1"
@@ -207,6 +211,8 @@ def build_governed_snapshot_candidate_bundle(
         encoding="utf-8",
     )
 
+    completeness_summary = summarize_instrument_completeness(nested_packets)
+
     governed_path = output_dir / "futures_producer_packet_governed.v1.json"
     governed_doc: Dict[str, Any] = {
         "schema_name": GOVERNED_SCHEMA_NAME,
@@ -225,6 +231,17 @@ def build_governed_snapshot_candidate_bundle(
         "non_authorizing": True,
         "real_metadata_source_marked": True,
         "candidate_phase": True,
+        "u2b_candidate_validation_only": True,
+        "instrument_completeness_mode": "candidate_validation",
+        "missing_provider_metadata_policy": {
+            "allowed_missing_provider_metadata": sorted(
+                CANDIDATE_VALIDATION_ALLOWED_MISSING_PROVIDER_METADATA
+            ),
+            "reason": "kraken_public_instruments_view_missing_min_notional",
+            "not_loader_write_eligible": True,
+            "not_observability_truth": True,
+        },
+        "instrument_completeness_summary": completeness_summary,
         "GOVERNED_SNAPSHOT_ACCEPTED_FOR_INTAKE": False,
         "metadata_table_ref": str(metadata_table_path.resolve()),
         "metadata_refresh_utc": fetched_at,
@@ -287,6 +304,7 @@ def build_governed_snapshot_candidate_bundle(
         "top20_candidate_count": len(top20_raw),
         "manifest_verify_rc": manifest_rc,
         "nested_packet_shape": True,
+        "instrument_completeness_summary": completeness_summary,
         "source_stage": SOURCE_STAGE,
         "market_data_source_stage": MARKET_DATA_SOURCE_STAGE,
     }
