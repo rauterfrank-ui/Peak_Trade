@@ -178,3 +178,11 @@ def test_governed_snapshot_template_links_u5c_transform_contract() -> None:
     doc = GOVERNED_SNAPSHOT_TEMPLATE_DOC.read_text(encoding="utf-8")
     assert "U5c transform contract" in doc
     assert "not** direct report-only intake" in doc
+
+
+def test_u5d_offline_transform_script_referenced_in_contract() -> None:
+    doc = MARKET_DATA_SOURCE_DOC.read_text(encoding="utf-8")
+    assert "transform_kraken_futures_raw_to_u2c_candidate_v1.py" in doc
+    assert "CONFIRM_U5D_OFFLINE_TRANSFORM_VALIDATION_V1" in doc or "U5d" in doc
+    assert "test_transform_kraken_futures_raw_to_u2c_candidate_v1.py" in doc
+    assert "u5d_u2c_candidate_validation_v1" in doc or "U5d offline" in doc

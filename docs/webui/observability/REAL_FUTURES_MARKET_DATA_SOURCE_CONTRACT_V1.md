@@ -173,6 +173,7 @@ Charter markers remain fail-closed. **U5b probe CLI** is an isolated manual oper
 | **U5** | This market-data source charter (docs-only) | this document |
 | **U5b** | Kraken Futures public probe (isolated CLI + mocked tests) | `probe_kraken_futures_public_market_data_v1.py` |
 | **U5c** | U5b raw evidence → U2c governed snapshot candidate transform contract (docs/tests-only) | §12 this document |
+| **U5d** | Offline transform candidate validation CLI (no network; confirm token) | `transform_kraken_futures_raw_to_u2c_candidate_v1.py` |
 | U2b write / Truth-GO | Governed snapshot intake | not authorized |
 
 ## 11. Tests
@@ -182,6 +183,7 @@ Charter markers remain fail-closed. **U5b probe CLI** is an isolated manual oper
 | `tests/ops/test_workflow_dashboard_env_schema_boundary_v1.py` | Doc existence, machine markers, U4b cross-link |
 | `tests/ops/test_real_futures_market_data_source_contract_boundary_v1.py` | Charter boundary, U5c transform contract, forbidden provider ids, no dummy substitution |
 | `tests/ops/test_probe_kraken_futures_public_market_data_v1.py` | U5b probe CLI boundary, mocked HTTP, confirm token, no network in CI |
+| `tests/ops/test_transform_kraken_futures_raw_to_u2c_candidate_v1.py` | U5d offline transform validation CLI, fixture-only, no network |
 
 ## 12. U5C Transform Contract to U2c Governed Snapshot Candidate
 
@@ -305,7 +307,7 @@ Missing Kraken fields must remain in `missing_fields` — **no BTC&#47;USD subst
 | Gate | Marker / outcome |
 |------|------------------|
 | 1. Raw Capture PASS | U5b bundle + raw JSON artifacts + `MANIFEST_VERIFY_RC=0` |
-| 2. Transform Validation PASS | Future transform script validates mapping — **not authorized in this slice** |
+| 2. Transform Validation PASS | U5d offline validation CLI (`transform_kraken_futures_raw_to_u2c_candidate_v1.py`) — manual operator GO only; **no transform execution in CI** |
 | 3. Candidate MANIFEST RC=0 | Candidate bundle integrity |
 | 4. Operator Acceptance | Explicit durable acceptance — `GOVERNED_SNAPSHOT_ACCEPTED=true` only then |
 | 5. U2b Loader Validation PASS | `futures_producer_packet_real_metadata_source_v1.py` |
@@ -324,4 +326,9 @@ Missing Kraken fields must remain in `missing_fields` — **no BTC&#47;USD subst
 |-------------|---------|
 | `tests/ops/test_real_futures_market_data_source_contract_boundary_v1.py` | U5c §12 markers, intake-not-ready, forbidden shortcuts, reuse chain |
 | `tests/ops/test_probe_kraken_futures_public_market_data_v1.py` | U5b probe remains view-only, preview not governed |
+| `tests/ops/test_transform_kraken_futures_raw_to_u2c_candidate_v1.py` | U5d offline validation artifact markers, no network, no intake |
 | `tests/webui/test_futures_producer_packet_real_metadata_source_v1.py` | U2b loader rejection reasons (unchanged — referenced by gates) |
+
+### 12.11 U5D Offline Transform Validation CLI
+
+**U5d offline validation record:** Manual operator CLI `transform_kraken_futures_raw_to_u2c_candidate_v1.py` reads durable U5C raw instruments/tickers + U5B probe report and emits **`u5d_u2c_candidate_validation.v1`** validation artifact only. Requires confirm token **`CONFIRM_U5D_OFFLINE_TRANSFORM_VALIDATION_V1`**. No network, no snapshot intake, no loader, no readmodel write, no dashboard wiring. **`GOVERNED_SNAPSHOT_ACCEPTED=false`** until separate operator acceptance.
