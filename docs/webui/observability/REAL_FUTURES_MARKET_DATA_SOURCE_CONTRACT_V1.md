@@ -172,6 +172,7 @@ Charter markers remain fail-closed. **U5b probe CLI** is an isolated manual oper
 | U2b | Real metadata loader guard | on main |
 | **U5** | This market-data source charter (docs-only) | this document |
 | **U5b** | Kraken Futures public probe (isolated CLI + mocked tests) | `probe_kraken_futures_public_market_data_v1.py` |
+| **U5c** | U5b raw evidence → U2c governed snapshot candidate transform contract (docs/tests-only) | §12 this document |
 | U2b write / Truth-GO | Governed snapshot intake | not authorized |
 
 ## 11. Tests
@@ -179,5 +180,148 @@ Charter markers remain fail-closed. **U5b probe CLI** is an isolated manual oper
 | Test module | Purpose |
 |-------------|---------|
 | `tests/ops/test_workflow_dashboard_env_schema_boundary_v1.py` | Doc existence, machine markers, U4b cross-link |
-| `tests/ops/test_real_futures_market_data_source_contract_boundary_v1.py` | Charter boundary, forbidden provider ids, no dummy substitution |
+| `tests/ops/test_real_futures_market_data_source_contract_boundary_v1.py` | Charter boundary, U5c transform contract, forbidden provider ids, no dummy substitution |
 | `tests/ops/test_probe_kraken_futures_public_market_data_v1.py` | U5b probe CLI boundary, mocked HTTP, confirm token, no network in CI |
+
+## 12. U5C Transform Contract to U2c Governed Snapshot Candidate
+
+**U5c transform contract record (docs/tests-only):** Normative handoff contract defining how **U5b raw view-only Kraken Futures evidence** may **later** be transformed offline into a **U2c governed snapshot candidate** under Archive Root. This section does **not** execute a transform, create snapshot data, run intake, invoke the U2b loader, write readmodels, wire dashboards, grant Truth-GO, or authorize trading.
+
+### 12.1 Status (machine markers)
+
+```
+TRANSFORM_EXECUTED=false
+SNAPSHOT_INTAKE_EXECUTED=false
+LOADER_RUN_EXECUTED=false
+READMODEL_WRITE_EXECUTED=false
+DASHBOARD_WIRING_EXECUTED=false
+GOVERNED_SNAPSHOT_ACCEPTED=false
+U2C_SNAPSHOT_DIRECTLY_INTAKE_READY=false
+LIVE_AUTHORIZED=false
+PREFLIGHT_LIFT_AUTHORIZED=false
+OPERATOR_TRUTH_GO_GRANTED=false
+REAL_FUTURES_OBSERVABILITY_TRUTH_AVAILABLE=false
+Evidence != Approval/Lift/Live
+SPOT_BTC_DUMMY_SELECTED_TRUTH_FORBIDDEN=true
+MANIFEST_VERIFY_RC=0
+```
+
+### 12.2 Pipeline chain (no parallel surfaces)
+
+```
+U5b raw evidence
+  → U5c transform contract (this §12)
+  → U2c governed snapshot candidate
+  → Operator acceptance
+  → U2b loader validation
+  → Readmodel write
+  → /market Top20 panel
+```
+
+| Layer | Canonical reuse — **no new owner** |
+|-------|--------------------------------------|
+| U5 charter + U5b probe | This document §9–§10, `probe_kraken_futures_public_market_data_v1.py` |
+| U2c governed snapshot template | [FUTURES_UNIVERSE_GOVERNED_METADATA_SNAPSHOT_TEMPLATE_V1.md](FUTURES_UNIVERSE_GOVERNED_METADATA_SNAPSHOT_TEMPLATE_V1.md) §6–§10 |
+| U4b real-source charter | [FUTURES_UNIVERSE_REAL_SOURCE_CONTRACT_V1.md](FUTURES_UNIVERSE_REAL_SOURCE_CONTRACT_V1.md) |
+| U2b loader guard | `src/webui/workflow_dashboard_readmodel_v1/futures_producer_packet_real_metadata_source_v1.py` |
+| Readmodel persistence | [UNIVERSE_SELECTION_READMODEL_V1.md](UNIVERSE_SELECTION_READMODEL_V1.md) |
+
+U5c extends the U5/U2c boundary — **not** a second snapshot SSOT, readmodel owner, dashboard surface, or raw-evidence truth bypass.
+
+### 12.3 Inputs (future transform — not executed here)
+
+A future bounded transform slice (operator GO required) must consume **all** of:
+
+| Input | Required | Rule |
+|-------|:--------:|------|
+| U5b probe report | yes | `kraken_futures_public_market_data_probe_report.v1.json` — schema `kraken_futures_public_market_data_probe_report_v1` |
+| Raw instruments payload artifact | yes | Full Kraken `/derivatives/api/v3/instruments` JSON body — e.g. `kraken_futures_instruments_raw.v1.json` under durable Archive Root |
+| Raw tickers payload artifact | yes | Full Kraken `/derivatives/api/v3/tickers` JSON body — e.g. `kraken_futures_tickers_raw.v1.json` under durable Archive Root |
+| `MANIFEST.sha256` + `MANIFEST_VERIFY.log` | yes | **`MANIFEST_VERIFY_RC=0`** on the U5b evidence bundle (and later on candidate bundle) |
+| Endpoint provenance | yes | From report `endpoint_provenance` — host, `rest_base_url`, `allowed_public_get_paths` |
+| `fetched_at` / freshness | yes | ISO-8601 UTC from U5b report; governs candidate `metadata_refresh_utc` — stale/unknown fails closed |
+
+**U5b probe report alone is not U2c intake-ready.** Summary counts, `sample_instruments`, and `top20_candidate_preview` are **insufficient** without durable raw instruments and tickers artifacts.
+
+### 12.4 Outputs (future candidate — not created here)
+
+A future transform may emit under `{ARCHIVE_ROOT}/governed_metadata/{bundle_id}/`:
+
+| Output | Required | Rule |
+|--------|:--------:|------|
+| `futures_producer_packet_governed.v1.json` | yes | Per [FUTURES_UNIVERSE_GOVERNED_METADATA_SNAPSHOT_TEMPLATE_V1.md](FUTURES_UNIVERSE_GOVERNED_METADATA_SNAPSHOT_TEMPLATE_V1.md) §7 |
+| `metadata_table_ref` | yes | Points to metadata table artifact in same bundle (e.g. `futures_instrument_metadata_snapshot.v1.json`) |
+| `packets[]` / `packet_count` | yes | One or more complete `FuturesProducerPacket` entries |
+| `top20_ranking_candidate` | yes | Liquidity-ranked list — **not** U5b alphabetical preview |
+| Provenance / checksum links | yes | Non-empty `evidence_links` to U5b bundle + raw JSON artifacts |
+| `GOVERNED_SNAPSHOT_ACCEPTED` | yes | **must remain `false`** until explicit operator acceptance |
+
+Candidate output remains **`observability_truth_allowed=false`**, **`non_authorizing=true`**, and **`fixture_only=false`** until separate Truth-GO and loader gates.
+
+### 12.5 Required per-instrument fields (transform mapping)
+
+Each candidate instrument row must map explicit provider fields — **no silent defaults**:
+
+| Field group | Required | Rule |
+|-------------|:--------:|------|
+| Identity | yes | `provider`, `exchange`, `instrument_id`, `symbol` — **no slash spot pairs** |
+| Contract | yes | `contract_type` (`perpetual` / `future`), `market_type`, `base_currency`, `quote_currency`, expiry when dated |
+| Status | yes | `active` / provider-tradable — display-only; exclude inactive, delisted, non-futures, spot |
+| Price / ticker | yes | Last price / mark from tickers join when present |
+| Volume | when available | 24h volume or notional proxy from tickers — **no fabrication** |
+| Spread / depth proxy | when available | From bid/ask or depth fields when present |
+| Funding / open interest | when available | From ticker fields when present — omit when absent |
+| Timestamps | yes | `fetched_at` / provider timestamp aligned with U5b capture |
+| Evidence | yes | `evidence_links`, checksums, durable archive pointers |
+
+Missing Kraken fields must remain in `missing_fields` — **no BTC&#47;USD substitution**, no dummy fill.
+
+### 12.6 Ranking rules (candidate top20 only)
+
+| Rule | Requirement |
+|------|-------------|
+| Primary sort | Liquidity / notional volume (descending) when volume proxy available |
+| Tie-breaker | Spread/depth proxy, then freshness |
+| Exclusions | Inactive, non-futures, spot, slash pairs |
+| Forbidden | Strategy score, buy/sell signal, selected tradable future |
+| Forbidden preview reuse | U5b `top20_candidate_preview` is **alphabetical preview only** — must **never** become governed `top20_ranking_candidate` |
+
+### 12.7 Forbidden shortcuts
+
+| Forbidden | Reason |
+|-----------|--------|
+| U5b report-only direct U2c intake | Raw instruments/tickers artifacts required |
+| U5b alphabetical `top20_candidate_preview` as governed top20 | Preview ≠ ranking truth |
+| `BTC&#47;USD`, slash spot symbols | `INELIGIBLE_SPOT_SYMBOL` |
+| Dummy ranking rows / `btc_usd_dummy_default` | Missing Truth — not dummy fill |
+| `source_stage=live` or `market_data_view_only` as governed authority | View-only evidence ≠ governed stage |
+| Selected tradable future without operator acceptance | `no_selected_tradable_future` must remain true until governed acceptance |
+| Dashboard display from raw U5b evidence as observability truth | Raw bypass forbidden |
+| Readmodel write before U2b loader validation PASS | Separate gates |
+| `fixture_only=true`, `market_surface`, funnel readmodel | Forbidden upstream (U2c §9) |
+
+### 12.8 Gates (sequential — all separate)
+
+| Gate | Marker / outcome |
+|------|------------------|
+| 1. Raw Capture PASS | U5b bundle + raw JSON artifacts + `MANIFEST_VERIFY_RC=0` |
+| 2. Transform Validation PASS | Future transform script validates mapping — **not authorized in this slice** |
+| 3. Candidate MANIFEST RC=0 | Candidate bundle integrity |
+| 4. Operator Acceptance | Explicit durable acceptance — `GOVERNED_SNAPSHOT_ACCEPTED=true` only then |
+| 5. U2b Loader Validation PASS | `futures_producer_packet_real_metadata_source_v1.py` |
+| 6. Readmodel Write GO | Separate operator GO — `READMODEL_WRITE_EXECUTED=false` until then |
+| 7. Dashboard Wiring GO | Separate operator GO — `DASHBOARD_WIRING_EXECUTED=false` until then |
+
+### 12.9 Safety and no-touch scope
+
+- **No changes** to `src&#47;execution&#47;**`, `src&#47;risk&#47;**`, `src&#47;governance&#47;**`, Master V2, Double Play, Bull-Bear, Scope-Capital, Risk-KillSwitch, Execution-Live-Gates, scheduler, adapters, workflow YAML, or trading logic.
+- Public market-data evidence **≠** Trading, Truth-GO, Preflight-Lift, or selected tradable future.
+- Transform contract tests: static/mocked only — **no network**, no transform execution.
+
+### 12.10 Tests
+
+| Test module | Purpose |
+|-------------|---------|
+| `tests/ops/test_real_futures_market_data_source_contract_boundary_v1.py` | U5c §12 markers, intake-not-ready, forbidden shortcuts, reuse chain |
+| `tests/ops/test_probe_kraken_futures_public_market_data_v1.py` | U5b probe remains view-only, preview not governed |
+| `tests/webui/test_futures_producer_packet_real_metadata_source_v1.py` | U2b loader rejection reasons (unchanged — referenced by gates) |
