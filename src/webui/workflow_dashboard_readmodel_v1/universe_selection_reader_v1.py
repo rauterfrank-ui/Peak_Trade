@@ -35,6 +35,7 @@ LOAD_ERROR_MANIFEST_VERIFY_FAILED = "MANIFEST_VERIFY_FAILED"
 LOAD_ERROR_INVALID_JSON = "INVALID_JSON"
 LOAD_ERROR_CONTRACT_INVALID = "CONTRACT_INVALID"
 LOAD_ERROR_FIXTURE_MARKED_NOT_OBSERVABILITY_TRUTH = "FIXTURE_MARKED_NOT_OBSERVABILITY_TRUTH"
+LOAD_ERROR_REAL_METADATA_NOT_OBSERVABILITY_TRUTH = "REAL_METADATA_NOT_OBSERVABILITY_TRUTH"
 
 
 def _repo_root() -> Path:
@@ -172,6 +173,10 @@ def try_load_universe_selection_for_dashboard(
 
     if contract.fixture_marked:
         return _empty_slice(load_errors=(LOAD_ERROR_FIXTURE_MARKED_NOT_OBSERVABILITY_TRUTH,))
+
+    if payload.get("real_metadata_source_marked") is True:
+        if payload.get("observability_truth_allowed") is not True:
+            return _empty_slice(load_errors=(LOAD_ERROR_REAL_METADATA_NOT_OBSERVABILITY_TRUTH,))
 
     _ = STORAGE_RELATIVE_PATH
     return _contract_to_slice(contract)
