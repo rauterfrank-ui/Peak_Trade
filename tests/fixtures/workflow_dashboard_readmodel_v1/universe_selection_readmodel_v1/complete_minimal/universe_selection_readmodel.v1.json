@@ -1,0 +1,48 @@
+{
+  "schema_name": "universe_selection_readmodel.v1",
+  "schema_version": 1,
+  "generated_at": "2026-06-08T12:00:00Z",
+  "source_run_id": "fixture_complete_minimal_v1",
+  "source_stage": "paper",
+  "non_authorizing": true,
+  "fixture_marked": true,
+  "universe": [
+    {"row_id": "u-eth", "symbol": "ETHUSDT", "rank": 1, "exchange": "binance_futures", "notes": "fixture testdata"},
+    {"row_id": "u-sol", "symbol": "SOLUSDT", "rank": 2, "exchange": "binance_futures", "notes": "fixture testdata"},
+    {"row_id": "u-avax", "symbol": "AVAXUSDT", "rank": 3, "exchange": "binance_futures", "notes": "fixture testdata"}
+  ],
+  "ranking": [
+    {"row_id": "r-eth", "symbol": "ETHUSDT", "rank": 1, "display_score": 0.91, "notes": "fixture testdata"},
+    {"row_id": "r-sol", "symbol": "SOLUSDT", "rank": 2, "display_score": 0.87, "notes": "fixture testdata"}
+  ],
+  "selected_future": {
+    "row_id": "s-sol",
+    "symbol": "SOLUSDT",
+    "rank": 1,
+    "truth_status": "PERSISTED",
+    "selection_reason": "fixture_top_ranked_candidate",
+    "notes": "fixture testdata — not production truth"
+  },
+  "market_snapshot": {
+    "truth_status": "PERSISTED",
+    "source_kind": "governed_producer_fixture",
+    "snapshot_id": "fixture-snapshot-001",
+    "exchange": "binance_futures",
+    "captured_at": "2026-06-08T11:59:00Z"
+  },
+  "evidence": {
+    "producer_contract": "universe_selection_producer.v1",
+    "storage_target": "readmodels/universe_selection_readmodel.v1.json",
+    "manifest_verify_rc_expected": 0,
+    "links": [
+      {"label": "source_run_bundle", "path": "runs/p2_longer_bounded_paper_20260607T233758Z"}
+    ]
+  },
+  "missing_truth": {
+    "universe": "PERSISTED",
+    "ranking": "PERSISTED",
+    "selected_future": "PERSISTED",
+    "future_detail": "AVAILABLE",
+    "orders_fills_pnl": "NOT_PERSISTED"
+  }
+}

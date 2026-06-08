@@ -57,6 +57,18 @@ Stable Markers sind **Anzeige-/Test-Anker**, keine Claims zu Betriebsreadiness o
 - **Boundaries:** SSR only when gate on; no POST, no fetch/polling, no trading controls. `stale=true`, `stale_reason=archive_snapshot`.
 - **Tests:** `tests/webui/test_workflow_dashboard_readmodel_v1.py`, `tests/webui/test_observability_workflow_dashboard_structure_contract_v1.py`, `tests/ops/test_workflow_dashboard_env_schema_boundary_v1.py`.
 
+### Universe Selection Persistence Contract v1 (Slice 1 — schema/docs only)
+
+**Contract doc:** [**Universe Selection Read-model Schema v1**](UNIVERSE_SELECTION_READMODEL_V1.md) — `schema_name=universe_selection_readmodel.v1`.
+
+- **Storage target (Slice 2+):** `{ARCHIVE_ROOT}/readmodels/universe_selection_readmodel.v1.json` under `PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ARCHIVE_ROOT`.
+- **Validation (Slice 1):** `src/webui/workflow_dashboard_readmodel_v1/universe_selection_contract_v1.py` — offline schema only; **no archive writes**, **no runtime I/O**.
+- **Dashboard today:** Panels B–E remain **Missing Truth** (`UNIVERSE_SOURCE_NOT_PERSISTED`, `TOP20_RANKING_NOT_PERSISTED`, `SELECTED_FUTURE_NOT_PERSISTED`, `FUTURE_DETAIL_NOT_AVAILABLE`). Slice 1 does **not** populate rows.
+- **Slice 3 (future):** `workflow_dashboard_readmodel.v1` builder will read the persisted file when present and manifest-verified; until then Missing Truth stays valid.
+- **Producer eligibility (Slice 2+):** Paper / Shadow / Testnet bounded observation closeout adapters only — **Live not authorized**.
+- **BTC/USD rule:** `GET /market` dummy and Market Surface defaults must **never** substitute Observability universe/selection truth.
+- **Tests:** `tests/webui/test_universe_selection_contract_v1.py`, fixtures under `tests/fixtures/workflow_dashboard_readmodel_v1/universe_selection_readmodel_v1/`.
+
 ## Last Paper Run panel (view-only SSR v0)
 
 **Route:** **`GET &#47;observability`** only (not primary on **`GET &#47;market`**).
