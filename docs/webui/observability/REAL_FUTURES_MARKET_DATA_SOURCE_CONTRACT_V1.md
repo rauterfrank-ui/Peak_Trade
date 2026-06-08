@@ -152,13 +152,15 @@ PROVIDER_PROBE_AUTHORIZED=false
 REAL_FUTURES_MARKET_DATA_WIRING_AUTHORIZED=false
 ```
 
-**Kraken public probe slice remains blocked until:**
+Charter markers remain fail-closed. **U5b probe CLI** is an isolated manual operator tool — not observability truth, not dashboard wiring, not Truth-GO.
 
-1. This charter record is on `main` (U5 — this document).
-2. Operator issues explicit bounded GO token for probe prep (`SELECTED_NEXT_GO_TOKEN`).
-3. Isolated probe module/script lands on feature branch — mocked/static tests only in CI; live network only on explicit operator CLI with confirm token.
+**U5b probe module (bounded):** `scripts&#47;ops&#47;probe_kraken_futures_public_market_data_v1.py`
 
-**Probe later (bounded, when unblocked):** One explicit CLI (sibling to `capture_public_rest_binance_book_ticker_v0.py`), urllib-only, no daemon, no dashboard wiring, no scheduler/adapter touch.
+- Explicit confirm token: `CONFIRM_VIEW_ONLY_PUBLIC_MARKET_DATA_PROBE_V1`
+- Public GET allowlist only: `/derivatives/api/v3/instruments`, `/derivatives/api/v3/tickers`
+- urllib-only, one-shot, no daemon, no auth, no readmodel write
+- CI/tests: mocked/offline only; live network requires manual operator CLI with confirm token
+- Sibling pattern: `capture_public_rest_binance_book_ticker_v0.py` (spot reference only)
 
 ## 10. Implementation slices (reference)
 
@@ -168,7 +170,7 @@ REAL_FUTURES_MARKET_DATA_WIRING_AUTHORIZED=false
 | U2c | Governed metadata snapshot template | on main |
 | U2b | Real metadata loader guard | on main |
 | **U5** | This market-data source charter (docs-only) | this document |
-| U5b | Kraken Futures public probe (isolated CLI + mocked tests) | blocked until U5 on main + operator GO |
+| **U5b** | Kraken Futures public probe (isolated CLI + mocked tests) | `probe_kraken_futures_public_market_data_v1.py` |
 | U2b write / Truth-GO | Governed snapshot intake | not authorized |
 
 ## 11. Tests
@@ -177,3 +179,4 @@ REAL_FUTURES_MARKET_DATA_WIRING_AUTHORIZED=false
 |-------------|---------|
 | `tests/ops/test_workflow_dashboard_env_schema_boundary_v1.py` | Doc existence, machine markers, U4b cross-link |
 | `tests/ops/test_real_futures_market_data_source_contract_boundary_v1.py` | Charter boundary, forbidden provider ids, no dummy substitution |
+| `tests/ops/test_probe_kraken_futures_public_market_data_v1.py` | U5b probe CLI boundary, mocked HTTP, confirm token, no network in CI |
