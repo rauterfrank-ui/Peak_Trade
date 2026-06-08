@@ -24,7 +24,11 @@ from src.webui.workflow_dashboard_readmodel_v1 import (
 )
 
 FIXTURE_ROOT = (
-    project_root / "tests" / "fixtures" / "workflow_dashboard_readmodel_v1" / "universe_selection_readmodel_v1"
+    project_root
+    / "tests"
+    / "fixtures"
+    / "workflow_dashboard_readmodel_v1"
+    / "universe_selection_readmodel_v1"
 ).resolve()
 FIXTURE_MISSING = FIXTURE_ROOT / "missing_truth"
 FIXTURE_COMPLETE = FIXTURE_ROOT / "complete_minimal"
@@ -37,14 +41,16 @@ FIXTURE_ARCHIVE = (
     / "pipeline_minimal"
     / "archive_root"
 ).resolve()
-CONTRACT_DOC = project_root / "docs" / "webui" / "observability" / "UNIVERSE_SELECTION_READMODEL_V1.md"
+CONTRACT_DOC = (
+    project_root / "docs" / "webui" / "observability" / "UNIVERSE_SELECTION_READMODEL_V1.md"
+)
 HUB_DOC = project_root / "docs" / "webui" / "observability" / "OBSERVABILITY_HUB_V0.md"
 
 
 def test_contract_doc_exists_and_names_schema() -> None:
     text = CONTRACT_DOC.read_text(encoding="utf-8")
     assert "universe_selection_readmodel.v1" in text
-    assert "readmodels/universe_selection_readmodel.v1.json" in text
+    assert "readmodels&#47;universe_selection_readmodel.v1.json" in text
     assert "BTC/USD" in text
     assert "UNIVERSE_SOURCE_NOT_PERSISTED" in text
     assert "live" in text.lower()
@@ -56,7 +62,7 @@ def test_observability_hub_references_universe_selection_contract() -> None:
     assert "UNIVERSE_SELECTION_READMODEL_V1.md" in text
     assert "universe_selection_readmodel.v1" in text
     assert "UNIVERSE_SOURCE_NOT_PERSISTED" in text
-    assert "readmodels/universe_selection_readmodel.v1.json" in text
+    assert "readmodels&#47;universe_selection_readmodel.v1.json" in text
 
 
 def test_schema_constants() -> None:
@@ -152,7 +158,9 @@ def contract_to_safe_dict(contract: object) -> dict:
 
 def test_market_surface_dummy_source_kind_rejected() -> None:
     payload = copy.deepcopy(
-        json.loads((FIXTURE_COMPLETE / "universe_selection_readmodel.v1.json").read_text(encoding="utf-8"))
+        json.loads(
+            (FIXTURE_COMPLETE / "universe_selection_readmodel.v1.json").read_text(encoding="utf-8")
+        )
     )
     payload["selected_future"]["source_kind"] = "market_surface_dummy"
     with pytest.raises(UniverseSelectionContractError, match="source_kind forbidden"):

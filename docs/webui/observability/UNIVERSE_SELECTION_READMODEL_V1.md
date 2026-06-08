@@ -2,17 +2,17 @@
 
 ## 1. Purpose
 
-This document defines the **normative persistence contract** for **`universe_selection_readmodel.v1`**: governed Universe (~50 futures), Top-20 ranking, Selected Future, Future detail metadata, and related evidence links for the **view-only Workflow Dashboard** on **`GET /observability`**.
+This document defines the **normative persistence contract** for **`universe_selection_readmodel.v1`**: governed Universe (~50 futures), Top-20 ranking, Selected Future, Future detail metadata, and related evidence links for the **view-only Workflow Dashboard** on **`GET &#47;observability`**.
 
 **Slice 1 status:** Schema, validation helpers, fixtures, and static tests only. **No producer write**, **no dashboard population**, **no runtime start**. The dashboard continues to show **Missing Truth** until Slice 3 integrates archive reads.
 
-**Contract prep reference:** `planning/universe_top20_selected_future_persistence_contract_prep_no_run_v1_20260608T133943Z` (durable archive).
+**Contract prep reference:** `planning&#47;universe_top20_selected_future_persistence_contract_prep_no_run_v1_20260608T133943Z` (durable archive).
 
 ## 2. Non-authority note
 
 - **`non_authorizing: true`** is required on every persisted payload.
 - This readmodel is **display-only** — no order placement, no live arming, no strategy activation, no scheduler trigger.
-- **`GET /market`** dummy OHLCV and **`market_ranking_funnel_readmodel.v0`** remain a **separate** Market Surface SSOT — they must **not** backfill Observability Missing Truth.
+- **`GET &#47;market`** dummy OHLCV and **`market_ranking_funnel_readmodel.v0`** remain a **separate** Market Surface SSOT — they must **not** backfill Observability Missing Truth.
 - **BTC/USD** (and `market_surface_dummy` source kinds) are **forbidden** as Selected Future paper/future/runtime truth.
 
 ## 3. Schema identity
@@ -21,7 +21,7 @@ This document defines the **normative persistence contract** for **`universe_sel
 |-------|-------|
 | `schema_name` | `universe_selection_readmodel.v1` |
 | `schema_version` | `1` |
-| Storage target | `{ARCHIVE_ROOT}/readmodels/universe_selection_readmodel.v1.json` |
+| Storage target | `{ARCHIVE_ROOT}&#47;readmodels&#47;universe_selection_readmodel.v1.json` |
 | Validation module | `src/webui/workflow_dashboard_readmodel_v1/universe_selection_contract_v1.py` |
 | Dashboard consumer (Slice 3+) | `src/webui/workflow_dashboard_readmodel_v1/builder.py` |
 | Workflow SSR gate | `PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ENABLED=1` + `PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ARCHIVE_ROOT` |
@@ -79,7 +79,7 @@ When persisted:
 | `selection_reason` | string | no |
 | `notes` | string | no |
 
-**Forbidden symbols as selected truth:** `BTC/USD`, `BTCUSD`, `BTC-USD`.  
+**Forbidden symbols as selected truth:** `BTC&#47;USD`, `BTCUSD`, `BTC-USD`.  
 **Forbidden `source_kind` values:** `market_surface_dummy`, `get_market_dummy`, `btc_usd_dummy_default`.
 
 ### `market_snapshot`
@@ -91,7 +91,7 @@ Non-authorizing metadata block. Allowed keys include `truth_status`, `source_kin
 | Field | Type | Notes |
 |-------|------|-------|
 | `producer_contract` | string | e.g. `universe_selection_producer.v1` |
-| `storage_target` | string | `readmodels/universe_selection_readmodel.v1.json` |
+| `storage_target` | string | `readmodels&#47;universe_selection_readmodel.v1.json` |
 | `manifest_verify_rc_expected` | integer | `0` after atomic write |
 | `links` | array | Durable paths to run bundles / primary evidence |
 
@@ -120,8 +120,8 @@ Producers extend existing bounded observation adapters — **not** `src/executio
 
 ## 7. Durable storage and MANIFEST
 
-1. Write to `{ARCHIVE_ROOT}/readmodels/.staging/` then atomic rename.
-2. Update `{ARCHIVE_ROOT}/readmodels/MANIFEST.sha256`.
+1. Write to `{ARCHIVE_ROOT}&#47;readmodels&#47;.staging&#47;` then atomic rename.
+2. Update `{ARCHIVE_ROOT}&#47;readmodels&#47;MANIFEST.sha256`.
 3. Require `MANIFEST_VERIFY_RC=0` before dashboard treats panels as `PERSISTED` (Slice 3).
 4. No `/tmp`-only final storage.
 

@@ -154,17 +154,17 @@ def _normalize_row(row: Any, *, field: str) -> UniverseSelectionRowV1:
         row_id=_as_string(row_map.get("row_id"), field=f"{field}.row_id"),
         symbol=symbol,
         rank=_as_int(row_map.get("rank"), field=f"{field}.rank"),
-        exchange=row_map.get("exchange") if row_map.get("exchange") is None else _as_string(
-            row_map.get("exchange"), field=f"{field}.exchange"
-        ),
+        exchange=row_map.get("exchange")
+        if row_map.get("exchange") is None
+        else _as_string(row_map.get("exchange"), field=f"{field}.exchange"),
         display_score=(
             float(row_map["display_score"])
             if "display_score" in row_map and row_map["display_score"] is not None
             else None
         ),
-        notes=row_map.get("notes") if row_map.get("notes") is None else _as_string(
-            row_map.get("notes"), field=f"{field}.notes"
-        ),
+        notes=row_map.get("notes")
+        if row_map.get("notes") is None
+        else _as_string(row_map.get("notes"), field=f"{field}.notes"),
     )
     return normalized
 
@@ -185,7 +185,9 @@ def _normalize_missing_truth(value: Any) -> MissingTruthBlockV1:
         "selected_future": _as_string(
             block.get("selected_future"), field="missing_truth.selected_future"
         ),
-        "future_detail": _as_string(block.get("future_detail"), field="missing_truth.future_detail"),
+        "future_detail": _as_string(
+            block.get("future_detail"), field="missing_truth.future_detail"
+        ),
         "orders_fills_pnl": _as_string(
             block.get("orders_fills_pnl"), field="missing_truth.orders_fills_pnl"
         ),
@@ -246,9 +248,7 @@ def _reject_btc_dummy_selected_truth(
             f"{field}.symbol forbidden as paper/future/runtime truth: {symbol}"
         )
     if isinstance(source_kind, str) and source_kind in FORBIDDEN_TRUTH_SOURCE_KINDS:
-        raise UniverseSelectionContractError(
-            f"{field}.source_kind forbidden: {source_kind}"
-        )
+        raise UniverseSelectionContractError(f"{field}.source_kind forbidden: {source_kind}")
 
 
 def _validate_missing_truth_consistency(
@@ -301,7 +301,9 @@ def validate_universe_selection_payload(payload: dict[str, Any]) -> UniverseSele
     if not non_authorizing:
         raise UniverseSelectionContractError("non_authorizing must be true")
 
-    universe = _normalize_rows(payload.get("universe"), field="universe", max_rows=MAX_UNIVERSE_ROWS)
+    universe = _normalize_rows(
+        payload.get("universe"), field="universe", max_rows=MAX_UNIVERSE_ROWS
+    )
     ranking = _normalize_rows(payload.get("ranking"), field="ranking", max_rows=MAX_RANKING_ROWS)
     selected_future = _normalize_selected_future(payload.get("selected_future"))
     market_snapshot = _as_mapping(payload.get("market_snapshot"), field="market_snapshot")

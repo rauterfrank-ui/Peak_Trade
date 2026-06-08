@@ -29,7 +29,7 @@ def test_universe_selection_contract_doc_exists() -> None:
     doc = doc_path.read_text(encoding="utf-8")
     assert "schema_name" in doc
     assert "universe_selection_readmodel.v1" in doc
-    assert "readmodels/universe_selection_readmodel.v1.json" in doc
+    assert "readmodels&#47;universe_selection_readmodel.v1.json" in doc
     assert "BTC/USD" in doc
     assert "UNIVERSE_SOURCE_NOT_PERSISTED" in doc
 
