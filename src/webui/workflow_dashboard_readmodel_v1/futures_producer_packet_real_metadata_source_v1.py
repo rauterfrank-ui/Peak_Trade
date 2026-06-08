@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import sys
 from dataclasses import dataclass
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -637,3 +638,157 @@ def assert_governed_not_observability_truth(bundle: FuturesProducerPacketGoverne
     if not bundle.real_metadata_source_marked:
         msg = f"{REASON_GOVERNED_MISSING_REQUIRED_FIELD}: real_metadata_source_marked must be true"
         raise FuturesProducerPacketRealMetadataSourceError(msg)
+
+
+LOADER_PERSIST_CONFIRM_TOKEN = "U2B_GOVERNED_SNAPSHOT_LOADER_WRITE_EXECUTE_SEPARATE_OPERATOR_GO"
+LOADER_PERSIST_RECORD_SCHEMA = "loader_persist_record.v1"
+LOADER_PERSIST_PRODUCER_ID = "u2b_governed_snapshot_loader_persist_v1"
+REASON_CONFIRM_TOKEN_REQUIRED = "CONFIRM_TOKEN_REQUIRED"
+REASON_CONFIRM_TOKEN_INVALID = "CONFIRM_TOKEN_INVALID"
+REASON_OUTPUT_DIR_NOT_UNDER_ARCHIVE_ROOT = "OUTPUT_DIR_NOT_UNDER_ARCHIVE_ROOT"
+
+
+def _resolve_governed_bundle_path(candidate_bundle_path: Path) -> Path:
+    path = candidate_bundle_path.expanduser().resolve()
+    if path.is_file():
+        return path
+    if path.is_dir():
+        nested = path / "futures_producer_packet_governed.v1.json"
+        if nested.is_file():
+            return nested.resolve()
+    msg = f"{REASON_GOVERNED_SCHEMA_INVALID}: candidate bundle path not found"
+    raise FuturesProducerPacketRealMetadataSourceError(msg)
+
+
+def _summarize_candidate_validation(raw_packets: list[dict[str, Any]]) -> dict[str, int]:
+    strict_complete = 0
+    candidate_validation_complete = 0
+    for packet in raw_packets:
+        instrument = packet.get("instrument") or {}
+        if instrument.get("complete"):
+            strict_complete += 1
+        if instrument.get("candidate_validation_complete"):
+            candidate_validation_complete += 1
+    return {
+        "packet_count": len(raw_packets),
+        "strict_instrument_complete_count": strict_complete,
+        "candidate_validation_complete_count": candidate_validation_complete,
+    }
+
+
+def persist_governed_snapshot_loader_run_v1(
+    *,
+    confirm_token: str,
+    candidate_bundle_path: Path,
+    output_dir: Path,
+    archive_root: Path,
+    persist_bundle_id: str | None = None,
+) -> dict[str, Any]:
+    """Persist a durable U2b loader run record — not readmodel, dashboard, or truth."""
+    if not confirm_token:
+        msg = f"{REASON_CONFIRM_TOKEN_REQUIRED}: confirm token required"
+        raise FuturesProducerPacketRealMetadataSourceError(msg)
+    if confirm_token != LOADER_PERSIST_CONFIRM_TOKEN:
+        msg = f"{REASON_CONFIRM_TOKEN_INVALID}: confirm token mismatch"
+        raise FuturesProducerPacketRealMetadataSourceError(msg)
+
+    bundle_path = _resolve_governed_bundle_path(candidate_bundle_path)
+    resolved_archive = archive_root.expanduser().resolve()
+    resolved_output = output_dir.expanduser().resolve()
+    try:
+        resolved_output.relative_to(resolved_archive)
+    except ValueError as exc:
+        msg = f"{REASON_OUTPUT_DIR_NOT_UNDER_ARCHIVE_ROOT}: output_dir must be under archive_root"
+        raise FuturesProducerPacketRealMetadataSourceError(msg) from exc
+
+    bundle = load_futures_producer_packet_governed(bundle_path, archive_root=resolved_archive)
+    assert_governed_not_observability_truth(bundle)
+
+    raw = json.loads(bundle_path.read_text(encoding="utf-8"))
+    packets_raw = raw.get("packets") or []
+    if not isinstance(packets_raw, list):
+        msg = f"{REASON_GOVERNED_SCHEMA_INVALID}: packets must be array"
+        raise FuturesProducerPacketRealMetadataSourceError(msg)
+
+    completeness = _summarize_candidate_validation(
+        [item for item in packets_raw if isinstance(item, dict)]
+    )
+    bundle_id = persist_bundle_id or resolved_output.name
+    generated_at = datetime.now(tz=timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+    resolved_output.mkdir(parents=True, exist_ok=True)
+    record = {
+        "schema": LOADER_PERSIST_RECORD_SCHEMA,
+        "persist_bundle_id": bundle_id,
+        "producer_id": LOADER_PERSIST_PRODUCER_ID,
+        "generated_at": generated_at,
+        "source_candidate_bundle_path": str(bundle_path),
+        "source_run_id": bundle.source_run_id,
+        "source_stage": bundle.source_stage,
+        "loader_persist_executed": True,
+        "loader_can_parse_candidate": True,
+        "observability_truth_allowed": False,
+        "non_authorizing": True,
+        "selected_candidate_id": bundle.selected_candidate_id,
+        "completeness_summary": completeness,
+        "notes": (
+            "U2b governed snapshot loader persist record only — "
+            "not readmodel write, dashboard wiring, truth-GO, or trading"
+        ),
+    }
+    (resolved_output / "loader_persist_record.v1.json").write_text(
+        json.dumps(record, indent=2) + "\n",
+        encoding="utf-8",
+    )
+    (resolved_output / "loader_safety_flags.v1.json").write_text(
+        json.dumps(
+            {
+                "schema": "loader_safety_flags.v1",
+                "LOADER_PERSIST_EXECUTED": True,
+                "LOADER_RUN_EXECUTED": False,
+                "READMODEL_WRITE_EXECUTED": False,
+                "DASHBOARD_WIRING_EXECUTED": False,
+                "TRUTH_GO_GRANTED": False,
+                "LIVE_AUTHORIZED": False,
+                "PREFLIGHT_LIFT_AUTHORIZED": False,
+                "SELECTED_TRADABLE_FUTURE_CREATED": False,
+                "NETWORK_CALL_EXECUTED": False,
+                "NOT_READMODEL_WRITE": True,
+                "NOT_DASHBOARD_WIRING": True,
+                "NOT_TRUTH_GO": True,
+            },
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    (resolved_output / "source_candidate_bundle_ref.v1.json").write_text(
+        json.dumps(
+            {
+                "schema": "source_candidate_bundle_ref.v1",
+                "persist_bundle_id": bundle_id,
+                "candidate_bundle_path": str(bundle_path),
+            },
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+    repo_root = _repo_root()
+    if str(repo_root) not in sys.path:
+        sys.path.insert(0, str(repo_root))
+    from scripts.ops.primary_evidence_retention_v0 import finalize_durable_bundle_manifest
+
+    manifest_rc, manifest_msg = finalize_durable_bundle_manifest(resolved_output)
+    if manifest_rc != 0:
+        msg = f"{REASON_MANIFEST_VERIFY_FAILED}: manifest finalize rc={manifest_rc} ({manifest_msg})"
+        raise FuturesProducerPacketRealMetadataSourceError(msg)
+
+    return {
+        "persist_bundle_id": bundle_id,
+        "output_dir": str(resolved_output),
+        "manifest_verify_rc": manifest_rc,
+        "completeness_summary": completeness,
+        "selected_candidate_id": bundle.selected_candidate_id,
+    }
