@@ -19,10 +19,19 @@ pytestmark = pytest.mark.web
 from src.webui.app import create_app
 
 FIXTURE_ARCHIVE = (
-    project_root / "tests" / "fixtures" / "workflow_dashboard_readmodel_v1" / "pipeline_minimal" / "archive_root"
+    project_root
+    / "tests"
+    / "fixtures"
+    / "workflow_dashboard_readmodel_v1"
+    / "pipeline_minimal"
+    / "archive_root"
 ).resolve()
 LPR_FIXTURE = (
-    project_root / "tests" / "fixtures" / "last_paper_run_panel_readmodel_v0" / "p1_complete_minimal"
+    project_root
+    / "tests"
+    / "fixtures"
+    / "last_paper_run_panel_readmodel_v0"
+    / "p1_complete_minimal"
 ).resolve()
 
 
@@ -106,7 +115,10 @@ def test_btc_not_workflow_truth(client_on: TestClient) -> None:
     start = html.index('data-workflow-dashboard-v1="true"')
     end = html.index('data-observability-status-summary="true"')
     section = html[start:end]
-    assert "GET /market BTC/USD dummy is <strong>not</strong> Future or Paper runtime truth." in section
+    assert (
+        "GET /market BTC/USD dummy is <strong>not</strong> Future or Paper runtime truth."
+        in section
+    )
     assert "instrument_truth_status" not in section
     assert "selected_symbol" not in section
 

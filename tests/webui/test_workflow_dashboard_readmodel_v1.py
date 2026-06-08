@@ -17,7 +17,12 @@ from src.webui.workflow_dashboard_readmodel_v1 import (
 )
 
 FIXTURE_ARCHIVE = (
-    project_root / "tests" / "fixtures" / "workflow_dashboard_readmodel_v1" / "pipeline_minimal" / "archive_root"
+    project_root
+    / "tests"
+    / "fixtures"
+    / "workflow_dashboard_readmodel_v1"
+    / "pipeline_minimal"
+    / "archive_root"
 ).resolve()
 
 

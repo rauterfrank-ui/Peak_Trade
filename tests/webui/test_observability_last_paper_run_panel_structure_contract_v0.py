@@ -19,7 +19,11 @@ pytestmark = pytest.mark.web
 from src.webui.app import create_app
 
 FIXTURE_BUNDLE = (
-    project_root / "tests" / "fixtures" / "last_paper_run_panel_readmodel_v0" / "p1_complete_minimal"
+    project_root
+    / "tests"
+    / "fixtures"
+    / "last_paper_run_panel_readmodel_v0"
+    / "p1_complete_minimal"
 ).resolve()
 
 

@@ -46,12 +46,12 @@ Stable Markers sind **Anzeige-/Test-Anker**, keine Claims zu Betriebsreadiness o
 
 ## Workflow Dashboard V1 (view-only SSR v1)
 
-**Route:** **`GET /observability`** only (extends hub; no duplicate route).
+**Route:** **`GET &#47;observability`** only (extends hub; no duplicate route).
 
 - **Gate (default off):** `PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ENABLED=1` and `PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ARCHIVE_ROOT=<durable archive root>` — implemented in `src/webui/workflow_dashboard_runtime_v1.py`.
 - **Readmodel:** `workflow_dashboard_readmodel.v1` with embedded `workflow_pipeline_aggregate.v1` — builder `src/webui/workflow_dashboard_readmodel_v1/`.
 - **Panels (A–J):** Safety, Universe/Top20/Selected/Future missing-truth, Pipeline P1→T3, Orders/Fills/PnL, Evidence, KillSwitch, Next GO.
-- **Missing truth:** `UNIVERSE_SOURCE_NOT_PERSISTED`, `TOP20_RANKING_NOT_PERSISTED`, `SELECTED_FUTURE_NOT_PERSISTED`, `FUTURE_DETAIL_NOT_AVAILABLE` — **never** inferred from `GET /market` dummy OHLCV.
+- **Missing truth:** `UNIVERSE_SOURCE_NOT_PERSISTED`, `TOP20_RANKING_NOT_PERSISTED`, `SELECTED_FUTURE_NOT_PERSISTED`, `FUTURE_DETAIL_NOT_AVAILABLE` — **never** inferred from `GET &#47;market` dummy OHLCV.
 - **T1 original:** displayed with `RECLASSIFIED_STAGING_ONLY`; T3 **PLANNED_PARKED** without run bundle.
 - **Markers:** `data-workflow-dashboard-v1="true"`, `data-workflow-dashboard-readonly="true"`, `data-workflow-dashboard-authority="false"`, `data-workflow-panel-*-v1`, `data-workflow-stage-v1`.
 - **Boundaries:** SSR only when gate on; no POST, no fetch/polling, no trading controls. `stale=true`, `stale_reason=archive_snapshot`.
@@ -64,7 +64,7 @@ Stable Markers sind **Anzeige-/Test-Anker**, keine Claims zu Betriebsreadiness o
 - **Gate (default off):** `PEAK_TRADE_LAST_PAPER_RUN_PANEL_ENABLED=1` and `PEAK_TRADE_LAST_PAPER_RUN_BUNDLE_ROOT=<durable run bundle path>` — implemented in `src/webui/last_paper_run_panel_runtime_v0.py`.
 - **Readmodel:** `last_paper_run_panel_readmodel.v0` — builder `src/webui/last_paper_run_panel_readmodel_v0/`.
 - **Markers:** `data-observability-last-paper-run-panel-v0="true"`, `data-observability-last-paper-run-readonly="true"`, `data-observability-last-paper-run-authority="false"`, `data-observability-last-paper-run-instrument-truth="<status>"`.
-- **Instrument rule:** When run evidence lacks `selected_instrument` / `selected_future` / `selected_symbol`, UI shows **`NOT_PERSISTED`** — **never** `BTC/USD` or Market Surface query defaults as paper truth.
+- **Instrument rule:** When run evidence lacks `selected_instrument` / `selected_future` / `selected_symbol`, UI shows **`NOT_PERSISTED`** — **never** `BTC&#47;USD` or Market Surface query defaults as paper truth.
 - **Market separation:** **`GET &#47;market`** may show `data-market-v0-paper-run-truth-separation-v0` cross-link only; Market Surface remains fixture/OHLCV demo.
 - **Boundaries:** SSR only when gate on; no POST, no fetch/polling, no runtime/scheduler/paper start, no trading authority. `stale=true`, `stale_reason=archive_snapshot` for archive-backed reads.
 - **Tests:** `tests/webui/test_observability_last_paper_run_panel_structure_contract_v0.py`, `tests/webui/test_last_paper_run_panel_readmodel_v0.py`.

@@ -23,9 +23,7 @@ from .types import (
 _FIXED_GEN_ENV = "PEAK_TRADE_FIXED_GENERATED_AT_UTC"
 T2_NEXT_GO_FALLBACK = "GO_T3_LONGER_TESTNET_STAGE_READY_PACKAGE_NO_RUN_V1"
 
-_PRODUCER_FOLLOWUP = (
-    "Producer persistence contract (Slice 2) — no dashboard substitution."
-)
+_PRODUCER_FOLLOWUP = "Producer persistence contract (Slice 2) — no dashboard substitution."
 
 
 def _now_iso() -> str:

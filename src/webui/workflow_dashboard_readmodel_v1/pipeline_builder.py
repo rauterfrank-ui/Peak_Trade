@@ -235,7 +235,9 @@ def _load_run_stage(
     primary_captured = _parse_bool(machine_lines.get("PRIMARY_EVIDENCE_CAPTURED"))
     evidence_status = "captured" if primary_captured else "partial"
 
-    duration_actual = run_meta.get("duration_seconds_actual") or run_meta.get("actual_duration_seconds")
+    duration_actual = run_meta.get("duration_seconds_actual") or run_meta.get(
+        "actual_duration_seconds"
+    )
     if duration_actual is not None:
         try:
             duration_actual = float(duration_actual)
@@ -248,7 +250,9 @@ def _load_run_stage(
         bundle_basename=bundle_basename,
         verdict=verdict,
         reclassification=reclassification,
-        utc_start=str(run_meta.get("utc_start") or run_meta.get("utc")) if run_meta.get("utc_start") or run_meta.get("utc") else None,
+        utc_start=str(run_meta.get("utc_start") or run_meta.get("utc"))
+        if run_meta.get("utc_start") or run_meta.get("utc")
+        else None,
         utc_end=str(run_meta.get("utc_end")) if run_meta.get("utc_end") else None,
         duration_actual_seconds=duration_actual,
         duration_cap_seconds=_parse_int(

@@ -228,8 +228,7 @@ def to_json_dict(model: WorkflowDashboardReadModelV1) -> dict[str, Any]:
         },
         "killswitch_recovery": {
             "entries": [
-                {"stage_key": k, "summary": s}
-                for k, s in model.killswitch_recovery.entries
+                {"stage_key": k, "summary": s} for k, s in model.killswitch_recovery.entries
             ],
         },
         "next_go": {

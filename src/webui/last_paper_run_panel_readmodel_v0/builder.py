@@ -113,7 +113,9 @@ def _basename_only(path_value: object) -> str | None:
     return Path(text).name
 
 
-def _first_instrument_from_dict(data: dict) -> tuple[str | None, str | None, str | None, str | None]:
+def _first_instrument_from_dict(
+    data: dict,
+) -> tuple[str | None, str | None, str | None, str | None]:
     """Return (instrument, future, symbol, source_field) from explicit keys only."""
     for key in _INSTRUMENT_KEYS:
         val = data.get(key)
@@ -256,7 +258,11 @@ def build_last_paper_run_panel_readmodel_v0(bundle_root: Path) -> LastPaperRunPa
 
     stage = str(run_meta.get("stage") or machine_lines.get("P1_STAGE") or "UNKNOWN")
     mode = "paper" if _parse_bool_env(machine_lines.get("PAPER_ONLY"), default=True) else "unknown"
-    status = str(run_meta.get("review_verdict") or machine_lines.get("P1_SHORT_BOUNDED_PAPER_EXECUTE_VERDICT") or "UNKNOWN")
+    status = str(
+        run_meta.get("review_verdict")
+        or machine_lines.get("P1_SHORT_BOUNDED_PAPER_EXECUTE_VERDICT")
+        or "UNKNOWN"
+    )
 
     instrument = _resolve_instrument_block(run_meta, adapter_meta, runtime_fixture_ref)
 
@@ -269,7 +275,9 @@ def build_last_paper_run_panel_readmodel_v0(bundle_root: Path) -> LastPaperRunPa
     fills_count = _parse_int(run_meta.get("fills_count"))
     live_orders = _parse_int(machine_lines.get("LIVE_ORDERS_EXECUTED"))
 
-    manifest_rc = machine_lines.get("MANIFEST_VERIFY_RC") or str(run_meta.get("manifest_verify_rc") or "")
+    manifest_rc = machine_lines.get("MANIFEST_VERIFY_RC") or str(
+        run_meta.get("manifest_verify_rc") or ""
+    )
 
     last_run = LastRunBlockV0(
         run_id=run_id,
