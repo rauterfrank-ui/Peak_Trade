@@ -1,0 +1,23 @@
+"""Env/schema boundary for Workflow Dashboard V1."""
+
+from __future__ import annotations
+
+from pathlib import Path
+
+PROJECT_ROOT = Path(__file__).resolve().parents[2]
+
+
+def test_workflow_dashboard_env_constants_in_runtime_module() -> None:
+    from src.webui.workflow_dashboard_runtime_v1 import ENV_ARCHIVE_ROOT, ENV_ENABLED
+
+    assert ENV_ENABLED == "PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ENABLED"
+    assert ENV_ARCHIVE_ROOT == "PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ARCHIVE_ROOT"
+
+
+def test_observability_hub_doc_documents_workflow_dashboard() -> None:
+    doc = (PROJECT_ROOT / "docs/webui/observability/OBSERVABILITY_HUB_V0.md").read_text(
+        encoding="utf-8"
+    )
+    assert "PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ENABLED" in doc
+    assert "workflow_dashboard_readmodel.v1" in doc
+    assert "UNIVERSE_SOURCE_NOT_PERSISTED" in doc

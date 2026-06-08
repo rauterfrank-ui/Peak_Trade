@@ -1,0 +1,8 @@
+{
+  "run_id": "daemon_paper_24h_test_fixture_v0",
+  "review_verdict": "PASS",
+  "duration_seconds": 600,
+  "live_authority": false,
+  "testnet_authority": false,
+  "broker_authority": false
+}
