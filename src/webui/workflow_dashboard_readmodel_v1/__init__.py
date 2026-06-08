@@ -19,6 +19,13 @@ from .universe_selection_contract_v1 import (
     load_universe_selection_contract,
     validate_universe_selection_payload,
 )
+from .universe_selection_producer_v1 import (
+    ProducerWriteError,
+    ProducerWriteResult,
+    build_missing_truth_universe_selection_readmodel,
+    write_missing_truth_universe_selection_readmodel,
+    write_universe_selection_readmodel,
+)
 
 __all__ = [
     "PIPELINE_READMODEL_ID",
@@ -26,9 +33,14 @@ __all__ = [
     "SCHEMA_VERSION",
     "UNIVERSE_SELECTION_SCHEMA_NAME",
     "UNIVERSE_SELECTION_STORAGE_PATH",
+    "ProducerWriteError",
+    "ProducerWriteResult",
     "UniverseSelectionContractError",
     "UniverseSelectionContractV1",
     "WorkflowDashboardReadModelV1",
+    "build_missing_truth_universe_selection_readmodel",
+    "write_missing_truth_universe_selection_readmodel",
+    "write_universe_selection_readmodel",
     "build_workflow_dashboard_readmodel_v1",
     "build_workflow_pipeline_aggregate_v1",
     "load_universe_selection_contract",
