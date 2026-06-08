@@ -4,7 +4,9 @@
 
 This document defines the **normative persistence contract** for **`universe_selection_readmodel.v1`**: governed Universe (~50 futures), Top-20 ranking, Selected Future, Future detail metadata, and related evidence links for the **view-only Workflow Dashboard** on **`GET &#47;observability`**.
 
-**Slice 1 status:** Schema, validation helpers, fixtures, and static tests only. **No producer write**, **no dashboard population**, **no runtime start**. The dashboard continues to show **Missing Truth** until Slice 3 integrates archive reads.
+**Slice 1 status:** Schema, validation helpers, fixtures, and static tests only.
+
+**Slice 2 status:** Closeout-only **producer helper** (`universe_selection_producer_v1.py`) with Mode-B missing-truth write, atomic persistence, and manifest verify. **No adapter hooks** in Slice 2 (env-gated adapter wiring deferred). **No dashboard population** until Slice 3. **No runtime start**.
 
 **Contract prep reference:** `planning&#47;universe_top20_selected_future_persistence_contract_prep_no_run_v1_20260608T133943Z` (durable archive).
 
@@ -151,11 +153,50 @@ Missing Truth is a **valid** operator-visible state — not a dashboard defect.
 | `tests/webui/test_workflow_dashboard_readmodel_v1.py` | Dashboard still Missing Truth |
 | `tests/webui/test_observability_workflow_dashboard_structure_contract_v1.py` | HTML unchanged |
 
-## 10. Implementation slices
+## 10. Slice 2 producer helper contract (helper-only)
+
+**Module:** `src/webui/workflow_dashboard_readmodel_v1/universe_selection_producer_v1.py`  
+**Tests:** `tests/webui/test_universe_selection_producer_v1.py`
+
+### Functions
+
+| Function | Purpose |
+|----------|---------|
+| `build_missing_truth_universe_selection_readmodel(...)` | Build Mode-B payload (empty rows + canonical reason codes) |
+| `write_universe_selection_readmodel(archive_root, payload)` | Validate, atomic write, manifest update |
+| `write_missing_truth_universe_selection_readmodel(...)` | Build + write Mode-B in one call |
+
+### Mode B — missing inputs at closeout
+
+When a bounded Paper/Shadow/Testnet closeout completes but **no governed universe/scan inputs** exist, the producer **must not stay silent**. It writes explicit Missing Truth:
+
+- `universe[]` and `ranking[]` empty
+- `selected_future.truth_status` = `NOT_PERSISTED`
+- `missing_truth` reason codes: `UNIVERSE_SOURCE_NOT_PERSISTED`, `TOP20_RANKING_NOT_PERSISTED`, `SELECTED_FUTURE_NOT_PERSISTED`, `FUTURE_DETAIL_NOT_AVAILABLE`
+- `evidence.links` includes at least the triggering `run_bundle_path` (or `run_bundle_uri`)
+- `non_authorizing: true` required
+
+No BTC/USD dummy truth, no synthetic ranking, no dashboard faking.
+
+### Persistence mechanics
+
+1. Target: `{ARCHIVE_ROOT}&#47;readmodels&#47;universe_selection_readmodel.v1.json`
+2. Atomic write: temp file in `readmodels&#47;`, then `os.replace`
+3. Manifest: reuse `scripts/ops/primary_evidence_retention_v0.py` (`write_manifest_sha256`, `verify_manifest_sha256`) on `readmodels&#47;` subtree
+4. Fail closed: invalid payload or manifest verify failure → no partial final file
+
+### Adapter hooks (deferred)
+
+Slice 2 does **not** wire `run_*_bounded_observation_adapter_v0.py` closeout paths. Future slice: env-gated hook (`PEAK_TRADE_UNIVERSE_SELECTION_PRODUCER_V1_ENABLED=1`, default off) after separate operator GO.
+
+**Live remains forbidden.** `source_stage=live` is rejected by schema validation.
+
+## 11. Implementation slices
 
 | Slice | Scope |
 |-------|-------|
-| **1 (this doc)** | Contract docs + schema + fixtures + static tests |
-| **2** | Producer write adapter (Paper/Shadow/Testnet) |
+| **1** | Contract docs + schema + fixtures + static tests |
+| **2 (this slice)** | Producer helper + Mode-B write + unit tests (no adapter hooks) |
+| **2b (future)** | Env-gated adapter closeout hooks (Paper/Shadow/Testnet) |
 | **3** | Dashboard readmodel integration |
 | **4** | Bounded run verification (explicit operator GO) |
