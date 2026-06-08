@@ -40,3 +40,37 @@ def test_observability_hub_links_universe_selection_contract() -> None:
     )
     assert "UNIVERSE_SELECTION_READMODEL_V1.md" in doc
     assert "universe_selection_readmodel.v1" in doc
+
+
+REAL_SOURCE_CHARTER_DOC = (
+    PROJECT_ROOT
+    / "docs"
+    / "webui"
+    / "observability"
+    / "FUTURES_UNIVERSE_REAL_SOURCE_CONTRACT_V1.md"
+)
+UNIVERSE_SELECTION_DOC = (
+    PROJECT_ROOT / "docs" / "webui" / "observability" / "UNIVERSE_SELECTION_READMODEL_V1.md"
+)
+
+
+def test_futures_universe_real_source_charter_doc_exists_and_markers() -> None:
+    assert REAL_SOURCE_CHARTER_DOC.is_file()
+    doc = REAL_SOURCE_CHARTER_DOC.read_text(encoding="utf-8")
+    assert "REAL_FUTURES_OBSERVABILITY_TRUTH_AVAILABLE=false" in doc
+    assert "U2B_IMPLEMENTABLE_IMMEDIATELY=false" in doc
+    assert "U2B_BLOCKED" in doc
+    assert "Evidence != Approval/Lift/Live" in doc
+    assert "market_ranking_funnel_readmodel.v0" in doc
+    assert "FIXTURE_ONLY_AS_REAL_TRUTH_ALLOWED=false" in doc
+    assert "MANIFEST_VERIFY_RC=0" in doc
+    assert "SPOT_BTC_DUMMY_SELECTED_TRUTH_FORBIDDEN=true" in doc
+    assert "FuturesProducerPacket" in doc
+    assert "futures_universe_upstream_adapter_v1" in doc
+
+
+def test_universe_selection_readmodel_links_real_source_charter() -> None:
+    doc = UNIVERSE_SELECTION_DOC.read_text(encoding="utf-8")
+    assert "FUTURES_UNIVERSE_REAL_SOURCE_CONTRACT_V1.md" in doc
+    assert "Real-Source Charter" in doc
+    assert "REAL_FUTURES_OBSERVABILITY_TRUTH_AVAILABLE=false" in doc
