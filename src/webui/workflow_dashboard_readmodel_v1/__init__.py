@@ -26,6 +26,13 @@ from .universe_selection_producer_v1 import (
     write_missing_truth_universe_selection_readmodel,
     write_universe_selection_readmodel,
 )
+from .universe_selection_reader_v1 import (
+    LOAD_ERROR_CONTRACT_INVALID,
+    LOAD_ERROR_INVALID_JSON,
+    LOAD_ERROR_MANIFEST_NOT_FOUND,
+    LOAD_ERROR_MANIFEST_VERIFY_FAILED,
+    try_load_universe_selection_for_dashboard,
+)
 
 __all__ = [
     "PIPELINE_READMODEL_ID",
@@ -33,6 +40,10 @@ __all__ = [
     "SCHEMA_VERSION",
     "UNIVERSE_SELECTION_SCHEMA_NAME",
     "UNIVERSE_SELECTION_STORAGE_PATH",
+    "LOAD_ERROR_CONTRACT_INVALID",
+    "LOAD_ERROR_INVALID_JSON",
+    "LOAD_ERROR_MANIFEST_NOT_FOUND",
+    "LOAD_ERROR_MANIFEST_VERIFY_FAILED",
     "ProducerWriteError",
     "ProducerWriteResult",
     "UniverseSelectionContractError",
@@ -45,5 +56,6 @@ __all__ = [
     "build_workflow_pipeline_aggregate_v1",
     "load_universe_selection_contract",
     "to_json_dict",
+    "try_load_universe_selection_for_dashboard",
     "validate_universe_selection_payload",
 ]

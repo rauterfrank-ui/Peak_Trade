@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import shutil
 import sys
 from pathlib import Path
 
@@ -24,6 +25,13 @@ FIXTURE_ARCHIVE = (
     / "pipeline_minimal"
     / "archive_root"
 ).resolve()
+UNIVERSE_FIXTURES = (
+    project_root
+    / "tests"
+    / "fixtures"
+    / "workflow_dashboard_readmodel_v1"
+    / "universe_selection_readmodel_v1"
+)
 
 
 @pytest.fixture(autouse=True)
@@ -91,3 +99,38 @@ def test_next_go_from_t2() -> None:
 def test_archive_root_not_directory_raises() -> None:
     with pytest.raises(ValueError, match="archive_root_not_directory"):
         build_workflow_dashboard_readmodel_v1(FIXTURE_ARCHIVE / "nonexistent_dir_xyz")
+
+
+def _copy_pipeline_archive_with_readmodel(tmp_path: Path, fixture_dir: str) -> Path:
+    from scripts.ops.primary_evidence_retention_v0 import write_manifest_sha256
+
+    archive = tmp_path / "archive_with_universe"
+    shutil.copytree(FIXTURE_ARCHIVE, archive)
+    readmodels_dir = archive / "readmodels"
+    readmodels_dir.mkdir(parents=True, exist_ok=True)
+    src = UNIVERSE_FIXTURES / fixture_dir / "universe_selection_readmodel.v1.json"
+    shutil.copy2(src, readmodels_dir / "universe_selection_readmodel.v1.json")
+    write_manifest_sha256(readmodels_dir)
+    return archive
+
+
+def test_valid_readmodel_populates_model_fields(tmp_path: Path) -> None:
+    archive = _copy_pipeline_archive_with_readmodel(tmp_path, "complete_minimal")
+    m = build_workflow_dashboard_readmodel_v1(archive)
+    assert m.universe_selection.loaded is True
+    assert m.universe_missing.truth_status == "PERSISTED"
+    assert m.top20_missing.truth_status == "PERSISTED"
+    assert m.selected_future_missing.truth_status == "PERSISTED"
+    assert m.future_detail_missing.truth_status == "AVAILABLE"
+    assert len(m.universe_selection.universe) == 3
+    assert m.universe_selection.selected_future is not None
+    assert m.universe_selection.selected_future.symbol == "SOLUSDT"
+    assert "BTC/USD" not in str(to_json_dict(m))
+
+
+def test_invalid_btc_readmodel_preserves_missing_truth(tmp_path: Path) -> None:
+    archive = _copy_pipeline_archive_with_readmodel(tmp_path, "invalid_btc_usd_selected")
+    m = build_workflow_dashboard_readmodel_v1(archive)
+    assert m.universe_selection.loaded is False
+    assert m.universe_missing.truth_status == "UNIVERSE_SOURCE_NOT_PERSISTED"
+    assert "CONTRACT_INVALID" in m.load_errors or "MANIFEST" in str(m.load_errors)

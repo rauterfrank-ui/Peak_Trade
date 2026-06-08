@@ -93,35 +93,74 @@
       <p class="text-[11px] text-slate-400 m-0 font-mono">{{ saf.current_mode_label }}</p>
     </section>
 
+    {% set usel = wd.universe_selection %}
     <section class="rounded-xl border border-amber-900/40 bg-amber-950/20 px-5 py-4 space-y-3" data-workflow-panel-universe-v1="true" data-workflow-universe-truth-status="{{ wd.universe_missing.truth_status }}">
       <h2 class="text-sm font-semibold text-amber-200/95 uppercase text-[11px] m-0">Universe ~50 Futures</h2>
       <p class="text-xs font-mono text-amber-200/95 m-0">{{ wd.universe_missing.truth_status }}</p>
       <p class="text-xs text-slate-400 m-0">{{ wd.universe_missing.message }}</p>
+      {% if usel.loaded and wd.universe_missing.truth_status == 'PERSISTED' and usel.universe %}
+      <p class="text-[10px] text-slate-500 m-0 font-mono">rows={{ usel.universe | length }} · source={{ usel.source_stage }}/{{ usel.source_run_id }}</p>
+      <table class="w-full text-[10px] text-slate-400 border border-slate-800/60 rounded">
+        <thead><tr class="text-left"><th class="px-2 py-1">rank</th><th class="px-2 py-1">symbol</th><th class="px-2 py-1">exchange</th><th class="px-2 py-1">notes</th></tr></thead>
+        <tbody>
+          {% for row in usel.universe %}
+          <tr><td class="px-2 py-1 font-mono">{{ row.rank }}</td><td class="px-2 py-1 font-mono">{{ row.symbol }}</td><td class="px-2 py-1">{{ row.exchange or '—' }}</td><td class="px-2 py-1 text-slate-500">{{ row.notes or '' }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
       <table class="w-full text-[10px] text-slate-500 border border-slate-800/60 rounded">
         <thead><tr class="text-left"><th class="px-2 py-1">symbol</th><th class="px-2 py-1">exchange</th><th class="px-2 py-1">available</th><th class="px-2 py-1">exclusion_reason</th></tr></thead>
         <tbody><tr><td class="px-2 py-2 text-slate-600" colspan="4">No persisted universe rows — producer follow-up required.</td></tr></tbody>
       </table>
+      {% endif %}
     </section>
 
     <section class="rounded-xl border border-amber-900/40 bg-amber-950/20 px-5 py-4 space-y-3" data-workflow-panel-top20-v1="true" data-workflow-top20-truth-status="{{ wd.top20_missing.truth_status }}">
       <h2 class="text-sm font-semibold text-amber-200/95 uppercase text-[11px] m-0">Top 20 Ranking</h2>
       <p class="text-xs font-mono text-amber-200/95 m-0">{{ wd.top20_missing.truth_status }}</p>
       <p class="text-xs text-slate-400 m-0">{{ wd.top20_missing.message }}</p>
+      {% if usel.loaded and wd.top20_missing.truth_status == 'PERSISTED' and usel.ranking %}
+      <ol class="list-decimal pl-5 text-[10px] text-slate-400 space-y-0.5 m-0" start="1">
+        {% for row in usel.ranking %}
+        <li><span class="font-mono">{{ row.symbol }}</span>{% if row.display_score is not none %} · score {{ row.display_score }}{% endif %}</li>
+        {% endfor %}
+      </ol>
+      {% else %}
       <ol class="list-decimal pl-5 text-[10px] text-slate-600 space-y-0.5 m-0" start="1">
         {% for r in range(1, 21) %}<li>rank {{ r }} — not persisted</li>{% endfor %}
       </ol>
+      {% endif %}
     </section>
 
     <section class="rounded-xl border border-amber-900/40 bg-amber-950/20 px-5 py-4 space-y-3" data-workflow-panel-selected-future-v1="true" data-workflow-selected-future-truth-status="{{ wd.selected_future_missing.truth_status }}">
       <h2 class="text-sm font-semibold text-amber-200/95 uppercase text-[11px] m-0">Selected Future</h2>
       <p class="text-xs font-mono text-amber-200/95 m-0">{{ wd.selected_future_missing.truth_status }}</p>
       <p class="text-xs text-slate-400 m-0">{{ wd.selected_future_missing.message }}</p>
+      {% if usel.loaded and wd.selected_future_missing.truth_status == 'PERSISTED' and usel.selected_future %}
+      <dl class="grid grid-cols-2 gap-x-4 gap-y-1 text-[10px] m-0">
+        <div><dt class="text-slate-500">symbol</dt><dd class="font-mono text-slate-200">{{ usel.selected_future.symbol }}</dd></div>
+        <div><dt class="text-slate-500">rank</dt><dd class="font-mono text-slate-200">{{ usel.selected_future.rank }}</dd></div>
+        {% if usel.selected_future.selection_reason %}<div class="col-span-2"><dt class="text-slate-500">selection_reason</dt><dd class="text-slate-300">{{ usel.selected_future.selection_reason }}</dd></div>{% endif %}
+      </dl>
+      {% endif %}
     </section>
 
     <section class="rounded-xl border border-amber-900/40 bg-amber-950/20 px-5 py-4 space-y-3" data-workflow-panel-future-detail-v1="true" data-workflow-future-detail-status="{{ wd.future_detail_missing.truth_status }}">
       <h2 class="text-sm font-semibold text-amber-200/95 uppercase text-[11px] m-0">Future Detail</h2>
       <p class="text-xs font-mono text-amber-200/95 m-0">{{ wd.future_detail_missing.truth_status }}</p>
       <p class="text-xs text-slate-400 m-0">{{ wd.future_detail_missing.message }}</p>
+      {% if usel.loaded and wd.future_detail_missing.truth_status == 'AVAILABLE' and usel.market_snapshot %}
+      <dl class="grid grid-cols-2 gap-x-4 gap-y-1 text-[10px] m-0">
+        <div><dt class="text-slate-500">exchange</dt><dd class="font-mono text-slate-200">{{ usel.market_snapshot.exchange or '—' }}</dd></div>
+        <div><dt class="text-slate-500">snapshot_id</dt><dd class="font-mono text-slate-200">{{ usel.market_snapshot.snapshot_id or '—' }}</dd></div>
+        <div><dt class="text-slate-500">source_kind</dt><dd class="font-mono text-slate-200">{{ usel.market_snapshot.source_kind or '—' }}</dd></div>
+        <div><dt class="text-slate-500">captured_at</dt><dd class="font-mono text-slate-200">{{ usel.market_snapshot.captured_at or '—' }}</dd></div>
+      </dl>
+      {% endif %}
+      {% if usel.loaded and usel.evidence_links %}
+      <p class="text-[10px] text-slate-500 m-0 font-mono">evidence: {{ usel.evidence_links | join(' · ') }}</p>
+      {% endif %}
       <p class="text-[10px] text-slate-500 m-0">GET /market BTC/USD dummy is <strong>not</strong> Future or Paper runtime truth.</p>
     </section>
 
