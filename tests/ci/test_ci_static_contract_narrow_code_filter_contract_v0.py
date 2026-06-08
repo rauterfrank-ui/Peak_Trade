@@ -1,7 +1,8 @@
-"""Contract tests for CI static-contract narrow code path filter (ci.yml v0).
+"""Contract tests for CI static-contract narrow code path filter (ci.yml v0/v1).
 
 YAML structure assertions plus path semantics aligned with dorny/paths-filter
-(picomatch extglob). Semantics helper mirrors the three `tests/` code globs.
+(picomatch extglob). Semantics helper mirrors the three `tests/` code globs and
+webui_surface / non_webui_code buckets (Market/Observability path gating).
 """
 
 from __future__ import annotations
@@ -22,6 +23,39 @@ STATIC_CONTRACT_WEBUI_GLOB = "tests/webui/test_*_structure_contract*.py"
 STATIC_OPS_CONTRACT_GLOB = "src/ops/*_contract_v0.py"
 SRC_OPS_NON_CONTRACT_GLOB = "src/ops/!(*_contract_v0.py)"
 SRC_NON_OPS_GLOB = "src/!(ops)/**"
+WEBUI_SURFACE_GLOBS = (
+    "src/webui/**",
+    "templates/peak_trade_dashboard/**",
+    "docs/webui/**",
+    "tests/webui/**",
+    "tests/fixtures/**",
+    "tests/ops/test_*_env_schema_boundary*.py",
+)
+NON_WEBUI_CODE_GLOBS = (
+    "src/!(ops|webui)/**",
+    "src/ops/!(*_contract_v0.py)",
+    "templates/!(peak_trade_dashboard)/**",
+    "tests/!(ci|ops|webui|fixtures)/**",
+    "scripts/**",
+    "config/**",
+    "schemas/levelup/**",
+    "requirements.txt",
+    "requirements*.txt",
+    "pyproject.toml",
+    "uv.lock",
+    "pytest.ini",
+    "Makefile",
+)
+WEBUI_BOUNDED_PYTEST_MODULES = (
+    "tests/webui/test_workflow_dashboard_readmodel_v1.py",
+    "tests/webui/test_observability_workflow_dashboard_structure_contract_v1.py",
+    "tests/ops/test_workflow_dashboard_env_schema_boundary_v1.py",
+    "tests/webui/test_observability_hub.py",
+    "tests/webui/test_last_paper_run_panel_readmodel_v0.py",
+    "tests/webui/test_observability_last_paper_run_panel_structure_contract_v0.py",
+    "tests/ops/test_last_paper_run_panel_env_schema_boundary_v0.py",
+    "tests/webui/test_market_dashboard_readonly_structure_contract_v0.py",
+)
 
 
 def _ci_text() -> str:
@@ -31,6 +65,20 @@ def _ci_text() -> str:
 def _code_block() -> str:
     text = _ci_text()
     start = text.index("            code:")
+    end = text.index("            static_contract:")
+    return text[start:end]
+
+
+def _webui_surface_block() -> str:
+    text = _ci_text()
+    start = text.index("            webui_surface:")
+    end = text.index("            non_webui_code:")
+    return text[start:end]
+
+
+def _non_webui_code_block() -> str:
+    text = _ci_text()
+    start = text.index("            non_webui_code:")
     end = text.index("            static_contract:")
     return text[start:end]
 
@@ -89,6 +137,55 @@ def _matches_code_filter(path: str) -> bool:
     if path.startswith("src/"):
         return True
     return _matches_code_tests_bucket(path)
+
+
+def _matches_webui_surface(path: str) -> bool:
+    if path.startswith("src/webui/"):
+        return True
+    if path.startswith("templates/peak_trade_dashboard/"):
+        return True
+    if path.startswith("docs/webui/"):
+        return True
+    if path.startswith("tests/webui/"):
+        return True
+    if path.startswith("tests/fixtures/"):
+        return True
+    return fnmatch.fnmatch(path, "tests/ops/test_*_env_schema_boundary*.py")
+
+
+def _matches_non_webui_code(path: str) -> bool:
+    if path in {"requirements.txt", "pyproject.toml", "uv.lock", "pytest.ini", "Makefile"}:
+        return True
+    if path.startswith("requirements") and path.endswith(".txt"):
+        return True
+    if path.startswith(("scripts/", "config/", "schemas/levelup/")):
+        return True
+    if path.startswith("src/webui/"):
+        return False
+    if _matches_static_contract_ops_src(path):
+        return False
+    if path.startswith("src/ops/"):
+        return True
+    if path.startswith("src/"):
+        return True
+    if path.startswith("templates/peak_trade_dashboard/"):
+        return False
+    if path.startswith("templates/"):
+        return True
+    if path.startswith("tests/fixtures/") or path.startswith("tests/webui/"):
+        return False
+    if path.startswith("tests/"):
+        top = path.split("/")[1]
+        if top in {"ci", "ops", "webui", "fixtures"}:
+            return False
+        return True
+    return False
+
+
+def _run_matrix_for_paths(paths: list[str], *, force_matrix: bool = False) -> bool:
+    if force_matrix:
+        return True
+    return any(_matches_non_webui_code(p) for p in paths)
 
 
 def test_changes_job_exports_static_contract_outputs() -> None:
@@ -160,24 +257,122 @@ def test_code_and_static_contract_path_semantics_v0(
     assert static_match is expect_static
 
 
+def test_webui_surface_and_non_webui_code_filters_present() -> None:
+    webui_block = _webui_surface_block()
+    non_webui_block = _non_webui_code_block()
+    for glob in WEBUI_SURFACE_GLOBS:
+        assert f"'{glob}'" in webui_block
+    for glob in NON_WEBUI_CODE_GLOBS:
+        assert f"'{glob}'" in non_webui_block
+
+
+def test_changes_job_exports_webui_surface_outputs() -> None:
+    text = _ci_text()
+    assert "webui_surface_changed:" in text
+    assert "webui_surface_only:" in text
+    assert "webui_surface_changed=${WEBUI}" in text
+    assert "webui_surface_only=true" in text
+
+
+def test_run_matrix_derived_from_non_webui_code_not_raw_code_bucket() -> None:
+    text = _ci_text()
+    assert 'NON_WEBUI="${{ steps.filter.outputs.non_webui_code }}"' in text
+    assert 'echo "run_matrix=${CODE}"' not in text
+    assert "elif [ \"$NON_WEBUI\" = \"true\" ]; then" in text
+    assert "echo \"run_matrix=false\"" in text
+
+
 def test_matrix_jobs_keep_no_job_level_if_and_short_circuit_skip() -> None:
     text = _ci_text()
     assert "name: tests (${{ matrix.python-version }})" in text
-    assert "Docs/static-contract PR — skip full matrix tests" in text
+    assert "WebUI/docs/static-contract PR — skip full matrix tests" in text
     assert "IMPORTANT: No job-level if condition - matrix jobs must always be created" in text
-    assert "Docs/static-contract PR — skip strategy smoke tests" in text
+    assert "WebUI/docs/static-contract PR — skip strategy smoke tests" in text
+    assert "needs.changes.outputs.run_matrix != 'true'" in text
+    assert "needs.changes.outputs.run_matrix == 'true'" in text
+
+
+def test_strategy_smoke_gated_on_run_matrix_not_code_changed() -> None:
+    text = _ci_text()
+    assert "name: strategy-smoke" in text
+    assert "needs.changes.outputs.run_matrix == 'true'" in text
+    assert "needs.changes.outputs.code_changed == 'true'" not in text
 
 
 def test_fast_lane_runs_static_contract_tests_when_applicable() -> None:
     text = _ci_text()
     assert "Static contract tests (tests/ci, tests/ops, WebUI structure-contract" in text
     assert "needs.changes.outputs.static_contract_changed == 'true'" in text
+    assert "needs.changes.outputs.run_matrix != 'true'" in text
     assert "pytest tests/ci tests/ops" in text
     assert "webui_structure_contract=(tests/webui/test_*structure_contract*.py)" in text
     assert '"${webui_structure_contract[@]}"' in text
+
+
+def test_fast_lane_webui_bounded_pytest_modules() -> None:
+    text = _ci_text()
+    assert "WebUI bounded pytest (market/observability surface)" in text
+    assert "needs.changes.outputs.webui_surface_changed == 'true'" in text
+    assert "PEAK_TRADE_LAST_PAPER_RUN_PANEL_ENABLED" in text
+    assert "PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ENABLED" in text
+    for module in WEBUI_BOUNDED_PYTEST_MODULES:
+        assert module in text
+
+
+def test_required_check_names_unchanged() -> None:
+    text = _ci_text()
+    assert "name: tests (${{ matrix.python-version }})" in text
+    assert "name: strategy-smoke" in text
+    assert "name: Fast-Lane" in text
+    assert "python-version: ['3.9', '3.10', '3.11']" in text
 
 
 def test_code_changed_output_uses_narrowed_code_bucket_not_raw_filter_alias() -> None:
     text = _ci_text()
     assert "code_changed: ${{ steps.set_outputs.outputs.code_changed }}" in text
     assert "code_changed: ${{ steps.filter.outputs.code }}" not in text
+
+
+@pytest.mark.parametrize(
+    ("path", "expect_webui", "expect_non_webui"),
+    [
+        ("src/webui/app.py", True, False),
+        ("templates/peak_trade_dashboard/market_v0.html", True, False),
+        ("docs/webui/observability/OBSERVABILITY_HUB_V0.md", True, False),
+        ("tests/webui/test_observability_hub.py", True, False),
+        ("tests/fixtures/workflow_dashboard_readmodel_v1/foo.json", True, False),
+        ("tests/ops/test_workflow_dashboard_env_schema_boundary_v1.py", True, False),
+        ("tests/ops/test_other_ops.py", False, False),
+        ("src/execution/foo.py", False, True),
+        ("pyproject.toml", False, True),
+        ("templates/other/template.html", False, True),
+    ],
+)
+def test_webui_surface_and_non_webui_path_semantics_v1(
+    path: str,
+    expect_webui: bool,
+    expect_non_webui: bool,
+) -> None:
+    assert _matches_webui_surface(path) is expect_webui
+    assert _matches_non_webui_code(path) is expect_non_webui
+
+
+@pytest.mark.parametrize(
+    ("paths", "expect_run_matrix"),
+    [
+        (["src/webui/app.py", "templates/peak_trade_dashboard/market_v0.html"], False),
+        (["src/webui/app.py", "pyproject.toml"], True),
+        (["docs/foo.md"], False),
+        (["src/execution/module.py"], True),
+        (
+            [
+                "src/webui/workflow_dashboard_readmodel_v1/builder.py",
+                "tests/webui/test_workflow_dashboard_readmodel_v1.py",
+                "tests/ops/test_workflow_dashboard_env_schema_boundary_v1.py",
+            ],
+            False,
+        ),
+    ],
+)
+def test_run_matrix_semantics_for_path_sets_v1(paths: list[str], expect_run_matrix: bool) -> None:
+    assert _run_matrix_for_paths(paths) is expect_run_matrix

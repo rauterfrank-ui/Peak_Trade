@@ -7,7 +7,7 @@
 
 **Canonical reference:** [GATES_OVERVIEW.md](GATES_OVERVIEW.md) ist SSoT für Gates. Dieses Doc beschreibt pragmatische Flow-Details.
 
-**Stand:** 2026-02-07 (historischer Pragmatic-Flow-Kontext). Aktuelle Required-Checks-Semantik ist JSON-SSOT (`config/ci/required_status_checks.json`).
+**Stand:** 2026-06-08 (webui_surface path gating v1). Aktuelle Required-Checks-Semantik ist JSON-SSOT (`config/ci/required_status_checks.json`).
 
 ## Relevante Workflows und Jobs
 
@@ -29,14 +29,20 @@
 
 | Output | Bedeutung |
 |--------|-----------|
-| `run_matrix` | true → volle Py-Matrix (tests 3.9/3.10/3.11, strategy-smoke) laufen |
+| `run_matrix` | true → volle Py-Matrix (tests 3.9/3.10/3.11, strategy-smoke Inhalt) laufen |
 | `run_fast` / `run_fast_lane` | immer true → Fast-Lane läuft immer |
 | `docs_only` | true → nur docs/grafana/out/md geändert |
 | `workflow_only` | true → nur .github/workflows geändert |
+| `webui_surface_changed` | true → Market/Observability/WebUI-Oberflächenpfade geändert |
+| `webui_surface_only` | true → nur webui_surface (+ docs/static-contract), kein non_webui_code |
 
-- **Code-Änderungen** (run_matrix): `src&#47;**`, `tests&#47;**`, `scripts&#47;**`, `config&#47;**`, `pyproject.toml`, `uv.lock`, `requirements*.txt`, `pytest.ini`, `Makefile`.
+- **non_webui_code** (run_matrix): `src&#47;**` außer `src&#47;webui&#47;**`, `templates&#47;**` außer `peak_trade_dashboard`, `tests&#47;**` außer `webui`/`fixtures`/env-boundary-ops, plus `scripts&#47;**`, `config&#47;**`, deps, `Makefile`.
+- **webui_surface** (bounded Fast-Lane): `src&#47;webui&#47;**`, `templates&#47;peak_trade_dashboard&#47;**`, `docs&#47;webui&#47;**`, `tests&#47;webui&#47;**`, `tests&#47;fixtures&#47;**`, `tests&#47;ops&#47;test_*_env_schema_boundary*.py`.
+- **Code-Änderungen** (`code_changed`, historisch): wie bisher breiter `code`-Bucket (inkl. webui); **nicht** identisch mit `run_matrix`.
 - **Docs/Grafana-only:** `docs&#47;**`, `**&#47;grafana&#47;dashboards&#47;**`, `out&#47;**`, `**&#47;*.md`.
 - **Workflow-only:** `.github&#47;workflows&#47;**`.
+
+**Hinweis:** Globale required checks werden **nicht** entfernt. `tests (3.11)` und `strategy-smoke` bleiben als Check-Namen materialisiert; bei `webui_surface_only` short-circuit skip-success.
 
 ## Beispiel-Pfade → welche Jobs
 
@@ -46,6 +52,7 @@
 | `docs&#47;foo.md` | false | wie oben | <!-- pt:ref-target-ignore -->
 | `.github&#47;workflows&#47;lint.yml` | false | wie oben (+ Lint Gate, Docs Gates in eigenen Workflows) |
 | `src&#47;foo.py` | true | changes, Fast-Lane, **tests (3.9/3.10/3.11)**, **strategy-smoke**, **PR Gate** | <!-- pt:ref-target-ignore -->
+| `src&#47;webui&#47;app.py`, `templates&#47;peak_trade_dashboard&#47;*.html`, `tests&#47;webui&#47;*.py` | false | changes, Fast-Lane (+ bounded WebUI pytest), tests/strategy-smoke **skip SUCCESS**, Lint/docs-token/audit | <!-- pt:ref-target-ignore -->
 | `tests&#47;test_x.py`, `scripts&#47;bar.py`, `pyproject.toml`, `uv.lock`, `requirements.txt` | true | wie oben | <!-- pt:ref-target-ignore -->
 
 ## workflow_dispatch: Matrix erzwingen
@@ -65,3 +72,10 @@
 **Case C (workflow-only):** e.g. only `.github&#47;workflows&#47;lint.yml` changed.  
 - Expected jobs: changes + Fast-Lane + PR Gate; tests/strategy-smoke **SKIP** (same as Case A).  
 - Lint Gate / workflow-related checks run in their own workflows. PR Gate: SUCCESS after Fast-Lane + skip pass.
+
+**Case D (webui_surface-only):** e.g. `src&#47;webui&#47;**`, `templates&#47;peak_trade_dashboard&#47;**`, `tests&#47;webui&#47;**` (PR #4044-shaped).  
+- Expected: `run_matrix=false`, `webui_surface_only=true`.  
+- Fast-Lane: stability smoke + static-contract (wenn applicable) + **bounded WebUI pytest** (8 Module, env gates unset).  
+- tests (3.9/3.10/3.11) + strategy-smoke: Check-Namen materialisiert, **skip SUCCESS** (~Sekunden).  
+- Externe Gates unverändert: Lint Gate, docs-token-policy-gate, audit, dispatch-guard, etc.  
+- Keine globalen required checks entfernt.
