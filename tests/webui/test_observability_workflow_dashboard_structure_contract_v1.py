@@ -140,6 +140,8 @@ def test_market_separation(client_off: TestClient) -> None:
 def test_persisted_readmodel_renders_futures_only_values(
     monkeypatch: pytest.MonkeyPatch, tmp_path: Path
 ) -> None:
+    import json
+
     from scripts.ops.primary_evidence_retention_v0 import write_manifest_sha256
 
     archive = tmp_path / "archive_with_universe"
@@ -147,7 +149,11 @@ def test_persisted_readmodel_renders_futures_only_values(
     readmodels_dir = archive / "readmodels"
     readmodels_dir.mkdir(parents=True, exist_ok=True)
     src = UNIVERSE_FIXTURES / "complete_minimal" / "universe_selection_readmodel.v1.json"
-    shutil.copy2(src, readmodels_dir / "universe_selection_readmodel.v1.json")
+    payload = json.loads(src.read_text(encoding="utf-8"))
+    payload["fixture_marked"] = False
+    payload["source_run_id"] = "test_persisted_complete_minimal_non_fixture_marked"
+    dest = readmodels_dir / "universe_selection_readmodel.v1.json"
+    dest.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     write_manifest_sha256(readmodels_dir)
 
     monkeypatch.setenv("PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ENABLED", "1")

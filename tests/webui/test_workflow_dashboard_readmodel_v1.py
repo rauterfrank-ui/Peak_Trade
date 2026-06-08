@@ -101,7 +101,11 @@ def test_archive_root_not_directory_raises() -> None:
         build_workflow_dashboard_readmodel_v1(FIXTURE_ARCHIVE / "nonexistent_dir_xyz")
 
 
-def _copy_pipeline_archive_with_readmodel(tmp_path: Path, fixture_dir: str) -> Path:
+def _copy_pipeline_archive_with_readmodel(
+    tmp_path: Path, fixture_dir: str, *, fixture_marked: bool | None = None
+) -> Path:
+    import json
+
     from scripts.ops.primary_evidence_retention_v0 import write_manifest_sha256
 
     archive = tmp_path / "archive_with_universe"
@@ -109,13 +113,23 @@ def _copy_pipeline_archive_with_readmodel(tmp_path: Path, fixture_dir: str) -> P
     readmodels_dir = archive / "readmodels"
     readmodels_dir.mkdir(parents=True, exist_ok=True)
     src = UNIVERSE_FIXTURES / fixture_dir / "universe_selection_readmodel.v1.json"
-    shutil.copy2(src, readmodels_dir / "universe_selection_readmodel.v1.json")
+    dest = readmodels_dir / "universe_selection_readmodel.v1.json"
+    if fixture_marked is None:
+        shutil.copy2(src, dest)
+    else:
+        payload = json.loads(src.read_text(encoding="utf-8"))
+        payload["fixture_marked"] = fixture_marked
+        if not fixture_marked:
+            payload["source_run_id"] = f"test_persisted_{fixture_dir}_non_fixture_marked"
+        dest.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
     write_manifest_sha256(readmodels_dir)
     return archive
 
 
 def test_valid_readmodel_populates_model_fields(tmp_path: Path) -> None:
-    archive = _copy_pipeline_archive_with_readmodel(tmp_path, "complete_minimal")
+    archive = _copy_pipeline_archive_with_readmodel(
+        tmp_path, "complete_minimal", fixture_marked=False
+    )
     m = build_workflow_dashboard_readmodel_v1(archive)
     assert m.universe_selection.loaded is True
     assert m.universe_missing.truth_status == "PERSISTED"

@@ -119,6 +119,20 @@ def _install_universe_fixture(archive_root: Path, fixture_dir: str) -> Path:
     return dest
 
 
+def _install_persisted_test_readmodel(archive_root: Path, fixture_dir: str) -> Path:
+    """Install readmodel with fixture_marked=false for persisted SSR/builder test paths only."""
+    readmodels_dir = archive_root / READMODELS_DIRNAME
+    readmodels_dir.mkdir(parents=True, exist_ok=True)
+    src = UNIVERSE_FIXTURES / fixture_dir / READMODEL_FILENAME
+    payload = json.loads(src.read_text(encoding="utf-8"))
+    payload["fixture_marked"] = False
+    payload["source_run_id"] = f"test_persisted_{fixture_dir}_non_fixture_marked"
+    dest = readmodels_dir / READMODEL_FILENAME
+    dest.write_text(json.dumps(payload, indent=2, sort_keys=True) + "\n", encoding="utf-8")
+    write_manifest_sha256(readmodels_dir)
+    return dest
+
+
 def test_tc1_gate_off_hook_skips_write_reader_builder_missing_truth(
     archive_root: Path,
 ) -> None:
@@ -252,7 +266,7 @@ def test_tc4_valid_futures_fixture_reader_builder_no_producer_write(
 ) -> None:
     archive = tmp_path / "archive_with_futures_fixture"
     shutil.copytree(FIXTURE_ARCHIVE, archive)
-    _install_universe_fixture(archive, "complete_minimal")
+    _install_persisted_test_readmodel(archive, "complete_minimal")
 
     readmodels_dir = archive / READMODELS_DIRNAME
     before = {p.name: p.stat().st_mtime_ns for p in readmodels_dir.iterdir()}

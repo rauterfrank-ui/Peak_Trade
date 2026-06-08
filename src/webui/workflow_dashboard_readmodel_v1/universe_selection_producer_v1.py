@@ -28,6 +28,10 @@ from .universe_selection_contract_v1 import (
 )
 
 ENV_PRODUCER_V1_ENABLED = "PEAK_TRADE_UNIVERSE_SELECTION_PRODUCER_V1_ENABLED"
+ENV_UPSTREAM_FIXTURE_PATH = "PEAK_TRADE_UNIVERSE_SELECTION_UPSTREAM_FIXTURE_PATH"
+
+REASON_UPSTREAM_FIXTURE_PATH_FORBIDDEN = "UPSTREAM_FIXTURE_PATH_FORBIDDEN"
+REASON_UPSTREAM_FIXTURE_PATH_INVALID = "UPSTREAM_FIXTURE_PATH_INVALID"
 
 PRODUCER_CONTRACT = "universe_selection_producer.v1"
 READMODELS_DIRNAME = "readmodels"
@@ -240,6 +244,89 @@ def _producer_v1_enabled() -> bool:
     return (os.environ.get(ENV_PRODUCER_V1_ENABLED) or "").strip() == "1"
 
 
+def _resolve_upstream_fixture_path_status() -> tuple[Path | None, str | None]:
+    raw = (os.environ.get(ENV_UPSTREAM_FIXTURE_PATH) or "").strip()
+    if not raw:
+        return None, None
+    path = Path(raw).expanduser()
+    try:
+        resolved = path.resolve(strict=True)
+    except OSError:
+        return None, f"{REASON_UPSTREAM_FIXTURE_PATH_INVALID}: fixture path not found"
+    if not resolved.is_file():
+        return None, f"{REASON_UPSTREAM_FIXTURE_PATH_INVALID}: fixture path not found"
+    fixtures_root = (_repo_root() / "tests" / "fixtures").resolve()
+    try:
+        resolved.relative_to(fixtures_root)
+    except ValueError:
+        return None, f"{REASON_UPSTREAM_FIXTURE_PATH_FORBIDDEN}: path must be under tests/fixtures"
+    return resolved, None
+
+
+def build_upstream_mapped_universe_selection_readmodel(
+    *,
+    fixture_path: str | Path,
+    run_bundle_path: str | None = None,
+    evidence_links: tuple[str, ...] | None = None,
+) -> dict[str, Any]:
+    """Build readmodel payload from U2a fixture → U1 adapter (dry-verification only)."""
+    from .futures_producer_packet_fixture_source_v1 import (
+        bundle_to_upstream_input,
+        load_futures_producer_packet_fixture,
+    )
+    from .futures_universe_upstream_adapter_v1 import (
+        map_futures_packets_to_universe_selection_readmodel,
+    )
+
+    path = Path(fixture_path).expanduser().resolve()
+    fixtures_root = (_repo_root() / "tests" / "fixtures").resolve()
+    try:
+        path.relative_to(fixtures_root)
+    except ValueError as exc:
+        msg = f"{REASON_UPSTREAM_FIXTURE_PATH_FORBIDDEN}: path must be under tests/fixtures"
+        raise ProducerWriteError(msg) from exc
+    if not path.is_file():
+        msg = f"{REASON_UPSTREAM_FIXTURE_PATH_INVALID}: fixture file not found"
+        raise ProducerWriteError(msg)
+
+    bundle = load_futures_producer_packet_fixture(path)
+    upstream = bundle_to_upstream_input(bundle)
+    adapter_result = map_futures_packets_to_universe_selection_readmodel(upstream)
+    payload = dict(adapter_result.payload)
+
+    links = _build_evidence_links(
+        run_bundle_path=run_bundle_path,
+        run_bundle_uri=None,
+        extra_links=evidence_links,
+    )
+    fixture_link = str(path)
+    if fixture_link not in links:
+        links.append(fixture_link)
+    evidence = dict(payload.get("evidence") or {})
+    evidence["links"] = links
+    payload["evidence"] = evidence
+
+    contract = validate_universe_selection_payload(payload)
+    return contract_to_json_dict(contract)
+
+
+def write_upstream_mapped_universe_selection_readmodel(
+    archive_root: str | Path,
+    *,
+    fixture_path: str | Path,
+    run_bundle_path: str | None = None,
+    evidence_links: tuple[str, ...] | None = None,
+    dry_run: bool = False,
+) -> ProducerWriteResult:
+    """Validate and persist U2a→U1 mapped readmodel (fixture_marked, non-authorizing)."""
+    payload = build_upstream_mapped_universe_selection_readmodel(
+        fixture_path=fixture_path,
+        run_bundle_path=run_bundle_path,
+        evidence_links=evidence_links,
+    )
+    return write_universe_selection_readmodel(archive_root, payload, dry_run=dry_run)
+
+
 def emit_universe_selection_closeout_machine_lines(result: CloseoutHookResult) -> None:
     """Emit deterministic machine lines for bounded adapter closeout hooks."""
     print(f"UNIVERSE_SELECTION_PRODUCER_V1_ENABLED={'true' if result.enabled else 'false'}")
@@ -292,13 +379,33 @@ def maybe_write_missing_truth_after_bounded_closeout(
             error=f"source_stage unsupported: {stage}",
         )
 
-    try:
-        write_result = write_missing_truth_universe_selection_readmodel(
-            root,
-            source_run_id=source_run_id,
-            source_stage=stage,
-            run_bundle_path=str(run_bundle_path),
+    fixture_path, fixture_path_error = _resolve_upstream_fixture_path_status()
+    if fixture_path_error is not None:
+        return CloseoutHookResult(
+            enabled=True,
+            skipped=False,
+            written=False,
+            reason="ERROR",
+            archive_root=str(root),
+            readmodel_path=None,
+            manifest_verify_rc=None,
+            error=fixture_path_error,
         )
+
+    try:
+        if fixture_path is not None:
+            write_result = write_upstream_mapped_universe_selection_readmodel(
+                root,
+                fixture_path=fixture_path,
+                run_bundle_path=str(run_bundle_path),
+            )
+        else:
+            write_result = write_missing_truth_universe_selection_readmodel(
+                root,
+                source_run_id=source_run_id,
+                source_stage=stage,
+                run_bundle_path=str(run_bundle_path),
+            )
     except (ProducerWriteError, UniverseSelectionContractError, OSError, ValueError) as exc:
         return CloseoutHookResult(
             enabled=True,
