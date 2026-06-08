@@ -159,6 +159,7 @@ Charter markers remain fail-closed. **U5b probe CLI** is an isolated manual oper
 - Explicit confirm token: `CONFIRM_VIEW_ONLY_PUBLIC_MARKET_DATA_PROBE_V1`
 - Public GET allowlist only: `/derivatives/api/v3/instruments`, `/derivatives/api/v3/tickers`
 - urllib-only, one-shot, no daemon, no auth, no readmodel write
+- **Response byte-cap policy (bounded, not unbounded):** CLI default `--max-response-bytes` stays conservative (`262144`). Hard cap `3145728`. Manual Kraken instruments probe requires operator to set an explicit limit **at or above** `2097152` (live instruments payload observed ~1.2 MiB; tickers ~163 KiB). Exceeding cap fails with `INSTRUMENTS_RESPONSE_EXCEEDS_MAX_RESPONSE_BYTES` including observed/required bytes — no retry loop, no host workaround.
 - CI/tests: mocked/offline only; live network requires manual operator CLI with confirm token
 - Sibling pattern: `capture_public_rest_binance_book_ticker_v0.py` (spot reference only)
 

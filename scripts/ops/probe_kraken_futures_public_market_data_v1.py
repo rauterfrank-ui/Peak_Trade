@@ -48,7 +48,9 @@ FORBIDDEN_PATH_SUBSTRINGS: Tuple[str, ...] = (
 FORBIDDEN_HOST_NETLOCS: frozenset[str] = frozenset({"api.kraken.com"})
 
 MAX_TIMEOUT_SECONDS = 15.0
-MAX_RESPONSE_BYTES_DEFAULT = 1_048_576
+MAX_RESPONSE_BYTES_HARD_CAP = 3_145_728
+MIN_RECOMMENDED_MAX_RESPONSE_BYTES_FOR_INSTRUMENTS = 2_097_152
+MAX_RESPONSE_BYTES_CLI_DEFAULT = 262_144
 
 _INELIGIBLE_SPOT_SYMBOL_EXACT: frozenset[str] = frozenset(
     {"BTC/USD", "BTC-USD", "ETH/USD", "BTC/EUR"}
@@ -62,7 +64,7 @@ _FUTURES_TYPE_MARKERS: Tuple[str, ...] = (
 )
 
 
-PublicGetFetcher = Callable[[str, float, int], Tuple[int, bytes]]
+PublicGetFetcher = Callable[..., Tuple[int, bytes]]
 
 
 def _die(msg: str, code: int = 2) -> None:
@@ -122,7 +124,27 @@ def validate_probe_url(url: str, *, rest_base_url: str = REST_BASE_URL) -> List[
     return reasons
 
 
-def _read_body_capped(resp: Any, max_response_bytes: int) -> bytes:
+def _byte_cap_error_message(*, url: str, observed_bytes: int, max_response_bytes: int) -> str:
+    path = parse.urlparse(url).path or ""
+    if path.endswith("/instruments"):
+        code = "INSTRUMENTS_RESPONSE_EXCEEDS_MAX_RESPONSE_BYTES"
+    elif path.endswith("/tickers"):
+        code = "TICKERS_RESPONSE_EXCEEDS_MAX_RESPONSE_BYTES"
+    else:
+        code = "RESPONSE_EXCEEDS_MAX_RESPONSE_BYTES"
+    msg = (
+        f"ERR: {code}: endpoint={path or 'unknown'} "
+        f"observed_bytes={observed_bytes} max_response_bytes={max_response_bytes}"
+    )
+    if path.endswith("/instruments"):
+        msg += (
+            f" minimum_recommended_max_response_bytes="
+            f"{MIN_RECOMMENDED_MAX_RESPONSE_BYTES_FOR_INSTRUMENTS}"
+        )
+    return msg
+
+
+def _read_body_capped(resp: Any, max_response_bytes: int, *, url: str = "") -> bytes:
     out = bytearray()
     while len(out) <= max_response_bytes:
         chunk = resp.read(min(65536, max(0, max_response_bytes - len(out) + 1)))
@@ -130,7 +152,13 @@ def _read_body_capped(resp: Any, max_response_bytes: int) -> bytes:
             break
         out.extend(chunk)
         if len(out) > max_response_bytes:
-            raise ValueError("ERR: HTTP response body exceeds max_response_bytes")
+            raise ValueError(
+                _byte_cap_error_message(
+                    url=url,
+                    observed_bytes=len(out),
+                    max_response_bytes=max_response_bytes,
+                )
+            )
     return bytes(out)
 
 
@@ -148,9 +176,9 @@ def kraken_futures_public_fetch_v1(
     try:
         with request.urlopen(req, timeout=bounded_timeout) as resp:
             code = int(getattr(resp, "status", resp.getcode()))
-            return code, _read_body_capped(resp, max_response_bytes)
+            return code, _read_body_capped(resp, max_response_bytes, url=url)
     except error.HTTPError as exc:
-        return int(exc.code), _read_body_capped(exc, max_response_bytes)
+        return int(exc.code), _read_body_capped(exc, max_response_bytes, url=url)
     except (error.URLError, TimeoutError, OSError, ValueError) as exc:
         raise ValueError(f"fetch failed: {exc}") from exc
 
@@ -282,8 +310,8 @@ def run_probe(
         _die("ERR: confirm token required for network probe")
     if timeout_seconds <= 0 or timeout_seconds > MAX_TIMEOUT_SECONDS:
         _die(f"ERR: timeout_seconds must be in (0, {MAX_TIMEOUT_SECONDS}]")
-    if max_response_bytes <= 0 or max_response_bytes > MAX_RESPONSE_BYTES_DEFAULT:
-        _die("ERR: max_response_bytes out of allowed bounds")
+    if max_response_bytes <= 0 or max_response_bytes > MAX_RESPONSE_BYTES_HARD_CAP:
+        _die(f"ERR: max_response_bytes out of allowed bounds (1..{MAX_RESPONSE_BYTES_HARD_CAP}]")
 
     at = fetched_at or _utc_now_z()
     endpoint_results: Dict[str, Mapping[str, Any]] = {}
@@ -295,7 +323,14 @@ def run_probe(
         block = validate_probe_url(url)
         if block:
             _die(f"ERR: {block[0]}")
-        status, raw = fetcher(url, timeout_seconds, max_response_bytes)
+        try:
+            status, raw = fetcher(
+                url,
+                timeout_seconds=timeout_seconds,
+                max_response_bytes=max_response_bytes,
+            )
+        except ValueError as exc:
+            _die(str(exc))
         if status < 200 or status >= 300:
             _die(f"ERR: HTTP {status} from {ep}")
         try:
@@ -367,7 +402,16 @@ def main(argv: Optional[List[str]] = None) -> int:
         help=f"Must be {CONFIRM_TOKEN!r}.",
     )
     parser.add_argument("--timeout-seconds", type=float, default=10.0)
-    parser.add_argument("--max-response-bytes", type=int, default=262144)
+    parser.add_argument(
+        "--max-response-bytes",
+        type=int,
+        default=MAX_RESPONSE_BYTES_CLI_DEFAULT,
+        help=(
+            f"Hard-capped response body limit (max {MAX_RESPONSE_BYTES_HARD_CAP}). "
+            f"Manual Kraken instruments probe requires at least "
+            f"{MIN_RECOMMENDED_MAX_RESPONSE_BYTES_FOR_INSTRUMENTS}."
+        ),
+    )
     parser.add_argument(
         "--output-dir",
         type=Path,

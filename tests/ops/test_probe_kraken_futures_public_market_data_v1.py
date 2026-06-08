@@ -77,7 +77,7 @@ def _tickers_body(**overrides: Any) -> Dict[str, Any]:
     return base
 
 
-def _mock_fetcher_ok() -> Callable[[str, float, int], Tuple[int, bytes]]:
+def _mock_fetcher_ok() -> Callable[..., Tuple[int, bytes]]:
     responses: Dict[str, Tuple[int, bytes]] = {
         "/derivatives/api/v3/instruments": (
             200,
@@ -89,13 +89,56 @@ def _mock_fetcher_ok() -> Callable[[str, float, int], Tuple[int, bytes]]:
         ),
     }
 
-    def _fetch(url: str, timeout_seconds: float, max_response_bytes: int) -> Tuple[int, bytes]:
+    def _fetch(
+        url: str,
+        *,
+        timeout_seconds: float,
+        max_response_bytes: int,
+    ) -> Tuple[int, bytes]:
         for ep, payload in responses.items():
             if url.endswith(ep.split("/derivatives/api/v3", 1)[-1]):
                 raw = payload[1]
                 if len(raw) > max_response_bytes:
-                    raise ValueError("ERR: HTTP response body exceeds max_response_bytes")
+                    raise ValueError(
+                        f"ERR: RESPONSE_EXCEEDS_MAX_RESPONSE_BYTES: "
+                        f"observed_bytes={len(raw)} max_response_bytes={max_response_bytes}"
+                    )
                 return payload
+        raise ValueError(f"unexpected url: {url}")
+
+    return _fetch
+
+
+def _mock_fetcher_large_instruments(
+    instruments_byte_size: int,
+) -> Callable[..., Tuple[int, bytes]]:
+    pad = "x" * max(0, instruments_byte_size - 200)
+    instruments_body = _instruments_body(
+        instruments=[
+            {"symbol": "PF_XBTUSD", "type": "flexible_futures", "tradeable": True, "pad": pad},
+            {"symbol": "PF_ETHUSD", "type": "flexible_futures", "tradeable": True},
+        ]
+    )
+    inst_raw = json.dumps(instruments_body).encode("utf-8")
+
+    def _fetch(
+        url: str,
+        *,
+        timeout_seconds: float,
+        max_response_bytes: int,
+    ) -> Tuple[int, bytes]:
+        if url.endswith("/instruments"):
+            if len(inst_raw) > max_response_bytes:
+                raise ValueError(
+                    "ERR: INSTRUMENTS_RESPONSE_EXCEEDS_MAX_RESPONSE_BYTES: "
+                    f"observed_bytes={len(inst_raw)} max_response_bytes={max_response_bytes}"
+                )
+            return 200, inst_raw
+        if url.endswith("/tickers"):
+            tick_raw = json.dumps(_tickers_body()).encode("utf-8")
+            if len(tick_raw) > max_response_bytes:
+                raise ValueError("tickers exceed cap")
+            return 200, tick_raw
         raise ValueError(f"unexpected url: {url}")
 
     return _fetch
@@ -179,8 +222,24 @@ def test_run_probe_mocked_success(mod: Any, capsys: pytest.CaptureFixture[str]) 
     assert "NOT_LIVE_AUTHORIZATION=true" in out
 
 
+def test_run_probe_default_fetcher_keyword_args_regression(mod: Any) -> None:
+    report = mod.run_probe(
+        confirm=_CONFIRM,
+        timeout_seconds=5.0,
+        max_response_bytes=65536,
+        fetched_at="2026-06-08T20:00:00Z",
+        fetcher=_mock_fetcher_ok(),
+    )
+    assert report["instruments_count"] == 3
+
+
 def test_run_probe_rejects_http_error(mod: Any) -> None:
-    def _fetch_fail(url: str, timeout_seconds: float, max_response_bytes: int) -> Tuple[int, bytes]:
+    def _fetch_fail(
+        url: str,
+        *,
+        timeout_seconds: float,
+        max_response_bytes: int,
+    ) -> Tuple[int, bytes]:
         return 503, b"{}"
 
     with pytest.raises(SystemExit):
@@ -199,6 +258,64 @@ def test_kraken_fetch_blocks_forbidden_host(mod: Any) -> None:
             "https://api.kraken.com/derivatives/api/v3/instruments",
             timeout_seconds=3.0,
             max_response_bytes=8192,
+        )
+
+
+def test_kraken_fetch_requires_keyword_only_args(mod: Any) -> None:
+    with pytest.raises(TypeError):
+        mod.kraken_futures_public_fetch_v1(
+            "https://futures.kraken.com/derivatives/api/v3/instruments",
+            3.0,
+            8192,
+        )
+
+
+def test_byte_cap_exceeded_instruments_error(mod: Any) -> None:
+    fetcher = _mock_fetcher_large_instruments(instruments_byte_size=400_000)
+
+    with pytest.raises(SystemExit):
+        mod.run_probe(
+            confirm=_CONFIRM,
+            timeout_seconds=5.0,
+            max_response_bytes=262_144,
+            fetched_at="2026-06-08T20:00:00Z",
+            fetcher=fetcher,
+        )
+
+
+def test_manual_larger_byte_cap_accepted(mod: Any) -> None:
+    fetcher = _mock_fetcher_large_instruments(instruments_byte_size=400_000)
+    report = mod.run_probe(
+        confirm=_CONFIRM,
+        timeout_seconds=5.0,
+        max_response_bytes=2_097_152,
+        fetched_at="2026-06-08T20:00:00Z",
+        fetcher=fetcher,
+    )
+    assert report["instruments_count"] >= 1
+
+
+def test_max_response_bytes_hard_cap_rejected(mod: Any) -> None:
+    with pytest.raises(SystemExit):
+        mod.run_probe(
+            confirm=_CONFIRM,
+            timeout_seconds=5.0,
+            max_response_bytes=mod.MAX_RESPONSE_BYTES_HARD_CAP + 1,
+            fetched_at="2026-06-08T20:00:00Z",
+            fetcher=_mock_fetcher_ok(),
+        )
+
+
+def test_read_body_capped_instruments_error_message(mod: Any) -> None:
+    class _Resp:
+        def read(self, n: int) -> bytes:
+            return b"x" * n
+
+    with pytest.raises(ValueError, match="INSTRUMENTS_RESPONSE_EXCEEDS_MAX_RESPONSE_BYTES"):
+        mod._read_body_capped(
+            _Resp(),
+            100,
+            url="https://futures.kraken.com/derivatives/api/v3/instruments",
         )
 
 
