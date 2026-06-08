@@ -113,12 +113,66 @@
       data-market-v0-paper-run-truth-separation-v0="true"
     >
       <strong class="text-violet-200/95">Market Surface ≠ Paper Run Truth.</strong>
-      Default symbol (e.g. BTC/USD) and dummy OHLCV are not the last Paper Run instrument.
-      View-only last run:
+      Default symbol (e.g. BTC/USD) and dummy OHLCV are chart fixtures only — not Futures truth or Paper runtime authority.
+      {% if not active_paper_run.section_visible %}
+      View-only last run archive:
       <a href="/observability" class="text-sky-300/90 underline underline-offset-2 font-mono">GET /observability</a>
       (env-gated Last Paper Run panel).
+      {% endif %}
     </p>
   </section>
+
+  {% if active_paper_run.section_visible %}
+  <section
+    role="region"
+    aria-labelledby="market-v0-landmark-active-paper-run-h2"
+    class="rounded-xl border border-emerald-900/45 bg-gradient-to-br from-emerald-950/35 via-slate-950/40 to-slate-950/20 px-3 py-3 sm:px-4 text-xs text-emerald-100/95 shadow-md shadow-black/20"
+    data-market-v0-active-paper-run="true"
+    data-market-v0-active-paper-run-readonly="true"
+    data-market-v0-active-paper-run-authority="false"
+    data-market-v0-active-paper-run-non-authorizing="true"
+    data-market-v0-active-paper-run-evidence-only="true"
+    data-market-v0-active-paper-run-not-live="true"
+    data-market-v0-active-paper-run-enabled="{{ 'true' if active_paper_run.gate_enabled else 'false' }}"
+    data-market-v0-active-paper-run-active="{{ 'true' if active_paper_run.is_active else 'false' }}"
+  >
+    <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+      <h2 id="market-v0-landmark-active-paper-run-h2" class="font-semibold text-emerald-200/95 tracking-wide uppercase text-[11px] m-0">
+        Active Paper Run — View Only — Non Authorizing
+      </h2>
+      <div class="flex flex-wrap gap-1.5">
+        <span class="inline-flex items-center rounded-md border border-emerald-800/50 bg-emerald-950/45 px-2 py-0.5 text-[10px] font-semibold text-emerald-100/90">NOT LIVE</span>
+        <span class="inline-flex items-center rounded-md border border-slate-700/70 bg-slate-950/55 px-2 py-0.5 text-[10px] font-semibold text-slate-200/90">NOT PREFLIGHT LIFT</span>
+        <span class="inline-flex items-center rounded-md border border-slate-700/70 bg-slate-950/55 px-2 py-0.5 text-[10px] font-semibold text-slate-200/90">EVIDENCE ONLY</span>
+      </div>
+    </div>
+    <p class="text-[11px] text-emerald-100/90 m-0 mb-2 leading-snug">{{ active_paper_run.summary_line|e }}</p>
+    <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 text-[11px] m-0">
+      <div><dt class="inline text-slate-400">run_id</dt> <dd class="inline font-mono text-slate-100">{{ active_paper_run.run_id|e }}</dd></div>
+      <div><dt class="inline text-slate-400">mode</dt> <dd class="inline text-slate-100">{{ active_paper_run.mode|e }}</dd></div>
+      <div><dt class="inline text-slate-400">is_active</dt> <dd class="inline text-slate-100">{{ active_paper_run.is_active }}</dd></div>
+      <div><dt class="inline text-slate-400">elapsed_s</dt> <dd class="inline text-slate-100">{{ active_paper_run.elapsed_seconds if active_paper_run.elapsed_seconds is not none else "—" }}</dd></div>
+      <div><dt class="inline text-slate-400">heartbeat_iter</dt> <dd class="inline text-slate-100">{{ active_paper_run.heartbeat_iteration if active_paper_run.heartbeat_iteration is not none else "—" }}</dd></div>
+      <div><dt class="inline text-slate-400">heartbeat_ts</dt> <dd class="inline font-mono text-slate-100">{{ active_paper_run.heartbeat_ts_utc|e or "—" }}</dd></div>
+      <div><dt class="inline text-slate-400">last_event</dt> <dd class="inline font-mono text-slate-100">{{ active_paper_run.last_event_time|e or "—" }}</dd></div>
+      <div><dt class="inline text-slate-400">reason</dt> <dd class="inline text-slate-100">{{ active_paper_run.heartbeat_reason|e or "—" }}</dd></div>
+      <div><dt class="inline text-slate-400">equity/cash</dt> <dd class="inline text-slate-100">{{ active_paper_run.equity if active_paper_run.equity is not none else "—" }}</dd></div>
+      <div><dt class="inline text-slate-400">orders</dt> <dd class="inline text-slate-100">{{ active_paper_run.orders_executed }}</dd></div>
+      <div><dt class="inline text-slate-400">fills</dt> <dd class="inline text-slate-100">{{ active_paper_run.fills_count if active_paper_run.fills_count is not none else "—" }}</dd></div>
+      <div><dt class="inline text-slate-400">no_trade</dt> <dd class="inline text-slate-100">{{ active_paper_run.no_trade }}</dd></div>
+      <div><dt class="inline text-slate-400">paper_symbol</dt> <dd class="inline font-mono text-slate-100">{{ active_paper_run.symbol_display|e or "—" }} <span class="text-slate-500">(display metadata, not Futures truth)</span></dd></div>
+      <div><dt class="inline text-slate-400">evidence_root</dt> <dd class="inline font-mono text-slate-100">{{ active_paper_run.evidence_root_label|e or "—" }}</dd></div>
+      <div><dt class="inline text-slate-400">LIVE_AUTHORIZED</dt> <dd class="inline text-slate-100">{{ active_paper_run.live_authorized }}</dd></div>
+      <div><dt class="inline text-slate-400">PREFLIGHT_LIFT</dt> <dd class="inline text-slate-100">{{ active_paper_run.preflight_lift_authorized }}</dd></div>
+    </dl>
+    {% if active_paper_run.detail_url %}
+    <p class="mt-2 mb-0 text-[11px]">
+      Detail (Run UI companion):
+      <a href="{{ active_paper_run.detail_url|e }}" class="text-sky-300/90 underline underline-offset-2 font-mono break-all">{{ active_paper_run.detail_url|e }}</a>
+    </p>
+    {% endif %}
+  </section>
+  {% endif %}
 
   {% if run_projection.section_visible %}
   <section

@@ -26,6 +26,7 @@ from fastapi import APIRouter, HTTPException, Query, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
+from .market_active_paper_run_runtime_v0 import build_market_active_paper_run_display_context
 from .market_depth_runtime_v0 import market_depth_json_payload_v0
 from .market_ranking_funnel_runtime_v0 import build_market_ranking_funnel_display_context
 
@@ -564,6 +565,7 @@ def create_market_router(
         market_depth = build_market_depth_display_context()
         run_projection = build_market_run_projection_display_context()
         ranking_funnel = build_market_ranking_funnel_display_context()
+        active_paper_run = build_market_active_paper_run_display_context()
         return templates.TemplateResponse(
             request,
             "market_v0.html",
@@ -573,6 +575,7 @@ def create_market_router(
                 "market_depth": market_depth,
                 "run_projection": run_projection,
                 "ranking_funnel": ranking_funnel,
+                "active_paper_run": active_paper_run,
                 "query": {
                     "symbol": symbol,
                     "timeframe": timeframe,
