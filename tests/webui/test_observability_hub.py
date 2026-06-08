@@ -24,6 +24,16 @@ def client() -> TestClient:
     return TestClient(create_app())
 
 
+def test_observability_hub_last_paper_run_panel_absent_by_default(client: TestClient) -> None:
+    body = client.get("/observability").text
+    assert 'data-observability-last-paper-run-panel-v0="true"' not in body
+
+
+def test_observability_hub_workflow_dashboard_absent_by_default(client: TestClient) -> None:
+    body = client.get("/observability").text
+    assert 'data-workflow-dashboard-v1="true"' not in body
+
+
 def test_observability_hub_ok_markers(client: TestClient) -> None:
     r = client.get("/observability")
     assert r.status_code == 200

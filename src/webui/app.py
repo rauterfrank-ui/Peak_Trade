@@ -587,11 +587,20 @@ def create_app() -> FastAPI:
 
         No POST, no provider/exchange orchestration by this endpoint; navigation layer only.
         """
+        from .last_paper_run_panel_runtime_v0 import build_last_paper_run_panel_display_context
+        from .workflow_dashboard_runtime_v1 import build_workflow_dashboard_display_context
+
         proj_status = get_project_status()
+        last_paper_run_panel = build_last_paper_run_panel_display_context()
+        workflow_dashboard = build_workflow_dashboard_display_context()
         return templates.TemplateResponse(
             request,
             "observability_hub.html",
-            {"status": proj_status},
+            {
+                "status": proj_status,
+                "last_paper_run_panel": last_paper_run_panel,
+                "workflow_dashboard": workflow_dashboard,
+            },
         )
 
     @app.get("/market/double-play", response_class=HTMLResponse)
