@@ -34,6 +34,7 @@ LOAD_ERROR_MANIFEST_NOT_FOUND = "MANIFEST_NOT_FOUND"
 LOAD_ERROR_MANIFEST_VERIFY_FAILED = "MANIFEST_VERIFY_FAILED"
 LOAD_ERROR_INVALID_JSON = "INVALID_JSON"
 LOAD_ERROR_CONTRACT_INVALID = "CONTRACT_INVALID"
+LOAD_ERROR_FIXTURE_MARKED_NOT_OBSERVABILITY_TRUTH = "FIXTURE_MARKED_NOT_OBSERVABILITY_TRUTH"
 
 
 def _repo_root() -> Path:
@@ -168,6 +169,9 @@ def try_load_universe_selection_for_dashboard(
         contract = validate_universe_selection_payload(payload)
     except UniverseSelectionContractError:
         return _empty_slice(load_errors=(LOAD_ERROR_CONTRACT_INVALID,))
+
+    if contract.fixture_marked:
+        return _empty_slice(load_errors=(LOAD_ERROR_FIXTURE_MARKED_NOT_OBSERVABILITY_TRUTH,))
 
     _ = STORAGE_RELATIVE_PATH
     return _contract_to_slice(contract)

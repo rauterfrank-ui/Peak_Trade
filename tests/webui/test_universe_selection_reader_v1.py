@@ -19,6 +19,7 @@ from scripts.ops.primary_evidence_retention_v0 import (
 )
 from src.webui.workflow_dashboard_readmodel_v1.universe_selection_reader_v1 import (
     LOAD_ERROR_CONTRACT_INVALID,
+    LOAD_ERROR_FIXTURE_MARKED_NOT_OBSERVABILITY_TRUTH,
     LOAD_ERROR_INVALID_JSON,
     LOAD_ERROR_MANIFEST_NOT_FOUND,
     LOAD_ERROR_MANIFEST_VERIFY_FAILED,
@@ -99,15 +100,13 @@ def test_invalid_btc_selected_fallback(archive_root: Path) -> None:
     assert "BTC/USD" not in str(result)
 
 
-def test_valid_complete_minimal_loaded(archive_root: Path) -> None:
+def test_valid_complete_minimal_fixture_marked_not_ssr_truth(archive_root: Path) -> None:
     _install_fixture(archive_root, "complete_minimal")
     result = try_load_universe_selection_for_dashboard(archive_root)
-    assert result.loaded is True
-    assert result.load_errors == ()
-    assert len(result.universe) == 3
-    assert result.selected_future is not None
-    assert result.selected_future.symbol == "SOLUSDT"
-    assert "ETHUSDT" in {row.symbol for row in result.universe}
+    assert result.loaded is False
+    assert result.load_errors == (LOAD_ERROR_FIXTURE_MARKED_NOT_OBSERVABILITY_TRUTH,)
+    assert result.universe == ()
+    assert result.selected_future is None
     ok, _ = verify_manifest_sha256(archive_root / "readmodels")
     assert ok
 
