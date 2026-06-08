@@ -103,3 +103,18 @@ def test_governed_metadata_snapshot_template_doc_exists_and_markers() -> None:
 def test_real_source_charter_links_governed_snapshot_template() -> None:
     doc = REAL_SOURCE_CHARTER_DOC.read_text(encoding="utf-8")
     assert "FUTURES_UNIVERSE_GOVERNED_METADATA_SNAPSHOT_TEMPLATE_V1.md" in doc
+
+
+MARKET_DATA_SOURCE_DOC = (
+    PROJECT_ROOT
+    / "docs"
+    / "webui"
+    / "observability"
+    / "REAL_FUTURES_MARKET_DATA_SOURCE_CONTRACT_V1.md"
+)
+
+
+def test_real_futures_market_data_source_contract_linked_from_charter() -> None:
+    doc = REAL_SOURCE_CHARTER_DOC.read_text(encoding="utf-8")
+    assert "REAL_FUTURES_MARKET_DATA_SOURCE_CONTRACT_V1.md" in doc
+    assert MARKET_DATA_SOURCE_DOC.is_file()

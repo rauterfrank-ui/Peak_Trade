@@ -197,6 +197,7 @@ U2B_BLOCKED=true
 | **U4b** | This charter record (docs-only) | this document |
 | U2b | Real-source loader guard | on main |
 | **U2c Template** | Governed metadata snapshot template (docs-only) | [FUTURES_UNIVERSE_GOVERNED_METADATA_SNAPSHOT_TEMPLATE_V1.md](FUTURES_UNIVERSE_GOVERNED_METADATA_SNAPSHOT_TEMPLATE_V1.md) |
+| **U5** | Real futures market-data source charter (docs-only) | [REAL_FUTURES_MARKET_DATA_SOURCE_CONTRACT_V1.md](REAL_FUTURES_MARKET_DATA_SOURCE_CONTRACT_V1.md) |
 
 ## 11. Tests
 
