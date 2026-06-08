@@ -278,8 +278,8 @@ def test_run_matrix_derived_from_non_webui_code_not_raw_code_bucket() -> None:
     text = _ci_text()
     assert 'NON_WEBUI="${{ steps.filter.outputs.non_webui_code }}"' in text
     assert 'echo "run_matrix=${CODE}"' not in text
-    assert "elif [ \"$NON_WEBUI\" = \"true\" ]; then" in text
-    assert "echo \"run_matrix=false\"" in text
+    assert 'elif [ "$NON_WEBUI" = "true" ]; then' in text
+    assert 'echo "run_matrix=false"' in text
 
 
 def test_matrix_jobs_keep_no_job_level_if_and_short_circuit_skip() -> None:
