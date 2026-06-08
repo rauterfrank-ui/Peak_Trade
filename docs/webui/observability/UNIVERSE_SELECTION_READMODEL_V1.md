@@ -180,9 +180,9 @@ No BTC/USD dummy truth, no synthetic ranking, no dashboard faking.
 
 ### Persistence mechanics
 
-1. Target: `{ARCHIVE_ROOT}/readmodels/universe_selection_readmodel.v1.json`
-2. Atomic write: temp file in `readmodels/`, then `os.replace`
-3. Manifest: reuse `scripts/ops/primary_evidence_retention_v0.py` (`write_manifest_sha256`, `verify_manifest_sha256`) on `readmodels/` subtree
+1. Target: `{ARCHIVE_ROOT}&#47;readmodels&#47;universe_selection_readmodel.v1.json`
+2. Atomic write: temp file in `readmodels&#47;`, then `os.replace`
+3. Manifest: reuse `scripts/ops/primary_evidence_retention_v0.py` (`write_manifest_sha256`, `verify_manifest_sha256`) on `readmodels&#47;` subtree
 4. Fail closed: invalid payload or manifest verify failure → no partial final file
 
 ### Adapter hooks (deferred)
