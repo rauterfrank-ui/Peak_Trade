@@ -47,7 +47,7 @@ MANIFEST_VERIFY_RC=0
 - Provider probe implementation, network calls, daemon/polling, dashboard host restart.
 - Real-source loader write path (U2b), Truth-GO, observability truth promotion.
 - Exchange private API, credentials, order endpoints, testnet execute.
-- Changes to `src/execution/**`, `src/risk/**`, `src/governance/**`, scheduler, adapters, workflow YAML, or active run evidence.
+- Changes to `src&#47;execution&#47;**`, `src&#47;risk&#47;**`, `src&#47;governance&#47;**`, scheduler, adapters, workflow YAML, or active run evidence.
 
 ## 4. Reuse chain (no new parallel surfaces)
 
@@ -138,7 +138,7 @@ Missing fields must remain **missing** — no silent defaults, no BTC/USD substi
 |------|----------|
 | Spot Kraken host (`api.kraken.com`) | Rejected — `FORBIDDEN_PROVIDER_HOST` |
 | Order/private endpoints in probe | Rejected — `FORBIDDEN_ENDPOINT_PATH` |
-| `BTC/USD`, slash spot symbols as futures truth | Rejected — `INELIGIBLE_SPOT_SYMBOL` |
+| `BTC&#47;USD`, slash spot symbols as futures truth | Rejected — `INELIGIBLE_SPOT_SYMBOL` |
 | `market_ranking_funnel_readmodel.v0` upstream | `REASON_MARKET_SURFACE_NOT_OBSERVABILITY_TRUTH` |
 | Auto-run CLI without confirm token | Exit non-zero — no capture |
 | Network in docs-only charter tests | Forbidden — static/mocked only |
