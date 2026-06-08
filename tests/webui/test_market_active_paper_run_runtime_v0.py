@@ -85,9 +85,7 @@ def bridge_root(tmp_path: Path) -> Path:
 
 
 @pytest.fixture()
-def client_bridge_on(
-    monkeypatch: pytest.MonkeyPatch, bridge_root: Path
-) -> Iterator[TestClient]:
+def client_bridge_on(monkeypatch: pytest.MonkeyPatch, bridge_root: Path) -> Iterator[TestClient]:
     monkeypatch.setenv("PEAK_TRADE_MARKET_DEPTH_ENABLED", "0")
     monkeypatch.setenv("PEAK_TRADE_MARKET_ACTIVE_PAPER_RUN_ENABLED", "1")
     monkeypatch.setenv("PEAK_TRADE_MARKET_ACTIVE_PAPER_RUN_BRIDGE_ROOT", str(bridge_root))
