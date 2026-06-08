@@ -37,6 +37,7 @@ PRODUCER_CONTRACT = "universe_selection_producer.v1"
 READMODELS_DIRNAME = "readmodels"
 READMODEL_FILENAME = "universe_selection_readmodel.v1.json"
 MANIFEST_FILENAME = "MANIFEST.sha256"
+MANIFEST_VERIFY_LOG_FILENAME = "MANIFEST_VERIFY.log"
 
 
 class ProducerWriteError(ValueError):
@@ -73,17 +74,36 @@ def _repo_root() -> Path:
     return Path(__file__).resolve().parents[3]
 
 
-def _import_manifest_helpers() -> tuple[Any, Any, Any]:
+def _import_manifest_helpers() -> tuple[Any, Any, Any, Any]:
     repo_root = _repo_root()
     if str(repo_root) not in sys.path:
         sys.path.insert(0, str(repo_root))
     from scripts.ops.primary_evidence_retention_v0 import (
+        parse_manifest_verify_log_rc,
         require_durable_archive_root,
         verify_manifest_sha256,
         write_manifest_sha256,
     )
 
-    return require_durable_archive_root, write_manifest_sha256, verify_manifest_sha256
+    return (
+        require_durable_archive_root,
+        write_manifest_sha256,
+        verify_manifest_sha256,
+        parse_manifest_verify_log_rc,
+    )
+
+
+def _write_manifest_verify_log(readmodels_dir: Path, *, verify_ok: bool, verify_msg: str) -> None:
+    """Persist MANIFEST_VERIFY.log under readmodels/ (Slice 4 evidence path)."""
+    rc = 0 if verify_ok else 1
+    status = "OK" if verify_ok else "FAILED"
+    body = (
+        f"verify_ok={str(verify_ok).lower()}\n"
+        f"message={verify_msg}\n"
+        f"MANIFEST_VERIFY_RC={rc}\n"
+        f"STATUS={status}\n"
+    )
+    (readmodels_dir / MANIFEST_VERIFY_LOG_FILENAME).write_text(body, encoding="utf-8")
 
 
 def _now_iso() -> str:
@@ -176,9 +196,12 @@ def write_universe_selection_readmodel(
     dry_run: bool = False,
 ) -> ProducerWriteResult:
     """Validate and atomically persist universe_selection_readmodel.v1 under archive readmodels/."""
-    require_durable_archive_root, write_manifest_sha256, verify_manifest_sha256 = (
-        _import_manifest_helpers()
-    )
+    (
+        require_durable_archive_root,
+        write_manifest_sha256,
+        verify_manifest_sha256,
+        parse_manifest_verify_log_rc,
+    ) = _import_manifest_helpers()
 
     root = Path(archive_root).expanduser().resolve()
     ok, msg = require_durable_archive_root(root)
@@ -228,14 +251,22 @@ def write_universe_selection_readmodel(
 
     write_manifest_sha256(readmodels_dir)
     verify_ok, verify_msg = verify_manifest_sha256(readmodels_dir)
+    _write_manifest_verify_log(readmodels_dir, verify_ok=verify_ok, verify_msg=verify_msg)
+    write_manifest_sha256(readmodels_dir)
+    final_ok, final_msg = verify_manifest_sha256(readmodels_dir)
+    parsed_rc, _, _ = parse_manifest_verify_log_rc(readmodels_dir)
+    manifest_verify_rc = (
+        parsed_rc if parsed_rc is not None else (0 if final_ok and verify_ok else 1)
+    )
+    manifest_verify_ok = verify_ok and final_ok and manifest_verify_rc == 0
     return ProducerWriteResult(
         archive_root=str(root),
         readmodels_dir=str(readmodels_dir),
         readmodel_path=str(final_path),
         manifest_path=str(manifest_path),
-        manifest_verify_ok=verify_ok,
-        manifest_verify_message=verify_msg,
-        manifest_verify_rc=0 if verify_ok else 1,
+        manifest_verify_ok=manifest_verify_ok,
+        manifest_verify_message=final_msg if not final_ok else verify_msg,
+        manifest_verify_rc=manifest_verify_rc,
         dry_run=False,
     )
 
