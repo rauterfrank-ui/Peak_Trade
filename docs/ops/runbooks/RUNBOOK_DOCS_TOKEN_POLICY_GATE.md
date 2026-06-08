@@ -42,10 +42,10 @@ python3 scripts/ops/validate_docs_token_policy.py --base origin/main
 
 | Raw (violation) | Encoded (compliant) |
 |-----------------|---------------------|
-| `GET /observability` | `GET &#47;observability` |
-| `GET /market` | `GET &#47;market` |
-| `{ARCHIVE_ROOT}/readmodels/foo.json` | `{ARCHIVE_ROOT}&#47;readmodels&#47;foo.json` |
-| `BTC/USD` | `BTC&#47;USD` |
+| GET /observability | `GET &#47;observability` |
+| GET /market | `GET &#47;market` |
+| {ARCHIVE_ROOT}/readmodels/foo.json | `{ARCHIVE_ROOT}&#47;readmodels&#47;foo.json` |
+| BTC/USD | `BTC&#47;USD` |
 
 Autofix v2 (`scripts/ops/autofix_docs_token_policy_inline_code_v2.py`) is **optional and conservative** — not run by the preflight wrapper.
 

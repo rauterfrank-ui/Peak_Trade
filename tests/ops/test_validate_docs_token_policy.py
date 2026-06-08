@@ -521,7 +521,9 @@ class TestPreflightWrapper:
         content = preflight_script.read_text(encoding="utf-8")
         assert "validate_docs_token_policy.py" in content
         assert '--base "${BASE_REF}"' in content
-        assert "autofix_docs_token_policy_inline_code_v2.py" not in content.split("run_validator")[0]
+        assert (
+            "autofix_docs_token_policy_inline_code_v2.py" not in content.split("run_validator")[0]
+        )
 
     def test_preflight_passes_on_clean_main(self, preflight_script: Path) -> None:
         repo_root = preflight_script.parents[2]
