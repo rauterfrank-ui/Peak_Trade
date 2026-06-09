@@ -101,6 +101,39 @@ jobs:
 
             core.info(`CREATED: PR #${pr.data.number} ${pr.data.html_url}`);
 
+      - name: Checkout for contract-only classification
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Classify contract-only fast-lane candidate
+        id: classify
+        run: |
+          set -euo pipefail
+          git fetch origin main --depth=1
+          CHANGED="$(git diff --name-only origin/main...HEAD 2>/dev/null || true)"
+          if [ -z "$CHANGED" ]; then
+            echo "contract_only=false"
+            echo "contract_only=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          CONTRACT_ONLY=true
+          while IFS= read -r f; do
+            [ -z "$f" ] && continue
+            case "$f" in
+              src/ops/*_contract_v1.py) ;;
+              tests/ops/test_*_contract_v1.py) ;;
+              *)
+                echo "excluded path: $f"
+                CONTRACT_ONLY=false
+                break
+                ;;
+            esac
+          done <<< "$CHANGED"
+          echo "contract_only=${CONTRACT_ONLY}" >> "$GITHUB_OUTPUT"
+          echo "changed_files:"
+          echo "$CHANGED"
+
       - name: Dispatch required checks (workflow_dispatch)
         uses: actions/github-script@v7
         with:
@@ -110,10 +143,15 @@ jobs:
             const repo  = context.repo.repo;
             const ref   = context.ref.replace('refs/heads/', '');
 
+            const contractOnly = '${{ steps.classify.outputs.contract_only }}' === 'true';
+            const forceMatrix = contractOnly ? 'false' : 'true';
+            core.info(
+              `contract_only_fast_lane_candidate=${contractOnly} → ci.yml force_matrix=${forceMatrix}`
+            );
             core.info("Single workflow_dispatch sequence for required checks (one pass per cursor_auto_pr run).");
 
             const workflows = [
-              { id: 'ci.yml', inputs: { force_matrix: 'true' } },
+              { id: 'ci.yml', inputs: { force_matrix: forceMatrix } },
               { id: 'lint_gate.yml' },
               { id: 'policy_critic_gate.yml' },
               { id: 'policy_tracked_reports_guard.yml' },

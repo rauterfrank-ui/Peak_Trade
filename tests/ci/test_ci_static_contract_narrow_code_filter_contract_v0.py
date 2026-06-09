@@ -21,7 +21,8 @@ CODE_TEST_GLOBS = (
 )
 STATIC_CONTRACT_WEBUI_GLOB = "tests/webui/test_*_structure_contract*.py"
 STATIC_OPS_CONTRACT_GLOB = "src/ops/*_contract_v0.py"
-SRC_OPS_NON_CONTRACT_GLOB = "src/ops/!(*_contract_v0.py)"
+STATIC_OPS_CONTRACT_V1_GLOB = "src/ops/*_contract_v1.py"
+SRC_OPS_NON_CONTRACT_GLOB = "src/ops/!(*_contract_v0.py|*_contract_v1.py)"
 SRC_NON_OPS_GLOB = "src/!(ops)/**"
 WEBUI_SURFACE_GLOBS = (
     "src/webui/**",
@@ -33,7 +34,7 @@ WEBUI_SURFACE_GLOBS = (
 )
 NON_WEBUI_CODE_GLOBS = (
     "src/!(ops|webui)/**",
-    "src/ops/!(*_contract_v0.py)",
+    "src/ops/!(*_contract_v0.py|*_contract_v1.py)",
     "templates/!(peak_trade_dashboard)/**",
     "tests/!(ci|ops|webui|fixtures)/**",
     "scripts/**",
@@ -127,10 +128,30 @@ def _matches_static_contract_ops_src(path: str) -> bool:
     return fnmatch.fnmatch(path, STATIC_OPS_CONTRACT_GLOB)
 
 
+def _matches_static_contract_ops_v1(path: str) -> bool:
+    return fnmatch.fnmatch(path, STATIC_OPS_CONTRACT_V1_GLOB)
+
+
+def _matches_static_contract_ops_offline(path: str) -> bool:
+    return _matches_static_contract_ops_src(path) or _matches_static_contract_ops_v1(path)
+
+
+def _is_contract_only_fast_lane_candidate(paths: list[str]) -> bool:
+    if not paths:
+        return False
+    for path in paths:
+        if fnmatch.fnmatch(path, STATIC_OPS_CONTRACT_V1_GLOB):
+            continue
+        if fnmatch.fnmatch(path, "tests/ops/test_*_contract_v1.py"):
+            continue
+        return False
+    return True
+
+
 def _matches_code_filter(path: str) -> bool:
     if path.startswith("templates/"):
         return True
-    if _matches_static_contract_ops_src(path):
+    if _matches_static_contract_ops_offline(path):
         return False
     if path.startswith("src/ops/"):
         return True
@@ -162,7 +183,7 @@ def _matches_non_webui_code(path: str) -> bool:
         return True
     if path.startswith("src/webui/"):
         return False
-    if _matches_static_contract_ops_src(path):
+    if _matches_static_contract_ops_offline(path):
         return False
     if path.startswith("src/ops/"):
         return True
@@ -214,6 +235,11 @@ def test_static_contract_includes_webui_structure_contract_whitelist() -> None:
 def test_static_contract_includes_ops_offline_contract_modules() -> None:
     static_block = _static_block()
     assert f"'{STATIC_OPS_CONTRACT_GLOB}'" in static_block
+
+
+def test_static_contract_includes_ops_contract_v1_modules() -> None:
+    static_block = _static_block()
+    assert f"'{STATIC_OPS_CONTRACT_V1_GLOB}'" in static_block
 
 
 def test_code_filter_narrows_src_ops_contract_v0_modules() -> None:
@@ -376,3 +402,79 @@ def test_webui_surface_and_non_webui_path_semantics_v1(
 )
 def test_run_matrix_semantics_for_path_sets_v1(paths: list[str], expect_run_matrix: bool) -> None:
     assert _run_matrix_for_paths(paths) is expect_run_matrix
+
+
+@pytest.mark.parametrize(
+    ("path", "expect_code", "expect_static", "expect_non_webui"),
+    [
+        ("src/ops/order_capability_payload_builder_contract_v1.py", False, True, False),
+        ("src/ops/order_capability_killswitch_abort_binding_contract_v1.py", False, True, False),
+        ("src/ops/order_capability_cancel_cleanup_failclosed_contract_v1.py", False, True, False),
+        ("tests/ops/test_order_capability_payload_builder_contract_v1.py", False, False, False),
+        ("src/execution/contracts.py", True, False, True),
+        ("src/risk_layer/kill_switch/foo.py", True, False, True),
+        ("scripts/ops/run_order_capability_foo.py", False, False, True),
+    ],
+)
+def test_contract_v1_path_semantics(
+    path: str,
+    expect_code: bool,
+    expect_static: bool,
+    expect_non_webui: bool,
+) -> None:
+    assert _matches_code_filter(path) is expect_code
+    assert _matches_static_contract_ops_offline(path) is expect_static
+    assert _matches_non_webui_code(path) is expect_non_webui
+
+
+@pytest.mark.parametrize(
+    ("paths", "expect_contract_only", "expect_run_matrix"),
+    [
+        (["src/ops/order_capability_payload_builder_contract_v1.py"], True, False),
+        (
+            [
+                "src/ops/order_capability_killswitch_abort_binding_contract_v1.py",
+                "tests/ops/test_order_capability_killswitch_abort_binding_contract_v1.py",
+            ],
+            True,
+            False,
+        ),
+        (
+            [
+                "src/ops/order_capability_cancel_cleanup_failclosed_contract_v1.py",
+                "tests/ops/test_order_capability_cancel_cleanup_failclosed_contract_v1.py",
+            ],
+            True,
+            False,
+        ),
+        (["src/execution/contracts.py"], False, True),
+        (["src/risk_layer/kill_switch/foo.py"], False, True),
+        (["scripts/ops/run_order_capability_foo.py"], False, True),
+        ([".github/workflows/ci.yml"], False, False),
+        (
+            [
+                "src/ops/order_capability_foo_contract_v1.py",
+                "src/runtime/bar.py",
+            ],
+            False,
+            True,
+        ),
+    ],
+)
+def test_contract_only_v1_run_matrix_semantics(
+    paths: list[str],
+    expect_contract_only: bool,
+    expect_run_matrix: bool,
+) -> None:
+    assert _is_contract_only_fast_lane_candidate(paths) is expect_contract_only
+    assert _run_matrix_for_paths(paths) is expect_run_matrix
+
+
+def test_force_matrix_overrides_contract_only_v1_paths() -> None:
+    paths = [
+        "src/ops/order_capability_payload_builder_contract_v1.py",
+        "tests/ops/test_order_capability_payload_builder_contract_v1.py",
+    ]
+    assert _is_contract_only_fast_lane_candidate(paths) is True
+    assert _run_matrix_for_paths(paths, force_matrix=False) is False
+    assert _run_matrix_for_paths(paths, force_matrix=True) is True
