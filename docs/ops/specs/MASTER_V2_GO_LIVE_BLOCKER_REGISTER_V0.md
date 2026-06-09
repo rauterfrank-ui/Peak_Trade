@@ -2,7 +2,7 @@
 docs_token: DOCS_TOKEN_MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0
 status: draft
 scope: docs-only, non-authorizing Master V2 Go-Live blocker register
-last_updated: 2026-06-07
+last_updated: 2026-06-09
 ---
 
 # Master V2 Go-Live Blocker Register V0
@@ -835,6 +835,97 @@ Operator confirmation recorded in durable archive is **not** approval. §6.1 cla
 - Operator decision: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_006_source_bound_session_selection_repo_internal_status_reflection_operator_decision_no_run_v1_20260607T093204Z`
 - Execute plan: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_006_source_bound_session_selection_repo_internal_status_reflection_execute_plan_no_run_v1_20260607T093322Z`
 - Execute confirmation: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/glb_006_source_bound_session_selection_repo_internal_status_reflection_execute_confirmation_no_run_v1_20260607T093452Z`
+
+### 6.17 Preflight-Lift Blocker Decision Record — Inactive Posture v1 (bounded docs/tests)
+
+PREFLIGHT_LIFT_BLOCKER_DECISION_RECORD_INACTIVE=true
+DECISION_RECORD_NO_LIFT=true
+NO_AUTHORITY_CHANGE=true
+HARD_BLOCKERS_REMAIN_BLOCKED=true
+HARD_BLOCKER_COUNT=18
+STRICT_UPSTREAM_REMAINS_BLOCKED=true
+PREFLIGHT_REMAINS_BLOCKED=true
+PREFLIGHT_LIFT_AUTHORIZED=false
+PREFLIGHT_GATE_LIFTED=false
+LIVE_AUTHORIZED=false
+READY_FOR_OPERATOR_ARMING=false
+DASHBOARD_TRUTH_GRANTED=false
+OPERATOR_TRUTH_GO_GRANTED=false
+OBSERVABILITY_TRUTH_ALLOWED=false
+BUNDLE_TO_UPSTREAM_INPUT_AUTHORIZED=false
+SELECTED_TRADABLE_FUTURE_CREATED=false
+Q1_ACTIVE_HARD_BLOCKERS_REMAIN_BLOCKED=CONFIRMED_BY_OPERATOR_SCOPE_GO
+Q2_DECISION_RECORD_IS_INACTIVE_NO_LIFT=CONFIRMED_BY_OPERATOR_SCOPE_GO
+Q3_BOUNDED_DOCS_TESTS_SLICE_ALLOWED_AFTER_CONFIRM=CONFIRMED_BY_OPERATOR_SCOPE_GO
+Q4_NO_RUNTIME_LIVE_PREFLIGHT_TRUTH_AUTHORITY=CONFIRMED_BY_OPERATOR_SCOPE_GO
+OBS_001_STATUS=BLOCKED
+OBS_002_STATUS=BLOCKED
+OBS_003_STATUS=BLOCKED
+GLB_006_STATUS=BLOCKED
+GLB_008_STATUS=BLOCKED
+GLB_009_STATUS=BLOCKED
+GLB_010_STATUS=BLOCKED
+GLB_011_STATUS=BLOCKED
+GLB_012_STATUS=BLOCKED
+GLB_013_STATUS=BLOCKED
+GLB_014_STATUS=BLOCKED
+GLB_015_STATUS=BLOCKED
+GLB_016_STATUS=BLOCKED
+GLB_017_STATUS=BLOCKED
+GLB_020_STATUS=BLOCKED
+PREFLIGHT_STATUS=BLOCKED
+LIVE_STATUS=BLOCKED
+ARMING_STATUS=BLOCKED
+STRICT_UPSTREAM_REMAINS_BLOCKED_FOR_PUBLIC_VIEW=true
+PROVIDER_AUTHENTIC_MIN_NOTIONAL_SOURCE_FOUND=false
+SECTION_12_12_ON_MAIN=true
+PR4073_MERGED_DIAGNOSTIC_ONLY=true
+PR4074_MERGED_DOCS_TESTS_ONLY=true
+KRAKEN_MIN_NOTIONAL_CHAIN_CLOSED=true
+ALL_AUTHORITY_FLAGS_REMAIN_FALSE=true
+
+This reflection records a bounded **inactive / no-lift** Preflight-Lift blocker decision record for archive and docs/tests posture only.
+It is **not** a Pilot-GO, not arming, not live authorization, not a GLB lift, not an OBS-truth lift, not a Preflight lift, and not evidence-marking.
+No blocker is lifted; no authority is changed.
+
+**Operator confirmations Q1–Q4** (from durable archive `acceptance/preflight_lift_blocker_decision_record_operator_confirm_no_run_v1_20260609T035805Z`) are documented here for bounded docs/tests decision-record reflection only. Confirmations **do not** authorize runtime, scheduler execution, Paper, Shadow, Testnet, Live, Truth-GO, dashboard truth, selected tradable future, strict-upstream bypass, or Preflight gate lift.
+
+**Hard blockers that remain BLOCKED (18 + §12.12 family):**
+
+| Group | IDs | Status |
+|---|---|---|
+| Observability truth | OBS-001, OBS-002, OBS-003 | BLOCKED |
+| Risk/execution/authority | GLB-006, GLB-008, GLB-009, GLB-010, GLB-011, GLB-012, GLB-013, GLB-014, GLB-015, GLB-016, GLB-017, GLB-020 | BLOCKED |
+| Preflight/live/arming | PREFLIGHT, LIVE, ARMING | BLOCKED |
+| Strict upstream (Kraken public view) | §12.12 `min_notional` permanent block | BLOCKED |
+
+**Closed diagnostic/docs facts (no lift basis):**
+
+- PR #4073 merged — Kraken Metadata Coverage View Panel is **diagnostic-only**; does not lift truth or strict upstream.
+- PR #4074 merged — §12.12 normative permanent block docs/tests on `main`; documents BLOCKED posture; does **not** lift strict upstream or provide provider-authentic `min_notional`.
+
+**Canonical read-order (existing surfaces; no new SSOT):**
+
+- [Real Futures Market Data Source Contract v1](../../webui/observability/REAL_FUTURES_MARKET_DATA_SOURCE_CONTRACT_V1.md) — §12.12 Kraken public-view `min_notional` permanent block
+- [Paper/Shadow 24/7 Preflight Contract v0](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) — `PREFLIGHT_REMAINS_BLOCKED=true`
+
+**Explicit prohibitions (this reflection must not imply or authorize):**
+
+- **Do not** lift any GLB, OBS, PREFLIGHT, LIVE, or ARMING blocker from this reflection.
+- **Do not** set `PREFLIGHT_LIFT_AUTHORIZED=true`, `PREFLIGHT_GATE_LIFTED=true`, or `PREFLIGHT_REMAINS_BLOCKED=false`.
+- **Do not** execute Paper, Shadow, Testnet, runtime, scheduler, or live activity under this reflection chain.
+- **Do not** grant dashboard truth, selected tradable future, Operator Truth-GO, or governed snapshot acceptance.
+- **Do not** bypass strict upstream (`bundle_to_upstream_input`, transform execute, `instrument.complete` force, dummy `min_notional`, dummy fills, BTC/USD substitution).
+
+This criteria-reflection block records the bounded Preflight-Lift blocker decision record **inactive** posture for docs/tests reflection only. Register [§6](#6-blocker-register) rows for **GLB-006**, **GLB-008**–**GLB-017**, **GLB-020** remain **BLOCKED**; observability truth blockers **OBS-001**–**OBS-003** remain **BLOCKED**; composite **PREFLIGHT** / **LIVE** / **ARMING** remain **BLOCKED**.
+
+**Durable archive chain (read-only pointers; non-authorizing):**
+
+- Readiness review: `review/preflight_lift_readiness_review_no_run_v1_20260609T035440Z`
+- Decision record prep: `planning/preflight_lift_blocker_decision_record_prep_no_run_v1_20260609T035633Z`
+- Operator confirm: `acceptance/preflight_lift_blocker_decision_record_operator_confirm_no_run_v1_20260609T035805Z`
+
+Focused boundary test: `tests/ops/test_master_v2_go_live_blocker_register_core_doc_contract_v0.py`
 
 ## 7. No-Green Claim Rule
 
