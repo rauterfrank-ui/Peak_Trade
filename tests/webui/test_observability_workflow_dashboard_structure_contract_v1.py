@@ -19,7 +19,11 @@ from fastapi.testclient import TestClient
 
 pytestmark = pytest.mark.web
 
-from scripts.ops.primary_evidence_retention_v0 import verify_manifest_sha256, write_manifest_sha256, is_under_tmp
+from scripts.ops.primary_evidence_retention_v0 import (
+    verify_manifest_sha256,
+    write_manifest_sha256,
+    is_under_tmp,
+)
 from src.webui.app import create_app
 
 FIXTURE_ARCHIVE = (
