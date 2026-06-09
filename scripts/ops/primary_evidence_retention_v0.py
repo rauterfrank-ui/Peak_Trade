@@ -14,6 +14,7 @@ EVIDENCE_DOES_NOT_AUTHORIZE_RUNTIME=true
 VALIDATE_DURABLE_PRIMARY_EVIDENCE_ROOT_V0=true
 PRIMARY_EVIDENCE_RETENTION_HARD_GATE_EXTENSION_V0=true
 VALIDATE_DURABLE_LIFECYCLE_CLOSEOUT_ROOT_V0=true
+VALIDATE_ORDER_CAPABILITY_OFFLINE_DURABLE_RUN_ROOT_V0=true
 ```
 """
 
@@ -44,6 +45,14 @@ PAPER_BOUNDED_DURABLE_RUN_REQUIRED_REL_PATHS = (
     "runtime_out/evidence_manifest.json",
     "logs/scheduler_stdout.log",
     "logs/scheduler_stderr.log",
+    MANIFEST_FILENAME,
+)
+
+# Order-Capability offline dry-validation durable run roots (no network; non-authorizing).
+ORDER_CAPABILITY_OFFLINE_DURABLE_RUN_REQUIRED_REL_PATHS = (
+    "RUN_METADATA.json",
+    "ORDER_CAPABILITY_DRY_VALIDATION_RESULT.json",
+    "CLOSEOUT.md",
     MANIFEST_FILENAME,
 )
 
@@ -212,6 +221,38 @@ def validate_durable_primary_evidence_root(
         return False, msg, {"checks": checks, "issues": issues}
 
     return True, "", {"checks": checks, "issues": []}
+
+
+def validate_order_capability_offline_durable_run_root(
+    run_root: Path | str,
+) -> tuple[bool, list[str]]:
+    """Validate order-cap offline dry-validation durable run root.
+
+    Machine marker: ``VALIDATE_ORDER_CAPABILITY_OFFLINE_DURABLE_RUN_ROOT_V0=true``
+
+    Does not require review/REVIEW_RESULT.json (offline contract lane).
+    """
+    root = Path(run_root)
+    issues: list[str] = []
+
+    ok, msg = require_durable_archive_root(root)
+    if not ok:
+        issues.append(msg)
+        return False, issues
+
+    for rel in ORDER_CAPABILITY_OFFLINE_DURABLE_RUN_REQUIRED_REL_PATHS:
+        if not (root / rel).is_file():
+            issues.append(f"missing durable required file: {rel}")
+
+    if issues:
+        return False, issues
+
+    ok, msg = verify_manifest_sha256(root)
+    if not ok:
+        issues.append(msg)
+        return False, issues
+
+    return True, []
 
 
 def parse_manifest_verify_log_rc(root: Path) -> tuple[int | None, str, str]:

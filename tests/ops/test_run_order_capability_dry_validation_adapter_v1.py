@@ -157,6 +157,13 @@ def test_write_evidence_creates_durable_bundle(tmp_path: Path) -> None:
     assert (dest / "MANIFEST.sha256").is_file()
     ok, _msg = mod.verify_manifest(dest)
     assert ok is True
+    from scripts.ops.primary_evidence_retention_v0 import (
+        validate_order_capability_offline_durable_run_root,
+    )
+
+    layout_ok, layout_issues = validate_order_capability_offline_durable_run_root(dest)
+    assert layout_ok is True
+    assert layout_issues == []
     payload = json.loads(
         (dest / "ORDER_CAPABILITY_DRY_VALIDATION_RESULT.json").read_text(encoding="utf-8")
     )
@@ -167,3 +174,29 @@ def test_write_evidence_creates_durable_bundle(tmp_path: Path) -> None:
         "order_submission_executed=true"
         not in (dest / "CLOSEOUT.md").read_text(encoding="utf-8").lower()
     )
+
+
+def test_write_evidence_fail_closed_when_layout_validation_fails(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    mod = _load_adapter()
+    archive = _durable_archive(tmp_path)
+    monkeypatch.setattr(
+        mod,
+        "validate_order_capability_offline_durable_run_root",
+        lambda _dest: (False, ["missing durable required file: CLOSEOUT.md"]),
+    )
+    rc = mod.main(
+        _base_argv(archive)
+        + [
+            "--write-evidence",
+            "--operator-go-token",
+            REQUIRED_OPERATOR_GO_TOKEN,
+        ]
+    )
+    assert rc != 0
+
+
+def test_order_capability_dry_validation_adapter_references_offline_layout_validation() -> None:
+    text = ADAPTER_SCRIPT.read_text(encoding="utf-8")
+    assert "validate_order_capability_offline_durable_run_root" in text

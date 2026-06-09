@@ -21,6 +21,7 @@ if str(_REPO_ROOT) not in sys.path:
 
 from scripts.ops.primary_evidence_retention_v0 import (
     require_durable_archive_root,
+    validate_order_capability_offline_durable_run_root,
     verify_manifest_sha256,
     write_manifest_sha256,
 )
@@ -134,9 +135,9 @@ def write_durable_evidence(args: argparse.Namespace) -> tuple[int, str]:
     )
     (dest / "CLOSEOUT.md").write_text(_closeout_markdown(result_payload), encoding="utf-8")
     write_manifest_sha256(dest)
-    manifest_ok, manifest_msg = verify_manifest_sha256(dest)
-    if not manifest_ok:
-        return VALIDATION_EXIT, manifest_msg
+    layout_ok, layout_issues = validate_order_capability_offline_durable_run_root(dest)
+    if not layout_ok:
+        return VALIDATION_EXIT, "; ".join(layout_issues)
     return 0, str(dest)
 
 

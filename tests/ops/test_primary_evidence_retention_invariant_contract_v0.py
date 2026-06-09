@@ -243,6 +243,65 @@ def test_shared_helper_module_exists() -> None:
     assert "def finalize_primary_evidence_root" in text
 
 
+def test_order_capability_offline_durable_run_required_rel_paths_defined() -> None:
+    from scripts.ops.primary_evidence_retention_v0 import (
+        MANIFEST_FILENAME,
+        ORDER_CAPABILITY_OFFLINE_DURABLE_RUN_REQUIRED_REL_PATHS,
+    )
+
+    assert ORDER_CAPABILITY_OFFLINE_DURABLE_RUN_REQUIRED_REL_PATHS == (
+        "RUN_METADATA.json",
+        "ORDER_CAPABILITY_DRY_VALIDATION_RESULT.json",
+        "CLOSEOUT.md",
+        MANIFEST_FILENAME,
+    )
+
+
+def test_shared_helper_validate_order_capability_offline_durable_run_root_marker() -> None:
+    text = SHARED_HELPER.read_text(encoding="utf-8")
+    assert "def validate_order_capability_offline_durable_run_root" in text
+    assert "VALIDATE_ORDER_CAPABILITY_OFFLINE_DURABLE_RUN_ROOT_V0=true" in text
+
+
+def test_validate_order_capability_offline_durable_run_root_passes_minimal_layout(
+    tmp_path: Path,
+) -> None:
+    from scripts.ops.primary_evidence_retention_v0 import (
+        MANIFEST_FILENAME,
+        ORDER_CAPABILITY_OFFLINE_DURABLE_RUN_REQUIRED_REL_PATHS,
+        validate_order_capability_offline_durable_run_root,
+        write_manifest_sha256,
+    )
+
+    root = tmp_path / "order_cap_run"
+    root.mkdir()
+    for rel in ORDER_CAPABILITY_OFFLINE_DURABLE_RUN_REQUIRED_REL_PATHS:
+        if rel == MANIFEST_FILENAME:
+            continue
+        path = root / rel
+        path.parent.mkdir(parents=True, exist_ok=True)
+        path.write_text("{}", encoding="utf-8")
+    write_manifest_sha256(root)
+    ok, issues = validate_order_capability_offline_durable_run_root(root)
+    assert ok is True
+    assert issues == []
+
+
+def test_validate_order_capability_offline_durable_run_root_fail_closed_missing_file(
+    tmp_path: Path,
+) -> None:
+    from scripts.ops.primary_evidence_retention_v0 import (
+        validate_order_capability_offline_durable_run_root,
+    )
+
+    root = tmp_path / "incomplete"
+    root.mkdir()
+    (root / "RUN_METADATA.json").write_text("{}", encoding="utf-8")
+    ok, issues = validate_order_capability_offline_durable_run_root(root)
+    assert ok is False
+    assert any("missing durable required file" in issue for issue in issues)
+
+
 def test_canonical_owner_references_scheduler_completion_opt_in() -> None:
     text = _owner_text()
     assert "run_scheduler.py" in text
