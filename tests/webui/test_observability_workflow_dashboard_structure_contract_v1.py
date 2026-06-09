@@ -5,6 +5,7 @@ from __future__ import annotations
 import json
 import shutil
 import sys
+import uuid
 from pathlib import Path
 
 import pytest
@@ -18,7 +19,7 @@ from fastapi.testclient import TestClient
 
 pytestmark = pytest.mark.web
 
-from scripts.ops.primary_evidence_retention_v0 import verify_manifest_sha256, write_manifest_sha256
+from scripts.ops.primary_evidence_retention_v0 import verify_manifest_sha256, write_manifest_sha256, is_under_tmp
 from src.webui.app import create_app
 
 FIXTURE_ARCHIVE = (
@@ -50,6 +51,18 @@ GOVERNED_FIXTURE_ROOT = (
     / "workflow_dashboard_readmodel_v1"
     / "futures_producer_packet_governed_v1"
 )
+SCRATCH_ROOT = project_root / "tests" / "_durable_archive_scratch"
+
+
+def _durable_archive_root(tmp_path: Path) -> Path:
+    candidate = tmp_path / "archive_root"
+    candidate.mkdir(parents=True, exist_ok=True)
+    if not is_under_tmp(candidate):
+        return candidate
+    SCRATCH_ROOT.mkdir(parents=True, exist_ok=True)
+    durable = SCRATCH_ROOT / str(uuid.uuid4())
+    durable.mkdir(parents=True, exist_ok=True)
+    return durable
 
 
 @pytest.fixture()
@@ -190,11 +203,7 @@ def test_persisted_readmodel_renders_futures_only_values(
         assert marker in section
 
 
-def _copy_pipeline_archive_with_cvc_projection(tmp_path: Path) -> Path:
-    from scripts.ops.primary_evidence_retention_v0 import write_manifest_sha256
-
-    archive = tmp_path / "archive_with_cvc_projection"
-    shutil.copytree(FIXTURE_ARCHIVE, archive)
+def _seed_cvc_projection_readmodel(archive: Path) -> None:
     readmodels_dir = archive / "readmodels"
     readmodels_dir.mkdir(parents=True, exist_ok=True)
     src = UNIVERSE_FIXTURES / "complete_minimal" / "universe_selection_readmodel.v1.json"
@@ -222,6 +231,12 @@ def _copy_pipeline_archive_with_cvc_projection(tmp_path: Path) -> Path:
     evidence["projection_source"] = "candidate_validation_bridge"
     dest.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
     write_manifest_sha256(readmodels_dir)
+
+
+def _copy_pipeline_archive_with_cvc_projection(tmp_path: Path) -> Path:
+    archive = tmp_path / "archive_with_cvc_projection"
+    shutil.copytree(FIXTURE_ARCHIVE, archive)
+    _seed_cvc_projection_readmodel(archive)
     return archive
 
 
@@ -268,11 +283,10 @@ def _copy_pipeline_archive_with_kraken_metadata_coverage(
     *,
     with_cvc_projection: bool = False,
 ) -> Path:
+    archive = _durable_archive_root(tmp_path)
+    shutil.copytree(FIXTURE_ARCHIVE, archive, dirs_exist_ok=True)
     if with_cvc_projection:
-        archive = _copy_pipeline_archive_with_cvc_projection(tmp_path)
-    else:
-        archive = tmp_path / "archive_with_kraken_metadata"
-        shutil.copytree(FIXTURE_ARCHIVE, archive)
+        _seed_cvc_projection_readmodel(archive)
     _install_kraken_metadata_coverage_bundle(archive)
     return archive
 
