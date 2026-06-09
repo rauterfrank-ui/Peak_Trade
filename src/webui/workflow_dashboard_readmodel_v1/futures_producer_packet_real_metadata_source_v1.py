@@ -7,7 +7,7 @@ import sys
 from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any
+from typing import Any, Mapping
 
 from trading.master_v2.double_play_futures_input import FuturesFreshnessState, FuturesMarketType
 from trading.master_v2.double_play_futures_input_producer import (
@@ -84,6 +84,10 @@ REASON_MISSING_PROVIDER_METADATA = "MISSING_PROVIDER_METADATA"
 REASON_PROVENANCE_INCOMPLETE = "PROVENANCE_INCOMPLETE"
 REASON_FRESHNESS_NOT_FRESH = "FRESHNESS_NOT_FRESH"
 REASON_PACKET_RUNTIME_HANDLE = "PACKET_RUNTIME_HANDLE"
+REASON_CANDIDATE_VALIDATION_ONLY_REQUIRED = "CANDIDATE_VALIDATION_ONLY_REQUIRED"
+REASON_CANDIDATE_VALIDATION_MODE_INVALID = "CANDIDATE_VALIDATION_MODE_INVALID"
+
+CANDIDATE_VALIDATION_PROJECTION_SOURCE = "candidate_validation_bridge"
 
 
 class FuturesProducerPacketRealMetadataSourceError(ValueError):
@@ -112,6 +116,25 @@ class FuturesProducerPacketGovernedBundleV1:
     packets: tuple[FuturesProducerPacket, ...]
     selected_candidate_id: str | None = None
     bundle_path: str | None = None
+
+
+@dataclass(frozen=True)
+class CandidateValidationProjectionV1:
+    """Read-only projection from governed candidate_validation bundle — not observability truth."""
+
+    projection_source: str
+    observability_truth_allowed: bool
+    selected_tradable_future_created: bool
+    instrument_complete_forced: bool
+    min_notional_known_missing_allowed_for_projection: bool
+    readmodel_write_executed: bool
+    bundle: FuturesProducerPacketGovernedBundleV1
+    upstream: FuturesUniverseUpstreamInputV1
+    adapter_status: str
+    readmodel_payload: dict[str, Any]
+    packet_count: int
+    candidate_validation_eligible_count: int
+    strict_upstream_blocked: bool
 
 
 def _repo_root() -> Path:
@@ -624,6 +647,134 @@ def bundle_to_upstream_input(
         selected_candidate_id=bundle.selected_candidate_id,
         evidence_links=bundle.evidence_links,
         fixture_marked=False,
+    )
+
+
+def _require_candidate_validation_governed_raw(raw: dict[str, Any]) -> None:
+    if not raw.get("u2b_candidate_validation_only"):
+        msg = (
+            f"{REASON_CANDIDATE_VALIDATION_ONLY_REQUIRED}: "
+            "u2b_candidate_validation_only must be true"
+        )
+        raise FuturesProducerPacketRealMetadataSourceError(msg)
+    if raw.get("instrument_completeness_mode") != "candidate_validation":
+        msg = (
+            f"{REASON_CANDIDATE_VALIDATION_MODE_INVALID}: "
+            "instrument_completeness_mode must be candidate_validation"
+        )
+        raise FuturesProducerPacketRealMetadataSourceError(msg)
+
+
+def _instrument_raw_by_candidate_id(raw_packets: list[dict[str, Any]]) -> dict[str, dict[str, Any]]:
+    out: dict[str, dict[str, Any]] = {}
+    for item in raw_packets:
+        if not isinstance(item, dict):
+            continue
+        candidate = item.get("candidate")
+        instrument = item.get("instrument")
+        if not isinstance(candidate, dict) or not isinstance(instrument, dict):
+            continue
+        candidate_id = candidate.get("candidate_id")
+        if isinstance(candidate_id, str) and candidate_id.strip():
+            out[candidate_id.strip()] = instrument
+    return out
+
+
+def bundle_to_upstream_input_candidate_validation(
+    bundle: FuturesProducerPacketGovernedBundleV1,
+    *,
+    instrument_raw_by_candidate_id: Mapping[str, Mapping[str, Any]],
+) -> FuturesUniverseUpstreamInputV1:
+    """Map candidate_validation bundle to U1 input without strict instrument.complete gate."""
+    assert_governed_not_observability_truth(bundle)
+    return FuturesUniverseUpstreamInputV1(
+        source_run_id=bundle.source_run_id,
+        source_stage=bundle.source_stage,
+        generated_at=bundle.generated_at,
+        packets=bundle.packets,
+        upstream_source_kind=bundle.source_kind,
+        upstream_producer_id=bundle.producer_id,
+        selected_candidate_id=None,
+        evidence_links=bundle.evidence_links,
+        fixture_marked=False,
+        candidate_validation_projection=True,
+        instrument_raw_by_candidate_id=dict(instrument_raw_by_candidate_id),
+    )
+
+
+def project_governed_candidate_validation_bundle_v1(
+    path: Path,
+    *,
+    archive_root: Path,
+) -> CandidateValidationProjectionV1:
+    """Build read-only candidate_validation projection payload — no readmodel write."""
+    from .futures_universe_upstream_adapter_v1 import (
+        map_futures_packets_to_universe_selection_readmodel_candidate_validation,
+    )
+
+    bundle_path = path.expanduser().resolve()
+    bundle = load_futures_producer_packet_governed(bundle_path, archive_root=archive_root)
+    assert_governed_not_observability_truth(bundle)
+
+    try:
+        raw = json.loads(bundle_path.read_text(encoding="utf-8"))
+    except OSError as exc:
+        msg = f"{REASON_GOVERNED_SCHEMA_INVALID}: cannot read bundle path"
+        raise FuturesProducerPacketRealMetadataSourceError(msg) from exc
+    if not isinstance(raw, dict):
+        msg = f"{REASON_GOVERNED_SCHEMA_INVALID}: root must be object"
+        raise FuturesProducerPacketRealMetadataSourceError(msg)
+
+    _require_candidate_validation_governed_raw(raw)
+    packets_raw = raw.get("packets") or []
+    if not isinstance(packets_raw, list):
+        msg = f"{REASON_GOVERNED_SCHEMA_INVALID}: packets must be array"
+        raise FuturesProducerPacketRealMetadataSourceError(msg)
+
+    instrument_raw = _instrument_raw_by_candidate_id(
+        [item for item in packets_raw if isinstance(item, dict)]
+    )
+    upstream = bundle_to_upstream_input_candidate_validation(
+        bundle,
+        instrument_raw_by_candidate_id=instrument_raw,
+    )
+    adapter_result = map_futures_packets_to_universe_selection_readmodel_candidate_validation(
+        upstream
+    )
+    payload = dict(adapter_result.payload)
+    payload["observability_truth_allowed"] = False
+    payload["real_metadata_source_marked"] = True
+    payload["non_authorizing"] = True
+
+    links = list(payload.get("evidence", {}).get("links") or [])
+    bundle_link = str(bundle_path)
+    if bundle_link not in links:
+        links.append(bundle_link)
+    if bundle.metadata_table_ref not in links:
+        links.append(bundle.metadata_table_ref)
+    evidence = dict(payload.get("evidence") or {})
+    evidence["links"] = links
+    evidence["real_metadata_loader"] = GOVERNED_SOURCE_CONTRACT
+    evidence["metadata_table_ref"] = bundle.metadata_table_ref
+    evidence["metadata_refresh_utc"] = bundle.metadata_refresh_utc
+    evidence["projection_source"] = CANDIDATE_VALIDATION_PROJECTION_SOURCE
+    payload["evidence"] = evidence
+
+    eligible_count = len(payload.get("universe") or [])
+    return CandidateValidationProjectionV1(
+        projection_source=CANDIDATE_VALIDATION_PROJECTION_SOURCE,
+        observability_truth_allowed=False,
+        selected_tradable_future_created=False,
+        instrument_complete_forced=False,
+        min_notional_known_missing_allowed_for_projection=True,
+        readmodel_write_executed=False,
+        bundle=bundle,
+        upstream=upstream,
+        adapter_status=adapter_result.status,
+        readmodel_payload=payload,
+        packet_count=len(bundle.packets),
+        candidate_validation_eligible_count=eligible_count,
+        strict_upstream_blocked=True,
     )
 
 
