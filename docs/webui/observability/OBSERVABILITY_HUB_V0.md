@@ -61,7 +61,7 @@ Stable Markers sind **Anzeige-/Test-Anker**, keine Claims zu Betriebsreadiness o
 
 Additive Workflow Dashboard V1 panel — **diagnostic-only**, **not** observability truth, **not** selection, **not** tradeability.
 
-- **Data source:** manifest-verified `futures_producer_packet_governed.v1.json` under `{ARCHIVE_ROOT}/governed_metadata/` with `provider=kraken_futures` — reader `kraken_metadata_coverage_reader_v1.py`.
+- **Data source:** manifest-verified `futures_producer_packet_governed.v1.json` under `{ARCHIVE_ROOT}&#47;governed_metadata&#47;` with `provider=kraken_futures` — reader `kraken_metadata_coverage_reader_v1.py`.
 - **Display:** completeness summary only (`packet_count`, `candidate_validation_complete`, `strict_instrument_complete`, `min_notional_unknown`) — **no** universe/ranking row tables.
 - **Markers:** `data-workflow-panel-kraken-metadata-coverage-v1="true"`, `data-kraken-metadata-coverage-diagnostic-only="true"`, `data-kraken-metadata-coverage-not-truth="true"`, `data-kraken-metadata-coverage-not-selected-future="true"`, `data-kraken-metadata-coverage-strict-upstream-blocked="true"`.
 - **Coexistence:** separate from Projection Coverage (`data-workflow-panel-projection-coverage-v1`); Missing Truth panels unchanged.

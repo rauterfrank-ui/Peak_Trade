@@ -137,7 +137,9 @@ def try_load_kraken_metadata_coverage_for_dashboard(
         return _empty_card(LOAD_ERROR_GOVERNED_BUNDLE_INVALID)
 
     packet_count = int(summary.get("packet_count") or 0)
-    candidate_validation_complete_count = int(summary.get("candidate_validation_complete_count") or 0)
+    candidate_validation_complete_count = int(
+        summary.get("candidate_validation_complete_count") or 0
+    )
     strict_instrument_complete_count = int(summary.get("strict_instrument_complete_count") or 0)
     missing_counts = summary.get("missing_provider_metadata_counts")
     min_notional_unknown_count = 0
