@@ -133,6 +133,8 @@ Owner Map §2a.1 and Preflight §2a.1 remain aligned on durable primary-evidence
 - `src/ops/bounded_futures_testnet_exchange_impl_contract_v0.py`
 - `src/ops/bounded_futures_testnet_runtime_harness_contract_v0.py`
 - `scripts/ops/archive_futures_testnet_harness_v0.py`
+- `scripts/ops/run_testnet_private_readonly_connectivity_adapter_v1.py` (Path-C private-readonly lane; plan-only default; no execute authorization)
+- `scripts/ops/review_testnet_private_readonly_connectivity_evidence_v1.py` (Path-C offline evidence review; schema `testnet_path_c_private_readonly_connectivity.v1`)
 - `src/ops/bounded_futures_private_readonly_contract_v0.py`
 - `src/ops/kraken_futures_demo_credential_presence_contract_v0.py`
 - `tests/ops/test_bounded_futures_private_readonly_contract_v0.py`
