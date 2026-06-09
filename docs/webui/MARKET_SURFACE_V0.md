@@ -74,6 +74,15 @@ Stabile `data-*`‑Marker (Anker für Anzeige und automatisierte Tests — **kei
 - **Futures-Ranking-Funnel (contract-first Empty-State, `GET` `/market`):** `data-market-v0-ranking-funnel-empty-state-v0="true"` — **keine** Live-Ranking-Daten, **keine** erfundenen Scores/Symbole/Kandidatenlisten; reiner SSR-Platzhalter, bis ein kanonischer **Producer**/`readmodel`‑Vertrag existiert.
 - **Dynamische Funnel-Labels:** `data-market-v0-ranking-funnel-dynamic-labels-v0="true"` — Stufen heißen **Top Universe**, **Shortlist**, **Top Ranking / Selected Candidates**; **Zählwerte pro Stufe** sind **vom Producer** bzw. Datenstand abhängig (**nicht** als statisches `Top 50&#47;20&#47;5` ausgewiesen).
 
+### Single-page consolidation (env-gated SSR v1)
+
+**`GET &#47;market`** may embed view-only operator panels reused from the Observability Hub when consolidation is enabled. Governed in `src/webui/market_surface.py` via `build_market_single_page_consolidation_display_context()`; panel SSR reuses `build_workflow_dashboard_display_context()` and `build_last_paper_run_panel_display_context()` (same builders as **`GET &#47;observability`**).
+
+- **Gate (default off):** `PEAK_TRADE_MARKET_SINGLE_PAGE_CONSOLIDATION_V1_ENABLED=1` — sub-gates for Workflow Dashboard V1 and Last Paper Run remain required (`PEAK_TRADE_WORKFLOW_DASHBOARD_V1_*`, `PEAK_TRADE_LAST_PAPER_RUN_*`).
+- **Markers:** `data-market-single-page-consolidation-v1="true"`, `data-market-single-page-consolidation-readonly="true"`, `data-market-single-page-consolidation-authority="false"` — **absent** when gate disabled.
+- **Panels (view-only):** Workflow Dashboard V1 (pipeline, KillSwitch, PREFLIGHT blocked display, Next GO), Last Paper Run, Missing Truth / NOT_PERSISTED blocks — shared Jinja partials under `templates/peak_trade_dashboard/partials/`.
+- **Boundaries:** read-only SSR; **no** dashboard truth grant, **no** selected tradable future, **no** readmodel/loader write, **no** runtime/scheduler activation; **`GET &#47;observability`** remains supported (refactored to same partials).
+
 `data-market-source-kind` unterscheidet aktuell:
 
 - `dummy-offline-synthetic`

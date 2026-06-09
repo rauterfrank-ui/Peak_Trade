@@ -114,13 +114,33 @@
     >
       <strong class="text-violet-200/95">Market Surface ≠ Paper Run Truth.</strong>
       Default symbol (e.g. BTC/USD) and dummy OHLCV are chart fixtures only — not Futures truth or Paper runtime authority.
-      {% if not active_paper_run.section_visible %}
+      {% if not active_paper_run.section_visible and not (market_single_page_consolidation.section_visible and last_paper_run_panel and last_paper_run_panel.section_visible) %}
       View-only last run archive:
       <a href="/observability" class="text-sky-300/90 underline underline-offset-2 font-mono">GET /observability</a>
       (env-gated Last Paper Run panel).
       {% endif %}
     </p>
   </section>
+
+  {% if market_single_page_consolidation.section_visible %}
+  <div
+    id="market-single-page-consolidation-v1"
+    class="space-y-6 max-w-6xl"
+    role="region"
+    aria-label="Market single-page consolidation — view-only operator panels"
+    data-market-single-page-consolidation-v1="true"
+    data-market-single-page-consolidation-readonly="true"
+    data-market-single-page-consolidation-authority="false"
+    data-market-single-page-consolidation-gated="true"
+    data-dashboard-truth-granted="false"
+    data-selected-tradable-future-created="false"
+    data-readmodel-write-executed="false"
+    data-paper-shadow-testnet-runtime-run-executed="false"
+  >
+    {% include "partials/workflow_dashboard_v1_panels.html" %}
+    {% include "partials/last_paper_run_panel_v0.html" %}
+  </div>
+  {% endif %}
 
   {% if active_paper_run.section_visible %}
   <section

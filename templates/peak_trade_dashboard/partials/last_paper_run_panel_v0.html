@@ -1,0 +1,101 @@
+  {% if last_paper_run_panel and last_paper_run_panel.section_visible and last_paper_run_panel.readmodel %}
+  {% set lpr = last_paper_run_panel.readmodel %}
+  {% set lr = lpr.last_run %}
+  {% set inst = lpr.instrument %}
+  {% set ord = lpr.orders_fills %}
+  {% set ev = lpr.evidence %}
+  {% set saf = lpr.safety %}
+  {% set nxt = lpr.next_token %}
+  <section
+    role="region"
+    aria-labelledby="observability-last-paper-run-h2"
+    class="rounded-xl border border-violet-900/40 bg-violet-950/15 px-5 py-4 space-y-4"
+    data-observability-last-paper-run-panel-v0="true"
+    data-observability-last-paper-run-readonly="true"
+    data-observability-last-paper-run-authority="false"
+    data-observability-last-paper-run-enabled="true"
+    data-observability-last-paper-run-status="{{ last_paper_run_panel.display_status }}"
+    data-observability-last-paper-run-instrument-truth="{{ inst.instrument_truth_status }}"
+  >
+    <div class="space-y-1.5">
+      <h2 id="observability-last-paper-run-h2" class="text-sm font-semibold text-violet-200/95 tracking-wide uppercase text-[11px]">
+        Last Paper Run — View Only
+      </h2>
+      <p class="text-xs text-violet-100/85 leading-relaxed">
+        Durable evidence snapshot from server-configured bundle — display-only, non-authorizing.
+        <strong class="text-amber-200/95">Market Surface BTC/USD dummy is not Paper Run Truth.</strong>
+      </p>
+    </div>
+    <p
+      class="rounded-lg border border-amber-900/40 bg-amber-950/25 px-3 py-2 text-[11px] text-amber-100/90 leading-snug"
+      data-observability-last-paper-run-market-surface-warning="true"
+    >
+      Dashboard ≠ Freigabe · Evidence ≠ Approval ·
+      <span class="font-mono text-amber-200/90">GET /market</span> remains Market Surface / fixture only.
+    </p>
+    <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-xs">
+      <div><dt class="text-slate-400">run_id</dt><dd class="font-mono text-slate-100">{{ lr.run_id }}</dd></div>
+      <div><dt class="text-slate-400">job_name</dt><dd class="font-mono text-slate-100 break-all">{{ lr.job_name }}</dd></div>
+      <div><dt class="text-slate-400">stage</dt><dd class="font-mono text-slate-100">{{ lr.stage }}</dd></div>
+      <div><dt class="text-slate-400">mode</dt><dd class="font-mono text-slate-100">{{ lr.mode }}</dd></div>
+      <div><dt class="text-slate-400">status</dt><dd class="font-mono text-emerald-300/90">{{ lr.status }}</dd></div>
+      <div><dt class="text-slate-400">job_accepted</dt><dd class="font-mono text-slate-100">{{ lr.job_accepted }}</dd></div>
+      <div><dt class="text-slate-400">duration</dt><dd class="font-mono text-slate-100">{{ lr.duration_actual_seconds }}s / cap {{ lr.duration_cap_seconds }}s</dd></div>
+      <div><dt class="text-slate-400">hard_stop</dt><dd class="font-mono text-slate-100">{{ lr.hard_stop_enforced }}</dd></div>
+    </dl>
+    <div
+      class="rounded-lg border border-slate-700/70 bg-slate-950/40 px-3 py-3 space-y-2"
+      data-observability-last-paper-run-instrument-block="true"
+    >
+      <p class="text-[11px] font-semibold text-slate-300 uppercase tracking-wide m-0">Instrument / Future</p>
+      <p class="text-xs font-mono text-amber-200/95 m-0" data-observability-last-paper-run-instrument-truth-label="true">
+        instrument_truth_status: {{ inst.instrument_truth_status }}
+      </p>
+      {% if inst.instrument_truth_status == 'NOT_PERSISTED' %}
+      <p class="text-xs text-slate-400 m-0 leading-snug">
+        No selected instrument/future/symbol persisted in run evidence. Not inferred from Market Surface defaults.
+      </p>
+      {% else %}
+      <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 text-xs">
+        {% if inst.selected_instrument %}<div><dt class="text-slate-500">selected_instrument</dt><dd class="font-mono text-slate-200">{{ inst.selected_instrument }}</dd></div>{% endif %}
+        {% if inst.selected_future %}<div><dt class="text-slate-500">selected_future</dt><dd class="font-mono text-slate-200">{{ inst.selected_future }}</dd></div>{% endif %}
+        {% if inst.selected_symbol %}<div><dt class="text-slate-500">selected_symbol</dt><dd class="font-mono text-slate-200">{{ inst.selected_symbol }}</dd></div>{% endif %}
+      </dl>
+      {% endif %}
+      {% if inst.runtime_fixture_ref %}
+      <p class="text-[10px] text-slate-500 m-0 font-mono">runtime_fixture_ref: {{ inst.runtime_fixture_ref }}</p>
+      {% endif %}
+    </div>
+    <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-xs">
+      <div><dt class="text-slate-400">max_real_orders</dt><dd class="font-mono text-slate-100">{{ ord.max_real_orders }}</dd></div>
+      <div><dt class="text-slate-400">real_orders_executed</dt><dd class="font-mono text-slate-100">{{ ord.real_orders_executed }}</dd></div>
+      <div><dt class="text-slate-400">fills_count</dt><dd class="font-mono text-slate-100">{{ ord.fills_count }}</dd></div>
+      <div><dt class="text-slate-400">paper_orders_count</dt><dd class="font-mono text-slate-100">{{ ord.paper_orders_count }}</dd></div>
+    </dl>
+    <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-6 gap-y-2 text-xs">
+      <div><dt class="text-slate-400">evidence_root</dt><dd class="font-mono text-slate-100">{{ ev.durable_evidence_root_basename }}</dd></div>
+      <div><dt class="text-slate-400">primary_evidence</dt><dd class="font-mono text-slate-100">{{ ev.primary_evidence_captured }}</dd></div>
+      <div><dt class="text-slate-400">manifest_rc</dt><dd class="font-mono text-slate-100">{{ ev.manifest_verify_rc }}</dd></div>
+      <div><dt class="text-slate-400">post_run_review</dt><dd class="font-mono text-slate-100">{{ ev.post_run_review_status }}</dd></div>
+      <div><dt class="text-slate-400">closeout</dt><dd class="font-mono text-slate-100">{{ ev.closeout_status }}</dd></div>
+      <div><dt class="text-slate-400">adapter_evidence</dt><dd class="font-mono text-slate-100">{{ ev.adapter_primary_evidence_basename }}</dd></div>
+    </dl>
+    <dl class="grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-2 text-xs" data-observability-last-paper-run-safety="true">
+      <div><dt class="text-slate-500">LIVE_AUTHORIZED</dt><dd class="font-mono text-rose-300/90">{{ saf.LIVE_AUTHORIZED }}</dd></div>
+      <div><dt class="text-slate-500">READY_FOR_OPERATOR_ARMING</dt><dd class="font-mono text-rose-300/90">{{ saf.READY_FOR_OPERATOR_ARMING }}</dd></div>
+      <div><dt class="text-slate-500">PREFLIGHT_LIFT</dt><dd class="font-mono text-rose-300/90">{{ saf.PREFLIGHT_LIFT }}</dd></div>
+      <div><dt class="text-slate-500">GAP7</dt><dd class="font-mono text-rose-300/90">{{ saf.GAP7 }}</dd></div>
+    </dl>
+    <p class="text-[11px] text-slate-500 m-0">evidence ≠ approval — display only, no execute authority.</p>
+    {% if nxt.selected_next_go_token %}
+    <p class="text-xs text-slate-300 m-0">
+      <span class="text-slate-500">next_go_token:</span>
+      <span class="font-mono text-sky-300/90 break-all">{{ nxt.selected_next_go_token }}</span>
+      {% if nxt.next_stage_requires_operator_go %}
+      <span class="text-slate-500"> — operator GO required</span>
+      {% endif %}
+    </p>
+    {% endif %}
+    <p class="text-[10px] text-slate-500 m-0 font-mono">stale={{ lpr.stale }} · {{ lpr.stale_reason }} · generated {{ lpr.generated_at_utc }}</p>
+  </section>
+  {% endif %}

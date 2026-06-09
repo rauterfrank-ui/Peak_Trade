@@ -1,0 +1,251 @@
+  {% if workflow_dashboard and workflow_dashboard.section_visible and workflow_dashboard.readmodel %}
+  {% set wd = workflow_dashboard.readmodel %}
+  {% set pipe = wd.pipeline %}
+  {% set saf = wd.safety %}
+  <div
+    id="observability-workflow-dashboard-v1"
+    class="space-y-6 max-w-6xl"
+    data-workflow-dashboard-v1="true"
+    data-workflow-dashboard-readonly="true"
+    data-workflow-dashboard-authority="false"
+    data-workflow-dashboard-no-controls-v1="true"
+    data-workflow-dashboard-status="{{ workflow_dashboard.display_status }}"
+  >
+    <section
+      role="region"
+      aria-labelledby="workflow-dashboard-safety-h2"
+      class="rounded-xl border border-rose-900/40 bg-rose-950/20 px-5 py-4 space-y-3"
+      data-workflow-panel-safety-v1="true"
+    >
+      <h2 id="workflow-dashboard-safety-h2" class="text-sm font-semibold text-rose-200/95 tracking-wide uppercase text-[11px] m-0">
+        Workflow Dashboard — Safety (view-only)
+      </h2>
+      <p class="text-xs text-rose-100/90 m-0"><strong>Evidence ≠ Approval</strong> — display only, no execute authority.</p>
+      <dl class="grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-2 text-xs">
+        <div><dt class="text-slate-500">LIVE_AUTHORIZED</dt><dd class="font-mono text-rose-300/90">{{ saf.LIVE_AUTHORIZED }}</dd></div>
+        <div><dt class="text-slate-500">READY_FOR_OPERATOR_ARMING</dt><dd class="font-mono text-rose-300/90">{{ saf.READY_FOR_OPERATOR_ARMING }}</dd></div>
+        <div><dt class="text-slate-500">PREFLIGHT_LIFT</dt><dd class="font-mono text-rose-300/90">{{ saf.PREFLIGHT_LIFT }}</dd></div>
+        <div><dt class="text-slate-500">GAP7</dt><dd class="font-mono text-rose-300/90">{{ saf.GAP7 }}</dd></div>
+      </dl>
+      <p class="text-[11px] text-slate-400 m-0 font-mono">{{ saf.current_mode_label }}</p>
+    </section>
+
+    {% set usel = wd.universe_selection %}
+    <section class="rounded-xl border border-amber-900/40 bg-amber-950/20 px-5 py-4 space-y-3" data-workflow-panel-universe-v1="true" data-workflow-universe-truth-status="{{ wd.universe_missing.truth_status }}">
+      <h2 class="text-sm font-semibold text-amber-200/95 uppercase text-[11px] m-0">Universe ~50 Futures</h2>
+      <p class="text-xs font-mono text-amber-200/95 m-0">{{ wd.universe_missing.truth_status }}</p>
+      <p class="text-xs text-slate-400 m-0">{{ wd.universe_missing.message }}</p>
+      {% if usel.loaded and wd.universe_missing.truth_status == 'PERSISTED' and usel.universe %}
+      <p class="text-[10px] text-slate-500 m-0 font-mono">rows={{ usel.universe | length }} · source={{ usel.source_stage }}/{{ usel.source_run_id }}</p>
+      <table class="w-full text-[10px] text-slate-400 border border-slate-800/60 rounded">
+        <thead><tr class="text-left"><th class="px-2 py-1">rank</th><th class="px-2 py-1">symbol</th><th class="px-2 py-1">exchange</th><th class="px-2 py-1">notes</th></tr></thead>
+        <tbody>
+          {% for row in usel.universe %}
+          <tr><td class="px-2 py-1 font-mono">{{ row.rank }}</td><td class="px-2 py-1 font-mono">{{ row.symbol }}</td><td class="px-2 py-1">{{ row.exchange or '—' }}</td><td class="px-2 py-1 text-slate-500">{{ row.notes or '' }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% else %}
+      <table class="w-full text-[10px] text-slate-500 border border-slate-800/60 rounded">
+        <thead><tr class="text-left"><th class="px-2 py-1">symbol</th><th class="px-2 py-1">exchange</th><th class="px-2 py-1">available</th><th class="px-2 py-1">exclusion_reason</th></tr></thead>
+        <tbody><tr><td class="px-2 py-2 text-slate-600" colspan="4">No persisted universe rows — producer follow-up required.</td></tr></tbody>
+      </table>
+      {% endif %}
+    </section>
+
+    <section class="rounded-xl border border-amber-900/40 bg-amber-950/20 px-5 py-4 space-y-3" data-workflow-panel-top20-v1="true" data-workflow-top20-truth-status="{{ wd.top20_missing.truth_status }}">
+      <h2 class="text-sm font-semibold text-amber-200/95 uppercase text-[11px] m-0">Top 20 Ranking</h2>
+      <p class="text-xs font-mono text-amber-200/95 m-0">{{ wd.top20_missing.truth_status }}</p>
+      <p class="text-xs text-slate-400 m-0">{{ wd.top20_missing.message }}</p>
+      {% if usel.loaded and wd.top20_missing.truth_status == 'PERSISTED' and usel.ranking %}
+      <ol class="list-decimal pl-5 text-[10px] text-slate-400 space-y-0.5 m-0" start="1">
+        {% for row in usel.ranking %}
+        <li><span class="font-mono">{{ row.symbol }}</span>{% if row.display_score is not none %} · score {{ row.display_score }}{% endif %}</li>
+        {% endfor %}
+      </ol>
+      {% else %}
+      <ol class="list-decimal pl-5 text-[10px] text-slate-600 space-y-0.5 m-0" start="1">
+        {% for r in range(1, 21) %}<li>rank {{ r }} — not persisted</li>{% endfor %}
+      </ol>
+      {% endif %}
+    </section>
+
+    <section class="rounded-xl border border-amber-900/40 bg-amber-950/20 px-5 py-4 space-y-3" data-workflow-panel-selected-future-v1="true" data-workflow-selected-future-truth-status="{{ wd.selected_future_missing.truth_status }}">
+      <h2 class="text-sm font-semibold text-amber-200/95 uppercase text-[11px] m-0">Selected Future</h2>
+      <p class="text-xs font-mono text-amber-200/95 m-0">{{ wd.selected_future_missing.truth_status }}</p>
+      <p class="text-xs text-slate-400 m-0">{{ wd.selected_future_missing.message }}</p>
+      {% if usel.loaded and wd.selected_future_missing.truth_status == 'PERSISTED' and usel.selected_future %}
+      <dl class="grid grid-cols-2 gap-x-4 gap-y-1 text-[10px] m-0">
+        <div><dt class="text-slate-500">symbol</dt><dd class="font-mono text-slate-200">{{ usel.selected_future.symbol }}</dd></div>
+        <div><dt class="text-slate-500">rank</dt><dd class="font-mono text-slate-200">{{ usel.selected_future.rank }}</dd></div>
+        {% if usel.selected_future.selection_reason %}<div class="col-span-2"><dt class="text-slate-500">selection_reason</dt><dd class="text-slate-300">{{ usel.selected_future.selection_reason }}</dd></div>{% endif %}
+      </dl>
+      {% endif %}
+    </section>
+
+    <section class="rounded-xl border border-amber-900/40 bg-amber-950/20 px-5 py-4 space-y-3" data-workflow-panel-future-detail-v1="true" data-workflow-future-detail-status="{{ wd.future_detail_missing.truth_status }}">
+      <h2 class="text-sm font-semibold text-amber-200/95 uppercase text-[11px] m-0">Future Detail</h2>
+      <p class="text-xs font-mono text-amber-200/95 m-0">{{ wd.future_detail_missing.truth_status }}</p>
+      <p class="text-xs text-slate-400 m-0">{{ wd.future_detail_missing.message }}</p>
+      {% if usel.loaded and wd.future_detail_missing.truth_status == 'AVAILABLE' and usel.market_snapshot %}
+      <dl class="grid grid-cols-2 gap-x-4 gap-y-1 text-[10px] m-0">
+        <div><dt class="text-slate-500">exchange</dt><dd class="font-mono text-slate-200">{{ usel.market_snapshot.exchange or '—' }}</dd></div>
+        <div><dt class="text-slate-500">snapshot_id</dt><dd class="font-mono text-slate-200">{{ usel.market_snapshot.snapshot_id or '—' }}</dd></div>
+        <div><dt class="text-slate-500">source_kind</dt><dd class="font-mono text-slate-200">{{ usel.market_snapshot.source_kind or '—' }}</dd></div>
+        <div><dt class="text-slate-500">captured_at</dt><dd class="font-mono text-slate-200">{{ usel.market_snapshot.captured_at or '—' }}</dd></div>
+      </dl>
+      {% endif %}
+      {% if usel.loaded and usel.evidence_links %}
+      <p class="text-[10px] text-slate-500 m-0 font-mono">evidence: {{ usel.evidence_links | join(' · ') }}</p>
+      {% endif %}
+      <p class="text-[10px] text-slate-500 m-0">GET /market BTC/USD dummy is <strong>not</strong> Future or Paper runtime truth.</p>
+    </section>
+
+    {% set pcov = wd.universe_selection_projection_coverage %}
+    {% if pcov.loaded %}
+    <section
+      class="rounded-xl border border-cyan-900/35 bg-cyan-950/10 px-5 py-4 space-y-3"
+      data-workflow-panel-projection-coverage-v1="true"
+      data-projection-coverage-not-truth="true"
+      data-projection-coverage-non-authorizing="true"
+      data-projection-coverage-not-selected-future="true"
+      data-projection-coverage-strict-upstream-blocked="true"
+      data-projection-coverage-load-mode="{{ pcov.load_mode }}"
+    >
+      <h2 class="text-sm font-semibold text-cyan-200/95 uppercase text-[11px] m-0">Projection Coverage</h2>
+      <p class="text-xs text-cyan-100/85 m-0 leading-relaxed">
+        Candidate Validation · Non-authorizing · Not Truth · Not Selected Future · Strict Upstream Blocked
+      </p>
+      <p class="text-[10px] text-slate-500 m-0">Display-only candidate validation slice — not observability truth, not execution authority.</p>
+      <dl class="grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-2 text-xs">
+        <div><dt class="text-slate-500">universe_count</dt><dd class="font-mono text-cyan-200/95">{{ pcov.universe_count }}</dd></div>
+        <div><dt class="text-slate-500">ranking_count</dt><dd class="font-mono text-cyan-200/95">{{ pcov.ranking_count }}</dd></div>
+        <div><dt class="text-slate-500">load_mode</dt><dd class="font-mono text-cyan-200/95">{{ pcov.load_mode }}</dd></div>
+        <div><dt class="text-slate-500">display_kind</dt><dd class="font-mono text-cyan-200/95">{{ pcov.display_kind }}</dd></div>
+        {% if pcov.source_stage %}<div><dt class="text-slate-500">source_stage</dt><dd class="font-mono text-slate-300">{{ pcov.source_stage }}</dd></div>{% endif %}
+        {% if pcov.source_run_id %}<div><dt class="text-slate-500">source_run_id</dt><dd class="font-mono text-slate-300 break-all">{{ pcov.source_run_id }}</dd></div>{% endif %}
+      </dl>
+      {% if pcov.universe %}
+      <p class="text-[10px] text-slate-500 m-0 font-mono">projection_universe_rows={{ pcov.universe | length }}</p>
+      <table class="w-full text-[10px] text-slate-400 border border-slate-800/60 rounded">
+        <thead><tr class="text-left"><th class="px-2 py-1">rank</th><th class="px-2 py-1">symbol</th><th class="px-2 py-1">exchange</th><th class="px-2 py-1">notes</th></tr></thead>
+        <tbody>
+          {% for row in pcov.universe %}
+          <tr><td class="px-2 py-1 font-mono">{{ row.rank }}</td><td class="px-2 py-1 font-mono">{{ row.symbol }}</td><td class="px-2 py-1">{{ row.exchange or '—' }}</td><td class="px-2 py-1 text-slate-500">{{ row.notes or '' }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% endif %}
+      {% if pcov.ranking %}
+      <p class="text-[10px] text-slate-500 m-0 font-mono">projection_ranking_rows={{ pcov.ranking | length }}</p>
+      <ol class="list-decimal pl-5 text-[10px] text-slate-400 space-y-0.5 m-0" start="1">
+        {% for row in pcov.ranking %}
+        <li><span class="font-mono">{{ row.symbol }}</span>{% if row.display_score is not none %} · score {{ row.display_score }}{% endif %}</li>
+        {% endfor %}
+      </ol>
+      {% endif %}
+      {% if pcov.evidence_links %}
+      <p class="text-[10px] text-slate-500 m-0 font-mono">evidence: {{ pcov.evidence_links | join(' · ') }}</p>
+      {% endif %}
+    </section>
+    {% endif %}
+
+    {% set kmc = wd.kraken_metadata_coverage %}
+    {% if kmc.loaded %}
+    <section
+      class="rounded-xl border border-violet-900/35 bg-violet-950/10 px-5 py-4 space-y-3"
+      data-workflow-panel-kraken-metadata-coverage-v1="true"
+      data-kraken-metadata-coverage-diagnostic-only="true"
+      data-kraken-metadata-coverage-not-truth="true"
+      data-kraken-metadata-coverage-not-selected-future="true"
+      data-kraken-metadata-coverage-strict-upstream-blocked="true"
+    >
+      <h2 class="text-sm font-semibold text-violet-200/95 uppercase text-[11px] m-0">Kraken Futures Metadata Coverage</h2>
+      <p class="text-xs text-violet-100/85 m-0 leading-relaxed">
+        Candidate Validation · Diagnostic Only · Not Truth · Not Selected Future · Strict Upstream Blocked
+      </p>
+      <p class="text-[10px] text-slate-500 m-0">Governed metadata completeness diagnostics — not observability truth, not selection authority.</p>
+      <dl class="grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-2 text-xs">
+        <div><dt class="text-slate-500">provider</dt><dd class="font-mono text-violet-200/95">{{ kmc.provider }}</dd></div>
+        <div><dt class="text-slate-500">packet_count</dt><dd class="font-mono text-violet-200/95">{{ kmc.packet_count }}</dd></div>
+        <div><dt class="text-slate-500">candidate_validation_complete</dt><dd class="font-mono text-violet-200/95">{{ kmc.candidate_validation_complete_count }}/{{ kmc.candidate_validation_total_count }}</dd></div>
+        <div><dt class="text-slate-500">strict_instrument_complete</dt><dd class="font-mono text-violet-200/95">{{ kmc.strict_instrument_complete_count }}</dd></div>
+        <div><dt class="text-slate-500">min_notional_unknown</dt><dd class="font-mono text-violet-200/95">{{ kmc.min_notional_unknown_count }}</dd></div>
+        <div><dt class="text-slate-500">strict_upstream_blocked</dt><dd class="font-mono text-violet-200/95">{{ kmc.strict_upstream_blocked }}</dd></div>
+        <div><dt class="text-slate-500">observability_truth_allowed</dt><dd class="font-mono text-violet-200/95">{{ kmc.observability_truth_allowed }}</dd></div>
+        {% if kmc.source_run_id %}<div><dt class="text-slate-500">source_run_id</dt><dd class="font-mono text-slate-300 break-all">{{ kmc.source_run_id }}</dd></div>{% endif %}
+      </dl>
+      {% if kmc.evidence_links %}
+      <p class="text-[10px] text-slate-500 m-0 font-mono">evidence: {{ kmc.evidence_links | join(' · ') }}</p>
+      {% endif %}
+    </section>
+    {% endif %}
+
+    <section class="rounded-xl border border-emerald-900/35 bg-emerald-950/10 px-5 py-4 space-y-4" data-workflow-panel-pipeline-v1="true">
+      <h2 class="text-sm font-semibold text-emerald-200/95 uppercase text-[11px] m-0">Execution Pipeline</h2>
+      <div class="flex flex-wrap gap-2 text-[10px]">
+        {% for stage in pipe.stages %}
+        <div
+          class="rounded-lg border border-slate-700/70 bg-slate-950/40 px-3 py-2 min-w-[8rem]"
+          data-workflow-stage-v1="{{ stage.stage_key }}"
+          {% if stage.reclassification %}data-workflow-stage-reclassified-v1="{{ stage.reclassification }}"{% endif %}
+        >
+          <p class="font-mono text-slate-200 m-0">{{ stage.stage_key }}</p>
+          <p class="text-emerald-300/90 m-0">{{ stage.verdict }}</p>
+          {% if stage.reclassification %}
+          <p class="text-amber-300/90 m-0 text-[9px]">{{ stage.reclassification }}</p>
+          {% endif %}
+          {% if stage.bundle_basename %}<p class="text-slate-500 m-0 truncate">{{ stage.bundle_basename }}</p>{% endif %}
+        </div>
+        {% endfor %}
+      </div>
+      <dl class="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2 text-xs">
+        {% for stage in pipe.stages %}
+        {% if stage.bundle_basename %}
+        <div class="col-span-1 sm:col-span-2 border-t border-slate-800/50 pt-2">
+          <dt class="text-slate-500">{{ stage.stage_key }} · manifest_rc</dt>
+          <dd class="font-mono text-slate-200">{{ stage.manifest_verify_rc }}</dd>
+          <dt class="text-slate-500">duration</dt>
+          <dd class="font-mono text-slate-200">{{ stage.duration_actual_seconds }}s / cap {{ stage.duration_cap_seconds }}s</dd>
+        </div>
+        {% endif %}
+        {% endfor %}
+      </dl>
+    </section>
+
+    <section class="rounded-xl border border-sky-900/35 bg-sky-950/10 px-5 py-4 space-y-3" data-workflow-panel-orders-fills-v1="true" data-workflow-pnl-status="{{ wd.orders_fills_pnl.pnl_status }}">
+      <h2 class="text-sm font-semibold text-sky-200/95 uppercase text-[11px] m-0">Orders / Fills / PnL (view-only)</h2>
+      <dl class="grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-2 text-xs">
+        <div><dt class="text-slate-500">real_orders_executed</dt><dd class="font-mono text-slate-100">{{ wd.orders_fills_pnl.real_orders_executed }}</dd></div>
+        <div><dt class="text-slate-500">fills_count_total</dt><dd class="font-mono text-slate-100">{{ wd.orders_fills_pnl.fills_count_total }}</dd></div>
+        <div><dt class="text-slate-500">pnl_status</dt><dd class="font-mono text-amber-200/95">{{ wd.orders_fills_pnl.pnl_status }}</dd></div>
+      </dl>
+    </section>
+
+    <section class="rounded-xl border border-violet-900/35 bg-violet-950/10 px-5 py-4 space-y-3" data-workflow-panel-evidence-v1="true">
+      <h2 class="text-sm font-semibold text-violet-200/95 uppercase text-[11px] m-0">Evidence Explorer</h2>
+      <ul class="space-y-1 text-xs font-mono text-slate-300 m-0 p-0 list-none">
+        {% for entry in wd.evidence_explorer.entries %}
+        <li>{{ entry.stage_key }} · {{ entry.bundle_basename or 'planned' }} · manifest {{ entry.manifest_verify_rc }} · closeout {{ entry.closeout_status }}</li>
+        {% endfor %}
+      </ul>
+    </section>
+
+    <section class="rounded-xl border border-orange-900/35 bg-orange-950/10 px-5 py-4 space-y-3" data-workflow-panel-killswitch-v1="true">
+      <h2 class="text-sm font-semibold text-orange-200/95 uppercase text-[11px] m-0">KillSwitch / Recovery</h2>
+      <ul class="space-y-1 text-[10px] text-slate-400 m-0 p-0 list-none">
+        {% for item in wd.killswitch_recovery.entries %}
+        <li>{{ item.stage_key }}: {{ item.summary or 'no summary' }}</li>
+        {% endfor %}
+      </ul>
+    </section>
+
+    <section class="rounded-xl border border-cyan-900/35 bg-cyan-950/10 px-5 py-4 space-y-2" data-workflow-panel-next-go-v1="true">
+      <h2 class="text-sm font-semibold text-cyan-200/95 uppercase text-[11px] m-0">Next GO (display only)</h2>
+      <p class="text-xs font-mono text-sky-300/90 m-0 break-all">{{ wd.next_go.selected_next_go_token }}</p>
+      <p class="text-[11px] text-slate-500 m-0">{{ wd.next_go.display_note }}</p>
+    </section>
+
+    <p class="text-[10px] text-slate-500 m-0 font-mono">stale={{ wd.stale }} · {{ wd.stale_reason }} · generated {{ wd.generated_at_utc }}</p>
+  </div>
+  {% endif %}
