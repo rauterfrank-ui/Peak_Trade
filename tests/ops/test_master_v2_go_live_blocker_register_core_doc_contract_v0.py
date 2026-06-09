@@ -136,3 +136,62 @@ def test_blocker_register_references_read_model_companion_surfaces_v0() -> None:
     assert "Decision Authority Map" in text
     assert "Promotion State Machine" in text
     assert READ_MODEL.is_file()
+
+
+def test_preflight_lift_blocker_decision_record_inactive_section_present_v0() -> None:
+    text = _plain(BLOCKER_REGISTER)
+    assert "6.17 Preflight-Lift Blocker Decision Record" in text
+    assert "PREFLIGHT_LIFT_BLOCKER_DECISION_RECORD_INACTIVE=true" in text
+    assert "DECISION_RECORD_NO_LIFT=true" in text
+    assert "NO_AUTHORITY_CHANGE=true" in text
+
+
+def test_preflight_lift_blocker_decision_record_q1_q4_confirmations_documented_v0() -> None:
+    text = _plain(BLOCKER_REGISTER)
+    assert "Q1_ACTIVE_HARD_BLOCKERS_REMAIN_BLOCKED=CONFIRMED_BY_OPERATOR_SCOPE_GO" in text
+    assert "Q2_DECISION_RECORD_IS_INACTIVE_NO_LIFT=CONFIRMED_BY_OPERATOR_SCOPE_GO" in text
+    assert (
+        "Q3_BOUNDED_DOCS_TESTS_SLICE_ALLOWED_AFTER_CONFIRM=CONFIRMED_BY_OPERATOR_SCOPE_GO" in text
+    )
+    assert "Q4_NO_RUNTIME_LIVE_PREFLIGHT_TRUTH_AUTHORITY=CONFIRMED_BY_OPERATOR_SCOPE_GO" in text
+
+
+def test_preflight_lift_blocker_decision_record_hard_blockers_remain_blocked_v0() -> None:
+    text = _plain(BLOCKER_REGISTER)
+    for marker in (
+        "HARD_BLOCKERS_REMAIN_BLOCKED=true",
+        "HARD_BLOCKER_COUNT=18",
+        "OBS_001_STATUS=BLOCKED",
+        "OBS_002_STATUS=BLOCKED",
+        "OBS_003_STATUS=BLOCKED",
+        "GLB_016_STATUS=BLOCKED",
+        "PREFLIGHT_STATUS=BLOCKED",
+        "LIVE_STATUS=BLOCKED",
+        "ARMING_STATUS=BLOCKED",
+        "STRICT_UPSTREAM_REMAINS_BLOCKED=true",
+        "STRICT_UPSTREAM_REMAINS_BLOCKED_FOR_PUBLIC_VIEW=true",
+        "PROVIDER_AUTHENTIC_MIN_NOTIONAL_SOURCE_FOUND=false",
+    ):
+        assert marker in text
+
+
+def test_preflight_lift_blocker_decision_record_no_lift_authority_language_v0() -> None:
+    text = _plain(BLOCKER_REGISTER)
+    section = text.split("6.17 Preflight-Lift Blocker Decision Record")[1].split(
+        "This reflection records"
+    )[0]
+    assert "PREFLIGHT_LIFT_AUTHORIZED=false" in section
+    assert "PREFLIGHT_GATE_LIFTED=false" in section
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in section
+    assert "LIVE_AUTHORIZED=false" in section
+    assert "READY_FOR_OPERATOR_ARMING=false" in section
+    assert "ALL_AUTHORITY_FLAGS_REMAIN_FALSE=true" in section
+    marker_lines = [line.strip() for line in section.splitlines() if "=" in line and line.strip()]
+    forbidden_markers = (
+        "PREFLIGHT_LIFT_READY=true",
+        "PREFLIGHT_LIFT_AUTHORIZED=true",
+        "LIVE_AUTHORIZED=true",
+        "READY_FOR_OPERATOR_ARMING=true",
+    )
+    for marker in forbidden_markers:
+        assert marker not in marker_lines
