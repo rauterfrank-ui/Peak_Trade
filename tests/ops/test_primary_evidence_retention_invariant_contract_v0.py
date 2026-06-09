@@ -2,7 +2,10 @@
 
 from __future__ import annotations
 
+import shutil
 from pathlib import Path
+
+import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 CANONICAL_OWNER = (
@@ -257,6 +260,22 @@ def test_order_capability_offline_durable_run_required_rel_paths_defined() -> No
     )
 
 
+def _durable_archive(tmp_path: Path) -> Path:
+    path = REPO_ROOT / "tests" / ".pytest_archive_roots" / tmp_path.name
+    if path.exists():
+        shutil.rmtree(path)
+    path.mkdir(parents=True, exist_ok=True)
+    return path
+
+
+@pytest.fixture(autouse=True)
+def _cleanup_durable_archive_roots():
+    yield
+    archive_roots = REPO_ROOT / "tests" / ".pytest_archive_roots"
+    if archive_roots.is_dir():
+        shutil.rmtree(archive_roots, ignore_errors=True)
+
+
 def test_shared_helper_validate_order_capability_offline_durable_run_root_marker() -> None:
     text = SHARED_HELPER.read_text(encoding="utf-8")
     assert "def validate_order_capability_offline_durable_run_root" in text
@@ -273,7 +292,7 @@ def test_validate_order_capability_offline_durable_run_root_passes_minimal_layou
         write_manifest_sha256,
     )
 
-    root = tmp_path / "order_cap_run"
+    root = _durable_archive(tmp_path) / "order_cap_run"
     root.mkdir()
     for rel in ORDER_CAPABILITY_OFFLINE_DURABLE_RUN_REQUIRED_REL_PATHS:
         if rel == MANIFEST_FILENAME:
@@ -294,7 +313,7 @@ def test_validate_order_capability_offline_durable_run_root_fail_closed_missing_
         validate_order_capability_offline_durable_run_root,
     )
 
-    root = tmp_path / "incomplete"
+    root = _durable_archive(tmp_path) / "incomplete"
     root.mkdir()
     (root / "RUN_METADATA.json").write_text("{}", encoding="utf-8")
     ok, issues = validate_order_capability_offline_durable_run_root(root)
