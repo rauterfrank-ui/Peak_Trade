@@ -87,9 +87,7 @@ def _valid_input(**overrides: object) -> OrderCapabilityAbortBindingInput:
         "expected_environment": "demo_testnet_only",
     }
     base.update(overrides)
-    if "payload_summary" not in overrides and any(
-        key.startswith("payload_") for key in overrides
-    ):
+    if "payload_summary" not in overrides and any(key.startswith("payload_") for key in overrides):
         payload_overrides = {
             key.removeprefix("payload_"): value
             for key, value in overrides.items()

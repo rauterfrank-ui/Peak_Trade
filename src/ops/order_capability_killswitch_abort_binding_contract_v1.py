@@ -276,7 +276,9 @@ def evaluate_order_capability_abort_binding(
         reasons.append(REASON_TOKEN_MISMATCH)
     elif not inp.expected_operator_go_token_binding.strip():
         reasons.append(REASON_TOKEN_MISMATCH)
-    elif summary.operator_go_token_binding.strip() != inp.expected_operator_go_token_binding.strip():
+    elif (
+        summary.operator_go_token_binding.strip() != inp.expected_operator_go_token_binding.strip()
+    ):
         reasons.append(REASON_TOKEN_MISMATCH)
 
     if _normalize(summary.abort_ack_marker) != _normalize(DEFAULT_ABORT_ACK_MARKER):
@@ -360,9 +362,7 @@ def validate_order_capability_abort_binding_verdict(
             "order_submission_executed and cancel_executed must remain false"
         )
     if verdict.trade_position_mutation_executed:
-        raise OrderCapabilityAbortBindingError(
-            "trade_position_mutation_executed must remain false"
-        )
+        raise OrderCapabilityAbortBindingError("trade_position_mutation_executed must remain false")
     if not verdict.no_authority_change or not verdict.preflight_remains_blocked:
         raise OrderCapabilityAbortBindingError(
             "no_authority_change and preflight_remains_blocked must remain true"
