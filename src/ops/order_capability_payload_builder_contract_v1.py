@@ -12,6 +12,13 @@ from enum import Enum
 from typing import Any
 
 from src.ops.bounded_futures_testnet_contract_v0 import DEFAULT_INSTRUMENT
+from src.ops.order_capability_side_price_qty_rules_contract_v1 import (
+    REASON_UNSAFE_AUTHORITY_FLAGS,
+    OrderCapabilitySidePriceQtyVerdict,
+    SidePriceQtyRulesError,
+    map_side_price_qty_verdict_to_payload_builder_flag,
+    validate_order_capability_side_price_qty_verdict,
+)
 
 PACKAGE_MARKER = "ORDER_CAPABILITY_PAYLOAD_BUILDER_CONTRACT_V1=true"
 SCHEMA_VERSION = "order_capability_payload_build_result.v1"
@@ -44,6 +51,11 @@ FORBIDDEN_ENVIRONMENT_MARKERS = frozenset(
         "mainnet",
     }
 )
+REASON_SIDE_PRICE_QTY_RULES_VERDICT_MISSING = "SIDE_PRICE_QTY_RULES_VERDICT_MISSING"
+REASON_SIDE_PRICE_QTY_RULES_VERDICT_INVALID = "SIDE_PRICE_QTY_RULES_VERDICT_INVALID"
+REASON_SIDE_PRICE_QTY_RULES_AUTHORITY_UNSAFE = "SIDE_PRICE_QTY_RULES_AUTHORITY_UNSAFE"
+REASON_SIDE_PRICE_QTY_RULES_NOT_SATISFIED = "SIDE_PRICE_QTY_RULES_NOT_SATISFIED"
+
 FORBIDDEN_SERIALIZATION_KEYS = frozenset(
     {
         "api_key",
@@ -87,6 +99,8 @@ class OrderCapabilityPayloadInput:
     kill_switch_binding_marker: str
     cleanup_cancel_correlation_marker: str
     evidence_correlation_id: str = ""
+    side_price_qty_verdict: OrderCapabilitySidePriceQtyVerdict | None = None
+    requires_side_price_qty_contract: bool = True
 
 
 @dataclass(frozen=True)
@@ -182,6 +196,28 @@ def _resolve_evidence_correlation_id(inp: OrderCapabilityPayloadInput) -> str:
     return f"evcorr-{digest[:24]}"
 
 
+def _validate_side_price_qty_wiring(inp: OrderCapabilityPayloadInput) -> None:
+    if not inp.requires_side_price_qty_contract:
+        return
+    if inp.side_price_qty_verdict is None:
+        raise PayloadBuildError(REASON_SIDE_PRICE_QTY_RULES_VERDICT_MISSING)
+    verdict = inp.side_price_qty_verdict
+    try:
+        validate_order_capability_side_price_qty_verdict(verdict)
+    except SidePriceQtyRulesError as exc:
+        raise PayloadBuildError(REASON_SIDE_PRICE_QTY_RULES_VERDICT_INVALID) from exc
+    safety = verdict.safety_flags
+    if (
+        safety.get("execute_authorized")
+        or safety.get("cancel_authorized")
+        or safety.get("flatten_authorized")
+        or REASON_UNSAFE_AUTHORITY_FLAGS in verdict.reason_codes
+    ):
+        raise PayloadBuildError(REASON_SIDE_PRICE_QTY_RULES_AUTHORITY_UNSAFE)
+    if not map_side_price_qty_verdict_to_payload_builder_flag(verdict):
+        raise PayloadBuildError(REASON_SIDE_PRICE_QTY_RULES_NOT_SATISFIED)
+
+
 def _validate_input(inp: OrderCapabilityPayloadInput) -> float:
     if not inp.instrument.strip():
         raise PayloadBuildError("instrument must be non-empty")
@@ -223,6 +259,7 @@ def _validate_input(inp: OrderCapabilityPayloadInput) -> float:
     computed_notional = inp.limit_price * inp.quantity
     if computed_notional > inp.max_notional_eur:
         raise PayloadBuildError("computed notional exceeds max_notional_eur cap")
+    _validate_side_price_qty_wiring(inp)
     return computed_notional
 
 
