@@ -256,6 +256,19 @@ Governed bundles with `u2b_candidate_validation_only=true` and `candidate_valida
 
 **GET &#47;market** remains separate SSOT — must not backfill Observability Missing Truth.
 
+### Projection-coverage reader (Slice 3 additive — non-truth, not dashboard-wired)
+
+**Function:** `try_load_universe_selection_projection_coverage_for_dashboard(archive_root)` in `universe_selection_reader_v1.py`
+
+- **Opt-in only** — `builder.py` and SSR templates do **not** call this function until a separate dashboard-wiring GO.
+- **Non-authorizing display path** for `candidate_validation_projection=true` payloads when `observability_truth_allowed=false` and `selected_future.truth_status=NOT_PERSISTED`.
+- Reuses manifest verify + contract validation + `_contract_to_slice`; sets `load_mode=projection_coverage` on the returned slice.
+- **Does not** weaken `try_load_universe_selection_for_dashboard` — truth reader remains fail-closed on CVC (`REAL_METADATA_NOT_OBSERVABILITY_TRUTH`).
+- **Does not** authorize truth-GO, selected tradable future, preflight/live, or observability truth panels.
+- Reject paths: `PROJECTION_NOT_CVC_ONLY`, `NOT_CVC_PROJECTION`, `SELECTED_FUTURE_PERSISTED_NOT_PROJECTION`, `NON_AUTHORIZING_REQUIRED`, plus shared manifest/contract errors.
+
+**Tests:** `tests/webui/test_universe_selection_reader_v1.py` (projection reader cases)
+
 ## 11. Implementation slices
 
 | Slice | Scope |

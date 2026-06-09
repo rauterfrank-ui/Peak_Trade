@@ -143,6 +143,7 @@ class UniverseSelectionDashboardSliceV1:
     selected_future: SelectedFutureDisplayV1 | None = None
     market_snapshot: MarketSnapshotDisplayV1 | None = None
     evidence_links: tuple[str, ...] = ()
+    load_mode: str | None = None
 
 
 @dataclass(frozen=True)
@@ -217,6 +218,7 @@ def to_json_dict(model: WorkflowDashboardReadModelV1) -> dict[str, Any]:
         "universe_selection": {
             "loaded": model.universe_selection.loaded,
             "load_errors": list(model.universe_selection.load_errors),
+            "load_mode": model.universe_selection.load_mode,
             "source_run_id": model.universe_selection.source_run_id,
             "source_stage": model.universe_selection.source_stage,
             "generated_at": model.universe_selection.generated_at,

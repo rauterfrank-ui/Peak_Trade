@@ -14,10 +14,6 @@ from .types import (
     UniverseSelectionRowDisplayV1,
 )
 from .universe_selection_contract_v1 import (
-    MISSING_TRUTH_FUTURE_DETAIL,
-    MISSING_TRUTH_RANKING,
-    MISSING_TRUTH_SELECTED,
-    MISSING_TRUTH_UNIVERSE,
     STORAGE_RELATIVE_PATH,
     UniverseSelectionContractError,
     UniverseSelectionContractV1,
@@ -36,6 +32,12 @@ LOAD_ERROR_INVALID_JSON = "INVALID_JSON"
 LOAD_ERROR_CONTRACT_INVALID = "CONTRACT_INVALID"
 LOAD_ERROR_FIXTURE_MARKED_NOT_OBSERVABILITY_TRUTH = "FIXTURE_MARKED_NOT_OBSERVABILITY_TRUTH"
 LOAD_ERROR_REAL_METADATA_NOT_OBSERVABILITY_TRUTH = "REAL_METADATA_NOT_OBSERVABILITY_TRUTH"
+LOAD_ERROR_NOT_CVC_PROJECTION = "NOT_CVC_PROJECTION"
+LOAD_ERROR_PROJECTION_NOT_CVC_ONLY = "PROJECTION_NOT_CVC_ONLY"
+LOAD_ERROR_SELECTED_FUTURE_PERSISTED_NOT_PROJECTION = "SELECTED_FUTURE_PERSISTED_NOT_PROJECTION"
+LOAD_ERROR_NON_AUTHORIZING_REQUIRED = "NON_AUTHORIZING_REQUIRED"
+
+PROJECTION_COVERAGE_LOAD_MODE = "projection_coverage"
 
 
 def _repo_root() -> Path:
@@ -85,7 +87,11 @@ def _row_display(row: UniverseSelectionRowV1) -> UniverseSelectionRowDisplayV1:
     )
 
 
-def _contract_to_slice(contract: UniverseSelectionContractV1) -> UniverseSelectionDashboardSliceV1:
+def _contract_to_slice(
+    contract: UniverseSelectionContractV1,
+    *,
+    load_mode: str | None = None,
+) -> UniverseSelectionDashboardSliceV1:
     selected = None
     if contract.selected_future is not None:
         sf = contract.selected_future
@@ -130,13 +136,14 @@ def _contract_to_slice(contract: UniverseSelectionContractV1) -> UniverseSelecti
         selected_future=selected,
         market_snapshot=market_snapshot,
         evidence_links=_normalize_evidence_links(contract.evidence),
+        load_mode=load_mode,
     )
 
 
-def try_load_universe_selection_for_dashboard(
+def _load_manifest_verified_readmodel(
     archive_root: str | Path,
-) -> UniverseSelectionDashboardSliceV1:
-    """Verify-before-trust read of universe_selection_readmodel.v1 (read-only, no writes)."""
+) -> UniverseSelectionDashboardSliceV1 | tuple[dict[str, Any], UniverseSelectionContractV1]:
+    """Shared verify-before-trust load path (read-only, no writes)."""
     root = Path(archive_root).expanduser().resolve()
     readmodels_dir = root / READMODELS_DIRNAME
     readmodel_path = readmodels_dir / READMODEL_FILENAME
@@ -171,6 +178,31 @@ def try_load_universe_selection_for_dashboard(
     except UniverseSelectionContractError:
         return _empty_slice(load_errors=(LOAD_ERROR_CONTRACT_INVALID,))
 
+    return payload, contract
+
+
+def _selected_future_persisted_in_payload(payload: dict[str, Any]) -> bool:
+    selected_raw = payload.get("selected_future")
+    if not isinstance(selected_raw, dict):
+        return False
+    truth_status = selected_raw.get("truth_status")
+    if truth_status == "PERSISTED":
+        return True
+    if isinstance(selected_raw.get("symbol"), str) and selected_raw.get("symbol").strip():
+        return True
+    return False
+
+
+def try_load_universe_selection_for_dashboard(
+    archive_root: str | Path,
+) -> UniverseSelectionDashboardSliceV1:
+    """Verify-before-trust read of universe_selection_readmodel.v1 (read-only, no writes)."""
+    loaded = _load_manifest_verified_readmodel(archive_root)
+    if not isinstance(loaded, tuple):
+        return loaded
+
+    payload, contract = loaded
+
     if contract.fixture_marked:
         return _empty_slice(load_errors=(LOAD_ERROR_FIXTURE_MARKED_NOT_OBSERVABILITY_TRUTH,))
 
@@ -180,3 +212,39 @@ def try_load_universe_selection_for_dashboard(
 
     _ = STORAGE_RELATIVE_PATH
     return _contract_to_slice(contract)
+
+
+def try_load_universe_selection_projection_coverage_for_dashboard(
+    archive_root: str | Path,
+) -> UniverseSelectionDashboardSliceV1:
+    """Read-only candidate_validation projection coverage (non-truth, non-selection)."""
+    loaded = _load_manifest_verified_readmodel(archive_root)
+    if not isinstance(loaded, tuple):
+        return loaded
+
+    payload, contract = loaded
+
+    if contract.fixture_marked:
+        return _empty_slice(load_errors=(LOAD_ERROR_FIXTURE_MARKED_NOT_OBSERVABILITY_TRUTH,))
+
+    if payload.get("non_authorizing") is not True:
+        return _empty_slice(load_errors=(LOAD_ERROR_NON_AUTHORIZING_REQUIRED,))
+
+    if payload.get("observability_truth_allowed") is True:
+        return _empty_slice(load_errors=(LOAD_ERROR_PROJECTION_NOT_CVC_ONLY,))
+
+    if payload.get("observability_truth_allowed") is not False:
+        return _empty_slice(load_errors=(LOAD_ERROR_NOT_CVC_PROJECTION,))
+
+    evidence = payload.get("evidence")
+    if (
+        not isinstance(evidence, dict)
+        or evidence.get("candidate_validation_projection") is not True
+    ):
+        return _empty_slice(load_errors=(LOAD_ERROR_NOT_CVC_PROJECTION,))
+
+    if contract.selected_future is not None or _selected_future_persisted_in_payload(payload):
+        return _empty_slice(load_errors=(LOAD_ERROR_SELECTED_FUTURE_PERSISTED_NOT_PROJECTION,))
+
+    _ = STORAGE_RELATIVE_PATH
+    return _contract_to_slice(contract, load_mode=PROJECTION_COVERAGE_LOAD_MODE)
