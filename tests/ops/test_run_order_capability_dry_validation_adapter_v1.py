@@ -105,8 +105,7 @@ def test_write_evidence_with_invalid_operator_go_fails(tmp_path: Path) -> None:
     mod = _load_adapter()
     archive = _durable_archive(tmp_path)
     rc = mod.main(
-        _base_argv(archive)
-        + ["--write-evidence", "--operator-go-token", "INVALID_GO_TOKEN"]
+        _base_argv(archive) + ["--write-evidence", "--operator-go-token", "INVALID_GO_TOKEN"]
     )
     assert rc != 0
 
@@ -114,11 +113,7 @@ def test_write_evidence_with_invalid_operator_go_fails(tmp_path: Path) -> None:
 def test_no_network_false_fails_closed(tmp_path: Path) -> None:
     mod = _load_adapter()
     archive = _durable_archive(tmp_path)
-    argv = [
-        item
-        for item in _base_argv(archive)
-        if item not in {"--no-network", "--no-order"}
-    ] + [
+    argv = [item for item in _base_argv(archive) if item not in {"--no-network", "--no-order"}] + [
         "--write-evidence",
         "--operator-go-token",
         REQUIRED_OPERATOR_GO_TOKEN,
@@ -168,6 +163,7 @@ def test_write_evidence_creates_durable_bundle(tmp_path: Path) -> None:
     assert payload["verdict"] == "PASS"
     assert payload["safety_flags"]["order_submission_executed"] is False
     assert payload["safety_flags"]["network_api_called"] is False
-    assert "order_submission_executed=true" not in (dest / "CLOSEOUT.md").read_text(
-        encoding="utf-8"
-    ).lower()
+    assert (
+        "order_submission_executed=true"
+        not in (dest / "CLOSEOUT.md").read_text(encoding="utf-8").lower()
+    )

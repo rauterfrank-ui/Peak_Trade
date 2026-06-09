@@ -65,17 +65,13 @@ def test_pass_with_conservative_inputs_and_blockers_confirmed() -> None:
 
 
 def test_fail_closed_missing_abort_ack() -> None:
-    result = evaluate_order_capability_dry_validation(
-        _valid_inputs(abort_ack_confirmed=False)
-    )
+    result = evaluate_order_capability_dry_validation(_valid_inputs(abort_ack_confirmed=False))
     assert result["verdict"] == "FAIL_CLOSED"
     assert any("abort_ack" in r for r in result["fail_reasons"])
 
 
 def test_fail_closed_missing_max_notional_confirmation() -> None:
-    result = evaluate_order_capability_dry_validation(
-        _valid_inputs(max_notional_confirmed=False)
-    )
+    result = evaluate_order_capability_dry_validation(_valid_inputs(max_notional_confirmed=False))
     assert result["verdict"] == "FAIL_CLOSED"
     assert any("max_notional" in r for r in result["fail_reasons"])
 
@@ -97,25 +93,19 @@ def test_fail_closed_non_demo_venue() -> None:
 
 
 def test_fail_closed_market_order_type() -> None:
-    result = evaluate_order_capability_dry_validation(
-        _valid_inputs(order_type="market")
-    )
+    result = evaluate_order_capability_dry_validation(_valid_inputs(order_type="market"))
     assert result["verdict"] == "FAIL_CLOSED"
     assert any("order_type" in r for r in result["fail_reasons"])
 
 
 def test_fail_closed_duration_over_sixty() -> None:
-    result = evaluate_order_capability_dry_validation(
-        _valid_inputs(session_duration_seconds=61)
-    )
+    result = evaluate_order_capability_dry_validation(_valid_inputs(session_duration_seconds=61))
     assert result["verdict"] == "FAIL_CLOSED"
     assert any("session_duration" in r for r in result["fail_reasons"])
 
 
 def test_fail_closed_unsupported_instrument() -> None:
-    result = evaluate_order_capability_dry_validation(
-        _valid_inputs(instrument="BTCUSDT")
-    )
+    result = evaluate_order_capability_dry_validation(_valid_inputs(instrument="BTCUSDT"))
     assert result["verdict"] == "FAIL_CLOSED"
     assert any("instrument" in r for r in result["fail_reasons"])
 
