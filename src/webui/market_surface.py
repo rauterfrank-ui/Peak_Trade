@@ -26,9 +26,11 @@ from fastapi import APIRouter, HTTPException, Query, Request
 from fastapi.responses import HTMLResponse
 from fastapi.templating import Jinja2Templates
 
+from .last_paper_run_panel_runtime_v0 import build_last_paper_run_panel_display_context
 from .market_active_paper_run_runtime_v0 import build_market_active_paper_run_display_context
 from .market_depth_runtime_v0 import market_depth_json_payload_v0
 from .market_ranking_funnel_runtime_v0 import build_market_ranking_funnel_display_context
+from .workflow_dashboard_runtime_v1 import build_workflow_dashboard_display_context
 
 logger = logging.getLogger(__name__)
 
@@ -39,6 +41,10 @@ MARKET_DEPTH_SSR_TOP_LEVELS = 8
 DEFAULT_SYMBOL = "BTC/USD"
 DEFAULT_TIMEFRAME = "1h"
 DEFAULT_LIMIT = 120
+
+MARKET_SINGLE_PAGE_CONSOLIDATION_ENABLED_ENV = (
+    "PEAK_TRADE_MARKET_SINGLE_PAGE_CONSOLIDATION_V1_ENABLED"
+)
 
 MARKET_RUN_PROJECTION_ENABLED_ENV = "PEAK_TRADE_MARKET_RUN_PROJECTION_ENABLED"
 MARKET_RUN_PROJECTION_PAYLOAD_JSON_ENV = "PEAK_TRADE_MARKET_RUN_PROJECTION_PAYLOAD_JSON"
@@ -324,6 +330,24 @@ def _registry_run_projection_subset(run: Dict[str, Any]) -> Dict[str, Any]:
     return subset
 
 
+def _market_single_page_consolidation_enabled() -> bool:
+    return (os.getenv(MARKET_SINGLE_PAGE_CONSOLIDATION_ENABLED_ENV) or "").strip() == "1"
+
+
+def build_market_single_page_consolidation_display_context() -> Dict[str, Any]:
+    """SSR gate for embedding observability view-only panels on GET /market (default off)."""
+
+    base: Dict[str, Any] = {
+        "section_visible": False,
+        "gate_enabled": False,
+    }
+    if not _market_single_page_consolidation_enabled():
+        return base
+    base["gate_enabled"] = True
+    base["section_visible"] = True
+    return base
+
+
 def build_market_run_projection_display_context() -> Dict[str, Any]:
     """SSR-only post-closeout registry projection panel for GET /market (env-gated, read-only)."""
 
@@ -566,6 +590,12 @@ def create_market_router(
         run_projection = build_market_run_projection_display_context()
         ranking_funnel = build_market_ranking_funnel_display_context()
         active_paper_run = build_market_active_paper_run_display_context()
+        market_single_page_consolidation = build_market_single_page_consolidation_display_context()
+        workflow_dashboard: Dict[str, Any] | None = None
+        last_paper_run_panel: Dict[str, Any] | None = None
+        if market_single_page_consolidation["section_visible"]:
+            workflow_dashboard = build_workflow_dashboard_display_context()
+            last_paper_run_panel = build_last_paper_run_panel_display_context()
         return templates.TemplateResponse(
             request,
             "market_v0.html",
@@ -576,6 +606,9 @@ def create_market_router(
                 "run_projection": run_projection,
                 "ranking_funnel": ranking_funnel,
                 "active_paper_run": active_paper_run,
+                "market_single_page_consolidation": market_single_page_consolidation,
+                "workflow_dashboard": workflow_dashboard,
+                "last_paper_run_panel": last_paper_run_panel,
                 "query": {
                     "symbol": symbol,
                     "timeframe": timeframe,
