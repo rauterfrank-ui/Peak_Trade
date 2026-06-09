@@ -5,6 +5,7 @@ from __future__ import annotations
 from .builder import build_workflow_dashboard_readmodel_v1
 from .pipeline_builder import build_workflow_pipeline_aggregate_v1
 from .types import (
+    KrakenMetadataCoverageCardV1,
     PIPELINE_READMODEL_ID,
     ProjectionCoverageCardV1,
     READMODEL_ID,
@@ -27,6 +28,14 @@ from .universe_selection_producer_v1 import (
     write_missing_truth_universe_selection_readmodel,
     write_universe_selection_readmodel,
 )
+from .kraken_metadata_coverage_reader_v1 import (
+    LOAD_ERROR_GOVERNED_BUNDLE_INVALID,
+    LOAD_ERROR_GOVERNED_BUNDLE_NOT_FOUND,
+    LOAD_ERROR_MANIFEST_VERIFY_FAILED,
+    LOAD_ERROR_OBSERVABILITY_TRUTH_CLAIMED,
+    LOAD_ERROR_PROVIDER_NOT_KRAKEN_FUTURES,
+    try_load_kraken_metadata_coverage_for_dashboard,
+)
 from .universe_selection_reader_v1 import (
     LOAD_ERROR_CONTRACT_INVALID,
     LOAD_ERROR_INVALID_JSON,
@@ -47,6 +56,12 @@ __all__ = [
     "SCHEMA_VERSION",
     "UNIVERSE_SELECTION_SCHEMA_NAME",
     "UNIVERSE_SELECTION_STORAGE_PATH",
+    "KrakenMetadataCoverageCardV1",
+    "LOAD_ERROR_GOVERNED_BUNDLE_INVALID",
+    "LOAD_ERROR_GOVERNED_BUNDLE_NOT_FOUND",
+    "LOAD_ERROR_MANIFEST_VERIFY_FAILED",
+    "LOAD_ERROR_OBSERVABILITY_TRUTH_CLAIMED",
+    "LOAD_ERROR_PROVIDER_NOT_KRAKEN_FUTURES",
     "LOAD_ERROR_CONTRACT_INVALID",
     "LOAD_ERROR_INVALID_JSON",
     "LOAD_ERROR_MANIFEST_NOT_FOUND",
@@ -64,6 +79,7 @@ __all__ = [
     "build_workflow_pipeline_aggregate_v1",
     "load_universe_selection_contract",
     "to_json_dict",
+    "try_load_kraken_metadata_coverage_for_dashboard",
     "try_load_universe_selection_for_dashboard",
     "try_load_universe_selection_projection_coverage_for_dashboard",
     "PROJECTION_COVERAGE_LOAD_MODE",

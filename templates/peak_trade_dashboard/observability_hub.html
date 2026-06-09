@@ -213,6 +213,37 @@
     </section>
     {% endif %}
 
+    {% set kmc = wd.kraken_metadata_coverage %}
+    {% if kmc.loaded %}
+    <section
+      class="rounded-xl border border-violet-900/35 bg-violet-950/10 px-5 py-4 space-y-3"
+      data-workflow-panel-kraken-metadata-coverage-v1="true"
+      data-kraken-metadata-coverage-diagnostic-only="true"
+      data-kraken-metadata-coverage-not-truth="true"
+      data-kraken-metadata-coverage-not-selected-future="true"
+      data-kraken-metadata-coverage-strict-upstream-blocked="true"
+    >
+      <h2 class="text-sm font-semibold text-violet-200/95 uppercase text-[11px] m-0">Kraken Futures Metadata Coverage</h2>
+      <p class="text-xs text-violet-100/85 m-0 leading-relaxed">
+        Candidate Validation · Diagnostic Only · Not Truth · Not Selected Future · Strict Upstream Blocked
+      </p>
+      <p class="text-[10px] text-slate-500 m-0">Governed metadata completeness diagnostics — not observability truth, not selection authority.</p>
+      <dl class="grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-2 text-xs">
+        <div><dt class="text-slate-500">provider</dt><dd class="font-mono text-violet-200/95">{{ kmc.provider }}</dd></div>
+        <div><dt class="text-slate-500">packet_count</dt><dd class="font-mono text-violet-200/95">{{ kmc.packet_count }}</dd></div>
+        <div><dt class="text-slate-500">candidate_validation_complete</dt><dd class="font-mono text-violet-200/95">{{ kmc.candidate_validation_complete_count }}/{{ kmc.candidate_validation_total_count }}</dd></div>
+        <div><dt class="text-slate-500">strict_instrument_complete</dt><dd class="font-mono text-violet-200/95">{{ kmc.strict_instrument_complete_count }}</dd></div>
+        <div><dt class="text-slate-500">min_notional_unknown</dt><dd class="font-mono text-violet-200/95">{{ kmc.min_notional_unknown_count }}</dd></div>
+        <div><dt class="text-slate-500">strict_upstream_blocked</dt><dd class="font-mono text-violet-200/95">{{ kmc.strict_upstream_blocked }}</dd></div>
+        <div><dt class="text-slate-500">observability_truth_allowed</dt><dd class="font-mono text-violet-200/95">{{ kmc.observability_truth_allowed }}</dd></div>
+        {% if kmc.source_run_id %}<div><dt class="text-slate-500">source_run_id</dt><dd class="font-mono text-slate-300 break-all">{{ kmc.source_run_id }}</dd></div>{% endif %}
+      </dl>
+      {% if kmc.evidence_links %}
+      <p class="text-[10px] text-slate-500 m-0 font-mono">evidence: {{ kmc.evidence_links | join(' · ') }}</p>
+      {% endif %}
+    </section>
+    {% endif %}
+
     <section class="rounded-xl border border-emerald-900/35 bg-emerald-950/10 px-5 py-4 space-y-4" data-workflow-panel-pipeline-v1="true">
       <h2 class="text-sm font-semibold text-emerald-200/95 uppercase text-[11px] m-0">Execution Pipeline</h2>
       <div class="flex flex-wrap gap-2 text-[10px]">
