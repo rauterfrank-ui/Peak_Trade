@@ -164,6 +164,55 @@
       <p class="text-[10px] text-slate-500 m-0">GET /market BTC/USD dummy is <strong>not</strong> Future or Paper runtime truth.</p>
     </section>
 
+    {% set pcov = wd.universe_selection_projection_coverage %}
+    {% if pcov.loaded %}
+    <section
+      class="rounded-xl border border-cyan-900/35 bg-cyan-950/10 px-5 py-4 space-y-3"
+      data-workflow-panel-projection-coverage-v1="true"
+      data-projection-coverage-not-truth="true"
+      data-projection-coverage-non-authorizing="true"
+      data-projection-coverage-not-selected-future="true"
+      data-projection-coverage-strict-upstream-blocked="true"
+      data-projection-coverage-load-mode="{{ pcov.load_mode }}"
+    >
+      <h2 class="text-sm font-semibold text-cyan-200/95 uppercase text-[11px] m-0">Projection Coverage</h2>
+      <p class="text-xs text-cyan-100/85 m-0 leading-relaxed">
+        Candidate Validation · Non-authorizing · Not Truth · Not Selected Future · Strict Upstream Blocked
+      </p>
+      <p class="text-[10px] text-slate-500 m-0">Display-only candidate validation slice — not observability truth, not execution authority.</p>
+      <dl class="grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-2 text-xs">
+        <div><dt class="text-slate-500">universe_count</dt><dd class="font-mono text-cyan-200/95">{{ pcov.universe_count }}</dd></div>
+        <div><dt class="text-slate-500">ranking_count</dt><dd class="font-mono text-cyan-200/95">{{ pcov.ranking_count }}</dd></div>
+        <div><dt class="text-slate-500">load_mode</dt><dd class="font-mono text-cyan-200/95">{{ pcov.load_mode }}</dd></div>
+        <div><dt class="text-slate-500">display_kind</dt><dd class="font-mono text-cyan-200/95">{{ pcov.display_kind }}</dd></div>
+        {% if pcov.source_stage %}<div><dt class="text-slate-500">source_stage</dt><dd class="font-mono text-slate-300">{{ pcov.source_stage }}</dd></div>{% endif %}
+        {% if pcov.source_run_id %}<div><dt class="text-slate-500">source_run_id</dt><dd class="font-mono text-slate-300 break-all">{{ pcov.source_run_id }}</dd></div>{% endif %}
+      </dl>
+      {% if pcov.universe %}
+      <p class="text-[10px] text-slate-500 m-0 font-mono">projection_universe_rows={{ pcov.universe | length }}</p>
+      <table class="w-full text-[10px] text-slate-400 border border-slate-800/60 rounded">
+        <thead><tr class="text-left"><th class="px-2 py-1">rank</th><th class="px-2 py-1">symbol</th><th class="px-2 py-1">exchange</th><th class="px-2 py-1">notes</th></tr></thead>
+        <tbody>
+          {% for row in pcov.universe %}
+          <tr><td class="px-2 py-1 font-mono">{{ row.rank }}</td><td class="px-2 py-1 font-mono">{{ row.symbol }}</td><td class="px-2 py-1">{{ row.exchange or '—' }}</td><td class="px-2 py-1 text-slate-500">{{ row.notes or '' }}</td></tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      {% endif %}
+      {% if pcov.ranking %}
+      <p class="text-[10px] text-slate-500 m-0 font-mono">projection_ranking_rows={{ pcov.ranking | length }}</p>
+      <ol class="list-decimal pl-5 text-[10px] text-slate-400 space-y-0.5 m-0" start="1">
+        {% for row in pcov.ranking %}
+        <li><span class="font-mono">{{ row.symbol }}</span>{% if row.display_score is not none %} · score {{ row.display_score }}{% endif %}</li>
+        {% endfor %}
+      </ol>
+      {% endif %}
+      {% if pcov.evidence_links %}
+      <p class="text-[10px] text-slate-500 m-0 font-mono">evidence: {{ pcov.evidence_links | join(' · ') }}</p>
+      {% endif %}
+    </section>
+    {% endif %}
+
     <section class="rounded-xl border border-emerald-900/35 bg-emerald-950/10 px-5 py-4 space-y-4" data-workflow-panel-pipeline-v1="true">
       <h2 class="text-sm font-semibold text-emerald-200/95 uppercase text-[11px] m-0">Execution Pipeline</h2>
       <div class="flex flex-wrap gap-2 text-[10px]">
