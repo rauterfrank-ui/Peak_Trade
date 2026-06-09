@@ -18,6 +18,7 @@ from fastapi.testclient import TestClient
 
 pytestmark = pytest.mark.web
 
+from scripts.ops.primary_evidence_retention_v0 import verify_manifest_sha256, write_manifest_sha256
 from src.webui.app import create_app
 
 FIXTURE_ARCHIVE = (
@@ -41,6 +42,13 @@ UNIVERSE_FIXTURES = (
     / "fixtures"
     / "workflow_dashboard_readmodel_v1"
     / "universe_selection_readmodel_v1"
+)
+GOVERNED_FIXTURE_ROOT = (
+    project_root
+    / "tests"
+    / "fixtures"
+    / "workflow_dashboard_readmodel_v1"
+    / "futures_producer_packet_governed_v1"
 )
 
 
@@ -217,6 +225,58 @@ def _copy_pipeline_archive_with_cvc_projection(tmp_path: Path) -> Path:
     return archive
 
 
+def _install_kraken_metadata_coverage_bundle(archive: Path) -> None:
+    bundle_dir = archive / "governed_metadata" / "kraken_metadata_coverage_minimal_v1"
+    bundle_dir.mkdir(parents=True, exist_ok=True)
+    metadata_table_path = bundle_dir / "metadata_table.v1.json"
+    metadata_table_path.write_text(
+        json.dumps(
+            {
+                "schema": "metadata_table.v1",
+                "bundle_id": "kraken_metadata_coverage_minimal_v1",
+                "row_count": 3,
+                "rows": [],
+            },
+            indent=2,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    evidence_dir = archive / "runs" / "kraken_metadata_evidence"
+    evidence_dir.mkdir(parents=True, exist_ok=True)
+    (evidence_dir / "CLOSEOUT.md").write_text("# kraken metadata evidence\n", encoding="utf-8")
+
+    template_path = GOVERNED_FIXTURE_ROOT / "governed_packet_kraken_metadata_coverage_minimal.json"
+    data = json.loads(template_path.read_text(encoding="utf-8"))
+    data["metadata_table_ref"] = str(metadata_table_path.resolve())
+    data["evidence_links"] = [str(evidence_dir.resolve())]
+
+    bundle_path = bundle_dir / "futures_producer_packet_governed.v1.json"
+    bundle_path.write_text(json.dumps(data, indent=2) + "\n", encoding="utf-8")
+    write_manifest_sha256(bundle_dir)
+    verify_ok, verify_msg = verify_manifest_sha256(bundle_dir)
+    assert verify_ok, verify_msg
+    (bundle_dir / "MANIFEST_VERIFY.log").write_text(
+        f"verify_ok=true\nmessage={verify_msg}\nMANIFEST_VERIFY_RC=0\nSTATUS=OK\n",
+        encoding="utf-8",
+    )
+    write_manifest_sha256(bundle_dir)
+
+
+def _copy_pipeline_archive_with_kraken_metadata_coverage(
+    tmp_path: Path,
+    *,
+    with_cvc_projection: bool = False,
+) -> Path:
+    if with_cvc_projection:
+        archive = _copy_pipeline_archive_with_cvc_projection(tmp_path)
+    else:
+        archive = tmp_path / "archive_with_kraken_metadata"
+        shutil.copytree(FIXTURE_ARCHIVE, archive)
+    _install_kraken_metadata_coverage_bundle(archive)
+    return archive
+
+
 def _workflow_dashboard_section(html: str) -> str:
     start = html.index('data-workflow-dashboard-v1="true"')
     end = html.index('data-observability-status-summary="true"')
@@ -302,6 +362,92 @@ def test_projection_coverage_section_forbidden_wording_absent(
     proj_section = section[proj_start:proj_end].lower()
     for forbidden in ("ready", "tradeable", " live ", "preflight", "persisted truth"):
         assert forbidden not in proj_section
+
+
+def test_kraken_metadata_coverage_absent_when_gate_disabled(client_off: TestClient) -> None:
+    html = client_off.get("/observability").text
+    assert 'data-workflow-panel-kraken-metadata-coverage-v1="true"' not in html
+
+
+def test_kraken_metadata_coverage_absent_without_governed_bundle(client_on: TestClient) -> None:
+    html = client_on.get("/observability").text
+    assert 'data-workflow-panel-kraken-metadata-coverage-v1="true"' not in html
+
+
+def test_kraken_metadata_coverage_present_with_governed_archive(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    archive = _copy_pipeline_archive_with_kraken_metadata_coverage(tmp_path)
+    monkeypatch.setenv("PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ENABLED", "1")
+    monkeypatch.setenv("PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ARCHIVE_ROOT", str(archive))
+    monkeypatch.setenv("PEAK_TRADE_FIXED_GENERATED_AT_UTC", "2026-06-09T02:35:00+00:00")
+    client = TestClient(create_app())
+    html = client.get("/observability").text
+    section = _workflow_dashboard_section(html)
+    assert 'data-workflow-panel-kraken-metadata-coverage-v1="true"' in section
+    assert 'data-kraken-metadata-coverage-diagnostic-only="true"' in section
+    assert 'data-kraken-metadata-coverage-not-truth="true"' in section
+    assert 'data-kraken-metadata-coverage-not-selected-future="true"' in section
+    assert 'data-kraken-metadata-coverage-strict-upstream-blocked="true"' in section
+    assert "Kraken Futures Metadata Coverage" in section
+    assert "Diagnostic Only" in section
+    assert "Not Truth" in section
+    assert "Not Selected Future" in section
+    assert "Strict Upstream Blocked" in section
+    assert "min_notional_unknown" in section.lower() or ">3<" in section
+    assert "kraken_futures" in section
+    assert "candidate_validation_complete" in section.lower() or "3/3" in section
+    assert "strict_instrument_complete" in section.lower() or ">0<" in section
+
+
+def test_kraken_metadata_coverage_coexists_with_projection_coverage(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    archive = _copy_pipeline_archive_with_kraken_metadata_coverage(
+        tmp_path, with_cvc_projection=True
+    )
+    monkeypatch.setenv("PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ENABLED", "1")
+    monkeypatch.setenv("PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ARCHIVE_ROOT", str(archive))
+    monkeypatch.setenv("PEAK_TRADE_FIXED_GENERATED_AT_UTC", "2026-06-09T02:35:00+00:00")
+    client = TestClient(create_app())
+    html = client.get("/observability").text
+    section = _workflow_dashboard_section(html)
+    assert 'data-workflow-panel-projection-coverage-v1="true"' in section
+    assert 'data-workflow-panel-kraken-metadata-coverage-v1="true"' in section
+
+
+def test_kraken_metadata_coverage_missing_truth_unchanged(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    archive = _copy_pipeline_archive_with_kraken_metadata_coverage(tmp_path)
+    monkeypatch.setenv("PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ENABLED", "1")
+    monkeypatch.setenv("PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ARCHIVE_ROOT", str(archive))
+    monkeypatch.setenv("PEAK_TRADE_FIXED_GENERATED_AT_UTC", "2026-06-09T02:35:00+00:00")
+    client = TestClient(create_app())
+    html = client.get("/observability").text
+    section = _workflow_dashboard_section(html)
+    assert "UNIVERSE_SOURCE_NOT_PERSISTED" in section
+    assert "TOP20_RANKING_NOT_PERSISTED" in section
+    assert "SELECTED_FUTURE_NOT_PERSISTED" in section
+    assert "FUTURE_DETAIL_NOT_AVAILABLE" in section
+    assert 'data-workflow-panel-kraken-metadata-coverage-v1="true"' in section
+
+
+def test_kraken_metadata_coverage_forbidden_wording_absent(
+    monkeypatch: pytest.MonkeyPatch, tmp_path: Path
+) -> None:
+    archive = _copy_pipeline_archive_with_kraken_metadata_coverage(tmp_path)
+    monkeypatch.setenv("PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ENABLED", "1")
+    monkeypatch.setenv("PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ARCHIVE_ROOT", str(archive))
+    monkeypatch.setenv("PEAK_TRADE_FIXED_GENERATED_AT_UTC", "2026-06-09T02:35:00+00:00")
+    client = TestClient(create_app())
+    html = client.get("/observability").text
+    section = _workflow_dashboard_section(html)
+    kmc_start = section.index('data-workflow-panel-kraken-metadata-coverage-v1="true"')
+    kmc_end = section.index('data-workflow-panel-pipeline-v1="true"')
+    kmc_section = section[kmc_start:kmc_end].lower()
+    for forbidden in ("ready", "tradeable", " live ", "preflight", "approved", "persisted truth"):
+        assert forbidden not in kmc_section
 
 
 def test_last_paper_run_still_works_with_both_gates(monkeypatch: pytest.MonkeyPatch) -> None:

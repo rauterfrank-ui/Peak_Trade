@@ -27,6 +27,7 @@ from .universe_selection_contract_v1 import (
     MISSING_TRUTH_SELECTED,
     MISSING_TRUTH_UNIVERSE,
 )
+from .kraken_metadata_coverage_reader_v1 import try_load_kraken_metadata_coverage_for_dashboard
 from .universe_selection_reader_v1 import (
     PROJECTION_COVERAGE_LOAD_MODE,
     try_load_universe_selection_for_dashboard,
@@ -193,6 +194,8 @@ def build_workflow_dashboard_readmodel_v1(archive_root: Path) -> WorkflowDashboa
         try_load_universe_selection_projection_coverage_for_dashboard(root)
     )
 
+    kraken_metadata_coverage = try_load_kraken_metadata_coverage_for_dashboard(root)
+
     universe_missing, top20_missing, selected_future_missing, future_detail_missing = (
         _universe_selection_missing_cards(universe_selection)
     )
@@ -304,6 +307,7 @@ def build_workflow_dashboard_readmodel_v1(archive_root: Path) -> WorkflowDashboa
         future_detail_missing=future_detail_missing,
         universe_selection=universe_selection,
         universe_selection_projection_coverage=universe_selection_projection_coverage,
+        kraken_metadata_coverage=kraken_metadata_coverage,
         pipeline=pipeline,
         orders_fills_pnl=orders_fills,
         evidence_explorer=evidence_card,

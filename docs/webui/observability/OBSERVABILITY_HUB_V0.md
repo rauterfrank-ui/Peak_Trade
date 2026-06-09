@@ -57,6 +57,16 @@ Stable Markers sind **Anzeige-/Test-Anker**, keine Claims zu Betriebsreadiness o
 - **Boundaries:** SSR only when gate on; no POST, no fetch/polling, no trading controls. `stale=true`, `stale_reason=archive_snapshot`.
 - **Tests:** `tests/webui/test_workflow_dashboard_readmodel_v1.py`, `tests/webui/test_observability_workflow_dashboard_structure_contract_v1.py`, `tests/ops/test_workflow_dashboard_env_schema_boundary_v1.py`.
 
+### Kraken Futures Metadata Coverage panel (diagnostic-only)
+
+Additive Workflow Dashboard V1 panel — **diagnostic-only**, **not** observability truth, **not** selection, **not** tradeability.
+
+- **Data source:** manifest-verified `futures_producer_packet_governed.v1.json` under `{ARCHIVE_ROOT}/governed_metadata/` with `provider=kraken_futures` — reader `kraken_metadata_coverage_reader_v1.py`.
+- **Display:** completeness summary only (`packet_count`, `candidate_validation_complete`, `strict_instrument_complete`, `min_notional_unknown`) — **no** universe/ranking row tables.
+- **Markers:** `data-workflow-panel-kraken-metadata-coverage-v1="true"`, `data-kraken-metadata-coverage-diagnostic-only="true"`, `data-kraken-metadata-coverage-not-truth="true"`, `data-kraken-metadata-coverage-not-selected-future="true"`, `data-kraken-metadata-coverage-strict-upstream-blocked="true"`.
+- **Coexistence:** separate from Projection Coverage (`data-workflow-panel-projection-coverage-v1`); Missing Truth panels unchanged.
+- **Strict upstream:** `bundle_to_upstream_input` remains blocked when `min_notional_unknown` — panel does not lift upstream or truth gates.
+
 ### Universe Selection Persistence Contract v1 (Slice 1 — schema/docs only)
 
 **Contract doc:** [**Universe Selection Read-model Schema v1**](UNIVERSE_SELECTION_READMODEL_V1.md) — `schema_name=universe_selection_readmodel.v1`.

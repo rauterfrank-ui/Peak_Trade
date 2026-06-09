@@ -147,6 +147,26 @@ class UniverseSelectionDashboardSliceV1:
 
 
 @dataclass(frozen=True)
+class KrakenMetadataCoverageCardV1:
+    loaded: bool
+    load_errors: tuple[str, ...]
+    provider: str | None = None
+    packet_count: int = 0
+    candidate_validation_complete_count: int = 0
+    candidate_validation_total_count: int = 0
+    strict_instrument_complete_count: int = 0
+    min_notional_unknown_count: int = 0
+    strict_upstream_blocked: bool = True
+    observability_truth_allowed: bool = False
+    diagnostic_only: bool = True
+    not_truth: bool = True
+    not_selected_future: bool = True
+    source_run_id: str | None = None
+    generated_at: str | None = None
+    evidence_links: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True)
 class ProjectionCoverageCardV1:
     loaded: bool
     load_errors: tuple[str, ...]
@@ -186,6 +206,7 @@ class WorkflowDashboardReadModelV1:
     future_detail_missing: MissingTruthCardV1
     universe_selection: UniverseSelectionDashboardSliceV1
     universe_selection_projection_coverage: ProjectionCoverageCardV1
+    kraken_metadata_coverage: KrakenMetadataCoverageCardV1
     pipeline: WorkflowPipelineAggregateV1
     orders_fills_pnl: OrdersFillsPnlCardV1
     evidence_explorer: EvidenceCardV1
@@ -329,6 +350,30 @@ def to_json_dict(model: WorkflowDashboardReadModelV1) -> dict[str, Any]:
                 for row in model.universe_selection_projection_coverage.ranking
             ],
             "evidence_links": list(model.universe_selection_projection_coverage.evidence_links),
+        },
+        "kraken_metadata_coverage": {
+            "loaded": model.kraken_metadata_coverage.loaded,
+            "load_errors": list(model.kraken_metadata_coverage.load_errors),
+            "provider": model.kraken_metadata_coverage.provider,
+            "packet_count": model.kraken_metadata_coverage.packet_count,
+            "candidate_validation_complete_count": (
+                model.kraken_metadata_coverage.candidate_validation_complete_count
+            ),
+            "candidate_validation_total_count": (
+                model.kraken_metadata_coverage.candidate_validation_total_count
+            ),
+            "strict_instrument_complete_count": (
+                model.kraken_metadata_coverage.strict_instrument_complete_count
+            ),
+            "min_notional_unknown_count": model.kraken_metadata_coverage.min_notional_unknown_count,
+            "strict_upstream_blocked": model.kraken_metadata_coverage.strict_upstream_blocked,
+            "observability_truth_allowed": model.kraken_metadata_coverage.observability_truth_allowed,
+            "diagnostic_only": model.kraken_metadata_coverage.diagnostic_only,
+            "not_truth": model.kraken_metadata_coverage.not_truth,
+            "not_selected_future": model.kraken_metadata_coverage.not_selected_future,
+            "source_run_id": model.kraken_metadata_coverage.source_run_id,
+            "generated_at": model.kraken_metadata_coverage.generated_at,
+            "evidence_links": list(model.kraken_metadata_coverage.evidence_links),
         },
         "pipeline": {
             "readmodel_id": model.pipeline.readmodel_id,
