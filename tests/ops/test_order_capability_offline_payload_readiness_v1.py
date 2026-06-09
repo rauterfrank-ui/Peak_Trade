@@ -216,7 +216,9 @@ def _run_offline_payload_readiness_chain() -> dict[str, object]:
     side_price_qty_verdict = evaluate_order_capability_side_price_qty_rules(_side_price_qty_input())
     payload = build_order_capability_payload(_payload_input())
     dry_validation = evaluate_order_capability_dry_validation(_dry_validation_inputs())
-    boundary = evaluate_order_capability_private_endpoint_boundary(_path_c_readonly_boundary_input())
+    boundary = evaluate_order_capability_private_endpoint_boundary(
+        _path_c_readonly_boundary_input()
+    )
 
     binding = evaluate_order_capability_abort_binding(
         OrderCapabilityAbortBindingInput(
@@ -287,7 +289,9 @@ def _run_offline_payload_readiness_chain() -> dict[str, object]:
             expected_operator_cleanup_go_token_binding=payload.operator_go_token_binding,
             expected_environment=str(fixture["environment"]),
             now_utc=NOW_UTC,
-            private_endpoint_boundary_satisfied=map_boundary_verdict_to_cleanup_input_flag(boundary),
+            private_endpoint_boundary_satisfied=map_boundary_verdict_to_cleanup_input_flag(
+                boundary
+            ),
         )
     )
 
