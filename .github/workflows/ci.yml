@@ -34,7 +34,7 @@ jobs:
   # - run_fast: always true. run_fast_lane: alias.
   # - docs_only: true when ONLY docs/out/*.md changed (no code, workflow, or static-contract paths).
   # - workflow_only: true when ONLY .github/workflows changed.
-  # - static_contract_changed: tests/ci/**, tests/ops/**, or tests/webui/test_*_structure_contract*.py (not full-matrix code).
+  # - static_contract_changed: tests/ci/**, tests/ops/**, tests/webui/test_*_structure_contract*.py, src/ops/*_contract_v0.py, src/ops/*_contract_v1.py (not full-matrix code).
   # - docs_or_static_contract_only: no src/scripts/config/workflow code paths; docs and/or static-contract only.
   # - webui_surface_changed: Market/Observability/WebUI surface paths (bounded Fast-Lane lane).
   # - webui_surface_only: webui_surface without non_webui_code (Case D — skip full matrix, bounded WebUI pytest).
@@ -65,7 +65,7 @@ jobs:
             code:
               # Picomatch extglob: offline ops contract modules use static_contract + Fast-Lane (PR #3984 lineage).
               - 'src/!(ops)/**'
-              - 'src/ops/!(*_contract_v0.py)'
+              - 'src/ops/!(*_contract_v0.py|*_contract_v1.py)'
               - 'templates/**'
               # Picomatch extglob (dorny/paths-filter): separate `!` lines do not exclude
               # matched files from `tests/**` (see PR #3728 validation). Split buckets:
@@ -90,7 +90,7 @@ jobs:
               - 'tests/ops/test_*_env_schema_boundary*.py'
             non_webui_code:
               - 'src/!(ops|webui)/**'
-              - 'src/ops/!(*_contract_v0.py)'
+              - 'src/ops/!(*_contract_v0.py|*_contract_v1.py)'
               - 'templates/!(peak_trade_dashboard)/**'
               - 'tests/!(ci|ops|webui|fixtures)/**'
               - 'scripts/**'
@@ -107,6 +107,7 @@ jobs:
               - 'tests/ops/**'
               - 'tests/webui/test_*_structure_contract*.py'
               - 'src/ops/*_contract_v0.py'
+              - 'src/ops/*_contract_v1.py'
             docs:
               - 'docs/**'
               - 'out/**'
