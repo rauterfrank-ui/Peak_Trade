@@ -192,9 +192,7 @@ def review_evidence(
                 manifest_payload.get("session_class") == EXPECTED_SESSION_CLASS
             )
             if not checks["session_class_match"]:
-                issues.append(
-                    f"{MANIFEST_JSON} session_class must be {EXPECTED_SESSION_CLASS!r}"
-                )
+                issues.append(f"{MANIFEST_JSON} session_class must be {EXPECTED_SESSION_CLASS!r}")
             checks["connectivity_mode_match"] = (
                 manifest_payload.get("connectivity_mode") == EXPECTED_CONNECTIVITY_MODE
             )
@@ -206,9 +204,7 @@ def review_evidence(
                 manifest_payload.get("private_readonly_reachability_proven") is True
             )
             if not checks["private_readonly_proven"]:
-                issues.append(
-                    f"{MANIFEST_JSON} must set private_readonly_reachability_proven=true"
-                )
+                issues.append(f"{MANIFEST_JSON} must set private_readonly_reachability_proven=true")
             checks["order_submission_denied"] = (
                 manifest_payload.get("order_submission_allowed") is False
                 and manifest_payload.get("real_orders_executed") is False

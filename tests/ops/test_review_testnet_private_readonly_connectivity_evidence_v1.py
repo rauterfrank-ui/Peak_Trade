@@ -48,8 +48,7 @@ def _write_path_c_bundle(staging: Path, *, connectivity_proven: bool = True) -> 
         encoding="utf-8",
     )
     (evidence / "steps.jsonl").write_text(
-        json.dumps({"step": 1, "http_method": "GET", "no_orders": True, "no_cancel": True})
-        + "\n",
+        json.dumps({"step": 1, "http_method": "GET", "no_orders": True, "no_cancel": True}) + "\n",
         encoding="utf-8",
     )
     endpoints = [

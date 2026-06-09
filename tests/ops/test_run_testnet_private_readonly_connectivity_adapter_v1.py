@@ -19,7 +19,9 @@ from src.ops.bounded_futures_private_readonly_contract_v0 import (
 )
 
 ROOT = Path(__file__).resolve().parent.parent.parent
-ADAPTER_SCRIPT = ROOT / "scripts" / "ops" / "run_testnet_private_readonly_connectivity_adapter_v1.py"
+ADAPTER_SCRIPT = (
+    ROOT / "scripts" / "ops" / "run_testnet_private_readonly_connectivity_adapter_v1.py"
+)
 REVIEW_SCRIPT = (
     ROOT / "scripts" / "ops" / "review_testnet_private_readonly_connectivity_evidence_v1.py"
 )
@@ -72,9 +74,7 @@ def _load_adapter():
 
 
 def _load_review():
-    return _load_module(
-        REVIEW_SCRIPT, "review_testnet_private_readonly_connectivity_evidence_v1"
-    )
+    return _load_module(REVIEW_SCRIPT, "review_testnet_private_readonly_connectivity_evidence_v1")
 
 
 def _staging(tmp_path: Path) -> Path:
