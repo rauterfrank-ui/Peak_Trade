@@ -339,3 +339,64 @@ Missing Kraken fields must remain in `missing_fields` — **no BTC&#47;USD subst
 ### 12.11 U5D Offline Transform Validation CLI
 
 **U5d offline validation record:** Manual operator CLI `transform_kraken_futures_raw_to_u2c_candidate_v1.py` reads durable U5C raw instruments/tickers + U5B probe report and emits **`u5d_u2c_candidate_validation.v1`** validation artifact only. Requires confirm token **`CONFIRM_U5D_OFFLINE_TRANSFORM_VALIDATION_V1`**. No network, no snapshot intake, no loader, no readmodel write, no dashboard wiring. **`GOVERNED_SNAPSHOT_ACCEPTED=false`** until separate operator acceptance.
+
+### 12.12 Kraken Public View — min_notional Permanent Block (normative)
+
+**Permanent-block record (docs/tests-only):** Normative statement that Kraken Futures **public** `/derivatives/api/v3/instruments` evidence does **not** supply a provider-authentic `min_notional` field. This section does **not** authorize enrichment, transform execution, loader writes, dashboard truth, strict-upstream lift, or selected tradable future creation.
+
+#### 12.12.1 Status (machine markers)
+
+```
+KRAKEN_PUBLIC_MIN_NOTIONAL_PROVIDER_FIELD_PRESENT=false
+PROVIDER_AUTHENTIC_MIN_NOTIONAL_SOURCE_FOUND=false
+OFFLINE_MIN_NOTIONAL_ENRICHMENT_FEASIBLE=false
+STRICT_UPSTREAM_REMAINS_BLOCKED_FOR_PUBLIC_VIEW=true
+MISSING_PROVIDER_METADATA_NOT_IN_PUBLIC_VIEW=min_notional
+IMPACT_MID_SIZE_MAPS_TO_MIN_QTY_NOT_MIN_NOTIONAL=true
+PRICE_QTY_MIN_NOTIONAL_HEURISTIC_FORBIDDEN=true
+TICK_SIZE_CONTRACT_SIZE_MIN_NOTIONAL_HEURISTIC_FORBIDDEN=true
+CVC_DIAGNOSTIC_PATH_NON_TRUTH_ONLY=true
+```
+
+#### 12.12.2 Provider evidence (U5C public instruments)
+
+| Fact | Rule |
+|------|------|
+| `min_notional` in raw `/instruments` JSON | **Absent** — no provider field to map |
+| `MISSING_PROVIDER_METADATA_NOT_IN_PUBLIC_VIEW` | Canonical code constant in `scripts/ops/u2c_packet_shape_v1.py` — **`min_notional` only** |
+| `extract_kraken_provider_instrument_fields` | Sets `missing_provider_metadata=["min_notional"]` when provider field absent |
+| `impactMidSize` | Maps to **`min_qty`** only (`kraken_instruments.impactMidSize`) — **not** `min_notional` |
+| `tickSize`, `contractSize`, `contractValueTradePrecision` | Sizing/precision fields — **not** exchange min-order-notional semantics |
+
+Offline U5C/U5D/U2c evidence may show `candidate_validation_complete=true` while `instrument.complete=false` and `min_notional_known=false` — this is **expected** for Kraken public-view-only bundles.
+
+#### 12.12.3 Forbidden enrichment shortcuts
+
+| Forbidden | Reason |
+|-----------|--------|
+| Dummy `min_notional` / dummy fills | Silent defaults forbidden (U2c §instrument completeness) |
+| `impactMidSize` relabelled as `min_notional` | Semantic drift; collides with existing `min_qty` mapping |
+| Ticker `last`/`markPrice` × `min_qty` or `impactMidSize` | Price/Qty heuristic without provider `min_notional` basis |
+| `tickSize` × `contractSize` as `min_notional` | Sizing math — not provider min-order-notional |
+| `instrument.complete` force | Strict validation must remain fail-closed |
+| `bundle_to_upstream_input` execute on public-view CVC bundles | `REASON_INSTRUMENT_INCOMPLETE` — all packets blocked until authentic `min_notional` exists |
+| Dashboard truth / selected tradable future from CVC or diagnostic panels | Non-truth paths only |
+
+#### 12.12.4 Strict upstream vs CVC diagnostic path
+
+| Path | Behavior |
+|------|----------|
+| Strict (`bundle_to_upstream_input`, `evaluate_packet_eligibility`) | **Fail-closed** when `instrument.complete=false` or `min_notional_known=false` |
+| CVC projection (`project_governed_candidate_validation_bundle_v1`) | Additive **non-truth** bridge only — `strict_upstream_blocked=true`, `observability_truth_allowed=false` |
+| Kraken metadata coverage panel (PR #4073) | Diagnostic-only display — does **not** lift upstream or truth gates |
+
+CVC and diagnostic surfaces **must not** weaken strict upstream gates or promote public-view bundles to observability truth.
+
+#### 12.12.5 Tests (boundary guards)
+
+| Test module | Purpose |
+|-------------|---------|
+| `tests/ops/test_u2c_packet_shape_v1.py` | `MISSING_PROVIDER_METADATA_NOT_IN_PUBLIC_VIEW`; `impactMidSize` ≠ `min_notional` |
+| `tests/ops/test_real_futures_market_data_source_contract_boundary_v1.py` | §12.12 markers present; no forbidden heuristic language |
+| `tests/ops/test_transform_kraken_futures_raw_to_u2c_candidate_v1.py` | U5d rows keep `missing_provider_metadata=["min_notional"]` |
+| `tests/webui/test_candidate_validation_readmodel_projection_v1.py` | Strict path still blocked for CVC bundles |

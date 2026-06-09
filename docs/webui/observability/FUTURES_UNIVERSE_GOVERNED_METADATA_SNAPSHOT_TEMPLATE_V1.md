@@ -148,6 +148,8 @@ Required `*_known` flags (all **true**):
 
 Underlying values (`tick_size`, `lot_size`, `min_notional`, margin constraints when known) must be explicit — **no silent defaults**.
 
+**Kraken public-view candidate bundles:** When `missing_provider_metadata_policy.allowed_missing_provider_metadata` includes `min_notional` only, `instrument.complete` may remain `false` while `candidate_validation_complete=true`. This is **not** strict-upstream-ready. Canonical normative record: [REAL_FUTURES_MARKET_DATA_SOURCE_CONTRACT_V1.md](REAL_FUTURES_MARKET_DATA_SOURCE_CONTRACT_V1.md) §12.12 — **no parallel SSOT**.
+
 ### Provenance completeness
 
 ```

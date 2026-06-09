@@ -186,3 +186,31 @@ def test_u5d_offline_transform_script_referenced_in_contract() -> None:
     assert "CONFIRM_U5D_OFFLINE_TRANSFORM_VALIDATION_V1" in doc or "U5d" in doc
     assert "test_transform_kraken_futures_raw_to_u2c_candidate_v1.py" in doc
     assert "u5d_u2c_candidate_validation_v1" in doc or "U5d offline" in doc
+
+
+def test_real_futures_contract_documents_public_view_min_notional_permanent_block() -> None:
+    doc = MARKET_DATA_SOURCE_DOC.read_text(encoding="utf-8")
+    assert "### 12.12 Kraken Public View — min_notional Permanent Block" in doc
+    markers = (
+        "KRAKEN_PUBLIC_MIN_NOTIONAL_PROVIDER_FIELD_PRESENT=false",
+        "PROVIDER_AUTHENTIC_MIN_NOTIONAL_SOURCE_FOUND=false",
+        "OFFLINE_MIN_NOTIONAL_ENRICHMENT_FEASIBLE=false",
+        "STRICT_UPSTREAM_REMAINS_BLOCKED_FOR_PUBLIC_VIEW=true",
+        "MISSING_PROVIDER_METADATA_NOT_IN_PUBLIC_VIEW=min_notional",
+        "IMPACT_MID_SIZE_MAPS_TO_MIN_QTY_NOT_MIN_NOTIONAL=true",
+        "PRICE_QTY_MIN_NOTIONAL_HEURISTIC_FORBIDDEN=true",
+        "CVC_DIAGNOSTIC_PATH_NON_TRUTH_ONLY=true",
+    )
+    for marker in markers:
+        assert marker in doc
+    assert "impactMidSize" in doc
+    assert "kraken_instruments.impactMidSize" in doc
+    assert "bundle_to_upstream_input" in doc
+    forbidden = (
+        "Dummy `min_notional`",
+        "impactMidSize` relabelled as `min_notional`",
+        "instrument.complete` force",
+    )
+    for phrase in forbidden:
+        assert phrase in doc
+    assert "observability_truth_allowed=false" in doc

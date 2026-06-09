@@ -229,6 +229,7 @@ Governed bundles with `u2b_candidate_validation_only=true` and `candidate_valida
 - Produces contract-valid readmodel-shaped JSON with `observability_truth_allowed=false`, `selected_future.truth_status=NOT_PERSISTED`
 - **Does not** authorize readmodel persist, dashboard wiring, truth-GO, or selected tradable future
 - Strict upstream (`bundle_to_upstream_input`, `evaluate_packet_eligibility`) remains unchanged and fail-closed
+- **Permanent block (Kraken public view):** Missing `min_notional` in public `/instruments` keeps strict upstream fail-closed; CVC/diagnostic paths do **not** lift gates. Canonical normative record: [REAL_FUTURES_MARKET_DATA_SOURCE_CONTRACT_V1.md](REAL_FUTURES_MARKET_DATA_SOURCE_CONTRACT_V1.md) §12.12
 
 **Tests:** `tests/webui/test_candidate_validation_readmodel_projection_v1.py`
 
