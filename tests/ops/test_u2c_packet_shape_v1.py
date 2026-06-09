@@ -154,3 +154,28 @@ def test_incomplete_flat_row_keeps_instrument_incomplete(shape: Any) -> None:
     assert packet["instrument"]["candidate_validation_complete"] is False
     assert packet["instrument"]["missing_fields"] == []
     assert "min_qty" in packet["instrument"]["completeness_reason"]
+
+
+def test_missing_provider_metadata_not_in_public_view_includes_min_notional(shape: Any) -> None:
+    assert shape.MISSING_PROVIDER_METADATA_NOT_IN_PUBLIC_VIEW == frozenset({"min_notional"})
+    assert shape.CANDIDATE_VALIDATION_ALLOWED_MISSING_PROVIDER_METADATA == frozenset(
+        {"min_notional"}
+    )
+
+
+def test_extract_kraken_fields_never_sets_min_notional_from_impact_mid_size(shape: Any) -> None:
+    inst = {
+        "symbol": "PF_ETHUSD",
+        "quote": "USD",
+        "impactMidSize": 5.1,
+        "tickSize": 0.1,
+        "contractSize": 1,
+        "retailMarginLevels": [
+            {"numNonContractUnits": 0.0, "initialMargin": 0.01, "maintenanceMargin": 0.005}
+        ],
+    }
+    provider = shape.extract_kraken_provider_instrument_fields(inst)
+    assert "min_notional" not in provider
+    assert provider["min_qty"] == 5.1
+    assert provider["min_qty_source"] == "kraken_instruments.impactMidSize"
+    assert provider["missing_provider_metadata"] == ["min_notional"]

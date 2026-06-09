@@ -66,6 +66,7 @@ Additive Workflow Dashboard V1 panel — **diagnostic-only**, **not** observabil
 - **Markers:** `data-workflow-panel-kraken-metadata-coverage-v1="true"`, `data-kraken-metadata-coverage-diagnostic-only="true"`, `data-kraken-metadata-coverage-not-truth="true"`, `data-kraken-metadata-coverage-not-selected-future="true"`, `data-kraken-metadata-coverage-strict-upstream-blocked="true"`.
 - **Coexistence:** separate from Projection Coverage (`data-workflow-panel-projection-coverage-v1`); Missing Truth panels unchanged.
 - **Strict upstream:** `bundle_to_upstream_input` remains blocked when `min_notional_unknown` — panel does not lift upstream or truth gates.
+- **Permanent block reference:** Kraken public `/instruments` supplies no provider-authentic `min_notional` — see [REAL_FUTURES_MARKET_DATA_SOURCE_CONTRACT_V1.md](REAL_FUTURES_MARKET_DATA_SOURCE_CONTRACT_V1.md) §12.12.
 
 ### Universe Selection Persistence Contract v1 (Slice 1 — schema/docs only)
 
