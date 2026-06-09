@@ -888,7 +888,7 @@ This reflection records a bounded **inactive / no-lift** Preflight-Lift blocker 
 It is **not** a Pilot-GO, not arming, not live authorization, not a GLB lift, not an OBS-truth lift, not a Preflight lift, and not evidence-marking.
 No blocker is lifted; no authority is changed.
 
-**Operator confirmations Q1–Q4** (from durable archive `acceptance/preflight_lift_blocker_decision_record_operator_confirm_no_run_v1_20260609T035805Z`) are documented here for bounded docs/tests decision-record reflection only. Confirmations **do not** authorize runtime, scheduler execution, Paper, Shadow, Testnet, Live, Truth-GO, dashboard truth, selected tradable future, strict-upstream bypass, or Preflight gate lift.
+**Operator confirmations Q1–Q4** (from durable archive `acceptance&#47;preflight_lift_blocker_decision_record_operator_confirm_no_run_v1_20260609T035805Z`) are documented here for bounded docs/tests decision-record reflection only. Confirmations **do not** authorize runtime, scheduler execution, Paper, Shadow, Testnet, Live, Truth-GO, dashboard truth, selected tradable future, strict-upstream bypass, or Preflight gate lift.
 
 **Hard blockers that remain BLOCKED (18 + §12.12 family):**
 
@@ -921,9 +921,9 @@ This criteria-reflection block records the bounded Preflight-Lift blocker decisi
 
 **Durable archive chain (read-only pointers; non-authorizing):**
 
-- Readiness review: `review/preflight_lift_readiness_review_no_run_v1_20260609T035440Z`
-- Decision record prep: `planning/preflight_lift_blocker_decision_record_prep_no_run_v1_20260609T035633Z`
-- Operator confirm: `acceptance/preflight_lift_blocker_decision_record_operator_confirm_no_run_v1_20260609T035805Z`
+- Readiness review: `review&#47;preflight_lift_readiness_review_no_run_v1_20260609T035440Z`
+- Decision record prep: `planning&#47;preflight_lift_blocker_decision_record_prep_no_run_v1_20260609T035633Z`
+- Operator confirm: `acceptance&#47;preflight_lift_blocker_decision_record_operator_confirm_no_run_v1_20260609T035805Z`
 
 Focused boundary test: `tests/ops/test_master_v2_go_live_blocker_register_core_doc_contract_v0.py`
 
