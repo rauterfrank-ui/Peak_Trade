@@ -137,9 +137,7 @@ def _validate_environment(environment: str) -> None:
         if marker in normalized:
             raise PayloadBuildError(f"environment must not include forbidden marker {marker!r}")
     if normalized not in ALLOWED_ENVIRONMENTS:
-        raise PayloadBuildError(
-            f"environment must be one of {sorted(ALLOWED_ENVIRONMENTS)!r}"
-        )
+        raise PayloadBuildError(f"environment must be one of {sorted(ALLOWED_ENVIRONMENTS)!r}")
 
 
 def _validate_venue(venue: str) -> None:
