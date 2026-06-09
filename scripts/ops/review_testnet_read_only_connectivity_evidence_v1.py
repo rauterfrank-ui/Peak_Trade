@@ -146,15 +146,15 @@ def review_evidence(
                 manifest_payload.get("connectivity_mode") == "read-only-connectivity"
             )
             if not checks["connectivity_mode_match"]:
-                issues.append(
-                    f"{MANIFEST_JSON} connectivity_mode must be read-only-connectivity"
-                )
+                issues.append(f"{MANIFEST_JSON} connectivity_mode must be read-only-connectivity")
             checks["testnet_connectivity_proven"] = (
                 manifest_payload.get("testnet_connectivity_proven") is True
             )
             if not checks["testnet_connectivity_proven"]:
                 issues.append(f"{MANIFEST_JSON} must set testnet_connectivity_proven=true")
-            checks["broker_connected_when_proven"] = manifest_payload.get("broker_connected") is True
+            checks["broker_connected_when_proven"] = (
+                manifest_payload.get("broker_connected") is True
+            )
             if not checks["broker_connected_when_proven"]:
                 issues.append(
                     f"{MANIFEST_JSON} broker_connected must be true when connectivity proven"
@@ -171,7 +171,9 @@ def review_evidence(
             if not checks["order_submission_denied"]:
                 issues.append(f"{MANIFEST_JSON} must deny order submission")
             request_count = manifest_payload.get("network_request_count")
-            checks["network_request_count_present"] = isinstance(request_count, int) and request_count > 0
+            checks["network_request_count_present"] = (
+                isinstance(request_count, int) and request_count > 0
+            )
             if not checks["network_request_count_present"]:
                 issues.append(f"{MANIFEST_JSON} network_request_count must be positive int")
             checks["proof_contract_refs_present"] = checks.get(

@@ -634,9 +634,7 @@ def _write_closeout_artifacts(
                 "archive_path": str(archive_dest),
                 "duration_seconds_requested": plan.duration_seconds,
                 "heartbeat_interval_seconds": plan.heartbeat_interval_seconds,
-                "testnet_connectivity_proven": harness_evidence.get(
-                    "network_reachability_proven"
-                ),
+                "testnet_connectivity_proven": harness_evidence.get("network_reachability_proven"),
                 "broker_connected": harness_evidence.get("network_reachability_proven"),
                 "network_request_count": harness_evidence.get("request_count"),
                 "review_verdict": review_payload.get("verdict"),
@@ -829,9 +827,7 @@ def main(
         )
         active_fetcher = fetcher
         if args.allow_live_network and active_fetcher is None:
-            active_fetcher = harness.default_safe_public_rest_fetcher(
-                harness.DEFAULT_REST_BASE_URL
-            )
+            active_fetcher = harness.default_safe_public_rest_fetcher(harness.DEFAULT_REST_BASE_URL)
         issues = validate_execute_preconditions(
             ctx,
             repo_clean_checker=repo_clean_checker or default_repo_clean_checker,

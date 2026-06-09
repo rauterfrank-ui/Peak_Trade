@@ -130,8 +130,7 @@ def test_plan_forbids_staging_script_in_commands(tmp_path: Path) -> None:
 def test_execute_without_approval_record_fails(tmp_path: Path) -> None:
     mod = _load_adapter()
     rc = mod.main(
-        _base_argv(_staging(tmp_path))
-        + ["--execute", "--no-strict-repo-clean"],
+        _base_argv(_staging(tmp_path)) + ["--execute", "--no-strict-repo-clean"],
         prerequisite_checker=lambda _root: (True, ""),
         repo_clean_checker=lambda _root: (True, ""),
         fetcher=_FakeFetcher(),
@@ -142,7 +141,9 @@ def test_execute_without_approval_record_fails(tmp_path: Path) -> None:
 def test_execute_with_invalid_approval_token_fails(tmp_path: Path) -> None:
     mod = _load_adapter()
     bad = tmp_path / "bad.md"
-    bad.write_text("APPROVE_EXECUTE_TESTNET_PATH_B_READ_ONLY_CONNECTIVITY_NOW=false\n", encoding="utf-8")
+    bad.write_text(
+        "APPROVE_EXECUTE_TESTNET_PATH_B_READ_ONLY_CONNECTIVITY_NOW=false\n", encoding="utf-8"
+    )
     rc = mod.main(
         _base_argv(_staging(tmp_path))
         + [
@@ -221,7 +222,10 @@ def test_fake_fetcher_hits_demo_futures_only(tmp_path: Path) -> None:
     assert rc == 0
     assert fetcher.urls
     assert all("demo-futures.kraken.com" in url for url in fetcher.urls)
-    assert all("futures.kraken.com" not in url.replace("demo-futures.kraken.com", "") for url in fetcher.urls)
+    assert all(
+        "futures.kraken.com" not in url.replace("demo-futures.kraken.com", "")
+        for url in fetcher.urls
+    )
 
 
 def test_execute_with_fake_fetcher_produces_durable_manifest(tmp_path: Path) -> None:
