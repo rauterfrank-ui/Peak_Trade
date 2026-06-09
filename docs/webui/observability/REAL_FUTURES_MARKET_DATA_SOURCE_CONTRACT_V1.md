@@ -54,7 +54,7 @@ MANIFEST_VERIFY_RC=0
 - `persist_governed_snapshot_loader_run_v1()` in `src/webui/workflow_dashboard_readmodel_v1/futures_producer_packet_real_metadata_source_v1.py`
 - Offline CLI: `scripts/ops/persist_u2b_governed_snapshot_loader_run_v1.py`
 - Confirm token: `U2B_GOVERNED_SNAPSHOT_LOADER_WRITE_EXECUTE_SEPARATE_OPERATOR_GO` (fail-closed; separate operator execute GO still required)
-- Writes durable loader persist record under `{ARCHIVE_ROOT}/runtime/` only — **not** readmodel, dashboard, truth, live, or trading
+- Writes durable loader persist record under `{ARCHIVE_ROOT}&#47;runtime&#47;` only — **not** readmodel, dashboard, truth, live, or trading
 
 ## 4. Reuse chain (no new parallel surfaces)
 

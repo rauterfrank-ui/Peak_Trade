@@ -782,7 +782,9 @@ def persist_governed_snapshot_loader_run_v1(
 
     manifest_rc, manifest_msg = finalize_durable_bundle_manifest(resolved_output)
     if manifest_rc != 0:
-        msg = f"{REASON_MANIFEST_VERIFY_FAILED}: manifest finalize rc={manifest_rc} ({manifest_msg})"
+        msg = (
+            f"{REASON_MANIFEST_VERIFY_FAILED}: manifest finalize rc={manifest_rc} ({manifest_msg})"
+        )
         raise FuturesProducerPacketRealMetadataSourceError(msg)
 
     return {

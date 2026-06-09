@@ -83,7 +83,9 @@ def test_persist_requires_confirm_token(tmp_path: Path) -> None:
     archive_root = _durable_archive_root(tmp_path)
     bundle_path = _install_governed_bundle(archive_root, "governed_packet_valid_minimal.json")
     out_dir = archive_root / "runtime" / "loader_persist_v1"
-    with pytest.raises(FuturesProducerPacketRealMetadataSourceError, match=REASON_CONFIRM_TOKEN_INVALID):
+    with pytest.raises(
+        FuturesProducerPacketRealMetadataSourceError, match=REASON_CONFIRM_TOKEN_INVALID
+    ):
         persist_governed_snapshot_loader_run_v1(
             confirm_token="WRONG_TOKEN",
             candidate_bundle_path=bundle_path,
@@ -161,7 +163,9 @@ def test_persist_candidate_validation_bundle_and_upstream_still_blocked(
     assert summary["completeness_summary"]["candidate_validation_complete_count"] == 1
 
     bundle = load_futures_producer_packet_governed(bundle_path, archive_root=archive_root)
-    with pytest.raises(FuturesProducerPacketRealMetadataSourceError, match=REASON_INSTRUMENT_INCOMPLETE):
+    with pytest.raises(
+        FuturesProducerPacketRealMetadataSourceError, match=REASON_INSTRUMENT_INCOMPLETE
+    ):
         bundle_to_upstream_input(bundle)
 
 
