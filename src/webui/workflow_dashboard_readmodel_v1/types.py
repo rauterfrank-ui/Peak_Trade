@@ -147,6 +147,27 @@ class UniverseSelectionDashboardSliceV1:
 
 
 @dataclass(frozen=True)
+class ProjectionCoverageCardV1:
+    loaded: bool
+    load_errors: tuple[str, ...]
+    load_mode: str | None = None
+    display_kind: str | None = None
+    candidate_validation: bool = False
+    non_authorizing: bool = False
+    not_truth: bool = True
+    not_selected_future: bool = True
+    strict_upstream_blocked: bool = True
+    universe_count: int = 0
+    ranking_count: int = 0
+    source_run_id: str | None = None
+    source_stage: str | None = None
+    generated_at: str | None = None
+    universe: tuple[UniverseSelectionRowDisplayV1, ...] = ()
+    ranking: tuple[UniverseSelectionRowDisplayV1, ...] = ()
+    evidence_links: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True)
 class WorkflowDashboardReadModelV1:
     schema_version: str
     readmodel_id: str
@@ -164,6 +185,7 @@ class WorkflowDashboardReadModelV1:
     selected_future_missing: MissingTruthCardV1
     future_detail_missing: MissingTruthCardV1
     universe_selection: UniverseSelectionDashboardSliceV1
+    universe_selection_projection_coverage: ProjectionCoverageCardV1
     pipeline: WorkflowPipelineAggregateV1
     orders_fills_pnl: OrdersFillsPnlCardV1
     evidence_explorer: EvidenceCardV1
@@ -268,6 +290,45 @@ def to_json_dict(model: WorkflowDashboardReadModelV1) -> dict[str, Any]:
                 }
             ),
             "evidence_links": list(model.universe_selection.evidence_links),
+        },
+        "universe_selection_projection_coverage": {
+            "loaded": model.universe_selection_projection_coverage.loaded,
+            "load_errors": list(model.universe_selection_projection_coverage.load_errors),
+            "load_mode": model.universe_selection_projection_coverage.load_mode,
+            "display_kind": model.universe_selection_projection_coverage.display_kind,
+            "candidate_validation": model.universe_selection_projection_coverage.candidate_validation,
+            "non_authorizing": model.universe_selection_projection_coverage.non_authorizing,
+            "not_truth": model.universe_selection_projection_coverage.not_truth,
+            "not_selected_future": model.universe_selection_projection_coverage.not_selected_future,
+            "strict_upstream_blocked": model.universe_selection_projection_coverage.strict_upstream_blocked,
+            "universe_count": model.universe_selection_projection_coverage.universe_count,
+            "ranking_count": model.universe_selection_projection_coverage.ranking_count,
+            "source_run_id": model.universe_selection_projection_coverage.source_run_id,
+            "source_stage": model.universe_selection_projection_coverage.source_stage,
+            "generated_at": model.universe_selection_projection_coverage.generated_at,
+            "universe": [
+                {
+                    "row_id": row.row_id,
+                    "symbol": row.symbol,
+                    "rank": row.rank,
+                    "exchange": row.exchange,
+                    "display_score": row.display_score,
+                    "notes": row.notes,
+                }
+                for row in model.universe_selection_projection_coverage.universe
+            ],
+            "ranking": [
+                {
+                    "row_id": row.row_id,
+                    "symbol": row.symbol,
+                    "rank": row.rank,
+                    "exchange": row.exchange,
+                    "display_score": row.display_score,
+                    "notes": row.notes,
+                }
+                for row in model.universe_selection_projection_coverage.ranking
+            ],
+            "evidence_links": list(model.universe_selection_projection_coverage.evidence_links),
         },
         "pipeline": {
             "readmodel_id": model.pipeline.readmodel_id,

@@ -16,6 +16,7 @@ from .types import (
     MissingTruthCardV1,
     NextGoCardV1,
     OrdersFillsPnlCardV1,
+    ProjectionCoverageCardV1,
     SafetyCardV1,
     UniverseSelectionDashboardSliceV1,
     WorkflowDashboardReadModelV1,
@@ -26,7 +27,11 @@ from .universe_selection_contract_v1 import (
     MISSING_TRUTH_SELECTED,
     MISSING_TRUTH_UNIVERSE,
 )
-from .universe_selection_reader_v1 import try_load_universe_selection_for_dashboard
+from .universe_selection_reader_v1 import (
+    PROJECTION_COVERAGE_LOAD_MODE,
+    try_load_universe_selection_for_dashboard,
+    try_load_universe_selection_projection_coverage_for_dashboard,
+)
 
 _FIXED_GEN_ENV = "PEAK_TRADE_FIXED_GENERATED_AT_UTC"
 T2_NEXT_GO_FALLBACK = "GO_T3_LONGER_TESTNET_STAGE_READY_PACKAGE_NO_RUN_V1"
@@ -126,6 +131,38 @@ def _universe_selection_missing_cards(
     return universe, top20, selected, future_detail
 
 
+def _build_projection_coverage_card(
+    projection: UniverseSelectionDashboardSliceV1,
+) -> ProjectionCoverageCardV1:
+    if not projection.loaded:
+        return ProjectionCoverageCardV1(
+            loaded=False,
+            load_errors=projection.load_errors,
+            not_truth=True,
+            not_selected_future=True,
+            strict_upstream_blocked=True,
+        )
+    return ProjectionCoverageCardV1(
+        loaded=True,
+        load_errors=(),
+        load_mode=projection.load_mode or PROJECTION_COVERAGE_LOAD_MODE,
+        display_kind=PROJECTION_COVERAGE_LOAD_MODE,
+        candidate_validation=True,
+        non_authorizing=True,
+        not_truth=True,
+        not_selected_future=True,
+        strict_upstream_blocked=True,
+        universe_count=len(projection.universe),
+        ranking_count=len(projection.ranking),
+        source_run_id=projection.source_run_id,
+        source_stage=projection.source_stage,
+        generated_at=projection.generated_at,
+        universe=projection.universe,
+        ranking=projection.ranking,
+        evidence_links=projection.evidence_links,
+    )
+
+
 def build_workflow_dashboard_readmodel_v1(archive_root: Path) -> WorkflowDashboardReadModelV1:
     """Materialize display-only workflow dashboard from durable archive."""
 
@@ -151,6 +188,10 @@ def build_workflow_dashboard_readmodel_v1(archive_root: Path) -> WorkflowDashboa
     universe_selection = try_load_universe_selection_for_dashboard(root)
     if universe_selection.load_errors:
         errors.extend(universe_selection.load_errors)
+
+    universe_selection_projection_coverage = _build_projection_coverage_card(
+        try_load_universe_selection_projection_coverage_for_dashboard(root)
+    )
 
     universe_missing, top20_missing, selected_future_missing, future_detail_missing = (
         _universe_selection_missing_cards(universe_selection)
@@ -262,6 +303,7 @@ def build_workflow_dashboard_readmodel_v1(archive_root: Path) -> WorkflowDashboa
         selected_future_missing=selected_future_missing,
         future_detail_missing=future_detail_missing,
         universe_selection=universe_selection,
+        universe_selection_projection_coverage=universe_selection_projection_coverage,
         pipeline=pipeline,
         orders_fills_pnl=orders_fills,
         evidence_explorer=evidence_card,

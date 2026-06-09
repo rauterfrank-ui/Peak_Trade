@@ -6,6 +6,7 @@ from .builder import build_workflow_dashboard_readmodel_v1
 from .pipeline_builder import build_workflow_pipeline_aggregate_v1
 from .types import (
     PIPELINE_READMODEL_ID,
+    ProjectionCoverageCardV1,
     READMODEL_ID,
     SCHEMA_VERSION,
     WorkflowDashboardReadModelV1,
@@ -52,6 +53,7 @@ __all__ = [
     "LOAD_ERROR_MANIFEST_VERIFY_FAILED",
     "ProducerWriteError",
     "ProducerWriteResult",
+    "ProjectionCoverageCardV1",
     "UniverseSelectionContractError",
     "UniverseSelectionContractV1",
     "WorkflowDashboardReadModelV1",
