@@ -260,7 +260,7 @@ Governed bundles with `u2b_candidate_validation_only=true` and `candidate_valida
 
 **Function:** `try_load_universe_selection_projection_coverage_for_dashboard(archive_root)` in `universe_selection_reader_v1.py`
 
-- **Opt-in reader** — `builder.py` loads this path in parallel to the truth reader and exposes `universe_selection_projection_coverage` in workflow dashboard JSON (non-authorizing classification only). SSR templates do **not** render this section until a separate template-wiring GO.
+- **Opt-in reader** — `builder.py` loads this path in parallel to the truth reader and exposes `universe_selection_projection_coverage` in workflow dashboard JSON (non-authorizing classification only).
 - **Non-authorizing display path** for `candidate_validation_projection=true` payloads when `observability_truth_allowed=false` and `selected_future.truth_status=NOT_PERSISTED`.
 - Reuses manifest verify + contract validation + `_contract_to_slice`; sets `load_mode=projection_coverage` on the returned slice.
 - **Does not** weaken `try_load_universe_selection_for_dashboard` — truth reader remains fail-closed on CVC (`REAL_METADATA_NOT_OBSERVABILITY_TRUTH`).
@@ -278,9 +278,22 @@ Governed bundles with `u2b_candidate_validation_only=true` and `candidate_valida
 - Truth missing cards (`universe_missing`, `top20_missing`, `selected_future_missing`, `future_detail_missing`) remain driven **only** by the truth reader path.
 - Classification on the card: `load_mode=projection_coverage`, `candidate_validation=true`, `non_authorizing=true`, `not_truth=true`, `not_selected_future=true`, `strict_upstream_blocked=true`.
 - **Does not** authorize truth-GO, selected tradable future, preflight/live, or observability truth panels.
-- Template/app wiring deferred — `observability_hub.html` unchanged until separate GO.
 
 **Tests:** `tests/webui/test_workflow_dashboard_readmodel_v1.py` (projection coverage builder cases)
+
+### Template projection-coverage display (Slice 3 additive — non-truth, template-only)
+
+**Template:** `templates/peak_trade_dashboard/observability_hub.html`  
+**SSR gate:** existing `PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ENABLED=1` + archive root — **no `app.py` change**.
+
+- Renders `universe_selection_projection_coverage` as a **separate cyan section** when `pcov.loaded=true`.
+- Gate is **`pcov.loaded` only** — must **not** use `truth_status == 'PERSISTED'` or `wd.universe_selection.loaded`.
+- Required labels: Projection Coverage, Candidate Validation, Non-authorizing, Not Truth, Not Selected Future, Strict Upstream Blocked.
+- Data attributes: `data-workflow-panel-projection-coverage-v1`, `data-projection-coverage-not-truth=true`.
+- Truth missing panels (Universe/Top20/Selected Future/Future Detail) remain on the truth reader path unchanged.
+- **Does not** authorize truth-GO, selected tradable future, preflight/live, readmodel write, or builder/reader/producer changes.
+
+**Tests:** `tests/webui/test_observability_workflow_dashboard_structure_contract_v1.py`, `tests/webui/test_observability_hub.py`
 
 ## 11. Implementation slices
 
