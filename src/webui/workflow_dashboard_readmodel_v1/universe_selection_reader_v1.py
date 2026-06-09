@@ -237,7 +237,10 @@ def try_load_universe_selection_projection_coverage_for_dashboard(
         return _empty_slice(load_errors=(LOAD_ERROR_NOT_CVC_PROJECTION,))
 
     evidence = payload.get("evidence")
-    if not isinstance(evidence, dict) or evidence.get("candidate_validation_projection") is not True:
+    if (
+        not isinstance(evidence, dict)
+        or evidence.get("candidate_validation_projection") is not True
+    ):
         return _empty_slice(load_errors=(LOAD_ERROR_NOT_CVC_PROJECTION,))
 
     if contract.selected_future is not None or _selected_future_persisted_in_payload(payload):
