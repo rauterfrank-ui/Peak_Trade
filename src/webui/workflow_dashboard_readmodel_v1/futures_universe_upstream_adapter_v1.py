@@ -601,11 +601,7 @@ def map_futures_packets_to_universe_selection_readmodel_candidate_validation(
         },
     }
     validate_universe_selection_payload(payload)
-    status = (
-        "candidate_validation_projection"
-        if universe_rows or ranking_rows
-        else "missing_truth"
-    )
+    status = "candidate_validation_projection" if universe_rows or ranking_rows else "missing_truth"
     return FuturesUniverseUpstreamAdapterResultV1(
         status=status,
         payload=payload,
