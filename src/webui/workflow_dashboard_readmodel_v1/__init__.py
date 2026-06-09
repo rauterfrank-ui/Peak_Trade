@@ -31,7 +31,13 @@ from .universe_selection_reader_v1 import (
     LOAD_ERROR_INVALID_JSON,
     LOAD_ERROR_MANIFEST_NOT_FOUND,
     LOAD_ERROR_MANIFEST_VERIFY_FAILED,
+    LOAD_ERROR_NOT_CVC_PROJECTION,
+    LOAD_ERROR_NON_AUTHORIZING_REQUIRED,
+    LOAD_ERROR_PROJECTION_NOT_CVC_ONLY,
+    LOAD_ERROR_SELECTED_FUTURE_PERSISTED_NOT_PROJECTION,
+    PROJECTION_COVERAGE_LOAD_MODE,
     try_load_universe_selection_for_dashboard,
+    try_load_universe_selection_projection_coverage_for_dashboard,
 )
 
 __all__ = [
@@ -57,5 +63,11 @@ __all__ = [
     "load_universe_selection_contract",
     "to_json_dict",
     "try_load_universe_selection_for_dashboard",
+    "try_load_universe_selection_projection_coverage_for_dashboard",
+    "PROJECTION_COVERAGE_LOAD_MODE",
+    "LOAD_ERROR_NOT_CVC_PROJECTION",
+    "LOAD_ERROR_PROJECTION_NOT_CVC_ONLY",
+    "LOAD_ERROR_SELECTED_FUTURE_PERSISTED_NOT_PROJECTION",
+    "LOAD_ERROR_NON_AUTHORIZING_REQUIRED",
     "validate_universe_selection_payload",
 ]

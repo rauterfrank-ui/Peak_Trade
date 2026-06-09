@@ -23,8 +23,13 @@ from src.webui.workflow_dashboard_readmodel_v1.universe_selection_reader_v1 impo
     LOAD_ERROR_INVALID_JSON,
     LOAD_ERROR_MANIFEST_NOT_FOUND,
     LOAD_ERROR_MANIFEST_VERIFY_FAILED,
+    LOAD_ERROR_NOT_CVC_PROJECTION,
+    LOAD_ERROR_PROJECTION_NOT_CVC_ONLY,
     LOAD_ERROR_REAL_METADATA_NOT_OBSERVABILITY_TRUTH,
+    LOAD_ERROR_SELECTED_FUTURE_PERSISTED_NOT_PROJECTION,
+    PROJECTION_COVERAGE_LOAD_MODE,
     try_load_universe_selection_for_dashboard,
+    try_load_universe_selection_projection_coverage_for_dashboard,
 )
 
 SCRATCH_ROOT = project_root / "tests" / "_durable_archive_scratch"
@@ -58,6 +63,39 @@ def _install_fixture(archive_root: Path, fixture_dir: str, *, write_manifest: bo
     if write_manifest:
         _write_manifest_sha256(readmodels_dir)
     return dest
+
+
+def _install_cvc_projection_fixture(
+    archive_root: Path,
+    *,
+    write_manifest: bool = True,
+) -> Path:
+    path = _install_fixture(archive_root, "complete_minimal", write_manifest=False)
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    payload["fixture_marked"] = False
+    payload["real_metadata_source_marked"] = True
+    payload["observability_truth_allowed"] = False
+    payload["non_authorizing"] = True
+    payload["selected_future"] = {"truth_status": "NOT_PERSISTED"}
+    payload["missing_truth"]["selected_future"] = "SELECTED_FUTURE_NOT_PERSISTED"
+    payload["missing_truth"]["future_detail"] = "FUTURE_DETAIL_NOT_AVAILABLE"
+    payload["market_snapshot"] = {
+        "truth_status": "NOT_PERSISTED",
+        "source_kind": "NOT_PERSISTED",
+        "snapshot_id": None,
+        "exchange": None,
+        "captured_at": None,
+    }
+    evidence = payload.get("evidence")
+    if not isinstance(evidence, dict):
+        evidence = {}
+        payload["evidence"] = evidence
+    evidence["candidate_validation_projection"] = True
+    evidence["projection_source"] = "candidate_validation_bridge"
+    path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    if write_manifest:
+        _write_manifest_sha256(path.parent)
+    return path
 
 
 def test_no_file_missing_truth_fallback(archive_root: Path) -> None:
@@ -163,3 +201,94 @@ def test_real_metadata_marked_without_observability_truth_not_ssr_truth(
     assert result.universe == ()
     assert result.selected_future is None
     assert "BTC/USD" not in str(result)
+
+
+def test_truth_reader_rejects_cvc_while_projection_reader_accepts(
+    archive_root: Path,
+) -> None:
+    _install_cvc_projection_fixture(archive_root)
+    truth = try_load_universe_selection_for_dashboard(archive_root)
+    projection = try_load_universe_selection_projection_coverage_for_dashboard(archive_root)
+    assert truth.loaded is False
+    assert truth.load_errors == (LOAD_ERROR_REAL_METADATA_NOT_OBSERVABILITY_TRUTH,)
+    assert projection.loaded is True
+    assert projection.load_mode == PROJECTION_COVERAGE_LOAD_MODE
+    assert len(projection.universe) == 3
+    assert len(projection.ranking) == 2
+    assert projection.selected_future is None
+
+
+def test_projection_reader_accepts_cvc_payload(archive_root: Path) -> None:
+    _install_cvc_projection_fixture(archive_root)
+    result = try_load_universe_selection_projection_coverage_for_dashboard(archive_root)
+    assert result.loaded is True
+    assert result.load_mode == PROJECTION_COVERAGE_LOAD_MODE
+    assert result.load_errors == ()
+    assert result.selected_future is None
+
+
+def test_projection_reader_rejects_observability_truth_allowed(archive_root: Path) -> None:
+    path = _install_cvc_projection_fixture(archive_root, write_manifest=False)
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    payload["observability_truth_allowed"] = True
+    path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    _write_manifest_sha256(path.parent)
+    result = try_load_universe_selection_projection_coverage_for_dashboard(archive_root)
+    assert result.loaded is False
+    assert result.load_errors == (LOAD_ERROR_PROJECTION_NOT_CVC_ONLY,)
+
+
+def test_projection_reader_rejects_selected_future_persisted(archive_root: Path) -> None:
+    path = _install_cvc_projection_fixture(archive_root, write_manifest=False)
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    payload["selected_future"] = {
+        "row_id": "s-sol",
+        "symbol": "SOLUSDT",
+        "rank": 1,
+        "truth_status": "PERSISTED",
+        "selection_reason": "fixture_top_ranked_candidate",
+    }
+    payload["missing_truth"]["selected_future"] = "PERSISTED"
+    path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    _write_manifest_sha256(path.parent)
+    result = try_load_universe_selection_projection_coverage_for_dashboard(archive_root)
+    assert result.loaded is False
+    assert result.load_errors == (LOAD_ERROR_SELECTED_FUTURE_PERSISTED_NOT_PROJECTION,)
+
+
+def test_projection_reader_rejects_missing_candidate_validation_flag(
+    archive_root: Path,
+) -> None:
+    path = _install_cvc_projection_fixture(archive_root, write_manifest=False)
+    payload = json.loads(path.read_text(encoding="utf-8"))
+    evidence = payload["evidence"]
+    del evidence["candidate_validation_projection"]
+    path.write_text(json.dumps(payload, indent=2) + "\n", encoding="utf-8")
+    _write_manifest_sha256(path.parent)
+    result = try_load_universe_selection_projection_coverage_for_dashboard(archive_root)
+    assert result.loaded is False
+    assert result.load_errors == (LOAD_ERROR_NOT_CVC_PROJECTION,)
+
+
+def test_projection_reader_rejects_missing_manifest(archive_root: Path) -> None:
+    _install_cvc_projection_fixture(archive_root, write_manifest=False)
+    result = try_load_universe_selection_projection_coverage_for_dashboard(archive_root)
+    assert result.loaded is False
+    assert result.load_errors == (LOAD_ERROR_MANIFEST_NOT_FOUND,)
+
+
+def test_projection_reader_rejects_manifest_tamper(archive_root: Path) -> None:
+    path = _install_cvc_projection_fixture(archive_root)
+    path.write_text(path.read_text(encoding="utf-8") + "\n", encoding="utf-8")
+    result = try_load_universe_selection_projection_coverage_for_dashboard(archive_root)
+    assert result.loaded is False
+    assert result.load_errors == (LOAD_ERROR_MANIFEST_VERIFY_FAILED,)
+
+
+def test_projection_reader_performs_no_writes(archive_root: Path) -> None:
+    _install_cvc_projection_fixture(archive_root)
+    readmodels_dir = archive_root / "readmodels"
+    before = {p.name: p.stat().st_mtime_ns for p in readmodels_dir.iterdir()}
+    try_load_universe_selection_projection_coverage_for_dashboard(archive_root)
+    after = {p.name: p.stat().st_mtime_ns for p in readmodels_dir.iterdir()}
+    assert before == after
