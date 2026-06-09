@@ -260,7 +260,7 @@ Governed bundles with `u2b_candidate_validation_only=true` and `candidate_valida
 
 **Function:** `try_load_universe_selection_projection_coverage_for_dashboard(archive_root)` in `universe_selection_reader_v1.py`
 
-- **Opt-in only** — `builder.py` and SSR templates do **not** call this function until a separate dashboard-wiring GO.
+- **Opt-in reader** — `builder.py` loads this path in parallel to the truth reader and exposes `universe_selection_projection_coverage` in workflow dashboard JSON (non-authorizing classification only). SSR templates do **not** render this section until a separate template-wiring GO.
 - **Non-authorizing display path** for `candidate_validation_projection=true` payloads when `observability_truth_allowed=false` and `selected_future.truth_status=NOT_PERSISTED`.
 - Reuses manifest verify + contract validation + `_contract_to_slice`; sets `load_mode=projection_coverage` on the returned slice.
 - **Does not** weaken `try_load_universe_selection_for_dashboard` — truth reader remains fail-closed on CVC (`REAL_METADATA_NOT_OBSERVABILITY_TRUTH`).
@@ -268,6 +268,19 @@ Governed bundles with `u2b_candidate_validation_only=true` and `candidate_valida
 - Reject paths: `PROJECTION_NOT_CVC_ONLY`, `NOT_CVC_PROJECTION`, `SELECTED_FUTURE_PERSISTED_NOT_PROJECTION`, `NON_AUTHORIZING_REQUIRED`, plus shared manifest/contract errors.
 
 **Tests:** `tests/webui/test_universe_selection_reader_v1.py` (projection reader cases)
+
+### Builder projection-coverage JSON (Slice 3 additive — non-truth, not template-wired)
+
+**Module:** `src/webui/workflow_dashboard_readmodel_v1/builder.py`  
+**Field:** `universe_selection_projection_coverage` on `WorkflowDashboardReadModelV1` (`ProjectionCoverageCardV1`)
+
+- Builder calls `try_load_universe_selection_projection_coverage_for_dashboard` **in parallel** to the truth reader.
+- Truth missing cards (`universe_missing`, `top20_missing`, `selected_future_missing`, `future_detail_missing`) remain driven **only** by the truth reader path.
+- Classification on the card: `load_mode=projection_coverage`, `candidate_validation=true`, `non_authorizing=true`, `not_truth=true`, `not_selected_future=true`, `strict_upstream_blocked=true`.
+- **Does not** authorize truth-GO, selected tradable future, preflight/live, or observability truth panels.
+- Template/app wiring deferred — `observability_hub.html` unchanged until separate GO.
+
+**Tests:** `tests/webui/test_workflow_dashboard_readmodel_v1.py` (projection coverage builder cases)
 
 ## 11. Implementation slices
 
