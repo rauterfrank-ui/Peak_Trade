@@ -2,8 +2,8 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass
-from typing import Any, Sequence
+from dataclasses import dataclass, field
+from typing import Any, Mapping, Sequence
 
 from trading.master_v2.double_play_futures_input import FuturesMarketType
 from trading.master_v2.double_play_futures_input_producer import FuturesProducerPacket
@@ -66,7 +66,9 @@ REASON_SPOT_OR_NON_DERIVATIVE_SELECTED_FUTURE_REJECTED = (
 REASON_SELECTED_FUTURE_NOT_IN_ELIGIBLE_UNIVERSE = "SELECTED_FUTURE_NOT_IN_ELIGIBLE_UNIVERSE"
 REASON_INELIGIBLE_MARKET_TYPE = "INELIGIBLE_MARKET_TYPE"
 REASON_INELIGIBLE_INSTRUMENT_METADATA_INCOMPLETE = "INELIGIBLE_INSTRUMENT_METADATA_INCOMPLETE"
+REASON_INELIGIBLE_CANDIDATE_VALIDATION_INCOMPLETE = "INELIGIBLE_CANDIDATE_VALIDATION_INCOMPLETE"
 REASON_INELIGIBLE_SPOT_SYMBOL = "INELIGIBLE_SPOT_SYMBOL"
+CANDIDATE_VALIDATION_PROJECTION_SOURCE = "candidate_validation_bridge"
 
 
 @dataclass(frozen=True)
@@ -82,6 +84,8 @@ class FuturesUniverseUpstreamInputV1:
     selected_candidate_id: str | None = None
     evidence_links: tuple[str, ...] = ()
     fixture_marked: bool = False
+    candidate_validation_projection: bool = False
+    instrument_raw_by_candidate_id: Mapping[str, Mapping[str, Any]] = field(default_factory=dict)
 
 
 @dataclass(frozen=True)
@@ -145,6 +149,36 @@ def evaluate_packet_eligibility(packet: FuturesProducerPacket) -> tuple[bool, st
         return False, REASON_INELIGIBLE_MARKET_TYPE
     if not packet.instrument.complete:
         return False, REASON_INELIGIBLE_INSTRUMENT_METADATA_INCOMPLETE
+    return True, None
+
+
+def evaluate_packet_eligibility_candidate_validation(
+    packet: FuturesProducerPacket,
+    *,
+    raw_instrument: Mapping[str, Any] | None,
+) -> tuple[bool, str | None]:
+    """Candidate-validation projection eligibility — strict instrument.complete not required."""
+    symbol = packet.candidate.symbol
+    if _is_spot_symbol(symbol):
+        return False, REASON_INELIGIBLE_SPOT_SYMBOL
+    if packet.candidate.market_type not in ELIGIBLE_MARKET_TYPES:
+        return False, REASON_INELIGIBLE_MARKET_TYPE
+    if packet.candidate.live_authorization:
+        return False, REASON_INELIGIBLE_MARKET_TYPE
+    if raw_instrument is None or raw_instrument.get("candidate_validation_complete") is not True:
+        return False, REASON_INELIGIBLE_CANDIDATE_VALIDATION_INCOMPLETE
+    instrument = packet.instrument
+    provider_flags = (
+        instrument.contract_size_known,
+        instrument.tick_size_known,
+        instrument.step_size_known,
+        instrument.min_qty_known,
+        instrument.margin_asset_known,
+        instrument.settlement_asset_known,
+        instrument.leverage_bounds_known,
+    )
+    if not all(provider_flags) or instrument.missing_fields:
+        return False, REASON_INELIGIBLE_CANDIDATE_VALIDATION_INCOMPLETE
     return True, None
 
 
@@ -419,6 +453,159 @@ def map_futures_packets_to_universe_selection_readmodel(
     validate_universe_selection_payload(payload)
 
     status = "ok" if has_universe and has_ranking and has_selected else "partial"
+    return FuturesUniverseUpstreamAdapterResultV1(
+        status=status,
+        payload=payload,
+        rejection_reasons=tuple(rejection_reasons),
+        eligibility_exclusions=tuple(exclusions),
+    )
+
+
+def map_futures_packets_to_universe_selection_readmodel_candidate_validation(
+    upstream_input: FuturesUniverseUpstreamInputV1,
+) -> FuturesUniverseUpstreamAdapterResultV1:
+    """Map candidate_validation_complete packets to a non-truth projection payload (no selected future)."""
+    if not upstream_input.candidate_validation_projection:
+        msg = (
+            "candidate_validation_projection must be true for "
+            "map_futures_packets_to_universe_selection_readmodel_candidate_validation"
+        )
+        raise ValueError(msg)
+
+    rejection_reasons: list[str] = []
+    exclusions: list[EligibilityExclusionV1] = []
+
+    if is_forbidden_upstream_source(
+        upstream_source_kind=upstream_input.upstream_source_kind,
+        upstream_producer_id=upstream_input.upstream_producer_id,
+    ):
+        rejection_reasons.append(REASON_MARKET_SURFACE_NOT_OBSERVABILITY_TRUTH)
+        payload = _missing_truth_payload(
+            source_run_id=upstream_input.source_run_id,
+            source_stage=upstream_input.source_stage,
+            generated_at=upstream_input.generated_at,
+            evidence_links=upstream_input.evidence_links,
+            fixture_marked=upstream_input.fixture_marked,
+            rejection_reasons=tuple(rejection_reasons),
+        )
+        return FuturesUniverseUpstreamAdapterResultV1(
+            status="missing_truth",
+            payload=payload,
+            rejection_reasons=tuple(rejection_reasons),
+            eligibility_exclusions=(),
+        )
+
+    if not upstream_input.packets:
+        rejection_reasons.append(REASON_UPSTREAM_SOURCE_EMPTY)
+        payload = _missing_truth_payload(
+            source_run_id=upstream_input.source_run_id,
+            source_stage=upstream_input.source_stage,
+            generated_at=upstream_input.generated_at,
+            evidence_links=upstream_input.evidence_links,
+            fixture_marked=upstream_input.fixture_marked,
+            rejection_reasons=tuple(rejection_reasons),
+        )
+        return FuturesUniverseUpstreamAdapterResultV1(
+            status="missing_truth",
+            payload=payload,
+            rejection_reasons=tuple(rejection_reasons),
+            eligibility_exclusions=(),
+        )
+
+    if upstream_input.selected_candidate_id:
+        rejection_reasons.append(REASON_SELECTED_FUTURE_NOT_IN_ELIGIBLE_UNIVERSE)
+
+    raw_by_id = upstream_input.instrument_raw_by_candidate_id
+    eligible_packets: list[FuturesProducerPacket] = []
+    for packet in upstream_input.packets:
+        raw_instrument = raw_by_id.get(packet.candidate.candidate_id)
+        eligible, reason = evaluate_packet_eligibility_candidate_validation(
+            packet,
+            raw_instrument=raw_instrument,
+        )
+        if eligible:
+            eligible_packets.append(packet)
+        elif reason is not None:
+            exclusions.append(
+                EligibilityExclusionV1(
+                    candidate_id=packet.candidate.candidate_id,
+                    symbol=packet.candidate.symbol,
+                    reason=reason,
+                )
+            )
+
+    eligible_packets.sort(key=_sort_key)
+    universe_packets = eligible_packets[:MAX_UNIVERSE_ROWS]
+    ranking_packets = eligible_packets[:MAX_RANKING_ROWS]
+    universe_rows = [_universe_row(packet) for packet in universe_packets]
+    ranking_rows = [_ranking_row(packet) for packet in ranking_packets]
+
+    if not universe_rows and not ranking_rows:
+        rejection_reasons.append(REASON_UPSTREAM_SOURCE_EMPTY)
+        payload = _missing_truth_payload(
+            source_run_id=upstream_input.source_run_id,
+            source_stage=upstream_input.source_stage,
+            generated_at=upstream_input.generated_at,
+            evidence_links=upstream_input.evidence_links,
+            fixture_marked=upstream_input.fixture_marked,
+            rejection_reasons=tuple(rejection_reasons),
+        )
+        return FuturesUniverseUpstreamAdapterResultV1(
+            status="missing_truth",
+            payload=payload,
+            rejection_reasons=tuple(rejection_reasons),
+            eligibility_exclusions=tuple(exclusions),
+        )
+
+    links = [item.strip() for item in upstream_input.evidence_links if item and item.strip()]
+    payload: dict[str, Any] = {
+        "schema_name": SCHEMA_NAME,
+        "schema_version": SCHEMA_VERSION,
+        "generated_at": upstream_input.generated_at,
+        "source_run_id": upstream_input.source_run_id.strip(),
+        "source_stage": upstream_input.source_stage.strip().lower(),
+        "non_authorizing": True,
+        "fixture_marked": False,
+        "real_metadata_source_marked": True,
+        "observability_truth_allowed": False,
+        "universe": universe_rows,
+        "ranking": ranking_rows,
+        "selected_future": {"truth_status": "NOT_PERSISTED"},
+        "market_snapshot": {
+            "truth_status": "NOT_PERSISTED",
+            "source_kind": "NOT_PERSISTED",
+            "snapshot_id": None,
+            "exchange": None,
+            "captured_at": None,
+        },
+        "evidence": {
+            "producer_contract": PRODUCER_CONTRACT,
+            "upstream_adapter": UPSTREAM_ADAPTER_CONTRACT,
+            "storage_target": STORAGE_RELATIVE_PATH,
+            "manifest_verify_rc_expected": 0,
+            "links": links,
+            "rejection_reasons": list(rejection_reasons),
+            "projection_source": CANDIDATE_VALIDATION_PROJECTION_SOURCE,
+            "candidate_validation_projection": True,
+            "eligibility_exclusions": [
+                {"candidate_id": item.candidate_id, "symbol": item.symbol, "reason": item.reason}
+                for item in exclusions
+            ],
+        },
+        "missing_truth": {
+            "universe": "PERSISTED" if universe_rows else MISSING_TRUTH_UNIVERSE,
+            "ranking": "PERSISTED" if ranking_rows else MISSING_TRUTH_RANKING,
+            "selected_future": MISSING_TRUTH_SELECTED,
+            "future_detail": MISSING_TRUTH_FUTURE_DETAIL,
+            "orders_fills_pnl": MISSING_TRUTH_PNL,
+        },
+    }
+    validate_universe_selection_payload(payload)
+    status = (
+        "candidate_validation_projection"
+        if universe_rows or ranking_rows
+        else "missing_truth"
+    )
     return FuturesUniverseUpstreamAdapterResultV1(
         status=status,
         payload=payload,

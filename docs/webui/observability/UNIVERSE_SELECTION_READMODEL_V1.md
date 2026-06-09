@@ -219,6 +219,19 @@ No BTC/USD dummy truth, no synthetic ranking, no dashboard faking.
 
 **Tests:** `tests/webui/test_universe_selection_producer_closeout_hook_v1.py`
 
+### Candidate-validation projection bridge (non-truth, build-only)
+
+**Modules:** `futures_producer_packet_real_metadata_source_v1.project_governed_candidate_validation_bundle_v1`, `universe_selection_producer_v1.build_real_metadata_mapped_universe_selection_readmodel_candidate_validation`
+
+Governed bundles with `u2b_candidate_validation_only=true` and `candidate_validation_complete` may use a **separate additive projection path** when `instrument.complete=false` (e.g. missing `min_notional` in public provider view). This path:
+
+- Reuses load/contract validation — **does not** call strict `bundle_to_upstream_input`
+- Produces contract-valid readmodel-shaped JSON with `observability_truth_allowed=false`, `selected_future.truth_status=NOT_PERSISTED`
+- **Does not** authorize readmodel persist, dashboard wiring, truth-GO, or selected tradable future
+- Strict upstream (`bundle_to_upstream_input`, `evaluate_packet_eligibility`) remains unchanged and fail-closed
+
+**Tests:** `tests/webui/test_candidate_validation_readmodel_projection_v1.py`
+
 ### Dashboard reader (Slice 3)
 
 **Module:** `src/webui/workflow_dashboard_readmodel_v1/universe_selection_reader_v1.py`  

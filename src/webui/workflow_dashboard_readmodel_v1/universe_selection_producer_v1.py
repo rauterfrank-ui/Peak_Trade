@@ -417,6 +417,48 @@ def build_real_metadata_mapped_universe_selection_readmodel(
     return serialized
 
 
+def build_real_metadata_mapped_universe_selection_readmodel_candidate_validation(
+    *,
+    archive_root: str | Path,
+    governed_bundle_path: str | Path,
+    run_bundle_path: str | None = None,
+    evidence_links: tuple[str, ...] | None = None,
+) -> dict[str, Any]:
+    """Build non-truth candidate_validation projection payload — no persist/write."""
+    from .futures_producer_packet_real_metadata_source_v1 import (
+        project_governed_candidate_validation_bundle_v1,
+    )
+
+    root = Path(archive_root).expanduser().resolve()
+    path = Path(governed_bundle_path).expanduser().resolve()
+    projection = project_governed_candidate_validation_bundle_v1(path, archive_root=root)
+    payload = dict(projection.readmodel_payload)
+
+    links = _build_evidence_links(
+        run_bundle_path=run_bundle_path,
+        run_bundle_uri=None,
+        extra_links=evidence_links,
+    )
+    for link in payload.get("evidence", {}).get("links") or []:
+        if link not in links:
+            links.append(link)
+    evidence = dict(payload.get("evidence") or {})
+    evidence["links"] = links
+    payload["evidence"] = evidence
+
+    contract = validate_universe_selection_payload(payload)
+    serialized = contract_to_json_dict(contract)
+    serialized["observability_truth_allowed"] = False
+    serialized["real_metadata_source_marked"] = True
+    serialized["non_authorizing"] = True
+    serialized["fixture_marked"] = False
+    evidence_out = dict(serialized.get("evidence") or {})
+    evidence_out["projection_source"] = projection.projection_source
+    evidence_out["candidate_validation_projection"] = True
+    serialized["evidence"] = evidence_out
+    return serialized
+
+
 def write_real_metadata_mapped_universe_selection_readmodel(
     archive_root: str | Path,
     *,
