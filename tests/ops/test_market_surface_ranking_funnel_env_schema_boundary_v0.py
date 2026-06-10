@@ -685,6 +685,64 @@ def test_market_surface_chartjs_browser_capture_criteria_post_4112_parity_v0() -
     assert "separately authorized" in chartjs_row.lower()
 
 
+def test_market_surface_chartjs_chain_closeout_handoff_post_4113_parity_v0() -> None:
+    """Post-#4113 chain-closeout handoff guards on parity record and DOCS_TRUTH_MAP (non-authorizing)."""
+    surface = (PROJECT_ROOT / "docs/webui/MARKET_SURFACE_V0.md").read_text(encoding="utf-8")
+    truth_map = (PROJECT_ROOT / "docs/ops/registry/DOCS_TRUTH_MAP.md").read_text(encoding="utf-8")
+
+    parity_start = surface.index("**Parity record:**")
+    parity_end = surface.index(
+        "#### Chart.js vendor fallback template wiring v1 (implemented)", parity_start
+    )
+    parity_record = surface[parity_start:parity_end]
+
+    for token in (
+        "PR #4113",
+        "#4108→#4113",
+        "CHARTJS_CHAIN_CLOSED_ON_MAIN=true",
+        "chain-closeout handoff protocol",
+        "no parallel handoff doc/SSOT",
+        "separately authorized — not granted",
+        "Browser-Capture-Execute-Readiness-Prep",
+        "onerror-only",
+        "jsdelivr",
+        "data-chartjs-vendor-fallback-v0",
+        "non-authorizing",
+        "no Truth/Readiness/Execution/Runtime authority",
+    ):
+        assert token.lower() in parity_record.lower()
+
+    for forbidden in (
+        "browser_capture_execute_authorized_now=true",
+        "vendor_fallback_authorized_now=true",
+        "dashboard_truth_go_authorized=true",
+        "execute_authorized=true",
+        "live_authorized=true",
+        "preflight_lift_authorized=true",
+        "runtime_authorized=true",
+        "truth_go_authorized=true",
+    ):
+        assert forbidden.lower() not in parity_record.lower()
+
+    assert "PR #4113" in truth_map
+    chronicle_start = truth_map.index("## Änderungsnachweis (Slice A)")
+    chronicle_end = truth_map.index("\n- 2026-06-03", chronicle_start)
+    chronicle = truth_map[chronicle_start:chronicle_end]
+    assert "PR #4113" in chronicle or "PR #4114" in chronicle
+    assert "chain closeout handoff protocol" in chronicle.lower()
+    assert "no parallel handoff doc/SSOT".lower() in chronicle.lower()
+    assert "separately authorized — not granted" in chronicle.lower()
+    assert "browser_capture_execute_authorized_now=false" in chronicle.lower()
+    assert "#4108→#4113" in chronicle or "4108→#4113" in chronicle
+
+    chartjs_row_start = truth_map.index("Chart.js local fallback planning charter v0")
+    chartjs_row_end = truth_map.index("\n", chartjs_row_start)
+    chartjs_row = truth_map[chartjs_row_start:chartjs_row_end]
+    assert "#4113" in chartjs_row
+    assert "PR #4108/#4110/#4111/#4112/#4113" in chartjs_row
+    assert "separately authorized" in chartjs_row.lower()
+
+
 def test_market_surface_chartjs_local_fallback_planning_charter_post_merge_parity_v0() -> None:
     """Parent CHARTJS_LOCAL_FALLBACK charter block reflects PR #4108 wiring on main."""
     surface = (PROJECT_ROOT / "docs/webui/MARKET_SURFACE_V0.md").read_text(encoding="utf-8")
