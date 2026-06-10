@@ -122,3 +122,26 @@ def test_chartjs_vendor_fallback_docs_marker_documented_v0() -> None:
     surface = (project_root / "docs/webui/MARKET_SURFACE_V0.md").read_text(encoding="utf-8")
     assert "data-chartjs-vendor-fallback-v0" in surface
     assert "non-authorizing" in surface.lower() or "non-authority" in surface.lower()
+
+
+def test_chartjs_cdn_diagnostics_operator_pointer_no_stale_deferred_v0() -> None:
+    """#4101 operator pointer must not claim vendor fallback is deferred/not active post-#4108."""
+    surface = (project_root / "docs/webui/MARKET_SURFACE_V0.md").read_text(encoding="utf-8")
+    section_start = surface.index("#### Operator enablement (chart.js CDN diagnostics v1)")
+    section_end = surface.index("### Chart.js local fallback planning charter v0")
+    chartjs_cdn = surface[section_start:section_end]
+
+    for stale in (
+        "vendor fallback stays deferred",
+        "no active local Chart.js vendor fallback",
+    ):
+        assert stale.lower() not in chartjs_cdn.lower()
+
+    for required in (
+        "template-wired",
+        "onerror-only",
+        "data-chartjs-vendor-fallback-v0",
+        "peakTradeChartjsVendorFallbackV0",
+        "non-authorizing",
+    ):
+        assert required.lower() in chartjs_cdn.lower()
