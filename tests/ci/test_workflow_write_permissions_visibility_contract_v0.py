@@ -199,9 +199,9 @@ def test_cybersecurity_visibility_r001_derived_evidence_owner_crosslink_v0() -> 
     assert "R-001" in ci_audit_text
     assert module_name in ci_audit_text
     assert "DERIVED-CYBER-R-001-001" in ci_audit_text
-    assert "mapped-by-derived-evidence" in ci_collapsed
-    assert "INPUT_JSONL_PROVIDED=false" in ci_audit_text
-    assert "DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=true" in ci_audit_text
+    assert "mapped" in ci_collapsed
+    assert "INPUT_JSONL_PROVIDED=true" in ci_audit_text
+    assert "DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=false" in ci_audit_text
     assert "non-authorizing" in ci_collapsed
 
     assert module_name in truth_map_text

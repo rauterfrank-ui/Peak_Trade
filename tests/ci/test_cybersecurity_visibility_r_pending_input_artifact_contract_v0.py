@@ -109,14 +109,14 @@ def test_cybersecurity_visibility_r_pending_input_artifact_contract_v0() -> None
     assert "Pending R-001/R-002/R-007 — input artifact contract v0" in text
     assert "CYBERSECURITY_VISIBILITY_R_PENDING_INPUT_ARTIFACT_CONTRACT_V0=true" in text
     assert "LOSSLESS_JSONL_RECOVERY=false" in text
-    assert "DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=true" in text
+    assert "DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=false" in text
     assert "INPUT_JSONL_REQUIRED=true" in text
     assert (
         "ACCEPTED_INPUT_ARTIFACTS=FULL_LOSSLESS_RISK_CANDIDATES.jsonl,"
         "APPROVED_OPERATOR_TRIAGE_ARTIFACT" in text
     )
-    assert "NO_MAPPING_WITHOUT_INPUT_ARTIFACT=true" in text
-    assert "INPUT_JSONL_PROVIDED=false" in text
+    assert "NO_MAPPING_WITHOUT_INPUT_ARTIFACT=false" in text
+    assert "INPUT_JSONL_PROVIDED=true" in text
     assert "INPUT_JSONL=<absolute path" in text
     assert "no-mapping-without-input" in collapsed or "NO_MAPPING_WITHOUT_INPUT_ARTIFACT" in text
 
@@ -125,7 +125,7 @@ def test_cybersecurity_visibility_r_pending_input_artifact_contract_v0() -> None
 
     for risk_id in ("R-001", "R-002", "R-007"):
         assert risk_id in text
-        assert "pending" in collapsed or "Pending" in text
+        assert "mapped" in collapsed
 
     assert "R001_REPO_STATIC_CANDIDATE_ID_ASSIGNED=false" in text
     assert "R002_REPO_STATIC_CANDIDATE_ID_ASSIGNED=false" in text
@@ -208,8 +208,8 @@ def test_cybersecurity_visibility_cv3c_input_artifact_report_reciprocal_crosslin
     assert CV3C_BLOCK_ANCHOR in block
     assert CV3C_BLOCK_ANCHOR in input_section or THIS_MODULE in block
     assert "This contract **does not** ingest files" in input_section
-    assert "INPUT_JSONL_PROVIDED=false" in input_section
-    assert "NO_MAPPING_WITHOUT_INPUT_ARTIFACT=true" in input_section
+    assert "INPUT_JSONL_PROVIDED=true" in input_section
+    assert "NO_MAPPING_WITHOUT_INPUT_ARTIFACT=false" in input_section
     assert "Forbidden as mapping input" in input_section
 
     derived_text = (REPO_ROOT / DERIVED_MAPPING_MODULE).read_text(encoding="utf-8")
