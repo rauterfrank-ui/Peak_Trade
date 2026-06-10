@@ -8,6 +8,9 @@ Read-only Market Surface v0 — öffentliche OHLCV + minimale Chart-UI.
 GET /market embeds offline Market Depth read-model state SSR-only via
 ``market_depth_json_payload_v0`` (no in-page Depth JSON route, no fetch).
 
+GET /market may embed env-gated Tape readmodel SSR via
+``build_market_tape_display_context`` (offline fixture bundle only, default off).
+
 Keine Orders, kein OPS-Cockpit-Bezug. Dummy-Quelle für Offline/CI; Kraken über fetch_ohlcv_df.
 """
 
@@ -30,6 +33,10 @@ from .last_paper_run_panel_runtime_v0 import build_last_paper_run_panel_display_
 from .market_active_paper_run_runtime_v0 import build_market_active_paper_run_display_context
 from .market_depth_runtime_v0 import market_depth_json_payload_v0
 from .market_ranking_funnel_runtime_v0 import build_market_ranking_funnel_display_context
+from .market_tape_readmodel_v0.gate import (
+    enabled_explicitly_on as _market_tape_enabled_explicitly_on,
+    resolve_market_tape_readmodel_payload_v0,
+)
 from .workflow_dashboard_runtime_v1 import build_workflow_dashboard_display_context
 
 logger = logging.getLogger(__name__)
@@ -38,6 +45,7 @@ logger = logging.getLogger(__name__)
 MARKET_TIMEFRAMES: tuple[str, ...] = ("1m", "5m", "15m", "1h", "4h", "1d")
 MAX_OHLCV_LIMIT = 720
 MARKET_DEPTH_SSR_TOP_LEVELS = 8
+MARKET_TAPE_SSR_TOP_TRADES = 5
 DEFAULT_SYMBOL = "BTC/USD"
 DEFAULT_TIMEFRAME = "1h"
 DEFAULT_LIMIT = 120
@@ -466,6 +474,79 @@ def build_market_run_projection_display_context() -> Dict[str, Any]:
     return base
 
 
+def build_market_tape_display_context() -> Dict[str, Any]:
+    """SSR-only tape readmodel panel for GET /market (env-gated, read-only, default off)."""
+
+    base: Dict[str, Any] = {
+        "section_visible": False,
+        "gate_enabled": False,
+        "tape_ready": False,
+        "readmodel_id": "",
+        "display_status": "disabled",
+        "summary_line": "",
+        "symbol": "",
+        "trade_count": 0,
+        "top_trades": [],
+        "generated_at_iso": "",
+        "stale": True,
+        "stale_reason": "",
+    }
+
+    if not _market_tape_enabled_explicitly_on():
+        return base
+
+    base["gate_enabled"] = True
+    base["section_visible"] = True
+
+    http_status, payload = resolve_market_tape_readmodel_payload_v0()
+    base["readmodel_id"] = str(payload.get("readmodel_id", ""))
+    base["generated_at_iso"] = _truncate_display(payload.get("generated_at_iso"))
+    base["stale"] = payload.get("stale") is True
+    stale_reason = payload.get("stale_reason")
+    base["stale_reason"] = _truncate_display(stale_reason) if stale_reason else ""
+
+    if http_status == 200:
+        base["tape_ready"] = True
+        base["display_status"] = "ok"
+        base["symbol"] = _truncate_display(payload.get("symbol"))
+        tape_obj = payload.get("tape")
+        trades: List[Dict[str, str]] = []
+        trade_count = 0
+        if isinstance(tape_obj, dict):
+            raw_trades = tape_obj.get("trades")
+            if isinstance(raw_trades, list):
+                trade_count = len(raw_trades)
+                for row in raw_trades[:MARKET_TAPE_SSR_TOP_TRADES]:
+                    if not isinstance(row, dict):
+                        continue
+                    trades.append(
+                        {
+                            "sequence": _truncate_display(row.get("sequence")),
+                            "price": _truncate_display(row.get("price")),
+                            "size": _truncate_display(row.get("size")),
+                            "side": _truncate_display(row.get("side")),
+                        }
+                    )
+        base["trade_count"] = trade_count
+        base["top_trades"] = trades
+        sym = base["symbol"]
+        if sym:
+            base["summary_line"] = (
+                f"{sym} — {trade_count} trades (offline bundle, read-only display)"
+            )
+        else:
+            base["summary_line"] = f"{trade_count} trades (offline bundle, read-only display)"
+        return base
+
+    base["display_status"] = str(payload.get("runtime_source_status", "unavailable"))
+    warnings = payload.get("warnings")
+    if isinstance(warnings, list) and warnings:
+        base["summary_line"] = _truncate_display(warnings[0])
+    else:
+        base["summary_line"] = base["stale_reason"] or base["display_status"]
+    return base
+
+
 def build_market_depth_display_context() -> Dict[str, Any]:
     """SSR-only snapshot for templates: tuple from helper, unchanged semantics."""
 
@@ -588,6 +669,7 @@ def create_market_router(
         proj_status = get_project_status()
         market_depth = build_market_depth_display_context()
         run_projection = build_market_run_projection_display_context()
+        market_tape = build_market_tape_display_context()
         ranking_funnel = build_market_ranking_funnel_display_context()
         active_paper_run = build_market_active_paper_run_display_context()
         market_single_page_consolidation = build_market_single_page_consolidation_display_context()
@@ -604,6 +686,7 @@ def create_market_router(
                 "payload": payload,
                 "market_depth": market_depth,
                 "run_projection": run_projection,
+                "market_tape": market_tape,
                 "ranking_funnel": ranking_funnel,
                 "active_paper_run": active_paper_run,
                 "market_single_page_consolidation": market_single_page_consolidation,

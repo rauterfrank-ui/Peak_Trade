@@ -241,6 +241,70 @@
   </section>
   {% endif %}
 
+  {% if market_tape.section_visible %}
+  <section
+    id="market-v0-tape-ssr"
+    role="region"
+    aria-labelledby="market-v0-tape-ssr-h2"
+    class="rounded-xl border border-teal-900/45 bg-gradient-to-br from-teal-950/35 via-slate-950/40 to-slate-950/20 px-3 py-2.5 sm:px-4 text-xs text-teal-100/95"
+    data-market-v0-tape="true"
+    data-market-v0-tape-readonly="true"
+    data-market-v0-tape-authority="false"
+    data-market-v0-tape-non-authorizing="true"
+    data-market-v0-tape-evidence-only="true"
+    data-market-v0-tape-provider-truth-blocked="true"
+    data-market-v0-tape-dashboard-truth-blocked="true"
+    data-market-v0-tape-trading-readiness-blocked="true"
+    data-market-v0-tape-selected-future-truth-blocked="true"
+    data-market-v0-tape-order-fill-position-truth-blocked="true"
+    data-market-v0-tape-enabled="{{ 'true' if market_tape.gate_enabled else 'false' }}"
+    data-market-v0-tape-ready="{{ 'true' if market_tape.tape_ready else 'false' }}"
+    {% if market_tape.readmodel_id %}data-market-v0-tape-readmodel-id="{{ market_tape.readmodel_id|e }}"{% endif %}
+  >
+    <h2 id="market-v0-tape-ssr-h2" class="font-semibold text-teal-200/95 tracking-wide uppercase text-[11px] m-0 mb-2">
+      Market tape (read-only)
+    </h2>
+    <p class="leading-snug text-teal-100/90 m-0 text-[11px] mb-2">
+      Read-only tape display. This panel does not authorize runtime, testnet, live trading, broker access, exchange access, or strategy execution. Tape rows are offline fixture evidence only — not order, fill, or position truth.
+    </p>
+    <dl class="m-0 grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-1 text-[11px] tabular-nums">
+      <div><dt class="inline text-slate-400">status</dt> <dd class="inline text-slate-100">{{ market_tape.display_status|e }}</dd></div>
+      <div><dt class="inline text-slate-400">readmodel</dt> <dd class="inline text-slate-100">{{ market_tape.readmodel_id|e or "—" }}</dd></div>
+      <div><dt class="inline text-slate-400">symbol</dt> <dd class="inline text-slate-100">{{ market_tape.symbol|e or "—" }}</dd></div>
+      <div><dt class="inline text-slate-400">trades</dt> <dd class="inline text-slate-100">{{ market_tape.trade_count }}</dd></div>
+      <div><dt class="inline text-slate-400">generated_at</dt> <dd class="inline text-slate-100">{{ market_tape.generated_at_iso|e or "—" }}</dd></div>
+      <div><dt class="inline text-slate-400">stale</dt> <dd class="inline text-slate-100">{{ market_tape.stale }}</dd></div>
+    </dl>
+    <p class="mt-2 mb-0 text-[11px] text-teal-100/85 leading-snug">{{ market_tape.summary_line|e }}</p>
+    {% if market_tape.tape_ready and market_tape.top_trades %}
+    <div class="mt-2 pt-2 border-t border-teal-800/30">
+      <p class="m-0 mb-1 text-[10px] font-semibold uppercase tracking-wide text-teal-300/90">Top trades (display subset)</p>
+      <table class="w-full text-[10px] tabular-nums border-collapse">
+        <thead>
+          <tr class="text-slate-400 text-left">
+            <th class="pr-2 font-normal">seq</th>
+            <th class="pr-2 font-normal">side</th>
+            <th class="pr-2 font-normal">price</th>
+            <th class="font-normal">size</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for row in market_tape.top_trades %}
+          <tr>
+            <td class="pr-2 text-slate-200">{{ row.sequence|e }}</td>
+            <td class="pr-2 text-slate-200">{{ row.side|e }}</td>
+            <td class="pr-2 font-mono text-slate-200">{{ row.price|e }}</td>
+            <td class="font-mono text-slate-200">{{ row.size|e }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+      <p class="m-0 mt-1 text-[10px] text-slate-400">Top-{{ market_tape.top_trades|length }} Auszug · offline fixture · keine Ausführungs- oder Bereitschaftsaussage.</p>
+    </div>
+    {% endif %}
+  </section>
+  {% endif %}
+
   <section
     id="market-v0-ranking-funnel-ssr"
     role="region"

@@ -1108,6 +1108,55 @@ def test_double_play_market_dashboard_excludes_run_projection_landmark_v0(
     assert 'data-market-v0-run-projection="true"' not in html
 
 
+def test_market_dashboard_tape_landmark_region_when_enabled_v0(
+    client: TestClient,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Tape SSR keeps IA/landmark parity when the env-gated overlay is enabled."""
+    fixture_root = (
+        project_root / "tests" / "fixtures" / "market_tape_readmodel_v0" / "complete_minimal"
+    )
+    monkeypatch.setenv("PEAK_TRADE_MARKET_TAPE_ENABLED", "1")
+    monkeypatch.setenv("PEAK_TRADE_MARKET_TAPE_BUNDLE_ROOT", str(fixture_root.resolve()))
+    html = _html(client, "/market")
+
+    assert re.search(
+        r'role="region"[^>]*aria-labelledby="market-v0-tape-ssr-h2"',
+        html,
+    )
+    assert 'id="market-v0-tape-ssr"' in html
+    assert 'data-market-v0-tape="true"' in html
+    assert 'data-market-v0-tape-readonly="true"' in html
+    assert 'data-market-v0-tape-authority="false"' in html
+    assert "Market tape (read-only)" in html
+
+
+def test_market_dashboard_tape_landmark_absent_when_disabled_v0(
+    client: TestClient,
+) -> None:
+    """Tape landmark is absent when the env-gated overlay is disabled (default)."""
+    html = _html(client, "/market")
+
+    assert "market-v0-tape-ssr" not in html
+    assert 'data-market-v0-tape="true"' not in html
+
+
+def test_double_play_market_dashboard_excludes_tape_landmark_v0(
+    client: TestClient,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Double-Play market surface must not inherit /market tape SSR landmarks."""
+    fixture_root = (
+        project_root / "tests" / "fixtures" / "market_tape_readmodel_v0" / "complete_minimal"
+    )
+    monkeypatch.setenv("PEAK_TRADE_MARKET_TAPE_ENABLED", "1")
+    monkeypatch.setenv("PEAK_TRADE_MARKET_TAPE_BUNDLE_ROOT", str(fixture_root.resolve()))
+    html = _html(client, "/market/double-play")
+
+    assert "market-v0-tape-ssr" not in html
+    assert 'data-market-v0-tape="true"' not in html
+
+
 MARKET_SURFACE_DOC = project_root / "docs" / "webui" / "MARKET_SURFACE_V0.md"
 STRUCTURE_CONTRACT_OWNER = "tests/webui/test_market_dashboard_readonly_structure_contract_v0.py"
 MARKET_DASHBOARD_MARKER_IA_CROSSWALK_DRIFT_LOCK_V0 = (
