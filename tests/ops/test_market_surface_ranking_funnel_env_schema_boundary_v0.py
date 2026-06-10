@@ -124,3 +124,43 @@ def test_market_surface_run_projection_operator_pointer_env_boundary_v0() -> Non
 
     for token in required_boundary_tokens:
         assert token.lower() in run_projection.lower()
+
+
+def test_market_surface_ranking_funnel_operator_pointer_env_boundary_v0() -> None:
+    """Ranking funnel operator enablement tokens stay pinned in MARKET_SURFACE_V0."""
+    surface = (PROJECT_ROOT / "docs/webui/MARKET_SURFACE_V0.md").read_text(encoding="utf-8")
+
+    section_start = surface.index("### Market Ranking Funnel SSR v0 landed")
+    section_end = surface.index("### Marker / IA crosswalk policy v0")
+    ranking_funnel = surface[section_start:section_end]
+
+    assert "Operator enablement (ranking funnel v1)" in ranking_funnel
+
+    required_env_tokens = [
+        "PEAK_TRADE_MARKET_RANKING_FUNNEL_ENABLED=1",
+        "PEAK_TRADE_MARKET_RANKING_FUNNEL_BUNDLE_ROOT",
+    ]
+
+    for token in required_env_tokens:
+        assert token in ranking_funnel
+
+    required_boundary_tokens = [
+        "default off",
+        "operator-gated",
+        "fail-closed",
+        "GET",
+        "&#47;market",
+        "no provider truth",
+        "no dashboard truth",
+        "Market-Airport excluded",
+        "Master V2 / Double Play protected",
+        "no run",
+        "testnet",
+        "paper",
+        "shadow",
+        "test_market_dashboard_readonly_structure_contract_v0.py",
+        "test_market_ranking_funnel_readmodel_v0.py",
+    ]
+
+    for token in required_boundary_tokens:
+        assert token.lower() in ranking_funnel.lower()
