@@ -83,6 +83,22 @@ Stabile `data-*`‑Marker (Anker für Anzeige und automatisierte Tests — **kei
 - **Panels (view-only):** Workflow Dashboard V1 (pipeline, KillSwitch, PREFLIGHT blocked display, Next GO), Last Paper Run, Missing Truth / NOT_PERSISTED blocks — shared Jinja partials under `templates/peak_trade_dashboard/partials/`.
 - **Boundaries:** read-only SSR; **no** dashboard truth grant, **no** selected tradable future, **no** readmodel/loader write, **no** runtime/scheduler activation; **`GET &#47;observability`** remains supported (refactored to same partials).
 
+#### Operator enablement (single-page consolidation v1)
+
+**Default off / operator-gated / fail-closed:** Single-page consolidation on **`GET`** **`&#47;market`** stays **disabled** until **every** env gate below is explicitly set. Workflow, Last Paper Run, and Missing Truth panels **absent when gates are off** is **expected** — **not** a template defect, **not** Dashboard Truth, **not** Provider Truth, **no** runtime authority.
+
+**Required env chain (all steps for embedded panels on `GET` `/market`):**
+
+| Step | Env var(s) | Sub-gate |
+|------|------------|----------|
+| 1 | `PEAK_TRADE_MARKET_SINGLE_PAGE_CONSOLIDATION_V1_ENABLED=1` | Master consolidation gate |
+| 2 | `PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ENABLED=1` + `PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ARCHIVE_ROOT=<path>` | Workflow Dashboard V1 |
+| 3 | `PEAK_TRADE_LAST_PAPER_RUN_PANEL_ENABLED=1` + `PEAK_TRADE_LAST_PAPER_RUN_BUNDLE_ROOT=<path>` | Last Paper Run panel |
+
+**Troubleshooting (missing visibility / June 9 gap):** Walk the env chain top-down before assuming SSR regression. Cross-check **`tests/webui/test_market_single_page_consolidation_structure_contract_v1.py`** (structure contract) and sub-gate wording in [Observability Hub v0](observability/OBSERVABILITY_HUB_V0.md). Disabled consolidation markers (`data-market-single-page-consolidation-*`) **absent** when step 1 is unset — same fail-closed pattern as ranking-funnel and depth env gates in this document.
+
+**Protected boundaries:** read-only SSR only — **no dashboard truth grant**, **no provider truth**, **no** Live/Testnet/Order/Cancel/Execute/Arming/Preflight authority, **no** runtime/scheduler activation. **Market-Airport excluded.** **`GET`** **`&#47;market&#47;double-play`** (**Master V2 / Double Play protected**) — consolidation does not alter Double Play routes, markers, or decision logic.
+
 `data-market-source-kind` unterscheidet aktuell:
 
 - `dummy-offline-synthetic`
