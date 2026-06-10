@@ -164,3 +164,48 @@ def test_market_surface_ranking_funnel_operator_pointer_env_boundary_v0() -> Non
 
     for token in required_boundary_tokens:
         assert token.lower() in ranking_funnel.lower()
+
+
+def test_market_surface_market_depth_operator_pointer_env_boundary_v0() -> None:
+    """Market depth operator enablement tokens stay pinned in MARKET_SURFACE_V0."""
+    surface = (PROJECT_ROOT / "docs/webui/MARKET_SURFACE_V0.md").read_text(encoding="utf-8")
+
+    section_start = surface.index("### Market Depth display on GET /market (SSR v0 implemented)")
+    section_end = surface.index(
+        "## Double-Play Market Dashboard konsumiert strukturierte Metadaten v2"
+    )
+    market_depth = surface[section_start:section_end]
+
+    assert "Operator enablement (market depth v1)" in market_depth
+    assert "PEAK_TRADE_MARKET_DEPTH_" in market_depth
+
+    required_env_tokens = [
+        "PEAK_TRADE_MARKET_DEPTH_ENABLED=1",
+        "PEAK_TRADE_MARKET_DEPTH_BUNDLE_ROOT",
+    ]
+
+    for token in required_env_tokens:
+        assert token in market_depth
+
+    required_boundary_tokens = [
+        "default off",
+        "operator-gated",
+        "fail-closed",
+        "GET",
+        "&#47;market",
+        "no provider truth",
+        "no dashboard truth",
+        "Market-Airport excluded",
+        "Master V2 / Double Play protected",
+        "no run",
+        "testnet",
+        "paper",
+        "shadow",
+        "test_market_dashboard_readonly_structure_contract_v0.py",
+        "test_market_depth_readmodel_v0.py",
+        "test_market_depth_api_v0.py",
+        "test_market_surface_api.py",
+    ]
+
+    for token in required_boundary_tokens:
+        assert token.lower() in market_depth.lower()
