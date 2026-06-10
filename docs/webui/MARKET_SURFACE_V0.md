@@ -460,6 +460,77 @@ MARKET_DASHBOARD_READ_ONLY_NON_AUTHORITY=true
 
 **Protected boundaries:** read-only capture charter only — **no dashboard truth grant**, **no provider truth**, **no vendor fallback authorization**. **Market-Airport excluded.** **`GET`** **`&#47;market&#47;double-play`** (**Master V2 / Double Play protected**) — capture charter does not alter Double Play routes, markers, or decision logic. **No run, Testnet, Paper, or Shadow authorization** is granted by documenting this charter.
 
+#### Browser-capture execute prep (read-only v1)
+
+**Charter context:** Erweiterung unter **`CHARTJS_LOCAL_FALLBACK_PLANNING_CHARTER_V0`** — browser-capture execute prep only; **keine** Browser-Capture-Erhebung in diesem Slice.
+
+**Docs-only / fail-closed / no authority:** Dieser Abschnitt embeddet die operatorische Browser-Capture-Execute-Vorbereitung aus dem durable browser-prep bundle — **nicht** als automatische Erhebung oder Vendor-Fallback-Freigabe. **Diese Änderung startet keine Browser-Capture-Erhebung.** **Kein** Browser-Render, **kein** Netzwerkzugriff, **keine** Vendor-Datei wird durch diese Dokumentation erzeugt. **Vendor-Fallback bleibt nicht autorisiert**; erfordert später separate **Evidence Review**, **Vendor-Decision**-GO und **Vendor-Implementation**-GO plus Implementierungs-PR. **Keine** Provider Truth, **keine** Dashboard Truth, **keine** Trading Readiness, **keine** Live-/Preflight-Lift-/Execution-/Order-/Cancel-Autorität. **Keine** Secrets/Credentials/Operator-Env-Lesung in der Capture-Prozedur. **Keine** Runtime-/Scheduler-/Exchange-Ausführung wird durch diese Änderung gestartet. Orthogonal zu #4101, #4104, #4105, #4097–#4103 — **none** grant vendor fallback, provider truth, dashboard truth, or trading authorization.
+
+##### Browser-Capture-Preflight-Checkliste
+
+Operator preflight before any chartered browser/network evidence capture — **checklist only; not executed in this docs slice**:
+
+| # | Check | Pass criterion | Fail-closed |
+|---|-------|----------------|-------------|
+| P1 | Repo/Branch/HEAD sauber | `main`; full SHA in future `MACHINE_SUMMARY.env`; `git status --short` empty | STOP |
+| P2 | Active runs false | No paper/shadow/testnet/live/scheduler/daemon processes for Peak_Trade | STOP |
+| P3 | Kein Secret-/Credential-/Operator-Env-Zugriff | No secrets/credentials/operator-env file reads in capture lane | STOP |
+| P4 | Host-/Renderpfad nur mit separatem GO | Render path (`GET` `/market`, `/market/double-play`, or R&amp;D charts shell) only under capture GO | STOP |
+| P5 | Browser/Network nur mit separatem Evidence-Capture-GO | Browser render and network only under **`GO_MARKET_DASHBOARD_CHARTJS_CDN_BLOCKING_EVIDENCE_CAPTURE_READONLY_BROWSER_NO_VENDOR_V1`** | STOP |
+| P6 | Kein Vendor-Asset | No vendor download/create/check-in | STOP |
+| P7 | Kein Vendor-Fallback | `VENDOR_FALLBACK_AUTHORIZED_NOW=false` in future capture bundle | STOP |
+| P8 | Kein Truth-/Trading-/Execution-Impact | No Provider/Dashboard Truth, trading readiness, Live/Preflight/Order/Cancel/Execute/Arming authority | STOP |
+| P9 | Prior prep + charter on `main` | Browser prep bundle `MANIFEST_VERIFY_RC=0`; #4105 capture charter present; boundary tests green on HEAD | STOP |
+
+##### Browser-Capture-Readiness-Matrix
+
+| Capture-Ziel | Erlaubte Beobachtung | Verbotene Ableitung | Erforderliches Artefakt | Fail-closed-Kriterium |
+|--------------|---------------------|---------------------|-------------------------|----------------------|
+| CDN script load failure | `<script>` onerror; `data-chartjs-cdn-load-error` on script tag | Trading blocked / readiness GO | `BROWSER_OBSERVATION.md` | Marker absent while claiming CDN block → **FAIL** |
+| Shell propagation | Shell mirrors `data-chartjs-cdn-load-error` | Dashboard Truth / Provider Truth | `BROWSER_OBSERVATION.md` | Script error without shell propagation → distinction required |
+| Monitored surface | `data-chartjs-cdn-monitored-v0="true"` | New authority surface | `BROWSER_OBSERVATION.md` | Unmonitored path → **STOP** |
+| Script attribution | `data-chartjs-cdn-script-v0="true"` on failing script | Vendor fallback authorized | `BROWSER_OBSERVATION.md` | Missing script marker → **FAIL** CDN causality |
+| Chart status | `data-market-chart-status` = `ready`/`empty`/`error` | Order/execute authorization | `BROWSER_OBSERVATION.md` | `empty` with zero bars → SSR-empty exclusion mandatory |
+| Environment | OS, browser, high-level network posture — **no secrets** | Secrets/credentials exposure | `NETWORK_OBSERVATION.md` only if network separately authorized; else `CAPTURE_REPORT.md` | Any secret in artifact → **FAIL** |
+| Render path | Route + shell under test | Master V2 logic change | `CAPTURE_REPORT.md` | Unchartered route → **STOP** |
+| Expected vs observed | Expected CDN load success; observed load failure | Hypothetical outage without reproduction | `CAPTURE_REPORT.md` | Speculation without observation → **FAIL** |
+| CDN causality | Failure tied to Chart.js CDN load path | App regression as primary cause | `CAUSALITY_REVIEW.md` | Causality incomplete → **FAIL** |
+| Exclusions | Reject app regression, fixture, host, operator error, SSR-empty, render-error | Silent conflation | `CAUSALITY_REVIEW.md` | Any exclusion blank → **FAIL** |
+| Operator attestation | Signed human judgment | Inferred from pytest alone | `OPERATOR_ATTESTATION.md` | Missing attestation → **FAIL** |
+| Manifest integrity | `MANIFEST_VERIFY_RC=0` | Claim evidence raised with corrupt bundle | `MANIFEST.sha256`, `MANIFEST_VERIFY.txt` | `MANIFEST_VERIFY_RC != 0` → **FAIL** |
+
+##### Operator-Attestation-Template
+
+Copy into future capture bundle `OPERATOR_ATTESTATION.md` — **template only; not signed in this docs slice**:
+
+- **Operator Frank Rauter**
+- **Datum/UTCSTAMP:** `<UTCSTAMP>` *(ISO-8601 compact, e.g. `20260610T192234Z`)*
+- **Renderpfad:** `<GET &#47;market | GET &#47;market&#47;double-play | R&amp;D charts shell>`
+- **Erwartete Wirkung / erwartete/observierte Auswirkung:** `<expected Chart.js CDN load and chart behavior before observation>`
+- **Beobachtete Wirkung / beobachteter Blocking-Befund:** `<observed CDN script load failure under operator-controlled conditions>`
+- **Chart.js CDN Kausalitätsabgrenzung:** `<why failure is Chart.js CDN load blocking — not SSR-empty, client-render-error, or other classes>`
+- **Ausschluss App-Code/Test-Fixture/lokaler Host/Operator-Fehlbedienung:** explicit rejection table (app regression, test-fixture artifact, local host/DNS/proxy, operator mis-operation, SSR-empty, client-render-error)
+- **Bestätigung:** keine Vendor-/Truth-/Execution-Autorisierung — no vendor fallback, no Provider/Dashboard Truth, no trading/Live/Preflight/Order/Cancel/Execute/Arming authority; no secrets/credentials/operator-env reads; no Chart.js vendor asset created or downloaded
+
+##### Durable-Capture-Bundle-Layout
+
+Future browser capture execute bundles under durable archive root — **not created in this docs slice**:
+
+| File | Required | Notes |
+|------|----------|-------|
+| **`MACHINE_SUMMARY.env`** | yes | Machine-readable flags; all authority flags false |
+| **`CAPTURE_REPORT.md`** | yes | Narrative summary; route, timing, expected vs observed effect |
+| **`BROWSER_OBSERVATION.md`** | yes | DOM/marker readout; chart status; shell/script attribution |
+| **`NETWORK_OBSERVATION.md`** | conditional | Only if capture GO separately authorizes network test — **no secrets** |
+| **`OPERATOR_ATTESTATION.md`** | yes | Completed attestation from template above |
+| **`CAUSALITY_REVIEW.md`** | yes | CDN causality + exclusion table |
+| **`MANIFEST.sha256`** | yes | SHA-256 of all bundle files except manifest files |
+| **`MANIFEST_VERIFY.txt`** | yes | Per-file OK/FAIL + `MANIFEST_VERIFY_RC=0` before evidence claim |
+
+**When later browser capture GO is sensible:** Only when browser-capture execute prep is on `main`, browser prep bundle verified, operator reproduces CDN script load failure under controlled conditions, and operator accepts browser + network **only** under **`GO_MARKET_DASHBOARD_CHARTJS_CDN_BLOCKING_EVIDENCE_CAPTURE_READONLY_BROWSER_NO_VENDOR_V1`**.
+
+**Protected boundaries:** read-only browser-capture execute prep only — **no dashboard truth grant**, **no provider truth**, **no vendor fallback authorization**. **Market-Airport excluded.** **`GET`** **`&#47;market&#47;double-play`** (**Master V2 / Double Play protected**) — execute prep does not alter Double Play routes, markers, or decision logic. **No run, Testnet, Paper, or Shadow authorization** is granted by documenting this execute prep.
+
 ## Double-Play Market Dashboard v1 SSR
 
 **Route:** **`GET &#47;market&#47;double-play`**
