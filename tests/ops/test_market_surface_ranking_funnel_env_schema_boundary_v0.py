@@ -313,3 +313,73 @@ def test_market_surface_ssr_provenance_snapshot_operator_pointer_env_boundary_v0
 
     for token in forbidden_authority_tokens:
         assert token.lower() not in ssr_provenance.lower()
+
+
+def test_market_surface_active_paper_run_operator_pointer_env_boundary_v0() -> None:
+    """Active paper run operator enablement tokens stay pinned in MARKET_SURFACE_V0."""
+    surface = (PROJECT_ROOT / "docs/webui/MARKET_SURFACE_V0.md").read_text(encoding="utf-8")
+
+    section_start = surface.index("### Active Paper Run SSR (env-gated v1)")
+    section_end = surface.index("### Single-page consolidation (env-gated SSR v1)")
+    active_paper_run = surface[section_start:section_end]
+
+    assert "Operator enablement (active paper run v1)" in active_paper_run
+
+    required_env_tokens = [
+        "PEAK_TRADE_MARKET_ACTIVE_PAPER_RUN_ENABLED=1",
+        "PEAK_TRADE_MARKET_ACTIVE_PAPER_RUN_BRIDGE_ROOT",
+        "PEAK_TRADE_MARKET_ACTIVE_PAPER_RUN_DETAIL_URL",
+    ]
+
+    for token in required_env_tokens:
+        assert token in active_paper_run
+
+    required_marker_tokens = [
+        "data-market-v0-active-paper-run",
+        "data-market-v0-active-paper-run-readonly",
+        'data-market-v0-active-paper-run-authority="false"',
+        "data-market-v0-active-paper-run-enabled",
+        "data-market-v0-active-paper-run-active",
+        "LIVE_AUTHORIZED",
+        "PREFLIGHT_LIFT",
+        "is_active",
+    ]
+
+    for token in required_marker_tokens:
+        assert token in active_paper_run
+
+    required_boundary_tokens = [
+        "default off",
+        "operator-gated",
+        "fail-closed",
+        "Observability/Operator Context",
+        "no authority",
+        "no provider truth",
+        "no dashboard truth",
+        "trading readiness",
+        "exchange-freshness",
+        "vendor fallback stays deferred",
+        "Market-Airport excluded",
+        "Master V2 / Double Play protected",
+        "no run",
+        "testnet",
+        "paper",
+        "shadow",
+        "Last Paper Run",
+        "SSR provenance / snapshot triage",
+        "test_market_active_paper_run_runtime_v0.py",
+    ]
+
+    for token in required_boundary_tokens:
+        assert token.lower() in active_paper_run.lower()
+
+    forbidden_authority_tokens = [
+        "live_authorized=true",
+        "preflight_lift_authorized=true",
+        "testnet_authorized=true",
+        "execute_authorized=true",
+        "order_authorized=true",
+    ]
+
+    for token in forbidden_authority_tokens:
+        assert token.lower() not in active_paper_run.lower()
