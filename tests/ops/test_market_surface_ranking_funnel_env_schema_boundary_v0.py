@@ -326,6 +326,82 @@ def test_market_surface_chartjs_cdn_blocking_evidence_criteria_env_boundary_v0()
         assert token.lower() not in cdn_evidence.lower()
 
 
+def test_market_surface_chartjs_cdn_blocking_evidence_capture_charter_env_boundary_v0() -> None:
+    """CDN-blocking evidence capture charter tokens stay pinned in MARKET_SURFACE_V0 charter."""
+    surface = (PROJECT_ROOT / "docs/webui/MARKET_SURFACE_V0.md").read_text(encoding="utf-8")
+
+    section_start = surface.index("#### CDN-blocking evidence capture charter (v1)")
+    section_end = surface.index("## Double-Play Market Dashboard v1 SSR")
+    capture_charter = surface[section_start:section_end]
+
+    assert "CDN-blocking evidence capture charter (v1)" in capture_charter
+
+    required_phase_tokens = [
+        "Prep",
+        "Docs-Execute",
+        "Capture",
+        "Review",
+        "Vendor-Decision",
+        "Vendor-Implementation",
+    ]
+
+    for token in required_phase_tokens:
+        assert token in capture_charter
+
+    required_artifact_tokens = [
+        "Zeitpunkt/UTCSTAMP",
+        "Umgebung",
+        "Renderpfad",
+        "erwartete Wirkung",
+        "beobachtete Wirkung",
+        "Chart.js-CDN-Kausalitätsabgrenzung",
+        "Operator-Attestation",
+        "MANIFEST.sha256",
+        "MANIFEST_VERIFY.txt",
+    ]
+
+    for token in required_artifact_tokens:
+        assert token.lower() in capture_charter.lower()
+
+    required_boundary_tokens = [
+        "capture-erhebung",
+        "browser-render",
+        "netzwerkzugriff",
+        "vendor-datei",
+        "vendor-fallback bleibt nicht autorisiert",
+        "no provider truth",
+        "no dashboard truth",
+        "trading readiness",
+        "preflight-lift",
+        "execution",
+        "order",
+        "cancel",
+        "secrets/credentials/operator-env",
+        "fail-closed",
+        "no authority",
+        "#4101",
+        "#4104",
+        "#4097",
+        "Market-Airport excluded",
+        "Master V2 / Double Play protected",
+    ]
+
+    for token in required_boundary_tokens:
+        assert token.lower() in capture_charter.lower()
+
+    forbidden_authority_tokens = [
+        "vendor_fallback_authorized_now=true",
+        "live_authorized=true",
+        "preflight_lift_authorized=true",
+        "execute_authorized=true",
+        "order_authorized=true",
+        "dashboard_truth_go_authorized=true",
+    ]
+
+    for token in forbidden_authority_tokens:
+        assert token.lower() not in capture_charter.lower()
+
+
 def test_market_surface_ssr_provenance_snapshot_operator_pointer_env_boundary_v0() -> None:
     """SSR provenance / snapshot triage operator enablement tokens stay pinned in MARKET_SURFACE_V0."""
     surface = (PROJECT_ROOT / "docs/webui/MARKET_SURFACE_V0.md").read_text(encoding="utf-8")
