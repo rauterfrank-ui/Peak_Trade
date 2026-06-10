@@ -419,6 +419,47 @@ MARKET_DASHBOARD_READ_ONLY_NON_AUTHORITY=true
 
 **Protected boundaries:** read-only evidence criteria only — **no dashboard truth grant**, **no provider truth**, **no vendor fallback authorization**. **Market-Airport excluded.** **`GET`** **`&#47;market&#47;double-play`** (**Master V2 / Double Play protected**) — evidence criteria do not alter Double Play routes, markers, or decision logic. **No run, Testnet, Paper, or Shadow authorization** is granted by documenting these criteria.
 
+#### CDN-blocking evidence capture charter (v1)
+
+**Charter context:** Erweiterung unter **`CHARTJS_LOCAL_FALLBACK_PLANNING_CHARTER_V0`** — capture charter only; **keine** Evidence-Erhebung in diesem Slice.
+
+**Docs-only / fail-closed / no authority:** Dieser Abschnitt normiert die **spätere** operatorische Evidence-Capture-Prozedur — **nicht** als automatische Erhebung oder Vendor-Fallback-Freigabe. **Diese Änderung startet keine Capture-Erhebung.** **Kein** Browser-Render, **kein** Netzwerkzugriff, **keine** Vendor-Datei wird durch diese Dokumentation erzeugt. **Vendor-Fallback bleibt nicht autorisiert**; erfordert später separate **Evidence Review**, **Vendor-Decision**-GO und **Vendor-Implementation**-GO plus Implementierungs-PR. **Keine** Provider Truth, **keine** Dashboard Truth, **keine** Trading Readiness, **keine** Live-/Preflight-Lift-/Execution-/Order-/Cancel-Autorität. **Keine** Secrets/Credentials/Operator-Env-Lesung in der Capture-Prozedur. **Keine** Runtime-/Scheduler-/Exchange-Ausführung wird durch diese Änderung gestartet. Orthogonal zu #4101 Chart.js CDN diagnostics operator pointer, #4104 CDN-blocking evidence criteria, Operator-Pointer-Kette #4097–#4103 — **none** grant vendor fallback, provider truth, dashboard truth, or trading authorization.
+
+**Phase separation (strict — do not conflate):**
+
+| Phase | Purpose | Browser/Network | Vendor | Authority |
+|-------|---------|-----------------|--------|-----------|
+| **1. Prep** | Capture charter prep in durable archive | no | no | no |
+| **2. Docs-Execute** | Embed capture charter on `main` (this section) | no | no | no |
+| **3. Capture** | Operator evidence capture under separate GO | **yes if blocking reproduced** | no | no |
+| **4. Review** | Read-only review of capture bundle | no | no | no |
+| **5. Vendor-Decision** | Separate decision GO after verified evidence | no | no | no |
+| **6. Vendor-Implementation** | Separate impl GO + PR (vendor asset + template) | optional offline test | **yes** | no trading authority |
+
+**Minimum capture artifacts (future durable bundle — not `/tmp`):**
+
+| Artifact field | Required | Notes |
+|----------------|----------|-------|
+| **Zeitpunkt/UTCSTAMP** | yes | ISO-8601 compact timestamp at observation |
+| **Umgebung** | yes | OS, browser, high-level network posture — **no secrets** |
+| **Renderpfad** | yes | Route + shell (`GET` `/market`, `/market/double-play`, or R&amp;D charts) |
+| **Erwartete Wirkung** | yes | Expected chart/CDN behavior before load |
+| **Beobachtete Wirkung** | yes | Observed CDN script load failure + marker state |
+| **Chart.js-CDN-Kausalitätsabgrenzung** | yes | Why failure is CDN load, not other failure class |
+| **Ausschluss App-Code/Test-Fixture/lokaler Host/Operator-Fehlbedienung** | yes | Explicit rejection of regression, fixture, host, operator error |
+| **Reproduktionshinweis** | yes | Minimal steps for independent replay |
+| **Operator-Attestation** | yes | Signed operator record — not inferred from static tests |
+| **`MANIFEST.sha256`** | yes | SHA-256 of all bundle files except manifest files |
+| **`MANIFEST_VERIFY.txt`** | yes | Per-file OK/FAIL + `MANIFEST_VERIFY_RC=0` |
+
+**Capture procedure summary (future — separately authorized):** Walk #4101 CDN diagnostics markers (`data-chartjs-cdn-load-error`, `data-chartjs-cdn-monitored-v0`, `data-chartjs-cdn-script-v0`, `data-market-chart-status`) and #4104 sufficient/insufficient conditions; record environment, render path, expected vs observed effect, CDN causality distinction, exclusions, reproduction hint, operator attestation; write durable archive bundle; verify manifest before claiming evidence raised.
+
+**When later Capture GO is sensible:** Only when capture charter is on `main`, operator reproduces CDN script load failure under controlled conditions, attribution markers correlate, SSR-empty and client-render-error are ruled out, and operator accepts browser + network **only** under separate **`GO_MARKET_DASHBOARD_CHARTJS_CDN_BLOCKING_EVIDENCE_CAPTURE_READONLY_BROWSER_NO_VENDOR_V1`**.
+
+**When capture does NOT authorize vendor fallback:** Manifest verification failure; distinction shows SSR-empty or render-error; blocking attributed to app regression, fixture, host, or operator error; static pytest/HTML structure proof only; review not completed; separate Vendor-Decision or Vendor-Implementation GO not issued.
+
+**Protected boundaries:** read-only capture charter only — **no dashboard truth grant**, **no provider truth**, **no vendor fallback authorization**. **Market-Airport excluded.** **`GET`** **`&#47;market&#47;double-play`** (**Master V2 / Double Play protected**) — capture charter does not alter Double Play routes, markers, or decision logic. **No run, Testnet, Paper, or Shadow authorization** is granted by documenting this charter.
+
 ## Double-Play Market Dashboard v1 SSR
 
 **Route:** **`GET &#47;market&#47;double-play`**
