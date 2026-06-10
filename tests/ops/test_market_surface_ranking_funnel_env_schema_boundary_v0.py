@@ -87,3 +87,40 @@ def test_market_surface_single_page_consolidation_operator_pointer_env_boundary_
 
     for token in required_boundary_tokens:
         assert token.lower() in consolidation.lower()
+
+
+def test_market_surface_run_projection_operator_pointer_env_boundary_v0() -> None:
+    """Run projection operator enablement tokens stay pinned in MARKET_SURFACE_V0."""
+    surface = (PROJECT_ROOT / "docs/webui/MARKET_SURFACE_V0.md").read_text(encoding="utf-8")
+
+    section_start = surface.index("### Post-Closeout Registry run projection (env-gated SSR v0)")
+    section_end = surface.index("## Safety banner and stable markers")
+    run_projection = surface[section_start:section_end]
+
+    assert "Operator enablement (run projection v1)" in run_projection
+    assert "PEAK_TRADE_MARKET_RUN_PROJECTION_" in run_projection
+
+    required_env_tokens = [
+        "PEAK_TRADE_MARKET_RUN_PROJECTION_ENABLED=1",
+        "PEAK_TRADE_MARKET_RUN_PROJECTION_PAYLOAD_JSON",
+    ]
+
+    for token in required_env_tokens:
+        assert token in run_projection
+
+    required_boundary_tokens = [
+        "default off",
+        "operator-gated",
+        "fail-closed",
+        "&#47;market",
+        "no provider truth",
+        "no dashboard truth",
+        "Market-Airport excluded",
+        "Master V2 / Double Play protected",
+        "test_market_registry_projection_overlay_v0.py",
+        "test_market_dashboard_readonly_structure_contract_v0.py",
+        "test_market_dashboard_readonly_run_projection_spec_v0.py",
+    ]
+
+    for token in required_boundary_tokens:
+        assert token.lower() in run_projection.lower()
