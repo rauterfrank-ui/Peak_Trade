@@ -21,6 +21,7 @@ from src.webui.app import create_app
 
 VENDOR_FALLBACK_PATH = "/static/vendor/chartjs/4.4.1/chart.umd.min.js"
 PINNED_SHA256 = "d2af8974e95271638772e9e9524db5b9a6f58d6ec2d5d781400447b4a31c681e"
+PINNED_SIZE_BYTES = 205399
 
 
 @pytest.fixture()
@@ -53,6 +54,11 @@ def test_chartjs_vendor_static_route_sha256_matches_pinned_v0(client: TestClient
     response = client.get(VENDOR_FALLBACK_PATH)
     digest = hashlib.sha256(response.content).hexdigest()
     assert digest == PINNED_SHA256
+
+
+def test_chartjs_vendor_static_route_size_matches_pinned_v0(client: TestClient) -> None:
+    response = client.get(VENDOR_FALLBACK_PATH)
+    assert len(response.content) == PINNED_SIZE_BYTES
 
 
 def test_static_route_missing_asset_returns_404_v0(client: TestClient) -> None:
