@@ -225,10 +225,12 @@ def test_market_surface_chartjs_cdn_diagnostics_operator_pointer_env_boundary_v0
         "data-chartjs-cdn-load-error",
         "data-chartjs-cdn-monitored-v0",
         "data-chartjs-cdn-script-v0",
+        "data-chartjs-vendor-fallback-v0",
         "data-market-chart-status",
         "data-market-v11",
         "market-v0-chart-status",
         "CHARTJS_LOCAL_FALLBACK_PLANNING_CHARTER_V0",
+        "peakTradeChartjsVendorFallbackV0",
     ]
 
     for token in required_diagnostic_tokens:
@@ -238,7 +240,10 @@ def test_market_surface_chartjs_cdn_diagnostics_operator_pointer_env_boundary_v0
         "diagnostic only",
         "fail-closed",
         "no authority",
-        "vendor fallback stays deferred until CDN-blocking evidence",
+        "template-wired",
+        "onerror-only",
+        "non-authorizing",
+        "Chart.js vendor fallback template wiring v1",
         "no provider truth",
         "no dashboard truth",
         "Market-Airport excluded",
@@ -249,10 +254,19 @@ def test_market_surface_chartjs_cdn_diagnostics_operator_pointer_env_boundary_v0
         "shadow",
         "test_market_dashboard_readonly_structure_contract_v0.py",
         "tests/test_market_surface_api.py",
+        "test_chartjs_vendor_fallback_wiring_contract_v0.py",
     ]
 
     for token in required_boundary_tokens:
         assert token.lower() in chartjs_cdn.lower()
+
+    forbidden_stale_tokens = [
+        "vendor fallback stays deferred",
+        "no active local Chart.js vendor fallback",
+    ]
+
+    for token in forbidden_stale_tokens:
+        assert token.lower() not in chartjs_cdn.lower()
 
 
 def test_market_surface_chartjs_cdn_blocking_evidence_criteria_env_boundary_v0() -> None:
@@ -517,7 +531,7 @@ def test_market_surface_ssr_provenance_snapshot_operator_pointer_env_boundary_v0
         "no provider truth",
         "no dashboard truth",
         "trading readiness",
-        "vendor fallback stays deferred",
+        "vendor fallback template wiring v1",
         "Market-Airport excluded",
         "Master V2 / Double Play protected",
         "no run",
@@ -586,7 +600,7 @@ def test_market_surface_active_paper_run_operator_pointer_env_boundary_v0() -> N
         "no dashboard truth",
         "trading readiness",
         "exchange-freshness",
-        "vendor fallback stays deferred",
+        "vendor fallback template wiring v1",
         "Market-Airport excluded",
         "Master V2 / Double Play protected",
         "no run",
