@@ -3051,6 +3051,7 @@ PARALLEL_OPERATOR_STATUS_INDEX_CREATED=false
 | Scheduled workflow variable gates + residual schedule boundaries | `docs/ops/CI_SCHEDULED_WORKFLOW_VARIABLE_GATES.md` — **§ GH Schedule Governance Minimal RC v0** |
 | Read-only manual-only / residual schedule recommender | `scripts/ops/recommend_manual_only_workflows.py` (reference only; **no** script change in SLICE-GH-0) |
 | Manual-only recommender tests | `tests/ops/test_recommend_manual_only_workflows.py` (GH-001 manual-only contract merged #3911) |
+| Residual PRB scheduled YAML contract tests | `tests/ci/test_residual_prb_scheduled_scorecard_workflow_contract_v0.py` |
 | Ops Cockpit / OE / CV / ER / OC prior releases | this document — § Operator Experience …, § Cybersecurity Visibility …, § Ops Cockpit …; ER SSOT in `PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md` |
 
 **Release scope (complete):** **2 PRs** merged — minimal explicit sub-go-gated workflow governance without batch YAML, without new status hubs, and without lifting STOP_IDLE / preflight / retention enforcement.
