@@ -113,6 +113,47 @@ Stabile `data-*`‑Marker (Anker für Anzeige und automatisierte Tests — **kei
 
 **Protected boundaries:** read-only SSR display only — **no dashboard truth grant**, **no provider truth**. **Market-Airport excluded.** **`GET`** **`&#47;market&#47;double-play`** (**Master V2 / Double Play protected**) — provenance enablement does not alter Double Play routes, markers, or decision logic.
 
+### Active Paper Run SSR (env-gated v1)
+
+**`GET`** **`&#47;market`** may render a **view-only** Active Paper Run panel when explicitly enabled. Governed in `src/webui/market_surface.py` via `build_market_active_paper_run_display_context()`; SSR reads bridge/staging evidence (`meta.json`, `evidence_pointer.json`, heartbeat, events) from a configured root — **no** browser **`fetch()`**, **no** runtime start/stop controls, **no** order UI.
+
+- **Gate (default off):** `PEAK_TRADE_MARKET_ACTIVE_PAPER_RUN_ENABLED=1` plus `PEAK_TRADE_MARKET_ACTIVE_PAPER_RUN_BRIDGE_ROOT=<path>`; optional `PEAK_TRADE_MARKET_ACTIVE_PAPER_RUN_DETAIL_URL`.
+- **Markers:** `data-market-v0-active-paper-run="true"`, `data-market-v0-active-paper-run-readonly="true"`, `data-market-v0-active-paper-run-authority="false"`, `data-market-v0-active-paper-run-non-authorizing="true"`, `data-market-v0-active-paper-run-evidence-only="true"`, `data-market-v0-active-paper-run-not-live="true"`, `data-market-v0-active-paper-run-enabled`, `data-market-v0-active-paper-run-active` — **absent** when gate disabled.
+- **Boundaries:** read-only SSR; **Observability/Operator Context only** — **no** dashboard truth grant, **no** provider truth, **no** trading readiness, **no** exchange-freshness guarantee, **no** runtime/scheduler activation; **`GET`** **`&#47;observability`** remains the canonical hub for workflow panels.
+
+#### Operator enablement (active paper run v1)
+
+**Default off / operator-gated / fail-closed / no authority:** Active Paper Run SSR on **`GET`** **`&#47;market`** stays **disabled** until **both** env gates below are explicitly set. Panel **absent** when gates are off is **expected** — **not** a template defect, **not** Dashboard Truth GO, **not** Provider Truth, **not** trading readiness, **not** Live/Testnet/Order/Cancel/Execute/Arming/Preflight authority, **no run, Testnet, Paper, or Shadow authorization**. **Vendor fallback stays deferred** until CDN-blocking evidence.
+
+**Required env chain (both steps for Active Paper Run SSR v0):**
+
+| Step | Env var(s) | Notes |
+|------|------------|-------|
+| 1 | `PEAK_TRADE_MARKET_ACTIVE_PAPER_RUN_ENABLED=1` | Master active-paper-run gate |
+| 2 | `PEAK_TRADE_MARKET_ACTIVE_PAPER_RUN_BRIDGE_ROOT=<path>` | Bridge directory with `meta.json` + `evidence_pointer.json` |
+| 3 | `PEAK_TRADE_MARKET_ACTIVE_PAPER_RUN_DETAIL_URL` (optional) | Detail link override |
+
+**Bridge guard semantics:** `evidence_pointer.json` must have `view_only=true` and `fake_data≠true`; unreadable bridge or failed pointer guard yields diagnostic status — **not** trading block.
+
+**Authority display labels (always false in SSR builder — reject misread):**
+
+| Label | Operator meaning | Common misread (reject) |
+|-------|------------------|-------------------------|
+| `LIVE_AUTHORIZED` | Hardcoded **false** diagnostic field | Live trading authorized |
+| `PREFLIGHT_LIFT` | Hardcoded **false** diagnostic field | Preflight lifted / ready to run |
+| `is_active` / `data-market-v0-active-paper-run-active` | Bridge-derived idle/stale heuristic (~10 min window) | Exchange connectivity / trading GO |
+| `paper_symbol` / `symbol_display` | Display metadata only | Futures/Provider Truth |
+
+**Orthogonal surfaces (do not conflate in triage):**
+
+- **Last Paper Run** (#4097 consolidation sub-gate) — **historical/completed** run via `PEAK_TRADE_LAST_PAPER_RUN_*`; **not** Active Paper Run bridge
+- **SSR provenance / snapshot triage** (#4102) — always-on/conditional provenance markers; **not** env-gated active-run panel
+- **Env-gated depth/ranking/projection/consolidation** (#4097–#4100) — separate default-off SSR panels
+
+**Troubleshooting (missing/stale active-run display):** Walk the env chain top-down before assuming SSR regression. Verify bridge root path, `meta.json` / `evidence_pointer.json` validity, and `view_only` guard. Distinguish **panel absent** (gate off — expected) from **bridge_unreadable** / **pointer_guard_failed** (gate on but bridge invalid). **Do not** equate heartbeat, equity, or `is_active` with exchange connectivity, Provider Truth, Dashboard Truth, or trading authorization. Cross-check **`tests/webui/test_market_active_paper_run_runtime_v0.py`**, **`tests/webui/test_market_dashboard_readonly_structure_contract_v0.py`**.
+
+**Protected boundaries:** read-only SSR only — **no dashboard truth grant**, **no provider truth**, **no** Live/Testnet/Order/Cancel/Execute/Arming/Preflight authority, **no** runtime/scheduler activation. **Market-Airport excluded.** **`GET`** **`&#47;market&#47;double-play`** (**Master V2 / Double Play protected**) — active paper run operator enablement does not alter Double Play routes, markers, or decision logic. **No run, Testnet, Paper, or Shadow authorization** is granted by enabling this display path.
+
 ### Single-page consolidation (env-gated SSR v1)
 
 **`GET &#47;market`** may embed view-only operator panels reused from the Observability Hub when consolidation is enabled. Governed in `src/webui/market_surface.py` via `build_market_single_page_consolidation_display_context()`; panel SSR reuses `build_workflow_dashboard_display_context()` and `build_last_paper_run_panel_display_context()` (same builders as **`GET &#47;observability`**).
