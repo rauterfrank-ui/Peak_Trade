@@ -145,3 +145,57 @@ def test_chartjs_cdn_diagnostics_operator_pointer_no_stale_deferred_v0() -> None
         "non-authorizing",
     ):
         assert required.lower() in chartjs_cdn.lower()
+
+
+def test_docs_truth_map_chartjs_post_merge_no_stale_planning_only_v0() -> None:
+    """DOCS_TRUTH_MAP Chart.js row must reflect PR #4108/#4110 on-main wiring."""
+    truth_map = (project_root / "docs/ops/registry/DOCS_TRUTH_MAP.md").read_text(encoding="utf-8")
+    row_start = truth_map.index("Chart.js local fallback planning charter v0")
+    row_end = truth_map.index("\n", row_start)
+    chartjs_row = truth_map[row_start:row_end]
+
+    for stale in (
+        "planning-only",
+        "future implementation preconditions",
+        "kein vendor/static/templates",
+    ):
+        assert stale.lower() not in chartjs_row.lower()
+
+    for required in (
+        "PR #4108",
+        "CHARTJS_VENDOR_ADDED_ON_MAIN=true",
+        "CHARTJS_LOCAL_FALLBACK_WIRING_V1_ON_MAIN=true",
+        "jsdelivr",
+        "onerror",
+        "data-chartjs-vendor-fallback-v0",
+        "non-authorizing",
+        "separately authorized",
+    ):
+        assert required.lower() in chartjs_row.lower()
+
+
+def test_market_surface_double_play_v12_no_stale_cdn_only_fallback_v0() -> None:
+    """Double-Play v1.2 must not claim CDN-only or deferred fallback post-#4108."""
+    surface = (project_root / "docs/webui/MARKET_SURFACE_V0.md").read_text(encoding="utf-8")
+    section_start = surface.index(
+        "## Double-Play Market Dashboard v1.2 candlestick and visual panels"
+    )
+    section_end = surface.index("## Double-Play Market Dashboard v1.3 rail field mapping")
+    v12 = surface[section_start:section_end]
+
+    for stale in (
+        "chart.js cdn nur",
+        "cdn nur für",
+        "lokaler chart.js-fallback",
+    ):
+        assert stale.lower() not in v12.lower()
+
+    for required in (
+        "jsdelivr",
+        "onerror-only",
+        "template-wired",
+        "non-authorizing",
+        "chart.js vendor fallback template wiring v1",
+        "pr #4108",
+    ):
+        assert required.lower() in v12.lower()
