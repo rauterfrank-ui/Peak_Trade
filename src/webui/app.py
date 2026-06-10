@@ -98,6 +98,7 @@ from typing import Any, Dict, List, Literal, Optional
 import toml
 from fastapi import FastAPI, HTTPException, Query, Request
 from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 logger = logging.getLogger(__name__)
@@ -207,6 +208,7 @@ from .double_play_dashboard_display_json_route_v0 import (
 # Wir gehen davon aus: src/webui/app.py -> src/webui -> src -> REPO_ROOT
 BASE_DIR = Path(__file__).resolve().parents[2]
 TEMPLATE_DIR = BASE_DIR / "templates" / "peak_trade_dashboard"
+STATIC_DIR = BASE_DIR / "static"
 
 
 def get_project_status() -> Dict[str, Any]:
@@ -2098,6 +2100,9 @@ def create_app() -> FastAPI:
                 status_code=500,
                 detail=f"Failed to load alerts: {str(e)}",
             )
+
+    if STATIC_DIR.is_dir():
+        app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
     return app
 
