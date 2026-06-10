@@ -213,6 +213,23 @@ Non-authority invariants remain unchanged:
 - `API_ENDPOINT_CREATED=false`
 - `DOUBLE_PLAY_ROUTE_CHANGED=false`
 
+#### Operator enablement (ranking funnel v1)
+
+**Default off / operator-gated / fail-closed:** Ranking funnel SSR on **`GET`** **`&#47;market`** stays **disabled** until **both** env gates below are explicitly set. Empty-state markers, absent row markers, or **`#market-v0-ranking-funnel-ssr`** region **absent when gates are off** is **expected** — **not** a template defect, **not** Dashboard Truth GO, **not** Provider Truth, **no** runtime, Testnet, Paper, or Shadow authority.
+
+**Required env chain (both steps for ranking funnel rows on `GET` `/market`):**
+
+| Step | Env var(s) | Notes |
+|------|------------|-------|
+| 1 | `PEAK_TRADE_MARKET_RANKING_FUNNEL_ENABLED=1` | Master ranking-funnel gate |
+| 2 | `PEAK_TRADE_MARKET_RANKING_FUNNEL_BUNDLE_ROOT=<path>` | Offline bundle root for `market_ranking_funnel_readmodel.v0` |
+
+**Bundle/readmodel readiness:** Bundle must expose valid `market_ranking_funnel_readmodel.v0` JSON with `readmodel_id`, `generated_at_iso`, `source`, `stale`/`stale_reason`, and `stages.universe[]`/`shortlist[]`/`selected[]` before row markers replace empty-state UI. Fixture target: `tests/fixtures/market_ranking_funnel_readmodel_v0/`. **`GET`** **`&#47;market`** must **not** derive Provider Truth from funnel display.
+
+**Troubleshooting (missing/stale funnel rows):** Walk the env chain top-down before assuming SSR regression. Verify bundle root path and readmodel JSON validity. Distinguish **empty-state markers present** (gate on, no rows — expected display empty state) from **absent funnel region** (gate off — expected). Cross-check **`tests/webui/test_market_dashboard_readonly_structure_contract_v0.py`**, **`tests/webui/test_market_ranking_funnel_readmodel_v0.py`**, and existing charter/env tests in **`tests/ops/test_market_surface_ranking_funnel_env_schema_boundary_v0.py`**.
+
+**Protected boundaries:** read-only SSR only — **no dashboard truth grant**, **no provider truth**, **no** Live/Testnet/Order/Cancel/Execute/Arming/Preflight authority, **no** runtime/scheduler activation. **Market-Airport excluded.** **`GET`** **`&#47;market&#47;double-play`** (**Master V2 / Double Play protected**) — ranking funnel does not alter Double Play routes, markers, or decision logic. **No run, Testnet, Paper, or Shadow authorization** is granted by enabling this display path.
+
 ### Marker / IA crosswalk policy v0
 
 `market_v0.html` deliberately exposes many `data-market-v0-*` markers for SSR structure, visual grouping, and regression tests. `MARKET_SURFACE_V0.md` is the canonical product/contract surface, not a complete attribute registry: it should describe marker families and authority boundaries rather than duplicate every template attribute.
