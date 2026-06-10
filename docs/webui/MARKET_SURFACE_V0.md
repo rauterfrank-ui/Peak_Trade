@@ -380,6 +380,8 @@ MARKET_DASHBOARD_READ_ONLY_NON_AUTHORITY=true
 
 **Offene Decision-/Evidence-Kette (separat autorisiert — nicht durch Wiring allein):** operatorisch evidenziertes CDN-Blocking (#4104), optional Browser-Capture (#4105/#4106), **Vendor-Decision**-GO — **nicht** wiring absence.
 
+**Parity record:** charter slices #4104–#4106 aligned to post-#4108 onerror-only wiring reality (PR #4110).
+
 #### Chart.js vendor fallback template wiring v1 (implemented)
 
 **UI-only / fail-closed / non-authorizing:** CDN-primary bleibt **jsdelivr** (`chart.js@4.4.1`). Lokaler Vendor-Fallback wird **nur** bei CDN-`<script>`-`onerror` über `peakTradeChartjsVendorFallbackV0` nachgeladen — Pfad **`/static/vendor/chartjs/4.4.1/chart.umd.min.js`**. **Kein** eager local `<script>` in SSR. Nach erfolgreichem lokalen Load setzt die Shell **`data-chartjs-vendor-fallback-v0="true"`** (**diagnostisch**, getrennt von **`data-chartjs-cdn-load-error`**). Betroffene Shells: **`#market-v0-shell`**, **`#double-play-market-v0-shell`**, **`#r-and-d-charts-shell`**. **Keine** Provider Truth, **keine** Dashboard Truth, **keine** Trading Readiness, **keine** Live-/Preflight-/Execution-/Order-/Cancel-Autorität. **Market-Airport excluded.** **`GET`** **`&#47;market&#47;double-play`** (**Master V2 / Double Play protected**) — Wiring ändert keine Trading-Logik.
