@@ -74,7 +74,10 @@ def test_package_marker_present() -> None:
 
 def test_ready_safety_cancel_happy_path_tripped_intended_order() -> None:
     verdict = evaluate_order_capability_safety_cancel_under_killswitch(_valid_input())
-    assert verdict.status == OrderCapabilitySafetyCancelVerdictKind.READY_FOR_DRY_SAFETY_CANCEL_PLAN_ONLY
+    assert (
+        verdict.status
+        == OrderCapabilitySafetyCancelVerdictKind.READY_FOR_DRY_SAFETY_CANCEL_PLAN_ONLY
+    )
     assert verdict.reason_codes == ()
     assert verdict.dry_safety_cancel_plan_candidate is True
     assert verdict.intended_order_id_binding_verified is True
@@ -183,9 +186,7 @@ def test_safety_flags_immutable_on_pass() -> None:
 
 
 def test_fail_method_not_post() -> None:
-    verdict = evaluate_order_capability_safety_cancel_under_killswitch(
-        _valid_input(method="GET")
-    )
+    verdict = evaluate_order_capability_safety_cancel_under_killswitch(_valid_input(method="GET"))
     assert verdict.status == OrderCapabilitySafetyCancelVerdictKind.FAIL_CLOSED
     assert REASON_FORBIDDEN_METHOD_NOT_POST in verdict.reason_codes
 

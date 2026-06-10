@@ -246,7 +246,9 @@ def _validate_killswitch_state(state: str) -> list[str]:
     return [REASON_KILLSWITCH_STATE_AMBIGUOUS]
 
 
-def _validate_intended_order_id(intended_order_id: str, requested_order_id: str) -> tuple[list[str], bool]:
+def _validate_intended_order_id(
+    intended_order_id: str, requested_order_id: str
+) -> tuple[list[str], bool]:
     intended = intended_order_id.strip()
     requested = requested_order_id.strip()
     if not intended:
@@ -418,7 +420,10 @@ def _validate_serialized_keys(data: dict[str, Any]) -> None:
 def validate_order_capability_safety_cancel_verdict(
     verdict: OrderCapabilitySafetyCancelVerdict,
 ) -> None:
-    if verdict.status == OrderCapabilitySafetyCancelVerdictKind.READY_FOR_DRY_SAFETY_CANCEL_PLAN_ONLY:
+    if (
+        verdict.status
+        == OrderCapabilitySafetyCancelVerdictKind.READY_FOR_DRY_SAFETY_CANCEL_PLAN_ONLY
+    ):
         if verdict.reason_codes:
             raise OrderCapabilitySafetyCancelError(
                 "READY_FOR_DRY_SAFETY_CANCEL_PLAN_ONLY must not include reason codes"
