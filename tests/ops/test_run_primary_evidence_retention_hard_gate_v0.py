@@ -585,7 +585,11 @@ def test_pe6_hard_gate_cyber_er_artifact_retention_crosslink_v0() -> None:
     assert "INPUT_JSONL_PROVIDED=false" in ci_audit
     assert "CYBER_VISIBILITY_ARTIFACTS_DEFENSIVE_DERIVED_STATIC_ONLY=true" in ci_audit
     ci_lines = {line.strip() for line in ci_audit.splitlines()}
-    assert ("INPUT_JSONL_PROVIDED" + _MARKER_TRUE) not in ci_lines
+    assert (
+        "CYBERSECURITY_VISIBILITY_DEFINITIVE_R001_R002_R007_MAPPING_EXECUTION_DOCS_TESTS_V1=true"
+        in ci_audit
+    )
+    assert ("LOSSLESS_JSONL_RECOVERY" + _MARKER_TRUE) not in ci_lines
 
 
 @pytest.mark.skipif(not COPY_CHECK.is_file(), reason="operator archive copy-check not present")
@@ -830,7 +834,11 @@ def test_hard_gate_owner_crosslinks_cybersecurity_artifact_retention_histogram_v
     assert "DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=true" in ci_audit
 
     ci_lines = {line.strip() for line in ci_audit.splitlines()}
-    assert ("INPUT_JSONL_PROVIDED" + _MARKER_TRUE) not in ci_lines
+    assert (
+        "CYBERSECURITY_VISIBILITY_DEFINITIVE_R001_R002_R007_MAPPING_EXECUTION_DOCS_TESTS_V1=true"
+        in ci_audit
+    )
+    assert ("LOSSLESS_JSONL_RECOVERY" + _MARKER_TRUE) not in ci_lines
 
     for pending_id in ("R-001", "R-002", "R-007"):
         assert pending_id in ci_audit
