@@ -636,7 +636,7 @@ def test_market_surface_chartjs_browser_capture_criteria_post_4111_parity_v0() -
 
 
 def test_market_surface_chartjs_browser_capture_criteria_post_4112_parity_v0() -> None:
-    """Post-#4112 chronicle/cross-ref guards on parity record and DOCS_TRUTH_MAP."""
+    """Post-#4112 chronicle/cross-ref guards on parity record and DOCS_TRUTH_MAP (non-authorizing)."""
     surface = (PROJECT_ROOT / "docs/webui/MARKET_SURFACE_V0.md").read_text(encoding="utf-8")
     truth_map = (PROJECT_ROOT / "docs/ops/registry/DOCS_TRUTH_MAP.md").read_text(encoding="utf-8")
 
