@@ -91,6 +91,28 @@ Stabile `data-*`‑Marker (Anker für Anzeige und automatisierte Tests — **kei
 - **Futures-Ranking-Funnel (contract-first Empty-State, `GET` `/market`):** `data-market-v0-ranking-funnel-empty-state-v0="true"` — **keine** Live-Ranking-Daten, **keine** erfundenen Scores/Symbole/Kandidatenlisten; reiner SSR-Platzhalter, bis ein kanonischer **Producer**/`readmodel`‑Vertrag existiert.
 - **Dynamische Funnel-Labels:** `data-market-v0-ranking-funnel-dynamic-labels-v0="true"` — Stufen heißen **Top Universe**, **Shortlist**, **Top Ranking / Selected Candidates**; **Zählwerte pro Stufe** sind **vom Producer** bzw. Datenstand abhängig (**nicht** als statisches `Top 50&#47;20&#47;5` ausgewiesen).
 
+#### Operator enablement (SSR provenance / snapshot triage v1)
+
+**Display-only / fail-closed / no authority:** SSR provenance and snapshot markers on **`GET`** **`&#47;market`** are **operator-facing troubleshooting signals only** — **not** env-gated SSR panels, **not** Dashboard Truth GO, **not** Provider Truth, **not** trading readiness, **not** Live/Testnet/Order/Cancel/Execute/Arming/Preflight authority, **no** runtime/scheduler activation, **no run, Testnet, Paper, or Shadow authorization**. **Vendor fallback stays deferred** until CDN-blocking evidence (see § Chart.js local fallback planning charter v0); **do not** treat provenance timestamps or stale flags as cue to enable local Chart.js fallback.
+
+**Provenance signal map (always-on / conditional — no env chain):**
+
+| Signal | Operator meaning | Common misread (reject) |
+|--------|------------------|-------------------------|
+| `data-market-v0-embedded-snapshot-generated-at-v0` + **„Snapshot bei Seitenladen“** + `generated_at_utc` | OHLC SSR snapshot time at page render | Exchange freshness / live market connectivity |
+| `data-market-v0-depth-bundle-provenance-v0` + `data-market-v0-depth-bundle-stale` | Depth-bundle fixture provenance (`generated_at_iso`, `stale`, `stale_reason`) — **separate** from OHLC snapshot | Same as OHLC snapshot / trading block |
+| `data-market-v0-payload-meta-note-v0` + `meta.note` | Dummy/offline **data-origin note** when present | Readiness GO / provider OK |
+| `data-market-v0-depth-tile-freshness-mirror-v0` | Cockpit mirror of `depth_generated_at_iso` / `depth_stale` / `depth_stale_reason` — same diagnostic semantics as lower **Tiefen-Bundle-Provenienz** block | Duplicate of OHLC **„Snapshot bei Seitenladen“** |
+
+**Orthogonal surfaces (do not conflate in triage):**
+
+- **Chart.js CDN diagnostics v1** (#4101) — client CDN/render path; walk **`#### Operator enablement (chart.js CDN diagnostics v1)`** when chart status or CDN markers are in scope
+- **Env-gated operator pointers** (#4097–#4100) — consolidation, run projection, ranking funnel, market depth; absent panels when gates are off are **expected**, not provenance defects
+
+**Troubleshooting (provenance vs freshness vs readiness):** Walk **which marker family** is visible first (OHLC embedded snapshot vs depth-bundle provenance vs payload meta note vs depth-tile freshness mirror). **Do not** equate any timestamp, stale flag, or data note with exchange connectivity, Provider Truth, Dashboard Truth, or trading authorization. If depth SSR panel is missing, walk **market depth v1** env chain (#4100) separately — provenance markers **≠** env-gate failure. Cross-check **`tests/webui/test_market_dashboard_readonly_structure_contract_v0.py`** and **`tests/test_market_surface_api.py`**.
+
+**Protected boundaries:** read-only SSR display only — **no dashboard truth grant**, **no provider truth**. **Market-Airport excluded.** **`GET`** **`&#47;market&#47;double-play`** (**Master V2 / Double Play protected**) — provenance enablement does not alter Double Play routes, markers, or decision logic.
+
 ### Single-page consolidation (env-gated SSR v1)
 
 **`GET &#47;market`** may embed view-only operator panels reused from the Observability Hub when consolidation is enabled. Governed in `src/webui/market_surface.py` via `build_market_single_page_consolidation_display_context()`; panel SSR reuses `build_workflow_dashboard_display_context()` and `build_last_paper_run_panel_display_context()` (same builders as **`GET &#47;observability`**).
