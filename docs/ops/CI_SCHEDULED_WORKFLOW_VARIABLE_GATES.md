@@ -187,6 +187,24 @@ RECOMMENDER_READ_ONLY=true
 
 ---
 
+## Residual PRB scheduled scorecard YAML contract v0
+
+**Five** workflows retain active `schedule:` on the PRB scorecard chain (no `PT_*` variable gates — unlike paper/export smoke orchestrator above):
+
+| Workflow file | Cron (UTC) | Scorecard script |
+|---------------|------------|------------------|
+| `prbc-stability-gate.yml` | `57 2 * * *` | `scripts/ci/stability_gate.py` |
+| `prbd-live-readiness-scorecard.yml` | `7 3 * * *` | `scripts/ci/live_readiness_scorecard.py` |
+| `prbe-shadow-testnet-scorecard.yml` | `29 2 * * *` | `scripts/ci/shadow_testnet_readiness_scorecard.py` |
+| `prbg-execution-evidence.yml` | `19 2 * * *` | `scripts/ci/execution_evidence_producer.py` |
+| `prbi-live-pilot-scorecard.yml` | `39 2 * * *` | `scripts/ci/live_pilot_scorecard.py` |
+
+**Static contract test owner:** `tests/ci/test_residual_prb_scheduled_scorecard_workflow_contract_v0.py` — offline YAML parse only; **no** workflow dispatch, **no** secret/credential reads, **no** runtime or exchange execution authority.
+
+**Chain note (runtime — not executed by contract test):** PRBC → PRBD → PRBE; PRBG parallel; PRBI consumes upstream artifacts.
+
+---
+
 ## Cross-References
 
 - [CI_AUDIT_KNOWN_ISSUES.md](CI_AUDIT_KNOWN_ISSUES.md) — **§ GH Schedule Governance Minimal RC v0 — index v0**
