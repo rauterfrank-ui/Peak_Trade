@@ -538,6 +538,103 @@ def test_market_surface_chartjs_cdn_blocking_evidence_capture_browser_execute_pr
         assert token.lower() not in execute_prep.lower()
 
 
+def test_market_surface_chartjs_browser_capture_criteria_post_4111_parity_v0() -> None:
+    """Post-#4111 parity guards on #4104/#4105/#4106 charter cross-refs."""
+    surface = (PROJECT_ROOT / "docs/webui/MARKET_SURFACE_V0.md").read_text(encoding="utf-8")
+    truth_map = (PROJECT_ROOT / "docs/ops/registry/DOCS_TRUTH_MAP.md").read_text(encoding="utf-8")
+
+    parity_start = surface.index("**Parity record:**")
+    parity_end = surface.index(
+        "#### Chart.js vendor fallback template wiring v1 (implemented)", parity_start
+    )
+    parity_record = surface[parity_start:parity_end]
+
+    criteria_start = surface.index("#### CDN-blocking evidence criteria (v1)")
+    criteria_end = surface.index("#### CDN-blocking evidence capture charter (v1)", criteria_start)
+    criteria = surface[criteria_start:criteria_end]
+
+    capture_start = surface.index("#### CDN-blocking evidence capture charter (v1)")
+    capture_end = surface.index("#### Browser-capture execute prep (read-only v1)", capture_start)
+    capture_charter = surface[capture_start:capture_end]
+
+    execute_start = surface.index("#### Browser-capture execute prep (read-only v1)")
+    execute_end = surface.index("## Double-Play Market Dashboard v1 SSR", execute_start)
+    execute_prep = surface[execute_start:execute_end]
+
+    section_required_tokens = {
+        parity_record: (
+            "#4108",
+            "#4110",
+            "#4111",
+            "onerror-only",
+            "separately authorized — not granted",
+            "data-chartjs-vendor-fallback-v0",
+            "non-authorizing",
+        ),
+        criteria: (
+            "PR #4108",
+            "onerror-only",
+            "separater GO",
+            "jetzt nicht erteilt",
+            "data-chartjs-vendor-fallback-v0",
+            "non-authorizing",
+        ),
+        capture_charter: (
+            "PR #4108",
+            "onerror-only",
+            "separate GO",
+            "data-chartjs-vendor-fallback-v0",
+            "non-authorizing",
+        ),
+        execute_prep: (
+            "PR #4108",
+            "onerror-only",
+            "separately authorized",
+            "data-chartjs-vendor-fallback-v0",
+            "non-authorizing",
+        ),
+    }
+
+    for section, tokens in section_required_tokens.items():
+        for token in tokens:
+            assert token.lower() in section.lower()
+
+    for token in ("PR #4110", "PR #4111"):
+        assert token in parity_record
+
+    assert "separately authorized — not granted" in parity_record.lower()
+    assert "jsdelivr" in parity_record.lower()
+
+    for stale in (
+        "vendor fallback stays deferred",
+        "planning-only",
+        "future implementation preconditions",
+        "kein vendor/static/templates",
+        "chart.js cdn nur",
+    ):
+        assert stale.lower() not in parity_record.lower()
+        assert stale.lower() not in criteria.lower()
+        assert stale.lower() not in capture_charter.lower()
+        assert stale.lower() not in execute_prep.lower()
+
+    for forbidden in (
+        "browser_capture_execute_authorized_now=true",
+        "vendor_fallback_authorized_now=true",
+        "dashboard_truth_go_authorized=true",
+        "execute_authorized=true",
+    ):
+        for section in (parity_record, criteria, capture_charter, execute_prep):
+            assert forbidden.lower() not in section.lower()
+
+    assert "PR #4111" in truth_map
+    chartjs_row_start = truth_map.index("Chart.js local fallback planning charter v0")
+    chartjs_row_end = truth_map.index("\n", chartjs_row_start)
+    chartjs_row = truth_map[chartjs_row_start:chartjs_row_end]
+    assert "#4111" in chartjs_row
+    assert "PR #4108/#4110/#4111" in chartjs_row
+    assert "separately authorized" in chartjs_row.lower()
+
+
 def test_market_surface_chartjs_local_fallback_planning_charter_post_merge_parity_v0() -> None:
     """Parent CHARTJS_LOCAL_FALLBACK charter block reflects PR #4108 wiring on main."""
     surface = (PROJECT_ROOT / "docs/webui/MARKET_SURFACE_V0.md").read_text(encoding="utf-8")
