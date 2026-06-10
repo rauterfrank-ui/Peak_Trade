@@ -234,7 +234,9 @@ def _validate_offline_rules(
     return reasons, instrument_rules_offline_bound
 
 
-def _validate_unsafe_authority_flags(inp: OrderCapabilityDemoInstrumentRulesBindingInput) -> list[str]:
+def _validate_unsafe_authority_flags(
+    inp: OrderCapabilityDemoInstrumentRulesBindingInput,
+) -> list[str]:
     if inp.execute_authorized or inp.order_authorized or inp.cancel_authorized:
         return [REASON_UNSAFE_AUTHORITY_FLAGS]
     return []
@@ -345,18 +347,15 @@ def evaluate_order_capability_demo_instrument_rules_binding(
     reasons.extend(cap_reasons)
 
     deduped_reasons = list(dict.fromkeys(reasons))
-    binding_prepared = (
-        instrument_rules_offline_bound
-        and not any(
-            code
-            in {
-                REASON_DEMO_HOST_MISMATCH,
-                REASON_LIVE_HOST_REJECTED,
-                REASON_CREDENTIAL_CLASS_REJECTED,
-                REASON_MISSING_INSTRUMENT,
-            }
-            for code in deduped_reasons
-        )
+    binding_prepared = instrument_rules_offline_bound and not any(
+        code
+        in {
+            REASON_DEMO_HOST_MISMATCH,
+            REASON_LIVE_HOST_REJECTED,
+            REASON_CREDENTIAL_CLASS_REJECTED,
+            REASON_MISSING_INSTRUMENT,
+        }
+        for code in deduped_reasons
     )
 
     operator_prep_allowed = (
@@ -371,7 +370,10 @@ def evaluate_order_capability_demo_instrument_rules_binding(
         if (
             instrument_rules_offline_bound
             and REASON_INFEASIBLE_UNDER_CAP_ENVELOPE in deduped_reasons
-            and len([code for code in deduped_reasons if code != REASON_INFEASIBLE_UNDER_CAP_ENVELOPE]) == 0
+            and len(
+                [code for code in deduped_reasons if code != REASON_INFEASIBLE_UNDER_CAP_ENVELOPE]
+            )
+            == 0
         ):
             return _immutable_authority_fields(
                 verdict=DemoInstrumentRulesBindingVerdictKind.INFEASIBLE_UNDER_CAP,
@@ -479,9 +481,13 @@ def validate_order_capability_demo_instrument_rules_binding_result(
     ):
         raise DemoInstrumentRulesBindingError("order/cancel/execute authority must remain false")
     if not result.value_redacted or not result.no_secret_material:
-        raise DemoInstrumentRulesBindingError("value_redacted and no_secret_material must remain true")
+        raise DemoInstrumentRulesBindingError(
+            "value_redacted and no_secret_material must remain true"
+        )
     if result.cancelallorders_allowed or result.batchorder_allowed:
-        raise DemoInstrumentRulesBindingError("cancelallorders and batchorder must remain disallowed")
+        raise DemoInstrumentRulesBindingError(
+            "cancelallorders and batchorder must remain disallowed"
+        )
     if result.blocker_min_size_not_verified_offline != (not result.min_size_verified_offline):
         raise DemoInstrumentRulesBindingError(
             "blocker_min_size_not_verified_offline must mirror min_size_verified_offline"
@@ -501,7 +507,9 @@ def validate_order_capability_demo_instrument_rules_binding_result(
                 "INFEASIBLE_UNDER_CAP requires INFEASIBLE_UNDER_CAP_ENVELOPE reason"
             )
         if result.cap_feasible:
-            raise DemoInstrumentRulesBindingError("INFEASIBLE_UNDER_CAP requires cap_feasible=false")
+            raise DemoInstrumentRulesBindingError(
+                "INFEASIBLE_UNDER_CAP requires cap_feasible=false"
+            )
     else:
         if not result.reason_codes:
             raise DemoInstrumentRulesBindingError("FAIL_CLOSED requires non-empty reason_codes")

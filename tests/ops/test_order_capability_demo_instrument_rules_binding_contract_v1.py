@@ -128,7 +128,10 @@ def test_demo_host_required_accepts_demo_futures() -> None:
 def test_live_prod_host_rejected(host: str) -> None:
     result = evaluate_order_capability_demo_instrument_rules_binding(_valid_input(demo_host=host))
     assert result.verdict == DemoInstrumentRulesBindingVerdictKind.FAIL_CLOSED
-    assert REASON_DEMO_HOST_MISMATCH in result.reason_codes or REASON_LIVE_HOST_REJECTED in result.reason_codes
+    assert (
+        REASON_DEMO_HOST_MISMATCH in result.reason_codes
+        or REASON_LIVE_HOST_REJECTED in result.reason_codes
+    )
 
 
 def test_credential_class_kraken_futures_demo_only_accepted() -> None:
