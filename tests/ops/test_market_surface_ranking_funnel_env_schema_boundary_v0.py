@@ -255,6 +255,77 @@ def test_market_surface_chartjs_cdn_diagnostics_operator_pointer_env_boundary_v0
         assert token.lower() in chartjs_cdn.lower()
 
 
+def test_market_surface_chartjs_cdn_blocking_evidence_criteria_env_boundary_v0() -> None:
+    """CDN-blocking evidence criteria tokens stay pinned in MARKET_SURFACE_V0 charter."""
+    surface = (PROJECT_ROOT / "docs/webui/MARKET_SURFACE_V0.md").read_text(encoding="utf-8")
+
+    section_start = surface.index("#### CDN-blocking evidence criteria (v1)")
+    section_end = surface.index("## Double-Play Market Dashboard v1 SSR")
+    cdn_evidence = surface[section_start:section_end]
+
+    assert "CDN-blocking evidence criteria (v1)" in cdn_evidence
+
+    required_charter_tokens = [
+        "CHARTJS_LOCAL_FALLBACK_PLANNING_CHARTER_V0",
+        "CDN-blocking evidence",
+        "vendor fallback",
+        "separater expliziter Vendor-Fallback-Implementation-GO",
+        "keine Vendor-Datei",
+        "no provider truth",
+        "no dashboard truth",
+        "trading readiness",
+        "Market-Airport excluded",
+        "Master V2 / Double Play protected",
+    ]
+
+    for token in required_charter_tokens:
+        assert token.lower() in cdn_evidence.lower()
+
+    required_negative_tokens = [
+        "bloße CDN-Abhängigkeit",
+        "hypothetisches Offline-Risiko",
+        "Operator-Wunsch nach Fallback",
+        "CSP-/Netzwerk-Paranoia ohne reproduzierbaren Blocking-Befund",
+        "allgemeiner Browserfehler ohne Chart.js-CDN-Kausalität",
+    ]
+
+    for token in required_negative_tokens:
+        assert token.lower() in cdn_evidence.lower()
+
+    required_boundary_tokens = [
+        "fail-closed",
+        "no authority",
+        "vendor-fallback bleibt nicht autorisiert",
+        "browser-render",
+        "netzwerkzugriff",
+        "no run",
+        "testnet",
+        "paper",
+        "shadow",
+        "#4101",
+        "#4097",
+        "data-chartjs-cdn-load-error",
+        "data-chartjs-cdn-monitored-v0",
+        "data-chartjs-cdn-script-v0",
+        "data-market-chart-status",
+    ]
+
+    for token in required_boundary_tokens:
+        assert token.lower() in cdn_evidence.lower()
+
+    forbidden_authority_tokens = [
+        "vendor_fallback_authorized_now=true",
+        "live_authorized=true",
+        "preflight_lift_authorized=true",
+        "execute_authorized=true",
+        "order_authorized=true",
+        "dashboard_truth_go_authorized=true",
+    ]
+
+    for token in forbidden_authority_tokens:
+        assert token.lower() not in cdn_evidence.lower()
+
+
 def test_market_surface_ssr_provenance_snapshot_operator_pointer_env_boundary_v0() -> None:
     """SSR provenance / snapshot triage operator enablement tokens stay pinned in MARKET_SURFACE_V0."""
     surface = (PROJECT_ROOT / "docs/webui/MARKET_SURFACE_V0.md").read_text(encoding="utf-8")
