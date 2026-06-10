@@ -37,6 +37,9 @@ ARCHIVE_FULL_LOSSLESS_SHA256 = "eff5698370a8cd38cacf02325d81223ca667d4995bda8cfc
 CHARTER_BLOCK_ANCHOR = "CYBERSECURITY_VISIBILITY_R_PENDING_REPO_STATIC_INVENTORY_CHARTER_V0=true"
 INPUT_ARTIFACT_BLOCK_ANCHOR = "CYBERSECURITY_VISIBILITY_R_PENDING_INPUT_ARTIFACT_CONTRACT_V0=true"
 MAPPING_GUARD_BLOCK_ANCHOR = "CYBERSECURITY_VISIBILITY_R_PENDING_MAPPING_GUARD_V0=true"
+DEFINITIVE_MAPPING_EXECUTION_BLOCK_ANCHOR = (
+    "CYBERSECURITY_VISIBILITY_DEFINITIVE_R001_R002_R007_MAPPING_EXECUTION_DOCS_TESTS_V1=true"
+)
 EXTERNAL_INPUT_JSONL_MAPPING_GUARD_BLOCK_ANCHOR = (
     "CYBERSECURITY_VISIBILITY_R_PENDING_EXTERNAL_INPUT_JSONL_MAPPING_GUARD_V0=true"
 )
@@ -44,7 +47,7 @@ WAVE1_BATCH_CLOSURE_BLOCK_ANCHOR = (
     "CYBERSECURITY_VISIBILITY_DERIVED_ONLY_MAPPING_WAVE1_BATCH_CLOSURE_V0=true"
 )
 
-DERIVED_EVIDENCE_MAPPED_RISKS: dict[str, tuple[str, str]] = {
+DEFINITIVE_MAPPED_RISKS: dict[str, tuple[str, str]] = {
     "R-001": (
         "tests/ci/test_workflow_write_permissions_visibility_contract_v0.py",
         "DERIVED-CYBER-R-001-001",
@@ -58,6 +61,21 @@ DERIVED_EVIDENCE_MAPPED_RISKS: dict[str, tuple[str, str]] = {
         "DERIVED-CYBER-R-007-001",
     ),
 }
+DERIVED_EVIDENCE_MAPPED_RISKS = DEFINITIVE_MAPPED_RISKS
+
+VALIDATION_BUNDLE_PATH = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/cybersecurity_input_jsonl_artifact_validation_v0_20260610T133528Z"
+)
+MAPPING_WAVE_CHARTER_PATH = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/cybersecurity_definitive_mapping_wave_charter_only_no_run_v0_20260610T133840Z"
+)
+OPERATOR_INPUT_JSONL_PATH = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/cybersecurity_input_jsonl_operator_intake_readonly_v0_20260601T164324Z/"
+    "operator_artifacts_pending/FULL_LOSSLESS_RISK_CANDIDATES.jsonl"
+)
 
 WAVE1_BATCH_CLOSURE_PLAN_PATH = (
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
@@ -116,15 +134,39 @@ EXTERNAL_VALIDATION_EXPECTED: dict[str, str] = {
 }
 
 GUARD_REGISTRY_EXPECTED: dict[str, str] = {
+    "INPUT_JSONL_PROVIDED": "true",
+    "LOSSLESS_JSONL_RECOVERY": "false",
+    "DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED": "false",
+    "NO_MAPPING_WITHOUT_INPUT_ARTIFACT": "false",
+}
+
+HISTORICAL_GUARD_REGISTRY_EXPECTED: dict[str, str] = {
     "INPUT_JSONL_PROVIDED": "false",
     "LOSSLESS_JSONL_RECOVERY": "false",
     "DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED": "true",
     "NO_MAPPING_WITHOUT_INPUT_ARTIFACT": "true",
 }
 
-GUARD_REGISTRY_LINE_RX = re.compile(
-    r"^(INPUT_JSONL_PROVIDED|LOSSLESS_JSONL_RECOVERY)=(true|false)$"
-)
+DEFINITIVE_EXECUTION_EXPECTED: dict[str, str] = {
+    "CYBERSECURITY_VISIBILITY_DEFINITIVE_R001_R002_R007_MAPPING_EXECUTION_DOCS_TESTS_V1": "true",
+    "GO_TOKEN": "GO_CYBERSECURITY_DEFINITIVE_R001_R002_R007_MAPPING_EXECUTION_DOCS_TESTS_V1",
+    "SLICE_CYBER_DEFMAP_EXEC_V1": "true",
+    "INPUT_JSONL_PROVIDED": "true",
+    "DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED": "false",
+    "LOSSLESS_JSONL_RECOVERY": "false",
+    "NOT_ORIGINAL_TMP_FULL_LOSSLESS": "true",
+    "APPROVED_SCOPE_NAME": "cybersecurity_visibility_r001_r002_r007_inventory_recovery_read_only_v0",
+    "INPUT_JSONL_REPO_INGESTED": "false",
+    "JSONL_FULL_REEVALUATED": "false",
+    "FAKE_R_ID_REBUILD_DONE": "false",
+    "CSC_003A_SCOPE_INCLUDED": "false",
+    "CSC_003E_SCOPE_INCLUDED": "false",
+    "NO_PARALLEL_SSOT": "true",
+    "PARALLEL_DOC_CREATED": "false",
+    "AUTHORITY_IMPACT": "NO_AUTHORITY_CHANGE",
+}
+
+BLOCKED_MAPPING_LINE_RX = re.compile(r"^DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=true$")
 
 CANONICAL_PENDING_CYBER_TEST_MODULES = frozenset(
     {
@@ -189,9 +231,22 @@ def _risk_table_rows(text: str) -> dict[str, tuple[str, str]]:
     return rows
 
 
-def _assert_derived_evidence_mapped(status_cell: str) -> None:
-    assert "mapped-by-derived-evidence" in status_cell.lower()
-    assert status_cell.strip().lower() != "mapped"
+def _assert_definitive_mapped(status_cell: str) -> None:
+    lowered = status_cell.strip().lower()
+    assert "mapped-by-derived-evidence" not in lowered
+    assert "mapped" in lowered
+
+
+def _assert_definitive_mapped_row(
+    owner_cell: str,
+    status_cell: str,
+    *,
+    expected_owner: str,
+    derived_id: str,
+) -> None:
+    assert expected_owner in owner_cell
+    _assert_definitive_mapped(status_cell)
+    assert derived_id in status_cell or "wave-1 lineage" in status_cell.lower()
 
 
 def _assert_derived_evidence_mapped_row(
@@ -201,9 +256,12 @@ def _assert_derived_evidence_mapped_row(
     expected_owner: str,
     derived_id: str,
 ) -> None:
-    assert expected_owner in owner_cell
-    _assert_derived_evidence_mapped(status_cell)
-    assert derived_id in status_cell
+    _assert_definitive_mapped_row(
+        owner_cell,
+        status_cell,
+        expected_owner=expected_owner,
+        derived_id=derived_id,
+    )
 
 
 def test_cybersecurity_visibility_r_pending_mapping_guard_v0() -> None:
@@ -215,23 +273,23 @@ def test_cybersecurity_visibility_r_pending_mapping_guard_v0() -> None:
     assert "FORBIDS_FLIPPING_INPUT_JSONL_PROVIDED_WITHOUT_AUTHORIZED_MAPPING_SLICE=true" in text
     assert "FORBIDS_PENDING_RISK_TABLE_MAPPED_STATUS_WITHOUT_INPUT=true" in text
     assert "FORBIDS_REPO_STATIC_SUCCESSOR_AS_DEFINITIVE_MAPPING_INPUT=true" in text
-    assert "INPUT_JSONL_PROVIDED=false" in text
-    assert "NO_MAPPING_WITHOUT_INPUT_ARTIFACT=true" in text
+    assert "INPUT_JSONL_PROVIDED=true" in text
+    assert "NO_MAPPING_WITHOUT_INPUT_ARTIFACT=false" in text
     assert (
         "ACCEPTED_INPUT_ARTIFACTS=FULL_LOSSLESS_RISK_CANDIDATES.jsonl,"
         "APPROVED_OPERATOR_TRIAGE_ARTIFACT" in text
     )
     assert "LOSSLESS_JSONL_RECOVERY=false" in text
-    assert "DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=true" in text
+    assert "DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=false" in text
 
-    assert "cannot be documented or tested as **recovered**" in text
+    assert "Definitive R-001/R-002/R-007 mapping execution docs/tests v1" in text
     assert "repo-static successor `REPO_STATIC_CYBERSECURITY_RISK_CANDIDATES.jsonl` alone" in text
 
     rows = _risk_table_rows(text)
-    for risk_id, (expected_owner, derived_id) in DERIVED_EVIDENCE_MAPPED_RISKS.items():
+    for risk_id, (expected_owner, derived_id) in DEFINITIVE_MAPPED_RISKS.items():
         assert risk_id in rows
         owner_cell, status_cell = rows[risk_id]
-        _assert_derived_evidence_mapped_row(
+        _assert_definitive_mapped_row(
             owner_cell,
             status_cell,
             expected_owner=expected_owner,
@@ -250,10 +308,8 @@ def test_cybersecurity_visibility_r_pending_mapping_guard_v0() -> None:
 
     for line in text.splitlines():
         stripped = line.strip()
-        if stripped.startswith("INPUT_JSONL_PROVIDED="):
-            assert stripped == "INPUT_JSONL_PROVIDED=false"
-        if stripped.startswith("LOSSLESS_JSONL_RECOVERY="):
-            assert stripped == "LOSSLESS_JSONL_RECOVERY=false"
+        if stripped == "LOSSLESS_JSONL_RECOVERY=true":
+            raise AssertionError("LOSSLESS_JSONL_RECOVERY=true is forbidden")
 
     for marker in (
         "R001_REPO_STATIC_CANDIDATE_ID_ASSIGNED=false",
@@ -306,10 +362,10 @@ def test_cybersecurity_visibility_pending_guard_risk_table_registry_v0() -> None
     text = _ci_audit_text()
     rows = _risk_table_rows(text)
 
-    for risk_id, (expected_owner, derived_id) in DERIVED_EVIDENCE_MAPPED_RISKS.items():
+    for risk_id, (expected_owner, derived_id) in DEFINITIVE_MAPPED_RISKS.items():
         assert risk_id in rows
         owner_cell, status_cell = rows[risk_id]
-        _assert_derived_evidence_mapped_row(
+        _assert_definitive_mapped_row(
             owner_cell,
             status_cell,
             expected_owner=expected_owner,
@@ -351,18 +407,29 @@ def test_cybersecurity_visibility_histogram_owner_reuse_modules_exist_v0() -> No
     )
 
 
+def _canonical_guard_blocks(text: str) -> list[str]:
+    anchors = (
+        ADOPTION_BLOCK_ANCHOR,
+        INPUT_ARTIFACT_BLOCK_ANCHOR,
+        MAPPING_GUARD_BLOCK_ANCHOR,
+        DEFINITIVE_MAPPING_EXECUTION_BLOCK_ANCHOR,
+    )
+    return [_block_containing(text, anchor) for anchor in anchors]
+
+
 def _forbidden_guard_registry_assignments(text: str) -> list[str]:
     drift: list[str] = []
-    for line in text.splitlines():
-        stripped = line.strip()
-        match = GUARD_REGISTRY_LINE_RX.match(stripped)
-        if not match:
-            continue
-        key, value = match.group(1), match.group(2)
-        if value == "true":
-            drift.append(stripped)
-        elif key in GUARD_REGISTRY_EXPECTED and value != GUARD_REGISTRY_EXPECTED[key]:
-            drift.append(stripped)
+    for block in _canonical_guard_blocks(text):
+        values = _machine_line_values(block)
+        for key, expected in GUARD_REGISTRY_EXPECTED.items():
+            if key not in values:
+                continue
+            if values.get(key) != expected:
+                drift.append(f"{key}={values.get(key)!r} expected {expected!r}")
+    if re.search(r"^LOSSLESS_JSONL_RECOVERY=true$", text, re.MULTILINE):
+        drift.append("LOSSLESS_JSONL_RECOVERY=true")
+    if "CYBERSECURITY_VISIBILITY_CHAIN_PARALLEL_ANCHOR" in text:
+        drift.append("CYBERSECURITY_VISIBILITY_CHAIN_PARALLEL_ANCHOR")
     return drift
 
 
@@ -384,18 +451,16 @@ def test_cybersecurity_visibility_r_pending_external_input_jsonl_mapping_guard_v
             f"external mapping guard {key}={external_values.get(key)!r} expected {expected!r}"
         )
 
-    _assert_block_keys(
-        external_block,
-        block_name="external_input_jsonl_mapping_guard",
-        required_keys=frozenset(
-            {
-                "INPUT_JSONL_PROVIDED",
-                "LOSSLESS_JSONL_RECOVERY",
-                "DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED",
-                "NO_MAPPING_WITHOUT_INPUT_ARTIFACT",
-            }
-        ),
-    )
+    for key in (
+        "INPUT_JSONL_PROVIDED",
+        "LOSSLESS_JSONL_RECOVERY",
+        "DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED",
+        "NO_MAPPING_WITHOUT_INPUT_ARTIFACT",
+    ):
+        assert external_values.get(key) == HISTORICAL_GUARD_REGISTRY_EXPECTED[key], (
+            f"external historical {key}={external_values.get(key)!r} "
+            f"expected {HISTORICAL_GUARD_REGISTRY_EXPECTED[key]!r}"
+        )
 
     assert "non-authorizing" in collapsed
     assert "CYBERSECURITY_VISIBILITY_CHAIN_PARALLEL_ANCHOR" not in text
@@ -409,10 +474,28 @@ def test_cybersecurity_visibility_pending_guard_negative_drift_forbidden_v0() ->
     assert not drift_lines, f"forbidden guard-registry assignments: {drift_lines}"
 
     rows = _risk_table_rows(text)
-    for risk_id in DERIVED_EVIDENCE_MAPPED_RISKS:
-        _, status_cell = rows[risk_id]
-        assert status_cell.strip().lower() != "mapped"
+    for risk_id, (expected_owner, derived_id) in DEFINITIVE_MAPPED_RISKS.items():
+        owner_cell, status_cell = rows[risk_id]
+        _assert_definitive_mapped_row(
+            owner_cell,
+            status_cell,
+            expected_owner=expected_owner,
+            derived_id=derived_id,
+        )
         assert "recovered" not in status_cell.lower()
+
+    execution_block = _block_containing(text, DEFINITIVE_MAPPING_EXECUTION_BLOCK_ANCHOR)
+    execution_values = _machine_line_values(execution_block)
+    for key, expected in DEFINITIVE_EXECUTION_EXPECTED.items():
+        assert execution_values.get(key) == expected, (
+            f"definitive execution {key}={execution_values.get(key)!r} expected {expected!r}"
+        )
+    assert VALIDATION_BUNDLE_PATH in text
+    assert MAPPING_WAVE_CHARTER_PATH in text
+    assert OPERATOR_INPUT_JSONL_PATH in text
+    assert ARCHIVE_FULL_LOSSLESS_SHA256 in text
+    assert "CSC 003a" not in text or "CSC_003A_SCOPE_INCLUDED=false" in text
+    assert "CSC_003E_SCOPE_INCLUDED=false" in text
 
     for line in text.splitlines():
         stripped = line.strip()
@@ -465,9 +548,9 @@ def test_cybersecurity_visibility_wave1_batch_closure_mapping_guard_v0() -> None
         )
 
     rows = _risk_table_rows(text)
-    for risk_id, (expected_owner, derived_id) in DERIVED_EVIDENCE_MAPPED_RISKS.items():
+    for risk_id, (expected_owner, derived_id) in DEFINITIVE_MAPPED_RISKS.items():
         owner_cell, status_cell = rows[risk_id]
-        _assert_derived_evidence_mapped_row(
+        _assert_definitive_mapped_row(
             owner_cell,
             status_cell,
             expected_owner=expected_owner,
@@ -519,17 +602,20 @@ def test_cybersecurity_visibility_cv3b_mapping_guard_readout_crosslink_v0() -> N
     assert DERIVED_MAPPING_PLAN_PROGRESS_MODULE in block
     assert INVENTORY_CHARTER_MODULE in block
     assert "Retained risk table" in block
-    assert "mapped-by-derived-evidence" in collapsed
-    assert "definitive" in collapsed
+    assert "mapped-by-derived-evidence" in collapsed or "definitive" in collapsed
     assert "INPUT_JSONL_PROVIDED=false" in block
     assert "DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=true" in block
     assert "non-authorizing" in collapsed
 
     rows = _risk_table_rows(text)
     for risk_id in ("R-001", "R-002", "R-007"):
-        _, status_cell = rows[risk_id]
-        assert "mapped-by-derived-evidence" in status_cell
-        assert status_cell.strip() != "mapped"
+        owner_cell, status_cell = rows[risk_id]
+        _assert_definitive_mapped_row(
+            owner_cell,
+            status_cell,
+            expected_owner=DEFINITIVE_MAPPED_RISKS[risk_id][0],
+            derived_id=DEFINITIVE_MAPPED_RISKS[risk_id][1],
+        )
 
     assert "CYBERSECURITY_VISIBILITY_CHAIN_PARALLEL_ANCHOR" not in text
 
@@ -563,6 +649,16 @@ def test_cybersecurity_visibility_cv3c_mapping_guard_report_crosslink_v0() -> No
     assert "static/derived/read-only only" in collapsed
     assert "non-authorizing" in collapsed
 
+    rows = _risk_table_rows(text)
+    for risk_id in ("R-001", "R-002", "R-007"):
+        owner_cell, status_cell = rows[risk_id]
+        _assert_definitive_mapped_row(
+            owner_cell,
+            status_cell,
+            expected_owner=DEFINITIVE_MAPPED_RISKS[risk_id][0],
+            derived_id=DEFINITIVE_MAPPED_RISKS[risk_id][1],
+        )
+
     artifact_text = (REPO_ROOT / INPUT_ARTIFACT_MODULE).read_text(encoding="utf-8")
     assert CV3C_BLOCK_ANCHOR in artifact_text or CV3C_REPORT_HEADING in artifact_text
     assert "CYBERSECURITY_VISIBILITY_CHAIN_PARALLEL_ANCHOR" not in text
@@ -578,18 +674,18 @@ def test_cybersecurity_visibility_archive_adoption_mapping_guard_crosslink_v0() 
     assert ARCHIVE_FULL_LOSSLESS_SHA256 in text
     assert adoption_values["NOT_ORIGINAL_TMP_FULL_LOSSLESS"] == "true"
     assert adoption_values["DERIVED_ONLY_USED_AS_AUTHORITY"] == "false"
-    assert adoption_values["INPUT_JSONL_PROVIDED"] == "false"
+    assert adoption_values["INPUT_JSONL_PROVIDED"] == "true"
     assert adoption_values["LOSSLESS_JSONL_RECOVERY"] == "false"
-    assert adoption_values["DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED"] == "true"
+    assert adoption_values["DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED"] == "false"
     assert adoption_values["FORBIDS_ORIGINAL_TMP_RECOVERY_CLAIM"] == "true"
 
     assert "Pending R-001/R-002/R-007 — mapping guard v0" in text
-    assert "cannot be documented or tested as **recovered**" in text
+    assert "Definitive R-001/R-002/R-007 mapping execution docs/tests v1" in text
 
     rows = _risk_table_rows(text)
-    for risk_id, (expected_owner, derived_id) in DERIVED_EVIDENCE_MAPPED_RISKS.items():
+    for risk_id, (expected_owner, derived_id) in DEFINITIVE_MAPPED_RISKS.items():
         owner_cell, status_cell = rows[risk_id]
-        _assert_derived_evidence_mapped_row(
+        _assert_definitive_mapped_row(
             owner_cell,
             status_cell,
             expected_owner=expected_owner,

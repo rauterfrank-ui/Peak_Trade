@@ -804,7 +804,11 @@ def test_invariant_owner_crosslinks_cybersecurity_artifact_retention_histogram_v
     assert Path(__file__).name in HARD_GATE_CONTRACT_TESTS.read_text(encoding="utf-8")
 
     ci_lines = {line.strip() for line in ci_audit.splitlines()}
-    assert ("INPUT_JSONL_PROVIDED" + _MARKER_TRUE) not in ci_lines
+    assert (
+        "CYBERSECURITY_VISIBILITY_DEFINITIVE_R001_R002_R007_MAPPING_EXECUTION_DOCS_TESTS_V1=true"
+        in ci_audit
+    )
+    assert ("LOSSLESS_JSONL_RECOVERY" + _MARKER_TRUE) not in ci_lines
     assert ("R001_R002_R007_MAPPING_COMPLETED" + _MARKER_TRUE) not in ci_lines
 
 
@@ -840,7 +844,11 @@ def test_pe6_invariant_owner_cyber_er_defensive_reciprocal_retention_guard_v0() 
     assert "READY_FOR_OPERATOR_ARMING=false" in preflight_er
 
     ci_lines = {line.strip() for line in ci_audit.splitlines()}
-    assert ("INPUT_JSONL_PROVIDED" + _MARKER_TRUE) not in ci_lines
+    assert (
+        "CYBERSECURITY_VISIBILITY_DEFINITIVE_R001_R002_R007_MAPPING_EXECUTION_DOCS_TESTS_V1=true"
+        in ci_audit
+    )
+    assert ("LOSSLESS_JSONL_RECOVERY" + _MARKER_TRUE) not in ci_lines
     assert ("R001_R002_R007_MAPPING_COMPLETED" + _MARKER_TRUE) not in ci_lines
 
 

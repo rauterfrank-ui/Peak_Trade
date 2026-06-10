@@ -285,9 +285,10 @@ DERIVED_EVIDENCE_MAPPED_RISKS: dict[str, tuple[str, str]] = {
 }
 
 
-def _assert_derived_evidence_mapped(status_cell: str) -> None:
-    assert "mapped-by-derived-evidence" in status_cell.lower()
-    assert status_cell.strip().lower() != "mapped"
+def _assert_definitive_mapped(status_cell: str) -> None:
+    lowered = status_cell.strip().lower()
+    assert "mapped-by-derived-evidence" not in lowered
+    assert "mapped" in lowered
 
 
 def _assert_derived_evidence_mapped_row(
@@ -298,8 +299,8 @@ def _assert_derived_evidence_mapped_row(
     derived_id: str,
 ) -> None:
     assert expected_owner in owner_cell
-    _assert_derived_evidence_mapped(status_cell)
-    assert derived_id in status_cell
+    _assert_definitive_mapped(status_cell)
+    assert derived_id in status_cell or "wave-1 lineage" in status_cell.lower()
 
 
 def _ci_audit_text() -> str:

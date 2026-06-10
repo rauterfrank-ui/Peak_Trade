@@ -147,13 +147,13 @@ NO_PERFORMANCE_REGRESSION=true
 
 | ID | Repo-mapped static owner | Status |
 |----|--------------------------|--------|
-| R-001 | `tests/ci/test_workflow_write_permissions_visibility_contract_v0.py` | **mapped-by-derived-evidence** (`DERIVED-CYBER-R-001-001`) |
-| R-002 | `tests/ci/test_cybersecurity_visibility_r_pending_mapping_guard_v0.py` | **mapped-by-derived-evidence** (`DERIVED-CYBER-R-002-001`) |
+| R-001 | `tests/ci/test_workflow_write_permissions_visibility_contract_v0.py` | mapped (definitive; wave-1 lineage `DERIVED-CYBER-R-001-001`) |
+| R-002 | `tests/ci/test_cybersecurity_visibility_r_pending_mapping_guard_v0.py` | mapped (definitive; wave-1 lineage `DERIVED-CYBER-R-002-001`) |
 | R-003 | `tests/ops/test_run_sample_size_ramp_script_contract_v0.py` | mapped |
 | R-004 | `tests/ops/test_run_testnet_evidence_flow_v2_script_contract_v0.py` | mapped |
 | R-005 | `tests/ops/test_knowledge_prod_smoke_script.py` | mapped |
 | R-006 | `tests/ci/test_prcd_aws_export_write_smoke_workflow_contract_v0.py` | mapped |
-| R-007 | `tests/ci/test_workflow_secrets_reference_visibility_contract_v0.py` | **mapped-by-derived-evidence** (`DERIVED-CYBER-R-007-001`) |
+| R-007 | `tests/ci/test_workflow_secrets_reference_visibility_contract_v0.py` | mapped (definitive; wave-1 lineage `DERIVED-CYBER-R-007-001`) |
 
 > R-001/R-002/R-007 IDs here are the **post-HOLD lossless-inventory** set (see Source artifacts above), not `docs/ops/RISK_REGISTER.md` ops-register IDs.
 
@@ -167,16 +167,16 @@ ARCHIVE_RECREATE_FULL_LOSSLESS_GOVERNANCE_ACCEPTED=true
 OPERATOR_ACCEPTED_ARCHIVE_EVIDENCE_CHAIN_MANIFEST_VERIFY_RC=0
 FULL_LOSSLESS_RISK_CANDIDATES_JSONL_NOT_FOUND=false
 ORIGINAL_TMP_FULL_LOSSLESS_NOT_FOUND=true
-INPUT_JSONL_PROVIDED=false
+INPUT_JSONL_PROVIDED=true
 LOSSLESS_JSONL_RECOVERY=false
 DERIVED_ONLY_USED_AS_AUTHORITY=false
-DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=true
+DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=false
 FORBIDS_ORIGINAL_TMP_RECOVERY_CLAIM=true
 OLD_R_ID_RECONSTRUCTION_ATTEMPTED=false
 CYBERSECURITY_VISIBILITY_ARCHIVE_FULL_LOSSLESS_ADOPTION_DOCS_TESTS_ONLY=true
 ```
 
-**Purpose:** Record operator acceptance (Frank Rauter; `GO_SLICE_CYBER_FULL_LOSSLESS_ARCHIVE_EVIDENCE_GOVERNANCE_ADOPTION_V0`) that the **durable archive** Recreate → Intake PASS → Mapping PASS chain is **governance truth** for retained risks **R-001**, **R-002**, and **R-007** while the original 20260508 `/tmp` `FULL_LOSSLESS_RISK_CANDIDATES.jsonl` remains **unavailable** and must **not** be claimed recovered. The recreated file is **operator-accepted archive evidence** — **not** byte-equivalent to the lost `/tmp` original (`NOT_ORIGINAL_TMP_FULL_LOSSLESS=true`). This section **does not** ingest JSONL into the repo, **does not** set `INPUT_JSONL_PROVIDED=true`, **does not** set `LOSSLESS_JSONL_RECOVERY=true`, **does not** use `DERIVED_LOSSLESS_RISK_CANDIDATES_FROM_CSC_RCHAIN_EVIDENCE.jsonl` as authority, and **does not** flip R-001/R-002/R-007 to definitive **`mapped`** (retain **mapped-by-derived-evidence** in the table above).
+**Purpose:** Record operator acceptance (Frank Rauter; `GO_SLICE_CYBER_FULL_LOSSLESS_ARCHIVE_EVIDENCE_GOVERNANCE_ADOPTION_V0`) that the **durable archive** Recreate → Intake PASS → Mapping PASS chain is **governance truth** for retained risks **R-001**, **R-002**, and **R-007** while the original 20260508 `/tmp` `FULL_LOSSLESS_RISK_CANDIDATES.jsonl` remains **unavailable** and must **not** be claimed recovered. The recreated file is **operator-accepted archive evidence** — **not** byte-equivalent to the lost `/tmp` original (`NOT_ORIGINAL_TMP_FULL_LOSSLESS=true`). Definitive **`mapped`** status for R-001/R-002/R-007 is recorded in the retained-risk table above per § definitive mapping execution docs/tests v1. This section **does not** ingest JSONL into the repo, **does not** set `LOSSLESS_JSONL_RECOVERY=true`, and **does not** use `DERIVED_LOSSLESS_RISK_CANDIDATES_FROM_CSC_RCHAIN_EVIDENCE.jsonl` as authority.
 
 **Operator-accepted archive FULL_LOSSLESS (external; not repo-ingested):**
 
@@ -455,11 +455,11 @@ Operators may use this histogram for **CI/Ops visibility triage**. Retained risk
 ```
 CYBERSECURITY_VISIBILITY_R_PENDING_INPUT_ARTIFACT_CONTRACT_V0=true
 LOSSLESS_JSONL_RECOVERY=false
-DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=true
+DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=false
 INPUT_JSONL_REQUIRED=true
 ACCEPTED_INPUT_ARTIFACTS=FULL_LOSSLESS_RISK_CANDIDATES.jsonl,APPROVED_OPERATOR_TRIAGE_ARTIFACT
-NO_MAPPING_WITHOUT_INPUT_ARTIFACT=true
-INPUT_JSONL_PROVIDED=false
+NO_MAPPING_WITHOUT_INPUT_ARTIFACT=false
+INPUT_JSONL_PROVIDED=true
 R001_REPO_STATIC_CANDIDATE_ID_ASSIGNED=false
 R002_REPO_STATIC_CANDIDATE_ID_ASSIGNED=false
 R007_REPO_STATIC_CANDIDATE_ID_ASSIGNED=false
@@ -489,7 +489,7 @@ APPROVED_SCOPE_NAME=cybersecurity_visibility_r001_r002_r007_inventory_recovery_r
 OPERATOR_NAME=<name>
 ```
 
-**Gate for definitive mapping:** `NO_MAPPING_WITHOUT_INPUT_ARTIFACT=true` until a future slice records `INPUT_JSONL_PROVIDED=true` (or `INPUT_TRIAGE_ARTIFACT_PROVIDED=true`) with verified artifact checks. Until then, R-001/R-002/R-007 remain **Pending** in the table above with `DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=true`.
+**Gate for definitive mapping:** satisfied by § definitive mapping execution docs/tests v1 (`INPUT_JSONL_PROVIDED=true`; validated external INPUT_JSONL; `DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=false`). R-001/R-002/R-007 are **mapped** in the retained-risk table above.
 
 **Relationship to repo-static charter v0:** Interim histogram and 162-row successor inventory remain **review-input only** per § Pending R-001/R-002/R-007 — repo-static successor inventory charter v0. Successor inventory **cannot** satisfy `INPUT_JSONL_REQUIRED` for definitive mapping.
 
@@ -498,19 +498,58 @@ OPERATOR_NAME=<name>
 ```
 CYBERSECURITY_VISIBILITY_R_PENDING_MAPPING_GUARD_V0=true
 LOSSLESS_JSONL_RECOVERY=false
-DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=true
+DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=false
 INPUT_JSONL_REQUIRED=true
-INPUT_JSONL_PROVIDED=false
-NO_MAPPING_WITHOUT_INPUT_ARTIFACT=true
+INPUT_JSONL_PROVIDED=true
+NO_MAPPING_WITHOUT_INPUT_ARTIFACT=false
 FORBIDS_FLIPPING_INPUT_JSONL_PROVIDED_WITHOUT_AUTHORIZED_MAPPING_SLICE=true
 FORBIDS_PENDING_RISK_TABLE_MAPPED_STATUS_WITHOUT_INPUT=true
 FORBIDS_REPO_STATIC_SUCCESSOR_AS_DEFINITIVE_MAPPING_INPUT=true
 CYBERSECURITY_VISIBILITY_R_PENDING_MAPPING_GUARD_DOCS_TESTS_ONLY=true
 ```
 
-**Purpose:** Static guardrails so pending retained risks **R-001**, **R-002**, and **R-007** cannot be documented or tested as **recovered** or **definitively mapped** while `INPUT_JSONL_PROVIDED=false`. Repo edits that assign `candidate_id`, flip the retained-risk table to **mapped** with a repo test owner, or set `INPUT_JSONL_PROVIDED=true` without an operator-chartered mapping slice are **invalid** in this repository state.
+**Purpose:** Static guardrails for retained risks **R-001**, **R-002**, and **R-007** after validated external INPUT_JSONL and operator-chartered definitive mapping execution (§ definitive mapping execution docs/tests v1). Guards **forbid** reverting to blocked/pending state, claiming `LOSSLESS_JSONL_RECOVERY=true`, using repo-static successor as definitive mapping input, or fabricating INPUT_JSONL. R-001/R-002/R-007 are **mapped** in the retained-risk table above.
 
 **Non-authorizing:** Same boundaries as § input artifact contract v0; no runtime, workflow dispatch, hooks, Notion, Market, broker/exchange, Testnet/Live, or Master V2 / Double Play authority changes.
+
+### Definitive R-001/R-002/R-007 mapping execution docs/tests v1 (SLICE-CYBER-DEFMAP-EXEC-V1)
+
+```
+CYBERSECURITY_VISIBILITY_DEFINITIVE_R001_R002_R007_MAPPING_EXECUTION_DOCS_TESTS_V1=true
+GO_TOKEN=GO_CYBERSECURITY_DEFINITIVE_R001_R002_R007_MAPPING_EXECUTION_DOCS_TESTS_V1
+SLICE_CYBER_DEFMAP_EXEC_V1=true
+INPUT_JSONL_PROVIDED=true
+DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=false
+LOSSLESS_JSONL_RECOVERY=false
+NOT_ORIGINAL_TMP_FULL_LOSSLESS=true
+APPROVED_SCOPE_NAME=cybersecurity_visibility_r001_r002_r007_inventory_recovery_read_only_v0
+INPUT_JSONL_REPO_INGESTED=false
+JSONL_FULL_REEVALUATED=false
+FAKE_R_ID_REBUILD_DONE=false
+CSC_003A_SCOPE_INCLUDED=false
+CSC_003E_SCOPE_INCLUDED=false
+NO_PARALLEL_SSOT=true
+PARALLEL_DOC_CREATED=false
+AUTHORITY_IMPACT=NO_AUTHORITY_CHANGE
+CYBERSECURITY_VISIBILITY_DEFINITIVE_MAPPING_EXECUTION_DOCS_TESTS_ONLY=true
+```
+
+**Purpose:** Record operator-chartered **docs/tests-only** definitive mapping flip for retained risks **R-001**, **R-002**, and **R-007** to existing reciprocal repo test owners after upstream INPUT_JSONL artifact validation PASS and Mapping-Wave Charter PASS. External INPUT_JSONL remains **archive-only** (`INPUT_JSONL_REPO_INGESTED=false`). Does **not** claim `LOSSLESS_JSONL_RECOVERY=true` (`NOT_ORIGINAL_TMP_FULL_LOSSLESS=true`).
+
+**Upstream evidence pointers (durable archive; not repo-ingested):**
+
+| Token | Durable path |
+|-------|--------------|
+| Validation bundle | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_input_jsonl_artifact_validation_v0_20260610T133528Z` |
+| Mapping-Wave Charter | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_definitive_mapping_wave_charter_only_no_run_v0_20260610T133840Z` |
+| INPUT_JSONL | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/cybersecurity_input_jsonl_operator_intake_readonly_v0_20260601T164324Z/operator_artifacts_pending/FULL_LOSSLESS_RISK_CANDIDATES.jsonl` |
+| SHA256 | `eff5698370a8cd38cacf02325d81223ca667d4995bda8cfcb6435b5de5327f26` |
+| `NOT_ORIGINAL_TMP_FULL_LOSSLESS` | `true` |
+| `APPROVED_SCOPE_NAME` | `cybersecurity_visibility_r001_r002_r007_inventory_recovery_read_only_v0` |
+
+**Guard module (reuse — no parallel cyber anchor):** `tests/ci/test_cybersecurity_visibility_r_pending_mapping_guard_v0.py`
+
+**Non-authorizing:** Docs/tests reflection only; no JSONL repo ingest, no JSONL full re-evaluate, no fake R-ID rebuild, no CSC **003a**/**003e** scope, no runtime/scheduler/daemon, no Testnet/Live, no broker/exchange, no Master V2 / Double Play authority changes.
 
 ### Pending R-001/R-002/R-007 — external INPUT_JSONL intake mapping guard v0
 

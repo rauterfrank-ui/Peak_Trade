@@ -51,7 +51,7 @@ def test_cybersecurity_visibility_archive_full_lossless_governance_adoption_v0()
     assert "Recreate → Intake PASS → Mapping PASS" in text
     for risk_id in ("R-001", "R-002", "R-007"):
         assert risk_id in text
-    assert "INPUT_JSONL_PROVIDED=false" in text
+    assert "INPUT_JSONL_PROVIDED=true" in text
     assert "LOSSLESS_JSONL_RECOVERY=false" in text
     assert "FORBIDS_ORIGINAL_TMP_RECOVERY_CLAIM=true" in text
     assert "must **not** be claimed recovered" in text

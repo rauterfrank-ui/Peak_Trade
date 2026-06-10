@@ -587,10 +587,10 @@ def test_cybersecurity_visibility_chain_owner_registry_crosslink_v0() -> None:
     ):
         assert derived_id in ci_audit_text
         assert owner_module in ci_audit_text
-        assert "mapped-by-derived-evidence" in ci_collapsed
+        assert "mapped" in ci_collapsed
         assert "DERIVED-CYBER-" in ci_audit_text
 
-    assert "INPUT_JSONL_PROVIDED=false" in ci_audit_text
+    assert "INPUT_JSONL_PROVIDED=true" in ci_audit_text
 
     assert "2026-05-23" in truth_map_text
     assert "Cybersecurity Visibility Chain" in truth_map_text
@@ -616,8 +616,8 @@ def test_workflow_secrets_owner_crosslinks_cybersecurity_histogram_v0() -> None:
 
     assert WORKFLOW_SECRETS_HISTOGRAM_CROSSLINK_MARKER in ci_audit_text
     assert "workflow_secrets_visibility" in ci_audit_text
-    assert "INPUT_JSONL_PROVIDED=false" in ci_audit_text
-    assert "DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=true" in ci_audit_text
+    assert "INPUT_JSONL_PROVIDED=true" in ci_audit_text
+    assert "DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=false" in ci_audit_text
     assert WORKFLOW_SECRETS_HISTOGRAM_CROSSLINK_TESTS.is_file()
 
     crosslink_text = WORKFLOW_SECRETS_HISTOGRAM_CROSSLINK_TESTS.read_text(encoding="utf-8")
