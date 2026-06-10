@@ -1,6 +1,6 @@
 """Tape readmodel env gate resolution (default-off, fail-closed).
 
-Contract-only module: not wired to HTTP/SSR in this slice.
+Shared by SSR display context on ``GET /market`` and future JSON routes.
 """
 
 from __future__ import annotations

@@ -73,6 +73,26 @@ Dashboard ≠ Freigabe. Market Surface v0 is **review input only** for operators
 
 **Protected boundaries:** read-only SSR only — **no dashboard truth grant**, **no provider truth**, **no** Live/Testnet/Order/Cancel/Execute/Arming/Preflight authority, **no** runtime/scheduler activation. **Market-Airport excluded.** **`GET`** **`&#47;market&#47;double-play`** (**Master V2 / Double Play protected**) — run projection does not alter Double Play routes, markers, or decision logic.
 
+### Market tape readmodel SSR (env-gated v0)
+
+**`GET`** **`&#47;market`** only (not **`GET &#47;market&#47;double-play`**) may render an env-gated **read-only** tape panel from offline fixture bundles via `build_market_tape_display_context()` in `src/webui/market_surface.py` (gate resolution in `src/webui/market_tape_readmodel_v0/gate.py`). **No** new route, **no** provider fetch, **no** order/fill/position truth.
+
+- **Gate (default off):** `PEAK_TRADE_MARKET_TAPE_ENABLED=1` and `PEAK_TRADE_MARKET_TAPE_BUNDLE_ROOT=<path>` — fail-closed when missing/invalid.
+- **Markers:** `data-market-v0-tape="true"`, `data-market-v0-tape-readonly="true"`, `data-market-v0-tape-authority="false"`, `data-market-v0-tape-non-authorizing="true"`, `data-market-v0-tape-evidence-only="true"`, boundary mirrors `data-market-v0-tape-*-truth-blocked="true"`, `data-market-v0-tape-enabled`, `data-market-v0-tape-ready`, `data-market-v0-tape-readmodel-id` — **absent** when gate disabled; **never** on **`GET &#47;market&#47;double-play`**.
+- **Boundaries:** read-only SSR; **no** dashboard truth grant, **no** provider truth, **no** trading readiness, **no** selected-future truth, **no** order/fill/position truth; **no** runtime/scheduler activation.
+- **Orthogonal:** OHLCV/depth/ranking/run-projection SSR unchanged; F5 owner remains [Futures Read-only Market Dashboard Contract v0](../ops/specs/FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md).
+
+#### Operator enablement (tape readmodel SSR v0)
+
+**Default off / operator-gated / fail-closed:** Tape SSR on **`GET`** **`&#47;market`** stays **disabled** until **both** env gates below are explicitly set. Panel **absent** when gates are off is **expected** — **not** a template defect, **not** Dashboard Truth GO, **not** Provider Truth, **no** runtime, Testnet, Paper, or Shadow authority.
+
+| Step | Env var(s) | Notes |
+|------|------------|-------|
+| 1 | `PEAK_TRADE_MARKET_TAPE_ENABLED=1` | Master tape gate |
+| 2 | `PEAK_TRADE_MARKET_TAPE_BUNDLE_ROOT=<path>` | Offline fixture root with `tape.json` |
+
+**Troubleshooting:** Distinguish **absent markers** (gate off — expected) from **`data-market-v0-tape-ready="false"`** (gate on but bundle/build not ready). Cross-check **`tests/webui/test_market_tape_ssr_v0.py`** and **`tests/webui/test_market_dashboard_readonly_structure_contract_v0.py`**.
+
 ## Safety banner and stable markers
 
 Das HTML-Template für **`GET &#47;market`** rendert oberhalb der Chart-Fläche ein **sichtbares** Safety-Banner (**read-only**, **non-authorizing**) mit Quellen-spezifischem Kurztext (`source=dummy` \| `source=kraken`).
@@ -84,6 +104,7 @@ Stabile `data-*`‑Marker (Anker für Anzeige und automatisierte Tests — **kei
 - `data-market-safety-banner="true"`
 - `data-market-surface-v0="true"`
 - **Registry run projection SSR v0 (**`GET`** **`&#47;market`**, env-gated):** `data-market-v0-run-projection="true"`, `data-market-v0-run-projection-readonly="true"`, `data-market-v0-run-projection-authority="false"`, `data-market-v0-run-projection-enabled`, `data-market-v0-run-projection-ready` — **absent** when gate disabled; **never** on **`GET &#47;market&#47;double-play`**.
+- **Market tape SSR v0 (**`GET`** **`&#47;market`**, env-gated):** `data-market-v0-tape="true"`, `data-market-v0-tape-readonly="true"`, `data-market-v0-tape-authority="false"`, `data-market-v0-tape-non-authorizing="true"`, `data-market-v0-tape-evidence-only="true"`, boundary `data-market-v0-tape-*-truth-blocked="true"`, `data-market-v0-tape-enabled`, `data-market-v0-tape-ready`, `data-market-v0-tape-readmodel-id` — **absent** when gate disabled; **never** on **`GET &#47;market&#47;double-play`**.
 - **Market Depth SSR v0 (**`GET`** **`&#47;market`**):** `data-market-depth-panel="true"`, `data-market-depth-status="<status>"` — bei Hilfs‑**HTTP 200** zeigt das Template **`display_status` `ok`**; sonst **`runtime_source_status`** aus Diagnose‑JSON (z. B. **`disabled`**, **`unconfigured`**, **`builder_error`**); optional `data-market-depth-readmodel-id`, `data-market-depth-summary`; **Darstellung/Test‑Anker**, **keine** operationalen Freigaben.
 - **`GET`** **`/market` · SSR Tiefen-Bundle-Provenienz (gleiche Region):** wenn das eingebettete Depth-Hilfstupel bereits **`generated_at_iso`**, **`stale`** / **`stale_reason`** (Fixture-/Diagnose‑Semantik) und ggf. Bundle-**`source`** liefert, rendert `/market` darunter einen **getrennten** Kurzblock **„Tiefen-Bundle-Provenienz“** (**nicht** der OHLC-**„Snapshot bei Seitenladen“** / **`generated_at_utc`**); Marker **`data-market-v0-depth-bundle-provenance-v0="true"`** plus **`data-market-v0-depth-bundle-stale`** — **display-only**.
 - **Embedded OHLCV payload snapshot time (`GET` `/market`):** sichtbarer Hinweis **„Snapshot bei Seitenladen“** mit dem gleichen Feld **`generated_at_utc`** wie im eingebetteten Market-Payload (und wie der JSON-Vertrag **`GET`** **`&#47;api&#47;market&#47;ohlcv`**); Marker **`data-market-v0-embedded-snapshot-generated-at-v0="true"`** — bezeichnet **SSR‑Zeitpunkt beim Seitenauftrag**, keine Live‑ oder Exchange‑**Freshness**‑Autorität.
