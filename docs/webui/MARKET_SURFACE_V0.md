@@ -378,6 +378,47 @@ MARKET_DASHBOARD_READ_ONLY_NON_AUTHORITY=true
 
 **v1.2 Implementierung (später):** Lokaler Chart.js‑Fallback **nur** nach obiger Checkliste und **separatem** Implementierungs-Charter — **nicht** als Micro-Contract ohne CDN‑Blocking‑Evidenz.
 
+#### CDN-blocking evidence criteria (v1)
+
+**Charter context:** Erweiterung unter **`CHARTJS_LOCAL_FALLBACK_PLANNING_CHARTER_V0`** — criteria only; **keine** Implementierung in diesem Slice.
+
+**Docs-only / fail-closed / no authority:** Dieser Abschnitt normiert **wann** operatorisch evidenziertes CDN-Blocking vorliegt — als Voraussetzung für eine **spätere, separat autorisierte** Vendor-Fallback-**Entscheidung**, **nicht** als automatische Freigabe. **Vendor-Fallback bleibt nicht autorisiert** durch diese Kriterien allein. **Keine Vendor-Datei** wird durch diese Dokumentation erzeugt. **Kein** Browser-Render, **kein** Netzwerkzugriff, **keine** Runtime-/Scheduler-/Exchange-Ausführung wird durch diese Änderung gestartet. **Keine** Provider Truth, **keine** Dashboard Truth, **keine** Trading Readiness, **keine** Execution-/Order-/Cancel-Autorität, **keine** Live-/Preflight-Lift-Autorisierung.
+
+**Gate chain (all steps required before vendor fallback implementation):**
+
+| Step | Requirement |
+|------|-------------|
+| 1 | Verifizierte CDN-blocking evidence (durable archive, `MANIFEST.sha256`, nicht `/tmp`) |
+| 2 | Diese Kriterien auf `main` (dieser Abschnitt) |
+| 3 | Optional: operator evidence capture (browser-render — **separater GO**) |
+| 4 | **Separater expliziter Vendor-Fallback-Implementation-GO** |
+| 5 | Separater Implementierungs-PR (vendor asset + template path — **nicht** auto-authorisiert) |
+
+**Sufficient conditions (CDN-blocking evidence — all must hold):**
+
+1. **Reproducible blocking:** dokumentierter, reproduzierbarer Blocking-Befund im relevanten Market-Dashboard-Renderpfad (`GET` `/market`, `GET` `/market/double-play`, or R&amp;D charts shell) — Chart.js CDN script load fails under operator-controlled conditions.
+2. **CDN causality:** klare Zuordnung zu Chart.js CDN-Ausfall/Blockade — **nicht** App-Code-Regression, Test-Fixture-Artefakt, lokales Host-Problem, oder Operator-Fehlbedienung.
+3. **Attribution markers:** `data-chartjs-cdn-load-error` on failing `<script>` **and** propagated to shell (`#market-v0-shell`, `#double-play-market-v0-shell`, or `#r-and-d-charts-shell`); `data-chartjs-cdn-monitored-v0="true"`; `data-chartjs-cdn-script-v0="true"`.
+4. **Distinction documented:** operator rules out SSR-empty (`data-market-chart-status=empty`, zero bars) and client-render-error (Chart.js loaded, render fails without CDN error) — see #4101 CDN diagnostics operator pointer.
+5. **Traceable artifacts:** Zeitpunkt, Umgebung, erwartete/observierte Auswirkung, Reproduktionshinweis — durable bundle with operator attestation.
+6. **Review-confirmed decision:** review-bestätigte Entscheidung, dass CDN-Blocking die Dashboard-Chart-Funktionalität blockiert — **display/troubleshooting only**; **no** trading block.
+
+**Insufficient conditions (explicitly reject):**
+
+| Insufficient claim | Why rejected |
+|--------------------|--------------|
+| Bloße CDN-Abhängigkeit (jsdelivr URL in template) | Design intent; not blocking |
+| Hypothetisches Offline-Risiko | Speculation without reproducible failure |
+| Operator-Wunsch nach Fallback | Preference ≠ evidence |
+| CSP-/Netzwerk-Paranoia ohne reproduzierbaren Blocking-Befund | Policy concern ≠ observed blocking |
+| Allgemeiner Browserfehler ohne Chart.js-CDN-Kausalität | Not tied to CDN attribution contract |
+| Static pytest/HTML structure tests alone | Prove marker **contract**, not live CDN failure |
+| Testnet/Paper/Live status or run posture | Orthogonal lane authority — not CDN evidence |
+
+**Orthogonal surfaces (no-authority):** #4101 Chart.js CDN diagnostics operator pointer; Operator-Pointer-Kette #4097–#4103 (consolidation, run projection, ranking funnel, market depth, SSR provenance, active paper run) — **none** grant vendor fallback, provider truth, dashboard truth, or trading authorization.
+
+**Protected boundaries:** read-only evidence criteria only — **no dashboard truth grant**, **no provider truth**, **no vendor fallback authorization**. **Market-Airport excluded.** **`GET`** **`&#47;market&#47;double-play`** (**Master V2 / Double Play protected**) — evidence criteria do not alter Double Play routes, markers, or decision logic. **No run, Testnet, Paper, or Shadow authorization** is granted by documenting these criteria.
+
 ## Double-Play Market Dashboard v1 SSR
 
 **Route:** **`GET &#47;market&#47;double-play`**
