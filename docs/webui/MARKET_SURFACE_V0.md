@@ -380,7 +380,7 @@ MARKET_DASHBOARD_READ_ONLY_NON_AUTHORITY=true
 
 **Offene Decision-/Evidence-Kette (separat autorisiert — nicht durch Wiring allein):** operatorisch evidenziertes CDN-Blocking (#4104), optional Browser-Capture (#4105/#4106), **Vendor-Decision**-GO — **nicht** wiring absence.
 
-**Parity record:** charter slices #4104–#4106 aligned to post-#4108 onerror-only wiring reality (PR #4110 charter parity; PR #4111 stale-pointer guard closed DOCS_TRUTH_MAP/Double-Play deferred-fallback drift). Browser-Capture execute remains **separately authorized — not granted**; CDN-primary **jsdelivr**; vendor fallback **onerror-only**; `data-chartjs-vendor-fallback-v0` **diagnostisch/non-authorizing**.
+**Parity record:** charter slices #4104–#4106 aligned to post-#4108 onerror-only wiring reality (PR #4110 charter parity; PR #4111 stale-pointer guard closed DOCS_TRUTH_MAP/Double-Play deferred-fallback drift; PR #4112 browser-capture-criteria parity closed post-#4111 charter cross-refs — **chronicle/cross-ref only**, **no** Browser-Capture execute). Browser-Capture execute remains **separately authorized — not granted**; CDN-primary **jsdelivr**; vendor fallback **onerror-only**; `data-chartjs-vendor-fallback-v0` **diagnostisch/non-authorizing**.
 
 #### Chart.js vendor fallback template wiring v1 (implemented)
 
