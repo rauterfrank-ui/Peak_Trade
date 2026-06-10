@@ -6,6 +6,7 @@ Class-4 scoped: no network, credentials, orders, or Testnet execute.
 from __future__ import annotations
 
 import ast
+import json
 from decimal import Decimal
 from pathlib import Path
 
@@ -41,6 +42,10 @@ from src.ops.order_capability_demo_instrument_rules_fixture_normalizer_contract_
     REASON_MISSING_QTY_PRECISION,
     REASON_MISSING_QTY_STEP,
     REASON_PROVIDER_TRUTH_NOT_CLAIMED_IN_THIS_SLICE,
+    REASON_PROVIDER_TRUTH_NOT_CLAIMED_FROM_RENDERED_DOC_EXAMPLE,
+    REASON_CANDIDATE_FIELD_REJECTED_MAPPING,
+    REASON_TICKSIZE_CONFLICT_UNRESOLVED,
+    BROWSER_RENDERED_VENDOR_DOCS_SNAPSHOT_SOURCE,
     REASON_SECRET_MATERIAL_REJECTED,
     REASON_SOURCE_NOT_ACCEPTABLE,
     REASON_U5D_NOT_ELEVATED_TO_PROVIDER_TRUTH,
@@ -80,6 +85,16 @@ U5D_INSTRUMENTS_FIXTURE = (
 FIXED_CAPTURED_AT = "2026-06-10T08:01:30Z"
 FIXED_RAW_HASH = "a" * 64
 FIXED_NORMALIZED_HASH = "b" * 64
+BROWSER_RENDER_GO = (
+    "GO_ORDER_CAPABILITY_BROWSER_RENDERED_VENDOR_DOCS_SNAPSHOT_EXECUTE_WEB_READONLY_V1"
+)
+BROWSER_RENDER_FIXTURE = (
+    Path(__file__).resolve().parents[1]
+    / "fixtures"
+    / "order_capability"
+    / "browser_rendered_vendor_docs_pf_xbtusd_candidate.v1.json"
+)
+BROWSER_RENDER_RAW_HASH = "bb600b9f8cd649d8fb8765a482c2b2f976a0bb63d71ee775462250e6fe6bb47f"
 
 
 def _complete_rules(**overrides: object) -> DemoInstrumentRulesNormalizedFields:
@@ -123,6 +138,52 @@ def _synthetic_input(**overrides: object) -> DemoInstrumentRulesFixtureNormalize
         "provenance": _complete_provenance(),
         "rules": _complete_rules(),
         "raw_payload": None,
+        "cancelallorders": False,
+        "batchorder": False,
+        "execute_authorized": False,
+        "order_authorized": False,
+        "cancel_authorized": False,
+    }
+    base.update(overrides)
+    return DemoInstrumentRulesFixtureNormalizerInput(**base)
+
+
+def _browser_render_disposition_payload(**overrides: object) -> dict[str, object]:
+    payload = json.loads(BROWSER_RENDER_FIXTURE.read_text(encoding="utf-8"))
+    if overrides:
+        payload.update(overrides)
+    return payload
+
+
+def _browser_render_provenance(**overrides: object) -> DemoInstrumentRulesFixtureProvenance:
+    base = {
+        "source_type": BROWSER_RENDERED_VENDOR_DOCS_SNAPSHOT_SOURCE,
+        "source_uri_or_origin": (
+            "docs.kraken.com/api-reference/instrument-details/get-instruments"
+        ),
+        "captured_at": FIXED_CAPTURED_AT,
+        "captured_by_flow": "browser_render_execute_web_readonly_v1",
+        "network_authorized_by_go_token": BROWSER_RENDER_GO,
+        "raw_payload_hash": BROWSER_RENDER_RAW_HASH,
+        "normalized_payload_hash": FIXED_NORMALIZED_HASH,
+        "schema_version": FIXTURE_SCHEMA_VERSION,
+        "venue": "kraken_futures_demo",
+        "host": REQUIRED_DEMO_HOST,
+        "instrument": DEFAULT_INSTRUMENT,
+        "value_redacted": True,
+        "no_secret_material": True,
+        "repo_versioned": True,
+    }
+    base.update(overrides)
+    return DemoInstrumentRulesFixtureProvenance(**base)
+
+
+def _browser_render_input(**overrides: object) -> DemoInstrumentRulesFixtureNormalizerInput:
+    base = {
+        "source_class": FixtureSourceClass.ACCEPTABLE_IF_VERSIONED,
+        "provenance": _browser_render_provenance(),
+        "rules": None,
+        "raw_payload": _browser_render_disposition_payload(),
         "cancelallorders": False,
         "batchorder": False,
         "execute_authorized": False,
@@ -432,3 +493,143 @@ def test_no_execution_risk_layer_imports() -> None:
         if isinstance(node, ast.ImportFrom) and node.module:
             assert not node.module.startswith("src.execution")
             assert not node.module.startswith("src.risk_layer")
+
+
+def test_browser_rendered_vendor_docs_snapshot_source_type_accepted_candidate_only() -> None:
+    assert (
+        classify_source_type_marker(BROWSER_RENDERED_VENDOR_DOCS_SNAPSHOT_SOURCE)
+        == FixtureSourceClass.ACCEPTABLE_IF_VERSIONED
+    )
+    result = evaluate_demo_instrument_rules_fixture_normalization(_browser_render_input())
+    assert result.verdict == FixtureNormalizerVerdictKind.FAIL_CLOSED
+    assert result.provider_truth_bound is False
+    assert REASON_PROVIDER_TRUTH_NOT_CLAIMED_FROM_RENDERED_DOC_EXAMPLE in result.reason_codes
+    assert REASON_PROVIDER_TRUTH_NOT_CLAIMED_IN_THIS_SLICE in result.reason_codes
+    assert REASON_MISSING_MIN_SIZE in result.reason_codes
+    assert REASON_MISSING_QTY_STEP in result.reason_codes
+
+
+def test_browser_rendered_impactmidsize_cannot_map_to_min_size() -> None:
+    result = evaluate_demo_instrument_rules_fixture_normalization(
+        _browser_render_input(
+            rules=_complete_rules(
+                min_size=Decimal("1"),
+                qty_step=None,
+                price_tick=None,
+                qty_precision=None,
+                price_precision=None,
+                cap_feasibility_rule=None,
+            )
+        )
+    )
+    assert result.verdict == FixtureNormalizerVerdictKind.FAIL_CLOSED
+    assert REASON_CANDIDATE_FIELD_REJECTED_MAPPING in result.reason_codes
+    assert result.provider_truth_bound is False
+
+
+def test_browser_rendered_contractsize_cannot_map_to_qty_step() -> None:
+    result = evaluate_demo_instrument_rules_fixture_normalization(
+        _browser_render_input(
+            rules=_complete_rules(
+                min_size=None,
+                qty_step=Decimal("1"),
+                price_tick=None,
+                qty_precision=None,
+                price_precision=None,
+                cap_feasibility_rule=None,
+            )
+        )
+    )
+    assert result.verdict == FixtureNormalizerVerdictKind.FAIL_CLOSED
+    assert REASON_CANDIDATE_FIELD_REJECTED_MAPPING in result.reason_codes
+    assert result.provider_truth_bound is False
+
+
+def test_browser_rendered_contractsize_may_remain_contract_size_candidate() -> None:
+    payload = _browser_render_disposition_payload()
+    disposition = payload["browser_render_disposition_v1"]
+    assert disposition["candidate_fields"]["contract_size_candidate"]["value"] == "1"
+    result = evaluate_demo_instrument_rules_fixture_normalization(
+        _browser_render_input(rules=None, raw_payload=payload)
+    )
+    assert REASON_CANDIDATE_FIELD_REJECTED_MAPPING not in result.reason_codes
+    assert result.provider_truth_bound is False
+
+
+def test_browser_rendered_ticksize_conflict_fail_closed() -> None:
+    result = evaluate_demo_instrument_rules_fixture_normalization(
+        _browser_render_input(
+            rules=_complete_rules(
+                min_size=None,
+                qty_step=None,
+                price_tick=Decimal("1"),
+                qty_precision=None,
+                price_precision=None,
+                cap_feasibility_rule=None,
+            )
+        )
+    )
+    assert result.verdict == FixtureNormalizerVerdictKind.FAIL_CLOSED
+    assert REASON_TICKSIZE_CONFLICT_UNRESOLVED in result.reason_codes
+    assert result.provider_truth_bound is False
+
+
+def test_browser_rendered_missing_min_size_blocks_provider_truth() -> None:
+    result = evaluate_demo_instrument_rules_fixture_normalization(
+        _browser_render_input(
+            rules=_complete_rules(
+                min_size=None,
+                qty_step=Decimal("0.001"),
+                price_tick=Decimal("0.5"),
+            )
+        )
+    )
+    assert REASON_MISSING_MIN_SIZE in result.reason_codes
+    assert result.min_size_verified_offline is False
+    assert result.provider_truth_bound is False
+
+
+def test_browser_rendered_missing_qty_step_blocks_provider_truth() -> None:
+    result = evaluate_demo_instrument_rules_fixture_normalization(
+        _browser_render_input(
+            rules=_complete_rules(
+                min_size=Decimal("0.001"),
+                qty_step=None,
+                price_tick=Decimal("0.5"),
+            )
+        )
+    )
+    assert REASON_MISSING_QTY_STEP in result.reason_codes
+    assert result.provider_truth_bound is False
+
+
+def test_browser_rendered_provider_truth_bound_remains_false_no_binding_pass() -> None:
+    normalizer_result = evaluate_demo_instrument_rules_fixture_normalization(
+        _browser_render_input()
+    )
+    assert normalizer_result.provider_truth_bound is False
+    assert normalizer_result.verdict == FixtureNormalizerVerdictKind.FAIL_CLOSED
+
+    offline_rules = map_normalizer_to_binding_offline_rules(
+        normalizer_result,
+        rules=None,
+        source_ref=BROWSER_RENDERED_VENDOR_DOCS_SNAPSHOT_SOURCE,
+    )
+    assert offline_rules.offline_bound is False
+
+    binding_result = evaluate_order_capability_demo_instrument_rules_binding(
+        OrderCapabilityDemoInstrumentRulesBindingInput(
+            demo_host=REQUIRED_DEMO_HOST,
+            credential_class=ALLOWED_CREDENTIAL_CLASS,
+            instrument=DEFAULT_INSTRUMENT,
+            offline_rules=offline_rules,
+            cap_max_notional_eur=Decimal("10.0"),
+            reference_price_usd=Decimal("100.0"),
+            fx_rate_usd_per_eur=Decimal("1.0"),
+        )
+    )
+    assert binding_result.verdict == DemoInstrumentRulesBindingVerdictKind.FAIL_CLOSED
+    assert REASON_OFFLINE_RULES_NOT_BOUND in binding_result.reason_codes
+    assert binding_result.instrument_rules_offline_bound is False
+    assert binding_result.min_size_verified_offline is False
+    assert BLOCKER_MIN_SIZE_NOT_VERIFIED_OFFLINE in binding_result.blockers
