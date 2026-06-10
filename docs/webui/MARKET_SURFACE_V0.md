@@ -505,7 +505,7 @@ Copy into future capture bundle `OPERATOR_ATTESTATION.md` — **template only; n
 
 - **Operator Frank Rauter**
 - **Datum/UTCSTAMP:** `<UTCSTAMP>` *(ISO-8601 compact, e.g. `20260610T192234Z`)*
-- **Renderpfad:** `<GET /market | GET /market/double-play | R&amp;D charts shell>`
+- **Renderpfad:** `<GET &#47;market | GET &#47;market&#47;double-play | R&amp;D charts shell>`
 - **Erwartete Wirkung / erwartete/observierte Auswirkung:** `<expected Chart.js CDN load and chart behavior before observation>`
 - **Beobachtete Wirkung / beobachteter Blocking-Befund:** `<observed CDN script load failure under operator-controlled conditions>`
 - **Chart.js CDN Kausalitätsabgrenzung:** `<why failure is Chart.js CDN load blocking — not SSR-empty, client-render-error, or other classes>`
