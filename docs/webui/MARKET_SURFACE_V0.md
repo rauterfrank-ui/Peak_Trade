@@ -346,12 +346,14 @@ Dashboard markers remain non-authorizing: **Dashboard ≠ Freigabe**; no marker 
 
 ### Chart.js local fallback planning charter v0
 
-**Status:** **planning-only** — **keine** Implementierung in diesem Charter-Slice. **Kanonischer Owner** bleibt dieses Dokument (**`docs&#47;webui&#47;MARKET_SURFACE_V0.md`**); **kein** paralleles Spec-, Dashboard- oder Vendor-Artefakt.
+**Status:** **planning charter with post-merge wiring reality** — #4104–#4106 normieren Evidence/Capture/**Decision**-Autorisierung (ursprüngliche docs-only Charter-Slices). **Vendor-Asset und Template-Wiring v1 sind seit PR #4108 auf `main`** — **onerror-only**, **non-authorizing** (siehe **§ Chart.js vendor fallback template wiring v1 (implemented)**). **Kanonischer Owner** bleibt dieses Dokument (**`docs&#47;webui&#47;MARKET_SURFACE_V0.md`**); **kein** paralleles Spec-, Dashboard- oder Vendor-Artefakt.
 
 ```
 CHARTJS_LOCAL_FALLBACK_PLANNING_CHARTER_V0=true
 CHARTJS_LOCAL_FALLBACK_IMPLEMENTATION_IN_THIS_SLICE=false
-CHARTJS_VENDOR_ADDED=false
+CHARTJS_VENDOR_ADDED_ON_MAIN=true
+CHARTJS_LOCAL_FALLBACK_WIRING_V1_ON_MAIN=true
+CHARTJS_LOCAL_FALLBACK_EAGER_SSR=false
 CHARTJS_VENDOR_ADDED_IN_THIS_SLICE=false
 TEMPLATES_CHANGED_IN_THIS_SLICE=false
 SRC_CHANGED_IN_THIS_SLICE=false
@@ -360,23 +362,23 @@ DASHBOARD_AUTHORITY_CHANGED=false
 MARKET_DASHBOARD_READ_ONLY_NON_AUTHORITY=true
 ```
 
-**Scope dieses Charter-Slices (docs-only):** normative Planung für einen **zukünftigen**, **separaten** Implementierungs-PR — **nach** operatorisch **evidenziertem** CDN‑Blocking (bestehende **v0 CDN load attribution**, #3476). **Dieser Slice** ändert **weder** `templates&#47;**`, **noch** `src&#47;**`, **noch** statische Vendor-Pfade, **noch** `.github&#47;**` oder `config&#47;**`.
+**Scope (original docs-only charter slices):** normative Planung für **Evidence Review**, **Vendor-Decision**-GO und **Browser-Capture**-Autorisierung — **nicht** für erneute Asset-/Template-Implementierung. **Template-Wiring und Vendor-Asset sind bereits auf `main` (PR #4108)**; CDN-primary bleibt **jsdelivr**. **Diese Charter-Abschnitte** starten **keine** Capture-Erhebung, **keinen** Browser-Render und **keine** Vendor-Fallback-**Entscheidungs**-Autorität.
 
-**Nicht in diesem Slice:** Chart.js **nicht** ins Repo vendoren; **keine** `<script>`‑/Template‑Umstellung; **keine** neuen Dashboard-Routen; **keine** Runtime-, Scheduler-, Paper-, Shadow-, Testnet- oder Live-Starts; **keine** Order-Submission-, Handelsplatz- oder Ausführungs-Autorität; **kein** Polling; **keine** Master-V2-/Double-Play-Trading-Logik. Dashboard bleibt **read-only** und **non-authorizing** (**Dashboard ≠ Freigabe**).
+**Nicht durch diese Charter-Abschnitte autorisiert:** Browser-/Capture-Execute; **keine** neuen Dashboard-Routen; **keine** Runtime-, Scheduler-, Paper-, Shadow-, Testnet- oder Live-Starts; **keine** Order-Submission-, Handelsplatz- oder Ausführungs-Autorität; **kein** Polling; **keine** Master-V2-/Double-Play-Trading-Logik. Dashboard bleibt **read-only** und **non-authorizing** (**Dashboard ≠ Freigabe**).
 
-**Beibehalten (bestehend):** CDN‑Ladung über **jsdelivr** mit **`onerror`**, **`data-chartjs-cdn-load-error`**, **`data-chartjs-cdn-monitored-v0="true"`** auf den jeweiligen Shell-Containern (**`#market-v0-shell`**, **`#double-play-market-v0-shell`**, **`#r-and-d-charts-shell`**). SSR‑Empty-/Chart‑error‑Diagnosemarker aus **v1.1** bleiben unverändert.
+**Beibehalten (bestehend):** CDN‑Primary über **jsdelivr** mit **`onerror`**, **`data-chartjs-cdn-load-error`**, **`data-chartjs-cdn-monitored-v0="true"`** auf den jeweiligen Shell-Containern (**`#market-v0-shell`**, **`#double-play-market-v0-shell`**, **`#r-and-d-charts-shell`**). Bei CDN-`onerror` lädt **template-wired vendor fallback v1** lokal (**onerror-only**). SSR‑Empty-/Chart‑error‑Diagnosemarker aus **v1.1** bleiben unverändert.
 
-**Zukünftige Implementierungs-Voraussetzungen** (alle müssen in einem **eigenen**, operator-charterten PR erfüllt sein — **nicht** hier):
+**Auf `main` erfüllt (PR #4108 — nicht erneut als Gate):**
 
-| Voraussetzung | Anforderung |
-|---------------|-------------|
-| Kanonischer Asset-Owner | Ein **einziges** Repo-Ziel für vendorte Chart.js (Pfad + Review-Owner) **vor** Merge festlegen — **kein** paralleles Vendor-Verzeichnis |
-| Lizenz / Quelle / Integrität | Version, Download-Quelle, Lizenztext und Integritätsnachweis (z. B. Hash) **dokumentiert**; Attribution im UI/Docs **ohne** Autoritäts-Upgrade |
-| Offline-/No-Network-Test | Fallback-Ladepfad **ohne** CDN-Netzwerkabhängigkeit per Test nachweisbar (bestehende Structure-Contract-/WebUI-Testfamilie **erweitern**, nicht duplizieren) |
-| Dashboard-Autorität | **`MARKET_DASHBOARD_READ_ONLY_NON_AUTHORITY=true`**; **`DASHBOARD_AUTHORITY_CHANGED=false`**; keine Freigabe-, Gate-, Live-, Testnet- oder Handelsplatz-/Ausführungs-Semantik |
-| Runtime-Grenzen | **Kein** Polling; **keine** Scheduler-/Adapter-/Runtime-Kopplung; **keine** neuen `fetch()`-Verträge für Market/Double-Play |
+| Voraussetzung | Status auf `main` |
+|---------------|-------------------|
+| Kanonischer Asset-Owner | **`/static/vendor/chartjs/4.4.1/chart.umd.min.js`** — siehe **`tests/ops/test_chartjs_vendor_asset_integrity_v0.py`** |
+| Lizenz / Quelle / Integrität | Version, Lizenztext und Integritätsnachweis dokumentiert — **ohne** Autoritäts-Upgrade |
+| Offline-/No-Network-Test | Fallback-Ladepfad per Structure-Contract nachweisbar — **`tests/webui/test_chartjs_vendor_fallback_wiring_contract_v0.py`** |
+| Dashboard-Autorität | **`MARKET_DASHBOARD_READ_ONLY_NON_AUTHORITY=true`**; **`DASHBOARD_AUTHORITY_CHANGED=false`** |
+| Runtime-Grenzen | **Kein** Polling; **keine** Scheduler-/Adapter-/Runtime-Kopplung |
 
-**v1.2 Implementierung (später):** Lokaler Chart.js‑Fallback **nur** nach obiger Checkliste und **separatem** Implementierungs-Charter — **nicht** als Micro-Contract ohne CDN‑Blocking‑Evidenz.
+**Offene Decision-/Evidence-Kette (separat autorisiert — nicht durch Wiring allein):** operatorisch evidenziertes CDN-Blocking (#4104), optional Browser-Capture (#4105/#4106), **Vendor-Decision**-GO — **nicht** wiring absence.
 
 #### Chart.js vendor fallback template wiring v1 (implemented)
 
@@ -396,23 +398,24 @@ Cross-check: **`tests/webui/test_chartjs_vendor_fallback_wiring_contract_v0.py`*
 
 **Charter context:** Erweiterung unter **`CHARTJS_LOCAL_FALLBACK_PLANNING_CHARTER_V0`** — criteria only; **keine** Implementierung in diesem Slice.
 
-**Docs-only / fail-closed / no authority:** Dieser Abschnitt normiert **wann** operatorisch evidenziertes CDN-Blocking vorliegt — als Voraussetzung für eine **spätere, separat autorisierte** Vendor-Fallback-**Entscheidung**, **nicht** als automatische Freigabe. **Vendor-Fallback bleibt nicht autorisiert** durch diese Kriterien allein. **Keine Vendor-Datei** wird durch diese Dokumentation erzeugt. **Kein** Browser-Render, **kein** Netzwerkzugriff, **keine** Runtime-/Scheduler-/Exchange-Ausführung wird durch diese Änderung gestartet. **Keine** Provider Truth, **keine** Dashboard Truth, **keine** Trading Readiness, **keine** Execution-/Order-/Cancel-Autorität, **keine** Live-/Preflight-Lift-Autorisierung.
+**Docs-only / fail-closed / no authority:** Dieser Abschnitt normiert **wann** operatorisch evidenziertes CDN-Blocking vorliegt — als Voraussetzung für eine **spätere, separat autorisierte** Vendor-Fallback-**Entscheidung**, **nicht** als automatische Freigabe. **Vendor-Fallback-Entscheidung bleibt nicht autorisiert** durch diese Kriterien allein — **nicht** wiring absence: **Template-Wiring v1 und Vendor-Asset sind seit PR #4108 auf `main`** (**onerror-only**, **non-authorizing**). **Keine Vendor-Datei** wird durch diese Dokumentation erzeugt. **Kein** Browser-Render, **kein** Netzwerkzugriff, **keine** Runtime-/Scheduler-/Exchange-Ausführung wird durch diese Änderung gestartet. **Keine** Provider Truth, **keine** Dashboard Truth, **keine** Trading Readiness, **keine** Execution-/Order-/Cancel-Autorität, **keine** Live-/Preflight-Lift-Autorisierung.
 
-**Gate chain (all steps required before vendor fallback implementation):**
+**Gate chain (evidence + decision — wiring already on `main` via PR #4108):**
 
 | Step | Requirement |
 |------|-------------|
+| 0 | **Template-Wiring v1 auf `main` (PR #4108)** — CDN-primary **jsdelivr**; onerror-only local fallback; **`data-chartjs-vendor-fallback-v0`** diagnostisch/non-authorizing — siehe **§ Chart.js vendor fallback template wiring v1 (implemented)** |
 | 1 | Verifizierte CDN-blocking evidence (durable archive, `MANIFEST.sha256`, nicht `/tmp`) |
 | 2 | Diese Kriterien auf `main` (dieser Abschnitt) |
-| 3 | Optional: operator evidence capture (browser-render — **separater GO**) |
-| 4 | **Separater expliziter Vendor-Fallback-Implementation-GO** |
-| 5 | Separater Implementierungs-PR (vendor asset + template path — **nicht** auto-authorisiert) |
+| 3 | Optional: operator evidence capture (browser-render — **separater GO**; **jetzt nicht erteilt**) |
+| 4 | **Separater expliziter Vendor-Decision-GO** nach verified evidence |
+| 5 | Read-only decision review — **kein** erneuter Implementierungs-PR für Asset/Template (bereits auf `main`) |
 
 **Sufficient conditions (CDN-blocking evidence — all must hold):**
 
 1. **Reproducible blocking:** dokumentierter, reproduzierbarer Blocking-Befund im relevanten Market-Dashboard-Renderpfad (`GET` `/market`, `GET` `/market/double-play`, or R&amp;D charts shell) — Chart.js CDN script load fails under operator-controlled conditions.
 2. **CDN causality:** klare Zuordnung zu Chart.js CDN-Ausfall/Blockade — **nicht** App-Code-Regression, Test-Fixture-Artefakt, lokales Host-Problem, oder Operator-Fehlbedienung.
-3. **Attribution markers:** `data-chartjs-cdn-load-error` on failing `<script>` **and** propagated to shell (`#market-v0-shell`, `#double-play-market-v0-shell`, or `#r-and-d-charts-shell`); `data-chartjs-cdn-monitored-v0="true"`; `data-chartjs-cdn-script-v0="true"`.
+3. **Attribution markers:** `data-chartjs-cdn-load-error` on failing `<script>` **and** propagated to shell (`#market-v0-shell`, `#double-play-market-v0-shell`, or `#r-and-d-charts-shell`); `data-chartjs-cdn-monitored-v0="true"`; `data-chartjs-cdn-script-v0="true"`; optional post-onerror **`data-chartjs-vendor-fallback-v0="true"`** (**diagnostisch / non-authorizing** — not evidence alone).
 4. **Distinction documented:** operator rules out SSR-empty (`data-market-chart-status=empty`, zero bars) and client-render-error (Chart.js loaded, render fails without CDN error) — see #4101 CDN diagnostics operator pointer.
 5. **Traceable artifacts:** Zeitpunkt, Umgebung, erwartete/observierte Auswirkung, Reproduktionshinweis — durable bundle with operator attestation.
 6. **Review-confirmed decision:** review-bestätigte Entscheidung, dass CDN-Blocking die Dashboard-Chart-Funktionalität blockiert — **display/troubleshooting only**; **no** trading block.
@@ -429,7 +432,7 @@ Cross-check: **`tests/webui/test_chartjs_vendor_fallback_wiring_contract_v0.py`*
 | Static pytest/HTML structure tests alone | Prove marker **contract**, not live CDN failure |
 | Testnet/Paper/Live status or run posture | Orthogonal lane authority — not CDN evidence |
 
-**Orthogonal surfaces (no-authority):** #4101 Chart.js CDN diagnostics operator pointer; Operator-Pointer-Kette #4097–#4103 (consolidation, run projection, ranking funnel, market depth, SSR provenance, active paper run) — **none** grant vendor fallback, provider truth, dashboard truth, or trading authorization.
+**Orthogonal surfaces (no-authority):** #4101 Chart.js CDN diagnostics operator pointer; PR #4108 template-wired onerror-only vendor fallback (**non-authorizing**); Operator-Pointer-Kette #4097–#4103 (consolidation, run projection, ranking funnel, market depth, SSR provenance, active paper run) — **none** grant vendor fallback **decision**, provider truth, dashboard truth, or trading authorization.
 
 **Protected boundaries:** read-only evidence criteria only — **no dashboard truth grant**, **no provider truth**, **no vendor fallback authorization**. **Market-Airport excluded.** **`GET`** **`&#47;market&#47;double-play`** (**Master V2 / Double Play protected**) — evidence criteria do not alter Double Play routes, markers, or decision logic. **No run, Testnet, Paper, or Shadow authorization** is granted by documenting these criteria.
 
@@ -437,7 +440,7 @@ Cross-check: **`tests/webui/test_chartjs_vendor_fallback_wiring_contract_v0.py`*
 
 **Charter context:** Erweiterung unter **`CHARTJS_LOCAL_FALLBACK_PLANNING_CHARTER_V0`** — capture charter only; **keine** Evidence-Erhebung in diesem Slice.
 
-**Docs-only / fail-closed / no authority:** Dieser Abschnitt normiert die **spätere** operatorische Evidence-Capture-Prozedur — **nicht** als automatische Erhebung oder Vendor-Fallback-Freigabe. **Diese Änderung startet keine Capture-Erhebung.** **Kein** Browser-Render, **kein** Netzwerkzugriff, **keine** Vendor-Datei wird durch diese Dokumentation erzeugt. **Vendor-Fallback bleibt nicht autorisiert**; erfordert später separate **Evidence Review**, **Vendor-Decision**-GO und **Vendor-Implementation**-GO plus Implementierungs-PR. **Keine** Provider Truth, **keine** Dashboard Truth, **keine** Trading Readiness, **keine** Live-/Preflight-Lift-/Execution-/Order-/Cancel-Autorität. **Keine** Secrets/Credentials/Operator-Env-Lesung in der Capture-Prozedur. **Keine** Runtime-/Scheduler-/Exchange-Ausführung wird durch diese Änderung gestartet. Orthogonal zu #4101 Chart.js CDN diagnostics operator pointer, #4104 CDN-blocking evidence criteria, Operator-Pointer-Kette #4097–#4103 — **none** grant vendor fallback, provider truth, dashboard truth, or trading authorization.
+**Docs-only / fail-closed / no authority:** Dieser Abschnitt normiert die **spätere** operatorische Evidence-Capture-Prozedur — **nicht** als automatische Erhebung oder Vendor-Fallback-**Entscheidungs**-Freigabe. **Diese Änderung startet keine Capture-Erhebung.** **Kein** Browser-Render, **kein** Netzwerkzugriff, **keine** Vendor-Datei wird durch diese Dokumentation erzeugt. **Vendor-Fallback-Entscheidung bleibt nicht autorisiert**; erfordert später separate **Evidence Review** und **Vendor-Decision**-GO — **nicht** wiring absence: **Template-Wiring v1 und Vendor-Asset sind seit PR #4108 auf `main`** (**onerror-only**, **non-authorizing**). **Keine** Provider Truth, **keine** Dashboard Truth, **keine** Trading Readiness, **keine** Live-/Preflight-Lift-/Execution-/Order-/Cancel-Autorität. **Keine** Secrets/Credentials/Operator-Env-Lesung in der Capture-Prozedur. **Keine** Runtime-/Scheduler-/Exchange-Ausführung wird durch diese Änderung gestartet. Orthogonal zu #4101 Chart.js CDN diagnostics operator pointer, #4104 CDN-blocking evidence criteria, PR #4108 template wiring, Operator-Pointer-Kette #4097–#4103 — **none** grant vendor fallback **decision**, provider truth, dashboard truth, or trading authorization.
 
 **Phase separation (strict — do not conflate):**
 
@@ -448,7 +451,7 @@ Cross-check: **`tests/webui/test_chartjs_vendor_fallback_wiring_contract_v0.py`*
 | **3. Capture** | Operator evidence capture under separate GO | **yes if blocking reproduced** | no | no |
 | **4. Review** | Read-only review of capture bundle | no | no | no |
 | **5. Vendor-Decision** | Separate decision GO after verified evidence | no | no | no |
-| **6. Vendor-Implementation** | Separate impl GO + PR (vendor asset + template) | optional offline test | **yes** | no trading authority |
+| **6. Wiring verification (complete)** | Confirm PR #4108 onerror-only wiring + vendor asset on `main` — **no new impl PR** | optional offline test | existing asset | no trading authority |
 
 **Minimum capture artifacts (future durable bundle — not `/tmp`):**
 
@@ -466,11 +469,11 @@ Cross-check: **`tests/webui/test_chartjs_vendor_fallback_wiring_contract_v0.py`*
 | **`MANIFEST.sha256`** | yes | SHA-256 of all bundle files except manifest files |
 | **`MANIFEST_VERIFY.txt`** | yes | Per-file OK/FAIL + `MANIFEST_VERIFY_RC=0` |
 
-**Capture procedure summary (future — separately authorized):** Walk #4101 CDN diagnostics markers (`data-chartjs-cdn-load-error`, `data-chartjs-cdn-monitored-v0`, `data-chartjs-cdn-script-v0`, `data-market-chart-status`) and #4104 sufficient/insufficient conditions; record environment, render path, expected vs observed effect, CDN causality distinction, exclusions, reproduction hint, operator attestation; write durable archive bundle; verify manifest before claiming evidence raised.
+**Capture procedure summary (future — separately authorized):** Walk #4101 CDN diagnostics markers (`data-chartjs-cdn-load-error`, `data-chartjs-cdn-monitored-v0`, `data-chartjs-cdn-script-v0`, `data-market-chart-status`, optional **`data-chartjs-vendor-fallback-v0`** after onerror local load — **diagnostisch / non-authorizing**) and #4104 sufficient/insufficient conditions; record environment, render path, expected vs observed effect, CDN causality distinction, exclusions, reproduction hint, operator attestation; write durable archive bundle; verify manifest before claiming evidence raised.
 
 **When later Capture GO is sensible:** Only when capture charter is on `main`, operator reproduces CDN script load failure under controlled conditions, attribution markers correlate, SSR-empty and client-render-error are ruled out, and operator accepts browser + network **only** under separate **`GO_MARKET_DASHBOARD_CHARTJS_CDN_BLOCKING_EVIDENCE_CAPTURE_READONLY_BROWSER_NO_VENDOR_V1`**.
 
-**When capture does NOT authorize vendor fallback:** Manifest verification failure; distinction shows SSR-empty or render-error; blocking attributed to app regression, fixture, host, or operator error; static pytest/HTML structure proof only; review not completed; separate Vendor-Decision or Vendor-Implementation GO not issued.
+**When capture does NOT authorize vendor fallback decision:** Manifest verification failure; distinction shows SSR-empty or render-error; blocking attributed to app regression, fixture, host, or operator error; static pytest/HTML structure proof only; review not completed; separate **Vendor-Decision** GO not issued — **not** because wiring is absent (PR #4108 on `main`).
 
 **Protected boundaries:** read-only capture charter only — **no dashboard truth grant**, **no provider truth**, **no vendor fallback authorization**. **Market-Airport excluded.** **`GET`** **`&#47;market&#47;double-play`** (**Master V2 / Double Play protected**) — capture charter does not alter Double Play routes, markers, or decision logic. **No run, Testnet, Paper, or Shadow authorization** is granted by documenting this charter.
 
@@ -478,7 +481,7 @@ Cross-check: **`tests/webui/test_chartjs_vendor_fallback_wiring_contract_v0.py`*
 
 **Charter context:** Erweiterung unter **`CHARTJS_LOCAL_FALLBACK_PLANNING_CHARTER_V0`** — browser-capture execute prep only; **keine** Browser-Capture-Erhebung in diesem Slice.
 
-**Docs-only / fail-closed / no authority:** Dieser Abschnitt embeddet die operatorische Browser-Capture-Execute-Vorbereitung aus dem durable browser-prep bundle — **nicht** als automatische Erhebung oder Vendor-Fallback-Freigabe. **Diese Änderung startet keine Browser-Capture-Erhebung.** **Kein** Browser-Render, **kein** Netzwerkzugriff, **keine** Vendor-Datei wird durch diese Dokumentation erzeugt. **Vendor-Fallback bleibt nicht autorisiert**; erfordert später separate **Evidence Review**, **Vendor-Decision**-GO und **Vendor-Implementation**-GO plus Implementierungs-PR. **Keine** Provider Truth, **keine** Dashboard Truth, **keine** Trading Readiness, **keine** Live-/Preflight-Lift-/Execution-/Order-/Cancel-Autorität. **Keine** Secrets/Credentials/Operator-Env-Lesung in der Capture-Prozedur. **Keine** Runtime-/Scheduler-/Exchange-Ausführung wird durch diese Änderung gestartet. Orthogonal zu #4101, #4104, #4105, #4097–#4103 — **none** grant vendor fallback, provider truth, dashboard truth, or trading authorization.
+**Docs-only / fail-closed / no authority:** Dieser Abschnitt embeddet die operatorische Browser-Capture-Execute-Vorbereitung aus dem durable browser-prep bundle — **nicht** als automatische Erhebung oder Vendor-Fallback-**Entscheidungs**-Freigabe. **Diese Änderung startet keine Browser-Capture-Erhebung.** **Kein** Browser-Render, **kein** Netzwerkzugriff, **keine** Vendor-Datei wird durch diese Dokumentation erzeugt. **Vendor-Fallback-Entscheidung bleibt nicht autorisiert**; erfordert später separate **Evidence Review** und **Vendor-Decision**-GO — **nicht** wiring absence: **Template-Wiring v1 und Vendor-Asset sind seit PR #4108 auf `main`** (**onerror-only**, **non-authorizing**). **Keine** Provider Truth, **keine** Dashboard Truth, **keine** Trading Readiness, **keine** Live-/Preflight-Lift-/Execution-/Order-/Cancel-Autorität. **Keine** Secrets/Credentials/Operator-Env-Lesung in der Capture-Prozedur. **Keine** Runtime-/Scheduler-/Exchange-Ausführung wird durch diese Änderung gestartet. Orthogonal zu #4101, #4104, #4105, PR #4108 template wiring, #4097–#4103 — **none** grant vendor fallback **decision**, provider truth, dashboard truth, or trading authorization.
 
 ##### Browser-Capture-Preflight-Checkliste
 
@@ -491,8 +494,8 @@ Operator preflight before any chartered browser/network evidence capture — **c
 | P3 | Kein Secret-/Credential-/Operator-Env-Zugriff | No secrets/credentials/operator-env file reads in capture lane | STOP |
 | P4 | Host-/Renderpfad nur mit separatem GO | Render path (`GET` `/market`, `/market/double-play`, or R&amp;D charts shell) only under capture GO | STOP |
 | P5 | Browser/Network nur mit separatem Evidence-Capture-GO | Browser render and network only under **`GO_MARKET_DASHBOARD_CHARTJS_CDN_BLOCKING_EVIDENCE_CAPTURE_READONLY_BROWSER_NO_VENDOR_V1`** | STOP |
-| P6 | Kein Vendor-Asset | No vendor download/create/check-in | STOP |
-| P7 | Kein Vendor-Fallback | `VENDOR_FALLBACK_AUTHORIZED_NOW=false` in future capture bundle | STOP |
+| P6 | Kein neues Vendor-Asset | No **new** vendor download/create/check-in during capture — existing PR #4108 asset unchanged | STOP |
+| P7 | Kein Vendor-Fallback-Entscheid | `VENDOR_FALLBACK_AUTHORIZED_NOW=false` in future capture bundle — wiring on `main` ≠ decision authorized | STOP |
 | P8 | Kein Truth-/Trading-/Execution-Impact | No Provider/Dashboard Truth, trading readiness, Live/Preflight/Order/Cancel/Execute/Arming authority | STOP |
 | P9 | Prior prep + charter on `main` | Browser prep bundle `MANIFEST_VERIFY_RC=0`; #4105 capture charter present; boundary tests green on HEAD | STOP |
 
@@ -503,7 +506,8 @@ Operator preflight before any chartered browser/network evidence capture — **c
 | CDN script load failure | `<script>` onerror; `data-chartjs-cdn-load-error` on script tag | Trading blocked / readiness GO | `BROWSER_OBSERVATION.md` | Marker absent while claiming CDN block → **FAIL** |
 | Shell propagation | Shell mirrors `data-chartjs-cdn-load-error` | Dashboard Truth / Provider Truth | `BROWSER_OBSERVATION.md` | Script error without shell propagation → distinction required |
 | Monitored surface | `data-chartjs-cdn-monitored-v0="true"` | New authority surface | `BROWSER_OBSERVATION.md` | Unmonitored path → **STOP** |
-| Script attribution | `data-chartjs-cdn-script-v0="true"` on failing script | Vendor fallback authorized | `BROWSER_OBSERVATION.md` | Missing script marker → **FAIL** CDN causality |
+| Script attribution | `data-chartjs-cdn-script-v0="true"` on failing script | Vendor fallback **decision** authorized | `BROWSER_OBSERVATION.md` | Missing script marker → **FAIL** CDN causality |
+| Vendor fallback marker | `data-chartjs-vendor-fallback-v0="true"` after onerror local load only | Vendor fallback **decision** authorized / readiness GO | `BROWSER_OBSERVATION.md` | Marker without CDN error path → distinction required |
 | Chart status | `data-market-chart-status` = `ready`/`empty`/`error` | Order/execute authorization | `BROWSER_OBSERVATION.md` | `empty` with zero bars → SSR-empty exclusion mandatory |
 | Environment | OS, browser, high-level network posture — **no secrets** | Secrets/credentials exposure | `NETWORK_OBSERVATION.md` only if network separately authorized; else `CAPTURE_REPORT.md` | Any secret in artifact → **FAIL** |
 | Render path | Route + shell under test | Master V2 logic change | `CAPTURE_REPORT.md` | Unchartered route → **STOP** |

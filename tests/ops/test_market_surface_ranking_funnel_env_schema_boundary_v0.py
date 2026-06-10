@@ -283,7 +283,10 @@ def test_market_surface_chartjs_cdn_blocking_evidence_criteria_env_boundary_v0()
         "CHARTJS_LOCAL_FALLBACK_PLANNING_CHARTER_V0",
         "CDN-blocking evidence",
         "vendor fallback",
-        "separater expliziter Vendor-Fallback-Implementation-GO",
+        "Vendor-Decision-GO",
+        "PR #4108",
+        "onerror-only",
+        "wiring absence",
         "keine Vendor-Datei",
         "no provider truth",
         "no dashboard truth",
@@ -309,7 +312,8 @@ def test_market_surface_chartjs_cdn_blocking_evidence_criteria_env_boundary_v0()
     required_boundary_tokens = [
         "fail-closed",
         "no authority",
-        "vendor-fallback bleibt nicht autorisiert",
+        "no vendor fallback authorization",
+        "wiring absence",
         "browser-render",
         "netzwerkzugriff",
         "no run",
@@ -321,11 +325,22 @@ def test_market_surface_chartjs_cdn_blocking_evidence_criteria_env_boundary_v0()
         "data-chartjs-cdn-load-error",
         "data-chartjs-cdn-monitored-v0",
         "data-chartjs-cdn-script-v0",
+        "data-chartjs-vendor-fallback-v0",
         "data-market-chart-status",
     ]
 
     for token in required_boundary_tokens:
         assert token.lower() in cdn_evidence.lower()
+
+    forbidden_stale_tokens = [
+        "vendor fallback stays deferred",
+        "no active local Chart.js vendor fallback",
+        "Separater Implementierungs-PR (vendor asset + template path",
+        "Vendor-Fallback-Implementation-GO",
+    ]
+
+    for token in forbidden_stale_tokens:
+        assert token.lower() not in cdn_evidence.lower()
 
     forbidden_authority_tokens = [
         "vendor_fallback_authorized_now=true",
@@ -356,7 +371,7 @@ def test_market_surface_chartjs_cdn_blocking_evidence_capture_charter_env_bounda
         "Capture",
         "Review",
         "Vendor-Decision",
-        "Vendor-Implementation",
+        "Wiring verification",
     ]
 
     for token in required_phase_tokens:
@@ -382,7 +397,11 @@ def test_market_surface_chartjs_cdn_blocking_evidence_capture_charter_env_bounda
         "browser-render",
         "netzwerkzugriff",
         "vendor-datei",
-        "vendor-fallback bleibt nicht autorisiert",
+        "no vendor fallback authorization",
+        "wiring absence",
+        "PR #4108",
+        "onerror-only",
+        "data-chartjs-vendor-fallback-v0",
         "no provider truth",
         "no dashboard truth",
         "trading readiness",
@@ -402,6 +421,15 @@ def test_market_surface_chartjs_cdn_blocking_evidence_capture_charter_env_bounda
 
     for token in required_boundary_tokens:
         assert token.lower() in capture_charter.lower()
+
+    forbidden_stale_tokens = [
+        "vendor fallback stays deferred",
+        "Vendor-Implementation",
+        "Implementierungs-PR",
+    ]
+
+    for token in forbidden_stale_tokens:
+        assert token.lower() not in capture_charter.lower()
 
     forbidden_authority_tokens = [
         "vendor_fallback_authorized_now=true",
@@ -462,7 +490,11 @@ def test_market_surface_chartjs_cdn_blocking_evidence_capture_browser_execute_pr
         "browser-render",
         "netzwerkzugriff",
         "vendor-datei",
-        "vendor-fallback bleibt nicht autorisiert",
+        "no vendor fallback authorization",
+        "wiring absence",
+        "PR #4108",
+        "onerror-only",
+        "data-chartjs-vendor-fallback-v0",
         "no provider truth",
         "no dashboard truth",
         "trading readiness",
@@ -484,6 +516,15 @@ def test_market_surface_chartjs_cdn_blocking_evidence_capture_browser_execute_pr
     for token in required_boundary_tokens:
         assert token.lower() in execute_prep.lower()
 
+    forbidden_stale_tokens = [
+        "vendor fallback stays deferred",
+        "Vendor-Implementation",
+        "Implementierungs-PR",
+    ]
+
+    for token in forbidden_stale_tokens:
+        assert token.lower() not in execute_prep.lower()
+
     forbidden_authority_tokens = [
         "vendor_fallback_authorized_now=true",
         "live_authorized=true",
@@ -495,6 +536,42 @@ def test_market_surface_chartjs_cdn_blocking_evidence_capture_browser_execute_pr
 
     for token in forbidden_authority_tokens:
         assert token.lower() not in execute_prep.lower()
+
+
+def test_market_surface_chartjs_local_fallback_planning_charter_post_merge_parity_v0() -> None:
+    """Parent CHARTJS_LOCAL_FALLBACK charter block reflects PR #4108 wiring on main."""
+    surface = (PROJECT_ROOT / "docs/webui/MARKET_SURFACE_V0.md").read_text(encoding="utf-8")
+
+    section_start = surface.index("### Chart.js local fallback planning charter v0")
+    section_end = surface.index(
+        "#### Chart.js vendor fallback template wiring v1 (implemented)",
+        section_start,
+    )
+    parent_charter = surface[section_start:section_end]
+
+    required_parity_tokens = [
+        "CHARTJS_VENDOR_ADDED_ON_MAIN=true",
+        "CHARTJS_LOCAL_FALLBACK_WIRING_V1_ON_MAIN=true",
+        "PR #4108",
+        "onerror-only",
+        "wiring absence",
+        "jsdelivr",
+    ]
+
+    for token in required_parity_tokens:
+        assert token.lower() in parent_charter.lower()
+
+    forbidden_stale_tokens = [
+        "CHARTJS_VENDOR_ADDED=false",
+        "zukünftigen",
+        "separaten",
+        "Implementierungs-PR",
+        "nicht ins Repo vendoren",
+        "keine Template-Umstellung",
+    ]
+
+    for token in forbidden_stale_tokens:
+        assert token.lower() not in parent_charter.lower()
 
 
 def test_market_surface_ssr_provenance_snapshot_operator_pointer_env_boundary_v0() -> None:
