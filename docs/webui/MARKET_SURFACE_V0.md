@@ -269,6 +269,18 @@ Dashboard markers remain non-authorizing: **Dashboard ≠ Freigabe**; no marker 
 - **Keine** Double‑Play‑Komposition oder Trading‑/Risk‑/Capital‑Interpretation durch diese Diagnosemarker.
 - **v0 CDN load attribution (template):** Die Chart.js‑Einbindung über **jsdelivr** setzt am `<script>`‑Tag ein **`onerror`**, markiert das Skript bei Ladefehler mit **`data-chartjs-cdn-load-error`** und spiegelt den Zustand auf den jeweiligen Dashboard‑Shell‑Container (**`data-chartjs-cdn-load-error`** auf **`#market-v0-shell`**, **`#double-play-market-v0-shell`**, bzw. **`#r-and-d-charts-shell`** wenn Diagramme geladen werden). Zusätzlich **`data-chartjs-cdn-monitored-v0="true"`** kennzeichnet Oberflächen mit dieser Überwachung. **Lokaler Vendor‑Chart.js‑Fallback** bleibt **separates** Arbeitspaket (siehe Hinweis zu **v1.2** unten); Oberflächen bleiben **read-only** und **non-authorizing**.
 
+#### Operator enablement (chart.js CDN diagnostics v1)
+
+**Diagnostic only / fail-closed / no authority:** Chart.js CDN diagnostics on **`GET`** **`&#47;market`** (and parallel Double-Play/R&amp;D shells) are **operator-facing troubleshooting signals only** — **not** env-gated SSR panels, **not** Dashboard Truth GO, **not** Provider Truth, **no** Live/Testnet/Order/Cancel/Execute/Arming/Preflight authority, **no** runtime/scheduler activation, **no run, Testnet, Paper, or Shadow authorization**.
+
+**Diagnostic markers (non-authorizing):** **`data-chartjs-cdn-load-error`**, **`data-chartjs-cdn-monitored-v0="true"`**, **`data-chartjs-cdn-script-v0="true"`**, **`data-market-chart-status`** (incl. **`#market-v0-chart-status`**), and **`data-market-v11-*`** chart render diagnostics mirror CDN load, SSR empty, and client render state — **display/troubleshooting only**; **`GET`** **`&#47;market`** must **not** derive Provider Truth from these markers.
+
+**Vendor fallback boundary:** **`CHARTJS_LOCAL_FALLBACK_PLANNING_CHARTER_V0`** remains **planning/charter context only** — **no** active local Chart.js vendor fallback is authorized by this operator pointer. **Vendor fallback stays deferred until CDN-blocking evidence** is operator-evidenced (existing v0 CDN load attribution); do **not** treat CDN load errors as trading blocks or readiness GO.
+
+**Troubleshooting (CDN blocked vs SSR empty vs render error):** Walk **Chart status states** (`ready`/`empty`/`error` on **`data-market-chart-status`**) first, then **CDN attribution** (`data-chartjs-cdn-load-error`, **`data-chartjs-cdn-monitored-v0`**, script tag **`data-chartjs-cdn-script-v0`**), then **v1.1 diagnostics** (`data-market-v11-*`). Cross-check **`tests/webui/test_market_dashboard_readonly_structure_contract_v0.py`** and **`tests/test_market_surface_api.py`**. Distinguish **CDN script blocked** (CDN markers set) from **SSR empty bars** (`empty` status, no bars) from **client render failure** (`error` status) — **none** of these grant dashboard or provider authority. **Do not** escalate to local vendor fallback without charter + CDN-blocking evidence.
+
+**Protected boundaries:** read-only diagnostic path only — **no dashboard truth grant**, **no provider truth**. **Market-Airport excluded.** **`GET`** **`&#47;market&#47;double-play`** (**Master V2 / Double Play protected**) — CDN diagnostics operator enablement does not alter Double Play routes, markers, or decision logic.
+
 ### Chart.js local fallback planning charter v0
 
 **Status:** **planning-only** — **keine** Implementierung in diesem Charter-Slice. **Kanonischer Owner** bleibt dieses Dokument (**`docs&#47;webui&#47;MARKET_SURFACE_V0.md`**); **kein** paralleles Spec-, Dashboard- oder Vendor-Artefakt.
