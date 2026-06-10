@@ -126,6 +126,61 @@ def test_market_surface_run_projection_operator_pointer_env_boundary_v0() -> Non
         assert token.lower() in run_projection.lower()
 
 
+def test_market_surface_tape_operator_pointer_env_boundary_v0() -> None:
+    """Tape readmodel SSR operator enablement tokens stay pinned in MARKET_SURFACE_V0."""
+    surface = (PROJECT_ROOT / "docs/webui/MARKET_SURFACE_V0.md").read_text(encoding="utf-8")
+
+    section_start = surface.index("### Market tape readmodel SSR (env-gated v0)")
+    section_end = surface.index("## Safety banner and stable markers")
+    tape = surface[section_start:section_end]
+
+    assert "Operator enablement (tape readmodel SSR v0)" in tape
+    assert "PEAK_TRADE_MARKET_TAPE_" in tape
+
+    required_env_tokens = [
+        "PEAK_TRADE_MARKET_TAPE_ENABLED=1",
+        "PEAK_TRADE_MARKET_TAPE_BUNDLE_ROOT",
+    ]
+
+    for token in required_env_tokens:
+        assert token in tape
+
+    required_boundary_tokens = [
+        "default off",
+        "operator-gated",
+        "fail-closed",
+        "offline-only",
+        "offline fixture",
+        "diagnostic",
+        "operator-context",
+        "GET",
+        "&#47;market",
+        "no provider truth",
+        "no dashboard truth",
+        "trading readiness",
+        "selected-future truth",
+        "order/fill/position truth",
+        "fills.json",
+        "workflow-pipeline fills",
+        "Market-Airport excluded",
+        "Master V2 / Double Play protected",
+        "no Double-Play authority",
+        "no run",
+        "testnet",
+        "paper",
+        "shadow",
+        "network",
+        "browser requirement",
+        "test_market_tape_ssr_v0.py",
+        "test_market_dashboard_readonly_structure_contract_v0.py",
+        "test_market_tape_readmodel_v0.py",
+        "test_market_surface_ranking_funnel_env_schema_boundary_v0.py",
+    ]
+
+    for token in required_boundary_tokens:
+        assert token.lower() in tape.lower()
+
+
 def test_market_surface_ranking_funnel_operator_pointer_env_boundary_v0() -> None:
     """Ranking funnel operator enablement tokens stay pinned in MARKET_SURFACE_V0."""
     surface = (PROJECT_ROOT / "docs/webui/MARKET_SURFACE_V0.md").read_text(encoding="utf-8")
