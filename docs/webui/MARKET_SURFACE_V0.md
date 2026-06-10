@@ -378,6 +378,20 @@ MARKET_DASHBOARD_READ_ONLY_NON_AUTHORITY=true
 
 **v1.2 Implementierung (später):** Lokaler Chart.js‑Fallback **nur** nach obiger Checkliste und **separatem** Implementierungs-Charter — **nicht** als Micro-Contract ohne CDN‑Blocking‑Evidenz.
 
+#### Chart.js vendor fallback template wiring v1 (implemented)
+
+**UI-only / fail-closed / non-authorizing:** CDN-primary bleibt **jsdelivr** (`chart.js@4.4.1`). Lokaler Vendor-Fallback wird **nur** bei CDN-`<script>`-`onerror` über `peakTradeChartjsVendorFallbackV0` nachgeladen — Pfad **`/static/vendor/chartjs/4.4.1/chart.umd.min.js`**. **Kein** eager local `<script>` in SSR. Nach erfolgreichem lokalen Load setzt die Shell **`data-chartjs-vendor-fallback-v0="true"`** (**diagnostisch**, getrennt von **`data-chartjs-cdn-load-error`**). Betroffene Shells: **`#market-v0-shell`**, **`#double-play-market-v0-shell`**, **`#r-and-d-charts-shell`**. **Keine** Provider Truth, **keine** Dashboard Truth, **keine** Trading Readiness, **keine** Live-/Preflight-/Execution-/Order-/Cancel-Autorität. **Market-Airport excluded.** **`GET`** **`&#47;market&#47;double-play`** (**Master V2 / Double Play protected**) — Wiring ändert keine Trading-Logik.
+
+```
+CHARTJS_VENDOR_ADDED=true
+CHARTJS_LOCAL_FALLBACK_WIRING_V1=true
+CHARTJS_LOCAL_FALLBACK_EAGER_SSR=false
+MARKET_DASHBOARD_READ_ONLY_NON_AUTHORITY=true
+DASHBOARD_AUTHORITY_CHANGED=false
+```
+
+Cross-check: **`tests/webui/test_chartjs_vendor_fallback_wiring_contract_v0.py`**, **`tests/ops/test_chartjs_vendor_asset_integrity_v0.py`**.
+
 #### CDN-blocking evidence criteria (v1)
 
 **Charter context:** Erweiterung unter **`CHARTJS_LOCAL_FALLBACK_PLANNING_CHARTER_V0`** — criteria only; **keine** Implementierung in diesem Slice.

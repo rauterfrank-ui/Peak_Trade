@@ -109,11 +109,37 @@
     </section>
   </div>
   <script type="application/json" id="r-and-d-charts-payload">{{ charts | tojson }}</script>
+  <script data-chartjs-vendor-fallback-loader-v0="true">
+    (function () {
+      window.peakTradeChartjsVendorFallbackV0 = function (shellId) {
+        var shell = document.getElementById(shellId);
+        if (
+          !shell ||
+          shell.getAttribute("data-chartjs-vendor-fallback-v0") === "true" ||
+          typeof window.Chart !== "undefined"
+        ) {
+          return;
+        }
+        var scr = document.createElement("script");
+        scr.src = "/static/vendor/chartjs/4.4.1/chart.umd.min.js";
+        scr.setAttribute("data-chartjs-vendor-fallback-script-v0", "true");
+        scr.onload = function () {
+          shell.setAttribute("data-chartjs-vendor-fallback-v0", "true");
+          document.dispatchEvent(
+            new CustomEvent("peak-trade-chartjs-vendor-fallback-ready", {
+              detail: { shellId: shellId },
+            })
+          );
+        };
+        document.head.appendChild(scr);
+      };
+    })();
+  </script>
   <script
     id="peak-trade-r-and-d-chartjs-cdn-v0"
     src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"
     data-chartjs-cdn-script-v0="true"
-    onerror="this.setAttribute('data-chartjs-cdn-load-error','true');var s=document.getElementById('r-and-d-charts-shell');if(s)s.setAttribute('data-chartjs-cdn-load-error','true');"
+    onerror="this.setAttribute('data-chartjs-cdn-load-error','true');var s=document.getElementById('r-and-d-charts-shell');if(s){s.setAttribute('data-chartjs-cdn-load-error','true');if(window.peakTradeChartjsVendorFallbackV0)window.peakTradeChartjsVendorFallbackV0('r-and-d-charts-shell');}"
   ></script>
   <script>
     (function () {
@@ -126,6 +152,8 @@
         return;
       }
       if (payload.empty || payload.no_plot_points) return;
+
+      function drawRdCharts() {
       const grid = document.documentElement.classList.contains("dark")
         ? "rgba(148, 163, 184, 0.15)"
         : "rgba(148, 163, 184, 0.2)";
@@ -209,6 +237,14 @@
           },
         });
       }
+      }
+
+      drawRdCharts();
+      document.addEventListener("peak-trade-chartjs-vendor-fallback-ready", function (ev) {
+        if (ev.detail && ev.detail.shellId === "r-and-d-charts-shell") {
+          drawRdCharts();
+        }
+      });
     })();
   </script>
   {% endif %}
