@@ -253,3 +253,63 @@ def test_market_surface_chartjs_cdn_diagnostics_operator_pointer_env_boundary_v0
 
     for token in required_boundary_tokens:
         assert token.lower() in chartjs_cdn.lower()
+
+
+def test_market_surface_ssr_provenance_snapshot_operator_pointer_env_boundary_v0() -> None:
+    """SSR provenance / snapshot triage operator enablement tokens stay pinned in MARKET_SURFACE_V0."""
+    surface = (PROJECT_ROOT / "docs/webui/MARKET_SURFACE_V0.md").read_text(encoding="utf-8")
+
+    section_start = surface.index("#### Operator enablement (SSR provenance / snapshot triage v1)")
+    section_end = surface.index("### Single-page consolidation (env-gated SSR v1)")
+    ssr_provenance = surface[section_start:section_end]
+
+    assert "Operator enablement (SSR provenance / snapshot triage v1)" in ssr_provenance
+
+    required_provenance_tokens = [
+        "data-market-v0-embedded-snapshot-generated-at-v0",
+        "data-market-v0-depth-bundle-provenance-v0",
+        "data-market-v0-depth-bundle-stale",
+        "data-market-v0-payload-meta-note-v0",
+        "data-market-v0-depth-tile-freshness-mirror-v0",
+        "generated_at_utc",
+        "Snapshot bei Seitenladen",
+        "meta.note",
+        "depth_generated_at_iso",
+        "depth_stale",
+        "depth_stale_reason",
+    ]
+
+    for token in required_provenance_tokens:
+        assert token in ssr_provenance
+
+    required_boundary_tokens = [
+        "display-only",
+        "fail-closed",
+        "no authority",
+        "no provider truth",
+        "no dashboard truth",
+        "trading readiness",
+        "vendor fallback stays deferred",
+        "Market-Airport excluded",
+        "Master V2 / Double Play protected",
+        "no run",
+        "testnet",
+        "paper",
+        "shadow",
+        "chart.js CDN diagnostics v1",
+        "test_market_dashboard_readonly_structure_contract_v0.py",
+        "tests/test_market_surface_api.py",
+    ]
+
+    for token in required_boundary_tokens:
+        assert token.lower() in ssr_provenance.lower()
+
+    forbidden_authority_tokens = [
+        "live_authorized=true",
+        "testnet_authorized=true",
+        "execute_authorized=true",
+        "order_authorized=true",
+    ]
+
+    for token in forbidden_authority_tokens:
+        assert token.lower() not in ssr_provenance.lower()
