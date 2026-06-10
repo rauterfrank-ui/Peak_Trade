@@ -209,3 +209,47 @@ def test_market_surface_market_depth_operator_pointer_env_boundary_v0() -> None:
 
     for token in required_boundary_tokens:
         assert token.lower() in market_depth.lower()
+
+
+def test_market_surface_chartjs_cdn_diagnostics_operator_pointer_env_boundary_v0() -> None:
+    """Chart.js CDN diagnostics operator enablement tokens stay pinned in MARKET_SURFACE_V0."""
+    surface = (PROJECT_ROOT / "docs/webui/MARKET_SURFACE_V0.md").read_text(encoding="utf-8")
+
+    section_start = surface.index("#### Operator enablement (chart.js CDN diagnostics v1)")
+    section_end = surface.index("### Chart.js local fallback planning charter v0")
+    chartjs_cdn = surface[section_start:section_end]
+
+    assert "Operator enablement (chart.js CDN diagnostics v1)" in chartjs_cdn
+
+    required_diagnostic_tokens = [
+        "data-chartjs-cdn-load-error",
+        "data-chartjs-cdn-monitored-v0",
+        "data-chartjs-cdn-script-v0",
+        "data-market-chart-status",
+        "data-market-v11",
+        "market-v0-chart-status",
+        "CHARTJS_LOCAL_FALLBACK_PLANNING_CHARTER_V0",
+    ]
+
+    for token in required_diagnostic_tokens:
+        assert token in chartjs_cdn
+
+    required_boundary_tokens = [
+        "diagnostic only",
+        "fail-closed",
+        "no authority",
+        "vendor fallback stays deferred until CDN-blocking evidence",
+        "no provider truth",
+        "no dashboard truth",
+        "Market-Airport excluded",
+        "Master V2 / Double Play protected",
+        "no run",
+        "testnet",
+        "paper",
+        "shadow",
+        "test_market_dashboard_readonly_structure_contract_v0.py",
+        "tests/test_market_surface_api.py",
+    ]
+
+    for token in required_boundary_tokens:
+        assert token.lower() in chartjs_cdn.lower()
