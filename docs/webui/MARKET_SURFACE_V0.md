@@ -380,7 +380,7 @@ MARKET_DASHBOARD_READ_ONLY_NON_AUTHORITY=true
 
 **Offene Decision-/Evidence-Kette (separat autorisiert — nicht durch Wiring allein):** operatorisch evidenziertes CDN-Blocking (#4104), optional Browser-Capture (#4105/#4106), **Vendor-Decision**-GO — **nicht** wiring absence.
 
-**Parity record:** charter slices #4104–#4106 aligned to post-#4108 onerror-only wiring reality (PR #4110).
+**Parity record:** charter slices #4104–#4106 aligned to post-#4108 onerror-only wiring reality (PR #4110 charter parity; PR #4111 stale-pointer guard closed DOCS_TRUTH_MAP/Double-Play deferred-fallback drift). Browser-Capture execute remains **separately authorized — not granted**; CDN-primary **jsdelivr**; vendor fallback **onerror-only**; `data-chartjs-vendor-fallback-v0` **diagnostisch/non-authorizing**.
 
 #### Chart.js vendor fallback template wiring v1 (implemented)
 
@@ -499,7 +499,7 @@ Operator preflight before any chartered browser/network evidence capture — **c
 | P6 | Kein neues Vendor-Asset | No **new** vendor download/create/check-in during capture — existing PR #4108 asset unchanged | STOP |
 | P7 | Kein Vendor-Fallback-Entscheid | `VENDOR_FALLBACK_AUTHORIZED_NOW=false` in future capture bundle — wiring on `main` ≠ decision authorized | STOP |
 | P8 | Kein Truth-/Trading-/Execution-Impact | No Provider/Dashboard Truth, trading readiness, Live/Preflight/Order/Cancel/Execute/Arming authority | STOP |
-| P9 | Prior prep + charter on `main` | Browser prep bundle `MANIFEST_VERIFY_RC=0`; #4105 capture charter present; boundary tests green on HEAD | STOP |
+| P9 | Prior prep + charter on `main` | Browser prep bundle `MANIFEST_VERIFY_RC=0`; #4105 capture charter present; #4111 stale-pointer parity closed (`test_chartjs_vendor_fallback_wiring_contract_v0.py`); boundary tests green on HEAD | STOP |
 
 ##### Browser-Capture-Readiness-Matrix
 
