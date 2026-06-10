@@ -56,6 +56,23 @@ Dashboard ≠ Freigabe. Market Surface v0 is **review input only** for operators
 
 `MARKET_DASHBOARD_IS_PROJECTION_ONLY=true` — this surface must not be promoted to approval, gate clearance, or execution authority.
 
+#### Operator enablement (run projection v1)
+
+**Default off / operator-gated / fail-closed:** Registry run projection on **`GET`** **`&#47;market`** stays **disabled** until **both** env gates below are explicitly set. Projection panel and `data-market-v0-run-projection-*` markers **absent when gates are off** is **expected** — **not** a template defect, **not** Dashboard Truth GO, **not** Provider Truth, **no** runtime, Testnet, Paper, or Shadow authority.
+
+**Required env chain (both steps for projection panel on `GET` `/market`):**
+
+| Step | Env var(s) | Notes |
+|------|------------|-------|
+| 1 | `PEAK_TRADE_MARKET_RUN_PROJECTION_ENABLED=1` | Master run-projection gate |
+| 2 | `PEAK_TRADE_MARKET_RUN_PROJECTION_PAYLOAD_JSON=<path>` | Post-closeout projection payload v0 (`peak_trade.post_closeout_projection_payload.v0`) |
+
+**Payload/registry readiness:** Payload must expose `projection_ready=true`, valid `registry_pointer`, and `consumers.market_dashboard_projection_allowed=true` before `data-market-v0-run-projection-ready="true"`. Registry JSON is read-only at the pointer; UI shows basename labels only — **no** archive walks. **`GET`** **`&#47;market`** must **not** derive Provider Truth from projection display.
+
+**Troubleshooting (missing/stale projection):** Walk the env chain top-down before assuming SSR regression. Verify payload path, registry pointer, and readiness flags. Distinguish **absent markers** (gate off — expected) from **`data-market-v0-run-projection-ready="false"`** (gate on but payload/registry not ready). Cross-check **`tests/webui/test_market_registry_projection_overlay_v0.py`**, **`tests/webui/test_market_dashboard_readonly_structure_contract_v0.py`**, and **`tests/ops/test_market_dashboard_readonly_run_projection_spec_v0.py`**.
+
+**Protected boundaries:** read-only SSR only — **no dashboard truth grant**, **no provider truth**, **no** Live/Testnet/Order/Cancel/Execute/Arming/Preflight authority, **no** runtime/scheduler activation. **Market-Airport excluded.** **`GET`** **`&#47;market&#47;double-play`** (**Master V2 / Double Play protected**) — run projection does not alter Double Play routes, markers, or decision logic.
+
 ## Safety banner and stable markers
 
 Das HTML-Template für **`GET &#47;market`** rendert oberhalb der Chart-Fläche ein **sichtbares** Safety-Banner (**read-only**, **non-authorizing**) mit Quellen-spezifischem Kurztext (`source=dummy` \| `source=kraken`).
