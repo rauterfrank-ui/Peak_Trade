@@ -1,0 +1,19 @@
+{
+  "browser_render_disposition_v1": {
+    "instrument": "PF_XBTUSD",
+    "candidate_fields": {
+      "contract_size_candidate": {"value": "1"},
+      "price_tick_candidates": [
+        {"value": "0.5", "source": "V1-A"},
+        {"value": "1", "source": "V1-B"}
+      ],
+      "impact_mid_size_candidate": {"value": "1"}
+    },
+    "rejected_mappings": [
+      "impactMidSize→min_size",
+      "contractSize→qty_step"
+    ],
+    "ticksize_conflict": true,
+    "missing_required": ["min_size", "qty_step"]
+  }
+}

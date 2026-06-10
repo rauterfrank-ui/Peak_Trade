@@ -76,6 +76,16 @@ REASON_FORBIDDEN_ENDPOINT_BATCHORDER = "FORBIDDEN_ENDPOINT_BATCHORDER"
 REASON_UNSAFE_AUTHORITY_FLAGS = "UNSAFE_AUTHORITY_FLAGS"
 REASON_INCOMPLETE_PROVENANCE = "INCOMPLETE_PROVENANCE"
 REASON_PROVIDER_TRUTH_NOT_CLAIMED_IN_THIS_SLICE = "PROVIDER_TRUTH_NOT_CLAIMED_IN_THIS_SLICE"
+REASON_TICKSIZE_CONFLICT_UNRESOLVED = "TICKSIZE_CONFLICT_UNRESOLVED"
+REASON_CANDIDATE_FIELD_REJECTED_MAPPING = "CANDIDATE_FIELD_REJECTED_MAPPING"
+REASON_PROVIDER_TRUTH_NOT_CLAIMED_FROM_RENDERED_DOC_EXAMPLE = (
+    "PROVIDER_TRUTH_NOT_CLAIMED_FROM_RENDERED_DOC_EXAMPLE"
+)
+
+BROWSER_RENDER_DISPOSITION_KEY = "browser_render_disposition_v1"
+REJECTED_MAPPING_IMPACT_MID_TO_MIN_SIZE = "impactMidSize→min_size"
+REJECTED_MAPPING_CONTRACT_SIZE_TO_QTY_STEP = "contractSize→qty_step"
+BROWSER_RENDERED_VENDOR_DOCS_SNAPSHOT_SOURCE = "browser_rendered_vendor_docs_snapshot"
 
 
 class FixtureNormalizerError(ValueError):
@@ -208,6 +218,7 @@ def classify_source_type_marker(source_type: str) -> FixtureSourceClass:
         "acceptable_if_versioned",
         "vendor_docs_snapshot",
         "exchange_docs_snapshot",
+        "browser_rendered_vendor_docs_snapshot",
     }:
         return FixtureSourceClass.ACCEPTABLE_IF_VERSIONED
     if normalized in {
@@ -406,6 +417,79 @@ def _validate_forbidden_endpoints(inp: DemoInstrumentRulesFixtureNormalizerInput
     return reasons
 
 
+def _is_browser_rendered_vendor_docs_source(
+    provenance: DemoInstrumentRulesFixtureProvenance | None,
+) -> bool:
+    if provenance is None:
+        return False
+    normalized = _normalize(provenance.source_type).replace(" ", "_")
+    return normalized == BROWSER_RENDERED_VENDOR_DOCS_SNAPSHOT_SOURCE
+
+
+def _candidate_decimal_value(candidate: object) -> Decimal | None:
+    if not isinstance(candidate, dict):
+        return None
+    value = candidate.get("value")
+    if value is None:
+        return None
+    try:
+        parsed = Decimal(str(value))
+    except Exception:
+        return None
+    return parsed if parsed > 0 else None
+
+
+def _validate_browser_rendered_candidate_disposition(
+    *,
+    raw_payload: dict[str, Any] | None,
+    rules: DemoInstrumentRulesNormalizedFields | None,
+    provenance: DemoInstrumentRulesFixtureProvenance | None,
+) -> list[str]:
+    """Fail-closed guards for browser-rendered vendor doc candidate evidence."""
+    if not _is_browser_rendered_vendor_docs_source(provenance):
+        return []
+
+    reasons: list[str] = [REASON_PROVIDER_TRUTH_NOT_CLAIMED_FROM_RENDERED_DOC_EXAMPLE]
+    if raw_payload is None:
+        return reasons
+
+    disposition = raw_payload.get(BROWSER_RENDER_DISPOSITION_KEY)
+    if not isinstance(disposition, dict):
+        return reasons
+
+    rejected = disposition.get("rejected_mappings")
+    rejected_mappings = rejected if isinstance(rejected, list) else []
+
+    candidates = disposition.get("candidate_fields")
+    candidate_fields = candidates if isinstance(candidates, dict) else {}
+
+    impact_mid_size = _candidate_decimal_value(candidate_fields.get("impact_mid_size_candidate"))
+    contract_size = _candidate_decimal_value(candidate_fields.get("contract_size_candidate"))
+
+    if rules is not None:
+        if (
+            REJECTED_MAPPING_IMPACT_MID_TO_MIN_SIZE in rejected_mappings
+            and rules.min_size is not None
+            and impact_mid_size is not None
+            and rules.min_size == impact_mid_size
+        ):
+            reasons.append(REASON_CANDIDATE_FIELD_REJECTED_MAPPING)
+        if (
+            REJECTED_MAPPING_CONTRACT_SIZE_TO_QTY_STEP in rejected_mappings
+            and rules.qty_step is not None
+            and contract_size is not None
+            and rules.qty_step == contract_size
+        ):
+            reasons.append(REASON_CANDIDATE_FIELD_REJECTED_MAPPING)
+
+    if disposition.get("ticksize_conflict") is True:
+        if rules is not None and rules.price_tick is not None:
+            if not disposition.get("ticksize_conflict_resolved"):
+                reasons.append(REASON_TICKSIZE_CONFLICT_UNRESOLVED)
+
+    return reasons
+
+
 def _immutable_authority_result(
     *,
     verdict: FixtureNormalizerVerdictKind,
@@ -477,6 +561,14 @@ def evaluate_demo_instrument_rules_fixture_normalization(
     if inp.raw_payload is not None:
         reasons.extend(reject_secret_like_mapping(inp.raw_payload))
 
+    reasons.extend(
+        _validate_browser_rendered_candidate_disposition(
+            raw_payload=inp.raw_payload,
+            rules=inp.rules,
+            provenance=inp.provenance,
+        )
+    )
+
     reasons.extend(_validate_provenance_complete(inp.provenance))
     reasons.extend(
         _validate_source_class_policy(source_class=inp.source_class, provenance=inp.provenance)
@@ -513,6 +605,9 @@ def evaluate_demo_instrument_rules_fixture_normalization(
         REASON_LIVE_HOST_REJECTED,
         REASON_DEMO_ENDPOINT_SNAPSHOT_GO_NOT_AUTHORIZED,
         REASON_VENDOR_DOCS_NOT_VERSIONED,
+        REASON_TICKSIZE_CONFLICT_UNRESOLVED,
+        REASON_CANDIDATE_FIELD_REJECTED_MAPPING,
+        REASON_PROVIDER_TRUTH_NOT_CLAIMED_FROM_RENDERED_DOC_EXAMPLE,
     }
     schema_valid = not rule_reasons and not any(code in schema_blocking_reasons for code in reasons)
 
