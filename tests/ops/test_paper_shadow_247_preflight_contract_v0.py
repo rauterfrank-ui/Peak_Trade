@@ -260,6 +260,8 @@ def test_preflight_section_2b3_durable_closeout_adapter_validation_ssot_v0() -> 
     assert "test_supervisor_pack_durable_closeout_hook_pass_through_v0.py" in section
     assert "POST_INVOKE_RESULT_CLASSIFICATION_MATRIX_GUARD_V0=true" in section
     assert "ALL_FIVE_ATTACH_HOOK_SURFACES_RESULT_CLASSIFICATION_COVERED=true" in section
+    assert "VALIDATE_CLI_ARGS_CROSS_SURFACE_PARITY_MATRIX_GUARD_V0=true" in section
+    assert "ALL_BOUNDED_ADAPTER_ATTACH_SURFACES_CLI_ARGS_MATRIX_COVERED=true" in section
 
 
 def test_preflight_section_2b3_durable_closeout_force_and_blocker_hints_v0() -> None:
