@@ -1,15 +1,63 @@
-"""Static contract tests for Paper-L2 120min hold-binding profile v0."""
+"""Static contract tests for Paper-L2 120min hold-binding profile v0.
+
+Includes FALSE_CONFIDENCE interpretation guard static crosslink (v0): fail-closed
+retention of PR #4123 / Scheduler Boundary §10b P0 markers. Archive charter is
+external authority (Durable Archive); this module reflects repo markers only.
+"""
 
 from __future__ import annotations
 
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
+SELF = Path(__file__).resolve()
 ADAPTER = ROOT / "scripts" / "ops" / "run_paper_only_bounded_observation_adapter_v0.py"
 L2_CONTRACT = ROOT / "scripts" / "ops" / "paper_l2_120min_hold_binding_approval_v0.py"
 GUARD = ROOT / "scripts" / "ops" / "scheduler_start_boundary_guard_v0.py"
 BOUNDARY_SPEC = ROOT / "docs" / "ops" / "specs" / "SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md"
 FIXTURE = ROOT / "tests" / "fixtures" / "ops" / "paper_l2_120min_hold_binding_approval_sample.md"
+
+ARCHIVE_ROOT = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
+ARCHIVE_FALSE_CONFIDENCE_CHARTER_BUNDLE = (
+    f"{ARCHIVE_ROOT}/charter/"
+    "false_confidence_interpretation_guard_after_systemwide_safe_scope_inventory_"
+    "operator_go_autofill_no_run_v1_20260611T111453Z"
+)
+
+PACKAGE_MARKER = "FALSE_CONFIDENCE_INTERPRETATION_GUARD_REPO_STATIC_CROSSLINK_V0=true"
+
+# Scheduler Boundary §10b P0 namespace / false-confidence markers (PR #4123).
+BOUNDARY_SPEC_P0_MARKERS: tuple[str, ...] = (
+    "PAPER_L2_120MIN_HOLD_BINDING_PROFILE_V0=true",
+    "PAPER_L2_120MIN_HOLD_BINDING_PROFILE_NON_AUTHORIZING=true",
+    "PAPER_L2_120MIN_HOLD_BINDING_NO_TRADING_LOGIC_MUTATION=true",
+    "PAPER_L2_120MIN_HOLD_BINDING_MASTER_V2_DOUBLE_PLAY_UNCHANGED=true",
+    "PAPER_TL_L2_NAMESPACE=paper_trading_logic_evidence_ladder_step_2",
+    "PAPER_TL_L2_NOT_MASTER_V2_G5_L2=true",
+    "PAPER_TL_L2_PROVES_INFRASTRUCTURE_SAFETY_ONLY=true",
+    "PAPER_TL_L2_PROVES_MASTER_V2_RUNTIME=false",
+    "LINEAGE_EDGE_STEP0_TO_PAPER_TL_L2=MISSING_RUNTIME_BRIDGE",
+    "BULL_BEAR_SIDE_SWITCH_AT_PAPER_TL_L2=NOT_REACHED",
+)
+
+# FI-001 / FI-002: repo markers must not imply full Master-V2 / trading-logic proof.
+FI001_REPO_MARKERS: tuple[str, ...] = (
+    "PAPER_TL_L2_PROVES_MASTER_V2_RUNTIME=false",
+    "PAPER_TL_L2_PROVES_INFRASTRUCTURE_SAFETY_ONLY=true",
+    "LINEAGE_EDGE_STEP0_TO_PAPER_TL_L2=MISSING_RUNTIME_BRIDGE",
+)
+FI002_REPO_MARKERS: tuple[str, ...] = (
+    "PAPER_L2_120MIN_HOLD_BINDING_NO_TRADING_LOGIC_MUTATION=true",
+    "PAPER_L2_120MIN_HOLD_BINDING_MASTER_V2_DOUBLE_PLAY_UNCHANGED=true",
+    "PAPER_TL_L2_NOT_MASTER_V2_G5_L2=true",
+)
+
+FIXTURE_FALSE_CONFIDENCE_MARKERS: tuple[str, ...] = (
+    "PAPER_TL_L2_STATUS=ACHIEVED",
+    "UNQUALIFIED_L2_CLAIM_FORBIDDEN=true",
+    "PAPER_TL_L2_PROVES_MASTER_V2_RUNTIME=false",
+    "MASTER_V2_G5_L2_STATUS=NOT_STARTED_OR_EXTERNAL",
+)
 
 FORBIDDEN_DIFF_PREFIXES = (
     "src/strategies/",
@@ -72,9 +120,54 @@ def test_pr_scope_excludes_trading_and_double_play_paths() -> None:
         ADAPTER,
         L2_CONTRACT,
         ROOT / "tests" / "ops" / "test_run_paper_only_bounded_observation_adapter_v0.py",
-        Path(__file__),
+        SELF,
     ]
     for path in touched:
         rel = path.relative_to(ROOT).as_posix().lower()
         for forbidden in FORBIDDEN_DIFF_PREFIXES:
             assert forbidden not in rel
+
+
+def test_false_confidence_static_crosslink_package_marker_v0() -> None:
+    text = SELF.read_text(encoding="utf-8")
+    assert PACKAGE_MARKER in text
+
+
+def test_false_confidence_archive_charter_authority_path_constant_v0() -> None:
+    """Archive charter is external authority; repo test anchors path only (no CI filesystem)."""
+    text = SELF.read_text(encoding="utf-8")
+    assert "ARCHIVE_FALSE_CONFIDENCE_CHARTER_BUNDLE" in text
+    assert ARCHIVE_ROOT in text
+    assert "false_confidence_interpretation_guard_after_systemwide_safe_scope_inventory" in text
+    assert "operator_go_autofill_no_run_v1_20260611T111453Z" in text
+    assert ARCHIVE_FALSE_CONFIDENCE_CHARTER_BUNDLE == (
+        f"{ARCHIVE_ROOT}/charter/"
+        "false_confidence_interpretation_guard_after_systemwide_safe_scope_inventory_"
+        "operator_go_autofill_no_run_v1_20260611T111453Z"
+    )
+
+
+def test_boundary_spec_retains_paper_tl_l2_p0_marker_set_v0() -> None:
+    text = BOUNDARY_SPEC.read_text(encoding="utf-8")
+    section_start = text.index("## 10b.")
+    section_text = text[section_start : section_start + 2500]
+    for marker in BOUNDARY_SPEC_P0_MARKERS:
+        assert marker in section_text, f"missing §10b P0 marker: {marker}"
+
+
+def test_fixture_retains_false_confidence_namespace_guards_v0() -> None:
+    text = FIXTURE.read_text(encoding="utf-8")
+    for marker in FIXTURE_FALSE_CONFIDENCE_MARKERS:
+        assert marker in text, f"missing fixture false-confidence marker: {marker}"
+    assert "not Master V2 / Double Play runtime" in text
+
+
+def test_false_confidence_fi001_fi002_reflected_in_repo_markers_v0() -> None:
+    boundary = BOUNDARY_SPEC.read_text(encoding="utf-8")
+    fixture = FIXTURE.read_text(encoding="utf-8")
+    for marker in FI001_REPO_MARKERS:
+        assert marker in boundary, f"FI-001 boundary marker missing: {marker}"
+    assert "PAPER_TL_L2_STATUS=ACHIEVED" in fixture
+    for marker in FI002_REPO_MARKERS:
+        assert marker in boundary, f"FI-002 boundary marker missing: {marker}"
+    assert "UNQUALIFIED_L2_CLAIM_FORBIDDEN=true" in fixture
