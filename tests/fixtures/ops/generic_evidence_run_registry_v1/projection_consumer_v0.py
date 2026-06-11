@@ -102,6 +102,95 @@ VALIDATE_PATHS_CROSS_SURFACE_PARITY_MATRIX_V0: dict[str, dict[str, tuple[str, ..
     },
 }
 
+POST_INVOKE_RESULT_CLASSIFICATION_MATRIX_GUARD_MARKERS: tuple[str, ...] = (
+    "POST_INVOKE_RESULT_CLASSIFICATION_MATRIX_GUARD_V0=true",
+    "ALL_FIVE_ATTACH_HOOK_SURFACES_RESULT_CLASSIFICATION_COVERED=true",
+    "SCHEDULER_RESULT_CLASSIFICATION_SURFACE_GUARDED=true",
+    "SUPERVISOR_RESULT_CLASSIFICATION_SURFACE_GUARDED=true",
+    "STATUS_CLASSIFICATION_GUARDED=true",
+    "HELPER_RC_CLASSIFICATION_GUARDED=true",
+    "NON_AUTHORIZING_CLASSIFICATION_GUARDED=true",
+    "NEW_PARALLEL_CLASSIFICATION_LOGIC_CREATED=false",
+)
+
+POST_INVOKE_RESULT_CLASSIFICATION_CROSS_SURFACE_PARITY_MATRIX_V0: dict[
+    str, dict[str, tuple[str, ...] | str]
+] = {
+    "paper_bounded_adapter": {
+        "rel_path": "scripts/ops/run_paper_only_bounded_observation_adapter_v0.py",
+        "binding_mode": "canonical_definer",
+        "emit_function": "emit_bounded_adapter_durable_closeout_machine_lines",
+        "required_in_emit_body": (
+            "BOUNDED_ADAPTER_DURABLE_CLOSEOUT_STATUS=blocked",
+            'status = "pass" if rc == 0 else "failed"',
+            "BOUNDED_ADAPTER_DURABLE_CLOSEOUT_STATUS={status}",
+            "BOUNDED_ADAPTER_DURABLE_CLOSEOUT_HELPER_RC=not_run",
+            "BOUNDED_ADAPTER_DURABLE_CLOSEOUT_HELPER_RC={rc}",
+            "BOUNDED_ADAPTER_DURABLE_CLOSEOUT_NON_AUTHORIZING=true",
+        ),
+        "forbidden_in_source": (),
+    },
+    "shadow_bounded_adapter": {
+        "rel_path": "scripts/ops/run_shadow_bounded_observation_adapter_v0.py",
+        "binding_mode": "paper_import_delegation",
+        "required_in_source": (
+            "from scripts.ops.run_paper_only_bounded_observation_adapter_v0 import",
+            "maybe_invoke_durable_closeout_after_archive",
+        ),
+        "forbidden_in_source": ("def emit_bounded_adapter_durable_closeout_machine_lines(",),
+    },
+    "testnet_bounded_adapter": {
+        "rel_path": "scripts/ops/run_testnet_bounded_observation_adapter_v0.py",
+        "binding_mode": "paper_import_delegation",
+        "required_in_source": (
+            "from scripts.ops.run_paper_only_bounded_observation_adapter_v0 import",
+            "maybe_invoke_durable_closeout_after_archive",
+        ),
+        "forbidden_in_source": ("def emit_bounded_adapter_durable_closeout_machine_lines(",),
+    },
+    "scheduler_completion": {
+        "rel_path": "scripts/run_scheduler.py",
+        "binding_mode": "prefix_scoped_emit",
+        "emit_function": "emit_scheduler_durable_closeout_machine_lines",
+        "invoked_helper_rc_mode": "exit_code_fail_closed_surrogate",
+        "required_in_emit_body": (
+            "SCHEDULER_DURABLE_CLOSEOUT_STATUS=blocked",
+            "SCHEDULER_DURABLE_CLOSEOUT_HELPER_RC=not_run",
+            "SCHEDULER_DURABLE_CLOSEOUT_NON_AUTHORIZING=true",
+            "SCHEDULER_DURABLE_CLOSEOUT_EXIT_CODE",
+        ),
+        "forbidden_in_source": ("def emit_bounded_adapter_durable_closeout_machine_lines(",),
+    },
+    "supervisor_evidence_pack": {
+        "rel_path": "scripts/ops/pack_online_readiness_supervisor_evidence_v0.py",
+        "binding_mode": "prefix_scoped_emit",
+        "emit_function": "emit_supervisor_pack_durable_closeout_machine_lines",
+        "invoked_helper_rc_mode": "exit_code_fail_closed_surrogate",
+        "required_in_emit_body": (
+            "SUPERVISOR_PACK_DURABLE_CLOSEOUT_STATUS=blocked",
+            "SUPERVISOR_PACK_DURABLE_CLOSEOUT_HELPER_RC=not_run",
+            "SUPERVISOR_PACK_DURABLE_CLOSEOUT_NON_AUTHORIZING=true",
+            "SUPERVISOR_PACK_DURABLE_CLOSEOUT_EXIT_CODE",
+        ),
+        "forbidden_in_source": ("def emit_bounded_adapter_durable_closeout_machine_lines(",),
+    },
+}
+
+
+def durable_closeout_emit_function_body(rel_path: str, emit_function: str) -> str:
+    """Return source text for a top-level emit helper (test-only static guard aid)."""
+    text = (REPO_ROOT / rel_path).read_text(encoding="utf-8")
+    start_token = f"def {emit_function}("
+    start = text.index(start_token)
+    lines = text[start:].splitlines()
+    body_lines = [lines[0]]
+    for line in lines[1:]:
+        if line.startswith("def ") and not line.startswith("    "):
+            break
+        body_lines.append(line)
+    return "\n".join(body_lines)
+
+
 POST_CLOSEOUT_AUTOMATION_HOOK_OWNER_PRECHECK_MARKERS: tuple[str, ...] = (
     "POST_CLOSEOUT_AUTOMATION_HOOK_OWNER_PRECHECK_V0=true",
     "HOOK_AUTOMATION_OWNER_STATUS=identified",
@@ -135,6 +224,9 @@ POST_CLOSEOUT_AUTOMATION_HOOK_OWNER_PRECHECK_MARKERS: tuple[str, ...] = (
     "PREFLIGHT_REMAINS_BLOCKED=true",
     "VALIDATE_PATHS_CROSS_SURFACE_PARITY_MATRIX_GUARD_V0=true",
     "NEW_PARALLEL_VALIDATION_LOGIC_CREATED=false",
+    "POST_INVOKE_RESULT_CLASSIFICATION_MATRIX_GUARD_V0=true",
+    "ALL_FIVE_ATTACH_HOOK_SURFACES_RESULT_CLASSIFICATION_COVERED=true",
+    "NEW_PARALLEL_CLASSIFICATION_LOGIC_CREATED=false",
 )
 
 POST_CLOSEOUT_PROJECTION_AUTOMATION_CHARTER_MARKERS: tuple[str, ...] = (

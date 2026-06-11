@@ -140,3 +140,41 @@ def test_validate_paths_cross_surface_parity_matrix_guard_v0() -> None:
     assert testnet_spec["binding_mode"] == "paper_import_delegation"
     assert matrix["scheduler_completion"]["binding_mode"] == "paper_import_at_invoke"
     assert matrix["supervisor_evidence_pack"]["binding_mode"] == "paper_import_at_invoke"
+
+
+def test_post_invoke_result_classification_cross_surface_parity_matrix_guard_v0() -> None:
+    owners = pc.CANONICAL_DURABLE_CLOSEOUT_ATTACH_HOOK_OWNERS_V0
+    matrix = pc.POST_INVOKE_RESULT_CLASSIFICATION_CROSS_SURFACE_PARITY_MATRIX_V0
+    assert len(matrix) == 5
+    assert set(matrix) == set(owners)
+    assert "testnet_bounded_adapter" in matrix
+    for owner_id, spec in matrix.items():
+        rel_path = str(spec["rel_path"])
+        assert owners[owner_id] == rel_path
+        source = (REPO_ROOT / rel_path).read_text(encoding="utf-8")
+        for forbidden in spec.get("forbidden_in_source", ()):
+            assert forbidden not in source, (
+                f"{owner_id}: parallel classification logic {forbidden!r} in {rel_path}"
+            )
+        emit_function = spec.get("emit_function")
+        if emit_function:
+            body = pc.durable_closeout_emit_function_body(rel_path, str(emit_function))
+            for token in spec.get("required_in_emit_body", ()):
+                assert token in body, f"{owner_id}: missing {token!r} in {emit_function}"
+        else:
+            for token in spec.get("required_in_source", ()):
+                assert token in source, f"{owner_id}: missing {token!r} in {rel_path}"
+    paper_spec = matrix["paper_bounded_adapter"]
+    assert paper_spec["binding_mode"] == "canonical_definer"
+    assert matrix["shadow_bounded_adapter"]["binding_mode"] == "paper_import_delegation"
+    assert matrix["testnet_bounded_adapter"]["binding_mode"] == "paper_import_delegation"
+    assert matrix["scheduler_completion"]["binding_mode"] == "prefix_scoped_emit"
+    assert matrix["supervisor_evidence_pack"]["binding_mode"] == "prefix_scoped_emit"
+    assert (
+        matrix["scheduler_completion"]["invoked_helper_rc_mode"]
+        == "exit_code_fail_closed_surrogate"
+    )
+    assert (
+        matrix["supervisor_evidence_pack"]["invoked_helper_rc_mode"]
+        == "exit_code_fail_closed_surrogate"
+    )
