@@ -118,6 +118,93 @@
     </dl>
   </section>
 
+  <section
+    id="market-v0-futures-metrics-strip"
+    role="region"
+    aria-labelledby="market-v0-landmark-futures-metrics-strip-h2"
+    class="rounded-xl border border-violet-900/40 bg-gradient-to-r from-slate-950/90 via-violet-950/20 to-slate-950/90 px-3 py-2.5 sm:px-4 shadow-sm shadow-black/15 ring-1 ring-violet-900/30"
+    data-market-v0-futures-metrics-strip="true"
+    data-market-v0-futures-metrics-display-only="true"
+    data-market-v0-futures-metrics-no-authority="true"
+    data-market-readonly="true"
+    data-market-non-authorizing="true"
+  >
+    <h2 id="market-v0-landmark-futures-metrics-strip-h2" class="sr-only">Futures metrics strip (display-only)</h2>
+    <div class="flex flex-wrap items-center justify-between gap-2 mb-2">
+      <span class="text-[10px] font-semibold uppercase tracking-wide text-violet-300/90">Futures metrics · selected instrument</span>
+      <div class="flex flex-wrap gap-1 text-[9px] font-semibold uppercase tracking-wide">
+        <span class="rounded border border-slate-700/70 bg-slate-900/80 px-1.5 py-0.5 text-slate-300" data-market-v0-futures-metrics-display-only="true">display-only</span>
+        <span class="rounded border border-slate-700/70 bg-slate-900/80 px-1.5 py-0.5 text-slate-300">data authority=false</span>
+        <span class="rounded border border-slate-700/70 bg-slate-900/80 px-1.5 py-0.5 text-slate-300">trading authority=false</span>
+        <span class="rounded border border-slate-700/70 bg-slate-900/80 px-1.5 py-0.5 text-slate-300">no orders</span>
+        <span class="rounded border border-slate-700/70 bg-slate-900/80 px-1.5 py-0.5 text-slate-300">no execution</span>
+      </div>
+    </div>
+    <dl class="m-0 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-x-3 gap-y-2 text-[11px] tabular-nums">
+      <div data-market-v0-futures-metric-last="true">
+        <dt class="text-slate-500 uppercase text-[10px] tracking-wide">Last / close</dt>
+        <dd class="m-0 font-mono text-sky-200/95">
+          {% if futures_metrics_strip.last_price_status == "available" %}
+          {{ futures_metrics_strip.last_close_display|e }}
+          {% else %}
+          unavailable ({{ futures_metrics_strip.source_mode|e }})
+          {% endif %}
+        </dd>
+      </div>
+      <div data-market-v0-futures-metric-volatility="true">
+        <dt class="text-slate-500 uppercase text-[10px] tracking-wide">Volatility proxy</dt>
+        <dd class="m-0 font-mono text-slate-200">
+          {% if futures_metrics_strip.volatility_status == "available" %}
+          {{ futures_metrics_strip.volatility_proxy_display|e }}
+          <span class="block text-[9px] text-slate-500">display-only · not a signal</span>
+          {% else %}
+          unavailable ({{ futures_metrics_strip.source_mode|e }})
+          {% endif %}
+        </dd>
+      </div>
+      <div data-market-v0-futures-metric-volume="true">
+        <dt class="text-slate-500 uppercase text-[10px] tracking-wide">Volume / liquidity</dt>
+        <dd class="m-0 font-mono text-slate-200">
+          {% if futures_metrics_strip.volume_status == "available" %}
+          {{ futures_metrics_strip.volume_display|e }}
+          <span class="block text-[9px] text-slate-500">last bar volume</span>
+          {% else %}
+          unavailable ({{ futures_metrics_strip.source_mode|e }})
+          {% endif %}
+        </dd>
+      </div>
+      <div data-market-v0-futures-metric-spread="true">
+        <dt class="text-slate-500 uppercase text-[10px] tracking-wide">Spread</dt>
+        <dd class="m-0 font-mono text-slate-200">
+          {% if futures_metrics_strip.spread_depth_status == "available" %}
+          {{ futures_metrics_strip.spread_display|e }}
+          <span class="block text-[9px] text-slate-500">mid {{ futures_metrics_strip.mid_display|e }} · depth {{ futures_metrics_strip.spread_source_mode|e }}</span>
+          {% else %}
+          unavailable (depth {{ futures_metrics_strip.depth_display_status|e }})
+          {% endif %}
+        </dd>
+      </div>
+      <div data-market-v0-futures-metric-depth-quality="true">
+        <dt class="text-slate-500 uppercase text-[10px] tracking-wide">Depth quality</dt>
+        <dd class="m-0 font-mono text-slate-200">
+          {% if futures_metrics_strip.spread_depth_status == "available" %}
+          {{ futures_metrics_strip.depth_quality_display|e }}
+          {% else %}
+          unavailable (depth {{ futures_metrics_strip.depth_display_status|e }})
+          {% endif %}
+        </dd>
+      </div>
+      <div data-market-v0-futures-metric-readiness="true">
+        <dt class="text-slate-500 uppercase text-[10px] tracking-wide">Readiness</dt>
+        <dd class="m-0 font-mono text-slate-200">{{ futures_metrics_strip.readiness_display|e }}</dd>
+      </div>
+    </dl>
+    <p
+      class="m-0 mt-2 text-[10px] font-mono text-slate-400"
+      data-market-v0-futures-metric-source-mode="true"
+    >source-mode: {{ futures_metrics_strip.source_mode|e }} · derived from embedded bars{% if futures_metrics_strip.spread_depth_status == "available" %}/depth{% endif %} · display-only</p>
+  </section>
+
   <nav
     class="rounded-lg border border-slate-800/75 bg-slate-950/55 px-3 py-2 flex flex-wrap gap-2 text-[10px] font-semibold uppercase tracking-wide"
     aria-label="Operator story"
