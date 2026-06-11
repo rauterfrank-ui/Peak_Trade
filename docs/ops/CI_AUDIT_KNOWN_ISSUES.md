@@ -3114,7 +3114,7 @@ PARALLEL_OPERATOR_STATUS_INDEX_CREATED=false
 | Scheduled workflow variable gates + residual schedule boundaries | `docs/ops/CI_SCHEDULED_WORKFLOW_VARIABLE_GATES.md` — **§ GH Schedule Governance Minimal RC v0** |
 | Read-only manual-only / residual schedule recommender | `scripts/ops/recommend_manual_only_workflows.py` (reference only; **no** script change in SLICE-GH-0) |
 | Manual-only recommender tests | `tests/ops/test_recommend_manual_only_workflows.py` (GH-001 manual-only contract merged #3911) |
-| Residual PRB scheduled YAML contract tests | `tests/ci/test_residual_prb_scheduled_scorecard_workflow_contract_v0.py` |
+| Residual PRB scheduled YAML contract + implemented-posture docs drift guard tests | `tests/ci/test_residual_prb_scheduled_scorecard_workflow_contract_v0.py` |
 | Ops Cockpit / OE / CV / ER / OC prior releases | this document — § Operator Experience …, § Cybersecurity Visibility …, § Ops Cockpit …; ER SSOT in `PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md` |
 
 **Release scope (complete):** **2 PRs** merged — minimal explicit sub-go-gated workflow governance without batch YAML, without new status hubs, and without lifting STOP_IDLE / preflight / retention enforcement.
@@ -3128,7 +3128,19 @@ PARALLEL_OPERATOR_STATUS_INDEX_CREATED=false
 | **SLICE-GH-2** (optional) | Static test guard after GH-001 if needed | none | **deferred** (GH-001 yaml-shape guard merged #3911) |
 | **SLICE-GH-CI** | Single-workflow manual-only: `.github&#47;workflows&#47;ci.yml` (`schedule:` removed; `workflow_dispatch`, `pull_request`, `push`, `merge_group` retained) | **one file** | **complete** (#3958) |
 
-**Residual schedules on `main` (post GH-001..004 + GH-CI + PRCC + PRK/PRBD Option2 + PRBJ Option B):** **5** workflows retain active `schedule:` — `prbc-stability-gate.yml`, `prbd-live-readiness-scorecard.yml`, `prbe-shadow-testnet-scorecard.yml`, `prbg-execution-evidence.yml`, `prbi-live-pilot-scorecard.yml`. **8** are **manual-only** (no active `schedule:`; other triggers retained): `ci.yml`, `pro-prk-nightly-selfcheck.yml`, `real-market-forward-evidence-smoke.yml`, `audit.yml`, `pru-required-checks-drift-detector.yml`, `prcc-aws-export-smoke.yml`, `prk-prj-status-report.yml`, `prbj-testnet-exec-events.yml`. Recommender inventory set remains **13** files (`RESIDUAL_SCHEDULE_WORKFLOW_FILES`); **5** have active schedules. **No batch YAML wave.** **No schedule reactivation** for PR #3896 manual-only set.
+**Residual schedules on `main` (post GH-001..004 + GH-CI + PRCC + PRK/PRBD Option2 + PRBJ Option B):** **5** workflows retain active `schedule:` on the PRB scorecard chain (implemented posture — **not** manual-only); **8** are **manual-only** (GH-CI side; no active `schedule:`; other triggers retained). Recommender inventory set remains **13** files (`RESIDUAL_SCHEDULE_WORKFLOW_FILES`); **5** active schedules + **8** manual-only. **No batch YAML wave.** **No schedule reactivation** for PR #3896 manual-only set.
+
+**PRB scheduled scorecard implemented posture (5 active schedules — cron table must match `PRB_SCHEDULED_WORKFLOWS` in contract test):**
+
+| Workflow file | Cron (UTC) | Scorecard script |
+|---------------|------------|------------------|
+| `prbc-stability-gate.yml` | `57 2 * * *` | `scripts/ci/stability_gate.py` |
+| `prbd-live-readiness-scorecard.yml` | `7 3 * * *` | `scripts/ci/live_readiness_scorecard.py` |
+| `prbe-shadow-testnet-scorecard.yml` | `29 2 * * *` | `scripts/ci/shadow_testnet_readiness_scorecard.py` |
+| `prbg-execution-evidence.yml` | `19 2 * * *` | `scripts/ci/execution_evidence_producer.py` |
+| `prbi-live-pilot-scorecard.yml` | `39 2 * * *` | `scripts/ci/live_pilot_scorecard.py` |
+
+**Manual-only inventory (8 — GH-CI side; distinct from PRB scheduled chain above):** `ci.yml`, `pro-prk-nightly-selfcheck.yml`, `real-market-forward-evidence-smoke.yml`, `audit.yml`, `pru-required-checks-drift-detector.yml`, `prcc-aws-export-smoke.yml`, `prk-prj-status-report.yml`, `prbj-testnet-exec-events.yml`.
 
 **Durable operator pointers (archive only — not repo-ingested):**
 
@@ -3171,6 +3183,12 @@ CI_YML_SCHEDULE_FREE_CONFIRMED=true
 GH_CI_SCHEDULE_MANUAL_ONLY_DOCS_DRIFT_GUARD_IMPLEMENTED=true
 GH_CI_SCHEDULE_MANUAL_ONLY=true
 GH_CI_CANDIDATE_WORKFLOW=ci.yml
+RESIDUAL_PRB_SCHEDULED_SCORECARD_DOCS_DRIFT_GUARD_IMPLEMENTED=true
+PRB_SCHEDULED_WORKFLOWS_POSTURE_CONFIRMED=true
+CI_AUDIT_PRB_SCHEDULED_POSTURE_ALIGNED=true
+VARIABLE_GATES_PRB_SCHEDULED_POSTURE_ALIGNED=true
+PRB_SCHEDULED_COUNT_5_CONFIRMED=true
+GH_CI_MANUAL_ONLY_COUNT_8_PRESERVED=true
 WORKFLOW_DISPATCH_EXECUTED=false
 RECOMMENDER_READ_ONLY=true
 PREFLIGHT_REMAINS_BLOCKED=true

@@ -56,6 +56,35 @@ PRB_SCHEDULED_WORKFLOWS: dict[str, dict[str, str | bool]] = {
     },
 }
 
+PRB_SECTION_HEADING = "## Residual PRB scheduled scorecard YAML contract v0"
+GH_SCHEDULE_GOVERNANCE_HEADING = "## GH Schedule Governance Minimal RC v0"
+PRB_DRIFT_GUARD_PACKAGE_MARKER = (
+    "RESIDUAL_PRB_SCHEDULED_SCORECARD_DOCS_DRIFT_GUARD_IMPLEMENTED=true"
+)
+PRB_SCHEDULED_POSTURE_MARKER = "PRB_SCHEDULED_WORKFLOWS_POSTURE_CONFIRMED=true"
+CI_AUDIT_PRB_ALIGNED_MARKER = "CI_AUDIT_PRB_SCHEDULED_POSTURE_ALIGNED=true"
+VARIABLE_GATES_PRB_ALIGNED_MARKER = "VARIABLE_GATES_PRB_SCHEDULED_POSTURE_ALIGNED=true"
+PRB_SCHEDULED_COUNT_5_MARKER = "PRB_SCHEDULED_COUNT_5_CONFIRMED=true"
+GH_CI_MANUAL_ONLY_COUNT_8_MARKER = "GH_CI_MANUAL_ONLY_COUNT_8_PRESERVED=true"
+GH_CI_DRIFT_GUARD_MARKER = "GH_CI_SCHEDULE_MANUAL_ONLY_DOCS_DRIFT_GUARD_IMPLEMENTED=true"
+CANONICAL_RESIDUAL_ACTIVE_COUNT_LINE = "RESIDUAL_ACTIVE_SCHEDULE_COUNT=5"
+CANONICAL_MANUAL_ONLY_COUNT_LINE = "RESIDUAL_MANUAL_ONLY_RESIDUAL_COUNT=8"
+STALE_RESIDUAL_ACTIVE_COUNT_LINE = "RESIDUAL_ACTIVE_SCHEDULE_COUNT=6"
+STALE_MANUAL_ONLY_COUNT_LINE = "RESIDUAL_MANUAL_ONLY_RESIDUAL_COUNT=7"
+
+GH001_MANUAL_ONLY_FORMER_RESIDUAL = frozenset(
+    {
+        "ci.yml",
+        "pro-prk-nightly-selfcheck.yml",
+        "real-market-forward-evidence-smoke.yml",
+        "audit.yml",
+        "pru-required-checks-drift-detector.yml",
+        "prcc-aws-export-smoke.yml",
+        "prk-prj-status-report.yml",
+        "prbj-testnet-exec-events.yml",
+    }
+)
+
 _SECRETS_TOKEN_RE = re.compile(r"\$\{\{\s*secrets\.([A-Za-z0-9_]+)\s*\}\}")
 _FORBIDDEN_PROMOTION_TOKENS = ("live_ready", "futures_ready", "gate_passed")
 _FORBIDDEN_BRANCH_PROTECTION_TOKENS = (
@@ -122,6 +151,35 @@ def _schedule_cron_entries(triggers: dict[str, Any]) -> list[str]:
 
 def _secret_names_in_text(text: str) -> set[str]:
     return set(_SECRETS_TOKEN_RE.findall(text))
+
+
+def _prb_section(text: str) -> str:
+    start = text.find(PRB_SECTION_HEADING)
+    assert start != -1, f"missing {PRB_SECTION_HEADING}"
+    end = text.find("\n## ", start + len(PRB_SECTION_HEADING))
+    return text[start:] if end == -1 else text[start:end]
+
+
+def _prb_machine_block(section: str) -> str:
+    fence = section.find("```text")
+    assert fence != -1, "PRB section missing machine block"
+    end = section.find("```", fence + 7)
+    assert end != -1
+    return section[fence:end]
+
+
+def _gh_schedule_governance_machine_block(text: str) -> str:
+    start = text.find(GH_SCHEDULE_GOVERNANCE_HEADING)
+    assert start != -1
+    fence = text.find("```text", start)
+    assert fence != -1
+    end = text.find("```", fence + 7)
+    assert end != -1
+    return text[fence:end]
+
+
+def _scheduled_workflow_files() -> frozenset[str]:
+    return frozenset(str(spec["workflow_file"]) for spec in PRB_SCHEDULED_WORKFLOWS.values())
 
 
 @pytest.mark.parametrize("prb_id", sorted(PRB_SCHEDULED_WORKFLOWS))
@@ -261,3 +319,68 @@ def test_docs_owner_crosslinks_residual_prb_contract_test() -> None:
     assert test_path in audit
     for prb_id in PRB_SCHEDULED_WORKFLOWS:
         assert str(PRB_SCHEDULED_WORKFLOWS[prb_id]["workflow_file"]) in gates
+
+
+def test_prb_docs_drift_guard_package_marker_v0() -> None:
+    assert PRB_DRIFT_GUARD_PACKAGE_MARKER in Path(__file__).read_text(encoding="utf-8")
+
+
+@pytest.mark.parametrize("doc_path", [VARIABLE_GATES_DOC, CI_AUDIT_DOC])
+def test_prb_scheduled_cron_table_matches_workflow_inventory(doc_path: Path) -> None:
+    """Docs cron table must match PRB_SCHEDULED_WORKFLOWS constants."""
+    text = doc_path.read_text(encoding="utf-8")
+    for spec in PRB_SCHEDULED_WORKFLOWS.values():
+        workflow_file = str(spec["workflow_file"])
+        expected_cron = str(spec["expected_cron"])
+        scorecard_script = str(spec["scorecard_script"])
+        assert workflow_file in text
+        assert expected_cron in text
+        assert scorecard_script in text
+
+
+@pytest.mark.parametrize("doc_path", [VARIABLE_GATES_DOC, CI_AUDIT_DOC])
+def test_prb_docs_machine_block_markers_aligned(doc_path: Path) -> None:
+    text = doc_path.read_text(encoding="utf-8")
+    if doc_path == VARIABLE_GATES_DOC:
+        block = _prb_machine_block(_prb_section(text))
+    else:
+        block = _gh_schedule_governance_machine_block(text)
+    for marker in (
+        PRB_DRIFT_GUARD_PACKAGE_MARKER,
+        PRB_SCHEDULED_POSTURE_MARKER,
+        CI_AUDIT_PRB_ALIGNED_MARKER,
+        VARIABLE_GATES_PRB_ALIGNED_MARKER,
+        PRB_SCHEDULED_COUNT_5_MARKER,
+        GH_CI_MANUAL_ONLY_COUNT_8_MARKER,
+        CANONICAL_RESIDUAL_ACTIVE_COUNT_LINE,
+        CANONICAL_MANUAL_ONLY_COUNT_LINE,
+        GH_CI_DRIFT_GUARD_MARKER,
+    ):
+        assert marker in block, f"missing {marker} in {doc_path.name}"
+    assert STALE_RESIDUAL_ACTIVE_COUNT_LINE not in block
+    assert STALE_MANUAL_ONLY_COUNT_LINE not in block
+
+
+def test_prb_scheduled_posture_not_mixed_with_gh_ci_manual_only_inventory() -> None:
+    """PRB scheduled chain must stay separate from the 8 manual-only GH-CI side."""
+    gates_section = _prb_section(VARIABLE_GATES_DOC.read_text(encoding="utf-8"))
+    audit = CI_AUDIT_DOC.read_text(encoding="utf-8")
+    scheduled_files = _scheduled_workflow_files()
+    for manual_only in GH001_MANUAL_ONLY_FORMER_RESIDUAL:
+        assert manual_only not in scheduled_files
+        assert f"| `{manual_only}` |" not in gates_section
+        assert f"| `{manual_only}` |" not in audit
+    for workflow_file in scheduled_files:
+        assert workflow_file not in GH001_MANUAL_ONLY_FORMER_RESIDUAL
+
+
+@pytest.mark.parametrize("prb_id", sorted(PRB_SCHEDULED_WORKFLOWS))
+def test_prb_yaml_implemented_posture_requires_active_schedule_not_manual_only(
+    prb_id: str,
+) -> None:
+    """Drift guard confirms YAML still has active schedule — no doc-only manual-only flip."""
+    workflow_file = str(PRB_SCHEDULED_WORKFLOWS[prb_id]["workflow_file"])
+    assert workflow_file not in GH001_MANUAL_ONLY_FORMER_RESIDUAL
+    text = _workflow_text(prb_id)
+    assert re.search(r"^\s*schedule\s*:", text, re.MULTILINE)
+    assert "workflow_dispatch" in text

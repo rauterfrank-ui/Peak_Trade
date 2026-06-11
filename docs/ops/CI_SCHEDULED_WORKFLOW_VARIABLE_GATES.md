@@ -205,9 +205,25 @@ RECOMMENDER_READ_ONLY=true
 | `prbg-execution-evidence.yml` | `19 2 * * *` | `scripts/ci/execution_evidence_producer.py` |
 | `prbi-live-pilot-scorecard.yml` | `39 2 * * *` | `scripts/ci/live_pilot_scorecard.py` |
 
-**Static contract test owner:** `tests/ci/test_residual_prb_scheduled_scorecard_workflow_contract_v0.py` — offline YAML parse only; **no** workflow dispatch, **no** secret/credential reads, **no** runtime or exchange execution authority.
+**Static contract test owner:** `tests/ci/test_residual_prb_scheduled_scorecard_workflow_contract_v0.py` — offline YAML parse only; **no** workflow dispatch, **no** secret/credential reads, **no** runtime or exchange execution authority; PRB scheduled implemented-posture docs drift guard (symmetric to GH-CI manual-only drift guard #4143).
+
+**Implemented posture (5 active schedules — distinct from 8 manual-only GH-CI side):** PRBC/PRBD/PRBE/PRBG/PRBI retain active `schedule:` on `main`; cron values below must stay aligned with `PRB_SCHEDULED_WORKFLOWS` in the contract test module.
 
 **Chain note (runtime — not executed by contract test):** PRBC → PRBD → PRBE; PRBG parallel; PRBI consumes upstream artifacts.
+
+```text
+RESIDUAL_PRB_SCHEDULED_SCORECARD_DOCS_DRIFT_GUARD_IMPLEMENTED=true
+PRB_SCHEDULED_WORKFLOWS_POSTURE_CONFIRMED=true
+VARIABLE_GATES_PRB_SCHEDULED_POSTURE_ALIGNED=true
+CI_AUDIT_PRB_SCHEDULED_POSTURE_ALIGNED=true
+PRB_SCHEDULED_COUNT_5_CONFIRMED=true
+GH_CI_MANUAL_ONLY_COUNT_8_PRESERVED=true
+RESIDUAL_ACTIVE_SCHEDULE_COUNT=5
+RESIDUAL_MANUAL_ONLY_RESIDUAL_COUNT=8
+GH_CI_SCHEDULE_MANUAL_ONLY_DOCS_DRIFT_GUARD_IMPLEMENTED=true
+WORKFLOW_YAML_TOUCHED=false
+WORKFLOW_DISPATCH_EXECUTED=false
+```
 
 ---
 
