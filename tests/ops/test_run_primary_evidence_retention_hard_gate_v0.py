@@ -159,7 +159,7 @@ PE8_ORDER_CAPABILITY_FIXTURE_BINDING_OFFLINE_CLOSEOUT_WIRING_LANE_MATRIX: tuple[
     Pe8OrderCapabilityOfflineCloseoutWiringRow(
         "order_capability_fixture_binding_runner",
         "run_order_capability_fixture_binding_dry_validation_v1.py",
-        "pending",
+        "wired",
     ),
 )
 
@@ -167,7 +167,8 @@ PE8_ORDER_CAPABILITY_FIXTURE_BINDING_OFFLINE_CLOSEOUT_WIRING_MARKERS = (
     "PE8_ORDER_CAPABILITY_FIXTURE_BINDING_OFFLINE_DURABLE_CLOSEOUT_WIRING_GUARD_V0=true",
     "ORDER_CAPABILITY_FIXTURE_BINDING_PE_CLOSEOUT_WIRING_GUARD_IMPLEMENTED=true",
     "FIXTURE_BINDING_RUNNER_PRIMARY_EVIDENCE_WIRING_GUARDED=true",
-    "FIXTURE_BINDING_RUNNER_PRIMARY_EVIDENCE_WIRING_PENDING=true",
+    "FIXTURE_BINDING_RUNNER_PRIMARY_EVIDENCE_WIRING_COMPLETE=true",
+    "ORDER_CAPABILITY_FIXTURE_BINDING_RUNNER_PE_WIRING_IMPLEMENTED=true",
     "ADAPTER_PRIMARY_EVIDENCE_WIRING_REFERENCED=true",
     "PRIMARY_EVIDENCE_RETENTION_V0_REFERENCED=true",
     "PREFLIGHT_2A1_DURABLE_COMPLETION_DUTY_GUARDED=true",
@@ -712,10 +713,13 @@ def test_pe8_order_capability_fixture_binding_offline_durable_closeout_wiring_gu
     assert "primary_evidence_retention_v0" in adapter_text
     assert "validate_order_capability_offline_durable_run_root" in adapter_text
     assert "write_manifest_sha256" in adapter_text
-    assert "primary_evidence_retention_v0" not in fixture_text
-    assert "validate_order_capability_offline_durable_run_root" not in fixture_text
-    assert "FIXTURE_BINDING_RUNNER_PRIMARY_EVIDENCE_WIRING_PENDING=true" in section
-    assert "FIXTURE_BINDING_DURABLE_COMPLETION_INVALID_WITHOUT_HELPER_WIRING=true" in section
+    assert "primary_evidence_retention_v0" in fixture_text
+    assert "validate_order_capability_offline_durable_run_root" in fixture_text
+    assert "write_manifest_sha256" in fixture_text
+    assert "--write-evidence" in fixture_text
+    assert "FIXTURE_BINDING_RUNNER_PRIMARY_EVIDENCE_WIRING_COMPLETE=true" in section
+    assert "ORDER_CAPABILITY_FIXTURE_BINDING_RUNNER_PE_WIRING_IMPLEMENTED=true" in section
+    assert "FIXTURE_BINDING_RUNNER_PRIMARY_EVIDENCE_WIRING_PENDING=true" not in section
     assert (
         "ORDER_CAPABILITY_FIXTURE_BINDING_PE8_OFFLINE_DURABLE_CLOSEOUT_WIRING_GUARD_V0=true"
         in fixture_test_text

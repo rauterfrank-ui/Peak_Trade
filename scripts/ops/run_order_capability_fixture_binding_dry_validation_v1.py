@@ -10,6 +10,7 @@ from __future__ import annotations
 import argparse
 import json
 import sys
+from datetime import datetime, timezone
 from decimal import Decimal
 from pathlib import Path
 from typing import Any
@@ -18,6 +19,11 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
+from scripts.ops.primary_evidence_retention_v0 import (
+    require_durable_archive_root,
+    validate_order_capability_offline_durable_run_root,
+    write_manifest_sha256,
+)
 from src.ops.bounded_futures_testnet_contract_v0 import DEFAULT_INSTRUMENT
 from src.ops.order_capability_demo_instrument_rules_binding_contract_v1 import (
     ALLOWED_CREDENTIAL_CLASS,
@@ -48,6 +54,8 @@ from src.ops.order_capability_demo_instrument_rules_fixture_normalizer_contract_
 
 RUNNER_VERSION = "order_capability_fixture_binding_dry_validation_runner_v1"
 REPORT_SCHEMA_VERSION = "order_capability_fixture_binding_dry_validation_report.v1"
+RUN_TYPE = "ORDER_CAPABILITY_FIXTURE_BINDING_OFFLINE_V1"
+REQUIRED_OPERATOR_GO_TOKEN = "GO_ORDER_CAPABILITY_FIXTURE_BINDING_RUNNER_PRIMARY_EVIDENCE_WIRING_IMPL_OPERATOR_GO_AUTOFILL_NO_RUN_V1"
 BROWSER_RENDER_GO = (
     "GO_ORDER_CAPABILITY_BROWSER_RENDERED_VENDOR_DOCS_SNAPSHOT_EXECUTE_WEB_READONLY_V1"
 )
@@ -318,6 +326,100 @@ def build_fixture_binding_dry_validation_report(fixture_path: Path) -> dict[str,
     }
 
 
+def _utc_stamp() -> str:
+    return datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+
+
+def _validate_write_evidence_flags(args: argparse.Namespace) -> list[str]:
+    reasons: list[str] = []
+    if args.archive_root is None:
+        reasons.append("--archive-root required for --write-evidence")
+    if args.operator_go_token and args.operator_go_token != REQUIRED_OPERATOR_GO_TOKEN:
+        reasons.append(f"operator_go_token must be {REQUIRED_OPERATOR_GO_TOKEN!r}")
+    if args.write_evidence and not args.operator_go_token:
+        reasons.append("operator_go_token required for --write-evidence")
+    return reasons
+
+
+def _closeout_markdown(report: dict[str, Any]) -> str:
+    safety = report["safety_flags"]
+    lines = [
+        "# ORDER_CAPABILITY_FIXTURE_BINDING_DRY_VALIDATION CLOSEOUT",
+        "",
+        f"**Verdict:** `{report['verdict']}`",
+        f"**Run ID:** `{report.get('run_id', '')}`",
+        "",
+        "## Safety",
+        "",
+        f"- no_network={safety['no_network']}",
+        f"- no_secrets={safety['no_secrets']}",
+        f"- no_authority_change={safety['no_authority_change']}",
+        f"- order_capability_execute_authorized={safety['order_capability_execute_authorized']}",
+        f"- order_capability_lane_parked={report['order_capability_lane_parked']}",
+        f"- binding_pass_possible_now={report['binding_pass_possible_now']}",
+        "",
+        "Offline fixture-binding validation only. Does not authorize execute.",
+    ]
+    return "\n".join(lines) + "\n"
+
+
+def write_durable_evidence(args: argparse.Namespace) -> tuple[int, str]:
+    safety_reasons = _validate_write_evidence_flags(args)
+    if safety_reasons:
+        return RUNNER_ERROR_EXIT, "; ".join(safety_reasons)
+
+    assert args.archive_root is not None
+    ok, reason = require_durable_archive_root(args.archive_root)
+    if not ok:
+        return RUNNER_ERROR_EXIT, reason
+
+    try:
+        report = build_fixture_binding_dry_validation_report(args.fixture)
+    except (FixtureBindingDryValidationError, FixtureNormalizerError) as exc:
+        return RUNNER_ERROR_EXIT, str(exc)
+
+    if not report.get("fail_closed_status_recognized"):
+        return RUNNER_ERROR_EXIT, "fail-closed status not recognized"
+
+    run_id = args.run_id or f"order_capability_fixture_binding_{_utc_stamp()}"
+    dest = args.archive_root / "runs" / "testnet" / run_id
+    dest.mkdir(parents=True, exist_ok=True)
+
+    result_payload = dict(report)
+    result_payload["run_id"] = run_id
+    result_payload["archive_root"] = str(args.archive_root)
+    result_payload["mode"] = "write-evidence"
+    result_payload["run_type"] = RUN_TYPE
+    result_payload["operator_go_token_class"] = REQUIRED_OPERATOR_GO_TOKEN
+
+    metadata = {
+        "run_id": run_id,
+        "run_type": RUN_TYPE,
+        "runner_version": RUNNER_VERSION,
+        "utc_timestamp": _utc_stamp(),
+        "archive_root": str(args.archive_root),
+        "fixture_path": str(args.fixture.resolve()),
+        "no_network": True,
+        "no_secrets": True,
+        "order_submission_executed": False,
+        "network_api_called": False,
+    }
+    (dest / "RUN_METADATA.json").write_text(
+        json.dumps(metadata, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    (dest / "ORDER_CAPABILITY_DRY_VALIDATION_RESULT.json").write_text(
+        json.dumps(result_payload, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    (dest / "CLOSEOUT.md").write_text(_closeout_markdown(result_payload), encoding="utf-8")
+    write_manifest_sha256(dest)
+    layout_ok, layout_issues = validate_order_capability_offline_durable_run_root(dest)
+    if not layout_ok:
+        return RUNNER_ERROR_EXIT, "; ".join(layout_issues)
+    return 0, str(dest)
+
+
 def _format_text(report: dict[str, Any]) -> str:
     lines = [
         f"verdict={report['verdict']}",
@@ -339,12 +441,26 @@ def build_arg_parser() -> argparse.ArgumentParser:
             "Plan-only default; offline repo-local fixtures only."
         )
     )
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument(
+        "--plan-only",
+        action="store_true",
+        help="Emit validation report only (default when --write-evidence omitted).",
+    )
+    mode.add_argument(
+        "--write-evidence",
+        action="store_true",
+        help="Write durable offline validation evidence (requires operator GO token).",
+    )
     parser.add_argument("--fixture", type=Path, required=True, help="Repo-local fixture JSON path")
+    parser.add_argument("--archive-root", type=Path, default=None)
+    parser.add_argument("--run-id", type=str, default="")
+    parser.add_argument("--operator-go-token", type=str, default="")
     parser.add_argument(
         "--output",
         type=Path,
         default=None,
-        help="Optional output path; stdout used when omitted.",
+        help="Optional flat output path for plan-only mode; stdout used when omitted.",
     )
     parser.add_argument(
         "--format",
@@ -358,6 +474,21 @@ def build_arg_parser() -> argparse.ArgumentParser:
 def main(argv: list[str] | None = None) -> int:
     parser = build_arg_parser()
     args = parser.parse_args(argv)
+
+    if args.write_evidence:
+        safety_reasons = _validate_write_evidence_flags(args)
+        if safety_reasons:
+            print("; ".join(safety_reasons), file=sys.stderr)
+            return RUNNER_ERROR_EXIT
+        rc, message = write_durable_evidence(args)
+        if rc != 0:
+            print(message, file=sys.stderr)
+            return rc
+        if args.format == "json":
+            print(json.dumps({"mode": "write-evidence", "dest": message}, indent=2) + "\n", end="")
+        else:
+            print(message)
+        return 0
 
     try:
         report = build_fixture_binding_dry_validation_report(args.fixture)
