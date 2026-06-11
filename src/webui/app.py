@@ -52,6 +52,7 @@ HTML Pages:
 - GET /r_and_d/comparison (R&D Multi-Run Comparison - Phase 78)
 - GET /market (Market Surface v0 — read-only OHLCV, Close-Line-Chart)
 - GET /market/double-play (Double-Play Market Dashboard v1 — SSR OHLCV chart + Double-Play display snapshot; kein Fetch)
+- GET /market/futures (F5 Futures Read-only Market Dashboard v0 — SSR offline/fixture display; kein Fetch, keine Autorität)
 - GET /observability (Observability-Hub — read-only Link-/Hinweisleiste, keine neue Autorität)
 
 API Endpoints:
@@ -648,6 +649,29 @@ def create_app() -> FastAPI:
                 "double_play_json_url": _DP_DOUBLE_PLAY_DISPLAY_JSON_URL,
                 "legacy_demo_href": _DP_MARKET_V0_DEMO_HREF,
                 "legacy_api_href": _DP_MARKET_V0_API_HREF,
+            },
+        )
+
+    @app.get("/market/futures", response_class=HTMLResponse)
+    async def futures_read_only_market_dashboard_v0_ssr_page(request: Request) -> Any:
+        """
+        F5 Futures Read-only Market Dashboard v0 — SSR composition (read-only).
+
+        Offline/fixture display context only; no exchange fetch, no cache/evidence writes,
+        no session/order/testnet/Live authority.
+        """
+        from .futures_read_only_market_dashboard_runtime_v0 import (
+            build_futures_read_only_market_dashboard_display_context,
+        )
+
+        proj_status = get_project_status()
+        f5_dashboard = build_futures_read_only_market_dashboard_display_context()
+        return templates.TemplateResponse(
+            request,
+            "futures_read_only_market_dashboard_v0.html",
+            {
+                "status": proj_status,
+                "f5_dashboard": f5_dashboard,
             },
         )
 
