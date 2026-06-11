@@ -258,6 +258,8 @@ def test_preflight_section_2b3_durable_closeout_adapter_validation_ssot_v0() -> 
     assert "test_bounded_adapter_invoke_durable_closeout_v0.py" in section
     assert "test_scheduler_durable_closeout_hook_pass_through_v0.py" in section
     assert "test_supervisor_pack_durable_closeout_hook_pass_through_v0.py" in section
+    assert "POST_INVOKE_RESULT_CLASSIFICATION_MATRIX_GUARD_V0=true" in section
+    assert "ALL_FIVE_ATTACH_HOOK_SURFACES_RESULT_CLASSIFICATION_COVERED=true" in section
 
 
 def test_preflight_section_2b3_durable_closeout_force_and_blocker_hints_v0() -> None:
