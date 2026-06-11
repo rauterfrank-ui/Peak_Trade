@@ -25,10 +25,15 @@ APPROVAL_FIXTURE_24H = (
 APPROVAL_FIXTURE_GAP4_TEMPLATE = (
     ROOT / "tests" / "fixtures" / "ops" / "gap4_req_a_paper_hold_binding_approval_sample.md"
 )
+APPROVAL_FIXTURE_L2_TEMPLATE = (
+    ROOT / "tests" / "fixtures" / "ops" / "paper_l2_120min_hold_binding_approval_sample.md"
+)
 RUN_ID_24H = "daemon_paper_24h_20260524T093549Z"
 RUN_ID_GAP4 = "daemon_paper_24h_test_fixture_v0"
+RUN_ID_L2 = "daemon_paper_24h_test_fixture_v0"
 PROFILE_24H = "daemon_paper_shadow_24h_v0"
 PROFILE_GAP4 = "gap4_req_a_paper_bounded_v0"
+PROFILE_L2 = "paper_l2_120min_hold_binding_v0"
 ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
 
 
@@ -825,3 +830,160 @@ def test_global_preflight_hold_unchanged_without_env_bridge() -> None:
     hold = payload.get("hold_context_v0") or {}
     assert hold.get("current_state") == "HOLD_NO_PAPER_RUN"
     assert payload.get("scheduler_execution_authorized") is not True
+
+
+def _base_argv_l2_120min(
+    staging: Path,
+    archive: Path | None = None,
+    *,
+    duration_seconds: int | None = 7200,
+) -> list[str]:
+    argv = _base_argv(staging, archive) + [
+        "--profile",
+        PROFILE_L2,
+        "--run-id",
+        RUN_ID_L2,
+    ]
+    if duration_seconds is not None:
+        argv.extend(["--duration-seconds", str(duration_seconds)])
+    return argv
+
+
+def _l2_120min_approval_fixture(tmp_path: Path, hold_binding_outroot: Path) -> Path:
+    text = APPROVAL_FIXTURE_L2_TEMPLATE.read_text(encoding="utf-8").replace(
+        "__HOLD_BINDING_OUTROOT__",
+        str(hold_binding_outroot.resolve()),
+    )
+    path = tmp_path / "l2_120min_approval.md"
+    path.write_text(text, encoding="utf-8")
+    return path
+
+
+def _materialize_l2_120min_hold_binding_outroot(tmp_path: Path) -> Path:
+    from tests.ops.test_scheduler_hold_runtime_binding_v0 import (
+        _materialize_valid_binding_outroot,
+    )
+
+    parent = ROOT / "tests" / ".pytest_archive_roots" / f"l2_120min_hold_binding_{tmp_path.name}"
+    parent.mkdir(parents=True, exist_ok=True)
+    return _materialize_valid_binding_outroot(parent)
+
+
+def test_default_profile_plan_has_no_hold_binding_contract_profile(tmp_path: Path) -> None:
+    mod = _load_mod()
+    staging = _staging(tmp_path)
+    buf = io.StringIO()
+    with redirect_stdout(buf):
+        rc = mod.main(_base_argv(staging) + ["--json"])
+    assert rc == 0
+    plan = json.loads(buf.getvalue())
+    assert plan["contract_profile"] == ""
+    assert plan["duration_seconds"] == 7200
+
+
+def test_l2_120min_profile_plan_default_duration_7200(tmp_path: Path) -> None:
+    mod = _load_mod()
+    staging = _staging(tmp_path)
+    buf = io.StringIO()
+    with redirect_stdout(buf):
+        rc = mod.main(_base_argv_l2_120min(staging, duration_seconds=None) + ["--json"])
+    assert rc == 0
+    plan = json.loads(buf.getvalue())
+    assert plan["contract_profile"] == PROFILE_L2
+    assert plan["duration_seconds"] == 7200
+
+
+def test_l2_120min_profile_duration_7200_accepted(tmp_path: Path) -> None:
+    mod = _load_mod()
+    staging = _staging(tmp_path)
+    buf = io.StringIO()
+    with redirect_stdout(buf):
+        rc = mod.main(_base_argv_l2_120min(staging, duration_seconds=7200) + ["--json"])
+    assert rc == 0
+    plan = json.loads(buf.getvalue())
+    assert plan["duration_seconds"] == 7200
+
+
+@pytest.mark.parametrize("duration", [3600, 900, 7201])
+def test_l2_120min_profile_duration_not_7200_fails(tmp_path: Path, duration: int) -> None:
+    mod = _load_mod()
+    staging = _staging(tmp_path)
+    rc = mod.main(_base_argv_l2_120min(staging, duration_seconds=duration))
+    assert rc == mod.VALIDATION_EXIT
+
+
+def test_l2_120min_execute_missing_hold_binding_outroot_fails(tmp_path: Path) -> None:
+    mod = _load_mod()
+    staging = _staging(tmp_path)
+    archive = _durable_archive(tmp_path)
+    bad = tmp_path / "l2_120min_bad_approval.md"
+    bad.write_text(
+        "\n".join(
+            [
+                "CONTRACT_PROFILE=paper_l2_120min_hold_binding_v0",
+                "APPROVE_EXECUTE_PAPER_ONLY_120MIN_NOW=true",
+                "START_PAPER_NOW=true",
+                "APPROVED_RUN_ID=daemon_paper_24h_test_fixture_v0",
+                "START_SHADOW_NOW=false",
+                "START_TESTNET_NOW=false",
+                "LIVE_ALLOWED=false",
+            ]
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    rc = mod.main(
+        _base_argv_l2_120min(staging, archive)
+        + ["--execute", "--approval-record", str(bad), "--no-strict-repo-clean"],
+        repo_clean_checker=lambda _root: (True, ""),
+    )
+    assert rc != 0
+
+
+def test_l2_120min_execute_sets_hold_runtime_env_bridge_mocked(tmp_path: Path) -> None:
+    mod = _load_mod()
+    staging = _staging(tmp_path)
+    archive = _durable_archive(tmp_path)
+    hold_outroot = _materialize_l2_120min_hold_binding_outroot(tmp_path)
+    approval = _l2_120min_approval_fixture(tmp_path, hold_outroot)
+    scheduler_extra_env: dict[str, str] | None = None
+
+    def _runner(
+        argv: Sequence[str],
+        _cwd,
+        _stdout,
+        _stderr,
+        *,
+        extra_env: Mapping[str, str] | None = None,
+    ) -> int:
+        if "review_scheduler_paper_runtime_evidence.py" in " ".join(argv):
+            review_dir = staging / "review"
+            review_dir.mkdir(parents=True, exist_ok=True)
+            (review_dir / "REVIEW_RESULT.json").write_text(
+                json.dumps({"verdict": "PASS", "metrics": {}, "issues": []}),
+                encoding="utf-8",
+            )
+            return 0
+        if "run_with_timeout.py" in " ".join(argv):
+            nonlocal scheduler_extra_env
+            scheduler_extra_env = dict(extra_env) if extra_env else None
+            return mod.TIMEOUT_EXIT
+        return 0
+
+    rc = mod.main(
+        _base_argv_l2_120min(staging, archive, duration_seconds=7200)
+        + ["--execute", "--approval-record", str(approval), "--no-strict-repo-clean"],
+        subprocess_runner=_runner,
+        repo_clean_checker=lambda _root: (True, ""),
+    )
+    assert rc == 0
+    from scripts.ops.scheduler_start_boundary_guard_v0 import (
+        SCHEDULER_HOLD_RUNTIME_OUTROOT_ENV,
+        SCHEDULER_HOLD_RUNTIME_RUN_ID_ENV,
+    )
+
+    assert scheduler_extra_env is not None
+    assert scheduler_extra_env.get(SCHEDULER_HOLD_RUNTIME_OUTROOT_ENV) == str(
+        hold_outroot.resolve()
+    )
+    assert scheduler_extra_env.get(SCHEDULER_HOLD_RUNTIME_RUN_ID_ENV) == RUN_ID_L2
