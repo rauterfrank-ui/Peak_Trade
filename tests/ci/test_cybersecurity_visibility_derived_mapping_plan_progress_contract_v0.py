@@ -781,9 +781,14 @@ RELEASE_RC_EXPECTED: dict[str, str] = {
     "CYBERSECURITY_VISIBILITY_RELEASE_RC_V0": "true",
     "SLICE_CV1_DOCS_ONLY": "true",
     "WAVE1_DERIVED_MAPPING_BATCH_CLOSURE_COMPLETE": "true",
-    "MAPPED_BY_DERIVED_EVIDENCE_ONLY": "true",
-    "DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED": "true",
-    "INPUT_JSONL_PROVIDED": "false",
+    "DEFINITIVE_R001_R002_R007_MAPPING_EXECUTION_MERGED_PR4093": "true",
+    "R001_R002_R007_DEFINITIVE_MAPPING_STATUS": "definitive_mapped",
+    "DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED": "false",
+    "INPUT_JSONL_PROVIDED": "true",
+    "INPUT_JSONL_REPO_INGESTED": "false",
+    "LOSSLESS_JSONL_RECOVERY": "false",
+    "NOT_ORIGINAL_TMP_FULL_LOSSLESS": "true",
+    "CYBERSECURITY_VISIBILITY_RELEASE_RC_V0_POST_DEFINITIVE_R001_R002_R007_MAPPING_INDEX_SYNC_V1": "true",
     "CYBER_REAL_DATA_PII_BLOCKED": "true",
     "CYBER_REAL_DATA_REQUIRES_LEGAL_PRIVACY_GO": "true",
     "NO_EXTERNAL_CYBER_DATA_INTAKE": "true",
@@ -822,6 +827,8 @@ def test_cybersecurity_visibility_release_rc_v0_slice_cv1_index_v0() -> None:
     assert POST_OE_RANKING_BUNDLE_PATH in section
     assert "DERIVED_ONLY_MAPPING_WAVE1_BATCH_CLOSURE_V0=true" in section
     assert "mapped-by-derived-evidence" in section
+    assert "PR #4093" in section
+    assert "definitive mapping execution docs/tests v1" in section.lower()
     assert "Legal/Privacy-GO" in section
     assert "no parallel" in section.lower()
     assert "CYBERSECURITY_VISIBILITY_CHAIN_PARALLEL_ANCHOR" not in text
@@ -1028,3 +1035,44 @@ def test_cybersecurity_visibility_cv3c_report_contract_reciprocal_crosslink_v0()
     assert (REPO_ROOT / INPUT_ARTIFACT_MODULE).is_file()
     assert CV3C_BLOCK_ANCHOR in (REPO_ROOT / INPUT_ARTIFACT_MODULE).read_text(encoding="utf-8")
     assert "CYBERSECURITY_VISIBILITY_CHAIN_PARALLEL_ANCHOR" not in text
+
+
+POST_DEFMAP_INDEX_SYNC_ANCHOR = "CYBERSECURITY_VISIBILITY_RELEASE_RC_V0_POST_DEFINITIVE_R001_R002_R007_MAPPING_INDEX_SYNC_V1=true"
+DEFMAP_EXEC_HEADING = (
+    "### Definitive R-001/R-002/R-007 mapping execution docs/tests v1 (SLICE-CYBER-DEFMAP-EXEC-V1)"
+)
+
+
+def test_cybersecurity_visibility_release_rc_v0_post_definitive_r001_r002_r007_mapping_index_sync_v0() -> (
+    None
+):
+    """Release RC index must not drift back to blocked after merged PR #4093 definitive mapping."""
+    text = _ci_audit_text()
+    truth_map = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    section = _release_rc_index_section(text)
+    release_block = _block_containing(text, RELEASE_RC_BLOCK_ANCHOR)
+    release_values = _machine_line_values(release_block)
+
+    assert POST_DEFMAP_INDEX_SYNC_ANCHOR in release_block
+    assert release_values["DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED"] == "false"
+    assert release_values["R001_R002_R007_DEFINITIVE_MAPPING_STATUS"] == "definitive_mapped"
+    assert release_values["DEFINITIVE_R001_R002_R007_MAPPING_EXECUTION_MERGED_PR4093"] == "true"
+    assert release_values["INPUT_JSONL_PROVIDED"] == "true"
+    assert release_values["INPUT_JSONL_REPO_INGESTED"] == "false"
+    assert release_values["LOSSLESS_JSONL_RECOVERY"] == "false"
+    assert release_values["NOT_ORIGINAL_TMP_FULL_LOSSLESS"] == "true"
+    assert "PR #4093" in section
+    assert "mapped (definitive" in text
+    assert DEFMAP_EXEC_HEADING in text
+    assert "GO_CYBERSECURITY_DEFINITIVE_R001_R002_R007_MAPPING_EXECUTION_DOCS_TESTS_V1" in text
+
+    release_start = text.index(RELEASE_RC_INDEX_HEADING)
+    release_end = text.index("## Ops Cockpit / Operator Status Index RC v0", release_start)
+    release_window = text[release_start:release_end]
+    assert "DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=true" not in release_window
+
+    assert POST_DEFMAP_INDEX_SYNC_ANCHOR in truth_map
+    assert "PR #4093" in truth_map
+    assert "R001_R002_R007_DEFINITIVE_MAPPING_STATUS=definitive_mapped" in truth_map
+    assert THIS_MODULE in truth_map
+    assert "non-authorizing" in section.lower()
