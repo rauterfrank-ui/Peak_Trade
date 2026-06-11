@@ -315,6 +315,7 @@ def test_spec_section_6a08_1_preflight_2b3_closeout_validation_crosslink_v0() ->
     assert "test_scheduler_durable_closeout_hook_pass_through_v0.py" in section
     assert "test_supervisor_pack_durable_closeout_hook_pass_through_v0.py" in section
     assert "VALIDATE_PATHS_CROSS_SURFACE_PARITY_MATRIX_GUARD_V0=true" in section
+    assert "VALIDATE_CLI_ARGS_CROSS_SURFACE_PARITY_MATRIX_GUARD_V0=true" in section
     assert "test_post_closeout_hook_attach_readiness_bridge_v0.py" in section
     assert "NEW_PARALLEL_VALIDATION_LOGIC_CREATED=false" in section
     for owner_id in (

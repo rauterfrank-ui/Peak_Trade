@@ -218,3 +218,24 @@ def test_post_invoke_result_classification_matrix_owner_alignment_v0() -> None:
     assert set(matrix) == set(owners)
     for owner_id, rel_path in owners.items():
         assert str(matrix[owner_id]["rel_path"]) == rel_path
+
+
+def test_validate_cli_args_cross_surface_parity_matrix_taxonomy_markers_v0() -> None:
+    section = _section_6a08_1()
+    for marker in pc.VALIDATE_CLI_ARGS_CROSS_SURFACE_PARITY_MATRIX_GUARD_MARKERS:
+        assert marker in section
+    assert "test_post_closeout_hook_attach_readiness_bridge_v0.py" in section
+    assert "testnet_bounded_adapter" in section
+
+
+def test_validate_cli_args_cross_surface_parity_matrix_owner_alignment_v0() -> None:
+    owners = pc.CANONICAL_DURABLE_CLOSEOUT_ATTACH_HOOK_OWNERS_V0
+    matrix = pc.VALIDATE_CLI_ARGS_CROSS_SURFACE_PARITY_MATRIX_V0
+    bounded_owners = (
+        "paper_bounded_adapter",
+        "shadow_bounded_adapter",
+        "testnet_bounded_adapter",
+    )
+    assert set(matrix) == set(bounded_owners)
+    for owner_id in bounded_owners:
+        assert str(matrix[owner_id]["rel_path"]) == owners[owner_id]

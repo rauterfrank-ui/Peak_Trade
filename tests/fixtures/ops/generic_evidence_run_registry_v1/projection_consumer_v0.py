@@ -177,6 +177,79 @@ POST_INVOKE_RESULT_CLASSIFICATION_CROSS_SURFACE_PARITY_MATRIX_V0: dict[
 }
 
 
+VALIDATE_CLI_ARGS_CROSS_SURFACE_PARITY_MATRIX_GUARD_MARKERS: tuple[str, ...] = (
+    "VALIDATE_CLI_ARGS_CROSS_SURFACE_PARITY_MATRIX_GUARD_V0=true",
+    "ALL_BOUNDED_ADAPTER_ATTACH_SURFACES_CLI_ARGS_MATRIX_COVERED=true",
+    "PAPER_CLI_ARGS_SURFACE_GUARDED=true",
+    "SHADOW_CLI_ARGS_IMPORT_CHAIN_GUARDED=true",
+    "TESTNET_CLI_ARGS_SURFACE_GUARDED=true",
+    "VALIDATE_DURABLE_CLOSEOUT_INVOKE_CLI_ARGS_GUARDED=true",
+    "DURABLE_CLOSEOUT_INVOKE_FLAG_CLI_ARGS_GUARDED=true",
+    "FORCE_SCOPE_BLOCKER_HINT_CLI_ARGS_GUARDED=true",
+    "NEW_PARALLEL_CLI_ARGS_VALIDATION_LOGIC_CREATED=false",
+)
+
+VALIDATE_CLI_ARGS_CROSS_SURFACE_PARITY_MATRIX_V0: dict[str, dict[str, tuple[str, ...] | str]] = {
+    "paper_bounded_adapter": {
+        "rel_path": "scripts/ops/run_paper_only_bounded_observation_adapter_v0.py",
+        "binding_mode": "canonical_definer",
+        "validate_function": "validate_durable_closeout_invoke_cli_args",
+        "required_in_source": (
+            "def validate_durable_closeout_invoke_cli_args(",
+            "validate_durable_closeout_invoke_cli_args(ctx.args)",
+            "add_bounded_adapter_durable_closeout_cli_args",
+            "--invoke-durable-closeout-v0",
+            "--durable-closeout-dest-dir",
+            "--durable-closeout-force",
+        ),
+        "required_in_validate_body": (
+            "invoke_durable_closeout_v0",
+            "durable_closeout_dest_dir",
+            "--run-local-post-closeout-chain-v0 requires --invoke-durable-closeout-v0",
+            "--require-durable-pointer-evidence requires --invoke-durable-closeout-v0",
+            "--durable-pointer-pattern requires --invoke-durable-closeout-v0",
+            "--durable-closeout-dest-dir is required with --invoke-durable-closeout-v0",
+            "is_under_tmp(dest_path)",
+        ),
+        "forbidden_in_source": (),
+    },
+    "shadow_bounded_adapter": {
+        "rel_path": "scripts/ops/run_shadow_bounded_observation_adapter_v0.py",
+        "binding_mode": "paper_import_delegation",
+        "required_in_source": (
+            "from scripts.ops.run_paper_only_bounded_observation_adapter_v0 import",
+            "validate_durable_closeout_invoke_cli_args(ctx.args)",
+            "add_bounded_adapter_durable_closeout_cli_args",
+        ),
+        "forbidden_in_source": ("def validate_durable_closeout_invoke_cli_args(",),
+    },
+    "testnet_bounded_adapter": {
+        "rel_path": "scripts/ops/run_testnet_bounded_observation_adapter_v0.py",
+        "binding_mode": "paper_import_delegation",
+        "required_in_source": (
+            "from scripts.ops.run_paper_only_bounded_observation_adapter_v0 import",
+            "validate_durable_closeout_invoke_cli_args(ctx.args)",
+            "add_bounded_adapter_durable_closeout_cli_args",
+        ),
+        "forbidden_in_source": ("def validate_durable_closeout_invoke_cli_args(",),
+    },
+}
+
+
+def durable_closeout_validate_function_body(rel_path: str, validate_function: str) -> str:
+    """Return source text for a top-level validate helper (test-only static guard aid)."""
+    text = (REPO_ROOT / rel_path).read_text(encoding="utf-8")
+    start_token = f"def {validate_function}("
+    start = text.index(start_token)
+    lines = text[start:].splitlines()
+    body_lines = [lines[0]]
+    for line in lines[1:]:
+        if line.startswith("def ") and not line.startswith("    "):
+            break
+        body_lines.append(line)
+    return "\n".join(body_lines)
+
+
 def durable_closeout_emit_function_body(rel_path: str, emit_function: str) -> str:
     """Return source text for a top-level emit helper (test-only static guard aid)."""
     text = (REPO_ROOT / rel_path).read_text(encoding="utf-8")
@@ -227,6 +300,15 @@ POST_CLOSEOUT_AUTOMATION_HOOK_OWNER_PRECHECK_MARKERS: tuple[str, ...] = (
     "POST_INVOKE_RESULT_CLASSIFICATION_MATRIX_GUARD_V0=true",
     "ALL_FIVE_ATTACH_HOOK_SURFACES_RESULT_CLASSIFICATION_COVERED=true",
     "NEW_PARALLEL_CLASSIFICATION_LOGIC_CREATED=false",
+    "VALIDATE_CLI_ARGS_CROSS_SURFACE_PARITY_MATRIX_GUARD_V0=true",
+    "ALL_BOUNDED_ADAPTER_ATTACH_SURFACES_CLI_ARGS_MATRIX_COVERED=true",
+    "PAPER_CLI_ARGS_SURFACE_GUARDED=true",
+    "SHADOW_CLI_ARGS_IMPORT_CHAIN_GUARDED=true",
+    "TESTNET_CLI_ARGS_SURFACE_GUARDED=true",
+    "VALIDATE_DURABLE_CLOSEOUT_INVOKE_CLI_ARGS_GUARDED=true",
+    "DURABLE_CLOSEOUT_INVOKE_FLAG_CLI_ARGS_GUARDED=true",
+    "FORCE_SCOPE_BLOCKER_HINT_CLI_ARGS_GUARDED=true",
+    "NEW_PARALLEL_CLI_ARGS_VALIDATION_LOGIC_CREATED=false",
 )
 
 POST_CLOSEOUT_PROJECTION_AUTOMATION_CHARTER_MARKERS: tuple[str, ...] = (

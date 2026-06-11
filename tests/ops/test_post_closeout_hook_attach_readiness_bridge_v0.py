@@ -178,3 +178,34 @@ def test_post_invoke_result_classification_cross_surface_parity_matrix_guard_v0(
         matrix["supervisor_evidence_pack"]["invoked_helper_rc_mode"]
         == "exit_code_fail_closed_surrogate"
     )
+
+
+def test_validate_cli_args_cross_surface_parity_matrix_guard_v0() -> None:
+    bounded_owners = (
+        "paper_bounded_adapter",
+        "shadow_bounded_adapter",
+        "testnet_bounded_adapter",
+    )
+    owners = pc.CANONICAL_DURABLE_CLOSEOUT_ATTACH_HOOK_OWNERS_V0
+    matrix = pc.VALIDATE_CLI_ARGS_CROSS_SURFACE_PARITY_MATRIX_V0
+    assert len(matrix) == 3
+    assert set(matrix) == set(bounded_owners)
+    assert "testnet_bounded_adapter" in matrix
+    for owner_id, spec in matrix.items():
+        rel_path = str(spec["rel_path"])
+        assert owners[owner_id] == rel_path
+        source = (REPO_ROOT / rel_path).read_text(encoding="utf-8")
+        for token in spec.get("required_in_source", ()):
+            assert token in source, f"{owner_id}: missing {token!r} in {rel_path}"
+        for forbidden in spec.get("forbidden_in_source", ()):
+            assert forbidden not in source, (
+                f"{owner_id}: parallel CLI-args validation logic {forbidden!r} in {rel_path}"
+            )
+        validate_function = spec.get("validate_function")
+        if validate_function:
+            body = pc.durable_closeout_validate_function_body(rel_path, str(validate_function))
+            for token in spec.get("required_in_validate_body", ()):
+                assert token in body, f"{owner_id}: missing {token!r} in {validate_function}"
+    assert matrix["paper_bounded_adapter"]["binding_mode"] == "canonical_definer"
+    assert matrix["shadow_bounded_adapter"]["binding_mode"] == "paper_import_delegation"
+    assert matrix["testnet_bounded_adapter"]["binding_mode"] == "paper_import_delegation"
