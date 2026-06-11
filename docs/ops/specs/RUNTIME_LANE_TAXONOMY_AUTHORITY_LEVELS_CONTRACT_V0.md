@@ -1300,6 +1300,8 @@ Paper, Shadow, and Testnet bounded adapter attach hooks call `validate_durable_c
 
 Scheduler completion (`scheduler_completion`) and supervisor evidence pack (`supervisor_evidence_pack`) attach hooks call the same shared `validate_durable_closeout_invoke_paths()` before helper invoke (`SCHEDULER_SUPERVISOR_DURABLE_CLOSEOUT_PRE_INVOKE_VALIDATION=true`; `VALIDATE_DURABLE_CLOSEOUT_PATHS_REUSED=true`; `HELPER_PARALLEL_LOGIC_CREATED=false`). Machine line prefixes: `SCHEDULER_DURABLE_CLOSEOUT_*`, `SUPERVISOR_PACK_DURABLE_CLOSEOUT_*`.
 
+**Cross-surface validate-paths parity matrix (static guards only):** `VALIDATE_PATHS_CROSS_SURFACE_PARITY_MATRIX_GUARD_V0=true`; `ALL_FIVE_ATTACH_HOOK_SURFACES_VALIDATE_PATHS_MATRIX_COVERED=true`; `TESTNET_VALIDATE_PATHS_SURFACE_INCLUDED=true`; Shadow/Testnet delegate to Paper `validate_durable_closeout_invoke_paths()` import chain (`SHADOW_VALIDATE_PATHS_IMPORT_CHAIN_GUARDED=true`); Scheduler/Supervisor import the same function at invoke (`SCHEDULER_VALIDATE_PATHS_SURFACE_GUARDED=true`; `SUPERVISOR_VALIDATE_PATHS_SURFACE_GUARDED=true`); `NEW_PARALLEL_VALIDATION_LOGIC_CREATED=false`. Static matrix: [test_post_closeout_hook_attach_readiness_bridge_v0.py](../../../tests/ops/test_post_closeout_hook_attach_readiness_bridge_v0.py); [test_post_closeout_automation_hook_owner_precheck_v0.py](../../../tests/ops/test_post_closeout_automation_hook_owner_precheck_v0.py).
+
 When validation blocks closeout copy:
 
 - `BOUNDED_ADAPTER_DURABLE_CLOSEOUT_VALIDATION_BLOCKED=true`
@@ -1325,7 +1327,7 @@ Machine line shapes (non-authorizing): `BOUNDED_ADAPTER_DURABLE_CLOSEOUT_BLOCKER
 
 Pre-recovery `RUN_CLOSEOUT.md` / `RESULT_SUMMARY.env` FAIL lines are **traceability only** and must **not** override current PASS when recovery PASS + analysis PASS + `MANIFEST_VERIFY_RC=0` are present. **Evidence ≠ approval**; Preflight remains **BLOCKED** (`PREFLIGHT_REMAINS_BLOCKED=true`; `PREFLIGHT_BLOCKED_LIFTED=false`; no-live / no-order / no-arming).
 
-Static guards: [test_durable_closeout_copy_verify_v0.py](../../../tests/ops/test_durable_closeout_copy_verify_v0.py); [test_bounded_adapter_invoke_durable_closeout_v0.py](../../../tests/ops/test_bounded_adapter_invoke_durable_closeout_v0.py); [test_scheduler_durable_closeout_hook_pass_through_v0.py](../../../tests/ops/test_scheduler_durable_closeout_hook_pass_through_v0.py); [test_supervisor_pack_durable_closeout_hook_pass_through_v0.py](../../../tests/ops/test_supervisor_pack_durable_closeout_hook_pass_through_v0.py); [test_paper_shadow_247_preflight_contract_v0.py](../../../tests/ops/test_paper_shadow_247_preflight_contract_v0.py) §2b.3.
+Static guards: [test_durable_closeout_copy_verify_v0.py](../../../tests/ops/test_durable_closeout_copy_verify_v0.py); [test_bounded_adapter_invoke_durable_closeout_v0.py](../../../tests/ops/test_bounded_adapter_invoke_durable_closeout_v0.py); [test_scheduler_durable_closeout_hook_pass_through_v0.py](../../../tests/ops/test_scheduler_durable_closeout_hook_pass_through_v0.py); [test_supervisor_pack_durable_closeout_hook_pass_through_v0.py](../../../tests/ops/test_supervisor_pack_durable_closeout_hook_pass_through_v0.py); [test_post_closeout_hook_attach_readiness_bridge_v0.py](../../../tests/ops/test_post_closeout_hook_attach_readiness_bridge_v0.py) (validate-paths cross-surface parity matrix); [test_paper_shadow_247_preflight_contract_v0.py](../../../tests/ops/test_paper_shadow_247_preflight_contract_v0.py) §2b.3.
 
 **Forbidden attach points (always):**
 

@@ -29,6 +29,79 @@ CANONICAL_DURABLE_CLOSEOUT_ATTACH_HOOK_OWNERS_V0: dict[str, str] = {
     "supervisor_evidence_pack": "scripts/ops/pack_online_readiness_supervisor_evidence_v0.py",
 }
 
+VALIDATE_PATHS_CROSS_SURFACE_PARITY_MATRIX_GUARD_MARKERS: tuple[str, ...] = (
+    "VALIDATE_PATHS_CROSS_SURFACE_PARITY_MATRIX_GUARD_V0=true",
+    "ALL_FIVE_ATTACH_HOOK_SURFACES_VALIDATE_PATHS_MATRIX_COVERED=true",
+    "TESTNET_VALIDATE_PATHS_SURFACE_INCLUDED=true",
+    "SHADOW_VALIDATE_PATHS_IMPORT_CHAIN_GUARDED=true",
+    "SCHEDULER_VALIDATE_PATHS_SURFACE_GUARDED=true",
+    "SUPERVISOR_VALIDATE_PATHS_SURFACE_GUARDED=true",
+    "NEW_PARALLEL_VALIDATION_LOGIC_CREATED=false",
+)
+
+VALIDATE_PATHS_CROSS_SURFACE_PARITY_MATRIX_V0: dict[str, dict[str, tuple[str, ...] | str]] = {
+    "paper_bounded_adapter": {
+        "rel_path": "scripts/ops/run_paper_only_bounded_observation_adapter_v0.py",
+        "binding_mode": "canonical_definer",
+        "required_in_source": (
+            "def validate_durable_closeout_invoke_paths(",
+            "_validate_source_dest_distinct",
+            "maybe_invoke_durable_closeout_after_archive",
+        ),
+        "forbidden_in_source": (),
+    },
+    "shadow_bounded_adapter": {
+        "rel_path": "scripts/ops/run_shadow_bounded_observation_adapter_v0.py",
+        "binding_mode": "paper_import_delegation",
+        "required_in_source": (
+            "from scripts.ops.run_paper_only_bounded_observation_adapter_v0 import",
+            "maybe_invoke_durable_closeout_after_archive",
+            "validate_durable_closeout_invoke_cli_args",
+        ),
+        "forbidden_in_source": (
+            "def validate_durable_closeout_invoke_paths(",
+            "def _validate_source_dest_distinct(",
+        ),
+    },
+    "testnet_bounded_adapter": {
+        "rel_path": "scripts/ops/run_testnet_bounded_observation_adapter_v0.py",
+        "binding_mode": "paper_import_delegation",
+        "required_in_source": (
+            "from scripts.ops.run_paper_only_bounded_observation_adapter_v0 import",
+            "maybe_invoke_durable_closeout_after_archive",
+            "validate_durable_closeout_invoke_cli_args",
+        ),
+        "forbidden_in_source": (
+            "def validate_durable_closeout_invoke_paths(",
+            "def _validate_source_dest_distinct(",
+        ),
+    },
+    "scheduler_completion": {
+        "rel_path": "scripts/run_scheduler.py",
+        "binding_mode": "paper_import_at_invoke",
+        "required_in_source": (
+            "validate_durable_closeout_invoke_paths",
+            "invoke_scheduler_durable_closeout_after_completion",
+        ),
+        "forbidden_in_source": (
+            "def validate_durable_closeout_invoke_paths(",
+            "def _validate_source_dest_distinct(",
+        ),
+    },
+    "supervisor_evidence_pack": {
+        "rel_path": "scripts/ops/pack_online_readiness_supervisor_evidence_v0.py",
+        "binding_mode": "paper_import_at_invoke",
+        "required_in_source": (
+            "validate_durable_closeout_invoke_paths",
+            "invoke_supervisor_pack_durable_closeout_after_pack",
+        ),
+        "forbidden_in_source": (
+            "def validate_durable_closeout_invoke_paths(",
+            "def _validate_source_dest_distinct(",
+        ),
+    },
+}
+
 POST_CLOSEOUT_AUTOMATION_HOOK_OWNER_PRECHECK_MARKERS: tuple[str, ...] = (
     "POST_CLOSEOUT_AUTOMATION_HOOK_OWNER_PRECHECK_V0=true",
     "HOOK_AUTOMATION_OWNER_STATUS=identified",
@@ -60,6 +133,8 @@ POST_CLOSEOUT_AUTOMATION_HOOK_OWNER_PRECHECK_MARKERS: tuple[str, ...] = (
     "AUTHORITATIVE_STATUS_HIERARCHY_V0=true",
     "HISTORICAL_PRE_RECOVERY_FAIL_NOT_CURRENT_STATUS=true",
     "PREFLIGHT_REMAINS_BLOCKED=true",
+    "VALIDATE_PATHS_CROSS_SURFACE_PARITY_MATRIX_GUARD_V0=true",
+    "NEW_PARALLEL_VALIDATION_LOGIC_CREATED=false",
 )
 
 POST_CLOSEOUT_PROJECTION_AUTOMATION_CHARTER_MARKERS: tuple[str, ...] = (

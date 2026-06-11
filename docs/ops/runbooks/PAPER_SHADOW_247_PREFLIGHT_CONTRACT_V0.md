@@ -549,6 +549,8 @@ When validation blocks closeout copy:
 
 Static guards: [test_scheduler_durable_closeout_hook_pass_through_v0.py](../../../tests/ops/test_scheduler_durable_closeout_hook_pass_through_v0.py); [test_supervisor_pack_durable_closeout_hook_pass_through_v0.py](../../../tests/ops/test_supervisor_pack_durable_closeout_hook_pass_through_v0.py).
 
+Cross-surface validate-paths parity matrix static guard: [test_post_closeout_hook_attach_readiness_bridge_v0.py](../../../tests/ops/test_post_closeout_hook_attach_readiness_bridge_v0.py) (`VALIDATE_PATHS_CROSS_SURFACE_PARITY_MATRIX_GUARD_V0=true`; all five §6a.0.8.1 attach surfaces including Testnet; Shadow/Testnet Paper import delegation; Scheduler/Supervisor invoke-time import; `NEW_PARALLEL_VALIDATION_LOGIC_CREATED=false`).
+
 **Force-scope note:** bounded adapters expose `--durable-closeout-force`; scheduler and supervisor attach hooks do **not** expose a separate force flag in this slice — non-empty dest without force remains blocked (same as bounded adapters without force).
 
 ### `--durable-closeout-force` (adapter) vs `--force` (helper)
