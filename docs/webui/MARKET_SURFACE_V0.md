@@ -44,6 +44,69 @@ Keine Kopplung an OPS Cockpit (`/ops`). Keine Trading-Aktionen.
 - **Futures metrics strip (v1):** `#market-v0-futures-metrics-strip` is **display-only** header-adjacent IA (`data-market-v0-futures-metrics-strip`, `data-market-v0-futures-metrics-display-only`, `data-market-v0-futures-metrics-no-authority`) — compact Kraken-like selected-instrument summary derived from existing embedded **`payload.bars`** (last/close, bar-range volatility proxy, last-bar volume) and optional **`market_depth`** (spread, depth-quality proxy). **Not** a trading signal; **no** new producer/readmodel SSOT; **no** order/execution authority. Distinct from chart-cockpit **`data-market-v0-ssr-metrics-strip`** (chart-centric snapshot tiles).
 - Chronicle crosslink: **`docs/ops/CI_AUDIT_KNOWN_ISSUES.md`** § Market Dashboard Operator Overview IA v1 DOCS_TRUTH_MAP static crosslink v1; **`docs/ops/registry/DOCS_TRUTH_MAP.md`** Änderungsnachweis row (PR #4145 anchor); static guard in **`tests/ops/test_market_surface_ranking_funnel_env_schema_boundary_v0.py`**. **Display-only / SSR / no SPA / no order controls** — Kraken-like information architecture is view-IA only, not trading control.
 
+#### Operator enablement (Kraken-like operator overview IA v1 — post #4145–#4150 wave)
+
+**Scope:** **`GET`** **`&#47;market`** is **SSR**, **display-only**, **no-authority** review input. **Kraken-like** here means **information architecture** (compact operator layout, instrument context band, story navigation) — **not** order placement, **not** cancel/execute/arming, **not** leverage/margin controls, **not** Live/Testnet/Paper/Shadow authorization. **No** new route, **no** SPA, **no** new producer/readmodel SSOT.
+
+**Operator story (Observe → Rank → Select → Explain → Double-Play status):**
+
+| Step | Meaning on **`GET`** **`&#47;market`** | Primary anchors | Authority |
+|------|--------------------------------------|-----------------|-----------|
+| **Observe** | Compact tape+depth co-presence inline | `#market-v0-observe-strip`, `data-market-v0-observe-co-presence-v1`, `data-market-v0-observe-tape-inline-v1`, `data-market-v0-observe-depth-inline-v1` | Display-only; full tape/depth panels below remain detail anchors |
+| **Rank** | Ranking/watchlist/scanner funnel | `data-market-v0-ranking-watchlist`, `data-market-v0-ranking-scanner-funnel`, `data-market-v0-ranking-funnel-v0` | Display-only; **no** live ranking authority |
+| **Select** | Selected instrument context + symbol query nav | `#market-v0-instrument-header`, `data-market-v0-instrument-display-only`, `data-market-v0-ranking-symbol-nav` | **Not** a selector with trading authority; `GET &#47;market?symbol=…` is display-only navigation |
+| **Explain** | AI/decision/readiness/blocker readout | `data-market-ai-decision-readout-v1` | **No** trading signal; **no** approval authority |
+| **Double-Play status** | Read-only navigation/context to Master V2 composition | Link from instrument header → **`GET`** **`&#47;market&#47;double-play`** | **No** decision-logic authority; protected Master V2 / Double Play route |
+
+**Recommended operator reading order (top → bottom on **`GET`** **`&#47;market`**):**
+
+1. **System bar** — `data-market-operator-system-bar-v1`: read-only, live locked, **trading authority=false**
+2. **Instrument header** — `#market-v0-instrument-header`: symbol, **source-mode**, snapshot, last close; **data authority=false**, **trading authority=false**
+3. **Futures metrics strip** — `#market-v0-futures-metrics-strip`: compact summary from existing **`payload.bars`** and optional **`market_depth`** (last/close, bar-range volatility proxy, last-bar volume, spread/depth-quality when available)
+4. **Observe co-presence** — inline tape+depth micro-tables with labeled **source-mode**
+5. **Ranking / watchlist funnel** — stage rows, selected-instrument highlight (visual only)
+6. **Explain / readiness / blockers** — display-only readout; guardrails/diagnostics in secondary sections
+7. **Double-Play detail** — follow header link to **`GET`** **`&#47;market&#47;double-play`** for Bull/Bear/scope/capital/risk **display** only
+
+**Futures metrics strip (v1) — operator triage:**
+
+- Derived from **existing** embedded OHLCV bars, query context, and optional depth SSR — **no** new data source, **no** signal, **no** recommendation
+- Markers: `data-market-v0-futures-metrics-strip`, `data-market-v0-futures-metrics-display-only`, `data-market-v0-futures-metrics-no-authority`
+- Distinct from chart-cockpit **`data-market-v0-ssr-metrics-strip`** (chart-centric tiles downstream)
+- Fields labeled **`unavailable`** or absent when depth/bars context missing — **fail-closed**, not invented values
+- **Do not** treat metrics strip values as trading readiness, Provider Truth, or exchange connectivity
+
+**Source-mode semantics (fail-closed):**
+
+| Label / context | Operator meaning | Common misread (reject) |
+|-----------------|------------------|-------------------------|
+| `dummy` / offline / synthetic | SSR from offline/synthetic payload | Live market or exchange readiness |
+| `fixture_offline` (tape/depth observe) | Fixture bundle evidence only | Provider Truth / order-book truth |
+| `disabled` | Env-gated panel off or context absent | Template regression |
+| `unavailable` | Field not derivable from current SSR context | Hidden live data |
+| `kraken` (query `source=kraken` only) | Public OHLCV network display for that request | Futures/Testnet/Live/order authorization |
+
+**Never** claim Live, Kraken exchange trading, or broker connectivity unless the visible **source-mode** and query context explicitly support the claim. Default **`source=dummy`** is **offline/synthetic**.
+
+**Authority boundaries (explicit):**
+
+- **data authority=false** · **trading authority=false** · **no orders** · **no execution** · **no cancel** · **no arming** · **no leverage/margin controls**
+- **`data-market-readonly="true"`** · **`data-market-non-authorizing="true"`** on shell regions
+- Dashboard ≠ Freigabe · AI ≠ Authority · Signal ≠ Trade · Docs ≠ Approval
+- Enabling any env-gated SSR panel (tape, depth, ranking, projection) **does not** grant runtime start, scheduler activation, Preflight lift, or Testnet/Live permission
+
+**Explicit non-goals for this wave (#4145–#4150):**
+
+- **No** new **`GET`** route, SPA, or parallel Market Surface SSOT
+- **No** new producer/readmodel or invented metric fields
+- **No** order form, buy/sell/cancel/arm/leverage/margin UI
+- **No** change to Master V2 / Double Play **decision logic**, Bull/Bear logic, Risk/KillSwitch, Scope/Capital, strategy/signal/position-sizing, or execution paths
+- **Market-Airport excluded**
+
+**Troubleshooting:** Distinguish **env-gate off** (markers absent — expected) from **display present but source-mode `disabled`/`unavailable`** (context missing). Walk per-feature enablement subsections below (tape, depth, ranking funnel, provenance) before assuming regression. Cross-check **`tests/webui/test_market_dashboard_readonly_structure_contract_v0.py`** and **`tests/ops/test_market_surface_ranking_funnel_env_schema_boundary_v0.py`**.
+
+**Protected boundaries:** read-only SSR/docs only — **`GET`** **`&#47;market&#47;double-play`** remains Master V2 / Double Play protected; this enablement guide does not alter Double Play routes, markers, or decision logic.
+
 ### Lane taxonomy cross-reference (non-authorizing)
 
 This document is the **canonical Market Surface v0** owner for **`GET &#47;market`**, **`GET &#47;api&#47;market&#47;*`**, and related SSR read-only routes. Lane indexing and forbidden promotions are defined in [Runtime Lane Taxonomy + Authority Levels Contract v0](../ops/specs/RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md) **§7h**:
