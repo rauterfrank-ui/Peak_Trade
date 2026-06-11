@@ -183,6 +183,7 @@ Non-goals:
 | §2b planning artifact retention | [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) §2b |
 | §2b.1 mandatory durable closeout | [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) §2b.1 |
 | §2b.2 closeout enforcement planning | [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) §2b.2 |
+| §2b.3 durable closeout adapter validation | [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) §2b.3 (PR #4127/#4128; crosslinks §6a.0.8.1) |
 | §6a.0.7 remote paper dry command template planning | This spec §6a.0.7 (planning-only; non-executable) |
 | §6a.0.8 post-closeout projection automation charter | This spec §6a.0.8 (docs/tests-only; binds §6a.1 / §6a.2 / Registry v1) |
 | §6a.0.8.1 post-closeout automation hook owner precheck | This spec §6a.0.8.1 (docs/tests-only; attach-point plan only; **no** hook install) |
@@ -1261,9 +1262,20 @@ NO_SCHEDULER_BEHAVIOR_CHANGE_IN_PRECHECK=true
 NO_NOTION_WRITE_IN_PRECHECK=true
 NO_MARKET_GLOBAL_ENABLEMENT_IN_PRECHECK=true
 POST_CLOSEOUT_AUTOMATION_HOOK_OWNER_PRECHECK_DOCS_TESTS_ONLY=true
+TAXONOMY_PREFLIGHT_2B3_CLOSEOUT_VALIDATION_CROSSLINK_V0=true
+DURABLE_CLOSEOUT_ADAPTER_PRE_INVOKE_VALIDATION=true
+BOUNDED_ADAPTER_OBSERVATION_CLOSEOUT_DECOUPLED=true
+DURABLE_CLOSEOUT_IDENTICAL_SOURCE_DEST_REJECTED=true
+DURABLE_CLOSEOUT_FORCE_REQUIRES_DISTINCT_PATHS=true
+BLOCKER_HINT_MACHINE_READABLE=true
+AUTHORITATIVE_STATUS_HIERARCHY_V0=true
+HISTORICAL_PRE_RECOVERY_FAIL_NOT_CURRENT_STATUS=true
+PREFLIGHT_REMAINS_BLOCKED=true
 ```
 
 **Purpose:** Normatively record **where** post-closeout work may attach after material run closeout, and distinguish **implemented narrow durable-closeout attach hooks** (default-off; invoke [durable_closeout_copy_verify_v0.py](../../../scripts/ops/durable_closeout_copy_verify_v0.py) only) from **not-yet-implemented full post-closeout automation** (phases 2–9 orchestration). This slice does **not** enable Notion/Market consumers, lift Preflight **BLOCKED**, or set `READY_FOR_START=true`.
+
+**Preflight §2b.3 crosslink (adapter closeout validation SSOT):** Closeout guard semantics for bounded adapter attach hooks are owned by [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) **§2b.3** (docs/tests-only sync after PR **#4127** helper guard and PR **#4128** adapter pre-invoke validation). Taxonomy §6a.0.8.1 records attach surfaces; §2b.3 records validation, `BLOCKER_HINT`, force-scope, and authoritative status hierarchy — **bidirectional crosslink only**; no helper/adapter re-implementation in this spec.
 
 **Hook owner status (Precheck only):** `hook_automation_owner_status=identified` means canonical attach surfaces are named below. It **does not** imply `FULL_POST_CLOSEOUT_AUTOMATION_IMPLEMENTED=true`, `POST_CLOSEOUT_AUTOMATION_HOOK_IMPLEMENTED=true`, Preflight **BLOCKED** lift (`PREFLIGHT_BLOCKED_LIFTED=false`), or operator recovery elimination.
 
@@ -1277,6 +1289,37 @@ POST_CLOSEOUT_AUTOMATION_HOOK_OWNER_PRECHECK_DOCS_TESTS_ONLY=true
 | `supervisor_evidence_pack` | [pack_online_readiness_supervisor_evidence_v0.py](../../../scripts/ops/pack_online_readiness_supervisor_evidence_v0.py) | `--invoke-durable-closeout-after-pack-v0` (+ `--durable-closeout-dest-dir`) | Pack finalization — **after** supervisor STOP and copy into durable archive root | Operator-invoked pack complete; `supervisor_session_closeout_v0.json`; optional `finalize_primary_evidence_root()` when `--primary-evidence-enforce`; manifest verify RC=0 |
 
 `DURABLE_CLOSEOUT_ATTACH_HOOK_V0_IMPLEMENTED=true` — narrow attach hooks ship on `main` and call **only** [durable_closeout_copy_verify_v0.py](../../../scripts/ops/durable_closeout_copy_verify_v0.py). `DURABLE_CLOSEOUT_ATTACH_HOOK_V0_DEFAULT_OFF=true` — hooks require explicit operator flags. `DURABLE_CLOSEOUT_ATTACH_HOOK_V0_NON_AUTHORIZING=true` — hook invocation does **not** complete §2b.1 by itself, lift gates, or authorize runtime.
+
+**Adapter closeout validation (Preflight §2b.3; PR #4128 on `main`):**
+
+Paper and Shadow bounded adapter attach hooks (`paper_bounded_adapter`, `shadow_bounded_adapter`) must satisfy closeout pre-invoke validation before helper invoke when `--invoke-durable-closeout-v0` is set. Adapters call `validate_durable_closeout_invoke_paths()` and **reuse** helper `_validate_source_dest_distinct` and `_dest_has_content` — **no parallel guard logic** (`DURABLE_CLOSEOUT_ADAPTER_PRE_INVOKE_VALIDATION=true`). PR **#4127** fail-closed helper guard rejects identical/equivalent `--source-dir` and `--dest-dir` (`DURABLE_CLOSEOUT_IDENTICAL_SOURCE_DEST_REJECTED=true`).
+
+When validation blocks closeout copy:
+
+- `BOUNDED_ADAPTER_DURABLE_CLOSEOUT_VALIDATION_BLOCKED=true`
+- `BOUNDED_ADAPTER_DURABLE_CLOSEOUT_STATUS=blocked`
+- `BOUNDED_ADAPTER_OBSERVATION_CLOSEOUT_DECOUPLED=true` — observation/review **PASS** does **not** imply closeout copy **PASS**; operators must treat closeout status separately.
+
+**`--durable-closeout-force` (adapter) vs `--force` (helper):** `DURABLE_CLOSEOUT_FORCE_REQUIRES_DISTINCT_PATHS=true`. `--durable-closeout-force` on bounded adapters permits overwrite only when `--durable-closeout-dest-dir` is non-empty and source/dest are **distinct** paths (for example separate snapshot source → distinct durable destination). **Not** a bypass for identical/equivalent source==dest. Helper `--force` follows the same distinct-path rule.
+
+**`BLOCKER_HINT` (machine-readable operator recovery):** When closeout copy is blocked, adapters emit machine-readable hints (`BLOCKER_HINT_MACHINE_READABLE=true`), for example:
+
+| Token | Operator recovery |
+|---|---|
+| `durable_closeout_identical_source_dest` | Copy from a **separate snapshot source directory**; ensure dest is a **distinct** durable path outside `/tmp`. |
+| `durable_closeout_dest_non_empty_without_force` | Use a fresh dest, or `--durable-closeout-force` only with **distinct** source/dest. |
+
+Machine line shapes (non-authorizing): `BOUNDED_ADAPTER_DURABLE_CLOSEOUT_BLOCKER_HINT=<token>`; `BLOCKER_HINT=<token>` in adapter `START_RETURN_CODE` artifact when execute returns blocked closeout. Hints **do not** lift Preflight **BLOCKED**, authorize runtime, Live, orders, or arming.
+
+**Authoritative status hierarchy (post-recovery vs historical pre-recovery FAIL):** `AUTHORITATIVE_STATUS_HIERARCHY_V0=true`; `HISTORICAL_PRE_RECOVERY_FAIL_NOT_CURRENT_STATUS=true`. When durable bundles contain divergent status — for example historical `RUN_CLOSEOUT.md` or `RESULT_SUMMARY.env` recording a **pre-recovery FAIL** while later snapshot-recovery artifacts show **PASS** — **authoritative current status** (when `MANIFEST_VERIFY_RC=0` on the recovery/analysis bundle) is:
+
+1. **`MACHINE_SUMMARY.env`** in the recovery or post-run analysis bundle
+2. **Recovery artifacts** (snapshot-source re-copy, durable closeout verify RC=0, analysis bundle verdict)
+3. **Post-run analysis bundle** with verified manifest
+
+Pre-recovery `RUN_CLOSEOUT.md` / `RESULT_SUMMARY.env` FAIL lines are **traceability only** and must **not** override current PASS when recovery PASS + analysis PASS + `MANIFEST_VERIFY_RC=0` are present. **Evidence ≠ approval**; Preflight remains **BLOCKED** (`PREFLIGHT_REMAINS_BLOCKED=true`; `PREFLIGHT_BLOCKED_LIFTED=false`; no-live / no-order / no-arming).
+
+Static guards: [test_durable_closeout_copy_verify_v0.py](../../../tests/ops/test_durable_closeout_copy_verify_v0.py); [test_bounded_adapter_invoke_durable_closeout_v0.py](../../../tests/ops/test_bounded_adapter_invoke_durable_closeout_v0.py); [test_paper_shadow_247_preflight_contract_v0.py](../../../tests/ops/test_paper_shadow_247_preflight_contract_v0.py) §2b.3.
 
 **Forbidden attach points (always):**
 
@@ -1298,9 +1341,9 @@ POST_CLOSEOUT_AUTOMATION_HOOK_OWNER_PRECHECK_DOCS_TESTS_ONLY=true
 
 **Readiness gate coupling:** [test_closeout_to_projection_chain_automation_contract_v0.py](../../../tests/ops/test_closeout_to_projection_chain_automation_contract_v0.py) treats `claimed_full_post_closeout_automation_implemented=true` as invalid unless `hook_automation_owner_status=identified` (synthetic tests only).
 
-Cross-reference: Preflight §2a.1 primary evidence hard gate; §2b.1 mandatory durable closeout; [primary_evidence_retention_v0.py](../../../scripts/ops/primary_evidence_retention_v0.py); [test_post_closeout_automation_hook_owner_precheck_v0.py](../../../tests/ops/test_post_closeout_automation_hook_owner_precheck_v0.py).
+Cross-reference: Preflight §2a.1 primary evidence hard gate; §2b.1 mandatory durable closeout; Preflight **§2b.3** durable closeout adapter validation (PR #4127/#4128; `BLOCKER_HINT`; `--durable-closeout-force`; authoritative hierarchy); [primary_evidence_retention_v0.py](../../../scripts/ops/primary_evidence_retention_v0.py); [test_post_closeout_automation_hook_owner_precheck_v0.py](../../../tests/ops/test_post_closeout_automation_hook_owner_precheck_v0.py).
 
-Cross-reference: [MARKET_SURFACE_V0.md](../../webui/MARKET_SURFACE_V0.md) (future registry overlay on `GET &#47;market`); §6a.0.9 payload builder planning; [DOCS_TRUTH_MAP.md](../registry/DOCS_TRUTH_MAP.md); Preflight §2b.1 mandatory durable closeout.
+Cross-reference: [MARKET_SURFACE_V0.md](../../webui/MARKET_SURFACE_V0.md) (future registry overlay on `GET &#47;market`); §6a.0.9 payload builder planning; [DOCS_TRUTH_MAP.md](../registry/DOCS_TRUTH_MAP.md); Preflight §2b.1 mandatory durable closeout; Preflight §2b.3 adapter closeout validation SSOT.
 
 ### 6a.0.9 Shared Projection Payload Builder Planning Contract v0 (planning-only)
 

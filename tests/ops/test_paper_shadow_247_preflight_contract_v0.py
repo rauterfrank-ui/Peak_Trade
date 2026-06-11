@@ -291,3 +291,10 @@ def test_preflight_section_2b3_adjacent_section_ordering_v0() -> None:
     assert text.index("## 2b.3 Durable closeout adapter validation operator SSOT v0") < text.index(
         "## 2c. Preflight Gate Repo-Internal Write/Lift Applied Reflection v0"
     )
+
+
+def test_preflight_section_2b3_crosslinks_taxonomy_6a08_1_v0() -> None:
+    section = _section_2b3()
+    assert "RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md" in section
+    assert "§6a.0.8.1" in section
+    assert "non-authorizing" in section.lower()

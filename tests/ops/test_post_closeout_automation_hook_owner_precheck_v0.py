@@ -142,3 +142,33 @@ def test_chain_contract_exports_hook_contract_summary() -> None:
     assert "PostCloseoutHookContractInputs" in text
     assert "build_post_closeout_hook_contract_summary" in text
     assert callable(build_post_closeout_hook_contract_summary)
+
+
+def test_taxonomy_section_6a08_1_preflight_2b3_closeout_validation_crosslink_v0() -> None:
+    section = _section_6a08_1()
+    assert "TAXONOMY_PREFLIGHT_2B3_CLOSEOUT_VALIDATION_CROSSLINK_V0=true" in section
+    assert "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md" in section
+    assert "§2b.3" in section
+    assert "#4128" in section
+    assert "#4127" in section
+    assert "validate_durable_closeout_invoke_paths" in section
+    assert "--durable-closeout-force" in section
+    assert "BLOCKER_HINT" in section
+    assert "durable_closeout_identical_source_dest" in section
+    assert "AUTHORITATIVE_STATUS_HIERARCHY_V0=true" in section
+    assert "MACHINE_SUMMARY.env" in section
+    assert "MANIFEST_VERIFY_RC=0" in section
+    assert "RUN_CLOSEOUT.md" in section
+    assert "HISTORICAL_PRE_RECOVERY_FAIL_NOT_CURRENT_STATUS=true" in section
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in section
+    assert "PREFLIGHT_BLOCKED_LIFTED=false" in section
+    assert "test_bounded_adapter_invoke_durable_closeout_v0.py" in section
+    assert "no-order" in section.lower() or "no-order / no-arming" in section
+
+
+def test_preflight_section_2b3_crosslinks_taxonomy_6a08_1_v0() -> None:
+    from tests.ops.test_paper_shadow_247_preflight_contract_v0 import _section_2b3
+
+    section = _section_2b3()
+    assert "RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md" in section
+    assert "§6a.0.8.1" in section
