@@ -305,11 +305,11 @@ def plan_and_execute(
     if is_under_tmp(source_dir) and not allow_tmp_source:
         return _fail(result, "source under /tmp requires --allow-tmp-source")
 
-    ok, msg = _validate_dest_outside_tmp(dest_dir)
+    ok, msg = _validate_source_dest_distinct(source_dir, dest_dir)
     if not ok:
         return _fail(result, msg)
 
-    ok, msg = _validate_source_dest_distinct(source_dir, dest_dir)
+    ok, msg = _validate_dest_outside_tmp(dest_dir)
     if not ok:
         return _fail(result, msg)
 
