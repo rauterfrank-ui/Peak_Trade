@@ -25,6 +25,13 @@ BROWSER_RENDER_FIXTURE = (
     / "browser_rendered_vendor_docs_pf_xbtusd_candidate.v1.json"
 )
 TEST_PACKAGE_MARKER = "RUN_ORDER_CAPABILITY_FIXTURE_BINDING_DRY_VALIDATION_V1_TEST=true"
+TRUTH_MAP = ROOT / "docs" / "ops" / "registry" / "DOCS_TRUTH_MAP.md"
+CI_AUDIT = ROOT / "docs" / "ops" / "CI_AUDIT_KNOWN_ISSUES.md"
+CROSSLINK_PACKAGE_MARKER = (
+    "ORDER_CAPABILITY_FIXTURE_BINDING_DOCS_TRUTH_MAP_STATIC_CROSSLINK_GUARD_V1=true"
+)
+RUNNER_REL = "scripts/ops/run_order_capability_fixture_binding_dry_validation_v1.py"
+TEST_REL = "tests/ops/test_run_order_capability_fixture_binding_dry_validation_v1.py"
 
 
 def _load_runner():
@@ -203,6 +210,71 @@ def test_order_capability_lane_parked_flags() -> None:
     assert report["safety_flags"]["no_network"] is True
     assert report["safety_flags"]["no_secrets"] is True
     assert report["safety_flags"]["order_capability_execute_authorized"] is False
+
+
+def _docs_truth_map_chronicle_row(truth_map: str, needle: str) -> str:
+    row_start = truth_map.index(needle)
+    row_end = truth_map.index("\n", row_start)
+    return truth_map[row_start:row_end]
+
+
+def test_order_capability_fixture_binding_crosslink_package_marker_v1() -> None:
+    text = Path(__file__).read_text(encoding="utf-8")
+    assert CROSSLINK_PACKAGE_MARKER in text
+
+
+def test_docs_truth_map_order_capability_fixture_binding_chronicle_v1() -> None:
+    truth_map = TRUTH_MAP.read_text(encoding="utf-8")
+    row = _docs_truth_map_chronicle_row(
+        truth_map, "Order-Capability fixture-binding DOCS_TRUTH_MAP static crosslink guard v1"
+    )
+    for required in (
+        RUNNER_REL,
+        TEST_REL,
+        "ORDER_CAPABILITY_FIXTURE_BINDING_CROSSLINK_GUARD_IMPLEMENTED=true",
+        "ORDER_CAPABILITY_PARKED_READ_ONLY_CONFIRMED=true",
+        "ORDERFLOW_AUTHORIZATION_CREATED=false",
+        "CANCEL_EXECUTE_AUTHORIZATION_CREATED=false",
+        "non-authorizing",
+        "parked/read-only",
+    ):
+        assert required.lower() in row.lower()
+
+
+def test_ci_audit_order_capability_fixture_binding_crosslink_v1() -> None:
+    ci_audit = CI_AUDIT.read_text(encoding="utf-8")
+    section_start = ci_audit.index(
+        "## Order-Capability fixture-binding DOCS_TRUTH_MAP static crosslink v1"
+    )
+    section_text = ci_audit[section_start : section_start + 3500]
+    for required in (
+        CROSSLINK_PACKAGE_MARKER,
+        "ORDER_CAPABILITY_FIXTURE_BINDING_CROSSLINK_GUARD_IMPLEMENTED=true",
+        "ORDER_CAPABILITY_PARKED_READ_ONLY_CONFIRMED=true",
+        RUNNER_REL,
+        TEST_REL,
+        "ORDERFLOW_AUTHORIZATION_CREATED=false",
+        "CANCEL_EXECUTE_AUTHORIZATION_CREATED=false",
+        "READY_FOR_OPERATOR_ARMING_CHANGED=false",
+        "non-authorizing",
+        "plan-only",
+    ):
+        assert required.lower() in section_text.lower()
+
+
+def test_order_capability_fixture_binding_runner_referenced_in_docs_v1() -> None:
+    assert RUNNER_SCRIPT.is_file()
+    truth_map = TRUTH_MAP.read_text(encoding="utf-8")
+    ci_audit = CI_AUDIT.read_text(encoding="utf-8")
+    assert RUNNER_REL in truth_map
+    assert RUNNER_REL in ci_audit
+
+
+def test_order_capability_fixture_binding_tests_referenced_in_docs_v1() -> None:
+    truth_map = TRUTH_MAP.read_text(encoding="utf-8")
+    ci_audit = CI_AUDIT.read_text(encoding="utf-8")
+    assert TEST_REL in truth_map
+    assert TEST_REL in ci_audit
 
 
 def test_output_written_only_when_explicit(tmp_path: Path) -> None:
