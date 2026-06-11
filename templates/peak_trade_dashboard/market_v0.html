@@ -1312,15 +1312,70 @@
         aria-labelledby="market-v0-landmark-depth-chart-placeholder-h2"
         class="bg-gradient-to-br from-amber-950/22 via-slate-950/88 to-slate-900/85 px-2.5 py-2.5 text-[10px] text-slate-400 shadow-inner shadow-black/25"
         data-market-v0-depth-chart-placeholder="true"
+        {% if market_depth.chart_gate_enabled %}data-market-v0-depth-chart-enabled="true"{% endif %}
+        {% if market_depth.chart_cumulative_ready %}
+        data-market-v0-depth-chart-cumulative="true"
+        data-market-v0-depth-chart-ready="true"
+        data-market-v0-depth-chart-readonly="true"
+        data-market-v0-depth-chart-authority="false"
+        data-market-v0-depth-chart-non-authorizing="true"
+        data-market-v0-depth-chart-provider-truth-blocked="true"
+        data-market-v0-depth-chart-dashboard-truth-blocked="true"
+        data-market-v0-depth-chart-trading-readiness-blocked="true"
+        data-market-v0-depth-chart-selected-future-truth-blocked="true"
+        data-market-v0-depth-chart-liquidity-truth-blocked="true"
+        data-market-v0-depth-chart-slippage-truth-blocked="true"
+        data-market-v0-depth-chart-depth-truth-blocked="true"
+        data-market-v0-depth-chart-execution-readiness-blocked="true"
+        data-market-v0-depth-chart-double-play-protected="true"
+        data-market-v0-depth-chart-market-airport-excluded="true"
+        {% endif %}
       >
-        <h2 id="market-v0-landmark-depth-chart-placeholder-h2" class="sr-only" data-market-v0-depth-chart-placeholder-landmark-heading-v0="true">Depth chart placeholder (read-only, non-cumulative SSR)</h2>
+        <h2 id="market-v0-landmark-depth-chart-placeholder-h2" class="sr-only" data-market-v0-depth-chart-placeholder-landmark-heading-v0="true">{% if market_depth.chart_cumulative_ready %}Cumulative depth chart (read-only, offline fixture SSR){% else %}Depth chart placeholder (read-only, non-cumulative SSR){% endif %}</h2>
+        {% if market_depth.chart_cumulative_ready and market_depth.chart_has_svg_paths %}
+        <div class="flex flex-wrap items-start justify-between gap-2 mb-2">
+          <p class="font-semibold text-slate-100 uppercase tracking-wide leading-snug m-0">
+            Cumulative depth (display-only, offline fixture)
+          </p>
+          <span class="inline-flex items-center rounded border border-amber-800/50 bg-amber-950/45 px-1.5 py-0.5 text-[9px] font-semibold text-amber-100/90 tabular-nums">Cumulative · not liquidity truth</span>
+        </div>
+        <div
+          class="mb-2 rounded-lg border border-slate-700/55 bg-slate-950/72 px-2 py-2 ring-1 ring-slate-800/45 shadow-inner shadow-black/15"
+          data-market-v0-depth-chart-cumulative-svg-v0="true"
+          role="img"
+          aria-label="Stepped cumulative bid and ask sizes from offline fixture, display only"
+        >
+          <svg viewBox="0 0 240 72" class="w-full h-[4.25rem]" xmlns="http://www.w3.org/2000/svg">
+            <defs>
+              <linearGradient id="mv0-dc-cum-bid" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="rgba(52,211,153,0.12)" />
+                <stop offset="100%" stop-color="rgba(52,211,153,0.38)" />
+              </linearGradient>
+              <linearGradient id="mv0-dc-cum-ask" x1="0" y1="0" x2="1" y2="0">
+                <stop offset="0%" stop-color="rgba(244,63,94,0.38)" />
+                <stop offset="100%" stop-color="rgba(244,63,94,0.12)" />
+              </linearGradient>
+            </defs>
+            <line x1="120" y1="8" x2="120" y2="64" stroke="rgba(100,116,139,0.45)" stroke-width="0.9" stroke-dasharray="3 3" />
+            {% if market_depth.chart_bid_path_d %}
+            <path d="{{ market_depth.chart_bid_path_d|e }}" fill="url(#mv0-dc-cum-bid)" stroke="rgba(52,211,153,0.5)" stroke-width="0.85" />
+            {% endif %}
+            {% if market_depth.chart_ask_path_d %}
+            <path d="{{ market_depth.chart_ask_path_d|e }}" fill="url(#mv0-dc-cum-ask)" stroke="rgba(244,63,94,0.5)" stroke-width="0.85" />
+            {% endif %}
+            <line x1="8" y1="58" x2="232" y2="58" stroke="rgba(51,65,85,0.8)" stroke-width="0.75" />
+          </svg>
+        </div>
+        <p class="m-0 leading-snug">
+          Stepped cumulative sizes from offline Top-N fixture levels — <strong class="font-semibold text-slate-200">not</strong> live order-book depth, <strong class="font-semibold text-slate-200">not</strong> liquidity/slippage/execution truth, <strong class="font-semibold text-slate-200">no</strong> polling. Diagnostic operator context only.
+        </p>
+        {% elif market_depth.has_depth_levels and market_depth.top_bids and market_depth.top_asks %}
         <div class="flex flex-wrap items-start justify-between gap-2 mb-2">
           <p class="font-semibold text-slate-100 uppercase tracking-wide leading-snug m-0">
             Displayed top-level depth (static)
           </p>
           <span class="inline-flex items-center rounded border border-amber-800/50 bg-amber-950/45 px-1.5 py-0.5 text-[9px] font-semibold text-amber-100/90 tabular-nums">Not cumulative</span>
         </div>
-        {% if market_depth.has_depth_levels and market_depth.top_bids and market_depth.top_asks %}
         {% set _mini = namespace(i=0) %}
         <div class="grid grid-cols-2 gap-2 mb-2" role="img" aria-label="Miniature SSR bid versus ask displayed sizes, top levels only">
           <div class="rounded-lg border border-emerald-900/30 bg-slate-950/65 p-2 space-y-1.5">
@@ -1355,7 +1410,16 @@
             {% endfor %}
           </div>
         </div>
+        <p class="m-0 leading-snug">
+          Visual impression only from SSR Top-N levels — <strong class="font-semibold text-slate-200">not</strong> a full cumulative depth chart, <strong class="font-semibold text-slate-200">no</strong> live feed, <strong class="font-semibold text-slate-200">no</strong> polling. Enable <code class="text-[9px]">PEAK_TRADE_MARKET_DEPTH_CHART_ENABLED=1</code> for cumulative SSR visual.
+        </p>
         {% else %}
+        <div class="flex flex-wrap items-start justify-between gap-2 mb-2">
+          <p class="font-semibold text-slate-100 uppercase tracking-wide leading-snug m-0">
+            Displayed top-level depth (static)
+          </p>
+          <span class="inline-flex items-center rounded border border-amber-800/50 bg-amber-950/45 px-1.5 py-0.5 text-[9px] font-semibold text-amber-100/90 tabular-nums">Not cumulative</span>
+        </div>
         <div
           class="mb-2 rounded-lg border border-slate-700/55 bg-slate-950/72 px-2 py-2 ring-1 ring-slate-800/45 shadow-inner shadow-black/15"
           data-market-v0-depth-chart-disabled-envelope="true"
@@ -1405,10 +1469,10 @@
             Decorative split · no level data · offline / disabled depth state.
           </p>
         </div>
-        {% endif %}
         <p class="m-0 leading-snug">
           Visual impression only from SSR Top-N levels — <strong class="font-semibold text-slate-200">not</strong> a full cumulative depth chart, <strong class="font-semibold text-slate-200">no</strong> live feed, <strong class="font-semibold text-slate-200">no</strong> polling. Canonical diagnostic strip remains the depth summary below.
         </p>
+        {% endif %}
       </section>
 
       <section

@@ -237,6 +237,7 @@ def test_market_surface_market_depth_operator_pointer_env_boundary_v0() -> None:
     required_env_tokens = [
         "PEAK_TRADE_MARKET_DEPTH_ENABLED=1",
         "PEAK_TRADE_MARKET_DEPTH_BUNDLE_ROOT",
+        "PEAK_TRADE_MARKET_DEPTH_CHART_ENABLED=1",
     ]
 
     for token in required_env_tokens:
@@ -246,10 +247,15 @@ def test_market_surface_market_depth_operator_pointer_env_boundary_v0() -> None:
         "default off",
         "operator-gated",
         "fail-closed",
+        "offline-only",
         "GET",
         "&#47;market",
         "no provider truth",
         "no dashboard truth",
+        "liquidity",
+        "slippage",
+        "execution readiness",
+        "no Chart.js",
         "Market-Airport excluded",
         "Master V2 / Double Play protected",
         "no run",
@@ -260,6 +266,7 @@ def test_market_surface_market_depth_operator_pointer_env_boundary_v0() -> None:
         "test_market_depth_readmodel_v0.py",
         "test_market_depth_api_v0.py",
         "test_market_surface_api.py",
+        "test_market_depth_chart_ssr_v0.py",
     ]
 
     for token in required_boundary_tokens:

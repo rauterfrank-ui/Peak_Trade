@@ -16,7 +16,13 @@ from .market_depth_readmodel_v0.builder import READMODEL_ID
 
 ENV_ENABLED = "PEAK_TRADE_MARKET_DEPTH_ENABLED"
 ENV_BUNDLE_ROOT = "PEAK_TRADE_MARKET_DEPTH_BUNDLE_ROOT"
+ENV_CHART_ENABLED = "PEAK_TRADE_MARKET_DEPTH_CHART_ENABLED"
 FIXED_GEN_ENV = "PEAK_TRADE_FIXED_GENERATED_AT_UTC"
+
+
+def depth_chart_enabled_explicitly_on() -> bool:
+    raw = os.environ.get(ENV_CHART_ENABLED)
+    return raw is not None and raw.strip() == "1"
 
 
 def generated_at_iso() -> str:
@@ -108,8 +114,10 @@ def market_depth_json_payload_v0() -> tuple[int, dict[str, Any]]:
 
 __all__ = [
     "ENV_BUNDLE_ROOT",
+    "ENV_CHART_ENABLED",
     "ENV_ENABLED",
     "FIXED_GEN_ENV",
+    "depth_chart_enabled_explicitly_on",
     "enabled_explicitly_on",
     "generated_at_iso",
     "market_depth_json_payload_v0",

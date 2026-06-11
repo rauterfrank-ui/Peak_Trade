@@ -781,6 +781,22 @@ Facts on **`main`** **after** SSR display v0:
 
 **Protected boundaries:** read-only SSR/API only — **no dashboard truth grant**, **no provider truth**, **no** Live/Testnet/Order/Cancel/Execute/Arming/Preflight authority, **no** runtime/scheduler activation. **Market-Airport excluded.** **`GET`** **`&#47;market&#47;double-play`** (**Master V2 / Double Play protected**) — market depth operator enablement does not alter Double Play routes, markers, or decision logic. **No run, Testnet, Paper, or Shadow authorization** is granted by enabling this display path.
 
+#### Cumulative depth chart SSR v0 (env-gated, `GET` `/market` only)
+
+**Default off / operator-gated / fail-closed / offline-only:** Cumulative depth chart visual on **`GET`** **`&#47;market`** stays **disabled** until **all three** env gates below are set (master depth gates **plus** chart sub-gate). **`data-market-v0-depth-chart-cumulative`** and related markers **absent when chart sub-gate is off** is **expected** — the non-cumulative placeholder mini-bars remain. **Not** Dashboard Truth, **not** Provider Truth, **not** trading readiness, **not** liquidity/slippage/depth/execution truth, **no** Chart.js, **no** network, **no** browser requirement.
+
+**Required env chain (all steps for cumulative chart SSR on `GET` `/market`):**
+
+| Step | Env var(s) | Notes |
+|------|------------|-------|
+| 1 | `PEAK_TRADE_MARKET_DEPTH_ENABLED=1` | Master market-depth gate |
+| 2 | `PEAK_TRADE_MARKET_DEPTH_BUNDLE_ROOT=<path>` | Offline bundle root for `market_depth_readmodel.v0` |
+| 3 | `PEAK_TRADE_MARKET_DEPTH_CHART_ENABLED=1` | Chart visual sub-gate (cumulative SSR only) |
+
+**Markers:** `data-market-v0-depth-chart-cumulative="true"`, `data-market-v0-depth-chart-readonly="true"`, `data-market-v0-depth-chart-authority="false"`, `data-market-v0-depth-chart-non-authorizing="true"`, boundary mirrors `data-market-v0-depth-chart-*-truth-blocked="true"`, `data-market-v0-depth-chart-enabled`, `data-market-v0-depth-chart-ready` — **absent** when sub-gate disabled; **never** on **`GET &#47;market&#47;double-play`**.
+
+**Boundaries:** read-only SSR SVG from offline Top-N fixture levels — **no** liquidity truth, **no** slippage truth, **no** depth truth, **no** execution readiness, **no Chart.js** for depth visualization, **no** Double-Play authority, **Market-Airport excluded**. Cross-check **`tests/webui/test_market_depth_chart_ssr_v0.py`** and **`tests/webui/test_market_dashboard_readonly_structure_contract_v0.py`**.
+
 Do **not** add a new Observability/Evidence/readiness **hub** solely for depth; reuse **Market Surface v0** navigation patterns already described in **Verwandte read-only WebUI-Fläche**.
 
 ## Double-Play Market Dashboard konsumiert strukturierte Metadaten v2
@@ -826,8 +842,8 @@ Das HTML für **`GET &#47;market`** enthält beim Chart‑Bereich ein Status‑E
 ### Zielpanels (priorisierte Zielrichtung)
 
 - **Market‑/Chart‑Panel:** Zeitreihe/OHLCV‑Darstellung (read‑only); **Basis** weiterhin eingebetteter Market‑Payload bzw. **`GET`** **`&#47;api&#47;market&#47;ohlcv`**‑Semantik wie in diesem Dokument beschrieben. **Zusätzliche oder ersetzende** Chart-/Candle‑Datenquellen **über** diese kanonischen Pfade hinaus bedürfen eines **expliziten, kanonischen Readmodel‑/Route‑Vertrags** vor Implementierung.
-- **Orderbuch / Price‑Ladder‑Panel:** read‑only Bid/Ask‑Stufen dort, wo Daten verfügbar sind — **über** **`market_depth_readmodel.v0`** (**`depth.bids`** / **`depth.asks`**), **wenn** Market Depth über Env/Bundle (**`GET`** **`&#47;api&#47;market&#47;depth`**, SSR‑Kontext **`GET`** **`&#47;market`**) aktiv und gebaut wird; keine Order‑Handles. **Ist `main`:** Top‑N‑Ladder‑SSR auf **`GET`** **`&#47;market`** (**`data-market-v0-orderbook-*`**) — Details unter **[Market Depth display on GET /market (SSR v0 implemented)](#market-depth-display-on-get-market-ssr-v0-implemented)**; kumulative Depth‑Chart bleibt **deferred**.
-- **Depth‑Chart‑Panel:** kumulative Tiefe gegen Preis (**read‑only Diagramm**) als **Ableitung** aus derselben Bid/Ask‑Readmodel‑Form, sobald Panel‑Umsetzung ansteht — **ohne** neue Netz-/Provider‑Abfrage durch diesen Platzhalter‑Vertrag.
+- **Orderbuch / Price‑Ladder‑Panel:** read‑only Bid/Ask‑Stufen dort, wo Daten verfügbar sind — **über** **`market_depth_readmodel.v0`** (**`depth.bids`** / **`depth.asks`**), **wenn** Market Depth über Env/Bundle (**`GET`** **`&#47;api&#47;market&#47;depth`**, SSR‑Kontext **`GET`** **`&#47;market`**) aktiv und gebaut wird; keine Order‑Handles. **Ist `main`:** Top‑N‑Ladder‑SSR auf **`GET`** **`&#47;market`** (**`data-market-v0-orderbook-*`**) — Details unter **[Market Depth display on GET /market (SSR v0 implemented)](#market-depth-display-on-get-market-ssr-v0-implemented)**; kumulative Depth‑Chart SSR v0 unter **[Cumulative depth chart SSR v0](#cumulative-depth-chart-ssr-v0-env-gated-get-market-only)** (env sub-gate `PEAK_TRADE_MARKET_DEPTH_CHART_ENABLED=1`).
+- **Depth‑Chart‑Panel:** kumulative Tiefe gegen Preis (**read‑only SSR SVG**) als **Ableitung** aus derselben Bid/Ask‑Readmodel‑Form — **implementiert** auf **`GET`** **`&#47;market`** when chart sub-gate on; **ohne** neue Netz-/Provider‑Abfrage, **ohne** Chart.js.
 - **Market‑Trades / Tape‑Panel:** **nur** nach Einführung eines **kanonischen, read‑only** Tape‑Readmodels (**derzeit nicht** Teil von Market Surface v0); **kein** Alias für Run‑Trade‑Listen anderer Apps — bis dahin ausdrücklich **nicht** implementierungspflichtig.
 - **Double‑Play / Master V2 Status‑Rail:** bestehendes **display‑only** Snapshot‑/`dp_display`‑Muster (**`GET`** **`&#47;market&#47;double-play`** bzw. JSON‑Parallelroute wie in diesem Dokument referenziert); **Diagnostics bleiben Anzeige**, nie Freigabe.
 
