@@ -1,0 +1,201 @@
+<!-- F5 Futures Read-only Market Dashboard v0 — SSR-only, offline/fixture display -->
+{% extends "base.html" %}
+
+{% block content %}
+<div
+  class="space-y-6 max-w-7xl mx-auto px-4 py-6 pb-12"
+  id="f5-market-dashboard-v0-shell"
+  role="region"
+  aria-labelledby="f5-market-dashboard-v0-landmark-page-title"
+  data-f5-market-dashboard-v0="true"
+  data-f5-market-dashboard-ssr-only="true"
+  data-f5-market-dashboard-readonly="true"
+  data-f5-market-dashboard-no-fetch="true"
+  data-f5-market-dashboard-no-live="true"
+  data-f5-market-dashboard-no-orders="true"
+  data-f5-market-dashboard-no-authority="true"
+  data-f5-market-dashboard-non-authorizing="true"
+  data-f5-market-dashboard-gate-enabled="{{ 'true' if f5_dashboard.gate_enabled else 'false' }}"
+  data-f5-market-dashboard-display-status="{{ f5_dashboard.display_status }}"
+  data-f5-overall-status="{{ f5_dashboard.overall_status }}"
+  data-f5-provider-truth-blocked="true"
+  data-f5-dashboard-truth-blocked="true"
+  data-f5-trading-readiness-blocked="true"
+  data-f5-selected-future-truth-blocked="true"
+  data-f5-execution-readiness-blocked="true"
+>
+  <header class="rounded-2xl border border-slate-800/90 bg-gradient-to-br from-slate-950 via-slate-900/95 to-slate-950 px-5 py-4 shadow-xl shadow-black/35 ring-1 ring-slate-700/40">
+    <h1 id="f5-market-dashboard-v0-landmark-page-title" class="text-xl sm:text-2xl font-bold text-slate-100 tracking-tight">
+      Futures Read-only Market Dashboard v0
+    </h1>
+    <p class="text-xs text-slate-500 mt-1 m-0">F5 display boundary — operator context only — no trading authority</p>
+  </header>
+
+  <section
+    role="region"
+    aria-labelledby="f5-market-dashboard-v0-no-live-banner-h2"
+    class="rounded-xl border border-amber-900/45 bg-gradient-to-br from-amber-950/40 via-slate-950/40 to-slate-950/25 px-4 py-3 text-sm text-amber-100/95 shadow-md shadow-black/20 ring-1 ring-amber-950/30"
+    data-f5-no-live-banner="true"
+  >
+    <h2 id="f5-market-dashboard-v0-no-live-banner-h2" class="sr-only">F5 mandatory no-live banner</h2>
+    <p class="m-0 font-medium">
+      Futures dashboard is read-only. No orders, no sessions, no testnet activation, no Live authorization.
+    </p>
+    <p class="m-0 mt-2 text-xs text-amber-200/80">
+      Display is not enforcement. Diagnostics and dashboard display are not risk enforcement.
+    </p>
+  </section>
+
+  <section
+    role="region"
+    aria-labelledby="f5-market-dashboard-v0-readonly-chips-h2"
+    class="rounded-xl border border-slate-600/55 bg-slate-900/60 px-4 py-3 shadow-sm shadow-black/25 ring-1 ring-slate-800/45"
+    data-f5-readonly-banner="true"
+  >
+    <h2 id="f5-market-dashboard-v0-readonly-chips-h2" class="sr-only">Read-only posture</h2>
+    <ul class="m-0 p-0 list-none flex flex-wrap gap-2" aria-label="Read-only posture">
+      <li class="inline-flex items-center rounded-full border border-slate-600/70 bg-slate-950/65 px-2.5 py-1 text-[11px] font-semibold text-slate-200/95">Read-only display</li>
+      <li class="inline-flex items-center rounded-full border border-slate-600/70 bg-slate-950/65 px-2.5 py-1 text-[11px] font-semibold text-slate-200/95">No orders</li>
+      <li class="inline-flex items-center rounded-full border border-slate-600/70 bg-slate-950/65 px-2.5 py-1 text-[11px] font-semibold text-slate-200/95">No Live/Testnet action</li>
+      <li class="inline-flex items-center rounded-full border border-slate-600/70 bg-slate-950/65 px-2.5 py-1 text-[11px] font-semibold text-slate-200/95">No strategy authority</li>
+      <li class="inline-flex items-center rounded-full border border-slate-600/70 bg-slate-950/65 px-2.5 py-1 text-[11px] font-semibold text-slate-200/95">Operator context only</li>
+    </ul>
+  </section>
+
+  <section
+    role="region"
+    aria-labelledby="f5-market-dashboard-v0-summary-h2"
+    class="rounded-xl border border-slate-700/60 bg-slate-900/50 px-4 py-3 text-sm text-slate-300"
+    data-f5-summary="true"
+  >
+    <h2 id="f5-market-dashboard-v0-summary-h2" class="text-sm font-semibold text-slate-200 mb-1">Display summary</h2>
+    <p class="m-0">{{ f5_dashboard.summary_line }}</p>
+    <p class="m-0 mt-1 text-xs text-slate-500">Overall status: <code>{{ f5_dashboard.overall_status }}</code></p>
+  </section>
+
+  {% if f5_dashboard.kraken_futures_testnet_label %}
+  <section
+    role="region"
+    aria-labelledby="f5-kraken-futures-testnet-warning-h2"
+    class="rounded-xl border border-rose-900/50 bg-rose-950/30 px-4 py-3 text-sm text-rose-100/95"
+    data-f5-kraken-futures-testnet-label="true"
+    data-f5-env-name="{{ f5_dashboard.env_name }}"
+  >
+    <h2 id="f5-kraken-futures-testnet-warning-h2" class="text-sm font-semibold text-rose-200 mb-1">Metadata label only</h2>
+    <p class="m-0">
+      Metadata label only. No governed Kraken Futures adapter or futures execution path proven.
+    </p>
+    <p class="m-0 mt-1 text-xs text-rose-200/80">env_name: <code>{{ f5_dashboard.env_name }}</code> — not execution authority.</p>
+  </section>
+  {% endif %}
+
+  <section
+    role="region"
+    aria-labelledby="f5-status-model-h2"
+    class="rounded-xl border border-slate-700/60 bg-slate-900/50 px-4 py-3"
+    data-f5-status-model="true"
+  >
+    <h2 id="f5-status-model-h2" class="text-sm font-semibold text-slate-200 mb-2">Status model (F5 v0)</h2>
+    <ul class="m-0 p-0 list-none flex flex-wrap gap-2">
+      {% for status in f5_dashboard.status_model_values %}
+      <li
+        class="inline-flex items-center rounded border border-slate-600/60 bg-slate-950/60 px-2 py-0.5 text-[11px] font-mono text-slate-300"
+        data-f5-status-value="{{ status }}"
+      >{{ status }}</li>
+      {% endfor %}
+    </ul>
+  </section>
+
+  <section
+    role="region"
+    aria-labelledby="f5-f1-metadata-h2"
+    class="rounded-xl border border-slate-700/60 bg-slate-900/50 px-4 py-3"
+    data-f5-instrument-metadata-section="true"
+    data-f5-f1-status="{{ f5_dashboard.f1.status }}"
+  >
+    <h2 id="f5-f1-metadata-h2" class="text-sm font-semibold text-slate-200 mb-2">F1 — Instrument metadata</h2>
+    <p class="text-xs text-slate-500 m-0 mb-2">Status: <code>{{ f5_dashboard.f1.status }}</code></p>
+    <table class="w-full text-xs text-left border-collapse">
+      <thead><tr class="text-slate-500"><th class="py-1 pr-2">Field</th><th class="py-1">Value</th></tr></thead>
+      <tbody>
+        {% for row in f5_dashboard.f1.rows %}
+        <tr data-f5-f1-field="{{ row.field }}" data-f5-f1-display-status="{{ row.display_status }}">
+          <td class="py-0.5 pr-2 font-mono text-slate-400">{{ row.field }}</td>
+          <td class="py-0.5 font-mono {% if row.display_status == 'missing' %}text-amber-300/90{% else %}text-slate-200{% endif %}">{{ row.value }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+
+  <section
+    role="region"
+    aria-labelledby="f5-f2-provenance-h2"
+    class="rounded-xl border border-slate-700/60 bg-slate-900/50 px-4 py-3"
+    data-f5-provenance-section="true"
+    data-f5-f2-status="{{ f5_dashboard.f2.status }}"
+  >
+    <h2 id="f5-f2-provenance-h2" class="text-sm font-semibold text-slate-200 mb-2">F2 — Market data provenance</h2>
+    <p class="text-xs text-slate-500 m-0 mb-2">Status: <code>{{ f5_dashboard.f2.status }}</code></p>
+    <table class="w-full text-xs text-left border-collapse">
+      <thead><tr class="text-slate-500"><th class="py-1 pr-2">Field</th><th class="py-1">Value</th></tr></thead>
+      <tbody>
+        {% for row in f5_dashboard.f2.rows %}
+        <tr data-f5-f2-field="{{ row.field }}" data-f5-f2-display-status="{{ row.display_status }}">
+          <td class="py-0.5 pr-2 font-mono text-slate-400">{{ row.field }}</td>
+          <td class="py-0.5 font-mono {% if row.display_status == 'missing' %}text-amber-300/90{% else %}text-slate-200{% endif %}">{{ row.value }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+
+  <section
+    role="region"
+    aria-labelledby="f5-f3-backtest-h2"
+    class="rounded-xl border border-slate-700/60 bg-slate-900/50 px-4 py-3"
+    data-f5-backtest-realism-section="true"
+    data-f5-f3-status="{{ f5_dashboard.f3.status }}"
+  >
+    <h2 id="f5-f3-backtest-h2" class="text-sm font-semibold text-slate-200 mb-2">F3 — Backtest realism</h2>
+    <p class="text-xs text-slate-500 m-0 mb-2">Status: <code>{{ f5_dashboard.f3.status }}</code></p>
+    <table class="w-full text-xs text-left border-collapse">
+      <thead><tr class="text-slate-500"><th class="py-1 pr-2">Field</th><th class="py-1">Value</th></tr></thead>
+      <tbody>
+        {% for row in f5_dashboard.f3.rows %}
+        <tr data-f5-f3-field="{{ row.field }}" data-f5-f3-display-status="{{ row.display_status }}">
+          <td class="py-0.5 pr-2 font-mono text-slate-400">{{ row.field }}</td>
+          <td class="py-0.5 font-mono {% if row.display_status == 'missing' %}text-amber-300/90{% else %}text-slate-200{% endif %}">{{ row.value }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+
+  <section
+    role="region"
+    aria-labelledby="f5-f4-risk-h2"
+    class="rounded-xl border border-slate-700/60 bg-slate-900/50 px-4 py-3"
+    data-f5-risk-safety-section="true"
+    data-f5-f4-status="{{ f5_dashboard.f4.status }}"
+  >
+    <h2 id="f5-f4-risk-h2" class="text-sm font-semibold text-slate-200 mb-2">F4 — Risk / safety</h2>
+    <p class="text-xs text-slate-500 m-0 mb-2">Status: <code>{{ f5_dashboard.f4.status }}</code></p>
+    <table class="w-full text-xs text-left border-collapse">
+      <thead><tr class="text-slate-500"><th class="py-1 pr-2">Field</th><th class="py-1">Value</th></tr></thead>
+      <tbody>
+        {% for row in f5_dashboard.f4.rows %}
+        <tr data-f5-f4-field="{{ row.field }}" data-f5-f4-display-status="{{ row.display_status }}">
+          <td class="py-0.5 pr-2 font-mono text-slate-400">{{ row.field }}</td>
+          <td class="py-0.5 font-mono {% if row.display_status == 'missing' %}text-amber-300/90{% else %}text-slate-200{% endif %}">{{ row.value }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </section>
+
+  <footer class="text-xs text-slate-500 pt-2 border-t border-slate-800/60" data-f5-footer-boundary="true">
+    F5 read-only dashboard v0 — review input only — does not grant Live, Testnet, broker, exchange, or execution permission.
+  </footer>
+</div>
+{% endblock %}

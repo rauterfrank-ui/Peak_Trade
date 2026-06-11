@@ -1,0 +1,45 @@
+{
+  "schema_version": "futures_read_only_market_dashboard.v0",
+  "readmodel_id": "futures_read_only_market_dashboard_v0",
+  "non_authorizing": true,
+  "display_status": "ready",
+  "summary_line": "Offline fixture — partial F1, missing F2-F4, metadata label only for kraken_futures_testnet.",
+  "overall_status": "futures_metadata_partial",
+  "env_name": "kraken_futures_testnet",
+  "status_model_values": [
+    "spot_only",
+    "generic_market",
+    "metadata_label_only",
+    "futures_metadata_missing",
+    "futures_metadata_partial",
+    "provenance_missing",
+    "provenance_partial",
+    "backtest_realism_incomplete",
+    "risk_safety_incomplete",
+    "testnet_candidate_only",
+    "unsupported_for_live"
+  ],
+  "f1": {
+    "status": "futures_metadata_partial",
+    "instrument_id": "PF_XBTUSD",
+    "exchange": "kraken",
+    "market_type": "futures",
+    "symbol": "XBT/USD",
+    "base_currency": "XBT",
+    "quote_currency": "USD",
+    "settle_currency": "USD",
+    "contract_type": "perpetual",
+    "perpetual": true,
+    "tick_size": "0.5",
+    "metadata_source": "offline_fixture"
+  },
+  "f2": {
+    "status": "provenance_missing"
+  },
+  "f3": {
+    "status": "backtest_realism_incomplete"
+  },
+  "f4": {
+    "status": "risk_safety_incomplete"
+  }
+}
