@@ -47,6 +47,77 @@
     </dl>
   </section>
 
+  <section
+    id="market-v0-instrument-header"
+    role="region"
+    aria-labelledby="market-v0-landmark-instrument-header-h2"
+    class="rounded-xl border border-sky-900/45 bg-gradient-to-r from-slate-950/90 via-sky-950/25 to-slate-950/90 px-3 py-3 sm:px-4 shadow-sm shadow-black/20 ring-1 ring-sky-900/35"
+    data-market-v0-instrument-header="true"
+    data-market-v0-instrument-display-only="true"
+    data-market-v0-instrument-data-authority="false"
+    data-market-v0-instrument-trading-authority="false"
+    data-market-readonly="true"
+    data-market-non-authorizing="true"
+  >
+    <h2 id="market-v0-landmark-instrument-header-h2" class="sr-only">Instrument header (display-only)</h2>
+    <div class="flex flex-wrap items-start justify-between gap-3">
+      <div class="min-w-0 flex-1">
+        <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1">
+          <p
+            class="m-0 text-xl sm:text-2xl font-bold font-mono text-slate-50 tracking-tight"
+            data-market-v0-instrument-symbol="true"
+          >{{ instrument_header.symbol|e }}</p>
+          <span class="text-[10px] font-semibold uppercase tracking-wide text-slate-400">{{ instrument_header.timeframe|e }} · limit {{ query.limit }}</span>
+        </div>
+        <p
+          class="m-0 mt-1 text-[10px] font-mono text-slate-400"
+          data-market-v0-instrument-source-mode="true"
+        >
+          source-mode: {{ instrument_header.source_mode|e }}
+          {% if instrument_header.snapshot_at_utc %} · snapshot {{ instrument_header.snapshot_at_utc|e }}{% endif %}
+          {% if instrument_header.last_bar_ts %} · last bar {{ instrument_header.last_bar_ts|e }}{% endif %}
+        </p>
+      </div>
+      <div class="flex flex-wrap gap-1.5 text-[9px] font-semibold uppercase tracking-wide shrink-0">
+        <span class="rounded border border-slate-700/70 bg-slate-900/80 px-1.5 py-0.5 text-slate-300" data-market-v0-instrument-display-only="true">display-only</span>
+        <span class="rounded border border-slate-700/70 bg-slate-900/80 px-1.5 py-0.5 text-slate-300" data-market-v0-instrument-data-authority="false">data authority=false</span>
+        <span class="rounded border border-slate-700/70 bg-slate-900/80 px-1.5 py-0.5 text-slate-300" data-market-v0-instrument-trading-authority="false">trading authority=false</span>
+        <span class="rounded border border-slate-700/70 bg-slate-900/80 px-1.5 py-0.5 text-slate-300">no orders</span>
+        <span class="rounded border border-slate-700/70 bg-slate-900/80 px-1.5 py-0.5 text-slate-300">no execution</span>
+      </div>
+    </div>
+    <dl class="mt-3 m-0 grid grid-cols-1 sm:grid-cols-3 gap-x-4 gap-y-2 text-[11px] tabular-nums">
+      <div data-market-v0-instrument-price-summary="true">
+        <dt class="text-slate-500 uppercase text-[10px] tracking-wide">Last / derived close</dt>
+        <dd class="m-0 font-mono text-lg text-sky-200/95">
+          {% if instrument_header.price_summary_status == "available" %}
+          {{ instrument_header.last_close_display|e }}
+          {% else %}
+          unavailable ({{ instrument_header.source_mode|e }})
+          {% endif %}
+        </dd>
+      </div>
+      <div data-market-v0-instrument-spread-summary="true">
+        <dt class="text-slate-500 uppercase text-[10px] tracking-wide">Mid / spread (depth)</dt>
+        <dd class="m-0 font-mono text-slate-200">
+          {% if instrument_header.spread_summary_status == "available" %}
+          mid {{ instrument_header.mid_display|e }} · spread {{ instrument_header.spread_display|e }}
+          <span class="block text-[10px] text-slate-500">depth source: {{ instrument_header.spread_source_mode|e }} · display-only</span>
+          {% else %}
+          unavailable (depth {{ market_depth.display_status|e }}) · display-only
+          {% endif %}
+        </dd>
+      </div>
+      <div class="flex items-end">
+        <a
+          href="{{ instrument_header.double_play_href|e }}"
+          class="inline-flex items-center gap-1 rounded-md border border-amber-900/45 bg-amber-950/35 px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-wide text-amber-200/95 no-underline hover:bg-amber-950/55"
+          data-market-v0-instrument-nav-double-play="true"
+        >Double-Play detail →</a>
+      </div>
+    </dl>
+  </section>
+
   <nav
     class="rounded-lg border border-slate-800/75 bg-slate-950/55 px-3 py-2 flex flex-wrap gap-2 text-[10px] font-semibold uppercase tracking-wide"
     aria-label="Operator story"

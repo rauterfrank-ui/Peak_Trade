@@ -692,6 +692,95 @@ def build_market_depth_display_context() -> Dict[str, Any]:
 _RANKING_TABLE_STAGE_ORDER: tuple[str, ...] = ("universe", "shortlist", "selected")
 
 
+def _format_display_price(value: float | None) -> str:
+    if value is None:
+        return ""
+    text = f"{value:.8f}".rstrip("0").rstrip(".")
+    return text or "0"
+
+
+def build_market_instrument_header_display_context(
+    *,
+    symbol: str,
+    timeframe: str,
+    limit: int,
+    source: Literal["kraken", "dummy"],
+    payload: Dict[str, Any],
+    market_depth: Dict[str, Any],
+) -> Dict[str, Any]:
+    """Display-only instrument header context for GET /market (no selector authority)."""
+
+    if source == "dummy":
+        source_mode = "dummy_offline_synthetic"
+    elif source == "kraken":
+        source_mode = "kraken_public_ohlcv"
+    else:
+        source_mode = "unavailable"
+
+    bars = payload.get("bars") if isinstance(payload.get("bars"), list) else []
+    last_close: float | None = None
+    last_bar_ts = ""
+    if bars:
+        last_bar = bars[-1] if isinstance(bars[-1], dict) else {}
+        raw_close = last_bar.get("close")
+        if raw_close is not None:
+            try:
+                last_close = float(raw_close)
+            except (TypeError, ValueError):
+                last_close = None
+        last_bar_ts = str(last_bar.get("ts") or "").strip()
+
+    mid: float | None = None
+    spread: float | None = None
+    spread_source_mode = "unavailable"
+    top_bids = (
+        market_depth.get("top_bids") if isinstance(market_depth.get("top_bids"), list) else []
+    )
+    top_asks = (
+        market_depth.get("top_asks") if isinstance(market_depth.get("top_asks"), list) else []
+    )
+    if market_depth.get("has_depth_levels") and top_bids and top_asks:
+        try:
+            best_bid = float(str(top_bids[0].get("price", "")).strip())
+            best_ask = float(str(top_asks[0].get("price", "")).strip())
+            mid = (best_bid + best_ask) / 2.0
+            spread = best_ask - best_bid
+            spread_source_mode = (
+                "fixture_offline"
+                if market_depth.get("display_status") == "ok"
+                else str(market_depth.get("display_status") or "unavailable")
+            )
+        except (TypeError, ValueError, IndexError, AttributeError):
+            mid = None
+            spread = None
+
+    encoded_symbol = symbol.replace("/", "%2F")
+    double_play_href = (
+        f"/market/double-play?source={source}&symbol={encoded_symbol}"
+        f"&timeframe={timeframe}&limit={limit}"
+    )
+
+    return {
+        "symbol": symbol,
+        "timeframe": timeframe,
+        "source_mode": source_mode,
+        "snapshot_at_utc": str(payload.get("generated_at_utc") or "").strip(),
+        "last_bar_ts": last_bar_ts,
+        "last_close": last_close,
+        "last_close_display": _format_display_price(last_close),
+        "price_summary_status": "available" if last_close is not None else "unavailable",
+        "mid": mid,
+        "spread": spread,
+        "mid_display": _format_display_price(mid),
+        "spread_display": _format_display_price(spread),
+        "spread_summary_status": "available" if spread is not None else "unavailable",
+        "spread_source_mode": spread_source_mode,
+        "data_authority": False,
+        "trading_authority": False,
+        "double_play_href": double_play_href,
+    }
+
+
 def build_market_operator_overview_display_context(
     *,
     ranking_funnel: Dict[str, Any],
@@ -811,6 +900,14 @@ def create_market_router(
         operator_overview = build_market_operator_overview_display_context(
             ranking_funnel=ranking_funnel,
         )
+        instrument_header = build_market_instrument_header_display_context(
+            symbol=symbol,
+            timeframe=timeframe,
+            limit=limit,
+            source=src,
+            payload=payload,
+            market_depth=market_depth,
+        )
         active_paper_run = build_market_active_paper_run_display_context()
         market_single_page_consolidation = build_market_single_page_consolidation_display_context()
         workflow_dashboard: Dict[str, Any] | None = None
@@ -829,6 +926,7 @@ def create_market_router(
                 "market_tape": market_tape,
                 "ranking_funnel": ranking_funnel,
                 "operator_overview": operator_overview,
+                "instrument_header": instrument_header,
                 "active_paper_run": active_paper_run,
                 "market_single_page_consolidation": market_single_page_consolidation,
                 "workflow_dashboard": workflow_dashboard,

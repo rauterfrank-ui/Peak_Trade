@@ -1392,3 +1392,59 @@ def test_double_play_excludes_market_observe_co_presence_markers_v1(client: Test
     assert "data-market-v0-observe-co-presence-v1" not in html
     assert "data-market-v0-observe-tape-inline-v1" not in html
     assert "data-market-v0-observe-depth-inline-v1" not in html
+
+
+def test_market_instrument_header_display_only_markers_v1(client: TestClient) -> None:
+    """Kraken-like instrument header: display-only markers, no order controls."""
+    html = _html(client, "/market")
+
+    assert 'id="market-v0-instrument-header"' in html
+    assert 'data-market-v0-instrument-header="true"' in html
+    assert 'data-market-v0-instrument-symbol="true"' in html
+    assert 'data-market-v0-instrument-source-mode="true"' in html
+    assert 'data-market-v0-instrument-data-authority="false"' in html
+    assert 'data-market-v0-instrument-trading-authority="false"' in html
+    assert 'data-market-v0-instrument-price-summary="true"' in html
+    assert 'data-market-v0-instrument-spread-summary="true"' in html
+    assert 'data-market-v0-instrument-nav-double-play="true"' in html
+    assert 'data-market-v0-instrument-display-only="true"' in html
+    assert "source-mode: dummy_offline_synthetic" in html
+    assert "data authority=false" in html
+    assert "trading authority=false" in html
+    assert ">no orders<" in html
+    assert ">no execution<" in html
+    assert "/market/double-play?source=dummy" in html
+    assert "BTC%2FUSD" in html or "BTC/USD" in html
+
+    header_idx = html.index('id="market-v0-instrument-header"')
+    header_window = html[header_idx : header_idx + 8000].lower()
+    assert "data-order-form" not in header_window
+    assert "data-order-submit" not in header_window
+    assert "place order" not in header_window
+    assert "cancel order" not in header_window
+    assert "arm order" not in header_window
+    assert "leverage" not in header_window
+    assert "margin control" not in header_window
+
+    assert 'id="market-v0-observe-co-presence"' in html
+    assert 'data-market-v0-observe-co-presence-v1="true"' in html
+
+
+def test_market_instrument_header_spread_from_depth_fixture_v1(
+    client_depth_fixture_bundle_on: TestClient,
+) -> None:
+    """Depth fixture enables mid/spread summary in instrument header."""
+    html = _html(client_depth_fixture_bundle_on, "/market")
+
+    assert 'data-market-v0-instrument-spread-summary="true"' in html
+    assert "mid 63015" in html
+    assert "spread 10" in html
+    assert "depth source: fixture_offline" in html
+
+
+def test_double_play_excludes_market_instrument_header_markers_v1(client: TestClient) -> None:
+    """Double-Play must not carry /market-only instrument header markers."""
+    html = _html(client, "/market/double-play")
+    assert "market-v0-instrument-header" not in html
+    assert "data-market-v0-instrument-header" not in html
+    assert "data-market-v0-instrument-symbol" not in html
