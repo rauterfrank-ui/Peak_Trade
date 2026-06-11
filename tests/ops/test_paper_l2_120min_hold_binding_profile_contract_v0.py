@@ -15,6 +15,7 @@ ADAPTER = ROOT / "scripts" / "ops" / "run_paper_only_bounded_observation_adapter
 L2_CONTRACT = ROOT / "scripts" / "ops" / "paper_l2_120min_hold_binding_approval_v0.py"
 GUARD = ROOT / "scripts" / "ops" / "scheduler_start_boundary_guard_v0.py"
 BOUNDARY_SPEC = ROOT / "docs" / "ops" / "specs" / "SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md"
+TRUTH_MAP = ROOT / "docs" / "ops" / "registry" / "DOCS_TRUTH_MAP.md"
 FIXTURE = ROOT / "tests" / "fixtures" / "ops" / "paper_l2_120min_hold_binding_approval_sample.md"
 
 ARCHIVE_ROOT = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
@@ -171,3 +172,56 @@ def test_false_confidence_fi001_fi002_reflected_in_repo_markers_v0() -> None:
     for marker in FI002_REPO_MARKERS:
         assert marker in boundary, f"FI-002 boundary marker missing: {marker}"
     assert "UNQUALIFIED_L2_CLAIM_FORBIDDEN=true" in fixture
+
+
+def _docs_truth_map_chronicle_row(truth_map: str, needle: str) -> str:
+    row_start = truth_map.index(needle)
+    row_end = truth_map.index("\n", row_start)
+    return truth_map[row_start:row_end]
+
+
+def test_docs_truth_map_pr4123_semantic_claim_guard_chronicle_v0() -> None:
+    """DOCS_TRUTH_MAP must record PR #4123 semantic claim boundary guard on main."""
+    truth_map = TRUTH_MAP.read_text(encoding="utf-8")
+    row = _docs_truth_map_chronicle_row(truth_map, "PR #4123 —")
+
+    for required in (
+        "semantic claim",
+        "PAPER_TL_L2_PROVES_INFRASTRUCTURE_SAFETY_ONLY=true",
+        "PAPER_TL_L2_PROVES_MASTER_V2_RUNTIME=false",
+        "SEMANTIC_LINEAGE_VERDICT=PARTIAL",
+        "FULL_MASTER_V2_DOUBLE_PLAY_SEMANTIC_LINEAGE_VERIFIED=false",
+        "non-authorizing",
+    ):
+        assert required.lower() in row.lower()
+
+
+def test_docs_truth_map_pr4124_false_confidence_guard_chronicle_v0() -> None:
+    """DOCS_TRUTH_MAP must record PR #4124 FALSE_CONFIDENCE crosslink guard on main."""
+    truth_map = TRUTH_MAP.read_text(encoding="utf-8")
+    row = _docs_truth_map_chronicle_row(truth_map, "PR #4124 —")
+
+    for required in (
+        "FALSE_CONFIDENCE",
+        "FALSE_CONFIDENCE_INTERPRETATION_GUARD_REPO_STATIC_CROSSLINK_V0=true",
+        "OPEN_GUARD_CHARTER_GAP=false",
+        "non-authorizing",
+    ):
+        assert required.lower() in row.lower()
+
+
+def test_docs_truth_map_paper_l2_guard_stack_chronicle_v0() -> None:
+    """DOCS_TRUTH_MAP must record Paper-L2 guard stack CLOSED on main."""
+    truth_map = TRUTH_MAP.read_text(encoding="utf-8")
+    row = _docs_truth_map_chronicle_row(
+        truth_map, "Paper-L2 semantic + FALSE_CONFIDENCE + Venv guard stack"
+    )
+
+    for required in (
+        "b585b351",
+        "PR #4123–#4125",
+        "GUARD_REGRESSION_ON_MAIN=false",
+        "SEMANTIC_LINEAGE_VERDICT=PARTIAL",
+        "non-authorizing",
+    ):
+        assert required.lower() in row.lower()

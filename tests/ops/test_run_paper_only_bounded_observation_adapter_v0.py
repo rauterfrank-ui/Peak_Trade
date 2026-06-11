@@ -187,6 +187,26 @@ def test_bounded_battery_subprocess_python_isolation_guard_markers() -> None:
     assert "GUARD_REGRESSION_ON_MAIN=false" in text
 
 
+def test_docs_truth_map_pr4125_venv_isolation_guard_chronicle_v0() -> None:
+    """DOCS_TRUTH_MAP must record PR #4125 venv/python isolation guard on main."""
+    truth_map = (ROOT / "docs" / "ops" / "registry" / "DOCS_TRUTH_MAP.md").read_text(
+        encoding="utf-8"
+    )
+    row_start = truth_map.index("PR #4125 —")
+    row_end = truth_map.index("\n", row_start)
+    row = truth_map[row_start:row_end]
+
+    for required in (
+        "venv",
+        "SUBPROCESS_PYTHON_PREFERS_VENV=true",
+        "_subprocess_python_executable",
+        "GUARD_REGRESSION_ON_MAIN",
+        "ENVIRONMENT_MISMATCH",
+        "non-authorizing",
+    ):
+        assert required.lower() in row.lower()
+
+
 def test_help_works() -> None:
     python_executable = _subprocess_python_executable()
     if not _trading_importable_under(python_executable):
