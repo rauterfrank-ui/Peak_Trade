@@ -379,6 +379,95 @@ def test_non_dry_copy_verifies_manifest(helper, tmp_path):
         _cleanup_archive_like_dest(dest)
 
 
+def test_identical_source_dest_path_rejected(helper, tmp_path, capsys):
+    src = _minimal_source(tmp_path)
+    try:
+        rc = helper.main(
+            [
+                "--source-dir",
+                str(src),
+                "--dest-dir",
+                str(src),
+                *_tmp_source_args(),
+                "--dry-run",
+            ]
+        )
+        assert rc == 1
+        err = capsys.readouterr().err
+        assert "same path" in err
+        assert "snapshot source" in err
+    finally:
+        pass
+
+
+def test_realpath_equivalent_source_dest_rejected(helper, tmp_path, capsys):
+    src = _minimal_source(tmp_path)
+    dest_alias = tmp_path / "dest_alias"
+    dest_alias.symlink_to(src, target_is_directory=True)
+    try:
+        rc = helper.main(
+            [
+                "--source-dir",
+                str(src),
+                "--dest-dir",
+                str(dest_alias),
+                *_tmp_source_args(),
+                "--dry-run",
+            ]
+        )
+        assert rc == 1
+        err = capsys.readouterr().err
+        assert "same path" in err
+    finally:
+        pass
+
+
+def test_separate_snapshot_source_to_dest_with_force_succeeds(helper, tmp_path):
+    snapshot_src = _minimal_source(tmp_path, with_closeout=True)
+    dest = _archive_like_dest(tmp_path, "snapshot_dest")
+    try:
+        dest.mkdir(parents=True, exist_ok=True)
+        (dest / "prestart.env").write_text("PAPER_ONLY=true\n", encoding="utf-8")
+        rc = helper.main(
+            [
+                "--source-dir",
+                str(snapshot_src),
+                "--dest-dir",
+                str(dest),
+                *_tmp_source_args(),
+                "--force",
+            ]
+        )
+        assert rc == 0
+        assert (dest / "AFTER_FIXTURE_CLOSEOUT.md").is_file()
+        assert (dest / "MANIFEST.sha256").is_file()
+    finally:
+        _cleanup_archive_like_dest(dest)
+
+
+def test_non_empty_dest_without_force_rejected_with_operator_hint(helper, tmp_path, capsys):
+    src = _minimal_source(tmp_path)
+    dest = _archive_like_dest(tmp_path, "prepopulated_dest")
+    try:
+        dest.mkdir(parents=True, exist_ok=True)
+        (dest / "prestart.env").write_text("PAPER_ONLY=true\n", encoding="utf-8")
+        rc = helper.main(
+            [
+                "--source-dir",
+                str(src),
+                "--dest-dir",
+                str(dest),
+                *_tmp_source_args(),
+            ]
+        )
+        assert rc == 1
+        err = capsys.readouterr().err
+        assert "non-empty" in err
+        assert "snapshot source" in err
+    finally:
+        _cleanup_archive_like_dest(dest)
+
+
 def test_duplicate_dest_without_force_fails(helper, tmp_path):
     src = _minimal_source(tmp_path)
     dest = _archive_like_dest(tmp_path, "dup")

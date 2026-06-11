@@ -166,6 +166,22 @@ def _validate_dest_outside_tmp(dest: Path) -> tuple[bool, str]:
     return True, ""
 
 
+def _validate_source_dest_distinct(source_dir: Path, dest_dir: Path) -> tuple[bool, str]:
+    """Fail closed when source and dest resolve to the same directory."""
+    try:
+        source_resolved = source_dir.resolve()
+        dest_resolved = dest_dir.resolve()
+    except OSError as exc:
+        return False, f"cannot resolve source/dest paths: {exc}"
+    if source_resolved == dest_resolved:
+        return False, (
+            "source-dir and dest-dir resolve to the same path "
+            "(use a separate snapshot source directory with a distinct dest-dir, "
+            "or --force only when source and dest differ)"
+        )
+    return True, ""
+
+
 def _safe_dest_child(dest: Path, relative: Path) -> Path:
     dest_resolved = dest.resolve()
     target = (dest / relative).resolve()
@@ -289,12 +305,21 @@ def plan_and_execute(
     if is_under_tmp(source_dir) and not allow_tmp_source:
         return _fail(result, "source under /tmp requires --allow-tmp-source")
 
+    ok, msg = _validate_source_dest_distinct(source_dir, dest_dir)
+    if not ok:
+        return _fail(result, msg)
+
     ok, msg = _validate_dest_outside_tmp(dest_dir)
     if not ok:
         return _fail(result, msg)
 
     if _dest_has_content(dest_dir) and not force:
-        return _fail(result, "destination exists and is non-empty (use --force to overwrite)")
+        return _fail(
+            result,
+            "destination exists and is non-empty "
+            "(use --force only when source-dir and dest-dir differ, "
+            "or copy from a separate snapshot source directory)",
+        )
 
     if require_closeout_report and _find_closeout_report(source_dir) is None:
         return _fail(result, f"no {CLOSEOUT_GLOB} closeout report in source")
