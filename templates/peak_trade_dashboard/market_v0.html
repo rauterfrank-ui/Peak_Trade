@@ -521,37 +521,81 @@
     {% if ranking_funnel.non_authorizing %}data-market-v0-ranking-funnel-non-authorizing-v0="true"{% endif %}
     {% if ranking_funnel.gate_enabled %}data-market-v0-ranking-funnel-enabled-v0="true"{% endif %}
   >
-    <div class="flex flex-wrap items-start justify-between gap-2 mb-2">
-      <div class="min-w-0 space-y-1">
-        <h2 id="market-v0-landmark-ranking-funnel-h2" data-market-v0-ranking-funnel-landmark-heading-v0="true" class="text-xs sm:text-sm font-semibold text-slate-100 tracking-tight m-0">
+    <div
+      id="market-v0-ranking-watchlist"
+      data-market-v0-ranking-watchlist="true"
+      data-market-v0-ranking-display-only="true"
+      data-market-v0-ranking-no-authority="true"
+    >
+      <div class="flex flex-wrap items-start justify-between gap-2 mb-2">
+        <div class="min-w-0 space-y-1">
+          <h2 id="market-v0-landmark-ranking-funnel-h2" data-market-v0-ranking-funnel-landmark-heading-v0="true" class="text-xs sm:text-sm font-semibold text-slate-100 tracking-tight m-0">
+            {% if ranking_funnel.has_rows %}
+            Watchlist · Scanner-Funnel · nur Darstellung
+            {% else %}
+            Watchlist · Scanner-Funnel · nur Darstellung (leer)
+            {% endif %}
+          </h2>
+          <p class="text-[10px] text-slate-500 m-0 max-w-2xl leading-snug">
+            {% if ranking_funnel.has_rows %}
+            <strong class="text-slate-400 font-semibold">Read-only SSR</strong> aus offline Bundle —
+            <strong class="text-amber-200/90 font-semibold">keine Orders, keine Freigabe, kein Signal</strong>.
+            {{ ranking_funnel.summary_line|e }}
+            {% else %}
+            Auf <strong class="text-slate-400 font-semibold">dieser read-only Oberfläche</strong> werden hier
+            <strong class="text-amber-200/90 font-semibold">keine Kandidatenzeilen</strong> aus einem Ranking-/Producer-Kontext angezeigt.
+            <strong class="text-slate-400">Das ist weder Empfehlung noch Signal, weder Freigabe noch Sperre noch „Ready“-Status</strong>.
+            {% if ranking_funnel.summary_line %}{{ ranking_funnel.summary_line|e }}{% endif %}
+            {% endif %}
+          </p>
+        </div>
+        <div class="flex flex-wrap gap-1.5 shrink-0 text-[9px] font-bold uppercase tracking-wide">
           {% if ranking_funnel.has_rows %}
-          Futures-Ranking-Funnel · nur Darstellung (Zeilen)
+          <span class="inline-flex items-center rounded-md border border-violet-800/55 bg-violet-950/45 px-2 py-0.5 text-violet-200/90">Zeilen · display-only</span>
           {% else %}
-          Futures-Ranking-Funnel · nur Darstellung (leer)
+          <span class="inline-flex items-center rounded-md border border-amber-800/55 bg-amber-950/45 px-2 py-0.5 text-amber-200/90">Leer · display-only</span>
           {% endif %}
-        </h2>
-        <p class="text-[10px] text-slate-500 m-0 max-w-2xl leading-snug">
-          {% if ranking_funnel.has_rows %}
-          <strong class="text-slate-400 font-semibold">Read-only SSR</strong> aus offline Bundle —
-          <strong class="text-amber-200/90 font-semibold">keine Orders, keine Freigabe, kein Signal</strong>.
-          {{ ranking_funnel.summary_line|e }}
-          {% else %}
-          Auf <strong class="text-slate-400 font-semibold">dieser read-only Oberfläche</strong> werden hier
-          <strong class="text-amber-200/90 font-semibold">keine Kandidatenzeilen</strong> aus einem Ranking-/Producer-Kontext angezeigt.
-          <strong class="text-slate-400">Das ist weder Empfehlung noch Signal, weder Freigabe noch Sperre noch „Ready“-Status</strong>.
-          {% if ranking_funnel.summary_line %}{{ ranking_funnel.summary_line|e }}{% endif %}
-          {% endif %}
+          <span class="inline-flex items-center rounded-md border border-slate-700/70 bg-slate-950/65 px-2 py-0.5 text-slate-300" data-market-v0-ranking-display-only="true">display-only</span>
+          <span class="inline-flex items-center rounded-md border border-slate-700/70 bg-slate-950/65 px-2 py-0.5 text-slate-300" data-market-v0-ranking-no-authority="true">no authority</span>
+        </div>
+      </div>
+
+      <div
+        id="market-v0-ranking-selected-instrument"
+        class="mb-2.5 rounded-lg border px-2.5 py-2 {% if ranking_watchlist.has_selected_in_table %}border-sky-700/55 bg-sky-950/35 ring-1 ring-sky-800/40{% else %}border-slate-800/75 bg-slate-950/55{% endif %}"
+        data-market-v0-ranking-selected-instrument="true"
+        data-market-v0-ranking-selected-symbol="{{ query.symbol|e }}"
+        {% if ranking_watchlist.has_selected_in_table %}data-market-v0-ranking-selected-instrument-highlighted="true"{% else %}data-market-v0-ranking-selected-instrument-query-only="true"{% endif %}
+      >
+        <p class="m-0 text-[10px] font-semibold uppercase tracking-wide text-slate-400">
+          Selected instrument (query context · display-only)
+        </p>
+        <p class="m-0 mt-1 font-mono text-sm text-slate-100">
+          {{ query.symbol|e }}
+          <span class="text-[10px] text-slate-500 font-sans">· no selector authority · navigation via symbol links only</span>
         </p>
       </div>
-      {% if ranking_funnel.has_rows %}
-      <span class="shrink-0 inline-flex items-center rounded-md border border-violet-800/55 bg-violet-950/45 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-violet-200/90">Zeilen · display-only</span>
-      {% else %}
-      <span class="shrink-0 inline-flex items-center rounded-md border border-amber-800/55 bg-amber-950/45 px-2 py-0.5 text-[9px] font-bold uppercase tracking-wide text-amber-200/90">Leer · display-only</span>
-      {% endif %}
+
+      <p
+        class="m-0 mb-2 text-[10px] text-slate-500"
+        id="market-v0-ranking-source-mode"
+        data-market-v0-ranking-source-mode="true"
+      >
+        source-mode:
+        <span class="font-mono text-violet-200/90">{{ ranking_watchlist.source_mode|e }}</span>
+        {% if ranking_watchlist.ranking_funnel_source %}
+        · bundle source: <span class="font-mono text-slate-300">{{ ranking_watchlist.ranking_funnel_source|e }}</span>
+        {% endif %}
+        · display-status: <span class="font-mono text-slate-300">{{ ranking_watchlist.display_status|e }}</span>
+        · fixture/offline/dummy — not live exchange data
+      </p>
     </div>
+
     <div
+      id="market-v0-ranking-scanner-funnel"
       class="grid grid-cols-1 sm:grid-cols-3 gap-2.5"
-      aria-label="Funnel-Stufen: read-only ranking producer display"
+      aria-label="Scanner funnel stages: read-only ranking producer display"
+      data-market-v0-ranking-scanner-funnel="true"
     >
       {% for stage_key, stage_label in ranking_funnel.stage_labels.items() %}
       <div
@@ -570,19 +614,30 @@
         <p class="text-[9px] text-slate-500 m-0 mt-1 leading-snug tabular-nums">
           {{ ranking_funnel.stage_counts[stage_key] }} row(s) · producer-defined count
         </p>
-        {% if ranking_funnel.has_rows and ranking_funnel.stages[stage_key] %}
+        {% if ranking_funnel.has_rows and ranking_watchlist.stages[stage_key] %}
         <ul class="m-0 mt-2 p-0 list-none space-y-1" data-market-v0-ranking-funnel-stage-rows-v0="true">
-          {% for row in ranking_funnel.stages[stage_key] %}
+          {% for row in ranking_watchlist.stages[stage_key] %}
           <li
-            class="rounded border border-slate-800/80 bg-slate-950/50 px-2 py-1 text-[10px] font-mono text-slate-200"
+            class="rounded border px-2 py-1 text-[10px] font-mono {% if row.is_selected %}border-sky-600/70 bg-sky-950/40 text-sky-100 ring-1 ring-sky-800/35{% else %}border-slate-800/80 bg-slate-950/50 text-slate-200{% endif %}"
             data-market-v0-ranking-funnel-row-v0="true"
+            {% if row.is_selected %}data-market-v0-ranking-selected-instrument-row="true"{% endif %}
           >
             <span class="text-violet-300/90">#{{ row.rank|e }}</span>
             <span class="text-slate-400 px-1">·</span>
-            <span>{{ row.symbol|e }}</span>
+            <a
+              href="{{ row.market_nav_href|e }}"
+              class="text-sky-300/95 no-underline hover:underline"
+              data-market-v0-ranking-symbol-nav="true"
+            >{{ row.symbol|e }}</a>
+            {% if row.is_selected %}
+            <span class="ml-1 rounded border border-sky-700/60 bg-sky-950/50 px-1 py-px text-[8px] font-bold uppercase tracking-wide text-sky-200/90">selected</span>
+            {% endif %}
             {% if "display_score" in row %}
             <span class="text-slate-500 px-1">·</span>
             <span class="text-slate-400">score {{ row.display_score|e }}</span>
+            {% endif %}
+            {% if row.notes is defined and row.notes %}
+            <span class="block text-[9px] text-slate-500 mt-0.5">{{ row.notes|e }}</span>
             {% endif %}
           </li>
           {% endfor %}
@@ -596,11 +651,12 @@
     <div
       class="mt-3 rounded-lg border border-violet-800/45 bg-slate-950/60 px-2.5 py-2.5 overflow-x-auto"
       data-market-top20-table-v1="true"
+      data-market-v0-ranking-symbol-nav="true"
     >
       <p class="m-0 mb-2 text-[10px] font-semibold uppercase tracking-wide text-violet-300/90">
         Top20 / Universe table · source_mode={{ operator_overview.ranking_source_mode }} · count={{ operator_overview.ranking_table_count }}
       </p>
-      {% if operator_overview.ranking_table_rows %}
+      {% if ranking_watchlist.table_rows %}
       <table class="w-full text-[10px] border-collapse tabular-nums">
         <thead>
           <tr class="text-left text-slate-400 border-b border-slate-800/70">
@@ -613,10 +669,15 @@
           </tr>
         </thead>
         <tbody>
-          {% for row in operator_overview.ranking_table_rows %}
-          <tr class="border-b border-slate-900/60 text-slate-200">
+          {% for row in ranking_watchlist.table_rows %}
+          <tr class="border-b border-slate-900/60 {% if row.is_selected %}bg-sky-950/30 text-sky-100{% else %}text-slate-200{% endif %}" {% if row.is_selected %}data-market-v0-ranking-selected-instrument-row="true"{% endif %}>
             <td class="pr-2 py-1">{{ row.rank|e }}</td>
-            <td class="pr-2 py-1 font-mono">{{ row.symbol|e }}</td>
+            <td class="pr-2 py-1 font-mono">
+              <a href="{{ row.market_nav_href|e }}" class="text-sky-300/95 no-underline hover:underline" data-market-v0-ranking-symbol-nav="true">{{ row.symbol|e }}</a>
+              {% if row.is_selected %}
+              <span class="ml-1 rounded border border-sky-700/60 px-1 py-px text-[8px] font-bold uppercase text-sky-200/90">selected</span>
+              {% endif %}
+            </td>
             <td class="pr-2 py-1">{{ row.stage|e }}</td>
             <td class="pr-2 py-1">{% if row.display_score is defined %}{{ row.display_score|e }}{% else %}—{% endif %}</td>
             <td class="pr-2 py-1">display-only</td>
