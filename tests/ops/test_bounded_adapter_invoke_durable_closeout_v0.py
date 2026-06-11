@@ -52,6 +52,7 @@ def _durable_args(**overrides: object) -> argparse.Namespace:
     base = {
         "invoke_durable_closeout_v0": False,
         "durable_closeout_dest_dir": None,
+        "durable_closeout_force": False,
         "run_local_post_closeout_chain_v0": False,
         "chain_archive_root": None,
         "chain_run_id": "",
@@ -484,6 +485,7 @@ def test_paper_and_shadow_expose_cli_flags(paper, shadow):
     for flags in (paper_flags, shadow_flags):
         assert "--invoke-durable-closeout-v0" in flags
         assert "--durable-closeout-dest-dir" in flags
+        assert "--durable-closeout-force" in flags
         assert "--run-local-post-closeout-chain-v0" in flags
         assert "--chain-archive-root" in flags
         assert "--chain-run-id" in flags
@@ -511,3 +513,158 @@ def test_shadow_chain_validation_delegates_same_rules(shadow, tmp_path):
         )
     )
     assert any("requires --invoke-durable-closeout-v0" in issue for issue in issues)
+
+
+def test_validate_identical_source_dest_blocked(paper, tmp_path):
+    archive_source = tmp_path / "archive_run"
+    archive_source.mkdir()
+    (archive_source / "note.txt").write_text("x\n", encoding="utf-8")
+    ok, msg, blocker = paper.validate_durable_closeout_invoke_paths(
+        archive_source,
+        archive_source,
+    )
+    assert ok is False
+    assert "same path" in msg
+    assert blocker == "durable_closeout_identical_source_dest"
+
+
+def test_validate_realpath_equivalent_source_dest_blocked(paper, tmp_path):
+    archive_source = tmp_path / "archive_run"
+    archive_source.mkdir()
+    (archive_source / "note.txt").write_text("x\n", encoding="utf-8")
+    dest_alias = tmp_path / "dest_alias"
+    dest_alias.symlink_to(archive_source, target_is_directory=True)
+    ok, _msg, blocker = paper.validate_durable_closeout_invoke_paths(
+        archive_source,
+        dest_alias,
+    )
+    assert ok is False
+    assert blocker == "durable_closeout_identical_source_dest"
+
+
+def test_validate_prepopulated_dest_without_force_blocked(paper, tmp_path):
+    archive_source = tmp_path / "archive_run"
+    archive_source.mkdir()
+    (archive_source / "note.txt").write_text("x\n", encoding="utf-8")
+    durable_dest = _durable_dest(tmp_path, "prepopulated")
+    durable_dest.mkdir(parents=True, exist_ok=True)
+    (durable_dest / "prestart.env").write_text("PAPER_ONLY=true\n", encoding="utf-8")
+    ok, msg, blocker = paper.validate_durable_closeout_invoke_paths(
+        archive_source,
+        durable_dest,
+    )
+    assert ok is False
+    assert "non-empty" in msg
+    assert blocker == "durable_closeout_dest_non_empty_without_force"
+
+
+def test_maybe_invoke_identical_paths_blocks_without_helper_call(paper, tmp_path, capsys):
+    archive_dest = tmp_path / "archive_dest"
+    archive_dest.mkdir()
+    (archive_dest / "note.txt").write_text("x\n", encoding="utf-8")
+    calls: list[list[str]] = []
+
+    def _recording_invoker(argv: list[str]) -> int:
+        calls.append(list(argv))
+        return 0
+
+    args = _durable_args(
+        invoke_durable_closeout_v0=True,
+        durable_closeout_dest_dir=archive_dest,
+    )
+    ctx = paper.ExecuteContext(
+        args=args,
+        repo_root=REPO_ROOT,
+        staging_root=tmp_path / "staging",
+        archive_root=tmp_path / "archive",
+        runtime_out=tmp_path / "staging" / "runtime_out",
+        logs_dir=tmp_path / "staging" / "logs",
+        plan_dir=tmp_path / "staging" / "plan",
+        review_dir=tmp_path / "staging" / "review",
+        temp_jobs=tmp_path / "staging" / "plan" / "temp_jobs.toml",
+        run_id="paper_run",
+    )
+    rc = paper.maybe_invoke_durable_closeout_after_archive(
+        ctx,
+        archive_dest,
+        durable_closeout_invoker=_recording_invoker,
+    )
+    assert rc == paper.VALIDATION_EXIT
+    assert calls == []
+    out = capsys.readouterr()
+    assert "BOUNDED_ADAPTER_DURABLE_CLOSEOUT_STATUS=blocked" in out.out
+    assert (
+        "BOUNDED_ADAPTER_DURABLE_CLOSEOUT_BLOCKER_HINT=durable_closeout_identical_source_dest"
+        in out.out
+    )
+    assert "BOUNDED_ADAPTER_DURABLE_CLOSEOUT_INVOKED=false" in out.out
+    assert "BOUNDED_ADAPTER_OBSERVATION_CLOSEOUT_DECOUPLED=true" in out.out
+
+
+def test_maybe_invoke_prepopulated_dest_without_force_blocks_with_hint(paper, tmp_path, capsys):
+    archive_dest = tmp_path / "archive_dest"
+    archive_dest.mkdir()
+    (archive_dest / "note.txt").write_text("x\n", encoding="utf-8")
+    durable_dest = _durable_dest(tmp_path, "prepopulated_invoke")
+    durable_dest.mkdir(parents=True, exist_ok=True)
+    (durable_dest / "prestart.env").write_text("PAPER_ONLY=true\n", encoding="utf-8")
+    calls: list[list[str]] = []
+
+    def _recording_invoker(argv: list[str]) -> int:
+        calls.append(list(argv))
+        return 0
+
+    args = _durable_args(
+        invoke_durable_closeout_v0=True,
+        durable_closeout_dest_dir=durable_dest,
+    )
+    ctx = paper.ExecuteContext(
+        args=args,
+        repo_root=REPO_ROOT,
+        staging_root=tmp_path / "staging",
+        archive_root=tmp_path / "archive",
+        runtime_out=tmp_path / "staging" / "runtime_out",
+        logs_dir=tmp_path / "staging" / "logs",
+        plan_dir=tmp_path / "staging" / "plan",
+        review_dir=tmp_path / "staging" / "review",
+        temp_jobs=tmp_path / "staging" / "plan" / "temp_jobs.toml",
+        run_id="paper_run",
+    )
+    rc = paper.maybe_invoke_durable_closeout_after_archive(
+        ctx,
+        archive_dest,
+        durable_closeout_invoker=_recording_invoker,
+    )
+    assert rc == paper.VALIDATION_EXIT
+    assert calls == []
+    out = capsys.readouterr()
+    assert (
+        "BOUNDED_ADAPTER_DURABLE_CLOSEOUT_BLOCKER_HINT="
+        "durable_closeout_dest_non_empty_without_force" in out.out
+    )
+    assert "BOUNDED_ADAPTER_DURABLE_CLOSEOUT_STATUS=blocked" in out.out
+
+
+def test_invoke_separate_snapshot_source_with_force_passes(paper, tmp_path):
+    archive_source = tmp_path / "archive_run"
+    archive_source.mkdir()
+    (archive_source / "AFTER_FIXTURE_CLOSEOUT.md").write_text("# closeout\n", encoding="utf-8")
+    (archive_source / "note.txt").write_text("x\n", encoding="utf-8")
+    durable_dest = _durable_dest(tmp_path, "force_snapshot")
+    durable_dest.mkdir(parents=True, exist_ok=True)
+    (durable_dest / "prestart.env").write_text("PAPER_ONLY=true\n", encoding="utf-8")
+    calls: list[list[str]] = []
+
+    def _recording_invoker(argv: list[str]) -> int:
+        calls.append(list(argv))
+        return 0
+
+    rc = paper.invoke_durable_closeout_after_archive(
+        source_dir=archive_source,
+        dest_dir=durable_dest,
+        args=_durable_args(durable_closeout_force=True),
+        durable_closeout_invoker=_recording_invoker,
+    )
+    assert rc == 0
+    assert len(calls) == 1
+    assert "--force" in calls[0]

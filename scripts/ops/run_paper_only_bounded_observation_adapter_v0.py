@@ -29,6 +29,10 @@ if str(_REPO_ROOT) not in sys.path:
 from scripts.ops import bounded_daemon_paper_shadow_24h_approval_v0 as contract_24h
 from scripts.ops import gap4_req_a_paper_hold_binding_approval_v0 as contract_gap4
 from scripts.ops import paper_l2_120min_hold_binding_approval_v0 as contract_l2_120min
+from scripts.ops.durable_closeout_copy_verify_v0 import (
+    _dest_has_content,
+    _validate_source_dest_distinct,
+)
 from scripts.ops.primary_evidence_retention_v0 import (
     is_under_tmp,
     verify_manifest_sha256,
@@ -564,6 +568,27 @@ def validate_durable_closeout_invoke_cli_args(args: argparse.Namespace) -> list[
     return issues
 
 
+def validate_durable_closeout_invoke_paths(
+    source_dir: Path,
+    dest_dir: Path,
+    *,
+    force: bool = False,
+) -> tuple[bool, str, str]:
+    """Validate adapter closeout paths before helper invoke (reuses helper guards)."""
+    ok, msg = _validate_source_dest_distinct(source_dir, dest_dir)
+    if not ok:
+        return False, msg, "durable_closeout_identical_source_dest"
+    if _dest_has_content(dest_dir) and not force:
+        return (
+            False,
+            "destination exists and is non-empty "
+            "(use --durable-closeout-force only when source and dest differ, "
+            "or copy from a separate snapshot source directory)",
+            "durable_closeout_dest_non_empty_without_force",
+        )
+    return True, "", ""
+
+
 ARCHIVE_POINTER_FILENAME = "ARCHIVE_POINTER.md"
 
 
@@ -630,6 +655,7 @@ def build_durable_closeout_invoke_argv(
     chain_run_id: str | None = None,
     require_durable_pointer_evidence: bool = False,
     durable_pointer_patterns: Sequence[str] = (),
+    force: bool = False,
 ) -> list[str]:
     argv = [
         sys.executable,
@@ -641,6 +667,8 @@ def build_durable_closeout_invoke_argv(
     ]
     if is_under_tmp(source_dir):
         argv.append("--allow-tmp-source")
+    if force:
+        argv.append("--force")
     if run_local_post_closeout_chain_v0:
         if chain_archive_root is None:
             raise ValueError("chain_archive_root is required when run_local_post_closeout_chain_v0")
@@ -677,6 +705,15 @@ def invoke_durable_closeout_after_archive(
     pointer_patterns = (
         resolve_bounded_adapter_durable_pointer_patterns(args) if args is not None else ()
     )
+    force = bool(args and getattr(args, "durable_closeout_force", False))
+    ok, msg, _blocker = validate_durable_closeout_invoke_paths(
+        source_dir,
+        dest_dir,
+        force=force,
+    )
+    if not ok:
+        print(msg, file=sys.stderr)
+        return 1
     invoker = durable_closeout_invoker or _default_durable_closeout_invoker
     return invoker(
         build_durable_closeout_invoke_argv(
@@ -687,6 +724,7 @@ def invoke_durable_closeout_after_archive(
             chain_run_id=chain_run_id,
             require_durable_pointer_evidence=pointer_required,
             durable_pointer_patterns=pointer_patterns,
+            force=force,
         )
     )
 
@@ -697,9 +735,26 @@ def emit_bounded_adapter_durable_closeout_machine_lines(
     rc: int,
     source_dir: Path,
     dest_dir: Path | None,
+    validation_blocked: bool = False,
+    blocker_hint: str = "",
 ) -> None:
     print(f"BOUNDED_ADAPTER_DURABLE_CLOSEOUT_INVOKED={'true' if invoked else 'false'}")
-    if not invoked:
+    print(
+        "BOUNDED_ADAPTER_DURABLE_CLOSEOUT_VALIDATION_BLOCKED="
+        f"{'true' if validation_blocked else 'false'}"
+    )
+    if blocker_hint:
+        print(f"BOUNDED_ADAPTER_DURABLE_CLOSEOUT_BLOCKER_HINT={blocker_hint}")
+    print("BOUNDED_ADAPTER_OBSERVATION_CLOSEOUT_DECOUPLED=true")
+    if not invoked and not validation_blocked:
+        return
+    if validation_blocked:
+        print("BOUNDED_ADAPTER_DURABLE_CLOSEOUT_STATUS=blocked")
+        print(f"BOUNDED_ADAPTER_DURABLE_CLOSEOUT_SOURCE_DIR={source_dir.resolve()}")
+        if dest_dir is not None:
+            print(f"BOUNDED_ADAPTER_DURABLE_CLOSEOUT_DEST_DIR={dest_dir.resolve()}")
+        print("BOUNDED_ADAPTER_DURABLE_CLOSEOUT_HELPER_RC=not_run")
+        print("BOUNDED_ADAPTER_DURABLE_CLOSEOUT_NON_AUTHORIZING=true")
         return
     status = "pass" if rc == 0 else "failed"
     print(f"BOUNDED_ADAPTER_DURABLE_CLOSEOUT_STATUS={status}")
@@ -816,6 +871,34 @@ def maybe_invoke_durable_closeout_after_archive(
             print(handoff_msg, file=sys.stderr)
             return VALIDATION_EXIT
     dest_dir = Path(ctx.args.durable_closeout_dest_dir).expanduser().resolve()
+    force = bool(getattr(ctx.args, "durable_closeout_force", False))
+    ok, validation_msg, blocker_hint = validate_durable_closeout_invoke_paths(
+        archive_dest,
+        dest_dir,
+        force=force,
+    )
+    if not ok:
+        emit_bounded_adapter_durable_closeout_machine_lines(
+            invoked=False,
+            rc=0,
+            source_dir=archive_dest,
+            dest_dir=dest_dir,
+            validation_blocked=True,
+            blocker_hint=blocker_hint,
+        )
+        emit_bounded_adapter_local_post_closeout_chain_machine_lines(
+            requested=chain_requested,
+            passthrough=False,
+            chain_archive_root=chain_archive_root,
+            chain_run_id=chain_run_id,
+        )
+        emit_bounded_adapter_durable_pointer_machine_lines(
+            required=pointer_required,
+            pattern_count=pointer_pattern_count,
+            archive_pointer_handoff=archive_pointer_handoff,
+        )
+        print(validation_msg, file=sys.stderr)
+        return VALIDATION_EXIT
     rc = invoke_durable_closeout_after_archive(
         source_dir=archive_dest,
         dest_dir=dest_dir,
@@ -1221,6 +1304,14 @@ def add_bounded_adapter_durable_closeout_cli_args(parser: argparse.ArgumentParse
         type=Path,
         default=None,
         help="Durable material closeout destination (required with --invoke-durable-closeout-v0).",
+    )
+    parser.add_argument(
+        "--durable-closeout-force",
+        action="store_true",
+        help=(
+            "Pass --force to durable_closeout_copy_verify_v0.py when source and dest differ "
+            "and destination is pre-populated."
+        ),
     )
     parser.add_argument(
         "--run-local-post-closeout-chain-v0",
