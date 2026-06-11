@@ -1448,3 +1448,63 @@ def test_double_play_excludes_market_instrument_header_markers_v1(client: TestCl
     assert "market-v0-instrument-header" not in html
     assert "data-market-v0-instrument-header" not in html
     assert "data-market-v0-instrument-symbol" not in html
+
+
+def test_market_ranking_watchlist_funnel_vnext_wiring_markers_v1(client: TestClient) -> None:
+    """Kraken-like ranking watchlist/scanner funnel vNext wiring markers on /market."""
+    html = _html(client, "/market")
+
+    assert 'id="market-v0-ranking-watchlist"' in html
+    assert 'data-market-v0-ranking-watchlist="true"' in html
+    assert 'id="market-v0-ranking-scanner-funnel"' in html
+    assert 'data-market-v0-ranking-scanner-funnel="true"' in html
+    assert 'id="market-v0-ranking-selected-instrument"' in html
+    assert 'data-market-v0-ranking-selected-instrument="true"' in html
+    assert 'id="market-v0-ranking-source-mode"' in html
+    assert 'data-market-v0-ranking-source-mode="true"' in html
+    assert 'data-market-v0-ranking-display-only="true"' in html
+    assert 'data-market-v0-ranking-no-authority="true"' in html
+
+    assert 'id="market-v0-instrument-header"' in html
+    assert 'data-market-v0-instrument-header="true"' in html
+    assert 'id="market-v0-observe-co-presence"' in html
+    assert 'data-market-v0-observe-co-presence-v1="true"' in html
+
+    ranking_idx = html.index('id="market-v0-ranking-watchlist"')
+    ranking_window = html[ranking_idx : ranking_idx + 20000].lower()
+    assert "data-order-form" not in ranking_window
+    assert "data-order-submit" not in ranking_window
+    assert "place order" not in ranking_window
+    assert "cancel order" not in ranking_window
+    assert "arm order" not in ranking_window
+    assert "leverage" not in ranking_window
+    assert "margin control" not in ranking_window
+
+
+def test_market_ranking_watchlist_symbol_nav_and_selected_highlight_fixture_v1(
+    client_ranking_funnel_fixture_bundle_on: TestClient,
+) -> None:
+    """Fixture ranking rows expose display-only symbol nav and selected-instrument highlight."""
+    html = _html(client_ranking_funnel_fixture_bundle_on, "/market")
+
+    assert 'data-market-v0-ranking-symbol-nav="true"' in html
+    assert (
+        "/market?source=dummy&amp;symbol=BTCUSDT" in html
+        or "/market?source=dummy&symbol=BTCUSDT" in html
+    )
+    assert 'data-market-v0-ranking-selected-instrument-highlighted="true"' in html
+    assert 'data-market-v0-ranking-selected-instrument-row="true"' in html
+    assert ">selected<" in html.lower()
+
+
+def test_double_play_excludes_ranking_watchlist_vnext_markers_v1(client: TestClient) -> None:
+    """Double-Play must not carry /market-only ranking watchlist vNext markers."""
+    html = _html(client, "/market/double-play")
+    assert "market-v0-ranking-watchlist" not in html
+    assert "data-market-v0-ranking-watchlist" not in html
+    assert "market-v0-ranking-scanner-funnel" not in html
+    assert "data-market-v0-ranking-scanner-funnel" not in html
+    assert "market-v0-ranking-selected-instrument" not in html
+    assert "data-market-v0-ranking-symbol-nav" not in html
+    assert "data-market-v0-ranking-source-mode" not in html
+    assert "data-market-v0-ranking-no-authority" not in html

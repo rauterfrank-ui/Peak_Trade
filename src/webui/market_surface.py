@@ -692,6 +692,109 @@ def build_market_depth_display_context() -> Dict[str, Any]:
 _RANKING_TABLE_STAGE_ORDER: tuple[str, ...] = ("universe", "shortlist", "selected")
 
 
+def _normalize_symbol_for_match(symbol: str) -> str:
+    normalized = symbol.upper().replace("/", "").replace("-", "")
+    for suffix in ("USDT", "USD", "EUR", "GBP"):
+        if normalized.endswith(suffix) and len(normalized) > len(suffix):
+            return normalized[: -len(suffix)]
+    return normalized
+
+
+def build_market_symbol_nav_href(
+    *,
+    symbol: str,
+    source: str,
+    timeframe: str,
+    limit: int,
+) -> str:
+    """Display-only GET /market query link for a ranking row symbol (no selector authority)."""
+    from urllib.parse import quote
+
+    return (
+        f"/market?source={quote(source, safe='')}&symbol={quote(symbol, safe='')}"
+        f"&timeframe={quote(timeframe, safe='')}&limit={limit}"
+    )
+
+
+def _enrich_ranking_row_for_watchlist(
+    row: dict[str, Any],
+    *,
+    selected_symbol: str,
+    source: str,
+    timeframe: str,
+    limit: int,
+) -> dict[str, Any]:
+    row_symbol = str(row.get("symbol") or "")
+    is_selected = _normalize_symbol_for_match(row_symbol) == _normalize_symbol_for_match(
+        selected_symbol
+    )
+    return {
+        **row,
+        "is_selected": is_selected,
+        "market_nav_href": build_market_symbol_nav_href(
+            symbol=row_symbol,
+            source=source,
+            timeframe=timeframe,
+            limit=limit,
+        ),
+    }
+
+
+def build_market_ranking_watchlist_display_context(
+    *,
+    ranking_funnel: Dict[str, Any],
+    operator_overview: Dict[str, Any],
+    selected_symbol: str,
+    source: str,
+    timeframe: str,
+    limit: int,
+) -> Dict[str, Any]:
+    """Display-only watchlist/scanner funnel wiring for GET /market ranking SSR."""
+
+    stages = ranking_funnel.get("stages") if isinstance(ranking_funnel.get("stages"), dict) else {}
+    enriched_stages: dict[str, list[dict[str, Any]]] = {}
+    for stage_key in _RANKING_TABLE_STAGE_ORDER:
+        enriched_stages[stage_key] = [
+            _enrich_ranking_row_for_watchlist(
+                row,
+                selected_symbol=selected_symbol,
+                source=source,
+                timeframe=timeframe,
+                limit=limit,
+            )
+            for row in (stages.get(stage_key) or [])
+            if isinstance(row, dict)
+        ]
+
+    table_rows = operator_overview.get("ranking_table_rows")
+    raw_rows = table_rows if isinstance(table_rows, list) else []
+    enriched_table_rows = [
+        _enrich_ranking_row_for_watchlist(
+            row,
+            selected_symbol=selected_symbol,
+            source=source,
+            timeframe=timeframe,
+            limit=limit,
+        )
+        for row in raw_rows
+        if isinstance(row, dict)
+    ]
+
+    source_mode = str(operator_overview.get("ranking_source_mode") or "unavailable")
+    rf_source = str(ranking_funnel.get("source") or "").strip()
+
+    return {
+        "selected_symbol": selected_symbol,
+        "source_mode": source_mode,
+        "ranking_funnel_source": rf_source,
+        "display_status": str(ranking_funnel.get("display_status") or "disabled"),
+        "stages": enriched_stages,
+        "table_rows": enriched_table_rows,
+        "table_count": len(enriched_table_rows),
+        "has_selected_in_table": any(bool(r.get("is_selected")) for r in enriched_table_rows),
+    }
+
+
 def _format_display_price(value: float | None) -> str:
     if value is None:
         return ""
@@ -900,6 +1003,14 @@ def create_market_router(
         operator_overview = build_market_operator_overview_display_context(
             ranking_funnel=ranking_funnel,
         )
+        ranking_watchlist = build_market_ranking_watchlist_display_context(
+            ranking_funnel=ranking_funnel,
+            operator_overview=operator_overview,
+            selected_symbol=symbol,
+            source=src,
+            timeframe=timeframe,
+            limit=limit,
+        )
         instrument_header = build_market_instrument_header_display_context(
             symbol=symbol,
             timeframe=timeframe,
@@ -925,6 +1036,7 @@ def create_market_router(
                 "run_projection": run_projection,
                 "market_tape": market_tape,
                 "ranking_funnel": ranking_funnel,
+                "ranking_watchlist": ranking_watchlist,
                 "operator_overview": operator_overview,
                 "instrument_header": instrument_header,
                 "active_paper_run": active_paper_run,

@@ -309,6 +309,8 @@ Landed boundaries:
 
 The default disabled or empty state remains valid. When enabled with bundle rows, `/market` may render read-only ranking rows and explicit non-authority copy.
 
+**Watchlist / scanner funnel vNext wiring (display-only IA, PR after #4148):** The ranking section reuses `market_ranking_funnel_readmodel.v0` via existing runtime/context — **no new producer, no new readmodel SSOT, no trading controls**. SSR markers include `market-v0-ranking-watchlist`, `market-v0-ranking-scanner-funnel`, `market-v0-ranking-selected-instrument`, `market-v0-ranking-symbol-nav`, `market-v0-ranking-source-mode`, `market-v0-ranking-display-only`, and `market-v0-ranking-no-authority`. Symbol links are display-only GET `/market?symbol=…` navigation; query-context instrument highlighting is visual only (**no selector authority**).
+
 **Landmark / region (SSR v0):** section **`#market-v0-ranking-funnel-ssr`** has **`role="region"`**, **`aria-labelledby="market-v0-landmark-ranking-funnel-h2"`**, and **`data-market-v0-ranking-funnel-landmark-heading-v0="true"`** on the visible **`h2`** — same IA pattern family as depth/orderbook landmarks. Depth SSR and ranking funnel SSR may **coexist** on **`GET`** **`/market`** when both env gates and fixtures are enabled; markers must not replace each other (**structure-contract #3732**). **`GET`** **`/market/double-play`** remains **without** ranking-funnel SSR landmarks even when depth+ranking env/fixtures are enabled (**structure-contract #3733**).
 
 Non-authority invariants remain unchanged:
