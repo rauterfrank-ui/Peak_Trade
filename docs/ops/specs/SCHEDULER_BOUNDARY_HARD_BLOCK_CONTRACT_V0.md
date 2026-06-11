@@ -185,6 +185,12 @@ PAPER_L2_120MIN_HOLD_BINDING_PROFILE_DOES_NOT_CLEAR_GLOBAL_HOLD=true
 PAPER_L2_120MIN_HOLD_BINDING_PROFILE_NON_AUTHORIZING=true
 PAPER_L2_120MIN_HOLD_BINDING_NO_TRADING_LOGIC_MUTATION=true
 PAPER_L2_120MIN_HOLD_BINDING_MASTER_V2_DOUBLE_PLAY_UNCHANGED=true
+PAPER_TL_L2_NAMESPACE=paper_trading_logic_evidence_ladder_step_2
+PAPER_TL_L2_NOT_MASTER_V2_G5_L2=true
+PAPER_TL_L2_PROVES_INFRASTRUCTURE_SAFETY_ONLY=true
+PAPER_TL_L2_PROVES_MASTER_V2_RUNTIME=false
+LINEAGE_EDGE_STEP0_TO_PAPER_TL_L2=MISSING_RUNTIME_BRIDGE
+BULL_BEAR_SIDE_SWITCH_AT_PAPER_TL_L2=NOT_REACHED
 ```
 
 Profile `paper_l2_120min_hold_binding_v0` on [run_paper_only_bounded_observation_adapter_v0.py](../../../scripts/ops/run_paper_only_bounded_observation_adapter_v0.py) (contract: [paper_l2_120min_hold_binding_approval_v0.py](../../../scripts/ops/paper_l2_120min_hold_binding_approval_v0.py)):

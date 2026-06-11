@@ -37,6 +37,19 @@ PROFILE_L2 = "paper_l2_120min_hold_binding_v0"
 ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
 
 
+def test_adapter_source_has_no_master_v2_double_play_dispatch() -> None:
+    text = SCRIPT.read_text(encoding="utf-8")
+    assert "from src.trading.master_v2" not in text
+    assert "import master_v2" not in text
+    for line in text.splitlines():
+        stripped = line.strip()
+        if stripped.startswith("#"):
+            continue
+        lowered = stripped.lower()
+        assert "master_v2" not in lowered
+        assert "double_play" not in lowered
+
+
 def _load_mod():
     name = "run_paper_only_bounded_observation_adapter_v0"
     spec = importlib.util.spec_from_file_location(name, SCRIPT)

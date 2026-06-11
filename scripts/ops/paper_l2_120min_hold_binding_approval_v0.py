@@ -1,4 +1,7 @@
-"""Paper-L2 120min hold-binding approval contract v0.
+"""Paper-TL-L2 namespace: hold-binding approval for paper trading logic evidence ladder step 2.
+
+Paper-TL-L2 proves infrastructure/safety/scheduler no-trade composition only.
+Does not prove Master V2 G5-L2 go/no-go eval. Does not dispatch master_v2/double_play runtime.
 
 Non-authorizing: validates machine-line approval records and hold-binding outroot only.
 Does not clear global HOLD, start runtime, or grant Testnet/Live/broker authority.
