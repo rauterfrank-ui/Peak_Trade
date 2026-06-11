@@ -1138,3 +1138,57 @@ def test_market_operator_overview_ia_v1_tests_referenced_in_docs_v1() -> None:
     for test_rel in (OPERATOR_OVERVIEW_STRUCTURE_TEST_REL, BOUNDARY_TEST_REL):
         assert test_rel in truth_map
         assert test_rel in ci_audit
+
+
+def test_market_kraken_like_operator_enablement_guide_v1_env_boundary_v0() -> None:
+    """Kraken-like operator enablement guide tokens stay pinned in MARKET_SURFACE_V0."""
+    surface = (PROJECT_ROOT / "docs/webui/MARKET_SURFACE_V0.md").read_text(encoding="utf-8")
+
+    section_start = surface.index(
+        "#### Operator enablement (Kraken-like operator overview IA v1 — post #4145–#4150 wave)"
+    )
+    section_end = surface.index(
+        "### Lane taxonomy cross-reference (non-authorizing)", section_start
+    )
+    guide = surface[section_start:section_end]
+
+    required_tokens = [
+        "Observe → Rank → Select → Explain → Double-Play status",
+        "display-only",
+        "no-authority",
+        "information architecture",
+        "order placement",
+        "no cancel",
+        "no arming",
+        "no leverage/margin controls",
+        "#market-v0-instrument-header",
+        "data-market-v0-futures-metrics-strip",
+        "data-market-v0-observe-co-presence-v1",
+        "data-market-v0-ranking-watchlist",
+        "data-market-ai-decision-readout-v1",
+        "trading authority=false",
+        "data authority=false",
+        "source-mode",
+        "fixture_offline",
+        "unavailable",
+        "new route",
+        "SPA",
+        "new producer",
+        "Master V2 / Double Play",
+        "decision logic",
+        "Market-Airport excluded",
+        "tests/webui/test_market_dashboard_readonly_structure_contract_v0.py",
+    ]
+
+    for token in required_tokens:
+        assert token.lower() in guide.lower(), f"missing enablement guide token: {token!r}"
+
+    forbidden_tokens = [
+        "execute_authorized=true",
+        "preflight_lift_authorized=true",
+        "live_authorized=true",
+        "order_authorized=true",
+    ]
+
+    for token in forbidden_tokens:
+        assert token.lower() not in guide.lower(), f"forbidden token in guide: {token!r}"
