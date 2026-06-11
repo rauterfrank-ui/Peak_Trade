@@ -133,11 +133,18 @@ def test_false_confidence_static_crosslink_package_marker_v0() -> None:
     assert PACKAGE_MARKER in text
 
 
-def test_archive_false_confidence_charter_bundle_exists_with_manifest_v0() -> None:
-    bundle = Path(ARCHIVE_FALSE_CONFIDENCE_CHARTER_BUNDLE)
-    assert bundle.is_dir(), f"missing archive charter bundle: {bundle}"
-    assert (bundle / "MANIFEST.sha256").is_file()
-    assert (bundle / "FALSE_CONFIDENCE_INTERPRETATION_GUARD_CHARTER.md").is_file()
+def test_false_confidence_archive_charter_authority_path_constant_v0() -> None:
+    """Archive charter is external authority; repo test anchors path only (no CI filesystem)."""
+    text = SELF.read_text(encoding="utf-8")
+    assert "ARCHIVE_FALSE_CONFIDENCE_CHARTER_BUNDLE" in text
+    assert ARCHIVE_ROOT in text
+    assert "false_confidence_interpretation_guard_after_systemwide_safe_scope_inventory" in text
+    assert "operator_go_autofill_no_run_v1_20260611T111453Z" in text
+    assert ARCHIVE_FALSE_CONFIDENCE_CHARTER_BUNDLE == (
+        f"{ARCHIVE_ROOT}/charter/"
+        "false_confidence_interpretation_guard_after_systemwide_safe_scope_inventory_"
+        "operator_go_autofill_no_run_v1_20260611T111453Z"
+    )
 
 
 def test_boundary_spec_retains_paper_tl_l2_p0_marker_set_v0() -> None:
