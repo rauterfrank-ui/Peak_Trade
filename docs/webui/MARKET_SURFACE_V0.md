@@ -39,6 +39,7 @@ Keine Kopplung an OPS Cockpit (`/ops`). Keine Trading-Aktionen.
 - Top20/ranking table reuses **`market_ranking_funnel_readmodel_v0`** (`data-market-top20-ranking-v1`, `data-market-ranking-source-mode-v1`).
 - Explain readout reuses **`build_static_dashboard_display_dict()`** display-only (`data-market-ai-decision-readout-v1`) — **no** trading signal.
 - **`GET &#47;market&#47;double-play`**: Bull/Bear cards (`data-double-play-bull-bear-cards-v1`), compact scope/capital/risk cards (`data-double-play-scope-capital-risk-v1`); depth/diagnostics secondary.
+- **Observe co-presence tape+depth (v1):** `#market-v0-observe-strip` embeds compact inline micro-tables from existing **`market_tape`** / **`market_depth`** SSR contexts (`#market-v0-observe-co-presence`, `#market-v0-observe-tape-inline`, `#market-v0-observe-depth-inline`). View-only IA wiring — **no** new readmodel SSOT, **no** trading authority, **no** Kraken/live data claim without explicit `source-mode` labeling (`data-market-v0-observe-source-mode-v1`). Full tape/depth panels remain detail anchors below.
 - Chronicle crosslink: **`docs/ops/CI_AUDIT_KNOWN_ISSUES.md`** § Market Dashboard Operator Overview IA v1 DOCS_TRUTH_MAP static crosslink v1; **`docs/ops/registry/DOCS_TRUTH_MAP.md`** Änderungsnachweis row (PR #4145 anchor); static guard in **`tests/ops/test_market_surface_ranking_funnel_env_schema_boundary_v0.py`**. **Display-only / SSR / no SPA / no order controls** — Kraken-like information architecture is view-IA only, not trading control.
 
 ### Lane taxonomy cross-reference (non-authorizing)

@@ -1318,3 +1318,77 @@ def test_double_play_operator_detail_redesign_markers_v1(client: TestClient) -> 
 
     lowered = html.lower()
     assert "place order" not in lowered
+
+
+def test_market_observe_co_presence_tape_depth_inline_default_v1(client: TestClient) -> None:
+    """Observe strip surfaces co-presence inline tape/depth wiring with display-only markers."""
+    html = _html(client, "/market")
+
+    assert 'id="market-v0-observe-co-presence"' in html
+    assert 'data-market-v0-observe-co-presence-v1="true"' in html
+    assert 'id="market-v0-observe-tape-inline"' in html
+    assert 'data-market-v0-observe-tape-inline-v1="true"' in html
+    assert 'id="market-v0-observe-depth-inline"' in html
+    assert 'data-market-v0-observe-depth-inline-v1="true"' in html
+    assert 'data-market-v0-observe-display-only-v1="true"' in html
+    assert 'data-market-v0-observe-source-mode-v1=' in html
+    assert ">READ ONLY<" in html
+    assert ">display-only<" in html
+    assert ">no orders<" in html
+    assert ">no execution<" in html
+    assert 'data-market-v0-observe-tape-empty-v1="true"' in html
+    assert 'data-market-v0-observe-depth-empty-v1="true"' in html
+    assert 'data-market-v0-observe-tape-source-mode-v1="disabled"' in html
+    assert 'data-market-v0-observe-depth-source-mode-v1="disabled"' in html
+
+    observe_idx = html.index('id="market-v0-observe-strip"')
+    observe_window = html[observe_idx : observe_idx + 12000].lower()
+    assert "data-order-form" not in observe_window
+    assert "data-order-submit" not in observe_window
+    assert "place order" not in observe_window
+    assert "cancel order" not in observe_window
+    assert "arm order" not in observe_window
+    assert "leverage" not in observe_window
+    assert "margin control" not in observe_window
+
+    assert 'data-market-operator-overview-v1="true"' in html
+    assert 'data-market-observe-strip-v1="true"' in html
+    assert 'data-market-operator-step-v1="observe"' in html
+
+
+def test_market_observe_co_presence_tape_depth_inline_with_fixtures_v1(
+    client_depth_fixture_bundle_on: TestClient,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """Fixture tape+depth bundles render inline micro-table rows in observe co-presence strip."""
+    fixture_root = (
+        project_root / "tests" / "fixtures" / "market_tape_readmodel_v0" / "complete_minimal"
+    )
+    monkeypatch.setenv("PEAK_TRADE_MARKET_TAPE_ENABLED", "1")
+    monkeypatch.setenv("PEAK_TRADE_MARKET_TAPE_BUNDLE_ROOT", str(fixture_root.resolve()))
+
+    html = _html(client_depth_fixture_bundle_on, "/market")
+
+    assert 'data-market-v0-observe-co-presence-v1="true"' in html
+    assert 'data-market-v0-observe-tape-inline-v1="true"' in html
+    assert 'data-market-v0-observe-depth-inline-v1="true"' in html
+    assert 'data-market-v0-observe-tape-source-mode-v1="fixture_offline"' in html
+    assert 'data-market-v0-observe-depth-source-mode-v1="fixture_offline"' in html
+    assert 'data-market-v0-observe-tape-row-v1="true"' in html
+    assert 'data-market-v0-observe-depth-row-v1="true"' in html
+    assert "63010" in html
+    assert "63000" in html
+    assert "63030" in html
+    assert 'data-market-v0-observe-tape-empty-v1="true"' not in html
+    assert 'data-market-v0-observe-depth-empty-v1="true"' not in html
+
+
+def test_double_play_excludes_market_observe_co_presence_markers_v1(client: TestClient) -> None:
+    """Double-Play must not carry /market-only observe co-presence inline markers."""
+    html = _html(client, "/market/double-play")
+    assert "market-v0-observe-co-presence" not in html
+    assert "market-v0-observe-tape-inline" not in html
+    assert "market-v0-observe-depth-inline" not in html
+    assert "data-market-v0-observe-co-presence-v1" not in html
+    assert "data-market-v0-observe-tape-inline-v1" not in html
+    assert "data-market-v0-observe-depth-inline-v1" not in html

@@ -304,22 +304,133 @@
     data-market-observe-strip-v1="true"
     data-market-tape-or-observe-strip-v1="true"
     data-market-depth-display-only-v1="true"
+    data-market-v0-observe-display-only-v1="true"
   >
     <h2 id="market-v0-landmark-observe-strip-h2" class="text-xs font-semibold text-teal-200/95 m-0 mb-2">Observe · Tape &amp; Depth (display-only)</h2>
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-[11px]">
-      <div class="rounded-lg border border-teal-800/40 bg-slate-950/55 px-2.5 py-2" data-market-observe-tape-summary-v1="true">
-        <p class="m-0 text-slate-400 font-semibold uppercase text-[10px]">Market tape</p>
-        {% if market_tape.section_visible %}
-        <p class="m-0 mt-1 text-slate-200">{{ market_tape.summary_line|e }}</p>
-        <p class="m-0 mt-1 text-slate-500 tabular-nums">Status: {{ market_tape.display_status|e }} · Trades: {{ market_tape.trade_count }}</p>
+    <p class="m-0 mb-2 flex flex-wrap gap-1.5 text-[9px] font-semibold uppercase tracking-wide" data-market-v0-observe-display-only-v1="true">
+      <span class="rounded border border-slate-700/70 bg-slate-900/80 px-1.5 py-0.5 text-slate-300">READ ONLY</span>
+      <span class="rounded border border-slate-700/70 bg-slate-900/80 px-1.5 py-0.5 text-slate-300">display-only</span>
+      <span class="rounded border border-slate-700/70 bg-slate-900/80 px-1.5 py-0.5 text-slate-300">no orders</span>
+      <span class="rounded border border-slate-700/70 bg-slate-900/80 px-1.5 py-0.5 text-slate-300">no execution</span>
+    </p>
+    {% if market_tape.section_visible and market_tape.tape_ready %}
+    {% set observe_tape_source_mode = "fixture_offline" %}
+    {% elif market_tape.section_visible %}
+    {% set observe_tape_source_mode = market_tape.display_status %}
+    {% else %}
+    {% set observe_tape_source_mode = "disabled" %}
+    {% endif %}
+    {% if market_depth.has_depth_levels %}
+    {% set observe_depth_source_mode = "fixture_offline" if market_depth.display_status == "ok" else market_depth.display_status %}
+    {% else %}
+    {% set observe_depth_source_mode = market_depth.display_status %}
+    {% endif %}
+    <div
+      id="market-v0-observe-co-presence"
+      class="grid grid-cols-1 md:grid-cols-2 gap-3 text-[11px]"
+      data-market-v0-observe-co-presence-v1="true"
+      data-market-v0-observe-source-mode-v1="tape:{{ observe_tape_source_mode|e }};depth:{{ observe_depth_source_mode|e }}"
+    >
+      <div
+        id="market-v0-observe-tape-inline"
+        class="rounded-lg border border-teal-800/40 bg-slate-950/55 px-2.5 py-2 flex flex-col gap-1.5"
+        data-market-v0-observe-tape-inline-v1="true"
+        data-market-observe-tape-summary-v1="true"
+        data-market-v0-observe-tape-source-mode-v1="{{ observe_tape_source_mode|e }}"
+      >
+        <div class="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0.5">
+          <p class="m-0 text-slate-400 font-semibold uppercase text-[10px]">Market tape</p>
+          <span class="text-[9px] font-mono text-slate-500" data-market-v0-observe-source-mode-v1="tape">source: {{ observe_tape_source_mode|e }}</span>
+        </div>
+        {% if market_tape.tape_ready and market_tape.top_trades %}
+        <table class="w-full text-[10px] tabular-nums border-collapse">
+          <thead>
+            <tr class="text-slate-400 text-left">
+              <th class="pr-2 font-normal">seq</th>
+              <th class="pr-2 font-normal">side</th>
+              <th class="pr-2 font-normal">price</th>
+              <th class="font-normal">size</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for row in market_tape.top_trades %}
+            <tr data-market-v0-observe-tape-row-v1="true">
+              <td class="pr-2 text-slate-200">{{ row.sequence|e }}</td>
+              <td class="pr-2 text-slate-200">{{ row.side|e }}</td>
+              <td class="pr-2 font-mono text-slate-200">{{ row.price|e }}</td>
+              <td class="font-mono text-slate-200">{{ row.size|e }}</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <p class="m-0 text-[10px] text-slate-500">Top-{{ market_tape.top_trades|length }} · offline fixture · not live market data.</p>
         {% else %}
-        <p class="m-0 mt-1 text-slate-400">Tape SSR off or unconfigured — fixture/offline display mode.</p>
+        <p class="m-0 text-slate-400" data-market-v0-observe-tape-empty-v1="true">
+          {% if market_tape.section_visible %}
+          Tape unavailable in this snapshot ({{ market_tape.display_status|e }}) — display-only; not live market data.
+          {% else %}
+          Tape SSR off — fixture/offline display mode; enable env gate for full panel below.
+          {% endif %}
+        </p>
+        {% endif %}
+        {% if market_tape.section_visible %}
+        <p class="m-0 text-[10px] text-slate-500 tabular-nums">{{ market_tape.summary_line|e }}</p>
+        {% endif %}
+        {% if market_tape.section_visible %}
+        <p class="m-0 text-[9px] text-teal-700/90"><a href="#market-v0-tape-ssr" class="text-teal-400/90 no-underline hover:underline">Full tape panel ↓</a></p>
         {% endif %}
       </div>
-      <div class="rounded-lg border border-amber-800/40 bg-slate-950/55 px-2.5 py-2" data-market-observe-depth-summary-v1="true">
-        <p class="m-0 text-slate-400 font-semibold uppercase text-[10px]">Orderbook / depth</p>
-        <p class="m-0 mt-1 text-slate-200">{{ market_depth.summary_line|e }}</p>
-        <p class="m-0 mt-1 text-slate-500 tabular-nums">Status: {{ market_depth.display_status|e }} · display-only · no controls</p>
+      <div
+        id="market-v0-observe-depth-inline"
+        class="rounded-lg border border-amber-800/40 bg-slate-950/55 px-2.5 py-2 flex flex-col gap-1.5"
+        data-market-v0-observe-depth-inline-v1="true"
+        data-market-observe-depth-summary-v1="true"
+        data-market-v0-observe-depth-source-mode-v1="{{ observe_depth_source_mode|e }}"
+      >
+        <div class="flex flex-wrap items-baseline justify-between gap-x-2 gap-y-0.5">
+          <p class="m-0 text-slate-400 font-semibold uppercase text-[10px]">Orderbook / depth</p>
+          <span class="text-[9px] font-mono text-slate-500" data-market-v0-observe-source-mode-v1="depth">source: {{ observe_depth_source_mode|e }}</span>
+        </div>
+        {% if market_depth.has_depth_levels %}
+        {% set observe_depth_rows = [market_depth.top_bids[:5]|length, market_depth.top_asks[:5]|length]|max %}
+        <table class="w-full text-[10px] tabular-nums border-collapse">
+          <thead>
+            <tr class="text-slate-400 text-left">
+              <th class="pr-2 font-normal">lvl</th>
+              <th class="pr-2 font-normal">bid px</th>
+              <th class="pr-2 font-normal">bid sz</th>
+              <th class="pr-2 font-normal">ask px</th>
+              <th class="font-normal">ask sz</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for i in range(observe_depth_rows) %}
+            <tr data-market-v0-observe-depth-row-v1="true">
+              <td class="pr-2 text-slate-400">{{ i + 1 }}</td>
+              <td class="pr-2 font-mono text-emerald-300/90">
+                {% if i < market_depth.top_bids|length %}{{ market_depth.top_bids[i].price|e }}{% else %}—{% endif %}
+              </td>
+              <td class="pr-2 font-mono text-slate-300">
+                {% if i < market_depth.top_bids|length %}{{ market_depth.top_bids[i].size|e }}{% else %}—{% endif %}
+              </td>
+              <td class="pr-2 font-mono text-rose-300/90">
+                {% if i < market_depth.top_asks|length %}{{ market_depth.top_asks[i].price|e }}{% else %}—{% endif %}
+              </td>
+              <td class="font-mono text-slate-300">
+                {% if i < market_depth.top_asks|length %}{{ market_depth.top_asks[i].size|e }}{% else %}—{% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+        <p class="m-0 text-[10px] text-slate-500">Top levels · offline bundle · not live orderbook · no order controls.</p>
+        {% else %}
+        <p class="m-0 text-slate-400" data-market-v0-observe-depth-empty-v1="true">
+          Depth ladder empty ({{ market_depth.display_status|e }}) — display-only; not live orderbook data.
+        </p>
+        {% endif %}
+        <p class="m-0 text-[10px] text-slate-500 tabular-nums">{{ market_depth.summary_line|e }}</p>
+        <p class="m-0 text-[9px] text-amber-700/90"><a href="#market-v0-depth-ssr" class="text-amber-400/90 no-underline hover:underline">Full depth panel ↓</a></p>
       </div>
     </div>
   </section>
