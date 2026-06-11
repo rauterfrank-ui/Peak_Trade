@@ -21,6 +21,14 @@ TAXONOMY_SPEC = (
 )
 REGISTRY_SCRIPT = REPO_ROOT / "scripts" / "ops" / "build_generic_evidence_run_registry_v1.py"
 
+CANONICAL_DURABLE_CLOSEOUT_ATTACH_HOOK_OWNERS_V0: dict[str, str] = {
+    "scheduler_completion": "scripts/run_scheduler.py",
+    "paper_bounded_adapter": "scripts/ops/run_paper_only_bounded_observation_adapter_v0.py",
+    "shadow_bounded_adapter": "scripts/ops/run_shadow_bounded_observation_adapter_v0.py",
+    "testnet_bounded_adapter": "scripts/ops/run_testnet_bounded_observation_adapter_v0.py",
+    "supervisor_evidence_pack": "scripts/ops/pack_online_readiness_supervisor_evidence_v0.py",
+}
+
 POST_CLOSEOUT_AUTOMATION_HOOK_OWNER_PRECHECK_MARKERS: tuple[str, ...] = (
     "POST_CLOSEOUT_AUTOMATION_HOOK_OWNER_PRECHECK_V0=true",
     "HOOK_AUTOMATION_OWNER_STATUS=identified",

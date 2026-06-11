@@ -314,6 +314,14 @@ def test_spec_section_6a08_1_preflight_2b3_closeout_validation_crosslink_v0() ->
     assert "pack_online_readiness_supervisor_evidence_v0.py" in section
     assert "test_scheduler_durable_closeout_hook_pass_through_v0.py" in section
     assert "test_supervisor_pack_durable_closeout_hook_pass_through_v0.py" in section
+    for owner_id in (
+        "scheduler_completion",
+        "paper_bounded_adapter",
+        "shadow_bounded_adapter",
+        "testnet_bounded_adapter",
+        "supervisor_evidence_pack",
+    ):
+        assert owner_id in section
 
 
 def test_preflight_crosslinks_taxonomy_spec() -> None:
