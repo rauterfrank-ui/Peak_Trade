@@ -884,6 +884,117 @@ def build_market_instrument_header_display_context(
     }
 
 
+def build_market_futures_metrics_strip_display_context(
+    *,
+    source: Literal["kraken", "dummy"],
+    payload: Dict[str, Any],
+    market_depth: Dict[str, Any],
+) -> Dict[str, Any]:
+    """Display-only futures metrics strip for GET /market (derived from bars/depth, no signals)."""
+
+    if source == "dummy":
+        source_mode = "dummy_offline_synthetic"
+    elif source == "kraken":
+        source_mode = "kraken_public_ohlcv"
+    else:
+        source_mode = "unavailable"
+
+    bars = payload.get("bars") if isinstance(payload.get("bars"), list) else []
+    last_close: float | None = None
+    volatility_proxy_display = ""
+    volatility_status = "unavailable"
+    volume_display = ""
+    volume_status = "unavailable"
+
+    if bars:
+        last_bar = bars[-1] if isinstance(bars[-1], dict) else {}
+        raw_close = last_bar.get("close")
+        if raw_close is not None:
+            try:
+                last_close = float(raw_close)
+            except (TypeError, ValueError):
+                last_close = None
+
+        if last_close is not None and last_close > 0:
+            try:
+                high = float(last_bar.get("high", 0))
+                low = float(last_bar.get("low", 0))
+                range_pct = ((high - low) / last_close) * 100.0
+                volatility_proxy_display = f"{range_pct:.4f}% bar range"
+                volatility_status = "available"
+            except (TypeError, ValueError):
+                pass
+
+        raw_volume = last_bar.get("volume")
+        if raw_volume is not None:
+            try:
+                volume_display = _format_display_price(float(raw_volume))
+                volume_status = "available"
+            except (TypeError, ValueError):
+                pass
+
+    mid: float | None = None
+    spread: float | None = None
+    spread_depth_status = "unavailable"
+    depth_quality_display = ""
+    spread_source_mode = "unavailable"
+    top_bids = (
+        market_depth.get("top_bids") if isinstance(market_depth.get("top_bids"), list) else []
+    )
+    top_asks = (
+        market_depth.get("top_asks") if isinstance(market_depth.get("top_asks"), list) else []
+    )
+    if market_depth.get("has_depth_levels") and top_bids and top_asks:
+        try:
+            best_bid = float(str(top_bids[0].get("price", "")).strip())
+            best_ask = float(str(top_asks[0].get("price", "")).strip())
+            mid = (best_bid + best_ask) / 2.0
+            spread = best_ask - best_bid
+            spread_source_mode = (
+                "fixture_offline"
+                if market_depth.get("display_status") == "ok"
+                else str(market_depth.get("display_status") or "unavailable")
+            )
+            level_count = len(top_bids) + len(top_asks)
+            spread_bps = (spread / mid * 10000.0) if mid and mid > 0 else 0.0
+            depth_quality_display = f"{level_count} top levels · {spread_bps:.2f} bps spread proxy"
+            spread_depth_status = "available"
+        except (TypeError, ValueError, IndexError, AttributeError):
+            mid = None
+            spread = None
+
+    bars_returned = int(payload.get("bars_returned") or 0)
+    depth_display = str(market_depth.get("display_status") or "unavailable")
+    if bars_returned > 0 and spread_depth_status == "available":
+        readiness_display = "bars+depth_ready"
+    elif bars_returned > 0:
+        readiness_display = "bars_ready"
+    else:
+        readiness_display = "bars_unavailable"
+
+    return {
+        "source_mode": source_mode,
+        "last_close": last_close,
+        "last_close_display": _format_display_price(last_close),
+        "last_price_status": "available" if last_close is not None else "unavailable",
+        "volatility_proxy_display": volatility_proxy_display,
+        "volatility_status": volatility_status,
+        "volume_display": volume_display,
+        "volume_status": volume_status,
+        "mid": mid,
+        "spread": spread,
+        "mid_display": _format_display_price(mid),
+        "spread_display": _format_display_price(spread),
+        "depth_quality_display": depth_quality_display,
+        "spread_depth_status": spread_depth_status,
+        "spread_source_mode": spread_source_mode,
+        "depth_display_status": depth_display,
+        "readiness_display": readiness_display,
+        "data_authority": False,
+        "trading_authority": False,
+    }
+
+
 def build_market_operator_overview_display_context(
     *,
     ranking_funnel: Dict[str, Any],
@@ -1019,6 +1130,11 @@ def create_market_router(
             payload=payload,
             market_depth=market_depth,
         )
+        futures_metrics_strip = build_market_futures_metrics_strip_display_context(
+            source=src,
+            payload=payload,
+            market_depth=market_depth,
+        )
         active_paper_run = build_market_active_paper_run_display_context()
         market_single_page_consolidation = build_market_single_page_consolidation_display_context()
         workflow_dashboard: Dict[str, Any] | None = None
@@ -1039,6 +1155,7 @@ def create_market_router(
                 "ranking_watchlist": ranking_watchlist,
                 "operator_overview": operator_overview,
                 "instrument_header": instrument_header,
+                "futures_metrics_strip": futures_metrics_strip,
                 "active_paper_run": active_paper_run,
                 "market_single_page_consolidation": market_single_page_consolidation,
                 "workflow_dashboard": workflow_dashboard,

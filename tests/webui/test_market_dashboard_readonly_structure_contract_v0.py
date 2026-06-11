@@ -1450,6 +1450,86 @@ def test_double_play_excludes_market_instrument_header_markers_v1(client: TestCl
     assert "data-market-v0-instrument-symbol" not in html
 
 
+def test_market_futures_metrics_strip_display_only_markers_v1(client: TestClient) -> None:
+    """Kraken-like futures metrics strip: display-only markers, derived from bars, no order controls."""
+    html = _html(client, "/market")
+
+    assert 'id="market-v0-futures-metrics-strip"' in html
+    assert 'data-market-v0-futures-metrics-strip="true"' in html
+    assert 'data-market-v0-futures-metric-last="true"' in html
+    assert 'data-market-v0-futures-metric-volatility="true"' in html
+    assert 'data-market-v0-futures-metric-volume="true"' in html
+    assert 'data-market-v0-futures-metric-spread="true"' in html
+    assert 'data-market-v0-futures-metric-depth-quality="true"' in html
+    assert 'data-market-v0-futures-metric-readiness="true"' in html
+    assert 'data-market-v0-futures-metric-source-mode="true"' in html
+    assert 'data-market-v0-futures-metrics-display-only="true"' in html
+    assert 'data-market-v0-futures-metrics-no-authority="true"' in html
+    assert "source-mode: dummy_offline_synthetic" in html
+    assert "data authority=false" in html
+    assert "trading authority=false" in html
+    assert ">no orders<" in html
+    assert ">no execution<" in html
+    assert "not a signal" in html
+
+    strip_idx = html.index('id="market-v0-futures-metrics-strip"')
+    strip_window = html[strip_idx : strip_idx + 12000].lower()
+    assert "data-order-form" not in strip_window
+    assert "data-order-submit" not in strip_window
+    assert "place order" not in strip_window
+    assert "cancel order" not in strip_window
+    assert "arm order" not in strip_window
+    assert "leverage" not in strip_window
+    assert "margin control" not in strip_window
+
+    assert 'id="market-v0-instrument-header"' in html
+    assert 'data-market-v0-instrument-header="true"' in html
+    assert 'id="market-v0-ranking-watchlist"' in html
+    assert 'data-market-v0-ranking-watchlist="true"' in html
+    assert 'id="market-v0-observe-co-presence"' in html
+    assert 'data-market-v0-observe-co-presence-v1="true"' in html
+    assert 'data-market-v0-ssr-metrics-strip="true"' in html
+
+
+def test_market_futures_metrics_strip_bars_derived_values_default_v1(client: TestClient) -> None:
+    """Default dummy OHLCV surfaces last/volatility/volume from embedded bars."""
+    html = _html(client, "/market")
+
+    assert 'data-market-v0-futures-metric-last="true"' in html
+    assert 'data-market-v0-futures-metric-volatility="true"' in html
+    assert 'data-market-v0-futures-metric-volume="true"' in html
+    assert "last bar volume" in html
+    assert "bar range" in html
+    assert "bars_ready" in html
+    assert "unavailable (depth" in html
+
+
+def test_market_futures_metrics_strip_spread_depth_from_fixture_v1(
+    client_depth_fixture_bundle_on: TestClient,
+) -> None:
+    """Depth fixture enables spread and depth-quality metrics in futures strip."""
+    html = _html(client_depth_fixture_bundle_on, "/market")
+
+    assert 'data-market-v0-futures-metric-spread="true"' in html
+    assert 'data-market-v0-futures-metric-depth-quality="true"' in html
+    assert "spread 10" in html
+    assert "top levels" in html
+    assert "bps spread proxy" in html
+    assert "bars+depth_ready" in html
+    assert "depth fixture_offline" in html
+
+
+def test_double_play_excludes_market_futures_metrics_strip_markers_v1(
+    client: TestClient,
+) -> None:
+    """Double-Play must not carry /market-only futures metrics strip markers."""
+    html = _html(client, "/market/double-play")
+    assert "market-v0-futures-metrics-strip" not in html
+    assert "data-market-v0-futures-metrics-strip" not in html
+    assert "data-market-v0-futures-metric-last" not in html
+    assert "data-market-v0-futures-metric-volatility" not in html
+
+
 def test_market_ranking_watchlist_funnel_vnext_wiring_markers_v1(client: TestClient) -> None:
     """Kraken-like ranking watchlist/scanner funnel vNext wiring markers on /market."""
     html = _html(client, "/market")
