@@ -495,6 +495,90 @@ PREFLIGHT_REMAINS_BLOCKED=true
 READY_FOR_OPERATOR_ARMING=false
 ```
 
+## 2b.3 Durable closeout adapter validation operator SSOT v0
+
+```
+PREFLIGHT_DURABLE_CLOSEOUT_ADAPTER_VALIDATION_SSOT_V0=true
+PREFLIGHT_DURABLE_CLOSEOUT_ADAPTER_VALIDATION_DOCS_TESTS_ONLY=true
+DURABLE_CLOSEOUT_IDENTICAL_SOURCE_DEST_REJECTED=true
+DURABLE_CLOSEOUT_ADAPTER_PRE_INVOKE_VALIDATION=true
+BOUNDED_ADAPTER_OBSERVATION_CLOSEOUT_DECOUPLED=true
+DURABLE_CLOSEOUT_FORCE_REQUIRES_DISTINCT_PATHS=true
+BLOCKER_HINT_MACHINE_READABLE=true
+AUTHORITATIVE_STATUS_HIERARCHY_V0=true
+HISTORICAL_PRE_RECOVERY_FAIL_NOT_CURRENT_STATUS=true
+PREFLIGHT_REMAINS_BLOCKED=true
+PRE_FLIGHT_BLOCKED_LIFTED=false
+READY_FOR_OPERATOR_ARMING=false
+CLOSEOUT_DOES_NOT_AUTHORIZE_RUNTIME=true
+```
+
+**Purpose:** Operator/SSOT sync after PR **#4127** (helper identical/equivalent source-dest guard) and PR **#4128** (bounded observation adapter closeout pre-invoke validation). This section documents runtime guard semantics already on `main`; it **does not** re-implement helpers, **does not** lift Preflight **BLOCKED**, and **does not** authorize Paper/Shadow/Testnet/Live/scheduler/daemon execution.
+
+### PR #4127 — helper source/dest guard (reuse; no parallel logic)
+
+[durable_closeout_copy_verify_v0.py](../../../scripts/ops/durable_closeout_copy_verify_v0.py) fail-closed rejects **identical or equivalent** `--source-dir` and `--dest-dir` paths (`_validate_source_dest_distinct`). Resolved paths that are the same directory are **rejected** regardless of narrative or observation PASS. Operators must use a **separate snapshot source directory** with a **distinct** durable destination, or satisfy helper `--force` **only when source and dest actually differ** (not as a bypass for identical paths).
+
+Static guard: [test_durable_closeout_copy_verify_v0.py](../../../tests/ops/test_durable_closeout_copy_verify_v0.py).
+
+### PR #4128 — bounded adapter closeout validation (decoupled from observation PASS)
+
+Paper and Shadow bounded observation adapters ([run_paper_only_bounded_observation_adapter_v0.py](../../../scripts/ops/run_paper_only_bounded_observation_adapter_v0.py), [run_shadow_bounded_observation_adapter_v0.py](../../../scripts/ops/run_shadow_bounded_observation_adapter_v0.py)) call `validate_durable_closeout_invoke_paths()` **before** invoking the helper when `--invoke-durable-closeout-v0` is set. The adapter **reuses** `_validate_source_dest_distinct` and `_dest_has_content` from the helper module — **no parallel guard logic**.
+
+When validation blocks closeout copy:
+
+- `BOUNDED_ADAPTER_DURABLE_CLOSEOUT_VALIDATION_BLOCKED=true`
+- `BOUNDED_ADAPTER_DURABLE_CLOSEOUT_STATUS=blocked`
+- `BOUNDED_ADAPTER_DURABLE_CLOSEOUT_HELPER_RC=not_run`
+- `BOUNDED_ADAPTER_OBSERVATION_CLOSEOUT_DECOUPLED=true` — observation/review **PASS** does **not** imply closeout copy **PASS**; operators must treat closeout status separately.
+
+Static guard: [test_bounded_adapter_invoke_durable_closeout_v0.py](../../../tests/ops/test_bounded_adapter_invoke_durable_closeout_v0.py).
+
+### `--durable-closeout-force` (adapter) vs `--force` (helper)
+
+| Flag | Surface | Safe use |
+|------|---------|----------|
+| `--durable-closeout-force` | bounded adapter (`--invoke-durable-closeout-v0`) | Only when `--durable-closeout-dest-dir` is **non-empty** and source/dest are **distinct** paths (for example overwrite of an existing durable tree from a separate snapshot source). **Not** a bypass for identical/equivalent source==dest. |
+| `--force` | [durable_closeout_copy_verify_v0.py](../../../scripts/ops/durable_closeout_copy_verify_v0.py) | Same rule: distinct source/dest required; permits overwrite when destination already has content. |
+
+Unsafe pattern (blocked): same resolved path for archive source and durable closeout destination with or without force flags.
+
+### `BLOCKER_HINT` (machine-readable operator recovery)
+
+When closeout copy is blocked, adapters emit machine-readable hints for operator recovery:
+
+| Token | Meaning | Operator recovery |
+|-------|---------|-------------------|
+| `durable_closeout_identical_source_dest` | Source and dest resolve to the same path | Copy from a **separate snapshot source directory**; ensure dest is a **distinct** durable path outside `/tmp`. |
+| `durable_closeout_dest_non_empty_without_force` | Destination exists and is non-empty without `--durable-closeout-force` | Use a fresh dest, or `--durable-closeout-force` only with **distinct** source/dest (or separate snapshot source). |
+
+Machine line shapes (non-authorizing):
+
+- `BOUNDED_ADAPTER_DURABLE_CLOSEOUT_BLOCKER_HINT=<token>`
+- `BLOCKER_HINT=<token>` in adapter `START_RETURN_CODE` artifact when execute returns blocked closeout
+
+Hints point to **snapshot-source recovery** or appropriate force scope; they **do not** authorize runtime, lift Preflight **BLOCKED**, or clear **HOLD**.
+
+### Authoritative status hierarchy (post-recovery vs historical pre-recovery FAIL)
+
+When durable run/closeout bundles contain **divergent** status fields — for example historical `RUN_CLOSEOUT.md` or `RESULT_SUMMARY.env` recording a **pre-recovery FAIL** (identical source/dest, missing force, or `/tmp`-only closeout) while later **snapshot-recovery** artifacts show **PASS**:
+
+**Authoritative current status** (when `MANIFEST_VERIFY_RC=0` on the recovery/analysis bundle):
+
+1. **`MACHINE_SUMMARY.env`** in the recovery or post-run analysis bundle
+2. **Recovery artifacts** (for example snapshot-source re-copy, durable closeout verify RC=0, analysis bundle verdict)
+3. **Post-run analysis bundle** with verified manifest
+
+**Subordinate / historical only:**
+
+- Pre-recovery `RUN_CLOSEOUT.md` / `RESULT_SUMMARY.env` FAIL lines — **traceability only**; must **not** be promoted as the current run FAIL when recovery PASS + analysis PASS + `MANIFEST_VERIFY_RC=0` are present.
+
+**Paper-L2 120min hold-binding context (observed):** bounded observation may **PASS** while closeout copy was **blocked** until snapshot-source recovery; `NEXT_TEST_NECESSITY=false` after analysis PASS does **not** imply Preflight lift.
+
+This hierarchy is **operator SSOT for status interpretation** only — **Evidence ≠ approval**; Preflight remains **BLOCKED** (`PREFLIGHT_REMAINS_BLOCKED=true`; `PRE_FLIGHT_BLOCKED_LIFTED=false`).
+
+Cross-reference: §2b.2 helper fail-closed rules; §2a.1 primary evidence hard gate; §2b.1 material closeout completeness.
+
 ## 2c. Preflight Gate Repo-Internal Write/Lift Applied Reflection v0
 
 PREFLIGHT_GATE_REPO_INTERNAL_WRITE_LIFT_V0=true

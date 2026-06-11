@@ -219,3 +219,75 @@ def test_preflight_section_2b2_eer1_readiness_review_index_v0() -> None:
     section_lines = {line.strip() for line in section.splitlines()}
     assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" not in section_lines
     assert "READY_FOR_OPERATOR_ARMING=true" not in section_lines
+
+
+def _section_2b3(text: str | None = None) -> str:
+    body = text if text is not None else _read_contract()
+    return body.split("## 2b.3 Durable closeout adapter validation operator SSOT v0", 1)[1].split(
+        "## 2c. Preflight Gate Repo-Internal Write/Lift Applied Reflection v0", 1
+    )[0]
+
+
+def test_preflight_section_2b3_durable_closeout_adapter_validation_ssot_v0() -> None:
+    text = _read_contract()
+    assert "## 2b.3 Durable closeout adapter validation operator SSOT v0" in text
+    section = _section_2b3(text)
+    for token in (
+        "PREFLIGHT_DURABLE_CLOSEOUT_ADAPTER_VALIDATION_SSOT_V0=true",
+        "PREFLIGHT_DURABLE_CLOSEOUT_ADAPTER_VALIDATION_DOCS_TESTS_ONLY=true",
+        "DURABLE_CLOSEOUT_IDENTICAL_SOURCE_DEST_REJECTED=true",
+        "DURABLE_CLOSEOUT_ADAPTER_PRE_INVOKE_VALIDATION=true",
+        "BOUNDED_ADAPTER_OBSERVATION_CLOSEOUT_DECOUPLED=true",
+        "DURABLE_CLOSEOUT_FORCE_REQUIRES_DISTINCT_PATHS=true",
+        "BLOCKER_HINT_MACHINE_READABLE=true",
+        "AUTHORITATIVE_STATUS_HIERARCHY_V0=true",
+        "HISTORICAL_PRE_RECOVERY_FAIL_NOT_CURRENT_STATUS=true",
+        "PREFLIGHT_REMAINS_BLOCKED=true",
+        "PRE_FLIGHT_BLOCKED_LIFTED=false",
+    ):
+        assert token in section
+    assert "#4127" in section
+    assert "#4128" in section
+    assert "durable_closeout_copy_verify_v0.py" in section
+    assert "run_paper_only_bounded_observation_adapter_v0.py" in section
+    assert "validate_durable_closeout_invoke_paths" in section
+    assert "test_durable_closeout_copy_verify_v0.py" in section
+    assert "test_bounded_adapter_invoke_durable_closeout_v0.py" in section
+
+
+def test_preflight_section_2b3_durable_closeout_force_and_blocker_hints_v0() -> None:
+    section = _section_2b3()
+    assert "--durable-closeout-force" in section
+    assert "BLOCKER_HINT" in section
+    assert "durable_closeout_identical_source_dest" in section
+    assert "durable_closeout_dest_non_empty_without_force" in section
+    assert "BOUNDED_ADAPTER_DURABLE_CLOSEOUT_BLOCKER_HINT" in section
+    assert "snapshot source" in section.lower() or "snapshot-source" in section.lower()
+
+
+def test_preflight_section_2b3_authoritative_hierarchy_and_non_authorizing_v0() -> None:
+    text = _read_contract()
+    section = _section_2b3(text)
+    assert "MACHINE_SUMMARY.env" in section
+    assert "MANIFEST_VERIFY_RC=0" in section
+    assert "RUN_CLOSEOUT.md" in section
+    assert "RESULT_SUMMARY.env" in section
+    assert "historical" in section.lower() or "pre-recovery" in section.lower()
+    assert "does **not** lift Preflight **BLOCKED**" in section or (
+        "Preflight remains **BLOCKED**" in section
+    )
+    collapsed = section.replace("**", "")
+    assert "Evidence ≠ approval" in collapsed or "Evidence != approval" in collapsed
+    assert text.index("## 2b.2 Closeout Enforcement Planning Contract v0") < text.index(
+        "## 2b.3 Durable closeout adapter validation operator SSOT v0"
+    )
+
+
+def test_preflight_section_2b3_adjacent_section_ordering_v0() -> None:
+    text = _read_contract()
+    assert text.index("## 2b.2 Closeout Enforcement Planning Contract v0") < text.index(
+        "## 2b.3 Durable closeout adapter validation operator SSOT v0"
+    )
+    assert text.index("## 2b.3 Durable closeout adapter validation operator SSOT v0") < text.index(
+        "## 2c. Preflight Gate Repo-Internal Write/Lift Applied Reflection v0"
+    )
