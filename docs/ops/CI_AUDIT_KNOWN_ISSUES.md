@@ -3009,7 +3009,8 @@ LIVE_TOUCHED=false
 
 - `DERIVED_ONLY_MAPPING_WAVE1_BATCH_CLOSURE_V0=true` (merged PR #3895).
 - R-001/R-002/R-007 promoted to **`mapped-by-derived-evidence`** with reciprocal repo test owners (see § derived-only mapping wave-1 batch closure v0).
-- Definitive **`mapped`** status remains **blocked** while `INPUT_JSONL_PROVIDED=false` (`DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=true`).
+- Definitive **`mapped`** status completed by merged PR #4093 (`GO_CYBERSECURITY_DEFINITIVE_R001_R002_R007_MAPPING_EXECUTION_DOCS_TESTS_V1`; see § definitive mapping execution docs/tests v1). Canonical retained-risk table above records **mapped (definitive)** for R-001/R-002/R-007.
+- Release RC index machine block below reflects post-#4093 state (`DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=false`; `R001_R002_R007_DEFINITIVE_MAPPING_STATUS=definitive_mapped`). Historical slice sections below may still record interim **blocked**/**pending** tokens at slice time — not current release-index truth.
 - CSC-RCHAIN-v1 repo-reflected aggregates unchanged: **258** ACCEPT / **1** reviewed-prepared-only / **413** PARK (`672` total); GROUP_PARK_REAFFIRMED **238**.
 
 **Durable operator pointers (archive only — not repo-ingested):**
@@ -3037,7 +3038,7 @@ LIVE_TOUCHED=false
 
 - **No real-data/PII** — no lossless JSONL ingest, no external cyber datasets, no raw logs, no personenbezogene Daten; cyber real-data/PII remains **BLOCKED** until explicit Legal/Privacy-GO.
 - **No runtime** — no paper/shadow/testnet/live, no scheduler/daemon, no workflow dispatch from automation.
-- **No external cyber data intake** — derived/repo-static visibility only; `INPUT_JSONL_PROVIDED=false` unchanged by this release line.
+- **No external cyber data intake into repo** — external INPUT_JSONL remains archive-only (`INPUT_JSONL_REPO_INGESTED=false`); governance `INPUT_JSONL_PROVIDED=true` reflects operator-chartered external artifact per § definitive mapping execution docs/tests v1 (PR #4093) — **not** repo ingest.
 - **No trading authority** — no Master V2 / Double Play / execution / risk / governance / live gate changes.
 - **Reuse-before-new** — extend this CI audit anchor and existing guard modules; **no** parallel cybersecurity index, evidence hub, readiness map, or handoff surface.
 - **Follow slices** may extend existing `tests&#47;ci&#47;test_cybersecurity_visibility_*` guards only — not new parallel SSOT files.
@@ -3046,9 +3047,14 @@ LIVE_TOUCHED=false
 CYBERSECURITY_VISIBILITY_RELEASE_RC_V0=true
 SLICE_CV1_DOCS_ONLY=true
 WAVE1_DERIVED_MAPPING_BATCH_CLOSURE_COMPLETE=true
-MAPPED_BY_DERIVED_EVIDENCE_ONLY=true
-DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=true
-INPUT_JSONL_PROVIDED=false
+DEFINITIVE_R001_R002_R007_MAPPING_EXECUTION_MERGED_PR4093=true
+R001_R002_R007_DEFINITIVE_MAPPING_STATUS=definitive_mapped
+DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=false
+INPUT_JSONL_PROVIDED=true
+INPUT_JSONL_REPO_INGESTED=false
+LOSSLESS_JSONL_RECOVERY=false
+NOT_ORIGINAL_TMP_FULL_LOSSLESS=true
+CYBERSECURITY_VISIBILITY_RELEASE_RC_V0_POST_DEFINITIVE_R001_R002_R007_MAPPING_INDEX_SYNC_V1=true
 CYBER_REAL_DATA_PII_BLOCKED=true
 CYBER_REAL_DATA_REQUIRES_LEGAL_PRIVACY_GO=true
 NO_EXTERNAL_CYBER_DATA_INTAKE=true
@@ -3061,6 +3067,8 @@ WORKFLOW_DISPATCH_EXECUTED=false
 PARALLEL_DOCS_CREATED=false
 PARALLEL_CYBER_INDEX_CREATED=false
 ```
+
+**Non-authorizing:** Release RC index sync only; does **not** ingest JSONL into repo, **does not** claim `LOSSLESS_JSONL_RECOVERY=true`, **does not** authorize runtime/scheduler/Testnet/Live, Preflight lift, or Master V2 / Double Play authority changes.
 
 ## Ops Cockpit / Operator Status Index RC v0 — meta-index v0
 
