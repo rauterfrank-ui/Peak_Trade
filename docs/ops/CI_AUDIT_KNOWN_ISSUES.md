@@ -82,6 +82,41 @@ PREFLIGHT_REMAINS_BLOCKED=true
 
 **Non-authorizing:** Docs/tests static crosslink only; does **not** authorize runtime, Testnet/Live/Paper/Shadow execution, scheduler/daemon/adapter start, broker/exchange access, provider-truth flip, dashboard truth, trading readiness, order/fill/position truth, Preflight lift, `READY_FOR_OPERATOR_ARMING=true`, Market-Airport, or Master V2 / Double Play / trading-logic changes. Tape SSR remains **default-off**, **env-gated**, **offline-fixture-only** on **`GET`** **`/market`** only.
 
+## Market Dashboard Operator Overview IA v1 DOCS_TRUTH_MAP static crosslink v1
+
+**Operator-GO:** `GO_MARKET_DASHBOARD_OPERATOR_OVERVIEW_IA_V1_DOCS_TRUTH_MAP_CI_AUDIT_STATIC_CROSSLINK_GUARD_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_market_dashboard_operator_view_redesign_pr4145_merge_closeout_no_run_v1_20260611T220823Z/`
+
+**Purpose:** Static crosslink guard so the read-only Market Dashboard Operator Overview IA v1 surface (PR #4145 on main) remains visible in DOCS_TRUTH_MAP and CI-Audit without authorizing runtime, trading authority, order controls, Testnet/Live, Preflight lift, or protected-scope mutation.
+
+**Canonical repo owners (reuse — do not duplicate):**
+
+| Concern | Owner |
+|---------|-------|
+| Operator Overview IA v1 spec + display-only markers | `docs/webui/MARKET_SURFACE_V0.md` § Operator overview IA v1 |
+| Operator Overview structure contract + SSR markers | `tests/webui/test_market_dashboard_readonly_structure_contract_v0.py` |
+| Operator Overview crosslink + env boundary guard | `tests/ops/test_market_surface_ranking_funnel_env_schema_boundary_v0.py` |
+| Display-only operator overview wiring (no decision logic) | `src/webui/market_surface.py` (`build_market_operator_overview_display_context`) |
+| DOCS_TRUTH_MAP chronicle | `docs/ops/registry/DOCS_TRUTH_MAP.md` (this crosslink section + Änderungsnachweis row) |
+
+```text
+MARKET_OPERATOR_OVERVIEW_IA_V1_CROSSLINK_GUARD_IMPLEMENTED=true
+MARKET_OPERATOR_OVERVIEW_IA_V1_DOCS_TRUTH_MAP_CI_AUDIT_STATIC_CROSSLINK_GUARD_V1=true
+MARKET_OPERATOR_OVERVIEW_IA_V1_CROSSLINK_DOCS_TESTS_ONLY=true
+MARKET_OPERATOR_OVERVIEW_IA_V1_SURFACE_REFERENCED=true
+MARKET_OPERATOR_OVERVIEW_IA_V1_TESTS_REFERENCED=true
+MARKET_OPERATOR_OVERVIEW_IA_V1_PR4145_ANCHOR_REFERENCED=true
+MARKET_DASHBOARD_READ_ONLY_NON_AUTHORITY=true
+MARKET_AIRPORT_CREATED_OR_REFERENCED=false
+ORDERFLOW_AUTHORIZATION_CREATED=false
+CANCEL_EXECUTE_AUTHORIZATION_CREATED=false
+READY_FOR_OPERATOR_ARMING_CHANGED=false
+RUNTIME_LOGIC_TOUCHED=false
+NEW_PARALLEL_SSOT_CREATED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+```
+
+**Non-authorizing:** Docs/tests static crosslink only; does **not** authorize runtime, Testnet/Live/Paper/Shadow execution, scheduler/daemon/adapter start, broker/exchange access, order submission/cancel/execute/arm, trading authority, provider-truth flip, dashboard truth, trading readiness, Preflight lift, `READY_FOR_OPERATOR_ARMING=true`, Market-Airport, or Master V2 / Double Play / Bull-Bear / Risk/KillSwitch / Scope/Capital / trading-logic changes. Operator Overview IA v1 remains **display-only**, **SSR**, **non-authorizing** on **`GET`** **`/market`** and **`GET`** **`/market/double-play`**; fixture/offline/source-mode labels are display-only only.
+
 ## Local reproduction
 ```bash
 ruff check .

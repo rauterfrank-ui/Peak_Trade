@@ -39,6 +39,7 @@ Keine Kopplung an OPS Cockpit (`/ops`). Keine Trading-Aktionen.
 - Top20/ranking table reuses **`market_ranking_funnel_readmodel_v0`** (`data-market-top20-ranking-v1`, `data-market-ranking-source-mode-v1`).
 - Explain readout reuses **`build_static_dashboard_display_dict()`** display-only (`data-market-ai-decision-readout-v1`) — **no** trading signal.
 - **`GET &#47;market&#47;double-play`**: Bull/Bear cards (`data-double-play-bull-bear-cards-v1`), compact scope/capital/risk cards (`data-double-play-scope-capital-risk-v1`); depth/diagnostics secondary.
+- Chronicle crosslink: **`docs/ops/CI_AUDIT_KNOWN_ISSUES.md`** § Market Dashboard Operator Overview IA v1 DOCS_TRUTH_MAP static crosslink v1; **`docs/ops/registry/DOCS_TRUTH_MAP.md`** Änderungsnachweis row (PR #4145 anchor); static guard in **`tests/ops/test_market_surface_ranking_funnel_env_schema_boundary_v0.py`**. **Display-only / SSR / no SPA / no order controls** — Kraken-like information architecture is view-IA only, not trading control.
 
 ### Lane taxonomy cross-reference (non-authorizing)
 
