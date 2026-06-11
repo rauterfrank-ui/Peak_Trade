@@ -50,6 +50,38 @@ PREFLIGHT_REMAINS_BLOCKED=true
 
 **Non-authorizing:** Docs/tests static crosslink only; does **not** authorize order submission, cancel, execute, broker/exchange, Testnet/Live, scheduler/daemon/adapter runtime, Preflight lift, `READY_FOR_OPERATOR_ARMING=true`, provider-truth flip, binding pass, or Master V2 / Double Play / trading-logic changes. Runner remains **plan-only** with `order_capability_lane_parked=true` and `order_capability_execute_authorized=false`.
 
+## Market tape readmodel SSR DOCS_TRUTH_MAP static crosslink v1
+
+**Operator-GO:** `GO_MARKET_TAPE_SSR_DOCS_TRUTH_MAP_CI_AUDIT_STATIC_CROSSLINK_GUARD_OPERATOR_GO_AUTOFILL_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_order_capability_fixture_binding_docs_truth_map_static_crosslink_guard_merge_no_run_v1_20260611T192531Z/`
+
+**Purpose:** Static crosslink guard so the env-gated read-only Market tape readmodel SSR surface (PR #4117 on main) remains visible in DOCS_TRUTH_MAP and CI-Audit without authorizing runtime, provider truth, order/fill/position truth, Testnet/Live, or Preflight lift.
+
+**Canonical repo owners (reuse — do not duplicate):**
+
+| Concern | Owner |
+|---------|-------|
+| Tape SSR spec + operator enablement | `docs/webui/MARKET_SURFACE_V0.md` § Market tape readmodel SSR |
+| Tape SSR + env boundary static tests | `tests/webui/test_market_tape_ssr_v0.py` |
+| Tape env/schema boundary guard | `tests/ops/test_market_surface_ranking_funnel_env_schema_boundary_v0.py` |
+| DOCS_TRUTH_MAP chronicle | `docs/ops/registry/DOCS_TRUTH_MAP.md` (this crosslink section + Änderungsnachweis row) |
+
+```text
+MARKET_TAPE_SSR_CROSSLINK_GUARD_IMPLEMENTED=true
+MARKET_TAPE_SSR_DOCS_TRUTH_MAP_CI_AUDIT_STATIC_CROSSLINK_GUARD_V1=true
+MARKET_TAPE_SSR_CROSSLINK_DOCS_TESTS_ONLY=true
+MARKET_TAPE_SSR_SURFACE_REFERENCED=true
+MARKET_TAPE_SSR_TESTS_REFERENCED=true
+MARKET_AIRPORT_CREATED_OR_REFERENCED=false
+ORDERFLOW_AUTHORIZATION_CREATED=false
+CANCEL_EXECUTE_AUTHORIZATION_CREATED=false
+READY_FOR_OPERATOR_ARMING_CHANGED=false
+RUNTIME_LOGIC_TOUCHED=false
+NEW_PARALLEL_SSOT_CREATED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+```
+
+**Non-authorizing:** Docs/tests static crosslink only; does **not** authorize runtime, Testnet/Live/Paper/Shadow execution, scheduler/daemon/adapter start, broker/exchange access, provider-truth flip, dashboard truth, trading readiness, order/fill/position truth, Preflight lift, `READY_FOR_OPERATOR_ARMING=true`, Market-Airport, or Master V2 / Double Play / trading-logic changes. Tape SSR remains **default-off**, **env-gated**, **offline-fixture-only** on **`GET`** **`/market`** only.
+
 ## Local reproduction
 ```bash
 ruff check .

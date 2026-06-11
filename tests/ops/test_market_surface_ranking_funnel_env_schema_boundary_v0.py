@@ -969,3 +969,84 @@ def test_market_surface_active_paper_run_operator_pointer_env_boundary_v0() -> N
 
     for token in forbidden_authority_tokens:
         assert token.lower() not in active_paper_run.lower()
+
+
+TRUTH_MAP = PROJECT_ROOT / "docs" / "ops" / "registry" / "DOCS_TRUTH_MAP.md"
+CI_AUDIT = PROJECT_ROOT / "docs" / "ops" / "CI_AUDIT_KNOWN_ISSUES.md"
+CROSSLINK_PACKAGE_MARKER = "MARKET_TAPE_SSR_DOCS_TRUTH_MAP_CI_AUDIT_STATIC_CROSSLINK_GUARD_V1=true"
+TEST_PACKAGE_MARKER = "MARKET_TAPE_SSR_DOCS_TRUTH_MAP_CI_AUDIT_CROSSLINK_GUARD_TEST=true"
+SURFACE_REL = "docs/webui/MARKET_SURFACE_V0.md"
+TAPE_SSR_TEST_REL = "tests/webui/test_market_tape_ssr_v0.py"
+BOUNDARY_TEST_REL = "tests/ops/test_market_surface_ranking_funnel_env_schema_boundary_v0.py"
+
+
+def _docs_truth_map_chronicle_row(truth_map: str, needle: str) -> str:
+    row_start = truth_map.index(needle)
+    row_end = truth_map.index("\n", row_start)
+    return truth_map[row_start:row_end]
+
+
+def test_market_tape_ssr_crosslink_package_marker_v1() -> None:
+    text = Path(__file__).read_text(encoding="utf-8")
+    assert TEST_PACKAGE_MARKER
+    assert CROSSLINK_PACKAGE_MARKER in text
+
+
+def test_docs_truth_map_market_tape_ssr_chronicle_v1() -> None:
+    truth_map = TRUTH_MAP.read_text(encoding="utf-8")
+    row = _docs_truth_map_chronicle_row(
+        truth_map, "Market tape readmodel SSR DOCS_TRUTH_MAP static crosslink guard v1"
+    )
+    for required in (
+        SURFACE_REL,
+        TAPE_SSR_TEST_REL,
+        BOUNDARY_TEST_REL,
+        "MARKET_TAPE_SSR_CROSSLINK_GUARD_IMPLEMENTED=true",
+        "MARKET_TAPE_SSR_SURFACE_REFERENCED=true",
+        "MARKET_TAPE_SSR_TESTS_REFERENCED=true",
+        "MARKET_AIRPORT_CREATED_OR_REFERENCED=false",
+        "ORDERFLOW_AUTHORIZATION_CREATED=false",
+        "non-authorizing",
+        "read-only",
+    ):
+        assert required.lower() in row.lower()
+
+
+def test_ci_audit_market_tape_ssr_crosslink_v1() -> None:
+    ci_audit = CI_AUDIT.read_text(encoding="utf-8")
+    section_start = ci_audit.index(
+        "## Market tape readmodel SSR DOCS_TRUTH_MAP static crosslink v1"
+    )
+    section_text = ci_audit[section_start : section_start + 3500]
+    for required in (
+        CROSSLINK_PACKAGE_MARKER,
+        "MARKET_TAPE_SSR_CROSSLINK_GUARD_IMPLEMENTED=true",
+        "MARKET_TAPE_SSR_SURFACE_REFERENCED=true",
+        "MARKET_TAPE_SSR_TESTS_REFERENCED=true",
+        "MARKET_AIRPORT_CREATED_OR_REFERENCED=false",
+        SURFACE_REL,
+        TAPE_SSR_TEST_REL,
+        BOUNDARY_TEST_REL,
+        "ORDERFLOW_AUTHORIZATION_CREATED=false",
+        "READY_FOR_OPERATOR_ARMING_CHANGED=false",
+        "non-authorizing",
+        "default-off",
+    ):
+        assert required.lower() in section_text.lower()
+
+
+def test_market_tape_ssr_surface_referenced_in_docs_v1() -> None:
+    surface = PROJECT_ROOT / "docs" / "webui" / "MARKET_SURFACE_V0.md"
+    assert surface.is_file()
+    truth_map = TRUTH_MAP.read_text(encoding="utf-8")
+    ci_audit = CI_AUDIT.read_text(encoding="utf-8")
+    assert SURFACE_REL in truth_map
+    assert SURFACE_REL in ci_audit
+
+
+def test_market_tape_ssr_tests_referenced_in_docs_v1() -> None:
+    truth_map = TRUTH_MAP.read_text(encoding="utf-8")
+    ci_audit = CI_AUDIT.read_text(encoding="utf-8")
+    for test_rel in (TAPE_SSR_TEST_REL, BOUNDARY_TEST_REL):
+        assert test_rel in truth_map
+        assert test_rel in ci_audit
