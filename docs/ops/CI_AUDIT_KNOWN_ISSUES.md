@@ -19,6 +19,37 @@
 - Historical formatter drift / Black wording: [Issue #252](https://github.com/rauterfrank-ui/Peak_Trade/issues/252)
 - Current formatter source of truth: Ruff format checks, not Black enforcement.
 
+## Order-Capability fixture-binding DOCS_TRUTH_MAP static crosslink v1
+
+**Operator-GO:** `GO_ORDER_CAPABILITY_FIXTURE_BINDING_DOCS_TRUTH_MAP_STATIC_CROSSLINK_GUARD_OPERATOR_GO_AUTOFILL_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_safe_scope_inventory_refresh_after_durable_closeout_guard_chain_pr4127_4137_no_run_v1_20260611T191500Z/`
+
+**Purpose:** Static crosslink guard so the parked/read-only Order-Capability fixture-binding surface (runner + tests on main) remains visible in DOCS_TRUTH_MAP and CI-Audit without authorizing orderflow, execute/cancel, runtime start, or Preflight lift.
+
+**Canonical repo owners (reuse — do not duplicate):**
+
+| Concern | Owner |
+|---------|-------|
+| Fixture-binding dry-validation runner (plan-only) | `scripts/ops/run_order_capability_fixture_binding_dry_validation_v1.py` |
+| Fixture-binding static crosslink + runner tests | `tests/ops/test_run_order_capability_fixture_binding_dry_validation_v1.py` |
+| DOCS_TRUTH_MAP chronicle | `docs/ops/registry/DOCS_TRUTH_MAP.md` (this crosslink section + Änderungsnachweis row) |
+
+```text
+ORDER_CAPABILITY_FIXTURE_BINDING_CROSSLINK_GUARD_IMPLEMENTED=true
+ORDER_CAPABILITY_FIXTURE_BINDING_DOCS_TRUTH_MAP_STATIC_CROSSLINK_GUARD_V1=true
+ORDER_CAPABILITY_FIXTURE_BINDING_CROSSLINK_DOCS_TESTS_ONLY=true
+ORDER_CAPABILITY_PARKED_READ_ONLY_CONFIRMED=true
+ORDER_CAPABILITY_RUNNER_REFERENCED=true
+ORDER_CAPABILITY_TESTS_REFERENCED=true
+ORDERFLOW_AUTHORIZATION_CREATED=false
+CANCEL_EXECUTE_AUTHORIZATION_CREATED=false
+READY_FOR_OPERATOR_ARMING_CHANGED=false
+RUNTIME_LOGIC_TOUCHED=false
+NEW_PARALLEL_SSOT_CREATED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+```
+
+**Non-authorizing:** Docs/tests static crosslink only; does **not** authorize order submission, cancel, execute, broker/exchange, Testnet/Live, scheduler/daemon/adapter runtime, Preflight lift, `READY_FOR_OPERATOR_ARMING=true`, provider-truth flip, binding pass, or Master V2 / Double Play / trading-logic changes. Runner remains **plan-only** with `order_capability_lane_parked=true` and `order_capability_execute_authorized=false`.
+
 ## Local reproduction
 ```bash
 ruff check .
