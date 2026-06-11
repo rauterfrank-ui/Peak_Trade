@@ -185,3 +185,19 @@ def test_preflight_section_2b3_crosslinks_taxonomy_6a08_1_v0() -> None:
     section = _section_2b3()
     assert "RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md" in section
     assert "§6a.0.8.1" in section
+
+
+def test_validate_paths_cross_surface_parity_matrix_taxonomy_markers_v0() -> None:
+    section = _section_6a08_1()
+    for marker in pc.VALIDATE_PATHS_CROSS_SURFACE_PARITY_MATRIX_GUARD_MARKERS:
+        assert marker in section
+    assert "test_post_closeout_hook_attach_readiness_bridge_v0.py" in section
+    assert "testnet_bounded_adapter" in section
+
+
+def test_validate_paths_cross_surface_parity_matrix_owner_alignment_v0() -> None:
+    owners = pc.CANONICAL_DURABLE_CLOSEOUT_ATTACH_HOOK_OWNERS_V0
+    matrix = pc.VALIDATE_PATHS_CROSS_SURFACE_PARITY_MATRIX_V0
+    assert set(matrix) == set(owners)
+    for owner_id, rel_path in owners.items():
+        assert str(matrix[owner_id]["rel_path"]) == rel_path
