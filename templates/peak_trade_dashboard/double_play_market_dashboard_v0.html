@@ -21,6 +21,7 @@
   data-double-play-market-source="{{ query.source }}"
   data-double-play-market-bars="{{ payload.bars_returned }}"
   data-double-play-market-symbol="{{ query.symbol }}"
+  data-double-play-operator-detail-v1="true"
 >
   <header
     class="rounded-2xl border border-slate-800/90 bg-gradient-to-br from-slate-950 via-slate-900/95 to-slate-950 px-5 py-4 shadow-xl shadow-black/35 ring-1 ring-slate-700/40"
@@ -87,6 +88,51 @@
 
   <section
     role="region"
+    aria-labelledby="double-play-market-v0-landmark-bull-bear-h2"
+    class="rounded-xl border border-slate-800/85 bg-slate-950/60 px-3 py-3 sm:px-4 ring-1 ring-slate-800/55"
+    data-double-play-bull-bear-cards-v1="true"
+  >
+    <h2 id="double-play-market-v0-landmark-bull-bear-h2" class="text-xs font-semibold text-slate-100 m-0 mb-2">Bull vs Bear · display-only</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-[11px]">
+      {% set suit = dp_display.panels | selectattr('name', 'equalto', 'strategy_suitability') | list %}
+      {% set comp = dp_display.panels | selectattr('name', 'equalto', 'composition') | list %}
+      <article class="rounded-lg border border-emerald-900/45 bg-emerald-950/20 px-3 py-2.5" data-double-play-bull-card-v1="true">
+        <p class="m-0 text-[10px] font-bold uppercase tracking-wide text-emerald-400/90">Bull / Long display</p>
+        <p class="m-0 mt-1 text-slate-200 leading-snug">
+          {% if suit and suit[0].summary %}{{ suit[0].summary }}{% else %}MODEL_ONLY — suitability panel unavailable in snapshot.{% endif %}
+        </p>
+        <p class="m-0 mt-1 text-slate-500">Dominant side: display-only · keine Signal-Autorität</p>
+      </article>
+      <article class="rounded-lg border border-rose-900/45 bg-rose-950/20 px-3 py-2.5" data-double-play-bear-card-v1="true">
+        <p class="m-0 text-[10px] font-bold uppercase tracking-wide text-rose-400/90">Bear / Short display</p>
+        <p class="m-0 mt-1 text-slate-200 leading-snug">
+          {% if comp and comp[0].summary %}{{ comp[0].summary }}{% else %}NONE / MODEL_ONLY — composition panel unavailable.{% endif %}
+        </p>
+        <p class="m-0 mt-1 text-slate-500">
+          {% if suit and suit[0].blockers %}Blockers: {{ suit[0].blockers | join("; ") }}{% else %}Keine Blocker im Display-Snapshot.{% endif %}
+        </p>
+      </article>
+    </div>
+  </section>
+
+  <section
+    role="region"
+    aria-labelledby="double-play-market-v0-landmark-scope-capital-risk-h2"
+    class="rounded-xl border border-slate-800/85 bg-slate-950/55 px-3 py-3 sm:px-4 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 text-[10px]"
+    data-double-play-scope-capital-risk-v1="true"
+  >
+    <h2 id="double-play-market-v0-landmark-scope-capital-risk-h2" class="sr-only">Scope Capital Risk status</h2>
+    {% for panel in dp_display.panels if panel.name in ['survival_envelope', 'capital_slot_ratchet', 'capital_slot_release', 'strategy_suitability'] %}
+    <article class="rounded-lg border border-slate-800/75 bg-slate-950/65 px-2.5 py-2" data-double-play-operator-card-v1="{{ panel.name }}">
+      <p class="m-0 text-slate-500 uppercase font-semibold">{{ panel.name | replace('_', ' ') }}</p>
+      <p class="m-0 mt-1 text-slate-200 font-semibold">{{ panel.status }}</p>
+      <p class="m-0 mt-1 text-slate-400 line-clamp-3">{{ panel.summary or "—" }}</p>
+    </article>
+    {% endfor %}
+  </section>
+
+  <section
+    role="region"
     aria-labelledby="double-play-market-v0-landmark-safety-h2"
     class="rounded-xl border border-amber-900/45 bg-gradient-to-br from-amber-950/40 via-slate-950/40 to-slate-950/25 px-3 py-3 sm:px-4 sm:py-3.5 shadow-md shadow-black/20 ring-1 ring-amber-950/30"
     data-double-play-market-safety="true"
@@ -146,17 +192,22 @@
     </ul>
   </section>
 
-  <section
-    id="double-play-market-v0-depth-ssr"
-    role="region"
-    aria-labelledby="double-play-market-v0-landmark-depth-ssr-h2"
-    class="rounded-xl border border-slate-800/85 bg-slate-950/60 px-3 py-3 sm:px-4 ring-1 ring-slate-800/55 shadow-md shadow-black/15 text-[11px] text-slate-300"
+  <details
+    class="rounded-xl border border-slate-800/85 bg-slate-950/60 px-3 py-3 sm:px-4 ring-1 ring-slate-800/55 text-[11px] text-slate-300"
+    data-double-play-market-depth-secondary-v1="true"
     data-double-play-market-depth-panel="true"
     data-double-play-market-depth-status="{{ market_depth.display_status }}"
     data-double-play-market-depth-non-authorizing="true"
     {% if market_depth.readmodel_id %}
     data-double-play-market-depth-readmodel-id="{{ market_depth.readmodel_id }}"
     {% endif %}
+  >
+    <summary class="cursor-pointer text-[10px] font-semibold uppercase tracking-wide text-slate-400 outline-none hover:text-slate-200">Depth (secondary · display-only)</summary>
+  <section
+    id="double-play-market-v0-depth-ssr"
+    role="region"
+    aria-labelledby="double-play-market-v0-landmark-depth-ssr-h2"
+    class="mt-2 text-[11px] text-slate-300"
   >
     <h2
       id="double-play-market-v0-landmark-depth-ssr-h2"
@@ -188,6 +239,7 @@
     </p>
     {% endif %}
   </section>
+  </details>
 
   <div
     class="flex flex-col gap-6 xl:grid xl:grid-cols-[minmax(0,1fr)_min(21rem,100%)] xl:items-start xl:gap-6"
@@ -273,9 +325,12 @@
       <div
         class="rounded-xl border border-slate-800/85 bg-slate-950/65 px-4 py-3 space-y-2.5 ring-1 ring-slate-800/50 shadow-md shadow-black/15"
         data-double-play-market-cockpit-diagnostics-secondary="true"
+        data-double-play-diagnostics-secondary-v1="true"
         data-market-v11-chart-diagnostics="true"
       >
-        <p class="text-[10px] font-semibold uppercase tracking-wide text-slate-400 m-0 pb-1 border-b border-slate-800/70">Diagnostics</p>
+        <details>
+        <summary class="cursor-pointer text-[10px] font-semibold uppercase tracking-wide text-slate-400 outline-none hover:text-slate-200">Diagnostics (secondary)</summary>
+        <div class="mt-2 space-y-2.5">
         <div class="grid grid-cols-1 sm:grid-cols-3 gap-2.5 text-[11px] font-mono text-slate-300" data-market-v11-diagnostics-inner="true">
           <div class="rounded-md border border-slate-800/75 bg-slate-950/55 px-2 py-1.5" data-market-v11-chart-library-status="true">
             <span class="text-slate-500 block text-[9px] uppercase tracking-wide mb-0.5">Chart.js</span>
@@ -317,6 +372,8 @@
           <span class="text-slate-600">·</span>
           <span class="font-mono text-slate-600">legacy: {{ legacy_demo_href }}</span>
         </div>
+        </div>
+        </details>
       </div>
 
       <script type="application/json" id="dp-market-ssr-payload">{{ payload | tojson }}</script>

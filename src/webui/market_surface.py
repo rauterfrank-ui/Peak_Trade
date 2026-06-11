@@ -35,6 +35,7 @@ from .market_depth_runtime_v0 import (
     depth_chart_enabled_explicitly_on,
     market_depth_json_payload_v0,
 )
+from .double_play_dashboard_display_json_route_v0 import build_static_dashboard_display_dict
 from .market_ranking_funnel_runtime_v0 import build_market_ranking_funnel_display_context
 from .market_tape_readmodel_v0.gate import (
     enabled_explicitly_on as _market_tape_enabled_explicitly_on,
@@ -688,6 +689,52 @@ def build_market_depth_display_context() -> Dict[str, Any]:
     }
 
 
+_RANKING_TABLE_STAGE_ORDER: tuple[str, ...] = ("universe", "shortlist", "selected")
+
+
+def build_market_operator_overview_display_context(
+    *,
+    ranking_funnel: Dict[str, Any],
+) -> Dict[str, Any]:
+    """Display-only operator overview context for GET /market (no decision logic)."""
+
+    dp_display = build_static_dashboard_display_dict()
+    rows: list[dict[str, Any]] = []
+    stages = ranking_funnel.get("stages") if isinstance(ranking_funnel.get("stages"), dict) else {}
+    for stage_key in _RANKING_TABLE_STAGE_ORDER:
+        for row in stages.get(stage_key) or []:
+            if isinstance(row, dict):
+                rows.append({**row, "stage": stage_key})
+
+    if rows and ranking_funnel.get("gate_enabled"):
+        source_mode = "existing_readmodel"
+    elif rows:
+        source_mode = "mixed"
+    elif ranking_funnel.get("gate_enabled"):
+        source_mode = "fixture_offline"
+    else:
+        source_mode = "fixture_offline"
+
+    panels = {
+        p.get("name"): p
+        for p in (dp_display.get("panels") or [])
+        if isinstance(p, dict) and p.get("name")
+    }
+
+    return {
+        "dp_display": dp_display,
+        "ranking_source_mode": source_mode,
+        "ranking_table_rows": rows,
+        "ranking_table_count": len(rows),
+        "suitability_panel": panels.get("strategy_suitability") or {},
+        "composition_panel": panels.get("composition") or {},
+        "survival_panel": panels.get("survival_envelope") or {},
+        "futures_input_panel": panels.get("futures_input") or {},
+        "capital_ratchet_panel": panels.get("capital_slot_ratchet") or {},
+        "capital_release_panel": panels.get("capital_slot_release") or {},
+    }
+
+
 def build_market_payload(
     *,
     symbol: str,
@@ -761,6 +808,9 @@ def create_market_router(
         run_projection = build_market_run_projection_display_context()
         market_tape = build_market_tape_display_context()
         ranking_funnel = build_market_ranking_funnel_display_context()
+        operator_overview = build_market_operator_overview_display_context(
+            ranking_funnel=ranking_funnel,
+        )
         active_paper_run = build_market_active_paper_run_display_context()
         market_single_page_consolidation = build_market_single_page_consolidation_display_context()
         workflow_dashboard: Dict[str, Any] | None = None
@@ -778,6 +828,7 @@ def create_market_router(
                 "run_projection": run_projection,
                 "market_tape": market_tape,
                 "ranking_funnel": ranking_funnel,
+                "operator_overview": operator_overview,
                 "active_paper_run": active_paper_run,
                 "market_single_page_consolidation": market_single_page_consolidation,
                 "workflow_dashboard": workflow_dashboard,

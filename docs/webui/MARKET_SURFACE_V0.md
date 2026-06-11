@@ -31,6 +31,15 @@ Keine Kopplung an OPS Cockpit (`/ops`). Keine Trading-Aktionen.
 
 **Read-only / non-authorizing:** Keine Orders, keine Paper-/Testnet-/Live‑Aktivierung, keine Scope/Capital‑Billigung, kein Bypass von Risk/KillSwitch‑Enforcement, keine Ausführungs‑ oder Strategieautorität. Keine Schlussfolgerung auf Futures‑„Readiness“ oder Provider‑Bereitschaft über diese View hinaus.
 
+### Operator overview IA v1 (display-only redesign)
+
+- **`GET &#47;market`** exposes **`data-market-operator-overview-v1`** with operator story steps **Observe → Rank → Select → Explain → Double-Play status** (`data-market-operator-story-v1`).
+- System bar: **`data-market-operator-system-bar-v1`** — read-only, live locked, trading authority=false, data source, instrument, snapshot.
+- Guardrails moved to collapsible secondary section: **`data-market-guardrails-secondary-v1`**; diagnostics: **`data-market-diagnostics-secondary-v1`**.
+- Top20/ranking table reuses **`market_ranking_funnel_readmodel_v0`** (`data-market-top20-ranking-v1`, `data-market-ranking-source-mode-v1`).
+- Explain readout reuses **`build_static_dashboard_display_dict()`** display-only (`data-market-ai-decision-readout-v1`) — **no** trading signal.
+- **`GET &#47;market&#47;double-play`**: Bull/Bear cards (`data-double-play-bull-bear-cards-v1`), compact scope/capital/risk cards (`data-double-play-scope-capital-risk-v1`); depth/diagnostics secondary.
+
 ### Lane taxonomy cross-reference (non-authorizing)
 
 This document is the **canonical Market Surface v0** owner for **`GET &#47;market`**, **`GET &#47;api&#47;market&#47;*`**, and related SSR read-only routes. Lane indexing and forbidden promotions are defined in [Runtime Lane Taxonomy + Authority Levels Contract v0](../ops/specs/RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md) **§7h**:
