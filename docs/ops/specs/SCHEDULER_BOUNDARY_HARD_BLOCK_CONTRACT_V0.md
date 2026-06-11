@@ -118,6 +118,7 @@ This contract does not authorize Master V2 or Double Play selection or live exec
 - **v0.2** — P67/P72 library scheduler boundary opt-in (§7b); default off; shared guard reused; CLI/launcher unchanged.
 - **v0.3** — Cross-reference Preflight §2a.1 future-run primary evidence hard gate (§7c); start guard unchanged.
 - **v0.4** — RUN_ID-scoped scheduler HOLD runtime binding (§10): optional env bridge for bounded 24h Daemon Paper/Shadow dry-run only; default HOLD_NO_PAPER_RUN preserved.
+- **v0.5** — Paper-L2 120min hold-binding profile (§10b): explicit `paper_l2_120min_hold_binding_v0` env bridge for 7200s paper-only evidence; default empty profile unchanged.
 
 ## 10. RUN_ID-scoped scheduler HOLD runtime binding (bounded 24h only)
 
@@ -175,3 +176,23 @@ Profile `gap4_req_a_paper_bounded_v0` on [run_paper_only_bounded_observation_ada
 - Validates `build_scheduler_hold_runtime_binding_v0()` at adapter preflight (fail-closed when invalid).
 - **Does not** change global preflight reporter defaults; **does not** clear `HOLD_NO_PAPER_RUN` for unscoped invocations.
 - **Does not** authorize Testnet/Live/Shadow/broker; **does not** lift `GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED` or full-scope tokens.
+
+## 10b. Paper-L2 120min hold-binding profile (`paper_l2_120min_hold_binding_v0`)
+
+```
+PAPER_L2_120MIN_HOLD_BINDING_PROFILE_V0=true
+PAPER_L2_120MIN_HOLD_BINDING_PROFILE_DOES_NOT_CLEAR_GLOBAL_HOLD=true
+PAPER_L2_120MIN_HOLD_BINDING_PROFILE_NON_AUTHORIZING=true
+PAPER_L2_120MIN_HOLD_BINDING_NO_TRADING_LOGIC_MUTATION=true
+PAPER_L2_120MIN_HOLD_BINDING_MASTER_V2_DOUBLE_PLAY_UNCHANGED=true
+```
+
+Profile `paper_l2_120min_hold_binding_v0` on [run_paper_only_bounded_observation_adapter_v0.py](../../../scripts/ops/run_paper_only_bounded_observation_adapter_v0.py) (contract: [paper_l2_120min_hold_binding_approval_v0.py](../../../scripts/ops/paper_l2_120min_hold_binding_approval_v0.py)):
+
+- **Paper-only** bounded trading-logic evidence lane; duration **7200** seconds (120min); fail-closed outside 7200s.
+- On `--execute`, sets the same §10 env bridge (`PEAK_TRADE_SCHEDULER_HOLD_RUNTIME_OUTROOT`, `PEAK_TRADE_SCHEDULER_HOLD_RUNTIME_RUN_ID`) using approval field `HOLD_BINDING_OUTROOT` + `APPROVED_RUN_ID`.
+- Validates `build_scheduler_hold_runtime_binding_v0()` at adapter preflight (fail-closed when invalid).
+- **No network**; **no secrets**; **no orders**; **no cancel**; **no arming**; **no Live**; **no Testnet**; **no broker/exchange**.
+- **Does not** change global preflight reporter defaults; **does not** clear `HOLD_NO_PAPER_RUN` for unscoped invocations.
+- **Does not** lift preflight/truth authority; **does not** mutate trading logic; **does not** mutate Master V2 / Double Play.
+- Default empty profile (no `--profile`) remains unchanged and **does not** set the §10 env bridge.

@@ -28,6 +28,7 @@ if str(_REPO_ROOT) not in sys.path:
 
 from scripts.ops import bounded_daemon_paper_shadow_24h_approval_v0 as contract_24h
 from scripts.ops import gap4_req_a_paper_hold_binding_approval_v0 as contract_gap4
+from scripts.ops import paper_l2_120min_hold_binding_approval_v0 as contract_l2_120min
 from scripts.ops.primary_evidence_retention_v0 import (
     is_under_tmp,
     verify_manifest_sha256,
@@ -172,14 +173,24 @@ def normalize_profile(profile: str | None) -> str:
 
 
 def validate_profile_name(profile: str) -> list[str]:
-    known = {contract_24h.CONTRACT_PROFILE, contract_gap4.CONTRACT_PROFILE}
+    known = {
+        contract_24h.CONTRACT_PROFILE,
+        contract_gap4.CONTRACT_PROFILE,
+        contract_l2_120min.CONTRACT_PROFILE,
+    }
     if profile and profile not in known:
         return [f"unknown profile: {profile!r}"]
     return []
 
 
 def _profiles_with_hold_runtime_env_bridge() -> frozenset[str]:
-    return frozenset({contract_24h.CONTRACT_PROFILE, contract_gap4.CONTRACT_PROFILE})
+    return frozenset(
+        {
+            contract_24h.CONTRACT_PROFILE,
+            contract_gap4.CONTRACT_PROFILE,
+            contract_l2_120min.CONTRACT_PROFILE,
+        }
+    )
 
 
 def resolve_scheduler_hold_runtime_binding_target(
@@ -194,6 +205,18 @@ def resolve_scheduler_hold_runtime_binding_target(
         return approval_record.resolve().parent.parent, run_id, []
     if profile == contract_gap4.CONTRACT_PROFILE:
         outroot, issues = contract_gap4.resolve_hold_binding_outroot(approval_fields)
+        expected = approval_fields.get("APPROVED_RUN_ID", "").strip() or run_id
+        if outroot is None:
+            return None, expected, issues
+        if expected != run_id:
+            return (
+                None,
+                expected,
+                [f"APPROVED_RUN_ID mismatch: expected {run_id!r}, got {expected!r}"],
+            )
+        return outroot, expected, []
+    if profile == contract_l2_120min.CONTRACT_PROFILE:
+        outroot, issues = contract_l2_120min.resolve_hold_binding_outroot(approval_fields)
         expected = approval_fields.get("APPROVED_RUN_ID", "").strip() or run_id
         if outroot is None:
             return None, expected, issues
@@ -225,6 +248,11 @@ def validate_approval_record(
     if profile == contract_gap4.CONTRACT_PROFILE:
         issues.extend(
             contract_gap4.validate_approval_record(fields, approved_run_id=approved_run_id)
+        )
+        return issues
+    if profile == contract_l2_120min.CONTRACT_PROFILE:
+        issues.extend(
+            contract_l2_120min.validate_approval_record(fields, approved_run_id=approved_run_id)
         )
         return issues
     for key, expected in REQUIRED_APPROVAL.items():
@@ -458,6 +486,23 @@ def validate_execute_preconditions(
                 if outroot is not None:
                     issues.extend(
                         contract_gap4.validate_scheduler_hold_runtime_binding_outroot(
+                            outroot,
+                            expected_run_id=expected_run_id,
+                        )
+                    )
+            if profile == contract_l2_120min.CONTRACT_PROFILE:
+                outroot, expected_run_id, resolve_issues = (
+                    resolve_scheduler_hold_runtime_binding_target(
+                        profile=profile,
+                        approval_record=ctx.args.approval_record,
+                        approval_fields=fields,
+                        run_id=ctx.run_id,
+                    )
+                )
+                issues.extend(resolve_issues)
+                if outroot is not None:
+                    issues.extend(
+                        contract_l2_120min.validate_scheduler_hold_runtime_binding_outroot(
                             outroot,
                             expected_run_id=expected_run_id,
                         )
@@ -1138,7 +1183,10 @@ def build_arg_parser() -> argparse.ArgumentParser:
         default="",
         help=(
             "Optional approval contract profile. "
-            f"Supported: {contract_24h.CONTRACT_PROFILE!r} (default: 120min paper-only)."
+            f"Supported: {contract_24h.CONTRACT_PROFILE!r}, "
+            f"{contract_gap4.CONTRACT_PROFILE!r}, "
+            f"{contract_l2_120min.CONTRACT_PROFILE!r} "
+            "(default empty: 120min paper-only without hold-binding bridge)."
         ),
     )
     parser.add_argument(
@@ -1260,6 +1308,20 @@ def main(
         if args.duration_seconds is None:
             args.duration_seconds = contract_gap4.GAP4_DEFAULT_DURATION_SECONDS
         duration_issues = contract_gap4.validate_paper_duration_seconds(args.duration_seconds)
+        if duration_issues:
+            for issue in duration_issues:
+                print(issue, file=sys.stderr)
+            return VALIDATION_EXIT
+    elif profile == contract_l2_120min.CONTRACT_PROFILE:
+        if not args.run_id.strip():
+            print(
+                f"--run-id is required for {contract_l2_120min.CONTRACT_PROFILE} profile",
+                file=sys.stderr,
+            )
+            return USAGE_EXIT
+        if args.duration_seconds is None:
+            args.duration_seconds = contract_l2_120min.L2_DURATION_SECONDS
+        duration_issues = contract_l2_120min.validate_paper_duration_seconds(args.duration_seconds)
         if duration_issues:
             for issue in duration_issues:
                 print(issue, file=sys.stderr)
