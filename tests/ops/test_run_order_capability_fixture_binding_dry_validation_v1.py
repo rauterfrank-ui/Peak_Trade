@@ -6,6 +6,7 @@ import ast
 import importlib.util
 import io
 import json
+import shutil
 import subprocess
 import sys
 from contextlib import redirect_stdout
@@ -33,10 +34,39 @@ CROSSLINK_PACKAGE_MARKER = (
 PE8_WIRING_GUARD_PACKAGE_MARKER = (
     "ORDER_CAPABILITY_FIXTURE_BINDING_PE8_OFFLINE_DURABLE_CLOSEOUT_WIRING_GUARD_V0=true"
 )
+PE_WIRING_IMPL_PACKAGE_MARKER = "ORDER_CAPABILITY_FIXTURE_BINDING_RUNNER_PE_WIRING_IMPL_V1=true"
+REQUIRED_OPERATOR_GO_TOKEN = "GO_ORDER_CAPABILITY_FIXTURE_BINDING_RUNNER_PRIMARY_EVIDENCE_WIRING_IMPL_OPERATOR_GO_AUTOFILL_NO_RUN_V1"
 ADAPTER_SCRIPT = ROOT / "scripts" / "ops" / "run_order_capability_dry_validation_adapter_v1.py"
 SHARED_HELPER = ROOT / "scripts" / "ops" / "primary_evidence_retention_v0.py"
 RUNNER_REL = "scripts/ops/run_order_capability_fixture_binding_dry_validation_v1.py"
 TEST_REL = "tests/ops/test_run_order_capability_fixture_binding_dry_validation_v1.py"
+
+
+def _durable_archive(tmp_path: Path) -> Path:
+    path = ROOT / "tests" / ".pytest_archive_roots" / tmp_path.name
+    if path.exists():
+        shutil.rmtree(path)
+    path.mkdir(parents=True, exist_ok=True)
+    return path
+
+
+def _base_write_argv(archive: Path, *, run_id: str = "fixture_binding_test_run") -> list[str]:
+    return [
+        "--fixture",
+        str(BROWSER_RENDER_FIXTURE),
+        "--archive-root",
+        str(archive),
+        "--run-id",
+        run_id,
+    ]
+
+
+@pytest.fixture(autouse=True)
+def _cleanup_archive_roots():
+    yield
+    archive_roots = ROOT / "tests" / ".pytest_archive_roots"
+    if archive_roots.is_dir():
+        shutil.rmtree(archive_roots, ignore_errors=True)
 
 
 def _load_runner():
@@ -68,6 +98,9 @@ def test_help_smoke() -> None:
     assert "--fixture" in proc.stdout
     assert "--output" in proc.stdout
     assert "--format" in proc.stdout
+    assert "--write-evidence" in proc.stdout
+    assert "--archive-root" in proc.stdout
+    assert "--operator-go-token" in proc.stdout
 
 
 def test_cli_loads_repo_fixture_and_runs_chain() -> None:
@@ -297,21 +330,111 @@ def test_adapter_primary_evidence_wiring_referenced_guard_v0() -> None:
     assert "def validate_order_capability_offline_durable_run_root" in helper_text
 
 
-def test_fixture_binding_runner_primary_evidence_wiring_pending_guard_v0() -> None:
+def test_pe_wiring_impl_package_marker_v1() -> None:
+    assert PE_WIRING_IMPL_PACKAGE_MARKER in Path(__file__).read_text(encoding="utf-8")
+
+
+def test_fixture_binding_runner_primary_evidence_wiring_impl_guard_v1() -> None:
     runner_text = RUNNER_SCRIPT.read_text(encoding="utf-8")
     preflight = (
         ROOT / "docs" / "ops" / "runbooks" / "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md"
     ).read_text(encoding="utf-8")
-    assert "primary_evidence_retention_v0" not in runner_text
-    assert "validate_order_capability_offline_durable_run_root" not in runner_text
+    assert "primary_evidence_retention_v0" in runner_text
+    assert "validate_order_capability_offline_durable_run_root" in runner_text
+    assert "write_manifest_sha256" in runner_text
+    assert "--write-evidence" in runner_text
     for token in (
-        "FIXTURE_BINDING_RUNNER_PRIMARY_EVIDENCE_WIRING_PENDING=true",
+        "FIXTURE_BINDING_RUNNER_PRIMARY_EVIDENCE_WIRING_COMPLETE=true",
         "FIXTURE_BINDING_RUNNER_PRIMARY_EVIDENCE_WIRING_GUARDED=true",
         "ADAPTER_PRIMARY_EVIDENCE_WIRING_REFERENCED=true",
         "ORDER_CAPABILITY_FIXTURE_BINDING_PE_CLOSEOUT_WIRING_GUARD_IMPLEMENTED=true",
+        "ORDER_CAPABILITY_FIXTURE_BINDING_RUNNER_PE_WIRING_IMPLEMENTED=true",
     ):
         assert token in preflight
-    assert "FIXTURE_BINDING_DURABLE_COMPLETION_INVALID_WITHOUT_HELPER_WIRING=true" in preflight
+    assert "FIXTURE_BINDING_RUNNER_PRIMARY_EVIDENCE_WIRING_PENDING=true" not in preflight
+
+
+def test_write_evidence_missing_operator_go_fails(tmp_path: Path) -> None:
+    mod = _load_runner()
+    archive = _durable_archive(tmp_path)
+    rc = mod.main(_base_write_argv(archive) + ["--write-evidence"])
+    assert rc != 0
+
+
+def test_write_evidence_with_invalid_operator_go_fails(tmp_path: Path) -> None:
+    mod = _load_runner()
+    archive = _durable_archive(tmp_path)
+    rc = mod.main(
+        _base_write_argv(archive) + ["--write-evidence", "--operator-go-token", "INVALID_GO_TOKEN"]
+    )
+    assert rc != 0
+
+
+def test_plan_only_does_not_write_durable_bundle(tmp_path: Path) -> None:
+    mod = _load_runner()
+    archive = _durable_archive(tmp_path)
+    buf = io.StringIO()
+    with redirect_stdout(buf):
+        rc = mod.main(_base_write_argv(archive))
+    assert rc == 0
+    assert not any(archive.rglob("ORDER_CAPABILITY_DRY_VALIDATION_RESULT.json"))
+
+
+def test_write_evidence_creates_durable_bundle(tmp_path: Path) -> None:
+    mod = _load_runner()
+    archive = _durable_archive(tmp_path)
+    rc = mod.main(
+        _base_write_argv(archive)
+        + [
+            "--write-evidence",
+            "--operator-go-token",
+            REQUIRED_OPERATOR_GO_TOKEN,
+        ]
+    )
+    assert rc == 0
+    dest = archive / "runs" / "testnet" / "fixture_binding_test_run"
+    assert (dest / "RUN_METADATA.json").is_file()
+    assert (dest / "ORDER_CAPABILITY_DRY_VALIDATION_RESULT.json").is_file()
+    assert (dest / "CLOSEOUT.md").is_file()
+    assert (dest / "MANIFEST.sha256").is_file()
+    from scripts.ops.primary_evidence_retention_v0 import (
+        validate_order_capability_offline_durable_run_root,
+        verify_manifest_sha256,
+    )
+
+    layout_ok, layout_issues = validate_order_capability_offline_durable_run_root(dest)
+    assert layout_ok is True
+    assert layout_issues == []
+    manifest_ok, _msg = verify_manifest_sha256(dest)
+    assert manifest_ok is True
+    payload = json.loads(
+        (dest / "ORDER_CAPABILITY_DRY_VALIDATION_RESULT.json").read_text(encoding="utf-8")
+    )
+    assert payload["verdict"] == "DRY_VALIDATION_COMPLETE"
+    assert payload["mode"] == "write-evidence"
+    assert payload["safety_flags"]["order_capability_execute_authorized"] is False
+    assert payload["order_capability_lane_parked"] is True
+
+
+def test_write_evidence_fail_closed_when_layout_validation_fails(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    mod = _load_runner()
+    archive = _durable_archive(tmp_path)
+    monkeypatch.setattr(
+        mod,
+        "validate_order_capability_offline_durable_run_root",
+        lambda _dest: (False, ["missing durable required file: CLOSEOUT.md"]),
+    )
+    rc = mod.main(
+        _base_write_argv(archive)
+        + [
+            "--write-evidence",
+            "--operator-go-token",
+            REQUIRED_OPERATOR_GO_TOKEN,
+        ]
+    )
+    assert rc != 0
 
 
 def test_output_written_only_when_explicit(tmp_path: Path) -> None:
