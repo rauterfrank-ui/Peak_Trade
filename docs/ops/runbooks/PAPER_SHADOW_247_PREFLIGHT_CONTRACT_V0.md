@@ -577,7 +577,7 @@ When durable run/closeout bundles contain **divergent** status fields — for ex
 
 This hierarchy is **operator SSOT for status interpretation** only — **Evidence ≠ approval**; Preflight remains **BLOCKED** (`PREFLIGHT_REMAINS_BLOCKED=true`; `PRE_FLIGHT_BLOCKED_LIFTED=false`).
 
-Cross-reference: §2b.2 helper fail-closed rules; §2a.1 primary evidence hard gate; §2b.1 material closeout completeness.
+Cross-reference: §2b.2 helper fail-closed rules; §2a.1 primary evidence hard gate; §2b.1 material closeout completeness; [Runtime Lane Taxonomy + Authority Levels Contract v0](../specs/RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md) **§6a.0.8.1** post-closeout automation hook owner precheck (canonical bounded-adapter attach surfaces; narrow durable-closeout hooks default-off; **non-authorizing**).
 
 ## 2c. Preflight Gate Repo-Internal Write/Lift Applied Reflection v0
 

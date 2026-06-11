@@ -290,6 +290,25 @@ def test_spec_crosslinks_preflight_retention_owner() -> None:
     assert "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md" in text
     assert "§2a" in text
     assert "§2b" in text
+    assert "§2b.3" in text
+
+
+def test_spec_section_6a08_1_preflight_2b3_closeout_validation_crosslink_v0() -> None:
+    text = _spec_text()
+    section_start = text.index("#### 6a.0.8.1 Post-Closeout Automation Hook Owner Precheck v0")
+    section_end = text.index(
+        "### 6a.0.9 Shared Projection Payload Builder Planning Contract v0 (planning-only)",
+        section_start,
+    )
+    section = text[section_start:section_end]
+    assert "TAXONOMY_PREFLIGHT_2B3_CLOSEOUT_VALIDATION_CROSSLINK_V0=true" in section
+    assert "§2b.3" in section
+    assert "#4128" in section
+    assert "BLOCKER_HINT" in section
+    assert "--durable-closeout-force" in section
+    assert "AUTHORITATIVE_STATUS_HIERARCHY_V0=true" in section
+    assert "MACHINE_SUMMARY.env" in section
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in section
 
 
 def test_preflight_crosslinks_taxonomy_spec() -> None:
