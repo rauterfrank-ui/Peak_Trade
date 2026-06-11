@@ -313,8 +313,9 @@ def test_generic_hook_contract_summary_exported_not_duplicated_v0() -> None:
 
 
 def test_runtime_hook_attach_owners_referenced_not_replaced_v0() -> None:
-    assert len(RUNTIME_GENERIC_HOOK_ATTACH_OWNER_IDS_V0) == 4
+    assert len(RUNTIME_GENERIC_HOOK_ATTACH_OWNER_IDS_V0) == 5
     assert "scheduler_completion" in RUNTIME_GENERIC_HOOK_ATTACH_OWNER_IDS_V0
+    assert "testnet_bounded_adapter" in RUNTIME_GENERIC_HOOK_ATTACH_OWNER_IDS_V0
     assert "must_not_replace_generic_post_closeout_hook_owners" in _this_module_source()
 
 

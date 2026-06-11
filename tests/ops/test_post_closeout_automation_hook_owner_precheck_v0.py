@@ -22,12 +22,9 @@ CHAIN_CONTRACT_TESTS = (
     REPO_ROOT / "tests" / "ops" / "test_closeout_to_projection_chain_automation_contract_v0.py"
 )
 
-CANONICAL_HOOK_ATTACH_OWNERS: dict[str, str] = {
-    "scheduler_completion": "scripts/run_scheduler.py",
-    "paper_bounded_adapter": "scripts/ops/run_paper_only_bounded_observation_adapter_v0.py",
-    "shadow_bounded_adapter": "scripts/ops/run_shadow_bounded_observation_adapter_v0.py",
-    "supervisor_evidence_pack": "scripts/ops/pack_online_readiness_supervisor_evidence_v0.py",
-}
+CANONICAL_HOOK_ATTACH_OWNERS: dict[str, str] = dict(
+    pc.CANONICAL_DURABLE_CLOSEOUT_ATTACH_HOOK_OWNERS_V0
+)
 
 FORBIDDEN_ATTACH_SURFACES: tuple[str, ...] = (
     "launchctl",
@@ -111,6 +108,8 @@ def test_preflight_crosslinks_hook_owner_precheck() -> None:
     assert "READY_FOR_START=false" in text
     assert "run_scheduler.py" in text
     assert "run_paper_only_bounded_observation_adapter_v0.py" in text
+    assert "run_shadow_bounded_observation_adapter_v0.py" in text
+    assert "run_testnet_bounded_observation_adapter_v0.py" in text
     assert "pack_online_readiness_supervisor_evidence_v0.py" in text
 
 
@@ -169,6 +168,15 @@ def test_taxonomy_section_6a08_1_preflight_2b3_closeout_validation_crosslink_v0(
     assert "PREFLIGHT_BLOCKED_LIFTED=false" in section
     assert "test_bounded_adapter_invoke_durable_closeout_v0.py" in section
     assert "no-order" in section.lower() or "no-order / no-arming" in section
+
+
+def test_all_five_attach_hook_surfaces_covered_in_static_guards_v0() -> None:
+    assert len(CANONICAL_HOOK_ATTACH_OWNERS) == 5
+    assert "testnet_bounded_adapter" in CANONICAL_HOOK_ATTACH_OWNERS
+    section = _section_6a08_1()
+    for owner_id, rel_path in CANONICAL_HOOK_ATTACH_OWNERS.items():
+        assert owner_id in section
+        assert rel_path in section
 
 
 def test_preflight_section_2b3_crosslinks_taxonomy_6a08_1_v0() -> None:

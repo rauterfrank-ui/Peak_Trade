@@ -33,6 +33,10 @@ ATTACH_OWNER_CLI_FLAGS: dict[str, tuple[str, ...]] = {
         "add_bounded_adapter_durable_closeout_cli_args",
         "maybe_invoke_durable_closeout_after_archive",
     ),
+    "scripts/ops/run_testnet_bounded_observation_adapter_v0.py": (
+        "add_bounded_adapter_durable_closeout_cli_args",
+        "maybe_invoke_durable_closeout_after_archive",
+    ),
     "scripts/run_scheduler.py": (
         "--invoke-durable-closeout-after-completion-v0",
         "--durable-closeout-dest-dir",
@@ -93,6 +97,13 @@ def test_attach_owner_cli_flags_present_in_source() -> None:
         source = (REPO_ROOT / rel_path).read_text(encoding="utf-8")
         for flag in flags:
             assert flag in source, f"missing {flag!r} in {rel_path}"
+
+
+def test_all_five_attach_hook_surfaces_covered_in_bridge_guards_v0() -> None:
+    owners = pc.CANONICAL_DURABLE_CLOSEOUT_ATTACH_HOOK_OWNERS_V0
+    assert len(owners) == 5
+    assert "testnet_bounded_adapter" in owners
+    assert set(ATTACH_OWNER_CLI_FLAGS) == set(owners.values())
 
 
 def test_forbidden_parallel_execute_script_absent() -> None:
