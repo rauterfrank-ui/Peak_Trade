@@ -84,14 +84,22 @@ Dashboard ≠ Freigabe. Market Surface v0 is **review input only** for operators
 
 #### Operator enablement (tape readmodel SSR v0)
 
-**Default off / operator-gated / fail-closed:** Tape SSR on **`GET`** **`&#47;market`** stays **disabled** until **both** env gates below are explicitly set. Panel **absent** when gates are off is **expected** — **not** a template defect, **not** Dashboard Truth GO, **not** Provider Truth, **no** runtime, Testnet, Paper, or Shadow authority.
+**Default off / operator-gated / fail-closed / offline-only:** Tape SSR on **`GET`** **`&#47;market`** stays **disabled** until **both** env gates below are explicitly set. Tape panel and `data-market-v0-tape-*` markers **absent when gates are off** is **expected** — **not** a template defect, **not** Dashboard Truth GO, **not** Provider Truth, **not** trading readiness, **not** selected-future truth, **not** order/fill/position truth, **no** runtime, Testnet, Paper, or Shadow authority. Tape rows are **diagnostic / operator-context only** — offline fixture evidence, **no** provider fetch, **no** network, **no** browser requirement.
+
+**Required env chain (both steps for tape SSR v0 on `GET` `/market`):**
 
 | Step | Env var(s) | Notes |
 |------|------------|-------|
 | 1 | `PEAK_TRADE_MARKET_TAPE_ENABLED=1` | Master tape gate |
-| 2 | `PEAK_TRADE_MARKET_TAPE_BUNDLE_ROOT=<path>` | Offline fixture root with `tape.json` |
+| 2 | `PEAK_TRADE_MARKET_TAPE_BUNDLE_ROOT=<path>` | Offline fixture root with `tape.json` (`market_tape_readmodel.v0`) |
 
-**Troubleshooting:** Distinguish **absent markers** (gate off — expected) from **`data-market-v0-tape-ready="false"`** (gate on but bundle/build not ready). Cross-check **`tests/webui/test_market_tape_ssr_v0.py`** and **`tests/webui/test_market_dashboard_readonly_structure_contract_v0.py`**.
+**Bundle/readmodel readiness:** Bundle must expose valid `tape.json` under the root before `data-market-v0-tape-ready="true"` and Top trades subset rows populate. Fixture target: `tests/fixtures/market_tape_readmodel_v0/`. **`GET`** **`&#47;market`** must **not** derive Provider Truth from tape display. **No** `fills.json` and **no** workflow-pipeline fills alias for tape data.
+
+**Troubleshooting (missing/stale tape):** Walk the env chain top-down before assuming SSR regression. Verify bundle root path and `tape.json` validity. Distinguish **absent markers** (gate off — expected) from **`data-market-v0-tape-ready="false"`** (gate on but bundle/build not ready). Cross-check **`tests/webui/test_market_tape_ssr_v0.py`**, **`tests/webui/test_market_dashboard_readonly_structure_contract_v0.py`**, **`tests/webui/test_market_tape_readmodel_v0.py`**, and **`tests/ops/test_market_surface_ranking_funnel_env_schema_boundary_v0.py`**.
+
+**Protected boundaries:** read-only SSR only — **no dashboard truth grant**, **no provider truth**, **no** trading readiness, **no** selected-future truth, **no** order/fill/position truth, **no** Live/Testnet/Order/Cancel/Execute/Arming/Preflight authority, **no** runtime/scheduler activation. **Market-Airport excluded** — not a dependency for tape enablement. **`GET`** **`&#47;market&#47;double-play`** (**Master V2 / Double Play protected**) — tape operator enablement does not alter Double Play routes, markers, or decision logic; **no Double-Play authority**. **No run, Testnet, Paper, or Shadow authorization** is granted by enabling this display path.
+
+Do **not** add a new Observability/Evidence/readiness **hub** solely for tape; reuse **Market Surface v0** navigation patterns already described in **Verwandte read-only WebUI-Fläche**.
 
 ## Safety banner and stable markers
 
