@@ -1331,7 +1331,7 @@ def test_market_observe_co_presence_tape_depth_inline_default_v1(client: TestCli
     assert 'id="market-v0-observe-depth-inline"' in html
     assert 'data-market-v0-observe-depth-inline-v1="true"' in html
     assert 'data-market-v0-observe-display-only-v1="true"' in html
-    assert 'data-market-v0-observe-source-mode-v1=' in html
+    assert "data-market-v0-observe-source-mode-v1=" in html
     assert ">READ ONLY<" in html
     assert ">display-only<" in html
     assert ">no orders<" in html
