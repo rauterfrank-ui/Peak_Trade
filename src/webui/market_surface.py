@@ -31,7 +31,10 @@ from fastapi.templating import Jinja2Templates
 
 from .last_paper_run_panel_runtime_v0 import build_last_paper_run_panel_display_context
 from .market_active_paper_run_runtime_v0 import build_market_active_paper_run_display_context
-from .market_depth_runtime_v0 import market_depth_json_payload_v0
+from .market_depth_runtime_v0 import (
+    depth_chart_enabled_explicitly_on,
+    market_depth_json_payload_v0,
+)
 from .market_ranking_funnel_runtime_v0 import build_market_ranking_funnel_display_context
 from .market_tape_readmodel_v0.gate import (
     enabled_explicitly_on as _market_tape_enabled_explicitly_on,
@@ -201,6 +204,80 @@ def _top_depth_level_rows(
                 asks_out.append(row)
 
     return bids_out, asks_out
+
+
+def _parse_depth_display_size(size_str: str) -> float:
+    try:
+        return float(str(size_str).replace(",", "").strip())
+    except (ValueError, TypeError):
+        return 0.0
+
+
+def _cumulative_depth_chart_svg_paths(
+    bid_rows: List[Dict[str, str]], ask_rows: List[Dict[str, str]]
+) -> Dict[str, Any]:
+    """Build stepped cumulative bid/ask SVG path data from offline Top-N rows only."""
+
+    bid_cums: List[float] = []
+    running = 0.0
+    for row in bid_rows:
+        running += _parse_depth_display_size(row.get("size", ""))
+        bid_cums.append(running)
+
+    ask_cums: List[float] = []
+    running = 0.0
+    for row in ask_rows:
+        running += _parse_depth_display_size(row.get("size", ""))
+        ask_cums.append(running)
+
+    max_c = max(bid_cums + ask_cums) if (bid_cums or ask_cums) else 0.0
+    if max_c <= 0:
+        return {"bid_path_d": "", "ask_path_d": "", "has_svg_paths": False}
+
+    baseline = 58.0
+    height = 48.0
+    center = 120.0
+    left = 8.0
+    right = 232.0
+
+    def y_for(cum: float) -> float:
+        return baseline - (cum / max_c) * height
+
+    bid_path = ""
+    if bid_cums:
+        step = (center - left) / max(len(bid_cums), 1)
+        parts = [f"M{center:.1f} {baseline:.1f}"]
+        x_prev = center
+        for i, cum in enumerate(bid_cums):
+            y = y_for(cum)
+            x = center - (i + 1) * step
+            parts.append(f"L{x_prev:.1f} {y:.1f}")
+            parts.append(f"L{x:.1f} {y:.1f}")
+            x_prev = x
+        parts.append(f"L{left:.1f} {baseline:.1f}")
+        parts.append(f"L{center:.1f} {baseline:.1f} Z")
+        bid_path = " ".join(parts)
+
+    ask_path = ""
+    if ask_cums:
+        step = (right - center) / max(len(ask_cums), 1)
+        parts = [f"M{center:.1f} {baseline:.1f}"]
+        x_prev = center
+        for i, cum in enumerate(ask_cums):
+            y = y_for(cum)
+            x = center + (i + 1) * step
+            parts.append(f"L{x_prev:.1f} {y:.1f}")
+            parts.append(f"L{x:.1f} {y:.1f}")
+            x_prev = x
+        parts.append(f"L{right:.1f} {baseline:.1f}")
+        parts.append(f"L{center:.1f} {baseline:.1f} Z")
+        ask_path = " ".join(parts)
+
+    return {
+        "bid_path_d": bid_path,
+        "ask_path_d": ask_path,
+        "has_svg_paths": bool(bid_path or ask_path),
+    }
 
 
 def _sanitize_depth_bundle_provenance(display_envelope: Dict[str, Any]) -> Dict[str, Any]:
@@ -585,6 +662,14 @@ def build_market_depth_display_context() -> Dict[str, Any]:
 
     has_depth_levels = len(top_bids) > 0 or len(top_asks) > 0
 
+    chart_gate_enabled = depth_chart_enabled_explicitly_on()
+    chart_cumulative_ready = chart_gate_enabled and depth_http_status == 200 and has_depth_levels
+    chart_svg = (
+        _cumulative_depth_chart_svg_paths(top_bids, top_asks)
+        if chart_cumulative_ready
+        else {"bid_path_d": "", "ask_path_d": "", "has_svg_paths": False}
+    )
+
     return {
         "depth_http_status": depth_http_status,
         "display_status": display_status,
@@ -594,6 +679,11 @@ def build_market_depth_display_context() -> Dict[str, Any]:
         "top_asks": top_asks,
         "top_levels_limit": top_limit,
         "has_depth_levels": has_depth_levels,
+        "chart_gate_enabled": chart_gate_enabled,
+        "chart_cumulative_ready": chart_cumulative_ready,
+        "chart_bid_path_d": chart_svg["bid_path_d"],
+        "chart_ask_path_d": chart_svg["ask_path_d"],
+        "chart_has_svg_paths": chart_svg["has_svg_paths"],
         **provenance_ctx,
     }
 
