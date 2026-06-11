@@ -1268,3 +1268,53 @@ def test_market_surface_ranking_funnel_producer_charter_v0() -> None:
 
     for token in forbidden_promotions:
         assert token in forbidden_section
+
+
+def test_market_operator_overview_story_markers_v1(client: TestClient) -> None:
+    """Operator overview redesign: story, system bar, chart primary, secondary guardrails."""
+    html = _html(client, "/market")
+
+    assert 'data-market-operator-overview-v1="true"' in html
+    assert 'data-market-operator-story-v1="true"' in html
+    assert 'data-market-operator-system-bar-v1="true"' in html
+    assert 'data-market-live-locked-v1="true"' in html
+    assert 'data-market-trading-authority-v1="false"' in html
+    assert 'data-market-guardrails-secondary-v1="true"' in html
+    assert 'data-market-diagnostics-secondary-v1="true"' in html
+    assert 'data-market-chart-primary-v1="true"' in html
+    assert 'data-market-top20-ranking-v1="true"' in html
+    assert 'data-market-ranking-source-mode-v1="fixture_offline"' in html
+    assert 'data-market-observe-strip-v1="true"' in html
+    assert 'data-market-ai-decision-readout-v1="true"' in html
+    assert 'data-market-double-play-status-v1="true"' in html
+    assert 'data-market-operator-step-v1="observe"' in html
+    assert 'data-market-operator-step-v1="rank"' in html
+    assert 'data-market-operator-step-v1="explain"' in html
+
+    lowered = html.lower()
+    assert "place order" not in lowered
+    assert "data-order-form" not in lowered
+
+
+def test_market_operator_overview_ranking_table_with_fixture_v1(
+    client_ranking_funnel_fixture_bundle_on: TestClient,
+) -> None:
+    html = _html(client_ranking_funnel_fixture_bundle_on, "/market")
+    assert 'data-market-top20-table-v1="true"' in html
+    assert 'data-market-ranking-source-mode-v1="existing_readmodel"' in html
+    assert "BTCUSDT" in html
+
+
+def test_double_play_operator_detail_redesign_markers_v1(client: TestClient) -> None:
+    html = _html(client, "/market/double-play")
+
+    assert 'data-double-play-operator-detail-v1="true"' in html
+    assert 'data-double-play-bull-bear-cards-v1="true"' in html
+    assert 'data-double-play-bull-card-v1="true"' in html
+    assert 'data-double-play-bear-card-v1="true"' in html
+    assert 'data-double-play-scope-capital-risk-v1="true"' in html
+    assert 'data-double-play-diagnostics-secondary-v1="true"' in html
+    assert 'data-double-play-market-depth-panel="true"' in html
+
+    lowered = html.lower()
+    assert "place order" not in lowered
