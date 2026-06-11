@@ -12,6 +12,7 @@ import pytest
 REPO_ROOT = Path(__file__).resolve().parents[2]
 PAPER_ADAPTER = REPO_ROOT / "scripts/ops/run_paper_only_bounded_observation_adapter_v0.py"
 SHADOW_ADAPTER = REPO_ROOT / "scripts/ops/run_shadow_bounded_observation_adapter_v0.py"
+TESTNET_ADAPTER = REPO_ROOT / "scripts/ops/run_testnet_bounded_observation_adapter_v0.py"
 DURABLE_HELPER = REPO_ROOT / "scripts/ops/durable_closeout_copy_verify_v0.py"
 FORBIDDEN_CHAIN_SCRIPT = REPO_ROOT / "scripts/ops/post_closeout_chain_execute_v0.py"
 PYTEST_DURABLE_DEST_ROOT = REPO_ROOT / "out" / "ops" / "_pytest_bounded_adapter_durable_closeout"
@@ -28,6 +29,15 @@ def _load_paper():
 
 def _load_shadow():
     spec = importlib.util.spec_from_file_location("shadow_adapter_invoke_durable", SHADOW_ADAPTER)
+    assert spec and spec.loader
+    mod = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = mod
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def _load_testnet():
+    spec = importlib.util.spec_from_file_location("testnet_adapter_invoke_durable", TESTNET_ADAPTER)
     assert spec and spec.loader
     mod = importlib.util.module_from_spec(spec)
     sys.modules[spec.name] = mod
@@ -71,6 +81,29 @@ def paper():
 @pytest.fixture(scope="module")
 def shadow():
     return _load_shadow()
+
+
+@pytest.fixture(scope="module")
+def testnet():
+    return _load_testnet()
+
+
+def _testnet_execute_context(
+    testnet, tmp_path: Path, args: argparse.Namespace, run_id: str = "testnet_run"
+):
+    staging = tmp_path / "staging"
+    staging.mkdir(parents=True, exist_ok=True)
+    return testnet.ExecuteContext(
+        args=args,
+        repo_root=REPO_ROOT,
+        staging_root=staging,
+        archive_root=tmp_path / "archive",
+        wrapper_evidence=staging / "wrapper_evidence",
+        logs_dir=staging / "logs",
+        plan_dir=staging / "plan",
+        review_dir=staging / "review",
+        run_id=run_id,
+    )
 
 
 def test_default_off_validate_returns_no_issues(paper):
@@ -493,6 +526,18 @@ def test_paper_and_shadow_expose_cli_flags(paper, shadow):
         assert "--durable-pointer-pattern" in flags
 
 
+def test_testnet_exposes_durable_closeout_cli_flags(testnet):
+    flags = {a.option_strings[0] for a in testnet.build_arg_parser()._actions if a.option_strings}
+    assert "--invoke-durable-closeout-v0" in flags
+    assert "--durable-closeout-dest-dir" in flags
+    assert "--durable-closeout-force" in flags
+    assert "--run-local-post-closeout-chain-v0" in flags
+    assert "--chain-archive-root" in flags
+    assert "--chain-run-id" in flags
+    assert "--require-durable-pointer-evidence" in flags
+    assert "--durable-pointer-pattern" in flags
+
+
 def test_forbidden_parallel_execute_script_absent():
     assert not FORBIDDEN_CHAIN_SCRIPT.exists()
     assert DURABLE_HELPER.is_file()
@@ -507,6 +552,23 @@ def test_shadow_validate_delegates_same_rules(shadow):
 
 def test_shadow_chain_validation_delegates_same_rules(shadow, tmp_path):
     issues = shadow.validate_durable_closeout_invoke_cli_args(
+        _durable_args(
+            run_local_post_closeout_chain_v0=True,
+            chain_archive_root=_chain_archive_root(tmp_path),
+        )
+    )
+    assert any("requires --invoke-durable-closeout-v0" in issue for issue in issues)
+
+
+def test_testnet_validate_delegates_same_rules(testnet):
+    issues = testnet.validate_durable_closeout_invoke_cli_args(
+        _durable_args(invoke_durable_closeout_v0=True)
+    )
+    assert any("durable-closeout-dest-dir" in issue for issue in issues)
+
+
+def test_testnet_chain_validation_delegates_same_rules(testnet, tmp_path):
+    issues = testnet.validate_durable_closeout_invoke_cli_args(
         _durable_args(
             run_local_post_closeout_chain_v0=True,
             chain_archive_root=_chain_archive_root(tmp_path),
@@ -668,3 +730,120 @@ def test_invoke_separate_snapshot_source_with_force_passes(paper, tmp_path):
     assert rc == 0
     assert len(calls) == 1
     assert "--force" in calls[0]
+
+
+def test_testnet_maybe_invoke_identical_paths_blocks_without_helper_call(
+    paper, testnet, tmp_path, capsys
+):
+    archive_dest = tmp_path / "archive_dest"
+    archive_dest.mkdir()
+    (archive_dest / "note.txt").write_text("x\n", encoding="utf-8")
+    calls: list[list[str]] = []
+
+    def _recording_invoker(argv: list[str]) -> int:
+        calls.append(list(argv))
+        return 0
+
+    args = _durable_args(
+        invoke_durable_closeout_v0=True,
+        durable_closeout_dest_dir=archive_dest,
+    )
+    ctx = _testnet_execute_context(testnet, tmp_path, args)
+    rc = testnet.maybe_invoke_durable_closeout_after_archive(
+        ctx,
+        archive_dest,
+        durable_closeout_invoker=_recording_invoker,
+    )
+    assert rc == paper.VALIDATION_EXIT
+    assert calls == []
+    out = capsys.readouterr()
+    assert "BOUNDED_ADAPTER_DURABLE_CLOSEOUT_STATUS=blocked" in out.out
+    assert (
+        "BOUNDED_ADAPTER_DURABLE_CLOSEOUT_BLOCKER_HINT=durable_closeout_identical_source_dest"
+        in out.out
+    )
+    assert "BOUNDED_ADAPTER_DURABLE_CLOSEOUT_INVOKED=false" in out.out
+    assert "BOUNDED_ADAPTER_OBSERVATION_CLOSEOUT_DECOUPLED=true" in out.out
+
+
+def test_testnet_maybe_invoke_prepopulated_dest_without_force_blocks_with_hint(
+    paper, testnet, tmp_path, capsys
+):
+    archive_dest = tmp_path / "archive_dest"
+    archive_dest.mkdir()
+    (archive_dest / "note.txt").write_text("x\n", encoding="utf-8")
+    durable_dest = _durable_dest(tmp_path, "testnet_prepopulated_invoke")
+    durable_dest.mkdir(parents=True, exist_ok=True)
+    (durable_dest / "prestart.env").write_text("TESTNET_ONLY=true\n", encoding="utf-8")
+    calls: list[list[str]] = []
+
+    def _recording_invoker(argv: list[str]) -> int:
+        calls.append(list(argv))
+        return 0
+
+    args = _durable_args(
+        invoke_durable_closeout_v0=True,
+        durable_closeout_dest_dir=durable_dest,
+    )
+    ctx = _testnet_execute_context(testnet, tmp_path, args)
+    rc = testnet.maybe_invoke_durable_closeout_after_archive(
+        ctx,
+        archive_dest,
+        durable_closeout_invoker=_recording_invoker,
+    )
+    assert rc == paper.VALIDATION_EXIT
+    assert calls == []
+    out = capsys.readouterr()
+    assert (
+        "BOUNDED_ADAPTER_DURABLE_CLOSEOUT_BLOCKER_HINT="
+        "durable_closeout_dest_non_empty_without_force" in out.out
+    )
+    assert "BOUNDED_ADAPTER_DURABLE_CLOSEOUT_STATUS=blocked" in out.out
+
+
+def test_testnet_invoke_separate_snapshot_source_with_force_passes(testnet, tmp_path):
+    archive_source = tmp_path / "archive_run"
+    archive_source.mkdir()
+    (archive_source / "CLOSEOUT.md").write_text("# closeout\n", encoding="utf-8")
+    durable_dest = _durable_dest(tmp_path, "testnet_force_snapshot")
+    durable_dest.mkdir(parents=True, exist_ok=True)
+    (durable_dest / "prestart.env").write_text("TESTNET_ONLY=true\n", encoding="utf-8")
+    calls: list[list[str]] = []
+
+    def _recording_invoker(argv: list[str]) -> int:
+        calls.append(list(argv))
+        return 0
+
+    rc = testnet.invoke_durable_closeout_after_archive(
+        source_dir=archive_source,
+        dest_dir=durable_dest,
+        args=_durable_args(durable_closeout_force=True),
+        durable_closeout_invoker=_recording_invoker,
+    )
+    assert rc == 0
+    assert len(calls) == 1
+    assert "--force" in calls[0]
+
+
+def test_testnet_maybe_invoke_without_flag_keeps_observation_closeout_decoupled(
+    testnet, tmp_path, capsys
+):
+    archive_source = tmp_path / "archive_run"
+    archive_source.mkdir()
+    calls: list[list[str]] = []
+
+    def _recording_invoker(argv: list[str]) -> int:
+        calls.append(list(argv))
+        return 0
+
+    ctx = _testnet_execute_context(testnet, tmp_path, _durable_args())
+    rc = testnet.maybe_invoke_durable_closeout_after_archive(
+        ctx,
+        archive_source,
+        durable_closeout_invoker=_recording_invoker,
+    )
+    assert rc == 0
+    assert calls == []
+    out = capsys.readouterr().out
+    assert "BOUNDED_ADAPTER_DURABLE_CLOSEOUT_INVOKED=false" in out
+    assert "BOUNDED_ADAPTER_OBSERVATION_CLOSEOUT_DECOUPLED=true" in out

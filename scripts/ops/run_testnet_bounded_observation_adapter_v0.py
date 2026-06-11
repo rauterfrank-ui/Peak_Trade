@@ -30,6 +30,13 @@ from scripts.ops.primary_evidence_retention_v0 import (
     verify_manifest_sha256,
     write_manifest_sha256 as _write_manifest_sha256,
 )
+from scripts.ops.run_paper_only_bounded_observation_adapter_v0 import (
+    DurableCloseoutInvoker,
+    add_bounded_adapter_durable_closeout_cli_args,
+    invoke_durable_closeout_after_archive,
+    maybe_invoke_durable_closeout_after_archive,
+    validate_durable_closeout_invoke_cli_args,
+)
 from src.webui.workflow_dashboard_readmodel_v1.universe_selection_producer_v1 import (
     emit_universe_selection_closeout_machine_lines,
     maybe_write_missing_truth_after_bounded_closeout,
@@ -386,6 +393,7 @@ def validate_execute_preconditions(
         clean, reason = repo_clean_checker(ctx.repo_root)
         if not clean:
             issues.append(reason or "repository is not clean")
+    issues.extend(validate_durable_closeout_invoke_cli_args(ctx.args))
     return issues
 
 
@@ -484,6 +492,7 @@ def execute_plan(
     plan: AdapterPlan,
     *,
     subprocess_runner: SubprocessRunner,
+    durable_closeout_invoker: DurableCloseoutInvoker | None = None,
 ) -> int:
     if ctx.staging_root.exists():
         shutil.rmtree(ctx.staging_root)
@@ -531,7 +540,11 @@ def execute_plan(
         source_stage="testnet",
     )
     emit_universe_selection_closeout_machine_lines(hook_result)
-    return 0
+    return maybe_invoke_durable_closeout_after_archive(
+        ctx,
+        archive_dest,
+        durable_closeout_invoker=durable_closeout_invoker,
+    )
 
 
 def build_arg_parser() -> argparse.ArgumentParser:
@@ -557,6 +570,7 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--strict-repo-clean", action="store_true", default=True)
     parser.add_argument("--no-strict-repo-clean", action="store_false", dest="strict_repo_clean")
     parser.add_argument("--json", action="store_true")
+    add_bounded_adapter_durable_closeout_cli_args(parser)
     return parser
 
 
@@ -564,6 +578,7 @@ def main(
     argv: list[str] | None = None,
     *,
     subprocess_runner: SubprocessRunner | None = None,
+    durable_closeout_invoker: DurableCloseoutInvoker | None = None,
     repo_clean_checker: RepoCleanChecker | None = None,
     prerequisite_checker: PrerequisiteChecker | None = None,
     environ: Mapping[str, str] | None = None,
@@ -626,7 +641,10 @@ def main(
                 print(issue, file=sys.stderr)
             return VALIDATION_EXIT
         return execute_plan(
-            ctx, plan, subprocess_runner=subprocess_runner or _default_subprocess_runner
+            ctx,
+            plan,
+            subprocess_runner=subprocess_runner or _default_subprocess_runner,
+            durable_closeout_invoker=durable_closeout_invoker,
         )
 
     print(render_plan(plan, args.json))
