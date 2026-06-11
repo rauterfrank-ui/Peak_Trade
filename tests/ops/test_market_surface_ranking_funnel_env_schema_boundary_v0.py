@@ -1050,3 +1050,91 @@ def test_market_tape_ssr_tests_referenced_in_docs_v1() -> None:
     for test_rel in (TAPE_SSR_TEST_REL, BOUNDARY_TEST_REL):
         assert test_rel in truth_map
         assert test_rel in ci_audit
+
+
+OPERATOR_OVERVIEW_CROSSLINK_PACKAGE_MARKER = (
+    "MARKET_OPERATOR_OVERVIEW_IA_V1_DOCS_TRUTH_MAP_CI_AUDIT_STATIC_CROSSLINK_GUARD_V1=true"
+)
+OPERATOR_OVERVIEW_TEST_PACKAGE_MARKER = (
+    "MARKET_OPERATOR_OVERVIEW_IA_V1_DOCS_TRUTH_MAP_CI_AUDIT_CROSSLINK_GUARD_TEST=true"
+)
+OPERATOR_OVERVIEW_STRUCTURE_TEST_REL = (
+    "tests/webui/test_market_dashboard_readonly_structure_contract_v0.py"
+)
+
+
+def test_market_operator_overview_ia_v1_crosslink_package_marker_v1() -> None:
+    text = Path(__file__).read_text(encoding="utf-8")
+    assert OPERATOR_OVERVIEW_TEST_PACKAGE_MARKER
+    assert OPERATOR_OVERVIEW_CROSSLINK_PACKAGE_MARKER in text
+
+
+def test_docs_truth_map_market_operator_overview_ia_v1_chronicle_v1() -> None:
+    truth_map = TRUTH_MAP.read_text(encoding="utf-8")
+    row = _docs_truth_map_chronicle_row(
+        truth_map,
+        "Market Dashboard Operator Overview IA v1 DOCS_TRUTH_MAP static crosslink guard v1",
+    )
+    for required in (
+        SURFACE_REL,
+        OPERATOR_OVERVIEW_STRUCTURE_TEST_REL,
+        BOUNDARY_TEST_REL,
+        "MARKET_OPERATOR_OVERVIEW_IA_V1_CROSSLINK_GUARD_IMPLEMENTED=true",
+        "MARKET_OPERATOR_OVERVIEW_IA_V1_SURFACE_REFERENCED=true",
+        "MARKET_OPERATOR_OVERVIEW_IA_V1_TESTS_REFERENCED=true",
+        "MARKET_OPERATOR_OVERVIEW_IA_V1_PR4145_ANCHOR_REFERENCED=true",
+        "PR #4145",
+        "MARKET_AIRPORT_CREATED_OR_REFERENCED=false",
+        "ORDERFLOW_AUTHORIZATION_CREATED=false",
+        "non-authorizing",
+        "read-only",
+        "display-only",
+    ):
+        assert required.lower() in row.lower()
+
+
+def test_ci_audit_market_operator_overview_ia_v1_crosslink_v1() -> None:
+    ci_audit = CI_AUDIT.read_text(encoding="utf-8")
+    section_start = ci_audit.index(
+        "## Market Dashboard Operator Overview IA v1 DOCS_TRUTH_MAP static crosslink v1"
+    )
+    section_text = ci_audit[section_start : section_start + 4000]
+    for required in (
+        OPERATOR_OVERVIEW_CROSSLINK_PACKAGE_MARKER,
+        "MARKET_OPERATOR_OVERVIEW_IA_V1_CROSSLINK_GUARD_IMPLEMENTED=true",
+        "MARKET_OPERATOR_OVERVIEW_IA_V1_SURFACE_REFERENCED=true",
+        "MARKET_OPERATOR_OVERVIEW_IA_V1_TESTS_REFERENCED=true",
+        "MARKET_OPERATOR_OVERVIEW_IA_V1_PR4145_ANCHOR_REFERENCED=true",
+        "MARKET_AIRPORT_CREATED_OR_REFERENCED=false",
+        SURFACE_REL,
+        OPERATOR_OVERVIEW_STRUCTURE_TEST_REL,
+        BOUNDARY_TEST_REL,
+        "ORDERFLOW_AUTHORIZATION_CREATED=false",
+        "READY_FOR_OPERATOR_ARMING_CHANGED=false",
+        "PR #4145",
+        "non-authorizing",
+        "display-only",
+        "/market",
+        "/market/double-play",
+    ):
+        assert required.lower() in section_text.lower()
+
+
+def test_market_operator_overview_ia_v1_surface_referenced_in_docs_v1() -> None:
+    surface = PROJECT_ROOT / "docs" / "webui" / "MARKET_SURFACE_V0.md"
+    assert surface.is_file()
+    surface_text = surface.read_text(encoding="utf-8")
+    truth_map = TRUTH_MAP.read_text(encoding="utf-8")
+    ci_audit = CI_AUDIT.read_text(encoding="utf-8")
+    assert SURFACE_REL in truth_map
+    assert SURFACE_REL in ci_audit
+    assert "data-market-operator-overview-v1" in surface_text
+    assert "Operator overview IA v1" in surface_text
+
+
+def test_market_operator_overview_ia_v1_tests_referenced_in_docs_v1() -> None:
+    truth_map = TRUTH_MAP.read_text(encoding="utf-8")
+    ci_audit = CI_AUDIT.read_text(encoding="utf-8")
+    for test_rel in (OPERATOR_OVERVIEW_STRUCTURE_TEST_REL, BOUNDARY_TEST_REL):
+        assert test_rel in truth_map
+        assert test_rel in ci_audit
