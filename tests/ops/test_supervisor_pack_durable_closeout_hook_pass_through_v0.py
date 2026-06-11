@@ -308,6 +308,88 @@ def test_maybe_invoke_emits_machine_lines(pm, tmp_path: Path, capsys):
     assert "SUPERVISOR_PACK_DURABLE_CLOSEOUT_INVOKED=false" in out
 
 
+def test_maybe_invoke_identical_paths_blocks_without_helper_call(pm, tmp_path, capsys):
+    archive = tmp_path / "archive"
+    archive.mkdir()
+    (archive / CLOSEOUT_FILENAME).write_text("{}\n", encoding="utf-8")
+    calls: list[list[str]] = []
+
+    def _recording_invoker(argv: list[str]) -> int:
+        calls.append(list(argv))
+        return 0
+
+    rc = pm.maybe_invoke_supervisor_pack_durable_closeout_after_pack(
+        archive_root=archive,
+        invoke_durable_closeout_after_pack_v0=True,
+        durable_closeout_dest_dir=archive,
+        pack_evidence_finalized=True,
+        durable_closeout_invoker=_recording_invoker,
+    )
+    assert rc == 1
+    assert calls == []
+    out = capsys.readouterr()
+    assert "SUPERVISOR_PACK_DURABLE_CLOSEOUT_STATUS=blocked" in out.out
+    assert (
+        "SUPERVISOR_PACK_DURABLE_CLOSEOUT_BLOCKER_HINT=durable_closeout_identical_source_dest"
+        in out.out
+    )
+    assert "SUPERVISOR_PACK_DURABLE_CLOSEOUT_INVOKED=false" in out.out
+    assert "SUPERVISOR_PACK_DURABLE_CLOSEOUT_HELPER_RC=not_run" in out.out
+
+
+def test_maybe_invoke_prepopulated_dest_without_force_blocks_with_hint(pm, tmp_path, capsys):
+    archive = tmp_path / "archive"
+    archive.mkdir()
+    (archive / CLOSEOUT_FILENAME).write_text("{}\n", encoding="utf-8")
+    dest = _durable_dest(tmp_path, "prepopulated")
+    dest.mkdir(parents=True, exist_ok=True)
+    (dest / "prestart.env").write_text("SUPERVISOR_ONLY=true\n", encoding="utf-8")
+    calls: list[list[str]] = []
+
+    def _recording_invoker(argv: list[str]) -> int:
+        calls.append(list(argv))
+        return 0
+
+    rc = pm.maybe_invoke_supervisor_pack_durable_closeout_after_pack(
+        archive_root=archive,
+        invoke_durable_closeout_after_pack_v0=True,
+        durable_closeout_dest_dir=dest,
+        pack_evidence_finalized=True,
+        durable_closeout_invoker=_recording_invoker,
+    )
+    assert rc == 1
+    assert calls == []
+    out = capsys.readouterr()
+    assert (
+        "SUPERVISOR_PACK_DURABLE_CLOSEOUT_BLOCKER_HINT="
+        "durable_closeout_dest_non_empty_without_force" in out.out
+    )
+    assert "SUPERVISOR_PACK_DURABLE_CLOSEOUT_STATUS=blocked" in out.out
+
+
+def test_invoke_identical_paths_blocks_without_helper_call(pm, tmp_path):
+    source = tmp_path / "archive"
+    source.mkdir()
+    calls: list[list[str]] = []
+
+    def _recording_invoker(argv: list[str]) -> int:
+        calls.append(list(argv))
+        return 0
+
+    rc = pm.invoke_supervisor_pack_durable_closeout_after_pack(
+        source_dir=source,
+        dest_dir=source,
+        durable_closeout_invoker=_recording_invoker,
+    )
+    assert rc == 1
+    assert calls == []
+
+
+def test_source_uses_validate_durable_closeout_invoke_paths(pm):
+    text = PACK_SCRIPT.read_text(encoding="utf-8")
+    assert "validate_durable_closeout_invoke_paths" in text
+
+
 def test_pack_script_no_direct_chain_owners(pm):
     text = PACK_SCRIPT.read_text(encoding="utf-8")
     assert "build_generic_evidence_run_registry_v1" not in text

@@ -1264,6 +1264,9 @@ NO_MARKET_GLOBAL_ENABLEMENT_IN_PRECHECK=true
 POST_CLOSEOUT_AUTOMATION_HOOK_OWNER_PRECHECK_DOCS_TESTS_ONLY=true
 TAXONOMY_PREFLIGHT_2B3_CLOSEOUT_VALIDATION_CROSSLINK_V0=true
 DURABLE_CLOSEOUT_ADAPTER_PRE_INVOKE_VALIDATION=true
+SCHEDULER_SUPERVISOR_DURABLE_CLOSEOUT_PRE_INVOKE_VALIDATION=true
+VALIDATE_DURABLE_CLOSEOUT_PATHS_REUSED=true
+HELPER_PARALLEL_LOGIC_CREATED=false
 BOUNDED_ADAPTER_OBSERVATION_CLOSEOUT_DECOUPLED=true
 DURABLE_CLOSEOUT_IDENTICAL_SOURCE_DEST_REJECTED=true
 DURABLE_CLOSEOUT_FORCE_REQUIRES_DISTINCT_PATHS=true
@@ -1286,13 +1289,16 @@ PREFLIGHT_REMAINS_BLOCKED=true
 | `scheduler_completion` | [run_scheduler.py](../../../scripts/run_scheduler.py) | `--invoke-durable-closeout-after-completion-v0` (+ `--durable-closeout-dest-dir`, `--evidence-dir`) | `finalize_scheduler_completion_evidence()` return path — **after** scheduler loop exit, **not** before job dispatch | Run completion; durable evidence root when `--primary-evidence-enforce`; `finalize_primary_evidence_root()` success; `scheduler_completion_closeout_v0.json`; `MANIFEST.sha256` verify RC=0 |
 | `paper_bounded_adapter` | [run_paper_only_bounded_observation_adapter_v0.py](../../../scripts/ops/run_paper_only_bounded_observation_adapter_v0.py) | `--invoke-durable-closeout-v0` (+ `--durable-closeout-dest-dir`) | Archive/closeout artifact finalization — **after** review and durable retention | Adapter execute complete; durable archive outside `/tmp`; manifest verify RC=0; bounded review when applicable |
 | `shadow_bounded_adapter` | [run_shadow_bounded_observation_adapter_v0.py](../../../scripts/ops/run_shadow_bounded_observation_adapter_v0.py) | `--invoke-durable-closeout-v0` (shared bounded-adapter CLI wiring) | Archive/closeout artifact finalization — **after** review and durable retention | Adapter execute complete; durable archive outside `/tmp`; manifest verify RC=0; bounded review when applicable |
+| `testnet_bounded_adapter` | [run_testnet_bounded_observation_adapter_v0.py](../../../scripts/ops/run_testnet_bounded_observation_adapter_v0.py) | `--invoke-durable-closeout-v0` (shared bounded-adapter CLI wiring; PR **#4131**) | Archive/closeout artifact finalization — **after** review and durable retention | Adapter execute complete; durable archive outside `/tmp`; manifest verify RC=0; bounded review when applicable |
 | `supervisor_evidence_pack` | [pack_online_readiness_supervisor_evidence_v0.py](../../../scripts/ops/pack_online_readiness_supervisor_evidence_v0.py) | `--invoke-durable-closeout-after-pack-v0` (+ `--durable-closeout-dest-dir`) | Pack finalization — **after** supervisor STOP and copy into durable archive root | Operator-invoked pack complete; `supervisor_session_closeout_v0.json`; optional `finalize_primary_evidence_root()` when `--primary-evidence-enforce`; manifest verify RC=0 |
 
 `DURABLE_CLOSEOUT_ATTACH_HOOK_V0_IMPLEMENTED=true` — narrow attach hooks ship on `main` and call **only** [durable_closeout_copy_verify_v0.py](../../../scripts/ops/durable_closeout_copy_verify_v0.py). `DURABLE_CLOSEOUT_ATTACH_HOOK_V0_DEFAULT_OFF=true` — hooks require explicit operator flags. `DURABLE_CLOSEOUT_ATTACH_HOOK_V0_NON_AUTHORIZING=true` — hook invocation does **not** complete §2b.1 by itself, lift gates, or authorize runtime.
 
-**Adapter closeout validation (Preflight §2b.3; PR #4128 on `main`):**
+**Attach-hook closeout pre-invoke validation (Preflight §2b.3; bounded adapters PR #4128/#4131; scheduler/supervisor parity on `main`):**
 
-Paper and Shadow bounded adapter attach hooks (`paper_bounded_adapter`, `shadow_bounded_adapter`) must satisfy closeout pre-invoke validation before helper invoke when `--invoke-durable-closeout-v0` is set. Adapters call `validate_durable_closeout_invoke_paths()` and **reuse** helper `_validate_source_dest_distinct` and `_dest_has_content` — **no parallel guard logic** (`DURABLE_CLOSEOUT_ADAPTER_PRE_INVOKE_VALIDATION=true`). PR **#4127** fail-closed helper guard rejects identical/equivalent `--source-dir` and `--dest-dir` (`DURABLE_CLOSEOUT_IDENTICAL_SOURCE_DEST_REJECTED=true`).
+Paper, Shadow, and Testnet bounded adapter attach hooks call `validate_durable_closeout_invoke_paths()` and **reuse** helper `_validate_source_dest_distinct` and `_dest_has_content` — **no parallel guard logic** (`DURABLE_CLOSEOUT_ADAPTER_PRE_INVOKE_VALIDATION=true`). PR **#4127** fail-closed helper guard rejects identical/equivalent `--source-dir` and `--dest-dir` (`DURABLE_CLOSEOUT_IDENTICAL_SOURCE_DEST_REJECTED=true`).
+
+Scheduler completion (`scheduler_completion`) and supervisor evidence pack (`supervisor_evidence_pack`) attach hooks call the same shared `validate_durable_closeout_invoke_paths()` before helper invoke (`SCHEDULER_SUPERVISOR_DURABLE_CLOSEOUT_PRE_INVOKE_VALIDATION=true`; `VALIDATE_DURABLE_CLOSEOUT_PATHS_REUSED=true`; `HELPER_PARALLEL_LOGIC_CREATED=false`). Machine line prefixes: `SCHEDULER_DURABLE_CLOSEOUT_*`, `SUPERVISOR_PACK_DURABLE_CLOSEOUT_*`.
 
 When validation blocks closeout copy:
 
@@ -1309,7 +1315,7 @@ When validation blocks closeout copy:
 | `durable_closeout_identical_source_dest` | Copy from a **separate snapshot source directory**; ensure dest is a **distinct** durable path outside `/tmp`. |
 | `durable_closeout_dest_non_empty_without_force` | Use a fresh dest, or `--durable-closeout-force` only with **distinct** source/dest. |
 
-Machine line shapes (non-authorizing): `BOUNDED_ADAPTER_DURABLE_CLOSEOUT_BLOCKER_HINT=<token>`; `BLOCKER_HINT=<token>` in adapter `START_RETURN_CODE` artifact when execute returns blocked closeout. Hints **do not** lift Preflight **BLOCKED**, authorize runtime, Live, orders, or arming.
+Machine line shapes (non-authorizing): `BOUNDED_ADAPTER_DURABLE_CLOSEOUT_BLOCKER_HINT=<token>`; `SCHEDULER_DURABLE_CLOSEOUT_BLOCKER_HINT=<token>`; `SUPERVISOR_PACK_DURABLE_CLOSEOUT_BLOCKER_HINT=<token>`; `BLOCKER_HINT=<token>` in adapter `START_RETURN_CODE` artifact when execute returns blocked closeout. Hints **do not** lift Preflight **BLOCKED**, authorize runtime, Live, orders, or arming.
 
 **Authoritative status hierarchy (post-recovery vs historical pre-recovery FAIL):** `AUTHORITATIVE_STATUS_HIERARCHY_V0=true`; `HISTORICAL_PRE_RECOVERY_FAIL_NOT_CURRENT_STATUS=true`. When durable bundles contain divergent status — for example historical `RUN_CLOSEOUT.md` or `RESULT_SUMMARY.env` recording a **pre-recovery FAIL** while later snapshot-recovery artifacts show **PASS** — **authoritative current status** (when `MANIFEST_VERIFY_RC=0` on the recovery/analysis bundle) is:
 
@@ -1319,7 +1325,7 @@ Machine line shapes (non-authorizing): `BOUNDED_ADAPTER_DURABLE_CLOSEOUT_BLOCKER
 
 Pre-recovery `RUN_CLOSEOUT.md` / `RESULT_SUMMARY.env` FAIL lines are **traceability only** and must **not** override current PASS when recovery PASS + analysis PASS + `MANIFEST_VERIFY_RC=0` are present. **Evidence ≠ approval**; Preflight remains **BLOCKED** (`PREFLIGHT_REMAINS_BLOCKED=true`; `PREFLIGHT_BLOCKED_LIFTED=false`; no-live / no-order / no-arming).
 
-Static guards: [test_durable_closeout_copy_verify_v0.py](../../../tests/ops/test_durable_closeout_copy_verify_v0.py); [test_bounded_adapter_invoke_durable_closeout_v0.py](../../../tests/ops/test_bounded_adapter_invoke_durable_closeout_v0.py); [test_paper_shadow_247_preflight_contract_v0.py](../../../tests/ops/test_paper_shadow_247_preflight_contract_v0.py) §2b.3.
+Static guards: [test_durable_closeout_copy_verify_v0.py](../../../tests/ops/test_durable_closeout_copy_verify_v0.py); [test_bounded_adapter_invoke_durable_closeout_v0.py](../../../tests/ops/test_bounded_adapter_invoke_durable_closeout_v0.py); [test_scheduler_durable_closeout_hook_pass_through_v0.py](../../../tests/ops/test_scheduler_durable_closeout_hook_pass_through_v0.py); [test_supervisor_pack_durable_closeout_hook_pass_through_v0.py](../../../tests/ops/test_supervisor_pack_durable_closeout_hook_pass_through_v0.py); [test_paper_shadow_247_preflight_contract_v0.py](../../../tests/ops/test_paper_shadow_247_preflight_contract_v0.py) §2b.3.
 
 **Forbidden attach points (always):**
 

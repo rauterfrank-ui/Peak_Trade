@@ -140,14 +140,29 @@ def emit_scheduler_durable_closeout_machine_lines(
     invoked: bool,
     exit_code: int,
     dest_dir: Optional[Path],
+    source_dir: Optional[Path] = None,
+    validation_blocked: bool = False,
+    blocker_hint: str = "",
 ) -> None:
     print(f"SCHEDULER_DURABLE_CLOSEOUT_REQUESTED={'true' if requested else 'false'}")
     print(f"SCHEDULER_DURABLE_CLOSEOUT_INVOKED={'true' if invoked else 'false'}")
+    print(
+        f"SCHEDULER_DURABLE_CLOSEOUT_VALIDATION_BLOCKED={'true' if validation_blocked else 'false'}"
+    )
+    if blocker_hint:
+        print(f"SCHEDULER_DURABLE_CLOSEOUT_BLOCKER_HINT={blocker_hint}")
+        print(f"BLOCKER_HINT={blocker_hint}")
     print(f"SCHEDULER_DURABLE_CLOSEOUT_EXIT_CODE={exit_code}")
     if dest_dir is not None:
         print(f"SCHEDULER_DURABLE_CLOSEOUT_DEST_DIR={dest_dir.resolve()}")
     else:
         print("SCHEDULER_DURABLE_CLOSEOUT_DEST_DIR=")
+    if validation_blocked:
+        print("SCHEDULER_DURABLE_CLOSEOUT_STATUS=blocked")
+        if source_dir is not None:
+            print(f"SCHEDULER_DURABLE_CLOSEOUT_SOURCE_DIR={source_dir.resolve()}")
+        print("SCHEDULER_DURABLE_CLOSEOUT_HELPER_RC=not_run")
+        print("SCHEDULER_DURABLE_CLOSEOUT_NON_AUTHORIZING=true")
 
 
 def invoke_scheduler_durable_closeout_after_completion(
@@ -155,13 +170,23 @@ def invoke_scheduler_durable_closeout_after_completion(
     source_dir: Path,
     dest_dir: Path,
     durable_closeout_invoker: Optional[Callable[[list[str]], int]] = None,
+    force: bool = False,
 ) -> int:
     """Invoke canonical durable closeout helper after scheduler completion evidence."""
     from scripts.ops.run_paper_only_bounded_observation_adapter_v0 import (
         _default_durable_closeout_invoker,
         build_durable_closeout_invoke_argv,
+        validate_durable_closeout_invoke_paths,
     )
 
+    ok, msg, _blocker = validate_durable_closeout_invoke_paths(
+        source_dir,
+        dest_dir,
+        force=force,
+    )
+    if not ok:
+        print(msg, file=sys.stderr)
+        return 1
     invoker = durable_closeout_invoker or _default_durable_closeout_invoker
     return invoker(build_durable_closeout_invoke_argv(source_dir=source_dir, dest_dir=dest_dir))
 
@@ -197,6 +222,27 @@ def maybe_invoke_scheduler_durable_closeout_after_completion(
         )
         return 1
     assert dest_dir is not None
+    from scripts.ops.run_paper_only_bounded_observation_adapter_v0 import (
+        validate_durable_closeout_invoke_paths,
+    )
+
+    ok, validation_msg, blocker_hint = validate_durable_closeout_invoke_paths(
+        evidence_dir,
+        dest_dir,
+        force=False,
+    )
+    if not ok:
+        emit_scheduler_durable_closeout_machine_lines(
+            requested=True,
+            invoked=False,
+            exit_code=1,
+            dest_dir=dest_dir,
+            source_dir=evidence_dir,
+            validation_blocked=True,
+            blocker_hint=blocker_hint,
+        )
+        print(validation_msg, file=sys.stderr)
+        return 1
     hook_rc = invoke_scheduler_durable_closeout_after_completion(
         source_dir=evidence_dir,
         dest_dir=dest_dir,
@@ -207,6 +253,7 @@ def maybe_invoke_scheduler_durable_closeout_after_completion(
         invoked=True,
         exit_code=hook_rc,
         dest_dir=dest_dir,
+        source_dir=evidence_dir,
     )
     return hook_rc
 

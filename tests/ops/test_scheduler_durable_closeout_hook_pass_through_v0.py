@@ -264,3 +264,86 @@ def test_maybe_invoke_emits_machine_lines(rs, tmp_path, capsys):
     out = capsys.readouterr().out
     assert "SCHEDULER_DURABLE_CLOSEOUT_REQUESTED=false" in out
     assert "SCHEDULER_DURABLE_CLOSEOUT_INVOKED=false" in out
+
+
+def test_maybe_invoke_identical_paths_blocks_without_helper_call(rs, tmp_path, capsys):
+    source = tmp_path / "evidence"
+    source.mkdir()
+    (source / "scheduler_completion_closeout_v0.json").write_text("{}\n", encoding="utf-8")
+    calls: list[list[str]] = []
+
+    def _recording_invoker(argv: list[str]) -> int:
+        calls.append(list(argv))
+        return 0
+
+    rc = rs.maybe_invoke_scheduler_durable_closeout_after_completion(
+        evidence_dir=source,
+        invoke_durable_closeout_after_completion_v0=True,
+        durable_closeout_dest_dir=source,
+        completion_evidence_finalized=True,
+        durable_closeout_invoker=_recording_invoker,
+    )
+    assert rc == 1
+    assert calls == []
+    out = capsys.readouterr()
+    assert "SCHEDULER_DURABLE_CLOSEOUT_STATUS=blocked" in out.out
+    assert (
+        "SCHEDULER_DURABLE_CLOSEOUT_BLOCKER_HINT=durable_closeout_identical_source_dest" in out.out
+    )
+    assert "SCHEDULER_DURABLE_CLOSEOUT_INVOKED=false" in out.out
+    assert "SCHEDULER_DURABLE_CLOSEOUT_HELPER_RC=not_run" in out.out
+
+
+def test_maybe_invoke_prepopulated_dest_without_force_blocks_with_hint(rs, tmp_path, capsys):
+    source = tmp_path / "evidence"
+    source.mkdir()
+    (source / "scheduler_completion_closeout_v0.json").write_text("{}\n", encoding="utf-8")
+    dest = _durable_dest(tmp_path, "prepopulated")
+    dest.mkdir(parents=True, exist_ok=True)
+    (dest / "prestart.env").write_text("SCHEDULER_ONLY=true\n", encoding="utf-8")
+    calls: list[list[str]] = []
+
+    def _recording_invoker(argv: list[str]) -> int:
+        calls.append(list(argv))
+        return 0
+
+    rc = rs.maybe_invoke_scheduler_durable_closeout_after_completion(
+        evidence_dir=source,
+        invoke_durable_closeout_after_completion_v0=True,
+        durable_closeout_dest_dir=dest,
+        completion_evidence_finalized=True,
+        durable_closeout_invoker=_recording_invoker,
+    )
+    assert rc == 1
+    assert calls == []
+    out = capsys.readouterr()
+    assert (
+        "SCHEDULER_DURABLE_CLOSEOUT_BLOCKER_HINT="
+        "durable_closeout_dest_non_empty_without_force" in out.out
+    )
+    assert "SCHEDULER_DURABLE_CLOSEOUT_STATUS=blocked" in out.out
+
+
+def test_invoke_identical_paths_blocks_without_helper_call(rs, tmp_path, capsys):
+    source = tmp_path / "evidence"
+    source.mkdir()
+    calls: list[list[str]] = []
+
+    def _recording_invoker(argv: list[str]) -> int:
+        calls.append(list(argv))
+        return 0
+
+    rc = rs.invoke_scheduler_durable_closeout_after_completion(
+        source_dir=source,
+        dest_dir=source,
+        durable_closeout_invoker=_recording_invoker,
+    )
+    assert rc == 1
+    assert calls == []
+    err = capsys.readouterr().err.lower()
+    assert "identical" in err or "same" in err
+
+
+def test_source_uses_validate_durable_closeout_invoke_paths(rs):
+    text = RUN_SCHEDULER.read_text(encoding="utf-8")
+    assert "validate_durable_closeout_invoke_paths" in text
