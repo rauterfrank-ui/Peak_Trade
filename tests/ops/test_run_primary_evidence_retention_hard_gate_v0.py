@@ -25,6 +25,12 @@ SHADOW_ADAPTER = REPO_ROOT / "scripts" / "ops" / "run_shadow_bounded_observation
 TESTNET_ADAPTER = REPO_ROOT / "scripts" / "ops" / "run_testnet_bounded_observation_adapter_v0.py"
 SHADOW_REVIEW = REPO_ROOT / "scripts" / "ops" / "review_shadow_bounded_observation_evidence_v0.py"
 TESTNET_REVIEW = REPO_ROOT / "scripts" / "ops" / "review_testnet_bounded_observation_evidence_v0.py"
+ORDER_CAPABILITY_DRY_VALIDATION = (
+    REPO_ROOT / "scripts" / "ops" / "run_order_capability_dry_validation_adapter_v1.py"
+)
+ORDER_CAPABILITY_FIXTURE_BINDING = (
+    REPO_ROOT / "scripts" / "ops" / "run_order_capability_fixture_binding_dry_validation_v1.py"
+)
 P67_LIB = REPO_ROOT / "src" / "ops" / "p67" / "shadow_session_scheduler_v1.py"
 P72_PACK = REPO_ROOT / "src" / "ops" / "p72" / "run_shadowloop_pack_v1.py"
 P79_VERIFY = REPO_ROOT / "scripts" / "ops" / "p79_supervisor_evidence_manifest_verify_v0.py"
@@ -107,6 +113,12 @@ PE2_RUN_TYPE_GUARD_MATRIX: tuple[Pe2RunTypeGuardRow, ...] = (
         "Supervisor",
         "pack_online_readiness_supervisor_evidence_v0.py",
     ),
+    Pe2RunTypeGuardRow(
+        "order_capability_offline",
+        "Order-Capability offline",
+        "primary_evidence_retention_v0.py",
+        "dry-validation",
+    ),
 )
 
 PE2_REQUIRED_RUN_TYPE_IDS = frozenset(row.run_type_id for row in PE2_RUN_TYPE_GUARD_MATRIX)
@@ -117,6 +129,15 @@ PE2_ENFORCEMENT_CONTRACT_ONLY_MARKERS = (
     "GAP2A1_ENFORCEMENT_OPT_IN_ONLY=true",
     "PREFLIGHT_REMAINS_BLOCKED=true",
     "READY_FOR_OPERATOR_ARMING=false",
+)
+
+PE7_ORDER_CAPABILITY_OFFLINE_APPLICABILITY_MARKERS = (
+    "PE7_ORDER_CAPABILITY_OFFLINE_RUN_TYPE_APPLICABILITY_GUARD_V0=true",
+    "PRIMARY_EVIDENCE_ORDER_CAPABILITY_OFFLINE_APPLICABILITY_GUARD_IMPLEMENTED=true",
+    "ORDER_CAPABILITY_OFFLINE_DURABLE_RUN_ROOT_HELPER_REFERENCED=true",
+    "ORDER_CAPABILITY_OFFLINE_ENFORCEMENT_OPT_IN_CONFIRMED=true",
+    "VALIDATE_ORDER_CAPABILITY_OFFLINE_DURABLE_RUN_ROOT_V0=true",
+    "SLICE_PE7_DOCS_TESTS_ONLY=true",
 )
 
 
@@ -160,6 +181,7 @@ def test_section_2a1_applies_to_all_run_types() -> None:
         "Live/Canary",
         "Scheduler",
         "Supervisor",
+        "Order-Capability offline",
         "Daemon",
         "Smoke",
         "bounded trial",
@@ -178,6 +200,7 @@ def test_pe2_run_type_primary_evidence_guard_matrix_covers_required_lanes_v0() -
             "bounded_observation",
             "scheduler",
             "supervisor",
+            "order_capability_offline",
         }
     )
 
@@ -590,6 +613,37 @@ def test_pe6_hard_gate_cyber_er_artifact_retention_crosslink_v0() -> None:
         in ci_audit
     )
     assert ("LOSSLESS_JSONL_RECOVERY" + _MARKER_TRUE) not in ci_lines
+
+
+def test_pe7_order_capability_offline_run_type_applicability_guard_v0() -> None:
+    section = _section_2a1()
+    gap2a1 = _section5_gap2a1()
+    helper_text = SHARED_HELPER.read_text(encoding="utf-8")
+    owner_text = Path(__file__).read_text(encoding="utf-8")
+
+    for token in PE7_ORDER_CAPABILITY_OFFLINE_APPLICABILITY_MARKERS:
+        assert token in section
+    for token in (
+        "PE7_ORDER_CAPABILITY_OFFLINE_RUN_TYPE_APPLICABILITY_GUARD_V0=true",
+        "PRIMARY_EVIDENCE_ORDER_CAPABILITY_OFFLINE_APPLICABILITY_GUARD_IMPLEMENTED=true",
+        "ORDER_CAPABILITY_OFFLINE_DURABLE_RUN_ROOT_HELPER_REFERENCED=true",
+        "ORDER_CAPABILITY_OFFLINE_ENFORCEMENT_OPT_IN_CONFIRMED=true",
+    ):
+        assert token in gap2a1
+    assert "Order-Capability offline run-type applicability (PE-7 guard)" in gap2a1
+    assert "order_capability_offline" in owner_text
+    assert "validate_order_capability_offline_durable_run_root" in helper_text
+    assert ORDER_CAPABILITY_DRY_VALIDATION.name in gap2a1
+    assert ORDER_CAPABILITY_FIXTURE_BINDING.name in gap2a1
+    assert ORDER_CAPABILITY_DRY_VALIDATION.name in section
+    assert ORDER_CAPABILITY_FIXTURE_BINDING.name in section
+    assert "parked/read-only" in section.lower()
+    assert "does not authorize orderflow" in section.lower()
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in section
+    assert "READY_FOR_OPERATOR_ARMING=false" in section
+    gap2a1_lines = {line.strip() for line in gap2a1.splitlines()}
+    assert "READY_FOR_OPERATOR_ARMING=true" not in gap2a1_lines
+    assert "ORDERFLOW_AUTHORIZATION_CREATED=true" not in gap2a1_lines
 
 
 @pytest.mark.skipif(not COPY_CHECK.is_file(), reason="operator archive copy-check not present")

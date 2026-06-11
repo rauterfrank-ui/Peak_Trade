@@ -140,6 +140,40 @@ def test_gap2a1_pe6_cyber_er_artifact_retention_crosslink_v0() -> None:
     assert "does not activate enforcement" in collapsed.lower()
 
 
+def test_gap2a1_pe7_order_capability_offline_run_type_applicability_crosslink_v0() -> None:
+    section5 = DOC.read_text(encoding="utf-8")
+    preflight = PREFLIGHT.read_text(encoding="utf-8")
+    hard_gate = HARD_GATE_TESTS.read_text(encoding="utf-8")
+    helper = (ROOT / "scripts" / "ops" / "primary_evidence_retention_v0.py").read_text(
+        encoding="utf-8"
+    )
+    gap2a1 = section5.split("## §2a.1 Primary Evidence Enforcement Contract v0", 1)[1].split(
+        "## Gap 1 Execute Entrypoint Contract v0", 1
+    )[0]
+    section_2a1 = preflight.split("## 2a.1", 1)[1].split("## 2b.", 1)[0]
+    for token in (
+        "PE7_ORDER_CAPABILITY_OFFLINE_RUN_TYPE_APPLICABILITY_GUARD_V0=true",
+        "PRIMARY_EVIDENCE_ORDER_CAPABILITY_OFFLINE_APPLICABILITY_GUARD_IMPLEMENTED=true",
+        "ORDER_CAPABILITY_OFFLINE_DURABLE_RUN_ROOT_HELPER_REFERENCED=true",
+        "ORDER_CAPABILITY_OFFLINE_ENFORCEMENT_OPT_IN_CONFIRMED=true",
+        "VALIDATE_ORDER_CAPABILITY_OFFLINE_DURABLE_RUN_ROOT_V0=true",
+    ):
+        assert token in section_2a1
+        assert token in gap2a1
+    assert "Order-Capability offline run-type applicability (PE-7 guard)" in gap2a1
+    assert "Order-Capability offline run-type applicability (PE-7 guard)" in section_2a1
+    assert "run_order_capability_dry_validation_adapter_v1.py" in gap2a1
+    assert "run_order_capability_fixture_binding_dry_validation_v1.py" in gap2a1
+    assert "test_pe7_order_capability_offline_run_type_applicability_guard_v0" in hard_gate
+    assert "validate_order_capability_offline_durable_run_root" in helper
+    assert "order_capability_offline" in hard_gate
+    collapsed = gap2a1.replace("**", "")
+    assert "does not authorize orderflow" in collapsed.lower()
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in gap2a1
+    assert "READY_FOR_OPERATOR_ARMING=false" in gap2a1
+    assert "does not activate enforcement" in collapsed.lower()
+
+
 def test_gap2a1_primary_evidence_enforcement_contract_is_not_default_on():
     text = DOC.read_text(encoding="utf-8")
     section = text.split("## §2a.1 Primary Evidence Enforcement Contract v0", 1)[1].split(

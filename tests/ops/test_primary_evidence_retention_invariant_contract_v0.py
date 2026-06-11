@@ -321,6 +321,24 @@ def test_validate_order_capability_offline_durable_run_root_fail_closed_missing_
     assert any("missing durable required file" in issue for issue in issues)
 
 
+def test_canonical_owner_section_2a1_order_capability_offline_applicability_v0() -> None:
+    section = _section_2a1()
+    for token in (
+        "PE7_ORDER_CAPABILITY_OFFLINE_RUN_TYPE_APPLICABILITY_GUARD_V0=true",
+        "PRIMARY_EVIDENCE_ORDER_CAPABILITY_OFFLINE_APPLICABILITY_GUARD_IMPLEMENTED=true",
+        "ORDER_CAPABILITY_OFFLINE_DURABLE_RUN_ROOT_HELPER_REFERENCED=true",
+        "ORDER_CAPABILITY_OFFLINE_ENFORCEMENT_OPT_IN_CONFIRMED=true",
+        "VALIDATE_ORDER_CAPABILITY_OFFLINE_DURABLE_RUN_ROOT_V0=true",
+    ):
+        assert token in section
+    assert "run_order_capability_dry_validation_adapter_v1.py" in section
+    assert "run_order_capability_fixture_binding_dry_validation_v1.py" in section
+    assert "validate_order_capability_offline_durable_run_root" in section
+    assert "does not authorize orderflow" in section.lower()
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in section
+    assert "READY_FOR_OPERATOR_ARMING=false" in section
+
+
 def test_canonical_owner_references_scheduler_completion_opt_in() -> None:
     text = _owner_text()
     assert "run_scheduler.py" in text

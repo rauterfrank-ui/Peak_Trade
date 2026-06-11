@@ -78,7 +78,15 @@ def test_section5_gap2a1_pe3_run_type_applicability_contract_v0() -> None:
     assert "PE2_RUN_TYPE_GUARD_MATRIX" in section
     assert "test_run_primary_evidence_retention_hard_gate_v0.py" in section
     assert "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md" in section
-    for run_type in ("Paper", "Shadow", "Testnet", "Live/Canary", "Scheduler", "Supervisor"):
+    for run_type in (
+        "Paper",
+        "Shadow",
+        "Testnet",
+        "Live/Canary",
+        "Scheduler",
+        "Supervisor",
+        "Order-Capability offline",
+    ):
         assert run_type in section
     assert "/tmp`-only insufficient" in section or "/tmp`-only is insufficient" in section
     assert "MANIFEST.sha256" in section
