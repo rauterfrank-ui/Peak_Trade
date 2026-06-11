@@ -148,7 +148,7 @@ AI-adjacent workflows (`infostream-automation`, `market_outlook_automation`) may
 |-------|-------|--------|
 | **SLICE-GH-0** | Docs-only governance start | **complete** (#3910) |
 | **SLICE-GH-001** | Single-workflow manual-only: `.github&#47;workflows&#47;pro-prk-nightly-selfcheck.yml` | **complete** (#3911) |
-| **SLICE-GH-CI** | Single-workflow manual-only: `.github&#47;workflows&#47;ci.yml` | **pending PR** (GH-CI slice) |
+| **SLICE-GH-CI** | Single-workflow manual-only: `.github&#47;workflows&#47;ci.yml` (`schedule:` removed; `workflow_dispatch`, `pull_request`, `push`, `merge_group` retained) | **complete** (#3958) |
 
 **Post GH-001..004 + GH-CI + PRCC + PRK/PRBD + PRBJ Option B schedule posture:** **8** residual inventory workflows are manual-only (`ci.yml`, `pro-prk-nightly-selfcheck.yml`, `real-market-forward-evidence-smoke.yml`, `audit.yml`, `pru-required-checks-drift-detector.yml`, `prcc-aws-export-smoke.yml`, `prk-prj-status-report.yml`, `prbj-testnet-exec-events.yml`); **`workflow_dispatch`** and other non-schedule triggers retained per workflow. Among `RESIDUAL_SCHEDULE_WORKFLOW_FILES`, **5** retain active `schedule:`. **No batch YAML wave.**
 
@@ -165,7 +165,7 @@ AI-adjacent workflows (`infostream-automation`, `market_outlook_automation`) may
 | Owner | Path |
 |-------|------|
 | Read-only CLI | `scripts/ops/recommend_manual_only_workflows.py` |
-| Static tests | `tests/ops/test_recommend_manual_only_workflows.py` (GH-001 manual-only contract merged #3911) |
+| Static tests | `tests/ops/test_recommend_manual_only_workflows.py` (GH-001 #3911; GH-CI #3958 implemented-posture docs drift guard) |
 
 **Planning bundle (archive — not repo-ingested):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/gh_schedule_governance_minimal_rc_v0_final_closeout_handoff_20260602T204000Z/`
 
@@ -175,10 +175,16 @@ GH_SCHEDULE_GOVERNANCE_MINIMAL_RC_V0_CORE_DONE=true
 SLICE_GH0_DOCS_ONLY=true
 SLICE_GH001_COMPLETE=true
 GH001_MANUAL_ONLY=true
-RESIDUAL_ACTIVE_SCHEDULE_COUNT=6
-RESIDUAL_MANUAL_ONLY_RESIDUAL_COUNT=7
+SLICE_GH_CI_COMPLETE=true
+GH_CI_MERGED_PR3958=true
+GH_CI_SCHEDULE_REMOVED=true
+CI_YML_SCHEDULE_FREE_CONFIRMED=true
+GH_CI_SCHEDULE_MANUAL_ONLY_DOCS_DRIFT_GUARD_IMPLEMENTED=true
+RESIDUAL_ACTIVE_SCHEDULE_COUNT=5
+RESIDUAL_MANUAL_ONLY_RESIDUAL_COUNT=8
 RESIDUAL_SCHEDULE_INVENTORY_COUNT=13
 GH001_CANDIDATE_WORKFLOW=pro-prk-nightly-selfcheck.yml
+GH_CI_CANDIDATE_WORKFLOW=ci.yml
 WORKFLOW_DISPATCH_EXECUTED=false
 BATCH_SCHEDULE_CHANGES=false
 SCHEDULE_REACTIVATION=false

@@ -20,6 +20,15 @@ SCRIPT = REPO_ROOT / "scripts" / "ops" / "recommend_manual_only_workflows.py"
 DOC = REPO_ROOT / "docs" / "ops" / "CI_SCHEDULED_WORKFLOW_VARIABLE_GATES.md"
 CI_AUDIT = REPO_ROOT / "docs" / "ops" / "CI_AUDIT_KNOWN_ISSUES.md"
 OPDS1_HEADING = "## Post-Release Operator Package Decision Contract v0"
+GH_SCHEDULE_GOVERNANCE_HEADING = "## GH Schedule Governance Minimal RC v0"
+GH_CI_DRIFT_GUARD_PACKAGE_MARKER = "GH_CI_SCHEDULE_MANUAL_ONLY_DOCS_DRIFT_GUARD_IMPLEMENTED=true"
+GH_CI_SLICE_ROW_TOKEN = "SLICE-GH-CI"
+GH_CI_MERGE_PR_REF = "#3958"
+FORBIDDEN_GH_CI_PENDING_PHRASE = "pending PR"
+CANONICAL_RESIDUAL_ACTIVE_COUNT_LINE = "RESIDUAL_ACTIVE_SCHEDULE_COUNT=5"
+CANONICAL_MANUAL_ONLY_COUNT_LINE = "RESIDUAL_MANUAL_ONLY_RESIDUAL_COUNT=8"
+STALE_RESIDUAL_ACTIVE_COUNT_LINE = "RESIDUAL_ACTIVE_SCHEDULE_COUNT=6"
+STALE_MANUAL_ONLY_COUNT_LINE = "RESIDUAL_MANUAL_ONLY_RESIDUAL_COUNT=7"
 
 EXPECTED_INTENTS = frozenset(
     {
@@ -225,6 +234,20 @@ def test_residual_all_json_covers_thirteen_without_duplicates() -> None:
     assert manual_only_count == RESIDUAL_MANUAL_ONLY_COUNT
 
 
+def _gh_ci_slice_table_rows(text: str) -> list[str]:
+    return [line for line in text.splitlines() if GH_CI_SLICE_ROW_TOKEN in line]
+
+
+def _gh_schedule_governance_machine_block(text: str) -> str:
+    start = text.find(GH_SCHEDULE_GOVERNANCE_HEADING)
+    assert start != -1
+    fence = text.find("```text", start)
+    assert fence != -1
+    end = text.find("```", fence + 7)
+    assert end != -1
+    return text[fence:end]
+
+
 def test_ci_manual_only_yaml_shape() -> None:
     """GH-CI: cron removed; dispatch and PR/push/merge_group retained."""
     text = CI_WORKFLOW.read_text(encoding="utf-8")
@@ -233,6 +256,34 @@ def test_ci_manual_only_yaml_shape() -> None:
     assert "pull_request:" in text
     assert "push:" in text
     assert "merge_group:" in text
+
+
+def test_gh_ci_docs_drift_guard_package_marker_v0() -> None:
+    assert GH_CI_DRIFT_GUARD_PACKAGE_MARKER in Path(__file__).read_text(encoding="utf-8")
+
+
+@pytest.mark.parametrize("doc_path", [DOC, CI_AUDIT])
+def test_gh_ci_slice_not_pending_pr_in_docs_drift_guard_v0(doc_path: Path) -> None:
+    """Docs must record SLICE-GH-CI complete (#3958), not pending PR."""
+    text = doc_path.read_text(encoding="utf-8")
+    rows = _gh_ci_slice_table_rows(text)
+    assert rows, f"missing {GH_CI_SLICE_ROW_TOKEN} table row in {doc_path.name}"
+    for row in rows:
+        assert FORBIDDEN_GH_CI_PENDING_PHRASE not in row, row
+        assert "complete" in row.lower(), row
+        assert GH_CI_MERGE_PR_REF in row, row
+
+
+@pytest.mark.parametrize("doc_path", [DOC, CI_AUDIT])
+def test_gh_ci_docs_residual_schedule_counts_drift_guard_v0(doc_path: Path) -> None:
+    """Docs machine block must match canonical 5 active / 8 manual-only counts."""
+    text = doc_path.read_text(encoding="utf-8")
+    block = _gh_schedule_governance_machine_block(text)
+    assert CANONICAL_RESIDUAL_ACTIVE_COUNT_LINE in block
+    assert CANONICAL_MANUAL_ONLY_COUNT_LINE in block
+    assert STALE_RESIDUAL_ACTIVE_COUNT_LINE not in block
+    assert STALE_MANUAL_ONLY_COUNT_LINE not in block
+    assert GH_CI_DRIFT_GUARD_PACKAGE_MARKER in block
 
 
 def test_pro_prk_nightly_selfcheck_manual_only_yaml_shape() -> None:
@@ -412,7 +463,7 @@ def test_github_workflows_active_schedule_allowlist_drift_guard_v0() -> None:
 
 
 def test_residual_active_schedule_allowlist_each_has_schedule_v0() -> None:
-    """Each of the 6 residual cron workflows must still expose schedule in on block."""
+    """Each of the 5 residual cron workflows must still expose schedule in on block."""
     pytest.importorskip("yaml")
     for fname in sorted(RESIDUAL_ACTIVE_SCHEDULE_ALLOWLIST):
         rec = _parse_workflow_file(fname)

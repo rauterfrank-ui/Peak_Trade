@@ -3126,7 +3126,7 @@ PARALLEL_OPERATOR_STATUS_INDEX_CREATED=false
 | **SLICE-GH-0** | Docs-only governance start | **none** | **complete** (#3910) |
 | **SLICE-GH-001** | Single-workflow manual-only: `.github&#47;workflows&#47;pro-prk-nightly-selfcheck.yml` (`schedule:` removed; `workflow_dispatch` retained) | **one file** | **complete** (#3911) |
 | **SLICE-GH-2** (optional) | Static test guard after GH-001 if needed | none | **deferred** (GH-001 yaml-shape guard merged #3911) |
-| **SLICE-GH-CI** | Single-workflow manual-only: `.github&#47;workflows&#47;ci.yml` (`schedule:` removed; `workflow_dispatch`, `pull_request`, `push`, `merge_group` retained) | **one file** | **pending PR** (GH-CI slice) |
+| **SLICE-GH-CI** | Single-workflow manual-only: `.github&#47;workflows&#47;ci.yml` (`schedule:` removed; `workflow_dispatch`, `pull_request`, `push`, `merge_group` retained) | **one file** | **complete** (#3958) |
 
 **Residual schedules on `main` (post GH-001..004 + GH-CI + PRCC + PRK/PRBD Option2 + PRBJ Option B):** **5** workflows retain active `schedule:` — `prbc-stability-gate.yml`, `prbd-live-readiness-scorecard.yml`, `prbe-shadow-testnet-scorecard.yml`, `prbg-execution-evidence.yml`, `prbi-live-pilot-scorecard.yml`. **8** are **manual-only** (no active `schedule:`; other triggers retained): `ci.yml`, `pro-prk-nightly-selfcheck.yml`, `real-market-forward-evidence-smoke.yml`, `audit.yml`, `pru-required-checks-drift-detector.yml`, `prcc-aws-export-smoke.yml`, `prk-prj-status-report.yml`, `prbj-testnet-exec-events.yml`. Recommender inventory set remains **13** files (`RESIDUAL_SCHEDULE_WORKFLOW_FILES`); **5** have active schedules. **No batch YAML wave.** **No schedule reactivation** for PR #3896 manual-only set.
 
@@ -3160,10 +3160,15 @@ GH001_SCHEDULE_REMOVED=true
 SLICE_GH_001_SEPARATE_SUB_GO=true
 BATCH_SCHEDULE_CHANGES=false
 SCHEDULE_REACTIVATION=false
-RESIDUAL_ACTIVE_SCHEDULE_COUNT=6
-RESIDUAL_MANUAL_ONLY_RESIDUAL_COUNT=7
+RESIDUAL_ACTIVE_SCHEDULE_COUNT=5
+RESIDUAL_MANUAL_ONLY_RESIDUAL_COUNT=8
 RESIDUAL_SCHEDULE_INVENTORY_COUNT=13
 GH001_CANDIDATE_WORKFLOW=pro-prk-nightly-selfcheck.yml
+SLICE_GH_CI_COMPLETE=true
+GH_CI_MERGED_PR3958=true
+GH_CI_SCHEDULE_REMOVED=true
+CI_YML_SCHEDULE_FREE_CONFIRMED=true
+GH_CI_SCHEDULE_MANUAL_ONLY_DOCS_DRIFT_GUARD_IMPLEMENTED=true
 GH_CI_SCHEDULE_MANUAL_ONLY=true
 GH_CI_CANDIDATE_WORKFLOW=ci.yml
 WORKFLOW_DISPATCH_EXECUTED=false
