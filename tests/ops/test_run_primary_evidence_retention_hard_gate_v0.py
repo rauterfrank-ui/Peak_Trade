@@ -141,6 +141,40 @@ PE7_ORDER_CAPABILITY_OFFLINE_APPLICABILITY_MARKERS = (
 )
 
 
+# SLICE-PE-8: Order-Capability fixture-binding offline durable closeout wiring guard matrix.
+class Pe8OrderCapabilityOfflineCloseoutWiringRow(NamedTuple):
+    lane_id: str
+    owner_script: str
+    wiring_status: str
+
+
+PE8_ORDER_CAPABILITY_FIXTURE_BINDING_OFFLINE_CLOSEOUT_WIRING_LANE_MATRIX: tuple[
+    Pe8OrderCapabilityOfflineCloseoutWiringRow, ...
+] = (
+    Pe8OrderCapabilityOfflineCloseoutWiringRow(
+        "order_capability_dry_validation_adapter",
+        "run_order_capability_dry_validation_adapter_v1.py",
+        "wired",
+    ),
+    Pe8OrderCapabilityOfflineCloseoutWiringRow(
+        "order_capability_fixture_binding_runner",
+        "run_order_capability_fixture_binding_dry_validation_v1.py",
+        "pending",
+    ),
+)
+
+PE8_ORDER_CAPABILITY_FIXTURE_BINDING_OFFLINE_CLOSEOUT_WIRING_MARKERS = (
+    "PE8_ORDER_CAPABILITY_FIXTURE_BINDING_OFFLINE_DURABLE_CLOSEOUT_WIRING_GUARD_V0=true",
+    "ORDER_CAPABILITY_FIXTURE_BINDING_PE_CLOSEOUT_WIRING_GUARD_IMPLEMENTED=true",
+    "FIXTURE_BINDING_RUNNER_PRIMARY_EVIDENCE_WIRING_GUARDED=true",
+    "FIXTURE_BINDING_RUNNER_PRIMARY_EVIDENCE_WIRING_PENDING=true",
+    "ADAPTER_PRIMARY_EVIDENCE_WIRING_REFERENCED=true",
+    "PRIMARY_EVIDENCE_RETENTION_V0_REFERENCED=true",
+    "PREFLIGHT_2A1_DURABLE_COMPLETION_DUTY_GUARDED=true",
+    "SLICE_PE8_DOCS_TESTS_ONLY=true",
+)
+
+
 def _owner_text() -> str:
     return CANONICAL_OWNER.read_text(encoding="utf-8")
 
@@ -638,6 +672,57 @@ def test_pe7_order_capability_offline_run_type_applicability_guard_v0() -> None:
     assert ORDER_CAPABILITY_DRY_VALIDATION.name in section
     assert ORDER_CAPABILITY_FIXTURE_BINDING.name in section
     assert "parked/read-only" in section.lower()
+    assert "does not authorize orderflow" in section.lower()
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in section
+    assert "READY_FOR_OPERATOR_ARMING=false" in section
+    gap2a1_lines = {line.strip() for line in gap2a1.splitlines()}
+    assert "READY_FOR_OPERATOR_ARMING=true" not in gap2a1_lines
+    assert "ORDERFLOW_AUTHORIZATION_CREATED=true" not in gap2a1_lines
+
+
+def test_pe8_order_capability_fixture_binding_offline_durable_closeout_wiring_guard_v0() -> None:
+    section = _section_2a1()
+    gap2a1 = _section5_gap2a1()
+    adapter_text = ORDER_CAPABILITY_DRY_VALIDATION.read_text(encoding="utf-8")
+    fixture_text = ORDER_CAPABILITY_FIXTURE_BINDING.read_text(encoding="utf-8")
+    helper_text = SHARED_HELPER.read_text(encoding="utf-8")
+    owner_text = Path(__file__).read_text(encoding="utf-8")
+    fixture_test_text = (
+        REPO_ROOT
+        / "tests"
+        / "ops"
+        / "test_run_order_capability_fixture_binding_dry_validation_v1.py"
+    ).read_text(encoding="utf-8")
+
+    for token in PE8_ORDER_CAPABILITY_FIXTURE_BINDING_OFFLINE_CLOSEOUT_WIRING_MARKERS:
+        assert token in section
+    for token in (
+        "PE8_ORDER_CAPABILITY_FIXTURE_BINDING_OFFLINE_DURABLE_CLOSEOUT_WIRING_GUARD_V0=true",
+        "ORDER_CAPABILITY_FIXTURE_BINDING_PE_CLOSEOUT_WIRING_GUARD_IMPLEMENTED=true",
+        "FIXTURE_BINDING_RUNNER_PRIMARY_EVIDENCE_WIRING_GUARDED=true",
+    ):
+        assert token in gap2a1
+    assert "PE8_ORDER_CAPABILITY_FIXTURE_BINDING_OFFLINE_CLOSEOUT_WIRING_LANE_MATRIX" in owner_text
+    assert (
+        "Order-Capability fixture-binding offline durable closeout wiring (PE-8 guard)" in section
+    )
+    assert "Order-Capability fixture-binding offline durable closeout wiring (PE-8 guard)" in gap2a1
+    assert "def validate_order_capability_offline_durable_run_root" in helper_text
+    assert "VALIDATE_ORDER_CAPABILITY_OFFLINE_DURABLE_RUN_ROOT_V0=true" in helper_text
+    assert "primary_evidence_retention_v0" in adapter_text
+    assert "validate_order_capability_offline_durable_run_root" in adapter_text
+    assert "write_manifest_sha256" in adapter_text
+    assert "primary_evidence_retention_v0" not in fixture_text
+    assert "validate_order_capability_offline_durable_run_root" not in fixture_text
+    assert "FIXTURE_BINDING_RUNNER_PRIMARY_EVIDENCE_WIRING_PENDING=true" in section
+    assert "FIXTURE_BINDING_DURABLE_COMPLETION_INVALID_WITHOUT_HELPER_WIRING=true" in section
+    assert (
+        "ORDER_CAPABILITY_FIXTURE_BINDING_PE8_OFFLINE_DURABLE_CLOSEOUT_WIRING_GUARD_V0=true"
+        in fixture_test_text
+    )
+    for row in PE8_ORDER_CAPABILITY_FIXTURE_BINDING_OFFLINE_CLOSEOUT_WIRING_LANE_MATRIX:
+        assert row.owner_script in section
+        assert row.owner_script in gap2a1
     assert "does not authorize orderflow" in section.lower()
     assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in section
     assert "READY_FOR_OPERATOR_ARMING=false" in section

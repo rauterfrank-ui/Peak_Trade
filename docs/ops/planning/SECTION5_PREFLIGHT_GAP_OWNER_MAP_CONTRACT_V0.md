@@ -74,6 +74,14 @@ PRIMARY_EVIDENCE_ORDER_CAPABILITY_OFFLINE_APPLICABILITY_GUARD_IMPLEMENTED=true
 ORDER_CAPABILITY_OFFLINE_DURABLE_RUN_ROOT_HELPER_REFERENCED=true
 ORDER_CAPABILITY_OFFLINE_ENFORCEMENT_OPT_IN_CONFIRMED=true
 SLICE_PE7_DOCS_TESTS_ONLY=true
+PE8_ORDER_CAPABILITY_FIXTURE_BINDING_OFFLINE_DURABLE_CLOSEOUT_WIRING_GUARD_V0=true
+ORDER_CAPABILITY_FIXTURE_BINDING_PE_CLOSEOUT_WIRING_GUARD_IMPLEMENTED=true
+FIXTURE_BINDING_RUNNER_PRIMARY_EVIDENCE_WIRING_GUARDED=true
+FIXTURE_BINDING_RUNNER_PRIMARY_EVIDENCE_WIRING_PENDING=true
+ADAPTER_PRIMARY_EVIDENCE_WIRING_REFERENCED=true
+PRIMARY_EVIDENCE_RETENTION_V0_REFERENCED=true
+PREFLIGHT_2A1_DURABLE_COMPLETION_DUTY_GUARDED=true
+SLICE_PE8_DOCS_TESTS_ONLY=true
 
 This contract records the primary-evidence enforcement posture for future run-like actions. It is intentionally non-authorizing and opt-in only.
 
@@ -88,6 +96,8 @@ Preflight §2a.1 documents run-type applicability for **run completion**: Paper,
 **Cyber ↔ ER artifact-retention crosslink (PE-6 guard) v0:** Cybersecurity visibility `artifact_retention_or_evidence_gap` histogram posture is linked to §2a.1 durable primary evidence / ER retention (`CYBER_VISIBILITY_ARTIFACTS_RETENTION_LINKED_TO_PRIMARY_EVIDENCE_V0`, `ER_ARTIFACT_RETENTION_LINKED_TO_CYBER_VISIBILITY_V0`). Defensive/derived/static only; no definitive cyber mapping without authoritative INPUT_JSONL. Crosslink: `docs/ops/CI_AUDIT_KNOWN_ISSUES.md` reciprocal histogram block. Static guard: `tests/ci/test_cybersecurity_visibility_repo_static_histogram_artifact_retention_or_evidence_gap_crosslink_v0.py`. **Tests-only**; **does not** activate enforcement.
 
 **Order-Capability offline run-type applicability (PE-7 guard) v0:** Extends PE2/PE3 applicability to parked/read-only Order-Capability offline dry-validation lanes. When operator-gated durable evidence is written, run completion requires durable archive outside `/tmp`, `MANIFEST.sha256` verified, and `validate_order_capability_offline_durable_run_root()` (`scripts/ops/primary_evidence_retention_v0.py`; `VALIDATE_ORDER_CAPABILITY_OFFLINE_DURABLE_RUN_ROOT_V0=true`). Owners: `run_order_capability_dry_validation_adapter_v1.py`, `run_order_capability_fixture_binding_dry_validation_v1.py`. Static guard: `tests/ops/test_run_primary_evidence_retention_hard_gate_v0.py` (`PE2_RUN_TYPE_GUARD_MATRIX` row `order_capability_offline`; `test_pe7_order_capability_offline_run_type_applicability_guard_v0`). **Parked/read-only** — does not authorize orderflow, cancel, execute, arming, or Preflight lift; `ORDER_CAPABILITY_OFFLINE_ENFORCEMENT_OPT_IN_CONFIRMED=true`; `GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false`.
+
+**Order-Capability fixture-binding offline durable closeout wiring (PE-8 guard) v0:** PE-4 analog for parked Order-Capability offline lanes. Adapter owner (`run_order_capability_dry_validation_adapter_v1.py`) is the **wired reference** for `primary_evidence_retention_v0` closeout paths. Fixture-binding owner (`run_order_capability_fixture_binding_dry_validation_v1.py`) is **contractually guarded** with **pending wiring** (`FIXTURE_BINDING_RUNNER_PRIMARY_EVIDENCE_WIRING_PENDING=true`): until separately scoped wiring lands, operator-gated durable completion claims from fixture-binding are invalid; flat `--output` does not satisfy §2a.1. Static guard: `tests/ops/test_run_primary_evidence_retention_hard_gate_v0.py` (`PE8_ORDER_CAPABILITY_FIXTURE_BINDING_OFFLINE_CLOSEOUT_WIRING_LANE_MATRIX`; `test_pe8_order_capability_fixture_binding_offline_durable_closeout_wiring_guard_v0`); reciprocal tests in `tests/ops/test_run_order_capability_fixture_binding_dry_validation_v1.py`. **Tests-only** — does not activate enforcement; does not authorize orderflow, cancel, execute, arming, or Preflight lift; `GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false`.
 
 **Criteria-SSOT Repo-Change-Proposal §2a.1 bidirectional crosslink (A-04) v0:**
 

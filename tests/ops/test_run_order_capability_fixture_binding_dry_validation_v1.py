@@ -30,6 +30,11 @@ CI_AUDIT = ROOT / "docs" / "ops" / "CI_AUDIT_KNOWN_ISSUES.md"
 CROSSLINK_PACKAGE_MARKER = (
     "ORDER_CAPABILITY_FIXTURE_BINDING_DOCS_TRUTH_MAP_STATIC_CROSSLINK_GUARD_V1=true"
 )
+PE8_WIRING_GUARD_PACKAGE_MARKER = (
+    "ORDER_CAPABILITY_FIXTURE_BINDING_PE8_OFFLINE_DURABLE_CLOSEOUT_WIRING_GUARD_V0=true"
+)
+ADAPTER_SCRIPT = ROOT / "scripts" / "ops" / "run_order_capability_dry_validation_adapter_v1.py"
+SHARED_HELPER = ROOT / "scripts" / "ops" / "primary_evidence_retention_v0.py"
 RUNNER_REL = "scripts/ops/run_order_capability_fixture_binding_dry_validation_v1.py"
 TEST_REL = "tests/ops/test_run_order_capability_fixture_binding_dry_validation_v1.py"
 
@@ -275,6 +280,38 @@ def test_order_capability_fixture_binding_tests_referenced_in_docs_v1() -> None:
     ci_audit = CI_AUDIT.read_text(encoding="utf-8")
     assert TEST_REL in truth_map
     assert TEST_REL in ci_audit
+
+
+def test_pe8_wiring_guard_package_marker_v0() -> None:
+    assert PE8_WIRING_GUARD_PACKAGE_MARKER in Path(__file__).read_text(encoding="utf-8")
+
+
+def test_adapter_primary_evidence_wiring_referenced_guard_v0() -> None:
+    adapter_text = ADAPTER_SCRIPT.read_text(encoding="utf-8")
+    helper_text = SHARED_HELPER.read_text(encoding="utf-8")
+    assert ADAPTER_SCRIPT.is_file()
+    assert SHARED_HELPER.is_file()
+    assert "primary_evidence_retention_v0" in adapter_text
+    assert "validate_order_capability_offline_durable_run_root" in adapter_text
+    assert "write_manifest_sha256" in adapter_text
+    assert "def validate_order_capability_offline_durable_run_root" in helper_text
+
+
+def test_fixture_binding_runner_primary_evidence_wiring_pending_guard_v0() -> None:
+    runner_text = RUNNER_SCRIPT.read_text(encoding="utf-8")
+    preflight = (
+        ROOT / "docs" / "ops" / "runbooks" / "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md"
+    ).read_text(encoding="utf-8")
+    assert "primary_evidence_retention_v0" not in runner_text
+    assert "validate_order_capability_offline_durable_run_root" not in runner_text
+    for token in (
+        "FIXTURE_BINDING_RUNNER_PRIMARY_EVIDENCE_WIRING_PENDING=true",
+        "FIXTURE_BINDING_RUNNER_PRIMARY_EVIDENCE_WIRING_GUARDED=true",
+        "ADAPTER_PRIMARY_EVIDENCE_WIRING_REFERENCED=true",
+        "ORDER_CAPABILITY_FIXTURE_BINDING_PE_CLOSEOUT_WIRING_GUARD_IMPLEMENTED=true",
+    ):
+        assert token in preflight
+    assert "FIXTURE_BINDING_DURABLE_COMPLETION_INVALID_WITHOUT_HELPER_WIRING=true" in preflight
 
 
 def test_output_written_only_when_explicit(tmp_path: Path) -> None:
