@@ -9,6 +9,7 @@ ADAPTER = ROOT / "scripts" / "ops" / "run_paper_only_bounded_observation_adapter
 L2_CONTRACT = ROOT / "scripts" / "ops" / "paper_l2_120min_hold_binding_approval_v0.py"
 GUARD = ROOT / "scripts" / "ops" / "scheduler_start_boundary_guard_v0.py"
 BOUNDARY_SPEC = ROOT / "docs" / "ops" / "specs" / "SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md"
+FIXTURE = ROOT / "tests" / "fixtures" / "ops" / "paper_l2_120min_hold_binding_approval_sample.md"
 
 FORBIDDEN_DIFF_PREFIXES = (
     "src/strategies/",
@@ -44,6 +45,26 @@ def test_boundary_spec_references_l2_120min_profile_section() -> None:
     text = BOUNDARY_SPEC.read_text(encoding="utf-8")
     assert "paper_l2_120min_hold_binding_v0" in text
     assert "## 10b." in text
+
+
+def test_boundary_spec_declares_paper_tl_l2_namespace_guards() -> None:
+    text = BOUNDARY_SPEC.read_text(encoding="utf-8")
+    assert "PAPER_TL_L2_NOT_MASTER_V2_G5_L2=true" in text
+    assert "PAPER_TL_L2_PROVES_MASTER_V2_RUNTIME=false" in text
+    assert "PAPER_TL_L2_PROVES_INFRASTRUCTURE_SAFETY_ONLY=true" in text
+
+
+def test_fixture_declares_paper_tl_l2_namespace_guard() -> None:
+    text = FIXTURE.read_text(encoding="utf-8")
+    assert "PAPER_TL_L2_PROVES_MASTER_V2_RUNTIME=false" in text
+    assert "MASTER_V2_G5_L2_STATUS=NOT_STARTED_OR_EXTERNAL" in text
+    assert "UNQUALIFIED_L2_CLAIM_FORBIDDEN=true" in text
+
+
+def test_l2_contract_docstring_qualifies_paper_tl_namespace() -> None:
+    text = L2_CONTRACT.read_text(encoding="utf-8")
+    assert "Paper-TL-L2" in text
+    assert "Master V2 G5-L2" in text
 
 
 def test_pr_scope_excludes_trading_and_double_play_paths() -> None:
