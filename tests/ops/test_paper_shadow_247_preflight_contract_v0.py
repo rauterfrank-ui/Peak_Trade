@@ -262,6 +262,9 @@ def test_preflight_section_2b3_durable_closeout_adapter_validation_ssot_v0() -> 
     assert "ALL_FIVE_ATTACH_HOOK_SURFACES_RESULT_CLASSIFICATION_COVERED=true" in section
     assert "VALIDATE_CLI_ARGS_CROSS_SURFACE_PARITY_MATRIX_GUARD_V0=true" in section
     assert "ALL_BOUNDED_ADAPTER_ATTACH_SURFACES_CLI_ARGS_MATRIX_COVERED=true" in section
+    assert "DEST_MANIFEST_VERIFY_RC_CROSS_SURFACE_PARITY_MATRIX_GUARD_V0=true" in section
+    assert "ALL_FIVE_ATTACH_HOOK_SURFACES_DEST_MANIFEST_VERIFY_RC_COVERED=true" in section
+    assert "HOOK_ATTACH_AFTER_MANIFEST_VERIFY_RC_ZERO_ONLY_GUARDED=true" in section
 
 
 def test_preflight_section_2b3_durable_closeout_force_and_blocker_hints_v0() -> None:

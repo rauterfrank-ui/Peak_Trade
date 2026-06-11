@@ -189,6 +189,100 @@ VALIDATE_CLI_ARGS_CROSS_SURFACE_PARITY_MATRIX_GUARD_MARKERS: tuple[str, ...] = (
     "NEW_PARALLEL_CLI_ARGS_VALIDATION_LOGIC_CREATED=false",
 )
 
+DURABLE_CLOSEOUT_HELPER_REL_PATH = "scripts/ops/durable_closeout_copy_verify_v0.py"
+HELPER_DEST_MANIFEST_VERIFY_RC_EMIT_TOKEN = "DURABLE_CLOSEOUT_DEST_MANIFEST_VERIFY_RC"
+
+DEST_MANIFEST_VERIFY_RC_CROSS_SURFACE_PARITY_MATRIX_GUARD_MARKERS: tuple[str, ...] = (
+    "DEST_MANIFEST_VERIFY_RC_CROSS_SURFACE_PARITY_MATRIX_GUARD_V0=true",
+    "ALL_FIVE_ATTACH_HOOK_SURFACES_DEST_MANIFEST_VERIFY_RC_COVERED=true",
+    "PAPER_DEST_MANIFEST_VERIFY_RC_SURFACE_GUARDED=true",
+    "SHADOW_DEST_MANIFEST_VERIFY_RC_IMPORT_CHAIN_GUARDED=true",
+    "TESTNET_DEST_MANIFEST_VERIFY_RC_SURFACE_GUARDED=true",
+    "SCHEDULER_DEST_MANIFEST_VERIFY_RC_SURFACE_GUARDED=true",
+    "SUPERVISOR_DEST_MANIFEST_VERIFY_RC_SURFACE_GUARDED=true",
+    "HOOK_ATTACH_AFTER_MANIFEST_VERIFY_RC_ZERO_ONLY_GUARDED=true",
+    "NEW_PARALLEL_MANIFEST_RC_CLASSIFICATION_LOGIC_CREATED=false",
+)
+
+POST_INVOKE_DEST_MANIFEST_VERIFY_RC_CROSS_SURFACE_PARITY_MATRIX_V0: dict[
+    str, dict[str, tuple[str, ...] | str]
+] = {
+    "paper_bounded_adapter": {
+        "rel_path": "scripts/ops/run_paper_only_bounded_observation_adapter_v0.py",
+        "binding_mode": "canonical_helper_invoke_chain",
+        "required_in_source": (
+            "build_durable_closeout_invoke_argv",
+            "_default_durable_closeout_invoker",
+            "durable_closeout_copy_verify_v0",
+            "maybe_invoke_durable_closeout_after_archive",
+        ),
+        "forbidden_in_source": (
+            HELPER_DEST_MANIFEST_VERIFY_RC_EMIT_TOKEN,
+            "def classify_dest_manifest_verify_rc(",
+        ),
+        "helper_rc_surrogate": "BOUNDED_ADAPTER_DURABLE_CLOSEOUT_HELPER_RC",
+    },
+    "shadow_bounded_adapter": {
+        "rel_path": "scripts/ops/run_shadow_bounded_observation_adapter_v0.py",
+        "binding_mode": "paper_import_delegation",
+        "required_in_source": (
+            "from scripts.ops.run_paper_only_bounded_observation_adapter_v0 import",
+            "maybe_invoke_durable_closeout_after_archive",
+        ),
+        "forbidden_in_source": (
+            HELPER_DEST_MANIFEST_VERIFY_RC_EMIT_TOKEN,
+            "build_durable_closeout_invoke_argv",
+            "_default_durable_closeout_invoker",
+            "def classify_dest_manifest_verify_rc(",
+        ),
+    },
+    "testnet_bounded_adapter": {
+        "rel_path": "scripts/ops/run_testnet_bounded_observation_adapter_v0.py",
+        "binding_mode": "paper_import_delegation",
+        "required_in_source": (
+            "from scripts.ops.run_paper_only_bounded_observation_adapter_v0 import",
+            "maybe_invoke_durable_closeout_after_archive",
+        ),
+        "forbidden_in_source": (
+            HELPER_DEST_MANIFEST_VERIFY_RC_EMIT_TOKEN,
+            "build_durable_closeout_invoke_argv",
+            "_default_durable_closeout_invoker",
+            "def classify_dest_manifest_verify_rc(",
+        ),
+    },
+    "scheduler_completion": {
+        "rel_path": "scripts/run_scheduler.py",
+        "binding_mode": "paper_import_at_invoke",
+        "required_in_source": (
+            "build_durable_closeout_invoke_argv",
+            "_default_durable_closeout_invoker",
+            "invoke_scheduler_durable_closeout_after_completion",
+            "durable_closeout_copy_verify_v0",
+        ),
+        "forbidden_in_source": (
+            HELPER_DEST_MANIFEST_VERIFY_RC_EMIT_TOKEN,
+            "def classify_dest_manifest_verify_rc(",
+        ),
+        "helper_rc_surrogate": "SCHEDULER_DURABLE_CLOSEOUT_EXIT_CODE",
+    },
+    "supervisor_evidence_pack": {
+        "rel_path": "scripts/ops/pack_online_readiness_supervisor_evidence_v0.py",
+        "binding_mode": "paper_import_at_invoke",
+        "required_in_source": (
+            "build_durable_closeout_invoke_argv",
+            "_default_durable_closeout_invoker",
+            "invoke_supervisor_pack_durable_closeout_after_pack",
+            "durable_closeout_copy_verify_v0",
+        ),
+        "forbidden_in_source": (
+            HELPER_DEST_MANIFEST_VERIFY_RC_EMIT_TOKEN,
+            "def classify_dest_manifest_verify_rc(",
+        ),
+        "helper_rc_surrogate": "SUPERVISOR_PACK_DURABLE_CLOSEOUT_EXIT_CODE",
+    },
+}
+
+
 VALIDATE_CLI_ARGS_CROSS_SURFACE_PARITY_MATRIX_V0: dict[str, dict[str, tuple[str, ...] | str]] = {
     "paper_bounded_adapter": {
         "rel_path": "scripts/ops/run_paper_only_bounded_observation_adapter_v0.py",
@@ -309,6 +403,15 @@ POST_CLOSEOUT_AUTOMATION_HOOK_OWNER_PRECHECK_MARKERS: tuple[str, ...] = (
     "DURABLE_CLOSEOUT_INVOKE_FLAG_CLI_ARGS_GUARDED=true",
     "FORCE_SCOPE_BLOCKER_HINT_CLI_ARGS_GUARDED=true",
     "NEW_PARALLEL_CLI_ARGS_VALIDATION_LOGIC_CREATED=false",
+    "DEST_MANIFEST_VERIFY_RC_CROSS_SURFACE_PARITY_MATRIX_GUARD_V0=true",
+    "ALL_FIVE_ATTACH_HOOK_SURFACES_DEST_MANIFEST_VERIFY_RC_COVERED=true",
+    "PAPER_DEST_MANIFEST_VERIFY_RC_SURFACE_GUARDED=true",
+    "SHADOW_DEST_MANIFEST_VERIFY_RC_IMPORT_CHAIN_GUARDED=true",
+    "TESTNET_DEST_MANIFEST_VERIFY_RC_SURFACE_GUARDED=true",
+    "SCHEDULER_DEST_MANIFEST_VERIFY_RC_SURFACE_GUARDED=true",
+    "SUPERVISOR_DEST_MANIFEST_VERIFY_RC_SURFACE_GUARDED=true",
+    "HOOK_ATTACH_AFTER_MANIFEST_VERIFY_RC_ZERO_ONLY_GUARDED=true",
+    "NEW_PARALLEL_MANIFEST_RC_CLASSIFICATION_LOGIC_CREATED=false",
 )
 
 POST_CLOSEOUT_PROJECTION_AUTOMATION_CHARTER_MARKERS: tuple[str, ...] = (

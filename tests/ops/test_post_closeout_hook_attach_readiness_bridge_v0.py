@@ -209,3 +209,47 @@ def test_validate_cli_args_cross_surface_parity_matrix_guard_v0() -> None:
     assert matrix["paper_bounded_adapter"]["binding_mode"] == "canonical_definer"
     assert matrix["shadow_bounded_adapter"]["binding_mode"] == "paper_import_delegation"
     assert matrix["testnet_bounded_adapter"]["binding_mode"] == "paper_import_delegation"
+
+
+def test_durable_closeout_helper_emits_dest_manifest_verify_rc_v0() -> None:
+    helper_path = REPO_ROOT / pc.DURABLE_CLOSEOUT_HELPER_REL_PATH
+    text = helper_path.read_text(encoding="utf-8")
+    assert pc.HELPER_DEST_MANIFEST_VERIFY_RC_EMIT_TOKEN in text
+    body = pc.durable_closeout_emit_function_body(
+        pc.DURABLE_CLOSEOUT_HELPER_REL_PATH,
+        "emit_machine_lines",
+    )
+    assert pc.HELPER_DEST_MANIFEST_VERIFY_RC_EMIT_TOKEN in body
+
+
+def test_post_invoke_dest_manifest_verify_rc_cross_surface_parity_matrix_guard_v0() -> None:
+    owners = pc.CANONICAL_DURABLE_CLOSEOUT_ATTACH_HOOK_OWNERS_V0
+    matrix = pc.POST_INVOKE_DEST_MANIFEST_VERIFY_RC_CROSS_SURFACE_PARITY_MATRIX_V0
+    helper_text = (REPO_ROOT / pc.DURABLE_CLOSEOUT_HELPER_REL_PATH).read_text(encoding="utf-8")
+    assert pc.HELPER_DEST_MANIFEST_VERIFY_RC_EMIT_TOKEN in helper_text
+    assert len(matrix) == 5
+    assert set(matrix) == set(owners)
+    assert "testnet_bounded_adapter" in matrix
+    for owner_id, spec in matrix.items():
+        rel_path = str(spec["rel_path"])
+        assert owners[owner_id] == rel_path
+        source = (REPO_ROOT / rel_path).read_text(encoding="utf-8")
+        for token in spec.get("required_in_source", ()):
+            assert token in source, f"{owner_id}: missing {token!r} in {rel_path}"
+        for forbidden in spec.get("forbidden_in_source", ()):
+            assert forbidden not in source, (
+                f"{owner_id}: parallel dest manifest verify RC logic {forbidden!r} in {rel_path}"
+            )
+        surrogate = spec.get("helper_rc_surrogate")
+        if surrogate:
+            assert surrogate in source, f"{owner_id}: missing helper RC surrogate {surrogate!r}"
+    assert matrix["paper_bounded_adapter"]["binding_mode"] == "canonical_helper_invoke_chain"
+    assert matrix["shadow_bounded_adapter"]["binding_mode"] == "paper_import_delegation"
+    assert matrix["testnet_bounded_adapter"]["binding_mode"] == "paper_import_delegation"
+    assert matrix["scheduler_completion"]["binding_mode"] == "paper_import_at_invoke"
+    assert matrix["supervisor_evidence_pack"]["binding_mode"] == "paper_import_at_invoke"
+    for marker in pc.DEST_MANIFEST_VERIFY_RC_CROSS_SURFACE_PARITY_MATRIX_GUARD_MARKERS:
+        assert marker in pc.POST_CLOSEOUT_AUTOMATION_HOOK_OWNER_PRECHECK_MARKERS
+    assert "HOOK_ATTACH_AFTER_MANIFEST_VERIFY_RC_ZERO_ONLY=true" in (
+        pc.POST_CLOSEOUT_AUTOMATION_HOOK_OWNER_PRECHECK_MARKERS
+    )
