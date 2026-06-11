@@ -250,9 +250,14 @@ def test_preflight_section_2b3_durable_closeout_adapter_validation_ssot_v0() -> 
     assert "#4128" in section
     assert "durable_closeout_copy_verify_v0.py" in section
     assert "run_paper_only_bounded_observation_adapter_v0.py" in section
+    assert "run_scheduler.py" in section
+    assert "pack_online_readiness_supervisor_evidence_v0.py" in section
     assert "validate_durable_closeout_invoke_paths" in section
+    assert "SCHEDULER_SUPERVISOR_DURABLE_CLOSEOUT_PRE_INVOKE_VALIDATION=true" in section
     assert "test_durable_closeout_copy_verify_v0.py" in section
     assert "test_bounded_adapter_invoke_durable_closeout_v0.py" in section
+    assert "test_scheduler_durable_closeout_hook_pass_through_v0.py" in section
+    assert "test_supervisor_pack_durable_closeout_hook_pass_through_v0.py" in section
 
 
 def test_preflight_section_2b3_durable_closeout_force_and_blocker_hints_v0() -> None:
@@ -262,6 +267,8 @@ def test_preflight_section_2b3_durable_closeout_force_and_blocker_hints_v0() -> 
     assert "durable_closeout_identical_source_dest" in section
     assert "durable_closeout_dest_non_empty_without_force" in section
     assert "BOUNDED_ADAPTER_DURABLE_CLOSEOUT_BLOCKER_HINT" in section
+    assert "SCHEDULER_DURABLE_CLOSEOUT_BLOCKER_HINT" in section
+    assert "SUPERVISOR_PACK_DURABLE_CLOSEOUT_BLOCKER_HINT" in section
     assert "snapshot source" in section.lower() or "snapshot-source" in section.lower()
 
 

@@ -502,6 +502,9 @@ PREFLIGHT_DURABLE_CLOSEOUT_ADAPTER_VALIDATION_SSOT_V0=true
 PREFLIGHT_DURABLE_CLOSEOUT_ADAPTER_VALIDATION_DOCS_TESTS_ONLY=true
 DURABLE_CLOSEOUT_IDENTICAL_SOURCE_DEST_REJECTED=true
 DURABLE_CLOSEOUT_ADAPTER_PRE_INVOKE_VALIDATION=true
+SCHEDULER_SUPERVISOR_DURABLE_CLOSEOUT_PRE_INVOKE_VALIDATION=true
+VALIDATE_DURABLE_CLOSEOUT_PATHS_REUSED=true
+HELPER_PARALLEL_LOGIC_CREATED=false
 BOUNDED_ADAPTER_OBSERVATION_CLOSEOUT_DECOUPLED=true
 DURABLE_CLOSEOUT_FORCE_REQUIRES_DISTINCT_PATHS=true
 BLOCKER_HINT_MACHINE_READABLE=true
@@ -523,7 +526,7 @@ Static guard: [test_durable_closeout_copy_verify_v0.py](../../../tests/ops/test_
 
 ### PR #4128 — bounded adapter closeout validation (decoupled from observation PASS)
 
-Paper and Shadow bounded observation adapters ([run_paper_only_bounded_observation_adapter_v0.py](../../../scripts/ops/run_paper_only_bounded_observation_adapter_v0.py), [run_shadow_bounded_observation_adapter_v0.py](../../../scripts/ops/run_shadow_bounded_observation_adapter_v0.py)) call `validate_durable_closeout_invoke_paths()` **before** invoking the helper when `--invoke-durable-closeout-v0` is set. The adapter **reuses** `_validate_source_dest_distinct` and `_dest_has_content` from the helper module — **no parallel guard logic**.
+Paper, Shadow, and Testnet bounded observation adapters ([run_paper_only_bounded_observation_adapter_v0.py](../../../scripts/ops/run_paper_only_bounded_observation_adapter_v0.py), [run_shadow_bounded_observation_adapter_v0.py](../../../scripts/ops/run_shadow_bounded_observation_adapter_v0.py), [run_testnet_bounded_observation_adapter_v0.py](../../../scripts/ops/run_testnet_bounded_observation_adapter_v0.py)) call `validate_durable_closeout_invoke_paths()` **before** invoking the helper when `--invoke-durable-closeout-v0` is set. The adapter **reuses** `_validate_source_dest_distinct` and `_dest_has_content` from the helper module — **no parallel guard logic**.
 
 When validation blocks closeout copy:
 
@@ -533,6 +536,20 @@ When validation blocks closeout copy:
 - `BOUNDED_ADAPTER_OBSERVATION_CLOSEOUT_DECOUPLED=true` — observation/review **PASS** does **not** imply closeout copy **PASS**; operators must treat closeout status separately.
 
 Static guard: [test_bounded_adapter_invoke_durable_closeout_v0.py](../../../tests/ops/test_bounded_adapter_invoke_durable_closeout_v0.py).
+
+### Scheduler and supervisor attach-hook closeout pre-invoke validation (taxonomy §6a.0.8.1)
+
+Scheduler completion ([run_scheduler.py](../../../scripts/run_scheduler.py) with `--invoke-durable-closeout-after-completion-v0`) and supervisor evidence pack ([pack_online_readiness_supervisor_evidence_v0.py](../../../scripts/ops/pack_online_readiness_supervisor_evidence_v0.py) with `--invoke-durable-closeout-after-pack-v0`) call the same shared `validate_durable_closeout_invoke_paths()` **before** invoking [durable_closeout_copy_verify_v0.py](../../../scripts/ops/durable_closeout_copy_verify_v0.py) — **reuse only**; **no parallel guard logic** (`SCHEDULER_SUPERVISOR_DURABLE_CLOSEOUT_PRE_INVOKE_VALIDATION=true`; `VALIDATE_DURABLE_CLOSEOUT_PATHS_REUSED=true`; `HELPER_PARALLEL_LOGIC_CREATED=false`).
+
+When validation blocks closeout copy:
+
+- `SCHEDULER_DURABLE_CLOSEOUT_VALIDATION_BLOCKED=true` or `SUPERVISOR_PACK_DURABLE_CLOSEOUT_VALIDATION_BLOCKED=true`
+- `SCHEDULER_DURABLE_CLOSEOUT_STATUS=blocked` or `SUPERVISOR_PACK_DURABLE_CLOSEOUT_STATUS=blocked`
+- `SCHEDULER_DURABLE_CLOSEOUT_HELPER_RC=not_run` or `SUPERVISOR_PACK_DURABLE_CLOSEOUT_HELPER_RC=not_run`
+
+Static guards: [test_scheduler_durable_closeout_hook_pass_through_v0.py](../../../tests/ops/test_scheduler_durable_closeout_hook_pass_through_v0.py); [test_supervisor_pack_durable_closeout_hook_pass_through_v0.py](../../../tests/ops/test_supervisor_pack_durable_closeout_hook_pass_through_v0.py).
+
+**Force-scope note:** bounded adapters expose `--durable-closeout-force`; scheduler and supervisor attach hooks do **not** expose a separate force flag in this slice — non-empty dest without force remains blocked (same as bounded adapters without force).
 
 ### `--durable-closeout-force` (adapter) vs `--force` (helper)
 
@@ -555,6 +572,8 @@ When closeout copy is blocked, adapters emit machine-readable hints for operator
 Machine line shapes (non-authorizing):
 
 - `BOUNDED_ADAPTER_DURABLE_CLOSEOUT_BLOCKER_HINT=<token>`
+- `SCHEDULER_DURABLE_CLOSEOUT_BLOCKER_HINT=<token>`
+- `SUPERVISOR_PACK_DURABLE_CLOSEOUT_BLOCKER_HINT=<token>`
 - `BLOCKER_HINT=<token>` in adapter `START_RETURN_CODE` artifact when execute returns blocked closeout
 
 Hints point to **snapshot-source recovery** or appropriate force scope; they **do not** authorize runtime, lift Preflight **BLOCKED**, or clear **HOLD**.
