@@ -339,6 +339,29 @@ def test_canonical_owner_section_2a1_order_capability_offline_applicability_v0()
     assert "READY_FOR_OPERATOR_ARMING=false" in section
 
 
+def test_canonical_owner_section_2a1_order_capability_fixture_binding_offline_closeout_wiring_v0() -> (
+    None
+):
+    section = _section_2a1()
+    for token in (
+        "PE8_ORDER_CAPABILITY_FIXTURE_BINDING_OFFLINE_DURABLE_CLOSEOUT_WIRING_GUARD_V0=true",
+        "ORDER_CAPABILITY_FIXTURE_BINDING_PE_CLOSEOUT_WIRING_GUARD_IMPLEMENTED=true",
+        "FIXTURE_BINDING_RUNNER_PRIMARY_EVIDENCE_WIRING_GUARDED=true",
+        "FIXTURE_BINDING_RUNNER_PRIMARY_EVIDENCE_WIRING_PENDING=true",
+        "ADAPTER_PRIMARY_EVIDENCE_WIRING_REFERENCED=true",
+        "PRIMARY_EVIDENCE_RETENTION_V0_REFERENCED=true",
+        "PREFLIGHT_2A1_DURABLE_COMPLETION_DUTY_GUARDED=true",
+    ):
+        assert token in section
+    assert "run_order_capability_dry_validation_adapter_v1.py" in section
+    assert "run_order_capability_fixture_binding_dry_validation_v1.py" in section
+    assert "validate_order_capability_offline_durable_run_root" in section
+    assert "FIXTURE_BINDING_DURABLE_COMPLETION_INVALID_WITHOUT_HELPER_WIRING=true" in section
+    assert "does not authorize orderflow" in section.lower()
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in section
+    assert "READY_FOR_OPERATOR_ARMING=false" in section
+
+
 def test_canonical_owner_references_scheduler_completion_opt_in() -> None:
     text = _owner_text()
     assert "run_scheduler.py" in text
