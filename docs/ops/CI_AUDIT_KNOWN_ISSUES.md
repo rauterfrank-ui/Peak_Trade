@@ -577,6 +577,73 @@ PREFLIGHT_REMAINS_BLOCKED=true
 
 **Non-authorizing:** Docs/tests-only reciprocal crosslink guard only; does **not** authorize pilot GO/No-Go lift, execute, runtime, run start, live, preflight lift, bounded-pilot session invoke, order/cancel/execution/arming, authority lift, trading-logic changes, strategy-logic changes, fee/slippage/accounting logic changes, Ops Cockpit payload semantic changes, DRAFT→READY promotion, new cockpit rows, Master V2 / Double Play / Bull-Bear / Risk / KillSwitch / Scope / Capital changes, workflow YAML mutation, `workflow_dispatch`, `gh run rerun`, or Market Dashboard authority changes. `run_bounded_pilot_session.py` remains the existing entry gate wrapper; this guard documents chain visibility only.
 
+## Bounded-pilot caps enforcement point ↔ run_bounded_pilot_session CI_AUDIT reciprocal crosslink — docs/tests-only guard v1
+
+**Operator-GO:** `GO_BOUNDED_PILOT_CAPS_ENFORCEMENT_POINT_RUN_BOUNDED_PILOT_SESSION_CI_AUDIT_DOCS_TRUTH_MAP_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1` · **Planning bundle (archive only):** `…&#47;planning&#47;systemwide_next_safe_scope_ranking_after_pr4196_merge_pr4197_duplicate_autoclose_no_run_v1_20260612T214836Z&#47;`
+
+**Purpose:** Static reciprocal crosslink guard so the canonical caps-enforcement documentation owner (`BOUNDED_PILOT_CAPS_ENFORCEMENT_POINT.md`) — which distinguishes Ops Cockpit/config **visibility** from execution-path **enforcement** at `risk_limits` / pipeline / session boundaries — remains visibly crosslinked in CI_AUDIT and DOCS_TRUTH_MAP to the existing bounded-pilot session entry path (`run_bounded_pilot_session.py`) and related checklist/entry-contract/runbook surfaces, with reuse pointer to the #4195 entry-gate-wrapper guard — **without** authorizing pilot GO, preflight lift, session invoke, live trading, caps-enforcement semantic changes, execution/trading/strategy logic changes, runtime, or execute.
+
+**Visibility ≠ enforcement:** Cockpit `exposure_state.caps_configured` and config-level caps presence are **not** execution enforcement. Caps enforcement remains bound to the existing `risk_limits` / pipeline / session execution path documented in `BOUNDED_PILOT_CAPS_ENFORCEMENT_POINT.md`. `run_bounded_pilot_session.py` is the session **entry** wrapper only; this guard documents audit visibility of that boundary, not runtime caps enforcement.
+
+**Canonical repo owners (reuse — do not duplicate):**
+
+| Concern | Owner |
+|---------|-------|
+| Caps enforcement documentation (DRAFT) | `docs/ops/specs/BOUNDED_PILOT_CAPS_ENFORCEMENT_POINT.md` |
+| Bounded-pilot session entry wrapper | `scripts/ops/run_bounded_pilot_session.py` (`run_bounded_pilot_session`) |
+| Session entry wrapper tests | `tests/ops/test_run_bounded_pilot_session.py` |
+| Pilot Go/No-Go checklist | `docs/ops/specs/PILOT_GO_NO_GO_CHECKLIST.md` |
+| Entry contract | `docs/ops/specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md` |
+| Live-entry runbook | `docs/ops/runbooks/RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md` |
+| Entry gate wrapper guard (#4195) | `tests/ops/test_run_bounded_pilot_session_operator_preflight_packet_runner_handoff_crosslink_v1.py` |
+| Remote runtime contract docs guard (reuse) | `tests/ops/test_remote_runtime_contract_docs_guard_v0.py` |
+| CI_AUDIT / DOCS_TRUTH_MAP reciprocal guard | `tests/ops/test_bounded_pilot_caps_enforcement_session_ci_audit_docs_truth_map_reciprocal_crosslink_v1.py` |
+| DOCS_TRUTH_MAP chronicle | `docs/ops/registry/DOCS_TRUTH_MAP.md` (this crosslink section + Änderungsnachweis row) |
+
+**Crosslink invariants (static — not pilot authority):**
+
+| Invariant | Posture |
+|-----------|---------|
+| Caps visibility | Ops Cockpit / config — **not** enforcement |
+| Caps enforcement | existing `risk_limits` / pipeline / session path — **no semantic change** |
+| Session entry path | `run_bounded_pilot_session` — entry wrapper only; **not** caps enforcement owner |
+| Entry gate chain | reuse #4195 guard — no parallel SSOT |
+| Preflight lift | **not authorized** — visibility only |
+| Session invoke | **not authorized** — visibility only |
+| Pilot Go/No-Go authority | **unchanged** — non-authorizing visibility only |
+
+```text
+BOUNDED_PILOT_CAPS_ENFORCEMENT_SESSION_CI_AUDIT_DOCS_TRUTH_MAP_RECIPROCAL_CROSSLINK_V1=true
+BOUNDED_PILOT_CAPS_ENFORCEMENT_SESSION_CROSSLINK_DOCS_TESTS_ONLY=true
+CAPS_VISIBILITY_IS_NOT_EXECUTION_ENFORCEMENT=true
+CAPS_ENFORCEMENT_POINT_DOCUMENTED=true
+CAPS_ENFORCEMENT_SEMANTIC_TOUCH=false
+RUN_BOUNDED_PILOT_SESSION_ENTRY_PATH_REFERENCED=true
+BOUNDED_PILOT_CAPS_OWNER_REFERENCED=true
+RUN_BOUNDED_PILOT_SESSION_ENTRY_GATE_GUARD_REFERENCED=true
+PILOT_CHECKLIST_CAPS_ROW_REFERENCED=true
+PILOT_AUTHORITY_LIFT=false
+SESSION_INVOKE_AUTHORIZED=false
+NO_SESSION_INVOKE_AUTHORIZED=true
+PREFLIGHT_LIFT_DIRECTLY_ALLOWED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+EVIDENCE_OR_DOCS_ANCHOR_NOT_RUNTIME_AUTHORITY=true
+NO_EXECUTE=true
+NO_RUNTIME=true
+NO_LIVE=true
+NO_PREFLIGHT_LIFT=true
+AUTHORITY_LIFT=false
+TRADING_LOGIC_TOUCHED=false
+FEE_SLIPPAGE_ACCOUNTING_LOGIC_TOUCHED=false
+NEW_PARALLEL_SSOT_CREATED=false
+U2B_PARKED=true
+MARKET_AIRPORT_EXCLUDED=true
+```
+
+**Guard module (reuse — no parallel caps SSOT):** `tests/ops/test_bounded_pilot_caps_enforcement_session_ci_audit_docs_truth_map_reciprocal_crosslink_v1.py`.
+
+**Non-authorizing:** Docs/tests-only reciprocal crosslink guard only; read-only audit visibility; does **not** authorize pilot GO/No-Go lift, execute, runtime, run start, live, preflight lift, bounded-pilot session invoke, order/cancel/execution/arming, authority lift, caps-enforcement semantic changes, trading-logic changes, strategy-logic changes, fee/slippage/accounting logic changes, Ops Cockpit payload semantic changes, DRAFT→READY promotion, new cockpit rows, Master V2 / Double Play / Bull-Bear / Risk / KillSwitch / Scope / Capital changes, workflow YAML mutation, `workflow_dispatch`, `gh run rerun`, or Market Dashboard authority changes. `BOUNDED_PILOT_CAPS_ENFORCEMENT_POINT.md` and `run_bounded_pilot_session.py` remain existing owners; this guard closes the CI_AUDIT visibility gap only.
+
 ## Tier-C + Shadow durable evidence CI_AUDIT ↔ SECTION5 ↔ Preflight §2a.1 reciprocal crosslink — docs/tests-only guard v1
 
 **Operator-GO:** `GO_TIER_C_SHADOW_DURABLE_EVIDENCE_CI_AUDIT_PREFLIGHT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1` · **Planning bundle (archive only):** `…&#47;planning&#47;systemwide_next_safe_scope_ranking_after_run_bounded_pilot_session_operator_preflight_packet_runner_handoff_crosslink_guard_merge_no_run_v1_20260612T211931Z&#47;`
