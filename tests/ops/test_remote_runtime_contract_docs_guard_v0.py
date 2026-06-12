@@ -1026,6 +1026,57 @@ ORDER_CAPABILITY_REMAINING_READINESS_GAP_REVIEW_OWNER_TESTS = (
     "test_run_order_capability_fixture_binding_dry_validation_v1.py",
     "test_order_capability_demo_instrument_rules_fixture_normalizer_contract_v1.py",
 )
+U2B_MIN_NOTIONAL_S2_CROSSREFERENCE_HEADING = (
+    "## U2b min_notional/S2 crossreference — docs/tests-only guard v1"
+)
+U2B_MIN_NOTIONAL_S2_CROSSREFERENCE_GUARD_BLOCK_ANCHOR = (
+    "U2B_MIN_NOTIONAL_S2_CROSSREFERENCE_DOCS_TRUTH_MAP_GUARD_V1=true"
+)
+U2B_MIN_NOTIONAL_S2_CROSSREFERENCE_INPUT_BUNDLE = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/systemwide_find_next_real_progress_scope_after_u2b_hold_no_run_v1_20260612T183833Z"
+)
+U2B_SLICE4_RUN_BUNDLE = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "runs/u2b_slice4_run_verification_bounded_observation_no_promotion_v1_20260612T182928Z"
+)
+U2B_MIN_NOTIONAL_S2_CROSSREFERENCE_EXPECTED: dict[str, str] = {
+    "U2B_MIN_NOTIONAL_S2_CROSSREFERENCE_DOCS_TRUTH_MAP_GUARD_V1": "true",
+    "U2B_MIN_NOTIONAL_S2_CROSSREFERENCE_DOCS_TESTS_ONLY": "true",
+    "U2B_P1_FAIL_CLOSED_HOLD_CONFIRMED": "true",
+    "U2B_SLICE4_OBSERVATION_PASS_REFERENCED": "true",
+    "U2B_SLICE4_PASS_DOES_NOT_RESOLVE_S2": "true",
+    "U2B_SLICE4_PASS_DOES_NOT_IMPLY_TRUTH_GO": "true",
+    "U2B_SLICE4_PASS_DOES_NOT_IMPLY_PROMOTION": "true",
+    "OFFICIAL_SOURCE_ARTIFACT_FOUND": "false",
+    "I2_INTEGRITY_PREFLIGHT_READY": "false",
+    "MISSING_TRUTH_EXPECTED": "true",
+    "observability_truth_allowed": "false",
+    "real_metadata_source_marked": "true",
+    "OBSERVABILITY_TRUTH_ALLOWED_CHANGED": "false",
+    "REAL_METADATA_SOURCE_MARKED_CHANGED": "false",
+    "NO_SOURCE_INGEST": "true",
+    "NO_METADATA_REFRESH": "true",
+    "NO_TRUTH_GO": "true",
+    "NO_PROMOTION": "true",
+    "NO_DUMMY_MIN_NOTIONAL_FILL": "true",
+    "NO_RUNTIME": "true",
+    "NO_LIVE": "true",
+    "NO_PREFLIGHT_LIFT": "true",
+    "AUTHORITY_LIFT": "false",
+    "TRADING_LOGIC_TOUCHED": "false",
+    "MASTER_V2_LOGIC_TOUCHED": "false",
+    "DOUBLE_PLAY_LOGIC_TOUCHED": "false",
+    "NEW_PARALLEL_SSOT_CREATED": "false",
+    "PREFLIGHT_REMAINS_BLOCKED": "true",
+    "MARKET_AIRPORT_EXCLUDED": "true",
+}
+U2B_MIN_NOTIONAL_S2_CROSSREFERENCE_OWNER_TESTS = (
+    "test_futures_producer_packet_real_metadata_source_v1.py",
+    "test_universe_selection_producer_u2b_u1_closeout_chain_v1.py",
+    "test_universe_selection_reader_v1.py",
+    "test_workflow_dashboard_env_schema_boundary_v1.py",
+)
 PREFLIGHT_PROCESS_GATE_HYGIENE_GUARD_EXPECTED: dict[str, str] = {
     "PREFLIGHT_PROCESS_GATE_HYGIENE_GUARD_V1": "true",
     "ACTIVE_RUN_CHECK_PEAK_TRADE_EXPLICIT_ONLY": "true",
@@ -1490,6 +1541,63 @@ def test_docs_truth_map_order_capability_remaining_readiness_gap_review_chronicl
     assert "demo-instrument rules binding" in text
     assert "**no** runtime/live/preflight lift/order/cancel/execution/arming/authority lift" in text
     assert ORDER_CAPABILITY_REMAINING_READINESS_GAP_REVIEW_INPUT_BUNDLE.split("/")[-1] in text
+
+
+def _u2b_min_notional_s2_crossreference_section(text: str) -> str:
+    start = text.find(U2B_MIN_NOTIONAL_S2_CROSSREFERENCE_HEADING)
+    assert start != -1, "missing U2b min_notional/S2 crossreference section"
+    next_heading = text.find("\n## ", start + 1)
+    if next_heading == -1:
+        return text[start:]
+    return text[start:next_heading]
+
+
+def test_ci_audit_u2b_min_notional_s2_crossreference_section_present_v1() -> None:
+    text = _ci_audit_text()
+    section = _u2b_min_notional_s2_crossreference_section(text)
+    assert U2B_MIN_NOTIONAL_S2_CROSSREFERENCE_INPUT_BUNDLE in section
+    assert U2B_SLICE4_RUN_BUNDLE in section
+    assert "crossreference guard" in section
+    assert "UNIVERSE_SELECTION_READMODEL_V1.md" in section
+    assert "FUTURES_UNIVERSE_REAL_SOURCE_CONTRACT_V1.md" in section
+    assert "FUTURES_UNIVERSE_GOVERNED_METADATA_SNAPSHOT_TEMPLATE_V1.md" in section
+    assert "futures_producer_packet_real_metadata_source_v1.py" in section
+    assert "REAL_METADATA_NOT_OBSERVABILITY_TRUTH" in section
+    assert (
+        "GO_UNIVERSE_SELECTION_U2B_OFFICIAL_SOURCE_ARTIFACT_INTEGRITY_PREFLIGHT_NO_INGEST_NO_RUN_V1"
+        in section
+    )
+    assert "no parallel u2b ssot" in section.lower()
+    assert THIS_MODULE in section
+    for module_name in U2B_MIN_NOTIONAL_S2_CROSSREFERENCE_OWNER_TESTS:
+        assert module_name in section, f"missing owner test reference {module_name!r}"
+
+
+def test_ci_audit_u2b_min_notional_s2_crossreference_machine_lines_v1() -> None:
+    block = _block_containing(
+        _ci_audit_text(),
+        U2B_MIN_NOTIONAL_S2_CROSSREFERENCE_GUARD_BLOCK_ANCHOR,
+    )
+    values = _machine_line_values(block)
+    missing = set(U2B_MIN_NOTIONAL_S2_CROSSREFERENCE_EXPECTED) - values.keys()
+    assert not missing, f"missing U2b min_notional/S2 crossreference keys: {sorted(missing)}"
+    for key, expected in U2B_MIN_NOTIONAL_S2_CROSSREFERENCE_EXPECTED.items():
+        assert values[key] == expected, f"{key}={values[key]!r} expected {expected!r}"
+
+
+def test_docs_truth_map_u2b_min_notional_s2_crossreference_chronicle_v1() -> None:
+    text = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    assert "U2b min_notional/S2 crossreference docs/tests-only guard v1" in text
+    assert THIS_MODULE in text
+    assert "U2B_MIN_NOTIONAL_S2_CROSSREFERENCE_DOCS_TRUTH_MAP_GUARD_V1=true" in text
+    assert "UNIVERSE_SELECTION_READMODEL_V1.md" in text
+    assert "test_universe_selection_producer_u2b_u1_closeout_chain_v1.py" in text
+    assert "test_universe_selection_reader_v1.py" in text
+    assert "**no** Truth-GO/promotion/source-ingest/metadata-refresh/dummy-fill" in text
+    assert U2B_MIN_NOTIONAL_S2_CROSSREFERENCE_INPUT_BUNDLE.split("/")[-1] in text
+    assert (
+        "u2b_slice4_run_verification_bounded_observation_no_promotion_v1_20260612T182928Z" in text
+    )
 
 
 def _systemwide_ci_docs_truth_map_residual_review_section(text: str) -> str:

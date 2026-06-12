@@ -86,6 +86,86 @@ PREFLIGHT_REMAINS_BLOCKED=true
 
 **Non-authorizing:** Docs/tests static crosslink only; does **not** authorize order submission, cancel, execute, broker/exchange, Testnet/Live, scheduler/daemon/adapter runtime, browser-rendered web capture execute, Preflight lift, `READY_FOR_OPERATOR_ARMING=true`, provider-truth flip, binding pass, or Master V2 / Double Play / trading-logic changes. Normalizer remains **parked/read-only** with `order_capability_lane_parked=true`, `provider_truth_bound=false`, and `order_capability_execute_authorized=false`.
 
+## U2b min_notional/S2 crossreference — docs/tests-only guard v1
+
+**Operator-GO:** `GO_U2B_MIN_NOTIONAL_S2_CROSSREFERENCE_DOCS_TRUTH_MAP_GUARD_DOCS_TESTS_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_find_next_real_progress_scope_after_u2b_hold_no_run_v1_20260612T183833Z/`
+
+**Purpose:** Static crossreference guard so U2b **S2/min_notional** blocker posture, P1 fail-closed hold, Slice-4 observation PASS, and Missing Truth fail-closed semantics remain visible in CI_AUDIT and DOCS_TRUTH_MAP alongside existing U2b/U4b/U2c contract owners — **without** authorizing Truth-GO, promotion, source ingest, metadata refresh, dummy-fill, or runtime.
+
+**Durable evidence (input — not SSOT):**
+
+| Artifact | Path |
+|----------|------|
+| Slice-4 bounded observation PASS | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runs/u2b_slice4_run_verification_bounded_observation_no_promotion_v1_20260612T182928Z/` |
+| Local source discovery (0 C2/C4) | `planning/u2b_local_official_source_artifact_discovery_readonly_no_ingest_no_run_v1_20260612T181725Z/` |
+| P1 fail-closed policy record | `planning/u2b_source_policy_decision_record_autofill_safe_default_p1_no_implementation_no_network_no_run_v1_20260612T175511Z/` |
+
+**Canonical repo owners (reuse — do not duplicate):**
+
+| Concern | Owner |
+|---------|-------|
+| Universe selection readmodel contract | `docs/webui/observability/UNIVERSE_SELECTION_READMODEL_V1.md` |
+| Real-source charter (U4b) | `docs/webui/observability/FUTURES_UNIVERSE_REAL_SOURCE_CONTRACT_V1.md` |
+| Governed snapshot template (U2c) | `docs/webui/observability/FUTURES_UNIVERSE_GOVERNED_METADATA_SNAPSHOT_TEMPLATE_V1.md` |
+| U2b loader guard | `src/webui/workflow_dashboard_readmodel_v1/futures_producer_packet_real_metadata_source_v1.py` |
+| U2b loader tests | `tests/webui/test_futures_producer_packet_real_metadata_source_v1.py` |
+| U2b→U1→U3 closeout chain tests | `tests/webui/test_universe_selection_producer_u2b_u1_closeout_chain_v1.py` |
+| Reader fail-closed tests | `tests/webui/test_universe_selection_reader_v1.py` |
+| Workflow dashboard env/doc boundary | `tests/ops/test_workflow_dashboard_env_schema_boundary_v1.py` |
+| DOCS_TRUTH_MAP chronicle | `docs/ops/registry/DOCS_TRUTH_MAP.md` (this crosslink section + Änderungsnachweis row) |
+
+**Crossreference invariants (static — not promotion):**
+
+| Invariant | Posture |
+|-----------|---------|
+| S2/min_notional blocked | **yes** — 332/332 missing on canonical candidate; no C2/C4 official source artifact |
+| Slice-4 PASS resolves S2 | **no** |
+| Slice-4 PASS implies Truth-GO | **no** |
+| Slice-4 PASS implies promotion | **no** |
+| P1 fail-closed hold | **yes** — autofill safe default @ 175511Z |
+| I2 integrity preflight | **inactive** — conditional on Frank-supplied C2/C4 path + attestation |
+| Missing Truth reader | **expected** — `REAL_METADATA_NOT_OBSERVABILITY_TRUTH` |
+| `observability_truth_allowed` | **false** — unchanged |
+| `real_metadata_source_marked` | **true** — unchanged |
+
+```text
+U2B_MIN_NOTIONAL_S2_CROSSREFERENCE_DOCS_TRUTH_MAP_GUARD_V1=true
+U2B_MIN_NOTIONAL_S2_CROSSREFERENCE_DOCS_TESTS_ONLY=true
+U2B_P1_FAIL_CLOSED_HOLD_CONFIRMED=true
+U2B_SLICE4_OBSERVATION_PASS_REFERENCED=true
+U2B_SLICE4_PASS_DOES_NOT_RESOLVE_S2=true
+U2B_SLICE4_PASS_DOES_NOT_IMPLY_TRUTH_GO=true
+U2B_SLICE4_PASS_DOES_NOT_IMPLY_PROMOTION=true
+OFFICIAL_SOURCE_ARTIFACT_FOUND=false
+I2_INTEGRITY_PREFLIGHT_READY=false
+MISSING_TRUTH_EXPECTED=true
+observability_truth_allowed=false
+real_metadata_source_marked=true
+OBSERVABILITY_TRUTH_ALLOWED_CHANGED=false
+REAL_METADATA_SOURCE_MARKED_CHANGED=false
+NO_SOURCE_INGEST=true
+NO_METADATA_REFRESH=true
+NO_TRUTH_GO=true
+NO_PROMOTION=true
+NO_DUMMY_MIN_NOTIONAL_FILL=true
+NO_RUNTIME=true
+NO_LIVE=true
+NO_PREFLIGHT_LIFT=true
+AUTHORITY_LIFT=false
+TRADING_LOGIC_TOUCHED=false
+MASTER_V2_LOGIC_TOUCHED=false
+DOUBLE_PLAY_LOGIC_TOUCHED=false
+NEW_PARALLEL_SSOT_CREATED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+MARKET_AIRPORT_EXCLUDED=true
+```
+
+**Conditional inactive GO (Frank supplies C2/C4 artifact path + attestation only):** `GO_UNIVERSE_SELECTION_U2B_OFFICIAL_SOURCE_ARTIFACT_INTEGRITY_PREFLIGHT_NO_INGEST_NO_RUN_V1`
+
+**Guard module (reuse — no parallel U2b SSOT):** `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`.
+
+**Non-authorizing:** Docs/tests-only crossreference guard only; does **not** authorize observability truth promotion, Truth-GO, source artifact ingest/validation, metadata refresh, dummy min_notional fill, network/exchange calls, Paper/Shadow/Testnet/Live runtime, scheduler/adapter start, Preflight lift, `observability_truth_allowed=true`, or Master V2 / Double Play / Risk / KillSwitch / trading-logic changes. U2b lane remains **P1 fail-closed** until operator supplies C2/C4 official source artifact.
+
 ## Order-Capability remaining readiness gap review — docs/tests-only visibility v1
 
 **Operator-GO:** `GO_ORDER_CAPABILITY_REMAINING_READINESS_GAP_REVIEW_DOCS_TESTS_ONLY_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_preflight_process_gate_hygiene_guard_merge_no_run_v1_20260612T002508Z/`
