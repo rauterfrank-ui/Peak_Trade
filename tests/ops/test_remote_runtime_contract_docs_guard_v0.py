@@ -80,6 +80,100 @@ ORDER_CAPABILITY_REMAINING_READINESS_GAP_REVIEW_EXPECTED: dict[str, str] = {
     "WORKFLOW_TOUCHED": "false",
     "MARKET_DASHBOARD_TOUCHED": "false",
 }
+ORDER_CAPABILITY_REMAINING_CONTRACT_SURFACES_RECIPROCAL_CROSSLINK_BUNDLE_GUARD_BLOCK_ANCHOR = (
+    "ORDER_CAPABILITY_REMAINING_CONTRACT_SURFACES_RECIPROCAL_CROSSLINK_BUNDLE_V1=true"
+)
+ORDER_CAPABILITY_REMAINING_CONTRACT_SURFACES_RECIPROCAL_CROSSLINK_BUNDLE_INPUT_BUNDLE = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/systemwide_next_safe_scope_ranking_after_bounded_pilot_caps_enforcement_session_crosslink_guard_merge_no_run_v1_20260612T220408Z"
+)
+ORDER_CAPABILITY_REMAINING_CONTRACT_SURFACES_RECIPROCAL_CROSSLINK_BUNDLE_EXPECTED: dict[
+    str, str
+] = {
+    "ORDER_CAPABILITY_REMAINING_CONTRACT_SURFACES_RECIPROCAL_CROSSLINK_BUNDLE_V1": "true",
+    "ORDER_CAPABILITY_REMAINING_CONTRACT_SURFACES_COUNT": "9",
+    "ORDER_CAPABILITY_REMAINING_CONTRACT_SURFACES_CROSSLINK_DOCS_TESTS_ONLY": "true",
+    "ORDER_CAPABILITY_LANE_PARKED": "true",
+    "ORDER_CAPABILITY_EXECUTE_AUTHORIZED": "false",
+    "ORDER_CAPABILITY_ARMING_AUTHORIZED": "false",
+    "U2B_PARKED": "true",
+    "SOURCE_ARTIFACT_INGESTED": "false",
+    "METADATA_REFRESH_EXECUTED": "false",
+    "TRUTH_GO_GRANTED": "false",
+    "TRUTH_PROMOTION_EXECUTED": "false",
+    "PREFLIGHT_REMAINS_BLOCKED": "true",
+    "NO_SESSION_INVOKE_AUTHORIZED": "true",
+    "EVIDENCE_OR_DOCS_ANCHOR_NOT_RUNTIME_AUTHORITY": "true",
+    "ORDER_CAPABILITY_PARKED_READ_ONLY_CONFIRMED": "true",
+    "ORDER_CAPABILITY_EXISTING_CROSSLINK_GUARDS_REFERENCED": "true",
+    "FIXTURE_BINDING_CROSSLINK_GUARD_REFERENCED": "true",
+    "DEMO_INSTRUMENT_RULES_NORMALIZER_CROSSLINK_GUARD_REFERENCED": "true",
+    "NO_RUNTIME": "true",
+    "NO_LIVE": "true",
+    "NO_PREFLIGHT_LIFT": "true",
+    "ORDER_CANCEL_EXECUTION_ARMING_TOUCHED": "false",
+    "AUTHORITY_LIFT": "false",
+    "TRADING_LOGIC_TOUCHED": "false",
+    "MASTER_V2_LOGIC_TOUCHED": "false",
+    "DOUBLE_PLAY_LOGIC_TOUCHED": "false",
+    "RISK_KILLSWITCH_SCOPE_CAPITAL_TOUCHED": "false",
+    "NEW_PARALLEL_SSOT_CREATED": "false",
+    "ORDERFLOW_AUTHORIZATION_CREATED": "false",
+    "CANCEL_EXECUTE_AUTHORIZATION_CREATED": "false",
+    "READY_FOR_OPERATOR_ARMING_CHANGED": "false",
+    "RUNTIME_LOGIC_TOUCHED": "false",
+    "JSONL_EVIDENCE_DATASET_MUTATION": "false",
+    "WORKFLOW_TOUCHED": "false",
+    "MARKET_DASHBOARD_TOUCHED": "false",
+    "MARKET_AIRPORT_EXCLUDED": "true",
+}
+ORDER_CAPABILITY_REMAINING_CONTRACT_SURFACES: tuple[tuple[str, str, str], ...] = (
+    (
+        "Payload builder",
+        "src/ops/order_capability_payload_builder_contract_v1.py",
+        "tests/ops/test_order_capability_payload_builder_contract_v1.py",
+    ),
+    (
+        "Dry-validation",
+        "src/ops/order_capability_dry_validation_contract_v1.py",
+        "tests/ops/test_order_capability_dry_validation_contract_v1.py",
+    ),
+    (
+        "Killswitch abort",
+        "src/ops/order_capability_killswitch_abort_binding_contract_v1.py",
+        "tests/ops/test_order_capability_killswitch_abort_binding_contract_v1.py",
+    ),
+    (
+        "Cancel cleanup",
+        "src/ops/order_capability_cancel_cleanup_failclosed_contract_v1.py",
+        "tests/ops/test_order_capability_cancel_cleanup_failclosed_contract_v1.py",
+    ),
+    (
+        "Safety cancel under killswitch",
+        "src/ops/order_capability_safety_cancel_under_killswitch_contract_v1.py",
+        "tests/ops/test_order_capability_safety_cancel_under_killswitch_contract_v1.py",
+    ),
+    (
+        "Offline payload readiness",
+        "tests/ops/test_order_capability_offline_payload_readiness_v1.py",
+        "tests/ops/test_order_capability_offline_payload_readiness_v1.py",
+    ),
+    (
+        "Private endpoint boundary",
+        "src/ops/order_capability_private_endpoint_boundary_contract_v1.py",
+        "tests/ops/test_order_capability_private_endpoint_boundary_contract_v1.py",
+    ),
+    (
+        "Side / price / qty rules",
+        "src/ops/order_capability_side_price_qty_rules_contract_v1.py",
+        "tests/ops/test_order_capability_side_price_qty_rules_contract_v1.py",
+    ),
+    (
+        "Demo instrument rules binding",
+        "src/ops/order_capability_demo_instrument_rules_binding_contract_v1.py",
+        "tests/ops/test_order_capability_demo_instrument_rules_binding_contract_v1.py",
+    ),
+)
 SYSTEMWIDE_CI_DOCS_TRUTH_MAP_RESIDUAL_REVIEW_HEADING = (
     "## Systemwide CI/Docs required-check truth-map residual review — docs/tests-only guard v1"
 )
@@ -1019,6 +1113,7 @@ ORDER_CAPABILITY_REMAINING_READINESS_GAP_REVIEW_OWNER_TESTS = (
     "test_order_capability_dry_validation_contract_v1.py",
     "test_order_capability_killswitch_abort_binding_contract_v1.py",
     "test_order_capability_cancel_cleanup_failclosed_contract_v1.py",
+    "test_order_capability_safety_cancel_under_killswitch_contract_v1.py",
     "test_order_capability_offline_payload_readiness_v1.py",
     "test_order_capability_private_endpoint_boundary_contract_v1.py",
     "test_order_capability_side_price_qty_rules_contract_v1.py",
@@ -1499,6 +1594,7 @@ def test_ci_audit_order_capability_remaining_readiness_gap_review_section_presen
     assert "Dry-validation" in section
     assert "Killswitch abort" in section
     assert "Cancel cleanup" in section
+    assert "Safety cancel under killswitch" in section
     assert "Offline payload readiness" in section
     assert "Private endpoint boundary" in section
     assert "Side / price / qty rules" in section
@@ -1541,6 +1637,90 @@ def test_docs_truth_map_order_capability_remaining_readiness_gap_review_chronicl
     assert "demo-instrument rules binding" in text
     assert "**no** runtime/live/preflight lift/order/cancel/execution/arming/authority lift" in text
     assert ORDER_CAPABILITY_REMAINING_READINESS_GAP_REVIEW_INPUT_BUNDLE.split("/")[-1] in text
+
+
+def test_ci_audit_order_capability_remaining_contract_surfaces_reciprocal_crosslink_bundle_section_v1() -> (
+    None
+):
+    text = _ci_audit_text()
+    section = _order_capability_remaining_readiness_gap_review_section(text)
+    assert "Reciprocal crosslink bundle — docs/tests-only guard v1" in section
+    assert (
+        ORDER_CAPABILITY_REMAINING_CONTRACT_SURFACES_RECIPROCAL_CROSSLINK_BUNDLE_INPUT_BUNDLE
+        in section
+    )
+    assert (
+        "GO_ORDER_CAPABILITY_REMAINING_CONTRACT_SURFACES_CI_AUDIT_DOCS_TRUTH_MAP_RECIPROCAL_CROSSLINK_BUNDLE_DOCS_TESTS_NO_RUN_V1"
+        in section
+    )
+    assert "Reciprocal crosslink surfaces (reuse — indexed, not duplicated)" in section
+    assert "same bundle chronicle row" in section
+    assert THIS_MODULE in section
+    for label, owner, test_rel in ORDER_CAPABILITY_REMAINING_CONTRACT_SURFACES:
+        assert label in section, f"missing surface label {label!r}"
+        assert owner in section, f"missing owner {owner!r} for {label!r}"
+        assert test_rel in section, f"missing test {test_rel!r} for {label!r}"
+
+
+def test_ci_audit_order_capability_remaining_contract_surfaces_reciprocal_crosslink_bundle_machine_lines_v1() -> (
+    None
+):
+    block = _block_containing(
+        _ci_audit_text(),
+        ORDER_CAPABILITY_REMAINING_CONTRACT_SURFACES_RECIPROCAL_CROSSLINK_BUNDLE_GUARD_BLOCK_ANCHOR,
+    )
+    values = _machine_line_values(block)
+    missing = (
+        set(ORDER_CAPABILITY_REMAINING_CONTRACT_SURFACES_RECIPROCAL_CROSSLINK_BUNDLE_EXPECTED)
+        - values.keys()
+    )
+    assert not missing, (
+        f"missing order capability reciprocal crosslink bundle keys: {sorted(missing)}"
+    )
+    for (
+        key,
+        expected,
+    ) in ORDER_CAPABILITY_REMAINING_CONTRACT_SURFACES_RECIPROCAL_CROSSLINK_BUNDLE_EXPECTED.items():
+        assert values[key] == expected, f"{key}={values[key]!r} expected {expected!r}"
+
+
+def test_docs_truth_map_order_capability_remaining_contract_surfaces_reciprocal_crosslink_bundle_chronicle_v1() -> (
+    None
+):
+    text = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    assert "Order-Capability remaining contract surfaces reciprocal crosslink bundle v1" in text
+    assert THIS_MODULE in text
+    assert (
+        ORDER_CAPABILITY_REMAINING_CONTRACT_SURFACES_RECIPROCAL_CROSSLINK_BUNDLE_GUARD_BLOCK_ANCHOR
+        in text
+    )
+    assert "ORDER_CAPABILITY_REMAINING_CONTRACT_SURFACES_COUNT=9" in text
+    assert "payload builder" in text
+    assert "dry-validation" in text
+    assert "killswitch abort" in text
+    assert "cancel cleanup" in text
+    assert "safety_cancel" in text
+    assert "offline payload readiness" in text
+    assert "private endpoint" in text
+    assert "side-price-qty" in text or "side / price / qty" in text.lower()
+    assert "demo instrument rules binding" in text.lower() or "demo-instrument" in text
+    assert "Order-Capability remaining readiness gap review" in text
+    assert (
+        ORDER_CAPABILITY_REMAINING_CONTRACT_SURFACES_RECIPROCAL_CROSSLINK_BUNDLE_INPUT_BUNDLE.split(
+            "/"
+        )[-1]
+        in text
+    )
+    assert "**no** runtime/live/preflight lift/session invoke" in text
+
+
+def test_order_capability_remaining_contract_surface_owner_tests_exist_v1() -> None:
+    assert len(ORDER_CAPABILITY_REMAINING_CONTRACT_SURFACES) == 9
+    for _label, owner, test_rel in ORDER_CAPABILITY_REMAINING_CONTRACT_SURFACES:
+        owner_path = REPO_ROOT / owner
+        test_path = REPO_ROOT / test_rel
+        assert owner_path.is_file(), f"missing canonical owner: {owner}"
+        assert test_path.is_file(), f"missing contract test: {test_rel}"
 
 
 def _u2b_min_notional_s2_crossreference_section(text: str) -> str:
