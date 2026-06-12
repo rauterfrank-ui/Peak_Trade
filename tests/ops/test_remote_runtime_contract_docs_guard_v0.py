@@ -474,6 +474,57 @@ PE7_REPO_NATIVE_BOUNDED_TESTNET_ORDER_CAP_CI_AUDIT_CROSSLINK_OWNER_TESTS = (
     "test_repo_native_bounded_order_cap_contract_v0.py",
     "test_repo_native_entrypoint_cli_cap_wiring_contract_v0.py",
 )
+PE_EER1_HOLD_BINDING_CHAIN_COMPLETION_STATIC_REVIEW_HEADING = (
+    "## PE+EER1+hold-binding reciprocal crosslink chain completion static review "
+    "— docs/tests-only guard v1"
+)
+PE_EER1_HOLD_BINDING_CHAIN_COMPLETION_STATIC_REVIEW_GUARD_BLOCK_ANCHOR = (
+    "PE_EER1_HOLD_BINDING_RECIPROCAL_CROSSLINK_CHAIN_COMPLETION_STATIC_REVIEW_GUARD_V1=true"
+)
+PE_EER1_HOLD_BINDING_CHAIN_COMPLETION_STATIC_REVIEW_EXPECTED: dict[str, str] = {
+    "PE_EER1_HOLD_BINDING_RECIPROCAL_CROSSLINK_CHAIN_COMPLETION_STATIC_REVIEW_GUARD_V1": "true",
+    "PE_EER1_HOLD_BINDING_RECIPROCAL_CROSSLINK_CHAIN_COMPLETION_DOCS_TESTS_ONLY": "true",
+    "PE4_PE11_CROSSLINK_CHAIN_COMPLETE": "true",
+    "HOLD_BINDING_CROSSLINK_CHAIN_COMPLETE": "true",
+    "EER1_CROSSLINK_COMPLETE": "true",
+    "PE4_RECIPROCAL_CROSSLINK_SECTION_REFERENCED": "true",
+    "PE5_RECIPROCAL_CROSSLINK_SECTION_REFERENCED": "true",
+    "PE7_RECIPROCAL_CROSSLINK_SECTION_REFERENCED": "true",
+    "PE8_PE9_PE10_RECIPROCAL_CROSSLINK_SECTION_REFERENCED": "true",
+    "PE11_RECIPROCAL_CROSSLINK_SECTION_REFERENCED": "true",
+    "PAPER_L2_HOLD_BINDING_RECIPROCAL_CROSSLINK_REFERENCED": "true",
+    "SECTION5_HOLD_BINDING_PROFILE_CROSSLINK_REFERENCED": "true",
+    "EER1_RECIPROCAL_CROSSLINK_SECTION_REFERENCED": "true",
+    "SECTION5_GAP_OWNER_MAP_OWNER_REFERENCED": "true",
+    "CI_AUDIT_RECIPROCAL_CROSSLINK_OWNER_REFERENCED": "true",
+    "NEW_PARALLEL_SSOT_CREATED": "false",
+    "NO_EXECUTE": "true",
+    "NO_PREFLIGHT_LIFT": "true",
+    "NO_RUNTIME": "true",
+    "NO_LIVE": "true",
+    "ORDER_CANCEL_EXECUTION_ARMING_TOUCHED": "false",
+    "AUTHORITY_LIFT": "false",
+    "TRADING_LOGIC_TOUCHED": "false",
+    "MASTER_V2_LOGIC_TOUCHED": "false",
+    "DOUBLE_PLAY_LOGIC_TOUCHED": "false",
+    "PREFLIGHT_REMAINS_BLOCKED": "true",
+    "READY_FOR_OPERATOR_ARMING": "false",
+    "MARKET_DASHBOARD_TOUCHED": "false",
+    "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED": "true",
+}
+PE_EER1_HOLD_BINDING_CHAIN_COMPLETION_STATIC_REVIEW_RECIPROCAL_SECTIONS = (
+    PE4_BOUNDED_OBSERVATION_MANDATORY_CLOSEOUT_CI_AUDIT_CROSSLINK_HEADING,
+    PE5_GAP4_GAP2A1_DEPENDENCY_CI_AUDIT_CROSSLINK_HEADING,
+    PE7_REPO_NATIVE_BOUNDED_TESTNET_ORDER_CAP_CI_AUDIT_CROSSLINK_HEADING,
+    PE8_PE9_PE10_BOUNDED_FUTURES_TESTNET_CI_AUDIT_CROSSLINK_HEADING,
+    PE11_BOUNDED_FUTURES_CI_AUDIT_CROSSLINK_HEADING,
+    PAPER_L2_PREFLIGHT_2A_RECIPROCAL_CROSSLINK_HEADING,
+    SECTION5_HOLD_BINDING_PROFILE_CROSSLINK_HEADING,
+    EER1_EVIDENCE_DURABLE_ENFORCEMENT_READINESS_CI_AUDIT_CROSSLINK_HEADING,
+)
+PE_EER1_HOLD_BINDING_CHAIN_COMPLETION_STATIC_REVIEW_OWNER_TESTS = (
+    "test_section5_preflight_gap_owner_map_contract_v0.py",
+)
 SECTION5_DOC = (
     REPO_ROOT / "docs" / "ops" / "planning" / "SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md"
 )
@@ -1621,6 +1672,76 @@ def test_docs_truth_map_eer1_ci_audit_crosslink_chronicle_v1() -> None:
     assert "ENFORCEMENT_ACTIVATED=false" in text
     assert "READY_FOR_OPERATOR_ARMING=false" in text
     assert "ORDER_EXECUTE_AUTHORIZED_NOW=false" in text
+    assert "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true" in text
+
+
+def _pe_eer1_hold_binding_chain_completion_static_review_section(text: str) -> str:
+    start = text.find(PE_EER1_HOLD_BINDING_CHAIN_COMPLETION_STATIC_REVIEW_HEADING)
+    assert start != -1, "missing PE+EER1+hold-binding chain completion static review section"
+    next_heading = text.find("\n## ", start + 1)
+    if next_heading == -1:
+        return text[start:]
+    return text[start:next_heading]
+
+
+def test_ci_audit_pe_eer1_hold_binding_chain_completion_static_review_section_present_v1() -> None:
+    text = _ci_audit_text()
+    section = _pe_eer1_hold_binding_chain_completion_static_review_section(text)
+    assert (
+        "GO_PE_EER1_HOLD_BINDING_RECIPROCAL_CROSSLINK_CHAIN_COMPLETION_STATIC_REVIEW_DOCS_TESTS_NO_RUN_V1"
+        in section
+    )
+    assert "SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md" in section
+    assert "no parallel chain-completion ssot" in section.lower()
+    assert THIS_MODULE in section
+    for slice_label in (
+        "PE-4",
+        "PE-5",
+        "PE-7",
+        "PE-8/9/10",
+        "PE-11",
+        "Hold-binding",
+        "EER1",
+    ):
+        assert slice_label in section, f"missing indexed slice label {slice_label!r}"
+    for module_name in PE_EER1_HOLD_BINDING_CHAIN_COMPLETION_STATIC_REVIEW_OWNER_TESTS:
+        assert module_name in section, f"missing owner test reference {module_name!r}"
+
+
+def test_ci_audit_pe_eer1_hold_binding_chain_completion_static_review_machine_lines_v1() -> None:
+    block = _block_containing(
+        _ci_audit_text(),
+        PE_EER1_HOLD_BINDING_CHAIN_COMPLETION_STATIC_REVIEW_GUARD_BLOCK_ANCHOR,
+    )
+    values = _machine_line_values(block)
+    missing = set(PE_EER1_HOLD_BINDING_CHAIN_COMPLETION_STATIC_REVIEW_EXPECTED) - values.keys()
+    assert not missing, (
+        f"missing PE+EER1+hold-binding chain completion static review keys: {sorted(missing)}"
+    )
+    for key, expected in PE_EER1_HOLD_BINDING_CHAIN_COMPLETION_STATIC_REVIEW_EXPECTED.items():
+        assert values[key] == expected, f"{key}={values[key]!r} expected {expected!r}"
+
+
+def test_ci_audit_pe_eer1_hold_binding_chain_reciprocal_sections_complete_on_main_v1() -> None:
+    text = _ci_audit_text()
+    for heading in PE_EER1_HOLD_BINDING_CHAIN_COMPLETION_STATIC_REVIEW_RECIPROCAL_SECTIONS:
+        assert heading in text, f"missing reciprocal crosslink section on main: {heading!r}"
+
+
+def test_docs_truth_map_pe_eer1_hold_binding_chain_completion_static_review_chronicle_v1() -> None:
+    text = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    assert (
+        "PE+EER1+hold-binding reciprocal crosslink chain completion static review guard v1" in text
+    )
+    assert THIS_MODULE in text
+    assert PE_EER1_HOLD_BINDING_CHAIN_COMPLETION_STATIC_REVIEW_GUARD_BLOCK_ANCHOR in text
+    assert "test_section5_preflight_gap_owner_map_contract_v0.py" in text
+    assert (
+        "**no** execute / Preflight-Lift / enforcement-activation / observation-run / paper-run / shadow-run / testnet-session / runtime"
+        in text
+    )
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in text
+    assert "READY_FOR_OPERATOR_ARMING=false" in text
     assert "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true" in text
 
 
