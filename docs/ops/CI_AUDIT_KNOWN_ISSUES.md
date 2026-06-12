@@ -314,6 +314,45 @@ PREFLIGHT_REMAINS_BLOCKED=true
 
 **Non-authorizing:** Docs/tests static crosslink only; does **not** authorize runtime, Testnet/Live/Paper/Shadow execution, scheduler/daemon/adapter start, broker/exchange access, order submission/cancel/execute/arm, trading authority, provider-truth flip, dashboard truth, trading readiness, Preflight lift, `READY_FOR_OPERATOR_ARMING=true`, Market-Airport, or Master V2 / Double Play / Bull-Bear / Risk/KillSwitch / Scope/Capital / trading-logic changes. Operator Overview IA v1 remains **display-only**, **SSR**, **non-authorizing** on **`GET`** **`/market`** and **`GET`** **`/market/double-play`**; fixture/offline/source-mode labels are display-only only.
 
+## Market Dashboard trading-app terminal rebuild PR #4162 DOCS_TRUTH_MAP static crosslink v1
+
+**Operator-GO:** `GO_MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_DOCS_TRUTH_MAP_CI_AUDIT_STATIC_CROSSLINK_GUARD_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_market_dashboard_terminal_rebuild_pass_no_run_v1_20260612T075155Z/` · **Merge closeout:** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/market_dashboard_trading_app_terminal_rebuild_pr4162_squash_merge_closeout_v1_20260612T074614Z/` · **Visual check:** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/review/market_dashboard_trading_app_terminal_rebuild_post_merge_visual_check_no_mutation_v1_20260612T074839Z/`
+
+**Purpose:** Static crosslink guard so the read-only Market Dashboard trading-app terminal rebuild (PR #4162 on main @ `9a8c259f1c5f41d8b617bd15b93d1c518473e80e`) remains visible in DOCS_TRUTH_MAP and CI-Audit after visual PASS, without reopening the Market Dashboard UI lane or authorizing runtime, trading authority, order controls, Testnet/Live, Preflight lift, or protected-scope mutation.
+
+**Canonical repo owners (reuse — do not duplicate):**
+
+| Concern | Owner |
+|---------|-------|
+| Market surface spec + terminal markers | `docs/webui/MARKET_SURFACE_V0.md` |
+| Terminal layout contract on `GET &#47;market` | `tests/webui/test_market_terminal_layout_v1.py` |
+| DOCS_TRUTH_MAP chronicle | `docs/ops/registry/DOCS_TRUTH_MAP.md` (this crosslink section + Änderungsnachweis row) |
+| Static docs guard hub | `tests/ops/test_remote_runtime_contract_docs_guard_v0.py` |
+
+```text
+MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_CROSSLINK_GUARD_IMPLEMENTED=true
+MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_DOCS_TRUTH_MAP_CI_AUDIT_STATIC_CROSSLINK_GUARD_V1=true
+MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_CROSSLINK_DOCS_TESTS_ONLY=true
+MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_SURFACE_REFERENCED=true
+MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_TESTS_REFERENCED=true
+MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_PR4162_ANCHOR_REFERENCED=true
+MARKET_DASHBOARD_LANE_CLOSED_AFTER_VISUAL_PASS=true
+MARKET_DASHBOARD_READ_ONLY_NON_AUTHORITY=true
+MARKET_AIRPORT_CREATED_OR_REFERENCED=false
+ORDERFLOW_AUTHORIZATION_CREATED=false
+CANCEL_EXECUTE_AUTHORIZATION_CREATED=false
+READY_FOR_OPERATOR_ARMING_CHANGED=false
+RUNTIME_LOGIC_TOUCHED=false
+NEW_PARALLEL_SSOT_CREATED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+PROTECTED_SCOPE_TOUCHED=false
+MASTER_V2_LOGIC_TOUCHED=false
+DOUBLE_PLAY_LOGIC_TOUCHED=false
+TRADING_LOGIC_TOUCHED=false
+```
+
+**Non-authorizing:** Docs/tests static crosslink/chronicle only; does **not** authorize UI rework, runtime, Testnet/Live/Paper/Shadow execution, scheduler/daemon/adapter start, broker/exchange access, order submission/cancel/execute/arm, trading authority, provider-truth flip, dashboard truth, trading readiness, Preflight lift, `READY_FOR_OPERATOR_ARMING=true`, Market-Airport, or Master V2 / Double Play / Bull-Bear / Risk/KillSwitch / Scope/Capital / trading-logic changes. Market Dashboard lane remains **closed after visual PASS**; this slice records PR #4162 terminal rebuild status only.
+
 ## Local reproduction
 ```bash
 ruff check .
