@@ -3,6 +3,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 DOC = ROOT / "docs" / "ops" / "planning" / "SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md"
+CI_AUDIT_RECIPROCAL_OWNER = ROOT / "docs" / "ops" / "CI_AUDIT_KNOWN_ISSUES.md"
 GAP5_SECTION_HEADER = "## Gap 5 Stop Criteria Contract v0"
 GAP5_GOVERNED_REFLECTION_HEADER = "## Gap 5 Governed Stop Proof Acceptance Reflection v0"
 GAP5_ACCEPTED_FINAL_LINE_REFLECTION_HEADER = (
@@ -133,10 +134,12 @@ def test_gap5_stop_criteria_contract_is_not_waiver_or_lifted():
 
 def test_gap5_stop_criteria_contract_has_no_parallel_doc_surface():
     owner_map = DOC.resolve()
+    ci_audit_owner = CI_AUDIT_RECIPROCAL_OWNER.resolve()
     parallel_docs: list[Path] = []
 
     for path in (ROOT / "docs").rglob("*.md"):
-        if path.resolve() == owner_map:
+        resolved = path.resolve()
+        if resolved == owner_map or resolved == ci_audit_owner:
             continue
         text = path.read_text(encoding="utf-8")
         if any(marker in text for marker in GAP5_PARALLEL_MARKERS):
