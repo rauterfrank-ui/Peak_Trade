@@ -16,7 +16,7 @@
 - `timeframe` — `1m` \| `5m` \| `15m` \| `1h` \| `4h` \| `1d` (Kraken-Pfad; Dummy bleibt synthetisch 1h); **Default** auf **`GET`** **`&#47;market`**: **`1d`**
 - `limit` — 1 … 720 (Default **`120`**)
 - `source` — **`kraken`** (Default auf **`GET`** **`&#47;market`**, öffentliche OHLCV) \| `dummy` (explizit offline/synthetisch)
-- **Canonical operator URL (short):** **`GET`** **`&#47;market`** — keine Query-Pflicht; effektive Defaults: `source=kraken`, `symbol=BTC/EUR`, `timeframe=1d`, `limit=120`; Seitentitel **Peak Trade Market Dashboard**
+- **Canonical operator URL (short):** **`GET`** **`&#47;market`** — keine Query-Pflicht; effektive Defaults: `source=kraken`, `symbol=BTC&#47;EUR`, `timeframe=1d`, `limit=120`; Seitentitel **Peak Trade Market Dashboard**
 
 Keine Kopplung an OPS Cockpit (`/ops`). Keine Trading-Aktionen.
 
