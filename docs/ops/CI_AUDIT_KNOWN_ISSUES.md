@@ -870,9 +870,9 @@ MARKET_DASHBOARD_TOUCHED=false
 
 ## Docs Token Policy Guard standard check integration — docs/tests-only guard v1
 
-**Operator-GO:** `GO_DOCS_TOKEN_POLICY_GUARD_STANDARD_CHECK_INTEGRATION_NARROW_FIX_NO_RUN_V1`
+**Operator-GO:** `GO_DOCS_TOKEN_POLICY_GUARD_STANDARD_CHECK_INTEGRATION_NARROW_FIX_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_order_capability_remaining_contract_surfaces_crosslink_bundle_merge_no_run_v1_20260612T221924Z/`
 
-**Purpose:** Anchor the Docs Token Policy Guard as **mandatory standard check #1** for every docs-only or docs+tests PR. Prevents recurring `docs-token-policy-gate` CI failures from forgotten local preflight. **Docs/tests/check-plan visibility only** — no workflow mutation, no required-check configuration change, no promotion, no runtime.
+**Purpose:** Anchor the Docs Token Policy Guard as **mandatory standard check #1** for every docs-only or docs+tests PR. Prevents recurring `docs-token-policy-gate` CI failures from forgotten local preflight. Static **CI_AUDIT ↔ DOCS_TRUTH_MAP reciprocal crosslink** closes the remaining chronicle/guard parity gap for this slice. **Docs/tests/check-plan visibility only** — no workflow mutation, no required-check configuration change, no promotion, no runtime.
 
 **Canonical repo owners (reuse — do not duplicate):**
 
@@ -882,22 +882,47 @@ MARKET_DASHBOARD_TOUCHED=false
 | Local preflight wrapper | `scripts/ops/preflight_docs_token_policy_changed.sh` |
 | Operator runbook (standard check table) | `docs/ops/runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE.md` — **§ Standard local checks for docs / docs+tests PRs** |
 | Gate catalog + mandatory preflight index | `docs/ops/GATES_OVERVIEW.md` — **§ Docs / docs+tests PR — mandatory local preflight** |
-| CI required context | `.github/workflows/docs-token-policy-gate.yml` → check `docs-token-policy-gate` |
-| Smoke tests | `tests/ops/test_validate_docs_token_policy.py`; `tests/ops/test_validate_docs_token_policy_smoke.py` |
+| CI required context (reference only — **no** YAML mutation) | `.github/workflows/docs-token-policy-gate.yml` → check `docs-token-policy-gate` |
+| Smoke tests | `tests/ops/test_validate_docs_token_policy_smoke.py` |
+| Remote runtime contract docs guard (reuse) | `tests/ops/test_remote_runtime_contract_docs_guard_v0.py` |
+| CI_AUDIT / DOCS_TRUTH_MAP reciprocal guard | `tests/ops/test_remote_runtime_contract_docs_guard_v0.py` |
+| DOCS_TRUTH_MAP chronicle | `docs/ops/registry/DOCS_TRUTH_MAP.md` (this crosslink section + Änderungsnachweis row) |
+
+**Crosslink invariants (static — not enforcement activation):**
+
+| Invariant | Posture |
+|-----------|---------|
+| Standard check #1 | mandatory for docs / docs+tests PRs — preflight before push |
+| Workflow YAML | **unchanged** — reference only |
+| Required-check config | **unchanged** — visibility only |
+| U2b | **parked** — not reactivated |
+| Market-Airport | **excluded** |
 
 ```text
 DOCS_TOKEN_POLICY_GUARD_STANDARD_CHECK_INTEGRATION_V1=true
+DOCS_TOKEN_POLICY_GUARD_STANDARD_CHECK_INTEGRATION_NARROW_FIX_V1=true
+DOCS_TOKEN_POLICY_GUARD_RECIPROCAL_CROSSLINK_PARITY=true
 DOCS_TOKEN_POLICY_GUARD_MANDATORY_FOR_DOCS_PR=true
 DOCS_TOKEN_POLICY_GUARD_MANDATORY_FOR_DOCS_TESTS_PR=true
 DOCS_TOKEN_POLICY_PREFLIGHT_COMMAND=preflight_docs_token_policy_changed.sh
 DOCS_TOKEN_POLICY_VALIDATOR=validate_docs_token_policy.py
 DOCS_TOKEN_POLICY_CI_REQUIRED_CONTEXT=docs-token-policy-gate
 STANDARD_CHECK_INTEGRATED=true
+WORKFLOW_YAML_MUTATED=false
 NO_WORKFLOW_MUTATION=true
 NO_REQUIRED_CHECK_CONFIG_CHANGE=true
 TRUTH_PROMOTION_EXECUTED=false
 OBSERVABILITY_TRUTH_ALLOWED_CHANGED=false
 REAL_METADATA_SOURCE_MARKED_CHANGED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+NO_SESSION_INVOKE_AUTHORIZED=true
+U2B_PARKED=true
+MARKET_AIRPORT_EXCLUDED=true
+EVIDENCE_OR_DOCS_ANCHOR_NOT_RUNTIME_AUTHORITY=true
+NO_RUNTIME=true
+NO_LIVE=true
+NO_PREFLIGHT_LIFT=true
+NEW_PARALLEL_SSOT_CREATED=false
 ```
 
 **Standard local sequence (before push):**
@@ -906,7 +931,9 @@ REAL_METADATA_SOURCE_MARKED_CHANGED=false
 2. PR-scoped pytest for touched contract tests (docs+tests PRs)
 3. Ruff on touched Python files (when applicable)
 
-**Non-authorizing:** Docs/check-plan integration only; does **not** authorize workflow edits, branch-protection changes, truth promotion, flag mutation, runtime/live/paper/shadow/testnet, or trading logic changes.
+**Guard module (reuse — no parallel docs-token-policy SSOT):** `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`.
+
+**Non-authorizing:** Docs/check-plan reciprocal crosslink integration only; does **not** authorize workflow edits, branch-protection changes, truth promotion, flag mutation, runtime/live/paper/shadow/testnet, session invoke, Preflight lift, order/cancel/execution/arming, U2b reactivation, Market-Airport authority changes, or trading logic changes.
 
 ## Primary evidence retention invariant residual static review — docs/tests-only guard v1
 
