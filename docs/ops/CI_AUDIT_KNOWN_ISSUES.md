@@ -511,6 +511,72 @@ PREFLIGHT_REMAINS_BLOCKED=true
 
 **Non-authorizing:** Docs/tests-only reciprocal crosslink guard only; does **not** authorize pilot GO/No-Go lift, execute, runtime, run start, live, preflight lift, bounded-pilot session invoke, order/cancel/execution/arming, authority lift, trading-logic changes, strategy-logic changes, fee/slippage/accounting logic changes, Ops Cockpit payload semantic changes, DRAFT→READY promotion, new cockpit rows, Master V2 / Double Play / Bull-Bear / Risk / KillSwitch / Scope / Capital changes, workflow YAML mutation, `workflow_dispatch`, `gh run rerun`, or Market Dashboard authority changes. `bounded_pilot_operator_preflight_packet.py` remains **read-only** orchestration; does not set handoff env or authorize live trading.
 
+## Bounded-pilot entry gate wrapper ↔ operator preflight packet ↔ runner handoff CI_AUDIT reciprocal crosslink — docs/tests-only guard v1
+
+**Operator-GO:** `GO_RUN_BOUNDED_PILOT_SESSION_OPERATOR_PREFLIGHT_PACKET_RUNNER_HANDOFF_CI_AUDIT_DOCS_TRUTH_MAP_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1` · **Planning bundle (archive only):** `…&#47;planning&#47;systemwide_next_safe_scope_ranking_after_bounded_pilot_operator_preflight_packet_readiness_stop_signal_snapshot_crosslink_guard_merge_no_run_v1_20260612T210321Z&#47;`
+
+**Purpose:** Static reciprocal crosslink guard so the canonical bounded-pilot entry gate wrapper (`run_bounded_pilot_session.py`, contract `run_bounded_pilot_session`) — which runs `check_bounded_pilot_readiness.run_bounded_pilot_readiness` first, invokes the read-only `bounded_pilot_operator_preflight_packet.build_operator_preflight_packet` immediately before handoff with fail-closed `packet_ok` posture, supports `--no-invoke` gate-only parity, and on success delegates to `run_execution_session.py --mode bounded_pilot` with `PT_BOUNDED_PILOT_INVOKED_FROM_GATE` and `PT_LIVE_CONFIRM_TOKEN` handoff env — remains visibly documented in CI_AUDIT and DOCS_TRUTH_MAP alongside live-entry runbook/entry-contract references and reuse pointer to the #4194 operator-preflight-packet guard — **without** authorizing pilot GO, preflight lift, session invoke, live trading, execution/trading/strategy logic changes, runtime, or execute.
+
+**Canonical repo owners (reuse — do not duplicate):**
+
+| Concern | Owner |
+|---------|-------|
+| Bounded-pilot entry gate wrapper | `scripts/ops/run_bounded_pilot_session.py` (`run_bounded_pilot_session`) |
+| Entry gate wrapper tests | `tests/ops/test_run_bounded_pilot_session.py` |
+| Bounded-pilot canonical preflight bundle | `scripts/ops/check_bounded_pilot_readiness.py` (`bounded_pilot_readiness_v1`) |
+| Operator preflight packet orchestration | `scripts/ops/bounded_pilot_operator_preflight_packet.py` (`bounded_pilot_operator_preflight_packet_v1`) |
+| Runner handoff target | `scripts/run_execution_session.py` (`--mode bounded_pilot`) |
+| Live-entry runbook | `docs/ops/runbooks/RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md` |
+| Entry contract | `docs/ops/specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md` |
+| Operator preflight packet guard (#4194) | `tests/ops/test_bounded_pilot_operator_preflight_packet_readiness_stop_signal_snapshot_crosslink_v1.py` |
+| CI_AUDIT / DOCS_TRUTH_MAP reciprocal guard | `tests/ops/test_run_bounded_pilot_session_operator_preflight_packet_runner_handoff_crosslink_v1.py` |
+| DOCS_TRUTH_MAP chronicle | `docs/ops/registry/DOCS_TRUTH_MAP.md` (this crosslink section + Änderungsnachweis row) |
+
+**Crosslink invariants (static — not pilot authority):**
+
+| Invariant | Posture |
+|-----------|---------|
+| Entry gate wrapper | `run_bounded_pilot_session` — gates + packet + optional handoff; **no new gate semantics** |
+| Readiness gates | `run_bounded_pilot_readiness` — fail-closed first |
+| Operator preflight packet | `build_operator_preflight_packet` — required before handoff; fail-closed on `packet_ok` |
+| Gate-only parity | `--no-invoke` — same packet semantics; no runner subprocess |
+| Runner handoff | `run_execution_session.py --mode bounded_pilot` — only after packet GREEN |
+| Handoff env | `PT_BOUNDED_PILOT_INVOKED_FROM_GATE=1` + `PT_LIVE_CONFIRM_TOKEN` — documented; **not** authorized by this guard |
+| Packet chain | reuse #4194 guard — no parallel SSOT |
+| Preflight lift | **not authorized** — visibility only |
+| Session invoke | **not authorized** — visibility only |
+| Pilot Go/No-Go authority | **unchanged** — non-authorizing visibility only |
+
+```text
+RUN_BOUNDED_PILOT_SESSION_OPERATOR_PREFLIGHT_PACKET_RUNNER_HANDOFF_CI_AUDIT_DOCS_TRUTH_MAP_RECIPROCAL_CROSSLINK_V1=true
+RUN_BOUNDED_PILOT_SESSION_CROSSLINK_DOCS_TESTS_ONLY=true
+RUN_BOUNDED_PILOT_SESSION_ENTRY_GATE_DOCUMENTED=true
+RUN_BOUNDED_PILOT_SESSION_CONTRACT=true
+BOUNDED_PILOT_READINESS_GATES_FIRST=true
+OPERATOR_PREFLIGHT_PACKET_BEFORE_HANDOFF=true
+NO_INVOKE_GATE_ONLY_PARITY=true
+RUNNER_HANDOFF_BOUNDED_PILOT_MODE=true
+HANDOFF_ENV_PT_BOUNDED_PILOT_INVOKED_FROM_GATE=true
+HANDOFF_ENV_PT_LIVE_CONFIRM_TOKEN=true
+FAIL_CLOSED_BEFORE_HANDOFF=true
+BOUNDED_PILOT_OPERATOR_PREFLIGHT_PACKET_GUARD_REFERENCED=true
+PILOT_GO_NO_GO_AUTHORITY_CREATED=false
+NO_EXECUTE=true
+NO_RUNTIME=true
+NO_LIVE=true
+NO_PREFLIGHT_LIFT=true
+NO_SESSION_INVOKE_AUTHORIZED=true
+AUTHORITY_LIFT=false
+TRADING_LOGIC_TOUCHED=false
+FEE_SLIPPAGE_ACCOUNTING_LOGIC_TOUCHED=false
+NEW_PARALLEL_SSOT_CREATED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+```
+
+**Guard module (reuse — no parallel entry-gate SSOT):** `tests/ops/test_run_bounded_pilot_session_operator_preflight_packet_runner_handoff_crosslink_v1.py`.
+
+**Non-authorizing:** Docs/tests-only reciprocal crosslink guard only; does **not** authorize pilot GO/No-Go lift, execute, runtime, run start, live, preflight lift, bounded-pilot session invoke, order/cancel/execution/arming, authority lift, trading-logic changes, strategy-logic changes, fee/slippage/accounting logic changes, Ops Cockpit payload semantic changes, DRAFT→READY promotion, new cockpit rows, Master V2 / Double Play / Bull-Bear / Risk / KillSwitch / Scope / Capital changes, workflow YAML mutation, `workflow_dispatch`, `gh run rerun`, or Market Dashboard authority changes. `run_bounded_pilot_session.py` remains the existing entry gate wrapper; this guard documents chain visibility only.
+
 ## Order-Capability remaining readiness gap review — docs/tests-only visibility v1
 
 **Operator-GO:** `GO_ORDER_CAPABILITY_REMAINING_READINESS_GAP_REVIEW_DOCS_TESTS_ONLY_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_preflight_process_gate_hygiene_guard_merge_no_run_v1_20260612T002508Z/`
