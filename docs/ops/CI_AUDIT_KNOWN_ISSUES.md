@@ -217,6 +217,61 @@ PREFLIGHT_REMAINS_BLOCKED=true
 
 **Non-authorizing:** Docs/tests-only reciprocal crosslink guard only; does **not** authorize pilot GO/No-Go lift, execute, runtime, run start, live, preflight lift, order/cancel/execution/arming, fee/slippage/accounting logic changes, authority lift, trading-logic changes, Master V2 / Double Play / Bull-Bear / Risk / KillSwitch / Scope / Capital changes, workflow YAML mutation, `workflow_dispatch`, `gh run rerun`, or Market Dashboard authority changes. Row 7 remains **doc-based**; `pilot_go_no_go_eval_v1.py` remains **11 cockpit rows** without Row 7 eval.
 
+## Pilot Rows 8/10/11 doc-based eval exclusion CI_AUDIT ↔ edge-case matrix / incident runbooks reciprocal crosslink — docs/tests-only guard v1
+
+**Operator-GO:** `GO_PILOT_GONOGO_ROWS_8_10_11_EXCLUSION_CI_AUDIT_DOCS_TRUTH_MAP_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1` · **Planning bundle (archive only):** `…&#47;planning&#47;systemwide_next_safe_scope_ranking_after_pilot_row7_fee_slippage_crosslink_guard_merge_no_run_v1_20260612T193100Z&#47;`
+
+**Purpose:** Static reciprocal crosslink guard so Pilot **Rows 8 (Partial Fill), 10 (Restart/Replay), and 11 (Incident Runbooks)** remain documented as **doc-based evidence owners** excluded from the **11-row** automated `pilot_go_no_go_eval_v1.py` cockpit eval — aligned with `PILOT_EXECUTION_EDGE_CASE_MATRIX`, `PILOT_GO_NO_GO_OPERATIONAL_SLICE`, and existing `RUNBOOK_PILOT_INCIDENT_*` runbooks — **without** authorizing pilot GO, new cockpit rows, execution/trading/strategy logic changes, runtime, or execute.
+
+**Canonical repo owners (reuse — do not duplicate):**
+
+| Concern | Owner |
+|---------|-------|
+| Execution edge-case matrix (Rows 8/10 domains) | `docs/ops/specs/PILOT_EXECUTION_EDGE_CASE_MATRIX.md` |
+| Pilot Go/No-Go operational slice (Rows 8/10/11 doc-based) | `docs/ops/specs/PILOT_GO_NO_GO_OPERATIONAL_SLICE.md` |
+| Pilot eval (11 cockpit rows; Rows 8/10/11 excluded) | `scripts/ops/pilot_go_no_go_eval_v1.py` |
+| Pilot eval tests | `tests/ops/test_pilot_go_no_go_eval_v1.py` |
+| Restart mid-session runbook (Row 10) | `docs/ops/runbooks/RUNBOOK_PILOT_INCIDENT_RESTART_MID_SESSION.md` |
+| Incident runbooks (Row 11) | `docs&#47;ops&#47;runbooks&#47;RUNBOOK_PILOT_INCIDENT_*.md` (7 runbooks on main) |
+| CI_AUDIT / DOCS_TRUTH_MAP reciprocal guard | `tests/ops/test_pilot_gonogo_rows_8_10_11_exclusion_crosslink_v1.py` |
+| DOCS_TRUTH_MAP chronicle | `docs/ops/registry/DOCS_TRUTH_MAP.md` (this crosslink section + Änderungsnachweis row) |
+
+**Crosslink invariants (static — not pilot authority):**
+
+| Invariant | Posture |
+|-----------|---------|
+| Row 8 in pilot eval | **excluded** — doc-based; Partial Fill via edge-case matrix + recon references |
+| Row 10 in pilot eval | **excluded** — doc-based; Restart/Replay via edge-case matrix + restart runbook |
+| Row 11 in pilot eval | **excluded** — doc-based; Incident paths via `RUNBOOK_PILOT_INCIDENT_*` |
+| Rows 8/10/11 missing ≠ PASS | absence from eval must not be read as autorisierender Cockpit-PASS |
+| New cockpit row | **not created** — docs/tests guard only |
+| Pilot Go/No-Go authority | **unchanged** — non-authorizing visibility only |
+
+```text
+PILOT_GONOGO_ROWS_8_10_11_EXCLUSION_CI_AUDIT_DOCS_TRUTH_MAP_RECIPROCAL_CROSSLINK_V1=true
+PILOT_GONOGO_ROWS_8_10_11_EXCLUSION_CROSSLINK_DOCS_TESTS_ONLY=true
+PILOT_EVAL_ROW8_INTENTIONALLY_EXCLUDED=true
+PILOT_EVAL_ROW10_INTENTIONALLY_EXCLUDED=true
+PILOT_EVAL_ROW11_INTENTIONALLY_EXCLUDED=true
+PILOT_ROW8_DOC_BASED_EVIDENCE_REFERENCED=true
+PILOT_ROW10_DOC_BASED_EVIDENCE_REFERENCED=true
+PILOT_ROW11_DOC_BASED_EVIDENCE_REFERENCED=true
+PILOT_GO_NO_GO_AUTHORITY_CREATED=false
+NEW_COCKPIT_ROW_CREATED=false
+NO_EXECUTE=true
+NO_RUNTIME=true
+NO_LIVE=true
+NO_PREFLIGHT_LIFT=true
+AUTHORITY_LIFT=false
+TRADING_LOGIC_TOUCHED=false
+NEW_PARALLEL_SSOT_CREATED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+```
+
+**Guard module (reuse — no parallel Rows 8/10/11 SSOT):** `tests/ops/test_pilot_gonogo_rows_8_10_11_exclusion_crosslink_v1.py`.
+
+**Non-authorizing:** Docs/tests-only reciprocal crosslink guard only; does **not** authorize pilot GO/No-Go lift, execute, runtime, run start, live, preflight lift, order/cancel/execution/arming, authority lift, trading-logic changes, strategy-logic changes, fee/slippage/accounting logic changes, new cockpit rows, Master V2 / Double Play / Bull-Bear / Risk / KillSwitch / Scope / Capital changes, workflow YAML mutation, `workflow_dispatch`, `gh run rerun`, or Market Dashboard authority changes. Rows 8/10/11 remain **doc-based**; `pilot_go_no_go_eval_v1.py` remains **11 cockpit rows** without Rows 8/10/11 eval.
+
 ## Order-Capability remaining readiness gap review — docs/tests-only visibility v1
 
 **Operator-GO:** `GO_ORDER_CAPABILITY_REMAINING_READINESS_GAP_REVIEW_DOCS_TESTS_ONLY_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_preflight_process_gate_hygiene_guard_merge_no_run_v1_20260612T002508Z/`
