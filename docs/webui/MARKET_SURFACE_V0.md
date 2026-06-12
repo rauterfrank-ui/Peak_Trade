@@ -4,7 +4,7 @@
 
 | Methode | Pfad | Beschreibung |
 |---------|------|----------------|
-| GET | `/market` | **Canonical operator page (unified single-page v1).** HTML: **read-only** Market-Dashboard — **SSR-OHLC-/Kerzendisplay**; **Chart.js** Close-Line/Diagnose; **embedded Double-Play display** (`#double-play`, partial reuse); **embedded F5 futures/instrument overview** (`#futures`, partial reuse); operator overview IA; ranking funnel; depth/tape when env-gated. Markers: **`data-market-single-page-unified-v1="true"`**, **`data-market-safety-status-bar-v1="true"`**. **No** trading authority. |
+| GET | `/market` | **Canonical operator page (unified single-page; IA v2 remodel layout active).** HTML: **read-only** Market-Dashboard — **chart-first** SSR primary; **Chart.js** Close-Line/Diagnose; **compact operator overview band**; **secondary grid** (Double-Play / Safety / F5 compact partials); **diagnostics drawer collapsed by default**; ranking funnel; depth/tape when env-gated. Shell marker: **`data-market-remodel-ia-v2="true"`**; legacy consolidation markers **`data-market-single-page-unified-v1="true"`**, **`data-market-safety-status-bar-v1="true"`** may co-exist. **No** trading authority. |
 | GET | `/market/double-play` | **Legacy redirect (302)** → **`GET &#47;market?{query}#double-play`** (query preserved). Display content lives on canonical **`/market`**; **no** separate primary operator surface. |
 | GET | `/market/futures` | **Legacy redirect (302)** → **`GET &#47;market?{query}#futures`** (query preserved when present). F5 display content lives on canonical **`/market`**; env gates unchanged (`PEAK_TRADE_F5_MARKET_DASHBOARD_*`). |
 | GET | `/api/market/ohlcv` | JSON: OHLCV-Bars (`open`/`high`/`low`/`close`/`volume`, Zeit `ts`) |
@@ -31,6 +31,49 @@ Keine Kopplung an OPS Cockpit (`/ops`). Keine Trading-Aktionen.
 - **`kraken`** hier nur **öffentliche OHLCV‑Darstellung**, **keine** Ableitung von Futures‑Readiness noch von Testnet/Live‑Freigaben.
 
 **Read-only / non-authorizing:** Keine Orders, keine Paper-/Testnet-/Live‑Aktivierung, keine Scope/Capital‑Billigung, kein Bypass von Risk/KillSwitch‑Enforcement, keine Ausführungs‑ oder Strategieautorität. Keine Schlussfolgerung auf Futures‑„Readiness“ oder Provider‑Bereitschaft über diese View hinaus.
+
+### Market Dashboard Remodel IA v2 (current operator layout — display-only)
+
+**Status:** Implementation complete on **`GET`** **`&#47;market`** — structure contract **96/96**, SSR real-values **10/10**, operator visual PASS after restart. **No** further template/src slice without a newly evidenced gap and separate operator GO.
+
+**Merged delivery wave:**
+
+| PR | Scope |
+|----|-------|
+| #4183 | IA v2 structure contract (Slice 1) — `data-market-remodel-*-v2` landmark family in `tests/webui/test_market_dashboard_readonly_structure_contract_v0.py` |
+| #4184 | Template Slice 2 — v2 markers and IA ordering in canonical templates&#47;partials |
+| #4185 | Render recovery — `primary_values` SSR context wiring for hero/watchlist/diagnostics partials |
+
+**Current target layout (above-fold operator story on canonical **`GET`** **`&#47;market`**):**
+
+1. **Chart-first primary area** — close-line/chart landmark before diagnostics (`data-market-remodel-chart-primary-v2` family; partial `partials&#47;market_primary_close_chart_v1.html`)
+2. **Compact operator overview band** — safety/lane/freshness/readiness/blocked/authority chips (`data-market-remodel-operator-overview-v2="true"`, `data-market-remodel-operator-{topic}-v2`)
+3. **Secondary grid** — Double-Play / Safety / F5 compact panels above fold (`data-market-remodel-secondary-grid-v2="true"`, `data-market-remodel-secondary-double-play-v2`, `data-market-remodel-secondary-safety-v2`, `data-market-remodel-secondary-futures-v2`; partials `double_play_market_compact_v1.html`, `market_safety_compact_v1.html`, `futures_market_compact_v1.html`)
+4. **Diagnostics collapsed by default** — `<details>` without `open` (`data-market-remodel-diagnostics-drawer-v2="true"`, `data-market-remodel-diagnostics-collapsed-default-v2="true"`; partial `market_diagnostics_drawer_v1.html`); data-source/freshness readouts secondary — **not** operator-primary
+5. **Single canonical surface** — **`GET`** **`&#47;market`** only; legacy **`GET`** **`&#47;market&#47;double-play`** / **`GET`** **`&#47;market&#47;futures`** remain **302** anchor redirects
+
+**Shell and authority markers:**
+
+- **`data-market-remodel-ia-v2="true"`** on page shell (`templates&#47;peak_trade_dashboard&#47;market_v0.html`)
+- **`data-market-readonly="true"`** · **`data-market-non-authorizing="true"`** — **display-only** SSR
+- **No** order / cancel / arming / execution controls on this surface
+- **No** authority lift · **no** Preflight lift · **no** Live/Testnet/Paper/Shadow activation from dashboard display
+- Double-Play / F5 / Safety sections are **read-only display** only — **no** Master V2 / Double Play **decision logic** change
+
+**Contract guards (reuse — no new parallel owner):**
+
+- Structure: **`tests/webui/test_market_dashboard_readonly_structure_contract_v0.py`** (96 passed incl. 12 IA v2 remodel tests)
+- SSR real-values: **`tests/webui/test_market_canonical_short_url_title_real_values_ui_v1.py`** (10 passed)
+- Env/schema boundary pins: **`tests/ops/test_market_surface_ranking_funnel_env_schema_boundary_v0.py`**
+
+**Explicit non-goals (IA v2 closeout):**
+
+- **No** new **`GET`** route, SPA, or parallel Market Surface SSOT
+- **No** template/src/API change in this docs-only alignment slice
+- **No** change to Master V2 / Double Play decision logic, Bull/Bear, Risk/KillSwitch, Scope/Capital, strategy/signal/position-sizing, or execution paths
+- **Market-Airport excluded**
+
+The **Operator overview IA v1** subsection below remains as chronicle/reference for the pre-remodel wave (#4145–#4150); **IA v2 remodel** is the active operator layout on **`GET`** **`&#47;market`**.
 
 ### Operator overview IA v1 (display-only redesign)
 
