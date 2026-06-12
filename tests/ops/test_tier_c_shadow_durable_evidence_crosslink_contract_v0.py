@@ -1,12 +1,13 @@
 """Static crosslink contract for Tier-C + Shadow durable evidence (v0).
 
-Anchors operator-verified archive bundles into canonical Preflight and Section-5
-surfaces. Read-only file-content tests — does not authorize runtime, lifts, or
-Testnet execution.
+Anchors operator-verified archive bundles into canonical Preflight, Section-5,
+CI_AUDIT, and DOCS_TRUTH_MAP surfaces. Read-only file-content tests — does not
+authorize runtime, lifts, or Testnet execution.
 """
 
 from __future__ import annotations
 
+import ast
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -14,11 +15,17 @@ SECTION5 = (
     REPO_ROOT / "docs" / "ops" / "planning" / "SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md"
 )
 PREFLIGHT = REPO_ROOT / "docs" / "ops" / "runbooks" / "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md"
+CI_AUDIT = REPO_ROOT / "docs" / "ops" / "CI_AUDIT_KNOWN_ISSUES.md"
+TRUTH_MAP = REPO_ROOT / "docs" / "ops" / "registry" / "DOCS_TRUTH_MAP.md"
 SELF = Path(__file__).resolve()
+TEST_REL = "tests/ops/test_tier_c_shadow_durable_evidence_crosslink_contract_v0.py"
+SECTION5_REL = "docs/ops/planning/SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md"
+PREFLIGHT_REL = "docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md"
 
 ARCHIVE_ROOT = "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
 
 PACKAGE_MARKER = "TIER_C_SHADOW_DURABLE_EVIDENCE_REPO_STATIC_CROSSLINK_V0=true"
+CROSSLINK_PACKAGE_MARKER = "TIER_C_SHADOW_DURABLE_EVIDENCE_CI_AUDIT_PREFLIGHT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1=true"
 
 ARCHIVE_BUNDLE_SUFFIXES: tuple[str, ...] = (
     "planning/repo_wide_next_system_step_ranking_after_class4_stop_idle_v0_20260603T175350Z/",
@@ -111,3 +118,99 @@ def test_crosslink_reuses_canonical_owners_not_parallel_surfaces_v0() -> None:
         "tests/ops/test_bounded_observation_review_durable_primary_evidence_contract_v0.py",
     ):
         assert owner in section5 or owner in preflight
+
+
+def _docs_truth_map_chronicle_row(truth_map: str, needle: str) -> str:
+    row_start = truth_map.index(needle)
+    row_end = truth_map.index("\n", row_start)
+    return truth_map[row_start:row_end]
+
+
+def test_ci_audit_reciprocal_crosslink_package_marker_present_v1() -> None:
+    assert CROSSLINK_PACKAGE_MARKER in _read(SELF)
+
+
+def test_docs_truth_map_tier_c_shadow_chronicle_v1() -> None:
+    truth_map = _read(TRUTH_MAP)
+    row = _docs_truth_map_chronicle_row(
+        truth_map,
+        "Tier-C + Shadow durable evidence CI_AUDIT ↔ SECTION5 ↔ Preflight §2a.1 reciprocal crosslink guard v1",
+    )
+    for required in (
+        SECTION5_REL,
+        PREFLIGHT_REL,
+        TEST_REL,
+        CROSSLINK_PACKAGE_MARKER,
+        PACKAGE_MARKER,
+        "SECTION5_TIER_C_SHADOW_BLOCK_REFERENCED=true",
+        "PREFLIGHT_TIER_C_SHADOW_ANCHORS_REFERENCED=true",
+        "EVIDENCE_ARCHIVE_ANCHOR_NOT_RUNTIME_AUTHORITY=true",
+        "PREFLIGHT_LIFT_DIRECTLY_ALLOWED=false",
+        "PREFLIGHT_REMAINS_BLOCKED=true",
+        "TESTNET_NOW_RECOMMENDED=false",
+        "NO_SESSION_INVOKE_AUTHORIZED=true",
+        "non-authorizing",
+        "U2B_PARKED=true",
+        "MARKET_AIRPORT_EXCLUDED=true",
+    ):
+        assert required.lower() in row.lower()
+
+
+def test_ci_audit_tier_c_shadow_reciprocal_crosslink_v1() -> None:
+    ci_audit = _read(CI_AUDIT)
+    section_start = ci_audit.index(
+        "## Tier-C + Shadow durable evidence CI_AUDIT ↔ SECTION5 ↔ Preflight §2a.1 reciprocal crosslink — docs/tests-only guard v1"
+    )
+    section_text = ci_audit[section_start : section_start + 5500]
+    for required in (
+        CROSSLINK_PACKAGE_MARKER,
+        PACKAGE_MARKER,
+        SECTION5_REL,
+        PREFLIGHT_REL,
+        TEST_REL,
+        "Tier-C + Shadow durable evidence archive crosslink v0",
+        "Tier-C + Shadow durable evidence archive anchors (non-authorizing) v0",
+        "SECTION5_TIER_C_SHADOW_BLOCK_REFERENCED=true",
+        "PREFLIGHT_TIER_C_SHADOW_ANCHORS_REFERENCED=true",
+        "EVIDENCE_ARCHIVE_ANCHOR_NOT_RUNTIME_AUTHORITY=true",
+        "PREFLIGHT_LIFT_DIRECTLY_ALLOWED=false",
+        "PREFLIGHT_REMAINS_BLOCKED=true",
+        "TESTNET_NOW_RECOMMENDED=false",
+        "NO_SESSION_INVOKE_AUTHORIZED=true",
+        "NO_EXECUTE=true",
+        "NO_RUNTIME=true",
+        "NO_LIVE=true",
+        "NO_PREFLIGHT_LIFT=true",
+        "NEW_PARALLEL_SSOT_CREATED=false",
+        "U2B_PARKED=true",
+        "MARKET_AIRPORT_EXCLUDED=true",
+        "non-authorizing",
+        "read-only",
+    ):
+        assert required.lower() in section_text.lower()
+
+
+def test_canonical_owners_referenced_in_ci_audit_and_truth_map_v1() -> None:
+    truth_map = _read(TRUTH_MAP)
+    ci_audit = _read(CI_AUDIT)
+    for rel in (SECTION5_REL, PREFLIGHT_REL, TEST_REL):
+        assert rel in truth_map
+        assert rel in ci_audit
+
+
+def test_guard_module_is_offline_static_only_v1() -> None:
+    tree = ast.parse(_read(SELF))
+    imports = {
+        alias.name
+        for node in ast.walk(tree)
+        if isinstance(node, ast.Import)
+        for alias in node.names
+    }
+    imports.update(
+        alias.name.split(".")[0]
+        for node in ast.walk(tree)
+        if isinstance(node, ast.ImportFrom) and node.module
+        for alias in node.names
+    )
+    forbidden = {"subprocess", "socket", "requests", "httpx", "urllib"}
+    assert forbidden.isdisjoint(imports)
