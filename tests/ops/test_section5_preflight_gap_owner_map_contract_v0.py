@@ -102,6 +102,42 @@ def _gap4_section(text: str) -> str:
     )[0]
 
 
+def test_section5_hold_binding_profile_preflight_2a_reciprocal_crosslink_v1() -> None:
+    text = DOC.read_text(encoding="utf-8")
+    ci_audit = (ROOT / "docs" / "ops" / "CI_AUDIT_KNOWN_ISSUES.md").read_text(encoding="utf-8")
+    gap2a1 = _gap2a1_section(text)
+    for token in (
+        "SECTION5_HOLD_BINDING_PROFILE_PREFLIGHT_2A_RECIPROCAL_CROSSLINK_V1=true",
+        "SECTION5_HOLD_BINDING_PROFILE_CROSSLINK_DOCS_TESTS_ONLY=true",
+        "GAP4_REQ_A_PAPER_BOUNDED_V0_SECTION5_CROSSLINK_REFERENCED=true",
+        "PAPER_L2_120MIN_HOLD_BINDING_V0_SECTION5_CROSSLINK_REFERENCED=true",
+        "SCHEDULER_BOUNDARY_10A_REFERENCED=true",
+        "SCHEDULER_BOUNDARY_10B_REFERENCED=true",
+        "DURATION_7200_SECONDS_REFERENCED=true",
+        "PAPER_L2_120MIN_HOLD_BINDING_PREFLIGHT_2A_RECIPROCAL_CROSSLINK_V1=true",
+        "PROFILE_FULLY_IMPLEMENTED_ON_MAIN=true",
+        "NO_EXECUTE=true",
+        "NO_PREFLIGHT_LIFT=true",
+        "NO_RUNTIME=true",
+        "PREFLIGHT_REMAINS_BLOCKED=true",
+        "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true",
+    ):
+        assert token in gap2a1
+        assert token in ci_audit
+    assert "Hold-binding profile Preflight §2a reciprocal crosslink (SECTION5 guard)" in gap2a1
+    assert "gap4_req_a_paper_bounded_v0" in gap2a1
+    assert "paper_l2_120min_hold_binding_v0" in gap2a1
+    assert "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md" in gap2a1
+    assert "SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md" in gap2a1
+    assert "test_gap4_req_a_300s_hold_binding_profile_contract_v0.py" in gap2a1
+    assert "test_paper_l2_120min_hold_binding_profile_contract_v0.py" in gap2a1
+    assert "SECTION5 Gap Owner Map hold-binding profile crosslink" in ci_audit
+    collapsed = gap2a1.replace("**", "")
+    assert "does not authorize execute" in collapsed.lower()
+    gap2a1_lines = {line.strip() for line in gap2a1.splitlines()}
+    assert "PREFLIGHT_REMAINS_BLOCKED=false" not in gap2a1_lines
+
+
 def test_section5_gap4_pe5_dependency_guard_v0() -> None:
     text = DOC.read_text(encoding="utf-8")
     gap4 = _gap4_section(text)
