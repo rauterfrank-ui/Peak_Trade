@@ -3360,16 +3360,18 @@ LIVE_TOUCHED=false
 | OE final release closeout | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/operator_experience_release_rc_v0_final_release_closeout_handoff_20260602T174916Z/` |
 | CV3+ release train planning (post-PE) | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/next_larger_release_candidate_after_pe_rc_core_complete_v0_20260603T031800Z/` |
 
-**Planned slice decomposition (reference — not authorized until merged):**
+**Planned slice decomposition (reference — status synced post-PR #4164):**
 
-| Order | Slice ID | Scope |
-|-------|----------|-------|
-| 1 | **SLICE-CV-1** | Docs-only: this release index + post-wave-1 status reflection (**this PR**) |
-| 2 | **SLICE-CV-2** | Tests-ci: static guard coherence — extend existing `tests&#47;ci&#47;test_cybersecurity_visibility_*` modules only |
-| 3 | **SLICE-CV-3a** | Docs/tests: CSC-RCHAIN histogram defensive closure — extend existing `tests&#47;ci&#47;test_csc_rchain_*` and `tests&#47;ci&#47;test_cybersecurity_visibility_repo_static_histogram_*` only (**this PR**) |
-| 4 | **SLICE-CV-3b** | Tests-ci: defensive visibility readout / owner-triage guard coverage — extend existing `tests&#47;ci&#47;test_cybersecurity_visibility_*` only (**merged** #3949) |
-| 5 | **SLICE-CV-3c** | Tests-ci: static defensive visibility report contract — extend existing `tests&#47;ci&#47;test_cybersecurity_visibility_*` only (**this PR**) |
-| 6 | **SLICE-CV-3** (optional follow-up) | Docs/tests: CSC-RCHAIN PR15 finalization reflection OR `docs_drift_or_pointer_integrity` bucket (**this PR**) |
+| Order | Slice ID | Scope | Status |
+|-------|----------|-------|--------|
+| 1 | **SLICE-CV-1** | Docs-only: this release index + post-wave-1 status reflection | **complete** |
+| 2 | **SLICE-CV-2** | Tests-ci: static guard coherence — extend existing `tests&#47;ci&#47;test_cybersecurity_visibility_*` modules only | **complete** |
+| 3 | **SLICE-CV-3a** | Docs/tests: CSC-RCHAIN histogram defensive closure — extend existing `tests&#47;ci&#47;test_csc_rchain_*` and `tests&#47;ci&#47;test_cybersecurity_visibility_repo_static_histogram_*` only | **complete** |
+| 4 | **SLICE-CV-3b** | Tests-ci: defensive visibility readout / owner-triage guard coverage — extend existing `tests&#47;ci&#47;test_cybersecurity_visibility_*` only | **complete** (#3949) |
+| 5 | **SLICE-CV-3c** | Tests-ci: static defensive visibility report contract — extend existing `tests&#47;ci&#47;test_cybersecurity_visibility_*` only | **complete** |
+| 6 | **SLICE-CV-3** | Docs/tests: docs drift / pointer integrity crosslink — deferred-bucket routing only (not histogram closure) | **complete** (#4164); `docs_drift_or_pointer_integrity` **deferred** by design |
+
+**Post-PR #4164 release index sync (SLICE-CV-3):** CV3+ release train **CORE COMPLETE after SLICE-CV-3** (`CYBERSECURITY_DEFENSIVE_VISIBILITY_CV3_PLUS_RC_V0_CORE_COMPLETE_AFTER_CV3=true`); `docs_drift_or_pointer_integrity` histogram bucket remains **deferred** (`DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true`; `DOCS_DRIFT_OR_POINTER_INTEGRITY_COMPLETE=false`). Merge closeout (archive only): `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/cybersecurity_visibility_cv3_csc_rchain_pr15_pointer_integrity_guard_squash_merge_closeout_v1_20260612T082018Z/`.
 
 **Operational rules:**
 
@@ -3392,6 +3394,11 @@ INPUT_JSONL_REPO_INGESTED=false
 LOSSLESS_JSONL_RECOVERY=false
 NOT_ORIGINAL_TMP_FULL_LOSSLESS=true
 CYBERSECURITY_VISIBILITY_RELEASE_RC_V0_POST_DEFINITIVE_R001_R002_R007_MAPPING_INDEX_SYNC_V1=true
+CYBERSECURITY_VISIBILITY_RELEASE_RC_V0_POST_SLICE_CV3_RELEASE_INDEX_SYNC_V1=true
+SLICE_CV3_DOCS_DRIFT_POINTER_INTEGRITY_CROSSLINK_GUARD_MERGED_PR4164=true
+CYBERSECURITY_DEFENSIVE_VISIBILITY_CV3_PLUS_RC_V0_CORE_COMPLETE_AFTER_CV3=true
+DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
+DOCS_DRIFT_OR_POINTER_INTEGRITY_COMPLETE=false
 CYBER_REAL_DATA_PII_BLOCKED=true
 CYBER_REAL_DATA_REQUIRES_LEGAL_PRIVACY_GO=true
 NO_EXTERNAL_CYBER_DATA_INTAKE=true
@@ -3427,7 +3434,7 @@ PARALLEL_CYBER_INDEX_CREATED=false
 | Release | Status | Repo index owner |
 |---------|--------|------------------|
 | `OPERATOR_EXPERIENCE_RELEASE_RC_V0` | **CORE COMPLETE** (OE-1 + OE-2) | this document — § Operator Experience … |
-| `CYBERSECURITY_VISIBILITY_RELEASE_RC_V0` | **CORE COMPLETE** (CV-1 + CV-2) | this document — § Cybersecurity Visibility … |
+| `CYBERSECURITY_VISIBILITY_RELEASE_RC_V0` | **CORE COMPLETE** (CV-1 + CV-2 + CV-3; CV3+ train after SLICE-CV-3 #4164) | this document — § Cybersecurity Visibility … |
 | `EVIDENCE_DURABLE_CLOSEOUT_RETENTION_RC_V0` | **CORE COMPLETE** (ER-1 + ER-2; ER-3 optional deferred) | `PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md` — § Evidence Durable … |
 
 **Durable operator pointers (archive only — not repo-ingested):**
@@ -3761,7 +3768,7 @@ PARALLEL_PRIMARY_EVIDENCE_ENFORCEMENT_INDEX_CREATED=false
 |--------------|--------|------------------------|
 | `PRIMARY_EVIDENCE_RUN_COMPLETION_CONTRACT_RC_V0` | **CORE COMPLETE** (`CORE_COMPLETE_AFTER_PE6`; PE-2..PE-6) | this document — § Primary Evidence …; archive closeout below |
 | `EVIDENCE_DURABLE_CLOSEOUT_RETENTION_RC_V0` | **CORE COMPLETE** (ER-1 + ER-2; ER-3 deferred) | Preflight — § Evidence Durable … |
-| `CYBERSECURITY_DEFENSIVE_VISIBILITY_CV3_PLUS_RC_V0` | **CORE COMPLETE** (`CORE_COMPLETE_AFTER_CV3C`) | this document — § Cybersecurity Visibility …; CV3A/CV3B/CV3C blocks |
+| `CYBERSECURITY_DEFENSIVE_VISIBILITY_CV3_PLUS_RC_V0` | **CORE COMPLETE** (`CORE_COMPLETE_AFTER_CV3`; SLICE-CV-3 #4164) | this document — § Cybersecurity Visibility …; CV3A/CV3B/CV3C/SLICE-CV-3 blocks |
 
 **Readiness review scope (planning/docs/tests only):**
 
@@ -3792,7 +3799,7 @@ PARALLEL_PRIMARY_EVIDENCE_ENFORCEMENT_INDEX_CREATED=false
 EVIDENCE_DURABLE_ENFORCEMENT_READINESS_REVIEW_RC_V0_STARTED=true
 EER1_READINESS_REVIEW_INDEX_COMPLETE=true
 PRIMARY_EVIDENCE_RUN_COMPLETION_CONTRACT_RC_V0_STATUS=CORE_COMPLETE_AFTER_PE6
-CYBERSECURITY_DEFENSIVE_VISIBILITY_CV3_PLUS_RC_V0_STATUS=CORE_COMPLETE_AFTER_CV3C
+CYBERSECURITY_DEFENSIVE_VISIBILITY_CV3_PLUS_RC_V0_STATUS=CORE_COMPLETE_AFTER_CV3
 EVIDENCE_DURABLE_CLOSEOUT_RETENTION_RC_V0_CORE_DONE=true
 SLICE_EER1_DOCS_TESTS_ONLY=true
 GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false

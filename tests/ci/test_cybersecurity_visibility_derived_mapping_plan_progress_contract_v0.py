@@ -789,6 +789,11 @@ RELEASE_RC_EXPECTED: dict[str, str] = {
     "LOSSLESS_JSONL_RECOVERY": "false",
     "NOT_ORIGINAL_TMP_FULL_LOSSLESS": "true",
     "CYBERSECURITY_VISIBILITY_RELEASE_RC_V0_POST_DEFINITIVE_R001_R002_R007_MAPPING_INDEX_SYNC_V1": "true",
+    "CYBERSECURITY_VISIBILITY_RELEASE_RC_V0_POST_SLICE_CV3_RELEASE_INDEX_SYNC_V1": "true",
+    "SLICE_CV3_DOCS_DRIFT_POINTER_INTEGRITY_CROSSLINK_GUARD_MERGED_PR4164": "true",
+    "CYBERSECURITY_DEFENSIVE_VISIBILITY_CV3_PLUS_RC_V0_CORE_COMPLETE_AFTER_CV3": "true",
+    "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED": "true",
+    "DOCS_DRIFT_OR_POINTER_INTEGRITY_COMPLETE": "false",
     "CYBER_REAL_DATA_PII_BLOCKED": "true",
     "CYBER_REAL_DATA_REQUIRES_LEGAL_PRIVACY_GO": "true",
     "NO_EXTERNAL_CYBER_DATA_INTAKE": "true",
@@ -1074,5 +1079,62 @@ def test_cybersecurity_visibility_release_rc_v0_post_definitive_r001_r002_r007_m
     assert POST_DEFMAP_INDEX_SYNC_ANCHOR in truth_map
     assert "PR #4093" in truth_map
     assert "R001_R002_R007_DEFINITIVE_MAPPING_STATUS=definitive_mapped" in truth_map
+    assert THIS_MODULE in truth_map
+    assert "non-authorizing" in section.lower()
+
+
+POST_SLICE_CV3_INDEX_SYNC_ANCHOR = (
+    "CYBERSECURITY_VISIBILITY_RELEASE_RC_V0_POST_SLICE_CV3_RELEASE_INDEX_SYNC_V1=true"
+)
+CV3_POINTER_INTEGRITY_HEADING = "### Docs drift / pointer integrity crosslink guard v0 (SLICE-CV-3)"
+CV3_SLICE_CLOSEOUT_PATH = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "closeout/cybersecurity_visibility_cv3_csc_rchain_pr15_pointer_integrity_guard_squash_merge_closeout_v1_20260612T082018Z/"
+)
+
+
+def test_cybersecurity_visibility_release_rc_v0_post_slice_cv3_release_index_sync_v1() -> None:
+    """Release RC index must reflect merged SLICE-CV-3 #4164; deferred bucket stays deferred."""
+    text = _ci_audit_text()
+    truth_map = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    section = _release_rc_index_section(text)
+    release_block = _block_containing(text, RELEASE_RC_BLOCK_ANCHOR)
+    release_values = _machine_line_values(release_block)
+
+    assert POST_SLICE_CV3_INDEX_SYNC_ANCHOR in release_block
+    assert (
+        release_values["SLICE_CV3_DOCS_DRIFT_POINTER_INTEGRITY_CROSSLINK_GUARD_MERGED_PR4164"]
+        == "true"
+    )
+    assert (
+        release_values["CYBERSECURITY_DEFENSIVE_VISIBILITY_CV3_PLUS_RC_V0_CORE_COMPLETE_AFTER_CV3"]
+        == "true"
+    )
+    assert release_values["DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED"] == "true"
+    assert release_values["DOCS_DRIFT_OR_POINTER_INTEGRITY_COMPLETE"] == "false"
+    assert "#4164" in section
+    assert "optional follow-up" not in section.lower()
+    assert CV3_POINTER_INTEGRITY_HEADING in text
+    assert CV3_SLICE_CLOSEOUT_PATH in section
+    assert "CV-1 + CV-2 + CV-3" in text
+
+    release_start = text.index(RELEASE_RC_INDEX_HEADING)
+    release_end = text.index("## Ops Cockpit / Operator Status Index RC v0", release_start)
+    release_window = text[release_start:release_end]
+    assert "CORE_COMPLETE_AFTER_CV3C" not in release_window
+
+    eer_start = text.index("## Evidence Durable Enforcement Readiness Review RC v0")
+    eer_end = text.index("## Post-Release Operator Package Decision Contract v0", eer_start)
+    eer_window = text[eer_start:eer_end]
+    assert (
+        "CYBERSECURITY_DEFENSIVE_VISIBILITY_CV3_PLUS_RC_V0_STATUS=CORE_COMPLETE_AFTER_CV3"
+        in eer_window
+    )
+    assert "CORE_COMPLETE_AFTER_CV3C" not in eer_window
+
+    assert POST_SLICE_CV3_INDEX_SYNC_ANCHOR in truth_map
+    assert "#4164" in truth_map
+    assert "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true" in truth_map
+    assert "DOCS_DRIFT_OR_POINTER_INTEGRITY_COMPLETE=false" in truth_map
     assert THIS_MODULE in truth_map
     assert "non-authorizing" in section.lower()
