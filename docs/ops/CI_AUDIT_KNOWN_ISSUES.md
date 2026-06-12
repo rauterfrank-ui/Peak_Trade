@@ -2963,6 +2963,55 @@ LOCAL_DRY_HOST_NO_RUN_PREFLIGHT_DOCS_TESTS_ONLY=true
 
 **Non-authorizing:** No runtime/scheduler/daemon execution, no paper/shadow/testnet/live, no AWS/network/rclone/S3 upload, no Notion write, no Market Dashboard authority, no Preflight lift, no Path-B lift, and no Global-Preflight lift. `/tmp`-only evidence remains invalid.
 
+## Preflight Process Gate Hygiene — active-run false-positive guard v0
+
+### Preflight process gate hygiene docs guard v0
+
+```text
+PREFLIGHT_PROCESS_GATE_HYGIENE_GUARD_V1=true
+ACTIVE_RUN_CHECK_PEAK_TRADE_EXPLICIT_ONLY=true
+ACTIVE_RUN_EXCLUDE_MACOS_SYSTEM_SUBSTRING_FALSE_POSITIVES=true
+ACTIVE_RUN_EXCLUDE_SHELL_CURSOR_SELF_MATCH=true
+UNTRACKED_DOT_PYTHON_VERSION_TOLERATED_WHEN_TRACKED_CLEAN=true
+UNTRACKED_DOT_PYTHON_VERSION_MUST_NOT_BE_COMMITTED_OR_DELETED_BY_AUTOMATION=true
+NO_RUNTIME=true
+NO_LIVE=true
+PREFLIGHT_REMAINS_BLOCKED=true
+PREFLIGHT_LIFT=false
+ORDER_CANCEL_EXECUTION_ARMING_TOUCHED=false
+TRADING_LOGIC_TOUCHED=false
+MASTER_V2_LOGIC_TOUCHED=false
+DOUBLE_PLAY_LOGIC_TOUCHED=false
+PARALLEL_DOCS_CREATED=false
+PREFLIGHT_PROCESS_GATE_HYGIENE_DOCS_TESTS_ONLY=true
+```
+
+**Purpose:** Clarify read-only preflight and closeout hygiene for active-run detection and tolerated local worktree state. This guard does **not** authorize runtime, preflight lift, or trading authority.
+
+**Active-run detection (Peak_Trade explicit only):** Preflight and closeout active-run checks must count only explicit Peak_Trade runtime or trading processes associated with this repo — for example scheduler, paper, shadow, testnet, live, adapter, order, cancel, execution, or arming processes under `Peak_Trade` paths. Generic macOS or system processes whose names merely contain substrings such as `live`, `order`, or `result-order` are **not** evidence of an active Peak_Trade run. Examples that must remain non-blocking unless independently tied to repo runtime: `liveactivitiesd`, `dns-result-order`, and `PhotosReliveWidget`.
+
+**Shell/Cursor self-match exclusion:** Process-scan wrappers must not count the scan command itself as an active run. Exclude Cursor sandbox shells, grep pipelines, and embedded script text that repeats runtime keyword patterns.
+
+**Tolerated untracked `.python-version`:** A local untracked root `.python-version` may be documented as a tolerated operator-local file during read-only rankings and closeouts when tracked files are clean. It must **not** hard-block preflight/ranking gates by itself. Automation must **not** commit or delete it blindly.
+
+**External durable artifact (archive only — not repo-ingested):**
+
+| Token | Durable path |
+|-------|--------------|
+| Systemwide next safe slice selection after PR #4153 closeout | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_pr4153_closeout_select_single_next_safe_slice_no_run_v1_20260612T000800Z` |
+
+**Canonical repo owners (reuse — do not duplicate):**
+
+| Concern | Owner |
+|---------|-------|
+| Local dry host no-run preflight charter reflection | this document — **§ Local Dry Host No-Run Preflight Charter …** |
+| Lane taxonomy + scheduler boundary | `docs/ops/specs/RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md`, `docs/ops/specs/SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md` |
+| §2a primary evidence + closeout | `docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md` |
+
+**Guard module (reuse — no parallel preflight hygiene anchor):** `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`.
+
+**Non-authorizing:** No runtime, no live, no preflight lift, no order/cancel/execution/arming, no trading logic, no Master V2 / Double Play authority changes, no workflow edits, and no Market Dashboard authority changes.
+
 ## Operator Experience Release RC v0 — index v0
 
 **Release:** `OPERATOR_EXPERIENCE_RELEASE_RC_V0` · **Slice:** `SLICE-OE-1` (docs-only start) · **UTC:** 2026-06-02 · **Canonical repo owners (reuse — no parallel index):**

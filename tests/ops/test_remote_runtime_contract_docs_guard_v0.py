@@ -32,6 +32,32 @@ LOCAL_DRY_HOST_PREFLIGHT_CHARTER_PATH = (
 
 GUARD_BLOCK_ANCHOR = "REMOTE_RUNTIME_EXTERNAL_CHARTER_CONTRACT_DOCS_GUARD_V0=true"
 LOCAL_DRY_HOST_GUARD_BLOCK_ANCHOR = "LOCAL_DRY_HOST_NO_RUN_PREFLIGHT_CHARTER_REFLECTION_V0=true"
+PREFLIGHT_PROCESS_GATE_HYGIENE_HEADING = (
+    "## Preflight Process Gate Hygiene — active-run false-positive guard v0"
+)
+PREFLIGHT_PROCESS_GATE_HYGIENE_GUARD_BLOCK_ANCHOR = "PREFLIGHT_PROCESS_GATE_HYGIENE_GUARD_V1=true"
+PREFLIGHT_PROCESS_GATE_HYGIENE_INPUT_BUNDLE = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/systemwide_next_safe_scope_ranking_after_pr4153_closeout_select_single_next_safe_slice_no_run_v1_20260612T000800Z"
+)
+PREFLIGHT_PROCESS_GATE_HYGIENE_GUARD_EXPECTED: dict[str, str] = {
+    "PREFLIGHT_PROCESS_GATE_HYGIENE_GUARD_V1": "true",
+    "ACTIVE_RUN_CHECK_PEAK_TRADE_EXPLICIT_ONLY": "true",
+    "ACTIVE_RUN_EXCLUDE_MACOS_SYSTEM_SUBSTRING_FALSE_POSITIVES": "true",
+    "ACTIVE_RUN_EXCLUDE_SHELL_CURSOR_SELF_MATCH": "true",
+    "UNTRACKED_DOT_PYTHON_VERSION_TOLERATED_WHEN_TRACKED_CLEAN": "true",
+    "UNTRACKED_DOT_PYTHON_VERSION_MUST_NOT_BE_COMMITTED_OR_DELETED_BY_AUTOMATION": "true",
+    "NO_RUNTIME": "true",
+    "NO_LIVE": "true",
+    "PREFLIGHT_REMAINS_BLOCKED": "true",
+    "PREFLIGHT_LIFT": "false",
+    "ORDER_CANCEL_EXECUTION_ARMING_TOUCHED": "false",
+    "TRADING_LOGIC_TOUCHED": "false",
+    "MASTER_V2_LOGIC_TOUCHED": "false",
+    "DOUBLE_PLAY_LOGIC_TOUCHED": "false",
+    "PARALLEL_DOCS_CREATED": "false",
+    "PREFLIGHT_PROCESS_GATE_HYGIENE_DOCS_TESTS_ONLY": "true",
+}
 
 GUARD_EXPECTED: dict[str, str] = {
     "REMOTE_RUNTIME_IS_BACKEND": "true",
@@ -249,6 +275,41 @@ def test_ci_audit_local_dry_host_guard_machine_lines() -> None:
     assert not missing, f"missing local dry host guard keys: {sorted(missing)}"
     for key, expected in LOCAL_DRY_HOST_GUARD_EXPECTED.items():
         assert values[key] == expected, f"{key}={values[key]!r} expected {expected!r}"
+
+
+def test_ci_audit_preflight_process_gate_hygiene_section_present_v1() -> None:
+    text = _ci_audit_text()
+    assert PREFLIGHT_PROCESS_GATE_HYGIENE_HEADING in text
+    assert "### Preflight process gate hygiene docs guard v0" in text
+    assert PREFLIGHT_PROCESS_GATE_HYGIENE_INPUT_BUNDLE in text
+    assert "liveactivitiesd" in text
+    assert "dns-result-order" in text
+    assert "PhotosReliveWidget" in text
+    assert "Shell/Cursor self-match" in text
+    assert "untracked root `.python-version`" in text
+    assert "must **not** commit or delete it blindly" in text
+    assert THIS_MODULE in text
+    assert "no parallel preflight hygiene anchor" in text.lower()
+
+
+def test_ci_audit_preflight_process_gate_hygiene_machine_lines_v1() -> None:
+    block = _block_containing(_ci_audit_text(), PREFLIGHT_PROCESS_GATE_HYGIENE_GUARD_BLOCK_ANCHOR)
+    values = _machine_line_values(block)
+    missing = set(PREFLIGHT_PROCESS_GATE_HYGIENE_GUARD_EXPECTED) - values.keys()
+    assert not missing, f"missing preflight process gate hygiene keys: {sorted(missing)}"
+    for key, expected in PREFLIGHT_PROCESS_GATE_HYGIENE_GUARD_EXPECTED.items():
+        assert values[key] == expected, f"{key}={values[key]!r} expected {expected!r}"
+
+
+def test_docs_truth_map_preflight_process_gate_hygiene_chronicle_v1() -> None:
+    text = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    assert "Preflight process gate hygiene guard v1" in text
+    assert THIS_MODULE in text
+    assert "precise Peak_Trade active-run detection" in text
+    assert "shell/Cursor self-match exclusion" in text
+    assert "tolerated untracked root `.python-version` when tracked clean" in text
+    assert "PREFLIGHT_PROCESS_GATE_HYGIENE_GUARD_V1=true" in text
+    assert PREFLIGHT_PROCESS_GATE_HYGIENE_INPUT_BUNDLE.split("/")[-1] in text
 
 
 def test_ci_audit_reuses_canonical_owners_not_parallel_surfaces() -> None:
