@@ -1,0 +1,74 @@
+<!-- Primary operator hero: title, real values, chart above-the-fold -->
+<section
+  id="market-primary-operator-hero-v1"
+  class="space-y-4"
+  role="region"
+  aria-labelledby="market-v0-landmark-page-title"
+  data-market-operator-real-values-v1="true"
+  data-market-chart-above-fold-v1="true"
+  data-market-detail-click-required="false"
+  data-market-primary-market-values-v1="true"
+  data-market-canonical-short-url-v1="true"
+  {% if query.source == 'kraken' and primary_values.status == 'available' %}
+  data-market-source-kind="kraken-public"
+  {% elif query.source == 'dummy' %}
+  data-market-source-kind="dummy-offline-synthetic"
+  {% endif %}
+>
+  <header class="rounded-xl border border-sky-900/40 bg-gradient-to-br from-slate-950/95 via-sky-950/20 to-slate-950/90 px-4 py-4 sm:px-5 shadow-lg shadow-black/20 ring-1 ring-sky-900/25">
+    <p class="text-[10px] font-semibold uppercase tracking-[0.14em] text-sky-400/85 m-0">Canonical operator URL · <span class="font-mono text-sky-300/90">/market</span></p>
+    <h1 id="market-v0-landmark-page-title" class="text-2xl sm:text-3xl font-bold text-slate-50 tracking-tight m-0 mt-1" data-market-page-title-v1="true">
+      {{ page_title|e }}
+    </h1>
+    <p class="text-sm text-slate-400 m-0 mt-2 leading-snug max-w-3xl">
+      Read-only public market display — no orders, no trading authority.
+      {% if query.source == 'kraken' %}Kraken public OHLCV{% else %}Explicit offline synthetic mode{% endif %}.
+    </p>
+  </header>
+
+  {% if query.source == 'dummy' %}
+  <div
+    class="rounded-lg border border-amber-600/50 bg-amber-950/40 px-3 py-2 text-sm text-amber-100"
+    role="alert"
+    data-market-dummy-explicit-synthetic-v1="true"
+    data-market-source-kind="dummy-offline-synthetic"
+  >
+    <strong class="text-amber-200">SYNTHETIC / OFFLINE / DUMMY</strong> — not live market data. Use <span class="font-mono">/market</span> without <span class="font-mono">source=dummy</span> for public Kraken OHLCV.
+  </div>
+  {% endif %}
+
+  {% if data_unavailable and query.source == 'kraken' %}
+  <div
+    class="rounded-lg border border-rose-700/50 bg-rose-950/35 px-3 py-2 text-sm text-rose-100"
+    role="alert"
+    data-market-unavailable-compact-v1="true"
+  >
+    <strong class="text-rose-200">Public market data unavailable</strong>
+    {% if primary_values.unavailable_reason %} — {{ primary_values.unavailable_reason|e }}{% endif %}.
+    No synthetic fallback. Retry later or check network/provider.
+  </div>
+  {% endif %}
+
+  <section
+    class="rounded-xl border border-slate-700/60 bg-slate-950/80 px-3 py-3 sm:px-4 ring-1 ring-slate-800/50"
+    data-market-primary-values-panel-v1="true"
+    aria-label="Primary market values"
+  >
+    <dl class="m-0 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-x-4 gap-y-3 text-[11px] tabular-nums">
+      <div><dt class="text-slate-500 uppercase text-[10px]">Symbol</dt><dd class="m-0 font-mono text-lg text-slate-50">{{ primary_values.symbol|e }}</dd></div>
+      <div><dt class="text-slate-500 uppercase text-[10px]">Source</dt><dd class="m-0 font-mono text-sky-300/95">{{ primary_values.source|e }} · {{ primary_values.source_mode|e }}</dd></div>
+      <div><dt class="text-slate-500 uppercase text-[10px]">Timeframe</dt><dd class="m-0 font-mono text-slate-200">{{ primary_values.timeframe|e }}</dd></div>
+      <div><dt class="text-slate-500 uppercase text-[10px]">Bars</dt><dd class="m-0 font-mono text-slate-200">{{ primary_values.bars_returned|e }} / {{ primary_values.limit|e }}</dd></div>
+      <div><dt class="text-slate-500 uppercase text-[10px]">Freshness</dt><dd class="m-0 font-mono text-slate-300 text-[10px] break-all">{% if primary_values.last_bar_ts %}{{ primary_values.last_bar_ts|e }}{% else %}{{ primary_values.generated_at_utc|e }}{% endif %}</dd></div>
+      <div data-market-primary-last-close-v1="true"><dt class="text-slate-500 uppercase text-[10px]">Last / Close</dt><dd class="m-0 font-mono text-xl text-sky-200/95">{% if primary_values.status == 'available' %}{{ primary_values.last_close_display|e }}{% else %}unavailable{% endif %}</dd></div>
+    </dl>
+    <dl class="m-0 mt-3 grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-2 text-[11px] tabular-nums border-t border-slate-800/60 pt-3">
+      <div><dt class="text-slate-500 uppercase text-[10px]">O</dt><dd class="m-0 font-mono text-slate-200">{{ primary_values.last_open_display|e or '—' }}</dd></div>
+      <div><dt class="text-slate-500 uppercase text-[10px]">H</dt><dd class="m-0 font-mono text-slate-200">{{ primary_values.last_high_display|e or '—' }}</dd></div>
+      <div><dt class="text-slate-500 uppercase text-[10px]">L</dt><dd class="m-0 font-mono text-slate-200">{{ primary_values.last_low_display|e or '—' }}</dd></div>
+      <div><dt class="text-slate-500 uppercase text-[10px]">Change</dt><dd class="m-0 font-mono text-slate-200">{% if primary_values.change_status == 'available' %}{{ primary_values.change_abs_display|e }} ({{ primary_values.change_pct_display|e }}){% else %}—{% endif %}</dd></div>
+    </dl>
+  </section>
+
+  {% include "partials/market_primary_close_chart_v1.html" %}
+</section>
