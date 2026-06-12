@@ -54,7 +54,7 @@ def test_legacy_double_play_redirect_preserves_query(client: TestClient) -> None
     assert r.status_code == 302
     loc = r.headers["location"]
     assert loc.startswith("/market?")
-    assert "source=dummy" in loc
+    assert "source=kraken" in loc
     assert "symbol=BTC" in loc
     assert "timeframe=1d" in loc
     assert "limit=120" in loc

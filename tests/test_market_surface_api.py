@@ -283,13 +283,10 @@ class TestMarketSurfaceHtml:
 
 def test_market_v0_template_kraken_banner_markers_in_source() -> None:
     """Kraken-Pfad ohne Netzwerk: Banner-Zweig muss im Template existieren."""
-    tmpl_path = (
-        Path(__file__).resolve().parents[1]
-        / "templates"
-        / "peak_trade_dashboard"
-        / "market_v0.html"
-    )
-    txt = tmpl_path.read_text(encoding="utf-8")
+    root = Path(__file__).resolve().parents[1] / "templates" / "peak_trade_dashboard"
+    txt = (root / "market_v0.html").read_text(encoding="utf-8")
+    partial = (root / "partials" / "market_primary_close_chart_v1.html").read_text(encoding="utf-8")
+    combined = txt + "\n" + partial
     assert 'data-market-source-kind="kraken-public-ohlcv-network"' in txt
     assert 'data-market-v1-dashboard-shell="true"' in txt
     assert 'data-market-v1-readonly-banner="true"' in txt
@@ -308,28 +305,28 @@ def test_market_v0_template_kraken_banner_markers_in_source() -> None:
     assert 'data-market-v0-ohlcv-preview="true"' in txt
     assert 'data-market-v0-depth-preview="true"' in txt
     assert 'data-market-v0-ssr-metrics-strip="true"' in txt
-    assert 'data-market-v0-in-chart-ohlc-svg-v1="true"' in txt
-    assert 'data-market-v0-close-chart-integrated-frame="true"' in txt
-    assert 'data-market-v0-in-chart-ohlc-svg-root="true"' in txt
+    assert 'data-market-v0-in-chart-ohlc-svg-v1="true"' in combined
+    assert 'data-market-v0-close-chart-integrated-frame="true"' in combined
+    assert 'data-market-v0-in-chart-ohlc-svg-root="true"' in combined
     assert (
-        'data-market-v0-in-chart-ohlc-candle-up="true"' in txt
-        or 'data-market-v0-in-chart-ohlc-candle-down="true"' in txt
+        'data-market-v0-in-chart-ohlc-candle-up="true"' in combined
+        or 'data-market-v0-in-chart-ohlc-candle-down="true"' in combined
     )
-    assert "chartjs-chart-financial" not in txt.lower()
-    assert 'data-market-v11-chart-diagnostics="true"' in txt
-    assert 'data-market-v11-chart-library-status="true"' in txt
-    assert 'data-market-v11-payload-bars="true"' in txt
-    assert 'data-market-v11-render-fallback="true"' in txt
+    assert "chartjs-chart-financial" not in combined.lower()
+    assert 'data-market-v11-chart-diagnostics="true"' in combined
+    assert 'data-market-v11-chart-library-status="true"' in combined
+    assert 'data-market-v11-payload-bars="true"' in combined
+    assert 'data-market-v11-render-fallback="true"' in combined
     assert txt.count('data-market-v1-stat-card="true"') >= 6
     assert "Read-only market display" in txt
     assert "Futures" in txt
     assert "read-only · non-authorizing" in txt
-    assert 'id="market-v0-chart-status"' in txt
-    assert "data-market-chart-status" in txt
-    assert "data-market-empty-state" in txt
-    assert "Chart bereit — read-only OHLCV-Anzeige." in txt
-    assert "Keine OHLCV-Bars für diese Abfrage verfügbar." in txt
-    assert "Chart-Daten konnten nicht gerendert werden; keine Trading-Aktion verfügbar." in txt
+    assert 'id="market-v0-chart-status"' in combined
+    assert "data-market-chart-status" in combined
+    assert "data-market-empty-state" in combined
+    assert "Chart bereit — read-only OHLCV-Anzeige." in combined
+    assert "Keine OHLCV-Bars für diese Abfrage verfügbar." in combined
+    assert "Chart-Daten konnten nicht gerendert werden; keine Trading-Aktion verfügbar." in combined
     assert 'data-market-depth-panel="true"' in txt
     assert "data-market-depth-status" in txt
     assert 'data-market-v0-orderbook-topn="true"' in txt

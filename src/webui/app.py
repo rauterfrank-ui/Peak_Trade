@@ -611,7 +611,7 @@ def create_app() -> FastAPI:
         symbol: str = Query("BTC/EUR", description="Trading-Paar, z.B. BTC/EUR"),
         timeframe: str = Query("1d", description="Timeframe (Kraken); Dummy ignoriert Serie"),
         limit: int = Query(120, ge=1, le=MAX_OHLCV_LIMIT, description="Bars (max 720)"),
-        source: str = Query("dummy", description="dummy | kraken"),
+        source: str = Query("kraken", description="dummy | kraken"),
     ) -> RedirectResponse:
         """Legacy deep-link → canonical GET /market with #double-play anchor (query preserved)."""
         if timeframe not in MARKET_TIMEFRAMES:

@@ -50,6 +50,92 @@
   </section>
 
   <section
+    id="market-v0-primary-values"
+    role="region"
+    aria-labelledby="market-v0-landmark-primary-values-h2"
+    class="rounded-xl border border-sky-900/45 bg-gradient-to-r from-slate-950/95 via-sky-950/30 to-slate-950/95 px-3 py-3 sm:px-4 shadow-sm shadow-black/20 ring-1 ring-sky-900/35"
+    data-market-primary-values-v1="true"
+    data-market-real-values-operator-view-v1="true"
+    data-market-primary-values-source="{{ query.source }}"
+  >
+    <h2 id="market-v0-landmark-primary-values-h2" class="sr-only">Primary market values</h2>
+    {% if query.source == 'dummy' %}
+    <p
+      class="m-0 mb-2 rounded-lg border border-amber-800/55 bg-amber-950/45 px-2.5 py-2 text-[11px] font-semibold text-amber-100/95"
+      data-market-source-kind="dummy-offline-synthetic"
+      data-market-dummy-clearly-labeled-v1="true"
+    >
+      Dummy / Synthetic / Offline — keine echten Marktdaten. Explizit über <span class="font-mono">source=dummy</span>.
+    </p>
+    {% elif query.source == 'kraken' %}
+    <p
+      class="m-0 mb-2 rounded-lg border border-emerald-800/45 bg-emerald-950/35 px-2.5 py-2 text-[11px] text-emerald-100/95"
+      data-market-source-kind="kraken-public-ohlcv-network"
+    >
+      <strong class="text-emerald-200/95">Kraken public / read-only</strong> — öffentliche OHLCV, keine Orders, kein Live.
+    </p>
+    {% endif %}
+    {% if primary_values.provider_unavailable %}
+    <p
+      class="m-0 mb-2 rounded-lg border border-rose-800/55 bg-rose-950/40 px-2.5 py-2 text-[11px] font-semibold text-rose-100/95"
+      data-market-public-data-unavailable-v1="true"
+    >
+      Public market data unavailable{% if primary_values.provider_error %} — {{ primary_values.provider_error|e }}{% endif %}.
+    </p>
+    {% endif %}
+    <div class="flex flex-wrap items-baseline gap-x-3 gap-y-1 mb-2">
+      <p class="m-0 text-xl sm:text-2xl font-bold font-mono text-slate-50 tracking-tight">{{ primary_values.symbol|e }}</p>
+      <span class="text-[10px] font-semibold uppercase tracking-wide text-slate-400">{{ primary_values.timeframe|e }} · {{ primary_values.bars_returned }} bars · limit {{ primary_values.limit }}</span>
+    </div>
+    <dl class="m-0 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-x-3 gap-y-2 text-[11px] tabular-nums">
+      <div>
+        <dt class="text-slate-500 uppercase text-[10px] tracking-wide">Last / Close</dt>
+        <dd class="m-0 font-mono text-lg text-sky-200/95">
+          {% if primary_values.data_available %}{{ primary_values.close_display|e }}{% else %}—{% endif %}
+        </dd>
+      </div>
+      <div>
+        <dt class="text-slate-500 uppercase text-[10px] tracking-wide">Open</dt>
+        <dd class="m-0 font-mono text-slate-200">{% if primary_values.data_available %}{{ primary_values.open_display|e }}{% else %}—{% endif %}</dd>
+      </div>
+      <div>
+        <dt class="text-slate-500 uppercase text-[10px] tracking-wide">High</dt>
+        <dd class="m-0 font-mono text-slate-200">{% if primary_values.data_available %}{{ primary_values.high_display|e }}{% else %}—{% endif %}</dd>
+      </div>
+      <div>
+        <dt class="text-slate-500 uppercase text-[10px] tracking-wide">Low</dt>
+        <dd class="m-0 font-mono text-slate-200">{% if primary_values.data_available %}{{ primary_values.low_display|e }}{% else %}—{% endif %}</dd>
+      </div>
+      <div>
+        <dt class="text-slate-500 uppercase text-[10px] tracking-wide">Change</dt>
+        <dd class="m-0 font-mono text-slate-200">
+          {% if primary_values.change_status == "available" %}
+          {{ primary_values.change_abs_display|e }} ({{ primary_values.change_pct_display|e }})
+          {% else %}—{% endif %}
+        </dd>
+      </div>
+      <div>
+        <dt class="text-slate-500 uppercase text-[10px] tracking-wide">Last bar ts</dt>
+        <dd class="m-0 font-mono text-slate-300 break-all text-[10px]">{{ primary_values.last_bar_ts|e or "—" }}</dd>
+      </div>
+      <div>
+        <dt class="text-slate-500 uppercase text-[10px] tracking-wide">Snapshot</dt>
+        <dd class="m-0 font-mono text-slate-300 break-all text-[10px]">{{ primary_values.snapshot_at_utc|e or "—" }}</dd>
+      </div>
+      <div>
+        <dt class="text-slate-500 uppercase text-[10px] tracking-wide">Source</dt>
+        <dd class="m-0 font-mono text-sky-300/90">{{ primary_values.source_label|e }}</dd>
+      </div>
+    </dl>
+  </section>
+
+  {% include "partials/market_primary_close_chart_v1.html" %}
+
+  {% include "partials/double_play_market_panel_v0.html" %}
+
+  {% include "partials/futures_read_only_market_panel_v0.html" %}
+
+  <section
     id="market-v0-instrument-header"
     role="region"
     aria-labelledby="market-v0-landmark-instrument-header-h2"
@@ -109,13 +195,6 @@
           unavailable (depth {{ market_depth.display_status|e }}) · display-only
           {% endif %}
         </dd>
-      </div>
-      <div class="flex items-end">
-        <a
-          href="{{ instrument_header.double_play_href|e }}"
-          class="inline-flex items-center gap-1 rounded-md border border-amber-900/45 bg-amber-950/35 px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-wide text-amber-200/95 no-underline hover:bg-amber-950/55"
-          data-market-v0-instrument-nav-double-play="true"
-        >Double-Play detail →</a>
       </div>
     </dl>
   </section>
@@ -267,7 +346,7 @@
         <p class="m-0 leading-snug"><strong class="text-sky-200/95">Öffentliche OHLCV (Kraken)</strong> — rein anzeigend, kein Futures-Readiness-Nachweis.</p>
         {% endif %}
         <p class="mt-2 m-0 leading-snug"><strong class="text-amber-200/95">Guardrails:</strong> Dashboard ≠ Freigabe · AI ≠ Authority · Signal ≠ Trade · Docs ≠ Approval — reine Anzeige, keine Broker-/Order-/Live-Autorität.</p>
-        <p class="mt-2 m-0 leading-snug" data-market-v0-paper-run-truth-separation-v0="true"><strong class="text-violet-200/95">Market Surface ≠ Paper Run Truth.</strong> Default symbol and dummy OHLCV are chart fixtures only.</p>
+        <p class="mt-2 m-0 leading-snug" data-market-v0-paper-run-truth-separation-v0="true"><strong class="text-violet-200/95">Market Surface ≠ Paper Run Truth.</strong> Chart values reflect the selected query source only.</p>
       </section>
     </div>
   </details>
@@ -842,9 +921,7 @@
     </div>
   </section>
 
-  {% include "partials/double_play_market_panel_v0.html" %}
-
-  {% include "partials/futures_read_only_market_panel_v0.html" %}
+  <!-- Double-Play / Futures embedded above-the-fold after primary chart -->
 
   <!-- Pro cockpit grid: chart/main column + read-only side panels (IA inspiration only; no order UI) -->
   <div
@@ -1308,219 +1385,8 @@
     </p>
   </section>
 
-  <section
-    role="region"
-    aria-labelledby="market-v0-landmark-close-chart-h2"
-    class="bg-slate-900/65 rounded-xl border border-slate-800 ring-2 ring-sky-900/15 shadow-xl shadow-black/30 p-4 sm:p-5 min-h-[30rem]"
-    data-chart="market-v0-close-line"
-    data-market-chart-primary-v1="true"
-    data-market-v11-chart-diagnostics="true"
-  >
-    <div class="flex flex-wrap items-end justify-between gap-2 mb-3">
-      <h2 id="market-v0-landmark-close-chart-h2" class="text-base font-semibold text-slate-100 m-0 tracking-tight">Schlusskurs (Close)</h2>
-      <span class="text-[10px] font-semibold uppercase tracking-wide text-slate-500">Dominant panel · keine Order-UI</span>
-    </div>
+  {# Primary OHLC chart rendered above-the-fold via partial market_primary_close_chart_v1.html #}
 
-    <div
-      class="rounded-xl border border-slate-700/75 bg-slate-950/55 ring-1 ring-sky-900/15 shadow-inner shadow-black/25 overflow-hidden"
-      data-market-v0-chart-candle-stack="true"
-    >
-
-    <div
-      class="border-b border-slate-800/80 bg-slate-950/65 p-3 sm:p-3.5 text-xs text-slate-300"
-      data-market-v11-diagnostics-inner="true"
-    >
-      <h3 class="text-sm font-semibold text-slate-100 tracking-tight m-0 mb-2">Chart diagnostics</h3>
-      <p class="text-[11px] text-slate-400 leading-snug m-0 mb-3">
-        No backend/API/provider change. Chart.js loads from CDN; if blank:
-        <span class="text-rose-400/95 font-medium">Chart library missing or blocked</span>
-        oder
-        <span class="text-rose-400/95 font-medium">Chart render error</span>.
-      </p>
-      <dl
-        class="m-0 flex flex-col sm:flex-row gap-2 font-mono text-[11px]"
-        data-market-v11-diagnostics-visual-rails="true"
-        aria-label="Chart diagnostics summary"
-      >
-        <div class="flex-1 min-w-0 rounded-lg border border-slate-800/80 bg-slate-950/55 overflow-hidden flex shadow-sm shadow-black/15">
-          <div class="w-1 shrink-0 bg-sky-500/55 self-stretch" aria-hidden="true"></div>
-          <div class="min-w-0 flex-1 px-2.5 py-2">
-            <dt class="text-slate-500 uppercase tracking-wide text-[10px] mb-1 m-0" data-market-v11-chart-library-status="true">
-              Chart.js status
-            </dt>
-            <dd id="market-v11-chartjs-state" class="text-sky-300/95 m-0">SSR only — verified in browser</dd>
-          </div>
-        </div>
-        <div class="flex-1 min-w-0 rounded-lg border border-slate-800/80 bg-slate-950/55 overflow-hidden flex shadow-sm shadow-black/15">
-          <div class="w-1 shrink-0 bg-emerald-500/45 self-stretch" aria-hidden="true"></div>
-          <div class="min-w-0 flex-1 px-2.5 py-2">
-            <dt class="text-slate-500 uppercase tracking-wide text-[10px] mb-1 m-0" data-market-v11-payload-bars="true">
-              Embedded bars
-            </dt>
-            <dd id="market-v11-embedded-bar-count" class="text-slate-200 m-0">{{ payload.bars_returned }}</dd>
-          </div>
-        </div>
-        <div class="flex-1 min-w-0 rounded-lg border border-slate-800/80 bg-slate-950/55 overflow-hidden flex shadow-sm shadow-black/15">
-          <div class="w-1 shrink-0 {% if payload.bars_returned == 0 %}bg-amber-500/50{% else %}bg-emerald-500/45{% endif %} self-stretch" aria-hidden="true"></div>
-          <div class="min-w-0 flex-1 px-2.5 py-2">
-            <dt class="text-slate-500 uppercase tracking-wide text-[10px] mb-1 m-0">Chart render status</dt>
-            <dd id="market-v11-client-render-flag" class="text-slate-200 m-0">
-              SSR: {% if payload.bars_returned == 0 %}empty{% else %}ready{% endif %}
-            </dd>
-          </div>
-        </div>
-      </dl>
-    </div>
-
-    <div
-      id="market-v11-render-fallback"
-      data-market-v11-render-fallback="true"
-      data-market-v11-fallback-mode="{% if payload.bars_returned == 0 %}empty-ssr{% else %}client-alert{% endif %}"
-      role="alert"
-      class="mb-0 rounded-none border-x-0 border-t-0 border-b-2 px-4 py-3 {% if payload.bars_returned == 0 %}block border-b-amber-500/80 bg-amber-950/50 text-amber-50{% else %}hidden border-b-rose-600/85 bg-rose-950/40 text-rose-50{% endif %}"
-      {% if payload.bars_returned != 0 %}aria-hidden="true"{% endif %}
-    >
-      {% if payload.bars_returned == 0 %}
-      <p class="m-0 text-sm font-semibold leading-snug">
-        Embedded bars: keine OHLCV-Serie eingebettet — Chart bleibt leer bis Daten vorliegen.
-      </p>
-      {% endif %}
-      <p
-        id="market-v11-render-fallback-msg"
-        class="{% if payload.bars_returned == 0 %}hidden m-0{% else %}hidden m-0 text-sm font-semibold{% endif %}"
-      ></p>
-    </div>
-
-    <div
-      id="market-v0-chart-status"
-      role="status"
-      class="text-xs text-slate-200 mb-0 min-h-[1.5rem] font-medium border-b border-slate-800/80 border-l-4 border-l-sky-500/55 px-3 py-2.5 bg-slate-950/55"
-      data-market-chart-status="{% if payload.bars_returned == 0 %}empty{% else %}ready{% endif %}"
-      {% if payload.bars_returned == 0 %}data-market-empty-state="true"{% endif %}
-    >
-      {% if payload.bars_returned == 0 %}
-      Keine OHLCV-Bars für diese Abfrage verfügbar.
-      {% else %}
-      Chart bereit — read-only OHLCV-Anzeige.
-      {% endif %}
-    </div>
-
-    <div
-      class="relative flex flex-col min-h-[22rem] h-[28rem] sm:h-[30rem] w-full rounded-none border-0 border-t border-slate-800/70 bg-gradient-to-b from-slate-950/45 to-slate-950/80 shadow-inner shadow-black/35"
-      data-market-v0-close-chart-integrated-frame="true"
-      data-market-v0-in-chart-ohlc-svg-v1="true"
-      aria-label="OHLC chart (SSR, read-only)"
-    >
-      <div class="shrink-0 bg-slate-950/80 px-3 py-2.5 border-b border-slate-800/60">
-        <div class="flex flex-wrap items-center justify-between gap-2">
-          <div>
-            <h3 class="text-[11px] font-semibold text-slate-100 tracking-tight m-0">OHLC chart (SSR)</h3>
-            <p class="text-[9px] text-slate-500 m-0 mt-0.5 leading-snug">Kerzen im Plot· dieselbe Preisskala · Not live · No polling · read-only</p>
-          </div>
-          {% if payload.bars and payload.bars|length > 0 %}
-          {% set _cmax_ic = 96 %}
-          {% set _blen_ic = payload.bars|length %}
-          {% set _cshown_ic = _blen_ic if _blen_ic < _cmax_ic else _cmax_ic %}
-          <span class="rounded border border-slate-700/70 bg-slate-900/70 px-1.5 py-0.5 text-[8px] font-semibold text-slate-400 tabular-nums uppercase">Plot {{ _cshown_ic }} bars</span>
-          {% endif %}
-        </div>
-      </div>
-
-      <div class="relative flex-1 min-h-0 w-full bg-slate-950/40">
-        {% if not payload.bars or payload.bars|length == 0 %}
-        <div
-          class="flex h-full min-h-[16rem] items-center justify-center px-4 text-center text-[11px] text-slate-500"
-          data-market-v0-in-chart-ohlc-svg-empty="true"
-        >
-          <p class="m-0 max-w-md leading-snug">No embedded OHLCV rows — chart area empty (SSR). Keine synthetischen Kerzen.</p>
-        </div>
-        {% else %}
-        {% set cmax_ic = 96 %}
-        {% set blen_ic = payload.bars|length %}
-        {% set cstart_ic = blen_ic - cmax_ic if blen_ic > cmax_ic else 0 %}
-        {% set chart_bars_ic = payload.bars[cstart_ic:] %}
-        {% set n_ic = chart_bars_ic|length %}
-        {% set mm_ic = namespace(minv=0.0, maxv=0.0, first=true) %}
-        {% for bar in chart_bars_ic %}
-          {% set lo = bar.low|float %}
-          {% set hi = bar.high|float %}
-          {% if mm_ic.first %}
-            {% set mm_ic.minv = lo %}
-            {% set mm_ic.maxv = hi %}
-            {% set mm_ic.first = false %}
-          {% else %}
-            {% if lo < mm_ic.minv %}{% set mm_ic.minv = lo %}{% endif %}
-            {% if hi > mm_ic.maxv %}{% set mm_ic.maxv = hi %}{% endif %}
-          {% endif %}
-        {% endfor %}
-        {% set sp_raw = mm_ic.maxv - mm_ic.minv %}
-        {% set sp_use = sp_raw if sp_raw >= 1e-12 else 1e-12 %}
-        {% set vb_w_ic = 1000 %}
-        {% set vb_h_ic = 420 %}
-        {% set pad_l_ic = 52 %}
-        {% set pad_r_ic = 14 %}
-        {% set pad_t_ic = 18 %}
-        {% set pad_b_ic = 38 %}
-        {% set plot_w_ic = vb_w_ic - pad_l_ic - pad_r_ic %}
-        {% set plot_h_ic = vb_h_ic - pad_t_ic - pad_b_ic %}
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          viewBox="0 0 {{ vb_w_ic }} {{ vb_h_ic }}"
-          preserveAspectRatio="none"
-          class="block h-full w-full"
-          role="img"
-          aria-label="SSR OHLC candlesticks in plot coordinates, older left newer right, read-only"
-          data-market-v0-in-chart-ohlc-svg-root="true"
-        >
-          <rect x="0" y="0" width="{{ vb_w_ic }}" height="{{ vb_h_ic }}" fill="rgba(15,23,42,0.35)" />
-          {% for gi in range(5) %}
-          {% set gy = pad_t_ic + (plot_h_ic * gi / 4) %}
-          <line x1="{{ pad_l_ic }}" y1="{{ gy }}" x2="{{ vb_w_ic - pad_r_ic }}" y2="{{ gy }}" stroke="rgba(148,163,184,0.12)" stroke-width="1" />
-          {% endfor %}
-          {% for bar in chart_bars_ic %}
-          {% set loop_idx = loop.index0 %}
-          {% set o = bar.open|float %}
-          {% set h = bar.high|float %}
-          {% set l = bar.low|float %}
-          {% set c = bar.close|float %}
-          {% if o >= c %}
-            {% set top_pri = o %}
-            {% set bot_pri = c %}
-          {% else %}
-            {% set top_pri = c %}
-            {% set bot_pri = o %}
-          {% endif %}
-          {% set up_ic = c >= o %}
-          {% set slot_w = plot_w_ic / n_ic %}
-          {% set cx = pad_l_ic + (loop_idx + 0.5) * slot_w %}
-          {% set cw0 = [12, slot_w * 0.62]|min %}
-          {% set cw = [3.0, cw0]|max %}
-          {% set y_hi = pad_t_ic + (mm_ic.maxv - h) / sp_use * plot_h_ic %}
-          {% set y_lo = pad_t_ic + (mm_ic.maxv - l) / sp_use * plot_h_ic %}
-          {% set y_body_top = pad_t_ic + (mm_ic.maxv - top_pri) / sp_use * plot_h_ic %}
-          {% set y_body_bot = pad_t_ic + (mm_ic.maxv - bot_pri) / sp_use * plot_h_ic %}
-          {% set bh0 = y_body_bot - y_body_top %}
-          {% set bh = [bh0, 1.2]|max %}
-          <g
-            data-market-v0-in-chart-ohlc-candle="true"
-            {% if up_ic %}
-            data-market-v0-in-chart-ohlc-candle-up="true"
-            {% else %}
-            data-market-v0-in-chart-ohlc-candle-down="true"
-            {% endif %}
-          >
-            <line x1="{{ cx|round(2) }}" y1="{{ y_hi|round(2) }}" x2="{{ cx|round(2) }}" y2="{{ y_lo|round(2) }}" stroke="{% if up_ic %}rgba(52,211,153,0.85){% else %}rgba(244,63,94,0.88){% endif %}" stroke-width="1.1" />
-            <rect x="{{ (cx - cw / 2)|round(2) }}" y="{{ y_body_top|round(2) }}" width="{{ cw|round(2) }}" height="{{ bh|round(2) }}" rx="0.6" fill="{% if up_ic %}rgba(52,211,153,0.35){% else %}rgba(244,63,94,0.32){% endif %}" stroke="{% if up_ic %}rgba(52,211,153,0.55){% else %}rgba(244,63,94,0.5){% endif %}" stroke-width="0.9" />
-          </g>
-          {% endfor %}
-          <text x="{{ pad_l_ic }}" y="{{ vb_h_ic - 10 }}" fill="#64748b" font-size="11" font-family="ui-monospace, monospace">low {{ mm_ic.minv|round(8) }}</text>
-          <text x="{{ vb_w_ic - pad_r_ic }}" y="{{ pad_t_ic + 12 }}" text-anchor="end" fill="#64748b" font-size="11" font-family="ui-monospace, monospace">high {{ mm_ic.maxv|round(8) }}</text>
-        </svg>
-        {% endif %}
-      </div>
-    </div>
-    </div>
-  </section>
     </div>
 
     <aside

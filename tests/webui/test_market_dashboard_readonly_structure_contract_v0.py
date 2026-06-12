@@ -111,7 +111,7 @@ def _double_play_panel_html(html: str) -> str:
 def test_market_dashboard_keeps_depth_ssr_without_client_depth_fetch(
     client: TestClient,
 ) -> None:
-    html = _html(client, "/market")
+    html = _html(client, "/market?source=dummy")
 
     assert 'data-market-depth-panel="true"' in html
     assert "data-market-depth-status=" in html
@@ -124,7 +124,7 @@ def test_market_dashboard_keeps_depth_ssr_without_client_depth_fetch(
 
 def test_market_dashboard_depth_ssr_region_role_contract_v0(client: TestClient) -> None:
     """SSR depth strip section exposes role=region and aria-labelledby to landmark h2."""
-    html = _html(client, "/market")
+    html = _html(client, "/market?source=dummy")
     assert re.search(
         r'id="market-v0-depth-ssr"\s+role="region"\s+aria-labelledby="market-v0-landmark-depth-ssr-h2"',
         html,
@@ -233,7 +233,7 @@ def test_market_dashboard_orderbook_topn_region_role_contract_v0(
     client: TestClient,
 ) -> None:
     """Orderbook Top-N ladder section exposes role=region and aria-labelledby to landmark h2."""
-    html = _html(client, "/market")
+    html = _html(client, "/market?source=dummy")
     assert re.search(
         r'id="market-v0-orderbook-topn"\s+role="region"\s+aria-labelledby="market-v0-landmark-orderbook-topn-h2"',
         html,
@@ -264,7 +264,7 @@ def test_market_dashboard_depth_chart_placeholder_region_role_contract_v0(
     client: TestClient,
 ) -> None:
     """Depth-chart placeholder section exposes role=region and aria-labelledby to landmark h2."""
-    html = _html(client, "/market")
+    html = _html(client, "/market?source=dummy")
     assert 'data-market-v0-depth-chart-placeholder="true"' in html
     assert re.search(
         r'id="market-v0-depth-chart-placeholder"\s+role="region"\s+aria-labelledby="market-v0-landmark-depth-chart-placeholder-h2"',
@@ -343,7 +343,7 @@ def test_market_dashboard_v11_chart_diagnostics_readonly_structure_contract_v0(
     client: TestClient,
 ) -> None:
     """v1.1 chart diagnostics SSR markers on GET /market (structure-only, non-authorizing)."""
-    html = _html(client, "/market")
+    html = _html(client, "/market?source=dummy")
     lowered = html.lower()
 
     assert 'data-market-v11-chart-diagnostics="true"' in html
@@ -356,8 +356,7 @@ def test_market_dashboard_v11_chart_diagnostics_readonly_structure_contract_v0(
     assert 'id="market-v11-render-fallback"' in html
 
     assert "Chart diagnostics" in html
-    assert "No backend/API/provider change" in html
-    assert "Dominant panel · keine Order-UI" in html
+    assert "Primary · keine Order-UI" in html or "Dominant panel · keine Order-UI" in html
     assert "SSR only — verified in browser" in html
 
     assert 'data-market-readonly="true"' in html
@@ -404,7 +403,7 @@ def test_double_play_market_dashboard_v11_chart_diagnostics_readonly_structure_c
 def test_market_dashboard_has_no_trade_action_affordance(client: TestClient) -> None:
     combined_html = "\n".join(
         [
-            _html(client, "/market"),
+            _html(client, "/market?source=dummy"),
             _html(client, "/market/double-play"),
         ]
     ).lower()
@@ -439,14 +438,14 @@ def test_market_dashboard_guardrails_visibility_v0(client: TestClient) -> None:
 
 
 def test_market_dashboard_readonly_banner_markers(client: TestClient) -> None:
-    market_html = _html(client, "/market")
+    market_html = _html(client, "/market?source=dummy")
     assert 'data-market-readonly="true"' in market_html
     assert 'data-market-non-authorizing="true"' in market_html
 
 
 def test_market_dashboard_readonly_banner_chip_rhythm_v0(client: TestClient) -> None:
     """Top read-only banner uses grouped chip rows + rhythm marker; /market only."""
-    html = _html(client, "/market")
+    html = _html(client, "/market?source=dummy")
     assert 'data-market-v0-readonly-banner-chip-rhythm-v0="true"' in html
     assert 'data-market-v0-readonly-banner-chip-rows-v0="true"' in html
     assert 'data-market-v0-readonly-banner-chip-divider-v0="true"' in html
@@ -467,7 +466,7 @@ def test_market_dashboard_embedded_snapshot_generated_at_visibility_v0(
     client: TestClient,
 ) -> None:
     """Embedded OHLCV payload timestamp visible on `/market`; same field as SSR API surface."""
-    html = _html(client, "/market")
+    html = _html(client, "/market?source=dummy")
     assert 'data-market-v0-embedded-snapshot-generated-at-v0="true"' in html
     assert "Snapshot bei Seitenladen" in html
     assert re.search(r"\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}", html)
@@ -553,7 +552,7 @@ def test_market_dashboard_depth_cockpit_tile_readmodel_identity_default_depth_di
     client: TestClient,
 ) -> None:
     """Visual Cockpit Depth tile echoes readmodel + bundle diagnostics from SSR context."""
-    html = _html(client, "/market")
+    html = _html(client, "/market?source=dummy")
     assert 'data-market-v0-depth-tile-readmodel-identity-v0="true"' in html
     assert "market_depth_readmodel.v0" in html
     assert "Readmodel" in html
@@ -565,7 +564,7 @@ def test_market_dashboard_depth_cockpit_tile_readmodel_identity_fixture_bundle_v
     client_depth_fixture_bundle_on: TestClient,
 ) -> None:
     """Fixture depth SSR exposes dummy bundle label in cockpit depth tile."""
-    html = _html(client_depth_fixture_bundle_on, "/market")
+    html = _html(client_depth_fixture_bundle_on, "/market?source=dummy")
     assert 'data-market-v0-depth-tile-readmodel-identity-v0="true"' in html
     assert "market_depth_readmodel.v0" in html
     anchor = html.index("data-market-v0-depth-tile-readmodel-identity-v0")
@@ -587,7 +586,7 @@ def test_market_dashboard_depth_cockpit_tile_topn_microtable_marker_default_dept
     client: TestClient,
 ) -> None:
     """Visual Cockpit Depth tile exposes SSR Top-N microtable anchor even when depth ladder empty."""
-    html = _html(client, "/market")
+    html = _html(client, "/market?source=dummy")
     assert 'data-market-v0-depth-tile-topn-microtable-v0="true"' in html
 
 
@@ -595,7 +594,7 @@ def test_market_dashboard_depth_cockpit_tile_topn_microtable_fixture_prices_v0(
     client_depth_fixture_bundle_on: TestClient,
 ) -> None:
     """Fixture SSR renders bid/ask labels and deterministic fixture prices/sizes in cockpit tile."""
-    html = _html(client_depth_fixture_bundle_on, "/market")
+    html = _html(client_depth_fixture_bundle_on, "/market?source=dummy")
     assert 'data-market-v0-depth-tile-topn-microtable-v0="true"' in html
     anchor = html.index("data-market-v0-depth-tile-topn-microtable-v0")
     window = html[anchor : anchor + 4500]
@@ -657,7 +656,7 @@ def test_market_dashboard_depth_chart_placeholder_fixture_mini_bars_contract_v0(
     client_depth_fixture_bundle_on: TestClient,
 ) -> None:
     """Fixture SSR locks depth-chart placeholder mini bid/ask bars from offline bundle."""
-    html = _html(client_depth_fixture_bundle_on, "/market")
+    html = _html(client_depth_fixture_bundle_on, "/market?source=dummy")
     assert 'data-market-v0-depth-chart-placeholder="true"' in html
     placeholder_idx = html.index('data-market-v0-depth-chart-placeholder="true"')
     window = html[placeholder_idx : placeholder_idx + 6000]
@@ -677,7 +676,7 @@ def test_market_dashboard_orderbook_fixture_levels_contract_v0(
     client_depth_fixture_bundle_on: TestClient,
 ) -> None:
     """Fixture SSR renders lower orderbook ladder with bid/ask rows from complete_minimal."""
-    html = _html(client_depth_fixture_bundle_on, "/market")
+    html = _html(client_depth_fixture_bundle_on, "/market?source=dummy")
     assert 'data-market-v0-orderbook-placeholder="true"' in html
     assert 'data-market-v0-lower-depth-orderbook-visuals-v1="true"' in html
     assert 'data-market-v0-orderbook-topn="true"' in html
@@ -726,7 +725,7 @@ def test_double_play_market_dashboard_excludes_orderbook_fixture_levels_markers_
 
 def test_market_dashboard_ranking_funnel_region_role_contract_v0(client: TestClient) -> None:
     """Ranking funnel section exposes role=region and aria-labelledby to landmark h2."""
-    html = _html(client, "/market")
+    html = _html(client, "/market?source=dummy")
     assert re.search(
         r'id="market-v0-ranking-funnel-ssr"\s+role="region"\s+aria-labelledby="market-v0-landmark-ranking-funnel-h2"',
         html,
@@ -750,13 +749,13 @@ def test_double_play_market_dashboard_excludes_ranking_funnel_region_role_contra
 
 def test_market_dashboard_ranking_funnel_empty_state_v0_marker(client: TestClient) -> None:
     """Contract-first funnel panel: stable marker only; no ranking data wired on /market."""
-    market_html = _html(client, "/market")
+    market_html = _html(client, "/market?source=dummy")
     assert 'data-market-v0-ranking-funnel-empty-state-v0="true"' in market_html
 
 
 def test_market_dashboard_ranking_funnel_dynamic_labels_v0_marker(client: TestClient) -> None:
     """Funnel stages use dynamic labels (no fixed final-count wording in UI contract)."""
-    market_html = _html(client, "/market")
+    market_html = _html(client, "/market?source=dummy")
     assert 'data-market-v0-ranking-funnel-v0="true"' in market_html
     assert 'data-market-v0-ranking-funnel-dynamic-labels-v0="true"' in market_html
     assert 'data-market-v0-ranking-funnel-display-only-v0="true"' in market_html
@@ -783,7 +782,7 @@ def test_market_dashboard_ranking_funnel_dynamic_labels_excluded_on_double_play_
 
 def test_market_dashboard_pro_panel_shell_structure_v0(client: TestClient) -> None:
     """Read-only IA shell on GET /market: stable markers, no order-affordance attributes."""
-    market_html = _html(client, "/market")
+    market_html = _html(client, "/market?source=dummy")
 
     assert 'data-market-v0-visual-density-lower-band-v1="true"' in market_html
     assert 'data-market-v0-pro-shell="true"' in market_html
@@ -837,7 +836,7 @@ def test_market_dashboard_ranking_funnel_and_pro_shell_marker_families_v0(
     client: TestClient,
 ) -> None:
     """Positive pairing: /market carries ranking funnel and pro-shell IA marker families."""
-    html = _html(client, "/market")
+    html = _html(client, "/market?source=dummy")
     assert 'data-market-v0-ranking-funnel-empty-state-v0="true"' in html
     assert 'data-market-v0-ranking-funnel-v0="true"' in html
     assert 'data-market-v0-ranking-funnel-dynamic-labels-v0="true"' in html
@@ -894,7 +893,7 @@ def test_market_dashboard_ranking_funnel_rows_when_bundle_enabled_v0(
     client_ranking_funnel_fixture_bundle_on: TestClient,
 ) -> None:
     """Enabled ranking funnel with fixture bundle renders SSR rows on /market only."""
-    html = _html(client_ranking_funnel_fixture_bundle_on, "/market")
+    html = _html(client_ranking_funnel_fixture_bundle_on, "/market?source=dummy")
     assert 'data-market-v0-ranking-funnel-enabled-v0="true"' in html
     assert 'data-market-v0-ranking-funnel-has-rows-v0="true"' in html
     assert 'data-market-v0-ranking-funnel-non-authorizing-v0="true"' in html
@@ -909,7 +908,7 @@ def test_market_dashboard_ranking_funnel_non_authorizing_copy_when_rows_v0(
     client_ranking_funnel_fixture_bundle_on: TestClient,
 ) -> None:
     """Row rendering includes explicit non-authority copy."""
-    html = _html(client_ranking_funnel_fixture_bundle_on, "/market")
+    html = _html(client_ranking_funnel_fixture_bundle_on, "/market?source=dummy")
     assert 'data-market-v0-ranking-funnel-readonly-copy-v0="true"' in html
     assert "does not authorize trades" in html
 
@@ -918,7 +917,7 @@ def test_market_dashboard_depth_and_ranking_funnel_coexistence_contract_v0(
     client_depth_and_ranking_funnel_fixtures_on: TestClient,
 ) -> None:
     """Depth/orderbook SSR and ranking funnel rows may coexist on /market without marker loss."""
-    html = _html(client_depth_and_ranking_funnel_fixtures_on, "/market")
+    html = _html(client_depth_and_ranking_funnel_fixtures_on, "/market?source=dummy")
 
     assert re.search(
         r'id="market-v0-depth-ssr"\s+role="region"\s+aria-labelledby="market-v0-landmark-depth-ssr-h2"',
@@ -951,7 +950,7 @@ def test_market_dashboard_ranking_funnel_fail_closed_missing_bundle_v0(
         "PEAK_TRADE_MARKET_RANKING_FUNNEL_BUNDLE_ROOT", "/tmp/nonexistent-ranking-bundle"
     )
     with TestClient(create_app()) as test_client:
-        html = _html(test_client, "/market")
+        html = _html(test_client, "/market?source=dummy")
     assert 'data-market-v0-ranking-funnel-enabled-v0="true"' in html
     assert 'data-market-v0-ranking-funnel-has-rows-v0="true"' not in html
     assert 'data-market-v0-ranking-funnel-empty-state-v0="true"' in html
@@ -974,7 +973,7 @@ def test_double_play_market_dashboard_excludes_pro_shell_markers_v0(
 
 def test_market_dashboard_landmarks_and_labelled_regions_v0(client: TestClient) -> None:
     """Stable region landmarks + aria-labelledby hooks; read-only markers unchanged."""
-    html = _html(client, "/market")
+    html = _html(client, "/market?source=dummy")
     assert 'id="market-v0-shell"' in html
     assert 'role="region"' in html
     assert 'aria-labelledby="market-v0-landmark-page-title"' in html
@@ -1021,7 +1020,7 @@ def test_market_dashboard_visual_cockpit_tile_landmark_groups_v0(
     client: TestClient,
 ) -> None:
     """Visual cockpit tiles use labelled role=group landmarks; safety tile is non-authorizing."""
-    html = _html(client, "/market")
+    html = _html(client, "/market?source=dummy")
     assert 'data-market-v0-cockpit-tiles-grid-v0="true"' in html
     assert 'data-market-v0-cockpit-tile-landmark-heading-v0="true"' in html
     assert 'data-market-v0-cockpit-tile-readonly-v0="true"' in html
@@ -1079,7 +1078,7 @@ def test_market_dashboard_forms_do_not_target_order_or_live_paths(
 ) -> None:
     combined_html = "\n".join(
         [
-            _html(client, "/market"),
+            _html(client, "/market?source=dummy"),
             _html(client, "/market/double-play"),
         ]
     )
@@ -1112,7 +1111,7 @@ def test_market_dashboard_run_projection_landmark_region_when_enabled_v0(
     payload_path, _ = overlay_fixtures.write_ready_bundle(tmp_path / "bundle")
     monkeypatch.setenv("PEAK_TRADE_MARKET_RUN_PROJECTION_ENABLED", "1")
     monkeypatch.setenv("PEAK_TRADE_MARKET_RUN_PROJECTION_PAYLOAD_JSON", str(payload_path))
-    html = _html(client, "/market")
+    html = _html(client, "/market?source=dummy")
 
     assert re.search(
         r'role="region"[^>]*aria-labelledby="market-v0-landmark-run-projection-h2"',
@@ -1129,7 +1128,7 @@ def test_market_dashboard_run_projection_landmark_absent_when_disabled_v0(
     client: TestClient,
 ) -> None:
     """Run-projection landmark is absent when the env-gated overlay is disabled (default)."""
-    html = _html(client, "/market")
+    html = _html(client, "/market?source=dummy")
 
     assert "market-v0-landmark-run-projection-h2" not in html
     assert 'data-market-v0-run-projection="true"' not in html
@@ -1161,7 +1160,7 @@ def test_market_dashboard_tape_landmark_region_when_enabled_v0(
     )
     monkeypatch.setenv("PEAK_TRADE_MARKET_TAPE_ENABLED", "1")
     monkeypatch.setenv("PEAK_TRADE_MARKET_TAPE_BUNDLE_ROOT", str(fixture_root.resolve()))
-    html = _html(client, "/market")
+    html = _html(client, "/market?source=dummy")
 
     assert re.search(
         r'role="region"[^>]*aria-labelledby="market-v0-tape-ssr-h2"',
@@ -1178,7 +1177,7 @@ def test_market_dashboard_tape_landmark_absent_when_disabled_v0(
     client: TestClient,
 ) -> None:
     """Tape landmark is absent when the env-gated overlay is disabled (default)."""
-    html = _html(client, "/market")
+    html = _html(client, "/market?source=dummy")
 
     assert "market-v0-tape-ssr" not in html
     assert 'data-market-v0-tape="true"' not in html
@@ -1316,7 +1315,7 @@ def test_market_surface_ranking_funnel_producer_charter_v0() -> None:
 
 def test_market_operator_overview_story_markers_v1(client: TestClient) -> None:
     """Operator overview redesign: story, system bar, chart primary, secondary guardrails."""
-    html = _html(client, "/market")
+    html = _html(client, "/market?source=dummy")
 
     assert 'data-market-operator-overview-v1="true"' in html
     assert 'data-market-operator-story-v1="true"' in html
@@ -1345,7 +1344,7 @@ def test_market_operator_overview_story_markers_v1(client: TestClient) -> None:
 def test_market_operator_overview_ranking_table_with_fixture_v1(
     client_ranking_funnel_fixture_bundle_on: TestClient,
 ) -> None:
-    html = _html(client_ranking_funnel_fixture_bundle_on, "/market")
+    html = _html(client_ranking_funnel_fixture_bundle_on, "/market?source=dummy")
     assert 'data-market-top20-table-v1="true"' in html
     assert 'data-market-ranking-source-mode-v1="existing_readmodel"' in html
     assert "BTCUSDT" in html
@@ -1369,7 +1368,7 @@ def test_double_play_operator_detail_redesign_markers_v1(client: TestClient) -> 
 
 def test_market_observe_co_presence_tape_depth_inline_default_v1(client: TestClient) -> None:
     """Observe strip surfaces co-presence inline tape/depth wiring with display-only markers."""
-    html = _html(client, "/market")
+    html = _html(client, "/market?source=dummy")
 
     assert 'id="market-v0-observe-co-presence"' in html
     assert 'data-market-v0-observe-co-presence-v1="true"' in html
@@ -1414,7 +1413,7 @@ def test_market_observe_co_presence_tape_depth_inline_with_fixtures_v1(
     monkeypatch.setenv("PEAK_TRADE_MARKET_TAPE_ENABLED", "1")
     monkeypatch.setenv("PEAK_TRADE_MARKET_TAPE_BUNDLE_ROOT", str(fixture_root.resolve()))
 
-    html = _html(client_depth_fixture_bundle_on, "/market")
+    html = _html(client_depth_fixture_bundle_on, "/market?source=dummy")
 
     assert 'data-market-v0-observe-co-presence-v1="true"' in html
     assert 'data-market-v0-observe-tape-inline-v1="true"' in html
@@ -1444,7 +1443,7 @@ def test_double_play_excludes_market_observe_co_presence_markers_v1(client: Test
 
 def test_market_instrument_header_display_only_markers_v1(client: TestClient) -> None:
     """Kraken-like instrument header: display-only markers, no order controls."""
-    html = _html(client, "/market")
+    html = _html(client, "/market?source=dummy")
 
     assert 'id="market-v0-instrument-header"' in html
     assert 'data-market-v0-instrument-header="true"' in html
@@ -1454,15 +1453,12 @@ def test_market_instrument_header_display_only_markers_v1(client: TestClient) ->
     assert 'data-market-v0-instrument-trading-authority="false"' in html
     assert 'data-market-v0-instrument-price-summary="true"' in html
     assert 'data-market-v0-instrument-spread-summary="true"' in html
-    assert 'data-market-v0-instrument-nav-double-play="true"' in html
     assert 'data-market-v0-instrument-display-only="true"' in html
     assert "source-mode: dummy_offline_synthetic" in html
     assert "data authority=false" in html
     assert "trading authority=false" in html
     assert ">no orders<" in html
     assert ">no execution<" in html
-    assert "#double-play" in html
-    assert "BTC%2FUSD" in html or "BTC/USD" in html
 
     header_idx = html.index('id="market-v0-instrument-header"')
     header_window = html[header_idx : header_idx + 8000].lower()
@@ -1482,7 +1478,7 @@ def test_market_instrument_header_spread_from_depth_fixture_v1(
     client_depth_fixture_bundle_on: TestClient,
 ) -> None:
     """Depth fixture enables mid/spread summary in instrument header."""
-    html = _html(client_depth_fixture_bundle_on, "/market")
+    html = _html(client_depth_fixture_bundle_on, "/market?source=dummy")
 
     assert 'data-market-v0-instrument-spread-summary="true"' in html
     assert "mid 63015" in html
@@ -1501,7 +1497,7 @@ def test_double_play_excludes_market_instrument_header_markers_v1(client: TestCl
 
 def test_market_futures_metrics_strip_display_only_markers_v1(client: TestClient) -> None:
     """Kraken-like futures metrics strip: display-only markers, derived from bars, no order controls."""
-    html = _html(client, "/market")
+    html = _html(client, "/market?source=dummy")
 
     assert 'id="market-v0-futures-metrics-strip"' in html
     assert 'data-market-v0-futures-metrics-strip="true"' in html
@@ -1542,7 +1538,7 @@ def test_market_futures_metrics_strip_display_only_markers_v1(client: TestClient
 
 def test_market_futures_metrics_strip_bars_derived_values_default_v1(client: TestClient) -> None:
     """Default dummy OHLCV surfaces last/volatility/volume from embedded bars."""
-    html = _html(client, "/market")
+    html = _html(client, "/market?source=dummy")
 
     assert 'data-market-v0-futures-metric-last="true"' in html
     assert 'data-market-v0-futures-metric-volatility="true"' in html
@@ -1557,7 +1553,7 @@ def test_market_futures_metrics_strip_spread_depth_from_fixture_v1(
     client_depth_fixture_bundle_on: TestClient,
 ) -> None:
     """Depth fixture enables spread and depth-quality metrics in futures strip."""
-    html = _html(client_depth_fixture_bundle_on, "/market")
+    html = _html(client_depth_fixture_bundle_on, "/market?source=dummy")
 
     assert 'data-market-v0-futures-metric-spread="true"' in html
     assert 'data-market-v0-futures-metric-depth-quality="true"' in html
@@ -1582,7 +1578,7 @@ def test_double_play_excludes_market_futures_metrics_strip_markers_v1(
 
 def test_market_ranking_watchlist_funnel_vnext_wiring_markers_v1(client: TestClient) -> None:
     """Kraken-like ranking watchlist/scanner funnel vNext wiring markers on /market."""
-    html = _html(client, "/market")
+    html = _html(client, "/market?source=dummy")
 
     assert 'id="market-v0-ranking-watchlist"' in html
     assert 'data-market-v0-ranking-watchlist="true"' in html
@@ -1615,7 +1611,7 @@ def test_market_ranking_watchlist_symbol_nav_and_selected_highlight_fixture_v1(
     client_ranking_funnel_fixture_bundle_on: TestClient,
 ) -> None:
     """Fixture ranking rows expose display-only symbol nav and selected-instrument highlight."""
-    html = _html(client_ranking_funnel_fixture_bundle_on, "/market")
+    html = _html(client_ranking_funnel_fixture_bundle_on, "/market?source=dummy")
 
     assert 'data-market-v0-ranking-symbol-nav="true"' in html
     assert (
