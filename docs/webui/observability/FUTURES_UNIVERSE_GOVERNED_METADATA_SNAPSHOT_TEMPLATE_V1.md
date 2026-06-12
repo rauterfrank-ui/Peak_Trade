@@ -247,8 +247,83 @@ All tests must pass. Docs preflight must pass if markdown changed.
 | U2c Truth-GO form | Inactive operator form prep | not started |
 | Truth enablement | Separate bounded slice | **not authorized** |
 
-## 14. Tests
+## 14. U2b observability truth promotion — bounded prep (stop conditions, no promotion)
+
+This section documents **static stop conditions and preconditions** for a **future**, operator-authorized observability-truth-promotion slice. It does **not** authorize promotion, flag changes, readmodel rewrites, or Truth-GO.
+
+### 14.1 Status (machine markers — prep-only)
+
+```
+TRUTH_PROMOTION_EXECUTED=false
+OBSERVABILITY_TRUTH_PROMOTION_BOUNDED_PREP_ONLY=true
+CANONICAL_GOVERNED_CANDIDATE_BUNDLE_ID=u2c_kraken_governed_snapshot_candidate_post_pr4067_v1_20260608T234112Z
+OPERATOR_TRUTH_GO_RECORD_REQUIRED=true
+TRUTH_PROMOTION_STOP_S1_STRICT_INSTRUMENT_COMPLETE=active_when_zero_without_policy
+TRUTH_PROMOTION_STOP_S2_MIN_NOTIONAL_MISSING=active_when_all_packets_missing
+TRUTH_PROMOTION_STOP_S3_OPERATOR_TRUTH_GO_RECORD=active_until_durable_record
+TRUTH_PROMOTION_STOP_S5_TRUTH_GO_GRANTED=false
+MISSING_TRUTH_FAIL_CLOSED_INTENTIONAL=true
+observability_truth_allowed=false
+real_metadata_source_marked=true
+```
+
+### 14.2 Canonical candidate lineage (archive reference, non-normative)
+
+| Field | Value |
+|-------|-------|
+| **Recommended canonical bundle** | `u2c_kraken_governed_snapshot_candidate_post_pr4067_v1_20260608T234112Z` |
+| **Archive path** | `{ARCHIVE_ROOT}/governed_metadata/u2c_kraken_governed_snapshot_candidate_post_pr4067_v1_20260608T234112Z/` |
+| **Lineage predecessors** | `..._v1_20260608T223345Z` → `..._aligned_v1_20260608T230742Z` → `..._completeness_aligned_v1_20260608T233741Z` → **post_pr4067** |
+| **Readmodel evidence link** | `{ARCHIVE_ROOT}/readmodels/universe_selection_readmodel.v1.json` links governed packet under post_pr4067 bundle |
+| **Candidate shape** | 332 packets, Top-20 ranking candidate; `schema_name=futures_producer_packet_governed.v1`, `source_kind=governed_metadata_snapshot` |
+| **Promotion in this prep** | **not executed** — lineage documented for later bounded GO only |
+
+### 14.3 Hard preconditions before any future Truth-GO
+
+| # | Precondition | Enforced by |
+|---|--------------|-------------|
+| P1 | Durable **Operator Truth-GO Decision Record** under `{ARCHIVE_ROOT}/planning/` with explicit scoped GO token | Operator — **required**; template alone is insufficient |
+| P2 | U2c §11 all ten operator confirmations recorded in that durable record | U2c charter |
+| P3 | `TRUTH_GO_GRANTED=true` only inside an explicit Operator GO record — **never** from prep docs or candidate build | `candidate_safety_flags.v1.json` + operator record |
+| P4 | Policy decision on `min_notional` / strict completeness documented before `observability_truth_allowed=true` | Operator + U4b/U5c §12.12 |
+| P5 | `MANIFEST_VERIFY_RC=0` on canonical candidate bundle **and** readmodels dir at promotion-write time | `primary_evidence_retention_v0.py` |
+| P6 | Full universe/U2b regression green at Truth-GO time | `tests/webui/test_universe_selection*.py`, U2b loader/chain tests |
+| P7 | Separate bounded Truth-Promotion GO token — distinct from Live/Trading/Execute authorization | Operator |
+
+**`OPERATOR_TRUTH_GO_RECORD_REQUIRED=true`** — promotion remains blocked until P1 is satisfied.
+
+### 14.4 Stop conditions (promotion must not proceed while active)
+
+| ID | Stop condition | Active when |
+|----|----------------|-------------|
+| **S1** | `strict_instrument_complete_count=0` without documented policy exception | Canonical build_summary shows zero strict-complete instruments |
+| **S2** | `min_notional` missing on all governed packets without operator acceptance | Public-view Kraken metadata — see REAL_FUTURES_MARKET_DATA_SOURCE_CONTRACT_V1.md §12.12 |
+| **S3** | No durable Operator Truth-GO Record | P1 unsatisfied |
+| **S4** | `MANIFEST_VERIFY_RC ≠ 0` on candidate or readmodel | Integrity gate |
+| **S5** | `TRUTH_GO_GRANTED=false` in `candidate_safety_flags.v1.json` | Default candidate safety |
+| **S6** | `observability_truth_allowed` would be set without bounded Truth-GO | Code + contract |
+| **S7** | Operator explicitly requires Slice 4 run verification first | Separate O2 GO |
+| **S8** | Metadata older than accepted freshness policy | Operator freshness acceptance |
+
+**Current archive posture (2026-06-08 candidates):** S1, S2, S3, S5 active — promotion is **correctly blocked**.
+
+### 14.5 Fail-closed Missing Truth (expected behavior)
+
+While `real_metadata_source_marked=true` and `observability_truth_allowed=false`:
+
+- U2b loader may validate governed bundles and persist readmodel-shaped payloads with **`observability_truth_allowed=false`**.
+- Reader returns **`LOAD_ERROR_REAL_METADATA_NOT_OBSERVABILITY_TRUTH`** — SSR/dashboard must show **Missing Truth** for universe/ranking/selected_future.
+- **No dummy fill**, no BTC/slash substitution, no funnel/market_surface upstream — intentional fail-closed until Operator Truth-GO + policy gates clear.
+
+### 14.6 Explicit non-goals (this prep section)
+
+- Not observability truth promotion execution
+- Not `observability_truth_allowed=true` or `real_metadata_source_marked` mutation
+- Not Slice 4 run verification, metadata refresh, or source-policy implementation
+- Not dummy `min_notional` fill or forced `instrument.complete`
+
+## 15. Tests
 
 | Test module | Purpose |
 |-------------|---------|
-| `tests/ops/test_workflow_dashboard_env_schema_boundary_v1.py` | Template existence, machine markers, charter cross-link |
+| `tests/ops/test_workflow_dashboard_env_schema_boundary_v1.py` | Template existence, machine markers, charter cross-link, §14 stop-condition markers |
