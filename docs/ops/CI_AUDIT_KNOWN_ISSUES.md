@@ -195,6 +195,59 @@ MARKET_DASHBOARD_TOUCHED=false
 
 **Non-authorizing:** Docs/tests-only residual review guard only; does **not** authorize required-check configuration changes, branch-protection edits, workflow YAML mutation, `workflow_dispatch`, `gh run rerun`, runtime/scheduler/daemon execution, paper/shadow/testnet/live, Preflight lift, order/cancel/execution/arming, JSONL ingest, evidence dataset mutation, Market Dashboard authority changes, or Master V2 / Double Play / Bull-Bear / Risk / KillSwitch / Scope / Capital / trading-logic changes.
 
+## Primary evidence retention invariant residual static review — docs/tests-only guard v1
+
+**Operator-GO:** `GO_PRIMARY_EVIDENCE_RETENTION_INVARIANT_RESIDUAL_STATIC_REVIEW_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_ci_docs_required_check_truth_map_residual_review_merge_no_run_v1_20260612T005020Z/`
+
+**Purpose:** Post-PR #4156 residual static review guard for the systemwide primary-evidence completion invariant: a run or closeout is **not complete** when primary evidence is missing, stored only under `/tmp`, not checksummed, not manifest-verified, or not referencable from durable closeout evidence. This review is **visibility/consistency only** — not enforcement activation — and does **not** authorize runtime, run start, live, preflight lift, order/cancel/execution/arming, authority lift, workflow mutation, `workflow_dispatch`, `gh run rerun`, JSONL ingest, or evidence dataset mutation.
+
+**Canonical repo owners (reuse — do not duplicate):**
+
+| Concern | Owner |
+|---------|-------|
+| Run/preflight primary-evidence contract (§2a / §2a.1) | `docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md` |
+| Retention helper (implementation reference) | `scripts/ops/primary_evidence_retention_v0.py` |
+| Invariant + ER crosslink static guards | `tests/ops/test_primary_evidence_retention_invariant_contract_v0.py` |
+| Run-type hard-gate matrix | `tests/ops/test_run_primary_evidence_retention_hard_gate_v0.py` |
+| Durable closeout copy verify | `tests/ops/test_durable_closeout_copy_verify_v0.py` |
+| CI_AUDIT / DOCS_TRUTH_MAP crosslink guard | `tests/ops/test_remote_runtime_contract_docs_guard_v0.py` |
+
+```text
+PRIMARY_EVIDENCE_RETENTION_INVARIANT_RESIDUAL_STATIC_REVIEW_V1=true
+PRIMARY_EVIDENCE_RETENTION_INVARIANT_RESIDUAL_STATIC_REVIEW_DOCS_TESTS_ONLY=true
+DURABLE_OUTSIDE_TMP_REQUIRED=true
+MANIFEST_CREATION_REQUIRED=true
+MANIFEST_VERIFICATION_REQUIRED=true
+CHECKSUM_VERIFICATION_REQUIRED=true
+CLOSEOUT_INCOMPLETE_WITHOUT_PRIMARY_EVIDENCE=true
+TMP_ONLY_EVIDENCE_INVALID=true
+PAPER_SHADOW_TESTNET_LIVE_APPLICABILITY_INDEXED=true
+RUNTIME_SCHEDULER_SUPERVISOR_FLOWS_INDEXED=true
+EXISTING_RETENTION_GUARDS_REFERENCED=true
+NO_RUNTIME=true
+NO_RUN_START=true
+NO_LIVE=true
+NO_PREFLIGHT_LIFT=true
+ORDER_CANCEL_EXECUTION_ARMING_TOUCHED=false
+AUTHORITY_LIFT=false
+TRADING_LOGIC_TOUCHED=false
+MASTER_V2_LOGIC_TOUCHED=false
+DOUBLE_PLAY_LOGIC_TOUCHED=false
+RISK_KILLSWITCH_SCOPE_CAPITAL_TOUCHED=false
+NEW_PARALLEL_SSOT_CREATED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+WORKFLOW_TOUCHED=false
+WORKFLOW_DISPATCH_EXECUTED=false
+GH_RUN_RERUN_EXECUTED=false
+JSONL_EVIDENCE_DATASET_MUTATION=false
+MARKET_DASHBOARD_TOUCHED=false
+EVIDENCE_DATASET_MUTATION=false
+```
+
+**Guard module (reuse — no parallel evidence-retention SSOT):** `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`.
+
+**Non-authorizing:** Docs/tests-only residual static review guard only; does **not** authorize runtime, run start, live, preflight lift, order/cancel/execution/arming, authority lift, trading-logic changes, Master V2 / Double Play / Bull-Bear / Risk / KillSwitch / Scope / Capital changes, workflow YAML mutation, `workflow_dispatch`, `gh run rerun`, JSONL ingest, evidence dataset mutation, Market Dashboard authority changes, or `/tmp`-only completion.
+
 ## Market tape readmodel SSR DOCS_TRUTH_MAP static crosslink v1
 
 **Operator-GO:** `GO_MARKET_TAPE_SSR_DOCS_TRUTH_MAP_CI_AUDIT_STATIC_CROSSLINK_GUARD_OPERATOR_GO_AUTOFILL_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_order_capability_fixture_binding_docs_truth_map_static_crosslink_guard_merge_no_run_v1_20260611T192531Z/`
