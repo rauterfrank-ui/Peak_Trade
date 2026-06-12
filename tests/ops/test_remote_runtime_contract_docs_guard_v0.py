@@ -200,6 +200,44 @@ PAPER_L2_PREFLIGHT_2A_RECIPROCAL_CROSSLINK_OWNER_TESTS = (
     "test_gap4_req_a_300s_hold_binding_profile_contract_v0.py",
     "test_paper_shadow_247_preflight_contract_v0.py",
 )
+SECTION5_HOLD_BINDING_PROFILE_CROSSLINK_HEADING = (
+    "## SECTION5 Gap Owner Map hold-binding profile crosslink — docs/tests-only guard v1"
+)
+SECTION5_HOLD_BINDING_PROFILE_CROSSLINK_GUARD_BLOCK_ANCHOR = (
+    "SECTION5_HOLD_BINDING_PROFILE_PREFLIGHT_2A_RECIPROCAL_CROSSLINK_V1=true"
+)
+SECTION5_HOLD_BINDING_PROFILE_CROSSLINK_EXPECTED: dict[str, str] = {
+    "SECTION5_HOLD_BINDING_PROFILE_PREFLIGHT_2A_RECIPROCAL_CROSSLINK_V1": "true",
+    "SECTION5_HOLD_BINDING_PROFILE_CROSSLINK_DOCS_TESTS_ONLY": "true",
+    "GAP4_REQ_A_PAPER_BOUNDED_V0_SECTION5_CROSSLINK_REFERENCED": "true",
+    "PAPER_L2_120MIN_HOLD_BINDING_V0_SECTION5_CROSSLINK_REFERENCED": "true",
+    "SCHEDULER_BOUNDARY_10A_REFERENCED": "true",
+    "SCHEDULER_BOUNDARY_10B_REFERENCED": "true",
+    "DURATION_7200_SECONDS_REFERENCED": "true",
+    "PAPER_L2_120MIN_HOLD_BINDING_PREFLIGHT_2A_RECIPROCAL_CROSSLINK_V1": "true",
+    "PROFILE_FULLY_IMPLEMENTED_ON_MAIN": "true",
+    "NO_EXECUTE": "true",
+    "NO_PREFLIGHT_LIFT": "true",
+    "NO_RUNTIME": "true",
+    "NO_LIVE": "true",
+    "ORDER_CANCEL_EXECUTION_ARMING_TOUCHED": "false",
+    "AUTHORITY_LIFT": "false",
+    "TRADING_LOGIC_TOUCHED": "false",
+    "MASTER_V2_LOGIC_TOUCHED": "false",
+    "DOUBLE_PLAY_LOGIC_TOUCHED": "false",
+    "NEW_PARALLEL_SSOT_CREATED": "false",
+    "PREFLIGHT_REMAINS_BLOCKED": "true",
+    "MARKET_DASHBOARD_TOUCHED": "false",
+    "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED": "true",
+}
+SECTION5_HOLD_BINDING_PROFILE_CROSSLINK_OWNER_TESTS = (
+    "test_gap4_req_a_300s_hold_binding_profile_contract_v0.py",
+    "test_paper_l2_120min_hold_binding_profile_contract_v0.py",
+    "test_section5_preflight_gap_owner_map_contract_v0.py",
+)
+SECTION5_DOC = (
+    REPO_ROOT / "docs" / "ops" / "planning" / "SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md"
+)
 PRIMARY_EVIDENCE_RETENTION_INVARIANT_RESIDUAL_STATIC_REVIEW_OWNER_SURFACES = (
     "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md",
     "primary_evidence_retention_v0.py",
@@ -905,6 +943,71 @@ def test_ci_audit_paper_l2_preflight_2a_reciprocal_crosslink_machine_lines_v1() 
     )
     for key, expected in PAPER_L2_PREFLIGHT_2A_RECIPROCAL_CROSSLINK_EXPECTED.items():
         assert values[key] == expected, f"{key}={values[key]!r} expected {expected!r}"
+
+
+def _section5_hold_binding_profile_crosslink_section(text: str) -> str:
+    start = text.find(SECTION5_HOLD_BINDING_PROFILE_CROSSLINK_HEADING)
+    assert start != -1, "missing SECTION5 hold-binding profile crosslink section"
+    next_heading = text.find("\n## ", start + 1)
+    if next_heading == -1:
+        return text[start:]
+    return text[start:next_heading]
+
+
+def test_ci_audit_section5_hold_binding_profile_crosslink_section_present_v1() -> None:
+    text = _ci_audit_text()
+    section = _section5_hold_binding_profile_crosslink_section(text)
+    assert (
+        "GO_SECTION5_GAP_OWNER_MAP_HOLD_BINDING_PROFILE_CROSSLINKS_DOCS_TESTS_NO_RUN_V1" in section
+    )
+    assert "gap4_req_a_paper_bounded_v0" in section
+    assert "paper_l2_120min_hold_binding_v0" in section
+    assert "7200s" in section or "7200" in section
+    assert "§10a" in section
+    assert "§10b" in section
+    assert "SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md" in section
+    assert "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md" in section
+    assert "no parallel gap-owner ssot" in section.lower()
+    assert THIS_MODULE in section
+    for module_name in SECTION5_HOLD_BINDING_PROFILE_CROSSLINK_OWNER_TESTS:
+        assert module_name in section, f"missing owner test reference {module_name!r}"
+
+
+def test_ci_audit_section5_hold_binding_profile_crosslink_machine_lines_v1() -> None:
+    block = _block_containing(
+        _ci_audit_text(),
+        SECTION5_HOLD_BINDING_PROFILE_CROSSLINK_GUARD_BLOCK_ANCHOR,
+    )
+    values = _machine_line_values(block)
+    missing = set(SECTION5_HOLD_BINDING_PROFILE_CROSSLINK_EXPECTED) - values.keys()
+    assert not missing, f"missing SECTION5 hold-binding profile crosslink keys: {sorted(missing)}"
+    for key, expected in SECTION5_HOLD_BINDING_PROFILE_CROSSLINK_EXPECTED.items():
+        assert values[key] == expected, f"{key}={values[key]!r} expected {expected!r}"
+
+
+def test_section5_doc_hold_binding_profile_crosslink_tokens_v1() -> None:
+    text = SECTION5_DOC.read_text(encoding="utf-8")
+    assert "Hold-binding profile Preflight §2a reciprocal crosslink (SECTION5 guard)" in text
+    assert SECTION5_HOLD_BINDING_PROFILE_CROSSLINK_GUARD_BLOCK_ANCHOR in text
+    assert "gap4_req_a_paper_bounded_v0" in text
+    assert "paper_l2_120min_hold_binding_v0" in text
+    assert "test_gap4_req_a_300s_hold_binding_profile_contract_v0.py" in text
+    assert "test_paper_l2_120min_hold_binding_profile_contract_v0.py" in text
+
+
+def test_docs_truth_map_section5_hold_binding_profile_crosslink_chronicle_v1() -> None:
+    text = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    assert (
+        "SECTION5 Gap Owner Map hold-binding profile Preflight §2a reciprocal crosslink guard v1"
+        in text
+    )
+    assert THIS_MODULE in text
+    assert SECTION5_HOLD_BINDING_PROFILE_CROSSLINK_GUARD_BLOCK_ANCHOR in text
+    assert "gap4_req_a_paper_bounded_v0" in text
+    assert "paper_l2_120min_hold_binding_v0" in text
+    assert "test_section5_preflight_gap_owner_map_contract_v0.py" in text
+    assert "**no** execute / Preflight-Lift / runtime" in text
+    assert "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true" in text
 
 
 def test_docs_truth_map_paper_l2_preflight_2a_reciprocal_crosslink_chronicle_v1() -> None:

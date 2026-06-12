@@ -92,6 +92,28 @@ Preflight §2a.1 documents run-type applicability for **run completion**: Paper,
 
 **Bounded observation mandatory closeout wiring (PE-4 guard) v0:** Shadow/Testnet bounded observation review (`review_*_bounded_observation_evidence_v0.py`, `--durable-run-root`, `validate_durable_primary_evidence_root()`), Paper bounded adapter (`run_paper_only_bounded_observation_adapter_v0.py`), and Scheduler completion closeout reference (`scheduler_completion_closeout_v0.json`) must satisfy §2a.1 durable primary evidence + manifest/checksum verify; `/tmp`-only insufficient; material closeout may reference `durable_closeout_copy_verify_v0.py`. Static guard: `tests/ops/test_bounded_observation_review_durable_primary_evidence_contract_v0.py` (`PE4_BOUNDED_CLOSEOUT_LANE_MATRIX`). **Tests-only**; **does not** activate enforcement.
 
+**Hold-binding profile Preflight §2a reciprocal crosslink (SECTION5 guard) v0:** Gap Owner Map visibility for scheduler HOLD-binding paper profiles `gap4_req_a_paper_bounded_v0` (Scheduler Boundary §10a; 300–900s) and `paper_l2_120min_hold_binding_v0` (§10b; 7200s / 120min), reciprocal to Preflight §2a (#4166) and `docs/ops/CI_AUDIT_KNOWN_ISSUES.md` § Paper-L2 hold-binding crosslink. Canonical prose: `docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md` §2a; `docs/ops/specs/SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md` §10a/§10b. Static guards: `tests/ops/test_gap4_req_a_300s_hold_binding_profile_contract_v0.py`, `tests/ops/test_paper_l2_120min_hold_binding_profile_contract_v0.py`, `tests/ops/test_section5_preflight_gap_owner_map_contract_v0.py`. **Docs/tests-only**; **does not** authorize execute, preflight lift, runtime, order/cancel/execution/arming, or trading-logic changes; `PREFLIGHT_REMAINS_BLOCKED=true`.
+
+```
+SECTION5_HOLD_BINDING_PROFILE_PREFLIGHT_2A_RECIPROCAL_CROSSLINK_V1=true
+SECTION5_HOLD_BINDING_PROFILE_CROSSLINK_DOCS_TESTS_ONLY=true
+GAP4_REQ_A_PAPER_BOUNDED_V0_SECTION5_CROSSLINK_REFERENCED=true
+PAPER_L2_120MIN_HOLD_BINDING_V0_SECTION5_CROSSLINK_REFERENCED=true
+SCHEDULER_BOUNDARY_10A_REFERENCED=true
+SCHEDULER_BOUNDARY_10B_REFERENCED=true
+DURATION_7200_SECONDS_REFERENCED=true
+PAPER_L2_120MIN_HOLD_BINDING_PREFLIGHT_2A_RECIPROCAL_CROSSLINK_V1=true
+PROFILE_FULLY_IMPLEMENTED_ON_MAIN=true
+NO_EXECUTE=true
+NO_PREFLIGHT_LIFT=true
+NO_RUNTIME=true
+NO_LIVE=true
+ORDER_CANCEL_EXECUTION_ARMING_TOUCHED=false
+NEW_PARALLEL_SSOT_CREATED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
+```
+
 **Gap4 ↔ Gap2a.1 dependency (PE-5 guard) v0:** Gap 4 output-evidence completion is invalid without §2a.1 durable primary evidence and manifest/checksum verification (`GAP4_OUTPUT_EVIDENCE_DEPENDS_ON_GAP2A1_PRIMARY_EVIDENCE_V0`). See Gap 4 output/evidence paths criteria below. Static guard: `tests/ops/test_gap4_gap2a1_primary_evidence_dependency_contract_v0.py`. **Tests-only**; **does not** activate enforcement.
 
 **Cyber ↔ ER artifact-retention crosslink (PE-6 guard) v0:** Cybersecurity visibility `artifact_retention_or_evidence_gap` histogram posture is linked to §2a.1 durable primary evidence / ER retention (`CYBER_VISIBILITY_ARTIFACTS_RETENTION_LINKED_TO_PRIMARY_EVIDENCE_V0`, `ER_ARTIFACT_RETENTION_LINKED_TO_CYBER_VISIBILITY_V0`). Defensive/derived/static only; no definitive cyber mapping without authoritative INPUT_JSONL. Crosslink: `docs/ops/CI_AUDIT_KNOWN_ISSUES.md` reciprocal histogram block. Static guard: `tests/ci/test_cybersecurity_visibility_repo_static_histogram_artifact_retention_or_evidence_gap_crosslink_v0.py`. **Tests-only**; **does not** activate enforcement.
