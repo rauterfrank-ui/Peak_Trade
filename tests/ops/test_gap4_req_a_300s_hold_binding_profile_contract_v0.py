@@ -9,6 +9,7 @@ ADAPTER = ROOT / "scripts" / "ops" / "run_paper_only_bounded_observation_adapter
 GAP4_CONTRACT = ROOT / "scripts" / "ops" / "gap4_req_a_paper_hold_binding_approval_v0.py"
 GUARD = ROOT / "scripts" / "ops" / "scheduler_start_boundary_guard_v0.py"
 BOUNDARY_SPEC = ROOT / "docs" / "ops" / "specs" / "SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md"
+PREFLIGHT = ROOT / "docs" / "ops" / "runbooks" / "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md"
 
 FORBIDDEN_DIFF_PREFIXES = (
     "src/strategies/",
@@ -44,6 +45,19 @@ def test_scheduler_guard_exports_hold_runtime_env_names() -> None:
 def test_boundary_spec_references_gap4_profile_section() -> None:
     text = BOUNDARY_SPEC.read_text(encoding="utf-8")
     assert "gap4_req_a_paper_bounded_v0" in text
+
+
+def test_preflight_section_2a_reciprocal_crosslink_gap4_req_a_v1() -> None:
+    section = (
+        PREFLIGHT.read_text(encoding="utf-8")
+        .split("## 2a. Primary evidence retention invariant v0", 1)[1]
+        .split("## 2a.1", 1)[0]
+    )
+    assert "gap4_req_a_paper_bounded_v0" in section
+    assert "§10a" in section
+    assert "paper_l2_120min_hold_binding_v0" in section
+    assert "§10b" in section
+    assert "test_gap4_req_a_300s_hold_binding_profile_contract_v0.py" in section
 
 
 def test_pr_scope_excludes_trading_and_double_play_paths() -> None:

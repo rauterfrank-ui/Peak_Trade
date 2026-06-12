@@ -131,6 +131,25 @@ def _section_2a1(text: str) -> str:
     return text.split("## 2a.1", 1)[1].split("## 2b.", 1)[0]
 
 
+def _section_2a(text: str) -> str:
+    return text.split("## 2a. Primary evidence retention invariant v0", 1)[1].split("## 2a.1", 1)[0]
+
+
+def test_preflight_section_2a_hold_binding_profiles_reciprocal_crosslink_v1() -> None:
+    text = _read_contract()
+    section = _section_2a(text)
+    assert "gap4_req_a_paper_bounded_v0" in section
+    assert "paper_l2_120min_hold_binding_v0" in section
+    assert "§10a" in section
+    assert "§10b" in section
+    assert "7200" in section
+    assert "300–900s" in section or "300-900s" in section
+    assert "test_gap4_req_a_300s_hold_binding_profile_contract_v0.py" in section
+    assert "test_paper_l2_120min_hold_binding_profile_contract_v0.py" in section
+    collapsed = section.replace("**", "")
+    assert "does not authorize execute or preflight lift" in collapsed.lower()
+
+
 def test_preflight_section_2a1_pe3_run_type_applicability_contract_v0() -> None:
     text = _read_contract()
     section = _section_2a1(text)
