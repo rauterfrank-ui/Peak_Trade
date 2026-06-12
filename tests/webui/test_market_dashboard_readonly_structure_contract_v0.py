@@ -23,6 +23,11 @@ from fastapi.testclient import TestClient
 pytestmark = pytest.mark.web
 
 from src.webui.app import create_app
+from src.webui.market_surface import (
+    DEFAULT_SYMBOL,
+    build_market_payload_for_page,
+    build_market_v0_page_template_context,
+)
 from tests.fixtures.ops import market_registry_projection_overlay_v0 as overlay_fixtures
 
 FORM_ACTION_RE = re.compile(
@@ -1889,3 +1894,41 @@ def test_market_remodel_ia_v2_chart_primary_landmark_heading(client: TestClient)
         chart_window,
         re.IGNORECASE,
     )
+
+
+def test_market_remodel_ia_v2_primary_values_ssr_render_wiring(client: TestClient) -> None:
+    """IA v2 hero/watchlist/diagnostics partials require primary_values in SSR context."""
+    html = _html(client, "/market")
+
+    assert 'data-market-primary-market-values-v1="true"' in html
+    assert 'data-market-primary-values-panel-v1="true"' in html
+    assert 'data-market-terminal-watchlist-v1="true"' in html
+    assert 'data-market-remodel-diagnostics-freshness-v2="true"' in html
+
+    hero_idx = html.index('data-market-primary-values-panel-v1="true"')
+    hero_window = html[hero_idx : hero_idx + 4000]
+    assert DEFAULT_SYMBOL in hero_window
+
+
+def test_build_market_v0_page_template_context_includes_primary_values() -> None:
+    """Context builder must always expose primary_values for /market template includes."""
+    payload, data_unavailable = build_market_payload_for_page(
+        symbol=DEFAULT_SYMBOL,
+        timeframe="1d",
+        limit=120,
+        source="dummy",
+    )
+    context = build_market_v0_page_template_context(
+        get_project_status=lambda: {"ok": True},
+        symbol=DEFAULT_SYMBOL,
+        timeframe="1d",
+        limit=120,
+        source="dummy",
+        payload=payload,
+        data_unavailable=data_unavailable,
+    )
+
+    primary_values = context.get("primary_values")
+    assert isinstance(primary_values, dict)
+    assert primary_values.get("symbol") == DEFAULT_SYMBOL
+    assert primary_values.get("status") in {"available", "unavailable"}

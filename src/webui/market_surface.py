@@ -1180,6 +1180,99 @@ def build_market_primary_values_display_context(
     }
 
 
+def build_market_v0_page_template_context(
+    *,
+    get_project_status: Callable[[], Dict[str, Any]],
+    symbol: str,
+    timeframe: str,
+    limit: int,
+    source: Literal["kraken", "dummy"],
+    payload: Dict[str, Any],
+    data_unavailable: bool,
+) -> Dict[str, Any]:
+    """SSR template context for GET /market (display-only; always includes primary_values)."""
+
+    primary_values = build_market_primary_values_display_context(
+        symbol=symbol,
+        timeframe=timeframe,
+        limit=limit,
+        source=source,
+        payload=payload,
+        data_unavailable=data_unavailable,
+    )
+    proj_status = get_project_status()
+    market_depth = build_market_depth_display_context()
+    run_projection = build_market_run_projection_display_context()
+    market_tape = build_market_tape_display_context()
+    ranking_funnel = build_market_ranking_funnel_display_context()
+    operator_overview = build_market_operator_overview_display_context(
+        ranking_funnel=ranking_funnel,
+    )
+    ranking_watchlist = build_market_ranking_watchlist_display_context(
+        ranking_funnel=ranking_funnel,
+        operator_overview=operator_overview,
+        selected_symbol=symbol,
+        source=source,
+        timeframe=timeframe,
+        limit=limit,
+    )
+    instrument_header = build_market_instrument_header_display_context(
+        symbol=symbol,
+        timeframe=timeframe,
+        limit=limit,
+        source=source,
+        payload=payload,
+        market_depth=market_depth,
+    )
+    futures_metrics_strip = build_market_futures_metrics_strip_display_context(
+        source=source,
+        payload=payload,
+        market_depth=market_depth,
+    )
+    active_paper_run = build_market_active_paper_run_display_context()
+    market_single_page_consolidation = build_market_single_page_consolidation_display_context()
+    workflow_dashboard: Dict[str, Any] | None = None
+    last_paper_run_panel: Dict[str, Any] | None = None
+    if market_single_page_consolidation["section_visible"]:
+        workflow_dashboard = build_workflow_dashboard_display_context()
+        last_paper_run_panel = build_last_paper_run_panel_display_context()
+    dp_display = build_static_dashboard_display_dict()
+    f5_dashboard = build_futures_read_only_market_dashboard_display_context()
+    encoded_symbol = quote(symbol, safe="")
+    legacy_demo_href = (
+        f"/market?source={source}&symbol={encoded_symbol}&timeframe={timeframe}&limit={limit}"
+    )
+    return {
+        "status": proj_status,
+        "payload": payload,
+        "market_depth": market_depth,
+        "run_projection": run_projection,
+        "market_tape": market_tape,
+        "ranking_funnel": ranking_funnel,
+        "ranking_watchlist": ranking_watchlist,
+        "operator_overview": operator_overview,
+        "instrument_header": instrument_header,
+        "futures_metrics_strip": futures_metrics_strip,
+        "active_paper_run": active_paper_run,
+        "market_single_page_consolidation": market_single_page_consolidation,
+        "workflow_dashboard": workflow_dashboard,
+        "last_paper_run_panel": last_paper_run_panel,
+        "dp_display": dp_display,
+        "f5_dashboard": f5_dashboard,
+        "double_play_json_url": "/api/master-v2/double-play/dashboard-display.json",
+        "legacy_demo_href": legacy_demo_href,
+        "page_title": PAGE_TITLE,
+        "primary_values": primary_values,
+        "data_unavailable": data_unavailable,
+        "query": {
+            "symbol": symbol,
+            "timeframe": timeframe,
+            "limit": limit,
+            "source": source,
+        },
+    }
+
+
 def create_market_router(
     templates: Jinja2Templates,
     get_project_status: Callable[[], Dict[str, Any]],
@@ -1229,88 +1322,18 @@ def create_market_router(
         payload, data_unavailable = build_market_payload_for_page(
             symbol=symbol, timeframe=timeframe, limit=limit, source=src
         )
-        primary_values = build_market_primary_values_display_context(
-            symbol=symbol,
-            timeframe=timeframe,
-            limit=limit,
-            source=src,
-            payload=payload,
-            data_unavailable=data_unavailable,
-        )
-        proj_status = get_project_status()
-        market_depth = build_market_depth_display_context()
-        run_projection = build_market_run_projection_display_context()
-        market_tape = build_market_tape_display_context()
-        ranking_funnel = build_market_ranking_funnel_display_context()
-        operator_overview = build_market_operator_overview_display_context(
-            ranking_funnel=ranking_funnel,
-        )
-        ranking_watchlist = build_market_ranking_watchlist_display_context(
-            ranking_funnel=ranking_funnel,
-            operator_overview=operator_overview,
-            selected_symbol=symbol,
-            source=src,
-            timeframe=timeframe,
-            limit=limit,
-        )
-        instrument_header = build_market_instrument_header_display_context(
-            symbol=symbol,
-            timeframe=timeframe,
-            limit=limit,
-            source=src,
-            payload=payload,
-            market_depth=market_depth,
-        )
-        futures_metrics_strip = build_market_futures_metrics_strip_display_context(
-            source=src,
-            payload=payload,
-            market_depth=market_depth,
-        )
-        active_paper_run = build_market_active_paper_run_display_context()
-        market_single_page_consolidation = build_market_single_page_consolidation_display_context()
-        workflow_dashboard: Dict[str, Any] | None = None
-        last_paper_run_panel: Dict[str, Any] | None = None
-        if market_single_page_consolidation["section_visible"]:
-            workflow_dashboard = build_workflow_dashboard_display_context()
-            last_paper_run_panel = build_last_paper_run_panel_display_context()
-        dp_display = build_static_dashboard_display_dict()
-        f5_dashboard = build_futures_read_only_market_dashboard_display_context()
-        encoded_symbol = quote(symbol, safe="")
-        legacy_demo_href = (
-            f"/market?source={src}&symbol={encoded_symbol}&timeframe={timeframe}&limit={limit}"
-        )
         return templates.TemplateResponse(
             request,
             "market_v0.html",
-            {
-                "status": proj_status,
-                "payload": payload,
-                "market_depth": market_depth,
-                "run_projection": run_projection,
-                "market_tape": market_tape,
-                "ranking_funnel": ranking_funnel,
-                "ranking_watchlist": ranking_watchlist,
-                "operator_overview": operator_overview,
-                "instrument_header": instrument_header,
-                "futures_metrics_strip": futures_metrics_strip,
-                "active_paper_run": active_paper_run,
-                "market_single_page_consolidation": market_single_page_consolidation,
-                "workflow_dashboard": workflow_dashboard,
-                "last_paper_run_panel": last_paper_run_panel,
-                "dp_display": dp_display,
-                "f5_dashboard": f5_dashboard,
-                "double_play_json_url": "/api/master-v2/double-play/dashboard-display.json",
-                "legacy_demo_href": legacy_demo_href,
-                "page_title": PAGE_TITLE,
-                "primary_values": primary_values,
-                "data_unavailable": data_unavailable,
-                "query": {
-                    "symbol": symbol,
-                    "timeframe": timeframe,
-                    "limit": limit,
-                    "source": src,
-                },
-            },
+            build_market_v0_page_template_context(
+                get_project_status=get_project_status,
+                symbol=symbol,
+                timeframe=timeframe,
+                limit=limit,
+                source=src,
+                payload=payload,
+                data_unavailable=data_unavailable,
+            ),
         )
 
     return router
