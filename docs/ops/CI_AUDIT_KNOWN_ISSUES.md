@@ -577,6 +577,62 @@ PREFLIGHT_REMAINS_BLOCKED=true
 
 **Non-authorizing:** Docs/tests-only reciprocal crosslink guard only; does **not** authorize pilot GO/No-Go lift, execute, runtime, run start, live, preflight lift, bounded-pilot session invoke, order/cancel/execution/arming, authority lift, trading-logic changes, strategy-logic changes, fee/slippage/accounting logic changes, Ops Cockpit payload semantic changes, DRAFT→READY promotion, new cockpit rows, Master V2 / Double Play / Bull-Bear / Risk / KillSwitch / Scope / Capital changes, workflow YAML mutation, `workflow_dispatch`, `gh run rerun`, or Market Dashboard authority changes. `run_bounded_pilot_session.py` remains the existing entry gate wrapper; this guard documents chain visibility only.
 
+## Tier-C + Shadow durable evidence CI_AUDIT ↔ SECTION5 ↔ Preflight §2a.1 reciprocal crosslink — docs/tests-only guard v1
+
+**Operator-GO:** `GO_TIER_C_SHADOW_DURABLE_EVIDENCE_CI_AUDIT_PREFLIGHT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1` · **Planning bundle (archive only):** `…&#47;planning&#47;systemwide_next_safe_scope_ranking_after_run_bounded_pilot_session_operator_preflight_packet_runner_handoff_crosslink_guard_merge_no_run_v1_20260612T211931Z&#47;`
+
+**Purpose:** Static reciprocal crosslink guard so operator-verified Tier-C + Shadow durable evidence archive anchors (2026-06-03 scheduler probe and Shadow bounded dry-run rehearsal chain) remain visibly documented in CI_AUDIT and DOCS_TRUTH_MAP alongside the existing SECTION5 **Tier-C + Shadow durable evidence archive crosslink v0** block and Preflight §2a.1 **Tier-C + Shadow durable evidence archive anchors (non-authorizing) v0** — **without** authorizing preflight lift, Shadow-HOLD lift, session invoke, Testnet, runtime, execute, archive-confirmation authority lift, or new evidence registry/SSOT surfaces.
+
+**Canonical repo owners (reuse — do not duplicate):**
+
+| Concern | Owner |
+|---------|-------|
+| SECTION5 Tier-C crosslink block | `docs/ops/planning/SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md` — **Tier-C + Shadow durable evidence archive crosslink v0** |
+| Preflight §2a.1 archive anchors | `docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md` — **Tier-C + Shadow durable evidence archive anchors (non-authorizing) v0** |
+| Static crosslink contract guard (v0, extended) | `tests/ops/test_tier_c_shadow_durable_evidence_crosslink_contract_v0.py` |
+| DOCS_TRUTH_MAP chronicle | `docs/ops/registry/DOCS_TRUTH_MAP.md` (this crosslink section + Änderungsnachweis row) |
+| Gap2a1 enforcement contract (reuse) | `tests/ops/test_gap2a1_primary_evidence_enforcement_contract_v0.py` |
+| Bounded observation durable evidence (reuse) | `tests/ops/test_bounded_observation_review_durable_primary_evidence_contract_v0.py` |
+
+**Crosslink invariants (static — not runtime authority):**
+
+| Invariant | Posture |
+|-----------|---------|
+| SECTION5 Tier-C block | existing v0 block — archive pointers only; **no semantic change** |
+| Preflight §2a.1 anchors | existing v0 anchors — read-only pointers; **no §2a.1 enforcement activation** |
+| Archive root | operator durable root — `EVIDENCE_ARCHIVE_ANCHOR_NOT_RUNTIME_AUTHORITY=true` |
+| Primary evidence reuse | SECTION5/Preflight §2a.1 reuse pointers + test guards above — **no parallel evidence index** |
+| Preflight lift | **not authorized** — visibility only |
+| Session invoke | **not authorized** — visibility only |
+| Testnet / runtime / execute | **not authorized** — visibility only |
+
+```text
+TIER_C_SHADOW_DURABLE_EVIDENCE_CI_AUDIT_PREFLIGHT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1=true
+TIER_C_SHADOW_DURABLE_EVIDENCE_REPO_STATIC_CROSSLINK_V0=true
+TIER_C_SHADOW_DURABLE_EVIDENCE_CI_AUDIT_SECTION5_PREFLIGHT_RECIPROCAL_CROSSLINK_GUARD_V1=true
+TIER_C_SHADOW_DURABLE_EVIDENCE_CROSSLINK_DOCS_TESTS_ONLY=true
+SECTION5_TIER_C_SHADOW_BLOCK_REFERENCED=true
+PREFLIGHT_TIER_C_SHADOW_ANCHORS_REFERENCED=true
+EVIDENCE_ARCHIVE_ANCHOR_NOT_RUNTIME_AUTHORITY=true
+PREFLIGHT_LIFT_DIRECTLY_ALLOWED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+TESTNET_NOW_RECOMMENDED=false
+NO_SESSION_INVOKE_AUTHORIZED=true
+NO_EXECUTE=true
+NO_RUNTIME=true
+NO_LIVE=true
+NO_PREFLIGHT_LIFT=true
+AUTHORITY_LIFT=false
+TRADING_LOGIC_TOUCHED=false
+NEW_PARALLEL_SSOT_CREATED=false
+U2B_PARKED=true
+MARKET_AIRPORT_EXCLUDED=true
+```
+
+**Guard module (reuse — no parallel Tier-C evidence SSOT):** `tests/ops/test_tier_c_shadow_durable_evidence_crosslink_contract_v0.py`.
+
+**Non-authorizing:** Docs/tests-only reciprocal crosslink guard only; does **not** authorize preflight lift, Shadow-HOLD lift, session invoke, Testnet session execute, runtime, run start, live, execute, order/cancel/execution/arming, authority lift, trading-logic changes, strategy-logic changes, fee/slippage/accounting logic changes, Ops Cockpit payload semantic changes, DRAFT→READY promotion, new cockpit rows, Master V2 / Double Play / Bull-Bear / Risk / KillSwitch / Scope / Capital changes, workflow YAML mutation, `workflow_dispatch`, `gh run rerun`, Market Dashboard authority changes, Truth-GO/promotion/source-ingest/metadata-refresh, or new evidence registry/SSOT surfaces. Archive pointers record **confirmed probe evidence only**; this guard documents CI_AUDIT visibility only.
+
 ## Order-Capability remaining readiness gap review — docs/tests-only visibility v1
 
 **Operator-GO:** `GO_ORDER_CAPABILITY_REMAINING_READINESS_GAP_REVIEW_DOCS_TESTS_ONLY_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_preflight_process_gate_hygiene_guard_merge_no_run_v1_20260612T002508Z/`
