@@ -272,9 +272,9 @@ real_metadata_source_marked=true
 | Field | Value |
 |-------|-------|
 | **Recommended canonical bundle** | `u2c_kraken_governed_snapshot_candidate_post_pr4067_v1_20260608T234112Z` |
-| **Archive path** | `{ARCHIVE_ROOT}/governed_metadata/u2c_kraken_governed_snapshot_candidate_post_pr4067_v1_20260608T234112Z/` |
+| **Archive path** | `{ARCHIVE_ROOT}&#47;governed_metadata&#47;u2c_kraken_governed_snapshot_candidate_post_pr4067_v1_20260608T234112Z&#47;` |
 | **Lineage predecessors** | `..._v1_20260608T223345Z` → `..._aligned_v1_20260608T230742Z` → `..._completeness_aligned_v1_20260608T233741Z` → **post_pr4067** |
-| **Readmodel evidence link** | `{ARCHIVE_ROOT}/readmodels/universe_selection_readmodel.v1.json` links governed packet under post_pr4067 bundle |
+| **Readmodel evidence link** | `{ARCHIVE_ROOT}&#47;readmodels&#47;universe_selection_readmodel.v1.json` links governed packet under post_pr4067 bundle |
 | **Candidate shape** | 332 packets, Top-20 ranking candidate; `schema_name=futures_producer_packet_governed.v1`, `source_kind=governed_metadata_snapshot` |
 | **Promotion in this prep** | **not executed** — lineage documented for later bounded GO only |
 
@@ -282,12 +282,12 @@ real_metadata_source_marked=true
 
 | # | Precondition | Enforced by |
 |---|--------------|-------------|
-| P1 | Durable **Operator Truth-GO Decision Record** under `{ARCHIVE_ROOT}/planning/` with explicit scoped GO token | Operator — **required**; template alone is insufficient |
+| P1 | Durable **Operator Truth-GO Decision Record** under `{ARCHIVE_ROOT}&#47;planning&#47;` with explicit scoped GO token | Operator — **required**; template alone is insufficient |
 | P2 | U2c §11 all ten operator confirmations recorded in that durable record | U2c charter |
 | P3 | `TRUTH_GO_GRANTED=true` only inside an explicit Operator GO record — **never** from prep docs or candidate build | `candidate_safety_flags.v1.json` + operator record |
 | P4 | Policy decision on `min_notional` / strict completeness documented before `observability_truth_allowed=true` | Operator + U4b/U5c §12.12 |
 | P5 | `MANIFEST_VERIFY_RC=0` on canonical candidate bundle **and** readmodels dir at promotion-write time | `primary_evidence_retention_v0.py` |
-| P6 | Full universe/U2b regression green at Truth-GO time | `tests/webui/test_universe_selection*.py`, U2b loader/chain tests |
+| P6 | Full universe/U2b regression green at Truth-GO time | `tests&#47;webui&#47;test_universe_selection*.py`, U2b loader/chain tests |
 | P7 | Separate bounded Truth-Promotion GO token — distinct from Live/Trading/Execute authorization | Operator |
 
 **`OPERATOR_TRUTH_GO_RECORD_REQUIRED=true`** — promotion remains blocked until P1 is satisfied.
