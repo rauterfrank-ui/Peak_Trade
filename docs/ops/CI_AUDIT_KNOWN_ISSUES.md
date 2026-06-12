@@ -86,6 +86,65 @@ PREFLIGHT_REMAINS_BLOCKED=true
 
 **Non-authorizing:** Docs/tests static crosslink only; does **not** authorize order submission, cancel, execute, broker/exchange, Testnet/Live, scheduler/daemon/adapter runtime, browser-rendered web capture execute, Preflight lift, `READY_FOR_OPERATOR_ARMING=true`, provider-truth flip, binding pass, or Master V2 / Double Play / trading-logic changes. Normalizer remains **parked/read-only** with `order_capability_lane_parked=true`, `provider_truth_bound=false`, and `order_capability_execute_authorized=false`.
 
+## Order-Capability remaining readiness gap review — docs/tests-only visibility v1
+
+**Operator-GO:** `GO_ORDER_CAPABILITY_REMAINING_READINESS_GAP_REVIEW_DOCS_TESTS_ONLY_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_preflight_process_gate_hygiene_guard_merge_no_run_v1_20260612T002508Z/`
+
+**Purpose:** Consolidate remaining Order-Capability readiness visibility across existing parked contract and fixture surfaces. This review is **visibility/readiness only** — not an execution feature — and does **not** authorize order, cancel, execution, arming, adapter, scheduler, paper, shadow, testnet, or live runtime.
+
+**Existing crosslink guards (reuse — indexed, not duplicated):**
+
+| Concern | Owner |
+|---------|-------|
+| Fixture-binding DOCS_TRUTH_MAP static crosslink | this document — **§ Order-Capability fixture-binding …**; `tests/ops/test_run_order_capability_fixture_binding_dry_validation_v1.py` |
+| Demo instrument rules fixture normalizer DOCS_TRUTH_MAP static crosslink | this document — **§ Order-Capability demo instrument rules fixture normalizer …**; `tests/ops/test_order_capability_demo_instrument_rules_fixture_normalizer_contract_v1.py` |
+
+**Remaining contract/fixture surfaces without consolidated readiness gap index (reuse — do not duplicate):**
+
+| Readiness area | Contract / test owner |
+|----------------|----------------------|
+| Payload builder | `src/ops/order_capability_payload_builder_contract_v1.py`, `tests/ops/test_order_capability_payload_builder_contract_v1.py` |
+| Dry-validation | `src/ops/order_capability_dry_validation_contract_v1.py`, `tests/ops/test_order_capability_dry_validation_contract_v1.py`, `tests/ops/test_run_order_capability_dry_validation_adapter_v1.py` |
+| Killswitch abort | `src/ops/order_capability_killswitch_abort_binding_contract_v1.py`, `tests/ops/test_order_capability_killswitch_abort_binding_contract_v1.py` |
+| Cancel cleanup | `src/ops/order_capability_cancel_cleanup_failclosed_contract_v1.py`, `tests/ops/test_order_capability_cancel_cleanup_failclosed_contract_v1.py` |
+| Safety cancel under killswitch | `src/ops/order_capability_safety_cancel_under_killswitch_contract_v1.py`, `tests/ops/test_order_capability_safety_cancel_under_killswitch_contract_v1.py` |
+| Offline payload readiness | `tests/ops/test_order_capability_offline_payload_readiness_v1.py`, `tests/fixtures/ops/order_capability_offline_payload_readiness_v1/minimal_chain_inputs.json` |
+| Private endpoint boundary | `src/ops/order_capability_private_endpoint_boundary_contract_v1.py`, `tests/ops/test_order_capability_private_endpoint_boundary_contract_v1.py` |
+| Side / price / qty rules | `src/ops/order_capability_side_price_qty_rules_contract_v1.py`, `tests/ops/test_order_capability_side_price_qty_rules_contract_v1.py` |
+| Demo instrument rules binding | `src/ops/order_capability_demo_instrument_rules_binding_contract_v1.py`, `tests/ops/test_order_capability_demo_instrument_rules_binding_contract_v1.py` |
+
+```text
+ORDER_CAPABILITY_REMAINING_READINESS_GAP_REVIEW_V1=true
+ORDER_CAPABILITY_REMAINING_READINESS_GAP_REVIEW_DOCS_TESTS_ONLY=true
+ORDER_CAPABILITY_PARKED_READ_ONLY_CONFIRMED=true
+ORDER_CAPABILITY_EXISTING_CROSSLINK_GUARDS_REFERENCED=true
+FIXTURE_BINDING_CROSSLINK_GUARD_REFERENCED=true
+DEMO_INSTRUMENT_RULES_NORMALIZER_CROSSLINK_GUARD_REFERENCED=true
+REMAINING_CONTRACT_SURFACES_INDEXED=true
+NO_RUNTIME=true
+NO_LIVE=true
+NO_PREFLIGHT_LIFT=true
+ORDER_CANCEL_EXECUTION_ARMING_TOUCHED=false
+AUTHORITY_LIFT=false
+TRADING_LOGIC_TOUCHED=false
+MASTER_V2_LOGIC_TOUCHED=false
+DOUBLE_PLAY_LOGIC_TOUCHED=false
+RISK_KILLSWITCH_SCOPE_CAPITAL_TOUCHED=false
+NEW_PARALLEL_SSOT_CREATED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+ORDERFLOW_AUTHORIZATION_CREATED=false
+CANCEL_EXECUTE_AUTHORIZATION_CREATED=false
+READY_FOR_OPERATOR_ARMING_CHANGED=false
+RUNTIME_LOGIC_TOUCHED=false
+JSONL_EVIDENCE_DATASET_MUTATION=false
+WORKFLOW_TOUCHED=false
+MARKET_DASHBOARD_TOUCHED=false
+```
+
+**Guard module (reuse — no parallel readiness SSOT):** `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`.
+
+**Non-authorizing:** Docs/tests-only visibility guard only; does **not** authorize order submission, cancel, execute, arming, broker/exchange, Testnet/Live, scheduler/daemon/adapter runtime, Preflight lift, `READY_FOR_OPERATOR_ARMING=true`, provider-truth flip, binding pass, JSONL ingest, evidence dataset mutation, workflow edits, Market Dashboard authority changes, or Master V2 / Double Play / Bull-Bear / Risk / KillSwitch / Scope / Capital / trading-logic changes. Lane remains **parked/read-only** with `order_capability_lane_parked=true` and `order_capability_execute_authorized=false`.
+
 ## Market tape readmodel SSR DOCS_TRUTH_MAP static crosslink v1
 
 **Operator-GO:** `GO_MARKET_TAPE_SSR_DOCS_TRUTH_MAP_CI_AUDIT_STATIC_CROSSLINK_GUARD_OPERATOR_GO_AUTOFILL_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_order_capability_fixture_binding_docs_truth_map_static_crosslink_guard_merge_no_run_v1_20260611T192531Z/`
