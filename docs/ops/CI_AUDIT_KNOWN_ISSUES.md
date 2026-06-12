@@ -272,6 +272,67 @@ PREFLIGHT_REMAINS_BLOCKED=true
 
 **Non-authorizing:** Docs/tests-only reciprocal crosslink guard only; does **not** authorize pilot GO/No-Go lift, execute, runtime, run start, live, preflight lift, order/cancel/execution/arming, authority lift, trading-logic changes, strategy-logic changes, fee/slippage/accounting logic changes, new cockpit rows, Master V2 / Double Play / Bull-Bear / Risk / KillSwitch / Scope / Capital changes, workflow YAML mutation, `workflow_dispatch`, `gh run rerun`, or Market Dashboard authority changes. Rows 8/10/11 remain **doc-based**; `pilot_go_no_go_eval_v1.py` remains **11 cockpit rows** without Rows 8/10/11 eval.
 
+## Pilot Go/No-Go checklist ↔ operational slice ↔ eval scope boundary CI_AUDIT reciprocal crosslink — docs/tests-only guard v1
+
+**Operator-GO:** `GO_PILOT_GO_NO_GO_CHECKLIST_OPERATIONAL_SLICE_EVAL_SCOPE_BOUNDARY_CI_AUDIT_DOCS_TRUTH_MAP_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1` · **Planning bundle (archive only):** `…&#47;planning&#47;systemwide_next_safe_scope_ranking_after_pilot_gonogo_rows_8_10_11_exclusion_crosslink_guard_merge_no_run_v1_20260612T194654Z&#47;`
+
+**Purpose:** Static reciprocal crosslink guard so the parent Pilot Go/No-Go SSOT chain remains visible in CI_AUDIT and DOCS_TRUTH_MAP: **15-row** canonical checklist and operational slice (**DRAFT**), **11-row** automated cockpit eval (`pilot_go_no_go_eval_v1.py`), and doc-based Rows **7, 8, 10, 11** intentionally excluded from eval — with reuse pointers to the existing Row 7 (#4189) and Rows 8/10/11 (#4190) row-level guards — **without** authorizing pilot GO, changing DRAFT posture, adding cockpit rows, execution/trading/strategy logic changes, runtime, or execute.
+
+**Canonical repo owners (reuse — do not duplicate):**
+
+| Concern | Owner |
+|---------|-------|
+| Pilot Go/No-Go checklist (15 rows, DRAFT) | `docs/ops/specs/PILOT_GO_NO_GO_CHECKLIST.md` |
+| Pilot Go/No-Go operational slice (15-row mapping, DRAFT) | `docs/ops/specs/PILOT_GO_NO_GO_OPERATIONAL_SLICE.md` |
+| Pilot eval (11 cockpit rows; Rows 7/8/10/11 excluded) | `scripts/ops/pilot_go_no_go_eval_v1.py` |
+| Pilot eval tests | `tests/ops/test_pilot_go_no_go_eval_v1.py` |
+| Row 7 doc-based exclusion guard (#4189) | `tests/ops/test_pilot_fee_slippage_conservative_assumptions_crosslink_v1.py` |
+| Rows 8/10/11 doc-based exclusion guard (#4190) | `tests/ops/test_pilot_gonogo_rows_8_10_11_exclusion_crosslink_v1.py` |
+| CI_AUDIT / DOCS_TRUTH_MAP reciprocal guard | `tests/ops/test_pilot_gonogo_checklist_operational_slice_eval_scope_boundary_crosslink_v1.py` |
+| DOCS_TRUTH_MAP chronicle | `docs/ops/registry/DOCS_TRUTH_MAP.md` (this crosslink section + Änderungsnachweis row) |
+
+**Crosslink invariants (static — not pilot authority):**
+
+| Invariant | Posture |
+|-----------|---------|
+| Checklist rows | **15** — canonical checklist source; **DRAFT** |
+| Operational slice rows | **15** — checklist→evidence mapping; **DRAFT** |
+| Evaluated cockpit rows | **11** — Rows 1,2,3,4,5,6,9,12,13,14,15 only |
+| Doc-based excluded rows | **7, 8, 10, 11** — not modeled as autorisierende Cockpit eval rows |
+| Row-level guards | reuse #4189 Row 7 guard + #4190 Rows 8/10/11 guard — no parallel SSOT |
+| Doc-based missing ≠ PASS | absence from eval must not be read as autorisierender Cockpit-PASS |
+| DRAFT posture | **unchanged** — visibility only |
+| New cockpit row | **not created** — docs/tests guard only |
+| Pilot Go/No-Go authority | **unchanged** — non-authorizing visibility only |
+
+```text
+PILOT_GONOGO_CHECKLIST_OPERATIONAL_SLICE_EVAL_SCOPE_BOUNDARY_CI_AUDIT_DOCS_TRUTH_MAP_RECIPROCAL_CROSSLINK_V1=true
+PILOT_GONOGO_EVAL_SCOPE_BOUNDARY_CROSSLINK_DOCS_TESTS_ONLY=true
+PILOT_CHECKLIST_15_ROW_DRAFT=true
+PILOT_OPERATIONAL_SLICE_15_ROW_DRAFT=true
+PILOT_EVAL_11_COCKPIT_ROWS=true
+PILOT_EVAL_ROWS_7_8_10_11_DOC_BASED_EXCLUDED=true
+PILOT_ROW7_GUARD_REFERENCED=true
+PILOT_ROWS_8_10_11_GUARD_REFERENCED=true
+PILOT_DOC_BASED_MISSING_NOT_PASS=true
+DRAFT_POSTURE_CHANGED=false
+PILOT_GO_NO_GO_AUTHORITY_CREATED=false
+NEW_COCKPIT_ROW_CREATED=false
+NO_EXECUTE=true
+NO_RUNTIME=true
+NO_LIVE=true
+NO_PREFLIGHT_LIFT=true
+AUTHORITY_LIFT=false
+TRADING_LOGIC_TOUCHED=false
+FEE_SLIPPAGE_ACCOUNTING_LOGIC_TOUCHED=false
+NEW_PARALLEL_SSOT_CREATED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+```
+
+**Guard module (reuse — no parallel parent-scope SSOT):** `tests/ops/test_pilot_gonogo_checklist_operational_slice_eval_scope_boundary_crosslink_v1.py`.
+
+**Non-authorizing:** Docs/tests-only reciprocal crosslink guard only; does **not** authorize pilot GO/No-Go lift, execute, runtime, run start, live, preflight lift, order/cancel/execution/arming, authority lift, trading-logic changes, strategy-logic changes, fee/slippage/accounting logic changes, DRAFT→READY promotion, new cockpit rows, Master V2 / Double Play / Bull-Bear / Risk / KillSwitch / Scope / Capital changes, workflow YAML mutation, `workflow_dispatch`, `gh run rerun`, or Market Dashboard authority changes. Checklist and operational slice remain **DRAFT**; `pilot_go_no_go_eval_v1.py` remains **11 cockpit rows** without Rows 7/8/10/11 eval.
+
 ## Order-Capability remaining readiness gap review — docs/tests-only visibility v1
 
 **Operator-GO:** `GO_ORDER_CAPABILITY_REMAINING_READINESS_GAP_REVIEW_DOCS_TESTS_ONLY_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_preflight_process_gate_hygiene_guard_merge_no_run_v1_20260612T002508Z/`
