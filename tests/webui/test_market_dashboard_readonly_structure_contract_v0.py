@@ -1638,3 +1638,260 @@ def test_double_play_excludes_ranking_watchlist_vnext_markers_v1(client: TestCli
     assert "data-market-v0-ranking-symbol-nav" not in dp_html
     assert "data-market-v0-ranking-source-mode" not in dp_html
     assert "data-market-v0-ranking-no-authority" not in dp_html
+
+
+# ---------------------------------------------------------------------------
+# Market Dashboard Remodel IA v2 structure contract (tests-only; Slice 1)
+# Canonical owner: docs/webui/MARKET_SURFACE_V0.md
+# Target IA charter: planning/market_dashboard_remodel_readonly_inventory_charter_*
+# ---------------------------------------------------------------------------
+
+REMODEL_IA_V2_PENDING_REASON = (
+    "Market Dashboard Remodel IA v2 contract pending template implementation"
+)
+
+REMODEL_IA_V2_SHELL_MARKER = 'data-market-remodel-ia-v2="true"'
+REMODEL_IA_V2_OPERATOR_OVERVIEW_MARKER = 'data-market-remodel-operator-overview-v2="true"'
+REMODEL_IA_V2_CHART_PRIMARY_MARKER = 'data-market-chart-primary-v2="true"'
+REMODEL_IA_V2_SECONDARY_GRID_MARKER = 'data-market-remodel-secondary-grid-v2="true"'
+REMODEL_IA_V2_SECONDARY_DOUBLE_PLAY_MARKER = 'data-market-remodel-secondary-double-play-v2="true"'
+REMODEL_IA_V2_SECONDARY_SAFETY_MARKER = 'data-market-remodel-secondary-safety-v2="true"'
+REMODEL_IA_V2_SECONDARY_FUTURES_MARKER = 'data-market-remodel-secondary-futures-v2="true"'
+REMODEL_IA_V2_DIAGNOSTICS_DRAWER_MARKER = 'data-market-remodel-diagnostics-drawer-v2="true"'
+REMODEL_IA_V2_DIAGNOSTICS_COLLAPSED_MARKER = (
+    'data-market-remodel-diagnostics-collapsed-default-v2="true"'
+)
+
+REMODEL_IA_V2_FULL_DP_PANEL_MARKERS = (
+    'data-double-play-market-dashboard-v0="true"',
+    'data-double-play-market-composition-ssr-v1="true"',
+)
+REMODEL_IA_V2_FULL_F5_PANEL_MARKERS = (
+    'data-f5-market-dashboard-v0="true"',
+    'data-futures-read-only-market-dashboard-v0="true"',
+)
+
+
+def _diagnostics_drawer_window(html: str) -> str:
+    """Return HTML inside the diagnostics drawer (v1 anchor; v2 marker pending)."""
+    for anchor in (
+        'data-market-remodel-diagnostics-drawer-v2="true"',
+        'data-market-diagnostics-drawer-v1="true"',
+        'id="market-terminal-diagnostics"',
+    ):
+        if anchor in html:
+            start = html.index(anchor)
+            details_close = html.find("</details>", start)
+            if details_close > start:
+                return html[start:details_close]
+            return html[start:]
+    return ""
+
+
+def _above_fold_window(html: str) -> str:
+    """HTML before the diagnostics drawer — chart-first / operator-band contract scope."""
+    for anchor in (
+        'data-market-remodel-diagnostics-drawer-v2="true"',
+        'data-market-diagnostics-drawer-v1="true"',
+        'id="market-terminal-diagnostics"',
+    ):
+        if anchor in html:
+            return html[: html.index(anchor)]
+    return html
+
+
+def test_market_remodel_ia_v2_single_get_market_surface_active(client: TestClient) -> None:
+    """Remodel stays on canonical GET /market; legacy routes redirect (no parallel SSOT)."""
+    market_html = _html(client, "/market")
+    assert 'data-market-single-page-unified-v1="true"' in market_html
+    assert 'id="market-v0-shell"' in market_html
+
+    for legacy_path in ("/market/double-play", "/market/futures"):
+        response = client.get(legacy_path, follow_redirects=False)
+        assert response.status_code == 302
+        location = response.headers.get("location", "")
+        assert location.startswith("/market")
+        assert "market-airport" not in location.lower()
+
+
+def test_market_remodel_ia_v2_chart_before_diagnostics_order_active(client: TestClient) -> None:
+    """Chart region precedes diagnostics drawer in SSR document order (structural chart-first)."""
+    html = _html(client, "/market")
+    chart_anchors = (
+        'data-market-chart-primary-v2="true"',
+        'data-market-chart-primary-v1="true"',
+        'id="market-primary-operator-hero-v1"',
+        'data-market-chart-dominant-v1="true"',
+    )
+    diag_anchors = (
+        'data-market-remodel-diagnostics-drawer-v2="true"',
+        'data-market-diagnostics-drawer-v1="true"',
+        'id="market-terminal-diagnostics"',
+    )
+    chart_idx = min(html.index(a) for a in chart_anchors if a in html)
+    diag_idx = min(html.index(a) for a in diag_anchors if a in html)
+    assert chart_idx < diag_idx
+
+
+def test_market_remodel_ia_v2_diagnostics_collapsed_by_default_active(client: TestClient) -> None:
+    """Diagnostics drawer uses <details> without open attribute (collapsed by default)."""
+    html = _html(client, "/market")
+    drawer = _diagnostics_drawer_window(html)
+    assert drawer
+    assert "<details" in drawer.lower()
+    assert re.search(r"<details\b(?![^>]*\bopen\b)[^>]*>", drawer, re.IGNORECASE)
+
+
+def test_market_remodel_ia_v2_safety_read_only_no_execute_active(client: TestClient) -> None:
+    """Safety semantics: read-only shell, no forms, no execute/order/cancel/arming affordances."""
+    html = _html(client, "/market")
+    lowered = html.lower()
+
+    assert 'data-market-readonly="true"' in html
+    assert 'data-market-non-authorizing="true"' in html
+    assert 'data-market-trading-authority-v1="false"' in html
+
+    assert "<form" not in lowered
+    assert "data-order-form" not in lowered
+    assert "data-order-submit" not in lowered
+    for term in (
+        "place order",
+        "submit order",
+        "cancel order",
+        "arm order",
+        "execute trade",
+        "authorize live",
+        "preflight lift",
+    ):
+        assert term not in lowered
+
+
+def test_market_remodel_ia_v2_master_v2_double_play_display_only_active(
+    client: TestClient,
+) -> None:
+    """Master V2 / Double Play / Bull-Bear remain display-only on unified GET /market."""
+    html = _html(client, "/market")
+    above_fold = _above_fold_window(html)
+
+    assert 'data-double-play-bull-bear-cards-v1="true"' in above_fold
+    assert 'data-double-play-market-readonly="true"' in html
+    assert 'data-double-play-market-no-authority="true"' in html
+    assert 'data-double-play-bull-card-v1="true"' in html
+    assert 'data-double-play-bear-card-v1="true"' in html
+
+    dp_window = above_fold[
+        above_fold.index('data-double-play-bull-bear-cards-v1="true"') : above_fold.index(
+            'data-double-play-bull-bear-cards-v1="true"'
+        )
+        + 4000
+    ].lower()
+    assert "data-double-play-side-switch" not in dp_window
+    assert "data-double-play-decision-cta" not in dp_window
+    assert "<button" not in dp_window
+
+
+@pytest.mark.xfail(strict=False, reason=REMODEL_IA_V2_PENDING_REASON)
+def test_market_remodel_ia_v2_shell_and_landmark_markers(client: TestClient) -> None:
+    """v2 remodel shell exposes canonical data-market-remodel-* landmark family."""
+    html = _html(client, "/market")
+    required = (
+        REMODEL_IA_V2_SHELL_MARKER,
+        REMODEL_IA_V2_OPERATOR_OVERVIEW_MARKER,
+        REMODEL_IA_V2_CHART_PRIMARY_MARKER,
+        REMODEL_IA_V2_SECONDARY_GRID_MARKER,
+        REMODEL_IA_V2_SECONDARY_DOUBLE_PLAY_MARKER,
+        REMODEL_IA_V2_SECONDARY_SAFETY_MARKER,
+        REMODEL_IA_V2_SECONDARY_FUTURES_MARKER,
+        REMODEL_IA_V2_DIAGNOSTICS_DRAWER_MARKER,
+        REMODEL_IA_V2_DIAGNOSTICS_COLLAPSED_MARKER,
+    )
+    for marker in required:
+        assert marker in html
+
+
+@pytest.mark.xfail(strict=False, reason=REMODEL_IA_V2_PENDING_REASON)
+def test_market_remodel_ia_v2_operator_overview_band_compact(client: TestClient) -> None:
+    """Operator overview band: compact safety/lane/freshness row — no action controls."""
+    html = _html(client, "/market")
+    above_fold = _above_fold_window(html)
+
+    assert REMODEL_IA_V2_OPERATOR_OVERVIEW_MARKER in above_fold
+    overview_idx = above_fold.index(REMODEL_IA_V2_OPERATOR_OVERVIEW_MARKER)
+    overview_window = above_fold[overview_idx : overview_idx + 6000]
+
+    for topic in ("safety", "lane", "freshness", "readiness", "blocked", "authority"):
+        assert f"data-market-remodel-operator-{topic}-v2=" in overview_window
+
+    assert 'data-market-terminal-tabs-v1="true"' not in above_fold
+    assert "Read-only stub" not in above_fold
+
+    overview_lower = overview_window.lower()
+    assert "data-order-form" not in overview_lower
+    assert "place order" not in overview_lower
+    assert "<button" not in overview_lower
+
+
+@pytest.mark.xfail(strict=False, reason=REMODEL_IA_V2_PENDING_REASON)
+def test_market_remodel_ia_v2_secondary_grid_structure(client: TestClient) -> None:
+    """Secondary grid: Double-Play, Safety/Guardrails, F5 compact panels above fold."""
+    html = _html(client, "/market")
+    above_fold = _above_fold_window(html)
+
+    assert REMODEL_IA_V2_SECONDARY_GRID_MARKER in above_fold
+    grid_idx = above_fold.index(REMODEL_IA_V2_SECONDARY_GRID_MARKER)
+    grid_window = above_fold[grid_idx : grid_idx + 12000]
+
+    assert REMODEL_IA_V2_SECONDARY_DOUBLE_PLAY_MARKER in grid_window
+    assert REMODEL_IA_V2_SECONDARY_SAFETY_MARKER in grid_window
+    assert REMODEL_IA_V2_SECONDARY_FUTURES_MARKER in grid_window
+
+
+@pytest.mark.xfail(strict=False, reason=REMODEL_IA_V2_PENDING_REASON)
+def test_market_remodel_ia_v2_no_duplicate_dp_f5_primary_in_diagnostics_drawer(
+    client: TestClient,
+) -> None:
+    """Full Double-Play / F5 panels are detail anchors only — not primary duplicates in drawer."""
+    html = _html(client, "/market")
+    drawer = _diagnostics_drawer_window(html)
+    assert drawer
+
+    for marker in REMODEL_IA_V2_FULL_DP_PANEL_MARKERS + REMODEL_IA_V2_FULL_F5_PANEL_MARKERS:
+        assert marker not in drawer
+
+
+@pytest.mark.xfail(strict=False, reason=REMODEL_IA_V2_PENDING_REASON)
+def test_market_remodel_ia_v2_diagnostics_secondary_not_operator_primary(
+    client: TestClient,
+) -> None:
+    """Diagnostics hold data-source/contract/freshness warnings — not primary operator surfaces."""
+    html = _html(client, "/market")
+    drawer = _diagnostics_drawer_window(html)
+    assert drawer
+
+    assert REMODEL_IA_V2_DIAGNOSTICS_DRAWER_MARKER in drawer
+    assert 'data-market-remodel-diagnostics-operator-primary-v2="true"' not in drawer
+    assert 'data-market-operator-story-v1="true"' not in drawer
+    assert 'data-market-operator-overview-v1="true"' not in drawer
+    assert "data-market-remodel-diagnostics-data-source-v2=" in drawer
+    assert "data-market-remodel-diagnostics-freshness-v2=" in drawer
+
+
+@pytest.mark.xfail(strict=False, reason=REMODEL_IA_V2_PENDING_REASON)
+def test_market_remodel_ia_v2_chart_primary_landmark_heading(client: TestClient) -> None:
+    """Primary chart is the leading landmark region before secondary panels."""
+    html = _html(client, "/market")
+    above_fold = _above_fold_window(html)
+
+    assert REMODEL_IA_V2_CHART_PRIMARY_MARKER in above_fold
+    chart_idx = above_fold.index(REMODEL_IA_V2_CHART_PRIMARY_MARKER)
+    grid_marker = REMODEL_IA_V2_SECONDARY_GRID_MARKER
+    assert grid_marker in above_fold
+    grid_idx = above_fold.index(grid_marker)
+    assert chart_idx < grid_idx
+
+    chart_window = above_fold[chart_idx : chart_idx + 8000]
+    assert re.search(
+        r'role="region"[^>]*aria-labelledby="[^"]*chart[^"]*"',
+        chart_window,
+        re.IGNORECASE,
+    )
