@@ -1377,6 +1377,52 @@ REPO_TRUTH_CLAIMS_STANDARD_CHECK_RECIPROCAL_CROSSLINK_OWNER_TESTS = (
     "test_check_repo_truth_claims_cli_contract_v0.py",
     "test_truth_core.py",
 )
+OPS_COCKPIT_V25_EVIDENCE_FRESHNESS_OBSERVATION_RECIPROCAL_CROSSLINK_HEADING = (
+    "## Ops Cockpit v2.5 evidence/freshness observation reciprocal crosslink "
+    "— docs/tests-only guard v1"
+)
+OPS_COCKPIT_V25_EVIDENCE_FRESHNESS_OBSERVATION_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR = (
+    "OPS_COCKPIT_V2_5_EVIDENCE_FRESHNESS_OBSERVATION_RECIPROCAL_CROSSLINK_V1=true"
+)
+OPS_COCKPIT_V25_EVIDENCE_FRESHNESS_OBSERVATION_RECIPROCAL_CROSSLINK_INPUT_BUNDLE = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/systemwide_next_safe_scope_ranking_after_repo_truth_claims_standard_check_"
+    "reciprocal_crosslink_bundle_merge_no_run_v1_20260613T030000Z"
+)
+OPS_COCKPIT_V25_EVIDENCE_FRESHNESS_OBSERVATION_RECIPROCAL_CROSSLINK_EXPECTED: dict[str, str] = {
+    "OPS_COCKPIT_V2_5_EVIDENCE_FRESHNESS_OBSERVATION_RECIPROCAL_CROSSLINK_V1": "true",
+    "OPS_COCKPIT_EVIDENCE_FRESHNESS_OBSERVATION_READ_ONLY": "true",
+    "OPS_COCKPIT_EVIDENCE_FRESHNESS_EXISTING_CANONICAL_OWNERS_REUSED": "true",
+    "OPS_COCKPIT_PAYLOAD_SEMANTIC_TOUCH": "false",
+    "OPS_COCKPIT_ENABLEMENT_CHANGED": "false",
+    "NEW_COCKPIT_ROW_CREATED": "false",
+    "FRESHNESS_THRESHOLDS_CHANGED": "false",
+    "EVIDENCE_OBSERVATION_SEMANTIC_TOUCH": "false",
+    "OBSERVABILITY_TRUTH_ALLOWED_CHANGED": "false",
+    "REAL_METADATA_SOURCE_MARKED_CHANGED": "false",
+    "DRAFT_POSTURE_CHANGED": "false",
+    "PARALLEL_COCKPIT_SURFACE_CREATED": "false",
+    "WORKFLOW_YAML_MUTATED": "false",
+    "REQUIRED_CHECK_CONFIG_MUTATED": "false",
+    "TRUTH_GO_GRANTED": "false",
+    "TRUTH_PROMOTION_EXECUTED": "false",
+    "PREFLIGHT_REMAINS_BLOCKED": "true",
+    "NO_SESSION_INVOKE_AUTHORIZED": "true",
+    "U2B_PARKED": "true",
+    "MARKET_AIRPORT_EXCLUDED": "true",
+    "EVIDENCE_OR_DOCS_ANCHOR_NOT_RUNTIME_AUTHORITY": "true",
+    "NO_RUNTIME": "true",
+    "NO_LIVE": "true",
+    "NO_PREFLIGHT_LIFT": "true",
+    "NEW_PARALLEL_SSOT_CREATED": "false",
+    "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED": "true",
+    "DOCS_DRIFT_OR_POINTER_INTEGRITY_COMPLETE": "false",
+}
+OPS_COCKPIT_V25_EVIDENCE_FRESHNESS_OBSERVATION_RECIPROCAL_CROSSLINK_OWNER_TESTS = (
+    "test_ops_cockpit_payload_top_level_contract.py",
+    "test_ops_cockpit.py",
+    "test_evidence_audit_observation.py",
+)
 PREFLIGHT_PROCESS_GATE_HYGIENE_GUARD_EXPECTED: dict[str, str] = {
     "PREFLIGHT_PROCESS_GATE_HYGIENE_GUARD_V1": "true",
     "ACTIVE_RUN_CHECK_PEAK_TRADE_EXPLICIT_ONLY": "true",
@@ -3904,6 +3950,117 @@ def test_docs_truth_map_repo_truth_claims_standard_check_reciprocal_crosslink_ch
     assert "WORKFLOW_YAML_MUTATED=false" in text
     assert "REQUIRED_CHECK_CONFIG_MUTATED=false" in text
     assert "PARALLEL_TRUTH_CLAIMS_OWNER_CREATED=false" in text
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in text
+    assert "NO_SESSION_INVOKE_AUTHORIZED=true" in text
+    assert "U2B_PARKED=true" in text
+    assert "MARKET_AIRPORT_EXCLUDED=true" in text
+    assert "EVIDENCE_OR_DOCS_ANCHOR_NOT_RUNTIME_AUTHORITY=true" in text
+    assert "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true" in text
+
+
+def _ops_cockpit_v25_evidence_freshness_observation_reciprocal_crosslink_section(
+    text: str,
+) -> str:
+    start = text.find(OPS_COCKPIT_V25_EVIDENCE_FRESHNESS_OBSERVATION_RECIPROCAL_CROSSLINK_HEADING)
+    assert start != -1, "missing Ops Cockpit v2.5 evidence/freshness reciprocal section"
+    next_heading = text.find("\n## ", start + 1)
+    if next_heading == -1:
+        return text[start:]
+    return text[start:next_heading]
+
+
+def test_ci_audit_ops_cockpit_v25_evidence_freshness_observation_reciprocal_crosslink_section_v1() -> (
+    None
+):
+    text = _ci_audit_text()
+    section = _ops_cockpit_v25_evidence_freshness_observation_reciprocal_crosslink_section(text)
+    assert (
+        OPS_COCKPIT_V25_EVIDENCE_FRESHNESS_OBSERVATION_RECIPROCAL_CROSSLINK_INPUT_BUNDLE in section
+    )
+    assert (
+        "GO_OPS_COCKPIT_V2_5_EVIDENCE_FRESHNESS_OBSERVATION_CI_AUDIT_DOCS_TRUTH_MAP_"
+        "RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1" in section
+    )
+    assert "CI_AUDIT ↔ DOCS_TRUTH_MAP reciprocal crosslink" in section
+    assert "DOCS_TRUTH_MAP chronicle" in section
+    assert "CI_AUDIT / DOCS_TRUTH_MAP reciprocal guard" in section
+    assert THIS_MODULE in section
+    assert "src/webui/ops_cockpit.py" in section
+    assert "FRESHNESS_FRESH_HOURS=24" in section
+    assert "FRESHNESS_OLDER_DAYS=30" in section
+    assert "operator-summary-evidence-freshness-observation-read-only" in section
+    assert "evidence_audit_observation.py" in section
+    assert "build_evidence_audit_observation" in section
+    assert "OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md" in section
+    assert "webui_ops_cockpit_v2_5_truth_first.md" in section
+    assert "closed Truth-Gates chain #4200–#4204" in section
+    for (
+        module_name
+    ) in OPS_COCKPIT_V25_EVIDENCE_FRESHNESS_OBSERVATION_RECIPROCAL_CROSSLINK_OWNER_TESTS:
+        assert module_name in section, (
+            f"missing Ops Cockpit evidence/freshness test owner {module_name!r}"
+        )
+
+
+def test_ci_audit_ops_cockpit_v25_evidence_freshness_observation_reciprocal_crosslink_machine_lines_v1() -> (
+    None
+):
+    block = _block_containing(
+        _ci_audit_text(),
+        OPS_COCKPIT_V25_EVIDENCE_FRESHNESS_OBSERVATION_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR,
+    )
+    values = _machine_line_values(block)
+    missing = (
+        set(OPS_COCKPIT_V25_EVIDENCE_FRESHNESS_OBSERVATION_RECIPROCAL_CROSSLINK_EXPECTED)
+        - values.keys()
+    )
+    assert not missing, (
+        f"missing Ops Cockpit v2.5 evidence/freshness reciprocal keys: {sorted(missing)}"
+    )
+    for (
+        key,
+        expected,
+    ) in OPS_COCKPIT_V25_EVIDENCE_FRESHNESS_OBSERVATION_RECIPROCAL_CROSSLINK_EXPECTED.items():
+        assert values[key] == expected, f"{key}={values[key]!r} expected {expected!r}"
+
+
+def test_docs_truth_map_ops_cockpit_v25_evidence_freshness_observation_reciprocal_crosslink_chronicle_v1() -> (
+    None
+):
+    text = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    assert (
+        "Ops Cockpit v2.5 evidence/freshness observation reciprocal crosslink bundle "
+        "CI_AUDIT ↔ DOCS_TRUTH_MAP guard v1"
+    ) in text
+    assert THIS_MODULE in text
+    assert (
+        OPS_COCKPIT_V25_EVIDENCE_FRESHNESS_OBSERVATION_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR
+        in text
+    )
+    assert "OPS_COCKPIT_EVIDENCE_FRESHNESS_OBSERVATION_READ_ONLY=true" in text
+    assert "OPS_COCKPIT_EVIDENCE_FRESHNESS_EXISTING_CANONICAL_OWNERS_REUSED=true" in text
+    assert "FRESHNESS_FRESH_HOURS=24" in text
+    assert "FRESHNESS_OLDER_DAYS=30" in text
+    assert "operator-summary-evidence-freshness-observation-read-only" in text
+    assert "evidence_audit_observation.py" in text
+    assert "build_evidence_audit_observation" in text
+    assert "webui_ops_cockpit_v2_5_truth_first.md" in text
+    assert "test_evidence_audit_observation.py" in text
+    assert "test_ops_cockpit.py" in text
+    assert (
+        OPS_COCKPIT_V25_EVIDENCE_FRESHNESS_OBSERVATION_RECIPROCAL_CROSSLINK_INPUT_BUNDLE.split("/")[
+            -1
+        ]
+        in text
+    )
+    assert "OPS_COCKPIT_PAYLOAD_SEMANTIC_TOUCH=false" in text
+    assert "OPS_COCKPIT_ENABLEMENT_CHANGED=false" in text
+    assert "NEW_COCKPIT_ROW_CREATED=false" in text
+    assert "FRESHNESS_THRESHOLDS_CHANGED=false" in text
+    assert "EVIDENCE_OBSERVATION_SEMANTIC_TOUCH=false" in text
+    assert "PARALLEL_COCKPIT_SURFACE_CREATED=false" in text
+    assert "WORKFLOW_YAML_MUTATED=false" in text
+    assert "REQUIRED_CHECK_CONFIG_MUTATED=false" in text
     assert "PREFLIGHT_REMAINS_BLOCKED=true" in text
     assert "NO_SESSION_INVOKE_AUTHORIZED=true" in text
     assert "U2B_PARKED=true" in text
