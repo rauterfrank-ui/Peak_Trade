@@ -755,9 +755,68 @@ WORKFLOW_TOUCHED=false
 MARKET_DASHBOARD_TOUCHED=false
 ```
 
+**Reciprocal crosslink bundle — docs/tests-only guard v1**
+
+**Operator-GO:** `GO_ORDER_CAPABILITY_REMAINING_CONTRACT_SURFACES_CI_AUDIT_DOCS_TRUTH_MAP_RECIPROCAL_CROSSLINK_BUNDLE_DOCS_TESTS_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_bounded_pilot_caps_enforcement_session_crosslink_guard_merge_no_run_v1_20260612T220408Z/`
+
+**Purpose:** Close the shared CI_AUDIT↔DOCS_TRUTH_MAP reciprocal visibility gap for the nine indexed remaining contract/fixture surfaces through one coherent bundle slice — reusing existing canonical owners and per-surface contract tests — **without** authorizing order, cancel, execute, arming, adapter, scheduler, paper, shadow, testnet, or live runtime. Lane remains **parked/read-only**.
+
+**Reciprocal crosslink surfaces (reuse — indexed, not duplicated):**
+
+| Readiness area | Canonical owner | Existing test/guard | DOCS_TRUTH_MAP chronicle |
+|----------------|-----------------|---------------------|--------------------------|
+| Payload builder | `src/ops/order_capability_payload_builder_contract_v1.py` | `tests/ops/test_order_capability_payload_builder_contract_v1.py` | this document — **§ Order-Capability remaining readiness gap review …**; `docs/ops/registry/DOCS_TRUTH_MAP.md` — **Order-Capability remaining contract surfaces reciprocal crosslink bundle v1** |
+| Dry-validation | `src/ops/order_capability_dry_validation_contract_v1.py` | `tests/ops/test_order_capability_dry_validation_contract_v1.py`, `tests/ops/test_run_order_capability_dry_validation_adapter_v1.py` | same bundle chronicle row |
+| Killswitch abort | `src/ops/order_capability_killswitch_abort_binding_contract_v1.py` | `tests/ops/test_order_capability_killswitch_abort_binding_contract_v1.py` | same bundle chronicle row |
+| Cancel cleanup | `src/ops/order_capability_cancel_cleanup_failclosed_contract_v1.py` | `tests/ops/test_order_capability_cancel_cleanup_failclosed_contract_v1.py` | same bundle chronicle row |
+| Safety cancel under killswitch | `src/ops/order_capability_safety_cancel_under_killswitch_contract_v1.py` | `tests/ops/test_order_capability_safety_cancel_under_killswitch_contract_v1.py` | same bundle chronicle row |
+| Offline payload readiness | `tests/ops/test_order_capability_offline_payload_readiness_v1.py`, `tests/fixtures/ops/order_capability_offline_payload_readiness_v1/minimal_chain_inputs.json` | `tests/ops/test_order_capability_offline_payload_readiness_v1.py` | same bundle chronicle row |
+| Private endpoint boundary | `src/ops/order_capability_private_endpoint_boundary_contract_v1.py` | `tests/ops/test_order_capability_private_endpoint_boundary_contract_v1.py` | same bundle chronicle row |
+| Side / price / qty rules | `src/ops/order_capability_side_price_qty_rules_contract_v1.py` | `tests/ops/test_order_capability_side_price_qty_rules_contract_v1.py` | same bundle chronicle row |
+| Demo instrument rules binding | `src/ops/order_capability_demo_instrument_rules_binding_contract_v1.py` | `tests/ops/test_order_capability_demo_instrument_rules_binding_contract_v1.py` | same bundle chronicle row |
+
+```text
+ORDER_CAPABILITY_REMAINING_CONTRACT_SURFACES_RECIPROCAL_CROSSLINK_BUNDLE_V1=true
+ORDER_CAPABILITY_REMAINING_CONTRACT_SURFACES_COUNT=9
+ORDER_CAPABILITY_REMAINING_CONTRACT_SURFACES_CROSSLINK_DOCS_TESTS_ONLY=true
+ORDER_CAPABILITY_LANE_PARKED=true
+ORDER_CAPABILITY_EXECUTE_AUTHORIZED=false
+ORDER_CAPABILITY_ARMING_AUTHORIZED=false
+U2B_PARKED=true
+SOURCE_ARTIFACT_INGESTED=false
+METADATA_REFRESH_EXECUTED=false
+TRUTH_GO_GRANTED=false
+TRUTH_PROMOTION_EXECUTED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+NO_SESSION_INVOKE_AUTHORIZED=true
+EVIDENCE_OR_DOCS_ANCHOR_NOT_RUNTIME_AUTHORITY=true
+ORDER_CAPABILITY_PARKED_READ_ONLY_CONFIRMED=true
+ORDER_CAPABILITY_EXISTING_CROSSLINK_GUARDS_REFERENCED=true
+FIXTURE_BINDING_CROSSLINK_GUARD_REFERENCED=true
+DEMO_INSTRUMENT_RULES_NORMALIZER_CROSSLINK_GUARD_REFERENCED=true
+NO_RUNTIME=true
+NO_LIVE=true
+NO_PREFLIGHT_LIFT=true
+ORDER_CANCEL_EXECUTION_ARMING_TOUCHED=false
+AUTHORITY_LIFT=false
+TRADING_LOGIC_TOUCHED=false
+MASTER_V2_LOGIC_TOUCHED=false
+DOUBLE_PLAY_LOGIC_TOUCHED=false
+RISK_KILLSWITCH_SCOPE_CAPITAL_TOUCHED=false
+NEW_PARALLEL_SSOT_CREATED=false
+ORDERFLOW_AUTHORIZATION_CREATED=false
+CANCEL_EXECUTE_AUTHORIZATION_CREATED=false
+READY_FOR_OPERATOR_ARMING_CHANGED=false
+RUNTIME_LOGIC_TOUCHED=false
+JSONL_EVIDENCE_DATASET_MUTATION=false
+WORKFLOW_TOUCHED=false
+MARKET_DASHBOARD_TOUCHED=false
+MARKET_AIRPORT_EXCLUDED=true
+```
+
 **Guard module (reuse — no parallel readiness SSOT):** `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`.
 
-**Non-authorizing:** Docs/tests-only visibility guard only; does **not** authorize order submission, cancel, execute, arming, broker/exchange, Testnet/Live, scheduler/daemon/adapter runtime, Preflight lift, `READY_FOR_OPERATOR_ARMING=true`, provider-truth flip, binding pass, JSONL ingest, evidence dataset mutation, workflow edits, Market Dashboard authority changes, or Master V2 / Double Play / Bull-Bear / Risk / KillSwitch / Scope / Capital / trading-logic changes. Lane remains **parked/read-only** with `order_capability_lane_parked=true` and `order_capability_execute_authorized=false`.
+**Non-authorizing:** Docs/tests-only visibility and reciprocal crosslink guard only; does **not** authorize order submission, cancel, execute, arming, broker/exchange, Testnet/Live, scheduler/daemon/adapter runtime, Preflight lift, session invoke, source ingest, metadata refresh, Truth-GO, truth promotion, `READY_FOR_OPERATOR_ARMING=true`, provider-truth flip, binding pass, JSONL ingest, evidence dataset mutation, workflow edits, Market Dashboard authority changes, or Master V2 / Double Play / Bull-Bear / Risk / KillSwitch / Scope / Capital / trading-logic changes. Lane remains **parked/read-only** with `ORDER_CAPABILITY_LANE_PARKED=true` and `ORDER_CAPABILITY_EXECUTE_AUTHORIZED=false`. U2b remains parked (`U2B_PARKED=true`).
 
 ## Systemwide CI/Docs required-check truth-map residual review — docs/tests-only guard v1
 
