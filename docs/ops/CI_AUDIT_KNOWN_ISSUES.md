@@ -232,7 +232,7 @@ PREFLIGHT_REMAINS_BLOCKED=true
 | Pilot eval (11 cockpit rows; Rows 8/10/11 excluded) | `scripts/ops/pilot_go_no_go_eval_v1.py` |
 | Pilot eval tests | `tests/ops/test_pilot_go_no_go_eval_v1.py` |
 | Restart mid-session runbook (Row 10) | `docs/ops/runbooks/RUNBOOK_PILOT_INCIDENT_RESTART_MID_SESSION.md` |
-| Incident runbooks (Row 11) | `docs/ops/runbooks/RUNBOOK_PILOT_INCIDENT_*.md` (7 runbooks on main) |
+| Incident runbooks (Row 11) | `docs&#47;ops&#47;runbooks&#47;RUNBOOK_PILOT_INCIDENT_*.md` (7 runbooks on main) |
 | CI_AUDIT / DOCS_TRUTH_MAP reciprocal guard | `tests/ops/test_pilot_gonogo_rows_8_10_11_exclusion_crosslink_v1.py` |
 | DOCS_TRUTH_MAP chronicle | `docs/ops/registry/DOCS_TRUTH_MAP.md` (this crosslink section + Änderungsnachweis row) |
 
