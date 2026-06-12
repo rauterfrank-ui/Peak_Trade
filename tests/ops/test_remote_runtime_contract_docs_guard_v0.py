@@ -171,6 +171,49 @@ PRIMARY_EVIDENCE_RETENTION_INVARIANT_RESIDUAL_STATIC_REVIEW_OWNER_SURFACES = (
     "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md",
     "primary_evidence_retention_v0.py",
 )
+MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_HEADING = (
+    "## Market Dashboard trading-app terminal rebuild PR #4162 DOCS_TRUTH_MAP static crosslink v1"
+)
+MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_GUARD_BLOCK_ANCHOR = (
+    "MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_CROSSLINK_GUARD_IMPLEMENTED=true"
+)
+MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_RANKING_BUNDLE = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/systemwide_next_safe_scope_ranking_after_market_dashboard_terminal_rebuild_pass_no_run_v1_20260612T075155Z"
+)
+MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_CLOSEOUT_BUNDLE = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "closeout/market_dashboard_trading_app_terminal_rebuild_pr4162_squash_merge_closeout_v1_20260612T074614Z"
+)
+MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_VISUAL_BUNDLE = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "review/market_dashboard_trading_app_terminal_rebuild_post_merge_visual_check_no_mutation_v1_20260612T074839Z"
+)
+MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_EXPECTED: dict[str, str] = {
+    "MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_CROSSLINK_GUARD_IMPLEMENTED": "true",
+    "MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_DOCS_TRUTH_MAP_CI_AUDIT_STATIC_CROSSLINK_GUARD_V1": "true",
+    "MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_CROSSLINK_DOCS_TESTS_ONLY": "true",
+    "MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_SURFACE_REFERENCED": "true",
+    "MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_TESTS_REFERENCED": "true",
+    "MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_PR4162_ANCHOR_REFERENCED": "true",
+    "MARKET_DASHBOARD_LANE_CLOSED_AFTER_VISUAL_PASS": "true",
+    "MARKET_DASHBOARD_READ_ONLY_NON_AUTHORITY": "true",
+    "MARKET_AIRPORT_CREATED_OR_REFERENCED": "false",
+    "ORDERFLOW_AUTHORIZATION_CREATED": "false",
+    "CANCEL_EXECUTE_AUTHORIZATION_CREATED": "false",
+    "READY_FOR_OPERATOR_ARMING_CHANGED": "false",
+    "RUNTIME_LOGIC_TOUCHED": "false",
+    "NEW_PARALLEL_SSOT_CREATED": "false",
+    "PREFLIGHT_REMAINS_BLOCKED": "true",
+    "PROTECTED_SCOPE_TOUCHED": "false",
+    "MASTER_V2_LOGIC_TOUCHED": "false",
+    "DOUBLE_PLAY_LOGIC_TOUCHED": "false",
+    "TRADING_LOGIC_TOUCHED": "false",
+}
+MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_OWNER_TESTS = (
+    "test_market_terminal_layout_v1.py",
+)
+MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_OWNER_SURFACES = ("MARKET_SURFACE_V0.md",)
 ORDER_CAPABILITY_REMAINING_READINESS_GAP_REVIEW_OWNER_TESTS = (
     "test_order_capability_payload_builder_contract_v1.py",
     "test_order_capability_dry_validation_contract_v1.py",
@@ -786,4 +829,67 @@ def test_docs_truth_map_primary_evidence_retention_invariant_residual_static_rev
     assert (
         PRIMARY_EVIDENCE_RETENTION_INVARIANT_RESIDUAL_STATIC_REVIEW_INPUT_BUNDLE.split("/")[-1]
         in text
+    )
+
+
+def _market_dashboard_trading_app_terminal_rebuild_pr4162_section(text: str) -> str:
+    start = text.find(MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_HEADING)
+    assert start != -1, "missing market dashboard trading-app terminal rebuild PR4162 section"
+    next_heading = text.find("\n## ", start + 1)
+    if next_heading == -1:
+        return text[start:]
+    return text[start:next_heading]
+
+
+def test_ci_audit_market_dashboard_trading_app_terminal_rebuild_pr4162_section_present_v1() -> None:
+    text = _ci_audit_text()
+    section = _market_dashboard_trading_app_terminal_rebuild_pr4162_section(text)
+    assert MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_RANKING_BUNDLE in section
+    assert MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_CLOSEOUT_BUNDLE in section
+    assert MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_VISUAL_BUNDLE in section
+    assert "PR #4162 on main @ `9a8c259f1c5f41d8b617bd15b93d1c518473e80e`" in section
+    assert "closed after visual PASS" in section
+    assert "without reopening the Market Dashboard UI lane" in section
+    assert THIS_MODULE in section
+    for module_name in MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_OWNER_TESTS:
+        assert module_name in section, f"missing owner test reference {module_name!r}"
+    for surface_name in MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_OWNER_SURFACES:
+        assert surface_name in section, f"missing owner surface reference {surface_name!r}"
+
+
+def test_ci_audit_market_dashboard_trading_app_terminal_rebuild_pr4162_machine_lines_v1() -> None:
+    block = _block_containing(
+        _ci_audit_text(),
+        MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_GUARD_BLOCK_ANCHOR,
+    )
+    values = _machine_line_values(block)
+    missing = set(MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_EXPECTED) - values.keys()
+    assert not missing, (
+        f"missing market dashboard trading-app terminal rebuild PR4162 keys: {sorted(missing)}"
+    )
+    for key, expected in MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_EXPECTED.items():
+        assert values[key] == expected, f"{key}={values[key]!r} expected {expected!r}"
+
+
+def test_docs_truth_map_market_dashboard_trading_app_terminal_rebuild_pr4162_chronicle_v1() -> None:
+    text = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    assert (
+        "Market Dashboard trading-app terminal rebuild PR #4162 DOCS_TRUTH_MAP static crosslink guard v1"
+        in text
+    )
+    assert THIS_MODULE in text
+    assert (
+        "MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_CROSSLINK_GUARD_IMPLEMENTED=true"
+        in text
+    )
+    assert "MARKET_DASHBOARD_LANE_CLOSED_AFTER_VISUAL_PASS=true" in text
+    assert "9a8c259f1c5f41d8b617bd15b93d1c518473e80e" in text
+    assert "test_market_terminal_layout_v1.py" in text
+    assert "data-market-trading-app-terminal-v1" in text
+    assert (
+        "**no** UI/runtime/trading/Master-V2/Double-Play-decision-logic/protected-scope touch/Market-Airport"
+        in text
+    )
+    assert (
+        MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_RANKING_BUNDLE.split("/")[-1] in text
     )
