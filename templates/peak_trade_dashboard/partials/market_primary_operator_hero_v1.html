@@ -1,13 +1,15 @@
-<!-- Primary operator hero: title, real values, chart above-the-fold -->
+<!-- Primary operator hero: terminal asset bar + dominant chart -->
 <section
   id="market-primary-operator-hero-v1"
-  class="space-y-4"
+  class="space-y-3 pt-2"
   role="region"
   aria-labelledby="market-v0-landmark-page-title"
   data-market-operator-real-values-v1="true"
   data-market-chart-above-fold-v1="true"
-  data-market-detail-click-required="false"
+  data-market-chart-dominant-v1="true"
   data-market-primary-market-values-v1="true"
+  data-market-metrics-above-fold-v1="true"
+  data-market-detail-click-required="false"
   data-market-canonical-short-url-v1="true"
   {% if query.source == 'kraken' and primary_values.status == 'available' %}
   data-market-source-kind="kraken-public"
@@ -15,16 +17,6 @@
   data-market-source-kind="dummy-offline-synthetic"
   {% endif %}
 >
-  <header class="rounded-xl border border-sky-900/40 bg-gradient-to-br from-slate-950/95 via-sky-950/20 to-slate-950/90 px-4 py-4 sm:px-5 shadow-lg shadow-black/20 ring-1 ring-sky-900/25">
-    <p class="text-[10px] font-semibold uppercase tracking-[0.14em] text-sky-400/85 m-0">Canonical operator URL · <span class="font-mono text-sky-300/90">/market</span></p>
-    <h1 id="market-v0-landmark-page-title" class="text-2xl sm:text-3xl font-bold text-slate-50 tracking-tight m-0 mt-1" data-market-page-title-v1="true">
-      {{ page_title|e }}
-    </h1>
-    <p class="text-sm text-slate-400 m-0 mt-2 leading-snug max-w-3xl">
-      Read-only public market display — no orders, no trading authority.
-      {% if query.source == 'kraken' %}Kraken public OHLCV{% else %}Explicit offline synthetic mode{% endif %}.
-    </p>
-  </header>
 
   {% if query.source == 'dummy' %}
   <div
@@ -50,10 +42,15 @@
   {% endif %}
 
   <section
-    class="rounded-xl border border-slate-700/60 bg-slate-950/80 px-3 py-3 sm:px-4 ring-1 ring-slate-800/50"
+    class="rounded-lg border border-slate-800/70 bg-slate-950/85 px-3 py-2.5 sm:px-4"
+    data-market-terminal-asset-bar-v1="true"
     data-market-primary-values-panel-v1="true"
     aria-label="Primary market values"
   >
+    <div class="flex flex-wrap items-end justify-between gap-3 mb-2">
+      <p class="m-0 text-2xl sm:text-3xl font-bold font-mono text-slate-50 tracking-tight">{{ primary_values.symbol|e }}</p>
+      <p class="m-0 text-[10px] font-mono text-slate-500">{{ query.source|e }} · public · {{ primary_values.timeframe|e }} · limit {{ primary_values.limit|e }}</p>
+    </div>
     <dl class="m-0 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-x-4 gap-y-3 text-[11px] tabular-nums">
       <div><dt class="text-slate-500 uppercase text-[10px]">Symbol</dt><dd class="m-0 font-mono text-lg text-slate-50">{{ primary_values.symbol|e }}</dd></div>
       <div><dt class="text-slate-500 uppercase text-[10px]">Source</dt><dd class="m-0 font-mono text-sky-300/95">{{ primary_values.source|e }} · {{ primary_values.source_mode|e }}</dd></div>
