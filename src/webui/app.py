@@ -98,7 +98,7 @@ from typing import Any, Dict, List, Literal, Optional
 
 import toml
 from fastapi import FastAPI, HTTPException, Query, Request
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
@@ -606,74 +606,37 @@ def create_app() -> FastAPI:
             },
         )
 
-    @app.get("/market/double-play", response_class=HTMLResponse)
-    async def double_play_market_dashboard_v1_ssr_page(
-        request: Request,
+    @app.get("/market/double-play")
+    async def double_play_market_dashboard_v1_legacy_redirect(
         symbol: str = Query("BTC/EUR", description="Trading-Paar, z.B. BTC/EUR"),
         timeframe: str = Query("1d", description="Timeframe (Kraken); Dummy ignoriert Serie"),
         limit: int = Query(120, ge=1, le=MAX_OHLCV_LIMIT, description="Bars (max 720)"),
         source: str = Query("dummy", description="dummy | kraken"),
-    ) -> Any:
-        """
-        Double-Play Market Dashboard v1 — SSR composition (read-only).
-
-        Embedded market OHLCV/chart semantics match GET /market; Double-Play panel snapshot uses
-        the same pure-stack dict as GET /api/master-v2/double-play/dashboard-display.json (in-process).
-        """
+    ) -> RedirectResponse:
+        """Legacy deep-link → canonical GET /market with #double-play anchor (query preserved)."""
         if timeframe not in MARKET_TIMEFRAMES:
             raise HTTPException(
                 status_code=422,
                 detail=f"timeframe muss einer von {list(MARKET_TIMEFRAMES)} sein, nicht {timeframe!r}",
             )
         src = _normalize_market_surface_source_for_double_play(source)
-        payload = build_market_payload(symbol=symbol, timeframe=timeframe, limit=limit, source=src)
-        proj_status = get_project_status()
+        from urllib.parse import quote
 
-        dp_display = build_static_dashboard_display_dict()
-        market_depth = build_market_depth_display_context()
-
-        return templates.TemplateResponse(
-            request,
-            "double_play_market_dashboard_v0.html",
-            {
-                "status": proj_status,
-                "payload": payload,
-                "market_depth": market_depth,
-                "query": {
-                    "symbol": symbol,
-                    "timeframe": timeframe,
-                    "limit": limit,
-                    "source": src,
-                },
-                "dp_display": dp_display,
-                "double_play_json_url": _DP_DOUBLE_PLAY_DISPLAY_JSON_URL,
-                "legacy_demo_href": _DP_MARKET_V0_DEMO_HREF,
-                "legacy_api_href": _DP_MARKET_V0_API_HREF,
-            },
+        encoded_symbol = quote(symbol, safe="")
+        url = (
+            f"/market?source={src}&symbol={encoded_symbol}"
+            f"&timeframe={timeframe}&limit={limit}#double-play"
         )
+        return RedirectResponse(url=url, status_code=302)
 
-    @app.get("/market/futures", response_class=HTMLResponse)
-    async def futures_read_only_market_dashboard_v0_ssr_page(request: Request) -> Any:
-        """
-        F5 Futures Read-only Market Dashboard v0 — SSR composition (read-only).
-
-        Offline/fixture display context only; no exchange fetch, no cache/evidence writes,
-        no session/order/testnet/Live authority.
-        """
-        from .futures_read_only_market_dashboard_runtime_v0 import (
-            build_futures_read_only_market_dashboard_display_context,
-        )
-
-        proj_status = get_project_status()
-        f5_dashboard = build_futures_read_only_market_dashboard_display_context()
-        return templates.TemplateResponse(
-            request,
-            "futures_read_only_market_dashboard_v0.html",
-            {
-                "status": proj_status,
-                "f5_dashboard": f5_dashboard,
-            },
-        )
+    @app.get("/market/futures")
+    async def futures_read_only_market_dashboard_v0_legacy_redirect(
+        request: Request,
+    ) -> RedirectResponse:
+        """Legacy deep-link → canonical GET /market with #futures anchor (query preserved)."""
+        qs = request.url.query
+        suffix = f"?{qs}" if qs else ""
+        return RedirectResponse(url=f"/market{suffix}#futures", status_code=302)
 
     @app.get("/", response_class=HTMLResponse)
     async def index(

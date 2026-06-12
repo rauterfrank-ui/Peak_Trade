@@ -23,6 +23,7 @@ import os
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Literal
+from urllib.parse import quote
 
 import pandas as pd
 from fastapi import APIRouter, HTTPException, Query, Request
@@ -36,6 +37,9 @@ from .market_depth_runtime_v0 import (
     market_depth_json_payload_v0,
 )
 from .double_play_dashboard_display_json_route_v0 import build_static_dashboard_display_dict
+from .futures_read_only_market_dashboard_runtime_v0 import (
+    build_futures_read_only_market_dashboard_display_context,
+)
 from .market_ranking_funnel_runtime_v0 import build_market_ranking_funnel_display_context
 from .market_tape_readmodel_v0.gate import (
     enabled_explicitly_on as _market_tape_enabled_explicitly_on,
@@ -859,8 +863,8 @@ def build_market_instrument_header_display_context(
 
     encoded_symbol = symbol.replace("/", "%2F")
     double_play_href = (
-        f"/market/double-play?source={source}&symbol={encoded_symbol}"
-        f"&timeframe={timeframe}&limit={limit}"
+        f"/market?source={source}&symbol={encoded_symbol}"
+        f"&timeframe={timeframe}&limit={limit}#double-play"
     )
 
     return {
@@ -1142,6 +1146,12 @@ def create_market_router(
         if market_single_page_consolidation["section_visible"]:
             workflow_dashboard = build_workflow_dashboard_display_context()
             last_paper_run_panel = build_last_paper_run_panel_display_context()
+        dp_display = build_static_dashboard_display_dict()
+        f5_dashboard = build_futures_read_only_market_dashboard_display_context()
+        encoded_symbol = quote(symbol, safe="")
+        legacy_demo_href = (
+            f"/market?source={src}&symbol={encoded_symbol}&timeframe={timeframe}&limit={limit}"
+        )
         return templates.TemplateResponse(
             request,
             "market_v0.html",
@@ -1160,6 +1170,10 @@ def create_market_router(
                 "market_single_page_consolidation": market_single_page_consolidation,
                 "workflow_dashboard": workflow_dashboard,
                 "last_paper_run_panel": last_paper_run_panel,
+                "dp_display": dp_display,
+                "f5_dashboard": f5_dashboard,
+                "double_play_json_url": "/api/master-v2/double-play/dashboard-display.json",
+                "legacy_demo_href": legacy_demo_href,
                 "query": {
                     "symbol": symbol,
                     "timeframe": timeframe,
