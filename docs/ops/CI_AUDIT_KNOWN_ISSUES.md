@@ -1252,6 +1252,75 @@ NEW_PARALLEL_SSOT_CREATED=false
 
 **Non-authorizing:** Docs/check-plan reciprocal crosslink integration only; does **not** authorize workflow edits, branch-protection changes, truth promotion, flag mutation, runtime/live/paper/shadow/testnet, session invoke, Preflight lift, order/cancel/execution/arming, U2b reactivation, Market-Airport authority changes, trading logic changes, or semantic changes to `check_repo_truth_claims.py` / `repo_truth_claims.yaml`.
 
+## Ops Cockpit v2.5 evidence/freshness observation reciprocal crosslink — docs/tests-only guard v1
+
+**Operator-GO:** `GO_OPS_COCKPIT_V2_5_EVIDENCE_FRESHNESS_OBSERVATION_CI_AUDIT_DOCS_TRUTH_MAP_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_repo_truth_claims_standard_check_reciprocal_crosslink_bundle_merge_no_run_v1_20260613T030000Z/`
+
+**Purpose:** Anchor the read-only **Ops Cockpit v2.5 evidence/freshness observation** contract as a reciprocal crosslink slice. Static **CI_AUDIT ↔ DOCS_TRUTH_MAP reciprocal crosslink** closes the remaining chronicle/guard parity gap for operator-visible freshness thresholds, evidence-freshness HTML observation section, and `evidence_audit_observation` builder visibility — **without** changing payload semantics, freshness classification logic, cockpit enablement, or authority. **Scope separate from closed Truth-Gates chain #4200–#4204** — this is Operator/Ops Cockpit visibility only.
+
+**Canonical repo owners (reuse — do not duplicate):**
+
+| Concern | Owner |
+|---------|-------|
+| Ops Cockpit payload + freshness thresholds | `src/webui/ops_cockpit.py` (`FRESHNESS_FRESH_HOURS=24`, `FRESHNESS_OLDER_DAYS=30`, `_freshness_label`, `_render_operator_summary_evidence_freshness_observation_read_only`) |
+| Evidence/audit observation builder | `src/ops/evidence_audit_observation.py` (`build_evidence_audit_observation`) |
+| Operator summary spec | `docs/ops/specs/OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md` — **Evidence freshness observation (read-only)** section |
+| v2.5 truth-first runbook | `docs/ops/runbooks/webui_ops_cockpit_v2_5_truth_first.md` |
+| SLICE-OC-2 top-level payload contract (reuse) | `tests/ops/test_ops_cockpit_payload_top_level_contract.py` |
+| WebUI freshness HTML contract tests (reuse) | `tests/webui/test_ops_cockpit.py` |
+| Evidence audit unit tests (reuse) | `tests/ops/test_evidence_audit_observation.py` |
+| OC release meta-index (reuse pointer) | CI_AUDIT § Ops Cockpit / Operator Status Index RC v0 |
+| Closed Truth-Gates chain (reuse pointer only — **no** re-chronicle) | #4200–#4204 |
+| Remote runtime contract docs guard (reuse) | `tests/ops/test_remote_runtime_contract_docs_guard_v0.py` |
+| CI_AUDIT / DOCS_TRUTH_MAP reciprocal guard | `tests/ops/test_remote_runtime_contract_docs_guard_v0.py` |
+| DOCS_TRUTH_MAP chronicle | `docs/ops/registry/DOCS_TRUTH_MAP.md` (this crosslink section + Änderungsnachweis row) |
+
+**Crosslink invariants (static — not cockpit authority):**
+
+| Invariant | Posture |
+|-----------|---------|
+| Freshness thresholds | `FRESHNESS_FRESH_HOURS=24`, `FRESHNESS_OLDER_DAYS=30` — **unchanged** |
+| HTML observation section | `operator-summary-evidence-freshness-observation-read-only` — visibility only |
+| Evidence audit observation | `build_evidence_audit_observation` — **unchanged** |
+| Payload semantics | **unchanged** — visibility/alignment only |
+| Cockpit enablement | **unchanged** — read-only observation only |
+| New cockpit row | **not created** — docs/tests guard only |
+| Truth-Gates chain #4200–#4204 | **closed** — not extended |
+
+```text
+OPS_COCKPIT_V2_5_EVIDENCE_FRESHNESS_OBSERVATION_RECIPROCAL_CROSSLINK_V1=true
+OPS_COCKPIT_EVIDENCE_FRESHNESS_OBSERVATION_READ_ONLY=true
+OPS_COCKPIT_EVIDENCE_FRESHNESS_EXISTING_CANONICAL_OWNERS_REUSED=true
+OPS_COCKPIT_PAYLOAD_SEMANTIC_TOUCH=false
+OPS_COCKPIT_ENABLEMENT_CHANGED=false
+NEW_COCKPIT_ROW_CREATED=false
+FRESHNESS_THRESHOLDS_CHANGED=false
+EVIDENCE_OBSERVATION_SEMANTIC_TOUCH=false
+OBSERVABILITY_TRUTH_ALLOWED_CHANGED=false
+REAL_METADATA_SOURCE_MARKED_CHANGED=false
+DRAFT_POSTURE_CHANGED=false
+PARALLEL_COCKPIT_SURFACE_CREATED=false
+WORKFLOW_YAML_MUTATED=false
+REQUIRED_CHECK_CONFIG_MUTATED=false
+TRUTH_GO_GRANTED=false
+TRUTH_PROMOTION_EXECUTED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+NO_SESSION_INVOKE_AUTHORIZED=true
+U2B_PARKED=true
+MARKET_AIRPORT_EXCLUDED=true
+EVIDENCE_OR_DOCS_ANCHOR_NOT_RUNTIME_AUTHORITY=true
+NO_RUNTIME=true
+NO_LIVE=true
+NO_PREFLIGHT_LIFT=true
+NEW_PARALLEL_SSOT_CREATED=false
+DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
+DOCS_DRIFT_OR_POINTER_INTEGRITY_COMPLETE=false
+```
+
+**Guard module (reuse — no parallel cockpit/evidence-freshness SSOT):** `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`.
+
+**Non-authorizing:** Docs/tests-only reciprocal crosslink integration only; does **not** authorize Ops Cockpit enablement, payload semantic changes, freshness threshold changes, evidence observation logic changes, DRAFT→READY promotion, new cockpit rows, runtime/live/paper/shadow/testnet, session invoke, Preflight lift, order/cancel/execution/arming, U2b reactivation, Market-Airport authority changes, trading logic changes, Truth-Gates chain #4200–#4204 extension, workflow edits, branch-protection changes, or truth promotion.
+
 ## Primary evidence retention invariant residual static review — docs/tests-only guard v1
 
 **Operator-GO:** `GO_PRIMARY_EVIDENCE_RETENTION_INVARIANT_RESIDUAL_STATIC_REVIEW_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_ci_docs_required_check_truth_map_residual_review_merge_no_run_v1_20260612T005020Z/`
