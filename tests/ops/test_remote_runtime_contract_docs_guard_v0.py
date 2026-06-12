@@ -751,6 +751,183 @@ GAP3_EXECUTE_COMMAND_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_OWNER_TESTS = (
     "test_gap3_execute_command_contract_v0.py",
     "test_gap2_gap3_command_dependency_contract_v0.py",
 )
+GAP4_OUTPUT_EVIDENCE_PATHS_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_HEADING = (
+    "## Gap 4 Output/Evidence Paths CI_AUDIT ↔ SECTION5 reciprocal crosslink "
+    "— docs/tests-only guard v1"
+)
+GAP4_OUTPUT_EVIDENCE_PATHS_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR = (
+    "GAP4_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1=true"
+)
+GAP4_OUTPUT_EVIDENCE_PATHS_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_EXPECTED: dict[str, str] = {
+    "GAP4_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1": "true",
+    "GAP4_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_ONLY": "true",
+    "GAP4_GAP7_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1": "true",
+    "DOCS_TESTS_ONLY": "true",
+    "CRITERIA_ONLY": "true",
+    "SECTION5_GAP4_OWNER_REFERENCED": "true",
+    "GAP4_OUTPUT_EVIDENCE_PATHS_CONTRACT_V0_REFERENCED": "true",
+    "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED": "false",
+    "GAP4_SCHEDULER_EXECUTION_AUTHORIZED": "false",
+    "PE4_PE5_NOT_USED_AS_GAP4_GAP7_REPLACEMENT": "true",
+    "SLICE_GAP4_TESTS_ONLY": "true",
+    "OBSERVATION_RUN_AUTHORIZED_NOW": "false",
+    "PAPER_RUN_AUTHORIZED_NOW": "false",
+    "SHADOW_RUN_AUTHORIZED_NOW": "false",
+    "TESTNET_SESSION_AUTHORIZED_NOW": "false",
+    "ORDER_EXECUTE_AUTHORIZED_NOW": "false",
+    "LIVE_AUTHORIZED_NOW": "false",
+    "NO_EXECUTE": "true",
+    "NO_PREFLIGHT_LIFT": "true",
+    "NO_RUNTIME": "true",
+    "NO_LIVE": "true",
+    "ORDER_CANCEL_EXECUTION_ARMING_TOUCHED": "false",
+    "AUTHORITY_LIFT": "false",
+    "TRADING_LOGIC_TOUCHED": "false",
+    "MASTER_V2_LOGIC_TOUCHED": "false",
+    "DOUBLE_PLAY_LOGIC_TOUCHED": "false",
+    "NEW_PARALLEL_SSOT_CREATED": "false",
+    "PREFLIGHT_REMAINS_BLOCKED": "true",
+    "READY_FOR_OPERATOR_ARMING": "false",
+    "MARKET_DASHBOARD_TOUCHED": "false",
+    "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED": "true",
+}
+GAP4_OUTPUT_EVIDENCE_PATHS_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_OWNER_TESTS = (
+    "test_gap4_output_evidence_paths_contract_v0.py",
+    "test_gap4_output_evidence_paths_drift_guard_contract_v0.py",
+)
+GAP5_STOP_CRITERIA_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_HEADING = (
+    "## Gap 5 Stop Criteria CI_AUDIT ↔ SECTION5 reciprocal crosslink — docs/tests-only guard v1"
+)
+GAP5_STOP_CRITERIA_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR = (
+    "GAP5_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1=true"
+)
+GAP5_STOP_CRITERIA_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_EXPECTED: dict[str, str] = {
+    "GAP5_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1": "true",
+    "GAP5_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_ONLY": "true",
+    "GAP4_GAP7_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1": "true",
+    "DOCS_TESTS_ONLY": "true",
+    "CRITERIA_ONLY": "true",
+    "SECTION5_GAP5_OWNER_REFERENCED": "true",
+    "GAP5_STOP_CRITERIA_CONTRACT_V0_REFERENCED": "true",
+    "GAP5_STOP_PROOF_ACCEPTED": "false",
+    "GAP5_STOP_REHEARSAL_EXECUTED": "false",
+    "GAP5_SCHEDULER_EXECUTION_AUTHORIZED": "false",
+    "PE4_PE5_NOT_USED_AS_GAP4_GAP7_REPLACEMENT": "true",
+    "SLICE_GAP5_TESTS_ONLY": "true",
+    "OBSERVATION_RUN_AUTHORIZED_NOW": "false",
+    "PAPER_RUN_AUTHORIZED_NOW": "false",
+    "SHADOW_RUN_AUTHORIZED_NOW": "false",
+    "TESTNET_SESSION_AUTHORIZED_NOW": "false",
+    "ORDER_EXECUTE_AUTHORIZED_NOW": "false",
+    "LIVE_AUTHORIZED_NOW": "false",
+    "NO_EXECUTE": "true",
+    "NO_PREFLIGHT_LIFT": "true",
+    "NO_RUNTIME": "true",
+    "NO_LIVE": "true",
+    "ORDER_CANCEL_EXECUTION_ARMING_TOUCHED": "false",
+    "AUTHORITY_LIFT": "false",
+    "TRADING_LOGIC_TOUCHED": "false",
+    "MASTER_V2_LOGIC_TOUCHED": "false",
+    "DOUBLE_PLAY_LOGIC_TOUCHED": "false",
+    "NEW_PARALLEL_SSOT_CREATED": "false",
+    "PREFLIGHT_REMAINS_BLOCKED": "true",
+    "READY_FOR_OPERATOR_ARMING": "false",
+    "MARKET_DASHBOARD_TOUCHED": "false",
+    "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED": "true",
+}
+GAP5_STOP_CRITERIA_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_OWNER_TESTS = (
+    "test_gap5_stop_criteria_contract_v0.py",
+    "test_gap5_stop_criteria_drift_guard_contract_v0.py",
+)
+GAP6_DRY_RUN_PROOF_CRITERIA_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_HEADING = (
+    "## Gap 6 Dry-Run Proof Criteria CI_AUDIT ↔ SECTION5 reciprocal crosslink "
+    "— docs/tests-only guard v1"
+)
+GAP6_DRY_RUN_PROOF_CRITERIA_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR = (
+    "GAP6_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1=true"
+)
+GAP6_DRY_RUN_PROOF_CRITERIA_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_EXPECTED: dict[str, str] = {
+    "GAP6_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1": "true",
+    "GAP6_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_ONLY": "true",
+    "GAP4_GAP7_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1": "true",
+    "DOCS_TESTS_ONLY": "true",
+    "CRITERIA_ONLY": "true",
+    "SECTION5_GAP6_OWNER_REFERENCED": "true",
+    "GAP6_DRY_RUN_PROOF_CRITERIA_CONTRACT_V0_REFERENCED": "true",
+    "GAP6_DRY_RUN_PROOF_VERIFIED": "false",
+    "GAP6_DRY_RUN_RC0_OBSERVED": "false",
+    "GAP6_SCHEDULER_EXECUTION_AUTHORIZED": "false",
+    "PE4_PE5_NOT_USED_AS_GAP4_GAP7_REPLACEMENT": "true",
+    "SLICE_GAP6_TESTS_ONLY": "true",
+    "OBSERVATION_RUN_AUTHORIZED_NOW": "false",
+    "PAPER_RUN_AUTHORIZED_NOW": "false",
+    "SHADOW_RUN_AUTHORIZED_NOW": "false",
+    "TESTNET_SESSION_AUTHORIZED_NOW": "false",
+    "ORDER_EXECUTE_AUTHORIZED_NOW": "false",
+    "LIVE_AUTHORIZED_NOW": "false",
+    "NO_EXECUTE": "true",
+    "NO_PREFLIGHT_LIFT": "true",
+    "NO_RUNTIME": "true",
+    "NO_LIVE": "true",
+    "ORDER_CANCEL_EXECUTION_ARMING_TOUCHED": "false",
+    "AUTHORITY_LIFT": "false",
+    "TRADING_LOGIC_TOUCHED": "false",
+    "MASTER_V2_LOGIC_TOUCHED": "false",
+    "DOUBLE_PLAY_LOGIC_TOUCHED": "false",
+    "NEW_PARALLEL_SSOT_CREATED": "false",
+    "PREFLIGHT_REMAINS_BLOCKED": "true",
+    "READY_FOR_OPERATOR_ARMING": "false",
+    "MARKET_DASHBOARD_TOUCHED": "false",
+    "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED": "true",
+}
+GAP6_DRY_RUN_PROOF_CRITERIA_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_OWNER_TESTS = (
+    "test_gap6_dry_run_proof_criteria_contract_v0.py",
+    "test_gap6_external_repo_drift_guard_contract_v0.py",
+)
+GAP7_RISK_BOUNDARY_CRITERIA_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_HEADING = (
+    "## Gap 7 Risk Boundary Criteria CI_AUDIT ↔ SECTION5 reciprocal crosslink "
+    "— docs/tests-only guard v1"
+)
+GAP7_RISK_BOUNDARY_CRITERIA_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR = (
+    "GAP7_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1=true"
+)
+GAP7_RISK_BOUNDARY_CRITERIA_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_EXPECTED: dict[str, str] = {
+    "GAP7_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1": "true",
+    "GAP7_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_ONLY": "true",
+    "GAP4_GAP7_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1": "true",
+    "DOCS_TESTS_ONLY": "true",
+    "CRITERIA_ONLY": "true",
+    "SECTION5_GAP7_OWNER_REFERENCED": "true",
+    "GAP7_RISK_BOUNDARY_CRITERIA_CONTRACT_V0_REFERENCED": "true",
+    "GAP7_RISK_BOUNDARY_VERIFIED": "false",
+    "GAP7_SCHEDULER_EXECUTION_AUTHORIZED": "false",
+    "PE4_PE5_NOT_USED_AS_GAP4_GAP7_REPLACEMENT": "true",
+    "SLICE_GAP7_TESTS_ONLY": "true",
+    "OBSERVATION_RUN_AUTHORIZED_NOW": "false",
+    "PAPER_RUN_AUTHORIZED_NOW": "false",
+    "SHADOW_RUN_AUTHORIZED_NOW": "false",
+    "TESTNET_SESSION_AUTHORIZED_NOW": "false",
+    "ORDER_EXECUTE_AUTHORIZED_NOW": "false",
+    "LIVE_AUTHORIZED_NOW": "false",
+    "NO_EXECUTE": "true",
+    "NO_PREFLIGHT_LIFT": "true",
+    "NO_RUNTIME": "true",
+    "NO_LIVE": "true",
+    "ORDER_CANCEL_EXECUTION_ARMING_TOUCHED": "false",
+    "AUTHORITY_LIFT": "false",
+    "TRADING_LOGIC_TOUCHED": "false",
+    "MASTER_V2_LOGIC_TOUCHED": "false",
+    "DOUBLE_PLAY_LOGIC_TOUCHED": "false",
+    "NEW_PARALLEL_SSOT_CREATED": "false",
+    "PREFLIGHT_REMAINS_BLOCKED": "true",
+    "READY_FOR_OPERATOR_ARMING": "false",
+    "MARKET_DASHBOARD_TOUCHED": "false",
+    "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED": "true",
+}
+GAP7_RISK_BOUNDARY_CRITERIA_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_OWNER_TESTS = (
+    "test_gap7_risk_boundary_criteria_contract_v0.py",
+    "test_gap7_risk_boundary_drift_guard_contract_v0.py",
+)
 PE_EER1_HOLD_BINDING_CHAIN_COMPLETION_STATIC_REVIEW_RECIPROCAL_SECTIONS = (
     PE4_BOUNDED_OBSERVATION_MANDATORY_CLOSEOUT_CI_AUDIT_CROSSLINK_HEADING,
     PE5_GAP4_GAP2A1_DEPENDENCY_CI_AUDIT_CROSSLINK_HEADING,
@@ -2520,6 +2697,261 @@ def test_docs_truth_map_gap1_gap3_ci_audit_section5_crosslink_chronicle_v1() -> 
     assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=false" in text
     assert "GAP2_CANONICAL_JOB_SET_VERIFIED=false" in text
     assert "GAP3_EXECUTE_COMMAND_VERIFIED=false" in text
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in text
+    assert "READY_FOR_OPERATOR_ARMING=false" in text
+    assert "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true" in text
+
+
+def _gap4_output_evidence_paths_ci_audit_section5_reciprocal_crosslink_section(text: str) -> str:
+    start = text.find(GAP4_OUTPUT_EVIDENCE_PATHS_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_HEADING)
+    assert start != -1, "missing Gap 4 Output/Evidence Paths CI_AUDIT crosslink section"
+    next_heading = text.find("\n## ", start + 1)
+    if next_heading == -1:
+        return text[start:]
+    return text[start:next_heading]
+
+
+def test_ci_audit_gap4_output_evidence_paths_crosslink_section_present_v1() -> None:
+    text = _ci_audit_text()
+    section = _gap4_output_evidence_paths_ci_audit_section5_reciprocal_crosslink_section(text)
+    assert "GO_GAP4_GAP7_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1" in section
+    assert "Gap 4 Output/Evidence Paths" in section
+    assert "SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md" in section
+    assert "pe-4/pe-5 reciprocal sections cover adjacent pe guards only" in section.lower()
+    assert "no parallel gap-4 ssot" in section.lower()
+    assert THIS_MODULE in section
+    for (
+        module_name
+    ) in GAP4_OUTPUT_EVIDENCE_PATHS_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_OWNER_TESTS:
+        assert module_name in section, f"missing owner test reference {module_name!r}"
+
+
+def test_ci_audit_gap4_output_evidence_paths_crosslink_machine_lines_v1() -> None:
+    block = _block_containing(
+        _ci_audit_text(),
+        GAP4_OUTPUT_EVIDENCE_PATHS_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR,
+    )
+    values = _machine_line_values(block)
+    missing = (
+        set(GAP4_OUTPUT_EVIDENCE_PATHS_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_EXPECTED)
+        - values.keys()
+    )
+    assert not missing, f"missing Gap 4 CI_AUDIT crosslink keys: {sorted(missing)}"
+    for (
+        key,
+        expected,
+    ) in GAP4_OUTPUT_EVIDENCE_PATHS_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_EXPECTED.items():
+        assert values[key] == expected, f"{key}={values[key]!r} expected {expected!r}"
+
+
+def test_section5_doc_gap4_output_evidence_paths_ci_audit_backref_present_v1() -> None:
+    text = SECTION5_DOC.read_text(encoding="utf-8")
+    assert "Gap 4 output/evidence paths CI_AUDIT ↔ SECTION5 reciprocal crosslink" in text
+    assert (
+        GAP4_OUTPUT_EVIDENCE_PATHS_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR in text
+    )
+    assert "test_gap4_output_evidence_paths_contract_v0.py" in text
+    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in text
+    assert "PE4_PE5_NOT_USED_AS_GAP4_GAP7_REPLACEMENT=true" in text
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in text
+    assert "READY_FOR_OPERATOR_ARMING=false" in text
+
+
+def _gap5_stop_criteria_ci_audit_section5_reciprocal_crosslink_section(text: str) -> str:
+    start = text.find(GAP5_STOP_CRITERIA_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_HEADING)
+    assert start != -1, "missing Gap 5 Stop Criteria CI_AUDIT crosslink section"
+    next_heading = text.find("\n## ", start + 1)
+    if next_heading == -1:
+        return text[start:]
+    return text[start:next_heading]
+
+
+def test_ci_audit_gap5_stop_criteria_crosslink_section_present_v1() -> None:
+    text = _ci_audit_text()
+    section = _gap5_stop_criteria_ci_audit_section5_reciprocal_crosslink_section(text)
+    assert "GO_GAP4_GAP7_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1" in section
+    assert "Gap 5 Stop Criteria" in section
+    assert "no parallel gap-5 ssot" in section.lower()
+    assert THIS_MODULE in section
+    for module_name in GAP5_STOP_CRITERIA_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_OWNER_TESTS:
+        assert module_name in section, f"missing owner test reference {module_name!r}"
+
+
+def test_ci_audit_gap5_stop_criteria_crosslink_machine_lines_v1() -> None:
+    block = _block_containing(
+        _ci_audit_text(),
+        GAP5_STOP_CRITERIA_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR,
+    )
+    values = _machine_line_values(block)
+    missing = (
+        set(GAP5_STOP_CRITERIA_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_EXPECTED) - values.keys()
+    )
+    assert not missing, f"missing Gap 5 CI_AUDIT crosslink keys: {sorted(missing)}"
+    for key, expected in GAP5_STOP_CRITERIA_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_EXPECTED.items():
+        assert values[key] == expected, f"{key}={values[key]!r} expected {expected!r}"
+
+
+def test_section5_doc_gap5_stop_criteria_ci_audit_backref_present_v1() -> None:
+    text = SECTION5_DOC.read_text(encoding="utf-8")
+    assert "Gap 5 stop criteria CI_AUDIT ↔ SECTION5 reciprocal crosslink" in text
+    assert GAP5_STOP_CRITERIA_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR in text
+    assert "test_gap5_stop_criteria_contract_v0.py" in text
+    assert "GAP5_STOP_PROOF_ACCEPTED=false" in text
+    assert "GAP5_SCHEDULER_EXECUTION_AUTHORIZED=false" in text
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in text
+    assert "READY_FOR_OPERATOR_ARMING=false" in text
+
+
+def _gap6_dry_run_proof_criteria_ci_audit_section5_reciprocal_crosslink_section(text: str) -> str:
+    start = text.find(GAP6_DRY_RUN_PROOF_CRITERIA_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_HEADING)
+    assert start != -1, "missing Gap 6 Dry-Run Proof Criteria CI_AUDIT crosslink section"
+    next_heading = text.find("\n## ", start + 1)
+    if next_heading == -1:
+        return text[start:]
+    return text[start:next_heading]
+
+
+def test_ci_audit_gap6_dry_run_proof_criteria_crosslink_section_present_v1() -> None:
+    text = _ci_audit_text()
+    section = _gap6_dry_run_proof_criteria_ci_audit_section5_reciprocal_crosslink_section(text)
+    assert "GO_GAP4_GAP7_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1" in section
+    assert "Gap 6 Dry-Run Proof Criteria" in section
+    assert "no parallel gap-6 ssot" in section.lower()
+    assert THIS_MODULE in section
+    for (
+        module_name
+    ) in GAP6_DRY_RUN_PROOF_CRITERIA_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_OWNER_TESTS:
+        assert module_name in section, f"missing owner test reference {module_name!r}"
+
+
+def test_ci_audit_gap6_dry_run_proof_criteria_crosslink_machine_lines_v1() -> None:
+    block = _block_containing(
+        _ci_audit_text(),
+        GAP6_DRY_RUN_PROOF_CRITERIA_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR,
+    )
+    values = _machine_line_values(block)
+    missing = (
+        set(GAP6_DRY_RUN_PROOF_CRITERIA_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_EXPECTED)
+        - values.keys()
+    )
+    assert not missing, f"missing Gap 6 CI_AUDIT crosslink keys: {sorted(missing)}"
+    for (
+        key,
+        expected,
+    ) in GAP6_DRY_RUN_PROOF_CRITERIA_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_EXPECTED.items():
+        assert values[key] == expected, f"{key}={values[key]!r} expected {expected!r}"
+
+
+def test_section5_doc_gap6_dry_run_proof_criteria_ci_audit_backref_present_v1() -> None:
+    text = SECTION5_DOC.read_text(encoding="utf-8")
+    assert "Gap 6 dry-run proof criteria CI_AUDIT ↔ SECTION5 reciprocal crosslink" in text
+    assert (
+        GAP6_DRY_RUN_PROOF_CRITERIA_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR
+        in text
+    )
+    assert "test_gap6_dry_run_proof_criteria_contract_v0.py" in text
+    assert "GAP6_DRY_RUN_PROOF_VERIFIED=false" in text
+    assert "GAP6_DRY_RUN_RC0_OBSERVED=false" in text
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in text
+    assert "READY_FOR_OPERATOR_ARMING=false" in text
+
+
+def _gap7_risk_boundary_criteria_ci_audit_section5_reciprocal_crosslink_section(text: str) -> str:
+    start = text.find(GAP7_RISK_BOUNDARY_CRITERIA_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_HEADING)
+    assert start != -1, "missing Gap 7 Risk Boundary Criteria CI_AUDIT crosslink section"
+    next_heading = text.find("\n## ", start + 1)
+    if next_heading == -1:
+        return text[start:]
+    return text[start:next_heading]
+
+
+def test_ci_audit_gap7_risk_boundary_criteria_crosslink_section_present_v1() -> None:
+    text = _ci_audit_text()
+    section = _gap7_risk_boundary_criteria_ci_audit_section5_reciprocal_crosslink_section(text)
+    assert "GO_GAP4_GAP7_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1" in section
+    assert "Gap 7 Risk Boundary Criteria" in section
+    assert "no parallel gap-7 ssot" in section.lower()
+    assert THIS_MODULE in section
+    for (
+        module_name
+    ) in GAP7_RISK_BOUNDARY_CRITERIA_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_OWNER_TESTS:
+        assert module_name in section, f"missing owner test reference {module_name!r}"
+
+
+def test_ci_audit_gap7_risk_boundary_criteria_crosslink_machine_lines_v1() -> None:
+    block = _block_containing(
+        _gap7_risk_boundary_criteria_ci_audit_section5_reciprocal_crosslink_section(
+            _ci_audit_text()
+        ),
+        GAP7_RISK_BOUNDARY_CRITERIA_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR,
+    )
+    values = _machine_line_values(block)
+    missing = (
+        set(GAP7_RISK_BOUNDARY_CRITERIA_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_EXPECTED)
+        - values.keys()
+    )
+    assert not missing, f"missing Gap 7 CI_AUDIT crosslink keys: {sorted(missing)}"
+    for (
+        key,
+        expected,
+    ) in GAP7_RISK_BOUNDARY_CRITERIA_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_EXPECTED.items():
+        assert values[key] == expected, f"{key}={values[key]!r} expected {expected!r}"
+
+
+def test_section5_doc_gap7_risk_boundary_criteria_ci_audit_backref_present_v1() -> None:
+    text = SECTION5_DOC.read_text(encoding="utf-8")
+    assert "Gap 7 risk boundary criteria CI_AUDIT ↔ SECTION5 reciprocal crosslink" in text
+    assert (
+        GAP7_RISK_BOUNDARY_CRITERIA_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR
+        in text
+    )
+    assert "test_gap7_risk_boundary_criteria_contract_v0.py" in text
+    assert "GAP7_RISK_BOUNDARY_VERIFIED=false" in text
+    assert "GAP7_SCHEDULER_EXECUTION_AUTHORIZED=false" in text
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in text
+    assert "READY_FOR_OPERATOR_ARMING=false" in text
+
+
+def test_ci_audit_gap4_gap7_pe4_pe5_not_replacement_v1() -> None:
+    text = _ci_audit_text()
+    assert PE4_BOUNDED_OBSERVATION_MANDATORY_CLOSEOUT_CI_AUDIT_CROSSLINK_HEADING in text
+    assert PE5_GAP4_GAP2A1_DEPENDENCY_CI_AUDIT_CROSSLINK_HEADING in text
+    assert GAP4_OUTPUT_EVIDENCE_PATHS_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_HEADING in text
+    gap4_section = _gap4_output_evidence_paths_ci_audit_section5_reciprocal_crosslink_section(text)
+    assert "PE4_PE5_NOT_USED_AS_GAP4_GAP7_REPLACEMENT=true" in gap4_section
+    assert "PE-4/PE-5 reciprocal sections cover adjacent PE guards only" in gap4_section
+
+
+def test_docs_truth_map_gap4_gap7_ci_audit_section5_crosslink_chronicle_v1() -> None:
+    text = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    assert "Gap 4–7 criteria CI_AUDIT ↔ SECTION5 reciprocal crosslink guard v1" in text
+    assert THIS_MODULE in text
+    assert (
+        GAP4_OUTPUT_EVIDENCE_PATHS_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR in text
+    )
+    assert GAP5_STOP_CRITERIA_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR in text
+    assert (
+        GAP6_DRY_RUN_PROOF_CRITERIA_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR
+        in text
+    )
+    assert (
+        GAP7_RISK_BOUNDARY_CRITERIA_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR
+        in text
+    )
+    assert "GAP4_GAP7_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1=true" in text
+    assert "PE4_PE5_NOT_USED_AS_GAP4_GAP7_REPLACEMENT=true" in text
+    assert "test_gap4_output_evidence_paths_contract_v0.py" in text
+    assert "test_gap5_stop_criteria_contract_v0.py" in text
+    assert "test_gap6_dry_run_proof_criteria_contract_v0.py" in text
+    assert "test_gap7_risk_boundary_criteria_contract_v0.py" in text
+    assert (
+        "**no** execute / Preflight-Lift / scheduler-execution / observation-run / paper-run / "
+        "shadow-run / testnet-session / runtime" in text
+    )
+    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in text
+    assert "GAP5_STOP_PROOF_ACCEPTED=false" in text
+    assert "GAP6_DRY_RUN_PROOF_VERIFIED=false" in text
+    assert "GAP7_RISK_BOUNDARY_VERIFIED=false" in text
     assert "PREFLIGHT_REMAINS_BLOCKED=true" in text
     assert "READY_FOR_OPERATOR_ARMING=false" in text
     assert "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true" in text

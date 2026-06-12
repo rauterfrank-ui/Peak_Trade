@@ -457,6 +457,26 @@ Future runs are not considered complete unless primary evidence artifacts are du
 
 This contract does not authorize runtime, scheduler, Paper, Shadow, Testnet, Live, AWS, broker, or exchange activity. It does not change default-on enforcement, does not mark `READY_FOR_OPERATOR_ARMING=true`, does not lift Path B, does not lift preflight, and does not approve runtime.
 
+**Gap 4 output/evidence paths CI_AUDIT ↔ SECTION5 reciprocal crosslink (SECTION5 guard) v0:** Reciprocal to `docs/ops/CI_AUDIT_KNOWN_ISSUES.md` § Gap 4 Output/Evidence Paths CI_AUDIT ↔ SECTION5 reciprocal crosslink. Static guards: `tests/ops/test_gap4_output_evidence_paths_contract_v0.py`, `tests/ops/test_gap4_output_evidence_paths_drift_guard_contract_v0.py`, `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`. PE-4/PE-5 reciprocal sections are adjacent PE guards only — **not** a replacement for this Gap 4 criteria crosslink. **Docs/tests-only**; criteria-only; does **not** authorize execute, preflight lift, bounded observation run, or runtime; `PREFLIGHT_REMAINS_BLOCKED=true`.
+
+```
+GAP4_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1=true
+GAP4_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_ONLY=true
+GAP4_GAP7_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1=true
+SECTION5_GAP4_OWNER_REFERENCED=true
+GAP4_OUTPUT_EVIDENCE_PATHS_CONTRACT_V0_REFERENCED=true
+GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false
+GAP4_SCHEDULER_EXECUTION_AUTHORIZED=false
+PE4_PE5_NOT_USED_AS_GAP4_GAP7_REPLACEMENT=true
+CRITERIA_ONLY=true
+NO_EXECUTE=true
+NO_PREFLIGHT_LIFT=true
+NO_RUNTIME=true
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
+```
+
 ## Gap 4 Criteria-SSOT Repo-Internal Write/Lift Applied Reflection v0
 
 SECTION5_CRITERIA_SSOT_REPO_CHANGE_PROPOSAL_V0=true
@@ -521,6 +541,27 @@ This contract records criteria only. It does not execute `scripts/run_scheduler.
 ### Non-authorization
 
 This contract does not execute `scripts/run_scheduler.py`, does not authorize scheduler execution, does not enable or modify `config/scheduler/jobs.toml`, and does not authorize runtime, Paper, Shadow, Testnet, Live, AWS, broker, or exchange activity. It does not change default-on enforcement, does not mark `READY_FOR_OPERATOR_ARMING=true`, does not lift Path B, does not lift preflight, and does not approve runtime.
+
+**Gap 6 dry-run proof criteria CI_AUDIT ↔ SECTION5 reciprocal crosslink (SECTION5 guard) v0:** Reciprocal to `docs/ops/CI_AUDIT_KNOWN_ISSUES.md` § Gap 6 Dry-Run Proof Criteria CI_AUDIT ↔ SECTION5 reciprocal crosslink. Static guards: `tests/ops/test_gap6_dry_run_proof_criteria_contract_v0.py`, `tests/ops/test_gap6_external_repo_drift_guard_contract_v0.py`, `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`. **Docs/tests-only**; criteria-only; does **not** authorize execute, preflight lift, dry-run proof acceptance, or runtime; `PREFLIGHT_REMAINS_BLOCKED=true`.
+
+```
+GAP6_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1=true
+GAP6_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_ONLY=true
+GAP4_GAP7_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1=true
+SECTION5_GAP6_OWNER_REFERENCED=true
+GAP6_DRY_RUN_PROOF_CRITERIA_CONTRACT_V0_REFERENCED=true
+GAP6_DRY_RUN_PROOF_VERIFIED=false
+GAP6_DRY_RUN_RC0_OBSERVED=false
+GAP6_SCHEDULER_EXECUTION_AUTHORIZED=false
+PE4_PE5_NOT_USED_AS_GAP4_GAP7_REPLACEMENT=true
+CRITERIA_ONLY=true
+NO_EXECUTE=true
+NO_PREFLIGHT_LIFT=true
+NO_RUNTIME=true
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
+```
 
 ## Gap 6 Criteria-SSOT Repo-Internal Write/Lift Applied Reflection v0
 
@@ -597,6 +638,26 @@ This contract records criteria only. It does not execute `scripts/run_scheduler.
 ### Non-authorization
 
 This contract does not verify or activate Risk Boundaries, does not change Risk/KillSwitch authority, does not change Risk/KillSwitch runtime behavior, does not change Master V2 / Double Play logic, does not change Bull/Bear side-switching or Scope/Capital behavior, and does not change execution/live gates. It does not modify `config/scheduler/jobs.toml`, does not enable any scheduler job, does not execute `scripts/run_scheduler.py`, does not authorize scheduler execution, does not approve runtime execution, and does not authorize Paper, Shadow, Testnet, Live, AWS, broker, or exchange activity. It does not change default-on enforcement, does not mark `READY_FOR_OPERATOR_ARMING=true`, does not lift Path B, does not lift preflight, and does not approve runtime.
+
+**Gap 7 risk boundary criteria CI_AUDIT ↔ SECTION5 reciprocal crosslink (SECTION5 guard) v0:** Reciprocal to `docs/ops/CI_AUDIT_KNOWN_ISSUES.md` § Gap 7 Risk Boundary Criteria CI_AUDIT ↔ SECTION5 reciprocal crosslink. Static guards: `tests/ops/test_gap7_risk_boundary_criteria_contract_v0.py`, `tests/ops/test_gap7_risk_boundary_drift_guard_contract_v0.py`, `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`. **Docs/tests-only**; criteria-only; does **not** authorize execute, preflight lift, risk boundary verification, or runtime; `PREFLIGHT_REMAINS_BLOCKED=true`.
+
+```
+GAP7_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1=true
+GAP7_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_ONLY=true
+GAP4_GAP7_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1=true
+SECTION5_GAP7_OWNER_REFERENCED=true
+GAP7_RISK_BOUNDARY_CRITERIA_CONTRACT_V0_REFERENCED=true
+GAP7_RISK_BOUNDARY_VERIFIED=false
+GAP7_SCHEDULER_EXECUTION_AUTHORIZED=false
+PE4_PE5_NOT_USED_AS_GAP4_GAP7_REPLACEMENT=true
+CRITERIA_ONLY=true
+NO_EXECUTE=true
+NO_PREFLIGHT_LIFT=true
+NO_RUNTIME=true
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
+```
 
 ## Gap 7 Criteria-SSOT Repo-Internal Write/Lift Applied Reflection v0
 
@@ -3244,6 +3305,27 @@ This contract records criteria only. It does not execute `scripts/run_scheduler.
 ### Non-authorization
 
 This contract does not grant a Type-2 waiver, does not execute or claim a stop-tool rehearsal, does not accept or verify stop proof, and does not change Risk/KillSwitch or runtime stop authority. It does not execute `scripts/run_scheduler.py`, does not authorize scheduler execution, does not enable or modify `config/scheduler/jobs.toml`, and does not authorize runtime, Paper, Shadow, Testnet, Live, AWS, broker, or exchange activity. It does not change default-on enforcement, does not mark `READY_FOR_OPERATOR_ARMING=true`, does not lift Path B, does not lift preflight, and does not approve runtime.
+
+**Gap 5 stop criteria CI_AUDIT ↔ SECTION5 reciprocal crosslink (SECTION5 guard) v0:** Reciprocal to `docs/ops/CI_AUDIT_KNOWN_ISSUES.md` § Gap 5 Stop Criteria CI_AUDIT ↔ SECTION5 reciprocal crosslink. Static guards: `tests/ops/test_gap5_stop_criteria_contract_v0.py`, `tests/ops/test_gap5_stop_criteria_drift_guard_contract_v0.py`, `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`. **Docs/tests-only**; criteria-only; does **not** authorize execute, preflight lift, stop rehearsal, or runtime; `PREFLIGHT_REMAINS_BLOCKED=true`.
+
+```
+GAP5_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1=true
+GAP5_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_ONLY=true
+GAP4_GAP7_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1=true
+SECTION5_GAP5_OWNER_REFERENCED=true
+GAP5_STOP_CRITERIA_CONTRACT_V0_REFERENCED=true
+GAP5_STOP_PROOF_ACCEPTED=false
+GAP5_STOP_REHEARSAL_EXECUTED=false
+GAP5_SCHEDULER_EXECUTION_AUTHORIZED=false
+PE4_PE5_NOT_USED_AS_GAP4_GAP7_REPLACEMENT=true
+CRITERIA_ONLY=true
+NO_EXECUTE=true
+NO_PREFLIGHT_LIFT=true
+NO_RUNTIME=true
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
+```
 
 ## Gap 2 Canonical Job Set Contract v0
 

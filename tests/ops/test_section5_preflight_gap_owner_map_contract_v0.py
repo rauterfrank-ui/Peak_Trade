@@ -102,6 +102,24 @@ def _gap4_section(text: str) -> str:
     )[0]
 
 
+def _gap5_section(text: str) -> str:
+    return text.split("## Gap 5 Stop Criteria Contract v0", 1)[1].split(
+        "## Gap 2 Canonical Job Set Contract v0", 1
+    )[0]
+
+
+def _gap6_section(text: str) -> str:
+    return text.split("## Gap 6 Dry-Run Proof Criteria Contract v0", 1)[1].split(
+        "## Gap 6 Criteria-SSOT Repo-Internal Write/Lift Applied Reflection v0", 1
+    )[0]
+
+
+def _gap7_section(text: str) -> str:
+    return text.split("## Gap 7 Risk Boundary Criteria Contract v0", 1)[1].split(
+        "## Gap 7 Criteria-SSOT Repo-Internal Write/Lift Applied Reflection v0", 1
+    )[0]
+
+
 def test_section5_hold_binding_profile_preflight_2a_reciprocal_crosslink_v1() -> None:
     text = DOC.read_text(encoding="utf-8")
     ci_audit = (ROOT / "docs" / "ops" / "CI_AUDIT_KNOWN_ISSUES.md").read_text(encoding="utf-8")
@@ -255,6 +273,73 @@ def test_section5_gap1_gap3_ci_audit_reciprocal_crosslink_v1() -> None:
     assert "test_remote_runtime_contract_docs_guard_v0.py" in gap1
     collapsed = gap1.replace("**", "")
     assert "does not authorize execute" in collapsed.lower()
+
+
+def test_section5_gap4_gap7_ci_audit_reciprocal_crosslink_v1() -> None:
+    text = DOC.read_text(encoding="utf-8")
+    ci_audit = (ROOT / "docs" / "ops" / "CI_AUDIT_KNOWN_ISSUES.md").read_text(encoding="utf-8")
+    gap4 = _gap4_section(text)
+    gap5 = _gap5_section(text)
+    gap6 = _gap6_section(text)
+    gap7 = _gap7_section(text)
+    shared_tokens = (
+        "GAP4_GAP7_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1=true",
+        "PE4_PE5_NOT_USED_AS_GAP4_GAP7_REPLACEMENT=true",
+        "CRITERIA_ONLY=true",
+        "NO_EXECUTE=true",
+        "NO_PREFLIGHT_LIFT=true",
+        "NO_RUNTIME=true",
+        "PREFLIGHT_REMAINS_BLOCKED=true",
+        "READY_FOR_OPERATOR_ARMING=false",
+        "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true",
+    )
+    for token in shared_tokens:
+        assert token in gap4
+        assert token in gap5
+        assert token in gap6
+        assert token in gap7
+        assert token in ci_audit
+    for token in (
+        "GAP4_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1=true",
+        "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false",
+    ):
+        assert token in gap4
+        assert token in ci_audit
+    for token in (
+        "GAP5_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1=true",
+        "GAP5_STOP_PROOF_ACCEPTED=false",
+        "GAP5_SCHEDULER_EXECUTION_AUTHORIZED=false",
+    ):
+        assert token in gap5
+        assert token in ci_audit
+    for token in (
+        "GAP6_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1=true",
+        "GAP6_DRY_RUN_PROOF_VERIFIED=false",
+        "GAP6_DRY_RUN_RC0_OBSERVED=false",
+    ):
+        assert token in gap6
+        assert token in ci_audit
+    for token in (
+        "GAP7_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1=true",
+        "GAP7_RISK_BOUNDARY_VERIFIED=false",
+        "GAP7_SCHEDULER_EXECUTION_AUTHORIZED=false",
+    ):
+        assert token in gap7
+        assert token in ci_audit
+    assert "Gap 4 output/evidence paths CI_AUDIT ↔ SECTION5 reciprocal crosslink" in gap4
+    assert "Gap 5 stop criteria CI_AUDIT ↔ SECTION5 reciprocal crosslink" in gap5
+    assert "Gap 6 dry-run proof criteria CI_AUDIT ↔ SECTION5 reciprocal crosslink" in gap6
+    assert "Gap 7 risk boundary criteria CI_AUDIT ↔ SECTION5 reciprocal crosslink" in gap7
+    assert "Gap 4 Output/Evidence Paths CI_AUDIT ↔ SECTION5 reciprocal crosslink" in ci_audit
+    assert "Gap 5 Stop Criteria CI_AUDIT ↔ SECTION5 reciprocal crosslink" in ci_audit
+    assert "Gap 6 Dry-Run Proof Criteria CI_AUDIT ↔ SECTION5 reciprocal crosslink" in ci_audit
+    assert "Gap 7 Risk Boundary Criteria CI_AUDIT ↔ SECTION5 reciprocal crosslink" in ci_audit
+    assert "PE-4 Bounded observation mandatory closeout wiring CI_AUDIT" in ci_audit
+    assert "PE-5 Gap4 ↔ Gap2a.1 dependency CI_AUDIT" in ci_audit
+    assert "test_remote_runtime_contract_docs_guard_v0.py" in gap4
+    collapsed = gap4.replace("**", "")
+    assert "does not authorize execute" in collapsed.lower()
+    assert "not a replacement for this gap 4 criteria crosslink" in collapsed.lower()
 
 
 def test_section5_pe_eer1_hold_binding_chain_completion_static_review_v1() -> None:
