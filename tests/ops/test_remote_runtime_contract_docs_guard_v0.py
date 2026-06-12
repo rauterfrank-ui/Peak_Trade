@@ -313,6 +313,42 @@ PE8_PE9_PE10_BOUNDED_FUTURES_TESTNET_CI_AUDIT_CROSSLINK_OWNER_TESTS = (
     "test_bounded_futures_testnet_runtime_harness_contract_v0.py",
     "test_archive_futures_testnet_harness_v0.py",
 )
+PE7_REPO_NATIVE_BOUNDED_TESTNET_ORDER_CAP_CI_AUDIT_CROSSLINK_HEADING = (
+    "## PE-7 Repo-native bounded Testnet order-cap CI_AUDIT ↔ SECTION5 reciprocal crosslink "
+    "— docs/tests-only guard v1"
+)
+PE7_REPO_NATIVE_BOUNDED_TESTNET_ORDER_CAP_CI_AUDIT_CROSSLINK_GUARD_BLOCK_ANCHOR = (
+    "PE7_REPO_NATIVE_BOUNDED_TESTNET_ORDER_CAP_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_V1=true"
+)
+PE7_REPO_NATIVE_BOUNDED_TESTNET_ORDER_CAP_CI_AUDIT_CROSSLINK_EXPECTED: dict[str, str] = {
+    "PE7_REPO_NATIVE_BOUNDED_TESTNET_ORDER_CAP_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_V1": "true",
+    "PE7_REPO_NATIVE_BOUNDED_TESTNET_ORDER_CAP_CI_AUDIT_CROSSLINK_DOCS_TESTS_ONLY": "true",
+    "DOCS_TESTS_ONLY": "true",
+    "SECTION5_PE7_REPO_NATIVE_ORDER_CAP_OWNER_REFERENCED": "true",
+    "BOUNDED_TESTNET_ORDER_CAP_CONTRACT_V0_REFERENCED": "true",
+    "REPO_NATIVE_BOUNDED_ORDER_CAP_CLI_WIRING_REFERENCED": "true",
+    "ORDER_EXECUTE_AUTHORIZED_NOW": "false",
+    "TESTNET_SESSION_AUTHORIZED_NOW": "false",
+    "RUN_TESTNET_SESSION_ALLOWED_NOW": "false",
+    "LIVE_AUTHORIZED_NOW": "false",
+    "NO_EXECUTE": "true",
+    "NO_PREFLIGHT_LIFT": "true",
+    "NO_RUNTIME": "true",
+    "NO_LIVE": "true",
+    "ORDER_CANCEL_EXECUTION_ARMING_TOUCHED": "false",
+    "AUTHORITY_LIFT": "false",
+    "TRADING_LOGIC_TOUCHED": "false",
+    "MASTER_V2_LOGIC_TOUCHED": "false",
+    "DOUBLE_PLAY_LOGIC_TOUCHED": "false",
+    "NEW_PARALLEL_SSOT_CREATED": "false",
+    "PREFLIGHT_REMAINS_BLOCKED": "true",
+    "MARKET_DASHBOARD_TOUCHED": "false",
+    "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED": "true",
+}
+PE7_REPO_NATIVE_BOUNDED_TESTNET_ORDER_CAP_CI_AUDIT_CROSSLINK_OWNER_TESTS = (
+    "test_repo_native_bounded_order_cap_contract_v0.py",
+    "test_repo_native_entrypoint_cli_cap_wiring_contract_v0.py",
+)
 SECTION5_DOC = (
     REPO_ROOT / "docs" / "ops" / "planning" / "SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md"
 )
@@ -1229,6 +1265,80 @@ def test_docs_truth_map_pe8_pe9_pe10_bounded_futures_testnet_ci_audit_crosslink_
     assert (
         "**no** execute / Preflight-Lift / futures-session / harness-network-I/O / runtime" in text
     )
+    assert "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true" in text
+
+
+def _pe7_repo_native_bounded_testnet_order_cap_ci_audit_crosslink_section(text: str) -> str:
+    start = text.find(PE7_REPO_NATIVE_BOUNDED_TESTNET_ORDER_CAP_CI_AUDIT_CROSSLINK_HEADING)
+    assert start != -1, (
+        "missing PE-7 repo-native bounded testnet order-cap CI_AUDIT crosslink section"
+    )
+    next_heading = text.find("\n## ", start + 1)
+    if next_heading == -1:
+        return text[start:]
+    return text[start:next_heading]
+
+
+def test_ci_audit_pe7_repo_native_bounded_testnet_order_cap_crosslink_section_present_v1() -> None:
+    text = _ci_audit_text()
+    section = _pe7_repo_native_bounded_testnet_order_cap_ci_audit_crosslink_section(text)
+    assert (
+        "GO_REPO_NATIVE_BOUNDED_TESTNET_ORDER_CAP_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1"
+        in section
+    )
+    assert "repo-native bounded Testnet order-cap contract" in section
+    assert "SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md" in section
+    assert "bounded_testnet_order_cap_contract_v0.py" in section
+    assert "no parallel pe-7 ssot" in section.lower()
+    assert THIS_MODULE in section
+    for module_name in PE7_REPO_NATIVE_BOUNDED_TESTNET_ORDER_CAP_CI_AUDIT_CROSSLINK_OWNER_TESTS:
+        assert module_name in section, f"missing owner test reference {module_name!r}"
+
+
+def test_ci_audit_pe7_repo_native_bounded_testnet_order_cap_crosslink_machine_lines_v1() -> None:
+    block = _block_containing(
+        _ci_audit_text(),
+        PE7_REPO_NATIVE_BOUNDED_TESTNET_ORDER_CAP_CI_AUDIT_CROSSLINK_GUARD_BLOCK_ANCHOR,
+    )
+    values = _machine_line_values(block)
+    missing = (
+        set(PE7_REPO_NATIVE_BOUNDED_TESTNET_ORDER_CAP_CI_AUDIT_CROSSLINK_EXPECTED) - values.keys()
+    )
+    assert not missing, f"missing PE-7 CI_AUDIT crosslink keys: {sorted(missing)}"
+    for (
+        key,
+        expected,
+    ) in PE7_REPO_NATIVE_BOUNDED_TESTNET_ORDER_CAP_CI_AUDIT_CROSSLINK_EXPECTED.items():
+        assert values[key] == expected, f"{key}={values[key]!r} expected {expected!r}"
+
+
+def test_section5_doc_pe7_repo_native_bounded_testnet_order_cap_owner_present_v1() -> None:
+    text = SECTION5_DOC.read_text(encoding="utf-8")
+    assert "**Repo-native bounded Testnet order-cap contract (PE-7 guard) v0:**" in text
+    assert "BOUNDED_TESTNET_ORDER_CAP_CONTRACT_V0=true" in text
+    assert "REPO_NATIVE_BOUNDED_ORDER_CAP_CLI_WIRING_COMPLETE=true" in text
+    assert "test_repo_native_bounded_order_cap_contract_v0.py" in text
+    assert "test_repo_native_entrypoint_cli_cap_wiring_contract_v0.py" in text
+    assert (
+        PE7_REPO_NATIVE_BOUNDED_TESTNET_ORDER_CAP_CI_AUDIT_CROSSLINK_GUARD_BLOCK_ANCHOR not in text
+    )
+
+
+def test_docs_truth_map_pe7_repo_native_bounded_testnet_order_cap_ci_audit_crosslink_chronicle_v1() -> (
+    None
+):
+    text = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    assert (
+        "PE-7 Repo-native bounded Testnet order-cap CI_AUDIT ↔ SECTION5 reciprocal crosslink guard v1"
+        in text
+    )
+    assert THIS_MODULE in text
+    assert PE7_REPO_NATIVE_BOUNDED_TESTNET_ORDER_CAP_CI_AUDIT_CROSSLINK_GUARD_BLOCK_ANCHOR in text
+    assert "test_repo_native_bounded_order_cap_contract_v0.py" in text
+    assert "test_repo_native_entrypoint_cli_cap_wiring_contract_v0.py" in text
+    assert "**no** execute / Preflight-Lift / testnet-session / order-execution / runtime" in text
+    assert "ORDER_EXECUTE_AUTHORIZED_NOW=false" in text
+    assert "TESTNET_SESSION_AUTHORIZED_NOW=false" in text
     assert "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true" in text
 
 
