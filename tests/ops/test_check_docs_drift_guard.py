@@ -117,3 +117,40 @@ def test_cli_reports_git_diff_failure_for_missing_base_ref(tmp_path: Path) -> No
     assert "ERR: git diff failed (exit 128)." in result.stderr
     assert "definitely_missing_base_ref_for_contract_probe...HEAD" in result.stderr
     assert "Hint: ensure the base ref exists" in result.stderr
+
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+CI_AUDIT = REPO_ROOT / "docs" / "ops" / "CI_AUDIT_KNOWN_ISSUES.md"
+DOCS_TRUTH_MAP = REPO_ROOT / "docs" / "ops" / "registry" / "DOCS_TRUTH_MAP.md"
+DOCS_TRUTH_MAP_CONFIG = REPO_ROOT / "config" / "ops" / "docs_truth_map.yaml"
+DOCS_DRIFT_GUARD_SCRIPT = REPO_ROOT / "scripts" / "ops" / "check_docs_drift_guard.py"
+CV3_POINTER_INTEGRITY_HEADING = "### Docs drift / pointer integrity crosslink guard v0 (SLICE-CV-3)"
+CV3_POINTER_INTEGRITY_BLOCK_ANCHOR = (
+    "SLICE_CV3_DOCS_DRIFT_POINTER_INTEGRITY_CROSSLINK_GUARD_V0=true"
+)
+CV3_HISTOGRAM_GUARD_MODULE = (
+    "tests/ci/test_cybersecurity_visibility_repo_static_histogram_"
+    "artifact_retention_or_evidence_gap_crosslink_v0.py"
+)
+
+
+def test_docs_drift_guard_cv3_pointer_integrity_crosslink_v0() -> None:
+    audit_text = CI_AUDIT.read_text(encoding="utf-8")
+    truth_map = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+
+    assert CV3_POINTER_INTEGRITY_HEADING in audit_text
+    assert CV3_POINTER_INTEGRITY_BLOCK_ANCHOR in audit_text
+    assert CV3_HISTOGRAM_GUARD_MODULE in audit_text
+    assert str(DOCS_DRIFT_GUARD_SCRIPT.relative_to(REPO_ROOT)).replace("\\", "/") in audit_text
+    assert str(DOCS_TRUTH_MAP_CONFIG.relative_to(REPO_ROOT)).replace("\\", "/") in audit_text
+    assert Path(__file__).name in audit_text
+    assert "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true" in audit_text
+    assert "DOCS_DRIFT_OR_POINTER_INTEGRITY_COMPLETE=false" in audit_text
+    assert "docs_drift_or_pointer_integrity" in audit_text.lower()
+
+    assert DOCS_TRUTH_MAP_CONFIG.is_file()
+    assert DOCS_DRIFT_GUARD_SCRIPT.is_file()
+    assert "check_docs_drift_guard.py" in truth_map
+    assert "docs_truth_map.yaml" in truth_map
+    assert "SLICE-CV-3" in truth_map
+    assert "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true" in truth_map

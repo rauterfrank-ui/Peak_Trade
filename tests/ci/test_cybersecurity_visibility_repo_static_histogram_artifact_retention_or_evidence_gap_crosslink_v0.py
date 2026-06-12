@@ -437,3 +437,115 @@ def test_cybersecurity_visibility_cv3c_histogram_report_reciprocal_crosslink_v0(
 
     input_text = (REPO_ROOT / INPUT_ARTIFACT_MODULE).read_text(encoding="utf-8")
     assert CV3C_BLOCK_ANCHOR in input_text or CV3C_REPORT_HEADING in input_text
+
+
+CV3_POINTER_INTEGRITY_HEADING = "### Docs drift / pointer integrity crosslink guard v0 (SLICE-CV-3)"
+CV3_POINTER_INTEGRITY_BLOCK_ANCHOR = (
+    "SLICE_CV3_DOCS_DRIFT_POINTER_INTEGRITY_CROSSLINK_GUARD_V0=true"
+)
+CV3_RANKING_BUNDLE = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/systemwide_next_safe_scope_ranking_after_market_dashboard_pr4162_crosslink_guard_merge_no_run_v1_20260612T080955Z/"
+)
+CV3_PREP_BUNDLE = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/cybersecurity_docs_drift_pointer_integrity_bounded_prep_no_run_v1_20260611T020817Z/"
+)
+CV3_PR15_CLOSEOUT_BUNDLE = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "closeout/csc_rchain_v1_pr15_no_safe_reaffirmation_block_stop_idle_finalization_v0_20260601T162636Z/"
+)
+DOCS_DRIFT_GUARD_SCRIPT = "scripts/ops/check_docs_drift_guard.py"
+DOCS_TRUTH_MAP_CONFIG = "config/ops/docs_truth_map.yaml"
+DOCS_DRIFT_GUARD_TEST_MODULE = "tests/ops/test_check_docs_drift_guard.py"
+CV3_POINTER_INTEGRITY_EXPECTED_MACHINE_LINES: dict[str, str] = {
+    "SLICE_CV3_DOCS_DRIFT_POINTER_INTEGRITY_CROSSLINK_GUARD_V0": "true",
+    "SLICE_CV3_DOCS_DRIFT_POINTER_INTEGRITY_CROSSLINK_GUARD_COMPLETE": "true",
+    "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED": "true",
+    "DOCS_DRIFT_OR_POINTER_INTEGRITY_COMPLETE": "false",
+    "CSC_RCHAIN_PR15_FINALIZATION_PR_NECESSARY": "false",
+    "CSC_RCHAIN_PR15_STOP_IDLE_NO_SAFE_REAFFIRMATION_BLOCK": "true",
+    "DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED": "true",
+    "INPUT_JSONL_PROVIDED": "false",
+    "SLICE_CV3_DOCS_TESTS_ONLY": "true",
+    "REUSE_DRIFT_GUARD": "REUSE_OK",
+    "PREFLIGHT_REMAINS_BLOCKED": "true",
+    "READY_FOR_OPERATOR_ARMING": "false",
+}
+CV3_POINTER_INTEGRITY_FORBIDDEN_MACHINE_LINES: tuple[str, ...] = (
+    "DOCS_DRIFT_OR_POINTER_INTEGRITY_COMPLETE=true",
+    "HISTOGRAM_BUCKET_CROSSLINKS_COMPLETE=false",
+    "INPUT_JSONL_PROVIDED=true",
+    "READY_FOR_OPERATOR_ARMING=true",
+    "FINALIZATION_PR_NECESSARY=true",
+)
+
+
+def _cv3_pointer_integrity_block(text: str) -> str:
+    start = text.index(CV3_POINTER_INTEGRITY_HEADING)
+    end = text.index("Operators may use this histogram", start)
+    return text[start:end]
+
+
+def _machine_line_values(block: str) -> dict[str, str]:
+    values: dict[str, str] = {}
+    for line in block.splitlines():
+        stripped = line.strip()
+        if "=" not in stripped or stripped.startswith("```"):
+            continue
+        key, _, value = stripped.partition("=")
+        values[key] = value
+    return values
+
+
+def test_cybersecurity_visibility_cv3_docs_drift_pointer_integrity_crosslink_v0() -> None:
+    text = _ci_audit_text()
+    block = _cv3_pointer_integrity_block(text)
+    collapsed = block.lower()
+    machine_values = _machine_line_values(block)
+
+    assert CV3_POINTER_INTEGRITY_BLOCK_ANCHOR in block
+    assert (
+        "GO_CYBERSECURITY_VISIBILITY_SLICE_CV3_CSC_RCHAIN_PR15_OR_DOCS_DRIFT_POINTER_INTEGRITY_DOCS_TESTS_NO_RUN_V1"
+        in block
+    )
+    assert CV3_RANKING_BUNDLE in block
+    assert CV3_PREP_BUNDLE in block
+    assert CV3_PR15_CLOSEOUT_BUNDLE in block
+    assert THIS_MODULE in block
+    assert DOCS_DRIFT_GUARD_TEST_MODULE in block
+    assert DOCS_DRIFT_GUARD_SCRIPT in block
+    assert DOCS_TRUTH_MAP_CONFIG in block
+    assert GROUPING_REFLECTION_GUARD_MODULE in block
+    assert "`docs_drift_or_pointer_integrity`" in block
+    assert "deferred" in collapsed
+    assert "not falsely closed" in collapsed
+    assert "stop_idle" in collapsed
+    assert "non-authorizing" in collapsed
+
+    for key, expected in CV3_POINTER_INTEGRITY_EXPECTED_MACHINE_LINES.items():
+        assert machine_values.get(key) == expected, (
+            f"SLICE-CV-3 {key}={machine_values.get(key)!r} expected {expected!r}"
+        )
+
+    closure_lines = {line.strip() for line in block.splitlines()}
+    for marker in CV3_POINTER_INTEGRITY_FORBIDDEN_MACHINE_LINES:
+        assert marker not in closure_lines
+
+    assert (REPO_ROOT / DOCS_DRIFT_GUARD_SCRIPT).is_file()
+    assert (REPO_ROOT / DOCS_TRUTH_MAP_CONFIG).is_file()
+    assert (REPO_ROOT / DOCS_DRIFT_GUARD_TEST_MODULE).is_file()
+
+    truth_map = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    assert "SLICE-CV-3" in truth_map
+    assert "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true" in truth_map
+    assert (
+        DOCS_DRIFT_GUARD_SCRIPT.replace("/", "&#47;") in truth_map
+        or DOCS_DRIFT_GUARD_SCRIPT in truth_map
+    )
+
+    drift_test_text = (REPO_ROOT / DOCS_DRIFT_GUARD_TEST_MODULE).read_text(encoding="utf-8")
+    assert (
+        CV3_POINTER_INTEGRITY_HEADING in drift_test_text
+        or CV3_POINTER_INTEGRITY_BLOCK_ANCHOR in drift_test_text
+    )
