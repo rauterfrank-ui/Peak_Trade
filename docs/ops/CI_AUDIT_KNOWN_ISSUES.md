@@ -996,7 +996,7 @@ DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
 
 **Operator-GO:** `GO_GAP4_GAP7_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1`
 
-**Purpose:** Reciprocal crosslink so CI_AUDIT documents the Gap 4 output/evidence paths criteria contract (SECTION5 `## Gap 4 Output/Evidence Paths Contract v0`) aligned with existing Gap 4 contract and drift-guard tests. PE-4/PE-5 reciprocal sections cover adjacent PE guards only — **not** a replacement for this Gap 4 criteria crosslink. Guard/Ops drift fix only — **non-authorizing**; **no** execute, preflight lift, bounded observation run, or runtime.
+**Purpose:** Reciprocal crosslink so CI_AUDIT documents the Gap 4 output/evidence paths criteria contract (SECTION5 `## Gap 4 Output&#47;Evidence Paths Contract v0`) aligned with existing Gap 4 contract and drift-guard tests. PE-4/PE-5 reciprocal sections cover adjacent PE guards only — **not** a replacement for this Gap 4 criteria crosslink. Guard/Ops drift fix only — **non-authorizing**; **no** execute, preflight lift, bounded observation run, or runtime.
 
 **Canonical repo owners (reuse — do not duplicate):**
 
