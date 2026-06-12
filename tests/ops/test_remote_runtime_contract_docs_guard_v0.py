@@ -503,6 +503,14 @@ PE_EER1_HOLD_BINDING_CHAIN_COMPLETION_STATIC_REVIEW_EXPECTED: dict[str, str] = {
     "RUNTIME_LANE_TAXONOMY_RECIPROCAL_CROSSLINK_SECTION_REFERENCED": "true",
     "SCHEDULER_BOUNDARY_RECIPROCAL_CROSSLINK_SECTION_REFERENCED": "true",
     "PE_EER1_HOLD_BINDING_CHAIN_COMPLETION_STATIC_REVIEW_INCLUDES_RUNTIME_SCHEDULER_RECIPROCAL_SECTIONS_V1": "true",
+    "GAP1_CROSSLINK_COMPLETE": "true",
+    "GAP2_CROSSLINK_COMPLETE": "true",
+    "GAP3_CROSSLINK_COMPLETE": "true",
+    "GAP1_RECIPROCAL_CROSSLINK_SECTION_REFERENCED": "true",
+    "GAP2_RECIPROCAL_CROSSLINK_SECTION_REFERENCED": "true",
+    "GAP3_RECIPROCAL_CROSSLINK_SECTION_REFERENCED": "true",
+    "GAP1_GAP3_CROSSLINK_CHAIN_COMPLETE": "true",
+    "CHAIN_COMPLETION_STATIC_REVIEW_INCLUDES_GAP1_GAP3_RECIPROCAL_SECTIONS_V1": "true",
     "SECTION5_GAP_OWNER_MAP_OWNER_REFERENCED": "true",
     "CI_AUDIT_RECIPROCAL_CROSSLINK_OWNER_REFERENCED": "true",
     "NEW_PARALLEL_SSOT_CREATED": "false",
@@ -754,6 +762,9 @@ PE_EER1_HOLD_BINDING_CHAIN_COMPLETION_STATIC_REVIEW_RECIPROCAL_SECTIONS = (
     EER1_EVIDENCE_DURABLE_ENFORCEMENT_READINESS_CI_AUDIT_CROSSLINK_HEADING,
     RUNTIME_LANE_TAXONOMY_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_HEADING,
     SCHEDULER_BOUNDARY_HARD_BLOCK_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_HEADING,
+    GAP1_EXECUTE_ENTRYPOINT_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_HEADING,
+    GAP2_CANONICAL_JOB_SET_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_HEADING,
+    GAP3_EXECUTE_COMMAND_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_HEADING,
 )
 PE_EER1_HOLD_BINDING_CHAIN_COMPLETION_STATIC_REVIEW_OWNER_TESTS = (
     "test_section5_preflight_gap_owner_map_contract_v0.py",
@@ -1940,6 +1951,9 @@ def test_ci_audit_pe_eer1_hold_binding_chain_completion_static_review_section_pr
         "EER1",
         "Runtime Lane Taxonomy",
         "Scheduler Boundary",
+        "Gap 1",
+        "Gap 2",
+        "Gap 3",
     ):
         assert slice_label in section, f"missing indexed slice label {slice_label!r}"
     for module_name in PE_EER1_HOLD_BINDING_CHAIN_COMPLETION_STATIC_REVIEW_OWNER_TESTS:
@@ -1975,12 +1989,16 @@ def test_docs_truth_map_pe_eer1_hold_binding_chain_completion_static_review_chro
         "PE+EER1+hold-binding chain completion extend Runtime Lane Taxonomy + Scheduler Boundary reciprocal sections guard v1"
         in text
     )
+    assert (
+        "PE+EER1+hold-binding chain completion extend Gap 1–3 reciprocal sections guard v1" in text
+    )
     assert THIS_MODULE in text
     assert PE_EER1_HOLD_BINDING_CHAIN_COMPLETION_STATIC_REVIEW_GUARD_BLOCK_ANCHOR in text
     assert (
         "PE_EER1_HOLD_BINDING_CHAIN_COMPLETION_STATIC_REVIEW_INCLUDES_RUNTIME_SCHEDULER_RECIPROCAL_SECTIONS_V1=true"
         in text
     )
+    assert "CHAIN_COMPLETION_STATIC_REVIEW_INCLUDES_GAP1_GAP3_RECIPROCAL_SECTIONS_V1=true" in text
     assert "test_section5_preflight_gap_owner_map_contract_v0.py" in text
     assert (
         "**no** execute / Preflight-Lift / enforcement-activation / observation-run / paper-run / shadow-run / testnet-session / runtime"
