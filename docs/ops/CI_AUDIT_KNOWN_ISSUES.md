@@ -195,6 +195,46 @@ MARKET_DASHBOARD_TOUCHED=false
 
 **Non-authorizing:** Docs/tests-only residual review guard only; does **not** authorize required-check configuration changes, branch-protection edits, workflow YAML mutation, `workflow_dispatch`, `gh run rerun`, runtime/scheduler/daemon execution, paper/shadow/testnet/live, Preflight lift, order/cancel/execution/arming, JSONL ingest, evidence dataset mutation, Market Dashboard authority changes, or Master V2 / Double Play / Bull-Bear / Risk / KillSwitch / Scope / Capital / trading-logic changes.
 
+## Docs Token Policy Guard standard check integration — docs/tests-only guard v1
+
+**Operator-GO:** `GO_DOCS_TOKEN_POLICY_GUARD_STANDARD_CHECK_INTEGRATION_NARROW_FIX_NO_RUN_V1`
+
+**Purpose:** Anchor the Docs Token Policy Guard as **mandatory standard check #1** for every docs-only or docs+tests PR. Prevents recurring `docs-token-policy-gate` CI failures from forgotten local preflight. **Docs/tests/check-plan visibility only** — no workflow mutation, no required-check configuration change, no promotion, no runtime.
+
+**Canonical repo owners (reuse — do not duplicate):**
+
+| Concern | Owner |
+|---------|-------|
+| Validator + `--changed` semantics | `scripts/ops/validate_docs_token_policy.py` |
+| Local preflight wrapper | `scripts/ops/preflight_docs_token_policy_changed.sh` |
+| Operator runbook (standard check table) | `docs/ops/runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE.md` — **§ Standard local checks for docs / docs+tests PRs** |
+| Gate catalog + mandatory preflight index | `docs/ops/GATES_OVERVIEW.md` — **§ Docs / docs+tests PR — mandatory local preflight** |
+| CI required context | `.github/workflows/docs-token-policy-gate.yml` → check `docs-token-policy-gate` |
+| Smoke tests | `tests/ops/test_validate_docs_token_policy.py`; `tests/ops/test_validate_docs_token_policy_smoke.py` |
+
+```text
+DOCS_TOKEN_POLICY_GUARD_STANDARD_CHECK_INTEGRATION_V1=true
+DOCS_TOKEN_POLICY_GUARD_MANDATORY_FOR_DOCS_PR=true
+DOCS_TOKEN_POLICY_GUARD_MANDATORY_FOR_DOCS_TESTS_PR=true
+DOCS_TOKEN_POLICY_PREFLIGHT_COMMAND=preflight_docs_token_policy_changed.sh
+DOCS_TOKEN_POLICY_VALIDATOR=validate_docs_token_policy.py
+DOCS_TOKEN_POLICY_CI_REQUIRED_CONTEXT=docs-token-policy-gate
+STANDARD_CHECK_INTEGRATED=true
+NO_WORKFLOW_MUTATION=true
+NO_REQUIRED_CHECK_CONFIG_CHANGE=true
+TRUTH_PROMOTION_EXECUTED=false
+OBSERVABILITY_TRUTH_ALLOWED_CHANGED=false
+REAL_METADATA_SOURCE_MARKED_CHANGED=false
+```
+
+**Standard local sequence (before push):**
+
+1. `bash scripts&#47;ops&#47;preflight_docs_token_policy_changed.sh` (or `python3 scripts&#47;ops&#47;validate_docs_token_policy.py --changed --base origin&#47;main`)
+2. PR-scoped pytest for touched contract tests (docs+tests PRs)
+3. Ruff on touched Python files (when applicable)
+
+**Non-authorizing:** Docs/check-plan integration only; does **not** authorize workflow edits, branch-protection changes, truth promotion, flag mutation, runtime/live/paper/shadow/testnet, or trading logic changes.
+
 ## Primary evidence retention invariant residual static review — docs/tests-only guard v1
 
 **Operator-GO:** `GO_PRIMARY_EVIDENCE_RETENTION_INVARIANT_RESIDUAL_STATIC_REVIEW_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_ci_docs_required_check_truth_map_residual_review_merge_no_run_v1_20260612T005020Z/`

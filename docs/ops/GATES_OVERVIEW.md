@@ -9,6 +9,19 @@
 
 > Token-Policy Hinweis: Inline illustrative Pfade im Fließtext **nicht** als `a&#47;b&#47;c` schreiben, sondern Slashes als `&#47;` encoden (z.B. `docs&#47;ops&#47;GATES_OVERVIEW.md`). Befehle in Code-Fences sind OK.
 
+## Docs / docs+tests PR — mandatory local preflight
+
+Jeder PR mit geänderten `*.md` (reine Docs-PR **oder** docs+tests-PR) **muss** vor Push lokal den Docs Token Policy Guard ausführen. Das ist **Standard-Check #1** — nicht optional.
+
+| # | Standard-Check | Lokal (kanonisch) | CI Required Context |
+|---|----------------|-------------------|---------------------|
+| 1 | **Docs Token Policy** | `bash scripts&#47;ops&#47;preflight_docs_token_policy_changed.sh` **oder** `python3 scripts&#47;ops&#47;validate_docs_token_policy.py --changed --base origin&#47;main` | `docs-token-policy-gate` |
+| 2 | Docs Reference Targets (bei `.md`-Diff) | `bash scripts&#47;ops&#47;verify_docs_reference_targets.sh --changed --base origin&#47;main` | `docs-reference-targets-gate` |
+| 3 | PR-scoped pytest (docs+tests) | betroffene Contract-/Boundary-Tests | je nach Diff |
+| 4 | Ruff (bei `.py`-Diff) | `ruff check` / `ruff format --check` auf berührte Dateien | `Lint Gate` |
+
+Runbook: `docs&#47;ops&#47;runbooks&#47;RUNBOOK_DOCS_TOKEN_POLICY_GATE.md` · CI-Audit: `docs&#47;ops&#47;CI_AUDIT_KNOWN_ISSUES.md` (§ Docs Token Policy Guard standard check integration).
+
 ## Gate Catalog (Table)
 
 **Legend**
