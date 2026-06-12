@@ -74,6 +74,16 @@ CONTRACT_MODULE = (
     / "order_capability_demo_instrument_rules_fixture_normalizer_contract_v1.py"
 )
 
+ROOT = Path(__file__).resolve().parents[2]
+TRUTH_MAP = ROOT / "docs" / "ops" / "registry" / "DOCS_TRUTH_MAP.md"
+CI_AUDIT = ROOT / "docs" / "ops" / "CI_AUDIT_KNOWN_ISSUES.md"
+CROSSLINK_PACKAGE_MARKER = "ORDER_CAPABILITY_DEMO_INSTRUMENT_RULES_FIXTURE_NORMALIZER_DOCS_TRUTH_MAP_STATIC_CROSSLINK_GUARD_V1=true"
+CONTRACT_REL = "src/ops/order_capability_demo_instrument_rules_fixture_normalizer_contract_v1.py"
+TEST_REL = "tests/ops/test_order_capability_demo_instrument_rules_fixture_normalizer_contract_v1.py"
+FIXTURE_REL = (
+    "tests/fixtures/order_capability/browser_rendered_vendor_docs_pf_xbtusd_candidate.v1.json"
+)
+
 TEST_PACKAGE_MARKER = (
     "ORDER_CAPABILITY_DEMO_INSTRUMENT_RULES_FIXTURE_NORMALIZER_CONTRACT_V1_TEST=true"
 )
@@ -633,3 +643,86 @@ def test_browser_rendered_provider_truth_bound_remains_false_no_binding_pass() -
     assert binding_result.instrument_rules_offline_bound is False
     assert binding_result.min_size_verified_offline is False
     assert BLOCKER_MIN_SIZE_NOT_VERIFIED_OFFLINE in binding_result.blockers
+
+
+def _docs_truth_map_chronicle_row(truth_map: str, needle: str) -> str:
+    row_start = truth_map.index(needle)
+    row_end = truth_map.index("\n", row_start)
+    return truth_map[row_start:row_end]
+
+
+def test_order_capability_demo_instrument_rules_fixture_normalizer_crosslink_package_marker_v1() -> (
+    None
+):
+    text = Path(__file__).read_text(encoding="utf-8")
+    assert CROSSLINK_PACKAGE_MARKER in text
+
+
+def test_docs_truth_map_order_capability_demo_instrument_rules_fixture_normalizer_chronicle_v1() -> (
+    None
+):
+    truth_map = TRUTH_MAP.read_text(encoding="utf-8")
+    row = _docs_truth_map_chronicle_row(
+        truth_map,
+        "Order-Capability demo instrument rules fixture normalizer DOCS_TRUTH_MAP static crosslink guard v1",
+    )
+    for required in (
+        CONTRACT_REL,
+        TEST_REL,
+        FIXTURE_REL,
+        "#4091",
+        "#4094",
+        "ORDER_CAPABILITY_DEMO_INSTRUMENT_RULES_FIXTURE_NORMALIZER_CROSSLINK_GUARD_IMPLEMENTED=true",
+        "ORDER_CAPABILITY_PARKED_READ_ONLY_CONFIRMED=true",
+        "BROWSER_RENDERED_VENDOR_DOCS_CANDIDATE_ONLY=true",
+        "ORDERFLOW_AUTHORIZATION_CREATED=false",
+        "CANCEL_EXECUTE_AUTHORIZATION_CREATED=false",
+        "non-authorizing",
+        "parked/read-only",
+    ):
+        assert required.lower() in row.lower()
+
+
+def test_ci_audit_order_capability_demo_instrument_rules_fixture_normalizer_crosslink_v1() -> None:
+    ci_audit = CI_AUDIT.read_text(encoding="utf-8")
+    section_start = ci_audit.index(
+        "## Order-Capability demo instrument rules fixture normalizer DOCS_TRUTH_MAP static crosslink v1"
+    )
+    section_text = ci_audit[section_start : section_start + 4000]
+    for required in (
+        CROSSLINK_PACKAGE_MARKER,
+        "ORDER_CAPABILITY_DEMO_INSTRUMENT_RULES_FIXTURE_NORMALIZER_CROSSLINK_GUARD_IMPLEMENTED=true",
+        "ORDER_CAPABILITY_PARKED_READ_ONLY_CONFIRMED=true",
+        "BROWSER_RENDERED_VENDOR_DOCS_CANDIDATE_ONLY=true",
+        "PROVIDER_TRUTH_BOUND=false",
+        "PR4091_ANCHOR_REFERENCED=true",
+        "PR4094_ANCHOR_REFERENCED=true",
+        CONTRACT_REL,
+        TEST_REL,
+        FIXTURE_REL,
+        "ORDERFLOW_AUTHORIZATION_CREATED=false",
+        "CANCEL_EXECUTE_AUTHORIZATION_CREATED=false",
+        "READY_FOR_OPERATOR_ARMING_CHANGED=false",
+        "non-authorizing",
+        "parked/read-only",
+    ):
+        assert required.lower() in section_text.lower()
+
+
+def test_order_capability_demo_instrument_rules_fixture_normalizer_contract_referenced_in_docs_v1() -> (
+    None
+):
+    assert CONTRACT_MODULE.is_file()
+    truth_map = TRUTH_MAP.read_text(encoding="utf-8")
+    ci_audit = CI_AUDIT.read_text(encoding="utf-8")
+    assert CONTRACT_REL in truth_map
+    assert CONTRACT_REL in ci_audit
+
+
+def test_order_capability_demo_instrument_rules_fixture_normalizer_tests_referenced_in_docs_v1() -> (
+    None
+):
+    truth_map = TRUTH_MAP.read_text(encoding="utf-8")
+    ci_audit = CI_AUDIT.read_text(encoding="utf-8")
+    assert TEST_REL in truth_map
+    assert TEST_REL in ci_audit

@@ -50,6 +50,42 @@ PREFLIGHT_REMAINS_BLOCKED=true
 
 **Non-authorizing:** Docs/tests static crosslink only; does **not** authorize order submission, cancel, execute, broker/exchange, Testnet/Live, scheduler/daemon/adapter runtime, Preflight lift, `READY_FOR_OPERATOR_ARMING=true`, provider-truth flip, binding pass, or Master V2 / Double Play / trading-logic changes. Runner remains **plan-only** with `order_capability_lane_parked=true` and `order_capability_execute_authorized=false`.
 
+## Order-Capability demo instrument rules fixture normalizer DOCS_TRUTH_MAP static crosslink v1
+
+**Operator-GO:** `GO_ORDER_CAPABILITY_DEMO_INSTRUMENT_RULES_FIXTURE_NORMALIZER_DOCS_TRUTH_MAP_STATIC_CROSSLINK_GUARD_OPERATOR_GO_AUTOFILL_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_cybersecurity_visibility_r001_r002_r007_index_sync_merge_closeout_no_run_v1_20260611T235231Z/`
+
+**Purpose:** Static crosslink guard so the parked/read-only Order-Capability demo instrument rules fixture normalizer surface (PR #4091 contract + PR #4094 browser-rendered guards on main) remains visible in DOCS_TRUTH_MAP and CI-Audit without authorizing orderflow, execute/cancel, runtime start, browser capture execute, provider-truth flip, or Preflight lift.
+
+**Canonical repo owners (reuse — do not duplicate):**
+
+| Concern | Owner |
+|---------|-------|
+| Fixture normalizer contract (offline, fail-closed) | `src/ops/order_capability_demo_instrument_rules_fixture_normalizer_contract_v1.py` |
+| Fixture normalizer static crosslink + contract tests | `tests/ops/test_order_capability_demo_instrument_rules_fixture_normalizer_contract_v1.py` |
+| Browser-rendered vendor-docs candidate fixture (candidate-only) | `tests/fixtures/order_capability/browser_rendered_vendor_docs_pf_xbtusd_candidate.v1.json` |
+| DOCS_TRUTH_MAP chronicle | `docs/ops/registry/DOCS_TRUTH_MAP.md` (this crosslink section + Änderungsnachweis row) |
+
+```text
+ORDER_CAPABILITY_DEMO_INSTRUMENT_RULES_FIXTURE_NORMALIZER_CROSSLINK_GUARD_IMPLEMENTED=true
+ORDER_CAPABILITY_DEMO_INSTRUMENT_RULES_FIXTURE_NORMALIZER_DOCS_TRUTH_MAP_STATIC_CROSSLINK_GUARD_V1=true
+ORDER_CAPABILITY_DEMO_INSTRUMENT_RULES_FIXTURE_NORMALIZER_CROSSLINK_DOCS_TESTS_ONLY=true
+ORDER_CAPABILITY_PARKED_READ_ONLY_CONFIRMED=true
+ORDER_CAPABILITY_NORMALIZER_CONTRACT_REFERENCED=true
+ORDER_CAPABILITY_NORMALIZER_TESTS_REFERENCED=true
+BROWSER_RENDERED_VENDOR_DOCS_CANDIDATE_ONLY=true
+PROVIDER_TRUTH_BOUND=false
+PR4091_ANCHOR_REFERENCED=true
+PR4094_ANCHOR_REFERENCED=true
+ORDERFLOW_AUTHORIZATION_CREATED=false
+CANCEL_EXECUTE_AUTHORIZATION_CREATED=false
+READY_FOR_OPERATOR_ARMING_CHANGED=false
+RUNTIME_LOGIC_TOUCHED=false
+NEW_PARALLEL_SSOT_CREATED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+```
+
+**Non-authorizing:** Docs/tests static crosslink only; does **not** authorize order submission, cancel, execute, broker/exchange, Testnet/Live, scheduler/daemon/adapter runtime, browser-rendered web capture execute, Preflight lift, `READY_FOR_OPERATOR_ARMING=true`, provider-truth flip, binding pass, or Master V2 / Double Play / trading-logic changes. Normalizer remains **parked/read-only** with `order_capability_lane_parked=true`, `provider_truth_bound=false`, and `order_capability_execute_authorized=false`.
+
 ## Market tape readmodel SSR DOCS_TRUTH_MAP static crosslink v1
 
 **Operator-GO:** `GO_MARKET_TAPE_SSR_DOCS_TRUTH_MAP_CI_AUDIT_STATIC_CROSSLINK_GUARD_OPERATOR_GO_AUTOFILL_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_order_capability_fixture_binding_docs_truth_map_static_crosslink_guard_merge_no_run_v1_20260611T192531Z/`
