@@ -5,8 +5,8 @@
 | Methode | Pfad | Beschreibung |
 |---------|------|----------------|
 | GET | `/market` | **Canonical operator page (unified single-page v1).** HTML: **read-only** Market-Dashboard — **SSR-OHLC-/Kerzendisplay**; **Chart.js** Close-Line/Diagnose; **embedded Double-Play display** (`#double-play`, partial reuse); **embedded F5 futures/instrument overview** (`#futures`, partial reuse); operator overview IA; ranking funnel; depth/tape when env-gated. Markers: **`data-market-single-page-unified-v1="true"`**, **`data-market-safety-status-bar-v1="true"`**. **No** trading authority. |
-| GET | `/market/double-play` | **Legacy redirect (302)** → **`GET /market?{query}#double-play`** (query preserved). Display content lives on canonical **`/market`**; **no** separate primary operator surface. |
-| GET | `/market/futures` | **Legacy redirect (302)** → **`GET /market?{query}#futures`** (query preserved when present). F5 display content lives on canonical **`/market`**; env gates unchanged (`PEAK_TRADE_F5_MARKET_DASHBOARD_*`). |
+| GET | `/market/double-play` | **Legacy redirect (302)** → **`GET &#47;market?{query}#double-play`** (query preserved). Display content lives on canonical **`/market`**; **no** separate primary operator surface. |
+| GET | `/market/futures` | **Legacy redirect (302)** → **`GET &#47;market?{query}#futures`** (query preserved when present). F5 display content lives on canonical **`/market`**; env gates unchanged (`PEAK_TRADE_F5_MARKET_DASHBOARD_*`). |
 | GET | `/api/market/ohlcv` | JSON: OHLCV-Bars (`open`/`high`/`low`/`close`/`volume`, Zeit `ts`) |
 | GET | `/api/market/depth` | JSON: Market Depth readmodel v0 — **read-only**, **env-gated** (**`PEAK_TRADE_MARKET_DEPTH_ENABLED`** muss **`1`** sein), Bundle nur über **`PEAK_TRADE_MARKET_DEPTH_BUNDLE_ROOT`** (kein Query-/Pfad‑Override); bei Erfolg Builder‑Payload (**`200`**), sonst kurzes Diagnose‑JSON (**`503`**); **`HTTP 200`**/**`503`** gelten für **diese JSON‑Route**. **`GET`** **`/market`** nutzt denselben Hilfstupel **nur serverseitig**, **nicht** per Browser‑Request auf diese URL; **kein** Polling‑Vertrag hier |
 
@@ -267,8 +267,8 @@ Stabile `data-*`‑Marker (Anker für Anzeige und automatisierte Tests — **kei
 | Section | Anchor | Partial | Display builders (reuse) |
 |---------|--------|---------|--------------------------|
 | Market overview + chart | (page shell) | `market_v0.html` | `build_market_payload`, ranking/depth/tape contexts |
-| Double-Play display | `#double-play` | `partials/double_play_market_panel_v0.html` | `build_static_dashboard_display_dict()` |
-| F5 futures/instrument | `#futures` | `partials/futures_read_only_market_panel_v0.html` | `build_futures_read_only_market_dashboard_display_context()` |
+| Double-Play display | `#double-play` | `partials&#47;double_play_market_panel_v0.html` | `build_static_dashboard_display_dict()` |
+| F5 futures/instrument | `#futures` | `partials&#47;futures_read_only_market_panel_v0.html` | `build_futures_read_only_market_dashboard_display_context()` |
 
 Legacy routes **`GET &#47;market&#47;double-play`** and **`GET &#47;market&#47;futures`** return **302** to the canonical page with anchors (**`redirect_with_anchor_preserve_query_v1`**). **No** Master V2 / Double Play decision logic change; **display-only** SSR composition.
 
