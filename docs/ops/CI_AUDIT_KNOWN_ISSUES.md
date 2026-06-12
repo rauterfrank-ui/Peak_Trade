@@ -397,6 +397,63 @@ PREFLIGHT_REMAINS_BLOCKED=true
 
 **Non-authorizing:** Docs/tests-only reciprocal crosslink guard only; does **not** authorize pilot GO/No-Go lift, execute, runtime, run start, live, preflight lift, order/cancel/execution/arming, authority lift, trading-logic changes, strategy-logic changes, fee/slippage/accounting logic changes, Ops Cockpit payload semantic changes, DRAFT→READY promotion, new cockpit rows, Master V2 / Double Play / Bull-Bear / Risk / KillSwitch / Scope / Capital changes, workflow YAML mutation, `workflow_dispatch`, `gh run rerun`, or Market Dashboard authority changes. Operational slice remains **DRAFT**; `pilot_go_no_go_eval_v1.py` remains **11 cockpit rows**; `build_ops_cockpit_payload()` semantics unchanged.
 
+## Bounded-pilot readiness ↔ live readiness ↔ pilot go/no-go eval CI_AUDIT reciprocal crosslink — docs/tests-only guard v1
+
+**Operator-GO:** `GO_BOUNDED_PILOT_READINESS_LIVE_READINESS_PILOT_GONOGO_EVAL_CI_AUDIT_DOCS_TRUTH_MAP_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1` · **Planning bundle (archive only):** `…&#47;planning&#47;systemwide_next_safe_scope_ranking_after_pilot_gonogo_eval_ops_cockpit_payload_field_mapping_crosslink_guard_merge_no_run_v1_20260612T203122Z&#47;`
+
+**Purpose:** Static reciprocal crosslink guard so the canonical **read-only** bounded-pilot preflight bundle (`check_bounded_pilot_readiness.py`, contract `bounded_pilot_readiness_v1`) — which composes live-stage `check_live_readiness.py` and `pilot_go_no_go_eval_v1.py` (via `build_ops_cockpit_payload()`) and requires `GO_FOR_NEXT_PHASE_ONLY` — remains visibly documented in CI_AUDIT and DOCS_TRUTH_MAP alongside entry-contract/runbook references and reuse pointer to the #4192 pilot eval↔cockpit payload field-mapping guard — **without** authorizing pilot GO, preflight lift, session invoke, live trading, execution/trading/strategy logic changes, runtime, or execute.
+
+**Canonical repo owners (reuse — do not duplicate):**
+
+| Concern | Owner |
+|---------|-------|
+| Bounded-pilot canonical preflight bundle | `scripts/ops/check_bounded_pilot_readiness.py` (`bounded_pilot_readiness_v1`) |
+| Bounded-pilot preflight tests | `tests/ops/test_check_bounded_pilot_readiness.py` |
+| Live-stage readiness checks | `scripts/check_live_readiness.py` |
+| Pilot Go/No-Go eval (11 cockpit rows) | `scripts/ops/pilot_go_no_go_eval_v1.py` |
+| Entry contract (read-only preflight reference) | `docs/ops/specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md` |
+| Live-entry runbook | `docs/ops/runbooks/RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md` |
+| Pilot eval↔cockpit payload mapping guard (#4192) | `tests/ops/test_pilot_gonogo_eval_ops_cockpit_payload_field_mapping_crosslink_v1.py` |
+| CI_AUDIT / DOCS_TRUTH_MAP reciprocal guard | `tests/ops/test_bounded_pilot_readiness_live_readiness_pilot_gonogo_eval_crosslink_v1.py` |
+| DOCS_TRUTH_MAP chronicle | `docs/ops/registry/DOCS_TRUTH_MAP.md` (this crosslink section + Änderungsnachweis row) |
+
+**Crosslink invariants (static — not pilot authority):**
+
+| Invariant | Posture |
+|-----------|---------|
+| Preflight bundle | `bounded_pilot_readiness_v1` — read-only; **no session invoke** |
+| Live readiness | stage `live` via `check_live_readiness.py` — bundled first; fail-closed |
+| Pilot go/no-go eval | `pilot_go_no_go_eval_v1.py` after cockpit payload build — fail-closed |
+| GREEN verdict required | `GO_FOR_NEXT_PHASE_ONLY` — **not** execute/live authorization |
+| Payload mapping chain | reuse #4192 guard — no parallel SSOT |
+| Preflight lift | **not authorized** — visibility only |
+| Pilot Go/No-Go authority | **unchanged** — non-authorizing visibility only |
+
+```text
+BOUNDED_PILOT_READINESS_LIVE_READINESS_PILOT_GONOGO_EVAL_CI_AUDIT_DOCS_TRUTH_MAP_RECIPROCAL_CROSSLINK_V1=true
+BOUNDED_PILOT_READINESS_CROSSLINK_DOCS_TESTS_ONLY=true
+BOUNDED_PILOT_READINESS_BUNDLE_DOCUMENTED=true
+BOUNDED_PILOT_READINESS_V1_CONTRACT=true
+LIVE_READINESS_STAGE_LIVE_BUNDLED=true
+PILOT_GO_NO_GO_EVAL_BUNDLED=true
+GO_FOR_NEXT_PHASE_ONLY_REQUIRED=true
+PILOT_GONOGO_EVAL_PAYLOAD_FIELD_MAPPING_GUARD_REFERENCED=true
+PILOT_GO_NO_GO_AUTHORITY_CREATED=false
+NO_EXECUTE=true
+NO_RUNTIME=true
+NO_LIVE=true
+NO_PREFLIGHT_LIFT=true
+AUTHORITY_LIFT=false
+TRADING_LOGIC_TOUCHED=false
+FEE_SLIPPAGE_ACCOUNTING_LOGIC_TOUCHED=false
+NEW_PARALLEL_SSOT_CREATED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+```
+
+**Guard module (reuse — no parallel preflight SSOT):** `tests/ops/test_bounded_pilot_readiness_live_readiness_pilot_gonogo_eval_crosslink_v1.py`.
+
+**Non-authorizing:** Docs/tests-only reciprocal crosslink guard only; does **not** authorize pilot GO/No-Go lift, execute, runtime, run start, live, preflight lift, bounded-pilot session invoke, order/cancel/execution/arming, authority lift, trading-logic changes, strategy-logic changes, fee/slippage/accounting logic changes, Ops Cockpit payload semantic changes, DRAFT→READY promotion, new cockpit rows, Master V2 / Double Play / Bull-Bear / Risk / KillSwitch / Scope / Capital changes, workflow YAML mutation, `workflow_dispatch`, `gh run rerun`, or Market Dashboard authority changes. `check_bounded_pilot_readiness.py` remains **read-only** preflight; does not set handoff env or authorize live trading.
+
 ## Order-Capability remaining readiness gap review — docs/tests-only visibility v1
 
 **Operator-GO:** `GO_ORDER_CAPABILITY_REMAINING_READINESS_GAP_REVIEW_DOCS_TESTS_ONLY_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_preflight_process_gate_hygiene_guard_merge_no_run_v1_20260612T002508Z/`
