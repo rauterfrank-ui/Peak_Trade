@@ -15,6 +15,7 @@ ADAPTER = ROOT / "scripts" / "ops" / "run_paper_only_bounded_observation_adapter
 L2_CONTRACT = ROOT / "scripts" / "ops" / "paper_l2_120min_hold_binding_approval_v0.py"
 GUARD = ROOT / "scripts" / "ops" / "scheduler_start_boundary_guard_v0.py"
 BOUNDARY_SPEC = ROOT / "docs" / "ops" / "specs" / "SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md"
+PREFLIGHT = ROOT / "docs" / "ops" / "runbooks" / "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md"
 TRUTH_MAP = ROOT / "docs" / "ops" / "registry" / "DOCS_TRUTH_MAP.md"
 FIXTURE = ROOT / "tests" / "fixtures" / "ops" / "paper_l2_120min_hold_binding_approval_sample.md"
 
@@ -94,6 +95,24 @@ def test_boundary_spec_references_l2_120min_profile_section() -> None:
     text = BOUNDARY_SPEC.read_text(encoding="utf-8")
     assert "paper_l2_120min_hold_binding_v0" in text
     assert "## 10b." in text
+
+
+def _preflight_section_2a() -> str:
+    text = PREFLIGHT.read_text(encoding="utf-8")
+    return text.split("## 2a. Primary evidence retention invariant v0", 1)[1].split("## 2a.1", 1)[0]
+
+
+def test_preflight_section_2a_reciprocal_crosslink_paper_l2_120min_v1() -> None:
+    section = _preflight_section_2a()
+    assert "paper_l2_120min_hold_binding_v0" in section
+    assert "7200" in section
+    assert "§10b" in section
+    assert "gap4_req_a_paper_bounded_v0" in section
+    assert "§10a" in section
+    assert "fully implemented" in section.lower()
+    assert "test_paper_l2_120min_hold_binding_profile_contract_v0.py" in section
+    collapsed = section.replace("**", "")
+    assert "does not authorize execute or preflight lift" in collapsed.lower()
 
 
 def test_boundary_spec_declares_paper_tl_l2_namespace_guards() -> None:

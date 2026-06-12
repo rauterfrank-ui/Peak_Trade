@@ -167,6 +167,39 @@ PRIMARY_EVIDENCE_RETENTION_INVARIANT_RESIDUAL_STATIC_REVIEW_OWNER_TESTS = (
     "test_run_primary_evidence_retention_hard_gate_v0.py",
     "test_durable_closeout_copy_verify_v0.py",
 )
+PAPER_L2_PREFLIGHT_2A_RECIPROCAL_CROSSLINK_HEADING = (
+    "## Paper-L2 120min hold-binding Preflight §2a reciprocal crosslink — docs/tests-only guard v1"
+)
+PAPER_L2_PREFLIGHT_2A_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR = (
+    "PAPER_L2_120MIN_HOLD_BINDING_PREFLIGHT_2A_RECIPROCAL_CROSSLINK_V1=true"
+)
+PAPER_L2_PREFLIGHT_2A_RECIPROCAL_CROSSLINK_EXPECTED: dict[str, str] = {
+    "PAPER_L2_120MIN_HOLD_BINDING_PREFLIGHT_2A_RECIPROCAL_CROSSLINK_V1": "true",
+    "PAPER_L2_120MIN_HOLD_BINDING_PREFLIGHT_2A_CROSSLINK_DOCS_TESTS_ONLY": "true",
+    "GAP4_REQ_A_PAPER_BOUNDED_V0_PREFLIGHT_2A_CROSSLINK_REFERENCED": "true",
+    "PAPER_L2_120MIN_HOLD_BINDING_V0_PREFLIGHT_2A_CROSSLINK_REFERENCED": "true",
+    "SCHEDULER_BOUNDARY_10B_REFERENCED": "true",
+    "DURATION_7200_SECONDS_REFERENCED": "true",
+    "PROFILE_FULLY_IMPLEMENTED_ON_MAIN": "true",
+    "NO_EXECUTE": "true",
+    "NO_PREFLIGHT_LIFT": "true",
+    "NO_RUNTIME": "true",
+    "NO_LIVE": "true",
+    "ORDER_CANCEL_EXECUTION_ARMING_TOUCHED": "false",
+    "AUTHORITY_LIFT": "false",
+    "TRADING_LOGIC_TOUCHED": "false",
+    "MASTER_V2_LOGIC_TOUCHED": "false",
+    "DOUBLE_PLAY_LOGIC_TOUCHED": "false",
+    "NEW_PARALLEL_SSOT_CREATED": "false",
+    "PREFLIGHT_REMAINS_BLOCKED": "true",
+    "MARKET_DASHBOARD_TOUCHED": "false",
+    "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED": "true",
+}
+PAPER_L2_PREFLIGHT_2A_RECIPROCAL_CROSSLINK_OWNER_TESTS = (
+    "test_paper_l2_120min_hold_binding_profile_contract_v0.py",
+    "test_gap4_req_a_300s_hold_binding_profile_contract_v0.py",
+    "test_paper_shadow_247_preflight_contract_v0.py",
+)
 PRIMARY_EVIDENCE_RETENTION_INVARIANT_RESIDUAL_STATIC_REVIEW_OWNER_SURFACES = (
     "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md",
     "primary_evidence_retention_v0.py",
@@ -830,6 +863,63 @@ def test_docs_truth_map_primary_evidence_retention_invariant_residual_static_rev
         PRIMARY_EVIDENCE_RETENTION_INVARIANT_RESIDUAL_STATIC_REVIEW_INPUT_BUNDLE.split("/")[-1]
         in text
     )
+
+
+def _paper_l2_preflight_2a_reciprocal_crosslink_section(text: str) -> str:
+    start = text.find(PAPER_L2_PREFLIGHT_2A_RECIPROCAL_CROSSLINK_HEADING)
+    assert start != -1, "missing paper L2 preflight §2a reciprocal crosslink section"
+    next_heading = text.find("\n## ", start + 1)
+    if next_heading == -1:
+        return text[start:]
+    return text[start:next_heading]
+
+
+def test_ci_audit_paper_l2_preflight_2a_reciprocal_crosslink_section_present_v1() -> None:
+    text = _ci_audit_text()
+    section = _paper_l2_preflight_2a_reciprocal_crosslink_section(text)
+    assert (
+        "GO_PAPER_L2_120MIN_HOLD_BINDING_PREFLIGHT_2A_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1"
+        in section
+    )
+    assert "paper_l2_120min_hold_binding_v0" in section
+    assert "gap4_req_a_paper_bounded_v0" in section
+    assert "7200s" in section
+    assert "§10b" in section
+    assert "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md" in section
+    assert "SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md" in section
+    assert "no parallel preflight crosslink ssot" in section.lower()
+    assert THIS_MODULE in section
+    for module_name in PAPER_L2_PREFLIGHT_2A_RECIPROCAL_CROSSLINK_OWNER_TESTS:
+        assert module_name in section, f"missing owner test reference {module_name!r}"
+
+
+def test_ci_audit_paper_l2_preflight_2a_reciprocal_crosslink_machine_lines_v1() -> None:
+    block = _block_containing(
+        _ci_audit_text(),
+        PAPER_L2_PREFLIGHT_2A_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR,
+    )
+    values = _machine_line_values(block)
+    missing = set(PAPER_L2_PREFLIGHT_2A_RECIPROCAL_CROSSLINK_EXPECTED) - values.keys()
+    assert not missing, (
+        f"missing paper L2 preflight §2a reciprocal crosslink keys: {sorted(missing)}"
+    )
+    for key, expected in PAPER_L2_PREFLIGHT_2A_RECIPROCAL_CROSSLINK_EXPECTED.items():
+        assert values[key] == expected, f"{key}={values[key]!r} expected {expected!r}"
+
+
+def test_docs_truth_map_paper_l2_preflight_2a_reciprocal_crosslink_chronicle_v1() -> None:
+    text = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    assert "Paper-L2 120min hold-binding Preflight §2a reciprocal crosslink guard v1" in text
+    assert THIS_MODULE in text
+    assert "PAPER_L2_120MIN_HOLD_BINDING_PREFLIGHT_2A_RECIPROCAL_CROSSLINK_V1=true" in text
+    assert "paper_l2_120min_hold_binding_v0" in text
+    assert "gap4_req_a_paper_bounded_v0" in text
+    assert "7200s" in text
+    assert "Scheduler Boundary §10b" in text
+    assert "test_paper_l2_120min_hold_binding_profile_contract_v0.py" in text
+    assert "test_paper_shadow_247_preflight_contract_v0.py" in text
+    assert "**no** execute / Preflight-Lift / runtime" in text
+    assert "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true" in text
 
 
 def _market_dashboard_trading_app_terminal_rebuild_pr4162_section(text: str) -> str:

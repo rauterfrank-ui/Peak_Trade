@@ -247,6 +247,50 @@ EVIDENCE_DATASET_MUTATION=false
 
 **Non-authorizing:** Docs/tests-only residual static review guard only; does **not** authorize runtime, run start, live, preflight lift, order/cancel/execution/arming, authority lift, trading-logic changes, Master V2 / Double Play / Bull-Bear / Risk / KillSwitch / Scope / Capital changes, workflow YAML mutation, `workflow_dispatch`, `gh run rerun`, JSONL ingest, evidence dataset mutation, Market Dashboard authority changes, or `/tmp`-only completion.
 
+## Paper-L2 120min hold-binding Preflight §2a reciprocal crosslink — docs/tests-only guard v1
+
+**Operator-GO:** `GO_PAPER_L2_120MIN_HOLD_BINDING_PREFLIGHT_2A_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1`
+
+**Purpose:** Static reciprocal crosslink guard so `paper_l2_120min_hold_binding_v0` / 7200s / Scheduler Boundary §10b remains aligned with Preflight §2a alongside the existing `gap4_req_a_paper_bounded_v0` / §10a crosslink. Guard/Ops drift fix only — **non-authorizing**; **no** execute, preflight lift, or runtime.
+
+**Canonical repo owners (reuse — do not duplicate):**
+
+| Concern | Owner |
+|---------|-------|
+| Preflight §2a hold-binding crosslinks | `docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md` |
+| Scheduler Boundary §10a / §10b profiles | `docs/ops/specs/SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md` |
+| Paper-L2 profile static guard | `tests/ops/test_paper_l2_120min_hold_binding_profile_contract_v0.py` |
+| Gap-4 REQ-A profile static guard | `tests/ops/test_gap4_req_a_300s_hold_binding_profile_contract_v0.py` |
+| Preflight contract static guard | `tests/ops/test_paper_shadow_247_preflight_contract_v0.py` |
+| CI_AUDIT / DOCS_TRUTH_MAP crosslink guard | `tests/ops/test_remote_runtime_contract_docs_guard_v0.py` |
+
+```text
+PAPER_L2_120MIN_HOLD_BINDING_PREFLIGHT_2A_RECIPROCAL_CROSSLINK_V1=true
+PAPER_L2_120MIN_HOLD_BINDING_PREFLIGHT_2A_CROSSLINK_DOCS_TESTS_ONLY=true
+GAP4_REQ_A_PAPER_BOUNDED_V0_PREFLIGHT_2A_CROSSLINK_REFERENCED=true
+PAPER_L2_120MIN_HOLD_BINDING_V0_PREFLIGHT_2A_CROSSLINK_REFERENCED=true
+SCHEDULER_BOUNDARY_10B_REFERENCED=true
+DURATION_7200_SECONDS_REFERENCED=true
+PROFILE_FULLY_IMPLEMENTED_ON_MAIN=true
+NO_EXECUTE=true
+NO_PREFLIGHT_LIFT=true
+NO_RUNTIME=true
+NO_LIVE=true
+ORDER_CANCEL_EXECUTION_ARMING_TOUCHED=false
+AUTHORITY_LIFT=false
+TRADING_LOGIC_TOUCHED=false
+MASTER_V2_LOGIC_TOUCHED=false
+DOUBLE_PLAY_LOGIC_TOUCHED=false
+NEW_PARALLEL_SSOT_CREATED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+MARKET_DASHBOARD_TOUCHED=false
+DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
+```
+
+**Guard module (reuse — no parallel preflight crosslink SSOT):** `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`.
+
+**Non-authorizing:** Docs/tests-only reciprocal crosslink guard only; does **not** authorize execute, runtime, run start, live, preflight lift, order/cancel/execution/arming, authority lift, trading-logic changes, Master V2 / Double Play / Bull-Bear / Risk / KillSwitch / Scope / Capital changes, workflow YAML mutation, `workflow_dispatch`, `gh run rerun`, JSONL ingest, evidence dataset mutation, or Market Dashboard authority changes.
+
 ## Market tape readmodel SSR DOCS_TRUTH_MAP static crosslink v1
 
 **Operator-GO:** `GO_MARKET_TAPE_SSR_DOCS_TRUTH_MAP_CI_AUDIT_STATIC_CROSSLINK_GUARD_OPERATOR_GO_AUTOFILL_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_order_capability_fixture_binding_docs_truth_map_static_crosslink_guard_merge_no_run_v1_20260611T192531Z/`
