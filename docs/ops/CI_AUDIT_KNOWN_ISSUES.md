@@ -1004,6 +1004,85 @@ NEW_PARALLEL_SSOT_CREATED=false
 
 **Non-authorizing:** Docs/check-plan reciprocal crosslink integration only; does **not** authorize workflow edits, branch-protection changes, truth promotion, flag mutation, runtime/live/paper/shadow/testnet, session invoke, Preflight lift, order/cancel/execution/arming, U2b reactivation, Market-Airport authority changes, or trading logic changes.
 
+## pt_docs_gates_snapshot + Docs Diff Guard Policy Gate reciprocal crosslink — docs/tests-only guard v1
+
+**Operator-GO:** `GO_PT_DOCS_GATES_SNAPSHOT_AND_DOCS_DIFF_GUARD_POLICY_RECIPROCAL_CROSSLINK_BUNDLE_DOCS_TESTS_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_docs_reference_targets_guard_standard_check_integration_merge_no_run_v1_20260613T001000Z/`
+
+**Purpose:** Anchor the **pt_docs_gates_snapshot** local 3-gate bundle wrapper and **Gate 3 (Docs Diff Guard Policy)** as a single reciprocal crosslink slice. Static **CI_AUDIT ↔ DOCS_TRUTH_MAP reciprocal crosslink** closes the remaining chronicle/guard parity gap for the snapshot wrapper and Gate 3 — symmetric to the closed #4200 Docs Token Policy Guard standard check #1 and #4201 Docs Reference Targets Guard standard check #2 integrations. **Docs/tests/check-plan visibility only** — no workflow mutation, no required-check configuration change, no promotion, no runtime.
+
+**Canonical repo owners (reuse — do not duplicate):**
+
+| Concern | Owner |
+|---------|-------|
+| Local 3-gate bundle wrapper | `scripts/ops/pt_docs_gates_snapshot.sh` |
+| Gate 3 validator | `scripts/ci/check_docs_diff_guard_section.py` |
+| Gate 3 marker inserter (reference) | `scripts/ops/insert_docs_diff_guard_section.py` |
+| Operator runbook (Gate 3) | `docs/ops/runbooks/RUNBOOK_DOCS_DIFF_GUARD_POLICY_GATE_OPERATOR.md` |
+| Gate catalog + snapshot index | `docs/ops/GATES_OVERVIEW.md` — **G-DOCS-SNAPSHOT**, **G-DOCS-DIFF-GUARD** |
+| Closed #4200 pointer (reuse) | CI_AUDIT § Docs Token Policy Guard standard check integration |
+| Closed #4201 pointer (reuse) | CI_AUDIT § Docs Reference Targets Guard standard check integration |
+| CI required context (reference only — **no** YAML mutation) | `.github/workflows/docs_diff_guard_policy_gate.yml` → check `Docs Diff Guard Policy Gate` |
+| Contract tests (reuse) | `tests/ci/test_check_docs_diff_guard_section_contract_v0.py` |
+| Remote runtime contract docs guard (reuse) | `tests/ops/test_remote_runtime_contract_docs_guard_v0.py` |
+| CI_AUDIT / DOCS_TRUTH_MAP reciprocal guard | `tests/ops/test_remote_runtime_contract_docs_guard_v0.py` |
+| DOCS_TRUTH_MAP chronicle | `docs/ops/registry/DOCS_TRUTH_MAP.md` (this crosslink section + Änderungsnachweis row) |
+
+**Crosslink invariants (static — not enforcement activation):**
+
+| Invariant | Posture |
+|-----------|---------|
+| Snapshot wrapper | bundles Gate 1 (Docs Token Policy) + Gate 2 (Docs Reference Targets) + Gate 3 (Docs Diff Guard Policy) — read-only local operator path |
+| Gate 3 | mandatory when `docs/ops/` trigger paths change — marker presence enforced |
+| Workflow YAML | **unchanged** — reference only |
+| Required-check config | **unchanged** — visibility only |
+| U2b | **parked** — not reactivated |
+| Market-Airport | **excluded** |
+
+```text
+PT_DOCS_GATES_SNAPSHOT_AND_DOCS_DIFF_GUARD_POLICY_RECIPROCAL_CROSSLINK_BUNDLE_V1=true
+PT_DOCS_GATES_SNAPSHOT_GATE3_RECIPROCAL_BINDING=true
+DOCS_DIFF_GUARD_POLICY_RECIPROCAL_CROSSLINK_PARITY=true
+EXISTING_CANONICAL_OWNERS_REUSED=true
+PT_DOCS_GATES_SNAPSHOT_WRAPPER=pt_docs_gates_snapshot.sh
+DOCS_DIFF_GUARD_POLICY_VALIDATOR=check_docs_diff_guard_section.py
+DOCS_DIFF_GUARD_POLICY_CI_REQUIRED_CONTEXT=Docs Diff Guard Policy Gate
+DOCS_TOKEN_POLICY_GUARD_STANDARD_CHECK_REUSE_POINTER=#4200
+DOCS_REFERENCE_TARGETS_GUARD_STANDARD_CHECK_REUSE_POINTER=#4201
+THREE_GATE_SNAPSHOT_SEQUENCE_DOCUMENTED=true
+STANDARD_CHECK_INTEGRATED=true
+PARALLEL_GUARD_CREATED=false
+SNAPSHOT_WRAPPER_MUTATED=false
+DOCS_DIFF_GUARD_SCRIPT_MUTATED=false
+WORKFLOW_YAML_MUTATED=false
+NO_WORKFLOW_MUTATION=true
+REQUIRED_CHECK_CONFIG_MUTATED=false
+NO_REQUIRED_CHECK_CONFIG_CHANGE=true
+TRUTH_PROMOTION_EXECUTED=false
+OBSERVABILITY_TRUTH_ALLOWED_CHANGED=false
+REAL_METADATA_SOURCE_MARKED_CHANGED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+NO_SESSION_INVOKE_AUTHORIZED=true
+U2B_PARKED=true
+MARKET_AIRPORT_EXCLUDED=true
+EVIDENCE_OR_DOCS_ANCHOR_NOT_RUNTIME_AUTHORITY=true
+NO_RUNTIME=true
+NO_LIVE=true
+NO_PREFLIGHT_LIFT=true
+NEW_PARALLEL_SSOT_CREATED=false
+```
+
+**Standard local sequence (before push — snapshot bundles gates 1–3):**
+
+1. `bash scripts&#47;ops&#47;preflight_docs_token_policy_changed.sh` (Gate 1 — reuse #4200)
+2. `bash scripts&#47;ops&#47;verify_docs_reference_targets.sh --changed --base origin&#47;main` (Gate 2 — reuse #4201, when `.md` changed)
+3. `python3 scripts&#47;ci&#47;check_docs_diff_guard_section.py` (Gate 3 — when `docs/ops/` trigger paths changed)
+4. **Or** bundle all three: `bash scripts&#47;ops&#47;pt_docs_gates_snapshot.sh --changed --base origin&#47;main`
+5. Continue with PR-scoped pytest and Ruff per `RUNBOOK_DOCS_TOKEN_POLICY_GATE.md` standard-check table
+
+**Guard module (reuse — no parallel snapshot/Gate-3 SSOT):** `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`.
+
+**Non-authorizing:** Docs/check-plan reciprocal crosslink integration only; does **not** authorize workflow edits, branch-protection changes, truth promotion, flag mutation, runtime/live/paper/shadow/testnet, session invoke, Preflight lift, order/cancel/execution/arming, U2b reactivation, Market-Airport authority changes, or trading logic changes.
+
 ## Primary evidence retention invariant residual static review — docs/tests-only guard v1
 
 **Operator-GO:** `GO_PRIMARY_EVIDENCE_RETENTION_INVARIANT_RESIDUAL_STATIC_REVIEW_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_ci_docs_required_check_truth_map_residual_review_merge_no_run_v1_20260612T005020Z/`
