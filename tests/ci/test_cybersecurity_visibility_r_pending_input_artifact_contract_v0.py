@@ -96,8 +96,13 @@ def _cv3c_report_block(text: str) -> str:
     return text[start:end]
 
 
+RELEASE_RC_SLICE_DECOMPOSITION_HEADING = (
+    "**Planned slice decomposition (reference — status synced post-PR #4164):**"
+)
+
+
 def _release_rc_index_section(text: str) -> str:
-    start = text.index("**Planned slice decomposition (reference — not authorized until merged):**")
+    start = text.index(RELEASE_RC_SLICE_DECOMPOSITION_HEADING)
     end = text.index("**Operational rules:**", start)
     return text[start:end]
 
