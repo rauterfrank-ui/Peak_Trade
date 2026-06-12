@@ -350,6 +350,48 @@ PE4_BOUNDED_OBSERVATION_MANDATORY_CLOSEOUT_CI_AUDIT_CROSSLINK_EXPECTED: dict[str
 PE4_BOUNDED_OBSERVATION_MANDATORY_CLOSEOUT_CI_AUDIT_CROSSLINK_OWNER_TESTS = (
     "test_bounded_observation_review_durable_primary_evidence_contract_v0.py",
 )
+PE5_GAP4_GAP2A1_DEPENDENCY_CI_AUDIT_CROSSLINK_HEADING = (
+    "## PE-5 Gap4 ↔ Gap2a.1 dependency CI_AUDIT ↔ SECTION5 reciprocal crosslink "
+    "— docs/tests-only guard v1"
+)
+PE5_GAP4_GAP2A1_DEPENDENCY_CI_AUDIT_CROSSLINK_GUARD_BLOCK_ANCHOR = (
+    "PE5_GAP4_GAP2A1_DEPENDENCY_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_V1=true"
+)
+PE5_GAP4_GAP2A1_DEPENDENCY_CI_AUDIT_CROSSLINK_EXPECTED: dict[str, str] = {
+    "PE5_GAP4_GAP2A1_DEPENDENCY_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_V1": "true",
+    "PE5_GAP4_GAP2A1_DEPENDENCY_CI_AUDIT_CROSSLINK_DOCS_TESTS_ONLY": "true",
+    "DOCS_TESTS_ONLY": "true",
+    "SECTION5_PE5_GAP4_GAP2A1_DEPENDENCY_OWNER_REFERENCED": "true",
+    "PE5_GAP4_GAP2A1_DEPENDENCY_GUARD_V0": "true",
+    "GAP4_OUTPUT_EVIDENCE_DEPENDS_ON_GAP2A1_PRIMARY_EVIDENCE_V0": "true",
+    "GAP4_COMPLETION_INVALID_WITHOUT_DURABLE_PRIMARY_EVIDENCE": "true",
+    "GAP4_COMPLETION_INVALID_WITHOUT_MANIFEST_VERIFY": "true",
+    "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED": "false",
+    "GAP2A1_PRIMARY_EVIDENCE_ENFORCED": "false",
+    "SLICE_PE5_TESTS_ONLY": "true",
+    "OBSERVATION_RUN_AUTHORIZED_NOW": "false",
+    "PAPER_RUN_AUTHORIZED_NOW": "false",
+    "SHADOW_RUN_AUTHORIZED_NOW": "false",
+    "TESTNET_SESSION_AUTHORIZED_NOW": "false",
+    "ORDER_EXECUTE_AUTHORIZED_NOW": "false",
+    "LIVE_AUTHORIZED_NOW": "false",
+    "NO_EXECUTE": "true",
+    "NO_PREFLIGHT_LIFT": "true",
+    "NO_RUNTIME": "true",
+    "NO_LIVE": "true",
+    "ORDER_CANCEL_EXECUTION_ARMING_TOUCHED": "false",
+    "AUTHORITY_LIFT": "false",
+    "TRADING_LOGIC_TOUCHED": "false",
+    "MASTER_V2_LOGIC_TOUCHED": "false",
+    "DOUBLE_PLAY_LOGIC_TOUCHED": "false",
+    "NEW_PARALLEL_SSOT_CREATED": "false",
+    "PREFLIGHT_REMAINS_BLOCKED": "true",
+    "MARKET_DASHBOARD_TOUCHED": "false",
+    "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED": "true",
+}
+PE5_GAP4_GAP2A1_DEPENDENCY_CI_AUDIT_CROSSLINK_OWNER_TESTS = (
+    "test_gap4_gap2a1_primary_evidence_dependency_contract_v0.py",
+)
 PE7_REPO_NATIVE_BOUNDED_TESTNET_ORDER_CAP_CI_AUDIT_CROSSLINK_HEADING = (
     "## PE-7 Repo-native bounded Testnet order-cap CI_AUDIT ↔ SECTION5 reciprocal crosslink "
     "— docs/tests-only guard v1"
@@ -1384,6 +1426,76 @@ def test_docs_truth_map_pe4_bounded_observation_mandatory_closeout_ci_audit_cros
     assert "PAPER_RUN_AUTHORIZED_NOW=false" in text
     assert "SHADOW_RUN_AUTHORIZED_NOW=false" in text
     assert "TESTNET_SESSION_AUTHORIZED_NOW=false" in text
+    assert "ORDER_EXECUTE_AUTHORIZED_NOW=false" in text
+    assert "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true" in text
+
+
+def _pe5_gap4_gap2a1_dependency_ci_audit_crosslink_section(text: str) -> str:
+    start = text.find(PE5_GAP4_GAP2A1_DEPENDENCY_CI_AUDIT_CROSSLINK_HEADING)
+    assert start != -1, "missing PE-5 Gap4 ↔ Gap2a.1 dependency CI_AUDIT crosslink section"
+    next_heading = text.find("\n## ", start + 1)
+    if next_heading == -1:
+        return text[start:]
+    return text[start:next_heading]
+
+
+def test_ci_audit_pe5_gap4_gap2a1_dependency_crosslink_section_present_v1() -> None:
+    text = _ci_audit_text()
+    section = _pe5_gap4_gap2a1_dependency_ci_audit_crosslink_section(text)
+    assert (
+        "GO_PE5_GAP4_GAP2A1_DEPENDENCY_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1"
+        in section
+    )
+    assert "Gap4 ↔ Gap2a.1 dependency" in section
+    assert "SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md" in section
+    assert "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md" in section
+    assert "GAP4_OUTPUT_EVIDENCE_DEPENDS_ON_GAP2A1_PRIMARY_EVIDENCE_V0" in section
+    assert "no parallel pe-5 ssot" in section.lower()
+    assert THIS_MODULE in section
+    for module_name in PE5_GAP4_GAP2A1_DEPENDENCY_CI_AUDIT_CROSSLINK_OWNER_TESTS:
+        assert module_name in section, f"missing owner test reference {module_name!r}"
+
+
+def test_ci_audit_pe5_gap4_gap2a1_dependency_crosslink_machine_lines_v1() -> None:
+    block = _block_containing(
+        _ci_audit_text(),
+        PE5_GAP4_GAP2A1_DEPENDENCY_CI_AUDIT_CROSSLINK_GUARD_BLOCK_ANCHOR,
+    )
+    values = _machine_line_values(block)
+    missing = set(PE5_GAP4_GAP2A1_DEPENDENCY_CI_AUDIT_CROSSLINK_EXPECTED) - values.keys()
+    assert not missing, f"missing PE-5 CI_AUDIT crosslink keys: {sorted(missing)}"
+    for (
+        key,
+        expected,
+    ) in PE5_GAP4_GAP2A1_DEPENDENCY_CI_AUDIT_CROSSLINK_EXPECTED.items():
+        assert values[key] == expected, f"{key}={values[key]!r} expected {expected!r}"
+
+
+def test_section5_doc_pe5_gap4_gap2a1_dependency_owner_present_v1() -> None:
+    text = SECTION5_DOC.read_text(encoding="utf-8")
+    assert "**Gap4 ↔ Gap2a.1 dependency (PE-5 guard) v0:**" in text
+    assert "PE5_GAP4_GAP2A1_DEPENDENCY_GUARD_V0=true" in text
+    assert "GAP4_OUTPUT_EVIDENCE_DEPENDS_ON_GAP2A1_PRIMARY_EVIDENCE_V0=true" in text
+    assert "test_gap4_gap2a1_primary_evidence_dependency_contract_v0.py" in text
+    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in text
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in text
+    assert PE5_GAP4_GAP2A1_DEPENDENCY_CI_AUDIT_CROSSLINK_GUARD_BLOCK_ANCHOR not in text
+
+
+def test_docs_truth_map_pe5_gap4_gap2a1_dependency_ci_audit_crosslink_chronicle_v1() -> None:
+    text = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    assert (
+        "PE-5 Gap4 ↔ Gap2a.1 dependency CI_AUDIT ↔ SECTION5 reciprocal crosslink guard v1" in text
+    )
+    assert THIS_MODULE in text
+    assert PE5_GAP4_GAP2A1_DEPENDENCY_CI_AUDIT_CROSSLINK_GUARD_BLOCK_ANCHOR in text
+    assert "test_gap4_gap2a1_primary_evidence_dependency_contract_v0.py" in text
+    assert (
+        "**no** execute / Preflight-Lift / observation-run / paper-run / shadow-run / testnet-session / runtime"
+        in text
+    )
+    assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in text
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in text
     assert "ORDER_EXECUTE_AUTHORIZED_NOW=false" in text
     assert "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true" in text
 

@@ -483,6 +483,60 @@ DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
 
 **Non-authorizing:** Docs/tests-only reciprocal crosslink guard only; does **not** authorize execute, runtime, run start, live, preflight lift, bounded observation run, paper/shadow/testnet session, order/cancel/execution/arming, authority lift, trading-logic changes, Master V2 / Double Play / Bull-Bear / Risk / KillSwitch / Scope / Capital changes, workflow YAML mutation, `workflow_dispatch`, `gh run rerun`, JSONL ingest, evidence dataset mutation, or Market Dashboard authority changes.
 
+## PE-5 Gap4 ↔ Gap2a.1 dependency CI_AUDIT ↔ SECTION5 reciprocal crosslink — docs/tests-only guard v1
+
+**Operator-GO:** `GO_PE5_GAP4_GAP2A1_DEPENDENCY_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1`
+
+**Purpose:** Reciprocal crosslink so CI_AUDIT documents the PE-5 Gap4 ↔ Gap2a.1 dependency guard (SECTION5 PE-5 guard) aligned with SECTION5 Gap Owner Map `**Gap4 ↔ Gap2a.1 dependency (PE-5 guard) v0:**` blocks in §2a.1 and Gap 4 output/evidence paths criteria, plus Preflight §2a.1 Gap4 output-evidence dependency prose. Guard/Ops drift fix only — **non-authorizing**; **no** execute, preflight lift, bounded observation run, paper/shadow/testnet session, or runtime.
+
+**Canonical repo owners (reuse — do not duplicate):**
+
+| Concern | Owner |
+|---------|-------|
+| Gap Owner Map SSOT — PE-5 Gap4 ↔ Gap2a.1 dependency guard | `docs/ops/planning/SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md` |
+| Preflight §2a.1 Gap4 output-evidence dependency prose (reference only) | `docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md` |
+| Gap4 ↔ Gap2a.1 primary evidence dependency contract (canonical static guard) | `tests/ops/test_gap4_gap2a1_primary_evidence_dependency_contract_v0.py` |
+| Gap4 output evidence paths contract (reference only) | `tests/ops/test_gap4_output_evidence_paths_contract_v0.py` |
+| Gap2a.1 primary evidence enforcement contract (reference only) | `tests/ops/test_gap2a1_primary_evidence_enforcement_contract_v0.py` |
+| CI_AUDIT / DOCS_TRUTH_MAP reciprocal guard | `tests/ops/test_remote_runtime_contract_docs_guard_v0.py` |
+
+```text
+PE5_GAP4_GAP2A1_DEPENDENCY_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_V1=true
+PE5_GAP4_GAP2A1_DEPENDENCY_CI_AUDIT_CROSSLINK_DOCS_TESTS_ONLY=true
+DOCS_TESTS_ONLY=true
+SECTION5_PE5_GAP4_GAP2A1_DEPENDENCY_OWNER_REFERENCED=true
+PE5_GAP4_GAP2A1_DEPENDENCY_GUARD_V0=true
+GAP4_OUTPUT_EVIDENCE_DEPENDS_ON_GAP2A1_PRIMARY_EVIDENCE_V0=true
+GAP4_COMPLETION_INVALID_WITHOUT_DURABLE_PRIMARY_EVIDENCE=true
+GAP4_COMPLETION_INVALID_WITHOUT_MANIFEST_VERIFY=true
+GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false
+GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false
+SLICE_PE5_TESTS_ONLY=true
+OBSERVATION_RUN_AUTHORIZED_NOW=false
+PAPER_RUN_AUTHORIZED_NOW=false
+SHADOW_RUN_AUTHORIZED_NOW=false
+TESTNET_SESSION_AUTHORIZED_NOW=false
+ORDER_EXECUTE_AUTHORIZED_NOW=false
+LIVE_AUTHORIZED_NOW=false
+NO_EXECUTE=true
+NO_PREFLIGHT_LIFT=true
+NO_RUNTIME=true
+NO_LIVE=true
+ORDER_CANCEL_EXECUTION_ARMING_TOUCHED=false
+AUTHORITY_LIFT=false
+TRADING_LOGIC_TOUCHED=false
+MASTER_V2_LOGIC_TOUCHED=false
+DOUBLE_PLAY_LOGIC_TOUCHED=false
+NEW_PARALLEL_SSOT_CREATED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+MARKET_DASHBOARD_TOUCHED=false
+DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
+```
+
+**Guard module (reuse — no parallel PE-5 SSOT):** `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`.
+
+**Non-authorizing:** Docs/tests-only reciprocal crosslink guard only; does **not** authorize execute, runtime, run start, live, preflight lift, bounded observation run, paper/shadow/testnet session, order/cancel/execution/arming, authority lift, trading-logic changes, Master V2 / Double Play / Bull-Bear / Risk / KillSwitch / Scope / Capital changes, workflow YAML mutation, `workflow_dispatch`, `gh run rerun`, JSONL ingest, evidence dataset mutation, or Market Dashboard authority changes.
+
 ## PE-7 Repo-native bounded Testnet order-cap CI_AUDIT ↔ SECTION5 reciprocal crosslink — docs/tests-only guard v1
 
 **Operator-GO:** `GO_REPO_NATIVE_BOUNDED_TESTNET_ORDER_CAP_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1`
