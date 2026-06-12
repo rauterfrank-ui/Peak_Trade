@@ -2,6 +2,8 @@
 <!-- Market Surface v0 — read-only, in-chart OHLC (SSR SVG); Chart.js diagnostics optional; v1 shell -->
 {% extends "base.html" %}
 
+{% block title %}{{ page_title|e }}{% endblock %}
+
 {% block content %}
 <div
   class="space-y-6 max-w-7xl mx-auto px-2 sm:px-1 pb-2"
@@ -22,6 +24,9 @@
   data-market-operator-overview-v1="true"
   data-market-operator-story-v1="true"
   data-market-single-page-unified-v1="true"
+  data-market-operator-real-values-v1="true"
+  data-market-detail-click-required="false"
+  data-market-canonical-short-url-v1="true"
 >
   <section
     role="region"
@@ -48,6 +53,33 @@
       <div><dt class="inline text-slate-500">Snapshot</dt> <dd class="inline font-mono text-slate-300 break-all">{{ payload.generated_at_utc }}</dd></div>
     </dl>
   </section>
+
+  {% include "partials/market_primary_operator_hero_v1.html" %}
+
+  <section
+    id="market-double-play-summary-v1"
+    role="region"
+    aria-label="Double-Play summary embedded"
+    data-market-double-play-summary-visible-v1="true"
+  >
+    {% include "partials/double_play_market_panel_v0.html" %}
+  </section>
+
+  <section
+    id="market-futures-summary-v1"
+    role="region"
+    aria-label="Futures summary embedded"
+    data-market-futures-summary-visible-v1="true"
+  >
+    {% include "partials/futures_read_only_market_panel_v0.html" %}
+  </section>
+
+  <details
+    class="rounded-xl border border-slate-800/70 bg-slate-950/40 px-3 py-2"
+    data-market-secondary-operator-panels-v1="true"
+  >
+    <summary class="cursor-pointer text-sm font-semibold text-slate-300">Extended operator panels (secondary)</summary>
+    <div class="mt-4 space-y-6">
 
   <section
     id="market-v0-instrument-header"
@@ -109,13 +141,6 @@
           unavailable (depth {{ market_depth.display_status|e }}) · display-only
           {% endif %}
         </dd>
-      </div>
-      <div class="flex items-end">
-        <a
-          href="{{ instrument_header.double_play_href|e }}"
-          class="inline-flex items-center gap-1 rounded-md border border-amber-900/45 bg-amber-950/35 px-2.5 py-1.5 text-[10px] font-semibold uppercase tracking-wide text-amber-200/95 no-underline hover:bg-amber-950/55"
-          data-market-v0-instrument-nav-double-play="true"
-        >Double-Play detail →</a>
       </div>
     </dl>
   </section>
@@ -267,8 +292,11 @@
         <p class="m-0 leading-snug"><strong class="text-sky-200/95">Öffentliche OHLCV (Kraken)</strong> — rein anzeigend, kein Futures-Readiness-Nachweis.</p>
         {% endif %}
         <p class="mt-2 m-0 leading-snug"><strong class="text-amber-200/95">Guardrails:</strong> Dashboard ≠ Freigabe · AI ≠ Authority · Signal ≠ Trade · Docs ≠ Approval — reine Anzeige, keine Broker-/Order-/Live-Autorität.</p>
-        <p class="mt-2 m-0 leading-snug" data-market-v0-paper-run-truth-separation-v0="true"><strong class="text-violet-200/95">Market Surface ≠ Paper Run Truth.</strong> Default symbol and dummy OHLCV are chart fixtures only.</p>
+        <p class="mt-2 m-0 leading-snug" data-market-v0-paper-run-truth-separation-v0="true"><strong class="text-violet-200/95">Market Surface ≠ Paper Run Truth.</strong> Canonical <span class="font-mono">/market</span> uses Kraken public OHLCV by default; <span class="font-mono">source=dummy</span> is explicit synthetic only.</p>
       </section>
+    </div>
+  </details>
+
     </div>
   </details>
 
@@ -842,10 +870,6 @@
     </div>
   </section>
 
-  {% include "partials/double_play_market_panel_v0.html" %}
-
-  {% include "partials/futures_read_only_market_panel_v0.html" %}
-
   <!-- Pro cockpit grid: chart/main column + read-only side panels (IA inspiration only; no order UI) -->
   <div
     class="grid grid-cols-1 xl:grid-cols-12 gap-4 lg:gap-5 xl:gap-6 items-start"
@@ -857,9 +881,9 @@
     <div class="relative flex flex-col gap-4">
       <div class="min-w-0 space-y-2">
         <p class="text-[11px] uppercase tracking-[0.14em] text-sky-400/80 font-semibold m-0">Market Surface</p>
-        <h1 id="market-v0-landmark-page-title" class="text-2xl sm:text-3xl font-bold text-slate-50 tracking-tight m-0">
-          Read-only cockpit · <span class="text-sky-300/95">Close-line chart</span>
-        </h1>
+        <h2 class="text-2xl sm:text-3xl font-bold text-slate-50 tracking-tight m-0">
+          Extended cockpit · <span class="text-sky-300/95">Close-line chart</span>
+        </h2>
         <p class="text-sm text-slate-400 max-w-2xl m-0 leading-snug">
           Keine Orders · nur Anzeige · öffentliche OHLCV (Kraken) oder Dummy.
           Fokus: Kursverlauf — kein Candlestick-Plugin in v0.

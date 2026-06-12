@@ -783,7 +783,7 @@ def test_market_dashboard_ranking_funnel_dynamic_labels_excluded_on_double_play_
 
 def test_market_dashboard_pro_panel_shell_structure_v0(client: TestClient) -> None:
     """Read-only IA shell on GET /market: stable markers, no order-affordance attributes."""
-    market_html = _html(client, "/market")
+    market_html = _html(client, "/market?source=dummy")
 
     assert 'data-market-v0-visual-density-lower-band-v1="true"' in market_html
     assert 'data-market-v0-pro-shell="true"' in market_html
@@ -1444,7 +1444,7 @@ def test_double_play_excludes_market_observe_co_presence_markers_v1(client: Test
 
 def test_market_instrument_header_display_only_markers_v1(client: TestClient) -> None:
     """Kraken-like instrument header: display-only markers, no order controls."""
-    html = _html(client, "/market")
+    html = _html(client, "/market?source=dummy")
 
     assert 'id="market-v0-instrument-header"' in html
     assert 'data-market-v0-instrument-header="true"' in html
@@ -1454,7 +1454,6 @@ def test_market_instrument_header_display_only_markers_v1(client: TestClient) ->
     assert 'data-market-v0-instrument-trading-authority="false"' in html
     assert 'data-market-v0-instrument-price-summary="true"' in html
     assert 'data-market-v0-instrument-spread-summary="true"' in html
-    assert 'data-market-v0-instrument-nav-double-play="true"' in html
     assert 'data-market-v0-instrument-display-only="true"' in html
     assert "source-mode: dummy_offline_synthetic" in html
     assert "data authority=false" in html
@@ -1462,7 +1461,7 @@ def test_market_instrument_header_display_only_markers_v1(client: TestClient) ->
     assert ">no orders<" in html
     assert ">no execution<" in html
     assert "#double-play" in html
-    assert "BTC%2FUSD" in html or "BTC/USD" in html
+    assert "BTC%2FEUR" in html or "BTC/EUR" in html
 
     header_idx = html.index('id="market-v0-instrument-header"')
     header_window = html[header_idx : header_idx + 8000].lower()
@@ -1501,7 +1500,7 @@ def test_double_play_excludes_market_instrument_header_markers_v1(client: TestCl
 
 def test_market_futures_metrics_strip_display_only_markers_v1(client: TestClient) -> None:
     """Kraken-like futures metrics strip: display-only markers, derived from bars, no order controls."""
-    html = _html(client, "/market")
+    html = _html(client, "/market?source=dummy")
 
     assert 'id="market-v0-futures-metrics-strip"' in html
     assert 'data-market-v0-futures-metrics-strip="true"' in html
@@ -1542,7 +1541,7 @@ def test_market_futures_metrics_strip_display_only_markers_v1(client: TestClient
 
 def test_market_futures_metrics_strip_bars_derived_values_default_v1(client: TestClient) -> None:
     """Default dummy OHLCV surfaces last/volatility/volume from embedded bars."""
-    html = _html(client, "/market")
+    html = _html(client, "/market?source=dummy")
 
     assert 'data-market-v0-futures-metric-last="true"' in html
     assert 'data-market-v0-futures-metric-volatility="true"' in html
@@ -1557,7 +1556,7 @@ def test_market_futures_metrics_strip_spread_depth_from_fixture_v1(
     client_depth_fixture_bundle_on: TestClient,
 ) -> None:
     """Depth fixture enables spread and depth-quality metrics in futures strip."""
-    html = _html(client_depth_fixture_bundle_on, "/market")
+    html = _html(client_depth_fixture_bundle_on, "/market?source=dummy")
 
     assert 'data-market-v0-futures-metric-spread="true"' in html
     assert 'data-market-v0-futures-metric-depth-quality="true"' in html
@@ -1615,7 +1614,7 @@ def test_market_ranking_watchlist_symbol_nav_and_selected_highlight_fixture_v1(
     client_ranking_funnel_fixture_bundle_on: TestClient,
 ) -> None:
     """Fixture ranking rows expose display-only symbol nav and selected-instrument highlight."""
-    html = _html(client_ranking_funnel_fixture_bundle_on, "/market")
+    html = _html(client_ranking_funnel_fixture_bundle_on, "/market?source=dummy")
 
     assert 'data-market-v0-ranking-symbol-nav="true"' in html
     assert (

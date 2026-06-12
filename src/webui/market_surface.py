@@ -54,9 +54,11 @@ MARKET_TIMEFRAMES: tuple[str, ...] = ("1m", "5m", "15m", "1h", "4h", "1d")
 MAX_OHLCV_LIMIT = 720
 MARKET_DEPTH_SSR_TOP_LEVELS = 8
 MARKET_TAPE_SSR_TOP_TRADES = 5
-DEFAULT_SYMBOL = "BTC/USD"
-DEFAULT_TIMEFRAME = "1h"
+DEFAULT_SYMBOL = "BTC/EUR"
+DEFAULT_TIMEFRAME = "1d"
 DEFAULT_LIMIT = 120
+DEFAULT_SOURCE: Literal["kraken", "dummy"] = "kraken"
+PAGE_TITLE = "Peak Trade Market Dashboard"
 
 MARKET_SINGLE_PAGE_CONSOLIDATION_ENABLED_ENV = (
     "PEAK_TRADE_MARKET_SINGLE_PAGE_CONSOLIDATION_V1_ENABLED"
@@ -108,7 +110,7 @@ def _utc_now_iso() -> str:
 
 
 def _normalize_source(raw: str) -> Literal["kraken", "dummy"]:
-    key = (raw or "dummy").strip().lower()
+    key = (raw or DEFAULT_SOURCE).strip().lower()
     if key not in ("kraken", "dummy"):
         raise HTTPException(
             status_code=422,
@@ -150,11 +152,11 @@ def load_ohlcv_dataframe(
             limit=min(limit, MAX_OHLCV_LIMIT),
             use_cache=True,
         )
-    except ProviderError as e:
-        logger.warning("Kraken ProviderError: %s", e)
+    except (ProviderError, CacheError) as e:
+        logger.warning("Kraken data error: %s", e)
         raise HTTPException(status_code=503, detail=str(e)) from e
-    except CacheError as e:
-        logger.warning("Kraken CacheError: %s", e)
+    except Exception as e:
+        logger.warning("Kraken unexpected load error: %s", e)
         raise HTTPException(status_code=503, detail=str(e)) from e
 
     return df, meta
@@ -1063,6 +1065,121 @@ def build_market_payload(
     }
 
 
+def build_market_payload_for_page(
+    *,
+    symbol: str,
+    timeframe: str,
+    limit: int,
+    source: Literal["kraken", "dummy"],
+) -> tuple[Dict[str, Any], bool]:
+    """HTML page payload; Kraken failures render honest unavailable state (no 503 page)."""
+
+    try:
+        return build_market_payload(
+            symbol=symbol, timeframe=timeframe, limit=limit, source=source
+        ), False
+    except HTTPException as exc:
+        if exc.status_code != 503:
+            raise
+        detail = exc.detail if isinstance(exc.detail, str) else str(exc.detail)
+        meta: Dict[str, Any] = {
+            "unavailable": True,
+            "reason": detail,
+            "source_mode": (
+                "kraken_public_ohlcv" if source == "kraken" else "dummy_offline_synthetic"
+            ),
+        }
+        return (
+            {
+                "generated_at_utc": _utc_now_iso(),
+                "source": source,
+                "symbol": symbol,
+                "timeframe": timeframe,
+                "limit_requested": limit,
+                "bars_returned": 0,
+                "meta": meta,
+                "bars": [],
+            },
+            True,
+        )
+
+
+def build_market_primary_values_display_context(
+    *,
+    symbol: str,
+    timeframe: str,
+    limit: int,
+    source: Literal["kraken", "dummy"],
+    payload: Dict[str, Any],
+    data_unavailable: bool,
+) -> Dict[str, Any]:
+    """Above-the-fold operator market values (display-only, derived from embedded bars)."""
+
+    if source == "dummy":
+        source_kind = "dummy-offline-synthetic"
+        source_mode = "dummy_offline_synthetic"
+    else:
+        source_kind = "kraken-public"
+        source_mode = "kraken_public_ohlcv"
+
+    bars = payload.get("bars") if isinstance(payload.get("bars"), list) else []
+    last_bar = bars[-1] if bars and isinstance(bars[-1], dict) else {}
+    prev_bar = bars[-2] if len(bars) >= 2 and isinstance(bars[-2], dict) else {}
+
+    def _fval(row: Dict[str, Any], key: str) -> float | None:
+        raw = row.get(key)
+        if raw is None:
+            return None
+        try:
+            return float(raw)
+        except (TypeError, ValueError):
+            return None
+
+    last_close = _fval(last_bar, "close")
+    last_open = _fval(last_bar, "open")
+    last_high = _fval(last_bar, "high")
+    last_low = _fval(last_bar, "low")
+    last_volume = _fval(last_bar, "volume")
+    prev_close = _fval(prev_bar, "close")
+
+    change_abs: float | None = None
+    change_pct: float | None = None
+    if last_close is not None and prev_close is not None and prev_close != 0:
+        change_abs = last_close - prev_close
+        change_pct = (change_abs / prev_close) * 100.0
+
+    status = "available" if last_close is not None and not data_unavailable else "unavailable"
+    if data_unavailable and source == "kraken":
+        status = "unavailable"
+
+    meta = payload.get("meta") if isinstance(payload.get("meta"), dict) else {}
+    unavailable_reason = str(meta.get("reason") or "").strip()
+
+    return {
+        "symbol": symbol,
+        "timeframe": timeframe,
+        "limit": limit,
+        "source": source,
+        "source_kind": source_kind,
+        "source_mode": source_mode,
+        "status": status,
+        "data_unavailable": data_unavailable,
+        "unavailable_reason": unavailable_reason,
+        "generated_at_utc": str(payload.get("generated_at_utc") or "").strip(),
+        "last_bar_ts": str(last_bar.get("ts") or "").strip(),
+        "last_close": last_close,
+        "last_close_display": _format_display_price(last_close),
+        "last_open_display": _format_display_price(last_open),
+        "last_high_display": _format_display_price(last_high),
+        "last_low_display": _format_display_price(last_low),
+        "last_volume_display": _format_display_price(last_volume),
+        "change_abs_display": _format_display_price(change_abs),
+        "change_pct_display": f"{change_pct:.4f}%" if change_pct is not None else "",
+        "change_status": "available" if change_pct is not None else "unavailable",
+        "bars_returned": int(payload.get("bars_returned") or 0),
+    }
+
+
 def create_market_router(
     templates: Jinja2Templates,
     get_project_status: Callable[[], Dict[str, Any]],
@@ -1083,7 +1200,7 @@ def create_market_router(
             description="Anzahl Bars (max 720)",
         ),
         source: str = Query(
-            "dummy",
+            DEFAULT_SOURCE,
             description="dummy = offline synthetisch; kraken = öffentliche OHLCV",
         ),
     ) -> Dict[str, Any]:
@@ -1101,7 +1218,7 @@ def create_market_router(
         symbol: str = Query(DEFAULT_SYMBOL),
         timeframe: str = Query(DEFAULT_TIMEFRAME),
         limit: int = Query(DEFAULT_LIMIT, ge=1, le=MAX_OHLCV_LIMIT),
-        source: str = Query("dummy"),
+        source: str = Query(DEFAULT_SOURCE),
     ) -> Any:
         if timeframe not in MARKET_TIMEFRAMES:
             raise HTTPException(
@@ -1109,7 +1226,17 @@ def create_market_router(
                 detail=f"timeframe muss einer von {list(MARKET_TIMEFRAMES)} sein, nicht {timeframe!r}",
             )
         src = _normalize_source(source)
-        payload = build_market_payload(symbol=symbol, timeframe=timeframe, limit=limit, source=src)
+        payload, data_unavailable = build_market_payload_for_page(
+            symbol=symbol, timeframe=timeframe, limit=limit, source=src
+        )
+        primary_values = build_market_primary_values_display_context(
+            symbol=symbol,
+            timeframe=timeframe,
+            limit=limit,
+            source=src,
+            payload=payload,
+            data_unavailable=data_unavailable,
+        )
         proj_status = get_project_status()
         market_depth = build_market_depth_display_context()
         run_projection = build_market_run_projection_display_context()
@@ -1174,6 +1301,9 @@ def create_market_router(
                 "f5_dashboard": f5_dashboard,
                 "double_play_json_url": "/api/master-v2/double-play/dashboard-display.json",
                 "legacy_demo_href": legacy_demo_href,
+                "page_title": PAGE_TITLE,
+                "primary_values": primary_values,
+                "data_unavailable": data_unavailable,
                 "query": {
                     "symbol": symbol,
                     "timeframe": timeframe,
