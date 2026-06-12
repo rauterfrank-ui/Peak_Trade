@@ -186,6 +186,30 @@ def test_section5_eer1_readiness_review_index_crosslink_v0() -> None:
     assert "READY_FOR_OPERATOR_ARMING=true" not in gap2a1_lines
 
 
+def test_section5_pe_eer1_hold_binding_chain_completion_static_review_v1() -> None:
+    text = DOC.read_text(encoding="utf-8")
+    ci_audit = (ROOT / "docs" / "ops" / "CI_AUDIT_KNOWN_ISSUES.md").read_text(encoding="utf-8")
+    gap2a1 = _gap2a1_section(text)
+    for token in (
+        "PE_EER1_HOLD_BINDING_RECIPROCAL_CROSSLINK_CHAIN_COMPLETION_STATIC_REVIEW_GUARD_V1=true",
+        "PE4_PE11_CROSSLINK_CHAIN_COMPLETE=true",
+        "HOLD_BINDING_CROSSLINK_CHAIN_COMPLETE=true",
+        "EER1_CROSSLINK_COMPLETE=true",
+        "PREFLIGHT_REMAINS_BLOCKED=true",
+        "READY_FOR_OPERATOR_ARMING=false",
+    ):
+        assert token in gap2a1
+        assert token in ci_audit
+    assert "PE+EER1+hold-binding reciprocal crosslink chain completion static review" in gap2a1
+    assert "PE+EER1+hold-binding reciprocal crosslink chain completion static review" in ci_audit
+    assert "test_section5_preflight_gap_owner_map_contract_v0.py" in gap2a1
+    assert "test_remote_runtime_contract_docs_guard_v0.py" in gap2a1
+    collapsed = gap2a1.replace("**", "")
+    assert "does not activate enforcement" in collapsed.lower()
+    gap2a1_lines = {line.strip() for line in gap2a1.splitlines()}
+    assert "READY_FOR_OPERATOR_ARMING=true" not in gap2a1_lines
+
+
 PREFLIGHT_SYNTHESIS_DOCS_BLOCK_REFLECTION_HEADER = "## Preflight Synthesis Docs Block Reflection v0"
 PREFLIGHT_LIFT_CLASS4_REFLECTION_HEADER = (
     "## Preflight Lift Explicit Operator Authorization CLASS_4 Reflection v0"
