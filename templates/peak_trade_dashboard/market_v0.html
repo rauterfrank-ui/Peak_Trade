@@ -21,12 +21,14 @@
   data-market-v0-one-page-link-cleanup-v1="true"
   data-market-operator-overview-v1="true"
   data-market-operator-story-v1="true"
+  data-market-single-page-unified-v1="true"
 >
   <section
     role="region"
     aria-labelledby="market-v0-landmark-operator-system-bar-h2"
     class="rounded-xl border border-slate-700/60 bg-slate-950/80 px-3 py-2.5 sm:px-4 shadow-sm shadow-black/20 ring-1 ring-slate-800/50"
     data-market-operator-system-bar-v1="true"
+    data-market-safety-status-bar-v1="true"
     data-market-readonly="true"
     data-market-non-authorizing="true"
     data-market-live-locked-v1="true"
@@ -840,19 +842,9 @@
     </div>
   </section>
 
-  <section
-    id="market-v0-double-play-status"
-    role="region"
-    aria-labelledby="market-v0-landmark-double-play-status-h2"
-    class="rounded-xl border border-amber-900/35 bg-amber-950/20 px-3 py-2.5 sm:px-4 text-[11px]"
-    data-market-double-play-status-v1="true"
-  >
-    <h2 id="market-v0-landmark-double-play-status-h2" class="text-xs font-semibold text-amber-200/95 m-0 mb-1">Double-Play Status</h2>
-    <p class="m-0 text-slate-300">
-      Display-only snapshot — kein Trading-Signal.
-      <a href="/market/double-play?source={{ query.source }}&amp;symbol={{ query.symbol | replace('/', '%2F') }}&amp;timeframe={{ query.timeframe }}&amp;limit={{ query.limit }}" class="text-sky-300/90 underline underline-offset-2 font-mono">Detail: /market/double-play</a>
-    </p>
-  </section>
+  {% include "partials/double_play_market_panel_v0.html" %}
+
+  {% include "partials/futures_read_only_market_panel_v0.html" %}
 
   <!-- Pro cockpit grid: chart/main column + read-only side panels (IA inspiration only; no order UI) -->
   <div

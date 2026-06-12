@@ -4,9 +4,9 @@
 
 | Methode | Pfad | Beschreibung |
 |---------|------|----------------|
-| GET | `/market` | HTML: **read-only** Market-Dashboard — **SSR-OHLC-/Kerzendisplay** (serverseitig aus eingebettetem Market-Payload); ergänzend **Chart.js**‑Close-Line/Diagnose gemäß **Chart-status**‑Semantik in diesem Dokument (**kein** clientseitiges Ranking-/Live-Nachladen). **Futures-Ranking-Funnel** als **contract-first Empty-State** mit **producer-definierten** Stufengrößen (**kein** festes `Top 50&#47;20&#47;5`); Details **[Ranking funnel empty state (dynamic labels)](#ranking-funnel-empty-state-dynamic-labels)**. **read-only Market Depth SSR-Anzeige v0** (**`data-market-depth-*`**; Zustand in-process über **`market_depth_json_payload_v0()`** — siehe **[Market Depth display on GET /market (SSR v0 implemented)](#market-depth-display-on-get-market-ssr-v0-implemented)**) |
-| GET | `/market/double-play` | HTML: SSR read-only Komposition (ein Server-Render) — **v1.2** dominanter Canvas-Candlestick + **v1.3** menschenlesbare Double‑Play‑Rail‑Feldzuordnung (weiterhin **gleiche** eingebettete Payload-/JSON‑Semantik), sekundärer Chart.js‑Close-Line (**gleicher JSON-Vertrag wie** **`GET`** **`/api/master-v2/double-play/dashboard-display.json`** in-process); **narrow** read-only Market Depth SSR v0 (**`data-double-play-market-depth-*`**, **`#double-play-market-v0-depth-ssr`** — siehe **[Market Depth display on GET /market (SSR v0 implemented)](#market-depth-display-on-get-market-ssr-v0-implemented)**); **kein** **`/market`**‑only Top‑N ladder/ranking-funnel; **kein** client-fetch, **kein** automatisches Nachladen |
-| GET | `/market/futures` | HTML: **F5 Futures Read-only Market Dashboard v0** — SSR offline/fixture display (**`data-f5-*`**); kanonische Semantik in [Futures Read-only Market Dashboard Contract v0](../ops/specs/FUTURES_READ_ONLY_MARKET_DASHBOARD_CONTRACT_V0.md); **orthogonal** zu **`GET &#47;market`** OHLCV/Depth/Tape; env-gated fixture via **`PEAK_TRADE_F5_MARKET_DASHBOARD_ENABLED`** + **`PEAK_TRADE_F5_MARKET_DASHBOARD_BUNDLE_ROOT`**; **kein** client-fetch, **keine** Orders/Sessions/Testnet/Live-Autorität |
+| GET | `/market` | **Canonical operator page (unified single-page v1).** HTML: **read-only** Market-Dashboard — **SSR-OHLC-/Kerzendisplay**; **Chart.js** Close-Line/Diagnose; **embedded Double-Play display** (`#double-play`, partial reuse); **embedded F5 futures/instrument overview** (`#futures`, partial reuse); operator overview IA; ranking funnel; depth/tape when env-gated. Markers: **`data-market-single-page-unified-v1="true"`**, **`data-market-safety-status-bar-v1="true"`**. **No** trading authority. |
+| GET | `/market/double-play` | **Legacy redirect (302)** → **`GET /market?{query}#double-play`** (query preserved). Display content lives on canonical **`/market`**; **no** separate primary operator surface. |
+| GET | `/market/futures` | **Legacy redirect (302)** → **`GET /market?{query}#futures`** (query preserved when present). F5 display content lives on canonical **`/market`**; env gates unchanged (`PEAK_TRADE_F5_MARKET_DASHBOARD_*`). |
 | GET | `/api/market/ohlcv` | JSON: OHLCV-Bars (`open`/`high`/`low`/`close`/`volume`, Zeit `ts`) |
 | GET | `/api/market/depth` | JSON: Market Depth readmodel v0 — **read-only**, **env-gated** (**`PEAK_TRADE_MARKET_DEPTH_ENABLED`** muss **`1`** sein), Bundle nur über **`PEAK_TRADE_MARKET_DEPTH_BUNDLE_ROOT`** (kein Query-/Pfad‑Override); bei Erfolg Builder‑Payload (**`200`**), sonst kurzes Diagnose‑JSON (**`503`**); **`HTTP 200`**/**`503`** gelten für **diese JSON‑Route**. **`GET`** **`/market`** nutzt denselben Hilfstupel **nur serverseitig**, **nicht** per Browser‑Request auf diese URL; **kein** Polling‑Vertrag hier |
 
@@ -259,6 +259,20 @@ Stabile `data-*`‑Marker (Anker für Anzeige und automatisierte Tests — **kei
 **Troubleshooting (missing/stale active-run display):** Walk the env chain top-down before assuming SSR regression. Verify bridge root path, `meta.json` / `evidence_pointer.json` validity, and `view_only` guard. Distinguish **panel absent** (gate off — expected) from **bridge_unreadable** / **pointer_guard_failed** (gate on but bridge invalid). **Do not** equate heartbeat, equity, or `is_active` with exchange connectivity, Provider Truth, Dashboard Truth, or trading authorization. Cross-check **`tests/webui/test_market_active_paper_run_runtime_v0.py`**, **`tests/webui/test_market_dashboard_readonly_structure_contract_v0.py`**.
 
 **Protected boundaries:** read-only SSR only — **no dashboard truth grant**, **no provider truth**, **no** Live/Testnet/Order/Cancel/Execute/Arming/Preflight authority, **no** runtime/scheduler activation. **Market-Airport excluded.** **`GET`** **`&#47;market&#47;double-play`** (**Master V2 / Double Play protected**) — active paper run operator enablement does not alter Double Play routes, markers, or decision logic. **No run, Testnet, Paper, or Shadow authorization** is granted by enabling this display path.
+
+### Unified single-page operator surface (UI-only v1)
+
+**`GET &#47;market`** is the **only primary** operator dashboard page. It embeds:
+
+| Section | Anchor | Partial | Display builders (reuse) |
+|---------|--------|---------|--------------------------|
+| Market overview + chart | (page shell) | `market_v0.html` | `build_market_payload`, ranking/depth/tape contexts |
+| Double-Play display | `#double-play` | `partials/double_play_market_panel_v0.html` | `build_static_dashboard_display_dict()` |
+| F5 futures/instrument | `#futures` | `partials/futures_read_only_market_panel_v0.html` | `build_futures_read_only_market_dashboard_display_context()` |
+
+Legacy routes **`GET &#47;market&#47;double-play`** and **`GET &#47;market&#47;futures`** return **302** to the canonical page with anchors (**`redirect_with_anchor_preserve_query_v1`**). **No** Master V2 / Double Play decision logic change; **display-only** SSR composition.
+
+Tests: `tests/webui/test_market_single_page_unified_consolidation_ui_v1.py`.
 
 ### Single-page consolidation (env-gated SSR v1)
 
