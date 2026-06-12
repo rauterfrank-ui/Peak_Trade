@@ -1332,6 +1332,51 @@ DOCS_DRIFT_GUARD_SENSITIVE_PATH_COUPLING_RECIPROCAL_CROSSLINK_EXPECTED: dict[str
 DOCS_DRIFT_GUARD_SENSITIVE_PATH_COUPLING_RECIPROCAL_CROSSLINK_OWNER_TESTS = (
     "test_check_docs_drift_guard.py",
 )
+REPO_TRUTH_CLAIMS_STANDARD_CHECK_RECIPROCAL_CROSSLINK_HEADING = (
+    "## Repo Truth Claims standard check reciprocal crosslink — docs/tests-only guard v1"
+)
+REPO_TRUTH_CLAIMS_STANDARD_CHECK_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR = (
+    "REPO_TRUTH_CLAIMS_STANDARD_CHECK_RECIPROCAL_CROSSLINK_BUNDLE_V1=true"
+)
+REPO_TRUTH_CLAIMS_STANDARD_CHECK_RECIPROCAL_CROSSLINK_INPUT_BUNDLE = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/systemwide_next_safe_scope_ranking_after_check_docs_drift_guard_and_"
+    "sensitive_path_coupling_reciprocal_crosslink_bundle_merge_no_run_v1_20260613T021500Z"
+)
+REPO_TRUTH_CLAIMS_STANDARD_CHECK_RECIPROCAL_CROSSLINK_EXPECTED: dict[str, str] = {
+    "REPO_TRUTH_CLAIMS_STANDARD_CHECK_RECIPROCAL_CROSSLINK_BUNDLE_V1": "true",
+    "REPO_TRUTH_CLAIMS_RECIPROCAL_CROSSLINK_PARITY": "true",
+    "REPO_TRUTH_CLAIMS_EXISTING_CANONICAL_OWNERS_REUSED": "true",
+    "BRANCH_PROTECTED_TRUTH_GATE_AUTHORITY_UNCHANGED": "true",
+    "PARALLEL_TRUTH_CLAIMS_OWNER_CREATED": "false",
+    "STANDARD_CHECK_INTEGRATED": "true",
+    "PARALLEL_GUARD_CREATED": "false",
+    "REPO_TRUTH_CLAIMS_SEMANTIC_TOUCH": "false",
+    "REPO_TRUTH_CLAIMS_CONFIG_MUTATED": "false",
+    "WORKFLOW_YAML_MUTATED": "false",
+    "NO_WORKFLOW_MUTATION": "true",
+    "REQUIRED_CHECK_CONFIG_MUTATED": "false",
+    "NO_REQUIRED_CHECK_CONFIG_CHANGE": "true",
+    "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED": "true",
+    "DOCS_DRIFT_OR_POINTER_INTEGRITY_COMPLETE": "false",
+    "TRUTH_GO_GRANTED": "false",
+    "TRUTH_PROMOTION_EXECUTED": "false",
+    "OBSERVABILITY_TRUTH_ALLOWED_CHANGED": "false",
+    "REAL_METADATA_SOURCE_MARKED_CHANGED": "false",
+    "PREFLIGHT_REMAINS_BLOCKED": "true",
+    "NO_SESSION_INVOKE_AUTHORIZED": "true",
+    "U2B_PARKED": "true",
+    "MARKET_AIRPORT_EXCLUDED": "true",
+    "EVIDENCE_OR_DOCS_ANCHOR_NOT_RUNTIME_AUTHORITY": "true",
+    "NO_RUNTIME": "true",
+    "NO_LIVE": "true",
+    "NO_PREFLIGHT_LIFT": "true",
+    "NEW_PARALLEL_SSOT_CREATED": "false",
+}
+REPO_TRUTH_CLAIMS_STANDARD_CHECK_RECIPROCAL_CROSSLINK_OWNER_TESTS = (
+    "test_check_repo_truth_claims_cli_contract_v0.py",
+    "test_truth_core.py",
+)
 PREFLIGHT_PROCESS_GATE_HYGIENE_GUARD_EXPECTED: dict[str, str] = {
     "PREFLIGHT_PROCESS_GATE_HYGIENE_GUARD_V1": "true",
     "ACTIVE_RUN_CHECK_PEAK_TRADE_EXPLICIT_ONLY": "true",
@@ -3777,6 +3822,88 @@ def test_docs_truth_map_docs_drift_guard_sensitive_path_coupling_reciprocal_cros
     assert "WORKFLOW_YAML_MUTATED=false" in text
     assert "REQUIRED_CHECK_CONFIG_MUTATED=false" in text
     assert "PARALLEL_GUARD_CREATED=false" in text
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in text
+    assert "NO_SESSION_INVOKE_AUTHORIZED=true" in text
+    assert "U2B_PARKED=true" in text
+    assert "MARKET_AIRPORT_EXCLUDED=true" in text
+    assert "EVIDENCE_OR_DOCS_ANCHOR_NOT_RUNTIME_AUTHORITY=true" in text
+    assert "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true" in text
+
+
+def _repo_truth_claims_standard_check_reciprocal_crosslink_section(text: str) -> str:
+    start = text.find(REPO_TRUTH_CLAIMS_STANDARD_CHECK_RECIPROCAL_CROSSLINK_HEADING)
+    assert start != -1, "missing Repo Truth Claims standard check reciprocal section"
+    next_heading = text.find("\n## ", start + 1)
+    if next_heading == -1:
+        return text[start:]
+    return text[start:next_heading]
+
+
+def test_ci_audit_repo_truth_claims_standard_check_reciprocal_crosslink_section_v1() -> None:
+    text = _ci_audit_text()
+    section = _repo_truth_claims_standard_check_reciprocal_crosslink_section(text)
+    assert REPO_TRUTH_CLAIMS_STANDARD_CHECK_RECIPROCAL_CROSSLINK_INPUT_BUNDLE in section
+    assert (
+        "GO_REPO_TRUTH_CLAIMS_STANDARD_CHECK_RECIPROCAL_CROSSLINK_BUNDLE_DOCS_TESTS_NO_RUN_V1"
+        in section
+    )
+    assert "CI_AUDIT ↔ DOCS_TRUTH_MAP reciprocal crosslink" in section
+    assert "DOCS_TRUTH_MAP chronicle" in section
+    assert "CI_AUDIT / DOCS_TRUTH_MAP reciprocal guard" in section
+    assert THIS_MODULE in section
+    assert "check_repo_truth_claims.py" in section
+    assert "repo_truth_claims.yaml" in section
+    assert "REPO_TRUTH_CLAIMS.md" in section
+    assert "TRUTH_CORE.md" in section
+    assert "TRUTH_BRANCH_PROTECTION.md" in section
+    assert "repo-truth-claims" in section
+    assert "#4200" in section
+    assert "#4201" in section
+    assert "#4202" in section
+    assert "#4203" in section
+    for module_name in REPO_TRUTH_CLAIMS_STANDARD_CHECK_RECIPROCAL_CROSSLINK_OWNER_TESTS:
+        assert module_name in section, f"missing repo truth claims test owner {module_name!r}"
+
+
+def test_ci_audit_repo_truth_claims_standard_check_reciprocal_crosslink_machine_lines_v1() -> None:
+    block = _block_containing(
+        _ci_audit_text(),
+        REPO_TRUTH_CLAIMS_STANDARD_CHECK_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR,
+    )
+    values = _machine_line_values(block)
+    missing = set(REPO_TRUTH_CLAIMS_STANDARD_CHECK_RECIPROCAL_CROSSLINK_EXPECTED) - values.keys()
+    assert not missing, (
+        f"missing Repo Truth Claims standard check reciprocal keys: {sorted(missing)}"
+    )
+    for key, expected in REPO_TRUTH_CLAIMS_STANDARD_CHECK_RECIPROCAL_CROSSLINK_EXPECTED.items():
+        assert values[key] == expected, f"{key}={values[key]!r} expected {expected!r}"
+
+
+def test_docs_truth_map_repo_truth_claims_standard_check_reciprocal_crosslink_chronicle_v1() -> (
+    None
+):
+    text = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    assert (
+        "Repo Truth Claims standard check reciprocal crosslink bundle "
+        "CI_AUDIT ↔ DOCS_TRUTH_MAP guard v1"
+    ) in text
+    assert THIS_MODULE in text
+    assert REPO_TRUTH_CLAIMS_STANDARD_CHECK_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR in text
+    assert "REPO_TRUTH_CLAIMS_RECIPROCAL_CROSSLINK_PARITY=true" in text
+    assert "REPO_TRUTH_CLAIMS_EXISTING_CANONICAL_OWNERS_REUSED=true" in text
+    assert "BRANCH_PROTECTED_TRUTH_GATE_AUTHORITY_UNCHANGED=true" in text
+    assert "check_repo_truth_claims.py" in text
+    assert "repo_truth_claims.yaml" in text
+    assert "REPO_TRUTH_CLAIMS.md" in text
+    assert "TRUTH_CORE.md" in text
+    assert "test_check_repo_truth_claims_cli_contract_v0.py" in text
+    assert REPO_TRUTH_CLAIMS_STANDARD_CHECK_RECIPROCAL_CROSSLINK_INPUT_BUNDLE.split("/")[-1] in text
+    assert "**no** workflow YAML mutation" in text
+    assert "REPO_TRUTH_CLAIMS_SEMANTIC_TOUCH=false" in text
+    assert "REPO_TRUTH_CLAIMS_CONFIG_MUTATED=false" in text
+    assert "WORKFLOW_YAML_MUTATED=false" in text
+    assert "REQUIRED_CHECK_CONFIG_MUTATED=false" in text
+    assert "PARALLEL_TRUTH_CLAIMS_OWNER_CREATED=false" in text
     assert "PREFLIGHT_REMAINS_BLOCKED=true" in text
     assert "NO_SESSION_INVOKE_AUTHORIZED=true" in text
     assert "U2B_PARKED=true" in text

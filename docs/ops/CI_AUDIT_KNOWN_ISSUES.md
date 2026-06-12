@@ -1167,6 +1167,91 @@ NEW_PARALLEL_SSOT_CREATED=false
 
 **Non-authorizing:** Docs/check-plan reciprocal crosslink integration only; does **not** authorize workflow edits, branch-protection changes, truth promotion, flag mutation, runtime/live/paper/shadow/testnet, session invoke, Preflight lift, order/cancel/execution/arming, U2b reactivation, Market-Airport authority changes, trading logic changes, CV3 histogram bucket closure, or semantic changes to `check_docs_drift_guard.py` / `docs_truth_map.yaml`.
 
+## Repo Truth Claims standard check reciprocal crosslink — docs/tests-only guard v1
+
+**Operator-GO:** `GO_REPO_TRUTH_CLAIMS_STANDARD_CHECK_RECIPROCAL_CROSSLINK_BUNDLE_DOCS_TESTS_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_check_docs_drift_guard_and_sensitive_path_coupling_reciprocal_crosslink_bundle_merge_no_run_v1_20260613T021500Z/`
+
+**Purpose:** Anchor the **Repo Truth Claims** branch-protected truth gate (`repo-truth-claims`) as a reciprocal crosslink slice. Static **CI_AUDIT ↔ DOCS_TRUTH_MAP reciprocal crosslink** closes the remaining chronicle/guard parity gap for branch-protected truth gate visibility — symmetric to the closed #4200 Docs Token Policy Guard standard check #1, #4201 Docs Reference Targets Guard standard check #2, #4202 pt_docs_gates_snapshot + Diff Guard Gate 3 integrations, and #4203 Docs Drift Guard + sensitive-path coupling integrations. **Docs/tests/check-plan visibility only** — no workflow mutation, no required-check configuration change, no promotion, no runtime.
+
+**Canonical repo owners (reuse — do not duplicate):**
+
+| Concern | Owner |
+|---------|-------|
+| Repo truth claims CLI guard | `scripts/ops/check_repo_truth_claims.py` |
+| Claims config SSOT | `config/ops/repo_truth_claims.yaml` |
+| Operator registry doc | `docs/ops/registry/REPO_TRUTH_CLAIMS.md` |
+| Shared truth layer (reference) | `docs/ops/registry/TRUTH_CORE.md` |
+| Truth branch protection (reference) | `docs/ops/registry/TRUTH_BRANCH_PROTECTION.md` |
+| Truth gates CI (reference only — **no** YAML mutation) | `.github/workflows/truth_gates_pr.yml` → check `repo-truth-claims` |
+| Existing CLI contract tests (reuse) | `tests/ops/test_check_repo_truth_claims_cli_contract_v0.py` |
+| Truth core unit tests (reuse) | `tests/ops/test_truth_core.py` |
+| Closed #4200 pointer (reuse) | CI_AUDIT § Docs Token Policy Guard standard check integration |
+| Closed #4201 pointer (reuse) | CI_AUDIT § Docs Reference Targets Guard standard check integration |
+| Closed #4202 pointer (reuse) | CI_AUDIT § pt_docs_gates_snapshot + Docs Diff Guard Policy Gate reciprocal crosslink |
+| Closed #4203 pointer (reuse) | CI_AUDIT § Docs Drift Guard + sensitive-path coupling reciprocal crosslink |
+| Remote runtime contract docs guard (reuse) | `tests/ops/test_remote_runtime_contract_docs_guard_v0.py` |
+| CI_AUDIT / DOCS_TRUTH_MAP reciprocal guard | `tests/ops/test_remote_runtime_contract_docs_guard_v0.py` |
+| DOCS_TRUTH_MAP chronicle | `docs/ops/registry/DOCS_TRUTH_MAP.md` (this crosslink section + Änderungsnachweis row) |
+
+**Crosslink invariants (static — not enforcement activation):**
+
+| Invariant | Posture |
+|-----------|---------|
+| Branch-protected truth gate | `repo-truth-claims` — reference only; authority **unchanged** |
+| Repo truth claims semantic | **unchanged** — reference only |
+| repo_truth_claims.yaml rules | **unchanged** — reference only |
+| Workflow YAML | **unchanged** — reference only |
+| Required-check config | **unchanged** — visibility only |
+| U2b | **parked** — not reactivated |
+| Market-Airport | **excluded** |
+
+```text
+REPO_TRUTH_CLAIMS_STANDARD_CHECK_RECIPROCAL_CROSSLINK_BUNDLE_V1=true
+REPO_TRUTH_CLAIMS_RECIPROCAL_CROSSLINK_PARITY=true
+REPO_TRUTH_CLAIMS_EXISTING_CANONICAL_OWNERS_REUSED=true
+BRANCH_PROTECTED_TRUTH_GATE_AUTHORITY_UNCHANGED=true
+PARALLEL_TRUTH_CLAIMS_OWNER_CREATED=false
+REPO_TRUTH_CLAIMS_GUARD=check_repo_truth_claims.py
+REPO_TRUTH_CLAIMS_CONFIG=repo_truth_claims.yaml
+REPO_TRUTH_CLAIMS_CI_REQUIRED_CONTEXT=repo-truth-claims
+DOCS_TOKEN_POLICY_GUARD_STANDARD_CHECK_REUSE_POINTER=#4200
+DOCS_REFERENCE_TARGETS_GUARD_STANDARD_CHECK_REUSE_POINTER=#4201
+PT_DOCS_GATES_SNAPSHOT_DIFF_GUARD_REUSE_POINTER=#4202
+DOCS_DRIFT_GUARD_SENSITIVE_PATH_COUPLING_REUSE_POINTER=#4203
+STANDARD_CHECK_INTEGRATED=true
+PARALLEL_GUARD_CREATED=false
+REPO_TRUTH_CLAIMS_SEMANTIC_TOUCH=false
+REPO_TRUTH_CLAIMS_CONFIG_MUTATED=false
+WORKFLOW_YAML_MUTATED=false
+NO_WORKFLOW_MUTATION=true
+REQUIRED_CHECK_CONFIG_MUTATED=false
+NO_REQUIRED_CHECK_CONFIG_CHANGE=true
+DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
+DOCS_DRIFT_OR_POINTER_INTEGRITY_COMPLETE=false
+TRUTH_GO_GRANTED=false
+TRUTH_PROMOTION_EXECUTED=false
+OBSERVABILITY_TRUTH_ALLOWED_CHANGED=false
+REAL_METADATA_SOURCE_MARKED_CHANGED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+NO_SESSION_INVOKE_AUTHORIZED=true
+U2B_PARKED=true
+MARKET_AIRPORT_EXCLUDED=true
+EVIDENCE_OR_DOCS_ANCHOR_NOT_RUNTIME_AUTHORITY=true
+NO_RUNTIME=true
+NO_LIVE=true
+NO_PREFLIGHT_LIFT=true
+NEW_PARALLEL_SSOT_CREATED=false
+```
+
+**Standard local sequence (before push — truth gate, read-only):**
+
+1. `python3 scripts&#47;ops&#47;check_repo_truth_claims.py`
+2. Continue with Docs Token Policy (#4200), Reference Targets (#4201), pt_docs_gates_snapshot (#4202), and Docs Drift Guard (#4203) preflight as applicable
+
+**Guard module (reuse — no parallel repo-truth-claims SSOT):** `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`.
+
+**Non-authorizing:** Docs/check-plan reciprocal crosslink integration only; does **not** authorize workflow edits, branch-protection changes, truth promotion, flag mutation, runtime/live/paper/shadow/testnet, session invoke, Preflight lift, order/cancel/execution/arming, U2b reactivation, Market-Airport authority changes, trading logic changes, or semantic changes to `check_repo_truth_claims.py` / `repo_truth_claims.yaml`.
+
 ## Primary evidence retention invariant residual static review — docs/tests-only guard v1
 
 **Operator-GO:** `GO_PRIMARY_EVIDENCE_RETENTION_INVARIANT_RESIDUAL_STATIC_REVIEW_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_ci_docs_required_check_truth_map_residual_review_merge_no_run_v1_20260612T005020Z/`
