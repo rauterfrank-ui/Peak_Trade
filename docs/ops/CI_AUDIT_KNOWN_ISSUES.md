@@ -645,7 +645,7 @@ DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
 
 **Operator-GO:** `GO_PE_EER1_HOLD_BINDING_RECIPROCAL_CROSSLINK_CHAIN_COMPLETION_STATIC_REVIEW_DOCS_TESTS_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_eer1_ci_audit_section5_reciprocal_crosslink_merge_no_auto_go_no_run_v1_20260612T113730Z/`
 
-**Purpose:** Meta static-review guard confirming the completed reciprocal-crosslink chain on main — PE-4..PE-11 (PE-6 via existing cyber histogram crosslink only), hold-binding (#4166/#4167), EER1 (#4173), Runtime Lane Taxonomy (#4176), Scheduler Boundary Hard Block (#4177), and Gap 1–3 execute-entrypoint criteria (#4179) — remains indexed consistently across CI_AUDIT and SECTION5 Gap Owner Map without authorizing execute, preflight lift, enforcement activation, runtime, or trading authority.
+**Purpose:** Meta static-review guard confirming the completed reciprocal-crosslink chain on main — PE-4..PE-11 (PE-6 via existing cyber histogram crosslink only), hold-binding (#4166/#4167), EER1 (#4173), Runtime Lane Taxonomy (#4176), Scheduler Boundary Hard Block (#4177), Gap 1–3 execute-entrypoint criteria (#4179), and Gap 4–7 criteria (#4181) — remains indexed consistently across CI_AUDIT and SECTION5 Gap Owner Map without authorizing execute, preflight lift, enforcement activation, runtime, or trading authority.
 
 **Indexed reciprocal crosslink sections (reuse — do not duplicate):**
 
@@ -663,6 +663,10 @@ DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
 | Gap 1 | **§ Gap 1 Execute Entrypoint CI_AUDIT ↔ SECTION5 reciprocal crosslink — docs/tests-only guard v1** |
 | Gap 2 | **§ Gap 2 Canonical Job Set CI_AUDIT ↔ SECTION5 reciprocal crosslink — docs/tests-only guard v1** |
 | Gap 3 | **§ Gap 3 Execute Command CI_AUDIT ↔ SECTION5 reciprocal crosslink — docs/tests-only guard v1** |
+| Gap 4 | **§ Gap 4 Output/Evidence Paths CI_AUDIT ↔ SECTION5 reciprocal crosslink — docs/tests-only guard v1** |
+| Gap 5 | **§ Gap 5 Stop Criteria CI_AUDIT ↔ SECTION5 reciprocal crosslink — docs/tests-only guard v1** |
+| Gap 6 | **§ Gap 6 Dry-Run Proof Criteria CI_AUDIT ↔ SECTION5 reciprocal crosslink — docs/tests-only guard v1** |
+| Gap 7 | **§ Gap 7 Risk Boundary Criteria CI_AUDIT ↔ SECTION5 reciprocal crosslink — docs/tests-only guard v1** |
 
 **Canonical repo owners (reuse — do not duplicate):**
 
@@ -699,6 +703,17 @@ GAP2_RECIPROCAL_CROSSLINK_SECTION_REFERENCED=true
 GAP3_RECIPROCAL_CROSSLINK_SECTION_REFERENCED=true
 GAP1_GAP3_CROSSLINK_CHAIN_COMPLETE=true
 CHAIN_COMPLETION_STATIC_REVIEW_INCLUDES_GAP1_GAP3_RECIPROCAL_SECTIONS_V1=true
+GAP4_CROSSLINK_COMPLETE=true
+GAP5_CROSSLINK_COMPLETE=true
+GAP6_CROSSLINK_COMPLETE=true
+GAP7_CROSSLINK_COMPLETE=true
+GAP4_RECIPROCAL_CROSSLINK_SECTION_REFERENCED=true
+GAP5_RECIPROCAL_CROSSLINK_SECTION_REFERENCED=true
+GAP6_RECIPROCAL_CROSSLINK_SECTION_REFERENCED=true
+GAP7_RECIPROCAL_CROSSLINK_SECTION_REFERENCED=true
+GAP4_GAP7_CROSSLINK_CHAIN_COMPLETE=true
+CHAIN_COMPLETION_STATIC_REVIEW_INCLUDES_GAP4_GAP7_RECIPROCAL_SECTIONS_V1=true
+PE4_PE5_NOT_USED_AS_GAP4_GAP7_REPLACEMENT=true
 SECTION5_GAP_OWNER_MAP_OWNER_REFERENCED=true
 CI_AUDIT_RECIPROCAL_CROSSLINK_OWNER_REFERENCED=true
 NEW_PARALLEL_SSOT_CREATED=false
