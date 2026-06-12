@@ -703,6 +703,58 @@ DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
 
 **Non-authorizing:** Docs/tests-only chain-completion static review guard only; does **not** authorize execute, runtime, run start, live, preflight lift, enforcement activation, paper/shadow/testnet session, order/cancel/execution/arming, authority lift, trading-logic changes, Master V2 / Double Play / Bull-Bear / Risk / KillSwitch / Scope / Capital changes, workflow YAML mutation, `workflow_dispatch`, `gh run rerun`, JSONL ingest, evidence dataset mutation, or Market Dashboard authority changes.
 
+## Runtime Lane Taxonomy CI_AUDIT ↔ Preflight reciprocal crosslink — docs/tests-only guard v1
+
+**Operator-GO:** `GO_RUNTIME_LANE_TAXONOMY_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_pr4174_pr4175_chain_closeout_no_auto_go_no_run_v1_20260612T115950Z/`
+
+**Purpose:** Reciprocal crosslink so CI_AUDIT documents the Runtime Lane Taxonomy + Authority Levels normative index aligned with Preflight §2 taxonomy index and existing taxonomy static guards. Guard/Ops drift fix only — **non-authorizing**; **no** execute, preflight lift, runtime, or trading authority.
+
+**Canonical repo owners (reuse — do not duplicate):**
+
+| Concern | Owner |
+|---------|-------|
+| Runtime Lane Taxonomy SSOT | `docs/ops/specs/RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md` |
+| Preflight §2 taxonomy index + BLOCKED status | `docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md` |
+| Runtime lane taxonomy static guard | `tests/ops/test_runtime_lane_taxonomy_authority_levels_contract_v0.py` |
+| Preflight↔taxonomy peer static crosslink | `tests/ops/test_paper_shadow_247_preflight_readiness_peer_static_crosslink_contract_v0.py` |
+| Preflight contract static guard | `tests/ops/test_paper_shadow_247_preflight_contract_v0.py` |
+| CI_AUDIT / DOCS_TRUTH_MAP reciprocal guard | `tests/ops/test_remote_runtime_contract_docs_guard_v0.py` |
+
+```text
+RUNTIME_LANE_TAXONOMY_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_GUARD_V1=true
+RUNTIME_LANE_TAXONOMY_CI_AUDIT_PREFLIGHT_CROSSLINK_DOCS_TESTS_ONLY=true
+DOCS_TESTS_ONLY=true
+RUNTIME_LANE_TAXONOMY_SPEC_OWNER_REFERENCED=true
+PREFLIGHT_RUNTIME_LANE_TAXONOMY_INDEX_REFERENCED=true
+RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0_REFERENCED=true
+EVIDENCE_DOES_NOT_AUTHORIZE_RUNTIME=true
+SLICE_RUNTIME_LANE_TAXONOMY_TESTS_ONLY=true
+OBSERVATION_RUN_AUTHORIZED_NOW=false
+PAPER_RUN_AUTHORIZED_NOW=false
+SHADOW_RUN_AUTHORIZED_NOW=false
+TESTNET_SESSION_AUTHORIZED_NOW=false
+ORDER_EXECUTE_AUTHORIZED_NOW=false
+LIVE_AUTHORIZED_NOW=false
+NO_EXECUTE=true
+NO_PREFLIGHT_LIFT=true
+NO_RUNTIME=true
+NO_LIVE=true
+ORDER_CANCEL_EXECUTION_ARMING_TOUCHED=false
+AUTHORITY_LIFT=false
+TRADING_LOGIC_TOUCHED=false
+MASTER_V2_LOGIC_TOUCHED=false
+DOUBLE_PLAY_LOGIC_TOUCHED=false
+NEW_PARALLEL_SSOT_CREATED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+MARKET_DASHBOARD_TOUCHED=false
+DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
+```
+
+**Guard module (reuse — no parallel lane-taxonomy SSOT):** `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`.
+
+**Non-authorizing:** Docs/tests-only reciprocal crosslink guard only; does **not** authorize execute, runtime, run start, live, preflight lift, paper/shadow/testnet session, order/cancel/execution/arming, authority lift, trading-logic changes, Master V2 / Double Play / Bull-Bear / Risk / KillSwitch / Scope / Capital changes, workflow YAML mutation, `workflow_dispatch`, `gh run rerun`, JSONL ingest, evidence dataset mutation, or Market Dashboard authority changes.
+
 ## Market tape readmodel SSR DOCS_TRUTH_MAP static crosslink v1
 
 **Operator-GO:** `GO_MARKET_TAPE_SSR_DOCS_TRUTH_MAP_CI_AUDIT_STATIC_CROSSLINK_GUARD_OPERATOR_GO_AUTOFILL_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_order_capability_fixture_binding_docs_truth_map_static_crosslink_guard_merge_no_run_v1_20260611T192531Z/`
