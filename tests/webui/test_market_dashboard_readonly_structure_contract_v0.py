@@ -1790,7 +1790,6 @@ def test_market_remodel_ia_v2_master_v2_double_play_display_only_active(
     assert "<button" not in dp_window
 
 
-@pytest.mark.xfail(strict=False, reason=REMODEL_IA_V2_PENDING_REASON)
 def test_market_remodel_ia_v2_shell_and_landmark_markers(client: TestClient) -> None:
     """v2 remodel shell exposes canonical data-market-remodel-* landmark family."""
     html = _html(client, "/market")
@@ -1809,7 +1808,6 @@ def test_market_remodel_ia_v2_shell_and_landmark_markers(client: TestClient) -> 
         assert marker in html
 
 
-@pytest.mark.xfail(strict=False, reason=REMODEL_IA_V2_PENDING_REASON)
 def test_market_remodel_ia_v2_operator_overview_band_compact(client: TestClient) -> None:
     """Operator overview band: compact safety/lane/freshness row — no action controls."""
     html = _html(client, "/market")
@@ -1831,7 +1829,6 @@ def test_market_remodel_ia_v2_operator_overview_band_compact(client: TestClient)
     assert "<button" not in overview_lower
 
 
-@pytest.mark.xfail(strict=False, reason=REMODEL_IA_V2_PENDING_REASON)
 def test_market_remodel_ia_v2_secondary_grid_structure(client: TestClient) -> None:
     """Secondary grid: Double-Play, Safety/Guardrails, F5 compact panels above fold."""
     html = _html(client, "/market")
@@ -1846,7 +1843,6 @@ def test_market_remodel_ia_v2_secondary_grid_structure(client: TestClient) -> No
     assert REMODEL_IA_V2_SECONDARY_FUTURES_MARKER in grid_window
 
 
-@pytest.mark.xfail(strict=False, reason=REMODEL_IA_V2_PENDING_REASON)
 def test_market_remodel_ia_v2_no_duplicate_dp_f5_primary_in_diagnostics_drawer(
     client: TestClient,
 ) -> None:
@@ -1859,7 +1855,6 @@ def test_market_remodel_ia_v2_no_duplicate_dp_f5_primary_in_diagnostics_drawer(
         assert marker not in drawer
 
 
-@pytest.mark.xfail(strict=False, reason=REMODEL_IA_V2_PENDING_REASON)
 def test_market_remodel_ia_v2_diagnostics_secondary_not_operator_primary(
     client: TestClient,
 ) -> None:
@@ -1876,7 +1871,6 @@ def test_market_remodel_ia_v2_diagnostics_secondary_not_operator_primary(
     assert "data-market-remodel-diagnostics-freshness-v2=" in drawer
 
 
-@pytest.mark.xfail(strict=False, reason=REMODEL_IA_V2_PENDING_REASON)
 def test_market_remodel_ia_v2_chart_primary_landmark_heading(client: TestClient) -> None:
     """Primary chart is the leading landmark region before secondary panels."""
     html = _html(client, "/market")

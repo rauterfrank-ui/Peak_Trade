@@ -3,16 +3,30 @@
   class="rounded-xl border border-slate-800/70 bg-slate-950/40 px-3 py-2 mt-6"
   data-market-diagnostics-drawer-v1="true"
   data-market-diagnostics-secondary-v1="true"
-  data-market-operator-story-v1="true"
-  data-market-operator-overview-v1="true"
   data-market-guardrails-secondary-v1="true"
+  data-market-remodel-diagnostics-drawer-v2="true"
+  data-market-remodel-diagnostics-collapsed-default-v2="true"
 >
   <summary class="cursor-pointer text-sm font-semibold text-slate-400">Diagnostics / internals</summary>
-  <div class="mt-4 space-y-6" data-market-secondary-operator-panels-v1="true">
-    <p class="m-0 text-[11px] text-slate-500">F1–F5 panels, ranking, tape, depth, metadata — collapsed by default; read-only; no trading authority.</p>
+  <div class="mt-4 space-y-4" data-market-secondary-operator-panels-v1="true">
+    <p class="m-0 text-[11px] text-slate-500">Data-source, freshness, ranking, tape, depth, metadata — collapsed by default; read-only; no trading authority.</p>
+    <dl class="m-0 grid grid-cols-1 sm:grid-cols-2 gap-3 text-[11px] font-mono">
+      <div
+        class="rounded-lg border border-slate-800/70 bg-slate-950/55 px-3 py-2"
+        data-market-remodel-diagnostics-data-source-v2="true"
+      >
+        <dt class="text-slate-500 uppercase text-[10px] m-0">Data source</dt>
+        <dd class="m-0 mt-1 text-slate-200">{{ query.source|e }} · display-only · no provider truth</dd>
+      </div>
+      <div
+        class="rounded-lg border border-slate-800/70 bg-slate-950/55 px-3 py-2"
+        data-market-remodel-diagnostics-freshness-v2="true"
+      >
+        <dt class="text-slate-500 uppercase text-[10px] m-0">Freshness</dt>
+        <dd class="m-0 mt-1 text-slate-200">{% if primary_values.last_bar_ts %}{{ primary_values.last_bar_ts|e }}{% else %}{{ primary_values.generated_at_utc|e }}{% endif %} · SSR snapshot</dd>
+      </div>
+    </dl>
     <div class="hidden" aria-hidden="true" data-market-single-page-unified-v1="true"></div>
-    {% include "partials/double_play_market_panel_v0.html" %}
-    {% include "partials/futures_read_only_market_panel_v0.html" %}
     {% include "partials/market_legacy_operator_panels_v0.html" %}
   </div>
 </details>
