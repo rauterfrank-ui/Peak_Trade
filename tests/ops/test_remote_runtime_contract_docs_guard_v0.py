@@ -121,6 +121,56 @@ SYSTEMWIDE_CI_DOCS_TRUTH_MAP_RESIDUAL_REVIEW_OWNER_TESTS = (
     "test_workflow_write_permissions_visibility_contract_v0.py",
     "test_residual_prb_scheduled_scorecard_workflow_contract_v0.py",
 )
+PRIMARY_EVIDENCE_RETENTION_INVARIANT_RESIDUAL_STATIC_REVIEW_HEADING = (
+    "## Primary evidence retention invariant residual static review — docs/tests-only guard v1"
+)
+PRIMARY_EVIDENCE_RETENTION_INVARIANT_RESIDUAL_STATIC_REVIEW_GUARD_BLOCK_ANCHOR = (
+    "PRIMARY_EVIDENCE_RETENTION_INVARIANT_RESIDUAL_STATIC_REVIEW_V1=true"
+)
+PRIMARY_EVIDENCE_RETENTION_INVARIANT_RESIDUAL_STATIC_REVIEW_INPUT_BUNDLE = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/systemwide_next_safe_scope_ranking_after_ci_docs_required_check_truth_map_residual_review_merge_no_run_v1_20260612T005020Z"
+)
+PRIMARY_EVIDENCE_RETENTION_INVARIANT_RESIDUAL_STATIC_REVIEW_EXPECTED: dict[str, str] = {
+    "PRIMARY_EVIDENCE_RETENTION_INVARIANT_RESIDUAL_STATIC_REVIEW_V1": "true",
+    "PRIMARY_EVIDENCE_RETENTION_INVARIANT_RESIDUAL_STATIC_REVIEW_DOCS_TESTS_ONLY": "true",
+    "DURABLE_OUTSIDE_TMP_REQUIRED": "true",
+    "MANIFEST_CREATION_REQUIRED": "true",
+    "MANIFEST_VERIFICATION_REQUIRED": "true",
+    "CHECKSUM_VERIFICATION_REQUIRED": "true",
+    "CLOSEOUT_INCOMPLETE_WITHOUT_PRIMARY_EVIDENCE": "true",
+    "TMP_ONLY_EVIDENCE_INVALID": "true",
+    "PAPER_SHADOW_TESTNET_LIVE_APPLICABILITY_INDEXED": "true",
+    "RUNTIME_SCHEDULER_SUPERVISOR_FLOWS_INDEXED": "true",
+    "EXISTING_RETENTION_GUARDS_REFERENCED": "true",
+    "NO_RUNTIME": "true",
+    "NO_RUN_START": "true",
+    "NO_LIVE": "true",
+    "NO_PREFLIGHT_LIFT": "true",
+    "ORDER_CANCEL_EXECUTION_ARMING_TOUCHED": "false",
+    "AUTHORITY_LIFT": "false",
+    "TRADING_LOGIC_TOUCHED": "false",
+    "MASTER_V2_LOGIC_TOUCHED": "false",
+    "DOUBLE_PLAY_LOGIC_TOUCHED": "false",
+    "RISK_KILLSWITCH_SCOPE_CAPITAL_TOUCHED": "false",
+    "NEW_PARALLEL_SSOT_CREATED": "false",
+    "PREFLIGHT_REMAINS_BLOCKED": "true",
+    "WORKFLOW_TOUCHED": "false",
+    "WORKFLOW_DISPATCH_EXECUTED": "false",
+    "GH_RUN_RERUN_EXECUTED": "false",
+    "JSONL_EVIDENCE_DATASET_MUTATION": "false",
+    "MARKET_DASHBOARD_TOUCHED": "false",
+    "EVIDENCE_DATASET_MUTATION": "false",
+}
+PRIMARY_EVIDENCE_RETENTION_INVARIANT_RESIDUAL_STATIC_REVIEW_OWNER_TESTS = (
+    "test_primary_evidence_retention_invariant_contract_v0.py",
+    "test_run_primary_evidence_retention_hard_gate_v0.py",
+    "test_durable_closeout_copy_verify_v0.py",
+)
+PRIMARY_EVIDENCE_RETENTION_INVARIANT_RESIDUAL_STATIC_REVIEW_OWNER_SURFACES = (
+    "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md",
+    "primary_evidence_retention_v0.py",
+)
 ORDER_CAPABILITY_REMAINING_READINESS_GAP_REVIEW_OWNER_TESTS = (
     "test_order_capability_payload_builder_contract_v1.py",
     "test_order_capability_dry_validation_contract_v1.py",
@@ -657,3 +707,83 @@ def test_docs_truth_map_systemwide_ci_docs_truth_map_residual_review_chronicle_v
         in text
     )
     assert SYSTEMWIDE_CI_DOCS_TRUTH_MAP_RESIDUAL_REVIEW_INPUT_BUNDLE.split("/")[-1] in text
+
+
+def _primary_evidence_retention_invariant_residual_static_review_section(text: str) -> str:
+    start = text.find(PRIMARY_EVIDENCE_RETENTION_INVARIANT_RESIDUAL_STATIC_REVIEW_HEADING)
+    assert start != -1, (
+        "missing primary evidence retention invariant residual static review section"
+    )
+    next_heading = text.find("\n## ", start + 1)
+    if next_heading == -1:
+        return text[start:]
+    return text[start:next_heading]
+
+
+def test_ci_audit_primary_evidence_retention_invariant_residual_static_review_section_present_v1() -> (
+    None
+):
+    text = _ci_audit_text()
+    section = _primary_evidence_retention_invariant_residual_static_review_section(text)
+    assert PRIMARY_EVIDENCE_RETENTION_INVARIANT_RESIDUAL_STATIC_REVIEW_INPUT_BUNDLE in section
+    assert "Post-PR #4156" in section
+    assert "primary-evidence completion invariant" in section
+    assert "not complete" in section
+    assert "stored only under `/tmp`" in section
+    assert "not manifest-verified" in section
+    assert "no parallel evidence-retention ssot" in section.lower()
+    assert "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md" in section
+    assert "§2a" in section
+    assert "primary_evidence_retention_v0.py" not in section
+    assert THIS_MODULE in section
+    for module_name in PRIMARY_EVIDENCE_RETENTION_INVARIANT_RESIDUAL_STATIC_REVIEW_OWNER_TESTS:
+        assert module_name in section, f"missing owner test reference {module_name!r}"
+
+
+def test_ci_audit_primary_evidence_retention_invariant_residual_static_review_machine_lines_v1() -> (
+    None
+):
+    block = _block_containing(
+        _ci_audit_text(),
+        PRIMARY_EVIDENCE_RETENTION_INVARIANT_RESIDUAL_STATIC_REVIEW_GUARD_BLOCK_ANCHOR,
+    )
+    values = _machine_line_values(block)
+    missing = (
+        set(PRIMARY_EVIDENCE_RETENTION_INVARIANT_RESIDUAL_STATIC_REVIEW_EXPECTED) - values.keys()
+    )
+    assert not missing, (
+        "missing primary evidence retention invariant residual static review keys: "
+        f"{sorted(missing)}"
+    )
+    for (
+        key,
+        expected,
+    ) in PRIMARY_EVIDENCE_RETENTION_INVARIANT_RESIDUAL_STATIC_REVIEW_EXPECTED.items():
+        assert values[key] == expected, f"{key}={values[key]!r} expected {expected!r}"
+
+
+def test_docs_truth_map_primary_evidence_retention_invariant_residual_static_review_chronicle_v1() -> (
+    None
+):
+    text = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    assert "Primary evidence retention invariant residual static review guard v1" in text
+    assert THIS_MODULE in text
+    assert "PRIMARY_EVIDENCE_RETENTION_INVARIANT_RESIDUAL_STATIC_REVIEW_V1=true" in text
+    assert "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md" in text
+    assert "primary_evidence_retention_v0.py" in text
+    assert "test_primary_evidence_retention_invariant_contract_v0.py" in text
+    assert "test_run_primary_evidence_retention_hard_gate_v0.py" in text
+    assert "test_durable_closeout_copy_verify_v0.py" in text
+    assert "outside `/tmp`" in text
+    assert "manifest-created" in text
+    assert "checksum-verified" in text
+    assert "manifest-verified" in text
+    assert "`/tmp`-only invalid" in text
+    assert (
+        "**no** runtime/run start/live/preflight lift/order/cancel/execution/arming/authority lift"
+        in text
+    )
+    assert (
+        PRIMARY_EVIDENCE_RETENTION_INVARIANT_RESIDUAL_STATIC_REVIEW_INPUT_BUNDLE.split("/")[-1]
+        in text
+    )
