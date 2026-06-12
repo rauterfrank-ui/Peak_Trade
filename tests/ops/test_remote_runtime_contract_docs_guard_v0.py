@@ -392,6 +392,52 @@ PE5_GAP4_GAP2A1_DEPENDENCY_CI_AUDIT_CROSSLINK_EXPECTED: dict[str, str] = {
 PE5_GAP4_GAP2A1_DEPENDENCY_CI_AUDIT_CROSSLINK_OWNER_TESTS = (
     "test_gap4_gap2a1_primary_evidence_dependency_contract_v0.py",
 )
+EER1_EVIDENCE_DURABLE_ENFORCEMENT_READINESS_CI_AUDIT_CROSSLINK_HEADING = (
+    "## EER1 Evidence Durable Enforcement Readiness CI_AUDIT ↔ SECTION5 reciprocal crosslink "
+    "— docs/tests-only guard v1"
+)
+EER1_EVIDENCE_DURABLE_ENFORCEMENT_READINESS_CI_AUDIT_CROSSLINK_GUARD_BLOCK_ANCHOR = (
+    "EER1_EVIDENCE_DURABLE_ENFORCEMENT_READINESS_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_V1=true"
+)
+EER1_EVIDENCE_DURABLE_ENFORCEMENT_READINESS_CI_AUDIT_CROSSLINK_EXPECTED: dict[str, str] = {
+    "EER1_EVIDENCE_DURABLE_ENFORCEMENT_READINESS_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_V1": "true",
+    "EER1_CI_AUDIT_SECTION5_CROSSLINK_DOCS_TESTS_ONLY": "true",
+    "DOCS_TESTS_ONLY": "true",
+    "SECTION5_EER1_OWNER_REFERENCED": "true",
+    "EVIDENCE_DURABLE_ENFORCEMENT_READINESS_REVIEW_RC_V0_STARTED": "true",
+    "EER1_READINESS_REVIEW_INDEX_COMPLETE": "true",
+    "PRIMARY_EVIDENCE_RUN_COMPLETION_CONTRACT_RC_V0_STATUS": "CORE_COMPLETE_AFTER_PE6",
+    "CYBERSECURITY_DEFENSIVE_VISIBILITY_CV3_PLUS_RC_V0_STATUS": "CORE_COMPLETE_AFTER_CV3",
+    "EVIDENCE_DURABLE_CLOSEOUT_RETENTION_RC_V0_CORE_DONE": "true",
+    "GAP2A1_PRIMARY_EVIDENCE_ENFORCED": "false",
+    "ENFORCEMENT_ACTIVATED": "false",
+    "SLICE_EER1_TESTS_ONLY": "true",
+    "OBSERVATION_RUN_AUTHORIZED_NOW": "false",
+    "PAPER_RUN_AUTHORIZED_NOW": "false",
+    "SHADOW_RUN_AUTHORIZED_NOW": "false",
+    "TESTNET_SESSION_AUTHORIZED_NOW": "false",
+    "ORDER_EXECUTE_AUTHORIZED_NOW": "false",
+    "LIVE_AUTHORIZED_NOW": "false",
+    "NO_EXECUTE": "true",
+    "NO_PREFLIGHT_LIFT": "true",
+    "NO_RUNTIME": "true",
+    "NO_LIVE": "true",
+    "ORDER_CANCEL_EXECUTION_ARMING_TOUCHED": "false",
+    "AUTHORITY_LIFT": "false",
+    "TRADING_LOGIC_TOUCHED": "false",
+    "MASTER_V2_LOGIC_TOUCHED": "false",
+    "DOUBLE_PLAY_LOGIC_TOUCHED": "false",
+    "NEW_PARALLEL_SSOT_CREATED": "false",
+    "PREFLIGHT_REMAINS_BLOCKED": "true",
+    "READY_FOR_OPERATOR_ARMING": "false",
+    "MARKET_DASHBOARD_TOUCHED": "false",
+    "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED": "true",
+}
+EER1_EVIDENCE_DURABLE_ENFORCEMENT_READINESS_CI_AUDIT_CROSSLINK_OWNER_TESTS = (
+    "test_section5_preflight_gap_owner_map_contract_v0.py",
+    "test_primary_evidence_retention_invariant_contract_v0.py",
+    "test_paper_shadow_247_preflight_contract_v0.py",
+)
 PE7_REPO_NATIVE_BOUNDED_TESTNET_ORDER_CAP_CI_AUDIT_CROSSLINK_HEADING = (
     "## PE-7 Repo-native bounded Testnet order-cap CI_AUDIT ↔ SECTION5 reciprocal crosslink "
     "— docs/tests-only guard v1"
@@ -1496,6 +1542,84 @@ def test_docs_truth_map_pe5_gap4_gap2a1_dependency_ci_audit_crosslink_chronicle_
     )
     assert "GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false" in text
     assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in text
+    assert "ORDER_EXECUTE_AUTHORIZED_NOW=false" in text
+    assert "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true" in text
+
+
+def _eer1_evidence_durable_enforcement_readiness_ci_audit_crosslink_section(text: str) -> str:
+    start = text.find(EER1_EVIDENCE_DURABLE_ENFORCEMENT_READINESS_CI_AUDIT_CROSSLINK_HEADING)
+    assert start != -1, "missing EER1 CI_AUDIT crosslink section"
+    next_heading = text.find("\n## ", start + 1)
+    if next_heading == -1:
+        return text[start:]
+    return text[start:next_heading]
+
+
+def test_ci_audit_eer1_crosslink_section_present_v1() -> None:
+    text = _ci_audit_text()
+    section = _eer1_evidence_durable_enforcement_readiness_ci_audit_crosslink_section(text)
+    assert (
+        "GO_EER1_EVIDENCE_DURABLE_ENFORCEMENT_READINESS_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1"
+        in section
+    )
+    assert "Evidence Durable Enforcement Readiness" in section
+    assert "SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md" in section
+    assert "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md" in section
+    assert "Evidence Durable Enforcement Readiness Review RC v0 — index v0" in section
+    assert "no parallel eer1 ssot" in section.lower()
+    assert THIS_MODULE in section
+    for module_name in EER1_EVIDENCE_DURABLE_ENFORCEMENT_READINESS_CI_AUDIT_CROSSLINK_OWNER_TESTS:
+        assert module_name in section, f"missing owner test reference {module_name!r}"
+
+
+def test_ci_audit_eer1_crosslink_machine_lines_v1() -> None:
+    block = _block_containing(
+        _ci_audit_text(),
+        EER1_EVIDENCE_DURABLE_ENFORCEMENT_READINESS_CI_AUDIT_CROSSLINK_GUARD_BLOCK_ANCHOR,
+    )
+    values = _machine_line_values(block)
+    missing = (
+        set(EER1_EVIDENCE_DURABLE_ENFORCEMENT_READINESS_CI_AUDIT_CROSSLINK_EXPECTED) - values.keys()
+    )
+    assert not missing, f"missing EER1 CI_AUDIT crosslink keys: {sorted(missing)}"
+    for (
+        key,
+        expected,
+    ) in EER1_EVIDENCE_DURABLE_ENFORCEMENT_READINESS_CI_AUDIT_CROSSLINK_EXPECTED.items():
+        assert values[key] == expected, f"{key}={values[key]!r} expected {expected!r}"
+
+
+def test_section5_doc_eer1_owner_present_v1() -> None:
+    text = SECTION5_DOC.read_text(encoding="utf-8")
+    assert "Evidence Durable Enforcement Readiness Review index (EER1 guard)" in text
+    assert "EVIDENCE_DURABLE_ENFORCEMENT_READINESS_REVIEW_RC_V0_STARTED=true" in text
+    assert "EER1_READINESS_REVIEW_INDEX_COMPLETE=true" in text
+    assert "test_section5_preflight_gap_owner_map_contract_v0.py" in text
+    assert (
+        "EER1 Evidence Durable Enforcement Readiness CI_AUDIT ↔ SECTION5 reciprocal crosslink"
+        in text
+    )
+    assert EER1_EVIDENCE_DURABLE_ENFORCEMENT_READINESS_CI_AUDIT_CROSSLINK_GUARD_BLOCK_ANCHOR in text
+    assert "READY_FOR_OPERATOR_ARMING=false" in text
+    assert "ENFORCEMENT_ACTIVATED=false" in text
+
+
+def test_docs_truth_map_eer1_ci_audit_crosslink_chronicle_v1() -> None:
+    text = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    assert (
+        "EER1 Evidence Durable Enforcement Readiness CI_AUDIT ↔ SECTION5 reciprocal crosslink guard v1"
+        in text
+    )
+    assert THIS_MODULE in text
+    assert EER1_EVIDENCE_DURABLE_ENFORCEMENT_READINESS_CI_AUDIT_CROSSLINK_GUARD_BLOCK_ANCHOR in text
+    assert "test_section5_preflight_gap_owner_map_contract_v0.py" in text
+    assert (
+        "**no** execute / Preflight-Lift / enforcement-activation / observation-run / paper-run / shadow-run / testnet-session / runtime"
+        in text
+    )
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in text
+    assert "ENFORCEMENT_ACTIVATED=false" in text
+    assert "READY_FOR_OPERATOR_ARMING=false" in text
     assert "ORDER_EXECUTE_AUTHORIZED_NOW=false" in text
     assert "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true" in text
 
