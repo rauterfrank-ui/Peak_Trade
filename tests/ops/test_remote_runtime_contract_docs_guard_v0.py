@@ -609,6 +609,140 @@ SCHEDULER_BOUNDARY_HARD_BLOCK_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_OWNER_TEST
     "test_paper_l2_120min_hold_binding_profile_contract_v0.py",
     "test_paper_shadow_247_preflight_contract_v0.py",
 )
+GAP1_EXECUTE_ENTRYPOINT_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_HEADING = (
+    "## Gap 1 Execute Entrypoint CI_AUDIT ↔ SECTION5 reciprocal crosslink "
+    "— docs/tests-only guard v1"
+)
+GAP1_EXECUTE_ENTRYPOINT_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR = (
+    "GAP1_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1=true"
+)
+GAP1_EXECUTE_ENTRYPOINT_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_EXPECTED: dict[str, str] = {
+    "GAP1_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1": "true",
+    "GAP1_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_ONLY": "true",
+    "GAP1_GAP3_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1": "true",
+    "DOCS_TESTS_ONLY": "true",
+    "CRITERIA_ONLY": "true",
+    "SECTION5_GAP1_OWNER_REFERENCED": "true",
+    "GAP1_EXECUTE_ENTRYPOINT_CONTRACT_V0_REFERENCED": "true",
+    "GAP1_EXECUTE_ENTRYPOINT_VERIFIED": "false",
+    "GAP1_RUNTIME_APPROVED": "false",
+    "GAP1_SCHEDULER_EXECUTION_AUTHORIZED": "false",
+    "GAP1_ENTRYPOINT_DRY_RUN_ONLY": "true",
+    "SLICE_GAP1_TESTS_ONLY": "true",
+    "OBSERVATION_RUN_AUTHORIZED_NOW": "false",
+    "PAPER_RUN_AUTHORIZED_NOW": "false",
+    "SHADOW_RUN_AUTHORIZED_NOW": "false",
+    "TESTNET_SESSION_AUTHORIZED_NOW": "false",
+    "ORDER_EXECUTE_AUTHORIZED_NOW": "false",
+    "LIVE_AUTHORIZED_NOW": "false",
+    "NO_EXECUTE": "true",
+    "NO_PREFLIGHT_LIFT": "true",
+    "NO_RUNTIME": "true",
+    "NO_LIVE": "true",
+    "ORDER_CANCEL_EXECUTION_ARMING_TOUCHED": "false",
+    "AUTHORITY_LIFT": "false",
+    "TRADING_LOGIC_TOUCHED": "false",
+    "MASTER_V2_LOGIC_TOUCHED": "false",
+    "DOUBLE_PLAY_LOGIC_TOUCHED": "false",
+    "NEW_PARALLEL_SSOT_CREATED": "false",
+    "PREFLIGHT_REMAINS_BLOCKED": "true",
+    "READY_FOR_OPERATOR_ARMING": "false",
+    "MARKET_DASHBOARD_TOUCHED": "false",
+    "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED": "true",
+}
+GAP1_EXECUTE_ENTRYPOINT_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_OWNER_TESTS = (
+    "test_gap1_execute_entrypoint_contract_v0.py",
+    "test_gap1_execute_entrypoint_drift_guard_contract_v0.py",
+)
+GAP2_CANONICAL_JOB_SET_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_HEADING = (
+    "## Gap 2 Canonical Job Set CI_AUDIT ↔ SECTION5 reciprocal crosslink — docs/tests-only guard v1"
+)
+GAP2_CANONICAL_JOB_SET_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR = (
+    "GAP2_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1=true"
+)
+GAP2_CANONICAL_JOB_SET_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_EXPECTED: dict[str, str] = {
+    "GAP2_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1": "true",
+    "GAP2_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_ONLY": "true",
+    "GAP1_GAP3_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1": "true",
+    "DOCS_TESTS_ONLY": "true",
+    "CRITERIA_ONLY": "true",
+    "SECTION5_GAP2_OWNER_REFERENCED": "true",
+    "GAP2_CANONICAL_JOB_SET_CONTRACT_V0_REFERENCED": "true",
+    "GAP2_CRITERIA_ONLY": "true",
+    "GAP2_CANONICAL_JOB_SET_VERIFIED": "false",
+    "GAP2_JOB_SET_ENABLED": "false",
+    "GAP2_JOBS_TOML_CHANGED": "false",
+    "GAP2_SCHEDULER_EXECUTION_AUTHORIZED": "false",
+    "GAP2_RUNTIME_APPROVED": "false",
+    "SLICE_GAP2_TESTS_ONLY": "true",
+    "OBSERVATION_RUN_AUTHORIZED_NOW": "false",
+    "PAPER_RUN_AUTHORIZED_NOW": "false",
+    "SHADOW_RUN_AUTHORIZED_NOW": "false",
+    "TESTNET_SESSION_AUTHORIZED_NOW": "false",
+    "ORDER_EXECUTE_AUTHORIZED_NOW": "false",
+    "LIVE_AUTHORIZED_NOW": "false",
+    "NO_EXECUTE": "true",
+    "NO_PREFLIGHT_LIFT": "true",
+    "NO_RUNTIME": "true",
+    "NO_LIVE": "true",
+    "ORDER_CANCEL_EXECUTION_ARMING_TOUCHED": "false",
+    "AUTHORITY_LIFT": "false",
+    "TRADING_LOGIC_TOUCHED": "false",
+    "MASTER_V2_LOGIC_TOUCHED": "false",
+    "DOUBLE_PLAY_LOGIC_TOUCHED": "false",
+    "NEW_PARALLEL_SSOT_CREATED": "false",
+    "PREFLIGHT_REMAINS_BLOCKED": "true",
+    "READY_FOR_OPERATOR_ARMING": "false",
+    "MARKET_DASHBOARD_TOUCHED": "false",
+    "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED": "true",
+}
+GAP2_CANONICAL_JOB_SET_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_OWNER_TESTS = (
+    "test_gap2_canonical_job_set_contract_v0.py",
+    "test_gap2_job_set_boundary_drift_guard_contract_v0.py",
+)
+GAP3_EXECUTE_COMMAND_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_HEADING = (
+    "## Gap 3 Execute Command CI_AUDIT ↔ SECTION5 reciprocal crosslink — docs/tests-only guard v1"
+)
+GAP3_EXECUTE_COMMAND_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR = (
+    "GAP3_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1=true"
+)
+GAP3_EXECUTE_COMMAND_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_EXPECTED: dict[str, str] = {
+    "GAP3_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1": "true",
+    "GAP3_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_ONLY": "true",
+    "GAP1_GAP3_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1": "true",
+    "DOCS_TESTS_ONLY": "true",
+    "CRITERIA_ONLY": "true",
+    "SECTION5_GAP3_OWNER_REFERENCED": "true",
+    "GAP3_EXECUTE_COMMAND_CONTRACT_V0_REFERENCED": "true",
+    "GAP3_EXECUTE_COMMAND_VERIFIED": "false",
+    "GAP3_SCHEDULER_EXECUTION_AUTHORIZED": "false",
+    "GAP3_EXECUTE_COMMAND_DRY_RUN_ONLY": "true",
+    "SLICE_GAP3_TESTS_ONLY": "true",
+    "OBSERVATION_RUN_AUTHORIZED_NOW": "false",
+    "PAPER_RUN_AUTHORIZED_NOW": "false",
+    "SHADOW_RUN_AUTHORIZED_NOW": "false",
+    "TESTNET_SESSION_AUTHORIZED_NOW": "false",
+    "ORDER_EXECUTE_AUTHORIZED_NOW": "false",
+    "LIVE_AUTHORIZED_NOW": "false",
+    "NO_EXECUTE": "true",
+    "NO_PREFLIGHT_LIFT": "true",
+    "NO_RUNTIME": "true",
+    "NO_LIVE": "true",
+    "ORDER_CANCEL_EXECUTION_ARMING_TOUCHED": "false",
+    "AUTHORITY_LIFT": "false",
+    "TRADING_LOGIC_TOUCHED": "false",
+    "MASTER_V2_LOGIC_TOUCHED": "false",
+    "DOUBLE_PLAY_LOGIC_TOUCHED": "false",
+    "NEW_PARALLEL_SSOT_CREATED": "false",
+    "PREFLIGHT_REMAINS_BLOCKED": "true",
+    "READY_FOR_OPERATOR_ARMING": "false",
+    "MARKET_DASHBOARD_TOUCHED": "false",
+    "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED": "true",
+}
+GAP3_EXECUTE_COMMAND_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_OWNER_TESTS = (
+    "test_gap3_execute_command_contract_v0.py",
+    "test_gap2_gap3_command_dependency_contract_v0.py",
+)
 PE_EER1_HOLD_BINDING_CHAIN_COMPLETION_STATIC_REVIEW_RECIPROCAL_SECTIONS = (
     PE4_BOUNDED_OBSERVATION_MANDATORY_CLOSEOUT_CI_AUDIT_CROSSLINK_HEADING,
     PE5_GAP4_GAP2A1_DEPENDENCY_CI_AUDIT_CROSSLINK_HEADING,
@@ -2195,6 +2329,179 @@ def test_docs_truth_map_scheduler_boundary_hard_block_ci_audit_preflight_crossli
         "**no** execute / Preflight-Lift / observation-run / paper-run / shadow-run / testnet-session / runtime"
         in text
     )
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in text
+    assert "READY_FOR_OPERATOR_ARMING=false" in text
+    assert "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true" in text
+
+
+def _gap1_execute_entrypoint_ci_audit_section5_reciprocal_crosslink_section(text: str) -> str:
+    start = text.find(GAP1_EXECUTE_ENTRYPOINT_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_HEADING)
+    assert start != -1, "missing Gap 1 Execute Entrypoint CI_AUDIT crosslink section"
+    next_heading = text.find("\n## ", start + 1)
+    if next_heading == -1:
+        return text[start:]
+    return text[start:next_heading]
+
+
+def test_ci_audit_gap1_execute_entrypoint_crosslink_section_present_v1() -> None:
+    text = _ci_audit_text()
+    section = _gap1_execute_entrypoint_ci_audit_section5_reciprocal_crosslink_section(text)
+    assert "GO_GAP1_GAP3_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1" in section
+    assert "Gap 1 Execute Entrypoint" in section
+    assert "SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md" in section
+    assert "no parallel gap-1 ssot" in section.lower()
+    assert THIS_MODULE in section
+    for module_name in GAP1_EXECUTE_ENTRYPOINT_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_OWNER_TESTS:
+        assert module_name in section, f"missing owner test reference {module_name!r}"
+
+
+def test_ci_audit_gap1_execute_entrypoint_crosslink_machine_lines_v1() -> None:
+    block = _block_containing(
+        _ci_audit_text(),
+        GAP1_EXECUTE_ENTRYPOINT_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR,
+    )
+    values = _machine_line_values(block)
+    missing = (
+        set(GAP1_EXECUTE_ENTRYPOINT_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_EXPECTED) - values.keys()
+    )
+    assert not missing, f"missing Gap 1 CI_AUDIT crosslink keys: {sorted(missing)}"
+    for (
+        key,
+        expected,
+    ) in GAP1_EXECUTE_ENTRYPOINT_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_EXPECTED.items():
+        assert values[key] == expected, f"{key}={values[key]!r} expected {expected!r}"
+
+
+def test_section5_doc_gap1_execute_entrypoint_ci_audit_backref_present_v1() -> None:
+    text = SECTION5_DOC.read_text(encoding="utf-8")
+    assert "Gap 1 execute entrypoint CI_AUDIT ↔ SECTION5 reciprocal crosslink" in text
+    assert GAP1_EXECUTE_ENTRYPOINT_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR in text
+    assert "test_gap1_execute_entrypoint_contract_v0.py" in text
+    assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=false" in text
+    assert "GAP1_SCHEDULER_EXECUTION_AUTHORIZED=false" in text
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in text
+    assert "READY_FOR_OPERATOR_ARMING=false" in text
+
+
+def _gap2_canonical_job_set_ci_audit_section5_reciprocal_crosslink_section(text: str) -> str:
+    start = text.find(GAP2_CANONICAL_JOB_SET_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_HEADING)
+    assert start != -1, "missing Gap 2 Canonical Job Set CI_AUDIT crosslink section"
+    next_heading = text.find("\n## ", start + 1)
+    if next_heading == -1:
+        return text[start:]
+    return text[start:next_heading]
+
+
+def test_ci_audit_gap2_canonical_job_set_crosslink_section_present_v1() -> None:
+    text = _ci_audit_text()
+    section = _gap2_canonical_job_set_ci_audit_section5_reciprocal_crosslink_section(text)
+    assert "GO_GAP1_GAP3_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1" in section
+    assert "Gap 2 Canonical Job Set" in section
+    assert "SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md" in section
+    assert "no parallel gap-2 ssot" in section.lower()
+    assert THIS_MODULE in section
+    for module_name in GAP2_CANONICAL_JOB_SET_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_OWNER_TESTS:
+        assert module_name in section, f"missing owner test reference {module_name!r}"
+
+
+def test_ci_audit_gap2_canonical_job_set_crosslink_machine_lines_v1() -> None:
+    block = _block_containing(
+        _ci_audit_text(),
+        GAP2_CANONICAL_JOB_SET_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR,
+    )
+    values = _machine_line_values(block)
+    missing = (
+        set(GAP2_CANONICAL_JOB_SET_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_EXPECTED) - values.keys()
+    )
+    assert not missing, f"missing Gap 2 CI_AUDIT crosslink keys: {sorted(missing)}"
+    for (
+        key,
+        expected,
+    ) in GAP2_CANONICAL_JOB_SET_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_EXPECTED.items():
+        assert values[key] == expected, f"{key}={values[key]!r} expected {expected!r}"
+
+
+def test_section5_doc_gap2_canonical_job_set_ci_audit_backref_present_v1() -> None:
+    text = SECTION5_DOC.read_text(encoding="utf-8")
+    assert "Gap 2 canonical job set CI_AUDIT ↔ SECTION5 reciprocal crosslink" in text
+    assert GAP2_CANONICAL_JOB_SET_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR in text
+    assert "test_gap2_canonical_job_set_contract_v0.py" in text
+    assert "GAP2_CANONICAL_JOB_SET_VERIFIED=false" in text
+    assert "GAP2_SCHEDULER_EXECUTION_AUTHORIZED=false" in text
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in text
+    assert "READY_FOR_OPERATOR_ARMING=false" in text
+
+
+def _gap3_execute_command_ci_audit_section5_reciprocal_crosslink_section(text: str) -> str:
+    start = text.find(GAP3_EXECUTE_COMMAND_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_HEADING)
+    assert start != -1, "missing Gap 3 Execute Command CI_AUDIT crosslink section"
+    next_heading = text.find("\n## ", start + 1)
+    if next_heading == -1:
+        return text[start:]
+    return text[start:next_heading]
+
+
+def test_ci_audit_gap3_execute_command_crosslink_section_present_v1() -> None:
+    text = _ci_audit_text()
+    section = _gap3_execute_command_ci_audit_section5_reciprocal_crosslink_section(text)
+    assert "GO_GAP1_GAP3_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1" in section
+    assert "Gap 3 Execute Command" in section
+    assert "SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md" in section
+    assert "no parallel gap-3 ssot" in section.lower()
+    assert THIS_MODULE in section
+    for module_name in GAP3_EXECUTE_COMMAND_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_OWNER_TESTS:
+        assert module_name in section, f"missing owner test reference {module_name!r}"
+
+
+def test_ci_audit_gap3_execute_command_crosslink_machine_lines_v1() -> None:
+    block = _block_containing(
+        _gap3_execute_command_ci_audit_section5_reciprocal_crosslink_section(_ci_audit_text()),
+        GAP3_EXECUTE_COMMAND_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR,
+    )
+    values = _machine_line_values(block)
+    missing = (
+        set(GAP3_EXECUTE_COMMAND_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_EXPECTED) - values.keys()
+    )
+    assert not missing, f"missing Gap 3 CI_AUDIT crosslink keys: {sorted(missing)}"
+    for (
+        key,
+        expected,
+    ) in GAP3_EXECUTE_COMMAND_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_EXPECTED.items():
+        assert values[key] == expected, f"{key}={values[key]!r} expected {expected!r}"
+
+
+def test_section5_doc_gap3_execute_command_ci_audit_backref_present_v1() -> None:
+    text = SECTION5_DOC.read_text(encoding="utf-8")
+    assert "Gap 3 execute command CI_AUDIT ↔ SECTION5 reciprocal crosslink" in text
+    assert GAP3_EXECUTE_COMMAND_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR in text
+    assert "test_gap3_execute_command_contract_v0.py" in text
+    assert "GAP3_EXECUTE_COMMAND_VERIFIED=false" in text
+    assert "GAP3_SCHEDULER_EXECUTION_AUTHORIZED=false" in text
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in text
+    assert "READY_FOR_OPERATOR_ARMING=false" in text
+
+
+def test_docs_truth_map_gap1_gap3_ci_audit_section5_crosslink_chronicle_v1() -> None:
+    text = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    assert (
+        "Gap 1–3 execute-entrypoint criteria CI_AUDIT ↔ SECTION5 reciprocal crosslink guard v1"
+        in text
+    )
+    assert THIS_MODULE in text
+    assert GAP1_EXECUTE_ENTRYPOINT_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR in text
+    assert GAP2_CANONICAL_JOB_SET_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR in text
+    assert GAP3_EXECUTE_COMMAND_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR in text
+    assert "GAP1_GAP3_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1=true" in text
+    assert "test_gap1_execute_entrypoint_contract_v0.py" in text
+    assert "test_gap2_canonical_job_set_contract_v0.py" in text
+    assert "test_gap3_execute_command_contract_v0.py" in text
+    assert (
+        "**no** execute / Preflight-Lift / scheduler-execution / observation-run / paper-run / "
+        "shadow-run / testnet-session / runtime" in text
+    )
+    assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=false" in text
+    assert "GAP2_CANONICAL_JOB_SET_VERIFIED=false" in text
+    assert "GAP3_EXECUTE_COMMAND_VERIFIED=false" in text
     assert "PREFLIGHT_REMAINS_BLOCKED=true" in text
     assert "READY_FOR_OPERATOR_ARMING=false" in text
     assert "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true" in text

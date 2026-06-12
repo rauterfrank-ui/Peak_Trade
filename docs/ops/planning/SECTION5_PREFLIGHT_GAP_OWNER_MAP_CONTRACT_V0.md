@@ -296,6 +296,25 @@ Gap 3 remains the canonical command-text contract; Gap 1 only identifies the ent
 
 This contract does not execute `scripts/run_scheduler.py`, does not authorize runtime or scheduler execution, does not enable or modify `config/scheduler/jobs.toml`, and does not authorize Paper, Shadow, Testnet, Live, AWS, broker, or exchange activity. It does not change default-on enforcement, does not mark `READY_FOR_OPERATOR_ARMING=true`, and does not lift Path B.
 
+**Gap 1 execute entrypoint CI_AUDIT ↔ SECTION5 reciprocal crosslink (SECTION5 guard) v0:** Reciprocal to `docs/ops/CI_AUDIT_KNOWN_ISSUES.md` § Gap 1 Execute Entrypoint CI_AUDIT ↔ SECTION5 reciprocal crosslink. Static guards: `tests/ops/test_gap1_execute_entrypoint_contract_v0.py`, `tests/ops/test_gap1_execute_entrypoint_drift_guard_contract_v0.py`, `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`. **Docs/tests-only**; criteria-only; does **not** authorize execute, preflight lift, runtime, or scheduler execution; `PREFLIGHT_REMAINS_BLOCKED=true`.
+
+```
+GAP1_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1=true
+GAP1_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_ONLY=true
+GAP1_GAP3_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1=true
+SECTION5_GAP1_OWNER_REFERENCED=true
+GAP1_EXECUTE_ENTRYPOINT_CONTRACT_V0_REFERENCED=true
+GAP1_EXECUTE_ENTRYPOINT_VERIFIED=false
+GAP1_SCHEDULER_EXECUTION_AUTHORIZED=false
+CRITERIA_ONLY=true
+NO_EXECUTE=true
+NO_PREFLIGHT_LIFT=true
+NO_RUNTIME=true
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
+```
+
 ## Gap 1 Criteria-SSOT Repo-Internal Write/Lift Applied Reflection v0
 
 SECTION5_CRITERIA_SSOT_REPO_CHANGE_PROPOSAL_V0=true
@@ -351,6 +370,25 @@ The canonical command is documentation/planning text only in this contract slice
 ### Non-authorization
 
 This PR does not authorize runtime, Paper, Shadow, Testnet, Live, AWS, broker, or exchange activity. It does not change default-on enforcement, does not mark `READY_FOR_OPERATOR_ARMING=true`, does not lift Path B, does not lift preflight, and does not approve runtime.
+
+**Gap 3 execute command CI_AUDIT ↔ SECTION5 reciprocal crosslink (SECTION5 guard) v0:** Reciprocal to `docs/ops/CI_AUDIT_KNOWN_ISSUES.md` § Gap 3 Execute Command CI_AUDIT ↔ SECTION5 reciprocal crosslink. Static guards: `tests/ops/test_gap3_execute_command_contract_v0.py`, `tests/ops/test_gap2_gap3_command_dependency_contract_v0.py`, `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`. **Docs/tests-only**; criteria-only; does **not** authorize execute, preflight lift, runtime, or scheduler execution; `PREFLIGHT_REMAINS_BLOCKED=true`.
+
+```
+GAP3_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1=true
+GAP3_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_ONLY=true
+GAP1_GAP3_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1=true
+SECTION5_GAP3_OWNER_REFERENCED=true
+GAP3_EXECUTE_COMMAND_CONTRACT_V0_REFERENCED=true
+GAP3_EXECUTE_COMMAND_VERIFIED=false
+GAP3_SCHEDULER_EXECUTION_AUTHORIZED=false
+CRITERIA_ONLY=true
+NO_EXECUTE=true
+NO_PREFLIGHT_LIFT=true
+NO_RUNTIME=true
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
+```
 
 ## Gap 3 Criteria-SSOT Repo-Internal Write/Lift Applied Reflection v0
 
@@ -3220,6 +3258,26 @@ RUNTIME_APPROVED=false
 This is a docs/tests-only criteria contract. It prepares future canonical job-set boundary criteria only. `config/scheduler/jobs.toml` is referenced as a boundary surface only. It does not modify `config/scheduler/jobs.toml`, does not enable any scheduler job, does not verify or activate a canonical job set, does not execute `scripts/run_scheduler.py`, does not authorize scheduler execution, does not approve runtime execution, and does not authorize Paper, Shadow, Testnet, Live, AWS, broker, or exchange activity. It does not change default-on enforcement, does not mark `READY_FOR_OPERATOR_ARMING=true`, and does not lift Path B. Current status remains criteria-only, not verified, not job-enabled, not scheduler-authorized, and not runtime-approved.
 
 Gap 1 remains the entrypoint boundary. Gap 3 remains the canonical command-text contract. Gap 4 remains the durable output/evidence path contract. Gap 5 remains the stop criteria-only contract. Gap 6 remains the dry-run proof criteria-only contract.
+
+**Gap 2 canonical job set CI_AUDIT ↔ SECTION5 reciprocal crosslink (SECTION5 guard) v0:** Reciprocal to `docs/ops/CI_AUDIT_KNOWN_ISSUES.md` § Gap 2 Canonical Job Set CI_AUDIT ↔ SECTION5 reciprocal crosslink. Static guards: `tests/ops/test_gap2_canonical_job_set_contract_v0.py`, `tests/ops/test_gap2_job_set_boundary_drift_guard_contract_v0.py`, `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`. **Docs/tests-only**; criteria-only; does **not** authorize execute, preflight lift, job-set enablement, runtime, or scheduler execution; `PREFLIGHT_REMAINS_BLOCKED=true`.
+
+```
+GAP2_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1=true
+GAP2_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_ONLY=true
+GAP1_GAP3_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1=true
+SECTION5_GAP2_OWNER_REFERENCED=true
+GAP2_CANONICAL_JOB_SET_CONTRACT_V0_REFERENCED=true
+GAP2_CANONICAL_JOB_SET_VERIFIED=false
+GAP2_JOB_SET_ENABLED=false
+GAP2_SCHEDULER_EXECUTION_AUTHORIZED=false
+CRITERIA_ONLY=true
+NO_EXECUTE=true
+NO_PREFLIGHT_LIFT=true
+NO_RUNTIME=true
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
+```
 
 ### Reuse-first owner surfaces
 

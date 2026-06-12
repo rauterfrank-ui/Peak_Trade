@@ -186,6 +186,77 @@ def test_section5_eer1_readiness_review_index_crosslink_v0() -> None:
     assert "READY_FOR_OPERATOR_ARMING=true" not in gap2a1_lines
 
 
+def _gap1_section(text: str) -> str:
+    return text.split("## Gap 1 Execute Entrypoint Contract v0", 1)[1].split(
+        "## Gap 3 Execute Command Contract v0", 1
+    )[0]
+
+
+def _gap3_section(text: str) -> str:
+    return text.split("## Gap 3 Execute Command Contract v0", 1)[1].split(
+        "## Gap 4 Output/Evidence Paths Contract v0", 1
+    )[0]
+
+
+def _gap2_canonical_section(text: str) -> str:
+    return text.split("## Gap 2 Canonical Job Set Contract v0", 1)[1].split(
+        "## Gap 2 Criteria-SSOT Repo-Internal Write/Lift Applied Reflection v0", 1
+    )[0]
+
+
+def test_section5_gap1_gap3_ci_audit_reciprocal_crosslink_v1() -> None:
+    text = DOC.read_text(encoding="utf-8")
+    ci_audit = (ROOT / "docs" / "ops" / "CI_AUDIT_KNOWN_ISSUES.md").read_text(encoding="utf-8")
+    gap1 = _gap1_section(text)
+    gap2 = _gap2_canonical_section(text)
+    gap3 = _gap3_section(text)
+    shared_tokens = (
+        "GAP1_GAP3_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1=true",
+        "CRITERIA_ONLY=true",
+        "NO_EXECUTE=true",
+        "NO_PREFLIGHT_LIFT=true",
+        "NO_RUNTIME=true",
+        "PREFLIGHT_REMAINS_BLOCKED=true",
+        "READY_FOR_OPERATOR_ARMING=false",
+        "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true",
+    )
+    for token in shared_tokens:
+        assert token in gap1
+        assert token in gap2
+        assert token in gap3
+        assert token in ci_audit
+    for token in (
+        "GAP1_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1=true",
+        "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=false",
+        "GAP1_SCHEDULER_EXECUTION_AUTHORIZED=false",
+    ):
+        assert token in gap1
+        assert token in ci_audit
+    for token in (
+        "GAP2_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1=true",
+        "GAP2_CANONICAL_JOB_SET_VERIFIED=false",
+        "GAP2_SCHEDULER_EXECUTION_AUTHORIZED=false",
+    ):
+        assert token in gap2
+        assert token in ci_audit
+    for token in (
+        "GAP3_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1=true",
+        "GAP3_EXECUTE_COMMAND_VERIFIED=false",
+        "GAP3_SCHEDULER_EXECUTION_AUTHORIZED=false",
+    ):
+        assert token in gap3
+        assert token in ci_audit
+    assert "Gap 1 execute entrypoint CI_AUDIT ↔ SECTION5 reciprocal crosslink" in gap1
+    assert "Gap 2 canonical job set CI_AUDIT ↔ SECTION5 reciprocal crosslink" in gap2
+    assert "Gap 3 execute command CI_AUDIT ↔ SECTION5 reciprocal crosslink" in gap3
+    assert "Gap 1 Execute Entrypoint CI_AUDIT ↔ SECTION5 reciprocal crosslink" in ci_audit
+    assert "Gap 2 Canonical Job Set CI_AUDIT ↔ SECTION5 reciprocal crosslink" in ci_audit
+    assert "Gap 3 Execute Command CI_AUDIT ↔ SECTION5 reciprocal crosslink" in ci_audit
+    assert "test_remote_runtime_contract_docs_guard_v0.py" in gap1
+    collapsed = gap1.replace("**", "")
+    assert "does not authorize execute" in collapsed.lower()
+
+
 def test_section5_pe_eer1_hold_binding_chain_completion_static_review_v1() -> None:
     text = DOC.read_text(encoding="utf-8")
     ci_audit = (ROOT / "docs" / "ops" / "CI_AUDIT_KNOWN_ISSUES.md").read_text(encoding="utf-8")

@@ -3,6 +3,7 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[2]
 DOC = ROOT / "docs" / "ops" / "planning" / "SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md"
+CI_AUDIT_RECIPROCAL_OWNER = ROOT / "docs" / "ops" / "CI_AUDIT_KNOWN_ISSUES.md"
 GAP3_SECTION_HEADER = "## Gap 3 Execute Command Contract v0"
 CANONICAL_COMMAND = (
     "uv run python scripts/run_scheduler.py --config config/scheduler/jobs.toml "
@@ -77,10 +78,12 @@ def test_gap3_execute_command_contract_is_not_execution_authorized_or_lifted():
 
 def test_gap3_execute_command_contract_has_no_parallel_doc_surface():
     owner_map = DOC.resolve()
+    ci_audit_owner = CI_AUDIT_RECIPROCAL_OWNER.resolve()
     parallel_docs: list[Path] = []
 
     for path in (ROOT / "docs").rglob("*.md"):
-        if path.resolve() == owner_map:
+        resolved = path.resolve()
+        if resolved == owner_map or resolved == ci_audit_owner:
             continue
         text = path.read_text(encoding="utf-8")
         if any(marker in text for marker in GAP3_PARALLEL_MARKERS):
