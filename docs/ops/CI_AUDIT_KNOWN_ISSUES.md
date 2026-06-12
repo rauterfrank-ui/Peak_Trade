@@ -992,6 +992,220 @@ DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
 
 **Non-authorizing:** Docs/tests-only reciprocal crosslink guard only; does **not** authorize execute, runtime, run start, live, preflight lift, scheduler execution, paper/shadow/testnet session, order/cancel/execution/arming, authority lift, trading-logic changes, Master V2 / Double Play / Bull-Bear / Risk / KillSwitch / Scope / Capital changes, workflow YAML mutation, `workflow_dispatch`, `gh run rerun`, JSONL ingest, evidence dataset mutation, or Market Dashboard authority changes.
 
+## Gap 4 Output/Evidence Paths CI_AUDIT ↔ SECTION5 reciprocal crosslink — docs/tests-only guard v1
+
+**Operator-GO:** `GO_GAP4_GAP7_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1`
+
+**Purpose:** Reciprocal crosslink so CI_AUDIT documents the Gap 4 output/evidence paths criteria contract (SECTION5 `## Gap 4 Output/Evidence Paths Contract v0`) aligned with existing Gap 4 contract and drift-guard tests. PE-4/PE-5 reciprocal sections cover adjacent PE guards only — **not** a replacement for this Gap 4 criteria crosslink. Guard/Ops drift fix only — **non-authorizing**; **no** execute, preflight lift, bounded observation run, or runtime.
+
+**Canonical repo owners (reuse — do not duplicate):**
+
+| Concern | Owner |
+|---------|-------|
+| Gap Owner Map SSOT — Gap 4 output/evidence paths contract | `docs/ops/planning/SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md` |
+| Gap 4 output evidence paths contract (canonical static guard) | `tests/ops/test_gap4_output_evidence_paths_contract_v0.py` |
+| Gap 4 output evidence paths drift guard (reference only) | `tests/ops/test_gap4_output_evidence_paths_drift_guard_contract_v0.py` |
+| CI_AUDIT / DOCS_TRUTH_MAP reciprocal guard | `tests/ops/test_remote_runtime_contract_docs_guard_v0.py` |
+
+```text
+GAP4_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1=true
+GAP4_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_ONLY=true
+GAP4_GAP7_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1=true
+DOCS_TESTS_ONLY=true
+CRITERIA_ONLY=true
+SECTION5_GAP4_OWNER_REFERENCED=true
+GAP4_OUTPUT_EVIDENCE_PATHS_CONTRACT_V0_REFERENCED=true
+GAP4_OUTPUT_EVIDENCE_PATHS_VERIFIED=false
+GAP4_SCHEDULER_EXECUTION_AUTHORIZED=false
+PE4_PE5_NOT_USED_AS_GAP4_GAP7_REPLACEMENT=true
+SLICE_GAP4_TESTS_ONLY=true
+OBSERVATION_RUN_AUTHORIZED_NOW=false
+PAPER_RUN_AUTHORIZED_NOW=false
+SHADOW_RUN_AUTHORIZED_NOW=false
+TESTNET_SESSION_AUTHORIZED_NOW=false
+ORDER_EXECUTE_AUTHORIZED_NOW=false
+LIVE_AUTHORIZED_NOW=false
+NO_EXECUTE=true
+NO_PREFLIGHT_LIFT=true
+NO_RUNTIME=true
+NO_LIVE=true
+ORDER_CANCEL_EXECUTION_ARMING_TOUCHED=false
+AUTHORITY_LIFT=false
+TRADING_LOGIC_TOUCHED=false
+MASTER_V2_LOGIC_TOUCHED=false
+DOUBLE_PLAY_LOGIC_TOUCHED=false
+NEW_PARALLEL_SSOT_CREATED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+MARKET_DASHBOARD_TOUCHED=false
+DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
+```
+
+**Guard module (reuse — no parallel Gap-4 SSOT):** `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`.
+
+**Non-authorizing:** Docs/tests-only reciprocal crosslink guard only; does **not** authorize execute, runtime, run start, live, preflight lift, bounded observation run, paper/shadow/testnet session, order/cancel/execution/arming, authority lift, trading-logic changes, Master V2 / Double Play / Bull-Bear / Risk / KillSwitch / Scope / Capital changes, workflow YAML mutation, `workflow_dispatch`, `gh run rerun`, JSONL ingest, evidence dataset mutation, or Market Dashboard authority changes.
+
+## Gap 5 Stop Criteria CI_AUDIT ↔ SECTION5 reciprocal crosslink — docs/tests-only guard v1
+
+**Operator-GO:** `GO_GAP4_GAP7_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1`
+
+**Purpose:** Reciprocal crosslink so CI_AUDIT documents the Gap 5 stop criteria contract (SECTION5 `## Gap 5 Stop Criteria Contract v0`) aligned with existing Gap 5 contract and drift-guard tests. Guard/Ops drift fix only — **non-authorizing**; **no** execute, preflight lift, stop rehearsal, or runtime.
+
+**Canonical repo owners (reuse — do not duplicate):**
+
+| Concern | Owner |
+|---------|-------|
+| Gap Owner Map SSOT — Gap 5 stop criteria contract | `docs/ops/planning/SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md` |
+| Gap 5 stop criteria contract (canonical static guard) | `tests/ops/test_gap5_stop_criteria_contract_v0.py` |
+| Gap 5 stop criteria drift guard (reference only) | `tests/ops/test_gap5_stop_criteria_drift_guard_contract_v0.py` |
+| CI_AUDIT / DOCS_TRUTH_MAP reciprocal guard | `tests/ops/test_remote_runtime_contract_docs_guard_v0.py` |
+
+```text
+GAP5_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1=true
+GAP5_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_ONLY=true
+GAP4_GAP7_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1=true
+DOCS_TESTS_ONLY=true
+CRITERIA_ONLY=true
+SECTION5_GAP5_OWNER_REFERENCED=true
+GAP5_STOP_CRITERIA_CONTRACT_V0_REFERENCED=true
+GAP5_STOP_PROOF_ACCEPTED=false
+GAP5_STOP_REHEARSAL_EXECUTED=false
+GAP5_SCHEDULER_EXECUTION_AUTHORIZED=false
+PE4_PE5_NOT_USED_AS_GAP4_GAP7_REPLACEMENT=true
+SLICE_GAP5_TESTS_ONLY=true
+OBSERVATION_RUN_AUTHORIZED_NOW=false
+PAPER_RUN_AUTHORIZED_NOW=false
+SHADOW_RUN_AUTHORIZED_NOW=false
+TESTNET_SESSION_AUTHORIZED_NOW=false
+ORDER_EXECUTE_AUTHORIZED_NOW=false
+LIVE_AUTHORIZED_NOW=false
+NO_EXECUTE=true
+NO_PREFLIGHT_LIFT=true
+NO_RUNTIME=true
+NO_LIVE=true
+ORDER_CANCEL_EXECUTION_ARMING_TOUCHED=false
+AUTHORITY_LIFT=false
+TRADING_LOGIC_TOUCHED=false
+MASTER_V2_LOGIC_TOUCHED=false
+DOUBLE_PLAY_LOGIC_TOUCHED=false
+NEW_PARALLEL_SSOT_CREATED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+MARKET_DASHBOARD_TOUCHED=false
+DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
+```
+
+**Guard module (reuse — no parallel Gap-5 SSOT):** `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`.
+
+**Non-authorizing:** Docs/tests-only reciprocal crosslink guard only; does **not** authorize execute, runtime, run start, live, preflight lift, stop rehearsal, paper/shadow/testnet session, order/cancel/execution/arming, authority lift, trading-logic changes, Master V2 / Double Play / Bull-Bear / Risk / KillSwitch / Scope / Capital changes, workflow YAML mutation, `workflow_dispatch`, `gh run rerun`, JSONL ingest, evidence dataset mutation, or Market Dashboard authority changes.
+
+## Gap 6 Dry-Run Proof Criteria CI_AUDIT ↔ SECTION5 reciprocal crosslink — docs/tests-only guard v1
+
+**Operator-GO:** `GO_GAP4_GAP7_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1`
+
+**Purpose:** Reciprocal crosslink so CI_AUDIT documents the Gap 6 dry-run proof criteria contract (SECTION5 `## Gap 6 Dry-Run Proof Criteria Contract v0`) aligned with existing Gap 6 contract and drift-guard tests. Guard/Ops drift fix only — **non-authorizing**; **no** execute, preflight lift, dry-run proof acceptance, or runtime.
+
+**Canonical repo owners (reuse — do not duplicate):**
+
+| Concern | Owner |
+|---------|-------|
+| Gap Owner Map SSOT — Gap 6 dry-run proof criteria contract | `docs/ops/planning/SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md` |
+| Gap 6 dry-run proof criteria contract (canonical static guard) | `tests/ops/test_gap6_dry_run_proof_criteria_contract_v0.py` |
+| Gap 6 external repo drift guard (reference only) | `tests/ops/test_gap6_external_repo_drift_guard_contract_v0.py` |
+| CI_AUDIT / DOCS_TRUTH_MAP reciprocal guard | `tests/ops/test_remote_runtime_contract_docs_guard_v0.py` |
+
+```text
+GAP6_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1=true
+GAP6_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_ONLY=true
+GAP4_GAP7_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1=true
+DOCS_TESTS_ONLY=true
+CRITERIA_ONLY=true
+SECTION5_GAP6_OWNER_REFERENCED=true
+GAP6_DRY_RUN_PROOF_CRITERIA_CONTRACT_V0_REFERENCED=true
+GAP6_DRY_RUN_PROOF_VERIFIED=false
+GAP6_DRY_RUN_RC0_OBSERVED=false
+GAP6_SCHEDULER_EXECUTION_AUTHORIZED=false
+PE4_PE5_NOT_USED_AS_GAP4_GAP7_REPLACEMENT=true
+SLICE_GAP6_TESTS_ONLY=true
+OBSERVATION_RUN_AUTHORIZED_NOW=false
+PAPER_RUN_AUTHORIZED_NOW=false
+SHADOW_RUN_AUTHORIZED_NOW=false
+TESTNET_SESSION_AUTHORIZED_NOW=false
+ORDER_EXECUTE_AUTHORIZED_NOW=false
+LIVE_AUTHORIZED_NOW=false
+NO_EXECUTE=true
+NO_PREFLIGHT_LIFT=true
+NO_RUNTIME=true
+NO_LIVE=true
+ORDER_CANCEL_EXECUTION_ARMING_TOUCHED=false
+AUTHORITY_LIFT=false
+TRADING_LOGIC_TOUCHED=false
+MASTER_V2_LOGIC_TOUCHED=false
+DOUBLE_PLAY_LOGIC_TOUCHED=false
+NEW_PARALLEL_SSOT_CREATED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+MARKET_DASHBOARD_TOUCHED=false
+DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
+```
+
+**Guard module (reuse — no parallel Gap-6 SSOT):** `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`.
+
+**Non-authorizing:** Docs/tests-only reciprocal crosslink guard only; does **not** authorize execute, runtime, run start, live, preflight lift, dry-run proof acceptance, paper/shadow/testnet session, order/cancel/execution/arming, authority lift, trading-logic changes, Master V2 / Double Play / Bull-Bear / Risk / KillSwitch / Scope / Capital changes, workflow YAML mutation, `workflow_dispatch`, `gh run rerun`, JSONL ingest, evidence dataset mutation, or Market Dashboard authority changes.
+
+## Gap 7 Risk Boundary Criteria CI_AUDIT ↔ SECTION5 reciprocal crosslink — docs/tests-only guard v1
+
+**Operator-GO:** `GO_GAP4_GAP7_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1`
+
+**Purpose:** Reciprocal crosslink so CI_AUDIT documents the Gap 7 risk boundary criteria contract (SECTION5 `## Gap 7 Risk Boundary Criteria Contract v0`) aligned with existing Gap 7 contract and drift-guard tests. Guard/Ops drift fix only — **non-authorizing**; **no** execute, preflight lift, risk boundary verification, or runtime.
+
+**Canonical repo owners (reuse — do not duplicate):**
+
+| Concern | Owner |
+|---------|-------|
+| Gap Owner Map SSOT — Gap 7 risk boundary criteria contract | `docs/ops/planning/SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md` |
+| Gap 7 risk boundary criteria contract (canonical static guard) | `tests/ops/test_gap7_risk_boundary_criteria_contract_v0.py` |
+| Gap 7 risk boundary drift guard (reference only) | `tests/ops/test_gap7_risk_boundary_drift_guard_contract_v0.py` |
+| CI_AUDIT / DOCS_TRUTH_MAP reciprocal guard | `tests/ops/test_remote_runtime_contract_docs_guard_v0.py` |
+
+```text
+GAP7_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1=true
+GAP7_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_ONLY=true
+GAP4_GAP7_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_GUARD_V1=true
+DOCS_TESTS_ONLY=true
+CRITERIA_ONLY=true
+SECTION5_GAP7_OWNER_REFERENCED=true
+GAP7_RISK_BOUNDARY_CRITERIA_CONTRACT_V0_REFERENCED=true
+GAP7_RISK_BOUNDARY_VERIFIED=false
+GAP7_SCHEDULER_EXECUTION_AUTHORIZED=false
+PE4_PE5_NOT_USED_AS_GAP4_GAP7_REPLACEMENT=true
+SLICE_GAP7_TESTS_ONLY=true
+OBSERVATION_RUN_AUTHORIZED_NOW=false
+PAPER_RUN_AUTHORIZED_NOW=false
+SHADOW_RUN_AUTHORIZED_NOW=false
+TESTNET_SESSION_AUTHORIZED_NOW=false
+ORDER_EXECUTE_AUTHORIZED_NOW=false
+LIVE_AUTHORIZED_NOW=false
+NO_EXECUTE=true
+NO_PREFLIGHT_LIFT=true
+NO_RUNTIME=true
+NO_LIVE=true
+ORDER_CANCEL_EXECUTION_ARMING_TOUCHED=false
+AUTHORITY_LIFT=false
+TRADING_LOGIC_TOUCHED=false
+MASTER_V2_LOGIC_TOUCHED=false
+DOUBLE_PLAY_LOGIC_TOUCHED=false
+NEW_PARALLEL_SSOT_CREATED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+MARKET_DASHBOARD_TOUCHED=false
+DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
+```
+
+**Guard module (reuse — no parallel Gap-7 SSOT):** `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`.
+
+**Non-authorizing:** Docs/tests-only reciprocal crosslink guard only; does **not** authorize execute, runtime, run start, live, preflight lift, risk boundary verification, paper/shadow/testnet session, order/cancel/execution/arming, authority lift, trading-logic changes, Master V2 / Double Play / Bull-Bear / Risk / KillSwitch / Scope / Capital changes, workflow YAML mutation, `workflow_dispatch`, `gh run rerun`, JSONL ingest, evidence dataset mutation, or Market Dashboard authority changes.
+
 ## Market tape readmodel SSR DOCS_TRUTH_MAP static crosslink v1
 
 **Operator-GO:** `GO_MARKET_TAPE_SSR_DOCS_TRUTH_MAP_CI_AUDIT_STATIC_CROSSLINK_GUARD_OPERATOR_GO_AUTOFILL_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_order_capability_fixture_binding_docs_truth_map_static_crosslink_guard_merge_no_run_v1_20260611T192531Z/`
