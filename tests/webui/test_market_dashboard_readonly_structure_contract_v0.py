@@ -91,6 +91,23 @@ def _html(client: TestClient, path: str) -> str:
     return response.text
 
 
+def _unified_market_html(client: TestClient, *, query: str = "") -> str:
+    """Canonical operator page (GET /market); legacy /market/double-play redirects here."""
+    return _html(client, f"/market{query}")
+
+
+def _double_play_panel_html(html: str) -> str:
+    """Embedded Double-Play section on unified GET /market (not full page shell)."""
+    anchor = 'data-market-single-page-section-double-play-v1="true"'
+    if anchor not in html:
+        return html
+    start = html.index(anchor)
+    sec_start = html.rfind("<section", 0, start)
+    futures_idx = html.find('id="futures"', start)
+    end = futures_idx if futures_idx > start else len(html)
+    return html[sec_start:end]
+
+
 def test_market_dashboard_keeps_depth_ssr_without_client_depth_fetch(
     client: TestClient,
 ) -> None:
@@ -120,14 +137,15 @@ def test_double_play_market_dashboard_excludes_depth_ssr_region_role_contract_v0
     client: TestClient,
 ) -> None:
     """Double-Play uses dp-specific depth landmarks; must not carry `/market` depth region markup."""
-    html = _html(client, "/market/double-play")
+    html = _unified_market_html(client)
+    dp_html = _double_play_panel_html(html)
     assert not re.search(
         r'id="market-v0-depth-ssr"\s+role="region"\s+aria-labelledby="market-v0-landmark-depth-ssr-h2"',
-        html,
+        dp_html,
     )
     assert re.search(
         r'id="double-play-market-v0-depth-ssr"\s+role="region"\s+aria-labelledby="double-play-market-v0-landmark-depth-ssr-h2"',
-        html,
+        dp_html,
     )
     assert 'data-double-play-market-depth-panel="true"' in html
     assert 'data-double-play-market-depth-landmark-heading-v0="true"' in html
@@ -140,12 +158,13 @@ def test_double_play_market_dashboard_depth_ssr_with_fixture_bundle_v0(
     client_depth_fixture_bundle_on: TestClient,
 ) -> None:
     """Enabled offline depth fixture surfaces on Double-Play via shared display context."""
-    html = _html(client_depth_fixture_bundle_on, "/market/double-play")
+    html = _unified_market_html(client_depth_fixture_bundle_on)
+    dp_html = _double_play_panel_html(html)
     assert 'data-double-play-market-depth-panel="true"' in html
     assert 'data-double-play-market-depth-status="ok"' in html
     assert 'data-double-play-market-depth-summary="true"' in html
-    assert 'id="market-v0-depth-ssr"' not in html
-    assert "data-market-depth-panel" not in html
+    assert 'id="market-v0-depth-ssr"' not in dp_html
+    assert "data-market-depth-panel" not in dp_html
     assert "/api/market/depth" not in html
     assert "fetch(" not in html
 
@@ -154,7 +173,8 @@ def test_double_play_market_dashboard_depth_ssr_default_disabled_post_merge_v0(
     client: TestClient,
 ) -> None:
     """Post-merge: Double-Play depth strip is always present; default env stays disabled."""
-    html = _html(client, "/market/double-play")
+    html = _unified_market_html(client)
+    dp_html = _double_play_panel_html(html)
     assert re.search(
         r'id="double-play-market-v0-depth-ssr"\s+role="region"\s+aria-labelledby="double-play-market-v0-landmark-depth-ssr-h2"',
         html,
@@ -163,15 +183,16 @@ def test_double_play_market_dashboard_depth_ssr_default_disabled_post_merge_v0(
     assert 'data-double-play-market-depth-status="disabled"' in html
     assert 'data-double-play-market-depth-non-authorizing="true"' in html
     assert 'data-double-play-market-depth-operator-hint="true"' in html
-    assert 'id="market-v0-depth-ssr"' not in html
-    assert "data-market-v0-ranking-funnel" not in html
+    assert 'id="market-v0-depth-ssr"' not in dp_html
+    assert "data-market-v0-ranking-funnel" not in dp_html
 
 
 def test_double_play_market_dashboard_depth_ssr_post_merge_contract_v0(
     client_depth_fixture_bundle_on: TestClient,
 ) -> None:
     """Post-merge #3725: fixture depth, dp markers, OHLC shell coexistence, /market exclusions, no fetch."""
-    html = _html(client_depth_fixture_bundle_on, "/market/double-play")
+    html = _unified_market_html(client_depth_fixture_bundle_on)
+    dp_html = _double_play_panel_html(html)
 
     assert re.search(
         r'id="double-play-market-v0-depth-ssr"\s+role="region"\s+aria-labelledby="double-play-market-v0-landmark-depth-ssr-h2"',
@@ -195,13 +216,13 @@ def test_double_play_market_dashboard_depth_ssr_post_merge_contract_v0(
     assert 'data-double-play-market-candlestick-v1-2="true"' in html
     assert 'data-double-play-market-composition-ssr-v1="true"' in html
 
-    assert 'id="market-v0-depth-ssr"' not in html
-    assert "data-market-depth-panel" not in html
-    assert "data-market-v0-depth-" not in html
-    assert 'id="market-v0-landmark-depth-ssr-h2"' not in html
-    assert "data-market-v0-ranking-funnel" not in html
-    assert "market-v0-landmark-ranking-funnel-h2" not in html
-    assert 'id="market-v0-ranking-funnel-ssr"' not in html
+    assert 'id="market-v0-depth-ssr"' not in dp_html
+    assert "data-market-depth-panel" not in dp_html
+    assert "data-market-v0-depth-" not in dp_html
+    assert 'id="market-v0-landmark-depth-ssr-h2"' not in dp_html
+    assert "data-market-v0-ranking-funnel" not in dp_html
+    assert "market-v0-landmark-ranking-funnel-h2" not in dp_html
+    assert 'id="market-v0-ranking-funnel-ssr"' not in dp_html
 
     assert "/api/market/depth" not in html
     assert "fetch(" not in html
@@ -227,15 +248,16 @@ def test_double_play_market_dashboard_excludes_orderbook_topn_landmark_region_v0
     client: TestClient,
 ) -> None:
     """Double-Play page must not carry `/market` Orderbook Top-N landmark region markup."""
-    html = _html(client, "/market/double-play")
+    html = _unified_market_html(client)
+    dp_html = _double_play_panel_html(html)
     assert not re.search(
         r'id="market-v0-orderbook-topn"\s+role="region"\s+aria-labelledby="market-v0-landmark-orderbook-topn-h2"',
-        html,
+        dp_html,
     )
-    assert "market-v0-landmark-orderbook-topn-h2" not in html
-    assert "data-market-v0-orderbook-landmark-heading-v0" not in html
-    assert "data-market-v0-orderbook-topn" not in html
-    assert "data-market-v0-orderbook-placeholder" not in html
+    assert "market-v0-landmark-orderbook-topn-h2" not in dp_html
+    assert "data-market-v0-orderbook-landmark-heading-v0" not in dp_html
+    assert "data-market-v0-orderbook-topn" not in dp_html
+    assert "data-market-v0-orderbook-placeholder" not in dp_html
 
 
 def test_market_dashboard_depth_chart_placeholder_region_role_contract_v0(
@@ -256,20 +278,22 @@ def test_double_play_market_dashboard_excludes_depth_chart_placeholder_landmark_
     client: TestClient,
 ) -> None:
     """Double-Play page must not carry `/market` depth-chart placeholder landmark region markup."""
-    html = _html(client, "/market/double-play")
+    html = _unified_market_html(client)
+    dp_html = _double_play_panel_html(html)
     assert not re.search(
         r'id="market-v0-depth-chart-placeholder"\s+role="region"\s+aria-labelledby="market-v0-landmark-depth-chart-placeholder-h2"',
-        html,
+        dp_html,
     )
-    assert "market-v0-landmark-depth-chart-placeholder-h2" not in html
-    assert "data-market-v0-depth-chart-placeholder-landmark-heading-v0" not in html
-    assert "data-market-v0-depth-chart-placeholder" not in html
+    assert "market-v0-landmark-depth-chart-placeholder-h2" not in dp_html
+    assert "data-market-v0-depth-chart-placeholder-landmark-heading-v0" not in dp_html
+    assert "data-market-v0-depth-chart-placeholder" not in dp_html
 
 
 def test_double_play_market_dashboard_does_not_embed_market_depth_api_fetch(
     client: TestClient,
 ) -> None:
-    html = _html(client, "/market/double-play")
+    html = _unified_market_html(client)
+    dp_html = _double_play_panel_html(html)
 
     assert "/api/market/depth" not in html
     assert "fetch(" not in html
@@ -280,12 +304,13 @@ def test_double_play_dashboard_excludes_market_depth_ssr_markers_v0(
     client: TestClient,
 ) -> None:
     """Double-Play page must not carry `/market` SSR Market Depth strip markup."""
-    html = _html(client, "/market/double-play")
+    html = _unified_market_html(client)
+    dp_html = _double_play_panel_html(html)
 
-    assert "data-market-depth-panel" not in html
-    assert 'id="market-v0-depth-ssr"' not in html
-    assert 'id="market-v0-landmark-depth-ssr-h2"' not in html
-    assert "data-market-v0-depth-landmark-heading-v0" not in html
+    assert "data-market-depth-panel" not in dp_html
+    assert 'id="market-v0-depth-ssr"' not in dp_html
+    assert 'id="market-v0-landmark-depth-ssr-h2"' not in dp_html
+    assert "data-market-v0-depth-landmark-heading-v0" not in dp_html
     assert 'data-double-play-market-depth-panel="true"' in html
     assert 'id="double-play-market-v0-depth-ssr"' in html
 
@@ -350,7 +375,8 @@ def test_double_play_market_dashboard_v11_chart_diagnostics_readonly_structure_c
     client: TestClient,
 ) -> None:
     """v1.1 chart diagnostics SSR markers on GET /market/double-play (dp-specific shell)."""
-    html = _html(client, "/market/double-play")
+    html = _unified_market_html(client)
+    dp_html = _double_play_panel_html(html)
     lowered = html.lower()
 
     assert 'data-market-v11-chart-diagnostics="true"' in html
@@ -430,10 +456,11 @@ def test_double_play_market_dashboard_excludes_market_readonly_banner_chip_rhyth
     client: TestClient,
 ) -> None:
     """Double-Play must not carry `/market` read-only banner rhythm contract markers."""
-    html = _html(client, "/market/double-play")
-    assert "data-market-v0-readonly-banner-chip-rhythm-v0" not in html
-    assert "data-market-v0-readonly-banner-chip-rows-v0" not in html
-    assert "data-market-v0-readonly-banner-chip-divider-v0" not in html
+    html = _unified_market_html(client)
+    dp_html = _double_play_panel_html(html)
+    assert "data-market-v0-readonly-banner-chip-rhythm-v0" not in dp_html
+    assert "data-market-v0-readonly-banner-chip-rows-v0" not in dp_html
+    assert "data-market-v0-readonly-banner-chip-divider-v0" not in dp_html
 
 
 def test_market_dashboard_embedded_snapshot_generated_at_visibility_v0(
@@ -450,8 +477,9 @@ def test_double_play_market_dashboard_excludes_market_embedded_snapshot_generate
     client: TestClient,
 ) -> None:
     """`/market`-specific embedded-snapshot marker must not leak onto Double-Play."""
-    html = _html(client, "/market/double-play")
-    assert "data-market-v0-embedded-snapshot-generated-at-v0" not in html
+    html = _unified_market_html(client)
+    dp_html = _double_play_panel_html(html)
+    assert "data-market-v0-embedded-snapshot-generated-at-v0" not in dp_html
 
 
 def test_market_dashboard_payload_meta_note_visibility_dummy_v0(client: TestClient) -> None:
@@ -467,8 +495,9 @@ def test_double_play_market_dashboard_excludes_market_payload_meta_note_marker_v
     client: TestClient,
 ) -> None:
     """`/market` payload-meta marker must not appear on Double-Play."""
-    html = _html(client, "/market/double-play")
-    assert "data-market-v0-payload-meta-note-v0" not in html
+    html = _unified_market_html(client)
+    dp_html = _double_play_panel_html(html)
+    assert "data-market-v0-payload-meta-note-v0" not in dp_html
 
 
 @pytest.fixture()
@@ -515,8 +544,9 @@ def test_double_play_market_dashboard_excludes_market_depth_bundle_provenance_ma
     client: TestClient,
 ) -> None:
     """`/market`-only depth-bundle provenance marker must not leak onto Double-Play."""
-    html = _html(client, "/market/double-play")
-    assert "data-market-v0-depth-bundle-provenance-v0" not in html
+    html = _unified_market_html(client)
+    dp_html = _double_play_panel_html(html)
+    assert "data-market-v0-depth-bundle-provenance-v0" not in dp_html
 
 
 def test_market_dashboard_depth_cockpit_tile_readmodel_identity_default_depth_disabled_v0(
@@ -548,8 +578,9 @@ def test_double_play_market_dashboard_excludes_depth_cockpit_readmodel_identity_
     client: TestClient,
 ) -> None:
     """`/market`-only cockpit-depth identity marker stays off Double-Play."""
-    html = _html(client, "/market/double-play")
-    assert "data-market-v0-depth-tile-readmodel-identity-v0" not in html
+    html = _unified_market_html(client)
+    dp_html = _double_play_panel_html(html)
+    assert "data-market-v0-depth-tile-readmodel-identity-v0" not in dp_html
 
 
 def test_market_dashboard_depth_cockpit_tile_topn_microtable_marker_default_depth_disabled_v0(
@@ -580,8 +611,9 @@ def test_double_play_market_dashboard_excludes_depth_cockpit_topn_microtable_mar
     client: TestClient,
 ) -> None:
     """`/market`-only cockpit-depth Top-N microtable marker stays off Double-Play."""
-    html = _html(client, "/market/double-play")
-    assert "data-market-v0-depth-tile-topn-microtable-v0" not in html
+    html = _unified_market_html(client)
+    dp_html = _double_play_panel_html(html)
+    assert "data-market-v0-depth-tile-topn-microtable-v0" not in dp_html
 
 
 def test_market_dashboard_depth_cockpit_tile_freshness_mirror_default_depth_disabled_v0(
@@ -616,8 +648,9 @@ def test_double_play_market_dashboard_excludes_depth_cockpit_freshness_mirror_ma
     client: TestClient,
 ) -> None:
     """`/market`-only cockpit freshness mirror stays off Double-Play."""
-    html = _html(client, "/market/double-play")
-    assert "data-market-v0-depth-tile-freshness-mirror-v0" not in html
+    html = _unified_market_html(client)
+    dp_html = _double_play_panel_html(html)
+    assert "data-market-v0-depth-tile-freshness-mirror-v0" not in dp_html
 
 
 def test_market_dashboard_depth_chart_placeholder_fixture_mini_bars_contract_v0(
@@ -675,18 +708,20 @@ def test_double_play_market_dashboard_excludes_depth_chart_placeholder_marker_v0
     client: TestClient,
 ) -> None:
     """`/market`-only depth-chart placeholder marker stays off Double-Play."""
-    html = _html(client, "/market/double-play")
-    assert 'data-market-v0-depth-chart-placeholder="true"' not in html
+    html = _unified_market_html(client)
+    dp_html = _double_play_panel_html(html)
+    assert 'data-market-v0-depth-chart-placeholder="true"' not in dp_html
 
 
 def test_double_play_market_dashboard_excludes_orderbook_fixture_levels_markers_v0(
     client: TestClient,
 ) -> None:
     """`/market`-only fixture orderbook level markers stay off Double-Play."""
-    html = _html(client, "/market/double-play")
-    assert 'data-market-v0-orderbook-has-levels="true"' not in html
-    assert 'data-market-v0-orderbook-bids="true"' not in html
-    assert 'data-market-v0-orderbook-asks="true"' not in html
+    html = _unified_market_html(client)
+    dp_html = _double_play_panel_html(html)
+    assert 'data-market-v0-orderbook-has-levels="true"' not in dp_html
+    assert 'data-market-v0-orderbook-bids="true"' not in dp_html
+    assert 'data-market-v0-orderbook-asks="true"' not in dp_html
 
 
 def test_market_dashboard_ranking_funnel_region_role_contract_v0(client: TestClient) -> None:
@@ -703,13 +738,14 @@ def test_market_dashboard_ranking_funnel_region_role_contract_v0(client: TestCli
 def test_double_play_market_dashboard_excludes_ranking_funnel_region_role_contract_v0(
     client: TestClient,
 ) -> None:
-    html = _html(client, "/market/double-play")
+    html = _unified_market_html(client)
+    dp_html = _double_play_panel_html(html)
     assert not re.search(
         r'id="market-v0-ranking-funnel-ssr"\s+role="region"\s+aria-labelledby="market-v0-landmark-ranking-funnel-h2"',
-        html,
+        dp_html,
     )
-    assert "market-v0-ranking-funnel-ssr" not in html
-    assert "data-market-v0-ranking-funnel-landmark-heading-v0" not in html
+    assert "market-v0-ranking-funnel-ssr" not in dp_html
+    assert "data-market-v0-ranking-funnel-landmark-heading-v0" not in dp_html
 
 
 def test_market_dashboard_ranking_funnel_empty_state_v0_marker(client: TestClient) -> None:
@@ -737,11 +773,12 @@ def test_market_dashboard_ranking_funnel_dynamic_labels_excluded_on_double_play_
     client: TestClient,
 ) -> None:
     """Double-Play must not carry /market-only ranking funnel dynamic-label SSR markers."""
-    html = _html(client, "/market/double-play")
-    assert 'data-market-v0-ranking-funnel-v0="true"' not in html
-    assert "data-market-v0-ranking-funnel-label-stage-v0" not in html
-    assert "data-market-v0-ranking-funnel-label-text-v0" not in html
-    assert 'data-market-v0-ranking-funnel-display-only-v0="true"' not in html
+    html = _unified_market_html(client)
+    dp_html = _double_play_panel_html(html)
+    assert 'data-market-v0-ranking-funnel-v0="true"' not in dp_html
+    assert "data-market-v0-ranking-funnel-label-stage-v0" not in dp_html
+    assert "data-market-v0-ranking-funnel-label-text-v0" not in dp_html
+    assert 'data-market-v0-ranking-funnel-display-only-v0="true"' not in dp_html
 
 
 def test_market_dashboard_pro_panel_shell_structure_v0(client: TestClient) -> None:
@@ -817,21 +854,22 @@ def test_double_play_market_dashboard_excludes_ranking_funnel_markers_v0(
     client: TestClient,
 ) -> None:
     """Double-Play must not carry `/market`-only ranking funnel contract markers."""
-    html = _html(client, "/market/double-play")
-    assert "data-market-v0-ranking-funnel-empty-state-v0" not in html
-    assert "data-market-v0-ranking-funnel-dynamic-labels-v0" not in html
-    assert "data-market-v0-ranking-funnel-label-stage-v0" not in html
-    assert "data-market-v0-ranking-funnel-label-text-v0" not in html
-    assert "data-market-v0-ranking-funnel-display-only-v0" not in html
-    assert "data-market-v0-ranking-funnel-stages-v0" not in html
-    assert "data-market-v0-ranking-funnel-has-rows-v0" not in html
-    assert "data-market-v0-ranking-funnel-enabled-v0" not in html
-    assert "data-market-v0-ranking-funnel-row-v0" not in html
-    assert "data-market-v0-ranking-funnel-stage-rows-v0" not in html
-    assert "market-v0-landmark-ranking-funnel-h2" not in html
-    assert "market-v0-ranking-funnel-ssr" not in html
-    assert "data-market-v0-ranking-funnel-landmark-heading-v0" not in html
-    assert "data-market-v0-" not in html
+    html = _unified_market_html(client)
+    dp_html = _double_play_panel_html(html)
+    assert "data-market-v0-ranking-funnel-empty-state-v0" not in dp_html
+    assert "data-market-v0-ranking-funnel-dynamic-labels-v0" not in dp_html
+    assert "data-market-v0-ranking-funnel-label-stage-v0" not in dp_html
+    assert "data-market-v0-ranking-funnel-label-text-v0" not in dp_html
+    assert "data-market-v0-ranking-funnel-display-only-v0" not in dp_html
+    assert "data-market-v0-ranking-funnel-stages-v0" not in dp_html
+    assert "data-market-v0-ranking-funnel-has-rows-v0" not in dp_html
+    assert "data-market-v0-ranking-funnel-enabled-v0" not in dp_html
+    assert "data-market-v0-ranking-funnel-row-v0" not in dp_html
+    assert "data-market-v0-ranking-funnel-stage-rows-v0" not in dp_html
+    assert "market-v0-landmark-ranking-funnel-h2" not in dp_html
+    assert "market-v0-ranking-funnel-ssr" not in dp_html
+    assert "data-market-v0-ranking-funnel-landmark-heading-v0" not in dp_html
+    assert "data-market-v0-" not in dp_html
     assert 'data-market-readonly="true"' in html
 
 
@@ -839,16 +877,17 @@ def test_double_play_excludes_ranking_funnel_when_depth_and_ranking_env_enabled_
     client_depth_and_ranking_funnel_fixtures_on: TestClient,
 ) -> None:
     """Depth+ranking fixtures enabled still render dp depth only on /market/double-play."""
-    html = _html(client_depth_and_ranking_funnel_fixtures_on, "/market/double-play")
+    html = _unified_market_html(client_depth_and_ranking_funnel_fixtures_on)
+    dp_html = _double_play_panel_html(html)
 
     assert re.search(
         r'id="double-play-market-v0-depth-ssr"\s+role="region"\s+aria-labelledby="double-play-market-v0-landmark-depth-ssr-h2"',
-        html,
+        dp_html,
     )
-    assert 'data-double-play-market-depth-panel="true"' in html
-    assert 'id="market-v0-depth-ssr"' not in html
-    assert "data-market-v0-ranking-funnel" not in html
-    assert 'id="market-v0-ranking-funnel-ssr"' not in html
+    assert 'data-double-play-market-depth-panel="true"' in dp_html
+    assert 'id="market-v0-depth-ssr"' not in dp_html
+    assert "data-market-v0-ranking-funnel" not in dp_html
+    assert 'id="market-v0-ranking-funnel-ssr"' not in dp_html
 
 
 def test_market_dashboard_ranking_funnel_rows_when_bundle_enabled_v0(
@@ -922,13 +961,14 @@ def test_double_play_market_dashboard_excludes_pro_shell_markers_v0(
     client: TestClient,
 ) -> None:
     """Double-Play must not carry `/market`-only pro-shell / visual-cockpit IA markers."""
-    html = _html(client, "/market/double-play")
-    assert "data-market-v0-pro-shell" not in html
-    assert "data-market-v0-pro-grid" not in html
-    assert "data-market-v0-pro-boundary" not in html
-    assert "data-market-v0-visual-cockpit" not in html
-    assert "market-v0-landmark-visual-cockpit-h2" not in html
-    assert "data-market-v0-" not in html
+    html = _unified_market_html(client)
+    dp_html = _double_play_panel_html(html)
+    assert "data-market-v0-pro-shell" not in dp_html
+    assert "data-market-v0-pro-grid" not in dp_html
+    assert "data-market-v0-pro-boundary" not in dp_html
+    assert "data-market-v0-visual-cockpit" not in dp_html
+    assert "market-v0-landmark-visual-cockpit-h2" not in dp_html
+    assert "data-market-v0-" not in dp_html
     assert 'data-market-readonly="true"' in html
 
 
@@ -1003,17 +1043,19 @@ def test_double_play_excludes_visual_cockpit_tile_landmark_groups_v0(
     client: TestClient,
 ) -> None:
     """Double-Play must not carry `/market`-only visual cockpit tile IA markers."""
-    html = _html(client, "/market/double-play")
-    assert "data-market-v0-cockpit-tiles-grid-v0" not in html
-    assert "data-market-v0-cockpit-tile-landmark-heading-v0" not in html
-    assert "market-v0-landmark-cockpit-tile-snapshot-h3" not in html
-    assert "data-market-v0-cockpit-tile-non-authorizing-v0" not in html
+    html = _unified_market_html(client)
+    dp_html = _double_play_panel_html(html)
+    assert "data-market-v0-cockpit-tiles-grid-v0" not in dp_html
+    assert "data-market-v0-cockpit-tile-landmark-heading-v0" not in dp_html
+    assert "market-v0-landmark-cockpit-tile-snapshot-h3" not in dp_html
+    assert "data-market-v0-cockpit-tile-non-authorizing-v0" not in dp_html
 
 
 def test_double_play_market_dashboard_landmarks_and_labelled_regions_v0(
     client: TestClient,
 ) -> None:
-    html = _html(client, "/market/double-play")
+    html = _unified_market_html(client)
+    dp_html = _double_play_panel_html(html)
     assert 'id="double-play-market-v0-shell"' in html
     assert 'aria-labelledby="double-play-market-v0-landmark-page-title"' in html
     assert 'id="double-play-market-v0-landmark-page-title"' in html
@@ -1102,10 +1144,11 @@ def test_double_play_market_dashboard_excludes_run_projection_landmark_v0(
     payload_path, _ = overlay_fixtures.write_ready_bundle(tmp_path / "bundle")
     monkeypatch.setenv("PEAK_TRADE_MARKET_RUN_PROJECTION_ENABLED", "1")
     monkeypatch.setenv("PEAK_TRADE_MARKET_RUN_PROJECTION_PAYLOAD_JSON", str(payload_path))
-    html = _html(client, "/market/double-play")
+    html = _unified_market_html(client)
+    dp_html = _double_play_panel_html(html)
 
-    assert "market-v0-landmark-run-projection-h2" not in html
-    assert 'data-market-v0-run-projection="true"' not in html
+    assert "market-v0-landmark-run-projection-h2" not in dp_html
+    assert 'data-market-v0-run-projection="true"' not in dp_html
 
 
 def test_market_dashboard_tape_landmark_region_when_enabled_v0(
@@ -1151,10 +1194,11 @@ def test_double_play_market_dashboard_excludes_tape_landmark_v0(
     )
     monkeypatch.setenv("PEAK_TRADE_MARKET_TAPE_ENABLED", "1")
     monkeypatch.setenv("PEAK_TRADE_MARKET_TAPE_BUNDLE_ROOT", str(fixture_root.resolve()))
-    html = _html(client, "/market/double-play")
+    html = _unified_market_html(client)
+    dp_html = _double_play_panel_html(html)
 
-    assert "market-v0-tape-ssr" not in html
-    assert 'data-market-v0-tape="true"' not in html
+    assert "market-v0-tape-ssr" not in dp_html
+    assert 'data-market-v0-tape="true"' not in dp_html
 
 
 MARKET_SURFACE_DOC = project_root / "docs" / "webui" / "MARKET_SURFACE_V0.md"
@@ -1286,7 +1330,9 @@ def test_market_operator_overview_story_markers_v1(client: TestClient) -> None:
     assert 'data-market-ranking-source-mode-v1="fixture_offline"' in html
     assert 'data-market-observe-strip-v1="true"' in html
     assert 'data-market-ai-decision-readout-v1="true"' in html
-    assert 'data-market-double-play-status-v1="true"' in html
+    assert 'data-market-single-page-unified-v1="true"' in html
+    assert 'data-market-single-page-section-double-play-v1="true"' in html
+    assert 'data-market-operator-step-v1="double-play-status"' in html
     assert 'data-market-operator-step-v1="observe"' in html
     assert 'data-market-operator-step-v1="rank"' in html
     assert 'data-market-operator-step-v1="explain"' in html
@@ -1306,7 +1352,8 @@ def test_market_operator_overview_ranking_table_with_fixture_v1(
 
 
 def test_double_play_operator_detail_redesign_markers_v1(client: TestClient) -> None:
-    html = _html(client, "/market/double-play")
+    html = _unified_market_html(client)
+    dp_html = _double_play_panel_html(html)
 
     assert 'data-double-play-operator-detail-v1="true"' in html
     assert 'data-double-play-bull-bear-cards-v1="true"' in html
@@ -1385,13 +1432,14 @@ def test_market_observe_co_presence_tape_depth_inline_with_fixtures_v1(
 
 def test_double_play_excludes_market_observe_co_presence_markers_v1(client: TestClient) -> None:
     """Double-Play must not carry /market-only observe co-presence inline markers."""
-    html = _html(client, "/market/double-play")
-    assert "market-v0-observe-co-presence" not in html
-    assert "market-v0-observe-tape-inline" not in html
-    assert "market-v0-observe-depth-inline" not in html
-    assert "data-market-v0-observe-co-presence-v1" not in html
-    assert "data-market-v0-observe-tape-inline-v1" not in html
-    assert "data-market-v0-observe-depth-inline-v1" not in html
+    html = _unified_market_html(client)
+    dp_html = _double_play_panel_html(html)
+    assert "market-v0-observe-co-presence" not in dp_html
+    assert "market-v0-observe-tape-inline" not in dp_html
+    assert "market-v0-observe-depth-inline" not in dp_html
+    assert "data-market-v0-observe-co-presence-v1" not in dp_html
+    assert "data-market-v0-observe-tape-inline-v1" not in dp_html
+    assert "data-market-v0-observe-depth-inline-v1" not in dp_html
 
 
 def test_market_instrument_header_display_only_markers_v1(client: TestClient) -> None:
@@ -1413,7 +1461,7 @@ def test_market_instrument_header_display_only_markers_v1(client: TestClient) ->
     assert "trading authority=false" in html
     assert ">no orders<" in html
     assert ">no execution<" in html
-    assert "/market/double-play?source=dummy" in html
+    assert "#double-play" in html
     assert "BTC%2FUSD" in html or "BTC/USD" in html
 
     header_idx = html.index('id="market-v0-instrument-header"')
@@ -1444,10 +1492,11 @@ def test_market_instrument_header_spread_from_depth_fixture_v1(
 
 def test_double_play_excludes_market_instrument_header_markers_v1(client: TestClient) -> None:
     """Double-Play must not carry /market-only instrument header markers."""
-    html = _html(client, "/market/double-play")
-    assert "market-v0-instrument-header" not in html
-    assert "data-market-v0-instrument-header" not in html
-    assert "data-market-v0-instrument-symbol" not in html
+    html = _unified_market_html(client)
+    dp_html = _double_play_panel_html(html)
+    assert "market-v0-instrument-header" not in dp_html
+    assert "data-market-v0-instrument-header" not in dp_html
+    assert "data-market-v0-instrument-symbol" not in dp_html
 
 
 def test_market_futures_metrics_strip_display_only_markers_v1(client: TestClient) -> None:
@@ -1523,11 +1572,12 @@ def test_double_play_excludes_market_futures_metrics_strip_markers_v1(
     client: TestClient,
 ) -> None:
     """Double-Play must not carry /market-only futures metrics strip markers."""
-    html = _html(client, "/market/double-play")
-    assert "market-v0-futures-metrics-strip" not in html
-    assert "data-market-v0-futures-metrics-strip" not in html
-    assert "data-market-v0-futures-metric-last" not in html
-    assert "data-market-v0-futures-metric-volatility" not in html
+    html = _unified_market_html(client)
+    dp_html = _double_play_panel_html(html)
+    assert "market-v0-futures-metrics-strip" not in dp_html
+    assert "data-market-v0-futures-metrics-strip" not in dp_html
+    assert "data-market-v0-futures-metric-last" not in dp_html
+    assert "data-market-v0-futures-metric-volatility" not in dp_html
 
 
 def test_market_ranking_watchlist_funnel_vnext_wiring_markers_v1(client: TestClient) -> None:
@@ -1579,12 +1629,13 @@ def test_market_ranking_watchlist_symbol_nav_and_selected_highlight_fixture_v1(
 
 def test_double_play_excludes_ranking_watchlist_vnext_markers_v1(client: TestClient) -> None:
     """Double-Play must not carry /market-only ranking watchlist vNext markers."""
-    html = _html(client, "/market/double-play")
-    assert "market-v0-ranking-watchlist" not in html
-    assert "data-market-v0-ranking-watchlist" not in html
-    assert "market-v0-ranking-scanner-funnel" not in html
-    assert "data-market-v0-ranking-scanner-funnel" not in html
-    assert "market-v0-ranking-selected-instrument" not in html
-    assert "data-market-v0-ranking-symbol-nav" not in html
-    assert "data-market-v0-ranking-source-mode" not in html
-    assert "data-market-v0-ranking-no-authority" not in html
+    html = _unified_market_html(client)
+    dp_html = _double_play_panel_html(html)
+    assert "market-v0-ranking-watchlist" not in dp_html
+    assert "data-market-v0-ranking-watchlist" not in dp_html
+    assert "market-v0-ranking-scanner-funnel" not in dp_html
+    assert "data-market-v0-ranking-scanner-funnel" not in dp_html
+    assert "market-v0-ranking-selected-instrument" not in dp_html
+    assert "data-market-v0-ranking-symbol-nav" not in dp_html
+    assert "data-market-v0-ranking-source-mode" not in dp_html
+    assert "data-market-v0-ranking-no-authority" not in dp_html
