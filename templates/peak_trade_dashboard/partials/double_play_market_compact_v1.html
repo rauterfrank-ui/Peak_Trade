@@ -1,0 +1,26 @@
+<section
+  role="region"
+  aria-labelledby="market-terminal-dp-compact-h2"
+  class="rounded-lg border border-amber-900/40 bg-slate-950/70 px-3 py-3 ring-1 ring-amber-950/25"
+  data-market-double-play-summary-visible-v1="true"
+  data-market-double-play-compact-v1="true"
+  data-market-single-page-section-double-play-v1="true"
+  data-double-play-bull-bear-cards-v1="true"
+  data-double-play-market-readonly="true"
+  data-double-play-market-no-authority="true"
+>
+  <h2 id="market-terminal-dp-compact-h2" class="text-[11px] font-semibold uppercase tracking-wide text-amber-200/90 m-0 mb-2">Double Play · display-only</h2>
+  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
+    {% set suit = dp_display.panels | selectattr('name', 'equalto', 'strategy_suitability') | list %}
+    {% set comp = dp_display.panels | selectattr('name', 'equalto', 'composition') | list %}
+    <article class="rounded border border-emerald-900/45 bg-emerald-950/25 px-2.5 py-2" data-double-play-bull-card-v1="true">
+      <p class="m-0 text-[10px] font-bold uppercase text-emerald-400/90">Bull / Long</p>
+      <p class="m-0 mt-1 text-slate-200 line-clamp-2">{% if suit and suit[0].summary %}{{ suit[0].summary }}{% else %}MODEL_ONLY{% endif %}</p>
+    </article>
+    <article class="rounded border border-rose-900/45 bg-rose-950/25 px-2.5 py-2" data-double-play-bear-card-v1="true">
+      <p class="m-0 text-[10px] font-bold uppercase text-rose-400/90">Bear / Short</p>
+      <p class="m-0 mt-1 text-slate-200 line-clamp-2">{% if comp and comp[0].summary %}{{ comp[0].summary }}{% else %}NONE / MODEL_ONLY{% endif %}</p>
+    </article>
+  </div>
+  <p class="m-0 mt-2 text-[10px] text-slate-500">No authority · no side-switch · read-only snapshot</p>
+</section>

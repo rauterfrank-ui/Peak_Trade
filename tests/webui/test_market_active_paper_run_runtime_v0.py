@@ -114,7 +114,7 @@ def test_market_active_paper_run_panel_renders_with_bridge(client_bridge_on: Tes
 
 
 def test_market_double_play_unchanged_without_active_panel(client_bridge_on: TestClient) -> None:
-    response = client_bridge_on.get("/market/double-play")
-    assert response.status_code == 200
-    html = response.text
-    assert 'data-market-v0-active-paper-run="true"' not in html
+    response = client_bridge_on.get("/market/double-play", follow_redirects=False)
+    assert response.status_code == 302
+    assert "#double-play" in response.headers["location"]
+    assert 'data-market-v0-active-paper-run="true"' not in response.text

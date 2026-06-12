@@ -83,7 +83,10 @@ def test_double_play_excludes_run_projection_markers(
     payload_path, _ = overlay_fixtures.write_ready_bundle(tmp_path / "bundle")
     monkeypatch.setenv("PEAK_TRADE_MARKET_RUN_PROJECTION_ENABLED", "1")
     monkeypatch.setenv("PEAK_TRADE_MARKET_RUN_PROJECTION_PAYLOAD_JSON", str(payload_path))
-    html = _html(client, "/market/double-play")
+    response = client.get("/market/double-play", follow_redirects=False)
+    assert response.status_code == 302
+    assert "#double-play" in response.headers["location"]
+    html = response.text
     for marker in RUN_PROJECTION_MARKERS:
         assert marker not in html
     assert BOUNDARY_COPY not in html

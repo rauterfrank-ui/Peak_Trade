@@ -282,14 +282,12 @@ class TestMarketSurfaceHtml:
 
 
 def test_market_v0_template_kraken_banner_markers_in_source() -> None:
-    """Kraken-Pfad ohne Netzwerk: Banner-Zweig muss im Template existieren."""
-    tmpl_path = (
-        Path(__file__).resolve().parents[1]
-        / "templates"
-        / "peak_trade_dashboard"
-        / "market_v0.html"
+    """Kraken-Pfad ohne Netzwerk: Banner-Zweig muss im Template-Stack existieren."""
+    tmpl_dir = Path(__file__).resolve().parents[1] / "templates" / "peak_trade_dashboard"
+    txt = (tmpl_dir / "market_v0.html").read_text(encoding="utf-8")
+    txt += (tmpl_dir / "partials" / "market_legacy_operator_panels_v0.html").read_text(
+        encoding="utf-8"
     )
-    txt = tmpl_path.read_text(encoding="utf-8")
     assert 'data-market-source-kind="kraken-public-ohlcv-network"' in txt
     assert 'data-market-v1-dashboard-shell="true"' in txt
     assert 'data-market-v1-readonly-banner="true"' in txt
