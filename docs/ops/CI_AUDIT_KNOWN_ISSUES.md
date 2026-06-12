@@ -166,6 +166,57 @@ MARKET_AIRPORT_EXCLUDED=true
 
 **Non-authorizing:** Docs/tests-only crossreference guard only; does **not** authorize observability truth promotion, Truth-GO, source artifact ingest/validation, metadata refresh, dummy min_notional fill, network/exchange calls, Paper/Shadow/Testnet/Live runtime, scheduler/adapter start, Preflight lift, `observability_truth_allowed=true`, or Master V2 / Double Play / Risk / KillSwitch / trading-logic changes. U2b lane remains **P1 fail-closed** until operator supplies C2/C4 official source artifact.
 
+## Pilot Row 7 Fee/Slippage conservative assumptions CI_AUDIT ↔ pilot eval / backtest smoke reciprocal crosslink — docs/tests-only guard v1
+
+**Operator-GO:** `GO_PILOT_FEE_SLIPPAGE_CONSERVATIVE_ASSUMPTIONS_CI_AUDIT_PILOT_GONOGO_BACKTEST_SMOKE_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1` · **Planning bundle (archive only):** `…&#47;planning&#47;systemwide_find_next_non_u2b_real_progress_scope_after_pr4188_merge_no_run_v1_20260612T190006Z&#47;`
+
+**Purpose:** Static reciprocal crosslink guard so Pilot **Row 7 (Fee/Slippage Realism)** conservative assumptions (`fee_bps=10.0`, `slippage_bps=5.0`), the doc-based evidence owner, demo execution backtest smoke defaults, and the intentional **11-row** (Row 7 excluded) boundary of `pilot_go_no_go_eval_v1.py` remain visible in CI_AUDIT and DOCS_TRUTH_MAP — **without** authorizing pilot GO, fee/slippage/accounting logic changes, runtime, or execute.
+
+**Canonical repo owners (reuse — do not duplicate):**
+
+| Concern | Owner |
+|---------|-------|
+| Conservative fee/slippage assumptions (doc SSOT) | `docs/ops/specs/FEE_SLIPPAGE_CONSERVATIVE_ASSUMPTIONS.md` |
+| Pilot Go/No-Go operational slice (Row 7 doc-based) | `docs/ops/specs/PILOT_GO_NO_GO_OPERATIONAL_SLICE.md` |
+| Demo execution backtest smoke defaults | `tests/test_demo_execution_backtest_smoke.py` |
+| Pilot eval (11 cockpit rows; Row 7 excluded) | `scripts/ops/pilot_go_no_go_eval_v1.py` |
+| Pilot eval tests | `tests/ops/test_pilot_go_no_go_eval_v1.py` |
+| CI_AUDIT / DOCS_TRUTH_MAP reciprocal guard | `tests/ops/test_pilot_fee_slippage_conservative_assumptions_crosslink_v1.py` |
+| DOCS_TRUTH_MAP chronicle | `docs/ops/registry/DOCS_TRUTH_MAP.md` (this crosslink section + Änderungsnachweis row) |
+
+**Crosslink invariants (static — not pilot authority):**
+
+| Invariant | Posture |
+|-----------|---------|
+| Canonical defaults | `fee_bps=10.0`, `slippage_bps=5.0` in assumptions doc and backtest smoke |
+| Row 7 in pilot eval | **excluded** — doc-based evidence; eval covers 11 cockpit rows only |
+| Row 7 missing ≠ PASS | absence from eval must not be read as autorisierender Cockpit-PASS |
+| Fee/slippage rechenlogik | **unchanged** — docs/tests guard only |
+
+```text
+PILOT_FEE_SLIPPAGE_CONSERVATIVE_ASSUMPTIONS_CI_AUDIT_PILOT_GONOGO_BACKTEST_SMOKE_RECIPROCAL_CROSSLINK_V1=true
+PILOT_FEE_SLIPPAGE_CONSERVATIVE_ASSUMPTIONS_CROSSLINK_DOCS_TESTS_ONLY=true
+PILOT_ROW7_DOC_BASED_EVIDENCE_REFERENCED=true
+PILOT_EVAL_ROW7_INTENTIONALLY_EXCLUDED=true
+FEE_BPS_10_SLIPPAGE_BPS_5_CROSSLINKED=true
+BACKTEST_SMOKE_DEFAULTS_ALIGNED=true
+PILOT_GO_NO_GO_AUTHORITY_CREATED=false
+FEE_SLIPPAGE_ACCOUNTING_LOGIC_TOUCHED=false
+READY_FOR_OPERATOR_ARMING_CHANGED=false
+NO_EXECUTE=true
+NO_RUNTIME=true
+NO_LIVE=true
+NO_PREFLIGHT_LIFT=true
+AUTHORITY_LIFT=false
+TRADING_LOGIC_TOUCHED=false
+NEW_PARALLEL_SSOT_CREATED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+```
+
+**Guard module (reuse — no parallel Row 7 SSOT):** `tests/ops/test_pilot_fee_slippage_conservative_assumptions_crosslink_v1.py`.
+
+**Non-authorizing:** Docs/tests-only reciprocal crosslink guard only; does **not** authorize pilot GO/No-Go lift, execute, runtime, run start, live, preflight lift, order/cancel/execution/arming, fee/slippage/accounting logic changes, authority lift, trading-logic changes, Master V2 / Double Play / Bull-Bear / Risk / KillSwitch / Scope / Capital changes, workflow YAML mutation, `workflow_dispatch`, `gh run rerun`, or Market Dashboard authority changes. Row 7 remains **doc-based**; `pilot_go_no_go_eval_v1.py` remains **11 cockpit rows** without Row 7 eval.
+
 ## Order-Capability remaining readiness gap review — docs/tests-only visibility v1
 
 **Operator-GO:** `GO_ORDER_CAPABILITY_REMAINING_READINESS_GAP_REVIEW_DOCS_TESTS_ONLY_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_preflight_process_gate_hygiene_guard_merge_no_run_v1_20260612T002508Z/`
