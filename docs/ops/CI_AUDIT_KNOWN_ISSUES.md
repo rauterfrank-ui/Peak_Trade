@@ -583,6 +583,64 @@ DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
 
 **Non-authorizing:** Docs/tests-only reciprocal crosslink guard only; does **not** authorize execute, runtime, run start, live, preflight lift, testnet session, order execution, order/cancel/execution/arming, authority lift, trading-logic changes, Master V2 / Double Play / Bull-Bear / Risk / KillSwitch / Scope / Capital changes, workflow YAML mutation, `workflow_dispatch`, `gh run rerun`, JSONL ingest, evidence dataset mutation, or Market Dashboard authority changes.
 
+## EER1 Evidence Durable Enforcement Readiness CI_AUDIT ↔ SECTION5 reciprocal crosslink — docs/tests-only guard v1
+
+**Operator-GO:** `GO_EER1_EVIDENCE_DURABLE_ENFORCEMENT_READINESS_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1`
+
+**Purpose:** Reciprocal crosslink so CI_AUDIT documents the EER1 Evidence Durable Enforcement Readiness Review index guard (SECTION5 EER1 guard) aligned with SECTION5 Gap Owner Map `**Evidence Durable Enforcement Readiness Review index (EER1 guard) v0:**` block, existing EER1 meta-index (`§ Evidence Durable Enforcement Readiness Review RC v0 — index v0`), Preflight §2b.2 crosslink, and completed prerequisite RC arcs (PE run-completion, ER, CV3+). Guard/Ops drift fix only — **non-authorizing**; **no** execute, preflight lift, enforcement activation, paper/shadow/testnet session, or runtime.
+
+**Canonical repo owners (reuse — do not duplicate):**
+
+| Concern | Owner |
+|---------|-------|
+| Gap Owner Map SSOT — EER1 readiness review guard | `docs/ops/planning/SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md` |
+| Preflight §2b.2 EER1 crosslink (reference only) | `docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md` |
+| EER1 meta-index (reference only — extend, do not duplicate) | this document — **§ Evidence Durable Enforcement Readiness Review RC v0 — index v0** |
+| Primary evidence retention invariant guard (reference only) | `tests/ops/test_primary_evidence_retention_invariant_contract_v0.py` |
+| Gap-2a.1 enforcement contract guard (reference only) | `tests/ops/test_gap2a1_primary_evidence_enforcement_contract_v0.py` |
+| SECTION5 gap owner map guard (canonical static guard) | `tests/ops/test_section5_preflight_gap_owner_map_contract_v0.py` |
+| Preflight contract guard (reference only) | `tests/ops/test_paper_shadow_247_preflight_contract_v0.py` |
+| CI_AUDIT / DOCS_TRUTH_MAP reciprocal guard | `tests/ops/test_remote_runtime_contract_docs_guard_v0.py` |
+
+```text
+EER1_EVIDENCE_DURABLE_ENFORCEMENT_READINESS_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_V1=true
+EER1_CI_AUDIT_SECTION5_CROSSLINK_DOCS_TESTS_ONLY=true
+DOCS_TESTS_ONLY=true
+SECTION5_EER1_OWNER_REFERENCED=true
+EVIDENCE_DURABLE_ENFORCEMENT_READINESS_REVIEW_RC_V0_STARTED=true
+EER1_READINESS_REVIEW_INDEX_COMPLETE=true
+PRIMARY_EVIDENCE_RUN_COMPLETION_CONTRACT_RC_V0_STATUS=CORE_COMPLETE_AFTER_PE6
+CYBERSECURITY_DEFENSIVE_VISIBILITY_CV3_PLUS_RC_V0_STATUS=CORE_COMPLETE_AFTER_CV3
+EVIDENCE_DURABLE_CLOSEOUT_RETENTION_RC_V0_CORE_DONE=true
+GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false
+ENFORCEMENT_ACTIVATED=false
+SLICE_EER1_TESTS_ONLY=true
+OBSERVATION_RUN_AUTHORIZED_NOW=false
+PAPER_RUN_AUTHORIZED_NOW=false
+SHADOW_RUN_AUTHORIZED_NOW=false
+TESTNET_SESSION_AUTHORIZED_NOW=false
+ORDER_EXECUTE_AUTHORIZED_NOW=false
+LIVE_AUTHORIZED_NOW=false
+NO_EXECUTE=true
+NO_PREFLIGHT_LIFT=true
+NO_RUNTIME=true
+NO_LIVE=true
+ORDER_CANCEL_EXECUTION_ARMING_TOUCHED=false
+AUTHORITY_LIFT=false
+TRADING_LOGIC_TOUCHED=false
+MASTER_V2_LOGIC_TOUCHED=false
+DOUBLE_PLAY_LOGIC_TOUCHED=false
+NEW_PARALLEL_SSOT_CREATED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+MARKET_DASHBOARD_TOUCHED=false
+DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
+```
+
+**Guard module (reuse — no parallel EER1 SSOT):** `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`.
+
+**Non-authorizing:** Docs/tests-only reciprocal crosslink guard only; does **not** authorize execute, runtime, run start, live, preflight lift, enforcement activation, paper/shadow/testnet session, order/cancel/execution/arming, authority lift, trading-logic changes, Master V2 / Double Play / Bull-Bear / Risk / KillSwitch / Scope / Capital changes, workflow YAML mutation, `workflow_dispatch`, `gh run rerun`, JSONL ingest, evidence dataset mutation, or Market Dashboard authority changes.
+
 ## Market tape readmodel SSR DOCS_TRUTH_MAP static crosslink v1
 
 **Operator-GO:** `GO_MARKET_TAPE_SSR_DOCS_TRUTH_MAP_CI_AUDIT_STATIC_CROSSLINK_GUARD_OPERATOR_GO_AUTOFILL_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_order_capability_fixture_binding_docs_truth_map_static_crosslink_guard_merge_no_run_v1_20260611T192531Z/`
