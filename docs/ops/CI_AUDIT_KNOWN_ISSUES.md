@@ -205,8 +205,7 @@ MARKET_DASHBOARD_TOUCHED=false
 
 | Concern | Owner |
 |---------|-------|
-| Run/preflight primary-evidence contract (§2a / §2a.1) | `docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md` |
-| Retention helper (implementation reference) | `scripts/ops/primary_evidence_retention_v0.py` |
+| Run/preflight primary-evidence contract (§2a / §2a.1; shared retention helper reference) | `docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md` |
 | Invariant + ER crosslink static guards | `tests/ops/test_primary_evidence_retention_invariant_contract_v0.py` |
 | Run-type hard-gate matrix | `tests/ops/test_run_primary_evidence_retention_hard_gate_v0.py` |
 | Durable closeout copy verify | `tests/ops/test_durable_closeout_copy_verify_v0.py` |

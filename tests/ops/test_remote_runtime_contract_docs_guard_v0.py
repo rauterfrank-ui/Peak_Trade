@@ -733,7 +733,8 @@ def test_ci_audit_primary_evidence_retention_invariant_residual_static_review_se
     assert "not manifest-verified" in section
     assert "no parallel evidence-retention ssot" in section.lower()
     assert "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md" in section
-    assert "primary_evidence_retention_v0.py" in section
+    assert "§2a" in section
+    assert "primary_evidence_retention_v0.py" not in section
     assert THIS_MODULE in section
     for module_name in PRIMARY_EVIDENCE_RETENTION_INVARIANT_RESIDUAL_STATIC_REVIEW_OWNER_TESTS:
         assert module_name in section, f"missing owner test reference {module_name!r}"
