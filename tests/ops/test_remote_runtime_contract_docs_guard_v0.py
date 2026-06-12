@@ -15,6 +15,9 @@ DOCS_TRUTH_MAP = REPO_ROOT / "docs" / "ops" / "registry" / "DOCS_TRUTH_MAP.md"
 TAXONOMY_SPEC = (
     REPO_ROOT / "docs" / "ops" / "specs" / "RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md"
 )
+SCHEDULER_BOUNDARY_SPEC = (
+    REPO_ROOT / "docs" / "ops" / "specs" / "SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md"
+)
 THIS_MODULE = Path(__file__).name
 
 CHARTER_PATH = (
@@ -568,6 +571,50 @@ RUNTIME_LANE_TAXONOMY_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_EXPECTED: dict[str
 RUNTIME_LANE_TAXONOMY_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_OWNER_TESTS = (
     "test_runtime_lane_taxonomy_authority_levels_contract_v0.py",
     "test_paper_shadow_247_preflight_readiness_peer_static_crosslink_contract_v0.py",
+    "test_paper_shadow_247_preflight_contract_v0.py",
+)
+SCHEDULER_BOUNDARY_HARD_BLOCK_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_HEADING = "## Scheduler Boundary Hard Block CI_AUDIT ↔ Preflight reciprocal crosslink — docs/tests-only guard v1"
+SCHEDULER_BOUNDARY_HARD_BLOCK_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR = (
+    "SCHEDULER_BOUNDARY_HARD_BLOCK_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_GUARD_V1=true"
+)
+SCHEDULER_BOUNDARY_HARD_BLOCK_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_INPUT_BUNDLE = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/systemwide_next_safe_scope_ranking_after_pr4176_runtime_lane_taxonomy_crosslink_merge_no_auto_go_no_run_v1_20260612T121555Z"
+)
+SCHEDULER_BOUNDARY_HARD_BLOCK_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_EXPECTED: dict[str, str] = {
+    "SCHEDULER_BOUNDARY_HARD_BLOCK_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_GUARD_V1": "true",
+    "SCHEDULER_BOUNDARY_HARD_BLOCK_CI_AUDIT_PREFLIGHT_CROSSLINK_DOCS_TESTS_ONLY": "true",
+    "DOCS_TESTS_ONLY": "true",
+    "SCHEDULER_BOUNDARY_SPEC_OWNER_REFERENCED": "true",
+    "PREFLIGHT_SCHEDULER_BOUNDARY_INDEX_REFERENCED": "true",
+    "SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0_REFERENCED": "true",
+    "SCHEDULER_EVIDENCE_DOES_NOT_AUTHORIZE_RUNTIME": "true",
+    "SLICE_SCHEDULER_BOUNDARY_TESTS_ONLY": "true",
+    "OBSERVATION_RUN_AUTHORIZED_NOW": "false",
+    "PAPER_RUN_AUTHORIZED_NOW": "false",
+    "SHADOW_RUN_AUTHORIZED_NOW": "false",
+    "TESTNET_SESSION_AUTHORIZED_NOW": "false",
+    "ORDER_EXECUTE_AUTHORIZED_NOW": "false",
+    "LIVE_AUTHORIZED_NOW": "false",
+    "NO_EXECUTE": "true",
+    "NO_PREFLIGHT_LIFT": "true",
+    "NO_RUNTIME": "true",
+    "NO_LIVE": "true",
+    "ORDER_CANCEL_EXECUTION_ARMING_TOUCHED": "false",
+    "AUTHORITY_LIFT": "false",
+    "TRADING_LOGIC_TOUCHED": "false",
+    "MASTER_V2_LOGIC_TOUCHED": "false",
+    "DOUBLE_PLAY_LOGIC_TOUCHED": "false",
+    "NEW_PARALLEL_SSOT_CREATED": "false",
+    "PREFLIGHT_REMAINS_BLOCKED": "true",
+    "READY_FOR_OPERATOR_ARMING": "false",
+    "MARKET_DASHBOARD_TOUCHED": "false",
+    "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED": "true",
+}
+SCHEDULER_BOUNDARY_HARD_BLOCK_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_OWNER_TESTS = (
+    "test_scheduler_boundary_hard_block_contract_v0.py",
+    "test_gap4_req_a_300s_hold_binding_profile_contract_v0.py",
+    "test_paper_l2_120min_hold_binding_profile_contract_v0.py",
     "test_paper_shadow_247_preflight_contract_v0.py",
 )
 PREFLIGHT_DOC = (
@@ -2012,6 +2059,121 @@ def test_docs_truth_map_runtime_lane_taxonomy_ci_audit_preflight_crosslink_chron
     assert THIS_MODULE in text
     assert RUNTIME_LANE_TAXONOMY_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR in text
     assert "test_runtime_lane_taxonomy_authority_levels_contract_v0.py" in text
+    assert (
+        "**no** execute / Preflight-Lift / observation-run / paper-run / shadow-run / testnet-session / runtime"
+        in text
+    )
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in text
+    assert "READY_FOR_OPERATOR_ARMING=false" in text
+    assert "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true" in text
+
+
+def _scheduler_boundary_hard_block_ci_audit_preflight_reciprocal_crosslink_section(
+    text: str,
+) -> str:
+    start = text.find(SCHEDULER_BOUNDARY_HARD_BLOCK_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_HEADING)
+    assert start != -1, (
+        "missing Scheduler Boundary Hard Block CI_AUDIT ↔ Preflight reciprocal crosslink section"
+    )
+    next_heading = text.find("\n## ", start + 1)
+    if next_heading == -1:
+        return text[start:]
+    return text[start:next_heading]
+
+
+def test_ci_audit_scheduler_boundary_hard_block_preflight_reciprocal_crosslink_section_present_v1() -> (
+    None
+):
+    text = _ci_audit_text()
+    section = _scheduler_boundary_hard_block_ci_audit_preflight_reciprocal_crosslink_section(text)
+    assert (
+        "GO_SCHEDULER_BOUNDARY_HARD_BLOCK_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1"
+        in section
+    )
+    assert "Scheduler Boundary Hard Block" in section
+    assert "SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md" in section
+    assert "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md" in section
+    assert "no parallel scheduler-boundary ssot" in section.lower()
+    assert THIS_MODULE in section
+    for (
+        module_name
+    ) in SCHEDULER_BOUNDARY_HARD_BLOCK_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_OWNER_TESTS:
+        assert module_name in section, f"missing owner test reference {module_name!r}"
+
+
+def test_ci_audit_scheduler_boundary_hard_block_preflight_reciprocal_crosslink_machine_lines_v1() -> (
+    None
+):
+    block = _block_containing(
+        _ci_audit_text(),
+        SCHEDULER_BOUNDARY_HARD_BLOCK_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR,
+    )
+    values = _machine_line_values(block)
+    missing = (
+        set(SCHEDULER_BOUNDARY_HARD_BLOCK_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_EXPECTED)
+        - values.keys()
+    )
+    assert not missing, (
+        f"missing Scheduler Boundary Hard Block CI_AUDIT ↔ Preflight reciprocal crosslink keys: "
+        f"{sorted(missing)}"
+    )
+    for (
+        key,
+        expected,
+    ) in SCHEDULER_BOUNDARY_HARD_BLOCK_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_EXPECTED.items():
+        assert values[key] == expected, f"{key}={values[key]!r} expected {expected!r}"
+
+
+def test_preflight_doc_scheduler_boundary_hard_block_ci_audit_backref_present_v1() -> None:
+    text = PREFLIGHT_DOC.read_text(encoding="utf-8")
+    assert (
+        SCHEDULER_BOUNDARY_HARD_BLOCK_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR
+        in text
+    )
+    assert (
+        "§ Scheduler Boundary Hard Block CI_AUDIT ↔ Preflight reciprocal crosslink — docs/tests-only guard v1"
+        in text
+    )
+    assert "test_scheduler_boundary_hard_block_contract_v0.py" in text
+    assert "test_gap4_req_a_300s_hold_binding_profile_contract_v0.py" in text
+    assert "test_paper_l2_120min_hold_binding_profile_contract_v0.py" in text
+    assert THIS_MODULE in text
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in text
+    assert "READY_FOR_OPERATOR_ARMING=false" in text
+
+
+def test_scheduler_boundary_spec_ci_audit_preflight_backref_present_v1() -> None:
+    text = SCHEDULER_BOUNDARY_SPEC.read_text(encoding="utf-8")
+    assert (
+        SCHEDULER_BOUNDARY_HARD_BLOCK_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR
+        in text
+    )
+    assert (
+        "§ Scheduler Boundary Hard Block CI_AUDIT ↔ Preflight reciprocal crosslink — docs/tests-only guard v1"
+        in text
+    )
+    assert "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md" in text
+    assert "test_scheduler_boundary_hard_block_contract_v0.py" in text
+    assert "test_gap4_req_a_300s_hold_binding_profile_contract_v0.py" in text
+    assert "test_paper_l2_120min_hold_binding_profile_contract_v0.py" in text
+    assert THIS_MODULE in text
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in text
+    assert "READY_FOR_OPERATOR_ARMING=false" in text
+
+
+def test_docs_truth_map_scheduler_boundary_hard_block_ci_audit_preflight_crosslink_chronicle_v1() -> (
+    None
+):
+    text = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    assert (
+        "Scheduler Boundary Hard Block CI_AUDIT ↔ Preflight reciprocal crosslink guard v1" in text
+    )
+    assert THIS_MODULE in text
+    assert (
+        SCHEDULER_BOUNDARY_HARD_BLOCK_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR
+        in text
+    )
+    assert "test_scheduler_boundary_hard_block_contract_v0.py" in text
     assert (
         "**no** execute / Preflight-Lift / observation-run / paper-run / shadow-run / testnet-session / runtime"
         in text

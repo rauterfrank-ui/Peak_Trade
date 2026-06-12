@@ -755,6 +755,59 @@ DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
 
 **Non-authorizing:** Docs/tests-only reciprocal crosslink guard only; does **not** authorize execute, runtime, run start, live, preflight lift, paper/shadow/testnet session, order/cancel/execution/arming, authority lift, trading-logic changes, Master V2 / Double Play / Bull-Bear / Risk / KillSwitch / Scope / Capital changes, workflow YAML mutation, `workflow_dispatch`, `gh run rerun`, JSONL ingest, evidence dataset mutation, or Market Dashboard authority changes.
 
+## Scheduler Boundary Hard Block CI_AUDIT ↔ Preflight reciprocal crosslink — docs/tests-only guard v1
+
+**Operator-GO:** `GO_SCHEDULER_BOUNDARY_HARD_BLOCK_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_pr4176_runtime_lane_taxonomy_crosslink_merge_no_auto_go_no_run_v1_20260612T121555Z/`
+
+**Purpose:** Reciprocal crosslink so CI_AUDIT documents the Scheduler Boundary Hard-Block Contract normative start-boundary index aligned with Preflight hold-binding/scheduler references and existing scheduler boundary static guards. Guard/Ops drift fix only — **non-authorizing**; **no** execute, preflight lift, runtime, or trading authority.
+
+**Canonical repo owners (reuse — do not duplicate):**
+
+| Concern | Owner |
+|---------|-------|
+| Scheduler Boundary Hard-Block SSOT | `docs/ops/specs/SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md` |
+| Preflight §2a hold-binding + BLOCKED status | `docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md` |
+| Scheduler boundary static guard | `tests/ops/test_scheduler_boundary_hard_block_contract_v0.py` |
+| Gap-4 REQ-A hold-binding profile guard | `tests/ops/test_gap4_req_a_300s_hold_binding_profile_contract_v0.py` |
+| Paper-L2 hold-binding profile guard | `tests/ops/test_paper_l2_120min_hold_binding_profile_contract_v0.py` |
+| Preflight contract static guard | `tests/ops/test_paper_shadow_247_preflight_contract_v0.py` |
+| CI_AUDIT / DOCS_TRUTH_MAP reciprocal guard | `tests/ops/test_remote_runtime_contract_docs_guard_v0.py` |
+
+```text
+SCHEDULER_BOUNDARY_HARD_BLOCK_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_GUARD_V1=true
+SCHEDULER_BOUNDARY_HARD_BLOCK_CI_AUDIT_PREFLIGHT_CROSSLINK_DOCS_TESTS_ONLY=true
+DOCS_TESTS_ONLY=true
+SCHEDULER_BOUNDARY_SPEC_OWNER_REFERENCED=true
+PREFLIGHT_SCHEDULER_BOUNDARY_INDEX_REFERENCED=true
+SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0_REFERENCED=true
+SCHEDULER_EVIDENCE_DOES_NOT_AUTHORIZE_RUNTIME=true
+SLICE_SCHEDULER_BOUNDARY_TESTS_ONLY=true
+OBSERVATION_RUN_AUTHORIZED_NOW=false
+PAPER_RUN_AUTHORIZED_NOW=false
+SHADOW_RUN_AUTHORIZED_NOW=false
+TESTNET_SESSION_AUTHORIZED_NOW=false
+ORDER_EXECUTE_AUTHORIZED_NOW=false
+LIVE_AUTHORIZED_NOW=false
+NO_EXECUTE=true
+NO_PREFLIGHT_LIFT=true
+NO_RUNTIME=true
+NO_LIVE=true
+ORDER_CANCEL_EXECUTION_ARMING_TOUCHED=false
+AUTHORITY_LIFT=false
+TRADING_LOGIC_TOUCHED=false
+MASTER_V2_LOGIC_TOUCHED=false
+DOUBLE_PLAY_LOGIC_TOUCHED=false
+NEW_PARALLEL_SSOT_CREATED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+MARKET_DASHBOARD_TOUCHED=false
+DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
+```
+
+**Guard module (reuse — no parallel scheduler-boundary SSOT):** `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`.
+
+**Non-authorizing:** Docs/tests-only reciprocal crosslink guard only; does **not** authorize execute, runtime, run start, live, preflight lift, paper/shadow/testnet session, order/cancel/execution/arming, authority lift, trading-logic changes, Master V2 / Double Play / Bull-Bear / Risk / KillSwitch / Scope / Capital changes, workflow YAML mutation, `workflow_dispatch`, `gh run rerun`, JSONL ingest, evidence dataset mutation, or Market Dashboard authority changes.
+
 ## Market tape readmodel SSR DOCS_TRUTH_MAP static crosslink v1
 
 **Operator-GO:** `GO_MARKET_TAPE_SSR_DOCS_TRUTH_MAP_CI_AUDIT_STATIC_CROSSLINK_GUARD_OPERATOR_GO_AUTOFILL_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_order_capability_fixture_binding_docs_truth_map_static_crosslink_guard_merge_no_run_v1_20260611T192531Z/`
