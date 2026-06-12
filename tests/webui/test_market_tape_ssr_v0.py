@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import re
 import sys
 from collections.abc import Iterator
 from pathlib import Path
@@ -62,6 +63,12 @@ def _html(client: TestClient, path: str = "/market") -> str:
     return response.text
 
 
+def _tape_section(html: str) -> str:
+    match = re.search(r'id="market-v0-tape-ssr"[\s\S]*?</section>', html)
+    assert match, "tape SSR section missing"
+    return match.group(0)
+
+
 def test_gate_disabled_no_tape_section(client: TestClient) -> None:
     html = _html(client)
     for marker in TAPE_MARKERS:
@@ -87,7 +94,7 @@ def test_gate_enabled_valid_fixture_shows_panel(
     assert "Top trades (display subset)" in html
     assert "63020" in html
     assert str(FIXTURE_ROOT.resolve()) not in html
-    lowered = html.lower()
+    lowered = _tape_section(html).lower()
     assert "trading_ready" not in lowered
     assert "live_ready" not in lowered
     assert "provider_ok" not in lowered
@@ -123,7 +130,10 @@ def test_double_play_excludes_tape_markers(
 ) -> None:
     monkeypatch.setenv("PEAK_TRADE_MARKET_TAPE_ENABLED", "1")
     monkeypatch.setenv("PEAK_TRADE_MARKET_TAPE_BUNDLE_ROOT", str(FIXTURE_ROOT.resolve()))
-    html = _html(client, "/market/double-play")
+    response = client.get("/market/double-play", follow_redirects=False)
+    assert response.status_code == 302
+    assert "#double-play" in response.headers["location"]
+    html = response.text
     for marker in TAPE_MARKERS:
         assert marker not in html
     assert BOUNDARY_COPY not in html
