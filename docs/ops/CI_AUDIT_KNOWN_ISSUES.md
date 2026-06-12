@@ -325,7 +325,7 @@ PREFLIGHT_REMAINS_BLOCKED=true
 | Concern | Owner |
 |---------|-------|
 | Market surface spec + terminal markers | `docs/webui/MARKET_SURFACE_V0.md` |
-| Terminal layout contract on `GET /market` | `tests/webui/test_market_terminal_layout_v1.py` |
+| Terminal layout contract on `GET &#47;market` | `tests/webui/test_market_terminal_layout_v1.py` |
 | DOCS_TRUTH_MAP chronicle | `docs/ops/registry/DOCS_TRUTH_MAP.md` (this crosslink section + Änderungsnachweis row) |
 | Static docs guard hub | `tests/ops/test_remote_runtime_contract_docs_guard_v0.py` |
 
