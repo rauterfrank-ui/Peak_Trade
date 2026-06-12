@@ -253,7 +253,7 @@ PREFLIGHT_REMAINS_BLOCKED=true
 READY_FOR_OPERATOR_ARMING=false
 ```
 
-**PE+EER1+hold-binding reciprocal crosslink chain completion static review (SECTION5 guard) v0:** Meta guard confirming the completed reciprocal-crosslink chain on main — PE-4..PE-11 reciprocal CI_AUDIT sections (PE-6 via existing cyber histogram crosslink only), hold-binding (#4166/#4167), EER1 (#4173), Runtime Lane Taxonomy (#4176), Scheduler Boundary Hard Block (#4177), and Gap 1–3 execute-entrypoint criteria (#4179) — remains indexed consistently across SECTION5 and `docs/ops/CI_AUDIT_KNOWN_ISSUES.md`. Reciprocal crosslink guard: `docs/ops/CI_AUDIT_KNOWN_ISSUES.md` — **§ PE+EER1+hold-binding reciprocal crosslink chain completion static review — docs/tests-only guard v1**; CI_AUDIT / DOCS_TRUTH_MAP reciprocal guard: `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`. Static guard: `tests/ops/test_section5_preflight_gap_owner_map_contract_v0.py`. **Planning/docs/tests chain-completion review only** — does **not** activate enforcement, **does not** lift preflight, **does not** set `READY_FOR_OPERATOR_ARMING=true`.
+**PE+EER1+hold-binding reciprocal crosslink chain completion static review (SECTION5 guard) v0:** Meta guard confirming the completed reciprocal-crosslink chain on main — PE-4..PE-11 reciprocal CI_AUDIT sections (PE-6 via existing cyber histogram crosslink only), hold-binding (#4166/#4167), EER1 (#4173), Runtime Lane Taxonomy (#4176), Scheduler Boundary Hard Block (#4177), Gap 1–3 execute-entrypoint criteria (#4179), and Gap 4–7 criteria (#4181) — remains indexed consistently across SECTION5 and `docs/ops/CI_AUDIT_KNOWN_ISSUES.md`. Reciprocal crosslink guard: `docs/ops/CI_AUDIT_KNOWN_ISSUES.md` — **§ PE+EER1+hold-binding reciprocal crosslink chain completion static review — docs/tests-only guard v1**; CI_AUDIT / DOCS_TRUTH_MAP reciprocal guard: `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`. Static guard: `tests/ops/test_section5_preflight_gap_owner_map_contract_v0.py`. **Planning/docs/tests chain-completion review only** — does **not** activate enforcement, **does not** lift preflight, **does not** set `READY_FOR_OPERATOR_ARMING=true`.
 
 ```text
 PE_EER1_HOLD_BINDING_RECIPROCAL_CROSSLINK_CHAIN_COMPLETION_STATIC_REVIEW_GUARD_V1=true
@@ -268,6 +268,13 @@ GAP2_CROSSLINK_COMPLETE=true
 GAP3_CROSSLINK_COMPLETE=true
 GAP1_GAP3_CROSSLINK_CHAIN_COMPLETE=true
 CHAIN_COMPLETION_STATIC_REVIEW_INCLUDES_GAP1_GAP3_RECIPROCAL_SECTIONS_V1=true
+GAP4_CROSSLINK_COMPLETE=true
+GAP5_CROSSLINK_COMPLETE=true
+GAP6_CROSSLINK_COMPLETE=true
+GAP7_CROSSLINK_COMPLETE=true
+GAP4_GAP7_CROSSLINK_CHAIN_COMPLETE=true
+CHAIN_COMPLETION_STATIC_REVIEW_INCLUDES_GAP4_GAP7_RECIPROCAL_SECTIONS_V1=true
+PE4_PE5_NOT_USED_AS_GAP4_GAP7_REPLACEMENT=true
 PREFLIGHT_REMAINS_BLOCKED=true
 READY_FOR_OPERATOR_ARMING=false
 ```
