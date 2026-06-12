@@ -454,6 +454,63 @@ PREFLIGHT_REMAINS_BLOCKED=true
 
 **Non-authorizing:** Docs/tests-only reciprocal crosslink guard only; does **not** authorize pilot GO/No-Go lift, execute, runtime, run start, live, preflight lift, bounded-pilot session invoke, order/cancel/execution/arming, authority lift, trading-logic changes, strategy-logic changes, fee/slippage/accounting logic changes, Ops Cockpit payload semantic changes, DRAFT→READY promotion, new cockpit rows, Master V2 / Double Play / Bull-Bear / Risk / KillSwitch / Scope / Capital changes, workflow YAML mutation, `workflow_dispatch`, `gh run rerun`, or Market Dashboard authority changes. `check_bounded_pilot_readiness.py` remains **read-only** preflight; does not set handoff env or authorize live trading.
 
+## Bounded-pilot operator preflight packet ↔ readiness ↔ stop-signal snapshot CI_AUDIT reciprocal crosslink — docs/tests-only guard v1
+
+**Operator-GO:** `GO_BOUNDED_PILOT_OPERATOR_PREFLIGHT_PACKET_READINESS_STOP_SIGNAL_SNAPSHOT_CI_AUDIT_DOCS_TRUTH_MAP_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1` · **Planning bundle (archive only):** `…&#47;planning&#47;systemwide_next_safe_scope_ranking_after_bounded_pilot_readiness_ci_audit_docs_truth_map_crosslink_guard_merge_no_run_v1_20260612T204750Z&#47;`
+
+**Purpose:** Static reciprocal crosslink guard so the canonical **read-only** bounded-pilot operator preflight packet (`bounded_pilot_operator_preflight_packet.py`, contract `bounded_pilot_operator_preflight_packet_v1`) — which orchestrates `check_bounded_pilot_readiness.run_bounded_pilot_readiness` and `snapshot_operator_stop_signals.build_stop_signal_snapshot` with fail-closed hard-error posture on incident-stop artifact and kill-switch file read/parse failures — remains visibly documented in CI_AUDIT and DOCS_TRUTH_MAP alongside live-entry runbook references and reuse pointer to the #4193 bounded-pilot readiness-bundle guard — **without** authorizing pilot GO, preflight lift, session invoke, live trading, execution/trading/strategy logic changes, runtime, or execute.
+
+**Canonical repo owners (reuse — do not duplicate):**
+
+| Concern | Owner |
+|---------|-------|
+| Bounded-pilot operator preflight packet | `scripts/ops/bounded_pilot_operator_preflight_packet.py` (`bounded_pilot_operator_preflight_packet_v1`) |
+| Operator preflight packet tests | `tests/ops/test_bounded_pilot_operator_preflight_packet.py` |
+| Bounded-pilot canonical preflight bundle | `scripts/ops/check_bounded_pilot_readiness.py` (`bounded_pilot_readiness_v1`) |
+| Bounded-pilot preflight tests | `tests/ops/test_check_bounded_pilot_readiness.py` |
+| Stop-signal snapshot builder | `scripts/ops/snapshot_operator_stop_signals.py` |
+| Live-entry runbook | `docs/ops/runbooks/RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md` |
+| Bounded-pilot readiness bundle guard (#4193) | `tests/ops/test_bounded_pilot_readiness_live_readiness_pilot_gonogo_eval_crosslink_v1.py` |
+| CI_AUDIT / DOCS_TRUTH_MAP reciprocal guard | `tests/ops/test_bounded_pilot_operator_preflight_packet_readiness_stop_signal_snapshot_crosslink_v1.py` |
+| DOCS_TRUTH_MAP chronicle | `docs/ops/registry/DOCS_TRUTH_MAP.md` (this crosslink section + Änderungsnachweis row) |
+
+**Crosslink invariants (static — not pilot authority):**
+
+| Invariant | Posture |
+|-----------|---------|
+| Operator preflight packet | `bounded_pilot_operator_preflight_packet_v1` — read-only orchestration; **no new gate semantics** |
+| Readiness bundle | `run_bounded_pilot_readiness` — bundled first; fail-closed |
+| Stop-signal snapshot | `build_stop_signal_snapshot` — fail-closed on hard read/parse errors |
+| Hard-error sources | `incident_stop_artifact` + `kill_switch_file` status `error` → blocked |
+| Readiness chain | reuse #4193 guard — no parallel SSOT |
+| Preflight lift | **not authorized** — visibility only |
+| Pilot Go/No-Go authority | **unchanged** — non-authorizing visibility only |
+
+```text
+BOUNDED_PILOT_OPERATOR_PREFLIGHT_PACKET_READINESS_STOP_SIGNAL_SNAPSHOT_CI_AUDIT_DOCS_TRUTH_MAP_RECIPROCAL_CROSSLINK_V1=true
+BOUNDED_PILOT_OPERATOR_PREFLIGHT_PACKET_CROSSLINK_DOCS_TESTS_ONLY=true
+BOUNDED_PILOT_OPERATOR_PREFLIGHT_PACKET_ORCHESTRATION_DOCUMENTED=true
+BOUNDED_PILOT_OPERATOR_PREFLIGHT_PACKET_V1_CONTRACT=true
+BOUNDED_PILOT_READINESS_BUNDLED=true
+STOP_SIGNAL_SNAPSHOT_BUNDLED=true
+STOP_SIGNAL_HARD_ERROR_FAIL_CLOSED=true
+BOUNDED_PILOT_READINESS_GUARD_REFERENCED=true
+PILOT_GO_NO_GO_AUTHORITY_CREATED=false
+NO_EXECUTE=true
+NO_RUNTIME=true
+NO_LIVE=true
+NO_PREFLIGHT_LIFT=true
+AUTHORITY_LIFT=false
+TRADING_LOGIC_TOUCHED=false
+FEE_SLIPPAGE_ACCOUNTING_LOGIC_TOUCHED=false
+NEW_PARALLEL_SSOT_CREATED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+```
+
+**Guard module (reuse — no parallel orchestration SSOT):** `tests/ops/test_bounded_pilot_operator_preflight_packet_readiness_stop_signal_snapshot_crosslink_v1.py`.
+
+**Non-authorizing:** Docs/tests-only reciprocal crosslink guard only; does **not** authorize pilot GO/No-Go lift, execute, runtime, run start, live, preflight lift, bounded-pilot session invoke, order/cancel/execution/arming, authority lift, trading-logic changes, strategy-logic changes, fee/slippage/accounting logic changes, Ops Cockpit payload semantic changes, DRAFT→READY promotion, new cockpit rows, Master V2 / Double Play / Bull-Bear / Risk / KillSwitch / Scope / Capital changes, workflow YAML mutation, `workflow_dispatch`, `gh run rerun`, or Market Dashboard authority changes. `bounded_pilot_operator_preflight_packet.py` remains **read-only** orchestration; does not set handoff env or authorize live trading.
+
 ## Order-Capability remaining readiness gap review — docs/tests-only visibility v1
 
 **Operator-GO:** `GO_ORDER_CAPABILITY_REMAINING_READINESS_GAP_REVIEW_DOCS_TESTS_ONLY_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_preflight_process_gate_hygiene_guard_merge_no_run_v1_20260612T002508Z/`
