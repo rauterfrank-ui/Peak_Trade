@@ -168,7 +168,7 @@ MARKET_AIRPORT_EXCLUDED=true
 
 ## Pilot Row 7 Fee/Slippage conservative assumptions CI_AUDIT ↔ pilot eval / backtest smoke reciprocal crosslink — docs/tests-only guard v1
 
-**Operator-GO:** `GO_PILOT_FEE_SLIPPAGE_CONSERVATIVE_ASSUMPTIONS_CI_AUDIT_PILOT_GONOGO_BACKTEST_SMOKE_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_find_next_non_u2b_real_progress_scope_after_pr4188_merge_no_run_v1_20260612T190006Z/`
+**Operator-GO:** `GO_PILOT_FEE_SLIPPAGE_CONSERVATIVE_ASSUMPTIONS_CI_AUDIT_PILOT_GONOGO_BACKTEST_SMOKE_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1` · **Planning bundle (archive only):** `…&#47;planning&#47;systemwide_find_next_non_u2b_real_progress_scope_after_pr4188_merge_no_run_v1_20260612T190006Z&#47;`
 
 **Purpose:** Static reciprocal crosslink guard so Pilot **Row 7 (Fee/Slippage Realism)** conservative assumptions (`fee_bps=10.0`, `slippage_bps=5.0`), the doc-based evidence owner, demo execution backtest smoke defaults, and the intentional **11-row** (Row 7 excluded) boundary of `pilot_go_no_go_eval_v1.py` remain visible in CI_AUDIT and DOCS_TRUTH_MAP — **without** authorizing pilot GO, fee/slippage/accounting logic changes, runtime, or execute.
 
