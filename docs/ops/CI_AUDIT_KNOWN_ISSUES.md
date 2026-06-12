@@ -591,7 +591,6 @@ PREFLIGHT_REMAINS_BLOCKED=true
 | Preflight §2a.1 archive anchors | `docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md` — **Tier-C + Shadow durable evidence archive anchors (non-authorizing) v0** |
 | Static crosslink contract guard (v0, extended) | `tests/ops/test_tier_c_shadow_durable_evidence_crosslink_contract_v0.py` |
 | DOCS_TRUTH_MAP chronicle | `docs/ops/registry/DOCS_TRUTH_MAP.md` (this crosslink section + Änderungsnachweis row) |
-| Primary evidence retention (reuse) | `scripts/ops/primary_evidence_retention_v0.py` |
 | Gap2a1 enforcement contract (reuse) | `tests/ops/test_gap2a1_primary_evidence_enforcement_contract_v0.py` |
 | Bounded observation durable evidence (reuse) | `tests/ops/test_bounded_observation_review_durable_primary_evidence_contract_v0.py` |
 
@@ -602,7 +601,7 @@ PREFLIGHT_REMAINS_BLOCKED=true
 | SECTION5 Tier-C block | existing v0 block — archive pointers only; **no semantic change** |
 | Preflight §2a.1 anchors | existing v0 anchors — read-only pointers; **no §2a.1 enforcement activation** |
 | Archive root | operator durable root — `EVIDENCE_ARCHIVE_ANCHOR_NOT_RUNTIME_AUTHORITY=true` |
-| Primary evidence reuse | existing PE owners indexed — **no parallel evidence index** |
+| Primary evidence reuse | SECTION5/Preflight §2a.1 reuse pointers + test guards above — **no parallel evidence index** |
 | Preflight lift | **not authorized** — visibility only |
 | Session invoke | **not authorized** — visibility only |
 | Testnet / runtime / execute | **not authorized** — visibility only |
