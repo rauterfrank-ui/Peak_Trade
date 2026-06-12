@@ -935,6 +935,75 @@ NEW_PARALLEL_SSOT_CREATED=false
 
 **Non-authorizing:** Docs/check-plan reciprocal crosslink integration only; does **not** authorize workflow edits, branch-protection changes, truth promotion, flag mutation, runtime/live/paper/shadow/testnet, session invoke, Preflight lift, order/cancel/execution/arming, U2b reactivation, Market-Airport authority changes, or trading logic changes.
 
+## Docs Reference Targets Guard standard check integration — docs/tests-only guard v1
+
+**Operator-GO:** `GO_DOCS_REFERENCE_TARGETS_GUARD_STANDARD_CHECK_INTEGRATION_NARROW_FIX_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_docs_token_policy_guard_standard_check_integration_merge_no_run_v1_20260612T224000Z/`
+
+**Purpose:** Anchor the Docs Reference Targets Guard as **mandatory standard check #2** for every docs-only or docs+tests PR with changed `*.md`. Prevents recurring `docs-reference-targets-gate` CI failures from forgotten local preflight. Static **CI_AUDIT ↔ DOCS_TRUTH_MAP reciprocal crosslink** closes the remaining chronicle/guard parity gap for this slice — symmetric to the closed #4200 Docs Token Policy Guard standard check #1 integration. **Docs/tests/check-plan visibility only** — no workflow mutation, no required-check configuration change, no promotion, no runtime.
+
+**Canonical repo owners (reuse — do not duplicate):**
+
+| Concern | Owner |
+|---------|-------|
+| Validator + `--changed` semantics | `scripts/ops/verify_docs_reference_targets.sh` |
+| Operator runbook | `docs/ops/runbooks/RUNBOOK_DOCS_REFERENCE_TARGETS_GATE_OPERATOR.md` |
+| Gate catalog + mandatory preflight index (standard check #2) | `docs/ops/GATES_OVERVIEW.md` — **§ Docs / docs+tests PR — mandatory local preflight** |
+| Companion standard-check table (step 2) | `docs/ops/runbooks/RUNBOOK_DOCS_TOKEN_POLICY_GATE.md` — **§ Standard local checks for docs / docs+tests PRs** (reference only) |
+| CI required context (reference only — **no** YAML mutation) | `.github/workflows/docs_reference_targets_gate.yml` → check `docs-reference-targets-gate` |
+| Contract tests (reuse) | `tests/ops/test_verify_docs_reference_targets_script.py` |
+| Remote runtime contract docs guard (reuse) | `tests/ops/test_remote_runtime_contract_docs_guard_v0.py` |
+| CI_AUDIT / DOCS_TRUTH_MAP reciprocal guard | `tests/ops/test_remote_runtime_contract_docs_guard_v0.py` |
+| DOCS_TRUTH_MAP chronicle | `docs/ops/registry/DOCS_TRUTH_MAP.md` (this crosslink section + Änderungsnachweis row) |
+
+**Crosslink invariants (static — not enforcement activation):**
+
+| Invariant | Posture |
+|-----------|---------|
+| Standard check #2 | mandatory for docs / docs+tests PRs with `.md` diff — preflight before push |
+| Workflow YAML | **unchanged** — reference only |
+| Required-check config | **unchanged** — visibility only |
+| U2b | **parked** — not reactivated |
+| Market-Airport | **excluded** |
+
+```text
+DOCS_REFERENCE_TARGETS_GUARD_STANDARD_CHECK_INTEGRATION_V1=true
+DOCS_REFERENCE_TARGETS_GUARD_STANDARD_CHECK_INTEGRATION_NARROW_FIX_V1=true
+DOCS_REFERENCE_TARGETS_GUARD_RECIPROCAL_CROSSLINK_PARITY=true
+DOCS_REFERENCE_TARGETS_EXISTING_CANONICAL_OWNER_REUSED=true
+DOCS_REFERENCE_TARGETS_GUARD_MANDATORY_FOR_DOCS_PR=true
+DOCS_REFERENCE_TARGETS_GUARD_MANDATORY_FOR_DOCS_TESTS_PR=true
+DOCS_REFERENCE_TARGETS_PREFLIGHT_COMMAND=verify_docs_reference_targets.sh
+DOCS_REFERENCE_TARGETS_VALIDATOR=verify_docs_reference_targets.sh
+DOCS_REFERENCE_TARGETS_CI_REQUIRED_CONTEXT=docs-reference-targets-gate
+STANDARD_CHECK_INTEGRATED=true
+PARALLEL_GUARD_CREATED=false
+WORKFLOW_YAML_MUTATED=false
+NO_WORKFLOW_MUTATION=true
+REQUIRED_CHECK_CONFIG_MUTATED=false
+NO_REQUIRED_CHECK_CONFIG_CHANGE=true
+TRUTH_PROMOTION_EXECUTED=false
+OBSERVABILITY_TRUTH_ALLOWED_CHANGED=false
+REAL_METADATA_SOURCE_MARKED_CHANGED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+NO_SESSION_INVOKE_AUTHORIZED=true
+U2B_PARKED=true
+MARKET_AIRPORT_EXCLUDED=true
+EVIDENCE_OR_DOCS_ANCHOR_NOT_RUNTIME_AUTHORITY=true
+NO_RUNTIME=true
+NO_LIVE=true
+NO_PREFLIGHT_LIFT=true
+NEW_PARALLEL_SSOT_CREATED=false
+```
+
+**Standard local sequence (before push — step 2 after Docs Token Policy #1):**
+
+1. `bash scripts&#47;ops&#47;verify_docs_reference_targets.sh --changed --base origin&#47;main` (when `.md` changed)
+2. Continue with PR-scoped pytest and Ruff per `RUNBOOK_DOCS_TOKEN_POLICY_GATE.md` standard-check table
+
+**Guard module (reuse — no parallel docs-reference-targets SSOT):** `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`.
+
+**Non-authorizing:** Docs/check-plan reciprocal crosslink integration only; does **not** authorize workflow edits, branch-protection changes, truth promotion, flag mutation, runtime/live/paper/shadow/testnet, session invoke, Preflight lift, order/cancel/execution/arming, U2b reactivation, Market-Airport authority changes, or trading logic changes.
+
 ## Primary evidence retention invariant residual static review — docs/tests-only guard v1
 
 **Operator-GO:** `GO_PRIMARY_EVIDENCE_RETENTION_INVARIANT_RESIDUAL_STATIC_REVIEW_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_ci_docs_required_check_truth_map_residual_review_merge_no_run_v1_20260612T005020Z/`
