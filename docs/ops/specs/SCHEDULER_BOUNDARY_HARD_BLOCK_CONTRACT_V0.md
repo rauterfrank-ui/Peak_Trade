@@ -22,6 +22,8 @@ Normative hard-block contract for the canonical scheduler launcher (`scripts/run
 
 Related: [RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md](RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md) §7, [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md), [SCHEDULER_DAEMON.md](../../SCHEDULER_DAEMON.md).
 
+**CI_AUDIT ↔ Preflight reciprocal crosslink (reference-only — docs/tests guard):** Reciprocal crosslink guard: `docs/ops/CI_AUDIT_KNOWN_ISSUES.md` — **§ Scheduler Boundary Hard Block CI_AUDIT ↔ Preflight reciprocal crosslink — docs/tests-only guard v1**; Preflight reciprocal index: `docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md` §2 taxonomy index. Static guards: `tests/ops/test_scheduler_boundary_hard_block_contract_v0.py`, `tests/ops/test_gap4_req_a_300s_hold_binding_profile_contract_v0.py`, `tests/ops/test_paper_l2_120min_hold_binding_profile_contract_v0.py`, `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`. **Docs/tests-only**; **non-authorizing**. `SCHEDULER_BOUNDARY_HARD_BLOCK_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_GUARD_V1=true`; `PREFLIGHT_REMAINS_BLOCKED=true`; `READY_FOR_OPERATOR_ARMING=false`.
+
 ## 1. Purpose
 
 Make the scheduler boundary **machine-checkable** at process start: non-dry-run scheduler execution must fail closed when preflight reports blocked posture.
