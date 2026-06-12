@@ -195,6 +195,9 @@ def test_section5_pe_eer1_hold_binding_chain_completion_static_review_v1() -> No
         "PE4_PE11_CROSSLINK_CHAIN_COMPLETE=true",
         "HOLD_BINDING_CROSSLINK_CHAIN_COMPLETE=true",
         "EER1_CROSSLINK_COMPLETE=true",
+        "RUNTIME_LANE_TAXONOMY_CROSSLINK_COMPLETE=true",
+        "SCHEDULER_BOUNDARY_CROSSLINK_COMPLETE=true",
+        "PE_EER1_HOLD_BINDING_CHAIN_COMPLETION_STATIC_REVIEW_INCLUDES_RUNTIME_SCHEDULER_RECIPROCAL_SECTIONS_V1=true",
         "PREFLIGHT_REMAINS_BLOCKED=true",
         "READY_FOR_OPERATOR_ARMING=false",
     ):
@@ -202,6 +205,8 @@ def test_section5_pe_eer1_hold_binding_chain_completion_static_review_v1() -> No
         assert token in ci_audit
     assert "PE+EER1+hold-binding reciprocal crosslink chain completion static review" in gap2a1
     assert "PE+EER1+hold-binding reciprocal crosslink chain completion static review" in ci_audit
+    assert "Runtime Lane Taxonomy (#4176)" in gap2a1
+    assert "Scheduler Boundary Hard Block (#4177)" in gap2a1
     assert "test_section5_preflight_gap_owner_map_contract_v0.py" in gap2a1
     assert "test_remote_runtime_contract_docs_guard_v0.py" in gap2a1
     collapsed = gap2a1.replace("**", "")
