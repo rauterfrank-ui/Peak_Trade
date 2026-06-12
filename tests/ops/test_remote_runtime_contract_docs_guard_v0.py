@@ -1172,6 +1172,42 @@ U2B_MIN_NOTIONAL_S2_CROSSREFERENCE_OWNER_TESTS = (
     "test_universe_selection_reader_v1.py",
     "test_workflow_dashboard_env_schema_boundary_v1.py",
 )
+DOCS_TOKEN_POLICY_GUARD_STANDARD_CHECK_INTEGRATION_HEADING = (
+    "## Docs Token Policy Guard standard check integration — docs/tests-only guard v1"
+)
+DOCS_TOKEN_POLICY_GUARD_STANDARD_CHECK_INTEGRATION_GUARD_BLOCK_ANCHOR = (
+    "DOCS_TOKEN_POLICY_GUARD_STANDARD_CHECK_INTEGRATION_V1=true"
+)
+DOCS_TOKEN_POLICY_GUARD_STANDARD_CHECK_INTEGRATION_INPUT_BUNDLE = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/systemwide_next_safe_scope_ranking_after_order_capability_remaining_contract_surfaces_crosslink_bundle_merge_no_run_v1_20260612T221924Z"
+)
+DOCS_TOKEN_POLICY_GUARD_STANDARD_CHECK_INTEGRATION_EXPECTED: dict[str, str] = {
+    "DOCS_TOKEN_POLICY_GUARD_STANDARD_CHECK_INTEGRATION_V1": "true",
+    "DOCS_TOKEN_POLICY_GUARD_STANDARD_CHECK_INTEGRATION_NARROW_FIX_V1": "true",
+    "DOCS_TOKEN_POLICY_GUARD_RECIPROCAL_CROSSLINK_PARITY": "true",
+    "DOCS_TOKEN_POLICY_GUARD_MANDATORY_FOR_DOCS_PR": "true",
+    "DOCS_TOKEN_POLICY_GUARD_MANDATORY_FOR_DOCS_TESTS_PR": "true",
+    "STANDARD_CHECK_INTEGRATED": "true",
+    "WORKFLOW_YAML_MUTATED": "false",
+    "NO_WORKFLOW_MUTATION": "true",
+    "NO_REQUIRED_CHECK_CONFIG_CHANGE": "true",
+    "TRUTH_PROMOTION_EXECUTED": "false",
+    "OBSERVABILITY_TRUTH_ALLOWED_CHANGED": "false",
+    "REAL_METADATA_SOURCE_MARKED_CHANGED": "false",
+    "PREFLIGHT_REMAINS_BLOCKED": "true",
+    "NO_SESSION_INVOKE_AUTHORIZED": "true",
+    "U2B_PARKED": "true",
+    "MARKET_AIRPORT_EXCLUDED": "true",
+    "EVIDENCE_OR_DOCS_ANCHOR_NOT_RUNTIME_AUTHORITY": "true",
+    "NO_RUNTIME": "true",
+    "NO_LIVE": "true",
+    "NO_PREFLIGHT_LIFT": "true",
+    "NEW_PARALLEL_SSOT_CREATED": "false",
+}
+DOCS_TOKEN_POLICY_GUARD_STANDARD_CHECK_INTEGRATION_OWNER_TESTS = (
+    "test_validate_docs_token_policy_smoke.py",
+)
 PREFLIGHT_PROCESS_GATE_HYGIENE_GUARD_EXPECTED: dict[str, str] = {
     "PREFLIGHT_PROCESS_GATE_HYGIENE_GUARD_V1": "true",
     "ACTIVE_RUN_CHECK_PEAK_TRADE_EXPLICIT_ONLY": "true",
@@ -3265,4 +3301,77 @@ def test_docs_truth_map_gap4_gap7_ci_audit_section5_crosslink_chronicle_v1() -> 
     assert "GAP7_RISK_BOUNDARY_VERIFIED=false" in text
     assert "PREFLIGHT_REMAINS_BLOCKED=true" in text
     assert "READY_FOR_OPERATOR_ARMING=false" in text
+    assert "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true" in text
+
+
+def _docs_token_policy_guard_standard_check_integration_section(text: str) -> str:
+    start = text.find(DOCS_TOKEN_POLICY_GUARD_STANDARD_CHECK_INTEGRATION_HEADING)
+    assert start != -1, "missing Docs Token Policy Guard standard check integration section"
+    next_heading = text.find("\n## ", start + 1)
+    if next_heading == -1:
+        return text[start:]
+    return text[start:next_heading]
+
+
+def test_ci_audit_docs_token_policy_guard_standard_check_integration_reciprocal_crosslink_section_v1() -> (
+    None
+):
+    text = _ci_audit_text()
+    section = _docs_token_policy_guard_standard_check_integration_section(text)
+    assert DOCS_TOKEN_POLICY_GUARD_STANDARD_CHECK_INTEGRATION_INPUT_BUNDLE in section
+    assert "GO_DOCS_TOKEN_POLICY_GUARD_STANDARD_CHECK_INTEGRATION_NARROW_FIX_NO_RUN_V1" in section
+    assert "CI_AUDIT ↔ DOCS_TRUTH_MAP reciprocal crosslink" in section
+    assert "DOCS_TRUTH_MAP chronicle" in section
+    assert "CI_AUDIT / DOCS_TRUTH_MAP reciprocal guard" in section
+    assert THIS_MODULE in section
+    assert "preflight_docs_token_policy_changed.sh" in section
+    assert "validate_docs_token_policy.py" in section
+    assert "RUNBOOK_DOCS_TOKEN_POLICY_GATE.md" in section
+    assert "GATES_OVERVIEW.md" in section
+    assert "docs-token-policy-gate" in section
+    for module_name in DOCS_TOKEN_POLICY_GUARD_STANDARD_CHECK_INTEGRATION_OWNER_TESTS:
+        assert module_name in section, f"missing smoke test owner {module_name!r}"
+
+
+def test_ci_audit_docs_token_policy_guard_standard_check_integration_reciprocal_crosslink_machine_lines_v1() -> (
+    None
+):
+    block = _block_containing(
+        _ci_audit_text(),
+        DOCS_TOKEN_POLICY_GUARD_STANDARD_CHECK_INTEGRATION_GUARD_BLOCK_ANCHOR,
+    )
+    values = _machine_line_values(block)
+    missing = set(DOCS_TOKEN_POLICY_GUARD_STANDARD_CHECK_INTEGRATION_EXPECTED) - values.keys()
+    assert not missing, (
+        f"missing docs token policy guard standard check integration keys: {sorted(missing)}"
+    )
+    for key, expected in DOCS_TOKEN_POLICY_GUARD_STANDARD_CHECK_INTEGRATION_EXPECTED.items():
+        assert values[key] == expected, f"{key}={values[key]!r} expected {expected!r}"
+
+
+def test_docs_truth_map_docs_token_policy_guard_standard_check_integration_reciprocal_crosslink_chronicle_v1() -> (
+    None
+):
+    text = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    assert (
+        "Docs Token Policy Guard standard check integration CI_AUDIT ↔ DOCS_TRUTH_MAP reciprocal "
+        "crosslink guard v1"
+    ) in text
+    assert THIS_MODULE in text
+    assert DOCS_TOKEN_POLICY_GUARD_STANDARD_CHECK_INTEGRATION_GUARD_BLOCK_ANCHOR in text
+    assert "DOCS_TOKEN_POLICY_GUARD_STANDARD_CHECK_INTEGRATION_NARROW_FIX_V1=true" in text
+    assert "DOCS_TOKEN_POLICY_GUARD_RECIPROCAL_CROSSLINK_PARITY=true" in text
+    assert "preflight_docs_token_policy_changed.sh" in text
+    assert "validate_docs_token_policy.py" in text
+    assert "RUNBOOK_DOCS_TOKEN_POLICY_GATE.md" in text
+    assert "GATES_OVERVIEW.md" in text
+    assert "test_validate_docs_token_policy_smoke.py" in text
+    assert DOCS_TOKEN_POLICY_GUARD_STANDARD_CHECK_INTEGRATION_INPUT_BUNDLE.split("/")[-1] in text
+    assert "**no** workflow YAML mutation" in text
+    assert "WORKFLOW_YAML_MUTATED=false" in text
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in text
+    assert "NO_SESSION_INVOKE_AUTHORIZED=true" in text
+    assert "U2B_PARKED=true" in text
+    assert "MARKET_AIRPORT_EXCLUDED=true" in text
+    assert "EVIDENCE_OR_DOCS_ANCHOR_NOT_RUNTIME_AUTHORITY=true" in text
     assert "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true" in text
