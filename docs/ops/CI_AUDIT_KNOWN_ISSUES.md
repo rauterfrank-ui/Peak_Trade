@@ -337,6 +337,52 @@ DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
 
 **Non-authorizing:** Docs/tests-only reciprocal crosslink guard only; does **not** authorize execute, runtime, run start, live, preflight lift, order/cancel/execution/arming, authority lift, trading-logic changes, Master V2 / Double Play / Bull-Bear / Risk / KillSwitch / Scope / Capital changes, workflow YAML mutation, `workflow_dispatch`, `gh run rerun`, JSONL ingest, evidence dataset mutation, or Market Dashboard authority changes.
 
+## PE-11 Bounded Futures reachability CI_AUDIT ↔ SECTION5 reciprocal crosslink — docs/tests-only guard v1
+
+**Operator-GO:** `GO_PE11_BOUNDED_FUTURES_CI_AUDIT_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1`
+
+**Purpose:** Reciprocal crosslink so CI_AUDIT documents PE-11 governed bounded futures reachability reflection aligned with SECTION5 Gap Owner Map `## PE-11 Governed Bounded Futures Reachability Reflection v0`. Guard/Ops drift fix only — **non-authorizing**; **no** execute, preflight lift, futures session, or runtime.
+
+**Canonical repo owners (reuse — do not duplicate):**
+
+| Concern | Owner |
+|---------|-------|
+| Gap Owner Map SSOT — PE-11 reflection | `docs/ops/planning/SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md` |
+| SECTION5 PE-11 static guard | `tests/ops/test_section5_preflight_gap_owner_map_contract_v0.py` |
+| Bounded futures private-readonly contract (reference only) | `src/ops/bounded_futures_private_readonly_contract_v0.py` |
+| Bounded futures contract tests | `tests/ops/test_bounded_futures_private_readonly_contract_v0.py` |
+| CI_AUDIT / DOCS_TRUTH_MAP reciprocal guard | `tests/ops/test_remote_runtime_contract_docs_guard_v0.py` |
+
+```text
+PE11_BOUNDED_FUTURES_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_V1=true
+PE11_BOUNDED_FUTURES_CI_AUDIT_CROSSLINK_DOCS_TESTS_ONLY=true
+PE11_BOUNDED_FUTURES_REACHABILITY_GOVERNED_REFLECTION_V0_REFERENCED=true
+REACHABILITY_PROVEN_NOT_ORDER_AUTHORIZED=true
+SECTION5_PE11_OWNER_REFERENCED=true
+BOUNDED_FUTURES_PRIVATE_READONLY_CONTRACT_REFERENCED=true
+ZERO_ORDER_PUBLIC_FUTURES_REACHABILITY_PROVEN_REFERENCED=true
+PRIVATE_READONLY_WIRE_REACHABILITY_PROVEN_REFERENCED=true
+NO_EXECUTE=true
+NO_PREFLIGHT_LIFT=true
+NO_RUNTIME=true
+NO_LIVE=true
+FUTURES_SESSION_AUTHORIZED_NOW=false
+FUTURES_EXECUTE_AUTHORIZED=false
+ORDER_CANCEL_EXECUTION_ARMING_TOUCHED=false
+AUTHORITY_LIFT=false
+TRADING_LOGIC_TOUCHED=false
+MASTER_V2_LOGIC_TOUCHED=false
+DOUBLE_PLAY_LOGIC_TOUCHED=false
+NEW_PARALLEL_SSOT_CREATED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+MARKET_DASHBOARD_TOUCHED=false
+DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
+```
+
+**Guard module (reuse — no parallel PE-11 SSOT):** `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`.
+
+**Non-authorizing:** Docs/tests-only reciprocal crosslink guard only; does **not** authorize execute, runtime, run start, live, preflight lift, futures session, order/cancel/execution/arming, authority lift, trading-logic changes, Master V2 / Double Play / Bull-Bear / Risk / KillSwitch / Scope / Capital changes, workflow YAML mutation, `workflow_dispatch`, `gh run rerun`, JSONL ingest, evidence dataset mutation, or Market Dashboard authority changes.
+
 ## Market tape readmodel SSR DOCS_TRUTH_MAP static crosslink v1
 
 **Operator-GO:** `GO_MARKET_TAPE_SSR_DOCS_TRUTH_MAP_CI_AUDIT_STATIC_CROSSLINK_GUARD_OPERATOR_GO_AUTOFILL_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_order_capability_fixture_binding_docs_truth_map_static_crosslink_guard_merge_no_run_v1_20260611T192531Z/`

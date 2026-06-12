@@ -235,6 +235,42 @@ SECTION5_HOLD_BINDING_PROFILE_CROSSLINK_OWNER_TESTS = (
     "test_paper_l2_120min_hold_binding_profile_contract_v0.py",
     "test_section5_preflight_gap_owner_map_contract_v0.py",
 )
+PE11_BOUNDED_FUTURES_CI_AUDIT_CROSSLINK_HEADING = (
+    "## PE-11 Bounded Futures reachability CI_AUDIT ↔ SECTION5 reciprocal crosslink "
+    "— docs/tests-only guard v1"
+)
+PE11_BOUNDED_FUTURES_CI_AUDIT_CROSSLINK_GUARD_BLOCK_ANCHOR = (
+    "PE11_BOUNDED_FUTURES_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_V1=true"
+)
+PE11_BOUNDED_FUTURES_CI_AUDIT_CROSSLINK_EXPECTED: dict[str, str] = {
+    "PE11_BOUNDED_FUTURES_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_V1": "true",
+    "PE11_BOUNDED_FUTURES_CI_AUDIT_CROSSLINK_DOCS_TESTS_ONLY": "true",
+    "PE11_BOUNDED_FUTURES_REACHABILITY_GOVERNED_REFLECTION_V0_REFERENCED": "true",
+    "REACHABILITY_PROVEN_NOT_ORDER_AUTHORIZED": "true",
+    "SECTION5_PE11_OWNER_REFERENCED": "true",
+    "BOUNDED_FUTURES_PRIVATE_READONLY_CONTRACT_REFERENCED": "true",
+    "ZERO_ORDER_PUBLIC_FUTURES_REACHABILITY_PROVEN_REFERENCED": "true",
+    "PRIVATE_READONLY_WIRE_REACHABILITY_PROVEN_REFERENCED": "true",
+    "NO_EXECUTE": "true",
+    "NO_PREFLIGHT_LIFT": "true",
+    "NO_RUNTIME": "true",
+    "NO_LIVE": "true",
+    "FUTURES_SESSION_AUTHORIZED_NOW": "false",
+    "FUTURES_EXECUTE_AUTHORIZED": "false",
+    "ORDER_CANCEL_EXECUTION_ARMING_TOUCHED": "false",
+    "AUTHORITY_LIFT": "false",
+    "TRADING_LOGIC_TOUCHED": "false",
+    "MASTER_V2_LOGIC_TOUCHED": "false",
+    "DOUBLE_PLAY_LOGIC_TOUCHED": "false",
+    "NEW_PARALLEL_SSOT_CREATED": "false",
+    "PREFLIGHT_REMAINS_BLOCKED": "true",
+    "MARKET_DASHBOARD_TOUCHED": "false",
+    "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED": "true",
+}
+PE11_BOUNDED_FUTURES_CI_AUDIT_CROSSLINK_OWNER_TESTS = (
+    "test_section5_preflight_gap_owner_map_contract_v0.py",
+    "test_bounded_futures_private_readonly_contract_v0.py",
+)
 SECTION5_DOC = (
     REPO_ROOT / "docs" / "ops" / "planning" / "SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md"
 )
@@ -1022,6 +1058,64 @@ def test_docs_truth_map_paper_l2_preflight_2a_reciprocal_crosslink_chronicle_v1(
     assert "test_paper_l2_120min_hold_binding_profile_contract_v0.py" in text
     assert "test_paper_shadow_247_preflight_contract_v0.py" in text
     assert "**no** execute / Preflight-Lift / runtime" in text
+    assert "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true" in text
+
+
+def _pe11_bounded_futures_ci_audit_crosslink_section(text: str) -> str:
+    start = text.find(PE11_BOUNDED_FUTURES_CI_AUDIT_CROSSLINK_HEADING)
+    assert start != -1, "missing PE-11 bounded futures CI_AUDIT crosslink section"
+    next_heading = text.find("\n## ", start + 1)
+    if next_heading == -1:
+        return text[start:]
+    return text[start:next_heading]
+
+
+def test_ci_audit_pe11_bounded_futures_reachability_crosslink_section_present_v1() -> None:
+    text = _ci_audit_text()
+    section = _pe11_bounded_futures_ci_audit_crosslink_section(text)
+    assert "GO_PE11_BOUNDED_FUTURES_CI_AUDIT_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1" in section
+    assert "PE-11 Governed Bounded Futures Reachability Reflection v0" in section
+    assert "SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md" in section
+    assert "REACHABILITY_PROVEN_NOT_ORDER_AUTHORIZED" in section
+    assert "no parallel pe-11 ssot" in section.lower()
+    assert THIS_MODULE in section
+    for module_name in PE11_BOUNDED_FUTURES_CI_AUDIT_CROSSLINK_OWNER_TESTS:
+        assert module_name in section, f"missing owner test reference {module_name!r}"
+
+
+def test_ci_audit_pe11_bounded_futures_reachability_crosslink_machine_lines_v1() -> None:
+    block = _block_containing(
+        _ci_audit_text(),
+        PE11_BOUNDED_FUTURES_CI_AUDIT_CROSSLINK_GUARD_BLOCK_ANCHOR,
+    )
+    values = _machine_line_values(block)
+    missing = set(PE11_BOUNDED_FUTURES_CI_AUDIT_CROSSLINK_EXPECTED) - values.keys()
+    assert not missing, f"missing PE-11 CI_AUDIT crosslink keys: {sorted(missing)}"
+    for key, expected in PE11_BOUNDED_FUTURES_CI_AUDIT_CROSSLINK_EXPECTED.items():
+        assert values[key] == expected, f"{key}={values[key]!r} expected {expected!r}"
+
+
+def test_section5_doc_pe11_bounded_futures_reachability_owner_present_v1() -> None:
+    text = SECTION5_DOC.read_text(encoding="utf-8")
+    assert "## PE-11 Governed Bounded Futures Reachability Reflection v0" in text
+    assert "PE11_BOUNDED_FUTURES_REACHABILITY_GOVERNED_REFLECTION_V0=true" in text
+    assert "REACHABILITY_PROVEN_NOT_ORDER_AUTHORIZED=true" in text
+    assert "bounded_futures_private_readonly_contract_v0.py" in text
+    assert PE11_BOUNDED_FUTURES_CI_AUDIT_CROSSLINK_GUARD_BLOCK_ANCHOR not in text
+
+
+def test_docs_truth_map_pe11_bounded_futures_ci_audit_crosslink_chronicle_v1() -> None:
+    text = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    assert (
+        "PE-11 Bounded Futures reachability CI_AUDIT ↔ SECTION5 reciprocal crosslink guard v1"
+        in text
+    )
+    assert THIS_MODULE in text
+    assert PE11_BOUNDED_FUTURES_CI_AUDIT_CROSSLINK_GUARD_BLOCK_ANCHOR in text
+    assert "REACHABILITY_PROVEN_NOT_ORDER_AUTHORIZED=true" in text
+    assert "test_section5_preflight_gap_owner_map_contract_v0.py" in text
+    assert "test_bounded_futures_private_readonly_contract_v0.py" in text
+    assert "**no** execute / Preflight-Lift / futures-session / runtime" in text
     assert "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true" in text
 
 
