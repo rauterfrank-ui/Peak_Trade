@@ -217,13 +217,13 @@ Static guards: existing §2a.1 gap2a1 contract and drift-guard tests (reuse-firs
 
 This contract does not enable default enforcement, does not lift preflight, does not approve runtime, does not start Paper/Shadow/Testnet/Live, and does not mutate AWS/Notion/broker/exchange surfaces.
 
-**Evidence Durable Enforcement Readiness Review index (EER1 guard) v0:** `EVIDENCE_DURABLE_ENFORCEMENT_READINESS_REVIEW_RC_V0` / `SLICE-EER-1` readiness-review crosslink — consolidates completed prerequisite arcs (`PRIMARY_EVIDENCE_RUN_COMPLETION_CONTRACT_RC_V0` **CORE COMPLETE** after PE-6; `EVIDENCE_DURABLE_CLOSEOUT_RETENTION_RC_V0` **CORE COMPLETE**; `CYBERSECURITY_DEFENSIVE_VISIBILITY_CV3_PLUS_RC_V0` **CORE COMPLETE** after CV3C) with this §2a.1 Gap-2a.1 contract, Preflight §2a.1/§2b.2, durable closeout/manifest verification requirements, and Gap4↔Gap2a.1 dependency guards. **Planning/docs/tests readiness review only** — prerequisite RC completion is **input**, not enforcement authorization. Static guard: `tests/ops/test_section5_preflight_gap_owner_map_contract_v0.py`. Meta-index: `docs/ops/CI_AUDIT_KNOWN_ISSUES.md` — **§ Evidence Durable Enforcement Readiness Review RC v0 — index v0**. **Does not** activate enforcement, **does not** lift preflight, **does not** set `READY_FOR_OPERATOR_ARMING=true`.
+**Evidence Durable Enforcement Readiness Review index (EER1 guard) v0:** `EVIDENCE_DURABLE_ENFORCEMENT_READINESS_REVIEW_RC_V0` / `SLICE-EER-1` readiness-review crosslink — consolidates completed prerequisite arcs (`PRIMARY_EVIDENCE_RUN_COMPLETION_CONTRACT_RC_V0` **CORE COMPLETE** after PE-6; `EVIDENCE_DURABLE_CLOSEOUT_RETENTION_RC_V0` **CORE COMPLETE**; `CYBERSECURITY_DEFENSIVE_VISIBILITY_CV3_PLUS_RC_V0` **CORE COMPLETE** after SLICE-CV-3 #4164) with this §2a.1 Gap-2a.1 contract, Preflight §2a.1/§2b.2, durable closeout/manifest verification requirements, and Gap4↔Gap2a.1 dependency guards. **Planning/docs/tests readiness review only** — prerequisite RC completion is **input**, not enforcement authorization. Static guard: `tests/ops/test_section5_preflight_gap_owner_map_contract_v0.py`. Meta-index: `docs/ops/CI_AUDIT_KNOWN_ISSUES.md` — **§ Evidence Durable Enforcement Readiness Review RC v0 — index v0**. **Does not** activate enforcement, **does not** lift preflight, **does not** set `READY_FOR_OPERATOR_ARMING=true`.
 
 ```text
 EVIDENCE_DURABLE_ENFORCEMENT_READINESS_REVIEW_RC_V0_STARTED=true
 EER1_READINESS_REVIEW_INDEX_COMPLETE=true
 PRIMARY_EVIDENCE_RUN_COMPLETION_CONTRACT_RC_V0_STATUS=CORE_COMPLETE_AFTER_PE6
-CYBERSECURITY_DEFENSIVE_VISIBILITY_CV3_PLUS_RC_V0_STATUS=CORE_COMPLETE_AFTER_CV3C
+CYBERSECURITY_DEFENSIVE_VISIBILITY_CV3_PLUS_RC_V0_STATUS=CORE_COMPLETE_AFTER_CV3
 GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false
 ENFORCEMENT_ACTIVATED=false
 PREFLIGHT_REMAINS_BLOCKED=true
