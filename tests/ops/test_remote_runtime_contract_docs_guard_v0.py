@@ -1208,6 +1208,45 @@ DOCS_TOKEN_POLICY_GUARD_STANDARD_CHECK_INTEGRATION_EXPECTED: dict[str, str] = {
 DOCS_TOKEN_POLICY_GUARD_STANDARD_CHECK_INTEGRATION_OWNER_TESTS = (
     "test_validate_docs_token_policy_smoke.py",
 )
+DOCS_REFERENCE_TARGETS_GUARD_STANDARD_CHECK_INTEGRATION_HEADING = (
+    "## Docs Reference Targets Guard standard check integration — docs/tests-only guard v1"
+)
+DOCS_REFERENCE_TARGETS_GUARD_STANDARD_CHECK_INTEGRATION_GUARD_BLOCK_ANCHOR = (
+    "DOCS_REFERENCE_TARGETS_GUARD_STANDARD_CHECK_INTEGRATION_V1=true"
+)
+DOCS_REFERENCE_TARGETS_GUARD_STANDARD_CHECK_INTEGRATION_INPUT_BUNDLE = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/systemwide_next_safe_scope_ranking_after_docs_token_policy_guard_standard_check_integration_merge_no_run_v1_20260612T224000Z"
+)
+DOCS_REFERENCE_TARGETS_GUARD_STANDARD_CHECK_INTEGRATION_EXPECTED: dict[str, str] = {
+    "DOCS_REFERENCE_TARGETS_GUARD_STANDARD_CHECK_INTEGRATION_V1": "true",
+    "DOCS_REFERENCE_TARGETS_GUARD_STANDARD_CHECK_INTEGRATION_NARROW_FIX_V1": "true",
+    "DOCS_REFERENCE_TARGETS_GUARD_RECIPROCAL_CROSSLINK_PARITY": "true",
+    "DOCS_REFERENCE_TARGETS_EXISTING_CANONICAL_OWNER_REUSED": "true",
+    "DOCS_REFERENCE_TARGETS_GUARD_MANDATORY_FOR_DOCS_PR": "true",
+    "DOCS_REFERENCE_TARGETS_GUARD_MANDATORY_FOR_DOCS_TESTS_PR": "true",
+    "STANDARD_CHECK_INTEGRATED": "true",
+    "PARALLEL_GUARD_CREATED": "false",
+    "WORKFLOW_YAML_MUTATED": "false",
+    "NO_WORKFLOW_MUTATION": "true",
+    "REQUIRED_CHECK_CONFIG_MUTATED": "false",
+    "NO_REQUIRED_CHECK_CONFIG_CHANGE": "true",
+    "TRUTH_PROMOTION_EXECUTED": "false",
+    "OBSERVABILITY_TRUTH_ALLOWED_CHANGED": "false",
+    "REAL_METADATA_SOURCE_MARKED_CHANGED": "false",
+    "PREFLIGHT_REMAINS_BLOCKED": "true",
+    "NO_SESSION_INVOKE_AUTHORIZED": "true",
+    "U2B_PARKED": "true",
+    "MARKET_AIRPORT_EXCLUDED": "true",
+    "EVIDENCE_OR_DOCS_ANCHOR_NOT_RUNTIME_AUTHORITY": "true",
+    "NO_RUNTIME": "true",
+    "NO_LIVE": "true",
+    "NO_PREFLIGHT_LIFT": "true",
+    "NEW_PARALLEL_SSOT_CREATED": "false",
+}
+DOCS_REFERENCE_TARGETS_GUARD_STANDARD_CHECK_INTEGRATION_OWNER_TESTS = (
+    "test_verify_docs_reference_targets_script.py",
+)
 PREFLIGHT_PROCESS_GATE_HYGIENE_GUARD_EXPECTED: dict[str, str] = {
     "PREFLIGHT_PROCESS_GATE_HYGIENE_GUARD_V1": "true",
     "ACTIVE_RUN_CHECK_PEAK_TRADE_EXPLICIT_ONLY": "true",
@@ -3369,6 +3408,84 @@ def test_docs_truth_map_docs_token_policy_guard_standard_check_integration_recip
     assert DOCS_TOKEN_POLICY_GUARD_STANDARD_CHECK_INTEGRATION_INPUT_BUNDLE.split("/")[-1] in text
     assert "**no** workflow YAML mutation" in text
     assert "WORKFLOW_YAML_MUTATED=false" in text
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in text
+    assert "NO_SESSION_INVOKE_AUTHORIZED=true" in text
+    assert "U2B_PARKED=true" in text
+    assert "MARKET_AIRPORT_EXCLUDED=true" in text
+    assert "EVIDENCE_OR_DOCS_ANCHOR_NOT_RUNTIME_AUTHORITY=true" in text
+    assert "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true" in text
+
+
+def _docs_reference_targets_guard_standard_check_integration_section(text: str) -> str:
+    start = text.find(DOCS_REFERENCE_TARGETS_GUARD_STANDARD_CHECK_INTEGRATION_HEADING)
+    assert start != -1, "missing Docs Reference Targets Guard standard check integration section"
+    next_heading = text.find("\n## ", start + 1)
+    if next_heading == -1:
+        return text[start:]
+    return text[start:next_heading]
+
+
+def test_ci_audit_docs_reference_targets_guard_standard_check_integration_reciprocal_crosslink_section_v1() -> (
+    None
+):
+    text = _ci_audit_text()
+    section = _docs_reference_targets_guard_standard_check_integration_section(text)
+    assert DOCS_REFERENCE_TARGETS_GUARD_STANDARD_CHECK_INTEGRATION_INPUT_BUNDLE in section
+    assert (
+        "GO_DOCS_REFERENCE_TARGETS_GUARD_STANDARD_CHECK_INTEGRATION_NARROW_FIX_NO_RUN_V1" in section
+    )
+    assert "CI_AUDIT ↔ DOCS_TRUTH_MAP reciprocal crosslink" in section
+    assert "DOCS_TRUTH_MAP chronicle" in section
+    assert "CI_AUDIT / DOCS_TRUTH_MAP reciprocal guard" in section
+    assert THIS_MODULE in section
+    assert "verify_docs_reference_targets.sh" in section
+    assert "RUNBOOK_DOCS_REFERENCE_TARGETS_GATE_OPERATOR.md" in section
+    assert "GATES_OVERVIEW.md" in section
+    assert "docs-reference-targets-gate" in section
+    for module_name in DOCS_REFERENCE_TARGETS_GUARD_STANDARD_CHECK_INTEGRATION_OWNER_TESTS:
+        assert module_name in section, f"missing contract test owner {module_name!r}"
+
+
+def test_ci_audit_docs_reference_targets_guard_standard_check_integration_reciprocal_crosslink_machine_lines_v1() -> (
+    None
+):
+    block = _block_containing(
+        _ci_audit_text(),
+        DOCS_REFERENCE_TARGETS_GUARD_STANDARD_CHECK_INTEGRATION_GUARD_BLOCK_ANCHOR,
+    )
+    values = _machine_line_values(block)
+    missing = set(DOCS_REFERENCE_TARGETS_GUARD_STANDARD_CHECK_INTEGRATION_EXPECTED) - values.keys()
+    assert not missing, (
+        f"missing docs reference targets guard standard check integration keys: {sorted(missing)}"
+    )
+    for key, expected in DOCS_REFERENCE_TARGETS_GUARD_STANDARD_CHECK_INTEGRATION_EXPECTED.items():
+        assert values[key] == expected, f"{key}={values[key]!r} expected {expected!r}"
+
+
+def test_docs_truth_map_docs_reference_targets_guard_standard_check_integration_reciprocal_crosslink_chronicle_v1() -> (
+    None
+):
+    text = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    assert (
+        "Docs Reference Targets Guard standard check integration CI_AUDIT ↔ DOCS_TRUTH_MAP "
+        "reciprocal crosslink guard v1"
+    ) in text
+    assert THIS_MODULE in text
+    assert DOCS_REFERENCE_TARGETS_GUARD_STANDARD_CHECK_INTEGRATION_GUARD_BLOCK_ANCHOR in text
+    assert "DOCS_REFERENCE_TARGETS_GUARD_STANDARD_CHECK_INTEGRATION_NARROW_FIX_V1=true" in text
+    assert "DOCS_REFERENCE_TARGETS_GUARD_RECIPROCAL_CROSSLINK_PARITY=true" in text
+    assert "DOCS_REFERENCE_TARGETS_EXISTING_CANONICAL_OWNER_REUSED=true" in text
+    assert "verify_docs_reference_targets.sh" in text
+    assert "RUNBOOK_DOCS_REFERENCE_TARGETS_GATE_OPERATOR.md" in text
+    assert "GATES_OVERVIEW.md" in text
+    assert "test_verify_docs_reference_targets_script.py" in text
+    assert (
+        DOCS_REFERENCE_TARGETS_GUARD_STANDARD_CHECK_INTEGRATION_INPUT_BUNDLE.split("/")[-1] in text
+    )
+    assert "**no** workflow YAML mutation" in text
+    assert "WORKFLOW_YAML_MUTATED=false" in text
+    assert "REQUIRED_CHECK_CONFIG_MUTATED=false" in text
+    assert "PARALLEL_GUARD_CREATED=false" in text
     assert "PREFLIGHT_REMAINS_BLOCKED=true" in text
     assert "NO_SESSION_INVOKE_AUTHORIZED=true" in text
     assert "U2B_PARKED=true" in text
