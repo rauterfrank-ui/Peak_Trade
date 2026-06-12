@@ -525,6 +525,54 @@ PE_EER1_HOLD_BINDING_CHAIN_COMPLETION_STATIC_REVIEW_RECIPROCAL_SECTIONS = (
 PE_EER1_HOLD_BINDING_CHAIN_COMPLETION_STATIC_REVIEW_OWNER_TESTS = (
     "test_section5_preflight_gap_owner_map_contract_v0.py",
 )
+RUNTIME_LANE_TAXONOMY_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_HEADING = (
+    "## Runtime Lane Taxonomy CI_AUDIT ↔ Preflight reciprocal crosslink — docs/tests-only guard v1"
+)
+RUNTIME_LANE_TAXONOMY_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR = (
+    "RUNTIME_LANE_TAXONOMY_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_GUARD_V1=true"
+)
+RUNTIME_LANE_TAXONOMY_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_INPUT_BUNDLE = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/systemwide_next_safe_scope_ranking_after_pr4174_pr4175_chain_closeout_no_auto_go_no_run_v1_20260612T115950Z"
+)
+RUNTIME_LANE_TAXONOMY_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_EXPECTED: dict[str, str] = {
+    "RUNTIME_LANE_TAXONOMY_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_GUARD_V1": "true",
+    "RUNTIME_LANE_TAXONOMY_CI_AUDIT_PREFLIGHT_CROSSLINK_DOCS_TESTS_ONLY": "true",
+    "DOCS_TESTS_ONLY": "true",
+    "RUNTIME_LANE_TAXONOMY_SPEC_OWNER_REFERENCED": "true",
+    "PREFLIGHT_RUNTIME_LANE_TAXONOMY_INDEX_REFERENCED": "true",
+    "RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0_REFERENCED": "true",
+    "EVIDENCE_DOES_NOT_AUTHORIZE_RUNTIME": "true",
+    "SLICE_RUNTIME_LANE_TAXONOMY_TESTS_ONLY": "true",
+    "OBSERVATION_RUN_AUTHORIZED_NOW": "false",
+    "PAPER_RUN_AUTHORIZED_NOW": "false",
+    "SHADOW_RUN_AUTHORIZED_NOW": "false",
+    "TESTNET_SESSION_AUTHORIZED_NOW": "false",
+    "ORDER_EXECUTE_AUTHORIZED_NOW": "false",
+    "LIVE_AUTHORIZED_NOW": "false",
+    "NO_EXECUTE": "true",
+    "NO_PREFLIGHT_LIFT": "true",
+    "NO_RUNTIME": "true",
+    "NO_LIVE": "true",
+    "ORDER_CANCEL_EXECUTION_ARMING_TOUCHED": "false",
+    "AUTHORITY_LIFT": "false",
+    "TRADING_LOGIC_TOUCHED": "false",
+    "MASTER_V2_LOGIC_TOUCHED": "false",
+    "DOUBLE_PLAY_LOGIC_TOUCHED": "false",
+    "NEW_PARALLEL_SSOT_CREATED": "false",
+    "PREFLIGHT_REMAINS_BLOCKED": "true",
+    "READY_FOR_OPERATOR_ARMING": "false",
+    "MARKET_DASHBOARD_TOUCHED": "false",
+    "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED": "true",
+}
+RUNTIME_LANE_TAXONOMY_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_OWNER_TESTS = (
+    "test_runtime_lane_taxonomy_authority_levels_contract_v0.py",
+    "test_paper_shadow_247_preflight_readiness_peer_static_crosslink_contract_v0.py",
+    "test_paper_shadow_247_preflight_contract_v0.py",
+)
+PREFLIGHT_DOC = (
+    REPO_ROOT / "docs" / "ops" / "runbooks" / "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md"
+)
 SECTION5_DOC = (
     REPO_ROOT / "docs" / "ops" / "planning" / "SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md"
 )
@@ -1880,3 +1928,94 @@ def test_docs_truth_map_market_dashboard_trading_app_terminal_rebuild_pr4162_chr
     assert (
         MARKET_DASHBOARD_TRADING_APP_TERMINAL_REBUILD_PR4162_RANKING_BUNDLE.split("/")[-1] in text
     )
+
+
+def _runtime_lane_taxonomy_ci_audit_preflight_reciprocal_crosslink_section(text: str) -> str:
+    start = text.find(RUNTIME_LANE_TAXONOMY_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_HEADING)
+    assert start != -1, (
+        "missing Runtime Lane Taxonomy CI_AUDIT ↔ Preflight reciprocal crosslink section"
+    )
+    next_heading = text.find("\n## ", start + 1)
+    if next_heading == -1:
+        return text[start:]
+    return text[start:next_heading]
+
+
+def test_ci_audit_runtime_lane_taxonomy_preflight_reciprocal_crosslink_section_present_v1() -> None:
+    text = _ci_audit_text()
+    section = _runtime_lane_taxonomy_ci_audit_preflight_reciprocal_crosslink_section(text)
+    assert (
+        "GO_RUNTIME_LANE_TAXONOMY_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1"
+        in section
+    )
+    assert "Runtime Lane Taxonomy" in section
+    assert "RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md" in section
+    assert "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md" in section
+    assert "no parallel lane-taxonomy ssot" in section.lower()
+    assert THIS_MODULE in section
+    for module_name in RUNTIME_LANE_TAXONOMY_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_OWNER_TESTS:
+        assert module_name in section, f"missing owner test reference {module_name!r}"
+
+
+def test_ci_audit_runtime_lane_taxonomy_preflight_reciprocal_crosslink_machine_lines_v1() -> None:
+    block = _block_containing(
+        _ci_audit_text(),
+        RUNTIME_LANE_TAXONOMY_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR,
+    )
+    values = _machine_line_values(block)
+    missing = (
+        set(RUNTIME_LANE_TAXONOMY_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_EXPECTED) - values.keys()
+    )
+    assert not missing, (
+        f"missing Runtime Lane Taxonomy CI_AUDIT ↔ Preflight reciprocal crosslink keys: "
+        f"{sorted(missing)}"
+    )
+    for (
+        key,
+        expected,
+    ) in RUNTIME_LANE_TAXONOMY_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_EXPECTED.items():
+        assert values[key] == expected, f"{key}={values[key]!r} expected {expected!r}"
+
+
+def test_preflight_doc_runtime_lane_taxonomy_ci_audit_backref_present_v1() -> None:
+    text = PREFLIGHT_DOC.read_text(encoding="utf-8")
+    assert RUNTIME_LANE_TAXONOMY_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR in text
+    assert (
+        "§ Runtime Lane Taxonomy CI_AUDIT ↔ Preflight reciprocal crosslink — docs/tests-only guard v1"
+        in text
+    )
+    assert "test_runtime_lane_taxonomy_authority_levels_contract_v0.py" in text
+    assert "test_paper_shadow_247_preflight_readiness_peer_static_crosslink_contract_v0.py" in text
+    assert THIS_MODULE in text
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in text
+    assert "READY_FOR_OPERATOR_ARMING=false" in text
+
+
+def test_taxonomy_spec_runtime_lane_ci_audit_preflight_backref_present_v1() -> None:
+    text = TAXONOMY_SPEC.read_text(encoding="utf-8")
+    assert RUNTIME_LANE_TAXONOMY_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR in text
+    assert (
+        "§ Runtime Lane Taxonomy CI_AUDIT ↔ Preflight reciprocal crosslink — docs/tests-only guard v1"
+        in text
+    )
+    assert "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md" in text
+    assert "test_runtime_lane_taxonomy_authority_levels_contract_v0.py" in text
+    assert "test_paper_shadow_247_preflight_readiness_peer_static_crosslink_contract_v0.py" in text
+    assert THIS_MODULE in text
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in text
+    assert "READY_FOR_OPERATOR_ARMING=false" in text
+
+
+def test_docs_truth_map_runtime_lane_taxonomy_ci_audit_preflight_crosslink_chronicle_v1() -> None:
+    text = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    assert "Runtime Lane Taxonomy CI_AUDIT ↔ Preflight reciprocal crosslink guard v1" in text
+    assert THIS_MODULE in text
+    assert RUNTIME_LANE_TAXONOMY_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR in text
+    assert "test_runtime_lane_taxonomy_authority_levels_contract_v0.py" in text
+    assert (
+        "**no** execute / Preflight-Lift / observation-run / paper-run / shadow-run / testnet-session / runtime"
+        in text
+    )
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in text
+    assert "READY_FOR_OPERATOR_ARMING=false" in text
+    assert "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true" in text

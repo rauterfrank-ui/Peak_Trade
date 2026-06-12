@@ -13,6 +13,8 @@ This contract is the **normative lane ID and authority-level index** for Peak_Tr
 
 It does **not** authorize runtime, clear HOLD or GLB blockers, grant Live or Testnet permission, or substitute for subsystem owners (preflight retention, GLB register, Canary entry criteria, scheduler daemon policy).
 
+**CI_AUDIT ↔ Preflight reciprocal crosslink (reference-only — docs/tests guard):** Reciprocal crosslink guard: `docs/ops/CI_AUDIT_KNOWN_ISSUES.md` — **§ Runtime Lane Taxonomy CI_AUDIT ↔ Preflight reciprocal crosslink — docs/tests-only guard v1**; Preflight reciprocal index: `docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md` §2 taxonomy index. Static guards: `tests/ops/test_runtime_lane_taxonomy_authority_levels_contract_v0.py`, `tests/ops/test_paper_shadow_247_preflight_readiness_peer_static_crosslink_contract_v0.py`, `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`. **Docs/tests-only**; **non-authorizing**. `RUNTIME_LANE_TAXONOMY_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_GUARD_V1=true`; `PREFLIGHT_REMAINS_BLOCKED=true`; `READY_FOR_OPERATOR_ARMING=false`.
+
 Machine markers (stable literals for contract tests):
 
 ```
