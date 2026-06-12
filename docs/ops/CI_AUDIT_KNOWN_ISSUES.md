@@ -145,6 +145,56 @@ MARKET_DASHBOARD_TOUCHED=false
 
 **Non-authorizing:** Docs/tests-only visibility guard only; does **not** authorize order submission, cancel, execute, arming, broker/exchange, Testnet/Live, scheduler/daemon/adapter runtime, Preflight lift, `READY_FOR_OPERATOR_ARMING=true`, provider-truth flip, binding pass, JSONL ingest, evidence dataset mutation, workflow edits, Market Dashboard authority changes, or Master V2 / Double Play / Bull-Bear / Risk / KillSwitch / Scope / Capital / trading-logic changes. Lane remains **parked/read-only** with `order_capability_lane_parked=true` and `order_capability_execute_authorized=false`.
 
+## Systemwide CI/Docs required-check truth-map residual review — docs/tests-only guard v1
+
+**Operator-GO:** `GO_SYSTEMWIDE_CI_DOCS_REQUIRED_CHECK_TRUTH_MAP_RESIDUAL_REVIEW_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_order_capability_readiness_gap_review_merge_no_run_v1_20260612T003655Z/`
+
+**Purpose:** Post-PR #4154/#4155 residual review guard for CI/docs consistency across required-check safety gate surfaces, docs-token-policy gate expectations, same-repo approval/hard-retrigger guidance, workflow secrets visibility, workflow write-permission visibility, and residual PRB scheduled scorecard/manual-only posture. This review is **consistency/visibility only** — not a required-check configuration change — and does **not** authorize runtime, live, preflight lift, workflow mutation, `workflow_dispatch`, `gh run rerun`, order/cancel/execution/arming, or authority lift.
+
+**Existing crosslink guards (reuse — indexed, not duplicated):**
+
+| Concern | Owner |
+|---------|-------|
+| Required-check safety gate surfaces + SSOT pointer index | `tests/ci/test_required_checks_safety_gate_surfaces_v0.py`; `docs/ops/specs/MASTER_V2_CI_REQUIRED_CHECKS_SAFETY_GATE_POINTER_INDEX_V0.md` |
+| Docs-token-policy gate expectations | `docs/ops/GATES_OVERVIEW.md`; `.github/workflows/docs-token-policy-gate.yml` (reference only — **no** YAML mutation in this slice) |
+| Same-repo approval / hard-retrigger guidance | `docs/ops/runbooks/github_rulesets_pr_reviews_policy.md` |
+| Workflow secrets visibility | `tests/ci/test_workflow_secrets_reference_visibility_contract_v0.py` |
+| Workflow write-permission visibility | `tests/ci/test_workflow_write_permissions_visibility_contract_v0.py` |
+| Residual PRB scheduled scorecard + GH manual-only posture | `tests/ci/test_residual_prb_scheduled_scorecard_workflow_contract_v0.py`; this document — **§ GH Schedule Governance Minimal RC v0 — index v0** |
+
+```text
+SYSTEMWIDE_CI_DOCS_REQUIRED_CHECK_TRUTH_MAP_RESIDUAL_REVIEW_V1=true
+SYSTEMWIDE_CI_DOCS_REQUIRED_CHECK_TRUTH_MAP_RESIDUAL_REVIEW_DOCS_TESTS_ONLY=true
+REQUIRED_CHECK_SAFETY_GATE_SURFACES_INDEXED=true
+DOCS_TOKEN_POLICY_GATE_REFERENCED=true
+SAME_REPO_APPROVAL_HARD_RETRIGGER_GUIDANCE_REFERENCED=true
+WORKFLOW_SECRETS_VISIBILITY_GUARD_REFERENCED=true
+WORKFLOW_WRITE_PERMISSIONS_VISIBILITY_GUARD_REFERENCED=true
+PRB_SCHEDULED_SCORECARD_POSTURE_GUARD_REFERENCED=true
+GH_SCHEDULE_MANUAL_ONLY_POSTURE_GUARD_REFERENCED=true
+EXISTING_CI_DOCS_GUARDS_REFERENCED=true
+NO_RUNTIME=true
+NO_LIVE=true
+NO_PREFLIGHT_LIFT=true
+ORDER_CANCEL_EXECUTION_ARMING_TOUCHED=false
+AUTHORITY_LIFT=false
+TRADING_LOGIC_TOUCHED=false
+MASTER_V2_LOGIC_TOUCHED=false
+DOUBLE_PLAY_LOGIC_TOUCHED=false
+RISK_KILLSWITCH_SCOPE_CAPITAL_TOUCHED=false
+NEW_PARALLEL_SSOT_CREATED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+WORKFLOW_TOUCHED=false
+WORKFLOW_DISPATCH_EXECUTED=false
+GH_RUN_RERUN_EXECUTED=false
+JSONL_EVIDENCE_DATASET_MUTATION=false
+MARKET_DASHBOARD_TOUCHED=false
+```
+
+**Guard module (reuse — no parallel required-check SSOT):** `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`.
+
+**Non-authorizing:** Docs/tests-only residual review guard only; does **not** authorize required-check configuration changes, branch-protection edits, workflow YAML mutation, `workflow_dispatch`, `gh run rerun`, runtime/scheduler/daemon execution, paper/shadow/testnet/live, Preflight lift, order/cancel/execution/arming, JSONL ingest, evidence dataset mutation, Market Dashboard authority changes, or Master V2 / Double Play / Bull-Bear / Risk / KillSwitch / Scope / Capital / trading-logic changes.
+
 ## Market tape readmodel SSR DOCS_TRUTH_MAP static crosslink v1
 
 **Operator-GO:** `GO_MARKET_TAPE_SSR_DOCS_TRUTH_MAP_CI_AUDIT_STATIC_CROSSLINK_GUARD_OPERATOR_GO_AUTOFILL_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_order_capability_fixture_binding_docs_truth_map_static_crosslink_guard_merge_no_run_v1_20260611T192531Z/`

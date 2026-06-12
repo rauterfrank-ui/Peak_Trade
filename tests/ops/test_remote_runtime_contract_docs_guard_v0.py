@@ -77,6 +77,50 @@ ORDER_CAPABILITY_REMAINING_READINESS_GAP_REVIEW_EXPECTED: dict[str, str] = {
     "WORKFLOW_TOUCHED": "false",
     "MARKET_DASHBOARD_TOUCHED": "false",
 }
+SYSTEMWIDE_CI_DOCS_TRUTH_MAP_RESIDUAL_REVIEW_HEADING = (
+    "## Systemwide CI/Docs required-check truth-map residual review — docs/tests-only guard v1"
+)
+SYSTEMWIDE_CI_DOCS_TRUTH_MAP_RESIDUAL_REVIEW_GUARD_BLOCK_ANCHOR = (
+    "SYSTEMWIDE_CI_DOCS_REQUIRED_CHECK_TRUTH_MAP_RESIDUAL_REVIEW_V1=true"
+)
+SYSTEMWIDE_CI_DOCS_TRUTH_MAP_RESIDUAL_REVIEW_INPUT_BUNDLE = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/systemwide_next_safe_scope_ranking_after_order_capability_readiness_gap_review_merge_no_run_v1_20260612T003655Z"
+)
+SYSTEMWIDE_CI_DOCS_TRUTH_MAP_RESIDUAL_REVIEW_EXPECTED: dict[str, str] = {
+    "SYSTEMWIDE_CI_DOCS_REQUIRED_CHECK_TRUTH_MAP_RESIDUAL_REVIEW_V1": "true",
+    "SYSTEMWIDE_CI_DOCS_REQUIRED_CHECK_TRUTH_MAP_RESIDUAL_REVIEW_DOCS_TESTS_ONLY": "true",
+    "REQUIRED_CHECK_SAFETY_GATE_SURFACES_INDEXED": "true",
+    "DOCS_TOKEN_POLICY_GATE_REFERENCED": "true",
+    "SAME_REPO_APPROVAL_HARD_RETRIGGER_GUIDANCE_REFERENCED": "true",
+    "WORKFLOW_SECRETS_VISIBILITY_GUARD_REFERENCED": "true",
+    "WORKFLOW_WRITE_PERMISSIONS_VISIBILITY_GUARD_REFERENCED": "true",
+    "PRB_SCHEDULED_SCORECARD_POSTURE_GUARD_REFERENCED": "true",
+    "GH_SCHEDULE_MANUAL_ONLY_POSTURE_GUARD_REFERENCED": "true",
+    "EXISTING_CI_DOCS_GUARDS_REFERENCED": "true",
+    "NO_RUNTIME": "true",
+    "NO_LIVE": "true",
+    "NO_PREFLIGHT_LIFT": "true",
+    "ORDER_CANCEL_EXECUTION_ARMING_TOUCHED": "false",
+    "AUTHORITY_LIFT": "false",
+    "TRADING_LOGIC_TOUCHED": "false",
+    "MASTER_V2_LOGIC_TOUCHED": "false",
+    "DOUBLE_PLAY_LOGIC_TOUCHED": "false",
+    "RISK_KILLSWITCH_SCOPE_CAPITAL_TOUCHED": "false",
+    "NEW_PARALLEL_SSOT_CREATED": "false",
+    "PREFLIGHT_REMAINS_BLOCKED": "true",
+    "WORKFLOW_TOUCHED": "false",
+    "WORKFLOW_DISPATCH_EXECUTED": "false",
+    "GH_RUN_RERUN_EXECUTED": "false",
+    "JSONL_EVIDENCE_DATASET_MUTATION": "false",
+    "MARKET_DASHBOARD_TOUCHED": "false",
+}
+SYSTEMWIDE_CI_DOCS_TRUTH_MAP_RESIDUAL_REVIEW_OWNER_TESTS = (
+    "test_required_checks_safety_gate_surfaces_v0.py",
+    "test_workflow_secrets_reference_visibility_contract_v0.py",
+    "test_workflow_write_permissions_visibility_contract_v0.py",
+    "test_residual_prb_scheduled_scorecard_workflow_contract_v0.py",
+)
 ORDER_CAPABILITY_REMAINING_READINESS_GAP_REVIEW_OWNER_TESTS = (
     "test_order_capability_payload_builder_contract_v1.py",
     "test_order_capability_dry_validation_contract_v1.py",
@@ -553,3 +597,63 @@ def test_docs_truth_map_order_capability_remaining_readiness_gap_review_chronicl
     assert "demo-instrument rules binding" in text
     assert "**no** runtime/live/preflight lift/order/cancel/execution/arming/authority lift" in text
     assert ORDER_CAPABILITY_REMAINING_READINESS_GAP_REVIEW_INPUT_BUNDLE.split("/")[-1] in text
+
+
+def _systemwide_ci_docs_truth_map_residual_review_section(text: str) -> str:
+    start = text.find(SYSTEMWIDE_CI_DOCS_TRUTH_MAP_RESIDUAL_REVIEW_HEADING)
+    assert start != -1, "missing systemwide CI/docs truth-map residual review section"
+    next_heading = text.find("\n## ", start + 1)
+    if next_heading == -1:
+        return text[start:]
+    return text[start:next_heading]
+
+
+def test_ci_audit_systemwide_ci_docs_truth_map_residual_review_section_present_v1() -> None:
+    text = _ci_audit_text()
+    section = _systemwide_ci_docs_truth_map_residual_review_section(text)
+    assert SYSTEMWIDE_CI_DOCS_TRUTH_MAP_RESIDUAL_REVIEW_INPUT_BUNDLE in section
+    assert "Post-PR #4154/#4155" in section
+    assert "required-check safety gate surfaces" in section
+    assert "docs-token-policy gate expectations" in section
+    assert "same-repo approval/hard-retrigger guidance" in section
+    assert "workflow secrets visibility" in section
+    assert "workflow write-permission visibility" in section
+    assert "residual PRB scheduled scorecard/manual-only posture" in section
+    assert "MASTER_V2_CI_REQUIRED_CHECKS_SAFETY_GATE_POINTER_INDEX_V0.md" in section
+    assert "github_rulesets_pr_reviews_policy.md" in section
+    assert "no parallel required-check ssot" in section.lower()
+    assert THIS_MODULE in section
+    for module_name in SYSTEMWIDE_CI_DOCS_TRUTH_MAP_RESIDUAL_REVIEW_OWNER_TESTS:
+        assert module_name in section, f"missing owner test reference {module_name!r}"
+
+
+def test_ci_audit_systemwide_ci_docs_truth_map_residual_review_machine_lines_v1() -> None:
+    block = _block_containing(
+        _ci_audit_text(),
+        SYSTEMWIDE_CI_DOCS_TRUTH_MAP_RESIDUAL_REVIEW_GUARD_BLOCK_ANCHOR,
+    )
+    values = _machine_line_values(block)
+    missing = set(SYSTEMWIDE_CI_DOCS_TRUTH_MAP_RESIDUAL_REVIEW_EXPECTED) - values.keys()
+    assert not missing, (
+        f"missing systemwide CI/docs truth-map residual review keys: {sorted(missing)}"
+    )
+    for key, expected in SYSTEMWIDE_CI_DOCS_TRUTH_MAP_RESIDUAL_REVIEW_EXPECTED.items():
+        assert values[key] == expected, f"{key}={values[key]!r} expected {expected!r}"
+
+
+def test_docs_truth_map_systemwide_ci_docs_truth_map_residual_review_chronicle_v1() -> None:
+    text = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    assert "Systemwide CI/Docs required-check truth-map residual review guard v1" in text
+    assert THIS_MODULE in text
+    assert "SYSTEMWIDE_CI_DOCS_REQUIRED_CHECK_TRUTH_MAP_RESIDUAL_REVIEW_V1=true" in text
+    assert "required-check safety gate surfaces" in text
+    assert "docs-token-policy gate expectations" in text
+    assert "same-repo approval/hard-retrigger guidance" in text
+    assert "workflow secrets visibility" in text
+    assert "workflow write-permission visibility" in text
+    assert "residual PRB scheduled scorecard/manual-only posture" in text
+    assert (
+        "**no** runtime/live/preflight lift/workflow mutation/workflow_dispatch/gh run rerun"
+        in text
+    )
+    assert SYSTEMWIDE_CI_DOCS_TRUTH_MAP_RESIDUAL_REVIEW_INPUT_BUNDLE.split("/")[-1] in text
