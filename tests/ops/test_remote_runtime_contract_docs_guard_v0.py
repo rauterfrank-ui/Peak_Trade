@@ -40,6 +40,55 @@ PREFLIGHT_PROCESS_GATE_HYGIENE_INPUT_BUNDLE = (
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
     "planning/systemwide_next_safe_scope_ranking_after_pr4153_closeout_select_single_next_safe_slice_no_run_v1_20260612T000800Z"
 )
+ORDER_CAPABILITY_REMAINING_READINESS_GAP_REVIEW_HEADING = (
+    "## Order-Capability remaining readiness gap review — docs/tests-only visibility v1"
+)
+ORDER_CAPABILITY_REMAINING_READINESS_GAP_REVIEW_GUARD_BLOCK_ANCHOR = (
+    "ORDER_CAPABILITY_REMAINING_READINESS_GAP_REVIEW_V1=true"
+)
+ORDER_CAPABILITY_REMAINING_READINESS_GAP_REVIEW_INPUT_BUNDLE = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/systemwide_next_safe_scope_ranking_after_preflight_process_gate_hygiene_guard_merge_no_run_v1_20260612T002508Z"
+)
+ORDER_CAPABILITY_REMAINING_READINESS_GAP_REVIEW_EXPECTED: dict[str, str] = {
+    "ORDER_CAPABILITY_REMAINING_READINESS_GAP_REVIEW_V1": "true",
+    "ORDER_CAPABILITY_REMAINING_READINESS_GAP_REVIEW_DOCS_TESTS_ONLY": "true",
+    "ORDER_CAPABILITY_PARKED_READ_ONLY_CONFIRMED": "true",
+    "ORDER_CAPABILITY_EXISTING_CROSSLINK_GUARDS_REFERENCED": "true",
+    "FIXTURE_BINDING_CROSSLINK_GUARD_REFERENCED": "true",
+    "DEMO_INSTRUMENT_RULES_NORMALIZER_CROSSLINK_GUARD_REFERENCED": "true",
+    "REMAINING_CONTRACT_SURFACES_INDEXED": "true",
+    "NO_RUNTIME": "true",
+    "NO_LIVE": "true",
+    "NO_PREFLIGHT_LIFT": "true",
+    "ORDER_CANCEL_EXECUTION_ARMING_TOUCHED": "false",
+    "AUTHORITY_LIFT": "false",
+    "TRADING_LOGIC_TOUCHED": "false",
+    "MASTER_V2_LOGIC_TOUCHED": "false",
+    "DOUBLE_PLAY_LOGIC_TOUCHED": "false",
+    "RISK_KILLSWITCH_SCOPE_CAPITAL_TOUCHED": "false",
+    "NEW_PARALLEL_SSOT_CREATED": "false",
+    "PREFLIGHT_REMAINS_BLOCKED": "true",
+    "ORDERFLOW_AUTHORIZATION_CREATED": "false",
+    "CANCEL_EXECUTE_AUTHORIZATION_CREATED": "false",
+    "READY_FOR_OPERATOR_ARMING_CHANGED": "false",
+    "RUNTIME_LOGIC_TOUCHED": "false",
+    "JSONL_EVIDENCE_DATASET_MUTATION": "false",
+    "WORKFLOW_TOUCHED": "false",
+    "MARKET_DASHBOARD_TOUCHED": "false",
+}
+ORDER_CAPABILITY_REMAINING_READINESS_GAP_REVIEW_OWNER_TESTS = (
+    "test_order_capability_payload_builder_contract_v1.py",
+    "test_order_capability_dry_validation_contract_v1.py",
+    "test_order_capability_killswitch_abort_binding_contract_v1.py",
+    "test_order_capability_cancel_cleanup_failclosed_contract_v1.py",
+    "test_order_capability_offline_payload_readiness_v1.py",
+    "test_order_capability_private_endpoint_boundary_contract_v1.py",
+    "test_order_capability_side_price_qty_rules_contract_v1.py",
+    "test_order_capability_demo_instrument_rules_binding_contract_v1.py",
+    "test_run_order_capability_fixture_binding_dry_validation_v1.py",
+    "test_order_capability_demo_instrument_rules_fixture_normalizer_contract_v1.py",
+)
 PREFLIGHT_PROCESS_GATE_HYGIENE_GUARD_EXPECTED: dict[str, str] = {
     "PREFLIGHT_PROCESS_GATE_HYGIENE_GUARD_V1": "true",
     "ACTIVE_RUN_CHECK_PEAK_TRADE_EXPLICIT_ONLY": "true",
@@ -442,3 +491,65 @@ def test_ci_audit_mv2_readonly_alignment_rc_machine_lines_v0() -> None:
     assert not missing, f"missing MV2 readonly alignment RC keys: {sorted(missing)}"
     for key, expected in MV2_READONLY_ALIGNMENT_RC_EXPECTED.items():
         assert values[key] == expected, f"{key}={values[key]!r} expected {expected!r}"
+
+
+def _order_capability_remaining_readiness_gap_review_section(text: str) -> str:
+    start = text.find(ORDER_CAPABILITY_REMAINING_READINESS_GAP_REVIEW_HEADING)
+    assert start != -1, "missing Order-Capability remaining readiness gap review section"
+    next_heading = text.find("\n## ", start + 1)
+    if next_heading == -1:
+        return text[start:]
+    return text[start:next_heading]
+
+
+def test_ci_audit_order_capability_remaining_readiness_gap_review_section_present_v1() -> None:
+    text = _ci_audit_text()
+    section = _order_capability_remaining_readiness_gap_review_section(text)
+    assert ORDER_CAPABILITY_REMAINING_READINESS_GAP_REVIEW_INPUT_BUNDLE in section
+    assert "visibility/readiness only" in section
+    assert "Payload builder" in section
+    assert "Dry-validation" in section
+    assert "Killswitch abort" in section
+    assert "Cancel cleanup" in section
+    assert "Offline payload readiness" in section
+    assert "Private endpoint boundary" in section
+    assert "Side / price / qty rules" in section
+    assert "Demo instrument rules binding" in section
+    assert "Fixture-binding DOCS_TRUTH_MAP static crosslink" in section
+    assert "Demo instrument rules fixture normalizer DOCS_TRUTH_MAP static crosslink" in section
+    assert "no parallel readiness ssot" in section.lower()
+    assert THIS_MODULE in section
+    for module_name in ORDER_CAPABILITY_REMAINING_READINESS_GAP_REVIEW_OWNER_TESTS:
+        assert module_name in section, f"missing owner test reference {module_name!r}"
+
+
+def test_ci_audit_order_capability_remaining_readiness_gap_review_machine_lines_v1() -> None:
+    block = _block_containing(
+        _ci_audit_text(),
+        ORDER_CAPABILITY_REMAINING_READINESS_GAP_REVIEW_GUARD_BLOCK_ANCHOR,
+    )
+    values = _machine_line_values(block)
+    missing = set(ORDER_CAPABILITY_REMAINING_READINESS_GAP_REVIEW_EXPECTED) - values.keys()
+    assert not missing, f"missing order capability readiness gap review keys: {sorted(missing)}"
+    for key, expected in ORDER_CAPABILITY_REMAINING_READINESS_GAP_REVIEW_EXPECTED.items():
+        assert values[key] == expected, f"{key}={values[key]!r} expected {expected!r}"
+
+
+def test_docs_truth_map_order_capability_remaining_readiness_gap_review_chronicle_v1() -> None:
+    text = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    assert (
+        "Order-Capability remaining readiness gap review docs/tests-only visibility guard v1"
+        in text
+    )
+    assert THIS_MODULE in text
+    assert "ORDER_CAPABILITY_REMAINING_READINESS_GAP_REVIEW_V1=true" in text
+    assert "payload builder" in text
+    assert "dry-validation" in text
+    assert "killswitch abort" in text
+    assert "cancel cleanup" in text
+    assert "offline payload readiness" in text
+    assert "private endpoint" in text
+    assert "side-price-qty" in text
+    assert "demo-instrument rules binding" in text
+    assert "**no** runtime/live/preflight lift/order/cancel/execution/arming/authority lift" in text
+    assert ORDER_CAPABILITY_REMAINING_READINESS_GAP_REVIEW_INPUT_BUNDLE.split("/")[-1] in text
