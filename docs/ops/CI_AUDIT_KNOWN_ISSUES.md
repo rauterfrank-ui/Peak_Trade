@@ -97,8 +97,8 @@ PREFLIGHT_REMAINS_BLOCKED=true
 | Artifact | Path |
 |----------|------|
 | Slice-4 bounded observation PASS | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runs/u2b_slice4_run_verification_bounded_observation_no_promotion_v1_20260612T182928Z/` |
-| Local source discovery (0 C2/C4) | `planning/u2b_local_official_source_artifact_discovery_readonly_no_ingest_no_run_v1_20260612T181725Z/` |
-| P1 fail-closed policy record | `planning/u2b_source_policy_decision_record_autofill_safe_default_p1_no_implementation_no_network_no_run_v1_20260612T175511Z/` |
+| Local source discovery (0 C2/C4) | `planning&#47;u2b_local_official_source_artifact_discovery_readonly_no_ingest_no_run_v1_20260612T181725Z&#47;` |
+| P1 fail-closed policy record | `planning&#47;u2b_source_policy_decision_record_autofill_safe_default_p1_no_implementation_no_network_no_run_v1_20260612T175511Z&#47;` |
 
 **Canonical repo owners (reuse — do not duplicate):**
 
