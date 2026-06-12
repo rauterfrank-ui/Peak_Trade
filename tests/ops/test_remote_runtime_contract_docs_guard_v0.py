@@ -1288,6 +1288,50 @@ PT_DOCS_GATES_SNAPSHOT_DOCS_DIFF_GUARD_POLICY_RECIPROCAL_CROSSLINK_EXPECTED: dic
 PT_DOCS_GATES_SNAPSHOT_DOCS_DIFF_GUARD_POLICY_RECIPROCAL_CROSSLINK_OWNER_TESTS = (
     "test_check_docs_diff_guard_section_contract_v0.py",
 )
+DOCS_DRIFT_GUARD_SENSITIVE_PATH_COUPLING_RECIPROCAL_CROSSLINK_HEADING = (
+    "## Docs Drift Guard + sensitive-path coupling reciprocal crosslink — docs/tests-only guard v1"
+)
+DOCS_DRIFT_GUARD_SENSITIVE_PATH_COUPLING_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR = (
+    "CHECK_DOCS_DRIFT_GUARD_AND_SENSITIVE_PATH_COUPLING_RECIPROCAL_CROSSLINK_BUNDLE_V1=true"
+)
+DOCS_DRIFT_GUARD_SENSITIVE_PATH_COUPLING_RECIPROCAL_CROSSLINK_INPUT_BUNDLE = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/systemwide_next_safe_scope_ranking_after_pt_docs_gates_snapshot_and_"
+    "docs_diff_guard_policy_reciprocal_crosslink_bundle_merge_no_run_v1_20260613T010500Z"
+)
+DOCS_DRIFT_GUARD_SENSITIVE_PATH_COUPLING_RECIPROCAL_CROSSLINK_EXPECTED: dict[str, str] = {
+    "CHECK_DOCS_DRIFT_GUARD_AND_SENSITIVE_PATH_COUPLING_RECIPROCAL_CROSSLINK_BUNDLE_V1": "true",
+    "DOCS_DRIFT_GUARD_RECIPROCAL_CROSSLINK_PARITY": "true",
+    "SENSITIVE_PATH_REQUIRED_DOCS_COUPLING_RECIPROCAL_BINDING": "true",
+    "EXISTING_CANONICAL_OWNERS_REUSED": "true",
+    "CV3_HISTOGRAM_BUCKET_SCOPE_SEPARATE": "true",
+    "STANDARD_CHECK_INTEGRATED": "true",
+    "PARALLEL_GUARD_CREATED": "false",
+    "DOCS_DRIFT_GUARD_SEMANTIC_TOUCH": "false",
+    "SENSITIVE_PATH_COUPLING_SEMANTIC_TOUCH": "false",
+    "DOCS_TRUTH_MAP_YAML_MUTATED": "false",
+    "WORKFLOW_YAML_MUTATED": "false",
+    "NO_WORKFLOW_MUTATION": "true",
+    "REQUIRED_CHECK_CONFIG_MUTATED": "false",
+    "NO_REQUIRED_CHECK_CONFIG_CHANGE": "true",
+    "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED": "true",
+    "DOCS_DRIFT_OR_POINTER_INTEGRITY_COMPLETE": "false",
+    "TRUTH_PROMOTION_EXECUTED": "false",
+    "OBSERVABILITY_TRUTH_ALLOWED_CHANGED": "false",
+    "REAL_METADATA_SOURCE_MARKED_CHANGED": "false",
+    "PREFLIGHT_REMAINS_BLOCKED": "true",
+    "NO_SESSION_INVOKE_AUTHORIZED": "true",
+    "U2B_PARKED": "true",
+    "MARKET_AIRPORT_EXCLUDED": "true",
+    "EVIDENCE_OR_DOCS_ANCHOR_NOT_RUNTIME_AUTHORITY": "true",
+    "NO_RUNTIME": "true",
+    "NO_LIVE": "true",
+    "NO_PREFLIGHT_LIFT": "true",
+    "NEW_PARALLEL_SSOT_CREATED": "false",
+}
+DOCS_DRIFT_GUARD_SENSITIVE_PATH_COUPLING_RECIPROCAL_CROSSLINK_OWNER_TESTS = (
+    "test_check_docs_drift_guard.py",
+)
 PREFLIGHT_PROCESS_GATE_HYGIENE_GUARD_EXPECTED: dict[str, str] = {
     "PREFLIGHT_PROCESS_GATE_HYGIENE_GUARD_V1": "true",
     "ACTIVE_RUN_CHECK_PEAK_TRADE_EXPLICIT_ONLY": "true",
@@ -3632,6 +3676,104 @@ def test_docs_truth_map_pt_docs_gates_snapshot_docs_diff_guard_policy_reciprocal
     assert "**no** workflow YAML mutation" in text
     assert "SNAPSHOT_WRAPPER_MUTATED=false" in text
     assert "DOCS_DIFF_GUARD_SCRIPT_MUTATED=false" in text
+    assert "WORKFLOW_YAML_MUTATED=false" in text
+    assert "REQUIRED_CHECK_CONFIG_MUTATED=false" in text
+    assert "PARALLEL_GUARD_CREATED=false" in text
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in text
+    assert "NO_SESSION_INVOKE_AUTHORIZED=true" in text
+    assert "U2B_PARKED=true" in text
+    assert "MARKET_AIRPORT_EXCLUDED=true" in text
+    assert "EVIDENCE_OR_DOCS_ANCHOR_NOT_RUNTIME_AUTHORITY=true" in text
+    assert "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true" in text
+
+
+def _docs_drift_guard_sensitive_path_coupling_reciprocal_crosslink_section(
+    text: str,
+) -> str:
+    start = text.find(DOCS_DRIFT_GUARD_SENSITIVE_PATH_COUPLING_RECIPROCAL_CROSSLINK_HEADING)
+    assert start != -1, "missing Docs Drift Guard + sensitive-path coupling reciprocal section"
+    next_heading = text.find("\n## ", start + 1)
+    if next_heading == -1:
+        return text[start:]
+    return text[start:next_heading]
+
+
+def test_ci_audit_docs_drift_guard_sensitive_path_coupling_reciprocal_crosslink_section_v1() -> (
+    None
+):
+    text = _ci_audit_text()
+    section = _docs_drift_guard_sensitive_path_coupling_reciprocal_crosslink_section(text)
+    assert DOCS_DRIFT_GUARD_SENSITIVE_PATH_COUPLING_RECIPROCAL_CROSSLINK_INPUT_BUNDLE in section
+    assert (
+        "GO_CHECK_DOCS_DRIFT_GUARD_AND_SENSITIVE_PATH_COUPLING_RECIPROCAL_CROSSLINK_BUNDLE_DOCS_TESTS_NO_RUN_V1"
+        in section
+    )
+    assert "CI_AUDIT ↔ DOCS_TRUTH_MAP reciprocal crosslink" in section
+    assert "DOCS_TRUTH_MAP chronicle" in section
+    assert "CI_AUDIT / DOCS_TRUTH_MAP reciprocal guard" in section
+    assert THIS_MODULE in section
+    assert "check_docs_drift_guard.py" in section
+    assert "docs_truth_map.yaml" in section
+    assert "TRUTH_BRANCH_PROTECTION.md" in section
+    assert "docs-drift-guard" in section
+    assert "sensitive-path → required_docs" in section
+    assert "fail-closed" in section
+    assert "#4200" in section
+    assert "#4201" in section
+    assert "#4202" in section
+    assert "#4164" in section
+    assert "SLICE-CV-3" in section
+    for module_name in DOCS_DRIFT_GUARD_SENSITIVE_PATH_COUPLING_RECIPROCAL_CROSSLINK_OWNER_TESTS:
+        assert module_name in section, f"missing drift guard test owner {module_name!r}"
+
+
+def test_ci_audit_docs_drift_guard_sensitive_path_coupling_reciprocal_crosslink_machine_lines_v1() -> (
+    None
+):
+    block = _block_containing(
+        _ci_audit_text(),
+        DOCS_DRIFT_GUARD_SENSITIVE_PATH_COUPLING_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR,
+    )
+    values = _machine_line_values(block)
+    missing = (
+        set(DOCS_DRIFT_GUARD_SENSITIVE_PATH_COUPLING_RECIPROCAL_CROSSLINK_EXPECTED) - values.keys()
+    )
+    assert not missing, (
+        f"missing Docs Drift Guard + sensitive-path coupling reciprocal keys: {sorted(missing)}"
+    )
+    for (
+        key,
+        expected,
+    ) in DOCS_DRIFT_GUARD_SENSITIVE_PATH_COUPLING_RECIPROCAL_CROSSLINK_EXPECTED.items():
+        assert values[key] == expected, f"{key}={values[key]!r} expected {expected!r}"
+
+
+def test_docs_truth_map_docs_drift_guard_sensitive_path_coupling_reciprocal_crosslink_chronicle_v1() -> (
+    None
+):
+    text = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    assert (
+        "Docs Drift Guard + sensitive-path coupling reciprocal crosslink bundle "
+        "CI_AUDIT ↔ DOCS_TRUTH_MAP guard v1"
+    ) in text
+    assert THIS_MODULE in text
+    assert DOCS_DRIFT_GUARD_SENSITIVE_PATH_COUPLING_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR in text
+    assert "DOCS_DRIFT_GUARD_RECIPROCAL_CROSSLINK_PARITY=true" in text
+    assert "SENSITIVE_PATH_REQUIRED_DOCS_COUPLING_RECIPROCAL_BINDING=true" in text
+    assert "EXISTING_CANONICAL_OWNERS_REUSED=true" in text
+    assert "CV3_HISTOGRAM_BUCKET_SCOPE_SEPARATE=true" in text
+    assert "check_docs_drift_guard.py" in text
+    assert "docs_truth_map.yaml" in text
+    assert "TRUTH_BRANCH_PROTECTION.md" in text
+    assert "test_check_docs_drift_guard.py" in text
+    assert (
+        DOCS_DRIFT_GUARD_SENSITIVE_PATH_COUPLING_RECIPROCAL_CROSSLINK_INPUT_BUNDLE.split("/")[-1]
+        in text
+    )
+    assert "**no** workflow YAML mutation" in text
+    assert "DOCS_DRIFT_GUARD_SEMANTIC_TOUCH=false" in text
+    assert "SENSITIVE_PATH_COUPLING_SEMANTIC_TOUCH=false" in text
+    assert "DOCS_TRUTH_MAP_YAML_MUTATED=false" in text
     assert "WORKFLOW_YAML_MUTATED=false" in text
     assert "REQUIRED_CHECK_CONFIG_MUTATED=false" in text
     assert "PARALLEL_GUARD_CREATED=false" in text

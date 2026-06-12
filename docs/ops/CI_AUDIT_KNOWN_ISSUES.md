@@ -1083,6 +1083,90 @@ NEW_PARALLEL_SSOT_CREATED=false
 
 **Non-authorizing:** Docs/check-plan reciprocal crosslink integration only; does **not** authorize workflow edits, branch-protection changes, truth promotion, flag mutation, runtime/live/paper/shadow/testnet, session invoke, Preflight lift, order/cancel/execution/arming, U2b reactivation, Market-Airport authority changes, or trading logic changes.
 
+## Docs Drift Guard + sensitive-path coupling reciprocal crosslink — docs/tests-only guard v1
+
+**Operator-GO:** `GO_CHECK_DOCS_DRIFT_GUARD_AND_SENSITIVE_PATH_COUPLING_RECIPROCAL_CROSSLINK_BUNDLE_DOCS_TESTS_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_pt_docs_gates_snapshot_and_docs_diff_guard_policy_reciprocal_crosslink_bundle_merge_no_run_v1_20260613T010500Z/`
+
+**Purpose:** Anchor the **Docs Drift Guard** and its **sensitive-path → required_docs** coupling as a reciprocal crosslink slice. Static **CI_AUDIT ↔ DOCS_TRUTH_MAP reciprocal crosslink** closes the remaining chronicle/guard parity gap for operative docs-drift enforcement visibility — symmetric to the closed #4200 Docs Token Policy Guard standard check #1, #4201 Docs Reference Targets Guard standard check #2, and #4202 pt_docs_gates_snapshot + Diff Guard Gate 3 integrations. **Docs/tests/check-plan visibility only** — no workflow mutation, no required-check configuration change, no promotion, no runtime. **Scope separate from CV3 (#4164):** the deferred `docs_drift_or_pointer_integrity` histogram bucket remains deferred; this slice documents operative sensitive→required_docs coupling only.
+
+**Canonical repo owners (reuse — do not duplicate):**
+
+| Concern | Owner |
+|---------|-------|
+| Docs drift CLI guard | `scripts/ops/check_docs_drift_guard.py` |
+| Sensitive-path mapping SSOT | `config/ops/docs_truth_map.yaml` |
+| Operator registry + Betrieb | `docs/ops/registry/DOCS_TRUTH_MAP.md` |
+| Truth branch protection (reference) | `docs/ops/registry/TRUTH_BRANCH_PROTECTION.md` |
+| Truth gates CI (reference only — **no** YAML mutation) | `.github/workflows/truth_gates_pr.yml` → check `docs-drift-guard` |
+| Existing drift guard tests (reuse) | `tests/ops/test_check_docs_drift_guard.py` |
+| CV3 deferred bucket (reuse — separate scope) | CI_AUDIT § Docs drift / pointer integrity crosslink guard v0 (SLICE-CV-3) |
+| Closed #4200 pointer (reuse) | CI_AUDIT § Docs Token Policy Guard standard check integration |
+| Closed #4201 pointer (reuse) | CI_AUDIT § Docs Reference Targets Guard standard check integration |
+| Closed #4202 pointer (reuse) | CI_AUDIT § pt_docs_gates_snapshot + Docs Diff Guard Policy Gate reciprocal crosslink |
+| Remote runtime contract docs guard (reuse) | `tests/ops/test_remote_runtime_contract_docs_guard_v0.py` |
+| CI_AUDIT / DOCS_TRUTH_MAP reciprocal guard | `tests/ops/test_remote_runtime_contract_docs_guard_v0.py` |
+| DOCS_TRUTH_MAP chronicle | `docs/ops/registry/DOCS_TRUTH_MAP.md` (this crosslink section + Änderungsnachweis row) |
+
+**Crosslink invariants (static — not enforcement activation):**
+
+| Invariant | Posture |
+|-----------|---------|
+| Sensitive-path → required_docs coupling | when a `sensitive` path changes, at least one `required_docs` entry must change in the same diff — fail-closed |
+| Docs drift guard semantic | **unchanged** — reference only |
+| docs_truth_map.yaml rules | **unchanged** — reference only |
+| CV3 histogram bucket | **separate scope** — `docs_drift_or_pointer_integrity` remains **deferred** |
+| Workflow YAML | **unchanged** — reference only |
+| Required-check config | **unchanged** — visibility only |
+| U2b | **parked** — not reactivated |
+| Market-Airport | **excluded** |
+
+```text
+CHECK_DOCS_DRIFT_GUARD_AND_SENSITIVE_PATH_COUPLING_RECIPROCAL_CROSSLINK_BUNDLE_V1=true
+DOCS_DRIFT_GUARD_RECIPROCAL_CROSSLINK_PARITY=true
+SENSITIVE_PATH_REQUIRED_DOCS_COUPLING_RECIPROCAL_BINDING=true
+EXISTING_CANONICAL_OWNERS_REUSED=true
+CV3_HISTOGRAM_BUCKET_SCOPE_SEPARATE=true
+DOCS_DRIFT_GUARD_VALIDATOR=check_docs_drift_guard.py
+DOCS_TRUTH_MAP_CONFIG=docs_truth_map.yaml
+DOCS_DRIFT_GUARD_CI_REQUIRED_CONTEXT=docs-drift-guard
+DOCS_TOKEN_POLICY_GUARD_STANDARD_CHECK_REUSE_POINTER=#4200
+DOCS_REFERENCE_TARGETS_GUARD_STANDARD_CHECK_REUSE_POINTER=#4201
+PT_DOCS_GATES_SNAPSHOT_DIFF_GUARD_REUSE_POINTER=#4202
+CV3_DEFERRED_BUCKET_REUSE_POINTER=#4164
+STANDARD_CHECK_INTEGRATED=true
+PARALLEL_GUARD_CREATED=false
+DOCS_DRIFT_GUARD_SEMANTIC_TOUCH=false
+SENSITIVE_PATH_COUPLING_SEMANTIC_TOUCH=false
+DOCS_TRUTH_MAP_YAML_MUTATED=false
+WORKFLOW_YAML_MUTATED=false
+NO_WORKFLOW_MUTATION=true
+REQUIRED_CHECK_CONFIG_MUTATED=false
+NO_REQUIRED_CHECK_CONFIG_CHANGE=true
+DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
+DOCS_DRIFT_OR_POINTER_INTEGRITY_COMPLETE=false
+TRUTH_PROMOTION_EXECUTED=false
+OBSERVABILITY_TRUTH_ALLOWED_CHANGED=false
+REAL_METADATA_SOURCE_MARKED_CHANGED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+NO_SESSION_INVOKE_AUTHORIZED=true
+U2B_PARKED=true
+MARKET_AIRPORT_EXCLUDED=true
+EVIDENCE_OR_DOCS_ANCHOR_NOT_RUNTIME_AUTHORITY=true
+NO_RUNTIME=true
+NO_LIVE=true
+NO_PREFLIGHT_LIFT=true
+NEW_PARALLEL_SSOT_CREATED=false
+```
+
+**Standard local sequence (before push — truth gate, read-only):**
+
+1. `python3 scripts&#47;ops&#47;check_docs_drift_guard.py --base origin&#47;main`
+2. Continue with Docs Token Policy (#4200), Reference Targets (#4201), and pt_docs_gates_snapshot (#4202) preflight as applicable
+
+**Guard module (reuse — no parallel docs-drift SSOT):** `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`.
+
+**Non-authorizing:** Docs/check-plan reciprocal crosslink integration only; does **not** authorize workflow edits, branch-protection changes, truth promotion, flag mutation, runtime/live/paper/shadow/testnet, session invoke, Preflight lift, order/cancel/execution/arming, U2b reactivation, Market-Airport authority changes, trading logic changes, CV3 histogram bucket closure, or semantic changes to `check_docs_drift_guard.py` / `docs_truth_map.yaml`.
+
 ## Primary evidence retention invariant residual static review — docs/tests-only guard v1
 
 **Operator-GO:** `GO_PRIMARY_EVIDENCE_RETENTION_INVARIANT_RESIDUAL_STATIC_REVIEW_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_ci_docs_required_check_truth_map_residual_review_merge_no_run_v1_20260612T005020Z/`
