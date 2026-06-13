@@ -1395,6 +1395,71 @@ DOCS_DRIFT_OR_POINTER_INTEGRITY_COMPLETE=false
 
 **Non-authorizing:** Docs/tests-only reciprocal crosslink integration only; does **not** authorize Ops Cockpit enablement, payload semantic changes, Master V2 / Double Play logic changes, DRAFT→READY promotion, new cockpit rows, runtime/live/paper/shadow/testnet, session invoke, Preflight lift, order/cancel/execution/arming, U2b reactivation, Market-Airport authority changes, trading logic changes, Truth-Gates chain #4200–#4204 or #4205 extension/re-chronicle, workflow edits, branch-protection changes, or truth promotion.
 
+## Ops Cockpit runbook canonical pointer + Runbooks index reciprocal crosslink — docs/tests-only guard v1
+
+**Operator-GO:** `GO_OPS_COCKPIT_RUNBOOK_CANONICAL_POINTER_RUNBOOKS_INDEX_CI_AUDIT_DOCS_TRUTH_MAP_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_p67_p72_library_scheduler_boundary_opt_in_reciprocal_crosslink_merge_no_run_v1_20260613T002242Z/`
+
+**Purpose:** Anchor the **canonical Ops Cockpit v2.5 truth-first runbook** in the existing Runbooks index and mark pre-v2.5 Ops Cockpit v2 lineage runbooks with uniform superseded banners pointing at the v2.5 owner — static **CI_AUDIT ↔ DOCS_TRUTH_MAP reciprocal crosslink** closes the Runbooks-index / pointer-integrity visibility gap **without** changing runbook historical content, payload semantics, cockpit enablement, or authority. **Scope separate from closed #4205 evidence/freshness, #4206 Master-V2 non-authority, and #4207 P67/P72 slices** — Runbooks index / supersession pointer only.
+
+**Canonical repo owners (reuse — do not duplicate):**
+
+| Concern | Owner |
+|---------|-------|
+| Canonical v2.5 truth-first runbook | `docs/ops/runbooks/webui_ops_cockpit_v2_5_truth_first.md` |
+| Operator summary surface (reuse pointer) | `docs/ops/specs/OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md` |
+| Runbooks index (single canonical entry) | `docs/ops/runbooks/README.md` |
+| Superseded pre-v2.5 runbooks (banner only) | `webui_ops_cockpit_v2_truth_first.md`, `webui_ops_cockpit_v2_1_truth_first.md`, `webui_ops_cockpit_v2_2_truth_first.md`, `webui_ops_cockpit_v2_3_truth_first.md`, `webui_ops_cockpit_v2_4_truth_first.md` |
+| Post-v2.5 incremental runbooks (historical purpose retained — **no** superseded banner) | `webui_ops_cockpit_v2_6_truth_first.md`, `webui_ops_cockpit_v2_7_truth_first.md`, `webui_ops_cockpit_v2_8_truth_first.md`, `webui_ops_cockpit_v2_9_truth_first.md` |
+| Closed #4205 evidence/freshness crosslink (reuse pointer only) | CI_AUDIT § Ops Cockpit v2.5 evidence/freshness observation reciprocal crosslink |
+| Closed #4206 Master-V2 non-authority crosslink (reuse pointer only) | CI_AUDIT § Ops Cockpit ↔ Master V2 non-authority reciprocal crosslink |
+| Closed #4207 P67/P72 crosslink (reuse pointer only — **no** re-chronicle) | CI_AUDIT § P67/P72 library scheduler boundary opt-in §7b reciprocal crosslink |
+| Remote runtime contract docs guard (reuse) | `tests/ops/test_remote_runtime_contract_docs_guard_v0.py` |
+| CI_AUDIT / DOCS_TRUTH_MAP reciprocal guard | `tests/ops/test_remote_runtime_contract_docs_guard_v0.py` |
+| DOCS_TRUTH_MAP chronicle | `docs/ops/registry/DOCS_TRUTH_MAP.md` (this crosslink section + Änderungsnachweis row) |
+
+**Runbooks index / supersession invariants (static — not cockpit authority):**
+
+| Invariant | Posture |
+|-----------|---------|
+| Canonical index entry | Exactly one v2.5 entry in `docs/ops/runbooks/README.md` |
+| Superseded banners | Pre-v2.5 lineage runbooks only; uniform pointer to v2.5 |
+| Historical runbook body | **Unchanged** below superseded banner |
+| Post-v2.5 runbooks | Retain independent incremental historical purpose |
+| Parallel runbook index | **Not created** |
+| Payload / enablement | **Unchanged** |
+
+```text
+OPS_COCKPIT_RUNBOOK_CANONICAL_POINTER_INDEX_RECIPROCAL_CROSSLINK_V1=true
+OPS_COCKPIT_V2_5_CANONICAL_RUNBOOK_POINTER_PRESENT=true
+OPS_COCKPIT_SUPERSEDED_RUNBOOKS_POINT_TO_V2_5=true
+OPS_COCKPIT_EXISTING_CANONICAL_OWNERS_REUSED=true
+OPS_COCKPIT_PAYLOAD_SEMANTIC_TOUCH=false
+OPS_COCKPIT_ENABLEMENT_CHANGED=false
+NEW_COCKPIT_ROW_CREATED=false
+MASTER_V2_SEMANTIC_TOUCH=false
+RUNBOOK_HISTORICAL_CONTENT_REMOVED=false
+PARALLEL_RUNBOOK_INDEX_CREATED=false
+WORKFLOW_YAML_MUTATED=false
+REQUIRED_CHECK_CONFIG_MUTATED=false
+TRUTH_GO_GRANTED=false
+TRUTH_PROMOTION_EXECUTED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+NO_SESSION_INVOKE_AUTHORIZED=true
+U2B_PARKED=true
+MARKET_AIRPORT_EXCLUDED=true
+EVIDENCE_OR_DOCS_ANCHOR_NOT_RUNTIME_AUTHORITY=true
+NO_RUNTIME=true
+NO_LIVE=true
+NO_PREFLIGHT_LIFT=true
+NEW_PARALLEL_SSOT_CREATED=false
+DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
+DOCS_DRIFT_OR_POINTER_INTEGRITY_COMPLETE=false
+```
+
+**Guard module (reuse — no parallel runbook-index SSOT):** `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`.
+
+**Non-authorizing:** Docs/tests-only reciprocal crosslink integration only; does **not** authorize Ops Cockpit enablement, payload semantic changes, new cockpit rows, runbook historical content removal, parallel runbook index creation, runtime/live/paper/shadow/testnet, session invoke, Preflight lift, order/cancel/execution/arming, U2b reactivation, Market-Airport authority changes, trading logic changes, Truth-Gates chain #4200–#4207 re-chronicle, workflow edits, branch-protection changes, or truth promotion.
+
 ## Primary evidence retention invariant residual static review — docs/tests-only guard v1
 
 **Operator-GO:** `GO_PRIMARY_EVIDENCE_RETENTION_INVARIANT_RESIDUAL_STATIC_REVIEW_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_ci_docs_required_check_truth_map_residual_review_merge_no_run_v1_20260612T005020Z/`

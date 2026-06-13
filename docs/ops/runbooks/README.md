@@ -72,6 +72,10 @@ Runbooks for AI autonomy workflows and control center operations:
 - [CURSOR_MULTI_AGENT_INTEGRATION_RUNBOOK_V1.md](CURSOR_MULTI_AGENT_INTEGRATION_RUNBOOK_V1.md) — Cursor Multi-Agent integration
 - [Wave3_Control_Center_Cheatsheet_v2.md](Wave3_Control_Center_Cheatsheet_v2.md) — Wave 3 Control Center cheatsheet
 
+### Ops Cockpit (WebUI, read-only)
+
+- [webui_ops_cockpit_v2_5_truth_first.md](./webui_ops_cockpit_v2_5_truth_first.md) — **Canonical** Ops Cockpit v2.5 truth-first operator runbook (`/ops`, `/api/ops-cockpit`; read-only; operator summary: [OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md](../specs/OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md))
+
 ### Phase-Specific Workflows
 
 Runbooks for specific phase implementations and workflows:
