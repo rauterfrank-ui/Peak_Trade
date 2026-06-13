@@ -147,6 +147,12 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
   - Status: closed (PR feat/realistic-backtest-runners-load-strategy-migration-v1; offline Tests `tests/scripts/test_realistic_backtest_runners_load_strategy_v1.py`)
   - Kanonische Keys: `ma_crossover`, `breakout_donchian`, `rsi_reversion`
 
+- [x] `demo_phase40_portfolio_backtest.py`: direkte OOP-Klassenimporte auf kanonischen `load_strategy()`-Pfad migriert
+  - Fundstellen: `scripts/demo_phase40_portfolio_backtest.py`
+  - Kontext: Fünf direkte Klassenimporte (`BreakoutStrategy`, `VolRegimeFilter`, `CompositeStrategy`, `RsiReversionStrategy`, `MACrossoverStrategy`) umgingen `load_strategy()`
+  - Status: closed (PR feat/demo-phase40-portfolio-backtest-load-strategy-migration-v1; offline Tests `tests/scripts/test_demo_phase40_portfolio_backtest_load_strategy_v1.py`)
+  - Kanonische Keys: `breakout`, `vol_regime_filter`, `composite`, `rsi_reversion`, `ma_crossover`
+
 ---
 
 ## Kategorie D – Tests & Infra
