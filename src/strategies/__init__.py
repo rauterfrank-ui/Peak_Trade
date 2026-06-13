@@ -22,6 +22,7 @@ STRATEGY_REGISTRY = {
     "rsi_reversion": "rsi_reversion",
     # Phase 40: Strategy Library & Portfolio-Track v1
     "breakout": "breakout",
+    "breakout_donchian": "breakout_donchian",
     "vol_regime_filter": "vol_regime_filter",
     "composite": "composite",
     "regime_aware_portfolio": "regime_aware_portfolio",

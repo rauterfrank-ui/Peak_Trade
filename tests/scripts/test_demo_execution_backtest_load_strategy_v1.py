@@ -121,6 +121,16 @@ def test_resolve_strategy_no_network_calls() -> None:
     urlopen.assert_not_called()
 
 
-def test_breakout_donchian_not_silently_aliased() -> None:
-    with pytest.raises(ValueError, match="Unbekannte Strategie"):
-        get_strategy_fn("breakout_donchian")
+def test_breakout_donchian_is_canonical_registry_key_not_silent_alias_to_breakout() -> None:
+    from src.strategies import STRATEGY_REGISTRY
+    from src.strategies.breakout import generate_signals as breakout_generate_signals
+
+    fn_donchian = get_strategy_fn("breakout_donchian")
+    fn_breakout = get_strategy_fn("breakout")
+
+    assert callable(fn_donchian)
+    assert callable(fn_breakout)
+    assert fn_breakout is breakout_generate_signals
+    assert fn_donchian is not breakout_generate_signals
+    assert fn_donchian is not fn_breakout
+    assert STRATEGY_REGISTRY["breakout_donchian"] != STRATEGY_REGISTRY["breakout"]

@@ -22,9 +22,12 @@ from datetime import datetime, timedelta
 from src.core.peak_config import load_config
 from src.core.position_sizing import build_position_sizer_from_config
 from src.core.risk import build_risk_manager_from_config
-from src.strategies.ma_crossover import MACrossoverStrategy
+from src.strategies import load_strategy
 from src.backtest.engine import BacktestEngine
 from src.backtest.stats import validate_for_live_trading
+
+MA_CROSSOVER_STRATEGY_KEY = "ma_crossover"
+MA_CROSSOVER_CONFIG_SECTION = "strategy.ma_crossover"
 
 
 def create_dummy_data(n_bars: int = 200) -> pd.DataFrame:
@@ -114,6 +117,22 @@ def print_report(result):
     print("\n" + "=" * 70 + "\n")
 
 
+def _load_ma_strategy_params(cfg) -> dict:
+    """Lädt MA-Crossover-Parameter aus Config; fail-closed bei fehlender Sektion."""
+    fast_window = cfg.get(f"{MA_CROSSOVER_CONFIG_SECTION}.fast_window")
+    slow_window = cfg.get(f"{MA_CROSSOVER_CONFIG_SECTION}.slow_window")
+    if fast_window is None or slow_window is None:
+        raise KeyError(
+            f"Config-Sektion [{MA_CROSSOVER_CONFIG_SECTION}] fehlt oder ist unvollständig"
+        )
+    return {
+        "fast_period": fast_window,
+        "slow_period": slow_window,
+        "stop_pct": cfg.get(f"{MA_CROSSOVER_CONFIG_SECTION}.stop_pct", 0.02),
+        "price_col": cfg.get(f"{MA_CROSSOVER_CONFIG_SECTION}.price_col", "close"),
+    }
+
+
 def main():
     """Main-Funktion."""
 
@@ -144,7 +163,7 @@ price_col = "close"
 position_size = 0.1
         """
         )
-        return
+        sys.exit(1)
 
     # Basis-Config anzeigen
     initial_cash = cfg.get("backtest.initial_cash", 10000.0)
@@ -155,16 +174,15 @@ position_size = 0.1
     print(f"  - Risk per Trade: {risk_per_trade:.1%}")
     print(f"  - Max Position Size: {max_position_size:.0%}")
 
-    # Strategie erstellen
-    print("\n📊 Erstelle Strategie...")
+    # Strategie-Parameter laden
+    print("\n📊 Strategie-Parameter...")
     try:
-        strategy = MACrossoverStrategy.from_config(cfg)
-        print(f"✅ {strategy}")
-        print(f"  - Fast Window: {strategy.fast_window}")
-        print(f"  - Slow Window: {strategy.slow_window}")
-        print(f"  - Price Column: '{strategy.price_col}'")
-    except Exception as e:
-        print(f"\n❌ FEHLER beim Erstellen der Strategie: {e}")
+        strategy_params = _load_ma_strategy_params(cfg)
+        print(f"  - Fast Window: {strategy_params['fast_period']}")
+        print(f"  - Slow Window: {strategy_params['slow_period']}")
+        print(f"  - Price Column: '{strategy_params['price_col']}'")
+    except KeyError as e:
+        print(f"\n❌ FEHLER: {e}")
         print("\nBitte stelle sicher, dass config.toml eine [strategy.ma_crossover] Sektion hat:")
         print(
             """
@@ -174,7 +192,9 @@ slow_window = 50
 price_col = "close"
         """
         )
-        return
+        sys.exit(1)
+
+    strategy_signal_fn = load_strategy(MA_CROSSOVER_STRATEGY_KEY)
 
     # Daten erstellen (später: von Kraken holen)
     print("\n📥 Lade Daten...")
@@ -184,7 +204,7 @@ price_col = "close"
 
     # Signale generieren (Test)
     print("\n🔍 Generiere Signale...")
-    signals = strategy.generate_signals(df)
+    signals = strategy_signal_fn(df, strategy_params)
     n_longs = (signals == 1).sum()
     n_flats = (signals == 0).sum()
     print(f"  - Long Signale: {n_longs}")
@@ -200,21 +220,8 @@ price_col = "close"
     risk_manager = build_risk_manager_from_config(cfg, section="risk_management")
     print(f"✅ {risk_manager}")
 
-    # Backtest durchführen (mit Legacy-API für BacktestEngine)
+    # Backtest durchführen
     print("\n⚙️  Führe Realistic Backtest durch...")
-
-    # BacktestEngine erwartet noch die alte API (strategy_signal_fn + params)
-    # Wir wrappen die neue OOP-Strategie in die alte API
-    def strategy_signal_fn(df, params):
-        return strategy.generate_signals(df)
-
-    # Stop-Loss aus Config holen
-    stop_pct = cfg.get("strategy.ma_crossover.stop_pct", 0.02)
-    strategy_params = {
-        "fast_period": strategy.fast_window,
-        "slow_period": strategy.slow_window,
-        "stop_pct": stop_pct,
-    }
 
     engine = BacktestEngine(core_position_sizer=position_sizer, risk_manager=risk_manager)
     result = engine.run_realistic(
