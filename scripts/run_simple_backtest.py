@@ -41,8 +41,10 @@ from src.risk import (
     RiskLimitsConfig,
 )
 
-# Strategie
-from src.strategies.ma_crossover import generate_signals
+# Strategie (kanonischer Registry-Pfad)
+from src.strategies import load_strategy
+
+MA_CROSSOVER_STRATEGY_KEY = "ma_crossover"
 
 
 def create_test_data(n_bars: int = 200) -> pd.DataFrame:
@@ -190,8 +192,9 @@ def main():
     print("6. Backtest durchführen")
     print("-" * 70)
 
+    strategy_signal_fn = load_strategy(MA_CROSSOVER_STRATEGY_KEY)
     result = engine.run_realistic(
-        df=df, strategy_signal_fn=generate_signals, strategy_params=strategy_config
+        df=df, strategy_signal_fn=strategy_signal_fn, strategy_params=strategy_config
     )
 
     print("✅ Backtest abgeschlossen!")

@@ -19,7 +19,10 @@ import numpy as np
 from datetime import datetime, timedelta
 
 from src.core import get_config, get_strategy_cfg
-from src.strategies.momentum import generate_signals, get_strategy_description
+from src.strategies import load_strategy
+from src.strategies.momentum import get_strategy_description
+
+MOMENTUM_STRATEGY_KEY = "momentum_1h"
 from src.backtest.engine import BacktestEngine
 from src.backtest.stats import validate_for_live_trading
 
@@ -155,8 +158,9 @@ stop_pct = 0.025
     # Backtest durchführen
     print("\n⚙️  Führe Realistic Backtest durch...")
     engine = BacktestEngine()
+    strategy_signal_fn = load_strategy(MOMENTUM_STRATEGY_KEY)
     result = engine.run_realistic(
-        df=df, strategy_signal_fn=generate_signals, strategy_params=strategy_params
+        df=df, strategy_signal_fn=strategy_signal_fn, strategy_params=strategy_params
     )
 
     # Report drucken
