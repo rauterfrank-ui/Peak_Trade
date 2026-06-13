@@ -29,7 +29,7 @@ import sys
 import argparse
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 
 # Pfad-Setup
 CURRENT_DIR = Path(__file__).resolve().parent
@@ -41,7 +41,56 @@ import pandas as pd
 import numpy as np
 
 from src.backtest.engine import BacktestEngine
-from src.strategies import load_strategy
+from src.core.experiments import log_backtest_result
+from src.strategies import STRATEGY_REGISTRY, load_strategy
+
+
+def get_available_strategy_hint_keys() -> list[str]:
+    return sorted(STRATEGY_REGISTRY.keys())
+
+
+def format_available_strategy_hints() -> str:
+    return ", ".join(get_available_strategy_hint_keys())
+
+
+def get_default_strategy_params(name: str) -> Dict[str, Any]:
+    defaults: Dict[str, Dict[str, Any]] = {
+        "ma_crossover": {
+            "fast_period": 10,
+            "slow_period": 30,
+            "stop_pct": 0.02,
+        },
+        "rsi_reversion": {
+            "rsi_period": 14,
+            "oversold": 30,
+            "overbought": 70,
+            "stop_pct": 0.02,
+        },
+        "macd": {
+            "fast_ema": 12,
+            "slow_ema": 26,
+            "signal_ema": 9,
+            "stop_pct": 0.02,
+        },
+        "momentum_1h": {
+            "lookback_period": 20,
+            "entry_threshold": 0.02,
+            "exit_threshold": -0.01,
+            "stop_pct": 0.02,
+        },
+        "bollinger_bands": {
+            "bb_period": 20,
+            "bb_std": 2.0,
+            "stop_pct": 0.02,
+        },
+        "breakout": {
+            "lookback_breakout": 20,
+            "stop_pct": 0.02,
+        },
+    }
+    if name not in defaults:
+        raise ValueError(f"Unbekannte Strategie '{name}'")
+    return dict(defaults[name])
 
 
 def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
@@ -172,7 +221,7 @@ def generate_sample_data(
     return df
 
 
-def main(argv: Optional[List[str]] = None) -> None:
+def main(argv: Optional[List[str]] = None) -> int:
     args = parse_args(argv)
 
     print("\n" + "=" * 70)
@@ -195,21 +244,16 @@ def main(argv: Optional[List[str]] = None) -> None:
     print(f"   Zeitraum: {df.index[0]} bis {df.index[-1]}")
     print(f"   Preis-Range: {df['close'].min():.2f} - {df['close'].max():.2f}")
 
-    # 2. Strategie laden
+    # 2. Strategie laden (kanonisch, fail-closed)
     print(f"\n🎯 Lade Strategie: {args.strategy}")
     try:
         strategy_fn = load_strategy(args.strategy)
-    except Exception as e:
+        strategy_params = get_default_strategy_params(args.strategy)
+    except ValueError as e:
         print(f"❌ Fehler beim Laden der Strategie: {e}")
-        print("   Verfuegbare Strategien: ma_crossover, rsi_reversion, macd, momentum, bollinger")
-        return
+        print(f"   Verfuegbare Strategien: {format_available_strategy_hints()}")
+        return 1
 
-    # Strategie-Parameter (Standard-Werte)
-    strategy_params = {
-        "fast_period": 10,
-        "slow_period": 30,
-        "stop_pct": 0.02,
-    }
     print(f"   Parameter: {strategy_params}")
 
     # 3. Backtest mit Order-Layer ausfuehren
@@ -312,13 +356,27 @@ def main(argv: Optional[List[str]] = None) -> None:
     print("✅ Order-Pipeline-Backtest Demo abgeschlossen!")
     print("=" * 70)
 
+    start_date_str = df.index[0].strftime("%Y-%m-%d")
+    end_date_str = df.index[-1].strftime("%Y-%m-%d")
+
+    registry_run_id = log_backtest_result(
+        result=result,
+        strategy_name=args.strategy,
+        tag=args.tag,
+        data_source="synthetic",
+        symbol=args.symbol,
+        timeframe=args.timeframe,
+        start_date=start_date_str,
+        end_date=end_date_str,
+        extra_metadata={"runner": "demo_order_pipeline_backtest.py"},
+    )
+    print(f"\n📝 Registry-Run-ID: {registry_run_id}")
     if args.tag:
-        print(f"\n📝 Tag: {args.tag}")
-        # NOTE: Siehe docs/TECH_DEBT_BACKLOG.md (Eintrag "Registry-Logging: demo_order_pipeline_backtest.py")
-        # log_backtest_run(..., tag=args.tag)
+        print(f"   Tag: {args.tag}")
 
     print()
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

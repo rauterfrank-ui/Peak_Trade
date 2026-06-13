@@ -132,10 +132,9 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
 
 ### Registry-Logging
 
-- [ ] Registry-Logging in `demo_order_pipeline_backtest.py` implementieren
-  - Fundstelle: `scripts&#47;demo_order_pipeline_backtest.py` (Zeile 306) (illustrative)
-  - Kontext: Registry-Logging für automatisches Tracking
-  - Vorschlag: Integration mit `src&#47;core&#47;experiments.py`
+- [x] Registry-Logging in `demo_order_pipeline_backtest.py` implementieren
+  - Fundstelle: `scripts&#47;demo_order_pipeline_backtest.py` (illustrative)
+  - Kontext: Registry-Logging für automatisches Tracking via `log_backtest_result` (fail-closed `load_strategy`, kanonische Registry-Hints)
 
 ---
 
