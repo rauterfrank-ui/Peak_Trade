@@ -22,9 +22,12 @@ from datetime import datetime, timedelta
 from src.core.peak_config import load_config
 from src.core.position_sizing import build_position_sizer_from_config
 from src.core.risk import build_risk_manager_from_config
-from src.strategies.rsi_reversion import RsiReversionStrategy
+from src.strategies import load_strategy
 from src.backtest.engine import BacktestEngine
 from src.backtest.stats import validate_for_live_trading
+
+RSI_REVERSION_STRATEGY_KEY = "rsi_reversion"
+RSI_REVERSION_CONFIG_SECTION = "strategy.rsi_reversion"
 
 
 def create_dummy_data(n_bars: int = 200) -> pd.DataFrame:
@@ -111,6 +114,30 @@ def print_report(result):
     print("\n" + "=" * 70 + "\n")
 
 
+def _load_rsi_strategy_params(cfg) -> dict:
+    """Lädt RSI-Reversion-Parameter aus Config; fail-closed bei fehlender Sektion."""
+    rsi_window = cfg.get(f"{RSI_REVERSION_CONFIG_SECTION}.rsi_window")
+    lower = cfg.get(f"{RSI_REVERSION_CONFIG_SECTION}.lower")
+    upper = cfg.get(f"{RSI_REVERSION_CONFIG_SECTION}.upper")
+    if rsi_window is None or lower is None or upper is None:
+        raise KeyError(
+            f"Config-Sektion [{RSI_REVERSION_CONFIG_SECTION}] fehlt oder ist unvollständig"
+        )
+    return {
+        "rsi_window": rsi_window,
+        "lower": lower,
+        "upper": upper,
+        "stop_pct": cfg.get(f"{RSI_REVERSION_CONFIG_SECTION}.stop_pct", 0.02),
+        "price_col": cfg.get(f"{RSI_REVERSION_CONFIG_SECTION}.price_col", "close"),
+    }
+
+
+def _long_only_signal_fn(df, params):
+    """Long-only Wrapper: Short-Signale (-1) in Flat (0) für Long-Only Engine."""
+    sigs = load_strategy(RSI_REVERSION_STRATEGY_KEY)(df, params)
+    return sigs.replace(-1, 0)
+
+
 def main():
     """Main-Funktion."""
 
@@ -134,7 +161,7 @@ upper = 70.0
 price_col = "close"
         """
         )
-        return
+        sys.exit(1)
 
     # Basis-Config anzeigen
     initial_cash = cfg.get("backtest.initial_cash", 10000.0)
@@ -145,19 +172,20 @@ price_col = "close"
     print(f"  - Risk per Trade: {risk_per_trade:.1%}")
     print(f"  - Max Position Size: {max_position_size:.0%}")
 
-    # Strategie erstellen
-    print("\n📊 Erstelle Strategie...")
+    # Strategie-Parameter laden
+    print("\n📊 Strategie-Parameter...")
     try:
-        strategy = RsiReversionStrategy.from_config(cfg)
-        print(f"✅ {strategy}")
-        print(f"  - RSI Window: {strategy.rsi_window}")
-        print(f"  - Lower Threshold: {strategy.lower}")
-        print(f"  - Upper Threshold: {strategy.upper}")
-        print(f"  - Price Column: '{strategy.price_col}'")
-    except Exception as e:
-        print(f"\n❌ FEHLER beim Erstellen der Strategie: {e}")
+        strategy_params = _load_rsi_strategy_params(cfg)
+        print(f"  - RSI Window: {strategy_params['rsi_window']}")
+        print(f"  - Lower Threshold: {strategy_params['lower']}")
+        print(f"  - Upper Threshold: {strategy_params['upper']}")
+        print(f"  - Price Column: '{strategy_params['price_col']}'")
+    except KeyError as e:
+        print(f"\n❌ FEHLER: {e}")
         print("\nBitte stelle sicher, dass config.toml eine [strategy.rsi_reversion] Sektion hat.")
-        return
+        sys.exit(1)
+
+    base_signal_fn = load_strategy(RSI_REVERSION_STRATEGY_KEY)
 
     # Daten erstellen (später: von Kraken holen)
     print("\n📥 Lade Daten...")
@@ -167,7 +195,7 @@ price_col = "close"
 
     # Signale generieren (Test)
     print("\n🔍 Generiere Signale...")
-    signals = strategy.generate_signals(df)
+    signals = base_signal_fn(df, strategy_params)
     n_longs = (signals == 1).sum()
     n_shorts = (signals == -1).sum()
     n_flats = (signals == 0).sum()
@@ -185,28 +213,12 @@ price_col = "close"
     risk_manager = build_risk_manager_from_config(cfg, section="risk_management")
     print(f"✅ {risk_manager}")
 
-    # Backtest durchführen (mit Legacy-API für BacktestEngine)
+    # Backtest durchführen (Long-Only Wrapper für Engine)
     print("\n⚙️  Führe Realistic Backtest durch...")
-
-    # BacktestEngine erwartet noch die alte API (strategy_signal_fn + params)
-    # Wir wrappen die neue OOP-Strategie in die alte API
-    def strategy_signal_fn(df, params):
-        # Konvertiere Short-Signale (-1) in Flat (0) für Long-Only Engine
-        sigs = strategy.generate_signals(df)
-        return sigs.replace(-1, 0)
-
-    # Stop-Loss aus Config holen
-    stop_pct = cfg.get("strategy.rsi_reversion.stop_pct", 0.02)
-    strategy_params = {
-        "rsi_window": strategy.rsi_window,
-        "lower": strategy.lower,
-        "upper": strategy.upper,
-        "stop_pct": stop_pct,
-    }
 
     engine = BacktestEngine(core_position_sizer=position_sizer, risk_manager=risk_manager)
     result = engine.run_realistic(
-        df=df, strategy_signal_fn=strategy_signal_fn, strategy_params=strategy_params
+        df=df, strategy_signal_fn=_long_only_signal_fn, strategy_params=strategy_params
     )
 
     # Report drucken

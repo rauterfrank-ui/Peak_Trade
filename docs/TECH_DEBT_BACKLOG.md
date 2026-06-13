@@ -141,6 +141,12 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
   - Kontext: Fünf Scripts umgingen `load_strategy()` mit direktem Modul-Import (`ma_crossover`, `momentum`); kanonische Keys `ma_crossover`, `momentum_1h`
   - Status: closed (PR feat/legacy-demo-scripts-load-strategy-migration-v1; offline Tests `tests/scripts/test_legacy_demo_scripts_load_strategy_v1.py`)
 
+- [x] Realistic Backtest Runners: direkte OOP-Klassenimporte auf kanonischen `load_strategy()`-Pfad migriert
+  - Fundstellen: `scripts/run_ma_realistic.py`, `scripts/run_donchian_realistic.py`, `scripts/run_rsi_realistic.py`
+  - Kontext: Drei `*_realistic.py`-Scripts importierten `MACrossoverStrategy`, `DonchianBreakoutStrategy`, `RsiReversionStrategy` direkt; `run_ma_realistic.py` hatte fail-open return bei Strategie-Fehler
+  - Status: closed (PR feat/realistic-backtest-runners-load-strategy-migration-v1; offline Tests `tests/scripts/test_realistic_backtest_runners_load_strategy_v1.py`)
+  - Kanonische Keys: `ma_crossover`, `breakout_donchian`, `rsi_reversion`
+
 ---
 
 ## Kategorie D – Tests & Infra
