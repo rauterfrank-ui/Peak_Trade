@@ -27,9 +27,52 @@ import pandas as pd
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from src.strategies.vol_breakout import VolBreakoutStrategy
-from src.strategies.mean_reversion_channel import MeanReversionChannelStrategy
-from src.strategies.rsi_reversion import RsiReversionStrategy
+from src.strategies import load_strategy
+
+VOL_BREAKOUT_STRATEGY_KEY = "vol_breakout"
+MEAN_REVERSION_CHANNEL_STRATEGY_KEY = "mean_reversion_channel"
+RSI_REVERSION_STRATEGY_KEY = "rsi_reversion"
+
+VOL_BREAKOUT_DEFAULT_PARAMS = {
+    "lookback_breakout": 20,
+    "vol_window": 14,
+    "vol_percentile": 50.0,
+    "side": "both",
+}
+VOL_BREAKOUT_LONG_ONLY_PARAMS = {
+    "side": "long",
+}
+
+MEAN_REVERSION_CHANNEL_DEFAULT_PARAMS = {
+    "window": 20,
+    "num_std": 2.0,
+    "exit_at_mean": True,
+}
+MEAN_REVERSION_CHANNEL_TIGHT_PARAMS = {
+    "window": 15,
+    "num_std": 1.5,
+    "exit_at_mean": False,
+}
+
+RSI_REVERSION_WILDER_PARAMS = {
+    "rsi_window": 14,
+    "lower": 30.0,
+    "upper": 70.0,
+    "use_wilder": True,
+}
+RSI_REVERSION_SIMPLE_PARAMS = {
+    "rsi_window": 14,
+    "lower": 30.0,
+    "upper": 70.0,
+    "use_wilder": False,
+}
+RSI_REVERSION_TREND_FILTER_PARAMS = {
+    "rsi_window": 14,
+    "lower": 30.0,
+    "upper": 70.0,
+    "use_trend_filter": True,
+    "trend_ma_window": 50,
+}
 
 
 def create_synthetic_ohlcv(n_bars: int = 500, seed: int = 42) -> pd.DataFrame:
@@ -109,19 +152,11 @@ Ideal für: Märkte mit klaren Konsolidierungs- und Ausbruchsphasen
 """
     )
 
-    # Default-Parameter
-    strategy = VolBreakoutStrategy(
-        lookback_breakout=20,
-        vol_window=14,
-        vol_percentile=50.0,
-        side="both",
-    )
-    signals = strategy.generate_signals(df)
+    vol_breakout_fn = load_strategy(VOL_BREAKOUT_STRATEGY_KEY)
+    signals = vol_breakout_fn(df, VOL_BREAKOUT_DEFAULT_PARAMS)
     print_strategy_stats("Vol Breakout (default)", df, signals)
 
-    # Long-Only
-    strategy_long = VolBreakoutStrategy(side="long")
-    signals_long = strategy_long.generate_signals(df)
+    signals_long = vol_breakout_fn(df, VOL_BREAKOUT_LONG_ONLY_PARAMS)
     print_strategy_stats("Vol Breakout (long only)", df, signals_long)
 
 
@@ -142,22 +177,11 @@ Ideal für: Seitwärtsmärkte (Ranging Markets)
 """
     )
 
-    # Default-Parameter
-    strategy = MeanReversionChannelStrategy(
-        window=20,
-        num_std=2.0,
-        exit_at_mean=True,
-    )
-    signals = strategy.generate_signals(df)
+    mean_reversion_fn = load_strategy(MEAN_REVERSION_CHANNEL_STRATEGY_KEY)
+    signals = mean_reversion_fn(df, MEAN_REVERSION_CHANNEL_DEFAULT_PARAMS)
     print_strategy_stats("Mean Rev Channel (default)", df, signals)
 
-    # Engere Bänder
-    strategy_tight = MeanReversionChannelStrategy(
-        window=15,
-        num_std=1.5,
-        exit_at_mean=False,
-    )
-    signals_tight = strategy_tight.generate_signals(df)
+    signals_tight = mean_reversion_fn(df, MEAN_REVERSION_CHANNEL_TIGHT_PARAMS)
     print_strategy_stats("Mean Rev Channel (tight)", df, signals_tight)
 
 
@@ -182,35 +206,14 @@ Ideal für: Seitwärtsmärkte mit Übertreibungen
 """
     )
 
-    # Default (mit Wilder-Smoothing)
-    strategy = RsiReversionStrategy(
-        rsi_window=14,
-        lower=30.0,
-        upper=70.0,
-        use_wilder=True,
-    )
-    signals = strategy.generate_signals(df)
+    rsi_reversion_fn = load_strategy(RSI_REVERSION_STRATEGY_KEY)
+    signals = rsi_reversion_fn(df, RSI_REVERSION_WILDER_PARAMS)
     print_strategy_stats("RSI Reversion (Wilder)", df, signals)
 
-    # Ohne Wilder (einfaches Rolling)
-    strategy_simple = RsiReversionStrategy(
-        rsi_window=14,
-        lower=30.0,
-        upper=70.0,
-        use_wilder=False,
-    )
-    signals_simple = strategy_simple.generate_signals(df)
+    signals_simple = rsi_reversion_fn(df, RSI_REVERSION_SIMPLE_PARAMS)
     print_strategy_stats("RSI Reversion (Simple)", df, signals_simple)
 
-    # Mit Trendfilter
-    strategy_trend = RsiReversionStrategy(
-        rsi_window=14,
-        lower=30.0,
-        upper=70.0,
-        use_trend_filter=True,
-        trend_ma_window=50,
-    )
-    signals_trend = strategy_trend.generate_signals(df)
+    signals_trend = rsi_reversion_fn(df, RSI_REVERSION_TREND_FILTER_PARAMS)
     print_strategy_stats("RSI Reversion (Trend Filter)", df, signals_trend)
 
 
