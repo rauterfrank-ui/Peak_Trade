@@ -59,6 +59,10 @@ Runbooks for operating and troubleshooting documentation quality gates:
 - [DAEMON_PAPER_24H_PLUS_OBSERVATION_GATE_BEFORE_TESTNET_V0.md](DAEMON_PAPER_24H_PLUS_OBSERVATION_GATE_BEFORE_TESTNET_V0.md) — Gate runbook for planning a future 24h+ Daemon Paper-Observation before Testnet review (no start commands; prose only; not “demo”)
 - [DAEMON_PAPER_24H_PLUS_OPERATOR_SCOPE_PREFLIGHT_V0.md](DAEMON_PAPER_24H_PLUS_OPERATOR_SCOPE_PREFLIGHT_V0.md) — Operator scope / preflight worksheet for a future Daemon 24h+ Paper-Test (decisions and checklist only; no commands)
 
+### Preflight / Primary Evidence (blocked, read-only)
+
+- [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](./PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) — **Canonical** Paper/Shadow 24/7 preflight contract (§2a / §2a.1 primary-evidence hard gate; **BLOCKED**; evidence ≠ approval; `PREFLIGHT_REMAINS_BLOCKED=true`)
+
 ### AI Autonomy & Control Center
 
 Runbooks for AI autonomy workflows and control center operations:
