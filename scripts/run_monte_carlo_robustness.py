@@ -51,6 +51,7 @@ project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
 from src.experiments.dummy_returns_timeline import create_dummy_returns
+from src.experiments.equity_loader import equity_to_returns, load_equity_curves_from_run_dir
 from src.experiments.ohlcv_returns_file import load_close_returns_from_ohlcv_parquet
 from src.experiments.monte_carlo import (
     MonteCarloConfig,
@@ -99,24 +100,23 @@ def load_returns_for_config(
     use_dummy_data: bool = False,
     dummy_bars: int = 500,
     shared_returns: Optional[pd.Series] = None,
-) -> Optional[pd.Series]:
+) -> pd.Series:
     """
     Lädt Returns für eine Top-N-Konfiguration.
 
     Args:
         config: Config-Dict aus load_top_n_configs_for_sweep
         experiments_dir: Verzeichnis mit Experiment-Ergebnissen
-        use_dummy_data: Wenn True, werden Dummy-Daten verwendet
-        dummy_bars: Anzahl Bars für Dummy-Daten
+        use_dummy_data: Wenn True, werden explizite Synthetic-Returns verwendet
+        dummy_bars: Anzahl Bars für Synthetic-Returns (--use-dummy-data)
+        shared_returns: Optional OHLCV-CLI-Returns (--ohlcv-file), überschreibt alle anderen Quellen
 
     Returns:
-        Returns-Serie oder None
+        Returns-Serie (DatetimeIndex)
 
-    Note:
-        Aktuell ist dies eine vereinfachte Implementierung. In einer vollständigen
-        Implementierung würde man die Equity-Curves aus den Backtest-Result-Objekten
-        laden. Für Phase 45 verwenden wir Dummy-Daten oder Approximationen.
-        ``shared_returns`` (aus ``--ohlcv-file``) überschreibt Dummy-/Placeholder-Returns.
+    Raises:
+        ValueError: Wenn config_id nicht auflösbar ist oder Equity-Artefakte fehlen/ungültig sind
+        FileNotFoundError: Wenn keine unterstützten Equity-Artefakte im Run-Verzeichnis existieren
     """
     logger = logging.getLogger(__name__)
     if shared_returns is not None:
@@ -126,17 +126,29 @@ def load_returns_for_config(
         return shared_returns.copy()
 
     if use_dummy_data:
-        logger.info(f"Verwende Dummy-Daten für Config {config.get('config_id', 'unknown')}")
+        logger.info(
+            f"Verwende explizite Synthetic-Returns (--use-dummy-data) "
+            f"für Config {config.get('config_id', 'unknown')}"
+        )
         return create_dummy_returns(dummy_bars)
 
-    # NOTE: Siehe docs/TECH_DEBT_BACKLOG.md (Eintrag "Vollständige Monte-Carlo-Robustness-Implementierung")
-    # Aktuell: Placeholder - würde hier die Equity-Curve aus dem Experiment-Run laden
-    logger.warning(
-        f"load_returns_for_config ist noch nicht vollständig implementiert "
-        f"für config_id={config.get('config_id', 'unknown')}. "
-        f"Verwende Dummy-Daten als Fallback."
-    )
-    return create_dummy_returns(dummy_bars)
+    config_id = str(config.get("config_id", ""))
+    if not config_id or config_id.startswith("config_"):
+        raise ValueError(
+            "Top-N config has no usable experiment_id/config_id to resolve a run directory. "
+            f"config_id={config_id!r}. "
+            "Ensure sweep results include an experiment_id (directory name) or use --use-dummy-data."
+        )
+
+    run_dir = Path(experiments_dir) / config_id
+    try:
+        curves = load_equity_curves_from_run_dir(run_dir, max_curves=1)
+    except (FileNotFoundError, ValueError) as e:
+        raise ValueError(
+            f"Equity load failed for config_id={config_id!r}, run_dir={run_dir}: {e}"
+        ) from e
+
+    return equity_to_returns(curves[0])
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -337,16 +349,16 @@ def run_from_args(args: argparse.Namespace) -> int:
         logger.info("=" * 70)
 
         # Lade Returns
-        returns = load_returns_for_config(
-            config,
-            experiments_dir,
-            use_dummy_data=args.use_dummy_data,
-            dummy_bars=args.dummy_bars,
-            shared_returns=shared_returns,
-        )
-
-        if returns is None:
-            logger.warning(f"Konnte Returns für {config_id} nicht laden, überspringe")
+        try:
+            returns = load_returns_for_config(
+                config,
+                experiments_dir,
+                use_dummy_data=args.use_dummy_data,
+                dummy_bars=args.dummy_bars,
+                shared_returns=shared_returns,
+            )
+        except (FileNotFoundError, ValueError) as e:
+            logger.error(f"Returns-Load fehlgeschlagen für {config_id}: {e}")
             continue
 
         # Führe Monte-Carlo durch

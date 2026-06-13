@@ -108,6 +108,8 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
   - Fundstelle: `scripts&#47;run_monte_carlo_robustness.py` (Zeile 139) (illustrative)
   - Kontext: Vollständige Implementierung, die Equity-Curves aus Backtest-Results lädt
   - Vorschlag: Integration mit Backtest-Registry
+  - Status: implemented (feat/monte-carlo-equity-loader-integration-v1) — `load_returns_for_config` nutzt kanonischen `equity_loader`; kein stiller Dummy-Fallback im Standardpfad; Synthetic nur via `--use-dummy-data`
+  - Fundstellen: `scripts/run_monte_carlo_robustness.py`, `src/experiments/equity_loader.py`, `tests/scripts/test_run_monte_carlo_robustness_equity_loader_integration_v1.py`
 
 ### Registry-Logging
 
