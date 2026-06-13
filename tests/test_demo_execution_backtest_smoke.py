@@ -132,7 +132,7 @@ class TestGetDefaultStrategyParams:
         assert "slow_ema" in params
         assert "signal_ema" in params
 
-    def test_unknown_strategy_raises(self):
+    def test_unknown_strategy_defaults_raises(self):
         """Unbekannte Strategie wirft ValueError (fail-closed)."""
         from scripts.demo_execution_backtest import get_default_strategy_params
 
