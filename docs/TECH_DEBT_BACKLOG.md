@@ -136,6 +136,11 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
   - Fundstelle: `scripts&#47;demo_order_pipeline_backtest.py` (illustrative)
   - Kontext: Registry-Logging für automatisches Tracking via `log_backtest_result` (fail-closed `load_strategy`, kanonische Registry-Hints)
 
+- [x] Legacy Demo-/Research-Scripts: direkte `generate_signals`-Imports auf kanonischen `load_strategy()`-Pfad migriert
+  - Fundstellen: `scripts/run_simple_backtest.py`, `scripts/demo_portfolio_backtest.py`, `scripts/demo_backtest_with_risk.py`, `scripts/demo_complete_pipeline.py`, `scripts/run_momentum_realistic.py`
+  - Kontext: Fünf Scripts umgingen `load_strategy()` mit direktem Modul-Import (`ma_crossover`, `momentum`); kanonische Keys `ma_crossover`, `momentum_1h`
+  - Status: closed (PR feat/legacy-demo-scripts-load-strategy-migration-v1; offline Tests `tests/scripts/test_legacy_demo_scripts_load_strategy_v1.py`)
+
 ---
 
 ## Kategorie D – Tests & Infra

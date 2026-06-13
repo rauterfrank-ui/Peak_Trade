@@ -21,7 +21,9 @@ from datetime import datetime, timedelta
 from src.core import get_config
 from src.backtest.engine import BacktestEngine
 from src.risk import PositionSizer, PositionSizerConfig, RiskLimits, RiskLimitsConfig
-from src.strategies.ma_crossover import generate_signals
+from src.strategies import load_strategy
+
+MA_CROSSOVER_STRATEGY_KEY = "ma_crossover"
 
 
 def create_test_data(n_bars: int = 200) -> pd.DataFrame:
@@ -76,7 +78,8 @@ def demo_default_risk():
 
     # Backtest durchführen
     print("\n⚙️  Führe Backtest durch...")
-    result = engine.run_realistic(df, generate_signals, strategy_params)
+    strategy_signal_fn = load_strategy(MA_CROSSOVER_STRATEGY_KEY)
+    result = engine.run_realistic(df, strategy_signal_fn, strategy_params)
 
     # Ergebnisse
     print("\n📊 Ergebnisse:")
@@ -118,7 +121,8 @@ def demo_strict_risk():
 
     # Backtest durchführen
     print("\n⚙️  Führe Backtest durch...")
-    result = engine.run_realistic(df, generate_signals, strategy_params)
+    strategy_signal_fn = load_strategy(MA_CROSSOVER_STRATEGY_KEY)
+    result = engine.run_realistic(df, strategy_signal_fn, strategy_params)
 
     # Ergebnisse
     print("\n📊 Ergebnisse:")
@@ -168,7 +172,8 @@ def demo_aggressive_risk():
 
     # Backtest durchführen
     print("\n⚙️  Führe Backtest durch...")
-    result = engine.run_realistic(df, generate_signals, strategy_params)
+    strategy_signal_fn = load_strategy(MA_CROSSOVER_STRATEGY_KEY)
+    result = engine.run_realistic(df, strategy_signal_fn, strategy_params)
 
     # Ergebnisse
     print("\n📊 Ergebnisse:")
@@ -197,7 +202,8 @@ def demo_trade_details():
     engine = BacktestEngine()
 
     # Backtest durchführen
-    result = engine.run_realistic(df, generate_signals, strategy_params)
+    strategy_signal_fn = load_strategy(MA_CROSSOVER_STRATEGY_KEY)
+    result = engine.run_realistic(df, strategy_signal_fn, strategy_params)
 
     # Erste 5 Trades anzeigen
     print(f"\n📋 Erste 5 von {len(result.trades)} Trades:\n")

@@ -30,7 +30,9 @@ from src.portfolio import (
     make_portfolio_strategy,
 )
 from src.backtest.engine import run_portfolio_strategy_backtest
-from src.strategies.ma_crossover import generate_signals
+from src.strategies import load_strategy
+
+MA_CROSSOVER_STRATEGY_KEY = "ma_crossover"
 
 logging.basicConfig(
     level=logging.INFO,
@@ -182,9 +184,10 @@ def main():
     logger.info("Starte Portfolio-Backtest...")
     print()
 
+    strategy_signal_fn = load_strategy(MA_CROSSOVER_STRATEGY_KEY)
     result = run_portfolio_strategy_backtest(
         data_dict=data_dict,
-        strategy_signal_fn=generate_signals,
+        strategy_signal_fn=strategy_signal_fn,
         strategy_params=strategy_params,
         portfolio_config=portfolio_config,
         initial_capital=args.initial_capital,

@@ -32,7 +32,9 @@ from src.risk import (
     PortfolioState,
 )
 from src.data import KrakenDataPipeline, fetch_kraken_data
-from src.strategies.ma_crossover import generate_signals
+from src.strategies import load_strategy
+
+MA_CROSSOVER_STRATEGY_KEY = "ma_crossover"
 from src.backtest.engine import BacktestEngine
 
 
@@ -306,10 +308,11 @@ def demo_5_complete_backtest(df: pd.DataFrame):
     print(f"  Zeitraum: {df.index[0]} bis {df.index[-1]}")
 
     engine = BacktestEngine()
+    strategy_signal_fn = load_strategy(MA_CROSSOVER_STRATEGY_KEY)
 
     try:
         result = engine.run_realistic(
-            df=df, strategy_signal_fn=generate_signals, strategy_params=strategy_params
+            df=df, strategy_signal_fn=strategy_signal_fn, strategy_params=strategy_params
         )
 
         # Ergebnisse anzeigen
