@@ -1740,6 +1740,63 @@ SHADOW_247_GOVERNANCE_CHARTER_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_OWNER_TESTS = 
     "test_paper_shadow_247_future_run_operator_decision_worksheet_static_crosslink_contract_v0.py",
     "test_paper_shadow_247_preflight_readiness_peer_static_crosslink_contract_v0.py",
 )
+EER1_EVIDENCE_DURABLE_ENFORCEMENT_READINESS_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_HEADING = (
+    "## EER1 Evidence Durable Enforcement Readiness Runbooks index reciprocal crosslink "
+    "— docs/tests-only guard v1"
+)
+EER1_EVIDENCE_DURABLE_ENFORCEMENT_READINESS_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR = "EER1_EVIDENCE_DURABLE_ENFORCEMENT_READINESS_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_V1=true"
+EER1_EVIDENCE_DURABLE_ENFORCEMENT_READINESS_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_INPUT_BUNDLE = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/systemwide_next_safe_scope_ranking_after_shadow_247_governance_charter_"
+    "runbooks_index_reciprocal_crosslink_merge_no_run_v1_20260613T113733Z"
+)
+EER1_EVIDENCE_DURABLE_ENFORCEMENT_READINESS_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_EXPECTED: dict[
+    str, str
+] = {
+    "EER1_EVIDENCE_DURABLE_ENFORCEMENT_READINESS_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_V1": "true",
+    "EER1_CANONICAL_OWNER_CHAIN_INDEXED": "true",
+    "EER1_EXISTING_GUARDS_REUSED": "true",
+    "EER1_ENFORCEMENT_READINESS_FAIL_CLOSED": "true",
+    "GAP2A1_PRIMARY_EVIDENCE_ENFORCED": "false",
+    "ENFORCEMENT_ACTIVATED": "false",
+    "PRIMARY_EVIDENCE_ENFORCEMENT_LIFT": "false",
+    "EER1_ENFORCEMENT_READINESS_SEMANTIC_TOUCH": "false",
+    "PRIMARY_EVIDENCE_RETENTION_SEMANTIC_TOUCH": "false",
+    "PREFLIGHT_SEMANTIC_TOUCH": "false",
+    "PREFLIGHT_LIFTED": "false",
+    "AUTHORITY_LIFT": "false",
+    "RUNBOOK_HISTORICAL_CONTENT_REMOVED": "false",
+    "PARALLEL_EER1_SURFACE_CREATED": "false",
+    "PARALLEL_RUNBOOK_INDEX_CREATED": "false",
+    "WORKFLOW_YAML_MUTATED": "false",
+    "REQUIRED_CHECK_CONFIG_MUTATED": "false",
+    "TRUTH_GO_GRANTED": "false",
+    "TRUTH_PROMOTION_EXECUTED": "false",
+    "PREFLIGHT_REMAINS_BLOCKED": "true",
+    "NO_SESSION_INVOKE_AUTHORIZED": "true",
+    "U2B_PARKED": "true",
+    "MARKET_AIRPORT_EXCLUDED": "true",
+    "EVIDENCE_OR_DOCS_ANCHOR_NOT_RUNTIME_AUTHORITY": "true",
+    "NO_RUNTIME": "true",
+    "NO_LIVE": "true",
+    "NO_PREFLIGHT_LIFT": "true",
+    "NEW_PARALLEL_SSOT_CREATED": "false",
+    "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED": "true",
+    "DOCS_DRIFT_OR_POINTER_INTEGRITY_COMPLETE": "false",
+    "RUNTIME_STARTED": "false",
+    "SCHEDULER_STARTED": "false",
+    "RUN_STARTED": "false",
+    "SESSION_INVOKED": "false",
+    "EXECUTE_STARTED": "false",
+    "ARMING_EXECUTED": "false",
+}
+EER1_EVIDENCE_DURABLE_ENFORCEMENT_READINESS_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_OWNER_TESTS = (
+    "test_primary_evidence_retention_invariant_contract_v0.py",
+    "test_gap2a1_primary_evidence_enforcement_contract_v0.py",
+    "test_gap2a1_primary_evidence_enforcement_drift_guard_contract_v0.py",
+    "test_section5_preflight_gap_owner_map_contract_v0.py",
+    "test_paper_shadow_247_preflight_contract_v0.py",
+)
 PREFLIGHT_PROCESS_GATE_HYGIENE_GUARD_EXPECTED: dict[str, str] = {
     "PREFLIGHT_PROCESS_GATE_HYGIENE_GUARD_V1": "true",
     "ACTIVE_RUN_CHECK_PEAK_TRADE_EXPLICIT_ONLY": "true",
@@ -5035,4 +5092,154 @@ def test_runbooks_readme_shadow_247_governance_charter_canonical_index_entry_v1(
     assert "SHADOW_247_GOVERNANCE_FAIL_CLOSED=true" in text
     assert (
         sum(1 for line in text.splitlines() if "SHADOW_247_GOVERNANCE_CHARTER_V0.md" in line) == 1
+    )
+
+
+def _eer1_evidence_durable_enforcement_readiness_runbooks_index_reciprocal_crosslink_section(
+    text: str,
+) -> str:
+    start = text.find(
+        EER1_EVIDENCE_DURABLE_ENFORCEMENT_READINESS_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_HEADING
+    )
+    assert start != -1, "missing EER1 runbooks index reciprocal section"
+    next_heading = text.find("\n## ", start + 1)
+    if next_heading == -1:
+        return text[start:]
+    return text[start:next_heading]
+
+
+def test_ci_audit_eer1_evidence_durable_enforcement_readiness_runbooks_index_reciprocal_crosslink_section_v1() -> (
+    None
+):
+    text = _ci_audit_text()
+    section = (
+        _eer1_evidence_durable_enforcement_readiness_runbooks_index_reciprocal_crosslink_section(
+            text
+        )
+    )
+    assert (
+        EER1_EVIDENCE_DURABLE_ENFORCEMENT_READINESS_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_INPUT_BUNDLE
+        in section
+    )
+    assert (
+        "GO_EER1_EVIDENCE_DURABLE_ENFORCEMENT_READINESS_RUNBOOKS_INDEX_CI_AUDIT_DOCS_TRUTH_MAP_"
+        "RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1" in section
+    )
+    assert "CI_AUDIT ↔ DOCS_TRUTH_MAP reciprocal crosslink" in section
+    assert "DOCS_TRUTH_MAP chronicle" in section
+    assert "CI_AUDIT / DOCS_TRUTH_MAP reciprocal guard" in section
+    assert THIS_MODULE in section
+    assert "docs/ops/runbooks/README.md" in section
+    assert "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md" in section
+    assert "SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md" in section
+    assert "Evidence Durable Enforcement Readiness Review RC v0 — index v0" in section
+    assert "no parallel eer1 ssot" in section.lower()
+    assert "#4173" in section
+    assert "#4209" in section
+    assert "#4210" in section
+    assert "#4211" in section
+
+
+def test_ci_audit_eer1_evidence_durable_enforcement_readiness_runbooks_index_reciprocal_crosslink_owner_tests_v1() -> (
+    None
+):
+    section = (
+        _eer1_evidence_durable_enforcement_readiness_runbooks_index_reciprocal_crosslink_section(
+            _ci_audit_text()
+        )
+    )
+    for module_name in (
+        EER1_EVIDENCE_DURABLE_ENFORCEMENT_READINESS_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_OWNER_TESTS
+    ):
+        assert module_name in section, f"missing owner test reference {module_name!r}"
+
+
+def test_ci_audit_eer1_evidence_durable_enforcement_readiness_runbooks_index_reciprocal_crosslink_machine_lines_v1() -> (
+    None
+):
+    block = _block_containing(
+        _ci_audit_text(),
+        EER1_EVIDENCE_DURABLE_ENFORCEMENT_READINESS_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR,
+    )
+    values = _machine_line_values(block)
+    missing = (
+        set(
+            EER1_EVIDENCE_DURABLE_ENFORCEMENT_READINESS_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_EXPECTED
+        )
+        - values.keys()
+    )
+    assert not missing, f"missing EER1 runbooks index reciprocal keys: {sorted(missing)}"
+    for (
+        key,
+        expected,
+    ) in EER1_EVIDENCE_DURABLE_ENFORCEMENT_READINESS_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_EXPECTED.items():
+        assert values[key] == expected, f"{key}={values[key]!r} expected {expected!r}"
+
+
+def test_docs_truth_map_eer1_evidence_durable_enforcement_readiness_runbooks_index_reciprocal_crosslink_chronicle_v1() -> (
+    None
+):
+    text = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    assert (
+        "EER1 Evidence Durable Enforcement Readiness Runbooks index reciprocal crosslink bundle "
+        "CI_AUDIT ↔ DOCS_TRUTH_MAP guard v1"
+    ) in text
+    assert THIS_MODULE in text
+    assert (
+        EER1_EVIDENCE_DURABLE_ENFORCEMENT_READINESS_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR
+        in text
+    )
+    assert "EER1_CANONICAL_OWNER_CHAIN_INDEXED=true" in text
+    assert "EER1_EXISTING_GUARDS_REUSED=true" in text
+    assert "EER1_ENFORCEMENT_READINESS_FAIL_CLOSED=true" in text
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in text
+    assert "ENFORCEMENT_ACTIVATED=false" in text
+    assert "docs/ops/runbooks/README.md" in text
+    assert "SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md" in text
+    assert (
+        EER1_EVIDENCE_DURABLE_ENFORCEMENT_READINESS_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_INPUT_BUNDLE.split(
+            "/"
+        )[-1]
+        in text
+    )
+    assert "EER1_ENFORCEMENT_READINESS_SEMANTIC_TOUCH=false" in text
+    assert "PRIMARY_EVIDENCE_RETENTION_SEMANTIC_TOUCH=false" in text
+    assert "PRIMARY_EVIDENCE_ENFORCEMENT_LIFT=false" in text
+    assert "PREFLIGHT_SEMANTIC_TOUCH=false" in text
+    assert "PREFLIGHT_LIFTED=false" in text
+    assert "AUTHORITY_LIFT=false" in text
+    assert "RUNBOOK_HISTORICAL_CONTENT_REMOVED=false" in text
+    assert "PARALLEL_EER1_SURFACE_CREATED=false" in text
+    assert "PARALLEL_RUNBOOK_INDEX_CREATED=false" in text
+    assert "WORKFLOW_YAML_MUTATED=false" in text
+    assert "REQUIRED_CHECK_CONFIG_MUTATED=false" in text
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in text
+    assert "NO_SESSION_INVOKE_AUTHORIZED=true" in text
+    assert "U2B_PARKED=true" in text
+    assert "MARKET_AIRPORT_EXCLUDED=true" in text
+    assert "EVIDENCE_OR_DOCS_ANCHOR_NOT_RUNTIME_AUTHORITY=true" in text
+    assert "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true" in text
+
+
+def test_runbooks_readme_eer1_evidence_durable_enforcement_readiness_canonical_index_entry_v1() -> (
+    None
+):
+    text = RUNBOOKS_INDEX.read_text(encoding="utf-8")
+    assert (
+        "### Evidence Durable Enforcement Readiness / GAP2A1 Planning (blocked, read-only)" in text
+    )
+    assert "Evidence Durable Enforcement Readiness Review RC v0 — index v0" in text
+    assert "Preflight §2b.2" in text
+    assert "SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md" in text
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in text
+    assert "ENFORCEMENT_ACTIVATED=false" in text
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in text
+    assert "EER1_ENFORCEMENT_READINESS_FAIL_CLOSED=true" in text
+    assert (
+        sum(
+            1
+            for line in text.splitlines()
+            if "Evidence Durable Enforcement Readiness / GAP2A1 Planning" in line
+        )
+        == 1
     )
