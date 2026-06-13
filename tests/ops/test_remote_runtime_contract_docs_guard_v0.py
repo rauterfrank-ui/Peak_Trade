@@ -4624,6 +4624,7 @@ def test_ci_audit_primary_evidence_retention_runbooks_index_reciprocal_crosslink
     assert "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md" in section
     assert "§2a" in section
     assert "§2a.1" in section
+    assert "primary_evidence_retention_v0.py" not in section
     assert "no parallel preflight ssot" in section.lower()
     assert "#4156" in section
     assert "#4208" in section
