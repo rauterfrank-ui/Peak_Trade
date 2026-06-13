@@ -37,7 +37,7 @@ def test_dummy_returns_timeline_stable_across_seeds() -> None:
 def test_dummy_returns_loader_single_component_portfolio_smoke(tmp_path: Path) -> None:
     """Offline: Dummy-Loader aus run_portfolio_robustness + Portfolio-Synthese ohne Sweep-Artefakte."""
     loader = portfolio_script.build_returns_loader(
-        sweep_name="smoke_sweep",
+        config_by_id={},
         experiments_dir=tmp_path,
         use_dummy_data=True,
         dummy_bars=48,
@@ -55,7 +55,7 @@ def test_dummy_returns_loader_single_component_portfolio_smoke(tmp_path: Path) -
 def test_dummy_returns_loader_two_component_portfolio_smoke(tmp_path: Path) -> None:
     """Zwei Komponenten: gemeinsame deterministische Zeitachse → voller Inner-Join über alle Bars."""
     loader = portfolio_script.build_returns_loader(
-        sweep_name="smoke_sweep",
+        config_by_id={},
         experiments_dir=tmp_path,
         use_dummy_data=True,
         dummy_bars=48,

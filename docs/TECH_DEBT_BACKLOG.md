@@ -117,6 +117,13 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
   - Status: implemented (feat/monte-carlo-equity-loader-integration-v1) — `load_returns_for_config` nutzt kanonischen `equity_loader`; kein stiller Dummy-Fallback im Standardpfad; Synthetic nur via `--use-dummy-data`
   - Fundstellen: `scripts/run_monte_carlo_robustness.py`, `src/experiments/equity_loader.py`, `tests/scripts/test_run_monte_carlo_robustness_equity_loader_integration_v1.py`
 
+- [ ] Vollständige Portfolio-Robustness-Returns-Loader-Implementierung
+  - Fundstelle: `scripts&#47;run_portfolio_robustness.py` (Zeile 99) (illustrative)
+  - Kontext: Sweep-basierter Returns-Loader mit stiller None-Rückgabe bei Ladefehlern
+  - Vorschlag: Kanonischen `equity_loader` via `load_returns_for_config` nutzen; fail-closed wie Monte-Carlo (#4215)
+  - Status: implemented (feat/portfolio-robustness-equity-loader-fail-closed-v1) — `build_returns_loader` nutzt kanonischen `equity_loader`; kein stiller None-Fallback; fehlende Komponenten fail-closed
+  - Fundstellen: `scripts/run_portfolio_robustness.py`, `src/experiments/equity_loader.py`, `tests/scripts/test_run_portfolio_robustness_equity_loader_integration_v1.py`
+
 ### Registry-Logging
 
 - [ ] Registry-Logging in `demo_order_pipeline_backtest.py` implementieren
