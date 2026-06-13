@@ -48,6 +48,12 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
   - Kontext: Legacy-Funktion für Backwards Compatibility
   - Vorschlag: Prüfen, ob alle Pipelines auf BollingerBandsStrategy (OOP) umgestellt sind, dann entfernen
 
+- [x] `run_full_portfolio.py`: Legacy-`*_signals`-Imports auf kanonischen `load_strategy()`-Pfad migriert
+  - Fundstelle: `scripts/run_full_portfolio.py`
+  - Kontext: Script importierte entfernte Legacy-Exports (`ma_crossover_signals` u.a.) und war beim Import gebrochen
+  - Status: closed (PR feat/run-full-portfolio-load-strategy-migration-v1; offline Tests `tests/scripts/test_run_full_portfolio_load_strategy_v1.py`)
+  - Fundstellen: `scripts/run_full_portfolio.py`, `src/strategies/__init__.py` (`load_strategy`), `tests/scripts/test_run_full_portfolio_load_strategy_v1.py`
+
 ---
 
 ## Kategorie B – Daten-Integration & Exchange

@@ -15,6 +15,7 @@ Strategien:
 
 import sys
 from pathlib import Path
+from typing import Callable, Dict, Tuple
 
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
@@ -22,17 +23,42 @@ import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 
-from src.core import get_config, list_strategies
-from src.strategies import (
-    ma_crossover_signals,
-    momentum_signals,
-    rsi_signals,
-    bollinger_signals,
-    macd_signals,
-    ecm_signals,
-)
+from src.core import get_config, get_strategy_cfg, list_strategies
+from src.strategies import load_strategy
 from src.portfolio import PortfolioManager
 from src.backtest.stats import validate_for_live_trading
+
+DEMO_PORTFOLIO_STRATEGY_NAMES: tuple[str, ...] = (
+    "ma_crossover",
+    "momentum_1h",
+    "rsi_strategy",
+    "bollinger_bands",
+    "macd",
+    "ecm_cycle",
+)
+
+
+def resolve_portfolio_strategy(strategy_name: str) -> Tuple[Callable, Dict]:
+    """
+    Resolve strategy signal function and params via canonical loaders.
+
+    Raises:
+        ValueError: Unknown strategy name (load_strategy fail-closed).
+        KeyError: Strategy not defined in config.toml (get_strategy_cfg fail-closed).
+    """
+    signal_fn = load_strategy(strategy_name)
+    params = get_strategy_cfg(strategy_name)
+    return signal_fn, params
+
+
+def add_configured_strategies(
+    pm: PortfolioManager,
+    strategy_names: tuple[str, ...] = DEMO_PORTFOLIO_STRATEGY_NAMES,
+) -> None:
+    """Add each configured strategy to the portfolio via canonical load_strategy()."""
+    for name in strategy_names:
+        signal_fn, params = resolve_portfolio_strategy(name)
+        pm.add_strategy(name, signal_fn, params=params)
 
 
 def create_rich_dummy_data(n_bars: int = 1000) -> pd.DataFrame:
@@ -183,21 +209,9 @@ def main():
     # Alle Strategien hinzufügen
     print(f"\n📥 Lade Strategien...")
 
-    strategies_to_add = [
-        ("ma_crossover", ma_crossover_signals),
-        ("momentum_1h", momentum_signals),
-        ("rsi_strategy", rsi_signals),
-        ("bollinger_bands", bollinger_signals),
-        ("macd", macd_signals),
-        ("ecm_cycle", ecm_signals),
-    ]
-
-    for name, signal_fn in strategies_to_add:
-        try:
-            pm.add_strategy(name, signal_fn)
-            print(f"  ✅ {name}")
-        except KeyError as e:
-            print(f"  ❌ {name}: {e}")
+    add_configured_strategies(pm)
+    for name in DEMO_PORTFOLIO_STRATEGY_NAMES:
+        print(f"  ✅ {name}")
 
     # Daten erstellen
     print("\n📊 Erstelle reichhaltige Testdaten...")
