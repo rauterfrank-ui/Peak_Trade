@@ -2041,6 +2041,75 @@ DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
 
 **Non-authorizing:** Docs/tests-only reciprocal crosslink guard only; does **not** authorize execute, runtime, run start, live, preflight lift, paper/shadow/testnet session, order/cancel/execution/arming, authority lift, trading-logic changes, Master V2 / Double Play / Bull-Bear / Risk / KillSwitch / Scope / Capital changes, workflow YAML mutation, `workflow_dispatch`, `gh run rerun`, JSONL ingest, evidence dataset mutation, or Market Dashboard authority changes.
 
+## P67/P72 library scheduler boundary opt-in §7b reciprocal crosslink — docs/tests-only guard v1
+
+**Operator-GO:** `GO_P67_P72_LIBRARY_SCHEDULER_BOUNDARY_OPT_IN_CI_AUDIT_DOCS_TRUTH_MAP_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_ops_cockpit_master_v2_non_authority_reciprocal_crosslink_merge_no_run_v1_20260613T000828Z/`
+
+**Purpose:** Reciprocal crosslink so CI_AUDIT documents the P67/P72 library scheduler boundary opt-in normative surface (`SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md` **§7** residual bypass + **§7b** opt-in `scheduler_boundary_enforce`) aligned with existing library contract tests and the closed #4177 launcher hard-block crosslink. Guard/Ops drift fix only — **non-authorizing**; **no** scheduler start authorization change, P67/P72 default change, library opt-in behavior change, execute, preflight lift, runtime, or trading authority.
+
+**Canonical repo owners (reuse — do not duplicate):**
+
+| Concern | Owner |
+|---------|-------|
+| Scheduler Boundary Hard-Block SSOT — §7 residual + §7b opt-in | `docs/ops/specs/SCHEDULER_BOUNDARY_HARD_BLOCK_CONTRACT_V0.md` |
+| Shared scheduler start guard (read-only reference) | `scripts/ops/scheduler_start_boundary_guard_v0.py` |
+| P67 library scheduler (reference only) | `src/ops/p67/shadow_session_scheduler_v1.py` |
+| P72 pack pass-through (reference only) | `src/ops/p72/run_shadowloop_pack_v1.py` |
+| P67/P72 library opt-in contract tests (reuse) | `tests/ops/test_p67_library_scheduler_boundary_opt_in_v0.py` |
+| Closed #4177 launcher hard-block crosslink (reuse pointer only — **no** re-chronicle) | CI_AUDIT § Scheduler Boundary Hard Block — `SCHEDULER_BOUNDARY_HARD_BLOCK_CI_AUDIT_PREFLIGHT_RECIPROCAL_CROSSLINK_GUARD_V1=true` |
+| CI_AUDIT / DOCS_TRUTH_MAP reciprocal guard | `tests/ops/test_remote_runtime_contract_docs_guard_v0.py` |
+| DOCS_TRUTH_MAP chronicle | `docs/ops/registry/DOCS_TRUTH_MAP.md` (this crosslink section + Änderungsnachweis row) |
+
+**Crosslink invariants (static — not scheduler authority):**
+
+| Invariant | Posture |
+|-----------|---------|
+| `scheduler_boundary_enforce` default | **off** — `P67RunContextV1` / `P72PackContextV1` default `False` |
+| Library bypass residual | **preserved** — `SCHEDULER_LIBRARY_BYPASS_RESIDUAL=true` |
+| CLI / launcher guard | **unchanged** — P67 CLI + `run_scheduler.py` guard before library call |
+| Opt-in guard when enabled | **non-authorizing** — shared `assert_scheduler_start_authorized()` only |
+| Closed #4177 launcher crosslink | **closed** — reuse pointer only |
+| Closed #4200–#4206 chains | **closed** — not extended |
+
+```text
+P67_P72_LIBRARY_SCHEDULER_BOUNDARY_OPT_IN_RECIPROCAL_CROSSLINK_V1=true
+P67_P72_LIBRARY_SCHEDULER_BOUNDARY_OPT_IN_FAIL_CLOSED=true
+P67_P72_EXISTING_CANONICAL_OWNERS_REUSED=true
+P67_LIBRARY_SCHEDULER_BOUNDARY_OPT_IN_IMPLEMENTED=true
+SCHEDULER_LIBRARY_BYPASS_RESIDUAL=true
+SCHEDULER_BOUNDARY_SPEC_7B_OWNER_REFERENCED=true
+SCHEDULER_BOUNDARY_SEMANTIC_TOUCH=false
+SCHEDULER_START_AUTHORIZATION_CHANGED=false
+P67_DEFAULT_CHANGED=false
+P72_DEFAULT_CHANGED=false
+LIBRARY_OPT_IN_BEHAVIOR_CHANGED=false
+PARALLEL_SCHEDULER_BOUNDARY_SURFACE_CREATED=false
+WORKFLOW_YAML_MUTATED=false
+REQUIRED_CHECK_CONFIG_MUTATED=false
+TRUTH_GO_GRANTED=false
+TRUTH_PROMOTION_EXECUTED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+NO_SESSION_INVOKE_AUTHORIZED=true
+U2B_PARKED=true
+MARKET_AIRPORT_EXCLUDED=true
+EVIDENCE_OR_DOCS_ANCHOR_NOT_RUNTIME_AUTHORITY=true
+NO_EXECUTE=true
+NO_PREFLIGHT_LIFT=true
+NO_RUNTIME=true
+NO_LIVE=true
+ORDER_CANCEL_EXECUTION_ARMING_TOUCHED=false
+AUTHORITY_LIFT=false
+TRADING_LOGIC_TOUCHED=false
+MASTER_V2_LOGIC_TOUCHED=false
+DOUBLE_PLAY_LOGIC_TOUCHED=false
+NEW_PARALLEL_SSOT_CREATED=false
+DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
+```
+
+**Guard module (reuse — no parallel scheduler-boundary SSOT):** `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`.
+
+**Non-authorizing:** Docs/tests-only reciprocal crosslink guard only; does **not** authorize execute, runtime, run start, live, preflight lift, paper/shadow/testnet session, order/cancel/execution/arming, authority lift, trading-logic changes, Master V2 / Double Play / Bull-Bear / Risk / KillSwitch / Scope / Capital changes, workflow YAML mutation, `workflow_dispatch`, `gh run rerun`, JSONL ingest, evidence dataset mutation, or Market Dashboard authority changes.
+
 ## Gap 1 Execute Entrypoint CI_AUDIT ↔ SECTION5 reciprocal crosslink — docs/tests-only guard v1
 
 **Operator-GO:** `GO_GAP1_GAP3_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1`
