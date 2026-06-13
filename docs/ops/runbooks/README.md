@@ -63,6 +63,10 @@ Runbooks for operating and troubleshooting documentation quality gates:
 
 - [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](./PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) — **Canonical** Paper/Shadow 24/7 preflight contract (§2a / §2a.1 primary-evidence hard gate; **BLOCKED**; evidence ≠ approval; `PREFLIGHT_REMAINS_BLOCKED=true`)
 
+### Preflight Taxonomy / Runtime Lanes (blocked, read-only)
+
+- [RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md](../specs/RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md) — **Canonical** Runtime Lane Taxonomy + Authority Levels contract (§2 taxonomy index; **BLOCKED** lanes; evidence ≠ approval; `PREFLIGHT_REMAINS_BLOCKED=true`; `RUNTIME_LANE_TAXONOMY_FAIL_CLOSED=true`)
+
 ### AI Autonomy & Control Center
 
 Runbooks for AI autonomy workflows and control center operations:
