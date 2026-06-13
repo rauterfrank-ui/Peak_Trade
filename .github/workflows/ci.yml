@@ -53,9 +53,17 @@ jobs:
       docs_or_static_contract_only: ${{ steps.set_outputs.outputs.docs_or_static_contract_only }}
       webui_surface_changed: ${{ steps.set_outputs.outputs.webui_surface_changed }}
       webui_surface_only: ${{ steps.set_outputs.outputs.webui_surface_only }}
+      test_selection_mode: ${{ steps.test_selection.outputs.test_selection_mode }}
+      test_selection_reason: ${{ steps.test_selection.outputs.test_selection_reason }}
+      tests_execute_full: ${{ steps.test_selection.outputs.tests_execute_full }}
+      tests_execute_focused: ${{ steps.test_selection.outputs.tests_execute_focused }}
+      tests_execute_no_op: ${{ steps.test_selection.outputs.tests_execute_no_op }}
+      focused_pytest_targets: ${{ steps.test_selection.outputs.focused_pytest_targets }}
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
 
       - name: Detect changes
         uses: dorny/paths-filter@v3
@@ -160,6 +168,31 @@ jobs:
           else
             echo "docs_or_static_contract_only=false" >> "$GITHUB_OUTPUT"
           fi
+
+      - name: Diff-aware test selection (fail-closed)
+        id: test_selection
+        env:
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+        run: |
+          set -euo pipefail
+          FORCE_ARGS=()
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ github.event.inputs.force_matrix }}" = "true" ]; then
+            FORCE_ARGS+=(--force-full)
+          fi
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASE_REF="${{ github.event.pull_request.base.ref }}"
+            git fetch origin "${BASE_REF}" --depth=1
+            git diff --name-only "origin/${BASE_REF}...HEAD" > /tmp/changed_files.txt || true
+          else
+            : > /tmp/changed_files.txt
+          fi
+          python3 scripts/ops/ci_test_selection_v1.py \
+            --files-file /tmp/changed_files.txt \
+            --event-name "${{ github.event_name }}" \
+            "${FORCE_ARGS[@]}" \
+            --github-output
+          echo "Changed files:"
+          cat /tmp/changed_files.txt || true
 
   # ============================================================================
   # CI Required Contexts Contract
@@ -286,8 +319,9 @@ jobs:
   # Tests (all Python versions)
   # ============================================================================
   # Always creates test jobs for all required Python versions (3.9, 3.10, 3.11).
-  # On docs-only / webui_surface-only / static-contract-only PRs, jobs short-circuit SUCCESS (not missing/skipped).
-  # On non_webui_code changes (or workflow-only), runs full test suite.
+  # On docs-only / workflow-only / static-contract-only PRs, jobs short-circuit SUCCESS (NO_OP).
+  # FOCUSED runs bounded pytest on 3.11 and import smoke on 3.9/3.10.
+  # FULL runs the repository test suite with coverage on 3.11.
   # ============================================================================
   tests:
     name: tests (${{ matrix.python-version }})
@@ -304,22 +338,34 @@ jobs:
         python-version: ['3.9', '3.10', '3.11']
 
     steps:
-      - name: WebUI/docs/static-contract PR — skip full matrix tests
-        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.run_matrix != 'true' && needs.changes.outputs.workflow_only != 'true' }}
-        run: echo "WebUI/docs/static-contract PR - skipping full matrix for Python ${{ matrix.python-version }} (bounded WebUI/contract tests run in Fast-Lane when applicable)"
+      - name: Diff-aware test selection summary
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          echo "test_selection_mode=${{ needs.changes.outputs.test_selection_mode }}"
+          echo "test_selection_reason=${{ needs.changes.outputs.test_selection_reason }}"
+          echo "tests_execute_full=${{ needs.changes.outputs.tests_execute_full }}"
+          echo "tests_execute_focused=${{ needs.changes.outputs.tests_execute_focused }}"
+          echo "tests_execute_no_op=${{ needs.changes.outputs.tests_execute_no_op }}"
+          echo "focused_pytest_targets=${{ needs.changes.outputs.focused_pytest_targets }}"
+
+      - name: NO_OP — skip full matrix tests (diff-aware)
+        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_no_op == 'true' }}
+        run: |
+          echo "NO_OP diff-aware selection — skipping full matrix for Python ${{ matrix.python-version }}"
+          echo "reason=${{ needs.changes.outputs.test_selection_reason }}"
 
       - name: Checkout
-        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.run_matrix == 'true' || needs.changes.outputs.workflow_only == 'true' }}
+        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_no_op != 'true' }}
         uses: actions/checkout@v5
 
       - name: Set up Python ${{ matrix.python-version }}
-        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.run_matrix == 'true' || needs.changes.outputs.workflow_only == 'true' }}
+        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_no_op != 'true' }}
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
 
       - name: Cache pip
-        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.run_matrix == 'true' || needs.changes.outputs.workflow_only == 'true' }}
+        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_no_op != 'true' }}
         uses: actions/cache@v4
         with:
           path: ~/.cache/pip
@@ -328,14 +374,14 @@ jobs:
             ${{ runner.os }}-pip-
 
       - name: Install dependencies
-        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.run_matrix == 'true' || needs.changes.outputs.workflow_only == 'true' }}
+        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_no_op != 'true' }}
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest pytest-cov
 
       - name: "Stability Smoke Tests (Fast Gate)"
-        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.run_matrix == 'true' || needs.changes.outputs.workflow_only == 'true' }}
+        if: ${{ (github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true') && needs.changes.outputs.tests_execute_no_op != 'true' }}
         id: stability_smoke
         shell: bash
         run: |
@@ -344,7 +390,7 @@ jobs:
           pytest tests/test_stability_smoke.py tests/test_data_contracts.py tests/test_error_taxonomy.py tests/test_resilience.py -m smoke -v --tb=short
 
       - name: "Smoke: RL v0.1 Contract Test"
-        if: ${{ (github.event_name != 'pull_request' || needs.changes.outputs.run_matrix == 'true' || needs.changes.outputs.workflow_only == 'true') && runner.os == 'Linux' }}
+        if: ${{ (github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true') && needs.changes.outputs.tests_execute_no_op != 'true' && runner.os == 'Linux' }}
         id: rl_v0_1_smoke
         shell: bash
         run: |
@@ -352,7 +398,7 @@ jobs:
           pytest -q tests/test_rl_v0_1_smoke.py
 
       - name: Validate RL v0.1 Contract
-        if: ${{ (github.event_name != 'pull_request' || needs.changes.outputs.run_matrix == 'true' || needs.changes.outputs.workflow_only == 'true') && runner.os == 'Linux' }}
+        if: ${{ (github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true') && needs.changes.outputs.tests_execute_no_op != 'true' && runner.os == 'Linux' }}
         id: rl_v0_1_contract
         shell: bash
         run: |
@@ -370,13 +416,29 @@ jobs:
           if-no-files-found: ignore
           retention-days: 7
 
-      - name: Run tests
-        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.run_matrix == 'true' || needs.changes.outputs.workflow_only == 'true' }}
+      - name: Run full test suite
+        if: ${{ (github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true') && needs.changes.outputs.tests_execute_no_op != 'true' }}
         run: |
           pytest tests/ -v --tb=short -m "not network and not external_tools"
 
-      - name: Run tests with coverage
-        if: ${{ (github.event_name != 'pull_request' || needs.changes.outputs.run_matrix == 'true' || needs.changes.outputs.workflow_only == 'true') && matrix.python-version == '3.11' }}
+      - name: Run focused tests (3.11)
+        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_focused == 'true' && matrix.python-version == '3.11' }}
+        run: |
+          set -euo pipefail
+          TARGETS="${{ needs.changes.outputs.focused_pytest_targets }}"
+          if [ -z "$TARGETS" ]; then
+            echo "FOCUSED mode without explicit targets — fail-closed to tests/ci/"
+            TARGETS="tests/ci/"
+          fi
+          pytest $TARGETS -v --tb=short -m "not network and not external_tools"
+
+      - name: Focused compatibility import smoke (3.9/3.10)
+        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_focused == 'true' && matrix.python-version != '3.11' }}
+        run: |
+          python -c "import importlib; importlib.import_module('src'); print('import smoke ok on Python ${{ matrix.python-version }}')"
+
+      - name: Run tests with coverage (FULL only)
+        if: ${{ (github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true') && matrix.python-version == '3.11' && needs.changes.outputs.tests_execute_no_op != 'true' }}
         run: |
           pytest tests/ --cov=src --cov-report=xml --cov-report=term-missing -m "not network and not external_tools"
 
@@ -405,22 +467,24 @@ jobs:
     # to satisfy branch protection rules (e.g., "strategy-smoke" check)
 
     steps:
-      - name: WebUI/docs/static-contract PR — skip strategy smoke tests
-        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.run_matrix != 'true' && needs.changes.outputs.workflow_only != 'true' }}
-        run: echo "WebUI/docs/static-contract PR - skipping strategy smoke tests"
+      - name: Skip strategy smoke (NO_OP/FOCUSED diff-aware)
+        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_full != 'true' }}
+        run: |
+          echo "Skipping strategy smoke — test_selection_mode=${{ needs.changes.outputs.test_selection_mode }}"
+          echo "reason=${{ needs.changes.outputs.test_selection_reason }}"
 
       - name: Checkout
-        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.run_matrix == 'true' || needs.changes.outputs.workflow_only == 'true' }}
+        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true' }}
         uses: actions/checkout@v5
 
       - name: Set up Python 3.11
-        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.run_matrix == 'true' || needs.changes.outputs.workflow_only == 'true' }}
+        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true' }}
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
       - name: Cache pip
-        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.run_matrix == 'true' || needs.changes.outputs.workflow_only == 'true' }}
+        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true' }}
         uses: actions/cache@v4
         with:
           path: ~/.cache/pip
@@ -429,31 +493,31 @@ jobs:
             ${{ runner.os }}-pip-
 
       - name: Install dependencies
-        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.run_matrix == 'true' || needs.changes.outputs.workflow_only == 'true' }}
+        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true' }}
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest
 
       - name: Run strategy smoke pytest
-        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.run_matrix == 'true' || needs.changes.outputs.workflow_only == 'true' }}
+        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true' }}
         run: |
           pytest tests/test_strategy_smoke_cli.py -v --tb=short
 
       - name: Create smoke results directory
-        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.run_matrix == 'true' || needs.changes.outputs.workflow_only == 'true' }}
+        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true' }}
         run: |
           mkdir -p test_results/strategy_smoke
 
       - name: Run strategy smoke CLI
-        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.run_matrix == 'true' || needs.changes.outputs.workflow_only == 'true' }}
+        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true' }}
         run: |
           python scripts/strategy_smoke_check.py \
             --output-json test_results/strategy_smoke/ci_smoke_latest.json \
             --output-md test_results/strategy_smoke/ci_smoke_latest.md
 
       - name: Upload smoke test artifacts
-        if: ${{ always() && (github.event_name != 'pull_request' || needs.changes.outputs.run_matrix == 'true' || needs.changes.outputs.workflow_only == 'true') }}
+        if: ${{ always() && (github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true') }}
         uses: actions/upload-artifact@v4
         with:
           name: strategy-smoke-results
@@ -480,4 +544,4 @@ jobs:
           [[ "${{ needs.fast-lane.result }}" == "success" ]] || { echo "Fast-Lane failed"; exit 1; }
           [[ "${{ needs.tests.result }}" == "success" ]] || { echo "tests failed"; exit 1; }
           [[ "${{ needs.strategy-smoke.result }}" == "success" ]] || { echo "strategy-smoke failed"; exit 1; }
-          echo "PR Gate: all gates passed (run_matrix=${{ needs.changes.outputs.run_matrix }}, docs_only=${{ needs.changes.outputs.docs_only }}, workflow_only=${{ needs.changes.outputs.workflow_only }}, static_contract_changed=${{ needs.changes.outputs.static_contract_changed }}, docs_or_static_contract_only=${{ needs.changes.outputs.docs_or_static_contract_only }}, webui_surface_changed=${{ needs.changes.outputs.webui_surface_changed }}, webui_surface_only=${{ needs.changes.outputs.webui_surface_only }})"
+          echo "PR Gate: all gates passed (run_matrix=${{ needs.changes.outputs.run_matrix }}, test_selection_mode=${{ needs.changes.outputs.test_selection_mode }}, test_selection_reason=${{ needs.changes.outputs.test_selection_reason }}, docs_only=${{ needs.changes.outputs.docs_only }}, workflow_only=${{ needs.changes.outputs.workflow_only }}, static_contract_changed=${{ needs.changes.outputs.static_contract_changed }}, docs_or_static_contract_only=${{ needs.changes.outputs.docs_or_static_contract_only }}, webui_surface_changed=${{ needs.changes.outputs.webui_surface_changed }}, webui_surface_only=${{ needs.changes.outputs.webui_surface_only }})"

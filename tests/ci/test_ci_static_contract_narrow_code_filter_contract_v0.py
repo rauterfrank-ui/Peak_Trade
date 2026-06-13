@@ -311,17 +311,17 @@ def test_run_matrix_derived_from_non_webui_code_not_raw_code_bucket() -> None:
 def test_matrix_jobs_keep_no_job_level_if_and_short_circuit_skip() -> None:
     text = _ci_text()
     assert "name: tests (${{ matrix.python-version }})" in text
-    assert "WebUI/docs/static-contract PR — skip full matrix tests" in text
+    assert "NO_OP — skip full matrix tests (diff-aware)" in text
     assert "IMPORTANT: No job-level if condition - matrix jobs must always be created" in text
-    assert "WebUI/docs/static-contract PR — skip strategy smoke tests" in text
-    assert "needs.changes.outputs.run_matrix != 'true'" in text
-    assert "needs.changes.outputs.run_matrix == 'true'" in text
+    assert "Skip strategy smoke (NO_OP/FOCUSED diff-aware)" in text
+    assert "needs.changes.outputs.tests_execute_no_op == 'true'" in text
+    assert "needs.changes.outputs.tests_execute_full == 'true'" in text
 
 
-def test_strategy_smoke_gated_on_run_matrix_not_code_changed() -> None:
+def test_strategy_smoke_gated_on_tests_execute_full_not_code_changed() -> None:
     text = _ci_text()
     assert "name: strategy-smoke" in text
-    assert "needs.changes.outputs.run_matrix == 'true'" in text
+    assert "needs.changes.outputs.tests_execute_full == 'true'" in text
     assert "needs.changes.outputs.code_changed == 'true'" not in text
 
 
