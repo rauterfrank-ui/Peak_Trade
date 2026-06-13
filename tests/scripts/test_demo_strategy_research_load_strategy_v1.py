@@ -65,7 +65,11 @@ def test_source_has_no_direct_strategy_class_imports() -> None:
     tree = ast.parse(_read_source())
     imported_names = set()
     for node in ast.walk(tree):
-        if isinstance(node, ast.ImportFrom) and node.module and node.module.startswith("src.strategies"):
+        if (
+            isinstance(node, ast.ImportFrom)
+            and node.module
+            and node.module.startswith("src.strategies")
+        ):
             for alias in node.names:
                 imported_names.add(alias.name)
     for forbidden in FORBIDDEN_CLASS_IMPORTS:
