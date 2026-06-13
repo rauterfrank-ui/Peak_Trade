@@ -1460,6 +1460,89 @@ DOCS_DRIFT_OR_POINTER_INTEGRITY_COMPLETE=false
 
 **Non-authorizing:** Docs/tests-only reciprocal crosslink integration only; does **not** authorize Ops Cockpit enablement, payload semantic changes, new cockpit rows, runbook historical content removal, parallel runbook index creation, runtime/live/paper/shadow/testnet, session invoke, Preflight lift, order/cancel/execution/arming, U2b reactivation, Market-Airport authority changes, trading logic changes, Truth-Gates chain #4200–#4207 re-chronicle, workflow edits, branch-protection changes, or truth promotion.
 
+## EER1 Evidence Durable Enforcement Readiness Runbooks index reciprocal crosslink — docs/tests-only guard v1
+
+**Operator-GO:** `GO_EER1_EVIDENCE_DURABLE_ENFORCEMENT_READINESS_RUNBOOKS_INDEX_CI_AUDIT_DOCS_TRUTH_MAP_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_shadow_247_governance_charter_runbooks_index_reciprocal_crosslink_merge_no_run_v1_20260613T113733Z/`
+
+**Purpose:** Anchor the **EER1 Evidence Durable Enforcement Readiness** owner chain (meta-index, Preflight §2b.2/§2a.1, SECTION5 §2a.1) in the existing Runbooks categorized index — static **CI_AUDIT ↔ DOCS_TRUTH_MAP reciprocal crosslink** closes the fail-closed Operator-navigation visibility gap **without** changing EER1 readiness semantics, activating GAP2A1 enforcement, lifting preflight, or altering primary-evidence invariant guards. **Scope separate from closed #4173 EER1 CI_AUDIT↔SECTION5 reciprocal slice, closed #4209 Primary Evidence Runbooks-index slice, closed #4210 Preflight Taxonomy Runbooks-index slice, closed #4211 Shadow-247 Runbooks-index slice, closed #4205–#4208 Ops Cockpit slices, and closed Truth-Gates chain #4200–#4204** — Runbooks index / canonical EER1 owner-chain pointer only.
+
+**Canonical repo owners (reuse — do not duplicate):**
+
+| Concern | Owner |
+|---------|-------|
+| EER1 meta-index SSOT (extend — do not duplicate) | this document — **§ Evidence Durable Enforcement Readiness Review RC v0 — index v0** |
+| Preflight §2b.2 / §2a.1 companion (reference only) | `docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md` |
+| SECTION5 Gap Owner Map — EER1 / Gap-2a.1 (reference only) | `docs/ops/planning/SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md` |
+| Primary evidence retention invariant guard (reuse) | `tests/ops/test_primary_evidence_retention_invariant_contract_v0.py` |
+| Gap-2a.1 enforcement contract guard (reuse) | `tests/ops/test_gap2a1_primary_evidence_enforcement_contract_v0.py` |
+| Gap-2a.1 drift guard (reuse) | `tests/ops/test_gap2a1_primary_evidence_enforcement_drift_guard_contract_v0.py` |
+| SECTION5 gap owner map guard (reuse) | `tests/ops/test_section5_preflight_gap_owner_map_contract_v0.py` |
+| Preflight contract guard (reuse) | `tests/ops/test_paper_shadow_247_preflight_contract_v0.py` |
+| Closed #4173 EER1 CI_AUDIT↔SECTION5 crosslink (reuse pointer only — **no** re-chronicle) | CI_AUDIT § EER1 Evidence Durable Enforcement Readiness CI_AUDIT ↔ SECTION5 reciprocal crosslink |
+| Closed #4209 Primary Evidence Runbooks index (reuse pointer only — **no** re-chronicle) | CI_AUDIT § Primary evidence retention + Preflight §2a/§2a.1 Runbooks index reciprocal crosslink |
+| Closed #4210 Preflight Taxonomy Runbooks index (reuse pointer only — **no** re-chronicle) | CI_AUDIT § Preflight Taxonomy / Runtime Lane Runbooks index reciprocal crosslink |
+| Closed #4211 Shadow-247 Runbooks index (reuse pointer only — **no** re-chronicle) | CI_AUDIT § Shadow-247 Governance Charter Runbooks index reciprocal crosslink |
+| Runbooks index (single canonical entry) | `docs/ops/runbooks/README.md` |
+| Table index pointer (reuse — not duplicate SSOT) | `docs/ops/RUNBOOK_INDEX.md` |
+| Remote runtime contract docs guard (reuse) | `tests/ops/test_remote_runtime_contract_docs_guard_v0.py` |
+| CI_AUDIT / DOCS_TRUTH_MAP reciprocal guard | `tests/ops/test_remote_runtime_contract_docs_guard_v0.py` |
+| DOCS_TRUTH_MAP chronicle | `docs/ops/registry/DOCS_TRUTH_MAP.md` (this crosslink section + Änderungsnachweis row) |
+
+**Runbooks index / EER1 owner-chain pointer invariants (static — not enforcement authority):**
+
+| Invariant | Posture |
+|-----------|---------|
+| Canonical index entry | Exactly one EER1 owner-chain section in `docs/ops/runbooks/README.md` |
+| EER1 meta-index body | **Unchanged** (extend meta-index crosslink pointer only) |
+| GAP2A1 enforcement | **Not activated** |
+| Enforcement activation | **Not authorized** |
+| Parallel EER1 SSOT | **Not created** |
+| Parallel runbook index | **Not created** |
+| Preflight lift | **Not authorized** |
+
+```text
+EER1_EVIDENCE_DURABLE_ENFORCEMENT_READINESS_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_V1=true
+EER1_CANONICAL_OWNER_CHAIN_INDEXED=true
+EER1_EXISTING_GUARDS_REUSED=true
+EER1_ENFORCEMENT_READINESS_FAIL_CLOSED=true
+GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false
+ENFORCEMENT_ACTIVATED=false
+PRIMARY_EVIDENCE_ENFORCEMENT_LIFT=false
+EER1_ENFORCEMENT_READINESS_SEMANTIC_TOUCH=false
+PRIMARY_EVIDENCE_RETENTION_SEMANTIC_TOUCH=false
+PREFLIGHT_SEMANTIC_TOUCH=false
+PREFLIGHT_LIFTED=false
+AUTHORITY_LIFT=false
+RUNBOOK_HISTORICAL_CONTENT_REMOVED=false
+PARALLEL_EER1_SURFACE_CREATED=false
+PARALLEL_RUNBOOK_INDEX_CREATED=false
+WORKFLOW_YAML_MUTATED=false
+REQUIRED_CHECK_CONFIG_MUTATED=false
+TRUTH_GO_GRANTED=false
+TRUTH_PROMOTION_EXECUTED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+NO_SESSION_INVOKE_AUTHORIZED=true
+U2B_PARKED=true
+MARKET_AIRPORT_EXCLUDED=true
+EVIDENCE_OR_DOCS_ANCHOR_NOT_RUNTIME_AUTHORITY=true
+NO_RUNTIME=true
+NO_LIVE=true
+NO_PREFLIGHT_LIFT=true
+NEW_PARALLEL_SSOT_CREATED=false
+DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
+DOCS_DRIFT_OR_POINTER_INTEGRITY_COMPLETE=false
+RUNTIME_STARTED=false
+SCHEDULER_STARTED=false
+RUN_STARTED=false
+SESSION_INVOKED=false
+EXECUTE_STARTED=false
+ARMING_EXECUTED=false
+```
+
+**Guard module (reuse — no parallel EER1 SSOT):** `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`.
+
+**Non-authorizing:** Docs/tests-only reciprocal crosslink integration only; does **not** authorize GAP2A1 enforcement activation, enforcement activation, preflight lift, EER1 readiness semantic changes, primary-evidence retention semantic changes, preflight contract semantic changes, parallel EER1/runbook index creation, runtime/live/paper/shadow/testnet, session invoke, execute/arming, order/cancel/execution, U2b reactivation, Market-Airport authority changes, trading logic changes, EER1 CI_AUDIT↔SECTION5 crosslink re-chronicle (#4173), Primary Evidence Runbooks index re-chronicle (#4209), Preflight Taxonomy Runbooks index re-chronicle (#4210), Shadow-247 Runbooks index re-chronicle (#4211), Ops Cockpit runbook pointer re-chronicle (#4205–#4208), Truth-Gates chain #4200–#4204 re-chronicle, workflow edits, branch-protection changes, or truth promotion.
+
 ## Shadow-247 Governance Charter Runbooks index reciprocal crosslink — docs/tests-only guard v1
 
 **Operator-GO:** `GO_SHADOW_247_GOVERNANCE_CHARTER_RUNBOOKS_INDEX_CI_AUDIT_DOCS_TRUTH_MAP_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_preflight_taxonomy_runbooks_index_reciprocal_crosslink_merge_no_run_v1_20260613T011300Z/`
@@ -6321,6 +6404,7 @@ PARALLEL_PRIMARY_EVIDENCE_ENFORCEMENT_INDEX_CREATED=false
 | CV3+ final closeout | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/cybersecurity_defensive_visibility_cv3_plus_rc_v0_core_complete_after_cv3c_v0_20260603T033708Z/` |
 | PE run-completion final closeout | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/primary_evidence_run_completion_contract_rc_v0_core_complete_after_pe6_v0_20260603T031800Z/` |
 | SLICE-EER-1 docs/tests index (this slice) | repo: `docs/ops/CI_AUDIT_KNOWN_ISSUES.md` — this section; crosslinks in Preflight §2b.2 and SECTION5 §2a.1 |
+| Runbooks index reciprocal crosslink (this slice) | repo: `docs/ops/CI_AUDIT_KNOWN_ISSUES.md` — **§ EER1 Evidence Durable Enforcement Readiness Runbooks index reciprocal crosslink**; `docs/ops/runbooks/README.md` — **Evidence Durable Enforcement Readiness / GAP2A1 Planning** |
 
 **Operational rules:**
 

@@ -71,6 +71,12 @@ Runbooks for operating and troubleshooting documentation quality gates:
 
 - [SHADOW_247_GOVERNANCE_CHARTER_V0.md](./SHADOW_247_GOVERNANCE_CHARTER_V0.md) — **Canonical** Shadow-247 governance charter (activation ladder, operator/stop/evidence planning; **non-authorizing**; `PREFLIGHT_REMAINS_BLOCKED=true`; `STOP_IDLE_PRESERVED=true`; `SHADOW_247_GOVERNANCE_FAIL_CLOSED=true`)
 
+### Evidence Durable Enforcement Readiness / GAP2A1 Planning (blocked, read-only)
+
+- [CI_AUDIT — Evidence Durable Enforcement Readiness Review RC v0 — index v0](../CI_AUDIT_KNOWN_ISSUES.md) — **Canonical** EER1 enforcement-readiness review meta-index (consolidates Preflight §2b.2, SECTION5 §2a.1, and completed prerequisite RC arcs; **non-authorizing**; `GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false`; `ENFORCEMENT_ACTIVATED=false`; `PREFLIGHT_REMAINS_BLOCKED=true`; `EER1_ENFORCEMENT_READINESS_FAIL_CLOSED=true`)
+- Preflight §2b.2 EER1 crosslink + §2a.1 primary-evidence hard gate (reuse — see **Preflight / Primary Evidence** above)
+- [SECTION5 Preflight Gap Owner Map](../planning/SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md) — SECTION5 §2a.1 Gap-2a.1 + EER1 readiness review guard (reference only)
+
 ### AI Autonomy & Control Center
 
 Runbooks for AI autonomy workflows and control center operations:
