@@ -1460,6 +1460,86 @@ DOCS_DRIFT_OR_POINTER_INTEGRITY_COMPLETE=false
 
 **Non-authorizing:** Docs/tests-only reciprocal crosslink integration only; does **not** authorize Ops Cockpit enablement, payload semantic changes, new cockpit rows, runbook historical content removal, parallel runbook index creation, runtime/live/paper/shadow/testnet, session invoke, Preflight lift, order/cancel/execution/arming, U2b reactivation, Market-Airport authority changes, trading logic changes, Truth-Gates chain #4200–#4207 re-chronicle, workflow edits, branch-protection changes, or truth promotion.
 
+## Shadow-247 Governance Charter Runbooks index reciprocal crosslink — docs/tests-only guard v1
+
+**Operator-GO:** `GO_SHADOW_247_GOVERNANCE_CHARTER_RUNBOOKS_INDEX_CI_AUDIT_DOCS_TRUTH_MAP_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_preflight_taxonomy_runbooks_index_reciprocal_crosslink_merge_no_run_v1_20260613T011300Z/`
+
+**Purpose:** Anchor the **canonical Shadow-247 Governance Charter** in the existing Runbooks categorized index — static **CI_AUDIT ↔ DOCS_TRUTH_MAP reciprocal crosslink** closes the fail-closed Operator-navigation visibility gap **without** changing charter semantics, governance posture, preflight contract semantics, activating GAP2A1 enforcement, activating the Shadow lane, or lifting preflight. **Scope separate from closed #4210 Preflight Taxonomy Runbooks-index slice, closed #4209 Primary Evidence Runbooks-index slice, closed #4205–#4208 Ops Cockpit slices, and closed Truth-Gates chain #4200–#4204** — Runbooks index / canonical governance-charter owner pointer only.
+
+**Canonical repo owners (reuse — do not duplicate):**
+
+| Concern | Owner |
+|---------|-------|
+| Shadow-247 Governance Charter SSOT | `docs/ops/runbooks/SHADOW_247_GOVERNANCE_CHARTER_V0.md` |
+| Preflight companion (BLOCKED status) | `docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md` |
+| Charter doc contract static guard (reuse) | `tests/ops/test_shadow247_governance_charter_doc_contract_v0.py` |
+| Preflight↔charter crosslink (reuse) | `tests/ops/test_paper_shadow_247_preflight_contract_v0.py` |
+| Future-run worksheet crosslink (reuse) | `tests/ops/test_paper_shadow_247_future_run_operator_decision_worksheet_static_crosslink_contract_v0.py` |
+| Preflight readiness peer crosslink (reuse) | `tests/ops/test_paper_shadow_247_preflight_readiness_peer_static_crosslink_contract_v0.py` |
+| Closed #4210 Preflight Taxonomy Runbooks index (reuse pointer only — **no** re-chronicle) | CI_AUDIT § Preflight Taxonomy / Runtime Lane Runbooks index reciprocal crosslink |
+| Closed #4209 Primary Evidence Runbooks index (reuse pointer only — **no** re-chronicle) | CI_AUDIT § Primary evidence retention + Preflight §2a/§2a.1 Runbooks index reciprocal crosslink |
+| Runbooks index (single canonical entry) | `docs/ops/runbooks/README.md` |
+| Table index pointer (reuse — not duplicate SSOT) | `docs/ops/RUNBOOK_INDEX.md` |
+| Remote runtime contract docs guard (reuse) | `tests/ops/test_remote_runtime_contract_docs_guard_v0.py` |
+| CI_AUDIT / DOCS_TRUTH_MAP reciprocal guard | `tests/ops/test_remote_runtime_contract_docs_guard_v0.py` |
+| DOCS_TRUTH_MAP chronicle | `docs/ops/registry/DOCS_TRUTH_MAP.md` (this crosslink section + Änderungsnachweis row) |
+
+**Runbooks index / governance-charter pointer invariants (static — not governance authority):**
+
+| Invariant | Posture |
+|-----------|---------|
+| Canonical index entry | Exactly one governance-charter entry in `docs/ops/runbooks/README.md` |
+| Charter contract body | **Unchanged** |
+| Governance / activation-ladder posture | **Unchanged** |
+| Shadow lane activation | **Not authorized** |
+| GAP2A1 enforcement | **Not activated** |
+| Parallel governance charter SSOT | **Not created** |
+| Parallel runbook index | **Not created** |
+| Preflight lift | **Not authorized** |
+
+```text
+SHADOW_247_GOVERNANCE_CHARTER_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_V1=true
+SHADOW_247_GOVERNANCE_CHARTER_CANONICAL_OWNER_INDEXED=true
+SHADOW_247_EXISTING_GOVERNANCE_GUARDS_REUSED=true
+SHADOW_247_GOVERNANCE_FAIL_CLOSED=true
+SHADOW_247_GOVERNANCE_SEMANTIC_TOUCH=false
+SHADOW_247_CHARTER_SEMANTIC_TOUCH=false
+SHADOW_247_LANE_ACTIVATED=false
+SHADOW_RUN_STARTED=false
+PREFLIGHT_SEMANTIC_TOUCH=false
+PREFLIGHT_LIFTED=false
+GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false
+AUTHORITY_LIFT=false
+RUNBOOK_HISTORICAL_CONTENT_REMOVED=false
+PARALLEL_SHADOW_247_CHARTER_CREATED=false
+PARALLEL_RUNBOOK_INDEX_CREATED=false
+WORKFLOW_YAML_MUTATED=false
+REQUIRED_CHECK_CONFIG_MUTATED=false
+TRUTH_GO_GRANTED=false
+TRUTH_PROMOTION_EXECUTED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+NO_SESSION_INVOKE_AUTHORIZED=true
+U2B_PARKED=true
+MARKET_AIRPORT_EXCLUDED=true
+EVIDENCE_OR_DOCS_ANCHOR_NOT_RUNTIME_AUTHORITY=true
+NO_RUNTIME=true
+NO_LIVE=true
+NO_PREFLIGHT_LIFT=true
+NEW_PARALLEL_SSOT_CREATED=false
+DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
+DOCS_DRIFT_OR_POINTER_INTEGRITY_COMPLETE=false
+RUNTIME_STARTED=false
+SCHEDULER_STARTED=false
+RUN_STARTED=false
+SESSION_INVOKED=false
+EXECUTE_STARTED=false
+ARMING_EXECUTED=false
+```
+
+**Guard module (reuse — no parallel governance-charter SSOT):** `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`.
+
+**Non-authorizing:** Docs/tests-only reciprocal crosslink integration only; does **not** authorize GAP2A1 enforcement activation, preflight lift, charter/governance semantic changes, preflight contract semantic changes, Shadow lane activation, Shadow run, parallel governance-charter/runbook index creation, runtime/live/paper/shadow/testnet, session invoke, execute/arming, order/cancel/execution, U2b reactivation, Market-Airport authority changes, trading logic changes, Preflight Taxonomy Runbooks index re-chronicle (#4210), Primary Evidence Runbooks index re-chronicle (#4209), Ops Cockpit runbook pointer re-chronicle (#4205–#4208), Truth-Gates chain #4200–#4204 re-chronicle, workflow edits, branch-protection changes, or truth promotion.
+
 ## Preflight Taxonomy / Runtime Lane Runbooks index reciprocal crosslink — docs/tests-only guard v1
 
 **Operator-GO:** `GO_PREFLIGHT_TAXONOMY_RUNBOOKS_INDEX_CI_AUDIT_DOCS_TRUTH_MAP_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_primary_evidence_retention_runbooks_index_reciprocal_crosslink_merge_no_run_v1_20260613T005835Z/`

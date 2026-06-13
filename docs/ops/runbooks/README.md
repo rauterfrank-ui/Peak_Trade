@@ -67,6 +67,10 @@ Runbooks for operating and troubleshooting documentation quality gates:
 
 - [RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md](../specs/RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md) — **Canonical** Runtime Lane Taxonomy + Authority Levels contract (§2 taxonomy index; **BLOCKED** lanes; evidence ≠ approval; `PREFLIGHT_REMAINS_BLOCKED=true`; `RUNTIME_LANE_TAXONOMY_FAIL_CLOSED=true`)
 
+### Shadow-247 Governance / Activation Ladder (blocked, read-only)
+
+- [SHADOW_247_GOVERNANCE_CHARTER_V0.md](./SHADOW_247_GOVERNANCE_CHARTER_V0.md) — **Canonical** Shadow-247 governance charter (activation ladder, operator/stop/evidence planning; **non-authorizing**; `PREFLIGHT_REMAINS_BLOCKED=true`; `STOP_IDLE_PRESERVED=true`; `SHADOW_247_GOVERNANCE_FAIL_CLOSED=true`)
+
 ### AI Autonomy & Control Center
 
 Runbooks for AI autonomy workflows and control center operations:
