@@ -1631,6 +1631,59 @@ PRIMARY_EVIDENCE_RETENTION_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_OWNER_TESTS = (
     "test_run_primary_evidence_retention_hard_gate_v0.py",
     "test_durable_closeout_copy_verify_v0.py",
 )
+PREFLIGHT_TAXONOMY_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_HEADING = (
+    "## Preflight Taxonomy / Runtime Lane Runbooks index reciprocal crosslink "
+    "— docs/tests-only guard v1"
+)
+PREFLIGHT_TAXONOMY_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR = (
+    "PREFLIGHT_TAXONOMY_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_V1=true"
+)
+PREFLIGHT_TAXONOMY_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_INPUT_BUNDLE = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/systemwide_next_safe_scope_ranking_after_primary_evidence_retention_"
+    "runbooks_index_reciprocal_crosslink_merge_no_run_v1_20260613T005835Z"
+)
+PREFLIGHT_TAXONOMY_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_EXPECTED: dict[str, str] = {
+    "PREFLIGHT_TAXONOMY_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_V1": "true",
+    "RUNTIME_LANE_TAXONOMY_CANONICAL_OWNER_INDEXED": "true",
+    "RUNTIME_LANE_TAXONOMY_EXISTING_GUARDS_REUSED": "true",
+    "RUNTIME_LANE_TAXONOMY_FAIL_CLOSED": "true",
+    "RUNTIME_LANE_TAXONOMY_SEMANTIC_TOUCH": "false",
+    "AUTHORITY_LEVELS_SEMANTIC_TOUCH": "false",
+    "PREFLIGHT_SEMANTIC_TOUCH": "false",
+    "PREFLIGHT_LIFTED": "false",
+    "GAP2A1_PRIMARY_EVIDENCE_ENFORCED": "false",
+    "AUTHORITY_LIFT": "false",
+    "RUNBOOK_HISTORICAL_CONTENT_REMOVED": "false",
+    "PARALLEL_TAXONOMY_SSOT_CREATED": "false",
+    "PARALLEL_RUNBOOK_INDEX_CREATED": "false",
+    "WORKFLOW_YAML_MUTATED": "false",
+    "REQUIRED_CHECK_CONFIG_MUTATED": "false",
+    "TRUTH_GO_GRANTED": "false",
+    "TRUTH_PROMOTION_EXECUTED": "false",
+    "PREFLIGHT_REMAINS_BLOCKED": "true",
+    "NO_SESSION_INVOKE_AUTHORIZED": "true",
+    "U2B_PARKED": "true",
+    "MARKET_AIRPORT_EXCLUDED": "true",
+    "EVIDENCE_OR_DOCS_ANCHOR_NOT_RUNTIME_AUTHORITY": "true",
+    "NO_RUNTIME": "true",
+    "NO_LIVE": "true",
+    "NO_PREFLIGHT_LIFT": "true",
+    "NEW_PARALLEL_SSOT_CREATED": "false",
+    "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED": "true",
+    "DOCS_DRIFT_OR_POINTER_INTEGRITY_COMPLETE": "false",
+    "RUNTIME_STARTED": "false",
+    "SCHEDULER_STARTED": "false",
+    "RUN_STARTED": "false",
+    "SESSION_INVOKED": "false",
+    "EXECUTE_STARTED": "false",
+    "ARMING_EXECUTED": "false",
+}
+PREFLIGHT_TAXONOMY_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_OWNER_TESTS = (
+    "test_runtime_lane_taxonomy_authority_levels_contract_v0.py",
+    "test_paper_shadow_247_preflight_readiness_peer_static_crosslink_contract_v0.py",
+    "test_paper_shadow_247_preflight_contract_v0.py",
+)
 PREFLIGHT_PROCESS_GATE_HYGIENE_GUARD_EXPECTED: dict[str, str] = {
     "PREFLIGHT_PROCESS_GATE_HYGIENE_GUARD_V1": "true",
     "ACTIVE_RUN_CHECK_PEAK_TRADE_EXPLICIT_ONLY": "true",
@@ -4698,5 +4751,108 @@ def test_runbooks_readme_primary_evidence_preflight_canonical_index_entry_v1() -
     assert "§2a" in text
     assert (
         sum(1 for line in text.splitlines() if "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md" in line)
+        == 1
+    )
+
+
+def _preflight_taxonomy_runbooks_index_reciprocal_crosslink_section(text: str) -> str:
+    start = text.find(PREFLIGHT_TAXONOMY_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_HEADING)
+    assert start != -1, "missing Preflight Taxonomy runbooks index reciprocal section"
+    next_heading = text.find("\n## ", start + 1)
+    if next_heading == -1:
+        return text[start:]
+    return text[start:next_heading]
+
+
+def test_ci_audit_preflight_taxonomy_runbooks_index_reciprocal_crosslink_section_v1() -> None:
+    text = _ci_audit_text()
+    section = _preflight_taxonomy_runbooks_index_reciprocal_crosslink_section(text)
+    assert PREFLIGHT_TAXONOMY_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_INPUT_BUNDLE in section
+    assert (
+        "GO_PREFLIGHT_TAXONOMY_RUNBOOKS_INDEX_CI_AUDIT_DOCS_TRUTH_MAP_"
+        "RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1" in section
+    )
+    assert "CI_AUDIT ↔ DOCS_TRUTH_MAP reciprocal crosslink" in section
+    assert "DOCS_TRUTH_MAP chronicle" in section
+    assert "CI_AUDIT / DOCS_TRUTH_MAP reciprocal guard" in section
+    assert THIS_MODULE in section
+    assert "docs/ops/runbooks/README.md" in section
+    assert "RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md" in section
+    assert "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md" in section
+    assert "no parallel taxonomy ssot" in section.lower()
+    assert "#4176" in section
+    assert "#4209" in section
+
+
+def test_ci_audit_preflight_taxonomy_runbooks_index_reciprocal_crosslink_owner_tests_v1() -> None:
+    section = _preflight_taxonomy_runbooks_index_reciprocal_crosslink_section(_ci_audit_text())
+    for module_name in PREFLIGHT_TAXONOMY_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_OWNER_TESTS:
+        assert module_name in section, f"missing owner test reference {module_name!r}"
+
+
+def test_ci_audit_preflight_taxonomy_runbooks_index_reciprocal_crosslink_machine_lines_v1() -> None:
+    block = _block_containing(
+        _ci_audit_text(),
+        PREFLIGHT_TAXONOMY_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR,
+    )
+    values = _machine_line_values(block)
+    missing = set(PREFLIGHT_TAXONOMY_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_EXPECTED) - values.keys()
+    assert not missing, (
+        f"missing Preflight Taxonomy runbooks index reciprocal keys: {sorted(missing)}"
+    )
+    for key, expected in PREFLIGHT_TAXONOMY_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_EXPECTED.items():
+        assert values[key] == expected, f"{key}={values[key]!r} expected {expected!r}"
+
+
+def test_docs_truth_map_preflight_taxonomy_runbooks_index_reciprocal_crosslink_chronicle_v1() -> (
+    None
+):
+    text = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    assert (
+        "Preflight Taxonomy / Runtime Lane Runbooks index reciprocal crosslink bundle "
+        "CI_AUDIT ↔ DOCS_TRUTH_MAP guard v1"
+    ) in text
+    assert THIS_MODULE in text
+    assert PREFLIGHT_TAXONOMY_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR in text
+    assert "RUNTIME_LANE_TAXONOMY_CANONICAL_OWNER_INDEXED=true" in text
+    assert "RUNTIME_LANE_TAXONOMY_EXISTING_GUARDS_REUSED=true" in text
+    assert "RUNTIME_LANE_TAXONOMY_FAIL_CLOSED=true" in text
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in text
+    assert "docs/ops/runbooks/README.md" in text
+    assert "RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md" in text
+    assert (
+        PREFLIGHT_TAXONOMY_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_INPUT_BUNDLE.split("/")[-1] in text
+    )
+    assert "RUNTIME_LANE_TAXONOMY_SEMANTIC_TOUCH=false" in text
+    assert "AUTHORITY_LEVELS_SEMANTIC_TOUCH=false" in text
+    assert "PREFLIGHT_SEMANTIC_TOUCH=false" in text
+    assert "PREFLIGHT_LIFTED=false" in text
+    assert "AUTHORITY_LIFT=false" in text
+    assert "RUNBOOK_HISTORICAL_CONTENT_REMOVED=false" in text
+    assert "PARALLEL_TAXONOMY_SSOT_CREATED=false" in text
+    assert "PARALLEL_RUNBOOK_INDEX_CREATED=false" in text
+    assert "WORKFLOW_YAML_MUTATED=false" in text
+    assert "REQUIRED_CHECK_CONFIG_MUTATED=false" in text
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in text
+    assert "NO_SESSION_INVOKE_AUTHORIZED=true" in text
+    assert "U2B_PARKED=true" in text
+    assert "MARKET_AIRPORT_EXCLUDED=true" in text
+    assert "EVIDENCE_OR_DOCS_ANCHOR_NOT_RUNTIME_AUTHORITY=true" in text
+    assert "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true" in text
+
+
+def test_runbooks_readme_preflight_taxonomy_runtime_lane_canonical_index_entry_v1() -> None:
+    text = RUNBOOKS_INDEX.read_text(encoding="utf-8")
+    assert "### Preflight Taxonomy / Runtime Lanes (blocked, read-only)" in text
+    assert "RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md" in text
+    assert "**Canonical**" in text
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in text
+    assert "RUNTIME_LANE_TAXONOMY_FAIL_CLOSED=true" in text
+    assert (
+        sum(
+            1
+            for line in text.splitlines()
+            if "RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md" in line
+        )
         == 1
     )
