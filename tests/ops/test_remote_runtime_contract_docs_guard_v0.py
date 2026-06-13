@@ -1423,6 +1423,54 @@ OPS_COCKPIT_V25_EVIDENCE_FRESHNESS_OBSERVATION_RECIPROCAL_CROSSLINK_OWNER_TESTS 
     "test_ops_cockpit.py",
     "test_evidence_audit_observation.py",
 )
+OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_RECIPROCAL_CROSSLINK_HEADING = (
+    "## Ops Cockpit ↔ Master V2 non-authority reciprocal crosslink — docs/tests-only guard v1"
+)
+OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR = (
+    "OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_RECIPROCAL_CROSSLINK_V1=true"
+)
+OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_RECIPROCAL_CROSSLINK_INPUT_BUNDLE = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/systemwide_next_safe_scope_ranking_after_ops_cockpit_v2_5_evidence_"
+    "freshness_observation_reciprocal_crosslink_merge_no_run_v1_20260613T000200Z"
+)
+OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_RECIPROCAL_CROSSLINK_EXPECTED: dict[str, str] = {
+    "OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_RECIPROCAL_CROSSLINK_V1": "true",
+    "OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_BOUNDARY_PRESERVED": "true",
+    "OPS_COCKPIT_MASTER_V2_EXISTING_CANONICAL_OWNERS_REUSED": "true",
+    "OPS_COCKPIT_IS_OBSERVATION_NOT_AUTHORITY": "true",
+    "OPS_COCKPIT_PAYLOAD_SEMANTIC_TOUCH": "false",
+    "OPS_COCKPIT_ENABLEMENT_CHANGED": "false",
+    "NEW_COCKPIT_ROW_CREATED": "false",
+    "MASTER_V2_SEMANTIC_TOUCH": "false",
+    "DOUBLE_PLAY_SEMANTIC_TOUCH": "false",
+    "BULL_BEAR_SEMANTIC_TOUCH": "false",
+    "TRADING_LOGIC_TOUCH": "false",
+    "OPS_COCKPIT_AUTHORITY_LIFT": "false",
+    "OBSERVABILITY_TRUTH_ALLOWED_CHANGED": "false",
+    "REAL_METADATA_SOURCE_MARKED_CHANGED": "false",
+    "DRAFT_POSTURE_CHANGED": "false",
+    "PARALLEL_COCKPIT_SURFACE_CREATED": "false",
+    "WORKFLOW_YAML_MUTATED": "false",
+    "REQUIRED_CHECK_CONFIG_MUTATED": "false",
+    "TRUTH_GO_GRANTED": "false",
+    "TRUTH_PROMOTION_EXECUTED": "false",
+    "PREFLIGHT_REMAINS_BLOCKED": "true",
+    "NO_SESSION_INVOKE_AUTHORIZED": "true",
+    "U2B_PARKED": "true",
+    "MARKET_AIRPORT_EXCLUDED": "true",
+    "EVIDENCE_OR_DOCS_ANCHOR_NOT_RUNTIME_AUTHORITY": "true",
+    "NO_RUNTIME": "true",
+    "NO_LIVE": "true",
+    "NO_PREFLIGHT_LIFT": "true",
+    "NEW_PARALLEL_SSOT_CREATED": "false",
+    "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED": "true",
+    "DOCS_DRIFT_OR_POINTER_INTEGRITY_COMPLETE": "false",
+}
+OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_RECIPROCAL_CROSSLINK_OWNER_TESTS = (
+    "test_ops_cockpit.py",
+    "test_strategy_to_master_v2_integration_contract_static_crosslink_v0.py",
+)
 PREFLIGHT_PROCESS_GATE_HYGIENE_GUARD_EXPECTED: dict[str, str] = {
     "PREFLIGHT_PROCESS_GATE_HYGIENE_GUARD_V1": "true",
     "ACTIVE_RUN_CHECK_PEAK_TRADE_EXPLICIT_ONLY": "true",
@@ -4058,6 +4106,104 @@ def test_docs_truth_map_ops_cockpit_v25_evidence_freshness_observation_reciproca
     assert "NEW_COCKPIT_ROW_CREATED=false" in text
     assert "FRESHNESS_THRESHOLDS_CHANGED=false" in text
     assert "EVIDENCE_OBSERVATION_SEMANTIC_TOUCH=false" in text
+    assert "PARALLEL_COCKPIT_SURFACE_CREATED=false" in text
+    assert "WORKFLOW_YAML_MUTATED=false" in text
+    assert "REQUIRED_CHECK_CONFIG_MUTATED=false" in text
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in text
+    assert "NO_SESSION_INVOKE_AUTHORIZED=true" in text
+    assert "U2B_PARKED=true" in text
+    assert "MARKET_AIRPORT_EXCLUDED=true" in text
+    assert "EVIDENCE_OR_DOCS_ANCHOR_NOT_RUNTIME_AUTHORITY=true" in text
+    assert "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true" in text
+
+
+def _ops_cockpit_master_v2_non_authority_reciprocal_crosslink_section(text: str) -> str:
+    start = text.find(OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_RECIPROCAL_CROSSLINK_HEADING)
+    assert start != -1, "missing Ops Cockpit Master V2 non-authority reciprocal section"
+    next_heading = text.find("\n## ", start + 1)
+    if next_heading == -1:
+        return text[start:]
+    return text[start:next_heading]
+
+
+def test_ci_audit_ops_cockpit_master_v2_non_authority_reciprocal_crosslink_section_v1() -> None:
+    text = _ci_audit_text()
+    section = _ops_cockpit_master_v2_non_authority_reciprocal_crosslink_section(text)
+    assert OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_RECIPROCAL_CROSSLINK_INPUT_BUNDLE in section
+    assert (
+        "GO_OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_CI_AUDIT_DOCS_TRUTH_MAP_"
+        "RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1" in section
+    )
+    assert "CI_AUDIT ↔ DOCS_TRUTH_MAP reciprocal crosslink" in section
+    assert "DOCS_TRUTH_MAP chronicle" in section
+    assert "CI_AUDIT / DOCS_TRUTH_MAP reciprocal guard" in section
+    assert THIS_MODULE in section
+    assert "OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_CONTRACT_V1.md" in section
+    assert "OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md" in section
+    assert "OPS_COCKPIT_VNEXT_REQUIRED_VIEWS_COVERAGE.md" in section
+    assert "src/webui/ops_cockpit.py" in section
+    assert "_render_operator_summary_preamble" in section
+    assert "operator-summary-master-v2-non-authority" in section
+    assert "operator-summary-preamble" in section
+    assert "§8" in section
+    assert "SLICE-MV2-1" in section
+    assert "Closed #4205 freshness crosslink" in section
+    assert "closed Truth-Gates chain #4200–#4204" in section
+    for module_name in OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_RECIPROCAL_CROSSLINK_OWNER_TESTS:
+        assert module_name in section, (
+            f"missing Ops Cockpit Master V2 non-authority test owner {module_name!r}"
+        )
+
+
+def test_ci_audit_ops_cockpit_master_v2_non_authority_reciprocal_crosslink_machine_lines_v1() -> (
+    None
+):
+    block = _block_containing(
+        _ci_audit_text(),
+        OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR,
+    )
+    values = _machine_line_values(block)
+    missing = set(OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_RECIPROCAL_CROSSLINK_EXPECTED) - values.keys()
+    assert not missing, (
+        f"missing Ops Cockpit Master V2 non-authority reciprocal keys: {sorted(missing)}"
+    )
+    for key, expected in OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_RECIPROCAL_CROSSLINK_EXPECTED.items():
+        assert values[key] == expected, f"{key}={values[key]!r} expected {expected!r}"
+
+
+def test_docs_truth_map_ops_cockpit_master_v2_non_authority_reciprocal_crosslink_chronicle_v1() -> (
+    None
+):
+    text = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    assert (
+        "Ops Cockpit ↔ Master V2 non-authority reciprocal crosslink bundle "
+        "CI_AUDIT ↔ DOCS_TRUTH_MAP guard v1"
+    ) in text
+    assert THIS_MODULE in text
+    assert OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR in text
+    assert "OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_BOUNDARY_PRESERVED=true" in text
+    assert "OPS_COCKPIT_MASTER_V2_EXISTING_CANONICAL_OWNERS_REUSED=true" in text
+    assert "OPS_COCKPIT_IS_OBSERVATION_NOT_AUTHORITY=true" in text
+    assert "OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_CONTRACT_V1.md" in text
+    assert "OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md" in text
+    assert "OPS_COCKPIT_VNEXT_REQUIRED_VIEWS_COVERAGE.md" in text
+    assert "operator-summary-master-v2-non-authority" in text
+    assert "test_ops_cockpit.py" in text
+    assert "test_strategy_to_master_v2_integration_contract_static_crosslink_v0.py" in text
+    assert (
+        OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_RECIPROCAL_CROSSLINK_INPUT_BUNDLE.split("/")[-1] in text
+    )
+    assert "OPS_COCKPIT_PAYLOAD_SEMANTIC_TOUCH=false" in text
+    assert "OPS_COCKPIT_ENABLEMENT_CHANGED=false" in text
+    assert "NEW_COCKPIT_ROW_CREATED=false" in text
+    assert "MASTER_V2_SEMANTIC_TOUCH=false" in text
+    assert "DOUBLE_PLAY_SEMANTIC_TOUCH=false" in text
+    assert "BULL_BEAR_SEMANTIC_TOUCH=false" in text
+    assert "TRADING_LOGIC_TOUCH=false" in text
+    assert "OPS_COCKPIT_AUTHORITY_LIFT=false" in text
+    assert "OBSERVABILITY_TRUTH_ALLOWED_CHANGED=false" in text
+    assert "REAL_METADATA_SOURCE_MARKED_CHANGED=false" in text
+    assert "DRAFT_POSTURE_CHANGED=false" in text
     assert "PARALLEL_COCKPIT_SURFACE_CREATED=false" in text
     assert "WORKFLOW_YAML_MUTATED=false" in text
     assert "REQUIRED_CHECK_CONFIG_MUTATED=false" in text

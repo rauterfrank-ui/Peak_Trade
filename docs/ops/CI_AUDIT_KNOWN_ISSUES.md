@@ -1321,6 +1321,80 @@ DOCS_DRIFT_OR_POINTER_INTEGRITY_COMPLETE=false
 
 **Non-authorizing:** Docs/tests-only reciprocal crosslink integration only; does **not** authorize Ops Cockpit enablement, payload semantic changes, freshness threshold changes, evidence observation logic changes, DRAFT→READY promotion, new cockpit rows, runtime/live/paper/shadow/testnet, session invoke, Preflight lift, order/cancel/execution/arming, U2b reactivation, Market-Airport authority changes, trading logic changes, Truth-Gates chain #4200–#4204 extension, workflow edits, branch-protection changes, or truth promotion.
 
+## Ops Cockpit ↔ Master V2 non-authority reciprocal crosslink — docs/tests-only guard v1
+
+**Operator-GO:** `GO_OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_CI_AUDIT_DOCS_TRUTH_MAP_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_ops_cockpit_v2_5_evidence_freshness_observation_reciprocal_crosslink_merge_no_run_v1_20260613T000200Z/`
+
+**Purpose:** Anchor the read-only **Ops Cockpit ↔ Master V2 / Double Play non-authority boundary** as a reciprocal crosslink slice. Static **CI_AUDIT ↔ DOCS_TRUTH_MAP reciprocal crosslink** closes the remaining chronicle/guard parity gap for the canonical non-authority contract, operator-summary preamble row, required-views coverage anchors, HTML preamble class `operator-summary-master-v2-non-authority`, and contract **§8** wording — **without** changing payload semantics, cockpit enablement, Master V2 / Double Play semantics, or authority. **Scope separate from closed Truth-Gates chain #4200–#4204 and closed #4205 evidence/freshness observation crosslink** — this is Operator/Ops Cockpit non-authority visibility only.
+
+**Canonical repo owners (reuse — do not duplicate):**
+
+| Concern | Owner |
+|---------|-------|
+| Master V2 / Double Play non-authority contract (SSOT) | `docs/ops/specs/OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_CONTRACT_V1.md` — **§8** required preamble wording |
+| Operator summary surface (preamble row) | `docs/ops/specs/OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md` — `operator-summary-preamble` / `operator-summary-master-v2-non-authority` |
+| Required views coverage (preamble anchor) | `docs/ops/specs/OPS_COCKPIT_VNEXT_REQUIRED_VIEWS_COVERAGE.md` — **Canonical anchors** |
+| HTML preamble render (reference only) | `src/webui/ops_cockpit.py` — `_render_operator_summary_preamble` |
+| WebUI preamble contract test (reuse) | `tests/webui/test_ops_cockpit.py` — `test_ops_cockpit_preamble_is_master_v2_non_authorizing` |
+| Strategy → Master V2 static crosslink (reuse) | `tests/ops/test_strategy_to_master_v2_integration_contract_static_crosslink_v0.py` |
+| MV2 alignment RC table row (reuse pointer) | CI_AUDIT § Master V2 / Double Play Read-only Alignment Inventory RC v0 — **SLICE-MV2-1** (~6024) |
+| Closed #4205 freshness crosslink (reuse pointer only — **no** re-chronicle) | CI_AUDIT § Ops Cockpit v2.5 evidence/freshness observation reciprocal crosslink |
+| Closed Truth-Gates chain (reuse pointer only — **no** re-chronicle) | #4200–#4204 |
+| Remote runtime contract docs guard (reuse) | `tests/ops/test_remote_runtime_contract_docs_guard_v0.py` |
+| CI_AUDIT / DOCS_TRUTH_MAP reciprocal guard | `tests/ops/test_remote_runtime_contract_docs_guard_v0.py` |
+| DOCS_TRUTH_MAP chronicle | `docs/ops/registry/DOCS_TRUTH_MAP.md` (this crosslink section + Änderungsnachweis row) |
+
+**Crosslink invariants (static — not cockpit authority):**
+
+| Invariant | Posture |
+|-----------|---------|
+| Non-authority contract §8 wording | **unchanged** — read-only / non-authorizing disclaimer |
+| HTML preamble class | `operator-summary-master-v2-non-authority` — visibility only |
+| Payload semantics | **unchanged** — visibility/alignment only |
+| Cockpit enablement | **unchanged** — observation not authority |
+| New cockpit row | **not created** — docs/tests guard only |
+| Master V2 / Double Play semantics | **unchanged** — boundary preserved |
+| Truth-Gates chain #4200–#4204 | **closed** — not extended |
+| #4205 evidence/freshness crosslink | **closed** — not re-chronicled |
+
+```text
+OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_RECIPROCAL_CROSSLINK_V1=true
+OPS_COCKPIT_MASTER_V2_NON_AUTHORITY_BOUNDARY_PRESERVED=true
+OPS_COCKPIT_MASTER_V2_EXISTING_CANONICAL_OWNERS_REUSED=true
+OPS_COCKPIT_IS_OBSERVATION_NOT_AUTHORITY=true
+OPS_COCKPIT_PAYLOAD_SEMANTIC_TOUCH=false
+OPS_COCKPIT_ENABLEMENT_CHANGED=false
+NEW_COCKPIT_ROW_CREATED=false
+MASTER_V2_SEMANTIC_TOUCH=false
+DOUBLE_PLAY_SEMANTIC_TOUCH=false
+BULL_BEAR_SEMANTIC_TOUCH=false
+TRADING_LOGIC_TOUCH=false
+OPS_COCKPIT_AUTHORITY_LIFT=false
+OBSERVABILITY_TRUTH_ALLOWED_CHANGED=false
+REAL_METADATA_SOURCE_MARKED_CHANGED=false
+DRAFT_POSTURE_CHANGED=false
+PARALLEL_COCKPIT_SURFACE_CREATED=false
+WORKFLOW_YAML_MUTATED=false
+REQUIRED_CHECK_CONFIG_MUTATED=false
+TRUTH_GO_GRANTED=false
+TRUTH_PROMOTION_EXECUTED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+NO_SESSION_INVOKE_AUTHORIZED=true
+U2B_PARKED=true
+MARKET_AIRPORT_EXCLUDED=true
+EVIDENCE_OR_DOCS_ANCHOR_NOT_RUNTIME_AUTHORITY=true
+NO_RUNTIME=true
+NO_LIVE=true
+NO_PREFLIGHT_LIFT=true
+NEW_PARALLEL_SSOT_CREATED=false
+DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
+DOCS_DRIFT_OR_POINTER_INTEGRITY_COMPLETE=false
+```
+
+**Guard module (reuse — no parallel non-authority SSOT):** `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`.
+
+**Non-authorizing:** Docs/tests-only reciprocal crosslink integration only; does **not** authorize Ops Cockpit enablement, payload semantic changes, Master V2 / Double Play logic changes, DRAFT→READY promotion, new cockpit rows, runtime/live/paper/shadow/testnet, session invoke, Preflight lift, order/cancel/execution/arming, U2b reactivation, Market-Airport authority changes, trading logic changes, Truth-Gates chain #4200–#4204 or #4205 extension/re-chronicle, workflow edits, branch-protection changes, or truth promotion.
+
 ## Primary evidence retention invariant residual static review — docs/tests-only guard v1
 
 **Operator-GO:** `GO_PRIMARY_EVIDENCE_RETENTION_INVARIANT_RESIDUAL_STATIC_REVIEW_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_ci_docs_required_check_truth_map_residual_review_merge_no_run_v1_20260612T005020Z/`
