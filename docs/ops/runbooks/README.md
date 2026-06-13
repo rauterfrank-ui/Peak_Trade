@@ -126,6 +126,17 @@ Runbooks for specific phase implementations and workflows:
 - [live_pilot_execution_plan.md](live_pilot_execution_plan.md) — Gesamtplan inkl. Gates und Caps
 - [live_pilot_kickoff.md](live_pilot_kickoff.md) — Kickoff (Pointer)
 
+#### Bounded Pilot Incident / Triage (blocked, read-only)
+
+- [RUNBOOK_BOUNDED_PILOT_INCIDENT_ABORT_TRIAGE_COMPASS.md](RUNBOOK_BOUNDED_PILOT_INCIDENT_ABORT_TRIAGE_COMPASS.md) — **Canonical** bounded-pilot incident / §5 abort triage compass (symptom routing → incident runbook, L5 evidence discipline; **non-authorizing**; `BOUNDED_PILOT_INCIDENT_NAVIGATION_FAIL_CLOSED=true`; `PILOT_GO_AUTHORIZED=false`; `PREFLIGHT_REMAINS_BLOCKED=true`)
+- [RUNBOOK_PILOT_INCIDENT_EXCHANGE_DEGRADED.md](RUNBOOK_PILOT_INCIDENT_EXCHANGE_DEGRADED.md) — Exchange/broker API degraded (Row 11 doc-based evidence owner)
+- [RUNBOOK_PILOT_INCIDENT_UNEXPECTED_EXPOSURE.md](RUNBOOK_PILOT_INCIDENT_UNEXPECTED_EXPOSURE.md) — Unexpected exposure / envelope doubt
+- [RUNBOOK_PILOT_INCIDENT_RECONCILIATION_MISMATCH.md](RUNBOOK_PILOT_INCIDENT_RECONCILIATION_MISMATCH.md) — Reconciliation / ledger disagreement
+- [RUNBOOK_PILOT_INCIDENT_SESSION_END_MISMATCH.md](RUNBOOK_PILOT_INCIDENT_SESSION_END_MISMATCH.md) — Session-end / closeout mismatch
+- [RUNBOOK_PILOT_INCIDENT_TRANSFER_AMBIGUITY.md](RUNBOOK_PILOT_INCIDENT_TRANSFER_AMBIGUITY.md) — Transfer / funding ambiguity
+- [RUNBOOK_PILOT_INCIDENT_TELEMETRY_DEGRADED.md](RUNBOOK_PILOT_INCIDENT_TELEMETRY_DEGRADED.md) — Telemetry / observability degraded
+- [RUNBOOK_PILOT_INCIDENT_RESTART_MID_SESSION.md](RUNBOOK_PILOT_INCIDENT_RESTART_MID_SESSION.md) — Mid-session restart / continuity break (Row 10 doc-based evidence owner)
+
 ### Runbook B — Execution Gates (B5/B3/B2)
 
 Safety controls for Shadow → Mini-Live (ArmedGate, RiskGate, Reconciliation). **All OFF by default.**

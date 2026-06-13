@@ -1460,6 +1460,89 @@ DOCS_DRIFT_OR_POINTER_INTEGRITY_COMPLETE=false
 
 **Non-authorizing:** Docs/tests-only reciprocal crosslink integration only; does **not** authorize Ops Cockpit enablement, payload semantic changes, new cockpit rows, runbook historical content removal, parallel runbook index creation, runtime/live/paper/shadow/testnet, session invoke, Preflight lift, order/cancel/execution/arming, U2b reactivation, Market-Airport authority changes, trading logic changes, Truth-Gates chain #4200–#4207 re-chronicle, workflow edits, branch-protection changes, or truth promotion.
 
+## Bounded-Pilot Incident/Triage Runbooks index reciprocal crosslink — docs/tests-only guard v1
+
+**Operator-GO:** `GO_BOUNDED_PILOT_INCIDENT_RUNBOOKS_INDEX_CI_AUDIT_DOCS_TRUTH_MAP_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_eer1_evidence_durable_enforcement_readiness_runbooks_index_reciprocal_crosslink_merge_no_run_v1_20260613T115359Z/`
+
+**Purpose:** Anchor the **canonical bounded-pilot incident / triage runbook owner chain** (abort triage compass + 7× `RUNBOOK_PILOT_INCIDENT_*` runbooks) in the existing Runbooks categorized index — static **CI_AUDIT ↔ DOCS_TRUTH_MAP reciprocal crosslink** closes the fail-closed Operator-navigation visibility gap **without** changing incident runbook semantics, bounded-pilot readiness posture, stop-signal contracts, pilot Go/No-Go authority, or lifting preflight. **Scope separate from closed #4190 Rows 8/10/11 doc-based exclusion guard, closed #4209–#4212 Runbooks-index reciprocal lanes, closed #4205–#4208 Ops Cockpit slices, and closed Truth-Gates chain #4200–#4204** — Runbooks index / canonical incident-owner pointer only.
+
+**Canonical repo owners (reuse — do not duplicate):**
+
+| Concern | Owner |
+|---------|-------|
+| Abort triage compass (symptom routing SSOT) | `docs/ops/runbooks/RUNBOOK_BOUNDED_PILOT_INCIDENT_ABORT_TRIAGE_COMPASS.md` |
+| Incident runbooks (Row 11 — 7 on main) | `docs&#47;ops&#47;runbooks&#47;RUNBOOK_PILOT_INCIDENT_*.md` |
+| Execution edge-case matrix (Rows 8/10 domains — reference only) | `docs/ops/specs/PILOT_EXECUTION_EDGE_CASE_MATRIX.md` |
+| Pilot Go/No-Go operational slice (Rows 8/10/11 doc-based — reference only) | `docs/ops/specs/PILOT_GO_NO_GO_OPERATIONAL_SLICE.md` |
+| L5 incident / safe-stop evidence pointer (reference only) | `docs/ops/specs/MASTER_V2_BOUNDED_PILOT_L5_INCIDENT_SAFE_STOP_EVIDENCE_POINTER_CONTRACT_V0.md` |
+| Bounded-pilot candidate flow (reference only) | `docs/ops/runbooks/RUNBOOK_BOUNDED_REAL_MONEY_PILOT_CANDIDATE_FLOW.md` |
+| Closed #4190 Rows 8/10/11 doc-based exclusion guard (reuse pointer only — **no** re-chronicle) | CI_AUDIT § Pilot Rows 8/10/11 doc-based eval exclusion |
+| Rows 8/10/11 exclusion guard module (reuse) | `tests/ops/test_pilot_gonogo_rows_8_10_11_exclusion_crosslink_v1.py` |
+| Closed #4212 EER1 Runbooks index (reuse pointer only — **no** re-chronicle) | CI_AUDIT § EER1 Evidence Durable Enforcement Readiness Runbooks index reciprocal crosslink |
+| Runbooks index (single canonical entry) | `docs/ops/runbooks/README.md` |
+| Table index pointer (reuse — not duplicate SSOT) | `docs/ops/RUNBOOK_INDEX.md` |
+| Remote runtime contract docs guard (reuse) | `tests/ops/test_remote_runtime_contract_docs_guard_v0.py` |
+| CI_AUDIT / DOCS_TRUTH_MAP reciprocal guard | `tests/ops/test_remote_runtime_contract_docs_guard_v0.py` |
+| DOCS_TRUTH_MAP chronicle | `docs/ops/registry/DOCS_TRUTH_MAP.md` (this crosslink section + Änderungsnachweis row) |
+
+**Runbooks index / incident-owner pointer invariants (static — not pilot authority):**
+
+| Invariant | Posture |
+|-----------|---------|
+| Canonical index entry | Exactly one Bounded-Pilot Incident/Triage subsection in `docs/ops/runbooks/README.md` |
+| Incident runbook bodies | **Unchanged** (index crosslink pointer only) |
+| Row 11 in pilot eval | **excluded** — doc-based; reuse closed #4190 guard |
+| Pilot Go/No-Go authority | **unchanged** — non-authorizing visibility only |
+| Parallel incident SSOT | **Not created** |
+| Parallel runbook index | **Not created** |
+| Preflight lift | **Not authorized** |
+
+```text
+BOUNDED_PILOT_INCIDENT_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_V1=true
+BOUNDED_PILOT_INCIDENT_CANONICAL_OWNERS_INDEXED=true
+BOUNDED_PILOT_EXISTING_INCIDENT_GUARDS_REUSED=true
+BOUNDED_PILOT_INCIDENT_NAVIGATION_FAIL_CLOSED=true
+BOUNDED_PILOT_INCIDENT_SEMANTIC_TOUCH=false
+BOUNDED_PILOT_READINESS_SEMANTIC_TOUCH=false
+PILOT_GONOGO_AUTHORITY_TOUCH=false
+STOP_SIGNAL_SEMANTIC_TOUCH=false
+PILOT_GO_AUTHORIZED=false
+PILOT_EVAL_ROW11_INTENTIONALLY_EXCLUDED=true
+GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false
+PREFLIGHT_SEMANTIC_TOUCH=false
+PREFLIGHT_LIFTED=false
+AUTHORITY_LIFT=false
+RUNBOOK_HISTORICAL_CONTENT_REMOVED=false
+PARALLEL_INCIDENT_SURFACE_CREATED=false
+PARALLEL_RUNBOOK_INDEX_CREATED=false
+WORKFLOW_YAML_MUTATED=false
+REQUIRED_CHECK_CONFIG_MUTATED=false
+TRUTH_GO_GRANTED=false
+TRUTH_PROMOTION_EXECUTED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+NO_SESSION_INVOKE_AUTHORIZED=true
+U2B_PARKED=true
+MARKET_AIRPORT_EXCLUDED=true
+EVIDENCE_OR_DOCS_ANCHOR_NOT_RUNTIME_AUTHORITY=true
+NO_RUNTIME=true
+NO_LIVE=true
+NO_PREFLIGHT_LIFT=true
+NEW_PARALLEL_SSOT_CREATED=false
+DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
+DOCS_DRIFT_OR_POINTER_INTEGRITY_COMPLETE=false
+RUNTIME_STARTED=false
+SCHEDULER_STARTED=false
+RUN_STARTED=false
+SESSION_INVOKED=false
+PILOT_SESSION_STARTED=false
+EXECUTE_STARTED=false
+ARMING_EXECUTED=false
+```
+
+**Guard module (reuse — no parallel incident SSOT):** `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`.
+
+**Non-authorizing:** Docs/tests-only reciprocal crosslink integration only; does **not** authorize pilot GO/No-Go lift, preflight lift, session invoke, bounded-pilot runtime start, live trading, execute/arming, incident runbook semantic changes, bounded-pilot readiness semantic changes, stop-signal semantic changes, parallel incident/runbook index creation, GAP2A1 enforcement activation, Rows 8/10/11 guard re-chronicle (#4190), EER1 Runbooks index re-chronicle (#4212), Runbook-Index-Reciprocal-Lanes re-chronicle (#4209–#4211), Ops Cockpit runbook pointer re-chronicle (#4205–#4208), Truth-Gates chain #4200–#4204 re-chronicle, workflow edits, branch-protection changes, or truth promotion.
+
 ## EER1 Evidence Durable Enforcement Readiness Runbooks index reciprocal crosslink — docs/tests-only guard v1
 
 **Operator-GO:** `GO_EER1_EVIDENCE_DURABLE_ENFORCEMENT_READINESS_RUNBOOKS_INDEX_CI_AUDIT_DOCS_TRUTH_MAP_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_shadow_247_governance_charter_runbooks_index_reciprocal_crosslink_merge_no_run_v1_20260613T113733Z/`

@@ -1797,6 +1797,73 @@ EER1_EVIDENCE_DURABLE_ENFORCEMENT_READINESS_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_
     "test_section5_preflight_gap_owner_map_contract_v0.py",
     "test_paper_shadow_247_preflight_contract_v0.py",
 )
+BOUNDED_PILOT_INCIDENT_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_HEADING = (
+    "## Bounded-Pilot Incident/Triage Runbooks index reciprocal crosslink "
+    "— docs/tests-only guard v1"
+)
+BOUNDED_PILOT_INCIDENT_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR = (
+    "BOUNDED_PILOT_INCIDENT_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_V1=true"
+)
+BOUNDED_PILOT_INCIDENT_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_INPUT_BUNDLE = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/systemwide_next_safe_scope_ranking_after_eer1_evidence_durable_"
+    "enforcement_readiness_runbooks_index_reciprocal_crosslink_merge_no_run_v1_"
+    "20260613T115359Z"
+)
+BOUNDED_PILOT_INCIDENT_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_EXPECTED: dict[str, str] = {
+    "BOUNDED_PILOT_INCIDENT_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_V1": "true",
+    "BOUNDED_PILOT_INCIDENT_CANONICAL_OWNERS_INDEXED": "true",
+    "BOUNDED_PILOT_EXISTING_INCIDENT_GUARDS_REUSED": "true",
+    "BOUNDED_PILOT_INCIDENT_NAVIGATION_FAIL_CLOSED": "true",
+    "BOUNDED_PILOT_INCIDENT_SEMANTIC_TOUCH": "false",
+    "BOUNDED_PILOT_READINESS_SEMANTIC_TOUCH": "false",
+    "PILOT_GONOGO_AUTHORITY_TOUCH": "false",
+    "STOP_SIGNAL_SEMANTIC_TOUCH": "false",
+    "PILOT_GO_AUTHORIZED": "false",
+    "PILOT_EVAL_ROW11_INTENTIONALLY_EXCLUDED": "true",
+    "GAP2A1_PRIMARY_EVIDENCE_ENFORCED": "false",
+    "PREFLIGHT_SEMANTIC_TOUCH": "false",
+    "PREFLIGHT_LIFTED": "false",
+    "AUTHORITY_LIFT": "false",
+    "RUNBOOK_HISTORICAL_CONTENT_REMOVED": "false",
+    "PARALLEL_INCIDENT_SURFACE_CREATED": "false",
+    "PARALLEL_RUNBOOK_INDEX_CREATED": "false",
+    "WORKFLOW_YAML_MUTATED": "false",
+    "REQUIRED_CHECK_CONFIG_MUTATED": "false",
+    "TRUTH_GO_GRANTED": "false",
+    "TRUTH_PROMOTION_EXECUTED": "false",
+    "PREFLIGHT_REMAINS_BLOCKED": "true",
+    "NO_SESSION_INVOKE_AUTHORIZED": "true",
+    "U2B_PARKED": "true",
+    "MARKET_AIRPORT_EXCLUDED": "true",
+    "EVIDENCE_OR_DOCS_ANCHOR_NOT_RUNTIME_AUTHORITY": "true",
+    "NO_RUNTIME": "true",
+    "NO_LIVE": "true",
+    "NO_PREFLIGHT_LIFT": "true",
+    "NEW_PARALLEL_SSOT_CREATED": "false",
+    "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED": "true",
+    "DOCS_DRIFT_OR_POINTER_INTEGRITY_COMPLETE": "false",
+    "RUNTIME_STARTED": "false",
+    "SCHEDULER_STARTED": "false",
+    "RUN_STARTED": "false",
+    "SESSION_INVOKED": "false",
+    "PILOT_SESSION_STARTED": "false",
+    "EXECUTE_STARTED": "false",
+    "ARMING_EXECUTED": "false",
+}
+BOUNDED_PILOT_INCIDENT_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_OWNER_TESTS = (
+    "test_pilot_gonogo_rows_8_10_11_exclusion_crosslink_v1.py",
+)
+BOUNDED_PILOT_INCIDENT_RUNBOOKS_INDEX_CANONICAL_RUNBOOKS = (
+    "RUNBOOK_BOUNDED_PILOT_INCIDENT_ABORT_TRIAGE_COMPASS.md",
+    "RUNBOOK_PILOT_INCIDENT_EXCHANGE_DEGRADED.md",
+    "RUNBOOK_PILOT_INCIDENT_UNEXPECTED_EXPOSURE.md",
+    "RUNBOOK_PILOT_INCIDENT_RECONCILIATION_MISMATCH.md",
+    "RUNBOOK_PILOT_INCIDENT_SESSION_END_MISMATCH.md",
+    "RUNBOOK_PILOT_INCIDENT_TRANSFER_AMBIGUITY.md",
+    "RUNBOOK_PILOT_INCIDENT_TELEMETRY_DEGRADED.md",
+    "RUNBOOK_PILOT_INCIDENT_RESTART_MID_SESSION.md",
+)
 PREFLIGHT_PROCESS_GATE_HYGIENE_GUARD_EXPECTED: dict[str, str] = {
     "PREFLIGHT_PROCESS_GATE_HYGIENE_GUARD_V1": "true",
     "ACTIVE_RUN_CHECK_PEAK_TRADE_EXPLICIT_ONLY": "true",
@@ -5240,6 +5307,125 @@ def test_runbooks_readme_eer1_evidence_durable_enforcement_readiness_canonical_i
             1
             for line in text.splitlines()
             if "Evidence Durable Enforcement Readiness / GAP2A1 Planning" in line
+        )
+        == 1
+    )
+
+
+def _bounded_pilot_incident_runbooks_index_reciprocal_crosslink_section(text: str) -> str:
+    start = text.find(BOUNDED_PILOT_INCIDENT_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_HEADING)
+    assert start != -1, "missing bounded pilot incident runbooks index reciprocal section"
+    next_heading = text.find("\n## ", start + 1)
+    if next_heading == -1:
+        return text[start:]
+    return text[start:next_heading]
+
+
+def test_ci_audit_bounded_pilot_incident_runbooks_index_reciprocal_crosslink_section_v1() -> None:
+    text = _ci_audit_text()
+    section = _bounded_pilot_incident_runbooks_index_reciprocal_crosslink_section(text)
+    assert BOUNDED_PILOT_INCIDENT_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_INPUT_BUNDLE in section
+    assert (
+        "GO_BOUNDED_PILOT_INCIDENT_RUNBOOKS_INDEX_CI_AUDIT_DOCS_TRUTH_MAP_"
+        "RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1" in section
+    )
+    assert "CI_AUDIT ↔ DOCS_TRUTH_MAP reciprocal crosslink" in section
+    assert "DOCS_TRUTH_MAP chronicle" in section
+    assert "CI_AUDIT / DOCS_TRUTH_MAP reciprocal guard" in section
+    assert THIS_MODULE in section
+    assert "docs/ops/runbooks/README.md" in section
+    assert "RUNBOOK_BOUNDED_PILOT_INCIDENT_ABORT_TRIAGE_COMPASS.md" in section
+    assert "RUNBOOK_PILOT_INCIDENT_" in section
+    assert "PILOT_EXECUTION_EDGE_CASE_MATRIX.md" in section
+    assert "PILOT_GO_NO_GO_OPERATIONAL_SLICE.md" in section
+    assert "no parallel incident ssot" in section.lower()
+    assert "#4190" in section
+    assert "#4212" in section
+
+
+def test_ci_audit_bounded_pilot_incident_runbooks_index_reciprocal_crosslink_owner_tests_v1() -> (
+    None
+):
+    section = _bounded_pilot_incident_runbooks_index_reciprocal_crosslink_section(_ci_audit_text())
+    for module_name in BOUNDED_PILOT_INCIDENT_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_OWNER_TESTS:
+        assert module_name in section, f"missing owner test reference {module_name!r}"
+
+
+def test_ci_audit_bounded_pilot_incident_runbooks_index_reciprocal_crosslink_machine_lines_v1() -> (
+    None
+):
+    block = _block_containing(
+        _ci_audit_text(),
+        BOUNDED_PILOT_INCIDENT_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR,
+    )
+    values = _machine_line_values(block)
+    missing = (
+        set(BOUNDED_PILOT_INCIDENT_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_EXPECTED) - values.keys()
+    )
+    assert not missing, (
+        f"missing bounded pilot incident runbooks index reciprocal keys: {sorted(missing)}"
+    )
+    for (
+        key,
+        expected,
+    ) in BOUNDED_PILOT_INCIDENT_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_EXPECTED.items():
+        assert values[key] == expected, f"{key}={values[key]!r} expected {expected!r}"
+
+
+def test_docs_truth_map_bounded_pilot_incident_runbooks_index_reciprocal_crosslink_chronicle_v1() -> (
+    None
+):
+    text = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    assert (
+        "Bounded-Pilot Incident/Triage Runbooks index reciprocal crosslink bundle "
+        "CI_AUDIT ↔ DOCS_TRUTH_MAP guard v1"
+    ) in text
+    assert THIS_MODULE in text
+    assert BOUNDED_PILOT_INCIDENT_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_GUARD_BLOCK_ANCHOR in text
+    assert "BOUNDED_PILOT_INCIDENT_CANONICAL_OWNERS_INDEXED=true" in text
+    assert "BOUNDED_PILOT_EXISTING_INCIDENT_GUARDS_REUSED=true" in text
+    assert "BOUNDED_PILOT_INCIDENT_NAVIGATION_FAIL_CLOSED=true" in text
+    assert "BOUNDED_PILOT_INCIDENT_SEMANTIC_TOUCH=false" in text
+    assert "BOUNDED_PILOT_READINESS_SEMANTIC_TOUCH=false" in text
+    assert "PILOT_GONOGO_AUTHORITY_TOUCH=false" in text
+    assert "STOP_SIGNAL_SEMANTIC_TOUCH=false" in text
+    assert "PILOT_GO_AUTHORIZED=false" in text
+    assert "docs/ops/runbooks/README.md" in text
+    assert "RUNBOOK_BOUNDED_PILOT_INCIDENT_ABORT_TRIAGE_COMPASS.md" in text
+    assert (
+        BOUNDED_PILOT_INCIDENT_RUNBOOKS_INDEX_RECIPROCAL_CROSSLINK_INPUT_BUNDLE.split("/")[-1]
+        in text
+    )
+    assert "PREFLIGHT_SEMANTIC_TOUCH=false" in text
+    assert "PREFLIGHT_LIFTED=false" in text
+    assert "AUTHORITY_LIFT=false" in text
+    assert "RUNBOOK_HISTORICAL_CONTENT_REMOVED=false" in text
+    assert "PARALLEL_INCIDENT_SURFACE_CREATED=false" in text
+    assert "PARALLEL_RUNBOOK_INDEX_CREATED=false" in text
+    assert "WORKFLOW_YAML_MUTATED=false" in text
+    assert "REQUIRED_CHECK_CONFIG_MUTATED=false" in text
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in text
+    assert "NO_SESSION_INVOKE_AUTHORIZED=true" in text
+    assert "U2B_PARKED=true" in text
+    assert "MARKET_AIRPORT_EXCLUDED=true" in text
+    assert "EVIDENCE_OR_DOCS_ANCHOR_NOT_RUNTIME_AUTHORITY=true" in text
+    assert "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true" in text
+
+
+def test_runbooks_readme_bounded_pilot_incident_triage_canonical_index_entry_v1() -> None:
+    text = RUNBOOKS_INDEX.read_text(encoding="utf-8")
+    assert "#### Bounded Pilot Incident / Triage (blocked, read-only)" in text
+    assert "RUNBOOK_BOUNDED_PILOT_INCIDENT_ABORT_TRIAGE_COMPASS.md" in text
+    assert "BOUNDED_PILOT_INCIDENT_NAVIGATION_FAIL_CLOSED=true" in text
+    assert "PILOT_GO_AUTHORIZED=false" in text
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in text
+    for runbook_name in BOUNDED_PILOT_INCIDENT_RUNBOOKS_INDEX_CANONICAL_RUNBOOKS:
+        assert runbook_name in text, f"missing runbook index entry {runbook_name!r}"
+    assert (
+        sum(
+            1
+            for line in text.splitlines()
+            if "#### Bounded Pilot Incident / Triage (blocked, read-only)" in line
         )
         == 1
     )
