@@ -1543,6 +1543,78 @@ ARMING_EXECUTED=false
 
 **Non-authorizing:** Docs/tests-only reciprocal crosslink integration only; does **not** authorize pilot GO/No-Go lift, preflight lift, session invoke, bounded-pilot runtime start, live trading, execute/arming, incident runbook semantic changes, bounded-pilot readiness semantic changes, stop-signal semantic changes, parallel incident/runbook index creation, GAP2A1 enforcement activation, Rows 8/10/11 guard re-chronicle (#4190), EER1 Runbooks index re-chronicle (#4212), Runbook-Index-Reciprocal-Lanes re-chronicle (#4209–#4211), Ops Cockpit runbook pointer re-chronicle (#4205–#4208), Truth-Gates chain #4200–#4204 re-chronicle, workflow edits, branch-protection changes, or truth promotion.
 
+## Tech-Debt Top-3 Runbook/Backlog CI_AUDIT ↔ DOCS_TRUTH_MAP static crosslink — docs/tests-only guard v1
+
+**Operator-GO:** `GO_TECH_DEBT_TOP3_RUNBOOK_BACKLOG_CI_AUDIT_DOCS_TRUTH_MAP_STATIC_CROSSLINK_DOCS_TESTS_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_bounded_pilot_incident_runbooks_index_reciprocal_crosslink_merge_no_run_v1_20260613T160514Z/`
+
+**Purpose:** Anchor the **canonical Tech-Debt Top-3 ROI runbook** and **Tech-Debt backlog SSOT** in the existing CI_AUDIT ↔ DOCS_TRUTH_MAP ↔ Runbooks-index guard chain — static **CI_AUDIT ↔ DOCS_TRUTH_MAP reciprocal crosslink** closes the fail-closed Operator-navigation visibility gap **without** changing backlog item status, ROI prioritization, runbook procedures, Tech-Debt implementation authority, or lifting preflight. **Scope separate from closed #4213 Bounded-Pilot Incident/Triage Runbooks-index slice, closed #4209–#4212 Runbooks-index reciprocal lanes, closed #4205–#4208 Ops Cockpit slices, and closed Truth-Gates chain #4200–#4204** — Tech-Debt runbook/backlog pointer visibility only.
+
+**Canonical repo owners (reuse — do not duplicate):**
+
+| Concern | Owner |
+|---------|-------|
+| Tech-Debt Top-3 ROI runbook (reference only) | `docs/ops/runbooks/RUNBOOK_TECH_DEBT_TOP3_ROI_FINISH.md` |
+| Tech-Debt backlog SSOT (reference only) | `docs/TECH_DEBT_BACKLOG.md` |
+| Evidence packs (reference only) | `docs/ops/evidence/EV_TECH_DEBT_*_20260128.md` |
+| Closed #4213 Bounded-Pilot Incident Runbooks index (reuse pointer only — **no** re-chronicle) | CI_AUDIT § Bounded-Pilot Incident/Triage Runbooks index reciprocal crosslink |
+| Runbooks index (single canonical entry) | `docs/ops/runbooks/README.md` |
+| Table index pointer (reuse — not duplicate SSOT) | `docs/ops/RUNBOOK_INDEX.md` |
+| Remote runtime contract docs guard (reuse) | `tests/ops/test_remote_runtime_contract_docs_guard_v0.py` |
+| CI_AUDIT / DOCS_TRUTH_MAP reciprocal guard | `tests/ops/test_remote_runtime_contract_docs_guard_v0.py` |
+| DOCS_TRUTH_MAP chronicle | `docs/ops/registry/DOCS_TRUTH_MAP.md` (this crosslink section + Änderungsnachweis row) |
+
+**Tech-Debt runbook/backlog pointer invariants (static — not implementation authority):**
+
+| Invariant | Posture |
+|-----------|---------|
+| Canonical index entry | Exactly one Tech-Debt Top-3 ROI / Backlog subsection in `docs/ops/runbooks/README.md` |
+| Runbook/backlog bodies | **Unchanged** (crosslink pointer only) |
+| Backlog item status | **Unchanged** — no status-posture rewrite |
+| ROI prioritization | **Unchanged** — visibility only |
+| Tech-Debt implementation | **Not authorized** — docs/tests crosslink only |
+| Parallel Tech-Debt SSOT | **Not created** |
+| Parallel runbook index | **Not created** |
+| Preflight lift | **Not authorized** |
+
+```text
+TECH_DEBT_TOP3_RUNBOOK_BACKLOG_STATIC_CROSSLINK_V1=true
+TECH_DEBT_TOP3_CANONICAL_OWNERS_INDEXED=true
+TECH_DEBT_TOP3_EXISTING_GUARDS_REUSED=true
+TECH_DEBT_TOP3_NAVIGATION_FAIL_CLOSED=true
+TECH_DEBT_TOP3_PRIORITY_SEMANTIC_TOUCH=false
+TECH_DEBT_TOP3_ROI_SEMANTIC_TOUCH=false
+TECH_DEBT_BACKLOG_STATUS_SEMANTIC_TOUCH=false
+TECH_DEBT_EXECUTION_AUTHORITY_TOUCH=false
+TECH_DEBT_RUNBOOK_HISTORICAL_CONTENT_REMOVED=false
+PARALLEL_TECH_DEBT_SURFACE_CREATED=false
+PARALLEL_RUNBOOK_INDEX_CREATED=false
+WORKFLOW_YAML_MUTATED=false
+REQUIRED_CHECK_CONFIG_MUTATED=false
+GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false
+PREFLIGHT_LIFTED=false
+AUTHORITY_LIFT=false
+TRADING_LOGIC_TOUCH=false
+PREFLIGHT_REMAINS_BLOCKED=true
+NO_SESSION_INVOKE_AUTHORIZED=true
+U2B_PARKED=true
+MARKET_AIRPORT_EXCLUDED=true
+EVIDENCE_OR_DOCS_ANCHOR_NOT_RUNTIME_AUTHORITY=true
+NO_RUNTIME=true
+NO_LIVE=true
+NO_PREFLIGHT_LIFT=true
+NEW_PARALLEL_SSOT_CREATED=false
+DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
+DOCS_DRIFT_OR_POINTER_INTEGRITY_COMPLETE=false
+RUNTIME_STARTED=false
+RUN_STARTED=false
+EXECUTE_STARTED=false
+ARMING_EXECUTED=false
+```
+
+**Guard module (reuse — no parallel Tech-Debt SSOT):** `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`.
+
+**Non-authorizing:** Docs/tests-only reciprocal crosslink integration only; does **not** authorize Tech-Debt item implementation (C/B/E code changes), live/paper/shadow/testnet/pilot runtime start, session invoke, execute/arming, preflight lift, backlog status changes, ROI re-prioritization, runbook historical content removal, parallel Tech-Debt/backlog SSOT creation, parallel runbook index creation, GAP2A1 enforcement activation, Bounded-Pilot Incident Runbooks index re-chronicle (#4213), Runbook-Index-Reciprocal-Lanes re-chronicle (#4209–#4212), Ops Cockpit runbook pointer re-chronicle (#4205–#4208), Truth-Gates chain #4200–#4204 re-chronicle, workflow edits, branch-protection changes, or truth promotion.
+
 ## EER1 Evidence Durable Enforcement Readiness Runbooks index reciprocal crosslink — docs/tests-only guard v1
 
 **Operator-GO:** `GO_EER1_EVIDENCE_DURABLE_ENFORCEMENT_READINESS_RUNBOOKS_INDEX_CI_AUDIT_DOCS_TRUTH_MAP_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_shadow_247_governance_charter_runbooks_index_reciprocal_crosslink_merge_no_run_v1_20260613T113733Z/`

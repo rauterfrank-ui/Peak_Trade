@@ -178,4 +178,13 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
 
 ---
 
+## Governance / static crosslink (reference only)
+
+- CI_AUDIT reciprocal guard: [`docs/ops/CI_AUDIT_KNOWN_ISSUES.md`](ops/CI_AUDIT_KNOWN_ISSUES.md) — § Tech-Debt Top-3 Runbook/Backlog CI_AUDIT ↔ DOCS_TRUTH_MAP static crosslink
+- DOCS_TRUTH_MAP chronicle: [`docs/ops/registry/DOCS_TRUTH_MAP.md`](ops/registry/DOCS_TRUTH_MAP.md)
+- Runbooks index: [`docs/ops/runbooks/README.md`](ops/runbooks/README.md)
+- Operator runbook: [`docs/ops/runbooks/RUNBOOK_TECH_DEBT_TOP3_ROI_FINISH.md`](ops/runbooks/RUNBOOK_TECH_DEBT_TOP3_ROI_FINISH.md) — **non-authorizing**; `TECH_DEBT_TOP3_NAVIGATION_FAIL_CLOSED=true`; backlog status semantics unchanged
+
+---
+
 **Hinweis:** Diese Items werden bei Bedarf in zukünftigen Phasen angegangen. Priorisierung erfolgt basierend auf Nutzer-Feedback und Projekt-Roadmap.

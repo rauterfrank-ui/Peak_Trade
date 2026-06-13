@@ -24,8 +24,10 @@ Broader Ops runbook/script orientation stays in [`RUNBOOK_INDEX.md`](../RUNBOOK_
 
 ---
 
-- [RUNBOOK_TECH_DEBT_TOP3_ROI_FINISH.md](./RUNBOOK_TECH_DEBT_TOP3_ROI_FINISH.md): Tech-Debt Top-3 ROI bis Finish (Cursor Multi-Agent)
+#### Tech-Debt Top-3 ROI / Backlog (blocked, read-only)
 
+- [RUNBOOK_TECH_DEBT_TOP3_ROI_FINISH.md](./RUNBOOK_TECH_DEBT_TOP3_ROI_FINISH.md) — **Canonical** Tech-Debt Top-3 ROI bis Finish runbook (Cursor Multi-Agent, NO-LIVE; **non-authorizing**; `TECH_DEBT_TOP3_NAVIGATION_FAIL_CLOSED=true`; `PREFLIGHT_REMAINS_BLOCKED=true`)
+- [`docs/TECH_DEBT_BACKLOG.md`](../../TECH_DEBT_BACKLOG.md) — **Canonical** Tech-Debt backlog SSOT (reference only; status semantics unchanged; `TECH_DEBT_BACKLOG_STATUS_SEMANTIC_TOUCH=false`)
 
 ## Research & New Listings (CEX+DEX Crawler, AI Layers)
 

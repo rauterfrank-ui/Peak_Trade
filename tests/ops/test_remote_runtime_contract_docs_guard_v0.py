@@ -1864,6 +1864,56 @@ BOUNDED_PILOT_INCIDENT_RUNBOOKS_INDEX_CANONICAL_RUNBOOKS = (
     "RUNBOOK_PILOT_INCIDENT_TELEMETRY_DEGRADED.md",
     "RUNBOOK_PILOT_INCIDENT_RESTART_MID_SESSION.md",
 )
+TECH_DEBT_TOP3_RUNBOOK_BACKLOG_STATIC_CROSSLINK_HEADING = (
+    "## Tech-Debt Top-3 Runbook/Backlog CI_AUDIT ↔ DOCS_TRUTH_MAP static crosslink "
+    "— docs/tests-only guard v1"
+)
+TECH_DEBT_TOP3_RUNBOOK_BACKLOG_STATIC_CROSSLINK_GUARD_BLOCK_ANCHOR = (
+    "TECH_DEBT_TOP3_RUNBOOK_BACKLOG_STATIC_CROSSLINK_V1=true"
+)
+TECH_DEBT_TOP3_RUNBOOK_BACKLOG_STATIC_CROSSLINK_INPUT_BUNDLE = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/systemwide_next_safe_scope_ranking_after_bounded_pilot_incident_"
+    "runbooks_index_reciprocal_crosslink_merge_no_run_v1_20260613T160514Z"
+)
+TECH_DEBT_TOP3_RUNBOOK_BACKLOG_STATIC_CROSSLINK_EXPECTED: dict[str, str] = {
+    "TECH_DEBT_TOP3_RUNBOOK_BACKLOG_STATIC_CROSSLINK_V1": "true",
+    "TECH_DEBT_TOP3_CANONICAL_OWNERS_INDEXED": "true",
+    "TECH_DEBT_TOP3_EXISTING_GUARDS_REUSED": "true",
+    "TECH_DEBT_TOP3_NAVIGATION_FAIL_CLOSED": "true",
+    "TECH_DEBT_TOP3_PRIORITY_SEMANTIC_TOUCH": "false",
+    "TECH_DEBT_TOP3_ROI_SEMANTIC_TOUCH": "false",
+    "TECH_DEBT_BACKLOG_STATUS_SEMANTIC_TOUCH": "false",
+    "TECH_DEBT_EXECUTION_AUTHORITY_TOUCH": "false",
+    "TECH_DEBT_RUNBOOK_HISTORICAL_CONTENT_REMOVED": "false",
+    "PARALLEL_TECH_DEBT_SURFACE_CREATED": "false",
+    "PARALLEL_RUNBOOK_INDEX_CREATED": "false",
+    "WORKFLOW_YAML_MUTATED": "false",
+    "REQUIRED_CHECK_CONFIG_MUTATED": "false",
+    "GAP2A1_PRIMARY_EVIDENCE_ENFORCED": "false",
+    "PREFLIGHT_LIFTED": "false",
+    "AUTHORITY_LIFT": "false",
+    "TRADING_LOGIC_TOUCH": "false",
+    "PREFLIGHT_REMAINS_BLOCKED": "true",
+    "NO_SESSION_INVOKE_AUTHORIZED": "true",
+    "U2B_PARKED": "true",
+    "MARKET_AIRPORT_EXCLUDED": "true",
+    "EVIDENCE_OR_DOCS_ANCHOR_NOT_RUNTIME_AUTHORITY": "true",
+    "NO_RUNTIME": "true",
+    "NO_LIVE": "true",
+    "NO_PREFLIGHT_LIFT": "true",
+    "NEW_PARALLEL_SSOT_CREATED": "false",
+    "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED": "true",
+    "DOCS_DRIFT_OR_POINTER_INTEGRITY_COMPLETE": "false",
+    "RUNTIME_STARTED": "false",
+    "RUN_STARTED": "false",
+    "EXECUTE_STARTED": "false",
+    "ARMING_EXECUTED": "false",
+}
+TECH_DEBT_TOP3_RUNBOOK_BACKLOG_STATIC_CROSSLINK_CANONICAL_PATHS = (
+    "docs/ops/runbooks/RUNBOOK_TECH_DEBT_TOP3_ROI_FINISH.md",
+    "docs/TECH_DEBT_BACKLOG.md",
+)
 PREFLIGHT_PROCESS_GATE_HYGIENE_GUARD_EXPECTED: dict[str, str] = {
     "PREFLIGHT_PROCESS_GATE_HYGIENE_GUARD_V1": "true",
     "ACTIVE_RUN_CHECK_PEAK_TRADE_EXPLICIT_ONLY": "true",
@@ -5429,3 +5479,110 @@ def test_runbooks_readme_bounded_pilot_incident_triage_canonical_index_entry_v1(
         )
         == 1
     )
+
+
+def _tech_debt_top3_runbook_backlog_static_crosslink_section(text: str) -> str:
+    start = text.find(TECH_DEBT_TOP3_RUNBOOK_BACKLOG_STATIC_CROSSLINK_HEADING)
+    assert start != -1, "missing tech debt top3 runbook backlog static crosslink section"
+    next_heading = text.find("\n## ", start + 1)
+    if next_heading == -1:
+        return text[start:]
+    return text[start:next_heading]
+
+
+def test_ci_audit_tech_debt_top3_runbook_backlog_static_crosslink_section_v1() -> None:
+    text = _ci_audit_text()
+    section = _tech_debt_top3_runbook_backlog_static_crosslink_section(text)
+    assert TECH_DEBT_TOP3_RUNBOOK_BACKLOG_STATIC_CROSSLINK_INPUT_BUNDLE in section
+    assert (
+        "GO_TECH_DEBT_TOP3_RUNBOOK_BACKLOG_CI_AUDIT_DOCS_TRUTH_MAP_"
+        "STATIC_CROSSLINK_DOCS_TESTS_NO_RUN_V1" in section
+    )
+    assert "CI_AUDIT ↔ DOCS_TRUTH_MAP reciprocal crosslink" in section
+    assert "DOCS_TRUTH_MAP chronicle" in section
+    assert "CI_AUDIT / DOCS_TRUTH_MAP reciprocal guard" in section
+    assert THIS_MODULE in section
+    assert "docs/ops/runbooks/README.md" in section
+    for path in TECH_DEBT_TOP3_RUNBOOK_BACKLOG_STATIC_CROSSLINK_CANONICAL_PATHS:
+        assert path in section, f"missing canonical path reference {path!r}"
+    assert "EV_TECH_DEBT_" in section
+    assert "no parallel tech-debt ssot" in section.lower()
+    assert "#4213" in section
+
+
+def test_ci_audit_tech_debt_top3_runbook_backlog_static_crosslink_machine_lines_v1() -> None:
+    block = _block_containing(
+        _ci_audit_text(),
+        TECH_DEBT_TOP3_RUNBOOK_BACKLOG_STATIC_CROSSLINK_GUARD_BLOCK_ANCHOR,
+    )
+    values = _machine_line_values(block)
+    missing = set(TECH_DEBT_TOP3_RUNBOOK_BACKLOG_STATIC_CROSSLINK_EXPECTED) - values.keys()
+    assert not missing, f"missing tech debt top3 static crosslink keys: {sorted(missing)}"
+    for key, expected in TECH_DEBT_TOP3_RUNBOOK_BACKLOG_STATIC_CROSSLINK_EXPECTED.items():
+        assert values[key] == expected, f"{key}={values[key]!r} expected {expected!r}"
+
+
+def test_docs_truth_map_tech_debt_top3_runbook_backlog_static_crosslink_chronicle_v1() -> None:
+    text = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    assert (
+        "Tech-Debt Top-3 Runbook/Backlog CI_AUDIT ↔ DOCS_TRUTH_MAP static crosslink bundle guard v1"
+    ) in text
+    assert THIS_MODULE in text
+    assert TECH_DEBT_TOP3_RUNBOOK_BACKLOG_STATIC_CROSSLINK_GUARD_BLOCK_ANCHOR in text
+    assert "TECH_DEBT_TOP3_CANONICAL_OWNERS_INDEXED=true" in text
+    assert "TECH_DEBT_TOP3_EXISTING_GUARDS_REUSED=true" in text
+    assert "TECH_DEBT_TOP3_NAVIGATION_FAIL_CLOSED=true" in text
+    assert "TECH_DEBT_TOP3_PRIORITY_SEMANTIC_TOUCH=false" in text
+    assert "TECH_DEBT_TOP3_ROI_SEMANTIC_TOUCH=false" in text
+    assert "TECH_DEBT_BACKLOG_STATUS_SEMANTIC_TOUCH=false" in text
+    assert "docs/ops/runbooks/README.md" in text
+    for path in TECH_DEBT_TOP3_RUNBOOK_BACKLOG_STATIC_CROSSLINK_CANONICAL_PATHS:
+        assert path in text, f"missing chronicle path reference {path!r}"
+    assert TECH_DEBT_TOP3_RUNBOOK_BACKLOG_STATIC_CROSSLINK_INPUT_BUNDLE.split("/")[-1] in text
+    assert "PREFLIGHT_LIFTED=false" in text
+    assert "AUTHORITY_LIFT=false" in text
+    assert "TRADING_LOGIC_TOUCH=false" in text
+    assert "PARALLEL_TECH_DEBT_SURFACE_CREATED=false" in text
+    assert "PARALLEL_RUNBOOK_INDEX_CREATED=false" in text
+    assert "WORKFLOW_YAML_MUTATED=false" in text
+    assert "REQUIRED_CHECK_CONFIG_MUTATED=false" in text
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in text
+    assert "NO_SESSION_INVOKE_AUTHORIZED=true" in text
+    assert "U2B_PARKED=true" in text
+    assert "MARKET_AIRPORT_EXCLUDED=true" in text
+    assert "EVIDENCE_OR_DOCS_ANCHOR_NOT_RUNTIME_AUTHORITY=true" in text
+    assert "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true" in text
+
+
+def test_runbooks_readme_tech_debt_top3_backlog_canonical_index_entry_v1() -> None:
+    text = RUNBOOKS_INDEX.read_text(encoding="utf-8")
+    assert "#### Tech-Debt Top-3 ROI / Backlog (blocked, read-only)" in text
+    assert "RUNBOOK_TECH_DEBT_TOP3_ROI_FINISH.md" in text
+    assert "TECH_DEBT_BACKLOG.md" in text
+    assert "TECH_DEBT_TOP3_NAVIGATION_FAIL_CLOSED=true" in text
+    assert "TECH_DEBT_BACKLOG_STATUS_SEMANTIC_TOUCH=false" in text
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in text
+    assert (
+        sum(
+            1
+            for line in text.splitlines()
+            if "#### Tech-Debt Top-3 ROI / Backlog (blocked, read-only)" in line
+        )
+        == 1
+    )
+
+
+def test_tech_debt_backlog_reciprocal_crosslink_pointers_v1() -> None:
+    text = (REPO_ROOT / "docs" / "TECH_DEBT_BACKLOG.md").read_text(encoding="utf-8")
+    assert "CI_AUDIT reciprocal guard" in text
+    assert "DOCS_TRUTH_MAP chronicle" in text
+    assert "RUNBOOK_TECH_DEBT_TOP3_ROI_FINISH.md" in text
+    assert "TECH_DEBT_TOP3_NAVIGATION_FAIL_CLOSED=true" in text
+
+
+def test_tech_debt_runbook_reciprocal_crosslink_pointers_v1() -> None:
+    runbook = REPO_ROOT / "docs" / "ops" / "runbooks" / "RUNBOOK_TECH_DEBT_TOP3_ROI_FINISH.md"
+    text = runbook.read_text(encoding="utf-8")
+    assert "TECH_DEBT_BACKLOG.md" in text
+    assert "CI_AUDIT_KNOWN_ISSUES.md" in text
+    assert "TECH_DEBT_TOP3_NAVIGATION_FAIL_CLOSED=true" in text
