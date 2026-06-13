@@ -54,6 +54,12 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
   - Status: closed (PR feat/run-full-portfolio-load-strategy-migration-v1; offline Tests `tests/scripts/test_run_full_portfolio_load_strategy_v1.py`)
   - Fundstellen: `scripts/run_full_portfolio.py`, `src/strategies/__init__.py` (`load_strategy`), `tests/scripts/test_run_full_portfolio_load_strategy_v1.py`
 
+- [x] `demo_execution_backtest.py`: paralleler `get_strategy_fn()`/`strategy_map` auf kanonischen `load_strategy()`-Pfad migriert
+  - Fundstelle: `scripts/demo_execution_backtest.py`
+  - Kontext: Hardcodierte `strategy_map` duplizierte STRATEGY_REGISTRY; Namensdrift (`breakout_donchian` vs. `breakout`, `momentum` vs. `momentum_1h`)
+  - Status: closed (PR feat/demo-execution-backtest-load-strategy-migration-v1; offline Tests `tests/scripts/test_demo_execution_backtest_load_strategy_v1.py`)
+  - Fundstellen: `scripts/demo_execution_backtest.py`, `src/strategies/__init__.py` (`load_strategy`), `tests/scripts/test_demo_execution_backtest_load_strategy_v1.py`
+
 ---
 
 ## Kategorie B – Daten-Integration & Exchange

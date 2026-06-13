@@ -66,69 +66,54 @@ from src.reporting.execution_reports import (
     from_execution_results,
     format_execution_stats,
 )
+from src.strategies import load_strategy
 
 
 # =============================================================================
 # Strategy Loader
 # =============================================================================
 
-
-def _macd_generate_signals(df: pd.DataFrame, params: Dict[str, Any]) -> pd.Series:
-    """Signal-Funktion für MACD über :class:`MACDStrategy` (kein modulweites Legacy-API)."""
-    from src.strategies.macd import MACDStrategy
-
-    fast = int(params.get("fast_ema", params.get("fast_period", 12)))
-    slow = int(params.get("slow_ema", params.get("slow_period", 26)))
-    sig = int(params.get("signal_ema", params.get("signal_period", 9)))
-    strategy = MACDStrategy(fast_ema=fast, slow_ema=slow, signal_ema=sig)
-    return strategy.generate_signals(df)
+# Kanonische Demo-Strategien (STRATEGY_REGISTRY-Keys; kein lokales Alias-Mapping).
+DEMO_SUPPORTED_STRATEGY_NAMES: tuple[str, ...] = (
+    "ma_crossover",
+    "rsi_reversion",
+    "macd",
+    "momentum_1h",
+    "bollinger_bands",
+    "breakout",
+)
 
 
 def get_strategy_fn(name: str) -> Callable[[pd.DataFrame, Dict[str, Any]], pd.Series]:
     """
-    Laedt die Signal-Funktion fuer eine Strategie.
+    Laedt die Signal-Funktion fuer eine Strategie via kanonischem load_strategy().
 
     Args:
-        name: Strategie-Name (z.B. "ma_crossover", "rsi_reversion", "macd")
+        name: Kanonischer Strategie-Name (z.B. "ma_crossover", "rsi_reversion", "macd")
 
     Returns:
         Callable: generate_signals(df, params) -> pd.Series
 
     Raises:
-        ValueError: Wenn Strategie unbekannt ist
+        ValueError: Wenn Strategie unbekannt ist (load_strategy fail-closed)
     """
-    strategy_map = {
-        "ma_crossover": "src.strategies.ma_crossover",
-        "rsi_reversion": "src.strategies.rsi_reversion",
-        "macd": "src.strategies.macd",
-        "momentum": "src.strategies.momentum",
-        "bollinger": "src.strategies.bollinger",
-        "breakout_donchian": "src.strategies.breakout_donchian",
-    }
-
-    if name not in strategy_map:
-        available = ", ".join(sorted(strategy_map.keys()))
-        raise ValueError(f"Unbekannte Strategie '{name}'. Verfuegbar: {available}")
-
-    if name == "macd":
-        return _macd_generate_signals
-
-    module_path = strategy_map[name]
-    module = __import__(module_path, fromlist=["generate_signals"])
-    return module.generate_signals
+    return load_strategy(name)
 
 
 def get_default_strategy_params(name: str) -> Dict[str, Any]:
     """
-    Gibt sinnvolle Default-Parameter fuer eine Strategie zurueck.
+    Gibt sinnvolle Default-Parameter fuer eine Demo-Strategie zurueck.
 
     Args:
-        name: Strategie-Name
+        name: Kanonischer Strategie-Name
 
     Returns:
         Dict mit Default-Parametern
+
+    Raises:
+        ValueError: Wenn Strategie nicht in DEMO_SUPPORTED_STRATEGY_NAMES
     """
-    defaults = {
+    defaults: Dict[str, Dict[str, Any]] = {
         "ma_crossover": {
             "fast_period": 10,
             "slow_period": 30,
@@ -141,27 +126,31 @@ def get_default_strategy_params(name: str) -> Dict[str, Any]:
             "stop_pct": 0.02,
         },
         "macd": {
-            "fast_period": 12,
-            "slow_period": 26,
-            "signal_period": 9,
+            "fast_ema": 12,
+            "slow_ema": 26,
+            "signal_ema": 9,
             "stop_pct": 0.02,
         },
-        "momentum": {
-            "lookback": 20,
-            "threshold": 0.02,
+        "momentum_1h": {
+            "lookback_period": 20,
+            "entry_threshold": 0.02,
+            "exit_threshold": -0.01,
             "stop_pct": 0.02,
         },
-        "bollinger": {
-            "period": 20,
-            "num_std": 2.0,
+        "bollinger_bands": {
+            "bb_period": 20,
+            "bb_std": 2.0,
             "stop_pct": 0.02,
         },
-        "breakout_donchian": {
-            "period": 20,
+        "breakout": {
+            "lookback_breakout": 20,
             "stop_pct": 0.02,
         },
     }
-    return defaults.get(name, {"stop_pct": 0.02})
+    if name not in defaults:
+        available = ", ".join(sorted(DEMO_SUPPORTED_STRATEGY_NAMES))
+        raise ValueError(f"Unbekannte Strategie '{name}' für Demo-Defaults. Verfügbar: {available}")
+    return dict(defaults[name])
 
 
 # =============================================================================

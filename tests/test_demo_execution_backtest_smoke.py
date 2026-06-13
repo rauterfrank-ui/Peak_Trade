@@ -92,11 +92,11 @@ class TestGetStrategyFn:
         fn = get_strategy_fn("macd")
         assert callable(fn)
 
-    def test_load_momentum(self):
-        """momentum Strategie kann geladen werden."""
+    def test_load_momentum_1h(self):
+        """momentum_1h Strategie kann geladen werden (kanonischer Registry-Name)."""
         from scripts.demo_execution_backtest import get_strategy_fn
 
-        fn = get_strategy_fn("momentum")
+        fn = get_strategy_fn("momentum_1h")
         assert callable(fn)
 
     def test_unknown_strategy_raises(self):
@@ -104,7 +104,7 @@ class TestGetStrategyFn:
         from scripts.demo_execution_backtest import get_strategy_fn
 
         with pytest.raises(ValueError, match="Unbekannte Strategie"):
-            get_strategy_fn("unknown_strategy")
+            get_strategy_fn("unknown_strategy_xyz")
 
 
 class TestGetDefaultStrategyParams:
@@ -128,17 +128,16 @@ class TestGetDefaultStrategyParams:
 
         params = get_default_strategy_params("macd")
 
-        assert "fast_period" in params
-        assert "slow_period" in params
-        assert "signal_period" in params
+        assert "fast_ema" in params
+        assert "slow_ema" in params
+        assert "signal_ema" in params
 
-    def test_unknown_strategy_returns_minimal(self):
-        """Unbekannte Strategie gibt minimale Defaults."""
+    def test_unknown_strategy_defaults_raises(self):
+        """Unbekannte Strategie wirft ValueError (fail-closed)."""
         from scripts.demo_execution_backtest import get_default_strategy_params
 
-        params = get_default_strategy_params("unknown")
-
-        assert "stop_pct" in params
+        with pytest.raises(ValueError, match="Unbekannte Strategie"):
+            get_default_strategy_params("unknown_strategy_xyz")
 
 
 class TestGenerateSampleData:
