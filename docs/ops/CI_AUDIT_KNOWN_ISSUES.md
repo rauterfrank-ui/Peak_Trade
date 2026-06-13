@@ -1555,7 +1555,7 @@ ARMING_EXECUTED=false
 |---------|-------|
 | Tech-Debt Top-3 ROI runbook (reference only) | `docs/ops/runbooks/RUNBOOK_TECH_DEBT_TOP3_ROI_FINISH.md` |
 | Tech-Debt backlog SSOT (reference only) | `docs/TECH_DEBT_BACKLOG.md` |
-| Evidence packs (reference only) | `docs/ops/evidence/EV_TECH_DEBT_*_20260128.md` |
+| Evidence packs (reference only) | `docs&#47;ops&#47;evidence&#47;EV_TECH_DEBT_*_20260128.md` |
 | Closed #4213 Bounded-Pilot Incident Runbooks index (reuse pointer only — **no** re-chronicle) | CI_AUDIT § Bounded-Pilot Incident/Triage Runbooks index reciprocal crosslink |
 | Runbooks index (single canonical entry) | `docs/ops/runbooks/README.md` |
 | Table index pointer (reuse — not duplicate SSOT) | `docs/ops/RUNBOOK_INDEX.md` |
