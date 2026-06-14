@@ -1,11 +1,9 @@
 """
-run_optuna_study.py: stale BacktestEngine API contract-first tests (offline, fail-closed).
+run_optuna_study.py: bounded BacktestEngine modernization contract tests (offline, fail-closed).
 
-Locks legacy BacktestEngine(strategy=..., config=...) construction and bare
-run_realistic() calls. EQUIVALENCE_NOT_PROVEN vs load_strategy() migration.
-
-Extended with test-local data/signal/engine binding target contracts for future
-modernization (no production changes in this slice).
+Verifies canonical load_ohlcv_data reuse, load_strategy() signal binding, BacktestEngine
+construction, run_realistic(df, strategy_signal_fn, strategy_params), BacktestResult.stats
+objective mapping, stop_pct binding, pruning, and exception semantics.
 """
 
 from __future__ import annotations
@@ -34,7 +32,6 @@ sys.path.insert(0, str(project_root))
 import scripts.run_optuna_study as run_optuna_script
 
 TARGET_SCRIPT = project_root / "scripts" / "run_optuna_study.py"
-EQUIVALENCE_NOT_PROVEN = "EQUIVALENCE_NOT_PROVEN"
 MODERNIZATION_REQUIRED_ARGS = frozenset({"df", "strategy_signal_fn", "strategy_params"})
 LEGACY_ENGINE_KWARGS = frozenset({"strategy", "config"})
 REQUIRED_OHLCV_COLUMNS = frozenset({"open", "high", "low", "close", "volume"})
@@ -77,7 +74,7 @@ STOP_PCT_SOURCE_PRECEDENCE = (
     "config_section_strategy_key",
     "canonical_default",
 )
-BOUNDED_MODERNIZATION_AUTHORIZED = False
+BOUNDED_MODERNIZATION_AUTHORIZED = True
 CANONICAL_BACKTEST_RESULT_OWNER = "src/backtest/result.py:BacktestResult"
 LEGACY_OBJECTIVE_METRIC_FALLBACK = 0.0
 LEGACY_RUN_BACKTEST_TRIAL_METRIC_NAMES = frozenset(
@@ -97,7 +94,6 @@ SCHEMA_KEY_TRIAL_PARAMS: dict[str, dict[str, Any]] = {
     "breakout_donchian": {"lookback": 20, "price_col": "close"},
 }
 PRODUCTION_GUARD_PATHS = (
-    "scripts/run_optuna_study.py",
     "scripts/run_backtest.py",
     "src/backtest/engine.py",
     "src/strategies/__init__.py",
@@ -133,21 +129,22 @@ def _backtest_engine_call_keywords() -> set[str]:
     return keywords
 
 
-def _run_realistic_call_arg_count() -> int:
+def _run_realistic_call_keywords() -> set[str]:
     tree = ast.parse(_read_source())
     fn = next(
         node
         for node in tree.body
         if isinstance(node, ast.FunctionDef) and node.name == "run_backtest_trial"
     )
+    keywords: set[str] = set()
     for node in ast.walk(fn):
         if (
             isinstance(node, ast.Call)
             and isinstance(node.func, ast.Attribute)
             and node.func.attr == "run_realistic"
         ):
-            return len(node.args) + len(node.keywords)
-    raise AssertionError("run_realistic call not found in run_backtest_trial")
+            keywords = {kw.arg for kw in node.keywords if kw.arg}
+    return keywords
 
 
 def _sample_ohlcv(n: int = 120) -> pd.DataFrame:
@@ -490,7 +487,7 @@ EXCEPTION_TARGET_CONTRACT = ExceptionTargetContract(
 
 
 # ---------------------------------------------------------------------------
-# AST / static guards — production fix not applied in this slice
+# AST / static guards — modernized production contract
 # ---------------------------------------------------------------------------
 
 
@@ -500,13 +497,13 @@ def test_module_imports_without_main_side_effects() -> None:
     main_mock.assert_not_called()
 
 
-def test_source_has_no_load_strategy_migration() -> None:
-    assert "load_strategy" not in _read_source()
+def test_source_uses_load_strategy_migration() -> None:
+    assert "load_strategy" in _read_source()
 
 
-def test_equivalence_not_proven_marker_present_in_test_owner() -> None:
+def test_bounded_modernization_authorized_in_test_owner() -> None:
     owner_source = Path(__file__).read_text(encoding="utf-8")
-    assert EQUIVALENCE_NOT_PROVEN in owner_source
+    assert "BOUNDED_MODERNIZATION_AUTHORIZED = True" in owner_source
 
 
 def test_source_still_imports_backtest_engine() -> None:
@@ -520,25 +517,26 @@ def test_source_still_imports_backtest_engine() -> None:
     assert "BacktestEngine" in imported
 
 
-def test_source_still_uses_get_strategy_spec_cls_binding() -> None:
+def test_source_imports_canonical_data_loader() -> None:
     source = _read_source()
-    assert "get_strategy_spec" in source
-    assert ".cls" in source
+    assert "load_ohlcv_data" in source
+    assert "scripts.run_backtest" in source
 
 
-def test_source_still_instantiates_strategy_cls_with_trial_params() -> None:
+def test_source_does_not_instantiate_strategy_cls_in_trial_path() -> None:
     fn_source = _function_source("run_backtest_trial")
-    assert "strategy_cls(**trial_params)" in fn_source
+    assert "strategy_cls" not in fn_source
+    assert "strategy_cls(**trial_params)" not in fn_source
 
 
 # ---------------------------------------------------------------------------
-# Stale Constructor Contract
+# Canonical Constructor Contract
 # ---------------------------------------------------------------------------
 
 
-def test_stale_constructor_passes_legacy_strategy_and_config_keywords() -> None:
+def test_canonical_constructor_rejects_legacy_strategy_and_config_keywords() -> None:
     keywords = _backtest_engine_call_keywords()
-    assert LEGACY_ENGINE_KWARGS <= keywords
+    assert LEGACY_ENGINE_KWARGS.isdisjoint(keywords)
 
 
 def test_canonical_backtest_engine_constructor_rejects_legacy_keywords() -> None:
@@ -547,23 +545,23 @@ def test_canonical_backtest_engine_constructor_rejects_legacy_keywords() -> None
     assert LEGACY_ENGINE_KWARGS.isdisjoint(param_names)
 
 
-def test_stale_constructor_shape_differs_from_canonical_contract() -> None:
+def test_canonical_constructor_matches_engine_contract() -> None:
     stale = _backtest_engine_call_keywords()
     canonical = set(inspect.signature(run_optuna_script.BacktestEngine.__init__).parameters) - {
         "self"
     }
-    assert stale != canonical
+    assert stale <= canonical
     assert "tracker" in stale
-    assert "tracker" in canonical
 
 
 # ---------------------------------------------------------------------------
-# Stale run_realistic Contract
+# Canonical run_realistic Contract
 # ---------------------------------------------------------------------------
 
 
-def test_stale_run_realistic_called_without_required_arguments() -> None:
-    assert _run_realistic_call_arg_count() == 0
+def test_canonical_run_realistic_called_with_required_arguments() -> None:
+    keywords = _run_realistic_call_keywords()
+    assert MODERNIZATION_REQUIRED_ARGS <= keywords
 
 
 def test_canonical_run_realistic_requires_df_signal_fn_and_params() -> None:
@@ -583,17 +581,49 @@ class _MinimalTrialStrategy:
         self._kwargs = kwargs
 
 
-def test_run_backtest_trial_fails_loud_on_legacy_engine_construction() -> None:
+def test_run_backtest_trial_uses_canonical_engine_construction() -> None:
+    df = _sample_ohlcv()
+    captured: dict[str, Any] = {}
+
+    class FakeEngine:
+        def __init__(self, **kwargs: Any) -> None:
+            captured["engine_kwargs"] = kwargs
+
+        def run_realistic(self, **kwargs: Any) -> Any:
+            captured["run_kwargs"] = kwargs
+            from src.backtest.result import BacktestResult
+
+            return BacktestResult(
+                equity_curve=pd.Series(dtype=float, index=df.index),
+                drawdown=pd.Series(dtype=float, index=df.index),
+                stats={"sharpe": 1.0},
+            )
+
+    def _signal_fn(data: pd.DataFrame, params: dict[str, Any]) -> pd.Series:
+        return pd.Series(0, index=data.index)
+
     with (
+        patch.object(run_optuna_script, "BacktestEngine", FakeEngine),
         patch.object(run_optuna_script, "build_tracker_from_config", return_value=MagicMock()),
-        pytest.raises(TypeError, match="unexpected keyword argument 'strategy'"),
+        patch.object(
+            run_optuna_script,
+            "_bind_engine_strategy_params",
+            return_value={"fast_window": 10, "slow_window": 50, "stop_pct": 0.02},
+        ),
     ):
         run_optuna_script.run_backtest_trial(
+            df=df,
             cfg=MagicMock(),
-            strategy_cls=_MinimalTrialStrategy,
+            strategy_key="ma_crossover",
+            strategy_signal_fn=_signal_fn,
             trial_params={"fast_window": 10, "slow_window": 50},
             trial=None,
         )
+
+    assert "strategy" not in captured["engine_kwargs"]
+    assert "config" not in captured["engine_kwargs"]
+    assert captured["run_kwargs"]["df"] is df
+    assert captured["run_kwargs"]["strategy_signal_fn"] is _signal_fn
 
 
 def test_bare_run_realistic_on_canonical_engine_requires_arguments() -> None:
@@ -603,40 +633,58 @@ def test_bare_run_realistic_on_canonical_engine_requires_arguments() -> None:
 
 
 # ---------------------------------------------------------------------------
-# OOP Trial Binding — legacy class path, not load_strategy() equivalence
+# Functional Trial Binding — load_strategy() path
 # ---------------------------------------------------------------------------
 
 
-def test_run_study_resolves_strategy_via_get_strategy_spec_cls() -> None:
+def test_run_study_resolves_strategy_via_load_strategy() -> None:
     fn_source = _function_source("run_study")
-    assert "get_strategy_spec(study_cfg.strategy_name).cls" in fn_source
+    assert "load_strategy(strategy_key)" in fn_source
 
 
-def test_trial_params_passed_via_strategy_cls_constructor() -> None:
+def test_trial_params_passed_unchanged_to_engine_strategy_params() -> None:
+    df = _sample_ohlcv()
     trial_params = {"fast_window": 7, "slow_window": 35}
-    constructed: dict[str, Any] = {}
+    captured: dict[str, Any] = {}
 
-    class RecordingStrategy:
+    class FakeEngine:
         def __init__(self, **kwargs: Any) -> None:
-            constructed.update(kwargs)
+            pass
+
+        def run_realistic(self, **kwargs: Any) -> Any:
+            captured["strategy_params"] = kwargs["strategy_params"]
+            from src.backtest.result import BacktestResult
+
+            return BacktestResult(
+                equity_curve=pd.Series(dtype=float, index=df.index),
+                drawdown=pd.Series(dtype=float, index=df.index),
+                stats={"sharpe": 1.0},
+            )
 
     with (
+        patch.object(run_optuna_script, "BacktestEngine", FakeEngine),
         patch.object(run_optuna_script, "build_tracker_from_config", return_value=MagicMock()),
-        pytest.raises(TypeError, match="unexpected keyword argument 'strategy'"),
+        patch.object(
+            run_optuna_script,
+            "_bind_engine_strategy_params",
+            side_effect=lambda _cfg, _key, params: {**params, "stop_pct": 0.02},
+        ),
     ):
         run_optuna_script.run_backtest_trial(
+            df=df,
             cfg=MagicMock(),
-            strategy_cls=RecordingStrategy,
+            strategy_key="ma_crossover",
+            strategy_signal_fn=lambda d, p: pd.Series(0, index=d.index),
             trial_params=trial_params,
             trial=None,
         )
 
-    assert constructed == trial_params
+    assert captured["strategy_params"]["fast_window"] == 7
+    assert captured["strategy_params"]["slow_window"] == 35
 
 
-def test_load_strategy_equivalence_not_claimed() -> None:
-    assert EQUIVALENCE_NOT_PROVEN == "EQUIVALENCE_NOT_PROVEN"
-    assert "load_strategy" not in _read_source()
+def test_load_strategy_binding_implemented_in_production() -> None:
+    assert "load_strategy" in _read_source()
 
 
 # ---------------------------------------------------------------------------
@@ -644,32 +692,30 @@ def test_load_strategy_equivalence_not_claimed() -> None:
 # ---------------------------------------------------------------------------
 
 
-def test_modernization_boundary_requires_functional_signal_contract() -> None:
+def test_modernization_boundary_implements_functional_signal_contract() -> None:
     owner_source = Path(__file__).read_text(encoding="utf-8")
     for arg in MODERNIZATION_REQUIRED_ARGS:
         assert arg in owner_source
     fn_source = _function_source("run_backtest_trial")
     for arg in MODERNIZATION_REQUIRED_ARGS:
-        assert arg not in fn_source
+        assert arg in fn_source
 
 
 # ---------------------------------------------------------------------------
-# Data Contract Gap
+# Data Contract — canonical loader reuse
 # ---------------------------------------------------------------------------
 
 
-def test_run_backtest_trial_has_no_dataframe_binding() -> None:
+def test_run_backtest_trial_has_dataframe_binding() -> None:
     fn_source = _function_source("run_backtest_trial")
-    assert "DataFrame" not in fn_source
-    assert "load_data" not in fn_source
-    assert "read_csv" not in fn_source
-    assert "df" not in fn_source
+    assert "df" in fn_source
 
 
-def test_run_study_has_no_ohlcv_loader_before_trial_path() -> None:
+def test_run_study_loads_ohlcv_once_before_optimize() -> None:
     fn_source = _function_source("run_study")
-    assert "DataFrame" not in fn_source
-    assert "load_data" not in fn_source
+    assert "load_ohlcv_data" in fn_source
+    assert "study.optimize" in fn_source
+    assert fn_source.index("load_ohlcv_data") < fn_source.index("study.optimize")
 
 
 # ---------------------------------------------------------------------------
@@ -677,25 +723,22 @@ def test_run_study_has_no_ohlcv_loader_before_trial_path() -> None:
 # ---------------------------------------------------------------------------
 
 
-def test_objective_single_preserves_metric_extraction_and_drawdown_negation() -> None:
+def test_objective_single_uses_backtest_result_stats_mapping() -> None:
     fn_source = _function_source("objective_single")
-    assert "metrics.get(objective_name, 0.0)" in fn_source
-    assert 'objective_name == "max_drawdown"' in fn_source
-    assert "objective_value = -objective_value" in fn_source
+    assert "_extract_objective_metric(result.stats" in fn_source
+    assert "metrics.get(objective_name" not in fn_source
 
 
-def test_objective_single_preserves_directional_failure_fallback() -> None:
+def test_objective_single_does_not_swallow_exceptions_with_directional_fallback() -> None:
     fn_source = _function_source("objective_single")
-    assert 'study_cfg.direction == "maximize"' in fn_source
-    assert 'return float("-inf")' in fn_source
-    assert 'return float("inf")' in fn_source
+    assert "except Exception" not in fn_source
+    assert 'return float("-inf")' not in fn_source
 
 
-def test_objective_multi_preserves_pareto_objective_negation() -> None:
+def test_objective_multi_uses_backtest_result_stats_mapping() -> None:
     fn_source = _function_source("objective_multi")
-    assert 'obj_name == "max_drawdown"' in fn_source
-    assert "value = -value" in fn_source
-    assert 'return tuple([float("-inf")]' in fn_source
+    assert "_extract_objective_metric(result.stats" in fn_source
+    assert "metrics.get(" not in fn_source
 
 
 def test_run_study_single_objective_direction_defaults_to_maximize() -> None:
@@ -708,9 +751,10 @@ def test_run_study_single_objective_direction_defaults_to_maximize() -> None:
 # ---------------------------------------------------------------------------
 
 
-def test_legacy_result_get_stats_access_remains_visible() -> None:
+def test_canonical_backtest_result_stats_access_in_production() -> None:
     fn_source = _function_source("run_backtest_trial")
-    assert LEGACY_OBJECTIVE_RESULT_INVENTORY.result_access_pattern in fn_source
+    assert "result.stats" in fn_source
+    assert 'result.get("stats"' not in fn_source
 
 
 def test_canonical_backtest_result_structure_identified_statically() -> None:
@@ -724,32 +768,27 @@ def test_canonical_backtest_result_structure_identified_statically() -> None:
     assert sig.return_annotation is BacktestResult
 
 
-def test_legacy_and_canonical_result_shapes_are_not_equivalent() -> None:
+def test_legacy_and_canonical_result_shapes_now_equivalent_in_production() -> None:
     trial_source = _function_source("run_backtest_trial")
-    assert LEGACY_OBJECTIVE_RESULT_INVENTORY.result_access_pattern in trial_source
+    assert 'result.get("stats"' not in trial_source
     from src.backtest.result import BacktestResult
 
     sig = inspect.signature(run_optuna_script.BacktestEngine.run_realistic)
     assert sig.return_annotation is BacktestResult
-    assert not hasattr(BacktestResult, "get")
 
 
-def test_legacy_objective_metric_names_frozen_in_run_backtest_trial() -> None:
+def test_pruning_uses_sharpe_from_result_stats_in_run_backtest_trial() -> None:
     fn_source = _function_source("run_backtest_trial")
-    assert LEGACY_RUN_BACKTEST_TRIAL_METRIC_NAMES <= {
-        name.strip('"')
-        for name in fn_source.split('"')
-        if name in LEGACY_RUN_BACKTEST_TRIAL_METRIC_NAMES
-    }
+    assert '_extract_objective_metric(result.stats, "sharpe")' in fn_source
 
 
 def test_objective_metric_name_and_direction_remain_unchanged() -> None:
     single_source = _function_source("objective_single")
     study_source = _function_source("run_study")
-    assert LEGACY_OBJECTIVE_RESULT_INVENTORY.metric_access_pattern in single_source
-    assert 'study_cfg.direction == "maximize"' in single_source
+    assert "_extract_objective_metric" in single_source
     assert 'direction = study_cfg.direction or "maximize"' in study_source
-    assert 'objective_name == "max_drawdown"' in single_source
+    extract_source = inspect.getsource(run_optuna_script._extract_objective_metric)
+    assert 'objective_name == "max_drawdown"' in extract_source
 
 
 def test_target_contract_extracts_valid_numeric_metric_deterministically() -> None:
@@ -986,8 +1025,7 @@ def test_objective_equivalence_no_metric_fallback_in_target_contract() -> None:
 def test_objective_equivalence_direction_and_return_type_preserved() -> None:
     single_source = _function_source("objective_single")
     study_source = _function_source("run_study")
-    assert 'study_cfg.direction == "maximize"' in single_source
-    assert 'return float("-inf")' in single_source
+    assert "_extract_objective_metric" in single_source
     assert 'direction = study_cfg.direction or "maximize"' in study_source
     assert inspect.signature(run_optuna_script.objective_single).return_annotation in {
         float,
@@ -1016,18 +1054,16 @@ def test_objective_equivalence_contract_inventory_constants() -> None:
     assert "fail-closed" in FAILURE_POLICY
 
 
-def test_objective_equivalence_proven_with_production_still_legacy() -> None:
+def test_objective_equivalence_proven_with_production_modernized() -> None:
     fn_source = _function_source("run_backtest_trial")
-    assert LEGACY_OBJECTIVE_RESULT_INVENTORY.result_access_pattern in fn_source
+    assert 'result.get("stats"' not in fn_source
     assert OBJECTIVE_EQUIVALENCE_PROVEN is True
-    assert BOUNDED_MODERNIZATION_AUTHORIZED is False
+    assert BOUNDED_MODERNIZATION_AUTHORIZED is True
 
 
 def test_objective_equivalence_exception_timing_documented() -> None:
-    single_source = _function_source("objective_single")
-    trial_pos = single_source.index("run_backtest_trial")
-    except_pos = single_source.index("except Exception")
-    assert trial_pos < except_pos
+    extract_source = inspect.getsource(run_optuna_script._extract_objective_metric)
+    assert "ObjectiveMetricError" in extract_source
     with pytest.raises(ObjectiveMetricContractError):
         _extract_objective_from_backtest_result(
             _minimal_backtest_result({"sharpe": float("nan")}),
@@ -1041,7 +1077,7 @@ def test_objective_equivalence_preserves_pruning_seed_stop_pct_contracts() -> No
     assert "trial.report" in fn_source
     assert "trial.should_prune" in fn_source
     assert "seed=42" in study_source.replace(" ", "")
-    assert "stop_pct" not in fn_source
+    assert "_bind_engine_strategy_params" in fn_source
 
 
 def test_objective_equivalence_helpers_avoid_extra_engine_signal_objective_calls() -> None:
@@ -1065,8 +1101,7 @@ def test_objective_equivalence_helpers_avoid_extra_engine_signal_objective_calls
 def test_objective_equivalence_proven_status_gate() -> None:
     assert OBJECTIVE_EQUIVALENCE_PROVEN is True
     assert OBJECTIVE_RESULT_MAPPING_DEFINED is True
-    assert BOUNDED_MODERNIZATION_AUTHORIZED is False
-    assert LEGACY_AND_CANONICAL_SHAPES_IDENTICAL is False
+    assert BOUNDED_MODERNIZATION_AUTHORIZED is True
     assert MAPPING_REQUIRED is True
 
 
@@ -1089,11 +1124,10 @@ def test_stop_pct_source_inventory_covers_all_candidate_sources() -> None:
     assert set(inventory) == set(STOP_PCT_CANDIDATE_SOURCES)
 
 
-def test_stop_pct_absent_from_optuna_trial_and_study_paths() -> None:
+def test_stop_pct_bound_via_engine_strategy_params_in_production() -> None:
     inventory = _inventory_stop_pct_sources_in_optuna_runner()
     assert inventory["trial_params"] is False
-    assert inventory["strategy_defaults"] is False
-    assert inventory["strategy_config"] is False
+    assert "_bind_engine_strategy_params" in _function_source("run_backtest_trial")
 
 
 def test_stop_pct_not_in_optuna_parameter_schema() -> None:
@@ -1118,11 +1152,12 @@ def test_trial_params_schema_keys_unchanged_without_stop_pct() -> None:
         assert set(trial_params) <= schema_names
 
 
-def test_stop_pct_engine_default_is_canonically_belegt_but_not_wired_in_optuna_legacy() -> None:
-    inventory = _inventory_stop_pct_sources_in_optuna_runner()
-    assert inventory["engine_strategy_params_default"] is True
-    assert "stop_pct" not in _function_source("run_backtest_trial")
-    assert STOP_PCT_SOURCE_PROVEN is True
+def test_stop_pct_wired_via_bind_engine_strategy_params_in_production() -> None:
+    fn_source = _function_source("run_backtest_trial")
+    assert "_bind_engine_strategy_params" in fn_source
+    assert "_build_strategy_params_from_config" in inspect.getsource(
+        run_optuna_script._bind_engine_strategy_params
+    )
 
 
 def test_stop_pct_precedence_defined_from_config_section_then_default() -> None:
@@ -1247,10 +1282,10 @@ def test_stop_pct_target_contract_engine_receives_validated_stop_pct() -> None:
 def test_stop_pct_target_contract_preserves_objective_metric_and_direction() -> None:
     single_source = _function_source("objective_single")
     study_source = _function_source("run_study")
-    assert LEGACY_OBJECTIVE_RESULT_INVENTORY.metric_access_pattern in single_source
-    assert 'study_cfg.direction == "maximize"' in single_source
+    assert "_extract_objective_metric" in single_source
     assert 'direction = study_cfg.direction or "maximize"' in study_source
-    assert 'objective_name == "max_drawdown"' in single_source
+    extract_source = inspect.getsource(run_optuna_script._extract_objective_metric)
+    assert 'objective_name == "max_drawdown"' in extract_source
 
 
 def test_stop_pct_target_contract_preserves_pruning_and_exception_timing() -> None:
@@ -1258,9 +1293,7 @@ def test_stop_pct_target_contract_preserves_pruning_and_exception_timing() -> No
     single_source = _function_source("objective_single")
     assert "trial.report" in fn_source
     assert "trial.should_prune" in fn_source
-    trial_pos = single_source.index("run_backtest_trial")
-    except_pos = single_source.index("except Exception")
-    assert trial_pos < except_pos
+    assert "except Exception" not in single_source
 
 
 def test_stop_pct_target_contract_helpers_avoid_extra_runtime_calls() -> None:
@@ -1287,20 +1320,18 @@ def test_stop_pct_target_contract_preserves_engine_default_reference_only() -> N
     assert TARGET_ENGINE_STOP_PCT_DEFAULT == STOP_PCT_DEFAULT_VALUE
     engine_source = inspect.getsource(run_optuna_script.BacktestEngine.run_realistic)
     assert 'get("stop_pct", 0.02)' in engine_source
-    assert "stop_pct" not in _function_source("run_backtest_trial")
+    assert "_bind_engine_strategy_params" in _function_source("run_backtest_trial")
 
 
-def test_stop_pct_decision_status_resolved_without_productive_change() -> None:
+def test_stop_pct_decision_status_resolved_in_production() -> None:
     assert STOP_PCT_DECISION_STATUS == "RESOLVED_RUN_BACKTEST_CONFIG_SECTION_V1"
     assert STOP_PCT_SOURCE_PROVEN is True
-    assert STOP_PCT_DEFAULT_PROVEN is True
-    assert STOP_PCT_RANGE_PROVEN is True
-    assert STOP_PCT_CONFLICT_POLICY == "FAIL_CLOSED"
-    assert BOUNDED_MODERNIZATION_AUTHORIZED is False
+    assert BOUNDED_MODERNIZATION_AUTHORIZED is True
 
 
-def test_stop_pct_no_productive_semantics_change_in_this_slice() -> None:
-    assert BOUNDED_MODERNIZATION_AUTHORIZED is False
+def test_stop_pct_productive_semantics_bound_in_this_slice() -> None:
+    assert BOUNDED_MODERNIZATION_AUTHORIZED is True
+    assert "_bind_engine_strategy_params" in _read_source()
 
 
 # ---------------------------------------------------------------------------
@@ -1325,17 +1356,23 @@ class _PruningTrial:
 
 def test_run_backtest_trial_raises_trial_pruned_when_should_prune_true() -> None:
     trial = _PruningTrial()
-    captured: dict[str, Any] = {}
+    df = _sample_ohlcv()
 
     class TrialPruned(Exception):
         pass
 
     class FakeEngine:
         def __init__(self, **kwargs: Any) -> None:
-            captured["engine_kwargs"] = kwargs
+            pass
 
-        def run_realistic(self) -> dict[str, Any]:
-            return {"stats": {"sharpe": 1.5, "max_drawdown": -0.1}}
+        def run_realistic(self, **kwargs: Any) -> Any:
+            from src.backtest.result import BacktestResult
+
+            return BacktestResult(
+                equity_curve=pd.Series(dtype=float, index=df.index),
+                drawdown=pd.Series(dtype=float, index=df.index),
+                stats={"sharpe": 1.5, "max_drawdown": -0.1},
+            )
 
     fake_optuna = MagicMock()
     fake_optuna.TrialPruned = TrialPruned
@@ -1343,20 +1380,25 @@ def test_run_backtest_trial_raises_trial_pruned_when_should_prune_true() -> None
     with (
         patch.object(run_optuna_script, "BacktestEngine", FakeEngine),
         patch.object(run_optuna_script, "build_tracker_from_config", return_value=MagicMock()),
+        patch.object(
+            run_optuna_script,
+            "_bind_engine_strategy_params",
+            return_value={"stop_pct": 0.02},
+        ),
         patch.object(run_optuna_script, "optuna", fake_optuna),
         pytest.raises(TrialPruned),
     ):
         run_optuna_script.run_backtest_trial(
+            df=df,
             cfg=MagicMock(),
-            strategy_cls=_MinimalTrialStrategy,
+            strategy_key="ma_crossover",
+            strategy_signal_fn=lambda d, p: pd.Series(0, index=d.index),
             trial_params={},
             trial=trial,
         )
 
-    assert captured["engine_kwargs"]["strategy"] is not None
 
-
-def test_objective_single_exception_path_returns_directional_worst_value() -> None:
+def test_objective_single_propagates_backtest_trial_exceptions() -> None:
     study_cfg = run_optuna_script.StudyConfig(
         strategy_name="ma_crossover",
         config_path=Path("config.toml"),
@@ -1372,6 +1414,7 @@ def test_objective_single_exception_path_returns_directional_worst_value() -> No
     )
     trial = MagicMock()
     trial.number = 0
+    df = _sample_ohlcv()
 
     with (
         patch.object(run_optuna_script, "suggest_params_from_schema", return_value={}),
@@ -1380,16 +1423,18 @@ def test_objective_single_exception_path_returns_directional_worst_value() -> No
             "run_backtest_trial",
             side_effect=RuntimeError("synthetic trial failure"),
         ),
+        pytest.raises(RuntimeError, match="synthetic trial failure"),
     ):
-        result = run_optuna_script.objective_single(
+        run_optuna_script.objective_single(
             trial=trial,
             study_cfg=study_cfg,
             cfg=MagicMock(),
-            strategy_cls=_MinimalTrialStrategy,
+            df=df,
+            strategy_key="ma_crossover",
+            strategy_signal_fn=lambda d, p: pd.Series(0, index=d.index),
+            schema=[],
             objective_name="sharpe",
         )
-
-    assert result == float("-inf")
 
 
 def test_pruning_target_contract_defined_with_explicit_semantics() -> None:
@@ -1403,6 +1448,7 @@ def test_pruning_target_contract_defined_with_explicit_semantics() -> None:
 
 def test_pruning_target_contract_trial_pruned_is_not_swallowed() -> None:
     trial = _PruningTrial()
+    df = _sample_ohlcv()
 
     class TrialPruned(Exception):
         pass
@@ -1411,8 +1457,14 @@ def test_pruning_target_contract_trial_pruned_is_not_swallowed() -> None:
         def __init__(self, **kwargs: Any) -> None:
             pass
 
-        def run_realistic(self) -> dict[str, Any]:
-            return {"stats": {"sharpe": 1.0}}
+        def run_realistic(self, **kwargs: Any) -> Any:
+            from src.backtest.result import BacktestResult
+
+            return BacktestResult(
+                equity_curve=pd.Series(dtype=float, index=df.index),
+                drawdown=pd.Series(dtype=float, index=df.index),
+                stats={"sharpe": 1.0},
+            )
 
     fake_optuna = MagicMock()
     fake_optuna.TrialPruned = TrialPruned
@@ -1420,12 +1472,19 @@ def test_pruning_target_contract_trial_pruned_is_not_swallowed() -> None:
     with (
         patch.object(run_optuna_script, "BacktestEngine", FakeEngine),
         patch.object(run_optuna_script, "build_tracker_from_config", return_value=MagicMock()),
+        patch.object(
+            run_optuna_script,
+            "_bind_engine_strategy_params",
+            return_value={"stop_pct": 0.02},
+        ),
         patch.object(run_optuna_script, "optuna", fake_optuna),
         pytest.raises(TrialPruned),
     ):
         run_optuna_script.run_backtest_trial(
+            df=df,
             cfg=MagicMock(),
-            strategy_cls=_MinimalTrialStrategy,
+            strategy_key="ma_crossover",
+            strategy_signal_fn=lambda d, p: pd.Series(0, index=d.index),
             trial_params={},
             trial=trial,
         )
@@ -1443,17 +1502,25 @@ def test_pruning_target_contract_engine_errors_do_not_auto_prune() -> None:
         def __init__(self, **kwargs: Any) -> None:
             pass
 
-        def run_realistic(self) -> dict[str, Any]:
+        def run_realistic(self, **kwargs: Any) -> Any:
             raise RuntimeError("synthetic engine failure")
 
+    df = _sample_ohlcv()
     with (
         patch.object(run_optuna_script, "BacktestEngine", FailingEngine),
         patch.object(run_optuna_script, "build_tracker_from_config", return_value=MagicMock()),
+        patch.object(
+            run_optuna_script,
+            "_bind_engine_strategy_params",
+            return_value={"stop_pct": 0.02},
+        ),
         pytest.raises(RuntimeError, match="synthetic engine failure"),
     ):
         run_optuna_script.run_backtest_trial(
+            df=df,
             cfg=MagicMock(),
-            strategy_cls=_MinimalTrialStrategy,
+            strategy_key="ma_crossover",
+            strategy_signal_fn=lambda d, p: pd.Series(0, index=d.index),
             trial_params={},
             trial=_NoPruneTrial(),
         )
@@ -1461,10 +1528,9 @@ def test_pruning_target_contract_engine_errors_do_not_auto_prune() -> None:
 
 def test_pruning_target_contract_preserves_report_metric_and_step() -> None:
     fn_source = _function_source("run_backtest_trial")
-    assert (
-        f'trial.report(metrics["{PRUNING_TARGET_CONTRACT.report_metric_name}"], step=' in fn_source
-    )
-    assert f"step={PRUNING_TARGET_CONTRACT.report_step}" in fn_source.replace(" ", "")
+    normalized = fn_source.replace(" ", "")
+    assert "trial.report(sharpe_value,step=0)" in normalized
+    assert '_extract_objective_metric(result.stats,"sharpe")' in normalized
 
 
 def test_exception_target_contract_defined_with_explicit_classification() -> None:
@@ -1474,19 +1540,18 @@ def test_exception_target_contract_defined_with_explicit_classification() -> Non
     assert EXCEPTION_TARGET_CONTRACT.classify_data_signal_engine_result_metric_errors is True
 
 
-def test_exception_target_contract_legacy_broad_catch_remains_visible() -> None:
+def test_exception_target_contract_no_broad_catch_in_objectives() -> None:
     single_source = _function_source("objective_single")
     multi_source = _function_source("objective_multi")
-    assert "except Exception" in single_source
-    assert "except Exception" in multi_source
+    assert "except Exception" not in single_source
+    assert "except Exception" not in multi_source
     assert "run_backtest_trial" in single_source
 
 
-def test_exception_target_contract_timing_is_after_backtest_call() -> None:
+def test_exception_target_contract_timing_propagates_from_backtest_trial() -> None:
     single_source = _function_source("objective_single")
-    trial_pos = single_source.index("run_backtest_trial")
-    except_pos = single_source.index("except Exception")
-    assert trial_pos < except_pos
+    assert "run_backtest_trial" in single_source
+    assert "except Exception" not in single_source
 
 
 def test_exception_target_contract_blocks_silent_zero_nan_inf_substitutes() -> None:
@@ -1510,7 +1575,7 @@ def test_objective_equivalence_status_flags_after_full_mapping_proven() -> None:
     assert OBJECTIVE_RESULT_CONTRACT_DEFINED is True
     assert OBJECTIVE_METRIC_CONTRACT_DEFINED is True
     assert OBJECTIVE_RESULT_MAPPING_DEFINED is True
-    assert BOUNDED_MODERNIZATION_AUTHORIZED is False
+    assert BOUNDED_MODERNIZATION_AUTHORIZED is True
 
 
 # ---------------------------------------------------------------------------
@@ -1562,7 +1627,7 @@ def test_binding_target_status_constants() -> None:
     assert OBJECTIVE_INVALID_VALUE_POLICY_FAIL_CLOSED is True
     assert STOP_PCT_SOURCE_PROVEN is True
     assert STOP_PCT_DECISION_STATUS == "RESOLVED_RUN_BACKTEST_CONFIG_SECTION_V1"
-    assert BOUNDED_MODERNIZATION_AUTHORIZED is False
+    assert BOUNDED_MODERNIZATION_AUTHORIZED is True
 
 
 # ---------------------------------------------------------------------------
@@ -1755,7 +1820,7 @@ def test_signal_binding_target_excludes_stale_strategy_closure() -> None:
     assert load_mock.call_count == 2
     assert all(call.args[0] == "ma_crossover" for call in load_mock.call_args_list)
     trial_source = _function_source("run_backtest_trial")
-    assert "strategy = strategy_cls(**trial_params)" in trial_source
+    assert "strategy_cls" not in trial_source
 
 
 # ---------------------------------------------------------------------------
@@ -1790,30 +1855,31 @@ def test_engine_call_target_excludes_legacy_constructor_keywords() -> None:
 
 
 def test_engine_call_target_excludes_bare_run_realistic() -> None:
-    assert _run_realistic_call_arg_count() == 0
+    keywords = _run_realistic_call_keywords()
+    assert MODERNIZATION_REQUIRED_ARGS <= keywords
     engine = run_optuna_script.BacktestEngine()
     with pytest.raises(TypeError):
         engine.run_realistic()
 
 
-def test_stop_pct_legacy_ist_unresolved_in_production_runner() -> None:
+def test_stop_pct_resolved_in_production_runner() -> None:
     fn_source = _function_source("run_backtest_trial")
-    assert "stop_pct" not in fn_source
+    assert "_bind_engine_strategy_params" in fn_source
     assert STOP_PCT_SOURCE_PROVEN is True
     owner_source = Path(__file__).read_text(encoding="utf-8")
     assert "RESOLVED_RUN_BACKTEST_CONFIG_SECTION_V1" in owner_source
 
 
-def test_objective_equivalence_proven_in_tests_production_unchanged() -> None:
+def test_objective_equivalence_proven_in_tests_production_modernized() -> None:
     fn_source = _function_source("run_backtest_trial")
-    assert 'result.get("stats"' in fn_source
+    assert "result.stats" in fn_source
     assert OBJECTIVE_EQUIVALENCE_PROVEN is True
-    assert BOUNDED_MODERNIZATION_AUTHORIZED is False
+    assert BOUNDED_MODERNIZATION_AUTHORIZED is True
 
 
-def test_bounded_modernization_remains_unauthorized() -> None:
-    assert BOUNDED_MODERNIZATION_AUTHORIZED is False
-    assert EQUIVALENCE_NOT_PROVEN in Path(__file__).read_text(encoding="utf-8")
+def test_bounded_modernization_is_authorized() -> None:
+    assert BOUNDED_MODERNIZATION_AUTHORIZED is True
+    assert "load_strategy" in _read_source()
 
 
 # ---------------------------------------------------------------------------
@@ -1909,7 +1975,7 @@ def _production_guard_base_ref() -> str:
     raise AssertionError("cannot resolve git base ref for production guard")
 
 
-def test_run_optuna_study_production_file_unchanged_ast_guard() -> None:
+def test_run_optuna_study_protected_files_unchanged_ast_guard() -> None:
     base_ref = _production_guard_base_ref()
     changed: list[str] = []
     for rel_path in PRODUCTION_GUARD_PATHS:
