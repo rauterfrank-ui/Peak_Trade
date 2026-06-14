@@ -697,6 +697,7 @@ class TestSweepEngineLoadStrategyMigration:
             patch("src.sweeps.engine.load_strategy", return_value=fake_signal_fn) as mock,
             patch("src.sweeps.engine.BacktestEngine") as engine_cls,
         ):
+
             def run_realistic_side_effect(df, strategy_signal_fn, strategy_params, **kwargs):
                 strategy_signal_fn(df, strategy_params)
                 return mock_result
