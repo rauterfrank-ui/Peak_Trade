@@ -36,7 +36,7 @@ import sys
 import uuid
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Optional
+from typing import Any, Callable, Dict, Optional
 
 import pandas as pd
 import numpy as np
@@ -52,9 +52,10 @@ from src.backtest.engine import BacktestEngine
 from src.backtest.stats import compute_backtest_stats, validate_for_live_trading
 from src.data import DataNormalizer, CsvLoader, KrakenCsvLoader
 from src.core.experiments import log_backtest_result
+from src.strategies import STRATEGY_REGISTRY, load_strategy
 from src.strategies.registry import (
     get_available_strategy_keys,
-    create_strategy_from_config,
+    get_strategy_spec,
 )
 from src.experiments.evidence_chain import (
     ensure_run_dir,
@@ -174,6 +175,71 @@ Beispiele:
     )
 
     return parser.parse_args()
+
+
+def _validate_strategy_registry_gates(key: str, cfg: PeakConfig) -> None:
+    """Mirror registry environment/tier gates (fail-closed)."""
+    spec = get_strategy_spec(key)
+
+    env_mode = cfg.get("environment.mode")
+    if not env_mode:
+        env_mode = cfg.get("env.mode")
+    if not env_mode:
+        env_mode = cfg.get("runtime.environment")
+    if not env_mode:
+        env_mode = cfg.get("environment.runtime_environment")
+    if not env_mode:
+        env_mode = "backtest"
+
+    if env_mode == "live" and not spec.is_live_ready:
+        raise ValueError(
+            f"Strategy '{key}' cannot be used in LIVE mode (IS_LIVE_READY=False). "
+            f"This strategy is R&D-only and not validated for live trading."
+        )
+
+    if spec.tier == "r_and_d":
+        allow_rnd = cfg.get("research.allow_r_and_d_strategies", False)
+        if not allow_rnd:
+            raise ValueError(
+                f"Strategy '{key}' is R&D-only (TIER=r_and_d) and requires "
+                f"'research.allow_r_and_d_strategies = true' in config."
+            )
+
+    if env_mode not in spec.allowed_environments:
+        allowed_str = ", ".join(spec.allowed_environments)
+        raise ValueError(
+            f"Strategy '{key}' not allowed in environment '{env_mode}'. "
+            f"Allowed environments: {allowed_str}"
+        )
+
+
+def _build_strategy_params_from_config(
+    cfg: PeakConfig,
+    strategy_key: str,
+) -> Dict[str, Any]:
+    """Build strategy params dict matching from_config() effective values."""
+    spec = get_strategy_spec(strategy_key)
+    instance = spec.cls.from_config(cfg, section=spec.config_section)
+    params: Dict[str, Any] = dict(instance.config)
+    params["stop_pct"] = cfg.get(f"strategy.{strategy_key}.stop_pct", 0.02)
+    return params
+
+
+def _resolve_strategy_signal_fn(
+    strategy_name: str,
+) -> Callable[[pd.DataFrame, Dict[str, Any]], pd.Series]:
+    """Canonical load_strategy() with OOP-registry-only alias fallback."""
+    if strategy_name in STRATEGY_REGISTRY:
+        return load_strategy(strategy_name)
+
+    spec = get_strategy_spec(strategy_name)
+    strategy_cls = spec.cls
+
+    def generate_signals(df: pd.DataFrame, params: Dict[str, Any]) -> pd.Series:
+        strategy = strategy_cls(config=dict(params))
+        return strategy.generate_signals(df)
+
+    return generate_signals
 
 
 def resolve_backtest_symbol(cfg: PeakConfig) -> str:
@@ -417,12 +483,25 @@ def main() -> int:
     if args.verbose:
         print(f"  Strategie: {strategy_name}")
 
-    # Strategie-Parameter aus Config holen
+    # Registry gates (same fail-closed posture as legacy create_strategy_from_config)
+    try:
+        _validate_strategy_registry_gates(strategy_name, cfg)
+    except KeyError as e:
+        print(f"\nFEHLER: Strategie nicht gefunden: {e}")
+        available = ", ".join(get_available_strategy_keys())
+        print(f"  Verfügbare Strategien: {available}")
+        return 1
+    except ValueError as e:
+        print(f"\nFEHLER: Strategie nicht erlaubt: {e}")
+        return 1
+
+    # Strategie-Parameter aus Config holen (matches from_config effective values)
     strategy_section = f"strategy.{strategy_name}"
-    strategy_params = cfg.get(strategy_section, {})
-    if not strategy_params:
+    raw_section = cfg.raw.get("strategy", {}).get(strategy_name, {})
+    if not raw_section:
         print(f"\nWARNUNG: Keine Config-Sektion [{strategy_section}] gefunden.")
         print("  Nutze Default-Parameter.")
+    strategy_params = _build_strategy_params_from_config(cfg, strategy_name)
 
     # 3. Daten laden
     print("\n[3/7] Daten laden...")
@@ -451,21 +530,15 @@ def main() -> int:
             print(f"  Position Sizer: {position_sizer}")
             print(f"  Risk Manager: {risk_manager}")
 
-        # OOP-Strategie aus Registry erstellen
-        # Alle Strategien sind jetzt OOP-basiert (migriert in Phase 7)
-        strategy = create_strategy_from_config(strategy_name, cfg)
+        strategy_signal_fn = _resolve_strategy_signal_fn(strategy_name)
         if args.verbose:
-            print(f"  Strategie: {strategy}")
+            print(f"  Strategie-Key: {strategy_name}")
+            print(f"  Strategy-Params: {strategy_params}")
 
-        # Backtest mit OOP-Strategie
         engine = BacktestEngine(
             core_position_sizer=position_sizer,
             risk_manager=risk_manager,
         )
-
-        # Wrapper-Funktion für Engine (erwartet (df, params) -> signals)
-        def strategy_signal_fn(data, params):
-            return strategy.generate_signals(data)
 
         result = engine.run_realistic(
             df=df,
