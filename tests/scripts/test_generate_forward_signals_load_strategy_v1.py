@@ -6,10 +6,11 @@ from __future__ import annotations
 
 import ast
 import importlib
+import inspect
 import subprocess
 import sys
 from pathlib import Path
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, call, patch
 
 import numpy as np
 import pandas as pd
@@ -24,6 +25,7 @@ import generate_forward_signals as forward_script
 TARGET_SCRIPT = project_root / "scripts/generate_forward_signals.py"
 MA_CROSSOVER_KEY = "ma_crossover"
 MOMENTUM_KEY = "momentum_1h"
+RSI_REVERSION_KEY = "rsi_reversion"
 
 FORBIDDEN_IMPORTS = ("create_strategy_from_config",)
 
@@ -102,6 +104,76 @@ def test_build_strategy_params_includes_section_and_stop_pct() -> None:
     assert params["slow_window"] == 50
     assert params["price_col"] == "close"
     assert params["stop_pct"] == 0.03
+
+
+def test_build_strategy_params_source_uses_load_strategy_not_from_config_bypass() -> None:
+    source = inspect.getsource(forward_script._build_strategy_params_from_config)
+    assert "load_strategy" in source
+    assert "get_strategy_spec" not in source
+    assert ".from_config" not in source
+
+
+def test_build_strategy_params_calls_load_strategy_for_registry_validation() -> None:
+    from src.core.peak_config import PeakConfig
+
+    cfg = PeakConfig(
+        raw={
+            "environment": {"mode": "backtest"},
+            "strategy": {
+                MA_CROSSOVER_KEY: {
+                    "fast_window": 10,
+                    "slow_window": 50,
+                    "price_col": "close",
+                },
+            },
+        }
+    )
+
+    with patch.object(forward_script, "load_strategy") as load_mock:
+        load_mock.return_value = MagicMock()
+        params = forward_script._build_strategy_params_from_config(cfg, MA_CROSSOVER_KEY)
+
+    load_mock.assert_called_once_with(MA_CROSSOVER_KEY)
+    assert params["fast_window"] == 10
+    assert params["stop_pct"] == 0.02
+
+
+def test_build_strategy_params_isolated_per_strategy_key() -> None:
+    from src.core.peak_config import PeakConfig
+
+    cfg = PeakConfig(
+        raw={
+            "environment": {"mode": "backtest"},
+            "strategy": {
+                MA_CROSSOVER_KEY: {"fast_window": 10, "slow_window": 50, "price_col": "close"},
+                RSI_REVERSION_KEY: {
+                    "rsi_period": 14,
+                    "oversold": 30,
+                    "overbought": 70,
+                },
+            },
+        }
+    )
+    ma_params = forward_script._build_strategy_params_from_config(cfg, MA_CROSSOVER_KEY)
+    rsi_params = forward_script._build_strategy_params_from_config(cfg, RSI_REVERSION_KEY)
+
+    assert "rsi_period" not in ma_params
+    assert "fast_window" not in rsi_params
+    assert ma_params["fast_window"] == 10
+    assert rsi_params["rsi_period"] == 14
+
+
+def test_build_strategy_params_unknown_strategy_fails_closed() -> None:
+    from src.core.peak_config import PeakConfig
+
+    cfg = PeakConfig(
+        raw={
+            "environment": {"mode": "backtest"},
+            "strategy": {MA_CROSSOVER_KEY: {"fast_window": 10, "slow_window": 50}},
+        }
+    )
+    with pytest.raises(ValueError, match="Unbekannte Strategie"):
+        forward_script._build_strategy_params_from_config(cfg, "definitely_not_a_strategy_xyz")
 
 
 def test_load_strategy_ma_crossover_matches_create_strategy_from_config_signals() -> None:
@@ -221,7 +293,8 @@ def test_main_calls_load_strategy_and_passes_full_params(tmp_path, monkeypatch) 
         )
 
     assert code == 0
-    load_strategy_mock.assert_called_once_with(MA_CROSSOVER_KEY)
+    load_strategy_mock.assert_has_calls([call(MA_CROSSOVER_KEY), call(MA_CROSSOVER_KEY)])
+    assert load_strategy_mock.call_count == 2
     assert captured["params"]["fast_window"] == 10
     assert captured["params"]["slow_window"] == 50
     assert captured["params"]["stop_pct"] == 0.02
@@ -279,7 +352,8 @@ def test_isolated_signal_fn_binding_per_symbol(tmp_path, monkeypatch) -> None:
         )
 
     assert code == 0
-    load_strategy_mock.assert_called_once_with(MA_CROSSOVER_KEY)
+    load_strategy_mock.assert_has_calls([call(MA_CROSSOVER_KEY), call(MA_CROSSOVER_KEY)])
+    assert load_strategy_mock.call_count == 2
     assert call_count == 2
 
 
