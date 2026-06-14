@@ -37,7 +37,9 @@ from src.core.experiments import (
     log_backtest_result,
     RUN_TYPE_PORTFOLIO_BACKTEST,
 )
-from src.strategies.registry import create_strategy_from_config
+from src.core.peak_config import PeakConfig
+from src.strategies import load_strategy
+from src.strategies.registry import get_strategy_spec
 from src.backtest.engine import BacktestEngine
 from src.backtest.result import BacktestResult
 
@@ -176,6 +178,18 @@ def load_data_for_symbol(
     return df
 
 
+def _build_strategy_params_from_config(
+    cfg: PeakConfig,
+    strategy_key: str,
+) -> Dict[str, Any]:
+    """Build strategy params dict matching from_config() effective values."""
+    spec = get_strategy_spec(strategy_key)
+    instance = spec.cls.from_config(cfg, section=spec.config_section)
+    params: Dict[str, Any] = dict(instance.config)
+    params["stop_pct"] = cfg.get(f"strategy.{strategy_key}.stop_pct", 0.02)
+    return params
+
+
 def run_single_asset_backtest(
     symbol: str,
     strategy_key: str,
@@ -204,8 +218,8 @@ def run_single_asset_backtest(
     # Daten laden
     df = load_data_for_symbol(symbol, n_bars=n_bars, start_time=start_time)
 
-    # Strategie erstellen
-    strategy = create_strategy_from_config(strategy_key, cfg)
+    strategy_params = _build_strategy_params_from_config(cfg, strategy_key)
+    base_signal_fn = load_strategy(strategy_key)
 
     # Position Sizer & Risk Manager
     position_sizer = build_position_sizer_from_config(cfg)
@@ -213,12 +227,8 @@ def run_single_asset_backtest(
 
     # Wrapper für Legacy-API
     def strategy_signal_fn(df, params):
-        sigs = strategy.generate_signals(df)
+        sigs = base_signal_fn(df, params)
         return sigs.replace(-1, 0)  # Long-Only
-
-    # Stop-Loss aus Config
-    stop_pct = cfg.get(f"strategy.{strategy_key}.stop_pct", 0.02)
-    strategy_params = {"stop_pct": stop_pct}
 
     # Backtest durchführen
     engine = BacktestEngine(core_position_sizer=position_sizer, risk_manager=risk_manager)
