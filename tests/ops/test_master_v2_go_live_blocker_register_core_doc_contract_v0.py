@@ -174,6 +174,63 @@ def test_glb018_closeout_path_crosslink_guard_v1() -> None:
     assert "LIVE_AUTHORIZED=true" not in collapsed
 
 
+def test_glb019_event_stream_crosslink_guard_v1() -> None:
+    """GLB019_EVENT_STREAM_CROSSLINK_GUARD_V1"""
+    row = _register_table_row("GLB-019")
+    assert "Event stream missing or inconsistent" in row
+    assert "| OPEN |" in row
+
+    text = _read(BLOCKER_REGISTER)
+    plain = _plain(BLOCKER_REGISTER)
+    section = plain.split("6.5.6 GLB-019")[1].split("6.5.7 GLB-020")[0]
+
+    assert "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md" in text
+    assert "Event Stream Legibility" in section
+    assert "State transitions" in section or "state transitions" in section.lower()
+    assert "Gate / blocker decisions" in section or "gate / blocker" in section.lower()
+    assert "fail-closed" in section.lower()
+    assert "does not close GLB-019" in section
+    assert "does not execute event" in section.lower()
+    assert "event" in section.lower() and "approval" in section.lower()
+    assert "event" in section.lower() and "promotion" in section.lower()
+    assert "non-authorizing" in section.lower()
+    assert "correlation" in section.lower()
+    assert "§2b.4" in text or "2b.4" in section
+    collapsed = section.replace("**", "")
+    assert "READY_FOR_OPERATOR_ARMING=true" not in collapsed
+    assert "LIVE_AUTHORIZED=true" not in collapsed
+    assert "PREFLIGHT_REMAINS_BLOCKED=false" not in collapsed
+
+
+def test_glb020_promotion_boundary_crosslink_guard_v1() -> None:
+    """GLB020_PROMOTION_BOUNDARY_CROSSLINK_GUARD_V1"""
+    row = _register_table_row("GLB-020")
+    assert "Promotion would be automatic or PnL-only" in row
+    assert "| BLOCKED |" in row
+
+    text = _read(BLOCKER_REGISTER)
+    plain = _plain(BLOCKER_REGISTER)
+    section = plain.split("6.5.7 GLB-020")[1].split("6.6 GLB-008")[0]
+
+    assert "MASTER_V2_PROMOTION_STATE_MACHINE_V1.md" in text
+    assert "Promotion Static Boundary" in section
+    assert "live-gated" in section.lower()
+    assert "live-authorized" in section.lower()
+    assert "explicit" in section.lower()
+    assert "fail-closed" in section.lower()
+    assert "does not close GLB-020" in section
+    assert "does not execute promotion" in section.lower()
+    assert "evidence" in section.lower() and "promotion" in section.lower()
+    assert "event stream" in section.lower() or "event" in section.lower()
+    assert "automatic" in section.lower() or "pnl-only" in section.lower()
+    assert "non-authorizing" in section.lower() or "does not authorize promotion" in section.lower()
+    collapsed = section.replace("**", "")
+    assert "READY_FOR_OPERATOR_ARMING=true" not in collapsed
+    assert "LIVE_AUTHORIZED=true" not in collapsed
+    assert "PREFLIGHT_REMAINS_BLOCKED=false" not in collapsed
+    assert "PROMOTION_EXECUTED=true" not in collapsed
+
+
 def test_glb015_repo_docs_not_final_approval_blocked_v0() -> None:
     row = _register_table_row("GLB-015")
     assert "Repo docs treated as approval" in row

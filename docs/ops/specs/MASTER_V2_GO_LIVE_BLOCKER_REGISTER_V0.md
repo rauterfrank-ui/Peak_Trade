@@ -312,6 +312,78 @@ The **canonical closeout-path legibility owner** for durable primary evidence an
 - [Section 5 Preflight Gap Owner Map Contract v0](../planning/SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md) — §2a.1 durable primary evidence (crosslink only; criteria blocks remain authoritative per §6.5.1)
 - Static guards: `tests/ops/test_master_v2_go_live_blocker_register_core_doc_contract_v0.py`
 
+### 6.5.6 GLB-019 — Event Stream Legibility (clarification)
+
+**GLB-019** (*Event stream missing or inconsistent*) remains **OPEN** until operator/evidence owner presents a **reviewable event-stream posture** with **missing or inconsistent events explicitly recorded** — **not** inferred from partial artifacts, silent gaps, unverified manifests, static docs/tests alone, or positive summary lines without event completeness review.
+
+The **canonical event-stream legibility owner** for durable primary evidence, audit/timeline completeness, and missing-event posture is [Paper/Shadow 24/7 Preflight Contract v0](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) §2a.1 and §2b.4 (GLB-019 boundary). Navigation/orientation for operator/audit review surfaces: [Operator / Audit Flat Path Index](./MASTER_V2_OPERATOR_AUDIT_FLAT_PATH_INDEX_V0.md). Session/event review shape (non-binding): [Session Review Pack Contract](./MASTER_V2_SESSION_REVIEW_PACK_CONTRACT_V0.md).
+
+**Minimum event classes (legibility SSOT; operative emission remains operator-scoped):**
+
+1. **State transitions** — stage, gate, session, or run-state changes visible where applicable to the scoped review.
+2. **Gate / blocker decisions** — gate/blocked/pass posture changes and blocker-related decision records **as review inputs**, not as authorization.
+3. **Risk / KillSwitch / abort / closeout events** — safety-stop, abort, incident, and closeout-related events where applicable; crosslink [GLB-017](../runbooks/RUNBOOK_BOUNDED_PILOT_INCIDENT_ABORT_TRIAGE_COMPASS.md) §12 and [GLB-018](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) §2b.3 without duplicating those boundaries.
+4. **Evidence / manifest / validation results** — manifest verification, primary-evidence completeness, and validation outcomes recorded; missing artifacts **not** hidden or repaired in-repo.
+5. **Promotion / readiness decisions (visibility only)** — readiness or promotion-visibility markers **reflect** criteria/authority owners; they **do not** authorize promotion (see §6.5.7).
+
+**Minimum identity and ordering fields (where existing repo semantics apply):**
+
+- **Event identity** — stable event or record identifier where the surface defines one.
+- **Ordering / sequence** — monotonic or explicitly documented ordering when multiple events are compared.
+- **Time** — timestamp or documented time basis (`occurred_at`, session time, or archive binding).
+- **Source** — producing surface, lane, or artifact path (`source`, `primary_source`, lane id, or equivalent).
+- **Correlation** — session, run, bundle, commit, or archive binding where applicable (`session_id`, `correlation_id`, archive root, commit SHA).
+- **Version / schema** — contract or schema version when the surface defines one.
+
+- **Missing, contradictory, unordered, or unverifiable events** → **fail-closed** / **incomplete event stream** — not review-complete; record `present: false` or equivalent missing posture where applicable.
+- **Documentation, tests, evidence maps, audit snapshots, and archive reflection blocks** are **non-authorizing** — they **do not** execute runtime actions or grant approval.
+- **Event-stream legibility ≠ event emission**; **event ≠ decision**; **event ≠ approval**; **event ≠ promotion**; **audit/snapshot/reporter output ≠ authorization**.
+- **Event streams reflect** criteria, authority, and decision owners — they **do not** override or substitute for them.
+- **No new event SSOT** beside existing canonical surfaces; this clarification **does not** execute event generation, replay, scheduler sync, or runtime emission.
+- **Missing primary evidence** is **not** replaced by a static event contract alone.
+- This clarification closes the **static legibility boundary only** — **does not** close **GLB-019**, **does not** execute event streams, **does not** lift preflight, **does not** grant arming, execution, or live authority.
+
+**Canonical read-order (existing surfaces; no new surface):**
+
+- [Paper/Shadow 24/7 Preflight Contract v0](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) — §2b.4 GLB-019 Event Stream static boundary
+- [Operator / Audit Flat Path Index](./MASTER_V2_OPERATOR_AUDIT_FLAT_PATH_INDEX_V0.md) — review-surface navigation only
+- [Decision Authority Map](./MASTER_V2_DECISION_AUTHORITY_MAP_V1.md) — authority vs observability separation
+- Static guards: `tests/ops/test_master_v2_go_live_blocker_register_core_doc_contract_v0.py`
+
+### 6.5.7 GLB-020 — Promotion Static Boundary (clarification)
+
+**GLB-020** (*Promotion would be automatic or PnL-only*) remains **BLOCKED** until **promotion authority** records an **explicit**, **scoped promotion decision** with **verified preconditions** — **not** inferred from green tests, complete evidence, reproducible packets, positive event streams, docs closeouts, machine lines, or readiness/gate visibility alone.
+
+The **canonical promotion static-boundary owner** is [Promotion State Machine](./MASTER_V2_PROMOTION_STATE_MACHINE_V1.md) §11 (GLB-020 boundary). Stage vocabulary and transition visibility anchor: same spec §3–§5. Criteria, approval, evidence, and authority owners remain: [Decision Authority Map](./MASTER_V2_DECISION_AUTHORITY_MAP_V1.md), [First Live Gate Status Index](./MASTER_V2_FIRST_LIVE_GATE_STATUS_INDEX_V1.md), [Readiness Ladder](./MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md), and register rows **GLB-014**–**GLB-019** (reuse; no duplication).
+
+**Stages / transitions (visibility only; no automatic stage change):**
+
+- `research` → `backtest` → `shadow-paper` → `testnet` → `live-gated` → `live-authorized`
+- **`live-gated` ≠ `live-authorized`**; readiness/gate visibility **does not** grant live permission.
+
+**Preconditions that must be explicitly reviewed before any operative promotion (non-exhaustive):**
+
+1. Named **promotion authority** route and explicit decision record (not repo docs alone).
+2. **Criteria / blocker posture** from register and SECTION5 criteria blocks — unresolved **BLOCKED** rows remain blocking.
+3. **Evidence / closeout / event-stream completeness** per GLB-003, GLB-018, GLB-019 — completeness is review input only.
+4. **Approval / authority records** per GLB-014/GLB-015 — mapping and reflection **≠** approval.
+5. **Risk / KillSwitch / execution gates** per GLB-008–GLB-013 — repo artifacts and tests **do not** close these by themselves.
+6. **Operator / external Go-No-Go** where applicable — separate from promotion visibility.
+
+- **Complete evidence, green tests, reproducible packet, or positive event stream alone** → **does not** authorize promotion.
+- **Missing, contradictory, or unverified preconditions** → **fail-closed** / **blocked** — no implicit stage advance.
+- **Promotion requires explicit, separately authorized decision** — not derivable from docs, tests, events, snapshots, reporter output, or machine lines.
+- **This slice does not** change stage, set arming, allow credentials, start runtime, or auto-escalate authority.
+- **Master V2 / Double Play / risk / execution boundaries** remain unchanged.
+- This clarification closes the **static promotion boundary only** — **does not** close **GLB-020**, **does not** execute promotion or stage transitions, **does not** lift preflight, **does not** grant arming, execution, or live authority.
+
+**Canonical read-order (existing surfaces; no new surface):**
+
+- [Promotion State Machine](./MASTER_V2_PROMOTION_STATE_MACHINE_V1.md) — §11 GLB-020 Promotion static boundary
+- [Decision Authority Map](./MASTER_V2_DECISION_AUTHORITY_MAP_V1.md) — promotion vs live-authorization separation
+- [First Live Gate Status Index](./MASTER_V2_FIRST_LIVE_GATE_STATUS_INDEX_V1.md) — gate visibility ≠ promotion command
+- Static guards: `tests/ops/test_master_v2_go_live_blocker_register_core_doc_contract_v0.py`
+
 ### 6.6 GLB-008/009/012/013 Repo-Internal Status/Lift Applied Reflection v0
 
 GLB_STATUS_REPO_INTERNAL_WRITE_LIFT_V0=true
