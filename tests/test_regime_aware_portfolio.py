@@ -8,6 +8,8 @@ Unit-Tests für die Regime-Aware Portfolio-Strategie.
 import pytest
 import pandas as pd
 import numpy as np
+from pathlib import Path
+from unittest.mock import MagicMock, patch
 
 from src.strategies.regime_aware_portfolio import RegimeAwarePortfolioStrategy
 from src.strategies.base import BaseStrategy
@@ -414,3 +416,188 @@ class TestRegimeAwarePortfolioIntegration:
         assert regime is not None
         assert len(regime) == len(df)
         assert set(regime.unique()).issubset({-1, 0, 1})
+
+
+# ============================================================================
+# RegimeAwarePortfolioStrategy._load_strategies load_strategy() MIGRATION
+# (offline, fail-closed)
+# ============================================================================
+
+
+class TestRegimeAwarePortfolioLoadStrategiesMigration:
+    """Offline guards for canonical RegimeAwarePortfolioStrategy._load_strategies binding."""
+
+    TARGET_MODULE = (
+        Path(__file__).resolve().parent.parent / "src/strategies/regime_aware_portfolio.py"
+    )
+    FORBIDDEN_NAMES = ("create_strategy_from_config",)
+
+    def _read_source(self) -> str:
+        return self.TARGET_MODULE.read_text(encoding="utf-8")
+
+    def _minimal_cfg(self):
+        raw: dict = {
+            "environment": {"mode": "backtest"},
+            "strategy": {
+                "breakout": {"lookback_breakout": 15, "side": "long"},
+                "rsi_reversion": {"rsi_window": 14, "lower": 30.0, "upper": 70.0},
+                "vol_regime_filter": {
+                    "vol_window": 14,
+                    "vol_percentile_low": 25,
+                    "vol_percentile_high": 75,
+                    "regime_mode": True,
+                },
+            },
+            "portfolio": {
+                "regime_aware_breakout_rsi": {
+                    "components": ["breakout", "rsi_reversion"],
+                    "base_weights": {"breakout": 0.5, "rsi_reversion": 0.5},
+                    "regime_strategy": "vol_regime_filter",
+                }
+            },
+        }
+
+        cfg = MagicMock()
+
+        def _get(path: str, default=None):
+            node = raw
+            for part in path.split("."):
+                if not isinstance(node, dict) or part not in node:
+                    return default
+                node = node[part]
+            return node
+
+        cfg.get.side_effect = _get
+        return cfg
+
+    def _portfolio(self, **overrides: object) -> RegimeAwarePortfolioStrategy:
+        params = {
+            "components": ["breakout", "rsi_reversion"],
+            "base_weights": {"breakout": 0.6, "rsi_reversion": 0.4},
+            "regime_strategy": "vol_regime_filter",
+        }
+        params.update(overrides)
+        return RegimeAwarePortfolioStrategy(**params)
+
+    def test_source_uses_load_strategy(self) -> None:
+        source = self._read_source()
+        assert "load_strategy" in source
+
+    def test_source_has_no_create_strategy_from_config(self) -> None:
+        source = self._read_source()
+        for forbidden in self.FORBIDDEN_NAMES:
+            assert forbidden not in source
+
+    def test_load_strategies_calls_load_strategy_per_binding(self) -> None:
+        calls: list[str] = []
+        original = __import__("src.strategies", fromlist=["load_strategy"]).load_strategy
+
+        def _track(key: str):
+            calls.append(key)
+            return original(key)
+
+        strategy = self._portfolio()
+        cfg = self._minimal_cfg()
+        df = create_ohlcv_data(10)
+
+        with patch("src.strategies.load_strategy", side_effect=_track):
+            with patch("src.core.peak_config.load_config", return_value=cfg):
+                strategy._load_strategies(df)
+
+        assert calls == ["breakout", "rsi_reversion", "vol_regime_filter"]
+        assert len(strategy._component_strategies) == 2
+        assert strategy._component_strategies[0].KEY == "breakout"
+        assert strategy._component_strategies[1].KEY == "rsi_reversion"
+        assert strategy._regime_strategy is not None
+        assert strategy._regime_strategy.KEY == "vol_regime_filter"
+
+    def test_load_strategies_preserves_component_order_and_weights(self) -> None:
+        strategy = self._portfolio(
+            components=["rsi_reversion", "breakout"],
+            base_weights={"rsi_reversion": 0.7, "breakout": 0.3},
+        )
+        cfg = self._minimal_cfg()
+        df = create_ohlcv_data(10)
+
+        with patch("src.core.peak_config.load_config", return_value=cfg):
+            strategy._load_strategies(df)
+
+        assert [s.KEY for s in strategy._component_strategies] == ["rsi_reversion", "breakout"]
+        assert strategy.base_weights["rsi_reversion"] == pytest.approx(0.7)
+        assert strategy.base_weights["breakout"] == pytest.approx(0.3)
+
+    def test_load_strategies_fresh_instances_no_shared_state(self) -> None:
+        cfg = self._minimal_cfg()
+        df = create_ohlcv_data(10)
+        first = self._portfolio()
+        second = self._portfolio()
+
+        with patch("src.core.peak_config.load_config", return_value=cfg):
+            first._load_strategies(df)
+            second._load_strategies(df)
+
+        assert first._component_strategies[0] is not second._component_strategies[0]
+        assert first._regime_strategy is not second._regime_strategy
+        first._component_strategies[0].config["lookback_breakout"] = 99
+        assert second._component_strategies[0].config["lookback_breakout"] == 15
+
+    def test_load_strategies_unknown_component_fail_closed(self) -> None:
+        strategy = self._portfolio(components=["breakout", "invalid_strategy_key_xyz"])
+        cfg = self._minimal_cfg()
+        df = create_ohlcv_data(10)
+
+        with patch("src.core.peak_config.load_config", return_value=cfg):
+            with pytest.raises(ValueError, match="invalid_strategy_key_xyz"):
+                strategy._load_strategies(df)
+
+    def test_load_strategies_vol_regime_overrides_use_load_strategy_binding(self) -> None:
+        calls: list[str] = []
+        original = __import__("src.strategies", fromlist=["load_strategy"]).load_strategy
+
+        def _track(key: str):
+            calls.append(key)
+            return original(key)
+
+        strategy = self._portfolio(
+            regime_component_cfg_overrides={"strategy.vol_regime_filter.regime_mode": True}
+        )
+        cfg = self._minimal_cfg()
+        df = create_ohlcv_data(10)
+
+        with patch("src.strategies.load_strategy", side_effect=_track):
+            with patch("src.core.peak_config.load_config", return_value=cfg):
+                strategy._load_strategies(df)
+
+        assert "vol_regime_filter" in calls
+        assert getattr(strategy._regime_strategy, "regime_mode", None) is True
+
+    def test_load_strategies_lazy_load_skips_second_call(self) -> None:
+        strategy = self._portfolio()
+        cfg = self._minimal_cfg()
+        df = create_ohlcv_data(10)
+        calls: list[str] = []
+        original = __import__("src.strategies", fromlist=["load_strategy"]).load_strategy
+
+        def _track(key: str):
+            calls.append(key)
+            return original(key)
+
+        with patch("src.strategies.load_strategy", side_effect=_track):
+            with patch("src.core.peak_config.load_config", return_value=cfg):
+                strategy._load_strategies(df)
+                strategy._load_strategies(df)
+
+        assert calls == ["breakout", "rsi_reversion", "vol_regime_filter"]
+
+    def test_nested_regime_aware_portfolio_component_preserves_existing_contract(self) -> None:
+        strategy = self._portfolio(components=["breakout", "regime_aware_portfolio"])
+        cfg = self._minimal_cfg()
+        df = create_ohlcv_data(10)
+
+        with patch("src.core.peak_config.load_config", return_value=cfg):
+            strategy._load_strategies(df)
+
+        assert len(strategy._component_strategies) == 2
+        assert strategy._component_strategies[0].KEY == "breakout"
+        assert strategy._component_strategies[1].KEY == "regime_aware_portfolio"
+        assert isinstance(strategy._component_strategies[1], RegimeAwarePortfolioStrategy)
