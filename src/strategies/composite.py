@@ -279,8 +279,9 @@ class CompositeStrategy(BaseStrategy):
         Returns:
             CompositeStrategy-Instanz
         """
-        # Lazy import um zirkuläre Abhängigkeit zu vermeiden
-        from .registry import create_strategy_from_config, get_strategy_spec
+        # Lazy imports um zirkuläre Abhängigkeit zu vermeiden
+        from src.strategies import load_strategy
+        from .registry import get_strategy_spec
 
         aggregation = cfg.get(f"{section}.aggregation", "weighted")
         signal_threshold = cfg.get(f"{section}.signal_threshold", 0.3)
@@ -293,7 +294,9 @@ class CompositeStrategy(BaseStrategy):
         strategies: List[BaseStrategy] = []
         for key in component_keys:
             try:
-                strategy = create_strategy_from_config(key, cfg)
+                spec = get_strategy_spec(key)
+                load_strategy(key)
+                strategy = spec.cls.from_config(cfg, section=spec.config_section)
                 strategies.append(strategy)
             except Exception as e:
                 logger.warning(f"Konnte Strategie '{key}' nicht laden: {e}")
@@ -303,7 +306,11 @@ class CompositeStrategy(BaseStrategy):
         filter_strategy = None
         if filter_key:
             try:
-                filter_strategy = create_strategy_from_config(filter_key, cfg)
+                filter_spec = get_strategy_spec(filter_key)
+                load_strategy(filter_key)
+                filter_strategy = filter_spec.cls.from_config(
+                    cfg, section=filter_spec.config_section
+                )
             except Exception as e:
                 logger.warning(f"Konnte Filter '{filter_key}' nicht laden: {e}")
 
