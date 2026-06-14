@@ -225,7 +225,8 @@ def _build_strategy_params_from_config(
     cfg: PeakConfig,
     strategy_key: str,
 ) -> Dict[str, Any]:
-    """Build strategy params dict from config section (mirrors from_config inputs)."""
+    """Build strategy params dict via canonical load_strategy() registry path."""
+    load_strategy(strategy_key)
     section = cfg.raw.get("strategy", {}).get(strategy_key, {})
     params: Dict[str, Any] = dict(section) if isinstance(section, dict) else {}
     params["stop_pct"] = cfg.get(f"strategy.{strategy_key}.stop_pct", 0.02)
