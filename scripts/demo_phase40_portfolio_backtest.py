@@ -38,6 +38,7 @@ from src.core.peak_config import load_config, PeakConfig
 from src.backtest.engine import BacktestEngine
 from src.backtest.stats import compute_basic_stats
 from src.strategies import load_strategy
+from src.strategies.base import BaseStrategy
 from src.strategies.registry import get_strategy_spec
 
 BREAKOUT_STRATEGY_KEY = "breakout"
@@ -153,6 +154,38 @@ def _apply_vol_regime_filter(
     filter_mask = vol_filter_fn(data, vol_params)
     aligned_filter = filter_mask.reindex(signals.index, fill_value=0)
     return signals * aligned_filter
+
+
+def _composite_component_from_load_strategy(
+    strategy_key: str,
+    signal_params: Dict[str, Any],
+    signal_fn,
+) -> BaseStrategy:
+    """Bindet eine kanonische load_strategy()-Signalfunktion für Composite-Portfolio."""
+    load_strategy(strategy_key)
+
+    class _LoadStrategyCompositeComponent(BaseStrategy):
+        KEY = strategy_key
+
+        def __init__(self, key: str, params: Dict[str, Any], fn) -> None:
+            super().__init__(config=dict(params))
+            self._registry_key = key
+            self._signal_fn = fn
+
+        @property
+        def key(self) -> str:
+            return self._registry_key
+
+        def generate_signals(self, data: pd.DataFrame) -> pd.Series:
+            return self._signal_fn(data, self.config)
+
+        @classmethod
+        def from_config(cls, cfg, section: str = "") -> BaseStrategy:
+            raise NotImplementedError(
+                "Demo composite components are bound via load_strategy() only."
+            )
+
+    return _LoadStrategyCompositeComponent(strategy_key, signal_params, signal_fn)
 
 
 # ============================================================================
@@ -299,16 +332,37 @@ def run_composite_backtest(
     ma_fn = load_strategy(MA_CROSSOVER_STRATEGY_KEY)
     composite_fn = load_strategy(COMPOSITE_STRATEGY_KEY)
 
-    rsi_strategy = get_strategy_spec(RSI_REVERSION_STRATEGY_KEY).cls(config=COMPOSITE_RSI_CONFIG)
-    breakout_strategy = get_strategy_spec(BREAKOUT_STRATEGY_KEY).cls(
-        config=COMPOSITE_BREAKOUT_CONFIG
+    ma_signal_params = {
+        "fast_period": COMPOSITE_MA_CONFIG["fast_window"],
+        "slow_period": COMPOSITE_MA_CONFIG["slow_window"],
+    }
+    composite_components = (
+        (
+            RSI_REVERSION_STRATEGY_KEY,
+            COMPOSITE_RSI_CONFIG,
+            rsi_fn,
+            COMPOSITE_WEIGHTS[0],
+        ),
+        (
+            BREAKOUT_STRATEGY_KEY,
+            COMPOSITE_BREAKOUT_CONFIG,
+            breakout_fn,
+            COMPOSITE_WEIGHTS[1],
+        ),
+        (
+            MA_CROSSOVER_STRATEGY_KEY,
+            ma_signal_params,
+            ma_fn,
+            COMPOSITE_WEIGHTS[2],
+        ),
     )
-    ma_strategy = get_strategy_spec(MA_CROSSOVER_STRATEGY_KEY).cls(config=COMPOSITE_MA_CONFIG)
     composite_params: Dict[str, Any] = {
         "strategies": [
-            (rsi_strategy, COMPOSITE_WEIGHTS[0]),
-            (breakout_strategy, COMPOSITE_WEIGHTS[1]),
-            (ma_strategy, COMPOSITE_WEIGHTS[2]),
+            (
+                _composite_component_from_load_strategy(key, signal_params, signal_fn),
+                weight,
+            )
+            for key, signal_params, signal_fn, weight in composite_components
         ],
         "aggregation": COMPOSITE_AGGREGATION,
         "signal_threshold": COMPOSITE_SIGNAL_THRESHOLD,
@@ -324,14 +378,9 @@ def run_composite_backtest(
     )
 
     # Komponenten-Signale für Analyse
-    ma_signal_params = {
-        "fast_period": COMPOSITE_MA_CONFIG["fast_window"],
-        "slow_period": COMPOSITE_MA_CONFIG["slow_window"],
-    }
     component_signals = {
-        rsi_strategy.key: rsi_fn(df, COMPOSITE_RSI_CONFIG),
-        breakout_strategy.key: breakout_fn(df, COMPOSITE_BREAKOUT_CONFIG),
-        ma_strategy.key: ma_fn(df, ma_signal_params),
+        key: signal_fn(df, signal_params)
+        for key, signal_params, signal_fn, _weight in composite_components
     }
 
     logger.info("\nKomponenten-Signal-Verteilung:")

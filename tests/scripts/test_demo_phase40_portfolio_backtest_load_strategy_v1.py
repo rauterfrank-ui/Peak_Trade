@@ -272,6 +272,95 @@ def test_cli_help_smoke_no_run() -> None:
     assert "breakout" in result.stdout
 
 
+def _function_source(function_name: str) -> str:
+    tree = ast.parse(_read_source())
+    for node in tree.body:
+        if isinstance(node, ast.FunctionDef) and node.name == function_name:
+            return ast.get_source_segment(_read_source(), node) or ""
+    raise AssertionError(f"Function {function_name} not found")
+
+
+def test_run_composite_backtest_has_no_spec_cls_binding() -> None:
+    source = _function_source("run_composite_backtest")
+    assert ".cls(" not in source
+    assert "get_strategy_spec(" not in source or "composite_spec" in source
+
+
+def test_run_composite_backtest_uses_load_strategy_component_binding() -> None:
+    source = _function_source("run_composite_backtest")
+    assert "_composite_component_from_load_strategy" in source
+    assert "load_strategy(RSI_REVERSION_STRATEGY_KEY)" in source
+    assert "load_strategy(BREAKOUT_STRATEGY_KEY)" in source
+    assert "load_strategy(MA_CROSSOVER_STRATEGY_KEY)" in source
+    assert "load_strategy(COMPOSITE_STRATEGY_KEY)" in source
+
+
+def test_composite_component_binding_matches_direct_oop_output() -> None:
+    from src.strategies import load_strategy
+    from src.strategies.breakout import BreakoutStrategy
+    from src.strategies.composite import CompositeStrategy
+    from src.strategies.ma_crossover import MACrossoverStrategy
+    from src.strategies.rsi_reversion import RsiReversionStrategy
+
+    df = _sample_ohlcv()
+    ma_signal_params = {
+        "fast_period": COMPOSITE_MA_CONFIG["fast_window"],
+        "slow_period": COMPOSITE_MA_CONFIG["slow_window"],
+    }
+    rsi_fn = load_strategy(RSI_REVERSION_STRATEGY_KEY)
+    breakout_fn = load_strategy(BREAKOUT_STRATEGY_KEY)
+    ma_fn = load_strategy(MA_CROSSOVER_STRATEGY_KEY)
+    composite_fn = load_strategy(COMPOSITE_STRATEGY_KEY)
+
+    legacy_components = (
+        RsiReversionStrategy(rsi_window=14, lower=30, upper=70),
+        BreakoutStrategy(lookback_breakout=20, stop_loss_pct=0.02),
+        MACrossoverStrategy(fast_window=20, slow_window=50),
+    )
+    legacy = CompositeStrategy(
+        strategies=[
+            (legacy_components[0], COMPOSITE_WEIGHTS[0]),
+            (legacy_components[1], COMPOSITE_WEIGHTS[1]),
+            (legacy_components[2], COMPOSITE_WEIGHTS[2]),
+        ],
+        aggregation=COMPOSITE_AGGREGATION,
+        signal_threshold=COMPOSITE_SIGNAL_THRESHOLD,
+    ).generate_signals(df)
+
+    bound_params = {
+        "strategies": [
+            (
+                phase40_script._composite_component_from_load_strategy(
+                    RSI_REVERSION_STRATEGY_KEY,
+                    COMPOSITE_RSI_CONFIG,
+                    rsi_fn,
+                ),
+                COMPOSITE_WEIGHTS[0],
+            ),
+            (
+                phase40_script._composite_component_from_load_strategy(
+                    BREAKOUT_STRATEGY_KEY,
+                    COMPOSITE_BREAKOUT_CONFIG,
+                    breakout_fn,
+                ),
+                COMPOSITE_WEIGHTS[1],
+            ),
+            (
+                phase40_script._composite_component_from_load_strategy(
+                    MA_CROSSOVER_STRATEGY_KEY,
+                    ma_signal_params,
+                    ma_fn,
+                ),
+                COMPOSITE_WEIGHTS[2],
+            ),
+        ],
+        "aggregation": COMPOSITE_AGGREGATION,
+        "signal_threshold": COMPOSITE_SIGNAL_THRESHOLD,
+    }
+    bound = composite_fn(df, bound_params)
+    pd.testing.assert_series_equal(bound, legacy)
+
+
 def test_run_functions_use_backtest_engine_with_mocked_run() -> None:
     df = _sample_ohlcv()
     with patch.object(phase40_script, "BacktestEngine") as engine_cls:
