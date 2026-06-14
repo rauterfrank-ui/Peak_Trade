@@ -48,8 +48,22 @@ OBJECTIVE_RESULT_CONTRACT_DEFINED = True
 OBJECTIVE_METRIC_CONTRACT_DEFINED = True
 PRUNING_CONTRACT_DEFINED = True
 EXCEPTION_CONTRACT_DEFINED = True
-STOP_PCT_SOURCE_PROVEN = False
-STOP_PCT_DECISION_STATUS = "UNRESOLVED_REQUIRES_SEMANTIC_GO"
+STOP_PCT_SOURCE_PROVEN = True
+STOP_PCT_PRECEDENCE_DEFINED = True
+STOP_PCT_DEFAULT_PROVEN = True
+STOP_PCT_RANGE_PROVEN = True
+STOP_PCT_CONFLICT_POLICY = "FAIL_CLOSED"
+STOP_PCT_TRIAL_PARAMETER = False
+STOP_PCT_DECISION_STATUS = "RESOLVED_RUN_BACKTEST_CONFIG_SECTION_V1"
+CANONICAL_STOP_PCT_OWNER = "scripts/run_backtest.py:_build_strategy_params_from_config"
+STOP_PCT_CONFIG_KEY_TEMPLATE = "strategy.{strategy_key}.stop_pct"
+STOP_PCT_DEFAULT_VALUE = 0.02
+STOP_PCT_RANGE_GT_EXCLUSIVE = 0.0
+STOP_PCT_RANGE_LE_INCLUSIVE = 0.10
+STOP_PCT_SOURCE_PRECEDENCE = (
+    "config_section_strategy_key",
+    "canonical_default",
+)
 BOUNDED_MODERNIZATION_AUTHORIZED = False
 CANONICAL_BACKTEST_RESULT_OWNER = "src/backtest/result.py:BacktestResult"
 LEGACY_OBJECTIVE_METRIC_FALLBACK = 0.0
@@ -347,6 +361,59 @@ def _inventory_stop_pct_sources_in_optuna_runner() -> dict[str, bool]:
         "strategy_config": "stop_pct" in study_source,
         "engine_strategy_params_default": 'get("stop_pct", 0.02)' in engine_source,
     }
+
+
+class StopPctContractError(ValueError):
+    """Test-local fail-closed rejection for stop_pct target contract."""
+
+
+def _canonical_config_stop_pct_key(strategy_key: str) -> str:
+    return STOP_PCT_CONFIG_KEY_TEMPLATE.format(strategy_key=strategy_key)
+
+
+def _resolve_stop_pct_from_config(cfg: Any, strategy_key: str) -> Any:
+    """Mirror scripts/run_backtest.py::_build_strategy_params_from_config stop_pct binding."""
+    import scripts.run_backtest as run_backtest_script
+
+    return run_backtest_script._build_strategy_params_from_config(cfg, strategy_key)["stop_pct"]
+
+
+def _validate_stop_pct_target_value(value: Any) -> float:
+    if value is None:
+        raise StopPctContractError("stop_pct value is None")
+    if isinstance(value, bool):
+        raise StopPctContractError("bool is not a valid numeric stop_pct")
+    if not isinstance(value, (int, float)):
+        raise StopPctContractError(f"non-numeric stop_pct: {type(value).__name__}")
+    result = float(value)
+    if not math.isfinite(result):
+        raise StopPctContractError(f"non-finite stop_pct: {result!r}")
+    if not (result > STOP_PCT_RANGE_GT_EXCLUSIVE and result <= STOP_PCT_RANGE_LE_INCLUSIVE):
+        raise StopPctContractError(
+            f"stop_pct {result!r} outside canonical range "
+            f"({STOP_PCT_RANGE_GT_EXCLUSIVE}, {STOP_PCT_RANGE_LE_INCLUSIVE}]"
+        )
+    return result
+
+
+def _resolve_stop_pct_target_contract(
+    cfg: Any,
+    strategy_key: str,
+    trial_params: dict[str, Any],
+) -> float:
+    if "stop_pct" in trial_params:
+        raise StopPctContractError("stop_pct must not be a trial search parameter")
+    raw = _resolve_stop_pct_from_config(cfg, strategy_key)
+    return _validate_stop_pct_target_value(raw)
+
+
+def _bind_stop_pct_to_engine_strategy_params(
+    cfg: Any,
+    strategy_key: str,
+    trial_params: dict[str, Any],
+) -> dict[str, Any]:
+    stop_pct = _resolve_stop_pct_target_contract(cfg, strategy_key, trial_params)
+    return {**trial_params, "stop_pct": stop_pct}
 
 
 PRUNING_TARGET_CONTRACT = PruningTargetContract(
@@ -712,8 +779,17 @@ def test_objective_result_and_metric_contract_status_flags_defined() -> None:
 
 
 # ---------------------------------------------------------------------------
-# stop_pct Ist- und Zielvertrag — inventory only, no production decision
+# stop_pct Ist- und Zielvertrag — resolved via run_backtest config-section owner
 # ---------------------------------------------------------------------------
+
+
+def test_canonical_stop_pct_owner_is_run_backtest_build_strategy_params() -> None:
+    import scripts.run_backtest as run_backtest_script
+
+    assert CANONICAL_STOP_PCT_OWNER == "scripts/run_backtest.py:_build_strategy_params_from_config"
+    source = inspect.getsource(run_backtest_script._build_strategy_params_from_config)
+    assert 'params["stop_pct"]' in source
+    assert 'cfg.get(f"strategy.{strategy_key}.stop_pct", 0.02)' in source
 
 
 def test_stop_pct_source_inventory_covers_all_candidate_sources() -> None:
@@ -728,36 +804,210 @@ def test_stop_pct_absent_from_optuna_trial_and_study_paths() -> None:
     assert inventory["strategy_config"] is False
 
 
-def test_stop_pct_engine_default_is_canonically_belegt_but_not_wired_in_optuna() -> None:
+def test_stop_pct_not_in_optuna_parameter_schema() -> None:
+    from src.strategies.registry import get_strategy_spec
+
+    for strategy_key in sorted(OPTUNA_DOCSTRING_SCHEMA_KEYS):
+        schema_names = {
+            param.name for param in get_strategy_spec(strategy_key).cls.parameter_schema
+        }
+        assert "stop_pct" not in schema_names
+    assert STOP_PCT_TRIAL_PARAMETER is False
+
+
+def test_trial_params_schema_keys_unchanged_without_stop_pct() -> None:
+    for strategy_key, trial_params in SCHEMA_KEY_TRIAL_PARAMS.items():
+        assert "stop_pct" not in trial_params
+        from src.strategies.registry import get_strategy_spec
+
+        schema_names = {
+            param.name for param in get_strategy_spec(strategy_key).cls.parameter_schema
+        }
+        assert set(trial_params) <= schema_names
+
+
+def test_stop_pct_engine_default_is_canonically_belegt_but_not_wired_in_optuna_legacy() -> None:
     inventory = _inventory_stop_pct_sources_in_optuna_runner()
     assert inventory["engine_strategy_params_default"] is True
-    assert STOP_PCT_SOURCE_PROVEN is False
-    assert STOP_PCT_DECISION_STATUS == "UNRESOLVED_REQUIRES_SEMANTIC_GO"
+    assert "stop_pct" not in _function_source("run_backtest_trial")
+    assert STOP_PCT_SOURCE_PROVEN is True
 
 
-def test_stop_pct_precedence_not_defined_without_proven_source() -> None:
-    module = ast.parse(Path(__file__).read_text(encoding="utf-8"))
-    module_constants = {
-        target.id
-        for node in module.body
-        if isinstance(node, ast.Assign)
-        for target in node.targets
-        if isinstance(target, ast.Name)
-    }
-    assert "STOP_PCT_SOURCE_PRECEDENCE" not in module_constants
-    assert STOP_PCT_SOURCE_PROVEN is False
-    assert STOP_PCT_DECISION_STATUS == "UNRESOLVED_REQUIRES_SEMANTIC_GO"
+def test_stop_pct_precedence_defined_from_config_section_then_default() -> None:
+    assert STOP_PCT_SOURCE_PRECEDENCE == (
+        "config_section_strategy_key",
+        "canonical_default",
+    )
+    assert STOP_PCT_PRECEDENCE_DEFINED is True
+    assert STOP_PCT_SOURCE_PROVEN is True
+
+
+def test_stop_pct_target_contract_binds_configured_valid_value_unchanged() -> None:
+    from src.core.peak_config import PeakConfig
+
+    cfg = PeakConfig(
+        raw={
+            "environment": {"mode": "backtest"},
+            "strategy": {"ma_crossover": {"fast_window": 10, "slow_window": 50, "stop_pct": 0.03}},
+        }
+    )
+    trial_params = {"fast_window": 10, "slow_window": 50}
+    assert _resolve_stop_pct_target_contract(cfg, "ma_crossover", trial_params) == 0.03
+
+
+def test_stop_pct_target_contract_missing_config_uses_canonical_default() -> None:
+    from src.core.peak_config import PeakConfig
+
+    cfg = PeakConfig(
+        raw={
+            "environment": {"mode": "backtest"},
+            "strategy": {"ma_crossover": {"fast_window": 10, "slow_window": 50}},
+        }
+    )
+    trial_params = {"fast_window": 10, "slow_window": 50}
+    assert (
+        _resolve_stop_pct_target_contract(cfg, "ma_crossover", trial_params)
+        == STOP_PCT_DEFAULT_VALUE
+    )
+
+
+def test_stop_pct_target_contract_no_second_fallback_source() -> None:
+    from src.core.peak_config import PeakConfig
+
+    cfg = PeakConfig(raw={"environment": {"mode": "backtest"}, "strategy": {}})
+    trial_params = {"fast_window": 10, "slow_window": 50}
+    resolved = _resolve_stop_pct_target_contract(cfg, "ma_crossover", trial_params)
+    assert resolved == STOP_PCT_DEFAULT_VALUE
+    engine_source = inspect.getsource(run_optuna_script.BacktestEngine.run_realistic)
+    assert 'get("stop_pct", 0.02)' in engine_source
+    assert resolved == TARGET_ENGINE_STOP_PCT_DEFAULT
+
+
+def test_stop_pct_target_contract_rejects_trial_params_conflict_fail_closed() -> None:
+    from src.core.peak_config import PeakConfig
+
+    cfg = PeakConfig(raw={"environment": {"mode": "backtest"}, "strategy": {}})
+    with pytest.raises(StopPctContractError, match="trial search parameter"):
+        _resolve_stop_pct_target_contract(
+            cfg, "ma_crossover", {"fast_window": 10, "stop_pct": 0.05}
+        )
+
+
+def test_stop_pct_target_contract_rejects_none_fail_closed() -> None:
+    with pytest.raises(StopPctContractError, match="None"):
+        _validate_stop_pct_target_value(None)
+
+
+def test_stop_pct_target_contract_rejects_bool_as_numeric_fail_closed() -> None:
+    with pytest.raises(StopPctContractError, match="bool"):
+        _validate_stop_pct_target_value(True)
+
+
+@pytest.mark.parametrize("bad_value", [float("nan"), float("inf"), float("-inf")])
+def test_stop_pct_target_contract_rejects_nonfinite_fail_closed(bad_value: float) -> None:
+    with pytest.raises(StopPctContractError, match="non-finite"):
+        _validate_stop_pct_target_value(bad_value)
+
+
+@pytest.mark.parametrize("bad_value", ["0.02", {"stop_pct": 0.02}, [0.02]])
+def test_stop_pct_target_contract_rejects_non_numeric_fail_closed(bad_value: Any) -> None:
+    with pytest.raises(StopPctContractError, match="non-numeric"):
+        _validate_stop_pct_target_value(bad_value)
+
+
+@pytest.mark.parametrize("bad_value", [0.0, -0.01, 0.11, 1.0])
+def test_stop_pct_target_contract_rejects_out_of_range_fail_closed(bad_value: float) -> None:
+    with pytest.raises(StopPctContractError, match="outside canonical range"):
+        _validate_stop_pct_target_value(bad_value)
+
+
+def test_stop_pct_target_contract_does_not_mutate_trial_params() -> None:
+    from src.core.peak_config import PeakConfig
+
+    cfg = PeakConfig(
+        raw={
+            "environment": {"mode": "backtest"},
+            "strategy": {"ma_crossover": {"fast_window": 10, "slow_window": 50, "stop_pct": 0.04}},
+        }
+    )
+    trial_params = {"fast_window": 7, "slow_window": 35}
+    baseline = copy.deepcopy(trial_params)
+    _bind_stop_pct_to_engine_strategy_params(cfg, "ma_crossover", trial_params)
+    assert trial_params == baseline
+
+
+def test_stop_pct_target_contract_engine_receives_validated_stop_pct() -> None:
+    from src.core.peak_config import PeakConfig
+
+    cfg = PeakConfig(
+        raw={
+            "environment": {"mode": "backtest"},
+            "strategy": {"ma_crossover": {"fast_window": 10, "slow_window": 50, "stop_pct": 0.035}},
+        }
+    )
+    trial_params = {"fast_window": 12, "slow_window": 40}
+    engine_params = _bind_stop_pct_to_engine_strategy_params(cfg, "ma_crossover", trial_params)
+    assert engine_params["stop_pct"] == 0.035
+    assert engine_params["fast_window"] == 12
+    assert engine_params["slow_window"] == 40
+
+
+def test_stop_pct_target_contract_preserves_objective_metric_and_direction() -> None:
+    single_source = _function_source("objective_single")
+    study_source = _function_source("run_study")
+    assert LEGACY_OBJECTIVE_RESULT_INVENTORY.metric_access_pattern in single_source
+    assert 'study_cfg.direction == "maximize"' in single_source
+    assert 'direction = study_cfg.direction or "maximize"' in study_source
+    assert 'objective_name == "max_drawdown"' in single_source
+
+
+def test_stop_pct_target_contract_preserves_pruning_and_exception_timing() -> None:
+    fn_source = _function_source("run_backtest_trial")
+    single_source = _function_source("objective_single")
+    assert "trial.report" in fn_source
+    assert "trial.should_prune" in fn_source
+    trial_pos = single_source.index("run_backtest_trial")
+    except_pos = single_source.index("except Exception")
+    assert trial_pos < except_pos
+
+
+def test_stop_pct_target_contract_helpers_avoid_extra_runtime_calls() -> None:
+    helper_sources = (
+        inspect.getsource(_resolve_stop_pct_from_config)
+        + inspect.getsource(_validate_stop_pct_target_value)
+        + inspect.getsource(_resolve_stop_pct_target_contract)
+        + inspect.getsource(_bind_stop_pct_to_engine_strategy_params)
+    )
+    forbidden = (
+        "run_backtest_trial(",
+        "run_realistic(",
+        "study.optimize(",
+        "optuna.create_study(",
+        "load_ohlcv_data(",
+        "objective_single(",
+        "objective_multi(",
+    )
+    for token in forbidden:
+        assert token not in helper_sources
 
 
 def test_stop_pct_target_contract_preserves_engine_default_reference_only() -> None:
-    assert TARGET_ENGINE_STOP_PCT_DEFAULT == 0.02
+    assert TARGET_ENGINE_STOP_PCT_DEFAULT == STOP_PCT_DEFAULT_VALUE
     engine_source = inspect.getsource(run_optuna_script.BacktestEngine.run_realistic)
     assert 'get("stop_pct", 0.02)' in engine_source
     assert "stop_pct" not in _function_source("run_backtest_trial")
 
 
+def test_stop_pct_decision_status_resolved_without_productive_change() -> None:
+    assert STOP_PCT_DECISION_STATUS == "RESOLVED_RUN_BACKTEST_CONFIG_SECTION_V1"
+    assert STOP_PCT_SOURCE_PROVEN is True
+    assert STOP_PCT_DEFAULT_PROVEN is True
+    assert STOP_PCT_RANGE_PROVEN is True
+    assert STOP_PCT_CONFLICT_POLICY == "FAIL_CLOSED"
+    assert BOUNDED_MODERNIZATION_AUTHORIZED is False
+
+
 def test_stop_pct_no_productive_semantics_change_in_this_slice() -> None:
-    assert STOP_PCT_DECISION_STATUS == "UNRESOLVED_REQUIRES_SEMANTIC_GO"
     assert BOUNDED_MODERNIZATION_AUTHORIZED is False
 
 
@@ -1012,8 +1262,8 @@ def test_binding_target_status_constants() -> None:
     assert PRUNING_CONTRACT_DEFINED is True
     assert EXCEPTION_CONTRACT_DEFINED is True
     assert OBJECTIVE_EQUIVALENCE_PROVEN is False
-    assert STOP_PCT_SOURCE_PROVEN is False
-    assert STOP_PCT_DECISION_STATUS == "UNRESOLVED_REQUIRES_SEMANTIC_GO"
+    assert STOP_PCT_SOURCE_PROVEN is True
+    assert STOP_PCT_DECISION_STATUS == "RESOLVED_RUN_BACKTEST_CONFIG_SECTION_V1"
     assert BOUNDED_MODERNIZATION_AUTHORIZED is False
 
 
@@ -1248,12 +1498,12 @@ def test_engine_call_target_excludes_bare_run_realistic() -> None:
         engine.run_realistic()
 
 
-def test_stop_pct_source_remains_unresolved_in_target_contract() -> None:
+def test_stop_pct_legacy_ist_unresolved_in_production_runner() -> None:
     fn_source = _function_source("run_backtest_trial")
     assert "stop_pct" not in fn_source
-    assert STOP_PCT_SOURCE_PROVEN is False
+    assert STOP_PCT_SOURCE_PROVEN is True
     owner_source = Path(__file__).read_text(encoding="utf-8")
-    assert "STOP_PCT_SOURCE_PROVEN = False" in owner_source
+    assert "RESOLVED_RUN_BACKTEST_CONFIG_SECTION_V1" in owner_source
 
 
 def test_objective_stats_mapping_remains_blocked() -> None:
