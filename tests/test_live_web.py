@@ -16,19 +16,19 @@ import json
 import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Dict, List
+from typing import TYPE_CHECKING, Any, Dict, List
 
 import pandas as pd
 import pytest
 
-# Skip if FastAPI not installed - must be done before any FastAPI imports
+# Skip if FastAPI not installed - must be done before any FastAPI/web-app imports
 pytest.importorskip("fastapi")
 
-from fastapi.testclient import TestClient
-from src.live.web.app import create_app, WebUIConfig
+if TYPE_CHECKING:
+    from fastapi.testclient import TestClient
 
 # Mark all tests in this module as web tests
-pytestmark = pytest.mark.web
+pytestmark = [pytest.mark.web, pytest.mark.requires_fastapi]
 
 
 # =============================================================================
@@ -144,6 +144,9 @@ def temp_runs_dir(
 @pytest.fixture
 def test_client(temp_runs_dir: Path) -> TestClient:
     """Erstellt einen TestClient mit temporärem Runs-Verzeichnis."""
+    from fastapi.testclient import TestClient
+    from src.live.web.app import WebUIConfig, create_app
+
     config = WebUIConfig(base_runs_dir=str(temp_runs_dir))
     app = create_app(config=config)
     return TestClient(app)
@@ -195,6 +198,9 @@ class TestRunsEndpoint:
 
     def test_empty_runs_dir(self) -> None:
         """Test leeres Runs-Verzeichnis."""
+        from fastapi.testclient import TestClient
+        from src.live.web.app import WebUIConfig, create_app
+
         with tempfile.TemporaryDirectory() as tmpdir:
             config = WebUIConfig(base_runs_dir=tmpdir)
             app = create_app(config=config)
@@ -390,6 +396,9 @@ class TestAlertsEndpoint:
 
     def test_alerts_empty(self) -> None:
         """Test Run ohne Alerts."""
+        from fastapi.testclient import TestClient
+        from src.live.web.app import WebUIConfig, create_app
+
         with tempfile.TemporaryDirectory() as tmpdir:
             base_dir = Path(tmpdir)
             run_dir = base_dir / "test_run"
@@ -624,6 +633,8 @@ class TestWebUIConfig:
 
     def test_default_values(self) -> None:
         """Test Default-Werte."""
+        from src.live.web.app import WebUIConfig
+
         cfg = WebUIConfig()
         assert cfg.enabled is True
         assert cfg.host == "127.0.0.1"
@@ -633,6 +644,8 @@ class TestWebUIConfig:
 
     def test_custom_values(self) -> None:
         """Test Custom-Werte."""
+        from src.live.web.app import WebUIConfig
+
         cfg = WebUIConfig(
             host="0.0.0.0",
             port=9000,
@@ -655,18 +668,24 @@ class TestAppFactory:
 
     def test_create_app_default(self) -> None:
         """Test App-Erstellung mit Defaults."""
+        from src.live.web.app import create_app
+
         app = create_app()
         assert app is not None
         assert app.title == "Peak_Trade Live Dashboard"
 
     def test_create_app_with_config(self) -> None:
         """Test App-Erstellung mit Config."""
+        from src.live.web.app import WebUIConfig, create_app
+
         config = WebUIConfig(auto_refresh_seconds=10)
         app = create_app(config=config)
         assert app is not None
 
     def test_create_app_with_base_dir(self) -> None:
         """Test App-Erstellung mit Base-Dir-Override."""
+        from src.live.web.app import create_app
+
         with tempfile.TemporaryDirectory() as tmpdir:
             app = create_app(base_runs_dir=tmpdir)
             assert app is not None
