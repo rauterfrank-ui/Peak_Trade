@@ -34,7 +34,7 @@ from src.core.peak_config import PeakConfig, load_config
 from src.core.position_sizing import build_position_sizer_from_config
 from src.core.risk import build_risk_manager_from_config
 from src.backtest.engine import BacktestEngine
-from src.strategies import load_strategy
+from src.strategies import STRATEGY_REGISTRY, load_strategy
 from src.strategies.registry import (
     get_available_strategy_keys,
     get_strategy_spec,
@@ -306,6 +306,28 @@ def validate_param_grid(grid: Dict[str, List[Any]]) -> None:
 # =============================================================================
 
 
+def _build_strategy_params_from_config(
+    cfg: PeakConfig,
+    strategy_key: str,
+) -> Dict[str, Any]:
+    """Build strategy params dict via canonical load_strategy() registry path."""
+    if strategy_key in STRATEGY_REGISTRY:
+        loader_key = strategy_key
+        section_key = strategy_key
+    else:
+        spec = get_strategy_spec(strategy_key)
+        section_key = spec.config_section.rsplit(".", 1)[-1]
+        loader_key = section_key if section_key in STRATEGY_REGISTRY else strategy_key
+
+    load_strategy(loader_key)
+    section = cfg.raw.get("strategy", {}).get(section_key, {})
+    if not section and section_key != strategy_key:
+        section = cfg.raw.get("strategy", {}).get(strategy_key, {})
+    params: Dict[str, Any] = dict(section) if isinstance(section, dict) else {}
+    params["stop_pct"] = cfg.get(f"strategy.{strategy_key}.stop_pct", 0.02)
+    return params
+
+
 class SweepEngine:
     """
     Orchestriert Hyperparameter-Sweeps für Strategien.
@@ -546,10 +568,7 @@ class SweepEngine:
                 param_overrides=params,
             )
         else:
-            spec = get_strategy_spec(strategy_key)
-            strategy_params_effective = dict(
-                spec.cls.from_config(cfg, section=spec.config_section).config
-            )
+            strategy_params_effective = _build_strategy_params_from_config(cfg, strategy_key)
             strategy_params_effective.update(params)
             base_signal_fn = load_strategy(strategy_key)
 
