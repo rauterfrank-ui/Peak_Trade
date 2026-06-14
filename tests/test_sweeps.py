@@ -13,6 +13,7 @@ Testet:
 import pytest
 import pandas as pd
 import numpy as np
+import inspect
 from datetime import datetime, timedelta
 from pathlib import Path
 from unittest.mock import MagicMock, patch
@@ -648,6 +649,118 @@ class TestSweepEngineLoadStrategyMigration:
     def test_engine_source_has_no_create_strategy_from_config(self) -> None:
         assert "create_strategy_from_config" not in self._read_engine_source()
 
+    def test_engine_source_has_no_spec_cls_from_config_in_param_path(self) -> None:
+        source = inspect.getsource(
+            __import__(
+                "src.sweeps.engine", fromlist=["_build_strategy_params_from_config"]
+            )._build_strategy_params_from_config
+        )
+        assert "load_strategy" in source
+        assert ".from_config" not in source
+
+    def test_build_strategy_params_includes_section_and_stop_pct(self) -> None:
+        from src.core.peak_config import PeakConfig
+        from src.sweeps.engine import _build_strategy_params_from_config
+
+        cfg = PeakConfig(
+            raw={
+                "environment": {"mode": "backtest"},
+                "strategy": {
+                    self.MA_CROSSOVER_KEY: {
+                        "fast_window": 10,
+                        "slow_window": 50,
+                        "price_col": "close",
+                        "stop_pct": 0.03,
+                    },
+                },
+            }
+        )
+        params = _build_strategy_params_from_config(cfg, self.MA_CROSSOVER_KEY)
+        assert params["fast_window"] == 10
+        assert params["slow_window"] == 50
+        assert params["price_col"] == "close"
+        assert params["stop_pct"] == 0.03
+
+    def test_build_strategy_params_calls_load_strategy_for_registry_validation(self) -> None:
+        from src.core.peak_config import PeakConfig
+        from src.sweeps import engine as engine_module
+
+        cfg = PeakConfig(
+            raw={
+                "environment": {"mode": "backtest"},
+                "strategy": {
+                    self.MA_CROSSOVER_KEY: {
+                        "fast_window": 10,
+                        "slow_window": 50,
+                        "price_col": "close",
+                    },
+                },
+            }
+        )
+
+        with patch.object(engine_module, "load_strategy") as load_mock:
+            load_mock.return_value = MagicMock()
+            params = engine_module._build_strategy_params_from_config(cfg, self.MA_CROSSOVER_KEY)
+
+        load_mock.assert_called_once_with(self.MA_CROSSOVER_KEY)
+        assert params["fast_window"] == 10
+        assert params["stop_pct"] == 0.02
+
+    def test_build_strategy_params_isolated_per_strategy_key(self) -> None:
+        from src.core.peak_config import PeakConfig
+        from src.sweeps.engine import _build_strategy_params_from_config
+
+        cfg = PeakConfig(
+            raw={
+                "environment": {"mode": "backtest"},
+                "strategy": {
+                    self.MA_CROSSOVER_KEY: {
+                        "fast_window": 10,
+                        "slow_window": 50,
+                        "price_col": "close",
+                    },
+                    "rsi_reversion": {
+                        "rsi_period": 14,
+                        "oversold": 30,
+                        "overbought": 70,
+                    },
+                },
+            }
+        )
+        ma_params = _build_strategy_params_from_config(cfg, self.MA_CROSSOVER_KEY)
+        rsi_params = _build_strategy_params_from_config(cfg, "rsi_reversion")
+
+        assert "rsi_period" not in ma_params
+        assert "fast_window" not in rsi_params
+        assert ma_params["fast_window"] == 10
+        assert rsi_params["rsi_period"] == 14
+
+    def test_build_strategy_params_unknown_strategy_fails_closed(self) -> None:
+        from src.core.peak_config import PeakConfig
+        from src.sweeps.engine import _build_strategy_params_from_config
+
+        cfg = PeakConfig(
+            raw={
+                "environment": {"mode": "backtest"},
+                "strategy": {self.MA_CROSSOVER_KEY: {"fast_window": 10, "slow_window": 50}},
+            }
+        )
+        with pytest.raises(KeyError, match="definitely_not_a_strategy_xyz"):
+            _build_strategy_params_from_config(cfg, "definitely_not_a_strategy_xyz")
+
+    def test_build_strategy_params_non_dict_section_fails_closed(self) -> None:
+        from src.core.peak_config import PeakConfig
+        from src.sweeps.engine import _build_strategy_params_from_config
+
+        cfg = PeakConfig(
+            raw={
+                "environment": {"mode": "backtest"},
+                "strategy": {self.MA_CROSSOVER_KEY: "invalid"},
+            }
+        )
+        params = _build_strategy_params_from_config(cfg, self.MA_CROSSOVER_KEY)
+        assert params == {"stop_pct": 0.02}
+
     def test_call_chain_run_sweep_strategy_to_engine(self) -> None:
         runner = (
             Path(__file__).resolve().parent.parent / "scripts/run_sweep_strategy.py"
@@ -710,9 +823,12 @@ class TestSweepEngineLoadStrategyMigration:
                 cfg=cfg,
             )
 
-        mock.assert_called_once_with(self.MA_CROSSOVER_KEY)
+        mock.assert_called()
+        assert mock.call_count == 2
+        assert mock.call_args_list[-1] == ((self.MA_CROSSOVER_KEY,),)
         assert captured["params"]["fast_window"] == 10
         assert captured["params"]["slow_window"] == 40
+        assert captured["params"]["stop_pct"] == 0.02
         assert isinstance(stats, dict)
 
     def test_isolated_load_strategy_binding_per_backtest_call(self, sample_ohlcv_data) -> None:
@@ -757,4 +873,9 @@ class TestSweepEngineLoadStrategyMigration:
                 cfg=cfg,
             )
 
-        assert load_calls == [self.MA_CROSSOVER_KEY, self.MA_CROSSOVER_KEY]
+        assert load_calls == [
+            self.MA_CROSSOVER_KEY,
+            self.MA_CROSSOVER_KEY,
+            self.MA_CROSSOVER_KEY,
+            self.MA_CROSSOVER_KEY,
+        ]
