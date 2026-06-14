@@ -879,3 +879,154 @@ class TestSweepEngineLoadStrategyMigration:
             self.MA_CROSSOVER_KEY,
             self.MA_CROSSOVER_KEY,
         ]
+
+    REGIME_KEY = "regime_aware_portfolio"
+
+    def _regime_cfg(self):
+        from src.core.peak_config import PeakConfig
+
+        return PeakConfig(
+            raw={
+                "environment": {"mode": "backtest"},
+                "strategy": {
+                    "breakout": {"lookback_breakout": 15, "side": "long"},
+                    "rsi_reversion": {"rsi_window": 14, "lower": 30.0, "upper": 70.0},
+                    "vol_regime_filter": {
+                        "vol_window": 14,
+                        "vol_percentile_low": 25,
+                        "vol_percentile_high": 75,
+                        "regime_mode": True,
+                    },
+                },
+                "portfolio": {
+                    "regime_aware_breakout_rsi": {
+                        "components": ["breakout", "rsi_reversion"],
+                        "base_weights": {"breakout": 0.6, "rsi_reversion": 0.4},
+                        "regime_strategy": "vol_regime_filter",
+                        "mode": "scale",
+                        "risk_on_scale": 1.0,
+                        "neutral_scale": 0.5,
+                        "risk_off_scale": 0.0,
+                        "signal_threshold": 0.3,
+                    }
+                },
+            }
+        )
+
+    def test_regime_branch_source_has_no_direct_class_import(self) -> None:
+        source = inspect.getsource(
+            __import__(
+                "src.sweeps.engine", fromlist=["SweepEngine"]
+            ).SweepEngine._run_single_backtest
+        )
+        assert (
+            "from src.strategies.regime_aware_portfolio import RegimeAwarePortfolioStrategy"
+            not in source
+        )
+
+    def test_regime_branch_source_uses_load_strategy_and_spec_cls(self) -> None:
+        source = inspect.getsource(
+            __import__(
+                "src.sweeps.engine", fromlist=["SweepEngine"]
+            ).SweepEngine._run_single_backtest
+        )
+        assert "load_strategy(strategy_key)" in source
+        assert "spec_ra.cls.from_config" in source
+
+    def test_run_single_backtest_regime_branch_calls_load_strategy(self, sample_ohlcv_data) -> None:
+        from src.sweeps import SweepEngine
+
+        cfg = self._regime_cfg()
+        engine = SweepEngine(verbose=False)
+        combo_params = {"risk_on_scale": 0.9, "neutral_scale": 0.4}
+
+        mock_strategy = MagicMock()
+        mock_strategy.generate_signals.return_value = pd.Series(
+            np.zeros(len(sample_ohlcv_data)), index=sample_ohlcv_data.index
+        )
+        mock_spec = MagicMock()
+        mock_spec.config_section = "portfolio.regime_aware_breakout_rsi"
+        mock_spec.cls.from_config.return_value = mock_strategy
+
+        mock_result = MagicMock()
+        mock_result.stats = {"total_return": 0.0, "sharpe": 0.0}
+
+        with (
+            patch("src.sweeps.engine.get_strategy_spec", return_value=mock_spec) as spec_mock,
+            patch("src.sweeps.engine.load_strategy") as load_mock,
+            patch("src.sweeps.engine.BacktestEngine") as engine_cls,
+        ):
+
+            def run_realistic_side_effect(df, strategy_signal_fn, strategy_params, **kwargs):
+                strategy_signal_fn(df, strategy_params)
+                return mock_result
+
+            engine_cls.return_value.run_realistic.side_effect = run_realistic_side_effect
+            stats, _ = engine._run_single_backtest(
+                data=sample_ohlcv_data,
+                strategy_key=self.REGIME_KEY,
+                params=combo_params,
+                cfg=cfg,
+            )
+
+        spec_mock.assert_called_once_with(self.REGIME_KEY)
+        load_mock.assert_called_once_with(self.REGIME_KEY)
+        mock_spec.cls.from_config.assert_called_once_with(
+            cfg,
+            section="portfolio.regime_aware_breakout_rsi",
+            param_overrides=combo_params,
+        )
+        mock_strategy.generate_signals.assert_called_once()
+        assert isinstance(stats, dict)
+
+    def test_regime_branch_isolated_binding_per_backtest_call(self, sample_ohlcv_data) -> None:
+        from src.sweeps import SweepEngine
+
+        cfg = self._regime_cfg()
+        engine = SweepEngine(verbose=False)
+        load_calls: list[str] = []
+        from_config_calls: list[dict[str, object]] = []
+
+        def track_load(key: str):
+            load_calls.append(key)
+
+        def track_from_config(*args, **kwargs):
+            from_config_calls.append(dict(kwargs))
+            mock_strategy = MagicMock()
+            mock_strategy.generate_signals.return_value = pd.Series(
+                np.zeros(len(sample_ohlcv_data)), index=sample_ohlcv_data.index
+            )
+            return mock_strategy
+
+        mock_spec = MagicMock()
+        mock_spec.config_section = "portfolio.regime_aware_breakout_rsi"
+        mock_spec.cls.from_config.side_effect = track_from_config
+
+        mock_result = MagicMock()
+        mock_result.stats = {"total_return": 0.0, "sharpe": 0.0}
+
+        with (
+            patch("src.sweeps.engine.get_strategy_spec", return_value=mock_spec),
+            patch("src.sweeps.engine.load_strategy", side_effect=track_load),
+            patch("src.sweeps.engine.BacktestEngine") as engine_cls,
+        ):
+            engine_cls.return_value.run_realistic.return_value = mock_result
+            engine._run_single_backtest(
+                data=sample_ohlcv_data,
+                strategy_key=self.REGIME_KEY,
+                params={"risk_on_scale": 0.8},
+                cfg=cfg,
+            )
+            engine._run_single_backtest(
+                data=sample_ohlcv_data,
+                strategy_key=self.REGIME_KEY,
+                params={"risk_on_scale": 0.6, "neutral_scale": 0.3},
+                cfg=cfg,
+            )
+
+        assert load_calls == [self.REGIME_KEY, self.REGIME_KEY]
+        assert from_config_calls[0]["param_overrides"] == {"risk_on_scale": 0.8}
+        assert from_config_calls[1]["param_overrides"] == {
+            "risk_on_scale": 0.6,
+            "neutral_scale": 0.3,
+        }
