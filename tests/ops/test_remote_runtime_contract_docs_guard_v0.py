@@ -2013,6 +2013,7 @@ RECIPROCAL_OWNER_TESTS = (
     "test_master_v2_double_play_pure_stack_readiness_map_static_crosslink_contract_v0.py",
     "test_futures_dynamic_scope_envelope_contract_static_crosslink_contract_v0.py",
     "test_master_v2_runtime_governance_boundary_contract_static_v0.py",
+    "test_master_v2_state_switch_contract_static_v0.py",
 )
 
 OPS_COCKPIT_OPERATOR_SUMMARY_SPEC = (
@@ -2098,6 +2099,12 @@ FUTURES_MASTER_V2_RUNTIME_GOVERNANCE_BOUNDARY_CONTRACT = (
 )
 RGB_STATIC_CROSSLINK_GUARD = (
     REPO_ROOT / "tests" / "ops" / "test_master_v2_runtime_governance_boundary_contract_static_v0.py"
+)
+FUTURES_DOUBLE_PLAY_STATE_SWITCH_CONTRACT = (
+    REPO_ROOT / "docs" / "ops" / "specs" / "FUTURES_DOUBLE_PLAY_STATE_SWITCH_CONTRACT_V0.md"
+)
+SS_STATIC_CROSSLINK_GUARD = (
+    REPO_ROOT / "tests" / "ops" / "test_master_v2_state_switch_contract_static_v0.py"
 )
 
 FORBIDDEN_PARALLEL_DOC_FRAGMENTS = (
@@ -2247,6 +2254,7 @@ def test_reciprocal_owner_crosslinks_present() -> None:
         if module_name in (
             DSE_STATIC_CROSSLINK_GUARD.name,
             RGB_STATIC_CROSSLINK_GUARD.name,
+            SS_STATIC_CROSSLINK_GUARD.name,
         ):
             continue
         peer_text = (REPO_ROOT / "tests" / "ops" / module_name).read_text(encoding="utf-8")
@@ -2279,6 +2287,21 @@ def test_master_v2_runtime_governance_boundary_static_crosslink_reciprocal_remot
         or "runtime_governance_boundary_contract_static" in contract_plain
     )
     assert FUTURES_MASTER_V2_RUNTIME_GOVERNANCE_BOUNDARY_CONTRACT.name in peer_text
+
+
+def test_master_v2_state_switch_contract_static_crosslink_reciprocal_remote_runtime_docs_guard_v0() -> (
+    None
+):
+    guard_text = Path(__file__).read_text(encoding="utf-8")
+    assert SS_STATIC_CROSSLINK_GUARD.name in guard_text
+    peer_text = SS_STATIC_CROSSLINK_GUARD.read_text(encoding="utf-8")
+    contract_text = FUTURES_DOUBLE_PLAY_STATE_SWITCH_CONTRACT.read_text(encoding="utf-8")
+    contract_plain = contract_text.replace("&#47;", "/")
+    assert (
+        SS_STATIC_CROSSLINK_GUARD.name in contract_plain
+        or "state_switch_contract_static" in contract_plain
+    )
+    assert FUTURES_DOUBLE_PLAY_STATE_SWITCH_CONTRACT.name in peer_text
 
 
 def test_no_parallel_remote_runtime_authority_docs_introduced() -> None:
