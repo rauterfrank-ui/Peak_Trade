@@ -1444,10 +1444,8 @@ def run_experiment(args: argparse.Namespace) -> int:
     logger.info("\n[2/4] Strategy laden...")
 
     try:
-        from src.strategies.registry import (
-            get_available_strategy_keys,
-            create_strategy_from_config,
-        )
+        from src.strategies import load_strategy
+        from src.strategies.registry import get_available_strategy_keys
         from src.core.peak_config import load_config
         from src.backtest.engine import BacktestEngine
         from src.backtest.stats import compute_backtest_stats
@@ -1471,12 +1469,12 @@ def run_experiment(args: argparse.Namespace) -> int:
         logger.error(f"Config-Fehler: {e}")
         return 1
 
-    # Strategy instanziieren
+    # Strategy laden
     try:
-        strategy = create_strategy_from_config(preset.strategy, cfg)
+        base_signal_fn = load_strategy(preset.strategy)
         logger.info(f"  Strategy geladen: {preset.strategy}")
     except Exception as e:
-        logger.error(f"Strategy-Instanziierung fehlgeschlagen: {e}")
+        logger.error(f"Strategy-Laden fehlgeschlagen: {e}")
         return 1
 
     # Backtest ausführen
@@ -1492,7 +1490,7 @@ def run_experiment(args: argparse.Namespace) -> int:
         )
 
         def strategy_signal_fn(data, params):
-            return strategy.generate_signals(data)
+            return base_signal_fn(data, params)
 
         result = engine.run_realistic(
             df=df,
