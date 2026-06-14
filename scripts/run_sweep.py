@@ -48,8 +48,8 @@ from src.core.position_sizing import build_position_sizer_from_config
 from src.core.risk import build_risk_manager_from_config
 from src.core.experiments import log_sweep_run, RUN_TYPE_SWEEP
 from src.backtest.engine import BacktestEngine
+from src.strategies import load_strategy
 from src.strategies.registry import (
-    create_strategy_from_config,
     get_available_strategy_keys,
     get_strategy_spec,
 )
@@ -137,6 +137,42 @@ def _resolve_stop_pct(
     if engine_stop_pct is not None:
         return float(engine_stop_pct)
     return _ENGINE_STOP_PCT_DEFAULT
+
+
+def _validate_strategy_registry_gates(strategy_key: str, cfg: PeakConfig) -> None:
+    """Mirror registry environment/tier gates (fail-closed)."""
+    spec = get_strategy_spec(strategy_key)
+
+    env_mode = cfg.get("environment.mode")
+    if not env_mode:
+        env_mode = cfg.get("env.mode")
+    if not env_mode:
+        env_mode = cfg.get("runtime.environment")
+    if not env_mode:
+        env_mode = cfg.get("environment.runtime_environment")
+    if not env_mode:
+        env_mode = "backtest"
+
+    if env_mode == "live" and not spec.is_live_ready:
+        raise ValueError(
+            f"Strategy '{strategy_key}' cannot be used in LIVE mode (IS_LIVE_READY=False). "
+            f"This strategy is R&D-only and not validated for live trading."
+        )
+
+    if spec.tier == "r_and_d":
+        allow_rnd = cfg.get("research.allow_r_and_d_strategies", False)
+        if not allow_rnd:
+            raise ValueError(
+                f"Strategy '{strategy_key}' is R&D-only (TIER=r_and_d) and requires "
+                f"'research.allow_r_and_d_strategies = true' in config."
+            )
+
+    if env_mode not in spec.allowed_environments:
+        allowed_str = ", ".join(spec.allowed_environments)
+        raise ValueError(
+            f"Strategy '{strategy_key}' not allowed in environment '{env_mode}'. "
+            f"Allowed environments: {allowed_str}"
+        )
 
 
 def _strategy_class_defaults(strategy_key: str) -> Dict[str, Any]:
@@ -446,7 +482,7 @@ def run_single_backtest(
     risk_manager = build_risk_manager_from_config(cfg, section="risk_management")
 
     # Registry/environment gates before bounded parameter normalization.
-    create_strategy_from_config(strategy_key, cfg)
+    _validate_strategy_registry_gates(strategy_key, cfg)
 
     strategy_defaults = _strategy_class_defaults(strategy_key)
     strategy_config = _strategy_config_section(cfg, strategy_key)
@@ -463,14 +499,10 @@ def run_single_backtest(
         risk_manager=risk_manager,
     )
 
+    base_signal_fn = load_strategy(strategy_key)
+
     def strategy_signal_fn(data, engine_strategy_params):
-        bound_strategy = create_strategy_from_config(strategy_key, cfg)
-        _apply_effective_params_to_strategy(
-            bound_strategy,
-            strategy_key,
-            engine_strategy_params,
-        )
-        return bound_strategy.generate_signals(data)
+        return base_signal_fn(data, engine_strategy_params)
 
     result = engine.run_realistic(
         df=df,

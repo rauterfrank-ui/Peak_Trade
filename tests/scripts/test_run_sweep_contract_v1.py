@@ -1,8 +1,8 @@
 """
 run_sweep.py: legacy contract-first static tests (offline, fail-closed).
 
-Locks current create_strategy_from_config() bypass semantics and known
-False-Confidence risks. EQUIVALENCE_NOT_PROVEN vs load_strategy() migration.
+Locks bounded parameter normalization, load_strategy() binding, and known
+False-Confidence risks from PR #4230/#4232.
 """
 
 from __future__ import annotations
@@ -26,7 +26,7 @@ import scripts.run_sweep as run_sweep_script
 
 TARGET_SCRIPT = project_root / "scripts/run_sweep.py"
 MA_CROSSOVER_KEY = "ma_crossover"
-EQUIVALENCE_NOT_PROVEN = "EQUIVALENCE_NOT_PROVEN"
+FORBIDDEN_IMPORTS = ("create_strategy_from_config",)
 
 
 def _read_source() -> str:
@@ -104,7 +104,7 @@ def test_module_imports_without_main_side_effects() -> None:
     main_mock.assert_not_called()
 
 
-def test_source_still_uses_create_strategy_from_config_bypass() -> None:
+def test_source_has_no_create_strategy_from_config() -> None:
     tree = ast.parse(_read_source())
     imported = {
         alias.name
@@ -112,16 +112,12 @@ def test_source_still_uses_create_strategy_from_config_bypass() -> None:
         if isinstance(node, ast.ImportFrom) and node.module
         for alias in node.names
     }
-    assert "create_strategy_from_config" in imported
+    for forbidden in FORBIDDEN_IMPORTS:
+        assert forbidden not in imported
 
 
-def test_source_has_no_load_strategy_migration() -> None:
-    assert "load_strategy" not in _read_source()
-
-
-def test_equivalence_not_proven_marker_present_in_test_owner() -> None:
-    owner_source = Path(__file__).read_text(encoding="utf-8")
-    assert EQUIVALENCE_NOT_PROVEN in owner_source
+def test_source_uses_load_strategy() -> None:
+    assert "load_strategy" in _read_source()
 
 
 def test_run_single_backtest_has_no_long_only_replace_wrapper() -> None:
@@ -211,6 +207,7 @@ def test_effective_params_sync_strategy_config() -> None:
 
 def test_closure_uses_engine_strategy_params_for_signal_generation() -> None:
     from src.core.peak_config import PeakConfig
+    from src.strategies import load_strategy
 
     raw = {
         "environment": {"mode": "backtest"},
@@ -220,19 +217,13 @@ def test_closure_uses_engine_strategy_params_for_signal_generation() -> None:
     df = _sample_ohlcv()
     grid_params = {"fast_window": 5, "slow_window": 30}
 
-    strategy_engine_would_use = run_sweep_script.create_strategy_from_config(MA_CROSSOVER_KEY, cfg)
     effective = run_sweep_script._merge_effective_parameters(
         MA_CROSSOVER_KEY,
         grid_params,
         strategy_defaults=run_sweep_script._strategy_class_defaults(MA_CROSSOVER_KEY),
         strategy_config=run_sweep_script._strategy_config_section(cfg, MA_CROSSOVER_KEY),
     )
-    run_sweep_script._apply_effective_params_to_strategy(
-        strategy_engine_would_use,
-        MA_CROSSOVER_KEY,
-        effective,
-    )
-    expected_if_engine_params_used = strategy_engine_would_use.generate_signals(df)
+    expected_if_engine_params_used = load_strategy(MA_CROSSOVER_KEY)(df, effective)
 
     captured: dict[str, Any] = {}
 
@@ -271,7 +262,7 @@ def test_closure_uses_engine_strategy_params_for_signal_generation() -> None:
 # ---------------------------------------------------------------------------
 
 
-def test_closure_creates_fresh_strategy_from_engine_params() -> None:
+def test_closure_creates_fresh_load_strategy_binding_per_call() -> None:
     from src.core.peak_config import PeakConfig
 
     raw = {
@@ -280,33 +271,18 @@ def test_closure_creates_fresh_strategy_from_engine_params() -> None:
     }
     cfg = PeakConfig(raw=raw)
     df = _sample_ohlcv()
-    binding: dict[str, Any] = {"instance_ids": [], "generate_calls": 0}
+    binding: dict[str, Any] = {"call_count": 0, "param_snapshots": []}
 
-    class TrackingStrategy:
-        _instances = 0
-
-        def __init__(self) -> None:
-            TrackingStrategy._instances += 1
-            self._id = id(self)
-            self.fast_window = 20
-            self.slow_window = 50
-            self.price_col = "close"
-            self.config = {"fast_window": 20, "slow_window": 50, "price_col": "close"}
-
-        def generate_signals(self, data: pd.DataFrame) -> pd.Series:
-            binding["generate_calls"] += 1
-            binding["instance_ids"].append(self._id)
-            return pd.Series(0, index=data.index)
+    def tracking_signal_fn(data: pd.DataFrame, params: dict[str, Any]) -> pd.Series:
+        binding["call_count"] += 1
+        binding["param_snapshots"].append(dict(params))
+        return pd.Series(0, index=data.index)
 
     mock_result = MagicMock()
     mock_result.stats = {}
 
     with (
-        patch.object(
-            run_sweep_script,
-            "create_strategy_from_config",
-            return_value=TrackingStrategy(),
-        ),
+        patch.object(run_sweep_script, "load_strategy", return_value=tracking_signal_fn),
         patch.object(
             run_sweep_script, "build_position_sizer_from_config", return_value=MagicMock()
         ),
@@ -327,13 +303,13 @@ def test_closure_creates_fresh_strategy_from_engine_params() -> None:
             cfg=cfg,
         )
 
-    assert TrackingStrategy._instances == 1
-    assert binding["generate_calls"] == 1
-    assert len(set(binding["instance_ids"])) == 1
+    assert binding["call_count"] == 1
+    assert binding["param_snapshots"][0]["fast_window"] == 10
+    assert binding["param_snapshots"][0]["slow_window"] == 30
 
 
 # ---------------------------------------------------------------------------
-# Registry gates — create_strategy_from_config path preserved
+# Registry gates — _validate_strategy_registry_gates path preserved
 # ---------------------------------------------------------------------------
 
 
@@ -361,9 +337,7 @@ def test_run_single_backtest_propagates_registry_gate_failure() -> None:
         )
 
 
-def test_create_strategy_from_config_live_gate_blocks_non_live_ready() -> None:
-    from src.strategies.registry import create_strategy_from_config
-
+def test_validate_strategy_registry_gates_live_gate_blocks_non_live_ready() -> None:
     cfg = DummyConfig(
         {
             "environment": {"mode": "live"},
@@ -372,12 +346,10 @@ def test_create_strategy_from_config_live_gate_blocks_non_live_ready() -> None:
         }
     )
     with pytest.raises(ValueError, match="IS_LIVE_READY=False"):
-        create_strategy_from_config("ehlers_cycle_filter", cfg)
+        run_sweep_script._validate_strategy_registry_gates("ehlers_cycle_filter", cfg)
 
 
-def test_create_strategy_from_config_environment_gate_blocks_disallowed_env() -> None:
-    from src.strategies.registry import create_strategy_from_config
-
+def test_validate_strategy_registry_gates_environment_gate_blocks_disallowed_env() -> None:
     cfg = DummyConfig(
         {
             "environment": {"mode": "testnet"},
@@ -386,7 +358,7 @@ def test_create_strategy_from_config_environment_gate_blocks_disallowed_env() ->
         }
     )
     with pytest.raises(ValueError, match="not allowed in environment"):
-        create_strategy_from_config("ehlers_cycle_filter", cfg)
+        run_sweep_script._validate_strategy_registry_gates("ehlers_cycle_filter", cfg)
 
 
 # ---------------------------------------------------------------------------
@@ -416,16 +388,16 @@ def test_closure_preserves_negative_signals_without_replace_wrapper() -> None:
 
     with (
         patch.object(
-            run_sweep_script,
-            "create_strategy_from_config",
-            return_value=NegativeSignalStrategy(),
-        ),
-        patch.object(
             run_sweep_script, "build_position_sizer_from_config", return_value=MagicMock()
         ),
         patch.object(run_sweep_script, "build_risk_manager_from_config", return_value=MagicMock()),
         patch.object(
             run_sweep_script.BacktestEngine, "run_realistic", side_effect=fake_run_realistic
+        ),
+        patch.object(
+            run_sweep_script,
+            "load_strategy",
+            return_value=lambda data, params: negative_signals,
         ),
     ):
         run_sweep_script.run_single_backtest(
@@ -480,8 +452,8 @@ def test_stop_pct_falls_back_to_engine_default_when_absent_from_grid() -> None:
         ),
         patch.object(
             run_sweep_script,
-            "create_strategy_from_config",
-            return_value=MagicMock(generate_signals=lambda data: pd.Series(0, index=data.index)),
+            "load_strategy",
+            return_value=lambda data, params: pd.Series(0, index=data.index),
         ),
     ):
         run_sweep_script.run_single_backtest(
@@ -515,8 +487,8 @@ def test_stop_pct_passes_through_when_present_in_grid_params() -> None:
         ),
         patch.object(
             run_sweep_script,
-            "create_strategy_from_config",
-            return_value=MagicMock(generate_signals=lambda data: pd.Series(0, index=data.index)),
+            "load_strategy",
+            return_value=lambda data, params: pd.Series(0, index=data.index),
         ),
     ):
         run_sweep_script.run_single_backtest(
@@ -548,8 +520,8 @@ def test_stop_pct_not_sourced_from_strategy_config_section_by_default() -> None:
         ),
         patch.object(
             run_sweep_script,
-            "create_strategy_from_config",
-            return_value=MagicMock(generate_signals=lambda data: pd.Series(0, index=data.index)),
+            "load_strategy",
+            return_value=lambda data, params: pd.Series(0, index=data.index),
         ),
     ):
         run_sweep_script.run_single_backtest(
@@ -967,12 +939,6 @@ def test_target_long_only_decision_unresolved_requires_semantic_go() -> None:
     assert "replace(-1, 0)" not in fn_source
 
 
-def test_target_load_strategy_migration_remains_blocked() -> None:
-    owner_source = Path(__file__).read_text(encoding="utf-8")
-    assert EQUIVALENCE_NOT_PROVEN in owner_source
-    assert "load_strategy" not in _read_source()
-
-
 def test_production_implements_bounded_parameter_normalization() -> None:
     fn_source = ast.get_source_segment(
         _read_source(),
@@ -985,7 +951,8 @@ def test_production_implements_bounded_parameter_normalization() -> None:
     assert fn_source is not None
     assert "_normalize_sweep_grid_params" in _read_source()
     assert "_merge_effective_parameters" in _read_source()
-    assert "_apply_effective_params_to_strategy" in fn_source
+    assert "load_strategy" in fn_source
+    assert "create_strategy_from_config" not in fn_source
     assert "hasattr(strategy, key)" not in fn_source
 
     ma_alias = run_sweep_script._normalize_sweep_grid_params(
@@ -996,3 +963,15 @@ def test_production_implements_bounded_parameter_normalization() -> None:
 
     with pytest.raises(run_sweep_script.SweepParameterNormalizationError, match="unknown key"):
         run_sweep_script._normalize_sweep_grid_params(MA_CROSSOVER_KEY, {"unknown_param": 1})
+
+
+def test_load_strategy_migration_completed() -> None:
+    assert "load_strategy" in _read_source()
+    tree = ast.parse(_read_source())
+    imported = {
+        alias.name
+        for node in tree.body
+        if isinstance(node, ast.ImportFrom) and node.module
+        for alias in node.names
+    }
+    assert "create_strategy_from_config" not in imported
