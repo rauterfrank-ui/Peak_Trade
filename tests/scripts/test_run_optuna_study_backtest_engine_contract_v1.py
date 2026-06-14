@@ -13,6 +13,7 @@ from __future__ import annotations
 import ast
 import importlib
 import inspect
+import os
 import subprocess
 import sys
 from dataclasses import dataclass
@@ -795,11 +796,32 @@ def test_bounded_modernization_remains_unauthorized() -> None:
 # ---------------------------------------------------------------------------
 
 
+def _production_guard_base_ref() -> str:
+    for candidate in (
+        os.environ.get("GITHUB_BASE_SHA"),
+        os.environ.get("CI_MERGE_BASE"),
+    ):
+        if candidate:
+            return candidate
+    for ref in ("origin/main", "main"):
+        result = subprocess.run(
+            ["git", "rev-parse", "--verify", ref],
+            cwd=project_root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if result.returncode == 0:
+            return ref
+    raise AssertionError("cannot resolve git base ref for production guard")
+
+
 def test_run_optuna_study_production_file_unchanged_ast_guard() -> None:
+    base_ref = _production_guard_base_ref()
     changed: list[str] = []
     for rel_path in PRODUCTION_GUARD_PATHS:
         result = subprocess.run(
-            ["git", "diff", "--name-only", "origin/main", "--", rel_path],
+            ["git", "diff", "--name-only", base_ref, "--", rel_path],
             cwd=project_root,
             capture_output=True,
             text=True,
