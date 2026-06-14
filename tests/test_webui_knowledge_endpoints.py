@@ -15,6 +15,10 @@ from __future__ import annotations
 import os
 import pytest
 from unittest.mock import Mock, patch, MagicMock
+
+# Skip if FastAPI not installed - must be done before any FastAPI imports
+pytest.importorskip("fastapi")
+
 from fastapi.testclient import TestClient
 
 # Check if chromadb is available
