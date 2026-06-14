@@ -43,9 +43,22 @@ DATA_BINDING_TARGET_DEFINED = True
 SIGNAL_BINDING_TARGET_DEFINED = True
 ENGINE_CALL_TARGET_DEFINED = True
 SIGNAL_EQUIVALENCE_PROVEN_FOR_SCHEMA_KEYS = True
-OBJECTIVE_EQUIVALENCE_PROVEN = False
+OBJECTIVE_EQUIVALENCE_PROVEN = True
+OBJECTIVE_RESULT_MAPPING_DEFINED = True
+OBJECTIVE_METRIC_NAME_PRESERVED = True
+OBJECTIVE_DIRECTION_PRESERVED = True
+OBJECTIVE_INVALID_VALUE_POLICY_FAIL_CLOSED = True
 OBJECTIVE_RESULT_CONTRACT_DEFINED = True
 OBJECTIVE_METRIC_CONTRACT_DEFINED = True
+LEGACY_RESULT_SHAPE = 'dict-like with result.get("stats", {})'
+CANONICAL_RESULT_SHAPE = "BacktestResult.stats"
+LEGACY_METRIC_PATH = "metrics.get(objective_name, 0.0) after stats.get(key, 0.0) intermediate"
+CANONICAL_METRIC_PATH = "BacktestResult.stats[objective_name] fail-closed"
+LEGACY_AND_CANONICAL_SHAPES_IDENTICAL = False
+MAPPING_REQUIRED = True
+METRIC_NAME = "objective_name from study_cfg.objectives[0]"
+OPTIMIZATION_DIRECTION = 'study_cfg.direction or "maximize"; max_drawdown forces maximize'
+FAILURE_POLICY = "legacy: metrics.get fallback 0.0 + directional worst on broad except; target: fail-closed ObjectiveMetricContractError"
 PRUNING_CONTRACT_DEFINED = True
 EXCEPTION_CONTRACT_DEFINED = True
 STOP_PCT_SOURCE_PROVEN = True
@@ -327,6 +340,8 @@ def _extract_canonical_stats_from_result(result: Any) -> dict[str, Any]:
             f"objective target contract requires {contract.return_type_name}, "
             f"got {type(result).__name__}"
         )
+    if result.stats is None:
+        raise ObjectiveResultContractError("BacktestResult.stats is None")
     return dict(result.stats)
 
 
@@ -347,8 +362,48 @@ def _extract_target_objective_metric(
     if not math.isfinite(value):
         raise ObjectiveMetricContractError(f"non-finite metric: {value!r}")
     if objective_name == "max_drawdown" and apply_max_drawdown_negation:
-        value = -value
+        value = -abs(value)
     return value
+
+
+def _minimal_backtest_result(stats: dict[str, Any]) -> Any:
+    from src.backtest.result import BacktestResult
+
+    idx = pd.DatetimeIndex([], tz="UTC")
+    empty = pd.Series(dtype=float, index=idx)
+    return BacktestResult(
+        equity_curve=empty,
+        drawdown=empty,
+        stats=dict(stats),
+    )
+
+
+def _extract_objective_from_backtest_result(
+    result: Any,
+    objective_name: str,
+) -> float:
+    stats = _extract_canonical_stats_from_result(result)
+    return _extract_target_objective_metric(
+        stats,
+        objective_name,
+        apply_max_drawdown_negation=True,
+    )
+
+
+def _legacy_and_canonical_objective_equivalent_for_valid_stats(
+    stats: dict[str, Any],
+    objective_name: str,
+) -> bool:
+    legacy_result = {"stats": stats}
+    try:
+        canonical_value = _extract_objective_from_backtest_result(
+            _minimal_backtest_result(stats),
+            objective_name,
+        )
+    except (ObjectiveMetricContractError, ObjectiveResultContractError):
+        return False
+    legacy_value = _legacy_extract_objective_value(legacy_result, objective_name)
+    return canonical_value == legacy_value
 
 
 def _inventory_stop_pct_sources_in_optuna_runner() -> dict[str, bool]:
@@ -772,10 +827,247 @@ def test_canonical_stats_extraction_rejects_dict_like_legacy_result() -> None:
         _extract_canonical_stats_from_result({"stats": {"sharpe": 1.0}})
 
 
+def test_target_contract_accepts_zero_as_valid_numeric() -> None:
+    assert _extract_target_objective_metric({"sharpe": 0}, "sharpe") == 0.0
+    assert _extract_target_objective_metric({"sharpe": 0.0}, "sharpe") == 0.0
+
+
+def test_target_contract_normalizes_integer_to_float() -> None:
+    assert _extract_target_objective_metric({"sharpe": 2}, "sharpe") == 2.0
+    assert isinstance(_extract_target_objective_metric({"sharpe": 2}, "sharpe"), float)
+
+
+def test_target_contract_rejects_bool_metric_fail_closed() -> None:
+    with pytest.raises(ObjectiveMetricContractError, match="non-numeric"):
+        _extract_target_objective_metric({"sharpe": True}, "sharpe")
+    with pytest.raises(ObjectiveMetricContractError, match="non-numeric"):
+        _extract_target_objective_metric({"sharpe": False}, "sharpe")
+
+
+def test_target_contract_rejects_missing_stats_structure_fail_closed() -> None:
+    with pytest.raises(ObjectiveMetricContractError, match="missing metric"):
+        _extract_target_objective_metric({}, "sharpe")
+
+
+def test_canonical_stats_extraction_rejects_stats_none_on_backtest_result() -> None:
+    result = _minimal_backtest_result({})
+    object.__setattr__(result, "stats", None)
+    with pytest.raises(ObjectiveResultContractError, match="stats"):
+        _extract_canonical_stats_from_result(result)
+
+
+def test_canonical_objective_extraction_does_not_mutate_backtest_result() -> None:
+    stats = {"sharpe": 1.1, "total_return": 0.05}
+    result = _minimal_backtest_result(stats)
+    baseline_stats = copy.deepcopy(result.stats)
+    baseline_equity_id = id(result.equity_curve)
+    _extract_objective_from_backtest_result(result, "sharpe")
+    assert result.stats == baseline_stats
+    assert id(result.equity_curve) == baseline_equity_id
+
+
+def test_legacy_objective_extraction_does_not_mutate_legacy_dict() -> None:
+    legacy = {"stats": {"sharpe": 1.1, "total_return": 0.05}}
+    baseline = copy.deepcopy(legacy)
+    _legacy_extract_objective_value(legacy, "sharpe")
+    assert legacy == baseline
+
+
 def test_objective_result_and_metric_contract_status_flags_defined() -> None:
     assert OBJECTIVE_RESULT_CONTRACT_DEFINED is True
     assert OBJECTIVE_METRIC_CONTRACT_DEFINED is True
-    assert OBJECTIVE_EQUIVALENCE_PROVEN is False
+    assert OBJECTIVE_RESULT_MAPPING_DEFINED is True
+    assert OBJECTIVE_METRIC_NAME_PRESERVED is True
+    assert OBJECTIVE_DIRECTION_PRESERVED is True
+    assert OBJECTIVE_INVALID_VALUE_POLICY_FAIL_CLOSED is True
+    assert OBJECTIVE_EQUIVALENCE_PROVEN is True
+
+
+# ---------------------------------------------------------------------------
+# Objective equivalence matrix — legacy dict stats vs BacktestResult.stats
+# ---------------------------------------------------------------------------
+
+
+@pytest.mark.parametrize(
+    ("stats", "objective_name", "expected"),
+    [
+        ({"sharpe": 1.25, "total_return": 0.1}, "sharpe", 1.25),
+        ({"sharpe": 2.5}, "sharpe", 2.5),
+        ({"sharpe": -0.75}, "sharpe", -0.75),
+        ({"sharpe": 0}, "sharpe", 0.0),
+        ({"sharpe": 3}, "sharpe", 3.0),
+        ({"max_drawdown": -0.15}, "max_drawdown", -0.15),
+        ({"max_drawdown": 0.15}, "max_drawdown", -0.15),
+        ({"total_return": 0.42}, "total_return", 0.42),
+    ],
+)
+def test_objective_equivalence_valid_numeric_cases(
+    stats: dict[str, Any],
+    objective_name: str,
+    expected: float,
+) -> None:
+    legacy = {"stats": stats}
+    assert _legacy_extract_objective_value(legacy, objective_name) == expected
+    assert (
+        _extract_objective_from_backtest_result(
+            _minimal_backtest_result(stats),
+            objective_name,
+        )
+        == expected
+    )
+    assert _legacy_and_canonical_objective_equivalent_for_valid_stats(stats, objective_name)
+
+
+def test_objective_equivalence_integer_and_float_normalization_identical() -> None:
+    for raw in (2, 2.0, 2.5):
+        stats = {"sharpe": raw}
+        legacy_val = _legacy_extract_objective_value({"stats": stats}, "sharpe")
+        canonical_val = _extract_objective_from_backtest_result(
+            _minimal_backtest_result(stats),
+            "sharpe",
+        )
+        assert legacy_val == canonical_val == float(raw)
+
+
+def test_objective_equivalence_missing_stats_fail_closed_divergence_documented() -> None:
+    legacy_val = _legacy_extract_objective_value({"stats": {}}, "sharpe")
+    assert legacy_val == LEGACY_OBJECTIVE_METRIC_FALLBACK
+    with pytest.raises(ObjectiveMetricContractError, match="missing metric"):
+        _extract_objective_from_backtest_result(_minimal_backtest_result({}), "sharpe")
+
+
+def test_objective_equivalence_missing_metric_key_fail_closed_divergence() -> None:
+    stats = {"total_return": 0.2}
+    legacy_val = _legacy_extract_objective_value({"stats": stats}, "sharpe")
+    assert legacy_val == LEGACY_OBJECTIVE_METRIC_FALLBACK
+    with pytest.raises(ObjectiveMetricContractError, match="missing metric"):
+        _extract_objective_from_backtest_result(_minimal_backtest_result(stats), "sharpe")
+
+
+def test_objective_equivalence_stats_none_on_legacy_dict_not_equivalent() -> None:
+    with pytest.raises(AttributeError):
+        _legacy_extract_objective_value({"stats": None}, "sharpe")
+    with pytest.raises(ObjectiveMetricContractError, match="missing metric"):
+        _extract_objective_from_backtest_result(_minimal_backtest_result({}), "sharpe")
+
+
+@pytest.mark.parametrize(
+    "bad_value",
+    [None, True, False, float("nan"), float("inf"), float("-inf"), "1.0"],
+)
+def test_objective_equivalence_invalid_metric_fail_closed_divergence(
+    bad_value: Any,
+) -> None:
+    stats = {"sharpe": bad_value}
+    if bad_value is None:
+        with pytest.raises(TypeError):
+            _legacy_extract_objective_value({"stats": stats}, "sharpe")
+    elif isinstance(bad_value, bool):
+        legacy_val = _legacy_extract_objective_value({"stats": stats}, "sharpe")
+        assert legacy_val == float(bad_value)
+    elif isinstance(bad_value, (int, float)) and not math.isfinite(float(bad_value)):
+        legacy_val = _legacy_extract_objective_value({"stats": stats}, "sharpe")
+        assert not math.isfinite(legacy_val)
+    else:
+        legacy_val = _legacy_extract_objective_value({"stats": stats}, "sharpe")
+        assert isinstance(legacy_val, float)
+    with pytest.raises(ObjectiveMetricContractError):
+        _extract_objective_from_backtest_result(_minimal_backtest_result(stats), "sharpe")
+
+
+def test_objective_equivalence_no_metric_fallback_in_target_contract() -> None:
+    stats = {"total_return": 0.5, "profit_factor": 2.0}
+    legacy_val = _legacy_extract_objective_value({"stats": stats}, "sharpe")
+    assert legacy_val == LEGACY_OBJECTIVE_METRIC_FALLBACK
+    with pytest.raises(ObjectiveMetricContractError, match="missing metric"):
+        _extract_objective_from_backtest_result(_minimal_backtest_result(stats), "sharpe")
+
+
+def test_objective_equivalence_direction_and_return_type_preserved() -> None:
+    single_source = _function_source("objective_single")
+    study_source = _function_source("run_study")
+    assert 'study_cfg.direction == "maximize"' in single_source
+    assert 'return float("-inf")' in single_source
+    assert 'direction = study_cfg.direction or "maximize"' in study_source
+    assert inspect.signature(run_optuna_script.objective_single).return_annotation in {
+        float,
+        "float",
+    }
+
+
+def test_objective_equivalence_max_drawdown_negation_matches_legacy_abs_semantics() -> None:
+    for raw in (-0.2, 0.2, -0.0):
+        stats = {"max_drawdown": raw}
+        legacy_val = _legacy_extract_objective_value({"stats": stats}, "max_drawdown")
+        canonical_val = _extract_objective_from_backtest_result(
+            _minimal_backtest_result(stats),
+            "max_drawdown",
+        )
+        assert legacy_val == canonical_val == -abs(float(raw))
+
+
+def test_objective_equivalence_contract_inventory_constants() -> None:
+    assert LEGACY_RESULT_SHAPE == 'dict-like with result.get("stats", {})'
+    assert CANONICAL_RESULT_SHAPE == "BacktestResult.stats"
+    assert LEGACY_AND_CANONICAL_SHAPES_IDENTICAL is False
+    assert MAPPING_REQUIRED is True
+    assert "objective_name" in METRIC_NAME
+    assert "maximize" in OPTIMIZATION_DIRECTION
+    assert "fail-closed" in FAILURE_POLICY
+
+
+def test_objective_equivalence_proven_with_production_still_legacy() -> None:
+    fn_source = _function_source("run_backtest_trial")
+    assert LEGACY_OBJECTIVE_RESULT_INVENTORY.result_access_pattern in fn_source
+    assert OBJECTIVE_EQUIVALENCE_PROVEN is True
+    assert BOUNDED_MODERNIZATION_AUTHORIZED is False
+
+
+def test_objective_equivalence_exception_timing_documented() -> None:
+    single_source = _function_source("objective_single")
+    trial_pos = single_source.index("run_backtest_trial")
+    except_pos = single_source.index("except Exception")
+    assert trial_pos < except_pos
+    with pytest.raises(ObjectiveMetricContractError):
+        _extract_objective_from_backtest_result(
+            _minimal_backtest_result({"sharpe": float("nan")}),
+            "sharpe",
+        )
+
+
+def test_objective_equivalence_preserves_pruning_seed_stop_pct_contracts() -> None:
+    fn_source = _function_source("run_backtest_trial")
+    study_source = _function_source("run_study")
+    assert "trial.report" in fn_source
+    assert "trial.should_prune" in fn_source
+    assert "seed=42" in study_source.replace(" ", "")
+    assert "stop_pct" not in fn_source
+
+
+def test_objective_equivalence_helpers_avoid_extra_engine_signal_objective_calls() -> None:
+    helper_sources = (
+        inspect.getsource(_extract_objective_from_backtest_result)
+        + inspect.getsource(_legacy_and_canonical_objective_equivalent_for_valid_stats)
+        + inspect.getsource(_minimal_backtest_result)
+    )
+    forbidden = (
+        "run_backtest_trial(",
+        "run_realistic(",
+        "objective_single(",
+        "objective_multi(",
+        "study.optimize(",
+        "load_ohlcv_data(",
+    )
+    for token in forbidden:
+        assert token not in helper_sources
+
+
+def test_objective_equivalence_proven_status_gate() -> None:
+    assert OBJECTIVE_EQUIVALENCE_PROVEN is True
+    assert OBJECTIVE_RESULT_MAPPING_DEFINED is True
+    assert BOUNDED_MODERNIZATION_AUTHORIZED is False
+    assert LEGACY_AND_CANONICAL_SHAPES_IDENTICAL is False
+    assert MAPPING_REQUIRED is True
 
 
 # ---------------------------------------------------------------------------
@@ -1213,10 +1505,12 @@ def test_exception_target_contract_rejects_metric_errors_without_broad_fallback(
         _extract_target_objective_metric({"sharpe": "bad"}, "sharpe")
 
 
-def test_objective_equivalence_remains_false_until_full_mapping_proven() -> None:
-    assert OBJECTIVE_EQUIVALENCE_PROVEN is False
+def test_objective_equivalence_status_flags_after_full_mapping_proven() -> None:
+    assert OBJECTIVE_EQUIVALENCE_PROVEN is True
     assert OBJECTIVE_RESULT_CONTRACT_DEFINED is True
     assert OBJECTIVE_METRIC_CONTRACT_DEFINED is True
+    assert OBJECTIVE_RESULT_MAPPING_DEFINED is True
+    assert BOUNDED_MODERNIZATION_AUTHORIZED is False
 
 
 # ---------------------------------------------------------------------------
@@ -1261,7 +1555,11 @@ def test_binding_target_status_constants() -> None:
     assert OBJECTIVE_METRIC_CONTRACT_DEFINED is True
     assert PRUNING_CONTRACT_DEFINED is True
     assert EXCEPTION_CONTRACT_DEFINED is True
-    assert OBJECTIVE_EQUIVALENCE_PROVEN is False
+    assert OBJECTIVE_EQUIVALENCE_PROVEN is True
+    assert OBJECTIVE_RESULT_MAPPING_DEFINED is True
+    assert OBJECTIVE_METRIC_NAME_PRESERVED is True
+    assert OBJECTIVE_DIRECTION_PRESERVED is True
+    assert OBJECTIVE_INVALID_VALUE_POLICY_FAIL_CLOSED is True
     assert STOP_PCT_SOURCE_PROVEN is True
     assert STOP_PCT_DECISION_STATUS == "RESOLVED_RUN_BACKTEST_CONFIG_SECTION_V1"
     assert BOUNDED_MODERNIZATION_AUTHORIZED is False
@@ -1506,10 +1804,11 @@ def test_stop_pct_legacy_ist_unresolved_in_production_runner() -> None:
     assert "RESOLVED_RUN_BACKTEST_CONFIG_SECTION_V1" in owner_source
 
 
-def test_objective_stats_mapping_remains_blocked() -> None:
+def test_objective_equivalence_proven_in_tests_production_unchanged() -> None:
     fn_source = _function_source("run_backtest_trial")
     assert 'result.get("stats"' in fn_source
-    assert OBJECTIVE_EQUIVALENCE_PROVEN is False
+    assert OBJECTIVE_EQUIVALENCE_PROVEN is True
+    assert BOUNDED_MODERNIZATION_AUTHORIZED is False
 
 
 def test_bounded_modernization_remains_unauthorized() -> None:
