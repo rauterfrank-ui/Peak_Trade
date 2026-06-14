@@ -407,6 +407,132 @@ def test_pure_transition_decision_never_grants_live_authorization() -> None:
     assert decision.live_authorization_granted is False
 
 
+def test_chop_detected_from_long_armed_yields_chop_guard_block_without_authorization() -> None:
+    tick_input = OfflineGovernanceTickInputV0(
+        side_state=SideState.LONG_ARMED,
+        scope_event=ScopeEvent.CHOP_DETECTED,
+    )
+    result = evaluate_offline_governance_tick_v0(tick_input)
+    _assert_non_authorizing(result)
+    assert result.tick_ok is True
+    assert result.transition_allowed is True
+    assert result.transition_reason_code == "CHOP_GUARD"
+    assert result.side_state_before == SideState.LONG_ARMED
+    assert result.side_state_after == SideState.CHOP_GUARD_BLOCK
+    assert result.recommended_side == "neutral"
+    assert "transition_compliance_visible" in result.compliance_labels
+    assert result == evaluate_offline_governance_tick_v0(tick_input)
+
+
+def test_chop_detected_from_switch_pending_states_yield_chop_guard_block() -> None:
+    for pending in (
+        SideState.SWITCH_LONG_TO_SHORT_PENDING,
+        SideState.SWITCH_SHORT_TO_LONG_PENDING,
+    ):
+        result = evaluate_offline_governance_tick_v0(
+            OfflineGovernanceTickInputV0(
+                side_state=pending,
+                scope_event=ScopeEvent.CHOP_DETECTED,
+            )
+        )
+        _assert_non_authorizing(result)
+        assert result.tick_ok is True
+        assert result.transition_reason_code == "CHOP_GUARD"
+        assert result.side_state_before == pending
+        assert result.side_state_after == SideState.CHOP_GUARD_BLOCK
+        assert "transition_compliance_visible" in result.compliance_labels
+
+
+def test_chop_detected_irrelevant_from_long_active_blocks_transition() -> None:
+    result = evaluate_offline_governance_tick_v0(
+        OfflineGovernanceTickInputV0(
+            side_state=SideState.LONG_ACTIVE,
+            scope_event=ScopeEvent.CHOP_DETECTED,
+        )
+    )
+    _assert_non_authorizing(result)
+    assert result.tick_ok is False
+    assert result.blocked_reason == "CHOP_IRRELEVANT"
+    assert result.transition_reason_code == "CHOP_IRRELEVANT"
+    assert result.transition_allowed is False
+    assert result.side_state_after == SideState.LONG_ACTIVE
+    assert "transition_blocked_visible" in result.compliance_labels
+
+
+def test_scope_unknown_fails_closed_without_side_change() -> None:
+    result = evaluate_offline_governance_tick_v0(
+        OfflineGovernanceTickInputV0(
+            side_state=SideState.LONG_ACTIVE,
+            scope_event=ScopeEvent.SCOPE_UNKNOWN,
+        )
+    )
+    _assert_non_authorizing(result)
+    assert result.tick_ok is False
+    assert result.blocked_reason == "SCOPE_UNKNOWN_FAIL_CLOSED"
+    assert result.transition_reason_code == "SCOPE_UNKNOWN_FAIL_CLOSED"
+    assert result.transition_allowed is False
+    assert result.side_state_after == SideState.LONG_ACTIVE
+    assert "transition_blocked_visible" in result.compliance_labels
+
+
+def test_long_active_downscope_confirmed_enters_switch_pending_via_harness() -> None:
+    result = evaluate_offline_governance_tick_v0(
+        OfflineGovernanceTickInputV0(
+            side_state=SideState.LONG_ACTIVE,
+            scope_event=ScopeEvent.DOWNSCOPE_CONFIRMED,
+        )
+    )
+    _assert_non_authorizing(result)
+    assert result.tick_ok is True
+    assert result.transition_reason_code == "DOWNscope_SWITCH_PENDING"
+    assert result.side_state_before == SideState.LONG_ACTIVE
+    assert result.side_state_after == SideState.SWITCH_LONG_TO_SHORT_PENDING
+    assert "transition_compliance_visible" in result.compliance_labels
+
+
+def test_switch_long_to_short_pending_downscope_confirmed_blocks_long() -> None:
+    result = evaluate_offline_governance_tick_v0(
+        OfflineGovernanceTickInputV0(
+            side_state=SideState.SWITCH_LONG_TO_SHORT_PENDING,
+            scope_event=ScopeEvent.DOWNSCOPE_CONFIRMED,
+        )
+    )
+    _assert_non_authorizing(result)
+    assert result.tick_ok is True
+    assert result.transition_reason_code == "LONG_BLOCKED"
+    assert result.side_state_after == SideState.LONG_BLOCKED
+    assert result.recommended_side == "long"
+
+
+def test_short_active_upscope_confirmed_enters_switch_pending_via_harness() -> None:
+    result = evaluate_offline_governance_tick_v0(
+        OfflineGovernanceTickInputV0(
+            side_state=SideState.SHORT_ACTIVE,
+            scope_event=ScopeEvent.UPSCOPE_CONFIRMED,
+        )
+    )
+    _assert_non_authorizing(result)
+    assert result.tick_ok is True
+    assert result.transition_reason_code == "UPscope_SWITCH_PENDING"
+    assert result.side_state_before == SideState.SHORT_ACTIVE
+    assert result.side_state_after == SideState.SWITCH_SHORT_TO_LONG_PENDING
+    assert "transition_compliance_visible" in result.compliance_labels
+
+
+def test_switch_short_to_long_pending_upscope_confirmed_blocks_short() -> None:
+    result = evaluate_offline_governance_tick_v0(
+        OfflineGovernanceTickInputV0(
+            side_state=SideState.SWITCH_SHORT_TO_LONG_PENDING,
+            scope_event=ScopeEvent.UPSCOPE_CONFIRMED,
+        )
+    )
+    _assert_non_authorizing(result)
+    assert result.tick_ok is True
+    assert result.transition_reason_code == "SHORT_BLOCKED"
+    assert result.side_state_after == SideState.SHORT_BLOCKED
+    assert result.recommended_side == "short"
+
+
 def test_harness_avoids_dangerous_imports_by_source_inspection() -> None:
     tree = ast.parse(Path(__file__).read_text(encoding="utf-8"))
     forbidden_roots = {
