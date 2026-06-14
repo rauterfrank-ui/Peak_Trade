@@ -14,6 +14,11 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[2]
 SPECS = REPO_ROOT / "docs" / "ops" / "specs"
 RUNBOOKS = REPO_ROOT / "docs" / "ops" / "runbooks"
+REMOTE_RUNTIME_DOCS_GUARD = (
+    REPO_ROOT / "tests" / "ops" / "test_remote_runtime_contract_docs_guard_v0.py"
+)
+
+THIS_MODULE = Path(__file__).name
 
 SS_CONTRACT = SPECS / "FUTURES_DOUBLE_PLAY_STATE_SWITCH_CONTRACT_V0.md"
 DSE_CONTRACT = SPECS / "FUTURES_DYNAMIC_SCOPE_ENVELOPE_CONTRACT_V0.md"
@@ -310,3 +315,10 @@ def test_state_switch_contract_no_duplicate_static_owners_v0() -> None:
     assert "NO_DUPLICATION_OF_PR3648_STATE_SWITCH_VS_KILLSWITCH_OWNER" in contract_text
     assert "NO_DUPLICATION_OF_PR3649_PURE_STACK_READINESS_OWNER" in contract_text
     assert contract_text.count("MARKER:") >= len(MACHINE_MARKERS)
+
+
+def test_state_switch_contract_reciprocal_remote_runtime_docs_guard_v0() -> None:
+    guard_text = REMOTE_RUNTIME_DOCS_GUARD.read_text(encoding="utf-8")
+    assert THIS_MODULE in guard_text
+    owner_text = Path(__file__).read_text(encoding="utf-8")
+    assert "test_remote_runtime_contract_docs_guard_v0.py" in owner_text
