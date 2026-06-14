@@ -217,10 +217,15 @@ def _build_strategy_params_from_config(
     cfg: PeakConfig,
     strategy_key: str,
 ) -> Dict[str, Any]:
-    """Build strategy params dict matching from_config() effective values."""
-    spec = get_strategy_spec(strategy_key)
-    instance = spec.cls.from_config(cfg, section=spec.config_section)
-    params: Dict[str, Any] = dict(instance.config)
+    """Build strategy params dict via canonical load_strategy() registry path."""
+    if strategy_key in STRATEGY_REGISTRY:
+        load_strategy(strategy_key)
+        section = cfg.raw.get("strategy", {}).get(strategy_key, {})
+        params: Dict[str, Any] = dict(section) if isinstance(section, dict) else {}
+    else:
+        spec = get_strategy_spec(strategy_key)
+        instance = spec.cls.from_config(cfg, section=spec.config_section)
+        params = dict(instance.config)
     params["stop_pct"] = cfg.get(f"strategy.{strategy_key}.stop_pct", 0.02)
     return params
 

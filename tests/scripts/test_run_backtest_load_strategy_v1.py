@@ -6,6 +6,7 @@ from __future__ import annotations
 
 import ast
 import importlib
+import inspect
 import subprocess
 import sys
 from pathlib import Path
@@ -82,16 +83,73 @@ def test_source_has_no_parallel_strategy_registry_assignment() -> None:
     assert "STRATEGY_REGISTRY" not in assigned_names
 
 
-def test_build_strategy_params_matches_from_config_defaults() -> None:
+def test_build_strategy_params_includes_stop_pct_default_for_registry_key() -> None:
     from src.core.peak_config import PeakConfig
 
     raw = {"environment": {"mode": "backtest"}, "strategy": {}}
     cfg = PeakConfig(raw=raw)
     params = run_backtest_script._build_strategy_params_from_config(cfg, MA_CROSSOVER_KEY)
-    assert params["fast_window"] == 20
-    assert params["slow_window"] == 50
-    assert params["price_col"] == "close"
     assert params["stop_pct"] == 0.02
+    assert "fast_window" not in params
+
+
+def test_build_strategy_params_source_uses_load_strategy_for_registry_path() -> None:
+    source = inspect.getsource(run_backtest_script._build_strategy_params_from_config)
+    assert "load_strategy" in source
+    assert "STRATEGY_REGISTRY" in source
+
+
+def test_build_strategy_params_calls_load_strategy_for_registry_validation() -> None:
+    from src.core.peak_config import PeakConfig
+
+    raw = {
+        "environment": {"mode": "backtest"},
+        "strategy": {
+            MA_CROSSOVER_KEY: {"fast_window": 10, "slow_window": 50, "price_col": "close"}
+        },
+    }
+    cfg = PeakConfig(raw=raw)
+
+    with patch.object(run_backtest_script, "load_strategy") as load_mock:
+        load_mock.return_value = MagicMock()
+        params = run_backtest_script._build_strategy_params_from_config(cfg, MA_CROSSOVER_KEY)
+
+    load_mock.assert_called_once_with(MA_CROSSOVER_KEY)
+    assert params["fast_window"] == 10
+    assert params["stop_pct"] == 0.02
+
+
+def test_build_strategy_params_isolated_per_strategy_key() -> None:
+    from src.core.peak_config import PeakConfig
+
+    cfg = PeakConfig(
+        raw={
+            "environment": {"mode": "backtest"},
+            "strategy": {
+                MA_CROSSOVER_KEY: {"fast_window": 10, "slow_window": 50, "price_col": "close"},
+                MOMENTUM_KEY: {
+                    "lookback_period": 15,
+                    "entry_threshold": 0.02,
+                    "exit_threshold": -0.01,
+                },
+            },
+        }
+    )
+    ma_params = run_backtest_script._build_strategy_params_from_config(cfg, MA_CROSSOVER_KEY)
+    mom_params = run_backtest_script._build_strategy_params_from_config(cfg, MOMENTUM_KEY)
+
+    assert "lookback_period" not in ma_params
+    assert "fast_window" not in mom_params
+    assert ma_params["fast_window"] == 10
+    assert mom_params["lookback_period"] == 15
+
+
+def test_build_strategy_params_unknown_strategy_fails_closed() -> None:
+    from src.core.peak_config import PeakConfig
+
+    cfg = PeakConfig(raw={"environment": {"mode": "backtest"}, "strategy": {}})
+    with pytest.raises(KeyError):
+        run_backtest_script._build_strategy_params_from_config(cfg, "definitely_not_a_strategy_xyz")
 
 
 def test_build_strategy_params_includes_explicit_section_values() -> None:
