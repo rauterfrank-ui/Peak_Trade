@@ -33,7 +33,8 @@ import pandas as pd
 from src.core.peak_config import load_config, PeakConfig
 from src.core.experiments import log_generic_experiment
 from src.forward.signals import ForwardSignal, save_signals_to_csv
-from src.strategies.registry import create_strategy_from_config, get_available_strategy_keys
+from src.strategies import load_strategy
+from src.strategies.registry import get_available_strategy_keys, get_strategy_spec
 from src.analytics.risk_monitor import (
     RiskPolicy,
     load_experiments_df as load_experiments_df_risk,
@@ -191,6 +192,54 @@ def determine_universe(cfg: Any, symbols_arg: str | None) -> List[str]:
     return list(universe)
 
 
+def _validate_strategy_registry_gates(key: str, cfg: PeakConfig) -> None:
+    """Mirror registry environment/tier gates (fail-closed)."""
+    spec = get_strategy_spec(key)
+
+    env_mode = cfg.get("environment.mode")
+    if not env_mode:
+        env_mode = cfg.get("env.mode")
+    if not env_mode:
+        env_mode = cfg.get("runtime.environment")
+    if not env_mode:
+        env_mode = cfg.get("environment.runtime_environment")
+    if not env_mode:
+        env_mode = "backtest"
+
+    if env_mode == "live" and not spec.is_live_ready:
+        raise ValueError(
+            f"Strategy '{key}' cannot be used in LIVE mode (IS_LIVE_READY=False). "
+            f"This strategy is R&D-only and not validated for live trading."
+        )
+
+    if spec.tier == "r_and_d":
+        allow_rnd = cfg.get("research.allow_r_and_d_strategies", False)
+        if not allow_rnd:
+            raise ValueError(
+                f"Strategy '{key}' is R&D-only (TIER=r_and_d) and requires "
+                f"'research.allow_r_and_d_strategies = true' in config."
+            )
+
+    if env_mode not in spec.allowed_environments:
+        allowed_str = ", ".join(spec.allowed_environments)
+        raise ValueError(
+            f"Strategy '{key}' not allowed in environment '{env_mode}'. "
+            f"Allowed environments: {allowed_str}"
+        )
+
+
+def _build_strategy_params_from_config(
+    cfg: PeakConfig,
+    strategy_key: str,
+) -> Dict[str, Any]:
+    """Build strategy params dict matching from_config() effective values."""
+    spec = get_strategy_spec(strategy_key)
+    instance = spec.cls.from_config(cfg, section=spec.config_section)
+    params: Dict[str, Any] = dict(instance.config)
+    params["stop_pct"] = cfg.get(f"strategy.{strategy_key}.stop_pct", 0.02)
+    return params
+
+
 def enforce_strategy_selection(cfg: PeakConfig, strategy_key: str) -> None:
     """
     Prüft, ob eine Strategie laut Filter-Flow als APPROVED gilt.
@@ -296,6 +345,10 @@ def main(argv: List[str] | None = None) -> int:
         if args.enforce_selection:
             enforce_strategy_selection(cfg, strategy_key)
 
+        _validate_strategy_registry_gates(strategy_key, cfg)
+        strategy_params = _build_strategy_params_from_config(cfg, strategy_key)
+        signal_fn = load_strategy(strategy_key)
+
         universe = determine_universe(cfg, args.symbols)
         run_name = (
             args.run_name
@@ -338,16 +391,8 @@ def main(argv: List[str] | None = None) -> int:
                 print(f"  ⚠️  Keine Daten für {symbol}, überspringe.")
                 continue
 
-            strategy = create_strategy_from_config(strategy_key, cfg)
-
-            if not hasattr(strategy, "generate_signals"):
-                raise AttributeError(
-                    f"Strategy {strategy!r} hat keine Methode generate_signals(data). "
-                    "Bitte sicherstellen, dass die Strategie diese API unterstützt."
-                )
-
             # Vollständige Signale berechnen
-            signals_series = strategy.generate_signals(data)
+            signals_series = signal_fn(data, strategy_params)
             if signals_series is None or signals_series.empty:
                 print(f"  ⚠️  generate_signals() liefert keine Signale für {symbol}, überspringe.")
                 continue
