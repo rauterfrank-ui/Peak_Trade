@@ -14,6 +14,9 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[2]
 SPECS = REPO_ROOT / "docs" / "ops" / "specs"
 RUNBOOKS = REPO_ROOT / "docs" / "ops" / "runbooks"
+REMOTE_RUNTIME_DOCS_GUARD = (
+    REPO_ROOT / "tests" / "ops" / "test_remote_runtime_contract_docs_guard_v0.py"
+)
 
 THIS_MODULE = Path(__file__).name
 DSE_CONTRACT = SPECS / "FUTURES_DYNAMIC_SCOPE_ENVELOPE_CONTRACT_V0.md"
@@ -319,3 +322,10 @@ def test_futures_dynamic_scope_envelope_no_duplicate_canonical_owner_candidates_
     assert dse_matches == [DSE_CONTRACT], (
         f"unexpected dynamic scope envelope owner set: {dse_matches}"
     )
+
+
+def test_futures_dynamic_scope_envelope_reciprocal_remote_runtime_docs_guard_v0() -> None:
+    guard_text = REMOTE_RUNTIME_DOCS_GUARD.read_text(encoding="utf-8")
+    assert THIS_MODULE in guard_text
+    owner_text = Path(__file__).read_text(encoding="utf-8")
+    assert "test_remote_runtime_contract_docs_guard_v0.py" in owner_text
