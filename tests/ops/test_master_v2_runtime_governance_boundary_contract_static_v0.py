@@ -14,6 +14,11 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[2]
 SPECS = REPO_ROOT / "docs" / "ops" / "specs"
 RUNBOOKS = REPO_ROOT / "docs" / "ops" / "runbooks"
+REMOTE_RUNTIME_DOCS_GUARD = (
+    REPO_ROOT / "tests" / "ops" / "test_remote_runtime_contract_docs_guard_v0.py"
+)
+
+THIS_MODULE = Path(__file__).name
 
 RGB_CONTRACT = SPECS / "FUTURES_MASTER_V2_RUNTIME_GOVERNANCE_BOUNDARY_CONTRACT_V0.md"
 DSE_CONTRACT = SPECS / "FUTURES_DYNAMIC_SCOPE_ENVELOPE_CONTRACT_V0.md"
@@ -308,3 +313,10 @@ def test_runtime_governance_boundary_contract_no_duplicate_static_owners_v0() ->
     assert "NO_DUPLICATION_OF_PR3648_AUTHORITY_MAP_OWNER" in contract_text
     assert "NO_DUPLICATION_OF_PR3649_PURE_STACK_OWNER" in contract_text
     assert contract_text.count("MARKER:") >= len(MACHINE_MARKERS)
+
+
+def test_runtime_governance_boundary_reciprocal_remote_runtime_docs_guard_v0() -> None:
+    guard_text = REMOTE_RUNTIME_DOCS_GUARD.read_text(encoding="utf-8")
+    assert THIS_MODULE in guard_text
+    owner_text = Path(__file__).read_text(encoding="utf-8")
+    assert "test_remote_runtime_contract_docs_guard_v0.py" in owner_text
