@@ -1,7 +1,7 @@
 # MASTER V2 — Decision Authority Map v1 (Canonical, Read-Only)
 
 status: ACTIVE
-last_updated: 2026-05-22
+last_updated: 2026-06-15
 owner: Peak_Trade
 purpose: Canonical docs-only, non-authorizing decision-authority mapping for Master V2 First Live Enablement
 docs_token: DOCS_TOKEN_MASTER_V2_DECISION_AUTHORITY_MAP_V1
@@ -122,7 +122,47 @@ Next closure candidate (separate slice, not part of this document):
 
 - a focused authority-gap closure slice that only resolves explicitly marked `partial`, `unclear`, and `missing` authority nodes without mixing runtime implementation.
 
-## 10) Cross-References
+## 10) SECTION5 / Preflight Go-No-Go Authority Route Legibility (GLB-014)
+
+GLB014_AUTHORITY_ROUTE_LEGIBILITY_BOUNDARY_V0=true
+AUTHORITY_ROUTE_CANONICAL_OWNER_EXPLICIT=true
+APPROVAL_RECORD_TYPE_EXPLICIT=true
+OWNER_NAMING_NON_AUTHORIZING=true
+AMBIGUOUS_AUTHORITY_ROUTE_FAIL_CLOSED=true
+AUTHORITY_ROUTE_NOT_APPROVAL=true
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+EXECUTION_AUTHORIZED=false
+LIVE_AUTHORIZED=false
+
+This section closes the **static authority-route legibility boundary** for [GLB-014](MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md) §6.5.2. It **does not** close **GLB-014**, **does not** lift preflight, and **does not** grant arming, execution, or live authority.
+
+### Canonical authority-route owner
+
+For **SECTION5 / Preflight / bounded-pilot Go-No-Go** legibility, **this Decision Authority Map** is the **sole canonical owner**. Competing document locations (archive reflection blocks, readiness ledgers, gate snapshots, Class4 Final Machine Lines, closeout bundles) are **non-authorizing** when they contradict this map or the [Go-Live Blocker Register](MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md) criteria rows.
+
+### Surface categories (evidence vs approval)
+
+| Surface | Role | Go-No-Go / approval? | When missing or ambiguous |
+|---|---|---|---|
+| Repo docs, mapping tables, FML reflection, static tests | Evidence, mapping, reporting, preparation | **No** | Fail-closed for authorization; usable as review input only |
+| Archive closeouts, merge records, planning bundles | Traceability / review input | **No** | Fail-closed for authorization |
+| Readiness ledger / gate snapshot `PASS_BLOCKED_SAFE` markers | Completeness signal | **No** | Fail-closed for authorization |
+| Owner/Operator naming (e.g. Frank Rauter in archive metadata) | Legibility / attribution | **No** | Does **not** imply approval |
+| **Stage-3 scoped executing approval record** | Real scoped operator approval for one bounded run | **Yes (scoped only)** | **BLOCKED** until explicit record exists |
+| **External LB-APR-001 class human Go record** | External Go-No-Go for Live/Canary class decisions | **Yes** | **BLOCKED** until explicit external record exists |
+
+Normative crosswalk: [Runtime Lane Taxonomy + Authority Levels Contract v0](RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md) — `scoped_runtime_exception`, `go_no_go_route_selected` (named route identified; **not Go**), `go_decision_granted`, `live_authority_requires_separate_record`.
+
+### Fail-closed legibility rule
+
+- **Missing authority route** → **BLOCKED** (no positive default authorization).
+- **Ambiguous or competing routes** → **fail-closed**; only this map's explicit approval-record types may authorize within their scoped mandate.
+- **Authority route legibility ≠ authority extension**; **authority route legibility ≠ preflight lift**.
+
+Static guard: `tests/ops/test_master_v2_decision_authority_map_static_crosslink_contract_v0.py` (`GLB014_AUTHORITY_ROUTE_LEGIBILITY_BOUNDARY_GUARD_V1`). Register guard: `tests/ops/test_master_v2_go_live_blocker_register_core_doc_contract_v0.py` (`GLB014_AUTHORITY_ROUTE_LEGIBILITY_CROSSLINK_GUARD_V1`).
+
+## 11) Cross-References
 
 - `docs/ops/specs/MASTER_V2_FIRST_LIVE_GATE_STATUS_INDEX_V1.md` (G10 handoff legibility note: §4.6)
 - `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md`

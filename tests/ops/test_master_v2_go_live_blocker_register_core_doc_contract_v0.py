@@ -67,6 +67,58 @@ def test_glb014_external_operator_go_no_go_blocked_v0() -> None:
     assert "external/operator authority is missing" in text
 
 
+def test_glb014_authority_route_legibility_crosslink_guard_v1() -> None:
+    """GLB014_AUTHORITY_ROUTE_LEGIBILITY_CROSSLINK_GUARD_V1"""
+    text = _read(BLOCKER_REGISTER)
+    plain = _plain(BLOCKER_REGISTER)
+    section = plain.split("6.5.2 GLB-014")[1].split("6.5.3 GLB-016")[0]
+
+    assert "MASTER_V2_DECISION_AUTHORITY_MAP_V1.md" in text
+    assert "Authority Route Legibility" in section
+    assert "Stage-3 scoped executing approval record" in section
+    assert "LB-APR-001" in section
+    assert "Owner/Operator naming" in section
+    assert "owner/operator naming" in section.lower()
+    assert "fail-closed" in section.lower()
+    assert "does not close GLB-014" in section
+    assert "does not lift preflight" in section
+    assert "PREFLIGHT_REMAINS_BLOCKED" not in section or "does not lift preflight" in section
+    assert "test_master_v2_decision_authority_map_static_crosslink_contract_v0.py" in text
+    assert "Evidence, mapping, FML reflection" in section or "evidence, mapping" in section.lower()
+    assert "non-authorizing" in section.lower()
+    collapsed = section.replace("**", "")
+    assert "READY_FOR_OPERATOR_ARMING=true" not in collapsed
+    assert "LIVE_AUTHORIZED=true" not in collapsed
+
+
+def test_glb016_preflight_packet_reproducibility_crosslink_guard_v1() -> None:
+    """GLB016_PREFLIGHT_PACKET_REPRODUCIBILITY_CROSSLINK_GUARD_V1"""
+    row = _register_table_row("GLB-016")
+    assert "Preflight packet unavailable" in row
+    assert "| BLOCKED |" in row
+
+    text = _read(BLOCKER_REGISTER)
+    plain = _plain(BLOCKER_REGISTER)
+    section = plain.split("6.5.3 GLB-016")[1].split("6.6 GLB-008")[0]
+
+    assert "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md" in text
+    assert "Preflight Packet Reproducibility" in section
+    assert "MANIFEST.sha256" in section
+    assert "MANIFEST_VERIFY_RC=0" in section
+    assert "/tmp" in section
+    assert "Reproducible packet" in section
+    assert "does not close GLB-016" in section
+    assert (
+        "does not execute preflight" in section.lower()
+        or "does not execute preflight scripts" in section
+    )
+    assert "fail-closed" in section.lower()
+    assert "test_master_v2_decision_authority_map_static_crosslink_contract_v0.py" in text
+    collapsed = section.replace("**", "")
+    assert "READY_FOR_OPERATOR_ARMING=true" not in collapsed
+    assert "PREFLIGHT_REMAINS_BLOCKED=false" not in collapsed
+
+
 def test_glb015_repo_docs_not_final_approval_blocked_v0() -> None:
     row = _register_table_row("GLB-015")
     assert "Repo docs treated as approval" in row
