@@ -52,9 +52,10 @@ from src.backtest.engine import BacktestEngine
 from src.backtest.result import BacktestResult
 from src.backtest import stats as stats_mod
 from src.backtest.reporting import save_full_report
+from src.strategies import load_strategy
 from src.strategies.registry import (
-    create_strategy_from_config,
     get_available_strategy_keys,
+    get_strategy_spec,
 )
 
 
@@ -224,6 +225,18 @@ def get_portfolio_definition(
     return portfolio_name, list(symbols), weights, initial_equity, dict(symbol_strategies_raw)
 
 
+def _build_strategy_params_from_config(
+    cfg: PeakConfig,
+    strategy_key: str,
+) -> Dict[str, Any]:
+    """Build strategy params dict matching from_config() effective values."""
+    spec = get_strategy_spec(strategy_key)
+    instance = spec.cls.from_config(cfg, section=spec.config_section)
+    params: Dict[str, Any] = dict(instance.config)
+    params["stop_pct"] = cfg.get(f"strategy.{strategy_key}.stop_pct", 0.02)
+    return params
+
+
 def run_single_symbol_backtest(
     cfg: PeakConfig,
     symbol: str,
@@ -256,21 +269,16 @@ def run_single_symbol_backtest(
         ohlcv_csv_path=ohlcv_csv_path,
     )
 
-    # Strategie erstellen
-    strategy = create_strategy_from_config(strategy_key, cfg)
+    strategy_params = _build_strategy_params_from_config(cfg, strategy_key)
+    base_signal_fn = load_strategy(strategy_key)
 
     # Position Sizer & Risk Manager
     position_sizer = build_position_sizer_from_config(cfg)
     risk_manager = build_risk_manager_from_config(cfg, section="risk_management")
 
-    # Wrapper für Legacy-API
     def strategy_signal_fn(df, params):
-        sigs = strategy.generate_signals(df)
+        sigs = base_signal_fn(df, params)
         return sigs.replace(-1, 0)  # Long-Only
-
-    # Stop-Loss aus Config
-    stop_pct = cfg.get(f"strategy.{strategy_key}.stop_pct", 0.02)
-    strategy_params = {"stop_pct": stop_pct}
 
     # Backtest durchführen
     engine = BacktestEngine(core_position_sizer=position_sizer, risk_manager=risk_manager)
