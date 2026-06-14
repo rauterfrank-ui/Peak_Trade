@@ -34,8 +34,8 @@ from src.core.peak_config import PeakConfig, load_config
 from src.core.position_sizing import build_position_sizer_from_config
 from src.core.risk import build_risk_manager_from_config
 from src.backtest.engine import BacktestEngine
+from src.strategies import load_strategy
 from src.strategies.registry import (
-    create_strategy_from_config,
     get_available_strategy_keys,
     get_strategy_spec,
 )
@@ -546,15 +546,12 @@ class SweepEngine:
                 param_overrides=params,
             )
         else:
-            strategy = create_strategy_from_config(strategy_key, cfg)
-
-        # Parameter auf Strategie anwenden
-        for key, value in params.items():
-            if hasattr(strategy, key):
-                setattr(strategy, key, value)
-            # Auch in config aktualisieren für Strategien die config nutzen
-            if hasattr(strategy, "config") and isinstance(strategy.config, dict):
-                strategy.config[key] = value
+            spec = get_strategy_spec(strategy_key)
+            strategy_params_effective = dict(
+                spec.cls.from_config(cfg, section=spec.config_section).config
+            )
+            strategy_params_effective.update(params)
+            base_signal_fn = load_strategy(strategy_key)
 
         # Backtest-Engine
         engine = BacktestEngine(
@@ -562,8 +559,15 @@ class SweepEngine:
             risk_manager=risk_manager,
         )
 
-        def strategy_signal_fn(df: pd.DataFrame, _params: Dict) -> pd.Series:
-            return strategy.generate_signals(df)
+        if strategy_key == "regime_aware_portfolio":
+
+            def strategy_signal_fn(df: pd.DataFrame, _params: Dict) -> pd.Series:
+                return strategy.generate_signals(df)
+
+        else:
+
+            def strategy_signal_fn(df: pd.DataFrame, engine_params: Dict) -> pd.Series:
+                return base_signal_fn(df, strategy_params_effective)
 
         result = engine.run_realistic(
             df=data,
