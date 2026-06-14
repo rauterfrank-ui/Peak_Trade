@@ -16,7 +16,7 @@ Workflow:
     1. CLI-Args parsen
     2. Synth-Session bauen (n_steps, n_regimes)
     3. OfflineRealtimeFeed aus Synth-Result erstellen
-    4. MACrossoverStrategy mit CLI-Parametern instanziieren
+    4. MA-Crossover-Strategie über kanonische Registry mit CLI-Parametern instanziieren
     5. ExecutionPipeline aufsetzen
     6. Pipeline ausführen
     7. Report generieren
@@ -52,9 +52,11 @@ import pandas as pd
 
 # Core imports
 from src.core.environment import EnvironmentConfig, TradingEnvironment
-from src.strategies.ma_crossover import MACrossoverStrategy
+from src.strategies import load_strategy
 from src.orders.paper import PaperOrderExecutor, PaperMarketContext
 from src.execution.pipeline import ExecutionPipeline, ExecutionPipelineConfig
+
+MA_CROSSOVER_STRATEGY_KEY = "ma_crossover"
 
 logger = logging.getLogger(__name__)
 
@@ -577,7 +579,7 @@ def build_offline_ma_crossover_pipeline(args: argparse.Namespace) -> Dict[str, A
         Dict mit Pipeline-Komponenten:
         - synth_result: Synth-Session-Result
         - feed: OfflineRealtimeFeed
-        - strategy: MACrossoverStrategy
+        - strategy_params: MA-Crossover-Parameter für load_strategy()
         - pipeline: ExecutionPipeline
         - env_config: EnvironmentConfig
         - run_id: Run-ID
@@ -608,11 +610,13 @@ def build_offline_ma_crossover_pipeline(args: argparse.Namespace) -> Dict[str, A
     feed = OfflineRealtimeFeed.from_synth_session_result(synth_result, feed_cfg)
     logger.info(f"[BUILD] Feed erstellt: {feed.config.playback_mode}-Modus")
 
-    # 5. MACrossoverStrategy erstellen
-    strategy = MACrossoverStrategy(
-        fast_window=args.fast_window,
-        slow_window=args.slow_window,
-    )
+    # 5. MA-Crossover-Parameter für kanonischen load_strategy()-Pfad
+    strategy_params = {
+        "fast_window": args.fast_window,
+        "slow_window": args.slow_window,
+        "price_col": "close",
+    }
+    _ = load_strategy(MA_CROSSOVER_STRATEGY_KEY)
     logger.info(
         f"[BUILD] Strategie erstellt: MA-Crossover "
         f"(fast={args.fast_window}, slow={args.slow_window})"
@@ -648,7 +652,7 @@ def build_offline_ma_crossover_pipeline(args: argparse.Namespace) -> Dict[str, A
     return {
         "synth_result": synth_result,
         "feed": feed,
-        "strategy": strategy,
+        "strategy_params": strategy_params,
         "pipeline": pipeline,
         "env_config": env_config,
         "run_id": synth_result.run_id,
@@ -663,7 +667,7 @@ def build_offline_ma_crossover_pipeline(args: argparse.Namespace) -> Dict[str, A
 
 def run_pipeline(
     pipeline: ExecutionPipeline,
-    strategy: MACrossoverStrategy,
+    strategy_params: Dict[str, Any],
     feed: OfflineRealtimeFeed,
     symbol: str,
 ) -> Dict[str, Any]:
@@ -672,7 +676,7 @@ def run_pipeline(
 
     Args:
         pipeline: ExecutionPipeline
-        strategy: MACrossoverStrategy
+        strategy_params: Parameter für load_strategy(MA_CROSSOVER_STRATEGY_KEY)
         feed: OfflineRealtimeFeed
         symbol: Trading-Symbol
 
@@ -686,7 +690,8 @@ def run_pipeline(
 
     # Signale generieren
     logger.info("[RUN] Generiere Signale...")
-    signals = strategy.generate_signals(df)
+    signal_fn = load_strategy(MA_CROSSOVER_STRATEGY_KEY)
+    signals = signal_fn(df, strategy_params)
     logger.info(f"[RUN] {len(signals)} Signale generiert")
 
     # Pipeline ausführen
@@ -954,7 +959,7 @@ def main() -> int:
         logger.info("[MAIN] Führe Pipeline aus...")
         perf_metrics = run_pipeline(
             pipeline=components["pipeline"],
-            strategy=components["strategy"],
+            strategy_params=components["strategy_params"],
             feed=components["feed"],
             symbol=components["internal_symbol"],
         )

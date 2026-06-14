@@ -8,6 +8,7 @@ Usage:
     python scripts/run_momentum_realistic.py
 """
 
+import importlib
 import sys
 from pathlib import Path
 
@@ -19,12 +20,16 @@ import numpy as np
 from datetime import datetime, timedelta
 
 from src.core import get_config, get_strategy_cfg
-from src.strategies import load_strategy
-from src.strategies.momentum import get_strategy_description
+from src.strategies import STRATEGY_REGISTRY, load_strategy
 
 MOMENTUM_STRATEGY_KEY = "momentum_1h"
 from src.backtest.engine import BacktestEngine
 from src.backtest.stats import validate_for_live_trading
+
+
+def _strategy_module(strategy_key: str):
+    module_name = STRATEGY_REGISTRY[strategy_key]
+    return importlib.import_module(f"src.strategies.{module_name}")
 
 
 def create_dummy_data(n_bars: int = 300) -> pd.DataFrame:
@@ -147,7 +152,7 @@ stop_pct = 0.025
         return
 
     # Strategie-Beschreibung anzeigen
-    print(get_strategy_description(strategy_params))
+    print(_strategy_module(MOMENTUM_STRATEGY_KEY).get_strategy_description(strategy_params))
 
     # Daten erstellen (später: von Kraken holen)
     print("\n📥 Lade Daten...")
