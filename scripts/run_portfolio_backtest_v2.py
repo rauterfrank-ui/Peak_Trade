@@ -53,10 +53,7 @@ from src.backtest.result import BacktestResult
 from src.backtest import stats as stats_mod
 from src.backtest.reporting import save_full_report
 from src.strategies import load_strategy
-from src.strategies.registry import (
-    get_available_strategy_keys,
-    get_strategy_spec,
-)
+from src.strategies.registry import get_available_strategy_keys
 
 
 def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
@@ -229,10 +226,10 @@ def _build_strategy_params_from_config(
     cfg: PeakConfig,
     strategy_key: str,
 ) -> Dict[str, Any]:
-    """Build strategy params dict matching from_config() effective values."""
-    spec = get_strategy_spec(strategy_key)
-    instance = spec.cls.from_config(cfg, section=spec.config_section)
-    params: Dict[str, Any] = dict(instance.config)
+    """Build strategy params dict via canonical load_strategy() registry path."""
+    load_strategy(strategy_key)
+    section = cfg.raw.get("strategy", {}).get(strategy_key, {})
+    params: Dict[str, Any] = dict(section) if isinstance(section, dict) else {}
     params["stop_pct"] = cfg.get(f"strategy.{strategy_key}.stop_pct", 0.02)
     return params
 
