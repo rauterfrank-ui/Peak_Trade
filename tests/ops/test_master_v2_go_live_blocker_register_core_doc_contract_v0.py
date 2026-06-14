@@ -82,6 +82,26 @@ def test_glb015_repo_docs_not_final_approval_blocked_v0() -> None:
     assert "does not clear Preflight BLOCKED" in text
 
 
+def test_glb015_section5_criteria_precedence_crosslink_guard_v1() -> None:
+    text = _read(BLOCKER_REGISTER)
+    plain = _plain(BLOCKER_REGISTER)
+    section = plain.split("6.5.1 GLB-015")[1].split("6.6 GLB-008")[0]
+
+    assert "SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md" in text
+    assert "Criteria-Block-Precedence" in section
+    assert "Final Machine Lines" in section
+    assert "non-authorizing" in section.lower()
+    assert "Documentation" in section and "Approval" in section
+    assert "Evidence" in section and "Authorization" in section
+    assert "Static tests" in section or "static tests" in section.lower()
+    assert "fail-closed" in section.lower()
+    assert "does not close GLB-015 by itself" in section
+    assert "test_section5_preflight_gap_owner_map_contract_v0.py" in text
+    assert "PREFLIGHT_REMAINS_BLOCKED" in section
+    assert "ALL_GAPS_CLOSED" in section
+    assert "arming" in section.lower()
+
+
 def test_no_green_claim_rule_v0() -> None:
     text = _plain(BLOCKER_REGISTER)
     assert "7. No-Green Claim Rule" in text
