@@ -30,9 +30,14 @@ from src.core.peak_config import load_config
 from src.core.position_sizing import build_position_sizer_from_config
 from src.core.risk import build_risk_manager_from_config
 from src.core.experiments import log_experiment_from_result
+from scripts.run_backtest import (
+    _build_strategy_params_from_config,
+    _resolve_strategy_signal_fn,
+    _validate_strategy_registry_gates,
+)
 from src.strategies.registry import (
     get_available_strategy_keys,
-    create_strategy_from_config,
+    get_strategy_spec,
     list_strategies,
 )
 from src.backtest.engine import BacktestEngine
@@ -231,15 +236,21 @@ def main():
         strategy_key = cfg.get("general.active_strategy", "ma_crossover")
         print(f"\n📊 Nutze aktive Strategie aus Config: '{strategy_key}'")
 
-    # Strategie erstellen
+    # Strategie auflösen (kanonischer load_strategy()-Pfad)
     print(f"\n🔨 Erstelle Strategie '{strategy_key}'...")
     try:
-        strategy = create_strategy_from_config(strategy_key, cfg)
-        print(f"✅ {strategy}")
+        _validate_strategy_registry_gates(strategy_key, cfg)
+        strategy_params = _build_strategy_params_from_config(cfg, strategy_key)
+        base_signal_fn = _resolve_strategy_signal_fn(strategy_key)
+        spec = get_strategy_spec(strategy_key)
+        print(f"✅ {spec.cls.__name__}({strategy_key})")
     except KeyError as e:
         print(f"\n❌ FEHLER: {e}")
         print("\nVerfügbare Strategien:")
         list_strategies(verbose=False)
+        return
+    except ValueError as e:
+        print(f"\n❌ FEHLER: {e}")
         return
     except Exception as e:
         print(f"\n❌ FEHLER beim Erstellen der Strategie: {e}")
@@ -253,7 +264,7 @@ def main():
 
     # Signale generieren (Test)
     print("\n🔍 Generiere Signale...")
-    signals = strategy.generate_signals(df)
+    signals = base_signal_fn(df, strategy_params)
     n_longs = (signals == 1).sum()
     n_shorts = (signals == -1).sum()
     n_flats = (signals == 0).sum()
@@ -278,14 +289,8 @@ def main():
     # Wrapper für Legacy-API
     def strategy_signal_fn(df, params):
         # Konvertiere Short-Signale (-1) in Flat (0) für Long-Only Engine
-        sigs = strategy.generate_signals(df)
+        sigs = base_signal_fn(df, params)
         return sigs.replace(-1, 0)
-
-    # Stop-Loss aus Config holen (strategie-spezifisch oder global)
-    stop_pct = cfg.get(f"strategy.{strategy_key}.stop_pct", 0.02)
-    strategy_params = {
-        "stop_pct": stop_pct,
-    }
 
     engine = BacktestEngine(core_position_sizer=position_sizer, risk_manager=risk_manager)
     result = engine.run_realistic(
