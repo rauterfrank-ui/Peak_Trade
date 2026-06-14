@@ -204,6 +204,20 @@ The repository may contain **material planning, closeout, merge, and evidence-ch
 
 Until explicit operator/reviewer confirmation exists, **BLOCKED** remains.
 
+### 6.5.1 GLB-015 — SECTION5 Criteria-Block-Precedence vs Class4 Final Machine Lines (clarification)
+
+When [Section 5 Preflight Gap Owner Map Contract v0](../planning/SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md) contains both **criteria-SSOT blocks** (Gap 1–7, §2a.1, Status) and **Class4 Final Machine Lines**, the criteria blocks are **authoritative** for verification and closure posture. Final Machine Lines are **non-authorizing reflection** only.
+
+- Criteria `*_VERIFIED=false`, `GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false`, `ALL_GAPS_CLOSED=false`, and `PREFLIGHT_REMAINS_BLOCKED=true` **take precedence** over contradictory positive Final Machine Lines.
+- **Documentation ≠ Approval**; **Evidence ≠ Authorization**; **Mapping ≠ Approval**; **Class4/FML reflection ≠ Criteria update**; **Static tests ≠ Preflight lift**; **Owner naming ≠ Approval record**.
+- Contradictory positive Final Machine Lines must **not** be used as closure, approval, arming, execution, or live evidence; evaluation is **fail-closed** on criteria status.
+- **GLB-015** remains **BLOCKED** until operator/reviewer confirms this boundary; this clarification **does not** close **GLB-015** by itself, **does not** clear Preflight **BLOCKED**, and **does not** grant arming, execution, or live authority.
+
+**Canonical read-order (existing surfaces; no new surface):**
+
+- [Section 5 Preflight Gap Owner Map Contract v0](../planning/SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md) — **SECTION5 Criteria-Block-Precedence vs Class4 Final Machine Lines GLB-015 Authority Boundary v0**
+- Static guards: `tests/ops/test_section5_preflight_gap_owner_map_contract_v0.py`, `tests/ops/test_master_v2_go_live_blocker_register_core_doc_contract_v0.py`
+
 ### 6.6 GLB-008/009/012/013 Repo-Internal Status/Lift Applied Reflection v0
 
 GLB_STATUS_REPO_INTERNAL_WRITE_LIFT_V0=true

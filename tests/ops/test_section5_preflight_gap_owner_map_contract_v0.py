@@ -1566,3 +1566,74 @@ def test_section5_tier1_canonical_tag_bounded_enforce_observed_final_line_reflec
     assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" in block_lines
     assert "GAP2A1_TIER1_ENFORCEMENT_LIFTED=true" in block_lines
     assert "READY_FOR_OPERATOR_ARMING=true" in block_lines
+
+
+CRITERIA_PRECEDENCE_GLB015_BOUNDARY_HEADER = "## SECTION5 Criteria-Block-Precedence vs Class4 Final Machine Lines GLB-015 Authority Boundary v0"
+
+
+def _criteria_precedence_glb015_boundary_section(text: str) -> str:
+    return text.split(CRITERIA_PRECEDENCE_GLB015_BOUNDARY_HEADER, 1)[1].split(
+        "## Final Machine Lines", 1
+    )[0]
+
+
+def test_section5_criteria_block_precedence_glb015_boundary_guard_v1() -> None:
+    text = DOC.read_text(encoding="utf-8")
+    section = _criteria_precedence_glb015_boundary_section(text)
+    blocker_register = (
+        ROOT / "docs" / "ops" / "specs" / "MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md"
+    ).read_text(encoding="utf-8")
+    block = _final_machine_lines(text)
+    gap1 = _gap1_section(text)
+    gap2a1 = _gap2a1_section(text)
+
+    for token in (
+        "SECTION5_CRITERIA_BLOCK_CLASS4_FINAL_LINES_GLB015_BOUNDARY_V0=true",
+        "SECTION5_CRITERIA_BLOCK_PRECEDENCE_GUARD_V0=true",
+        "CRITERIA_SSOT_REMAINS_AUTHORITATIVE=true",
+        "CLASS4_FINAL_MACHINE_LINES_NON_AUTHORIZING_REFLECTION=true",
+        "CONTRADICTORY_FINAL_LINES_FAIL_CLOSED=true",
+        "DOCUMENTATION_NOT_APPROVAL=true",
+        "EVIDENCE_NOT_AUTHORIZATION=true",
+        "MAPPING_NOT_APPROVAL=true",
+        "FML_NOT_CRITERIA_UPDATE=true",
+        "STATIC_TESTS_NOT_PREFLIGHT_LIFT=true",
+        "OWNER_NAMING_NOT_APPROVAL_RECORD=true",
+        "ALL_EIGHT_SECTION5_GAPS_CLOSED=false",
+        "ALL_GAPS_CLOSED=false",
+        "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false",
+        "PREFLIGHT_REMAINS_BLOCKED=true",
+        "READY_FOR_OPERATOR_ARMING=false",
+        "EXECUTION_AUTHORIZED=false",
+        "LIVE_AUTHORIZED=false",
+        "AUTHORITY_LIFT=false",
+        "PREFLIGHT_LIFT_EXECUTED=false",
+        "SECTION5_GAP_CLOSURE_EXECUTED=false",
+    ):
+        assert token in section
+
+    assert "6.5.1 GLB-015" in blocker_register
+    assert "Criteria-Block-Precedence" in blocker_register
+    assert "MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md" in section
+    assert "test_master_v2_go_live_blocker_register_core_doc_contract_v0.py" in section
+
+    assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=false" in gap1
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false" in gap2a1
+    block_lines = {line.strip() for line in block.splitlines()}
+    assert "GAP1_EXECUTE_ENTRYPOINT_VERIFIED=true" in block_lines
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" in block_lines
+    assert "PREFLIGHT_REMAINS_BLOCKED=false" in block_lines
+    assert "ALL_GAPS_CLOSED=true" in block_lines
+    assert "READY_FOR_OPERATOR_ARMING=true" in block_lines
+
+    section_lines = {line.strip() for line in section.splitlines()}
+    assert "READY_FOR_OPERATOR_ARMING=true" not in section_lines
+    assert "PREFLIGHT_REMAINS_BLOCKED=false" not in section_lines
+    assert "ALL_GAPS_CLOSED=true" not in section_lines
+    assert "GAP2A1_PRIMARY_EVIDENCE_ENFORCED=true" not in section_lines
+
+    collapsed = section.replace("**", "")
+    assert "single source of truth" in collapsed.lower()
+    assert "non-authorizing" in collapsed.lower()
+    assert "fail-closed" in collapsed.lower()
+    assert "does not close the eight section5 gaps" in collapsed.lower()

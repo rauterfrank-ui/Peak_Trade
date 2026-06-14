@@ -3424,6 +3424,69 @@ PATH_B_LIFT_DISCUSSION_READY=false
 
 This criteria-reflection block records the bounded Section-5 Criteria-SSOT repo-internal write/lift applied posture for Gap 2 (canonical job set) only. Criteria-SSOT repo-internal write/lift applied for this slice (A-02/C-02). Criteria-reflection does not verify or enable the canonical job set, does not lift preflight, and does not authorize runtime, scheduler execution, Paper, Shadow, Testnet, Live, AWS, broker, or exchange activity.
 
+## SECTION5 Criteria-Block-Precedence vs Class4 Final Machine Lines GLB-015 Authority Boundary v0
+
+SECTION5_CRITERIA_BLOCK_CLASS4_FINAL_LINES_GLB015_BOUNDARY_V0=true
+SECTION5_CRITERIA_BLOCK_PRECEDENCE_GUARD_V0=true
+CRITERIA_SSOT_REMAINS_AUTHORITATIVE=true
+CLASS4_FINAL_MACHINE_LINES_NON_AUTHORIZING_REFLECTION=true
+CONTRADICTORY_FINAL_LINES_FAIL_CLOSED=true
+DOCUMENTATION_NOT_APPROVAL=true
+EVIDENCE_NOT_AUTHORIZATION=true
+MAPPING_NOT_APPROVAL=true
+FML_NOT_CRITERIA_UPDATE=true
+STATIC_TESTS_NOT_PREFLIGHT_LIFT=true
+OWNER_NAMING_NOT_APPROVAL_RECORD=true
+GLB015_STATIC_BOUNDARY_SLICE_DOCS_TESTS_ONLY=true
+DOCS_ONLY_EXECUTE_SLICE=true
+ALL_EIGHT_SECTION5_GAPS_CLOSED=false
+ALL_GAPS_CLOSED=false
+GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+EXECUTION_AUTHORIZED=false
+LIVE_AUTHORIZED=false
+AUTHORITY_LIFT=false
+PREFLIGHT_LIFT_EXECUTED=false
+SECTION5_GAP_CLOSURE_EXECUTED=false
+
+This boundary contract closes the static **Documentation-vs-Approval** misread class for [GLB-015](../specs/MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md) §6.5 / §6.5.1. It does **not** close the eight SECTION5 gaps, does **not** lift preflight, and does **not** authorize runtime, arming, execution, or live.
+
+### Criteria-Block-Precedence (authoritative SSOT)
+
+The per-gap **Criteria Contract v0** blocks in this document (Status, §2a.1, Gap 1–7 criteria sections, and their Criteria-SSOT reflection blocks) are the **single source of truth** for closure and verification posture.
+
+- `*_VERIFIED=false` in a criteria block remains **false** until a canonical criteria update with required evidence and explicit approval sets it true.
+- `GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false` remains **blocking** until criteria-SSOT updates with required evidence and approval.
+- `PREFLIGHT_REMAINS_BLOCKED=true` in criteria blocks **takes precedence** over any positive Class4 reflection or summary line elsewhere in this document.
+- Missing criteria values must **not** be inferred from positive Final Machine Lines or governed reflection blocks.
+
+### Class4 Final Machine Lines (non-authorizing reflection)
+
+The **Final Machine Lines** block at the end of this document is a **Class4 governed archival reflection** surface only. Final Machine Lines are **reporting outputs**, not criteria updates.
+
+- Final Machine Lines **must not** override criteria-block SSOT values.
+- `VERIFIED=true`, `ALL_GAPS_CLOSED=true`, or `READY_FOR_OPERATOR_ARMING=true` appearing in Final Machine Lines is **not authorizing** when the corresponding criteria block does not confirm it.
+- When criteria tokens and Final Machine Lines **contradict**, evaluation is **fail-closed** on the criteria status.
+- Contradictory positive Final Machine Lines must **not** be used as closure, approval, arming, execution, or live evidence.
+
+### GLB-015 Documentation-vs-Approval boundary
+
+Per [GLB-015](../specs/MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md): **Documentation ≠ Approval**; **Evidence ≠ Authorization**; **Mapping ≠ Approval**; **Class4/FML reflection ≠ Criteria update**; **Static tests ≠ Preflight lift**; **Owner naming ≠ Approval record**.
+
+**GLB-015** remains **BLOCKED** in the register until the canonical boundary contract and static guard prevent this misread class. This slice closes only the **static boundary**, not underlying SECTION5 gap approvals.
+
+### Fail-closed evaluation rule
+
+| Condition | Result |
+|---|---|
+| Criteria `false` + Final Lines `true` | **Not closed**, **not verified**, **not arming-ready** |
+| Missing criteria value | **Do not** derive positive from reflection |
+| Contradictory doc locations | **Safe negative** interpretation |
+| Default when uncertain | **No positive authorization** |
+
+Static guard: `tests/ops/test_section5_preflight_gap_owner_map_contract_v0.py` (`SECTION5_CRITERIA_BLOCK_PRECEDENCE_GLB015_BOUNDARY_GUARD_V1`). Register guard: `tests/ops/test_master_v2_go_live_blocker_register_core_doc_contract_v0.py` (`GLB015_SECTION5_CRITERIA_PRECEDENCE_CROSSLINK_GUARD_V1`). **Docs/tests-only**; **no** preflight lift; **no** authority lift.
+
 ## Final Machine Lines
 
 SECTION5_OWNER_MAP_CONTRACT_V0_COMPLETE=true
