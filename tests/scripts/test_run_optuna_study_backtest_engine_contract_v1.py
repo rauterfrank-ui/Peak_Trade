@@ -11,13 +11,15 @@ modernization (no production changes in this slice).
 from __future__ import annotations
 
 import ast
+import copy
 import importlib
 import inspect
 import json
+import math
 import os
 import subprocess
 import sys
-from dataclasses import dataclass
+from dataclasses import dataclass, is_dataclass
 from pathlib import Path
 from typing import Any, Callable
 from unittest.mock import MagicMock, patch
@@ -42,8 +44,25 @@ SIGNAL_BINDING_TARGET_DEFINED = True
 ENGINE_CALL_TARGET_DEFINED = True
 SIGNAL_EQUIVALENCE_PROVEN_FOR_SCHEMA_KEYS = True
 OBJECTIVE_EQUIVALENCE_PROVEN = False
+OBJECTIVE_RESULT_CONTRACT_DEFINED = True
+OBJECTIVE_METRIC_CONTRACT_DEFINED = True
+PRUNING_CONTRACT_DEFINED = True
+EXCEPTION_CONTRACT_DEFINED = True
 STOP_PCT_SOURCE_PROVEN = False
+STOP_PCT_DECISION_STATUS = "UNRESOLVED_REQUIRES_SEMANTIC_GO"
 BOUNDED_MODERNIZATION_AUTHORIZED = False
+CANONICAL_BACKTEST_RESULT_OWNER = "src/backtest/result.py:BacktestResult"
+LEGACY_OBJECTIVE_METRIC_FALLBACK = 0.0
+LEGACY_RUN_BACKTEST_TRIAL_METRIC_NAMES = frozenset(
+    {"sharpe", "total_return", "max_drawdown", "win_rate", "num_trades", "profit_factor"}
+)
+STOP_PCT_CANDIDATE_SOURCES = (
+    "trial_params",
+    "strategy_defaults",
+    "strategy_config",
+    "engine_strategy_params_default",
+)
+TARGET_ENGINE_STOP_PCT_DEFAULT = 0.02
 OPTUNA_DOCSTRING_SCHEMA_KEYS = frozenset({"ma_crossover", "rsi_reversion", "breakout_donchian"})
 SCHEMA_KEY_TRIAL_PARAMS: dict[str, dict[str, Any]] = {
     "ma_crossover": {"fast_window": 10, "slow_window": 50},
@@ -194,6 +213,158 @@ def _simulate_engine_call_target(
         "strategy_params": dict(strategy_params),
         "signal_len": len(signals),
     }
+
+
+class ObjectiveMetricContractError(ValueError):
+    """Test-local fail-closed rejection for objective metric target contract."""
+
+
+class ObjectiveResultContractError(ValueError):
+    """Test-local fail-closed rejection for objective result shape target contract."""
+
+
+@dataclass(frozen=True)
+class LegacyObjectiveResultInventory:
+    result_access_pattern: str
+    metric_access_pattern: str
+    metric_fallback: float
+    drawdown_negation: bool
+    directional_failure_fallback: bool
+
+
+@dataclass(frozen=True)
+class CanonicalBacktestResultContract:
+    owner: str
+    stats_field: str
+    return_type_name: str
+
+
+@dataclass(frozen=True)
+class PruningTargetContract:
+    prune_exception_type: str
+    report_metric_name: str
+    report_step: int
+    swallow_trial_pruned: bool
+    convert_engine_errors_to_prune: bool
+
+
+@dataclass(frozen=True)
+class ExceptionTargetContract:
+    broad_catch_exception_blocked: bool
+    silent_zero_substitute_blocked: bool
+    silent_nan_substitute_blocked: bool
+    silent_inf_substitute_blocked: bool
+    classify_data_signal_engine_result_metric_errors: bool
+
+
+LEGACY_OBJECTIVE_RESULT_INVENTORY = LegacyObjectiveResultInventory(
+    result_access_pattern='result.get("stats", {})',
+    metric_access_pattern="metrics.get(objective_name, 0.0)",
+    metric_fallback=LEGACY_OBJECTIVE_METRIC_FALLBACK,
+    drawdown_negation=True,
+    directional_failure_fallback=True,
+)
+
+
+def _canonical_backtest_result_contract() -> CanonicalBacktestResultContract:
+    from src.backtest.result import BacktestResult
+
+    return CanonicalBacktestResultContract(
+        owner=CANONICAL_BACKTEST_RESULT_OWNER,
+        stats_field="stats",
+        return_type_name=BacktestResult.__name__,
+    )
+
+
+def _legacy_extract_stats_from_result(result: Any) -> dict[str, Any]:
+    if not hasattr(result, "get"):
+        raise TypeError("legacy contract expects dict-like result with .get()")
+    return result.get("stats", {})
+
+
+def _legacy_build_metrics_from_stats(stats: dict[str, Any]) -> dict[str, Any]:
+    return {
+        "sharpe": stats.get("sharpe", LEGACY_OBJECTIVE_METRIC_FALLBACK),
+        "total_return": stats.get("total_return", LEGACY_OBJECTIVE_METRIC_FALLBACK),
+        "max_drawdown": abs(stats.get("max_drawdown", LEGACY_OBJECTIVE_METRIC_FALLBACK)),
+        "win_rate": stats.get("win_rate", LEGACY_OBJECTIVE_METRIC_FALLBACK),
+        "num_trades": stats.get("num_trades", 0),
+        "profit_factor": stats.get("profit_factor", LEGACY_OBJECTIVE_METRIC_FALLBACK),
+    }
+
+
+def _legacy_extract_objective_value(
+    result: dict[str, Any],
+    objective_name: str,
+) -> float:
+    metrics = _legacy_build_metrics_from_stats(_legacy_extract_stats_from_result(result))
+    objective_value = metrics.get(objective_name, LEGACY_OBJECTIVE_METRIC_FALLBACK)
+    if objective_name == "max_drawdown":
+        objective_value = -objective_value
+    return float(objective_value)
+
+
+def _extract_canonical_stats_from_result(result: Any) -> dict[str, Any]:
+    contract = _canonical_backtest_result_contract()
+    from src.backtest.result import BacktestResult
+
+    if not isinstance(result, BacktestResult):
+        raise ObjectiveResultContractError(
+            f"objective target contract requires {contract.return_type_name}, "
+            f"got {type(result).__name__}"
+        )
+    return dict(result.stats)
+
+
+def _extract_target_objective_metric(
+    stats: dict[str, Any],
+    objective_name: str,
+    *,
+    apply_max_drawdown_negation: bool = False,
+) -> float:
+    if objective_name not in stats:
+        raise ObjectiveMetricContractError(f"missing metric: {objective_name!r}")
+    raw = stats[objective_name]
+    if raw is None:
+        raise ObjectiveMetricContractError("metric value is None")
+    if isinstance(raw, bool) or not isinstance(raw, (int, float)):
+        raise ObjectiveMetricContractError(f"non-numeric metric: {type(raw).__name__}")
+    value = float(raw)
+    if not math.isfinite(value):
+        raise ObjectiveMetricContractError(f"non-finite metric: {value!r}")
+    if objective_name == "max_drawdown" and apply_max_drawdown_negation:
+        value = -value
+    return value
+
+
+def _inventory_stop_pct_sources_in_optuna_runner() -> dict[str, bool]:
+    trial_source = _function_source("run_backtest_trial")
+    study_source = _function_source("run_study")
+    engine_source = inspect.getsource(run_optuna_script.BacktestEngine.run_realistic)
+    return {
+        "trial_params": "stop_pct" in trial_source,
+        "strategy_defaults": "stop_pct" in study_source,
+        "strategy_config": "stop_pct" in study_source,
+        "engine_strategy_params_default": 'get("stop_pct", 0.02)' in engine_source,
+    }
+
+
+PRUNING_TARGET_CONTRACT = PruningTargetContract(
+    prune_exception_type="optuna.TrialPruned",
+    report_metric_name="sharpe",
+    report_step=0,
+    swallow_trial_pruned=False,
+    convert_engine_errors_to_prune=False,
+)
+
+
+EXCEPTION_TARGET_CONTRACT = ExceptionTargetContract(
+    broad_catch_exception_blocked=True,
+    silent_zero_substitute_blocked=True,
+    silent_nan_substitute_blocked=True,
+    silent_inf_substitute_blocked=True,
+    classify_data_signal_engine_result_metric_errors=True,
+)
 
 
 # ---------------------------------------------------------------------------
@@ -411,6 +582,186 @@ def test_run_study_single_objective_direction_defaults_to_maximize() -> None:
 
 
 # ---------------------------------------------------------------------------
+# Objective/Stats Ist- und Zielvertrag — test-local, no production changes
+# ---------------------------------------------------------------------------
+
+
+def test_legacy_result_get_stats_access_remains_visible() -> None:
+    fn_source = _function_source("run_backtest_trial")
+    assert LEGACY_OBJECTIVE_RESULT_INVENTORY.result_access_pattern in fn_source
+
+
+def test_canonical_backtest_result_structure_identified_statically() -> None:
+    from src.backtest.result import BacktestResult
+
+    contract = _canonical_backtest_result_contract()
+    assert contract.owner == CANONICAL_BACKTEST_RESULT_OWNER
+    assert is_dataclass(BacktestResult)
+    assert contract.stats_field in BacktestResult.__dataclass_fields__
+    sig = inspect.signature(run_optuna_script.BacktestEngine.run_realistic)
+    assert sig.return_annotation is BacktestResult
+
+
+def test_legacy_and_canonical_result_shapes_are_not_equivalent() -> None:
+    trial_source = _function_source("run_backtest_trial")
+    assert LEGACY_OBJECTIVE_RESULT_INVENTORY.result_access_pattern in trial_source
+    from src.backtest.result import BacktestResult
+
+    sig = inspect.signature(run_optuna_script.BacktestEngine.run_realistic)
+    assert sig.return_annotation is BacktestResult
+    assert not hasattr(BacktestResult, "get")
+
+
+def test_legacy_objective_metric_names_frozen_in_run_backtest_trial() -> None:
+    fn_source = _function_source("run_backtest_trial")
+    assert LEGACY_RUN_BACKTEST_TRIAL_METRIC_NAMES <= {
+        name.strip('"')
+        for name in fn_source.split('"')
+        if name in LEGACY_RUN_BACKTEST_TRIAL_METRIC_NAMES
+    }
+
+
+def test_objective_metric_name_and_direction_remain_unchanged() -> None:
+    single_source = _function_source("objective_single")
+    study_source = _function_source("run_study")
+    assert LEGACY_OBJECTIVE_RESULT_INVENTORY.metric_access_pattern in single_source
+    assert 'study_cfg.direction == "maximize"' in single_source
+    assert 'direction = study_cfg.direction or "maximize"' in study_source
+    assert 'objective_name == "max_drawdown"' in single_source
+
+
+def test_target_contract_extracts_valid_numeric_metric_deterministically() -> None:
+    stats = {"sharpe": 1.25, "total_return": 0.1}
+    assert _extract_target_objective_metric(stats, "sharpe") == 1.25
+    assert _extract_target_objective_metric(stats, "sharpe") == 1.25
+
+
+def test_target_contract_rejects_missing_metric_fail_closed() -> None:
+    with pytest.raises(ObjectiveMetricContractError, match="missing metric"):
+        _extract_target_objective_metric({"total_return": 0.2}, "sharpe")
+
+
+def test_target_contract_rejects_none_metric_fail_closed() -> None:
+    with pytest.raises(ObjectiveMetricContractError, match="None"):
+        _extract_target_objective_metric({"sharpe": None}, "sharpe")
+
+
+def test_target_contract_rejects_nan_metric_fail_closed() -> None:
+    with pytest.raises(ObjectiveMetricContractError, match="non-finite"):
+        _extract_target_objective_metric({"sharpe": float("nan")}, "sharpe")
+
+
+@pytest.mark.parametrize("bad_value", [float("inf"), float("-inf")])
+def test_target_contract_rejects_nonfinite_inf_metric_fail_closed(bad_value: float) -> None:
+    with pytest.raises(ObjectiveMetricContractError, match="non-finite"):
+        _extract_target_objective_metric({"sharpe": bad_value}, "sharpe")
+
+
+@pytest.mark.parametrize("bad_value", ["1.0", {"sharpe": 1.0}, [1.0]])
+def test_target_contract_rejects_non_numeric_metric_fail_closed(bad_value: Any) -> None:
+    with pytest.raises(ObjectiveMetricContractError, match="non-numeric"):
+        _extract_target_objective_metric({"sharpe": bad_value}, "sharpe")
+
+
+def test_target_contract_does_not_mutate_stats_dict() -> None:
+    stats = {"sharpe": 1.2, "total_return": 0.05}
+    baseline = copy.deepcopy(stats)
+    _extract_target_objective_metric(stats, "sharpe")
+    assert stats == baseline
+
+
+def test_target_contract_blocks_fallback_to_alternate_metric() -> None:
+    stats = {"total_return": 0.5, "profit_factor": 2.0}
+    with pytest.raises(ObjectiveMetricContractError, match="missing metric"):
+        _extract_target_objective_metric(stats, "sharpe")
+
+
+def test_target_contract_helpers_avoid_extra_backtest_or_objective_calls() -> None:
+    helper_sources = (
+        inspect.getsource(_legacy_extract_stats_from_result)
+        + inspect.getsource(_extract_canonical_stats_from_result)
+        + inspect.getsource(_extract_target_objective_metric)
+    )
+    forbidden = (
+        "run_backtest_trial(",
+        "run_realistic(",
+        "objective_single(",
+        "objective_multi(",
+        "study.optimize(",
+    )
+    for token in forbidden:
+        assert token not in helper_sources
+
+
+def test_legacy_metric_fallback_differs_from_target_fail_closed_semantics() -> None:
+    legacy_value = _legacy_extract_objective_value({"stats": {}}, "sharpe")
+    assert legacy_value == LEGACY_OBJECTIVE_METRIC_FALLBACK
+    with pytest.raises(ObjectiveMetricContractError):
+        _extract_target_objective_metric({}, "sharpe")
+
+
+def test_canonical_stats_extraction_rejects_dict_like_legacy_result() -> None:
+    with pytest.raises(ObjectiveResultContractError, match="BacktestResult"):
+        _extract_canonical_stats_from_result({"stats": {"sharpe": 1.0}})
+
+
+def test_objective_result_and_metric_contract_status_flags_defined() -> None:
+    assert OBJECTIVE_RESULT_CONTRACT_DEFINED is True
+    assert OBJECTIVE_METRIC_CONTRACT_DEFINED is True
+    assert OBJECTIVE_EQUIVALENCE_PROVEN is False
+
+
+# ---------------------------------------------------------------------------
+# stop_pct Ist- und Zielvertrag — inventory only, no production decision
+# ---------------------------------------------------------------------------
+
+
+def test_stop_pct_source_inventory_covers_all_candidate_sources() -> None:
+    inventory = _inventory_stop_pct_sources_in_optuna_runner()
+    assert set(inventory) == set(STOP_PCT_CANDIDATE_SOURCES)
+
+
+def test_stop_pct_absent_from_optuna_trial_and_study_paths() -> None:
+    inventory = _inventory_stop_pct_sources_in_optuna_runner()
+    assert inventory["trial_params"] is False
+    assert inventory["strategy_defaults"] is False
+    assert inventory["strategy_config"] is False
+
+
+def test_stop_pct_engine_default_is_canonically_belegt_but_not_wired_in_optuna() -> None:
+    inventory = _inventory_stop_pct_sources_in_optuna_runner()
+    assert inventory["engine_strategy_params_default"] is True
+    assert STOP_PCT_SOURCE_PROVEN is False
+    assert STOP_PCT_DECISION_STATUS == "UNRESOLVED_REQUIRES_SEMANTIC_GO"
+
+
+def test_stop_pct_precedence_not_defined_without_proven_source() -> None:
+    module = ast.parse(Path(__file__).read_text(encoding="utf-8"))
+    module_constants = {
+        target.id
+        for node in module.body
+        if isinstance(node, ast.Assign)
+        for target in node.targets
+        if isinstance(target, ast.Name)
+    }
+    assert "STOP_PCT_SOURCE_PRECEDENCE" not in module_constants
+    assert STOP_PCT_SOURCE_PROVEN is False
+    assert STOP_PCT_DECISION_STATUS == "UNRESOLVED_REQUIRES_SEMANTIC_GO"
+
+
+def test_stop_pct_target_contract_preserves_engine_default_reference_only() -> None:
+    assert TARGET_ENGINE_STOP_PCT_DEFAULT == 0.02
+    engine_source = inspect.getsource(run_optuna_script.BacktestEngine.run_realistic)
+    assert 'get("stop_pct", 0.02)' in engine_source
+    assert "stop_pct" not in _function_source("run_backtest_trial")
+
+
+def test_stop_pct_no_productive_semantics_change_in_this_slice() -> None:
+    assert STOP_PCT_DECISION_STATUS == "UNRESOLVED_REQUIRES_SEMANTIC_GO"
+    assert BOUNDED_MODERNIZATION_AUTHORIZED is False
+
+
+# ---------------------------------------------------------------------------
 # Pruning and Exceptions — static + isolated fakes, no study execution
 # ---------------------------------------------------------------------------
 
@@ -499,6 +850,125 @@ def test_objective_single_exception_path_returns_directional_worst_value() -> No
     assert result == float("-inf")
 
 
+def test_pruning_target_contract_defined_with_explicit_semantics() -> None:
+    assert PRUNING_CONTRACT_DEFINED is True
+    assert PRUNING_TARGET_CONTRACT.prune_exception_type == "optuna.TrialPruned"
+    assert PRUNING_TARGET_CONTRACT.report_metric_name == "sharpe"
+    assert PRUNING_TARGET_CONTRACT.report_step == 0
+    assert PRUNING_TARGET_CONTRACT.swallow_trial_pruned is False
+    assert PRUNING_TARGET_CONTRACT.convert_engine_errors_to_prune is False
+
+
+def test_pruning_target_contract_trial_pruned_is_not_swallowed() -> None:
+    trial = _PruningTrial()
+
+    class TrialPruned(Exception):
+        pass
+
+    class FakeEngine:
+        def __init__(self, **kwargs: Any) -> None:
+            pass
+
+        def run_realistic(self) -> dict[str, Any]:
+            return {"stats": {"sharpe": 1.0}}
+
+    fake_optuna = MagicMock()
+    fake_optuna.TrialPruned = TrialPruned
+
+    with (
+        patch.object(run_optuna_script, "BacktestEngine", FakeEngine),
+        patch.object(run_optuna_script, "build_tracker_from_config", return_value=MagicMock()),
+        patch.object(run_optuna_script, "optuna", fake_optuna),
+        pytest.raises(TrialPruned),
+    ):
+        run_optuna_script.run_backtest_trial(
+            cfg=MagicMock(),
+            strategy_cls=_MinimalTrialStrategy,
+            trial_params={},
+            trial=trial,
+        )
+
+
+def test_pruning_target_contract_engine_errors_do_not_auto_prune() -> None:
+    class _NoPruneTrial:
+        def report(self, value: float, step: int) -> None:
+            pass
+
+        def should_prune(self) -> bool:
+            return False
+
+    class FailingEngine:
+        def __init__(self, **kwargs: Any) -> None:
+            pass
+
+        def run_realistic(self) -> dict[str, Any]:
+            raise RuntimeError("synthetic engine failure")
+
+    with (
+        patch.object(run_optuna_script, "BacktestEngine", FailingEngine),
+        patch.object(run_optuna_script, "build_tracker_from_config", return_value=MagicMock()),
+        pytest.raises(RuntimeError, match="synthetic engine failure"),
+    ):
+        run_optuna_script.run_backtest_trial(
+            cfg=MagicMock(),
+            strategy_cls=_MinimalTrialStrategy,
+            trial_params={},
+            trial=_NoPruneTrial(),
+        )
+
+
+def test_pruning_target_contract_preserves_report_metric_and_step() -> None:
+    fn_source = _function_source("run_backtest_trial")
+    assert (
+        f'trial.report(metrics["{PRUNING_TARGET_CONTRACT.report_metric_name}"], step=' in fn_source
+    )
+    assert f"step={PRUNING_TARGET_CONTRACT.report_step}" in fn_source.replace(" ", "")
+
+
+def test_exception_target_contract_defined_with_explicit_classification() -> None:
+    assert EXCEPTION_CONTRACT_DEFINED is True
+    assert EXCEPTION_TARGET_CONTRACT.broad_catch_exception_blocked is True
+    assert EXCEPTION_TARGET_CONTRACT.silent_zero_substitute_blocked is True
+    assert EXCEPTION_TARGET_CONTRACT.classify_data_signal_engine_result_metric_errors is True
+
+
+def test_exception_target_contract_legacy_broad_catch_remains_visible() -> None:
+    single_source = _function_source("objective_single")
+    multi_source = _function_source("objective_multi")
+    assert "except Exception" in single_source
+    assert "except Exception" in multi_source
+    assert "run_backtest_trial" in single_source
+
+
+def test_exception_target_contract_timing_is_after_backtest_call() -> None:
+    single_source = _function_source("objective_single")
+    trial_pos = single_source.index("run_backtest_trial")
+    except_pos = single_source.index("except Exception")
+    assert trial_pos < except_pos
+
+
+def test_exception_target_contract_blocks_silent_zero_nan_inf_substitutes() -> None:
+    assert EXCEPTION_TARGET_CONTRACT.silent_zero_substitute_blocked is True
+    assert EXCEPTION_TARGET_CONTRACT.silent_nan_substitute_blocked is True
+    assert EXCEPTION_TARGET_CONTRACT.silent_inf_substitute_blocked is True
+    target_helper_source = inspect.getsource(_extract_target_objective_metric)
+    assert "return 0" not in target_helper_source
+    assert "return float(" not in target_helper_source
+
+
+def test_exception_target_contract_rejects_metric_errors_without_broad_fallback() -> None:
+    with pytest.raises(ObjectiveMetricContractError):
+        _extract_target_objective_metric({"sharpe": float("nan")}, "sharpe")
+    with pytest.raises(ObjectiveMetricContractError):
+        _extract_target_objective_metric({"sharpe": "bad"}, "sharpe")
+
+
+def test_objective_equivalence_remains_false_until_full_mapping_proven() -> None:
+    assert OBJECTIVE_EQUIVALENCE_PROVEN is False
+    assert OBJECTIVE_RESULT_CONTRACT_DEFINED is True
+    assert OBJECTIVE_METRIC_CONTRACT_DEFINED is True
+
+
 # ---------------------------------------------------------------------------
 # No-Run Guard — import/help only
 # ---------------------------------------------------------------------------
@@ -537,8 +1007,13 @@ def test_binding_target_status_constants() -> None:
     assert SIGNAL_BINDING_TARGET_DEFINED is True
     assert ENGINE_CALL_TARGET_DEFINED is True
     assert SIGNAL_EQUIVALENCE_PROVEN_FOR_SCHEMA_KEYS is True
+    assert OBJECTIVE_RESULT_CONTRACT_DEFINED is True
+    assert OBJECTIVE_METRIC_CONTRACT_DEFINED is True
+    assert PRUNING_CONTRACT_DEFINED is True
+    assert EXCEPTION_CONTRACT_DEFINED is True
     assert OBJECTIVE_EQUIVALENCE_PROVEN is False
     assert STOP_PCT_SOURCE_PROVEN is False
+    assert STOP_PCT_DECISION_STATUS == "UNRESOLVED_REQUIRES_SEMANTIC_GO"
     assert BOUNDED_MODERNIZATION_AUTHORIZED is False
 
 
@@ -907,6 +1382,10 @@ def test_binding_contract_tests_do_not_start_study_trial_backtest_or_loader() ->
         inspect.getsource(_validate_data_binding_target)
         + inspect.getsource(_invoke_signal_binding_target)
         + inspect.getsource(_simulate_engine_call_target)
+        + inspect.getsource(_legacy_extract_stats_from_result)
+        + inspect.getsource(_extract_canonical_stats_from_result)
+        + inspect.getsource(_extract_target_objective_metric)
+        + inspect.getsource(_inventory_stop_pct_sources_in_optuna_runner)
     )
     forbidden_runtime_calls = (
         "study.optimize(",
