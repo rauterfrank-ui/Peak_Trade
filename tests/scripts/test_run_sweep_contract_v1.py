@@ -624,3 +624,350 @@ def test_cli_help_smoke(capsys: pytest.CaptureFixture[str]) -> None:
     assert exc.value.code == 0
     out = capsys.readouterr().out
     assert "Strategy Parameter Sweep" in out
+
+
+# ---------------------------------------------------------------------------
+# Target parameter normalization contract (test-local reference only)
+# ---------------------------------------------------------------------------
+# Defines the intended post-normalization semantics for a future production
+# slice. Does NOT claim scripts/run_sweep.py already satisfies this contract.
+# ---------------------------------------------------------------------------
+
+TARGET_PARAMETER_ALIAS_TABLE: dict[str, dict[str, str]] = {
+    MA_CROSSOVER_KEY: {
+        "short_window": "fast_window",
+        "long_window": "slow_window",
+    },
+    "rsi_reversion": {
+        "rsi_period": "rsi_window",
+        "entry_threshold": "lower",
+        "exit_threshold": "upper",
+    },
+}
+
+TARGET_ENGINE_STOP_PCT_DEFAULT = 0.02
+
+TARGET_STRATEGY_CANONICAL_KEYS: dict[str, frozenset[str]] = {
+    MA_CROSSOVER_KEY: frozenset({"fast_window", "slow_window", "price_col"}),
+    "rsi_reversion": frozenset(
+        {
+            "rsi_window",
+            "lower",
+            "upper",
+            "exit_lower",
+            "exit_upper",
+            "use_trend_filter",
+            "trend_ma_window",
+            "use_wilder",
+            "price_col",
+        }
+    ),
+}
+
+TARGET_SWEEP_ENGINE_KEYS = frozenset({"stop_pct"})
+
+LONG_ONLY_DECISION_STATUS = "UNRESOLVED_REQUIRES_SEMANTIC_GO"
+
+TARGET_PARAMETER_SOURCE_PRECEDENCE = (
+    "strategy_defaults",
+    "strategy_config",
+    "normalized_sweep_grid",
+    "engine_params_stop_pct_only",
+)
+
+
+class TargetNormalizationContractError(ValueError):
+    """Test-local fail-closed rejection for target normalization contract."""
+
+
+def _allowed_keys_for_strategy(strategy_key: str) -> frozenset[str]:
+    aliases = TARGET_PARAMETER_ALIAS_TABLE.get(strategy_key, {})
+    return (
+        TARGET_STRATEGY_CANONICAL_KEYS[strategy_key]
+        | TARGET_SWEEP_ENGINE_KEYS
+        | frozenset(aliases.keys())
+    )
+
+
+def _resolve_aliases_target_contract(
+    strategy_key: str,
+    raw_params: dict[str, Any],
+) -> dict[str, Any]:
+    if strategy_key not in TARGET_PARAMETER_ALIAS_TABLE:
+        raise TargetNormalizationContractError(
+            f"unsupported strategy_key for alias table: {strategy_key!r}"
+        )
+
+    alias_table = TARGET_PARAMETER_ALIAS_TABLE[strategy_key]
+    allowed = _allowed_keys_for_strategy(strategy_key)
+    normalized: dict[str, Any] = {}
+
+    for key in sorted(raw_params.keys()):
+        value = raw_params[key]
+        if key not in allowed:
+            raise TargetNormalizationContractError(f"unknown key rejected: {key!r}")
+
+        canonical = alias_table.get(key, key)
+        if canonical in normalized and normalized[canonical] != value:
+            raise TargetNormalizationContractError(
+                f"conflicting alias/canonical for {canonical!r}: "
+                f"{normalized[canonical]!r} vs {value!r}"
+            )
+        normalized[canonical] = value
+
+    return normalized
+
+
+def _resolve_stop_pct_target_contract(
+    *,
+    normalized_grid: dict[str, Any],
+    engine_stop_pct: float | None = None,
+) -> float:
+    if "stop_pct" in normalized_grid:
+        return float(normalized_grid["stop_pct"])
+    if engine_stop_pct is not None:
+        return float(engine_stop_pct)
+    return TARGET_ENGINE_STOP_PCT_DEFAULT
+
+
+def _merge_parameter_sources_target_contract(
+    strategy_key: str,
+    raw_grid: dict[str, Any],
+    *,
+    strategy_defaults: dict[str, Any] | None = None,
+    strategy_config: dict[str, Any] | None = None,
+    engine_params: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    defaults = dict(strategy_defaults or {})
+    config = dict(strategy_config or {})
+    normalized_grid = _resolve_aliases_target_contract(strategy_key, raw_grid)
+
+    effective: dict[str, Any] = {**defaults, **config, **normalized_grid}
+    effective["stop_pct"] = _resolve_stop_pct_target_contract(
+        normalized_grid=normalized_grid,
+        engine_stop_pct=(engine_params or {}).get("stop_pct"),
+    )
+    return effective
+
+
+def _apply_target_contract_strategy_surface(
+    strategy_key: str,
+    effective: dict[str, Any],
+) -> dict[str, Any]:
+    canonical = TARGET_STRATEGY_CANONICAL_KEYS[strategy_key]
+    attrs = {k: effective[k] for k in canonical if k in effective}
+    return {"attrs": attrs, "config": dict(attrs)}
+
+
+def _target_engine_binding_uses_normalized_params(
+    effective: dict[str, Any],
+    engine_strategy_params: dict[str, Any],
+) -> bool:
+    return engine_strategy_params == effective
+
+
+@pytest.mark.parametrize(
+    ("alias", "canonical", "value"),
+    [
+        ("short_window", "fast_window", 5),
+        ("long_window", "slow_window", 100),
+    ],
+)
+def test_target_ma_crossover_alias_matrix_maps_each_alias(
+    alias: str, canonical: str, value: int
+) -> None:
+    result = _resolve_aliases_target_contract(MA_CROSSOVER_KEY, {alias: value})
+    assert result == {canonical: value}
+
+
+def test_target_ma_crossover_alias_matrix_full_grid_combo() -> None:
+    result = _resolve_aliases_target_contract(
+        MA_CROSSOVER_KEY,
+        {"short_window": 8, "long_window": 40},
+    )
+    assert result == {"fast_window": 8, "slow_window": 40}
+
+
+@pytest.mark.parametrize(
+    ("alias", "canonical", "value"),
+    [
+        ("rsi_period", "rsi_window", 14),
+        ("entry_threshold", "lower", 25.0),
+        ("exit_threshold", "upper", 55.0),
+    ],
+)
+def test_target_rsi_reversion_alias_matrix_maps_each_alias(
+    alias: str, canonical: str, value: float | int
+) -> None:
+    result = _resolve_aliases_target_contract("rsi_reversion", {alias: value})
+    assert result == {canonical: value}
+
+
+def test_target_rsi_reversion_alias_matrix_full_grid_combo() -> None:
+    result = _resolve_aliases_target_contract(
+        "rsi_reversion",
+        {"rsi_period": 21, "entry_threshold": 30.0, "exit_threshold": 50.0},
+    )
+    assert result == {"rsi_window": 21, "lower": 30.0, "upper": 50.0}
+
+
+def test_target_canonical_keys_pass_through_unchanged() -> None:
+    ma = _resolve_aliases_target_contract(MA_CROSSOVER_KEY, {"fast_window": 12, "slow_window": 48})
+    rsi = _resolve_aliases_target_contract(
+        "rsi_reversion", {"rsi_window": 14, "lower": 30.0, "upper": 70.0}
+    )
+    assert ma == {"fast_window": 12, "slow_window": 48}
+    assert rsi == {"rsi_window": 14, "lower": 30.0, "upper": 70.0}
+
+
+def test_target_unknown_key_rejected_by_contract() -> None:
+    with pytest.raises(TargetNormalizationContractError, match="unknown key"):
+        _resolve_aliases_target_contract(MA_CROSSOVER_KEY, {"unknown_param": 1})
+
+
+def test_target_conflicting_alias_and_canonical_rejected() -> None:
+    with pytest.raises(TargetNormalizationContractError, match="conflicting"):
+        _resolve_aliases_target_contract(
+            MA_CROSSOVER_KEY,
+            {"short_window": 5, "fast_window": 10},
+        )
+
+
+def test_target_identical_alias_canonical_double_spec_is_deterministic() -> None:
+    result = _resolve_aliases_target_contract(
+        MA_CROSSOVER_KEY,
+        {"short_window": 7, "fast_window": 7, "long_window": 35, "slow_window": 35},
+    )
+    assert result == {"fast_window": 7, "slow_window": 35}
+
+
+def test_target_no_cross_strategy_alias_application() -> None:
+    with pytest.raises(TargetNormalizationContractError, match="unknown key"):
+        _resolve_aliases_target_contract("rsi_reversion", {"short_window": 5})
+
+
+def test_target_no_fuzzy_key_mapping() -> None:
+    with pytest.raises(TargetNormalizationContractError, match="unknown key"):
+        _resolve_aliases_target_contract(MA_CROSSOVER_KEY, {"fast_win": 10})
+
+
+@pytest.mark.parametrize(
+    "raw_params",
+    [
+        {"long_window": 100, "short_window": 5},
+        {"short_window": 5, "long_window": 100},
+    ],
+)
+def test_target_normalization_independent_of_dict_insertion_order(
+    raw_params: dict[str, int],
+) -> None:
+    result = _resolve_aliases_target_contract(MA_CROSSOVER_KEY, raw_params)
+    assert result == {"fast_window": 5, "slow_window": 100}
+
+
+def test_target_stop_pct_source_precedence_contract() -> None:
+    grid_only = _merge_parameter_sources_target_contract(
+        MA_CROSSOVER_KEY,
+        {"fast_window": 10, "slow_window": 30, "stop_pct": 0.05},
+        strategy_config={"stop_pct": 0.03},
+    )
+    assert grid_only["stop_pct"] == 0.05
+
+    engine_layer = _merge_parameter_sources_target_contract(
+        MA_CROSSOVER_KEY,
+        {"fast_window": 10, "slow_window": 30},
+        engine_params={"stop_pct": 0.04},
+    )
+    assert engine_layer["stop_pct"] == 0.04
+
+
+def test_target_missing_stop_pct_uses_engine_default_0_02() -> None:
+    effective = _merge_parameter_sources_target_contract(
+        MA_CROSSOVER_KEY,
+        {"fast_window": 10, "slow_window": 30},
+        strategy_config={"stop_pct": 0.03},
+    )
+    assert effective["stop_pct"] == TARGET_ENGINE_STOP_PCT_DEFAULT
+    assert "stop_pct" not in _resolve_aliases_target_contract(
+        MA_CROSSOVER_KEY, {"fast_window": 10, "slow_window": 30}
+    )
+
+
+def test_target_parameter_source_precedence_order() -> None:
+    effective = _merge_parameter_sources_target_contract(
+        MA_CROSSOVER_KEY,
+        {"fast_window": 15},
+        strategy_defaults={"fast_window": 5, "slow_window": 20},
+        strategy_config={"slow_window": 25},
+    )
+    assert effective["fast_window"] == 15
+    assert effective["slow_window"] == 25
+
+
+def test_target_strategy_config_consistency_invariant() -> None:
+    effective = _merge_parameter_sources_target_contract(
+        MA_CROSSOVER_KEY,
+        {"short_window": 9, "long_window": 45},
+    )
+    surface = _apply_target_contract_strategy_surface(MA_CROSSOVER_KEY, effective)
+    assert surface["attrs"] == surface["config"]
+    assert surface["attrs"]["fast_window"] == 9
+    assert surface["attrs"]["slow_window"] == 45
+
+
+def test_target_no_stateful_strategy_reuse_invariant() -> None:
+    combo_a = _merge_parameter_sources_target_contract(
+        MA_CROSSOVER_KEY, {"fast_window": 5, "slow_window": 20}
+    )
+    combo_b = _merge_parameter_sources_target_contract(
+        MA_CROSSOVER_KEY, {"fast_window": 10, "slow_window": 40}
+    )
+    surface_a = _apply_target_contract_strategy_surface(MA_CROSSOVER_KEY, combo_a)
+    surface_b = _apply_target_contract_strategy_surface(MA_CROSSOVER_KEY, combo_b)
+    assert surface_a["attrs"] != surface_b["attrs"]
+    assert surface_a is not surface_b
+
+
+def test_target_engine_strategy_params_consumed_contract() -> None:
+    effective = _merge_parameter_sources_target_contract(
+        MA_CROSSOVER_KEY,
+        {"short_window": 6, "long_window": 30},
+    )
+    assert _target_engine_binding_uses_normalized_params(effective, effective)
+    legacy_grid_params = {"short_window": 6, "long_window": 30}
+    assert legacy_grid_params != effective
+
+
+def test_target_long_only_decision_unresolved_requires_semantic_go() -> None:
+    assert LONG_ONLY_DECISION_STATUS == "UNRESOLVED_REQUIRES_SEMANTIC_GO"
+    fn_source = ast.get_source_segment(
+        _read_source(),
+        next(
+            n
+            for n in ast.parse(_read_source()).body
+            if isinstance(n, ast.FunctionDef) and n.name == "run_single_backtest"
+        ),
+    )
+    assert fn_source is not None
+    assert "replace(-1, 0)" not in fn_source
+
+
+def test_target_load_strategy_migration_remains_blocked() -> None:
+    owner_source = Path(__file__).read_text(encoding="utf-8")
+    assert EQUIVALENCE_NOT_PROVEN in owner_source
+    assert "load_strategy" not in _read_source()
+
+
+def test_production_does_not_yet_implement_target_normalization() -> None:
+    fn_source = ast.get_source_segment(
+        _read_source(),
+        next(
+            n
+            for n in ast.parse(_read_source()).body
+            if isinstance(n, ast.FunctionDef) and n.name == "run_single_backtest"
+        ),
+    )
+    assert fn_source is not None
+    assert "hasattr(strategy, key)" in fn_source
+    assert "TARGET_PARAMETER_ALIAS_TABLE" not in _read_source()
+    assert "short_window" not in fn_source
