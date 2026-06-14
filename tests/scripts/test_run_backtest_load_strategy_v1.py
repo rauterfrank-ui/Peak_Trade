@@ -96,7 +96,40 @@ def test_build_strategy_params_includes_stop_pct_default_for_registry_key() -> N
 def test_build_strategy_params_source_uses_load_strategy_for_registry_path() -> None:
     source = inspect.getsource(run_backtest_script._build_strategy_params_from_config)
     assert "load_strategy" in source
-    assert "STRATEGY_REGISTRY" in source
+    assert "spec.cls.from_config" not in source
+
+
+def test_resolve_strategy_signal_fn_source_uses_load_strategy_only() -> None:
+    source = inspect.getsource(run_backtest_script._resolve_strategy_signal_fn)
+    assert "load_strategy" in source
+    assert "spec.cls.from_config" not in source
+    assert "generate_signals(df" not in source
+
+
+def test_build_strategy_params_calls_load_strategy_for_alias_key() -> None:
+    from src.core.peak_config import PeakConfig
+
+    raw = {
+        "environment": {"mode": "backtest"},
+        "research": {"allow_r_and_d_strategies": True},
+        "strategy": {"el_karoui_vol_model": {}},
+    }
+    cfg = PeakConfig(raw=raw)
+
+    with patch.object(run_backtest_script, "load_strategy") as load_mock:
+        load_mock.return_value = MagicMock()
+        params = run_backtest_script._build_strategy_params_from_config(cfg, EL_KAROUI_ALIAS_KEY)
+
+    load_mock.assert_called_once_with("el_karoui_vol_model")
+    assert params["stop_pct"] == 0.02
+
+
+def test_resolve_strategy_signal_fn_calls_load_strategy_for_alias_key() -> None:
+    with patch.object(run_backtest_script, "load_strategy") as load_mock:
+        load_mock.return_value = MagicMock()
+        run_backtest_script._resolve_strategy_signal_fn(EL_KAROUI_ALIAS_KEY)
+
+    load_mock.assert_called_once_with("el_karoui_vol_model")
 
 
 def test_build_strategy_params_calls_load_strategy_for_registry_validation() -> None:
@@ -218,7 +251,7 @@ def test_signal_equivalence_vs_create_strategy_from_config(
     pd.testing.assert_series_equal(canonical, legacy)
 
 
-def test_el_karoui_alias_resolves_via_oop_fallback() -> None:
+def test_el_karoui_alias_resolves_via_load_strategy() -> None:
     from src.core.peak_config import PeakConfig
     from src.strategies.registry import create_strategy_from_config
 

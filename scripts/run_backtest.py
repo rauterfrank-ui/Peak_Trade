@@ -219,13 +219,18 @@ def _build_strategy_params_from_config(
 ) -> Dict[str, Any]:
     """Build strategy params dict via canonical load_strategy() registry path."""
     if strategy_key in STRATEGY_REGISTRY:
-        load_strategy(strategy_key)
-        section = cfg.raw.get("strategy", {}).get(strategy_key, {})
-        params: Dict[str, Any] = dict(section) if isinstance(section, dict) else {}
+        loader_key = strategy_key
+        section_key = strategy_key
     else:
         spec = get_strategy_spec(strategy_key)
-        instance = spec.cls.from_config(cfg, section=spec.config_section)
-        params = dict(instance.config)
+        section_key = spec.config_section.rsplit(".", 1)[-1]
+        loader_key = section_key if section_key in STRATEGY_REGISTRY else strategy_key
+
+    load_strategy(loader_key)
+    section = cfg.raw.get("strategy", {}).get(section_key, {})
+    if not section and section_key != strategy_key:
+        section = cfg.raw.get("strategy", {}).get(strategy_key, {})
+    params: Dict[str, Any] = dict(section) if isinstance(section, dict) else {}
     params["stop_pct"] = cfg.get(f"strategy.{strategy_key}.stop_pct", 0.02)
     return params
 
@@ -233,18 +238,15 @@ def _build_strategy_params_from_config(
 def _resolve_strategy_signal_fn(
     strategy_name: str,
 ) -> Callable[[pd.DataFrame, Dict[str, Any]], pd.Series]:
-    """Canonical load_strategy() with OOP-registry-only alias fallback."""
+    """Resolve signal callable via canonical load_strategy() path."""
     if strategy_name in STRATEGY_REGISTRY:
         return load_strategy(strategy_name)
 
     spec = get_strategy_spec(strategy_name)
-    strategy_cls = spec.cls
-
-    def generate_signals(df: pd.DataFrame, params: Dict[str, Any]) -> pd.Series:
-        strategy = strategy_cls(config=dict(params))
-        return strategy.generate_signals(df)
-
-    return generate_signals
+    loader_key = spec.config_section.rsplit(".", 1)[-1]
+    if loader_key in STRATEGY_REGISTRY:
+        return load_strategy(loader_key)
+    return load_strategy(strategy_name)
 
 
 def resolve_backtest_symbol(cfg: PeakConfig) -> str:
