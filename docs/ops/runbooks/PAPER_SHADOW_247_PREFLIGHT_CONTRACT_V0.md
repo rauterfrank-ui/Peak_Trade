@@ -419,6 +419,61 @@ A **reviewable closeout path** for operator/reviewer inspection must document **
 
 Crosslink: [First Live Pilot Sequence Runbook](RUNBOOK_MASTER_V2_FIRST_LIVE_PILOT_SEQUENCE_V0.md) §10; register §6.5.5; §2a.1 / §2b.1 criteria take precedence over Class4 reflection or positive summary lines. Static guard: `tests/ops/test_master_v2_go_live_blocker_register_core_doc_contract_v0.py` (`GLB018_CLOSEOUT_PATH_CROSSLINK_GUARD_V1`).
 
+## 2b.4 GLB-019 Event Stream Static Boundary v0
+
+```
+GLB019_EVENT_STREAM_BOUNDARY_V0=true
+EVENT_STREAM_REQUIRED_CLASSES_EXPLICIT=true
+EVENT_STREAM_REQUIRED_FIELDS_EXPLICIT=true
+INCOMPLETE_EVENT_STREAM_FAIL_CLOSED=true
+EVENT_STREAM_NON_AUTHORIZING=true
+EVENT_NOT_APPROVAL=true
+EVENT_NOT_PROMOTION=true
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+EXECUTION_AUTHORIZED=false
+LIVE_AUTHORIZED=false
+PROMOTION_EXECUTED=false
+```
+
+This section closes the **static event-stream legibility boundary** for [GLB-019](../specs/MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md) §6.5.6. It **does not** close **GLB-019**, **does not** emit, replay, sync, or mutate event streams, **does not** mutate registry, `out/ops`, or existing run-evidence datasets, and **does not** grant arming, execution, promotion, or live authority.
+
+### Minimum event classes (legibility SSOT)
+
+Where applicable to the scoped review packet or primary-evidence lane, the following event classes must be **visible or explicitly marked missing**:
+
+| Class | Examples (non-exhaustive) | Missing posture |
+|---|---|---|
+| State transitions | run/session/stage/gate state changes | record missing; do not infer pass |
+| Gate / blocker decisions | blocked/pass/review markers as **inputs** | fail-closed if contradictory |
+| Risk / KillSwitch / abort / closeout | safety stop, abort, closeout-related events | crosslink GLB-017/GLB-018; no auto-resume |
+| Evidence / manifest / validation | manifest verify, primary-evidence checks | `MANIFEST_VERIFY_RC≠0` → incomplete |
+| Promotion / readiness visibility | readiness/gate visibility markers | **visibility ≠ promotion** (GLB-020) |
+
+### Minimum identity and ordering fields
+
+When comparing or reviewing events across artifacts, the following fields are **required where the surface defines them**:
+
+1. **Event identity** — stable id or record key.
+2. **Ordering / sequence** — explicit order basis when multiple events are compared.
+3. **Time** — timestamp or documented time basis.
+4. **Source** — producing lane, surface, or artifact path.
+5. **Correlation** — session, run, bundle, commit, or durable archive binding.
+6. **Version / schema** — contract or schema version when defined.
+
+### Fail-closed event-stream rule
+
+| Condition | Result |
+|---|---|
+| Missing mandatory event class with no explicit missing record | **Incomplete event stream** → **fail-closed** |
+| Contradictory ordering, time, source, or correlation | **Incomplete / inconsistent** → **fail-closed** |
+| `/tmp`-only or unmanifested evidence | **`TMP_ONLY` / unverified** → **fail-closed** |
+| Statically documented event posture | **Review input only** — **not** emission, **not** approval, **not** promotion |
+
+**Event stream legibility ≠ event emission.** **Event ≠ decision.** **Event ≠ approval.** **Event ≠ promotion.** Audit entries, snapshots, and reporter output **reflect** criteria/authority owners — they **do not** override them. **`PREFLIGHT_REMAINS_BLOCKED=true`** remains default until explicit authority closes **GLB-019**.
+
+Crosslink: [Operator / Audit Flat Path Index](../specs/MASTER_V2_OPERATOR_AUDIT_FLAT_PATH_INDEX_V0.md); register §6.5.6; [Promotion State Machine](../specs/MASTER_V2_PROMOTION_STATE_MACHINE_V1.md) §11 (event visibility ≠ promotion); §2a.1 / §2b.1 criteria take precedence over Class4 reflection or positive summary lines. Static guard: `tests/ops/test_master_v2_go_live_blocker_register_core_doc_contract_v0.py` (`GLB019_EVENT_STREAM_CROSSLINK_GUARD_V1`).
+
 ### Evidence Durable Closeout Retention RC v0 — index v0
 
 **Release:** `EVIDENCE_DURABLE_CLOSEOUT_RETENTION_RC_V0` · **Status:** **CORE COMPLETE** (SLICE-ER-1 + SLICE-ER-2; ER-3 optional deferred) · **UTC:** 2026-06-02 · **Recommended next larger release candidate** after `CYBERSECURITY_VISIBILITY_RELEASE_RC_V0` (CORE COMPLETE on `main` @ `f4be4e4848c1205d1f88d54bc76fe26ad0eff84d`). **Canonical repo owners (reuse — no parallel index):**
