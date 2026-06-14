@@ -178,14 +178,14 @@ def test_create_sampler_invalid_raises():
 
 @pytest.mark.skipif(not OPTUNA_AVAILABLE, reason="Optuna not installed")
 @pytest.mark.skipif(not STUDY_RUNNER_AVAILABLE, reason="run_optuna_study.py not available")
-def test_suggest_params_from_schema(mock_strategy):
+def test_suggest_params_from_schema(sample_param_schema):
     """Test parameter suggestion from schema."""
     # Create a study and trial
     study = optuna.create_study(direction="maximize")
     trial = study.ask()
 
     # Suggest params
-    params = suggest_params_from_schema(trial, mock_strategy)
+    params = suggest_params_from_schema(trial, sample_param_schema)
 
     # Check all params are present
     assert "fast_window" in params
@@ -209,28 +209,24 @@ def test_suggest_params_from_schema(mock_strategy):
 
 @pytest.mark.skipif(not OPTUNA_AVAILABLE, reason="Optuna not installed")
 @pytest.mark.skipif(not STUDY_RUNNER_AVAILABLE, reason="run_optuna_study.py not available")
-def test_suggest_params_from_schema_empty_raises(mock_strategy):
+def test_suggest_params_from_schema_empty_raises():
     """Test that empty schema raises ValueError."""
-    mock_strategy.parameter_schema = []
-
     study = optuna.create_study(direction="maximize")
     trial = study.ask()
 
     with pytest.raises(ValueError, match="has no parameter_schema"):
-        suggest_params_from_schema(trial, mock_strategy)
+        suggest_params_from_schema(trial, [])
 
 
 @pytest.mark.skipif(not OPTUNA_AVAILABLE, reason="Optuna not installed")
 @pytest.mark.skipif(not STUDY_RUNNER_AVAILABLE, reason="run_optuna_study.py not available")
-def test_suggest_params_from_schema_none_raises(mock_strategy):
+def test_suggest_params_from_schema_none_raises():
     """Test that None schema raises ValueError."""
-    mock_strategy.parameter_schema = None
-
     study = optuna.create_study(direction="maximize")
     trial = study.ask()
 
     with pytest.raises(ValueError, match="has no parameter_schema"):
-        suggest_params_from_schema(trial, mock_strategy)
+        suggest_params_from_schema(trial, None)
 
 
 # ============================================================================
