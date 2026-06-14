@@ -6,10 +6,11 @@ from __future__ import annotations
 
 import ast
 import importlib
+import inspect
 import subprocess
 import sys
 from pathlib import Path
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, call, patch
 
 import numpy as np
 import pandas as pd
@@ -30,6 +31,28 @@ FORBIDDEN_IMPORTS = ("create_strategy_from_config",)
 
 def _read_source() -> str:
     return TARGET_SCRIPT.read_text(encoding="utf-8")
+
+
+def _minimal_cfg(strategy_key: str, **strategy_params: object) -> MagicMock:
+    raw = {
+        "strategy": {
+            strategy_key: dict(strategy_params),
+        },
+    }
+    cfg = MagicMock()
+    cfg.raw = raw
+
+    def _get(path: str, default=None):
+        node = raw
+        for part in path.split("."):
+            if not isinstance(node, dict) or part not in node:
+                return default
+            node = node[part]
+        return node
+
+    cfg.get.side_effect = _get
+    cfg.with_overrides.return_value = cfg
+    return cfg
 
 
 def _sample_ohlcv(n: int = 80) -> pd.DataFrame:
@@ -71,25 +94,68 @@ def test_source_uses_load_strategy() -> None:
 
 
 def test_build_strategy_params_includes_section_and_stop_pct() -> None:
-    from src.core.peak_config import PeakConfig
-
-    raw = {
-        "environment": {"mode": "backtest"},
-        "strategy": {
-            MA_CROSSOVER_KEY: {
-                "fast_window": 10,
-                "slow_window": 50,
-                "price_col": "close",
-                "stop_pct": 0.03,
-            },
-        },
-    }
-    cfg = PeakConfig(raw=raw)
+    cfg = _minimal_cfg(
+        MA_CROSSOVER_KEY,
+        fast_window=10,
+        slow_window=50,
+        price_col="close",
+        stop_pct=0.03,
+    )
     params = forward_runner._build_strategy_params_from_config(cfg, MA_CROSSOVER_KEY)
     assert params["fast_window"] == 10
     assert params["slow_window"] == 50
     assert params["price_col"] == "close"
     assert params["stop_pct"] == 0.03
+
+
+def test_build_strategy_params_source_uses_load_strategy_not_from_config_bypass() -> None:
+    source = inspect.getsource(forward_runner._build_strategy_params_from_config)
+    assert "load_strategy" in source
+    assert "get_strategy_spec" not in source
+    assert ".from_config" not in source
+
+
+def test_build_strategy_params_calls_load_strategy_for_registry_validation() -> None:
+    cfg = _minimal_cfg(MA_CROSSOVER_KEY, fast_window=10, slow_window=50, price_col="close")
+
+    with patch.object(forward_runner, "load_strategy") as load_mock:
+        load_mock.return_value = MagicMock()
+        params = forward_runner._build_strategy_params_from_config(cfg, MA_CROSSOVER_KEY)
+
+    load_mock.assert_called_once_with(MA_CROSSOVER_KEY)
+    assert params["fast_window"] == 10
+    assert params["stop_pct"] == 0.02
+
+
+def test_build_strategy_params_isolated_per_strategy_key() -> None:
+    from src.core.peak_config import PeakConfig
+
+    cfg = PeakConfig(
+        raw={
+            "environment": {"mode": "backtest"},
+            "strategy": {
+                MA_CROSSOVER_KEY: {"fast_window": 10, "slow_window": 50, "price_col": "close"},
+                RSI_REVERSION_KEY: {
+                    "rsi_period": 14,
+                    "oversold": 30,
+                    "overbought": 70,
+                },
+            },
+        }
+    )
+    ma_params = forward_runner._build_strategy_params_from_config(cfg, MA_CROSSOVER_KEY)
+    rsi_params = forward_runner._build_strategy_params_from_config(cfg, RSI_REVERSION_KEY)
+
+    assert "rsi_period" not in ma_params
+    assert "fast_window" not in rsi_params
+    assert ma_params["fast_window"] == 10
+    assert rsi_params["rsi_period"] == 14
+
+
+def test_build_strategy_params_unknown_strategy_fails_closed() -> None:
+    cfg = _minimal_cfg(MA_CROSSOVER_KEY, fast_window=10, slow_window=50, price_col="close")
+    with pytest.raises(ValueError, match="Unbekannte Strategie"):
+        forward_runner._build_strategy_params_from_config(cfg, "definitely_not_a_strategy_xyz")
 
 
 def test_load_strategy_ma_crossover_matches_create_strategy_from_config_signals() -> None:
@@ -195,7 +261,8 @@ def test_main_calls_load_strategy_and_passes_full_params(tmp_path) -> None:
         )
 
     assert code == 0
-    load_strategy_mock.assert_called_once_with(MA_CROSSOVER_KEY)
+    load_strategy_mock.assert_has_calls([call(MA_CROSSOVER_KEY), call(MA_CROSSOVER_KEY)])
+    assert load_strategy_mock.call_count == 2
     assert captured["params"]["fast_window"] == 10
     assert captured["params"]["slow_window"] == 50
     assert captured["params"]["stop_pct"] == 0.02
@@ -241,7 +308,8 @@ def test_isolated_signal_fn_binding_per_call(tmp_path) -> None:
         )
 
     assert code == 0
-    load_strategy_mock.assert_called_once_with(MA_CROSSOVER_KEY)
+    load_strategy_mock.assert_has_calls([call(MA_CROSSOVER_KEY), call(MA_CROSSOVER_KEY)])
+    assert load_strategy_mock.call_count == 2
     assert call_count == 1
 
 
