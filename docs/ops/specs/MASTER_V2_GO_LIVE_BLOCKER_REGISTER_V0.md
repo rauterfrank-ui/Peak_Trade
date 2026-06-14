@@ -263,6 +263,55 @@ A **reproducible preflight packet** for review is defined by [Paper/Shadow 24/7 
 - [Section 5 Preflight Gap Owner Map Contract v0](../planning/SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md) — §2a.1 durable primary evidence (crosslink only; criteria blocks remain authoritative per §6.5.1)
 - Static guards: `tests/ops/test_master_v2_go_live_blocker_register_core_doc_contract_v0.py`, `tests/ops/test_master_v2_decision_authority_map_static_crosslink_contract_v0.py`
 
+### 6.5.4 GLB-017 — Incident/Abort Route Legibility (clarification)
+
+**GLB-017** (*Incident/abort route unclear*) remains **BLOCKED** until **operator / incident owner** confirms that the **canonical incident/abort route** is **understood and reachable** for the **chosen pilot or bounded scope** — **not** inferred from repo docs alone, partial triage output, or static tests without an operator narrative.
+
+For **bounded pilot** incident, abort, emergency, KillSwitch, or not-safely-continuable conditions, the **canonical incident/abort route legibility owner** is [Bounded Pilot Incident / §5 Abort Triage Compass v0](../runbooks/RUNBOOK_BOUNDED_PILOT_INCIDENT_ABORT_TRIAGE_COMPASS.md) §12 (GLB-017 boundary). Org-wide **KillSwitch** posture uses [Kill Switch Runbook](../../risk/KILL_SWITCH_RUNBOOK.md). Entry-contract **§5 abort criteria** anchor: [Bounded Real-Money Pilot Entry Contract](./BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md). Pilot-sequence **STOP/Abort** checklist: [First Live Pilot Sequence Runbook](../runbooks/RUNBOOK_MASTER_V2_FIRST_LIVE_PILOT_SEQUENCE_V0.md) §11.
+
+- **Default safe posture:** ambiguity, unknown abort path, or unresolved exposure/reconciliation posture → **`NO_TRADE` / safe stop** (fail-closed); **no** automatic trading resume or incident auto-resolution.
+- **Trigger classes (non-exhaustive):** KillSwitch active; policy/governance blocked; stale or inconsistent state; exposure or cap surprise; reconciliation or session-end mismatch; transfer ambiguity; telemetry/dependency degraded; operator cannot determine bounded posture; any Entry-contract §5 abort condition; scheduler/adapter/process state not safely continuable for the declared scope.
+- **Documentation, tests, evidence maps, triage compass use, and archive reflection blocks** are **non-authorizing** — they **do not** execute abort, KillSwitch, recovery, closeout, or runtime stop actions.
+- **Incident/abort records** (including archive operator-confirmation reflection blocks) **do not** create approval, preflight lift, arming, execution, or live authorization.
+- **Missing, ambiguous, or competing incident/abort routes** → **fail-closed** / **BLOCKED**; pilot-scoped incident runbooks under `RUNBOOK_PILOT_INCIDENT_*.md` apply **after** compass routing — they **do not** supersede KillSwitch, Entry §5, or risk/execution gates.
+- **Risk/KillSwitch and execution boundaries** remain unchanged; actual incident/abort actions require a **separately authorized operative context**.
+- This clarification closes the **static legibility boundary only** — **does not** close **GLB-017**, **does not** execute incident/abort actions, **does not** lift preflight, **does not** grant arming, execution, or live authority.
+
+**Canonical read-order (existing surfaces; no new surface):**
+
+- [Bounded Pilot Incident / §5 Abort Triage Compass v0](../runbooks/RUNBOOK_BOUNDED_PILOT_INCIDENT_ABORT_TRIAGE_COMPASS.md) — §12 GLB-017 Incident/Abort Route static boundary
+- [Kill Switch Runbook](../../risk/KILL_SWITCH_RUNBOOK.md) — org KillSwitch operational reference
+- [First Live Pilot Sequence Runbook](../runbooks/RUNBOOK_MASTER_V2_FIRST_LIVE_PILOT_SEQUENCE_V0.md) — §11 STOP / Abort posture
+- Static guards: `tests/ops/test_master_v2_go_live_blocker_register_core_doc_contract_v0.py`
+
+### 6.5.5 GLB-018 — Closeout Path Legibility (clarification)
+
+**GLB-018** (*Closeout path missing*) remains **OPEN** until operator presents a **reviewable closeout path** with **durable, manifest-verified evidence** and a **safe end state** for the scoped run — **not** inferred from partial artifacts, `/tmp`-only roots, unverified manifests, or static docs/tests alone.
+
+The **canonical closeout-path legibility owner** for durable primary evidence and material closeout completeness is [Paper/Shadow 24/7 Preflight Contract v0](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) §2a.1, §2b.1, and §2b.3 (GLB-018 boundary). Post-pilot **closeout checklist** orientation: [First Live Pilot Sequence Runbook](../runbooks/RUNBOOK_MASTER_V2_FIRST_LIVE_PILOT_SEQUENCE_V0.md) §10.
+
+**Mandatory closeout path components (legibility SSOT; operative execution remains operator-scoped):**
+
+1. **Safe end state** — runtime/run status, positions, orders, scheduler/adapter processes, and relevant resources must be in a **safe terminal or explicitly blocked posture** before an **operative** closeout; this slice **documents** the requirement only — it **does not** verify or enforce runtime state.
+2. **Durable archive root** — primary evidence **outside `/tmp`**.
+3. **Checksum manifest** — `MANIFEST.sha256` with **MANIFEST_VERIFY_RC=0**.
+4. **Closeout reference** — closeout artifact referencing the durable archive root (per §2b.1 material closeout rules).
+5. **Primary evidence completeness** — mandatory lane artifacts present; missing/inconsistent events recorded, not ignored.
+6. **Explicit non-authorizing posture** — closeout documentation and evidence **do not** imply approval, preflight lift, arming, or live authorization.
+
+- **Incomplete, unverified, or `/tmp`-only evidence** → **fail-closed** / **incomplete closeout** — not review-complete.
+- **Statically documented closeout path ≠ executed closeout**; **closeout ≠ approval**; **closeout ≠ Preflight-/Authority-lift**.
+- **Recovery/follow-up recommendations** in docs or archive bundles **do not** authorize automatic resume, promotion, or trading restart.
+- Existing Paper/Shadow/Testnet/Live run-evidence datasets **must not** be mutated by this boundary slice.
+- This clarification closes the **static legibility boundary only** — **does not** close **GLB-018**, **does not** execute closeout scripts, **does not** mutate registry or `out/ops`, and **does not** grant arming, execution, or live authority.
+
+**Canonical read-order (existing surfaces; no new surface):**
+
+- [Paper/Shadow 24/7 Preflight Contract v0](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) — §2b.3 GLB-018 Closeout Path static boundary
+- [First Live Pilot Sequence Runbook](../runbooks/RUNBOOK_MASTER_V2_FIRST_LIVE_PILOT_SEQUENCE_V0.md) — §10 Closeout / Post-Pilot checklist
+- [Section 5 Preflight Gap Owner Map Contract v0](../planning/SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md) — §2a.1 durable primary evidence (crosslink only; criteria blocks remain authoritative per §6.5.1)
+- Static guards: `tests/ops/test_master_v2_go_live_blocker_register_core_doc_contract_v0.py`
+
 ### 6.6 GLB-008/009/012/013 Repo-Internal Status/Lift Applied Reflection v0
 
 GLB_STATUS_REPO_INTERNAL_WRITE_LIFT_V0=true
