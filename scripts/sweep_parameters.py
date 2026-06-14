@@ -42,7 +42,7 @@ from src.core.risk import build_risk_manager_from_config
 from src.core.experiments import log_experiment_from_result
 from src.backtest.engine import BacktestEngine
 from src.backtest.result import BacktestResult
-from src.strategies.registry import create_strategy_from_config
+from src.strategies import load_strategy
 
 
 def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
@@ -221,6 +221,17 @@ def build_param_grid(
     return param_names, combos
 
 
+def _build_strategy_params_from_config(
+    cfg: PeakConfig,
+    strategy_key: str,
+) -> Dict[str, Any]:
+    """Build strategy params dict from config section (mirrors from_config inputs)."""
+    section = cfg.raw.get("strategy", {}).get(strategy_key, {})
+    params: Dict[str, Any] = dict(section) if isinstance(section, dict) else {}
+    params["stop_pct"] = cfg.get(f"strategy.{strategy_key}.stop_pct", 0.02)
+    return params
+
+
 def run_backtest_for_params(
     base_cfg: PeakConfig,
     strategy_key: str,
@@ -254,21 +265,16 @@ def run_backtest_for_params(
     # Daten laden
     data = load_data_for_symbol(symbol, n_bars=n_bars)
 
-    # Strategie erstellen
-    strategy = create_strategy_from_config(strategy_key, cfg)
+    strategy_params = _build_strategy_params_from_config(cfg, strategy_key)
+    base_signal_fn = load_strategy(strategy_key)
 
     # Position Sizer & Risk Manager
     position_sizer = build_position_sizer_from_config(cfg)
     risk_manager = build_risk_manager_from_config(cfg, section="risk_management")
 
-    # Wrapper für Legacy-API
     def strategy_signal_fn(df, params):
-        sigs = strategy.generate_signals(df)
+        sigs = base_signal_fn(df, params)
         return sigs.replace(-1, 0)  # Long-Only
-
-    # Stop-Loss aus Config
-    stop_pct = cfg.get(f"strategy.{strategy_key}.stop_pct", 0.02)
-    strategy_params = {"stop_pct": stop_pct}
 
     # Backtest durchführen
     engine = BacktestEngine(core_position_sizer=position_sizer, risk_manager=risk_manager)
