@@ -106,7 +106,7 @@ Geplante Phasen mit **noch nicht umgesetzten** Features:
 
 ### 5.3 Tech-Debt Backlog (TECH_DEBT_BACKLOG.md)
 
-- Legacy-Funktionen in `macd.py` / `bollinger.py` entfernen (nach Umstellung auf OOP)
+- Legacy-Funktionen in `macd.py` / `bollinger.py`: **abgeschlossen** — modulweite Legacy-APIs entfernt (PR #2600, PR #2601); kanonisch OOP via `MACDStrategy` / `BollingerBandsStrategy`
 - Ggf. weitere Dummy-Adapter durch echte Kraken/Exchange-Integration ersetzen (je nach Script)
 
 ### 5.4 Futures/Continuous (docs/markets)

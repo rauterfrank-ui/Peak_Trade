@@ -38,15 +38,17 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
 
 ### Legacy-API Cleanup
 
-- [ ] Legacy-Funktionen in `macd.py` entfernen
-  - Fundstelle: `src&#47;strategies&#47;macd.py` (Zeile 232) (illustrative)
-  - Kontext: Legacy-Funktion für Backwards Compatibility
-  - Vorschlag: Prüfen, ob alle Pipelines auf MACDStrategy (OOP) umgestellt sind, dann entfernen
+- [x] Legacy-Funktionen in `macd.py` entfernen
+  - Fundstelle: `src&#47;strategies&#47;macd.py` (illustrative)
+  - Kontext: Modulweite Legacy-API (`generate_signals`, `calculate_macd`) für Backwards Compatibility; kanonisch OOP via `MACDStrategy`
+  - Status: closed (PR #2601, merge `779978e1`; read-only Audit `legacy_macd_bollinger_pipeline_audit_no_run_v1_20260614T171547Z`)
+  - Fundstellen: `src/strategies/macd.py`, `src/strategies/registry.py`, `src/strategies/__init__.py` (`load_strategy` OOP-Fallback)
 
-- [ ] Legacy-Funktionen in `bollinger.py` entfernen
-  - Fundstelle: `src&#47;strategies&#47;bollinger.py` (Zeile 237) (illustrative)
-  - Kontext: Legacy-Funktion für Backwards Compatibility
-  - Vorschlag: Prüfen, ob alle Pipelines auf BollingerBandsStrategy (OOP) umgestellt sind, dann entfernen
+- [x] Legacy-Funktionen in `bollinger.py` entfernen
+  - Fundstelle: `src&#47;strategies&#47;bollinger.py` (illustrative)
+  - Kontext: Modulweite Legacy-API (`generate_signals`) für Backwards Compatibility; kanonisch OOP via `BollingerBandsStrategy`
+  - Status: closed (PR #2600, merge `f1cd4057`; read-only Audit `legacy_macd_bollinger_pipeline_audit_no_run_v1_20260614T171547Z`)
+  - Fundstellen: `src/strategies/bollinger.py`, `src/strategies/registry.py`, `src/strategies/__init__.py` (`load_strategy` OOP-Fallback)
 
 - [x] `run_full_portfolio.py`: Legacy-`*_signals`-Imports auf kanonischen `load_strategy()`-Pfad migriert
   - Fundstelle: `scripts/run_full_portfolio.py`
