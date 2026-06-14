@@ -57,10 +57,10 @@ from src.core.experiments import (
 from src.backtest.engine import BacktestEngine
 from src.backtest.stats import validate_for_live_trading
 from src.data import DataNormalizer, CsvLoader, KrakenCsvLoader
+from src.strategies import load_strategy
 from src.strategies.registry import (
     get_available_strategy_keys,
     get_strategy_spec,
-    create_strategy_from_config,
     list_strategies,
 )
 
@@ -265,6 +265,18 @@ def load_ohlcv_data(
     return df
 
 
+def _build_strategy_params_from_config(
+    cfg,
+    strategy_key: str,
+) -> Dict[str, Any]:
+    """Build strategy params dict matching from_config() effective values."""
+    spec = get_strategy_spec(strategy_key)
+    instance = spec.cls.from_config(cfg, section=spec.config_section)
+    params: Dict[str, Any] = dict(instance.config)
+    params["stop_pct"] = cfg.get(f"strategy.{strategy_key}.stop_pct", 0.02)
+    return params
+
+
 def run_single_backtest(
     strategy_key: str,
     df: pd.DataFrame,
@@ -279,20 +291,16 @@ def run_single_backtest(
         Dict mit Ergebnis oder None bei Fehler
     """
     try:
-        # Strategie laden
         spec = get_strategy_spec(strategy_key)
-        strategy = create_strategy_from_config(strategy_key, cfg)
+        strategy_params = _build_strategy_params_from_config(cfg, strategy_key)
+        base_signal_fn = load_strategy(strategy_key)
 
         # Position-Sizer und Risk-Manager
         position_sizer = build_position_sizer_from_config(cfg)
         risk_manager = build_risk_manager_from_config(cfg, section="risk_management")
 
-        # Wrapper für Engine
         def strategy_signal_fn(data, params):
-            return strategy.generate_signals(data)
-
-        stop_pct = cfg.get(f"strategy.{strategy_key}.stop_pct", 0.02)
-        strategy_params = {"stop_pct": stop_pct}
+            return base_signal_fn(data, params)
 
         # Engine und Backtest
         engine = BacktestEngine(
