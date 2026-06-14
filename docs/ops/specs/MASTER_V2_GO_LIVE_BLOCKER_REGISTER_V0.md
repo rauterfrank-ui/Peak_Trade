@@ -471,6 +471,42 @@ The **canonical event-pointer integrity legibility owner** is [Paper/Shadow 24/7
 - Register §6.5.6 — GLB-019 event-stream legibility (reuse; no duplication)
 - Static guards: `tests/ops/test_master_v2_go_live_blocker_register_core_doc_contract_v0.py`
 
+### 6.5.11 GLB-005 — Static SRP V0 vs Source-Bound Review (clarification)
+
+**GLB-005** (*Static SRP V0 confused with source-bound review*) remains **OPEN** until operator/reviewer acknowledges **SRP contract boundaries** — **not** inferred from static SRP V0 output alone, navigation snapshots, summary lines, positive machine lines, or static docs/tests without distinguishing static template review from source-bound binding.
+
+The **canonical static-SRP owner** is [Session Review Pack Contract V0](./MASTER_V2_SESSION_REVIEW_PACK_CONTRACT_V0.md) (`report_live_sessions.session_review_pack_v0` — template-like, **non-binding**). The **canonical source-bound SRP planning owner** is [SRP Real-Binding Accepted Decision V0](./MASTER_V2_SESSION_REVIEW_PACK_REAL_BINDING_ACCEPTED_DECISION_V0.md) and [Source-Bound Mode Implementation Brief V0](./MASTER_V2_SESSION_REVIEW_PACK_SOURCE_BOUND_MODE_IMPLEMENTATION_BRIEF_V0.md) (`report_live_sessions.session_review_pack_source_bound_v0` — distinct future mode). Source-class precedence and missing-source handling: [Session Review Pack Evidence / Provenance Precedence V0](./MASTER_V2_SESSION_REVIEW_PACK_EVIDENCE_PROVENANCE_PRECEDENCE_V0.md). Explicit binding session selection scope: register **§6.1 GLB-006** (reuse; no duplication).
+
+**SRP modes and mandatory source-binding legibility (legibility SSOT; operative binding remains operator-scoped):**
+
+1. **Static SRP V0** — conservative template-like review structure; **does not** bind real session sources, registry rows, or runtime artifacts as canonical primary source.
+2. **Source-bound SRP (future mode)** — distinct contract/mode; **not** a silent extension of static V0; requires explicit operator source selector (for example future `--session-id` when source-bound is requested).
+3. **Source identity** — for any source-bound claim: explicit `session_id` or equivalent selector; missing selector → **blocked/incomplete** / **fail-closed**.
+4. **Source type / class** — runtime artifact / session-scoped artifact (precedence rank 1) per evidence/provenance precedence; registry, Evidence Index, dashboard/observer summary, operator note, or AI summary **do not** substitute for primary source.
+5. **Source version / contract id** — distinct contract ids (`session_review_pack_v0` vs `session_review_pack_source_bound_v0`); ambiguous or combined modes without explicit contract → **fail-closed**.
+6. **Code / repo version binding** — commit SHA or documented repo revision where canonical contracts require it.
+7. **Config / policy version** — contract, schema, or policy version when the surface defines one.
+8. **Artifact / manifest binding** — durable artifact paths outside `/tmp`; `MANIFEST.sha256` with **MANIFEST_VERIFY_RC=0** where primary evidence applies; unmodified referenced artifacts.
+9. **Producer / correlation** — producing surface, lane, session/run/bundle/archive binding where applicable.
+
+- **Treating static SRP V0 as real-source binding** → **fail-closed** / **STOP** — static template output **must not** be interpreted as bound primary source.
+- **Missing source-id, source-version, commit/config binding, or manifest-verified artifact reference** → **blocked/incomplete** — not review-complete for source-bound claims.
+- **Ambiguous, implicit, or competing source selection** → **unacceptable** (crosslink §6.1 GLB-006; no positive default source).
+- **Unverifiable, indirect, stale, or `/tmp`-only source** → **fail-closed** — no silent winner.
+- **Summary, FML, reporter, snapshot, event, log, or documentation output** → **does not** replace canonical primary source; **Summary ≠ Source**; **Event ≠ Source**; **Documentation ≠ Source**.
+- **Source-binding legibility ≠ source binding execution**; **source-binding ≠ approval**; **source-binding ≠ criteria update**; **source-binding ≠ promotion**; **source-binding ≠ authority**.
+- **Statically valid source-binding contract** → **does not** authorize runtime, arming, execution, or live mode; **`PREFLIGHT_REMAINS_BLOCKED=true`** remains default.
+- This clarification closes the **static source-bound legibility boundary only** — **does not** close **GLB-005**, **does not** load, ingest, refresh, validate, migrate, or transform sources, **does not** lift preflight, and **does not** grant arming, execution, or live authority.
+
+**Canonical read-order (existing surfaces; no new surface):**
+
+- [Session Review Pack Contract V0](./MASTER_V2_SESSION_REVIEW_PACK_CONTRACT_V0.md) — static SRP V0 boundary
+- [SRP Real-Binding Accepted Decision V0](./MASTER_V2_SESSION_REVIEW_PACK_REAL_BINDING_ACCEPTED_DECISION_V0.md) — B1/B2 accepted posture
+- [Source-Bound Mode Implementation Brief V0](./MASTER_V2_SESSION_REVIEW_PACK_SOURCE_BOUND_MODE_IMPLEMENTATION_BRIEF_V0.md) — future source-bound contract shape
+- [Session Review Pack Evidence / Provenance Precedence V0](./MASTER_V2_SESSION_REVIEW_PACK_EVIDENCE_PROVENANCE_PRECEDENCE_V0.md) — source-class precedence and missing-source handling
+- Register §6.1 — GLB-006 binding session selection scope (explicit vs navigation-only)
+- Static guards: `tests/ops/test_master_v2_go_live_blocker_register_core_doc_contract_v0.py`, `tests/ops/test_session_review_pack_source_bound_cli_shape_v0.py`
+
 ### 6.6 GLB-008/009/012/013 Repo-Internal Status/Lift Applied Reflection v0
 
 GLB_STATUS_REPO_INTERNAL_WRITE_LIFT_V0=true
