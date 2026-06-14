@@ -3,6 +3,10 @@ from __future__ import annotations
 from pathlib import Path
 
 import pytest
+
+# Skip if FastAPI not installed - must be done before any FastAPI imports
+pytest.importorskip("fastapi")
+
 from fastapi.testclient import TestClient
 
 from src.webui.app import create_app
