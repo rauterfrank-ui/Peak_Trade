@@ -42,11 +42,38 @@ import numpy as np
 
 from src.backtest.engine import BacktestEngine
 from src.core.experiments import log_backtest_result
-from src.strategies import STRATEGY_REGISTRY, load_strategy
+from src.strategies import load_strategy
+
+# Kanonische Demo-Strategien (load_strategy()-Keys; kein direkter Registry-Import).
+ORDER_PIPELINE_DEMO_AVAILABLE_STRATEGY_KEYS: tuple[str, ...] = (
+    "armstrong_cycle",
+    "bollinger_bands",
+    "bouchaud_microstructure",
+    "breakout",
+    "breakout_donchian",
+    "composite",
+    "ecm_cycle",
+    "ehlers_cycle_filter",
+    "el_karoui_vol_model",
+    "ma_crossover",
+    "macd",
+    "mean_reversion",
+    "mean_reversion_channel",
+    "meta_labeling",
+    "momentum_1h",
+    "my_strategy",
+    "regime_aware_portfolio",
+    "rsi_reversion",
+    "rsi_strategy",
+    "trend_following",
+    "vol_breakout",
+    "vol_regime_filter",
+    "vol_regime_overlay",
+)
 
 
 def get_available_strategy_hint_keys() -> list[str]:
-    return sorted(STRATEGY_REGISTRY.keys())
+    return sorted(ORDER_PIPELINE_DEMO_AVAILABLE_STRATEGY_KEYS)
 
 
 def format_available_strategy_hints() -> str:
