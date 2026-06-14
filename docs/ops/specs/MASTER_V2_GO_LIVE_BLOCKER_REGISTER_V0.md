@@ -384,6 +384,93 @@ The **canonical promotion static-boundary owner** is [Promotion State Machine](.
 - [First Live Gate Status Index](./MASTER_V2_FIRST_LIVE_GATE_STATUS_INDEX_V1.md) — gate visibility ≠ promotion command
 - Static guards: `tests/ops/test_master_v2_go_live_blocker_register_core_doc_contract_v0.py`
 
+### 6.5.8 GLB-003 — Evidence Package Provenance Legibility (clarification)
+
+**GLB-003** (*Evidence package incomplete or untraceable*) remains **OPEN** until operator/evidence owner presents a **reviewable evidence package** with **evidence list, provenance, and replayability route** — **not** inferred from partial artifacts, summary lines, `/tmp`-only roots, unverified manifests, copied or manually repaired files, or static docs/tests alone.
+
+The **canonical evidence-package provenance legibility owner** is [Provenance Replayability v1](./MASTER_V2_PROVENANCE_REPLAYABILITY_V1.md) (mapping and audit readability) together with [Paper/Shadow 24/7 Preflight Contract v0](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) §2a.1 (durable primary evidence, manifest, and retention hard gate). Evidence navigation (non-truth): [Evidence Packet and Index Navigation Map v0](./MASTER_V2_EVIDENCE_PACKET_AND_INDEX_NAVIGATION_MAP_V0.md).
+
+**Mandatory provenance and integrity fields (legibility SSOT; operative collection remains operator-scoped):**
+
+1. **Evidence list** — explicit inventory of primary evidence artifacts for the scoped review; missing items **not** treated as passed.
+2. **Source / producer identity** — producing surface, lane, script, or artifact path where applicable.
+3. **Code / repo version binding** — commit SHA or documented repo revision where canonical contracts require it.
+4. **Config / policy version** — contract, schema, or policy version when the surface defines one.
+5. **Input / dataset / artifact reference** — durable path or canonical pointer to referenced artifacts; `/tmp`-only **insufficient**.
+6. **Generation time / ordering** — timestamp or documented sequence basis where applicable.
+7. **Tool / runner version** — runner, CLI, or validation tool identity when recorded by the surface.
+8. **Environment / mode classification** — lane, mode, or authority class where applicable (non-authorizing).
+9. **Correlation / run / session binding** — `session_id`, run id, bundle id, archive root, or equivalent where applicable.
+10. **Integrity data** — `MANIFEST.sha256` with **MANIFEST_VERIFY_RC=0**; checksums for referenced artifacts; unmodified referenced artifacts.
+11. **Durable retention** — primary evidence **outside `/tmp`** in a durable archive root; later re-findable and verifiable.
+12. **Replayability route** — documented reconstruction or replay path per [Provenance Replayability v1](./MASTER_V2_PROVENANCE_REPLAYABILITY_V1.md); mapping **≠** replay guarantee.
+
+- **Incomplete provenance, missing integrity data, or `/tmp`-only evidence** → **fail-closed** / **untrusted or incomplete** — **not** review-complete; **missing evidence is not treated as passed**.
+- **Copied, manually edited, unbound, or unverifiable evidence** → **not** canonical primary evidence.
+- **Summary, FML, reporter, snapshot, event, log, or documentation output** → **does not** replace primary evidence.
+- **Evidence package legibility ≠ evidence generation**; **evidence ≠ approval**; **evidence ≠ criteria update**; **evidence ≠ promotion**; **evidence ≠ authority**.
+- **Statically valid evidence** → **does not** authorize runtime, execution, arming, or live mode.
+- This clarification closes the **static legibility boundary only** — **does not** close **GLB-003**, **does not** generate, reprocess, migrate, or mutate evidence, **does not** lift preflight, and **does not** grant arming, execution, or live authority.
+
+**Canonical read-order (existing surfaces; no new surface):**
+
+- [Provenance Replayability v1](./MASTER_V2_PROVENANCE_REPLAYABILITY_V1.md) — provenance / replayability mapping (non-authorizing)
+- [Paper/Shadow 24/7 Preflight Contract v0](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) — §2a.1 durable primary evidence hard gate
+- [Section 5 Preflight Gap Owner Map Contract v0](../planning/SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md) — §2a.1 criteria blocks (crosslink only; criteria blocks remain authoritative per §6.5.1)
+- Static guards: `tests/ops/test_master_v2_go_live_blocker_register_core_doc_contract_v0.py`
+
+### 6.5.9 GLB-004 — Registry / Session Record Legibility (clarification)
+
+**GLB-004** (*Registry/session records ambiguous*) remains **OPEN** until operator presents **explicit selected session** or **documented deferral** — **not** inferred from newest open row, latest registry entry, navigation `session_focus`, implicit auto-selection, or static docs/tests alone.
+
+The **canonical registry/session-record legibility owner** for explicit session binding versus navigation-only provenance is register **§6.1 GLB-006** (binding session selection scope) together with [Session Review Pack Evidence / Provenance Precedence v0](./MASTER_V2_SESSION_REVIEW_PACK_EVIDENCE_PROVENANCE_PRECEDENCE_V0.md) (source-class precedence; registry is discovery, not approval). Registry taxonomy crosslink: [KB Registry Evidence Taxonomy v0](./MASTER_V2_KB_REGISTRY_EVIDENCE_TAXONOMY_V0.md).
+
+**Mandatory session / registry legibility (legibility SSOT; operative selection remains operator-scoped):**
+
+1. **Explicit `session_id` decision** — for any binding review, signoff, or gate record that asserts **which session** was reviewed; auto-resolved focus **does not** satisfy explicit selection (see §6.1).
+2. **Documented deferral** — when session binding is intentionally deferred, deferral must be explicit (`needs_review`, documented STOP, or equivalent missing/defer posture) — **not** silent ambiguity.
+3. **Registry pointer consistency** — registry references must align with selected session or explicit missing/defer posture; conflicting registry rows → **unresolved** / **needs_review**.
+4. **Navigation vs binding separation** — read-only overview/snapshot `session_focus` (for example from `scripts/report_live_sessions.py`) is **navigation/triage provenance only** — **not** authorization, **not** explicit session selection for binding flows.
+5. **Provenance consistency** — registry/session records must remain consistent with primary evidence and provenance owners per §6.5.8; weaker classes **do not** substitute for explicit session selection.
+
+- **Ambiguous, implicit, or conflicting registry/session records** → **fail-closed** / **blocks review** — no silent winner.
+- **Registry presence ≠ session selected**; **registry ≠ approval**; **navigation snapshot ≠ binding session decision**.
+- **Documentation, tests, and static crosslinks** are **non-authorizing** — they **do not** execute session selection or grant authority.
+- This clarification closes the **static legibility boundary only** — **does not** close **GLB-004**, **does not** mutate registry behavior or `out/ops`, **does not** lift preflight, and **does not** grant arming, execution, or live authority.
+
+**Canonical read-order (existing surfaces; no new surface):**
+
+- Register §6.1 — GLB-006 binding session selection scope (explicit vs navigation-only)
+- [Session Review Pack Evidence / Provenance Precedence v0](./MASTER_V2_SESSION_REVIEW_PACK_EVIDENCE_PROVENANCE_PRECEDENCE_V0.md) — registry and source-class precedence
+- [KB Registry Evidence Taxonomy v0](./MASTER_V2_KB_REGISTRY_EVIDENCE_TAXONOMY_V0.md) — discovery crosslink only
+- Static guards: `tests/ops/test_master_v2_go_live_blocker_register_core_doc_contract_v0.py`
+
+### 6.5.10 GLB-007 — Event Pointer Integrity Legibility (clarification)
+
+**GLB-007** (*Missing event pointer hidden or repaired*) remains **OPEN** until operator/evidence owner preserves **missing/present state** for event pointers in review — **not** inferred from back-filled summaries, repaired artifacts, positive machine lines without pointer completeness, or static docs/tests alone.
+
+The **canonical event-pointer integrity legibility owner** is [Paper/Shadow 24/7 Preflight Contract v0](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) §2b.4 (GLB-019 event-stream boundary; pointer completeness posture) together with [Session Review Pack Evidence / Provenance Precedence v0](./MASTER_V2_SESSION_REVIEW_PACK_EVIDENCE_PROVENANCE_PRECEDENCE_V0.md) (missing-source handling: explicit missing → `needs_review`; no silent back-fill). Event review shape (non-binding): [Session Review Pack Contract v0](./MASTER_V2_SESSION_REVIEW_PACK_CONTRACT_V0.md).
+
+**Mandatory event-pointer posture (legibility SSOT; operative emission remains operator-scoped):**
+
+1. **Present / missing state preserved** — event pointers record `present: true&#47;false` or equivalent explicit missing marker; **missing pointers are not hidden or repaired in-repo**.
+2. **Event identity and source** — stable event or record identifier and producing surface where the contract defines one.
+3. **Ordering / correlation** — sequence, timestamp, and session/run/archive binding where applicable (reuse §6.5.6 identity fields without duplicating GLB-019 closure).
+4. **Integrity binding** — pointers reference manifest-verified durable artifacts where applicable; unverifiable pointers → **untrusted or incomplete**.
+5. **Provenance consistency** — event pointers must align with primary evidence per §6.5.8 and registry/session posture per §6.5.9; contradictions → **unresolved** / **needs_review**.
+
+- **Hidden, repaired, or back-filled missing event pointers** → **fail-closed** — artifacts **must not** be mutated to look complete.
+- **Event pointer legibility ≠ event emission**; **event pointer ≠ decision**; **event pointer ≠ approval**; **summary/reporter output ≠ primary event evidence**.
+- **Documentation, tests, and static crosslinks** are **non-authorizing** — they **do not** emit, replay, or repair events.
+- This clarification closes the **static legibility boundary only** — **does not** close **GLB-007**, **does not** execute event generation or replay, **does not** lift preflight, and **does not** grant arming, execution, or live authority.
+
+**Canonical read-order (existing surfaces; no new surface):**
+
+- [Paper/Shadow 24/7 Preflight Contract v0](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) — §2b.4 GLB-019 event-stream static boundary (pointer completeness crosslink)
+- [Session Review Pack Evidence / Provenance Precedence v0](./MASTER_V2_SESSION_REVIEW_PACK_EVIDENCE_PROVENANCE_PRECEDENCE_V0.md) — missing-source handling
+- Register §6.5.6 — GLB-019 event-stream legibility (reuse; no duplication)
+- Static guards: `tests/ops/test_master_v2_go_live_blocker_register_core_doc_contract_v0.py`
+
 ### 6.6 GLB-008/009/012/013 Repo-Internal Status/Lift Applied Reflection v0
 
 GLB_STATUS_REPO_INTERNAL_WRITE_LIFT_V0=true
