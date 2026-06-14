@@ -253,9 +253,9 @@ class TestSmokeTestFailure:
         """Exceptions im Backtest werden abgefangen."""
         from src.strategies.diagnostics import run_single_strategy_smoke
 
-        # Mock die Strategy-Registry um einen Fehler zu erzeugen
-        with patch("src.strategies.registry.get_strategy_spec") as mock_spec:
-            mock_spec.side_effect = RuntimeError("Simulated backtest error")
+        # Mock load_strategy um einen Fehler zu erzeugen
+        with patch("src.strategies.load_strategy") as mock_load:
+            mock_load.side_effect = RuntimeError("Simulated backtest error")
 
             result = run_single_strategy_smoke(
                 strategy_name="ma_crossover",
@@ -1029,6 +1029,127 @@ class TestPhase79ReportsWithDataHealth:
 
         assert "| Data-Health |" in content
         assert "| ok |" in content
+
+
+# ============================================================================
+# TEST 12: run_single_strategy_smoke load_strategy() MIGRATION (offline)
+# ============================================================================
+
+
+class TestRunSingleStrategySmokeLoadStrategyMigration:
+    """Offline guards for canonical run_single_strategy_smoke binding migration."""
+
+    TARGET_MODULE = PROJECT_ROOT / "src/strategies/diagnostics.py"
+    FORBIDDEN_NAMES = ("get_strategy_spec", "spec.cls")
+
+    def _read_source(self) -> str:
+        return self.TARGET_MODULE.read_text(encoding="utf-8")
+
+    def _run_single_strategy_smoke_source(self) -> str:
+        import ast
+
+        tree = ast.parse(self._read_source())
+        for node in tree.body:
+            if isinstance(node, ast.FunctionDef) and node.name == "run_single_strategy_smoke":
+                return ast.get_source_segment(self._read_source(), node) or ""
+        raise AssertionError("run_single_strategy_smoke not found")
+
+    def test_source_uses_load_strategy(self) -> None:
+        source = self._run_single_strategy_smoke_source()
+        assert "load_strategy" in source
+
+    def test_source_has_no_direct_registry_binding_bypass(self) -> None:
+        source = self._run_single_strategy_smoke_source()
+        for forbidden in self.FORBIDDEN_NAMES:
+            assert forbidden not in source
+
+    def test_run_single_strategy_smoke_calls_load_strategy(self, small_ohlcv_df) -> None:
+        from src.strategies.diagnostics import run_single_strategy_smoke
+
+        calls: list[str] = []
+        original = __import__("src.strategies", fromlist=["load_strategy"]).load_strategy
+
+        def _track(key: str):
+            calls.append(key)
+            return original(key)
+
+        with patch("src.strategies.load_strategy", side_effect=_track):
+            with patch("src.backtest.engine.BacktestEngine") as engine_cls:
+                engine_cls.return_value.run_realistic.return_value = MagicMock(
+                    stats={
+                        "total_return": 0.01,
+                        "sharpe": 1.0,
+                        "max_drawdown": -0.05,
+                        "total_trades": 3,
+                        "win_rate": 0.5,
+                        "profit_factor": 1.2,
+                    }
+                )
+                result = run_single_strategy_smoke(
+                    strategy_name="ma_crossover",
+                    df=small_ohlcv_df,
+                )
+
+        assert calls == ["ma_crossover"]
+        assert result.status == "ok"
+        assert result.name == "ma_crossover"
+
+    def test_run_single_strategy_smoke_passes_defaults_as_strategy_params(
+        self, small_ohlcv_df
+    ) -> None:
+        from src.strategies.diagnostics import run_single_strategy_smoke
+
+        captured_params: dict = {}
+
+        with patch("src.backtest.engine.BacktestEngine") as engine_cls:
+            engine_instance = engine_cls.return_value
+
+            def _capture(**kwargs):
+                captured_params.update(kwargs)
+                return MagicMock(
+                    stats={
+                        "total_return": 0.01,
+                        "sharpe": 1.0,
+                        "max_drawdown": -0.05,
+                        "total_trades": 3,
+                    }
+                )
+
+            engine_instance.run_realistic.side_effect = _capture
+            run_single_strategy_smoke(
+                strategy_name="ma_crossover",
+                df=small_ohlcv_df,
+            )
+
+        assert "strategy_params" in captured_params
+        assert isinstance(captured_params["strategy_params"], dict)
+
+    def test_run_single_strategy_smoke_unknown_strategy_fail_closed(self, small_ohlcv_df) -> None:
+        from src.strategies.diagnostics import run_single_strategy_smoke
+
+        result = run_single_strategy_smoke(
+            strategy_name="nonexistent_strategy_xyz",
+            df=small_ohlcv_df,
+        )
+
+        assert result.status == "fail"
+        assert result.error is not None
+        assert "nonexistent_strategy_xyz" in result.error
+
+    def test_run_single_strategy_smoke_load_strategy_error_fail_closed(
+        self, small_ohlcv_df
+    ) -> None:
+        from src.strategies.diagnostics import run_single_strategy_smoke
+
+        with patch("src.strategies.load_strategy") as mock_load:
+            mock_load.side_effect = ValueError("binding failed")
+            result = run_single_strategy_smoke(
+                strategy_name="ma_crossover",
+                df=small_ohlcv_df,
+            )
+
+        assert result.status == "fail"
+        assert "binding failed" in result.error
 
 
 # ============================================================================

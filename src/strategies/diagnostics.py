@@ -460,33 +460,18 @@ def run_single_strategy_smoke(
 
     try:
         # Imports hier, um Fehler abzufangen
-        from src.strategies.registry import get_strategy_spec
+        from src.strategies import load_strategy
         from src.backtest.engine import BacktestEngine
         from src.core.peak_config import load_config
         from src.core.position_sizing import build_position_sizer_from_config
         from src.core.risk import build_risk_manager_from_config
 
-        # Strategie aus Registry holen
-        spec = get_strategy_spec(strategy_name)
-
         # Strategie-Defaults aus Config laden
         defaults = get_strategy_defaults(strategy_name, config_path)
         category = get_strategy_category(strategy_name, config_path)
 
-        # Strategie instanziieren
-        # Manche Strategien brauchen spezielle Parameter
-        try:
-            if defaults:
-                strategy = spec.cls(**defaults)
-            else:
-                strategy = spec.cls()
-        except TypeError as e:
-            # Wenn das nicht klappt, versuche ohne Parameter
-            strategy = spec.cls()
-
-        # Signal-Funktion erstellen
-        def strategy_fn(data: pd.DataFrame, params: Dict) -> pd.Series:
-            return strategy.generate_signals(data)
+        # Strategie ueber kanonisches load_strategy() binden
+        strategy_fn = load_strategy(strategy_name)
 
         # Config laden (fuer BacktestEngine)
         cfg = load_config()
