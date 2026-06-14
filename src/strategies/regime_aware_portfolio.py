@@ -283,7 +283,9 @@ class RegimeAwarePortfolioStrategy(BaseStrategy):
         if self._component_strategies:
             return  # Bereits geladen
 
-        from .registry import create_strategy_from_config, get_strategy_spec
+        from src.strategies import load_strategy
+
+        from .registry import get_strategy_spec
         from ..core.peak_config import load_config
 
         cfg = load_config()
@@ -291,7 +293,9 @@ class RegimeAwarePortfolioStrategy(BaseStrategy):
         # Lade Komponenten-Strategien
         for component_name in self.components:
             try:
-                strategy = create_strategy_from_config(component_name, cfg)
+                spec = get_strategy_spec(component_name)
+                load_strategy(component_name)
+                strategy = spec.cls.from_config(cfg, section=spec.config_section)
                 self._component_strategies.append(strategy)
             except Exception as e:
                 logger.error(f"Konnte Komponente '{component_name}' nicht laden: {e}")
@@ -300,16 +304,13 @@ class RegimeAwarePortfolioStrategy(BaseStrategy):
         # Lade Regime-Strategie
         try:
             overrides = self._merge_vol_regime_filter_cfg_overrides()
+            spec = get_strategy_spec(self.regime_strategy_name)
+            load_strategy(self.regime_strategy_name)
             if self.regime_strategy_name == "vol_regime_filter" and overrides:
-                from .vol_regime_filter import VolRegimeFilter
-
-                spec = get_strategy_spec("vol_regime_filter")
                 cfg_ov = _ConfigGetOverlay(cfg, overrides)
-                self._regime_strategy = VolRegimeFilter.from_config(
-                    cfg_ov, section=spec.config_section
-                )
+                self._regime_strategy = spec.cls.from_config(cfg_ov, section=spec.config_section)
             else:
-                self._regime_strategy = create_strategy_from_config(self.regime_strategy_name, cfg)
+                self._regime_strategy = spec.cls.from_config(cfg, section=spec.config_section)
             # Prüfe ob Regime-Mode aktiviert ist
             if (
                 hasattr(self._regime_strategy, "regime_mode")
