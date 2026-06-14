@@ -231,6 +231,85 @@ def test_glb020_promotion_boundary_crosslink_guard_v1() -> None:
     assert "PROMOTION_EXECUTED=true" not in collapsed
 
 
+def test_glb003_evidence_provenance_boundary_crosslink_guard_v1() -> None:
+    """GLB003_EVIDENCE_PROVENANCE_BOUNDARY_CROSSLINK_GUARD_V1"""
+    row = _register_table_row("GLB-003")
+    assert "Evidence package incomplete or untraceable" in row
+    assert "| OPEN |" in row
+
+    text = _read(BLOCKER_REGISTER)
+    plain = _plain(BLOCKER_REGISTER)
+    section = plain.split("6.5.8 GLB-003")[1].split("6.5.9 GLB-004")[0]
+
+    assert "MASTER_V2_PROVENANCE_REPLAYABILITY_V1.md" in text
+    assert "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md" in text
+    assert "Evidence Package Provenance Legibility" in section
+    assert "MANIFEST.sha256" in section
+    assert "MANIFEST_VERIFY_RC=0" in section
+    assert "/tmp" in section
+    assert "fail-closed" in section.lower()
+    assert "does not close GLB-003" in section
+    assert "does not generate" in section.lower() or "does not generate, reprocess" in section
+    assert "evidence" in section.lower() and "approval" in section.lower()
+    assert "evidence" in section.lower() and "promotion" in section.lower()
+    assert "evidence" in section.lower() and "authority" in section.lower()
+    assert "replayability route" in section.lower()
+    assert "non-authorizing" in section.lower() or "does not authorize" in section.lower()
+    collapsed = section.replace("**", "")
+    assert "READY_FOR_OPERATOR_ARMING=true" not in collapsed
+    assert "LIVE_AUTHORIZED=true" not in collapsed
+    assert "PREFLIGHT_REMAINS_BLOCKED=false" not in collapsed
+
+
+def test_glb004_registry_session_record_boundary_crosslink_guard_v1() -> None:
+    """GLB004_REGISTRY_SESSION_RECORD_BOUNDARY_CROSSLINK_GUARD_V1"""
+    row = _register_table_row("GLB-004")
+    assert "Registry/session records ambiguous" in row
+    assert "| OPEN |" in row
+
+    text = _read(BLOCKER_REGISTER)
+    plain = _plain(BLOCKER_REGISTER)
+    section = plain.split("6.5.9 GLB-004")[1].split("6.5.10 GLB-007")[0]
+
+    assert "MASTER_V2_SESSION_REVIEW_PACK_EVIDENCE_PROVENANCE_PRECEDENCE_V0.md" in text
+    assert "Registry / Session Record Legibility" in section
+    assert "session_id" in section.lower()
+    assert "6.1 GLB-006" in section or "GLB-006" in section
+    assert "fail-closed" in section.lower()
+    assert "does not close GLB-004" in section
+    assert "navigation" in section.lower()
+    assert "registry" in section.lower() and "approval" in section.lower()
+    assert "non-authorizing" in section.lower()
+    collapsed = section.replace("**", "")
+    assert "READY_FOR_OPERATOR_ARMING=true" not in collapsed
+    assert "LIVE_AUTHORIZED=true" not in collapsed
+
+
+def test_glb007_event_pointer_integrity_boundary_crosslink_guard_v1() -> None:
+    """GLB007_EVENT_POINTER_INTEGRITY_BOUNDARY_CROSSLINK_GUARD_V1"""
+    row = _register_table_row("GLB-007")
+    assert "Missing event pointer hidden or repaired" in row
+    assert "| OPEN |" in row
+
+    text = _read(BLOCKER_REGISTER)
+    plain = _plain(BLOCKER_REGISTER)
+    section = plain.split("6.5.10 GLB-007")[1].split("6.6 GLB-008")[0]
+
+    assert "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md" in text
+    assert "MASTER_V2_SESSION_REVIEW_PACK_EVIDENCE_PROVENANCE_PRECEDENCE_V0.md" in text
+    assert "Event Pointer Integrity Legibility" in section
+    assert "missing" in section.lower() and "present" in section.lower()
+    assert "fail-closed" in section.lower()
+    assert "does not close GLB-007" in section
+    assert "mutated" in section.lower() or "repaired" in section.lower()
+    assert "event" in section.lower() and "approval" in section.lower()
+    assert "non-authorizing" in section.lower()
+    collapsed = section.replace("**", "")
+    assert "READY_FOR_OPERATOR_ARMING=true" not in collapsed
+    assert "LIVE_AUTHORIZED=true" not in collapsed
+    assert "PREFLIGHT_REMAINS_BLOCKED=false" not in collapsed
+
+
 def test_glb015_repo_docs_not_final_approval_blocked_v0() -> None:
     row = _register_table_row("GLB-015")
     assert "Repo docs treated as approval" in row
