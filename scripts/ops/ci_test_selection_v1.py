@@ -86,12 +86,16 @@ def categorize(path: str) -> str:
     return "unknown"
 
 
+def _repo_path_exists(path: str) -> bool:
+    return Path(path).is_file()
+
+
 def _focused_targets(files: list[str]) -> tuple[str, ...]:
     targets: list[str] = []
     seen: set[str] = set()
 
     def add(path: str) -> None:
-        if path not in seen:
+        if path not in seen and _repo_path_exists(path):
             seen.add(path)
             targets.append(path)
 
@@ -100,8 +104,11 @@ def _focused_targets(files: list[str]) -> tuple[str, ...]:
             add(path)
         elif path.startswith("scripts/") and path.endswith(".py"):
             script_stem = PurePosixPath(path).stem
-            add(f"tests/scripts/test_{script_stem}.py")
-            add(f"tests/scripts/test_{script_stem}_load_strategy_v1.py")
+            for candidate in (
+                f"tests/scripts/test_{script_stem}_load_strategy_v1.py",
+                f"tests/scripts/test_{script_stem}.py",
+            ):
+                add(candidate)
         elif path == ".github/workflows/ci.yml":
             add("tests/ci/test_ci_diff_aware_test_selection_v1.py")
             add("tests/ci/test_ci_static_contract_narrow_code_filter_contract_v0.py")

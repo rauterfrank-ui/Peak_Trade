@@ -104,7 +104,24 @@ def test_selector_global_test_infra_full() -> None:
 def test_selector_scripts_focused() -> None:
     sel = _run_selector("scripts/demo_strategy_research.py")
     assert sel["test_selection_mode"] == "FOCUSED"
-    assert "tests/scripts/test_demo_strategy_research" in sel["focused_pytest_targets"]
+    assert (
+        "tests/scripts/test_demo_strategy_research_load_strategy_v1.py"
+        in sel["focused_pytest_targets"]
+    )
+    assert "tests/scripts/test_demo_strategy_research.py" not in sel["focused_pytest_targets"]
+
+
+def test_selector_scripts_focused_omits_nonexistent_test_paths() -> None:
+    sel = _run_selector(
+        "scripts/run_momentum_realistic.py",
+        "scripts/run_offline_realtime_ma_crossover.py",
+    )
+    assert sel["test_selection_mode"] == "FOCUSED"
+    targets = sel["focused_pytest_targets"].split()
+    assert "tests/scripts/test_run_momentum_realistic_load_strategy_v1.py" in targets
+    assert "tests/scripts/test_run_offline_realtime_ma_crossover_load_strategy_v1.py" in targets
+    assert "tests/scripts/test_run_momentum_realistic.py" not in targets
+    assert "tests/scripts/test_run_offline_realtime_ma_crossover.py" not in targets
 
 
 def test_selector_unknown_fail_closed_full() -> None:
