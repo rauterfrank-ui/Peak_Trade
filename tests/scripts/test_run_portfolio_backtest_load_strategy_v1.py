@@ -6,10 +6,11 @@ from __future__ import annotations
 
 import ast
 import importlib
+import inspect
 import subprocess
 import sys
 from pathlib import Path
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, call, patch
 
 import numpy as np
 import pandas as pd
@@ -111,6 +112,56 @@ def test_build_strategy_params_includes_section_and_stop_pct() -> None:
     assert params["slow_window"] == 50
     assert params["price_col"] == "close"
     assert params["stop_pct"] == 0.02
+
+
+def test_build_strategy_params_source_uses_load_strategy_not_from_config_bypass() -> None:
+    source = inspect.getsource(portfolio_script._build_strategy_params_from_config)
+    assert "load_strategy" in source
+    assert "get_strategy_spec" not in source
+    assert ".from_config" not in source
+
+
+def test_build_strategy_params_calls_load_strategy_for_registry_validation() -> None:
+    cfg = _minimal_cfg(MA_CROSSOVER_KEY, fast_window=10, slow_window=50, price_col="close")
+
+    with patch.object(portfolio_script, "load_strategy") as load_mock:
+        load_mock.return_value = MagicMock()
+        params = portfolio_script._build_strategy_params_from_config(cfg, MA_CROSSOVER_KEY)
+
+    load_mock.assert_called_once_with(MA_CROSSOVER_KEY)
+    assert params["fast_window"] == 10
+    assert params["stop_pct"] == 0.02
+
+
+def test_build_strategy_params_isolated_per_strategy_key() -> None:
+    from src.core.peak_config import PeakConfig
+
+    cfg = PeakConfig(
+        raw={
+            "environment": {"mode": "backtest"},
+            "strategy": {
+                MA_CROSSOVER_KEY: {"fast_window": 10, "slow_window": 50, "price_col": "close"},
+                MOMENTUM_KEY: {
+                    "lookback_period": 15,
+                    "entry_threshold": 0.02,
+                    "exit_threshold": -0.01,
+                },
+            },
+        }
+    )
+    ma_params = portfolio_script._build_strategy_params_from_config(cfg, MA_CROSSOVER_KEY)
+    mom_params = portfolio_script._build_strategy_params_from_config(cfg, MOMENTUM_KEY)
+
+    assert "lookback_period" not in ma_params
+    assert "fast_window" not in mom_params
+    assert ma_params["fast_window"] == 10
+    assert mom_params["lookback_period"] == 15
+
+
+def test_build_strategy_params_unknown_strategy_fails_closed() -> None:
+    cfg = _minimal_cfg(MA_CROSSOVER_KEY, fast_window=10, slow_window=50, price_col="close")
+    with pytest.raises(ValueError, match="Unbekannte Strategie"):
+        portfolio_script._build_strategy_params_from_config(cfg, "definitely_not_a_strategy_xyz")
 
 
 def test_load_strategy_ma_crossover_matches_create_strategy_from_config_signals() -> None:
@@ -219,7 +270,8 @@ def test_run_single_asset_backtest_calls_load_strategy_and_passes_full_params() 
             n_bars=80,
         )
 
-    load_strategy_mock.assert_called_once_with(MA_CROSSOVER_KEY)
+    load_strategy_mock.assert_has_calls([call(MA_CROSSOVER_KEY), call(MA_CROSSOVER_KEY)])
+    assert load_strategy_mock.call_count == 2
     assert captured["params"]["fast_window"] == 10
     assert captured["params"]["slow_window"] == 50
     assert captured["params"]["stop_pct"] == 0.02
