@@ -15,6 +15,7 @@ import pandas as pd
 import numpy as np
 from datetime import datetime, timedelta
 from pathlib import Path
+from unittest.mock import MagicMock, patch
 
 
 # =============================================================================
@@ -625,3 +626,135 @@ class TestIntegration:
         assert summary.duration_seconds >= 0
         assert summary.started_at is not None
         assert summary.completed_at is not None
+
+
+# =============================================================================
+# SWEEP ENGINE load_strategy() MIGRATION (offline, fail-closed)
+# =============================================================================
+
+
+class TestSweepEngineLoadStrategyMigration:
+    """Offline guards for canonical SweepEngine strategy binding migration."""
+
+    TARGET_MODULE = Path(__file__).resolve().parent.parent / "src/sweeps/engine.py"
+    MA_CROSSOVER_KEY = "ma_crossover"
+
+    def _read_engine_source(self) -> str:
+        return self.TARGET_MODULE.read_text(encoding="utf-8")
+
+    def test_engine_source_uses_load_strategy(self) -> None:
+        assert "load_strategy" in self._read_engine_source()
+
+    def test_engine_source_has_no_create_strategy_from_config(self) -> None:
+        assert "create_strategy_from_config" not in self._read_engine_source()
+
+    def test_call_chain_run_sweep_strategy_to_engine(self) -> None:
+        runner = (
+            Path(__file__).resolve().parent.parent / "scripts/run_sweep_strategy.py"
+        ).read_text(encoding="utf-8")
+        assert "SweepEngine" in runner
+        assert "from src.sweeps import" in runner
+
+    def test_run_sweep_script_unchanged_binding_path(self) -> None:
+        run_sweep = (Path(__file__).resolve().parent.parent / "scripts/run_sweep.py").read_text(
+            encoding="utf-8"
+        )
+        assert "load_strategy" in run_sweep
+        assert "SweepEngine" not in run_sweep
+
+    def test_run_single_backtest_calls_load_strategy_with_effective_params(
+        self, sample_ohlcv_data
+    ) -> None:
+        from src.core.peak_config import PeakConfig
+        from src.sweeps import SweepEngine
+
+        captured: dict[str, object] = {}
+
+        def fake_signal_fn(df, params):
+            captured["params"] = dict(params)
+            return pd.Series(np.zeros(len(df)), index=df.index)
+
+        cfg = PeakConfig(
+            raw={
+                "environment": {"mode": "backtest"},
+                "strategy": {
+                    self.MA_CROSSOVER_KEY: {
+                        "fast_window": 20,
+                        "slow_window": 50,
+                        "price_col": "close",
+                    },
+                },
+            }
+        )
+
+        engine = SweepEngine(verbose=False)
+        combo_params = {"fast_window": 10, "slow_window": 40}
+
+        mock_result = MagicMock()
+        mock_result.stats = {"total_return": 0.0, "sharpe": 0.0}
+
+        with (
+            patch("src.sweeps.engine.load_strategy", return_value=fake_signal_fn) as mock,
+            patch("src.sweeps.engine.BacktestEngine") as engine_cls,
+        ):
+
+            def run_realistic_side_effect(df, strategy_signal_fn, strategy_params, **kwargs):
+                strategy_signal_fn(df, strategy_params)
+                return mock_result
+
+            engine_cls.return_value.run_realistic.side_effect = run_realistic_side_effect
+            stats, _ = engine._run_single_backtest(
+                data=sample_ohlcv_data,
+                strategy_key=self.MA_CROSSOVER_KEY,
+                params=combo_params,
+                cfg=cfg,
+            )
+
+        mock.assert_called_once_with(self.MA_CROSSOVER_KEY)
+        assert captured["params"]["fast_window"] == 10
+        assert captured["params"]["slow_window"] == 40
+        assert isinstance(stats, dict)
+
+    def test_isolated_load_strategy_binding_per_backtest_call(self, sample_ohlcv_data) -> None:
+        from src.core.peak_config import PeakConfig
+        from src.sweeps import SweepEngine
+
+        load_calls: list[str] = []
+
+        def fake_signal_fn(df, params):
+            return pd.Series(np.zeros(len(df)), index=df.index)
+
+        def side_effect(strategy_key: str):
+            load_calls.append(strategy_key)
+            return fake_signal_fn
+
+        cfg = PeakConfig(
+            raw={
+                "environment": {"mode": "backtest"},
+                "strategy": {self.MA_CROSSOVER_KEY: {"fast_window": 20, "slow_window": 50}},
+            }
+        )
+        engine = SweepEngine(verbose=False)
+
+        mock_result = MagicMock()
+        mock_result.stats = {"total_return": 0.0, "sharpe": 0.0}
+
+        with (
+            patch("src.sweeps.engine.load_strategy", side_effect=side_effect),
+            patch("src.sweeps.engine.BacktestEngine") as engine_cls,
+        ):
+            engine_cls.return_value.run_realistic.return_value = mock_result
+            engine._run_single_backtest(
+                data=sample_ohlcv_data,
+                strategy_key=self.MA_CROSSOVER_KEY,
+                params={"fast_window": 10, "slow_window": 40},
+                cfg=cfg,
+            )
+            engine._run_single_backtest(
+                data=sample_ohlcv_data,
+                strategy_key=self.MA_CROSSOVER_KEY,
+                params={"fast_window": 12, "slow_window": 42},
+                cfg=cfg,
+            )
+
+        assert load_calls == [self.MA_CROSSOVER_KEY, self.MA_CROSSOVER_KEY]
