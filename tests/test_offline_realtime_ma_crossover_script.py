@@ -259,7 +259,7 @@ class TestPipelineBuilder:
 
         assert "synth_result" in components
         assert "feed" in components
-        assert "strategy" in components
+        assert "strategy_params" in components
         assert "pipeline" in components
         assert "env_config" in components
         assert "run_id" in components
@@ -269,8 +269,8 @@ class TestPipelineBuilder:
         assert components["internal_symbol"] == "BTCEUR"
 
         # Prüfe Strategie-Parameter
-        assert components["strategy"].fast_window == 10
-        assert components["strategy"].slow_window == 30
+        assert components["strategy_params"]["fast_window"] == 10
+        assert components["strategy_params"]["slow_window"] == 30
 
     def test_build_pipeline_different_symbols(self):
         """Test: Pipeline mit verschiedenen Symbolen."""
@@ -325,7 +325,7 @@ class TestPipelineExecution:
         # Pipeline ausführen
         perf_metrics = run_pipeline(
             pipeline=components["pipeline"],
-            strategy=components["strategy"],
+            strategy_params=components["strategy_params"],
             feed=components["feed"],
             symbol=components["internal_symbol"],
         )
@@ -361,7 +361,7 @@ class TestPipelineExecution:
         components_fast = build_offline_ma_crossover_pipeline(args_fast)
         perf_fast = run_pipeline(
             pipeline=components_fast["pipeline"],
-            strategy=components_fast["strategy"],
+            strategy_params=components_fast["strategy_params"],
             feed=components_fast["feed"],
             symbol=components_fast["internal_symbol"],
         )
@@ -373,7 +373,7 @@ class TestPipelineExecution:
         components_slow = build_offline_ma_crossover_pipeline(args_slow)
         perf_slow = run_pipeline(
             pipeline=components_slow["pipeline"],
-            strategy=components_slow["strategy"],
+            strategy_params=components_slow["strategy_params"],
             feed=components_slow["feed"],
             symbol=components_slow["internal_symbol"],
         )
@@ -421,7 +421,7 @@ class TestIntegration:
         started_at = datetime.now()
         perf_metrics = run_pipeline(
             pipeline=components["pipeline"],
-            strategy=components["strategy"],
+            strategy_params=components["strategy_params"],
             feed=components["feed"],
             symbol=components["internal_symbol"],
         )
