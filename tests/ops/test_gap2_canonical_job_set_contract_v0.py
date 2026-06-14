@@ -5,6 +5,9 @@ ROOT = Path(__file__).resolve().parents[2]
 DOC = ROOT / "docs" / "ops" / "planning" / "SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md"
 CI_AUDIT_RECIPROCAL_OWNER = ROOT / "docs" / "ops" / "CI_AUDIT_KNOWN_ISSUES.md"
 GAP2_SECTION_HEADER = "## Gap 2 Canonical Job Set Contract v0"
+GAP2_CRITERIA_SSOT_REFLECTION_HEADER = (
+    "## Gap 2 Criteria-SSOT Repo-Internal Write/Lift Applied Reflection v0"
+)
 GAP2A1_SECTION_HEADER = "## §2a.1 Primary Evidence Enforcement Contract v0"
 GAP2_PARALLEL_MARKERS = (
     "GAP2_CANONICAL_JOB_SET_CONTRACT_V0=true",
@@ -19,7 +22,7 @@ _MARKER_TRUE = "=true"
 
 
 def _gap2_section(text: str) -> str:
-    return text.split(GAP2_SECTION_HEADER, 1)[1].split("## Final Machine Lines", 1)[0]
+    return text.split(GAP2_SECTION_HEADER, 1)[1].split(GAP2_CRITERIA_SSOT_REFLECTION_HEADER, 1)[0]
 
 
 def test_gap2_canonical_job_set_contract_is_present_and_non_authorizing():

@@ -2,7 +2,7 @@
 docs_token: DOCS_TOKEN_MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0
 status: draft
 scope: docs-only, non-authorizing Master V2 Go-Live blocker register
-last_updated: 2026-06-09
+last_updated: 2026-06-15
 ---
 
 # Master V2 Go-Live Blocker Register V0
@@ -217,6 +217,51 @@ When [Section 5 Preflight Gap Owner Map Contract v0](../planning/SECTION5_PREFLI
 
 - [Section 5 Preflight Gap Owner Map Contract v0](../planning/SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md) — **SECTION5 Criteria-Block-Precedence vs Class4 Final Machine Lines GLB-015 Authority Boundary v0**
 - Static guards: `tests/ops/test_section5_preflight_gap_owner_map_contract_v0.py`, `tests/ops/test_master_v2_go_live_blocker_register_core_doc_contract_v0.py`
+
+### 6.5.2 GLB-014 — Authority Route Legibility (clarification)
+
+**GLB-014** (*External/operator Go-No-Go owner unclear*) remains **BLOCKED** until **external/operator authority** records an **explicit**, **named Go-No-Go decision** via the canonical approval-record route — **not** inferred from repo docs, archive closeouts, evidence maps, operator naming, or static tests.
+
+For **SECTION5 / Preflight / bounded-pilot Go-No-Go** decisions, the **canonical authority-route legibility owner** is [Decision Authority Map](./MASTER_V2_DECISION_AUTHORITY_MAP_V1.md) §10. That section names which surfaces are **evidence, mapping, reporting, or preparation only** versus which **existing record type** represents a **real operator/external approval**.
+
+- **Evidence, mapping, FML reflection, docs closeouts, readiness ledger/gate snapshots, and static tests** are **non-authorizing** review inputs — **not** Go-No-Go approval records.
+- **Owner/Operator naming** (including Frank Rauter as Owner/Operator in durable archive metadata) is **legibility only** — it **does not** create automatic approval, arming, execution, or live authority.
+- **Approval record type** for bounded-pilot / preflight progression: explicit **Stage-3 scoped executing approval record** or external **LB-APR-001 class** human Go record — per [Runtime Lane Taxonomy + Authority Levels Contract v0](./RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md) §12 and [Decision Authority Map](./MASTER_V2_DECISION_AUTHORITY_MAP_V1.md) §10.
+- **Missing, ambiguous, or non-canonically evidenced authority route** → **fail-closed** / **BLOCKED** (no positive default authorization).
+- When competing document locations disagree, **[Decision Authority Map](./MASTER_V2_DECISION_AUTHORITY_MAP_V1.md)** is the **sole canonical authority-route owner** for legibility — not parallel maps, ledgers, index surfaces, or reflection blocks.
+- This clarification closes the **static legibility boundary only** — **does not** close **GLB-014**, **does not** lift preflight, **does not** grant arming, execution, or live authority.
+
+**Canonical read-order (existing surfaces; no new surface):**
+
+- [Decision Authority Map](./MASTER_V2_DECISION_AUTHORITY_MAP_V1.md) — §10 SECTION5 / Preflight Go-No-Go authority route legibility
+- [Runtime Lane Taxonomy + Authority Levels Contract v0](./RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md) — `scoped_runtime_exception`, `go_no_go_route_selected`, `go_decision_granted`, `live_authority_requires_separate_record`
+- Static guards: `tests/ops/test_master_v2_go_live_blocker_register_core_doc_contract_v0.py`, `tests/ops/test_master_v2_decision_authority_map_static_crosslink_contract_v0.py`
+
+### 6.5.3 GLB-016 — Preflight Packet Reproducibility (clarification)
+
+**GLB-016** (*Preflight packet unavailable / cannot be reproduced*) remains **BLOCKED** until operator can present a **reproducible preflight packet** meeting canonical mandatory-artifact requirements — **not** inferred from partial evidence, `/tmp`-only roots, or unverified manifests.
+
+A **reproducible preflight packet** for review is defined by [Paper/Shadow 24/7 Preflight Contract v0](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) §2a, §2b.1, and §2b.2 (GLB-016 Preflight Packet Reproducibility boundary). Mandatory components include (where applicable to the packet scope):
+
+- durable archive root **outside `/tmp`**
+- `MANIFEST.sha256` with **MANIFEST_VERIFY_RC=0**
+- commit-SHA / repo revision binding where canonical contracts require it
+- config snapshot (secrets redacted) when applicable
+- required primary evidence artifacts per §2a
+- closeout reference when applicable
+- explicit blocked posture: reproducible packet **does not** imply approval or arming
+
+- **Incomplete packet** (missing mandatory artifacts, hashes, or manifest verification) → **fail-closed** / **BLOCKED**
+- **Reproducible packet ≠ approval**; **reproducible packet ≠ ready for arming**; **`PREFLIGHT_REMAINS_BLOCKED=true`** remains default until explicit authority closes **GLB-016**
+- **`/tmp`-only evidence** does **not** satisfy reproducible packet requirements
+- Reproduction must yield the **same static content** or **same verifiable references** (manifest-verified durable tree) — not a re-interpreted or partial substitute
+- This clarification closes the **static reproducibility boundary only** — **does not** close **GLB-016**, **does not** execute preflight scripts, **does not** generate new packets, **does not** mutate existing run-evidence datasets, and **does not** grant arming, execution, or live authority
+
+**Canonical read-order (existing surfaces; no new surface):**
+
+- [Paper/Shadow 24/7 Preflight Contract v0](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) — §2b.2 GLB-016 Preflight Packet Reproducibility boundary
+- [Section 5 Preflight Gap Owner Map Contract v0](../planning/SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md) — §2a.1 durable primary evidence (crosslink only; criteria blocks remain authoritative per §6.5.1)
+- Static guards: `tests/ops/test_master_v2_go_live_blocker_register_core_doc_contract_v0.py`, `tests/ops/test_master_v2_decision_authority_map_static_crosslink_contract_v0.py`
 
 ### 6.6 GLB-008/009/012/013 Repo-Internal Status/Lift Applied Reflection v0
 

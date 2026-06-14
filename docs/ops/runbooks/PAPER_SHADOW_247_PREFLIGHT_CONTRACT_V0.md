@@ -325,6 +325,54 @@ Planning-only closeouts under `{archive}&#47;planning&#47;` remain valid per §2
 
 Cross-reference: [Runtime Lane Taxonomy + Authority Levels Contract v0](../specs/RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md) §2 index; shared manifest helper [primary_evidence_retention_v0.py](../../../scripts/ops/primary_evidence_retention_v0.py) (reuse semantics only).
 
+## 2b.2 GLB-016 Preflight Packet Reproducibility Boundary v0
+
+```
+GLB016_PREFLIGHT_PACKET_REPRODUCIBILITY_BOUNDARY_V0=true
+PREFLIGHT_PACKET_REQUIRED_ARTIFACTS_EXPLICIT=true
+PREFLIGHT_PACKET_VERSION_BINDING_EXPLICIT=true
+PREFLIGHT_PACKET_MANIFEST_VERIFICATION_REQUIRED=true
+INCOMPLETE_PACKET_FAIL_CLOSED=true
+REPRODUCIBLE_PACKET_NON_AUTHORIZING=true
+TMP_ONLY_PACKET_INCOMPLETE=true
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+EXECUTION_AUTHORIZED=false
+LIVE_AUTHORIZED=false
+```
+
+This section closes the **static preflight-packet reproducibility boundary** for [GLB-016](../specs/MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md) §6.5.3. It **does not** close **GLB-016**, **does not** execute preflight scripts, **does not** generate new packets, **does not** mutate existing run-evidence datasets, and **does not** grant arming, execution, or live authority.
+
+### Mandatory preflight packet components (reproducibility SSOT)
+
+A **reproducible preflight packet** presented for operator/reviewer inspection must include **all** applicable mandatory artifacts below on a **durable archive root outside `/tmp`**:
+
+1. **Durable archive root** — operator archive under `Peak_Trade_runtime_evidence_archive_*` (not `/tmp`-only).
+2. **Checksum manifest** — `MANIFEST.sha256` over archived packet files.
+3. **Manifest verification** — `MANIFEST_VERIFY_RC=0` (`shasum -a 256 -c MANIFEST.sha256` or shared `verify_manifest_sha256()` semantics).
+4. **Version / commit binding** — repo revision (commit-SHA or documented equivalent) and config snapshot (secrets redacted) when the packet scope includes run reproduction.
+5. **Primary evidence artifacts** — per §2a required runtime/closeout/review artifacts for the packet's declared run-type scope.
+6. **Closeout reference** — when applicable per §2b.1 material closeout rules.
+7. **Explicit blocked posture** — packet criteria must not imply approval when register rows remain **BLOCKED**.
+
+### Fail-closed reproducibility rule
+
+| Condition | Result |
+|---|---|
+| Missing mandatory artifact | **Incomplete packet** → **BLOCKED** |
+| `/tmp`-only storage | **`TMP_ONLY_PACKET_INCOMPLETE`** → **BLOCKED** |
+| Manifest missing or verify RC≠0 | **Not reproducible** → **BLOCKED** |
+| Reproducible packet presented | **Review input only** — **not** approval, **not** arming-ready |
+| Competing doc locations | §2a / §2b.1 / this §2b.2 criteria take precedence over Class4 reflection or positive summary lines |
+
+**Reproducible packet ≠ approval.** **Reproducible packet ≠ ready for arming.** **`PREFLIGHT_REMAINS_BLOCKED=true`** remains default until explicit authority closes **GLB-016**.
+
+Reproduction must yield the **same static content** or **same manifest-verified durable references** — not a re-interpreted, partial, or `/tmp`-substituted substitute.
+
+Crosslink: [Section 5 Preflight Gap Owner Map Contract v0](../planning/SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md) §2a.1 (criteria blocks authoritative per [GLB-015](../specs/MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md) §6.5.1). Authority-route legibility: [Decision Authority Map](../specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md) §10.
+
+Static guard: `tests/ops/test_master_v2_go_live_blocker_register_core_doc_contract_v0.py` (`GLB016_PREFLIGHT_PACKET_REPRODUCIBILITY_CROSSLINK_GUARD_V1`). Register crosslink: `tests/ops/test_master_v2_decision_authority_map_static_crosslink_contract_v0.py` (`GLB016_PREFLIGHT_PACKET_REPRODUCIBILITY_BOUNDARY_GUARD_V1`).
+
 ### Evidence Durable Closeout Retention RC v0 — index v0
 
 **Release:** `EVIDENCE_DURABLE_CLOSEOUT_RETENTION_RC_V0` · **Status:** **CORE COMPLETE** (SLICE-ER-1 + SLICE-ER-2; ER-3 optional deferred) · **UTC:** 2026-06-02 · **Recommended next larger release candidate** after `CYBERSECURITY_VISIBILITY_RELEASE_RC_V0` (CORE COMPLETE on `main` @ `f4be4e4848c1205d1f88d54bc76fe26ad0eff84d`). **Canonical repo owners (reuse — no parallel index):**

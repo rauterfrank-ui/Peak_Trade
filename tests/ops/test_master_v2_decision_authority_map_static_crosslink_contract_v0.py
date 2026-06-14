@@ -263,3 +263,68 @@ def test_core_docs_do_not_grant_live_authorization_v0() -> None:
     for path in (AUTHORITY_MAP, TRADING_LOGIC_MANIFEST, SCOPE_CAPITAL, BLOCKER_REGISTER):
         lowered = _lower(path)
         assert "live authorization" in lowered or "non-authorizing" in lowered, path.name
+
+
+def test_glb014_authority_route_legibility_boundary_guard_v1() -> None:
+    """GLB014_AUTHORITY_ROUTE_LEGIBILITY_BOUNDARY_GUARD_V1"""
+    text = _read(AUTHORITY_MAP)
+    plain = _plain(AUTHORITY_MAP)
+    section = plain.split("SECTION5 / Preflight Go-No-Go Authority Route Legibility")[1].split(
+        "11) Cross-References"
+    )[0]
+
+    for token in (
+        "GLB014_AUTHORITY_ROUTE_LEGIBILITY_BOUNDARY_V0=true",
+        "AUTHORITY_ROUTE_CANONICAL_OWNER_EXPLICIT=true",
+        "APPROVAL_RECORD_TYPE_EXPLICIT=true",
+        "OWNER_NAMING_NON_AUTHORIZING=true",
+        "AMBIGUOUS_AUTHORITY_ROUTE_FAIL_CLOSED=true",
+        "PREFLIGHT_REMAINS_BLOCKED=true",
+        "READY_FOR_OPERATOR_ARMING=false",
+        "EXECUTION_AUTHORIZED=false",
+        "LIVE_AUTHORIZED=false",
+    ):
+        assert token in section
+    assert "Stage-3 scoped executing approval record" in section
+    assert "LB-APR-001" in section
+    assert "Frank Rauter" in section
+    assert "does not close GLB-014" in section
+    assert "fail-closed" in section.lower()
+    assert "RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md" in text
+    assert BLOCKER_REGISTER_NAME in text
+    collapsed = section.replace("**", "")
+    assert "READY_FOR_OPERATOR_ARMING=true" not in collapsed
+    assert "LIVE_AUTHORIZED=true" not in collapsed
+
+
+def test_glb016_preflight_packet_reproducibility_boundary_guard_v1() -> None:
+    """GLB016_PREFLIGHT_PACKET_REPRODUCIBILITY_BOUNDARY_GUARD_V1"""
+    text = _read(PREFLIGHT_CONTRACT)
+    plain = _plain(PREFLIGHT_CONTRACT)
+    section = plain.split("2b.2 GLB-016 Preflight Packet Reproducibility Boundary")[1].split(
+        "Evidence Durable Closeout Retention RC"
+    )[0]
+
+    for token in (
+        "GLB016_PREFLIGHT_PACKET_REPRODUCIBILITY_BOUNDARY_V0=true",
+        "PREFLIGHT_PACKET_REQUIRED_ARTIFACTS_EXPLICIT=true",
+        "PREFLIGHT_PACKET_VERSION_BINDING_EXPLICIT=true",
+        "PREFLIGHT_PACKET_MANIFEST_VERIFICATION_REQUIRED=true",
+        "INCOMPLETE_PACKET_FAIL_CLOSED=true",
+        "REPRODUCIBLE_PACKET_NON_AUTHORIZING=true",
+        "PREFLIGHT_REMAINS_BLOCKED=true",
+        "READY_FOR_OPERATOR_ARMING=false",
+        "EXECUTION_AUTHORIZED=false",
+        "LIVE_AUTHORIZED=false",
+    ):
+        assert token in section
+    assert "MANIFEST.sha256" in section
+    assert "MANIFEST_VERIFY_RC=0" in section
+    assert "/tmp" in section
+    assert "does not close GLB-016" in section
+    assert "Reproducible packet" in section
+    assert "MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md" in text
+    assert "MASTER_V2_DECISION_AUTHORITY_MAP_V1.md" in text
+    collapsed = section.replace("**", "")
+    assert "READY_FOR_OPERATOR_ARMING=true" not in collapsed
+    assert "PREFLIGHT_REMAINS_BLOCKED=false" not in collapsed
