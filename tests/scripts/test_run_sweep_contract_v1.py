@@ -71,10 +71,12 @@ def _minimal_cfg(strategy_key: str, **strategy_params: object) -> MagicMock:
     return cfg
 
 
-def _apply_grid_params_like_run_sweep(strategy: object, params: dict[str, Any]) -> None:
-    for key, value in params.items():
-        if hasattr(strategy, key):
-            setattr(strategy, key, value)
+def _apply_effective_params_like_run_sweep(
+    strategy: object,
+    strategy_key: str,
+    effective: dict[str, Any],
+) -> None:
+    run_sweep_script._apply_effective_params_to_strategy(strategy, strategy_key, effective)
 
 
 class DummyConfig:
@@ -139,21 +141,12 @@ def test_run_single_backtest_has_no_long_only_replace_wrapper() -> None:
 # ---------------------------------------------------------------------------
 
 
-def test_grid_short_window_long_window_not_applied_to_ma_crossover() -> None:
-    from src.strategies.registry import create_strategy_from_config
-
-    cfg = _minimal_cfg(MA_CROSSOVER_KEY, fast_window=20, slow_window=50)
-    strategy = create_strategy_from_config(MA_CROSSOVER_KEY, cfg)
-    baseline_fast = strategy.fast_window
-    baseline_slow = strategy.slow_window
-
-    grid_params = {"short_window": 5, "long_window": 100}
-    _apply_grid_params_like_run_sweep(strategy, grid_params)
-
-    assert not hasattr(strategy, "short_window")
-    assert not hasattr(strategy, "long_window")
-    assert strategy.fast_window == baseline_fast
-    assert strategy.slow_window == baseline_slow
+def test_grid_short_window_long_window_normalized_for_ma_crossover() -> None:
+    normalized = run_sweep_script._normalize_sweep_grid_params(
+        MA_CROSSOVER_KEY,
+        {"short_window": 5, "long_window": 100},
+    )
+    assert normalized == {"fast_window": 5, "slow_window": 100}
 
 
 def test_short_window_long_window_not_equivalent_to_fast_window_slow_window() -> None:
@@ -175,8 +168,13 @@ def test_grid_fast_window_slow_window_are_applied_when_present() -> None:
 
     cfg = _minimal_cfg(MA_CROSSOVER_KEY, fast_window=20, slow_window=50)
     strategy = create_strategy_from_config(MA_CROSSOVER_KEY, cfg)
-
-    _apply_grid_params_like_run_sweep(strategy, {"fast_window": 8, "slow_window": 40})
+    effective = run_sweep_script._merge_effective_parameters(
+        MA_CROSSOVER_KEY,
+        {"fast_window": 8, "slow_window": 40},
+        strategy_defaults=run_sweep_script._strategy_class_defaults(MA_CROSSOVER_KEY),
+        strategy_config=run_sweep_script._strategy_config_section(cfg, MA_CROSSOVER_KEY),
+    )
+    _apply_effective_params_like_run_sweep(strategy, MA_CROSSOVER_KEY, effective)
 
     assert strategy.fast_window == 8
     assert strategy.slow_window == 40
@@ -187,19 +185,23 @@ def test_grid_fast_window_slow_window_are_applied_when_present() -> None:
 # ---------------------------------------------------------------------------
 
 
-def test_setattr_does_not_sync_strategy_config() -> None:
+def test_effective_params_sync_strategy_config() -> None:
     from src.strategies.registry import create_strategy_from_config
 
     cfg = _minimal_cfg(MA_CROSSOVER_KEY, fast_window=20, slow_window=50)
     strategy = create_strategy_from_config(MA_CROSSOVER_KEY, cfg)
-    config_before = dict(strategy.config)
-
-    _apply_grid_params_like_run_sweep(strategy, {"fast_window": 7, "slow_window": 35})
+    effective = run_sweep_script._merge_effective_parameters(
+        MA_CROSSOVER_KEY,
+        {"fast_window": 7, "slow_window": 35},
+        strategy_defaults=run_sweep_script._strategy_class_defaults(MA_CROSSOVER_KEY),
+        strategy_config=run_sweep_script._strategy_config_section(cfg, MA_CROSSOVER_KEY),
+    )
+    _apply_effective_params_like_run_sweep(strategy, MA_CROSSOVER_KEY, effective)
 
     assert strategy.fast_window == 7
     assert strategy.slow_window == 35
-    assert strategy.config["fast_window"] == config_before["fast_window"]
-    assert strategy.config["slow_window"] == config_before["slow_window"]
+    assert strategy.config["fast_window"] == 7
+    assert strategy.config["slow_window"] == 35
 
 
 # ---------------------------------------------------------------------------
@@ -207,9 +209,8 @@ def test_setattr_does_not_sync_strategy_config() -> None:
 # ---------------------------------------------------------------------------
 
 
-def test_closure_ignores_engine_strategy_params_for_signal_generation() -> None:
+def test_closure_uses_engine_strategy_params_for_signal_generation() -> None:
     from src.core.peak_config import PeakConfig
-    from src.strategies.registry import create_strategy_from_config
 
     raw = {
         "environment": {"mode": "backtest"},
@@ -219,20 +220,25 @@ def test_closure_ignores_engine_strategy_params_for_signal_generation() -> None:
     df = _sample_ohlcv()
     grid_params = {"fast_window": 5, "slow_window": 30}
 
-    strategy = create_strategy_from_config(MA_CROSSOVER_KEY, cfg)
-    _apply_grid_params_like_run_sweep(strategy, grid_params)
-    expected_from_setattr = strategy.generate_signals(df)
-
-    strategy_engine_would_use = create_strategy_from_config(MA_CROSSOVER_KEY, cfg)
-    strategy_engine_would_use.fast_window = 5
-    strategy_engine_would_use.slow_window = 70
+    strategy_engine_would_use = run_sweep_script.create_strategy_from_config(MA_CROSSOVER_KEY, cfg)
+    effective = run_sweep_script._merge_effective_parameters(
+        MA_CROSSOVER_KEY,
+        grid_params,
+        strategy_defaults=run_sweep_script._strategy_class_defaults(MA_CROSSOVER_KEY),
+        strategy_config=run_sweep_script._strategy_config_section(cfg, MA_CROSSOVER_KEY),
+    )
+    run_sweep_script._apply_effective_params_to_strategy(
+        strategy_engine_would_use,
+        MA_CROSSOVER_KEY,
+        effective,
+    )
     expected_if_engine_params_used = strategy_engine_would_use.generate_signals(df)
 
     captured: dict[str, Any] = {}
 
     def fake_run_realistic(**kwargs):
         captured["engine_params"] = dict(kwargs["strategy_params"])
-        out = kwargs["strategy_signal_fn"](kwargs["df"], {"fast_window": 5, "slow_window": 70})
+        out = kwargs["strategy_signal_fn"](kwargs["df"], kwargs["strategy_params"])
         captured["closure_output"] = out
         mock_result = MagicMock()
         mock_result.stats = {}
@@ -254,9 +260,10 @@ def test_closure_ignores_engine_strategy_params_for_signal_generation() -> None:
             cfg=cfg,
         )
 
-    pd.testing.assert_series_equal(captured["closure_output"], expected_from_setattr)
-    assert not captured["closure_output"].equals(expected_if_engine_params_used)
-    assert captured["engine_params"] == grid_params
+    pd.testing.assert_series_equal(captured["closure_output"], expected_if_engine_params_used)
+    assert captured["engine_params"]["fast_window"] == 5
+    assert captured["engine_params"]["slow_window"] == 30
+    assert captured["engine_params"]["stop_pct"] == run_sweep_script._ENGINE_STOP_PCT_DEFAULT
 
 
 # ---------------------------------------------------------------------------
@@ -264,7 +271,7 @@ def test_closure_ignores_engine_strategy_params_for_signal_generation() -> None:
 # ---------------------------------------------------------------------------
 
 
-def test_closure_binds_single_strategy_instance_without_rebind() -> None:
+def test_closure_creates_fresh_strategy_from_engine_params() -> None:
     from src.core.peak_config import PeakConfig
 
     raw = {
@@ -283,7 +290,8 @@ def test_closure_binds_single_strategy_instance_without_rebind() -> None:
             self._id = id(self)
             self.fast_window = 20
             self.slow_window = 50
-            self.config = {"fast_window": 20, "slow_window": 50}
+            self.price_col = "close"
+            self.config = {"fast_window": 20, "slow_window": 50, "price_col": "close"}
 
         def generate_signals(self, data: pd.DataFrame) -> pd.Series:
             binding["generate_calls"] += 1
@@ -483,7 +491,7 @@ def test_stop_pct_falls_back_to_engine_default_when_absent_from_grid() -> None:
             cfg=_minimal_cfg(MA_CROSSOVER_KEY),
         )
 
-    assert "stop_pct" not in captured["strategy_params"]
+    assert captured["strategy_params"]["stop_pct"] == run_sweep_script._ENGINE_STOP_PCT_DEFAULT
 
 
 def test_stop_pct_passes_through_when_present_in_grid_params() -> None:
@@ -551,7 +559,8 @@ def test_stop_pct_not_sourced_from_strategy_config_section_by_default() -> None:
             cfg=_minimal_cfg(MA_CROSSOVER_KEY, stop_pct=0.03),
         )
 
-    assert "stop_pct" not in captured["strategy_params"]
+    assert captured["strategy_params"]["stop_pct"] == run_sweep_script._ENGINE_STOP_PCT_DEFAULT
+    assert captured["strategy_params"]["stop_pct"] != 0.03
 
 
 # ---------------------------------------------------------------------------
@@ -569,6 +578,12 @@ def test_backtest_call_contract_captured_without_engine_execution() -> None:
     cfg = PeakConfig(raw=raw)
     df = _sample_ohlcv()
     params = {"fast_window": 12, "slow_window": 40}
+    expected_params = run_sweep_script._merge_effective_parameters(
+        MA_CROSSOVER_KEY,
+        params,
+        strategy_defaults=run_sweep_script._strategy_class_defaults(MA_CROSSOVER_KEY),
+        strategy_config=run_sweep_script._strategy_config_section(cfg, MA_CROSSOVER_KEY),
+    )
     captured: dict[str, Any] = {"run_calls": 0}
     mock_result = MagicMock()
     mock_result.stats = {"total_return": 0.0}
@@ -600,7 +615,7 @@ def test_backtest_call_contract_captured_without_engine_execution() -> None:
 
     assert captured["run_calls"] == 1
     assert captured["df_is_same"] is True
-    assert captured["strategy_params"] == params
+    assert captured["strategy_params"] == expected_params
     assert callable(captured["signal_fn"])
     assert captured["fee_bps"] == 0.0
     assert captured["slippage_bps"] == 0.0
@@ -958,7 +973,7 @@ def test_target_load_strategy_migration_remains_blocked() -> None:
     assert "load_strategy" not in _read_source()
 
 
-def test_production_does_not_yet_implement_target_normalization() -> None:
+def test_production_implements_bounded_parameter_normalization() -> None:
     fn_source = ast.get_source_segment(
         _read_source(),
         next(
@@ -968,6 +983,16 @@ def test_production_does_not_yet_implement_target_normalization() -> None:
         ),
     )
     assert fn_source is not None
-    assert "hasattr(strategy, key)" in fn_source
-    assert "TARGET_PARAMETER_ALIAS_TABLE" not in _read_source()
-    assert "short_window" not in fn_source
+    assert "_normalize_sweep_grid_params" in _read_source()
+    assert "_merge_effective_parameters" in _read_source()
+    assert "_apply_effective_params_to_strategy" in fn_source
+    assert "hasattr(strategy, key)" not in fn_source
+
+    ma_alias = run_sweep_script._normalize_sweep_grid_params(
+        MA_CROSSOVER_KEY,
+        {"short_window": 7, "long_window": 35},
+    )
+    assert ma_alias == {"fast_window": 7, "slow_window": 35}
+
+    with pytest.raises(run_sweep_script.SweepParameterNormalizationError, match="unknown key"):
+        run_sweep_script._normalize_sweep_grid_params(MA_CROSSOVER_KEY, {"unknown_param": 1})
