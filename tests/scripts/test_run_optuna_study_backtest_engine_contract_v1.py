@@ -13,6 +13,7 @@ from __future__ import annotations
 import ast
 import importlib
 import inspect
+import json
 import os
 import subprocess
 import sys
@@ -796,13 +797,81 @@ def test_bounded_modernization_remains_unauthorized() -> None:
 # ---------------------------------------------------------------------------
 
 
+def _ensure_git_object(rev: str) -> None:
+    probe = subprocess.run(
+        ["git", "cat-file", "-e", f"{rev}^{{commit}}"],
+        cwd=project_root,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    if probe.returncode == 0:
+        return
+    if os.environ.get("GITHUB_ACTIONS") != "true":
+        return
+    subprocess.run(
+        ["git", "fetch", "--depth=1", "origin", rev],
+        cwd=project_root,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+
+
 def _production_guard_base_ref() -> str:
     for candidate in (
         os.environ.get("GITHUB_BASE_SHA"),
         os.environ.get("CI_MERGE_BASE"),
     ):
         if candidate:
+            _ensure_git_object(candidate)
             return candidate
+
+    event_path = os.environ.get("GITHUB_EVENT_PATH")
+    if event_path:
+        try:
+            payload = json.loads(Path(event_path).read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            payload = {}
+        base_sha = payload.get("pull_request", {}).get("base", {}).get("sha")
+        if base_sha:
+            _ensure_git_object(base_sha)
+            return base_sha
+
+    base_ref_name = os.environ.get("GITHUB_BASE_REF")
+    if base_ref_name:
+        remote_ref = f"origin/{base_ref_name}"
+        result = subprocess.run(
+            ["git", "rev-parse", "--verify", remote_ref],
+            cwd=project_root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if result.returncode != 0 and os.environ.get("GITHUB_ACTIONS") == "true":
+            subprocess.run(
+                [
+                    "git",
+                    "fetch",
+                    "--depth=1",
+                    "origin",
+                    f"{base_ref_name}:refs/remotes/origin/{base_ref_name}",
+                ],
+                cwd=project_root,
+                capture_output=True,
+                text=True,
+                check=False,
+            )
+        verify = subprocess.run(
+            ["git", "rev-parse", "--verify", remote_ref],
+            cwd=project_root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        if verify.returncode == 0:
+            return remote_ref
+
     for ref in ("origin/main", "main"):
         result = subprocess.run(
             ["git", "rev-parse", "--verify", ref],
