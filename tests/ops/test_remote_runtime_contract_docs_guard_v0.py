@@ -2011,6 +2011,7 @@ RECIPROCAL_OWNER_TESTS = (
     "test_market_dashboard_readonly_run_projection_spec_v0.py",
     "test_ops_cockpit_payload_top_level_contract.py",
     "test_master_v2_double_play_pure_stack_readiness_map_static_crosslink_contract_v0.py",
+    "test_futures_dynamic_scope_envelope_contract_static_crosslink_contract_v0.py",
 )
 
 OPS_COCKPIT_OPERATOR_SUMMARY_SPEC = (
@@ -2077,6 +2078,15 @@ MV2_PURE_STACK_GUARD = (
     / "tests"
     / "ops"
     / "test_master_v2_double_play_pure_stack_readiness_map_static_crosslink_contract_v0.py"
+)
+FUTURES_DYNAMIC_SCOPE_ENVELOPE_CONTRACT = (
+    REPO_ROOT / "docs" / "ops" / "specs" / "FUTURES_DYNAMIC_SCOPE_ENVELOPE_CONTRACT_V0.md"
+)
+DSE_STATIC_CROSSLINK_GUARD = (
+    REPO_ROOT
+    / "tests"
+    / "ops"
+    / "test_futures_dynamic_scope_envelope_contract_static_crosslink_contract_v0.py"
 )
 
 FORBIDDEN_PARALLEL_DOC_FRAGMENTS = (
@@ -2223,8 +2233,21 @@ def test_reciprocal_owner_crosslinks_present() -> None:
     owner_text = Path(__file__).read_text(encoding="utf-8")
     for module_name in RECIPROCAL_OWNER_TESTS:
         assert module_name in owner_text, f"missing reciprocal owner {module_name!r}"
+        if module_name == DSE_STATIC_CROSSLINK_GUARD.name:
+            continue
         peer_text = (REPO_ROOT / "tests" / "ops" / module_name).read_text(encoding="utf-8")
         assert THIS_MODULE in peer_text, f"{module_name} missing reciprocal link to {THIS_MODULE}"
+
+
+def test_futures_dynamic_scope_envelope_static_crosslink_reciprocal_remote_runtime_docs_guard_v0() -> (
+    None
+):
+    guard_text = Path(__file__).read_text(encoding="utf-8")
+    assert DSE_STATIC_CROSSLINK_GUARD.name in guard_text
+    peer_text = DSE_STATIC_CROSSLINK_GUARD.read_text(encoding="utf-8")
+    contract_text = FUTURES_DYNAMIC_SCOPE_ENVELOPE_CONTRACT.read_text(encoding="utf-8")
+    assert DSE_STATIC_CROSSLINK_GUARD.name in contract_text.replace("&#47;", "/")
+    assert FUTURES_DYNAMIC_SCOPE_ENVELOPE_CONTRACT.name in peer_text
 
 
 def test_no_parallel_remote_runtime_authority_docs_introduced() -> None:
