@@ -1953,6 +1953,300 @@ def test_contract_37_producer_adapter_live_authorization_stripped_full_stack_das
     )
 
 
+def test_contract_38_scope_unknown_fail_closed_holds_side_pure_stack() -> None:
+    _s_before, _st_before, _ = _ts(SideState.LONG_ACTIVE, ScopeEvent.NOOP, EMPTY_ST, 0)
+    _s, _st, t_scope = _ts(SideState.LONG_ACTIVE, ScopeEvent.SCOPE_UNKNOWN, EMPTY_ST, 1)
+    assert _s == SideState.LONG_ACTIVE
+    assert _s == _s_before
+    assert not t_scope.allowed
+    assert t_scope.reason_code == "SCOPE_UNKNOWN_FAIL_CLOSED"
+    assert not t_scope.live_authorization_granted
+
+    surv = evaluate_survival_envelope(_env_ok())
+    meta = StrategyMetadata(
+        strategy_id="scope-unknown-long",
+        strategy_family="m",
+        declared_side=SideCompatibility.LONG_BULL,
+        explicit_side_evidence=True,
+    )
+    suit = project_strategy_suitability(_suit_in(meta, _suit_allows_from_envelope(surv)))
+    comp = compose_double_play_decision(
+        DoublePlayCompositionInput(
+            transition=t_scope,
+            resulting_side_state=_s,
+            survival=surv,
+            suitability=suit,
+            requested_side=RequestedSide.LONG_BULL,
+        )
+    )
+    assert comp.status is DoublePlayCompositionStatus.ELIGIBLE_MODEL_ONLY
+    assert comp.live_authorization is False
+    fi = evaluate_futures_input_snapshot(_fi_snapshot())
+    assert fi.status is FuturesReadinessStatus.DATA_READY
+    assert _stack_eligible_with_futures_gate(fi, comp)
+    assert not fi.live_authorization
+
+
+def test_contract_39_dashboard_display_scope_unknown_transition_warning_cross_module() -> None:
+    _s, _st, t_scope = _ts(SideState.LONG_ACTIVE, ScopeEvent.SCOPE_UNKNOWN, EMPTY_ST, 0)
+    assert _s == SideState.LONG_ACTIVE
+    assert not t_scope.allowed
+    assert t_scope.reason_code == "SCOPE_UNKNOWN_FAIL_CLOSED"
+
+    surv = evaluate_survival_envelope(_env_ok())
+    meta = StrategyMetadata(
+        strategy_id="dash-scope-unknown",
+        strategy_family="m",
+        declared_side=SideCompatibility.LONG_BULL,
+        explicit_side_evidence=True,
+    )
+    suit = project_strategy_suitability(_suit_in(meta, _suit_allows_from_envelope(surv)))
+    cfg = _cs_cfg_ok()
+    cs_st = _cs_state_ok(future="ETH-USD-PERP", realized=340.0, survival_allows_slot=True)
+    rat = evaluate_capital_slot_ratchet(cfg, cs_st)
+    rel = evaluate_capital_slot_release(cfg, cs_st)
+    comp = compose_double_play_decision(
+        DoublePlayCompositionInput(
+            transition=t_scope,
+            resulting_side_state=_s,
+            survival=surv,
+            suitability=suit,
+            requested_side=RequestedSide.LONG_BULL,
+            capital_slot_ratchet_decision=rat,
+            capital_slot_release_decision=rel,
+        )
+    )
+    fi = evaluate_futures_input_snapshot(_fi_snapshot())
+    snap = build_dashboard_display_snapshot(
+        futures_input=fi,
+        transition=t_scope,
+        survival=surv,
+        suitability=suit,
+        capital_slot_ratchet=rat,
+        capital_slot_release=rel,
+        composition=comp,
+    )
+    assert snap.panels[1].name == "state_transition"
+    assert snap.panels[1].status is DashboardDisplayStatus.DISPLAY_WARNING
+    assert "SCOPE_UNKNOWN_FAIL_CLOSED" in snap.panels[1].summary
+    assert snap.panels[1].blockers == ("SCOPE_UNKNOWN_FAIL_CLOSED",)
+    assert snap.panels[6].name == "composition"
+    assert snap.panels[6].status is DashboardDisplayStatus.DISPLAY_READY
+    assert snap.overall_status is DashboardDisplayStatus.DISPLAY_WARNING
+    _assert_dashboard_snapshot_invariants(snap)
+    _assert_no_live_authorization_pure_stack(
+        fi=fi,
+        transition=t_scope,
+        surv=surv,
+        suit=suit,
+        rat=rat,
+        rel=rel,
+        comp=comp,
+        snap=snap,
+    )
+
+
+def test_contract_40_switch_long_to_short_pending_pure_stack_to_composition_dashboard() -> None:
+    _s, _st, t_pending = _ts(SideState.LONG_ACTIVE, ScopeEvent.DOWNSCOPE_CONFIRMED, EMPTY_ST, 0)
+    assert _s == SideState.SWITCH_LONG_TO_SHORT_PENDING
+    assert t_pending.allowed
+    assert t_pending.reason_code == "DOWNscope_SWITCH_PENDING"
+    assert not t_pending.live_authorization_granted
+
+    surv = evaluate_survival_envelope(_env_ok())
+    meta = StrategyMetadata(
+        strategy_id="switch-pending-long",
+        strategy_family="m",
+        declared_side=SideCompatibility.LONG_BULL,
+        explicit_side_evidence=True,
+    )
+    suit = project_strategy_suitability(_suit_in(meta, _suit_allows_from_envelope(surv)))
+    cfg = _cs_cfg_ok()
+    cs_st = _cs_state_ok(future="ETH-USD-PERP", realized=340.0, survival_allows_slot=True)
+    rat = evaluate_capital_slot_ratchet(cfg, cs_st)
+    rel = evaluate_capital_slot_release(cfg, cs_st)
+    comp = compose_double_play_decision(
+        DoublePlayCompositionInput(
+            transition=t_pending,
+            resulting_side_state=_s,
+            survival=surv,
+            suitability=suit,
+            requested_side=RequestedSide.LONG_BULL,
+            capital_slot_ratchet_decision=rat,
+            capital_slot_release_decision=rel,
+        )
+    )
+    assert comp.status is DoublePlayCompositionStatus.ELIGIBLE_MODEL_ONLY
+    assert comp.live_authorization is False
+
+    fi = evaluate_futures_input_snapshot(_fi_snapshot())
+    snap = build_dashboard_display_snapshot(
+        futures_input=fi,
+        transition=t_pending,
+        survival=surv,
+        suitability=suit,
+        capital_slot_ratchet=rat,
+        capital_slot_release=rel,
+        composition=comp,
+    )
+    assert snap.panels[1].name == "state_transition"
+    assert snap.panels[1].status is DashboardDisplayStatus.DISPLAY_READY
+    assert "DOWNscope_SWITCH_PENDING" in snap.panels[1].summary
+    assert snap.panels[6].status is DashboardDisplayStatus.DISPLAY_READY
+    assert "ELIGIBLE_MODEL_ONLY" in snap.panels[6].summary
+    assert snap.overall_status is DashboardDisplayStatus.DISPLAY_READY
+    _assert_dashboard_snapshot_invariants(snap)
+    _assert_no_live_authorization_pure_stack(
+        fi=fi,
+        transition=t_pending,
+        surv=surv,
+        suit=suit,
+        rat=rat,
+        rel=rel,
+        comp=comp,
+        snap=snap,
+    )
+
+
+def test_contract_41_switch_short_to_long_pending_pure_stack_to_composition_dashboard() -> None:
+    _s, _st, t_pending = _ts(SideState.SHORT_ACTIVE, ScopeEvent.UPSCOPE_CONFIRMED, EMPTY_ST, 0)
+    assert _s == SideState.SWITCH_SHORT_TO_LONG_PENDING
+    assert t_pending.allowed
+    assert t_pending.reason_code == "UPscope_SWITCH_PENDING"
+    assert not t_pending.live_authorization_granted
+
+    surv = evaluate_survival_envelope(_env_ok())
+    meta = StrategyMetadata(
+        strategy_id="switch-pending-short",
+        strategy_family="m",
+        declared_side=SideCompatibility.SHORT_BEAR,
+        explicit_side_evidence=True,
+    )
+    suit = project_strategy_suitability(_suit_in(meta, _suit_allows_from_envelope(surv)))
+    cfg = _cs_cfg_ok()
+    cs_st = _cs_state_ok(future="SOL-USD-PERP", realized=340.0, survival_allows_slot=True)
+    rat = evaluate_capital_slot_ratchet(cfg, cs_st)
+    rel = evaluate_capital_slot_release(cfg, cs_st)
+    comp = compose_double_play_decision(
+        DoublePlayCompositionInput(
+            transition=t_pending,
+            resulting_side_state=_s,
+            survival=surv,
+            suitability=suit,
+            requested_side=RequestedSide.SHORT_BEAR,
+            capital_slot_ratchet_decision=rat,
+            capital_slot_release_decision=rel,
+        )
+    )
+    assert comp.status is DoublePlayCompositionStatus.ELIGIBLE_MODEL_ONLY
+    assert comp.live_authorization is False
+
+    fi = evaluate_futures_input_snapshot(_fi_snapshot())
+    snap = build_dashboard_display_snapshot(
+        futures_input=fi,
+        transition=t_pending,
+        survival=surv,
+        suitability=suit,
+        capital_slot_ratchet=rat,
+        capital_slot_release=rel,
+        composition=comp,
+    )
+    assert snap.panels[1].name == "state_transition"
+    assert snap.panels[1].status is DashboardDisplayStatus.DISPLAY_READY
+    assert "UPscope_SWITCH_PENDING" in snap.panels[1].summary
+    assert snap.panels[6].status is DashboardDisplayStatus.DISPLAY_READY
+    assert snap.overall_status is DashboardDisplayStatus.DISPLAY_READY
+    _assert_dashboard_snapshot_invariants(snap)
+    _assert_no_live_authorization_pure_stack(
+        fi=fi,
+        transition=t_pending,
+        surv=surv,
+        suit=suit,
+        rat=rat,
+        rel=rel,
+        comp=comp,
+        snap=snap,
+    )
+
+
+def test_contract_42_switch_pending_blocked_side_pure_stack_to_dashboard() -> None:
+    for (
+        pending_side,
+        confirm_event,
+        blocked_side,
+        reason_code,
+        requested,
+        declared,
+        strategy_id,
+    ) in (
+        (
+            SideState.SWITCH_LONG_TO_SHORT_PENDING,
+            ScopeEvent.DOWNSCOPE_CONFIRMED,
+            SideState.LONG_BLOCKED,
+            "LONG_BLOCKED",
+            RequestedSide.LONG_BULL,
+            SideCompatibility.LONG_BULL,
+            "switch-long-blocked",
+        ),
+        (
+            SideState.SWITCH_SHORT_TO_LONG_PENDING,
+            ScopeEvent.UPSCOPE_CONFIRMED,
+            SideState.SHORT_BLOCKED,
+            "SHORT_BLOCKED",
+            RequestedSide.SHORT_BEAR,
+            SideCompatibility.SHORT_BEAR,
+            "switch-short-blocked",
+        ),
+    ):
+        _s, _st, t_blocked = _ts(pending_side, confirm_event, EMPTY_ST, 0)
+        assert _s == blocked_side
+        assert t_blocked.allowed
+        assert t_blocked.reason_code == reason_code
+        assert not t_blocked.live_authorization_granted
+
+        surv = evaluate_survival_envelope(_env_ok())
+        meta = StrategyMetadata(
+            strategy_id=strategy_id,
+            strategy_family="m",
+            declared_side=declared,
+            explicit_side_evidence=True,
+        )
+        suit = project_strategy_suitability(_suit_in(meta, _suit_allows_from_envelope(surv)))
+        comp = compose_double_play_decision(
+            DoublePlayCompositionInput(
+                transition=t_blocked,
+                resulting_side_state=_s,
+                survival=surv,
+                suitability=suit,
+                requested_side=requested,
+            )
+        )
+        assert comp.status is DoublePlayCompositionStatus.ELIGIBLE_MODEL_ONLY
+        assert comp.live_authorization is False
+
+        fi = evaluate_futures_input_snapshot(_fi_snapshot())
+        snap = build_dashboard_display_snapshot(
+            futures_input=fi,
+            transition=t_blocked,
+            survival=surv,
+            suitability=suit,
+            composition=comp,
+        )
+        assert snap.panels[1].name == "state_transition"
+        assert snap.panels[1].status is DashboardDisplayStatus.DISPLAY_READY
+        assert reason_code in snap.panels[1].summary
+        assert snap.panels[6].status is DashboardDisplayStatus.DISPLAY_READY
+        _assert_dashboard_snapshot_invariants(snap)
+        _assert_no_live_authorization_pure_stack(
+            fi=fi,
+            transition=t_blocked,
+            surv=surv,
+            suit=suit,
+            comp=comp,
+            snap=snap,
+        )
+
+
 def _forbidden_toplevels() -> frozenset[str]:
     return frozenset(
         {
