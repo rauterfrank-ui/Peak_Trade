@@ -373,6 +373,52 @@ Crosslink: [Section 5 Preflight Gap Owner Map Contract v0](../planning/SECTION5_
 
 Static guard: `tests/ops/test_master_v2_go_live_blocker_register_core_doc_contract_v0.py` (`GLB016_PREFLIGHT_PACKET_REPRODUCIBILITY_CROSSLINK_GUARD_V1`). Register crosslink: `tests/ops/test_master_v2_decision_authority_map_static_crosslink_contract_v0.py` (`GLB016_PREFLIGHT_PACKET_REPRODUCIBILITY_BOUNDARY_GUARD_V1`).
 
+## 2b.3 GLB-018 Closeout Path Static Boundary v0
+
+```
+GLB018_CLOSEOUT_PATH_BOUNDARY_V0=true
+CLOSEOUT_REQUIRED_STEPS_EXPLICIT=true
+CLOSEOUT_REQUIRED_ARTIFACTS_EXPLICIT=true
+SAFE_END_STATE_REQUIRED=true
+DURABLE_EVIDENCE_REQUIRED=true
+MANIFEST_VERIFICATION_REQUIRED=true
+INCOMPLETE_CLOSEOUT_FAIL_CLOSED=true
+CLOSEOUT_NON_AUTHORIZING=true
+TMP_ONLY_CLOSEOUT_INCOMPLETE=true
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+EXECUTION_AUTHORIZED=false
+LIVE_AUTHORIZED=false
+```
+
+This section closes the **static closeout-path legibility boundary** for [GLB-018](../specs/MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md) §6.5.5. It **does not** close **GLB-018**, **does not** execute closeout scripts, **does not** mutate registry, `out/ops`, or existing run-evidence datasets, and **does not** grant arming, execution, or live authority.
+
+### Mandatory closeout path steps (legibility SSOT)
+
+A **reviewable closeout path** for operator/reviewer inspection must document **all** applicable steps below. Satisfying this static boundary **does not** assert that an operative closeout was executed.
+
+1. **Safe end state** — positions, orders, runtime/run status, scheduler/adapter processes, and relevant resources are in a **safe terminal or explicitly blocked posture** for the scoped activity (documented requirement; not verified by this docs/tests slice).
+2. **Durable archive root** — primary evidence under a path **outside `/tmp`**.
+3. **Checksum manifest** — `MANIFEST.sha256` over archived closeout files.
+4. **Manifest verification** — **MANIFEST_VERIFY_RC=0** (`shasum -a 256 -c MANIFEST.sha256` or shared `verify_manifest_sha256()` semantics).
+5. **Closeout reference** — closeout artifact present and referencing the durable archive root (per §2b.1 material closeout completeness rules).
+6. **Primary evidence completeness** — mandatory lane artifacts present; missing/inconsistent events **recorded**, not hidden or repaired in-repo.
+7. **Explicit blocked posture** — closeout criteria must not imply approval when register rows remain **OPEN** or **BLOCKED**.
+
+### Fail-closed closeout rule
+
+| Condition | Result |
+|---|---|
+| Missing mandatory artifact or closeout reference | **Incomplete closeout** → not review-complete |
+| `/tmp`-only storage | **`TMP_ONLY_CLOSEOUT_INCOMPLETE`** → **fail-closed** |
+| Manifest missing or verify RC≠0 | **Not verifiably complete** → **fail-closed** |
+| Safe end state not established (operative context) | **Closeout remains incomplete** — docs may still describe required posture |
+| Static closeout path documented | **Review input only** — **not** executed closeout, **not** approval, **not** preflight lift |
+
+**Closeout path ≠ executed closeout.** **Closeout ≠ approval.** **Closeout ≠ Preflight-/Authority-lift.** Recovery or follow-up recommendations **do not** authorize automatic resume or promotion. **`PREFLIGHT_REMAINS_BLOCKED=true`** remains default until explicit authority closes **GLB-018**.
+
+Crosslink: [First Live Pilot Sequence Runbook](RUNBOOK_MASTER_V2_FIRST_LIVE_PILOT_SEQUENCE_V0.md) §10; register §6.5.5; §2a.1 / §2b.1 criteria take precedence over Class4 reflection or positive summary lines. Static guard: `tests/ops/test_master_v2_go_live_blocker_register_core_doc_contract_v0.py` (`GLB018_CLOSEOUT_PATH_CROSSLINK_GUARD_V1`).
+
 ### Evidence Durable Closeout Retention RC v0 — index v0
 
 **Release:** `EVIDENCE_DURABLE_CLOSEOUT_RETENTION_RC_V0` · **Status:** **CORE COMPLETE** (SLICE-ER-1 + SLICE-ER-2; ER-3 optional deferred) · **UTC:** 2026-06-02 · **Recommended next larger release candidate** after `CYBERSECURITY_VISIBILITY_RELEASE_RC_V0` (CORE COMPLETE on `main` @ `f4be4e4848c1205d1f88d54bc76fe26ad0eff84d`). **Canonical repo owners (reuse — no parallel index):**

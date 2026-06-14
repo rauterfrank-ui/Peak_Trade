@@ -119,6 +119,61 @@ def test_glb016_preflight_packet_reproducibility_crosslink_guard_v1() -> None:
     assert "PREFLIGHT_REMAINS_BLOCKED=false" not in collapsed
 
 
+def test_glb017_incident_abort_route_crosslink_guard_v1() -> None:
+    """GLB017_INCIDENT_ABORT_ROUTE_CROSSLINK_GUARD_V1"""
+    row = _register_table_row("GLB-017")
+    assert "Incident/abort route unclear" in row
+    assert "| BLOCKED |" in row
+
+    text = _read(BLOCKER_REGISTER)
+    plain = _plain(BLOCKER_REGISTER)
+    section = plain.split("6.5.4 GLB-017")[1].split("6.5.5 GLB-018")[0]
+
+    assert "RUNBOOK_BOUNDED_PILOT_INCIDENT_ABORT_TRIAGE_COMPASS.md" in text
+    assert "Incident/Abort Route Legibility" in section
+    assert "KILL_SWITCH_RUNBOOK.md" in text
+    assert "fail-closed" in section.lower()
+    assert "does not close GLB-017" in section
+    assert "does not execute incident/abort" in section.lower()
+    assert "NO_TRADE" in section or "safe stop" in section.lower()
+    assert (
+        "automatic trading resume" in section.lower()
+        or "no automatic trading resume" in section.lower()
+    )
+    assert "non-authorizing" in section.lower()
+    collapsed = section.replace("**", "")
+    assert "READY_FOR_OPERATOR_ARMING=true" not in collapsed
+    assert "LIVE_AUTHORIZED=true" not in collapsed
+    assert "PREFLIGHT_REMAINS_BLOCKED=false" not in collapsed
+
+
+def test_glb018_closeout_path_crosslink_guard_v1() -> None:
+    """GLB018_CLOSEOUT_PATH_CROSSLINK_GUARD_V1"""
+    row = _register_table_row("GLB-018")
+    assert "Closeout path missing" in row
+    assert "| OPEN |" in row
+
+    text = _read(BLOCKER_REGISTER)
+    plain = _plain(BLOCKER_REGISTER)
+    section = plain.split("6.5.5 GLB-018")[1].split("6.6 GLB-008")[0]
+
+    assert "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md" in text
+    assert "Closeout Path Legibility" in section
+    assert "MANIFEST.sha256" in section
+    assert "MANIFEST_VERIFY_RC=0" in section
+    assert "/tmp" in section
+    assert "Safe end state" in section or "safe end state" in section.lower()
+    assert "does not close GLB-018" in section
+    assert "does not execute closeout" in section.lower()
+    assert "closeout" in section.lower() and "approval" in section.lower()
+    assert "fail-closed" in section.lower() or "incomplete closeout" in section.lower()
+    assert "non-authorizing" in section.lower()
+    collapsed = section.replace("**", "")
+    assert "READY_FOR_OPERATOR_ARMING=true" not in collapsed
+    assert "PREFLIGHT_REMAINS_BLOCKED=false" not in collapsed
+    assert "LIVE_AUTHORIZED=true" not in collapsed
+
+
 def test_glb015_repo_docs_not_final_approval_blocked_v0() -> None:
     row = _register_table_row("GLB-015")
     assert "Repo docs treated as approval" in row
