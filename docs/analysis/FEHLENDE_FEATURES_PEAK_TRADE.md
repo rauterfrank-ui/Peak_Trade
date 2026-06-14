@@ -106,7 +106,7 @@ Geplante Phasen mit **noch nicht umgesetzten** Features:
 
 ### 5.3 Tech-Debt Backlog (TECH_DEBT_BACKLOG.md)
 
-- Legacy-Funktionen in `macd.py` / `bollinger.py` entfernen (nach Umstellung auf OOP)
+- Legacy-Funktionen in `macd.py` / `bollinger.py`: **abgeschlossen** — modulweite Legacy-APIs entfernt (PR #2600, PR #2601); kanonisch OOP via `MACDStrategy` / `BollingerBandsStrategy`
 - Ggf. weitere Dummy-Adapter durch echte Kraken/Exchange-Integration ersetzen (je nach Script)
 
 ### 5.4 Futures/Continuous (docs/markets)
@@ -133,7 +133,7 @@ Geplante Phasen mit **noch nicht umgesetzten** Features:
 | **v1.0 bewusst ausgenommen** | Live-Execution, Multi-Exchange, Web-Auth, WebSocket, ML-Strategien, Auto-Liquidation, 100 % Coverage, API-Doku, Skalierung. |
 | **Roadmap 2026** | Phasen 11–17 (Optimization, Streaming, Live, ML, Cloud, Risk-Parity, Community). |
 | **Research-Track** | Sweeps, Metriken, Heatmaps, Vol-Regime-Wrapper, Regime-adaptive Strategien, Auto-Portfolio, Nightly-Sweeps, Feature-Importance. |
-| **Stubs/Placeholder** | Kill-Switch RiskHook, PagerDuty, WP0C-Adapter, einige R&D-Strategien, `src&#47;features`, Meta-Labeling Feature-Engineering. |
+| **Stubs/Placeholder** | Kill-Switch RiskHook, PagerDuty, WP0C-Adapter, einige R&D-Strategien, `src&#47;features&#47;__init__.py`, Meta-Labeling Feature-Engineering. |
 
 ---
 
