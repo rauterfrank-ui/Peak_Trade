@@ -8,6 +8,7 @@ Testet die Unified Research-CLI ohne echte Sweeps/Reports auszuführen.
 
 import pytest
 import argparse
+import logging
 from unittest.mock import Mock, patch
 
 # Importiere research_cli
@@ -780,3 +781,265 @@ class TestRunPipeline:
         assert mock_wf.called
         assert mock_mc.called
         assert mock_stress.called
+
+
+# =============================================================================
+# QUIET MODE CONTRACT TESTS
+# =============================================================================
+
+
+class TestResearchCliQuietMode:
+    """Offline contract tests for --quiet / -q on scripts/research_cli.py."""
+
+    def test_cli_accepts_quiet_flag_on_pipeline(self):
+        parser = research_cli.build_parser()
+        args = parser.parse_args(
+            ["pipeline", "--quiet", "--sweep-name", "test", "--config", "config/config.toml"]
+        )
+        assert args.quiet is True
+        assert args.command == "pipeline"
+
+    def test_cli_accepts_short_quiet_flag_on_pipeline(self):
+        parser = research_cli.build_parser()
+        args = parser.parse_args(
+            ["pipeline", "-q", "--sweep-name", "test", "--config", "config/config.toml"]
+        )
+        assert args.quiet is True
+
+    def test_cli_accepts_root_quiet_before_subcommand(self):
+        parser = research_cli.build_parser()
+        argv = ["--quiet", "pipeline", "--sweep-name", "test", "--config", "config/config.toml"]
+        args = parser.parse_args(argv)
+        research_cli._ensure_quiet_flag_coalesced(argv, args)
+        assert args.quiet is True
+        assert args.command == "pipeline"
+
+    def test_sweep_subcommand_accepts_quiet_via_parent_parser(self):
+        parser = research_cli.build_parser()
+        args = parser.parse_args(
+            ["sweep", "--quiet", "--sweep-name", "test", "--config", "config/config.toml"]
+        )
+        assert args.quiet is True
+        assert args.command == "sweep"
+
+    @patch("scripts.research_cli.run_stress_from_args")
+    @patch("scripts.research_cli.run_montecarlo_from_args")
+    @patch("scripts.research_cli.run_walkforward_from_args")
+    @patch("scripts.research_cli.run_promote_from_args")
+    @patch("scripts.research_cli.run_report_from_args")
+    @patch("scripts.research_cli.run_sweep_from_args")
+    def test_default_pipeline_preserves_progress_output(
+        self, mock_sweep, mock_report, mock_promote, mock_wf, mock_mc, mock_stress, caplog
+    ):
+        mock_sweep.return_value = 0
+        mock_report.return_value = 0
+        mock_promote.return_value = 0
+
+        with caplog.at_level(logging.INFO):
+            exit_code = research_cli.main(
+                ["pipeline", "--sweep-name", "test", "--config", "config/config.toml"]
+            )
+
+        assert exit_code == 0
+        assert any("Step 1/3: Strategy-Sweep ausführen" in r.message for r in caplog.records)
+
+    @patch("scripts.research_cli.run_stress_from_args")
+    @patch("scripts.research_cli.run_montecarlo_from_args")
+    @patch("scripts.research_cli.run_walkforward_from_args")
+    @patch("scripts.research_cli.run_promote_from_args")
+    @patch("scripts.research_cli.run_report_from_args")
+    @patch("scripts.research_cli.run_sweep_from_args")
+    def test_quiet_pipeline_suppresses_high_frequency_output(
+        self, mock_sweep, mock_report, mock_promote, mock_wf, mock_mc, mock_stress, caplog
+    ):
+        mock_sweep.return_value = 0
+        mock_report.return_value = 0
+        mock_promote.return_value = 0
+
+        with caplog.at_level(logging.INFO):
+            exit_code = research_cli.main(
+                ["pipeline", "--quiet", "--sweep-name", "test", "--config", "config/config.toml"]
+            )
+
+        assert exit_code == 0
+        assert not any("Step 1/3: Strategy-Sweep ausführen" in r.message for r in caplog.records)
+
+    @patch("scripts.research_cli.run_stress_from_args")
+    @patch("scripts.research_cli.run_montecarlo_from_args")
+    @patch("scripts.research_cli.run_walkforward_from_args")
+    @patch("scripts.research_cli.run_promote_from_args")
+    @patch("scripts.research_cli.run_report_from_args")
+    @patch("scripts.research_cli.run_sweep_from_args")
+    def test_quiet_pipeline_preserves_completion_output(
+        self, mock_sweep, mock_report, mock_promote, mock_wf, mock_mc, mock_stress, capsys
+    ):
+        mock_sweep.return_value = 0
+        mock_report.return_value = 0
+        mock_promote.return_value = 0
+
+        exit_code = research_cli.main(
+            ["pipeline", "--quiet", "--sweep-name", "test", "--config", "config/config.toml"]
+        )
+
+        assert exit_code == 0
+        out = capsys.readouterr().out
+        assert "✅ Pipeline erfolgreich abgeschlossen" in out
+
+    @patch("scripts.research_cli.run_strategy_profile")
+    def test_quiet_strategy_profile_preserves_artifact_path_output(self, mock_run_profile, capsys):
+        def _fake_profile(args):
+            output = research_cli._output_mode_from_args(args)
+            output.artifact_path("JSON-Profil exportiert: /tmp/test_profile.json")
+            return 0
+
+        mock_run_profile.side_effect = _fake_profile
+
+        exit_code = research_cli.main(
+            ["strategy-profile", "--quiet", "--strategy-id", "rsi_reversion"]
+        )
+
+        assert exit_code == 0
+        out = capsys.readouterr().out
+        assert "JSON-Profil exportiert:" in out
+
+    def test_quiet_mode_warning_visible(self, caplog):
+        with caplog.at_level(logging.WARNING):
+            research_cli._RESEARCH_CLI_LOGGER.warning("research-cli-quiet-warning-check")
+        assert any("research-cli-quiet-warning-check" in r.message for r in caplog.records)
+
+    def test_quiet_mode_error_visible(self, caplog):
+        with caplog.at_level(logging.ERROR):
+            research_cli._RESEARCH_CLI_LOGGER.error("research-cli-quiet-error-check")
+        assert any("research-cli-quiet-error-check" in r.message for r in caplog.records)
+
+    @patch("scripts.research_cli.run_pipeline")
+    def test_quiet_mode_propagates_exception(self, mock_run_pipeline):
+        mock_run_pipeline.side_effect = RuntimeError("research-cli-quiet-boom")
+
+        with pytest.raises(RuntimeError, match="research-cli-quiet-boom"):
+            research_cli.main(
+                ["pipeline", "--quiet", "--sweep-name", "test", "--config", "config/config.toml"]
+            )
+
+    @patch("scripts.research_cli.run_sweep_from_args")
+    @patch("scripts.research_cli.run_report_from_args")
+    @patch("scripts.research_cli.run_promote_from_args")
+    def test_quiet_pipeline_preserves_failure_exit_code(
+        self, mock_promote, mock_report, mock_sweep
+    ):
+        mock_sweep.return_value = 2
+        mock_report.return_value = 0
+        mock_promote.return_value = 0
+
+        exit_code = research_cli.main(
+            ["pipeline", "--quiet", "--sweep-name", "test", "--config", "config/config.toml"]
+        )
+
+        assert exit_code == 2
+
+    @patch("scripts.research_cli.run_pipeline", return_value=0)
+    def test_quiet_mode_restores_logging_after_success(self, _mock_pipeline):
+        baseline_module = research_cli._RESEARCH_CLI_LOGGER.level
+        baseline_root = logging.getLogger().level
+
+        assert (
+            research_cli.main(
+                ["pipeline", "--quiet", "--sweep-name", "test", "--config", "config/config.toml"]
+            )
+            == 0
+        )
+
+        assert research_cli._RESEARCH_CLI_LOGGER.level == baseline_module
+        assert logging.getLogger().level == baseline_root
+
+    @patch("scripts.research_cli.run_pipeline")
+    def test_quiet_mode_restores_logging_after_exception(self, mock_run_pipeline):
+        baseline_module = research_cli._RESEARCH_CLI_LOGGER.level
+        baseline_root = logging.getLogger().level
+        mock_run_pipeline.side_effect = RuntimeError("research-cli-restore-boom")
+
+        with pytest.raises(RuntimeError, match="research-cli-restore-boom"):
+            research_cli.main(
+                ["pipeline", "--quiet", "--sweep-name", "test", "--config", "config/config.toml"]
+            )
+
+        assert research_cli._RESEARCH_CLI_LOGGER.level == baseline_module
+        assert logging.getLogger().level == baseline_root
+
+    @patch("scripts.research_cli.run_pipeline", return_value=0)
+    def test_quiet_multiple_calls_do_not_duplicate_handlers(self, _mock_pipeline):
+        baseline_handlers = len(research_cli._RESEARCH_CLI_LOGGER.handlers)
+        argv = ["pipeline", "--quiet", "--sweep-name", "test", "--config", "config/config.toml"]
+
+        research_cli.main(argv)
+        research_cli.main(argv)
+
+        assert len(research_cli._RESEARCH_CLI_LOGGER.handlers) == baseline_handlers
+
+    @patch("scripts.research_cli.run_pipeline", return_value=0)
+    def test_quiet_no_global_state_leak_between_calls(self, mock_run_pipeline):
+        research_cli.main(
+            ["pipeline", "--quiet", "--sweep-name", "test", "--config", "config/config.toml"]
+        )
+        research_cli.main(["pipeline", "--sweep-name", "test", "--config", "config/config.toml"])
+
+        quiet_call = mock_run_pipeline.call_args_list[0][0][0]
+        default_call = mock_run_pipeline.call_args_list[1][0][0]
+        assert quiet_call.quiet is True
+        assert default_call.quiet is False
+
+    def test_quiet_pipeline_build_args_unchanged_except_quiet_flag(self):
+        base = argparse.Namespace(
+            sweep_name="test",
+            config="config/config.toml",
+            format="both",
+            with_plots=False,
+            top_n=5,
+            verbose=False,
+            quiet=False,
+        )
+        quiet = argparse.Namespace(**{**vars(base), "quiet": True})
+
+        default_sweep = research_cli._build_sweep_args_from_pipeline_args(base)
+        quiet_sweep = research_cli._build_sweep_args_from_pipeline_args(quiet)
+
+        assert default_sweep.sweep_name == quiet_sweep.sweep_name
+        assert default_sweep.config == quiet_sweep.config
+        assert default_sweep.verbose == quiet_sweep.verbose
+        assert default_sweep.quiet is False
+        assert quiet_sweep.quiet is True
+
+    @patch("scripts.research_cli.run_pipeline")
+    def test_quiet_does_not_change_dispatch_semantics(self, mock_run_pipeline):
+        mock_run_pipeline.return_value = 0
+
+        research_cli.main(
+            ["pipeline", "--quiet", "--sweep-name", "test", "--config", "config/config.toml"]
+        )
+
+        call_args = mock_run_pipeline.call_args[0][0]
+        assert call_args.command == "pipeline"
+        assert call_args.sweep_name == "test"
+
+    def test_research_cli_quiet_owner_has_no_phase41_engine_import(self):
+        import inspect
+
+        source = inspect.getsource(research_cli)
+        assert "from src.experiments.base import" not in source
+        assert "from src.sweeps.engine import" not in source
+
+    @patch("scripts.research_cli.run_sweep_from_args")
+    @patch("scripts.research_cli.ensure_evidence_dirs")
+    @patch("scripts.research_cli.write_meta")
+    def test_quiet_sweep_dispatch_offline_only(self, _mock_write, _mock_ensure, mock_run_sweep):
+        mock_run_sweep.return_value = 0
+
+        exit_code = research_cli.main(
+            ["sweep", "--quiet", "--sweep-name", "dummy", "--config", "config/config.toml"]
+        )
+
+        assert exit_code == 0
+        assert mock_run_sweep.called
+        sweep_args, output = mock_run_sweep.call_args[0]
+        assert sweep_args.command == "sweep"
+        assert output.quiet is True
