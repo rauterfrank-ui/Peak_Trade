@@ -8,7 +8,7 @@ import ast
 import importlib
 import sys
 from pathlib import Path
-from unittest.mock import patch
+from unittest.mock import MagicMock, patch
 
 import numpy as np
 import pandas as pd
@@ -27,6 +27,10 @@ TARGET_SCRIPTS: dict[str, Path] = {
 
 MA_CROSSOVER_KEY = "ma_crossover"
 MOMENTUM_KEY = "momentum_1h"
+DATA_LOADER_OWNER = "scripts/run_backtest.py:load_ohlcv_data"
+FORBIDDEN_LOCAL_LOADER_DEFS = frozenset(
+    {"load_ohlcv_data", "generate_dummy_ohlcv", "create_dummy_data"}
+)
 
 FORBIDDEN_DIRECT_IMPORTS = (
     "from src.strategies.ma_crossover import generate_signals",
@@ -54,6 +58,81 @@ def _sample_ohlcv(n: int = 80) -> pd.DataFrame:
         },
         index=index,
     )
+
+
+def _local_function_defs(name: str) -> set[str]:
+    tree = ast.parse(_read_source(name))
+    return {node.name for node in tree.body if isinstance(node, ast.FunctionDef)}
+
+
+def test_demo_complete_pipeline_source_has_no_local_loader_definitions() -> None:
+    local_defs = _local_function_defs("demo_complete_pipeline")
+    assert FORBIDDEN_LOCAL_LOADER_DEFS.isdisjoint(local_defs)
+
+
+def test_demo_complete_pipeline_source_imports_canonical_data_loader() -> None:
+    source = _read_source("demo_complete_pipeline")
+    assert "load_ohlcv_data" in source
+    assert "scripts.run_backtest" in source
+
+
+def test_demo_complete_pipeline_load_ohlcv_data_import_identity_is_canonical_owner() -> None:
+    """demo_complete_pipeline has pre-existing RiskLimitChecker import drift; verify via source + owner."""
+    import scripts.run_backtest as run_backtest_script
+
+    source = _read_source("demo_complete_pipeline")
+    assert "from scripts.run_backtest import load_ohlcv_data" in source
+    assert "load_ohlcv_data" not in _local_function_defs("demo_complete_pipeline")
+    assert run_backtest_script.load_ohlcv_data.__module__ == "scripts.run_backtest"
+
+
+def test_demo_4_kraken_pipeline_fallback_wires_canonical_loader() -> None:
+    """demo_complete_pipeline has pre-existing RiskLimitChecker import drift; mock risk before import."""
+    import types
+
+    captured: dict[str, object] = {}
+    sample_df = _sample_ohlcv()
+
+    def capture_loader(data_file, start_date, end_date, n_bars, verbose=False):
+        captured.update(
+            {
+                "data_file": data_file,
+                "start_date": start_date,
+                "end_date": end_date,
+                "n_bars": n_bars,
+                "verbose": verbose,
+            }
+        )
+        return sample_df
+
+    risk_mock = types.ModuleType("src.risk")
+    for name in (
+        "PositionSizer",
+        "PositionSizerConfig",
+        "RiskLimitChecker",
+        "RiskLimitsConfig",
+        "PortfolioState",
+    ):
+        setattr(risk_mock, name, MagicMock())
+
+    sys.modules.pop("scripts.demo_complete_pipeline", None)
+    with patch.dict(sys.modules, {"src.risk": risk_mock}):
+        import scripts.demo_complete_pipeline as demo_script
+
+    with (
+        patch.object(demo_script, "load_ohlcv_data", side_effect=capture_loader),
+        patch("src.data.test_kraken_connection", return_value=False),
+    ):
+        result = demo_script.demo_4_kraken_pipeline()
+
+    assert result is sample_df
+    assert captured == {
+        "data_file": None,
+        "start_date": None,
+        "end_date": None,
+        "n_bars": 200,
+        "verbose": False,
+    }
 
 
 @pytest.mark.parametrize(
