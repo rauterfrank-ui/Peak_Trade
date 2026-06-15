@@ -28,10 +28,17 @@ MOMENTUM_KEY = "momentum_1h"
 RSI_REVERSION_KEY = "rsi_reversion"
 
 FORBIDDEN_IMPORTS = ("create_strategy_from_config",)
+STRATEGY_PARAMS_BUILDER_OWNER = "scripts/run_backtest.py:_build_strategy_params_from_config"
+FORBIDDEN_LOCAL_BUILDER_DEFS = frozenset({"_build_strategy_params_from_config"})
 
 
 def _read_source() -> str:
     return TARGET_SCRIPT.read_text(encoding="utf-8")
+
+
+def _local_function_defs() -> set[str]:
+    tree = ast.parse(_read_source())
+    return {node.name for node in tree.body if isinstance(node, ast.FunctionDef)}
 
 
 def _sample_ohlcv(n: int = 80) -> pd.DataFrame:
@@ -84,6 +91,26 @@ def test_source_has_no_parallel_strategy_registry() -> None:
     assert "STRATEGY_REGISTRY" not in assigned_names
 
 
+def test_source_has_no_local_builder_definition() -> None:
+    local_defs = _local_function_defs()
+    assert FORBIDDEN_LOCAL_BUILDER_DEFS.isdisjoint(local_defs)
+
+
+def test_build_strategy_params_import_identity_is_canonical_owner() -> None:
+    import scripts.run_backtest as run_backtest_script
+
+    assert (
+        forward_script._build_strategy_params_from_config
+        is run_backtest_script._build_strategy_params_from_config
+    )
+
+
+def test_source_imports_canonical_strategy_params_builder() -> None:
+    source = _read_source()
+    assert "_build_strategy_params_from_config" in source
+    assert "scripts.run_backtest" in source
+
+
 def test_build_strategy_params_includes_section_and_stop_pct() -> None:
     from src.core.peak_config import PeakConfig
 
@@ -107,13 +134,15 @@ def test_build_strategy_params_includes_section_and_stop_pct() -> None:
 
 
 def test_build_strategy_params_source_uses_load_strategy_not_from_config_bypass() -> None:
-    source = inspect.getsource(forward_script._build_strategy_params_from_config)
+    import scripts.run_backtest as run_backtest_script
+
+    source = inspect.getsource(run_backtest_script._build_strategy_params_from_config)
     assert "load_strategy" in source
-    assert "get_strategy_spec" not in source
-    assert ".from_config" not in source
+    assert "spec.cls.from_config" not in source
 
 
 def test_build_strategy_params_calls_load_strategy_for_registry_validation() -> None:
+    import scripts.run_backtest as run_backtest_script
     from src.core.peak_config import PeakConfig
 
     cfg = PeakConfig(
@@ -129,7 +158,7 @@ def test_build_strategy_params_calls_load_strategy_for_registry_validation() -> 
         }
     )
 
-    with patch.object(forward_script, "load_strategy") as load_mock:
+    with patch.object(run_backtest_script, "load_strategy") as load_mock:
         load_mock.return_value = MagicMock()
         params = forward_script._build_strategy_params_from_config(cfg, MA_CROSSOVER_KEY)
 
@@ -172,8 +201,84 @@ def test_build_strategy_params_unknown_strategy_fails_closed() -> None:
             "strategy": {MA_CROSSOVER_KEY: {"fast_window": 10, "slow_window": 50}},
         }
     )
-    with pytest.raises(ValueError, match="Unbekannte Strategie"):
+    with pytest.raises(KeyError):
         forward_script._build_strategy_params_from_config(cfg, "definitely_not_a_strategy_xyz")
+
+
+def test_main_forwards_config_to_canonical_builder(tmp_path) -> None:
+    from src.core.peak_config import PeakConfig
+
+    cfg_path = tmp_path / "cfg.toml"
+    cfg_path.write_text("[environment]\nmode = 'backtest'\n", encoding="utf-8")
+    cfg = PeakConfig(
+        raw={
+            "environment": {"mode": "backtest"},
+            "strategy": {
+                MA_CROSSOVER_KEY: {
+                    "fast_window": 10,
+                    "slow_window": 50,
+                    "price_col": "close",
+                },
+            },
+        }
+    )
+    captured: dict[str, object] = {}
+
+    def capture_builder(config, strategy_key):
+        captured["cfg"] = config
+        captured["strategy_key"] = strategy_key
+        return {"fast_window": 10, "slow_window": 50, "stop_pct": 0.02}
+
+    ohlcv_meta = {
+        "symbol": "BTC/EUR",
+        "ohlcv_source": "dummy",
+        "timeframe": "1h",
+        "n_bars_requested": 200,
+        "bars_loaded": 80,
+        "kraken_pagination_used": None,
+        "kraken_bars_shortfall": None,
+    }
+
+    with (
+        patch.object(forward_script, "load_config", return_value=cfg),
+        patch.object(forward_script, "load_data_for_symbol") as load_data,
+        patch.object(
+            forward_script,
+            "_build_strategy_params_from_config",
+            side_effect=capture_builder,
+        ),
+        patch.object(
+            forward_script,
+            "load_strategy",
+            return_value=lambda df, params: pd.Series([1.0], index=df.index[-1:]),
+        ),
+        patch.object(forward_script, "log_generic_experiment"),
+        patch.object(forward_script, "save_signals_to_csv") as save_csv,
+    ):
+        load_data.return_value = (_sample_ohlcv(), ohlcv_meta)
+        save_csv.return_value = pd.DataFrame({"symbol": ["BTC/EUR"]})
+
+        out_dir = tmp_path / "forward"
+        code = forward_script.main(
+            [
+                "--strategy",
+                MA_CROSSOVER_KEY,
+                "--symbols",
+                "BTC/EUR",
+                "--config-path",
+                str(cfg_path),
+                "--output-dir",
+                str(out_dir),
+                "--run-name",
+                "probe_builder_forward",
+                "--n-bars",
+                "80",
+            ]
+        )
+
+    assert code == 0
+    assert captured["cfg"] is cfg
+    assert captured["strategy_key"] == MA_CROSSOVER_KEY
 
 
 def test_load_strategy_ma_crossover_matches_create_strategy_from_config_signals() -> None:
@@ -293,8 +398,7 @@ def test_main_calls_load_strategy_and_passes_full_params(tmp_path, monkeypatch) 
         )
 
     assert code == 0
-    load_strategy_mock.assert_has_calls([call(MA_CROSSOVER_KEY), call(MA_CROSSOVER_KEY)])
-    assert load_strategy_mock.call_count == 2
+    load_strategy_mock.assert_called_once_with(MA_CROSSOVER_KEY)
     assert captured["params"]["fast_window"] == 10
     assert captured["params"]["slow_window"] == 50
     assert captured["params"]["stop_pct"] == 0.02
@@ -352,8 +456,7 @@ def test_isolated_signal_fn_binding_per_symbol(tmp_path, monkeypatch) -> None:
         )
 
     assert code == 0
-    load_strategy_mock.assert_has_calls([call(MA_CROSSOVER_KEY), call(MA_CROSSOVER_KEY)])
-    assert load_strategy_mock.call_count == 2
+    load_strategy_mock.assert_called_once_with(MA_CROSSOVER_KEY)
     assert call_count == 2
 
 

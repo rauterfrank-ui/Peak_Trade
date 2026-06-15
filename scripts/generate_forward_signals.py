@@ -32,6 +32,7 @@ import pandas as pd
 
 from src.core.peak_config import load_config, PeakConfig
 from src.core.experiments import log_generic_experiment
+from scripts.run_backtest import _build_strategy_params_from_config
 from src.forward.signals import ForwardSignal, save_signals_to_csv
 from src.strategies import load_strategy
 from src.strategies.registry import get_available_strategy_keys, get_strategy_spec
@@ -226,18 +227,6 @@ def _validate_strategy_registry_gates(key: str, cfg: PeakConfig) -> None:
             f"Strategy '{key}' not allowed in environment '{env_mode}'. "
             f"Allowed environments: {allowed_str}"
         )
-
-
-def _build_strategy_params_from_config(
-    cfg: PeakConfig,
-    strategy_key: str,
-) -> Dict[str, Any]:
-    """Build strategy params dict via canonical load_strategy() registry path."""
-    load_strategy(strategy_key)
-    section = cfg.raw.get("strategy", {}).get(strategy_key, {})
-    params: Dict[str, Any] = dict(section) if isinstance(section, dict) else {}
-    params["stop_pct"] = cfg.get(f"strategy.{strategy_key}.stop_pct", 0.02)
-    return params
 
 
 def enforce_strategy_selection(cfg: PeakConfig, strategy_key: str) -> None:
