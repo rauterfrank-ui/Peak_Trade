@@ -28,7 +28,9 @@ TARGET_SCRIPT = project_root / "scripts/run_sweep.py"
 MA_CROSSOVER_KEY = "ma_crossover"
 FORBIDDEN_IMPORTS = ("create_strategy_from_config",)
 DATA_LOADER_OWNER = "scripts/run_backtest.py:load_ohlcv_data"
+CANONICAL_REGISTRY_GATE_OWNER = "scripts/run_backtest.py:_validate_strategy_registry_gates"
 FORBIDDEN_LOCAL_LOADER_DEFS = frozenset({"load_ohlcv_data", "generate_dummy_ohlcv"})
+FORBIDDEN_LOCAL_REGISTRY_GATE_DEFS = frozenset({"_validate_strategy_registry_gates"})
 
 
 def _read_source() -> str:
@@ -401,8 +403,86 @@ def test_closure_creates_fresh_load_strategy_binding_per_call() -> None:
 
 
 # ---------------------------------------------------------------------------
-# Registry gates — _validate_strategy_registry_gates path preserved
+# Registry gates — canonical _validate_strategy_registry_gates reuse
 # ---------------------------------------------------------------------------
+
+
+def test_source_has_no_local_registry_gate_definition() -> None:
+    local_defs = _local_function_defs()
+    assert FORBIDDEN_LOCAL_REGISTRY_GATE_DEFS.isdisjoint(local_defs)
+
+
+def test_validate_strategy_registry_gates_import_identity_is_canonical_owner() -> None:
+    import scripts.run_backtest as run_backtest_script
+
+    assert (
+        run_sweep_script._validate_strategy_registry_gates
+        is run_backtest_script._validate_strategy_registry_gates
+    )
+
+
+def test_source_imports_canonical_registry_gate_validator() -> None:
+    source = _read_source()
+    assert "_validate_strategy_registry_gates" in source
+    assert "scripts.run_backtest" in source
+
+
+def test_unknown_strategy_fails_closed_at_registry_gates() -> None:
+    from src.core.peak_config import PeakConfig
+
+    cfg = PeakConfig(raw={"environment": {"mode": "backtest"}})
+    with pytest.raises(KeyError):
+        run_sweep_script._validate_strategy_registry_gates("definitely_not_a_strategy_xyz", cfg)
+
+
+def test_run_single_backtest_invokes_registry_gates_before_parameter_merge() -> None:
+    cfg = DummyConfig(
+        {
+            "environment": {"mode": "backtest"},
+            "strategy": {MA_CROSSOVER_KEY: {"fast_window": 10, "slow_window": 30}},
+        }
+    )
+    df = _sample_ohlcv()
+    call_order: list[str] = []
+    gate_mock = MagicMock(side_effect=lambda key, config: call_order.append("gates"))
+    defaults_mock = MagicMock(
+        side_effect=lambda key: (
+            call_order.append("defaults"),
+            {"fast_window": 20, "slow_window": 50},
+        )[1]
+    )
+    merge_mock = MagicMock(
+        side_effect=lambda key, params, **kwargs: (
+            call_order.append("merge"),
+            {"fast_window": 10, "slow_window": 30, "stop_pct": 0.02},
+        )[1]
+    )
+
+    with (
+        patch.object(
+            run_sweep_script, "build_position_sizer_from_config", return_value=MagicMock()
+        ),
+        patch.object(run_sweep_script, "build_risk_manager_from_config", return_value=MagicMock()),
+        patch.object(run_sweep_script, "_validate_strategy_registry_gates", gate_mock),
+        patch.object(run_sweep_script, "_strategy_class_defaults", defaults_mock),
+        patch.object(run_sweep_script, "_merge_effective_parameters", merge_mock),
+        patch.object(
+            run_sweep_script,
+            "load_strategy",
+            return_value=lambda data, params: pd.Series(0, index=data.index),
+        ),
+        patch.object(run_sweep_script.BacktestEngine, "run_realistic") as run_realistic,
+    ):
+        run_realistic.return_value = MagicMock(stats={})
+        run_sweep_script.run_single_backtest(
+            df=df,
+            strategy_key=MA_CROSSOVER_KEY,
+            params={"fast_window": 10, "slow_window": 30},
+            cfg=cfg,
+        )
+
+    gate_mock.assert_called_once_with(MA_CROSSOVER_KEY, cfg)
+    assert call_order == ["gates", "defaults", "merge"]
 
 
 def test_run_single_backtest_propagates_registry_gate_failure() -> None:
