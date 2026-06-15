@@ -360,7 +360,7 @@ class TestVolatilityRollingPercentileGolden:
         actual = detector._compute_atr_percentile(series)
         _assert_atr_percentile_series_equal(actual, expected)
 
-    def test_detect_regimes_matches_independent_legacy_reference(
+    def test_volatility_detect_regimes_matches_independent_legacy_reference(
         self,
         sample_ohlcv_data: pd.DataFrame,
         default_config: RegimeDetectorConfig,
@@ -377,7 +377,7 @@ class TestVolatilityRollingPercentileGolden:
         _assert_atr_percentile_series_equal(actual_percentile, expected_percentile)
         pd.testing.assert_series_equal(actual_regimes, expected_regimes, check_names=True)
 
-    def test_detect_regimes_insufficient_history_empty_input(
+    def test_volatility_detect_regimes_insufficient_history_empty_input(
         self, default_config: RegimeDetectorConfig
     ) -> None:
         detector = VolatilityRegimeDetector(default_config)
@@ -389,7 +389,7 @@ class TestVolatilityRollingPercentileGolden:
         _, _, expected = _reference_volatility_detect_regimes(detector, empty_df)
         pd.testing.assert_series_equal(actual, expected, check_names=True)
 
-    def test_detect_regimes_minimal_allowed_length(self) -> None:
+    def test_volatility_detect_regimes_minimal_allowed_length(self) -> None:
         config = RegimeDetectorConfig(
             enabled=True,
             detector_name="volatility_breakout",
@@ -415,7 +415,7 @@ class TestVolatilityRollingPercentileGolden:
         _, _, expected = _reference_volatility_detect_regimes(detector, df)
         pd.testing.assert_series_equal(actual, expected, check_names=True)
 
-    def test_detect_regimes_uses_canonical_helper(self, monkeypatch) -> None:
+    def test_volatility_detect_regimes_uses_canonical_helper(self, monkeypatch) -> None:
         df = pd.DataFrame(
             {
                 "open": [1.0, 2.0, 3.0, 4.0, 5.0, 6.0],
