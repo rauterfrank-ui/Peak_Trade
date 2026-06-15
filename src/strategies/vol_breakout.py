@@ -24,6 +24,29 @@ import numpy as np
 from .base import BaseStrategy, StrategyMetadata
 
 
+def _rolling_last_pct_rank(
+    series: pd.Series,
+    window: int,
+    min_periods: int,
+) -> pd.Series:
+    """Rolling percentile rank (0-100) of the last value in each window.
+
+    Semantics match ``Series.rolling(...).apply(lambda x: pd.Series(x).rank(pct=True).iloc[-1] * 100)``.
+    """
+    values = series.to_numpy(dtype=np.float64, copy=False)
+    n = len(values)
+    out = np.full(n, np.nan, dtype=np.float64)
+
+    for end in range(n):
+        start = max(0, end - window + 1)
+        win = values[start : end + 1]
+        if np.count_nonzero(~np.isnan(win)) < min_periods:
+            continue
+        out[end] = pd.Series(win).rank(pct=True).iloc[-1] * 100.0
+
+    return pd.Series(out, index=series.index, dtype=np.float64)
+
+
 class VolBreakoutStrategy(BaseStrategy):
     """
     Volatility Breakout Strategy (ATR/Range-basiert).
@@ -240,9 +263,11 @@ class VolBreakoutStrategy(BaseStrategy):
         atr = self._compute_atr(data)
 
         # Rolling ATR-Perzentil für Vol-Filter
-        atr_percentile = atr.rolling(
-            window=self.lookback_breakout * 2, min_periods=self.vol_window
-        ).apply(lambda x: pd.Series(x).rank(pct=True).iloc[-1] * 100, raw=False)
+        atr_percentile = _rolling_last_pct_rank(
+            atr,
+            window=self.lookback_breakout * 2,
+            min_periods=self.vol_window,
+        )
 
         # Breakout-Levels
         upper_level, lower_level = self._compute_breakout_levels(data)

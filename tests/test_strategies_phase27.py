@@ -14,6 +14,7 @@ import numpy as np
 
 from src.strategies.vol_breakout import (
     VolBreakoutStrategy,
+    _rolling_last_pct_rank,
     generate_signals as vol_breakout_generate_signals,
 )
 from src.strategies.mean_reversion_channel import (
@@ -198,6 +199,105 @@ class TestVolBreakoutStrategy:
         assert strategy.meta.name == "Volatility Breakout"
         assert strategy.meta.regime == "breakout"
         assert "breakout" in strategy.meta.tags
+
+
+def _legacy_rolling_last_pct_rank_reference(
+    series: pd.Series,
+    window: int,
+    min_periods: int,
+) -> pd.Series:
+    """Test-only reference for legacy rolling().apply(rank(pct=True)) semantics."""
+    return series.rolling(window=window, min_periods=min_periods).apply(
+        lambda x: pd.Series(x).rank(pct=True).iloc[-1] * 100,
+        raw=False,
+    )
+
+
+def _assert_pct_rank_series_equal(actual: pd.Series, expected: pd.Series) -> None:
+    pd.testing.assert_series_equal(actual, expected, check_names=False)
+    assert actual.index.equals(expected.index)
+    pd.testing.assert_index_equal(actual.index, expected.index)
+    assert actual.dtype == expected.dtype
+    assert actual.isna().equals(expected.isna())
+
+
+class TestVolBreakoutRollingPercentileGolden:
+    """Golden-reference contracts for ATR percentile rolling rank semantics."""
+
+    @pytest.mark.parametrize(
+        ("values", "window", "min_periods"),
+        [
+            pytest.param([1.0, 2.0, 3.0, 4.0, 5.0], 3, 2, id="normal_ascending"),
+            pytest.param([5.0, 4.0, 3.0, 2.0, 1.0], 3, 2, id="descending"),
+            pytest.param([1.0, 2.0, 2.0, 2.0, 3.0], 4, 2, id="ties"),
+            pytest.param([1.0, np.nan, 3.0, 4.0, 5.0], 3, 2, id="nan_in_window"),
+            pytest.param([1.0, 2.0], 5, 2, id="partial_window"),
+            pytest.param([2.0, 2.0, 2.0], 3, 3, id="exact_window"),
+            pytest.param(list(range(1, 9)), 4, 2, id="multi_window"),
+            pytest.param([7.0] * 6, 4, 2, id="constant_input"),
+        ],
+    )
+    def test_rolling_last_pct_rank_matches_legacy_reference(
+        self,
+        values: list[float],
+        window: int,
+        min_periods: int,
+    ) -> None:
+        idx = pd.date_range("2024-01-01", periods=len(values), freq="h", tz="UTC")
+        series = pd.Series(values, index=idx, dtype=float)
+        expected = _legacy_rolling_last_pct_rank_reference(series, window, min_periods)
+        actual = _rolling_last_pct_rank(series, window, min_periods)
+        _assert_pct_rank_series_equal(actual, expected)
+
+    def test_rolling_last_pct_rank_timezone_aware_index(self) -> None:
+        idx = pd.date_range("2024-06-01", periods=8, freq="h", tz="UTC")
+        series = pd.Series(np.linspace(10.0, 17.0, 8), index=idx)
+        expected = _legacy_rolling_last_pct_rank_reference(series, window=4, min_periods=2)
+        actual = _rolling_last_pct_rank(series, window=4, min_periods=2)
+        _assert_pct_rank_series_equal(actual, expected)
+
+    def test_vol_breakout_atr_percentile_and_signals_match_legacy_path(self) -> None:
+        df = create_ohlcv_data(200)
+        strategy = VolBreakoutStrategy(lookback_breakout=20, vol_window=14)
+        atr = strategy._compute_atr(df)
+        window = strategy.lookback_breakout * 2
+        expected_pct = _legacy_rolling_last_pct_rank_reference(
+            atr, window=window, min_periods=strategy.vol_window
+        )
+        actual_pct = _rolling_last_pct_rank(atr, window=window, min_periods=strategy.vol_window)
+        _assert_pct_rank_series_equal(actual_pct, expected_pct)
+
+        expected_signals = strategy.generate_signals(df)
+        pd.testing.assert_series_equal(expected_signals, expected_signals)
+
+    def test_vol_breakout_generate_signals_uses_canonical_helper(self, monkeypatch) -> None:
+        df = create_ohlcv_data(120)
+        strategy = VolBreakoutStrategy()
+        calls: list[tuple[int, int]] = []
+
+        def _spy(series: pd.Series, window: int, min_periods: int) -> pd.Series:
+            calls.append((window, min_periods))
+            return _rolling_last_pct_rank(series, window=window, min_periods=min_periods)
+
+        apply_calls: list[object] = []
+        original_apply = pd.core.window.rolling.Rolling.apply
+
+        def _apply_spy(self, func, *args, **kwargs):
+            apply_calls.append(func)
+            return original_apply(self, func, *args, **kwargs)
+
+        monkeypatch.setattr(
+            "src.strategies.vol_breakout._rolling_last_pct_rank",
+            _spy,
+        )
+        monkeypatch.setattr(pd.core.window.rolling.Rolling, "apply", _apply_spy)
+
+        signals = strategy.generate_signals(df)
+
+        assert signals is not None
+        assert len(calls) == 1
+        assert calls[0] == (strategy.lookback_breakout * 2, strategy.vol_window)
+        assert not apply_calls
 
 
 # ============================================================================
