@@ -60,11 +60,21 @@ from src.experiments import (
     get_strategy_sweeps,
     list_available_strategies,
 )
+from src.experiments.base import (
+    ExperimentRunOutputMode,
+    apply_experiment_run_logging,
+    restore_experiment_run_logging,
+)
 
 
-def setup_logging(verbose: bool = False) -> None:
+def setup_logging(verbose: bool = False, quiet: bool = False) -> None:
     """Konfiguriert Logging."""
-    level = logging.DEBUG if verbose else logging.INFO
+    if verbose:
+        level = logging.DEBUG
+    elif quiet:
+        level = logging.WARNING
+    else:
+        level = logging.INFO
     logging.basicConfig(
         level=level,
         format="%(asctime)s | %(levelname)-7s | %(message)s",
@@ -218,6 +228,12 @@ def build_parser() -> argparse.ArgumentParser:
         action="store_true",
         help="Verbose Output",
     )
+    parser.add_argument(
+        "-q",
+        "--quiet",
+        action="store_true",
+        help="Silent-Modus: hochfrequente Progress-/INFO-Ausgaben unterdrücken (Warnungen/Fehler bleiben).",
+    )
 
     return parser
 
@@ -333,16 +349,17 @@ def create_progress_callback():
     return callback
 
 
-def run_from_args(args: argparse.Namespace) -> int:
+def run_from_args(args: argparse.Namespace, output: ExperimentRunOutputMode) -> int:
     """Führt einen Strategy-Sweep basierend auf Argumenten aus.
 
     Args:
         args: Parsed command-line arguments
+        output: Console output mode for progress/info lines
 
     Returns:
         Exit code (0 = success, 1 = error)
     """
-    setup_logging(args.verbose)
+    setup_logging(args.verbose, args.quiet)
     logger = logging.getLogger(__name__)
 
     # Info-Befehle
@@ -430,8 +447,10 @@ def run_from_args(args: argparse.Namespace) -> int:
     exp_config.max_workers = args.workers
 
     # Runner erstellen
+    use_progress = not args.verbose and not args.quiet
     runner = ExperimentRunner(
-        progress_callback=create_progress_callback() if not args.verbose else None,
+        progress_callback=create_progress_callback() if use_progress else None,
+        quiet=args.quiet,
     )
 
     # Kombinationen mit Constraints filtern
@@ -442,20 +461,20 @@ def run_from_args(args: argparse.Namespace) -> int:
         combinations = combinations[: args.max_runs]
 
     # Experiment-Info ausgeben
-    print("\n" + "=" * 70)
-    print("Peak_Trade Strategy Sweep (Phase 41)")
-    print("=" * 70)
-    print(f"Sweep:         {sweep_config.name}")
-    print(f"Strategie:     {sweep_config.strategy_name}")
-    print(f"Symbole:       {', '.join(sweep_config.symbols)}")
-    print(f"Timeframe:     {sweep_config.timeframe}")
-    print(f"Kombinationen: {len(combinations)}")
+    output.info("\n" + "=" * 70)
+    output.info("Peak_Trade Strategy Sweep (Phase 41)")
+    output.info("=" * 70)
+    output.info(f"Sweep:         {sweep_config.name}")
+    output.info(f"Strategie:     {sweep_config.strategy_name}")
+    output.info(f"Symbole:       {', '.join(sweep_config.symbols)}")
+    output.info(f"Timeframe:     {sweep_config.timeframe}")
+    output.info(f"Kombinationen: {len(combinations)}")
     if sweep_config.num_raw_combinations != len(combinations):
-        print(f"               (von {sweep_config.num_raw_combinations} vor Constraints)")
-    print(f"Parallel:      {'Ja' if args.parallel else 'Nein'}")
+        output.info(f"               (von {sweep_config.num_raw_combinations} vor Constraints)")
+    output.info(f"Parallel:      {'Ja' if args.parallel else 'Nein'}")
     if sweep_config.description:
-        print(f"Beschreibung:  {sweep_config.description}")
-    print("=" * 70 + "\n")
+        output.info(f"Beschreibung:  {sweep_config.description}")
+    output.info("=" * 70 + "\n")
 
     # Experiment ausführen
     try:
@@ -542,7 +561,12 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         args = parser.parse_args()
     else:
         args = parser.parse_args(list(argv))
-    return run_from_args(args)
+    module_prev, root_prev = apply_experiment_run_logging(args.quiet)
+    output = ExperimentRunOutputMode(quiet=args.quiet)
+    try:
+        return run_from_args(args, output)
+    finally:
+        restore_experiment_run_logging(module_prev, root_prev)
 
 
 if __name__ == "__main__":
