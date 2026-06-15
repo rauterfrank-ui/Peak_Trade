@@ -192,7 +192,7 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
 
 ### Plot-Generation
 
-- [ ] Plot-Generation optional machen für Performance-Benchmarks
+- [x] Plot-Generation optional machen für Performance-Benchmarks
   - Kontext: siehe `docs/PERFORMANCE_NOTES.md`, Abschnitt 5
   - Idee: `--no-plots` Flag für reine Performance-Benchmarks
   - Vorschlag: Asynchrone Plot-Generierung (später)
