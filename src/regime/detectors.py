@@ -28,6 +28,7 @@ from .base import (
     RegimeSeriesDetector,
 )
 from .config import RegimeDetectorConfig
+from src.strategies.vol_breakout import _rolling_last_pct_rank
 
 if TYPE_CHECKING:
     pass
@@ -341,9 +342,14 @@ class RangeCompressionRegimeDetector:
         directional_bias = self._compute_directional_bias(df)
 
         # Perzentile der Range-Ratio
-        ratio_percentile = range_ratio.rolling(
-            window=self.config.lookback_window, min_periods=self.config.range_compression_window
-        ).apply(lambda x: pd.Series(x).rank(pct=True).iloc[-1], raw=False)
+        ratio_percentile = (
+            _rolling_last_pct_rank(
+                range_ratio,
+                window=self.config.lookback_window,
+                min_periods=self.config.range_compression_window,
+            )
+            / 100.0
+        )
 
         # Regime-Klassifikation
         # 1. Breakout: Hohe Range-Expansion
