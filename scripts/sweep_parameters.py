@@ -44,8 +44,11 @@ from src.backtest.engine import BacktestEngine
 from src.backtest.result import BacktestResult
 from src.strategies import load_strategy
 from src.sweeps.engine import (
+    SweepRunOutputMode,
+    apply_sweep_run_logging,
     load_sweep_ohlcv_data,
     resolve_sweep_parquet_cache_from_config,
+    restore_sweep_run_logging,
 )
 
 
@@ -115,6 +118,12 @@ Examples:
         "--config-path",
         default="config.toml",
         help="Pfad zur TOML-Config (Default: config.toml).",
+    )
+    parser.add_argument(
+        "-q",
+        "--quiet",
+        action="store_true",
+        help="Silent-Modus: hochfrequente Progress-/INFO-Ausgaben unterdrücken (Warnungen/Fehler bleiben).",
     )
     return parser.parse_args(argv)
 
@@ -300,14 +309,21 @@ def run_backtest_for_params(
     return result
 
 
-def print_sweep_table(df: pd.DataFrame, param_names: List[str], n_top: int = 10):
+def print_sweep_table(
+    df: pd.DataFrame,
+    param_names: List[str],
+    n_top: int = 10,
+    *,
+    output: SweepRunOutputMode | None = None,
+):
     """Druckt formatierte Sweep-Ergebnis-Tabelle."""
-    print("\n" + "=" * 100)
-    print(f"PARAMETER SWEEP RESULTS (Top {min(n_top, len(df))})")
-    print("=" * 100)
+    mode = output or SweepRunOutputMode()
+    mode.info("\n" + "=" * 100)
+    mode.info(f"PARAMETER SWEEP RESULTS (Top {min(n_top, len(df))})")
+    mode.info("=" * 100)
 
     if len(df) == 0:
-        print("Keine Ergebnisse verfügbar.")
+        mode.info("Keine Ergebnisse verfügbar.")
         return
 
     # Spalten für Tabelle
@@ -322,13 +338,15 @@ def print_sweep_table(df: pd.DataFrame, param_names: List[str], n_top: int = 10)
 
     df_display = df[cols_to_show].head(n_top)
 
-    print(df_display.to_string(index=False))
-    print("=" * 100 + "\n")
+    mode.info(df_display.to_string(index=False))
+    mode.info("=" * 100 + "\n")
 
 
 def main(argv: List[str] | None = None) -> int:
     """Main-Funktion. Exit-Codes: 0 ok, 1 erwarteter fachlicher Fehler, 2 unerwartet."""
     args = parse_args(argv)
+    output = SweepRunOutputMode(quiet=args.quiet)
+    previous_log_level = apply_sweep_run_logging(args.quiet)
     deterministic_run_id = compute_deterministic_run_id(
         script_name="sweep_parameters.py",
         argv=list(sys.argv),
@@ -382,15 +400,15 @@ def main(argv: List[str] | None = None) -> int:
         )
         write_forward_run_manifest(manifest_path(), payload)
 
-    print("\n=, Peak_Trade Parameter Sweep")
-    print("=" * 70)
-
     try:
+        output.info("\n=, Peak_Trade Parameter Sweep")
+        output.info("=" * 70)
+
         # Config laden
-        print("\n  Lade Konfiguration...")
+        output.info("\n  Lade Konfiguration...")
         try:
             base_cfg = load_config(args.config_path)
-            print("  config geladen")
+            output.info("  config geladen")
         except FileNotFoundError as e:
             print(f"\nFEHLER: {e}", file=sys.stderr)
             print("\nBitte eine gültige TOML-Config angeben (--config-path).", file=sys.stderr)
@@ -425,16 +443,16 @@ def main(argv: List[str] | None = None) -> int:
         run_name_base = args.run_name or sweep_name
         run_name_base_resolved = run_name_base
 
-        print(f"\n  Sweep-Konfiguration:")
-        print(f"  - Strategie: {strategy_key}")
-        print(f"  - Symbol:    {symbol}")
-        print(f"  - Sweep-Name: {run_name_base}")
-        print(f"  - Sortiere nach: {sort_by} ({'ASC' if ascending else 'DESC'})")
-        print(f"  - Bars pro Run: {args.bars}")
-        print(f"  - run_id:     {deterministic_run_id}")
+        output.info(f"\n  Sweep-Konfiguration:")
+        output.info(f"  - Strategie: {strategy_key}")
+        output.info(f"  - Symbol:    {symbol}")
+        output.info(f"  - Sweep-Name: {run_name_base}")
+        output.info(f"  - Sortiere nach: {sort_by} ({'ASC' if ascending else 'DESC'})")
+        output.info(f"  - Bars pro Run: {args.bars}")
+        output.info(f"  - run_id:     {deterministic_run_id}")
 
         # Parameter-Gitter bauen
-        print(f"\n  Baue Parameter-Grid...")
+        output.info(f"\n  Baue Parameter-Grid...")
         try:
             param_names, combos = build_param_grid(base_cfg, strategy_key=strategy_key)
         except ValueError as e:
@@ -443,12 +461,12 @@ def main(argv: List[str] | None = None) -> int:
             return 1
 
         total_combos = len(combos)
-        print(f"  Parameter: {param_names}")
-        print(f"  Kombinationen: {total_combos}")
+        output.info(f"  Parameter: {param_names}")
+        output.info(f"  Kombinationen: {total_combos}")
 
         if args.max_runs is not None and args.max_runs < total_combos:
             combos = combos[: args.max_runs]
-            print(f"  max_runs={args.max_runs} – teste nur erste {len(combos)} Kombinationen")
+            output.info(f"  max_runs={args.max_runs} – teste nur erste {len(combos)} Kombinationen")
 
         sweep_timeframe = str(base_cfg.get("data.default_timeframe", "1h"))
         parquet_cache, use_parquet_cache = resolve_sweep_parquet_cache_from_config(base_cfg)
@@ -460,20 +478,21 @@ def main(argv: List[str] | None = None) -> int:
             cache=parquet_cache,
             use_cache=use_parquet_cache,
             data_source="synthetic",
+            quiet=args.quiet,
         )
 
         # Sweeps durchführen
-        print(f"\n  Starte Sweep mit {len(combos)} Kombinationen...")
-        print("-" * 70)
+        output.info(f"\n  Starte Sweep mit {len(combos)} Kombinationen...")
+        output.info("-" * 70)
 
         rows: List[Dict[str, Any]] = []
         results: List[BacktestResult] = []
 
         for idx, combo in enumerate(combos, start=1):
-            print(f"\n=== Run {idx}/{len(combos)} | {strategy_key} @ {symbol} ===")
-            print("Parameter:")
+            output.info(f"\n=== Run {idx}/{len(combos)} | {strategy_key} @ {symbol} ===")
+            output.info("Parameter:")
             for name, value in zip(param_names, combo):
-                print(f"  {name} = {value}")
+                output.info(f"  {name} = {value}")
 
             try:
                 result = run_backtest_for_params(
@@ -486,10 +505,10 @@ def main(argv: List[str] | None = None) -> int:
                     data=sweep_data,
                 )
             except Exception as e:
-                print(f"FEHLER: {e}")
+                print(f"FEHLER: {e}", file=sys.stderr)
                 continue
 
-            print(
+            output.info(
                 f"  Return: {result.stats.get('total_return', 0.0):>7.2%} | "
                 f"Sharpe: {result.stats.get('sharpe', 0.0):>6.2f} | "
                 f"Trades: {result.stats.get('total_trades', 0):>4}"
@@ -549,11 +568,11 @@ def main(argv: List[str] | None = None) -> int:
         if sort_by in df.columns:
             df = df.sort_values(by=sort_by, ascending=ascending)
         else:
-            print(f"\nSortierfeld {sort_by!r} nicht in Spalten – keine Sortierung")
+            print(f"\nSortierfeld {sort_by!r} nicht in Spalten – keine Sortierung", file=sys.stderr)
 
         df = df.reset_index(drop=True)
 
-        print_sweep_table(df, param_names, n_top=10)
+        print_sweep_table(df, param_names, n_top=10, output=output)
 
         sweeps_dir.mkdir(parents=True, exist_ok=True)
 
@@ -564,7 +583,7 @@ def main(argv: List[str] | None = None) -> int:
 
         top_k = max(args.top_k_reports, 0)
         if top_k > 0:
-            print(f"\nErstelle Reports für Top {top_k} Konfigurationen...")
+            output.info(f"\nErstelle Reports für Top {top_k} Konfigurationen...")
             from src.backtest.reporting import save_full_report
 
             top_df = df.head(top_k).copy()
@@ -598,19 +617,19 @@ def main(argv: List[str] | None = None) -> int:
                         save_plots_flag=True,
                         save_html_flag=True,
                     )
-                    print(f"  Report: {full_run_name}")
+                    output.info(f"  Report: {full_run_name}")
                 except Exception as e:
-                    print(f"  Warnung: Report nicht erstellt: {e}")
+                    print(f"  Warnung: Report nicht erstellt: {e}", file=sys.stderr)
 
         print("\nParameter Sweep abgeschlossen!")
-        print("   Beste Konfiguration:")
+        output.info("   Beste Konfiguration:")
         best = df.iloc[0]
         for name in param_names:
-            print(f"     {name} = {best[name]}")
-        print(
+            output.info(f"     {name} = {best[name]}")
+        output.info(
             f"   Performance: {best['total_return']:.2%} Return, Sharpe {best.get('sharpe', 0.0):.2f}"
         )
-        print()
+        output.info()
 
         write_manifest(0, output_csv=str(csv_path))
         return 0
@@ -624,6 +643,8 @@ def main(argv: List[str] | None = None) -> int:
         traceback.print_exc()
         write_manifest(2, error=str(e))
         return 2
+    finally:
+        restore_sweep_run_logging(previous_log_level)
 
 
 if __name__ == "__main__":

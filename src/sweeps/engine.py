@@ -48,6 +48,31 @@ logger = logging.getLogger(__name__)
 SweepDataCacheOutcome = str  # "hit" | "miss" | "disabled" | "fallback"
 
 
+@dataclass(frozen=True)
+class SweepRunOutputMode:
+    """Console output mode for offline sweep/research CLI entrypoints."""
+
+    quiet: bool = False
+
+    def info(self, *args: Any, file: Any = None, **kwargs: Any) -> None:
+        """Emit progress/info lines unless quiet mode is active."""
+        if not self.quiet:
+            print(*args, file=file, **kwargs)
+
+
+def apply_sweep_run_logging(quiet: bool) -> int:
+    """Apply sweep-engine logger level for a run. Returns level to restore."""
+    previous_level = logger.level
+    if quiet:
+        logger.setLevel(logging.WARNING)
+    return previous_level
+
+
+def restore_sweep_run_logging(previous_level: int) -> None:
+    """Restore sweep-engine logger level after ``apply_sweep_run_logging``."""
+    logger.setLevel(previous_level)
+
+
 # =============================================================================
 # DATA STRUCTURES
 # =============================================================================
@@ -340,6 +365,7 @@ def load_sweep_ohlcv_data(
     data_file: Optional[str] = None,
     start_ts: Optional[str] = None,
     end_ts: Optional[str] = None,
+    quiet: bool = False,
 ) -> Tuple[pd.DataFrame, SweepDataCacheOutcome]:
     """
     Load sweep OHLCV data via ParquetCache when enabled.
@@ -365,7 +391,8 @@ def load_sweep_ohlcv_data(
     if cache.exists(cache_key):
         try:
             cached_df = cache.load(cache_key)
-            logger.info("Sweep data cache hit (key=%s)", cache_key)
+            if not quiet:
+                logger.info("Sweep data cache hit (key=%s)", cache_key)
             return cached_df, "hit"
         except CacheCorruptionError:
             corrupted = True
@@ -378,7 +405,8 @@ def load_sweep_ohlcv_data(
     fresh_df = loader()
     cache.save(fresh_df, cache_key)
     outcome: SweepDataCacheOutcome = "fallback" if corrupted else "miss"
-    logger.info("Sweep data cache %s (key=%s)", outcome, cache_key)
+    if not quiet:
+        logger.info("Sweep data cache %s (key=%s)", outcome, cache_key)
     return fresh_df, outcome
 
 

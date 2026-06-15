@@ -207,6 +207,7 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
   - Kontext: siehe `docs/PERFORMANCE_NOTES.md`, Abschnitt 5
   - Idee: „Benchmark-/Silent"-Mode für Logs
   - Vorschlag: Batch-weiser Output statt einzelner Log-Zeilen
+  - Fortschritt (PR feat/research-run-logging-silent-mode-v1): `--quiet` für `scripts/sweep_parameters.py` über kanonischen Owner `src/sweeps/engine.py` (`SweepRunOutputMode`, `apply_sweep_run_logging`); verbleibend: `research_cli.py`, `run_sweep_strategy.py`, `run_strategy_sweep.py`, Batch-Output
 
 ### pandas-Optimierungen
 
