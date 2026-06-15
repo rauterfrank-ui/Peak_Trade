@@ -6,6 +6,14 @@ Tests fuer Regime Detection (Phase 28)
 Testet VolatilityRegimeDetector und RangeCompressionRegimeDetector.
 """
 
+from __future__ import annotations
+
+import ast
+import importlib
+import sys
+from pathlib import Path
+from unittest.mock import MagicMock, patch
+
 import pytest
 import pandas as pd
 import numpy as np
@@ -813,3 +821,135 @@ class TestRegimeDetectorConfig:
         assert config.enabled is True
         assert config.detector_name == "vol"
         assert config.vol_window == 25
+
+
+# ============================================================================
+# SCRIPT OHLCV CANONICAL REUSE CONTRACT (test_regime_detection.py)
+# ============================================================================
+
+project_root = Path(__file__).parent.parent
+sys.path.insert(0, str(project_root))
+sys.path.insert(0, str(project_root / "scripts"))
+
+import test_regime_detection as regime_detection_script
+
+TARGET_SCRIPT = project_root / "scripts/test_regime_detection.py"
+DATA_LOADER_OWNER = "scripts/run_backtest.py:load_ohlcv_data"
+FORBIDDEN_LOCAL_LOADER_DEFS = frozenset(
+    {"load_ohlcv_data", "generate_dummy_ohlcv", "create_dummy_data", "create_test_data"}
+)
+REGIME_DETECTION_SCRIPT_N_BARS = 200
+REGIME_SEMANTICS_MARKERS = (
+    "build_regime_config_from_config",
+    "label_trend_regime",
+    "label_vol_regime",
+    "label_combined_regime",
+    "summarize_regime_distribution",
+)
+
+
+def _read_script_source() -> str:
+    return TARGET_SCRIPT.read_text(encoding="utf-8")
+
+
+def _script_local_function_defs() -> set[str]:
+    tree = ast.parse(_read_script_source())
+    return {node.name for node in tree.body if isinstance(node, ast.FunctionDef)}
+
+
+def test_regime_detection_script_module_imports_without_main_side_effects() -> None:
+    with patch.object(regime_detection_script, "main") as main_mock:
+        importlib.reload(regime_detection_script)
+    main_mock.assert_not_called()
+
+
+def test_regime_detection_script_source_has_no_local_loader_definitions() -> None:
+    local_defs = _script_local_function_defs()
+    assert FORBIDDEN_LOCAL_LOADER_DEFS.isdisjoint(local_defs)
+    assert "create_test_data" not in _read_script_source()
+
+
+def test_regime_detection_script_source_imports_canonical_data_loader() -> None:
+    source = _read_script_source()
+    assert "load_ohlcv_data" in source
+    assert "scripts.run_backtest" in source
+
+
+def test_regime_detection_script_load_ohlcv_data_import_identity_is_canonical_owner() -> None:
+    import scripts.run_backtest as run_backtest_script
+
+    source = _read_script_source()
+    assert "from scripts.run_backtest import load_ohlcv_data" in source
+    assert "load_ohlcv_data" not in _script_local_function_defs()
+    assert regime_detection_script.load_ohlcv_data is run_backtest_script.load_ohlcv_data
+
+
+def test_regime_detection_script_main_wires_canonical_loader_with_n_bars_200() -> None:
+    captured: dict[str, object] = {}
+    sample_df = pd.DataFrame(
+        {
+            "open": [100.0, 101.0],
+            "high": [101.0, 102.0],
+            "low": [99.0, 100.0],
+            "close": [100.5, 101.5],
+            "volume": [1000.0, 1000.0],
+        },
+        index=pd.date_range("2024-01-01", periods=2, freq="h", tz="UTC"),
+    )
+
+    def capture_loader(data_file, start_date, end_date, n_bars, verbose=False):
+        captured.update(
+            {
+                "data_file": data_file,
+                "start_date": start_date,
+                "end_date": end_date,
+                "n_bars": n_bars,
+                "verbose": verbose,
+            }
+        )
+        return sample_df
+
+    with (
+        patch.object(regime_detection_script, "load_ohlcv_data", side_effect=capture_loader),
+        patch.object(regime_detection_script, "load_config", return_value=MagicMock()),
+        patch.object(
+            regime_detection_script,
+            "build_regime_config_from_config",
+            return_value=MagicMock(),
+        ),
+        patch.object(
+            regime_detection_script,
+            "label_trend_regime",
+            return_value=pd.Series(["trending", "ranging"], index=sample_df.index),
+        ),
+        patch.object(
+            regime_detection_script,
+            "label_vol_regime",
+            return_value=pd.Series(["low", "high"], index=sample_df.index),
+        ),
+        patch.object(
+            regime_detection_script,
+            "label_combined_regime",
+            return_value=pd.Series(["trending_low", "ranging_high"], index=sample_df.index),
+        ),
+        patch.object(
+            regime_detection_script,
+            "summarize_regime_distribution",
+            return_value={"trending_low": 0.5, "ranging_high": 0.5},
+        ),
+    ):
+        regime_detection_script.main()
+
+    assert captured == {
+        "data_file": None,
+        "start_date": None,
+        "end_date": None,
+        "n_bars": REGIME_DETECTION_SCRIPT_N_BARS,
+        "verbose": False,
+    }
+
+
+def test_regime_detection_script_regime_semantics_preserved_in_source() -> None:
+    source = _read_script_source()
+    for marker in REGIME_SEMANTICS_MARKERS:
+        assert marker in source, f"missing regime semantics marker: {marker}"
