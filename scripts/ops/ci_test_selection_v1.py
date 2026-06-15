@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import fnmatch
 import os
+import re
 import sys
 from dataclasses import dataclass
 from pathlib import Path, PurePosixPath
@@ -22,7 +23,44 @@ FULL_CATEGORIES = frozenset(
     }
 )
 NO_OP_CATEGORIES = frozenset({"docs_only", "workflow_only", "static_contract"})
-FOCUSED_CATEGORIES = frozenset({"scripts_focused", "tests_focused"})
+FOCUSED_CATEGORIES = frozenset(
+    {"scripts_focused", "tests_focused", "strategy_regime_owner_focused"}
+)
+
+# Paths that always force FULL when changed (never self-FOCUSED).
+CI_SELECTOR_FULL_PATHS = frozenset(
+    {
+        "scripts/ops/ci_test_selection_v1.py",
+        "config/ci/file_category_mapping.yaml",
+    }
+)
+
+# Shared / registry / framework prod paths — never strategy_regime_owner_focused.
+STRATEGY_REGIME_OWNER_BLOCKED_PROD = frozenset(
+    {
+        "src/strategies/__init__.py",
+        "src/strategies/composite.py",
+        "src/strategies/registry.py",
+        "src/strategies/base.py",
+        "src/strategies/diagnostics.py",
+        "src/strategies/regime_aware_portfolio.py",
+        "src/regime/__init__.py",
+        "src/regime/base.py",
+        "src/regime/switching.py",
+        "src/regime/config.py",
+    }
+)
+
+# Explicit canonical test owners (fail-closed when prod is listed).
+CANONICAL_STRATEGY_REGIME_TEST_OWNERS: dict[str, str] = {
+    "src/strategies/vol_breakout.py": "tests/test_strategies_phase27.py",
+    "src/strategies/vol_regime_filter.py": "tests/test_strategy_vol_regime_filter.py",
+    "src/regime/detectors.py": "tests/test_regime_detection.py",
+    "src/strategies/el_karoui/vol_model.py": "tests/strategies/el_karoui/test_vol_model.py",
+}
+
+_REPO_RELATIVE_PATH = re.compile(r"^[A-Za-z0-9_./-]+$")
+_IMPORT_MODULE = re.compile(r"^[a-zA-Z0-9_.]+$")
 
 
 @dataclass(frozen=True)
@@ -30,6 +68,7 @@ class SelectionResult:
     mode: str
     reason: str
     focused_pytest_targets: tuple[str, ...]
+    focused_module_imports: tuple[str, ...] = ()
 
     def github_output_lines(self) -> list[str]:
         lines = [
@@ -43,11 +82,34 @@ class SelectionResult:
             lines.append(f"focused_pytest_targets={' '.join(self.focused_pytest_targets)}")
         else:
             lines.append("focused_pytest_targets=")
+        if self.focused_module_imports:
+            lines.append(f"focused_module_imports={' '.join(self.focused_module_imports)}")
+        else:
+            lines.append("focused_module_imports=")
         return lines
+
+
+def _requires_full_ci_selector_change(files: list[str]) -> bool:
+    normalized = {PurePosixPath(f).as_posix() for f in files}
+    if normalized & CI_SELECTOR_FULL_PATHS:
+        return True
+    if any(f.startswith("tests/ci/test_ci_diff_aware_test_selection") for f in normalized):
+        return True
+    if ".github/workflows/ci.yml" in normalized and (
+        "scripts/ops/ci_test_selection_v1.py" in normalized
+        or "config/ci/file_category_mapping.yaml" in normalized
+        or any(f.startswith("tests/ci/test_ci_diff_aware_test_selection") for f in normalized)
+    ):
+        return True
+    return False
 
 
 def categorize(path: str) -> str:
     p = PurePosixPath(path).as_posix()
+    if p in CI_SELECTOR_FULL_PATHS:
+        return "ci_selector_change"
+    if p.startswith("tests/ci/test_ci_diff_aware_test_selection"):
+        return "ci_selector_change"
     if p.startswith("src/ops/") and (
         fnmatch.fnmatch(p, "src/ops/*_contract_v0.py")
         or fnmatch.fnmatch(p, "src/ops/*_contract_v1.py")
@@ -61,6 +123,8 @@ def categorize(path: str) -> str:
         return "static_contract"
     if p == "pytest.ini" or p.endswith("/conftest.py") or p == "tests/conftest.py":
         return "global_test_infra"
+    if _is_strategy_regime_owner_prod(p):
+        return "strategy_regime_owner_focused"
     if p.startswith("src/"):
         return "central_src"
     if p.startswith("scripts/"):
@@ -86,8 +150,148 @@ def categorize(path: str) -> str:
     return "unknown"
 
 
+def _is_strategy_regime_owner_prod(path: str) -> bool:
+    if path.endswith("__init__.py"):
+        return False
+    if path in STRATEGY_REGIME_OWNER_BLOCKED_PROD:
+        return False
+    if path.startswith("src/strategies/") and path.endswith(".py"):
+        return True
+    if path.startswith("src/regime/") and path.endswith(".py"):
+        return True
+    return False
+
+
+def _is_canonical_test_owner(path: str) -> bool:
+    if not (path.startswith("tests/") and path.endswith(".py")):
+        return False
+    if path.startswith("tests/ci/") or path.startswith("tests/ops/"):
+        return False
+    return True
+
+
 def _repo_path_exists(path: str) -> bool:
     return Path(path).is_file()
+
+
+def _prod_path_to_import_module(prod_path: str) -> str:
+    return prod_path[:-3].replace("/", ".")
+
+
+def _validate_repo_relative_path(path: str) -> bool:
+    if not path or not _REPO_RELATIVE_PATH.match(path):
+        return False
+    if path.startswith("/") or ".." in path.split("/"):
+        return False
+    return path.startswith("tests/") and path.endswith(".py")
+
+
+def _validate_import_module(module: str) -> bool:
+    return bool(module and _IMPORT_MODULE.match(module))
+
+
+def _discover_load_strategy_contract_tests(prod_path: str) -> tuple[str, ...]:
+    module = _prod_path_to_import_module(prod_path)
+    import_markers = (
+        f"from {module} import",
+        f"import {module}",
+    )
+    found: list[str] = []
+    scripts_tests = Path("tests/scripts")
+    if not scripts_tests.is_dir():
+        return ()
+    for candidate in sorted(scripts_tests.glob("test_*load_strategy*.py")):
+        rel = candidate.as_posix()
+        if not _repo_path_exists(rel):
+            continue
+        text = candidate.read_text(encoding="utf-8", errors="replace")
+        if any(marker in text for marker in import_markers):
+            found.append(rel)
+    return tuple(found)
+
+
+def _expected_canonical_test_owner(prod_path: str) -> str | None:
+    if prod_path in CANONICAL_STRATEGY_REGIME_TEST_OWNERS:
+        return CANONICAL_STRATEGY_REGIME_TEST_OWNERS[prod_path]
+    if not prod_path.startswith("src/"):
+        return None
+    rel = PurePosixPath(prod_path[len("src/") :])
+    if len(rel.parts) >= 2:
+        return f"tests/{rel.parent}/test_{rel.stem}.py"
+    return None
+
+
+def _strategy_regime_focused_targets(
+    prod_path: str, test_path: str, all_files: list[str]
+) -> tuple[str, ...] | None:
+    if not (_is_strategy_regime_owner_prod(prod_path) and _is_canonical_test_owner(test_path)):
+        return None
+    expected_owner = _expected_canonical_test_owner(prod_path)
+    if (
+        expected_owner is None
+        or test_path != expected_owner
+        or not _repo_path_exists(expected_owner)
+    ):
+        return None
+    if len([f for f in all_files if _is_strategy_regime_owner_prod(f)]) != 1:
+        return None
+    test_files = [f for f in all_files if _is_canonical_test_owner(f)]
+    if len(test_files) != 1 or test_files[0] != test_path:
+        return None
+    extra = [f for f in all_files if f not in {prod_path, test_path}]
+    if extra:
+        return None
+
+    targets: list[str] = []
+    seen: set[str] = set()
+
+    def add(path: str) -> None:
+        if path not in seen and _validate_repo_relative_path(path) and _repo_path_exists(path):
+            seen.add(path)
+            targets.append(path)
+
+    add(test_path)
+    for load_test in _discover_load_strategy_contract_tests(prod_path):
+        add(load_test)
+    if not targets:
+        return None
+    return tuple(sorted(targets))
+
+
+def _try_strategy_regime_owner_focused(files: list[str]) -> SelectionResult | None:
+    categories = {categorize(f) for f in files}
+    if "ci_selector_change" in categories:
+        return None
+    if categories & FULL_CATEGORIES:
+        return None
+    if categories & NO_OP_CATEGORIES:
+        return None
+
+    prod_files = sorted(f for f in files if _is_strategy_regime_owner_prod(f))
+    test_files = sorted(f for f in files if _is_canonical_test_owner(f))
+    if len(prod_files) != 1 or len(test_files) != 1:
+        return None
+
+    other = [f for f in files if f not in prod_files and f not in test_files]
+    if other:
+        return None
+
+    prod_path = prod_files[0]
+    test_path = test_files[0]
+    targets = _strategy_regime_focused_targets(prod_path, test_path, files)
+    if not targets:
+        return None
+
+    module = _prod_path_to_import_module(prod_path)
+    if not _validate_import_module(module):
+        return None
+
+    return SelectionResult(
+        "FOCUSED",
+        "strategy_regime_owner_focused",
+        targets,
+        (module,),
+    )
 
 
 def _focused_targets(files: list[str]) -> tuple[str, ...]:
@@ -115,17 +319,20 @@ def _focused_targets(files: list[str]) -> tuple[str, ...]:
 
     if not targets and any(categorize(f) in FOCUSED_CATEGORIES for f in files):
         add("tests/ci/test_ci_diff_aware_test_selection_v1.py")
-    return tuple(targets)
+    return tuple(sorted(targets))
 
 
 def resolve_selection(
     files: list[str], *, force_full: bool = False, event_name: str = "pull_request"
 ) -> SelectionResult:
-    normalized = [PurePosixPath(f).as_posix() for f in files if f.strip()]
+    normalized = sorted({PurePosixPath(f).as_posix() for f in files if f.strip()})
     if force_full or event_name in {"push", "merge_group", "schedule"}:
         return SelectionResult("FULL", "force_full_or_non_pr_event", ())
     if not normalized:
         return SelectionResult("FULL", "empty_diff_fail_closed", ())
+
+    if _requires_full_ci_selector_change(normalized):
+        return SelectionResult("FULL", "ci_selector_or_contract_change_requires_full", ())
 
     categories = {categorize(f) for f in normalized}
 
@@ -135,6 +342,13 @@ def resolve_selection(
 
     if categories <= NO_OP_CATEGORIES:
         return SelectionResult("NO_OP", "docs_workflow_or_static_contract_only", ())
+
+    strategy_focused = _try_strategy_regime_owner_focused(normalized)
+    if strategy_focused is not None:
+        return strategy_focused
+
+    if "strategy_regime_owner_focused" in categories:
+        return SelectionResult("FULL", "strategy_regime_owner_incomplete_or_ambiguous", ())
 
     if categories <= (NO_OP_CATEGORIES | FOCUSED_CATEGORIES):
         return SelectionResult(
@@ -146,6 +360,32 @@ def resolve_selection(
     return SelectionResult("FULL", "mixed_or_unclassified_fail_closed", ())
 
 
+def emit_validated_pytest_targets(raw: str) -> int:
+    for part in raw.split():
+        if not _validate_repo_relative_path(part) or not _repo_path_exists(part):
+            print(f"invalid pytest target: {part!r}", file=sys.stderr)
+            return 1
+        print(part)
+    return 0
+
+
+def run_import_smoke(modules: str) -> int:
+    import importlib
+
+    repo_root = Path(__file__).resolve().parents[2]
+    root_str = str(repo_root)
+    if root_str not in sys.path:
+        sys.path.insert(0, root_str)
+
+    for part in modules.split():
+        if not _validate_import_module(part):
+            print(f"invalid import module: {part!r}", file=sys.stderr)
+            return 1
+        importlib.import_module(part)
+        print(f"import smoke ok: {part}")
+    return 0
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description="CI diff-aware test selection v1")
     parser.add_argument("--files", nargs="*", default=None, help="Changed file paths")
@@ -153,7 +393,23 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--force-full", action="store_true")
     parser.add_argument("--event-name", default=os.environ.get("GITHUB_EVENT_NAME", "pull_request"))
     parser.add_argument("--github-output", action="store_true")
+    parser.add_argument(
+        "--emit-validated-pytest-targets",
+        metavar="TARGETS",
+        help="Print validated repo-relative pytest paths (one per line)",
+    )
+    parser.add_argument(
+        "--import-smoke-modules",
+        metavar="MODULES",
+        help="Import listed Python modules (space-separated)",
+    )
     args = parser.parse_args(argv)
+
+    if args.emit_validated_pytest_targets is not None:
+        return emit_validated_pytest_targets(args.emit_validated_pytest_targets)
+
+    if args.import_smoke_modules is not None:
+        return run_import_smoke(args.import_smoke_modules)
 
     files: list[str] = []
     if args.files_file and args.files_file.exists():

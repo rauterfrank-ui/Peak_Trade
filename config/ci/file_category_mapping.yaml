@@ -32,6 +32,13 @@ categories:
     globs:
       - "tests/**"
     runtime_class: minutes
+  strategy_regime_owner_focused:
+    mode: FOCUSED
+    globs:
+      - "src/strategies/**"
+      - "src/regime/**"
+    runtime_class: minutes
+    notes: "Single owner prod file + exactly one canonical test owner in diff; blocked for registry/shared paths"
   central_src:
     mode: FULL
     globs:
