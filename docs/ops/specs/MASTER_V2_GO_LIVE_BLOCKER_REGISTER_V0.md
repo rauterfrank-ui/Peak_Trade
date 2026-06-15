@@ -507,6 +507,39 @@ The **canonical static-SRP owner** is [Session Review Pack Contract V0](./MASTER
 - Register §6.1 — GLB-006 binding session selection scope (explicit vs navigation-only)
 - Static guards: `tests/ops/test_master_v2_go_live_blocker_register_core_doc_contract_v0.py`, `tests/ops/test_session_review_pack_source_bound_cli_shape_v0.py`
 
+### 6.5.12 GLB-006 — Explicit Binding Session Selection Static Boundary (clarification)
+
+**GLB-006** (*Source-bound session selection implicit*) remains **BLOCKED** until operator/session-owner provides **explicit** `session_id` selection for binding flows — **not** inferred from navigation snapshots, `session_focus`, `primary_source`, newest-started **open** bounded-pilot session, **latest bounded-pilot registry** row, default fallbacks, ordering heuristics, last-used session state, ambiguous discovery, or static docs/tests without an operator binding decision.
+
+Register **§6.1 GLB-006** remains the scope SSOT for binding versus navigation-only provenance; this §6.5.12 closes the **static explicit-binding session-selection legibility boundary only** (reuse; no duplication of §6.1 prose).
+
+**Binding session selection and mandatory legibility (legibility SSOT; operative session binding remains operator-scoped):**
+
+1. **Explicit session selection** — operator/session-owner **explicit** `session_id` (or equivalent canonical session key when the contract defines one); missing selector → **blocked/incomplete** / **fail-closed**.
+2. **Session type / mode** — bounded-pilot, source-bound, or other claimed mode must be explicit when the workflow asserts session tie-in; implicit mode → **fail-closed**.
+3. **Binding identity legibility** — distinct from navigation `session_focus` / `primary_source`; registry or discovery rows **do not** substitute for explicit binding `session_id` selection.
+4. **Instrument / scope / context reference** — when the binding workflow requires scope legibility, explicit recorded scope; unstated scope → **STOP** (crosslink GLB-011 where applicable).
+5. **Config / policy version** — contract, schema, or policy version when the surface defines one.
+6. **Repo commit / code version** — commit SHA or documented repo revision where canonical contracts require it.
+7. **Correlation / run / packet id** — run/bundle/archive/correlation binding where applicable for traceability (legibility only).
+8. **Owner / producer / authority reference** — role attribution for the binding decision record; **not** approval or authority lift.
+
+- **Implicit session selection** (newest open session, latest registry row, default, order, last-used, discovery) → **STOP** / **fail-closed** — no positive default session.
+- **Ambiguous, competing, stale, contradictory, or unverifiable binding** → **blocked/incomplete** — not binding-complete.
+- **Cross-session reuse without explicit binding** → **forbidden** — no silent session carry-over.
+- **Read-only triage `session_focus` / `primary_source`** → navigation only; **does not** satisfy explicit binding `session_id` selection (§6.1).
+- **Documentation, tests, events, evidence, summaries, snapshots, or machine lines** → **do not** replace explicit binding or session selection; **Documentation ≠ Binding**; **Event ≠ Binding**; **Evidence ≠ Binding**.
+- **Binding legibility ≠ binding execution**; **binding ≠ approval**; **binding ≠ criteria update**; **binding ≠ promotion**; **binding ≠ authority**; **binding ≠ runtime start**.
+- **Statically valid binding contract** → **does not** create, select, start, resume, mutate, or close sessions; **`PREFLIGHT_REMAINS_BLOCKED=true`**; **`READY_FOR_OPERATOR_ARMING=false`**; **`EXECUTION_AUTHORIZED=false`**; **`LIVE_AUTHORIZED=false`**.
+- This clarification closes the **static explicit-binding session-selection legibility boundary only** — **does not** close **GLB-006**, **does not** lift preflight, and **does not** grant arming, execution, or live authority.
+
+**Canonical read-order (existing surfaces; no new surface):**
+
+- Register §6.1 — GLB-006 binding session selection scope (explicit vs navigation-only)
+- [First Live Execution Sequence V0](./MASTER_V2_FIRST_LIVE_EXECUTION_SEQUENCE_V0.md) — Step 3 explicit session selection posture
+- [Session Review Pack Evidence / Provenance Precedence V0](./MASTER_V2_SESSION_REVIEW_PACK_EVIDENCE_PROVENANCE_PRECEDENCE_V0.md) — registry is discovery, not approval
+- Static guards: `tests/ops/test_master_v2_go_live_blocker_register_core_doc_contract_v0.py`
+
 ### 6.6 GLB-008/009/012/013 Repo-Internal Status/Lift Applied Reflection v0
 
 GLB_STATUS_REPO_INTERNAL_WRITE_LIFT_V0=true

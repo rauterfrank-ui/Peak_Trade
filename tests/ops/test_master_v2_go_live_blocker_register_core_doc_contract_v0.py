@@ -285,6 +285,50 @@ def test_glb004_registry_session_record_boundary_crosslink_guard_v1() -> None:
     assert "LIVE_AUTHORIZED=true" not in collapsed
 
 
+def test_glb006_explicit_binding_session_selection_static_boundary_crosslink_guard_v1() -> None:
+    """GLB006_EXPLICIT_BINDING_SESSION_SELECTION_STATIC_BOUNDARY_CROSSLINK_GUARD_V1"""
+    row = _register_table_row("GLB-006")
+    assert "Source-bound session selection implicit" in row
+    assert "| BLOCKED |" in row
+
+    text = _read(BLOCKER_REGISTER)
+    plain = _plain(BLOCKER_REGISTER)
+    section = plain.split("6.5.12 GLB-006")[1].split("6.6 GLB-008")[0]
+
+    assert "Explicit Binding Session Selection Static Boundary" in section
+    assert "6.1 GLB-006" in section or "Register §6.1" in section
+    assert "session_id" in section.lower()
+    assert "session_focus" in section.lower()
+    assert "primary_source" in section.lower()
+    assert (
+        "latest bounded-pilot registry" in section.lower()
+        or "latest registry row" in section.lower()
+    )
+    assert "fail-closed" in section.lower()
+    assert "does not close GLB-006" in section
+    assert (
+        "implicit session selection" in section.lower() or "implicit selection" in section.lower()
+    )
+    assert "last-used" in section.lower() or "last used" in section.lower()
+    assert "cross-session" in section.lower()
+    assert "Documentation" in section and "Binding" in section
+    assert "Event" in section and "Binding" in section
+    assert "Evidence" in section and "Binding" in section
+    assert "binding" in section.lower() and "approval" in section.lower()
+    assert "binding" in section.lower() and "promotion" in section.lower()
+    assert "binding" in section.lower() and "runtime start" in section.lower()
+    assert "does not create, select, start, resume, mutate, or close sessions" in section.lower()
+    assert "test_master_v2_go_live_blocker_register_core_doc_contract_v0.py" in text
+    collapsed = section.replace("**", "")
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in collapsed
+    assert "READY_FOR_OPERATOR_ARMING=false" in collapsed
+    assert "EXECUTION_AUTHORIZED=false" in collapsed
+    assert "LIVE_AUTHORIZED=false" in collapsed
+    assert "READY_FOR_OPERATOR_ARMING=true" not in collapsed
+    assert "LIVE_AUTHORIZED=true" not in collapsed
+    assert "PREFLIGHT_REMAINS_BLOCKED=false" not in collapsed
+
+
 def test_glb005_srp_source_bound_static_boundary_crosslink_guard_v1() -> None:
     """GLB005_SRP_SOURCE_BOUND_STATIC_BOUNDARY_CROSSLINK_GUARD_V1"""
     row = _register_table_row("GLB-005")
