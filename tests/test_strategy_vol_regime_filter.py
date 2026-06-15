@@ -5,6 +5,8 @@ Peak_Trade Phase 40 - Vol Regime Filter Tests
 Unit-Tests für den Volatilitäts-Regime-Filter.
 """
 
+from __future__ import annotations
+
 import pytest
 import pandas as pd
 import numpy as np
