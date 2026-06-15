@@ -36,6 +36,7 @@ from _forward_run_manifest import (
     try_git_sha,
     write_forward_run_manifest,
 )
+from scripts.run_backtest import _build_strategy_params_from_config
 from src.core.peak_config import load_config, PeakConfig
 from src.core.position_sizing import build_position_sizer_from_config
 from src.core.risk import build_risk_manager_from_config
@@ -232,18 +233,6 @@ def build_param_grid(
 
     combos = list(product(*param_values))
     return param_names, combos
-
-
-def _build_strategy_params_from_config(
-    cfg: PeakConfig,
-    strategy_key: str,
-) -> Dict[str, Any]:
-    """Build strategy params dict via canonical load_strategy() registry path."""
-    load_strategy(strategy_key)
-    section = cfg.raw.get("strategy", {}).get(strategy_key, {})
-    params: Dict[str, Any] = dict(section) if isinstance(section, dict) else {}
-    params["stop_pct"] = cfg.get(f"strategy.{strategy_key}.stop_pct", 0.02)
-    return params
 
 
 def run_backtest_for_params(
