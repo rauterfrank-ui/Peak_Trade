@@ -10,11 +10,11 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
 
 ### Backtest-Engine: Portfolio-Allocation-Methoden
 
-- [ ] `risk_parity` Allocation-Methode implementieren
+- [x] `risk_parity` Allocation-Methode implementieren
   - Fundstelle: `src&#47;backtest&#47;engine.py` (Zeile 1318) (illustrative)
   - Kontext: Portfolio-Allocation-Methode für gleiches Risk-Level pro Strategie
   - Vorschlag: Implementierung basierend auf Volatility/Risk-Metriken
-  - Status: implemented (Code PR #1030, merge `af02a6d5`) + Docs/Evidence PR #1031 (merge `c6fc8036`)
+  - Status: closed (PR #1030, merge `af02a6d5`; zwei-pass inverse-vol Allocation in `src/backtest/engine.py`; Evidence PR #1031 merge `c6fc8036`; Tests `tests/backtest/test_engine_allocations.py`, `tests/backtest/test_engine_two_pass_allocation.py`)
   - Evidence: `docs/ops/evidence/EV_TECH_DEBT_A_ALLOC_20260128.md`
   - Fundstellen: `src/backtest/engine.py`, `tests/backtest/test_engine_allocations.py`, `tests/backtest/test_engine_two_pass_allocation.py`
 
