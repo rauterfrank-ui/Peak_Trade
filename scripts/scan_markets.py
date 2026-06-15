@@ -33,22 +33,9 @@ from src.core.peak_config import load_config
 from src.core.position_sizing import build_position_sizer_from_config
 from src.core.risk import build_risk_manager_from_config
 from src.core.experiments import log_experiment_from_result
+from scripts.run_backtest import _build_strategy_params_from_config
 from src.strategies import load_strategy
 from src.strategies.registry import get_available_strategy_keys
-
-
-def _build_strategy_params_from_config(
-    cfg: Any,
-    strategy_key: str,
-) -> Dict[str, Any]:
-    """Build strategy params dict via canonical load_strategy() registry path."""
-    load_strategy(strategy_key)
-    section = cfg.raw.get("strategy", {}).get(strategy_key, {})
-    params: Dict[str, Any] = dict(section) if isinstance(section, dict) else {}
-    params["stop_pct"] = cfg.get(f"strategy.{strategy_key}.stop_pct", 0.02)
-    return params
-
-
 from src.backtest.engine import BacktestEngine
 from src.backtest.reporting import save_full_report
 
