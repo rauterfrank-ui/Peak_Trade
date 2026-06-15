@@ -28,7 +28,7 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
 
 ### Walk-Forward: Parameter-Optimierung
 
-- [ ] Parameter-Optimierung auf Train-Daten implementieren
+- [x] Parameter-Optimierung auf Train-Daten implementieren
   - Fundstelle: `src&#47;backtest&#47;walkforward.py` (Zeile 387) (illustrative)
   - Kontext: Train-Backtest für spätere Optimierung vorbereitet, aber noch nicht aktiv
   - Vorschlag: Integration mit Sweep-System für automatische Parameter-Optimierung
