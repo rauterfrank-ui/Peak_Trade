@@ -10,6 +10,7 @@ Testet:
 - CLI-Script Struktur
 """
 
+import ast
 import pytest
 import pandas as pd
 import numpy as np
@@ -644,9 +645,15 @@ class TestSweepEngineLoadStrategyMigration:
 
     TARGET_MODULE = Path(__file__).resolve().parent.parent / "src/sweeps/engine.py"
     MA_CROSSOVER_KEY = "ma_crossover"
+    STRATEGY_PARAMS_BUILDER_OWNER = "scripts/run_backtest.py:_build_strategy_params_from_config"
+    FORBIDDEN_LOCAL_BUILDER_DEFS = frozenset({"_build_strategy_params_from_config"})
 
     def _read_engine_source(self) -> str:
         return self.TARGET_MODULE.read_text(encoding="utf-8")
+
+    def _local_function_defs(self) -> set[str]:
+        tree = ast.parse(self._read_engine_source())
+        return {node.name for node in tree.body if isinstance(node, ast.FunctionDef)}
 
     def test_engine_source_uses_load_strategy(self) -> None:
         assert "load_strategy" in self._read_engine_source()
@@ -654,14 +661,31 @@ class TestSweepEngineLoadStrategyMigration:
     def test_engine_source_has_no_create_strategy_from_config(self) -> None:
         assert "create_strategy_from_config" not in self._read_engine_source()
 
-    def test_engine_source_has_no_spec_cls_from_config_in_param_path(self) -> None:
-        source = inspect.getsource(
-            __import__(
-                "src.sweeps.engine", fromlist=["_build_strategy_params_from_config"]
-            )._build_strategy_params_from_config
-        )
+    def test_engine_source_has_no_local_builder_definition(self) -> None:
+        local_defs = self._local_function_defs()
+        assert self.FORBIDDEN_LOCAL_BUILDER_DEFS.isdisjoint(local_defs)
+
+    def test_build_strategy_params_import_identity_is_canonical_owner(self) -> None:
+        import scripts.run_backtest as run_backtest_script
+        from src.sweeps import engine as engine_module
+
+        bound = engine_module._build_strategy_params_from_config
+        canonical = run_backtest_script._build_strategy_params_from_config
+        assert bound.__module__ == "scripts.run_backtest"
+        assert bound.__name__ == "_build_strategy_params_from_config"
+        assert inspect.getsource(bound) == inspect.getsource(canonical)
+
+    def test_engine_source_imports_canonical_strategy_params_builder(self) -> None:
+        source = self._read_engine_source()
+        assert "_build_strategy_params_from_config" in source
+        assert "scripts.run_backtest" in source
+
+    def test_build_strategy_params_source_uses_load_strategy_not_from_config_bypass(self) -> None:
+        import scripts.run_backtest as run_backtest_script
+
+        source = inspect.getsource(run_backtest_script._build_strategy_params_from_config)
         assert "load_strategy" in source
-        assert ".from_config" not in source
+        assert "spec.cls.from_config" not in source
 
     def test_build_strategy_params_includes_section_and_stop_pct(self) -> None:
         from src.core.peak_config import PeakConfig
@@ -687,6 +711,7 @@ class TestSweepEngineLoadStrategyMigration:
         assert params["stop_pct"] == 0.03
 
     def test_build_strategy_params_calls_load_strategy_for_registry_validation(self) -> None:
+        import scripts.run_backtest as run_backtest_script
         from src.core.peak_config import PeakConfig
         from src.sweeps import engine as engine_module
 
@@ -703,7 +728,7 @@ class TestSweepEngineLoadStrategyMigration:
             }
         )
 
-        with patch.object(engine_module, "load_strategy") as load_mock:
+        with patch.object(run_backtest_script, "load_strategy") as load_mock:
             load_mock.return_value = MagicMock()
             params = engine_module._build_strategy_params_from_config(cfg, self.MA_CROSSOVER_KEY)
 
@@ -811,8 +836,10 @@ class TestSweepEngineLoadStrategyMigration:
         mock_result = MagicMock()
         mock_result.stats = {"total_return": 0.0, "sharpe": 0.0}
 
+        load_mock = MagicMock(return_value=fake_signal_fn)
         with (
-            patch("src.sweeps.engine.load_strategy", return_value=fake_signal_fn) as mock,
+            patch("src.sweeps.engine.load_strategy", load_mock),
+            patch("scripts.run_backtest.load_strategy", load_mock),
             patch("src.sweeps.engine.BacktestEngine") as engine_cls,
         ):
 
@@ -828,9 +855,9 @@ class TestSweepEngineLoadStrategyMigration:
                 cfg=cfg,
             )
 
-        mock.assert_called()
-        assert mock.call_count == 2
-        assert mock.call_args_list[-1] == ((self.MA_CROSSOVER_KEY,),)
+        load_mock.assert_called()
+        assert load_mock.call_count == 2
+        assert load_mock.call_args_list[-1] == ((self.MA_CROSSOVER_KEY,),)
         assert captured["params"]["fast_window"] == 10
         assert captured["params"]["slow_window"] == 40
         assert captured["params"]["stop_pct"] == 0.02
@@ -860,8 +887,10 @@ class TestSweepEngineLoadStrategyMigration:
         mock_result = MagicMock()
         mock_result.stats = {"total_return": 0.0, "sharpe": 0.0}
 
+        load_mock = MagicMock(side_effect=side_effect)
         with (
-            patch("src.sweeps.engine.load_strategy", side_effect=side_effect),
+            patch("src.sweeps.engine.load_strategy", load_mock),
+            patch("scripts.run_backtest.load_strategy", load_mock),
             patch("src.sweeps.engine.BacktestEngine") as engine_cls,
         ):
             engine_cls.return_value.run_realistic.return_value = mock_result
@@ -878,11 +907,11 @@ class TestSweepEngineLoadStrategyMigration:
                 cfg=cfg,
             )
 
-        assert load_calls == [
-            self.MA_CROSSOVER_KEY,
-            self.MA_CROSSOVER_KEY,
-            self.MA_CROSSOVER_KEY,
-            self.MA_CROSSOVER_KEY,
+        assert load_mock.call_args_list == [
+            ((self.MA_CROSSOVER_KEY,),),
+            ((self.MA_CROSSOVER_KEY,),),
+            ((self.MA_CROSSOVER_KEY,),),
+            ((self.MA_CROSSOVER_KEY,),),
         ]
 
     REGIME_KEY = "regime_aware_portfolio"
