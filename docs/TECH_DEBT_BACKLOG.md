@@ -102,7 +102,7 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
 
 ### Vollständige Implementierungen
 
-- [ ] Vollständige Stress-Test-Implementierung
+- [x] Vollständige Stress-Test-Implementierung
   - Fundstelle: `src&#47;experiments&#47;stress_tests.py` (Zeile 389) (illustrative)
   - Kontext: Vollständige Implementierung, die Equity-Curves aus Backtest-Results lädt
   - Vorschlag: Integration mit Backtest-Registry für automatisches Laden
@@ -110,7 +110,7 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
   - Evidence: `docs/ops/evidence/EV_TECH_DEBT_C_20260128.md`
   - Fundstellen: `src/experiments/equity_loader.py`, `src/experiments/stress_tests.py`, `tests/experiments/test_equity_loader.py`
 
-- [ ] Vollständige Monte-Carlo-Implementierung
+- [x] Vollständige Monte-Carlo-Implementierung
   - Fundstelle: `src&#47;experiments&#47;monte_carlo.py` (Zeile 303) (illustrative)
   - Kontext: Vollständige Implementierung, die Equity-Curves aus Backtest-Results lädt
   - Vorschlag: Integration mit Backtest-Registry
@@ -118,14 +118,14 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
   - Evidence: `docs/ops/evidence/EV_TECH_DEBT_C_20260128.md`
   - Fundstellen: `src/experiments/equity_loader.py`, `src/experiments/monte_carlo.py`, `tests/experiments/test_equity_loader.py`
 
-- [ ] Vollständige Monte-Carlo-Robustness-Implementierung
+- [x] Vollständige Monte-Carlo-Robustness-Implementierung
   - Fundstelle: `scripts&#47;run_monte_carlo_robustness.py` (Zeile 139) (illustrative)
   - Kontext: Vollständige Implementierung, die Equity-Curves aus Backtest-Results lädt
   - Vorschlag: Integration mit Backtest-Registry
   - Status: implemented (feat/monte-carlo-equity-loader-integration-v1) — `load_returns_for_config` nutzt kanonischen `equity_loader`; kein stiller Dummy-Fallback im Standardpfad; Synthetic nur via `--use-dummy-data`
   - Fundstellen: `scripts/run_monte_carlo_robustness.py`, `src/experiments/equity_loader.py`, `tests/scripts/test_run_monte_carlo_robustness_equity_loader_integration_v1.py`
 
-- [ ] Vollständige Portfolio-Robustness-Returns-Loader-Implementierung
+- [x] Vollständige Portfolio-Robustness-Returns-Loader-Implementierung
   - Fundstelle: `scripts&#47;run_portfolio_robustness.py` (Zeile 99) (illustrative)
   - Kontext: Sweep-basierter Returns-Loader mit stiller None-Rückgabe bei Ladefehlern
   - Vorschlag: Kanonischen `equity_loader` via `load_returns_for_config` nutzen; fail-closed wie Monte-Carlo (#4215)
