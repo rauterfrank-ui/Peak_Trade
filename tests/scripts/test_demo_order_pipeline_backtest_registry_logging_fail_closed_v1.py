@@ -19,12 +19,41 @@ sys.path.insert(0, str(project_root))
 import scripts.demo_order_pipeline_backtest as demo_script
 from scripts.demo_order_pipeline_backtest import (
     format_available_strategy_hints,
-    generate_sample_data,
     get_available_strategy_hint_keys,
     main,
     parse_args,
 )
+from scripts.run_backtest import load_ohlcv_data
 from src.strategies import STRATEGY_REGISTRY, load_strategy
+
+DEMO_ORDER_PIPELINE_SCRIPT = project_root / "scripts/demo_order_pipeline_backtest.py"
+DATA_LOADER_OWNER = "scripts/run_backtest.py:load_ohlcv_data"
+FORBIDDEN_LOCAL_LOADER_DEFS = frozenset(
+    {
+        "load_ohlcv_data",
+        "generate_dummy_ohlcv",
+        "create_dummy_data",
+        "create_test_data",
+        "generate_sample_data",
+    }
+)
+DEMO_ORDER_PIPELINE_DEFAULT_N_BARS = 200
+ORDER_PIPELINE_SEMANTICS_MARKERS = (
+    "BacktestEngine",
+    "run_with_order_layer",
+    "fee_bps",
+    "slippage_bps",
+    "use_order_layer=True",
+    '"stop_pct": 0.02',
+    "log_backtest_result",
+)
+
+
+def _local_function_defs() -> set[str]:
+    tree = ast.parse(DEMO_ORDER_PIPELINE_SCRIPT.read_text(encoding="utf-8"))
+    return {
+        node.name for node in tree.body if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef))
+    }
 
 
 def test_module_imports_without_main_side_effects() -> None:
@@ -105,7 +134,7 @@ def test_no_silent_strategy_fallback_on_unknown_name() -> None:
 
 
 def test_invalid_strategy_params_fail_closed() -> None:
-    df = generate_sample_data(symbol="BTC/EUR", bars=80)
+    df = load_ohlcv_data(None, None, None, n_bars=80)
     strategy_fn = load_strategy("macd")
     invalid_params = {
         "fast_ema": 30,
@@ -245,3 +274,127 @@ def test_parse_args_defaults_unchanged() -> None:
     assert args.strategy == "ma_crossover"
     assert args.symbol == "BTC/EUR"
     assert args.bars == 200
+
+
+def test_source_has_no_local_loader_definitions() -> None:
+    local_defs = _local_function_defs()
+    assert FORBIDDEN_LOCAL_LOADER_DEFS.isdisjoint(local_defs)
+
+
+def test_source_imports_canonical_data_loader() -> None:
+    source = DEMO_ORDER_PIPELINE_SCRIPT.read_text(encoding="utf-8")
+    assert "load_ohlcv_data" in source
+    assert "scripts.run_backtest" in source
+
+
+def test_load_ohlcv_data_import_identity_is_canonical_owner() -> None:
+    import scripts.run_backtest as run_backtest_script
+
+    source = DEMO_ORDER_PIPELINE_SCRIPT.read_text(encoding="utf-8")
+    assert "from scripts.run_backtest import load_ohlcv_data" in source
+    assert "load_ohlcv_data" not in _local_function_defs()
+    assert demo_script.load_ohlcv_data is run_backtest_script.load_ohlcv_data
+
+
+def test_main_wires_canonical_loader_with_n_bars_from_cli() -> None:
+    captured: dict[str, object] = {}
+    sample_df = load_ohlcv_data(None, None, None, n_bars=50)
+    mock_result = MagicMock()
+    mock_result.stats = {
+        "total_return": 0.1,
+        "cagr": 0.05,
+        "max_drawdown": -0.02,
+        "sharpe": 1.0,
+        "total_trades": 3,
+        "win_rate": 0.5,
+        "profit_factor": 1.2,
+        "total_orders": 4,
+        "filled_orders": 3,
+        "rejected_orders": 1,
+        "total_fees": 1.5,
+    }
+    mock_result.trades = pd.DataFrame()
+    mock_engine = MagicMock()
+    mock_engine.run_with_order_layer.return_value = mock_result
+    mock_engine.execution_results = []
+
+    def capture_loader(data_file, start_date, end_date, n_bars, verbose=False):
+        captured.update(
+            {
+                "data_file": data_file,
+                "start_date": start_date,
+                "end_date": end_date,
+                "n_bars": n_bars,
+                "verbose": verbose,
+            }
+        )
+        return sample_df
+
+    with (
+        patch.object(demo_script, "load_ohlcv_data", side_effect=capture_loader),
+        patch.object(demo_script, "BacktestEngine", return_value=mock_engine),
+        patch.object(demo_script, "load_strategy", return_value=lambda df, p: df["close"] * 0),
+        patch.object(demo_script, "log_backtest_result", return_value="run-test-123"),
+    ):
+        exit_code = main(["--strategy", "ma_crossover", "--bars", "50"])
+
+    assert exit_code == 0
+    assert captured == {
+        "data_file": None,
+        "start_date": None,
+        "end_date": None,
+        "n_bars": 50,
+        "verbose": False,
+    }
+    mock_engine.run_with_order_layer.assert_called_once()
+
+
+def test_main_wires_canonical_loader_with_default_n_bars_200() -> None:
+    captured: dict[str, object] = {}
+    sample_df = load_ohlcv_data(None, None, None, n_bars=DEMO_ORDER_PIPELINE_DEFAULT_N_BARS)
+    mock_result = MagicMock()
+    mock_result.stats = {
+        "total_return": 0.0,
+        "max_drawdown": 0.0,
+        "sharpe": 0.0,
+        "total_trades": 0,
+        "win_rate": 0.0,
+        "profit_factor": 0.0,
+        "total_orders": 0,
+        "filled_orders": 0,
+        "rejected_orders": 0,
+        "total_fees": 0.0,
+    }
+    mock_result.trades = pd.DataFrame()
+    mock_engine = MagicMock()
+    mock_engine.run_with_order_layer.return_value = mock_result
+    mock_engine.execution_results = []
+
+    def capture_loader(data_file, start_date, end_date, n_bars, verbose=False):
+        captured.update(
+            {
+                "data_file": data_file,
+                "start_date": start_date,
+                "end_date": end_date,
+                "n_bars": n_bars,
+                "verbose": verbose,
+            }
+        )
+        return sample_df
+
+    with (
+        patch.object(demo_script, "load_ohlcv_data", side_effect=capture_loader),
+        patch.object(demo_script, "BacktestEngine", return_value=mock_engine),
+        patch.object(demo_script, "load_strategy", return_value=lambda df, p: df["close"] * 0),
+        patch.object(demo_script, "log_backtest_result", return_value="run-test-123"),
+    ):
+        main(["--strategy", "ma_crossover"])
+
+    assert captured["n_bars"] == DEMO_ORDER_PIPELINE_DEFAULT_N_BARS
+
+
+def test_order_pipeline_semantics_preserved_in_source() -> None:
+    source = DEMO_ORDER_PIPELINE_SCRIPT.read_text(encoding="utf-8")
+    for marker in ORDER_PIPELINE_SEMANTICS_MARKERS:
+        assert marker in source, f"missing order pipeline semantics marker: {marker}"
+    assert "generate_sample_data" not in source
