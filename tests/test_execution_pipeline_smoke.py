@@ -621,13 +621,13 @@ class TestDemoScript:
 
         assert hasattr(demo, "main")
         assert hasattr(demo, "parse_args")
-        assert hasattr(demo, "generate_sample_data")
+        assert hasattr(demo, "load_ohlcv_data")
 
-    def test_demo_script_generate_sample_data(self):
-        """generate_sample_data() generiert valide OHLCV-Daten."""
-        from scripts.demo_order_pipeline_backtest import generate_sample_data
+    def test_demo_script_load_ohlcv_data(self):
+        """load_ohlcv_data() liefert valide OHLCV-Daten fuer das Demo-Script."""
+        from scripts.run_backtest import load_ohlcv_data
 
-        df = generate_sample_data(symbol="BTC/EUR", bars=100, timeframe="1h")
+        df = load_ohlcv_data(None, None, None, n_bars=100)
 
         assert len(df) == 100
         assert "open" in df.columns
