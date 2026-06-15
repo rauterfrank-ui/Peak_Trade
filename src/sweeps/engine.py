@@ -20,6 +20,7 @@ Safety:
 from __future__ import annotations
 
 import itertools
+import logging
 import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
@@ -29,6 +30,8 @@ from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 import pandas as pd
 
 from src.backtest.result import BacktestResult
+from src.core.errors import CacheCorruptionError
+from src.data.cache import ParquetCache
 from src.core.experiments import log_sweep_run, RUN_TYPE_SWEEP
 from src.core.peak_config import PeakConfig, load_config
 from src.core.position_sizing import build_position_sizer_from_config
@@ -39,6 +42,10 @@ from src.strategies.registry import (
     get_available_strategy_keys,
     get_strategy_spec,
 )
+
+logger = logging.getLogger(__name__)
+
+SweepDataCacheOutcome = str  # "hit" | "miss" | "disabled" | "fallback"
 
 
 # =============================================================================
@@ -280,6 +287,99 @@ def expand_parameter_grid(grid: Dict[str, List[Any]]) -> List[Dict[str, Any]]:
         combinations.append(param_dict)
 
     return combinations
+
+
+def build_sweep_data_cache_key(
+    *,
+    symbol: str,
+    timeframe: str,
+    n_bars: int,
+    data_source: str = "synthetic",
+    data_file: Optional[str] = None,
+    start_ts: Optional[str] = None,
+    end_ts: Optional[str] = None,
+) -> str:
+    """Build a deterministic ParquetCache key for sweep OHLCV loads."""
+    parts = [
+        "sweep",
+        symbol.replace("/", "_"),
+        timeframe,
+        f"bars{n_bars}",
+        data_source,
+    ]
+    if data_file:
+        parts.append(f"file{Path(data_file).stem}")
+    if start_ts:
+        parts.append(f"start{start_ts}")
+    if end_ts:
+        parts.append(f"end{end_ts}")
+    return "_".join(parts)
+
+
+def resolve_sweep_parquet_cache_from_config(
+    cfg: PeakConfig,
+) -> Tuple[Optional[ParquetCache], bool]:
+    """Resolve ParquetCache and enablement from canonical [data] config."""
+    use_cache = bool(cfg.get("data.use_cache", True))
+    if not use_cache:
+        return None, False
+    data_dir = str(cfg.get("data.data_dir", "data"))
+    cache_dir = str(Path(data_dir) / "cache")
+    return ParquetCache(cache_dir=cache_dir), True
+
+
+def load_sweep_ohlcv_data(
+    *,
+    symbol: str,
+    timeframe: str,
+    n_bars: int,
+    loader: Callable[[], pd.DataFrame],
+    cache: Optional[ParquetCache] = None,
+    use_cache: bool = True,
+    data_source: str = "synthetic",
+    data_file: Optional[str] = None,
+    start_ts: Optional[str] = None,
+    end_ts: Optional[str] = None,
+) -> Tuple[pd.DataFrame, SweepDataCacheOutcome]:
+    """
+    Load sweep OHLCV data via ParquetCache when enabled.
+
+    Repeated logically identical requests reuse the cached dataset. Corrupt cache
+    entries are invalidated and reloaded from the injected loader (fail-closed on
+    stale/corrupt reads).
+    """
+    if not use_cache or cache is None:
+        return loader(), "disabled"
+
+    cache_key = build_sweep_data_cache_key(
+        symbol=symbol,
+        timeframe=timeframe,
+        n_bars=n_bars,
+        data_source=data_source,
+        data_file=data_file,
+        start_ts=start_ts,
+        end_ts=end_ts,
+    )
+
+    corrupted = False
+    if cache.exists(cache_key):
+        try:
+            cached_df = cache.load(cache_key)
+            logger.info("Sweep data cache hit (key=%s)", cache_key)
+            return cached_df, "hit"
+        except CacheCorruptionError:
+            corrupted = True
+            logger.warning(
+                "Sweep data cache corrupt (key=%s); invalidating and reloading",
+                cache_key,
+            )
+            cache.clear(cache_key)
+
+    fresh_df = loader()
+    cache.save(fresh_df, cache_key)
+    outcome: SweepDataCacheOutcome = "fallback" if corrupted else "miss"
+    logger.info("Sweep data cache %s (key=%s)", outcome, cache_key)
+    return fresh_df, outcome
 
 
 def validate_param_grid(grid: Dict[str, List[Any]]) -> None:

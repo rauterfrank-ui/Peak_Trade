@@ -185,10 +185,11 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
 
 ### Data-Layer Caching
 
-- [ ] Data-Layer Caching für große Research-Sweeps verbessern
+- [x] Data-Layer Caching für große Research-Sweeps verbessern
   - Kontext: siehe `docs/PERFORMANCE_NOTES.md`, Abschnitt 5
   - Idee: Caching-Layer weiter ausbauen / mehr Reuse zwischen Runs
   - Vorschlag: Parquet-Format für persistierte Daten nutzen (falls noch nicht geschehen)
+  - Status: implemented (PR feat/data-layer-caching-sweep-v1) — kanonischer `ParquetCache` in `src/sweeps/engine.py` + `scripts/sweep_parameters.py`; Offline-Contracts in `tests&#47;test_sweeps.py::TestSweepParquetCacheContracts`
 
 ### Plot-Generation
 

@@ -14,9 +14,12 @@ import pytest
 import pandas as pd
 import numpy as np
 import inspect
+import json
 from datetime import datetime, timedelta
 from pathlib import Path
 from unittest.mock import MagicMock, patch
+
+from tests.utils.dt import normalize_dt_index
 
 
 # =============================================================================
@@ -1030,3 +1033,330 @@ class TestSweepEngineLoadStrategyMigration:
             "risk_on_scale": 0.6,
             "neutral_scale": 0.3,
         }
+
+
+# =============================================================================
+# SWEEP DATA PARQUET CACHE CONTRACTS (offline, fail-closed)
+# =============================================================================
+
+
+class TestSweepParquetCacheContracts:
+    """Offline contracts for ParquetCache integration in sweep data loading."""
+
+    def _synthetic_loader(self, df: pd.DataFrame):
+        calls = {"count": 0}
+
+        def _loader() -> pd.DataFrame:
+            calls["count"] += 1
+            return df.copy()
+
+        _loader.calls = calls  # type: ignore[attr-defined]
+        return _loader
+
+    def _sample_df(self, *, seed: int = 1, n: int = 24) -> pd.DataFrame:
+        np.random.seed(seed)
+        index = pd.date_range("2024-01-01", periods=n, freq="h", tz="UTC")
+        close = 100.0 + np.cumsum(np.random.randn(n))
+        return pd.DataFrame(
+            {
+                "open": close * 0.999,
+                "high": close * 1.002,
+                "low": close * 0.998,
+                "close": close,
+                "volume": np.full(n, 1000.0),
+            },
+            index=index,
+        )
+
+    def test_first_identical_request_miss_single_loader_call(self, tmp_path) -> None:
+        from src.data.cache import ParquetCache
+        from src.sweeps.engine import load_sweep_ohlcv_data
+
+        df = self._sample_df()
+        loader = self._synthetic_loader(df)
+        cache = ParquetCache(cache_dir=str(tmp_path / "cache"))
+
+        loaded, outcome = load_sweep_ohlcv_data(
+            symbol="BTC/EUR",
+            timeframe="1h",
+            n_bars=len(df),
+            loader=loader,
+            cache=cache,
+            use_cache=True,
+        )
+
+        assert outcome == "miss"
+        assert loader.calls["count"] == 1
+        pd.testing.assert_frame_equal(loaded, df, check_freq=False)
+
+    def test_second_identical_request_hit_no_extra_loader_call(self, tmp_path) -> None:
+        from src.data.cache import ParquetCache
+        from src.sweeps.engine import load_sweep_ohlcv_data
+
+        df = self._sample_df(seed=2)
+        loader = self._synthetic_loader(df)
+        cache = ParquetCache(cache_dir=str(tmp_path / "cache"))
+
+        load_sweep_ohlcv_data(
+            symbol="BTC/EUR",
+            timeframe="1h",
+            n_bars=len(df),
+            loader=loader,
+            cache=cache,
+            use_cache=True,
+        )
+        loaded, outcome = load_sweep_ohlcv_data(
+            symbol="BTC/EUR",
+            timeframe="1h",
+            n_bars=len(df),
+            loader=loader,
+            cache=cache,
+            use_cache=True,
+        )
+
+        assert outcome == "hit"
+        assert loader.calls["count"] == 1
+        pd.testing.assert_frame_equal(
+            normalize_dt_index(loaded, ensure_utc=True),
+            normalize_dt_index(df, ensure_utc=True),
+            check_freq=False,
+        )
+
+    def test_different_symbols_have_isolated_cache_keys(self, tmp_path) -> None:
+        from src.data.cache import ParquetCache
+        from src.sweeps.engine import build_sweep_data_cache_key, load_sweep_ohlcv_data
+
+        cache = ParquetCache(cache_dir=str(tmp_path / "cache"))
+        btc_loader = self._synthetic_loader(self._sample_df(seed=3))
+        eth_loader = self._synthetic_loader(self._sample_df(seed=4))
+
+        load_sweep_ohlcv_data(
+            symbol="BTC/EUR",
+            timeframe="1h",
+            n_bars=24,
+            loader=btc_loader,
+            cache=cache,
+        )
+        load_sweep_ohlcv_data(
+            symbol="ETH/EUR",
+            timeframe="1h",
+            n_bars=24,
+            loader=eth_loader,
+            cache=cache,
+        )
+
+        assert build_sweep_data_cache_key(
+            symbol="BTC/EUR", timeframe="1h", n_bars=24
+        ) != build_sweep_data_cache_key(symbol="ETH/EUR", timeframe="1h", n_bars=24)
+        assert btc_loader.calls["count"] == 1
+        assert eth_loader.calls["count"] == 1
+
+    def test_different_timeframes_have_isolated_cache_keys(self, tmp_path) -> None:
+        from src.data.cache import ParquetCache
+        from src.sweeps.engine import build_sweep_data_cache_key, load_sweep_ohlcv_data
+
+        cache = ParquetCache(cache_dir=str(tmp_path / "cache"))
+        loader_1h = self._synthetic_loader(self._sample_df(seed=5))
+        loader_4h = self._synthetic_loader(self._sample_df(seed=6))
+
+        load_sweep_ohlcv_data(
+            symbol="BTC/EUR",
+            timeframe="1h",
+            n_bars=24,
+            loader=loader_1h,
+            cache=cache,
+        )
+        load_sweep_ohlcv_data(
+            symbol="BTC/EUR",
+            timeframe="4h",
+            n_bars=24,
+            loader=loader_4h,
+            cache=cache,
+        )
+
+        assert build_sweep_data_cache_key(
+            symbol="BTC/EUR", timeframe="1h", n_bars=24
+        ) != build_sweep_data_cache_key(symbol="BTC/EUR", timeframe="4h", n_bars=24)
+        assert loader_1h.calls["count"] == 1
+        assert loader_4h.calls["count"] == 1
+
+    def test_different_n_bars_have_isolated_cache_keys(self, tmp_path) -> None:
+        from src.data.cache import ParquetCache
+        from src.sweeps.engine import build_sweep_data_cache_key, load_sweep_ohlcv_data
+
+        cache = ParquetCache(cache_dir=str(tmp_path / "cache"))
+        loader_200 = self._synthetic_loader(self._sample_df(seed=7, n=20))
+        loader_400 = self._synthetic_loader(self._sample_df(seed=8, n=30))
+
+        load_sweep_ohlcv_data(
+            symbol="BTC/EUR",
+            timeframe="1h",
+            n_bars=200,
+            loader=loader_200,
+            cache=cache,
+        )
+        load_sweep_ohlcv_data(
+            symbol="BTC/EUR",
+            timeframe="1h",
+            n_bars=400,
+            loader=loader_400,
+            cache=cache,
+        )
+
+        assert build_sweep_data_cache_key(
+            symbol="BTC/EUR", timeframe="1h", n_bars=200
+        ) != build_sweep_data_cache_key(symbol="BTC/EUR", timeframe="1h", n_bars=400)
+        assert loader_200.calls["count"] == 1
+        assert loader_400.calls["count"] == 1
+
+    def test_cache_hit_matches_direct_loader_data(self, tmp_path) -> None:
+        from src.data.cache import ParquetCache
+        from src.sweeps.engine import load_sweep_ohlcv_data
+
+        df = self._sample_df(seed=9)
+        loader = self._synthetic_loader(df)
+        cache = ParquetCache(cache_dir=str(tmp_path / "cache"))
+
+        direct_df = loader()
+        cached_df, outcome = load_sweep_ohlcv_data(
+            symbol="BTC/EUR",
+            timeframe="1h",
+            n_bars=len(df),
+            loader=loader,
+            cache=cache,
+            use_cache=True,
+        )
+        hit_df, hit_outcome = load_sweep_ohlcv_data(
+            symbol="BTC/EUR",
+            timeframe="1h",
+            n_bars=len(df),
+            loader=loader,
+            cache=cache,
+            use_cache=True,
+        )
+
+        assert outcome == "miss"
+        assert hit_outcome == "hit"
+        pd.testing.assert_frame_equal(
+            normalize_dt_index(cached_df, ensure_utc=True),
+            normalize_dt_index(direct_df, ensure_utc=True),
+            check_freq=False,
+        )
+        pd.testing.assert_frame_equal(
+            normalize_dt_index(hit_df, ensure_utc=True),
+            normalize_dt_index(direct_df, ensure_utc=True),
+            check_freq=False,
+        )
+
+    def test_corrupt_cache_invalidates_and_reloads_without_stale_data(self, tmp_path) -> None:
+        from src.core.errors import CacheCorruptionError
+        from src.data.cache import ParquetCache
+        from src.sweeps.engine import (
+            build_sweep_data_cache_key,
+            load_sweep_ohlcv_data,
+        )
+
+        df = self._sample_df(seed=10)
+        loader = self._synthetic_loader(df)
+        cache = ParquetCache(cache_dir=str(tmp_path / "cache"))
+        cache_key = build_sweep_data_cache_key(symbol="BTC/EUR", timeframe="1h", n_bars=len(df))
+
+        cache.save(df, cache_key)
+        corrupt_path = cache._get_cache_path(cache_key)
+        Path(corrupt_path).write_text("not-a-parquet-file", encoding="utf-8")
+
+        with pytest.raises(CacheCorruptionError):
+            cache.load(cache_key)
+
+        reloaded, outcome = load_sweep_ohlcv_data(
+            symbol="BTC/EUR",
+            timeframe="1h",
+            n_bars=len(df),
+            loader=loader,
+            cache=cache,
+            use_cache=True,
+        )
+
+        assert outcome == "fallback"
+        assert loader.calls["count"] == 1
+        pd.testing.assert_frame_equal(reloaded, df, check_freq=False)
+
+    def test_cli_binds_cache_config_to_engine_loader(self, tmp_path) -> None:
+        import scripts.sweep_parameters as sweep_script
+        from src.core.peak_config import PeakConfig
+
+        cfg = PeakConfig(
+            raw={
+                "data": {
+                    "data_dir": str(tmp_path / "data"),
+                    "use_cache": True,
+                    "default_timeframe": "1h",
+                },
+                "strategy": {"ma_crossover": {"fast_window": 10, "slow_window": 50}},
+                "sweep": {
+                    "strategy_key": "ma_crossover",
+                    "symbol": "BTC/EUR",
+                    "parameters": {"fast_window": [10], "slow_window": [50]},
+                },
+            }
+        )
+
+        cache, use_cache = sweep_script.resolve_sweep_parquet_cache_from_config(cfg)
+        assert use_cache is True
+        assert cache is not None
+        assert str(cache.cache_dir).endswith("cache")
+
+    def test_cache_integration_does_not_mutate_strategy_config(self, tmp_path) -> None:
+        from src.data.cache import ParquetCache
+        from src.sweeps.engine import load_sweep_ohlcv_data
+
+        raw = {
+            "strategy": {
+                "ma_crossover": {
+                    "fast_window": 10,
+                    "slow_window": 50,
+                    "stop_pct": 0.02,
+                }
+            }
+        }
+        cfg_before = json.dumps(raw, sort_keys=True)
+        df = self._sample_df(seed=11)
+        loader = self._synthetic_loader(df)
+        cache = ParquetCache(cache_dir=str(tmp_path / "cache"))
+
+        load_sweep_ohlcv_data(
+            symbol="BTC/EUR",
+            timeframe="1h",
+            n_bars=len(df),
+            loader=loader,
+            cache=cache,
+        )
+
+        assert json.dumps(raw, sort_keys=True) == cfg_before
+
+    def test_no_network_or_runtime_side_effects(self, tmp_path, monkeypatch) -> None:
+        from src.data.cache import ParquetCache
+        from src.sweeps.engine import load_sweep_ohlcv_data
+
+        def _forbidden_network(*_args, **_kwargs):
+            raise AssertionError("network must not be used in offline sweep cache tests")
+
+        monkeypatch.setattr("src.data.kraken.fetch_ohlcv_df", _forbidden_network)
+        monkeypatch.setattr(
+            "src.data.providers.kraken_ccxt_backend.KrakenCcxtBackend", _forbidden_network
+        )
+
+        df = self._sample_df(seed=12)
+        loader = self._synthetic_loader(df)
+        cache = ParquetCache(cache_dir=str(tmp_path / "cache"))
+
+        loaded, outcome = load_sweep_ohlcv_data(
+            symbol="BTC/EUR",
+            timeframe="1h",
+            n_bars=len(df),
+            loader=loader,
+            cache=cache,
+        )
+
+        assert outcome == "miss"
+        assert len(loaded) == len(df)

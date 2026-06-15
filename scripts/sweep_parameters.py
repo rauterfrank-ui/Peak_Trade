@@ -43,6 +43,10 @@ from src.core.experiments import log_experiment_from_result
 from src.backtest.engine import BacktestEngine
 from src.backtest.result import BacktestResult
 from src.strategies import load_strategy
+from src.sweeps.engine import (
+    load_sweep_ohlcv_data,
+    resolve_sweep_parquet_cache_from_config,
+)
 
 
 def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
@@ -240,6 +244,7 @@ def run_backtest_for_params(
     param_names: List[str],
     param_values: Tuple[Any, ...],
     n_bars: int = 200,
+    data: pd.DataFrame | None = None,
 ) -> BacktestResult:
     """
     Führt Backtest mit überschriebenen Strategy-Parametern aus.
@@ -263,8 +268,9 @@ def run_backtest_for_params(
 
     cfg = base_cfg.with_overrides(overrides)
 
-    # Daten laden
-    data = load_data_for_symbol(symbol, n_bars=n_bars)
+    # Daten laden (vorgeladen im Sweep-Kontext oder einmalig pro Run)
+    if data is None:
+        data = load_data_for_symbol(symbol, n_bars=n_bars)
 
     strategy_params = _build_strategy_params_from_config(cfg, strategy_key)
     base_signal_fn = load_strategy(strategy_key)
@@ -444,6 +450,18 @@ def main(argv: List[str] | None = None) -> int:
             combos = combos[: args.max_runs]
             print(f"  max_runs={args.max_runs} – teste nur erste {len(combos)} Kombinationen")
 
+        sweep_timeframe = str(base_cfg.get("data.default_timeframe", "1h"))
+        parquet_cache, use_parquet_cache = resolve_sweep_parquet_cache_from_config(base_cfg)
+        sweep_data, _cache_outcome = load_sweep_ohlcv_data(
+            symbol=symbol,
+            timeframe=sweep_timeframe,
+            n_bars=args.bars,
+            loader=lambda: load_data_for_symbol(symbol, n_bars=args.bars),
+            cache=parquet_cache,
+            use_cache=use_parquet_cache,
+            data_source="synthetic",
+        )
+
         # Sweeps durchführen
         print(f"\n  Starte Sweep mit {len(combos)} Kombinationen...")
         print("-" * 70)
@@ -465,6 +483,7 @@ def main(argv: List[str] | None = None) -> int:
                     param_names=param_names,
                     param_values=combo,
                     n_bars=args.bars,
+                    data=sweep_data,
                 )
             except Exception as e:
                 print(f"FEHLER: {e}")
