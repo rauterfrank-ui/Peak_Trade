@@ -29,7 +29,9 @@ MEAN_REVERSION_KEY = "mean_reversion"
 
 FORBIDDEN_IMPORTS = ("create_strategy_from_config",)
 DATA_LOADER_OWNER = "scripts/run_backtest.py:load_ohlcv_data"
+STRATEGY_PARAMS_BUILDER_OWNER = "scripts/run_backtest.py:_build_strategy_params_from_config"
 FORBIDDEN_LOCAL_LOADER_DEFS = frozenset({"load_ohlcv_data", "generate_dummy_ohlcv"})
+FORBIDDEN_LOCAL_BUILDER_DEFS = frozenset({"_build_strategy_params_from_config"})
 
 
 def _read_source() -> str:
@@ -96,6 +98,11 @@ def test_source_has_no_local_loader_or_dummy_definitions() -> None:
     assert FORBIDDEN_LOCAL_LOADER_DEFS.isdisjoint(local_defs)
 
 
+def test_source_has_no_local_builder_definition() -> None:
+    local_defs = _local_function_defs()
+    assert FORBIDDEN_LOCAL_BUILDER_DEFS.isdisjoint(local_defs)
+
+
 def test_source_imports_canonical_data_loader() -> None:
     source = _read_source()
     assert "load_ohlcv_data" in source
@@ -106,6 +113,21 @@ def test_load_ohlcv_data_import_identity_is_canonical_owner() -> None:
     import scripts.run_backtest as run_backtest_script
 
     assert compare_runner.load_ohlcv_data is run_backtest_script.load_ohlcv_data
+
+
+def test_build_strategy_params_import_identity_is_canonical_owner() -> None:
+    import scripts.run_backtest as run_backtest_script
+
+    assert (
+        compare_runner._build_strategy_params_from_config
+        is run_backtest_script._build_strategy_params_from_config
+    )
+
+
+def test_source_imports_canonical_strategy_params_builder() -> None:
+    source = _read_source()
+    assert "_build_strategy_params_from_config" in source
+    assert "scripts.run_backtest" in source
 
 
 def test_main_forwards_load_ohlcv_arguments_to_canonical_loader(tmp_path, monkeypatch) -> None:
@@ -222,16 +244,19 @@ def test_build_strategy_params_includes_section_and_stop_pct() -> None:
 
 
 def test_build_strategy_params_source_uses_load_strategy_not_from_config_bypass() -> None:
-    source = inspect.getsource(compare_runner._build_strategy_params_from_config)
+    import scripts.run_backtest as run_backtest_script
+
+    source = inspect.getsource(run_backtest_script._build_strategy_params_from_config)
     assert "load_strategy" in source
-    assert "get_strategy_spec" not in source
-    assert ".from_config" not in source
+    assert "spec.cls.from_config" not in source
 
 
 def test_build_strategy_params_calls_load_strategy_for_registry_validation() -> None:
+    import scripts.run_backtest as run_backtest_script
+
     cfg = _minimal_cfg(MA_CROSSOVER_KEY, fast_window=10, slow_window=50, price_col="close")
 
-    with patch.object(compare_runner, "load_strategy") as load_mock:
+    with patch.object(run_backtest_script, "load_strategy") as load_mock:
         load_mock.return_value = MagicMock()
         params = compare_runner._build_strategy_params_from_config(cfg, MA_CROSSOVER_KEY)
 
@@ -263,10 +288,60 @@ def test_build_strategy_params_isolated_per_strategy_key() -> None:
 
 def test_build_strategy_params_unknown_strategy_fails_closed() -> None:
     cfg = _minimal_cfg(MA_CROSSOVER_KEY, fast_window=10, slow_window=50, price_col="close")
-    with pytest.raises(ValueError, match="Unbekannte Strategie"):
+    with pytest.raises(KeyError):
         compare_runner._build_strategy_params_from_config(
             cfg, "definitely_not_a_research_compare_strategy_xyz"
         )
+
+
+def test_run_single_backtest_forwards_config_to_canonical_builder() -> None:
+    cfg = _minimal_cfg(MA_CROSSOVER_KEY, fast_window=10, slow_window=50, price_col="close")
+    captured: dict[str, object] = {}
+
+    def capture_builder(config, strategy_key):
+        captured["cfg"] = config
+        captured["strategy_key"] = strategy_key
+        return {"fast_window": 10, "slow_window": 50, "stop_pct": 0.02}
+
+    mock_result = MagicMock()
+    mock_result.stats = {
+        "total_return": 0.1,
+        "max_drawdown": -0.05,
+        "sharpe": 1.0,
+        "win_rate": 0.5,
+        "profit_factor": 1.2,
+        "total_trades": 3,
+        "cagr": 0.08,
+    }
+
+    with (
+        patch.object(
+            compare_runner,
+            "_build_strategy_params_from_config",
+            side_effect=capture_builder,
+        ),
+        patch.object(
+            compare_runner,
+            "load_strategy",
+            return_value=lambda df, params: pd.Series(0, index=df.index),
+        ),
+        patch.object(compare_runner, "build_position_sizer_from_config", return_value=MagicMock()),
+        patch.object(compare_runner, "build_risk_manager_from_config", return_value=MagicMock()),
+        patch.object(compare_runner, "BacktestEngine") as engine_cls,
+        patch.object(compare_runner, "validate_for_live_trading", return_value=(True, [])),
+    ):
+        engine_cls.return_value.run_realistic.return_value = mock_result
+        result = compare_runner.run_single_backtest(
+            strategy_key=MA_CROSSOVER_KEY,
+            df=_sample_ohlcv(),
+            cfg=cfg,
+            symbol="BTC/EUR",
+            verbose=False,
+        )
+
+    assert result is not None
+    assert captured["cfg"] is cfg
+    assert captured["strategy_key"] == MA_CROSSOVER_KEY
 
 
 def test_load_strategy_ma_crossover_matches_create_strategy_from_config_signals() -> None:
@@ -352,8 +427,7 @@ def test_run_single_backtest_calls_load_strategy_with_params() -> None:
 
     assert result is not None
     assert result["strategy"] == MA_CROSSOVER_KEY
-    load_strategy_mock.assert_has_calls([call(MA_CROSSOVER_KEY), call(MA_CROSSOVER_KEY)])
-    assert load_strategy_mock.call_count == 2
+    load_strategy_mock.assert_called_once_with(MA_CROSSOVER_KEY)
     assert captured["params"]["fast_window"] == 10
     assert captured["params"]["stop_pct"] == 0.02
     assert call_count == 1
@@ -430,12 +504,7 @@ def test_isolated_load_strategy_binding_per_comparison_candidate(tmp_path, monke
         code = compare_runner.main()
 
     assert code == 0
-    assert load_calls == [
-        MA_CROSSOVER_KEY,
-        MA_CROSSOVER_KEY,
-        TREND_FOLLOWING_KEY,
-        TREND_FOLLOWING_KEY,
-    ]
+    assert load_calls == [MA_CROSSOVER_KEY, TREND_FOLLOWING_KEY]
 
 
 def test_strategy_order_preserved_in_main_loop(tmp_path, monkeypatch) -> None:
