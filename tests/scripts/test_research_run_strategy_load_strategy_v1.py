@@ -27,10 +27,17 @@ MA_CROSSOVER_KEY = "ma_crossover"
 TREND_FOLLOWING_KEY = "trend_following"
 
 FORBIDDEN_IMPORTS = ("create_strategy_from_config",)
+DATA_LOADER_OWNER = "scripts/run_backtest.py:load_ohlcv_data"
+FORBIDDEN_LOCAL_LOADER_DEFS = frozenset({"load_ohlcv_data", "generate_dummy_ohlcv"})
 
 
 def _read_source() -> str:
     return TARGET_SCRIPT.read_text(encoding="utf-8")
+
+
+def _local_function_defs() -> set[str]:
+    tree = ast.parse(_read_source())
+    return {node.name for node in tree.body if isinstance(node, ast.FunctionDef)}
 
 
 def _sample_ohlcv(n: int = 80) -> pd.DataFrame:
@@ -81,6 +88,110 @@ def test_source_has_no_create_strategy_from_config() -> None:
 
 def test_source_uses_load_strategy() -> None:
     assert "load_strategy" in _read_source()
+
+
+def test_source_has_no_local_loader_or_dummy_definitions() -> None:
+    local_defs = _local_function_defs()
+    assert FORBIDDEN_LOCAL_LOADER_DEFS.isdisjoint(local_defs)
+
+
+def test_source_imports_canonical_data_loader() -> None:
+    source = _read_source()
+    assert "load_ohlcv_data" in source
+    assert "scripts.run_backtest" in source
+
+
+def test_load_ohlcv_data_import_identity_is_canonical_owner() -> None:
+    import scripts.run_backtest as run_backtest_script
+
+    assert research_runner.load_ohlcv_data is run_backtest_script.load_ohlcv_data
+
+
+def test_main_forwards_load_ohlcv_arguments_to_canonical_loader(tmp_path, monkeypatch) -> None:
+    from src.core.peak_config import PeakConfig
+
+    cfg_path = tmp_path / "cfg.toml"
+    cfg_path.write_text("[environment]\nmode = 'backtest'\n", encoding="utf-8")
+    captured: dict[str, object] = {}
+
+    def capture_loader(
+        data_file,
+        start_date,
+        end_date,
+        n_bars,
+        verbose=False,
+    ):
+        captured.update(
+            {
+                "data_file": data_file,
+                "start_date": start_date,
+                "end_date": end_date,
+                "n_bars": n_bars,
+                "verbose": verbose,
+            }
+        )
+        return _sample_ohlcv()
+
+    mock_result = MagicMock()
+    mock_result.stats = {
+        "total_return": 0.0,
+        "max_drawdown": 0.0,
+        "sharpe": 0.0,
+        "cagr": 0.0,
+        "total_trades": 0,
+        "win_rate": 0.0,
+        "profit_factor": 0.0,
+    }
+    mock_result.equity_curve = pd.Series([100.0, 100.0])
+
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "research_run_strategy.py",
+            "--config",
+            str(cfg_path),
+            "--strategy",
+            MA_CROSSOVER_KEY,
+            "--data-file",
+            "data/btc.csv",
+            "--start",
+            "2023-01-01",
+            "--end",
+            "2023-12-31",
+            "--bars",
+            "250",
+            "--no-registry",
+            "--verbose",
+        ],
+    )
+
+    with (
+        patch.object(research_runner, "load_config") as load_config_mock,
+        patch.object(research_runner, "load_ohlcv_data", side_effect=capture_loader),
+        patch.object(
+            research_runner,
+            "load_strategy",
+            return_value=lambda df, params: pd.Series(0, index=df.index),
+        ),
+        patch.object(research_runner, "build_position_sizer_from_config", return_value=MagicMock()),
+        patch.object(research_runner, "build_risk_manager_from_config", return_value=MagicMock()),
+        patch.object(research_runner, "BacktestEngine") as engine_cls,
+    ):
+        load_config_mock.return_value = PeakConfig(
+            raw={"environment": {"mode": "backtest"}, "strategy": {MA_CROSSOVER_KEY: {}}}
+        )
+        engine_cls.return_value.run_realistic.return_value = mock_result
+        code = research_runner.main()
+
+    assert code == 0
+    assert captured == {
+        "data_file": "data/btc.csv",
+        "start_date": "2023-01-01",
+        "end_date": "2023-12-31",
+        "n_bars": 250,
+        "verbose": True,
+    }
 
 
 def test_source_is_distinct_from_prior_migration_owners() -> None:
