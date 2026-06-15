@@ -324,10 +324,10 @@ def load_ohlcv_data(
     verbose: bool = False,
 ) -> pd.DataFrame:
     """
-    Lädt OHLCV-Daten aus CSV oder generiert Dummy-Daten.
+    Lädt OHLCV-Daten aus CSV/Parquet oder generiert Dummy-Daten.
 
     Args:
-        data_file: Pfad zur CSV-Datei (None = Dummy-Daten)
+        data_file: Pfad zur CSV- oder Parquet-Datei (None = Dummy-Daten)
         start_date: Startdatum-Filter
         end_date: Enddatum-Filter
         n_bars: Anzahl Bars für Dummy-Daten
@@ -337,7 +337,7 @@ def load_ohlcv_data(
         Normalisierter OHLCV-DataFrame
     """
     if data_file:
-        # CSV laden
+        # CSV oder Parquet laden
         path = Path(data_file)
         if not path.exists():
             raise FileNotFoundError(f"Datei nicht gefunden: {data_file}")
@@ -345,17 +345,26 @@ def load_ohlcv_data(
         if verbose:
             print(f"  Lade Daten aus: {data_file}")
 
-        # Kraken-spezifisches Format erkennen
-        if "kraken" in str(path).lower():
-            loader = KrakenCsvLoader()
+        suffix = path.suffix.lower()
+        if suffix in {".parquet", ".pq"}:
+            df = pd.read_parquet(path)
+            df.columns = df.columns.str.lower()
+            if not isinstance(df.index, pd.DatetimeIndex) and "timestamp" in df.columns:
+                df = df.set_index(pd.DatetimeIndex(pd.to_datetime(df.pop("timestamp"), utc=True)))
+            normalizer = DataNormalizer()
+            df = normalizer.normalize(df)
         else:
-            loader = CsvLoader()
+            # Kraken-spezifisches Format erkennen
+            if "kraken" in str(path).lower():
+                loader = KrakenCsvLoader()
+            else:
+                loader = CsvLoader()
 
-        df = loader.load(str(path))
+            df = loader.load(str(path))
 
-        # Normalisieren
-        normalizer = DataNormalizer()
-        df = normalizer.normalize(df)
+            # Normalisieren
+            normalizer = DataNormalizer()
+            df = normalizer.normalize(df)
 
     else:
         # Dummy-Daten generieren

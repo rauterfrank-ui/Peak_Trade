@@ -405,3 +405,94 @@ def test_cli_help_smoke() -> None:
     )
     assert result.returncode == 0, result.stderr
     assert "NO-LIVE" in result.stdout
+
+
+def test_load_ohlcv_data_dummy_semantics_unchanged() -> None:
+    df = run_backtest_script.load_ohlcv_data(None, None, None, n_bars=120)
+    assert list(df.columns) == ["open", "high", "low", "close", "volume"]
+    assert len(df) == 120
+    assert isinstance(df.index, pd.DatetimeIndex)
+
+
+def test_load_ohlcv_data_missing_file_raises(tmp_path) -> None:
+    missing = tmp_path / "missing.csv"
+    with pytest.raises(FileNotFoundError, match="Datei nicht gefunden"):
+        run_backtest_script.load_ohlcv_data(str(missing), None, None, n_bars=10)
+
+
+def test_load_ohlcv_data_csv_path_uses_csv_loader_chain(tmp_path, monkeypatch) -> None:
+    csv_path = tmp_path / "btc_eur_1h.csv"
+    csv_path.write_text("timestamp,open,high,low,close,volume\n", encoding="utf-8")
+    raw_df = _sample_ohlcv()
+    normalized_df = raw_df.copy()
+    loader_calls: list[str] = []
+    normalize_calls: list[pd.DataFrame] = []
+
+    class FakeCsvLoader:
+        def load(self, path: str) -> pd.DataFrame:
+            loader_calls.append(path)
+            return raw_df
+
+    class FakeNormalizer:
+        def normalize(self, df: pd.DataFrame) -> pd.DataFrame:
+            normalize_calls.append(df)
+            return normalized_df
+
+    monkeypatch.setattr(run_backtest_script, "CsvLoader", FakeCsvLoader)
+    monkeypatch.setattr(run_backtest_script, "DataNormalizer", FakeNormalizer)
+
+    result = run_backtest_script.load_ohlcv_data(str(csv_path), None, None, n_bars=10)
+
+    assert loader_calls == [str(csv_path)]
+    assert len(normalize_calls) == 1
+    assert result is normalized_df
+
+
+def test_load_ohlcv_data_parquet_uses_read_parquet_and_normalizer(tmp_path, monkeypatch) -> None:
+    parquet_path = tmp_path / "btc_eur_1h.parquet"
+    parquet_path.write_bytes(b"parquet-placeholder")
+    raw_df = _sample_ohlcv().rename_axis("timestamp").reset_index()
+    normalized_df = raw_df.set_index("timestamp")
+    read_calls: list[str] = []
+    normalize_calls: list[pd.DataFrame] = []
+
+    def fake_read_parquet(path, *args, **kwargs):
+        read_calls.append(str(path))
+        return raw_df.copy()
+
+    class FakeNormalizer:
+        def normalize(self, df: pd.DataFrame) -> pd.DataFrame:
+            normalize_calls.append(df)
+            return normalized_df
+
+    monkeypatch.setattr(run_backtest_script.pd, "read_parquet", fake_read_parquet)
+    monkeypatch.setattr(run_backtest_script, "DataNormalizer", FakeNormalizer)
+
+    result = run_backtest_script.load_ohlcv_data(str(parquet_path), None, None, n_bars=10)
+
+    assert read_calls == [str(parquet_path)]
+    assert len(normalize_calls) == 1
+    assert list(normalize_calls[0].columns) == ["open", "high", "low", "close", "volume"]
+    assert isinstance(normalize_calls[0].index, pd.DatetimeIndex)
+    assert result is normalized_df
+
+
+@pytest.mark.parametrize("suffix", [".parquet", ".pq"])
+def test_load_ohlcv_data_parquet_suffixes_supported(tmp_path, monkeypatch, suffix) -> None:
+    parquet_path = tmp_path / f"btc_eur_1h{suffix}"
+    parquet_path.write_bytes(b"parquet-placeholder")
+    sample = _sample_ohlcv()
+
+    monkeypatch.setattr(
+        run_backtest_script.pd,
+        "read_parquet",
+        lambda path, *args, **kwargs: sample.copy(),
+    )
+    monkeypatch.setattr(
+        run_backtest_script,
+        "DataNormalizer",
+        lambda: MagicMock(normalize=lambda df: df),
+    )
+
+    result = run_backtest_script.load_ohlcv_data(str(parquet_path), None, None, n_bars=10)
+    assert len(result) == len(sample)

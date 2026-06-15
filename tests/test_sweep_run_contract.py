@@ -689,3 +689,36 @@ def test_run_sweep_strategy_quiet_warning_visible_via_logger(caplog) -> None:
         restore_sweep_run_logging(previous)
 
     assert any("quiet-mode-warning-check" in r.message for r in caplog.records)
+
+
+SWEEP_STRATEGY_SCRIPT = ROOT / "scripts" / "run_sweep_strategy.py"
+SWEEP_STRATEGY_FORBIDDEN_LOCAL_LOADER_DEFS = frozenset({"load_ohlcv_data", "generate_dummy_ohlcv"})
+
+
+def _run_sweep_strategy_source() -> str:
+    return SWEEP_STRATEGY_SCRIPT.read_text(encoding="utf-8")
+
+
+def _run_sweep_strategy_local_function_defs() -> set[str]:
+    import ast
+
+    tree = ast.parse(_run_sweep_strategy_source())
+    return {node.name for node in tree.body if isinstance(node, ast.FunctionDef)}
+
+
+def test_run_sweep_strategy_source_has_no_local_loader_or_dummy_definitions() -> None:
+    local_defs = _run_sweep_strategy_local_function_defs()
+    assert SWEEP_STRATEGY_FORBIDDEN_LOCAL_LOADER_DEFS.isdisjoint(local_defs)
+
+
+def test_run_sweep_strategy_imports_canonical_data_loader() -> None:
+    source = _run_sweep_strategy_source()
+    assert "load_ohlcv_data" in source
+    assert "scripts.run_backtest" in source
+
+
+def test_run_sweep_strategy_load_ohlcv_data_import_identity_is_canonical_owner() -> None:
+    import scripts.run_backtest as run_backtest_script
+    import scripts.run_sweep_strategy as run_sweep_strategy_script
+
+    assert run_sweep_strategy_script.load_ohlcv_data is run_backtest_script.load_ohlcv_data
