@@ -303,6 +303,210 @@ class TestMeanReversionStrategy:
 
 
 # =============================================================================
+# GOLDEN REFERENCE: EXPANDING VOL PERCENTILE (CAND-MR-EXP-VOL-PERCENTILE)
+# =============================================================================
+
+
+def _legacy_mr_expanding_vol_percentile_reference(vol: pd.Series) -> pd.Series:
+    """Test-only reference for legacy expanding <= mean percentile (0-100 scale)."""
+    return vol.expanding().apply(
+        lambda x: (x.iloc[-1:].values[0] <= x).mean() * 100 if len(x) > 0 else 50,
+        raw=False,
+    )
+
+
+def _assert_mr_expanding_vol_percentile_series_equal(
+    actual: pd.Series,
+    expected: pd.Series,
+) -> None:
+    pd.testing.assert_series_equal(actual, expected, check_names=False)
+    assert actual.index.equals(expected.index)
+    assert actual.dtype == expected.dtype
+    assert actual.isna().equals(expected.isna())
+
+
+def _reference_mean_reversion_vol_filter(
+    strategy: "MeanReversionStrategy",
+    data: pd.DataFrame,
+) -> pd.Series:
+    """Independent vol-filter reference using legacy expanding percentile semantics."""
+    returns = data["close"].pct_change()
+    vol = returns.rolling(window=strategy.vol_window).std()
+    vol_percentile = _legacy_mr_expanding_vol_percentile_reference(vol)
+    return vol_percentile <= strategy.max_vol_percentile
+
+
+def _reference_mean_reversion_signals_with_vol_filter(
+    strategy: "MeanReversionStrategy",
+    data: pd.DataFrame,
+) -> pd.Series:
+    """Independent generate_signals reference with legacy expanding vol filter."""
+    zscore = strategy._compute_zscore(data["close"])
+    signals = pd.Series(0, index=data.index, dtype=int)
+    entry_condition = zscore < strategy.entry_threshold
+    if strategy.use_vol_filter:
+        vol_ok = _reference_mean_reversion_vol_filter(strategy, data)
+        entry_condition = entry_condition & vol_ok
+    exit_condition = zscore > strategy.exit_threshold
+    entry_trigger = entry_condition & ~entry_condition.shift(1, fill_value=False).astype(bool)
+    signals[entry_trigger] = 1
+    exit_trigger = exit_condition & ~exit_condition.shift(1, fill_value=False).astype(bool)
+    signals[exit_trigger] = -1
+    return signals
+
+
+class TestMeanReversionExpandingVolPercentileGolden:
+    """Golden-reference contracts for expanding <= vol percentile semantics."""
+
+    @pytest.mark.parametrize(
+        ("values",),
+        [
+            pytest.param([], id="empty"),
+            pytest.param([0.01], id="single_element"),
+            pytest.param([0.01, 0.02], id="two_elements"),
+            pytest.param([0.01, 0.02, 0.03], id="three_elements"),
+            pytest.param([0.01, 0.02, 0.03, 0.04, 0.05], id="monotone_ascending"),
+            pytest.param([0.05, 0.04, 0.03, 0.02, 0.01], id="monotone_descending"),
+            pytest.param([0.02, 0.02, 0.02], id="constant"),
+            pytest.param([0.01, 0.02, 0.02, 0.02, 0.03], id="ties"),
+            pytest.param([0.01, 0.01, 0.02, 0.02, 0.03, 0.03], id="repeated_values"),
+            pytest.param([np.nan, 0.01, 0.02, 0.03], id="nan_at_start"),
+            pytest.param([0.01, np.nan, 0.03, 0.04], id="nan_within_prefix"),
+            pytest.param([0.01, 0.02, np.nan], id="nan_last_value"),
+            pytest.param([0.01, np.inf, 0.03, 0.04], id="positive_infinity"),
+            pytest.param([0.01, -np.inf, 0.03, 0.04], id="negative_infinity"),
+            pytest.param(list(np.linspace(0.01, 0.05, 8)), id="multi_window"),
+        ],
+    )
+    def test_expanding_vol_percentile_legacy_reference_stable(
+        self,
+        values: list[float],
+    ) -> None:
+        idx = pd.date_range("2024-01-01", periods=max(len(values), 1), freq="h", tz="UTC")[
+            : len(values)
+        ]
+        vol = pd.Series(values, index=idx, name="realized_vol", dtype=float)
+        expected = _legacy_mr_expanding_vol_percentile_reference(vol)
+        actual = _legacy_mr_expanding_vol_percentile_reference(vol)
+        _assert_mr_expanding_vol_percentile_series_equal(actual, expected)
+
+    @pytest.mark.parametrize(
+        "max_vol_percentile",
+        [25.0, 50.0, 70.0, 90.0, 100.0],
+    )
+    def test_compute_volatility_filter_matches_legacy_reference(
+        self,
+        ranging_data: pd.DataFrame,
+        max_vol_percentile: float,
+    ) -> None:
+        from src.strategies.mean_reversion import MeanReversionStrategy
+
+        strategy = MeanReversionStrategy(
+            use_vol_filter=True,
+            vol_window=20,
+            max_vol_percentile=max_vol_percentile,
+            lookback=20,
+        )
+        actual = strategy._compute_volatility_filter(ranging_data)
+        expected = _reference_mean_reversion_vol_filter(strategy, ranging_data)
+        pd.testing.assert_series_equal(actual, expected)
+        assert actual.index.equals(expected.index)
+        assert actual.dtype == expected.dtype
+
+    @pytest.mark.parametrize(
+        "max_vol_percentile",
+        [50.0, 70.0, 100.0],
+    )
+    def test_vol_filter_at_threshold_boundaries(
+        self,
+        max_vol_percentile: float,
+    ) -> None:
+        from src.strategies.mean_reversion import MeanReversionStrategy
+
+        idx = pd.date_range("2024-01-01", periods=40, freq="h", tz="UTC")
+        np.random.seed(789)
+        close = 50000 * np.exp(np.cumsum(np.random.normal(0, 0.01, 40)))
+        data = pd.DataFrame({"close": close}, index=idx)
+        strategy = MeanReversionStrategy(
+            use_vol_filter=True,
+            vol_window=10,
+            max_vol_percentile=max_vol_percentile,
+            lookback=10,
+        )
+        vol = data["close"].pct_change().rolling(window=strategy.vol_window).std()
+        expected_pct = _legacy_mr_expanding_vol_percentile_reference(vol)
+        expected = expected_pct <= max_vol_percentile
+        actual = strategy._compute_volatility_filter(data)
+        pd.testing.assert_series_equal(actual, expected)
+
+    def test_expanding_vol_percentile_on_computed_vol_matches_legacy_reference(
+        self,
+        ranging_data: pd.DataFrame,
+    ) -> None:
+        from src.strategies.mean_reversion import MeanReversionStrategy
+
+        strategy = MeanReversionStrategy(use_vol_filter=True, vol_window=20)
+        vol = ranging_data["close"].pct_change().rolling(window=strategy.vol_window).std()
+        expected_pct = _legacy_mr_expanding_vol_percentile_reference(vol)
+        # Reconstruct production percentile via threshold identity checks.
+        for threshold in (25.0, 50.0, 70.0, 100.0):
+            strategy_t = MeanReversionStrategy(
+                use_vol_filter=True,
+                vol_window=strategy.vol_window,
+                max_vol_percentile=threshold,
+                lookback=strategy.lookback,
+            )
+            actual_filter = strategy_t._compute_volatility_filter(ranging_data)
+            expected_filter = expected_pct <= threshold
+            pd.testing.assert_series_equal(actual_filter, expected_filter)
+
+    def test_generate_signals_with_vol_filter_matches_legacy_reference(
+        self,
+        ranging_data: pd.DataFrame,
+    ) -> None:
+        from src.strategies.mean_reversion import MeanReversionStrategy
+
+        strategy = MeanReversionStrategy(
+            use_vol_filter=True, vol_window=20, max_vol_percentile=70.0
+        )
+        actual = strategy.generate_signals(ranging_data)
+        expected = _reference_mean_reversion_signals_with_vol_filter(strategy, ranging_data)
+        pd.testing.assert_series_equal(actual, expected)
+        assert actual.index.equals(expected.index)
+        assert actual.dtype == expected.dtype
+
+    def test_expanding_vol_percentile_non_trivial_index(self) -> None:
+        idx = pd.Index(["b", "a", "c", "d"], name="bar_idx")
+        vol = pd.Series([0.02, 0.01, 0.03, 0.02], index=idx, name="vol", dtype=float)
+        expected = _legacy_mr_expanding_vol_percentile_reference(vol)
+        for threshold in (25.0, 50.0, 100.0):
+            legacy_filter = expected <= threshold
+            assert legacy_filter.index.equals(idx)
+
+    def test_mean_reversion_vol_filter_does_not_use_expanding_apply(
+        self,
+        ranging_data: pd.DataFrame,
+        monkeypatch: pytest.MonkeyPatch,
+    ) -> None:
+        from src.strategies.mean_reversion import MeanReversionStrategy
+
+        strategy = MeanReversionStrategy(
+            use_vol_filter=True, vol_window=20, max_vol_percentile=70.0
+        )
+        apply_calls: list[object] = []
+        original_apply = pd.core.window.expanding.Expanding.apply
+
+        def _apply_spy(self, func, *args, **kwargs):
+            apply_calls.append(func)
+            return original_apply(self, func, *args, **kwargs)
+
+        monkeypatch.setattr(pd.core.window.expanding.Expanding, "apply", _apply_spy)
+        signals = strategy.generate_signals(ranging_data)
+        assert signals is not None
+        assert not apply_calls
+
+
+# =============================================================================
 # TESTS: MY_STRATEGY (VOLATILITY BREAKOUT)
 # =============================================================================
 
