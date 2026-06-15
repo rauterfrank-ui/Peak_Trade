@@ -173,12 +173,11 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
 
 ### test_live_web.py Collection Error
 
-- [ ] test_live_web.py reparieren oder entfernen
+- [x] test_live_web.py reparieren oder entfernen
   - Fundstelle: `tests&#47;test_live_web.py`
-  - Kontext: Fehler bei Test-Collection (vermutlich fehlende Dependency)
-  - Aktueller Status: In pytest-Runs mit `--ignore=tests&#47;test_live_web.py` übersprungen
-  - Vorschlag: Prüfen, ob Test noch benötigt wird, sonst entfernen
-  - Priorität: Niedrig
+  - Kontext: Fehler bei Test-Collection (vorschneller Modul-Import vor `pytest.importorskip`)
+  - Status: closed (PR #4271, merge `157e037f`; Collection verifiziert, 39 Tests gesammelt)
+  - Fundstellen: `tests&#47;test_live_web.py`
 
 ---
 
