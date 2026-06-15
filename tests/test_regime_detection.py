@@ -19,6 +19,7 @@ from src.regime import (
     RangeCompressionRegimeDetector,
     make_regime_detector,
 )
+from src.strategies.vol_breakout import _rolling_last_pct_rank
 
 
 # ============================================================================
@@ -262,6 +263,67 @@ class TestVolatilityRegimeDetector:
 # ============================================================================
 
 
+def _legacy_range_ratio_percentile_reference(
+    series: pd.Series,
+    window: int,
+    min_periods: int,
+) -> pd.Series:
+    """Test-only reference for legacy rolling().apply(rank(pct=True)) semantics (0-1 scale)."""
+    return series.rolling(window=window, min_periods=min_periods).apply(
+        lambda x: pd.Series(x).rank(pct=True).iloc[-1],
+        raw=False,
+    )
+
+
+def _assert_range_ratio_percentile_series_equal(actual: pd.Series, expected: pd.Series) -> None:
+    pd.testing.assert_series_equal(actual, expected, check_names=False)
+    assert actual.index.equals(expected.index)
+    pd.testing.assert_index_equal(actual.index, expected.index)
+    assert actual.dtype == expected.dtype
+    assert actual.isna().equals(expected.isna())
+
+
+def _reference_range_compression_detect_regimes(
+    detector: RangeCompressionRegimeDetector,
+    df: pd.DataFrame,
+) -> tuple[pd.Series, pd.Series, pd.Series]:
+    """Independent legacy reference for RangeCompressionRegimeDetector.detect_regimes."""
+    n_bars = len(df)
+    regimes = pd.Series("unknown", index=df.index, dtype="object")
+
+    if n_bars < detector.config.min_history_bars:
+        return (
+            pd.Series(dtype=float, index=df.index),
+            pd.Series(dtype=float, index=df.index),
+            regimes.astype("string"),
+        )
+
+    range_ratio = detector._compute_range_ratio(df)
+    directional_bias = detector._compute_directional_bias(df)
+    ratio_percentile = _legacy_range_ratio_percentile_reference(
+        range_ratio,
+        window=detector.config.lookback_window,
+        min_periods=detector.config.range_compression_window,
+    )
+
+    expansion_mask = ratio_percentile >= 0.7
+    regimes[expansion_mask] = "breakout"
+
+    compression_mask = ratio_percentile <= detector.config.compression_threshold
+    regimes[compression_mask] = "ranging"
+
+    mid_range_mask = (~expansion_mask) & (~compression_mask)
+    strong_bias_mask = abs(directional_bias) > 0.02
+    trending_mask = mid_range_mask & strong_bias_mask
+    regimes[trending_mask] = "trending"
+
+    warmup_mask = pd.isna(ratio_percentile)
+    regimes[warmup_mask] = "unknown"
+
+    regimes.name = "regime"
+    return range_ratio, ratio_percentile, regimes.astype("string")
+
+
 class TestRangeCompressionRegimeDetector:
     """Tests fuer RangeCompressionRegimeDetector."""
 
@@ -298,6 +360,152 @@ class TestRangeCompressionRegimeDetector:
         unique_labels = set(regimes.unique())
 
         assert unique_labels.issubset(valid_labels)
+
+
+class TestRangeCompressionRollingPercentileGolden:
+    """Golden-reference contracts for range_ratio rolling percentile semantics (0-1 scale)."""
+
+    @pytest.mark.parametrize(
+        ("values", "window", "min_periods"),
+        [
+            pytest.param([1.0, 2.0, 3.0, 4.0, 5.0], 3, 2, id="normal_ascending"),
+            pytest.param([5.0, 4.0, 3.0, 2.0, 1.0], 3, 2, id="descending"),
+            pytest.param([1.0, 2.0, 2.0, 2.0, 3.0], 4, 2, id="ties"),
+            pytest.param([1.0, np.nan, 3.0, 4.0, 5.0], 3, 2, id="nan_in_window"),
+            pytest.param([1.0, 2.0], 5, 2, id="partial_window"),
+            pytest.param([2.0, 2.0, 2.0], 3, 3, id="exact_window"),
+            pytest.param(list(range(1, 9)), 4, 2, id="multi_window"),
+            pytest.param([7.0] * 6, 4, 2, id="constant_input"),
+            pytest.param([0.1, 0.2, 0.3, 0.4, 0.5, 0.6], 3, 3, id="monotone_values"),
+            pytest.param([1.0, 1.0, 2.0, 2.0, 3.0, 3.0], 4, 2, id="repeated_values"),
+        ],
+    )
+    def test_range_ratio_percentile_matches_legacy_reference(
+        self,
+        values: list[float],
+        window: int,
+        min_periods: int,
+    ) -> None:
+        idx = pd.date_range("2024-01-01", periods=len(values), freq="h", tz="UTC")
+        series = pd.Series(values, index=idx, dtype=float)
+        expected = _legacy_range_ratio_percentile_reference(series, window, min_periods)
+        actual = _rolling_last_pct_rank(series, window=window, min_periods=min_periods) / 100.0
+        _assert_range_ratio_percentile_series_equal(actual, expected)
+
+    def test_detect_regimes_matches_independent_legacy_reference(
+        self,
+        sample_ohlcv_data: pd.DataFrame,
+    ) -> None:
+        config = RegimeDetectorConfig(
+            enabled=True,
+            detector_name="range_compression",
+            lookback_window=50,
+            min_history_bars=100,
+            range_compression_window=20,
+            compression_threshold=0.3,
+        )
+        detector = RangeCompressionRegimeDetector(config)
+        expected_range_ratio, expected_percentile, expected_regimes = (
+            _reference_range_compression_detect_regimes(detector, sample_ohlcv_data)
+        )
+        actual_regimes = detector.detect_regimes(sample_ohlcv_data)
+        actual_range_ratio = detector._compute_range_ratio(sample_ohlcv_data)
+        actual_percentile = (
+            _rolling_last_pct_rank(
+                actual_range_ratio,
+                window=config.lookback_window,
+                min_periods=config.range_compression_window,
+            )
+            / 100.0
+        )
+
+        pd.testing.assert_series_equal(actual_range_ratio, expected_range_ratio, check_names=False)
+        _assert_range_ratio_percentile_series_equal(actual_percentile, expected_percentile)
+        pd.testing.assert_series_equal(actual_regimes, expected_regimes, check_names=True)
+
+    def test_detect_regimes_insufficient_history_empty_input(self) -> None:
+        config = RegimeDetectorConfig(
+            enabled=True,
+            detector_name="range_compression",
+            lookback_window=5,
+            min_history_bars=10,
+            range_compression_window=3,
+        )
+        detector = RangeCompressionRegimeDetector(config)
+        empty_df = pd.DataFrame(
+            columns=["open", "high", "low", "close", "volume"],
+            index=pd.DatetimeIndex([], name="timestamp"),
+        )
+        actual = detector.detect_regimes(empty_df)
+        _, _, expected = _reference_range_compression_detect_regimes(detector, empty_df)
+        pd.testing.assert_series_equal(actual, expected, check_names=True)
+
+    def test_detect_regimes_minimal_allowed_length(self) -> None:
+        config = RegimeDetectorConfig(
+            enabled=True,
+            detector_name="range_compression",
+            lookback_window=5,
+            min_history_bars=5,
+            range_compression_window=3,
+            compression_threshold=0.3,
+        )
+        detector = RangeCompressionRegimeDetector(config)
+        idx = pd.date_range("2024-01-01", periods=5, freq="h")
+        df = pd.DataFrame(
+            {
+                "open": [1.0, 2.0, 3.0, 4.0, 5.0],
+                "high": [1.5, 2.5, 3.5, 4.5, 5.5],
+                "low": [0.5, 1.5, 2.5, 3.5, 4.5],
+                "close": [1.0, 2.0, 3.0, 4.0, 5.0],
+                "volume": [1000] * 5,
+            },
+            index=idx,
+        )
+        actual = detector.detect_regimes(df)
+        _, _, expected = _reference_range_compression_detect_regimes(detector, df)
+        pd.testing.assert_series_equal(actual, expected, check_names=True)
+
+    def test_detect_regimes_uses_canonical_helper(self, monkeypatch) -> None:
+        df = pd.DataFrame(
+            {
+                "open": [1.0, 2.0, 3.0, 4.0, 5.0, 6.0],
+                "high": [1.5, 2.5, 3.5, 4.5, 5.5, 6.5],
+                "low": [0.5, 1.5, 2.5, 3.5, 4.5, 5.5],
+                "close": [1.0, 2.0, 3.0, 4.0, 5.0, 6.0],
+                "volume": [1000] * 6,
+            },
+            index=pd.date_range("2024-01-01", periods=6, freq="h"),
+        )
+        config = RegimeDetectorConfig(
+            enabled=True,
+            detector_name="range_compression",
+            lookback_window=5,
+            min_history_bars=5,
+            range_compression_window=3,
+        )
+        detector = RangeCompressionRegimeDetector(config)
+        calls: list[tuple[int, int]] = []
+
+        def _spy(series: pd.Series, window: int, min_periods: int) -> pd.Series:
+            calls.append((window, min_periods))
+            return _rolling_last_pct_rank(series, window=window, min_periods=min_periods)
+
+        apply_calls: list[object] = []
+        original_apply = pd.core.window.rolling.Rolling.apply
+
+        def _apply_spy(self, func, *args, **kwargs):
+            apply_calls.append(func)
+            return original_apply(self, func, *args, **kwargs)
+
+        monkeypatch.setattr("src.regime.detectors._rolling_last_pct_rank", _spy)
+        monkeypatch.setattr(pd.core.window.rolling.Rolling, "apply", _apply_spy)
+
+        regimes = detector.detect_regimes(df)
+
+        assert regimes is not None
+        assert len(calls) == 1
+        assert calls[0] == (config.lookback_window, config.range_compression_window)
+        assert not apply_calls
 
 
 # ============================================================================
