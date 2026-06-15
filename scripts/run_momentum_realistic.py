@@ -15,10 +15,7 @@ from pathlib import Path
 # Projekt-Root zum Python-Path hinzufügen
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-import pandas as pd
-import numpy as np
-from datetime import datetime, timedelta
-
+from scripts.run_backtest import load_ohlcv_data
 from src.core import get_config, get_strategy_cfg
 from src.strategies import load_strategy
 
@@ -30,50 +27,6 @@ from src.backtest.stats import validate_for_live_trading
 def _strategy_module(strategy_key: str):
     generate_signals = load_strategy(strategy_key)
     return importlib.import_module(generate_signals.__module__)
-
-
-def create_dummy_data(n_bars: int = 300) -> pd.DataFrame:
-    """
-    Erstellt Dummy-OHLCV-Daten mit Momentum-Verhalten.
-    """
-    np.random.seed(42)
-
-    # Start-Zeitpunkt
-    start = datetime.now() - timedelta(hours=n_bars)
-    dates = pd.date_range(start, periods=n_bars, freq="1h")
-
-    # Preis-Simulation mit Momentum-Phasen
-    base_price = 50000
-
-    # Trend + Cycle für Momentum
-    trend = np.linspace(0, 5000, n_bars)
-    cycle = np.sin(np.linspace(0, 6 * np.pi, n_bars)) * 3000
-
-    # Random Walk mit Momentum-Bursts
-    noise = np.random.randn(n_bars).cumsum() * 150
-
-    # Momentum-Bursts einfügen (simuliert starke Trends)
-    momentum_bursts = np.zeros(n_bars)
-    for i in range(5):  # 5 Momentum-Phasen
-        start_idx = np.random.randint(50, n_bars - 50)
-        burst_length = np.random.randint(20, 40)
-        momentum_bursts[start_idx : start_idx + burst_length] = np.linspace(0, 2000, burst_length)
-
-    close_prices = base_price + trend + cycle + noise + momentum_bursts
-
-    # OHLC generieren
-    df = pd.DataFrame(
-        {
-            "open": close_prices * (1 + np.random.randn(n_bars) * 0.002),
-            "high": close_prices * (1 + abs(np.random.randn(n_bars)) * 0.003),
-            "low": close_prices * (1 - abs(np.random.randn(n_bars)) * 0.003),
-            "close": close_prices,
-            "volume": np.random.randint(10, 100, n_bars),
-        },
-        index=dates,
-    )
-
-    return df
 
 
 def print_report(result):
@@ -156,7 +109,7 @@ stop_pct = 0.025
 
     # Daten erstellen (später: von Kraken holen)
     print("\n📥 Lade Daten...")
-    df = create_dummy_data(n_bars=300)
+    df = load_ohlcv_data(None, None, None, n_bars=300)
     print(f"  - Zeitraum: {df.index[0]} bis {df.index[-1]}")
     print(f"  - Bars: {len(df)}")
 
