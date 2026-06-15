@@ -88,7 +88,7 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
   - Kontext: Später echten Exchange-Client integrieren (z.B. Kraken)
   - Vorschlag: Integration mit `src&#47;exchange&#47;kraken_testnet.py` oder `src&#47;exchange&#47;ccxt_client.py`
 
-- [ ] Timeframe aus Daten ableiten in `run_shadow_execution.py`
+- [x] Timeframe aus Daten ableiten in `run_shadow_execution.py`
   - Fundstelle: `scripts&#47;run_shadow_execution.py` (Zeile 502) (illustrative)
   - Kontext: Timeframe aktuell hardcoded, sollte aus Daten abgeleitet werden
   - Vorschlag: Automatische Erkennung aus DataFrame-Index oder Config
