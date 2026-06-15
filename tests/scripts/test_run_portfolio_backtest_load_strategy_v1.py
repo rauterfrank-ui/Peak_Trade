@@ -10,7 +10,7 @@ import inspect
 import subprocess
 import sys
 from pathlib import Path
-from unittest.mock import MagicMock, call, patch
+from unittest.mock import MagicMock, patch
 
 import numpy as np
 import pandas as pd
@@ -27,10 +27,17 @@ MA_CROSSOVER_KEY = "ma_crossover"
 MOMENTUM_KEY = "momentum_1h"
 
 FORBIDDEN_IMPORTS = ("create_strategy_from_config",)
+STRATEGY_PARAMS_BUILDER_OWNER = "scripts/run_backtest.py:_build_strategy_params_from_config"
+FORBIDDEN_LOCAL_BUILDER_DEFS = frozenset({"_build_strategy_params_from_config"})
 
 
 def _read_source() -> str:
     return TARGET_SCRIPT.read_text(encoding="utf-8")
+
+
+def _local_function_defs() -> set[str]:
+    tree = ast.parse(_read_source())
+    return {node.name for node in tree.body if isinstance(node, ast.FunctionDef)}
 
 
 def _sample_ohlcv(n: int = 80) -> pd.DataFrame:
@@ -105,6 +112,26 @@ def test_source_has_no_parallel_strategy_registry() -> None:
     assert "STRATEGY_REGISTRY" not in assigned_names
 
 
+def test_source_has_no_local_builder_definition() -> None:
+    local_defs = _local_function_defs()
+    assert FORBIDDEN_LOCAL_BUILDER_DEFS.isdisjoint(local_defs)
+
+
+def test_build_strategy_params_import_identity_is_canonical_owner() -> None:
+    import scripts.run_backtest as run_backtest_script
+
+    assert (
+        portfolio_script._build_strategy_params_from_config
+        is run_backtest_script._build_strategy_params_from_config
+    )
+
+
+def test_source_imports_canonical_strategy_params_builder() -> None:
+    source = _read_source()
+    assert "_build_strategy_params_from_config" in source
+    assert "scripts.run_backtest" in source
+
+
 def test_build_strategy_params_includes_section_and_stop_pct() -> None:
     cfg = _minimal_cfg(MA_CROSSOVER_KEY, fast_window=10, slow_window=50, price_col="close")
     params = portfolio_script._build_strategy_params_from_config(cfg, MA_CROSSOVER_KEY)
@@ -115,16 +142,19 @@ def test_build_strategy_params_includes_section_and_stop_pct() -> None:
 
 
 def test_build_strategy_params_source_uses_load_strategy_not_from_config_bypass() -> None:
-    source = inspect.getsource(portfolio_script._build_strategy_params_from_config)
+    import scripts.run_backtest as run_backtest_script
+
+    source = inspect.getsource(run_backtest_script._build_strategy_params_from_config)
     assert "load_strategy" in source
-    assert "get_strategy_spec" not in source
-    assert ".from_config" not in source
+    assert "spec.cls.from_config" not in source
 
 
 def test_build_strategy_params_calls_load_strategy_for_registry_validation() -> None:
+    import scripts.run_backtest as run_backtest_script
+
     cfg = _minimal_cfg(MA_CROSSOVER_KEY, fast_window=10, slow_window=50, price_col="close")
 
-    with patch.object(portfolio_script, "load_strategy") as load_mock:
+    with patch.object(run_backtest_script, "load_strategy") as load_mock:
         load_mock.return_value = MagicMock()
         params = portfolio_script._build_strategy_params_from_config(cfg, MA_CROSSOVER_KEY)
 
@@ -160,8 +190,63 @@ def test_build_strategy_params_isolated_per_strategy_key() -> None:
 
 def test_build_strategy_params_unknown_strategy_fails_closed() -> None:
     cfg = _minimal_cfg(MA_CROSSOVER_KEY, fast_window=10, slow_window=50, price_col="close")
-    with pytest.raises(ValueError, match="Unbekannte Strategie"):
+    with pytest.raises(KeyError):
         portfolio_script._build_strategy_params_from_config(cfg, "definitely_not_a_strategy_xyz")
+
+
+def test_run_single_asset_backtest_forwards_config_to_canonical_builder() -> None:
+    from src.core.peak_config import PeakConfig
+
+    cfg = PeakConfig(
+        raw={
+            "environment": {"mode": "backtest"},
+            "strategy": {
+                MA_CROSSOVER_KEY: {
+                    "fast_window": 10,
+                    "slow_window": 50,
+                    "price_col": "close",
+                },
+            },
+        }
+    )
+    captured: dict[str, object] = {}
+
+    def capture_builder(config, strategy_key):
+        captured["cfg"] = config
+        captured["strategy_key"] = strategy_key
+        return {"fast_window": 10, "slow_window": 50, "stop_pct": 0.02}
+
+    mock_result = MagicMock()
+    mock_result.stats = {"total_return": 0.0, "sharpe": 0.0, "total_trades": 0}
+    mock_result.metadata = {}
+    mock_result.equity_curve = pd.Series(
+        [100.0, 101.0], index=pd.date_range("2024-01-01", periods=2, freq="h")
+    )
+
+    with (
+        patch.object(portfolio_script, "load_data_for_symbol") as load_data,
+        patch.object(
+            portfolio_script,
+            "_build_strategy_params_from_config",
+            side_effect=capture_builder,
+        ),
+        patch.object(
+            portfolio_script,
+            "load_strategy",
+            return_value=lambda df, params: pd.Series(0, index=df.index),
+        ),
+        patch.object(portfolio_script.BacktestEngine, "run_realistic", return_value=mock_result),
+    ):
+        load_data.return_value = _sample_ohlcv()
+        portfolio_script.run_single_asset_backtest(
+            symbol="BTC/EUR",
+            strategy_key=MA_CROSSOVER_KEY,
+            cfg=cfg,
+            n_bars=80,
+        )
+
+    assert captured["cfg"] is cfg
+    assert captured["strategy_key"] == MA_CROSSOVER_KEY
 
 
 def test_load_strategy_ma_crossover_matches_create_strategy_from_config_signals() -> None:
@@ -270,8 +355,7 @@ def test_run_single_asset_backtest_calls_load_strategy_and_passes_full_params() 
             n_bars=80,
         )
 
-    load_strategy_mock.assert_has_calls([call(MA_CROSSOVER_KEY), call(MA_CROSSOVER_KEY)])
-    assert load_strategy_mock.call_count == 2
+    load_strategy_mock.assert_called_once_with(MA_CROSSOVER_KEY)
     assert captured["params"]["fast_window"] == 10
     assert captured["params"]["slow_window"] == 50
     assert captured["params"]["stop_pct"] == 0.02
