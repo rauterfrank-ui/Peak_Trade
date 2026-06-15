@@ -34,6 +34,16 @@ def _run_selector(
     return result
 
 
+def _targets(sel: dict[str, str]) -> list[str]:
+    raw = sel.get("focused_pytest_targets", "")
+    return sorted(raw.split()) if raw else []
+
+
+def _modules(sel: dict[str, str]) -> list[str]:
+    raw = sel.get("focused_module_imports", "")
+    return sorted(raw.split()) if raw else []
+
+
 def test_required_tests_job_has_no_job_level_if() -> None:
     text = _ci_text()
     tests_block = text.split("  tests:", 1)[1].split("  strategy-smoke:", 1)[0]
@@ -55,6 +65,7 @@ def test_changes_job_exports_test_selection_outputs() -> None:
         "tests_execute_focused",
         "tests_execute_no_op",
         "focused_pytest_targets",
+        "focused_module_imports",
     ):
         assert (
             f"{key}:"
@@ -70,8 +81,23 @@ def test_tests_job_has_no_op_step() -> None:
 def test_tests_job_has_focused_and_full_steps() -> None:
     text = _ci_text()
     assert "Run full test suite" in text
-    assert "Run focused tests (3.11)" in text
+    assert "Run focused tests (matrix)" in text
     assert "Run tests with coverage (FULL only)" in text
+
+
+def test_tests_job_focused_runs_on_all_matrix_versions() -> None:
+    text = _ci_text()
+    focused_step = text.split("name: Run focused tests (matrix)", 1)[1].split("\n      - name:", 1)[
+        0
+    ]
+    assert "matrix.python-version == '3.11'" not in focused_step
+    assert "tests_execute_focused == 'true'" in focused_step
+
+
+def test_tests_job_focused_module_import_smoke_step() -> None:
+    assert "Focused module import smoke" in _ci_text()
+    assert "focused_module_imports" in _ci_text()
+    assert "--import-smoke-modules" in _ci_text()
 
 
 def test_selector_docs_only_no_op() -> None:
@@ -89,6 +115,22 @@ def test_selector_central_src_full() -> None:
     sel = _run_selector("src/strategies/__init__.py")
     assert sel["test_selection_mode"] == "FULL"
     assert sel["tests_execute_full"] == "true"
+
+
+def test_selector_registry_init_full() -> None:
+    sel = _run_selector(
+        "src/strategies/__init__.py",
+        "tests/test_strategy_vol_regime_filter.py",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+
+
+def test_selector_composite_full() -> None:
+    sel = _run_selector(
+        "src/strategies/composite.py",
+        "tests/test_strategy_composite.py",
+    )
+    assert sel["test_selection_mode"] == "FULL"
 
 
 def test_selector_dependencies_full() -> None:
@@ -117,16 +159,175 @@ def test_selector_scripts_focused_omits_nonexistent_test_paths() -> None:
         "scripts/run_offline_realtime_ma_crossover.py",
     )
     assert sel["test_selection_mode"] == "FOCUSED"
-    targets = sel["focused_pytest_targets"].split()
+    targets = _targets(sel)
     assert "tests/scripts/test_run_momentum_realistic_load_strategy_v1.py" in targets
     assert "tests/scripts/test_run_offline_realtime_ma_crossover_load_strategy_v1.py" in targets
     assert "tests/scripts/test_run_momentum_realistic.py" not in targets
     assert "tests/scripts/test_run_offline_realtime_ma_crossover.py" not in targets
 
 
+def test_selector_strategy_vol_breakout_owner_focused() -> None:
+    sel = _run_selector(
+        "src/strategies/vol_breakout.py",
+        "tests/test_strategies_phase27.py",
+    )
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "strategy_regime_owner_focused"
+    assert "tests/test_strategies_phase27.py" in _targets(sel)
+    assert _modules(sel) == ["src.strategies.vol_breakout"]
+
+
+def test_selector_strategy_vol_regime_filter_owner_focused() -> None:
+    sel = _run_selector(
+        "src/strategies/vol_regime_filter.py",
+        "tests/test_strategy_vol_regime_filter.py",
+    )
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert "tests/test_strategy_vol_regime_filter.py" in _targets(sel)
+    assert _modules(sel) == ["src.strategies.vol_regime_filter"]
+
+
+def test_selector_regime_detectors_owner_focused() -> None:
+    sel = _run_selector(
+        "src/regime/detectors.py",
+        "tests/test_regime_detection.py",
+    )
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert "tests/test_regime_detection.py" in _targets(sel)
+    assert _modules(sel) == ["src.regime.detectors"]
+
+
+def test_selector_el_karoui_vol_model_owner_focused() -> None:
+    sel = _run_selector(
+        "src/strategies/el_karoui/vol_model.py",
+        "tests/strategies/el_karoui/test_vol_model.py",
+    )
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert "tests/strategies/el_karoui/test_vol_model.py" in _targets(sel)
+    assert _modules(sel) == ["src.strategies.el_karoui.vol_model"]
+
+
+def test_selector_strategy_owner_includes_load_strategy_contract_tests() -> None:
+    sel = _run_selector(
+        "src/strategies/vol_breakout.py",
+        "tests/test_strategies_phase27.py",
+    )
+    targets = _targets(sel)
+    assert "tests/scripts/test_demo_strategy_research_load_strategy_v1.py" in targets
+
+
+def test_selector_focused_targets_sorted_deterministically() -> None:
+    sel = _run_selector(
+        "src/strategies/vol_breakout.py",
+        "tests/test_strategies_phase27.py",
+    )
+    assert _targets(sel) == sorted(_targets(sel))
+
+
+def test_selector_prod_only_without_test_owner_full() -> None:
+    sel = _run_selector("src/strategies/vol_breakout.py")
+    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_reason"] == "strategy_regime_owner_incomplete_or_ambiguous"
+
+
+def test_selector_two_prod_files_full() -> None:
+    sel = _run_selector(
+        "src/strategies/vol_breakout.py",
+        "src/strategies/vol_regime_filter.py",
+        "tests/test_strategies_phase27.py",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+
+
+def test_selector_strategy_plus_foreign_test_owner_full() -> None:
+    sel = _run_selector(
+        "src/strategies/vol_breakout.py",
+        "tests/test_strategy_vol_regime_filter.py",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+
+
+def test_selector_strategy_plus_conftest_full() -> None:
+    sel = _run_selector(
+        "src/strategies/vol_breakout.py",
+        "tests/test_strategies_phase27.py",
+        "tests/conftest.py",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+
+
+def test_selector_strategy_plus_dependency_full() -> None:
+    sel = _run_selector(
+        "src/strategies/vol_breakout.py",
+        "tests/test_strategies_phase27.py",
+        "requirements.txt",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+
+
+def test_selector_strategy_plus_pyproject_full() -> None:
+    sel = _run_selector(
+        "src/strategies/vol_breakout.py",
+        "tests/test_strategies_phase27.py",
+        "pyproject.toml",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+
+
+def test_selector_strategy_plus_workflow_full() -> None:
+    sel = _run_selector(
+        "src/strategies/vol_breakout.py",
+        "tests/test_strategies_phase27.py",
+        ".github/workflows/lint.yml",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+
+
+def test_selector_ci_selector_self_full() -> None:
+    sel = _run_selector(
+        "scripts/ops/ci_test_selection_v1.py",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_reason"] == "ci_selector_or_contract_change_requires_full"
+
+
+def test_selector_ci_workflow_change_self_full() -> None:
+    sel = _run_selector(
+        ".github/workflows/ci.yml",
+        "scripts/ops/ci_test_selection_v1.py",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+
+
+def test_selector_strategy_plus_core_full() -> None:
+    sel = _run_selector(
+        "src/strategies/vol_breakout.py",
+        "tests/test_strategies_phase27.py",
+        "src/core/foo.py",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+
+
+def test_selector_multiple_test_owners_full() -> None:
+    sel = _run_selector(
+        "src/strategies/vol_breakout.py",
+        "tests/test_strategies_phase27.py",
+        "tests/test_strategy_vol_regime_filter.py",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+
+
 def test_selector_unknown_fail_closed_full() -> None:
     sel = _run_selector("misc/unclassified.bin")
     assert sel["test_selection_mode"] == "FULL"
+
+
+def test_selector_empty_diff_fail_closed_full() -> None:
+    sel = _run_selector()
+    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_reason"] == "empty_diff_fail_closed"
 
 
 def test_selector_force_full() -> None:
@@ -139,14 +340,68 @@ def test_selector_push_event_full() -> None:
     assert sel["test_selection_mode"] == "FULL"
 
 
+def test_selector_merge_group_event_full() -> None:
+    sel = _run_selector(
+        "src/strategies/vol_breakout.py",
+        "tests/test_strategies_phase27.py",
+        event_name="merge_group",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+
+
+def test_selector_import_smoke_cli_ok() -> None:
+    out = subprocess.check_output(
+        [sys.executable, str(SELECTOR), "--import-smoke-modules", "src.strategies.vol_breakout"],
+        text=True,
+    )
+    assert "import smoke ok: src.strategies.vol_breakout" in out
+
+
+def test_selector_import_smoke_cli_rejects_invalid_module() -> None:
+    proc = subprocess.run(
+        [sys.executable, str(SELECTOR), "--import-smoke-modules", "src;rm -rf /"],
+        capture_output=True,
+        text=True,
+    )
+    assert proc.returncode != 0
+
+
+def test_selector_emit_validated_pytest_targets_ok() -> None:
+    out = subprocess.check_output(
+        [
+            sys.executable,
+            str(SELECTOR),
+            "--emit-validated-pytest-targets",
+            "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+        ],
+        text=True,
+    )
+    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" in out
+
+
+def test_selector_emit_validated_pytest_targets_rejects_injection() -> None:
+    proc = subprocess.run(
+        [
+            sys.executable,
+            str(SELECTOR),
+            "--emit-validated-pytest-targets",
+            "tests/ci/foo.py; echo pwned",
+        ],
+        capture_output=True,
+        text=True,
+    )
+    assert proc.returncode != 0
+
+
 def test_mapping_file_exists() -> None:
     assert MAPPING.is_file()
-    assert "docs_only:" in MAPPING.read_text(encoding="utf-8")
+    text = MAPPING.read_text(encoding="utf-8")
+    assert "docs_only:" in text
+    assert "strategy_regime_owner_focused:" in text
 
 
 def test_workflow_only_does_not_run_full_pytest_step_unconditionally() -> None:
     text = _ci_text()
-    assert "workflow_only == 'true'" not in text.split("Run full test suite", 1)[0] or True
     full_step = text.split("name: Run full test suite", 1)[1].split("\n      - name:", 1)[0]
     assert "tests_execute_full == 'true'" in full_step
     assert "workflow_only == 'true'" not in full_step

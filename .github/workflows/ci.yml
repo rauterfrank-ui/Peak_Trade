@@ -59,6 +59,7 @@ jobs:
       tests_execute_focused: ${{ steps.test_selection.outputs.tests_execute_focused }}
       tests_execute_no_op: ${{ steps.test_selection.outputs.tests_execute_no_op }}
       focused_pytest_targets: ${{ steps.test_selection.outputs.focused_pytest_targets }}
+      focused_module_imports: ${{ steps.test_selection.outputs.focused_module_imports }}
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -320,7 +321,7 @@ jobs:
   # ============================================================================
   # Always creates test jobs for all required Python versions (3.9, 3.10, 3.11).
   # On docs-only / workflow-only / static-contract-only PRs, jobs short-circuit SUCCESS (NO_OP).
-  # FOCUSED runs bounded pytest on 3.11 and import smoke on 3.9/3.10.
+  # FOCUSED runs bounded pytest on all matrix versions plus module import smoke.
   # FULL runs the repository test suite with coverage on 3.11.
   # ============================================================================
   tests:
@@ -347,6 +348,7 @@ jobs:
           echo "tests_execute_focused=${{ needs.changes.outputs.tests_execute_focused }}"
           echo "tests_execute_no_op=${{ needs.changes.outputs.tests_execute_no_op }}"
           echo "focused_pytest_targets=${{ needs.changes.outputs.focused_pytest_targets }}"
+          echo "focused_module_imports=${{ needs.changes.outputs.focused_module_imports }}"
 
       - name: NO_OP — skip full matrix tests (diff-aware)
         if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_no_op == 'true' }}
@@ -421,8 +423,8 @@ jobs:
         run: |
           pytest tests/ -v --tb=short -m "not network and not external_tools"
 
-      - name: Run focused tests (3.11)
-        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_focused == 'true' && matrix.python-version == '3.11' }}
+      - name: Run focused tests (matrix)
+        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_focused == 'true' }}
         run: |
           set -euo pipefail
           TARGETS="${{ needs.changes.outputs.focused_pytest_targets }}"
@@ -430,12 +432,15 @@ jobs:
             echo "FOCUSED mode without explicit targets — fail-closed to tests/ci/"
             TARGETS="tests/ci/"
           fi
-          pytest $TARGETS -v --tb=short -m "not network and not external_tools"
+          mapfile -t VALIDATED_TARGETS < <(python3 scripts/ops/ci_test_selection_v1.py --emit-validated-pytest-targets "$TARGETS")
+          pytest "${VALIDATED_TARGETS[@]}" -v --tb=short -m "not network and not external_tools"
 
-      - name: Focused compatibility import smoke (3.9/3.10)
-        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_focused == 'true' && matrix.python-version != '3.11' }}
+      - name: Focused module import smoke
+        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_focused == 'true' && needs.changes.outputs.focused_module_imports != '' }}
         run: |
-          python -c "import importlib; importlib.import_module('src'); print('import smoke ok on Python ${{ matrix.python-version }}')"
+          set -euo pipefail
+          python3 scripts/ops/ci_test_selection_v1.py --import-smoke-modules "${{ needs.changes.outputs.focused_module_imports }}"
+          echo "import smoke ok on Python ${{ matrix.python-version }}"
 
       - name: Run tests with coverage (FULL only)
         if: ${{ (github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true') && matrix.python-version == '3.11' && needs.changes.outputs.tests_execute_no_op != 'true' }}
