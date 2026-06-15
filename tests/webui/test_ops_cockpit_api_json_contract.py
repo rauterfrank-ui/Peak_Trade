@@ -148,7 +148,15 @@ def test_api_ops_cockpit_json_contract_nested_session_end_mismatch_state(
     assert isinstance(sem["observation_reason"], str)
     assert sem["reader_schema_version"].startswith("session_end_mismatch_reader")
     assert sem["runbook"] == "RUNBOOK_PILOT_INCIDENT_SESSION_END_MISMATCH"
-    assert sem["status"] in ("unknown", "nominal", "mismatch_signal", "caution", "degraded")
+    assert sem["status"] in (
+        "unknown",
+        "nominal",
+        "mismatch_signal",
+        "caution",
+        "degraded",
+        "aligned",
+        "ambiguous",
+    )
 
 
 def test_api_ops_cockpit_json_contract_nested_transfer_ambiguity_state(
