@@ -29,7 +29,25 @@ MA_CROSSOVER_KEY = "ma_crossover"
 MOMENTUM_KEY = "momentum_1h"
 DATA_LOADER_OWNER = "scripts/run_backtest.py:load_ohlcv_data"
 FORBIDDEN_LOCAL_LOADER_DEFS = frozenset(
-    {"load_ohlcv_data", "generate_dummy_ohlcv", "create_dummy_data"}
+    {"load_ohlcv_data", "generate_dummy_ohlcv", "create_dummy_data", "create_test_data"}
+)
+DEMO_BACKTEST_WITH_RISK_N_BARS = 200
+RISK_SEMANTICS_MARKERS = (
+    "BacktestEngine",
+    "RiskLimits",
+    "RiskLimitsConfig",
+    "PositionSizer",
+    "PositionSizerConfig",
+    "run_realistic",
+    '"stop_pct": 0.02',
+    "max_drawdown_pct=10.0",
+    "max_position_pct=5.0",
+    "daily_loss_limit_pct=2.0",
+    'method="fixed_fractional"',
+    "risk_pct=2.0",
+    "max_position_pct=50.0",
+    "max_drawdown_pct=30.0",
+    "daily_loss_limit_pct=10.0",
 )
 
 FORBIDDEN_DIRECT_IMPORTS = (
@@ -133,6 +151,84 @@ def test_demo_4_kraken_pipeline_fallback_wires_canonical_loader() -> None:
         "n_bars": 200,
         "verbose": False,
     }
+
+
+def test_demo_backtest_with_risk_source_has_no_local_loader_definitions() -> None:
+    local_defs = _local_function_defs("demo_backtest_with_risk")
+    assert FORBIDDEN_LOCAL_LOADER_DEFS.isdisjoint(local_defs)
+
+
+def test_demo_backtest_with_risk_source_imports_canonical_data_loader() -> None:
+    source = _read_source("demo_backtest_with_risk")
+    assert "load_ohlcv_data" in source
+    assert "scripts.run_backtest" in source
+
+
+def test_demo_backtest_with_risk_load_ohlcv_data_import_identity_is_canonical_owner() -> None:
+    import scripts.demo_backtest_with_risk as demo_script
+    import scripts.run_backtest as run_backtest_script
+
+    source = _read_source("demo_backtest_with_risk")
+    assert "from scripts.run_backtest import load_ohlcv_data" in source
+    assert "load_ohlcv_data" not in _local_function_defs("demo_backtest_with_risk")
+    assert demo_script.load_ohlcv_data is run_backtest_script.load_ohlcv_data
+
+
+def test_demo_default_risk_wires_canonical_loader_with_n_bars_200() -> None:
+    import scripts.demo_backtest_with_risk as demo_script
+
+    captured: dict[str, object] = {}
+    sample_df = _sample_ohlcv(DEMO_BACKTEST_WITH_RISK_N_BARS)
+    mock_engine = MagicMock()
+    mock_result = MagicMock()
+    mock_result.stats = {
+        "total_return": 0.01,
+        "max_drawdown": -0.02,
+        "sharpe": 1.0,
+        "total_trades": 1,
+        "win_rate": 1.0,
+        "profit_factor": 2.0,
+    }
+    mock_result.blocked_trades = 0
+    mock_engine.run_realistic.return_value = mock_result
+    mock_engine.risk_limits.config.max_drawdown_pct = 20.0
+    mock_engine.risk_limits.config.max_position_pct = 10.0
+    mock_engine.risk_limits.config.daily_loss_limit_pct = 5.0
+
+    def capture_loader(data_file, start_date, end_date, n_bars, verbose=False):
+        captured.update(
+            {
+                "data_file": data_file,
+                "start_date": start_date,
+                "end_date": end_date,
+                "n_bars": n_bars,
+                "verbose": verbose,
+            }
+        )
+        return sample_df
+
+    with (
+        patch.object(demo_script, "load_ohlcv_data", side_effect=capture_loader),
+        patch.object(demo_script, "BacktestEngine", return_value=mock_engine),
+        patch.object(demo_script, "load_strategy", return_value=MagicMock()),
+    ):
+        demo_script.demo_default_risk()
+
+    assert captured == {
+        "data_file": None,
+        "start_date": None,
+        "end_date": None,
+        "n_bars": DEMO_BACKTEST_WITH_RISK_N_BARS,
+        "verbose": False,
+    }
+    mock_engine.run_realistic.assert_called_once()
+
+
+def test_demo_backtest_with_risk_risk_semantics_preserved_in_source() -> None:
+    source = _read_source("demo_backtest_with_risk")
+    for marker in RISK_SEMANTICS_MARKERS:
+        assert marker in source, f"missing risk semantics marker: {marker}"
+    assert "create_test_data" not in source
 
 
 @pytest.mark.parametrize(
