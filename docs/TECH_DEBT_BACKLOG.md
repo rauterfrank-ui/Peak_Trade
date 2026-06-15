@@ -161,10 +161,10 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
 
 ### Pandas FutureWarnings (Phase 59)
 
-- [ ] Pandas `.fillna` Downcasting Warnings beheben
+- [x] Pandas `.fillna` Downcasting Warnings beheben
   - Fundstelle: Diverse `src&#47;strategies&#47;*.py`
   - Kontext: `.shift(1).fillna(False)` Pattern löst FutureWarning in pandas 2.x aus
-  - Status: implemented in PR #1036 (merge `7394f78c`, mergedAt 2026-01-28T05:58:36Z)
+  - Status: closed (PR #1036, merge `7394f78c`; Strategie-Pattern auf `shift(1, fill_value=False)` migriert, pytest FutureWarning-Filter entfernt; Regression `tests/test_fillna_downcasting_regression.py`)
   - Aktueller Status: Warning behoben; keine pandas-Downcasting `FutureWarning` Filter mehr nötig
   - Vorschlag: (historisch) Bei pandas 3.0 Migration auf `.astype(bool)` umstellen
   - Priorität: Niedrig (erledigt; Regression-Test deckt Verhalten ab)
