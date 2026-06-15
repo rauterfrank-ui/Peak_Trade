@@ -327,20 +327,31 @@ class ElKarouiVolModel:
             >>> percentiles = model.calculate_vol_percentile(vol_series)
         """
         lookback = self.config.lookback_window
+        min_periods = self.config.vol_window
 
-        def percentile_rank(x: pd.Series) -> float:
-            """Berechnet den Perzentil-Rang des letzten Werts."""
-            if len(x) < 2 or pd.isna(x.iloc[-1]):
-                return np.nan
-            current = x.iloc[-1]
-            return (x < current).mean()
+        # Match pandas rolling().apply() window semantics (including +/-inf -> NaN).
+        values = vol_series.to_numpy(dtype=np.float64, copy=True)
+        values[np.isinf(values)] = np.nan
+        n = len(values)
+        out = np.full(n, np.nan, dtype=np.float64)
 
-        percentiles = vol_series.rolling(
-            window=lookback,
-            min_periods=self.config.vol_window,
-        ).apply(percentile_rank, raw=False)
+        for end in range(n):
+            start = max(0, end - lookback + 1)
+            win = values[start : end + 1]
+            if np.count_nonzero(~np.isnan(win)) < min_periods:
+                continue
+            if len(win) < 2 or np.isnan(win[-1]):
+                continue
+            win_series = pd.Series(win)
+            current = win_series.iloc[-1]
+            out[end] = (win_series < current).mean()
 
-        return percentiles
+        return pd.Series(
+            out,
+            index=vol_series.index,
+            dtype=np.float64,
+            name=vol_series.name,
+        )
 
     def regime_for_percentile(self, percentile: float) -> VolRegime:
         """
