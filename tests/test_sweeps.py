@@ -18,6 +18,7 @@ import json
 import logging
 from datetime import datetime, timedelta
 from pathlib import Path
+from typing import Optional
 from unittest.mock import MagicMock, patch
 
 from tests.utils.dt import normalize_dt_index
@@ -1390,7 +1391,7 @@ class TestSweepBatchProgressContracts:
 
         monkeypatch.setattr(engine, "_run_single_backtest", _fake_backtest)
 
-    def _config_with_n(self, n: int, *, max_runs: int | None = None):
+    def _config_with_n(self, n: int, *, max_runs: Optional[int] = None):
         from src.sweeps import SweepConfig
 
         return SweepConfig(
