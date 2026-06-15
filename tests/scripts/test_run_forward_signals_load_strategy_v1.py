@@ -29,6 +29,8 @@ RSI_REVERSION_KEY = "rsi_reversion"
 FORBIDDEN_IMPORTS = ("create_strategy_from_config",)
 STRATEGY_PARAMS_BUILDER_OWNER = "scripts/run_backtest.py:_build_strategy_params_from_config"
 FORBIDDEN_LOCAL_BUILDER_DEFS = frozenset({"_build_strategy_params_from_config"})
+CANONICAL_REGISTRY_GATE_OWNER = "scripts/run_backtest.py:_validate_strategy_registry_gates"
+FORBIDDEN_LOCAL_REGISTRY_GATE_DEFS = frozenset({"_validate_strategy_registry_gates"})
 
 
 def _read_source() -> str:
@@ -416,6 +418,108 @@ def test_load_strategy_no_network_calls() -> None:
         load_strategy(MA_CROSSOVER_KEY)
         load_strategy(RSI_REVERSION_KEY)
     urlopen.assert_not_called()
+
+
+# ---------------------------------------------------------------------------
+# Registry gates — canonical _validate_strategy_registry_gates reuse
+# ---------------------------------------------------------------------------
+
+
+def test_source_has_no_local_registry_gate_definition() -> None:
+    local_defs = _local_function_defs()
+    assert FORBIDDEN_LOCAL_REGISTRY_GATE_DEFS.isdisjoint(local_defs)
+
+
+def test_validate_strategy_registry_gates_import_identity_is_canonical_owner() -> None:
+    import scripts.run_backtest as run_backtest_script
+
+    assert (
+        forward_runner._validate_strategy_registry_gates
+        is run_backtest_script._validate_strategy_registry_gates
+    )
+
+
+def test_source_imports_canonical_registry_gate_validator() -> None:
+    source = _read_source()
+    assert "_validate_strategy_registry_gates" in source
+    assert "scripts.run_backtest" in source
+
+
+def test_registry_gates_block_r_and_d_without_flag() -> None:
+    from src.core.peak_config import PeakConfig
+
+    raw = {"environment": {"mode": "backtest"}, "strategy": {"ehlers_cycle_filter": {}}}
+    cfg = PeakConfig(raw=raw)
+    with pytest.raises(ValueError, match="R&D-only"):
+        forward_runner._validate_strategy_registry_gates("ehlers_cycle_filter", cfg)
+
+
+def test_unknown_strategy_fails_closed_at_registry_gates() -> None:
+    from src.core.peak_config import PeakConfig
+
+    cfg = PeakConfig(raw={"environment": {"mode": "backtest"}})
+    with pytest.raises(KeyError):
+        forward_runner._validate_strategy_registry_gates("definitely_not_a_strategy_xyz", cfg)
+
+
+def test_main_invokes_registry_gates_before_strategy_params(tmp_path) -> None:
+    from src.core.peak_config import PeakConfig
+
+    cfg_path = tmp_path / "cfg.toml"
+    cfg_path.write_text("[environment]\nmode = 'backtest'\n", encoding="utf-8")
+    cfg = PeakConfig(
+        raw={
+            "environment": {"mode": "backtest"},
+            "strategy": {
+                MA_CROSSOVER_KEY: {
+                    "fast_window": 10,
+                    "slow_window": 50,
+                    "price_col": "close",
+                },
+            },
+        }
+    )
+    call_order: list[str] = []
+    gate_mock = MagicMock(side_effect=lambda key, config: call_order.append("gates"))
+    builder_mock = MagicMock(
+        side_effect=lambda config, strategy_key: (
+            call_order.append("builder"),
+            {"fast_window": 10, "slow_window": 50, "stop_pct": 0.02},
+        )[1]
+    )
+    mock_client = MagicMock()
+    mock_client.get_name.return_value = "mock"
+    mock_client.fetch_ohlcv.return_value = _sample_ohlcv()
+
+    with (
+        patch.object(forward_runner, "load_config", return_value=cfg),
+        patch.object(forward_runner, "build_exchange_client_from_config", return_value=mock_client),
+        patch.object(forward_runner, "_validate_strategy_registry_gates", gate_mock),
+        patch.object(forward_runner, "_build_strategy_params_from_config", builder_mock),
+        patch.object(
+            forward_runner,
+            "load_strategy",
+            return_value=lambda df, params: pd.Series([1.0], index=df.index[-1:]),
+        ),
+        patch.object(forward_runner, "log_forward_signal_run", return_value="run-1"),
+    ):
+        code = forward_runner.main(
+            [
+                "--config",
+                str(cfg_path),
+                "--strategy",
+                MA_CROSSOVER_KEY,
+                "--symbol",
+                "BTC/EUR",
+                "--dry-run",
+                "--no-alerts",
+            ]
+        )
+
+    assert code == 0
+    gate_mock.assert_called_once_with(MA_CROSSOVER_KEY, cfg)
+    builder_mock.assert_called_once_with(cfg, MA_CROSSOVER_KEY)
+    assert call_order == ["gates", "builder"]
 
 
 def test_import_smoke_no_main_execution() -> None:

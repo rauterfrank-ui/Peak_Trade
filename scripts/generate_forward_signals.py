@@ -32,7 +32,10 @@ import pandas as pd
 
 from src.core.peak_config import load_config, PeakConfig
 from src.core.experiments import log_generic_experiment
-from scripts.run_backtest import _build_strategy_params_from_config
+from scripts.run_backtest import (
+    _build_strategy_params_from_config,
+    _validate_strategy_registry_gates,
+)
 from src.forward.signals import ForwardSignal, save_signals_to_csv
 from src.strategies import load_strategy
 from src.strategies.registry import get_available_strategy_keys, get_strategy_spec
@@ -191,42 +194,6 @@ def determine_universe(cfg: Any, symbols_arg: str | None) -> List[str]:
             "Bitte --symbols setzen oder scan.universe konfigurieren."
         )
     return list(universe)
-
-
-def _validate_strategy_registry_gates(key: str, cfg: PeakConfig) -> None:
-    """Mirror registry environment/tier gates (fail-closed)."""
-    spec = get_strategy_spec(key)
-
-    env_mode = cfg.get("environment.mode")
-    if not env_mode:
-        env_mode = cfg.get("env.mode")
-    if not env_mode:
-        env_mode = cfg.get("runtime.environment")
-    if not env_mode:
-        env_mode = cfg.get("environment.runtime_environment")
-    if not env_mode:
-        env_mode = "backtest"
-
-    if env_mode == "live" and not spec.is_live_ready:
-        raise ValueError(
-            f"Strategy '{key}' cannot be used in LIVE mode (IS_LIVE_READY=False). "
-            f"This strategy is R&D-only and not validated for live trading."
-        )
-
-    if spec.tier == "r_and_d":
-        allow_rnd = cfg.get("research.allow_r_and_d_strategies", False)
-        if not allow_rnd:
-            raise ValueError(
-                f"Strategy '{key}' is R&D-only (TIER=r_and_d) and requires "
-                f"'research.allow_r_and_d_strategies = true' in config."
-            )
-
-    if env_mode not in spec.allowed_environments:
-        allowed_str = ", ".join(spec.allowed_environments)
-        raise ValueError(
-            f"Strategy '{key}' not allowed in environment '{env_mode}'. "
-            f"Allowed environments: {allowed_str}"
-        )
 
 
 def enforce_strategy_selection(cfg: PeakConfig, strategy_key: str) -> None:
