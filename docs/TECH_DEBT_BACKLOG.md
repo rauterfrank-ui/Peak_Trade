@@ -203,11 +203,11 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
 
 ### Logging
 
-- [ ] Logging in großen Research-Runs weiter drosseln oder Batch-weisen Output einführen
+- [x] Logging in großen Research-Runs weiter drosseln oder Batch-weisen Output einführen
   - Kontext: siehe `docs/PERFORMANCE_NOTES.md`, Abschnitt 5
   - Idee: „Benchmark-/Silent"-Mode für Logs
   - Vorschlag: Batch-weiser Output statt einzelner Log-Zeilen
-  - Fortschritt (PR feat/research-run-logging-silent-mode-v1): `--quiet` für `scripts/sweep_parameters.py`; (PR feat/research-run-quiet-run-sweep-strategy-v1): `--quiet` für `scripts/run_sweep_strategy.py` über kanonischen Owner `src/sweeps/engine.py` (`SweepRunOutputMode`, `apply_sweep_run_logging`); (PR feat/research-run-quiet-phase41-experiments-sweep-cli-v1): `--quiet` für `scripts/run_strategy_sweep.py` und `scripts/run_experiment_sweep.py` über kanonischen Owner `src/experiments/base.py` (`ExperimentRunOutputMode`, `apply_experiment_run_logging`); (PR feat/research-run-quiet-research-cli-v1): `--quiet` für `scripts/research_cli.py` über kanonischen Owner `scripts/research_cli.py` (`ResearchCliOutputMode`, `apply_research_cli_logging`) für native Subcommands `pipeline`, `strategy-profile`, `run-experiment`, `armstrong-elkaroui-combi` sowie Sweep-Dispatch; verbleibend: Batch-Output
+  - Fortschritt (PR feat/research-run-logging-silent-mode-v1): `--quiet` für `scripts/sweep_parameters.py`; (PR feat/research-run-quiet-run-sweep-strategy-v1): `--quiet` für `scripts/run_sweep_strategy.py` über kanonischen Owner `src/sweeps/engine.py` (`SweepRunOutputMode`, `apply_sweep_run_logging`); (PR feat/research-run-quiet-phase41-experiments-sweep-cli-v1): `--quiet` für `scripts/run_strategy_sweep.py` und `scripts/run_experiment_sweep.py` über kanonischen Owner `src/experiments/base.py` (`ExperimentRunOutputMode`, `apply_experiment_run_logging`); (PR feat/research-run-quiet-research-cli-v1): `--quiet` für `scripts/research_cli.py` über kanonischen Owner `scripts/research_cli.py` (`ResearchCliOutputMode`, `apply_research_cli_logging`) für native Subcommands `pipeline`, `strategy-profile`, `run-experiment`, `armstrong-elkaroui-combi` sowie Sweep-Dispatch; (PR feat/research-run-batch-output-v1): Batch-Progress (`progress_every`, Default 10) mit Final-Flush in `src/sweeps/engine.py` (`SweepEngine._maybe_emit_progress`) und `src/experiments/base.py` (`ExperimentRunner._maybe_emit_progress`); Offline-Contracts in `tests/test_sweeps.py` und `tests/test_experiments_base.py`
 
 ### pandas-Optimierungen
 

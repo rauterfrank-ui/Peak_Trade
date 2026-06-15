@@ -46,6 +46,27 @@ from src.strategies.registry import (
 logger = logging.getLogger(__name__)
 
 SweepDataCacheOutcome = str  # "hit" | "miss" | "disabled" | "fallback"
+DEFAULT_PROGRESS_EVERY = 10
+
+
+def _validate_progress_every(progress_every: int) -> int:
+    """Fail-closed validation for batch progress interval."""
+    if isinstance(progress_every, bool) or not isinstance(progress_every, int):
+        raise ValueError(f"progress_every must be a positive int, got {progress_every!r}")
+    if progress_every <= 0:
+        raise ValueError(f"progress_every must be positive, got {progress_every}")
+    return progress_every
+
+
+def _should_emit_batch_progress(current: int, total: int, progress_every: int) -> bool:
+    """Return True when batch progress should emit for the current unit."""
+    if total <= 0:
+        return False
+    if current % progress_every == 0:
+        return True
+    if current == total and total % progress_every != 0:
+        return True
+    return False
 
 
 @dataclass(frozen=True)
@@ -481,6 +502,7 @@ class SweepEngine:
         self,
         verbose: bool = False,
         progress_callback: Optional[Callable[[int, int, Dict], None]] = None,
+        progress_every: int = DEFAULT_PROGRESS_EVERY,
     ) -> None:
         """
         Initialisiert die Sweep-Engine.
@@ -489,9 +511,25 @@ class SweepEngine:
             verbose: Wenn True, ausführliche Ausgabe
             progress_callback: Optionaler Callback für Fortschritt
                 Signatur: callback(current_run, total_runs, current_params)
+            progress_every: Batch-Intervall für Fortschrittsausgaben (positiv)
         """
         self.verbose = verbose
         self.progress_callback = progress_callback
+        self.progress_every = _validate_progress_every(progress_every)
+
+    def _maybe_emit_progress(
+        self,
+        current: int,
+        total: int,
+        params: Dict[str, Any],
+    ) -> None:
+        """Emit batched progress via callback or verbose print."""
+        if not _should_emit_batch_progress(current, total, self.progress_every):
+            return
+        if self.progress_callback:
+            self.progress_callback(current, total, params)
+        elif self.verbose:
+            print(f"  [{current}/{total}] {params}")
 
     def run_sweep(
         self,
@@ -555,10 +593,7 @@ class SweepEngine:
 
         # Runs ausführen
         for i, params in enumerate(combinations, 1):
-            if self.progress_callback:
-                self.progress_callback(i, len(combinations), params)
-            elif self.verbose:
-                print(f"  [{i}/{len(combinations)}] {params}")
+            self._maybe_emit_progress(i, len(combinations), params)
 
             try:
                 stats, bt_result = self._run_single_backtest(

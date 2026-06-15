@@ -32,6 +32,28 @@ import pandas as pd
 
 logger = logging.getLogger(__name__)
 
+DEFAULT_PROGRESS_EVERY = 10
+
+
+def _validate_progress_every(progress_every: int) -> int:
+    """Fail-closed validation for batch progress interval."""
+    if isinstance(progress_every, bool) or not isinstance(progress_every, int):
+        raise ValueError(f"progress_every must be a positive int, got {progress_every!r}")
+    if progress_every <= 0:
+        raise ValueError(f"progress_every must be positive, got {progress_every}")
+    return progress_every
+
+
+def _should_emit_batch_progress(current: int, total: int, progress_every: int) -> bool:
+    """Return True when batch progress should emit for the current unit."""
+    if total <= 0:
+        return False
+    if current % progress_every == 0:
+        return True
+    if current == total and total % progress_every != 0:
+        return True
+    return False
+
 
 @dataclass(frozen=True)
 class ExperimentRunOutputMode:
@@ -669,6 +691,7 @@ class ExperimentRunner:
         backtest_fn: Optional[BacktestFunction] = None,
         progress_callback: Optional[Callable[[int, int, str], None]] = None,
         quiet: bool = False,
+        progress_every: int = DEFAULT_PROGRESS_EVERY,
     ) -> None:
         """
         Initialisiert den ExperimentRunner.
@@ -677,10 +700,26 @@ class ExperimentRunner:
             backtest_fn: Custom Backtest-Funktion (optional)
             progress_callback: Callback(current, total, message) für Progress
             quiet: Unterdrückt hochfrequente INFO-/Progress-Ausgaben
+            progress_every: Batch-Intervall für Fortschrittsausgaben (positiv)
         """
         self.backtest_fn = backtest_fn or self._default_backtest
         self.progress_callback = progress_callback
         self.quiet = quiet
+        self.progress_every = _validate_progress_every(progress_every)
+
+    def _maybe_emit_progress(
+        self,
+        current: int,
+        total: int,
+        message: str,
+    ) -> None:
+        """Emit batched progress via callback when not quiet."""
+        if self.quiet:
+            return
+        if not _should_emit_batch_progress(current, total, self.progress_every):
+            return
+        if self.progress_callback:
+            self.progress_callback(current, total, message)
 
     def _default_backtest(
         self,
@@ -918,12 +957,11 @@ class ExperimentRunner:
             for params in param_combinations:
                 run_index += 1
 
-                if self.progress_callback and not self.quiet:
-                    self.progress_callback(
-                        run_index,
-                        total_runs,
-                        f"{symbol} | {params}",
-                    )
+                self._maybe_emit_progress(
+                    run_index,
+                    total_runs,
+                    f"{symbol} | {params}",
+                )
 
                 logger.debug(f"Run {run_index}/{total_runs}: {symbol} | {params}")
 
@@ -1060,12 +1098,11 @@ class ExperimentRunner:
                 result = future.result()
                 results.append(result)
 
-                if self.progress_callback and not self.quiet:
-                    self.progress_callback(
-                        len(results),
-                        len(runs),
-                        f"Completed: {result.run_id}",
-                    )
+                self._maybe_emit_progress(
+                    len(results),
+                    len(runs),
+                    f"Completed: {result.run_id}",
+                )
 
         end_time = datetime.now()
         total_runtime = (end_time - start_time).total_seconds()
