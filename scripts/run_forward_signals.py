@@ -42,7 +42,10 @@ from typing import Any, Dict
 from src.core.peak_config import load_config, PeakConfig
 from src.core.experiments import log_forward_signal_run, RUN_TYPE_FORWARD_SIGNAL
 from src.exchange import build_exchange_client_from_config
-from scripts.run_backtest import _build_strategy_params_from_config
+from scripts.run_backtest import (
+    _build_strategy_params_from_config,
+    _validate_strategy_registry_gates,
+)
 from src.strategies import load_strategy
 from src.strategies.registry import get_available_strategy_keys, get_strategy_spec
 from src.notifications import Alert, ConsoleNotifier, FileNotifier, CombinedNotifier
@@ -50,42 +53,6 @@ from src.notifications.base import signal_level_from_value
 
 # Default Alert-Logdatei
 DEFAULT_ALERT_LOG = Path("logs/alerts.log")
-
-
-def _validate_strategy_registry_gates(key: str, cfg: PeakConfig) -> None:
-    """Mirror registry environment/tier gates (fail-closed)."""
-    spec = get_strategy_spec(key)
-
-    env_mode = cfg.get("environment.mode")
-    if not env_mode:
-        env_mode = cfg.get("env.mode")
-    if not env_mode:
-        env_mode = cfg.get("runtime.environment")
-    if not env_mode:
-        env_mode = cfg.get("environment.runtime_environment")
-    if not env_mode:
-        env_mode = "backtest"
-
-    if env_mode == "live" and not spec.is_live_ready:
-        raise ValueError(
-            f"Strategy '{key}' cannot be used in LIVE mode (IS_LIVE_READY=False). "
-            f"This strategy is R&D-only and not validated for live trading."
-        )
-
-    if spec.tier == "r_and_d":
-        allow_rnd = cfg.get("research.allow_r_and_d_strategies", False)
-        if not allow_rnd:
-            raise ValueError(
-                f"Strategy '{key}' is R&D-only (TIER=r_and_d) and requires "
-                f"'research.allow_r_and_d_strategies = true' in config."
-            )
-
-    if env_mode not in spec.allowed_environments:
-        allowed_str = ", ".join(spec.allowed_environments)
-        raise ValueError(
-            f"Strategy '{key}' not allowed in environment '{env_mode}'. "
-            f"Allowed environments: {allowed_str}"
-        )
 
 
 def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
