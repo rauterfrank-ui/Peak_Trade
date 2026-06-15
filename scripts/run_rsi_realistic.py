@@ -15,10 +15,7 @@ from pathlib import Path
 # Projekt-Root zum Python-Path hinzufügen
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-import pandas as pd
-import numpy as np
-from datetime import datetime, timedelta
-
+from scripts.run_backtest import load_ohlcv_data
 from src.core.peak_config import load_config
 from src.core.position_sizing import build_position_sizer_from_config
 from src.core.risk import build_risk_manager_from_config
@@ -28,44 +25,6 @@ from src.backtest.stats import validate_for_live_trading
 
 RSI_REVERSION_STRATEGY_KEY = "rsi_reversion"
 RSI_REVERSION_CONFIG_SECTION = "strategy.rsi_reversion"
-
-
-def create_dummy_data(n_bars: int = 200) -> pd.DataFrame:
-    """
-    Erstellt Dummy-OHLCV-Daten für Tests.
-
-    Simuliert Oszillationen für RSI-Mean-Reversion.
-    """
-    np.random.seed(42)
-
-    # Start-Zeitpunkt
-    start = datetime.now() - timedelta(hours=n_bars)
-    dates = pd.date_range(start, periods=n_bars, freq="1h")
-
-    # Preis-Simulation mit starken Oszillationen
-    base_price = 50000
-
-    # Oszillation für RSI-Extremwerte
-    cycle = np.sin(np.linspace(0, 6 * np.pi, n_bars)) * 3000
-
-    # Random Walk Noise
-    noise = np.random.randn(n_bars).cumsum() * 150
-
-    close_prices = base_price + cycle + noise
-
-    # OHLC generieren
-    df = pd.DataFrame(
-        {
-            "open": close_prices * (1 + np.random.randn(n_bars) * 0.002),
-            "high": close_prices * (1 + abs(np.random.randn(n_bars)) * 0.003),
-            "low": close_prices * (1 - abs(np.random.randn(n_bars)) * 0.003),
-            "close": close_prices,
-            "volume": np.random.randint(10, 100, n_bars),
-        },
-        index=dates,
-    )
-
-    return df
 
 
 def print_report(result):
@@ -189,7 +148,7 @@ price_col = "close"
 
     # Daten erstellen (später: von Kraken holen)
     print("\n📥 Lade Daten...")
-    df = create_dummy_data(n_bars=200)
+    df = load_ohlcv_data(None, None, None, n_bars=200)
     print(f"  - Zeitraum: {df.index[0]} bis {df.index[-1]}")
     print(f"  - Bars: {len(df)}")
 

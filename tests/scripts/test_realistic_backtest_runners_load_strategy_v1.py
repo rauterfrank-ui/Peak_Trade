@@ -1,5 +1,5 @@
 """
-Realistic backtest runners: canonical load_strategy() migration (offline, fail-closed).
+Realistic backtest runners: canonical load_strategy() and load_ohlcv_data reuse (offline, fail-closed).
 """
 
 from __future__ import annotations
@@ -34,9 +34,20 @@ FORBIDDEN_CLASS_IMPORTS = (
     "RsiReversionStrategy",
 )
 
+DATA_LOADER_OWNER = "scripts/run_backtest.py:load_ohlcv_data"
+FORBIDDEN_LOCAL_LOADER_DEFS = frozenset(
+    {"load_ohlcv_data", "generate_dummy_ohlcv", "create_dummy_data", "load_data_from_file"}
+)
+REALISTIC_RUNNER_N_BARS = 200
+
 
 def _read_source(name: str) -> str:
     return TARGET_SCRIPTS[name].read_text(encoding="utf-8")
+
+
+def _local_function_defs(name: str) -> set[str]:
+    tree = ast.parse(_read_source(name))
+    return {node.name for node in tree.body if isinstance(node, ast.FunctionDef)}
 
 
 def _sample_ohlcv(n: int = 80) -> pd.DataFrame:
@@ -61,6 +72,126 @@ def test_module_imports_without_main_side_effects(name: str) -> None:
     with patch.object(module, "main") as main_mock:
         importlib.reload(module)
     main_mock.assert_not_called()
+
+
+@pytest.mark.parametrize("name", TARGET_SCRIPTS)
+def test_source_has_no_local_loader_or_dummy_definitions(name: str) -> None:
+    local_defs = _local_function_defs(name)
+    assert FORBIDDEN_LOCAL_LOADER_DEFS.isdisjoint(local_defs)
+
+
+@pytest.mark.parametrize("name", TARGET_SCRIPTS)
+def test_source_imports_canonical_data_loader(name: str) -> None:
+    source = _read_source(name)
+    assert "load_ohlcv_data" in source
+    assert "scripts.run_backtest" in source
+
+
+@pytest.mark.parametrize("name", TARGET_SCRIPTS)
+def test_load_ohlcv_data_import_identity_is_canonical_owner(name: str) -> None:
+    import scripts.run_backtest as run_backtest_script
+
+    module = importlib.import_module(f"scripts.{name}")
+    assert module.load_ohlcv_data is run_backtest_script.load_ohlcv_data
+
+
+def _mock_cfg_for_runner(name: str) -> MagicMock:
+    cfg = MagicMock()
+    if name == "run_ma_realistic":
+        cfg.get.side_effect = lambda path, default=None: {
+            "backtest.initial_cash": 10000.0,
+            "risk.risk_per_trade": 0.01,
+            "risk.max_position_size": 0.25,
+            "strategy.ma_crossover.fast_window": 20,
+            "strategy.ma_crossover.slow_window": 50,
+            "strategy.ma_crossover.stop_pct": 0.02,
+            "strategy.ma_crossover.price_col": "close",
+        }.get(path, default)
+    elif name == "run_rsi_realistic":
+        cfg.get.side_effect = lambda path, default=None: {
+            "backtest.initial_cash": 10000.0,
+            "risk.risk_per_trade": 0.01,
+            "risk.max_position_size": 0.25,
+            "strategy.rsi_reversion.rsi_window": 14,
+            "strategy.rsi_reversion.lower": 30.0,
+            "strategy.rsi_reversion.upper": 70.0,
+            "strategy.rsi_reversion.stop_pct": 0.02,
+            "strategy.rsi_reversion.price_col": "close",
+        }.get(path, default)
+    else:
+        cfg.get.side_effect = lambda path, default=None: {
+            "backtest.initial_cash": 10000.0,
+            "risk.risk_per_trade": 0.01,
+            "risk.max_position_size": 0.25,
+            "strategy.breakout_donchian.lookback": 20,
+            "strategy.breakout_donchian.stop_pct": 0.02,
+            "strategy.breakout_donchian.price_col": "close",
+        }.get(path, default)
+    return cfg
+
+
+def _mock_backtest_result() -> MagicMock:
+    result = MagicMock()
+    result.equity_curve = pd.Series([10000.0, 10100.0])
+    result.stats = {
+        "total_return": 0.01,
+        "max_drawdown": -0.02,
+        "sharpe": 1.0,
+        "total_trades": 1,
+        "win_rate": 1.0,
+        "profit_factor": 2.0,
+        "blocked_trades": 0,
+    }
+    result.trades = None
+    result.blocked_trades = 0
+    return result
+
+
+@pytest.mark.parametrize("name", TARGET_SCRIPTS)
+def test_main_forwards_dummy_path_to_canonical_loader(name: str) -> None:
+    module = importlib.import_module(f"scripts.{name}")
+    captured: dict[str, object] = {}
+    sample_df = _sample_ohlcv(REALISTIC_RUNNER_N_BARS)
+
+    def capture_loader(
+        data_file,
+        start_date,
+        end_date,
+        n_bars,
+        verbose=False,
+    ):
+        captured.update(
+            {
+                "data_file": data_file,
+                "start_date": start_date,
+                "end_date": end_date,
+                "n_bars": n_bars,
+                "verbose": verbose,
+            }
+        )
+        return sample_df
+
+    signal_fn = MagicMock(return_value=pd.Series(0, index=sample_df.index))
+    mock_engine = MagicMock()
+    mock_engine.run_realistic.return_value = _mock_backtest_result()
+
+    with (
+        patch.object(module, "load_config", return_value=_mock_cfg_for_runner(name)),
+        patch.object(module, "load_ohlcv_data", side_effect=capture_loader),
+        patch.object(module, "load_strategy", return_value=signal_fn),
+        patch.object(module, "build_position_sizer_from_config", return_value=MagicMock()),
+        patch.object(module, "build_risk_manager_from_config", return_value=MagicMock()),
+        patch.object(module, "BacktestEngine", return_value=mock_engine),
+    ):
+        module.main()
+
+    assert captured == {
+        "data_file": None,
+        "start_date": None,
+        "end_date": None,
+        "n_bars": REALISTIC_RUNNER_N_BARS,
+        "verbose": False,
+    }
 
 
 @pytest.mark.parametrize("name", TARGET_SCRIPTS)
