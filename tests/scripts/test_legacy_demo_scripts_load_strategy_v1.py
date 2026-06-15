@@ -32,6 +32,20 @@ FORBIDDEN_LOCAL_LOADER_DEFS = frozenset(
     {"load_ohlcv_data", "generate_dummy_ohlcv", "create_dummy_data", "create_test_data"}
 )
 DEMO_BACKTEST_WITH_RISK_N_BARS = 200
+RUN_SIMPLE_BACKTEST_N_BARS = 200
+RUN_SIMPLE_BACKTEST_RISK_SEMANTICS_MARKERS = (
+    "BacktestEngine",
+    "RiskLimits",
+    "RiskLimitsConfig",
+    "PositionSizer",
+    "PositionSizerConfig",
+    "run_realistic",
+    'cfg["risk"]["position_sizing_method"]',
+    "max_drawdown_pct=cfg",
+    "max_position_pct=cfg",
+    "daily_loss_limit_pct=cfg",
+    "get_strategy_config",
+)
 RISK_SEMANTICS_MARKERS = (
     "BacktestEngine",
     "RiskLimits",
@@ -227,6 +241,102 @@ def test_demo_default_risk_wires_canonical_loader_with_n_bars_200() -> None:
 def test_demo_backtest_with_risk_risk_semantics_preserved_in_source() -> None:
     source = _read_source("demo_backtest_with_risk")
     for marker in RISK_SEMANTICS_MARKERS:
+        assert marker in source, f"missing risk semantics marker: {marker}"
+    assert "create_test_data" not in source
+
+
+def test_run_simple_backtest_source_has_no_local_loader_definitions() -> None:
+    local_defs = _local_function_defs("run_simple_backtest")
+    assert FORBIDDEN_LOCAL_LOADER_DEFS.isdisjoint(local_defs)
+
+
+def test_run_simple_backtest_source_imports_canonical_data_loader() -> None:
+    source = _read_source("run_simple_backtest")
+    assert "load_ohlcv_data" in source
+    assert "scripts.run_backtest" in source
+
+
+def test_run_simple_backtest_load_ohlcv_data_import_identity_is_canonical_owner() -> None:
+    import scripts.run_backtest as run_backtest_script
+    import scripts.run_simple_backtest as simple_script
+
+    source = _read_source("run_simple_backtest")
+    assert "from scripts.run_backtest import load_ohlcv_data" in source
+    assert "load_ohlcv_data" not in _local_function_defs("run_simple_backtest")
+    assert simple_script.load_ohlcv_data is run_backtest_script.load_ohlcv_data
+
+
+def test_main_wires_canonical_loader_with_n_bars_200() -> None:
+    import scripts.run_simple_backtest as simple_script
+
+    captured: dict[str, object] = {}
+    sample_df = _sample_ohlcv(RUN_SIMPLE_BACKTEST_N_BARS)
+    mock_cfg = {
+        "backtest": {"initial_cash": 10000.0, "results_dir": "results"},
+        "risk": {
+            "risk_per_trade": 0.02,
+            "max_position_size": 0.5,
+            "max_drawdown_pct": 30.0,
+            "daily_loss_limit_pct": 10.0,
+            "max_position_pct": 5.0,
+            "min_position_value": 100.0,
+            "position_sizing_method": "fixed_fractional",
+        },
+    }
+    mock_engine = MagicMock()
+    mock_result = MagicMock()
+    mock_result.stats = {
+        "total_return": 0.01,
+        "max_drawdown": -0.02,
+        "sharpe": 1.0,
+        "total_trades": 1,
+        "win_rate": 1.0,
+        "profit_factor": 2.0,
+    }
+    mock_result.blocked_trades = 0
+    mock_result.equity_curve = pd.Series([10000.0, 10100.0])
+    mock_result.trades = []
+    mock_engine.run_realistic.return_value = mock_result
+
+    def capture_loader(data_file, start_date, end_date, n_bars, verbose=False):
+        captured.update(
+            {
+                "data_file": data_file,
+                "start_date": start_date,
+                "end_date": end_date,
+                "n_bars": n_bars,
+                "verbose": verbose,
+            }
+        )
+        return sample_df
+
+    with (
+        patch.object(simple_script, "load_ohlcv_data", side_effect=capture_loader),
+        patch.object(simple_script, "load_config", return_value=mock_cfg),
+        patch.object(simple_script, "list_strategies", return_value=["ma_crossover"]),
+        patch.object(
+            simple_script,
+            "get_strategy_config",
+            return_value={"fast_period": 10, "slow_period": 30, "stop_pct": 0.02},
+        ),
+        patch.object(simple_script, "BacktestEngine", return_value=mock_engine),
+        patch.object(simple_script, "load_strategy", return_value=MagicMock()),
+    ):
+        simple_script.main()
+
+    assert captured == {
+        "data_file": None,
+        "start_date": None,
+        "end_date": None,
+        "n_bars": RUN_SIMPLE_BACKTEST_N_BARS,
+        "verbose": False,
+    }
+    mock_engine.run_realistic.assert_called_once()
+
+
+def test_run_simple_backtest_risk_semantics_preserved_in_source() -> None:
+    source = _read_source("run_simple_backtest")
+    for marker in RUN_SIMPLE_BACKTEST_RISK_SEMANTICS_MARKERS:
         assert marker in source, f"missing risk semantics marker: {marker}"
     assert "create_test_data" not in source
 
