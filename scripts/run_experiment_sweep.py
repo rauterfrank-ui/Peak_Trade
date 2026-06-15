@@ -69,11 +69,21 @@ from src.experiments import (
     STRATEGY_SWEEP_REGISTRY,
     REGIME_SWEEP_REGISTRY,
 )
+from src.experiments.base import (
+    ExperimentRunOutputMode,
+    apply_experiment_run_logging,
+    restore_experiment_run_logging,
+)
 
 
-def setup_logging(verbose: bool = False) -> None:
+def setup_logging(verbose: bool = False, quiet: bool = False) -> None:
     """Konfiguriert Logging."""
-    level = logging.DEBUG if verbose else logging.INFO
+    if verbose:
+        level = logging.DEBUG
+    elif quiet:
+        level = logging.WARNING
+    else:
+        level = logging.INFO
     logging.basicConfig(
         level=level,
         format="%(asctime)s | %(levelname)-7s | %(message)s",
@@ -81,8 +91,8 @@ def setup_logging(verbose: bool = False) -> None:
     )
 
 
-def parse_args() -> argparse.Namespace:
-    """Parst Kommandozeilen-Argumente."""
+def build_parser() -> argparse.ArgumentParser:
+    """Erstellt den ArgumentParser für Experiment-Sweeps."""
     parser = argparse.ArgumentParser(
         description="Peak_Trade Experiment Sweep CLI",
         formatter_class=argparse.RawDescriptionHelpFormatter,
@@ -227,8 +237,21 @@ def parse_args() -> argparse.Namespace:
         action="store_true",
         help="Verbose Output",
     )
+    parser.add_argument(
+        "-q",
+        "--quiet",
+        action="store_true",
+        help="Silent-Modus: hochfrequente Progress-/INFO-Ausgaben unterdrücken (Warnungen/Fehler bleiben).",
+    )
 
-    return parser.parse_args()
+    return parser
+
+
+def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
+    """Parst Kommandozeilen-Argumente."""
+    if argv is None:
+        return build_parser().parse_args()
+    return build_parser().parse_args(list(argv))
 
 
 def list_strategies() -> None:
@@ -316,10 +339,9 @@ def create_progress_callback():
     return callback
 
 
-def main() -> int:
-    """Haupt-Entry-Point."""
-    args = parse_args()
-    setup_logging(args.verbose)
+def run_from_args(args: argparse.Namespace, output: ExperimentRunOutputMode) -> int:
+    """Führt einen Experiment-Sweep basierend auf Argumenten aus."""
+    setup_logging(args.verbose, args.quiet)
     logger = logging.getLogger(__name__)
 
     # Info-Befehle
@@ -401,24 +423,26 @@ def main() -> int:
         return 0
 
     # Runner erstellen
+    use_progress = not args.verbose and not args.quiet
     runner = ExperimentRunner(
-        progress_callback=create_progress_callback() if not args.verbose else None,
+        progress_callback=create_progress_callback() if use_progress else None,
+        quiet=args.quiet,
     )
 
     # Experiment-Info ausgeben
-    print("\n" + "=" * 60)
-    print(f"Peak_Trade Experiment Sweep")
-    print("=" * 60)
-    print(f"Experiment:    {config.name}")
-    print(f"Strategie:     {config.strategy_name}")
-    print(f"Symbole:       {', '.join(symbols)}")
-    print(f"Timeframe:     {config.timeframe}")
-    print(f"Granularität:  {args.granularity}")
-    print(f"Kombinationen: {config.num_combinations}")
-    print(f"Parallel:      {'Ja' if args.parallel else 'Nein'}")
+    output.info("\n" + "=" * 60)
+    output.info("Peak_Trade Experiment Sweep")
+    output.info("=" * 60)
+    output.info(f"Experiment:    {config.name}")
+    output.info(f"Strategie:     {config.strategy_name}")
+    output.info(f"Symbole:       {', '.join(symbols)}")
+    output.info(f"Timeframe:     {config.timeframe}")
+    output.info(f"Granularität:  {args.granularity}")
+    output.info(f"Kombinationen: {config.num_combinations}")
+    output.info(f"Parallel:      {'Ja' if args.parallel else 'Nein'}")
     if args.with_regime:
-        print(f"Regime:        {args.detector}")
-    print("=" * 60 + "\n")
+        output.info(f"Regime:        {args.detector}")
+    output.info("=" * 60 + "\n")
 
     # Dry-Run
     if args.dry_run:
@@ -480,6 +504,17 @@ def main() -> int:
     print("\n" + "=" * 60)
 
     return 0
+
+
+def main(argv: Optional[List[str]] = None) -> int:
+    """Haupt-Entry-Point."""
+    args = parse_args(argv)
+    module_prev, root_prev = apply_experiment_run_logging(args.quiet)
+    output = ExperimentRunOutputMode(quiet=args.quiet)
+    try:
+        return run_from_args(args, output)
+    finally:
+        restore_experiment_run_logging(module_prev, root_prev)
 
 
 if __name__ == "__main__":

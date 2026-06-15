@@ -21,7 +21,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from datetime import datetime
 from itertools import product
-from typing import Any, Callable, Dict, List, Optional, Union
+from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 import hashlib
 import json
 import logging
@@ -31,6 +31,35 @@ import traceback
 import pandas as pd
 
 logger = logging.getLogger(__name__)
+
+
+@dataclass(frozen=True)
+class ExperimentRunOutputMode:
+    """Console output mode for Phase-41 experiment sweep CLI entrypoints."""
+
+    quiet: bool = False
+
+    def info(self, *args: Any, file: Any = None, **kwargs: Any) -> None:
+        """Emit progress/info lines unless quiet mode is active."""
+        if not self.quiet:
+            print(*args, file=file, **kwargs)
+
+
+def apply_experiment_run_logging(quiet: bool) -> Tuple[int, int]:
+    """Apply experiment logger levels for a run. Returns levels to restore."""
+    root = logging.getLogger()
+    module_previous = logger.level
+    root_previous = root.level
+    if quiet:
+        logger.setLevel(logging.WARNING)
+        root.setLevel(logging.WARNING)
+    return module_previous, root_previous
+
+
+def restore_experiment_run_logging(module_previous: int, root_previous: int) -> None:
+    """Restore experiment and root logger levels after ``apply_experiment_run_logging``."""
+    logger.setLevel(module_previous)
+    logging.getLogger().setLevel(root_previous)
 
 
 # ============================================================================
@@ -639,6 +668,7 @@ class ExperimentRunner:
         self,
         backtest_fn: Optional[BacktestFunction] = None,
         progress_callback: Optional[Callable[[int, int, str], None]] = None,
+        quiet: bool = False,
     ) -> None:
         """
         Initialisiert den ExperimentRunner.
@@ -646,9 +676,11 @@ class ExperimentRunner:
         Args:
             backtest_fn: Custom Backtest-Funktion (optional)
             progress_callback: Callback(current, total, message) für Progress
+            quiet: Unterdrückt hochfrequente INFO-/Progress-Ausgaben
         """
         self.backtest_fn = backtest_fn or self._default_backtest
         self.progress_callback = progress_callback
+        self.quiet = quiet
 
     def _default_backtest(
         self,
@@ -856,18 +888,20 @@ class ExperimentRunner:
         experiment_id = config.get_experiment_id()
         start_time = datetime.now()
 
-        logger.info(
-            f"Starte Experiment '{config.name}' (ID: {experiment_id})\n"
-            f"  Strategie: {config.strategy_name}\n"
-            f"  Symbole: {config.symbols}\n"
-            f"  Kombinationen: {config.num_combinations}"
-        )
+        if not self.quiet:
+            logger.info(
+                f"Starte Experiment '{config.name}' (ID: {experiment_id})\n"
+                f"  Strategie: {config.strategy_name}\n"
+                f"  Symbole: {config.symbols}\n"
+                f"  Kombinationen: {config.num_combinations}"
+            )
 
         # Generiere alle Parameter-Kombinationen
         param_combinations = config.generate_param_combinations()
 
         if dry_run:
-            logger.info(f"Dry-Run: {len(param_combinations)} Kombinationen generiert")
+            if not self.quiet:
+                logger.info(f"Dry-Run: {len(param_combinations)} Kombinationen generiert")
             return ExperimentResult(
                 experiment_id=experiment_id,
                 config=config,
@@ -884,7 +918,7 @@ class ExperimentRunner:
             for params in param_combinations:
                 run_index += 1
 
-                if self.progress_callback:
+                if self.progress_callback and not self.quiet:
                     self.progress_callback(
                         run_index,
                         total_runs,
@@ -914,13 +948,14 @@ class ExperimentRunner:
             end_time=end_time.isoformat(),
         )
 
-        logger.info(
-            f"Experiment abgeschlossen:\n"
-            f"  Runs: {experiment_result.num_runs}\n"
-            f"  Erfolgreich: {experiment_result.num_successful}\n"
-            f"  Fehlgeschlagen: {experiment_result.num_failed}\n"
-            f"  Laufzeit: {total_runtime:.1f}s"
-        )
+        if not self.quiet:
+            logger.info(
+                f"Experiment abgeschlossen:\n"
+                f"  Runs: {experiment_result.num_runs}\n"
+                f"  Erfolgreich: {experiment_result.num_successful}\n"
+                f"  Fehlgeschlagen: {experiment_result.num_failed}\n"
+                f"  Laufzeit: {total_runtime:.1f}s"
+            )
 
         # Speichere Ergebnisse falls gewünscht
         if config.save_results:
@@ -945,11 +980,15 @@ class ExperimentRunner:
         # CSV
         csv_path = os.path.join(config.output_dir, f"{base_name}.csv")
         result.save_csv(csv_path)
+        if self.quiet:
+            print(f"Ergebnisse gespeichert: {csv_path}")
 
         # Parquet
         try:
             parquet_path = os.path.join(config.output_dir, f"{base_name}.parquet")
             result.save_parquet(parquet_path)
+            if self.quiet:
+                print(f"Ergebnisse gespeichert: {parquet_path}")
         except ImportError:
             logger.debug("pyarrow nicht verfügbar, überspringe Parquet-Export")
 
@@ -958,7 +997,10 @@ class ExperimentRunner:
             summary_path = os.path.join(config.output_dir, f"{base_name}_summary.json")
             with open(summary_path, "w") as f:
                 json.dump(result.to_dict(), f, indent=2, default=str)
-            logger.info(f"Summary gespeichert: {summary_path}")
+            if self.quiet:
+                print(f"Summary gespeichert: {summary_path}")
+            else:
+                logger.info(f"Summary gespeichert: {summary_path}")
         except Exception as e:
             logger.warning(f"Konnte Summary nicht speichern: {e}")
 
@@ -983,10 +1025,11 @@ class ExperimentRunner:
         experiment_id = config.get_experiment_id()
         start_time = datetime.now()
 
-        logger.info(
-            f"Starte Parallel-Experiment '{config.name}' (ID: {experiment_id})\n"
-            f"  Workers: {config.max_workers}"
-        )
+        if not self.quiet:
+            logger.info(
+                f"Starte Parallel-Experiment '{config.name}' (ID: {experiment_id})\n"
+                f"  Workers: {config.max_workers}"
+            )
 
         param_combinations = config.generate_param_combinations()
         results: List[SweepResultRow] = []
@@ -1017,7 +1060,7 @@ class ExperimentRunner:
                 result = future.result()
                 results.append(result)
 
-                if self.progress_callback:
+                if self.progress_callback and not self.quiet:
                     self.progress_callback(
                         len(results),
                         len(runs),
