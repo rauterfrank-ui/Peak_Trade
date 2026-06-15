@@ -54,11 +54,73 @@ Verwendung:
 from __future__ import annotations
 
 import argparse
+import logging
 import sys
 import uuid
+from dataclasses import dataclass
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Optional, Sequence
+from typing import Any, Optional, Sequence
+
+_RESEARCH_CLI_LOGGER = logging.getLogger(__name__)
+
+
+@dataclass(frozen=True)
+class ResearchCliOutputMode:
+    """Console output mode for research_cli native subcommands."""
+
+    quiet: bool = False
+
+    def progress(self, logger: logging.Logger, msg: str, *args: Any) -> None:
+        """Emit high-frequency progress/info lines unless quiet mode is active."""
+        if not self.quiet:
+            logger.info(msg, *args)
+
+    def completion(self, msg: str) -> None:
+        """Emit completion lines (always visible)."""
+        print(msg)
+
+    def summary(self, msg: str) -> None:
+        """Emit summary lines (always visible)."""
+        print(msg)
+
+    def artifact_path(self, msg: str) -> None:
+        """Emit artifact/output path lines (always visible)."""
+        print(msg)
+
+
+def apply_research_cli_logging(quiet: bool) -> tuple[int, int]:
+    """Apply research_cli logger levels for a run. Returns levels to restore."""
+    root = logging.getLogger()
+    module_previous = _RESEARCH_CLI_LOGGER.level
+    root_previous = root.level
+    if quiet:
+        _RESEARCH_CLI_LOGGER.setLevel(logging.WARNING)
+        root.setLevel(logging.WARNING)
+    return module_previous, root_previous
+
+
+def restore_research_cli_logging(module_previous: int, root_previous: int) -> None:
+    """Restore research_cli and root logger levels after ``apply_research_cli_logging``."""
+    _RESEARCH_CLI_LOGGER.setLevel(module_previous)
+    logging.getLogger().setLevel(root_previous)
+
+
+def _output_mode_from_args(args: argparse.Namespace) -> ResearchCliOutputMode:
+    return ResearchCliOutputMode(quiet=bool(getattr(args, "quiet", False)))
+
+
+def _research_cli_log_level(args: argparse.Namespace) -> int:
+    if getattr(args, "verbose", False):
+        return logging.DEBUG
+    if getattr(args, "quiet", False):
+        return logging.WARNING
+    return logging.INFO
+
+
+_QUIET_CLI_HELP = (
+    "Silent-Modus: hochfrequente Progress-/INFO-Ausgaben unterdrücken (Warnungen/Fehler bleiben)."
+)
 
 # Projekt-Root zum Path hinzufügen
 project_root = Path(__file__).parent.parent
@@ -121,11 +183,20 @@ build_portfolio_robustness_parser = _portfolio_module.build_parser
 
 def build_parser() -> argparse.ArgumentParser:
     """Erstellt den Haupt-ArgumentParser für die Unified Research-CLI."""
+    quiet_parent = argparse.ArgumentParser(add_help=False)
+    quiet_parent.add_argument(
+        "-q",
+        "--quiet",
+        action="store_true",
+        help=_QUIET_CLI_HELP,
+    )
+
     parser = argparse.ArgumentParser(
         prog="peak-trade-research",
         description="Unified Research-CLI für Strategy-Sweeps, Reports, Promotion und Walk-Forward-Tests.",
         formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=__doc__,
+        parents=[quiet_parent],
     )
     parser.add_argument(
         "--run-id",
@@ -197,6 +268,7 @@ def build_parser() -> argparse.ArgumentParser:
     pipeline_parser = subparsers.add_parser(
         "pipeline",
         help="End-to-End-Research-Pipeline v2 (Sweep → Report → Promotion → optional Walk-Forward/Monte-Carlo/Stress-Tests).",
+        parents=[quiet_parent],
     )
 
     # Pipeline-Flags: Kombination aus allen anderen Parsern
@@ -377,6 +449,7 @@ def build_parser() -> argparse.ArgumentParser:
     profile_parser = subparsers.add_parser(
         "strategy-profile",
         help="Generiert ein Robustness-Profil für eine Strategie (Phase 41B).",
+        parents=[quiet_parent],
     )
 
     profile_parser.add_argument(
@@ -500,6 +573,7 @@ def build_parser() -> argparse.ArgumentParser:
     experiment_parser = subparsers.add_parser(
         "run-experiment",
         help="Führt ein R&D-Experiment mit Preset aus config/r_and_d_presets.toml aus.",
+        parents=[quiet_parent],
     )
 
     experiment_parser.add_argument(
@@ -597,6 +671,7 @@ def build_parser() -> argparse.ArgumentParser:
     combi_parser = subparsers.add_parser(
         "armstrong-elkaroui-combi",
         help="Führt das Armstrong × El-Karoui Kombi-Experiment aus (R&D-Only).",
+        parents=[quiet_parent],
     )
 
     combi_parser.add_argument(
@@ -712,6 +787,7 @@ def _build_sweep_args_from_pipeline_args(args: argparse.Namespace) -> argparse.N
         show_params=False,
         config=args.config,
         verbose=getattr(args, "verbose", False),
+        quiet=getattr(args, "quiet", False),
     )
 
 
@@ -728,6 +804,7 @@ def _build_report_args_from_pipeline_args(args: argparse.Namespace) -> argparse.
         with_plots=getattr(args, "with_plots", False),
         plot_metric="metric_sharpe_ratio",
         verbose=getattr(args, "verbose", False),
+        quiet=getattr(args, "quiet", False),
     )
 
 
@@ -741,6 +818,7 @@ def _build_promote_args_from_pipeline_args(args: argparse.Namespace) -> argparse
         output="reports/sweeps",
         experiments_dir="reports/experiments",
         verbose=getattr(args, "verbose", False),
+        quiet=getattr(args, "quiet", False),
     )
 
 
@@ -762,6 +840,7 @@ def _build_walkforward_args_from_pipeline_args(args: argparse.Namespace) -> argp
         metric_fallback="metric_total_return",
         output_dir="reports/walkforward",
         verbose=getattr(args, "verbose", False),
+        quiet=getattr(args, "quiet", False),
     )
 
 
@@ -780,6 +859,7 @@ def _build_montecarlo_args_from_pipeline_args(args: argparse.Namespace) -> argpa
         use_dummy_data=getattr(args, "mc_use_dummy_data", False),
         dummy_bars=getattr(args, "mc_dummy_bars", 500),
         verbose=getattr(args, "verbose", False),
+        quiet=getattr(args, "quiet", False),
     )
 
 
@@ -799,6 +879,7 @@ def _build_stress_args_from_pipeline_args(args: argparse.Namespace) -> argparse.
         use_dummy_data=getattr(args, "stress_use_dummy_data", False),
         dummy_bars=getattr(args, "stress_dummy_bars", 500),
         verbose=getattr(args, "verbose", False),
+        quiet=getattr(args, "quiet", False),
     )
 
 
@@ -824,9 +905,8 @@ def run_pipeline(args: argparse.Namespace) -> int:
     Returns:
         Exit code (0 = success, 1 = error)
     """
-    import logging
-
-    logger = logging.getLogger(__name__)
+    logger = _RESEARCH_CLI_LOGGER
+    output = _output_mode_from_args(args)
 
     # Bestimme Anzahl Steps für Logging
     num_steps = 3  # Sweep, Report, Promote
@@ -841,21 +921,24 @@ def run_pipeline(args: argparse.Namespace) -> int:
 
     # 1. Sweep
     step_counter += 1
-    logger.info("=" * 70)
-    logger.info(f"Step {step_counter}/{num_steps}: Strategy-Sweep ausführen")
-    logger.info("=" * 70)
+    output.progress(logger, "=" * 70)
+    output.progress(logger, f"Step {step_counter}/{num_steps}: Strategy-Sweep ausführen")
+    output.progress(logger, "=" * 70)
 
     sweep_args = _build_sweep_args_from_pipeline_args(args)
-    sweep_exit = run_sweep_from_args(sweep_args)
+    sweep_exit = run_sweep_from_args(
+        sweep_args,
+        _sweep_module.ExperimentRunOutputMode(quiet=getattr(args, "quiet", False)),
+    )
     if sweep_exit != 0:
         logger.error("[pipeline] Sweep fehlgeschlagen, Pipeline abgebrochen")
         return sweep_exit
 
     # 2. Report
     step_counter += 1
-    logger.info("=" * 70)
-    logger.info(f"Step {step_counter}/{num_steps}: Sweep-Report generieren")
-    logger.info("=" * 70)
+    output.progress(logger, "=" * 70)
+    output.progress(logger, f"Step {step_counter}/{num_steps}: Sweep-Report generieren")
+    output.progress(logger, "=" * 70)
 
     report_args = _build_report_args_from_pipeline_args(args)
     report_exit = run_report_from_args(report_args)
@@ -865,9 +948,9 @@ def run_pipeline(args: argparse.Namespace) -> int:
 
     # 3. Promotion
     step_counter += 1
-    logger.info("=" * 70)
-    logger.info(f"Step {step_counter}/{num_steps}: Top-{args.top_n} Promotion")
-    logger.info("=" * 70)
+    output.progress(logger, "=" * 70)
+    output.progress(logger, f"Step {step_counter}/{num_steps}: Top-{args.top_n} Promotion")
+    output.progress(logger, "=" * 70)
 
     promote_args = _build_promote_args_from_pipeline_args(args)
     promote_exit = run_promote_from_args(promote_args)
@@ -878,9 +961,9 @@ def run_pipeline(args: argparse.Namespace) -> int:
     # 4. Walk-Forward (optional)
     if getattr(args, "run_walkforward", False):
         step_counter += 1
-        logger.info("=" * 70)
-        logger.info(f"Step {step_counter}/{num_steps}: Walk-Forward-Testing")
-        logger.info("=" * 70)
+        output.progress(logger, "=" * 70)
+        output.progress(logger, f"Step {step_counter}/{num_steps}: Walk-Forward-Testing")
+        output.progress(logger, "=" * 70)
 
         train_window = getattr(args, "walkforward_train_window", None)
         test_window = getattr(args, "walkforward_test_window", None)
@@ -900,9 +983,9 @@ def run_pipeline(args: argparse.Namespace) -> int:
     # 5. Monte-Carlo (optional)
     if getattr(args, "run_montecarlo", False):
         step_counter += 1
-        logger.info("=" * 70)
-        logger.info(f"Step {step_counter}/{num_steps}: Monte-Carlo-Robustness")
-        logger.info("=" * 70)
+        output.progress(logger, "=" * 70)
+        output.progress(logger, f"Step {step_counter}/{num_steps}: Monte-Carlo-Robustness")
+        output.progress(logger, "=" * 70)
 
         montecarlo_args = _build_montecarlo_args_from_pipeline_args(args)
         mc_exit = run_montecarlo_from_args(montecarlo_args)
@@ -913,9 +996,9 @@ def run_pipeline(args: argparse.Namespace) -> int:
     # 6. Stress-Tests (optional)
     if getattr(args, "run_stress_tests", False):
         step_counter += 1
-        logger.info("=" * 70)
-        logger.info(f"Step {step_counter}/{num_steps}: Stress-Tests")
-        logger.info("=" * 70)
+        output.progress(logger, "=" * 70)
+        output.progress(logger, f"Step {step_counter}/{num_steps}: Stress-Tests")
+        output.progress(logger, "=" * 70)
 
         stress_args = _build_stress_args_from_pipeline_args(args)
         stress_exit = run_stress_from_args(stress_args)
@@ -923,9 +1006,9 @@ def run_pipeline(args: argparse.Namespace) -> int:
             logger.error("[pipeline] Stress-Tests fehlgeschlagen, Pipeline abgebrochen")
             return stress_exit
 
-    logger.info("=" * 70)
-    logger.info("✅ Pipeline erfolgreich abgeschlossen")
-    logger.info("=" * 70)
+    output.completion("=" * 70)
+    output.completion("✅ Pipeline erfolgreich abgeschlossen")
+    output.completion("=" * 70)
 
     return 0
 
@@ -945,16 +1028,16 @@ def run_strategy_profile(args: argparse.Namespace) -> int:
     Returns:
         Exit code (0 = success, 1 = error)
     """
-    import logging
     import numpy as np
     import pandas as pd
     from pathlib import Path
 
     logging.basicConfig(
-        level=logging.DEBUG if getattr(args, "verbose", False) else logging.INFO,
+        level=_research_cli_log_level(args),
         format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
     )
-    logger = logging.getLogger(__name__)
+    logger = _RESEARCH_CLI_LOGGER
+    output = _output_mode_from_args(args)
 
     # Import Strategy-Registry
     try:
@@ -1004,8 +1087,8 @@ def run_strategy_profile(args: argparse.Namespace) -> int:
         logger.info(f"Verfügbare Strategien: {', '.join(sorted(available))}")
         return 1
 
-    logger.info(f"Generiere Robustness-Profil für: {strategy_id}")
-    logger.info("=" * 60)
+    output.progress(logger, f"Generiere Robustness-Profil für: {strategy_id}")
+    output.progress(logger, "=" * 60)
 
     # Initialisiere Builder
     builder = StrategyProfileBuilder(
@@ -1019,7 +1102,7 @@ def run_strategy_profile(args: argparse.Namespace) -> int:
 
     # Generiere oder lade Daten
     if args.use_dummy_data:
-        logger.info(f"Verwende Dummy-Daten ({args.dummy_bars} Bars)")
+        output.progress(logger, f"Verwende Dummy-Daten ({args.dummy_bars} Bars)")
         n = args.dummy_bars
         dates = pd.date_range("2024-01-01", periods=n, freq="1h")
         returns = np.random.normal(0.0005, 0.02, n)
@@ -1030,7 +1113,7 @@ def run_strategy_profile(args: argparse.Namespace) -> int:
         try:
             from src.data.kraken import fetch_ohlcv_df
 
-            logger.info(f"Lade Marktdaten für {args.symbol} ({args.timeframe})")
+            output.progress(logger, f"Lade Marktdaten für {args.symbol} ({args.timeframe})")
             df = fetch_ohlcv_df(
                 symbol=args.symbol,
                 timeframe=args.timeframe,
@@ -1053,7 +1136,7 @@ def run_strategy_profile(args: argparse.Namespace) -> int:
                 )
         except Exception as e:
             logger.warning(f"Konnte Marktdaten nicht laden: {e}")
-            logger.info("Fallback zu Dummy-Daten")
+            output.progress(logger, "Fallback zu Dummy-Daten")
             n = args.dummy_bars
             dates = pd.date_range("2024-01-01", periods=n, freq="1h")
             returns = np.random.normal(0.0005, 0.02, n)
@@ -1065,7 +1148,7 @@ def run_strategy_profile(args: argparse.Namespace) -> int:
         returns = pd.Series(returns)
 
     # 1. Baseline-Performance berechnen
-    logger.info("Step 1/4: Berechne Baseline-Performance...")
+    output.progress(logger, "Step 1/4: Berechne Baseline-Performance...")
     try:
         from src.backtest.stats import compute_basic_stats
 
@@ -1080,15 +1163,15 @@ def run_strategy_profile(args: argparse.Namespace) -> int:
             stats["avg_trade"] = float(returns.mean())
 
         builder.set_performance_from_stats(stats)
-        logger.info(f"  Sharpe: {stats.get('sharpe', 0):.2f}")
-        logger.info(f"  Max DD: {stats.get('max_drawdown', 0):.2%}")
-        logger.info(f"  Total Return: {stats.get('total_return', 0):.2%}")
+        output.progress(logger, f"  Sharpe: {stats.get('sharpe', 0):.2f}")
+        output.progress(logger, f"  Max DD: {stats.get('max_drawdown', 0):.2%}")
+        output.progress(logger, f"  Total Return: {stats.get('total_return', 0):.2%}")
     except Exception as e:
         logger.warning(f"Performance-Berechnung fehlgeschlagen: {e}")
 
     # 2. Monte-Carlo-Analyse (optional)
     if args.with_montecarlo:
-        logger.info(f"Step 2/4: Monte-Carlo-Analyse ({args.mc_num_runs} Runs)...")
+        output.progress(logger, f"Step 2/4: Monte-Carlo-Analyse ({args.mc_num_runs} Runs)...")
         try:
             from src.experiments.monte_carlo import (
                 MonteCarloConfig,
@@ -1116,17 +1199,22 @@ def run_strategy_profile(args: argparse.Namespace) -> int:
                 sharpe_p95=sharpe_q.get("p95"),
             )
 
-            logger.info(
-                f"  Return p5/p50/p95: {total_return_q.get('p5', 0):.2%} / {total_return_q.get('p50', 0):.2%} / {total_return_q.get('p95', 0):.2%}"
+            output.progress(
+                logger,
+                f"  Return p5/p50/p95: {total_return_q.get('p5', 0):.2%} / {total_return_q.get('p50', 0):.2%} / {total_return_q.get('p95', 0):.2%}",
             )
         except Exception as e:
             logger.warning(f"Monte-Carlo-Analyse fehlgeschlagen: {e}")
     else:
-        logger.info("Step 2/4: Monte-Carlo übersprungen (--with-montecarlo nicht gesetzt)")
+        output.progress(
+            logger, "Step 2/4: Monte-Carlo übersprungen (--with-montecarlo nicht gesetzt)"
+        )
 
     # 3. Stress-Tests (optional)
     if args.with_stress:
-        logger.info(f"Step 3/4: Stress-Tests ({len(args.stress_scenarios)} Szenarien)...")
+        output.progress(
+            logger, f"Step 3/4: Stress-Tests ({len(args.stress_scenarios)} Szenarien)..."
+        )
         try:
             from src.experiments.stress_tests import (
                 StressScenarioConfig,
@@ -1161,17 +1249,18 @@ def run_strategy_profile(args: argparse.Namespace) -> int:
                     avg_return=sum(stress_returns) / len(stress_returns),
                     num_scenarios=len(stress_returns),
                 )
-                logger.info(
-                    f"  Min/Avg/Max Return: {min(stress_returns):.2%} / {sum(stress_returns) / len(stress_returns):.2%} / {max(stress_returns):.2%}"
+                output.progress(
+                    logger,
+                    f"  Min/Avg/Max Return: {min(stress_returns):.2%} / {sum(stress_returns) / len(stress_returns):.2%} / {max(stress_returns):.2%}",
                 )
         except Exception as e:
             logger.warning(f"Stress-Tests fehlgeschlagen: {e}")
     else:
-        logger.info("Step 3/4: Stress-Tests übersprungen (--with-stress nicht gesetzt)")
+        output.progress(logger, "Step 3/4: Stress-Tests übersprungen (--with-stress nicht gesetzt)")
 
     # 4. Regime-Analyse (optional)
     if args.with_regime:
-        logger.info("Step 4/4: Regime-Analyse...")
+        output.progress(logger, "Step 4/4: Regime-Analyse...")
         # Vereinfachte Regime-Simulation basierend auf Volatilität
         try:
             vol_window = 20
@@ -1201,22 +1290,24 @@ def run_strategy_profile(args: argparse.Namespace) -> int:
                     )
 
             builder.finalize_regimes()
-            logger.info("  Regime-Analyse abgeschlossen")
+            output.progress(logger, "  Regime-Analyse abgeschlossen")
         except Exception as e:
             logger.warning(f"Regime-Analyse fehlgeschlagen: {e}")
     else:
-        logger.info("Step 4/4: Regime-Analyse übersprungen (--with-regime nicht gesetzt)")
+        output.progress(
+            logger, "Step 4/4: Regime-Analyse übersprungen (--with-regime nicht gesetzt)"
+        )
 
     # 5. Tiering-Info laden
-    logger.info("Lade Tiering-Konfiguration...")
+    output.progress(logger, "Lade Tiering-Konfiguration...")
     try:
         tiering_config = load_tiering_config(args.tiering_config)
         tiering_info = tiering_config.get(strategy_id)
         if tiering_info:
             builder.tiering = tiering_info
-            logger.info(f"  Tier: {tiering_info.tier}")
+            output.progress(logger, f"  Tier: {tiering_info.tier}")
         else:
-            logger.info(f"  Kein Tiering-Eintrag für '{strategy_id}' gefunden")
+            output.progress(logger, f"  Kein Tiering-Eintrag für '{strategy_id}' gefunden")
     except Exception as e:
         logger.warning(f"Konnte Tiering-Config nicht laden: {e}")
 
@@ -1238,16 +1329,16 @@ def run_strategy_profile(args: argparse.Namespace) -> int:
         json_path = json_dir / json_filename
         json_dir.mkdir(parents=True, exist_ok=True)
         profile.to_json(json_path)
-        logger.info(f"JSON-Profil exportiert: {json_path}")
+        output.artifact_path(f"JSON-Profil exportiert: {json_path}")
 
     if output_format in ("md", "both"):
         md_path = md_dir / md_filename
         md_dir.mkdir(parents=True, exist_ok=True)
         profile.to_markdown(md_path)
-        logger.info(f"Markdown-Profil exportiert: {md_path}")
+        output.artifact_path(f"Markdown-Profil exportiert: {md_path}")
 
-    logger.info("=" * 60)
-    logger.info("✅ Strategy-Profil erfolgreich generiert")
+    output.completion("=" * 60)
+    output.completion("✅ Strategy-Profil erfolgreich generiert")
 
     return 0
 
@@ -1268,17 +1359,17 @@ def run_experiment(args: argparse.Namespace) -> int:
         Exit code (0 = success, 1 = error)
     """
     import json
-    import logging
     import numpy as np
     import pandas as pd
     from datetime import datetime, timedelta
     from pathlib import Path
 
     logging.basicConfig(
-        level=logging.DEBUG if getattr(args, "verbose", False) else logging.INFO,
+        level=_research_cli_log_level(args),
         format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
     )
-    logger = logging.getLogger(__name__)
+    logger = _RESEARCH_CLI_LOGGER
+    output = _output_mode_from_args(args)
 
     # Import R&D-Preset-Loader
     try:
@@ -1310,7 +1401,7 @@ def run_experiment(args: argparse.Namespace) -> int:
         return 1
 
     # Preset laden
-    logger.info(f"Lade R&D-Preset: {preset_id}")
+    output.progress(logger, f"Lade R&D-Preset: {preset_id}")
     try:
         presets_path = Path(args.presets_file) if args.presets_file else None
         preset = load_r_and_d_preset(preset_id, presets_path)
@@ -1341,42 +1432,42 @@ def run_experiment(args: argparse.Namespace) -> int:
     tag = args.tag or f"exp_rnd_{preset_id}"
     output_dir = Path(args.output_dir)
 
-    logger.info("=" * 70)
-    logger.info("R&D EXPERIMENT")
-    logger.info("=" * 70)
-    logger.info(f"  Preset:      {preset_id}")
-    logger.info(f"  Strategy:    {preset.strategy}")
-    logger.info(f"  Symbol:      {symbol}")
-    logger.info(f"  Timeframe:   {timeframe}")
-    logger.info(f"  Zeitraum:    {from_date} bis {to_date}")
-    logger.info(f"  Tag:         {tag}")
-    logger.info(f"  Hypothese:   {preset.hypothesis}")
-    logger.info("=" * 70)
+    output.progress(logger, "=" * 70)
+    output.progress(logger, "R&D EXPERIMENT")
+    output.progress(logger, "=" * 70)
+    output.progress(logger, f"  Preset:      {preset_id}")
+    output.progress(logger, f"  Strategy:    {preset.strategy}")
+    output.progress(logger, f"  Symbol:      {symbol}")
+    output.progress(logger, f"  Timeframe:   {timeframe}")
+    output.progress(logger, f"  Zeitraum:    {from_date} bis {to_date}")
+    output.progress(logger, f"  Tag:         {tag}")
+    output.progress(logger, f"  Hypothese:   {preset.hypothesis}")
+    output.progress(logger, "=" * 70)
 
     # Dry-Run-Modus
     if getattr(args, "dry_run", False):
-        logger.info("\n[DRY-RUN] Preset-Details:")
-        logger.info(f"  Description: {preset.description}")
-        logger.info(f"  Tier:        {preset.tier}")
-        logger.info(f"  Experimental: {preset.experimental}")
-        logger.info(f"  Allow-Live:  {preset.allow_live}")
-        logger.info(f"  Markets:     {preset.markets}")
-        logger.info(f"  Timeframes:  {preset.timeframes}")
-        logger.info(f"  Focus-Metrics: {preset.focus_metrics}")
-        logger.info(f"  Parameters:  {preset.parameters}")
-        logger.info("\n[DRY-RUN] Kein Backtest ausgeführt.")
+        output.progress(logger, "\n[DRY-RUN] Preset-Details:")
+        output.progress(logger, f"  Description: {preset.description}")
+        output.progress(logger, f"  Tier:        {preset.tier}")
+        output.progress(logger, f"  Experimental: {preset.experimental}")
+        output.progress(logger, f"  Allow-Live:  {preset.allow_live}")
+        output.progress(logger, f"  Markets:     {preset.markets}")
+        output.progress(logger, f"  Timeframes:  {preset.timeframes}")
+        output.progress(logger, f"  Focus-Metrics: {preset.focus_metrics}")
+        output.progress(logger, f"  Parameters:  {preset.parameters}")
+        output.completion("\n[DRY-RUN] Kein Backtest ausgeführt.")
         return 0
 
     # Random Seed setzen
     np.random.seed(args.seed)
 
     # Daten laden oder generieren
-    logger.info("\n[1/4] Daten laden...")
+    output.progress(logger, "\n[1/4] Daten laden...")
 
     if getattr(args, "use_dummy_data", False):
         # Dummy-Daten generieren
         n_bars = args.dummy_bars
-        logger.info(f"  Generiere {n_bars} Dummy-Bars")
+        output.progress(logger, f"  Generiere {n_bars} Dummy-Bars")
 
         end = datetime.now()
         start = end - timedelta(hours=n_bars)
@@ -1410,7 +1501,7 @@ def run_experiment(args: argparse.Namespace) -> int:
         try:
             from src.data.kraken import fetch_ohlcv_df
 
-            logger.info(f"  Lade Marktdaten für {symbol} ({timeframe})")
+            output.progress(logger, f"  Lade Marktdaten für {symbol} ({timeframe})")
             df = fetch_ohlcv_df(
                 symbol=symbol,
                 timeframe=timeframe,
@@ -1433,15 +1524,15 @@ def run_experiment(args: argparse.Namespace) -> int:
 
         except Exception as e:
             logger.warning(f"  Konnte Marktdaten nicht laden: {e}")
-            logger.info("  Fallback zu Dummy-Daten")
+            output.progress(logger, "  Fallback zu Dummy-Daten")
             args.use_dummy_data = True
             return run_experiment(args)
 
-    logger.info(f"  {len(df)} Bars geladen")
-    logger.info(f"  Zeitraum: {df.index[0]} - {df.index[-1]}")
+    output.progress(logger, f"  {len(df)} Bars geladen")
+    output.progress(logger, f"  Zeitraum: {df.index[0]} - {df.index[-1]}")
 
     # Strategy laden und Backtest ausführen
-    logger.info("\n[2/4] Strategy laden...")
+    output.progress(logger, "\n[2/4] Strategy laden...")
 
     try:
         from src.strategies import load_strategy
@@ -1472,13 +1563,13 @@ def run_experiment(args: argparse.Namespace) -> int:
     # Strategy laden
     try:
         base_signal_fn = load_strategy(preset.strategy)
-        logger.info(f"  Strategy geladen: {preset.strategy}")
+        output.progress(logger, f"  Strategy geladen: {preset.strategy}")
     except Exception as e:
         logger.error(f"Strategy-Laden fehlgeschlagen: {e}")
         return 1
 
     # Backtest ausführen
-    logger.info("\n[3/4] Backtest ausführen...")
+    output.progress(logger, "\n[3/4] Backtest ausführen...")
 
     try:
         position_sizer = build_position_sizer_from_config(cfg)
@@ -1499,11 +1590,11 @@ def run_experiment(args: argparse.Namespace) -> int:
         )
         result.strategy_name = preset.strategy
 
-        logger.info("  Backtest abgeschlossen")
+        output.progress(logger, "  Backtest abgeschlossen")
 
     except NotImplementedError as e:
         logger.warning(f"  Strategy wirft NotImplementedError (R&D-Prototyp): {e}")
-        logger.info("  Erstelle Dummy-Ergebnis für R&D-Tracking...")
+        output.progress(logger, "  Erstelle Dummy-Ergebnis für R&D-Tracking...")
 
         # Dummy-Result für R&D-Strategien die noch nicht implementiert sind
         result = type(
@@ -1532,17 +1623,17 @@ def run_experiment(args: argparse.Namespace) -> int:
         return 1
 
     # Ergebnisse ausgeben und speichern
-    logger.info("\n[4/4] Ergebnisse...")
+    output.progress(logger, "\n[4/4] Ergebnisse...")
 
     stats = result.stats
 
-    logger.info("\n--- BACKTEST-ERGEBNISSE ---")
-    logger.info(f"  Total Return:   {stats.get('total_return', 0):>10.2%}")
-    logger.info(f"  Max Drawdown:   {stats.get('max_drawdown', 0):>10.2%}")
-    logger.info(f"  Sharpe Ratio:   {stats.get('sharpe', 0):>10.2f}")
-    logger.info(f"  Total Trades:   {stats.get('total_trades', 0):>10}")
-    logger.info(f"  Win Rate:       {stats.get('win_rate', 0):>10.2%}")
-    logger.info(f"  Profit Factor:  {stats.get('profit_factor', 0):>10.2f}")
+    output.summary("\n--- BACKTEST-ERGEBNISSE ---")
+    output.summary(f"  Total Return:   {stats.get('total_return', 0):>10.2%}")
+    output.summary(f"  Max Drawdown:   {stats.get('max_drawdown', 0):>10.2%}")
+    output.summary(f"  Sharpe Ratio:   {stats.get('sharpe', 0):>10.2f}")
+    output.summary(f"  Total Trades:   {stats.get('total_trades', 0):>10}")
+    output.summary(f"  Win Rate:       {stats.get('win_rate', 0):>10.2%}")
+    output.summary(f"  Profit Factor:  {stats.get('profit_factor', 0):>10.2f}")
 
     # Ergebnisse speichern
     output_dir.mkdir(parents=True, exist_ok=True)
@@ -1584,11 +1675,11 @@ def run_experiment(args: argparse.Namespace) -> int:
     with open(result_file, "w") as f:
         json.dump(result_data, f, indent=2, default=str)
 
-    logger.info(f"\n  Ergebnis gespeichert: {result_file}")
+    output.artifact_path(f"\n  Ergebnis gespeichert: {result_file}")
 
-    logger.info("\n" + "=" * 70)
-    logger.info("✅ R&D-Experiment abgeschlossen")
-    logger.info("=" * 70)
+    output.completion("\n" + "=" * 70)
+    output.completion("✅ R&D-Experiment abgeschlossen")
+    output.completion("=" * 70)
 
     return 0
 
@@ -1613,10 +1704,11 @@ def run_armstrong_elkaroui_combi(args: argparse.Namespace) -> int:
     from pathlib import Path
 
     logging.basicConfig(
-        level=logging.DEBUG if getattr(args, "verbose", False) else logging.INFO,
+        level=_research_cli_log_level(args),
         format="%(asctime)s [%(levelname)s] %(name)s: %(message)s",
     )
-    logger = logging.getLogger(__name__)
+    logger = _RESEARCH_CLI_LOGGER
+    output = _output_mode_from_args(args)
 
     # Import Kombi-Experiment-Modul
     try:
@@ -1635,13 +1727,13 @@ def run_armstrong_elkaroui_combi(args: argparse.Namespace) -> int:
     from_date = args.from_date
     to_date = args.to_date or datetime.now().strftime("%Y-%m-%d")
 
-    logger.info("=" * 70)
-    logger.info("ARMSTRONG × EL-KAROUI KOMBI-EXPERIMENT (R&D)")
-    logger.info("=" * 70)
-    logger.info(f"  Symbol:      {symbol}")
-    logger.info(f"  Timeframe:   {timeframe}")
-    logger.info(f"  Zeitraum:    {from_date} bis {to_date}")
-    logger.info("=" * 70)
+    output.progress(logger, "=" * 70)
+    output.progress(logger, "ARMSTRONG × EL-KAROUI KOMBI-EXPERIMENT (R&D)")
+    output.progress(logger, "=" * 70)
+    output.progress(logger, f"  Symbol:      {symbol}")
+    output.progress(logger, f"  Timeframe:   {timeframe}")
+    output.progress(logger, f"  Zeitraum:    {from_date} bis {to_date}")
+    output.progress(logger, "=" * 70)
 
     # Config erstellen
     try:
@@ -1673,7 +1765,7 @@ def run_armstrong_elkaroui_combi(args: argparse.Namespace) -> int:
     if getattr(args, "use_dummy_data", False):
         from src.experiments.armstrong_elkaroui_combi_experiment import _generate_dummy_data
 
-        logger.info("  Verwende Dummy-Daten")
+        output.progress(logger, "  Verwende Dummy-Daten")
         data = _generate_dummy_data(config)
 
     # Experiment ausführen
@@ -1686,30 +1778,40 @@ def run_armstrong_elkaroui_combi(args: argparse.Namespace) -> int:
     # Report generieren falls gewünscht
     if getattr(args, "generate_report", False):
         report_path = generate_armstrong_elkaroui_combi_report(result)
-        logger.info(f"Report generiert: {report_path}")
+        output.artifact_path(f"Report generiert: {report_path}")
 
-    # Ergebnisse ausgeben
-    logger.info("\n--- ERGEBNISSE ---")
-    logger.info(f"  Run-ID: {result.run_id}")
-    logger.info(f"  Kombi-States: {len(result.combo_stats)}")
+    output.summary("\n--- ERGEBNISSE ---")
+    output.summary(f"  Run-ID: {result.run_id}")
+    output.summary(f"  Kombi-States: {len(result.combo_stats)}")
 
     if result.combo_stats:
-        logger.info("\n  Top Kombi-States nach avg_ret_3d_fwd:")
+        output.summary("\n  Top Kombi-States nach avg_ret_3d_fwd:")
         sorted_states = sorted(
             result.combo_stats.items(),
             key=lambda x: x[1].get("avg_ret_3d_fwd", 0),
             reverse=True,
         )
-        for state, stats in sorted_states[:5]:
-            avg_3d = stats.get("avg_ret_3d_fwd", 0) * 100
-            count = stats.get("count_bars", 0)
-            logger.info(f"    {state}: {avg_3d:+.2f}% (n={count})")
+        for state, state_stats in sorted_states[:5]:
+            avg_3d = state_stats.get("avg_ret_3d_fwd", 0) * 100
+            count = state_stats.get("count_bars", 0)
+            output.summary(f"    {state}: {avg_3d:+.2f}% (n={count})")
 
-    logger.info("\n" + "=" * 70)
-    logger.info("✅ Kombi-Experiment erfolgreich abgeschlossen")
-    logger.info("=" * 70)
+    output.completion("\n" + "=" * 70)
+    output.completion("✅ Kombi-Experiment erfolgreich abgeschlossen")
+    output.completion("=" * 70)
 
     return 0
+
+
+def _ensure_quiet_flag_coalesced(argv: Optional[Sequence[str]], args: argparse.Namespace) -> None:
+    """Preserve ``--quiet`` / ``-q`` when passed before the subcommand name."""
+    if getattr(args, "quiet", False):
+        return
+    if not argv:
+        return
+    tokens = list(argv)
+    if "-q" in tokens or "--quiet" in tokens:
+        args.quiet = True
 
 
 def _command_needs_research_evidence_bootstrap(args: argparse.Namespace) -> bool:
@@ -1724,6 +1826,42 @@ def _command_needs_research_evidence_bootstrap(args: argparse.Namespace) -> bool
     return args.command != "strategy-profile"
 
 
+_RESEARCH_CLI_QUIET_NATIVE_COMMANDS = frozenset(
+    {"pipeline", "strategy-profile", "run-experiment", "armstrong-elkaroui-combi"}
+)
+
+
+def _dispatch_command(args: argparse.Namespace) -> int:
+    """Dispatch parsed args to the selected subcommand handler."""
+    if args.command == "sweep":
+        sweep_quiet = bool(getattr(args, "quiet", False))
+        output = _sweep_module.ExperimentRunOutputMode(quiet=sweep_quiet)
+        return run_sweep_from_args(args, output)
+    if args.command == "report":
+        return run_report_from_args(args)
+    if args.command == "promote":
+        return run_promote_from_args(args)
+    if args.command == "walkforward":
+        return run_walkforward_from_args(args)
+    if args.command == "montecarlo":
+        return run_montecarlo_from_args(args)
+    if args.command == "stress":
+        return run_stress_from_args(args)
+    if args.command == "portfolio":
+        return run_portfolio_robustness_from_args(args)
+    if args.command == "pipeline":
+        return run_pipeline(args)
+    if args.command == "strategy-profile":
+        return run_strategy_profile(args)
+    if args.command == "run-experiment":
+        return run_experiment(args)
+    if args.command == "armstrong-elkaroui-combi":
+        return run_armstrong_elkaroui_combi(args)
+    parser = build_parser()
+    parser.error(f"Unknown command: {args.command}")
+    return 1
+
+
 def main(argv: Optional[Sequence[str]] = None) -> int:
     """Haupt-Entry-Point."""
     parser = build_parser()
@@ -1732,6 +1870,8 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         args = parser.parse_args()
     else:
         args = parser.parse_args(list(argv))
+
+    _ensure_quiet_flag_coalesced(argv, args)
 
     # Evidence-Pack nur für Subcommands, die diesen Run-Ordner nutzen (nicht strategy-profile).
     if _command_needs_research_evidence_bootstrap(args):
@@ -1750,31 +1890,23 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         args.run_id = getattr(args, "run_id", None)
         args.evidence_base_dir = None
 
+    quiet = bool(getattr(args, "quiet", False))
+
     if args.command == "sweep":
-        return run_sweep_from_args(args)
-    elif args.command == "report":
-        return run_report_from_args(args)
-    elif args.command == "promote":
-        return run_promote_from_args(args)
-    elif args.command == "walkforward":
-        return run_walkforward_from_args(args)
-    elif args.command == "montecarlo":
-        return run_montecarlo_from_args(args)
-    elif args.command == "stress":
-        return run_stress_from_args(args)
-    elif args.command == "portfolio":
-        return run_portfolio_robustness_from_args(args)
-    elif args.command == "pipeline":
-        return run_pipeline(args)
-    elif args.command == "strategy-profile":
-        return run_strategy_profile(args)
-    elif args.command == "run-experiment":
-        return run_experiment(args)
-    elif args.command == "armstrong-elkaroui-combi":
-        return run_armstrong_elkaroui_combi(args)
-    else:
-        parser.error(f"Unknown command: {args.command}")
-        return 1
+        module_prev, root_prev = _sweep_module.apply_experiment_run_logging(quiet)
+        try:
+            return _dispatch_command(args)
+        finally:
+            _sweep_module.restore_experiment_run_logging(module_prev, root_prev)
+
+    if args.command in _RESEARCH_CLI_QUIET_NATIVE_COMMANDS:
+        module_prev, root_prev = apply_research_cli_logging(quiet)
+        try:
+            return _dispatch_command(args)
+        finally:
+            restore_research_cli_logging(module_prev, root_prev)
+
+    return _dispatch_command(args)
 
 
 if __name__ == "__main__":
