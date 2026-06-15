@@ -669,10 +669,11 @@ class TestSweepEngineLoadStrategyMigration:
         import scripts.run_backtest as run_backtest_script
         from src.sweeps import engine as engine_module
 
-        assert (
-            engine_module._build_strategy_params_from_config
-            is run_backtest_script._build_strategy_params_from_config
-        )
+        bound = engine_module._build_strategy_params_from_config
+        canonical = run_backtest_script._build_strategy_params_from_config
+        assert bound.__module__ == "scripts.run_backtest"
+        assert bound.__name__ == "_build_strategy_params_from_config"
+        assert inspect.getsource(bound) == inspect.getsource(canonical)
 
     def test_engine_source_imports_canonical_strategy_params_builder(self) -> None:
         source = self._read_engine_source()
