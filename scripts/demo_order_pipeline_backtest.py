@@ -27,7 +27,6 @@ from __future__ import annotations
 
 import sys
 import argparse
-from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
@@ -37,8 +36,7 @@ ROOT_DIR = CURRENT_DIR.parent
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
-import pandas as pd
-import numpy as np
+from scripts.run_backtest import load_ohlcv_data
 
 from src.backtest.engine import BacktestEngine
 from src.core.experiments import log_backtest_result
@@ -179,75 +177,6 @@ Beispiele:
     return parser.parse_args(argv)
 
 
-def generate_sample_data(
-    symbol: str,
-    bars: int,
-    timeframe: str = "1h",
-) -> pd.DataFrame:
-    """
-    Generiert Sample-OHLCV-Daten fuer den Backtest.
-
-    Args:
-        symbol: Trading-Symbol
-        bars: Anzahl Bars
-        timeframe: Timeframe
-
-    Returns:
-        pd.DataFrame mit OHLCV-Daten
-    """
-    # Basis-Preis je nach Symbol
-    if "BTC" in symbol:
-        base_price = 50000.0
-        volatility = 0.02
-    elif "ETH" in symbol:
-        base_price = 3000.0
-        volatility = 0.025
-    elif "LTC" in symbol:
-        base_price = 100.0
-        volatility = 0.03
-    else:
-        base_price = 1000.0
-        volatility = 0.02
-
-    # Seed fuer Reproduzierbarkeit
-    np.random.seed(42)
-
-    # Zeitindex erstellen
-    if timeframe == "1h":
-        freq = "h"
-    elif timeframe == "4h":
-        freq = "4h"
-    elif timeframe == "1d":
-        freq = "D"
-    else:
-        freq = "h"
-
-    end_time = datetime.now()
-    start_time = end_time - timedelta(hours=bars)
-    index = pd.date_range(start=start_time, periods=bars, freq=freq)
-
-    # Random Walk fuer Close-Preise
-    returns = np.random.normal(0.0001, volatility, bars)
-    close = base_price * np.cumprod(1 + returns)
-
-    # OHLCV generieren
-    data = {
-        "open": close * (1 + np.random.uniform(-0.001, 0.001, bars)),
-        "high": close * (1 + np.abs(np.random.normal(0, 0.005, bars))),
-        "low": close * (1 - np.abs(np.random.normal(0, 0.005, bars))),
-        "close": close,
-        "volume": np.random.uniform(100, 10000, bars),
-    }
-
-    df = pd.DataFrame(data, index=index)
-
-    # Sicherstellen dass high >= max(open, close) und low <= min(open, close)
-    df["high"] = df[["open", "high", "close"]].max(axis=1)
-    df["low"] = df[["open", "low", "close"]].min(axis=1)
-
-    return df
-
-
 def main(argv: Optional[List[str]] = None) -> int:
     args = parse_args(argv)
 
@@ -262,11 +191,7 @@ def main(argv: Optional[List[str]] = None) -> int:
     print(f"   Timeframe: {args.timeframe}")
     print(f"   Bars: {args.bars}")
 
-    df = generate_sample_data(
-        symbol=args.symbol,
-        bars=args.bars,
-        timeframe=args.timeframe,
-    )
+    df = load_ohlcv_data(None, None, None, n_bars=args.bars)
 
     print(f"   Zeitraum: {df.index[0]} bis {df.index[-1]}")
     print(f"   Preis-Range: {df['close'].min():.2f} - {df['close'].max():.2f}")
