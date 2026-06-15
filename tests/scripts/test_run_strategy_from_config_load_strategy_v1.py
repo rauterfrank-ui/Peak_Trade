@@ -27,10 +27,17 @@ MOMENTUM_KEY = "momentum_1h"
 EL_KAROUI_ALIAS_KEY = "el_karoui_vol_v1"
 
 FORBIDDEN_IMPORTS = ("create_strategy_from_config",)
+DATA_LOADER_OWNER = "scripts/run_backtest.py:load_ohlcv_data"
+FORBIDDEN_LOCAL_LOADER_DEFS = frozenset({"load_ohlcv_data", "generate_dummy_ohlcv"})
 
 
 def _read_source() -> str:
     return TARGET_SCRIPT.read_text(encoding="utf-8")
+
+
+def _local_function_defs() -> set[str]:
+    tree = ast.parse(_read_source())
+    return {node.name for node in tree.body if isinstance(node, ast.FunctionDef)}
 
 
 def _sample_ohlcv(n: int = 80) -> pd.DataFrame:
@@ -70,6 +77,23 @@ def test_source_has_no_create_strategy_from_config() -> None:
 def test_source_uses_load_strategy_path() -> None:
     assert "_resolve_strategy_signal_fn" in _read_source()
     assert "_build_strategy_params_from_config" in _read_source()
+
+
+def test_source_has_no_local_loader_or_dummy_definitions() -> None:
+    local_defs = _local_function_defs()
+    assert FORBIDDEN_LOCAL_LOADER_DEFS.isdisjoint(local_defs)
+
+
+def test_source_imports_canonical_data_loader() -> None:
+    source = _read_source()
+    assert "load_ohlcv_data" in source
+    assert "scripts.run_backtest" in source
+
+
+def test_load_ohlcv_data_import_identity_is_canonical_owner() -> None:
+    import scripts.run_backtest as run_backtest_script
+
+    assert target_script.load_ohlcv_data is run_backtest_script.load_ohlcv_data
 
 
 def test_source_has_no_parallel_strategy_registry_assignment() -> None:
@@ -241,7 +265,7 @@ def test_main_passes_full_params_to_signal_fn() -> None:
     with (
         patch.object(target_script, "parse_args") as parse_mock,
         patch.object(target_script, "load_config", return_value=cfg),
-        patch.object(target_script, "create_dummy_data", return_value=_sample_ohlcv()),
+        patch.object(target_script, "load_ohlcv_data", return_value=_sample_ohlcv()),
         patch.object(target_script, "build_position_sizer_from_config", return_value=MagicMock()),
         patch.object(target_script, "build_risk_manager_from_config", return_value=MagicMock()),
         patch.object(target_script, "_resolve_strategy_signal_fn", return_value=fake_signal_fn),
@@ -268,6 +292,85 @@ def test_main_passes_full_params_to_signal_fn() -> None:
     call_kwargs["strategy_signal_fn"](call_kwargs["df"], call_kwargs["strategy_params"])
     assert captured["params"]["fast_window"] == 10
     assert captured["params"]["slow_window"] == 50
+
+
+def test_main_forwards_load_ohlcv_arguments_to_canonical_loader() -> None:
+    from src.core.peak_config import PeakConfig
+
+    raw = {
+        "environment": {"mode": "backtest"},
+        "strategy": {
+            MA_CROSSOVER_KEY: {"fast_window": 10, "slow_window": 50, "price_col": "close"}
+        },
+    }
+    cfg = PeakConfig(raw=raw)
+    captured: dict[str, object] = {}
+
+    def capture_loader(
+        data_file,
+        start_date,
+        end_date,
+        n_bars,
+        verbose=False,
+    ):
+        captured.update(
+            {
+                "data_file": data_file,
+                "start_date": start_date,
+                "end_date": end_date,
+                "n_bars": n_bars,
+                "verbose": verbose,
+            }
+        )
+        return _sample_ohlcv()
+
+    mock_result = MagicMock()
+    mock_result.stats = {
+        "total_return": 0.0,
+        "max_drawdown": 0.0,
+        "sharpe": 0.0,
+        "total_trades": 0,
+        "win_rate": 0.0,
+        "profit_factor": 0.0,
+        "blocked_trades": 0,
+    }
+    mock_result.equity_curve = pd.Series(
+        [10000.0, 10000.0], index=pd.date_range("2024-01-01", periods=2, freq="h")
+    )
+    mock_result.trades = None
+    mock_result.metadata = {}
+
+    with (
+        patch.object(target_script, "parse_args") as parse_mock,
+        patch.object(target_script, "load_config", return_value=cfg),
+        patch.object(target_script, "load_ohlcv_data", side_effect=capture_loader),
+        patch.object(target_script, "build_position_sizer_from_config", return_value=MagicMock()),
+        patch.object(target_script, "build_risk_manager_from_config", return_value=MagicMock()),
+        patch.object(
+            target_script,
+            "_resolve_strategy_signal_fn",
+            return_value=lambda df, params: pd.Series(0, index=df.index),
+        ),
+        patch.object(target_script.BacktestEngine, "run_realistic", return_value=mock_result),
+    ):
+        args = MagicMock()
+        args.list_strategies = False
+        args.strategy = MA_CROSSOVER_KEY
+        args.bars = 120
+        args.run_name = None
+        args.no_report = True
+        args.no_plots = True
+        parse_mock.return_value = args
+
+        target_script.main()
+
+    assert captured == {
+        "data_file": None,
+        "start_date": None,
+        "end_date": None,
+        "n_bars": 120,
+        "verbose": False,
+    }
 
 
 def test_config_object_not_mutated_during_resolution() -> None:
