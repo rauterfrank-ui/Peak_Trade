@@ -215,6 +215,8 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
   - Kontext: siehe `docs/PERFORMANCE_NOTES.md`, Abschnitt 5
   - Idee: Vektorization & Reduzierung von Zwischenkopien prüfen
   - Vorschlag: Nutzung von `numba` oder `cython` für kritische Loops (später)
+  - Fortschritt (Strategy-/Regime-/Experiment-Apply-Lane, PRs #4320–#4329, merges `bd662b6a`..`0ce71c41`): substanzielle `rolling().apply`/`expanding().apply`-Hotspots in `src/strategies`, `src/regime` und `src/experiments` vektorisiert — VolBreakout rolling percentile (PR #4320); VolRegimeFilter rolling percentile + threshold classification (PRs #4321, #4324); RangeCompressionRegimeDetector range-ratio + VolatilityRegimeDetector ATR percentiles (PRs #4322, #4323); ElKaroui regime apply + volatility percentile (PRs #4325, #4326); Mean-Reversion expanding volatility percentile (PR #4328); Armstrong/El-Karoui experiment volatility quantile ranks (PR #4329)
+  - Ausdrücklich nicht Teil dieser Lane / ohne separates GO abgelehnt: `src/risk/portfolio_var.py` (`rolling().apply` prod); Backtest-Bar-Loops, stateful Strategie-Loops, semantisch abweichende Percentile-Muster und kosmetische `.copy()`-Mikrofixes
 
 ---
 
