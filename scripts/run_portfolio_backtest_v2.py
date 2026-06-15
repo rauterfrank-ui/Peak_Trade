@@ -46,6 +46,7 @@ from _shared_forward_args import (
 )
 from _shared_ohlcv_loader import OHLCV_SOURCE_DUMMY, load_ohlcv_with_meta
 from src.core.peak_config import load_config, PeakConfig
+from scripts.run_backtest import _build_strategy_params_from_config
 from src.core.position_sizing import build_position_sizer_from_config
 from src.core.risk import build_risk_manager_from_config
 from src.backtest.engine import BacktestEngine
@@ -220,18 +221,6 @@ def get_portfolio_definition(
     weights = weights_arr.tolist()
 
     return portfolio_name, list(symbols), weights, initial_equity, dict(symbol_strategies_raw)
-
-
-def _build_strategy_params_from_config(
-    cfg: PeakConfig,
-    strategy_key: str,
-) -> Dict[str, Any]:
-    """Build strategy params dict via canonical load_strategy() registry path."""
-    load_strategy(strategy_key)
-    section = cfg.raw.get("strategy", {}).get(strategy_key, {})
-    params: Dict[str, Any] = dict(section) if isinstance(section, dict) else {}
-    params["stop_pct"] = cfg.get(f"strategy.{strategy_key}.stop_pct", 0.02)
-    return params
 
 
 def run_single_symbol_backtest(
