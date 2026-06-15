@@ -15,8 +15,10 @@ import pandas as pd
 import numpy as np
 import inspect
 import json
+import logging
 from datetime import datetime, timedelta
 from pathlib import Path
+from typing import Optional
 from unittest.mock import MagicMock, patch
 
 from tests.utils.dt import normalize_dt_index
@@ -1360,3 +1362,261 @@ class TestSweepParquetCacheContracts:
 
         assert outcome == "miss"
         assert len(loaded) == len(df)
+
+
+# =============================================================================
+# BATCH PROGRESS CONTRACTS (Phase 20, offline only)
+# =============================================================================
+
+
+class TestSweepBatchProgressContracts:
+    """Offline batch-progress contracts for Phase-20 SweepEngine."""
+
+    MA_KEY = "my_strategy"
+
+    @staticmethod
+    def _synthetic_stats(params: dict) -> dict:
+        return {
+            "total_return": float(params.get("lookback_window", 1)) * 0.01,
+            "sharpe": 1.0,
+            "max_drawdown": -0.05,
+            "total_trades": 10,
+        }
+
+    def _mock_run_single(self, engine, monkeypatch):
+        def _fake_backtest(*, data, strategy_key, params, cfg):
+            mock_result = MagicMock()
+            mock_result.stats = self._synthetic_stats(params)
+            return mock_result.stats, mock_result
+
+        monkeypatch.setattr(engine, "_run_single_backtest", _fake_backtest)
+
+    def _config_with_n(self, n: int, *, max_runs: Optional[int] = None):
+        from src.sweeps import SweepConfig
+
+        return SweepConfig(
+            strategy_key=self.MA_KEY,
+            param_grid={"lookback_window": list(range(1, n + 1))},
+            max_runs=max_runs,
+        )
+
+    def _run_offline(
+        self,
+        monkeypatch,
+        sample_ohlcv_data,
+        n: int,
+        *,
+        progress_every: int = 10,
+        verbose: bool = False,
+        progress_callback=None,
+    ):
+        from src.sweeps import SweepEngine
+
+        engine = SweepEngine(
+            verbose=verbose,
+            progress_callback=progress_callback,
+            progress_every=progress_every,
+        )
+        self._mock_run_single(engine, monkeypatch)
+        config = self._config_with_n(n)
+        return engine, engine.run_sweep(config, data=sample_ohlcv_data, skip_registry=True)
+
+    def test_fewer_emissions_than_items_when_total_gt_interval(
+        self, monkeypatch, sample_ohlcv_data
+    ) -> None:
+        calls: list[int] = []
+
+        def cb(current: int, total: int, params: dict) -> None:
+            calls.append(current)
+
+        self._run_offline(
+            monkeypatch,
+            sample_ohlcv_data,
+            25,
+            progress_every=10,
+            progress_callback=cb,
+        )
+        assert len(calls) < 25
+        assert calls == [10, 20, 25]
+
+    def test_emission_at_full_batch_boundaries(self, monkeypatch, sample_ohlcv_data) -> None:
+        calls: list[int] = []
+
+        def cb(current: int, total: int, params: dict) -> None:
+            calls.append(current)
+
+        self._run_offline(
+            monkeypatch,
+            sample_ohlcv_data,
+            20,
+            progress_every=10,
+            progress_callback=cb,
+        )
+        assert calls == [10, 20]
+
+    def test_final_flush_for_remainder_batch(self, monkeypatch, sample_ohlcv_data) -> None:
+        calls: list[int] = []
+
+        def cb(current: int, total: int, params: dict) -> None:
+            calls.append(current)
+
+        self._run_offline(
+            monkeypatch,
+            sample_ohlcv_data,
+            25,
+            progress_every=10,
+            progress_callback=cb,
+        )
+        assert calls[-1] == 25
+
+    def test_no_duplicate_final_flush_when_exactly_divisible(
+        self, monkeypatch, sample_ohlcv_data
+    ) -> None:
+        calls: list[int] = []
+
+        def cb(current: int, total: int, params: dict) -> None:
+            calls.append(current)
+
+        self._run_offline(
+            monkeypatch,
+            sample_ohlcv_data,
+            20,
+            progress_every=10,
+            progress_callback=cb,
+        )
+        assert calls.count(20) == 1
+
+    def test_zero_items_no_progress_output(self, monkeypatch, sample_ohlcv_data, capsys) -> None:
+        from src.sweeps import SweepConfig, SweepEngine
+
+        engine = SweepEngine(verbose=True, progress_every=10)
+        self._mock_run_single(engine, monkeypatch)
+        config = SweepConfig(
+            strategy_key=self.MA_KEY,
+            param_grid={"lookback_window": [20]},
+            max_runs=0,
+        )
+        summary = engine.run_sweep(config, data=sample_ohlcv_data, skip_registry=True)
+        out = capsys.readouterr().out
+        assert summary.runs_executed == 0
+        assert "[1/" not in out
+
+    def test_single_item_emits_one_final_progress(self, monkeypatch, sample_ohlcv_data) -> None:
+        calls: list[int] = []
+
+        def cb(current: int, total: int, params: dict) -> None:
+            calls.append(current)
+
+        self._run_offline(
+            monkeypatch,
+            sample_ohlcv_data,
+            1,
+            progress_every=10,
+            progress_callback=cb,
+        )
+        assert calls == [1]
+
+    def test_quiet_mode_suppresses_batch_progress(
+        self, monkeypatch, sample_ohlcv_data, capsys
+    ) -> None:
+        from src.sweeps import SweepEngine
+
+        engine = SweepEngine(verbose=False, progress_every=10)
+        self._mock_run_single(engine, monkeypatch)
+        config = self._config_with_n(15)
+        engine.run_sweep(config, data=sample_ohlcv_data, skip_registry=True)
+        assert capsys.readouterr().out == ""
+
+    def test_completion_visible_in_verbose_mode(
+        self, monkeypatch, sample_ohlcv_data, capsys
+    ) -> None:
+        self._run_offline(
+            monkeypatch,
+            sample_ohlcv_data,
+            5,
+            progress_every=10,
+            verbose=True,
+        )
+        out = capsys.readouterr().out
+        assert "[Sweep] Abgeschlossen" in out
+
+    def test_verbose_batch_progress_visible(self, monkeypatch, sample_ohlcv_data, capsys) -> None:
+        self._run_offline(
+            monkeypatch,
+            sample_ohlcv_data,
+            15,
+            progress_every=10,
+            verbose=True,
+        )
+        out = capsys.readouterr().out
+        assert "[10/15]" in out
+        assert "[15/15]" in out
+        assert "[1/15]" not in out
+
+    def test_warning_visible_immediately(self, caplog) -> None:
+        from src.sweeps.engine import logger as sweep_logger
+
+        with caplog.at_level(logging.WARNING, logger=sweep_logger.name):
+            sweep_logger.warning("phase20-batch-warning-check")
+        assert any("phase20-batch-warning-check" in r.message for r in caplog.records)
+
+    def test_error_visible_immediately(self, caplog) -> None:
+        from src.sweeps.engine import logger as sweep_logger
+
+        with caplog.at_level(logging.ERROR, logger=sweep_logger.name):
+            sweep_logger.error("phase20-batch-error-check")
+        assert any("phase20-batch-error-check" in r.message for r in caplog.records)
+
+    def test_exception_propagates_without_false_completion(
+        self, monkeypatch, sample_ohlcv_data, capsys
+    ) -> None:
+        from src.sweeps import SweepEngine
+
+        engine = SweepEngine(verbose=True, progress_every=2)
+
+        def _diag_abort(i, params, stats, success, error, result):
+            if i == 3:
+                raise RuntimeError("phase20-abort")
+
+        self._mock_run_single(engine, monkeypatch)
+        config = self._config_with_n(5)
+        with pytest.raises(RuntimeError, match="phase20-abort"):
+            engine.run_sweep(
+                config,
+                data=sample_ohlcv_data,
+                skip_registry=True,
+                diagnostics_callback=_diag_abort,
+            )
+        out = capsys.readouterr().out
+        assert "[Sweep] Abgeschlossen" not in out
+
+    def test_result_order_and_values_unchanged(self, monkeypatch, sample_ohlcv_data) -> None:
+        _, summary_default = self._run_offline(
+            monkeypatch, sample_ohlcv_data, 8, progress_every=1, verbose=True
+        )
+        _, summary_batched = self._run_offline(
+            monkeypatch, sample_ohlcv_data, 8, progress_every=4, verbose=True
+        )
+        assert [r.params for r in summary_default.results] == [
+            r.params for r in summary_batched.results
+        ]
+        assert [r.stats for r in summary_default.results] == [
+            r.stats for r in summary_batched.results
+        ]
+
+    def test_invalid_progress_every_rejected(self) -> None:
+        from src.sweeps import SweepEngine
+
+        with pytest.raises(ValueError, match="progress_every must be positive"):
+            SweepEngine(progress_every=0)
+        with pytest.raises(ValueError, match="progress_every must be positive"):
+            SweepEngine(progress_every=-3)
+
+    def test_should_emit_batch_progress_helper(self) -> None:
+        from src.sweeps.engine import _should_emit_batch_progress
+
+        assert _should_emit_batch_progress(0, 0, 10) is False
+        assert _should_emit_batch_progress(10, 20, 10) is True
+        assert _should_emit_batch_progress(20, 20, 10) is True
+        assert _should_emit_batch_progress(25, 25, 10) is True
+        assert _should_emit_batch_progress(15, 25, 10) is False
