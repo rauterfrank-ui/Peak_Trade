@@ -29,8 +29,10 @@ TREND_FOLLOWING_KEY = "trend_following"
 FORBIDDEN_IMPORTS = ("create_strategy_from_config",)
 DATA_LOADER_OWNER = "scripts/run_backtest.py:load_ohlcv_data"
 STRATEGY_PARAMS_BUILDER_OWNER = "scripts/run_backtest.py:_build_strategy_params_from_config"
+CANONICAL_REGISTRY_GATE_OWNER = "scripts/run_backtest.py:_validate_strategy_registry_gates"
 FORBIDDEN_LOCAL_LOADER_DEFS = frozenset({"load_ohlcv_data", "generate_dummy_ohlcv"})
 FORBIDDEN_LOCAL_BUILDER_DEFS = frozenset({"_build_strategy_params_from_config"})
+FORBIDDEN_LOCAL_REGISTRY_GATE_DEFS = frozenset({"_validate_strategy_registry_gates"})
 
 
 def _read_source() -> str:
@@ -547,6 +549,121 @@ def test_unknown_strategy_fails_closed() -> None:
 
     with pytest.raises(ValueError, match="Unbekannte Strategie"):
         load_strategy("definitely_not_a_research_run_strategy_xyz")
+
+
+# ---------------------------------------------------------------------------
+# Registry gates — canonical _validate_strategy_registry_gates reuse
+# ---------------------------------------------------------------------------
+
+
+def test_source_has_no_local_registry_gate_definition() -> None:
+    local_defs = _local_function_defs()
+    assert FORBIDDEN_LOCAL_REGISTRY_GATE_DEFS.isdisjoint(local_defs)
+
+
+def test_validate_strategy_registry_gates_import_identity_is_canonical_owner() -> None:
+    import scripts.run_backtest as run_backtest_script
+
+    assert (
+        research_runner._validate_strategy_registry_gates
+        is run_backtest_script._validate_strategy_registry_gates
+    )
+
+
+def test_source_imports_canonical_registry_gate_validator() -> None:
+    source = _read_source()
+    assert "_validate_strategy_registry_gates" in source
+    assert "scripts.run_backtest" in source
+
+
+def test_registry_gates_block_r_and_d_without_flag() -> None:
+    from src.core.peak_config import PeakConfig
+
+    raw = {"environment": {"mode": "backtest"}, "strategy": {"ehlers_cycle_filter": {}}}
+    cfg = PeakConfig(raw=raw)
+    with pytest.raises(ValueError, match="R&D-only"):
+        research_runner._validate_strategy_registry_gates("ehlers_cycle_filter", cfg)
+
+
+def test_unknown_strategy_fails_closed_at_registry_gates() -> None:
+    from src.core.peak_config import PeakConfig
+
+    cfg = PeakConfig(raw={"environment": {"mode": "backtest"}})
+    with pytest.raises(KeyError):
+        research_runner._validate_strategy_registry_gates("definitely_not_a_strategy_xyz", cfg)
+
+
+def test_main_invokes_registry_gates_before_strategy_params(tmp_path, monkeypatch) -> None:
+    from src.core.peak_config import PeakConfig
+
+    cfg_path = tmp_path / "cfg.toml"
+    cfg_path.write_text("[environment]\nmode = 'backtest'\n", encoding="utf-8")
+    cfg = PeakConfig(
+        raw={
+            "environment": {"mode": "backtest"},
+            "strategy": {
+                MA_CROSSOVER_KEY: {
+                    "fast_window": 10,
+                    "slow_window": 50,
+                    "price_col": "close",
+                },
+            },
+        }
+    )
+    call_order: list[str] = []
+    gate_mock = MagicMock(side_effect=lambda key, config: call_order.append("gates"))
+    builder_mock = MagicMock(
+        side_effect=lambda config, strategy_key: (
+            call_order.append("builder"),
+            {"fast_window": 10, "slow_window": 50, "stop_pct": 0.02},
+        )[1]
+    )
+    mock_result = MagicMock()
+    mock_result.stats = {
+        "total_return": 0.0,
+        "max_drawdown": 0.0,
+        "sharpe": 0.0,
+        "cagr": 0.0,
+        "total_trades": 0,
+        "win_rate": 0.0,
+        "profit_factor": 0.0,
+    }
+    mock_result.equity_curve = pd.Series([100.0, 100.0])
+
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "research_run_strategy.py",
+            "--config",
+            str(cfg_path),
+            "--strategy",
+            MA_CROSSOVER_KEY,
+            "--no-registry",
+        ],
+    )
+
+    with (
+        patch.object(research_runner, "load_config", return_value=cfg),
+        patch.object(research_runner, "_validate_strategy_registry_gates", gate_mock),
+        patch.object(research_runner, "_build_strategy_params_from_config", builder_mock),
+        patch.object(research_runner, "load_ohlcv_data", return_value=_sample_ohlcv()),
+        patch.object(
+            research_runner,
+            "load_strategy",
+            return_value=lambda df, params: pd.Series(0, index=df.index),
+        ),
+        patch.object(research_runner, "build_position_sizer_from_config", return_value=MagicMock()),
+        patch.object(research_runner, "build_risk_manager_from_config", return_value=MagicMock()),
+        patch.object(research_runner, "BacktestEngine") as engine_cls,
+    ):
+        engine_cls.return_value.run_realistic.return_value = mock_result
+        code = research_runner.main()
+
+    assert code == 0
+    gate_mock.assert_called_once_with(MA_CROSSOVER_KEY, cfg)
+    builder_mock.assert_called_once_with(cfg, MA_CROSSOVER_KEY)
+    assert call_order == ["gates", "builder"]
 
 
 def test_load_strategy_no_network_calls() -> None:
