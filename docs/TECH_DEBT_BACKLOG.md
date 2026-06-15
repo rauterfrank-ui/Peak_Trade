@@ -18,7 +18,7 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
   - Evidence: `docs/ops/evidence/EV_TECH_DEBT_A_ALLOC_20260128.md`
   - Fundstellen: `src/backtest/engine.py`, `tests/backtest/test_engine_allocations.py`, `tests/backtest/test_engine_two_pass_allocation.py`
 
-- [ ] `sharpe_weighted` Allocation-Methode implementieren
+- [x] `sharpe_weighted` Allocation-Methode implementieren
   - Fundstelle: `src&#47;backtest&#47;engine.py` (Zeile 1319) (illustrative)
   - Kontext: Portfolio-Allocation basierend auf historischer Sharpe-Ratio
   - Vorschlag: Benötigt historische Backtests als Input
