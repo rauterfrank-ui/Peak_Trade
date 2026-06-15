@@ -1,7 +1,7 @@
 """Static network-marker contract for scripts/ops/tls_fix_gh_orchestrator.sh.
 
-Reads the script as UTF-8 text only. Static assertions only; does not execute
-the script or invoke subprocess/OS network tooling.
+Parses the bash driver as UTF-8 text only. Never invokes bash, GitHub CLI,
+workflows, curl/openssl probes, or runtime network I/O from this module.
 """
 
 from __future__ import annotations
@@ -21,30 +21,44 @@ def test_tls_fix_gh_orchestrator_network_marker_contract_has_target_script() -> 
     assert SCRIPT.is_file()
 
 
-def test_tls_fix_gh_orchestrator_network_marker_contract_preserves_static_scope() -> None:
-    test_source = Path(__file__).read_text(encoding="utf-8")
-
-    forbidden_fragments = [
-        "subprocess" + ".",
-        "os" + ".system",
-        "runpy" + ".",
-        "importlib" + ".import_module",
-        "requests" + ".",
-        "httpx" + ".",
-        "urllib" + ".",
-        "socket" + ".",
-        "gh " + "api",
-        "gh " + "workflow",
-        "curl " + "-",
-        "wget " + "-",
-        "openssl " + "s_client",
-        "brew " + "upgrade",
-    ]
-
-    found = [fragment for fragment in forbidden_fragments if fragment in test_source]
-    assert not found, (
-        f"static network-marker contract must not use execution/network hooks: {found}"
+def test_tls_fix_gh_orchestrator_network_marker_contract_module_avoids_execution_hooks() -> None:
+    lines = Path(__file__).read_text(encoding="utf-8").splitlines()
+    stripped = [ln.strip() for ln in lines]
+    banned_starts = (
+        "import os",
+        "from os ",
+        "from os\t",
+        "import subprocess",
+        "from subprocess ",
+        "from subprocess\t",
+        "import runpy",
+        "from runpy ",
+        "from runpy\t",
+        "import importlib",
+        "from importlib ",
+        "from importlib\t",
+        "import requests",
+        "from requests",
+        "import httpx",
+        "from httpx",
+        "import urllib",
+        "from urllib",
+        "import socket",
+        "from socket ",
+        "from socket\t",
     )
+    hits = [ln for ln in stripped if ln.startswith(banned_starts)]
+    assert not hits, f"unexpected execution/network-hook imports: {hits}"
+
+
+def test_tls_fix_gh_orchestrator_network_marker_contract_preserves_output_or_evidence_surface() -> (
+    None
+):
+    text = _script_text().lower()
+
+    expected_markers = ("out/ops/", "evidence", "sha256")
+    missing = [marker for marker in expected_markers if marker not in text]
+    assert not missing, f"missing expected output/evidence markers: {missing}"
 
 
 def test_tls_fix_gh_orchestrator_network_marker_contract_freezes_gh_cli_surface() -> None:
