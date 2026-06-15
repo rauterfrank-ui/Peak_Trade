@@ -111,13 +111,13 @@ class VolatilityRegimeDetector:
         """
         window = self.config.lookback_window
 
-        def percentile_rank(x: pd.Series) -> float:
-            if len(x) < 2:
-                return 0.5
-            return x.rank(pct=True).iloc[-1]
-
-        return atr.rolling(window=window, min_periods=self.config.vol_window).apply(
-            percentile_rank, raw=False
+        return (
+            _rolling_last_pct_rank(
+                atr,
+                window=window,
+                min_periods=self.config.vol_window,
+            )
+            / 100.0
         )
 
     def _compute_ma_slope(self, data: pd.DataFrame) -> pd.Series:

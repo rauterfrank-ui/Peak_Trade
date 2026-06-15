@@ -258,6 +258,206 @@ class TestVolatilityRegimeDetector:
             detector.detect_regimes(invalid_data)
 
 
+def _legacy_atr_percentile_reference(
+    series: pd.Series,
+    window: int,
+    min_periods: int,
+) -> pd.Series:
+    """Test-only reference for legacy VolatilityRegimeDetector._compute_atr_percentile (0-1 scale)."""
+
+    def percentile_rank(x: pd.Series) -> float:
+        if len(x) < 2:
+            return 0.5
+        return x.rank(pct=True).iloc[-1]
+
+    return series.rolling(window=window, min_periods=min_periods).apply(percentile_rank, raw=False)
+
+
+def _assert_atr_percentile_series_equal(actual: pd.Series, expected: pd.Series) -> None:
+    pd.testing.assert_series_equal(actual, expected, check_names=False)
+    assert actual.index.equals(expected.index)
+    pd.testing.assert_index_equal(actual.index, expected.index)
+    assert actual.dtype == expected.dtype
+    assert actual.isna().equals(expected.isna())
+
+
+def _reference_volatility_detect_regimes(
+    detector: VolatilityRegimeDetector,
+    df: pd.DataFrame,
+) -> tuple[pd.Series, pd.Series, pd.Series]:
+    """Independent legacy reference for VolatilityRegimeDetector.detect_regimes."""
+    n_bars = len(df)
+    regimes = pd.Series("unknown", index=df.index, dtype="object")
+
+    if n_bars < detector.config.min_history_bars:
+        return (
+            pd.Series(dtype=float, index=df.index),
+            pd.Series(dtype=float, index=df.index),
+            regimes.astype("string"),
+        )
+
+    atr = detector._compute_atr(df)
+    atr_percentile = _legacy_atr_percentile_reference(
+        atr,
+        window=detector.config.lookback_window,
+        min_periods=detector.config.vol_window,
+    )
+    ma_slope = detector._compute_ma_slope(df)
+
+    high_vol_mask = atr_percentile >= detector.config.vol_percentile_breakout
+    regimes[high_vol_mask] = "breakout"
+
+    low_vol_mask = atr_percentile <= detector.config.vol_percentile_ranging
+    regimes[low_vol_mask] = "ranging"
+
+    mid_vol_mask = (~high_vol_mask) & (~low_vol_mask)
+    strong_trend_mask = abs(ma_slope) > detector.config.trending_slope_threshold
+    trending_mask = mid_vol_mask & strong_trend_mask
+    regimes[trending_mask] = "trending"
+
+    warmup_mask = pd.isna(atr_percentile)
+    regimes[warmup_mask] = "unknown"
+
+    regimes.name = "regime"
+    return atr, atr_percentile, regimes.astype("string")
+
+
+class TestVolatilityRollingPercentileGolden:
+    """Golden-reference contracts for ATR rolling percentile semantics (0-1 scale)."""
+
+    @pytest.mark.parametrize(
+        ("values", "window", "min_periods"),
+        [
+            pytest.param([1.0, 2.0, 3.0, 4.0, 5.0], 3, 2, id="normal_ascending"),
+            pytest.param([5.0, 4.0, 3.0, 2.0, 1.0], 3, 2, id="descending"),
+            pytest.param([1.0, 2.0, 2.0, 2.0, 3.0], 4, 2, id="ties"),
+            pytest.param([1.0, np.nan, 3.0, 4.0, 5.0], 3, 2, id="nan_in_window"),
+            pytest.param([1.0, 2.0], 5, 2, id="partial_window"),
+            pytest.param([2.0, 2.0, 2.0], 3, 3, id="exact_window"),
+            pytest.param(list(range(1, 9)), 4, 2, id="multi_window"),
+            pytest.param([7.0] * 6, 4, 2, id="constant_input"),
+            pytest.param([0.1, 0.2, 0.3, 0.4, 0.5, 0.6], 3, 3, id="monotone_values"),
+            pytest.param([1.0, 1.0, 2.0, 2.0, 3.0, 3.0], 4, 2, id="repeated_values"),
+        ],
+    )
+    def test_atr_percentile_matches_legacy_reference(
+        self,
+        values: list[float],
+        window: int,
+        min_periods: int,
+    ) -> None:
+        idx = pd.date_range("2024-01-01", periods=len(values), freq="h", tz="UTC")
+        series = pd.Series(values, index=idx, dtype=float)
+        expected = _legacy_atr_percentile_reference(series, window, min_periods)
+        config = RegimeDetectorConfig(
+            enabled=True,
+            detector_name="volatility_breakout",
+            lookback_window=window,
+            vol_window=min_periods,
+            min_history_bars=1,
+        )
+        detector = VolatilityRegimeDetector(config)
+        actual = detector._compute_atr_percentile(series)
+        _assert_atr_percentile_series_equal(actual, expected)
+
+    def test_detect_regimes_matches_independent_legacy_reference(
+        self,
+        sample_ohlcv_data: pd.DataFrame,
+        default_config: RegimeDetectorConfig,
+    ) -> None:
+        detector = VolatilityRegimeDetector(default_config)
+        expected_atr, expected_percentile, expected_regimes = _reference_volatility_detect_regimes(
+            detector, sample_ohlcv_data
+        )
+        actual_regimes = detector.detect_regimes(sample_ohlcv_data)
+        actual_atr = detector._compute_atr(sample_ohlcv_data)
+        actual_percentile = detector._compute_atr_percentile(actual_atr)
+
+        pd.testing.assert_series_equal(actual_atr, expected_atr, check_names=False)
+        _assert_atr_percentile_series_equal(actual_percentile, expected_percentile)
+        pd.testing.assert_series_equal(actual_regimes, expected_regimes, check_names=True)
+
+    def test_detect_regimes_insufficient_history_empty_input(
+        self, default_config: RegimeDetectorConfig
+    ) -> None:
+        detector = VolatilityRegimeDetector(default_config)
+        empty_df = pd.DataFrame(
+            columns=["open", "high", "low", "close", "volume"],
+            index=pd.DatetimeIndex([], name="timestamp"),
+        )
+        actual = detector.detect_regimes(empty_df)
+        _, _, expected = _reference_volatility_detect_regimes(detector, empty_df)
+        pd.testing.assert_series_equal(actual, expected, check_names=True)
+
+    def test_detect_regimes_minimal_allowed_length(self) -> None:
+        config = RegimeDetectorConfig(
+            enabled=True,
+            detector_name="volatility_breakout",
+            lookback_window=5,
+            min_history_bars=5,
+            vol_window=3,
+            vol_percentile_breakout=0.75,
+            vol_percentile_ranging=0.30,
+        )
+        detector = VolatilityRegimeDetector(config)
+        idx = pd.date_range("2024-01-01", periods=5, freq="h")
+        df = pd.DataFrame(
+            {
+                "open": [1.0, 2.0, 3.0, 4.0, 5.0],
+                "high": [1.5, 2.5, 3.5, 4.5, 5.5],
+                "low": [0.5, 1.5, 2.5, 3.5, 4.5],
+                "close": [1.0, 2.0, 3.0, 4.0, 5.0],
+                "volume": [1000] * 5,
+            },
+            index=idx,
+        )
+        actual = detector.detect_regimes(df)
+        _, _, expected = _reference_volatility_detect_regimes(detector, df)
+        pd.testing.assert_series_equal(actual, expected, check_names=True)
+
+    def test_detect_regimes_uses_canonical_helper(self, monkeypatch) -> None:
+        df = pd.DataFrame(
+            {
+                "open": [1.0, 2.0, 3.0, 4.0, 5.0, 6.0],
+                "high": [1.5, 2.5, 3.5, 4.5, 5.5, 6.5],
+                "low": [0.5, 1.5, 2.5, 3.5, 4.5, 5.5],
+                "close": [1.0, 2.0, 3.0, 4.0, 5.0, 6.0],
+                "volume": [1000] * 6,
+            },
+            index=pd.date_range("2024-01-01", periods=6, freq="h"),
+        )
+        config = RegimeDetectorConfig(
+            enabled=True,
+            detector_name="volatility_breakout",
+            lookback_window=5,
+            min_history_bars=5,
+            vol_window=3,
+        )
+        detector = VolatilityRegimeDetector(config)
+        calls: list[tuple[int, int]] = []
+
+        def _spy(series: pd.Series, window: int, min_periods: int) -> pd.Series:
+            calls.append((window, min_periods))
+            return _rolling_last_pct_rank(series, window=window, min_periods=min_periods)
+
+        apply_calls: list[object] = []
+        original_apply = pd.core.window.rolling.Rolling.apply
+
+        def _apply_spy(self, func, *args, **kwargs):
+            apply_calls.append(func)
+            return original_apply(self, func, *args, **kwargs)
+
+        monkeypatch.setattr("src.regime.detectors._rolling_last_pct_rank", _spy)
+        monkeypatch.setattr(pd.core.window.rolling.Rolling, "apply", _apply_spy)
+
+        regimes = detector.detect_regimes(df)
+
+        assert regimes is not None
+        assert len(calls) == 1
+        assert calls[0] == (config.lookback_window, config.vol_window)
+        assert not apply_calls
+
+
 # ============================================================================
 # RANGE COMPRESSION DETECTOR TESTS
 # ============================================================================
