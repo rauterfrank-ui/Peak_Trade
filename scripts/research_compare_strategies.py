@@ -36,17 +36,16 @@ from __future__ import annotations
 import argparse
 import sys
 import uuid
-from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 import pandas as pd
-import numpy as np
 
 # Projekt-Root zum Path hinzufügen
 PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
+from scripts.run_backtest import load_ohlcv_data
 from src.core.peak_config import load_config, PeakConfig
 from src.core.position_sizing import build_position_sizer_from_config
 from src.core.risk import build_risk_manager_from_config
@@ -56,7 +55,6 @@ from src.core.experiments import (
 )
 from src.backtest.engine import BacktestEngine
 from src.backtest.stats import validate_for_live_trading
-from src.data import DataNormalizer, CsvLoader, KrakenCsvLoader
 from src.strategies import load_strategy
 from src.strategies.registry import (
     get_available_strategy_keys,
@@ -183,86 +181,6 @@ Beispiele:
     )
 
     return parser.parse_args()
-
-
-def generate_dummy_ohlcv(
-    n_bars: int = 500,
-    base_price: float = 50000.0,
-    volatility: float = 0.015,
-) -> pd.DataFrame:
-    """
-    Generiert synthetische OHLCV-Daten für Research/Tests.
-
-    Die Daten enthalten sowohl Trends als auch Seitwärtsphasen.
-    """
-    np.random.seed(42)
-
-    end = datetime.now()
-    start = end - timedelta(hours=n_bars)
-    index = pd.date_range(start=start, periods=n_bars, freq="1h", tz="UTC")
-
-    returns = np.random.normal(0, volatility, n_bars)
-    trend = np.sin(np.linspace(0, 4 * np.pi, n_bars)) * 0.001
-    returns = returns + trend
-
-    close_prices = base_price * np.exp(np.cumsum(returns))
-
-    df = pd.DataFrame(index=index)
-    df["close"] = close_prices
-    df["open"] = df["close"].shift(1).fillna(base_price)
-
-    high_bump = np.random.uniform(0, 0.005, n_bars)
-    df["high"] = np.maximum(df["open"], df["close"]) * (1 + high_bump)
-
-    low_dip = np.random.uniform(0, 0.005, n_bars)
-    df["low"] = np.minimum(df["open"], df["close"]) * (1 - low_dip)
-
-    df["volume"] = np.random.uniform(100, 1000, n_bars)
-
-    return df[["open", "high", "low", "close", "volume"]]
-
-
-def load_ohlcv_data(
-    data_file: Optional[str],
-    start_date: Optional[str],
-    end_date: Optional[str],
-    n_bars: int,
-    verbose: bool = False,
-) -> pd.DataFrame:
-    """Lädt OHLCV-Daten aus CSV oder generiert Dummy-Daten."""
-    if data_file:
-        path = Path(data_file)
-        if not path.exists():
-            raise FileNotFoundError(f"Datei nicht gefunden: {data_file}")
-
-        if verbose:
-            print(f"  Lade Daten aus: {data_file}")
-
-        if "kraken" in str(path).lower():
-            loader = KrakenCsvLoader()
-        else:
-            loader = CsvLoader()
-
-        df = loader.load(str(path))
-        normalizer = DataNormalizer()
-        df = normalizer.normalize(df)
-    else:
-        if verbose:
-            print(f"  Generiere {n_bars} Dummy-Bars")
-        df = generate_dummy_ohlcv(n_bars=n_bars)
-
-    if start_date:
-        start_dt = pd.to_datetime(start_date).tz_localize("UTC")
-        df = df[df.index >= start_dt]
-
-    if end_date:
-        end_dt = pd.to_datetime(end_date).tz_localize("UTC")
-        df = df[df.index <= end_dt]
-
-    if len(df) == 0:
-        raise ValueError("Keine Daten nach Filterung übrig!")
-
-    return df
 
 
 def _build_strategy_params_from_config(
