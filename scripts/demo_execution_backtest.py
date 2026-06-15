@@ -45,7 +45,6 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
 
@@ -55,8 +54,9 @@ ROOT_DIR = CURRENT_DIR.parent
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
-import numpy as np
 import pandas as pd
+
+from scripts.run_backtest import load_ohlcv_data
 
 from src.backtest.engine import BacktestEngine
 from src.backtest.result import BacktestResult
@@ -151,89 +151,6 @@ def get_default_strategy_params(name: str) -> Dict[str, Any]:
         available = ", ".join(sorted(DEMO_SUPPORTED_STRATEGY_NAMES))
         raise ValueError(f"Unbekannte Strategie '{name}' für Demo-Defaults. Verfügbar: {available}")
     return dict(defaults[name])
-
-
-# =============================================================================
-# Data Generation
-# =============================================================================
-
-
-def generate_sample_data(
-    symbol: str,
-    start: Optional[str] = None,
-    end: Optional[str] = None,
-    bars: int = 200,
-    timeframe: str = "1h",
-) -> pd.DataFrame:
-    """
-    Generiert Sample-OHLCV-Daten fuer den Backtest.
-
-    Args:
-        symbol: Trading-Symbol (beeinflusst Basis-Preis)
-        start: Start-Datum (optional, sonst bars rueckwaerts von end)
-        end: End-Datum (optional, sonst jetzt)
-        bars: Anzahl Bars (wenn start nicht gesetzt)
-        timeframe: Timeframe ("1h", "4h", "1d")
-
-    Returns:
-        pd.DataFrame mit OHLCV-Daten
-    """
-    # Basis-Preis je nach Symbol
-    if "BTC" in symbol.upper():
-        base_price = 50000.0
-        volatility = 0.02
-    elif "ETH" in symbol.upper():
-        base_price = 3000.0
-        volatility = 0.025
-    elif "LTC" in symbol.upper():
-        base_price = 100.0
-        volatility = 0.03
-    else:
-        base_price = 1000.0
-        volatility = 0.02
-
-    # Seed fuer Reproduzierbarkeit
-    np.random.seed(42)
-
-    # Frequenz bestimmen
-    freq_map = {"1h": "h", "4h": "4h", "1d": "D", "1m": "min"}
-    freq = freq_map.get(timeframe, "h")
-
-    # Zeitraum bestimmen
-    if end:
-        end_time = pd.to_datetime(end)
-    else:
-        end_time = datetime.now()
-
-    if start:
-        start_time = pd.to_datetime(start)
-        index = pd.date_range(start=start_time, end=end_time, freq=freq)
-        bars = len(index)
-    else:
-        index = pd.date_range(end=end_time, periods=bars, freq=freq)
-
-    # Preis-Simulation mit Trend und Oszillation (fuer MA-Crossovers)
-    trend = np.linspace(0, base_price * 0.1, bars)
-    cycle = np.sin(np.linspace(0, 4 * np.pi, bars)) * base_price * 0.04
-    noise = np.random.randn(bars).cumsum() * base_price * 0.01
-    close = base_price + trend + cycle + noise
-
-    # OHLCV generieren
-    data = {
-        "open": close * (1 + np.random.uniform(-0.002, 0.002, bars)),
-        "high": close * (1 + np.abs(np.random.normal(0, 0.005, bars))),
-        "low": close * (1 - np.abs(np.random.normal(0, 0.005, bars))),
-        "close": close,
-        "volume": np.random.uniform(100, 10000, bars),
-    }
-
-    df = pd.DataFrame(data, index=index)
-
-    # Konsistenz: high >= max(open, close), low <= min(open, close)
-    df["high"] = df[["open", "high", "close"]].max(axis=1)
-    df["low"] = df[["open", "low", "close"]].min(axis=1)
-
-    return df
 
 
 # =============================================================================
@@ -703,14 +620,8 @@ def main(argv: Optional[List[str]] = None) -> Optional[BacktestResult]:
 
     strategy_params = get_default_strategy_params(args.strategy)
 
-    # Daten generieren
-    df = generate_sample_data(
-        symbol=args.symbol,
-        start=args.start,
-        end=args.end,
-        bars=args.bars,
-        timeframe=args.timeframe,
-    )
+    # Daten laden
+    df = load_ohlcv_data(None, args.start, args.end, n_bars=args.bars)
 
     # Zeitraum-Strings fuer Output
     start_str = df.index[0].strftime("%Y-%m-%d")
