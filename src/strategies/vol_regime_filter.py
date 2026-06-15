@@ -23,6 +23,7 @@ import pandas as pd
 import numpy as np
 
 from .base import BaseStrategy, StrategyMetadata
+from .vol_breakout import _rolling_last_pct_rank
 
 
 class VolRegimeFilter(BaseStrategy):
@@ -434,9 +435,11 @@ class VolRegimeFilter(BaseStrategy):
         # Perzentil-basierter Filter
         if self.vol_percentile_low is not None or self.vol_percentile_high is not None:
             # Rolling Perzentil berechnen
-            vol_percentile = vol.rolling(
-                window=self.lookback_percentile, min_periods=self.vol_window
-            ).apply(lambda x: pd.Series(x).rank(pct=True).iloc[-1] * 100, raw=False)
+            vol_percentile = _rolling_last_pct_rank(
+                vol,
+                window=self.lookback_percentile,
+                min_periods=self.vol_window,
+            )
 
             if self.vol_percentile_low is not None:
                 # Blockiere wenn Vol-Perzentil unter dem Minimum
