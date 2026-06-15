@@ -42,6 +42,7 @@ from typing import Any, Dict
 from src.core.peak_config import load_config, PeakConfig
 from src.core.experiments import log_forward_signal_run, RUN_TYPE_FORWARD_SIGNAL
 from src.exchange import build_exchange_client_from_config
+from scripts.run_backtest import _build_strategy_params_from_config
 from src.strategies import load_strategy
 from src.strategies.registry import get_available_strategy_keys, get_strategy_spec
 from src.notifications import Alert, ConsoleNotifier, FileNotifier, CombinedNotifier
@@ -85,18 +86,6 @@ def _validate_strategy_registry_gates(key: str, cfg: PeakConfig) -> None:
             f"Strategy '{key}' not allowed in environment '{env_mode}'. "
             f"Allowed environments: {allowed_str}"
         )
-
-
-def _build_strategy_params_from_config(
-    cfg: PeakConfig,
-    strategy_key: str,
-) -> Dict[str, Any]:
-    """Build strategy params dict via canonical load_strategy() registry path."""
-    load_strategy(strategy_key)
-    section = cfg.raw.get("strategy", {}).get(strategy_key, {})
-    params: Dict[str, Any] = dict(section) if isinstance(section, dict) else {}
-    params["stop_pct"] = cfg.get(f"strategy.{strategy_key}.stop_pct", 0.02)
-    return params
 
 
 def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
