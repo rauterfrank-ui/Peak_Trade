@@ -8,6 +8,7 @@ Unit-Tests für den Volatilitäts-Regime-Filter.
 import pytest
 import pandas as pd
 import numpy as np
+from types import SimpleNamespace
 
 from src.strategies.vol_breakout import _rolling_last_pct_rank
 from src.strategies.vol_regime_filter import VolRegimeFilter, generate_signals
@@ -75,6 +76,54 @@ def _reference_vol_regime_filter_filter_signals(
     filter_signal = filter_signal.fillna(0).astype(int)
     filter_signal.name = "vol_filter"
     return filter_signal
+
+
+def _legacy_regime_threshold_classification_reference(
+    vol_filter: VolRegimeFilter | SimpleNamespace,
+    vol: pd.Series,
+) -> pd.Series:
+    """Test-only reference for legacy regime_mode threshold loop in generate_signals."""
+    regime_signal = pd.Series(0, index=vol.index, dtype=int)
+
+    for i in range(len(vol)):
+        if i < vol_filter.min_bars:
+            regime_signal.iloc[i] = 0
+            continue
+
+        current_vol = vol.iloc[i]
+        if pd.isna(current_vol):
+            regime_signal.iloc[i] = 0
+            continue
+
+        if vol_filter.low_vol_threshold is not None and current_vol < vol_filter.low_vol_threshold:
+            regime_signal.iloc[i] = 1
+        elif (
+            vol_filter.high_vol_threshold is not None
+            and current_vol > vol_filter.high_vol_threshold
+        ):
+            regime_signal.iloc[i] = -1
+        else:
+            regime_signal.iloc[i] = 0
+
+    regime_signal.name = "vol_regime"
+    return regime_signal
+
+
+def _reference_regime_threshold_signals(
+    vol_filter: VolRegimeFilter,
+    data: pd.DataFrame,
+) -> pd.Series:
+    """Independent legacy reference for VolRegimeFilter regime_mode threshold path."""
+    vol = vol_filter._compute_volatility(data)
+    return _legacy_regime_threshold_classification_reference(vol_filter, vol)
+
+
+def _assert_regime_threshold_series_equal(actual: pd.Series, expected: pd.Series) -> None:
+    pd.testing.assert_series_equal(actual, expected, check_names=True)
+    assert actual.index.equals(expected.index)
+    pd.testing.assert_index_equal(actual.index, expected.index)
+    assert actual.dtype == expected.dtype
+    assert actual.isna().equals(expected.isna())
 
 
 # ============================================================================
@@ -608,6 +657,121 @@ class TestVolRegimeNewFeatures:
         # from_config sollte regime_mode=True setzen wenn Thresholds vorhanden
         # Hier testen wir nur die Instanz
         assert filter_auto.low_vol_threshold == 50.0
+
+
+# ============================================================================
+# GOLDEN REFERENCE: REGIME THRESHOLD CLASSIFICATION (CAND-VRF-REGIME-THRESHOLD)
+# ============================================================================
+
+
+class TestVolRegimeRegimeThresholdGolden:
+    """Golden-reference contracts for regime_mode threshold classification semantics."""
+
+    @pytest.mark.parametrize(
+        ("vol_values", "min_bars", "low_threshold", "high_threshold"),
+        [
+            pytest.param([10.0, 20.0, 30.0, 40.0, 50.0], 2, 35.0, None, id="low_only"),
+            pytest.param([10.0, 20.0, 30.0, 40.0, 50.0], 2, None, 25.0, id="high_only"),
+            pytest.param([10.0, 20.0, 30.0, 40.0, 50.0], 2, 35.0, 45.0, id="both_thresholds"),
+            pytest.param([23.0, 24.0, 25.0, 26.0, 27.0], 1, 24.0, 26.0, id="exact_boundaries"),
+            pytest.param(
+                [23.9, 24.0, 24.1, 25.9, 26.0, 26.1], 1, 24.0, 26.0, id="boundary_neighbors"
+            ),
+            pytest.param([1.0, np.nan, 3.0, 4.0, 5.0], 1, 2.0, 8.0, id="nan_values"),
+            pytest.param([5.0] * 8, 3, 10.0, 20.0, id="constant_input"),
+            pytest.param([1.0, 5.0, 1.0, 5.0, 1.0, 5.0], 2, 3.0, 4.0, id="alternating"),
+            pytest.param(list(range(1, 11)), 4, 5.0, 8.0, id="monotone"),
+        ],
+    )
+    def test_regime_threshold_on_vol_series_matches_legacy_reference(
+        self,
+        vol_values: list[float],
+        min_bars: int,
+        low_threshold: float | None,
+        high_threshold: float | None,
+    ) -> None:
+        idx = pd.date_range("2024-01-01", periods=len(vol_values), freq="h", tz="UTC")
+        vol = pd.Series(vol_values, index=idx, dtype=float)
+        config = SimpleNamespace(
+            min_bars=min_bars,
+            low_vol_threshold=low_threshold,
+            high_vol_threshold=high_threshold,
+        )
+        expected = _legacy_regime_threshold_classification_reference(config, vol)
+        warmup_mask = pd.Series(np.arange(len(vol)) < min_bars, index=idx)
+        valid_mask = ~warmup_mask & vol.notna()
+        low_mask = (
+            pd.Series(False, index=idx)
+            if low_threshold is None
+            else valid_mask & (vol < low_threshold)
+        )
+        high_mask = (
+            pd.Series(False, index=idx)
+            if high_threshold is None
+            else valid_mask & (vol > high_threshold) & ~low_mask
+        )
+        actual = pd.Series(0, index=idx, dtype=int).mask(low_mask, 1).mask(high_mask, -1)
+        actual.name = "vol_regime"
+        _assert_regime_threshold_series_equal(actual, expected)
+
+    @pytest.mark.parametrize(
+        "data_factory",
+        [
+            pytest.param(create_ohlcv_data, id="ohlcv"),
+            pytest.param(create_mixed_volatility_data, id="mixed_vol"),
+            pytest.param(create_low_volatility_data, id="low_vol"),
+            pytest.param(create_high_volatility_data, id="high_vol"),
+        ],
+    )
+    @pytest.mark.parametrize(
+        "vol_method",
+        ["atr", "std", "realized", "range"],
+    )
+    def test_regime_mode_generate_signals_matches_legacy_reference(
+        self,
+        data_factory,
+        vol_method: str,
+    ) -> None:
+        df = data_factory(200)
+        vol_filter = VolRegimeFilter(
+            vol_window=14,
+            vol_method=vol_method,
+            low_vol_threshold=50.0,
+            high_vol_threshold=500.0,
+            lookback_percentile=50,
+            min_bars=20,
+            regime_mode=True,
+        )
+        actual = vol_filter.generate_signals(df)
+        expected = _reference_regime_threshold_signals(vol_filter, df)
+        _assert_regime_threshold_series_equal(actual, expected)
+
+    def test_regime_threshold_low_only_integration(self) -> None:
+        df = create_low_volatility_data(200)
+        vol_filter = VolRegimeFilter(vol_window=14, low_vol_threshold=50.0, regime_mode=True)
+        actual = vol_filter.generate_signals(df)
+        expected = _reference_regime_threshold_signals(vol_filter, df)
+        _assert_regime_threshold_series_equal(actual, expected)
+
+    def test_regime_threshold_high_only_integration(self) -> None:
+        df = create_high_volatility_data(200)
+        vol_filter = VolRegimeFilter(vol_window=14, high_vol_threshold=200.0, regime_mode=True)
+        actual = vol_filter.generate_signals(df)
+        expected = _reference_regime_threshold_signals(vol_filter, df)
+        _assert_regime_threshold_series_equal(actual, expected)
+
+    def test_regime_threshold_min_bars_warmup_integration(self) -> None:
+        df = create_ohlcv_data(200)
+        vol_filter = VolRegimeFilter(
+            vol_window=14,
+            low_vol_threshold=50.0,
+            min_bars=30,
+            lookback_percentile=50,
+            regime_mode=True,
+        )
+        actual = vol_filter.generate_signals(df)
+        expected = _reference_regime_threshold_signals(vol_filter, df)
+        _assert_regime_threshold_series_equal(actual, expected)
 
 
 # ============================================================================

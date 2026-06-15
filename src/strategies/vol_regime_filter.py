@@ -402,29 +402,20 @@ class VolRegimeFilter(BaseStrategy):
             self.low_vol_threshold is not None or self.high_vol_threshold is not None
         ):
             # Regime-Mode: 1=Low-Vol, -1=High-Vol, 0=Neutral
-            regime_signal = pd.Series(0, index=data.index, dtype=int)
+            warmup_mask = pd.Series(np.arange(len(data)) < self.min_bars, index=data.index)
+            valid_mask = ~warmup_mask & vol.notna()
 
-            # Vor min_bars: Neutral (0)
-            for i in range(len(data)):
-                if i < self.min_bars:
-                    regime_signal.iloc[i] = 0
-                    continue
+            low_mask = pd.Series(False, index=data.index)
+            if self.low_vol_threshold is not None:
+                low_mask = valid_mask & (vol < self.low_vol_threshold)
 
-                current_vol = vol.iloc[i]
-                if pd.isna(current_vol):
-                    regime_signal.iloc[i] = 0
-                    continue
+            high_mask = pd.Series(False, index=data.index)
+            if self.high_vol_threshold is not None:
+                high_mask = valid_mask & (vol > self.high_vol_threshold) & ~low_mask
 
-                # Low-Vol: Risk-On (1)
-                if self.low_vol_threshold is not None and current_vol < self.low_vol_threshold:
-                    regime_signal.iloc[i] = 1
-                # High-Vol: Risk-Off (-1)
-                elif self.high_vol_threshold is not None and current_vol > self.high_vol_threshold:
-                    regime_signal.iloc[i] = -1
-                # Neutral (0) - zwischen den Thresholds oder außerhalb
-                else:
-                    regime_signal.iloc[i] = 0
-
+            regime_signal = (
+                pd.Series(0, index=data.index, dtype=int).mask(low_mask, 1).mask(high_mask, -1)
+            )
             regime_signal.name = "vol_regime"
             return regime_signal
 
