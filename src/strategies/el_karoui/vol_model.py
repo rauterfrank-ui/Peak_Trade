@@ -413,7 +413,19 @@ class ElKarouiVolModel:
         vol = self.calculate_realized_vol(returns)
         percentiles = self.calculate_vol_percentile(vol)
 
-        regimes = percentiles.apply(lambda x: self.regime_for_percentile(x).value)
+        if len(percentiles) == 0:
+            return pd.Series([], dtype=np.float64, index=percentiles.index, name=percentiles.name)
+
+        low = self.config.low_threshold
+        high = self.config.high_threshold
+        valid = percentiles.notna()
+        regimes = pd.Series(
+            VolRegime.MEDIUM.value,
+            index=percentiles.index,
+            name=percentiles.name,
+        )
+        regimes = regimes.mask(valid & (percentiles < low), VolRegime.LOW.value)
+        regimes = regimes.mask(valid & (percentiles > high), VolRegime.HIGH.value)
 
         return regimes
 
