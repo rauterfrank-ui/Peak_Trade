@@ -487,6 +487,167 @@ class TestConfig:
 # =============================================================================
 
 
+# =============================================================================
+# GOLDEN REFERENCE: vol_quantiles rolling rank(pct=True) semantics (0-1 scale)
+# =============================================================================
+
+
+def _legacy_aec_vol_quantile_reference(
+    vol_annualized: pd.Series,
+    lookback_window: int,
+    min_periods: int,
+) -> pd.Series:
+    """Test-only reference for legacy compute_elkaroui_regime_labels vol_quantiles."""
+    return vol_annualized.rolling(
+        window=lookback_window,
+        min_periods=min_periods,
+    ).apply(
+        lambda x: pd.Series(x).rank(pct=True).iloc[-1],
+        raw=False,
+    )
+
+
+def _reference_compute_elkaroui_regime_labels(
+    data: pd.DataFrame,
+    elkaroui_params: Dict[str, object],
+) -> pd.Series:
+    """Independent legacy reference for compute_elkaroui_regime_labels."""
+    from src.experiments.armstrong_elkaroui_combi_experiment import ElKarouiRegime
+
+    vol_window = int(elkaroui_params.get("vol_window", 20))
+    vol_threshold_low = float(elkaroui_params.get("vol_threshold_low", 0.3))
+    vol_threshold_high = float(elkaroui_params.get("vol_threshold_high", 0.7))
+    use_ewm = bool(elkaroui_params.get("use_ewm", True))
+    annualization_factor = float(elkaroui_params.get("annualization_factor", 252.0))
+
+    returns = data["close"].pct_change()
+    if use_ewm:
+        vol = returns.ewm(span=vol_window, min_periods=vol_window).std()
+    else:
+        vol = returns.rolling(window=vol_window, min_periods=vol_window).std()
+
+    vol_annualized = vol * np.sqrt(annualization_factor)
+
+    lookback_window = min(252, len(data) // 2)
+    if lookback_window < vol_window:
+        lookback_window = vol_window
+
+    vol_quantiles = _legacy_aec_vol_quantile_reference(
+        vol_annualized,
+        lookback_window=lookback_window,
+        min_periods=vol_window,
+    )
+
+    labels = pd.Series(ElKarouiRegime.MEDIUM, index=data.index)
+    labels[vol_quantiles <= vol_threshold_low] = ElKarouiRegime.LOW
+    labels[vol_quantiles >= vol_threshold_high] = ElKarouiRegime.HIGH
+    return labels
+
+
+def _assert_vol_quantile_series_equal(actual: pd.Series, expected: pd.Series) -> None:
+    pd.testing.assert_series_equal(actual, expected, check_names=False)
+    assert actual.index.equals(expected.index)
+    assert actual.dtype == expected.dtype
+    assert actual.isna().equals(expected.isna())
+
+
+def _production_aec_vol_quantile_from_annualized(
+    vol_annualized: pd.Series,
+    *,
+    lookback_window: int,
+    min_periods: int,
+) -> pd.Series:
+    from src.experiments.armstrong_elkaroui_combi_experiment import (
+        _rolling_vol_quantile_rank,
+    )
+
+    return _rolling_vol_quantile_rank(
+        vol_annualized,
+        lookback_window=lookback_window,
+        min_periods=min_periods,
+    )
+
+
+class TestAecVolQuantileRollingPercentileGolden:
+    """Golden-reference contracts for AEC vol_quantiles rolling rank semantics."""
+
+    @pytest.mark.parametrize(
+        ("values", "lookback_window", "min_periods"),
+        [
+            pytest.param([], 3, 2, id="empty"),
+            pytest.param([1.0], 3, 2, id="single_element"),
+            pytest.param([1.0, 2.0], 5, 2, id="shorter_than_window"),
+            pytest.param([1.0, 2.0, 3.0, 4.0, 5.0], 3, 2, id="monotone_ascending"),
+            pytest.param([5.0, 4.0, 3.0, 2.0, 1.0], 3, 2, id="monotone_descending"),
+            pytest.param([1.0, 2.0, 2.0, 2.0, 3.0], 4, 2, id="ties"),
+            pytest.param([1.0, 1.0, 2.0, 2.0, 3.0, 3.0], 4, 2, id="repeated_values"),
+            pytest.param([2.0, 2.0, 2.0], 3, 3, id="constant"),
+            pytest.param([1.0, np.nan, 3.0, 4.0, 5.0], 3, 2, id="nan_at_window_start"),
+            pytest.param([np.nan, 1.0, 2.0, 3.0], 3, 2, id="nan_leading"),
+            pytest.param([1.0, 2.0, np.nan], 3, 2, id="nan_last_window_value"),
+            pytest.param([1.0, np.inf, 3.0, 4.0], 3, 2, id="positive_infinity"),
+            pytest.param([1.0, -np.inf, 3.0, 4.0], 3, 2, id="negative_infinity"),
+            pytest.param(list(range(1, 9)), 4, 2, id="multi_window"),
+            pytest.param([7.0] * 6, 4, 2, id="constant_long"),
+            pytest.param([0.29, 0.30, 0.31, 0.32, 0.33], 3, 2, id="threshold_boundary_values"),
+        ],
+    )
+    def test_vol_quantile_matches_legacy_reference(
+        self,
+        values: list[float],
+        lookback_window: int,
+        min_periods: int,
+    ) -> None:
+        idx = pd.date_range("2024-01-01", periods=len(values), freq="h", tz="UTC")
+        series = pd.Series(values, index=idx, dtype=float, name="vol_annualized")
+        expected = _legacy_aec_vol_quantile_reference(
+            series,
+            lookback_window=lookback_window,
+            min_periods=min_periods,
+        )
+        actual = _production_aec_vol_quantile_from_annualized(
+            series,
+            lookback_window=lookback_window,
+            min_periods=min_periods,
+        )
+        _assert_vol_quantile_series_equal(actual, expected)
+
+    def test_vol_quantile_non_trivial_index_and_series_name(self) -> None:
+        idx = pd.Index([10, 20, 30, 40, 50], name="bar_id")
+        series = pd.Series([1.0, 2.0, 2.0, 4.0, 5.0], index=idx, dtype=float, name="vol_x")
+        expected = _legacy_aec_vol_quantile_reference(series, lookback_window=3, min_periods=2)
+        actual = _production_aec_vol_quantile_from_annualized(
+            series,
+            lookback_window=3,
+            min_periods=2,
+        )
+        _assert_vol_quantile_series_equal(actual, expected)
+        assert actual.name is None
+
+    def test_compute_elkaroui_regime_labels_matches_legacy_reference(
+        self,
+        sample_ohlcv_data: pd.DataFrame,
+    ) -> None:
+        from src.experiments.armstrong_elkaroui_combi_experiment import (
+            compute_elkaroui_regime_labels,
+        )
+
+        elkaroui_params = {
+            "vol_window": 20,
+            "vol_threshold_low": 0.3,
+            "vol_threshold_high": 0.7,
+            "use_ewm": True,
+            "annualization_factor": 252.0,
+        }
+        actual = compute_elkaroui_regime_labels(sample_ohlcv_data, elkaroui_params)
+        expected = _reference_compute_elkaroui_regime_labels(
+            sample_ohlcv_data,
+            elkaroui_params,
+        )
+        pd.testing.assert_series_equal(actual, expected, check_names=False)
+        assert actual.index.equals(expected.index)
+
+
 class TestCLIIntegration:
     """Tests für CLI-Integration."""
 
