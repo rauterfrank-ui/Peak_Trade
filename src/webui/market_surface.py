@@ -173,7 +173,27 @@ def _get_shared_ohlcv_loader():
 
 
 def _utc_now_iso() -> str:
+    fixed = (os.environ.get("PEAK_TRADE_FIXED_GENERATED_AT_UTC") or "").strip()
+    if fixed:
+        return fixed
     return datetime.now(timezone.utc).isoformat()
+
+
+def _pin_market_page_display_timestamps(dp_display: Dict[str, Any]) -> None:
+    """Pin SSR display timestamps when tests set PEAK_TRADE_FIXED_GENERATED_AT_UTC."""
+    fixed = (os.environ.get("PEAK_TRADE_FIXED_GENERATED_AT_UTC") or "").strip()
+    if not fixed:
+        return
+    meta = dp_display.get("display_snapshot_meta")
+    if not isinstance(meta, dict):
+        return
+    text = fixed[:-1] + "+00:00" if fixed.endswith("Z") else fixed
+    dt = datetime.fromisoformat(text)
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    meta["assembled_at_iso"] = (
+        dt.astimezone(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+    )
 
 
 def _normalize_source(raw: str | None) -> MarketSource:
@@ -2091,6 +2111,7 @@ def build_market_v0_page_template_context(
         workflow_dashboard = build_workflow_dashboard_display_context()
         last_paper_run_panel = build_last_paper_run_panel_display_context()
     dp_display = build_static_dashboard_display_dict()
+    _pin_market_page_display_timestamps(dp_display)
     f5_dashboard = build_futures_read_only_market_dashboard_display_context()
     futures_ohlcv = build_market_futures_ohlcv_display_context()
     governed_top20 = build_market_governed_top20_display_context(
