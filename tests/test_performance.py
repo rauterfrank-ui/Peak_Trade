@@ -328,12 +328,17 @@ class TestPerformanceIntegration:
     def test_nested_measurements(self):
         """Test nested performance measurements."""
         monitor = PerformanceMonitor()
+        fake_now = [0.0]
 
-        with monitor.measure("outer"):
-            time.sleep(0.01)
-            with monitor.measure("inner"):
-                time.sleep(0.005)
-            time.sleep(0.01)
+        def fake_perf_counter() -> float:
+            return fake_now[0]
+
+        with patch("src.core.performance.time.perf_counter", fake_perf_counter):
+            with monitor.measure("outer"):
+                fake_now[0] += 0.01
+                with monitor.measure("inner"):
+                    fake_now[0] += 0.005
+                fake_now[0] += 0.01
 
         metrics = monitor.get_metrics()
 
@@ -341,7 +346,15 @@ class TestPerformanceIntegration:
         assert len(metrics["outer"]) == 1
         assert len(metrics["inner"]) == 1
 
-        # Outer should take longer than inner
+        # Inner duration is isolated; outer includes inner plus surrounding work
+        inner_start = 0.01
+        inner_end = 0.015
+        outer_start = 0.0
+        outer_end = 0.025
+        expected_inner_ms = (inner_end - inner_start) * 1000
+        expected_outer_ms = (outer_end - outer_start) * 1000
+        assert metrics["inner"][0].duration_ms == expected_inner_ms
+        assert metrics["outer"][0].duration_ms == expected_outer_ms
         assert metrics["outer"][0].duration_ms > metrics["inner"][0].duration_ms
 
     def test_exception_handling_in_context(self):
