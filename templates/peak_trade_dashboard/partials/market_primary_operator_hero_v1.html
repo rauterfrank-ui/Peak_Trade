@@ -20,16 +20,26 @@
   {% endif %}
 >
 
-  {% if query.source == 'futures' and data_unavailable %}
+  {% if query.source == 'futures' and not governed_top20.snapshot_available %}
   <div
     class="rounded-lg border border-slate-600/60 bg-slate-950/50 px-3 py-2 text-sm text-slate-200"
     role="alert"
     data-market-futures-empty-state-v1="true"
     data-market-futures-first-fail-closed-v1="true"
+    data-market-futures-data-unavailable-v1="true"
   >
-    <strong class="text-slate-100">Futures snapshot unavailable</strong>
-    — governed futures data required. No spot OHLCV or synthetic fallback on the canonical <span class="font-mono">/market</span> default.
+    <strong class="text-slate-100">Futures data unavailable</strong>
+    — governed futures snapshot required. No spot OHLCV or synthetic fallback on the canonical <span class="font-mono">/market</span> default.
     {% if primary_values.unavailable_reason %}<span class="block mt-1 font-mono text-[11px] text-slate-400">{{ primary_values.unavailable_reason|e }}</span>{% endif %}
+  </div>
+  {% elif query.source == 'futures' and data_unavailable and governed_top20.snapshot_available %}
+  <div
+    class="rounded-lg border border-slate-700/55 bg-slate-950/45 px-3 py-2 text-[11px] text-slate-300"
+    role="status"
+    data-market-futures-ohlcv-not-wired-v1="true"
+  >
+    Futures OHLCV chart not wired on default path — governed ranking snapshot is available below (read-only display).
+    {% if primary_values.unavailable_reason %}<span class="block mt-1 font-mono text-[10px] text-slate-500">{{ primary_values.unavailable_reason|e }}</span>{% endif %}
   </div>
   {% endif %}
 
