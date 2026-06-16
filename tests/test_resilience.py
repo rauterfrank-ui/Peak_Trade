@@ -78,58 +78,83 @@ class TestCircuitBreaker:
 
     def test_circuit_breaker_half_open_recovery(self):
         """Test circuit transitions to HALF_OPEN and recovers."""
-        breaker = CircuitBreaker(failure_threshold=2, recovery_timeout=0.1, name="recovery_test")
-
         call_count = [0]
+        fake_now = [1_000_000.0]
 
-        @breaker.call
-        def sometimes_failing():
-            call_count[0] += 1
-            # Fail first 2 times, then succeed
-            if call_count[0] <= 2:
-                raise ValueError("Failing")
-            return "success"
+        def fake_time() -> float:
+            return fake_now[0]
 
-        # Cause 2 failures to open circuit
-        for _ in range(2):
-            with pytest.raises(ValueError):
+        with patch("src.core.resilience.time.time", fake_time):
+            breaker = CircuitBreaker(
+                failure_threshold=2, recovery_timeout=0.1, name="recovery_test"
+            )
+
+            @breaker.call
+            def sometimes_failing():
+                call_count[0] += 1
+                # Fail first 2 times, then succeed
+                if call_count[0] <= 2:
+                    raise ValueError("Failing")
+                return "success"
+
+            # Cause 2 failures to open circuit
+            for _ in range(2):
+                with pytest.raises(ValueError):
+                    sometimes_failing()
+
+            assert breaker.state == CircuitState.OPEN
+
+            # Still open before recovery timeout elapses
+            with pytest.raises(Exception, match="CircuitBreaker.*is OPEN"):
                 sometimes_failing()
+            assert call_count[0] == 2
 
-        assert breaker.state == CircuitState.OPEN
+            # Advance past recovery_timeout (0.1s) without wall-clock wait
+            fake_now[0] += 0.11
 
-        # Wait for recovery timeout
-        time.sleep(0.15)
+            # Next call should transition to HALF_OPEN and succeed
+            result = sometimes_failing()
 
-        # Next call should transition to HALF_OPEN and succeed
-        result = sometimes_failing()
-
-        assert result == "success"
-        assert breaker.state == CircuitState.CLOSED
-        assert breaker.stats.success_count == 1
+            assert result == "success"
+            assert breaker.state == CircuitState.CLOSED
+            assert breaker.stats.success_count == 1
 
     def test_circuit_breaker_half_open_failure(self):
         """Test circuit reopens if recovery attempt fails."""
-        breaker = CircuitBreaker(failure_threshold=2, recovery_timeout=0.1, name="reopen_test")
+        call_count = [0]
+        fake_now = [1_000_000.0]
 
-        @breaker.call
-        def always_fails():
-            raise ValueError("Always fails")
+        def fake_time() -> float:
+            return fake_now[0]
 
-        # Cause 2 failures to open circuit
-        for _ in range(2):
+        with patch("src.core.resilience.time.time", fake_time):
+            breaker = CircuitBreaker(failure_threshold=2, recovery_timeout=0.1, name="reopen_test")
+
+            @breaker.call
+            def always_fails():
+                call_count[0] += 1
+                raise ValueError("Always fails")
+
+            # Cause 2 failures to open circuit
+            for _ in range(2):
+                with pytest.raises(ValueError):
+                    always_fails()
+
+            assert breaker.state == CircuitState.OPEN
+
+            # Still open before recovery timeout elapses
+            with pytest.raises(Exception, match="CircuitBreaker.*is OPEN"):
+                always_fails()
+            assert call_count[0] == 2
+
+            # Advance past recovery_timeout (0.1s) without wall-clock wait
+            fake_now[0] += 0.11
+
+            # Recovery attempt should fail and reopen circuit
             with pytest.raises(ValueError):
                 always_fails()
 
-        assert breaker.state == CircuitState.OPEN
-
-        # Wait for recovery timeout
-        time.sleep(0.15)
-
-        # Recovery attempt should fail and reopen circuit
-        with pytest.raises(ValueError):
-            always_fails()
-
-        assert breaker.state == CircuitState.OPEN
+            assert breaker.state == CircuitState.OPEN
 
     def test_circuit_breaker_manual_reset(self):
         """Test manual reset of circuit breaker."""
