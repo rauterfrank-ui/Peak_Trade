@@ -185,7 +185,7 @@ def test_query_preservation_in_top50_toggle_href(client_full: TestClient) -> Non
     path = (
         "/market?symbol=SOLUSDT&top_n=20"
         "&matrix_filter_symbol=SOL"
-        "&matrix_filter_f5_status=futures_metadata_ready"
+        "&matrix_filter_f5_status=futures_metadata_partial"
         "&matrix_filter_freshness=fresh"
         "&matrix_sort_field=symbol"
         "&matrix_sort_direction=desc"
@@ -195,7 +195,7 @@ def test_query_preservation_in_top50_toggle_href(client_full: TestClient) -> Non
     top50 = hrefs[50]
     assert "symbol=SOLUSDT" in top50
     assert "matrix_filter_symbol=SOL" in top50
-    assert "matrix_filter_f5_status=futures_metadata_ready" in top50
+    assert "matrix_filter_f5_status=futures_metadata_partial" in top50
     assert "matrix_filter_freshness=fresh" in top50
     assert "matrix_sort_field=symbol" in top50
     assert "matrix_sort_direction=desc" in top50

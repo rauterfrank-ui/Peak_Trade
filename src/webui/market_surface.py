@@ -17,6 +17,7 @@ Legacy Spot/Synthetic nur explizit via ``source=kraken`` oder ``source=dummy`` m
 
 from __future__ import annotations
 
+import functools
 import importlib.util
 import json
 import logging
@@ -94,6 +95,9 @@ CANONICAL_MATRIX_TEMPLATE_OWNER = (
 CANONICAL_RANKING_FUNNEL_OWNER = "src/webui/market_ranking_funnel_runtime_v0.py"
 CANONICAL_ELIGIBILITY_OWNER = "src/webui/market_instrument_eligibility_v0.py"
 CANONICAL_STYLE_OWNER = CANONICAL_MATRIX_TEMPLATE_OWNER
+CANONICAL_URL_BUILDER_OWNER = "src/webui/market_surface.py"
+CANONICAL_FILTER_OWNER = "src/webui/market_surface.py"
+CANONICAL_SORT_OWNER = "src/webui/market_surface.py"
 CANONICAL_CLIENT_INTERACTION_OWNER = CANONICAL_MATRIX_TEMPLATE_OWNER
 CANONICAL_WORKSPACE_TEMPLATE_OWNER = (
     "templates/peak_trade_dashboard/partials/market_primary_operator_hero_v1.html"
@@ -127,6 +131,14 @@ AVAILABLE_SORT_FIELDS: tuple[str, ...] = (
     "volume",
 )
 AVAILABLE_FILTER_FIELDS: tuple[str, ...] = ("symbol", "f5_status", "freshness")
+ALLOWED_FRESHNESS_FILTER_VALUES: frozenset[str] = frozenset({"fresh", "stale"})
+MATRIX_VIEW_QUERY_PARAM_NAMES: tuple[str, ...] = (
+    "matrix_filter_symbol",
+    "matrix_filter_f5_status",
+    "matrix_filter_freshness",
+    "matrix_sort_field",
+    "matrix_sort_direction",
+)
 
 MARKET_SINGLE_PAGE_CONSOLIDATION_ENABLED_ENV = (
     "PEAK_TRADE_MARKET_SINGLE_PAGE_CONSOLIDATION_V1_ENABLED"
@@ -245,13 +257,12 @@ def _sanitize_matrix_filter_symbol(raw: str | None) -> str:
 
 
 def _sanitize_matrix_filter_f5_status(raw: str | None) -> str:
-    value = (raw or "").strip()[:64]
-    return value
+    return (raw or "").strip()[:64]
 
 
 def _sanitize_matrix_filter_freshness(raw: str | None) -> str:
     value = (raw or "").strip().lower()
-    return value if value in {"fresh", "stale"} else ""
+    return value if value in ALLOWED_FRESHNESS_FILTER_VALUES else ""
 
 
 def _sanitize_matrix_sort_field(raw: str | None) -> str:
@@ -332,6 +343,393 @@ def build_market_canonical_href(
         include_default_top_n=include_default_top_n,
     )
     return f"{CANONICAL_MARKET_ROUTE}?{urlencode(params)}"
+
+
+def _merge_market_view_extras(
+    base: MarketViewQueryExtras | None,
+    *,
+    matrix_filter_symbol: str | None = None,
+    matrix_filter_f5_status: str | None = None,
+    matrix_filter_freshness: str | None = None,
+    matrix_sort_field: str | None = None,
+    matrix_sort_direction: str | None = None,
+    clear_filters: bool = False,
+    clear_sort: bool = False,
+) -> MarketViewQueryExtras:
+    current = base or MarketViewQueryExtras()
+    if clear_filters:
+        return MarketViewQueryExtras(
+            matrix_sort_field="" if clear_sort else current.matrix_sort_field,
+            matrix_sort_direction="" if clear_sort else current.matrix_sort_direction,
+        )
+    if clear_sort:
+        return MarketViewQueryExtras(
+            matrix_filter_symbol=current.matrix_filter_symbol,
+            matrix_filter_f5_status=current.matrix_filter_f5_status,
+            matrix_filter_freshness=current.matrix_filter_freshness,
+        )
+    return MarketViewQueryExtras(
+        matrix_filter_symbol=(
+            matrix_filter_symbol
+            if matrix_filter_symbol is not None
+            else current.matrix_filter_symbol
+        ),
+        matrix_filter_f5_status=(
+            matrix_filter_f5_status
+            if matrix_filter_f5_status is not None
+            else current.matrix_filter_f5_status
+        ),
+        matrix_filter_freshness=(
+            matrix_filter_freshness
+            if matrix_filter_freshness is not None
+            else current.matrix_filter_freshness
+        ),
+        matrix_sort_field=(
+            matrix_sort_field if matrix_sort_field is not None else current.matrix_sort_field
+        ),
+        matrix_sort_direction=(
+            matrix_sort_direction
+            if matrix_sort_direction is not None
+            else current.matrix_sort_direction
+        ),
+    )
+
+
+def normalize_matrix_view_extras(
+    extras: MarketViewQueryExtras | None,
+    *,
+    allowed_f5_statuses: tuple[str, ...] | list[str] = (),
+) -> MarketViewQueryExtras:
+    """Fail-closed normalization for matrix view-only query state."""
+    base = extras or MarketViewQueryExtras()
+    f5 = base.matrix_filter_f5_status
+    if f5 and allowed_f5_statuses and f5 not in allowed_f5_statuses:
+        f5 = ""
+    sort_field = base.matrix_sort_field
+    if sort_field and sort_field not in AVAILABLE_SORT_FIELDS:
+        sort_field = ""
+    sort_direction = base.matrix_sort_direction
+    if sort_direction and sort_direction not in {"asc", "desc"}:
+        sort_direction = ""
+    if sort_field and not sort_direction:
+        sort_direction = "asc" if sort_field == "rank" else "desc"
+    if sort_direction and not sort_field:
+        sort_direction = ""
+    return MarketViewQueryExtras(
+        matrix_filter_symbol=_sanitize_matrix_filter_symbol(base.matrix_filter_symbol),
+        matrix_filter_f5_status=f5,
+        matrix_filter_freshness=_sanitize_matrix_filter_freshness(base.matrix_filter_freshness),
+        matrix_sort_field=sort_field,
+        matrix_sort_direction=sort_direction,
+    )
+
+
+def resolve_matrix_sort_state(extras: MarketViewQueryExtras) -> tuple[str, str, bool]:
+    """Return active sort field, direction, and whether sort params were explicit."""
+    explicit = bool(extras.matrix_sort_field or extras.matrix_sort_direction)
+    field = extras.matrix_sort_field or "rank"
+    if field not in AVAILABLE_SORT_FIELDS:
+        field = "rank"
+        explicit = False
+    direction = extras.matrix_sort_direction or ("asc" if field == "rank" else "desc")
+    if direction not in {"asc", "desc"}:
+        direction = "asc" if field == "rank" else "desc"
+        explicit = False
+    return field, direction, explicit
+
+
+def _matrix_row_matches_view_filters(row: dict[str, Any], extras: MarketViewQueryExtras) -> bool:
+    sym_q = extras.matrix_filter_symbol.strip().upper()
+    if sym_q and sym_q not in str(row.get("symbol") or "").upper():
+        return False
+    f5 = extras.matrix_filter_f5_status
+    if f5 and str(row.get("f5_status") or "") != f5:
+        return False
+    freshness = extras.matrix_filter_freshness
+    if freshness and str(row.get("freshness_filter") or "") != freshness:
+        return False
+    return True
+
+
+def _matrix_row_sort_key(row: dict[str, Any], field: str) -> tuple[int, Any]:
+    if field == "symbol":
+        return (0, str(row.get("symbol") or "").lower())
+    if field == "f5_status":
+        return (0, str(row.get("f5_status") or "").lower())
+    attr = {
+        "rank": "rank_sort",
+        "score": "score_sort",
+        "last_price": "last_price_sort",
+        "change": "change_sort",
+        "volume": "volume_sort",
+    }.get(field, "rank_sort")
+    value = row.get(attr)
+    if value is None:
+        return (1, "")
+    if isinstance(value, (int, float)):
+        return (0, value)
+    return (0, str(value).lower())
+
+
+def sort_matrix_rows(
+    rows: list[dict[str, Any]],
+    *,
+    field: str,
+    direction: str,
+) -> list[dict[str, Any]]:
+    dir_mult = -1 if direction == "desc" else 1
+
+    def _cmp(a: dict[str, Any], b: dict[str, Any]) -> int:
+        ak = _matrix_row_sort_key(a, field)
+        bk = _matrix_row_sort_key(b, field)
+        if ak[0] != bk[0]:
+            return ak[0] - bk[0]
+        if ak[1] == bk[1]:
+            ar = _matrix_row_sort_key(a, "rank")
+            br = _matrix_row_sort_key(b, "rank")
+            if ar[1] == br[1]:
+                return 0
+            if ar[1] == "":
+                return 1
+            if br[1] == "":
+                return -1
+            return (ar[1] > br[1]) - (ar[1] < br[1])
+        if ak[1] < bk[1]:
+            return -1 * dir_mult
+        return 1 * dir_mult
+
+    return sorted(rows, key=functools.cmp_to_key(_cmp))
+
+
+def apply_matrix_view_state(
+    rows: list[dict[str, Any]],
+    extras: MarketViewQueryExtras | None,
+    *,
+    allowed_f5_statuses: tuple[str, ...] | list[str],
+) -> tuple[list[dict[str, Any]], MarketViewQueryExtras, str, str, bool]:
+    normalized = normalize_matrix_view_extras(extras, allowed_f5_statuses=allowed_f5_statuses)
+    filtered = [row for row in rows if _matrix_row_matches_view_filters(row, normalized)]
+    sort_field, sort_direction, explicit_sort = resolve_matrix_sort_state(normalized)
+    if explicit_sort:
+        filtered = sort_matrix_rows(filtered, field=sort_field, direction=sort_direction)
+    no_results = len(filtered) == 0 and len(rows) > 0
+    return filtered, normalized, sort_field, sort_direction, no_results
+
+
+def build_market_matrix_view_href(
+    *,
+    source: str,
+    symbol: str,
+    timeframe: str,
+    limit: int,
+    top_n: int = DEFAULT_TOP_N,
+    extras: MarketViewQueryExtras | None = None,
+    matrix_filter_symbol: str | None = None,
+    matrix_filter_f5_status: str | None = None,
+    matrix_filter_freshness: str | None = None,
+    matrix_sort_field: str | None = None,
+    matrix_sort_direction: str | None = None,
+    clear_filters: bool = False,
+    clear_sort: bool = False,
+    include_default_top_n: bool = False,
+) -> str:
+    merged = _merge_market_view_extras(
+        extras,
+        matrix_filter_symbol=matrix_filter_symbol,
+        matrix_filter_f5_status=matrix_filter_f5_status,
+        matrix_filter_freshness=matrix_filter_freshness,
+        matrix_sort_field=matrix_sort_field,
+        matrix_sort_direction=matrix_sort_direction,
+        clear_filters=clear_filters,
+        clear_sort=clear_sort,
+    )
+    return build_market_canonical_href(
+        source=source,
+        symbol=symbol,
+        timeframe=timeframe,
+        limit=limit,
+        top_n=top_n,
+        extras=merged,
+        include_default_top_n=include_default_top_n,
+    )
+
+
+def build_market_matrix_sort_toggle_href(
+    *,
+    field: str,
+    source: str,
+    symbol: str,
+    timeframe: str,
+    limit: int,
+    top_n: int,
+    extras: MarketViewQueryExtras | None,
+    active_sort_field: str,
+    active_sort_direction: str,
+) -> str:
+    if field not in AVAILABLE_SORT_FIELDS:
+        field = "rank"
+    if field == active_sort_field:
+        next_direction = "desc" if active_sort_direction == "asc" else "asc"
+    else:
+        next_direction = "asc" if field == "rank" else "desc"
+    return build_market_matrix_view_href(
+        source=source,
+        symbol=symbol,
+        timeframe=timeframe,
+        limit=limit,
+        top_n=top_n,
+        extras=extras,
+        matrix_sort_field=field,
+        matrix_sort_direction=next_direction,
+    )
+
+
+def build_market_matrix_reset_filters_href(
+    *,
+    source: str,
+    symbol: str,
+    timeframe: str,
+    limit: int,
+    top_n: int,
+    extras: MarketViewQueryExtras | None,
+) -> str:
+    return build_market_matrix_view_href(
+        source=source,
+        symbol=symbol,
+        timeframe=timeframe,
+        limit=limit,
+        top_n=top_n,
+        extras=extras,
+        clear_filters=True,
+    )
+
+
+def build_market_matrix_reset_sort_href(
+    *,
+    source: str,
+    symbol: str,
+    timeframe: str,
+    limit: int,
+    top_n: int,
+    extras: MarketViewQueryExtras | None,
+) -> str:
+    return build_market_matrix_view_href(
+        source=source,
+        symbol=symbol,
+        timeframe=timeframe,
+        limit=limit,
+        top_n=top_n,
+        extras=extras,
+        clear_sort=True,
+    )
+
+
+def build_market_matrix_control_hrefs(
+    *,
+    source: str,
+    symbol: str,
+    timeframe: str,
+    limit: int,
+    top_n: int,
+    extras: MarketViewQueryExtras,
+    active_sort_field: str,
+    active_sort_direction: str,
+    f5_filter_values: list[str],
+) -> dict[str, Any]:
+    return {
+        "reset_filters": build_market_matrix_reset_filters_href(
+            source=source,
+            symbol=symbol,
+            timeframe=timeframe,
+            limit=limit,
+            top_n=top_n,
+            extras=extras,
+        ),
+        "reset_sort": build_market_matrix_reset_sort_href(
+            source=source,
+            symbol=symbol,
+            timeframe=timeframe,
+            limit=limit,
+            top_n=top_n,
+            extras=extras,
+        ),
+        "sort": {
+            field: build_market_matrix_sort_toggle_href(
+                field=field,
+                source=source,
+                symbol=symbol,
+                timeframe=timeframe,
+                limit=limit,
+                top_n=top_n,
+                extras=extras,
+                active_sort_field=active_sort_field,
+                active_sort_direction=active_sort_direction,
+            )
+            for field in AVAILABLE_SORT_FIELDS
+        },
+        "f5_status": {
+            "all": build_market_matrix_view_href(
+                source=source,
+                symbol=symbol,
+                timeframe=timeframe,
+                limit=limit,
+                top_n=top_n,
+                extras=extras,
+                matrix_filter_f5_status="",
+            ),
+            **{
+                status: build_market_matrix_view_href(
+                    source=source,
+                    symbol=symbol,
+                    timeframe=timeframe,
+                    limit=limit,
+                    top_n=top_n,
+                    extras=extras,
+                    matrix_filter_f5_status=status,
+                )
+                for status in f5_filter_values
+            },
+        },
+        "freshness": {
+            "all": build_market_matrix_view_href(
+                source=source,
+                symbol=symbol,
+                timeframe=timeframe,
+                limit=limit,
+                top_n=top_n,
+                extras=extras,
+                matrix_filter_freshness="",
+            ),
+            "fresh": build_market_matrix_view_href(
+                source=source,
+                symbol=symbol,
+                timeframe=timeframe,
+                limit=limit,
+                top_n=top_n,
+                extras=extras,
+                matrix_filter_freshness="fresh",
+            ),
+            "stale": build_market_matrix_view_href(
+                source=source,
+                symbol=symbol,
+                timeframe=timeframe,
+                limit=limit,
+                top_n=top_n,
+                extras=extras,
+                matrix_filter_freshness="stale",
+            ),
+        },
+        "filter_form_action": CANONICAL_MARKET_ROUTE,
+        "filter_form_fields": _market_query_params(
+            source=source,
+            symbol=symbol,
+            timeframe=timeframe,
+            limit=limit,
+            top_n=top_n,
+            extras=extras,
+            include_default_top_n=top_n != DEFAULT_TOP_N,
+        ),
+    }
 
 
 def _is_eligible_ranking_row(row: dict[str, Any]) -> bool:
@@ -1350,13 +1748,35 @@ def build_market_governed_top20_display_context(
 
     snapshot_available = snapshot_status in ("ready", "stale")
     f5_filter_values = sorted({str(r["f5_status"]) for r in rows})
+    producer_rows = rows
+    display_rows, resolved_extras, active_sort_field, active_sort_direction, filter_no_results = (
+        apply_matrix_view_state(
+            rows,
+            extras,
+            allowed_f5_statuses=f5_filter_values,
+        )
+    )
+    matrix_control_hrefs = build_market_matrix_control_hrefs(
+        source=source,
+        symbol=selected_symbol,
+        timeframe=timeframe,
+        limit=limit,
+        top_n=top_n,
+        extras=resolved_extras,
+        active_sort_field=active_sort_field,
+        active_sort_direction=active_sort_direction,
+        f5_filter_values=f5_filter_values,
+    )
     return {
         "section_visible": True,
         "snapshot_available": snapshot_available,
         "snapshot_status": snapshot_status,
         "display_status": "ready" if snapshot_available else snapshot_status,
-        "rows": rows,
-        "row_count": len(rows),
+        "rows": display_rows,
+        "producer_rows": producer_rows,
+        "row_count": len(producer_rows),
+        "visible_row_count": len(display_rows),
+        "filter_no_results": filter_no_results,
         "top_n": top_n,
         "top_n_default": DEFAULT_TOP_N,
         "top_n_selectable": True,
@@ -1378,6 +1798,10 @@ def build_market_governed_top20_display_context(
         "available_filter_fields": AVAILABLE_FILTER_FIELDS,
         "default_sort_field": "rank",
         "default_sort_direction": "asc",
+        "active_sort_field": active_sort_field,
+        "active_sort_direction": active_sort_direction,
+        "resolved_matrix_view_query": resolved_extras,
+        "matrix_control_hrefs": matrix_control_hrefs,
     }
 
 
@@ -1958,13 +2382,14 @@ def _find_governed_row_for_symbol(
     governed_top20: Dict[str, Any],
     symbol: str,
 ) -> dict[str, Any] | None:
-    rows = governed_top20.get("rows") if isinstance(governed_top20.get("rows"), list) else []
-    normalized = _normalize_symbol_for_match(symbol)
-    for row in rows:
-        if not isinstance(row, dict):
-            continue
-        if _normalize_symbol_for_match(str(row.get("symbol") or "")) == normalized:
-            return row
+    for key in ("producer_rows", "rows"):
+        rows = governed_top20.get(key) if isinstance(governed_top20.get(key), list) else []
+        normalized = _normalize_symbol_for_match(symbol)
+        for row in rows:
+            if not isinstance(row, dict):
+                continue
+            if _normalize_symbol_for_match(str(row.get("symbol") or "")) == normalized:
+                return row
     return None
 
 
@@ -2245,6 +2670,9 @@ def build_market_v0_page_template_context(
         top_n=top_n,
         extras=extras,
     )
+    resolved_view_query = governed_top20.get("resolved_matrix_view_query")
+    if not isinstance(resolved_view_query, MarketViewQueryExtras):
+        resolved_view_query = extras or MarketViewQueryExtras()
     selected_instrument_workspace = build_market_selected_instrument_workspace_display_context(
         symbol=symbol,
         source=source,
@@ -2288,7 +2716,7 @@ def build_market_v0_page_template_context(
                 source=source,
                 timeframe=timeframe,
                 limit=limit,
-                extras=extras,
+                extras=resolved_view_query,
             ),
             50: build_market_top_n_toggle_href(
                 top_n=50,
@@ -2296,7 +2724,7 @@ def build_market_v0_page_template_context(
                 source=source,
                 timeframe=timeframe,
                 limit=limit,
-                extras=extras,
+                extras=resolved_view_query,
             ),
         },
         "double_play_json_url": "/api/master-v2/double-play/dashboard-display.json",
@@ -2311,13 +2739,13 @@ def build_market_v0_page_template_context(
             "limit": limit,
             "source": source,
             "top_n": top_n,
-            "matrix_filter_symbol": extras.matrix_filter_symbol if extras else "",
-            "matrix_filter_f5_status": extras.matrix_filter_f5_status if extras else "",
-            "matrix_filter_freshness": extras.matrix_filter_freshness if extras else "",
-            "matrix_sort_field": extras.matrix_sort_field if extras else "",
-            "matrix_sort_direction": extras.matrix_sort_direction if extras else "",
+            "matrix_filter_symbol": resolved_view_query.matrix_filter_symbol,
+            "matrix_filter_f5_status": resolved_view_query.matrix_filter_f5_status,
+            "matrix_filter_freshness": resolved_view_query.matrix_filter_freshness,
+            "matrix_sort_field": resolved_view_query.matrix_sort_field,
+            "matrix_sort_direction": resolved_view_query.matrix_sort_direction,
         },
-        "matrix_view_query": extras or MarketViewQueryExtras(),
+        "matrix_view_query": resolved_view_query,
     }
 
 
