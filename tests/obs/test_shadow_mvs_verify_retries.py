@@ -19,19 +19,18 @@ import os
 
 import pytest
 
-# PT_PORT_BIND_GUARD: skip in sandbox unless explicitly enabled
-if os.environ.get("PEAKTRADE_ALLOW_PORT_BIND_TESTS", "0") != "1":
-    pytest.skip(
-        "port-bind tests disabled (set PEAKTRADE_ALLOW_PORT_BIND_TESTS=1 to enable)",
-        allow_module_level=True,
-    )
+# PT_PORT_BIND_GUARD: skip only when localhost port-bind is not permitted
 try:
     import socket as _pt_sock
 
     with _pt_sock.socket() as _s:
         _s.bind(("127.0.0.1", 0))
 except (PermissionError, OSError):
-    pytest.skip("port-bind not permitted in this environment (sandbox)", allow_module_level=True)
+    pytest.skip(
+        "port-bind not permitted in this environment (sandbox); "
+        "set PEAKTRADE_ALLOW_PORT_BIND_TESTS=1 to enable",
+        allow_module_level=True,
+    )
 import re
 import subprocess
 import threading
@@ -40,8 +39,6 @@ from dataclasses import dataclass, field
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
-
-pytestmark = pytest.mark.network
 
 _PROMETHEUS_MOCK_TIMESTAMP = 1_700_000_000.0
 
