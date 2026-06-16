@@ -7,7 +7,6 @@ Tests:
 - Alert routing returns expected severity
 """
 
-import time
 from datetime import datetime, timedelta
 
 import pytest
@@ -318,14 +317,30 @@ class TestOperatorAlerts:
         assert counts["P2"] == 1
         assert counts["P3"] == 0
 
-    def test_alerts_sorted_by_time(self):
+    def test_alerts_sorted_by_time(self, monkeypatch):
         """Test alerts sorted by timestamp (newest first)."""
         alerts = OperatorAlerts()
+        base = datetime(2026, 1, 1, 12, 0, 0)
+        utcnow_sequence = [
+            base,
+            base + timedelta(seconds=1),
+            base + timedelta(seconds=2),
+            base + timedelta(seconds=3),
+        ]
+        utcnow_index = [0]
+
+        def fake_utcnow():
+            ts = utcnow_sequence[utcnow_index[0]]
+            utcnow_index[0] += 1
+            return ts
+
+        class FakeDateTime:
+            utcnow = staticmethod(fake_utcnow)
+
+        monkeypatch.setattr("src.live.ops.alerts.datetime", FakeDateTime)
 
         alerts.raise_p1("DRIFT_CRITICAL", "Test 1")
-        time.sleep(0.01)
         alerts.raise_p2("DRIFT_HIGH", "Test 2")
-        time.sleep(0.01)
         alerts.raise_p1("DATA_FEED_DOWN", "Test 3")
 
         recent = alerts.get_recent_alerts(hours=24)
