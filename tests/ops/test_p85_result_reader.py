@@ -13,16 +13,29 @@ from src.ops.p85_result_reader import (
     read_p85_exchange_observation,
 )
 
+_FIXED_NOW = 1_700_000_000.0
 
-def _write_p85(base: Path, payload: dict, *, age_offset_sec: float = 0.0) -> Path:
+
+def _write_p85(
+    base: Path,
+    payload: dict,
+    *,
+    age_offset_sec: float = 0.0,
+    reference_now: float = _FIXED_NOW,
+) -> Path:
     d = base / "out" / "ops" / "run_x"
     d.mkdir(parents=True)
     p = d / "P85_RESULT.json"
     p.write_text(json.dumps(payload), encoding="utf-8")
     if age_offset_sec:
-        old = time.time() - age_offset_sec
-        os.utime(p, (old, old))
+        mtime = reference_now - age_offset_sec
+        os.utime(p, (mtime, mtime))
     return p
+
+
+def _read_p85(tmp_path: Path, **kwargs):
+    with patch("src.ops.p85_result_reader.time.time", return_value=_FIXED_NOW):
+        return read_p85_exchange_observation(tmp_path, **kwargs)
 
 
 def test_reader_ok_when_fresh_and_connectivity_true(tmp_path: Path) -> None:
@@ -34,7 +47,7 @@ def test_reader_ok_when_fresh_and_connectivity_true(tmp_path: Path) -> None:
         },
         age_offset_sec=60.0,
     )
-    out = read_p85_exchange_observation(tmp_path)
+    out = _read_p85(tmp_path)
     assert out["exchange"] == "ok"
     assert out["data_source"] == "p85_result_json"
     assert out["stale"] is False
@@ -49,7 +62,7 @@ def test_reader_degraded_when_connectivity_false(tmp_path: Path) -> None:
         {"connectivity": {"ok": False, "error": "x"}},
         age_offset_sec=10.0,
     )
-    out = read_p85_exchange_observation(tmp_path)
+    out = _read_p85(tmp_path)
     assert out["exchange"] == "degraded"
     assert out["observation_reason"] == "p85_connectivity_ok_false"
 
@@ -60,7 +73,7 @@ def test_reader_unknown_when_stale(tmp_path: Path) -> None:
         {"connectivity": {"ok": True}},
         age_offset_sec=4000.0,
     )
-    out = read_p85_exchange_observation(tmp_path)
+    out = _read_p85(tmp_path)
     assert out["exchange"] == "unknown"
     assert out["stale"] is True
     assert out["observation_reason"] == "artifact_stale"
@@ -68,16 +81,15 @@ def test_reader_unknown_when_stale(tmp_path: Path) -> None:
 
 def test_reader_ok_when_artifact_age_equals_max_age_boundary(tmp_path: Path) -> None:
     """Boundary: age_sec == max_age_sec must not use the stale early-return (strict >)."""
-    fixed_now = 1_700_000_000.0
     max_age = 250.0
-    mtime = fixed_now - max_age
+    mtime = _FIXED_NOW - max_age
     d = tmp_path / "out" / "ops" / "run_boundary"
     d.mkdir(parents=True)
     p = d / "P85_RESULT.json"
     p.write_text(json.dumps({"connectivity": {"ok": True}}), encoding="utf-8")
     os.utime(p, (mtime, mtime))
 
-    with patch("src.ops.p85_result_reader.time.time", return_value=fixed_now):
+    with patch("src.ops.p85_result_reader.time.time", return_value=_FIXED_NOW):
         out = read_p85_exchange_observation(tmp_path, max_age_sec=max_age)
 
     assert out["stale"] is False
@@ -105,7 +117,7 @@ def test_reader_unknown_when_no_file(tmp_path: Path) -> None:
 
 def test_reader_unknown_when_connectivity_not_dict(tmp_path: Path) -> None:
     _write_p85(tmp_path, {"connectivity": "bad"}, age_offset_sec=10.0)
-    out = read_p85_exchange_observation(tmp_path)
+    out = _read_p85(tmp_path)
     assert out["exchange"] == "unknown"
     assert out["observation_reason"] == "connectivity_missing_or_invalid"
 
@@ -128,6 +140,6 @@ def test_reader_picks_newest_file_by_mtime(tmp_path: Path) -> None:
 
 def test_reader_unknown_when_ok_not_boolean(tmp_path: Path) -> None:
     _write_p85(tmp_path, {"connectivity": {"ok": "yes"}}, age_offset_sec=10.0)
-    out = read_p85_exchange_observation(tmp_path)
+    out = _read_p85(tmp_path)
     assert out["exchange"] == "unknown"
     assert out["observation_reason"] == "connectivity_ok_not_boolean"
