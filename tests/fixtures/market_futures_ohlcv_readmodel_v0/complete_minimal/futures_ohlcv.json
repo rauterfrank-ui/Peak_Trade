@@ -1,0 +1,52 @@
+{
+  "readmodel_id": "market_futures_ohlcv_readmodel.v0",
+  "generated_at_iso": "2026-05-27T00:00:00Z",
+  "source": "fixture:complete_minimal",
+  "stale": false,
+  "stale_reason": null,
+  "non_authorizing": true,
+  "series": {
+    "BTCUSDT": {
+      "timeframe": "1d",
+      "bars": [
+        {
+          "ts": "2026-05-25T00:00:00+00:00",
+          "open": 68000.0,
+          "high": 68500.0,
+          "low": 67500.0,
+          "close": 68200.0,
+          "volume": 1200.5
+        },
+        {
+          "ts": "2026-05-26T00:00:00+00:00",
+          "open": 68200.0,
+          "high": 69000.0,
+          "low": 68000.0,
+          "close": 68850.0,
+          "volume": 980.25
+        },
+        {
+          "ts": "2026-05-27T00:00:00+00:00",
+          "open": 68850.0,
+          "high": 69200.0,
+          "low": 68600.0,
+          "close": 69100.0,
+          "volume": 1105.0
+        }
+      ]
+    },
+    "ETHUSDT": {
+      "timeframe": "1d",
+      "bars": [
+        {
+          "ts": "2026-05-27T00:00:00+00:00",
+          "open": 3500.0,
+          "high": 3550.0,
+          "low": 3480.0,
+          "close": 3525.0,
+          "volume": 4500.0
+        }
+      ]
+    }
+  }
+}

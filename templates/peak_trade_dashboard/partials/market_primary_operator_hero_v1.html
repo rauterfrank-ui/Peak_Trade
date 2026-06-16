@@ -37,9 +37,30 @@
     class="rounded-lg border border-slate-700/55 bg-slate-950/45 px-3 py-2 text-[11px] text-slate-300"
     role="status"
     data-market-futures-ohlcv-not-wired-v1="true"
+    {% if primary_values.unavailable_reason == 'futures_ohlcv_malformed' %}data-market-futures-ohlcv-malformed-v1="true"{% endif %}
+    {% if primary_values.unavailable_reason == 'futures_ohlcv_stale' %}data-market-futures-ohlcv-stale-v1="true"{% endif %}
+    {% if primary_values.unavailable_reason == 'futures_symbol_not_in_governed_universe' %}data-market-futures-selector-invalid-v1="true"{% endif %}
   >
-    Futures OHLCV chart not wired on default path — governed ranking snapshot is available below (read-only display).
+    {% if primary_values.unavailable_reason == 'futures_symbol_not_in_governed_universe' %}
+    <strong class="text-rose-200/90">Invalid futures instrument selection</strong> — symbol not in governed universe (fail-closed).
+    {% elif primary_values.unavailable_reason == 'futures_ohlcv_malformed' %}
+    <strong class="text-rose-200/90">Futures OHLCV invalid/malformed</strong> — no synthetic candles shown.
+    {% elif primary_values.unavailable_reason == 'futures_ohlcv_stale' %}
+    <strong class="text-amber-200/90">Futures OHLCV stale</strong> — chart unavailable (read-only fail-closed).
+    {% else %}
+    Futures OHLCV unavailable on default path — governed ranking snapshot is available below (read-only display).
+    {% endif %}
     {% if primary_values.unavailable_reason %}<span class="block mt-1 font-mono text-[10px] text-slate-500">{{ primary_values.unavailable_reason|e }}</span>{% endif %}
+  </div>
+  {% elif query.source == 'futures' and not data_unavailable %}
+  <div
+    class="rounded-lg border border-emerald-900/45 bg-emerald-950/20 px-3 py-2 text-[11px] text-emerald-100/90"
+    role="status"
+    data-market-futures-ohlcv-wired-v1="true"
+    data-market-futures-chart-complete-v1="true"
+  >
+    Futures OHLCV chart wired — read-only SSR from offline bundle.
+    {% if futures_ohlcv.source %}<span class="block mt-1 font-mono text-[10px] text-emerald-200/70">source: {{ futures_ohlcv.source|e }} · freshness: {{ futures_ohlcv.generated_at_iso|e }}</span>{% endif %}
   </div>
   {% endif %}
 
