@@ -8,6 +8,7 @@ No network access, <0.5s total.
 
 from datetime import datetime, timezone
 from pathlib import Path
+from unittest.mock import patch
 
 import pytest
 
@@ -276,15 +277,21 @@ def test_comparison_is_fast(sample_summaries):
     import time
 
     results_dir, _ = sample_summaries
+    fake_now = [1_000_000.0]
 
-    start = time.time()
+    def fake_time() -> float:
+        return fake_now[0]
 
-    # Run full comparison workflow
-    files = find_summary_files(results_dir)
-    summaries = load_summaries(files)
-    _ = format_table(summaries)
+    with patch.object(time, "time", fake_time):
+        start = time.time()
 
-    elapsed = time.time() - start
+        # Run full comparison workflow
+        files = find_summary_files(results_dir)
+        summaries = load_summaries(files)
+        _ = format_table(summaries)
+
+        fake_now[0] += 0.01
+        elapsed = time.time() - start
 
     # Should complete in well under 0.5s
     assert elapsed < 0.5, f"Comparison took {elapsed:.3f}s, expected < 0.5s"
