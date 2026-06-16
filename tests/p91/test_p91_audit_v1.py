@@ -1,6 +1,6 @@
-from pathlib import Path
 import json
-import time
+import os
+from pathlib import Path
 
 from src.ops.p91 import P91AuditContextV1, build_shadow_soak_audit_v1
 
@@ -35,12 +35,14 @@ def test_p91_insufficient_ticks(tmp_path: Path):
 def test_p91_latest_p76_status(tmp_path: Path):
     out_dir = tmp_path / "run_20260216T000000Z"
     out_dir.mkdir()
-    _mk_tick(out_dir, "tick_20260216T000001Z", "P76_READY")
-    time.sleep(0.01)
-    _mk_tick(out_dir, "tick_20260216T000002Z", "P76_NOT_READY")
+    tick_older = _mk_tick(out_dir, "tick_20260216T000001Z", "P76_READY")
+    tick_newer = _mk_tick(out_dir, "tick_20260216T000002Z", "P76_NOT_READY")
+    os.utime(tick_older, (300, 300))
+    os.utime(tick_newer, (100, 100))
     ctx = P91AuditContextV1(out_dir=out_dir, min_ticks=1)
     out = build_shadow_soak_audit_v1(ctx)
-    assert out["summary"]["latest_p76_status"] in ("ready", "not_ready")
+    assert out["summary"]["latest_tick"] == "tick_20260216T000002Z"
+    assert out["summary"]["latest_p76_status"] == "not_ready"
 
 
 def test_p91_json_serializable(tmp_path: Path):
