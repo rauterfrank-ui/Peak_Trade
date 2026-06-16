@@ -4,24 +4,70 @@
   class="rounded-lg border border-amber-900/40 bg-slate-950/70 px-2.5 py-2 ring-1 ring-amber-950/25"
   data-market-double-play-summary-visible-v1="true"
   data-market-double-play-compact-v1="true"
+  data-market-double-play-matrix-v1="true"
   data-market-single-page-section-double-play-v1="true"
   data-double-play-bull-bear-cards-v1="true"
   data-double-play-market-readonly="true"
   data-double-play-market-no-authority="true"
   data-market-remodel-secondary-double-play-v2="true"
 >
-  <h2 id="market-terminal-dp-compact-h2" class="text-[11px] font-semibold uppercase tracking-wide text-amber-200/90 m-0 mb-2">Double Play · display-only</h2>
-  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
-    {% set suit = dp_display.panels | selectattr('name', 'equalto', 'strategy_suitability') | list %}
-    {% set comp = dp_display.panels | selectattr('name', 'equalto', 'composition') | list %}
-    <article class="rounded border border-emerald-900/45 bg-emerald-950/25 px-2.5 py-2" data-double-play-bull-card-v1="true">
-      <p class="m-0 text-[10px] font-bold uppercase text-emerald-400/90">Bull / Long</p>
-      <p class="m-0 mt-1 text-slate-200 line-clamp-2">{% if suit and suit[0].summary %}{{ suit[0].summary }}{% else %}MODEL_ONLY{% endif %}</p>
-    </article>
-    <article class="rounded border border-rose-900/45 bg-rose-950/25 px-2.5 py-2" data-double-play-bear-card-v1="true">
-      <p class="m-0 text-[10px] font-bold uppercase text-rose-400/90">Bear / Short</p>
-      <p class="m-0 mt-1 text-slate-200 line-clamp-2">{% if comp and comp[0].summary %}{{ comp[0].summary }}{% else %}NONE / MODEL_ONLY{% endif %}</p>
-    </article>
+  <h2 id="market-terminal-dp-compact-h2" class="text-[11px] font-semibold uppercase tracking-wide text-amber-200/90 m-0 mb-2">Double Play · display-only matrix</h2>
+  <p class="m-0 mb-2 text-[10px] text-slate-500" data-market-double-play-readonly-marker-v1="true">Read-only · no authority · no side-switch · no side guidance</p>
+  <div class="overflow-x-auto -mx-0.5 px-0.5" data-market-double-play-matrix-scroll-v1="true">
+    <table class="w-full min-w-[640px] border-collapse text-[10px]" data-market-double-play-matrix-table-v1="true">
+      <thead>
+        <tr class="border-b border-slate-800/80 text-left text-[9px] uppercase tracking-wide text-slate-500">
+          {% for column in double_play_matrix.columns %}
+          <th scope="col" class="py-1 pr-2 font-semibold">{{ column }}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in double_play_matrix.rows %}
+        <tr class="border-b border-slate-900/70 align-top" data-market-double-play-matrix-row-v1="{{ row.dimension_slug }}">
+          <th scope="row" class="py-1.5 pr-2 font-semibold text-slate-300 whitespace-nowrap">{{ row.dimension }}</th>
+          <td class="py-1.5 pr-2 text-slate-200" data-market-double-play-bull-long-v1="true">
+            <span class="inline-flex items-center gap-1 rounded border px-1 py-0.5 font-semibold uppercase tracking-wide market-matrix-status-{{ row.bull_long.status }}" data-matrix-status-category="{{ row.bull_long.status }}">{{ row.bull_long.status_label }}</span>
+            <span class="block mt-0.5 text-slate-300">{{ row.bull_long.value }}</span>
+            {% if row.bull_long.raw_status and row.bull_long.raw_status != row.bull_long.status %}
+            <details class="mt-0.5 text-slate-500">
+              <summary class="cursor-pointer">Raw</summary>
+              <span class="font-mono">{{ row.bull_long.raw_status }}</span>
+            </details>
+            {% endif %}
+          </td>
+          <td class="py-1.5 pr-2 text-slate-200" data-market-double-play-bear-short-v1="true">
+            <span class="inline-flex items-center gap-1 rounded border px-1 py-0.5 font-semibold uppercase tracking-wide market-matrix-status-{{ row.bear_short.status }}" data-matrix-status-category="{{ row.bear_short.status }}">{{ row.bear_short.status_label }}</span>
+            <span class="block mt-0.5 text-slate-300">{{ row.bear_short.value }}</span>
+            {% if row.bear_short.raw_status and row.bear_short.raw_status != row.bear_short.status %}
+            <details class="mt-0.5 text-slate-500">
+              <summary class="cursor-pointer">Raw</summary>
+              <span class="font-mono">{{ row.bear_short.raw_status }}</span>
+            </details>
+            {% endif %}
+          </td>
+          <td class="py-1.5 pr-2 text-slate-200" data-market-double-play-common-status-v1="true">
+            <span class="inline-flex items-center gap-1 rounded border px-1 py-0.5 font-semibold uppercase tracking-wide market-matrix-status-{{ row.common_status.status }}" data-matrix-status-category="{{ row.common_status.status }}">{{ row.common_status.status_label }}</span>
+            <span class="block mt-0.5 text-slate-400">{{ row.common_status.value }}</span>
+          </td>
+          <td class="py-1.5 pr-2 text-slate-400" data-market-double-play-evidence-freshness-v1="true">
+            <span class="block font-mono text-[9px]">{{ row.evidence }}</span>
+            <span class="block font-mono text-[9px] mt-0.5">{{ row.freshness }}</span>
+          </td>
+          <td class="py-1.5 text-slate-500">{{ row.operator_hint }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
   </div>
-  <p class="m-0 mt-2 text-[10px] text-slate-500">No authority · no side-switch · read-only snapshot</p>
+  <style>
+    .market-matrix-status-active { border-color: rgb(6 78 59 / 0.55); background: rgb(2 44 34 / 0.45); color: rgb(167 243 208 / 0.95); }
+    .market-matrix-status-inactive { border-color: rgb(51 65 85 / 0.65); background: rgb(2 6 23 / 0.65); color: rgb(203 213 225 / 0.95); }
+    .market-matrix-status-blocked { border-color: rgb(127 29 29 / 0.65); background: rgb(69 10 10 / 0.45); color: rgb(254 202 202 / 0.95); }
+    .market-matrix-status-unavailable { border-color: rgb(71 85 105 / 0.65); background: rgb(15 23 42 / 0.65); color: rgb(148 163 184 / 0.95); }
+    .market-matrix-status-stale { border-color: rgb(146 64 14 / 0.65); background: rgb(69 26 3 / 0.45); color: rgb(253 230 138 / 0.95); }
+    .market-matrix-status-partial { border-color: rgb(120 53 15 / 0.65); background: rgb(69 26 3 / 0.35); color: rgb(251 191 36 / 0.95); }
+    .market-matrix-status-unknown { border-color: rgb(88 28 135 / 0.65); background: rgb(59 7 100 / 0.35); color: rgb(233 213 255 / 0.95); }
+    .market-matrix-status-not_authorized { border-color: rgb(76 29 149 / 0.65); background: rgb(46 16 101 / 0.45); color: rgb(221 214 254 / 0.95); }
+  </style>
 </section>
