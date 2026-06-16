@@ -5,7 +5,6 @@ Comprehensive tests for rate limiting functionality.
 """
 
 import pytest
-import time
 import threading
 from unittest.mock import patch
 
@@ -43,28 +42,40 @@ class TestTokenBucket:
 
     def test_token_bucket_refill(self):
         """Test token refilling over time."""
-        bucket = TokenBucket(capacity=10, refill_rate=10.0)  # 10 tokens/second
+        fake_now = [1_000_000.0]
 
-        # Use 5 tokens
-        bucket.acquire(5)
-        assert bucket.tokens == 5.0
+        def fake_time() -> float:
+            return fake_now[0]
 
-        # Wait 0.5 seconds (should add 5 tokens)
-        time.sleep(0.5)
-        bucket._refill()
+        with patch("src.core.rate_limiter.time.time", fake_time):
+            bucket = TokenBucket(capacity=10, refill_rate=10.0)  # 10 tokens/second
 
-        assert bucket.tokens == pytest.approx(10.0, abs=0.5)
+            # Use 5 tokens
+            bucket.acquire(5)
+            assert bucket.tokens == 5.0
+
+            # Advance 0.5 seconds (should add 5 tokens)
+            fake_now[0] += 0.5
+            bucket._refill()
+
+            assert bucket.tokens == pytest.approx(10.0, abs=0.5)
 
     def test_token_bucket_max_capacity(self):
         """Test that tokens don't exceed capacity."""
-        bucket = TokenBucket(capacity=10, refill_rate=10.0)
+        fake_now = [1_000_000.0]
 
-        # Wait to accumulate tokens beyond capacity
-        time.sleep(2.0)
-        bucket._refill()
+        def fake_time() -> float:
+            return fake_now[0]
 
-        # Should cap at capacity
-        assert bucket.tokens <= 10.0
+        with patch("src.core.rate_limiter.time.time", fake_time):
+            bucket = TokenBucket(capacity=10, refill_rate=10.0)
+
+            # Advance beyond capacity refill window
+            fake_now[0] += 2.0
+            bucket._refill()
+
+            # Should cap at capacity
+            assert bucket.tokens <= 10.0
 
     def test_token_bucket_get_wait_time(self):
         """Test wait time calculation."""
@@ -245,18 +256,24 @@ class TestRateLimiter:
 
     def test_rate_limiter_refill_over_time(self):
         """Test that tokens refill over time."""
-        limiter = RateLimiter(max_requests=10, window_seconds=1)  # 10 req/sec
+        fake_now = [1_000_000.0]
 
-        # Use 5 tokens
-        for _ in range(5):
-            limiter.acquire()
+        def fake_time() -> float:
+            return fake_now[0]
 
-        # Wait for refill (0.5 seconds = 5 tokens)
-        time.sleep(0.5)
+        with patch("src.core.rate_limiter.time.time", fake_time):
+            limiter = RateLimiter(max_requests=10, window_seconds=1)  # 10 req/sec
 
-        # Should be able to acquire more tokens
-        for _ in range(5):
-            assert limiter.acquire() is True
+            # Use 5 tokens
+            for _ in range(5):
+                limiter.acquire()
+
+            # Advance 0.5 seconds (5 tokens refill)
+            fake_now[0] += 0.5
+
+            # Should be able to acquire more tokens
+            for _ in range(5):
+                assert limiter.acquire() is True
 
 
 class TestRateLimitConfig:
@@ -296,17 +313,23 @@ class TestIntegration:
 
     def test_gradual_refill(self):
         """Test gradual token refilling."""
-        limiter = RateLimiter(max_requests=10, window_seconds=1)
+        fake_now = [0.0]
 
-        # Use all tokens
-        for _ in range(10):
-            limiter.acquire()
+        def fake_time() -> float:
+            return fake_now[0]
 
-        # Wait and try again periodically
-        for _ in range(5):
-            time.sleep(0.2)  # Wait for 2 tokens to refill
-            assert limiter.acquire() is True
-            assert limiter.acquire() is True
+        with patch("src.core.rate_limiter.time.time", fake_time):
+            limiter = RateLimiter(max_requests=10, window_seconds=1)
+
+            # Use all tokens
+            for _ in range(10):
+                limiter.acquire()
+
+            # Advance time in 0.2s steps (2 tokens per step) and acquire
+            for _ in range(5):
+                fake_now[0] += 0.2
+                assert limiter.acquire() is True
+                assert limiter.acquire() is True
 
     def test_mixed_endpoint_usage(self):
         """Test mixed global and endpoint-specific limits."""
