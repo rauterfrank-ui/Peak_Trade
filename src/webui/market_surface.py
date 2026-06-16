@@ -24,7 +24,7 @@ import os
 from datetime import datetime, timezone
 from pathlib import Path
 from dataclasses import dataclass
-from typing import Any, Callable, Dict, List, Literal
+from typing import Any, Callable, Dict, List, Literal, Optional
 from urllib.parse import quote, urlencode
 
 import pandas as pd
@@ -2374,18 +2374,18 @@ def create_market_router(
         timeframe: str = Query(DEFAULT_TIMEFRAME),
         limit: int = Query(DEFAULT_LIMIT, ge=1, le=MAX_OHLCV_LIMIT),
         source: str = Query(DEFAULT_SOURCE),
-        top_n: str | None = Query(None, description="Governed Top-N list size (20 or 50)"),
-        matrix_filter_symbol: str | None = Query(
+        top_n: Optional[str] = Query(None, description="Governed Top-N list size (20 or 50)"),
+        matrix_filter_symbol: Optional[str] = Query(
             None, description="View-only matrix symbol filter"
         ),
-        matrix_filter_f5_status: str | None = Query(
+        matrix_filter_f5_status: Optional[str] = Query(
             None, description="View-only matrix F5 status filter"
         ),
-        matrix_filter_freshness: str | None = Query(
+        matrix_filter_freshness: Optional[str] = Query(
             None, description="View-only matrix freshness filter"
         ),
-        matrix_sort_field: str | None = Query(None, description="View-only matrix sort field"),
-        matrix_sort_direction: str | None = Query(
+        matrix_sort_field: Optional[str] = Query(None, description="View-only matrix sort field"),
+        matrix_sort_direction: Optional[str] = Query(
             None, description="View-only matrix sort direction"
         ),
     ) -> Any:
