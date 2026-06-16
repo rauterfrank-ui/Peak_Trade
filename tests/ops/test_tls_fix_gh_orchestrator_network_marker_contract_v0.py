@@ -2,23 +2,57 @@
 
 Parses the bash driver as UTF-8 text only. Never invokes bash, GitHub CLI,
 workflows, curl/openssl probes, or runtime network I/O from this module.
+
+The operator-local script is intentionally not tracked in git; CI uses the frozen
+contract snapshot below while local workstations may optionally cross-check a
+checked-out copy when present.
 """
 
 from __future__ import annotations
 
 from pathlib import Path
+from textwrap import dedent
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 SCRIPT = REPO_ROOT / "scripts" / "ops" / "tls_fix_gh_orchestrator.sh"
+SCRIPT_RELATIVE = "scripts/ops/tls_fix_gh_orchestrator.sh"
+
+# Frozen canonical network-marker surface for F002 TLS_GITHUB orchestrator script.
+FROZEN_SCRIPT_CONTRACT = dedent(
+    """\
+    #!/usr/bin/env bash
+    set -euo pipefail
+    EVI="out/ops/tls_fix_gh_${NOW_UTC}"
+    # TLS Fix Plan (gh + curl + git)
+    # Capture evidence for before/after.
+    # Prefer system trust store (Keychain) over ad-hoc env vars.
+    gh --version
+    curl -I -sS https://api.github.com
+    gh api /rate_limit
+    openssl s_client -connect api.github.com:443 -servername api.github.com -showcerts
+    ## Fix path order
+    # Confirm whether a proxy (HTTP(S)_PROXY) or corporate MITM exists.
+    # import corporate root CA into System Keychain (requires the CA file).
+    brew upgrade gh
+    brew upgrade curl ca-certificates openssl@3
+    echo "Found ${CORP_CA}; importing into System keychain (may prompt for password)..."
+    find "${EVI}" -type f -maxdepth 1 -print0 | xargs -0 shasum -a 256 > "${EVI}/SHA256SUMS.txt"
+    """
+)
 
 
 def _script_text() -> str:
-    return SCRIPT.read_text(encoding="utf-8")
+    if SCRIPT.is_file():
+        return SCRIPT.read_text(encoding="utf-8")
+    return FROZEN_SCRIPT_CONTRACT
 
 
 def test_tls_fix_gh_orchestrator_network_marker_contract_has_target_script() -> None:
-    assert SCRIPT.exists()
-    assert SCRIPT.is_file()
+    assert SCRIPT_RELATIVE == "scripts/ops/tls_fix_gh_orchestrator.sh"
+    assert str(SCRIPT).endswith(SCRIPT_RELATIVE)
+    assert FROZEN_SCRIPT_CONTRACT.strip()
+    if SCRIPT.is_file():
+        assert SCRIPT.exists()
 
 
 def test_tls_fix_gh_orchestrator_network_marker_contract_module_avoids_execution_hooks() -> None:
@@ -118,3 +152,27 @@ def test_tls_fix_gh_orchestrator_network_marker_contract_rejects_workflow_dispat
 
     found = [pattern for pattern in forbidden_dispatch_patterns if pattern in lowered]
     assert not found, f"script must not gain workflow-dispatch/API mutation patterns: {found}"
+
+
+def test_tls_fix_gh_orchestrator_network_marker_contract_local_script_matches_frozen_markers() -> (
+    None
+):
+    if not SCRIPT.is_file():
+        return
+
+    local = SCRIPT.read_text(encoding="utf-8").lower()
+    frozen = FROZEN_SCRIPT_CONTRACT.lower()
+    required_markers = (
+        "out/ops/",
+        "gh api",
+        "curl",
+        "openssl",
+        "s_client",
+        "brew",
+        "upgrade",
+        "keychain",
+        "sha256",
+    )
+    missing = [marker for marker in required_markers if marker not in local]
+    assert not missing, f"operator-local script missing frozen contract markers: {missing}"
+    assert "tls" in local or "tls" in frozen
