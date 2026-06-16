@@ -35,7 +35,6 @@ except (PermissionError, OSError):
 import re
 import subprocess
 import threading
-import time
 import urllib.parse
 from dataclasses import dataclass, field
 from http import HTTPStatus
@@ -43,6 +42,8 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
 pytestmark = pytest.mark.network
+
+_PROMETHEUS_MOCK_TIMESTAMP = 1_700_000_000.0
 
 
 @dataclass
@@ -182,7 +183,7 @@ class _Handler(BaseHTTPRequestHandler):
 
                 # up is always available
                 if q.startswith('up{job="shadow_mvs"}'):
-                    result = [{"metric": {}, "value": [time.time(), "1"]}]
+                    result = [{"metric": {}, "value": [_PROMETHEUS_MOCK_TIMESTAMP, "1"]}]
                     self._json(
                         HTTPStatus.OK,
                         {"status": "success", "data": {"resultType": "vector", "result": result}},
@@ -192,9 +193,9 @@ class _Handler(BaseHTTPRequestHandler):
                 # Warmup-sensitive queries: return NaN first 2 calls, then a value.
                 if "rate(" in q or "histogram_quantile" in q:
                     if n < 3:
-                        result = [{"metric": {}, "value": [time.time(), "NaN"]}]
+                        result = [{"metric": {}, "value": [_PROMETHEUS_MOCK_TIMESTAMP, "NaN"]}]
                     else:
-                        result = [{"metric": {}, "value": [time.time(), "0.1"]}]
+                        result = [{"metric": {}, "value": [_PROMETHEUS_MOCK_TIMESTAMP, "0.1"]}]
                     self._json(
                         HTTPStatus.OK,
                         {"status": "success", "data": {"resultType": "vector", "result": result}},
