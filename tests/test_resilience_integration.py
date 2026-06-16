@@ -58,32 +58,44 @@ class TestCircuitBreakerIntegration:
         assert call_count[0] == 5
 
     def test_circuit_breaker_recovery(self):
-        """Test circuit breaker recovery after timeout."""
+        """Test circuit breaker recovery after timeout using deterministic fake clock."""
         call_count = [0]
+        fake_now = [1_000_000.0]
 
-        breaker = CircuitBreaker(failure_threshold=2, recovery_timeout=0.1, name="recovery_test")
+        def fake_time() -> float:
+            return fake_now[0]
 
-        @breaker.call
-        def sometimes_fails():
-            call_count[0] += 1
-            if call_count[0] <= 2:
-                raise ValueError("Failing")
-            return "success"
+        with patch("src.core.resilience.time.time", fake_time):
+            breaker = CircuitBreaker(
+                failure_threshold=2, recovery_timeout=0.1, name="recovery_test"
+            )
 
-        # Open the circuit
-        for _ in range(2):
-            with pytest.raises(ValueError):
+            @breaker.call
+            def sometimes_fails():
+                call_count[0] += 1
+                if call_count[0] <= 2:
+                    raise ValueError("Failing")
+                return "success"
+
+            # Open the circuit
+            for _ in range(2):
+                with pytest.raises(ValueError):
+                    sometimes_fails()
+
+            assert breaker.state == CircuitState.OPEN
+
+            # Still open before recovery timeout elapses
+            with pytest.raises(Exception, match="CircuitBreaker.*is OPEN"):
                 sometimes_fails()
+            assert call_count[0] == 2
 
-        assert breaker.state == CircuitState.OPEN
+            # Advance past recovery_timeout (0.1s) without wall-clock wait
+            fake_now[0] += 0.11
 
-        # Wait for recovery
-        time.sleep(0.15)
-
-        # Should recover
-        result = sometimes_fails()
-        assert result == "success"
-        assert breaker.state == CircuitState.CLOSED
+            # Should recover via HALF_OPEN -> CLOSED
+            result = sometimes_fails()
+            assert result == "success"
+            assert breaker.state == CircuitState.CLOSED
 
 
 class TestRateLimiterIntegration:
