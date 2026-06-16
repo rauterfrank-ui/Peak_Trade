@@ -22,6 +22,7 @@ Setup requirements:
 
 import pytest
 import time
+from unittest.mock import patch
 from src.core.performance import (
     PerformanceMonitor,
     PerformanceMetric,
@@ -77,14 +78,18 @@ class TestPerformanceMonitor:
     def test_measure_context_manager(self):
         """Test measure context manager."""
         monitor = PerformanceMonitor()
+        fake_now = [0.0]
 
-        with monitor.measure("test_op"):
-            time.sleep(0.01)  # Sleep for 10ms
+        def fake_perf_counter() -> float:
+            return fake_now[0]
+
+        with patch("src.core.performance.time.perf_counter", fake_perf_counter):
+            with monitor.measure("test_op"):
+                fake_now[0] += 0.01  # Simulate 10ms elapsed without wall-clock wait
 
         metrics = monitor.get_metrics("test_op")
         assert len(metrics["test_op"]) == 1
-        # Should be at least 10ms
-        assert metrics["test_op"][0].duration_ms >= 10.0
+        assert metrics["test_op"][0].duration_ms == 10.0
 
     def test_measure_with_metadata(self):
         """Test measure with metadata."""
@@ -99,18 +104,24 @@ class TestPerformanceMonitor:
     def test_timer_decorator(self):
         """Test timer decorator."""
         monitor = PerformanceMonitor()
+        fake_now = [0.0]
 
-        @monitor.timer("decorated_op")
-        def test_func():
-            time.sleep(0.01)
-            return "result"
+        def fake_perf_counter() -> float:
+            return fake_now[0]
 
-        result = test_func()
+        with patch("src.core.performance.time.perf_counter", fake_perf_counter):
+
+            @monitor.timer("decorated_op")
+            def test_func():
+                fake_now[0] += 0.01
+                return "result"
+
+            result = test_func()
         assert result == "result"
 
         metrics = monitor.get_metrics("decorated_op")
         assert len(metrics["decorated_op"]) == 1
-        assert metrics["decorated_op"][0].duration_ms >= 10.0
+        assert metrics["decorated_op"][0].duration_ms == 10.0
 
     def test_get_summary(self):
         """Test getting summary statistics."""
