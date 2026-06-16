@@ -6,10 +6,10 @@ Tests circuit breakers, rate limiters, and metrics integration.
 
 import pytest
 import time
-from unittest.mock import Mock
+from unittest.mock import Mock, patch
 
 from src.core.resilience import CircuitBreaker, CircuitState, health_check
-from src.core.rate_limiter import RateLimiter
+from src.core.rate_limiter import RateLimiter, TokenBucket
 from src.core.metrics import metrics
 from src.core.resilience_helpers import (
     with_resilience,
@@ -89,6 +89,10 @@ class TestCircuitBreakerIntegration:
 class TestRateLimiterIntegration:
     """Integration tests for rate limiters."""
 
+    def setup_method(self):
+        """Reset shared resilience registry before each rate-limiter test."""
+        reset_all_resilience()
+
     def test_rate_limiter_protects_function(self):
         """Test rate limiter protecting a function."""
         call_count = [0]
@@ -121,9 +125,49 @@ class TestRateLimiterIntegration:
             protected_function()
 
     def test_rate_limiter_with_decorator(self):
-        """Test rate limiter with resilience decorator."""
-        # Skip this test as it's flaky due to token refill timing
-        pytest.skip("Token refill timing makes this test flaky")
+        """Test rate limiter with resilience decorator using deterministic fake clock."""
+        fake_now = [1_000_000.0]
+
+        def fake_time() -> float:
+            return fake_now[0]
+
+        with patch("src.core.rate_limiter.time.time", fake_time):
+            call_count = [0]
+
+            @with_resilience(
+                "rl_decorator_contract",
+                "invoke",
+                use_circuit_breaker=False,
+                use_rate_limiter=True,
+                record_metrics=False,
+            )
+            def protected_function() -> str:
+                call_count[0] += 1
+                return "success"
+
+            limiter = create_module_rate_limiter("rl_decorator_contract", "invoke")
+            limiter.reset()
+            limiter.max_requests = 3
+            limiter.window_seconds = 1.0
+            limiter.refill_rate = 3.0
+            limiter.bucket = TokenBucket(
+                capacity=3,
+                refill_rate=3.0,
+                name=limiter.name,
+            )
+
+            for _ in range(3):
+                assert protected_function() == "success"
+            assert call_count[0] == 3
+
+            with pytest.raises(
+                Exception, match="Rate limit exceeded for rl_decorator_contract.invoke"
+            ):
+                protected_function()
+
+            fake_now[0] += 1.0
+            assert protected_function() == "success"
+            assert call_count[0] == 4
 
 
 class TestMetricsIntegration:
