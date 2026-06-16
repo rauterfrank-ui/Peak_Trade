@@ -50,6 +50,11 @@ from .market_futures_ohlcv_runtime_v0 import (
     build_market_futures_ohlcv_display_context,
     resolve_futures_ohlcv_series_for_symbol,
 )
+from .market_instrument_eligibility_v0 import (
+    CANONICAL_EXCLUSION_OWNER,
+    is_bitcoin_underlying,
+    is_eligible_market_dashboard_instrument,
+)
 from .workflow_dashboard_runtime_v1 import build_workflow_dashboard_display_context
 
 logger = logging.getLogger(__name__)
@@ -81,6 +86,7 @@ CANONICAL_F5_METADATA_OWNER = "src/webui/futures_read_only_market_dashboard_runt
 CANONICAL_SELECTED_INSTRUMENT_OWNER = "src/webui/market_surface.py"
 CANONICAL_FUTURES_OHLCV_OWNER = "src/webui/market_futures_ohlcv_runtime_v0.py"
 CANONICAL_CHART_OWNER = "templates/peak_trade_dashboard/partials/market_primary_close_chart_v1.html"
+CANONICAL_INSTRUMENT_EXCLUSION_OWNER = CANONICAL_EXCLUSION_OWNER
 
 MARKET_SINGLE_PAGE_CONSOLIDATION_ENABLED_ENV = (
     "PEAK_TRADE_MARKET_SINGLE_PAGE_CONSOLIDATION_V1_ENABLED"
@@ -168,6 +174,11 @@ def normalize_top_n(raw: int | str | None) -> int:
     return value
 
 
+def _is_eligible_ranking_row(row: dict[str, Any]) -> bool:
+    sym = str(row.get("symbol") or "").strip()
+    return bool(sym) and is_eligible_market_dashboard_instrument(sym)
+
+
 def collect_governed_futures_symbols(ranking_funnel: Dict[str, Any]) -> set[str]:
     symbols: set[str] = set()
     stages = ranking_funnel.get("stages") if isinstance(ranking_funnel.get("stages"), dict) else {}
@@ -176,7 +187,7 @@ def collect_governed_futures_symbols(ranking_funnel: Dict[str, Any]) -> set[str]
             if not isinstance(row, dict):
                 continue
             sym = str(row.get("symbol") or "").strip()
-            if sym:
+            if sym and is_eligible_market_dashboard_instrument(sym):
                 symbols.add(sym)
     return symbols
 
@@ -185,20 +196,22 @@ def is_valid_governed_futures_symbol(symbol: str, ranking_funnel: Dict[str, Any]
     sym = symbol.strip()
     if not sym or _is_forbidden_implicit_spot_symbol(sym):
         return False
+    if is_bitcoin_underlying(sym):
+        return False
     return sym in collect_governed_futures_symbols(ranking_funnel)
 
 
 def resolve_selected_futures_symbol_from_ranking_funnel(
     ranking_funnel: Dict[str, Any],
 ) -> str:
-    """Display-only: first governed ranking row from selected → shortlist → universe."""
+    """Display-only: first eligible governed ranking row from selected → shortlist → universe."""
     stages = ranking_funnel.get("stages") if isinstance(ranking_funnel.get("stages"), dict) else {}
     for stage_key in ("selected", "shortlist", "universe"):
         for row in stages.get(stage_key) or []:
             if not isinstance(row, dict):
                 continue
             sym = str(row.get("symbol") or "").strip()
-            if sym:
+            if sym and is_eligible_market_dashboard_instrument(sym):
                 return sym
     return ""
 
@@ -305,6 +318,15 @@ def resolve_market_page_data(
             unavailable_reason="legacy_source_requires_explicit_symbol",
         )
         return "", src, payload, True
+
+    if is_bitcoin_underlying(sym):
+        payload = build_futures_first_empty_payload(
+            symbol=sym,
+            timeframe=timeframe,
+            limit=limit,
+            unavailable_reason="bitcoin_instrument_excluded",
+        )
+        return sym, src, payload, True
 
     payload, data_unavailable = build_market_payload_for_page(
         symbol=sym,
@@ -1004,7 +1026,11 @@ def build_market_governed_top20_display_context(
     """Primary governed Top-N + F5 metadata wiring for futures-first GET /market (read-only)."""
     snapshot_status = _ranking_funnel_snapshot_status(ranking_funnel)
     stages = ranking_funnel.get("stages") if isinstance(ranking_funnel.get("stages"), dict) else {}
-    selected_rows = [row for row in (stages.get("selected") or []) if isinstance(row, dict)]
+    selected_rows = [
+        row
+        for row in (stages.get("selected") or [])
+        if isinstance(row, dict) and _is_eligible_ranking_row(row)
+    ]
     visible_rows = selected_rows[:top_n]
 
     f5_gate_enabled = bool(f5_dashboard.get("gate_enabled"))
@@ -1098,7 +1124,7 @@ def build_market_ranking_watchlist_display_context(
                 top_n=top_n,
             )
             for row in (stages.get(stage_key) or [])
-            if isinstance(row, dict)
+            if isinstance(row, dict) and _is_eligible_ranking_row(row)
         ]
 
     table_rows = operator_overview.get("ranking_table_rows")
@@ -1113,7 +1139,7 @@ def build_market_ranking_watchlist_display_context(
             top_n=top_n,
         )
         for row in raw_rows
-        if isinstance(row, dict)
+        if isinstance(row, dict) and _is_eligible_ranking_row(row)
     ]
 
     source_mode = str(operator_overview.get("ranking_source_mode") or "unavailable")
@@ -1342,7 +1368,7 @@ def build_market_operator_overview_display_context(
     stages = ranking_funnel.get("stages") if isinstance(ranking_funnel.get("stages"), dict) else {}
     for stage_key in _RANKING_TABLE_STAGE_ORDER:
         for row in stages.get(stage_key) or []:
-            if isinstance(row, dict):
+            if isinstance(row, dict) and _is_eligible_ranking_row(row):
                 rows.append({**row, "stage": stage_key})
 
     if rows and ranking_funnel.get("gate_enabled"):
@@ -1585,7 +1611,7 @@ def build_market_v0_page_template_context(
     )
     encoded_symbol = quote(symbol, safe="")
     legacy_demo_href = (
-        f"/market?source=dummy&symbol={quote('BTCUSDT', safe='')}"
+        f"/market?source=dummy&symbol={quote('ETHUSDT', safe='')}"
         f"&timeframe={timeframe}&limit={limit}"
     )
     return {

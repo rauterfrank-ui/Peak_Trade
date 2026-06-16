@@ -24,7 +24,12 @@ FULL_CATEGORIES = frozenset(
 )
 NO_OP_CATEGORIES = frozenset({"docs_only", "workflow_only", "static_contract"})
 FOCUSED_CATEGORIES = frozenset(
-    {"scripts_focused", "tests_focused", "strategy_regime_owner_focused"}
+    {
+        "scripts_focused",
+        "tests_focused",
+        "strategy_regime_owner_focused",
+        "market_dashboard_focused",
+    }
 )
 
 # Paths that always force FULL when changed (never self-FOCUSED).
@@ -59,6 +64,27 @@ CANONICAL_STRATEGY_REGIME_TEST_OWNERS: dict[str, str] = {
     "src/strategies/el_karoui/vol_model.py": "tests/strategies/el_karoui/test_vol_model.py",
 }
 
+MARKET_DASHBOARD_CI_POLICY_PATHS = frozenset(
+    {
+        "scripts/ops/ci_test_selection_v1.py",
+        "config/ci/file_category_mapping.yaml",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    }
+)
+
+CANONICAL_MARKET_DASHBOARD_FOCUSED_TESTS: tuple[str, ...] = (
+    "tests/webui/test_market_dashboard_no_bitcoin_futures_v1.py",
+    "tests/webui/test_market_futures_only_canonical_completion_v1.py",
+    "tests/webui/test_market_dashboard_readonly_structure_contract_v0.py",
+    "tests/webui/test_market_governed_top20_f5_default_wiring_v1.py",
+    "tests/webui/test_market_futures_first_root_cause_eradication_v1.py",
+    "tests/webui/test_futures_read_only_market_dashboard_v0.py",
+    "tests/webui/test_market_canonical_short_url_title_real_values_ui_v1.py",
+    "tests/webui/test_market_ranking_funnel_readmodel_v0.py",
+    "tests/test_market_surface_api.py",
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+)
+
 _REPO_RELATIVE_PATH = re.compile(r"^[A-Za-z0-9_./-]+$")
 _IMPORT_MODULE = re.compile(r"^[a-zA-Z0-9_.]+$")
 
@@ -91,6 +117,9 @@ class SelectionResult:
 
 def _requires_full_ci_selector_change(files: list[str]) -> bool:
     normalized = {PurePosixPath(f).as_posix() for f in files}
+    scoped = {f for f in normalized if _is_market_dashboard_scoped_path(f)}
+    if scoped and all(_is_market_dashboard_rebundle_path(f) for f in normalized):
+        return False
     if normalized & CI_SELECTOR_FULL_PATHS:
         return True
     if any(f.startswith("tests/ci/test_ci_diff_aware_test_selection") for f in normalized):
@@ -104,8 +133,76 @@ def _requires_full_ci_selector_change(files: list[str]) -> bool:
     return False
 
 
+def _is_market_dashboard_scoped_path(path: str) -> bool:
+    if path.startswith("src/webui/market_futures_ohlcv_readmodel_v0/"):
+        return True
+    if path.startswith("src/webui/market_ranking_funnel_readmodel_v0/"):
+        return True
+    if path.startswith("templates/peak_trade_dashboard/partials/market_"):
+        return True
+    if path == "templates/peak_trade_dashboard/market_v0.html":
+        return True
+    if path.startswith("tests/fixtures/market_"):
+        return True
+    if path.startswith("tests/fixtures/futures_read_only_market_dashboard"):
+        return True
+    if path.startswith("tests/webui/test_market_"):
+        return True
+    if path.startswith("tests/webui/test_futures_read_only_market_dashboard"):
+        return True
+    if path == "tests/test_market_surface_api.py":
+        return True
+    market_webui_prefixes = (
+        "src/webui/market_",
+        "src/webui/futures_read_only_market_dashboard_",
+        "src/webui/market_futures_ohlcv_",
+        "src/webui/market_ranking_funnel_",
+    )
+    return any(path.startswith(prefix) and path.endswith(".py") for prefix in market_webui_prefixes)
+
+
+def _is_market_dashboard_rebundle_path(path: str) -> bool:
+    return _is_market_dashboard_scoped_path(path) or path in MARKET_DASHBOARD_CI_POLICY_PATHS
+
+
+def _market_dashboard_focused_targets() -> tuple[str, ...]:
+    targets: list[str] = []
+    for path in CANONICAL_MARKET_DASHBOARD_FOCUSED_TESTS:
+        if _repo_path_exists(path):
+            targets.append(path)
+    return tuple(sorted(targets))
+
+
+def _try_market_dashboard_focused(files: list[str]) -> SelectionResult | None:
+    if not files:
+        return None
+    if not any(_is_market_dashboard_scoped_path(f) for f in files):
+        return None
+    if not all(_is_market_dashboard_rebundle_path(f) for f in files):
+        return None
+    targets = _market_dashboard_focused_targets()
+    if not targets:
+        return None
+    modules: set[str] = set()
+    for path in files:
+        if path.startswith("src/webui/") and path.endswith(".py"):
+            module = _prod_path_to_import_module(path)
+            if _validate_import_module(module):
+                modules.add(module)
+    return SelectionResult(
+        "FOCUSED",
+        "market_dashboard_focused",
+        targets,
+        tuple(sorted(modules)),
+    )
+
+
 def categorize(path: str) -> str:
     p = PurePosixPath(path).as_posix()
+    if p in MARKET_DASHBOARD_CI_POLICY_PATHS:
+        return "market_dashboard_focused"
+    if _is_market_dashboard_scoped_path(p):
+        return "market_dashboard_focused"
     if p in CI_SELECTOR_FULL_PATHS:
         return "ci_selector_change"
     if p.startswith("tests/ci/test_ci_diff_aware_test_selection"):
@@ -330,6 +427,10 @@ def resolve_selection(
         return SelectionResult("FULL", "force_full_or_non_pr_event", ())
     if not normalized:
         return SelectionResult("FULL", "empty_diff_fail_closed", ())
+
+    market_dashboard = _try_market_dashboard_focused(normalized)
+    if market_dashboard is not None:
+        return market_dashboard
 
     if _requires_full_ci_selector_change(normalized):
         return SelectionResult("FULL", "ci_selector_or_contract_change_requires_full", ())

@@ -121,7 +121,7 @@ def test_governed_top20_primary_visible_when_fixture_on(
     assert 'data-market-governed-top20-primary-v1="true"' in body
     assert 'data-market-governed-top20-available-v1="true"' in body
     assert 'data-market-governed-top20-table-v1="true"' in body
-    assert "BTCUSDT" in body
+    assert "ETHUSDT" in body
     assert 'data-market-governed-top20-row-v1="true"' in body
     assert FORBIDDEN_IMPLICIT_SPOT_DEFAULT_SYMBOL not in body
 

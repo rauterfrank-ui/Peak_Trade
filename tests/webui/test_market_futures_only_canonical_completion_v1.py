@@ -180,11 +180,11 @@ def test_invalid_top_n_rejected(client: TestClient) -> None:
 
 
 def test_futures_selector_links_and_selected_highlight(client_full_wiring_on: TestClient) -> None:
-    body = _html(client_full_wiring_on, "/market?symbol=BTCUSDT")
+    body = _html(client_full_wiring_on, "/market?symbol=ETHUSDT")
     assert 'data-market-futures-selector-v1="true"' in body
     assert 'data-market-futures-selector-link-v1="true"' in body
     assert 'data-market-futures-selector-selected-v1="true"' in body
-    assert "href=" in body and "symbol=BTCUSDT" in body
+    assert "href=" in body and "symbol=ETHUSDT" in body
 
 
 def test_invalid_futures_symbol_fail_closed(client_full_wiring_on: TestClient) -> None:
@@ -194,7 +194,7 @@ def test_invalid_futures_symbol_fail_closed(client_full_wiring_on: TestClient) -
 
 
 def test_futures_ohlcv_chart_wired_with_fixture(client_full_wiring_on: TestClient) -> None:
-    body = _html(client_full_wiring_on, "/market?symbol=BTCUSDT")
+    body = _html(client_full_wiring_on, "/market?symbol=ETHUSDT")
     assert 'data-market-futures-ohlcv-wired-v1="true"' in body
     assert 'data-market-futures-chart-complete-v1="true"' in body
     assert 'data-market-chart-status="ready"' in body
@@ -217,7 +217,7 @@ def test_futures_ohlcv_malformed_state(tmp_path: Path, monkeypatch: pytest.Monke
     monkeypatch.setenv(OHLCV_ENV_BUNDLE_ROOT, str(bundle))
     monkeypatch.setenv("PEAK_TRADE_MARKET_DEPTH_ENABLED", "0")
     with TestClient(create_app()) as test_client:
-        body = _html(test_client, "/market?symbol=BTCUSDT")
+        body = _html(test_client, "/market?symbol=ETHUSDT")
     assert 'data-market-futures-ohlcv-malformed-v1="true"' in body
 
 
@@ -241,8 +241,8 @@ def test_governed_symbol_validation_unit(monkeypatch: pytest.MonkeyPatch) -> Non
     monkeypatch.setenv(RANKING_ENV_BUNDLE_ROOT, str(RANKING_FIXTURE))
     ranking = build_market_ranking_funnel_display_context()
     symbols = collect_governed_futures_symbols(ranking)
-    assert "BTCUSDT" in symbols
-    assert is_valid_governed_futures_symbol("BTCUSDT", ranking)
+    assert "ETHUSDT" in symbols
+    assert is_valid_governed_futures_symbol("ETHUSDT", ranking)
     assert not is_valid_governed_futures_symbol("BTC/EUR", ranking)
     assert not is_valid_governed_futures_symbol("DOGEUSDT", ranking)
 
@@ -255,13 +255,13 @@ def test_resolve_market_page_data_futures_ohlcv_unit(
     monkeypatch.setenv(OHLCV_ENV_ENABLED, "1")
     monkeypatch.setenv(OHLCV_ENV_BUNDLE_ROOT, str(OHLCV_FIXTURE))
     sym, src, payload, unavailable = resolve_market_page_data(
-        symbol="BTCUSDT",
+        symbol="ETHUSDT",
         timeframe="1d",
         limit=120,
         source="futures",
     )
     assert src == "futures"
-    assert sym == "BTCUSDT"
+    assert sym == "ETHUSDT"
     assert unavailable is False
     assert payload["bars_returned"] == 3
 
@@ -282,11 +282,11 @@ def test_completion_contract_determinism_three_runs(
         ctx = build_market_governed_top20_display_context(
             ranking_funnel=ranking,
             f5_dashboard=f5,
-            selected_symbol="BTCUSDT",
+            selected_symbol="ETHUSDT",
             top_n=20,
         )
         sym, _, payload, unavailable = resolve_market_page_data(
-            symbol="BTCUSDT",
+            symbol="ETHUSDT",
             timeframe="1d",
             limit=120,
             source="futures",
