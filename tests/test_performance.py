@@ -302,17 +302,22 @@ class TestPerformanceIntegration:
     def test_multiple_operations_tracking(self):
         """Test tracking multiple different operations."""
         monitor = PerformanceMonitor()
+        fake_now = [0.0]
 
-        # Simulate different operations
-        for i in range(3):
-            with monitor.measure("db_query"):
-                time.sleep(0.005)
+        def fake_perf_counter() -> float:
+            return fake_now[0]
 
-            with monitor.measure("api_call"):
-                time.sleep(0.01)
+        with patch("src.core.performance.time.perf_counter", fake_perf_counter):
+            # Simulate different operations
+            for i in range(3):
+                with monitor.measure("db_query"):
+                    fake_now[0] += 0.005
 
-            with monitor.measure("computation"):
-                time.sleep(0.002)
+                with monitor.measure("api_call"):
+                    fake_now[0] += 0.01
+
+                with monitor.measure("computation"):
+                    fake_now[0] += 0.002
 
         summary = monitor.get_summary()
 
@@ -321,6 +326,10 @@ class TestPerformanceIntegration:
         assert summary["db_query"].count == 3
         assert summary["api_call"].count == 3
         assert summary["computation"].count == 3
+
+        assert summary["db_query"].mean_ms == pytest.approx(5.0)
+        assert summary["api_call"].mean_ms == pytest.approx(10.0)
+        assert summary["computation"].mean_ms == pytest.approx(2.0)
 
         # API calls should be slower than computations
         assert summary["api_call"].mean_ms > summary["computation"].mean_ms
