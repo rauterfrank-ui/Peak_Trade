@@ -24,6 +24,7 @@
   data-market-source="{{ query.source }}"
   data-market-bars="{{ payload.bars_returned }}"
   data-market-symbol="{{ query.symbol }}"
+  {% if futures_first %}data-market-futures-first-v1="true"{% endif %}
   data-market-canonical-short-url-v1="true"
   data-market-operator-real-values-v1="true"
   data-market-detail-click-required="false"

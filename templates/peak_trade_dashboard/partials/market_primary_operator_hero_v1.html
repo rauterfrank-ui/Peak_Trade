@@ -15,8 +15,23 @@
   data-market-source-kind="kraken-public"
   {% elif query.source == 'dummy' %}
   data-market-source-kind="dummy-offline-synthetic"
+  {% elif query.source == 'futures' %}
+  data-market-source-kind="futures-read-only-ssr"
   {% endif %}
 >
+
+  {% if query.source == 'futures' and data_unavailable %}
+  <div
+    class="rounded-lg border border-slate-600/60 bg-slate-950/50 px-3 py-2 text-sm text-slate-200"
+    role="alert"
+    data-market-futures-empty-state-v1="true"
+    data-market-futures-first-fail-closed-v1="true"
+  >
+    <strong class="text-slate-100">Futures snapshot unavailable</strong>
+    — governed futures data required. No spot OHLCV or synthetic fallback on the canonical <span class="font-mono">/market</span> default.
+    {% if primary_values.unavailable_reason %}<span class="block mt-1 font-mono text-[11px] text-slate-400">{{ primary_values.unavailable_reason|e }}</span>{% endif %}
+  </div>
+  {% endif %}
 
   {% if query.source == 'dummy' %}
   <div
@@ -25,7 +40,7 @@
     data-market-dummy-explicit-synthetic-v1="true"
     data-market-source-kind="dummy-offline-synthetic"
   >
-    <strong class="text-amber-200">SYNTHETIC / OFFLINE / DUMMY</strong> — not live market data. Use <span class="font-mono">/market</span> without <span class="font-mono">source=dummy</span> for public Kraken OHLCV.
+    <strong class="text-amber-200">SYNTHETIC / OFFLINE / DUMMY</strong> — explicit demo only. Canonical <span class="font-mono">/market</span> is futures-first (SSR, fail-closed).
   </div>
   {% endif %}
 
