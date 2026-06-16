@@ -230,17 +230,24 @@ class TestGlobalPerformanceMonitor:
         # Clear any existing metrics first
         performance_monitor.clear()
 
-        @performance_timer("global_test")
-        def test_func():
-            time.sleep(0.01)
-            return "result"
+        fake_now = [0.0]
 
-        result = test_func()
+        def fake_perf_counter() -> float:
+            return fake_now[0]
+
+        with patch("src.core.performance.time.perf_counter", fake_perf_counter):
+
+            @performance_timer("global_test")
+            def test_func():
+                fake_now[0] += 0.01
+                return "result"
+
+            result = test_func()
         assert result == "result"
 
         metrics = performance_monitor.get_metrics("global_test")
         assert len(metrics["global_test"]) == 1
-        assert metrics["global_test"][0].duration_ms >= 10.0
+        assert metrics["global_test"][0].duration_ms == 10.0
 
         # Clean up
         performance_monitor.clear()
