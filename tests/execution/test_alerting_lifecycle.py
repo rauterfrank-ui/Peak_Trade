@@ -206,24 +206,43 @@ def test_operator_state_ack_critical_suppression():
         assert state.is_acked("test_dedupe_key", severity="critical")
 
 
-def test_operator_state_ack_ttl_expiry():
+def test_operator_state_ack_ttl_expiry(monkeypatch):
     """Test ACK TTL expiry."""
     with tempfile.TemporaryDirectory() as tmpdir:
         state_path = Path(tmpdir) / "alerts_state.json"
         state = OperatorState(state_path=state_path, enabled=True)
 
+        base = datetime(2026, 1, 1, 12, 0, 0, tzinfo=timezone.utc)
+        now_sequence = [
+            base,
+            base,
+            base + timedelta(milliseconds=500),
+            base + timedelta(seconds=1),
+            base + timedelta(seconds=1),
+        ]
+        now_index = [0]
+
+        def fake_now(tz=None):
+            ts = now_sequence[now_index[0]]
+            now_index[0] += 1
+            return ts
+
+        class FakeDateTime:
+            now = staticmethod(fake_now)
+            fromtimestamp = staticmethod(datetime.fromtimestamp)
+
+        monkeypatch.setattr(
+            "src.execution.alerting.operator_state.datetime",
+            FakeDateTime,
+        )
+
         # ACK with 1 second TTL
         state.ack("test_dedupe_key", ttl_seconds=1)
 
-        # Should be acked immediately
+        # Should be acked before TTL boundary
         assert state.is_acked("test_dedupe_key", severity="warn")
 
-        # Wait for expiry
-        import time
-
-        time.sleep(1.5)
-
-        # Should be expired
+        # Should be expired at or after TTL boundary
         assert not state.is_acked("test_dedupe_key", severity="warn")
 
 
@@ -252,24 +271,43 @@ def test_operator_state_unsnooze():
         assert not state.is_snoozed("test_rule")
 
 
-def test_operator_state_snooze_ttl_expiry():
+def test_operator_state_snooze_ttl_expiry(monkeypatch):
     """Test snooze TTL expiry."""
     with tempfile.TemporaryDirectory() as tmpdir:
         state_path = Path(tmpdir) / "alerts_state.json"
         state = OperatorState(state_path=state_path, enabled=True)
 
+        base = datetime(2026, 1, 1, 12, 0, 0, tzinfo=timezone.utc)
+        now_sequence = [
+            base,
+            base,
+            base + timedelta(milliseconds=500),
+            base + timedelta(seconds=1),
+            base + timedelta(seconds=1),
+        ]
+        now_index = [0]
+
+        def fake_now(tz=None):
+            ts = now_sequence[now_index[0]]
+            now_index[0] += 1
+            return ts
+
+        class FakeDateTime:
+            now = staticmethod(fake_now)
+            fromtimestamp = staticmethod(datetime.fromtimestamp)
+
+        monkeypatch.setattr(
+            "src.execution.alerting.operator_state.datetime",
+            FakeDateTime,
+        )
+
         # Snooze with 1 second TTL
         state.snooze("test_rule", ttl_seconds=1)
 
-        # Should be snoozed immediately
+        # Should be snoozed before TTL boundary
         assert state.is_snoozed("test_rule")
 
-        # Wait for expiry
-        import time
-
-        time.sleep(1.5)
-
-        # Should be expired
+        # Should be expired at or after TTL boundary
         assert not state.is_snoozed("test_rule")
 
 
