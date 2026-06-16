@@ -37,11 +37,12 @@ def test_p91_latest_p76_status(tmp_path: Path):
     out_dir.mkdir()
     tick_older = _mk_tick(out_dir, "tick_20260216T000001Z", "P76_READY")
     tick_newer = _mk_tick(out_dir, "tick_20260216T000002Z", "P76_NOT_READY")
-    os.utime(tick_older, (100, 100))
-    os.utime(tick_newer, (300, 300))
+    os.utime(tick_older, (300, 300))
+    os.utime(tick_newer, (100, 100))
     ctx = P91AuditContextV1(out_dir=out_dir, min_ticks=1)
     out = build_shadow_soak_audit_v1(ctx)
-    assert out["summary"]["latest_p76_status"] in ("ready", "not_ready")
+    assert out["summary"]["latest_tick"] == "tick_20260216T000002Z"
+    assert out["summary"]["latest_p76_status"] == "not_ready"
 
 
 def test_p91_json_serializable(tmp_path: Path):
