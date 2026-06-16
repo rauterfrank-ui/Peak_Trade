@@ -4,8 +4,9 @@ Peak_Trade Resilience Module Tests
 Comprehensive unit tests for circuit breaker, retry logic, and health checks.
 """
 
+from collections import Counter
+
 import pytest
-import time
 from unittest.mock import Mock, patch
 from datetime import datetime
 
@@ -488,12 +489,24 @@ class TestGlobalHealthCheck:
         assert global_health_check is not None
         assert isinstance(global_health_check, HealthCheck)
 
+    def test_global_health_check_names_are_unique(self):
+        """Global health_check registry must keep all registered check names unique."""
+        check_names = tuple(global_health_check._checks.keys())
+        check_count = len(check_names)
+        name_count = len(check_names)
+        unique_name_count = len(set(check_names))
+        duplicates = sorted(name for name, count in Counter(check_names).items() if count > 1)
+
+        assert check_count == name_count
+        assert name_count == unique_name_count, f"duplicate global health check names: {duplicates}"
+        assert not duplicates
+
     def test_global_instance_can_register(self):
         """Test registering checks on global instance."""
         # Note: This modifies global state, but tests should be isolated
         # In practice, each test should use a fresh HealthCheck instance
 
-        check_name = f"test_global_{time.time()}"
+        check_name = "test_global_can_register"
         global_health_check.register(check_name, lambda: True)
 
         assert check_name in global_health_check._checks
