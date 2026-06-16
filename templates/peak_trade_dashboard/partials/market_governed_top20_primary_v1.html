@@ -6,6 +6,8 @@
   data-market-governed-top20-primary-v1="true"
   data-market-governed-top-n-primary-v1="true"
   data-market-governed-top20-wired-v1="true"
+  data-market-futures-universe-visual-matrix-v1="true"
+  data-market-governed-universe-matrix-v1="true"
   data-market-governed-top-n="{{ governed_top20.top_n }}"
   data-market-governed-top-n-default="{{ governed_top20.top_n_default }}"
   data-market-governed-top-n-selectable="{{ 'true' if governed_top20.top_n_selectable else 'false' }}"
@@ -13,6 +15,12 @@
   data-market-selected-instrument="{{ governed_top20.selected_symbol|e }}"
   data-market-governed-top20-snapshot-status="{{ governed_top20.snapshot_status|e }}"
   data-market-governed-top20-display-status="{{ governed_top20.display_status|e }}"
+  data-market-matrix-view-only="{{ 'true' if governed_top20.view_only else 'false' }}"
+  data-market-matrix-read-only="{{ 'true' if governed_top20.read_only else 'false' }}"
+  data-market-matrix-default-sort-field="{{ governed_top20.default_sort_field|e }}"
+  data-market-matrix-default-sort-direction="{{ governed_top20.default_sort_direction|e }}"
+  data-market-matrix-sort-fields="{{ governed_top20.available_sort_fields|join(',')|e }}"
+  data-market-matrix-filter-fields="{{ governed_top20.available_filter_fields|join(',')|e }}"
   {% if governed_top20.snapshot_available %}data-market-governed-top20-available-v1="true"{% else %}data-market-governed-top20-unavailable-v1="true"{% endif %}
   {% if governed_top20.stale %}data-market-governed-top20-stale-v1="true"{% endif %}
   {% if governed_top20.snapshot_status == 'malformed' %}data-market-governed-top20-malformed-v1="true"{% endif %}
@@ -22,13 +30,15 @@
   <div class="flex flex-wrap items-start justify-between gap-2 mb-2">
     <div>
       <h2 id="market-governed-top20-primary-h2" class="m-0 text-[11px] font-semibold uppercase tracking-wide text-violet-200/95">
-        Governed Futures Top-{{ governed_top20.top_n }} · read-only
+        Governed Futures Universe · Top-{{ governed_top20.top_n }} matrix · view-only
       </h2>
       <p class="m-0 mt-1 text-[10px] text-slate-500">
         source: <span class="font-mono text-slate-300">{{ governed_top20.data_source|e }}</span>
         · freshness: <span class="font-mono text-slate-300">{{ governed_top20.generated_at_iso|e }}</span>
         {% if governed_top20.stale %}
-        · <span class="text-amber-300/90">stale{% if governed_top20.stale_reason %} ({{ governed_top20.stale_reason|e }}){% endif %}</span>
+        · <span class="rounded border border-amber-700/60 bg-amber-950/40 px-1 py-0.5 text-amber-300/90" data-market-matrix-freshness-badge-v1="true" title="Snapshot marked stale by producer">stale{% if governed_top20.stale_reason %} ({{ governed_top20.stale_reason|e }}){% endif %}</span>
+        {% else %}
+        · <span class="rounded border border-emerald-800/50 bg-emerald-950/35 px-1 py-0.5 text-emerald-200/90" data-market-matrix-freshness-badge-v1="true" title="Freshness timestamp from ranking readmodel">fresh</span>
         {% endif %}
       </p>
     </div>
@@ -52,42 +62,263 @@
   </div>
 
   {% if governed_top20.snapshot_available and governed_top20.rows %}
-  <div class="overflow-x-auto" data-market-governed-top20-table-v1="true" data-market-futures-selector-table-v1="true">
-    <table class="w-full text-[11px] border-collapse tabular-nums">
-      <thead>
+  <div
+    class="mb-2 flex flex-wrap items-end gap-2 text-[10px]"
+    data-market-governed-matrix-filters-v1="true"
+    aria-label="Matrix filters (view-only)"
+  >
+    <label class="flex flex-col gap-0.5 text-slate-400">
+      <span class="uppercase tracking-wide">Symbol</span>
+      <input
+        type="search"
+        class="rounded border border-slate-700/70 bg-slate-900/80 px-2 py-1 font-mono text-slate-200 min-w-[8rem]"
+        placeholder="filter symbol…"
+        data-market-matrix-filter-symbol-v1="true"
+        autocomplete="off"
+      />
+    </label>
+    <label class="flex flex-col gap-0.5 text-slate-400">
+      <span class="uppercase tracking-wide" title="F5 metadata status applied uniformly to all rows in this snapshot">F5 status</span>
+      <select
+        class="rounded border border-slate-700/70 bg-slate-900/80 px-2 py-1 font-mono text-slate-200"
+        data-market-matrix-filter-f5-status-v1="true"
+      >
+        <option value="">all</option>
+        {% for status in governed_top20.f5_filter_values %}
+        <option value="{{ status|e }}">{{ status|e }}</option>
+        {% endfor %}
+      </select>
+    </label>
+    <label class="flex flex-col gap-0.5 text-slate-400">
+      <span class="uppercase tracking-wide" title="Freshness flag from ranking snapshot producer">Freshness</span>
+      <select
+        class="rounded border border-slate-700/70 bg-slate-900/80 px-2 py-1 font-mono text-slate-200"
+        data-market-matrix-filter-freshness-v1="true"
+      >
+        <option value="">all</option>
+        <option value="fresh">fresh</option>
+        <option value="stale">stale</option>
+      </select>
+    </label>
+    <button
+      type="button"
+      class="rounded border border-slate-700/70 bg-slate-900/80 px-2 py-1 text-slate-300 hover:text-slate-100"
+      data-market-matrix-reset-filters-v1="true"
+    >Reset filters</button>
+    <button
+      type="button"
+      class="rounded border border-slate-700/70 bg-slate-900/80 px-2 py-1 text-slate-300 hover:text-slate-100"
+      data-market-matrix-reset-sort-v1="true"
+      title="Restore governed ranking order (rank ascending)"
+    >Reset sort</button>
+  </div>
+
+  <div class="overflow-x-auto" data-market-governed-top20-table-v1="true" data-market-futures-selector-table-v1="true" data-market-governed-matrix-table-v1="true">
+    <table class="w-full min-w-[52rem] text-[11px] border-collapse tabular-nums">
+      <thead class="sticky top-0 z-10 bg-slate-950/95 backdrop-blur-sm">
         <tr class="text-left text-slate-400 border-b border-slate-800/70">
-          <th class="pr-2 py-1 font-normal">Rank</th>
-          <th class="pr-2 py-1 font-normal">Futures symbol</th>
-          <th class="pr-2 py-1 font-normal">Score</th>
-          <th class="pr-2 py-1 font-normal">F5 status</th>
+          <th class="pr-2 py-1 font-normal">
+            <button type="button" class="text-left text-inherit bg-transparent border-0 p-0 cursor-pointer hover:text-slate-200" data-market-matrix-sort-v1="true" data-market-matrix-sort-field="rank" title="Governed rank (default order)">Rank</button>
+          </th>
+          <th class="pr-2 py-1 font-normal">
+            <button type="button" class="text-left text-inherit bg-transparent border-0 p-0 cursor-pointer hover:text-slate-200" data-market-matrix-sort-v1="true" data-market-matrix-sort-field="symbol">Futures symbol</button>
+          </th>
+          <th class="pr-2 py-1 font-normal text-right">
+            <button type="button" class="text-right w-full text-inherit bg-transparent border-0 p-0 cursor-pointer hover:text-slate-200" data-market-matrix-sort-v1="true" data-market-matrix-sort-field="score" title="Producer display_score">Score</button>
+          </th>
+          <th class="pr-2 py-1 font-normal">
+            <button type="button" class="text-left text-inherit bg-transparent border-0 p-0 cursor-pointer hover:text-slate-200" data-market-matrix-sort-v1="true" data-market-matrix-sort-field="f5_status" title="F5 metadata status (snapshot-level)">Eligibility / F5</button>
+          </th>
+          <th class="pr-2 py-1 font-normal text-right">
+            <button type="button" class="text-right w-full text-inherit bg-transparent border-0 p-0 cursor-pointer hover:text-slate-200" data-market-matrix-sort-v1="true" data-market-matrix-sort-field="last_price" title="Last close from futures OHLCV readmodel when available">Last price</button>
+          </th>
+          <th class="pr-2 py-1 font-normal text-right">
+            <button type="button" class="text-right w-full text-inherit bg-transparent border-0 p-0 cursor-pointer hover:text-slate-200" data-market-matrix-sort-v1="true" data-market-matrix-sort-field="change" title="Bar-over-bar % change from OHLCV when available">Change</button>
+          </th>
+          <th class="pr-2 py-1 font-normal text-right">
+            <button type="button" class="text-right w-full text-inherit bg-transparent border-0 p-0 cursor-pointer hover:text-slate-200" data-market-matrix-sort-v1="true" data-market-matrix-sort-field="volume" title="Last bar volume from OHLCV when available">Volume</button>
+          </th>
           <th class="pr-2 py-1 font-normal">Freshness</th>
-          <th class="py-1 font-normal">Data source</th>
+          <th class="py-1 font-normal">Data status</th>
         </tr>
       </thead>
-      <tbody>
+      <tbody data-market-governed-matrix-tbody-v1="true">
         {% for row in governed_top20.rows %}
         <tr
           class="border-b border-slate-900/60 text-slate-200 {% if row.is_selected %}bg-sky-950/35 ring-1 ring-inset ring-sky-800/40{% endif %}"
           data-market-governed-top20-row-v1="true"
           data-market-futures-selector-row-v1="true"
+          data-market-governed-matrix-row-v1="true"
+          data-market-matrix-row-symbol="{{ row.symbol|e }}"
+          data-market-matrix-row-f5-status="{{ row.f5_status|e }}"
+          data-market-matrix-row-freshness="{{ row.freshness_filter|e }}"
+          data-market-matrix-sort-rank="{{ row.rank_sort if row.rank_sort is not none else '' }}"
+          data-market-matrix-sort-symbol="{{ row.symbol|e }}"
+          data-market-matrix-sort-score="{{ row.score_sort if row.score_sort is not none else '' }}"
+          data-market-matrix-sort-f5-status="{{ row.f5_status|e }}"
+          data-market-matrix-sort-last-price="{{ row.last_price_sort if row.last_price_sort is not none else '' }}"
+          data-market-matrix-sort-change="{{ row.change_sort if row.change_sort is not none else '' }}"
+          data-market-matrix-sort-volume="{{ row.volume_sort if row.volume_sort is not none else '' }}"
           {% if row.is_selected %}data-market-futures-selector-selected-v1="true"{% endif %}
         >
           <td class="pr-2 py-1">{{ row.rank|e }}</td>
           <td class="pr-2 py-1 font-mono">
             <a href="{{ row.market_nav_href|e }}" class="text-sky-300/95 no-underline hover:underline" data-market-futures-selector-link-v1="true">{{ row.symbol|e }}</a>
           </td>
-          <td class="pr-2 py-1">{{ row.score_display|e }}</td>
-          <td class="pr-2 py-1 font-mono text-slate-400">{{ row.f5_status|e }}</td>
-          <td class="pr-2 py-1 font-mono text-[10px] text-slate-400">{{ row.freshness_display|e }}</td>
-          <td class="py-1 font-mono text-[10px] text-slate-400">{{ row.data_source|e }}</td>
+          <td class="pr-2 py-1 text-right" title="display_score from ranking funnel">{{ row.score_display|e }}</td>
+          <td class="pr-2 py-1">
+            <span class="rounded border border-slate-700/60 bg-slate-900/70 px-1 py-0.5 font-mono text-[10px] text-slate-300" title="Candidate stage: {{ row.eligibility_status|e }}">{{ row.eligibility_status|e }}</span>
+            <span class="ml-1 rounded border border-violet-800/50 bg-violet-950/40 px-1 py-0.5 font-mono text-[10px] text-violet-200/90" title="F5 metadata status">{{ row.f5_status|e }}</span>
+          </td>
+          <td class="pr-2 py-1 text-right font-mono">{{ row.last_price_display|e }}</td>
+          <td class="pr-2 py-1 text-right font-mono">{{ row.change_display|e }}</td>
+          <td class="pr-2 py-1 text-right font-mono">{{ row.volume_display|e }}</td>
+          <td class="pr-2 py-1 font-mono text-[10px]">
+            {% if row.stale %}
+            <span class="rounded border border-amber-700/60 bg-amber-950/40 px-1 py-0.5 text-amber-300/90">stale</span>
+            {% else %}
+            <span class="rounded border border-emerald-800/50 bg-emerald-950/35 px-1 py-0.5 text-emerald-200/90">{{ row.freshness_display|e }}</span>
+            {% endif %}
+          </td>
+          <td class="py-1 font-mono text-[10px] text-slate-400">
+            {% if row.data_status == 'malformed' %}
+            <span class="rounded border border-rose-800/55 bg-rose-950/40 px-1 py-0.5 text-rose-200/90" data-market-matrix-data-status-malformed-v1="true">malformed</span>
+            {% elif row.data_status == 'stale' %}
+            <span class="rounded border border-amber-700/60 bg-amber-950/40 px-1 py-0.5 text-amber-300/90" data-market-matrix-data-status-stale-v1="true">stale</span>
+            {% elif row.data_status == 'partial' %}
+            <span class="rounded border border-slate-700/60 bg-slate-900/70 px-1 py-0.5 text-slate-300" title="Ranking row present; OHLCV field(s) unavailable">partial</span>
+            {% else %}
+            <span class="rounded border border-emerald-800/50 bg-emerald-950/35 px-1 py-0.5 text-emerald-200/90">ready</span>
+            {% endif %}
+            <span class="ml-1 text-slate-500" title="Ranking readmodel source label">{{ row.data_source|e }}</span>
+          </td>
         </tr>
         {% endfor %}
       </tbody>
     </table>
-    <p class="m-0 mt-2 text-[10px] text-slate-500">
-      {{ governed_top20.row_count }} row(s) · producer-defined count · ranking order preserved · no padding to {{ governed_top20.top_n }}
+    <p class="m-0 mt-2 text-[10px] text-slate-500" data-market-governed-matrix-row-summary-v1="true">
+      <span data-market-matrix-visible-count-v1="true">{{ governed_top20.row_count }}</span> row(s) visible · producer-defined count · ranking order preserved · no padding to {{ governed_top20.top_n }}
+    </p>
+    <p class="m-0 mt-1 text-[10px] text-amber-200/90 hidden" role="status" data-market-governed-matrix-no-results-v1="true">
+      No rows match the current filters (view-only; snapshot unchanged).
     </p>
   </div>
+
+  <details class="mt-2 text-[10px] text-slate-500" data-market-governed-matrix-legend-v1="true">
+    <summary class="cursor-pointer text-slate-400">Matrix legend (view-only)</summary>
+    <ul class="m-0 mt-1 list-disc pl-4 space-y-0.5">
+      <li><strong>Score</strong> — producer <code>display_score</code> from ranking funnel (not recomputed).</li>
+      <li><strong>Eligibility</strong> — governed <code>selected</code> stage row; F5 status from futures read-only dashboard metadata.</li>
+      <li><strong>Last price / Change / Volume</strong> — from futures OHLCV readmodel when gate+bundle provide series; otherwise em dash.</li>
+      <li><strong>Sort / Filter</strong> — client-side display only; does not mutate snapshot, ranking, or authority.</li>
+      <li>Liquidity, Regime, Bull/Bear, Scope — not shown (no canonical per-row owner in this slice).</li>
+    </ul>
+  </details>
+
+  <script>
+  (function () {
+    var root = document.getElementById("market-governed-top20-primary-v1");
+    if (!root) return;
+    var tbody = root.querySelector("[data-market-governed-matrix-tbody-v1]");
+    if (!tbody) return;
+    var rows = Array.prototype.slice.call(tbody.querySelectorAll("[data-market-governed-matrix-row-v1]"));
+    var defaultOrder = rows.map(function (r) { return r; });
+    var sortField = root.getAttribute("data-market-matrix-default-sort-field") || "rank";
+    var sortDir = root.getAttribute("data-market-matrix-default-sort-direction") || "asc";
+    var symbolInput = root.querySelector("[data-market-matrix-filter-symbol-v1]");
+    var f5Select = root.querySelector("[data-market-matrix-filter-f5-status-v1]");
+    var freshSelect = root.querySelector("[data-market-matrix-filter-freshness-v1]");
+    var noResults = root.querySelector("[data-market-governed-matrix-no-results-v1]");
+    var visibleCount = root.querySelector("[data-market-matrix-visible-count-v1]");
+
+    function parseSortValue(row, field) {
+      var attr = "data-market-matrix-sort-" + field.replace(/_/g, "-");
+      var raw = row.getAttribute(attr);
+      if (raw === "" || raw === null) return null;
+      if (field === "symbol" || field === "f5_status") return String(raw).toLowerCase();
+      var num = Number(raw);
+      return Number.isFinite(num) ? num : null;
+    }
+
+    function compareRows(a, b) {
+      var av = parseSortValue(a, sortField);
+      var bv = parseSortValue(b, sortField);
+      var dir = sortDir === "desc" ? -1 : 1;
+      if (av === null && bv === null) {
+        var ar = parseSortValue(a, "rank");
+        var br = parseSortValue(b, "rank");
+        if (ar === null && br === null) return 0;
+        if (ar === null) return 1;
+        if (br === null) return -1;
+        return (ar - br) * dir;
+      }
+      if (av === null) return 1;
+      if (bv === null) return -1;
+      if (av < bv) return -1 * dir;
+      if (av > bv) return 1 * dir;
+      var ar2 = parseSortValue(a, "rank");
+      var br2 = parseSortValue(b, "rank");
+      if (ar2 === null || br2 === null) return 0;
+      return ar2 - br2;
+    }
+
+    function rowMatchesFilters(row) {
+      var symQ = symbolInput && symbolInput.value ? symbolInput.value.trim().toUpperCase() : "";
+      if (symQ && row.getAttribute("data-market-matrix-row-symbol").toUpperCase().indexOf(symQ) === -1) return false;
+      var f5 = f5Select && f5Select.value ? f5Select.value : "";
+      if (f5 && row.getAttribute("data-market-matrix-row-f5-status") !== f5) return false;
+      var fr = freshSelect && freshSelect.value ? freshSelect.value : "";
+      if (fr && row.getAttribute("data-market-matrix-row-freshness") !== fr) return false;
+      return true;
+    }
+
+    function applyView() {
+      var visible = 0;
+      rows.forEach(function (row) {
+        var show = rowMatchesFilters(row);
+        row.style.display = show ? "" : "none";
+        if (show) visible += 1;
+      });
+      if (visibleCount) visibleCount.textContent = String(visible);
+      if (noResults) noResults.classList.toggle("hidden", visible > 0);
+      var sorted = rows.slice().sort(compareRows);
+      sorted.forEach(function (row) { tbody.appendChild(row); });
+    }
+
+    function resetSort() {
+      sortField = root.getAttribute("data-market-matrix-default-sort-field") || "rank";
+      sortDir = root.getAttribute("data-market-matrix-default-sort-direction") || "asc";
+      defaultOrder.forEach(function (row) { tbody.appendChild(row); });
+      applyView();
+    }
+
+    root.querySelectorAll("[data-market-matrix-sort-v1]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var field = btn.getAttribute("data-market-matrix-sort-field");
+        if (!field) return;
+        if (sortField === field) {
+          sortDir = sortDir === "asc" ? "desc" : "asc";
+        } else {
+          sortField = field;
+          sortDir = field === "rank" ? "asc" : "desc";
+        }
+        applyView();
+      });
+    });
+    if (symbolInput) symbolInput.addEventListener("input", applyView);
+    if (f5Select) f5Select.addEventListener("change", applyView);
+    if (freshSelect) freshSelect.addEventListener("change", applyView);
+    var resetFilters = root.querySelector("[data-market-matrix-reset-filters-v1]");
+    if (resetFilters) resetFilters.addEventListener("click", function () {
+      if (symbolInput) symbolInput.value = "";
+      if (f5Select) f5Select.value = "";
+      if (freshSelect) freshSelect.value = "";
+      applyView();
+    });
+    var resetSortBtn = root.querySelector("[data-market-matrix-reset-sort-v1]");
+    if (resetSortBtn) resetSortBtn.addEventListener("click", resetSort);
+  })();
+  </script>
   {% elif governed_top20.snapshot_status == 'malformed' %}
   <p class="m-0 text-sm text-rose-200/90" role="alert" data-market-governed-top20-malformed-state-v1="true">
     <strong>Governed snapshot invalid/malformed</strong> — ranking bundle could not be loaded. No partial or synthetic list shown.

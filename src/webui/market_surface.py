@@ -87,6 +87,37 @@ CANONICAL_SELECTED_INSTRUMENT_OWNER = "src/webui/market_surface.py"
 CANONICAL_FUTURES_OHLCV_OWNER = "src/webui/market_futures_ohlcv_runtime_v0.py"
 CANONICAL_CHART_OWNER = "templates/peak_trade_dashboard/partials/market_primary_close_chart_v1.html"
 CANONICAL_INSTRUMENT_EXCLUSION_OWNER = CANONICAL_EXCLUSION_OWNER
+CANONICAL_MATRIX_TEMPLATE_OWNER = (
+    "templates/peak_trade_dashboard/partials/market_governed_top20_primary_v1.html"
+)
+CANONICAL_RANKING_FUNNEL_OWNER = "src/webui/market_ranking_funnel_runtime_v0.py"
+CANONICAL_ELIGIBILITY_OWNER = "src/webui/market_instrument_eligibility_v0.py"
+CANONICAL_STYLE_OWNER = CANONICAL_MATRIX_TEMPLATE_OWNER
+CANONICAL_CLIENT_INTERACTION_OWNER = CANONICAL_MATRIX_TEMPLATE_OWNER
+
+MATRIX_ROW_SCHEMA: tuple[str, ...] = (
+    "rank",
+    "symbol",
+    "score_display",
+    "eligibility_status",
+    "f5_status",
+    "last_price_display",
+    "change_display",
+    "volume_display",
+    "freshness_display",
+    "data_source",
+    "data_status",
+)
+AVAILABLE_SORT_FIELDS: tuple[str, ...] = (
+    "rank",
+    "symbol",
+    "score",
+    "f5_status",
+    "last_price",
+    "change",
+    "volume",
+)
+AVAILABLE_FILTER_FIELDS: tuple[str, ...] = ("symbol", "f5_status", "freshness")
 
 MARKET_SINGLE_PAGE_CONSOLIDATION_ENABLED_ENV = (
     "PEAK_TRADE_MARKET_SINGLE_PAGE_CONSOLIDATION_V1_ENABLED"
@@ -968,6 +999,73 @@ def _format_ranking_score_display(row: dict[str, Any]) -> str:
         return "unavailable"
 
 
+def _parse_ranking_score_sort_value(row: dict[str, Any]) -> float | None:
+    if "display_score" not in row:
+        return None
+    score = row.get("display_score")
+    if score is None or isinstance(score, bool):
+        return None
+    try:
+        return float(score)
+    except (TypeError, ValueError):
+        return None
+
+
+def _derive_governed_matrix_row_ohlcv_fields(
+    *,
+    futures_ohlcv: Dict[str, Any],
+    symbol: str,
+    timeframe: str,
+    limit: int,
+) -> dict[str, Any]:
+    """Display-only OHLCV fields for a governed matrix row (no new scoring)."""
+    bars, reason, unavailable = resolve_futures_ohlcv_series_for_symbol(
+        futures_ohlcv=futures_ohlcv,
+        symbol=symbol,
+        timeframe=timeframe,
+        limit=limit,
+    )
+    if unavailable or not bars:
+        return {
+            "last_price_display": "—",
+            "last_price_sort": None,
+            "change_display": "—",
+            "change_sort": None,
+            "volume_display": "—",
+            "volume_sort": None,
+            "ohlcv_status": reason or "unavailable",
+        }
+
+    last_bar = bars[-1] if isinstance(bars[-1], dict) else {}
+    prev_bar = bars[-2] if len(bars) >= 2 and isinstance(bars[-2], dict) else {}
+
+    def _fval(row: dict[str, Any], key: str) -> float | None:
+        raw = row.get(key)
+        if raw is None:
+            return None
+        try:
+            return float(raw)
+        except (TypeError, ValueError):
+            return None
+
+    last_close = _fval(last_bar, "close")
+    prev_close = _fval(prev_bar, "close")
+    last_volume = _fval(last_bar, "volume")
+    change_pct: float | None = None
+    if last_close is not None and prev_close is not None and prev_close != 0:
+        change_pct = ((last_close - prev_close) / prev_close) * 100.0
+
+    return {
+        "last_price_display": _format_display_price(last_close) if last_close is not None else "—",
+        "last_price_sort": last_close,
+        "change_display": f"{change_pct:.4f}%" if change_pct is not None else "—",
+        "change_sort": change_pct,
+        "volume_display": _format_display_price(last_volume) if last_volume is not None else "—",
+        "volume_sort": last_volume,
+        "ohlcv_status": "ready",
+    }
+
+
 def _enrich_ranking_row_for_watchlist(
     row: dict[str, Any],
     *,
@@ -1017,13 +1115,14 @@ def build_market_governed_top20_display_context(
     *,
     ranking_funnel: Dict[str, Any],
     f5_dashboard: Dict[str, Any],
+    futures_ohlcv: Dict[str, Any] | None = None,
     selected_symbol: str = "",
     source: str = DEFAULT_SOURCE,
     timeframe: str = DEFAULT_TIMEFRAME,
     limit: int = DEFAULT_LIMIT,
     top_n: int = DEFAULT_TOP_N,
 ) -> Dict[str, Any]:
-    """Primary governed Top-N + F5 metadata wiring for futures-first GET /market (read-only)."""
+    """Primary governed Top-N visual matrix + F5 metadata for futures-first GET /market (view-only)."""
     snapshot_status = _ranking_funnel_snapshot_status(ranking_funnel)
     stages = ranking_funnel.get("stages") if isinstance(ranking_funnel.get("stages"), dict) else {}
     selected_rows = [
@@ -1049,20 +1148,51 @@ def build_market_governed_top20_display_context(
     data_source = str(ranking_funnel.get("source") or "").strip() or "unavailable"
     snapshot_stale = ranking_funnel.get("stale") is True
 
+    ohlcv_ctx = futures_ohlcv if isinstance(futures_ohlcv, dict) else {}
     rows: list[dict[str, Any]] = []
     for row in visible_rows:
         row_symbol = str(row.get("symbol") or "")
         is_selected = _normalize_symbol_for_match(row_symbol) == _normalize_symbol_for_match(
             selected_symbol
         )
+        ohlcv_fields = _derive_governed_matrix_row_ohlcv_fields(
+            futures_ohlcv=ohlcv_ctx,
+            symbol=row_symbol,
+            timeframe=timeframe,
+            limit=limit,
+        )
+        row_rank = row.get("rank")
+        try:
+            rank_sort = int(row_rank) if row_rank is not None else None
+        except (TypeError, ValueError):
+            rank_sort = None
+        if snapshot_stale:
+            row_data_status = "stale"
+        elif snapshot_status == "malformed":
+            row_data_status = "malformed"
+        elif ohlcv_fields["ohlcv_status"] == "ready":
+            row_data_status = "ready"
+        else:
+            row_data_status = "partial"
         rows.append(
             {
-                "rank": row.get("rank"),
+                "rank": row_rank,
+                "rank_sort": rank_sort,
                 "symbol": row_symbol,
                 "score_display": _format_ranking_score_display(row),
+                "score_sort": _parse_ranking_score_sort_value(row),
+                "eligibility_status": "selected",
                 "f5_status": f5_row_status,
+                "last_price_display": ohlcv_fields["last_price_display"],
+                "last_price_sort": ohlcv_fields["last_price_sort"],
+                "change_display": ohlcv_fields["change_display"],
+                "change_sort": ohlcv_fields["change_sort"],
+                "volume_display": ohlcv_fields["volume_display"],
+                "volume_sort": ohlcv_fields["volume_sort"],
                 "freshness_display": freshness_display,
+                "freshness_filter": "stale" if snapshot_stale else "fresh",
                 "data_source": data_source,
+                "data_status": row_data_status,
                 "stale": snapshot_stale,
                 "is_selected": is_selected,
                 "market_nav_href": build_market_symbol_nav_href(
@@ -1076,6 +1206,7 @@ def build_market_governed_top20_display_context(
         )
 
     snapshot_available = snapshot_status in ("ready", "stale")
+    f5_filter_values = sorted({str(r["f5_status"]) for r in rows})
     return {
         "section_visible": True,
         "snapshot_available": snapshot_available,
@@ -1095,7 +1226,15 @@ def build_market_governed_top20_display_context(
         "f5_display_status": f5_display_status,
         "f5_overall_status": f5_overall_status,
         "f5_gate_enabled": f5_gate_enabled,
+        "f5_filter_values": f5_filter_values,
         "unavailable_message": "Futures data unavailable",
+        "view_only": True,
+        "read_only": True,
+        "matrix_row_schema": MATRIX_ROW_SCHEMA,
+        "available_sort_fields": AVAILABLE_SORT_FIELDS,
+        "available_filter_fields": AVAILABLE_FILTER_FIELDS,
+        "default_sort_field": "rank",
+        "default_sort_direction": "asc",
     }
 
 
@@ -1603,6 +1742,7 @@ def build_market_v0_page_template_context(
     governed_top20 = build_market_governed_top20_display_context(
         ranking_funnel=ranking_funnel,
         f5_dashboard=f5_dashboard,
+        futures_ohlcv=futures_ohlcv,
         selected_symbol=symbol,
         source=source,
         timeframe=timeframe,
