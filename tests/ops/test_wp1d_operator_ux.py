@@ -8,7 +8,7 @@ Tests:
 """
 
 import time
-from datetime import datetime
+from datetime import datetime, timedelta
 
 import pytest
 
@@ -118,14 +118,32 @@ class TestSessionRegistry:
         assert summary["by_status"]["running"] == 1
         assert summary["by_status"]["completed"] == 1
 
-    def test_sessions_sorted_by_time(self):
+    def test_sessions_sorted_by_time(self, monkeypatch):
         """Test sessions sorted by start time (newest first)."""
         registry = SessionRegistry()
+        base = datetime(2026, 1, 1, 12, 0, 0)
+        utcnow_sequence = [
+            base,
+            base,
+            base + timedelta(seconds=1),
+            base + timedelta(seconds=1),
+            base + timedelta(seconds=2),
+            base + timedelta(seconds=2),
+        ]
+        utcnow_index = [0]
+
+        def fake_utcnow():
+            ts = utcnow_sequence[utcnow_index[0]]
+            utcnow_index[0] += 1
+            return ts
+
+        class FakeDateTime:
+            utcnow = staticmethod(fake_utcnow)
+
+        monkeypatch.setattr("src.live.ops.registry.datetime", FakeDateTime)
 
         registry.create_session("shadow_001")
-        time.sleep(0.01)  # Ensure different timestamps
         registry.create_session("shadow_002")
-        time.sleep(0.01)
         registry.create_session("shadow_003")
 
         sessions = registry.list_sessions()
@@ -139,30 +157,40 @@ class TestSessionRegistry:
 class TestStatusOverview:
     """Test status overview."""
 
-    def test_start_tracking(self):
+    def test_start_tracking(self, monkeypatch):
         """Test start tracking."""
+        monotonic_values = iter([100.0, 100.0, 100.15])
+        monkeypatch.setattr(
+            "src.live.ops.status.time.monotonic",
+            lambda: next(monotonic_values),
+        )
+
         overview = StatusOverview()
         overview.start()
-
-        time.sleep(0.1)  # Let some time pass
 
         status = overview.get_status()
 
-        assert status.system_uptime_s >= 0.1
-        assert status.data_feed_uptime_s >= 0.1
+        assert status.system_uptime_s == pytest.approx(0.15)
+        assert status.data_feed_uptime_s == pytest.approx(0.15)
 
-    def test_record_reconnect(self):
+    def test_record_reconnect(self, monkeypatch):
         """Test record reconnect."""
+        monotonic_values = iter([100.0, 100.05, 100.05, 100.20])
+        monkeypatch.setattr(
+            "src.live.ops.status.time.monotonic",
+            lambda: next(monotonic_values),
+        )
+
         overview = StatusOverview()
         overview.start()
-
-        time.sleep(0.05)
 
         overview.record_reconnect()
 
         status = overview.get_status()
 
         assert status.last_reconnect_ts is not None
+        assert status.system_uptime_s == pytest.approx(0.20)
+        assert status.data_feed_uptime_s == pytest.approx(0.15)
         # Data feed uptime should reset after reconnect
         assert status.data_feed_uptime_s < status.system_uptime_s
 
