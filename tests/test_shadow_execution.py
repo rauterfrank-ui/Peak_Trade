@@ -18,6 +18,7 @@ import subprocess
 import sys
 from pathlib import Path
 from datetime import datetime, timezone
+from unittest.mock import patch
 
 import pandas as pd
 import numpy as np
@@ -688,9 +689,16 @@ class TestShadowExecutionIntegration:
         # Sollte schnell sein (< 1 Sekunde)
         import time
 
-        start = time.time()
-        results = executor.execute_orders(orders)
-        elapsed = time.time() - start
+        fake_now = [1_000_000.0]
+
+        def fake_time() -> float:
+            return fake_now[0]
+
+        with patch.object(time, "time", fake_time):
+            start = time.time()
+            results = executor.execute_orders(orders)
+            fake_now[0] += 0.01
+            elapsed = time.time() - start
 
         assert len(results) == 100
         assert all(r.status == "filled" for r in results)
