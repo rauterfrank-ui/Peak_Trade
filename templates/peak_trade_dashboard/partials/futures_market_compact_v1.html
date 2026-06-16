@@ -10,8 +10,32 @@
   data-f5-market-dashboard-no-authority="true"
   data-f5-summary="true"
   data-market-remodel-secondary-futures-v2="true"
+  data-f5-market-dashboard-gate-enabled="{{ 'true' if f5_dashboard.gate_enabled else 'false' }}"
+  data-f5-market-dashboard-display-status="{{ f5_dashboard.display_status|e }}"
+  data-f5-overall-status="{{ f5_dashboard.overall_status|e }}"
+  {% if not f5_dashboard.gate_enabled %}data-f5-market-dashboard-missing-state-v1="true"{% endif %}
+  {% if f5_dashboard.display_status == 'builder_error' %}data-f5-market-dashboard-malformed-state-v1="true"{% endif %}
+  {% if f5_dashboard.display_status == 'unconfigured' %}data-f5-market-dashboard-unconfigured-state-v1="true"{% endif %}
 >
-  <h2 id="market-terminal-futures-compact-h2" class="text-[11px] font-semibold uppercase tracking-wide text-slate-200 m-0 mb-2">Futures · display-only</h2>
+  <h2 id="market-terminal-futures-compact-h2" class="text-[11px] font-semibold uppercase tracking-wide text-slate-200 m-0 mb-2">Futures · F5 metadata</h2>
+  {% if not f5_dashboard.gate_enabled %}
+  <p class="m-0 text-[11px] text-slate-400" data-f5-compact-unavailable-v1="true">
+    F5 metadata unavailable — <span class="font-mono">PEAK_TRADE_F5_MARKET_DASHBOARD_ENABLED=1</span> + bundle root required.
+  </p>
+  {% elif f5_dashboard.display_status == 'builder_error' %}
+  <p class="m-0 text-[11px] text-rose-200/90" role="alert" data-f5-compact-malformed-v1="true">
+    F5 fixture invalid/malformed — no invented metadata values shown.
+  </p>
+  {% elif f5_dashboard.display_status == 'unconfigured' %}
+  <p class="m-0 text-[11px] text-slate-400" data-f5-compact-unconfigured-v1="true">
+    F5 bundle root unconfigured — metadata unavailable (read-only, fail-closed).
+  </p>
+  {% else %}
   <p class="m-0 text-[11px] text-slate-300">{{ f5_dashboard.summary_line|e }}</p>
-  <p class="m-0 mt-1 text-[10px] text-slate-500">Status: <span class="font-mono text-slate-400">{{ f5_dashboard.overall_status|e }}</span> · no session · no testnet · no live</p>
+  <p class="m-0 mt-1 text-[10px] text-slate-500">
+    Status: <span class="font-mono text-slate-400">{{ f5_dashboard.overall_status|e }}</span>
+    · display: <span class="font-mono text-slate-400">{{ f5_dashboard.display_status|e }}</span>
+    · no session · no testnet · no live
+  </p>
+  {% endif %}
 </section>

@@ -116,7 +116,8 @@ def test_market_default_shows_futures_empty_state_without_snapshot(client: TestC
     body = client.get("/market").text
     assert 'data-market-futures-empty-state-v1="true"' in body
     assert 'data-market-futures-first-fail-closed-v1="true"' in body
-    assert 'data-market-empty-state="true"' in body
+    assert 'data-market-futures-data-unavailable-v1="true"' in body
+    assert "Futures data unavailable" in body
     assert "No spot OHLCV" in body or "no spot" in body.lower()
 
 

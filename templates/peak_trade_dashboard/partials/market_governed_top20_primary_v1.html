@@ -1,0 +1,86 @@
+<section
+  id="market-governed-top20-primary-v1"
+  role="region"
+  aria-labelledby="market-governed-top20-primary-h2"
+  class="rounded-lg border border-violet-900/50 bg-slate-950/80 px-3 py-3 ring-1 ring-violet-900/30"
+  data-market-governed-top20-primary-v1="true"
+  data-market-governed-top20-wired-v1="true"
+  data-market-governed-top20-snapshot-status="{{ governed_top20.snapshot_status|e }}"
+  data-market-governed-top20-display-status="{{ governed_top20.display_status|e }}"
+  {% if governed_top20.snapshot_available %}data-market-governed-top20-available-v1="true"{% else %}data-market-governed-top20-unavailable-v1="true"{% endif %}
+  {% if governed_top20.stale %}data-market-governed-top20-stale-v1="true"{% endif %}
+  {% if governed_top20.snapshot_status == 'malformed' %}data-market-governed-top20-malformed-v1="true"{% endif %}
+  data-market-governed-top20-row-count="{{ governed_top20.row_count }}"
+  data-market-governed-top20-gate-enabled="{{ 'true' if governed_top20.gate_enabled else 'false' }}"
+>
+  <div class="flex flex-wrap items-start justify-between gap-2 mb-2">
+    <div>
+      <h2 id="market-governed-top20-primary-h2" class="m-0 text-[11px] font-semibold uppercase tracking-wide text-violet-200/95">
+        Governed Futures Top-20 · read-only
+      </h2>
+      <p class="m-0 mt-1 text-[10px] text-slate-500">
+        source: <span class="font-mono text-slate-300">{{ governed_top20.data_source|e }}</span>
+        · freshness: <span class="font-mono text-slate-300">{{ governed_top20.generated_at_iso|e }}</span>
+        {% if governed_top20.stale %}
+        · <span class="text-amber-300/90">stale{% if governed_top20.stale_reason %} ({{ governed_top20.stale_reason|e }}){% endif %}</span>
+        {% endif %}
+      </p>
+    </div>
+    <div class="flex flex-wrap gap-1 text-[9px] font-semibold uppercase tracking-wide">
+      <span class="rounded border border-slate-700/70 bg-slate-900/80 px-1.5 py-0.5 text-slate-300">display-only</span>
+      <span class="rounded border border-slate-700/70 bg-slate-900/80 px-1.5 py-0.5 text-slate-300">no orders</span>
+      <span class="rounded border border-slate-700/70 bg-slate-900/80 px-1.5 py-0.5 text-slate-300">no live</span>
+    </div>
+  </div>
+
+  {% if governed_top20.snapshot_available and governed_top20.rows %}
+  <div class="overflow-x-auto" data-market-governed-top20-table-v1="true">
+    <table class="w-full text-[11px] border-collapse tabular-nums">
+      <thead>
+        <tr class="text-left text-slate-400 border-b border-slate-800/70">
+          <th class="pr-2 py-1 font-normal">Rank</th>
+          <th class="pr-2 py-1 font-normal">Futures symbol</th>
+          <th class="pr-2 py-1 font-normal">Score</th>
+          <th class="pr-2 py-1 font-normal">F5 status</th>
+          <th class="pr-2 py-1 font-normal">Freshness</th>
+          <th class="py-1 font-normal">Data source</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in governed_top20.rows %}
+        <tr class="border-b border-slate-900/60 text-slate-200" data-market-governed-top20-row-v1="true">
+          <td class="pr-2 py-1">{{ row.rank|e }}</td>
+          <td class="pr-2 py-1 font-mono">{{ row.symbol|e }}</td>
+          <td class="pr-2 py-1">{{ row.score_display|e }}</td>
+          <td class="pr-2 py-1 font-mono text-slate-400">{{ row.f5_status|e }}</td>
+          <td class="pr-2 py-1 font-mono text-[10px] text-slate-400">{{ row.freshness_display|e }}</td>
+          <td class="py-1 font-mono text-[10px] text-slate-400">{{ row.data_source|e }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+    <p class="m-0 mt-2 text-[10px] text-slate-500">
+      {{ governed_top20.row_count }} row(s) · producer-defined count · ranking order preserved · no padding to 20
+    </p>
+  </div>
+  {% elif governed_top20.snapshot_status == 'malformed' %}
+  <p class="m-0 text-sm text-rose-200/90" role="alert" data-market-governed-top20-malformed-state-v1="true">
+    <strong>Governed snapshot invalid/malformed</strong> — ranking bundle could not be loaded. No partial or synthetic list shown.
+  </p>
+  {% elif governed_top20.snapshot_status == 'stale' and not governed_top20.rows %}
+  <p class="m-0 text-sm text-amber-200/90" role="alert" data-market-governed-top20-stale-empty-state-v1="true">
+    <strong>Governed snapshot stale</strong>{% if governed_top20.stale_reason %} — {{ governed_top20.stale_reason|e }}{% endif %}. No rows available for display.
+  </p>
+  {% else %}
+  <p class="m-0 text-sm text-slate-200" role="alert" data-market-governed-top20-missing-state-v1="true">
+    <strong>{{ governed_top20.unavailable_message|e }}</strong>
+    — no governed Top-20 snapshot on the canonical <span class="font-mono">/market</span> default.
+    No spot OHLCV, no synthetic fallback, no invented ranking data.
+    {% if not governed_top20.gate_enabled %}
+    <span class="block mt-1 font-mono text-[10px] text-slate-400">PEAK_TRADE_MARKET_RANKING_FUNNEL_ENABLED=1 + bundle root required.</span>
+    {% elif governed_top20.snapshot_status == 'unconfigured' %}
+    <span class="block mt-1 font-mono text-[10px] text-slate-400">PEAK_TRADE_MARKET_RANKING_FUNNEL_BUNDLE_ROOT unconfigured.</span>
+    {% endif %}
+  </p>
+  {% endif %}
+</section>

@@ -64,6 +64,12 @@
 
   {% include "partials/market_primary_operator_hero_v1.html" %}
 
+  {% if futures_first %}
+  <div class="mt-3" data-market-governed-top20-primary-slot-v1="true">
+    {% include "partials/market_governed_top20_primary_v1.html" %}
+  </div>
+  {% endif %}
+
   <div class="mt-4 grid grid-cols-1 lg:grid-cols-4 gap-4" data-market-terminal-secondary-grid-v1="true" data-market-remodel-secondary-grid-v2="true">
     <div class="lg:col-span-1 order-2 lg:order-1">
       {% include "partials/market_watchlist_compact_v1.html" %}

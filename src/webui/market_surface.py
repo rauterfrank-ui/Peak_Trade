@@ -825,6 +825,18 @@ def build_market_symbol_nav_href(
     )
 
 
+def _format_ranking_score_display(row: dict[str, Any]) -> str:
+    if "display_score" not in row:
+        return "unavailable"
+    score = row.get("display_score")
+    if score is None or isinstance(score, bool):
+        return "unavailable"
+    try:
+        return f"{float(score):.4f}".rstrip("0").rstrip(".")
+    except (TypeError, ValueError):
+        return "unavailable"
+
+
 def _enrich_ranking_row_for_watchlist(
     row: dict[str, Any],
     *,
@@ -840,12 +852,91 @@ def _enrich_ranking_row_for_watchlist(
     return {
         **row,
         "is_selected": is_selected,
+        "score_display": _format_ranking_score_display(row),
         "market_nav_href": build_market_symbol_nav_href(
             symbol=row_symbol,
             source=source,
             timeframe=timeframe,
             limit=limit,
         ),
+    }
+
+
+def _ranking_funnel_snapshot_status(ranking_funnel: Dict[str, Any]) -> str:
+    """Canonical governed snapshot read status for futures-first default wiring."""
+    display = str(ranking_funnel.get("display_status") or "disabled")
+    if display == "disabled":
+        return "disabled"
+    if display == "unconfigured":
+        return "unconfigured"
+    if display == "builder_error":
+        return "malformed"
+    if ranking_funnel.get("stale") is True:
+        return "stale"
+    if display == "ready" and ranking_funnel.get("has_rows"):
+        return "ready"
+    if display == "empty":
+        return "empty"
+    return display
+
+
+def build_market_governed_top20_display_context(
+    *,
+    ranking_funnel: Dict[str, Any],
+    f5_dashboard: Dict[str, Any],
+) -> Dict[str, Any]:
+    """Primary governed Top-20 + F5 metadata wiring for futures-first GET /market (read-only)."""
+    snapshot_status = _ranking_funnel_snapshot_status(ranking_funnel)
+    stages = ranking_funnel.get("stages") if isinstance(ranking_funnel.get("stages"), dict) else {}
+    selected_rows = [row for row in (stages.get("selected") or []) if isinstance(row, dict)]
+
+    f5_gate_enabled = bool(f5_dashboard.get("gate_enabled"))
+    f5_display_status = str(f5_dashboard.get("display_status") or "disabled")
+    f5_overall_status = str(f5_dashboard.get("overall_status") or "futures_metadata_missing")
+    if not f5_gate_enabled:
+        f5_row_status = "unavailable"
+    elif f5_display_status == "builder_error":
+        f5_row_status = "malformed"
+    elif f5_display_status in ("unconfigured", "disabled"):
+        f5_row_status = "unavailable"
+    else:
+        f5_row_status = f5_overall_status
+
+    freshness_display = str(ranking_funnel.get("generated_at_iso") or "").strip() or "unavailable"
+    data_source = str(ranking_funnel.get("source") or "").strip() or "unavailable"
+    snapshot_stale = ranking_funnel.get("stale") is True
+
+    rows: list[dict[str, Any]] = []
+    for row in selected_rows:
+        rows.append(
+            {
+                "rank": row.get("rank"),
+                "symbol": str(row.get("symbol") or ""),
+                "score_display": _format_ranking_score_display(row),
+                "f5_status": f5_row_status,
+                "freshness_display": freshness_display,
+                "data_source": data_source,
+                "stale": snapshot_stale,
+            }
+        )
+
+    snapshot_available = snapshot_status in ("ready", "stale")
+    return {
+        "section_visible": True,
+        "snapshot_available": snapshot_available,
+        "snapshot_status": snapshot_status,
+        "display_status": "ready" if snapshot_available else snapshot_status,
+        "rows": rows,
+        "row_count": len(rows),
+        "data_source": data_source,
+        "generated_at_iso": freshness_display,
+        "stale": snapshot_stale,
+        "stale_reason": str(ranking_funnel.get("stale_reason") or ""),
+        "gate_enabled": bool(ranking_funnel.get("gate_enabled")),
+        "f5_display_status": f5_display_status,
+        "f5_overall_status": f5_overall_status,
+        "f5_gate_enabled": f5_gate_enabled,
+        "unavailable_message": "Futures data unavailable",
     }
 
 
@@ -1344,6 +1435,10 @@ def build_market_v0_page_template_context(
         last_paper_run_panel = build_last_paper_run_panel_display_context()
     dp_display = build_static_dashboard_display_dict()
     f5_dashboard = build_futures_read_only_market_dashboard_display_context()
+    governed_top20 = build_market_governed_top20_display_context(
+        ranking_funnel=ranking_funnel,
+        f5_dashboard=f5_dashboard,
+    )
     encoded_symbol = quote(symbol, safe="")
     legacy_demo_href = (
         f"/market?source=dummy&symbol={quote('BTCUSDT', safe='')}"
@@ -1366,6 +1461,7 @@ def build_market_v0_page_template_context(
         "last_paper_run_panel": last_paper_run_panel,
         "dp_display": dp_display,
         "f5_dashboard": f5_dashboard,
+        "governed_top20": governed_top20,
         "double_play_json_url": "/api/master-v2/double-play/dashboard-display.json",
         "legacy_demo_href": legacy_demo_href,
         "futures_first": source == "futures",
