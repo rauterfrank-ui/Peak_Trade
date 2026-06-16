@@ -33,33 +33,34 @@
   data-market-trading-authority-v1="false"
 >
   <header
-    class="flex flex-wrap items-center justify-between gap-3 py-3 border-b border-slate-800/80"
+    class="flex flex-wrap items-center justify-between gap-2 py-2 border-b border-slate-800/80"
     data-market-terminal-app-header-v1="true"
   >
     <div>
-      <p class="m-0 text-[10px] font-semibold uppercase tracking-[0.16em] text-slate-500">Peak Trade</p>
-      <h1 id="market-v0-landmark-page-title" class="m-0 text-lg sm:text-xl font-bold text-slate-50 tracking-tight" data-market-page-title-v1="true">{{ page_title|e }}</h1>
+      <p class="m-0 text-[9px] font-semibold uppercase tracking-[0.14em] text-slate-500">Peak Trade</p>
+      <h1 id="market-v0-landmark-page-title" class="m-0 text-base sm:text-lg font-bold text-slate-50 tracking-tight" data-market-page-title-v1="true">{{ page_title|e }}</h1>
     </div>
-    <div class="flex flex-wrap gap-1.5 text-[10px] font-semibold uppercase tracking-wide" data-market-terminal-status-badges-v1="true" data-market-operator-system-bar-v1="true" data-market-safety-status-bar-v1="true">
-      <span class="rounded-full border border-emerald-800/55 bg-emerald-950/45 px-2 py-0.5 text-emerald-200/95">Read only</span>
-      <span class="rounded-full border border-slate-700/70 bg-slate-950/65 px-2 py-0.5 text-slate-300">Live locked</span>
-      <span class="rounded-full border border-slate-700/70 bg-slate-950/65 px-2 py-0.5 text-slate-300">System OK</span>
+    <div class="flex flex-wrap gap-1 text-[9px] font-semibold uppercase tracking-wide" data-market-terminal-status-badges-v1="true" data-market-operator-system-bar-v1="true" data-market-safety-status-bar-v1="true">
+      <span class="rounded-full border border-emerald-800/55 bg-emerald-950/45 px-1.5 py-0.5 text-emerald-200/95">Read only</span>
+      <span class="rounded-full border border-slate-700/70 bg-slate-950/65 px-1.5 py-0.5 text-slate-300">Live locked</span>
+      <span class="rounded-full border border-slate-700/70 bg-slate-950/65 px-1.5 py-0.5 text-slate-300">System OK</span>
     </div>
   </header>
 
   <section
-    class="flex flex-wrap items-center gap-2 py-2 border-b border-slate-800/60 text-[10px] font-semibold uppercase tracking-wide"
-    aria-label="Operator overview"
+    class="flex flex-wrap items-center gap-1.5 py-1.5 border-b border-slate-800/60 text-[9px] font-semibold uppercase tracking-wide text-slate-400"
+    aria-label="Operator diagnostics"
     data-market-remodel-operator-overview-v2="true"
     data-market-operator-overview-v1="true"
     data-market-operator-story-v1="true"
+    data-market-operator-diagnostics-compact-v1="true"
   >
-    <span class="rounded-full border border-emerald-800/50 bg-emerald-950/40 px-2 py-0.5 text-emerald-200/95" data-market-remodel-operator-safety-v2="true">Safety · read-only</span>
-    <span class="rounded-full border border-slate-700/60 bg-slate-950/60 px-2 py-0.5 text-slate-300" data-market-remodel-operator-lane-v2="true">Lane · dashboard</span>
-    <span class="rounded-full border border-slate-700/60 bg-slate-950/60 px-2 py-0.5 text-slate-300" data-market-remodel-operator-freshness-v2="true">Freshness · SSR</span>
-    <span class="rounded-full border border-slate-700/60 bg-slate-950/60 px-2 py-0.5 text-slate-300" data-market-remodel-operator-readiness-v2="true">Readiness · display</span>
-    <span class="rounded-full border border-slate-700/60 bg-slate-950/60 px-2 py-0.5 text-slate-300" data-market-remodel-operator-blocked-v2="true">Blocked · live</span>
-    <span class="rounded-full border border-slate-700/60 bg-slate-950/60 px-2 py-0.5 text-slate-300" data-market-remodel-operator-authority-v2="true">Authority · false</span>
+    <span class="rounded border border-emerald-800/50 bg-emerald-950/35 px-1.5 py-0.5 text-emerald-200/90" data-market-remodel-operator-safety-v2="true">Safety · read-only</span>
+    <span class="rounded border border-slate-700/60 bg-slate-950/55 px-1.5 py-0.5" data-market-remodel-operator-lane-v2="true">Lane · dashboard</span>
+    <span class="rounded border border-slate-700/60 bg-slate-950/55 px-1.5 py-0.5" data-market-remodel-operator-freshness-v2="true">Freshness · SSR</span>
+    <span class="rounded border border-slate-700/60 bg-slate-950/55 px-1.5 py-0.5" data-market-remodel-operator-readiness-v2="true">Readiness · display</span>
+    <span class="rounded border border-slate-700/60 bg-slate-950/55 px-1.5 py-0.5" data-market-remodel-operator-blocked-v2="true">Blocked · live</span>
+    <span class="rounded border border-slate-700/60 bg-slate-950/55 px-1.5 py-0.5" data-market-remodel-operator-authority-v2="true">Authority · false</span>
   </section>
 
   {% include "partials/market_primary_operator_hero_v1.html" %}

@@ -3,7 +3,7 @@
   data-market-chart-primary-v2="true"
   role="region"
   aria-labelledby="market-v0-landmark-close-chart-h2"
-  class="bg-slate-900/40 rounded-lg border border-slate-800/80 ring-1 ring-sky-900/10 shadow-2xl shadow-black/40 p-3 sm:p-4"
+  class="bg-slate-900/40 rounded-lg border border-slate-800/80 ring-1 ring-sky-900/10 shadow-xl shadow-black/30 p-2.5 sm:p-3"
   data-chart="market-v0-close-line"
   data-market-chart-primary-v1="true"
   data-market-chart-above-fold-v1="true"
@@ -16,15 +16,15 @@
   {% if selected_instrument_workspace.ohlcv_status == 'stale' %}data-market-workspace-ohlcv-stale-v1="true"{% endif %}
   {% endif %}
 >
-  <div class="flex flex-wrap items-end justify-between gap-2 mb-2">
-    <h2 id="market-v0-landmark-close-chart-h2" class="text-base font-semibold text-slate-100 m-0 tracking-tight">Market chart (Close / OHLC)</h2>
-    <span class="text-[10px] font-semibold uppercase tracking-wide text-slate-500">Read-only · SSR</span>
+  <div class="flex flex-wrap items-end justify-between gap-1.5 mb-1.5">
+    <h2 id="market-v0-landmark-close-chart-h2" class="text-sm font-semibold text-slate-100 m-0 tracking-tight">Market chart (Close / OHLC)</h2>
+    <span class="text-[9px] font-semibold uppercase tracking-wide text-slate-500">Read-only · SSR</span>
   </div>
 
   <div
     id="market-v0-chart-status"
     role="status"
-    class="text-xs text-slate-200 mb-2 min-h-[1.25rem] font-medium border-l-4 border-l-sky-500/55 px-3 py-2 bg-slate-950/55 rounded-md"
+    class="text-[11px] text-slate-200 mb-1.5 min-h-[1rem] font-medium border-l-4 border-l-sky-500/55 px-2 py-1 bg-slate-950/55 rounded-md"
     data-market-chart-status="{% if payload.bars_returned == 0 %}empty{% elif selected_instrument_workspace is defined and selected_instrument_workspace.ohlcv_status == 'malformed' %}malformed{% elif selected_instrument_workspace is defined and selected_instrument_workspace.ohlcv_status == 'stale' %}stale{% elif selected_instrument_workspace is defined and selected_instrument_workspace.ohlcv_status == 'missing' %}missing{% else %}ready{% endif %}"
     {% if payload.bars_returned == 0 %}data-market-empty-state="true"{% endif %}
   >
