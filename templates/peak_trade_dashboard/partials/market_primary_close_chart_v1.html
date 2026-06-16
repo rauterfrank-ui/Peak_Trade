@@ -8,6 +8,13 @@
   data-market-chart-primary-v1="true"
   data-market-chart-above-fold-v1="true"
   data-market-chart-dominant-v1="true"
+  data-market-workspace-chart-v1="true"
+  {% if selected_instrument_workspace is defined and selected_instrument_workspace.workspace_visible %}
+  data-market-workspace-ohlcv-status="{{ selected_instrument_workspace.ohlcv_status|e }}"
+  {% if selected_instrument_workspace.ohlcv_status == 'empty' %}data-market-workspace-ohlcv-empty-v1="true"{% endif %}
+  {% if selected_instrument_workspace.ohlcv_status == 'malformed' %}data-market-workspace-ohlcv-malformed-v1="true"{% endif %}
+  {% if selected_instrument_workspace.ohlcv_status == 'stale' %}data-market-workspace-ohlcv-stale-v1="true"{% endif %}
+  {% endif %}
 >
   <div class="flex flex-wrap items-end justify-between gap-2 mb-3">
     <h2 id="market-v0-landmark-close-chart-h2" class="text-base font-semibold text-slate-100 m-0 tracking-tight">Market chart (Close / OHLC)</h2>
@@ -23,6 +30,10 @@
   >
     {% if payload.bars_returned == 0 %}
     Keine OHLCV-Bars für diese Abfrage verfügbar.
+    {% elif selected_instrument_workspace is defined and selected_instrument_workspace.ohlcv_status == 'malformed' %}
+    OHLCV malformed — keine synthetischen Kerzen.
+    {% elif selected_instrument_workspace is defined and selected_instrument_workspace.ohlcv_status == 'stale' %}
+    OHLCV stale — Chart read-only fail-closed.
     {% else %}
     Chart bereit — read-only OHLCV-Anzeige.
     {% endif %}
@@ -112,6 +123,20 @@
         </g>
         {% endfor %}
       </svg>
+      {% endif %}
+    </div>
+    <div
+      class="shrink-0 border-t border-slate-800/60 bg-slate-950/55 px-3 py-2"
+      data-market-workspace-volume-strip-v1="true"
+      aria-label="Volume from canonical OHLCV bars"
+    >
+      <h3 class="text-[10px] font-semibold uppercase tracking-wide text-slate-400 m-0 mb-1">Volume (last bar)</h3>
+      {% if selected_instrument_workspace is defined and selected_instrument_workspace.volume_status == 'available' %}
+      <p class="m-0 font-mono text-[11px] text-slate-200" data-market-workspace-volume-value-v1="true">{{ selected_instrument_workspace.volume_display|e }}</p>
+      {% elif not payload.bars or payload.bars|length == 0 %}
+      <p class="m-0 text-[11px] text-slate-500" data-market-workspace-volume-empty-v1="true">unavailable — no bars</p>
+      {% else %}
+      <p class="m-0 text-[11px] text-slate-500" data-market-workspace-volume-unavailable-v1="true">unavailable</p>
       {% endif %}
     </div>
   </div>

@@ -78,6 +78,7 @@ CANONICAL_MARKET_DASHBOARD_FOCUSED_TESTS: tuple[str, ...] = (
     "tests/webui/test_market_dashboard_readonly_structure_contract_v0.py",
     "tests/webui/test_market_governed_top20_f5_default_wiring_v1.py",
     "tests/webui/test_market_futures_universe_visual_matrix_v1.py",
+    "tests/webui/test_market_dashboard_selected_instrument_workspace_v1.py",
     "tests/webui/test_market_futures_first_root_cause_eradication_v1.py",
     "tests/webui/test_futures_read_only_market_dashboard_v0.py",
     "tests/webui/test_market_canonical_short_url_title_real_values_ui_v1.py",
