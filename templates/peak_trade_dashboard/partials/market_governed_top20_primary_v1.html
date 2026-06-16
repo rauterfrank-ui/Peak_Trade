@@ -2,7 +2,7 @@
   id="market-governed-top20-primary-v1"
   role="region"
   aria-labelledby="market-governed-top20-primary-h2"
-  class="rounded-lg border border-violet-900/50 bg-slate-950/80 px-3 py-3 ring-1 ring-violet-900/30"
+  class="rounded-lg border border-violet-900/50 bg-slate-950/80 px-3 py-2 ring-1 ring-violet-900/30"
   data-market-governed-top20-primary-v1="true"
   data-market-governed-top-n-primary-v1="true"
   data-market-governed-top20-wired-v1="true"
@@ -26,8 +26,13 @@
   {% if governed_top20.snapshot_status == 'malformed' %}data-market-governed-top20-malformed-v1="true"{% endif %}
   data-market-governed-top20-row-count="{{ governed_top20.row_count }}"
   data-market-governed-top20-gate-enabled="{{ 'true' if governed_top20.gate_enabled else 'false' }}"
+  data-market-matrix-filter-initial-symbol="{{ matrix_view_query.matrix_filter_symbol|e }}"
+  data-market-matrix-filter-initial-f5-status="{{ matrix_view_query.matrix_filter_f5_status|e }}"
+  data-market-matrix-filter-initial-freshness="{{ matrix_view_query.matrix_filter_freshness|e }}"
+  data-market-matrix-sort-initial-field="{{ matrix_view_query.matrix_sort_field|e }}"
+  data-market-matrix-sort-initial-direction="{{ matrix_view_query.matrix_sort_direction|e }}"
 >
-  <div class="flex flex-wrap items-start justify-between gap-2 mb-2">
+  <div class="flex flex-wrap items-start justify-between gap-2 mb-1.5">
     <div>
       <h2 id="market-governed-top20-primary-h2" class="m-0 text-[11px] font-semibold uppercase tracking-wide text-violet-200/95">
         Governed Futures Universe · Top-{{ governed_top20.top_n }} matrix · view-only
@@ -42,18 +47,20 @@
         {% endif %}
       </p>
     </div>
-    <div class="flex flex-wrap gap-1 text-[9px] font-semibold uppercase tracking-wide">
+    <div class="flex flex-wrap gap-1 text-[9px] font-semibold uppercase tracking-wide" data-market-governed-topn-toolbar-v1="true">
       <a
         href="{{ top_n_toggle_hrefs[20]|e }}"
         class="rounded border px-1.5 py-0.5 no-underline {% if governed_top20.top_n == 20 %}border-violet-500/70 bg-violet-950/50 text-violet-100{% else %}border-slate-700/70 bg-slate-900/80 text-slate-300 hover:text-slate-100{% endif %}"
         data-market-governed-top20-toggle-v1="true"
         data-market-governed-top-n-value="20"
+        {% if governed_top20.top_n == 20 %}aria-current="page"{% endif %}
       >Top 20</a>
       <a
         href="{{ top_n_toggle_hrefs[50]|e }}"
         class="rounded border px-1.5 py-0.5 no-underline {% if governed_top20.top_n == 50 %}border-violet-500/70 bg-violet-950/50 text-violet-100{% else %}border-slate-700/70 bg-slate-900/80 text-slate-300 hover:text-slate-100{% endif %}"
         data-market-governed-top50-toggle-v1="true"
         data-market-governed-top-n-value="50"
+        {% if governed_top20.top_n == 50 %}aria-current="page"{% endif %}
       >Top 50</a>
       <span class="rounded border border-slate-700/70 bg-slate-900/80 px-1.5 py-0.5 text-slate-300">display-only</span>
       <span class="rounded border border-slate-700/70 bg-slate-900/80 px-1.5 py-0.5 text-slate-300">no orders</span>
@@ -63,7 +70,7 @@
 
   {% if governed_top20.snapshot_available and governed_top20.rows %}
   <div
-    class="mb-2 flex flex-wrap items-end gap-2 text-[10px]"
+    class="mb-1.5 flex flex-wrap items-end gap-1.5 text-[10px]"
     data-market-governed-matrix-filters-v1="true"
     aria-label="Matrix filters (view-only)"
   >
@@ -223,11 +230,23 @@
     if (!tbody) return;
     var rows = Array.prototype.slice.call(tbody.querySelectorAll("[data-market-governed-matrix-row-v1]"));
     var defaultOrder = rows.map(function (r) { return r; });
-    var sortField = root.getAttribute("data-market-matrix-default-sort-field") || "rank";
-    var sortDir = root.getAttribute("data-market-matrix-default-sort-direction") || "asc";
+    var sortField = root.getAttribute("data-market-matrix-sort-initial-field") || root.getAttribute("data-market-matrix-default-sort-field") || "rank";
+    var sortDir = root.getAttribute("data-market-matrix-sort-initial-direction") || root.getAttribute("data-market-matrix-default-sort-direction") || "asc";
     var symbolInput = root.querySelector("[data-market-matrix-filter-symbol-v1]");
     var f5Select = root.querySelector("[data-market-matrix-filter-f5-status-v1]");
     var freshSelect = root.querySelector("[data-market-matrix-filter-freshness-v1]");
+    if (symbolInput) {
+      var initSym = root.getAttribute("data-market-matrix-filter-initial-symbol") || "";
+      if (initSym) symbolInput.value = initSym;
+    }
+    if (f5Select) {
+      var initF5 = root.getAttribute("data-market-matrix-filter-initial-f5-status") || "";
+      if (initF5) f5Select.value = initF5;
+    }
+    if (freshSelect) {
+      var initFresh = root.getAttribute("data-market-matrix-filter-initial-freshness") || "";
+      if (initFresh) freshSelect.value = initFresh;
+    }
     var noResults = root.querySelector("[data-market-governed-matrix-no-results-v1]");
     var visibleCount = root.querySelector("[data-market-matrix-visible-count-v1]");
 

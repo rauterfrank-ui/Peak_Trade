@@ -1,7 +1,7 @@
 <!-- Selected instrument view-only workspace: hero + KPIs + chart owner -->
 <section
   id="market-selected-instrument-workspace-v1"
-  class="space-y-3 pt-2"
+  class="space-y-2 pt-1"
   role="region"
   aria-labelledby="market-v0-landmark-page-title"
   data-market-selected-instrument-workspace-v1="true"
@@ -98,49 +98,48 @@
 
   <section
     id="market-primary-operator-hero-v1"
-    class="rounded-lg border border-slate-800/70 bg-slate-950/85 px-3 py-2.5 sm:px-4"
+    class="rounded-lg border border-slate-800/70 bg-slate-950/85 px-3 py-2 sm:px-3"
     data-market-terminal-asset-bar-v1="true"
     data-market-primary-values-panel-v1="true"
     data-market-workspace-hero-v1="true"
     aria-label="Selected instrument identity and KPIs"
   >
-    <div class="flex flex-wrap items-end justify-between gap-3 mb-2">
-      <p class="m-0 text-2xl sm:text-3xl font-bold font-mono text-slate-50 tracking-tight" data-market-workspace-symbol-v1="true">{{ primary_values.symbol|e }}</p>
-      <p class="m-0 text-[10px] font-mono text-slate-500">{{ query.source|e }} · public · {{ primary_values.timeframe|e }} · limit {{ primary_values.limit|e }}</p>
+    <div class="flex flex-wrap items-end justify-between gap-2 mb-1.5">
+      <p class="m-0 text-xl sm:text-2xl font-bold font-mono text-slate-50 tracking-tight" data-market-workspace-symbol-v1="true">{{ primary_values.symbol|e }}</p>
+      <p class="m-0 text-[9px] font-mono text-slate-500">{{ query.source|e }} · {{ primary_values.timeframe|e }} · {{ primary_values.limit|e }}</p>
     </div>
 
     <div
-      class="mb-3 rounded-md border border-sky-900/40 bg-sky-950/25 px-3 py-2.5"
+      class="mb-2 rounded-md border border-sky-900/40 bg-sky-950/25 px-2.5 py-2"
       data-market-workspace-kpi-band-v1="true"
       data-market-workspace-kpi-primary-v1="true"
       aria-label="Primary KPI band"
     >
-      <dl class="m-0 grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-2 text-[11px] tabular-nums">
-        <div data-market-workspace-kpi-last-price-v1="true" class="col-span-1">
-          <dt class="text-slate-500 uppercase text-[10px]">Last</dt>
-          <dd class="m-0 font-mono text-2xl font-semibold text-sky-200/95">{% if primary_values.status == 'available' %}{{ primary_values.last_close_display|e }}{% else %}unavailable{% endif %}</dd>
+      <dl class="m-0 grid grid-cols-2 sm:grid-cols-4 gap-x-3 gap-y-1.5 text-[10px] tabular-nums">
+        <div data-market-workspace-kpi-last-price-v1="true" class="col-span-1 sm:col-span-2">
+          <dt class="text-slate-500 uppercase text-[9px]">Last</dt>
+          <dd class="m-0 font-mono text-xl font-semibold text-sky-200/95">{% if primary_values.status == 'available' %}{{ primary_values.last_close_display|e }}{% else %}unavailable{% endif %}</dd>
         </div>
-        <div data-market-workspace-kpi-change-v1="true" class="col-span-1">
-          <dt class="text-slate-500 uppercase text-[10px]">Change</dt>
-          <dd class="m-0 font-mono text-lg text-slate-100">{% if primary_values.change_status == 'available' %}{{ primary_values.change_abs_display|e }} <span class="text-slate-400">({{ primary_values.change_pct_display|e }})</span>{% else %}unavailable{% endif %}</dd>
+        <div data-market-workspace-kpi-change-v1="true" class="col-span-1 sm:col-span-2">
+          <dt class="text-slate-500 uppercase text-[9px]">Change</dt>
+          <dd class="m-0 font-mono text-base text-slate-100">{% if primary_values.change_status == 'available' %}{{ primary_values.change_abs_display|e }} <span class="text-slate-400">({{ primary_values.change_pct_display|e }})</span>{% else %}unavailable{% endif %}</dd>
         </div>
         <div data-market-workspace-kpi-rank-v1="true" class="col-span-1">
-          <dt class="text-slate-500 uppercase text-[10px]">Rank</dt>
-          <dd class="m-0 font-mono text-base text-slate-200">{% if selected_instrument_workspace.ranking_rank is not none %}{{ selected_instrument_workspace.ranking_rank|e }}{% else %}unavailable{% endif %}</dd>
+          <dt class="text-slate-500 uppercase text-[9px]">Rank</dt>
+          <dd class="m-0 font-mono text-sm text-slate-200">{% if selected_instrument_workspace.ranking_rank is not none %}{{ selected_instrument_workspace.ranking_rank|e }}{% else %}unavailable{% endif %}</dd>
         </div>
         <div data-market-workspace-kpi-score-v1="true" class="col-span-1">
-          <dt class="text-slate-500 uppercase text-[10px]">Score</dt>
-          <dd class="m-0 font-mono text-base text-slate-200">{{ selected_instrument_workspace.ranking_score_display|e }}</dd>
+          <dt class="text-slate-500 uppercase text-[9px]">Score</dt>
+          <dd class="m-0 font-mono text-sm text-slate-200">{{ selected_instrument_workspace.ranking_score_display|e }}</dd>
         </div>
       </dl>
-      <dl class="m-0 mt-2 pt-2 border-t border-sky-900/30 grid grid-cols-2 sm:grid-cols-3 gap-x-4 gap-y-1 text-[10px] tabular-nums" data-market-workspace-kpi-status-v1="true">
-        <div data-market-workspace-kpi-freshness-v1="true"><dt class="text-slate-500 uppercase inline">Freshness · </dt><dd class="inline m-0 font-mono text-slate-300">{% if primary_values.last_bar_ts %}{{ primary_values.last_bar_ts|e }}{% else %}{{ primary_values.generated_at_utc|e }}{% endif %}</dd></div>
-        <div data-market-workspace-data-quality-badge-v1="true"><dt class="text-slate-500 uppercase inline">Quality · </dt><dd class="inline m-0 font-mono text-slate-300">{{ selected_instrument_workspace.data_quality_status|e }}</dd></div>
-        <div data-market-workspace-kpi-symbol-v1="true"><dt class="text-slate-500 uppercase inline">Symbol · </dt><dd class="inline m-0 font-mono text-slate-300">{{ primary_values.symbol|e }}</dd></div>
+      <dl class="m-0 mt-1.5 pt-1.5 border-t border-sky-900/30 flex flex-wrap gap-x-3 gap-y-0.5 text-[9px] tabular-nums" data-market-workspace-kpi-status-v1="true">
+        <div data-market-workspace-kpi-freshness-v1="true"><span class="rounded border border-slate-700/60 bg-slate-900/70 px-1 py-0.5 text-slate-300" title="{% if primary_values.last_bar_ts %}{{ primary_values.last_bar_ts|e }}{% else %}{{ primary_values.generated_at_utc|e }}{% endif %}">Fresh</span></div>
+        <div data-market-workspace-data-quality-badge-v1="true"><span class="rounded border border-slate-700/60 bg-slate-900/70 px-1 py-0.5 text-slate-300" title="{{ selected_instrument_workspace.data_quality_status|e }}">Quality</span></div>
       </dl>
     </div>
 
-    <dl class="m-0 grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-2 text-[11px] tabular-nums border-t border-slate-800/60 pt-2">
+    <dl class="m-0 grid grid-cols-4 gap-x-3 gap-y-1 text-[10px] tabular-nums border-t border-slate-800/60 pt-1.5">
       <div><dt class="text-slate-500 uppercase text-[10px]">O</dt><dd class="m-0 font-mono text-slate-200">{{ primary_values.last_open_display|e or '—' }}</dd></div>
       <div><dt class="text-slate-500 uppercase text-[10px]">H</dt><dd class="m-0 font-mono text-slate-200">{{ primary_values.last_high_display|e or '—' }}</dd></div>
       <div><dt class="text-slate-500 uppercase text-[10px]">L</dt><dd class="m-0 font-mono text-slate-200">{{ primary_values.last_low_display|e or '—' }}</dd></div>
@@ -150,35 +149,31 @@
 
   {% if selected_instrument_workspace.workspace_visible %}
   <section
-    class="rounded-lg border border-violet-900/45 bg-violet-950/20 px-3 py-2.5"
+    class="rounded-lg border border-violet-900/45 bg-violet-950/20 px-2.5 py-2"
+    data-market-workspace-ranking-f5-compact-v1="true"
     data-market-workspace-ranking-context-v1="true"
-    aria-label="Ranking context for selected instrument"
+    aria-label="Ranking context and F5 metadata"
   >
-    <h3 class="m-0 mb-2 text-[10px] font-semibold uppercase tracking-wide text-violet-200/90">Ranking context · Top-{{ selected_instrument_workspace.ranking_top_n }}</h3>
-    <dl class="m-0 grid grid-cols-2 sm:grid-cols-4 gap-x-4 gap-y-2 text-[11px] tabular-nums">
-      <div data-market-workspace-kpi-rank-v1="true"><dt class="text-slate-500 uppercase text-[10px]">Rank</dt><dd class="m-0 font-mono text-slate-100">{% if selected_instrument_workspace.ranking_rank is not none %}{{ selected_instrument_workspace.ranking_rank|e }}{% else %}unavailable{% endif %}</dd></div>
-      <div data-market-workspace-kpi-score-v1="true"><dt class="text-slate-500 uppercase text-[10px]">Score</dt><dd class="m-0 font-mono text-slate-100">{{ selected_instrument_workspace.ranking_score_display|e }}</dd></div>
-      <div><dt class="text-slate-500 uppercase text-[10px]">Eligibility</dt><dd class="m-0 font-mono text-slate-200">{{ selected_instrument_workspace.ranking_eligibility_status|e }}</dd></div>
-      <div><dt class="text-slate-500 uppercase text-[10px]">Data status</dt><dd class="m-0 font-mono text-slate-200">{{ selected_instrument_workspace.ranking_data_status|e }}</dd></div>
+    <div class="flex flex-wrap items-center justify-between gap-2 mb-1.5">
+      <h3 class="m-0 text-[9px] font-semibold uppercase tracking-wide text-violet-200/90">Ranking · Top-{{ selected_instrument_workspace.ranking_top_n }} · F5 strip</h3>
+      <span class="text-[9px] text-slate-500 uppercase">view-only</span>
+    </div>
+    <dl class="m-0 grid grid-cols-2 sm:grid-cols-4 gap-x-3 gap-y-1 text-[10px] tabular-nums mb-2">
+      <div data-market-workspace-kpi-rank-v1="true"><dt class="text-slate-500 uppercase text-[9px]">Rank</dt><dd class="m-0 font-mono text-slate-100">{% if selected_instrument_workspace.ranking_rank is not none %}{{ selected_instrument_workspace.ranking_rank|e }}{% else %}unavailable{% endif %}</dd></div>
+      <div data-market-workspace-kpi-score-v1="true"><dt class="text-slate-500 uppercase text-[9px]">Score</dt><dd class="m-0 font-mono text-slate-100">{{ selected_instrument_workspace.ranking_score_display|e }}</dd></div>
+      <div><dt class="text-slate-500 uppercase text-[9px]">Eligibility</dt><dd class="m-0 font-mono text-slate-200">{{ selected_instrument_workspace.ranking_eligibility_status|e }}</dd></div>
+      <div><dt class="text-slate-500 uppercase text-[9px]">Data</dt><dd class="m-0 font-mono text-slate-200">{{ selected_instrument_workspace.ranking_data_status|e }}</dd></div>
     </dl>
-  </section>
-
-  <section
-    class="rounded-lg border border-slate-700/60 bg-slate-950/70 px-3 py-2.5"
-    data-market-workspace-f5-strip-v1="true"
-    aria-label="F5 metadata visual strip"
-    data-f5-workspace-strip-readonly="true"
-  >
-    <h3 class="m-0 mb-2 text-[10px] font-semibold uppercase tracking-wide text-slate-300">F5 metadata strip · view-only</h3>
+    <div data-market-workspace-f5-strip-v1="true" data-f5-workspace-strip-readonly="true">
     {% if not selected_instrument_workspace.f5_gate_enabled %}
-    <p class="m-0 text-[11px] text-slate-400" data-market-workspace-f5-unavailable-v1="true">F5 metadata unavailable — env gate off.</p>
+    <p class="m-0 text-[10px] text-slate-400" data-market-workspace-f5-unavailable-v1="true">F5 metadata unavailable — env gate off.</p>
     {% elif selected_instrument_workspace.f5_display_status == 'builder_error' %}
-    <p class="m-0 text-[11px] text-rose-200/90" role="alert" data-market-workspace-f5-malformed-v1="true">F5 fixture invalid/malformed.</p>
+    <p class="m-0 text-[10px] text-rose-200/90" role="alert" data-market-workspace-f5-malformed-v1="true">F5 fixture invalid/malformed.</p>
     {% else %}
-    <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
+    <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
       {% for card in selected_instrument_workspace.f5_cards %}
       <article
-        class="rounded border px-2 py-1.5 {% if card.operator_category == 'ready' %}border-emerald-800/50 bg-emerald-950/35{% elif card.operator_category == 'partial' %}border-amber-800/50 bg-amber-950/30{% elif card.operator_category == 'incomplete' %}border-slate-700/60 bg-slate-900/60{% else %}border-slate-700/60 bg-slate-900/60{% endif %}"
+        class="rounded border px-1.5 py-1 {% if card.operator_category == 'ready' %}border-emerald-800/50 bg-emerald-950/35{% elif card.operator_category == 'partial' %}border-amber-800/50 bg-amber-950/30{% elif card.operator_category == 'incomplete' %}border-slate-700/60 bg-slate-900/60{% else %}border-slate-700/60 bg-slate-900/60{% endif %}"
         data-market-workspace-f5-card-v1="true"
         data-market-workspace-f5-card-id="{{ card.id|e }}"
         data-market-workspace-f5-card-status="{{ card.status|e }}"
@@ -186,20 +181,21 @@
         data-market-workspace-f5-operator-category="{{ card.operator_category|e }}"
         title="{{ card.status|e }}"
       >
-        <p class="m-0 text-[9px] uppercase tracking-wide text-slate-500">{{ card.label|e }}</p>
-        <p class="m-0 mt-0.5 font-mono text-[11px] text-slate-100">{{ card.operator_label|e }}</p>
+        <p class="m-0 text-[8px] uppercase tracking-wide text-slate-500">{{ card.label|e }}</p>
+        <p class="m-0 mt-0.5 font-mono text-[10px] text-slate-100">{{ card.operator_label|e }}</p>
       </article>
       {% endfor %}
     </div>
     {% endif %}
+    </div>
   </section>
 
   <section
-    class="rounded-lg border border-slate-700/60 bg-slate-950/70 px-3 py-2.5"
+    class="rounded-lg border border-slate-700/60 bg-slate-950/70 px-2.5 py-2"
     data-market-workspace-contract-metadata-v1="true"
     aria-label="Contract and market metadata"
   >
-    <h3 class="m-0 mb-2 text-[10px] font-semibold uppercase tracking-wide text-slate-300">Contract / market metadata</h3>
+    <h3 class="m-0 mb-1 text-[9px] font-semibold uppercase tracking-wide text-slate-300">Contract / market metadata</h3>
     {% if not selected_instrument_workspace.f5_gate_enabled or selected_instrument_workspace.f5_display_status in ('builder_error', 'disabled', 'unconfigured') %}
     <p class="m-0 text-[11px] text-slate-400" data-market-workspace-contract-unavailable-v1="true">Contract metadata unavailable.</p>
     {% else %}

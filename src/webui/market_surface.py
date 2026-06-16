@@ -23,8 +23,9 @@ import logging
 import os
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Callable, Dict, List, Literal
-from urllib.parse import quote
+from dataclasses import dataclass
+from typing import Any, Callable, Dict, List, Literal, Optional
+from urllib.parse import quote, urlencode
 
 import pandas as pd
 from fastapi import APIRouter, HTTPException, Query, Request
@@ -216,21 +217,121 @@ def _is_forbidden_implicit_spot_symbol(symbol: str) -> bool:
 
 
 def normalize_top_n(raw: int | str | None) -> int:
-    if raw is None:
+    """Fail-closed: unknown or disallowed values normalize to canonical Top 20."""
+    if raw is None or raw == "":
         return DEFAULT_TOP_N
     try:
         value = int(raw)
-    except (TypeError, ValueError) as exc:
-        raise HTTPException(
-            status_code=422,
-            detail=f"top_n muss 20 oder 50 sein, nicht {raw!r}",
-        ) from exc
+    except (TypeError, ValueError):
+        return DEFAULT_TOP_N
     if value not in ALLOWED_TOP_N_VALUES:
-        raise HTTPException(
-            status_code=422,
-            detail=f"top_n muss einer von {list(ALLOWED_TOP_N_VALUES)} sein, nicht {value}",
-        )
+        return DEFAULT_TOP_N
     return value
+
+
+@dataclass(frozen=True)
+class MarketViewQueryExtras:
+    """Optional matrix view-only query state preserved across Top-N navigation."""
+
+    matrix_filter_symbol: str = ""
+    matrix_filter_f5_status: str = ""
+    matrix_filter_freshness: str = ""
+    matrix_sort_field: str = ""
+    matrix_sort_direction: str = ""
+
+
+def _sanitize_matrix_filter_symbol(raw: str | None) -> str:
+    return (raw or "").strip()[:64]
+
+
+def _sanitize_matrix_filter_f5_status(raw: str | None) -> str:
+    value = (raw or "").strip()[:64]
+    return value
+
+
+def _sanitize_matrix_filter_freshness(raw: str | None) -> str:
+    value = (raw or "").strip().lower()
+    return value if value in {"fresh", "stale"} else ""
+
+
+def _sanitize_matrix_sort_field(raw: str | None) -> str:
+    value = (raw or "").strip()
+    return value if value in AVAILABLE_SORT_FIELDS else ""
+
+
+def _sanitize_matrix_sort_direction(raw: str | None) -> str:
+    value = (raw or "").strip().lower()
+    return value if value in {"asc", "desc"} else ""
+
+
+def build_market_view_query_extras(
+    *,
+    matrix_filter_symbol: str | None = None,
+    matrix_filter_f5_status: str | None = None,
+    matrix_filter_freshness: str | None = None,
+    matrix_sort_field: str | None = None,
+    matrix_sort_direction: str | None = None,
+) -> MarketViewQueryExtras:
+    return MarketViewQueryExtras(
+        matrix_filter_symbol=_sanitize_matrix_filter_symbol(matrix_filter_symbol),
+        matrix_filter_f5_status=_sanitize_matrix_filter_f5_status(matrix_filter_f5_status),
+        matrix_filter_freshness=_sanitize_matrix_filter_freshness(matrix_filter_freshness),
+        matrix_sort_field=_sanitize_matrix_sort_field(matrix_sort_field),
+        matrix_sort_direction=_sanitize_matrix_sort_direction(matrix_sort_direction),
+    )
+
+
+def _market_query_params(
+    *,
+    source: str,
+    symbol: str,
+    timeframe: str,
+    limit: int,
+    top_n: int,
+    extras: MarketViewQueryExtras | None = None,
+    include_default_top_n: bool = False,
+) -> list[tuple[str, str]]:
+    params: list[tuple[str, str]] = [("source", source)]
+    if symbol:
+        params.append(("symbol", symbol))
+    params.extend([("timeframe", timeframe), ("limit", str(limit))])
+    if include_default_top_n or top_n != DEFAULT_TOP_N:
+        params.append(("top_n", str(top_n)))
+    if extras is not None:
+        if extras.matrix_filter_symbol:
+            params.append(("matrix_filter_symbol", extras.matrix_filter_symbol))
+        if extras.matrix_filter_f5_status:
+            params.append(("matrix_filter_f5_status", extras.matrix_filter_f5_status))
+        if extras.matrix_filter_freshness:
+            params.append(("matrix_filter_freshness", extras.matrix_filter_freshness))
+        if extras.matrix_sort_field:
+            params.append(("matrix_sort_field", extras.matrix_sort_field))
+        if extras.matrix_sort_direction:
+            params.append(("matrix_sort_direction", extras.matrix_sort_direction))
+    return params
+
+
+def build_market_canonical_href(
+    *,
+    source: str,
+    symbol: str,
+    timeframe: str,
+    limit: int,
+    top_n: int = DEFAULT_TOP_N,
+    extras: MarketViewQueryExtras | None = None,
+    include_default_top_n: bool = False,
+) -> str:
+    """Deterministic absolute GET /market href (single canonical route)."""
+    params = _market_query_params(
+        source=source,
+        symbol=symbol,
+        timeframe=timeframe,
+        limit=limit,
+        top_n=top_n,
+        extras=extras,
+        include_default_top_n=include_default_top_n,
+    )
+    return f"{CANONICAL_MARKET_ROUTE}?{urlencode(params)}"
 
 
 def _is_eligible_ranking_row(row: dict[str, Any]) -> bool:
@@ -990,12 +1091,17 @@ def build_market_top_n_toggle_href(
     source: str,
     timeframe: str,
     limit: int,
+    extras: MarketViewQueryExtras | None = None,
 ) -> str:
-    """Display-only Top-N toggle link preserving current instrument selection."""
-    sym_param = f"&symbol={quote(symbol, safe='')}" if symbol else ""
-    return (
-        f"/market?source={quote(source, safe='')}{sym_param}"
-        f"&timeframe={quote(timeframe, safe='')}&limit={limit}&top_n={top_n}"
+    """Display-only Top-N toggle link preserving current instrument and matrix view state."""
+    return build_market_canonical_href(
+        source=source,
+        symbol=symbol,
+        timeframe=timeframe,
+        limit=limit,
+        top_n=top_n,
+        extras=extras,
+        include_default_top_n=True,
     )
 
 
@@ -1006,12 +1112,17 @@ def build_market_symbol_nav_href(
     timeframe: str,
     limit: int,
     top_n: int = DEFAULT_TOP_N,
+    extras: MarketViewQueryExtras | None = None,
 ) -> str:
     """Display-only GET /market query link for a ranking row symbol (no selector authority)."""
-    top_n_suffix = f"&top_n={top_n}" if top_n != DEFAULT_TOP_N else ""
-    return (
-        f"/market?source={quote(source, safe='')}&symbol={quote(symbol, safe='')}"
-        f"&timeframe={quote(timeframe, safe='')}&limit={limit}{top_n_suffix}"
+    return build_market_canonical_href(
+        source=source,
+        symbol=symbol,
+        timeframe=timeframe,
+        limit=limit,
+        top_n=top_n,
+        extras=extras,
+        include_default_top_n=False,
     )
 
 
@@ -1102,6 +1213,7 @@ def _enrich_ranking_row_for_watchlist(
     timeframe: str,
     limit: int,
     top_n: int = DEFAULT_TOP_N,
+    extras: MarketViewQueryExtras | None = None,
 ) -> dict[str, Any]:
     row_symbol = str(row.get("symbol") or "")
     is_selected = _normalize_symbol_for_match(row_symbol) == _normalize_symbol_for_match(
@@ -1117,6 +1229,7 @@ def _enrich_ranking_row_for_watchlist(
             timeframe=timeframe,
             limit=limit,
             top_n=top_n,
+            extras=extras,
         ),
     }
 
@@ -1149,6 +1262,7 @@ def build_market_governed_top20_display_context(
     timeframe: str = DEFAULT_TIMEFRAME,
     limit: int = DEFAULT_LIMIT,
     top_n: int = DEFAULT_TOP_N,
+    extras: MarketViewQueryExtras | None = None,
 ) -> Dict[str, Any]:
     """Primary governed Top-N visual matrix + F5 metadata for futures-first GET /market (view-only)."""
     snapshot_status = _ranking_funnel_snapshot_status(ranking_funnel)
@@ -1229,6 +1343,7 @@ def build_market_governed_top20_display_context(
                     timeframe=timeframe,
                     limit=limit,
                     top_n=top_n,
+                    extras=extras,
                 ),
             }
         )
@@ -1275,6 +1390,7 @@ def build_market_ranking_watchlist_display_context(
     timeframe: str,
     limit: int,
     top_n: int = DEFAULT_TOP_N,
+    extras: MarketViewQueryExtras | None = None,
 ) -> Dict[str, Any]:
     """Display-only watchlist/scanner funnel wiring for GET /market ranking SSR."""
 
@@ -1289,6 +1405,7 @@ def build_market_ranking_watchlist_display_context(
                 timeframe=timeframe,
                 limit=limit,
                 top_n=top_n,
+                extras=extras,
             )
             for row in (stages.get(stage_key) or [])
             if isinstance(row, dict) and _is_eligible_ranking_row(row)
@@ -1304,6 +1421,7 @@ def build_market_ranking_watchlist_display_context(
             timeframe=timeframe,
             limit=limit,
             top_n=top_n,
+            extras=extras,
         )
         for row in raw_rows
         if isinstance(row, dict) and _is_eligible_ranking_row(row)
@@ -2062,6 +2180,7 @@ def build_market_v0_page_template_context(
     payload: Dict[str, Any],
     data_unavailable: bool,
     top_n: int = DEFAULT_TOP_N,
+    extras: MarketViewQueryExtras | None = None,
 ) -> Dict[str, Any]:
     """SSR template context for GET /market (display-only; always includes primary_values)."""
 
@@ -2089,6 +2208,7 @@ def build_market_v0_page_template_context(
         timeframe=timeframe,
         limit=limit,
         top_n=top_n,
+        extras=extras,
     )
     instrument_header = build_market_instrument_header_display_context(
         symbol=symbol,
@@ -2123,6 +2243,7 @@ def build_market_v0_page_template_context(
         timeframe=timeframe,
         limit=limit,
         top_n=top_n,
+        extras=extras,
     )
     selected_instrument_workspace = build_market_selected_instrument_workspace_display_context(
         symbol=symbol,
@@ -2167,6 +2288,7 @@ def build_market_v0_page_template_context(
                 source=source,
                 timeframe=timeframe,
                 limit=limit,
+                extras=extras,
             ),
             50: build_market_top_n_toggle_href(
                 top_n=50,
@@ -2174,6 +2296,7 @@ def build_market_v0_page_template_context(
                 source=source,
                 timeframe=timeframe,
                 limit=limit,
+                extras=extras,
             ),
         },
         "double_play_json_url": "/api/master-v2/double-play/dashboard-display.json",
@@ -2188,7 +2311,13 @@ def build_market_v0_page_template_context(
             "limit": limit,
             "source": source,
             "top_n": top_n,
+            "matrix_filter_symbol": extras.matrix_filter_symbol if extras else "",
+            "matrix_filter_f5_status": extras.matrix_filter_f5_status if extras else "",
+            "matrix_filter_freshness": extras.matrix_filter_freshness if extras else "",
+            "matrix_sort_field": extras.matrix_sort_field if extras else "",
+            "matrix_sort_direction": extras.matrix_sort_direction if extras else "",
         },
+        "matrix_view_query": extras or MarketViewQueryExtras(),
     }
 
 
@@ -2245,7 +2374,20 @@ def create_market_router(
         timeframe: str = Query(DEFAULT_TIMEFRAME),
         limit: int = Query(DEFAULT_LIMIT, ge=1, le=MAX_OHLCV_LIMIT),
         source: str = Query(DEFAULT_SOURCE),
-        top_n: int = Query(DEFAULT_TOP_N, description="Governed Top-N list size (20 or 50)"),
+        top_n: Optional[str] = Query(None, description="Governed Top-N list size (20 or 50)"),
+        matrix_filter_symbol: Optional[str] = Query(
+            None, description="View-only matrix symbol filter"
+        ),
+        matrix_filter_f5_status: Optional[str] = Query(
+            None, description="View-only matrix F5 status filter"
+        ),
+        matrix_filter_freshness: Optional[str] = Query(
+            None, description="View-only matrix freshness filter"
+        ),
+        matrix_sort_field: Optional[str] = Query(None, description="View-only matrix sort field"),
+        matrix_sort_direction: Optional[str] = Query(
+            None, description="View-only matrix sort direction"
+        ),
     ) -> Any:
         if timeframe not in MARKET_TIMEFRAMES:
             raise HTTPException(
@@ -2253,6 +2395,13 @@ def create_market_router(
                 detail=f"timeframe muss einer von {list(MARKET_TIMEFRAMES)} sein, nicht {timeframe!r}",
             )
         normalized_top_n = normalize_top_n(top_n)
+        view_extras = build_market_view_query_extras(
+            matrix_filter_symbol=matrix_filter_symbol,
+            matrix_filter_f5_status=matrix_filter_f5_status,
+            matrix_filter_freshness=matrix_filter_freshness,
+            matrix_sort_field=matrix_sort_field,
+            matrix_sort_direction=matrix_sort_direction,
+        )
         sym, src, payload, data_unavailable = resolve_market_page_data(
             symbol=symbol,
             timeframe=timeframe,
@@ -2272,6 +2421,7 @@ def create_market_router(
                 payload=payload,
                 data_unavailable=data_unavailable,
                 top_n=normalized_top_n,
+                extras=view_extras,
             ),
         )
 

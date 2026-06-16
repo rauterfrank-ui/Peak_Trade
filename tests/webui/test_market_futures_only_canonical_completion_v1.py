@@ -174,9 +174,14 @@ def test_top50_selectable_and_not_padded(client_full_wiring_on: TestClient) -> N
     assert "no padding to 50" in body
 
 
-def test_invalid_top_n_rejected(client: TestClient) -> None:
-    resp = client.get("/market", params={"top_n": 99})
-    assert resp.status_code == 422
+def test_invalid_top_n_fail_closed_to_default(client: TestClient) -> None:
+    for bad in ("99", "abc", "0", "-1", "null", "99999"):
+        resp = client.get("/market", params={"top_n": bad})
+        assert resp.status_code == 200
+        assert 'data-market-governed-top-n="20"' in resp.text
+    resp_blank = client.get("/market?top_n=")
+    assert resp_blank.status_code == 200
+    assert 'data-market-governed-top-n="20"' in resp_blank.text
 
 
 def test_futures_selector_links_and_selected_highlight(client_full_wiring_on: TestClient) -> None:
