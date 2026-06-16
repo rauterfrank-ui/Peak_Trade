@@ -2523,7 +2523,6 @@ def build_market_double_play_matrix_display_context(
     suit = _matrix_panel_cell(_dp_panel_lookup(dp_display, "strategy_suitability"))
     comp = _matrix_panel_cell(_dp_panel_lookup(dp_display, "composition"))
     transition = _matrix_panel_cell(_dp_panel_lookup(dp_display, "state_transition"))
-    survival = _matrix_panel_cell(_dp_panel_lookup(dp_display, "survival_envelope"))
     overall = _matrix_common_status_cell(str(dp_display.get("overall_status") or "unknown"))
     warnings = dp_display.get("warnings") if isinstance(dp_display.get("warnings"), list) else []
     warning_text = "; ".join(str(item).strip() for item in warnings if str(item).strip())
@@ -2562,16 +2561,6 @@ def build_market_double_play_matrix_display_context(
             "operator_hint": "Display eligibility · not trading permission",
         },
         {
-            "dimension": "Survival envelope",
-            "dimension_slug": "survival_envelope",
-            "bull_long": survival,
-            "bear_short": _matrix_panel_cell({}),
-            "common_status": survival,
-            "evidence": evidence,
-            "freshness": freshness,
-            "operator_hint": "Envelope status only · no activation",
-        },
-        {
             "dimension": "Block reason",
             "dimension_slug": "block_reason",
             "bull_long": {
@@ -2586,16 +2575,6 @@ def build_market_double_play_matrix_display_context(
             "evidence": evidence,
             "freshness": freshness,
             "operator_hint": "Canonical blockers only · no inference",
-        },
-        {
-            "dimension": "Data availability",
-            "dimension_slug": "data_availability",
-            "bull_long": suit,
-            "bear_short": comp,
-            "common_status": overall,
-            "evidence": evidence,
-            "freshness": freshness,
-            "operator_hint": "Missing values remain unavailable",
         },
     ]
 
@@ -2633,27 +2612,12 @@ def build_market_safety_matrix_display_context(
     evidence = str(meta.get("source_id") or meta.get("source_kind") or "").strip() or "unavailable"
 
     f5_gate = bool(f5_dashboard.get("gate_enabled"))
-    f5_display = str(f5_dashboard.get("display_status") or "disabled")
-    f5_overall = str(f5_dashboard.get("overall_status") or "unavailable")
-    f1 = f5_dashboard.get("f1") if isinstance(f5_dashboard.get("f1"), dict) else {}
-    f2 = f5_dashboard.get("f2") if isinstance(f5_dashboard.get("f2"), dict) else {}
     f4 = f5_dashboard.get("f4") if isinstance(f5_dashboard.get("f4"), dict) else {}
-
-    if not f5_gate or f5_display in ("disabled", "unconfigured"):
-        f5_status = "unavailable"
-        f5_evidence = "f5_gate_disabled"
-    elif f5_display == "builder_error":
-        f5_status = "malformed"
-        f5_evidence = "f5_builder_error"
-    else:
-        f5_status = f5_overall
-        f5_evidence = str(f5_dashboard.get("readmodel_id") or "f5_readmodel")
 
     risk_status = str(f4.get("status") or "unavailable") if f5_gate else "unavailable"
     kill_switch_raw = (
         _f5_section_field_value(f4, "kill_switch_status") if f5_gate else "unavailable"
     )
-    provenance_status = str(f2.get("status") or "unavailable") if f5_gate else "unavailable"
 
     trading_ready = bool(dp_display.get("trading_ready"))
     live_authorized = bool(dp_display.get("live_authorization"))
@@ -2723,38 +2687,6 @@ def build_market_safety_matrix_display_context(
             reason_code=kill_switch_raw,
             evidence_value="f5_dashboard.f4.kill_switch_status",
             operator_hint="KillSwitch field only · no override UI",
-        ),
-        _authority_row(
-            dimension="Scope",
-            dimension_slug="scope",
-            raw_status=transition["raw_status"],
-            reason_code=transition["value"],
-            evidence_value="dp_display.state_transition",
-            operator_hint="Scope label only · no approval",
-        ),
-        _authority_row(
-            dimension="Data freshness",
-            dimension_slug="data_freshness",
-            raw_status=f5_status,
-            reason_code=f5_display,
-            evidence_value=f5_evidence,
-            operator_hint="Freshness from SSR snapshot metadata",
-        ),
-        _authority_row(
-            dimension="Evidence integrity",
-            dimension_slug="evidence_integrity",
-            raw_status=provenance_status,
-            reason_code=provenance_status,
-            evidence_value="f5_dashboard.f2",
-            operator_hint="Provenance read-model · no network fetch",
-        ),
-        _authority_row(
-            dimension="F5 / readiness",
-            dimension_slug="f5_readiness",
-            raw_status=f5_status,
-            reason_code=f5_overall,
-            evidence_value=f5_evidence,
-            operator_hint="F5 metadata display · not operational readiness",
         ),
     ]
 

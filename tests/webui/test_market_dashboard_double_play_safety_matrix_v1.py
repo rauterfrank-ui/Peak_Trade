@@ -153,8 +153,8 @@ def test_viewmodel_matrix_projection_no_new_computation(monkeypatch: pytest.Monk
     assert safety_matrix["preflight_blocked"] is True
     assert safety_matrix["execution_authorized"] is False
     assert safety_matrix["live_authorized"] is False
-    assert len(dp_matrix["rows"]) >= 5
-    assert len(safety_matrix["rows"]) >= 8
+    assert len(dp_matrix["rows"]) >= 4
+    assert len(safety_matrix["rows"]) >= 5
     preflight = next(row for row in safety_matrix["rows"] if row["dimension_slug"] == "preflight")
     assert preflight["status"] == "blocked"
     execution = next(

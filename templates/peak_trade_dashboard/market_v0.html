@@ -72,13 +72,13 @@
   {% endif %}
 
   <div class="mt-4 grid grid-cols-1 lg:grid-cols-4 gap-4" data-market-terminal-secondary-grid-v1="true" data-market-remodel-secondary-grid-v2="true">
-    <div class="lg:col-span-1 order-2 lg:order-1">
-      {% include "partials/market_watchlist_compact_v1.html" %}
-    </div>
     <div class="lg:col-span-3 order-1 lg:order-2 grid grid-cols-1 md:grid-cols-3 gap-3">
       {% include "partials/double_play_market_compact_v1.html" %}
       {% include "partials/market_safety_compact_v1.html" %}
       {% include "partials/futures_market_compact_v1.html" %}
+    </div>
+    <div class="lg:col-span-1 order-2 lg:order-1">
+      {% include "partials/market_watchlist_compact_v1.html" %}
     </div>
   </div>
 
