@@ -60,7 +60,7 @@ class TestMarketSurfaceJson:
 
 class TestMarketSurfaceHtml:
     def test_market_page_dummy_ok_markers(self, client: TestClient) -> None:
-        resp = client.get("/market", params={"source": "dummy", "symbol": "BTCUSDT", "limit": 20})
+        resp = client.get("/market", params={"source": "dummy", "symbol": "ETHUSDT", "limit": 20})
         assert resp.status_code == 200
         assert "text/html" in resp.headers.get("content-type", "")
         body = resp.text
@@ -154,7 +154,7 @@ class TestMarketSurfaceHtml:
     ) -> None:
         """Depth is embedded SSR-only; page must not steer browsers to the JSON route or XHR."""
 
-        resp = client.get("/market", params={"source": "dummy", "symbol": "BTCUSDT", "limit": 20})
+        resp = client.get("/market", params={"source": "dummy", "symbol": "ETHUSDT", "limit": 20})
         assert resp.status_code == 200
         assert "text/html" in resp.headers.get("content-type", "")
         body = resp.text
@@ -168,7 +168,7 @@ class TestMarketSurfaceHtml:
         client: TestClient,
     ) -> None:
         """Contract: GET /market carries narrow depth markers and no client Depth fetch."""
-        resp = client.get("/market", params={"source": "dummy", "symbol": "BTCUSDT", "limit": 20})
+        resp = client.get("/market", params={"source": "dummy", "symbol": "ETHUSDT", "limit": 20})
         assert resp.status_code == 200
         assert "text/html" in resp.headers.get("content-type", "")
         body = resp.text
@@ -201,7 +201,7 @@ class TestMarketSurfaceHtml:
             _fake_diagnostic,
         )
 
-        resp = client.get("/market", params={"source": "dummy", "symbol": "BTCUSDT", "limit": 20})
+        resp = client.get("/market", params={"source": "dummy", "symbol": "ETHUSDT", "limit": 20})
         assert resp.status_code == 200
         body = resp.text
         assert 'data-market-depth-status="builder_error"' in body
@@ -231,7 +231,7 @@ class TestMarketSurfaceHtml:
             _fake_ok,
         )
 
-        resp = client.get("/market", params={"source": "dummy", "symbol": "BTCUSDT", "limit": 20})
+        resp = client.get("/market", params={"source": "dummy", "symbol": "ETHUSDT", "limit": 20})
         assert resp.status_code == 200
         body = resp.text
         assert 'data-market-depth-status="ok"' in body
@@ -257,7 +257,7 @@ class TestMarketSurfaceHtml:
         monkeypatch.setenv("PEAK_TRADE_FIXED_GENERATED_AT_UTC", "2026-05-02T12:00:00+00:00")
         client = TestClient(create_app())
 
-        resp = client.get("/market", params={"source": "dummy", "symbol": "BTCUSDT", "limit": 20})
+        resp = client.get("/market", params={"source": "dummy", "symbol": "ETHUSDT", "limit": 20})
         assert resp.status_code == 200
         body = resp.text
         assert 'data-market-v0-orderbook-topn="true"' in body

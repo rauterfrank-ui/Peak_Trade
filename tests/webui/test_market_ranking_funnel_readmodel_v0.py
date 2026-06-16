@@ -34,7 +34,7 @@ def test_market_ranking_funnel_readmodel_builds_complete_minimal_fixture_v0() ->
     }
     assert model["stages"]["universe"][0] == {
         "row_id": "universe-1",
-        "symbol": "BTCUSDT",
+        "symbol": "ETHUSDT",
         "rank": 1,
         "display_score": 0.91,
         "notes": "fixture row",

@@ -39,6 +39,26 @@ categories:
       - "src/regime/**"
     runtime_class: minutes
     notes: "Single owner prod file + exactly one canonical test owner in diff; blocked for registry/shared paths"
+  market_dashboard_focused:
+    mode: FOCUSED
+    globs:
+      - "src/webui/market_*.py"
+      - "src/webui/market_*/**"
+      - "src/webui/futures_read_only_market_dashboard_*.py"
+      - "src/webui/market_futures_ohlcv_*.py"
+      - "src/webui/market_ranking_funnel_*.py"
+      - "templates/peak_trade_dashboard/market_v0.html"
+      - "templates/peak_trade_dashboard/partials/market_*.html"
+      - "tests/fixtures/market_*/**"
+      - "tests/fixtures/futures_read_only_market_dashboard*/**"
+      - "tests/webui/test_market_*.py"
+      - "tests/webui/test_futures_read_only_market_dashboard*.py"
+      - "tests/test_market_surface_api.py"
+      - "scripts/ops/ci_test_selection_v1.py"
+      - "config/ci/file_category_mapping.yaml"
+      - "tests/ci/test_ci_diff_aware_test_selection_v1.py"
+    runtime_class: minutes
+    notes: "Bounded canonical /market dashboard diff; central_src FULL preserved for non-dashboard src"
   central_src:
     mode: FULL
     globs:

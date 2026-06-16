@@ -9,11 +9,11 @@
     "universe": [],
     "shortlist": [],
     "selected": [
-      {"row_id": "selected-1", "symbol": "BTCUSDT", "rank": 1, "display_score": 0.91},
-      {"row_id": "selected-2", "symbol": "ETHUSDT", "rank": 2, "display_score": 0.88},
-      {"row_id": "selected-3", "symbol": "SOLUSDT", "rank": 3, "display_score": 0.85},
-      {"row_id": "selected-4", "symbol": "XRPUSDT", "rank": 4, "display_score": 0.82},
-      {"row_id": "selected-5", "symbol": "ADAUSDT", "rank": 5, "display_score": 0.79}
+      {"row_id": "selected-1", "symbol": "ETHUSDT", "rank": 1, "display_score": 0.91},
+      {"row_id": "selected-2", "symbol": "SOLUSDT", "rank": 2, "display_score": 0.88},
+      {"row_id": "selected-3", "symbol": "XRPUSDT", "rank": 3, "display_score": 0.85},
+      {"row_id": "selected-4", "symbol": "ADAUSDT", "rank": 4, "display_score": 0.82},
+      {"row_id": "selected-5", "symbol": "DOTUSDT", "rank": 5, "display_score": 0.79}
     ]
   }
 }

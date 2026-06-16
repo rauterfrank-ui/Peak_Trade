@@ -398,6 +398,45 @@ def test_mapping_file_exists() -> None:
     text = MAPPING.read_text(encoding="utf-8")
     assert "docs_only:" in text
     assert "strategy_regime_owner_focused:" in text
+    assert "market_dashboard_focused:" in text
+
+
+def test_selector_market_dashboard_eligibility_only_focused() -> None:
+    sel = _run_selector("src/webui/market_instrument_eligibility_v0.py")
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "market_dashboard_focused"
+    assert "tests/webui/test_market_dashboard_no_bitcoin_futures_v1.py" in _targets(sel)
+
+
+def test_selector_market_dashboard_rebundle_diff_focused() -> None:
+    files = (
+        "src/webui/market_instrument_eligibility_v0.py",
+        "src/webui/market_surface.py",
+        "tests/webui/test_market_dashboard_no_bitcoin_futures_v1.py",
+        "tests/test_market_surface_api.py",
+        "scripts/ops/ci_test_selection_v1.py",
+        "config/ci/file_category_mapping.yaml",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    )
+    sel = _run_selector(*files)
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "market_dashboard_focused"
+    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" in _targets(sel)
+    assert sel["tests_execute_full"] == "false"
+
+
+def test_selector_market_dashboard_plus_central_src_full() -> None:
+    sel = _run_selector(
+        "src/webui/market_surface.py",
+        "src/execution/live/orchestrator.py",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+
+
+def test_selector_market_dashboard_tests_only_focused() -> None:
+    sel = _run_selector("tests/webui/test_market_dashboard_no_bitcoin_futures_v1.py")
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "market_dashboard_focused"
 
 
 def test_workflow_only_does_not_run_full_pytest_step_unconditionally() -> None:
