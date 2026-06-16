@@ -1,27 +1,5 @@
-<section
-  role="region"
-  aria-labelledby="market-terminal-dp-compact-h2"
-  class="rounded-lg border border-amber-900/40 bg-slate-950/70 px-2.5 py-2 ring-1 ring-amber-950/25"
-  data-market-double-play-summary-visible-v1="true"
-  data-market-double-play-compact-v1="true"
-  data-market-single-page-section-double-play-v1="true"
-  data-double-play-bull-bear-cards-v1="true"
-  data-double-play-market-readonly="true"
-  data-double-play-market-no-authority="true"
-  data-market-remodel-secondary-double-play-v2="true"
->
-  <h2 id="market-terminal-dp-compact-h2" class="text-[11px] font-semibold uppercase tracking-wide text-amber-200/90 m-0 mb-2">Double Play · display-only</h2>
-  <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px]">
-    {% set suit = dp_display.panels | selectattr('name', 'equalto', 'strategy_suitability') | list %}
-    {% set comp = dp_display.panels | selectattr('name', 'equalto', 'composition') | list %}
-    <article class="rounded border border-emerald-900/45 bg-emerald-950/25 px-2.5 py-2" data-double-play-bull-card-v1="true">
-      <p class="m-0 text-[10px] font-bold uppercase text-emerald-400/90">Bull / Long</p>
-      <p class="m-0 mt-1 text-slate-200 line-clamp-2">{% if suit and suit[0].summary %}{{ suit[0].summary }}{% else %}MODEL_ONLY{% endif %}</p>
-    </article>
-    <article class="rounded border border-rose-900/45 bg-rose-950/25 px-2.5 py-2" data-double-play-bear-card-v1="true">
-      <p class="m-0 text-[10px] font-bold uppercase text-rose-400/90">Bear / Short</p>
-      <p class="m-0 mt-1 text-slate-200 line-clamp-2">{% if comp and comp[0].summary %}{{ comp[0].summary }}{% else %}NONE / MODEL_ONLY{% endif %}</p>
-    </article>
-  </div>
-  <p class="m-0 mt-2 text-[10px] text-slate-500">No authority · no side-switch · read-only snapshot</p>
+<section role="region" aria-labelledby="market-terminal-dp-compact-h2" class="rounded-lg border border-amber-900/40 bg-slate-950/70 px-2 py-1 ring-1 ring-amber-950/25" data-market-double-play-summary-visible-v1="true" data-market-double-play-compact-v1="true" data-market-double-play-matrix-v1="true" data-market-single-page-section-double-play-v1="true" data-double-play-bull-bear-cards-v1="true" data-double-play-market-readonly="true" data-double-play-market-no-authority="true" data-market-remodel-secondary-double-play-v2="true">
+<h2 id="market-terminal-dp-compact-h2" class="text-[10px] font-semibold uppercase text-amber-200/90 m-0 mb-1">Double Play · matrix</h2>
+<p class="m-0 mb-1 text-[9px] text-slate-500" data-market-double-play-readonly-marker-v1="true">Read-only · no authority · no side-switch · no side guidance</p>
+<div class="overflow-x-auto" data-market-double-play-matrix-scroll-v1="true"><table class="w-full min-w-[480px] border-collapse text-[9px]" data-market-double-play-matrix-table-v1="true"><thead><tr class="border-b border-slate-800/80 uppercase text-slate-500">{% for column in double_play_matrix.columns %}<th scope="col" class="py-0.5 pr-1">{{ column }}</th>{% endfor %}</tr></thead><tbody>{% for row in double_play_matrix.rows %}<tr class="border-b border-slate-900/70" data-market-double-play-matrix-row-v1="{{ row.dimension_slug }}"><th scope="row" class="py-0.5 pr-1 text-slate-300">{{ row.dimension|truncate(16, True, '…') }}</th><td class="py-0.5 pr-1" data-market-double-play-bull-long-v1="true"><span class="border border-slate-700 px-1 uppercase" data-matrix-status-category="{{ row.bull_long.status }}" title="{{ row.bull_long.raw_status|e }}">{{ row.bull_long.status_label }}</span> {{ row.bull_long.value|truncate(24, True, '…') }}</td><td class="py-0.5 pr-1" data-market-double-play-bear-short-v1="true"><span class="border border-slate-700 px-1 uppercase" data-matrix-status-category="{{ row.bear_short.status }}" title="{{ row.bear_short.raw_status|e }}">{{ row.bear_short.status_label }}</span> {{ row.bear_short.value|truncate(24, True, '…') }}</td><td class="py-0.5 pr-1" data-market-double-play-common-status-v1="true"><span class="border border-slate-700 px-1 uppercase" data-matrix-status-category="{{ row.common_status.status }}">{{ row.common_status.status_label }}</span> {{ row.common_status.value|truncate(20, True, '…') }}</td><td class="py-0.5 pr-1" data-market-double-play-evidence-freshness-v1="true">{% if loop.first %}<span class="font-mono">{{ row.evidence|truncate(16, True, '…') }}</span> <span class="font-mono">{{ row.freshness|truncate(16, True, '…') }}</span>{% else %}—{% endif %}</td><td class="py-0.5 text-slate-500">{{ row.operator_hint|truncate(24, True, '…') }}</td></tr>{% endfor %}</tbody></table></div>
 </section>

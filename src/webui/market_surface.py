@@ -107,6 +107,41 @@ CANONICAL_VOLUME_OWNER = CANONICAL_CHART_OWNER
 CANONICAL_RANKING_CONTEXT_OWNER = "src/webui/market_surface.py"
 CANONICAL_CONTRACT_METADATA_OWNER = CANONICAL_F5_METADATA_OWNER
 CANONICAL_FRESHNESS_OWNER = CANONICAL_FUTURES_OHLCV_OWNER
+CANONICAL_DOUBLE_PLAY_TEMPLATE_OWNER = (
+    "templates/peak_trade_dashboard/partials/double_play_market_compact_v1.html"
+)
+CANONICAL_SAFETY_TEMPLATE_OWNER = (
+    "templates/peak_trade_dashboard/partials/market_safety_compact_v1.html"
+)
+CANONICAL_DP_DATA_OWNER = "src/webui/double_play_dashboard_display_json_route_v0.py"
+CANONICAL_SAFETY_DATA_OWNER = "src/webui/futures_read_only_market_dashboard_runtime_v0.py"
+
+_MATRIX_DISPLAY_STATUS_ALLOWLIST: dict[str, tuple[str, str]] = {
+    "active": ("active", "Active"),
+    "inactive": ("inactive", "Inactive"),
+    "blocked": ("blocked", "Blocked"),
+    "unavailable": ("unavailable", "Unavailable"),
+    "stale": ("stale", "Stale"),
+    "partial": ("partial", "Partial"),
+    "unknown": ("unknown", "Unknown"),
+    "not_authorized": ("not_authorized", "Not authorized"),
+    "display_ready": ("active", "Active"),
+    "display_warning": ("partial", "Partial"),
+    "display_blocked": ("blocked", "Blocked"),
+    "display_missing": ("unavailable", "Unavailable"),
+    "display_error": ("blocked", "Blocked"),
+    "disabled": ("unavailable", "Unavailable"),
+    "unconfigured": ("unavailable", "Unavailable"),
+    "malformed": ("blocked", "Malformed"),
+    "ready": ("active", "Ready"),
+    "empty": ("unavailable", "Empty"),
+    "futures_metadata_partial": ("partial", "Partial metadata"),
+    "futures_metadata_missing": ("unavailable", "Metadata missing"),
+    "provenance_missing": ("unavailable", "Provenance missing"),
+    "provenance_partial": ("partial", "Provenance partial"),
+    "backtest_realism_incomplete": ("partial", "Realism incomplete"),
+    "risk_safety_incomplete": ("partial", "Risk/safety incomplete"),
+}
 
 MATRIX_ROW_SCHEMA: tuple[str, ...] = (
     "rank",
@@ -2418,6 +2453,264 @@ def _resolve_workspace_ohlcv_status(
     return "ready"
 
 
+def _normalize_matrix_display_status(raw_status: str) -> tuple[str, str]:
+    """Allowlisted read-only mapping of canonical status tokens to (category, label)."""
+    status = str(raw_status or "unknown").strip().lower()
+    if status in _MATRIX_DISPLAY_STATUS_ALLOWLIST:
+        return _MATRIX_DISPLAY_STATUS_ALLOWLIST[status]
+    if status.endswith("_missing"):
+        return "unavailable", status.replace("_", " ").title()
+    if status.endswith("_partial") or status.endswith("_incomplete"):
+        return "partial", status.replace("_", " ").title()
+    if status:
+        return "unknown", status.replace("_", " ").title()
+    return "unknown", "Unknown"
+
+
+def _dp_panel_lookup(dp_display: Dict[str, Any], name: str) -> dict[str, Any]:
+    panels = dp_display.get("panels") if isinstance(dp_display.get("panels"), list) else []
+    for panel in panels:
+        if isinstance(panel, dict) and str(panel.get("name") or "") == name:
+            return panel
+    return {}
+
+
+def _matrix_panel_cell(panel: dict[str, Any]) -> dict[str, str]:
+    if not panel:
+        return {
+            "value": "unavailable",
+            "status": "unavailable",
+            "status_label": "Unavailable",
+            "reason": "",
+            "raw_status": "unavailable",
+        }
+    raw_status = str(panel.get("status") or "unknown")
+    status, status_label = _normalize_matrix_display_status(raw_status)
+    summary = str(panel.get("summary") or "").strip() or "unavailable"
+    blockers = panel.get("blockers") if isinstance(panel.get("blockers"), list) else []
+    reason = "; ".join(str(item).strip() for item in blockers if str(item).strip())
+    return {
+        "value": summary,
+        "status": status,
+        "status_label": status_label,
+        "reason": reason,
+        "raw_status": raw_status,
+    }
+
+
+def _matrix_common_status_cell(raw_status: str) -> dict[str, str]:
+    status, status_label = _normalize_matrix_display_status(raw_status)
+    value = str(raw_status or "unknown").strip() or "unknown"
+    return {
+        "value": value,
+        "status": status,
+        "status_label": status_label,
+        "reason": "",
+        "raw_status": value,
+    }
+
+
+def build_market_double_play_matrix_display_context(
+    *,
+    dp_display: Dict[str, Any],
+) -> Dict[str, Any]:
+    """Read-only Double Play matrix projection for compact /market partial (no new decisions)."""
+    meta = (
+        dp_display.get("display_snapshot_meta")
+        if isinstance(dp_display.get("display_snapshot_meta"), dict)
+        else {}
+    )
+    suit = _matrix_panel_cell(_dp_panel_lookup(dp_display, "strategy_suitability"))
+    comp = _matrix_panel_cell(_dp_panel_lookup(dp_display, "composition"))
+    transition = _matrix_panel_cell(_dp_panel_lookup(dp_display, "state_transition"))
+    overall = _matrix_common_status_cell(str(dp_display.get("overall_status") or "unknown"))
+    warnings = dp_display.get("warnings") if isinstance(dp_display.get("warnings"), list) else []
+    warning_text = "; ".join(str(item).strip() for item in warnings if str(item).strip())
+    freshness = str(meta.get("assembled_at_iso") or "").strip() or "unavailable"
+    evidence = str(meta.get("source_id") or meta.get("source_kind") or "").strip() or "unavailable"
+
+    rows: list[dict[str, Any]] = [
+        {
+            "dimension": "Side summary",
+            "dimension_slug": "side_summary",
+            "bull_long": suit,
+            "bear_short": comp,
+            "common_status": overall,
+            "evidence": evidence,
+            "freshness": freshness,
+            "operator_hint": "Read-only snapshot · no side-switch",
+        },
+        {
+            "dimension": "Scope / state",
+            "dimension_slug": "scope_state",
+            "bull_long": transition,
+            "bear_short": comp,
+            "common_status": transition,
+            "evidence": evidence,
+            "freshness": freshness,
+            "operator_hint": "Model label only · no scope approval",
+        },
+        {
+            "dimension": "Eligibility",
+            "dimension_slug": "eligibility",
+            "bull_long": suit,
+            "bear_short": comp,
+            "common_status": comp,
+            "evidence": evidence,
+            "freshness": freshness,
+            "operator_hint": "Display eligibility · not trading permission",
+        },
+        {
+            "dimension": "Block reason",
+            "dimension_slug": "block_reason",
+            "bull_long": {
+                **suit,
+                "value": suit["reason"] or "none",
+            },
+            "bear_short": {
+                **comp,
+                "value": comp["reason"] or "none",
+            },
+            "common_status": _matrix_common_status_cell(warning_text or "none"),
+            "evidence": evidence,
+            "freshness": freshness,
+            "operator_hint": "Canonical blockers only · no inference",
+        },
+    ]
+
+    return {
+        "matrix_visible": True,
+        "read_only": True,
+        "view_only": True,
+        "columns": (
+            "Dimension",
+            "Bull / Long",
+            "Bear / Short",
+            "Common status",
+            "Evidence / Freshness",
+            "Operator hint",
+        ),
+        "freshness_at": freshness,
+        "evidence_source": evidence,
+        "rows": rows,
+    }
+
+
+def build_market_safety_matrix_display_context(
+    *,
+    dp_display: Dict[str, Any],
+    f5_dashboard: Dict[str, Any],
+) -> Dict[str, Any]:
+    """Read-only Safety matrix projection for compact /market partial (no new decisions)."""
+    meta = (
+        dp_display.get("display_snapshot_meta")
+        if isinstance(dp_display.get("display_snapshot_meta"), dict)
+        else {}
+    )
+    transition = _matrix_panel_cell(_dp_panel_lookup(dp_display, "state_transition"))
+    freshness = str(meta.get("assembled_at_iso") or "").strip() or "unavailable"
+    evidence = str(meta.get("source_id") or meta.get("source_kind") or "").strip() or "unavailable"
+
+    f5_gate = bool(f5_dashboard.get("gate_enabled"))
+    f4 = f5_dashboard.get("f4") if isinstance(f5_dashboard.get("f4"), dict) else {}
+
+    risk_status = str(f4.get("status") or "unavailable") if f5_gate else "unavailable"
+    kill_switch_raw = (
+        _f5_section_field_value(f4, "kill_switch_status") if f5_gate else "unavailable"
+    )
+
+    trading_ready = bool(dp_display.get("trading_ready"))
+    live_authorized = bool(dp_display.get("live_authorization"))
+
+    def _authority_row(
+        *,
+        dimension: str,
+        dimension_slug: str,
+        raw_status: str,
+        reason_code: str,
+        evidence_value: str,
+        operator_hint: str,
+    ) -> dict[str, Any]:
+        status, status_label = _normalize_matrix_display_status(raw_status)
+        return {
+            "dimension": dimension,
+            "dimension_slug": dimension_slug,
+            "status": status,
+            "status_label": status_label,
+            "raw_status": raw_status,
+            "reason_code": reason_code,
+            "authority_status": status
+            if status in ("not_authorized", "blocked")
+            else "not_authorized",
+            "evidence": evidence_value,
+            "freshness": freshness,
+            "operator_hint": operator_hint,
+        }
+
+    rows: list[dict[str, Any]] = [
+        _authority_row(
+            dimension="Preflight",
+            dimension_slug="preflight",
+            raw_status="blocked",
+            reason_code="PREFLIGHT_REMAINS_BLOCKED",
+            evidence_value="market_surface preflight gate",
+            operator_hint="Preflight remains blocked · display-only",
+        ),
+        _authority_row(
+            dimension="Execution authorization",
+            dimension_slug="execution_authorization",
+            raw_status="not_authorized" if not trading_ready else "active",
+            reason_code="EXECUTION_AUTHORIZED=false",
+            evidence_value="dp_display.trading_ready",
+            operator_hint="No execution authority on /market",
+        ),
+        _authority_row(
+            dimension="Live authorization",
+            dimension_slug="live_gate",
+            raw_status="not_authorized" if not live_authorized else "active",
+            reason_code="LIVE_AUTHORIZED=false",
+            evidence_value="dp_display snapshot",
+            operator_hint="Live locked · read-only surface",
+        ),
+        _authority_row(
+            dimension="Risk",
+            dimension_slug="risk",
+            raw_status=risk_status,
+            reason_code=str(f4.get("status") or "unavailable"),
+            evidence_value="f5_dashboard.f4",
+            operator_hint="Risk status from F4 read-model only",
+        ),
+        _authority_row(
+            dimension="KillSwitch",
+            dimension_slug="kill_switch",
+            raw_status=kill_switch_raw,
+            reason_code=kill_switch_raw,
+            evidence_value="f5_dashboard.f4.kill_switch_status",
+            operator_hint="KillSwitch field only · no override UI",
+        ),
+    ]
+
+    return {
+        "matrix_visible": True,
+        "read_only": True,
+        "view_only": True,
+        "preflight_blocked": True,
+        "execution_authorized": False,
+        "live_authorized": False,
+        "columns": (
+            "Safety rail",
+            "Status",
+            "Authority",
+            "Evidence",
+            "Freshness",
+            "Operator hint",
+        ),
+        "freshness_at": freshness,
+        "evidence_source": evidence,
+        "rows": rows,
+    }
+
+
 def build_market_selected_instrument_workspace_display_context(
     *,
     symbol: str,
@@ -2683,6 +2976,11 @@ def build_market_v0_page_template_context(
         payload=payload,
         data_unavailable=data_unavailable,
     )
+    double_play_matrix = build_market_double_play_matrix_display_context(dp_display=dp_display)
+    safety_matrix = build_market_safety_matrix_display_context(
+        dp_display=dp_display,
+        f5_dashboard=f5_dashboard,
+    )
     encoded_symbol = quote(symbol, safe="")
     legacy_demo_href = (
         f"/market?source=dummy&symbol={quote('ETHUSDT', safe='')}"
@@ -2708,6 +3006,8 @@ def build_market_v0_page_template_context(
         "futures_ohlcv": futures_ohlcv,
         "governed_top20": governed_top20,
         "selected_instrument_workspace": selected_instrument_workspace,
+        "double_play_matrix": double_play_matrix,
+        "safety_matrix": safety_matrix,
         "top_n": top_n,
         "top_n_toggle_hrefs": {
             20: build_market_top_n_toggle_href(
