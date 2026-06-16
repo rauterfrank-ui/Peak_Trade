@@ -239,6 +239,7 @@ class TestRetryWithBackoff:
     def test_retry_with_backoff_success(self):
         """Test successful retry after failures."""
         call_count = [0]
+        delays = []
 
         @retry_with_backoff(max_attempts=3, base_delay=0.05)
         def eventually_works():
@@ -247,28 +248,33 @@ class TestRetryWithBackoff:
                 raise ConnectionError("Temporary failure")
             return "success"
 
-        start = time.time()
-        result = eventually_works()
-        duration = time.time() - start
+        with patch("src.core.resilience.time.sleep", side_effect=lambda d: delays.append(d)):
+            result = eventually_works()
 
         assert result == "success"
         assert call_count[0] == 3
-        # Should have delayed at least base_delay * 2 (for 2 retries)
-        assert duration >= 0.05
+        assert len(delays) == 2
+        assert delays[0] == pytest.approx(0.05, rel=0.01)
+        assert delays[1] == pytest.approx(0.10, rel=0.01)
 
     def test_retry_with_backoff_exhaustion(self):
         """Test all retries exhausted."""
         call_count = [0]
+        delays = []
 
         @retry_with_backoff(max_attempts=3, base_delay=0.01)
         def always_fails():
             call_count[0] += 1
             raise ValueError("Always fails")
 
-        with pytest.raises(ValueError, match="Always fails"):
-            always_fails()
+        with patch("src.core.resilience.time.sleep", side_effect=lambda d: delays.append(d)):
+            with pytest.raises(ValueError, match="Always fails"):
+                always_fails()
 
         assert call_count[0] == 3
+        assert len(delays) == 2
+        assert delays[0] == pytest.approx(0.01, rel=0.01)
+        assert delays[1] == pytest.approx(0.02, rel=0.01)
 
     def test_retry_exponential_backoff(self):
         """Test exponential backoff calculation."""
@@ -282,14 +288,10 @@ class TestRetryWithBackoff:
                 raise ValueError("Not yet")
             return "success"
 
-        # Patch time.sleep to track delays
-        original_sleep = time.sleep
-
         def mock_sleep(duration):
             delays.append(duration)
-            original_sleep(0.01)  # Small actual sleep
 
-        with patch("time.sleep", side_effect=mock_sleep):
+        with patch("src.core.resilience.time.sleep", side_effect=mock_sleep):
             result = track_delays()
 
         assert result == "success"
@@ -312,13 +314,10 @@ class TestRetryWithBackoff:
                 raise ValueError("Not yet")
             return "success"
 
-        original_sleep = time.sleep
-
         def mock_sleep(duration):
             delays.append(duration)
-            original_sleep(0.01)
 
-        with patch("time.sleep", side_effect=mock_sleep):
+        with patch("src.core.resilience.time.sleep", side_effect=mock_sleep):
             result = constant_delay()
 
         assert result == "success"
@@ -336,7 +335,7 @@ class TestRetryWithBackoff:
         def mock_sleep(duration):
             delays.append(duration)
 
-        with patch("time.sleep", side_effect=mock_sleep):
+        with patch("src.core.resilience.time.sleep", side_effect=mock_sleep):
             with pytest.raises(ValueError):
                 check_max_delay()
 
