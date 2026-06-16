@@ -8,19 +8,117 @@
   "stages": {
     "universe": [
       {
-        "row_id": "universe-1",
+        "row_id": "selected-1",
         "symbol": "ETHUSDT",
         "rank": 1,
         "display_score": 0.91,
+        "notes": "fixture row"
+      },
+      {
+        "row_id": "selected-2",
+        "symbol": "SOLUSDT",
+        "rank": 2,
+        "display_score": 0.88,
+        "notes": "fixture row"
+      },
+      {
+        "row_id": "selected-3",
+        "symbol": "XRPUSDT",
+        "rank": 3,
+        "display_score": 0.85,
+        "notes": "fixture row"
+      },
+      {
+        "row_id": "selected-4",
+        "symbol": "ADAUSDT",
+        "rank": 4,
+        "display_score": 0.82,
+        "notes": "fixture row"
+      },
+      {
+        "row_id": "selected-5",
+        "symbol": "DOTUSDT",
+        "rank": 5,
+        "display_score": 0.79,
+        "notes": "fixture row"
+      },
+      {
+        "row_id": "selected-6",
+        "symbol": "AVAXUSDT",
+        "rank": 6,
+        "display_score": 0.76,
+        "notes": "fixture row"
+      },
+      {
+        "row_id": "selected-7",
+        "symbol": "LINKUSDT",
+        "rank": 7,
+        "display_score": 0.73,
+        "notes": "fixture row"
+      },
+      {
+        "row_id": "selected-8",
+        "symbol": "MATICUSDT",
+        "rank": 8,
+        "display_score": 0.7,
         "notes": "fixture row"
       }
     ],
     "shortlist": [
       {
-        "row_id": "shortlist-1",
+        "row_id": "selected-1",
         "symbol": "ETHUSDT",
         "rank": 1,
+        "display_score": 0.91,
+        "notes": "fixture row"
+      },
+      {
+        "row_id": "selected-2",
+        "symbol": "SOLUSDT",
+        "rank": 2,
         "display_score": 0.88,
+        "notes": "fixture row"
+      },
+      {
+        "row_id": "selected-3",
+        "symbol": "XRPUSDT",
+        "rank": 3,
+        "display_score": 0.85,
+        "notes": "fixture row"
+      },
+      {
+        "row_id": "selected-4",
+        "symbol": "ADAUSDT",
+        "rank": 4,
+        "display_score": 0.82,
+        "notes": "fixture row"
+      },
+      {
+        "row_id": "selected-5",
+        "symbol": "DOTUSDT",
+        "rank": 5,
+        "display_score": 0.79,
+        "notes": "fixture row"
+      },
+      {
+        "row_id": "selected-6",
+        "symbol": "AVAXUSDT",
+        "rank": 6,
+        "display_score": 0.76,
+        "notes": "fixture row"
+      },
+      {
+        "row_id": "selected-7",
+        "symbol": "LINKUSDT",
+        "rank": 7,
+        "display_score": 0.73,
+        "notes": "fixture row"
+      },
+      {
+        "row_id": "selected-8",
+        "symbol": "MATICUSDT",
+        "rank": 8,
+        "display_score": 0.7,
         "notes": "fixture row"
       }
     ],
@@ -29,7 +127,56 @@
         "row_id": "selected-1",
         "symbol": "ETHUSDT",
         "rank": 1,
-        "display_score": 0.84,
+        "display_score": 0.91,
+        "notes": "fixture row"
+      },
+      {
+        "row_id": "selected-2",
+        "symbol": "SOLUSDT",
+        "rank": 2,
+        "display_score": 0.88,
+        "notes": "fixture row"
+      },
+      {
+        "row_id": "selected-3",
+        "symbol": "XRPUSDT",
+        "rank": 3,
+        "display_score": 0.85,
+        "notes": "fixture row"
+      },
+      {
+        "row_id": "selected-4",
+        "symbol": "ADAUSDT",
+        "rank": 4,
+        "display_score": 0.82,
+        "notes": "fixture row"
+      },
+      {
+        "row_id": "selected-5",
+        "symbol": "DOTUSDT",
+        "rank": 5,
+        "display_score": 0.79,
+        "notes": "fixture row"
+      },
+      {
+        "row_id": "selected-6",
+        "symbol": "AVAXUSDT",
+        "rank": 6,
+        "display_score": 0.76,
+        "notes": "fixture row"
+      },
+      {
+        "row_id": "selected-7",
+        "symbol": "LINKUSDT",
+        "rank": 7,
+        "display_score": 0.73,
+        "notes": "fixture row"
+      },
+      {
+        "row_id": "selected-8",
+        "symbol": "MATICUSDT",
+        "rank": 8,
+        "display_score": 0.7,
         "notes": "fixture row"
       }
     ]

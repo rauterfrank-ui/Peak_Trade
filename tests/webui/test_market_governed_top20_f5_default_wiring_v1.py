@@ -130,7 +130,7 @@ def test_governed_top20_preserves_order_and_count_not_padded(
     client_governed_wiring_on: TestClient,
 ) -> None:
     body = _html(client_governed_wiring_on)
-    assert 'data-market-governed-top20-row-count="1"' in body
+    assert 'data-market-governed-top20-row-count="8"' in body
     assert "no padding to 20" in body
 
 
@@ -264,4 +264,4 @@ def test_template_context_includes_governed_top20(monkeypatch: pytest.MonkeyPatc
     )
     assert "governed_top20" in ctx
     assert ctx["governed_top20"]["snapshot_available"] is True
-    assert ctx["governed_top20"]["row_count"] == 1
+    assert ctx["governed_top20"]["row_count"] == 8

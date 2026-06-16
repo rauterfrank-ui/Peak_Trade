@@ -283,3 +283,87 @@ def test_no_parallel_chart_owner() -> None:
 def test_workspace_determinism_triple_run(client_workspace_on: TestClient) -> None:
     snapshots = [_html(client_workspace_on) for _ in range(3)]
     assert snapshots[0] == snapshots[1] == snapshots[2]
+
+
+def test_preview_matrix_at_least_eight_futures(client_workspace_on: TestClient) -> None:
+    html = _html(client_workspace_on)
+    matrix_rows = html.count('data-market-governed-matrix-row-v1="true"')
+    assert matrix_rows >= 8
+    assert 'data-market-futures-selector-selected-v1="true"' in html
+
+
+def test_preview_chart_at_least_forty_bars(client_workspace_on: TestClient) -> None:
+    html = _html(client_workspace_on)
+    chart_section = html.split('data-market-workspace-chart-v1="true"', 1)[1]
+    chart_section = chart_section.split('data-market-diagnostics-secondary-v1="true"', 1)[0]
+    candles = chart_section.count('data-market-v0-in-chart-ohlc-candle="true"')
+    volume_bars = chart_section.count('data-market-chart-volume-bar-v1="true"')
+    assert candles >= 40
+    assert volume_bars >= 40
+    assert candles == volume_bars
+
+
+def test_chart_axes_and_alignment(client_workspace_on: TestClient) -> None:
+    html = _html(client_workspace_on)
+    chart_section = html.split('data-market-workspace-chart-v1="true"', 1)[1]
+    chart_section = chart_section.split('data-market-diagnostics-secondary-v1="true"', 1)[0]
+    assert 'data-market-chart-price-axis-v1="true"' in chart_section
+    assert 'data-market-chart-time-axis-v1="true"' in chart_section
+    price_labels = chart_section.count('data-market-chart-price-label-v1="true"')
+    time_labels = chart_section.count('data-market-chart-time-label-v1="true"')
+    assert 5 <= price_labels <= 7
+    assert time_labels >= 4
+    candle_x = re.findall(r'data-market-chart-candle-x-v1="([0-9.]+)"', chart_section)
+    volume_x = re.findall(r'data-market-chart-volume-x-v1="([0-9.]+)"', chart_section)
+    assert len(candle_x) >= 40
+    assert candle_x == volume_x
+
+
+def test_kpi_hierarchy_and_f5_operator_status(client_workspace_on: TestClient) -> None:
+    html = _html(client_workspace_on)
+    assert 'data-market-workspace-kpi-band-v1="true"' in html
+    assert 'data-market-workspace-kpi-primary-v1="true"' in html
+    assert 'data-market-workspace-f5-operator-status-v1="true"' in html
+    assert 'data-market-workspace-contract-unavailable-compact-v1="true"' in html
+    assert 'data-market-workspace-visual-summary-v1="true"' in html
+
+
+def test_chart_height_bounded(client_workspace_on: TestClient) -> None:
+    html = _html(client_workspace_on)
+    assert 'data-market-chart-height-v1="420"' in html
+    assert "min-h-[60vh]" not in html
+
+
+def test_no_bitcoin_spot_or_authority(client_workspace_on: TestClient) -> None:
+    html = _html(client_workspace_on)
+    assert not BITCOIN_RE.search(html)
+    assert "BTC/EUR" not in html
+    assert "spot-only" not in html.lower()
+    assert not FORBIDDEN_AUTHORITY_RE.search(html)
+
+
+def test_flat_price_single_bar_states() -> None:
+    ws = build_market_selected_instrument_workspace_display_context(
+        symbol="ETHUSDT",
+        source="futures",
+        primary_values={
+            "symbol": "ETHUSDT",
+            "status": "available",
+            "last_close_display": "100.0",
+            "change_status": "unavailable",
+            "bars_returned": 1,
+        },
+        governed_top20={"rows": [], "top_n": 20, "stale": False, "stale_reason": "", "data_source": "x"},
+        f5_dashboard={"gate_enabled": True, "display_status": "ready", "f1": {}, "f2": {}, "f3": {}, "f4": {}},
+        futures_ohlcv={"display_status": "ready", "stale": False},
+        payload={
+            "bars_returned": 1,
+            "bars": [
+                {"ts": "2026-05-27T00:00:00+00:00", "open": 100.0, "high": 100.0, "low": 100.0, "close": 100.0, "volume": 10.0}
+            ],
+            "meta": {},
+        },
+        data_unavailable=False,
+    )
+    assert ws["visual_summary"]["implemented"] is True
+    assert ws["visual_summary"]["visible_bar_count"] == 1

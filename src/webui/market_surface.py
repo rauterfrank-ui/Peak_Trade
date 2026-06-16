@@ -1698,6 +1698,124 @@ def _f5_section_field_value(section: Dict[str, Any], field: str) -> str:
     return "unavailable"
 
 
+def _f5_operator_status_display(raw_status: str) -> tuple[str, str]:
+    """Map internal F5 tokens to operator-readable (category, label) pairs."""
+    status = str(raw_status or "unavailable").strip().lower()
+    if status in ("unavailable", "disabled", "unconfigured"):
+        return "missing", "Unavailable"
+    if status == "malformed":
+        return "missing", "Malformed"
+    if status == "ready":
+        return "ready", "Ready"
+    category_by_status: dict[str, str] = {
+        "futures_metadata_partial": "partial",
+        "futures_metadata_missing": "missing",
+        "provenance_missing": "missing",
+        "provenance_partial": "partial",
+        "backtest_realism_incomplete": "incomplete",
+        "risk_safety_incomplete": "incomplete",
+        "metadata_label_only": "partial",
+        "testnet_candidate_only": "partial",
+        "unsupported_for_live": "incomplete",
+    }
+    label_by_status: dict[str, str] = {
+        "futures_metadata_partial": "Partial metadata",
+        "futures_metadata_missing": "Metadata missing",
+        "provenance_missing": "Provenance missing",
+        "provenance_partial": "Provenance partial",
+        "backtest_realism_incomplete": "Realism incomplete",
+        "risk_safety_incomplete": "Risk/safety incomplete",
+        "metadata_label_only": "Metadata label only",
+        "testnet_candidate_only": "Testnet candidate",
+        "unsupported_for_live": "Unsupported for live",
+    }
+    category = category_by_status.get(status, "partial")
+    label = label_by_status.get(status, status.replace("_", " ").title())
+    return category, label
+
+
+def _build_workspace_visual_summary(
+    payload: Dict[str, Any],
+    *,
+    ranking_rank: Any,
+    data_quality: str,
+    freshness_stale: bool,
+) -> dict[str, Any]:
+    """Descriptive chart/ranking summary derived from already-resolved SSR values."""
+    bars = payload.get("bars") if isinstance(payload.get("bars"), list) else []
+    visible = [bar for bar in bars if isinstance(bar, dict)]
+    if not visible:
+        return {
+            "implemented": False,
+            "visible_bar_count": 0,
+            "up_bar_count": 0,
+            "down_bar_count": 0,
+            "total_volume_display": "unavailable",
+            "close_range_position_display": "unavailable",
+            "ranking_position_display": "unavailable",
+            "freshness_quality_display": "unavailable",
+        }
+
+    up_bar_count = 0
+    lows: list[float] = []
+    highs: list[float] = []
+    total_volume = 0.0
+    for bar in visible:
+        try:
+            o = float(bar.get("open"))
+            c = float(bar.get("close"))
+            lo = float(bar.get("low"))
+            hi = float(bar.get("high"))
+        except (TypeError, ValueError):
+            continue
+        if c >= o:
+            up_bar_count += 1
+        lows.append(lo)
+        highs.append(hi)
+        raw_volume = bar.get("volume")
+        if raw_volume is not None:
+            try:
+                total_volume += max(0.0, float(raw_volume))
+            except (TypeError, ValueError):
+                pass
+
+    down_bar_count = len(visible) - up_bar_count
+    range_low = min(lows) if lows else None
+    range_high = max(highs) if highs else None
+    last_close = None
+    try:
+        last_close = float(visible[-1].get("close"))
+    except (TypeError, ValueError):
+        last_close = None
+
+    close_range_position_display = "unavailable"
+    if (
+        last_close is not None
+        and range_low is not None
+        and range_high is not None
+        and range_high > range_low
+    ):
+        position_pct = ((last_close - range_low) / (range_high - range_low)) * 100.0
+        close_range_position_display = f"{position_pct:.1f}% of visible range"
+
+    ranking_position_display = str(ranking_rank) if ranking_rank is not None else "unavailable"
+    if freshness_stale or data_quality == "stale":
+        freshness_quality_display = "stale"
+    else:
+        freshness_quality_display = str(data_quality or "unavailable")
+
+    return {
+        "implemented": True,
+        "visible_bar_count": len(visible),
+        "up_bar_count": up_bar_count,
+        "down_bar_count": down_bar_count,
+        "total_volume_display": _format_display_price(total_volume),
+        "close_range_position_display": close_range_position_display,
+        "ranking_position_display": ranking_position_display,
+        "freshness_quality_display": freshness_quality_display,
+    }
+
+
 def _find_governed_row_for_symbol(
     governed_top20: Dict[str, Any],
     symbol: str,
@@ -1791,6 +1909,11 @@ def build_market_selected_instrument_workspace_display_context(
         "exchange": _f5_section_field_value(f1, "exchange"),
     }
     contract_complete = all(v != "unavailable" for v in contract_fields.values())
+    contract_unavailable_fields = [
+        name.replace("_", " ").title()
+        for name, value in contract_fields.items()
+        if value == "unavailable"
+    ]
 
     f5_gate = bool(f5_dashboard.get("gate_enabled"))
     f5_display = str(f5_dashboard.get("display_status") or "disabled")
@@ -1809,11 +1932,14 @@ def build_market_selected_instrument_workspace_display_context(
             card_status = "unavailable"
         else:
             card_status = str(section.get("status") or "unavailable")
+        operator_category, operator_label = _f5_operator_status_display(card_status)
         f5_cards.append(
             {
                 "id": card_id,
                 "label": label,
                 "status": card_status,
+                "operator_category": operator_category,
+                "operator_label": operator_label,
             }
         )
 
@@ -1851,6 +1977,13 @@ def build_market_selected_instrument_workspace_display_context(
         data_quality = "ready"
     else:
         data_quality = "partial"
+
+    visual_summary = _build_workspace_visual_summary(
+        payload,
+        ranking_rank=ranking_rank,
+        data_quality=data_quality,
+        freshness_stale=snapshot_stale,
+    )
 
     return {
         "workspace_visible": source == "futures",
@@ -1892,6 +2025,8 @@ def build_market_selected_instrument_workspace_display_context(
         "f5_cards": f5_cards,
         "contract_metadata": contract_fields,
         "contract_metadata_complete": contract_complete,
+        "contract_unavailable_fields": contract_unavailable_fields,
+        "visual_summary": visual_summary,
         "view_only": True,
         "read_only": True,
     }
