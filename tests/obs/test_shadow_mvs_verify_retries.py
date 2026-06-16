@@ -19,30 +19,28 @@ import os
 
 import pytest
 
-# PT_PORT_BIND_GUARD: skip in sandbox unless explicitly enabled
-if os.environ.get("PEAKTRADE_ALLOW_PORT_BIND_TESTS", "0") != "1":
-    pytest.skip(
-        "port-bind tests disabled (set PEAKTRADE_ALLOW_PORT_BIND_TESTS=1 to enable)",
-        allow_module_level=True,
-    )
+# PT_PORT_BIND_GUARD: skip only when localhost port-bind is not permitted
 try:
     import socket as _pt_sock
 
     with _pt_sock.socket() as _s:
         _s.bind(("127.0.0.1", 0))
 except (PermissionError, OSError):
-    pytest.skip("port-bind not permitted in this environment (sandbox)", allow_module_level=True)
+    pytest.skip(
+        "port-bind not permitted in this environment (sandbox); "
+        "set PEAKTRADE_ALLOW_PORT_BIND_TESTS=1 to enable",
+        allow_module_level=True,
+    )
 import re
 import subprocess
 import threading
-import time
 import urllib.parse
 from dataclasses import dataclass, field
 from http import HTTPStatus
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
-pytestmark = pytest.mark.network
+_PROMETHEUS_MOCK_TIMESTAMP = 1_700_000_000.0
 
 
 @dataclass
@@ -182,7 +180,7 @@ class _Handler(BaseHTTPRequestHandler):
 
                 # up is always available
                 if q.startswith('up{job="shadow_mvs"}'):
-                    result = [{"metric": {}, "value": [time.time(), "1"]}]
+                    result = [{"metric": {}, "value": [_PROMETHEUS_MOCK_TIMESTAMP, "1"]}]
                     self._json(
                         HTTPStatus.OK,
                         {"status": "success", "data": {"resultType": "vector", "result": result}},
@@ -192,9 +190,9 @@ class _Handler(BaseHTTPRequestHandler):
                 # Warmup-sensitive queries: return NaN first 2 calls, then a value.
                 if "rate(" in q or "histogram_quantile" in q:
                     if n < 3:
-                        result = [{"metric": {}, "value": [time.time(), "NaN"]}]
+                        result = [{"metric": {}, "value": [_PROMETHEUS_MOCK_TIMESTAMP, "NaN"]}]
                     else:
-                        result = [{"metric": {}, "value": [time.time(), "0.1"]}]
+                        result = [{"metric": {}, "value": [_PROMETHEUS_MOCK_TIMESTAMP, "0.1"]}]
                     self._json(
                         HTTPStatus.OK,
                         {"status": "success", "data": {"resultType": "vector", "result": result}},
