@@ -59,13 +59,16 @@ def client(monkeypatch: pytest.MonkeyPatch) -> Iterator[TestClient]:
 
 
 class TestCanonicalShortUrlDefaults:
-    def test_market_without_query_uses_kraken_defaults(self, client: TestClient) -> None:
+    def test_market_without_query_uses_futures_first_defaults(self, client: TestClient) -> None:
         resp = client.get("/market")
         assert resp.status_code == 200
         body = resp.text
         assert f'data-market-source="{DEFAULT_SOURCE}"' in body
-        assert f'data-market-symbol="{DEFAULT_SYMBOL}"' in body
-        assert DEFAULT_SYMBOL in body
+        assert DEFAULT_SOURCE == "futures"
+        assert DEFAULT_SYMBOL == ""
+        assert "BTC/EUR" not in body
+        assert "BTC%2FEUR" not in body
+        assert 'data-market-futures-first-v1="true"' in body
         assert DEFAULT_TIMEFRAME in body
         assert str(DEFAULT_LIMIT) in body
 
@@ -111,7 +114,10 @@ class TestCanonicalShortUrlDefaults:
         assert PAGE_TITLE in resp.text
 
     def test_dummy_explicit_synthetic_label(self, client: TestClient) -> None:
-        resp = client.get("/market", params={"source": "dummy", "limit": 20})
+        resp = client.get(
+            "/market",
+            params={"source": "dummy", "symbol": "BTCUSDT", "limit": 20},
+        )
         body = resp.text
         assert 'data-market-dummy-explicit-synthetic-v1="true"' in body
         assert 'data-market-source-kind="dummy-offline-synthetic"' in body
@@ -127,7 +133,7 @@ class TestCanonicalShortUrlDefaults:
 
         monkeypatch.setattr("src.data.kraken.fetch_ohlcv_df", _fail)
         with TestClient(create_app()) as client:
-            resp = client.get("/market")
+            resp = client.get("/market", params={"source": "kraken", "symbol": "BTC/USD"})
         assert resp.status_code == 200
         body = resp.text
         assert 'data-market-unavailable-compact-v1="true"' in body

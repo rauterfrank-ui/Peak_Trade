@@ -11,7 +11,8 @@ GET /market embeds offline Market Depth read-model state SSR-only via
 GET /market may embed env-gated Tape readmodel SSR via
 ``build_market_tape_display_context`` (offline fixture bundle only, default off).
 
-Keine Orders, kein OPS-Cockpit-Bezug. Dummy-Quelle für Offline/CI; Kraken über fetch_ohlcv_df.
+Keine Orders, kein OPS-Cockpit-Bezug. Kanonischer Default ist futures-first (SSR, fail-closed).
+Legacy Spot/Synthetic nur explizit via ``source=kraken`` oder ``source=dummy`` mit explizitem Symbol.
 """
 
 from __future__ import annotations
@@ -54,10 +55,13 @@ MARKET_TIMEFRAMES: tuple[str, ...] = ("1m", "5m", "15m", "1h", "4h", "1d")
 MAX_OHLCV_LIMIT = 720
 MARKET_DEPTH_SSR_TOP_LEVELS = 8
 MARKET_TAPE_SSR_TOP_TRADES = 5
-DEFAULT_SYMBOL = "BTC/EUR"
+DEFAULT_SYMBOL = ""
 DEFAULT_TIMEFRAME = "1d"
 DEFAULT_LIMIT = 120
-DEFAULT_SOURCE: Literal["kraken", "dummy"] = "kraken"
+MarketSource = Literal["futures", "kraken", "dummy"]
+DEFAULT_SOURCE: MarketSource = "futures"
+FORBIDDEN_IMPLICIT_SPOT_DEFAULT_SYMBOL = "BTC/EUR"
+LEGACY_DEMO_SOURCES: tuple[str, ...] = ("kraken", "dummy")
 PAGE_TITLE = "Peak Trade Market Dashboard"
 
 MARKET_SINGLE_PAGE_CONSOLIDATION_ENABLED_ENV = (
@@ -109,14 +113,113 @@ def _utc_now_iso() -> str:
     return datetime.now(timezone.utc).isoformat()
 
 
-def _normalize_source(raw: str) -> Literal["kraken", "dummy"]:
+def _normalize_source(raw: str | None) -> MarketSource:
     key = (raw or DEFAULT_SOURCE).strip().lower()
-    if key not in ("kraken", "dummy"):
+    if key not in ("futures", "kraken", "dummy"):
         raise HTTPException(
             status_code=422,
-            detail=f"source muss 'kraken' oder 'dummy' sein, nicht {raw!r}",
+            detail=f"source muss 'futures', 'kraken' oder 'dummy' sein, nicht {raw!r}",
         )
     return key  # type: ignore[return-value]
+
+
+def _normalize_request_symbol(symbol: str | None) -> str:
+    return (symbol or "").strip()
+
+
+def _is_forbidden_implicit_spot_symbol(symbol: str) -> bool:
+    normalized = symbol.strip().upper().replace(" ", "")
+    return normalized in {"BTC/EUR", "BTCEUR"}
+
+
+def resolve_selected_futures_symbol_from_ranking_funnel(
+    ranking_funnel: Dict[str, Any],
+) -> str:
+    """Display-only: first governed ranking row from selected → shortlist → universe."""
+    stages = ranking_funnel.get("stages") if isinstance(ranking_funnel.get("stages"), dict) else {}
+    for stage_key in ("selected", "shortlist", "universe"):
+        for row in stages.get(stage_key) or []:
+            if not isinstance(row, dict):
+                continue
+            sym = str(row.get("symbol") or "").strip()
+            if sym:
+                return sym
+    return ""
+
+
+def build_futures_first_empty_payload(
+    *,
+    symbol: str,
+    timeframe: str,
+    limit: int,
+    unavailable_reason: str,
+) -> Dict[str, Any]:
+    """Fail-closed futures SSR payload — no spot OHLCV, no synthetic fallback."""
+    return {
+        "generated_at_utc": _utc_now_iso(),
+        "source": "futures",
+        "symbol": symbol,
+        "timeframe": timeframe,
+        "limit_requested": limit,
+        "bars_returned": 0,
+        "meta": {
+            "unavailable": True,
+            "reason": unavailable_reason,
+            "source_mode": "futures_read_only_ssr",
+            "futures_empty_state": True,
+            "fail_closed": True,
+        },
+        "bars": [],
+    }
+
+
+def resolve_market_page_data(
+    *,
+    symbol: str | None,
+    timeframe: str,
+    limit: int,
+    source: str | None,
+) -> tuple[str, MarketSource, Dict[str, Any], bool]:
+    """Resolve canonical GET /market request state (futures-first, no implicit spot fallback)."""
+    src = _normalize_source(source)
+    sym = _normalize_request_symbol(symbol)
+
+    if src == "futures":
+        ranking_funnel = build_market_ranking_funnel_display_context()
+        if not sym:
+            sym = resolve_selected_futures_symbol_from_ranking_funnel(ranking_funnel)
+        if not sym:
+            payload = build_futures_first_empty_payload(
+                symbol="",
+                timeframe=timeframe,
+                limit=limit,
+                unavailable_reason="futures_snapshot_unavailable",
+            )
+            return "", src, payload, True
+        payload = build_futures_first_empty_payload(
+            symbol=sym,
+            timeframe=timeframe,
+            limit=limit,
+            unavailable_reason="futures_ohlcv_not_wired",
+        )
+        return sym, src, payload, True
+
+    if not sym:
+        payload = build_futures_first_empty_payload(
+            symbol="",
+            timeframe=timeframe,
+            limit=limit,
+            unavailable_reason="legacy_source_requires_explicit_symbol",
+        )
+        return "", src, payload, True
+
+    payload, data_unavailable = build_market_payload_for_page(
+        symbol=sym,
+        timeframe=timeframe,
+        limit=limit,
+        source=src,
+    )
+    return sym, src, payload, data_unavailable
 
 
 def load_ohlcv_dataframe(
@@ -813,7 +916,7 @@ def build_market_instrument_header_display_context(
     symbol: str,
     timeframe: str,
     limit: int,
-    source: Literal["kraken", "dummy"],
+    source: MarketSource,
     payload: Dict[str, Any],
     market_depth: Dict[str, Any],
 ) -> Dict[str, Any]:
@@ -824,7 +927,7 @@ def build_market_instrument_header_display_context(
     elif source == "kraken":
         source_mode = "kraken_public_ohlcv"
     else:
-        source_mode = "unavailable"
+        source_mode = "futures_read_only_ssr"
 
     bars = payload.get("bars") if isinstance(payload.get("bars"), list) else []
     last_close: float | None = None
@@ -892,7 +995,7 @@ def build_market_instrument_header_display_context(
 
 def build_market_futures_metrics_strip_display_context(
     *,
-    source: Literal["kraken", "dummy"],
+    source: MarketSource,
     payload: Dict[str, Any],
     market_depth: Dict[str, Any],
 ) -> Dict[str, Any]:
@@ -903,7 +1006,7 @@ def build_market_futures_metrics_strip_display_context(
     elif source == "kraken":
         source_mode = "kraken_public_ohlcv"
     else:
-        source_mode = "unavailable"
+        source_mode = "futures_read_only_ssr"
 
     bars = payload.get("bars") if isinstance(payload.get("bars"), list) else []
     last_close: float | None = None
@@ -1109,7 +1212,7 @@ def build_market_primary_values_display_context(
     symbol: str,
     timeframe: str,
     limit: int,
-    source: Literal["kraken", "dummy"],
+    source: MarketSource,
     payload: Dict[str, Any],
     data_unavailable: bool,
 ) -> Dict[str, Any]:
@@ -1118,9 +1221,12 @@ def build_market_primary_values_display_context(
     if source == "dummy":
         source_kind = "dummy-offline-synthetic"
         source_mode = "dummy_offline_synthetic"
-    else:
+    elif source == "kraken":
         source_kind = "kraken-public"
         source_mode = "kraken_public_ohlcv"
+    else:
+        source_kind = "futures-read-only-ssr"
+        source_mode = "futures_read_only_ssr"
 
     bars = payload.get("bars") if isinstance(payload.get("bars"), list) else []
     last_bar = bars[-1] if bars and isinstance(bars[-1], dict) else {}
@@ -1186,7 +1292,7 @@ def build_market_v0_page_template_context(
     symbol: str,
     timeframe: str,
     limit: int,
-    source: Literal["kraken", "dummy"],
+    source: MarketSource,
     payload: Dict[str, Any],
     data_unavailable: bool,
 ) -> Dict[str, Any]:
@@ -1240,7 +1346,8 @@ def build_market_v0_page_template_context(
     f5_dashboard = build_futures_read_only_market_dashboard_display_context()
     encoded_symbol = quote(symbol, safe="")
     legacy_demo_href = (
-        f"/market?source={source}&symbol={encoded_symbol}&timeframe={timeframe}&limit={limit}"
+        f"/market?source=dummy&symbol={quote('BTCUSDT', safe='')}"
+        f"&timeframe={timeframe}&limit={limit}"
     )
     return {
         "status": proj_status,
@@ -1261,6 +1368,7 @@ def build_market_v0_page_template_context(
         "f5_dashboard": f5_dashboard,
         "double_play_json_url": "/api/master-v2/double-play/dashboard-display.json",
         "legacy_demo_href": legacy_demo_href,
+        "futures_first": source == "futures",
         "page_title": PAGE_TITLE,
         "primary_values": primary_values,
         "data_unavailable": data_unavailable,
@@ -1281,7 +1389,7 @@ def create_market_router(
 
     @router.get("/api/market/ohlcv")
     async def api_market_ohlcv(
-        symbol: str = Query(DEFAULT_SYMBOL, description="Trading-Paar, z.B. BTC/USD"),
+        symbol: str = Query("", description="Trading-Paar; bei Legacy-Quellen erforderlich"),
         timeframe: str = Query(
             DEFAULT_TIMEFRAME,
             description="Timeframe (Kraken); Dummy ignoriert (synthetisch 1h)",
@@ -1294,7 +1402,7 @@ def create_market_router(
         ),
         source: str = Query(
             DEFAULT_SOURCE,
-            description="dummy = offline synthetisch; kraken = öffentliche OHLCV",
+            description="futures = SSR-only (kein OHLCV); kraken/dummy = explizite Legacy-Quelle",
         ),
     ) -> Dict[str, Any]:
         if timeframe not in MARKET_TIMEFRAMES:
@@ -1303,7 +1411,21 @@ def create_market_router(
                 detail=f"timeframe muss einer von {list(MARKET_TIMEFRAMES)} sein, nicht {timeframe!r}",
             )
         src = _normalize_source(source)
-        return build_market_payload(symbol=symbol, timeframe=timeframe, limit=limit, source=src)
+        if src == "futures":
+            raise HTTPException(
+                status_code=422,
+                detail=(
+                    "source=futures ist SSR-only auf GET /market; "
+                    "für OHLCV-JSON source=kraken oder source=dummy mit explizitem symbol verwenden"
+                ),
+            )
+        sym = _normalize_request_symbol(symbol)
+        if not sym:
+            raise HTTPException(
+                status_code=422,
+                detail="symbol ist für Legacy-OHLCV-Quellen erforderlich (kein impliziter Spot-Default)",
+            )
+        return build_market_payload(symbol=sym, timeframe=timeframe, limit=limit, source=src)
 
     @router.get("/market", response_class=HTMLResponse)
     async def market_v0_page(
@@ -1318,16 +1440,18 @@ def create_market_router(
                 status_code=422,
                 detail=f"timeframe muss einer von {list(MARKET_TIMEFRAMES)} sein, nicht {timeframe!r}",
             )
-        src = _normalize_source(source)
-        payload, data_unavailable = build_market_payload_for_page(
-            symbol=symbol, timeframe=timeframe, limit=limit, source=src
+        sym, src, payload, data_unavailable = resolve_market_page_data(
+            symbol=symbol,
+            timeframe=timeframe,
+            limit=limit,
+            source=source,
         )
         return templates.TemplateResponse(
             request,
             "market_v0.html",
             build_market_v0_page_template_context(
                 get_project_status=get_project_status,
-                symbol=symbol,
+                symbol=sym,
                 timeframe=timeframe,
                 limit=limit,
                 source=src,

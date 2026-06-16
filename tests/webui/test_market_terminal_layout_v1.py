@@ -87,8 +87,9 @@ def test_compact_panels_present(client: TestClient) -> None:
 def test_defaults_visible(client: TestClient) -> None:
     html = client.get("/market").text
     assert f'data-market-source="{DEFAULT_SOURCE}"' in html
-    assert f'data-market-symbol="{DEFAULT_SYMBOL}"' in html
-    assert DEFAULT_SYMBOL in html
+    assert DEFAULT_SOURCE == "futures"
+    assert "BTC/EUR" not in html
+    assert 'data-market-futures-first-v1="true"' in html
     assert DEFAULT_TIMEFRAME in html
     assert str(DEFAULT_LIMIT) in html
 
