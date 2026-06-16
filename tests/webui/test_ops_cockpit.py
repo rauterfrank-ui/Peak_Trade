@@ -1382,9 +1382,13 @@ def test_stale_state_order_stale_when_events_mtime_old(tmp_path: Path) -> None:
     """Old events file mtime → stale_state.order stale (log observation)."""
     import json
     import os
-    import time
+    from datetime import datetime, timezone
 
     import pandas as pd
+
+    fixed_now = datetime.fromtimestamp(1_700_000_000.0, tz=timezone.utc)
+    age_hours = 26.0
+    mtime = fixed_now.timestamp() - age_hours * 3600.0
 
     live_runs = tmp_path / "live_runs"
     run_dir = live_runs / "20251207_120000_shadow_ma_BTC-EUR_1m"
@@ -1403,9 +1407,12 @@ def test_stale_state_order_stale_when_events_mtime_old(tmp_path: Path) -> None:
     events = pd.DataFrame([{"step": 1, "position_size": 0.1, "price": 50000.0, "close": 50000.0}])
     ep = run_dir / "events.parquet"
     events.to_parquet(ep, index=False)
-    old = time.time() - 26 * 3600
-    os.utime(ep, (old, old))
-    payload = build_ops_cockpit_payload(repo_root=tmp_path)
+    os.utime(ep, (mtime, mtime))
+    real_datetime = datetime
+    with patch("src.live.order_staleness_reader.datetime") as mock_dt:
+        mock_dt.now.return_value = fixed_now
+        mock_dt.fromtimestamp = real_datetime.fromtimestamp
+        payload = build_ops_cockpit_payload(repo_root=tmp_path)
     assert payload["stale_state"]["order"] == "stale"
 
 
