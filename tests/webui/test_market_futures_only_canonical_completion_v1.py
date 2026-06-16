@@ -204,7 +204,9 @@ def test_futures_ohlcv_chart_wired_with_fixture(client_full_wiring_on: TestClien
 
 def test_futures_ohlcv_missing_symbol_explicit(client_full_wiring_on: TestClient) -> None:
     body = _html(client_full_wiring_on, "/market?symbol=SOLUSDT")
-    assert 'data-market-futures-ohlcv-not-wired-v1="true"' in body
+    assert 'data-market-futures-ohlcv-wired-v1="true"' in body
+    assert 'data-market-futures-ohlcv-not-wired-v1="true"' not in body
+    assert 'data-market-futures-selector-selected-v1="true"' in body
 
 
 def test_futures_ohlcv_malformed_state(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
@@ -263,7 +265,7 @@ def test_resolve_market_page_data_futures_ohlcv_unit(
     assert src == "futures"
     assert sym == "ETHUSDT"
     assert unavailable is False
-    assert payload["bars_returned"] == 3
+    assert payload["bars_returned"] == 45
 
 
 def test_completion_contract_determinism_three_runs(

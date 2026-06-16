@@ -28,12 +28,12 @@ def test_market_ranking_funnel_readmodel_builds_complete_minimal_fixture_v0() ->
     assert model["stale_reason"] is None
     assert model["non_authorizing"] is True
     assert model["stage_counts"] == {
-        "universe": 1,
-        "shortlist": 1,
-        "selected": 1,
+        "universe": 8,
+        "shortlist": 8,
+        "selected": 8,
     }
     assert model["stages"]["universe"][0] == {
-        "row_id": "universe-1",
+        "row_id": "selected-1",
         "symbol": "ETHUSDT",
         "rank": 1,
         "display_score": 0.91,

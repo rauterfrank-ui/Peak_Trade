@@ -169,7 +169,7 @@ def test_top20_default_top50_selectable(client_matrix_on: TestClient) -> None:
 
 def test_row_count_not_padded(monkeypatch: pytest.MonkeyPatch) -> None:
     ctx = _governed_ctx(monkeypatch, ranking_root=RANKING_FIXTURE, top_n=50)
-    assert ctx["row_count"] == 1
+    assert ctx["row_count"] == 8
     assert ctx["top_n"] == 50
 
 

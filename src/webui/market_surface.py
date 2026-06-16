@@ -94,6 +94,14 @@ CANONICAL_RANKING_FUNNEL_OWNER = "src/webui/market_ranking_funnel_runtime_v0.py"
 CANONICAL_ELIGIBILITY_OWNER = "src/webui/market_instrument_eligibility_v0.py"
 CANONICAL_STYLE_OWNER = CANONICAL_MATRIX_TEMPLATE_OWNER
 CANONICAL_CLIENT_INTERACTION_OWNER = CANONICAL_MATRIX_TEMPLATE_OWNER
+CANONICAL_WORKSPACE_TEMPLATE_OWNER = (
+    "templates/peak_trade_dashboard/partials/market_primary_operator_hero_v1.html"
+)
+CANONICAL_HERO_TEMPLATE_OWNER = CANONICAL_WORKSPACE_TEMPLATE_OWNER
+CANONICAL_VOLUME_OWNER = CANONICAL_CHART_OWNER
+CANONICAL_RANKING_CONTEXT_OWNER = "src/webui/market_surface.py"
+CANONICAL_CONTRACT_METADATA_OWNER = CANONICAL_F5_METADATA_OWNER
+CANONICAL_FRESHNESS_OWNER = CANONICAL_FUTURES_OHLCV_OWNER
 
 MATRIX_ROW_SCHEMA: tuple[str, ...] = (
     "rank",
@@ -165,7 +173,27 @@ def _get_shared_ohlcv_loader():
 
 
 def _utc_now_iso() -> str:
+    fixed = (os.environ.get("PEAK_TRADE_FIXED_GENERATED_AT_UTC") or "").strip()
+    if fixed:
+        return fixed
     return datetime.now(timezone.utc).isoformat()
+
+
+def _pin_market_page_display_timestamps(dp_display: Dict[str, Any]) -> None:
+    """Pin SSR display timestamps when tests set PEAK_TRADE_FIXED_GENERATED_AT_UTC."""
+    fixed = (os.environ.get("PEAK_TRADE_FIXED_GENERATED_AT_UTC") or "").strip()
+    if not fixed:
+        return
+    meta = dp_display.get("display_snapshot_meta")
+    if not isinstance(meta, dict):
+        return
+    text = fixed[:-1] + "+00:00" if fixed.endswith("Z") else fixed
+    dt = datetime.fromisoformat(text)
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    meta["assembled_at_iso"] = (
+        dt.astimezone(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+    )
 
 
 def _normalize_source(raw: str | None) -> MarketSource:
@@ -1678,6 +1706,352 @@ def build_market_primary_values_display_context(
     }
 
 
+def _f5_section_field_value(section: Dict[str, Any], field: str) -> str:
+    rows = section.get("rows") if isinstance(section.get("rows"), list) else []
+    for row in rows:
+        if not isinstance(row, dict) or str(row.get("field") or "") != field:
+            continue
+        if str(row.get("display_status") or "") == "missing":
+            return "unavailable"
+        value = str(row.get("value") or "").strip()
+        return value if value and value != "missing" else "unavailable"
+    return "unavailable"
+
+
+def _f5_operator_status_display(raw_status: str) -> tuple[str, str]:
+    """Map internal F5 tokens to operator-readable (category, label) pairs."""
+    status = str(raw_status or "unavailable").strip().lower()
+    if status in ("unavailable", "disabled", "unconfigured"):
+        return "missing", "Unavailable"
+    if status == "malformed":
+        return "missing", "Malformed"
+    if status == "ready":
+        return "ready", "Ready"
+    category_by_status: dict[str, str] = {
+        "futures_metadata_partial": "partial",
+        "futures_metadata_missing": "missing",
+        "provenance_missing": "missing",
+        "provenance_partial": "partial",
+        "backtest_realism_incomplete": "incomplete",
+        "risk_safety_incomplete": "incomplete",
+        "metadata_label_only": "partial",
+        "testnet_candidate_only": "partial",
+        "unsupported_for_live": "incomplete",
+    }
+    label_by_status: dict[str, str] = {
+        "futures_metadata_partial": "Partial metadata",
+        "futures_metadata_missing": "Metadata missing",
+        "provenance_missing": "Provenance missing",
+        "provenance_partial": "Provenance partial",
+        "backtest_realism_incomplete": "Realism incomplete",
+        "risk_safety_incomplete": "Risk/safety incomplete",
+        "metadata_label_only": "Metadata label only",
+        "testnet_candidate_only": "Testnet candidate",
+        "unsupported_for_live": "Unsupported for live",
+    }
+    category = category_by_status.get(status, "partial")
+    label = label_by_status.get(status, status.replace("_", " ").title())
+    return category, label
+
+
+def _build_workspace_visual_summary(
+    payload: Dict[str, Any],
+    *,
+    ranking_rank: Any,
+    data_quality: str,
+    freshness_stale: bool,
+) -> dict[str, Any]:
+    """Descriptive chart/ranking summary derived from already-resolved SSR values."""
+    bars = payload.get("bars") if isinstance(payload.get("bars"), list) else []
+    visible = [bar for bar in bars if isinstance(bar, dict)]
+    if not visible:
+        return {
+            "implemented": False,
+            "visible_bar_count": 0,
+            "up_bar_count": 0,
+            "down_bar_count": 0,
+            "total_volume_display": "unavailable",
+            "close_range_position_display": "unavailable",
+            "ranking_position_display": "unavailable",
+            "freshness_quality_display": "unavailable",
+        }
+
+    up_bar_count = 0
+    lows: list[float] = []
+    highs: list[float] = []
+    total_volume = 0.0
+    for bar in visible:
+        try:
+            o = float(bar.get("open"))
+            c = float(bar.get("close"))
+            lo = float(bar.get("low"))
+            hi = float(bar.get("high"))
+        except (TypeError, ValueError):
+            continue
+        if c >= o:
+            up_bar_count += 1
+        lows.append(lo)
+        highs.append(hi)
+        raw_volume = bar.get("volume")
+        if raw_volume is not None:
+            try:
+                total_volume += max(0.0, float(raw_volume))
+            except (TypeError, ValueError):
+                pass
+
+    down_bar_count = len(visible) - up_bar_count
+    range_low = min(lows) if lows else None
+    range_high = max(highs) if highs else None
+    last_close = None
+    try:
+        last_close = float(visible[-1].get("close"))
+    except (TypeError, ValueError):
+        last_close = None
+
+    close_range_position_display = "unavailable"
+    if (
+        last_close is not None
+        and range_low is not None
+        and range_high is not None
+        and range_high > range_low
+    ):
+        position_pct = ((last_close - range_low) / (range_high - range_low)) * 100.0
+        close_range_position_display = f"{position_pct:.1f}% of visible range"
+
+    ranking_position_display = str(ranking_rank) if ranking_rank is not None else "unavailable"
+    if freshness_stale or data_quality == "stale":
+        freshness_quality_display = "stale"
+    else:
+        freshness_quality_display = str(data_quality or "unavailable")
+
+    return {
+        "implemented": True,
+        "visible_bar_count": len(visible),
+        "up_bar_count": up_bar_count,
+        "down_bar_count": down_bar_count,
+        "total_volume_display": _format_display_price(total_volume),
+        "close_range_position_display": close_range_position_display,
+        "ranking_position_display": ranking_position_display,
+        "freshness_quality_display": freshness_quality_display,
+    }
+
+
+def _find_governed_row_for_symbol(
+    governed_top20: Dict[str, Any],
+    symbol: str,
+) -> dict[str, Any] | None:
+    rows = governed_top20.get("rows") if isinstance(governed_top20.get("rows"), list) else []
+    normalized = _normalize_symbol_for_match(symbol)
+    for row in rows:
+        if not isinstance(row, dict):
+            continue
+        if _normalize_symbol_for_match(str(row.get("symbol") or "")) == normalized:
+            return row
+    return None
+
+
+def _resolve_workspace_ohlcv_status(
+    *,
+    data_unavailable: bool,
+    payload: Dict[str, Any],
+    primary_values: Dict[str, Any],
+    futures_ohlcv: Dict[str, Any],
+) -> str:
+    reason = str(primary_values.get("unavailable_reason") or "").strip()
+    if reason == "futures_ohlcv_malformed":
+        return "malformed"
+    if reason == "futures_ohlcv_stale":
+        return "stale"
+    if data_unavailable:
+        if reason in ("futures_ohlcv_empty", "futures_ohlcv_symbol_missing"):
+            return "empty"
+        return "unavailable"
+    if int(payload.get("bars_returned") or 0) == 0:
+        return "empty"
+    if futures_ohlcv.get("display_status") == "builder_error":
+        return "malformed"
+    if futures_ohlcv.get("stale") is True:
+        return "stale"
+    return "ready"
+
+
+def build_market_selected_instrument_workspace_display_context(
+    *,
+    symbol: str,
+    source: MarketSource,
+    primary_values: Dict[str, Any],
+    governed_top20: Dict[str, Any],
+    f5_dashboard: Dict[str, Any],
+    futures_ohlcv: Dict[str, Any],
+    payload: Dict[str, Any],
+    data_unavailable: bool,
+) -> Dict[str, Any]:
+    """Single canonical selected-instrument workspace view-model (display-only, no recomputation)."""
+    governed_row = _find_governed_row_for_symbol(governed_top20, symbol)
+    ohlcv_status = _resolve_workspace_ohlcv_status(
+        data_unavailable=data_unavailable,
+        payload=payload,
+        primary_values=primary_values,
+        futures_ohlcv=futures_ohlcv,
+    )
+    volume_display = str(primary_values.get("last_volume_display") or "").strip()
+    volume_status = "available" if volume_display and volume_display != "—" else "unavailable"
+
+    ranking_rank = governed_row.get("rank") if governed_row else None
+    ranking_score = (
+        str(governed_row.get("score_display") or "unavailable") if governed_row else "unavailable"
+    )
+    ranking_eligibility = (
+        str(governed_row.get("eligibility_status") or "unavailable")
+        if governed_row
+        else "unavailable"
+    )
+    ranking_f5_status = (
+        str(governed_row.get("f5_status") or "unavailable") if governed_row else "unavailable"
+    )
+    ranking_data_status = (
+        str(governed_row.get("data_status") or "unavailable") if governed_row else "unavailable"
+    )
+
+    f1 = f5_dashboard.get("f1") if isinstance(f5_dashboard.get("f1"), dict) else {}
+    f2 = f5_dashboard.get("f2") if isinstance(f5_dashboard.get("f2"), dict) else {}
+    f3 = f5_dashboard.get("f3") if isinstance(f5_dashboard.get("f3"), dict) else {}
+    f4 = f5_dashboard.get("f4") if isinstance(f5_dashboard.get("f4"), dict) else {}
+
+    contract_fields = {
+        "contract_type": _f5_section_field_value(f1, "contract_type"),
+        "base_currency": _f5_section_field_value(f1, "base_currency"),
+        "quote_currency": _f5_section_field_value(f1, "quote_currency"),
+        "tick_size": _f5_section_field_value(f1, "tick_size"),
+        "lot_size": _f5_section_field_value(f1, "lot_size"),
+        "contract_size": _f5_section_field_value(f1, "contract_size"),
+        "perpetual": _f5_section_field_value(f1, "perpetual"),
+        "exchange": _f5_section_field_value(f1, "exchange"),
+    }
+    contract_complete = all(v != "unavailable" for v in contract_fields.values())
+    contract_unavailable_fields = [
+        name.replace("_", " ").title()
+        for name, value in contract_fields.items()
+        if value == "unavailable"
+    ]
+
+    f5_gate = bool(f5_dashboard.get("gate_enabled"))
+    f5_display = str(f5_dashboard.get("display_status") or "disabled")
+    f5_cards: list[dict[str, str]] = []
+    for card_id, section, label in (
+        ("f1", f1, "F1 Instrument"),
+        ("f2", f2, "F2 Provenance"),
+        ("f3", f3, "F3 Realism"),
+        ("f4", f4, "F4 Risk/Safety"),
+    ):
+        if not f5_gate:
+            card_status = "unavailable"
+        elif f5_display == "builder_error":
+            card_status = "malformed"
+        elif f5_display in ("unconfigured", "disabled"):
+            card_status = "unavailable"
+        else:
+            card_status = str(section.get("status") or "unavailable")
+        operator_category, operator_label = _f5_operator_status_display(card_status)
+        f5_cards.append(
+            {
+                "id": card_id,
+                "label": label,
+                "status": card_status,
+                "operator_category": operator_category,
+                "operator_label": operator_label,
+            }
+        )
+
+    meta = payload.get("meta") if isinstance(payload.get("meta"), dict) else {}
+    freshness_source = (
+        str(
+            meta.get("data_source")
+            or futures_ohlcv.get("source")
+            or governed_top20.get("data_source")
+            or ""
+        ).strip()
+        or "unavailable"
+    )
+    generated_at = (
+        str(
+            meta.get("freshness")
+            or futures_ohlcv.get("generated_at_iso")
+            or primary_values.get("generated_at_utc")
+            or ""
+        ).strip()
+        or "unavailable"
+    )
+    snapshot_stale = bool(governed_top20.get("stale")) or bool(futures_ohlcv.get("stale"))
+    stale_reason = str(
+        governed_top20.get("stale_reason") or futures_ohlcv.get("stale_reason") or ""
+    ).strip()
+
+    if ohlcv_status == "malformed":
+        data_quality = "malformed"
+    elif ohlcv_status == "stale" or snapshot_stale:
+        data_quality = "stale"
+    elif ohlcv_status == "empty":
+        data_quality = "empty"
+    elif ohlcv_status == "ready":
+        data_quality = "ready"
+    else:
+        data_quality = "partial"
+
+    visual_summary = _build_workspace_visual_summary(
+        payload,
+        ranking_rank=ranking_rank,
+        data_quality=data_quality,
+        freshness_stale=snapshot_stale,
+    )
+
+    return {
+        "workspace_visible": source == "futures",
+        "symbol": symbol,
+        "display_symbol": str(primary_values.get("symbol") or symbol or "unavailable"),
+        "source": str(primary_values.get("source") or source),
+        "source_mode": str(primary_values.get("source_mode") or ""),
+        "timeframe": str(primary_values.get("timeframe") or ""),
+        "selected_instrument": symbol,
+        "ranking_rank": ranking_rank,
+        "ranking_score_display": ranking_score,
+        "ranking_eligibility_status": ranking_eligibility,
+        "ranking_f5_status": ranking_f5_status,
+        "ranking_data_status": ranking_data_status,
+        "ranking_top_n": int(governed_top20.get("top_n") or DEFAULT_TOP_N),
+        "ranking_in_universe": governed_row is not None,
+        "last_price_display": (
+            str(primary_values.get("last_close_display") or "unavailable")
+            if primary_values.get("status") == "available"
+            else "unavailable"
+        ),
+        "change_abs_display": str(primary_values.get("change_abs_display") or "unavailable"),
+        "change_pct_display": str(primary_values.get("change_pct_display") or "unavailable"),
+        "change_status": str(primary_values.get("change_status") or "unavailable"),
+        "ohlcv_status": ohlcv_status,
+        "bars_returned": int(
+            primary_values.get("bars_returned") or payload.get("bars_returned") or 0
+        ),
+        "volume_display": volume_display if volume_status == "available" else "unavailable",
+        "volume_status": volume_status,
+        "freshness_source": freshness_source,
+        "freshness_generated_at": generated_at,
+        "freshness_stale": snapshot_stale,
+        "freshness_stale_reason": stale_reason,
+        "data_quality_status": data_quality,
+        "f5_gate_enabled": f5_gate,
+        "f5_display_status": f5_display,
+        "f5_overall_status": str(f5_dashboard.get("overall_status") or "unavailable"),
+        "f5_cards": f5_cards,
+        "contract_metadata": contract_fields,
+        "contract_metadata_complete": contract_complete,
+        "contract_unavailable_fields": contract_unavailable_fields,
+        "visual_summary": visual_summary,
+        "view_only": True,
+        "read_only": True,
+    }
+
+
 def build_market_v0_page_template_context(
     *,
     get_project_status: Callable[[], Dict[str, Any]],
@@ -1737,6 +2111,7 @@ def build_market_v0_page_template_context(
         workflow_dashboard = build_workflow_dashboard_display_context()
         last_paper_run_panel = build_last_paper_run_panel_display_context()
     dp_display = build_static_dashboard_display_dict()
+    _pin_market_page_display_timestamps(dp_display)
     f5_dashboard = build_futures_read_only_market_dashboard_display_context()
     futures_ohlcv = build_market_futures_ohlcv_display_context()
     governed_top20 = build_market_governed_top20_display_context(
@@ -1748,6 +2123,16 @@ def build_market_v0_page_template_context(
         timeframe=timeframe,
         limit=limit,
         top_n=top_n,
+    )
+    selected_instrument_workspace = build_market_selected_instrument_workspace_display_context(
+        symbol=symbol,
+        source=source,
+        primary_values=primary_values,
+        governed_top20=governed_top20,
+        f5_dashboard=f5_dashboard,
+        futures_ohlcv=futures_ohlcv,
+        payload=payload,
+        data_unavailable=data_unavailable,
     )
     encoded_symbol = quote(symbol, safe="")
     legacy_demo_href = (
@@ -1773,6 +2158,7 @@ def build_market_v0_page_template_context(
         "f5_dashboard": f5_dashboard,
         "futures_ohlcv": futures_ohlcv,
         "governed_top20": governed_top20,
+        "selected_instrument_workspace": selected_instrument_workspace,
         "top_n": top_n,
         "top_n_toggle_hrefs": {
             20: build_market_top_n_toggle_href(
