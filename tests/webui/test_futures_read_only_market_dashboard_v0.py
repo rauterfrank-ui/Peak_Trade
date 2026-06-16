@@ -156,7 +156,7 @@ def test_f5_market_dashboard_fixture_partial_f1_and_missing_f2_f4_v0(
     assert 'data-f5-f3-status="backtest_realism_incomplete"' in body
     assert 'data-f5-f4-status="risk_safety_incomplete"' in body
     assert 'data-f5-f1-field="instrument_id"' in body
-    assert ">PF_XBTUSD<" in body
+    assert ">PF_ETHUSD<" in body
 
 
 def test_f5_market_dashboard_no_live_authorization_styling_v0(client: TestClient) -> None:

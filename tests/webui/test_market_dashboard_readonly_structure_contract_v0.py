@@ -489,7 +489,7 @@ def test_double_play_market_dashboard_excludes_market_embedded_snapshot_generate
 
 def test_market_dashboard_payload_meta_note_visibility_dummy_v0(client: TestClient) -> None:
     """Dummy OHLCV meta.note is surfaced on /market next to SSR snapshot cues (bounded)."""
-    html = _html(client, "/market?source=dummy&symbol=BTCUSDT&timeframe=5m")
+    html = _html(client, "/market?source=dummy&symbol=ETHUSDT&timeframe=5m")
     assert 'data-market-v0-payload-meta-note-v0="true"' in html
     assert "Datenhinweis" in html
     assert "dummy: synthetische 1h-Bars" in html
@@ -524,7 +524,7 @@ def test_market_dashboard_depth_bundle_provenance_visibility_default_depth_disab
     client: TestClient,
 ) -> None:
     """`/market`: depth envelope provenance is visible and distinct from OHLC snapshot wording."""
-    html = _html(client, "/market?source=dummy&symbol=BTCUSDT")
+    html = _html(client, "/market?source=dummy&symbol=ETHUSDT")
     assert 'data-market-v0-depth-bundle-provenance-v0="true"' in html
     assert 'data-market-v0-depth-bundle-stale="true"' in html
     assert "Tiefen-Bundle-Provenienz" in html
@@ -538,7 +538,7 @@ def test_market_dashboard_depth_bundle_provenance_with_offline_fixture_stale_rea
     client_depth_fixture_bundle_on: TestClient,
 ) -> None:
     """SSR depth bundle path surfaces fixture stale_reason and deterministic generated_at_iso."""
-    html = _html(client_depth_fixture_bundle_on, "/market?source=dummy&symbol=BTCUSDT")
+    html = _html(client_depth_fixture_bundle_on, "/market?source=dummy&symbol=ETHUSDT")
     assert 'data-market-v0-depth-bundle-provenance-v0="true"' in html
     assert 'data-market-v0-depth-bundle-stale="true"' in html
     assert "2030-01-15T12:34:56.000000+00:00" in html
@@ -570,7 +570,7 @@ def test_market_dashboard_depth_cockpit_tile_readmodel_identity_fixture_bundle_v
     client_depth_fixture_bundle_on: TestClient,
 ) -> None:
     """Fixture depth SSR exposes dummy bundle label in cockpit depth tile."""
-    html = _html(client_depth_fixture_bundle_on, "/market?source=dummy&symbol=BTCUSDT")
+    html = _html(client_depth_fixture_bundle_on, "/market?source=dummy&symbol=ETHUSDT")
     assert 'data-market-v0-depth-tile-readmodel-identity-v0="true"' in html
     assert "market_depth_readmodel.v0" in html
     anchor = html.index("data-market-v0-depth-tile-readmodel-identity-v0")
@@ -600,7 +600,7 @@ def test_market_dashboard_depth_cockpit_tile_topn_microtable_fixture_prices_v0(
     client_depth_fixture_bundle_on: TestClient,
 ) -> None:
     """Fixture SSR renders bid/ask labels and deterministic fixture prices/sizes in cockpit tile."""
-    html = _html(client_depth_fixture_bundle_on, "/market?source=dummy&symbol=BTCUSDT")
+    html = _html(client_depth_fixture_bundle_on, "/market?source=dummy&symbol=ETHUSDT")
     assert 'data-market-v0-depth-tile-topn-microtable-v0="true"' in html
     anchor = html.index("data-market-v0-depth-tile-topn-microtable-v0")
     window = html[anchor : anchor + 4500]
@@ -625,7 +625,7 @@ def test_market_dashboard_depth_cockpit_tile_freshness_mirror_default_depth_disa
     client: TestClient,
 ) -> None:
     """Cockpit Depth tile mirrors bundle freshness/stale cues without scanning lower SSR."""
-    html = _html(client, "/market?source=dummy&symbol=BTCUSDT")
+    html = _html(client, "/market?source=dummy&symbol=ETHUSDT")
     assert 'data-market-v0-depth-tile-freshness-mirror-v0="true"' in html
     assert 'data-market-v0-depth-tile-freshness-stale="true"' in html
     anchor = html.index("data-market-v0-depth-tile-freshness-mirror-v0")
@@ -640,7 +640,7 @@ def test_market_dashboard_depth_cockpit_tile_freshness_mirror_fixture_bundle_v0(
     client_depth_fixture_bundle_on: TestClient,
 ) -> None:
     """Fixture SSR exposes deterministic bundle time + stale_reason inside cockpit mirror."""
-    html = _html(client_depth_fixture_bundle_on, "/market?source=dummy&symbol=BTCUSDT")
+    html = _html(client_depth_fixture_bundle_on, "/market?source=dummy&symbol=ETHUSDT")
     assert 'data-market-v0-depth-tile-freshness-mirror-v0="true"' in html
     assert 'data-market-v0-depth-tile-freshness-stale="true"' in html
     anchor = html.index("data-market-v0-depth-tile-freshness-mirror-v0")
@@ -662,7 +662,7 @@ def test_market_dashboard_depth_chart_placeholder_fixture_mini_bars_contract_v0(
     client_depth_fixture_bundle_on: TestClient,
 ) -> None:
     """Fixture SSR locks depth-chart placeholder mini bid/ask bars from offline bundle."""
-    html = _html(client_depth_fixture_bundle_on, "/market?source=dummy&symbol=BTCUSDT")
+    html = _html(client_depth_fixture_bundle_on, "/market?source=dummy&symbol=ETHUSDT")
     assert 'data-market-v0-depth-chart-placeholder="true"' in html
     placeholder_idx = html.index('data-market-v0-depth-chart-placeholder="true"')
     window = html[placeholder_idx : placeholder_idx + 6000]
@@ -682,7 +682,7 @@ def test_market_dashboard_orderbook_fixture_levels_contract_v0(
     client_depth_fixture_bundle_on: TestClient,
 ) -> None:
     """Fixture SSR renders lower orderbook ladder with bid/ask rows from complete_minimal."""
-    html = _html(client_depth_fixture_bundle_on, "/market?source=dummy&symbol=BTCUSDT")
+    html = _html(client_depth_fixture_bundle_on, "/market?source=dummy&symbol=ETHUSDT")
     assert 'data-market-v0-orderbook-placeholder="true"' in html
     assert 'data-market-v0-lower-depth-orderbook-visuals-v1="true"' in html
     assert 'data-market-v0-orderbook-topn="true"' in html
@@ -788,7 +788,7 @@ def test_market_dashboard_ranking_funnel_dynamic_labels_excluded_on_double_play_
 
 def test_market_dashboard_pro_panel_shell_structure_v0(client: TestClient) -> None:
     """Read-only IA shell on GET /market: stable markers, no order-affordance attributes."""
-    market_html = _html(client, "/market?source=dummy&symbol=BTCUSDT")
+    market_html = _html(client, "/market?source=dummy&symbol=ETHUSDT")
 
     assert 'data-market-v0-visual-density-lower-band-v1="true"' in market_html
     assert 'data-market-v0-pro-shell="true"' in market_html
@@ -906,7 +906,7 @@ def test_market_dashboard_ranking_funnel_rows_when_bundle_enabled_v0(
     assert 'data-market-v0-ranking-funnel-row-v0="true"' in html
     assert 'data-market-v0-ranking-funnel-stage-rows-v0="true"' in html
     assert 'data-market-v0-ranking-funnel-stage-v0="universe"' in html
-    assert "BTCUSDT" in html
+    assert "ETHUSDT" in html
     assert 'data-market-v0-ranking-funnel-empty-state-v0="true"' not in html
 
 
@@ -1353,7 +1353,7 @@ def test_market_operator_overview_ranking_table_with_fixture_v1(
     html = _html(client_ranking_funnel_fixture_bundle_on, "/market")
     assert 'data-market-top20-table-v1="true"' in html
     assert 'data-market-ranking-source-mode-v1="existing_readmodel"' in html
-    assert "BTCUSDT" in html
+    assert "ETHUSDT" in html
 
 
 def test_double_play_operator_detail_redesign_markers_v1(client: TestClient) -> None:
@@ -1419,7 +1419,7 @@ def test_market_observe_co_presence_tape_depth_inline_with_fixtures_v1(
     monkeypatch.setenv("PEAK_TRADE_MARKET_TAPE_ENABLED", "1")
     monkeypatch.setenv("PEAK_TRADE_MARKET_TAPE_BUNDLE_ROOT", str(fixture_root.resolve()))
 
-    html = _html(client_depth_fixture_bundle_on, "/market?source=dummy&symbol=BTCUSDT")
+    html = _html(client_depth_fixture_bundle_on, "/market?source=dummy&symbol=ETHUSDT")
 
     assert 'data-market-v0-observe-co-presence-v1="true"' in html
     assert 'data-market-v0-observe-tape-inline-v1="true"' in html
@@ -1449,7 +1449,7 @@ def test_double_play_excludes_market_observe_co_presence_markers_v1(client: Test
 
 def test_market_instrument_header_display_only_markers_v1(client: TestClient) -> None:
     """Kraken-like instrument header: display-only markers, no order controls."""
-    html = _html(client, "/market?source=dummy&symbol=BTCUSDT")
+    html = _html(client, "/market?source=dummy&symbol=ETHUSDT")
 
     assert 'id="market-v0-instrument-header"' in html
     assert 'data-market-v0-instrument-header="true"' in html
@@ -1466,7 +1466,7 @@ def test_market_instrument_header_display_only_markers_v1(client: TestClient) ->
     assert ">no orders<" in html
     assert ">no execution<" in html
     assert "#double-play" in html
-    assert "BTCUSDT" in html
+    assert "ETHUSDT" in html
 
     header_idx = html.index('id="market-v0-instrument-header"')
     header_window = html[header_idx : header_idx + 8000].lower()
@@ -1486,7 +1486,7 @@ def test_market_instrument_header_spread_from_depth_fixture_v1(
     client_depth_fixture_bundle_on: TestClient,
 ) -> None:
     """Depth fixture enables mid/spread summary in instrument header."""
-    html = _html(client_depth_fixture_bundle_on, "/market?source=dummy&symbol=BTCUSDT")
+    html = _html(client_depth_fixture_bundle_on, "/market?source=dummy&symbol=ETHUSDT")
 
     assert 'data-market-v0-instrument-spread-summary="true"' in html
     assert "mid 63015" in html
@@ -1505,7 +1505,7 @@ def test_double_play_excludes_market_instrument_header_markers_v1(client: TestCl
 
 def test_market_futures_metrics_strip_display_only_markers_v1(client: TestClient) -> None:
     """Kraken-like futures metrics strip: display-only markers, derived from bars, no order controls."""
-    html = _html(client, "/market?source=dummy&symbol=BTCUSDT")
+    html = _html(client, "/market?source=dummy&symbol=ETHUSDT")
 
     assert 'id="market-v0-futures-metrics-strip"' in html
     assert 'data-market-v0-futures-metrics-strip="true"' in html
@@ -1546,7 +1546,7 @@ def test_market_futures_metrics_strip_display_only_markers_v1(client: TestClient
 
 def test_market_futures_metrics_strip_bars_derived_values_default_v1(client: TestClient) -> None:
     """Default dummy OHLCV surfaces last/volatility/volume from embedded bars."""
-    html = _html(client, "/market?source=dummy&symbol=BTCUSDT")
+    html = _html(client, "/market?source=dummy&symbol=ETHUSDT")
 
     assert 'data-market-v0-futures-metric-last="true"' in html
     assert 'data-market-v0-futures-metric-volatility="true"' in html
@@ -1561,7 +1561,7 @@ def test_market_futures_metrics_strip_spread_depth_from_fixture_v1(
     client_depth_fixture_bundle_on: TestClient,
 ) -> None:
     """Depth fixture enables spread and depth-quality metrics in futures strip."""
-    html = _html(client_depth_fixture_bundle_on, "/market?source=dummy&symbol=BTCUSDT")
+    html = _html(client_depth_fixture_bundle_on, "/market?source=dummy&symbol=ETHUSDT")
 
     assert 'data-market-v0-futures-metric-spread="true"' in html
     assert 'data-market-v0-futures-metric-depth-quality="true"' in html
@@ -1619,12 +1619,12 @@ def test_market_ranking_watchlist_symbol_nav_and_selected_highlight_fixture_v1(
     client_ranking_funnel_fixture_bundle_on: TestClient,
 ) -> None:
     """Fixture ranking rows expose display-only symbol nav and selected-instrument highlight."""
-    html = _html(client_ranking_funnel_fixture_bundle_on, "/market?source=dummy&symbol=BTCUSDT")
+    html = _html(client_ranking_funnel_fixture_bundle_on, "/market?source=dummy&symbol=ETHUSDT")
 
     assert 'data-market-v0-ranking-symbol-nav="true"' in html
     assert (
-        "/market?source=dummy&amp;symbol=BTCUSDT" in html
-        or "/market?source=dummy&symbol=BTCUSDT" in html
+        "/market?source=dummy&amp;symbol=ETHUSDT" in html
+        or "/market?source=dummy&symbol=ETHUSDT" in html
     )
     assert 'data-market-v0-ranking-selected-instrument-highlighted="true"' in html
     assert 'data-market-v0-ranking-selected-instrument-row="true"' in html
@@ -1913,14 +1913,14 @@ def test_market_remodel_ia_v2_primary_values_ssr_render_wiring(client: TestClien
 def test_build_market_v0_page_template_context_includes_primary_values() -> None:
     """Context builder must always expose primary_values for /market template includes."""
     payload, data_unavailable = build_market_payload_for_page(
-        symbol="BTCUSDT",
+        symbol="ETHUSDT",
         timeframe="1d",
         limit=120,
         source="dummy",
     )
     context = build_market_v0_page_template_context(
         get_project_status=lambda: {"ok": True},
-        symbol="BTCUSDT",
+        symbol="ETHUSDT",
         timeframe="1d",
         limit=120,
         source="dummy",
@@ -1930,5 +1930,5 @@ def test_build_market_v0_page_template_context_includes_primary_values() -> None
 
     primary_values = context.get("primary_values")
     assert isinstance(primary_values, dict)
-    assert primary_values.get("symbol") == "BTCUSDT"
+    assert primary_values.get("symbol") == "ETHUSDT"
     assert primary_values.get("status") in {"available", "unavailable"}

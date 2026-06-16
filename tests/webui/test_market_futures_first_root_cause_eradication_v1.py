@@ -132,7 +132,7 @@ def test_market_ranking_funnel_top20_symbol_without_spot_fallback(
 ) -> None:
     body = client_ranking_funnel_fixture_on.get("/market").text
     assert 'data-market-source="futures"' in body
-    assert "BTCUSDT" in body
+    assert "ETHUSDT" in body
     assert FORBIDDEN_IMPLICIT_SPOT_DEFAULT_SYMBOL not in body
     assert 'data-market-v0-ranking-funnel-has-rows-v0="true"' in body
 
@@ -150,7 +150,7 @@ def test_api_market_ohlcv_legacy_requires_explicit_symbol(client: TestClient) ->
 
 
 def test_demo_dummy_explicit_opt_in_only(client: TestClient) -> None:
-    resp = client.get("/market", params={"source": "dummy", "symbol": "BTCUSDT", "limit": 20})
+    resp = client.get("/market", params={"source": "dummy", "symbol": "ETHUSDT", "limit": 20})
     assert resp.status_code == 200
     body = resp.text
     assert 'data-market-dummy-explicit-synthetic-v1="true"' in body

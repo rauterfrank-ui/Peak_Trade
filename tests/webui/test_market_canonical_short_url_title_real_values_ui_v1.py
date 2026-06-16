@@ -116,7 +116,7 @@ class TestCanonicalShortUrlDefaults:
     def test_dummy_explicit_synthetic_label(self, client: TestClient) -> None:
         resp = client.get(
             "/market",
-            params={"source": "dummy", "symbol": "BTCUSDT", "limit": 20},
+            params={"source": "dummy", "symbol": "ETHUSDT", "limit": 20},
         )
         body = resp.text
         assert 'data-market-dummy-explicit-synthetic-v1="true"' in body
