@@ -347,15 +347,20 @@ class TestPerformanceIntegration:
     def test_exception_handling_in_context(self):
         """Test that metrics are recorded even when exceptions occur."""
         monitor = PerformanceMonitor()
+        fake_now = [0.0]
 
-        try:
-            with monitor.measure("failing_op"):
-                time.sleep(0.01)
-                raise ValueError("Test error")
-        except ValueError:
-            pass
+        def fake_perf_counter() -> float:
+            return fake_now[0]
+
+        with patch("src.core.performance.time.perf_counter", fake_perf_counter):
+            try:
+                with monitor.measure("failing_op"):
+                    fake_now[0] += 0.01
+                    raise ValueError("Test error")
+            except ValueError:
+                pass
 
         # Metric should still be recorded
         metrics = monitor.get_metrics("failing_op")
         assert len(metrics["failing_op"]) == 1
-        assert metrics["failing_op"][0].duration_ms >= 10.0
+        assert metrics["failing_op"][0].duration_ms == 10.0
