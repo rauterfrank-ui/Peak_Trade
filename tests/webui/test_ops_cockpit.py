@@ -1726,7 +1726,11 @@ def test_dependencies_state_exchange_unknown_when_p85_stale(tmp_path: Path) -> N
     """Stale P85 artifact yields exchange unknown (conservative)."""
     import json
     import os
-    import time
+    from unittest.mock import patch
+
+    fixed_now = 1_700_000_000.0
+    age_sec = 4000.0
+    mtime = fixed_now - age_sec
 
     p85_dir = tmp_path / "out" / "ops" / "p85_stale"
     p85_dir.mkdir(parents=True)
@@ -1735,9 +1739,9 @@ def test_dependencies_state_exchange_unknown_when_p85_stale(tmp_path: Path) -> N
         json.dumps({"connectivity": {"ok": True}, "overall_ok": True}),
         encoding="utf-8",
     )
-    old = time.time() - 4000.0
-    os.utime(p, (old, old))
-    payload = build_ops_cockpit_payload(repo_root=tmp_path)
+    os.utime(p, (mtime, mtime))
+    with patch("src.ops.p85_result_reader.time.time", return_value=fixed_now):
+        payload = build_ops_cockpit_payload(repo_root=tmp_path)
     dep = payload["dependencies_state"]
     assert dep["exchange"] == "unknown"
     assert dep["p85_exchange_observation"]["stale"] is True
