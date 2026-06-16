@@ -21,6 +21,10 @@ This runbook describes how to run AI agent evaluations using promptfoo for Peak_
 - Trading strategy backtests (see `docs/risk/`)
 - Production observability (see `docs/ops/`)
 
+### GitHub Actions — paid evals (cost gate)
+
+In CI, **billable OpenAI-backed Promptfoo evals are default-off** on `pull_request` and `push`. Paid runs require **both** a manual `workflow_dispatch` input (`run_paid_openai_evals`) and repository variable `PEAK_TRADE_RUN_PAID_PROMPTFOO_EVALS=true`. Operator policy and workflow surfaces: [`docs/ops/AI_KI_COST_AUTONOMY_CI_POLICY_V0.md`](../ops/AI_KI_COST_AUTONOMY_CI_POLICY_V0.md).
+
 ---
 
 ## Prerequisites

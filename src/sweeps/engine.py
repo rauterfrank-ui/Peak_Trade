@@ -20,6 +20,7 @@ Safety:
 from __future__ import annotations
 
 import itertools
+import logging
 import uuid
 from dataclasses import dataclass, field
 from datetime import datetime
@@ -29,16 +30,69 @@ from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 import pandas as pd
 
 from src.backtest.result import BacktestResult
+from src.core.errors import CacheCorruptionError
+from src.data.cache import ParquetCache
 from src.core.experiments import log_sweep_run, RUN_TYPE_SWEEP
 from src.core.peak_config import PeakConfig, load_config
 from src.core.position_sizing import build_position_sizer_from_config
 from src.core.risk import build_risk_manager_from_config
 from src.backtest.engine import BacktestEngine
+from scripts.run_backtest import _build_strategy_params_from_config
+from src.strategies import STRATEGY_REGISTRY, load_strategy
 from src.strategies.registry import (
-    create_strategy_from_config,
     get_available_strategy_keys,
     get_strategy_spec,
 )
+
+logger = logging.getLogger(__name__)
+
+SweepDataCacheOutcome = str  # "hit" | "miss" | "disabled" | "fallback"
+DEFAULT_PROGRESS_EVERY = 10
+
+
+def _validate_progress_every(progress_every: int) -> int:
+    """Fail-closed validation for batch progress interval."""
+    if isinstance(progress_every, bool) or not isinstance(progress_every, int):
+        raise ValueError(f"progress_every must be a positive int, got {progress_every!r}")
+    if progress_every <= 0:
+        raise ValueError(f"progress_every must be positive, got {progress_every}")
+    return progress_every
+
+
+def _should_emit_batch_progress(current: int, total: int, progress_every: int) -> bool:
+    """Return True when batch progress should emit for the current unit."""
+    if total <= 0:
+        return False
+    if current % progress_every == 0:
+        return True
+    if current == total and total % progress_every != 0:
+        return True
+    return False
+
+
+@dataclass(frozen=True)
+class SweepRunOutputMode:
+    """Console output mode for offline sweep/research CLI entrypoints."""
+
+    quiet: bool = False
+
+    def info(self, *args: Any, file: Any = None, **kwargs: Any) -> None:
+        """Emit progress/info lines unless quiet mode is active."""
+        if not self.quiet:
+            print(*args, file=file, **kwargs)
+
+
+def apply_sweep_run_logging(quiet: bool) -> int:
+    """Apply sweep-engine logger level for a run. Returns level to restore."""
+    previous_level = logger.level
+    if quiet:
+        logger.setLevel(logging.WARNING)
+    return previous_level
+
+
+def restore_sweep_run_logging(previous_level: int) -> None:
+    """Restore sweep-engine logger level after ``apply_sweep_run_logging``."""
+    logger.setLevel(previous_level)
 
 
 # =============================================================================
@@ -282,6 +336,102 @@ def expand_parameter_grid(grid: Dict[str, List[Any]]) -> List[Dict[str, Any]]:
     return combinations
 
 
+def build_sweep_data_cache_key(
+    *,
+    symbol: str,
+    timeframe: str,
+    n_bars: int,
+    data_source: str = "synthetic",
+    data_file: Optional[str] = None,
+    start_ts: Optional[str] = None,
+    end_ts: Optional[str] = None,
+) -> str:
+    """Build a deterministic ParquetCache key for sweep OHLCV loads."""
+    parts = [
+        "sweep",
+        symbol.replace("/", "_"),
+        timeframe,
+        f"bars{n_bars}",
+        data_source,
+    ]
+    if data_file:
+        parts.append(f"file{Path(data_file).stem}")
+    if start_ts:
+        parts.append(f"start{start_ts}")
+    if end_ts:
+        parts.append(f"end{end_ts}")
+    return "_".join(parts)
+
+
+def resolve_sweep_parquet_cache_from_config(
+    cfg: PeakConfig,
+) -> Tuple[Optional[ParquetCache], bool]:
+    """Resolve ParquetCache and enablement from canonical [data] config."""
+    use_cache = bool(cfg.get("data.use_cache", True))
+    if not use_cache:
+        return None, False
+    data_dir = str(cfg.get("data.data_dir", "data"))
+    cache_dir = str(Path(data_dir) / "cache")
+    return ParquetCache(cache_dir=cache_dir), True
+
+
+def load_sweep_ohlcv_data(
+    *,
+    symbol: str,
+    timeframe: str,
+    n_bars: int,
+    loader: Callable[[], pd.DataFrame],
+    cache: Optional[ParquetCache] = None,
+    use_cache: bool = True,
+    data_source: str = "synthetic",
+    data_file: Optional[str] = None,
+    start_ts: Optional[str] = None,
+    end_ts: Optional[str] = None,
+    quiet: bool = False,
+) -> Tuple[pd.DataFrame, SweepDataCacheOutcome]:
+    """
+    Load sweep OHLCV data via ParquetCache when enabled.
+
+    Repeated logically identical requests reuse the cached dataset. Corrupt cache
+    entries are invalidated and reloaded from the injected loader (fail-closed on
+    stale/corrupt reads).
+    """
+    if not use_cache or cache is None:
+        return loader(), "disabled"
+
+    cache_key = build_sweep_data_cache_key(
+        symbol=symbol,
+        timeframe=timeframe,
+        n_bars=n_bars,
+        data_source=data_source,
+        data_file=data_file,
+        start_ts=start_ts,
+        end_ts=end_ts,
+    )
+
+    corrupted = False
+    if cache.exists(cache_key):
+        try:
+            cached_df = cache.load(cache_key)
+            if not quiet:
+                logger.info("Sweep data cache hit (key=%s)", cache_key)
+            return cached_df, "hit"
+        except CacheCorruptionError:
+            corrupted = True
+            logger.warning(
+                "Sweep data cache corrupt (key=%s); invalidating and reloading",
+                cache_key,
+            )
+            cache.clear(cache_key)
+
+    fresh_df = loader()
+    cache.save(fresh_df, cache_key)
+    outcome: SweepDataCacheOutcome = "fallback" if corrupted else "miss"
+    if not quiet:
+        logger.info("Sweep data cache %s (key=%s)", outcome, cache_key)
+    return fresh_df, outcome
+
+
 def validate_param_grid(grid: Dict[str, List[Any]]) -> None:
     """
     Validiert ein Parameter-Grid.
@@ -331,6 +481,7 @@ class SweepEngine:
         self,
         verbose: bool = False,
         progress_callback: Optional[Callable[[int, int, Dict], None]] = None,
+        progress_every: int = DEFAULT_PROGRESS_EVERY,
     ) -> None:
         """
         Initialisiert die Sweep-Engine.
@@ -339,9 +490,25 @@ class SweepEngine:
             verbose: Wenn True, ausführliche Ausgabe
             progress_callback: Optionaler Callback für Fortschritt
                 Signatur: callback(current_run, total_runs, current_params)
+            progress_every: Batch-Intervall für Fortschrittsausgaben (positiv)
         """
         self.verbose = verbose
         self.progress_callback = progress_callback
+        self.progress_every = _validate_progress_every(progress_every)
+
+    def _maybe_emit_progress(
+        self,
+        current: int,
+        total: int,
+        params: Dict[str, Any],
+    ) -> None:
+        """Emit batched progress via callback or verbose print."""
+        if not _should_emit_batch_progress(current, total, self.progress_every):
+            return
+        if self.progress_callback:
+            self.progress_callback(current, total, params)
+        elif self.verbose:
+            print(f"  [{current}/{total}] {params}")
 
     def run_sweep(
         self,
@@ -405,10 +572,7 @@ class SweepEngine:
 
         # Runs ausführen
         for i, params in enumerate(combinations, 1):
-            if self.progress_callback:
-                self.progress_callback(i, len(combinations), params)
-            elif self.verbose:
-                print(f"  [{i}/{len(combinations)}] {params}")
+            self._maybe_emit_progress(i, len(combinations), params)
 
             try:
                 stats, bt_result = self._run_single_backtest(
@@ -537,24 +701,17 @@ class SweepEngine:
 
         # Strategie erstellen (Sweep-Parameter müssen vor __init__/validate gelten)
         if strategy_key == "regime_aware_portfolio":
-            from src.strategies.regime_aware_portfolio import RegimeAwarePortfolioStrategy
-
             spec_ra = get_strategy_spec(strategy_key)
-            strategy = RegimeAwarePortfolioStrategy.from_config(
+            load_strategy(strategy_key)
+            strategy = spec_ra.cls.from_config(
                 cfg,
                 section=spec_ra.config_section,
                 param_overrides=params,
             )
         else:
-            strategy = create_strategy_from_config(strategy_key, cfg)
-
-        # Parameter auf Strategie anwenden
-        for key, value in params.items():
-            if hasattr(strategy, key):
-                setattr(strategy, key, value)
-            # Auch in config aktualisieren für Strategien die config nutzen
-            if hasattr(strategy, "config") and isinstance(strategy.config, dict):
-                strategy.config[key] = value
+            strategy_params_effective = _build_strategy_params_from_config(cfg, strategy_key)
+            strategy_params_effective.update(params)
+            base_signal_fn = load_strategy(strategy_key)
 
         # Backtest-Engine
         engine = BacktestEngine(
@@ -562,8 +719,15 @@ class SweepEngine:
             risk_manager=risk_manager,
         )
 
-        def strategy_signal_fn(df: pd.DataFrame, _params: Dict) -> pd.Series:
-            return strategy.generate_signals(df)
+        if strategy_key == "regime_aware_portfolio":
+
+            def strategy_signal_fn(df: pd.DataFrame, _params: Dict) -> pd.Series:
+                return strategy.generate_signals(df)
+
+        else:
+
+            def strategy_signal_fn(df: pd.DataFrame, engine_params: Dict) -> pd.Series:
+                return base_signal_fn(df, strategy_params_effective)
 
         result = engine.run_realistic(
             df=data,

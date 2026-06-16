@@ -50,17 +50,17 @@ from __future__ import annotations
 import argparse
 import logging
 import sys
-from datetime import datetime, timedelta
+from datetime import datetime
 from pathlib import Path
 from typing import Optional, Sequence
 
 import pandas as pd
-import numpy as np
 
 # Projekt-Root zum Path hinzufügen
 project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
+from scripts.run_backtest import load_ohlcv_data
 from src.backtest.walkforward import (
     WalkForwardConfig,
     run_walkforward_for_candidate_presets,
@@ -81,86 +81,6 @@ def setup_logging(verbose: bool = False) -> None:
         format="%(asctime)s | %(levelname)-7s | %(message)s",
         datefmt="%H:%M:%S",
     )
-
-
-def create_dummy_data(n_bars: int = 1000) -> pd.DataFrame:
-    """
-    Erstellt Dummy-OHLCV-Daten für Tests.
-
-    Args:
-        n_bars: Anzahl der Bars
-
-    Returns:
-        DataFrame mit OHLCV-Daten und DatetimeIndex
-    """
-    np.random.seed(42)
-
-    # Start-Zeitpunkt
-    start = datetime.now() - timedelta(hours=n_bars)
-    dates = pd.date_range(start, periods=n_bars, freq="1h")
-
-    # Preis-Simulation
-    base_price = 50000
-    trend = np.linspace(0, 5000, n_bars)
-    cycle = np.sin(np.linspace(0, 6 * np.pi, n_bars)) * 2000
-    noise = np.random.randn(n_bars).cumsum() * 200
-
-    close_prices = base_price + trend + cycle + noise
-
-    # OHLC generieren
-    df = pd.DataFrame(
-        {
-            "open": close_prices * (1 + np.random.randn(n_bars) * 0.002),
-            "high": close_prices * (1 + abs(np.random.randn(n_bars)) * 0.003),
-            "low": close_prices * (1 - abs(np.random.randn(n_bars)) * 0.003),
-            "close": close_prices,
-            "volume": np.random.randint(10, 100, n_bars),
-        },
-        index=dates,
-    )
-
-    return df
-
-
-def load_data_from_file(filepath: Path) -> pd.DataFrame:
-    """
-    Lädt OHLCV-Daten aus Datei (CSV oder Parquet).
-
-    Args:
-        filepath: Pfad zur Datei
-
-    Returns:
-        DataFrame mit OHLCV-Daten
-    """
-    if not filepath.exists():
-        raise FileNotFoundError(f"Daten-Datei nicht gefunden: {filepath}")
-
-    if filepath.suffix == ".parquet":
-        df = pd.read_parquet(filepath)
-    elif filepath.suffix == ".csv":
-        df = pd.read_csv(filepath, index_col=0, parse_dates=True)
-    else:
-        raise ValueError(f"Unsupported file format: {filepath.suffix}")
-
-    # Validierung
-    required_cols = ["open", "high", "low", "close", "volume"]
-    missing = [c for c in required_cols if c not in df.columns]
-    if missing:
-        raise ValueError(f"Fehlende Spalten: {missing}")
-
-    if not isinstance(df.index, pd.DatetimeIndex):
-        if "timestamp" in df.columns:
-            df = df.set_index(pd.to_datetime(df["timestamp"], utc=True))
-            df = df.drop(columns=["timestamp"], errors="ignore")
-        else:
-            raise ValueError(
-                "DataFrame muss einen DatetimeIndex oder eine 'timestamp'-Spalte haben"
-            )
-
-    if not df.index.is_monotonic_increasing:
-        df = df.sort_index()
-
-    return df
 
 
 def build_parser() -> argparse.ArgumentParser:
@@ -307,16 +227,25 @@ def run_from_args(args: argparse.Namespace) -> int:
     logger = logging.getLogger(__name__)
 
     try:
-        # 1. Daten laden
+        # 1. Daten laden (kanonischer OHLCV-Loader)
         logger.info("Lade Daten...")
         if args.use_dummy_data:
-            df = create_dummy_data(n_bars=args.dummy_bars)
-            logger.info(f"Dummy-Daten erstellt: {len(df)} Bars ({df.index[0]} - {df.index[-1]})")
+            data_file = None
         elif args.data_file:
-            df = load_data_from_file(Path(args.data_file))
-            logger.info(f"Daten geladen: {len(df)} Bars ({df.index[0]} - {df.index[-1]})")
+            data_file = args.data_file
         else:
             raise ValueError("Entweder --data-file oder --use-dummy-data muss angegeben werden")
+
+        df = load_ohlcv_data(
+            data_file=data_file,
+            start_date=args.start_date,
+            end_date=args.end_date,
+            n_bars=args.dummy_bars,
+        )
+        if args.use_dummy_data:
+            logger.info(f"Dummy-Daten erstellt: {len(df)} Bars ({df.index[0]} - {df.index[-1]})")
+        else:
+            logger.info(f"Daten geladen: {len(df)} Bars ({df.index[0]} - {df.index[-1]})")
 
         # 2. Walk-Forward-Config erstellen
         wf_config = WalkForwardConfig(

@@ -24,6 +24,53 @@ appear in inline-code spans, the `docs-reference-targets-gate` interprets them a
 
 ---
 
+## Pre-PR local changed-docs preflight
+
+Before pushing a branch that edits `*.md`, run:
+
+```bash
+bash scripts/ops/preflight_docs_token_policy_changed.sh
+```
+
+Equivalent direct call:
+
+```bash
+python3 scripts/ops/validate_docs_token_policy.py --base origin/main
+```
+
+**Common illustrative patterns** (encode `/` as `&#47;` inside single-backtick inline code):
+
+| Raw (violation) | Encoded (compliant) |
+|-----------------|---------------------|
+| GET /observability | `GET &#47;observability` |
+| GET /market | `GET &#47;market` |
+| {ARCHIVE_ROOT}/readmodels/foo.json | `{ARCHIVE_ROOT}&#47;readmodels&#47;foo.json` |
+| BTC/USD | `BTC&#47;USD` |
+
+Autofix v2 (`scripts/ops/autofix_docs_token_policy_inline_code_v2.py`) is **optional and conservative** — not run by the preflight wrapper.
+
+---
+
+## Standard local checks for docs / docs+tests PRs
+
+Every PR that changes `*.md` (docs-only **or** docs+tests) **must** run the Docs Token Policy Guard locally **before push**. This is a **required standard check** — not optional preflight.
+
+| Step | Command | Expected |
+|------|---------|----------|
+| 1 — Docs Token Policy (mandatory) | `bash scripts/ops/preflight_docs_token_policy_changed.sh` | Exit 0 |
+| 1 alt — direct validator | `python3 scripts/ops/validate_docs_token_policy.py --changed --base origin/main` | Exit 0, no violations |
+| 2 — Docs reference targets (when `.md` changed) | `bash scripts/ops/verify_docs_reference_targets.sh --changed --base origin/main` | Exit 0 |
+| 3 — Targeted pytest (docs+tests PRs) | run PR-scoped contract tests | all pass |
+| 4 — Ruff (when `.py` changed) | `ruff check` / `ruff format --check` on touched Python files | Exit 0 |
+
+**CI required check:** `docs-token-policy-gate` (`.github/workflows/docs-token-policy-gate.yml`). A local Step 1 failure predicts the same CI failure.
+
+**Common fix:** encode illustrative inline-code slashes as `&#47;` (e.g. `{ARCHIVE_ROOT}&#47;planning&#47;`, `tests&#47;webui&#47;test_foo.py`).
+
+See also: `docs/ops/GATES_OVERVIEW.md` (**G-DOCS-TOKEN**) and `docs/ops/CI_AUDIT_KNOWN_ISSUES.md` (**§ Docs Token Policy Guard standard check integration**).
+
+---
+
 ## When This Gate Triggers
 
 The gate scans changed Markdown files (`.md`) for inline-code tokens (single backticks: `` `token` ``) containing `/` and enforces:

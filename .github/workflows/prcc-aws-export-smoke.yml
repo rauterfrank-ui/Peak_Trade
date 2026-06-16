@@ -1,8 +1,6 @@
 name: PR-CC / AWS Export Smoke
 
 on:
-  schedule:
-    - cron: "49 2 * * *"
   workflow_dispatch: {}
 
 permissions:

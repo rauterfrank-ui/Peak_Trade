@@ -311,6 +311,30 @@ def compute_armstrong_event_labels(
     return labels
 
 
+def _rolling_vol_quantile_rank(
+    vol_annualized: pd.Series,
+    lookback_window: int,
+    min_periods: int,
+) -> pd.Series:
+    """Rolling percentile rank (0-1) of the last value in each window.
+
+    Semantics match ``Series.rolling(...).apply(lambda x: pd.Series(x).rank(pct=True).iloc[-1])``.
+    """
+    values = vol_annualized.to_numpy(dtype=np.float64, copy=True)
+    values[np.isinf(values)] = np.nan
+    n = len(values)
+    out = np.full(n, np.nan, dtype=np.float64)
+
+    for end in range(n):
+        start = max(0, end - lookback_window + 1)
+        win = values[start : end + 1]
+        if np.count_nonzero(~np.isnan(win)) < min_periods:
+            continue
+        out[end] = pd.Series(win).rank(pct=True).iloc[-1]
+
+    return pd.Series(out, index=vol_annualized.index, dtype=np.float64)
+
+
 def compute_elkaroui_regime_labels(
     data: pd.DataFrame,
     elkaroui_params: Dict[str, Any],
@@ -351,8 +375,10 @@ def compute_elkaroui_regime_labels(
     if lookback_window < vol_window:
         lookback_window = vol_window
 
-    vol_quantiles = vol_annualized.rolling(window=lookback_window, min_periods=vol_window).apply(
-        lambda x: pd.Series(x).rank(pct=True).iloc[-1], raw=False
+    vol_quantiles = _rolling_vol_quantile_rank(
+        vol_annualized,
+        lookback_window=lookback_window,
+        min_periods=vol_window,
     )
 
     # Klassifiziere Regime

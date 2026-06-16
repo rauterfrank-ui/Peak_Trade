@@ -1,0 +1,17 @@
+<section
+  role="region"
+  aria-labelledby="market-terminal-futures-compact-h2"
+  class="rounded-lg border border-slate-700/60 bg-slate-950/70 px-3 py-3 ring-1 ring-slate-800/40"
+  data-market-futures-summary-visible-v1="true"
+  data-market-futures-compact-v1="true"
+  data-market-single-page-section-futures-v1="true"
+  data-f5-market-dashboard-v0="true"
+  data-f5-market-dashboard-readonly="true"
+  data-f5-market-dashboard-no-authority="true"
+  data-f5-summary="true"
+  data-market-remodel-secondary-futures-v2="true"
+>
+  <h2 id="market-terminal-futures-compact-h2" class="text-[11px] font-semibold uppercase tracking-wide text-slate-200 m-0 mb-2">Futures · display-only</h2>
+  <p class="m-0 text-[11px] text-slate-300">{{ f5_dashboard.summary_line|e }}</p>
+  <p class="m-0 mt-1 text-[10px] text-slate-500">Status: <span class="font-mono text-slate-400">{{ f5_dashboard.overall_status|e }}</span> · no session · no testnet · no live</p>
+</section>

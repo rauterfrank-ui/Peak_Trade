@@ -53,22 +53,26 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional
 
-import numpy as np
 import pandas as pd
 
 # Projekt-Root zum Python-Path hinzufügen
 PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
+from scripts.run_backtest import load_ohlcv_data
 from src.sweeps import (
     SweepConfig,
     SweepEngine,
     SweepSummary,
     expand_parameter_grid,
+)
+from src.sweeps.engine import (
+    SweepRunOutputMode,
+    apply_sweep_run_logging,
+    restore_sweep_run_logging,
 )
 from src.strategies.registry import (
     get_available_strategy_keys,
@@ -227,6 +231,12 @@ Examples:
         action="store_true",
         help="Ausführliche Ausgabe",
     )
+    output_group.add_argument(
+        "-q",
+        "--quiet",
+        action="store_true",
+        help="Silent-Modus: hochfrequente Progress-/INFO-Ausgaben unterdrücken (Warnungen/Fehler bleiben).",
+    )
 
     # Config
     parser.add_argument(
@@ -375,78 +385,6 @@ def parse_cli_params(params: List[str]) -> Dict[str, List[Any]]:
     return grid
 
 
-def generate_dummy_ohlcv(
-    n_bars: int = 500,
-    base_price: float = 50000.0,
-    volatility: float = 0.015,
-) -> pd.DataFrame:
-    """Generiert synthetische OHLCV-Daten für Tests."""
-    np.random.seed(42)  # Reproduzierbarkeit
-
-    end = datetime.now()
-    start = end - timedelta(hours=n_bars)
-    index = pd.date_range(start=start, periods=n_bars, freq="1h", tz="UTC")
-
-    returns = np.random.normal(0, volatility, n_bars)
-    trend = np.sin(np.linspace(0, 4 * np.pi, n_bars)) * 0.001
-    returns = returns + trend
-    close_prices = base_price * np.exp(np.cumsum(returns))
-
-    df = pd.DataFrame(index=index)
-    df["close"] = close_prices
-    df["open"] = df["close"].shift(1).fillna(base_price)
-
-    high_bump = np.random.uniform(0, 0.005, n_bars)
-    df["high"] = np.maximum(df["open"], df["close"]) * (1 + high_bump)
-
-    low_dip = np.random.uniform(0, 0.005, n_bars)
-    df["low"] = np.minimum(df["open"], df["close"]) * (1 - low_dip)
-
-    df["volume"] = np.random.uniform(100, 1000, n_bars)
-
-    return df[["open", "high", "low", "close", "volume"]]
-
-
-def load_ohlcv_data(
-    data_file: Optional[str],
-    n_bars: int,
-    verbose: bool = False,
-) -> pd.DataFrame:
-    """Lädt OHLCV-Daten aus CSV/Parquet oder generiert Dummy-Daten."""
-    if data_file:
-        from src.data import DataNormalizer, CsvLoader, KrakenCsvLoader
-
-        path = Path(data_file)
-        if not path.exists():
-            raise FileNotFoundError(f"Datei nicht gefunden: {data_file}")
-
-        if verbose:
-            print(f"  Lade Daten aus: {data_file}")
-
-        suffix = path.suffix.lower()
-        if suffix in {".parquet", ".pq"}:
-            df = pd.read_parquet(path)
-            df.columns = df.columns.str.lower()
-            if not isinstance(df.index, pd.DatetimeIndex) and "timestamp" in df.columns:
-                df = df.set_index(pd.DatetimeIndex(pd.to_datetime(df.pop("timestamp"), utc=True)))
-            normalizer = DataNormalizer()
-            return normalizer.normalize(df)
-
-        if "kraken" in str(path).lower():
-            loader = KrakenCsvLoader()
-        else:
-            loader = CsvLoader()
-
-        df = loader.load(str(path))
-        normalizer = DataNormalizer()
-        df = normalizer.normalize(df)
-        return df
-
-    if verbose:
-        print(f"  Generiere {n_bars} Dummy-Bars")
-    return generate_dummy_ohlcv(n_bars=n_bars)
-
-
 def list_strategies_detailed() -> None:
     """Zeigt alle verfügbaren Strategien mit Details an."""
     print("\n" + "=" * 70)
@@ -589,6 +527,16 @@ def _write_sweep_diagnostics(
 def main(argv: Optional[List[str]] = None) -> int:
     """Main-Entry-Point für Strategy Sweep (Phase 20)."""
     args = parse_args(argv)
+    previous_log_level = apply_sweep_run_logging(args.quiet)
+    output = SweepRunOutputMode(quiet=args.quiet)
+    try:
+        return _run_main(args, output)
+    finally:
+        restore_sweep_run_logging(previous_log_level)
+
+
+def _run_main(args: argparse.Namespace, output: SweepRunOutputMode) -> int:
+    """Sweep-CLI-Hauptlogik (Logging-State wird von ``main`` wiederhergestellt)."""
 
     # List strategies mode
     if args.list_strategies:
@@ -606,30 +554,30 @@ def main(argv: Optional[List[str]] = None) -> int:
         print(f"Verfügbar: {', '.join(sorted(available))}")
         return 1
 
-    print("\n" + "=" * 70)
-    print("Peak_Trade: Hyperparameter Sweep (Phase 20)")
-    print("=" * 70)
+    output.info("\n" + "=" * 70)
+    output.info("Peak_Trade: Hyperparameter Sweep (Phase 20)")
+    output.info("=" * 70)
 
     # 1) Parameter-Grid laden
-    print(f"\n[1/4] Parameter-Grid laden...")
+    output.info(f"\n[1/4] Parameter-Grid laden...")
     try:
         if args.grid:
             param_grid = load_parameter_grid(args.grid)
-            print(f"  Grid aus: {args.grid}")
+            output.info(f"  Grid aus: {args.grid}")
         elif args.params:
             param_grid = parse_cli_params(args.params)
-            print(f"  Grid aus CLI-Parametern")
+            output.info(f"  Grid aus CLI-Parametern")
         else:
             print("FEHLER: Kein Parameter-Grid angegeben.")
             print("  Verwende --grid <DATEI/JSON> oder --param KEY=VAL1,VAL2,...")
             return 1
 
         combinations = expand_parameter_grid(param_grid)
-        print(f"  Parameter: {list(param_grid.keys())}")
-        print(f"  Kombinationen: {len(combinations)}")
+        output.info(f"  Parameter: {list(param_grid.keys())}")
+        output.info(f"  Kombinationen: {len(combinations)}")
 
         if args.max_runs and len(combinations) > args.max_runs:
-            print(f"  Limitiert auf: {args.max_runs} Runs")
+            output.info(f"  Limitiert auf: {args.max_runs} Runs")
 
     except Exception as e:
         print(f"FEHLER beim Laden des Grids: {e}")
@@ -637,41 +585,43 @@ def main(argv: Optional[List[str]] = None) -> int:
 
     # Dry-Run: nur Kombinationen anzeigen
     if args.dry_run:
-        print(f"\n[DRY-RUN] Folgende {len(combinations)} Kombinationen würden getestet:")
+        output.info(f"\n[DRY-RUN] Folgende {len(combinations)} Kombinationen würden getestet:")
         for i, combo in enumerate(combinations[:50], 1):
-            print(f"  {i:>3}. {combo}")
+            output.info(f"  {i:>3}. {combo}")
         if len(combinations) > 50:
-            print(f"  ... und {len(combinations) - 50} weitere")
+            output.info(f"  ... und {len(combinations) - 50} weitere")
         print("\n(Kein Backtest ausgeführt)")
         return 0
 
     # 2) Config validieren
-    print(f"\n[2/4] Config validieren...")
+    output.info(f"\n[2/4] Config validieren...")
     config_path = Path(args.config)
     if not config_path.exists():
         print(f"FEHLER: Config nicht gefunden: {config_path}")
         return 1
-    print(f"  Config: {config_path}")
+    output.info(f"  Config: {config_path}")
 
     # 3) Daten laden
-    print(f"\n[3/4] OHLCV-Daten laden...")
+    output.info(f"\n[3/4] OHLCV-Daten laden...")
     try:
         data = load_ohlcv_data(
             data_file=args.data_file,
+            start_date=None,
+            end_date=None,
             n_bars=args.bars,
-            verbose=args.verbose,
+            verbose=args.verbose and not args.quiet,
         )
-        print(f"  {len(data)} Bars geladen")
-        print(f"  Zeitraum: {data.index[0]} bis {data.index[-1]}")
+        output.info(f"  {len(data)} Bars geladen")
+        output.info(f"  Zeitraum: {data.index[0]} bis {data.index[-1]}")
     except Exception as e:
         print(f"FEHLER: {e}")
         return 1
 
     # 4) Sweep ausführen
-    print(f"\n[4/4] Sweep ausführen...")
-    print(f"  Strategie: {args.strategy}")
-    print(f"  Symbol: {args.symbol}")
-    print(f"  Timeframe: {args.timeframe}")
+    output.info(f"\n[4/4] Sweep ausführen...")
+    output.info(f"  Strategie: {args.strategy}")
+    output.info(f"  Symbol: {args.symbol}")
+    output.info(f"  Timeframe: {args.timeframe}")
 
     # Progress-Callback
     def progress_callback(current: int, total: int, params: Dict) -> None:
@@ -680,6 +630,10 @@ def main(argv: Optional[List[str]] = None) -> int:
         else:
             pct = current / total * 100
             print(f"\r  Fortschritt: {current}/{total} ({pct:.0f}%)", end="", flush=True)
+
+    progress_cb: Optional[Callable[[int, int, Dict], None]] = None
+    if not args.quiet:
+        progress_cb = progress_callback
 
     try:
         config = SweepConfig(
@@ -696,8 +650,8 @@ def main(argv: Optional[List[str]] = None) -> int:
         )
 
         engine = SweepEngine(
-            verbose=args.verbose,
-            progress_callback=None if args.verbose else progress_callback,
+            verbose=args.verbose and not args.quiet,
+            progress_callback=progress_cb,
         )
 
         def diagnostics_callback(

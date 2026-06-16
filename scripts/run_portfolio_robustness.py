@@ -47,6 +47,7 @@ project_root = Path(__file__).parent.parent
 sys.path.insert(0, str(project_root))
 
 from src.experiments.dummy_returns_timeline import create_dummy_returns
+from src.experiments.equity_loader import equity_to_returns, load_equity_curves_from_run_dir
 from src.experiments.portfolio_recipes import get_portfolio_recipe
 from src.experiments.portfolio_robustness import (
     PortfolioComponent,
@@ -54,7 +55,6 @@ from src.experiments.portfolio_robustness import (
     PortfolioRobustnessConfig,
     run_portfolio_robustness,
 )
-from src.experiments.stress_tests import load_returns_for_top_config
 from src.experiments.strategy_returns_manifest_loader import (
     StrategyReturnsManifestError,
     load_returns_for_strategy_from_manifest,
@@ -96,8 +96,60 @@ def _build_strategy_returns_cache(
     return cache
 
 
+def load_returns_for_config(
+    config: dict,
+    experiments_dir: Path,
+    *,
+    use_dummy_data: bool = False,
+    dummy_bars: int = 500,
+) -> pd.Series:
+    """
+    Lädt Returns für eine Top-N-Konfiguration (kanonischer equity_loader-Pfad).
+
+    Args:
+        config: Config-Dict aus load_top_n_configs_for_sweep
+        experiments_dir: Verzeichnis mit Experiment-Ergebnissen
+        use_dummy_data: Wenn True, werden explizite Synthetic-Returns verwendet
+        dummy_bars: Anzahl Bars für Synthetic-Returns (--use-dummy-data)
+
+    Returns:
+        Returns-Serie (DatetimeIndex)
+
+    Raises:
+        ValueError: Wenn config_id nicht auflösbar ist oder Equity-Artefakte fehlen/ungültig sind
+        FileNotFoundError: Wenn keine unterstützten Equity-Artefakte im Run-Verzeichnis existieren
+    """
+    logger = logging.getLogger(__name__)
+
+    if use_dummy_data:
+        config_rank = int(config.get("rank", 1))
+        logger.info(
+            f"Verwende explizite Synthetic-Returns (--use-dummy-data) "
+            f"für Config {config.get('config_id', 'unknown')}"
+        )
+        return create_dummy_returns(dummy_bars, seed=42 + config_rank)
+
+    config_id = str(config.get("config_id", ""))
+    if not config_id or config_id.startswith("config_"):
+        raise ValueError(
+            "Top-N config has no usable experiment_id/config_id to resolve a run directory. "
+            f"config_id={config_id!r}. "
+            "Ensure sweep results include an experiment_id (directory name) or use --use-dummy-data."
+        )
+
+    run_dir = Path(experiments_dir) / config_id
+    try:
+        curves = load_equity_curves_from_run_dir(run_dir, max_curves=1)
+    except (FileNotFoundError, ValueError) as e:
+        raise ValueError(
+            f"Equity load failed for config_id={config_id!r}, run_dir={run_dir}: {e}"
+        ) from e
+
+    return equity_to_returns(curves[0])
+
+
 def build_returns_loader(
-    sweep_name: str,
+    config_by_id: dict[str, dict],
     experiments_dir: Path,
     use_dummy_data: bool = False,
     dummy_bars: int = 500,
@@ -106,47 +158,52 @@ def build_returns_loader(
     Baut eine Returns-Loader-Funktion für Portfolio-Komponenten.
 
     Args:
-        sweep_name: Name des Sweeps
+        config_by_id: Mapping config_id -> Top-N-Config-Dict
         experiments_dir: Verzeichnis mit Experiment-Ergebnissen
         use_dummy_data: Wenn True, werden Dummy-Daten verwendet
         dummy_bars: Anzahl Bars für Dummy-Daten
 
     Returns:
-        Funktion (strategy_name: str, config_id: str) -> Optional[pd.Series]
+        Funktion (strategy_name: str, config_id: str) -> pd.Series
+
+    Raises:
+        ValueError: Propagiert Ladefehler fail-closed (kein stiller None-Fallback)
     """
 
-    def returns_loader(strategy_name: str, config_id: str) -> Optional[pd.Series]:
+    def returns_loader(strategy_name: str, config_id: str) -> pd.Series:
         """
         Lädt Returns für eine Strategie-Konfiguration.
 
         Args:
-            strategy_name: Name der Strategie (aktuell nicht verwendet, für zukünftige Erweiterungen)
-            config_id: Config-ID (z.B. "config_1" oder Registry-ID)
+            strategy_name: Name der Strategie (für Fehlerkontext)
+            config_id: Config-ID aus Top-N-Konfiguration
 
         Returns:
-            Returns-Serie oder None
+            Returns-Serie
+
+        Raises:
+            ValueError: Wenn config_id unbekannt ist oder Returns nicht geladen werden können
         """
         if use_dummy_data:
-            # Für Tests: Erstelle Dummy-Returns basierend auf config_id
             config_rank = int(config_id.split("_")[-1]) if config_id.split("_")[-1].isdigit() else 1
             return create_dummy_returns(dummy_bars, seed=42 + config_rank)
 
-        # Versuche, Returns aus Top-N-Konfigurationen zu laden
-        # config_id sollte z.B. "config_1", "config_2" etc. sein
-        try:
-            config_rank = int(config_id.split("_")[-1]) if config_id.split("_")[-1].isdigit() else 1
-            returns = load_returns_for_top_config(
-                sweep_name=sweep_name,
-                config_rank=config_rank,
-                experiments_dir=experiments_dir,
-                use_dummy_data=False,
-                dummy_bars=dummy_bars,
+        config = config_by_id.get(config_id)
+        if config is None:
+            known = sorted(config_by_id)
+            raise ValueError(
+                "Portfolio component config_id not found in Top-N sweep configs. "
+                f"strategy_name={strategy_name!r}, config_id={config_id!r}, "
+                f"known_config_ids={known!r}. "
+                "Ensure portfolio components match loaded Top-N configs."
             )
-            return returns
-        except Exception as e:
-            logger = logging.getLogger(__name__)
-            logger.warning(f"Konnte Returns nicht laden für {strategy_name}/{config_id}: {e}")
-            return None
+
+        return load_returns_for_config(
+            config,
+            experiments_dir,
+            use_dummy_data=False,
+            dummy_bars=dummy_bars,
+        )
 
     return returns_loader
 
@@ -599,8 +656,12 @@ def run_from_args(args: argparse.Namespace) -> int:
                     )
 
         else:
+            config_by_id = {
+                str(config.get("config_id", f"config_{i + 1}")): config
+                for i, config in enumerate(top_configs)
+            }
             returns_loader = build_returns_loader(
-                sweep_name=sweep_name,
+                config_by_id=config_by_id,
                 experiments_dir=experiments_dir,
                 use_dummy_data=args.use_dummy_data,
                 dummy_bars=args.dummy_bars,

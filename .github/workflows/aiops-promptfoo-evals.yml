@@ -17,19 +17,27 @@ on:
       - 'scripts/aiops/**'
       - '.github/workflows/aiops-promptfoo-evals.yml'
   workflow_dispatch:
+    inputs:
+      run_paid_openai_evals:
+        description: >-
+          Run paid OpenAI-backed Promptfoo evals. Requires repository variable
+          PEAK_TRADE_RUN_PAID_PROMPTFOO_EVALS set to true.
+        type: boolean
+        default: false
 
 jobs:
   changes:
     name: Detect Changes
     runs-on: ubuntu-latest
     outputs:
-      run_evals: ${{ steps.filter.outputs.run_evals }}
+      run_evals: ${{ steps.resolve.outputs.run_evals }}
     steps:
       - name: Checkout
         uses: actions/checkout@v5
 
       - name: Check for eval-relevant changes
         id: filter
+        if: github.event_name != 'workflow_dispatch'
         uses: dorny/paths-filter@v3
         with:
           filters: |
@@ -39,6 +47,16 @@ jobs:
               - 'evals/aiops/**'
               - 'scripts/aiops/**'
               - '.github/workflows/aiops-promptfoo-evals.yml'
+
+      - name: Resolve whether eval job should run
+        id: resolve
+        run: |
+          set -euo pipefail
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ]; then
+            echo "run_evals=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "run_evals=${{ steps.filter.outputs.run_evals }}" >> "$GITHUB_OUTPUT"
+          fi
 
   promptfoo-eval:
     name: Run Promptfoo Evals
@@ -58,11 +76,36 @@ jobs:
       - name: Prepare AIOps artifacts dir
         run: mkdir -p .artifacts/aiops
 
-      - name: Run Promptfoo Eval
+      - name: Run paid Promptfoo Eval (OpenAI)
+        if: >-
+          github.event_name == 'workflow_dispatch'
+          && github.event.inputs.run_paid_openai_evals == 'true'
+          && vars.PEAK_TRADE_RUN_PAID_PROMPTFOO_EVALS == 'true'
         env:
           OPENAI_API_KEY: ${{ secrets.OPENAI_API_KEY }}
         run: |
           bash scripts/aiops/run_promptfoo_eval.sh
+
+      - name: PR/Push — paid Promptfoo/OpenAI disabled (cost gate)
+        if: github.event_name == 'pull_request' || github.event_name == 'push'
+        run: |
+          set -euo pipefail
+          mkdir -p .artifacts/aiops
+          TS=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          printf '%s\n' "{\"status\":\"skipped_paid_eval\",\"reason\":\"pr_push_cost_gate\",\"ts_utc\":\"$TS\"}" > .artifacts/aiops/pr_push_cost_gate.json
+          echo "::notice::Paid Promptfoo/OpenAI evals are not executed on pull_request/push (default cost gate)."
+
+      - name: Manual run — paid Promptfoo skipped (missing opt-in)
+        if: >-
+          github.event_name == 'workflow_dispatch'
+          && (github.event.inputs.run_paid_openai_evals != 'true'
+          || vars.PEAK_TRADE_RUN_PAID_PROMPTFOO_EVALS != 'true')
+        run: |
+          set -euo pipefail
+          mkdir -p .artifacts/aiops
+          TS=$(date -u +%Y-%m-%dT%H:%M:%SZ)
+          printf '%s\n' "{\"status\":\"skipped_paid_eval\",\"reason\":\"manual_dispatch_missing_opt_in\",\"ts_utc\":\"$TS\"}" > .artifacts/aiops/manual_skip.json
+          echo "::notice::Paid Promptfoo requires workflow_dispatch input run_paid_openai_evals=true AND repository variable PEAK_TRADE_RUN_PAID_PROMPTFOO_EVALS=true."
 
       - name: Ensure eval artifacts (fallback if empty)
         run: |
@@ -94,11 +137,11 @@ jobs:
       - name: Write skip marker
         run: |
           TS=$(date -u +%Y-%m-%dT%H:%M:%SZ)
-          echo "{\"status\":\"skipped\",\"reason\":\"run_evals=false or missing OPENAI_API_KEY\",\"ts_utc\":\"$TS\"}" > .artifacts/aiops/skip.json
+          echo "{\"status\":\"skipped\",\"reason\":\"no eval-relevant path changes\",\"ts_utc\":\"$TS\"}" > .artifacts/aiops/skip.json
 
       - name: Log skip reason
         run: |
-          echo "No eval-relevant changes detected. Skipping promptfoo evals."
+          echo "No eval-relevant changes detected. Skipping promptfoo eval job."
           echo "This job succeeds to avoid false negatives in CI status."
 
       - name: Upload Artifacts

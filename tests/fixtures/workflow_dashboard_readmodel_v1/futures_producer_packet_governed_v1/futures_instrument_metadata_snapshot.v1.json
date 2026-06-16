@@ -1,0 +1,12 @@
+[
+  {
+    "instrument_id": "inst-eth-perp",
+    "exchange": "binance_futures",
+    "market_type": "perpetual",
+    "symbol": "ETHUSDT",
+    "status": "active",
+    "metadata_source": "governed_test_fixture",
+    "provenance_ref": "test-only-non-authoritative",
+    "last_metadata_refresh_utc": "2026-06-08T18:00:00Z"
+  }
+]

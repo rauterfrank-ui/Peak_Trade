@@ -11,7 +11,7 @@ import subprocess
 import sys
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import List, Optional
+from typing import Any, Callable, List, Optional, cast
 
 from .models import JobDefinition, JobSchedule, JobResult
 
@@ -182,6 +182,8 @@ def run_job(
     *,
     dry_run: bool = False,
     cwd: Optional[Path] = None,
+    subprocess_run: Optional[Callable[..., Any]] = None,
+    utcnow: Optional[Callable[[], datetime]] = None,
 ) -> JobResult:
     """
     Führt einen Job aus.
@@ -190,11 +192,14 @@ def run_job(
         job: Job-Definition
         dry_run: Wenn True, nur simulieren
         cwd: Arbeitsverzeichnis
+        subprocess_run: Optional ersetzt ``subprocess.run`` (Offline-Tests / Instrumentierung)
+        utcnow: Optional ersetzt ``datetime.utcnow`` für reproduzierbare Zeitstempel (Tests)
 
     Returns:
         JobResult mit Ausführungsergebnis
     """
-    started_at = datetime.utcnow()
+    now_fn = datetime.utcnow if utcnow is None else utcnow
+    started_at = now_fn()
 
     # Kommando bauen
     if job.command == "python":
@@ -204,7 +209,7 @@ def run_job(
 
     if dry_run:
         # Nur simulieren
-        finished_at = datetime.utcnow()
+        finished_at = now_fn()
         return JobResult(
             job_name=job.name,
             started_at=started_at,
@@ -215,9 +220,11 @@ def run_job(
             stderr="",
         )
 
+    run_fn = subprocess.run if subprocess_run is None else subprocess_run
+
     try:
         # Job ausführen
-        result = subprocess.run(
+        result = run_fn(
             cmd,
             capture_output=True,
             text=True,
@@ -225,7 +232,7 @@ def run_job(
             cwd=cwd,
         )
 
-        finished_at = datetime.utcnow()
+        finished_at = now_fn()
 
         # Output kürzen (max 2000 Zeichen)
         stdout = result.stdout[:2000] if result.stdout else ""
@@ -235,14 +242,14 @@ def run_job(
             job_name=job.name,
             started_at=started_at,
             finished_at=finished_at,
-            return_code=result.returncode,
+            return_code=cast(int, result.returncode),
             success=result.returncode == 0,
             stdout=stdout,
             stderr=stderr,
         )
 
-    except subprocess.TimeoutExpired as e:
-        finished_at = datetime.utcnow()
+    except subprocess.TimeoutExpired:
+        finished_at = now_fn()
         return JobResult(
             job_name=job.name,
             started_at=started_at,
@@ -255,7 +262,7 @@ def run_job(
         )
 
     except Exception as e:
-        finished_at = datetime.utcnow()
+        finished_at = now_fn()
         return JobResult(
             job_name=job.name,
             started_at=started_at,

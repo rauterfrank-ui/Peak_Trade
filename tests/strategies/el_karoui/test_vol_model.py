@@ -495,3 +495,347 @@ class TestModelRepr:
         assert "window=" in repr_str
         assert "thresholds=" in repr_str
         assert "target=" in repr_str
+
+
+# =============================================================================
+# GOLDEN REFERENCE: calculate_vol_percentile rolling apply semantics
+# =============================================================================
+
+
+def _legacy_vol_percentile_reference(
+    vol_series: pd.Series,
+    lookback: int,
+    min_periods: int,
+) -> pd.Series:
+    """Test-only reference for legacy ElKarouiVolModel.calculate_vol_percentile (0-1 scale)."""
+
+    def percentile_rank(x: pd.Series) -> float:
+        if len(x) < 2 or pd.isna(x.iloc[-1]):
+            return np.nan
+        current = x.iloc[-1]
+        return (x < current).mean()
+
+    return vol_series.rolling(
+        window=lookback,
+        min_periods=min_periods,
+    ).apply(percentile_rank, raw=False)
+
+
+def _assert_vol_percentile_series_equal(actual: pd.Series, expected: pd.Series) -> None:
+    pd.testing.assert_series_equal(actual, expected, check_names=True)
+    assert actual.index.equals(expected.index)
+    assert actual.dtype == expected.dtype
+    assert actual.isna().equals(expected.isna())
+
+
+class TestVolPercentileGoldenReference:
+    """Golden-reference contracts for ElKarouiVolModel.calculate_vol_percentile."""
+
+    @pytest.mark.parametrize(
+        ("values", "lookback", "min_periods"),
+        [
+            pytest.param([], 3, 2, id="empty"),
+            pytest.param([1.0], 3, 2, id="single_element"),
+            pytest.param([1.0, 2.0], 5, 2, id="shorter_than_window"),
+            pytest.param([1.0, 2.0, 3.0, 4.0, 5.0], 3, 2, id="monotone_ascending"),
+            pytest.param([5.0, 4.0, 3.0, 2.0, 1.0], 3, 2, id="monotone_descending"),
+            pytest.param([1.0, 2.0, 2.0, 2.0, 3.0], 4, 2, id="ties"),
+            pytest.param([1.0, 1.0, 2.0, 2.0, 3.0, 3.0], 4, 2, id="repeated_values"),
+            pytest.param([2.0, 2.0, 2.0], 3, 3, id="constant"),
+            pytest.param([1.0, np.nan, 3.0, 4.0, 5.0], 3, 2, id="nan_at_window_start"),
+            pytest.param([np.nan, 1.0, 2.0, 3.0], 3, 2, id="nan_leading"),
+            pytest.param([1.0, 2.0, np.nan], 3, 2, id="nan_last_window_value"),
+            pytest.param([1.0, np.inf, 3.0, 4.0], 3, 2, id="positive_infinity"),
+            pytest.param([1.0, -np.inf, 3.0, 4.0], 3, 2, id="negative_infinity"),
+            pytest.param(list(range(1, 9)), 4, 2, id="multi_window"),
+            pytest.param([7.0] * 6, 4, 2, id="constant_long"),
+        ],
+    )
+    def test_vol_percentile_matches_legacy_reference(
+        self,
+        values: list[float],
+        lookback: int,
+        min_periods: int,
+    ) -> None:
+        idx = pd.date_range("2024-01-01", periods=max(len(values), 1), freq="D")[: len(values)]
+        vol_series = pd.Series(values, index=idx, name="realized_vol", dtype=float)
+        expected = _legacy_vol_percentile_reference(vol_series, lookback, min_periods)
+        model = ElKarouiVolModel(
+            ElKarouiVolConfig(vol_window=min_periods, lookback_window=lookback)
+        )
+        actual = model.calculate_vol_percentile(vol_series)
+        _assert_vol_percentile_series_equal(actual, expected)
+
+    def test_vol_percentile_non_trivial_index(self) -> None:
+        idx = pd.Index([10, 20, 30, 40, 50, 60, 70, 80], name="bar")
+        vol_series = pd.Series(
+            [1.0, 2.0, 2.0, 3.0, 4.0, 3.0, 2.0, 1.0],
+            index=idx,
+            name="custom_vol",
+            dtype=float,
+        )
+        lookback, min_periods = 4, 2
+        expected = _legacy_vol_percentile_reference(vol_series, lookback, min_periods)
+        model = ElKarouiVolModel(
+            ElKarouiVolConfig(vol_window=min_periods, lookback_window=lookback)
+        )
+        actual = model.calculate_vol_percentile(vol_series)
+        _assert_vol_percentile_series_equal(actual, expected)
+
+    @pytest.mark.parametrize("lookback", [20, 50])
+    def test_vol_percentile_multiple_window_sizes(self, lookback: int) -> None:
+        vol_series = pd.Series(
+            np.random.RandomState(17).randn(120) * 0.02 + 0.05,
+            index=pd.date_range("2024-02-01", periods=120, freq="D"),
+            name="window_probe",
+            dtype=float,
+        )
+        min_periods = 10
+        expected = _legacy_vol_percentile_reference(vol_series, lookback, min_periods)
+        model = ElKarouiVolModel(
+            ElKarouiVolConfig(vol_window=min_periods, lookback_window=lookback)
+        )
+        actual = model.calculate_vol_percentile(vol_series)
+        _assert_vol_percentile_series_equal(actual, expected)
+
+    def test_vol_percentile_downstream_regime_output_unchanged(
+        self, mixed_vol_returns: pd.Series
+    ) -> None:
+        config = ElKarouiVolConfig(
+            vol_window=10,
+            lookback_window=50,
+            low_threshold=0.30,
+            high_threshold=0.70,
+        )
+        model = ElKarouiVolModel(config)
+        vol = model.calculate_realized_vol(mixed_vol_returns)
+        percentiles = model.calculate_vol_percentile(vol)
+        expected_regimes = _legacy_regime_series_apply_reference(
+            percentiles, config.low_threshold, config.high_threshold
+        )
+        actual_regimes = model.regime_series(mixed_vol_returns)
+        _assert_regime_series_equal(actual_regimes, expected_regimes)
+
+    def test_vol_percentile_from_config_dict_parity(self) -> None:
+        vol_series = pd.Series(
+            np.random.RandomState(19).randn(80) * 0.015 + 0.04,
+            index=pd.date_range("2024-03-01", periods=80, freq="D"),
+            name="cfg_vol",
+            dtype=float,
+        )
+        config_dict = {"vol_window": 8, "lookback_window": 40}
+        model = ElKarouiVolModel.from_config_dict(config_dict)
+        expected = _legacy_vol_percentile_reference(
+            vol_series,
+            model.config.lookback_window,
+            model.config.vol_window,
+        )
+        actual = model.calculate_vol_percentile(vol_series)
+        _assert_vol_percentile_series_equal(actual, expected)
+
+    def test_vol_percentile_from_default_parity(self) -> None:
+        vol_series = pd.Series(
+            np.random.RandomState(23).randn(150) * 0.012 + 0.03,
+            index=pd.date_range("2024-04-01", periods=150, freq="D"),
+            name="default_vol",
+            dtype=float,
+        )
+        model = ElKarouiVolModel.from_default()
+        expected = _legacy_vol_percentile_reference(
+            vol_series,
+            model.config.lookback_window,
+            model.config.vol_window,
+        )
+        actual = model.calculate_vol_percentile(vol_series)
+        _assert_vol_percentile_series_equal(actual, expected)
+
+
+# =============================================================================
+# GOLDEN REFERENCE: regime_series apply semantics
+# =============================================================================
+
+
+def _legacy_regime_for_percentile_value_reference(
+    percentile: float,
+    low_threshold: float,
+    high_threshold: float,
+) -> str:
+    """Test-only reference for legacy element-wise regime_for_percentile().value mapping."""
+    if pd.isna(percentile):
+        return VolRegime.MEDIUM.value
+    if percentile < low_threshold:
+        return VolRegime.LOW.value
+    if percentile > high_threshold:
+        return VolRegime.HIGH.value
+    return VolRegime.MEDIUM.value
+
+
+def _legacy_regime_series_apply_reference(
+    percentiles: pd.Series,
+    low_threshold: float,
+    high_threshold: float,
+) -> pd.Series:
+    """Test-only reference mirroring percentiles.apply(regime_for_percentile).value."""
+    if len(percentiles) == 0:
+        return pd.Series([], dtype=np.float64, index=percentiles.index, name=percentiles.name)
+    return percentiles.apply(
+        lambda x: _legacy_regime_for_percentile_value_reference(x, low_threshold, high_threshold)
+    )
+
+
+def _assert_regime_series_equal(actual: pd.Series, expected: pd.Series) -> None:
+    pd.testing.assert_series_equal(actual, expected, check_names=True)
+    assert actual.index.equals(expected.index)
+    assert actual.dtype == expected.dtype
+    assert actual.isna().equals(expected.isna())
+
+
+class TestRegimeSeriesGoldenReference:
+    """Golden-Reference-Tests für ElKarouiVolModel.regime_series apply-Pfad."""
+
+    @pytest.mark.parametrize(
+        ("percentile_values", "low_threshold", "high_threshold", "expected_values"),
+        [
+            pytest.param([], 0.30, 0.70, [], id="empty"),
+            pytest.param([0.50], 0.30, 0.70, ["normal"], id="single_element"),
+            pytest.param(
+                [0.29, 0.30, 0.31],
+                0.30,
+                0.70,
+                ["low", "normal", "normal"],
+                id="low_boundary_neighbors",
+            ),
+            pytest.param(
+                [0.69, 0.70, 0.71],
+                0.30,
+                0.70,
+                ["normal", "normal", "high"],
+                id="high_boundary_neighbors",
+            ),
+            pytest.param(
+                [0.10, 0.50, 0.90], 0.30, 0.70, ["low", "normal", "high"], id="all_regime_classes"
+            ),
+            pytest.param(
+                [np.nan, 0.50, np.nan], 0.30, 0.70, ["normal", "normal", "normal"], id="nan_values"
+            ),
+            pytest.param(
+                [np.inf, -np.inf, 0.50], 0.30, 0.70, ["high", "low", "normal"], id="infinity_values"
+            ),
+            pytest.param([0.50] * 6, 0.30, 0.70, ["normal"] * 6, id="constant"),
+            pytest.param([0.10, 0.90] * 4, 0.30, 0.70, ["low", "high"] * 4, id="alternating"),
+        ],
+    )
+    def test_legacy_regime_series_apply_reference_semantics(
+        self,
+        percentile_values: list[float],
+        low_threshold: float,
+        high_threshold: float,
+        expected_values: list[str],
+    ) -> None:
+        idx = pd.date_range("2024-01-01", periods=max(len(percentile_values), 1), freq="D")[
+            : len(percentile_values)
+        ]
+        percentiles = pd.Series(percentile_values, index=idx, name="vol_percentile", dtype=float)
+        actual = _legacy_regime_series_apply_reference(percentiles, low_threshold, high_threshold)
+        if len(percentile_values) == 0:
+            assert len(actual) == 0
+            assert actual.dtype == np.float64
+        else:
+            assert actual.tolist() == expected_values
+            assert pd.api.types.is_string_dtype(actual)
+        assert actual.name == "vol_percentile"
+
+    @pytest.mark.parametrize(
+        ("returns_values", "series_name"),
+        [
+            pytest.param([], "empty_returns", id="empty_series"),
+            pytest.param([0.01], "single_return", id="single_element"),
+            pytest.param(
+                list(np.random.RandomState(42).randn(100) * 0.005), "low_vol", id="low_vol"
+            ),
+            pytest.param(
+                list(np.random.RandomState(42).randn(100) * 0.04), "high_vol", id="high_vol"
+            ),
+            pytest.param(
+                list(np.random.RandomState(7).randn(150) * 0.015), "mixed_vol", id="mixed_vol"
+            ),
+        ],
+    )
+    def test_regime_series_matches_legacy_reference(
+        self,
+        returns_values: list[float],
+        series_name: str,
+    ) -> None:
+        idx = pd.date_range("2024-06-01", periods=max(len(returns_values), 1), freq="D")[
+            : len(returns_values)
+        ]
+        returns = pd.Series(returns_values, index=idx, name=series_name, dtype=float)
+        config = ElKarouiVolConfig(
+            vol_window=10,
+            lookback_window=50,
+            low_threshold=0.30,
+            high_threshold=0.70,
+        )
+        model = ElKarouiVolModel(config)
+
+        vol = model.calculate_realized_vol(returns)
+        percentiles = model.calculate_vol_percentile(vol)
+        expected = _legacy_regime_series_apply_reference(
+            percentiles, config.low_threshold, config.high_threshold
+        )
+        actual = model.regime_series(returns)
+        _assert_regime_series_equal(actual, expected)
+
+    def test_regime_series_non_trivial_index(self) -> None:
+        idx = pd.Index([10, 20, 30, 40, 50, 60, 70, 80, 90, 100], name="bar")
+        returns = pd.Series(
+            np.random.RandomState(7).randn(10) * 0.02, index=idx, name="custom_returns"
+        )
+        model = ElKarouiVolModel(
+            ElKarouiVolConfig(
+                vol_window=5, lookback_window=10, low_threshold=0.30, high_threshold=0.70
+            )
+        )
+        vol = model.calculate_realized_vol(returns)
+        percentiles = model.calculate_vol_percentile(vol)
+        expected = _legacy_regime_series_apply_reference(
+            percentiles, model.config.low_threshold, model.config.high_threshold
+        )
+        actual = model.regime_series(returns)
+        _assert_regime_series_equal(actual, expected)
+
+    def test_regime_series_from_config_dict_parity(self) -> None:
+        returns = pd.Series(
+            np.random.RandomState(11).randn(80) * 0.015,
+            index=pd.date_range("2024-03-01", periods=80, freq="D"),
+            name="cfg_returns",
+        )
+        config_dict = {
+            "vol_window": 8,
+            "lookback_window": 40,
+            "low_threshold": 0.25,
+            "high_threshold": 0.75,
+        }
+        model = ElKarouiVolModel.from_config_dict(config_dict)
+        vol = model.calculate_realized_vol(returns)
+        percentiles = model.calculate_vol_percentile(vol)
+        expected = _legacy_regime_series_apply_reference(
+            percentiles, model.config.low_threshold, model.config.high_threshold
+        )
+        actual = model.regime_series(returns)
+        _assert_regime_series_equal(actual, expected)
+
+    def test_regime_series_from_default_parity(self) -> None:
+        returns = pd.Series(
+            np.random.RandomState(13).randn(120) * 0.012,
+            index=pd.date_range("2024-04-01", periods=120, freq="D"),
+            name="default_returns",
+        )
+        model = ElKarouiVolModel.from_default()
+        vol = model.calculate_realized_vol(returns)
+        percentiles = model.calculate_vol_percentile(vol)
+        expected = _legacy_regime_series_apply_reference(
+            percentiles, model.config.low_threshold, model.config.high_threshold
+        )
+        actual = model.regime_series(returns)
+        _assert_regime_series_equal(actual, expected)

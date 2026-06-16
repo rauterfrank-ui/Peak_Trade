@@ -48,8 +48,10 @@ from src.core.peak_config import PeakConfig, load_config
 from src.core.position_sizing import build_position_sizer_from_config
 from src.core.risk import build_risk_manager_from_config
 from src.core.experiments import log_market_scan_result, RUN_TYPE_MARKET_SCAN
+from scripts.run_backtest import _build_strategy_params_from_config
 from src.backtest.engine import BacktestEngine
-from src.strategies.registry import create_strategy_from_config, get_available_strategy_keys
+from src.strategies import load_strategy
+from src.strategies.registry import get_available_strategy_keys
 
 
 def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
@@ -226,8 +228,9 @@ def scan_symbol_forward(
 
     # Strategie
     try:
-        strategy = create_strategy_from_config(strategy_key, cfg)
-        signals = strategy.generate_signals(df)
+        strategy_params = _build_strategy_params_from_config(cfg, strategy_key)
+        signal_fn = load_strategy(strategy_key)
+        signals = signal_fn(df, strategy_params)
 
         if signals is None or signals.empty:
             return {"error": "Keine Signale generiert"}
@@ -269,7 +272,8 @@ def scan_symbol_backtest_lite(
 
     # Strategie
     try:
-        strategy = create_strategy_from_config(strategy_key, cfg)
+        strategy_params = _build_strategy_params_from_config(cfg, strategy_key)
+        base_signal_fn = load_strategy(strategy_key)
     except Exception as e:
         return {"error": f"Strategie-Fehler: {e}"}
 
@@ -280,19 +284,19 @@ def scan_symbol_backtest_lite(
             risk_manager=risk_manager,
         )
 
-        def strategy_signal_fn(data, _params):
-            return strategy.generate_signals(data)
+        def strategy_signal_fn(data, params):
+            return base_signal_fn(data, params)
 
         result = engine.run_realistic(
             df=df,
             strategy_signal_fn=strategy_signal_fn,
-            strategy_params={},
+            strategy_params=strategy_params,
         )
 
         stats = result.stats or {}
 
         # Signal aus letztem Zeitpunkt extrahieren
-        signals = strategy.generate_signals(df)
+        signals = base_signal_fn(df, strategy_params)
         last_signal = float(signals.iloc[-1]) if signals is not None and not signals.empty else 0.0
 
         return {

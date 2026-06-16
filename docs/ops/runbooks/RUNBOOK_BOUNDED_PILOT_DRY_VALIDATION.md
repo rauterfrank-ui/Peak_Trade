@@ -164,3 +164,7 @@ State **UTC window**, **step** that failed, and whether cockpit posture is **kno
 - no new gates;
 - no replacement for operator judgment;
 - no claim of pilot readiness **beyond** documenting this dry-validation sequence.
+
+## Siehe auch
+
+- [CANARY_LIVE_ENTRY_CRITERIA.md](CANARY_LIVE_ENTRY_CRITERIA.md) — kanonische Canary-Live-Entry-Kriterien; dieser Dry-Validation-Runbook-Pointer ist rein navigierend und begründet keine Freigabe, keinen Live-Unlock, keine LB-APR-Abkürzung und keine Autorisierung von Runtime, Scheduler, Paper, Testnet, Live, Broker oder Exchange. **Docs ≠ Approval** · **Signal ≠ Trade** · NO-LIVE-Default unverändert.

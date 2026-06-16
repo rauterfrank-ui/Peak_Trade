@@ -22,62 +22,23 @@ from pathlib import Path
 # Projekt-Root zum Python-Path hinzufügen
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-import pandas as pd
-import numpy as np
-from datetime import datetime, timedelta
-
 from src.core.peak_config import load_config
 from src.core.position_sizing import build_position_sizer_from_config
 from src.core.risk import build_risk_manager_from_config
 from src.core.experiments import log_experiment_from_result
+from scripts.run_backtest import (
+    _build_strategy_params_from_config,
+    _resolve_strategy_signal_fn,
+    _validate_strategy_registry_gates,
+    load_ohlcv_data,
+)
 from src.strategies.registry import (
     get_available_strategy_keys,
-    create_strategy_from_config,
+    get_strategy_spec,
     list_strategies,
 )
 from src.backtest.engine import BacktestEngine
 from src.backtest.stats import validate_for_live_trading
-
-
-def create_dummy_data(n_bars: int = 200) -> pd.DataFrame:
-    """
-    Erstellt Dummy-OHLCV-Daten für Tests.
-
-    Simuliert verschiedene Marktbedingungen für flexible Strategie-Tests.
-    """
-    np.random.seed(42)
-
-    # Start-Zeitpunkt
-    start = datetime.now() - timedelta(hours=n_bars)
-    dates = pd.date_range(start, periods=n_bars, freq="1h")
-
-    # Preis-Simulation mit Trend, Oszillation und Noise
-    base_price = 50000
-
-    # Langfristiger Trend
-    trend = np.linspace(0, 3000, n_bars)
-
-    # Oszillation (für verschiedene Strategien)
-    cycle = np.sin(np.linspace(0, 4 * np.pi, n_bars)) * 2000
-
-    # Random Walk Noise
-    noise = np.random.randn(n_bars).cumsum() * 200
-
-    close_prices = base_price + trend + cycle + noise
-
-    # OHLC generieren
-    df = pd.DataFrame(
-        {
-            "open": close_prices * (1 + np.random.randn(n_bars) * 0.002),
-            "high": close_prices * (1 + abs(np.random.randn(n_bars)) * 0.003),
-            "low": close_prices * (1 - abs(np.random.randn(n_bars)) * 0.003),
-            "close": close_prices,
-            "volume": np.random.randint(10, 100, n_bars),
-        },
-        index=dates,
-    )
-
-    return df
 
 
 def print_report(result, strategy_name: str):
@@ -231,29 +192,35 @@ def main():
         strategy_key = cfg.get("general.active_strategy", "ma_crossover")
         print(f"\n📊 Nutze aktive Strategie aus Config: '{strategy_key}'")
 
-    # Strategie erstellen
+    # Strategie auflösen (kanonischer load_strategy()-Pfad)
     print(f"\n🔨 Erstelle Strategie '{strategy_key}'...")
     try:
-        strategy = create_strategy_from_config(strategy_key, cfg)
-        print(f"✅ {strategy}")
+        _validate_strategy_registry_gates(strategy_key, cfg)
+        strategy_params = _build_strategy_params_from_config(cfg, strategy_key)
+        base_signal_fn = _resolve_strategy_signal_fn(strategy_key)
+        spec = get_strategy_spec(strategy_key)
+        print(f"✅ {spec.cls.__name__}({strategy_key})")
     except KeyError as e:
         print(f"\n❌ FEHLER: {e}")
         print("\nVerfügbare Strategien:")
         list_strategies(verbose=False)
         return
+    except ValueError as e:
+        print(f"\n❌ FEHLER: {e}")
+        return
     except Exception as e:
         print(f"\n❌ FEHLER beim Erstellen der Strategie: {e}")
         return
 
-    # Daten erstellen (später: von Kraken holen)
+    # Daten laden (kanonischer OHLCV-Loader)
     print(f"\n📥 Lade Daten ({args.bars} bars)...")
-    df = create_dummy_data(n_bars=args.bars)
+    df = load_ohlcv_data(None, None, None, n_bars=args.bars)
     print(f"  - Zeitraum: {df.index[0]} bis {df.index[-1]}")
     print(f"  - Bars: {len(df)}")
 
     # Signale generieren (Test)
     print("\n🔍 Generiere Signale...")
-    signals = strategy.generate_signals(df)
+    signals = base_signal_fn(df, strategy_params)
     n_longs = (signals == 1).sum()
     n_shorts = (signals == -1).sum()
     n_flats = (signals == 0).sum()
@@ -278,14 +245,8 @@ def main():
     # Wrapper für Legacy-API
     def strategy_signal_fn(df, params):
         # Konvertiere Short-Signale (-1) in Flat (0) für Long-Only Engine
-        sigs = strategy.generate_signals(df)
+        sigs = base_signal_fn(df, params)
         return sigs.replace(-1, 0)
-
-    # Stop-Loss aus Config holen (strategie-spezifisch oder global)
-    stop_pct = cfg.get(f"strategy.{strategy_key}.stop_pct", 0.02)
-    strategy_params = {
-        "stop_pct": stop_pct,
-    }
 
     engine = BacktestEngine(core_position_sizer=position_sizer, risk_manager=risk_manager)
     result = engine.run_realistic(

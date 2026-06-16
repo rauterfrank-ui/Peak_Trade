@@ -616,9 +616,36 @@ ruff format --check .
 
 ---
 
+## Appendix G — External downloads intake (historical, non-authorizing)
+
+Operator-Artefakte aus `~/Downloads` (Intake 2026-05-19) sind **nicht** Repo-Wahrheit. Aktive Steuerung bleibt dieses Frontdoor + [CURSOR_MULTI_AGENT_RUNBOOK_PHASES_V2.md](CURSOR_MULTI_AGENT_RUNBOOK_PHASES_V2.md).
+
+| Artefakt | Ablage | Hinweis |
+|----------|--------|---------|
+| Notion Knowledge Graph / ops registry runbook v0 | [_archive/downloads_intake_20260519T195748Z/external/PEAK_TRADE_CURSOR_MULTI_AGENT_NOTION_KNOWLEDGE_GRAPH_RUNBOOK_V0.md](_archive/downloads_intake_20260519T195748Z/external/PEAK_TRADE_CURSOR_MULTI_AGENT_NOTION_KNOWLEDGE_GRAPH_RUNBOOK_V0.md) | **HISTORICAL** — Notion = navigation/evidence registry only; Repo + gates remain authoritative |
+| Autonomy roadmap (read-only, May 2026) | [_archive/downloads_intake_20260519T195748Z/external/Peak_Trade_Autonomy_Roadmap_20260502/](_archive/downloads_intake_20260519T195748Z/external/Peak_Trade_Autonomy_Roadmap_20260502/) | **HISTORICAL** — see [MASTER_V2_GO_LIVE_ROADMAP_V0.md](specs/MASTER_V2_GO_LIVE_ROADMAP_V0.md) §3.1 |
+| OPS Cockpit recheck snapshots (Apr 2026) | [_archive/downloads_intake_20260519T195748Z/external/OPS Cockpit/](_archive/downloads_intake_20260519T195748Z/external/OPS%20Cockpit/) | **HISTORICAL** — see [OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md](specs/OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md) |
+
+Index: [_archive/downloads_intake_20260519T195748Z/README.md](_archive/downloads_intake_20260519T195748Z/README.md)
+
+## Appendix H — Final Downloads cleanup (historical, non-authorizing)
+
+Second-pass cleanup (2026-05-19): remaining `~/Downloads` Peak_Trade items archived or externalized. **Not** repo truth.
+
+| Artefakt | Ablage |
+|----------|--------|
+| Direction-lock briefings, other MDs, visual PDFs | [_archive/downloads_final_cleanup_20260519T221506Z/](_archive/downloads_final_cleanup_20260519T221506Z/) |
+| Anthropic Cybersecurity Skills (third-party bulk) | [_archive/downloads_final_cleanup_20260519T221506Z/THIRD_PARTY_EXTERNAL_INPUTS_MANIFEST.md](_archive/downloads_final_cleanup_20260519T221506Z/THIRD_PARTY_EXTERNAL_INPUTS_MANIFEST.md) — **not vendored** |
+
+Operator originals: `~/Documents/Peak_Trade_external_downloads_archive_20260519T221506Z/` (outside Downloads).
+
+---
+
 ## Änderungslog
 - v1.1: Repo-Anchoring Pass (Appendix E) + Existenz-Check (Appendix B.1) + konkrete Ankerliste (verifizieren und pflegen).
 - v1.2: Live Execution Roadmap Runner (Appendix F) hinzugefügt — Multi-Agent-Workflow für Phase-0 bis Live.
+- v1.3: Appendix G — external downloads intake pointers (historical Notion/autonomy/OPS Cockpit artefacts; non-authorizing).
+- v1.4: Appendix H — final Downloads cleanup archive pointers (historical briefings, other MDs, visual PDFs; third-party manifest only).
 
 ---
 

@@ -8,11 +8,7 @@
 name: MarketSentinel – Daily Market Outlook
 
 on:
-  # Täglicher Lauf um 05:00 UTC
-  schedule:
-    - cron: "0 5 * * *"
-
-  # Manuell aus GitHub UI startbar
+  # Scheduled cron removed (cost minimization); manual dispatch only.
   workflow_dispatch:
 
 jobs:

@@ -46,16 +46,15 @@ from _shared_forward_args import (
 )
 from _shared_ohlcv_loader import OHLCV_SOURCE_DUMMY, load_ohlcv_with_meta
 from src.core.peak_config import load_config, PeakConfig
+from scripts.run_backtest import _build_strategy_params_from_config
 from src.core.position_sizing import build_position_sizer_from_config
 from src.core.risk import build_risk_manager_from_config
 from src.backtest.engine import BacktestEngine
 from src.backtest.result import BacktestResult
 from src.backtest import stats as stats_mod
 from src.backtest.reporting import save_full_report
-from src.strategies.registry import (
-    create_strategy_from_config,
-    get_available_strategy_keys,
-)
+from src.strategies import load_strategy
+from src.strategies.registry import get_available_strategy_keys
 
 
 def parse_args(argv: List[str] | None = None) -> argparse.Namespace:
@@ -256,21 +255,16 @@ def run_single_symbol_backtest(
         ohlcv_csv_path=ohlcv_csv_path,
     )
 
-    # Strategie erstellen
-    strategy = create_strategy_from_config(strategy_key, cfg)
+    strategy_params = _build_strategy_params_from_config(cfg, strategy_key)
+    base_signal_fn = load_strategy(strategy_key)
 
     # Position Sizer & Risk Manager
     position_sizer = build_position_sizer_from_config(cfg)
     risk_manager = build_risk_manager_from_config(cfg, section="risk_management")
 
-    # Wrapper für Legacy-API
     def strategy_signal_fn(df, params):
-        sigs = strategy.generate_signals(df)
+        sigs = base_signal_fn(df, params)
         return sigs.replace(-1, 0)  # Long-Only
-
-    # Stop-Loss aus Config
-    stop_pct = cfg.get(f"strategy.{strategy_key}.stop_pct", 0.02)
-    strategy_params = {"stop_pct": stop_pct}
 
     # Backtest durchführen
     engine = BacktestEngine(core_position_sizer=position_sizer, risk_manager=risk_manager)

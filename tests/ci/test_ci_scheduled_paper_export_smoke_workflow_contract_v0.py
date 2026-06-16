@@ -62,15 +62,11 @@ def test_workflow_exists_parseable_and_named() -> None:
     assert data.get("name") == "CI / Scheduled Paper + Export Smoke"
 
 
-def test_workflow_has_dispatch_and_schedule_triggers() -> None:
+def test_workflow_dispatch_only_without_active_schedule() -> None:
     triggers = _trigger_section(_workflow())
 
     assert "workflow_dispatch" in triggers
-
-    schedule = triggers.get("schedule")
-    assert isinstance(schedule, list)
-    assert len(schedule) >= 1
-    assert any(isinstance(entry, dict) and "cron" in entry for entry in schedule)
+    assert "schedule" not in triggers
 
 
 def test_workflow_permissions_allow_dispatch_and_read_contents() -> None:

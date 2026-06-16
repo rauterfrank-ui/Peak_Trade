@@ -153,3 +153,39 @@ When classifying **why** progression must remain blocked, cross-check [Failure t
 End-to-end bounded-pilot entry (non-incident): [RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md](RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md).
 
 Candidate session flow (context): [RUNBOOK_BOUNDED_REAL_MONEY_PILOT_CANDIDATE_FLOW.md](RUNBOOK_BOUNDED_REAL_MONEY_PILOT_CANDIDATE_FLOW.md).
+
+## 12) GLB-017 Incident/Abort Route Static Boundary v0
+
+```
+GLB017_INCIDENT_ABORT_ROUTE_BOUNDARY_V0=true
+INCIDENT_ABORT_ROUTE_CANONICAL_OWNER_EXPLICIT=true
+AMBIGUOUS_INCIDENT_ROUTE_FAIL_CLOSED=true
+INCIDENT_ABORT_ROUTE_NON_EXECUTING=true
+AUTOMATIC_TRADING_RESUME_FORBIDDEN=true
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+EXECUTION_AUTHORIZED=false
+LIVE_AUTHORIZED=false
+```
+
+This section closes the **static incident/abort route legibility boundary** for [GLB-017](../specs/MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md) §6.5.4. It **does not** close **GLB-017**, **does not** execute abort/KillSwitch/recovery actions, **does not** mutate runtime or evidence datasets, and **does not** grant arming, execution, or live authority.
+
+### Canonical route (bounded pilot)
+
+| Condition class | Canonical owner / route | Posture |
+|---|---|---|
+| KillSwitch active or org-wide safety stop | [Kill Switch Runbook](../../risk/KILL_SWITCH_RUNBOOK.md) | `NO_TRADE` / remain stopped |
+| Entry-contract §5 abort criteria | [Bounded Real-Money Pilot Entry Contract](../specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md) §5 | immediate abort / no new risk |
+| Bounded-pilot symptom triage | this compass §3–§6 → matching `RUNBOOK_PILOT_INCIDENT_*.md` | conservative stop; external L5 pointers only |
+| Ambiguous, missing, or competing route | **fail-closed** | `NO_TRADE`; escalate; **no** auto-resume |
+
+**Trigger classes (operator-facing):** exchange/broker unhealthy; exposure or cap surprise; reconciliation mismatch; session-end/closeout disagreement; transfer ambiguity; telemetry/dependency degraded; stale state; operator cannot determine bounded posture; any doubt whether trading is allowed.
+
+### Non-authorizing constraints
+
+- Using this compass, reading incident runbooks, or passing static tests **does not** execute runtime abort, KillSwitch, scheduler stop, or trading resume.
+- Archive operator-confirmation or reflection blocks **do not** create approval, preflight lift, arming, execution, or live authorization.
+- **Automatic incident resolution** and **automatic trading resume** are **forbidden** from docs/tests/evidence posture alone.
+- Actual incident/abort actions require a **separately authorized operative context** outside this static boundary slice.
+
+Crosslink: [First Live Pilot Sequence Runbook](RUNBOOK_MASTER_V2_FIRST_LIVE_PILOT_SEQUENCE_V0.md) §11 STOP/Abort; register §6.5.4. Static guard: `tests/ops/test_master_v2_go_live_blocker_register_core_doc_contract_v0.py` (`GLB017_INCIDENT_ABORT_ROUTE_CROSSLINK_GUARD_V1`).

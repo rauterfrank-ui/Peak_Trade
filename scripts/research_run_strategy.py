@@ -39,18 +39,22 @@ from __future__ import annotations
 
 import argparse
 import sys
-from datetime import datetime, timedelta
+from datetime import datetime
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
 import pandas as pd
-import numpy as np
 
 # Projekt-Root zum Path hinzufügen
 PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from src.core.peak_config import load_config
+from scripts.run_backtest import (
+    _build_strategy_params_from_config,
+    _validate_strategy_registry_gates,
+    load_ohlcv_data,
+)
+from src.core.peak_config import load_config, PeakConfig
 from src.core.position_sizing import build_position_sizer_from_config
 from src.core.risk import build_risk_manager_from_config
 from src.core.experiments import (
@@ -59,11 +63,10 @@ from src.core.experiments import (
 )
 from src.backtest.engine import BacktestEngine
 from src.backtest.stats import validate_for_live_trading
-from src.data import DataNormalizer, CsvLoader, KrakenCsvLoader
+from src.strategies import load_strategy
 from src.strategies.registry import (
     get_available_strategy_keys,
     get_strategy_spec,
-    create_strategy_from_config,
     list_strategies,
 )
 
@@ -214,123 +217,6 @@ def parse_custom_params(param_list: List[str]) -> Dict[str, Any]:
     return params
 
 
-def generate_dummy_ohlcv(
-    n_bars: int = 500,
-    base_price: float = 50000.0,
-    volatility: float = 0.015,
-) -> pd.DataFrame:
-    """
-    Generiert synthetische OHLCV-Daten für Research/Tests.
-
-    Die Daten enthalten sowohl Trends als auch Seitwärtsphasen,
-    was für verschiedene Strategietypen geeignet ist.
-
-    Args:
-        n_bars: Anzahl Bars
-        base_price: Startpreis
-        volatility: Volatilität (Standardabweichung der Returns)
-
-    Returns:
-        OHLCV-DataFrame mit DatetimeIndex (UTC)
-    """
-    np.random.seed(42)  # Reproduzierbarkeit
-
-    # Zeitindex (stündlich)
-    end = datetime.now()
-    start = end - timedelta(hours=n_bars)
-    index = pd.date_range(start=start, periods=n_bars, freq="1h", tz="UTC")
-
-    # Random Walk für Close mit Trend-Komponente
-    returns = np.random.normal(0, volatility, n_bars)
-
-    # Trend + Zyklen für interessantere Strategietests
-    trend = np.sin(np.linspace(0, 4 * np.pi, n_bars)) * 0.001
-    returns = returns + trend
-
-    close_prices = base_price * np.exp(np.cumsum(returns))
-
-    # OHLC generieren
-    df = pd.DataFrame(index=index)
-    df["close"] = close_prices
-    df["open"] = df["close"].shift(1).fillna(base_price)
-
-    # High = max(open, close) + random bump
-    high_bump = np.random.uniform(0, 0.005, n_bars)
-    df["high"] = np.maximum(df["open"], df["close"]) * (1 + high_bump)
-
-    # Low = min(open, close) - random dip
-    low_dip = np.random.uniform(0, 0.005, n_bars)
-    df["low"] = np.minimum(df["open"], df["close"]) * (1 - low_dip)
-
-    # Volume
-    df["volume"] = np.random.uniform(100, 1000, n_bars)
-
-    return df[["open", "high", "low", "close", "volume"]]
-
-
-def load_ohlcv_data(
-    data_file: Optional[str],
-    start_date: Optional[str],
-    end_date: Optional[str],
-    n_bars: int,
-    verbose: bool = False,
-) -> pd.DataFrame:
-    """
-    Lädt OHLCV-Daten aus CSV oder generiert Dummy-Daten.
-
-    Args:
-        data_file: Pfad zur CSV-Datei (None = Dummy-Daten)
-        start_date: Startdatum-Filter
-        end_date: Enddatum-Filter
-        n_bars: Anzahl Bars für Dummy-Daten
-        verbose: Ausführliche Ausgabe
-
-    Returns:
-        Normalisierter OHLCV-DataFrame
-    """
-    if data_file:
-        path = Path(data_file)
-        if not path.exists():
-            raise FileNotFoundError(f"Datei nicht gefunden: {data_file}")
-
-        if verbose:
-            print(f"  Lade Daten aus: {data_file}")
-
-        # Kraken-spezifisches Format erkennen
-        if "kraken" in str(path).lower():
-            loader = KrakenCsvLoader()
-        else:
-            loader = CsvLoader()
-
-        df = loader.load(str(path))
-
-        # Normalisieren
-        normalizer = DataNormalizer()
-        df = normalizer.normalize(df)
-    else:
-        if verbose:
-            print(f"  Generiere {n_bars} Dummy-Bars")
-        df = generate_dummy_ohlcv(n_bars=n_bars)
-
-    # Datums-Filter anwenden
-    if start_date:
-        start_dt = pd.to_datetime(start_date).tz_localize("UTC")
-        df = df[df.index >= start_dt]
-        if verbose:
-            print(f"  Filter: >= {start_date}")
-
-    if end_date:
-        end_dt = pd.to_datetime(end_date).tz_localize("UTC")
-        df = df[df.index <= end_dt]
-        if verbose:
-            print(f"  Filter: <= {end_date}")
-
-    if len(df) == 0:
-        raise ValueError("Keine Daten nach Filterung übrig!")
-
-    return df
-
-
 def print_summary(
     result,
     strategy_name: str,
@@ -449,28 +335,32 @@ def main() -> int:
 
     try:
         spec = get_strategy_spec(strategy_key)
-        strategy = create_strategy_from_config(strategy_key, cfg)
         strategy_desc = spec.description
-
-        if args.verbose:
-            print(f"  Strategie: {strategy}")
-            print(f"  Beschreibung: {strategy_desc}")
     except KeyError as e:
         print(f"\nFEHLER: {e}")
         print("\nVerfügbare Strategien:")
         list_strategies(verbose=False)
         return 1
 
-    # Custom-Parameter parsen und anwenden
+    try:
+        _validate_strategy_registry_gates(strategy_key, cfg)
+    except ValueError as e:
+        print(f"\nFEHLER: {e}")
+        return 1
+
     custom_params = parse_custom_params(args.param)
     if custom_params:
         print(f"  Custom-Parameter: {custom_params}")
-        # Parameter in strategy.config überschreiben
-        strategy.config.update(custom_params)
-        # Auch Instanz-Attribute aktualisieren
-        for k, v in custom_params.items():
-            if hasattr(strategy, k):
-                setattr(strategy, k, v)
+
+    strategy_params = _build_strategy_params_from_config(cfg, strategy_key)
+    if custom_params:
+        strategy_params.update(custom_params)
+
+    base_signal_fn = load_strategy(strategy_key)
+
+    if args.verbose:
+        print(f"  Strategie-Key: {strategy_key}")
+        print(f"  Beschreibung: {strategy_desc}")
 
     # 3. Daten laden
     print("\n[3/5] Daten laden...")
@@ -499,13 +389,8 @@ def main() -> int:
             print(f"  Position Sizer: {position_sizer}")
             print(f"  Risk Manager: {risk_manager}")
 
-        # Wrapper für Engine
         def strategy_signal_fn(data, params):
-            return strategy.generate_signals(data)
-
-        # Stop-Loss aus Config
-        stop_pct = cfg.get(f"strategy.{strategy_key}.stop_pct", 0.02)
-        strategy_params = {"stop_pct": stop_pct}
+            return base_signal_fn(data, params)
 
         # Engine erstellen und Backtest ausführen
         engine = BacktestEngine(

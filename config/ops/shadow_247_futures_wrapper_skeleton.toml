@@ -1,0 +1,47 @@
+# Shadow 24/7 Futures wrapper skeleton — read-only ops metadata v0
+#
+# Non-authorizing: documents planning defaults only. Does not enable scheduler, daemon,
+# testnet, live, broker, exchange, network, or order submission.
+# Aligns with config/ops/paper_shadow_247_preflight.toml boolean discipline.
+
+schema_version = "shadow_247_futures_wrapper_skeleton.v0"
+canonical_owner = "ops-shadow-247-futures-wrapper-skeleton"
+
+# Default-off operator posture (config-only; not runtime authority)
+enabled = false
+armed = false
+dry_run = true
+shadow_mode = true
+
+# Capability gates — must remain false until separate explicit governance PRs
+testnet_allowed = false
+live_allowed = false
+paper_allowed = false
+network_allowed = false
+broker_allowed = false
+exchange_allowed = false
+order_submission_allowed = false
+private_exchange_endpoint_allowed = false
+credentials_allowed = false
+
+# Futures / perpetual planning scope (not a trading approval)
+instrument = "BTCUSDT"
+market_type = "futures"
+perpetual_scope = true
+
+# Evidence + wrapper linkage
+evidence_root_convention = "/tmp/peak_trade_*"
+wrapper_script = "scripts/ops/shadow_247_futures_start_wrapper_skeleton_v0.py"
+wrapper_modes_allowed = [
+  "prestart_evidence_drycheck",
+  "inspect",
+  "default_fail_closed",
+]
+wrapper_daemon_start_allowed = false
+
+# Future gates — documented as required, not satisfiable from this file alone
+supervisor_timeout_future_gate_required = true
+abort_stop_criteria_future_gate_required = true
+final_operator_confirmation_gate_required = true
+
+immediate_execution_approved = false

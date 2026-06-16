@@ -41,6 +41,56 @@ Stable Markers sind **Anzeige-/Test-Anker**, keine Claims zu Betriebsreadiness o
 | R&amp;D Experiments | HTML-Liste und **`GET &#47;api&#47;r_and_d&#47;experiments`** |
 | OPS CI Health | **`GET &#47;ops&#47;ci-health`** (dediziertes CI-Dashboard) und **`GET &#47;ops&#47;ci-health&#47;status`** (bevorzugter read-only Status, JSON) — Hub nur GET-Links, v0.6 |
 | Paper/Shadow Summary (Placeholder v0) | Statischer Link zu **`GET &#47;api&#47;observability&#47;paper-shadow-summary`** + Doc-Pfad-Hinweise; **kein** serverseitiger Aufruf, **kein** Artefakt-Lesen beim Rendern von **`GET &#47;observability`** |
+| Last Paper Run (view-only SSR v0) | Env-gated SSR panel from durable run bundle — **`last_paper_run_panel_readmodel.v0`**; **not** Market Surface; instrument **`NOT_PERSISTED`** when absent in evidence |
+| Workflow Dashboard V1 (view-only SSR v1) | Env-gated multi-run pipeline + missing-truth panels — **`workflow_dashboard_readmodel.v1`**; **not** Market Surface; **no** BTC/USD substitution |
+
+## Workflow Dashboard V1 (view-only SSR v1)
+
+**Route:** **`GET &#47;observability`** only (extends hub; no duplicate route).
+
+- **Gate (default off):** `PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ENABLED=1` and `PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ARCHIVE_ROOT=<durable archive root>` — implemented in `src/webui/workflow_dashboard_runtime_v1.py`.
+- **Readmodel:** `workflow_dashboard_readmodel.v1` with embedded `workflow_pipeline_aggregate.v1` — builder `src/webui/workflow_dashboard_readmodel_v1/`.
+- **Panels (A–J):** Safety, Universe/Top20/Selected/Future missing-truth, Pipeline P1→T3, Orders/Fills/PnL, Evidence, KillSwitch, Next GO.
+- **Missing truth:** `UNIVERSE_SOURCE_NOT_PERSISTED`, `TOP20_RANKING_NOT_PERSISTED`, `SELECTED_FUTURE_NOT_PERSISTED`, `FUTURE_DETAIL_NOT_AVAILABLE` — **never** inferred from `GET &#47;market` dummy OHLCV.
+- **T1 original:** displayed with `RECLASSIFIED_STAGING_ONLY`; T3 **PLANNED_PARKED** without run bundle.
+- **Markers:** `data-workflow-dashboard-v1="true"`, `data-workflow-dashboard-readonly="true"`, `data-workflow-dashboard-authority="false"`, `data-workflow-panel-*-v1`, `data-workflow-stage-v1`.
+- **Boundaries:** SSR only when gate on; no POST, no fetch/polling, no trading controls. `stale=true`, `stale_reason=archive_snapshot`.
+- **Tests:** `tests/webui/test_workflow_dashboard_readmodel_v1.py`, `tests/webui/test_observability_workflow_dashboard_structure_contract_v1.py`, `tests/ops/test_workflow_dashboard_env_schema_boundary_v1.py`.
+
+### Kraken Futures Metadata Coverage panel (diagnostic-only)
+
+Additive Workflow Dashboard V1 panel — **diagnostic-only**, **not** observability truth, **not** selection, **not** tradeability.
+
+- **Data source:** manifest-verified `futures_producer_packet_governed.v1.json` under `{ARCHIVE_ROOT}&#47;governed_metadata&#47;` with `provider=kraken_futures` — reader `kraken_metadata_coverage_reader_v1.py`.
+- **Display:** completeness summary only (`packet_count`, `candidate_validation_complete`, `strict_instrument_complete`, `min_notional_unknown`) — **no** universe/ranking row tables.
+- **Markers:** `data-workflow-panel-kraken-metadata-coverage-v1="true"`, `data-kraken-metadata-coverage-diagnostic-only="true"`, `data-kraken-metadata-coverage-not-truth="true"`, `data-kraken-metadata-coverage-not-selected-future="true"`, `data-kraken-metadata-coverage-strict-upstream-blocked="true"`.
+- **Coexistence:** separate from Projection Coverage (`data-workflow-panel-projection-coverage-v1`); Missing Truth panels unchanged.
+- **Strict upstream:** `bundle_to_upstream_input` remains blocked when `min_notional_unknown` — panel does not lift upstream or truth gates.
+- **Permanent block reference:** Kraken public `/instruments` supplies no provider-authentic `min_notional` — see [REAL_FUTURES_MARKET_DATA_SOURCE_CONTRACT_V1.md](REAL_FUTURES_MARKET_DATA_SOURCE_CONTRACT_V1.md) §12.12.
+
+### Universe Selection Persistence Contract v1 (Slice 1 — schema/docs only)
+
+**Contract doc:** [**Universe Selection Read-model Schema v1**](UNIVERSE_SELECTION_READMODEL_V1.md) — `schema_name=universe_selection_readmodel.v1`.
+
+- **Storage target (Slice 2+):** `{ARCHIVE_ROOT}&#47;readmodels&#47;universe_selection_readmodel.v1.json` under `PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ARCHIVE_ROOT`.
+- **Validation (Slice 1):** `src/webui/workflow_dashboard_readmodel_v1/universe_selection_contract_v1.py` — offline schema only; **no archive writes**, **no runtime I/O**.
+- **Dashboard today:** Panels B–E remain **Missing Truth** (`UNIVERSE_SOURCE_NOT_PERSISTED`, `TOP20_RANKING_NOT_PERSISTED`, `SELECTED_FUTURE_NOT_PERSISTED`, `FUTURE_DETAIL_NOT_AVAILABLE`). Slice 1 does **not** populate rows.
+- **Slice 3 (future):** `workflow_dashboard_readmodel.v1` builder will read the persisted file when present and manifest-verified; until then Missing Truth stays valid.
+- **Producer eligibility (Slice 2+):** Paper / Shadow / Testnet bounded observation closeout adapters only — **Live not authorized**.
+- **BTC&#47;USD rule:** `GET &#47;market` dummy and Market Surface defaults must **never** substitute Observability universe/selection truth.
+- **Tests:** `tests/webui/test_universe_selection_contract_v1.py`, fixtures under `tests/fixtures/workflow_dashboard_readmodel_v1/universe_selection_readmodel_v1/`.
+
+## Last Paper Run panel (view-only SSR v0)
+
+**Route:** **`GET &#47;observability`** only (not primary on **`GET &#47;market`**).
+
+- **Gate (default off):** `PEAK_TRADE_LAST_PAPER_RUN_PANEL_ENABLED=1` and `PEAK_TRADE_LAST_PAPER_RUN_BUNDLE_ROOT=<durable run bundle path>` — implemented in `src/webui/last_paper_run_panel_runtime_v0.py`.
+- **Readmodel:** `last_paper_run_panel_readmodel.v0` — builder `src/webui/last_paper_run_panel_readmodel_v0/`.
+- **Markers:** `data-observability-last-paper-run-panel-v0="true"`, `data-observability-last-paper-run-readonly="true"`, `data-observability-last-paper-run-authority="false"`, `data-observability-last-paper-run-instrument-truth="<status>"`.
+- **Instrument rule:** When run evidence lacks `selected_instrument` / `selected_future` / `selected_symbol`, UI shows **`NOT_PERSISTED`** — **never** `BTC&#47;USD` or Market Surface query defaults as paper truth.
+- **Market separation:** **`GET &#47;market`** may show `data-market-v0-paper-run-truth-separation-v0` cross-link only; Market Surface remains fixture/OHLCV demo.
+- **Boundaries:** SSR only when gate on; no POST, no fetch/polling, no runtime/scheduler/paper start, no trading authority. `stale=true`, `stale_reason=archive_snapshot` for archive-backed reads.
+- **Tests:** `tests/webui/test_observability_last_paper_run_panel_structure_contract_v0.py`, `tests/webui/test_last_paper_run_panel_readmodel_v0.py`.
 
 ## Visual/UX consolidation (v0.7)
 

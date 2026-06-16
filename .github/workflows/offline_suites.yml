@@ -1,13 +1,7 @@
 name: Offline Test Suites
 
 on:
-  schedule:
-    # Daily Suite: Jeden Tag um 02:00 UTC
-    - cron: '0 2 * * *'
-    # Weekly Suite: Jeden Montag um 03:00 UTC
-    - cron: '0 3 * * 1'
-
-  # Manueller Trigger über GitHub UI
+  # Scheduled cron removed (cost minimization); manual dispatch only.
   workflow_dispatch:
     inputs:
       suite_type:

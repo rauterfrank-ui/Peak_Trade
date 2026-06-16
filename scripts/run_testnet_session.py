@@ -34,6 +34,9 @@ WICHTIG:
     - Nur Testnet-Environment ist erlaubt!
     - Default: validate_only=true (Orders werden validiert, nicht ausgefuehrt)
     - Keine echten Live-Trades in Phase 35!
+    - RUN_TESTNET_SESSION_ALLOWED_NOW=false (defense-in-depth; kein normaler Testnet-Run)
+    - REPO_NATIVE_BOUNDED_ORDER_CAP_CLI_WIRING_COMPLETE=true (bounded order-cap CLI wired; execute still blocked)
+    - Session-Execute erfordert --duration oder explizites --allow-unbounded-session
 
 Zum Beenden: Ctrl+C (SIGINT) oder SIGTERM
 """
@@ -73,6 +76,20 @@ from src.live.run_logging import (
     generate_run_id,
 )
 from src.orders.base import OrderRequest, OrderExecutionResult
+from src.ops.bounded_testnet_order_cap_contract_v0 import (
+    CLI_WIRING_COMPLETE_MARKER,
+    add_bounded_order_cap_cli_arguments,
+    bounded_cap_spec_from_namespace,
+    build_entrypoint_bounded_cap_config_evidence,
+    emit_entrypoint_bounded_cap_config_json,
+    planned_duration_seconds_from_args,
+    validate_bounded_cap_cli_namespace,
+)
+from src.ops.wallclock_session_evidence_v0 import (
+    WALLCLOCK_EVIDENCE_FILENAME,
+    WallClockSessionTracker,
+    write_wallclock_evidence,
+)
 from src.orders.testnet_executor import (
     TestnetExchangeOrderExecutor,
     EnvironmentNotTestnetError,
@@ -334,6 +351,8 @@ class TestnetSession:
         self._shutdown_requested = False
         self._last_signal: int = 0
         self._price_buffer: List[Dict[str, Any]] = []
+        self._wallclock_tracker: Optional[WallClockSessionTracker] = None
+        self._wallclock_evidence: Optional[Dict[str, Any]] = None
 
         # Signal Handler
         self._original_sigint_handler = None
@@ -629,6 +648,7 @@ class TestnetSession:
         """
         end_time = time.time() + (minutes * 60)
         all_results: List[OrderExecutionResult] = []
+        self._wallclock_tracker = WallClockSessionTracker.begin(minutes * 60)
 
         _emit_exec_event_safe(
             event_type="session_start",
@@ -668,6 +688,7 @@ class TestnetSession:
             level="info",
             msg=f"testnet session end symbol={self._session_config.symbol}",
         )
+        self._emit_wallclock_evidence()
         self._log_session_summary()
 
         if self._run_logger:
@@ -698,9 +719,25 @@ class TestnetSession:
             f"  Executor Mode: {executor_summary['mode']}"
         )
 
+    def _emit_wallclock_evidence(self) -> None:
+        if self._wallclock_tracker is None:
+            return
+        early_exit = self._shutdown_requested
+        early_reason = "shutdown_requested" if early_exit else ""
+        self._wallclock_evidence = self._wallclock_tracker.finalize(
+            early_exit_detected=early_exit,
+            early_exit_reason=early_reason,
+        )
+        self._wallclock_tracker = None
+        if self._run_logger is not None:
+            write_wallclock_evidence(
+                self._run_logger.run_dir / WALLCLOCK_EVIDENCE_FILENAME,
+                self._wallclock_evidence,
+            )
+
     def get_execution_summary(self) -> Dict[str, Any]:
         """Gibt eine Zusammenfassung der Session zurueck."""
-        return {
+        summary: Dict[str, Any] = {
             "session_metrics": self._metrics.to_dict(),
             "executor_summary": self._executor.get_execution_summary(),
             "config": {
@@ -709,6 +746,9 @@ class TestnetSession:
                 "poll_interval": self._session_config.poll_interval_seconds,
             },
         }
+        if self._wallclock_evidence is not None:
+            summary["wallclock_evidence"] = self._wallclock_evidence
+        return summary
 
 
 # =============================================================================
@@ -852,6 +892,81 @@ def build_testnet_session(
 
 
 # =============================================================================
+# Entrypoint fail-closed guards (defense-in-depth v0)
+# =============================================================================
+
+EXIT_FAIL_CLOSED_ENTRYPOINT = 2
+
+
+def _testnet_credentials_present() -> bool:
+    """True when both testnet credential env vars are set (values not inspected)."""
+    return bool(
+        os.environ.get("KRAKEN_TESTNET_API_KEY") and os.environ.get("KRAKEN_TESTNET_API_SECRET")
+    )
+
+
+def _enforce_bounded_order_cap_cli(
+    args: argparse.Namespace, logger: logging.Logger
+) -> Optional[int]:
+    """
+    Validate bounded order-cap CLI values (fail-closed).
+
+    Does not authorize NORMAL_TESTNET_RUN or operator arming.
+    """
+    fail_reasons = validate_bounded_cap_cli_namespace(args)
+    if fail_reasons:
+        for reason in fail_reasons:
+            logger.error(f"Bounded order-cap CLI invalid: {reason}")
+        return EXIT_FAIL_CLOSED_ENTRYPOINT
+    return None
+
+
+def _emit_bounded_order_cap_config(args: argparse.Namespace, logger: logging.Logger) -> None:
+    """Emit pre-session bounded cap + wall-clock config evidence (no orders/runtime)."""
+    spec = bounded_cap_spec_from_namespace(args)
+    evidence = build_entrypoint_bounded_cap_config_evidence(
+        spec,
+        planned_duration_seconds=planned_duration_seconds_from_args(args),
+    )
+    logger.info(
+        "Bounded order-cap config evidence: %s",
+        emit_entrypoint_bounded_cap_config_json(evidence),
+    )
+
+
+def _enforce_fail_closed_entrypoint(
+    args: argparse.Namespace, logger: logging.Logger
+) -> Optional[int]:
+    """
+    Fail-closed checks before any session execute (warmup/network).
+
+    Dry-run skips credential and duration requirements (config validation only).
+    Does not authorize NORMAL_TESTNET_RUN or operator arming.
+    """
+    cap_rc = _enforce_bounded_order_cap_cli(args, logger)
+    if cap_rc is not None:
+        return cap_rc
+    if args.dry_run:
+        return None
+    if not _testnet_credentials_present():
+        logger.error(
+            "Testnet credentials required for session execute. "
+            "Set KRAKEN_TESTNET_API_KEY and KRAKEN_TESTNET_API_SECRET."
+        )
+        return EXIT_FAIL_CLOSED_ENTRYPOINT
+    if args.duration is None and not args.allow_unbounded_session:
+        logger.error(
+            "Bounded session required: pass --duration MINUTES "
+            "or explicit --allow-unbounded-session (unsafe)."
+        )
+        return EXIT_FAIL_CLOSED_ENTRYPOINT
+    if args.duration is not None and args.duration <= 0:
+        logger.error("--duration must be a positive integer (minutes).")
+        return EXIT_FAIL_CLOSED_ENTRYPOINT
+    return None
+
+
+# =============================================================================
 # Main Entry Point
 # =============================================================================
 
@@ -916,7 +1031,12 @@ WICHTIG: Nur Testnet-Trading! Keine echten Live-Trades!
         "--duration",
         type=int,
         default=None,
-        help="Laufzeit in Minuten (default: unbegrenzt)",
+        help="Laufzeit in Minuten (Pflicht fuer Execute, ausser --allow-unbounded-session)",
+    )
+    parser.add_argument(
+        "--allow-unbounded-session",
+        action="store_true",
+        help="EXPLICIT unsafe opt-in: run until Ctrl+C without --duration (not operator-approved)",
     )
     parser.add_argument(
         "--log-level",
@@ -947,6 +1067,7 @@ WICHTIG: Nur Testnet-Trading! Keine echten Live-Trades!
         default=None,
         help="Alternatives Verzeichnis fuer Run-Logs",
     )
+    add_bounded_order_cap_cli_arguments(parser)
 
     args = parser.parse_args()
 
@@ -957,15 +1078,12 @@ WICHTIG: Nur Testnet-Trading! Keine echten Live-Trades!
     logger.info("Peak_Trade Testnet Session (Phase 35)")
     logger.info("=" * 60)
     logger.info("WICHTIG: Nur Testnet-Trading! Keine echten Live-Trades!")
+    logger.info("%s", CLI_WIRING_COMPLETE_MARKER)
     logger.info("=" * 60)
 
-    # API-Key-Check
-    api_key = os.environ.get("KRAKEN_TESTNET_API_KEY")
-    api_secret = os.environ.get("KRAKEN_TESTNET_API_SECRET")
-    if not api_key or not api_secret:
-        logger.warning(
-            "WARNUNG: KRAKEN_TESTNET_API_KEY und/oder KRAKEN_TESTNET_API_SECRET nicht gesetzt!"
-        )
+    fail_closed_rc = _enforce_fail_closed_entrypoint(args, logger)
+    if fail_closed_rc is not None:
+        return fail_closed_rc
 
     try:
         # Config laden
@@ -990,6 +1108,7 @@ WICHTIG: Nur Testnet-Trading! Keine echten Live-Trades!
         )
 
         if args.dry_run:
+            _emit_bounded_order_cap_config(args, logger)
             logger.info("Dry-Run: Session erfolgreich konfiguriert, keine Ausfuehrung.")
             return 0
 
@@ -997,14 +1116,19 @@ WICHTIG: Nur Testnet-Trading! Keine echten Live-Trades!
         logger.info("Starte Warmup...")
         session.warmup()
 
-        # Session starten
+        # Session starten (bounded default; unbounded only with explicit unsafe flag)
         if args.duration:
             logger.info(f"Starte Session fuer {args.duration} Minuten...")
             results = session.run_for_duration(args.duration)
             logger.info(f"Session beendet. {len(results)} Orders ausgefuehrt.")
-        else:
-            logger.info("Starte Session (Ctrl+C zum Beenden)...")
+        elif args.allow_unbounded_session:
+            logger.warning("Unbounded session (--allow-unbounded-session): Ctrl+C zum Beenden.")
             session.run_forever()
+        else:
+            logger.error(
+                "Bounded session required: --duration MINUTES or --allow-unbounded-session."
+            )
+            return EXIT_FAIL_CLOSED_ENTRYPOINT
 
         # Zusammenfassung
         summary = session.get_execution_summary()

@@ -15,57 +15,16 @@ from pathlib import Path
 # Projekt-Root zum Python-Path hinzufügen
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-import pandas as pd
-import numpy as np
-from datetime import datetime, timedelta
-
+from scripts.run_backtest import load_ohlcv_data
 from src.core.peak_config import load_config
 from src.core.position_sizing import build_position_sizer_from_config
 from src.core.risk import build_risk_manager_from_config
-from src.strategies.breakout_donchian import DonchianBreakoutStrategy
+from src.strategies import load_strategy
 from src.backtest.engine import BacktestEngine
 from src.backtest.stats import validate_for_live_trading
 
-
-def create_dummy_data(n_bars: int = 200) -> pd.DataFrame:
-    """
-    Erstellt Dummy-OHLCV-Daten für Tests.
-
-    Simuliert Trend mit Breakouts für Donchian-Strategie.
-    """
-    np.random.seed(42)
-
-    # Start-Zeitpunkt
-    start = datetime.now() - timedelta(hours=n_bars)
-    dates = pd.date_range(start, periods=n_bars, freq="1h")
-
-    # Preis-Simulation mit Trend und Breakouts
-    base_price = 50000
-
-    # Langfristiger Trend mit Stufen
-    trend = np.zeros(n_bars)
-    for i in range(0, n_bars, 40):
-        end = min(i + 40, n_bars)
-        trend[i:end] = (i // 40) * 2000
-
-    # Noise
-    noise = np.random.randn(n_bars).cumsum() * 100
-
-    close_prices = base_price + trend + noise
-
-    # OHLC generieren
-    df = pd.DataFrame(
-        {
-            "open": close_prices * (1 + np.random.randn(n_bars) * 0.002),
-            "high": close_prices * (1 + abs(np.random.randn(n_bars)) * 0.003),
-            "low": close_prices * (1 - abs(np.random.randn(n_bars)) * 0.003),
-            "close": close_prices,
-            "volume": np.random.randint(10, 100, n_bars),
-        },
-        index=dates,
-    )
-
-    return df
+DONCHIAN_STRATEGY_KEY = "breakout_donchian"
+DONCHIAN_CONFIG_SECTION = "strategy.breakout_donchian"
 
 
 def print_report(result):
@@ -114,6 +73,24 @@ def print_report(result):
     print("\n" + "=" * 70 + "\n")
 
 
+def _load_donchian_strategy_params(cfg) -> dict:
+    """Lädt Donchian-Parameter aus Config; fail-closed bei fehlender Sektion."""
+    lookback = cfg.get(f"{DONCHIAN_CONFIG_SECTION}.lookback")
+    if lookback is None:
+        raise KeyError(f"Config-Sektion [{DONCHIAN_CONFIG_SECTION}] fehlt oder ist unvollständig")
+    return {
+        "lookback": lookback,
+        "stop_pct": cfg.get(f"{DONCHIAN_CONFIG_SECTION}.stop_pct", 0.02),
+        "price_col": cfg.get(f"{DONCHIAN_CONFIG_SECTION}.price_col", "close"),
+    }
+
+
+def _long_only_signal_fn(df, params):
+    """Long-only Wrapper: Short-Signale (-1) in Flat (0) für Long-Only Engine."""
+    sigs = load_strategy(DONCHIAN_STRATEGY_KEY)(df, params)
+    return sigs.replace(-1, 0)
+
+
 def main():
     """Main-Funktion."""
 
@@ -135,7 +112,7 @@ lookback = 20
 price_col = "close"
         """
         )
-        return
+        sys.exit(1)
 
     # Basis-Config anzeigen
     initial_cash = cfg.get("backtest.initial_cash", 10000.0)
@@ -146,29 +123,31 @@ price_col = "close"
     print(f"  - Risk per Trade: {risk_per_trade:.1%}")
     print(f"  - Max Position Size: {max_position_size:.0%}")
 
-    # Strategie erstellen
-    print("\n📊 Erstelle Strategie...")
+    # Strategie-Parameter laden
+    print("\n📊 Strategie-Parameter...")
     try:
-        strategy = DonchianBreakoutStrategy.from_config(cfg)
-        print(f"✅ {strategy}")
-        print(f"  - Lookback: {strategy.lookback}")
-        print(f"  - Price Column: '{strategy.price_col}'")
-    except Exception as e:
-        print(f"\n❌ FEHLER beim Erstellen der Strategie: {e}")
+        strategy_params = _load_donchian_strategy_params(cfg)
+        print(f"  - Lookback: {strategy_params['lookback']}")
+        print(f"  - Price Column: '{strategy_params['price_col']}'")
+    except KeyError as e:
+        print(f"\n❌ FEHLER: {e}")
         print(
             "\nBitte stelle sicher, dass config.toml eine [strategy.breakout_donchian] Sektion hat."
         )
-        return
+        sys.exit(1)
+
+    # Kanonische Strategie für Signale (unwrapped)
+    base_signal_fn = load_strategy(DONCHIAN_STRATEGY_KEY)
 
     # Daten erstellen (später: von Kraken holen)
     print("\n📥 Lade Daten...")
-    df = create_dummy_data(n_bars=200)
+    df = load_ohlcv_data(None, None, None, n_bars=200)
     print(f"  - Zeitraum: {df.index[0]} bis {df.index[-1]}")
     print(f"  - Bars: {len(df)}")
 
     # Signale generieren (Test)
     print("\n🔍 Generiere Signale...")
-    signals = strategy.generate_signals(df)
+    signals = base_signal_fn(df, strategy_params)
     n_longs = (signals == 1).sum()
     n_shorts = (signals == -1).sum()
     n_flats = (signals == 0).sum()
@@ -186,26 +165,12 @@ price_col = "close"
     risk_manager = build_risk_manager_from_config(cfg, section="risk_management")
     print(f"✅ {risk_manager}")
 
-    # Backtest durchführen (mit Legacy-API für BacktestEngine)
+    # Backtest durchführen (Long-Only Wrapper für Engine)
     print("\n⚙️  Führe Realistic Backtest durch...")
-
-    # BacktestEngine erwartet noch die alte API (strategy_signal_fn + params)
-    # Wir wrappen die neue OOP-Strategie in die alte API
-    def strategy_signal_fn(df, params):
-        # Konvertiere Short-Signale (-1) in Flat (0) für Long-Only Engine
-        sigs = strategy.generate_signals(df)
-        return sigs.replace(-1, 0)
-
-    # Stop-Loss aus Config holen
-    stop_pct = cfg.get("strategy.breakout_donchian.stop_pct", 0.02)
-    strategy_params = {
-        "lookback": strategy.lookback,
-        "stop_pct": stop_pct,
-    }
 
     engine = BacktestEngine(core_position_sizer=position_sizer, risk_manager=risk_manager)
     result = engine.run_realistic(
-        df=df, strategy_signal_fn=strategy_signal_fn, strategy_params=strategy_params
+        df=df, strategy_signal_fn=_long_only_signal_fn, strategy_params=strategy_params
     )
 
     # Report drucken

@@ -28,6 +28,7 @@ from .base import (
     RegimeSeriesDetector,
 )
 from .config import RegimeDetectorConfig
+from src.strategies.vol_breakout import _rolling_last_pct_rank
 
 if TYPE_CHECKING:
     pass
@@ -110,13 +111,13 @@ class VolatilityRegimeDetector:
         """
         window = self.config.lookback_window
 
-        def percentile_rank(x: pd.Series) -> float:
-            if len(x) < 2:
-                return 0.5
-            return x.rank(pct=True).iloc[-1]
-
-        return atr.rolling(window=window, min_periods=self.config.vol_window).apply(
-            percentile_rank, raw=False
+        return (
+            _rolling_last_pct_rank(
+                atr,
+                window=window,
+                min_periods=self.config.vol_window,
+            )
+            / 100.0
         )
 
     def _compute_ma_slope(self, data: pd.DataFrame) -> pd.Series:
@@ -341,9 +342,14 @@ class RangeCompressionRegimeDetector:
         directional_bias = self._compute_directional_bias(df)
 
         # Perzentile der Range-Ratio
-        ratio_percentile = range_ratio.rolling(
-            window=self.config.lookback_window, min_periods=self.config.range_compression_window
-        ).apply(lambda x: pd.Series(x).rank(pct=True).iloc[-1], raw=False)
+        ratio_percentile = (
+            _rolling_last_pct_rank(
+                range_ratio,
+                window=self.config.lookback_window,
+                min_periods=self.config.range_compression_window,
+            )
+            / 100.0
+        )
 
         # Regime-Klassifikation
         # 1. Breakout: Hohe Range-Expansion

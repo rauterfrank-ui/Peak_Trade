@@ -24,8 +24,10 @@ Broader Ops runbook/script orientation stays in [`RUNBOOK_INDEX.md`](../RUNBOOK_
 
 ---
 
-- [RUNBOOK_TECH_DEBT_TOP3_ROI_FINISH.md](./RUNBOOK_TECH_DEBT_TOP3_ROI_FINISH.md): Tech-Debt Top-3 ROI bis Finish (Cursor Multi-Agent)
+#### Tech-Debt Top-3 ROI / Backlog (blocked, read-only)
 
+- [RUNBOOK_TECH_DEBT_TOP3_ROI_FINISH.md](./RUNBOOK_TECH_DEBT_TOP3_ROI_FINISH.md) — **Canonical** Tech-Debt Top-3 ROI bis Finish runbook (Cursor Multi-Agent, NO-LIVE; **non-authorizing**; `TECH_DEBT_TOP3_NAVIGATION_FAIL_CLOSED=true`; `PREFLIGHT_REMAINS_BLOCKED=true`)
+- [`docs/TECH_DEBT_BACKLOG.md`](../../TECH_DEBT_BACKLOG.md) — **Canonical** Tech-Debt backlog SSOT (reference only; status semantics unchanged; `TECH_DEBT_BACKLOG_STATUS_SEMANTIC_TOUCH=false`)
 
 ## Research & New Listings (CEX+DEX Crawler, AI Layers)
 
@@ -49,6 +51,33 @@ Runbooks for operating and troubleshooting documentation quality gates:
 - [RUNBOOK_DOCS_GATES_OPERATOR_PACK_QUICKSTART.md](RUNBOOK_DOCS_GATES_OPERATOR_PACK_QUICKSTART.md) — Quick start for all docs gates
 - [RUNBOOK_DOCS_GRAPH_TRIAGE_AND_REMEDIATION.md](RUNBOOK_DOCS_GRAPH_TRIAGE_AND_REMEDIATION.md) — Docs graph triage and remediation
 - [RUNBOOK_DOCS_GATES_FIX_FORWARD_CI_TRIAGE_CURSOR_MULTI_AGENT.md](RUNBOOK_DOCS_GATES_FIX_FORWARD_CI_TRIAGE_CURSOR_MULTI_AGENT.md) — Fix-forward CI triage for Token Policy and Reference Targets gate failures
+- [RUNBOOK_OPERATOR_CREDENTIAL_BOUNDARIES_PLANNING_FIRST_V0.md](RUNBOOK_OPERATOR_CREDENTIAL_BOUNDARIES_PLANNING_FIRST_V0.md) — Secret Handling (credential boundaries): planning-first, Cursor vs human-only, placeholders only (non-authorizing)
+
+### Non-execution readiness & observation gates (planning only)
+
+- [TESTNET_CHECKER_PREREQUISITES_V0.md](TESTNET_CHECKER_PREREQUISITES_V0.md) — Read-only Testnet prerequisite keys (non-authorizing)
+- [ORPHAN_SCHEDULER_AFTER_RUN_WITH_TIMEOUT_V0.md](ORPHAN_SCHEDULER_AFTER_RUN_WITH_TIMEOUT_V0.md) — Orphan scheduler classification after bounded timeout (no auto-kill in doc)
+- [BOUNDED_SCHEDULER_SINGLE_TICK_OPS_RUNBOOK_V0.md](BOUNDED_SCHEDULER_SINGLE_TICK_OPS_RUNBOOK_V0.md) — Bounded real-config scheduler: one dry-run tick on a `/tmp` copy (`run_scheduler_tick_once`; NO-LIVE)
+- [DAEMON_PAPER_24H_PLUS_OBSERVATION_GATE_BEFORE_TESTNET_V0.md](DAEMON_PAPER_24H_PLUS_OBSERVATION_GATE_BEFORE_TESTNET_V0.md) — Gate runbook for planning a future 24h+ Daemon Paper-Observation before Testnet review (no start commands; prose only; not “demo”)
+- [DAEMON_PAPER_24H_PLUS_OPERATOR_SCOPE_PREFLIGHT_V0.md](DAEMON_PAPER_24H_PLUS_OPERATOR_SCOPE_PREFLIGHT_V0.md) — Operator scope / preflight worksheet for a future Daemon 24h+ Paper-Test (decisions and checklist only; no commands)
+
+### Preflight / Primary Evidence (blocked, read-only)
+
+- [PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md](./PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) — **Canonical** Paper/Shadow 24/7 preflight contract (§2a / §2a.1 primary-evidence hard gate; **BLOCKED**; evidence ≠ approval; `PREFLIGHT_REMAINS_BLOCKED=true`)
+
+### Preflight Taxonomy / Runtime Lanes (blocked, read-only)
+
+- [RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md](../specs/RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md) — **Canonical** Runtime Lane Taxonomy + Authority Levels contract (§2 taxonomy index; **BLOCKED** lanes; evidence ≠ approval; `PREFLIGHT_REMAINS_BLOCKED=true`; `RUNTIME_LANE_TAXONOMY_FAIL_CLOSED=true`)
+
+### Shadow-247 Governance / Activation Ladder (blocked, read-only)
+
+- [SHADOW_247_GOVERNANCE_CHARTER_V0.md](./SHADOW_247_GOVERNANCE_CHARTER_V0.md) — **Canonical** Shadow-247 governance charter (activation ladder, operator/stop/evidence planning; **non-authorizing**; `PREFLIGHT_REMAINS_BLOCKED=true`; `STOP_IDLE_PRESERVED=true`; `SHADOW_247_GOVERNANCE_FAIL_CLOSED=true`)
+
+### Evidence Durable Enforcement Readiness / GAP2A1 Planning (blocked, read-only)
+
+- [CI_AUDIT — Evidence Durable Enforcement Readiness Review RC v0 — index v0](../CI_AUDIT_KNOWN_ISSUES.md) — **Canonical** EER1 enforcement-readiness review meta-index (consolidates Preflight §2b.2, SECTION5 §2a.1, and completed prerequisite RC arcs; **non-authorizing**; `GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false`; `ENFORCEMENT_ACTIVATED=false`; `PREFLIGHT_REMAINS_BLOCKED=true`; `EER1_ENFORCEMENT_READINESS_FAIL_CLOSED=true`)
+- Preflight §2b.2 EER1 crosslink + §2a.1 primary-evidence hard gate (reuse — see **Preflight / Primary Evidence** above)
+- [SECTION5 Preflight Gap Owner Map](../planning/SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md) — SECTION5 §2a.1 Gap-2a.1 + EER1 readiness review guard (reference only)
 
 ### AI Autonomy & Control Center
 
@@ -62,6 +91,10 @@ Runbooks for AI autonomy workflows and control center operations:
 - [RUNBOOK_AI_AUTONOMY_4B_M3_CURSOR_CONTROL_CENTER.md](RUNBOOK_AI_AUTONOMY_4B_M3_CURSOR_CONTROL_CENTER.md) — Cursor Control Center
 - [CURSOR_MULTI_AGENT_INTEGRATION_RUNBOOK_V1.md](CURSOR_MULTI_AGENT_INTEGRATION_RUNBOOK_V1.md) — Cursor Multi-Agent integration
 - [Wave3_Control_Center_Cheatsheet_v2.md](Wave3_Control_Center_Cheatsheet_v2.md) — Wave 3 Control Center cheatsheet
+
+### Ops Cockpit (WebUI, read-only)
+
+- [webui_ops_cockpit_v2_5_truth_first.md](./webui_ops_cockpit_v2_5_truth_first.md) — **Canonical** Ops Cockpit v2.5 truth-first operator runbook (`/ops`, `/api/ops-cockpit`; read-only; operator summary: [OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md](../specs/OPS_COCKPIT_OPERATOR_SUMMARY_SURFACE.md))
 
 ### Phase-Specific Workflows
 
@@ -94,6 +127,17 @@ Runbooks for specific phase implementations and workflows:
 - [RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md](RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md) — Trockenvalidierung vor Real-Money-Pilot
 - [live_pilot_execution_plan.md](live_pilot_execution_plan.md) — Gesamtplan inkl. Gates und Caps
 - [live_pilot_kickoff.md](live_pilot_kickoff.md) — Kickoff (Pointer)
+
+#### Bounded Pilot Incident / Triage (blocked, read-only)
+
+- [RUNBOOK_BOUNDED_PILOT_INCIDENT_ABORT_TRIAGE_COMPASS.md](RUNBOOK_BOUNDED_PILOT_INCIDENT_ABORT_TRIAGE_COMPASS.md) — **Canonical** bounded-pilot incident / §5 abort triage compass (symptom routing → incident runbook, L5 evidence discipline; **non-authorizing**; `BOUNDED_PILOT_INCIDENT_NAVIGATION_FAIL_CLOSED=true`; `PILOT_GO_AUTHORIZED=false`; `PREFLIGHT_REMAINS_BLOCKED=true`)
+- [RUNBOOK_PILOT_INCIDENT_EXCHANGE_DEGRADED.md](RUNBOOK_PILOT_INCIDENT_EXCHANGE_DEGRADED.md) — Exchange/broker API degraded (Row 11 doc-based evidence owner)
+- [RUNBOOK_PILOT_INCIDENT_UNEXPECTED_EXPOSURE.md](RUNBOOK_PILOT_INCIDENT_UNEXPECTED_EXPOSURE.md) — Unexpected exposure / envelope doubt
+- [RUNBOOK_PILOT_INCIDENT_RECONCILIATION_MISMATCH.md](RUNBOOK_PILOT_INCIDENT_RECONCILIATION_MISMATCH.md) — Reconciliation / ledger disagreement
+- [RUNBOOK_PILOT_INCIDENT_SESSION_END_MISMATCH.md](RUNBOOK_PILOT_INCIDENT_SESSION_END_MISMATCH.md) — Session-end / closeout mismatch
+- [RUNBOOK_PILOT_INCIDENT_TRANSFER_AMBIGUITY.md](RUNBOOK_PILOT_INCIDENT_TRANSFER_AMBIGUITY.md) — Transfer / funding ambiguity
+- [RUNBOOK_PILOT_INCIDENT_TELEMETRY_DEGRADED.md](RUNBOOK_PILOT_INCIDENT_TELEMETRY_DEGRADED.md) — Telemetry / observability degraded
+- [RUNBOOK_PILOT_INCIDENT_RESTART_MID_SESSION.md](RUNBOOK_PILOT_INCIDENT_RESTART_MID_SESSION.md) — Mid-session restart / continuity break (Row 10 doc-based evidence owner)
 
 ### Runbook B — Execution Gates (B5/B3/B2)
 
@@ -193,7 +237,7 @@ This hybrid approach balances discoverability (all findable from this index) wit
 
 ---
 
-**Last Updated:** 2026-04-15  
+**Last Updated:** 2026-05-11
 **Maintainer:** ops
 
 ## Incident-stop / HOLD classification discoverability

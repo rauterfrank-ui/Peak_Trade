@@ -22,6 +22,7 @@ STRATEGY_REGISTRY = {
     "rsi_reversion": "rsi_reversion",
     # Phase 40: Strategy Library & Portfolio-Track v1
     "breakout": "breakout",
+    "breakout_donchian": "breakout_donchian",
     "vol_regime_filter": "vol_regime_filter",
     "composite": "composite",
     "regime_aware_portfolio": "regime_aware_portfolio",
@@ -40,6 +41,7 @@ def load_strategy(strategy_name: str):
     """
     Lädt die Strategie dynamisch.
     Erwartet: Modul hat eine Funktion generate_signals(df, params)
+    oder eine OOP-Strategie in der Registry (Fallback).
     """
     if strategy_name not in STRATEGY_REGISTRY:
         raise ValueError(
@@ -51,7 +53,26 @@ def load_strategy(strategy_name: str):
     # Dynamisch importieren
     module = __import__(f"src.strategies.{module_name}", fromlist=["generate_signals"])
 
-    return module.generate_signals
+    if hasattr(module, "generate_signals") and callable(module.generate_signals):
+        return module.generate_signals
+
+    try:
+        from src.strategies.registry import get_strategy_spec
+
+        spec = get_strategy_spec(strategy_name)
+    except KeyError as exc:
+        raise ValueError(
+            f"Strategie '{strategy_name}' hat keine generate_signals-Funktion "
+            f"und ist nicht in der OOP-Registry registriert."
+        ) from exc
+
+    strategy_cls = spec.cls
+
+    def generate_signals(df, params):
+        strategy = strategy_cls(config=dict(params))
+        return strategy.generate_signals(df)
+
+    return generate_signals
 
 
 __all__ = [

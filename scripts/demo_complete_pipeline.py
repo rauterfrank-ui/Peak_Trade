@@ -20,9 +20,9 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
 import pandas as pd
-import numpy as np
-from datetime import datetime, timedelta, date
+from datetime import date
 
+from scripts.run_backtest import load_ohlcv_data
 from src.core import get_config
 from src.risk import (
     PositionSizer,
@@ -32,7 +32,9 @@ from src.risk import (
     PortfolioState,
 )
 from src.data import KrakenDataPipeline, fetch_kraken_data
-from src.strategies.ma_crossover import generate_signals
+from src.strategies import load_strategy
+
+MA_CROSSOVER_STRATEGY_KEY = "ma_crossover"
 from src.backtest.engine import BacktestEngine
 
 
@@ -219,7 +221,10 @@ def demo_4_kraken_pipeline():
         if not test_kraken_connection():
             print("❌ Keine Verbindung zu Kraken möglich.")
             print("   Nutze stattdessen Dummy-Daten für Demo.\n")
-            return create_dummy_data()
+            print("\n📊 Erstelle Dummy-Daten...")
+            df = load_ohlcv_data(None, None, None, n_bars=200)
+            print(f"  ✅ {len(df)} Dummy-Bars erstellt")
+            return df
 
         # Pipeline erstellen
         print("\n📡 Erstelle Kraken-Pipeline...")
@@ -244,39 +249,10 @@ def demo_4_kraken_pipeline():
     except Exception as e:
         print(f"\n⚠️  Kraken-Fehler: {e}")
         print("   Nutze Dummy-Daten für Demo.\n")
-        return create_dummy_data()
-
-
-def create_dummy_data(n_bars: int = 200) -> pd.DataFrame:
-    """Erstellt Dummy-Daten für Demo wenn Kraken nicht verfügbar."""
-    print("\n📊 Erstelle Dummy-Daten...")
-
-    np.random.seed(42)
-
-    start = datetime.now() - timedelta(hours=n_bars)
-    dates = pd.date_range(start, periods=n_bars, freq="1h", tz="UTC")
-
-    # Preis-Simulation
-    base_price = 50000
-    trend = np.linspace(0, 3000, n_bars)
-    cycle = np.sin(np.linspace(0, 4 * np.pi, n_bars)) * 2000
-    noise = np.random.randn(n_bars).cumsum() * 200
-
-    close_prices = base_price + trend + cycle + noise
-
-    df = pd.DataFrame(
-        {
-            "open": close_prices * (1 + np.random.randn(n_bars) * 0.002),
-            "high": close_prices * (1 + abs(np.random.randn(n_bars)) * 0.003),
-            "low": close_prices * (1 - abs(np.random.randn(n_bars)) * 0.003),
-            "close": close_prices,
-            "volume": np.random.randint(10, 100, n_bars).astype(float),
-        },
-        index=dates,
-    )
-
-    print(f"  ✅ {len(df)} Dummy-Bars erstellt")
-    return df
+        print("\n📊 Erstelle Dummy-Daten...")
+        df = load_ohlcv_data(None, None, None, n_bars=200)
+        print(f"  ✅ {len(df)} Dummy-Bars erstellt")
+        return df
 
 
 def demo_5_complete_backtest(df: pd.DataFrame):
@@ -306,10 +282,11 @@ def demo_5_complete_backtest(df: pd.DataFrame):
     print(f"  Zeitraum: {df.index[0]} bis {df.index[-1]}")
 
     engine = BacktestEngine()
+    strategy_signal_fn = load_strategy(MA_CROSSOVER_STRATEGY_KEY)
 
     try:
         result = engine.run_realistic(
-            df=df, strategy_signal_fn=generate_signals, strategy_params=strategy_params
+            df=df, strategy_signal_fn=strategy_signal_fn, strategy_params=strategy_params
         )
 
         # Ergebnisse anzeigen

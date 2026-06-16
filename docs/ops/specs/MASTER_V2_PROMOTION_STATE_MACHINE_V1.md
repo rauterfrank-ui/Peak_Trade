@@ -65,6 +65,7 @@ State semantics are interpretation and governance visibility only. They are not 
 - [MASTER_V2_FIRST_LIVE_GATE_STATUS_INDEX_V1.md](MASTER_V2_FIRST_LIVE_GATE_STATUS_INDEX_V1.md): compact gate visibility and conservative status posture.
 - [MASTER_V2_DECISION_AUTHORITY_MAP_V1.md](MASTER_V2_DECISION_AUTHORITY_MAP_V1.md): authority topology and unresolved approval-chain nodes.
 - [MASTER_V2_SCOPE_CAPITAL_ENVELOPE_CLARIFICATION_V1.md](MASTER_V2_SCOPE_CAPITAL_ENVELOPE_CLARIFICATION_V1.md): upstream scope and capital semantics adjacent to promotion logic.
+- [MASTER_V2_LEARNING_AI_AUTONOMY_INVENTORY_V1.md](MASTER_V2_LEARNING_AI_AUTONOMY_INVENTORY_V1.md): Stage-7 model/policy approval state machine §10 (orthogonal to environment states in this spec).
 - [CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md](CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md): non-equality and authority-boundary language lock.
 
 This specification only cross-links these artifacts and does not modify them.
@@ -113,3 +114,53 @@ Potential follow-up slice (separate topic):
 - [MASTER_V2_LEARNING_AI_AUTONOMY_INVENTORY_V1.md](MASTER_V2_LEARNING_AI_AUTONOMY_INVENTORY_V1.md)
 - [CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md](CANONICAL_VOCAB_AUTHORITY_PROVENANCE_V0.md)
 - [AI_AUTONOMY_GO_NO_GO_OVERVIEW.md](../../governance/AI_AUTONOMY_GO_NO_GO_OVERVIEW.md)
+
+## 11) GLB-020 Promotion Static Boundary v0
+
+```
+GLB020_PROMOTION_BOUNDARY_V0=true
+PROMOTION_PRECONDITIONS_EXPLICIT=true
+EXPLICIT_PROMOTION_DECISION_REQUIRED=true
+INCOMPLETE_PROMOTION_PRECONDITIONS_FAIL_CLOSED=true
+EVIDENCE_NOT_PROMOTION=true
+EVENT_NOT_PROMOTION=true
+TEST_NOT_PROMOTION=true
+AUTOMATIC_STAGE_TRANSITION_FORBIDDEN=true
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+EXECUTION_AUTHORIZED=false
+LIVE_AUTHORIZED=false
+PROMOTION_EXECUTED=false
+```
+
+This section closes the **static promotion legibility and non-authorizing boundary** for [GLB-020](./MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md) §6.5.7. It **does not** close **GLB-020**, **does not** execute promotion or stage transitions, **does not** set arming, **does not** allow credentials, and **does not** grant live authorization.
+
+### Stages and transitions (visibility only)
+
+Canonical environment states in §3 remain **interpretation and governance visibility only**. No state or transition row in §4 **authorizes** runtime activation, promotion execution, or live trading.
+
+| Transition | Preconditions (review; not auto-satisfied) | Blocking posture |
+|---|---|---|
+| `research` → `backtest` | reproducibility and documented assumptions | missing reproducibility → blocked |
+| `backtest` → `shadow-paper` | conservative pass criteria; stability posture | unstable evidence → blocked |
+| `shadow-paper` → `testnet` | bounded behavior visibility; gate clarity | ambiguity → blocked |
+| `testnet` → `live-gated` | readiness/gate evidence; incident readiness | unresolved blockers → blocked |
+| `live-gated` → `live-authorized` | **explicit external/operator approval chain** | readiness visibility **≠** live permission |
+
+### Preconditions and canonical owners (must be reviewed; not inferred)
+
+1. **Promotion authority** — explicit scoped decision; register **GLB-014** / **GLB-015** authority-route legibility applies.
+2. **Criteria / blockers** — register and SECTION5 criteria blocks; **BLOCKED** rows remain blocking.
+3. **Evidence / closeout / event stream** — GLB-003, GLB-018, GLB-019 completeness is **review input only**.
+4. **Risk / KillSwitch / execution gates** — GLB-008–GLB-013; repo tests and docs **do not** close by themselves.
+5. **Gate / readiness visibility** — [Gate Status Index](./MASTER_V2_FIRST_LIVE_GATE_STATUS_INDEX_V1.md) reports status; **does not** command promotion.
+
+### Non-authorizing constraints
+
+- **Evidence ≠ promotion**; **event stream ≠ promotion**; **tests ≠ promotion**; **docs closeout ≠ promotion**; **machine lines ≠ promotion**.
+- **Missing or contradictory preconditions** → **fail-closed** / **blocked** — no implicit stage advance.
+- **Automatic or PnL-only promotion** is **forbidden** from repository posture alone.
+- **Promotion requires explicit, separately authorized decision** outside this read-only state-machine view.
+- Actual stage changes, arming, credentials, runtime start, and live enablement require **operative authorization** not created by this spec.
+
+Crosslink: register §6.5.7; [Decision Authority Map](./MASTER_V2_DECISION_AUTHORITY_MAP_V1.md); [Paper/Shadow 24/7 Preflight Contract v0](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) §2b.4 (event visibility ≠ promotion). Static guard: `tests/ops/test_master_v2_go_live_blocker_register_core_doc_contract_v0.py` (`GLB020_PROMOTION_BOUNDARY_CROSSLINK_GUARD_V1`).

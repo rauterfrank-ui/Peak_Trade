@@ -5,12 +5,127 @@ Peak_Trade Phase 40 - Vol Regime Filter Tests
 Unit-Tests für den Volatilitäts-Regime-Filter.
 """
 
+from __future__ import annotations
+
 import pytest
 import pandas as pd
 import numpy as np
+from types import SimpleNamespace
 
+from src.strategies.vol_breakout import _rolling_last_pct_rank
 from src.strategies.vol_regime_filter import VolRegimeFilter, generate_signals
 from src.strategies.base import BaseStrategy
+
+
+def _legacy_rolling_last_pct_rank_reference(
+    series: pd.Series,
+    window: int,
+    min_periods: int,
+) -> pd.Series:
+    """Test-only reference for legacy rolling().apply(rank(pct=True)) semantics."""
+    return series.rolling(window=window, min_periods=min_periods).apply(
+        lambda x: pd.Series(x).rank(pct=True).iloc[-1] * 100,
+        raw=False,
+    )
+
+
+def _assert_pct_rank_series_equal(actual: pd.Series, expected: pd.Series) -> None:
+    pd.testing.assert_series_equal(actual, expected, check_names=False)
+    assert actual.index.equals(expected.index)
+    pd.testing.assert_index_equal(actual.index, expected.index)
+    assert actual.dtype == expected.dtype
+    assert actual.isna().equals(expected.isna())
+
+
+def _reference_vol_regime_filter_filter_signals(
+    vol_filter: VolRegimeFilter,
+    data: pd.DataFrame,
+) -> pd.Series:
+    """Independent filter-mode reference using legacy rolling percentile semantics."""
+    vol = vol_filter._compute_volatility(data)
+    filter_signal = pd.Series(1, index=data.index, dtype=int)
+
+    if vol_filter.vol_percentile_low is not None or vol_filter.vol_percentile_high is not None:
+        vol_percentile = _legacy_rolling_last_pct_rank_reference(
+            vol,
+            window=vol_filter.lookback_percentile,
+            min_periods=vol_filter.vol_window,
+        )
+        if vol_filter.vol_percentile_low is not None:
+            filter_signal = filter_signal.where(vol_percentile >= vol_filter.vol_percentile_low, 0)
+        if vol_filter.vol_percentile_high is not None:
+            filter_signal = filter_signal.where(vol_percentile <= vol_filter.vol_percentile_high, 0)
+
+    if vol_filter.min_vol is not None:
+        filter_signal = filter_signal.where(vol >= vol_filter.min_vol, 0)
+    if vol_filter.max_vol is not None:
+        filter_signal = filter_signal.where(vol <= vol_filter.max_vol, 0)
+
+    if vol_filter.atr_threshold is not None:
+        if vol_filter.vol_method != "atr":
+            if "high" in data.columns and "low" in data.columns:
+                atr = vol_filter._compute_atr(data)
+                filter_signal = filter_signal.where(atr >= vol_filter.atr_threshold, 0)
+        else:
+            filter_signal = filter_signal.where(vol >= vol_filter.atr_threshold, 0)
+
+    if vol_filter.invert:
+        filter_signal = 1 - filter_signal
+
+    for i in range(min(vol_filter.min_bars, len(data))):
+        filter_signal.iloc[i] = 0
+
+    filter_signal = filter_signal.fillna(0).astype(int)
+    filter_signal.name = "vol_filter"
+    return filter_signal
+
+
+def _legacy_regime_threshold_classification_reference(
+    vol_filter: VolRegimeFilter | SimpleNamespace,
+    vol: pd.Series,
+) -> pd.Series:
+    """Test-only reference for legacy regime_mode threshold loop in generate_signals."""
+    regime_signal = pd.Series(0, index=vol.index, dtype=int)
+
+    for i in range(len(vol)):
+        if i < vol_filter.min_bars:
+            regime_signal.iloc[i] = 0
+            continue
+
+        current_vol = vol.iloc[i]
+        if pd.isna(current_vol):
+            regime_signal.iloc[i] = 0
+            continue
+
+        if vol_filter.low_vol_threshold is not None and current_vol < vol_filter.low_vol_threshold:
+            regime_signal.iloc[i] = 1
+        elif (
+            vol_filter.high_vol_threshold is not None
+            and current_vol > vol_filter.high_vol_threshold
+        ):
+            regime_signal.iloc[i] = -1
+        else:
+            regime_signal.iloc[i] = 0
+
+    regime_signal.name = "vol_regime"
+    return regime_signal
+
+
+def _reference_regime_threshold_signals(
+    vol_filter: VolRegimeFilter,
+    data: pd.DataFrame,
+) -> pd.Series:
+    """Independent legacy reference for VolRegimeFilter regime_mode threshold path."""
+    vol = vol_filter._compute_volatility(data)
+    return _legacy_regime_threshold_classification_reference(vol_filter, vol)
+
+
+def _assert_regime_threshold_series_equal(actual: pd.Series, expected: pd.Series) -> None:
+    pd.testing.assert_series_equal(actual, expected, check_names=True)
+    assert actual.index.equals(expected.index)
+    pd.testing.assert_index_equal(actual.index, expected.index)
+    assert actual.dtype == expected.dtype
+    assert actual.isna().equals(expected.isna())
 
 
 # ============================================================================
@@ -544,3 +659,241 @@ class TestVolRegimeNewFeatures:
         # from_config sollte regime_mode=True setzen wenn Thresholds vorhanden
         # Hier testen wir nur die Instanz
         assert filter_auto.low_vol_threshold == 50.0
+
+
+# ============================================================================
+# GOLDEN REFERENCE: REGIME THRESHOLD CLASSIFICATION (CAND-VRF-REGIME-THRESHOLD)
+# ============================================================================
+
+
+class TestVolRegimeRegimeThresholdGolden:
+    """Golden-reference contracts for regime_mode threshold classification semantics."""
+
+    @pytest.mark.parametrize(
+        ("vol_values", "min_bars", "low_threshold", "high_threshold"),
+        [
+            pytest.param([10.0, 20.0, 30.0, 40.0, 50.0], 2, 35.0, None, id="low_only"),
+            pytest.param([10.0, 20.0, 30.0, 40.0, 50.0], 2, None, 25.0, id="high_only"),
+            pytest.param([10.0, 20.0, 30.0, 40.0, 50.0], 2, 35.0, 45.0, id="both_thresholds"),
+            pytest.param([23.0, 24.0, 25.0, 26.0, 27.0], 1, 24.0, 26.0, id="exact_boundaries"),
+            pytest.param(
+                [23.9, 24.0, 24.1, 25.9, 26.0, 26.1], 1, 24.0, 26.0, id="boundary_neighbors"
+            ),
+            pytest.param([1.0, np.nan, 3.0, 4.0, 5.0], 1, 2.0, 8.0, id="nan_values"),
+            pytest.param([5.0] * 8, 3, 10.0, 20.0, id="constant_input"),
+            pytest.param([1.0, 5.0, 1.0, 5.0, 1.0, 5.0], 2, 3.0, 4.0, id="alternating"),
+            pytest.param(list(range(1, 11)), 4, 5.0, 8.0, id="monotone"),
+        ],
+    )
+    def test_regime_threshold_on_vol_series_matches_legacy_reference(
+        self,
+        vol_values: list[float],
+        min_bars: int,
+        low_threshold: float | None,
+        high_threshold: float | None,
+    ) -> None:
+        idx = pd.date_range("2024-01-01", periods=len(vol_values), freq="h", tz="UTC")
+        vol = pd.Series(vol_values, index=idx, dtype=float)
+        config = SimpleNamespace(
+            min_bars=min_bars,
+            low_vol_threshold=low_threshold,
+            high_vol_threshold=high_threshold,
+        )
+        expected = _legacy_regime_threshold_classification_reference(config, vol)
+        warmup_mask = pd.Series(np.arange(len(vol)) < min_bars, index=idx)
+        valid_mask = ~warmup_mask & vol.notna()
+        low_mask = (
+            pd.Series(False, index=idx)
+            if low_threshold is None
+            else valid_mask & (vol < low_threshold)
+        )
+        high_mask = (
+            pd.Series(False, index=idx)
+            if high_threshold is None
+            else valid_mask & (vol > high_threshold) & ~low_mask
+        )
+        actual = pd.Series(0, index=idx, dtype=int).mask(low_mask, 1).mask(high_mask, -1)
+        actual.name = "vol_regime"
+        _assert_regime_threshold_series_equal(actual, expected)
+
+    @pytest.mark.parametrize(
+        "data_factory",
+        [
+            pytest.param(create_ohlcv_data, id="ohlcv"),
+            pytest.param(create_mixed_volatility_data, id="mixed_vol"),
+            pytest.param(create_low_volatility_data, id="low_vol"),
+            pytest.param(create_high_volatility_data, id="high_vol"),
+        ],
+    )
+    @pytest.mark.parametrize(
+        "vol_method",
+        ["atr", "std", "realized", "range"],
+    )
+    def test_regime_mode_generate_signals_matches_legacy_reference(
+        self,
+        data_factory,
+        vol_method: str,
+    ) -> None:
+        df = data_factory(200)
+        vol_filter = VolRegimeFilter(
+            vol_window=14,
+            vol_method=vol_method,
+            low_vol_threshold=50.0,
+            high_vol_threshold=500.0,
+            lookback_percentile=50,
+            min_bars=20,
+            regime_mode=True,
+        )
+        actual = vol_filter.generate_signals(df)
+        expected = _reference_regime_threshold_signals(vol_filter, df)
+        _assert_regime_threshold_series_equal(actual, expected)
+
+    def test_regime_threshold_low_only_integration(self) -> None:
+        df = create_low_volatility_data(200)
+        vol_filter = VolRegimeFilter(vol_window=14, low_vol_threshold=50.0, regime_mode=True)
+        actual = vol_filter.generate_signals(df)
+        expected = _reference_regime_threshold_signals(vol_filter, df)
+        _assert_regime_threshold_series_equal(actual, expected)
+
+    def test_regime_threshold_high_only_integration(self) -> None:
+        df = create_high_volatility_data(200)
+        vol_filter = VolRegimeFilter(vol_window=14, high_vol_threshold=200.0, regime_mode=True)
+        actual = vol_filter.generate_signals(df)
+        expected = _reference_regime_threshold_signals(vol_filter, df)
+        _assert_regime_threshold_series_equal(actual, expected)
+
+    def test_regime_threshold_min_bars_warmup_integration(self) -> None:
+        df = create_ohlcv_data(200)
+        vol_filter = VolRegimeFilter(
+            vol_window=14,
+            low_vol_threshold=50.0,
+            min_bars=30,
+            lookback_percentile=50,
+            regime_mode=True,
+        )
+        actual = vol_filter.generate_signals(df)
+        expected = _reference_regime_threshold_signals(vol_filter, df)
+        _assert_regime_threshold_series_equal(actual, expected)
+
+
+# ============================================================================
+# GOLDEN REFERENCE: ROLLING PERCENTILE RANK (CAND-VRF-ROLL-PCT)
+# ============================================================================
+
+
+class TestVolRegimeFilterRollingPercentileGolden:
+    """Golden-reference contracts for vol percentile rolling rank semantics."""
+
+    @pytest.mark.parametrize(
+        ("values", "window", "min_periods"),
+        [
+            pytest.param([1.0, 2.0, 3.0, 4.0, 5.0], 3, 2, id="normal_ascending"),
+            pytest.param([5.0, 4.0, 3.0, 2.0, 1.0], 3, 2, id="descending"),
+            pytest.param([1.0, 2.0, 2.0, 2.0, 3.0], 4, 2, id="ties"),
+            pytest.param([1.0, np.nan, 3.0, 4.0, 5.0], 3, 2, id="nan_in_window"),
+            pytest.param([1.0, 2.0], 5, 2, id="partial_window"),
+            pytest.param([2.0, 2.0, 2.0], 3, 3, id="exact_window"),
+            pytest.param(list(range(1, 9)), 4, 2, id="multi_window"),
+            pytest.param([7.0] * 6, 4, 2, id="constant_input"),
+        ],
+    )
+    def test_vol_percentile_rank_matches_legacy_reference(
+        self,
+        values: list[float],
+        window: int,
+        min_periods: int,
+    ) -> None:
+        idx = pd.date_range("2024-01-01", periods=len(values), freq="h", tz="UTC")
+        series = pd.Series(values, index=idx, dtype=float)
+        expected = _legacy_rolling_last_pct_rank_reference(series, window, min_periods)
+        actual = _rolling_last_pct_rank(series, window, min_periods)
+        _assert_pct_rank_series_equal(actual, expected)
+
+    @pytest.mark.parametrize(
+        "data_factory",
+        [
+            pytest.param(create_ohlcv_data, id="ohlcv"),
+            pytest.param(create_mixed_volatility_data, id="mixed_vol"),
+            pytest.param(create_low_volatility_data, id="low_vol"),
+            pytest.param(create_high_volatility_data, id="high_vol"),
+        ],
+    )
+    @pytest.mark.parametrize(
+        "vol_method",
+        ["atr", "std", "realized", "range"],
+    )
+    def test_generate_signals_matches_independent_legacy_reference(
+        self,
+        data_factory,
+        vol_method: str,
+    ) -> None:
+        df = data_factory(200)
+        vol_filter = VolRegimeFilter(
+            vol_window=14,
+            vol_method=vol_method,
+            vol_percentile_low=25,
+            vol_percentile_high=75,
+            lookback_percentile=50,
+            min_bars=20,
+        )
+        actual = vol_filter.generate_signals(df)
+        expected = _reference_vol_regime_filter_filter_signals(vol_filter, df)
+        pd.testing.assert_series_equal(actual, expected)
+        assert actual.index.equals(expected.index)
+        assert actual.dtype == expected.dtype
+        assert actual.isna().equals(expected.isna())
+
+    def test_vol_regime_filter_percentile_on_computed_vol_matches_legacy_reference(
+        self,
+    ) -> None:
+        df = create_ohlcv_data(200)
+        vol_filter = VolRegimeFilter(vol_window=14, lookback_percentile=50)
+        vol = vol_filter._compute_volatility(df)
+        expected_pct = _legacy_rolling_last_pct_rank_reference(
+            vol,
+            window=vol_filter.lookback_percentile,
+            min_periods=vol_filter.vol_window,
+        )
+        actual_pct = _rolling_last_pct_rank(
+            vol,
+            window=vol_filter.lookback_percentile,
+            min_periods=vol_filter.vol_window,
+        )
+        _assert_pct_rank_series_equal(actual_pct, expected_pct)
+
+    def test_vol_regime_filter_generate_signals_uses_canonical_helper(
+        self,
+        monkeypatch: pytest.MonkeyPatch,
+    ) -> None:
+        df = create_ohlcv_data(200)
+        vol_filter = VolRegimeFilter(
+            vol_window=14,
+            vol_percentile_low=25,
+            vol_percentile_high=75,
+            lookback_percentile=50,
+        )
+        calls: list[tuple[int, int]] = []
+
+        def _spy(series: pd.Series, window: int, min_periods: int) -> pd.Series:
+            calls.append((window, min_periods))
+            return _rolling_last_pct_rank(series, window=window, min_periods=min_periods)
+
+        apply_calls: list[object] = []
+        original_apply = pd.core.window.rolling.Rolling.apply
+
+        def _apply_spy(self, func, *args, **kwargs):
+            apply_calls.append(func)
+            return original_apply(self, func, *args, **kwargs)
+
+        monkeypatch.setattr(
+            "src.strategies.vol_regime_filter._rolling_last_pct_rank",
+            _spy,
+        )
+        monkeypatch.setattr(pd.core.window.rolling.Rolling, "apply", _apply_spy)
+
+        signals = vol_filter.generate_signals(df)
+
+        assert signals is not None
+        assert len(calls) == 1
+        assert calls[0] == (vol_filter.lookback_percentile, vol_filter.vol_window)
+        assert not apply_calls

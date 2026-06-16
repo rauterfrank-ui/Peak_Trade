@@ -9,6 +9,19 @@
 
 > Token-Policy Hinweis: Inline illustrative Pfade im Fließtext **nicht** als `a&#47;b&#47;c` schreiben, sondern Slashes als `&#47;` encoden (z.B. `docs&#47;ops&#47;GATES_OVERVIEW.md`). Befehle in Code-Fences sind OK.
 
+## Docs / docs+tests PR — mandatory local preflight
+
+Jeder PR mit geänderten `*.md` (reine Docs-PR **oder** docs+tests-PR) **muss** vor Push lokal den Docs Token Policy Guard ausführen. Das ist **Standard-Check #1** — nicht optional.
+
+| # | Standard-Check | Lokal (kanonisch) | CI Required Context |
+|---|----------------|-------------------|---------------------|
+| 1 | **Docs Token Policy** | `bash scripts&#47;ops&#47;preflight_docs_token_policy_changed.sh` **oder** `python3 scripts&#47;ops&#47;validate_docs_token_policy.py --changed --base origin&#47;main` | `docs-token-policy-gate` |
+| 2 | Docs Reference Targets (bei `.md`-Diff) | `bash scripts&#47;ops&#47;verify_docs_reference_targets.sh --changed --base origin&#47;main` | `docs-reference-targets-gate` |
+| 3 | PR-scoped pytest (docs+tests) | betroffene Contract-/Boundary-Tests | je nach Diff |
+| 4 | Ruff (bei `.py`-Diff) | `ruff check` / `ruff format --check` auf berührte Dateien | `Lint Gate` |
+
+Runbook: `docs&#47;ops&#47;runbooks&#47;RUNBOOK_DOCS_TOKEN_POLICY_GATE.md` · CI-Audit: `docs&#47;ops&#47;CI_AUDIT_KNOWN_ISSUES.md` (§ Docs Token Policy Guard standard check integration).
+
 ## Gate Catalog (Table)
 
 **Legend**
@@ -19,7 +32,7 @@
 
 | Gate ID / Name | Category | Where defined (file paths) | Trigger (what changes) | How to run locally (command) | Expected PASS signal | Typical FAIL causes (with fix pointers) |
 |---|---|---|---|---|---|---|
-| **G-DOCS-TOKEN** `docs-token-policy-gate` | Docs | `.github/workflows/docs-token-policy-gate.yml`; `scripts/ops/validate_docs_token_policy.py`; Allowlist: `scripts/ops/docs_token_policy_allowlist.txt` | PR/MG/Man; workflow itself is “not applicable” if no `*.md` changed | `python3 scripts&#47;ops&#47;validate_docs_token_policy.py --changed --base origin&#47;main` | `✅` (keine Violations) / Exit 0 | **Inline-Code Token enthält `/` aber ist illustrativ** → Slashes encoden als `&#47;` im betroffenen `.md`; ggf. erlauben via Allowlist (nur für generische Tokens) in `scripts/ops/docs_token_policy_allowlist.txt` |
+| **G-DOCS-TOKEN** `docs-token-policy-gate` | Docs | `.github/workflows/docs-token-policy-gate.yml`; `scripts/ops/validate_docs_token_policy.py`; Allowlist: `scripts/ops/docs_token_policy_allowlist.txt` | PR/MG/Man; workflow itself is “not applicable” if no `*.md` changed | `python3 scripts&#47;ops&#47;validate_docs_token_policy.py --changed --base origin&#47;main`; **Pre-PR preflight:** `bash scripts&#47;ops&#47;preflight_docs_token_policy_changed.sh` | `✅` (keine Violations) / Exit 0 | **Inline-Code Token enthält `/` aber ist illustrativ** → Slashes encoden als `&#47;` im betroffenen `.md`; ggf. erlauben via Allowlist (nur für generische Tokens) in `scripts/ops/docs_token_policy_allowlist.txt` |
 | **G-DOCS-REF-TARGETS** `docs-reference-targets-gate` | Docs | `.github/workflows/docs_reference_targets_gate.yml`; `scripts/ops/verify_docs_reference_targets.sh`; Ignore (full-scan only): `docs/ops/DOCS_REFERENCE_TARGETS_IGNORE.txt` | PR/MG/Man; not applicable if keine `*.md` changed | `bash scripts/ops/verify_docs_reference_targets.sh --changed --base origin/main` | `All referenced targets exist.` / Exit 0 | **Docs referenzieren nicht-existente Repo-Pfade** → Pfad korrigieren/umbenennen; falls **nur illustrativ** → encoden als `&#47;` im Inline-Code |
 | **G-DOCS-REF-TARGETS-FULLSCAN** `docs-reference-targets-fullscan-warn` | Docs / Ops | `.github/workflows/docs_reference_targets_fullscan_schedule.yml`; `scripts/ops/verify_docs_reference_targets.sh` | Schd (Mo 07:00 UTC) + Man | `bash scripts/ops/verify_docs_reference_targets.sh --warn-only` | Job SUCCESS; Log `All referenced targets exist.` **oder** `::warning` + Step Summary bei fehlenden Zielen (Debt sichtbar, Job bleibt grün) | **Volllauf-Debt auf main** → lokal gleicher Befehl; Trend/Baseline: siehe `Check Docs Link Debt Trend`; Details: `docs/ops/DOCS_REFERENCE_TARGETS_DEBT_GUIDE.md` |
 | **G-DOCS-DIFF-GUARD** `Docs Diff Guard Policy Gate` | Docs / Policy | `.github/workflows/docs_diff_guard_policy_gate.yml`; `scripts/ci/check_docs_diff_guard_section.py`; Inserter: `scripts/ops/insert_docs_diff_guard_section.py` | PR/MG/Man; **triggered** wenn Pfade unter `docs/ops/` bzw. `scripts/ops/docs_diff_guard.sh` o.Ä. geändert (siehe `TRIGGER_PREFIXES` im Script) | `python3 scripts&#47;ci&#47;check_docs_diff_guard_section.py` | `✅ Docs Diff Guard Policy: OK (marker present).` | **Marker fehlt** in required docs (`docs/ops/README.md`, `docs/ops/PR_MANAGEMENT_TOOLKIT.md`, `docs/ops/PR_MANAGEMENT_QUICKSTART.md`) → Insert: `python3 scripts&#47;ops&#47;insert_docs_diff_guard_section.py --files <comma-separated>` |

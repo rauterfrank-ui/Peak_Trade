@@ -109,8 +109,127 @@ gh run list --workflow="ci-export-pack-download-verify.yml" --limit 5
 
 ---
 
+## Manual-only workflow recommender after PR #3896
+
+Fourteen ops/schedule workflows remain **active** on GitHub with **`workflow_dispatch` retained**; their **`schedule` / cron triggers were removed** in PR #3896 to reduce recurring Actions cost. Cron is not restored by merging or running this recommender.
+
+**Read-only CLI:** `scripts/ops/recommend_manual_only_workflows.py`
+
+| Behavior | Detail |
+|----------|--------|
+| Purpose | Map an operator **intent** (e.g. paper/shadow evidence, health suite) to relevant manual-only workflows |
+| Output | Workflow file, display name, rationale, cost/risk notes, optional `gh workflow run "…"` **text only** |
+| Does **not** | Run `gh`, mutate repo files, re-enable `schedule`, or change GitHub settings |
+| Operator-GO | Every manual run needs an explicit operator decision; runs can incur runner and provider (e.g. AI) costs |
+
+**Re-enabling cron** requires a **separate PR** that restores `schedule:` in workflow YAML plus explicit **operator-GO** — not this recommender.
+
+**`residual_all` intent:** lists all **13** entries in `RESIDUAL_SCHEDULE_WORKFLOW_FILES` — **5** with active `schedule:` plus **8** manual-only (GH-001..004 + GH-CI + PRCC + PRK + PRBJ); not “13 active schedules”.
+
+**Examples:**
+
+```bash
+python scripts/ops/recommend_manual_only_workflows.py --list-intents
+python scripts/ops/recommend_manual_only_workflows.py --intent paper_shadow_evidence --include-commands
+python scripts/ops/recommend_manual_only_workflows.py --intent market_info_daily --include-commands --json
+```
+
+AI-adjacent workflows (`infostream-automation`, `market_outlook_automation`) may incur model/API cost; prefer safe dispatch inputs (e.g. `skip_ai=true`) unless cost is explicitly approved.
+
+---
+
+## GH Schedule Governance Minimal RC v0 — SLICE-GH-0 / SLICE-GH-001
+
+**Release:** `GH_SCHEDULE_GOVERNANCE_MINIMAL_RC_V0` · **Status:** **CORE COMPLETE** · **Status index:** `docs/ops/CI_AUDIT_KNOWN_ISSUES.md` — **§ GH Schedule Governance Minimal RC v0 — index v0** (reuse — no parallel hub).
+
+**Slice separation (historical reference + status):**
+
+| Slice | Scope | Status |
+|-------|-------|--------|
+| **SLICE-GH-0** | Docs-only governance start | **complete** (#3910) |
+| **SLICE-GH-001** | Single-workflow manual-only: `.github&#47;workflows&#47;pro-prk-nightly-selfcheck.yml` | **complete** (#3911) |
+| **SLICE-GH-CI** | Single-workflow manual-only: `.github&#47;workflows&#47;ci.yml` (`schedule:` removed; `workflow_dispatch`, `pull_request`, `push`, `merge_group` retained) | **complete** (#3958) |
+
+**Post GH-001..004 + GH-CI + PRCC + PRK/PRBD + PRBJ Option B schedule posture:** **8** residual inventory workflows are manual-only (`ci.yml`, `pro-prk-nightly-selfcheck.yml`, `real-market-forward-evidence-smoke.yml`, `audit.yml`, `pru-required-checks-drift-detector.yml`, `prcc-aws-export-smoke.yml`, `prk-prj-status-report.yml`, `prbj-testnet-exec-events.yml`); **`workflow_dispatch`** and other non-schedule triggers retained per workflow. Among `RESIDUAL_SCHEDULE_WORKFLOW_FILES`, **5** retain active `schedule:`. **No batch YAML wave.**
+
+**Governance boundaries:**
+
+- **Further YAML change** — requires **per-workflow Sub-GO**; not part of this completed release line; **`workflow_dispatch` must not be executed** from agent/CI automation.
+- **Manual-only recommender** — `scripts/ops/recommend_manual_only_workflows.py` remains **read-only**; printed `gh workflow run` lines are **text only**; recommendation **≠** schedule deactivation or workflow disablement.
+- **Schedule reactivation** — restoring `schedule:` on PR #3896 manual-only workflows or batch-editing residual schedules requires a **separate PR** and explicit operator-GO — not this release line.
+- **Variable gates above** — unchanged; this section does not add new repository variables or new workflow surfaces.
+- **Authority** — no runtime, paper/shadow/testnet/live, Notion writes, trading/execution/risk/governance/live-gate changes, or Master V2 / Double Play logic changes.
+
+**Recommender + test owners:**
+
+| Owner | Path |
+|-------|------|
+| Read-only CLI | `scripts/ops/recommend_manual_only_workflows.py` |
+| Static tests | `tests/ops/test_recommend_manual_only_workflows.py` (GH-001 #3911; GH-CI #3958 implemented-posture docs drift guard) |
+
+**Planning bundle (archive — not repo-ingested):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/gh_schedule_governance_minimal_rc_v0_final_closeout_handoff_20260602T204000Z/`
+
+```text
+GH_SCHEDULE_GOVERNANCE_MINIMAL_RC_V0=true
+GH_SCHEDULE_GOVERNANCE_MINIMAL_RC_V0_CORE_DONE=true
+SLICE_GH0_DOCS_ONLY=true
+SLICE_GH001_COMPLETE=true
+GH001_MANUAL_ONLY=true
+SLICE_GH_CI_COMPLETE=true
+GH_CI_MERGED_PR3958=true
+GH_CI_SCHEDULE_REMOVED=true
+CI_YML_SCHEDULE_FREE_CONFIRMED=true
+GH_CI_SCHEDULE_MANUAL_ONLY_DOCS_DRIFT_GUARD_IMPLEMENTED=true
+RESIDUAL_ACTIVE_SCHEDULE_COUNT=5
+RESIDUAL_MANUAL_ONLY_RESIDUAL_COUNT=8
+RESIDUAL_SCHEDULE_INVENTORY_COUNT=13
+GH001_CANDIDATE_WORKFLOW=pro-prk-nightly-selfcheck.yml
+GH_CI_CANDIDATE_WORKFLOW=ci.yml
+WORKFLOW_DISPATCH_EXECUTED=false
+BATCH_SCHEDULE_CHANGES=false
+SCHEDULE_REACTIVATION=false
+RECOMMENDER_READ_ONLY=true
+```
+
+---
+
+## Residual PRB scheduled scorecard YAML contract v0
+
+**Five** workflows retain active `schedule:` on the PRB scorecard chain (no `PT_*` variable gates — unlike paper/export smoke orchestrator above):
+
+| Workflow file | Cron (UTC) | Scorecard script |
+|---------------|------------|------------------|
+| `prbc-stability-gate.yml` | `57 2 * * *` | `scripts/ci/stability_gate.py` |
+| `prbd-live-readiness-scorecard.yml` | `7 3 * * *` | `scripts/ci/live_readiness_scorecard.py` |
+| `prbe-shadow-testnet-scorecard.yml` | `29 2 * * *` | `scripts/ci/shadow_testnet_readiness_scorecard.py` |
+| `prbg-execution-evidence.yml` | `19 2 * * *` | `scripts/ci/execution_evidence_producer.py` |
+| `prbi-live-pilot-scorecard.yml` | `39 2 * * *` | `scripts/ci/live_pilot_scorecard.py` |
+
+**Static contract test owner:** `tests/ci/test_residual_prb_scheduled_scorecard_workflow_contract_v0.py` — offline YAML parse only; **no** workflow dispatch, **no** secret/credential reads, **no** runtime or exchange execution authority; PRB scheduled implemented-posture docs drift guard (symmetric to GH-CI manual-only drift guard #4143).
+
+**Implemented posture (5 active schedules — distinct from 8 manual-only GH-CI side):** PRBC/PRBD/PRBE/PRBG/PRBI retain active `schedule:` on `main`; cron values below must stay aligned with `PRB_SCHEDULED_WORKFLOWS` in the contract test module.
+
+**Chain note (runtime — not executed by contract test):** PRBC → PRBD → PRBE; PRBG parallel; PRBI consumes upstream artifacts.
+
+```text
+RESIDUAL_PRB_SCHEDULED_SCORECARD_DOCS_DRIFT_GUARD_IMPLEMENTED=true
+PRB_SCHEDULED_WORKFLOWS_POSTURE_CONFIRMED=true
+VARIABLE_GATES_PRB_SCHEDULED_POSTURE_ALIGNED=true
+CI_AUDIT_PRB_SCHEDULED_POSTURE_ALIGNED=true
+PRB_SCHEDULED_COUNT_5_CONFIRMED=true
+GH_CI_MANUAL_ONLY_COUNT_8_PRESERVED=true
+RESIDUAL_ACTIVE_SCHEDULE_COUNT=5
+RESIDUAL_MANUAL_ONLY_RESIDUAL_COUNT=8
+GH_CI_SCHEDULE_MANUAL_ONLY_DOCS_DRIFT_GUARD_IMPLEMENTED=true
+WORKFLOW_YAML_TOUCHED=false
+WORKFLOW_DISPATCH_EXECUTED=false
+```
+
+---
+
 ## Cross-References
 
+- [CI_AUDIT_KNOWN_ISSUES.md](CI_AUDIT_KNOWN_ISSUES.md) — **§ GH Schedule Governance Minimal RC v0 — index v0**
 - [CI.md](CI.md) — CI pipeline overview
 - [runbooks/prj_scheduled_shadow_paper_features_smoke.md](runbooks/prj_scheduled_shadow_paper_features_smoke.md)
 - [runbooks/PHASE_W_EXPORT_PACK_GH_CONSUMER.md](runbooks/PHASE_W_EXPORT_PACK_GH_CONSUMER.md)

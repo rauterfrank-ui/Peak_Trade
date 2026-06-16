@@ -33,10 +33,9 @@ from src.core.peak_config import load_config
 from src.core.position_sizing import build_position_sizer_from_config
 from src.core.risk import build_risk_manager_from_config
 from src.core.experiments import log_experiment_from_result
-from src.strategies.registry import (
-    create_strategy_from_config,
-    list_strategies,
-)
+from scripts.run_backtest import _build_strategy_params_from_config
+from src.strategies import load_strategy
+from src.strategies.registry import get_available_strategy_keys
 from src.backtest.engine import BacktestEngine
 from src.backtest.reporting import save_full_report
 
@@ -135,21 +134,17 @@ def run_backtest_for_symbol(
     # Daten laden
     df = load_data_for_symbol(symbol, n_bars=n_bars)
 
-    # Strategie erstellen
-    strategy = create_strategy_from_config(strategy_key, cfg)
+    # Strategie via kanonischem load_strategy()
+    strategy_params = _build_strategy_params_from_config(cfg, strategy_key)
+    base_signal_fn = load_strategy(strategy_key)
 
     # Position Sizer & Risk Manager
     position_sizer = build_position_sizer_from_config(cfg)
     risk_manager = build_risk_manager_from_config(cfg, section="risk_management")
 
-    # Wrapper für Legacy-API
     def strategy_signal_fn(df, params):
-        sigs = strategy.generate_signals(df)
+        sigs = base_signal_fn(df, params)
         return sigs.replace(-1, 0)  # Long-Only
-
-    # Stop-Loss aus Config
-    stop_pct = cfg.get(f"strategy.{strategy_key}.stop_pct", 0.02)
-    strategy_params = {"stop_pct": stop_pct}
 
     # Backtest durchführen
     engine = BacktestEngine(core_position_sizer=position_sizer, risk_manager=risk_manager)
@@ -301,16 +296,16 @@ def main():
 
     # Strategie validieren
     print(f"\n🔨 Validiere Strategie '{strategy_key}'...")
-    try:
-        strategy = create_strategy_from_config(strategy_key, cfg)
-        print(f"✅ {strategy}")
-    except KeyError as e:
-        print(f"\n❌ FEHLER: {e}")
-        print("\nVerfügbare Strategien:")
-        list_strategies(verbose=False)
+    available = get_available_strategy_keys()
+    if strategy_key not in available:
+        print(f"\n❌ FEHLER: Unbekannter Strategy-Key '{strategy_key}'")
+        print(f"\nVerfügbare Strategien: {', '.join(available)}")
         return
-    except Exception as e:
-        print(f"\n❌ FEHLER beim Erstellen der Strategie: {e}")
+    try:
+        load_strategy(strategy_key)
+        print(f"✅ Strategie '{strategy_key}' validiert")
+    except ValueError as e:
+        print(f"\n❌ FEHLER beim Laden der Strategie: {e}")
         return
 
     # Scan durchführen

@@ -126,6 +126,51 @@ Maps vNext **Session / Run State** and parts of **Health / Drift** to existing p
 
 **Note — `market_data_cache_observation`:** Local parquet / filesystem QC only (`read_market_data_cache_observation` in `src/ops/market_data_cache_observation_reader.py`). Does **not** assert live market data or broker truth.
 
+## Ops Cockpit — post-trilogy operator status reflection v0
+
+**Release:** `OPS_COCKPIT_OR_OPERATOR_STATUS_INDEX_RC_V0` · **Status:** **CORE COMPLETE** (SLICE-OC-1 + SLICE-OC-2 + SLICE-OC-3 pointer-only) · **UTC:** 2026-06-02 · **Repo-SSOT for meta-index:** [`CI_AUDIT_KNOWN_ISSUES.md`](../CI_AUDIT_KNOWN_ISSUES.md) — **§ Ops Cockpit / Operator Status Index RC v0 — meta-index v0** (no parallel status hub).
+
+**Purpose:** The Operator Summary Surface may **display or reflect** post-trilogy release status (OE/CV/ER core-complete) for operator visibility. Reflection is **read-only**; it does **not** create authority, approvals, runtime clearance, preflight lift, retention enforcement, or trading/Master V2/Double Play decisions.
+
+| Release line | Core status | Canonical detail owner (pointer — not duplicated here) |
+|--------------|-------------|----------------------------------------------------------|
+| Operator Experience RC v0 | **CORE COMPLETE** | [`CI_AUDIT_KNOWN_ISSUES.md`](../CI_AUDIT_KNOWN_ISSUES.md) — § Operator Experience …; market polish — [`MARKET_SURFACE_V0.md`](../../webui/MARKET_SURFACE_V0.md) |
+| Cybersecurity Visibility RC v0 | **CORE COMPLETE** | [`CI_AUDIT_KNOWN_ISSUES.md`](../CI_AUDIT_KNOWN_ISSUES.md) — § Cybersecurity Visibility … |
+| Evidence Durable Closeout Retention RC v0 | **CORE COMPLETE** | [`PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md`](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) — § Evidence Durable … (**ER SSOT**; Ops Cockpit shows pointer/status only) |
+
+**Authority boundaries:**
+
+- **Canonical truth** remains the **repository** plus **durable Evidence Archive** closeout bundles (external paths listed in CI audit meta-index); **not** Notion, **not** this HTML surface alone.
+- **Notion** is a **mirror/status projection** only — **not** an authority source for runtime, gates, trading, or approvals.
+- **No PII, raw logs, or secrets** in operator-summary reflection rows for this release line.
+- **No auto-writes or auto-sync** without explicit operator GO.
+- **Preflight** remains **BLOCKED**; **STOP_IDLE** preserved; no paper/shadow/testnet/live implication from displayed status.
+- **SLICE-OC-2 complete (#3909):** tests-only static guard for these reflection tokens in `tests/ops/test_ops_cockpit_payload_top_level_contract.py` (reciprocal crosslink in `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`); **no** new payload keys or `src/webui/ops_cockpit.py` changes without separate GO.
+- **SLICE-OC-3 complete (pointer-only):** one-line post-trilogy crosslink in [`MARKET_SURFACE_V0.md`](../../webui/MARKET_SURFACE_V0.md) — **§ Operator Experience Release RC v0 — SLICE-OE-1 Status-Reflexion**; **docs-only** navigational closeout; **no** UI/template/`src` change in this slice.
+
+**Durable planning pointer (archive only):**
+
+`/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/next_larger_theme_ranking_after_evidence_retention_rc_v0_20260602T182803Z/`
+
+```text
+OPS_COCKPIT_OR_OPERATOR_STATUS_INDEX_RC_V0=true
+OPS_COCKPIT_OR_OPERATOR_STATUS_INDEX_RC_V0_CORE_DONE=true
+SLICE_OC1_DOCS_ONLY_REFLECTION=true
+SLICE_OC2_GUARD_COMPLETE=true
+OPS_COCKPIT_DISPLAY_REFLECTION_ONLY=true
+OPS_COCKPIT_AUTHORITY_CHANGED=false
+OPERATOR_EXPERIENCE_RELEASE_RC_V0_CORE_DONE=true
+CYBERSECURITY_VISIBILITY_RELEASE_RC_V0_CORE_DONE=true
+EVIDENCE_DURABLE_CLOSEOUT_RETENTION_RC_V0_CORE_DONE=true
+ER_DETAILS_PREFLIGHT_OWNER_ONLY=true
+NOTION_AS_MIRROR_ONLY=true
+NOTION_WRITES=false
+PREFLIGHT_REMAINS_BLOCKED=true
+RUNTIME_AUTHORITY_CHANGED=false
+TRADING_AUTHORITY_CHANGED=false
+MASTER_V2_LOGIC_CHANGED=false
+```
+
 ## Related
 
 - [`OPS_COCKPIT_VNEXT_REQUIRED_VIEWS_COVERAGE.md`](OPS_COCKPIT_VNEXT_REQUIRED_VIEWS_COVERAGE.md) — vNext Required Views §1–7 ↔ payload / summary surface / tests (compact traceability); **§ Supplementary Cockpit surfaces** für repo-vorhandene Keys **außerhalb** der Required-Views-Matrix (z. B. `phase83_eligibility_snapshot`, `workflow_officer_state`, `update_officer_ui`, Phase 57 snapshot discoverability, `balance_semantics_state`) — gleiche Traceability-Tiefe **ohne** RV-Neuzuordnung.

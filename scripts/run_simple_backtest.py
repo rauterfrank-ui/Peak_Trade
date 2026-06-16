@@ -23,9 +23,7 @@ from pathlib import Path
 # Projekt-Root zum Python-Path hinzufügen
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-import pandas as pd
-import numpy as np
-from datetime import datetime, timedelta
+from scripts.run_backtest import load_ohlcv_data
 
 # Simple Config Loader (TOML ohne Pydantic)
 from src.core.config_simple import load_config, get_strategy_config, list_strategies
@@ -41,37 +39,10 @@ from src.risk import (
     RiskLimitsConfig,
 )
 
-# Strategie
-from src.strategies.ma_crossover import generate_signals
+# Strategie (kanonischer Registry-Pfad)
+from src.strategies import load_strategy
 
-
-def create_test_data(n_bars: int = 200) -> pd.DataFrame:
-    """Erstellt Test-OHLCV-Daten."""
-    np.random.seed(42)
-
-    start = datetime.now() - timedelta(hours=n_bars)
-    dates = pd.date_range(start, periods=n_bars, freq="1h", tz="UTC")
-
-    # Preis-Simulation
-    base_price = 50000
-    trend = np.linspace(0, 3000, n_bars)
-    cycle = np.sin(np.linspace(0, 4 * np.pi, n_bars)) * 2000
-    noise = np.random.randn(n_bars).cumsum() * 200
-
-    close_prices = base_price + trend + cycle + noise
-
-    df = pd.DataFrame(
-        {
-            "open": close_prices * (1 + np.random.randn(n_bars) * 0.002),
-            "high": close_prices * (1 + abs(np.random.randn(n_bars)) * 0.003),
-            "low": close_prices * (1 - abs(np.random.randn(n_bars)) * 0.003),
-            "close": close_prices,
-            "volume": np.random.randint(10, 100, n_bars).astype(float),
-        },
-        index=dates,
-    )
-
-    return df
+MA_CROSSOVER_STRATEGY_KEY = "ma_crossover"
 
 
 def main():
@@ -179,7 +150,7 @@ def main():
     print("5. Daten laden")
     print("-" * 70)
 
-    df = create_test_data(200)
+    df = load_ohlcv_data(None, None, None, n_bars=200)
     print(f"✅ Daten erstellt: {len(df)} Bars")
     print(f"  Zeitraum: {df.index[0]} bis {df.index[-1]}")
 
@@ -190,8 +161,9 @@ def main():
     print("6. Backtest durchführen")
     print("-" * 70)
 
+    strategy_signal_fn = load_strategy(MA_CROSSOVER_STRATEGY_KEY)
     result = engine.run_realistic(
-        df=df, strategy_signal_fn=generate_signals, strategy_params=strategy_config
+        df=df, strategy_signal_fn=strategy_signal_fn, strategy_params=strategy_config
     )
 
     print("✅ Backtest abgeschlossen!")

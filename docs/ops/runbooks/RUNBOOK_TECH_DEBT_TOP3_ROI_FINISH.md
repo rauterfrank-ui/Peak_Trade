@@ -4,6 +4,8 @@ Stand: 2026-01-28
 Modus: **Cursor Multi-Agent Chat**  
 Leitplanken: **NO-LIVE / Research-safe** • kleine PRs • deterministisch • token-policy-safe Docs
 
+**Governance crosslink (reference only):** Canonical backlog [`docs/TECH_DEBT_BACKLOG.md`](../../TECH_DEBT_BACKLOG.md) · CI_AUDIT ↔ DOCS_TRUTH_MAP static guard [`docs/ops/CI_AUDIT_KNOWN_ISSUES.md`](../CI_AUDIT_KNOWN_ISSUES.md) · Runbooks index [`README.md`](./README.md) — **non-authorizing**; `TECH_DEBT_TOP3_NAVIGATION_FAIL_CLOSED=true`; backlog/runbook status semantics unchanged.
+
 ---
 
 ## 1) Zielbild

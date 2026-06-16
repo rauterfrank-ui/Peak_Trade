@@ -14,6 +14,13 @@ def test_prk_status_report_assets_exist():
     assert Path(".github/workflows/prj-scheduled-shadow-paper-features-smoke.yml").exists()
 
 
+def test_prk_status_report_manual_only_yaml_shape() -> None:
+    """PRK/PRBD Option2: schedule removed; workflow_dispatch retained."""
+    text = Path(".github/workflows/prk-prj-status-report.yml").read_text(encoding="utf-8")
+    assert "workflow_dispatch" in text
+    assert "schedule:" not in text
+
+
 def test_prk_status_report_output_version_and_schema(tmp_path: Path) -> None:
     """Contract: report JSON includes output_version and basic schema compliance."""
     runs_json = [

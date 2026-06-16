@@ -81,3 +81,4 @@ The closest-to-trade path remains canonically described as:
 - `docs&#47;governance&#47;ai&#47;PROVIDER_MODEL_BINDING_SPEC_V1.md`
 - `out&#47;ops&#47;peak_trade_truth_model_*`
 - `out&#47;ops&#47;ai_layer_model_matrix_v1_*`
+<!-- L1-G4-TRUTH-DOC-FRESHNESS-TOUCH: 2026-06-06T17:43:22.441114+00:00 operator=Frank_Rauter purpose=row12_bounded_refresh -->

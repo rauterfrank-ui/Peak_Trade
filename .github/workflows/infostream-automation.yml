@@ -30,15 +30,7 @@
 name: InfoStream Automation
 
 on:
-  # ===========================================================================
-  # Täglich um 03:15 UTC (15 Minuten nach dem TestHealth Nightly)
-  # ===========================================================================
-  schedule:
-    - cron: "15 3 * * *"
-
-  # ===========================================================================
-  # Manueller Trigger
-  # ===========================================================================
+  # Scheduled cron removed (cost minimization); manual dispatch only.
   workflow_dispatch:
     inputs:
       skip_ai:

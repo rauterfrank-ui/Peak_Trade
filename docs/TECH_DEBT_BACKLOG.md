@@ -10,15 +10,15 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
 
 ### Backtest-Engine: Portfolio-Allocation-Methoden
 
-- [ ] `risk_parity` Allocation-Methode implementieren
+- [x] `risk_parity` Allocation-Methode implementieren
   - Fundstelle: `src&#47;backtest&#47;engine.py` (Zeile 1318) (illustrative)
   - Kontext: Portfolio-Allocation-Methode für gleiches Risk-Level pro Strategie
   - Vorschlag: Implementierung basierend auf Volatility/Risk-Metriken
-  - Status: implemented (Code PR #1030, merge `af02a6d5`) + Docs/Evidence PR #1031 (merge `c6fc8036`)
+  - Status: closed (PR #1030, merge `af02a6d5`; zwei-pass inverse-vol Allocation in `src/backtest/engine.py`; Evidence PR #1031 merge `c6fc8036`; Tests `tests/backtest/test_engine_allocations.py`, `tests/backtest/test_engine_two_pass_allocation.py`)
   - Evidence: `docs/ops/evidence/EV_TECH_DEBT_A_ALLOC_20260128.md`
   - Fundstellen: `src/backtest/engine.py`, `tests/backtest/test_engine_allocations.py`, `tests/backtest/test_engine_two_pass_allocation.py`
 
-- [ ] `sharpe_weighted` Allocation-Methode implementieren
+- [x] `sharpe_weighted` Allocation-Methode implementieren
   - Fundstelle: `src&#47;backtest&#47;engine.py` (Zeile 1319) (illustrative)
   - Kontext: Portfolio-Allocation basierend auf historischer Sharpe-Ratio
   - Vorschlag: Benötigt historische Backtests als Input
@@ -28,7 +28,7 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
 
 ### Walk-Forward: Parameter-Optimierung
 
-- [ ] Parameter-Optimierung auf Train-Daten implementieren
+- [x] Parameter-Optimierung auf Train-Daten implementieren
   - Fundstelle: `src&#47;backtest&#47;walkforward.py` (Zeile 387) (illustrative)
   - Kontext: Train-Backtest für spätere Optimierung vorbereitet, aber noch nicht aktiv
   - Vorschlag: Integration mit Sweep-System für automatische Parameter-Optimierung
@@ -38,15 +38,29 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
 
 ### Legacy-API Cleanup
 
-- [ ] Legacy-Funktionen in `macd.py` entfernen
-  - Fundstelle: `src&#47;strategies&#47;macd.py` (Zeile 232) (illustrative)
-  - Kontext: Legacy-Funktion für Backwards Compatibility
-  - Vorschlag: Prüfen, ob alle Pipelines auf MACDStrategy (OOP) umgestellt sind, dann entfernen
+- [x] Legacy-Funktionen in `macd.py` entfernen
+  - Fundstelle: `src&#47;strategies&#47;macd.py` (illustrative)
+  - Kontext: Modulweite Legacy-API (`generate_signals`, `calculate_macd`) für Backwards Compatibility; kanonisch OOP via `MACDStrategy`
+  - Status: closed (PR #2601, merge `779978e1`; read-only Audit `legacy_macd_bollinger_pipeline_audit_no_run_v1_20260614T171547Z`)
+  - Fundstellen: `src/strategies/macd.py`, `src/strategies/registry.py`, `src/strategies/__init__.py` (`load_strategy` OOP-Fallback)
 
-- [ ] Legacy-Funktionen in `bollinger.py` entfernen
-  - Fundstelle: `src&#47;strategies&#47;bollinger.py` (Zeile 237) (illustrative)
-  - Kontext: Legacy-Funktion für Backwards Compatibility
-  - Vorschlag: Prüfen, ob alle Pipelines auf BollingerBandsStrategy (OOP) umgestellt sind, dann entfernen
+- [x] Legacy-Funktionen in `bollinger.py` entfernen
+  - Fundstelle: `src&#47;strategies&#47;bollinger.py` (illustrative)
+  - Kontext: Modulweite Legacy-API (`generate_signals`) für Backwards Compatibility; kanonisch OOP via `BollingerBandsStrategy`
+  - Status: closed (PR #2600, merge `f1cd4057`; read-only Audit `legacy_macd_bollinger_pipeline_audit_no_run_v1_20260614T171547Z`)
+  - Fundstellen: `src/strategies/bollinger.py`, `src/strategies/registry.py`, `src/strategies/__init__.py` (`load_strategy` OOP-Fallback)
+
+- [x] `run_full_portfolio.py`: Legacy-`*_signals`-Imports auf kanonischen `load_strategy()`-Pfad migriert
+  - Fundstelle: `scripts/run_full_portfolio.py`
+  - Kontext: Script importierte entfernte Legacy-Exports (`ma_crossover_signals` u.a.) und war beim Import gebrochen
+  - Status: closed (PR feat/run-full-portfolio-load-strategy-migration-v1; offline Tests `tests/scripts/test_run_full_portfolio_load_strategy_v1.py`)
+  - Fundstellen: `scripts/run_full_portfolio.py`, `src/strategies/__init__.py` (`load_strategy`), `tests/scripts/test_run_full_portfolio_load_strategy_v1.py`
+
+- [x] `demo_execution_backtest.py`: paralleler `get_strategy_fn()`/`strategy_map` auf kanonischen `load_strategy()`-Pfad migriert
+  - Fundstelle: `scripts/demo_execution_backtest.py`
+  - Kontext: Hardcodierte `strategy_map` duplizierte STRATEGY_REGISTRY; Namensdrift (`breakout_donchian` vs. `breakout`, `momentum` vs. `momentum_1h`)
+  - Status: closed (PR feat/demo-execution-backtest-load-strategy-migration-v1; offline Tests `tests/scripts/test_demo_execution_backtest_load_strategy_v1.py`)
+  - Fundstellen: `scripts/demo_execution_backtest.py`, `src/strategies/__init__.py` (`load_strategy`), `tests/scripts/test_demo_execution_backtest_load_strategy_v1.py`
 
 ---
 
@@ -74,7 +88,7 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
   - Kontext: Später echten Exchange-Client integrieren (z.B. Kraken)
   - Vorschlag: Integration mit `src&#47;exchange&#47;kraken_testnet.py` oder `src&#47;exchange&#47;ccxt_client.py`
 
-- [ ] Timeframe aus Daten ableiten in `run_shadow_execution.py`
+- [x] Timeframe aus Daten ableiten in `run_shadow_execution.py`
   - Fundstelle: `scripts&#47;run_shadow_execution.py` (Zeile 502) (illustrative)
   - Kontext: Timeframe aktuell hardcoded, sollte aus Daten abgeleitet werden
   - Vorschlag: Automatische Erkennung aus DataFrame-Index oder Config
@@ -88,7 +102,7 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
 
 ### Vollständige Implementierungen
 
-- [ ] Vollständige Stress-Test-Implementierung
+- [x] Vollständige Stress-Test-Implementierung
   - Fundstelle: `src&#47;experiments&#47;stress_tests.py` (Zeile 389) (illustrative)
   - Kontext: Vollständige Implementierung, die Equity-Curves aus Backtest-Results lädt
   - Vorschlag: Integration mit Backtest-Registry für automatisches Laden
@@ -96,7 +110,7 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
   - Evidence: `docs/ops/evidence/EV_TECH_DEBT_C_20260128.md`
   - Fundstellen: `src/experiments/equity_loader.py`, `src/experiments/stress_tests.py`, `tests/experiments/test_equity_loader.py`
 
-- [ ] Vollständige Monte-Carlo-Implementierung
+- [x] Vollständige Monte-Carlo-Implementierung
   - Fundstelle: `src&#47;experiments&#47;monte_carlo.py` (Zeile 303) (illustrative)
   - Kontext: Vollständige Implementierung, die Equity-Curves aus Backtest-Results lädt
   - Vorschlag: Integration mit Backtest-Registry
@@ -104,17 +118,42 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
   - Evidence: `docs/ops/evidence/EV_TECH_DEBT_C_20260128.md`
   - Fundstellen: `src/experiments/equity_loader.py`, `src/experiments/monte_carlo.py`, `tests/experiments/test_equity_loader.py`
 
-- [ ] Vollständige Monte-Carlo-Robustness-Implementierung
+- [x] Vollständige Monte-Carlo-Robustness-Implementierung
   - Fundstelle: `scripts&#47;run_monte_carlo_robustness.py` (Zeile 139) (illustrative)
   - Kontext: Vollständige Implementierung, die Equity-Curves aus Backtest-Results lädt
   - Vorschlag: Integration mit Backtest-Registry
+  - Status: implemented (feat/monte-carlo-equity-loader-integration-v1) — `load_returns_for_config` nutzt kanonischen `equity_loader`; kein stiller Dummy-Fallback im Standardpfad; Synthetic nur via `--use-dummy-data`
+  - Fundstellen: `scripts/run_monte_carlo_robustness.py`, `src/experiments/equity_loader.py`, `tests/scripts/test_run_monte_carlo_robustness_equity_loader_integration_v1.py`
+
+- [x] Vollständige Portfolio-Robustness-Returns-Loader-Implementierung
+  - Fundstelle: `scripts&#47;run_portfolio_robustness.py` (Zeile 99) (illustrative)
+  - Kontext: Sweep-basierter Returns-Loader mit stiller None-Rückgabe bei Ladefehlern
+  - Vorschlag: Kanonischen `equity_loader` via `load_returns_for_config` nutzen; fail-closed wie Monte-Carlo (#4215)
+  - Status: implemented (feat/portfolio-robustness-equity-loader-fail-closed-v1) — `build_returns_loader` nutzt kanonischen `equity_loader`; kein stiller None-Fallback; fehlende Komponenten fail-closed
+  - Fundstellen: `scripts/run_portfolio_robustness.py`, `src/experiments/equity_loader.py`, `tests/scripts/test_run_portfolio_robustness_equity_loader_integration_v1.py`
 
 ### Registry-Logging
 
-- [ ] Registry-Logging in `demo_order_pipeline_backtest.py` implementieren
-  - Fundstelle: `scripts&#47;demo_order_pipeline_backtest.py` (Zeile 306) (illustrative)
-  - Kontext: Registry-Logging für automatisches Tracking
-  - Vorschlag: Integration mit `src&#47;core&#47;experiments.py`
+- [x] Registry-Logging in `demo_order_pipeline_backtest.py` implementieren
+  - Fundstelle: `scripts&#47;demo_order_pipeline_backtest.py` (illustrative)
+  - Kontext: Registry-Logging für automatisches Tracking via `log_backtest_result` (fail-closed `load_strategy`, kanonische Registry-Hints)
+
+- [x] Legacy Demo-/Research-Scripts: direkte `generate_signals`-Imports auf kanonischen `load_strategy()`-Pfad migriert
+  - Fundstellen: `scripts/run_simple_backtest.py`, `scripts/demo_portfolio_backtest.py`, `scripts/demo_backtest_with_risk.py`, `scripts/demo_complete_pipeline.py`, `scripts/run_momentum_realistic.py`
+  - Kontext: Fünf Scripts umgingen `load_strategy()` mit direktem Modul-Import (`ma_crossover`, `momentum`); kanonische Keys `ma_crossover`, `momentum_1h`
+  - Status: closed (PR feat/legacy-demo-scripts-load-strategy-migration-v1; offline Tests `tests/scripts/test_legacy_demo_scripts_load_strategy_v1.py`)
+
+- [x] Realistic Backtest Runners: direkte OOP-Klassenimporte auf kanonischen `load_strategy()`-Pfad migriert
+  - Fundstellen: `scripts/run_ma_realistic.py`, `scripts/run_donchian_realistic.py`, `scripts/run_rsi_realistic.py`
+  - Kontext: Drei `*_realistic.py`-Scripts importierten `MACrossoverStrategy`, `DonchianBreakoutStrategy`, `RsiReversionStrategy` direkt; `run_ma_realistic.py` hatte fail-open return bei Strategie-Fehler
+  - Status: closed (PR feat/realistic-backtest-runners-load-strategy-migration-v1; offline Tests `tests/scripts/test_realistic_backtest_runners_load_strategy_v1.py`)
+  - Kanonische Keys: `ma_crossover`, `breakout_donchian`, `rsi_reversion`
+
+- [x] `demo_phase40_portfolio_backtest.py`: direkte OOP-Klassenimporte auf kanonischen `load_strategy()`-Pfad migriert
+  - Fundstellen: `scripts/demo_phase40_portfolio_backtest.py`
+  - Kontext: Fünf direkte Klassenimporte (`BreakoutStrategy`, `VolRegimeFilter`, `CompositeStrategy`, `RsiReversionStrategy`, `MACrossoverStrategy`) umgingen `load_strategy()`
+  - Status: closed (PR feat/demo-phase40-portfolio-backtest-load-strategy-migration-v1; offline Tests `tests/scripts/test_demo_phase40_portfolio_backtest_load_strategy_v1.py`)
+  - Kanonische Keys: `breakout`, `vol_regime_filter`, `composite`, `rsi_reversion`, `ma_crossover`
 
 ---
 
@@ -122,10 +161,10 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
 
 ### Pandas FutureWarnings (Phase 59)
 
-- [ ] Pandas `.fillna` Downcasting Warnings beheben
+- [x] Pandas `.fillna` Downcasting Warnings beheben
   - Fundstelle: Diverse `src&#47;strategies&#47;*.py`
   - Kontext: `.shift(1).fillna(False)` Pattern löst FutureWarning in pandas 2.x aus
-  - Status: implemented in PR #1036 (merge `7394f78c`, mergedAt 2026-01-28T05:58:36Z)
+  - Status: closed (PR #1036, merge `7394f78c`; Strategie-Pattern auf `shift(1, fill_value=False)` migriert, pytest FutureWarning-Filter entfernt; Regression `tests/test_fillna_downcasting_regression.py`)
   - Aktueller Status: Warning behoben; keine pandas-Downcasting `FutureWarning` Filter mehr nötig
   - Vorschlag: (historisch) Bei pandas 3.0 Migration auf `.astype(bool)` umstellen
   - Priorität: Niedrig (erledigt; Regression-Test deckt Verhalten ab)
@@ -134,12 +173,11 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
 
 ### test_live_web.py Collection Error
 
-- [ ] test_live_web.py reparieren oder entfernen
+- [x] test_live_web.py reparieren oder entfernen
   - Fundstelle: `tests&#47;test_live_web.py`
-  - Kontext: Fehler bei Test-Collection (vermutlich fehlende Dependency)
-  - Aktueller Status: In pytest-Runs mit `--ignore=tests&#47;test_live_web.py` übersprungen
-  - Vorschlag: Prüfen, ob Test noch benötigt wird, sonst entfernen
-  - Priorität: Niedrig
+  - Kontext: Fehler bei Test-Collection (vorschneller Modul-Import vor `pytest.importorskip`)
+  - Status: closed (PR #4271, merge `157e037f`; Collection verifiziert, 39 Tests gesammelt)
+  - Fundstellen: `tests&#47;test_live_web.py`
 
 ---
 
@@ -147,14 +185,15 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
 
 ### Data-Layer Caching
 
-- [ ] Data-Layer Caching für große Research-Sweeps verbessern
+- [x] Data-Layer Caching für große Research-Sweeps verbessern
   - Kontext: siehe `docs/PERFORMANCE_NOTES.md`, Abschnitt 5
   - Idee: Caching-Layer weiter ausbauen / mehr Reuse zwischen Runs
   - Vorschlag: Parquet-Format für persistierte Daten nutzen (falls noch nicht geschehen)
+  - Status: implemented (PR feat/data-layer-caching-sweep-v1) — kanonischer `ParquetCache` in `src/sweeps/engine.py` + `scripts/sweep_parameters.py`; Offline-Contracts in `tests&#47;test_sweeps.py::TestSweepParquetCacheContracts`
 
 ### Plot-Generation
 
-- [ ] Plot-Generation optional machen für Performance-Benchmarks
+- [x] Plot-Generation optional machen für Performance-Benchmarks
   - Kontext: siehe `docs/PERFORMANCE_NOTES.md`, Abschnitt 5
   - Idee: `--no-plots` Flag für reine Performance-Benchmarks
   - Vorschlag: Asynchrone Plot-Generierung (später)
@@ -164,10 +203,11 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
 
 ### Logging
 
-- [ ] Logging in großen Research-Runs weiter drosseln oder Batch-weisen Output einführen
+- [x] Logging in großen Research-Runs weiter drosseln oder Batch-weisen Output einführen
   - Kontext: siehe `docs/PERFORMANCE_NOTES.md`, Abschnitt 5
   - Idee: „Benchmark-/Silent"-Mode für Logs
   - Vorschlag: Batch-weiser Output statt einzelner Log-Zeilen
+  - Fortschritt (PR feat/research-run-logging-silent-mode-v1): `--quiet` für `scripts/sweep_parameters.py`; (PR feat/research-run-quiet-run-sweep-strategy-v1): `--quiet` für `scripts/run_sweep_strategy.py` über kanonischen Owner `src/sweeps/engine.py` (`SweepRunOutputMode`, `apply_sweep_run_logging`); (PR feat/research-run-quiet-phase41-experiments-sweep-cli-v1): `--quiet` für `scripts/run_strategy_sweep.py` und `scripts/run_experiment_sweep.py` über kanonischen Owner `src/experiments/base.py` (`ExperimentRunOutputMode`, `apply_experiment_run_logging`); (PR feat/research-run-quiet-research-cli-v1): `--quiet` für `scripts/research_cli.py` über kanonischen Owner `scripts/research_cli.py` (`ResearchCliOutputMode`, `apply_research_cli_logging`) für native Subcommands `pipeline`, `strategy-profile`, `run-experiment`, `armstrong-elkaroui-combi` sowie Sweep-Dispatch; (PR feat/research-run-batch-output-v1): Batch-Progress (`progress_every`, Default 10) mit Final-Flush in `src/sweeps/engine.py` (`SweepEngine._maybe_emit_progress`) und `src/experiments/base.py` (`ExperimentRunner._maybe_emit_progress`); Offline-Contracts in `tests/test_sweeps.py` und `tests/test_experiments_base.py`
 
 ### pandas-Optimierungen
 
@@ -175,6 +215,17 @@ Dieses Dokument sammelt bewusst aufgeschobene Tech-Debt-Items und größere TODO
   - Kontext: siehe `docs/PERFORMANCE_NOTES.md`, Abschnitt 5
   - Idee: Vektorization & Reduzierung von Zwischenkopien prüfen
   - Vorschlag: Nutzung von `numba` oder `cython` für kritische Loops (später)
+  - Fortschritt (Strategy-/Regime-/Experiment-Apply-Lane, PRs #4320–#4329, merges `bd662b6a`..`0ce71c41`): substanzielle `rolling().apply`/`expanding().apply`-Hotspots in `src&#47;strategies&#47;`, `src&#47;regime&#47;` und `src&#47;experiments&#47;` vektorisiert — VolBreakout rolling percentile (PR #4320); VolRegimeFilter rolling percentile + threshold classification (PRs #4321, #4324); RangeCompressionRegimeDetector range-ratio + VolatilityRegimeDetector ATR percentiles (PRs #4322, #4323); ElKaroui regime apply + volatility percentile (PRs #4325, #4326); Mean-Reversion expanding volatility percentile (PR #4328); Armstrong/El-Karoui experiment volatility quantile ranks (PR #4329)
+  - Ausdrücklich nicht Teil dieser Lane / ohne separates GO abgelehnt: `src/risk/portfolio_var.py` (`rolling().apply` prod); Backtest-Bar-Loops, stateful Strategie-Loops, semantisch abweichende Percentile-Muster und kosmetische `.copy()`-Mikrofixes
+
+---
+
+## Governance / static crosslink (reference only)
+
+- CI_AUDIT reciprocal guard: [`docs/ops/CI_AUDIT_KNOWN_ISSUES.md`](ops/CI_AUDIT_KNOWN_ISSUES.md) — § Tech-Debt Top-3 Runbook/Backlog CI_AUDIT ↔ DOCS_TRUTH_MAP static crosslink
+- DOCS_TRUTH_MAP chronicle: [`docs/ops/registry/DOCS_TRUTH_MAP.md`](ops/registry/DOCS_TRUTH_MAP.md)
+- Runbooks index: [`docs/ops/runbooks/README.md`](ops/runbooks/README.md)
+- Operator runbook: [`docs/ops/runbooks/RUNBOOK_TECH_DEBT_TOP3_ROI_FINISH.md`](ops/runbooks/RUNBOOK_TECH_DEBT_TOP3_ROI_FINISH.md) — **non-authorizing**; `TECH_DEBT_TOP3_NAVIGATION_FAIL_CLOSED=true`; backlog status semantics unchanged
 
 ---
 

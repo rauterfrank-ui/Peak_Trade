@@ -2,6 +2,8 @@
 Unit tests for docs token policy validator.
 """
 
+import os
+import subprocess
 import tempfile
 from pathlib import Path
 import pytest
@@ -439,3 +441,98 @@ Done!
     for v in result.violations:
         assert "&#47;" in v.fix_suggestion
         assert v.token.replace("/", "&#47;") in v.fix_suggestion
+
+
+class TestPr4046IllustrativeSlashPatterns:
+    """Regression: PR #4046 docs-token-policy-gate failure patterns."""
+
+    def test_scan_get_observability_raw_slash_violation(self, temp_repo, validator):
+        md_file = temp_repo / "docs" / "webui" / "example.md"
+        md_file.parent.mkdir(parents=True)
+        md_file.write_text("Route: `GET /observability` for view-only hub.\n")
+
+        result = validator.scan_file(md_file)
+
+        assert not result.passed
+        assert any(v.token == "GET /observability" for v in result.violations)
+        assert "&#47;" in result.violations[0].fix_suggestion
+
+    def test_scan_get_observability_encoded_passes(self, temp_repo, validator):
+        md_file = temp_repo / "docs" / "example.md"
+        md_file.write_text("Route: `GET &#47;observability`.\n")
+
+        result = validator.scan_file(md_file)
+
+        assert result.passed
+
+    def test_scan_archive_root_readmodels_path_violation(self, temp_repo, validator):
+        md_file = temp_repo / "docs" / "example.md"
+        md_file.write_text(
+            "Storage: `{ARCHIVE_ROOT}/readmodels/universe_selection_readmodel.v1.json`\n"
+        )
+
+        result = validator.scan_file(md_file)
+
+        assert not result.passed
+        assert result.violations[0].token_type == "ILLUSTRATIVE"
+
+    def test_scan_archive_root_readmodels_path_encoded_passes(self, temp_repo, validator):
+        md_file = temp_repo / "docs" / "example.md"
+        md_file.write_text(
+            "Storage: `{ARCHIVE_ROOT}&#47;readmodels&#47;universe_selection_readmodel.v1.json`\n"
+        )
+
+        result = validator.scan_file(md_file)
+
+        assert result.passed
+
+    def test_scan_btc_usd_illustrative_violation(self, temp_repo, validator):
+        md_file = temp_repo / "docs" / "example.md"
+        md_file.write_text("Forbidden: `BTC/USD` as selected truth.\n")
+
+        result = validator.scan_file(md_file)
+
+        assert not result.passed
+        assert any(v.token == "BTC/USD" for v in result.violations)
+
+    def test_scan_btc_usd_encoded_passes(self, temp_repo, validator):
+        md_file = temp_repo / "docs" / "example.md"
+        md_file.write_text("Allowed: `BTC&#47;USD` as encoded illustrative token.\n")
+
+        result = validator.scan_file(md_file)
+
+        assert result.passed
+
+
+class TestPreflightWrapper:
+    """Smoke tests for preflight_docs_token_policy_changed.sh delegation."""
+
+    @pytest.fixture
+    def preflight_script(self) -> Path:
+        repo_root = Path(__file__).resolve().parents[2]
+        script = repo_root / "scripts" / "ops" / "preflight_docs_token_policy_changed.sh"
+        assert script.is_file(), "preflight script must exist"
+        return script
+
+    def test_preflight_script_exists_and_executable(self, preflight_script: Path) -> None:
+        assert os.access(preflight_script, os.X_OK)
+
+    def test_preflight_script_delegates_to_validator(self, preflight_script: Path) -> None:
+        content = preflight_script.read_text(encoding="utf-8")
+        assert "validate_docs_token_policy.py" in content
+        assert '--base "${BASE_REF}"' in content
+        assert (
+            "autofix_docs_token_policy_inline_code_v2.py" not in content.split("run_validator")[0]
+        )
+
+    def test_preflight_passes_on_clean_main(self, preflight_script: Path) -> None:
+        repo_root = preflight_script.parents[2]
+        result = subprocess.run(
+            ["bash", str(preflight_script), "origin/main"],
+            cwd=repo_root,
+            capture_output=True,
+            text=True,
+            check=False,
+        )
+        assert result.returncode == 0, result.stderr or result.stdout
+        assert "preflight passed" in result.stdout

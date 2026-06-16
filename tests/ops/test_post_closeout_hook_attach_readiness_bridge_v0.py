@@ -1,0 +1,255 @@
+"""Static bridge tests: narrow durable-closeout attach hooks vs full post-closeout automation."""
+
+from __future__ import annotations
+
+from pathlib import Path
+
+from tests.fixtures.ops.generic_evidence_run_registry_v1 import projection_consumer_v0 as pc
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+TAXONOMY = (
+    REPO_ROOT / "docs" / "ops" / "specs" / "RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md"
+)
+PREFLIGHT = REPO_ROOT / "docs" / "ops" / "runbooks" / "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md"
+DOCS_TRUTH_MAP = REPO_ROOT / "docs/ops/registry/DOCS_TRUTH_MAP.md"
+FORBIDDEN_CHAIN_SCRIPT = REPO_ROOT / "scripts/ops/post_closeout_chain_execute_v0.py"
+
+BRIDGE_MARKERS: tuple[str, ...] = (
+    "DURABLE_CLOSEOUT_ATTACH_HOOK_V0_IMPLEMENTED=true",
+    "DURABLE_CLOSEOUT_ATTACH_HOOK_V0_NON_AUTHORIZING=true",
+    "DURABLE_CLOSEOUT_ATTACH_HOOK_V0_DEFAULT_OFF=true",
+    "POST_CLOSEOUT_AUTOMATION_HOOK_IMPLEMENTED=false",
+    "FULL_POST_CLOSEOUT_AUTOMATION_IMPLEMENTED=false",
+    "PREFLIGHT_BLOCKED_LIFTED=false",
+    "READY_FOR_START_AFTER_SLICE=false",
+)
+
+ATTACH_OWNER_CLI_FLAGS: dict[str, tuple[str, ...]] = {
+    "scripts/ops/run_paper_only_bounded_observation_adapter_v0.py": (
+        "--invoke-durable-closeout-v0",
+        "--durable-closeout-dest-dir",
+    ),
+    "scripts/ops/run_shadow_bounded_observation_adapter_v0.py": (
+        "add_bounded_adapter_durable_closeout_cli_args",
+        "maybe_invoke_durable_closeout_after_archive",
+    ),
+    "scripts/ops/run_testnet_bounded_observation_adapter_v0.py": (
+        "add_bounded_adapter_durable_closeout_cli_args",
+        "maybe_invoke_durable_closeout_after_archive",
+    ),
+    "scripts/run_scheduler.py": (
+        "--invoke-durable-closeout-after-completion-v0",
+        "--durable-closeout-dest-dir",
+    ),
+    "scripts/ops/pack_online_readiness_supervisor_evidence_v0.py": (
+        "--invoke-durable-closeout-after-pack-v0",
+        "--durable-closeout-dest-dir",
+    ),
+}
+
+FORBIDDEN_GATE_LIFT_MARKER_LINES: tuple[str, ...] = (
+    "READY_FOR_START_AFTER_SLICE=true",
+    "PREFLIGHT_BLOCKED_LIFTED=true",
+    "PRE_FLIGHT_BLOCKED_LIFTED=true",
+)
+
+
+def _section_6a08_1() -> str:
+    return pc.taxonomy_section_6a08_1()
+
+
+def test_bridge_markers_in_taxonomy_section_6a08_1() -> None:
+    section = _section_6a08_1()
+    for marker in BRIDGE_MARKERS:
+        assert marker in section
+
+
+def test_taxonomy_distinguishes_narrow_attach_from_full_automation() -> None:
+    section = _section_6a08_1()
+    assert "DURABLE_CLOSEOUT_ATTACH_HOOK_V0_IMPLEMENTED=true" in section
+    assert "durable_closeout_copy_verify_v0.py" in section
+    assert "POST_CLOSEOUT_AUTOMATION_HOOK_IMPLEMENTED=false" in section
+    assert "FULL_POST_CLOSEOUT_AUTOMATION_IMPLEMENTED=false" in section
+    assert "paper_bounded_adapter" in section
+    assert "narrow durable-closeout attach hooks" in section.lower() or (
+        "Narrow durable-closeout attach hooks" in section
+    )
+
+
+def test_preflight_bridge_crosslink_preserves_blocked_and_ready_false() -> None:
+    text = PREFLIGHT.read_text(encoding="utf-8")
+    assert "DURABLE_CLOSEOUT_ATTACH_HOOK_V0_IMPLEMENTED=true" in text
+    assert "POST_CLOSEOUT_AUTOMATION_HOOK_IMPLEMENTED=false" in text
+    assert "FULL_POST_CLOSEOUT_AUTOMATION_IMPLEMENTED=false" in text
+    assert "PRE_FLIGHT_BLOCKED_LIFTED=false" in text
+    assert "READY_FOR_START=false" in text
+    assert "Current status: **BLOCKED**." in text
+
+
+def test_docs_truth_map_records_attach_readiness_bridge() -> None:
+    text = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    assert "Durable closeout attach readiness bridge v0" in text
+    assert "DURABLE_CLOSEOUT_ATTACH_HOOK_V0_IMPLEMENTED=true" in text
+
+
+def test_attach_owner_cli_flags_present_in_source() -> None:
+    for rel_path, flags in ATTACH_OWNER_CLI_FLAGS.items():
+        source = (REPO_ROOT / rel_path).read_text(encoding="utf-8")
+        for flag in flags:
+            assert flag in source, f"missing {flag!r} in {rel_path}"
+
+
+def test_all_five_attach_hook_surfaces_covered_in_bridge_guards_v0() -> None:
+    owners = pc.CANONICAL_DURABLE_CLOSEOUT_ATTACH_HOOK_OWNERS_V0
+    assert len(owners) == 5
+    assert "testnet_bounded_adapter" in owners
+    assert set(ATTACH_OWNER_CLI_FLAGS) == set(owners.values())
+
+
+def test_forbidden_parallel_execute_script_absent() -> None:
+    assert not FORBIDDEN_CHAIN_SCRIPT.exists()
+
+
+def test_bridge_section_has_no_gate_lift_markers() -> None:
+    section = _section_6a08_1()
+    for marker in FORBIDDEN_GATE_LIFT_MARKER_LINES:
+        assert marker not in section
+    assert "READY_FOR_START_AFTER_SLICE=false" in section
+    assert "PREFLIGHT_BLOCKED_LIFTED=false" in section
+
+
+def test_validate_paths_cross_surface_parity_matrix_guard_v0() -> None:
+    owners = pc.CANONICAL_DURABLE_CLOSEOUT_ATTACH_HOOK_OWNERS_V0
+    matrix = pc.VALIDATE_PATHS_CROSS_SURFACE_PARITY_MATRIX_V0
+    assert len(matrix) == 5
+    assert set(matrix) == set(owners)
+    assert "testnet_bounded_adapter" in matrix
+    for owner_id, spec in matrix.items():
+        rel_path = str(spec["rel_path"])
+        assert owners[owner_id] == rel_path
+        source = (REPO_ROOT / rel_path).read_text(encoding="utf-8")
+        for token in spec.get("required_in_source", ()):
+            assert token in source, f"{owner_id}: missing {token!r} in {rel_path}"
+        for forbidden in spec.get("forbidden_in_source", ()):
+            assert forbidden not in source, (
+                f"{owner_id}: parallel validation logic {forbidden!r} in {rel_path}"
+            )
+    shadow_spec = matrix["shadow_bounded_adapter"]
+    testnet_spec = matrix["testnet_bounded_adapter"]
+    assert shadow_spec["binding_mode"] == "paper_import_delegation"
+    assert testnet_spec["binding_mode"] == "paper_import_delegation"
+    assert matrix["scheduler_completion"]["binding_mode"] == "paper_import_at_invoke"
+    assert matrix["supervisor_evidence_pack"]["binding_mode"] == "paper_import_at_invoke"
+
+
+def test_post_invoke_result_classification_cross_surface_parity_matrix_guard_v0() -> None:
+    owners = pc.CANONICAL_DURABLE_CLOSEOUT_ATTACH_HOOK_OWNERS_V0
+    matrix = pc.POST_INVOKE_RESULT_CLASSIFICATION_CROSS_SURFACE_PARITY_MATRIX_V0
+    assert len(matrix) == 5
+    assert set(matrix) == set(owners)
+    assert "testnet_bounded_adapter" in matrix
+    for owner_id, spec in matrix.items():
+        rel_path = str(spec["rel_path"])
+        assert owners[owner_id] == rel_path
+        source = (REPO_ROOT / rel_path).read_text(encoding="utf-8")
+        for forbidden in spec.get("forbidden_in_source", ()):
+            assert forbidden not in source, (
+                f"{owner_id}: parallel classification logic {forbidden!r} in {rel_path}"
+            )
+        emit_function = spec.get("emit_function")
+        if emit_function:
+            body = pc.durable_closeout_emit_function_body(rel_path, str(emit_function))
+            for token in spec.get("required_in_emit_body", ()):
+                assert token in body, f"{owner_id}: missing {token!r} in {emit_function}"
+        else:
+            for token in spec.get("required_in_source", ()):
+                assert token in source, f"{owner_id}: missing {token!r} in {rel_path}"
+    paper_spec = matrix["paper_bounded_adapter"]
+    assert paper_spec["binding_mode"] == "canonical_definer"
+    assert matrix["shadow_bounded_adapter"]["binding_mode"] == "paper_import_delegation"
+    assert matrix["testnet_bounded_adapter"]["binding_mode"] == "paper_import_delegation"
+    assert matrix["scheduler_completion"]["binding_mode"] == "prefix_scoped_emit"
+    assert matrix["supervisor_evidence_pack"]["binding_mode"] == "prefix_scoped_emit"
+    assert (
+        matrix["scheduler_completion"]["invoked_helper_rc_mode"]
+        == "exit_code_fail_closed_surrogate"
+    )
+    assert (
+        matrix["supervisor_evidence_pack"]["invoked_helper_rc_mode"]
+        == "exit_code_fail_closed_surrogate"
+    )
+
+
+def test_validate_cli_args_cross_surface_parity_matrix_guard_v0() -> None:
+    bounded_owners = (
+        "paper_bounded_adapter",
+        "shadow_bounded_adapter",
+        "testnet_bounded_adapter",
+    )
+    owners = pc.CANONICAL_DURABLE_CLOSEOUT_ATTACH_HOOK_OWNERS_V0
+    matrix = pc.VALIDATE_CLI_ARGS_CROSS_SURFACE_PARITY_MATRIX_V0
+    assert len(matrix) == 3
+    assert set(matrix) == set(bounded_owners)
+    assert "testnet_bounded_adapter" in matrix
+    for owner_id, spec in matrix.items():
+        rel_path = str(spec["rel_path"])
+        assert owners[owner_id] == rel_path
+        source = (REPO_ROOT / rel_path).read_text(encoding="utf-8")
+        for token in spec.get("required_in_source", ()):
+            assert token in source, f"{owner_id}: missing {token!r} in {rel_path}"
+        for forbidden in spec.get("forbidden_in_source", ()):
+            assert forbidden not in source, (
+                f"{owner_id}: parallel CLI-args validation logic {forbidden!r} in {rel_path}"
+            )
+        validate_function = spec.get("validate_function")
+        if validate_function:
+            body = pc.durable_closeout_validate_function_body(rel_path, str(validate_function))
+            for token in spec.get("required_in_validate_body", ()):
+                assert token in body, f"{owner_id}: missing {token!r} in {validate_function}"
+    assert matrix["paper_bounded_adapter"]["binding_mode"] == "canonical_definer"
+    assert matrix["shadow_bounded_adapter"]["binding_mode"] == "paper_import_delegation"
+    assert matrix["testnet_bounded_adapter"]["binding_mode"] == "paper_import_delegation"
+
+
+def test_durable_closeout_helper_emits_dest_manifest_verify_rc_v0() -> None:
+    helper_path = REPO_ROOT / pc.DURABLE_CLOSEOUT_HELPER_REL_PATH
+    text = helper_path.read_text(encoding="utf-8")
+    assert pc.HELPER_DEST_MANIFEST_VERIFY_RC_EMIT_TOKEN in text
+    body = pc.durable_closeout_emit_function_body(
+        pc.DURABLE_CLOSEOUT_HELPER_REL_PATH,
+        "emit_machine_lines",
+    )
+    assert pc.HELPER_DEST_MANIFEST_VERIFY_RC_EMIT_TOKEN in body
+
+
+def test_post_invoke_dest_manifest_verify_rc_cross_surface_parity_matrix_guard_v0() -> None:
+    owners = pc.CANONICAL_DURABLE_CLOSEOUT_ATTACH_HOOK_OWNERS_V0
+    matrix = pc.POST_INVOKE_DEST_MANIFEST_VERIFY_RC_CROSS_SURFACE_PARITY_MATRIX_V0
+    helper_text = (REPO_ROOT / pc.DURABLE_CLOSEOUT_HELPER_REL_PATH).read_text(encoding="utf-8")
+    assert pc.HELPER_DEST_MANIFEST_VERIFY_RC_EMIT_TOKEN in helper_text
+    assert len(matrix) == 5
+    assert set(matrix) == set(owners)
+    assert "testnet_bounded_adapter" in matrix
+    for owner_id, spec in matrix.items():
+        rel_path = str(spec["rel_path"])
+        assert owners[owner_id] == rel_path
+        source = (REPO_ROOT / rel_path).read_text(encoding="utf-8")
+        for token in spec.get("required_in_source", ()):
+            assert token in source, f"{owner_id}: missing {token!r} in {rel_path}"
+        for forbidden in spec.get("forbidden_in_source", ()):
+            assert forbidden not in source, (
+                f"{owner_id}: parallel dest manifest verify RC logic {forbidden!r} in {rel_path}"
+            )
+        surrogate = spec.get("helper_rc_surrogate")
+        if surrogate:
+            assert surrogate in source, f"{owner_id}: missing helper RC surrogate {surrogate!r}"
+    assert matrix["paper_bounded_adapter"]["binding_mode"] == "canonical_helper_invoke_chain"
+    assert matrix["shadow_bounded_adapter"]["binding_mode"] == "paper_import_delegation"
+    assert matrix["testnet_bounded_adapter"]["binding_mode"] == "paper_import_delegation"
+    assert matrix["scheduler_completion"]["binding_mode"] == "paper_import_at_invoke"
+    assert matrix["supervisor_evidence_pack"]["binding_mode"] == "paper_import_at_invoke"
+    for marker in pc.DEST_MANIFEST_VERIFY_RC_CROSS_SURFACE_PARITY_MATRIX_GUARD_MARKERS:
+        assert marker in pc.POST_CLOSEOUT_AUTOMATION_HOOK_OWNER_PRECHECK_MARKERS
+    assert "HOOK_ATTACH_AFTER_MANIFEST_VERIFY_RC_ZERO_ONLY=true" in (
+        pc.POST_CLOSEOUT_AUTOMATION_HOOK_OWNER_PRECHECK_MARKERS
+    )

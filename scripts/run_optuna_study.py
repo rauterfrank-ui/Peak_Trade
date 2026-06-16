@@ -47,18 +47,24 @@ from __future__ import annotations
 
 import argparse
 import logging
+import math
 import sys
 from dataclasses import dataclass
 from datetime import datetime
 from pathlib import Path
-from typing import Any, Dict, List, Optional
+from typing import Any, Callable, Dict, List, Optional
+
+import pandas as pd
 
 # Peak_Trade imports
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
+from scripts.run_backtest import _build_strategy_params_from_config, load_ohlcv_data
 from src.backtest.engine import BacktestEngine
+from src.backtest.result import BacktestResult
 from src.core.peak_config import load_config
 from src.core.tracking import build_tracker_from_config
+from src.strategies import load_strategy
 from src.strategies.parameters import Param
 from src.strategies.registry import get_strategy_spec
 
@@ -76,6 +82,60 @@ except ImportError:
     Trial = Any
 
 logger = logging.getLogger(__name__)
+
+_STOP_PCT_RANGE_GT_EXCLUSIVE = 0.0
+_STOP_PCT_RANGE_LE_INCLUSIVE = 0.10
+
+
+class ObjectiveMetricError(ValueError):
+    """Fail-closed rejection for missing or invalid objective metrics."""
+
+
+def _validate_stop_pct_value(value: Any) -> float:
+    if value is None:
+        raise ValueError("stop_pct value is None")
+    if isinstance(value, bool):
+        raise ValueError("bool is not a valid numeric stop_pct")
+    if not isinstance(value, (int, float)):
+        raise ValueError(f"non-numeric stop_pct: {type(value).__name__}")
+    result = float(value)
+    if not math.isfinite(result):
+        raise ValueError(f"non-finite stop_pct: {result!r}")
+    if not (result > _STOP_PCT_RANGE_GT_EXCLUSIVE and result <= _STOP_PCT_RANGE_LE_INCLUSIVE):
+        raise ValueError(
+            f"stop_pct {result!r} outside canonical range "
+            f"({_STOP_PCT_RANGE_GT_EXCLUSIVE}, {_STOP_PCT_RANGE_LE_INCLUSIVE}]"
+        )
+    return result
+
+
+def _bind_engine_strategy_params(
+    cfg: Any,
+    strategy_key: str,
+    trial_params: Dict[str, Any],
+) -> Dict[str, Any]:
+    if "stop_pct" in trial_params:
+        raise ValueError("stop_pct must not be a trial search parameter")
+    stop_pct = _validate_stop_pct_value(
+        _build_strategy_params_from_config(cfg, strategy_key)["stop_pct"]
+    )
+    return {**trial_params, "stop_pct": stop_pct}
+
+
+def _extract_objective_metric(stats: Dict[str, Any], objective_name: str) -> float:
+    if objective_name not in stats:
+        raise ObjectiveMetricError(f"missing metric: {objective_name!r}")
+    raw = stats[objective_name]
+    if raw is None:
+        raise ObjectiveMetricError("metric value is None")
+    if isinstance(raw, bool) or not isinstance(raw, (int, float)):
+        raise ObjectiveMetricError(f"non-numeric metric: {type(raw).__name__}")
+    value = float(raw)
+    if not math.isfinite(value):
+        raise ObjectiveMetricError(f"non-finite metric: {value!r}")
+    if objective_name == "max_drawdown":
+        value = -abs(value)
+    return value
 
 
 @dataclass
@@ -177,27 +237,22 @@ def create_sampler(
         raise ValueError(f"Unknown sampler type: {sampler_type}")
 
 
-def suggest_params_from_schema(trial: Trial, strategy: Any) -> Dict[str, Any]:
+def suggest_params_from_schema(trial: Trial, schema: List[Param]) -> Dict[str, Any]:
     """
-    Extract parameter suggestions from strategy's parameter_schema.
+    Extract parameter suggestions from a strategy parameter_schema.
 
     Args:
         trial: Optuna Trial
-        strategy: Strategy instance with parameter_schema property
+        schema: Strategy parameter_schema entries
 
     Returns:
         Dict of suggested parameters
     """
-    schema = strategy.parameter_schema
     if not schema:
-        raise ValueError(
-            f"Strategy {strategy.__class__.__name__} has no parameter_schema. "
-            "Cannot optimize parameters."
-        )
+        raise ValueError("Strategy has no parameter_schema. Cannot optimize parameters.")
 
     params = {}
     for param in schema:
-        # Use built-in to_optuna_suggest() method from Param class
         value = param.to_optuna_suggest(trial)
         params[param.name] = value
 
@@ -205,67 +260,53 @@ def suggest_params_from_schema(trial: Trial, strategy: Any) -> Dict[str, Any]:
 
 
 def run_backtest_trial(
+    df: pd.DataFrame,
     cfg: Any,
-    strategy_cls: type,
+    strategy_key: str,
+    strategy_signal_fn: Callable[[pd.DataFrame, Dict[str, Any]], pd.Series],
     trial_params: Dict[str, Any],
     trial: Optional[Trial] = None,
-) -> Dict[str, float]:
+) -> BacktestResult:
     """
     Run a single backtest trial with given parameters.
 
     Args:
+        df: OHLCV DataFrame (reused by reference across trials)
         cfg: Peak config
-        strategy_cls: Strategy class
+        strategy_key: Strategy registry key
+        strategy_signal_fn: Functional signal adapter from load_strategy()
         trial_params: Parameters for this trial
         trial: Optional Optuna Trial for intermediate reporting
 
     Returns:
-        Dict of metrics (sharpe, total_return, max_drawdown, win_rate, etc.)
+        BacktestResult with stats for objective extraction
     """
-    # Build strategy with trial params
-    strategy = strategy_cls(**trial_params)
-
-    # Build tracker (optional, for MLflow logging)
+    strategy_params = _bind_engine_strategy_params(cfg, strategy_key, trial_params)
     tracker = build_tracker_from_config(cfg)
-
-    # Build backtest engine
-    engine = BacktestEngine(
-        strategy=strategy,
-        config=cfg,
-        tracker=tracker,
+    engine = BacktestEngine(tracker=tracker)
+    result = engine.run_realistic(
+        df=df,
+        strategy_signal_fn=strategy_signal_fn,
+        strategy_params=strategy_params,
     )
 
-    # Run backtest
-    result = engine.run_realistic()
-
-    # Extract metrics
-    stats = result.get("stats", {})
-    metrics = {
-        "sharpe": stats.get("sharpe", 0.0),
-        "total_return": stats.get("total_return", 0.0),
-        "max_drawdown": abs(stats.get("max_drawdown", 0.0)),  # always positive
-        "win_rate": stats.get("win_rate", 0.0),
-        "num_trades": stats.get("num_trades", 0),
-        "profit_factor": stats.get("profit_factor", 0.0),
-    }
-
-    # Report intermediate values for pruning (if supported)
     if trial is not None and hasattr(trial, "report"):
-        # Report primary metric (sharpe) at the "end" of the trial
-        trial.report(metrics["sharpe"], step=0)
-
-        # Check if should prune
+        sharpe_value = _extract_objective_metric(result.stats, "sharpe")
+        trial.report(sharpe_value, step=0)
         if trial.should_prune():
             raise optuna.TrialPruned()
 
-    return metrics
+    return result
 
 
 def objective_single(
     trial: Trial,
     study_cfg: StudyConfig,
     cfg: Any,
-    strategy_cls: type,
+    df: pd.DataFrame,
+    strategy_key: str,
+    strategy_signal_fn: Callable[[pd.DataFrame, Dict[str, Any]], pd.Series],
+    schema: List[Param],
     objective_name: str,
 ) -> float:
     """
@@ -275,50 +316,43 @@ def objective_single(
         trial: Optuna Trial
         study_cfg: Study configuration
         cfg: Peak config
-        strategy_cls: Strategy class
+        df: Shared OHLCV DataFrame
+        strategy_key: Strategy registry key
+        strategy_signal_fn: Functional signal adapter
+        schema: Strategy parameter_schema
         objective_name: Metric to optimize (e.g., "sharpe")
 
     Returns:
         Objective value (higher is better for maximize)
     """
-    # Suggest parameters from schema
-    trial_params = suggest_params_from_schema(trial, strategy_cls())
+    trial_params = suggest_params_from_schema(trial, schema)
 
-    # Log parameters to trial
     for k, v in trial_params.items():
         trial.set_user_attr(f"param_{k}", v)
 
-    # Run backtest
-    try:
-        metrics = run_backtest_trial(cfg, strategy_cls, trial_params, trial)
-    except Exception as e:
-        logger.error(f"Trial {trial.number} failed: {e}")
-        # Return worst possible value
-        if study_cfg.direction == "maximize":
-            return float("-inf")
-        else:
-            return float("inf")
+    result = run_backtest_trial(
+        df=df,
+        cfg=cfg,
+        strategy_key=strategy_key,
+        strategy_signal_fn=strategy_signal_fn,
+        trial_params=trial_params,
+        trial=trial,
+    )
 
-    # Log all metrics as user attributes
-    for metric_name, metric_value in metrics.items():
+    for metric_name, metric_value in result.stats.items():
         trial.set_user_attr(metric_name, metric_value)
 
-    # Return target objective
-    objective_value = metrics.get(objective_name, 0.0)
-
-    # For max_drawdown, we want to minimize (smaller drawdown = better)
-    # But metrics stores it as positive value, so negate for maximization
-    if objective_name == "max_drawdown":
-        objective_value = -objective_value
-
-    return objective_value
+    return _extract_objective_metric(result.stats, objective_name)
 
 
 def objective_multi(
     trial: Trial,
     study_cfg: StudyConfig,
     cfg: Any,
-    strategy_cls: type,
+    df: pd.DataFrame,
+    strategy_key: str,
+    strategy_signal_fn: Callable[[pd.DataFrame, Dict[str, Any]], pd.Series],
+    schema: List[Param],
     objective_names: List[str],
 ) -> tuple:
     """
@@ -328,43 +362,33 @@ def objective_multi(
         trial: Optuna Trial
         study_cfg: Study configuration
         cfg: Peak config
-        strategy_cls: Strategy class
+        df: Shared OHLCV DataFrame
+        strategy_key: Strategy registry key
+        strategy_signal_fn: Functional signal adapter
+        schema: Strategy parameter_schema
         objective_names: List of metrics to optimize
 
     Returns:
         Tuple of objective values
     """
-    # Suggest parameters from schema
-    trial_params = suggest_params_from_schema(trial, strategy_cls())
+    trial_params = suggest_params_from_schema(trial, schema)
 
-    # Log parameters
     for k, v in trial_params.items():
         trial.set_user_attr(f"param_{k}", v)
 
-    # Run backtest
-    try:
-        metrics = run_backtest_trial(cfg, strategy_cls, trial_params, trial)
-    except Exception as e:
-        logger.error(f"Trial {trial.number} failed: {e}")
-        # Return worst possible values for all objectives
-        return tuple([float("-inf")] * len(objective_names))
+    result = run_backtest_trial(
+        df=df,
+        cfg=cfg,
+        strategy_key=strategy_key,
+        strategy_signal_fn=strategy_signal_fn,
+        trial_params=trial_params,
+        trial=trial,
+    )
 
-    # Log all metrics
-    for metric_name, metric_value in metrics.items():
+    for metric_name, metric_value in result.stats.items():
         trial.set_user_attr(metric_name, metric_value)
 
-    # Return tuple of objectives
-    values = []
-    for obj_name in objective_names:
-        value = metrics.get(obj_name, 0.0)
-
-        # For max_drawdown, negate to maximize (minimize drawdown = maximize -drawdown)
-        if obj_name == "max_drawdown":
-            value = -value
-
-        values.append(value)
-
-    return tuple(values)
+    return tuple(_extract_objective_metric(result.stats, obj_name) for obj_name in objective_names)
 
 
 def run_study(study_cfg: StudyConfig) -> None:
@@ -380,18 +404,24 @@ def run_study(study_cfg: StudyConfig) -> None:
     logger.info(f"Loading config from {study_cfg.config_path}")
     cfg = load_config(str(study_cfg.config_path))
 
-    # Get strategy class
-    logger.info(f"Loading strategy: {study_cfg.strategy_name}")
-    strategy_cls = get_strategy_spec(study_cfg.strategy_name).cls
-
-    # Verify strategy has parameter_schema
-    dummy_strategy = strategy_cls()
-    schema = dummy_strategy.parameter_schema
+    strategy_key = study_cfg.strategy_name
+    logger.info(f"Loading strategy: {strategy_key}")
+    strategy_spec = get_strategy_spec(strategy_key)
+    schema = strategy_spec.cls.parameter_schema
     if not schema:
-        logger.error(
-            f"Strategy {study_cfg.strategy_name} has no parameter_schema. Cannot run optimization."
-        )
+        logger.error(f"Strategy {strategy_key} has no parameter_schema. Cannot run optimization.")
         sys.exit(1)
+
+    strategy_signal_fn = load_strategy(strategy_key)
+
+    logger.info("Loading OHLCV data (once per study)")
+    df = load_ohlcv_data(
+        data_file=cfg.get("backtest.data_file"),
+        start_date=cfg.get("backtest.start_date"),
+        end_date=cfg.get("backtest.end_date"),
+        n_bars=cfg.get("backtest.bars", 500),
+    )
+    logger.info(f"  {len(df)} bars loaded")
 
     logger.info(f"Parameter schema: {len(schema)} parameters")
     for param in schema:
@@ -431,7 +461,14 @@ def run_study(study_cfg: StudyConfig) -> None:
         # Run optimization
         study.optimize(
             lambda trial: objective_multi(
-                trial, study_cfg, cfg, strategy_cls, study_cfg.objectives
+                trial,
+                study_cfg,
+                cfg,
+                df,
+                strategy_key,
+                strategy_signal_fn,
+                schema,
+                study_cfg.objectives,
             ),
             n_trials=study_cfg.n_trials,
             timeout=study_cfg.timeout,
@@ -473,7 +510,16 @@ def run_study(study_cfg: StudyConfig) -> None:
 
         # Run optimization
         study.optimize(
-            lambda trial: objective_single(trial, study_cfg, cfg, strategy_cls, objective_name),
+            lambda trial: objective_single(
+                trial,
+                study_cfg,
+                cfg,
+                df,
+                strategy_key,
+                strategy_signal_fn,
+                schema,
+                objective_name,
+            ),
             n_trials=study_cfg.n_trials,
             timeout=study_cfg.timeout,
             n_jobs=study_cfg.n_jobs,

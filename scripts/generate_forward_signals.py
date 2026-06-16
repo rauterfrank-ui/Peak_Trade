@@ -32,8 +32,13 @@ import pandas as pd
 
 from src.core.peak_config import load_config, PeakConfig
 from src.core.experiments import log_generic_experiment
+from scripts.run_backtest import (
+    _build_strategy_params_from_config,
+    _validate_strategy_registry_gates,
+)
 from src.forward.signals import ForwardSignal, save_signals_to_csv
-from src.strategies.registry import create_strategy_from_config, get_available_strategy_keys
+from src.strategies import load_strategy
+from src.strategies.registry import get_available_strategy_keys, get_strategy_spec
 from src.analytics.risk_monitor import (
     RiskPolicy,
     load_experiments_df as load_experiments_df_risk,
@@ -296,6 +301,10 @@ def main(argv: List[str] | None = None) -> int:
         if args.enforce_selection:
             enforce_strategy_selection(cfg, strategy_key)
 
+        _validate_strategy_registry_gates(strategy_key, cfg)
+        strategy_params = _build_strategy_params_from_config(cfg, strategy_key)
+        signal_fn = load_strategy(strategy_key)
+
         universe = determine_universe(cfg, args.symbols)
         run_name = (
             args.run_name
@@ -338,16 +347,8 @@ def main(argv: List[str] | None = None) -> int:
                 print(f"  ⚠️  Keine Daten für {symbol}, überspringe.")
                 continue
 
-            strategy = create_strategy_from_config(strategy_key, cfg)
-
-            if not hasattr(strategy, "generate_signals"):
-                raise AttributeError(
-                    f"Strategy {strategy!r} hat keine Methode generate_signals(data). "
-                    "Bitte sicherstellen, dass die Strategie diese API unterstützt."
-                )
-
             # Vollständige Signale berechnen
-            signals_series = strategy.generate_signals(data)
+            signals_series = signal_fn(data, strategy_params)
             if signals_series is None or signals_series.empty:
                 print(f"  ⚠️  generate_signals() liefert keine Signale für {symbol}, überspringe.")
                 continue

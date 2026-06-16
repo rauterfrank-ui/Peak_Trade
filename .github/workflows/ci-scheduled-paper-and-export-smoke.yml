@@ -2,8 +2,6 @@ name: CI / Scheduled Paper + Export Smoke
 
 "on":
   workflow_dispatch:
-  schedule:
-    - cron: "17 * * * *"
 
 permissions:
   actions: write

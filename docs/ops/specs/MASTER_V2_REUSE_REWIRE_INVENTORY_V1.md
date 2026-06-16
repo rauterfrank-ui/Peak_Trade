@@ -1,7 +1,7 @@
 # MASTER V2 — Reuse / Rewire Inventory v1 (Canonical, Read-Only)
 
 status: ACTIVE
-last_updated: 2026-04-19
+last_updated: 2026-05-20
 owner: Peak_Trade
 purpose: Evidence-based reuse/rewire inventory for existing Master V2 First Live Enablement readiness surfaces
 docs_token: DOCS_TOKEN_MASTER_V2_REUSE_REWIRE_INVENTORY_V1
@@ -16,7 +16,7 @@ Scope:
 - identify what can be rewired with minimal adaptation (no parallel rebuild)
 - identify what is documented-only, partial, or unclear
 - isolate genuinely missing inventory/mapping pieces
-- prepare structurally for later higher-order slices (dataflow/decision-authority), without implementing them
+- maintain pointers to materialized higher-order map surfaces (dataflow/decision-authority) without redefining them
 
 This document is mapping-only and non-authorizing.
 
@@ -49,6 +49,11 @@ Canonical report/rendering + existing single-gate fills:
 Canonical vocabulary/boundary lock for gate-fill semantics:
 
 - `docs/ops/specs/MASTER_V2_GATE_FILL_VOCABULARY_BOUNDARY_LOCK_V1.md`
+
+Materialized higher-order map surfaces (subordinate; reuse pointers only):
+
+- `docs/ops/specs/MASTER_V2_DATAFLOW_MAP_V1.md`
+- `docs/ops/specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md`
 
 This inventory is subordinate to all above surfaces and only maps reuse/rewire opportunity across them.
 
@@ -97,31 +102,34 @@ Evidence discipline:
 
 | block / area | existing repo artifacts | reusable as-is | rewirable with minimal adaptation | documented-only / partial / unclear | genuinely missing | notes / evidence pointers |
 |---|---|---|---|---|---|---|
-| dataflow mapping preparation | read-model evidence pointer semantics and report surface row/detail schema | yes: reuse evidence-pointer and field schema as stable input vocabulary | yes: rewire by adding a docs-only dataflow map that references existing fields without changing semantics | currently documented only as interpretation pointers, not full source-to-decision flow | canonical cross-surface dataflow map (docs-only) | `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_READ_MODEL_V1.md`; `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md` |
-| decision-authority mapping preparation | required-authority field and non-authorization clauses already exist | yes: authority boundary language reusable as-is | yes: rewire by mapping decision nodes to existing authority-safe wording and required-authority field | partial: authority ownership is referenced but not consolidated as a single map artifact | canonical decision-authority map surface (docs-only) | `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md`; `docs/ops/specs/MASTER_V2_GATE_FILL_VOCABULARY_BOUNDARY_LOCK_V1.md`; `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md` |
+| dataflow mapping preparation | read-model evidence pointer semantics and report surface row/detail schema; materialized dataflow map | yes: reuse evidence-pointer and field schema as stable input vocabulary | yes: rewire discoverability through existing dataflow map cross-references without changing semantics | partial: some cross-gate evidence-bundle aggregation remains documented-only | no new dataflow map required; canonical owner is materialized | `docs/ops/specs/MASTER_V2_DATAFLOW_MAP_V1.md`; `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_READ_MODEL_V1.md`; `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md` |
+| decision-authority mapping preparation | required-authority field and non-authorization clauses; materialized decision-authority map | yes: authority boundary language reusable as-is | yes: rewire discoverability through existing authority map cross-references without changing authority | partial: several authority nodes remain `partial`, `unclear`, or `missing` inside the map by design | no new decision-authority map required; canonical owner is materialized | `docs/ops/specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md`; `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md`; `docs/ops/specs/MASTER_V2_GATE_FILL_VOCABULARY_BOUNDARY_LOCK_V1.md`; `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md` |
 | cross-gate inventory maintenance | five single-gate fills plus canonical ladder levels | yes: gate labels (`L0` to `L5`) and single-gate pattern reusable | yes: rewire by maintaining one canonical cross-gate inventory table instead of parallel notes | partial visibility if readers inspect only per-gate sections | this canonical inventory file is the missing artifact now materialized in v1 | `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md`; `docs/ops/specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md`; `docs/ops/specs/MASTER_V2_REUSE_REWIRE_INVENTORY_V1.md` |
 
 ## 6) Genuinely Missing / Unclear Areas
 
 Genuinely missing (for later slices, not implemented here):
 
-- canonical docs-only cross-surface dataflow map (source -> interpretation field -> report surface cell -> decision touchpoint)
-- canonical docs-only decision-authority map that consolidates authority domains referenced across readiness surfaces
 - optional claim-discipline review aid (lint/checklist) to reduce accidental claim-class drift in future additive docs slices
+
+Materialized / rewired (no new parallel map surface required):
+
+- canonical cross-surface dataflow map: `docs/ops/specs/MASTER_V2_DATAFLOW_MAP_V1.md`
+- canonical decision-authority map: `docs/ops/specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md`
 
 Unclear or partial (kept explicit, non-upgraded):
 
 - candidate-scoped evidence bundles are intentionally open in multiple existing single-gate fills
 - discoverability can degrade if readers skip canonical reader order and consume isolated sections
-- higher-order mapping work is prepared structurally but not yet consolidated in dedicated artifacts
+- authority-map stage rows may remain `partial`, `unclear`, or `missing` without implying live authorization or gate closure
 
 ## 7) Implications for Next Higher-Order Slices
 
 This inventory suggests a minimal, low-drift sequence for later work:
 
-1. Dataflow Map Slice (docs-only): reuse read-model/report fields as nodes, map provenance paths end-to-end.
-2. Decision-Authority Map Slice (docs-only): consolidate required-authority anchors and authority boundaries without changing authority.
-3. Optional Review Hygiene Slice (docs/process-only): lightweight claim-class and pointer-consistency checklist.
+1. Reuse/rewire maintenance only: keep this inventory aligned with materialized map owners (`MASTER_V2_DATAFLOW_MAP_V1.md`, `MASTER_V2_DECISION_AUTHORITY_MAP_V1.md`) via cross-references; do not create parallel map surfaces.
+2. Optional Review Hygiene Slice (docs/process-only): lightweight claim-class and pointer-consistency checklist.
+3. Optional authority-gap closure slices (docs-only, separate): may resolve explicitly marked `partial`, `unclear`, or `missing` nodes inside `MASTER_V2_DECISION_AUTHORITY_MAP_V1.md` without mixing runtime implementation or live authorization.
 
 Guardrails for all above:
 

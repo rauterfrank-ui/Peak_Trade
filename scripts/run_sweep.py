@@ -32,24 +32,160 @@ import argparse
 import itertools
 import json
 import sys
-from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any, Dict, List, Optional
 
-import numpy as np
 import pandas as pd
 
 # Projekt-Root zum Python-Path hinzufügen
 PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
 
+from scripts.run_backtest import (
+    _validate_strategy_registry_gates,
+    load_ohlcv_data,
+)
 from src.core.peak_config import PeakConfig, load_config
 from src.core.position_sizing import build_position_sizer_from_config
 from src.core.risk import build_risk_manager_from_config
 from src.core.experiments import log_sweep_run, RUN_TYPE_SWEEP
 from src.backtest.engine import BacktestEngine
-from src.strategies.registry import create_strategy_from_config, get_available_strategy_keys
+from src.strategies import load_strategy
+from src.strategies.registry import (
+    get_available_strategy_keys,
+    get_strategy_spec,
+)
 from src.strategies.base import BaseStrategy
+
+
+class SweepParameterNormalizationError(ValueError):
+    """Fail-closed rejection for unknown or conflicting sweep parameters."""
+
+
+_PARAMETER_ALIAS_TABLE: Dict[str, Dict[str, str]] = {
+    "ma_crossover": {
+        "short_window": "fast_window",
+        "long_window": "slow_window",
+    },
+    "rsi_reversion": {
+        "rsi_period": "rsi_window",
+        "entry_threshold": "lower",
+        "exit_threshold": "upper",
+    },
+}
+
+_STRATEGY_CANONICAL_KEYS: Dict[str, frozenset[str]] = {
+    "ma_crossover": frozenset({"fast_window", "slow_window", "price_col"}),
+    "rsi_reversion": frozenset(
+        {
+            "rsi_window",
+            "lower",
+            "upper",
+            "exit_lower",
+            "exit_upper",
+            "use_trend_filter",
+            "trend_ma_window",
+            "use_wilder",
+            "price_col",
+        }
+    ),
+}
+
+_SWEEP_ENGINE_KEYS = frozenset({"stop_pct"})
+_ENGINE_STOP_PCT_DEFAULT = 0.02
+
+
+def _allowed_keys_for_strategy(strategy_key: str) -> frozenset[str]:
+    aliases = _PARAMETER_ALIAS_TABLE.get(strategy_key, {})
+    return _STRATEGY_CANONICAL_KEYS[strategy_key] | _SWEEP_ENGINE_KEYS | frozenset(aliases.keys())
+
+
+def _normalize_sweep_grid_params(
+    strategy_key: str,
+    raw_params: Dict[str, Any],
+) -> Dict[str, Any]:
+    if strategy_key not in _PARAMETER_ALIAS_TABLE:
+        raise SweepParameterNormalizationError(
+            f"unsupported strategy_key for alias table: {strategy_key!r}"
+        )
+
+    alias_table = _PARAMETER_ALIAS_TABLE[strategy_key]
+    allowed = _allowed_keys_for_strategy(strategy_key)
+    normalized: Dict[str, Any] = {}
+
+    for key in sorted(raw_params.keys()):
+        value = raw_params[key]
+        if key not in allowed:
+            raise SweepParameterNormalizationError(f"unknown key rejected: {key!r}")
+
+        canonical = alias_table.get(key, key)
+        if canonical in normalized and normalized[canonical] != value:
+            raise SweepParameterNormalizationError(
+                f"conflicting alias/canonical for {canonical!r}: "
+                f"{normalized[canonical]!r} vs {value!r}"
+            )
+        normalized[canonical] = value
+
+    return normalized
+
+
+def _resolve_stop_pct(
+    *,
+    normalized_grid: Dict[str, Any],
+    engine_stop_pct: Optional[float] = None,
+) -> float:
+    if "stop_pct" in normalized_grid:
+        return float(normalized_grid["stop_pct"])
+    if engine_stop_pct is not None:
+        return float(engine_stop_pct)
+    return _ENGINE_STOP_PCT_DEFAULT
+
+
+def _strategy_class_defaults(strategy_key: str) -> Dict[str, Any]:
+    spec = get_strategy_spec(strategy_key)
+    baseline = spec.cls()
+    canonical = _STRATEGY_CANONICAL_KEYS[strategy_key]
+    return {key: baseline.config[key] for key in canonical if key in baseline.config}
+
+
+def _strategy_config_section(cfg: PeakConfig, strategy_key: str) -> Dict[str, Any]:
+    spec = get_strategy_spec(strategy_key)
+    section_data = cfg.get(spec.config_section, {})
+    if isinstance(section_data, dict):
+        return dict(section_data)
+    return {}
+
+
+def _merge_effective_parameters(
+    strategy_key: str,
+    raw_grid: Dict[str, Any],
+    *,
+    strategy_defaults: Optional[Dict[str, Any]] = None,
+    strategy_config: Optional[Dict[str, Any]] = None,
+    engine_params: Optional[Dict[str, Any]] = None,
+) -> Dict[str, Any]:
+    defaults = dict(strategy_defaults or {})
+    config = dict(strategy_config or {})
+    normalized_grid = _normalize_sweep_grid_params(strategy_key, raw_grid)
+
+    effective: Dict[str, Any] = {**defaults, **config, **normalized_grid}
+    effective["stop_pct"] = _resolve_stop_pct(
+        normalized_grid=normalized_grid,
+        engine_stop_pct=(engine_params or {}).get("stop_pct"),
+    )
+    return effective
+
+
+def _apply_effective_params_to_strategy(
+    strategy: BaseStrategy,
+    strategy_key: str,
+    effective: Dict[str, Any],
+) -> None:
+    canonical = _STRATEGY_CANONICAL_KEYS[strategy_key]
+    attrs = {key: effective[key] for key in canonical if key in effective}
+    for key, value in attrs.items():
+        setattr(strategy, key, value)
+    strategy.config.update(attrs)
 
 
 def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
@@ -229,71 +365,6 @@ def load_parameter_grid(grid_arg: str) -> Dict[str, List[Any]]:
         raise ValueError(f"Konnte Grid nicht laden. Weder gültige Datei noch JSON-String: {e}")
 
 
-def generate_dummy_ohlcv(
-    n_bars: int = 500,
-    base_price: float = 50000.0,
-    volatility: float = 0.015,
-) -> pd.DataFrame:
-    """Generiert synthetische OHLCV-Daten für Tests."""
-    np.random.seed(42)  # Reproduzierbarkeit
-
-    end = datetime.now()
-    start = end - timedelta(hours=n_bars)
-    index = pd.date_range(start=start, periods=n_bars, freq="1h", tz="UTC")
-
-    returns = np.random.normal(0, volatility, n_bars)
-    trend = np.sin(np.linspace(0, 4 * np.pi, n_bars)) * 0.001
-    returns = returns + trend
-    close_prices = base_price * np.exp(np.cumsum(returns))
-
-    df = pd.DataFrame(index=index)
-    df["close"] = close_prices
-    df["open"] = df["close"].shift(1).fillna(base_price)
-
-    high_bump = np.random.uniform(0, 0.005, n_bars)
-    df["high"] = np.maximum(df["open"], df["close"]) * (1 + high_bump)
-
-    low_dip = np.random.uniform(0, 0.005, n_bars)
-    df["low"] = np.minimum(df["open"], df["close"]) * (1 - low_dip)
-
-    df["volume"] = np.random.uniform(100, 1000, n_bars)
-
-    return df[["open", "high", "low", "close", "volume"]]
-
-
-def load_ohlcv_data(
-    data_file: Optional[str],
-    n_bars: int,
-    verbose: bool = False,
-) -> pd.DataFrame:
-    """Lädt OHLCV-Daten aus CSV oder generiert Dummy-Daten."""
-    if data_file:
-        from src.data import DataNormalizer, CsvLoader, KrakenCsvLoader
-
-        path = Path(data_file)
-        if not path.exists():
-            raise FileNotFoundError(f"Datei nicht gefunden: {data_file}")
-
-        if verbose:
-            print(f"  Lade Daten aus: {data_file}")
-
-        if "kraken" in str(path).lower():
-            loader = KrakenCsvLoader()
-        else:
-            loader = CsvLoader()
-
-        df = loader.load(str(path))
-        normalizer = DataNormalizer()
-        df = normalizer.normalize(df)
-
-    else:
-        if verbose:
-            print(f"  Generiere {n_bars} Dummy-Bars")
-        df = generate_dummy_ohlcv(n_bars=n_bars)
-
-    return df
-
-
 def run_single_backtest(
     df: pd.DataFrame,
     strategy_key: str,
@@ -311,13 +382,17 @@ def run_single_backtest(
     position_sizer = build_position_sizer_from_config(cfg)
     risk_manager = build_risk_manager_from_config(cfg, section="risk_management")
 
-    # Strategie erstellen und Parameter überschreiben
-    strategy = create_strategy_from_config(strategy_key, cfg)
+    # Registry/environment gates before bounded parameter normalization.
+    _validate_strategy_registry_gates(strategy_key, cfg)
 
-    # Parameter auf Strategie anwenden
-    for key, value in params.items():
-        if hasattr(strategy, key):
-            setattr(strategy, key, value)
+    strategy_defaults = _strategy_class_defaults(strategy_key)
+    strategy_config = _strategy_config_section(cfg, strategy_key)
+    effective_params = _merge_effective_parameters(
+        strategy_key,
+        params,
+        strategy_defaults=strategy_defaults,
+        strategy_config=strategy_config,
+    )
 
     # Backtest-Engine
     engine = BacktestEngine(
@@ -325,13 +400,15 @@ def run_single_backtest(
         risk_manager=risk_manager,
     )
 
-    def strategy_signal_fn(data, _params):
-        return strategy.generate_signals(data)
+    base_signal_fn = load_strategy(strategy_key)
+
+    def strategy_signal_fn(data, engine_strategy_params):
+        return base_signal_fn(data, engine_strategy_params)
 
     result = engine.run_realistic(
         df=df,
         strategy_signal_fn=strategy_signal_fn,
-        strategy_params=params,
+        strategy_params=effective_params,
     )
 
     return result.stats or {}
@@ -437,6 +514,8 @@ def main(argv: Optional[List[str]] = None) -> int:
     try:
         df = load_ohlcv_data(
             data_file=args.data_file,
+            start_date=None,
+            end_date=None,
             n_bars=args.bars,
             verbose=args.verbose,
         )

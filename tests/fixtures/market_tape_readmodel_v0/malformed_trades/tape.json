@@ -1,0 +1,14 @@
+{
+  "symbol": "BTC/EUR",
+  "source": "fixture:malformed",
+  "limit": 5,
+  "trades": [
+    {
+      "sequence": 1,
+      "price": "-1",
+      "size": "0.1",
+      "side": "buy",
+      "timestamp_iso": "2026-05-02T15:59:58Z"
+    }
+  ]
+}

@@ -61,6 +61,23 @@
     </ul>
   </section>
 
+  {# Template contract: workflow dashboard panels rendered via shared partial include.
+     Projection Coverage panel markers (Not Truth · Not Selected Future):
+     data-workflow-panel-projection-coverage-v1="true"
+     data-projection-coverage-not-truth="true"
+     data-projection-coverage-non-authorizing="true"
+     data-projection-coverage-not-selected-future="true"
+     data-projection-coverage-strict-upstream-blocked="true"
+     universe_selection_projection_coverage
+     pcov.loaded
+     Projection Coverage
+     Not Truth
+     Not Selected Future
+     data-workflow-panel-pipeline-v1="true"
+  #}
+  {% include "partials/workflow_dashboard_v1_panels.html" %}
+
+
   <section
     class="rounded-xl border border-cyan-900/35 bg-cyan-950/10 px-5 py-4 space-y-4"
     aria-label="System Status Snapshot — display-only"
@@ -347,6 +364,8 @@
       </ul>
     </div>
   </section>
+
+  {% include "partials/last_paper_run_panel_v0.html" %}
 
   <section
     class="rounded-xl border border-rose-900/35 bg-rose-950/10 px-5 py-4 space-y-4"

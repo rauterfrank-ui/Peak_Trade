@@ -37,10 +37,17 @@ sys.path.insert(0, str(Path(__file__).parent.parent))
 
 import pandas as pd
 
+from typing import Any, Dict
+
 from src.core.peak_config import load_config, PeakConfig
 from src.core.experiments import log_forward_signal_run, RUN_TYPE_FORWARD_SIGNAL
 from src.exchange import build_exchange_client_from_config
-from src.strategies.registry import create_strategy_from_config, get_available_strategy_keys
+from scripts.run_backtest import (
+    _build_strategy_params_from_config,
+    _validate_strategy_registry_gates,
+)
+from src.strategies import load_strategy
+from src.strategies.registry import get_available_strategy_keys, get_strategy_spec
 from src.notifications import Alert, ConsoleNotifier, FileNotifier, CombinedNotifier
 from src.notifications.base import signal_level_from_value
 
@@ -213,13 +220,15 @@ def main(argv: Optional[List[str]] = None) -> int:
         print(f"      FEHLER beim Abrufen von OHLCV: {e}")
         return 1
 
-    # 5) Strategie erstellen und Signale generieren
+    # 5) Strategie binden und Signale generieren
     print(f"\n[5/6] Generiere Signale mit Strategie '{args.strategy}'...")
     try:
-        strategy = create_strategy_from_config(args.strategy, cfg)
-        print(f"      Strategie instanziiert: {strategy}")
+        _validate_strategy_registry_gates(args.strategy, cfg)
+        strategy_params = _build_strategy_params_from_config(cfg, args.strategy)
+        signal_fn = load_strategy(args.strategy)
+        print(f"      Strategie gebunden: {args.strategy}")
 
-        signals = strategy.generate_signals(df)
+        signals = signal_fn(df, strategy_params)
         if signals is None or signals.empty:
             print(f"      FEHLER: Strategie liefert keine Signale.")
             return 1

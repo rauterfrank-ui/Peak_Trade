@@ -1,7 +1,7 @@
 # MASTER V2 — First Live Gate Status Index v1 (Canonical, Read-Only)
 
 status: ACTIVE
-last_updated: 2026-04-25
+last_updated: 2026-06-07
 owner: Peak_Trade
 purpose: Canonical docs-only gate status index for Master V2 First Live readiness visibility and auditability
 docs_token: DOCS_TOKEN_MASTER_V2_FIRST_LIVE_GATE_STATUS_INDEX_V1
@@ -33,6 +33,32 @@ Out of scope:
 
 For **suggested read order** and cluster grouping of the `MASTER_V2_FIRST_LIVE_PRE_LIVE_*_CONTRACT_V1.md` filename set, see [`MASTER_V2_FIRST_LIVE_PRE_LIVE_NAVIGATION_READ_MODEL_V0.md`](MASTER_V2_FIRST_LIVE_PRE_LIVE_NAVIGATION_READ_MODEL_V0.md). That document is a **navigation and read-order read model only**; it is **not** a gate schedule, not signoff, not evidence, not a live or First-Live go, and it does not change the meaning of any contract in this index.
 
+## 2.2) Section-5 Preflight criteria pointer (non-authority)
+
+SECTION5_CRITERIA_SSOT_REPO_CHANGE_PROPOSAL_V0=true
+SECTION5_CRITERIA_SSOT_REPO_CHANGE_PROPOSAL_GATE_INDEX_GOVERNED_REFLECTION_V0=true
+SECTION5_CRITERIA_SSOT_REPO_INTERNAL_WRITE_LIFT_V0=true
+SECTION5_CRITERIA_SSOT_REPO_INTERNAL_WRITE_LIFT_GATE_INDEX_APPLIED_V0=true
+CHANGE_ATOM=A-07
+CHANGE_ATOM_APPLIED=true
+PROPOSAL_CANDIDATE=C-08
+C_01_C_06_C_08_APPLIED=true
+C_01_C_12_APPLIED=false
+CRITERIA_SSOT_LIFTED=true
+POST_REVIEW_LIFT_DECISION_REQUIRED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+GATE_INDEX_STATUS_LIFT_FROM_CRITERIA_REFLECTION=true
+
+This subsection adds a **read-only** pointer to Section-5 preflight gap criteria surfaces for audit orientation. Criteria-SSOT repo-internal write/lift applied for gate-index slice (A-07/C-08). It **does not** change any gate status in [§4](#4-compact-gate-index-table), **does not** lift preflight, and **does not** authorize live progression.
+
+**Canonical Section-5 criteria owners (reuse-first):**
+
+- [`SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md`](../planning/SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md) — gap owner map and criteria-reflection blocks (Gap 1–6, §2a.1)
+- [`PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md`](../runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md) — preflight contract §2a.1 primary-evidence posture (**BLOCKED**)
+
+**Static guards (docs/tests contract only):** `tests/ops/test_section5_preflight_gap_owner_map_contract_v0.py`, `tests/ops/test_gap2a1_primary_evidence_enforcement_drift_guard_contract_v0.py`.
+
 ## 3) Canonical Status Model
 
 Allowed status values for this index:
@@ -55,7 +81,7 @@ Status discipline:
 | G1 | Canonical First Live readiness anchor | `Verified` | yes: [Readiness Ladder](MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md) | none for mapping visibility | canonical docs stewardship | none for this index slice |
 | G2 | Canonical interpretation grammar availability | `Verified` | yes: [Readiness Read Model](MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_READ_MODEL_V1.md) | none for mapping visibility | canonical docs stewardship | none for this index slice |
 | G3 | Canonical report rendering carrier availability | `Verified` | yes: [Gate Status Report Surface](MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md) | none for mapping visibility | canonical docs stewardship | none for this index slice |
-| G4 | Dry validation readiness posture (L1) | `Partial` | yes: [Ladder](MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md), [Dry Validation Runbook](../runbooks/RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md), [Live Entry Runbook (Phase A)](../runbooks/RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md), [Entry Contract §3.1](BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md), [§4.1 L1 pointer record](#41-l1-candidate-evidence-pointer-record-g4) | operator-held L1 artifact files (drill log, go/no-go JSON, execution dry-run log) are not asserted as immutable in-repo objects for the bounded-pilot candidate | governance plus operator decision authority | operator/governance archival of Step 1–3 outputs under change control outside this index (optional future repo-resolvable pointer slice) |
+| G4 | Dry validation readiness posture (L1) | `Partial` | yes: [Ladder](MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md), [Dry Validation Runbook](../runbooks/RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md), [Live Entry Runbook (Phase A)](../runbooks/RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md), [Entry Contract §3.1](BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md), [§4.1 L1 pointer record](#41-l1-candidate-evidence-pointer-record-g4), [§4.1.1 Step-2 recapture pointer](#411-external-durable-evidence-pointer-record-step-2-recapture-chain), [§4.1.2 external readiness pointer](#412-external-durable-evidence-pointer-record-g4-external-readiness-chain), [§4.1.3 final gate-reflection pointer](#413-external-durable-evidence-pointer-record-g4-final-gate-reflection-chain), [§4.1.4 final gate-status decision pointer](#414-external-durable-evidence-pointer-record-g4-final-gate-status-decision-chain) | bounded L1/G4 evidence satisfaction asserted for mapping (`L1_G4_EVIDENCE_SATISFIED=true`); operator-held L1 artifact files remain not asserted as immutable in-repo objects for the bounded-pilot candidate | governance plus operator decision authority | optional post-execute review under separate operator authority; L1/G4 final gate-status decision pointer slice complete; gate remains `Partial` for index hosting discipline |
 | G5 | Go or no-go interpretation posture (L2) | `Partial` | yes: [Ladder](MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md) (Level 2), [Report Surface](MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md), [Go No-Go Checklist](PILOT_GO_NO_GO_CHECKLIST.md), [Go No-Go Operational Slice](PILOT_GO_NO_GO_OPERATIONAL_SLICE.md), [Entry Contract — Go/No-Go Acceptable](BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md), [§4.2 L2 pointer record](#42-l2-candidate-verdict-pointer-record-g5) | operator-held go/no-go eval capture (for example JSON from the pilot go/no-go eval script) is not asserted as an immutable in-repo object for the bounded-pilot candidate | governance plus operator decision authority | operator/governance archival of go/no-go eval output under change control outside this index (optional future repo-resolvable pointer slice) |
 | G6 | Entry contract interpretation posture (L3) | `Partial` | yes: [Ladder](MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md) (Level 3), [Report Surface](MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md), [Entry Contract](BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md), [Entry Boundary Note](BOUNDED_REAL_MONEY_PILOT_ENTRY_BOUNDARY_NOTE.md), [§4.3 L3 pointer record](#43-l3-candidate-prerequisite-pointer-record-g6) | operator-held confirmation that all §3 prerequisites are satisfied for the bounded-pilot candidate is not asserted as an immutable in-repo evidence bundle | governance plus operator decision authority | operator/governance archival of prerequisite confirmation evidence per candidate under change control outside this index (optional future repo-resolvable pointer slice) |
 | G7 | Candidate session flow interpretation posture (L4) | `Partial` | yes: [Ladder](MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md) (Level 4), [Report Surface](MASTER_V2_FIRST_LIVE_ENABLEMENT_GATE_STATUS_REPORT_SURFACE_V1.md), [Candidate Flow Runbook](../runbooks/RUNBOOK_BOUNDED_REAL_MONEY_PILOT_CANDIDATE_FLOW.md), [Live Entry Runbook](../runbooks/RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md), [Entry Contract — First Bounded Real-Money Step](BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md), [§4.4 L4 pointer record](#44-l4-candidate-session-flow-pointer-record-g7) | operator-held session-flow execution evidence (for example session logs, registry exports, or handoff artifacts) is not asserted as an immutable in-repo bundle for the bounded-pilot candidate | governance plus operator decision authority | operator/governance archival of session-flow execution evidence per candidate under change control outside this index (optional future repo-resolvable pointer slice) |
@@ -94,6 +120,183 @@ This subsection materializes **one** candidate-scoped **L1 dry-validation eviden
 **G4 status after this record:** remains `Partial` — this index still does not host operator-held drill output, go/no-go JSON, or execution dry-run logs as named, immutable in-repo objects for a specific candidate.
 
 **Next open gap:** operator/governance capture and archival of the three primary artifact classes (dry-validation Steps 1–3) under change control **outside** this index; a later slice may add repo-resolvable pointers **if and when** those artifacts become stable, reviewable references. Minimal field vocabulary for external pointer records (L1 only) lives in [`MASTER_V2_BOUNDED_PILOT_L1_EVIDENCE_POINTER_CONTRACT_V0.md`](MASTER_V2_BOUNDED_PILOT_L1_EVIDENCE_POINTER_CONTRACT_V0.md) and does not by itself close this gap.
+
+
+## 4.1.1) External durable evidence pointer record (Step-2 recapture chain)
+
+This subsection adds **one** repo-resolvable **pointer metadata record** for externally retained bounded Step-2 recapture / evidence-satisfaction / promotion-classification evidence. It is **not** a live authorization, **not** a gate closure, **not** a claim that `G4` is satisfied or complete, and **not** a substitute for operator-governed evidence retention.
+
+**Pointer discipline:** metadata and bundle-root references only — **no payloads**, **no secrets**, **no eval JSON bodies**, **no log dumps** in-repo. Vocabulary aligns with [`MASTER_V2_BOUNDED_PILOT_L1_EVIDENCE_POINTER_CONTRACT_V0.md`](MASTER_V2_BOUNDED_PILOT_L1_EVIDENCE_POINTER_CONTRACT_V0.md) where applicable.
+
+| field | value |
+|---|---|
+| `pointer_class` | `L1_BOUNDED_STEP2_RECAPTURE_EVIDENCE_CHAIN_POINTER` |
+| `bounded_pilot_scope` | first strictly bounded real-money pilot (see [`BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md`](BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md) title and §1–2) |
+| `artifact_summary` | manifest-verified durable archive bundles for bounded Step-2 recapture execute, result classification, evidence-satisfaction classification, and external-only promotion result classification |
+| `retrieval_reference` | durable archive roots under `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/` (bundle directory names only; operator-held archive) |
+| `git_head_at_capture` | `8269d5dfd0102eb4d25bb8532b710ec92e323852` |
+| `captured_at_utc` | `20260606T185548Z` (pointer-slice execute UTC) |
+| `retention_owner` | operator / governance steward (external archive) |
+
+**Representative bundle roots (pointer metadata only):**
+
+- `go_live_l1_g4_step2_recapture_execute_v1_20260606T182035Z`
+- `go_live_l1_g4_step2_recapture_result_classification_no_run_v1_20260606T182304Z`
+- `go_live_l1_g4_step2_evidence_satisfaction_classification_no_run_v1_20260606T182406Z`
+- `go_live_l1_g4_evidence_satisfaction_promotion_result_classification_no_run_v1_20260606T184457Z`
+- `go_live_l1_g4_repo_internal_evidence_gate_change_preparation_no_run_v1_20260606T185107Z`
+- `go_live_l1_g4_repo_internal_evidence_gate_change_preparation_review_no_run_v1_20260606T185235Z`
+- `go_live_l1_g4_repo_internal_evidence_gate_pointer_slice_command_review_no_run_v1_20260606T185418Z`
+
+**What this record makes visible:** where bounded Step-2 recapture and related external-only classification evidence is retained outside this repository for review orientation.
+
+**What this record explicitly does not claim:**
+
+- `L1_G4_EVIDENCE_SATISFIED=true` or global L1/G4 evidence satisfaction (`L1_G4_EVIDENCE_SATISFIED=false`)
+- repo-internal gate closure or gate-change authorization
+- global blocker lift or automatic blocker removal
+- Step-3 planning or Step-3 execute authorization
+- preflight-lift or live authorization
+- acceptable pilot verdict, live eligibility, or real-money entry permission
+- closure or upgrade of `G4` beyond `Partial`
+- that operator-held drill output, go/no-go JSON, or execution dry-run logs are now immutable in-repo objects
+
+**G4 status after this record:** remains `Partial` — this pointer slice documents external durable evidence locations only; it does not host artifact payloads or close the L1 dry-validation gate.
+
+## 4.1.2) External durable evidence pointer record (G4 external readiness chain)
+
+This subsection adds **one** repo-resolvable **pointer metadata record** for externally retained bounded **G4 external-readiness** evidence spanning dry-validation Steps 1–3 and real Production Dry-Run Log capture. It is **not** a live authorization, **not** a gate closure, **not** a claim that `G4` is satisfied or complete, and **not** a substitute for operator-governed evidence retention.
+
+**Pointer discipline:** metadata and bundle-root references only — **no payloads**, **no secrets**, **no eval JSON bodies**, **no log dumps** in-repo. Vocabulary aligns with [`MASTER_V2_BOUNDED_PILOT_L1_EVIDENCE_POINTER_CONTRACT_V0.md`](MASTER_V2_BOUNDED_PILOT_L1_EVIDENCE_POINTER_CONTRACT_V0.md) where applicable. Step-2 recapture subset remains cross-mapped in [§4.1.1](#411-external-durable-evidence-pointer-record-step-2-recapture-chain).
+
+| field | value |
+|---|---|
+| `pointer_class` | `L1_BOUNDED_G4_EXTERNAL_READINESS_EVIDENCE_CHAIN_POINTER` |
+| `bounded_pilot_scope` | first strictly bounded real-money pilot (see [`BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md`](BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md) title and §1–2) |
+| `artifact_summary` | manifest-verified durable archive bundles for bounded Step 1 dry-validation execute and classification; Step 2 evidence-satisfaction / recapture chain (see §4.1.1); Step 3 reference-only artifact capture execute and classification; real Production Dry-Run Log capture with stdout/stderr/exit-code/script-invocation-status execute, post-execute review, and result classification |
+| `retrieval_reference` | durable archive roots under `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/` (bundle directory names only; operator-held archive) |
+| `git_head_at_capture` | `a01e0d3cf319f6f15f10f7b5fc8b27f52f75237a` |
+| `captured_at_utc` | `20260606T212356Z` (§4.1.2 pointer-slice execute UTC) |
+| `retention_owner` | operator / governance steward (external archive) |
+
+**Representative bundle roots (pointer metadata only):**
+
+- `go_live_l1_g4_dry_validation_run_execute_v1_20260606T201200Z`
+- `go_live_l1_g4_dry_validation_result_classification_no_run_v1_20260606T201455Z`
+- `go_live_l1_g4_step2_evidence_satisfaction_classification_no_run_v1_20260606T182406Z`
+- `go_live_l1_g4_section4_1_1_pointer_reflection_closeout_no_run_v1_20260606T195200Z`
+- `go_live_l1_g4_step3_artifact_capture_execute_v1_20260606T202845Z`
+- `go_live_l1_g4_step3_artifact_capture_result_classification_no_run_v1_20260606T203244Z`
+- `go_live_l1_g4_production_dry_run_log_capture_execute_v1_20260606T204609Z`
+- `go_live_l1_g4_production_dry_run_log_capture_post_execute_review_no_run_v1_20260606T204938Z`
+- `go_live_l1_g4_real_production_dry_run_log_capture_execute_v1_20260606T210526Z`
+- `go_live_l1_g4_real_production_dry_run_log_capture_post_execute_review_no_run_v1_20260606T210746Z`
+- `go_live_l1_g4_real_production_dry_run_log_capture_result_classification_no_run_v1_20260606T210927Z`
+
+**What this record makes visible:** where bounded G4 external-readiness evidence (Steps 1–3 plus real Production Dry-Run Log capture chain) is retained outside this repository for review orientation.
+
+**What this record explicitly does not claim:**
+
+- `L1_G4_EVIDENCE_SATISFIED=true` or global L1/G4 evidence satisfaction (`L1_G4_EVIDENCE_SATISFIED=false`)
+- repo-internal gate closure or gate-change authorization (`REPO_INTERNAL_GATE_CHANGE_AUTHORIZED=false`)
+- global blocker lift or automatic blocker removal (`GLOBAL_BLOCKER_LIFT_AUTHORIZED=false`)
+- preflight-lift or live authorization (`PREFLIGHT_LIFT_AUTHORIZED=false`, `LIVE_AUTHORIZED=false`)
+- operator arming or live readiness (`READY_FOR_OPERATOR_ARMING=false`)
+- credentials, orders, or scheduler/runtime use (`CREDENTIALS_ALLOWED=false`, `ORDERS_ALLOWED=false`, `SCHEDULER_RUNTIME_ALLOWED=false`)
+- Master V2 Double Play or trading-logic changes (`MV2_DOUBLE_PLAY_TOUCHED=false`, `TRADING_LOGIC_TOUCHED=false`)
+- acceptable pilot verdict, live eligibility, or real-money entry permission
+- closure or upgrade of `G4` beyond `Partial`
+- that operator-held drill output, go/no-go JSON, or execution dry-run logs are now immutable in-repo objects
+
+**G4 status after this record:** remains `Partial` — this pointer slice documents external durable evidence locations only; it does not host artifact payloads or close the L1 dry-validation gate.
+
+## 4.1.3) External durable evidence pointer record (G4 final gate-reflection chain)
+
+This subsection adds **one** repo-resolvable **pointer metadata record** for externally retained bounded **G4 final gate-reflection / evidence-satisfaction decision** evidence spanning final external classification, repo-internal reflection prep, operator selection, charter and repo-diff review prep, execute prep, and operator final GO record. It is **not** a live authorization, **not** a gate closure, **not** a claim that `G4` is satisfied or complete, and **not** a substitute for operator-governed evidence retention.
+
+**Pointer discipline:** metadata and bundle-root references only — **no payloads**, **no secrets**, **no eval JSON bodies**, **no log dumps** in-repo. Vocabulary aligns with [`MASTER_V2_BOUNDED_PILOT_L1_EVIDENCE_POINTER_CONTRACT_V0.md`](MASTER_V2_BOUNDED_PILOT_L1_EVIDENCE_POINTER_CONTRACT_V0.md) where applicable. External readiness subset remains cross-mapped in [§4.1.2](#412-external-durable-evidence-pointer-record-g4-external-readiness-chain).
+
+| field | value |
+|---|---|
+| `pointer_class` | `L1_BOUNDED_G4_FINAL_GATE_REFLECTION_EVIDENCE_CHAIN_POINTER` |
+| `bounded_pilot_scope` | first strictly bounded real-money pilot (see [`BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md`](BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md) title and §1–2) |
+| `artifact_summary` | manifest-verified durable archive bundles for final external evidence-satisfaction gate-decision classification; repo-internal final gate reflection operator prep, Option B selection, charter and repo-diff review prep, execute prep, and operator final GO record |
+| `retrieval_reference` | durable archive roots under `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/` (bundle directory names only; operator-held archive) |
+| `git_head_at_capture` | `793d830175765d68fbb198d585153800feebd4cc` |
+| `captured_at_utc` | `20260606T220809Z` (§4.1.3 pointer-slice execute UTC) |
+| `retention_owner` | operator / governance steward (external archive) |
+| `FINAL_EXTERNAL_EVIDENCE_CHAIN_REVIEWED` | **true** |
+| `FINAL_EXTERNAL_EVIDENCE_CHAIN_READY_FOR_REPO_INTERNAL_GATE_DECISION_PROPOSAL` | **true** |
+
+**Representative bundle roots (pointer metadata only):**
+
+- `go_live_l1_g4_final_evidence_satisfaction_gate_decision_execute_no_run_v1_20260606T215849Z`
+- `go_live_l1_g4_repo_internal_final_gate_reflection_operator_prep_no_run_v1_20260606T220026Z`
+- `go_live_l1_g4_repo_internal_final_gate_reflection_operator_selection_record_no_run_v1_20260606T220143Z`
+- `go_live_l1_g4_repo_internal_final_gate_reflection_charter_and_repo_diff_review_prep_no_run_v1_20260606T220307Z`
+- `go_live_l1_g4_repo_internal_final_gate_reflection_execute_prep_no_run_v1_20260606T220452Z`
+- `go_live_l1_g4_repo_internal_final_gate_reflection_execute_operator_final_go_record_no_run_v1_20260606T220650Z`
+
+**What this record makes visible:** where bounded G4 final gate-reflection and external evidence-satisfaction decision evidence is retained outside this repository for review orientation, and that the external chain is ready for repo-internal gate-decision **proposal review only**.
+
+**What this record explicitly does not claim:**
+
+- `L1_G4_EVIDENCE_SATISFIED=true` or global L1/G4 evidence satisfaction (`L1_G4_EVIDENCE_SATISFIED=false`)
+- repo-internal gate closure or future gate-change authorization beyond this bounded docs-only pointer slice (`REPO_INTERNAL_GATE_CHANGE_AUTHORIZED=false` for any authority lift)
+- global blocker lift or automatic blocker removal (`GLOBAL_BLOCKER_LIFT_AUTHORIZED=false`)
+- preflight-lift or live authorization (`PREFLIGHT_LIFT_AUTHORIZED=false`, `LIVE_AUTHORIZED=false`)
+- operator arming or live readiness (`READY_FOR_OPERATOR_ARMING=false`)
+- credentials, orders, or scheduler/runtime use (`CREDENTIALS_ALLOWED=false`, `ORDERS_ALLOWED=false`, `SCHEDULER_RUNTIME_ALLOWED=false`)
+- Master V2 Double Play or trading-logic changes (`MV2_DOUBLE_PLAY_TOUCHED=false`, `TRADING_LOGIC_TOUCHED=false`)
+- acceptable pilot verdict, live eligibility, or real-money entry permission
+- closure or upgrade of `G4` beyond `Partial`
+- that operator-held drill output, go/no-go JSON, or execution dry-run logs are now immutable in-repo objects
+
+**G4 status after this record:** remains `Partial` — this pointer slice documents external durable evidence locations and repo-internal reflection readiness orientation only; it does not host artifact payloads or close the L1 dry-validation gate.
+
+## 4.1.4) External durable evidence pointer record (G4 final gate-status decision chain)
+
+This subsection adds **one** repo-resolvable **pointer metadata record** for externally retained bounded **G4 final gate-status decision** evidence spanning operator prep, Option B selection, charter and repo-diff review prep, execute prep, operator final GO record, and bounded docs-only gate-status decision execute. It is **not** a live authorization, **not** a global gate closure, **not** a preflight lift, and **not** a substitute for operator-governed evidence retention.
+
+**Pointer discipline:** metadata and bundle-root references only — **no payloads**, **no secrets**, **no eval JSON bodies**, **no log dumps** in-repo. Vocabulary aligns with [`MASTER_V2_BOUNDED_PILOT_L1_EVIDENCE_POINTER_CONTRACT_V0.md`](MASTER_V2_BOUNDED_PILOT_L1_EVIDENCE_POINTER_CONTRACT_V0.md) where applicable. Final gate-reflection subset remains cross-mapped in [§4.1.3](#413-external-durable-evidence-pointer-record-g4-final-gate-reflection-chain).
+
+| field | value |
+|---|---|
+| `pointer_class` | `L1_BOUNDED_G4_FINAL_GATE_STATUS_DECISION_EVIDENCE_CHAIN_POINTER` |
+| `bounded_pilot_scope` | first strictly bounded real-money pilot (see [`BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md`](BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md) title and §1–2) |
+| `artifact_summary` | manifest-verified durable archive bundles for final gate-status decision operator prep, Option B selection, charter and repo-diff review prep, execute prep, operator final GO record, and bounded docs-only gate-status decision execute |
+| `retrieval_reference` | durable archive roots under `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/runtime/` (bundle directory names only; operator-held archive) |
+| `git_head_at_capture` | `65f22eab7e74943bed161cbb228dbc932ec4f3aa` |
+| `captured_at_utc` | `20260607T000700Z` (§4.1.4 pointer-slice execute UTC) |
+| `retention_owner` | operator / governance steward (external archive) |
+| `REPO_INTERNAL_FINAL_GATE_REFLECTION_CHAIN_CLOSED` | **true** |
+| `L1_G4_EVIDENCE_SATISFIED` | **true** (bounded mapping assertion for L1/G4 gate-status only) |
+
+**Representative bundle roots (pointer metadata only):**
+
+- `go_live_l1_g4_repo_internal_final_gate_reflection_closeout_no_run_v1_20260606T223557Z`
+- `go_live_l1_g4_final_gate_status_decision_operator_prep_no_run_v1_20260607T000200Z`
+- `go_live_l1_g4_final_gate_status_decision_operator_selection_record_no_run_v1_20260607T000300Z`
+- `go_live_l1_g4_final_gate_status_decision_charter_and_repo_diff_review_prep_no_run_v1_20260607T000400Z`
+- `go_live_l1_g4_final_gate_status_decision_execute_prep_no_run_v1_20260607T000500Z`
+- `go_live_l1_g4_final_gate_status_decision_execute_operator_final_go_record_no_run_v1_20260607T000600Z`
+- `go_live_l1_g4_final_gate_status_decision_execute_v1_20260607T000700Z`
+
+**What this record makes visible:** where bounded G4 final gate-status decision evidence is retained outside this repository for review orientation, and that bounded L1/G4 evidence satisfaction is asserted for **mapping only** (`L1_G4_EVIDENCE_SATISFIED=true`).
+
+**What this record explicitly does not claim:**
+
+- global gate closure or automatic gate closure beyond L1/G4 mapping (`REPO_INTERNAL_GATE_CHANGE_AUTHORIZED=false` for authority lift)
+- global blocker lift or automatic blocker removal (`GLOBAL_BLOCKER_LIFT_AUTHORIZED=false`)
+- preflight-lift or live authorization (`PREFLIGHT_LIFT_AUTHORIZED=false`, `LIVE_AUTHORIZED=false`)
+- operator arming or live readiness (`READY_FOR_OPERATOR_ARMING=false`)
+- credentials, orders, or scheduler/runtime use (`CREDENTIALS_ALLOWED=false`, `ORDERS_ALLOWED=false`, `SCHEDULER_RUNTIME_ALLOWED=false`)
+- Master V2 Double Play or trading-logic changes (`MV2_DOUBLE_PLAY_TOUCHED=false`, `TRADING_LOGIC_TOUCHED=false`)
+- acceptable pilot verdict, live eligibility, or real-money entry permission
+- closure or upgrade of `G4` beyond `Partial` for index hosting discipline
+- that operator-held drill output, go/no-go JSON, or execution dry-run logs are now immutable in-repo objects
+
+**G4 status after this record:** remains `Partial` — this pointer slice documents external durable evidence locations and bounded L1/G4 gate-status decision mapping only; it does not host artifact payloads or authorize live entry.
 
 ## 4.2) L2 candidate verdict pointer record (G5)
 
@@ -234,7 +437,7 @@ This subsection records **one** compact **G10** clarification for review orienta
 - G1: Canonical anchor is explicit and active; this index reuses that anchor without redefining steering authority.
 - G2: Interpretation grammar is canonically materialized; this index does not redefine grammar.
 - G3: Reporting carrier is canonically materialized; this index does not alter report schema.
-- G4: L1 mapped sources plus one compact candidate-scoped L1 pointer record ([§4.1](#41-l1-candidate-evidence-pointer-record-g4)); operator-held L1 artifact files remain outside this index, so G4 stays `Partial`.
+- G4: L1 mapped sources plus candidate-scoped L1 pointer records ([§4.1](#41-l1-candidate-evidence-pointer-record-g4), [§4.1.1](#411-external-durable-evidence-pointer-record-step-2-recapture-chain), [§4.1.2](#412-external-durable-evidence-pointer-record-g4-external-readiness-chain), [§4.1.3](#413-external-durable-evidence-pointer-record-g4-final-gate-reflection-chain), [§4.1.4](#414-external-durable-evidence-pointer-record-g4-final-gate-status-decision-chain)); bounded L1/G4 evidence satisfaction asserted for mapping (`L1_G4_EVIDENCE_SATISFIED=true`); operator-held L1 artifact files remain outside this index as immutable in-repo objects, so G4 stays `Partial`.
 - G5: L2 mapped sources plus one compact candidate-scoped L2 verdict pointer record ([§4.2](#42-l2-candidate-verdict-pointer-record-g5)); operator-held go/no-go eval capture remains outside this index, so G5 stays `Partial`.
 - G6: L3 mapped sources plus one compact candidate-scoped L3 prerequisite pointer record ([§4.3](#43-l3-candidate-prerequisite-pointer-record-g6)); operator-held prerequisite confirmation for the candidate remains outside this index, so G6 stays `Partial`.
 - G7: L4 mapped sources plus one compact candidate-scoped L4 session-flow pointer record ([§4.4](#44-l4-candidate-session-flow-pointer-record-g7)); operator-held session-flow execution evidence for the candidate remains outside this index, so G7 stays `Partial`.

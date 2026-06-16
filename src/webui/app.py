@@ -52,6 +52,7 @@ HTML Pages:
 - GET /r_and_d/comparison (R&D Multi-Run Comparison - Phase 78)
 - GET /market (Market Surface v0 — read-only OHLCV, Close-Line-Chart)
 - GET /market/double-play (Double-Play Market Dashboard v1 — SSR OHLCV chart + Double-Play display snapshot; kein Fetch)
+- GET /market/futures (F5 Futures Read-only Market Dashboard v0 — SSR offline/fixture display; kein Fetch, keine Autorität)
 - GET /observability (Observability-Hub — read-only Link-/Hinweisleiste, keine neue Autorität)
 
 API Endpoints:
@@ -97,7 +98,8 @@ from typing import Any, Dict, List, Literal, Optional
 
 import toml
 from fastapi import FastAPI, HTTPException, Query, Request
-from fastapi.responses import HTMLResponse, JSONResponse
+from fastapi.responses import HTMLResponse, JSONResponse, RedirectResponse
+from fastapi.staticfiles import StaticFiles
 from fastapi.templating import Jinja2Templates
 
 logger = logging.getLogger(__name__)
@@ -194,6 +196,7 @@ from .market_depth_api_v0 import router as market_depth_api_v0_router
 from .market_surface import (
     MAX_OHLCV_LIMIT,
     MARKET_TIMEFRAMES,
+    build_market_depth_display_context,
     build_market_payload,
     create_market_router,
 )
@@ -206,6 +209,7 @@ from .double_play_dashboard_display_json_route_v0 import (
 # Wir gehen davon aus: src/webui/app.py -> src/webui -> src -> REPO_ROOT
 BASE_DIR = Path(__file__).resolve().parents[2]
 TEMPLATE_DIR = BASE_DIR / "templates" / "peak_trade_dashboard"
+STATIC_DIR = BASE_DIR / "static"
 
 
 def get_project_status() -> Dict[str, Any]:
@@ -586,56 +590,53 @@ def create_app() -> FastAPI:
 
         No POST, no provider/exchange orchestration by this endpoint; navigation layer only.
         """
+        from .last_paper_run_panel_runtime_v0 import build_last_paper_run_panel_display_context
+        from .workflow_dashboard_runtime_v1 import build_workflow_dashboard_display_context
+
         proj_status = get_project_status()
+        last_paper_run_panel = build_last_paper_run_panel_display_context()
+        workflow_dashboard = build_workflow_dashboard_display_context()
         return templates.TemplateResponse(
             request,
             "observability_hub.html",
-            {"status": proj_status},
+            {
+                "status": proj_status,
+                "last_paper_run_panel": last_paper_run_panel,
+                "workflow_dashboard": workflow_dashboard,
+            },
         )
 
-    @app.get("/market/double-play", response_class=HTMLResponse)
-    async def double_play_market_dashboard_v1_ssr_page(
-        request: Request,
+    @app.get("/market/double-play")
+    async def double_play_market_dashboard_v1_legacy_redirect(
         symbol: str = Query("BTC/EUR", description="Trading-Paar, z.B. BTC/EUR"),
         timeframe: str = Query("1d", description="Timeframe (Kraken); Dummy ignoriert Serie"),
         limit: int = Query(120, ge=1, le=MAX_OHLCV_LIMIT, description="Bars (max 720)"),
         source: str = Query("dummy", description="dummy | kraken"),
-    ) -> Any:
-        """
-        Double-Play Market Dashboard v1 — SSR composition (read-only).
-
-        Embedded market OHLCV/chart semantics match GET /market; Double-Play panel snapshot uses
-        the same pure-stack dict as GET /api/master-v2/double-play/dashboard-display.json (in-process).
-        """
+    ) -> RedirectResponse:
+        """Legacy deep-link → canonical GET /market with #double-play anchor (query preserved)."""
         if timeframe not in MARKET_TIMEFRAMES:
             raise HTTPException(
                 status_code=422,
                 detail=f"timeframe muss einer von {list(MARKET_TIMEFRAMES)} sein, nicht {timeframe!r}",
             )
         src = _normalize_market_surface_source_for_double_play(source)
-        payload = build_market_payload(symbol=symbol, timeframe=timeframe, limit=limit, source=src)
-        proj_status = get_project_status()
+        from urllib.parse import quote
 
-        dp_display = build_static_dashboard_display_dict()
-
-        return templates.TemplateResponse(
-            request,
-            "double_play_market_dashboard_v0.html",
-            {
-                "status": proj_status,
-                "payload": payload,
-                "query": {
-                    "symbol": symbol,
-                    "timeframe": timeframe,
-                    "limit": limit,
-                    "source": src,
-                },
-                "dp_display": dp_display,
-                "double_play_json_url": _DP_DOUBLE_PLAY_DISPLAY_JSON_URL,
-                "legacy_demo_href": _DP_MARKET_V0_DEMO_HREF,
-                "legacy_api_href": _DP_MARKET_V0_API_HREF,
-            },
+        encoded_symbol = quote(symbol, safe="")
+        url = (
+            f"/market?source={src}&symbol={encoded_symbol}"
+            f"&timeframe={timeframe}&limit={limit}#double-play"
         )
+        return RedirectResponse(url=url, status_code=302)
+
+    @app.get("/market/futures")
+    async def futures_read_only_market_dashboard_v0_legacy_redirect(
+        request: Request,
+    ) -> RedirectResponse:
+        """Legacy deep-link → canonical GET /market with #futures anchor (query preserved)."""
+        qs = request.url.query
+        suffix = f"?{qs}" if qs else ""
+        return RedirectResponse(url=f"/market{suffix}#futures", status_code=302)
 
     @app.get("/", response_class=HTMLResponse)
     async def index(
@@ -2086,6 +2087,9 @@ def create_app() -> FastAPI:
                 status_code=500,
                 detail=f"Failed to load alerts: {str(e)}",
             )
+
+    if STATIC_DIR.is_dir():
+        app.mount("/static", StaticFiles(directory=str(STATIC_DIR)), name="static")
 
     return app
 

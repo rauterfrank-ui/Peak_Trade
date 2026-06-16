@@ -5,12 +5,16 @@ import os
 import subprocess
 from pathlib import Path
 
+from tests.ops.scheduler_boundary_subprocess_test_env_v0 import (
+    scheduler_boundary_subprocess_test_env,
+)
+
 
 def _run(cmd: list[str], env: dict[str, str], cwd: Path) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
         cmd,
         cwd=str(cwd),
-        env={**os.environ, **env},
+        env={**os.environ, **scheduler_boundary_subprocess_test_env(), **env},
         text=True,
         capture_output=True,
         check=False,

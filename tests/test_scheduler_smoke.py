@@ -444,6 +444,7 @@ enabled = true
                 "--config",
                 str(tmp_path / "nonexistent.toml"),
                 "--once",
+                "--dry-run",
             ]
         )
 

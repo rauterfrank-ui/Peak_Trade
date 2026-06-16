@@ -2,7 +2,7 @@
 title: "Current focus — operator-maintained (not auto-generated)"
 status: DRAFT
 scope: docs-only (NO-LIVE)
-last_updated: 2026-05-08
+last_updated: 2026-05-16
 ---
 
 # Current focus
@@ -17,6 +17,34 @@ This is **not** produced by Workflow Officer or Update Officer; officers aggrega
 ## Active goal (one sentence)
 
 **Finish Plan PRs 6–8** bilden die **abgeschlossene** Navigations-Spine auf `main` (docs-only / snapshot-only): [PR 6 — Live-Ops runbook pack](FINISH_PLAN.md#pr-6-live-ops-runbook-pack-docs-only) · [PR 7 — Observability / status reports](FINISH_PLAN.md#pr-7-observabilitystatus-report-hardening-code-docs) · [PR 8 — Release checklist / Go–No-Go](FINISH_PLAN.md#pr-8-release-checklist-gono-go-rubric-docs-only) — Einstieg weiter über [Workflow Frontdoor](../../WORKFLOW_FRONTDOOR.md) und [Release docs](../release/README.md); **NO** live unlocks. **Aktueller Fokus:** schmale Slices aus [FINISH_PLAN — Workstreams](FINISH_PLAN.md#workstreams-16--inputs--outputs--contracts--tests) und den Runbooks (z. B. [Stufe J](../runbooks/RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED.md#stufe-j--scripts--demo-daten-operativ-niedrig-priorisiert), [Chat-led gaps](../runbooks/RUNBOOK_CHAT_LED_OPEN_FEATURES.md)) — kein weiterer nummerierter PR 9+ im Finish-Plan. **Truth/docs governance, PR truth gates, officer truth integration, bounded-pilot / canary-live-entry docs, J1 forward-pipeline slices, the J2 Optuna demo-runner slice, and the J3 placeholder-inventory tooling smoke are landed** — see **Recently landed** below.
+
+---
+
+## Post–#3478 closeout (May 2026, docs / WebUI / security concepts)
+
+Short operator snapshot after **#3470–#3478** (no new roadmap promises; **not** testnet/live readiness).
+
+- **Market Dashboard / Double-Play read-only line (#3470–#3476):** **closed/idle** for micro-continuation; orientation: [`MARKET_SURFACE_V0.md`](../../webui/MARKET_SURFACE_V0.md). These slices did **not** start scheduler, runtime, paper, testnet, live, broker, exchange, or order paths.
+- **Credential / Kraken governance docs (#3471):** **closed/idle** for routine follow-up; planning-first boundary runbook: [`RUNBOOK_OPERATOR_CREDENTIAL_BOUNDARIES_PLANNING_FIRST_V0.md`](../runbooks/RUNBOOK_OPERATOR_CREDENTIAL_BOUNDARIES_PLANNING_FIRST_V0.md).
+- **Semgrep / SAST and ZAP / DAST (#3477–#3478):** **concept-only**, **manual-first**, **default-off**; **no** install, **no** scan/run, **no** CI gates from those specs alone. Entry points: [`SEMGREP_SAST_ADOPTION_CONCEPT_V0.md`](../specs/SEMGREP_SAST_ADOPTION_CONCEPT_V0.md), [`ZAP_DAST_SHADOW_CONCEPT_V0.md`](../specs/ZAP_DAST_SHADOW_CONCEPT_V0.md), and the CI/static posture index [`CI_GITHUB_ACTIONS_PERMISSIONS_SECRETS_ARTIFACTS_AUDIT_INDEX_V0.md`](../CI_GITHUB_ACTIONS_PERMISSIONS_SECRETS_ARTIFACTS_AUDIT_INDEX_V0.md).
+- **Chart.js:** CDN load-failure **attribution** is in place (#3476); **local** vendored fallback is **not** implemented and needs a **separate** charter if ever pursued.
+
+**Suggested default posture:** **STOP/IDLE** at the repo slice level unless the operator selects a **larger** charter (e.g. Testnet/Daemon planning, Chart.js local fallback **concept**, `/market/double-play` design depth, or another explicit non-micro topic).
+
+## Post–Canary docs navigation + Go-Live gap audit closeout (May 2026, docs-only)
+
+Kurzer Operator-Snapshot nach **PR #3494–#3496** sowie nach dem **read-only Go-Live Gap Audit Matrix v0** — **Navigation/Wissenslage nur**; **kein** Testnet-/Live-Readiness-Nachweis und **kein** Genehmigung-/LB-APR-Artefakt.
+
+- **PR #3494:** Canary-Kriterien ↔ kanonische Runbooks/Readiness-Pointer — [`CANARY_LIVE_ENTRY_CRITERIA.md`](../runbooks/CANARY_LIVE_ENTRY_CRITERIA.md) (inkl. erforderlicher Truth-Map-Zeile im gleichen Slice).
+- **PR #3495:** Dry Validation ↔ Canary — [`RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md`](../runbooks/RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md).
+- **PR #3496:** Bounded Pilot Live Entry ↔ Canary — [`RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md`](../runbooks/RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md).
+
+GitHub (Links zur Nachverfolgung): https://github.com/rauterfrank-ui/Peak_Trade/pull/3494 · https://github.com/rauterfrank-ui/Peak_Trade/pull/3495 · https://github.com/rauterfrank-ui/Peak_Trade/pull/3496
+
+- **Read-only Go-Live Gap Audit Matrix v0:** breite bestehende Abdeckung für Live-default-off / Gates / CI-Doku-Verträge; **keine** sofortige Pflicht für einen zusätzlichen generischen tests-only Contract; empfohlene Haltung **`stop_idle_after_gap_audit`** bis zu einem neuen expliziten Charter. Lokales Audit-Artefakt (Maschinenreferenz): `/tmp/peak_trade_readonly_golive_gap_audit_v0_20260516T075330Z/READONLY_GOLIVE_GAP_AUDIT_V0_RESULT.md`
+- **Notion PR Slice Registry (nur dokumentarisch):** „Canary Docs Navigation Chain (#3494–#3496)“ — https://www.notion.so/3625d37faddf81baa19fdc239b3704e4 · „Go-Live Gap Audit Matrix v0“ — https://www.notion.so/3625d37faddf81549d04f1f17958f12b — **Notion ≠ Approval**, **Docs ≠ Approval**.
+
+**Suggested default posture:** **STOP_IDLE** für Runtime/Scheduler/Testnet/Live/Broker/Exchange bleibt; Cursor/Multi-Agent nur unter klarem **read-only / docs-tests-bounded** Charter. **NO-LIVE**-Default unverändert; **LB-APR** weiterhin erforderlich und durch diese Reihe **nicht** shortcut.
 
 ---
 

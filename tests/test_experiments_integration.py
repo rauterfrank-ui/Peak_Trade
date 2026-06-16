@@ -343,6 +343,7 @@ class TestProgressTracking:
         runner = ExperimentRunner(
             backtest_fn=simple_backtest,
             progress_callback=progress_cb,
+            progress_every=1,
         )
         runner.run(config)
 

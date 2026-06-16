@@ -2,8 +2,7 @@ name: Ops Doctor Dashboard (Pages)
 
 on:
   workflow_dispatch: {}
-  schedule:
-    - cron: "15 6 * * 1"  # Mondays 06:15 UTC (07:15 Berlin winter time)
+  # Scheduled cron removed (cost minimization); manual dispatch only.
 
 permissions:
   contents: read

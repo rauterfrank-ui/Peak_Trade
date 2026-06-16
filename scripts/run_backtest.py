@@ -36,7 +36,7 @@ import sys
 import uuid
 from datetime import datetime, timedelta
 from pathlib import Path
-from typing import Optional
+from typing import Any, Callable, Dict, Optional
 
 import pandas as pd
 import numpy as np
@@ -52,9 +52,10 @@ from src.backtest.engine import BacktestEngine
 from src.backtest.stats import compute_backtest_stats, validate_for_live_trading
 from src.data import DataNormalizer, CsvLoader, KrakenCsvLoader
 from src.core.experiments import log_backtest_result
+from src.strategies import STRATEGY_REGISTRY, load_strategy
 from src.strategies.registry import (
     get_available_strategy_keys,
-    create_strategy_from_config,
+    get_strategy_spec,
 )
 from src.experiments.evidence_chain import (
     ensure_run_dir,
@@ -176,6 +177,78 @@ Beispiele:
     return parser.parse_args()
 
 
+def _validate_strategy_registry_gates(key: str, cfg: PeakConfig) -> None:
+    """Mirror registry environment/tier gates (fail-closed)."""
+    spec = get_strategy_spec(key)
+
+    env_mode = cfg.get("environment.mode")
+    if not env_mode:
+        env_mode = cfg.get("env.mode")
+    if not env_mode:
+        env_mode = cfg.get("runtime.environment")
+    if not env_mode:
+        env_mode = cfg.get("environment.runtime_environment")
+    if not env_mode:
+        env_mode = "backtest"
+
+    if env_mode == "live" and not spec.is_live_ready:
+        raise ValueError(
+            f"Strategy '{key}' cannot be used in LIVE mode (IS_LIVE_READY=False). "
+            f"This strategy is R&D-only and not validated for live trading."
+        )
+
+    if spec.tier == "r_and_d":
+        allow_rnd = cfg.get("research.allow_r_and_d_strategies", False)
+        if not allow_rnd:
+            raise ValueError(
+                f"Strategy '{key}' is R&D-only (TIER=r_and_d) and requires "
+                f"'research.allow_r_and_d_strategies = true' in config."
+            )
+
+    if env_mode not in spec.allowed_environments:
+        allowed_str = ", ".join(spec.allowed_environments)
+        raise ValueError(
+            f"Strategy '{key}' not allowed in environment '{env_mode}'. "
+            f"Allowed environments: {allowed_str}"
+        )
+
+
+def _build_strategy_params_from_config(
+    cfg: PeakConfig,
+    strategy_key: str,
+) -> Dict[str, Any]:
+    """Build strategy params dict via canonical load_strategy() registry path."""
+    if strategy_key in STRATEGY_REGISTRY:
+        loader_key = strategy_key
+        section_key = strategy_key
+    else:
+        spec = get_strategy_spec(strategy_key)
+        section_key = spec.config_section.rsplit(".", 1)[-1]
+        loader_key = section_key if section_key in STRATEGY_REGISTRY else strategy_key
+
+    load_strategy(loader_key)
+    section = cfg.raw.get("strategy", {}).get(section_key, {})
+    if not section and section_key != strategy_key:
+        section = cfg.raw.get("strategy", {}).get(strategy_key, {})
+    params: Dict[str, Any] = dict(section) if isinstance(section, dict) else {}
+    params["stop_pct"] = cfg.get(f"strategy.{strategy_key}.stop_pct", 0.02)
+    return params
+
+
+def _resolve_strategy_signal_fn(
+    strategy_name: str,
+) -> Callable[[pd.DataFrame, Dict[str, Any]], pd.Series]:
+    """Resolve signal callable via canonical load_strategy() path."""
+    if strategy_name in STRATEGY_REGISTRY:
+        return load_strategy(strategy_name)
+
+    spec = get_strategy_spec(strategy_name)
+    loader_key = spec.config_section.rsplit(".", 1)[-1]
+    if loader_key in STRATEGY_REGISTRY:
+        return load_strategy(loader_key)
+    return load_strategy(strategy_name)
+
+
 def resolve_backtest_symbol(cfg: PeakConfig) -> str:
     """
     Symbol für Evidence-Chain-Metadaten (nur Config / Defaults, kein I/O).
@@ -251,10 +324,10 @@ def load_ohlcv_data(
     verbose: bool = False,
 ) -> pd.DataFrame:
     """
-    Lädt OHLCV-Daten aus CSV oder generiert Dummy-Daten.
+    Lädt OHLCV-Daten aus CSV/Parquet oder generiert Dummy-Daten.
 
     Args:
-        data_file: Pfad zur CSV-Datei (None = Dummy-Daten)
+        data_file: Pfad zur CSV- oder Parquet-Datei (None = Dummy-Daten)
         start_date: Startdatum-Filter
         end_date: Enddatum-Filter
         n_bars: Anzahl Bars für Dummy-Daten
@@ -264,7 +337,7 @@ def load_ohlcv_data(
         Normalisierter OHLCV-DataFrame
     """
     if data_file:
-        # CSV laden
+        # CSV oder Parquet laden
         path = Path(data_file)
         if not path.exists():
             raise FileNotFoundError(f"Datei nicht gefunden: {data_file}")
@@ -272,17 +345,26 @@ def load_ohlcv_data(
         if verbose:
             print(f"  Lade Daten aus: {data_file}")
 
-        # Kraken-spezifisches Format erkennen
-        if "kraken" in str(path).lower():
-            loader = KrakenCsvLoader()
+        suffix = path.suffix.lower()
+        if suffix in {".parquet", ".pq"}:
+            df = pd.read_parquet(path)
+            df.columns = df.columns.str.lower()
+            if not isinstance(df.index, pd.DatetimeIndex) and "timestamp" in df.columns:
+                df = df.set_index(pd.DatetimeIndex(pd.to_datetime(df.pop("timestamp"), utc=True)))
+            normalizer = DataNormalizer()
+            df = normalizer.normalize(df)
         else:
-            loader = CsvLoader()
+            # Kraken-spezifisches Format erkennen
+            if "kraken" in str(path).lower():
+                loader = KrakenCsvLoader()
+            else:
+                loader = CsvLoader()
 
-        df = loader.load(str(path))
+            df = loader.load(str(path))
 
-        # Normalisieren
-        normalizer = DataNormalizer()
-        df = normalizer.normalize(df)
+            # Normalisieren
+            normalizer = DataNormalizer()
+            df = normalizer.normalize(df)
 
     else:
         # Dummy-Daten generieren
@@ -417,12 +499,25 @@ def main() -> int:
     if args.verbose:
         print(f"  Strategie: {strategy_name}")
 
-    # Strategie-Parameter aus Config holen
+    # Registry gates (same fail-closed posture as legacy create_strategy_from_config)
+    try:
+        _validate_strategy_registry_gates(strategy_name, cfg)
+    except KeyError as e:
+        print(f"\nFEHLER: Strategie nicht gefunden: {e}")
+        available = ", ".join(get_available_strategy_keys())
+        print(f"  Verfügbare Strategien: {available}")
+        return 1
+    except ValueError as e:
+        print(f"\nFEHLER: Strategie nicht erlaubt: {e}")
+        return 1
+
+    # Strategie-Parameter aus Config holen (matches from_config effective values)
     strategy_section = f"strategy.{strategy_name}"
-    strategy_params = cfg.get(strategy_section, {})
-    if not strategy_params:
+    raw_section = cfg.raw.get("strategy", {}).get(strategy_name, {})
+    if not raw_section:
         print(f"\nWARNUNG: Keine Config-Sektion [{strategy_section}] gefunden.")
         print("  Nutze Default-Parameter.")
+    strategy_params = _build_strategy_params_from_config(cfg, strategy_name)
 
     # 3. Daten laden
     print("\n[3/7] Daten laden...")
@@ -451,21 +546,15 @@ def main() -> int:
             print(f"  Position Sizer: {position_sizer}")
             print(f"  Risk Manager: {risk_manager}")
 
-        # OOP-Strategie aus Registry erstellen
-        # Alle Strategien sind jetzt OOP-basiert (migriert in Phase 7)
-        strategy = create_strategy_from_config(strategy_name, cfg)
+        strategy_signal_fn = _resolve_strategy_signal_fn(strategy_name)
         if args.verbose:
-            print(f"  Strategie: {strategy}")
+            print(f"  Strategie-Key: {strategy_name}")
+            print(f"  Strategy-Params: {strategy_params}")
 
-        # Backtest mit OOP-Strategie
         engine = BacktestEngine(
             core_position_sizer=position_sizer,
             risk_manager=risk_manager,
         )
-
-        # Wrapper-Funktion für Engine (erwartet (df, params) -> signals)
-        def strategy_signal_fn(data, params):
-            return strategy.generate_signals(data)
 
         result = engine.run_realistic(
             df=df,

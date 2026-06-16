@@ -24,6 +24,16 @@ def client() -> TestClient:
     return TestClient(create_app())
 
 
+def test_observability_hub_last_paper_run_panel_absent_by_default(client: TestClient) -> None:
+    body = client.get("/observability").text
+    assert 'data-observability-last-paper-run-panel-v0="true"' not in body
+
+
+def test_observability_hub_workflow_dashboard_absent_by_default(client: TestClient) -> None:
+    body = client.get("/observability").text
+    assert 'data-workflow-dashboard-v1="true"' not in body
+
+
 def test_observability_hub_ok_markers(client: TestClient) -> None:
     r = client.get("/observability")
     assert r.status_code == 200
@@ -239,6 +249,31 @@ def test_observability_hub_template_health_panel_markers_and_no_post() -> None:
     assert 'type="submit"' not in txt
     assert "<button" not in txt.lower()
     assert "fetch(" not in txt
+
+
+def test_observability_hub_template_projection_coverage_markers() -> None:
+    tmpl = (
+        Path(__file__).resolve().parents[2]
+        / "templates"
+        / "peak_trade_dashboard"
+        / "observability_hub.html"
+    )
+    txt = tmpl.read_text(encoding="utf-8")
+    assert 'data-workflow-panel-projection-coverage-v1="true"' in txt
+    assert 'data-projection-coverage-not-truth="true"' in txt
+    assert 'data-projection-coverage-non-authorizing="true"' in txt
+    assert 'data-projection-coverage-not-selected-future="true"' in txt
+    assert 'data-projection-coverage-strict-upstream-blocked="true"' in txt
+    assert "universe_selection_projection_coverage" in txt
+    assert "pcov.loaded" in txt
+    assert "Projection Coverage" in txt
+    assert "Not Truth" in txt
+    assert "Not Selected Future" in txt
+    proj_start = txt.index('data-workflow-panel-projection-coverage-v1="true"')
+    proj_end = txt.index('data-workflow-panel-pipeline-v1="true"')
+    proj_block = txt[proj_start:proj_end]
+    assert "truth_status == 'PERSISTED'" not in proj_block
+    assert "wd.universe_selection.loaded" not in proj_block
 
 
 def test_observability_hub_doc_exists_and_tokens() -> None:

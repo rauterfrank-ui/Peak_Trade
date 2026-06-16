@@ -196,15 +196,38 @@ def _assert_command_inventory_shape(payload: dict[str, object]) -> None:
         == "out/paper_shadow_247/runtime/high_vol_no_trade/__DRY_RUN_PLACEHOLDER__"
     )
 
-    assert any(str(c["name"]).startswith("paper_runner_") and c["found"] is False for c in commands)
-    for c in commands:
-        if str(c["name"]).startswith("paper_runner_") and c["found"] is False:
-            assert "safety_classification" not in c
-            break
+    assert not any(str(c["name"]).startswith("paper_runner_") for c in commands)
+    for name in paper:
+        assert by_name[name]["found"] is True, name
     shadow_entry = by_name["p7_shadow_high_vol_no_trade_runner_manual_v0"]
     assert shadow_entry["source"] == "shadow"
-    assert shadow_entry["found"] is False
-    assert "safety_classification" not in shadow_entry
+    assert shadow_entry["found"] is True
+    assert shadow_entry["enabled"] is False
+    assert shadow_entry["command"] == "python"
+    safety_shadow = shadow_entry["safety_classification"]
+    assert isinstance(safety_shadow, dict)
+    assert safety_shadow["paper_only"] is False
+    assert safety_shadow["dry_run_visible"] is True
+    assert safety_shadow["paper_runtime_job"] is False
+    assert safety_shadow["enabled"] is False
+    assert safety_shadow["disabled_by_default"] is True
+    assert safety_shadow["authorization_flags"] == {
+        "testnet_authorized": False,
+        "live_authorized": False,
+        "broker_authorized": False,
+        "exchange_authorized": False,
+        "order_submission_authorized": False,
+    }
+    assert safety_shadow["non_authorizing"] is True
+    args_shadow = shadow_entry["args"]
+    assert isinstance(args_shadow, dict)
+    assert args_shadow["script"] == "scripts/aiops/run_shadow_session.py"
+    assert args_shadow["spec"] == "tests/fixtures/p6/shadow_session_high_vol_no_trade_v0.json"
+    assert (
+        args_shadow["outdir"]
+        == "out/paper_shadow_247/shadow/high_vol_no_trade/__DRY_RUN_PLACEHOLDER__"
+    )
+    assert args_shadow["dry_run"] is True
 
 
 def _assert_hold_context_v0(payload: dict[str, object]) -> None:
@@ -499,6 +522,44 @@ def test_preflight_cli_operator_decision_record_missing_file_exits_2(tmp_path: P
         "hold_testnet_authorized=false",
         "hold_live_authorized=false",
     ]
+
+
+def test_paper_shadow_247_preflight_shadow_jobs_align_with_scheduler_inventory() -> None:
+    """Shadow jobs declared in preflight metadata must resolve in jobs.toml."""
+
+    meta = tomllib.loads(PREFLIGHT_CONFIG.read_text(encoding="utf-8"))
+    shadow_jobs = [str(x) for x in meta["shadow_jobs"]]
+    assert shadow_jobs == ["p7_shadow_high_vol_no_trade_runner_manual_v0"]
+
+    payload = _run_json()
+    by_name = {str(c["name"]): c for c in payload["commands"]}
+    for name in shadow_jobs:
+        entry = by_name[name]
+        assert entry["found"] is True, name
+        assert entry["source"] == "shadow"
+        assert entry["enabled"] is False
+        args = entry["args"]
+        assert isinstance(args, dict)
+        assert args["script"] == "scripts/aiops/run_shadow_session.py"
+        assert args["spec"] == "tests/fixtures/p6/shadow_session_high_vol_no_trade_v0.json"
+
+
+def test_paper_shadow_247_preflight_paper_jobs_align_with_scheduler_inventory() -> None:
+    """P7 paper_runner_* contract fixtures must not be canonical scheduler job expectations."""
+
+    meta = tomllib.loads(PREFLIGHT_CONFIG.read_text(encoding="utf-8"))
+    paper_jobs = [str(x) for x in meta["paper_jobs"]]
+    assert paper_jobs == [
+        "paper_shadow_247_paper_only_runtime_min_v0",
+        "paper_shadow_247_paper_only_runtime_high_vol_no_trade_v0",
+        "paper_shadow_247_paper_only_preflight_status_v0",
+    ]
+    assert not any(name.startswith("paper_runner_") for name in paper_jobs)
+
+    payload = _run_json()
+    by_name = {str(c["name"]): c for c in payload["commands"]}
+    for name in paper_jobs:
+        assert by_name[name]["found"] is True, name
 
 
 def test_paper_shadow_247_preflight_metadata_config_is_materialized() -> None:

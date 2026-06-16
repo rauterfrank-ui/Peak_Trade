@@ -113,7 +113,9 @@ For **autonomy stages 0–2**, interpret posture as **operator / distributed rec
 
 Further reading (same specs directory):
 
+- [Runtime Lane Taxonomy §12 Autonomy Stage Authority Crosswalk](./RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md) — normative stage 0–7 authority crosswalk (non-authorizing)
 - [First Live Readiness Ladder](./MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md)
+- [Learning AI Autonomy Inventory §10 Stage-7 Model/Policy Approval State Machine](./MASTER_V2_LEARNING_AI_AUTONOMY_INVENTORY_V1.md) — normative S0–S15 approval index (non-authorizing)
 - [Learning AI Autonomy Inventory](./MASTER_V2_LEARNING_AI_AUTONOMY_INVENTORY_V1.md)
 - [Futures Class A Capability Contract](./MASTER_V2_FUTURES_CLASS_A_CAPABILITY_CONTRACT_V0.md) — §7 WP1B / futures wiring HOLD posture remains unchanged unless separately approved.
 

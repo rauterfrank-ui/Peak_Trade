@@ -27,9 +27,8 @@ from __future__ import annotations
 
 import sys
 import argparse
-from datetime import datetime, timedelta
 from pathlib import Path
-from typing import List, Optional
+from typing import Any, Dict, List, Optional
 
 # Pfad-Setup
 CURRENT_DIR = Path(__file__).resolve().parent
@@ -37,11 +36,86 @@ ROOT_DIR = CURRENT_DIR.parent
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
-import pandas as pd
-import numpy as np
+from scripts.run_backtest import load_ohlcv_data
 
 from src.backtest.engine import BacktestEngine
+from src.core.experiments import log_backtest_result
 from src.strategies import load_strategy
+
+# Kanonische Demo-Strategien (load_strategy()-Keys; kein direkter Registry-Import).
+ORDER_PIPELINE_DEMO_AVAILABLE_STRATEGY_KEYS: tuple[str, ...] = (
+    "armstrong_cycle",
+    "bollinger_bands",
+    "bouchaud_microstructure",
+    "breakout",
+    "breakout_donchian",
+    "composite",
+    "ecm_cycle",
+    "ehlers_cycle_filter",
+    "el_karoui_vol_model",
+    "ma_crossover",
+    "macd",
+    "mean_reversion",
+    "mean_reversion_channel",
+    "meta_labeling",
+    "momentum_1h",
+    "my_strategy",
+    "regime_aware_portfolio",
+    "rsi_reversion",
+    "rsi_strategy",
+    "trend_following",
+    "vol_breakout",
+    "vol_regime_filter",
+    "vol_regime_overlay",
+)
+
+
+def get_available_strategy_hint_keys() -> list[str]:
+    return sorted(ORDER_PIPELINE_DEMO_AVAILABLE_STRATEGY_KEYS)
+
+
+def format_available_strategy_hints() -> str:
+    return ", ".join(get_available_strategy_hint_keys())
+
+
+def get_default_strategy_params(name: str) -> Dict[str, Any]:
+    defaults: Dict[str, Dict[str, Any]] = {
+        "ma_crossover": {
+            "fast_period": 10,
+            "slow_period": 30,
+            "stop_pct": 0.02,
+        },
+        "rsi_reversion": {
+            "rsi_period": 14,
+            "oversold": 30,
+            "overbought": 70,
+            "stop_pct": 0.02,
+        },
+        "macd": {
+            "fast_ema": 12,
+            "slow_ema": 26,
+            "signal_ema": 9,
+            "stop_pct": 0.02,
+        },
+        "momentum_1h": {
+            "lookback_period": 20,
+            "entry_threshold": 0.02,
+            "exit_threshold": -0.01,
+            "stop_pct": 0.02,
+        },
+        "bollinger_bands": {
+            "bb_period": 20,
+            "bb_std": 2.0,
+            "stop_pct": 0.02,
+        },
+        "breakout": {
+            "lookback_breakout": 20,
+            "stop_pct": 0.02,
+        },
+    }
+    if name not in defaults:
+        raise ValueError(f"Unbekannte Strategie '{name}'")
+    return dict(defaults[name])
 
 
 def parse_args(argv: Optional[List[str]] = None) -> argparse.Namespace:
@@ -103,76 +177,7 @@ Beispiele:
     return parser.parse_args(argv)
 
 
-def generate_sample_data(
-    symbol: str,
-    bars: int,
-    timeframe: str = "1h",
-) -> pd.DataFrame:
-    """
-    Generiert Sample-OHLCV-Daten fuer den Backtest.
-
-    Args:
-        symbol: Trading-Symbol
-        bars: Anzahl Bars
-        timeframe: Timeframe
-
-    Returns:
-        pd.DataFrame mit OHLCV-Daten
-    """
-    # Basis-Preis je nach Symbol
-    if "BTC" in symbol:
-        base_price = 50000.0
-        volatility = 0.02
-    elif "ETH" in symbol:
-        base_price = 3000.0
-        volatility = 0.025
-    elif "LTC" in symbol:
-        base_price = 100.0
-        volatility = 0.03
-    else:
-        base_price = 1000.0
-        volatility = 0.02
-
-    # Seed fuer Reproduzierbarkeit
-    np.random.seed(42)
-
-    # Zeitindex erstellen
-    if timeframe == "1h":
-        freq = "h"
-    elif timeframe == "4h":
-        freq = "4h"
-    elif timeframe == "1d":
-        freq = "D"
-    else:
-        freq = "h"
-
-    end_time = datetime.now()
-    start_time = end_time - timedelta(hours=bars)
-    index = pd.date_range(start=start_time, periods=bars, freq=freq)
-
-    # Random Walk fuer Close-Preise
-    returns = np.random.normal(0.0001, volatility, bars)
-    close = base_price * np.cumprod(1 + returns)
-
-    # OHLCV generieren
-    data = {
-        "open": close * (1 + np.random.uniform(-0.001, 0.001, bars)),
-        "high": close * (1 + np.abs(np.random.normal(0, 0.005, bars))),
-        "low": close * (1 - np.abs(np.random.normal(0, 0.005, bars))),
-        "close": close,
-        "volume": np.random.uniform(100, 10000, bars),
-    }
-
-    df = pd.DataFrame(data, index=index)
-
-    # Sicherstellen dass high >= max(open, close) und low <= min(open, close)
-    df["high"] = df[["open", "high", "close"]].max(axis=1)
-    df["low"] = df[["open", "low", "close"]].min(axis=1)
-
-    return df
-
-
-def main(argv: Optional[List[str]] = None) -> None:
+def main(argv: Optional[List[str]] = None) -> int:
     args = parse_args(argv)
 
     print("\n" + "=" * 70)
@@ -186,30 +191,21 @@ def main(argv: Optional[List[str]] = None) -> None:
     print(f"   Timeframe: {args.timeframe}")
     print(f"   Bars: {args.bars}")
 
-    df = generate_sample_data(
-        symbol=args.symbol,
-        bars=args.bars,
-        timeframe=args.timeframe,
-    )
+    df = load_ohlcv_data(None, None, None, n_bars=args.bars)
 
     print(f"   Zeitraum: {df.index[0]} bis {df.index[-1]}")
     print(f"   Preis-Range: {df['close'].min():.2f} - {df['close'].max():.2f}")
 
-    # 2. Strategie laden
+    # 2. Strategie laden (kanonisch, fail-closed)
     print(f"\n🎯 Lade Strategie: {args.strategy}")
     try:
         strategy_fn = load_strategy(args.strategy)
-    except Exception as e:
+        strategy_params = get_default_strategy_params(args.strategy)
+    except ValueError as e:
         print(f"❌ Fehler beim Laden der Strategie: {e}")
-        print("   Verfuegbare Strategien: ma_crossover, rsi_reversion, macd, momentum, bollinger")
-        return
+        print(f"   Verfuegbare Strategien: {format_available_strategy_hints()}")
+        return 1
 
-    # Strategie-Parameter (Standard-Werte)
-    strategy_params = {
-        "fast_period": 10,
-        "slow_period": 30,
-        "stop_pct": 0.02,
-    }
     print(f"   Parameter: {strategy_params}")
 
     # 3. Backtest mit Order-Layer ausfuehren
@@ -312,13 +308,27 @@ def main(argv: Optional[List[str]] = None) -> None:
     print("✅ Order-Pipeline-Backtest Demo abgeschlossen!")
     print("=" * 70)
 
+    start_date_str = df.index[0].strftime("%Y-%m-%d")
+    end_date_str = df.index[-1].strftime("%Y-%m-%d")
+
+    registry_run_id = log_backtest_result(
+        result=result,
+        strategy_name=args.strategy,
+        tag=args.tag,
+        data_source="synthetic",
+        symbol=args.symbol,
+        timeframe=args.timeframe,
+        start_date=start_date_str,
+        end_date=end_date_str,
+        extra_metadata={"runner": "demo_order_pipeline_backtest.py"},
+    )
+    print(f"\n📝 Registry-Run-ID: {registry_run_id}")
     if args.tag:
-        print(f"\n📝 Tag: {args.tag}")
-        # NOTE: Siehe docs/TECH_DEBT_BACKLOG.md (Eintrag "Registry-Logging: demo_order_pipeline_backtest.py")
-        # log_backtest_run(..., tag=args.tag)
+        print(f"   Tag: {args.tag}")
 
     print()
+    return 0
 
 
 if __name__ == "__main__":
-    main()
+    raise SystemExit(main())

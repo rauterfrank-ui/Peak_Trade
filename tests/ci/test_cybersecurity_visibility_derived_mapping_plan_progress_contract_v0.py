@@ -1,0 +1,1140 @@
+"""Static contract for Cybersecurity Visibility derived mapping plan progress v0.
+
+Reads docs/ops/CI_AUDIT_KNOWN_ISSUES.md only. Plan progress only — no mapping execution.
+"""
+
+from __future__ import annotations
+
+import re
+from pathlib import Path
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+CI_AUDIT_KNOWN_ISSUES = REPO_ROOT / "docs" / "ops" / "CI_AUDIT_KNOWN_ISSUES.md"
+DOCS_TRUTH_MAP = REPO_ROOT / "docs" / "ops" / "registry" / "DOCS_TRUTH_MAP.md"
+DERIVED_REFLECTION_TEST = (
+    "test_cybersecurity_visibility_derived_input_jsonl_reflection_contract_v0.py"
+)
+MAPPING_GUARD_TEST = "test_cybersecurity_visibility_r_pending_mapping_guard_v0.py"
+THIS_MODULE = Path(__file__).name
+
+PLAN_BLOCK_ANCHOR = "CYBERSECURITY_VISIBILITY_DERIVED_MAPPING_PLAN_PROGRESS_V0=true"
+CONTRACT_EXTENSION_BLOCK_ANCHOR = (
+    "CYBERSECURITY_VISIBILITY_DERIVED_ONLY_MAPPING_CONTRACT_EXTENSION_V0=true"
+)
+DECISION_RECORD_BLOCK_ANCHOR = (
+    "CYBERSECURITY_VISIBILITY_DERIVED_ONLY_MAPPING_DECISION_RECORD_V0=true"
+)
+EXECUTION_CHARTER_BLOCK_ANCHOR = (
+    "CYBERSECURITY_VISIBILITY_DERIVED_ONLY_MAPPING_EXECUTION_CHARTER_V0=true"
+)
+EXECUTION_GO_RECORD_BLOCK_ANCHOR = (
+    "CYBERSECURITY_VISIBILITY_DERIVED_ONLY_MAPPING_EXECUTION_GO_RECORD_V0=true"
+)
+GUARD_EXTENSION_BLOCK_ANCHOR = (
+    "CYBERSECURITY_VISIBILITY_DERIVED_ONLY_MAPPING_GUARD_EXTENSION_V0=true"
+)
+WAVE1_CHARTER_BLOCK_ANCHOR = "CYBERSECURITY_VISIBILITY_DERIVED_ONLY_MAPPING_WAVE1_CHARTER_V0=true"
+WAVE1_EXECUTION_GUARD_PREP_BLOCK_ANCHOR = (
+    "CYBERSECURITY_VISIBILITY_DERIVED_ONLY_MAPPING_WAVE1_EXECUTION_GUARD_PREP_V0=true"
+)
+WAVE1_BATCH_CLOSURE_BLOCK_ANCHOR = (
+    "CYBERSECURITY_VISIBILITY_DERIVED_ONLY_MAPPING_WAVE1_BATCH_CLOSURE_V0=true"
+)
+CHARTER_BUNDLE_PATH = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/cybersecurity_derived_only_mapping_contract_extension_charter_readonly_v0_20260601T171650Z"
+)
+PRECHECK_BUNDLE_PATH = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/cybersecurity_definitive_mapping_readiness_precheck_readonly_v0_20260601T171452Z"
+)
+PLAN_PROGRESS_CLOSEOUT_PATH = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "closeout/after_small_cyber_mapping_plan_progress_pr_merge_closeout_readonly_v0_20260601T171301Z"
+)
+PLANNING_BUNDLE_PATH = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/cybersecurity_mapping_after_derived_reflection_next_progress_readonly_v0_20260601T170753Z"
+)
+POST_MERGE_CLOSEOUT_PATH = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "closeout/after_derived_input_artifact_repo_reflection_pr_merge_closeout_readonly_v0_20260601T170502Z"
+)
+PRECHECK_BUNDLE_PATH = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/cybersecurity_derived_jsonl_mapping_precheck_readonly_v0_20260601T165920Z"
+)
+READINESS_REFRESH_BUNDLE_PATH = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/cybersecurity_derived_only_mapping_readiness_refresh_readonly_v0_20260601T172844Z"
+)
+PR3888_CLOSEOUT_PATH = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "closeout/after_pr3888_derived_only_mapping_contract_extension_merge_closeout_readonly_v0_20260601T172611Z"
+)
+EXECUTION_CHARTER_PRECHECK_PATH = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/cybersecurity_derived_only_mapping_execution_charter_precheck_readonly_v0_20260601T173815Z"
+)
+PR3889_CLOSEOUT_PATH = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "closeout/after_small_derived_only_mapping_decision_record_pr_merge_closeout_readonly_v0_20260601T173555Z"
+)
+EXECUTION_GO_READINESS_PRECHECK_PATH = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/cybersecurity_derived_only_mapping_execution_go_readiness_precheck_readonly_v0_20260601T174752Z"
+)
+PR3890_CLOSEOUT_PATH = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "closeout/after_small_derived_only_mapping_execution_charter_pr_merge_closeout_readonly_v0_20260601T174422Z"
+)
+PR3891_CLOSEOUT_PATH = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "closeout/after_small_derived_only_mapping_execution_go_record_pr_merge_closeout_readonly_v0_20260601T175356Z"
+)
+GUARD_EXTENSION_PRECHECK_PATH = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/cybersecurity_derived_only_mapping_guard_extension_precheck_readonly_v0_20260601T175637Z"
+)
+DERIVED_JSONL_BUILD_VALIDATE_PATH = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/cybersecurity_derived_jsonl_build_validate_v0_20260601T165743Z"
+)
+WAVE_SCOPE_PRECHECK_PATH = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/cybersecurity_derived_only_mapping_wave_scope_precheck_readonly_v0_20260601T180641Z"
+)
+PR3892_CLOSEOUT_PATH = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "closeout/after_small_derived_only_mapping_guard_extension_pr_merge_closeout_readonly_v0_20260601T180415Z"
+)
+WAVE1_EXECUTION_READINESS_PRECHECK_PATH = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/cybersecurity_derived_only_mapping_wave1_execution_readiness_precheck_readonly_v0_20260601T182100Z"
+)
+PR3893_CLOSEOUT_PATH = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "closeout/after_small_derived_only_mapping_wave1_charter_pr_merge_closeout_readonly_v0_20260601T181212Z"
+)
+WAVE1_BATCH_CLOSURE_PLAN_PATH = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/cybersecurity_derived_only_mapping_wave1_batch_closure_plan_readonly_v0_20260601T182957Z"
+)
+PR3894_CLOSEOUT_PATH = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "closeout/after_small_derived_only_mapping_wave1_execution_guard_prep_pr_merge_closeout_readonly_v0_20260601T182216Z"
+)
+WRITE_PERMISSIONS_OWNER_TEST = "test_workflow_write_permissions_visibility_contract_v0.py"
+SECRETS_REFERENCE_OWNER_TEST = "test_workflow_secrets_reference_visibility_contract_v0.py"
+
+FENCED_BLOCK_RX = re.compile(r"```[^\n]*\n(.*?)```", re.DOTALL)
+RISK_TABLE_ROW_RX = re.compile(
+    r"^\| (R-\d{3}) \| ([^|]*) \| ([^|]*) \|$",
+    re.MULTILINE,
+)
+
+PLAN_PROGRESS_EXPECTED: dict[str, str] = {
+    "DERIVED_MAPPING_PLAN_PROGRESS_ONLY": "true",
+    "INPUT_JSONL_PROVIDED": "false",
+    "DERIVED_INPUT_JSONL_PROVIDED_EXTERNAL": "true",
+    "LOSSLESS_JSONL_RECOVERY": "false",
+    "ORIGINAL_FULL_LOSSLESS_EQUIVALENCE_CLAIMED": "false",
+    "OLD_R_ID_RECONSTRUCTION_ALLOWED": "false",
+    "DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED": "true",
+    "FORBIDS_PENDING_RISK_TABLE_MAPPED_STATUS_WITHOUT_INPUT": "true",
+    "DERIVED_CANDIDATE_ID_FAMILY_ONLY": "true",
+}
+
+PLAN_DERIVED_IDS = (
+    "DERIVED-CYBER-R-001-001",
+    "DERIVED-CYBER-R-002-001",
+    "DERIVED-CYBER-R-007-001",
+)
+
+CONTRACT_EXTENSION_EXPECTED: dict[str, str] = {
+    "DERIVED_ONLY_MAPPING_CONTRACT_PROPOSED": "true",
+    "DERIVED_ONLY_MAPPING_PATH_REQUIRES_SEPARATE_GO": "true",
+    "INPUT_JSONL_PROVIDED": "false",
+    "DERIVED_INPUT_JSONL_PROVIDED_EXTERNAL": "true",
+    "DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED": "true",
+    "FORBIDS_PENDING_RISK_TABLE_MAPPED_STATUS_WITHOUT_INPUT": "true",
+    "LOSSLESS_JSONL_RECOVERY": "false",
+    "ORIGINAL_FULL_LOSSLESS_EQUIVALENCE_CLAIMED": "false",
+    "OLD_R_ID_RECONSTRUCTION_ALLOWED": "false",
+    "DERIVED_CANDIDATE_ID_FAMILY_ONLY": "true",
+}
+
+DECISION_RECORD_EXPECTED: dict[str, str] = {
+    "DERIVED_ONLY_MAPPING_DECISION_RECORDED": "true",
+    "DERIVED_ONLY_MAPPING_PATH_REQUIRES_SEPARATE_GO": "true",
+    "INPUT_JSONL_PROVIDED": "false",
+    "DERIVED_INPUT_JSONL_PROVIDED_EXTERNAL": "true",
+    "DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED": "true",
+    "FORBIDS_PENDING_RISK_TABLE_MAPPED_STATUS_WITHOUT_INPUT": "true",
+    "LOSSLESS_JSONL_RECOVERY": "false",
+    "ORIGINAL_FULL_LOSSLESS_EQUIVALENCE_CLAIMED": "false",
+    "OLD_R_ID_RECONSTRUCTION_ALLOWED": "false",
+    "DERIVED_CANDIDATE_ID_FAMILY_ONLY": "true",
+}
+
+EXECUTION_CHARTER_EXPECTED: dict[str, str] = {
+    "DERIVED_ONLY_MAPPING_EXECUTION_CHARTER_PROPOSED": "true",
+    "DERIVED_ONLY_MAPPING_PATH_REQUIRES_SEPARATE_GO": "true",
+    "INPUT_JSONL_PROVIDED": "false",
+    "DERIVED_INPUT_JSONL_PROVIDED_EXTERNAL": "true",
+    "DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED": "true",
+    "FORBIDS_PENDING_RISK_TABLE_MAPPED_STATUS_WITHOUT_INPUT": "true",
+    "LOSSLESS_JSONL_RECOVERY": "false",
+    "ORIGINAL_FULL_LOSSLESS_EQUIVALENCE_CLAIMED": "false",
+    "OLD_R_ID_RECONSTRUCTION_ALLOWED": "false",
+    "DERIVED_CANDIDATE_ID_FAMILY_ONLY": "true",
+}
+
+EXECUTION_GO_RECORD_EXPECTED: dict[str, str] = {
+    "DERIVED_ONLY_MAPPING_EXECUTION_GO_RECORDED": "true",
+    "DERIVED_ONLY_MAPPING_PATH_REQUIRES_SEPARATE_GO": "true",
+    "INPUT_JSONL_PROVIDED": "false",
+    "DERIVED_INPUT_JSONL_PROVIDED_EXTERNAL": "true",
+    "DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED": "true",
+    "FORBIDS_PENDING_RISK_TABLE_MAPPED_STATUS_WITHOUT_INPUT": "true",
+    "LOSSLESS_JSONL_RECOVERY": "false",
+    "ORIGINAL_FULL_LOSSLESS_EQUIVALENCE_CLAIMED": "false",
+    "OLD_R_ID_RECONSTRUCTION_ALLOWED": "false",
+    "DERIVED_CANDIDATE_ID_FAMILY_ONLY": "true",
+}
+
+GUARD_EXTENSION_EXPECTED: dict[str, str] = {
+    "DERIVED_ONLY_MAPPING_GUARD_EXTENSION_PROPOSED": "true",
+    "DERIVED_ONLY_MAPPING_EXECUTION_GO_RECORDED": "true",
+    "DERIVED_ONLY_MAPPING_PATH_REQUIRES_SEPARATE_GO": "true",
+    "INPUT_JSONL_PROVIDED": "false",
+    "DERIVED_INPUT_JSONL_PROVIDED_EXTERNAL": "true",
+    "DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED": "true",
+    "FORBIDS_PENDING_RISK_TABLE_MAPPED_STATUS_WITHOUT_INPUT": "true",
+    "LOSSLESS_JSONL_RECOVERY": "false",
+    "ORIGINAL_FULL_LOSSLESS_EQUIVALENCE_CLAIMED": "false",
+    "OLD_R_ID_RECONSTRUCTION_ALLOWED": "false",
+    "DERIVED_CANDIDATE_ID_FAMILY_ONLY": "true",
+}
+
+WAVE1_CHARTER_EXPECTED: dict[str, str] = {
+    "DERIVED_ONLY_MAPPING_WAVE1_CHARTER_PROPOSED": "true",
+    "DERIVED_ONLY_MAPPING_GUARD_EXTENSION_PROPOSED": "true",
+    "DERIVED_ONLY_MAPPING_EXECUTION_GO_RECORDED": "true",
+    "DERIVED_ONLY_MAPPING_PATH_REQUIRES_SEPARATE_GO": "true",
+    "INPUT_JSONL_PROVIDED": "false",
+    "DERIVED_INPUT_JSONL_PROVIDED_EXTERNAL": "true",
+    "DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED": "true",
+    "FORBIDS_PENDING_RISK_TABLE_MAPPED_STATUS_WITHOUT_INPUT": "true",
+    "LOSSLESS_JSONL_RECOVERY": "false",
+    "ORIGINAL_FULL_LOSSLESS_EQUIVALENCE_CLAIMED": "false",
+    "OLD_R_ID_RECONSTRUCTION_ALLOWED": "false",
+    "DERIVED_CANDIDATE_ID_FAMILY_ONLY": "true",
+}
+
+WAVE1_EXECUTION_GUARD_PREP_EXPECTED: dict[str, str] = {
+    "DERIVED_ONLY_MAPPING_WAVE1_EXECUTION_GUARD_PREP_PROPOSED": "true",
+    "DERIVED_ONLY_MAPPING_WAVE1_CHARTER_PROPOSED": "true",
+    "DERIVED_ONLY_MAPPING_GUARD_EXTENSION_PROPOSED": "true",
+    "DERIVED_ONLY_MAPPING_EXECUTION_GO_RECORDED": "true",
+    "DERIVED_ONLY_MAPPING_PATH_REQUIRES_SEPARATE_GO": "true",
+    "INPUT_JSONL_PROVIDED": "false",
+    "DERIVED_INPUT_JSONL_PROVIDED_EXTERNAL": "true",
+    "DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED": "true",
+    "FORBIDS_PENDING_RISK_TABLE_MAPPED_STATUS_WITHOUT_INPUT": "true",
+    "LOSSLESS_JSONL_RECOVERY": "false",
+    "ORIGINAL_FULL_LOSSLESS_EQUIVALENCE_CLAIMED": "false",
+    "OLD_R_ID_RECONSTRUCTION_ALLOWED": "false",
+    "DERIVED_CANDIDATE_ID_FAMILY_ONLY": "true",
+    "DIRECT_MAPPING_WAVE_BLOCKED": "true",
+}
+
+WAVE1_BATCH_CLOSURE_EXPECTED: dict[str, str] = {
+    "DERIVED_ONLY_MAPPING_WAVE1_BATCH_CLOSURE_V0": "true",
+    "MAPPED_BY_DERIVED_EVIDENCE_ONLY": "true",
+    "DERIVED_EVIDENCE_MAPPED_STATUS_ALLOWED": "true",
+    "FORBIDS_DEFINITIVE_MAPPED_WITHOUT_INPUT": "true",
+    "FORBIDS_PENDING_RISK_TABLE_DEFINITIVE_MAPPED_WITHOUT_INPUT": "true",
+    "DERIVED_ONLY_MAPPING_WAVE1_EXECUTION_GUARD_PREP_PROPOSED": "true",
+    "DERIVED_ONLY_MAPPING_WAVE1_CHARTER_PROPOSED": "true",
+    "DERIVED_ONLY_MAPPING_PATH_REQUIRES_SEPARATE_GO": "true",
+    "INPUT_JSONL_PROVIDED": "false",
+    "DERIVED_INPUT_JSONL_PROVIDED_EXTERNAL": "true",
+    "DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED": "true",
+    "FORBIDS_PENDING_RISK_TABLE_MAPPED_STATUS_WITHOUT_INPUT": "true",
+    "LOSSLESS_JSONL_RECOVERY": "false",
+    "ORIGINAL_FULL_LOSSLESS_EQUIVALENCE_CLAIMED": "false",
+    "OLD_R_ID_RECONSTRUCTION_ALLOWED": "false",
+    "DERIVED_CANDIDATE_ID_FAMILY_ONLY": "true",
+    "DIRECT_MAPPING_WAVE_BLOCKED": "false",
+}
+
+DERIVED_EVIDENCE_MAPPED_RISKS: dict[str, tuple[str, str]] = {
+    "R-001": (
+        "tests/ci/test_workflow_write_permissions_visibility_contract_v0.py",
+        "DERIVED-CYBER-R-001-001",
+    ),
+    "R-002": (
+        "tests/ci/test_cybersecurity_visibility_r_pending_mapping_guard_v0.py",
+        "DERIVED-CYBER-R-002-001",
+    ),
+    "R-007": (
+        "tests/ci/test_workflow_secrets_reference_visibility_contract_v0.py",
+        "DERIVED-CYBER-R-007-001",
+    ),
+}
+
+
+def _assert_definitive_mapped(status_cell: str) -> None:
+    lowered = status_cell.strip().lower()
+    assert "mapped-by-derived-evidence" not in lowered
+    assert "mapped" in lowered
+
+
+def _assert_derived_evidence_mapped_row(
+    owner_cell: str,
+    status_cell: str,
+    *,
+    expected_owner: str,
+    derived_id: str,
+) -> None:
+    assert expected_owner in owner_cell
+    _assert_definitive_mapped(status_cell)
+    assert derived_id in status_cell or "wave-1 lineage" in status_cell.lower()
+
+
+def _ci_audit_text() -> str:
+    return CI_AUDIT_KNOWN_ISSUES.read_text(encoding="utf-8")
+
+
+def _block_containing(text: str, anchor: str) -> str:
+    start = text.find(anchor)
+    assert start != -1, f"missing anchor {anchor}"
+    fence_start = text.rfind("```", 0, start)
+    fence_end = text.find("```", start)
+    assert fence_start != -1 and fence_end != -1, f"missing fenced block for {anchor}"
+    return text[fence_start : fence_end + 3]
+
+
+def _machine_line_values(block: str) -> dict[str, str]:
+    inner = FENCED_BLOCK_RX.search(block)
+    assert inner, "fenced block must have inner content"
+    values: dict[str, str] = {}
+    for line in inner.group(1).splitlines():
+        stripped = line.strip()
+        if "=" in stripped and not stripped.startswith("|"):
+            key, value = stripped.split("=", 1)
+            values[key.strip()] = value.strip()
+    return values
+
+
+def _risk_table_rows(text: str) -> dict[str, tuple[str, str]]:
+    section_start = text.find("### Retained cybersecurity risks R-001 through R-007")
+    assert section_start != -1
+    section = text[section_start : section_start + 4000]
+    return {
+        match.group(1): (match.group(2).strip(), match.group(3).strip())
+        for match in RISK_TABLE_ROW_RX.finditer(section)
+    }
+
+
+def test_cybersecurity_visibility_derived_mapping_plan_progress_contract_v0() -> None:
+    text = _ci_audit_text()
+    collapsed = text.lower()
+    plan_block = _block_containing(text, PLAN_BLOCK_ANCHOR)
+    plan_values = _machine_line_values(plan_block)
+
+    assert "Pending R-001/R-002/R-007 — derived mapping plan progress v0" in text
+    assert PLANNING_BUNDLE_PATH in text
+    assert POST_MERGE_CLOSEOUT_PATH in text
+    assert PRECHECK_BUNDLE_PATH in text
+    assert THIS_MODULE in text
+    assert "DEFINITIVE_R001_R002_R007_MAPPING_PR" in text
+    assert "does not** execute mapping" in text
+    assert "does not** set `INPUT_JSONL_PROVIDED=true`" in text
+    assert "does not** flip the pending risk table to **mapped**" in text
+
+    for derived_id in PLAN_DERIVED_IDS:
+        assert derived_id in text
+
+    for key, expected in PLAN_PROGRESS_EXPECTED.items():
+        assert plan_values.get(key) == expected, (
+            f"plan progress {key}={plan_values.get(key)!r} expected {expected!r}"
+        )
+
+    assert "non-authorizing" in collapsed
+
+
+def test_cybersecurity_visibility_derived_mapping_plan_wave1_derived_evidence_table_v0() -> None:
+    rows = _risk_table_rows(_ci_audit_text())
+    for risk_id, (expected_owner, derived_id) in DERIVED_EVIDENCE_MAPPED_RISKS.items():
+        owner_cell, status_cell = rows[risk_id]
+        _assert_derived_evidence_mapped_row(
+            owner_cell,
+            status_cell,
+            expected_owner=expected_owner,
+            derived_id=derived_id,
+        )
+
+
+def test_cybersecurity_visibility_derived_mapping_plan_progress_truth_map_crosslink_v0() -> None:
+    truth_map = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    collapsed = truth_map.lower()
+
+    assert "derived mapping plan progress" in truth_map
+    assert "DERIVED_MAPPING_PLAN_PROGRESS_ONLY=true" in truth_map
+    assert "INPUT_JSONL_PROVIDED=false" in truth_map
+    assert THIS_MODULE in truth_map
+    assert DERIVED_REFLECTION_TEST in truth_map
+    assert MAPPING_GUARD_TEST in truth_map
+    assert "non-authorizing" in collapsed
+
+
+def test_cybersecurity_visibility_derived_only_mapping_contract_extension_v0() -> None:
+    text = _ci_audit_text()
+    collapsed = text.lower()
+    extension_block = _block_containing(text, CONTRACT_EXTENSION_BLOCK_ANCHOR)
+    extension_values = _machine_line_values(extension_block)
+
+    assert "Pending R-001/R-002/R-007 — derived-only mapping contract extension v0" in text
+    assert CHARTER_BUNDLE_PATH in text
+    assert PRECHECK_BUNDLE_PATH in text
+    assert PLAN_PROGRESS_CLOSEOUT_PATH in text
+    assert THIS_MODULE in text
+    assert "OPERATOR_GO_DERIVED_ONLY_MAPPING_EXECUTION" in text
+    assert "does not** execute mapping" in text
+    assert "does not** set `INPUT_JSONL_PROVIDED=true`" in text
+    assert "does not** flip the pending risk table to **mapped**" in text
+    assert "does not** claim derived JSONL is the original" in text
+    assert "does not** authorize Old-R-ID reconstruction" in text
+
+    for key, expected in CONTRACT_EXTENSION_EXPECTED.items():
+        assert extension_values.get(key) == expected, (
+            f"contract extension {key}={extension_values.get(key)!r} expected {expected!r}"
+        )
+
+    assert "non-authorizing" in collapsed
+
+
+def test_cybersecurity_visibility_derived_only_mapping_contract_extension_truth_map_crosslink_v0() -> (
+    None
+):
+    truth_map = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    collapsed = truth_map.lower()
+
+    assert "derived-only mapping contract extension" in truth_map
+    assert "DERIVED_ONLY_MAPPING_CONTRACT_PROPOSED=true" in truth_map
+    assert "DERIVED_ONLY_MAPPING_PATH_REQUIRES_SEPARATE_GO=true" in truth_map
+    assert "INPUT_JSONL_PROVIDED=false" in truth_map
+    assert THIS_MODULE in truth_map
+    assert DERIVED_REFLECTION_TEST in truth_map
+    assert MAPPING_GUARD_TEST in truth_map
+    assert "non-authorizing" in collapsed
+
+
+def test_cybersecurity_visibility_derived_only_mapping_decision_record_v0() -> None:
+    text = _ci_audit_text()
+    collapsed = text.lower()
+    decision_block = _block_containing(text, DECISION_RECORD_BLOCK_ANCHOR)
+    decision_values = _machine_line_values(decision_block)
+
+    assert "Pending R-001/R-002/R-007 — derived-only mapping decision record v0" in text
+    assert READINESS_REFRESH_BUNDLE_PATH in text
+    assert PR3888_CLOSEOUT_PATH in text
+    assert CHARTER_BUNDLE_PATH in text
+    assert THIS_MODULE in text
+    assert "OPERATOR_GO_DERIVED_ONLY_MAPPING_EXECUTION" in text
+    assert "does not** execute mapping" in text
+    assert "does not** set `INPUT_JSONL_PROVIDED=true`" in text
+    assert "does not** flip the pending risk table to **mapped**" in text
+    assert "does not** claim derived JSONL is the original" in text
+    assert "does not** authorize Old-R-ID reconstruction" in text
+
+    for key, expected in DECISION_RECORD_EXPECTED.items():
+        assert decision_values.get(key) == expected, (
+            f"decision record {key}={decision_values.get(key)!r} expected {expected!r}"
+        )
+
+    assert "non-authorizing" in collapsed
+
+
+def test_cybersecurity_visibility_derived_only_mapping_decision_record_truth_map_crosslink_v0() -> (
+    None
+):
+    truth_map = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    collapsed = truth_map.lower()
+
+    assert "derived-only mapping decision record" in truth_map
+    assert "DERIVED_ONLY_MAPPING_DECISION_RECORDED=true" in truth_map
+    assert "DERIVED_ONLY_MAPPING_PATH_REQUIRES_SEPARATE_GO=true" in truth_map
+    assert "INPUT_JSONL_PROVIDED=false" in truth_map
+    assert THIS_MODULE in truth_map
+    assert DERIVED_REFLECTION_TEST in truth_map
+    assert MAPPING_GUARD_TEST in truth_map
+    assert "non-authorizing" in collapsed
+
+
+def test_cybersecurity_visibility_derived_only_mapping_execution_charter_v0() -> None:
+    text = _ci_audit_text()
+    collapsed = text.lower()
+    charter_block = _block_containing(text, EXECUTION_CHARTER_BLOCK_ANCHOR)
+    charter_values = _machine_line_values(charter_block)
+
+    assert "Pending R-001/R-002/R-007 — derived-only mapping execution charter v0" in text
+    assert EXECUTION_CHARTER_PRECHECK_PATH in text
+    assert PR3889_CLOSEOUT_PATH in text
+    assert READINESS_REFRESH_BUNDLE_PATH in text
+    assert THIS_MODULE in text
+    assert "OPERATOR_GO_DERIVED_ONLY_MAPPING_EXECUTION" in text
+    assert "does not** execute mapping" in text
+    assert "does not** set `INPUT_JSONL_PROVIDED=true`" in text
+    assert "does not** flip the pending risk table to **mapped**" in text
+    assert "does not** claim derived JSONL is the original" in text
+    assert "does not** authorize Old-R-ID reconstruction" in text
+
+    for key, expected in EXECUTION_CHARTER_EXPECTED.items():
+        assert charter_values.get(key) == expected, (
+            f"execution charter {key}={charter_values.get(key)!r} expected {expected!r}"
+        )
+
+    assert "non-authorizing" in collapsed
+
+
+def test_cybersecurity_visibility_derived_only_mapping_execution_charter_truth_map_crosslink_v0() -> (
+    None
+):
+    truth_map = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    collapsed = truth_map.lower()
+
+    assert "derived-only mapping execution charter" in truth_map
+    assert "DERIVED_ONLY_MAPPING_EXECUTION_CHARTER_PROPOSED=true" in truth_map
+    assert "DERIVED_ONLY_MAPPING_PATH_REQUIRES_SEPARATE_GO=true" in truth_map
+    assert "INPUT_JSONL_PROVIDED=false" in truth_map
+    assert THIS_MODULE in truth_map
+    assert DERIVED_REFLECTION_TEST in truth_map
+    assert MAPPING_GUARD_TEST in truth_map
+    assert "non-authorizing" in collapsed
+
+
+def test_cybersecurity_visibility_derived_only_mapping_execution_go_record_v0() -> None:
+    text = _ci_audit_text()
+    collapsed = text.lower()
+    go_record_block = _block_containing(text, EXECUTION_GO_RECORD_BLOCK_ANCHOR)
+    go_record_values = _machine_line_values(go_record_block)
+
+    assert "Pending R-001/R-002/R-007 — derived-only mapping execution GO record v0" in text
+    assert EXECUTION_GO_READINESS_PRECHECK_PATH in text
+    assert PR3890_CLOSEOUT_PATH in text
+    assert EXECUTION_CHARTER_PRECHECK_PATH in text
+    assert THIS_MODULE in text
+    assert "does not** execute mapping" in text
+    assert "does not** set `INPUT_JSONL_PROVIDED=true`" in text
+    assert "does not** flip the pending risk table to **mapped**" in text
+    assert "does not** claim derived JSONL is the original" in text
+    assert "does not** authorize Old-R-ID reconstruction" in text
+
+    for key, expected in EXECUTION_GO_RECORD_EXPECTED.items():
+        assert go_record_values.get(key) == expected, (
+            f"execution GO record {key}={go_record_values.get(key)!r} expected {expected!r}"
+        )
+
+    assert "non-authorizing" in collapsed
+
+
+def test_cybersecurity_visibility_derived_only_mapping_execution_go_record_truth_map_crosslink_v0() -> (
+    None
+):
+    truth_map = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    collapsed = truth_map.lower()
+
+    assert "derived-only mapping execution GO record" in truth_map
+    assert "DERIVED_ONLY_MAPPING_EXECUTION_GO_RECORDED=true" in truth_map
+    assert "DERIVED_ONLY_MAPPING_PATH_REQUIRES_SEPARATE_GO=true" in truth_map
+    assert "INPUT_JSONL_PROVIDED=false" in truth_map
+    assert THIS_MODULE in truth_map
+    assert DERIVED_REFLECTION_TEST in truth_map
+    assert MAPPING_GUARD_TEST in truth_map
+    assert "non-authorizing" in collapsed
+
+
+def test_cybersecurity_visibility_derived_only_mapping_guard_extension_v0() -> None:
+    text = _ci_audit_text()
+    collapsed = text.lower()
+    guard_block = _block_containing(text, GUARD_EXTENSION_BLOCK_ANCHOR)
+    guard_values = _machine_line_values(guard_block)
+
+    assert "Pending R-001/R-002/R-007 — derived-only mapping guard extension v0" in text
+    assert GUARD_EXTENSION_PRECHECK_PATH in text
+    assert PR3891_CLOSEOUT_PATH in text
+    assert DERIVED_JSONL_BUILD_VALIDATE_PATH in text
+    assert THIS_MODULE in text
+    assert "OPERATOR_GO_DERIVED_ONLY_MAPPING_EXECUTION" in text
+    assert "does not** execute mapping" in text
+    assert "does not** set `INPUT_JSONL_PROVIDED=true`" in text
+    assert "does not** flip the pending risk table to **mapped**" in text
+    assert "does not** claim derived JSONL is the original" in text
+    assert "does not** authorize Old-R-ID reconstruction" in text
+
+    for key, expected in GUARD_EXTENSION_EXPECTED.items():
+        assert guard_values.get(key) == expected, (
+            f"guard extension {key}={guard_values.get(key)!r} expected {expected!r}"
+        )
+
+    assert "non-authorizing" in collapsed
+
+
+def test_cybersecurity_visibility_derived_only_mapping_guard_extension_truth_map_crosslink_v0() -> (
+    None
+):
+    truth_map = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    collapsed = truth_map.lower()
+
+    assert "derived-only mapping guard extension" in truth_map
+    assert "DERIVED_ONLY_MAPPING_GUARD_EXTENSION_PROPOSED=true" in truth_map
+    assert "DERIVED_ONLY_MAPPING_EXECUTION_GO_RECORDED=true" in truth_map
+    assert "DERIVED_ONLY_MAPPING_PATH_REQUIRES_SEPARATE_GO=true" in truth_map
+    assert "INPUT_JSONL_PROVIDED=false" in truth_map
+    assert THIS_MODULE in truth_map
+    assert DERIVED_REFLECTION_TEST in truth_map
+    assert MAPPING_GUARD_TEST in truth_map
+    assert "non-authorizing" in collapsed
+
+
+def test_cybersecurity_visibility_derived_only_mapping_wave1_charter_v0() -> None:
+    text = _ci_audit_text()
+    collapsed = text.lower()
+    wave1_block = _block_containing(text, WAVE1_CHARTER_BLOCK_ANCHOR)
+    wave1_values = _machine_line_values(wave1_block)
+
+    assert "Pending R-001/R-002/R-007 — derived-only mapping wave-1 charter v0" in text
+    assert WAVE_SCOPE_PRECHECK_PATH in text
+    assert PR3892_CLOSEOUT_PATH in text
+    assert DERIVED_JSONL_BUILD_VALIDATE_PATH in text
+    assert THIS_MODULE in text
+    assert "OPERATOR_GO_DERIVED_ONLY_MAPPING_EXECUTION" in text
+    assert "DIRECT_MAPPING_WAVE_BLOCKED=true" in text
+    assert "does not** execute mapping" in text
+    assert "does not** set `INPUT_JSONL_PROVIDED=true`" in text
+    assert "does not** flip the pending risk table to **mapped**" in text
+    assert "does not** claim derived JSONL is the original" in text
+    assert "does not** authorize Old-R-ID reconstruction" in text
+    assert "does not** edit owner test modules" in text
+
+    for derived_id in PLAN_DERIVED_IDS:
+        assert derived_id in text
+
+    for key, expected in WAVE1_CHARTER_EXPECTED.items():
+        assert wave1_values.get(key) == expected, (
+            f"wave-1 charter {key}={wave1_values.get(key)!r} expected {expected!r}"
+        )
+
+    assert "non-authorizing" in collapsed
+
+
+def test_cybersecurity_visibility_derived_only_mapping_wave1_charter_truth_map_crosslink_v0() -> (
+    None
+):
+    truth_map = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    collapsed = truth_map.lower()
+
+    assert "derived-only mapping wave-1 charter" in truth_map
+    assert "DERIVED_ONLY_MAPPING_WAVE1_CHARTER_PROPOSED=true" in truth_map
+    assert "DERIVED_ONLY_MAPPING_GUARD_EXTENSION_PROPOSED=true" in truth_map
+    assert "DERIVED_ONLY_MAPPING_PATH_REQUIRES_SEPARATE_GO=true" in truth_map
+    assert "INPUT_JSONL_PROVIDED=false" in truth_map
+    assert THIS_MODULE in truth_map
+    assert DERIVED_REFLECTION_TEST in truth_map
+    assert MAPPING_GUARD_TEST in truth_map
+    assert "non-authorizing" in collapsed
+
+
+def test_cybersecurity_visibility_derived_only_mapping_wave1_execution_guard_prep_v0() -> None:
+    text = _ci_audit_text()
+    collapsed = text.lower()
+    guard_prep_block = _block_containing(text, WAVE1_EXECUTION_GUARD_PREP_BLOCK_ANCHOR)
+    guard_prep_values = _machine_line_values(guard_prep_block)
+
+    assert "Pending R-001/R-002/R-007 — derived-only mapping wave-1 execution guard prep v0" in text
+    assert WAVE1_EXECUTION_READINESS_PRECHECK_PATH in text
+    assert PR3893_CLOSEOUT_PATH in text
+    assert WAVE_SCOPE_PRECHECK_PATH in text
+    assert DERIVED_JSONL_BUILD_VALIDATE_PATH in text
+    assert THIS_MODULE in text
+    assert "OPERATOR_GO_DERIVED_ONLY_MAPPING_EXECUTION" in text
+    assert "DIRECT_MAPPING_WAVE_BLOCKED=true" in text
+    assert "does not** execute mapping" in text
+    assert "does not** set `INPUT_JSONL_PROVIDED=true`" in text
+    assert "does not** flip the pending risk table to **mapped**" in text
+    assert "does not** claim derived JSONL is the original" in text
+    assert "does not** authorize Old-R-ID reconstruction" in text
+    assert "does not** edit owner test modules" in text
+
+    for derived_id in PLAN_DERIVED_IDS:
+        assert derived_id in text
+
+    for key, expected in WAVE1_EXECUTION_GUARD_PREP_EXPECTED.items():
+        assert guard_prep_values.get(key) == expected, (
+            f"wave-1 execution guard prep {key}={guard_prep_values.get(key)!r} "
+            f"expected {expected!r}"
+        )
+
+    assert "non-authorizing" in collapsed
+
+
+def test_cybersecurity_visibility_derived_only_mapping_wave1_execution_guard_prep_truth_map_crosslink_v0() -> (
+    None
+):
+    truth_map = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    collapsed = truth_map.lower()
+
+    assert "derived-only mapping wave-1 execution guard prep" in truth_map
+    assert "DERIVED_ONLY_MAPPING_WAVE1_EXECUTION_GUARD_PREP_PROPOSED=true" in truth_map
+    assert "DERIVED_ONLY_MAPPING_WAVE1_CHARTER_PROPOSED=true" in truth_map
+    assert "DERIVED_ONLY_MAPPING_GUARD_EXTENSION_PROPOSED=true" in truth_map
+    assert "DERIVED_ONLY_MAPPING_PATH_REQUIRES_SEPARATE_GO=true" in truth_map
+    assert "INPUT_JSONL_PROVIDED=false" in truth_map
+    assert "DIRECT_MAPPING_WAVE_BLOCKED=true" in truth_map
+    assert THIS_MODULE in truth_map
+    assert DERIVED_REFLECTION_TEST in truth_map
+    assert MAPPING_GUARD_TEST in truth_map
+    assert "non-authorizing" in collapsed
+
+
+def test_cybersecurity_visibility_derived_only_mapping_wave1_batch_closure_v0() -> None:
+    text = _ci_audit_text()
+    collapsed = text.lower()
+    batch_block = _block_containing(text, WAVE1_BATCH_CLOSURE_BLOCK_ANCHOR)
+    batch_values = _machine_line_values(batch_block)
+
+    assert "Pending R-001/R-002/R-007 — derived-only mapping wave-1 batch closure v0" in text
+    assert WAVE1_BATCH_CLOSURE_PLAN_PATH in text
+    assert PR3894_CLOSEOUT_PATH in text
+    assert WAVE1_EXECUTION_READINESS_PRECHECK_PATH in text
+    assert DERIVED_JSONL_BUILD_VALIDATE_PATH in text
+    assert THIS_MODULE in text
+    assert MAPPING_GUARD_TEST in text
+    assert DERIVED_REFLECTION_TEST in text
+    assert WRITE_PERMISSIONS_OWNER_TEST in text
+    assert SECRETS_REFERENCE_OWNER_TEST in text
+    assert "OPERATOR_GO_WAVE1_BATCH_CLOSURE_PR=true" in text
+    assert "does not** set `INPUT_JSONL_PROVIDED=true`" in text
+    assert "does not** claim derived JSONL is the original" in text
+    assert "does not** authorize Old-R-ID reconstruction" in text
+    assert "does not** assign definitive **`mapped`** status" in text
+    assert "is distinct from definitive mapped" in text
+
+    for derived_id in PLAN_DERIVED_IDS:
+        assert derived_id in text
+
+    for key, expected in WAVE1_BATCH_CLOSURE_EXPECTED.items():
+        assert batch_values.get(key) == expected, (
+            f"wave-1 batch closure {key}={batch_values.get(key)!r} expected {expected!r}"
+        )
+
+    rows = _risk_table_rows(text)
+    for risk_id, (expected_owner, derived_id) in DERIVED_EVIDENCE_MAPPED_RISKS.items():
+        owner_cell, status_cell = rows[risk_id]
+        _assert_derived_evidence_mapped_row(
+            owner_cell,
+            status_cell,
+            expected_owner=expected_owner,
+            derived_id=derived_id,
+        )
+
+    assert "non-authorizing" in collapsed
+
+
+def test_cybersecurity_visibility_derived_only_mapping_wave1_batch_closure_truth_map_crosslink_v0() -> (
+    None
+):
+    truth_map = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    collapsed = truth_map.lower()
+
+    assert "derived-only mapping wave-1 batch closure" in truth_map
+    assert "DERIVED_ONLY_MAPPING_WAVE1_BATCH_CLOSURE_V0=true" in truth_map
+    assert "MAPPED_BY_DERIVED_EVIDENCE_ONLY=true" in truth_map
+    assert "DERIVED_EVIDENCE_MAPPED_STATUS_ALLOWED=true" in truth_map
+    assert "FORBIDS_DEFINITIVE_MAPPED_WITHOUT_INPUT=true" in truth_map
+    assert "INPUT_JSONL_PROVIDED=false" in truth_map
+    assert "DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=true" in truth_map
+    assert THIS_MODULE in truth_map
+    assert DERIVED_REFLECTION_TEST in truth_map
+    assert MAPPING_GUARD_TEST in truth_map
+    assert WRITE_PERMISSIONS_OWNER_TEST in truth_map
+    assert SECRETS_REFERENCE_OWNER_TEST in truth_map
+    assert "mapped-by-derived-evidence" in collapsed
+    assert "non-authorizing" in collapsed
+
+
+RELEASE_RC_INDEX_HEADING = "## Cybersecurity Visibility Release RC v0 — index v0"
+RELEASE_RC_BLOCK_ANCHOR = "CYBERSECURITY_VISIBILITY_RELEASE_RC_V0=true"
+CV1_PLANNING_BUNDLE_PATH = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/cybersecurity_visibility_release_rc_v0_slice_cv1_docs_only_20260602T175506Z/"
+)
+POST_OE_RANKING_BUNDLE_PATH = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/next_larger_theme_ranking_after_operator_experience_release_rc_v0_20260602T175228Z/"
+)
+
+RELEASE_RC_EXPECTED: dict[str, str] = {
+    "CYBERSECURITY_VISIBILITY_RELEASE_RC_V0": "true",
+    "SLICE_CV1_DOCS_ONLY": "true",
+    "WAVE1_DERIVED_MAPPING_BATCH_CLOSURE_COMPLETE": "true",
+    "DEFINITIVE_R001_R002_R007_MAPPING_EXECUTION_MERGED_PR4093": "true",
+    "R001_R002_R007_DEFINITIVE_MAPPING_STATUS": "definitive_mapped",
+    "DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED": "false",
+    "INPUT_JSONL_PROVIDED": "true",
+    "INPUT_JSONL_REPO_INGESTED": "false",
+    "LOSSLESS_JSONL_RECOVERY": "false",
+    "NOT_ORIGINAL_TMP_FULL_LOSSLESS": "true",
+    "CYBERSECURITY_VISIBILITY_RELEASE_RC_V0_POST_DEFINITIVE_R001_R002_R007_MAPPING_INDEX_SYNC_V1": "true",
+    "CYBERSECURITY_VISIBILITY_RELEASE_RC_V0_POST_SLICE_CV3_RELEASE_INDEX_SYNC_V1": "true",
+    "SLICE_CV3_DOCS_DRIFT_POINTER_INTEGRITY_CROSSLINK_GUARD_MERGED_PR4164": "true",
+    "CYBERSECURITY_DEFENSIVE_VISIBILITY_CV3_PLUS_RC_V0_CORE_COMPLETE_AFTER_CV3": "true",
+    "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED": "true",
+    "DOCS_DRIFT_OR_POINTER_INTEGRITY_COMPLETE": "false",
+    "CYBER_REAL_DATA_PII_BLOCKED": "true",
+    "CYBER_REAL_DATA_REQUIRES_LEGAL_PRIVACY_GO": "true",
+    "NO_EXTERNAL_CYBER_DATA_INTAKE": "true",
+    "NO_RUNTIME": "true",
+    "NO_TRADING_AUTHORITY_CHANGE": "true",
+    "MASTER_V2_LOGIC_CHANGED": "false",
+    "DOUBLE_PLAY_LOGIC_CHANGED": "false",
+    "NOTION_WRITES": "false",
+    "WORKFLOW_DISPATCH_EXECUTED": "false",
+    "PARALLEL_DOCS_CREATED": "false",
+    "PARALLEL_CYBER_INDEX_CREATED": "false",
+}
+
+
+def _release_rc_index_section(text: str) -> str:
+    start = text.find(RELEASE_RC_INDEX_HEADING)
+    assert start != -1, "missing Cybersecurity Visibility Release RC v0 index section"
+    return text[start:]
+
+
+def test_cybersecurity_visibility_release_rc_v0_slice_cv1_index_v0() -> None:
+    text = _ci_audit_text()
+    collapsed = text.lower()
+    section = _release_rc_index_section(text)
+    release_block = _block_containing(text, RELEASE_RC_BLOCK_ANCHOR)
+    release_values = _machine_line_values(release_block)
+
+    assert "CYBERSECURITY_VISIBILITY_RELEASE_RC_V0" in section
+    assert "SLICE-CV-1" in section
+    assert "SLICE-CV-2" in section
+    assert "docs/tests-only" in section
+    assert "docs/ops/CI_AUDIT_KNOWN_ISSUES.md" in section
+    assert THIS_MODULE in section
+    assert MAPPING_GUARD_TEST in section
+    assert CV1_PLANNING_BUNDLE_PATH in section
+    assert POST_OE_RANKING_BUNDLE_PATH in section
+    assert "DERIVED_ONLY_MAPPING_WAVE1_BATCH_CLOSURE_V0=true" in section
+    assert "mapped-by-derived-evidence" in section
+    assert "PR #4093" in section
+    assert "definitive mapping execution docs/tests v1" in section.lower()
+    assert "Legal/Privacy-GO" in section
+    assert "no parallel" in section.lower()
+    assert "CYBERSECURITY_VISIBILITY_CHAIN_PARALLEL_ANCHOR" not in text
+
+    for key, expected in RELEASE_RC_EXPECTED.items():
+        assert release_values.get(key) == expected, (
+            f"release RC index {key}={release_values.get(key)!r} expected {expected!r}"
+        )
+
+    assert "non-authorizing" in collapsed
+
+
+def test_cybersecurity_visibility_release_rc_v0_slice_cv2_guard_owner_crosslink_v0() -> None:
+    text = _release_rc_index_section(_ci_audit_text())
+
+    assert "SLICE-CV-2" in text
+    assert "test_cybersecurity_visibility_" in text
+    assert THIS_MODULE in text
+    assert "extend existing" in text.lower()
+
+
+CV3B_READOUT_HEADING = "### Defensive visibility readout / owner-triage guard v0 (SLICE-CV-3b)"
+CV3B_BLOCK_ANCHOR = "CV3B_DEFENSIVE_VISIBILITY_READOUT_OWNER_TRIAGE_GUARD_V0=true"
+CV3B_PLANNING_BUNDLE = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/cv3b_defensive_visibility_readout_after_cv3a_v0_20260603T031905Z/"
+)
+CV3A_CLOSEOUT_BUNDLE = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "closeout/after_cv3a_csc_rchain_histogram_defensive_closure_merge_closeout_v0_20260603T031905Z/"
+)
+MAPPING_GUARD_MODULE = "tests/ci/test_cybersecurity_visibility_r_pending_mapping_guard_v0.py"
+INVENTORY_CHARTER_MODULE = (
+    "tests/ci/test_cybersecurity_visibility_r_pending_inventory_charter_v0.py"
+)
+ARTIFACT_RETENTION_MODULE = (
+    "tests/ci/test_cybersecurity_visibility_repo_static_histogram_"
+    "artifact_retention_or_evidence_gap_crosslink_v0.py"
+)
+CSC_RCHAIN_GROUPING_MODULE = "tests/ci/test_csc_rchain_v1_grouping_reflection_contract_v0.py"
+
+CV3B_EXPECTED_MACHINE_LINES: dict[str, str] = {
+    "CV3B_DEFENSIVE_VISIBILITY_READOUT_OWNER_TRIAGE_GUARD_V0": "true",
+    "CYBERSECURITY_DEFENSIVE_VISIBILITY_CV3_PLUS_RC_V0_STARTED": "true",
+    "CV3A_COMPLETE": "true",
+    "CV3B_DEFENSIVE_VISIBILITY_READOUT_OWNER_TRIAGE_GUARD_COMPLETE": "true",
+    "DEFENSIVE_CYBER_ONLY": "true",
+    "DEFENSIVE_VISIBILITY_READOUT_STATIC_DERIVED_ONLY": "true",
+    "OWNER_TRIAGE_READOUT_NON_AUTHORIZING": "true",
+    "DEFINITIVE_CYBER_MAPPING_PERFORMED": "false",
+    "INPUT_JSONL_REQUIRED": "false",
+    "INPUT_JSONL_FABRICATED": "false",
+    "INPUT_JSONL_PROVIDED": "false",
+    "DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED": "true",
+    "MAPPED_BY_DERIVED_EVIDENCE_ONLY": "true",
+    "CSC_RCHAIN_V1_003A_BLOCKED": "true",
+    "CSC_RCHAIN_V1_003E_BLOCKED": "true",
+    "RUNTIME_AUTHORITY_ADDED": "false",
+    "SECRET_SCANNING_REAL_SECRETS": "false",
+    "REUSE_DRIFT_GUARD": "REUSE_OK",
+    "NO_PARALLEL_DOCS": "true",
+    "NO_PARALLEL_BUILDS": "true",
+    "PREFLIGHT_REMAINS_BLOCKED": "true",
+    "READY_FOR_OPERATOR_ARMING": "false",
+    "RUNTIME_STARTED": "false",
+    "SCHEDULER_STARTED": "false",
+    "LIVE_TOUCHED": "false",
+    "ENFORCEMENT_ACTIVATED": "false",
+    "EXPLOIT_CODE_ADDED": "false",
+    "OFFENSIVE_AUTOMATION_ADDED": "false",
+    "SLICE_CV3B_TESTS_ONLY": "true",
+}
+CV3B_FORBIDDEN_AUTHORIZATION_PHRASES: tuple[str, ...] = (
+    "definitive mapping completed",
+    "input_jsonl fabricated",
+    "offensive_automation_enabled=true",
+    "runtime authority granted",
+    "secret scanning authorized",
+)
+CV3B_FORBIDDEN_MACHINE_TRUE_LINES: tuple[str, ...] = (
+    "INPUT_JSONL_PROVIDED=true",
+    "INPUT_JSONL_FABRICATED=true",
+    "READY_FOR_OPERATOR_ARMING=true",
+    "RUNTIME_AUTHORITY_ADDED=true",
+    "ENFORCEMENT_ACTIVATED=true",
+    "EXPLOIT_CODE_ADDED=true",
+    "OFFENSIVE_AUTOMATION_ADDED=true",
+)
+
+
+def _cv3b_readout_block(text: str) -> str:
+    start = text.index(CV3B_READOUT_HEADING)
+    end = text.index("Operators may use this histogram", start)
+    return text[start:end]
+
+
+def test_cybersecurity_visibility_cv3b_defensive_readout_owner_triage_guard_v0() -> None:
+    text = _ci_audit_text()
+    block = _cv3b_readout_block(text)
+    collapsed = block.lower()
+    machine_values = _machine_line_values(block)
+
+    assert "GO_SLICE_CV3B_DEFENSIVE_VISIBILITY_READOUT_OWNER_TRIAGE_GUARD_V0" in block
+    assert CV3B_PLANNING_BUNDLE in block
+    assert CV3A_CLOSEOUT_BUNDLE in block
+    assert THIS_MODULE in block
+    assert MAPPING_GUARD_MODULE in block
+    assert INVENTORY_CHARTER_MODULE in block
+    assert ARTIFACT_RETENTION_MODULE in block
+    assert CSC_RCHAIN_GROUPING_MODULE in block
+    assert "static/derived only" in collapsed
+    assert "owner-triage" in collapsed or "owner triage" in collapsed
+    assert "mapped-by-derived-evidence" in collapsed
+    assert "review-input only" in collapsed
+    assert "plan progress only" in collapsed
+    assert "CSC_RCHAIN_V1_003A_BLOCKED=true" in block
+    assert "CSC_RCHAIN_V1_003E_BLOCKED=true" in block
+    assert "**003a**" in block or "003a" in collapsed
+    assert "non-authorizing" in collapsed
+
+    for owner in (
+        MAPPING_GUARD_MODULE,
+        INVENTORY_CHARTER_MODULE,
+        f"tests/ci/{THIS_MODULE}",
+        ARTIFACT_RETENTION_MODULE,
+        CSC_RCHAIN_GROUPING_MODULE,
+    ):
+        assert (REPO_ROOT / owner).is_file(), f"missing CV3B guard owner: {owner!r}"
+
+    for key, expected in CV3B_EXPECTED_MACHINE_LINES.items():
+        assert machine_values.get(key) == expected, (
+            f"CV3B readout {key}={machine_values.get(key)!r} expected {expected!r}"
+        )
+
+    readout_lines = {line.strip() for line in block.splitlines()}
+    for marker in CV3B_FORBIDDEN_MACHINE_TRUE_LINES:
+        assert marker not in readout_lines
+
+    for phrase in CV3B_FORBIDDEN_AUTHORIZATION_PHRASES:
+        assert phrase not in collapsed
+
+    assert "exploit/offensive automation" in collapsed
+    assert "secret scanning against real secrets" in collapsed
+    assert "CYBERSECURITY_VISIBILITY_CHAIN_PARALLEL_ANCHOR" not in text
+
+
+def test_cybersecurity_visibility_cv3b_readout_slice_guard_owner_crosslink_v0() -> None:
+    text = _cv3b_readout_block(_ci_audit_text())
+    release_section = _release_rc_index_section(_ci_audit_text())
+
+    assert "SLICE-CV-3b" in release_section
+    assert CV3B_BLOCK_ANCHOR in text
+    assert THIS_MODULE in text
+    assert MAPPING_GUARD_MODULE in text
+    assert (
+        "extend existing" in release_section.lower()
+        or "test_cybersecurity_visibility_" in release_section
+    )
+
+
+CV3C_REPORT_HEADING = "### Static defensive visibility report contract v0 (SLICE-CV-3c)"
+CV3C_BLOCK_ANCHOR = "CV3C_STATIC_DEFENSIVE_VISIBILITY_REPORT_CONTRACT_V0=true"
+CV3C_PLANNING_BUNDLE = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/cv3_next_slice_decision_after_cv3b_v0_20260603T032809Z/"
+)
+CV3B_CLOSEOUT_BUNDLE = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "closeout/after_cv3b_defensive_visibility_readout_owner_triage_guard_merge_closeout_v0_20260603T032809Z/"
+)
+INPUT_ARTIFACT_MODULE = (
+    "tests/ci/test_cybersecurity_visibility_r_pending_input_artifact_contract_v0.py"
+)
+
+
+def _cv3c_report_block(text: str) -> str:
+    start = text.index(CV3C_REPORT_HEADING)
+    end = text.index("Operators may use this histogram", start)
+    return text[start:end]
+
+
+def test_cybersecurity_visibility_cv3c_report_contract_reciprocal_crosslink_v0() -> None:
+    text = _ci_audit_text()
+    block = _cv3c_report_block(text)
+    collapsed = block.lower()
+    release_section = _release_rc_index_section(text)
+
+    assert "GO_SLICE_CV3C_STATIC_DEFENSIVE_VISIBILITY_REPORT_CONTRACT_V0" in block
+    assert CV3C_PLANNING_BUNDLE in block
+    assert CV3B_CLOSEOUT_BUNDLE in block
+    assert CV3C_BLOCK_ANCHOR in block
+    assert INPUT_ARTIFACT_MODULE in block
+    assert MAPPING_GUARD_MODULE in block
+    assert ARTIFACT_RETENTION_MODULE in block
+    assert f"tests/ci/{THIS_MODULE}" in block
+    assert "SLICE-CV-3c" in release_section
+    assert "static/derived/read-only only" in collapsed
+    assert "CV3B_COMPLETE=true" in block
+    assert "STATIC_DERIVED_VISIBILITY_ONLY=true" in block
+    assert "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true" in block
+    assert "INPUT_JSONL_FABRICATED=false" in block
+    assert "non-authorizing" in collapsed
+
+    assert (REPO_ROOT / INPUT_ARTIFACT_MODULE).is_file()
+    assert CV3C_BLOCK_ANCHOR in (REPO_ROOT / INPUT_ARTIFACT_MODULE).read_text(encoding="utf-8")
+    assert "CYBERSECURITY_VISIBILITY_CHAIN_PARALLEL_ANCHOR" not in text
+
+
+POST_DEFMAP_INDEX_SYNC_ANCHOR = "CYBERSECURITY_VISIBILITY_RELEASE_RC_V0_POST_DEFINITIVE_R001_R002_R007_MAPPING_INDEX_SYNC_V1=true"
+DEFMAP_EXEC_HEADING = (
+    "### Definitive R-001/R-002/R-007 mapping execution docs/tests v1 (SLICE-CYBER-DEFMAP-EXEC-V1)"
+)
+
+
+def test_cybersecurity_visibility_release_rc_v0_post_definitive_r001_r002_r007_mapping_index_sync_v0() -> (
+    None
+):
+    """Release RC index must not drift back to blocked after merged PR #4093 definitive mapping."""
+    text = _ci_audit_text()
+    truth_map = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    section = _release_rc_index_section(text)
+    release_block = _block_containing(text, RELEASE_RC_BLOCK_ANCHOR)
+    release_values = _machine_line_values(release_block)
+
+    assert POST_DEFMAP_INDEX_SYNC_ANCHOR in release_block
+    assert release_values["DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED"] == "false"
+    assert release_values["R001_R002_R007_DEFINITIVE_MAPPING_STATUS"] == "definitive_mapped"
+    assert release_values["DEFINITIVE_R001_R002_R007_MAPPING_EXECUTION_MERGED_PR4093"] == "true"
+    assert release_values["INPUT_JSONL_PROVIDED"] == "true"
+    assert release_values["INPUT_JSONL_REPO_INGESTED"] == "false"
+    assert release_values["LOSSLESS_JSONL_RECOVERY"] == "false"
+    assert release_values["NOT_ORIGINAL_TMP_FULL_LOSSLESS"] == "true"
+    assert "PR #4093" in section
+    assert "mapped (definitive" in text
+    assert DEFMAP_EXEC_HEADING in text
+    assert "GO_CYBERSECURITY_DEFINITIVE_R001_R002_R007_MAPPING_EXECUTION_DOCS_TESTS_V1" in text
+
+    release_start = text.index(RELEASE_RC_INDEX_HEADING)
+    release_end = text.index("## Ops Cockpit / Operator Status Index RC v0", release_start)
+    release_window = text[release_start:release_end]
+    assert "DEFINITIVE_R001_R002_R007_MAPPING_BLOCKED=true" not in release_window
+
+    assert POST_DEFMAP_INDEX_SYNC_ANCHOR in truth_map
+    assert "PR #4093" in truth_map
+    assert "R001_R002_R007_DEFINITIVE_MAPPING_STATUS=definitive_mapped" in truth_map
+    assert THIS_MODULE in truth_map
+    assert "non-authorizing" in section.lower()
+
+
+POST_SLICE_CV3_INDEX_SYNC_ANCHOR = (
+    "CYBERSECURITY_VISIBILITY_RELEASE_RC_V0_POST_SLICE_CV3_RELEASE_INDEX_SYNC_V1=true"
+)
+CV3_POINTER_INTEGRITY_HEADING = "### Docs drift / pointer integrity crosslink guard v0 (SLICE-CV-3)"
+CV3_SLICE_CLOSEOUT_PATH = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "closeout/cybersecurity_visibility_cv3_csc_rchain_pr15_pointer_integrity_guard_squash_merge_closeout_v1_20260612T082018Z/"
+)
+
+
+def test_cybersecurity_visibility_release_rc_v0_post_slice_cv3_release_index_sync_v1() -> None:
+    """Release RC index must reflect merged SLICE-CV-3 #4164; deferred bucket stays deferred."""
+    text = _ci_audit_text()
+    truth_map = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    section = _release_rc_index_section(text)
+    release_block = _block_containing(text, RELEASE_RC_BLOCK_ANCHOR)
+    release_values = _machine_line_values(release_block)
+
+    assert POST_SLICE_CV3_INDEX_SYNC_ANCHOR in release_block
+    assert (
+        release_values["SLICE_CV3_DOCS_DRIFT_POINTER_INTEGRITY_CROSSLINK_GUARD_MERGED_PR4164"]
+        == "true"
+    )
+    assert (
+        release_values["CYBERSECURITY_DEFENSIVE_VISIBILITY_CV3_PLUS_RC_V0_CORE_COMPLETE_AFTER_CV3"]
+        == "true"
+    )
+    assert release_values["DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED"] == "true"
+    assert release_values["DOCS_DRIFT_OR_POINTER_INTEGRITY_COMPLETE"] == "false"
+    assert "#4164" in section
+    assert "optional follow-up" not in section.lower()
+    assert CV3_POINTER_INTEGRITY_HEADING in text
+    assert CV3_SLICE_CLOSEOUT_PATH in section
+    assert "CV-1 + CV-2 + CV-3" in text
+
+    release_start = text.index(RELEASE_RC_INDEX_HEADING)
+    release_end = text.index("## Ops Cockpit / Operator Status Index RC v0", release_start)
+    release_window = text[release_start:release_end]
+    assert "CORE_COMPLETE_AFTER_CV3C" not in release_window
+
+    eer_start = text.index("## Evidence Durable Enforcement Readiness Review RC v0")
+    eer_end = text.index("## Post-Release Operator Package Decision Contract v0", eer_start)
+    eer_window = text[eer_start:eer_end]
+    assert (
+        "CYBERSECURITY_DEFENSIVE_VISIBILITY_CV3_PLUS_RC_V0_STATUS=CORE_COMPLETE_AFTER_CV3"
+        in eer_window
+    )
+    assert "CORE_COMPLETE_AFTER_CV3C" not in eer_window
+
+    assert POST_SLICE_CV3_INDEX_SYNC_ANCHOR in truth_map
+    assert "#4164" in truth_map
+    assert "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true" in truth_map
+    assert "DOCS_DRIFT_OR_POINTER_INTEGRITY_COMPLETE=false" in truth_map
+    assert THIS_MODULE in truth_map
+    assert "non-authorizing" in section.lower()

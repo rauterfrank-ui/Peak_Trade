@@ -40,6 +40,7 @@ from src.live.testnet_orchestrator import (
     TestnetOrchestrator,
     RunInfo,
     RunNotFoundError,
+    PersistedRunStopNotApplicableError,
     ReadinessCheckFailedError,
     InvalidModeError,
     OrchestratorError,
@@ -372,6 +373,7 @@ def cmd_status(args: argparse.Namespace, orchestrator: TestnetOrchestrator) -> i
                     print(f"Last Error: {status.last_error}")
                 if status.notes:
                     print(f"Notes: {status.notes}")
+                print(f"status_source: {status.status_source}")
 
         return 0
 
@@ -413,9 +415,15 @@ def cmd_stop(args: argparse.Namespace, orchestrator: TestnetOrchestrator) -> int
                 return 1
 
             orchestrator.stop_run(args.run_id)
-            print(f"✅ Run gestoppt: {args.run_id}")
+            print(f"✅ Run gestoppt (in_memory): {args.run_id}")
             return 0
 
+    except PersistedRunStopNotApplicableError as e:
+        print(
+            f"⚠️ Stop nicht möglich — nur persistierte Metadaten (kein aktiver Orchestrator-Prozess): {e}",
+            file=sys.stderr,
+        )
+        return 2
     except RunNotFoundError as e:
         print(f"❌ Fehler: {e}", file=sys.stderr)
         return 1

@@ -24,11 +24,20 @@ def client() -> TestClient:
     return TestClient(create_app())
 
 
-def test_double_play_market_dashboard_v1_cockpit_layout_ok_defaults(client: TestClient) -> None:
-    r = client.get("/market/double-play")
+def _market_unified_html(client: TestClient) -> str:
+    r = client.get("/market?source=dummy&symbol=BTC/EUR&timeframe=1d&limit=120")
     assert r.status_code == 200
-    assert "text/html" in r.headers.get("content-type", "")
-    body = r.text
+    return r.text
+
+
+def test_double_play_legacy_route_redirects_to_market_anchor(client: TestClient) -> None:
+    r = client.get("/market/double-play", follow_redirects=False)
+    assert r.status_code == 302
+    assert r.headers["location"].endswith("#double-play")
+
+
+def test_double_play_market_dashboard_v1_cockpit_layout_ok_defaults(client: TestClient) -> None:
+    body = _market_unified_html(client)
 
     assert 'data-double-play-market-dashboard-v0="true"' in body
     assert 'data-double-play-market-composition-ssr-v1="true"' in body
@@ -44,16 +53,13 @@ def test_double_play_market_dashboard_v1_cockpit_layout_ok_defaults(client: Test
     assert 'data-double-play-market-market-link="true"' in body
 
     assert 'data-double-play-market-cockpit-layout-v1-1="true"' in body
-    assert 'data-double-play-market-cockpit-header="true"' in body
     assert 'data-double-play-market-cockpit-grid="true"' in body
     assert 'data-double-play-market-cockpit-chart-column="true"' in body
     assert 'data-double-play-market-cockpit-rail="true"' in body
     assert 'data-double-play-market-cockpit-safety-chips="true"' in body
     assert 'data-double-play-market-cockpit-diagnostics-secondary="true"' in body
 
-    assert "Double-Play Market Dashboard v1" in body
-    assert "Cockpit" in body
-    assert "Snapshot bei Seitenladen" in body
+    assert "Double-Play display (embedded)" in body
 
     assert "No orders" in body
     assert "No live" in body
@@ -88,9 +94,7 @@ def test_double_play_market_dashboard_v1_2_candlesticks_and_visual_panels(
     client: TestClient,
 ) -> None:
     """Markers and copy anchors for Candlestick cockpit v1.2 + visual DP rail."""
-    r = client.get("/market/double-play")
-    assert r.status_code == 200
-    body = r.text
+    body = _market_unified_html(client)
 
     assert 'data-double-play-market-candlestick-v1-2="true"' in body
     assert 'data-double-play-market-candlestick-canvas="true"' in body
@@ -143,9 +147,7 @@ def test_double_play_market_dashboard_v1_2_candlesticks_and_visual_panels(
 
 
 def test_double_play_market_dashboard_v1_3_field_mapping_rail(client: TestClient) -> None:
-    r = client.get("/market/double-play")
-    assert r.status_code == 200
-    body = r.text
+    body = _market_unified_html(client)
 
     assert 'data-double-play-market-field-mapping-v1-3="true"' in body
     assert 'data-double-play-market-diagnostic-only-label="true"' in body
@@ -206,9 +208,7 @@ def test_double_play_market_dashboard_v1_3_field_mapping_rail(client: TestClient
 
 def test_double_play_market_dashboard_consumes_structured_metadata_v2(client: TestClient) -> None:
     """Rail surfaces display-layer v2 metadata from SSR dp_display (no new backend keys)."""
-    r = client.get("/market/double-play")
-    assert r.status_code == 200
-    body = r.text
+    body = _market_unified_html(client)
 
     assert 'data-double-play-market-ui-consumes-v2-metadata="true"' in body
     assert 'data-double-play-market-display-layer-version="true"' in body
@@ -256,6 +256,35 @@ def test_double_play_market_dashboard_consumes_structured_metadata_v2(client: Te
         assert w not in body
 
     lower = body.lower()
+    assert "live_authorization" not in lower
+
+
+def test_double_play_market_dashboard_operator_reading_guide_v0(client: TestClient) -> None:
+    """Orientation block: OHLC SSR vs DP display rail semantics (readonly, display metadata)."""
+    body = _market_unified_html(client)
+
+    assert 'data-double-play-market-operator-reading-guide-v0="true"' in body
+    assert "So lesen Sie diese Ansicht" in body
+    assert "Marktkontext" in body
+    assert "Double-Play-Display-Snapshot" in body
+    assert "dashboard-display.json" in body
+    assert "Ordinal" in body
+    assert "Panel group" in body
+    assert "Severity rank" in body
+    assert "Display-/Readout-Hinweise" in body
+    assert "Ausführungs-Priorität" in body
+
+    forbidden = ("BUY", "SELL", "GO", "APPROVED", "ACTIVE TRADE")
+    for w in forbidden:
+        assert w not in body
+
+    lower = body.lower()
+    assert "<form" not in lower
+    assert 'method="post"' not in lower
+    assert "<button" not in lower
+    assert 'type="submit"' not in lower
+    assert "fetch(" not in body
+    assert "setinterval" not in lower
     assert "live_authorization" not in lower
 
 

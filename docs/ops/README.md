@@ -18,6 +18,8 @@
 
 - **PR #3238** — Observability **read-model** contract **tests** (`tests/webui/test_market_depth_readmodel_v0.py`, `tests/webui/test_paper_shadow_summary_readmodel_v0.py`): **tests-only** fixture-backed regression/readability anchors; **not** operational readiness, telemetry guarantees, or authorization.
 
+- **AI/KI CI cost & autonomy (v0)** — Operator policy: paid LLM **default-off** on PR/push/schedule; explicit opt-in for billable paths; InfoStream / Market Outlook / Promptfoo posture: [`AI_KI_COST_AUTONOMY_CI_POLICY_V0.md`](AI_KI_COST_AUTONOMY_CI_POLICY_V0.md).
+
 <!-- ops readme status navigation note -->
 - Projektstatus / Navigation: `docs&#47;INDEX.md` ist der zentrale Einstieg für Docs-Navigation.
 - Für kompakten Status-/Lookup-Einstieg nutze `docs&#47;ops&#47;STATUS_MATRIX.md`; für datierten narrativen Kontext nutze `docs&#47;ops&#47;STATUS_OVERVIEW_2026-02-19.md`.

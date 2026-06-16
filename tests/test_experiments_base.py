@@ -531,6 +531,7 @@ class TestExperimentRunner:
         runner = ExperimentRunner(
             backtest_fn=mock_backtest,
             progress_callback=progress_cb,
+            progress_every=1,
         )
         config = ExperimentConfig(
             name="Test",
@@ -628,3 +629,693 @@ class TestExperimentRunnerIntegration:
         summary = result.get_summary_stats()
         assert summary["num_runs"] == 4
         assert "sharpe_ratio_mean" in summary
+
+
+# ============================================================================
+# PHASE-41 QUIET MODE CONTRACT TESTS
+# ============================================================================
+
+import logging
+import sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parent.parent
+SCRIPTS = ROOT / "scripts"
+sys.path.insert(0, str(SCRIPTS))
+
+from src.experiments.base import (
+    ExperimentRunOutputMode,
+    apply_experiment_run_logging,
+    logger as experiment_logger,
+    restore_experiment_run_logging,
+)
+
+
+def _sample_experiment_result(config: ExperimentConfig) -> ExperimentResult:
+    rows = [
+        SweepResultRow(
+            experiment_id=config.get_experiment_id(),
+            run_id=f"{config.get_experiment_id()}_0001",
+            strategy_name=config.strategy_name,
+            symbol="BTC/EUR",
+            timeframe="1h",
+            params={"fast": 5},
+            metrics={"total_return": 0.12, "sharpe_ratio": 1.1, "max_drawdown": -0.05},
+        )
+    ]
+    return ExperimentResult(
+        experiment_id=config.get_experiment_id(),
+        config=config,
+        results=rows,
+        total_runtime_seconds=0.5,
+    )
+
+
+def _mock_strategy_sweep_run(monkeypatch, tmp_path, *, quiet: bool = False):
+    import run_strategy_sweep as rss
+
+    config = ExperimentConfig(
+        name="mock_sweep",
+        strategy_name="ma_crossover",
+        param_sweeps=[ParamSweep("fast", [5])],
+        save_results=True,
+        output_dir=str(tmp_path / "reports" / "experiments"),
+    )
+    result = _sample_experiment_result(config)
+    captured: dict[str, object] = {}
+
+    class MockSweepConfig:
+        name = "rsi_reversion_basic"
+        strategy_name = "rsi_reversion"
+        symbols = ["BTC/EUR"]
+        timeframe = "1h"
+        description = "mock"
+        num_raw_combinations = 1
+        tags: list[str] = []
+
+        def generate_param_combinations(self):
+            return [{"fast": 5}]
+
+        def to_experiment_config(self, **kwargs):
+            captured["exp_config_kwargs"] = kwargs
+            return config
+
+    class MockRunner:
+        def __init__(self, **kwargs):
+            captured["runner_kwargs"] = kwargs
+
+        def run(self, exp_config):
+            captured["exp_config"] = exp_config
+            return result
+
+        def run_parallel(self, exp_config):
+            return self.run(exp_config)
+
+    monkeypatch.setattr(rss, "get_predefined_sweep", lambda _name: MockSweepConfig())
+    monkeypatch.setattr(rss, "ExperimentRunner", MockRunner)
+    return rss, captured, result
+
+
+def _mock_experiment_sweep_run(monkeypatch, tmp_path, *, quiet: bool = False):
+    import run_experiment_sweep as res
+
+    config = ExperimentConfig(
+        name="MA_CROSSOVER Parameter Sweep",
+        strategy_name="ma_crossover",
+        param_sweeps=[ParamSweep("fast", [5])],
+        save_results=True,
+        output_dir=str(tmp_path / "reports" / "experiments"),
+    )
+    result = _sample_experiment_result(config)
+    captured: dict[str, object] = {}
+
+    class MockRunner:
+        def __init__(self, **kwargs):
+            captured["runner_kwargs"] = kwargs
+
+        def run(self, exp_config):
+            captured["exp_config"] = exp_config
+            return result
+
+        def run_parallel(self, exp_config):
+            return self.run(exp_config)
+
+    monkeypatch.setattr(res, "get_strategy_sweeps", lambda *_a, **_k: [ParamSweep("fast", [5])])
+    monkeypatch.setattr(res, "ExperimentRunner", MockRunner)
+    monkeypatch.setattr(res, "ExperimentConfig", lambda **kwargs: config)
+    return res, captured, result
+
+
+def test_run_strategy_sweep_quiet_flag_parsed() -> None:
+    import run_strategy_sweep as rss
+
+    args = rss.build_parser().parse_args(["--quiet", "--sweep-name", "rsi_reversion_basic"])
+    assert args.quiet is True
+    args_short = rss.build_parser().parse_args(["-q", "--sweep-name", "rsi_reversion_basic"])
+    assert args_short.quiet is True
+
+
+def test_run_experiment_sweep_quiet_flag_parsed() -> None:
+    import run_experiment_sweep as res
+
+    args = res.parse_args(["--quiet", "--strategy", "ma_crossover"])
+    assert args.quiet is True
+    args_short = res.parse_args(["-q", "--strategy", "ma_crossover"])
+    assert args_short.quiet is True
+
+
+def test_run_strategy_sweep_default_mode_preserves_pre_run_info(
+    tmp_path, monkeypatch, capsys
+) -> None:
+    rss, _, _ = _mock_strategy_sweep_run(monkeypatch, tmp_path)
+    monkeypatch.chdir(tmp_path)
+
+    code = rss.main(["--sweep-name", "rsi_reversion_basic", "--no-save"])
+    assert code == 0
+    out = capsys.readouterr().out
+    assert "Peak_Trade Strategy Sweep (Phase 41)" in out
+    assert "Kombinationen:" in out
+
+
+def test_run_strategy_sweep_quiet_mode_suppresses_pre_run_info(
+    tmp_path, monkeypatch, capsys
+) -> None:
+    rss, _, _ = _mock_strategy_sweep_run(monkeypatch, tmp_path)
+    monkeypatch.chdir(tmp_path)
+
+    code = rss.main(["--quiet", "--sweep-name", "rsi_reversion_basic", "--no-save"])
+    assert code == 0
+    out = capsys.readouterr().out
+    assert "Peak_Trade Strategy Sweep (Phase 41)" not in out
+    assert "Kombinationen:" not in out
+
+
+def test_run_strategy_sweep_quiet_mode_preserves_completion_output(
+    tmp_path, monkeypatch, capsys
+) -> None:
+    rss, _, _ = _mock_strategy_sweep_run(monkeypatch, tmp_path)
+    monkeypatch.chdir(tmp_path)
+
+    code = rss.main(["--quiet", "--sweep-name", "rsi_reversion_basic", "--no-save"])
+    assert code == 0
+    out = capsys.readouterr().out
+    assert "Ergebnisse" in out
+    assert "Runs:" in out
+    assert "Erfolgsrate:" in out
+
+
+def test_run_experiment_sweep_default_mode_preserves_pre_run_info(
+    tmp_path, monkeypatch, capsys
+) -> None:
+    res, _, _ = _mock_experiment_sweep_run(monkeypatch, tmp_path)
+    monkeypatch.chdir(tmp_path)
+
+    code = res.main(["--strategy", "ma_crossover", "--no-save"])
+    assert code == 0
+    out = capsys.readouterr().out
+    assert "Peak_Trade Experiment Sweep" in out
+    assert "Kombinationen:" in out
+
+
+def test_run_experiment_sweep_quiet_mode_suppresses_pre_run_info(
+    tmp_path, monkeypatch, capsys
+) -> None:
+    res, _, _ = _mock_experiment_sweep_run(monkeypatch, tmp_path)
+    monkeypatch.chdir(tmp_path)
+
+    code = res.main(["--quiet", "--strategy", "ma_crossover", "--no-save"])
+    assert code == 0
+    out = capsys.readouterr().out
+    assert "Peak_Trade Experiment Sweep" not in out
+    assert "Kombinationen:" not in out
+
+
+def test_run_experiment_sweep_quiet_mode_preserves_completion_output(
+    tmp_path, monkeypatch, capsys
+) -> None:
+    res, _, _ = _mock_experiment_sweep_run(monkeypatch, tmp_path)
+    monkeypatch.chdir(tmp_path)
+
+    code = res.main(["--quiet", "--strategy", "ma_crossover", "--no-save"])
+    assert code == 0
+    out = capsys.readouterr().out
+    assert "Ergebnisse" in out
+    assert "Runs:" in out
+    assert "Erfolgsrate:" in out
+
+
+def test_experiment_runner_quiet_mode_suppresses_high_frequency_logger_info(
+    caplog,
+) -> None:
+    calls: list[tuple[int, int, str]] = []
+
+    def progress_cb(current: int, total: int, message: str) -> None:
+        calls.append((current, total, message))
+        print(f"progress:{current}/{total}")
+
+    runner = ExperimentRunner(
+        backtest_fn=lambda *_a, **_k: {"total_return": 0.1, "sharpe_ratio": 1.0},
+        progress_callback=progress_cb,
+        quiet=True,
+    )
+    config = ExperimentConfig(
+        name="quiet-runner",
+        strategy_name="ma_crossover",
+        param_sweeps=[ParamSweep("fast", [5, 10])],
+        save_results=False,
+    )
+
+    with caplog.at_level(logging.INFO, logger=experiment_logger.name):
+        result = runner.run(config)
+
+    assert result.num_runs == 2
+    assert calls == []
+    assert not any("Starte Experiment" in r.message for r in caplog.records)
+
+
+def test_experiment_runner_default_mode_emits_start_info(caplog) -> None:
+    runner = ExperimentRunner(
+        backtest_fn=lambda *_a, **_k: {"total_return": 0.1, "sharpe_ratio": 1.0},
+        quiet=False,
+    )
+    config = ExperimentConfig(
+        name="default-runner",
+        strategy_name="ma_crossover",
+        param_sweeps=[ParamSweep("fast", [5])],
+        save_results=False,
+    )
+
+    with caplog.at_level(logging.INFO, logger=experiment_logger.name):
+        runner.run(config)
+
+    assert any("Starte Experiment" in r.message for r in caplog.records)
+
+
+def test_experiment_runner_quiet_mode_preserves_artifact_path_output(tmp_path, caplog) -> None:
+    runner = ExperimentRunner(
+        backtest_fn=lambda *_a, **_k: {"total_return": 0.1, "sharpe_ratio": 1.0},
+        quiet=True,
+    )
+    config = ExperimentConfig(
+        name="artifact-runner",
+        strategy_name="ma_crossover",
+        param_sweeps=[ParamSweep("fast", [5])],
+        save_results=True,
+        output_dir=str(tmp_path),
+    )
+
+    with caplog.at_level(logging.INFO, logger=experiment_logger.name):
+        runner.run(config)
+
+    summary_files = list(tmp_path.glob("*_summary.json"))
+    assert summary_files
+
+
+def test_experiment_runner_quiet_warning_visible(caplog) -> None:
+    previous_module, previous_root = apply_experiment_run_logging(True)
+    try:
+        with caplog.at_level(logging.WARNING, logger=experiment_logger.name):
+            experiment_logger.warning("phase41-quiet-warning-check")
+    finally:
+        restore_experiment_run_logging(previous_module, previous_root)
+
+    assert any("phase41-quiet-warning-check" in r.message for r in caplog.records)
+
+
+def test_experiment_runner_quiet_error_visible(caplog) -> None:
+    previous_module, previous_root = apply_experiment_run_logging(True)
+    try:
+        with caplog.at_level(logging.ERROR, logger=experiment_logger.name):
+            experiment_logger.error("phase41-quiet-error-check")
+    finally:
+        restore_experiment_run_logging(previous_module, previous_root)
+
+    assert any("phase41-quiet-error-check" in r.message for r in caplog.records)
+
+
+def test_run_strategy_sweep_quiet_mode_restores_logging_after_success() -> None:
+    import run_strategy_sweep as rss
+
+    baseline_module = experiment_logger.level
+    baseline_root = logging.getLogger().level
+    with patch.object(rss, "run_from_args", return_value=0):
+        assert rss.main(["--quiet", "--list-sweeps"]) == 0
+    assert experiment_logger.level == baseline_module
+    assert logging.getLogger().level == baseline_root
+
+
+def test_run_strategy_sweep_quiet_mode_restores_logging_after_exception() -> None:
+    import run_strategy_sweep as rss
+
+    baseline_module = experiment_logger.level
+    baseline_root = logging.getLogger().level
+    with patch.object(rss, "run_from_args", side_effect=RuntimeError("boom")):
+        with pytest.raises(RuntimeError, match="boom"):
+            rss.main(["--quiet", "--list-sweeps"])
+    assert experiment_logger.level == baseline_module
+    assert logging.getLogger().level == baseline_root
+
+
+def test_run_experiment_sweep_quiet_mode_restores_logging_after_success() -> None:
+    import run_experiment_sweep as res
+
+    baseline_module = experiment_logger.level
+    baseline_root = logging.getLogger().level
+    with patch.object(res, "run_from_args", return_value=0):
+        assert res.main(["--quiet", "--list-strategies"]) == 0
+    assert experiment_logger.level == baseline_module
+    assert logging.getLogger().level == baseline_root
+
+
+def test_run_experiment_sweep_quiet_mode_restores_logging_after_exception() -> None:
+    import run_experiment_sweep as res
+
+    baseline_module = experiment_logger.level
+    baseline_root = logging.getLogger().level
+    with patch.object(res, "run_from_args", side_effect=RuntimeError("boom")):
+        with pytest.raises(RuntimeError, match="boom"):
+            res.main(["--quiet", "--list-strategies"])
+    assert experiment_logger.level == baseline_module
+    assert logging.getLogger().level == baseline_root
+
+
+def test_phase41_quiet_multiple_calls_do_not_duplicate_handlers() -> None:
+    import run_strategy_sweep as rss
+    import run_experiment_sweep as res
+
+    baseline_handlers = len(experiment_logger.handlers)
+    with patch.object(rss, "run_from_args", return_value=0):
+        rss.main(["--quiet", "--list-sweeps"])
+        rss.main(["--quiet", "--list-sweeps"])
+    with patch.object(res, "run_from_args", return_value=0):
+        res.main(["--quiet", "--list-strategies"])
+    assert len(experiment_logger.handlers) == baseline_handlers
+
+
+def test_run_strategy_sweep_quiet_binds_same_runner_contract(tmp_path, monkeypatch) -> None:
+    rss, captured_default, _ = _mock_strategy_sweep_run(monkeypatch, tmp_path)
+    monkeypatch.chdir(tmp_path)
+    rss.main(["--sweep-name", "rsi_reversion_basic", "--no-save"])
+
+    rss2, captured_quiet, _ = _mock_strategy_sweep_run(monkeypatch, tmp_path)
+    rss2.main(["--quiet", "--sweep-name", "rsi_reversion_basic", "--no-save"])
+
+    default_kwargs = captured_default["runner_kwargs"]
+    quiet_kwargs = captured_quiet["runner_kwargs"]
+    assert default_kwargs["quiet"] is False
+    assert quiet_kwargs["quiet"] is True
+    assert captured_default["exp_config"] == captured_quiet["exp_config"]
+
+
+def test_run_experiment_sweep_quiet_binds_same_runner_contract(tmp_path, monkeypatch) -> None:
+    res, captured_default, _ = _mock_experiment_sweep_run(monkeypatch, tmp_path)
+    monkeypatch.chdir(tmp_path)
+    res.main(["--strategy", "ma_crossover", "--no-save"])
+
+    res2, captured_quiet, _ = _mock_experiment_sweep_run(monkeypatch, tmp_path)
+    res2.main(["--quiet", "--strategy", "ma_crossover", "--no-save"])
+
+    default_kwargs = captured_default["runner_kwargs"]
+    quiet_kwargs = captured_quiet["runner_kwargs"]
+    assert default_kwargs["quiet"] is False
+    assert quiet_kwargs["quiet"] is True
+
+
+def test_run_strategy_sweep_quiet_propagates_runner_exception(
+    tmp_path, monkeypatch, caplog
+) -> None:
+    import run_strategy_sweep as rss
+
+    class MockSweepConfig:
+        name = "rsi_reversion_basic"
+        strategy_name = "rsi_reversion"
+        symbols = ["BTC/EUR"]
+        timeframe = "1h"
+        description = None
+        num_raw_combinations = 1
+        tags: list[str] = []
+
+        def generate_param_combinations(self):
+            return [{"fast": 5}]
+
+        def to_experiment_config(self, **kwargs):
+            return ExperimentConfig(
+                name="mock",
+                strategy_name="rsi_reversion",
+                param_sweeps=[ParamSweep("fast", [5])],
+                save_results=False,
+            )
+
+    class FailingRunner:
+        def __init__(self, **_kwargs):
+            pass
+
+        def run(self, _config):
+            raise RuntimeError("simulated strategy sweep failure")
+
+    monkeypatch.setattr(rss, "get_predefined_sweep", lambda _name: MockSweepConfig())
+    monkeypatch.setattr(rss, "ExperimentRunner", FailingRunner)
+    monkeypatch.chdir(tmp_path)
+
+    with caplog.at_level(logging.ERROR):
+        code = rss.main(["--quiet", "--sweep-name", "rsi_reversion_basic"])
+    assert code == 1
+    assert any("Sweep fehlgeschlagen" in r.message for r in caplog.records)
+
+
+def test_experiment_run_output_mode_info_suppressed_when_quiet(capsys) -> None:
+    quiet = ExperimentRunOutputMode(quiet=True)
+    quiet.info("should-not-appear")
+    assert capsys.readouterr().out == ""
+
+    normal = ExperimentRunOutputMode(quiet=False)
+    normal.info("should-appear")
+    assert "should-appear" in capsys.readouterr().out
+
+
+# =============================================================================
+# BATCH PROGRESS CONTRACTS (Phase 41, offline only)
+# =============================================================================
+
+
+class TestExperimentBatchProgressContracts:
+    """Offline batch-progress contracts for Phase-41 ExperimentRunner."""
+
+    @staticmethod
+    def _mock_backtest_factory():
+        call_count = 0
+
+        def mock_backtest(*_args, **_kwargs):
+            nonlocal call_count
+            call_count += 1
+            return {
+                "total_return": 0.1 * call_count,
+                "sharpe_ratio": 1.0,
+                "max_drawdown": -0.05,
+            }
+
+        return mock_backtest
+
+    def _config_with_n(self, n: int) -> ExperimentConfig:
+        return ExperimentConfig(
+            name="batch-contract",
+            strategy_name="ma_crossover",
+            param_sweeps=[ParamSweep("fast", list(range(1, n + 1)))],
+            save_results=False,
+        )
+
+    def _run_offline(
+        self,
+        n: int,
+        *,
+        progress_every: int = 10,
+        quiet: bool = False,
+        progress_callback=None,
+        backtest_fn=None,
+    ):
+        runner = ExperimentRunner(
+            backtest_fn=backtest_fn or self._mock_backtest_factory(),
+            progress_callback=progress_callback,
+            quiet=quiet,
+            progress_every=progress_every,
+        )
+        return runner, runner.run(self._config_with_n(n))
+
+    def test_fewer_emissions_than_items_when_total_gt_interval(self) -> None:
+        calls: list[int] = []
+
+        def cb(current: int, total: int, message: str) -> None:
+            calls.append(current)
+
+        self._run_offline(25, progress_every=10, progress_callback=cb)
+        assert len(calls) < 25
+        assert calls == [10, 20, 25]
+
+    def test_emission_at_full_batch_boundaries(self) -> None:
+        calls: list[int] = []
+
+        def cb(current: int, total: int, message: str) -> None:
+            calls.append(current)
+
+        self._run_offline(20, progress_every=10, progress_callback=cb)
+        assert calls == [10, 20]
+
+    def test_final_flush_for_remainder_batch(self) -> None:
+        calls: list[int] = []
+
+        def cb(current: int, total: int, message: str) -> None:
+            calls.append(current)
+
+        self._run_offline(25, progress_every=10, progress_callback=cb)
+        assert calls[-1] == 25
+
+    def test_no_duplicate_final_flush_when_exactly_divisible(self) -> None:
+        calls: list[int] = []
+
+        def cb(current: int, total: int, message: str) -> None:
+            calls.append(current)
+
+        self._run_offline(20, progress_every=10, progress_callback=cb)
+        assert calls.count(20) == 1
+
+    def test_zero_items_no_progress_callback(self) -> None:
+        calls: list[int] = []
+
+        def cb(current: int, total: int, message: str) -> None:
+            calls.append(current)
+
+        runner = ExperimentRunner(
+            backtest_fn=self._mock_backtest_factory(),
+            progress_callback=cb,
+            progress_every=10,
+        )
+        config = ExperimentConfig(
+            name="empty",
+            strategy_name="ma_crossover",
+            param_sweeps=[],
+            symbols=[],
+            save_results=False,
+        )
+        result = runner.run(config)
+        assert result.num_runs == 0
+        assert calls == []
+
+    def test_single_item_emits_one_final_progress(self) -> None:
+        calls: list[int] = []
+
+        def cb(current: int, total: int, message: str) -> None:
+            calls.append(current)
+
+        self._run_offline(1, progress_every=10, progress_callback=cb)
+        assert calls == [1]
+
+    def test_quiet_mode_suppresses_batch_progress(self, caplog) -> None:
+        calls: list[int] = []
+
+        def cb(current: int, total: int, message: str) -> None:
+            calls.append(current)
+
+        runner, result = self._run_offline(
+            15,
+            progress_every=10,
+            progress_callback=cb,
+            quiet=True,
+        )
+        assert result.num_runs == 15
+        assert calls == []
+        assert not any("Starte Experiment" in r.message for r in caplog.records)
+
+    def test_completion_and_summary_remain_visible(self, caplog) -> None:
+        with caplog.at_level(logging.INFO, logger=experiment_logger.name):
+            _, result = self._run_offline(3, progress_every=10, quiet=False)
+        assert result.num_runs == 3
+        assert any("Experiment abgeschlossen" in r.message for r in caplog.records)
+
+    def test_artifact_path_remains_visible(self, tmp_path, caplog) -> None:
+        runner = ExperimentRunner(
+            backtest_fn=self._mock_backtest_factory(),
+            quiet=True,
+            progress_every=10,
+        )
+        config = ExperimentConfig(
+            name="artifact-batch",
+            strategy_name="ma_crossover",
+            param_sweeps=[ParamSweep("fast", [5])],
+            save_results=True,
+            output_dir=str(tmp_path),
+        )
+        with caplog.at_level(logging.INFO, logger=experiment_logger.name):
+            runner.run(config)
+        assert list(tmp_path.glob("*_summary.json"))
+
+    def test_warning_visible_immediately(self, caplog) -> None:
+        previous_module, previous_root = apply_experiment_run_logging(True)
+        try:
+            with caplog.at_level(logging.WARNING, logger=experiment_logger.name):
+                experiment_logger.warning("phase41-batch-warning-check")
+        finally:
+            restore_experiment_run_logging(previous_module, previous_root)
+        assert any("phase41-batch-warning-check" in r.message for r in caplog.records)
+
+    def test_error_visible_immediately(self, caplog) -> None:
+        previous_module, previous_root = apply_experiment_run_logging(True)
+        try:
+            with caplog.at_level(logging.ERROR, logger=experiment_logger.name):
+                experiment_logger.error("phase41-batch-error-check")
+        finally:
+            restore_experiment_run_logging(previous_module, previous_root)
+        assert any("phase41-batch-error-check" in r.message for r in caplog.records)
+
+    def test_exception_propagates_without_false_completion(self, monkeypatch, caplog) -> None:
+        runner = ExperimentRunner(
+            backtest_fn=self._mock_backtest_factory(),
+            progress_every=2,
+        )
+        original_emit = runner._maybe_emit_progress
+        emit_calls = 0
+
+        def exploding_emit(*args, **kwargs):
+            nonlocal emit_calls
+            emit_calls += 1
+            if emit_calls == 2:
+                raise RuntimeError("phase41-abort")
+            return original_emit(*args, **kwargs)
+
+        monkeypatch.setattr(runner, "_maybe_emit_progress", exploding_emit)
+        config = self._config_with_n(5)
+        with caplog.at_level(logging.INFO, logger=experiment_logger.name):
+            with pytest.raises(RuntimeError, match="phase41-abort"):
+                runner.run(config)
+        assert not any("Experiment abgeschlossen" in r.message for r in caplog.records)
+
+    def test_config_seeds_and_results_unchanged(self) -> None:
+        _, result_every = self._run_offline(6, progress_every=1)
+        _, result_batch = self._run_offline(6, progress_every=3)
+        assert [r.params for r in result_every.results] == [r.params for r in result_batch.results]
+        assert [r.metrics for r in result_every.results] == [
+            r.metrics for r in result_batch.results
+        ]
+        assert result_every.config.get_experiment_id() == result_batch.config.get_experiment_id()
+
+    def test_logging_state_restored_after_success(self) -> None:
+        previous_module, previous_root = apply_experiment_run_logging(True)
+        try:
+            self._run_offline(2, progress_every=10, quiet=True)
+        finally:
+            restore_experiment_run_logging(previous_module, previous_root)
+        assert experiment_logger.level == previous_module
+        assert logging.getLogger().level == previous_root
+
+    def test_logging_state_restored_after_exception(self) -> None:
+        previous_module, previous_root = apply_experiment_run_logging(True)
+        try:
+            with pytest.raises(ValueError):
+                ExperimentRunner(progress_every=0)
+        finally:
+            restore_experiment_run_logging(previous_module, previous_root)
+        assert experiment_logger.level == previous_module
+
+    def test_no_handler_duplication_on_multiple_runs(self) -> None:
+        handler_count = len(logging.getLogger().handlers)
+        runner = ExperimentRunner(
+            backtest_fn=self._mock_backtest_factory(),
+            progress_every=10,
+        )
+        config = self._config_with_n(2)
+        runner.run(config)
+        runner.run(config)
+        assert len(logging.getLogger().handlers) == handler_count
+
+    def test_invalid_progress_every_rejected(self) -> None:
+        with pytest.raises(ValueError, match="progress_every must be positive"):
+            ExperimentRunner(progress_every=0)
+        with pytest.raises(ValueError, match="progress_every must be positive"):
+            ExperimentRunner(progress_every=-1)
+
+    def test_should_emit_batch_progress_helper(self) -> None:
+        from src.experiments.base import _should_emit_batch_progress
+
+        assert _should_emit_batch_progress(0, 0, 10) is False
+        assert _should_emit_batch_progress(10, 20, 10) is True
+        assert _should_emit_batch_progress(20, 20, 10) is True
+        assert _should_emit_batch_progress(25, 25, 10) is True

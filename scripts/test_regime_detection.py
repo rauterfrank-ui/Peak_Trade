@@ -11,10 +11,7 @@ from pathlib import Path
 # Projekt-Root zum Python-Path hinzufügen
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-import pandas as pd
-import numpy as np
-from datetime import datetime, timedelta
-
+from scripts.run_backtest import load_ohlcv_data
 from src.core.peak_config import load_config
 from src.core.regime import (
     build_regime_config_from_config,
@@ -23,29 +20,6 @@ from src.core.regime import (
     label_combined_regime,
     summarize_regime_distribution,
 )
-
-
-def create_test_data(n_bars=200):
-    """Erstellt Test-OHLCV-Daten."""
-    dates = pd.date_range(datetime.now() - timedelta(hours=n_bars), periods=n_bars, freq="1h")
-
-    # Trend + Noise
-    trend = np.linspace(0, 100, n_bars)
-    noise = np.random.randn(n_bars).cumsum() * 10
-    close_prices = 1000 + trend + noise
-
-    df = pd.DataFrame(
-        {
-            "open": close_prices * 0.99,
-            "high": close_prices * 1.01,
-            "low": close_prices * 0.98,
-            "close": close_prices,
-            "volume": np.random.randint(10, 100, n_bars),
-        },
-        index=dates,
-    )
-
-    return df
 
 
 def main():
@@ -72,7 +46,7 @@ def main():
 
     # Test-Daten erstellen
     print("\n3️⃣ Erstelle Test-Daten...")
-    df = create_test_data(n_bars=200)
+    df = load_ohlcv_data(None, None, None, n_bars=200)
     print(f"   ✅ {len(df)} Bars erstellt")
     print(f"   📊 Preis-Range: {df['close'].min():.2f} - {df['close'].max():.2f}")
 

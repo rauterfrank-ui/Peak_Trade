@@ -525,3 +525,245 @@ def test_snapshot_to_jsonable_empty_snapshot_still_matches_contract() -> None:
         assert p["status"] == "display_missing"
         assert p["severity_rank"] == 20
         assert p["ordinal"] == i
+
+
+def test_snapshot_to_jsonable_scope_unknown_fail_closed_prt_boundary() -> None:
+    _s, _st, t_scope = _ts(SideState.LONG_ACTIVE, ScopeEvent.SCOPE_UNKNOWN, EMPTY_ST, 0)
+    assert _s == SideState.LONG_ACTIVE
+    assert not t_scope.allowed
+    assert t_scope.reason_code == "SCOPE_UNKNOWN_FAIL_CLOSED"
+    snap = build_dashboard_display_snapshot(transition=t_scope)
+    before_status = snap.overall_status
+    data = snapshot_to_jsonable(snap)
+    assert snap.overall_status is before_status
+    _assert_serialized_dashboard_authority_invariants(data)
+    st_p = next(p for p in data["panels"] if p["name"] == "state_transition")
+    assert st_p["status"] == "display_warning"
+    assert st_p["severity_rank"] == 10
+    assert st_p["panel_group"] == "state"
+    assert st_p["ordinal"] == 1
+    assert "SCOPE_UNKNOWN_FAIL_CLOSED" in st_p["summary"]
+    assert st_p["blockers"] == ["SCOPE_UNKNOWN_FAIL_CLOSED"]
+    assert st_p["live_authorization"] is False
+    assert st_p["is_authority"] is False
+    assert data["overall_status"] == "display_warning"
+    data_repeat = snapshot_to_jsonable(snap)
+    assert data_repeat["panels"] == data["panels"]
+    assert data_repeat["overall_status"] == data["overall_status"]
+
+
+def test_snapshot_to_jsonable_switch_long_to_short_pending_prt_boundary() -> None:
+    _s, _st, t_pending = _ts(SideState.LONG_ACTIVE, ScopeEvent.DOWNSCOPE_CONFIRMED, EMPTY_ST, 0)
+    assert _s == SideState.SWITCH_LONG_TO_SHORT_PENDING
+    assert t_pending.allowed
+    assert t_pending.reason_code == "DOWNscope_SWITCH_PENDING"
+    surv = evaluate_survival_envelope(_env_ok())
+    meta = StrategyMetadata(
+        strategy_id="json-switch-pending-long",
+        strategy_family="m",
+        declared_side=SideCompatibility.LONG_BULL,
+        explicit_side_evidence=True,
+    )
+    suit = project_strategy_suitability(_suit_in(meta, _suit_allows_from_envelope(surv)))
+    cfg = CapitalSlotConfig(
+        profit_step_pct=0.10,
+        cashflow_lock_fraction=0.30,
+        reinvest_fraction=0.70,
+        allow_auto_top_up=False,
+        live_authorization=False,
+        min_realized_volatility=0.05,
+        min_atr_or_range=0.05,
+        max_time_without_cashflow_step=10_000,
+        min_opportunity_score=0.2,
+    )
+    cs_st = CapitalSlotState(
+        selected_future="ETH-USD-PERP",
+        initial_slot_base=300.0,
+        active_slot_base=300.0,
+        realized_or_settled_slot_equity=340.0,
+        unrealized_pnl=0.0,
+        locked_cashflow=0.0,
+        time_without_cashflow_step=0,
+        realized_volatility=0.5,
+        atr_or_range=0.5,
+        opportunity_score=0.8,
+        survival_allows_slot=True,
+    )
+    rat = evaluate_capital_slot_ratchet(cfg, cs_st)
+    rel = evaluate_capital_slot_release(cfg, cs_st)
+    comp = compose_double_play_decision(
+        DoublePlayCompositionInput(
+            transition=t_pending,
+            resulting_side_state=_s,
+            survival=surv,
+            suitability=suit,
+            requested_side=RequestedSide.LONG_BULL,
+            capital_slot_ratchet_decision=rat,
+            capital_slot_release_decision=rel,
+        )
+    )
+    fi = evaluate_futures_input_snapshot(_fi_snapshot())
+    snap = build_dashboard_display_snapshot(
+        futures_input=fi,
+        transition=t_pending,
+        survival=surv,
+        suitability=suit,
+        capital_slot_ratchet=rat,
+        capital_slot_release=rel,
+        composition=comp,
+    )
+    before_panels = snap.panels
+    data = snapshot_to_jsonable(snap)
+    assert snap.panels == before_panels
+    _assert_serialized_dashboard_authority_invariants(data)
+    st_p = next(p for p in data["panels"] if p["name"] == "state_transition")
+    assert st_p["status"] == "display_ready"
+    assert st_p["severity_rank"] == 0
+    assert "DOWNscope_SWITCH_PENDING" in st_p["summary"]
+    assert st_p["blockers"] == []
+    comp_p = next(p for p in data["panels"] if p["name"] == "composition")
+    assert comp_p["status"] == "display_ready"
+    assert "ELIGIBLE_MODEL_ONLY" in comp_p["summary"]
+    assert data["overall_status"] == "display_ready"
+    data_repeat = snapshot_to_jsonable(snap)
+    assert data_repeat["panels"] == data["panels"]
+
+
+def test_snapshot_to_jsonable_switch_short_to_long_pending_prt_boundary() -> None:
+    _s, _st, t_pending = _ts(SideState.SHORT_ACTIVE, ScopeEvent.UPSCOPE_CONFIRMED, EMPTY_ST, 0)
+    assert _s == SideState.SWITCH_SHORT_TO_LONG_PENDING
+    assert t_pending.allowed
+    assert t_pending.reason_code == "UPscope_SWITCH_PENDING"
+    surv = evaluate_survival_envelope(_env_ok())
+    meta = StrategyMetadata(
+        strategy_id="json-switch-pending-short",
+        strategy_family="m",
+        declared_side=SideCompatibility.SHORT_BEAR,
+        explicit_side_evidence=True,
+    )
+    suit = project_strategy_suitability(_suit_in(meta, _suit_allows_from_envelope(surv)))
+    cfg = CapitalSlotConfig(
+        profit_step_pct=0.10,
+        cashflow_lock_fraction=0.30,
+        reinvest_fraction=0.70,
+        allow_auto_top_up=False,
+        live_authorization=False,
+        min_realized_volatility=0.05,
+        min_atr_or_range=0.05,
+        max_time_without_cashflow_step=10_000,
+        min_opportunity_score=0.2,
+    )
+    cs_st = CapitalSlotState(
+        selected_future="SOL-USD-PERP",
+        initial_slot_base=300.0,
+        active_slot_base=300.0,
+        realized_or_settled_slot_equity=340.0,
+        unrealized_pnl=0.0,
+        locked_cashflow=0.0,
+        time_without_cashflow_step=0,
+        realized_volatility=0.5,
+        atr_or_range=0.5,
+        opportunity_score=0.8,
+        survival_allows_slot=True,
+    )
+    rat = evaluate_capital_slot_ratchet(cfg, cs_st)
+    rel = evaluate_capital_slot_release(cfg, cs_st)
+    comp = compose_double_play_decision(
+        DoublePlayCompositionInput(
+            transition=t_pending,
+            resulting_side_state=_s,
+            survival=surv,
+            suitability=suit,
+            requested_side=RequestedSide.SHORT_BEAR,
+            capital_slot_ratchet_decision=rat,
+            capital_slot_release_decision=rel,
+        )
+    )
+    fi = evaluate_futures_input_snapshot(_fi_snapshot())
+    snap = build_dashboard_display_snapshot(
+        futures_input=fi,
+        transition=t_pending,
+        survival=surv,
+        suitability=suit,
+        capital_slot_ratchet=rat,
+        capital_slot_release=rel,
+        composition=comp,
+    )
+    before_panels = snap.panels
+    data = snapshot_to_jsonable(snap)
+    assert snap.panels == before_panels
+    _assert_serialized_dashboard_authority_invariants(data)
+    st_p = next(p for p in data["panels"] if p["name"] == "state_transition")
+    assert st_p["status"] == "display_ready"
+    assert st_p["severity_rank"] == 0
+    assert "UPscope_SWITCH_PENDING" in st_p["summary"]
+    assert st_p["blockers"] == []
+    comp_p = next(p for p in data["panels"] if p["name"] == "composition")
+    assert comp_p["status"] == "display_ready"
+    assert "ELIGIBLE_MODEL_ONLY" in comp_p["summary"]
+    assert data["overall_status"] == "display_ready"
+    data_repeat = snapshot_to_jsonable(snap)
+    assert data_repeat["panels"] == data["panels"]
+
+
+def test_snapshot_to_jsonable_switch_pending_blocked_side_prt_boundary() -> None:
+    for pending_side, confirm_event, blocked_side, reason_code, requested, declared in (
+        (
+            SideState.SWITCH_LONG_TO_SHORT_PENDING,
+            ScopeEvent.DOWNSCOPE_CONFIRMED,
+            SideState.LONG_BLOCKED,
+            "LONG_BLOCKED",
+            RequestedSide.LONG_BULL,
+            SideCompatibility.LONG_BULL,
+        ),
+        (
+            SideState.SWITCH_SHORT_TO_LONG_PENDING,
+            ScopeEvent.UPSCOPE_CONFIRMED,
+            SideState.SHORT_BLOCKED,
+            "SHORT_BLOCKED",
+            RequestedSide.SHORT_BEAR,
+            SideCompatibility.SHORT_BEAR,
+        ),
+    ):
+        _s, _st, t_blocked = _ts(pending_side, confirm_event, EMPTY_ST, 0)
+        assert _s == blocked_side
+        assert t_blocked.allowed
+        assert t_blocked.reason_code == reason_code
+        surv = evaluate_survival_envelope(_env_ok())
+        meta = StrategyMetadata(
+            strategy_id=f"json-{reason_code.lower()}",
+            strategy_family="m",
+            declared_side=declared,
+            explicit_side_evidence=True,
+        )
+        suit = project_strategy_suitability(_suit_in(meta, _suit_allows_from_envelope(surv)))
+        comp = compose_double_play_decision(
+            DoublePlayCompositionInput(
+                transition=t_blocked,
+                resulting_side_state=_s,
+                survival=surv,
+                suitability=suit,
+                requested_side=requested,
+            )
+        )
+        fi = evaluate_futures_input_snapshot(_fi_snapshot())
+        snap = build_dashboard_display_snapshot(
+            futures_input=fi,
+            transition=t_blocked,
+            survival=surv,
+            suitability=suit,
+            composition=comp,
+        )
+        before_panels = snap.panels
+        data = snapshot_to_jsonable(snap)
+        assert snap.panels == before_panels
+        _assert_serialized_dashboard_authority_invariants(data)
+        st_p = next(p for p in data["panels"] if p["name"] == "state_transition")
+        assert st_p["status"] == "display_ready"
+        assert reason_code in st_p["summary"]
+        assert st_p["blockers"] == []
+        comp_p = next(p for p in data["panels"] if p["name"] == "composition")
+        assert comp_p["status"] == "display_ready"
+        assert "ELIGIBLE_MODEL_ONLY" in comp_p["summary"]
+        assert data["live_authorization"] is False
+        assert data["trading_ready"] is False

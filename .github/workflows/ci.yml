@@ -18,8 +18,6 @@ on:
         required: false
         default: false
         type: boolean
-  schedule:
-    - cron: "0 3 * * 1"  # Monday 03:00 UTC
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -29,26 +27,44 @@ jobs:
   # ============================================================================
   # Change Detection (pragmatic flow)
   # ============================================================================
-  # Outputs: code_changed (historical output name), run_matrix, run_fast_lane, docs_only, workflow_only.
+  # Outputs: code_changed (historical output name), run_matrix, run_fast_lane, docs_only, workflow_only,
+  # static_contract_changed, docs_or_static_contract_only, webui_surface_changed, webui_surface_only.
   # - run_fast_lane: always true (Fast-Lane always runs).
-  # - run_matrix: true when code paths changed (or workflow_dispatch force_matrix=true).
+  # - run_matrix: true when non_webui_code paths changed (or workflow_dispatch force_matrix=true).
   # - run_fast: always true. run_fast_lane: alias.
-  # - docs_only: true when ONLY docs/out/*.md changed.
+  # - docs_only: true when ONLY docs/out/*.md changed (no code, workflow, or static-contract paths).
   # - workflow_only: true when ONLY .github/workflows changed.
-  # Code paths: src/**, tests/**, scripts/**, config/**, schemas/levelup/** (committed JSON Schema), pyproject.toml, uv.lock, requirements*.txt, pytest.ini, Makefile.
+  # - static_contract_changed: tests/ci/**, tests/ops/**, tests/webui/test_*_structure_contract*.py, src/ops/*_contract_v0.py, src/ops/*_contract_v1.py (not full-matrix code).
+  # - docs_or_static_contract_only: no src/scripts/config/workflow code paths; docs and/or static-contract only.
+  # - webui_surface_changed: Market/Observability/WebUI surface paths (bounded Fast-Lane lane).
+  # - webui_surface_only: webui_surface without non_webui_code (Case D — skip full matrix, bounded WebUI pytest).
+  # Code paths: src/**, templates/**, tests/** minus tests/ci/**, tests/ops/**, and whitelisted tests/webui/test_*_structure_contract*.py; plus scripts/**, config/**, schemas/levelup/**, deps, Makefile.
   # ============================================================================
   changes:
     runs-on: ubuntu-latest
     outputs:
-      code_changed: ${{ steps.filter.outputs.code }}
+      code_changed: ${{ steps.set_outputs.outputs.code_changed }}
       run_matrix: ${{ steps.set_outputs.outputs.run_matrix }}
       run_fast: ${{ steps.set_outputs.outputs.run_fast }}
       run_fast_lane: ${{ steps.set_outputs.outputs.run_fast }}
       docs_only: ${{ steps.set_outputs.outputs.docs_only }}
       workflow_only: ${{ steps.set_outputs.outputs.workflow_only }}
+      static_contract_changed: ${{ steps.set_outputs.outputs.static_contract_changed }}
+      docs_or_static_contract_only: ${{ steps.set_outputs.outputs.docs_or_static_contract_only }}
+      webui_surface_changed: ${{ steps.set_outputs.outputs.webui_surface_changed }}
+      webui_surface_only: ${{ steps.set_outputs.outputs.webui_surface_only }}
+      test_selection_mode: ${{ steps.test_selection.outputs.test_selection_mode }}
+      test_selection_reason: ${{ steps.test_selection.outputs.test_selection_reason }}
+      tests_execute_full: ${{ steps.test_selection.outputs.tests_execute_full }}
+      tests_execute_focused: ${{ steps.test_selection.outputs.tests_execute_focused }}
+      tests_execute_no_op: ${{ steps.test_selection.outputs.tests_execute_no_op }}
+      focused_pytest_targets: ${{ steps.test_selection.outputs.focused_pytest_targets }}
+      focused_module_imports: ${{ steps.test_selection.outputs.focused_module_imports }}
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
 
       - name: Detect changes
         uses: dorny/paths-filter@v3
@@ -56,8 +72,15 @@ jobs:
         with:
           filters: |
             code:
-              - 'src/**'
-              - 'tests/**'
+              # Picomatch extglob: offline ops contract modules use static_contract + Fast-Lane (PR #3984 lineage).
+              - 'src/!(ops)/**'
+              - 'src/ops/!(*_contract_v0.py|*_contract_v1.py)'
+              - 'templates/**'
+              # Picomatch extglob (dorny/paths-filter): separate `!` lines do not exclude
+              # matched files from `tests/**` (see PR #3728 validation). Split buckets:
+              - 'tests/!(ci|ops|webui)/**'
+              - 'tests/webui/!(test_*_structure_contract*)/**'
+              - 'tests/webui/!(test_*_structure_contract*).py'
               - 'scripts/**'
               - 'config/**'
               - 'schemas/levelup/**'
@@ -67,6 +90,33 @@ jobs:
               - 'uv.lock'
               - 'pytest.ini'
               - 'Makefile'
+            webui_surface:
+              - 'src/webui/**'
+              - 'templates/peak_trade_dashboard/**'
+              - 'docs/webui/**'
+              - 'tests/webui/**'
+              - 'tests/fixtures/**'
+              - 'tests/ops/test_*_env_schema_boundary*.py'
+            non_webui_code:
+              - 'src/!(ops|webui)/**'
+              - 'src/ops/!(*_contract_v0.py|*_contract_v1.py)'
+              - 'templates/!(peak_trade_dashboard)/**'
+              - 'tests/!(ci|ops|webui|fixtures)/**'
+              - 'scripts/**'
+              - 'config/**'
+              - 'schemas/levelup/**'
+              - 'requirements.txt'
+              - 'requirements*.txt'
+              - 'pyproject.toml'
+              - 'uv.lock'
+              - 'pytest.ini'
+              - 'Makefile'
+            static_contract:
+              - 'tests/ci/**'
+              - 'tests/ops/**'
+              - 'tests/webui/test_*_structure_contract*.py'
+              - 'src/ops/*_contract_v0.py'
+              - 'src/ops/*_contract_v1.py'
             docs:
               - 'docs/**'
               - 'out/**'
@@ -78,25 +128,72 @@ jobs:
         id: set_outputs
         run: |
           FORCE_MATRIX="${{ github.event_name == 'workflow_dispatch' && github.event.inputs.force_matrix == 'true' }}"
-          if [ "$FORCE_MATRIX" = "true" ]; then
-            echo "run_matrix=true" >> "$GITHUB_OUTPUT"
-          else
-            echo "run_matrix=${{ steps.filter.outputs.code }}" >> "$GITHUB_OUTPUT"
-          fi
-          echo "run_fast=true" >> "$GITHUB_OUTPUT"
           CODE="${{ steps.filter.outputs.code }}"
+          NON_WEBUI="${{ steps.filter.outputs.non_webui_code }}"
+          WEBUI="${{ steps.filter.outputs.webui_surface }}"
+          STATIC="${{ steps.filter.outputs.static_contract }}"
           DOCS="${{ steps.filter.outputs.docs }}"
           WF="${{ steps.filter.outputs.workflow }}"
-          if [ "$DOCS" = "true" ] && [ "$CODE" != "true" ] && [ "$WF" != "true" ]; then
+
+          echo "code_changed=${CODE}" >> "$GITHUB_OUTPUT"
+          echo "static_contract_changed=${STATIC}" >> "$GITHUB_OUTPUT"
+          echo "webui_surface_changed=${WEBUI}" >> "$GITHUB_OUTPUT"
+
+          if [ "$FORCE_MATRIX" = "true" ]; then
+            echo "run_matrix=true" >> "$GITHUB_OUTPUT"
+          elif [ "$NON_WEBUI" = "true" ]; then
+            echo "run_matrix=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "run_matrix=false" >> "$GITHUB_OUTPUT"
+          fi
+          echo "run_fast=true" >> "$GITHUB_OUTPUT"
+
+          if [ "$WEBUI" = "true" ] && [ "$NON_WEBUI" != "true" ] && [ "$WF" != "true" ]; then
+            echo "webui_surface_only=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "webui_surface_only=false" >> "$GITHUB_OUTPUT"
+          fi
+
+          if [ "$DOCS" = "true" ] && [ "$CODE" != "true" ] && [ "$WF" != "true" ] && [ "$STATIC" != "true" ]; then
             echo "docs_only=true" >> "$GITHUB_OUTPUT"
           else
             echo "docs_only=false" >> "$GITHUB_OUTPUT"
           fi
-          if [ "$WF" = "true" ] && [ "$CODE" != "true" ] && [ "$DOCS" != "true" ]; then
+          if [ "$WF" = "true" ] && [ "$CODE" != "true" ] && [ "$DOCS" != "true" ] && [ "$STATIC" != "true" ]; then
             echo "workflow_only=true" >> "$GITHUB_OUTPUT"
           else
             echo "workflow_only=false" >> "$GITHUB_OUTPUT"
           fi
+          if [ "$CODE" != "true" ] && [ "$WF" != "true" ] && { [ "$DOCS" = "true" ] || [ "$STATIC" = "true" ]; }; then
+            echo "docs_or_static_contract_only=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "docs_or_static_contract_only=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Diff-aware test selection (fail-closed)
+        id: test_selection
+        env:
+          GITHUB_EVENT_NAME: ${{ github.event_name }}
+        run: |
+          set -euo pipefail
+          FORCE_ARGS=()
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ github.event.inputs.force_matrix }}" = "true" ]; then
+            FORCE_ARGS+=(--force-full)
+          fi
+          if [ "${{ github.event_name }}" = "pull_request" ]; then
+            BASE_REF="${{ github.event.pull_request.base.ref }}"
+            git fetch origin "${BASE_REF}" --depth=1
+            git diff --name-only "origin/${BASE_REF}...HEAD" > /tmp/changed_files.txt || true
+          else
+            : > /tmp/changed_files.txt
+          fi
+          python3 scripts/ops/ci_test_selection_v1.py \
+            --files-file /tmp/changed_files.txt \
+            --event-name "${{ github.event_name }}" \
+            "${FORCE_ARGS[@]}" \
+            --github-output
+          echo "Changed files:"
+          cat /tmp/changed_files.txt || true
 
   # ============================================================================
   # CI Required Contexts Contract
@@ -161,7 +258,7 @@ jobs:
   fast-lane:
     name: Fast-Lane
     runs-on: ubuntu-latest
-    timeout-minutes: 5
+    timeout-minutes: 10
     needs: changes
     steps:
       - name: Checkout
@@ -190,17 +287,47 @@ jobs:
         run: |
           pytest tests/test_stability_smoke.py tests/test_data_contracts.py tests/test_error_taxonomy.py tests/test_resilience.py -m smoke -v --tb=short
 
+      - name: Static contract tests (tests/ci, tests/ops, WebUI structure-contract, src/ops contract modules via tests)
+        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.static_contract_changed == 'true' && needs.changes.outputs.run_matrix != 'true' && needs.changes.outputs.workflow_only != 'true' }}
+        run: |
+          set -euo pipefail
+          shopt -s nullglob
+          webui_structure_contract=(tests/webui/test_*structure_contract*.py)
+          shopt -u nullglob
+          pytest tests/ci tests/ops "${webui_structure_contract[@]}" -q --tb=short -m "not network and not external_tools"
+
+      - name: WebUI bounded pytest (market/observability surface)
+        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.webui_surface_changed == 'true' && needs.changes.outputs.run_matrix != 'true' }}
+        env:
+          PEAK_TRADE_LAST_PAPER_RUN_PANEL_ENABLED: ""
+          PEAK_TRADE_LAST_PAPER_RUN_BUNDLE_ROOT: ""
+          PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ENABLED: ""
+          PEAK_TRADE_WORKFLOW_DASHBOARD_V1_ARCHIVE_ROOT: ""
+        run: |
+          set -euo pipefail
+          pytest \
+            tests/webui/test_workflow_dashboard_readmodel_v1.py \
+            tests/webui/test_observability_workflow_dashboard_structure_contract_v1.py \
+            tests/ops/test_workflow_dashboard_env_schema_boundary_v1.py \
+            tests/webui/test_observability_hub.py \
+            tests/webui/test_last_paper_run_panel_readmodel_v0.py \
+            tests/webui/test_observability_last_paper_run_panel_structure_contract_v0.py \
+            tests/ops/test_last_paper_run_panel_env_schema_boundary_v0.py \
+            tests/webui/test_market_dashboard_readonly_structure_contract_v0.py \
+            -q --tb=short -m "not network and not external_tools"
+
   # ============================================================================
   # Tests (all Python versions)
   # ============================================================================
   # Always creates test jobs for all required Python versions (3.9, 3.10, 3.11).
-  # On docs-only PRs, jobs skip gracefully (report SUCCESS/SKIPPED, not PENDING).
-  # On code changes, runs full test suite.
+  # On docs-only / workflow-only / static-contract-only PRs, jobs short-circuit SUCCESS (NO_OP).
+  # FOCUSED runs bounded pytest on all matrix versions plus module import smoke.
+  # FULL runs the repository test suite with coverage on 3.11.
   # ============================================================================
   tests:
     name: tests (${{ matrix.python-version }})
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 40
     needs: changes
     # IMPORTANT: No job-level if condition - matrix jobs must always be created
     # to satisfy branch protection rules (e.g., "tests (3.11)" check)
@@ -212,22 +339,35 @@ jobs:
         python-version: ['3.9', '3.10', '3.11']
 
     steps:
-      - name: Docs-only PR — skip tests
-        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.code_changed != 'true' && needs.changes.outputs.workflow_only != 'true' }}
-        run: echo "Docs-only PR detected - skipping tests for Python ${{ matrix.python-version }}"
+      - name: Diff-aware test selection summary
+        if: ${{ github.event_name == 'pull_request' }}
+        run: |
+          echo "test_selection_mode=${{ needs.changes.outputs.test_selection_mode }}"
+          echo "test_selection_reason=${{ needs.changes.outputs.test_selection_reason }}"
+          echo "tests_execute_full=${{ needs.changes.outputs.tests_execute_full }}"
+          echo "tests_execute_focused=${{ needs.changes.outputs.tests_execute_focused }}"
+          echo "tests_execute_no_op=${{ needs.changes.outputs.tests_execute_no_op }}"
+          echo "focused_pytest_targets=${{ needs.changes.outputs.focused_pytest_targets }}"
+          echo "focused_module_imports=${{ needs.changes.outputs.focused_module_imports }}"
+
+      - name: NO_OP — skip full matrix tests (diff-aware)
+        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_no_op == 'true' }}
+        run: |
+          echo "NO_OP diff-aware selection — skipping full matrix for Python ${{ matrix.python-version }}"
+          echo "reason=${{ needs.changes.outputs.test_selection_reason }}"
 
       - name: Checkout
-        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.code_changed == 'true' || needs.changes.outputs.workflow_only == 'true' }}
+        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_no_op != 'true' }}
         uses: actions/checkout@v5
 
       - name: Set up Python ${{ matrix.python-version }}
-        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.code_changed == 'true' || needs.changes.outputs.workflow_only == 'true' }}
+        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_no_op != 'true' }}
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
 
       - name: Cache pip
-        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.code_changed == 'true' || needs.changes.outputs.workflow_only == 'true' }}
+        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_no_op != 'true' }}
         uses: actions/cache@v4
         with:
           path: ~/.cache/pip
@@ -236,14 +376,14 @@ jobs:
             ${{ runner.os }}-pip-
 
       - name: Install dependencies
-        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.code_changed == 'true' || needs.changes.outputs.workflow_only == 'true' }}
+        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_no_op != 'true' }}
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest pytest-cov
 
       - name: "Stability Smoke Tests (Fast Gate)"
-        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.code_changed == 'true' || needs.changes.outputs.workflow_only == 'true' }}
+        if: ${{ (github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true') && needs.changes.outputs.tests_execute_no_op != 'true' }}
         id: stability_smoke
         shell: bash
         run: |
@@ -252,7 +392,7 @@ jobs:
           pytest tests/test_stability_smoke.py tests/test_data_contracts.py tests/test_error_taxonomy.py tests/test_resilience.py -m smoke -v --tb=short
 
       - name: "Smoke: RL v0.1 Contract Test"
-        if: ${{ (github.event_name != 'pull_request' || needs.changes.outputs.code_changed == 'true' || needs.changes.outputs.workflow_only == 'true') && runner.os == 'Linux' }}
+        if: ${{ (github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true') && needs.changes.outputs.tests_execute_no_op != 'true' && runner.os == 'Linux' }}
         id: rl_v0_1_smoke
         shell: bash
         run: |
@@ -260,7 +400,7 @@ jobs:
           pytest -q tests/test_rl_v0_1_smoke.py
 
       - name: Validate RL v0.1 Contract
-        if: ${{ (github.event_name != 'pull_request' || needs.changes.outputs.code_changed == 'true' || needs.changes.outputs.workflow_only == 'true') && runner.os == 'Linux' }}
+        if: ${{ (github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true') && needs.changes.outputs.tests_execute_no_op != 'true' && runner.os == 'Linux' }}
         id: rl_v0_1_contract
         shell: bash
         run: |
@@ -278,13 +418,32 @@ jobs:
           if-no-files-found: ignore
           retention-days: 7
 
-      - name: Run tests
-        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.code_changed == 'true' || needs.changes.outputs.workflow_only == 'true' }}
+      - name: Run full test suite
+        if: ${{ (github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true') && needs.changes.outputs.tests_execute_no_op != 'true' }}
         run: |
           pytest tests/ -v --tb=short -m "not network and not external_tools"
 
-      - name: Run tests with coverage
-        if: ${{ (github.event_name != 'pull_request' || needs.changes.outputs.code_changed == 'true' || needs.changes.outputs.workflow_only == 'true') && matrix.python-version == '3.11' }}
+      - name: Run focused tests (matrix)
+        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_focused == 'true' }}
+        run: |
+          set -euo pipefail
+          TARGETS="${{ needs.changes.outputs.focused_pytest_targets }}"
+          if [ -z "$TARGETS" ]; then
+            echo "FOCUSED mode without explicit targets — fail-closed to tests/ci/"
+            TARGETS="tests/ci/"
+          fi
+          mapfile -t VALIDATED_TARGETS < <(python3 scripts/ops/ci_test_selection_v1.py --emit-validated-pytest-targets "$TARGETS")
+          pytest "${VALIDATED_TARGETS[@]}" -v --tb=short -m "not network and not external_tools"
+
+      - name: Focused module import smoke
+        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_focused == 'true' && needs.changes.outputs.focused_module_imports != '' }}
+        run: |
+          set -euo pipefail
+          python3 scripts/ops/ci_test_selection_v1.py --import-smoke-modules "${{ needs.changes.outputs.focused_module_imports }}"
+          echo "import smoke ok on Python ${{ matrix.python-version }}"
+
+      - name: Run tests with coverage (FULL only)
+        if: ${{ (github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true') && matrix.python-version == '3.11' && needs.changes.outputs.tests_execute_no_op != 'true' }}
         run: |
           pytest tests/ --cov=src --cov-report=xml --cov-report=term-missing -m "not network and not external_tools"
 
@@ -313,22 +472,24 @@ jobs:
     # to satisfy branch protection rules (e.g., "strategy-smoke" check)
 
     steps:
-      - name: Docs-only PR — skip strategy smoke tests
-        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.code_changed != 'true' && needs.changes.outputs.workflow_only != 'true' }}
-        run: echo "Docs-only PR detected - skipping strategy smoke tests"
+      - name: Skip strategy smoke (NO_OP/FOCUSED diff-aware)
+        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_full != 'true' }}
+        run: |
+          echo "Skipping strategy smoke — test_selection_mode=${{ needs.changes.outputs.test_selection_mode }}"
+          echo "reason=${{ needs.changes.outputs.test_selection_reason }}"
 
       - name: Checkout
-        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.code_changed == 'true' || needs.changes.outputs.workflow_only == 'true' }}
+        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true' }}
         uses: actions/checkout@v5
 
       - name: Set up Python 3.11
-        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.code_changed == 'true' || needs.changes.outputs.workflow_only == 'true' }}
+        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true' }}
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
       - name: Cache pip
-        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.code_changed == 'true' || needs.changes.outputs.workflow_only == 'true' }}
+        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true' }}
         uses: actions/cache@v4
         with:
           path: ~/.cache/pip
@@ -337,31 +498,31 @@ jobs:
             ${{ runner.os }}-pip-
 
       - name: Install dependencies
-        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.code_changed == 'true' || needs.changes.outputs.workflow_only == 'true' }}
+        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true' }}
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest
 
       - name: Run strategy smoke pytest
-        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.code_changed == 'true' || needs.changes.outputs.workflow_only == 'true' }}
+        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true' }}
         run: |
           pytest tests/test_strategy_smoke_cli.py -v --tb=short
 
       - name: Create smoke results directory
-        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.code_changed == 'true' || needs.changes.outputs.workflow_only == 'true' }}
+        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true' }}
         run: |
           mkdir -p test_results/strategy_smoke
 
       - name: Run strategy smoke CLI
-        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.code_changed == 'true' || needs.changes.outputs.workflow_only == 'true' }}
+        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true' }}
         run: |
           python scripts/strategy_smoke_check.py \
             --output-json test_results/strategy_smoke/ci_smoke_latest.json \
             --output-md test_results/strategy_smoke/ci_smoke_latest.md
 
       - name: Upload smoke test artifacts
-        if: ${{ always() && (github.event_name != 'pull_request' || needs.changes.outputs.code_changed == 'true' || needs.changes.outputs.workflow_only == 'true') }}
+        if: ${{ always() && (github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true') }}
         uses: actions/upload-artifact@v4
         with:
           name: strategy-smoke-results
@@ -388,4 +549,4 @@ jobs:
           [[ "${{ needs.fast-lane.result }}" == "success" ]] || { echo "Fast-Lane failed"; exit 1; }
           [[ "${{ needs.tests.result }}" == "success" ]] || { echo "tests failed"; exit 1; }
           [[ "${{ needs.strategy-smoke.result }}" == "success" ]] || { echo "strategy-smoke failed"; exit 1; }
-          echo "PR Gate: all gates passed (run_matrix=${{ needs.changes.outputs.run_matrix }}, docs_only=${{ needs.changes.outputs.docs_only }}, workflow_only=${{ needs.changes.outputs.workflow_only }})"
+          echo "PR Gate: all gates passed (run_matrix=${{ needs.changes.outputs.run_matrix }}, test_selection_mode=${{ needs.changes.outputs.test_selection_mode }}, test_selection_reason=${{ needs.changes.outputs.test_selection_reason }}, docs_only=${{ needs.changes.outputs.docs_only }}, workflow_only=${{ needs.changes.outputs.workflow_only }}, static_contract_changed=${{ needs.changes.outputs.static_contract_changed }}, docs_or_static_contract_only=${{ needs.changes.outputs.docs_or_static_contract_only }}, webui_surface_changed=${{ needs.changes.outputs.webui_surface_changed }}, webui_surface_only=${{ needs.changes.outputs.webui_surface_only }})"

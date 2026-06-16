@@ -37,11 +37,54 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from src.core.peak_config import load_config, PeakConfig
 from src.backtest.engine import BacktestEngine
 from src.backtest.stats import compute_basic_stats
-from src.strategies.breakout import BreakoutStrategy
-from src.strategies.vol_regime_filter import VolRegimeFilter
-from src.strategies.composite import CompositeStrategy
-from src.strategies.rsi_reversion import RsiReversionStrategy
-from src.strategies.ma_crossover import MACrossoverStrategy
+from src.strategies import load_strategy
+from src.strategies.base import BaseStrategy
+from src.strategies.registry import get_strategy_spec
+
+BREAKOUT_STRATEGY_KEY = "breakout"
+VOL_REGIME_FILTER_STRATEGY_KEY = "vol_regime_filter"
+COMPOSITE_STRATEGY_KEY = "composite"
+RSI_REVERSION_STRATEGY_KEY = "rsi_reversion"
+MA_CROSSOVER_STRATEGY_KEY = "ma_crossover"
+
+BREAKOUT_PARAMS: Dict[str, Any] = {
+    "lookback_breakout": 20,
+    "stop_loss_pct": 0.03,
+    "take_profit_pct": 0.06,
+    "side": "both",
+}
+
+RSI_VOL_RSI_PARAMS: Dict[str, Any] = {
+    "rsi_window": 14,
+    "lower": 30.0,
+    "upper": 70.0,
+}
+
+RSI_VOL_FILTER_PARAMS: Dict[str, Any] = {
+    "vol_window": 14,
+    "vol_percentile_low": 25,
+    "vol_percentile_high": 75,
+}
+
+COMPOSITE_RSI_CONFIG: Dict[str, Any] = {
+    "rsi_window": 14,
+    "lower": 30,
+    "upper": 70,
+}
+
+COMPOSITE_BREAKOUT_CONFIG: Dict[str, Any] = {
+    "lookback_breakout": 20,
+    "stop_loss_pct": 0.02,
+}
+
+COMPOSITE_MA_CONFIG: Dict[str, Any] = {
+    "fast_window": 20,
+    "slow_window": 50,
+}
+
+COMPOSITE_WEIGHTS = (0.4, 0.3, 0.3)
+COMPOSITE_AGGREGATION = "weighted"
+COMPOSITE_SIGNAL_THRESHOLD = 0.3
 
 # Setup logging
 logging.basicConfig(
@@ -101,6 +144,50 @@ def generate_demo_data(
     return df[["open", "high", "low", "close", "volume"]]
 
 
+def _apply_vol_regime_filter(
+    data: pd.DataFrame,
+    signals: pd.Series,
+    vol_filter_fn,
+    vol_params: Dict[str, Any],
+) -> pd.Series:
+    """Wendet Vol-Regime-Filter auf Trading-Signale an (äquivalent zu apply_to_signals)."""
+    filter_mask = vol_filter_fn(data, vol_params)
+    aligned_filter = filter_mask.reindex(signals.index, fill_value=0)
+    return signals * aligned_filter
+
+
+def _composite_component_from_load_strategy(
+    strategy_key: str,
+    signal_params: Dict[str, Any],
+    signal_fn,
+) -> BaseStrategy:
+    """Bindet eine kanonische load_strategy()-Signalfunktion für Composite-Portfolio."""
+    load_strategy(strategy_key)
+
+    class _LoadStrategyCompositeComponent(BaseStrategy):
+        KEY = strategy_key
+
+        def __init__(self, key: str, params: Dict[str, Any], fn) -> None:
+            super().__init__(config=dict(params))
+            self._registry_key = key
+            self._signal_fn = fn
+
+        @property
+        def key(self) -> str:
+            return self._registry_key
+
+        def generate_signals(self, data: pd.DataFrame) -> pd.Series:
+            return self._signal_fn(data, self.config)
+
+        @classmethod
+        def from_config(cls, cfg, section: str = "") -> BaseStrategy:
+            raise NotImplementedError(
+                "Demo composite components are bound via load_strategy() only."
+            )
+
+    return _LoadStrategyCompositeComponent(strategy_key, signal_params, signal_fn)
+
+
 # ============================================================================
 # BACKTEST RUNNERS
 # ============================================================================
@@ -124,28 +211,22 @@ def run_breakout_backtest(
     logger.info("BREAKOUT STRATEGY BACKTEST")
     logger.info("=" * 60)
 
-    # Strategie initialisieren
-    strategy = BreakoutStrategy(
-        lookback_breakout=20,
-        stop_loss_pct=0.03,
-        take_profit_pct=0.06,
-        side="both",
-    )
+    breakout_fn = load_strategy(BREAKOUT_STRATEGY_KEY)
+    breakout_spec = get_strategy_spec(BREAKOUT_STRATEGY_KEY)
 
-    logger.info(f"Strategie: {strategy.meta.name}")
+    logger.info(f"Strategie: {breakout_spec.description}")
     logger.info(
-        f"Parameter: lookback={strategy.lookback_breakout}, SL={strategy.stop_loss_pct}, TP={strategy.take_profit_pct}"
+        "Parameter: lookback=%s, SL=%s, TP=%s",
+        BREAKOUT_PARAMS["lookback_breakout"],
+        BREAKOUT_PARAMS["stop_loss_pct"],
+        BREAKOUT_PARAMS["take_profit_pct"],
     )
-
-    # Signale generieren
-    signals = strategy.generate_signals(df)
 
     # Backtest Engine (ohne ExecutionPipeline für einfacheren Demo-Modus)
     engine = BacktestEngine(use_execution_pipeline=False)
 
-    # Legacy generate_signals Wrapper
     def signal_fn(data: pd.DataFrame, params: Dict) -> pd.Series:
-        return strategy.generate_signals(data)
+        return breakout_fn(data, BREAKOUT_PARAMS)
 
     result = engine.run_realistic(
         df=df,
@@ -182,26 +263,19 @@ def run_rsi_with_vol_filter_backtest(
     logger.info("RSI REVERSION + VOL REGIME FILTER BACKTEST")
     logger.info("=" * 60)
 
-    # RSI-Strategie
-    rsi_strategy = RsiReversionStrategy(
-        rsi_window=14,
-        lower=30.0,
-        upper=70.0,
-    )
+    rsi_fn = load_strategy(RSI_REVERSION_STRATEGY_KEY)
+    vol_filter_fn = load_strategy(VOL_REGIME_FILTER_STRATEGY_KEY)
+    rsi_spec = get_strategy_spec(RSI_REVERSION_STRATEGY_KEY)
+    vol_spec = get_strategy_spec(VOL_REGIME_FILTER_STRATEGY_KEY)
 
-    # Vol-Filter
-    vol_filter = VolRegimeFilter(
-        vol_window=14,
-        vol_percentile_low=25,
-        vol_percentile_high=75,
-    )
-
-    logger.info(f"Trading-Strategie: {rsi_strategy.meta.name}")
-    logger.info(f"Filter: {vol_filter.meta.name}")
+    logger.info(f"Trading-Strategie: {rsi_spec.description}")
+    logger.info(f"Filter: {vol_spec.description}")
 
     # Signale generieren und filtern
-    raw_signals = rsi_strategy.generate_signals(df)
-    filtered_signals = vol_filter.apply_to_signals(df, raw_signals)
+    raw_signals = rsi_fn(df, RSI_VOL_RSI_PARAMS)
+    filtered_signals = _apply_vol_regime_filter(
+        df, raw_signals, vol_filter_fn, RSI_VOL_FILTER_PARAMS
+    )
 
     # Statistiken
     raw_trades = (raw_signals != 0).sum()
@@ -216,8 +290,8 @@ def run_rsi_with_vol_filter_backtest(
     engine = BacktestEngine(use_execution_pipeline=False)
 
     def signal_fn(data: pd.DataFrame, params: Dict) -> pd.Series:
-        raw = rsi_strategy.generate_signals(data)
-        return vol_filter.apply_to_signals(data, raw)
+        raw = rsi_fn(data, RSI_VOL_RSI_PARAMS)
+        return _apply_vol_regime_filter(data, raw, vol_filter_fn, RSI_VOL_FILTER_PARAMS)
 
     result = engine.run_realistic(
         df=df,
@@ -253,31 +327,61 @@ def run_composite_backtest(
     logger.info("COMPOSITE STRATEGY BACKTEST (Portfolio)")
     logger.info("=" * 60)
 
-    # Komponenten-Strategien
-    rsi_strategy = RsiReversionStrategy(rsi_window=14, lower=30, upper=70)
-    breakout_strategy = BreakoutStrategy(lookback_breakout=20, stop_loss_pct=0.02)
-    ma_strategy = MACrossoverStrategy(fast_window=20, slow_window=50)
+    rsi_fn = load_strategy(RSI_REVERSION_STRATEGY_KEY)
+    breakout_fn = load_strategy(BREAKOUT_STRATEGY_KEY)
+    ma_fn = load_strategy(MA_CROSSOVER_STRATEGY_KEY)
+    composite_fn = load_strategy(COMPOSITE_STRATEGY_KEY)
 
-    # Composite-Strategie
-    composite = CompositeStrategy(
-        strategies=[
-            (rsi_strategy, 0.4),
-            (breakout_strategy, 0.3),
-            (ma_strategy, 0.3),
+    ma_signal_params = {
+        "fast_period": COMPOSITE_MA_CONFIG["fast_window"],
+        "slow_period": COMPOSITE_MA_CONFIG["slow_window"],
+    }
+    composite_components = (
+        (
+            RSI_REVERSION_STRATEGY_KEY,
+            COMPOSITE_RSI_CONFIG,
+            rsi_fn,
+            COMPOSITE_WEIGHTS[0],
+        ),
+        (
+            BREAKOUT_STRATEGY_KEY,
+            COMPOSITE_BREAKOUT_CONFIG,
+            breakout_fn,
+            COMPOSITE_WEIGHTS[1],
+        ),
+        (
+            MA_CROSSOVER_STRATEGY_KEY,
+            ma_signal_params,
+            ma_fn,
+            COMPOSITE_WEIGHTS[2],
+        ),
+    )
+    composite_params: Dict[str, Any] = {
+        "strategies": [
+            (
+                _composite_component_from_load_strategy(key, signal_params, signal_fn),
+                weight,
+            )
+            for key, signal_params, signal_fn, weight in composite_components
         ],
-        aggregation="weighted",
-        signal_threshold=0.3,
+        "aggregation": COMPOSITE_AGGREGATION,
+        "signal_threshold": COMPOSITE_SIGNAL_THRESHOLD,
+    }
+    composite_spec = get_strategy_spec(COMPOSITE_STRATEGY_KEY)
+
+    logger.info(f"Strategie: {composite_spec.description}")
+    logger.info("Komponenten: RSI (40%), Breakout (30%), MA Crossover (30%)")
+    logger.info(
+        "Aggregation: %s, Threshold: %s",
+        COMPOSITE_AGGREGATION,
+        COMPOSITE_SIGNAL_THRESHOLD,
     )
 
-    logger.info(f"Strategie: {composite.meta.name}")
-    logger.info(f"Komponenten: RSI (40%), Breakout (30%), MA Crossover (30%)")
-    logger.info(f"Aggregation: {composite.aggregation}, Threshold: {composite.signal_threshold}")
-
-    # Signale generieren
-    signals = composite.generate_signals(df)
-
     # Komponenten-Signale für Analyse
-    component_signals = composite.get_component_signals(df)
+    component_signals = {
+        key: signal_fn(df, signal_params)
+        for key, signal_params, signal_fn, _weight in composite_components
+    }
 
     logger.info("\nKomponenten-Signal-Verteilung:")
     for name, comp_signals in component_signals.items():
@@ -290,7 +394,7 @@ def run_composite_backtest(
     engine = BacktestEngine(use_execution_pipeline=False)
 
     def signal_fn(data: pd.DataFrame, params: Dict) -> pd.Series:
-        return composite.generate_signals(data)
+        return composite_fn(data, composite_params)
 
     result = engine.run_realistic(
         df=df,

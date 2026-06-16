@@ -139,6 +139,12 @@ Nur interne Referenzen; Pfade relativ zum Repository-Root `docs/`.
 | Stop / Freeze / Rollback | [incident_stop_freeze_rollback.md](./incident_stop_freeze_rollback.md) |
 | Risk-Limit-Verletzung | [risk_limit_breach.md](./risk_limit_breach.md) |
 | Offene Features / Triage | [RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED.md](./RUNBOOK_UNIMPLEMENTED_FEATURES_ORDERED.md) |
+| Master V2 First Live — Readiness Ladder (Navigation; non-authorizing) | [MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md](../specs/MASTER_V2_FIRST_LIVE_ENABLEMENT_READINESS_LADDER.md) |
+| Bounded real-money pilot — Entry Contract (DRAFT) | [BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md](../specs/BOUNDED_REAL_MONEY_PILOT_ENTRY_CONTRACT.md) |
+| Bounded pilot — Dry Validation Runbook | [RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md](RUNBOOK_BOUNDED_PILOT_DRY_VALIDATION.md) |
+| Bounded pilot — Live Entry Runbook | [RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md](RUNBOOK_BOUNDED_PILOT_LIVE_ENTRY.md) |
+
+**Hinweis (Pointer-only):** Die vier Zusatzzeilen sind **Lesepfade** zu kanonischen Specs/Runbooks; sie begründen **keine** Freigabe, **keinen** Live-Unlock, **keine** Abkürzung des externen LB-APR-001-Nachweises und **keine** Autorisierung von Runtime, Scheduler, Paper, Testnet, Live, Broker oder Exchange. **Docs ≠ Approval** · **Signal ≠ Trade** · NO-LIVE-Default unverändert.
 
 ---
 

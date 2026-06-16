@@ -49,7 +49,40 @@ from src.regime import (
     make_switching_policy,
     StrategySwitchDecision,
 )
-from src.strategies import STRATEGY_REGISTRY
+from src.strategies import load_strategy
+
+VOL_BREAKOUT_STRATEGY_KEY = "vol_breakout"
+MEAN_REVERSION_CHANNEL_STRATEGY_KEY = "mean_reversion_channel"
+RSI_REVERSION_STRATEGY_KEY = "rsi_reversion"
+TREND_FOLLOWING_STRATEGY_KEY = "trend_following"
+MA_CROSSOVER_STRATEGY_KEY = "ma_crossover"
+
+# Kanonische Demo-Strategien (load_strategy()-Keys; kein direkter Registry-Import).
+REGIME_DEMO_AVAILABLE_STRATEGY_KEYS: tuple[str, ...] = (
+    "armstrong_cycle",
+    "bollinger_bands",
+    "bouchaud_microstructure",
+    "breakout",
+    "breakout_donchian",
+    "composite",
+    "ecm_cycle",
+    "ehlers_cycle_filter",
+    "el_karoui_vol_model",
+    "ma_crossover",
+    "macd",
+    "mean_reversion",
+    "mean_reversion_channel",
+    "meta_labeling",
+    "momentum_1h",
+    "my_strategy",
+    "regime_aware_portfolio",
+    "rsi_reversion",
+    "rsi_strategy",
+    "trend_following",
+    "vol_breakout",
+    "vol_regime_filter",
+    "vol_regime_overlay",
+)
 
 # Logging konfigurieren
 logging.basicConfig(
@@ -203,6 +236,27 @@ def print_regime_stats(stats: Dict[str, Any]) -> None:
 # ============================================================================
 
 
+def get_regime_demo_available_strategies() -> List[str]:
+    """Return canonical strategy keys validated via load_strategy()."""
+    for key in REGIME_DEMO_AVAILABLE_STRATEGY_KEYS:
+        load_strategy(key)
+    return list(REGIME_DEMO_AVAILABLE_STRATEGY_KEYS)
+
+
+def validate_regime_mapped_strategy_keys(
+    switching_config: StrategySwitchingConfig,
+) -> None:
+    """Validate regime-mapped strategy keys through canonical load_strategy()."""
+    regime_keys: set[str] = set(switching_config.default_strategies)
+    for strategies in switching_config.regime_to_strategies.values():
+        regime_keys.update(strategies)
+    if switching_config.regime_to_weights:
+        for weights in switching_config.regime_to_weights.values():
+            regime_keys.update(weights.keys())
+    for key in sorted(regime_keys):
+        load_strategy(key)
+
+
 def simulate_switching_decisions(
     regimes: pd.Series,
     switching_config: StrategySwitchingConfig,
@@ -340,18 +394,25 @@ def run_demo(
         enabled=use_regime_layer,
         policy_name="simple_regime_mapping",
         regime_to_strategies={
-            "breakout": ["vol_breakout"],
-            "ranging": ["mean_reversion_channel", "rsi_reversion"],
-            "trending": ["trend_following"],
-            "unknown": ["ma_crossover"],
+            "breakout": [VOL_BREAKOUT_STRATEGY_KEY],
+            "ranging": [
+                MEAN_REVERSION_CHANNEL_STRATEGY_KEY,
+                RSI_REVERSION_STRATEGY_KEY,
+            ],
+            "trending": [TREND_FOLLOWING_STRATEGY_KEY],
+            "unknown": [MA_CROSSOVER_STRATEGY_KEY],
         },
         regime_to_weights={
-            "ranging": {"mean_reversion_channel": 0.6, "rsi_reversion": 0.4},
+            "ranging": {
+                MEAN_REVERSION_CHANNEL_STRATEGY_KEY: 0.6,
+                RSI_REVERSION_STRATEGY_KEY: 0.4,
+            },
         },
-        default_strategies=["ma_crossover"],
+        default_strategies=[MA_CROSSOVER_STRATEGY_KEY],
     )
 
-    available_strategies = list(STRATEGY_REGISTRY.keys())
+    validate_regime_mapped_strategy_keys(switching_config)
+    available_strategies = get_regime_demo_available_strategies()
     switching_stats = simulate_switching_decisions(regimes, switching_config, available_strategies)
     print_switching_stats(switching_stats)
 

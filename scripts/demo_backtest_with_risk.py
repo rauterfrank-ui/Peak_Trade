@@ -14,43 +14,13 @@ from pathlib import Path
 # Projekt-Root zum Python-Path hinzufügen
 sys.path.insert(0, str(Path(__file__).parent.parent))
 
-import pandas as pd
-import numpy as np
-from datetime import datetime, timedelta
-
+from scripts.run_backtest import load_ohlcv_data
 from src.core import get_config
 from src.backtest.engine import BacktestEngine
 from src.risk import PositionSizer, PositionSizerConfig, RiskLimits, RiskLimitsConfig
-from src.strategies.ma_crossover import generate_signals
+from src.strategies import load_strategy
 
-
-def create_test_data(n_bars: int = 200) -> pd.DataFrame:
-    """Erstellt Test-OHLCV-Daten."""
-    np.random.seed(42)
-
-    start = datetime.now() - timedelta(hours=n_bars)
-    dates = pd.date_range(start, periods=n_bars, freq="1h", tz="UTC")
-
-    # Preis-Simulation mit Trend und Oszillation
-    base_price = 50000
-    trend = np.linspace(0, 3000, n_bars)
-    cycle = np.sin(np.linspace(0, 4 * np.pi, n_bars)) * 2000
-    noise = np.random.randn(n_bars).cumsum() * 200
-
-    close_prices = base_price + trend + cycle + noise
-
-    df = pd.DataFrame(
-        {
-            "open": close_prices * (1 + np.random.randn(n_bars) * 0.002),
-            "high": close_prices * (1 + abs(np.random.randn(n_bars)) * 0.003),
-            "low": close_prices * (1 - abs(np.random.randn(n_bars)) * 0.003),
-            "close": close_prices,
-            "volume": np.random.randint(10, 100, n_bars).astype(float),
-        },
-        index=dates,
-    )
-
-    return df
+MA_CROSSOVER_STRATEGY_KEY = "ma_crossover"
 
 
 def demo_default_risk():
@@ -60,7 +30,7 @@ def demo_default_risk():
     print("=" * 70)
 
     # Daten erstellen
-    df = create_test_data(200)
+    df = load_ohlcv_data(None, None, None, n_bars=200)
     print(f"\nDaten: {len(df)} Bars von {df.index[0]} bis {df.index[-1]}")
 
     # Strategie-Parameter
@@ -76,7 +46,8 @@ def demo_default_risk():
 
     # Backtest durchführen
     print("\n⚙️  Führe Backtest durch...")
-    result = engine.run_realistic(df, generate_signals, strategy_params)
+    strategy_signal_fn = load_strategy(MA_CROSSOVER_STRATEGY_KEY)
+    result = engine.run_realistic(df, strategy_signal_fn, strategy_params)
 
     # Ergebnisse
     print("\n📊 Ergebnisse:")
@@ -96,7 +67,7 @@ def demo_strict_risk():
     print("=" * 70)
 
     # Daten erstellen
-    df = create_test_data(200)
+    df = load_ohlcv_data(None, None, None, n_bars=200)
 
     # Strategie-Parameter
     strategy_params = {"fast_period": 10, "slow_period": 30, "stop_pct": 0.02}
@@ -118,7 +89,8 @@ def demo_strict_risk():
 
     # Backtest durchführen
     print("\n⚙️  Führe Backtest durch...")
-    result = engine.run_realistic(df, generate_signals, strategy_params)
+    strategy_signal_fn = load_strategy(MA_CROSSOVER_STRATEGY_KEY)
+    result = engine.run_realistic(df, strategy_signal_fn, strategy_params)
 
     # Ergebnisse
     print("\n📊 Ergebnisse:")
@@ -140,7 +112,7 @@ def demo_aggressive_risk():
     print("=" * 70)
 
     # Daten erstellen
-    df = create_test_data(200)
+    df = load_ohlcv_data(None, None, None, n_bars=200)
 
     # Strategie-Parameter
     strategy_params = {"fast_period": 10, "slow_period": 30, "stop_pct": 0.02}
@@ -168,7 +140,8 @@ def demo_aggressive_risk():
 
     # Backtest durchführen
     print("\n⚙️  Führe Backtest durch...")
-    result = engine.run_realistic(df, generate_signals, strategy_params)
+    strategy_signal_fn = load_strategy(MA_CROSSOVER_STRATEGY_KEY)
+    result = engine.run_realistic(df, strategy_signal_fn, strategy_params)
 
     # Ergebnisse
     print("\n📊 Ergebnisse:")
@@ -188,7 +161,7 @@ def demo_trade_details():
     print("=" * 70)
 
     # Daten erstellen
-    df = create_test_data(200)
+    df = load_ohlcv_data(None, None, None, n_bars=200)
 
     # Strategie-Parameter
     strategy_params = {"fast_period": 10, "slow_period": 30, "stop_pct": 0.02}
@@ -197,7 +170,8 @@ def demo_trade_details():
     engine = BacktestEngine()
 
     # Backtest durchführen
-    result = engine.run_realistic(df, generate_signals, strategy_params)
+    strategy_signal_fn = load_strategy(MA_CROSSOVER_STRATEGY_KEY)
+    result = engine.run_realistic(df, strategy_signal_fn, strategy_params)
 
     # Erste 5 Trades anzeigen
     print(f"\n📋 Erste 5 von {len(result.trades)} Trades:\n")

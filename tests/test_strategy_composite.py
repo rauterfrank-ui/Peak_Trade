@@ -8,6 +8,7 @@ Unit-Tests für die Multi-Strategy Composite-Strategie.
 import pytest
 import pandas as pd
 import numpy as np
+from pathlib import Path
 from typing import Optional
 
 from src.strategies.composite import CompositeStrategy, generate_signals
@@ -417,3 +418,163 @@ class TestCompositeIntegration:
         # Prüfe sinnvolle Signal-Verteilung
         signal_counts = result.value_counts()
         assert len(signal_counts) >= 1
+
+
+# ============================================================================
+# CompositeStrategy.from_config load_strategy() MIGRATION (offline, fail-closed)
+# ============================================================================
+
+
+class TestCompositeStrategyFromConfigLoadStrategyMigration:
+    """Offline guards for canonical CompositeStrategy.from_config binding migration."""
+
+    TARGET_MODULE = Path(__file__).resolve().parent.parent / "src/strategies/composite.py"
+    FORBIDDEN_NAMES = ("create_strategy_from_config",)
+
+    def _read_source(self) -> str:
+        return self.TARGET_MODULE.read_text(encoding="utf-8")
+
+    def _minimal_cfg(self, **composite_overrides: object):
+        from unittest.mock import MagicMock
+
+        raw: dict = {
+            "environment": {"mode": "backtest"},
+            "strategy": {
+                "composite": {
+                    "components": ["rsi_reversion", "breakout"],
+                    "weights": [0.6, 0.4],
+                    "aggregation": "weighted",
+                    "signal_threshold": 0.3,
+                },
+                "rsi_reversion": {"rsi_window": 14, "lower": 30.0, "upper": 70.0},
+                "breakout": {"lookback_breakout": 15, "side": "long"},
+            },
+        }
+        composite_section = raw["strategy"]["composite"]
+        composite_section.update(composite_overrides)
+
+        cfg = MagicMock()
+
+        def _get(path: str, default=None):
+            node = raw
+            for part in path.split("."):
+                if not isinstance(node, dict) or part not in node:
+                    return default
+                node = node[part]
+            return node
+
+        cfg.get.side_effect = _get
+        return cfg
+
+    def test_source_uses_load_strategy(self) -> None:
+        source = self._read_source()
+        assert "load_strategy" in source
+
+    def test_source_has_no_create_strategy_from_config(self) -> None:
+        source = self._read_source()
+        for forbidden in self.FORBIDDEN_NAMES:
+            assert forbidden not in source
+
+    def test_from_config_calls_load_strategy_per_component(self) -> None:
+        from unittest.mock import patch
+
+        calls: list[str] = []
+        original = __import__("src.strategies", fromlist=["load_strategy"]).load_strategy
+
+        def _track(key: str):
+            calls.append(key)
+            return original(key)
+
+        cfg = self._minimal_cfg()
+        with patch("src.strategies.load_strategy", side_effect=_track):
+            composite = CompositeStrategy.from_config(cfg)
+
+        assert calls == ["rsi_reversion", "breakout"]
+        assert len(composite.strategies) == 2
+        assert composite.strategies[0].KEY == "rsi_reversion"
+        assert composite.strategies[1].KEY == "breakout"
+
+    def test_from_config_preserves_component_order_weights_and_params(self) -> None:
+        cfg = self._minimal_cfg(
+            components=["breakout", "rsi_reversion"],
+            weights=[0.7, 0.3],
+            aggregation="voting",
+            signal_threshold=0.25,
+        )
+        composite = CompositeStrategy.from_config(cfg)
+
+        assert [s.KEY for s in composite.strategies] == ["breakout", "rsi_reversion"]
+        assert composite.weights == [0.7, 0.3]
+        assert composite.aggregation == "voting"
+        assert composite.signal_threshold == 0.25
+        assert composite.strategies[0].config["lookback_breakout"] == 15
+        assert composite.strategies[1].config["rsi_window"] == 14
+
+    def test_from_config_returns_composite_strategy_instance(self) -> None:
+        composite = CompositeStrategy.from_config(self._minimal_cfg())
+        assert isinstance(composite, CompositeStrategy)
+        assert isinstance(composite, BaseStrategy)
+        assert composite.KEY == "composite"
+
+    def test_from_config_fresh_instances_no_shared_state(self) -> None:
+        cfg = self._minimal_cfg()
+        first = CompositeStrategy.from_config(cfg)
+        second = CompositeStrategy.from_config(cfg)
+
+        assert first.strategies[0] is not second.strategies[0]
+        assert first.strategies[1] is not second.strategies[1]
+        first.strategies[0].config["rsi_window"] = 99
+        assert second.strategies[0].config["rsi_window"] == 14
+
+    def test_from_config_unknown_component_fail_closed(self) -> None:
+        cfg = self._minimal_cfg(
+            components=["rsi_reversion", "invalid_strategy_key_xyz"],
+            weights=None,
+        )
+        composite = CompositeStrategy.from_config(cfg)
+
+        assert len(composite.strategies) == 1
+        assert composite.strategies[0].KEY == "rsi_reversion"
+
+    def test_from_config_filter_uses_load_strategy_binding(self) -> None:
+        from unittest.mock import patch
+
+        calls: list[str] = []
+        original = __import__("src.strategies", fromlist=["load_strategy"]).load_strategy
+
+        def _track(key: str):
+            calls.append(key)
+            return original(key)
+
+        cfg = self._minimal_cfg(filter="vol_regime_filter")
+        cfg.get.side_effect = lambda path, default=None: {
+            "strategy.composite.components": ["rsi_reversion", "breakout"],
+            "strategy.composite.weights": [0.6, 0.4],
+            "strategy.composite.aggregation": "weighted",
+            "strategy.composite.signal_threshold": 0.3,
+            "strategy.composite.filter": "vol_regime_filter",
+            "strategy.rsi_reversion.rsi_window": 14,
+            "strategy.rsi_reversion.lower": 30.0,
+            "strategy.rsi_reversion.upper": 70.0,
+            "strategy.breakout.lookback_breakout": 15,
+            "strategy.breakout.side": "long",
+            "strategy.vol_regime_filter.vol_window": 14,
+            "strategy.vol_regime_filter.vol_percentile_low": 25,
+            "strategy.vol_regime_filter.vol_percentile_high": 75,
+        }.get(path, default)
+
+        with patch("src.strategies.load_strategy", side_effect=_track):
+            composite = CompositeStrategy.from_config(cfg)
+
+        assert "vol_regime_filter" in calls
+        assert composite.filter_strategy is not None
+        assert composite.filter_strategy.KEY == "vol_regime_filter"
+
+    def test_nested_composite_component_preserves_existing_contract(self) -> None:
+        cfg = self._minimal_cfg(components=["rsi_reversion", "composite"], weights=None)
+        composite = CompositeStrategy.from_config(cfg)
+
+        assert len(composite.strategies) == 2
+        assert composite.strategies[0].KEY == "rsi_reversion"
+        assert composite.strategies[1].KEY == "composite"
+        assert isinstance(composite.strategies[1], CompositeStrategy)

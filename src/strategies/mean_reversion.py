@@ -206,10 +206,29 @@ class MeanReversionStrategy(BaseStrategy):
         returns = data["close"].pct_change()
         vol = returns.rolling(window=self.vol_window).std()
 
-        # Expanding Percentile der Volatilität
-        vol_percentile = vol.expanding().apply(
-            lambda x: (x.iloc[-1:].values[0] <= x).mean() * 100 if len(x) > 0 else 50, raw=False
-        )
+        # Expanding Percentile der Volatilität (<= mean semantics, 0-100 scale).
+        # Matches legacy vol.expanding().apply(lambda ...) including NaN/inf edge cases.
+        n = len(vol)
+        out = np.full(n, np.nan, dtype=np.float64)
+        for end in range(n):
+            prefix = vol.iloc[: end + 1]
+            if len(prefix) == 0:
+                out[end] = 50.0
+                continue
+            current = prefix.iloc[-1]
+            if pd.isna(current):
+                if prefix.isna().all():
+                    out[end] = np.nan
+                else:
+                    out[end] = (current <= prefix).mean() * 100.0
+                continue
+            if np.isinf(current):
+                out[end] = 0.0
+                continue
+            comp = [False if np.isinf(val) else (current <= val) for val in prefix]
+            out[end] = np.mean(comp) * 100.0
+
+        vol_percentile = pd.Series(out, index=vol.index, dtype=np.float64, name=vol.name)
 
         # Filter: Nur wenn Volatilität unter Schwelle
         return vol_percentile <= self.max_vol_percentile

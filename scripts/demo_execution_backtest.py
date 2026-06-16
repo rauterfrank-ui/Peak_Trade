@@ -45,7 +45,6 @@ from __future__ import annotations
 import argparse
 import json
 import sys
-from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional
 
@@ -55,8 +54,9 @@ ROOT_DIR = CURRENT_DIR.parent
 if str(ROOT_DIR) not in sys.path:
     sys.path.insert(0, str(ROOT_DIR))
 
-import numpy as np
 import pandas as pd
+
+from scripts.run_backtest import load_ohlcv_data
 
 from src.backtest.engine import BacktestEngine
 from src.backtest.result import BacktestResult
@@ -66,69 +66,54 @@ from src.reporting.execution_reports import (
     from_execution_results,
     format_execution_stats,
 )
+from src.strategies import load_strategy
 
 
 # =============================================================================
 # Strategy Loader
 # =============================================================================
 
-
-def _macd_generate_signals(df: pd.DataFrame, params: Dict[str, Any]) -> pd.Series:
-    """Signal-Funktion für MACD über :class:`MACDStrategy` (kein modulweites Legacy-API)."""
-    from src.strategies.macd import MACDStrategy
-
-    fast = int(params.get("fast_ema", params.get("fast_period", 12)))
-    slow = int(params.get("slow_ema", params.get("slow_period", 26)))
-    sig = int(params.get("signal_ema", params.get("signal_period", 9)))
-    strategy = MACDStrategy(fast_ema=fast, slow_ema=slow, signal_ema=sig)
-    return strategy.generate_signals(df)
+# Kanonische Demo-Strategien (STRATEGY_REGISTRY-Keys; kein lokales Alias-Mapping).
+DEMO_SUPPORTED_STRATEGY_NAMES: tuple[str, ...] = (
+    "ma_crossover",
+    "rsi_reversion",
+    "macd",
+    "momentum_1h",
+    "bollinger_bands",
+    "breakout",
+)
 
 
 def get_strategy_fn(name: str) -> Callable[[pd.DataFrame, Dict[str, Any]], pd.Series]:
     """
-    Laedt die Signal-Funktion fuer eine Strategie.
+    Laedt die Signal-Funktion fuer eine Strategie via kanonischem load_strategy().
 
     Args:
-        name: Strategie-Name (z.B. "ma_crossover", "rsi_reversion", "macd")
+        name: Kanonischer Strategie-Name (z.B. "ma_crossover", "rsi_reversion", "macd")
 
     Returns:
         Callable: generate_signals(df, params) -> pd.Series
 
     Raises:
-        ValueError: Wenn Strategie unbekannt ist
+        ValueError: Wenn Strategie unbekannt ist (load_strategy fail-closed)
     """
-    strategy_map = {
-        "ma_crossover": "src.strategies.ma_crossover",
-        "rsi_reversion": "src.strategies.rsi_reversion",
-        "macd": "src.strategies.macd",
-        "momentum": "src.strategies.momentum",
-        "bollinger": "src.strategies.bollinger",
-        "breakout_donchian": "src.strategies.breakout_donchian",
-    }
-
-    if name not in strategy_map:
-        available = ", ".join(sorted(strategy_map.keys()))
-        raise ValueError(f"Unbekannte Strategie '{name}'. Verfuegbar: {available}")
-
-    if name == "macd":
-        return _macd_generate_signals
-
-    module_path = strategy_map[name]
-    module = __import__(module_path, fromlist=["generate_signals"])
-    return module.generate_signals
+    return load_strategy(name)
 
 
 def get_default_strategy_params(name: str) -> Dict[str, Any]:
     """
-    Gibt sinnvolle Default-Parameter fuer eine Strategie zurueck.
+    Gibt sinnvolle Default-Parameter fuer eine Demo-Strategie zurueck.
 
     Args:
-        name: Strategie-Name
+        name: Kanonischer Strategie-Name
 
     Returns:
         Dict mit Default-Parametern
+
+    Raises:
+        ValueError: Wenn Strategie nicht in DEMO_SUPPORTED_STRATEGY_NAMES
     """
-    defaults = {
+    defaults: Dict[str, Dict[str, Any]] = {
         "ma_crossover": {
             "fast_period": 10,
             "slow_period": 30,
@@ -141,110 +126,31 @@ def get_default_strategy_params(name: str) -> Dict[str, Any]:
             "stop_pct": 0.02,
         },
         "macd": {
-            "fast_period": 12,
-            "slow_period": 26,
-            "signal_period": 9,
+            "fast_ema": 12,
+            "slow_ema": 26,
+            "signal_ema": 9,
             "stop_pct": 0.02,
         },
-        "momentum": {
-            "lookback": 20,
-            "threshold": 0.02,
+        "momentum_1h": {
+            "lookback_period": 20,
+            "entry_threshold": 0.02,
+            "exit_threshold": -0.01,
             "stop_pct": 0.02,
         },
-        "bollinger": {
-            "period": 20,
-            "num_std": 2.0,
+        "bollinger_bands": {
+            "bb_period": 20,
+            "bb_std": 2.0,
             "stop_pct": 0.02,
         },
-        "breakout_donchian": {
-            "period": 20,
+        "breakout": {
+            "lookback_breakout": 20,
             "stop_pct": 0.02,
         },
     }
-    return defaults.get(name, {"stop_pct": 0.02})
-
-
-# =============================================================================
-# Data Generation
-# =============================================================================
-
-
-def generate_sample_data(
-    symbol: str,
-    start: Optional[str] = None,
-    end: Optional[str] = None,
-    bars: int = 200,
-    timeframe: str = "1h",
-) -> pd.DataFrame:
-    """
-    Generiert Sample-OHLCV-Daten fuer den Backtest.
-
-    Args:
-        symbol: Trading-Symbol (beeinflusst Basis-Preis)
-        start: Start-Datum (optional, sonst bars rueckwaerts von end)
-        end: End-Datum (optional, sonst jetzt)
-        bars: Anzahl Bars (wenn start nicht gesetzt)
-        timeframe: Timeframe ("1h", "4h", "1d")
-
-    Returns:
-        pd.DataFrame mit OHLCV-Daten
-    """
-    # Basis-Preis je nach Symbol
-    if "BTC" in symbol.upper():
-        base_price = 50000.0
-        volatility = 0.02
-    elif "ETH" in symbol.upper():
-        base_price = 3000.0
-        volatility = 0.025
-    elif "LTC" in symbol.upper():
-        base_price = 100.0
-        volatility = 0.03
-    else:
-        base_price = 1000.0
-        volatility = 0.02
-
-    # Seed fuer Reproduzierbarkeit
-    np.random.seed(42)
-
-    # Frequenz bestimmen
-    freq_map = {"1h": "h", "4h": "4h", "1d": "D", "1m": "min"}
-    freq = freq_map.get(timeframe, "h")
-
-    # Zeitraum bestimmen
-    if end:
-        end_time = pd.to_datetime(end)
-    else:
-        end_time = datetime.now()
-
-    if start:
-        start_time = pd.to_datetime(start)
-        index = pd.date_range(start=start_time, end=end_time, freq=freq)
-        bars = len(index)
-    else:
-        index = pd.date_range(end=end_time, periods=bars, freq=freq)
-
-    # Preis-Simulation mit Trend und Oszillation (fuer MA-Crossovers)
-    trend = np.linspace(0, base_price * 0.1, bars)
-    cycle = np.sin(np.linspace(0, 4 * np.pi, bars)) * base_price * 0.04
-    noise = np.random.randn(bars).cumsum() * base_price * 0.01
-    close = base_price + trend + cycle + noise
-
-    # OHLCV generieren
-    data = {
-        "open": close * (1 + np.random.uniform(-0.002, 0.002, bars)),
-        "high": close * (1 + np.abs(np.random.normal(0, 0.005, bars))),
-        "low": close * (1 - np.abs(np.random.normal(0, 0.005, bars))),
-        "close": close,
-        "volume": np.random.uniform(100, 10000, bars),
-    }
-
-    df = pd.DataFrame(data, index=index)
-
-    # Konsistenz: high >= max(open, close), low <= min(open, close)
-    df["high"] = df[["open", "high", "close"]].max(axis=1)
-    df["low"] = df[["open", "low", "close"]].min(axis=1)
-
-    return df
+    if name not in defaults:
+        available = ", ".join(sorted(DEMO_SUPPORTED_STRATEGY_NAMES))
+        raise ValueError(f"Unbekannte Strategie '{name}' für Demo-Defaults. Verfügbar: {available}")
+    return dict(defaults[name])
 
 
 # =============================================================================
@@ -714,14 +620,8 @@ def main(argv: Optional[List[str]] = None) -> Optional[BacktestResult]:
 
     strategy_params = get_default_strategy_params(args.strategy)
 
-    # Daten generieren
-    df = generate_sample_data(
-        symbol=args.symbol,
-        start=args.start,
-        end=args.end,
-        bars=args.bars,
-        timeframe=args.timeframe,
-    )
+    # Daten laden
+    df = load_ohlcv_data(None, args.start, args.end, n_bars=args.bars)
 
     # Zeitraum-Strings fuer Output
     start_str = df.index[0].strftime("%Y-%m-%d")

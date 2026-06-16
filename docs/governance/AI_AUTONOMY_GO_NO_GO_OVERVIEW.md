@@ -98,6 +98,10 @@ AI **MUST NOT** sein:
 - Ausnahme-Entscheider (Overrides/Exceptions)
 - Live-Optimierer (Parameter-Tweaks on-the-fly im Live-Betrieb)
 
+### 4.3 CI / Hilfsautomatisierung (GitHub Actions — nicht handelsautorisierend)
+
+Workflows können optionale OpenAI-/LLM-Pfade enthalten (z. B. Market Outlook unter `.github/workflows/market_outlook_automation.yml`, InfoStream unter `.github/workflows/infostream-automation.yml`, Promptfoo unter `.github/workflows/aiops-promptfoo-evals.yml`). Diese Pfade sind **keine** Live-/Order-/Risk-Freigabe und **keine** Kostenermächtigung: Secret-Anwesenheit erteilt keine Ausgabenerlaubnis; posture (default-off, explizite Opt-ins) steht in [`docs/ops/AI_KI_COST_AUTONOMY_CI_POLICY_V0.md`](../ops/AI_KI_COST_AUTONOMY_CI_POLICY_V0.md).
+
 ---
 
 ## 5. Verhältnis zu Peak_Trade Layern (Architektur-Invariante)

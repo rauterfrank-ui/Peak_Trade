@@ -5,7 +5,7 @@ Smoke-Tests fuer scripts/demo_execution_backtest.py (Phase 16C).
 
 Testet:
 - Import des Demo-Scripts
-- Interne Funktionen (get_strategy_fn, generate_sample_data, etc.)
+- Interne Funktionen (get_strategy_fn, load_ohlcv_data, etc.)
 - main() mit Test-Argumenten (ohne echte CLI)
 - ExecutionPipeline vs. Legacy-Modus
 """
@@ -25,7 +25,7 @@ class TestDemoScriptImports:
         assert hasattr(demo_execution_backtest, "main")
         assert hasattr(demo_execution_backtest, "parse_args")
         assert hasattr(demo_execution_backtest, "get_strategy_fn")
-        assert hasattr(demo_execution_backtest, "generate_sample_data")
+        assert hasattr(demo_execution_backtest, "load_ohlcv_data")
         assert hasattr(demo_execution_backtest, "run_backtest")
 
     def test_parse_args_defaults(self):
@@ -92,11 +92,11 @@ class TestGetStrategyFn:
         fn = get_strategy_fn("macd")
         assert callable(fn)
 
-    def test_load_momentum(self):
-        """momentum Strategie kann geladen werden."""
+    def test_load_momentum_1h(self):
+        """momentum_1h Strategie kann geladen werden (kanonischer Registry-Name)."""
         from scripts.demo_execution_backtest import get_strategy_fn
 
-        fn = get_strategy_fn("momentum")
+        fn = get_strategy_fn("momentum_1h")
         assert callable(fn)
 
     def test_unknown_strategy_raises(self):
@@ -104,7 +104,7 @@ class TestGetStrategyFn:
         from scripts.demo_execution_backtest import get_strategy_fn
 
         with pytest.raises(ValueError, match="Unbekannte Strategie"):
-            get_strategy_fn("unknown_strategy")
+            get_strategy_fn("unknown_strategy_xyz")
 
 
 class TestGetDefaultStrategyParams:
@@ -128,27 +128,26 @@ class TestGetDefaultStrategyParams:
 
         params = get_default_strategy_params("macd")
 
-        assert "fast_period" in params
-        assert "slow_period" in params
-        assert "signal_period" in params
+        assert "fast_ema" in params
+        assert "slow_ema" in params
+        assert "signal_ema" in params
 
-    def test_unknown_strategy_returns_minimal(self):
-        """Unbekannte Strategie gibt minimale Defaults."""
+    def test_unknown_strategy_defaults_raises(self):
+        """Unbekannte Strategie wirft ValueError (fail-closed)."""
         from scripts.demo_execution_backtest import get_default_strategy_params
 
-        params = get_default_strategy_params("unknown")
+        with pytest.raises(ValueError, match="Unbekannte Strategie"):
+            get_default_strategy_params("unknown_strategy_xyz")
 
-        assert "stop_pct" in params
 
-
-class TestGenerateSampleData:
-    """Tests fuer generate_sample_data."""
+class TestLoadOhlcvData:
+    """Tests fuer den kanonischen OHLCV-Loader load_ohlcv_data."""
 
     def test_basic_generation(self):
-        """Sample-Daten werden korrekt generiert."""
-        from scripts.demo_execution_backtest import generate_sample_data
+        """Dummy-OHLCV-Daten werden korrekt generiert."""
+        from scripts.run_backtest import load_ohlcv_data
 
-        df = generate_sample_data(symbol="BTC/EUR", bars=50)
+        df = load_ohlcv_data(None, None, None, n_bars=50)
 
         assert isinstance(df, pd.DataFrame)
         assert len(df) == 50
@@ -158,23 +157,21 @@ class TestGenerateSampleData:
         assert "close" in df.columns
         assert "volume" in df.columns
 
-    def test_different_symbols(self):
-        """Verschiedene Symbole haben unterschiedliche Basis-Preise."""
-        from scripts.demo_execution_backtest import generate_sample_data
+    def test_different_n_bars(self):
+        """Verschiedene n_bars liefern unterschiedliche Laengen."""
+        from scripts.run_backtest import load_ohlcv_data
 
-        btc_df = generate_sample_data(symbol="BTC/EUR", bars=10)
-        eth_df = generate_sample_data(symbol="ETH/EUR", bars=10)
-        ltc_df = generate_sample_data(symbol="LTC/EUR", bars=10)
+        short_df = load_ohlcv_data(None, None, None, n_bars=10)
+        long_df = load_ohlcv_data(None, None, None, n_bars=50)
 
-        # BTC sollte hoeher sein als ETH, ETH hoeher als LTC
-        assert btc_df["close"].mean() > eth_df["close"].mean()
-        assert eth_df["close"].mean() > ltc_df["close"].mean()
+        assert len(short_df) == 10
+        assert len(long_df) == 50
 
     def test_ohlc_consistency(self):
         """OHLC-Daten sind konsistent (high >= close, low <= close)."""
-        from scripts.demo_execution_backtest import generate_sample_data
+        from scripts.run_backtest import load_ohlcv_data
 
-        df = generate_sample_data(symbol="BTC/EUR", bars=100)
+        df = load_ohlcv_data(None, None, None, n_bars=100)
 
         # High >= max(open, close)
         assert (df["high"] >= df[["open", "close"]].max(axis=1)).all()
@@ -183,19 +180,18 @@ class TestGenerateSampleData:
         assert (df["low"] <= df[["open", "close"]].min(axis=1)).all()
 
     def test_with_start_end(self):
-        """Sample-Daten mit Start/End-Datum."""
-        from scripts.demo_execution_backtest import generate_sample_data
+        """Start/End-Filter werden auf Dummy-Daten angewendet."""
+        from scripts.run_backtest import load_ohlcv_data
 
-        df = generate_sample_data(
-            symbol="BTC/EUR",
-            start="2024-01-01",
-            end="2024-01-10",
-            timeframe="1d",
-        )
+        full_df = load_ohlcv_data(None, None, None, n_bars=100)
+        start = full_df.index[10].strftime("%Y-%m-%d")
+        end = full_df.index[40].strftime("%Y-%m-%d")
+
+        df = load_ohlcv_data(None, start, end, n_bars=100)
 
         assert len(df) > 0
-        assert df.index[0] >= pd.Timestamp("2024-01-01")
-        assert df.index[-1] <= pd.Timestamp("2024-01-10")
+        assert df.index[0] >= pd.Timestamp(start, tz="UTC")
+        assert df.index[-1] <= pd.Timestamp(end, tz="UTC") + pd.Timedelta(days=1)
 
 
 class TestRunBacktest:
@@ -207,10 +203,10 @@ class TestRunBacktest:
             run_backtest,
             get_strategy_fn,
             get_default_strategy_params,
-            generate_sample_data,
         )
+        from scripts.run_backtest import load_ohlcv_data
 
-        df = generate_sample_data(symbol="BTC/EUR", bars=100)
+        df = load_ohlcv_data(None, None, None, n_bars=100)
         strategy_fn = get_strategy_fn("ma_crossover")
         params = get_default_strategy_params("ma_crossover")
 
@@ -238,10 +234,10 @@ class TestRunBacktest:
             run_backtest,
             get_strategy_fn,
             get_default_strategy_params,
-            generate_sample_data,
         )
+        from scripts.run_backtest import load_ohlcv_data
 
-        df = generate_sample_data(symbol="BTC/EUR", bars=100)
+        df = load_ohlcv_data(None, None, None, n_bars=100)
         strategy_fn = get_strategy_fn("ma_crossover")
         params = get_default_strategy_params("ma_crossover")
 
@@ -266,10 +262,10 @@ class TestRunBacktest:
             run_backtest,
             get_strategy_fn,
             get_default_strategy_params,
-            generate_sample_data,
         )
+        from scripts.run_backtest import load_ohlcv_data
 
-        df = generate_sample_data(symbol="BTC/EUR", bars=100)
+        df = load_ohlcv_data(None, None, None, n_bars=100)
         strategy_fn = get_strategy_fn("ma_crossover")
         params = get_default_strategy_params("ma_crossover")
 
@@ -374,11 +370,11 @@ class TestEdgeCases:
             run_backtest,
             get_strategy_fn,
             get_default_strategy_params,
-            generate_sample_data,
         )
+        from scripts.run_backtest import load_ohlcv_data
 
         # Sehr wenige Bars (koennte zu keinen Trades fuehren)
-        df = generate_sample_data(symbol="BTC/EUR", bars=35)
+        df = load_ohlcv_data(None, None, None, n_bars=35)
         strategy_fn = get_strategy_fn("ma_crossover")
         params = get_default_strategy_params("ma_crossover")
 
@@ -403,10 +399,10 @@ class TestEdgeCases:
             run_backtest,
             get_strategy_fn,
             get_default_strategy_params,
-            generate_sample_data,
         )
+        from scripts.run_backtest import load_ohlcv_data
 
-        df = generate_sample_data(symbol="BTC/EUR", bars=100)
+        df = load_ohlcv_data(None, None, None, n_bars=100)
         strategy_fn = get_strategy_fn("ma_crossover")
         params = get_default_strategy_params("ma_crossover")
 

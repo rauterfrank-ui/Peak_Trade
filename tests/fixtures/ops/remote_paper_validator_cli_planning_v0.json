@@ -1,0 +1,55 @@
+{
+  "schema_version": "peak_trade.remote_paper_validator_cli_planning.v0",
+  "validator_cli_name": "remote_paper_validator_cli_planning_v0",
+  "planning_only": true,
+  "implemented": true,
+  "do_not_run": true,
+  "no_runtime": true,
+  "no_network": true,
+  "no_aws": true,
+  "no_ssh": true,
+  "no_systemd": true,
+  "no_archive_walker": true,
+  "no_archive_mutation": true,
+  "no_dry_command_template": true,
+  "no_remote_runner": true,
+  "ready_for_implementation": false,
+  "input_paths": {
+    "preflight_json": "scripts/ops/preflight_remote_runtime_runner_v0.py",
+    "approval_packet": "tests/fixtures/ops/remote_paper_approval_command_packet_v0.json",
+    "host_inventory": "tests/fixtures/ops/remote_host_inventory_planning_v0.json",
+    "cost_kill_orphan_safety": "tests/fixtures/ops/remote_cost_kill_orphan_safety_v0.json",
+    "registry_json": "scripts/ops/build_generic_evidence_run_registry_v1.py",
+    "s3_prefix_plan_json": null,
+    "closeout_metadata_json": null
+  },
+  "future_output_shape": {
+    "status_enum": ["PASS", "BLOCKED", "INVALID"],
+    "fields": ["status", "reasons", "checked_artifacts", "authority"],
+    "emit_command_template": false
+  },
+  "authority_flags": {
+    "runtime_authorized": false,
+    "remote_runner_authorized": false,
+    "live_authorized": false,
+    "testnet_authorized": false
+  },
+  "bound_contracts": {
+    "section_2a": "docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md#2a-primary-evidence-retention-invariant-v0",
+    "section_2b_1": "docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md#2b1-mandatory-durable-closeout-contract-v0",
+    "section_2b_2": "docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md#2b2-closeout-enforcement-planning-contract-v0",
+    "section_6a_0_5": "docs/ops/specs/RUNTIME_LANE_TAXONOMY_AUTHORITY_LEVELS_CONTRACT_V0.md"
+  },
+  "output_machine_lines": {
+    "REMOTE_PAPER_VALIDATOR_CLI_PLANNING_CONTRACT_V0": true,
+    "REMOTE_PAPER_VALIDATOR_CLI_PLANNING_ONLY": true,
+    "REMOTE_PAPER_VALIDATOR_CLI_IMPLEMENTED": true,
+    "REMOTE_PAPER_VALIDATOR_CLI_DO_NOT_RUN": true,
+    "REMOTE_PAPER_VALIDATOR_CLI_READY_FOR_IMPLEMENTATION": false,
+    "REMOTE_PAPER_VALIDATOR_CLI_READY_FOR_START": false,
+    "REMOTE_PAPER_VALIDATOR_CLI_PREFLIGHT_BLOCKED_LIFTED": false,
+    "REMOTE_RUNNER_START_PERMITTED": false,
+    "REMOTE_PAPER_VALIDATOR_CLI_PASS_DOES_NOT_AUTHORIZE_RUNTIME": true,
+    "REMOTE_PAPER_VALIDATOR_CLI_PASS_DOES_NOT_AUTHORIZE_REMOTE_RUNNER": true
+  }
+}

@@ -12,6 +12,16 @@ except ImportError:
 REPO_ROOT = Path(__file__).resolve().parents[2]
 JOBS_CONFIG = REPO_ROOT / "config" / "scheduler" / "jobs.toml"
 PREFLIGHT_CONFIG = REPO_ROOT / "config" / "ops" / "paper_shadow_247_preflight.toml"
+BOUNDARY_GUARD = (
+    REPO_ROOT / "tests" / "ops" / "test_gap2_job_set_boundary_drift_guard_contract_v0.py"
+)
+BOUNDED_PAPER_JOBS = (
+    "paper_shadow_247_paper_only_preflight_status_v0",
+    "paper_shadow_247_paper_only_runtime_min_v0",
+    "paper_shadow_247_paper_only_runtime_high_vol_no_trade_v0",
+)
+BOUNDED_SHADOW_JOB = "p7_shadow_high_vol_no_trade_runner_manual_v0"
+EXCLUDED_PLACEHOLDER = "shadow_247_futures_prestart_evidence_drycheck_placeholder_v0"
 
 
 def _jobs() -> list[dict]:
@@ -98,3 +108,46 @@ def test_paper_only_runtime_scheduler_job_is_not_enabled_in_dry_run_job_set() ->
 
     assert "paper_shadow_247_paper_only_runtime_high_vol_no_trade_v0" not in enabled_names
     assert "paper_shadow_247_paper_only_preflight_status_v0" in enabled_names
+
+
+def test_bounded_path_b_candidate_jobs_match_preflight_inventory_only_v0() -> None:
+    payload = tomllib.loads(PREFLIGHT_CONFIG.read_text(encoding="utf-8"))
+    assert set(payload["paper_jobs"]) == set(BOUNDED_PAPER_JOBS)
+    assert payload["shadow_jobs"] == [BOUNDED_SHADOW_JOB]
+    assert EXCLUDED_PLACEHOLDER not in payload["paper_jobs"]
+    assert EXCLUDED_PLACEHOLDER not in payload["shadow_jobs"]
+
+    enabled_names = {job["name"] for job in _jobs() if job.get("enabled") is True}
+    for name in BOUNDED_PAPER_JOBS:
+        if name == "paper_shadow_247_paper_only_preflight_status_v0":
+            assert name in enabled_names
+            continue
+        assert name not in enabled_names
+
+    shadow = next(job for job in _jobs() if job.get("name") == BOUNDED_SHADOW_JOB)
+    assert shadow["enabled"] is False
+    assert shadow["args"]["dry_run"] is True
+
+
+def test_runtime_scheduler_job_config_crosslinks_gap2_boundary_drift_guard_v0() -> None:
+    assert BOUNDARY_GUARD.is_file()
+    text = BOUNDARY_GUARD.read_text(encoding="utf-8")
+    assert Path(__file__).name in text
+    assert "PAPER_PLUS_BOUNDED_SHADOW_NON_24_7" in text
+
+
+def test_runtime_scheduler_job_config_crosslinks_gap2_and_hardening_v0() -> None:
+    gap2_owner = REPO_ROOT / "tests/ops/test_gap2_canonical_job_set_contract_v0.py"
+    hardening_owner = REPO_ROOT / "tests/ops/test_scheduler_dry_run_hardening_source_contract_v0.py"
+    section5 = (
+        REPO_ROOT / "docs/ops/planning/SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md"
+    ).read_text(encoding="utf-8")
+
+    assert gap2_owner.is_file()
+    assert hardening_owner.is_file()
+    assert Path(__file__).name in section5
+    gap2_text = gap2_owner.read_text(encoding="utf-8")
+    hardening_text = hardening_owner.read_text(encoding="utf-8")
+    assert "test_scheduler_dry_run_hardening_source_contract_v0.py" in gap2_text
+    assert "test_gap2_canonical_job_set_contract_v0.py" in hardening_text
+    assert Path(__file__).name in hardening_text

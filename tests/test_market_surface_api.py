@@ -71,7 +71,27 @@ class TestMarketSurfaceHtml:
         assert 'data-market-v1-readonly-banner="true"' in body
         assert body.count('data-market-v1-stat-card="true"') >= 6
         assert 'data-market-v1-api-reference="true"' in body
-        assert 'data-market-v11-chart-diagnostics="true"' in body
+        assert 'data-market-v0-surface-links="true"' in body
+        assert 'data-market-v0-dashboard-surface="true"' in body
+        assert 'data-market-v0-rd-charts-surface="true"' in body
+        assert 'data-market-v0-data-surfaces="true"' in body
+        assert 'data-market-v0-ohlcv-surface="true"' in body
+        assert 'data-market-v0-depth-surface="true"' in body
+        assert 'data-market-v0-visual-cockpit="true"' in body
+        assert 'data-market-v0-visual-surface-strip="true"' in body
+        assert 'data-market-v0-dashboard-preview="true"' in body
+        assert 'data-market-v0-rd-preview="true"' in body
+        assert 'data-market-v0-ohlcv-preview="true"' in body
+        assert 'data-market-v0-depth-preview="true"' in body
+        assert 'data-market-v0-ssr-metrics-strip="true"' in body
+        assert 'data-market-v0-in-chart-ohlc-svg-v1="true"' in body
+        assert 'data-market-v0-close-chart-integrated-frame="true"' in body
+        assert 'data-market-v0-in-chart-ohlc-svg-root="true"' in body
+        assert (
+            'data-market-v0-in-chart-ohlc-candle-up="true"' in body
+            or 'data-market-v0-in-chart-ohlc-candle-down="true"' in body
+        )
+        assert "chartjs-chart-financial" not in body.lower()
         assert 'data-market-v11-chart-library-status="true"' in body
         assert 'data-market-v11-payload-bars="true"' in body
         assert 'data-market-v11-render-fallback="true"' in body
@@ -103,6 +123,12 @@ class TestMarketSurfaceHtml:
         assert "Capital" in body or "Scope" in body
         assert "KillSwitch" in body or "Risk" in body
         assert "chart.js@4.4.1" in body.lower() or "chart.umd.min.js" in body
+        assert 'data-chartjs-cdn-script-v0="true"' in body
+        assert 'data-chartjs-cdn-monitored-v0="true"' in body
+        assert 'id="peak-trade-market-chartjs-cdn-v0"' in body
+        assert 'id="market-v0-shell"' in body
+        assert "data-chartjs-cdn-load-error" in body
+        assert "onerror=" in body.lower()
         lower = body.lower()
         assert "<form" not in lower
         assert 'method="post"' not in lower
@@ -115,6 +141,12 @@ class TestMarketSurfaceHtml:
         assert "Chart bereit — read-only OHLCV-Anzeige." in body
         assert 'data-market-depth-panel="true"' in body
         assert 'data-market-depth-status="disabled"' in body
+        assert 'data-market-v0-orderbook-topn="true"' in body
+        assert 'data-market-v0-orderbook-has-levels="false"' in body
+        assert 'data-market-v0-orderbook-empty="true"' in body
+        assert 'data-market-v0-ladder-empty-explain="true"' in body
+        assert "Depth SSR is" in body
+        assert 'data-market-depth-operator-hint="true"' in body
 
     def test_market_page_depth_ssr_forbids_client_depth_route_and_xhr(
         self,
@@ -173,7 +205,12 @@ class TestMarketSurfaceHtml:
         assert resp.status_code == 200
         body = resp.text
         assert 'data-market-depth-status="builder_error"' in body
+        assert 'data-market-v0-orderbook-has-levels="false"' in body
+        assert 'data-market-v0-orderbook-empty="true"' in body
         assert "/api/market/depth" not in body
+        assert "failed build" in body
+        assert "validation" in body
+        assert 'data-market-depth-operator-hint="true"' in body
 
     def test_market_depth_ssr_ok_branch_uses_display_status_ok(
         self,
@@ -198,7 +235,42 @@ class TestMarketSurfaceHtml:
         assert resp.status_code == 200
         body = resp.text
         assert 'data-market-depth-status="ok"' in body
+        assert 'data-market-v0-orderbook-has-levels="false"' in body
+        assert 'data-market-v0-orderbook-empty="true"' in body
         assert "/api/market/depth" not in body
+        assert "no bid/ask rows" in body
+        assert 'data-market-depth-operator-hint="true"' in body
+
+    def test_market_dashboard_orderbook_topn_ssr_with_fixture_bundle(
+        self,
+        monkeypatch: pytest.MonkeyPatch,
+    ) -> None:
+        bundle = (
+            Path(__file__).resolve().parents[1]
+            / "tests"
+            / "fixtures"
+            / "market_depth_readmodel_v0"
+            / "complete_minimal"
+        )
+        monkeypatch.setenv("PEAK_TRADE_MARKET_DEPTH_ENABLED", "1")
+        monkeypatch.setenv("PEAK_TRADE_MARKET_DEPTH_BUNDLE_ROOT", str(bundle.resolve()))
+        monkeypatch.setenv("PEAK_TRADE_FIXED_GENERATED_AT_UTC", "2026-05-02T12:00:00+00:00")
+        client = TestClient(create_app())
+
+        resp = client.get("/market", params={"source": "dummy", "limit": 20})
+        assert resp.status_code == 200
+        body = resp.text
+        assert 'data-market-v0-orderbook-topn="true"' in body
+        assert 'data-market-v0-orderbook-has-levels="true"' in body
+        assert 'data-market-v0-orderbook-bids="true"' in body
+        assert 'data-market-v0-orderbook-asks="true"' in body
+        assert 'data-market-v0-orderbook-empty="true"' not in body
+        assert "63010" in body
+        assert "63020" in body
+        assert 'data-market-depth-status="ok"' in body
+        assert "/api/market/depth" not in body
+        assert "fetch(" not in body
+        assert "XMLHttpRequest" not in body
 
     def test_market_html_invalid_timeframe_422(self, client: TestClient) -> None:
         r = client.get("/market", params={"source": "dummy", "timeframe": "bad"})
@@ -210,19 +282,38 @@ class TestMarketSurfaceHtml:
 
 
 def test_market_v0_template_kraken_banner_markers_in_source() -> None:
-    """Kraken-Pfad ohne Netzwerk: Banner-Zweig muss im Template existieren."""
-    tmpl_path = (
-        Path(__file__).resolve().parents[1]
-        / "templates"
-        / "peak_trade_dashboard"
-        / "market_v0.html"
+    """Kraken-Pfad ohne Netzwerk: Banner-Zweig muss im Template-Stack existieren."""
+    tmpl_dir = Path(__file__).resolve().parents[1] / "templates" / "peak_trade_dashboard"
+    txt = (tmpl_dir / "market_v0.html").read_text(encoding="utf-8")
+    txt += (tmpl_dir / "partials" / "market_legacy_operator_panels_v0.html").read_text(
+        encoding="utf-8"
     )
-    txt = tmpl_path.read_text(encoding="utf-8")
     assert 'data-market-source-kind="kraken-public-ohlcv-network"' in txt
     assert 'data-market-v1-dashboard-shell="true"' in txt
     assert 'data-market-v1-readonly-banner="true"' in txt
     assert 'data-market-v1-context="true"' in txt
     assert 'data-market-v1-api-reference="true"' in txt
+    assert 'data-market-v0-surface-links="true"' in txt
+    assert 'data-market-v0-dashboard-surface="true"' in txt
+    assert 'data-market-v0-rd-charts-surface="true"' in txt
+    assert 'data-market-v0-data-surfaces="true"' in txt
+    assert 'data-market-v0-ohlcv-surface="true"' in txt
+    assert 'data-market-v0-depth-surface="true"' in txt
+    assert 'data-market-v0-visual-cockpit="true"' in txt
+    assert 'data-market-v0-visual-surface-strip="true"' in txt
+    assert 'data-market-v0-dashboard-preview="true"' in txt
+    assert 'data-market-v0-rd-preview="true"' in txt
+    assert 'data-market-v0-ohlcv-preview="true"' in txt
+    assert 'data-market-v0-depth-preview="true"' in txt
+    assert 'data-market-v0-ssr-metrics-strip="true"' in txt
+    assert 'data-market-v0-in-chart-ohlc-svg-v1="true"' in txt
+    assert 'data-market-v0-close-chart-integrated-frame="true"' in txt
+    assert 'data-market-v0-in-chart-ohlc-svg-root="true"' in txt
+    assert (
+        'data-market-v0-in-chart-ohlc-candle-up="true"' in txt
+        or 'data-market-v0-in-chart-ohlc-candle-down="true"' in txt
+    )
+    assert "chartjs-chart-financial" not in txt.lower()
     assert 'data-market-v11-chart-diagnostics="true"' in txt
     assert 'data-market-v11-chart-library-status="true"' in txt
     assert 'data-market-v11-payload-bars="true"' in txt
@@ -239,3 +330,4 @@ def test_market_v0_template_kraken_banner_markers_in_source() -> None:
     assert "Chart-Daten konnten nicht gerendert werden; keine Trading-Aktion verfügbar." in txt
     assert 'data-market-depth-panel="true"' in txt
     assert "data-market-depth-status" in txt
+    assert 'data-market-v0-orderbook-topn="true"' in txt

@@ -2,7 +2,35 @@
 
 from __future__ import annotations
 
+import json
 from pathlib import Path
+
+_REPO_ROOT = Path(__file__).resolve().parents[2]
+_DISPATCH_GUARD_ENFORCEMENT_DOC = (
+    _REPO_ROOT / "docs" / "ops" / "ci" / "WORKFLOW_DISPATCH_GUARD_ENFORCEMENT.md"
+)
+_REQUIRED_CHECKS_JSON = _REPO_ROOT / "config" / "ci" / "required_status_checks.json"
+
+
+def test_workflow_dispatch_guard_enforcement_doc_active_aligned_with_json_ssot_v0() -> None:
+    """Dispatch-guard enforcement doc must not regress to legacy NOT ACTIVE posture."""
+    doc_text = _DISPATCH_GUARD_ENFORCEMENT_DOC.read_text(encoding="utf-8")
+    cfg = json.loads(_REQUIRED_CHECKS_JSON.read_text(encoding="utf-8"))
+    assert "dispatch-guard" in cfg["required_contexts"]
+
+    banned_fragments = [
+        "NOT ACTIVE as a required check",
+        "awaiting operator action",
+        "NOT CONFIGURED (awaiting operator action)",
+        "Enforcement Activation | **PENDING**",
+    ]
+    for banned in banned_fragments:
+        assert banned not in doc_text, f"legacy NOT ACTIVE narrative: {banned!r}"
+
+    assert "config/ci/required_status_checks.json" in doc_text
+    assert "dispatch-guard" in doc_text
+    assert "ACTIVE as a required check" in doc_text
+    assert "PHASE5C_WORKFLOW_DISPATCH_GUARD_ENFORCEMENT_CLOSEOUT.md" in doc_text
 
 
 def test_ci_workflow_does_not_claim_pr_gate_only_branch_protection() -> None:

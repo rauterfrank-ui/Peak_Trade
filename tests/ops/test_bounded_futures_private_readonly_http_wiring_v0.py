@@ -1,0 +1,292 @@
+"""Offline tests for private-readonly HTTP wiring (mocked fetcher only)."""
+
+from __future__ import annotations
+
+import base64
+import json
+from urllib import error
+
+import pytest
+
+from scripts.ops import archive_futures_testnet_harness_v0 as harness
+from src.ops.bounded_futures_private_readonly_contract_v0 import (
+    CONFIRM_TOKEN_PRIVATE_READONLY_REACHABILITY,
+    DEMO_FUTURES_REST_BASE_URL,
+    FETCH_FAILURE_CLASS_NETWORK,
+    FUTURES_PRIVATE_READONLY_GET_ENDPOINTS,
+    PRIVATE_READONLY_ENDPOINT_ORDER,
+    PRIVATE_READONLY_HTTP_WIRING_PRESENT,
+    PrivateReadonlyHttpRequest,
+    build_private_readonly_evidence_from_network,
+    build_private_readonly_get_request_plan,
+    build_private_readonly_http_request,
+    build_private_readonly_plan_evidence_skeleton,
+    compute_futures_private_authent,
+    resolve_private_readonly_credentials_from_environ,
+    run_private_readonly_reachability,
+    summarize_private_response_for_evidence,
+    validate_redacted_network_call_record,
+)
+from src.ops.kraken_futures_demo_credential_presence_contract_v0 import (
+    build_checker_boundary_v0,
+)
+
+TEST_PACKAGE_MARKER = "BOUNDED_FUTURES_PRIVATE_READONLY_HTTP_WIRING_GUARD_V0=true"
+
+
+class _FakePrivateFetcher:
+    def __init__(self, *, body: bytes | None = None) -> None:
+        self.requests: list[PrivateReadonlyHttpRequest] = []
+        self._body = body if body is not None else b'{"accounts":[]}'
+
+    def fetch(
+        self,
+        http_request: PrivateReadonlyHttpRequest,
+        *,
+        timeout_seconds: float,
+    ) -> tuple[int, bytes]:
+        self.requests.append(http_request)
+        assert http_request.method == "GET"
+        assert "sendorder" not in http_request.url
+        assert set(http_request.headers.keys()) == {"APIKey", "Authent", "Nonce"}
+        return 200, self._body
+
+
+class _TimeoutOnFirstGetFetcher:
+    def fetch(
+        self,
+        http_request: PrivateReadonlyHttpRequest,
+        *,
+        timeout_seconds: float,
+    ) -> tuple[int, bytes]:
+        raise TimeoutError("timed out")
+
+
+class _UrlErrorOnFirstGetFetcher:
+    def fetch(
+        self,
+        http_request: PrivateReadonlyHttpRequest,
+        *,
+        timeout_seconds: float,
+    ) -> tuple[int, bytes]:
+        raise error.URLError("connection reset")
+
+
+def test_package_marker_and_http_wiring_flag() -> None:
+    assert TEST_PACKAGE_MARKER
+    assert PRIVATE_READONLY_HTTP_WIRING_PRESENT is True
+    assert harness.SAFE_PRIVATE_READONLY_URLLIB_FETCHER_PRESENT is True
+
+
+def test_request_plan_builds_exactly_three_gets() -> None:
+    plan = build_private_readonly_get_request_plan()
+    assert len(plan) == 3
+    assert [row["method"] for row in plan] == ["GET", "GET", "GET"]
+    assert {row["endpoint_path"] for row in plan} == set(FUTURES_PRIVATE_READONLY_GET_ENDPOINTS)
+    assert list(PRIVATE_READONLY_ENDPOINT_ORDER) == [
+        "/derivatives/api/v3/accounts",
+        "/derivatives/api/v3/openpositions",
+        "/derivatives/api/v3/openorders",
+    ]
+
+
+@pytest.mark.parametrize(
+    ("full_endpoint_path", "signed_suffix", "expected_url_suffix"),
+    [
+        ("/derivatives/api/v3/accounts", "/accounts", "/accounts"),
+        (
+            "/derivatives/api/v3/openpositions",
+            "/openpositions",
+            "/openpositions",
+        ),
+        ("/derivatives/api/v3/openorders", "/openorders", "/openorders"),
+    ],
+)
+def test_request_builder_signs_suffix_paths(
+    full_endpoint_path: str,
+    signed_suffix: str,
+    expected_url_suffix: str,
+) -> None:
+    secret = base64.b64encode(b"test-secret-bytes-32chars-long!!").decode()
+    nonce = "1415957147987"
+    http_request = build_private_readonly_http_request(
+        rest_base_url=DEMO_FUTURES_REST_BASE_URL,
+        endpoint_path=full_endpoint_path,
+        api_key="demo-key",
+        api_secret_b64=secret,
+        nonce=nonce,
+    )
+    expected_authent = compute_futures_private_authent(
+        api_secret_b64=secret,
+        endpoint_path=signed_suffix,
+        post_data="",
+        nonce=nonce,
+    )
+    full_path_authent = compute_futures_private_authent(
+        api_secret_b64=secret,
+        endpoint_path=full_endpoint_path,
+        post_data="",
+        nonce=nonce,
+    )
+    assert http_request.headers["Authent"] == expected_authent
+    assert http_request.headers["Authent"] != full_path_authent
+    assert http_request.url == f"{DEMO_FUTURES_REST_BASE_URL}{expected_url_suffix}"
+    assert http_request.endpoint_path == full_endpoint_path
+
+
+def test_blocklisted_endpoint_cannot_be_built() -> None:
+    secret = base64.b64encode(b"test-secret-bytes-32chars-long!!").decode()
+    with pytest.raises(ValueError, match="forbidden|not allowed|allowlist"):
+        build_private_readonly_http_request(
+            rest_base_url=DEMO_FUTURES_REST_BASE_URL,
+            endpoint_path="/derivatives/api/v3/sendorder",
+            api_key="demo-key",
+            api_secret_b64=secret,
+        )
+
+
+def test_auth_header_names_present_values_not_in_evidence() -> None:
+    secret = base64.b64encode(b"test-secret-bytes-32chars-long!!").decode()
+    http_request = build_private_readonly_http_request(
+        rest_base_url=DEMO_FUTURES_REST_BASE_URL,
+        endpoint_path="/derivatives/api/v3/accounts",
+        api_key="demo-key-not-logged",
+        api_secret_b64=secret,
+        nonce="12345",
+    )
+    assert http_request.auth_header_names == ("APIKey", "Authent", "Nonce")
+    record = summarize_private_response_for_evidence(
+        endpoint=http_request.endpoint_path,
+        http_status=200,
+        body=b'{"accounts":[{"balance":"999"}],"openPositions":[]}',
+        auth_header_names=http_request.auth_header_names,
+    )
+    assert record["credential_values_logged"] is False
+    assert "999" not in json.dumps(record)
+    assert "demo-key" not in json.dumps(record)
+    assert validate_redacted_network_call_record(record) == []
+
+
+def test_fetch_timeout_returns_failure_result() -> None:
+    secret = base64.b64encode(b"test-secret-bytes-32chars-long!!").decode()
+    result = run_private_readonly_reachability(
+        rest_base_url=DEMO_FUTURES_REST_BASE_URL,
+        api_key="demo-key",
+        api_secret_b64=secret,
+        fetcher=_TimeoutOnFirstGetFetcher(),
+        duration_cap_seconds=60,
+    )
+    assert result.fetch_failure is True
+    assert result.failure_class == FETCH_FAILURE_CLASS_NETWORK
+    assert result.failed_endpoint == "/derivatives/api/v3/accounts"
+    assert result.request_count_attempted == 1
+    assert result.completed_request_count == 0
+    assert result.exception_type == "TimeoutError"
+    assert len(result.network_calls) == 1
+    assert "demo-key" not in json.dumps(result.network_calls)
+    assert result.network_calls[0]["http_status_class"] == "unknown"
+
+
+def test_fetch_urlerror_returns_failure_result() -> None:
+    secret = base64.b64encode(b"test-secret-bytes-32chars-long!!").decode()
+    result = run_private_readonly_reachability(
+        rest_base_url=DEMO_FUTURES_REST_BASE_URL,
+        api_key="demo-key",
+        api_secret_b64=secret,
+        fetcher=_UrlErrorOnFirstGetFetcher(),
+        duration_cap_seconds=60,
+    )
+    assert result.fetch_failure is True
+    assert result.exception_type == "URLError"
+
+
+def test_mocked_reachability_calls_three_endpoints() -> None:
+    secret = base64.b64encode(b"test-secret-bytes-32chars-long!!").decode()
+    fetcher = _FakePrivateFetcher()
+    result = run_private_readonly_reachability(
+        rest_base_url=DEMO_FUTURES_REST_BASE_URL,
+        api_key="demo-key",
+        api_secret_b64=secret,
+        fetcher=fetcher,
+        duration_cap_seconds=60,
+    )
+    assert result.request_count == 3
+    assert set(result.endpoints_called) == set(FUTURES_PRIVATE_READONLY_GET_ENDPOINTS)
+    assert result.private_readonly_reachability_proven is True
+    assert len(fetcher.requests) == 3
+
+
+def test_credentials_present_does_not_authorize_execute() -> None:
+    boundary = build_checker_boundary_v0()
+    skeleton = build_private_readonly_plan_evidence_skeleton(run_id="x")
+    assert boundary["futures_private_api_authorized"] is False
+    assert skeleton["futures_private_api_authorized"] is False
+    assert skeleton["private_readonly_execute_wired"] is True
+
+
+def test_resolve_credentials_from_environ_without_logging() -> None:
+    secret = base64.b64encode(b"s" * 32).decode()
+    creds = resolve_private_readonly_credentials_from_environ(
+        {
+            "KRAKEN_FUTURES_DEMO_API_KEY": "k",
+            "KRAKEN_FUTURES_DEMO_API_SECRET": secret,
+        }
+    )
+    assert creds == ("k", secret)
+
+
+def test_harness_private_execute_blocked_without_confirm(tmp_path) -> None:
+    from tests.ops.test_archive_futures_testnet_harness_v0 import _durable_test_archive_root
+
+    archive = _durable_test_archive_root(tmp_path)
+    rc = harness.main(
+        [
+            "--archive-root",
+            str(archive),
+            "--run-id",
+            "no-confirm",
+            "--mode",
+            "private_readonly_reachability_only",
+            "--execute-network",
+        ],
+        environ={
+            "KRAKEN_FUTURES_DEMO_API_KEY": "k",
+            "KRAKEN_FUTURES_DEMO_API_SECRET": base64.b64encode(b"x" * 32).decode(),
+        },
+    )
+    assert rc == harness.USAGE_EXIT
+
+
+def test_harness_private_execute_mocked_fetcher(tmp_path) -> None:
+    from tests.ops.test_archive_futures_testnet_harness_v0 import _durable_test_archive_root
+
+    archive = _durable_test_archive_root(tmp_path)
+    fake = _FakePrivateFetcher()
+    secret = base64.b64encode(b"test-secret-bytes-32chars-long!!").decode()
+    rc = harness.main(
+        [
+            "--archive-root",
+            str(archive),
+            "--run-id",
+            "privexec",
+            "--mode",
+            "private_readonly_reachability_only",
+            "--execute-network",
+            "--confirm-futures-private-readonly-reachability",
+            CONFIRM_TOKEN_PRIVATE_READONLY_REACHABILITY,
+        ],
+        private_fetcher=fake,
+        environ={
+            "KRAKEN_FUTURES_DEMO_API_KEY": "demo-key",
+            "KRAKEN_FUTURES_DEMO_API_SECRET": secret,
+        },
+    )
+    assert rc == 0
+    assert len(fake.requests) == 3
+    evidence_path = list((archive / "runtime").iterdir())[0] / "FUTURES_EVIDENCE.json"
+    evidence = json.loads(evidence_path.read_text(encoding="utf-8"))
+    assert evidence["request_count"] == 3
+    assert evidence["private_readonly_reachability_proven"] is True
+    dump = json.dumps(evidence)
+    assert "demo-key" not in dump
+    assert evidence["futures_private_api_authorized"] is False

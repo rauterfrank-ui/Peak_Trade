@@ -1,0 +1,17 @@
+<!-- F5 Futures Read-only Market Dashboard — legacy standalone shell; panel reused via partial -->
+{% extends "base.html" %}
+
+{% block content %}
+<div class="space-y-6 max-w-7xl mx-auto px-4 py-6 pb-12" data-f5-market-legacy-page-v1="true">
+  <header class="rounded-2xl border border-slate-800/90 bg-gradient-to-br from-slate-950 via-slate-900/95 to-slate-950 px-5 py-4 shadow-xl shadow-black/35 ring-1 ring-slate-700/40">
+    <h1 id="f5-market-dashboard-v0-landmark-page-title" class="text-xl sm:text-2xl font-bold text-slate-100 tracking-tight">
+      Futures Read-only Market Dashboard v0
+    </h1>
+    <p class="text-xs text-slate-500 mt-1 m-0">F5 display boundary — operator context only — no trading authority</p>
+    <p class="text-[10px] text-slate-500 mt-2 m-0">
+      <a href="/market#futures" class="text-sky-300/90 underline underline-offset-2 font-mono">Canonical: GET /market#futures</a>
+    </p>
+  </header>
+  {% include "partials/futures_read_only_market_panel_v0.html" %}
+</div>
+{% endblock %}

@@ -1,14 +1,7 @@
 name: Test Health Automation
 
 on:
-  # Scheduled runs
-  schedule:
-    # Täglich um 06:00 UTC (07:00 CET)
-    - cron: '0 6 * * *'
-    # Wöchentlich Sonntags um 03:00 UTC (04:00 CET)
-    - cron: '0 3 * * 0'
-
-  # Manueller Trigger
+  # Scheduled cron removed (cost minimization); manual dispatch only.
   workflow_dispatch:
     inputs:
       profile:
