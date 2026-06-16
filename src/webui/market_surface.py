@@ -46,6 +46,10 @@ from .market_tape_readmodel_v0.gate import (
     enabled_explicitly_on as _market_tape_enabled_explicitly_on,
     resolve_market_tape_readmodel_payload_v0,
 )
+from .market_futures_ohlcv_runtime_v0 import (
+    build_market_futures_ohlcv_display_context,
+    resolve_futures_ohlcv_series_for_symbol,
+)
 from .workflow_dashboard_runtime_v1 import build_workflow_dashboard_display_context
 
 logger = logging.getLogger(__name__)
@@ -62,7 +66,21 @@ MarketSource = Literal["futures", "kraken", "dummy"]
 DEFAULT_SOURCE: MarketSource = "futures"
 FORBIDDEN_IMPLICIT_SPOT_DEFAULT_SYMBOL = "BTC/EUR"
 LEGACY_DEMO_SOURCES: tuple[str, ...] = ("kraken", "dummy")
+DEFAULT_TOP_N = 20
+ALLOWED_TOP_N_VALUES: tuple[int, ...] = (20, 50)
 PAGE_TITLE = "Peak Trade Market Dashboard"
+
+CANONICAL_MARKET_ROUTE = "/market"
+CANONICAL_MARKET_ROUTE_OWNER = "src/webui/market_surface.py"
+CANONICAL_MARKET_VIEWMODEL_OWNER = "src/webui/market_surface.py"
+CANONICAL_MARKET_TEMPLATE_OWNER = "templates/peak_trade_dashboard/market_v0.html"
+CANONICAL_FUTURES_UNIVERSE_OWNER = "src/webui/market_ranking_funnel_runtime_v0.py"
+CANONICAL_FUTURES_RANKING_OWNER = "src/webui/market_ranking_funnel_runtime_v0.py"
+CANONICAL_TOP_N_OWNER = "src/webui/market_surface.py"
+CANONICAL_F5_METADATA_OWNER = "src/webui/futures_read_only_market_dashboard_runtime_v0.py"
+CANONICAL_SELECTED_INSTRUMENT_OWNER = "src/webui/market_surface.py"
+CANONICAL_FUTURES_OHLCV_OWNER = "src/webui/market_futures_ohlcv_runtime_v0.py"
+CANONICAL_CHART_OWNER = "templates/peak_trade_dashboard/partials/market_primary_close_chart_v1.html"
 
 MARKET_SINGLE_PAGE_CONSOLIDATION_ENABLED_ENV = (
     "PEAK_TRADE_MARKET_SINGLE_PAGE_CONSOLIDATION_V1_ENABLED"
@@ -132,6 +150,44 @@ def _is_forbidden_implicit_spot_symbol(symbol: str) -> bool:
     return normalized in {"BTC/EUR", "BTCEUR"}
 
 
+def normalize_top_n(raw: int | str | None) -> int:
+    if raw is None:
+        return DEFAULT_TOP_N
+    try:
+        value = int(raw)
+    except (TypeError, ValueError) as exc:
+        raise HTTPException(
+            status_code=422,
+            detail=f"top_n muss 20 oder 50 sein, nicht {raw!r}",
+        ) from exc
+    if value not in ALLOWED_TOP_N_VALUES:
+        raise HTTPException(
+            status_code=422,
+            detail=f"top_n muss einer von {list(ALLOWED_TOP_N_VALUES)} sein, nicht {value}",
+        )
+    return value
+
+
+def collect_governed_futures_symbols(ranking_funnel: Dict[str, Any]) -> set[str]:
+    symbols: set[str] = set()
+    stages = ranking_funnel.get("stages") if isinstance(ranking_funnel.get("stages"), dict) else {}
+    for stage_key in ("universe", "shortlist", "selected"):
+        for row in stages.get(stage_key) or []:
+            if not isinstance(row, dict):
+                continue
+            sym = str(row.get("symbol") or "").strip()
+            if sym:
+                symbols.add(sym)
+    return symbols
+
+
+def is_valid_governed_futures_symbol(symbol: str, ranking_funnel: Dict[str, Any]) -> bool:
+    sym = symbol.strip()
+    if not sym or _is_forbidden_implicit_spot_symbol(sym):
+        return False
+    return sym in collect_governed_futures_symbols(ranking_funnel)
+
+
 def resolve_selected_futures_symbol_from_ranking_funnel(
     ranking_funnel: Dict[str, Any],
 ) -> str:
@@ -179,13 +235,23 @@ def resolve_market_page_data(
     timeframe: str,
     limit: int,
     source: str | None,
+    top_n: int = DEFAULT_TOP_N,
 ) -> tuple[str, MarketSource, Dict[str, Any], bool]:
     """Resolve canonical GET /market request state (futures-first, no implicit spot fallback)."""
+    _ = top_n  # display-only; governed list sizing uses template context
     src = _normalize_source(source)
     sym = _normalize_request_symbol(symbol)
 
     if src == "futures":
         ranking_funnel = build_market_ranking_funnel_display_context()
+        if sym and not is_valid_governed_futures_symbol(sym, ranking_funnel):
+            payload = build_futures_first_empty_payload(
+                symbol=sym,
+                timeframe=timeframe,
+                limit=limit,
+                unavailable_reason="futures_symbol_not_in_governed_universe",
+            )
+            return sym, src, payload, True
         if not sym:
             sym = resolve_selected_futures_symbol_from_ranking_funnel(ranking_funnel)
         if not sym:
@@ -196,11 +262,38 @@ def resolve_market_page_data(
                 unavailable_reason="futures_snapshot_unavailable",
             )
             return "", src, payload, True
+
+        futures_ohlcv = build_market_futures_ohlcv_display_context()
+        bars, reason, unavailable = resolve_futures_ohlcv_series_for_symbol(
+            futures_ohlcv=futures_ohlcv,
+            symbol=sym,
+            timeframe=timeframe,
+            limit=limit,
+        )
+        if not unavailable:
+            payload = {
+                "generated_at_utc": str(futures_ohlcv.get("generated_at_iso") or _utc_now_iso()),
+                "source": "futures",
+                "symbol": sym,
+                "timeframe": timeframe,
+                "limit_requested": limit,
+                "bars_returned": len(bars),
+                "meta": {
+                    "source_mode": "futures_read_only_ssr",
+                    "futures_ohlcv_readmodel_id": futures_ohlcv.get("readmodel_id"),
+                    "data_source": futures_ohlcv.get("source"),
+                    "freshness": futures_ohlcv.get("generated_at_iso"),
+                    "fail_closed": False,
+                },
+                "bars": bars,
+            }
+            return sym, src, payload, False
+
         payload = build_futures_first_empty_payload(
             symbol=sym,
             timeframe=timeframe,
             limit=limit,
-            unavailable_reason="futures_ohlcv_not_wired",
+            unavailable_reason=reason or "futures_ohlcv_not_wired",
         )
         return sym, src, payload, True
 
@@ -809,19 +902,35 @@ def _normalize_symbol_for_match(symbol: str) -> str:
     return normalized
 
 
+def build_market_top_n_toggle_href(
+    *,
+    top_n: int,
+    symbol: str,
+    source: str,
+    timeframe: str,
+    limit: int,
+) -> str:
+    """Display-only Top-N toggle link preserving current instrument selection."""
+    sym_param = f"&symbol={quote(symbol, safe='')}" if symbol else ""
+    return (
+        f"/market?source={quote(source, safe='')}{sym_param}"
+        f"&timeframe={quote(timeframe, safe='')}&limit={limit}&top_n={top_n}"
+    )
+
+
 def build_market_symbol_nav_href(
     *,
     symbol: str,
     source: str,
     timeframe: str,
     limit: int,
+    top_n: int = DEFAULT_TOP_N,
 ) -> str:
     """Display-only GET /market query link for a ranking row symbol (no selector authority)."""
-    from urllib.parse import quote
-
+    top_n_suffix = f"&top_n={top_n}" if top_n != DEFAULT_TOP_N else ""
     return (
         f"/market?source={quote(source, safe='')}&symbol={quote(symbol, safe='')}"
-        f"&timeframe={quote(timeframe, safe='')}&limit={limit}"
+        f"&timeframe={quote(timeframe, safe='')}&limit={limit}{top_n_suffix}"
     )
 
 
@@ -844,6 +953,7 @@ def _enrich_ranking_row_for_watchlist(
     source: str,
     timeframe: str,
     limit: int,
+    top_n: int = DEFAULT_TOP_N,
 ) -> dict[str, Any]:
     row_symbol = str(row.get("symbol") or "")
     is_selected = _normalize_symbol_for_match(row_symbol) == _normalize_symbol_for_match(
@@ -858,6 +968,7 @@ def _enrich_ranking_row_for_watchlist(
             source=source,
             timeframe=timeframe,
             limit=limit,
+            top_n=top_n,
         ),
     }
 
@@ -884,11 +995,17 @@ def build_market_governed_top20_display_context(
     *,
     ranking_funnel: Dict[str, Any],
     f5_dashboard: Dict[str, Any],
+    selected_symbol: str = "",
+    source: str = DEFAULT_SOURCE,
+    timeframe: str = DEFAULT_TIMEFRAME,
+    limit: int = DEFAULT_LIMIT,
+    top_n: int = DEFAULT_TOP_N,
 ) -> Dict[str, Any]:
-    """Primary governed Top-20 + F5 metadata wiring for futures-first GET /market (read-only)."""
+    """Primary governed Top-N + F5 metadata wiring for futures-first GET /market (read-only)."""
     snapshot_status = _ranking_funnel_snapshot_status(ranking_funnel)
     stages = ranking_funnel.get("stages") if isinstance(ranking_funnel.get("stages"), dict) else {}
     selected_rows = [row for row in (stages.get("selected") or []) if isinstance(row, dict)]
+    visible_rows = selected_rows[:top_n]
 
     f5_gate_enabled = bool(f5_dashboard.get("gate_enabled"))
     f5_display_status = str(f5_dashboard.get("display_status") or "disabled")
@@ -907,16 +1024,28 @@ def build_market_governed_top20_display_context(
     snapshot_stale = ranking_funnel.get("stale") is True
 
     rows: list[dict[str, Any]] = []
-    for row in selected_rows:
+    for row in visible_rows:
+        row_symbol = str(row.get("symbol") or "")
+        is_selected = _normalize_symbol_for_match(row_symbol) == _normalize_symbol_for_match(
+            selected_symbol
+        )
         rows.append(
             {
                 "rank": row.get("rank"),
-                "symbol": str(row.get("symbol") or ""),
+                "symbol": row_symbol,
                 "score_display": _format_ranking_score_display(row),
                 "f5_status": f5_row_status,
                 "freshness_display": freshness_display,
                 "data_source": data_source,
                 "stale": snapshot_stale,
+                "is_selected": is_selected,
+                "market_nav_href": build_market_symbol_nav_href(
+                    symbol=row_symbol,
+                    source=source,
+                    timeframe=timeframe,
+                    limit=limit,
+                    top_n=top_n,
+                ),
             }
         )
 
@@ -928,6 +1057,10 @@ def build_market_governed_top20_display_context(
         "display_status": "ready" if snapshot_available else snapshot_status,
         "rows": rows,
         "row_count": len(rows),
+        "top_n": top_n,
+        "top_n_default": DEFAULT_TOP_N,
+        "top_n_selectable": True,
+        "selected_symbol": selected_symbol,
         "data_source": data_source,
         "generated_at_iso": freshness_display,
         "stale": snapshot_stale,
@@ -948,6 +1081,7 @@ def build_market_ranking_watchlist_display_context(
     source: str,
     timeframe: str,
     limit: int,
+    top_n: int = DEFAULT_TOP_N,
 ) -> Dict[str, Any]:
     """Display-only watchlist/scanner funnel wiring for GET /market ranking SSR."""
 
@@ -961,6 +1095,7 @@ def build_market_ranking_watchlist_display_context(
                 source=source,
                 timeframe=timeframe,
                 limit=limit,
+                top_n=top_n,
             )
             for row in (stages.get(stage_key) or [])
             if isinstance(row, dict)
@@ -975,6 +1110,7 @@ def build_market_ranking_watchlist_display_context(
             source=source,
             timeframe=timeframe,
             limit=limit,
+            top_n=top_n,
         )
         for row in raw_rows
         if isinstance(row, dict)
@@ -1386,6 +1522,7 @@ def build_market_v0_page_template_context(
     source: MarketSource,
     payload: Dict[str, Any],
     data_unavailable: bool,
+    top_n: int = DEFAULT_TOP_N,
 ) -> Dict[str, Any]:
     """SSR template context for GET /market (display-only; always includes primary_values)."""
 
@@ -1412,6 +1549,7 @@ def build_market_v0_page_template_context(
         source=source,
         timeframe=timeframe,
         limit=limit,
+        top_n=top_n,
     )
     instrument_header = build_market_instrument_header_display_context(
         symbol=symbol,
@@ -1435,9 +1573,15 @@ def build_market_v0_page_template_context(
         last_paper_run_panel = build_last_paper_run_panel_display_context()
     dp_display = build_static_dashboard_display_dict()
     f5_dashboard = build_futures_read_only_market_dashboard_display_context()
+    futures_ohlcv = build_market_futures_ohlcv_display_context()
     governed_top20 = build_market_governed_top20_display_context(
         ranking_funnel=ranking_funnel,
         f5_dashboard=f5_dashboard,
+        selected_symbol=symbol,
+        source=source,
+        timeframe=timeframe,
+        limit=limit,
+        top_n=top_n,
     )
     encoded_symbol = quote(symbol, safe="")
     legacy_demo_href = (
@@ -1461,7 +1605,25 @@ def build_market_v0_page_template_context(
         "last_paper_run_panel": last_paper_run_panel,
         "dp_display": dp_display,
         "f5_dashboard": f5_dashboard,
+        "futures_ohlcv": futures_ohlcv,
         "governed_top20": governed_top20,
+        "top_n": top_n,
+        "top_n_toggle_hrefs": {
+            20: build_market_top_n_toggle_href(
+                top_n=20,
+                symbol=symbol,
+                source=source,
+                timeframe=timeframe,
+                limit=limit,
+            ),
+            50: build_market_top_n_toggle_href(
+                top_n=50,
+                symbol=symbol,
+                source=source,
+                timeframe=timeframe,
+                limit=limit,
+            ),
+        },
         "double_play_json_url": "/api/master-v2/double-play/dashboard-display.json",
         "legacy_demo_href": legacy_demo_href,
         "futures_first": source == "futures",
@@ -1473,6 +1635,7 @@ def build_market_v0_page_template_context(
             "timeframe": timeframe,
             "limit": limit,
             "source": source,
+            "top_n": top_n,
         },
     }
 
@@ -1530,17 +1693,20 @@ def create_market_router(
         timeframe: str = Query(DEFAULT_TIMEFRAME),
         limit: int = Query(DEFAULT_LIMIT, ge=1, le=MAX_OHLCV_LIMIT),
         source: str = Query(DEFAULT_SOURCE),
+        top_n: int = Query(DEFAULT_TOP_N, description="Governed Top-N list size (20 or 50)"),
     ) -> Any:
         if timeframe not in MARKET_TIMEFRAMES:
             raise HTTPException(
                 status_code=422,
                 detail=f"timeframe muss einer von {list(MARKET_TIMEFRAMES)} sein, nicht {timeframe!r}",
             )
+        normalized_top_n = normalize_top_n(top_n)
         sym, src, payload, data_unavailable = resolve_market_page_data(
             symbol=symbol,
             timeframe=timeframe,
             limit=limit,
             source=source,
+            top_n=normalized_top_n,
         )
         return templates.TemplateResponse(
             request,
@@ -1553,6 +1719,7 @@ def create_market_router(
                 source=src,
                 payload=payload,
                 data_unavailable=data_unavailable,
+                top_n=normalized_top_n,
             ),
         )
 

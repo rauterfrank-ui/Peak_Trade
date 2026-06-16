@@ -4,7 +4,13 @@
   aria-labelledby="market-governed-top20-primary-h2"
   class="rounded-lg border border-violet-900/50 bg-slate-950/80 px-3 py-3 ring-1 ring-violet-900/30"
   data-market-governed-top20-primary-v1="true"
+  data-market-governed-top-n-primary-v1="true"
   data-market-governed-top20-wired-v1="true"
+  data-market-governed-top-n="{{ governed_top20.top_n }}"
+  data-market-governed-top-n-default="{{ governed_top20.top_n_default }}"
+  data-market-governed-top-n-selectable="{{ 'true' if governed_top20.top_n_selectable else 'false' }}"
+  data-market-futures-selector-v1="true"
+  data-market-selected-instrument="{{ governed_top20.selected_symbol|e }}"
   data-market-governed-top20-snapshot-status="{{ governed_top20.snapshot_status|e }}"
   data-market-governed-top20-display-status="{{ governed_top20.display_status|e }}"
   {% if governed_top20.snapshot_available %}data-market-governed-top20-available-v1="true"{% else %}data-market-governed-top20-unavailable-v1="true"{% endif %}
@@ -16,7 +22,7 @@
   <div class="flex flex-wrap items-start justify-between gap-2 mb-2">
     <div>
       <h2 id="market-governed-top20-primary-h2" class="m-0 text-[11px] font-semibold uppercase tracking-wide text-violet-200/95">
-        Governed Futures Top-20 · read-only
+        Governed Futures Top-{{ governed_top20.top_n }} · read-only
       </h2>
       <p class="m-0 mt-1 text-[10px] text-slate-500">
         source: <span class="font-mono text-slate-300">{{ governed_top20.data_source|e }}</span>
@@ -27,6 +33,18 @@
       </p>
     </div>
     <div class="flex flex-wrap gap-1 text-[9px] font-semibold uppercase tracking-wide">
+      <a
+        href="{{ top_n_toggle_hrefs[20]|e }}"
+        class="rounded border px-1.5 py-0.5 no-underline {% if governed_top20.top_n == 20 %}border-violet-500/70 bg-violet-950/50 text-violet-100{% else %}border-slate-700/70 bg-slate-900/80 text-slate-300 hover:text-slate-100{% endif %}"
+        data-market-governed-top20-toggle-v1="true"
+        data-market-governed-top-n-value="20"
+      >Top 20</a>
+      <a
+        href="{{ top_n_toggle_hrefs[50]|e }}"
+        class="rounded border px-1.5 py-0.5 no-underline {% if governed_top20.top_n == 50 %}border-violet-500/70 bg-violet-950/50 text-violet-100{% else %}border-slate-700/70 bg-slate-900/80 text-slate-300 hover:text-slate-100{% endif %}"
+        data-market-governed-top50-toggle-v1="true"
+        data-market-governed-top-n-value="50"
+      >Top 50</a>
       <span class="rounded border border-slate-700/70 bg-slate-900/80 px-1.5 py-0.5 text-slate-300">display-only</span>
       <span class="rounded border border-slate-700/70 bg-slate-900/80 px-1.5 py-0.5 text-slate-300">no orders</span>
       <span class="rounded border border-slate-700/70 bg-slate-900/80 px-1.5 py-0.5 text-slate-300">no live</span>
@@ -34,7 +52,7 @@
   </div>
 
   {% if governed_top20.snapshot_available and governed_top20.rows %}
-  <div class="overflow-x-auto" data-market-governed-top20-table-v1="true">
+  <div class="overflow-x-auto" data-market-governed-top20-table-v1="true" data-market-futures-selector-table-v1="true">
     <table class="w-full text-[11px] border-collapse tabular-nums">
       <thead>
         <tr class="text-left text-slate-400 border-b border-slate-800/70">
@@ -48,9 +66,16 @@
       </thead>
       <tbody>
         {% for row in governed_top20.rows %}
-        <tr class="border-b border-slate-900/60 text-slate-200" data-market-governed-top20-row-v1="true">
+        <tr
+          class="border-b border-slate-900/60 text-slate-200 {% if row.is_selected %}bg-sky-950/35 ring-1 ring-inset ring-sky-800/40{% endif %}"
+          data-market-governed-top20-row-v1="true"
+          data-market-futures-selector-row-v1="true"
+          {% if row.is_selected %}data-market-futures-selector-selected-v1="true"{% endif %}
+        >
           <td class="pr-2 py-1">{{ row.rank|e }}</td>
-          <td class="pr-2 py-1 font-mono">{{ row.symbol|e }}</td>
+          <td class="pr-2 py-1 font-mono">
+            <a href="{{ row.market_nav_href|e }}" class="text-sky-300/95 no-underline hover:underline" data-market-futures-selector-link-v1="true">{{ row.symbol|e }}</a>
+          </td>
           <td class="pr-2 py-1">{{ row.score_display|e }}</td>
           <td class="pr-2 py-1 font-mono text-slate-400">{{ row.f5_status|e }}</td>
           <td class="pr-2 py-1 font-mono text-[10px] text-slate-400">{{ row.freshness_display|e }}</td>
@@ -60,7 +85,7 @@
       </tbody>
     </table>
     <p class="m-0 mt-2 text-[10px] text-slate-500">
-      {{ governed_top20.row_count }} row(s) · producer-defined count · ranking order preserved · no padding to 20
+      {{ governed_top20.row_count }} row(s) · producer-defined count · ranking order preserved · no padding to {{ governed_top20.top_n }}
     </p>
   </div>
   {% elif governed_top20.snapshot_status == 'malformed' %}
@@ -74,7 +99,7 @@
   {% else %}
   <p class="m-0 text-sm text-slate-200" role="alert" data-market-governed-top20-missing-state-v1="true">
     <strong>{{ governed_top20.unavailable_message|e }}</strong>
-    — no governed Top-20 snapshot on the canonical <span class="font-mono">/market</span> default.
+    — no governed Top-{{ governed_top20.top_n }} snapshot on the canonical <span class="font-mono">/market</span> default.
     No spot OHLCV, no synthetic fallback, no invented ranking data.
     {% if not governed_top20.gate_enabled %}
     <span class="block mt-1 font-mono text-[10px] text-slate-400">PEAK_TRADE_MARKET_RANKING_FUNNEL_ENABLED=1 + bundle root required.</span>
