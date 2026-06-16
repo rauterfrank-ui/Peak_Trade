@@ -5,7 +5,6 @@ Tests circuit breakers, rate limiters, and metrics integration.
 """
 
 import pytest
-import time
 from unittest.mock import Mock, patch
 
 from src.core.resilience import CircuitBreaker, CircuitState, health_check
@@ -203,19 +202,25 @@ class TestMetricsIntegration:
         assert len(snapshots.get("circuit_breaker_failure", [])) >= 2
 
     def test_metrics_track_latency(self):
-        """Test metrics tracking operation latency."""
-        with metrics.track_latency("test_operation"):
-            time.sleep(0.01)  # Small sleep
+        """Test metrics tracking operation latency using deterministic fake clock."""
+        fake_now = [1_000_000.0]
 
-        snapshots = metrics.get_snapshots("request_latency")
-        latency_snapshots = snapshots.get("request_latency", [])
+        def fake_time() -> float:
+            return fake_now[0]
 
-        # Should have recorded at least one latency
-        assert len(latency_snapshots) >= 1
+        with patch("src.core.metrics.time.time", fake_time):
+            with metrics.track_latency("test_operation"):
+                fake_now[0] += 0.01  # Simulate 0.01s latency without wall-clock wait
 
-        # Latency should be > 0.01 seconds
-        if latency_snapshots:
-            assert latency_snapshots[-1]["value"] >= 0.01
+            snapshots = metrics.get_snapshots("request_latency")
+            latency_snapshots = snapshots.get("request_latency", [])
+
+            # Should have recorded at least one latency
+            assert len(latency_snapshots) >= 1
+
+            # Latency should be >= 0.01 seconds (exact 0.01 with fake clock)
+            if latency_snapshots:
+                assert latency_snapshots[-1]["value"] >= 0.01
 
     def test_metrics_with_resilience_decorator(self):
         """Test metrics collection with resilience decorator."""
