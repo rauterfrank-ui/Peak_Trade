@@ -110,11 +110,12 @@
   {% endif %}
 
   <div
-    class="relative flex flex-col w-full rounded-lg border border-slate-800/70 bg-gradient-to-b from-slate-950/45 to-slate-950/80 shadow-inner shadow-black/35"
-    style="height:420px;max-height:480px"
+    class="relative flex flex-col w-full max-w-full rounded-lg border border-slate-800/70 bg-gradient-to-b from-slate-950/45 to-slate-950/80 shadow-inner shadow-black/35 min-h-[280px] sm:min-h-[360px]"
+    style="height:clamp(280px, 52vw, 420px);max-height:480px"
     data-market-v0-close-chart-integrated-frame="true"
     data-market-v0-in-chart-ohlc-svg-v1="true"
     data-market-chart-operator-readable-v1="true"
+    data-market-chart-responsive-v1="true"
     aria-label="OHLC chart (SSR, read-only)"
   >
     <div class="shrink-0 bg-slate-950/80 px-3 py-1.5 border-b border-slate-800/60">

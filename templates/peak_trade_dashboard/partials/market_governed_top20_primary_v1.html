@@ -47,17 +47,17 @@
         {% endif %}
       </p>
     </div>
-    <div class="flex flex-wrap gap-1 text-[9px] font-semibold uppercase tracking-wide" data-market-governed-topn-toolbar-v1="true">
+    <div class="flex flex-wrap items-center gap-1.5 sm:gap-1 text-[9px] sm:text-[9px] font-semibold uppercase tracking-wide w-full sm:w-auto" data-market-governed-topn-toolbar-v1="true" data-market-matrix-toolbar-responsive-v1="true">
       <a
         href="{{ top_n_toggle_hrefs[20]|e }}"
-        class="rounded border px-1.5 py-0.5 no-underline {% if governed_top20.top_n == 20 %}border-violet-500/70 bg-violet-950/50 text-violet-100{% else %}border-slate-700/70 bg-slate-900/80 text-slate-300 hover:text-slate-100{% endif %}"
+        class="rounded border px-2 py-1 sm:px-1.5 sm:py-0.5 min-h-[2rem] sm:min-h-0 inline-flex items-center no-underline {% if governed_top20.top_n == 20 %}border-violet-500/70 bg-violet-950/50 text-violet-100{% else %}border-slate-700/70 bg-slate-900/80 text-slate-300 hover:text-slate-100{% endif %}"
         data-market-governed-top20-toggle-v1="true"
         data-market-governed-top-n-value="20"
         {% if governed_top20.top_n == 20 %}aria-current="page"{% endif %}
       >Top 20</a>
       <a
         href="{{ top_n_toggle_hrefs[50]|e }}"
-        class="rounded border px-1.5 py-0.5 no-underline {% if governed_top20.top_n == 50 %}border-violet-500/70 bg-violet-950/50 text-violet-100{% else %}border-slate-700/70 bg-slate-900/80 text-slate-300 hover:text-slate-100{% endif %}"
+        class="rounded border px-2 py-1 sm:px-1.5 sm:py-0.5 min-h-[2rem] sm:min-h-0 inline-flex items-center no-underline {% if governed_top20.top_n == 50 %}border-violet-500/70 bg-violet-950/50 text-violet-100{% else %}border-slate-700/70 bg-slate-900/80 text-slate-300 hover:text-slate-100{% endif %}"
         data-market-governed-top50-toggle-v1="true"
         data-market-governed-top-n-value="50"
         {% if governed_top20.top_n == 50 %}aria-current="page"{% endif %}
@@ -70,9 +70,10 @@
 
   {% if governed_top20.snapshot_available and governed_top20.producer_rows %}
   <div
-    class="mb-1.5 flex flex-wrap items-end gap-1.5 text-[10px]"
+    class="mb-1.5 flex flex-wrap items-end gap-2 sm:gap-1.5 text-[10px]"
     data-market-governed-matrix-filters-v1="true"
     data-market-matrix-url-state-v1="true"
+    data-market-matrix-toolbar-filters-v1="true"
     aria-label="Matrix filters (view-only)"
   >
     <form
@@ -91,11 +92,12 @@
         <input
           type="search"
           name="matrix_filter_symbol"
-          class="rounded border border-slate-700/70 bg-slate-900/80 px-2 py-1 font-mono text-slate-200 min-w-[8rem]"
+          class="rounded border border-slate-700/70 bg-slate-900/80 px-2 py-1.5 sm:py-1 font-mono text-slate-200 min-w-[8rem] w-full sm:w-auto min-h-[2.25rem] sm:min-h-0"
           placeholder="filter symbol…"
           value="{{ matrix_view_query.matrix_filter_symbol|e }}"
           data-market-matrix-filter-symbol-v1="true"
           autocomplete="off"
+          aria-label="Filter matrix by futures symbol"
         />
       </label>
     </form>
@@ -104,13 +106,13 @@
       <div class="flex flex-wrap gap-1">
         <a
           href="{{ governed_top20.matrix_control_hrefs.f5_status.all|e }}"
-          class="rounded border px-2 py-1 font-mono no-underline {% if not matrix_view_query.matrix_filter_f5_status %}border-violet-500/70 bg-violet-950/50 text-violet-100{% else %}border-slate-700/70 bg-slate-900/80 text-slate-300 hover:text-slate-100{% endif %}"
+          class="rounded border px-2 py-1.5 sm:py-1 font-mono no-underline min-h-[2rem] sm:min-h-0 inline-flex items-center {% if not matrix_view_query.matrix_filter_f5_status %}border-violet-500/70 bg-violet-950/50 text-violet-100{% else %}border-slate-700/70 bg-slate-900/80 text-slate-300 hover:text-slate-100{% endif %}"
           {% if not matrix_view_query.matrix_filter_f5_status %}aria-current="true"{% endif %}
         >all</a>
         {% for status in governed_top20.f5_filter_values %}
         <a
           href="{{ governed_top20.matrix_control_hrefs.f5_status[status]|e }}"
-          class="rounded border px-2 py-1 font-mono no-underline {% if matrix_view_query.matrix_filter_f5_status == status %}border-violet-500/70 bg-violet-950/50 text-violet-100{% else %}border-slate-700/70 bg-slate-900/80 text-slate-300 hover:text-slate-100{% endif %}"
+          class="rounded border px-2 py-1.5 sm:py-1 font-mono no-underline min-h-[2rem] sm:min-h-0 inline-flex items-center {% if matrix_view_query.matrix_filter_f5_status == status %}border-violet-500/70 bg-violet-950/50 text-violet-100{% else %}border-slate-700/70 bg-slate-900/80 text-slate-300 hover:text-slate-100{% endif %}"
           {% if matrix_view_query.matrix_filter_f5_status == status %}aria-current="true"{% endif %}
         >{{ status|e }}</a>
         {% endfor %}
@@ -122,7 +124,7 @@
         {% for label, key in [('all', 'all'), ('fresh', 'fresh'), ('stale', 'stale')] %}
         <a
           href="{{ governed_top20.matrix_control_hrefs.freshness[key]|e }}"
-          class="rounded border px-2 py-1 font-mono no-underline {% if (key == 'all' and not matrix_view_query.matrix_filter_freshness) or matrix_view_query.matrix_filter_freshness == key %}border-violet-500/70 bg-violet-950/50 text-violet-100{% else %}border-slate-700/70 bg-slate-900/80 text-slate-300 hover:text-slate-100{% endif %}"
+          class="rounded border px-2 py-1.5 sm:py-1 font-mono no-underline min-h-[2rem] sm:min-h-0 inline-flex items-center {% if (key == 'all' and not matrix_view_query.matrix_filter_freshness) or matrix_view_query.matrix_filter_freshness == key %}border-violet-500/70 bg-violet-950/50 text-violet-100{% else %}border-slate-700/70 bg-slate-900/80 text-slate-300 hover:text-slate-100{% endif %}"
           {% if (key == 'all' and not matrix_view_query.matrix_filter_freshness) or matrix_view_query.matrix_filter_freshness == key %}aria-current="true"{% endif %}
         >{{ label|e }}</a>
         {% endfor %}
@@ -130,44 +132,44 @@
     </div>
     <a
       href="{{ governed_top20.matrix_control_hrefs.reset_filters|e }}"
-      class="rounded border border-slate-700/70 bg-slate-900/80 px-2 py-1 text-slate-300 hover:text-slate-100 no-underline"
+      class="rounded border border-slate-700/70 bg-slate-900/80 px-2 py-1.5 sm:py-1 text-slate-300 hover:text-slate-100 no-underline min-h-[2rem] sm:min-h-0 inline-flex items-center"
       data-market-matrix-reset-filters-v1="true"
     >Reset filters</a>
     <a
       href="{{ governed_top20.matrix_control_hrefs.reset_sort|e }}"
-      class="rounded border border-slate-700/70 bg-slate-900/80 px-2 py-1 text-slate-300 hover:text-slate-100 no-underline"
+      class="rounded border border-slate-700/70 bg-slate-900/80 px-2 py-1.5 sm:py-1 text-slate-300 hover:text-slate-100 no-underline min-h-[2rem] sm:min-h-0 inline-flex items-center"
       data-market-matrix-reset-sort-v1="true"
       title="Restore governed ranking order (rank ascending)"
     >Reset sort</a>
   </div>
 
-  <div class="overflow-x-auto" data-market-governed-top20-table-v1="true" data-market-futures-selector-table-v1="true" data-market-governed-matrix-table-v1="true">
+  <div class="overflow-x-auto max-w-full" data-market-governed-top20-table-v1="true" data-market-futures-selector-table-v1="true" data-market-governed-matrix-table-v1="true" data-market-governed-matrix-scroll-contained-v1="true" data-market-matrix-scroll-contained-v1="true">
     <table class="w-full min-w-[52rem] text-[11px] border-collapse tabular-nums">
       <thead class="sticky top-0 z-10 bg-slate-950/95 backdrop-blur-sm">
         <tr class="text-left text-slate-400 border-b border-slate-800/70">
-          <th class="pr-2 py-1 font-normal">
+          <th scope="col" class="pr-2 py-1 font-normal sticky left-0 z-20 bg-slate-950/95">
             <a href="{{ governed_top20.matrix_control_hrefs.sort.rank|e }}" class="text-sky-300/95 no-underline hover:underline {% if governed_top20.active_sort_field == 'rank' %}font-semibold text-violet-100{% endif %}" data-market-matrix-sort-v1="true" data-market-matrix-sort-field="rank" title="Governed rank (default order)" {% if governed_top20.active_sort_field == 'rank' %}aria-current="true"{% endif %}>Rank</a>
           </th>
-          <th class="pr-2 py-1 font-normal">
+          <th scope="col" class="pr-2 py-1 font-normal">
             <a href="{{ governed_top20.matrix_control_hrefs.sort.symbol|e }}" class="text-sky-300/95 no-underline hover:underline {% if governed_top20.active_sort_field == 'symbol' %}font-semibold text-violet-100{% endif %}" data-market-matrix-sort-v1="true" data-market-matrix-sort-field="symbol" {% if governed_top20.active_sort_field == 'symbol' %}aria-current="true"{% endif %}>Futures symbol</a>
           </th>
-          <th class="pr-2 py-1 font-normal text-right">
+          <th scope="col" class="pr-2 py-1 font-normal text-right">
             <a href="{{ governed_top20.matrix_control_hrefs.sort.score|e }}" class="text-sky-300/95 no-underline hover:underline {% if governed_top20.active_sort_field == 'score' %}font-semibold text-violet-100{% endif %}" data-market-matrix-sort-v1="true" data-market-matrix-sort-field="score" title="Producer display_score" {% if governed_top20.active_sort_field == 'score' %}aria-current="true"{% endif %}>Score</a>
           </th>
-          <th class="pr-2 py-1 font-normal">
+          <th scope="col" class="pr-2 py-1 font-normal">
             <a href="{{ governed_top20.matrix_control_hrefs.sort.f5_status|e }}" class="text-sky-300/95 no-underline hover:underline {% if governed_top20.active_sort_field == 'f5_status' %}font-semibold text-violet-100{% endif %}" data-market-matrix-sort-v1="true" data-market-matrix-sort-field="f5_status" title="F5 metadata status (snapshot-level)" {% if governed_top20.active_sort_field == 'f5_status' %}aria-current="true"{% endif %}>Eligibility / F5</a>
           </th>
-          <th class="pr-2 py-1 font-normal text-right">
+          <th scope="col" class="pr-2 py-1 font-normal text-right">
             <a href="{{ governed_top20.matrix_control_hrefs.sort.last_price|e }}" class="text-sky-300/95 no-underline hover:underline {% if governed_top20.active_sort_field == 'last_price' %}font-semibold text-violet-100{% endif %}" data-market-matrix-sort-v1="true" data-market-matrix-sort-field="last_price" title="Last close from futures OHLCV readmodel when available" {% if governed_top20.active_sort_field == 'last_price' %}aria-current="true"{% endif %}>Last price</a>
           </th>
-          <th class="pr-2 py-1 font-normal text-right">
+          <th scope="col" class="pr-2 py-1 font-normal text-right">
             <a href="{{ governed_top20.matrix_control_hrefs.sort.change|e }}" class="text-sky-300/95 no-underline hover:underline {% if governed_top20.active_sort_field == 'change' %}font-semibold text-violet-100{% endif %}" data-market-matrix-sort-v1="true" data-market-matrix-sort-field="change" title="Bar-over-bar % change from OHLCV when available" {% if governed_top20.active_sort_field == 'change' %}aria-current="true"{% endif %}>Change</a>
           </th>
-          <th class="pr-2 py-1 font-normal text-right">
+          <th scope="col" class="pr-2 py-1 font-normal text-right">
             <a href="{{ governed_top20.matrix_control_hrefs.sort.volume|e }}" class="text-sky-300/95 no-underline hover:underline {% if governed_top20.active_sort_field == 'volume' %}font-semibold text-violet-100{% endif %}" data-market-matrix-sort-v1="true" data-market-matrix-sort-field="volume" title="Last bar volume from OHLCV when available" {% if governed_top20.active_sort_field == 'volume' %}aria-current="true"{% endif %}>Volume</a>
           </th>
-          <th class="pr-2 py-1 font-normal">Freshness</th>
-          <th class="py-1 font-normal">Data status</th>
+          <th scope="col" class="pr-2 py-1 font-normal">Freshness</th>
+          <th scope="col" class="py-1 font-normal">Data status</th>
         </tr>
       </thead>
       <tbody data-market-governed-matrix-tbody-v1="true">
@@ -189,7 +191,7 @@
           data-market-matrix-sort-volume="{{ row.volume_sort if row.volume_sort is not none else '' }}"
           {% if row.is_selected %}data-market-futures-selector-selected-v1="true"{% endif %}
         >
-          <td class="pr-2 py-1">{{ row.rank|e }}</td>
+          <td class="pr-2 py-1 sticky left-0 z-[1] bg-slate-950/90">{{ row.rank|e }}</td>
           <td class="pr-2 py-1 font-mono">
             <a href="{{ row.market_nav_href|e }}" class="text-sky-300/95 no-underline hover:underline" data-market-futures-selector-link-v1="true">{{ row.symbol|e }}</a>
           </td>
