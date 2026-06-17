@@ -495,12 +495,8 @@ PE15_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_REPLAY_CI_AUDIT_CROSSLINK_HEADING 
     "## PE-15 Bounded Futures Testnet preflight packet replay CI_AUDIT ↔ SECTION5 reciprocal "
     "crosslink — docs/tests-only guard v1"
 )
-PE15_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_REPLAY_CI_AUDIT_CROSSLINK_GUARD_BLOCK_ANCHOR = (
-    "PE15_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_REPLAY_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_V1=true"
-)
-PE15_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_REPLAY_CI_AUDIT_CROSSLINK_EXPECTED: dict[
-    str, str
-] = {
+PE15_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_REPLAY_CI_AUDIT_CROSSLINK_GUARD_BLOCK_ANCHOR = "PE15_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_REPLAY_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_V1=true"
+PE15_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_REPLAY_CI_AUDIT_CROSSLINK_EXPECTED: dict[str, str] = {
     "PE15_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_REPLAY_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_V1": "true",
     "PE15_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_REPLAY_CI_AUDIT_CROSSLINK_DOCS_TESTS_ONLY": "true",
     "SECTION5_PE15_OWNER_REFERENCED": "true",
@@ -3374,9 +3370,7 @@ def test_ci_audit_pe15_bounded_futures_testnet_preflight_packet_replay_crosslink
     None
 ):
     text = _ci_audit_text()
-    section = _pe15_bounded_futures_testnet_preflight_packet_replay_ci_audit_crosslink_section(
-        text
-    )
+    section = _pe15_bounded_futures_testnet_preflight_packet_replay_ci_audit_crosslink_section(text)
     assert (
         "GO_PE15_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_REPLAY_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1"
         in section
@@ -3396,9 +3390,7 @@ def test_ci_audit_pe15_bounded_futures_testnet_preflight_packet_replay_crosslink
     None
 ):
     text = _ci_audit_text()
-    section = _pe15_bounded_futures_testnet_preflight_packet_replay_ci_audit_crosslink_section(
-        text
-    )
+    section = _pe15_bounded_futures_testnet_preflight_packet_replay_ci_audit_crosslink_section(text)
     block = _block_containing(
         section,
         PE15_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_REPLAY_CI_AUDIT_CROSSLINK_GUARD_BLOCK_ANCHOR,
