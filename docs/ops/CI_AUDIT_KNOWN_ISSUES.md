@@ -2272,6 +2272,68 @@ DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
 
 **Non-authorizing:** Docs/tests-only reciprocal crosslink guard only; does **not** authorize execute, runtime, run start, live, preflight lift, futures session, lifecycle network/orders, order/cancel/execution/arming, authority lift, trading-logic changes, Master V2 / Double Play / Bull-Bear / Risk / KillSwitch / Scope / Capital changes, workflow YAML mutation, `workflow_dispatch`, `gh run rerun`, JSONL ingest, evidence dataset mutation, or Market Dashboard authority changes.
 
+## PE-15 Bounded Futures Testnet preflight packet replay CI_AUDIT ↔ SECTION5 reciprocal crosslink — docs/tests-only guard v1
+
+**Operator-GO:** `GO_PE15_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_REPLAY_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1`
+
+**Purpose:** Reciprocal crosslink so CI_AUDIT documents PE-15 bounded futures testnet preflight packet offline replay + manifest verification guard aligned with SECTION5 Gap Owner Map PE-15 guard block, PE-14 input capture reuse, PE-13 packet schema reuse, PE-12 lifecycle binding, and Preflight §2b.2 reproducibility boundary. Guard/Ops drift fix only — **non-authorizing**; **no** execute, preflight lift, futures session, network I/O, lifecycle execute, or runtime.
+
+**Canonical repo owners (reuse — do not duplicate):**
+
+| Concern | Owner |
+|---------|-------|
+| Gap Owner Map SSOT — PE-15 guard block | `docs/ops/planning/SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md` |
+| Bounded futures testnet preflight packet replay (PE-15) | `src/ops/bounded_futures_testnet_preflight_packet_replay_contract_v0.py` |
+| Bounded futures testnet preflight packet builder (PE-14 input capture reuse) | `src/ops/bounded_futures_testnet_preflight_packet_builder_contract_v0.py` |
+| Bounded futures testnet preflight packet contract (PE-13 schema reuse) | `src/ops/bounded_futures_testnet_preflight_packet_contract_v0.py` |
+| PE-12 lifecycle composition (reference only) | `src/ops/bounded_futures_testnet_adapter_lifecycle_contract_v0.py` |
+| Preflight §2b.2 GLB-016 boundary (reference only) | `docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md` |
+| Static replay guard | `tests/ops/test_bounded_futures_testnet_preflight_packet_replay_contract_v0.py` |
+| CI_AUDIT / DOCS_TRUTH_MAP reciprocal guard | `tests/ops/test_remote_runtime_contract_docs_guard_v0.py` |
+
+```text
+PE15_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_REPLAY_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_V1=true
+PE15_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_REPLAY_CI_AUDIT_CROSSLINK_DOCS_TESTS_ONLY=true
+SECTION5_PE15_OWNER_REFERENCED=true
+BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_REPLAY_CONTRACT_V0_REFERENCED=true
+PE14_INPUT_CAPTURE_REUSED=true
+PE13_PACKET_SCHEMA_REUSED=true
+PE12_LIFECYCLE_BINDING_REFERENCED=true
+GLB016_STATIC_PREFLIGHT_PACKET_REPLAY_BOUNDARY_REFERENCED=true
+OFFLINE_REPLAY_PRESENT=true
+MANIFEST_VERIFICATION_PRESENT=true
+PACKET_DIGEST_VERIFICATION_PRESENT=true
+INPUT_CAPTURE_DIGEST_VERIFICATION_PRESENT=true
+FAIL_CLOSED_MANIPULATION_DETECTION_PRESENT=true
+DETERMINISTIC_REPLAY_PRESENT=true
+EXECUTION_AUTHORIZED=false
+LIVE_AUTHORIZED=false
+CREDENTIALS_ALLOWED=false
+NETWORK_ALLOWED=false
+ORDERS_ALLOWED=false
+RUNTIME_ALLOWED=false
+SCHEDULER_ALLOWED=false
+NO_EXECUTE=true
+NO_PREFLIGHT_LIFT=true
+NO_RUNTIME=true
+NO_LIVE=true
+ORDER_CANCEL_EXECUTION_ARMING_TOUCHED=false
+AUTHORITY_LIFT=false
+TRADING_LOGIC_TOUCHED=false
+MASTER_V2_LOGIC_TOUCHED=false
+DOUBLE_PLAY_LOGIC_TOUCHED=false
+NEW_PARALLEL_SSOT_CREATED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+FOLLOWUP_RUN_GATE=OPERATOR_INPUT_REQUIRED_IN_NEW_CHAT_NO_AUTO_GO
+MARKET_DASHBOARD_TOUCHED=false
+DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
+```
+
+**Guard module (reuse — no parallel PE-15 SSOT):** `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`.
+
+**Non-authorizing:** Docs/tests-only reciprocal crosslink guard only; does **not** authorize execute, runtime, run start, live, preflight lift, futures session, lifecycle network/orders, order/cancel/execution/arming, authority lift, trading-logic changes, Master V2 / Double Play / Bull-Bear / Risk / KillSwitch / Scope / Capital changes, workflow YAML mutation, `workflow_dispatch`, `gh run rerun`, JSONL ingest, evidence dataset mutation, or Market Dashboard authority changes.
+
 ## PE-8/PE-9/PE-10 Bounded Futures Testnet CI_AUDIT ↔ SECTION5 reciprocal crosslink — docs/tests-only guard v1
 
 **Operator-GO:** `GO_PE8_PE9_PE10_BOUNDED_FUTURES_TESTNET_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1`
