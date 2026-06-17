@@ -2966,7 +2966,9 @@ def _pe8_pe9_pe10_bounded_futures_testnet_ci_audit_crosslink_section(text: str) 
 
 def _pe12_bounded_futures_testnet_adapter_lifecycle_ci_audit_crosslink_section(text: str) -> str:
     start = text.find(PE12_BOUNDED_FUTURES_TESTNET_ADAPTER_LIFECYCLE_CI_AUDIT_CROSSLINK_HEADING)
-    assert start != -1, "missing PE-12 bounded futures testnet adapter lifecycle CI_AUDIT crosslink section"
+    assert start != -1, (
+        "missing PE-12 bounded futures testnet adapter lifecycle CI_AUDIT crosslink section"
+    )
     next_heading = text.find("\n## ", start + 1)
     if next_heading == -1:
         return text[start:]
@@ -2987,7 +2989,9 @@ def test_ci_audit_pe12_bounded_futures_testnet_adapter_lifecycle_crosslink_secti
     assert "bounded_futures_testnet_adapter_lifecycle_contract_v0" in section
     assert "no parallel pe-12 ssot" in section.lower()
     assert THIS_MODULE in section
-    for module_name in PE12_BOUNDED_FUTURES_TESTNET_ADAPTER_LIFECYCLE_CI_AUDIT_CROSSLINK_OWNER_TESTS:
+    for (
+        module_name
+    ) in PE12_BOUNDED_FUTURES_TESTNET_ADAPTER_LIFECYCLE_CI_AUDIT_CROSSLINK_OWNER_TESTS:
         assert module_name in section, f"missing owner test reference {module_name!r}"
 
 
@@ -2999,9 +3003,15 @@ def test_ci_audit_pe12_bounded_futures_testnet_adapter_lifecycle_crosslink_machi
         PE12_BOUNDED_FUTURES_TESTNET_ADAPTER_LIFECYCLE_CI_AUDIT_CROSSLINK_GUARD_BLOCK_ANCHOR,
     )
     values = _machine_line_values(block)
-    missing = set(PE12_BOUNDED_FUTURES_TESTNET_ADAPTER_LIFECYCLE_CI_AUDIT_CROSSLINK_EXPECTED) - values.keys()
+    missing = (
+        set(PE12_BOUNDED_FUTURES_TESTNET_ADAPTER_LIFECYCLE_CI_AUDIT_CROSSLINK_EXPECTED)
+        - values.keys()
+    )
     assert not missing, f"missing PE-12 CI_AUDIT crosslink keys: {sorted(missing)}"
-    for key, expected in PE12_BOUNDED_FUTURES_TESTNET_ADAPTER_LIFECYCLE_CI_AUDIT_CROSSLINK_EXPECTED.items():
+    for (
+        key,
+        expected,
+    ) in PE12_BOUNDED_FUTURES_TESTNET_ADAPTER_LIFECYCLE_CI_AUDIT_CROSSLINK_EXPECTED.items():
         assert values[key] == expected, f"{key}={values[key]!r} expected {expected!r}"
 
 
@@ -3011,7 +3021,10 @@ def test_section5_doc_pe12_bounded_futures_testnet_adapter_lifecycle_owner_prese
     assert "BOUNDED_FUTURES_TESTNET_ADAPTER_LIFECYCLE_CONTRACT_V0=true" in text
     assert "LIFECYCLE_EXECUTE_AUTHORIZED_NOW=false" in text
     assert "readiness_decision" in text
-    assert PE12_BOUNDED_FUTURES_TESTNET_ADAPTER_LIFECYCLE_CI_AUDIT_CROSSLINK_GUARD_BLOCK_ANCHOR not in text
+    assert (
+        PE12_BOUNDED_FUTURES_TESTNET_ADAPTER_LIFECYCLE_CI_AUDIT_CROSSLINK_GUARD_BLOCK_ANCHOR
+        not in text
+    )
 
 
 def test_docs_truth_map_pe12_bounded_futures_testnet_adapter_lifecycle_ci_audit_crosslink_chronicle_v1() -> (
@@ -3023,7 +3036,9 @@ def test_docs_truth_map_pe12_bounded_futures_testnet_adapter_lifecycle_ci_audit_
         in text
     )
     assert THIS_MODULE in text
-    assert PE12_BOUNDED_FUTURES_TESTNET_ADAPTER_LIFECYCLE_CI_AUDIT_CROSSLINK_GUARD_BLOCK_ANCHOR in text
+    assert (
+        PE12_BOUNDED_FUTURES_TESTNET_ADAPTER_LIFECYCLE_CI_AUDIT_CROSSLINK_GUARD_BLOCK_ANCHOR in text
+    )
     assert "test_bounded_futures_testnet_adapter_lifecycle_contract_v0.py" in text
     assert "**no** execute / Preflight-Lift / futures-session / lifecycle" in text
     assert "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true" in text
