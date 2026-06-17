@@ -90,6 +90,7 @@ class PreflightCompletenessTruthInput:
     replay_result: dict[str, Any] | None = None
     archive_result: dict[str, Any] | None = None
     source_state_capture_proof: ExplicitContractProof | None = None
+    source_state_capture_result: dict[str, Any] | None = None
     operator_review_proof: ExplicitContractProof | None = None
 
 
@@ -511,14 +512,37 @@ def evaluate_glb016_internal_truth(
     internal_static_chain_complete = completeness["completeness_status"] == COMPLETENESS_COMPLETE
 
     source_proof = evaluation_input.source_state_capture_proof
+    capture_result = evaluation_input.source_state_capture_result
     operator_proof = evaluation_input.operator_review_proof
 
-    source_state_capture_present = source_proof is not None
+    source_state_capture_present = source_proof is not None or capture_result is not None
     source_state_capture_valid = _proof_valid(
         source_proof,
         expected_contract_version=SOURCE_STATE_CAPTURE_CONTRACT_VERSION,
         expected_marker="BOUNDED_FUTURES_TESTNET_PREFLIGHT_SOURCE_STATE_CAPTURE_CONTRACT_V0=true",
     )
+    source_state_digest: str | None = None
+    if capture_result is not None:
+        if capture_result.get("capture_status") != "valid":
+            if source_state_capture_valid:
+                source_state_capture_valid = False
+            validation_errors.append(
+                "source_state_capture: capture_result present without capture_status=valid"
+            )
+        else:
+            digest = capture_result.get("source_state_digest")
+            if not digest or not isinstance(digest, str) or len(digest) != 64:
+                source_state_capture_valid = False
+                validation_errors.append(
+                    "source_state_capture: valid capture_result missing digest"
+                )
+            else:
+                source_state_digest = digest
+                if source_proof is None:
+                    source_state_capture_valid = False
+                    validation_errors.append(
+                        "source_state_capture: capture_result without explicit contract proof"
+                    )
     operator_review_reproducible = operator_proof is not None
     operator_review_valid = _proof_valid(
         operator_proof,
@@ -561,6 +585,7 @@ def evaluate_glb016_internal_truth(
         "packet_completeness_present": internal_static_chain_complete,
         "source_state_capture_present": source_state_capture_present,
         "source_state_capture_valid": source_state_capture_valid,
+        "source_state_digest": source_state_digest,
         "operator_review_reproducible": operator_review_reproducible,
         "operator_review_valid": operator_review_valid,
         "glb016_full_preflight_reproducibility_satisfied": glb016_full,

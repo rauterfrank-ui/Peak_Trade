@@ -165,6 +165,8 @@ Owner Map §2a.1 and Preflight §2a.1 remain aligned on durable primary-evidence
 
 **Bounded Futures Testnet preflight packet completeness + internal truth evaluation (PE-17 guard) v0:** Addresses GLB-016 static packet completeness and internal non-authorizing truth evaluation at offline integration layer only (reuses PE-13 packet schema + digest SSOT; reuses PE-14 canonical input capture SSOT; reuses PE-15 replay/manifest verification SSOT; reuses PE-16 durable archive wiring results). Canonical evaluator: `src/ops/bounded_futures_testnet_preflight_packet_completeness_truth_contract_v0.py` (`BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_COMPLETENESS_TRUTH_CONTRACT_V0=true`). Static guard: `tests/ops/test_bounded_futures_testnet_preflight_packet_completeness_truth_contract_v0.py`. Deterministic completeness matrix across packet, capture, builder alignment, replay, archive, digest chain, lifecycle gates, and evidence requirements; internal GLB-016 truth states `blocked_incomplete`, `static_chain_complete_additional_requirements_open`, `ready_for_separate_operator_review`; `source_state_capture_present=false` by default; `operator_review_reproducible=false` by default; `GLB016_FULL_PREFLIGHT_REPRODUCIBILITY_SATISFIED=false` by default; `operator_go_present=false`; `credentials_allowed=false`; `network_allowed=false`; `orders_allowed=false`; `runtime_allowed=false`; `scheduler_allowed=false`; `execution_authorized=false`; `live_authorized=false`; `FOLLOWUP_RUN_GATE=OPERATOR_INPUT_REQUIRED_IN_NEW_CHAT_NO_AUTO_GO`; **does not** authorize Futures execute, network, credentials, orders, runtime, scheduler, preflight lift, canonical source-state capture, operator-review reproducibility closure, full GLB-016 preflight reproducibility closure, or Master-V2 / Double-Play authority.
 
+**Bounded Futures Testnet preflight canonical source-state capture (PE-18 guard) v0:** Addresses GLB-016 canonical source-state capture gap at offline explicit-input integration layer only (reuses PE-13 packet schema + digest SSOT; reuses PE-14 canonical input capture SSOT; reuses PE-15 replay/manifest verification SSOT; reuses PE-16 durable archive wiring SSOT; composes PE-17 completeness/truth proof consumption). Canonical capture evaluator: `src/ops/bounded_futures_testnet_preflight_source_state_capture_contract_v0.py` (`BOUNDED_FUTURES_TESTNET_PREFLIGHT_SOURCE_STATE_CAPTURE_CONTRACT_V0=true`). Static guard: `tests/ops/test_bounded_futures_testnet_preflight_source_state_capture_contract_v0.py`. Deterministic canonical serialization and source-state digest; explicit repository/contract-version/config/registry/policy/evidence-chain/toolchain bindings; fail-closed rejection of dirty state, authority flags, secrets, volatile host metadata, and digest mismatches; `operator_go_present=false`; `credentials_allowed=false`; `network_allowed=false`; `orders_allowed=false`; `scheduler_runtime_allowed=false`; `execution_authorized=false`; `live_authorized=false`; `GLB016_FULL_PREFLIGHT_REPRODUCIBILITY_SATISFIED=false`; `OPERATOR_REVIEW_REPRODUCIBLE=false`; `FOLLOWUP_RUN_GATE=OPERATOR_INPUT_REQUIRED_IN_NEW_CHAT_NO_AUTO_GO`; **does not** authorize Futures execute, network, credentials, orders, runtime, scheduler, preflight lift, operator-review reproducibility closure, full GLB-016 preflight reproducibility closure, or Master-V2 / Double-Play authority.
+
 ### Reuse-first owner surfaces
 
 - `scripts/ops/primary_evidence_retention_v0.py`
@@ -187,6 +189,7 @@ Owner Map §2a.1 and Preflight §2a.1 remain aligned on durable primary-evidence
 - `src/ops/bounded_futures_testnet_adapter_lifecycle_contract_v0.py`
 - `src/ops/bounded_futures_testnet_preflight_packet_contract_v0.py`
 - `src/ops/bounded_futures_testnet_preflight_packet_builder_contract_v0.py`
+- `src/ops/bounded_futures_testnet_preflight_source_state_capture_contract_v0.py`
 - `scripts/ops/archive_futures_testnet_harness_v0.py`
 - `scripts/ops/run_testnet_private_readonly_connectivity_adapter_v1.py` (Path-C private-readonly lane; plan-only default; no execute authorization)
 - `scripts/ops/review_testnet_private_readonly_connectivity_evidence_v1.py` (Path-C offline evidence review; schema `testnet_path_c_private_readonly_connectivity.v1`)
@@ -203,6 +206,7 @@ Owner Map §2a.1 and Preflight §2a.1 remain aligned on durable primary-evidence
 - `tests/ops/test_bounded_futures_testnet_adapter_lifecycle_contract_v0.py`
 - `tests/ops/test_bounded_futures_testnet_preflight_packet_contract_v0.py`
 - `tests/ops/test_bounded_futures_testnet_preflight_packet_builder_contract_v0.py`
+- `tests/ops/test_bounded_futures_testnet_preflight_source_state_capture_contract_v0.py`
 - `tests/ops/test_archive_futures_testnet_harness_v0.py`
 - existing preflight contract §2a/§2a.1 surfaces
 - existing docs truth map / reference / token-policy checks
