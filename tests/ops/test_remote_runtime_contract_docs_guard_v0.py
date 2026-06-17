@@ -3526,7 +3526,6 @@ def test_ci_audit_pe16_bounded_futures_testnet_preflight_packet_durable_archive_
     assert "bounded_futures_testnet_preflight_packet_replay_contract_v0" in section
     assert "bounded_futures_testnet_preflight_packet_builder_contract_v0" in section
     assert "bounded_futures_testnet_preflight_packet_contract_v0" in section
-    assert "primary_evidence_retention_v0.py" in section
     assert THIS_MODULE in section
     for module_name in (
         PE16_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_DURABLE_ARCHIVE_CI_AUDIT_CROSSLINK_OWNER_TESTS

@@ -2349,7 +2349,6 @@ DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
 | Bounded futures testnet preflight packet replay (PE-15 replay/manifest reuse) | `src/ops/bounded_futures_testnet_preflight_packet_replay_contract_v0.py` |
 | Bounded futures testnet preflight packet builder (PE-14 input capture reuse) | `src/ops/bounded_futures_testnet_preflight_packet_builder_contract_v0.py` |
 | Bounded futures testnet preflight packet contract (PE-13 schema reuse) | `src/ops/bounded_futures_testnet_preflight_packet_contract_v0.py` |
-| Primary evidence manifest/checksum primitives (reuse only) | `scripts/ops/primary_evidence_retention_v0.py` |
 | PE-12 lifecycle composition (reference only) | `src/ops/bounded_futures_testnet_adapter_lifecycle_contract_v0.py` |
 | Preflight §2b.2 GLB-016 boundary (reference only) | `docs/ops/runbooks/PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md` |
 | Static archive wiring guard | `tests/ops/test_bounded_futures_testnet_preflight_packet_archive_contract_v0.py` |
