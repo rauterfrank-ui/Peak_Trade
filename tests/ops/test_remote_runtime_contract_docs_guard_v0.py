@@ -445,6 +445,52 @@ PE13_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_CI_AUDIT_CROSSLINK_EXPECTED: dict[
 PE13_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_CI_AUDIT_CROSSLINK_OWNER_TESTS = (
     "test_bounded_futures_testnet_preflight_packet_contract_v0.py",
 )
+PE14_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_BUILDER_CI_AUDIT_CROSSLINK_HEADING = (
+    "## PE-14 Bounded Futures Testnet preflight packet builder CI_AUDIT ↔ SECTION5 reciprocal "
+    "crosslink — docs/tests-only guard v1"
+)
+PE14_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_BUILDER_CI_AUDIT_CROSSLINK_GUARD_BLOCK_ANCHOR = "PE14_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_BUILDER_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_V1=true"
+PE14_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_BUILDER_CI_AUDIT_CROSSLINK_EXPECTED: dict[
+    str, str
+] = {
+    "PE14_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_BUILDER_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_V1": "true",
+    "PE14_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_BUILDER_CI_AUDIT_CROSSLINK_DOCS_TESTS_ONLY": "true",
+    "SECTION5_PE14_OWNER_REFERENCED": "true",
+    "BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_BUILDER_CONTRACT_V0_REFERENCED": "true",
+    "PE13_PACKET_SCHEMA_REUSED": "true",
+    "PE12_LIFECYCLE_BINDING_REFERENCED": "true",
+    "GLB016_STATIC_PREFLIGHT_PACKET_BUILDER_BOUNDARY_REFERENCED": "true",
+    "CANONICAL_INPUT_CAPTURE_PRESENT": "true",
+    "DETERMINISTIC_BUILDER_PRESENT": "true",
+    "DETERMINISTIC_SERIALIZATION_PRESENT": "true",
+    "DETERMINISTIC_DIGEST_PRESENT": "true",
+    "FAIL_CLOSED_VALIDATION_PRESENT": "true",
+    "EXECUTION_AUTHORIZED": "false",
+    "LIVE_AUTHORIZED": "false",
+    "CREDENTIALS_ALLOWED": "false",
+    "NETWORK_ALLOWED": "false",
+    "ORDERS_ALLOWED": "false",
+    "RUNTIME_ALLOWED": "false",
+    "SCHEDULER_ALLOWED": "false",
+    "NO_EXECUTE": "true",
+    "NO_PREFLIGHT_LIFT": "true",
+    "NO_RUNTIME": "true",
+    "NO_LIVE": "true",
+    "ORDER_CANCEL_EXECUTION_ARMING_TOUCHED": "false",
+    "AUTHORITY_LIFT": "false",
+    "TRADING_LOGIC_TOUCHED": "false",
+    "MASTER_V2_LOGIC_TOUCHED": "false",
+    "DOUBLE_PLAY_LOGIC_TOUCHED": "false",
+    "NEW_PARALLEL_SSOT_CREATED": "false",
+    "PREFLIGHT_REMAINS_BLOCKED": "true",
+    "READY_FOR_OPERATOR_ARMING": "false",
+    "FOLLOWUP_RUN_GATE": "OPERATOR_INPUT_REQUIRED_IN_NEW_CHAT_NO_AUTO_GO",
+    "MARKET_DASHBOARD_TOUCHED": "false",
+    "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED": "true",
+}
+PE14_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_BUILDER_CI_AUDIT_CROSSLINK_OWNER_TESTS = (
+    "test_bounded_futures_testnet_preflight_packet_builder_contract_v0.py",
+)
 PE8_PE9_PE10_BOUNDED_FUTURES_TESTNET_CI_AUDIT_CROSSLINK_HEADING = (
     "## PE-8/PE-9/PE-10 Bounded Futures Testnet CI_AUDIT ↔ SECTION5 reciprocal crosslink "
     "— docs/tests-only guard v1"
@@ -3161,6 +3207,100 @@ def test_docs_truth_map_pe13_bounded_futures_testnet_preflight_packet_ci_audit_c
         PE13_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_CI_AUDIT_CROSSLINK_GUARD_BLOCK_ANCHOR in text
     )
     assert "test_bounded_futures_testnet_preflight_packet_contract_v0.py" in text
+    assert "FOLLOWUP_RUN_GATE=OPERATOR_INPUT_REQUIRED_IN_NEW_CHAT_NO_AUTO_GO" in text
+    assert "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true" in text
+
+
+def _pe14_bounded_futures_testnet_preflight_packet_builder_ci_audit_crosslink_section(
+    text: str,
+) -> str:
+    start = text.find(
+        PE14_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_BUILDER_CI_AUDIT_CROSSLINK_HEADING
+    )
+    assert start != -1, (
+        "missing PE-14 bounded futures testnet preflight packet builder CI_AUDIT crosslink section"
+    )
+    next_heading = text.find("\n## ", start + 1)
+    if next_heading == -1:
+        return text[start:]
+    return text[start:next_heading]
+
+
+def test_ci_audit_pe14_bounded_futures_testnet_preflight_packet_builder_crosslink_section_present_v1() -> (
+    None
+):
+    text = _ci_audit_text()
+    section = _pe14_bounded_futures_testnet_preflight_packet_builder_ci_audit_crosslink_section(
+        text
+    )
+    assert (
+        "GO_PE14_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_BUILDER_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1"
+        in section
+    )
+    assert "PE-14 bounded futures testnet preflight packet builder" in section
+    assert "SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md" in section
+    assert "bounded_futures_testnet_preflight_packet_builder_contract_v0" in section
+    assert "bounded_futures_testnet_preflight_packet_contract_v0" in section
+    for (
+        module_name
+    ) in PE14_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_BUILDER_CI_AUDIT_CROSSLINK_OWNER_TESTS:
+        assert module_name in section
+
+
+def test_ci_audit_pe14_bounded_futures_testnet_preflight_packet_builder_crosslink_machine_lines_v1() -> (
+    None
+):
+    text = _ci_audit_text()
+    section = _pe14_bounded_futures_testnet_preflight_packet_builder_ci_audit_crosslink_section(
+        text
+    )
+    block = _block_containing(
+        section,
+        PE14_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_BUILDER_CI_AUDIT_CROSSLINK_GUARD_BLOCK_ANCHOR,
+    )
+    values = _machine_line_values(block)
+    missing = (
+        set(PE14_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_BUILDER_CI_AUDIT_CROSSLINK_EXPECTED)
+        - values.keys()
+    )
+    assert not missing, f"missing PE-14 CI_AUDIT crosslink keys: {sorted(missing)}"
+    for (
+        key,
+        expected,
+    ) in PE14_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_BUILDER_CI_AUDIT_CROSSLINK_EXPECTED.items():
+        assert values[key] == expected, f"{key}={values[key]!r} expected {expected!r}"
+
+
+def test_section5_doc_pe14_bounded_futures_testnet_preflight_packet_builder_owner_present_v1() -> (
+    None
+):
+    text = SECTION5_DOC.read_text(encoding="utf-8")
+    assert (
+        "**Bounded Futures Testnet preflight packet builder + input capture (PE-14 guard) v0:**"
+        in text
+    )
+    assert "BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_BUILDER_CONTRACT_V0=true" in text
+    assert "FOLLOWUP_RUN_GATE=OPERATOR_INPUT_REQUIRED_IN_NEW_CHAT_NO_AUTO_GO" in text
+    assert (
+        PE14_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_BUILDER_CI_AUDIT_CROSSLINK_GUARD_BLOCK_ANCHOR
+        not in text
+    )
+
+
+def test_docs_truth_map_pe14_bounded_futures_testnet_preflight_packet_builder_ci_audit_crosslink_chronicle_v1() -> (
+    None
+):
+    text = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    assert (
+        "PE-14 Bounded Futures Testnet preflight packet builder CI_AUDIT ↔ SECTION5 reciprocal crosslink guard v1"
+        in text
+    )
+    assert THIS_MODULE in text
+    assert (
+        PE14_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_BUILDER_CI_AUDIT_CROSSLINK_GUARD_BLOCK_ANCHOR
+        in text
+    )
+    assert "test_bounded_futures_testnet_preflight_packet_builder_contract_v0.py" in text
     assert "FOLLOWUP_RUN_GATE=OPERATOR_INPUT_REQUIRED_IN_NEW_CHAT_NO_AUTO_GO" in text
     assert "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true" in text
 
