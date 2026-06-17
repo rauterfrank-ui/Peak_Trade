@@ -160,7 +160,10 @@ def test_pe19_pe20_pe25_pe33_owners_referenced_not_duplicated() -> None:
         boundary_text
     )
     assert "evaluate_operator_review(" not in boundary_text
-    assert "from src.ops.bounded_futures_testnet_preflight_operator_review_reproducibility_contract_v0 import (\n    evaluate_operator_review" not in boundary_text
+    assert (
+        "from src.ops.bounded_futures_testnet_preflight_operator_review_reproducibility_contract_v0 import (\n    evaluate_operator_review"
+        not in boundary_text
+    )
     assert "evaluate_operator_closure_lifecycle_integration" not in boundary_text
     assert "persist_operator_review_proof_package" not in boundary_text
     assert "import subprocess" not in boundary_text
