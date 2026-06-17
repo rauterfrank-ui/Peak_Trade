@@ -3965,13 +3965,13 @@ def test_ci_audit_pe19_bounded_futures_testnet_preflight_operator_review_reprodu
         in section
     )
     assert "Bounded Futures Testnet preflight operator-review reproducibility" in section
-    assert "bounded_futures_testnet_preflight_operator_review_reproducibility_contract_v0" in section
+    assert (
+        "bounded_futures_testnet_preflight_operator_review_reproducibility_contract_v0" in section
+    )
     assert "bounded_futures_testnet_preflight_source_state_capture_contract_v0" in section
     assert "bounded_futures_testnet_preflight_packet_completeness_truth_contract_v0" in section
     assert THIS_MODULE in section
-    for (
-        module_name
-    ) in PE19_BOUNDED_FUTURES_TESTNET_PREFLIGHT_OPERATOR_REVIEW_REPRODUCIBILITY_CI_AUDIT_CROSSLINK_OWNER_TESTS:
+    for module_name in PE19_BOUNDED_FUTURES_TESTNET_PREFLIGHT_OPERATOR_REVIEW_REPRODUCIBILITY_CI_AUDIT_CROSSLINK_OWNER_TESTS:
         assert module_name in section
 
 
@@ -4022,8 +4022,7 @@ def test_docs_truth_map_pe19_bounded_futures_testnet_preflight_operator_review_r
     text = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
     assert (
         "PE-19 Bounded Futures Testnet preflight operator-review reproducibility CI_AUDIT ↔ "
-        "SECTION5 reciprocal crosslink guard v1"
-        in text
+        "SECTION5 reciprocal crosslink guard v1" in text
     )
     assert THIS_MODULE in text
     assert (
