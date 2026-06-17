@@ -281,7 +281,9 @@ def _order_record_dict(order: OrderRecord) -> dict[str, Any]:
     }
 
 
-def _position_binding_dict(position: PositionStateBinding, *, include_digest: bool = True) -> dict[str, Any]:
+def _position_binding_dict(
+    position: PositionStateBinding, *, include_digest: bool = True
+) -> dict[str, Any]:
     data = asdict(position)
     if not include_digest:
         data.pop("snapshot_digest", None)

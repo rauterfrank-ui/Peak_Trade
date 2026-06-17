@@ -326,9 +326,7 @@ def test_orphaned_order_fails() -> None:
     bad = replace(integration_input, reconciliation_binding=bad_recon)
     result = evaluate_position_order_reconciliation_primary_evidence_integration(bad)
     assert result["integration_pass"] is False
-    assert any(
-        "unresolved reconciliation" in r or "orphaned" in r for r in result["fail_reasons"]
-    )
+    assert any("unresolved reconciliation" in r or "orphaned" in r for r in result["fail_reasons"])
 
 
 def test_orphaned_position_fails() -> None:
