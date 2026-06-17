@@ -17,6 +17,22 @@ from src.ops.bounded_futures_testnet_adapter_lifecycle_contract_v0 import (
     PHASE_STATIC_PREFLIGHT,
     PHASE_ZERO_ORDER,
 )
+from src.ops.bounded_futures_testnet_operator_review_chain_durable_evidence_traceability_boundary_contract_v0 import (
+    BOUNDARY_OWNER as PE37_BOUNDARY_OWNER,
+    CONTRACT_VERSION as PE37_CONTRACT_VERSION,
+    Pe33Pe36ProofChainBinding,
+    compute_traceability_identity,
+    default_minimal_boundary_input as default_minimal_pe37_boundary_input,
+    evaluate_durable_evidence_traceability_boundary,
+)
+from src.ops.bounded_futures_testnet_handoff_staleness_revocation_recovery_boundary_contract_v0 import (
+    HANDOFF_STATE_STALE,
+    HANDOFF_STATE_REVOKED,
+    HANDOFF_STATE_SUPERSEDED,
+)
+from src.ops.bounded_futures_testnet_operator_review_admission_presentation_boundary_contract_v0 import (
+    default_minimal_pe35_proof_binding,
+)
 from src.ops.bounded_futures_testnet_preflight_execution_readiness_assembly_lifecycle_integration_contract_v0 import (
     AUTHORITY_LIFT,
     CONTRACT_IMPLEMENTATION_ONLY,
@@ -44,6 +60,7 @@ from src.ops.bounded_futures_testnet_preflight_execution_readiness_assembly_life
     TESTNET_RUN_STARTED,
     ZERO_ORDER_CAPABILITY_OWNER,
     Pe19ReviewProofBinding,
+    Pe37TraceabilityProofBinding,
     AssemblySafetySnapshot,
     compute_assembly_input_digest,
     compute_assembly_result_digest,
@@ -134,11 +151,18 @@ PE25_MODULE = (
     / "ops"
     / "bounded_futures_testnet_operator_closure_lifecycle_integration_contract_v0.py"
 )
+PE37_MODULE = (
+    REPO_ROOT
+    / "src"
+    / "ops"
+    / "bounded_futures_testnet_operator_review_chain_durable_evidence_traceability_boundary_contract_v0.py"
+)
 
 TEST_PACKAGE_MARKER = "BOUNDED_FUTURES_TESTNET_PREFLIGHT_EXECUTION_READINESS_ASSEMBLY_LIFECYCLE_INTEGRATION_GUARD_V0=true"
 _CLASS4_SCOPED_EXCEPTION_MARKER = "BOUNDED_FUTURES_TESTNET_PREFLIGHT_EXECUTION_READINESS_ASSEMBLY_LIFECYCLE_INTEGRATION_GUARD_CLASS4_SCOPED_EXCEPTION_V0=true"
 
 VALID_COMMIT_SHA = "abcdef0123456789abcdef0123456789abcdef01"
+ALT_COMMIT_SHA = "1234567890abcdef1234567890abcdef12345678"
 
 
 def test_package_marker_present() -> None:
@@ -194,6 +218,10 @@ def test_pe12_through_pe25_owners_referenced_not_duplicated() -> None:
         "bounded_futures_testnet_operator_closure_lifecycle_integration_contract_v0"
         in assembly_text
     )
+    assert (
+        "bounded_futures_testnet_operator_review_chain_durable_evidence_traceability_boundary_contract_v0"
+        in assembly_text
+    )
     assert "evaluate_phase_transition" not in assembly_text
     assert PE13_MODULE.exists()
     assert PE14_MODULE.exists()
@@ -209,6 +237,7 @@ def test_pe12_through_pe25_owners_referenced_not_duplicated() -> None:
     assert PE23_MODULE.exists()
     assert PE24_MODULE.exists()
     assert PE25_MODULE.exists()
+    assert PE37_MODULE.exists()
     assert GLB012_PACKAGE_MARKER in GLB012_MODULE.read_text(encoding="utf-8")
 
 
@@ -248,18 +277,38 @@ def test_deterministic_identical_inputs_same_payload_and_digest() -> None:
     assert left_result["assembly_result_digest"] == right_result["assembly_result_digest"]
 
 
-def test_valid_full_pe12_through_pe25_composition_passes() -> None:
+def test_valid_full_pe12_through_pe37_composition_passes() -> None:
     assembly_input = default_minimal_assembly_input(source_revision=VALID_COMMIT_SHA)
     result = evaluate_preflight_execution_readiness_assembly_lifecycle_integration(assembly_input)
     assert result["integration_pass"] is True
     assert result["preflight_execution_readiness_assembly_complete"] is True
     assert result["assembly_review_eligible"] is True
     assert result["pe12_preflight_execution_readiness_assembly_proven"] is True
+    assert result["traceability_identity"] is not None
+    assert result["pe37_durable_evidence_traceability_boundary_static_proven"] is True
     assert result["assembly_result_digest"] == compute_assembly_result_digest(
         assembly_input,
         preflight_execution_readiness_assembly_complete=True,
     )
     assert result["fail_reasons"] == []
+
+
+def test_valid_pe37_traceability_binding_happy_path() -> None:
+    assembly_input = default_minimal_assembly_input(source_revision=VALID_COMMIT_SHA)
+    pe37_result = evaluate_durable_evidence_traceability_boundary(
+        assembly_input.pe37_traceability_boundary_input
+    )
+    assert pe37_result["durable_evidence_traceability_boundary_satisfied"] is True
+    assert (
+        assembly_input.pe37_traceability_proof.traceability_identity
+        == pe37_result["traceability_identity"]
+    )
+    result = evaluate_preflight_execution_readiness_assembly_lifecycle_integration(assembly_input)
+    assert result["integration_pass"] is True
+    assert (
+        result["traceability_identity"]
+        == assembly_input.pe37_traceability_proof.traceability_identity
+    )
 
 
 def test_valid_static_proof_remains_non_authorizing() -> None:
@@ -751,3 +800,290 @@ def test_default_safety_snapshot_matches_required_invariants() -> None:
     assert snapshot.preflight_remains_blocked is True
     assert snapshot.ready_for_operator_arming is False
     assert snapshot.zero_order_authorized is False
+
+
+def test_missing_pe37_traceability_identity_fails() -> None:
+    assembly_input = default_minimal_assembly_input()
+    bad_proof = replace(assembly_input.pe37_traceability_proof, traceability_identity="")
+    bad = replace(assembly_input, pe37_traceability_proof=bad_proof)
+    result = evaluate_preflight_execution_readiness_assembly_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("traceability_identity required" in r for r in result["fail_reasons"])
+
+
+def test_empty_pe37_traceability_identity_fails() -> None:
+    assembly_input = default_minimal_assembly_input()
+    bad_proof = replace(assembly_input.pe37_traceability_proof, traceability_identity="")
+    bad = replace(assembly_input, pe37_traceability_proof=bad_proof)
+    result = evaluate_preflight_execution_readiness_assembly_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+
+
+def test_malformed_pe37_traceability_identity_fails() -> None:
+    assembly_input = default_minimal_assembly_input()
+    bad_proof = replace(
+        assembly_input.pe37_traceability_proof, traceability_identity="not-a-digest"
+    )
+    bad = replace(assembly_input, pe37_traceability_proof=bad_proof)
+    result = evaluate_preflight_execution_readiness_assembly_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("traceability_identity must be 64-char" in r for r in result["fail_reasons"])
+
+
+def test_pe37_source_revision_mismatch_fails() -> None:
+    assembly_input = default_minimal_assembly_input(source_revision=VALID_COMMIT_SHA)
+    bad_proof = replace(
+        assembly_input.pe37_traceability_proof,
+        source_revision=ALT_COMMIT_SHA,
+    )
+    bad = replace(assembly_input, pe37_traceability_proof=bad_proof)
+    result = evaluate_preflight_execution_readiness_assembly_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("source_revision mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe37_proof_digest_mismatch_fails() -> None:
+    assembly_input = default_minimal_assembly_input()
+    bad_proof = replace(assembly_input.pe37_traceability_proof, boundary_result_digest="f" * 64)
+    bad = replace(assembly_input, pe37_traceability_proof=bad_proof)
+    result = evaluate_preflight_execution_readiness_assembly_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("boundary_result_digest mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe37_owner_mismatch_fails() -> None:
+    assembly_input = default_minimal_assembly_input()
+    bad_proof = replace(assembly_input.pe37_traceability_proof, traceability_owner="wrong.owner.v0")
+    bad = replace(assembly_input, pe37_traceability_proof=bad_proof)
+    result = evaluate_preflight_execution_readiness_assembly_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("traceability_owner must be" in r for r in result["fail_reasons"])
+
+
+def test_pe37_archive_identity_mismatch_fails() -> None:
+    assembly_input = default_minimal_assembly_input()
+    bad_archive = replace(
+        assembly_input.pe37_traceability_boundary_input.pe16_archive_binding,
+        archive_identity="1" * 64,
+    )
+    bad_boundary = replace(
+        assembly_input.pe37_traceability_boundary_input,
+        pe16_archive_binding=bad_archive,
+    )
+    bad = replace(assembly_input, pe37_traceability_boundary_input=bad_boundary)
+    result = evaluate_preflight_execution_readiness_assembly_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("archive_identity" in r for r in result["fail_reasons"])
+
+
+def test_pe37_manifest_identity_mismatch_fails() -> None:
+    assembly_input = default_minimal_assembly_input()
+    bad_archive = replace(
+        assembly_input.pe37_traceability_boundary_input.pe16_archive_binding,
+        archive_manifest_digest="2" * 64,
+    )
+    bad_boundary = replace(
+        assembly_input.pe37_traceability_boundary_input,
+        pe16_archive_binding=bad_archive,
+    )
+    bad = replace(assembly_input, pe37_traceability_boundary_input=bad_boundary)
+    result = evaluate_preflight_execution_readiness_assembly_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("archive_manifest_digest" in r for r in result["fail_reasons"])
+
+
+def test_incomplete_pe33_through_pe37_chain_fails() -> None:
+    assembly_input = default_minimal_assembly_input()
+    broken_chain = replace(
+        assembly_input.pe37_traceability_boundary_input.proof_chain,
+        pe35_boundary_result_digest="3" * 64,
+    )
+    bad_boundary = replace(
+        assembly_input.pe37_traceability_boundary_input,
+        proof_chain=broken_chain,
+    )
+    bad = replace(assembly_input, pe37_traceability_boundary_input=bad_boundary)
+    result = evaluate_preflight_execution_readiness_assembly_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+
+
+def test_wrong_pe37_proof_chain_order_fails() -> None:
+    assembly_input = default_minimal_assembly_input()
+    chain = assembly_input.pe37_traceability_boundary_input.proof_chain
+    broken_chain = Pe33Pe36ProofChainBinding(
+        pe33_integration_proof_digest=chain.pe34_handoff_digest,
+        pe34_handoff_digest=chain.pe33_integration_proof_digest,
+        pe35_boundary_input_digest=chain.pe35_boundary_input_digest,
+        pe35_boundary_result_digest=chain.pe35_boundary_result_digest,
+        pe36_boundary_input_digest=chain.pe36_boundary_input_digest,
+        pe36_boundary_result_digest=chain.pe36_boundary_result_digest,
+        pe36_presentation_projection_digest=chain.pe36_presentation_projection_digest,
+    )
+    bad_boundary = replace(
+        assembly_input.pe37_traceability_boundary_input,
+        proof_chain=broken_chain,
+    )
+    bad = replace(assembly_input, pe37_traceability_boundary_input=bad_boundary)
+    result = evaluate_preflight_execution_readiness_assembly_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+
+
+def test_stale_pe37_traceability_proof_fails() -> None:
+    assembly_input = default_minimal_assembly_input()
+    broken_pe35 = replace(
+        assembly_input.pe37_traceability_boundary_input.pe36_boundary_input.pe35_boundary_input,
+        lifecycle_metadata=replace(
+            assembly_input.pe37_traceability_boundary_input.pe36_boundary_input.pe35_boundary_input.lifecycle_metadata,
+            lifecycle_state=HANDOFF_STATE_STALE,
+        ),
+    )
+    broken_pe35_proof = default_minimal_pe35_proof_binding(broken_pe35)
+    broken_pe36 = replace(
+        assembly_input.pe37_traceability_boundary_input.pe36_boundary_input,
+        pe35_boundary_input=broken_pe35,
+        pe35_proof=broken_pe35_proof,
+    )
+    bad_boundary = replace(
+        assembly_input.pe37_traceability_boundary_input,
+        pe36_boundary_input=broken_pe36,
+    )
+    bad = replace(assembly_input, pe37_traceability_boundary_input=bad_boundary)
+    result = evaluate_preflight_execution_readiness_assembly_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+
+
+def test_revoked_pe37_traceability_proof_fails() -> None:
+    assembly_input = default_minimal_assembly_input()
+    broken_pe35 = replace(
+        assembly_input.pe37_traceability_boundary_input.pe36_boundary_input.pe35_boundary_input,
+        lifecycle_metadata=replace(
+            assembly_input.pe37_traceability_boundary_input.pe36_boundary_input.pe35_boundary_input.lifecycle_metadata,
+            lifecycle_state=HANDOFF_STATE_REVOKED,
+        ),
+    )
+    broken_pe35_proof = default_minimal_pe35_proof_binding(broken_pe35)
+    broken_pe36 = replace(
+        assembly_input.pe37_traceability_boundary_input.pe36_boundary_input,
+        pe35_boundary_input=broken_pe35,
+        pe35_proof=broken_pe35_proof,
+    )
+    bad_boundary = replace(
+        assembly_input.pe37_traceability_boundary_input,
+        pe36_boundary_input=broken_pe36,
+    )
+    bad = replace(assembly_input, pe37_traceability_boundary_input=bad_boundary)
+    result = evaluate_preflight_execution_readiness_assembly_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+
+
+def test_superseded_pe37_traceability_proof_fails() -> None:
+    assembly_input = default_minimal_assembly_input()
+    broken_pe35 = replace(
+        assembly_input.pe37_traceability_boundary_input.pe36_boundary_input.pe35_boundary_input,
+        lifecycle_metadata=replace(
+            assembly_input.pe37_traceability_boundary_input.pe36_boundary_input.pe35_boundary_input.lifecycle_metadata,
+            lifecycle_state=HANDOFF_STATE_SUPERSEDED,
+        ),
+    )
+    broken_pe35_proof = default_minimal_pe35_proof_binding(broken_pe35)
+    broken_pe36 = replace(
+        assembly_input.pe37_traceability_boundary_input.pe36_boundary_input,
+        pe35_boundary_input=broken_pe35,
+        pe35_proof=broken_pe35_proof,
+    )
+    bad_boundary = replace(
+        assembly_input.pe37_traceability_boundary_input,
+        pe36_boundary_input=broken_pe36,
+    )
+    bad = replace(assembly_input, pe37_traceability_boundary_input=bad_boundary)
+    result = evaluate_preflight_execution_readiness_assembly_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+
+
+def test_duplicate_pe37_admission_identity_fails() -> None:
+    assembly_input = default_minimal_assembly_input()
+    baseline = evaluate_durable_evidence_traceability_boundary(
+        assembly_input.pe37_traceability_boundary_input
+    )
+    assert baseline["admission_identity"] is not None
+    result = evaluate_preflight_execution_readiness_assembly_lifecycle_integration(
+        assembly_input,
+        bound_admission_identities=(baseline["admission_identity"],),
+    )
+    assert result["integration_pass"] is False
+    assert any("duplicate admission" in r for r in result["fail_reasons"])
+
+
+def test_pe37_traceability_replay_fails() -> None:
+    assembly_input = default_minimal_assembly_input()
+    baseline = evaluate_durable_evidence_traceability_boundary(
+        assembly_input.pe37_traceability_boundary_input
+    )
+    assert baseline["traceability_identity"] is not None
+    result = evaluate_preflight_execution_readiness_assembly_lifecycle_integration(
+        assembly_input,
+        bound_traceability_identities=(baseline["traceability_identity"],),
+    )
+    assert result["integration_pass"] is False
+    assert any("replay" in r for r in result["fail_reasons"])
+
+
+def test_pe37_unknown_extra_fields_fails() -> None:
+    assembly_input = default_minimal_assembly_input()
+    result = evaluate_preflight_execution_readiness_assembly_lifecycle_integration(
+        assembly_input,
+        extra_traceability_fields=("unexpected_field",),
+    )
+    assert result["integration_pass"] is False
+    assert any("unknown extra traceability fields" in r for r in result["fail_reasons"])
+
+
+def test_pe37_secret_credential_command_action_fields_fail() -> None:
+    assembly_input = default_minimal_assembly_input()
+    result = evaluate_preflight_execution_readiness_assembly_lifecycle_integration(
+        assembly_input,
+        injected_traceability_overrides={"api_key": "secret-value"},
+    )
+    assert result["integration_pass"] is False
+    assert any("forbidden" in r for r in result["fail_reasons"])
+
+
+def test_pe37_traceability_identity_in_assembly_digest() -> None:
+    assembly_input = default_minimal_assembly_input(source_revision=VALID_COMMIT_SHA)
+    canonical = serialize_assembly_input_canonical(assembly_input)
+    assert assembly_input.pe37_traceability_proof.traceability_identity in canonical
+
+
+def test_pe37_traceability_identity_deterministic() -> None:
+    assembly_input = default_minimal_assembly_input(source_revision=VALID_COMMIT_SHA)
+    expected = compute_traceability_identity(
+        source_revision=VALID_COMMIT_SHA,
+        proof_chain=assembly_input.pe37_traceability_boundary_input.proof_chain,
+        archive_identity=assembly_input.pe37_traceability_boundary_input.pe16_archive_binding.archive_identity,
+        archive_manifest_digest=assembly_input.pe37_traceability_boundary_input.pe16_archive_binding.archive_manifest_digest,
+        operator_review_proof_identity=assembly_input.pe37_traceability_boundary_input.pe19_pe20_review_proof.operator_review_proof_identity,
+    )
+    assert assembly_input.pe37_traceability_proof.traceability_identity == expected
+
+
+def test_pe37_owner_constants_coherent() -> None:
+    assembly_input = default_minimal_assembly_input()
+    assert assembly_input.pe37_traceability_proof.traceability_owner == PE37_BOUNDARY_OWNER
+    assert PE37_BOUNDARY_OWNER == PE37_CONTRACT_VERSION
+
+
+def test_pe37_inputs_not_mutated() -> None:
+    assembly_input = default_minimal_assembly_input()
+    before = serialize_assembly_input_canonical(assembly_input)
+    evaluate_preflight_execution_readiness_assembly_lifecycle_integration(assembly_input)
+    after = serialize_assembly_input_canonical(assembly_input)
+    assert before == after
+
+
+def test_missing_pe37_traceability_proof_fails() -> None:
+    assembly_input = default_minimal_assembly_input()
+    bad_proof = replace(assembly_input.pe37_traceability_proof, boundary_input_digest="")
+    bad = replace(assembly_input, pe37_traceability_proof=bad_proof)
+    result = evaluate_preflight_execution_readiness_assembly_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("boundary_input_digest required" in r for r in result["fail_reasons"])

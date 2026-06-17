@@ -12,8 +12,14 @@ from __future__ import annotations
 import hashlib
 import json
 import re
-from dataclasses import asdict, dataclass
-from typing import Any
+import threading
+from dataclasses import asdict, dataclass, replace
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from src.ops.bounded_futures_testnet_operator_review_chain_durable_evidence_traceability_boundary_contract_v0 import (
+        DurableEvidenceTraceabilityBoundaryInput,
+    )
 
 from src.ops.bounded_futures_testnet_adapter_capability_lifecycle_integration_contract_v0 import (
     CONTRACT_VERSION as GLB012_CONTRACT_VERSION,
@@ -96,6 +102,10 @@ CONTRACT_VERSION = (
 SERIALIZATION_VERSION = "bounded_futures_testnet_preflight_execution_readiness_assembly_lifecycle_integration.serialization.v0"
 HASH_ALGORITHM = "sha256"
 REPOSITORY_IDENTITY = "Peak_Trade"
+PE37_CONTRACT_VERSION = (
+    "bounded_futures_testnet_operator_review_chain_durable_evidence_traceability_boundary.v0"
+)
+PE37_BOUNDARY_OWNER = PE37_CONTRACT_VERSION
 ZERO_ORDER_CAPABILITY_OWNER = PHASE_CANONICAL_OWNERS[PHASE_ZERO_ORDER]
 
 GLOBAL_PREFLIGHT_EXECUTION_READINESS = False
@@ -145,6 +155,7 @@ _EXPECTED_CONTRACT_VERSIONS: dict[str, str] = {
     "pe23_capital_slot_ratchet_release": PE23_CONTRACT_VERSION,
     "pe24_pilot_envelope": PE24_CONTRACT_VERSION,
     "pe25_operator_closure": PE25_CONTRACT_VERSION,
+    "pe37_traceability_boundary": PE37_CONTRACT_VERSION,
     "integration": CONTRACT_VERSION,
 }
 
@@ -166,6 +177,7 @@ class ContractVersionsInput:
     pe23_capital_slot_ratchet_release: str
     pe24_pilot_envelope: str
     pe25_operator_closure: str
+    pe37_traceability_boundary: str
     integration: str
 
 
@@ -253,6 +265,17 @@ class Pe25OperatorClosureProofBinding:
 
 
 @dataclass(frozen=True)
+class Pe37TraceabilityProofBinding:
+    traceability_owner: str
+    source_revision: str
+    boundary_input_digest: str
+    boundary_result_digest: str
+    traceability_identity: str
+    pe37_integration_pass: bool
+    durable_evidence_traceability_boundary_satisfied: bool
+
+
+@dataclass(frozen=True)
 class ZeroOrderCapabilityProofBinding:
     capability_owner: str
     capability_proof_digest: str
@@ -305,6 +328,8 @@ class PreflightExecutionReadinessAssemblyInput:
     pe23_capital_slot_ratchet_release_proof: Pe23CapitalSlotRatchetReleaseProofBinding
     pe24_pilot_envelope_proof: Pe24PilotEnvelopeProofBinding
     pe25_operator_closure_proof: Pe25OperatorClosureProofBinding
+    pe37_traceability_boundary_input: DurableEvidenceTraceabilityBoundaryInput
+    pe37_traceability_proof: Pe37TraceabilityProofBinding
     zero_order_capability_proof: ZeroOrderCapabilityProofBinding
     safety_snapshot: AssemblySafetySnapshot
     futures_only: bool = True
@@ -383,6 +408,11 @@ def _assembly_input_dict(
         ),
         "pe24_pilot_envelope_proof": asdict(assembly_input.pe24_pilot_envelope_proof),
         "pe25_operator_closure_proof": asdict(assembly_input.pe25_operator_closure_proof),
+        "pe37_traceability_boundary_input_digest": _compute_pe37_boundary_input_digest(
+            assembly_input.pe37_traceability_boundary_input
+        ),
+        "pe37_traceability_proof": asdict(assembly_input.pe37_traceability_proof),
+        "traceability_identity": assembly_input.pe37_traceability_proof.traceability_identity,
         "zero_order_capability_proof": asdict(assembly_input.zero_order_capability_proof),
         "safety_snapshot": asdict(assembly_input.safety_snapshot),
         "futures_only": assembly_input.futures_only,
@@ -924,6 +954,122 @@ def _validate_zero_order_capability_proof(binding: ZeroOrderCapabilityProofBindi
     return fail_reasons
 
 
+def _compute_pe37_boundary_input_digest(
+    boundary_input: DurableEvidenceTraceabilityBoundaryInput,
+) -> str:
+    from src.ops.bounded_futures_testnet_operator_review_chain_durable_evidence_traceability_boundary_contract_v0 import (
+        compute_boundary_input_digest,
+    )
+
+    return compute_boundary_input_digest(boundary_input)
+
+
+def _validate_pe37_traceability_proof(
+    assembly_input: PreflightExecutionReadinessAssemblyInput,
+) -> list[str]:
+    from src.ops.bounded_futures_testnet_operator_review_chain_durable_evidence_traceability_boundary_contract_v0 import (
+        BOUNDARY_OWNER as pe37_boundary_owner,
+        CONTRACT_VERSION as pe37_contract_version,
+        compute_traceability_identity,
+        evaluate_durable_evidence_traceability_boundary,
+    )
+
+    fail_reasons: list[str] = []
+    proof = assembly_input.pe37_traceability_proof
+    boundary_input = assembly_input.pe37_traceability_boundary_input
+
+    if proof.traceability_owner != pe37_boundary_owner:
+        fail_reasons.append(
+            f"pe37_traceability_proof: traceability_owner must be {pe37_boundary_owner!r}"
+        )
+    if proof.traceability_owner != pe37_contract_version:
+        fail_reasons.append(
+            f"pe37_traceability_proof: traceability_owner must be {pe37_contract_version!r}"
+        )
+
+    if not proof.source_revision:
+        fail_reasons.append("pe37_traceability_proof: source_revision required")
+    elif not _valid_commit_sha(proof.source_revision):
+        fail_reasons.append(
+            "pe37_traceability_proof: source_revision must be full 40-char lowercase commit SHA"
+        )
+    elif proof.source_revision != assembly_input.source_revision:
+        fail_reasons.append("pe37_traceability_proof: source_revision mismatch")
+
+    computed_boundary_input_digest = _compute_pe37_boundary_input_digest(boundary_input)
+    if not proof.boundary_input_digest:
+        fail_reasons.append("pe37_traceability_proof: boundary_input_digest required")
+    elif not _valid_sha256_digest(proof.boundary_input_digest):
+        fail_reasons.append(
+            "pe37_traceability_proof: boundary_input_digest must be 64-char lowercase sha256 hex"
+        )
+    elif proof.boundary_input_digest != computed_boundary_input_digest:
+        fail_reasons.append("pe37_traceability_proof: boundary_input_digest mismatch")
+
+    if not proof.boundary_result_digest:
+        fail_reasons.append("pe37_traceability_proof: boundary_result_digest required")
+    elif not _valid_sha256_digest(proof.boundary_result_digest):
+        fail_reasons.append(
+            "pe37_traceability_proof: boundary_result_digest must be 64-char lowercase sha256 hex"
+        )
+
+    if not proof.traceability_identity:
+        fail_reasons.append("pe37_traceability_proof: traceability_identity required")
+    elif not _valid_sha256_digest(proof.traceability_identity):
+        fail_reasons.append(
+            "pe37_traceability_proof: traceability_identity must be 64-char lowercase sha256 hex"
+        )
+
+    if proof.pe37_integration_pass is not True:
+        fail_reasons.append("pe37_traceability_proof: pe37_integration_pass must be true")
+    if proof.durable_evidence_traceability_boundary_satisfied is not True:
+        fail_reasons.append(
+            "pe37_traceability_proof: durable_evidence_traceability_boundary_satisfied must be true"
+        )
+
+    pe37_result = evaluate_durable_evidence_traceability_boundary(boundary_input)
+    if not pe37_result["boundary_pass"]:
+        fail_reasons.append("pe37_traceability_boundary_input: PE-37 boundary evaluation failed")
+        fail_reasons.extend(
+            f"pe37_traceability_boundary_input: {reason}" for reason in pe37_result["fail_reasons"]
+        )
+    elif not pe37_result["durable_evidence_traceability_boundary_satisfied"]:
+        fail_reasons.append(
+            "pe37_traceability_boundary_input: durable_evidence_traceability_boundary_satisfied required"
+        )
+
+    computed_traceability_identity = pe37_result.get("traceability_identity")
+    if computed_traceability_identity is not None:
+        if proof.traceability_identity != computed_traceability_identity:
+            fail_reasons.append("pe37_traceability_proof: traceability_identity mismatch")
+        expected_traceability = compute_traceability_identity(
+            source_revision=proof.source_revision,
+            proof_chain=boundary_input.proof_chain,
+            archive_identity=boundary_input.pe16_archive_binding.archive_identity,
+            archive_manifest_digest=boundary_input.pe16_archive_binding.archive_manifest_digest,
+            operator_review_proof_identity=boundary_input.pe19_pe20_review_proof.operator_review_proof_identity,
+        )
+        if proof.traceability_identity != expected_traceability:
+            fail_reasons.append(
+                "pe37_traceability_proof: traceability_identity drift from compute_traceability_identity"
+            )
+
+    computed_boundary_result_digest = pe37_result.get("boundary_result_digest")
+    if computed_boundary_result_digest is not None:
+        if proof.boundary_result_digest != computed_boundary_result_digest:
+            fail_reasons.append("pe37_traceability_proof: boundary_result_digest mismatch")
+
+    pe34_source = (
+        boundary_input.pe36_boundary_input.pe35_boundary_input.pe34_handoff.source_revision
+    )
+    if pe34_source != assembly_input.source_revision:
+        fail_reasons.append(
+            "pe37_traceability_boundary_input: source_revision mismatch with assembly"
+        )
+
+    return fail_reasons
+
+
 def validate_preflight_execution_readiness_assembly_input(
     assembly_input: PreflightExecutionReadinessAssemblyInput,
 ) -> list[str]:
@@ -1008,6 +1154,7 @@ def validate_preflight_execution_readiness_assembly_input(
     fail_reasons.extend(
         _validate_pe25_operator_closure_proof(assembly_input.pe25_operator_closure_proof)
     )
+    fail_reasons.extend(_validate_pe37_traceability_proof(assembly_input))
     fail_reasons.extend(
         _validate_zero_order_capability_proof(assembly_input.zero_order_capability_proof)
     )
@@ -1096,6 +1243,11 @@ def evaluate_preflight_execution_readiness_assembly_lifecycle_integration(
     expected_pe24_integration_proof_digest: str | None = None,
     expected_pe25_closure_result_digest: str | None = None,
     expected_assembly_id: str | None = None,
+    expected_traceability_identity: str | None = None,
+    extra_traceability_fields: tuple[str, ...] = (),
+    injected_traceability_overrides: dict[str, Any] | None = None,
+    bound_traceability_identities: tuple[str, ...] = (),
+    bound_admission_identities: tuple[str, ...] = (),
     dirty_source_state: bool = False,
     assembly_complete_without_proof_chain: bool = False,
     assembly_review_eligible_without_proof_chain: bool = False,
@@ -1224,6 +1376,47 @@ def evaluate_preflight_execution_readiness_assembly_lifecycle_integration(
         if assembly_input.assembly_id != expected_assembly_id:
             fail_reasons.append("assembly_id mismatch")
 
+    if expected_traceability_identity is not None:
+        if (
+            assembly_input.pe37_traceability_proof.traceability_identity
+            != expected_traceability_identity
+        ):
+            fail_reasons.append("pe37_traceability_proof: traceability_identity mismatch")
+
+    if extra_traceability_fields or injected_traceability_overrides:
+        from src.ops.bounded_futures_testnet_operator_review_chain_durable_evidence_traceability_boundary_contract_v0 import (
+            evaluate_durable_evidence_traceability_boundary,
+        )
+
+        pe37_boundary_input = assembly_input.pe37_traceability_boundary_input
+        pe37_injection = evaluate_durable_evidence_traceability_boundary(
+            pe37_boundary_input,
+            extra_traceability_fields=extra_traceability_fields,
+            injected_traceability_overrides=injected_traceability_overrides,
+        )
+        if pe37_injection["fail_reasons"]:
+            fail_reasons.extend(
+                f"pe37_traceability_boundary_input: {reason}"
+                for reason in pe37_injection["fail_reasons"]
+            )
+
+    if bound_traceability_identities or bound_admission_identities:
+        from src.ops.bounded_futures_testnet_operator_review_chain_durable_evidence_traceability_boundary_contract_v0 import (
+            evaluate_durable_evidence_traceability_boundary,
+        )
+
+        pe37_boundary_input = replace(
+            assembly_input.pe37_traceability_boundary_input,
+            bound_traceability_identities=bound_traceability_identities,
+            bound_admission_identities=bound_admission_identities,
+        )
+        pe37_replay = evaluate_durable_evidence_traceability_boundary(pe37_boundary_input)
+        if pe37_replay["fail_reasons"]:
+            fail_reasons.extend(
+                f"pe37_traceability_boundary_input: {reason}"
+                for reason in pe37_replay["fail_reasons"]
+            )
+
     if dirty_source_state:
         fail_reasons.append("dirty_source_state=true is not allowed")
     if assembly_input.pe18_source_state_proof.dirty_state:
@@ -1310,6 +1503,12 @@ def evaluate_preflight_execution_readiness_assembly_lifecycle_integration(
         "assigned_lifecycle_phase": matrix.assigned_lifecycle_phase,
         "readiness_decision_phase": matrix.readiness_decision_phase,
         "lifecycle_matrix_digest": matrix.lifecycle_matrix_digest,
+        "traceability_identity": (
+            assembly_input.pe37_traceability_proof.traceability_identity
+            if integration_pass
+            else None
+        ),
+        "pe37_durable_evidence_traceability_boundary_static_proven": integration_pass,
         "pe12_preflight_execution_readiness_assembly_proven": (
             preflight_execution_readiness_assembly_complete
         ),
@@ -1361,6 +1560,217 @@ def evaluate_preflight_execution_readiness_assembly_lifecycle_integration(
     }
 
 
+def default_minimal_pe37_traceability_proof(
+    boundary_input: DurableEvidenceTraceabilityBoundaryInput,
+) -> Pe37TraceabilityProofBinding:
+    """Build canonical PE-37 traceability proof binding from explicit boundary evaluation."""
+    from src.ops.bounded_futures_testnet_operator_review_chain_durable_evidence_traceability_boundary_contract_v0 import (
+        BOUNDARY_OWNER as pe37_boundary_owner,
+        evaluate_durable_evidence_traceability_boundary,
+    )
+
+    pe37_result = evaluate_durable_evidence_traceability_boundary(boundary_input)
+    traceability_identity = pe37_result["traceability_identity"]
+    boundary_result_digest = pe37_result["boundary_result_digest"]
+    if traceability_identity is None or boundary_result_digest is None:
+        raise ValueError("PE-37 traceability proof binding requires satisfied boundary evaluation")
+    return Pe37TraceabilityProofBinding(
+        traceability_owner=pe37_boundary_owner,
+        source_revision=boundary_input.pe36_boundary_input.pe35_boundary_input.pe34_handoff.source_revision,
+        boundary_input_digest=_compute_pe37_boundary_input_digest(boundary_input),
+        boundary_result_digest=boundary_result_digest,
+        traceability_identity=traceability_identity,
+        pe37_integration_pass=pe37_result["boundary_pass"],
+        durable_evidence_traceability_boundary_satisfied=pe37_result[
+            "durable_evidence_traceability_boundary_satisfied"
+        ],
+    )
+
+
+_assembly_default_build_depth = threading.local()
+
+
+def _assembly_default_build_depth_value() -> int:
+    return int(getattr(_assembly_default_build_depth, "value", 0))
+
+
+def _set_assembly_default_build_depth(value: int) -> None:
+    _assembly_default_build_depth.value = value
+
+
+def _default_minimal_pe37_traceability_stub(
+    *,
+    source_revision: str,
+    satisfied: bool,
+) -> tuple[DurableEvidenceTraceabilityBoundaryInput, Pe37TraceabilityProofBinding]:
+    """Non-recursive PE-37 placeholder for nested default assembly construction."""
+    from src.ops.bounded_futures_testnet_handoff_staleness_revocation_recovery_boundary_contract_v0 import (
+        HANDOFF_STATE_CURRENT,
+        CanonicalCurrentBindings,
+        HandoffLifecycleMetadata,
+        HandoffStalenessRevocationRecoveryBoundaryInput,
+    )
+    from src.ops.bounded_futures_testnet_operator_review_admission_presentation_boundary_contract_v0 import (
+        OperatorReviewAdmissionPresentationBoundaryInput,
+        default_minimal_pe35_proof_binding,
+    )
+    from src.ops.bounded_futures_testnet_cross_slice_proof_coherence_integration_contract_v0 import (
+        COHERENCE_OWNER as PE33_COHERENCE_OWNER,
+    )
+    from src.ops.bounded_futures_testnet_operator_review_handoff_boundary_contract_v0 import (
+        ContractVersionsInput as Pe34ContractVersionsInput,
+        OperatorReviewHandoffBoundaryInput,
+        Pe19UndecidedReviewInputBinding,
+        Pe20UndecidedPackageEligibilityBinding,
+        Pe25CrossSliceClosureBinding,
+        Pe33CoherenceProofBinding,
+        compute_boundary_input_digest as compute_pe34_boundary_input_digest,
+        compute_review_input_digest,
+        default_minimal_safety_snapshot as default_minimal_pe34_safety_snapshot,
+    )
+    from src.ops.bounded_futures_testnet_preflight_operator_review_proof_package_contract_v0 import (
+        PACKAGE_SCHEMA_VERSION as PE20_PACKAGE_SCHEMA_VERSION,
+    )
+    from src.ops.bounded_futures_testnet_preflight_operator_review_reproducibility_contract_v0 import (
+        default_minimal_operator_review_input,
+    )
+    from src.ops.bounded_futures_testnet_preflight_packet_archive_contract_v0 import (
+        compute_archive_identity,
+    )
+    from src.ops.bounded_futures_testnet_preflight_packet_completeness_truth_contract_v0 import (
+        COMPLETENESS_CONTRACT_VERSION,
+    )
+
+    packet_digest = "a" * 64
+    input_capture_digest = "b" * 64
+    replay_manifest_digest = "c" * 64
+    archive_manifest_digest = "e" * 64
+    source_state_digest = "f" * 64
+    archive_identity = compute_archive_identity(
+        source_revision=source_revision,
+        packet_digest=packet_digest,
+        input_capture_digest=input_capture_digest,
+        manifest_digest=archive_manifest_digest,
+    )
+    review_input = default_minimal_operator_review_input(
+        source_revision=source_revision,
+        packet_digest=packet_digest,
+        input_capture_digest=input_capture_digest,
+        replay_manifest_digest=replay_manifest_digest,
+        archive_identity=archive_identity,
+        archive_manifest_digest=archive_manifest_digest,
+        completeness_truth_identity=COMPLETENESS_CONTRACT_VERSION,
+        source_state_digest=source_state_digest,
+    )
+    pe33_input_digest = "0" * 64
+    pe33_proof_digest = "1" * 64
+    pe25_slot_digest = "5" * 64
+    review_input_digest = compute_review_input_digest(review_input)
+    pe34_handoff = OperatorReviewHandoffBoundaryInput(
+        source_revision=source_revision,
+        repository_identity=REPOSITORY_IDENTITY,
+        handoff_id="operator-review-handoff-boundary-001",
+        adapter_id="offline_bounded_futures_testnet_adapter_v0",
+        instrument="PF_ETHUSD",
+        market_type=DEFAULT_MARKET_TYPE,
+        contract_versions=Pe34ContractVersionsInput(
+            pe12_lifecycle=PE12_CONTRACT_VERSION,
+            pe19_operator_review=PE19_CONTRACT_VERSION,
+            pe20_review_proof_package=PE20_CONTRACT_VERSION,
+            pe25_operator_closure=PE25_CONTRACT_VERSION,
+            pe33_cross_slice_proof_coherence="bounded_futures_testnet_cross_slice_proof_coherence_integration.v0",
+            integration="bounded_futures_testnet_operator_review_handoff_boundary.v0",
+        ),
+        pe33_coherence_proof=Pe33CoherenceProofBinding(
+            coherence_owner=PE33_COHERENCE_OWNER,
+            source_revision=source_revision,
+            integration_input_digest=pe33_input_digest,
+            integration_proof_digest=pe33_proof_digest,
+            cross_slice_proof_coherence_for_separate_operator_review=True,
+            static_pe12_lifecycle_chain_complete=True,
+            integration_pass=True,
+        ),
+        pe33_integration_input=None,
+        pe19_undecided_review_input=Pe19UndecidedReviewInputBinding(
+            review_input_owner=PE19_CONTRACT_VERSION,
+            source_revision=source_revision,
+            review_input=review_input,
+            pe33_integration_proof_digest=pe33_proof_digest,
+            operator_name_legibility=None,
+        ),
+        pe20_undecided_package_eligibility=Pe20UndecidedPackageEligibilityBinding(
+            package_owner=PE20_CONTRACT_VERSION,
+            source_revision=source_revision,
+            review_input_digest=review_input_digest,
+            package_schema_version=PE20_PACKAGE_SCHEMA_VERSION,
+            undecided_package_eligibility=True,
+            operative_decision_issued=False,
+            decision_record_digest=None,
+            package_id=None,
+        ),
+        pe25_cross_slice_closure=Pe25CrossSliceClosureBinding(
+            closure_owner=PE25_CONTRACT_VERSION,
+            source_revision=source_revision,
+            closure_result_digest=pe25_slot_digest,
+            pe33_pe25_slot_digest=pe25_slot_digest,
+            operative_operator_closure_executed=False,
+            operator_closure_static_complete=True,
+        ),
+        safety_snapshot=default_minimal_pe34_safety_snapshot(),
+    )
+    pe34_digest = compute_pe34_boundary_input_digest(pe34_handoff)
+    pe35_input = HandoffStalenessRevocationRecoveryBoundaryInput(
+        pe34_handoff=pe34_handoff,
+        canonical_current=CanonicalCurrentBindings(
+            source_revision=source_revision,
+            pe33_integration_proof_digest=pe33_proof_digest,
+            pe34_handoff_digest=pe34_digest,
+            replay_manifest_digest=replay_manifest_digest,
+            archive_manifest_digest=archive_manifest_digest,
+        ),
+        lifecycle_metadata=HandoffLifecycleMetadata(
+            lifecycle_state=HANDOFF_STATE_CURRENT,
+            handoff_digest=pe34_digest,
+            review_identity="glb-016-bounded-futures-testnet-operator-review",
+            generation=0,
+        ),
+    )
+    pe36_input = OperatorReviewAdmissionPresentationBoundaryInput(
+        pe35_boundary_input=pe35_input,
+        pe35_proof=default_minimal_pe35_proof_binding(pe35_input),
+        operator_name_legibility=None,
+    )
+    from src.ops.bounded_futures_testnet_operator_review_chain_durable_evidence_traceability_boundary_contract_v0 import (
+        DurableEvidenceTraceabilityBoundaryInput,
+        default_minimal_pe16_archive_binding,
+        default_minimal_pe19_pe20_review_proof_binding,
+        default_minimal_pe36_proof_binding,
+        default_minimal_proof_chain_binding,
+    )
+
+    boundary_input = DurableEvidenceTraceabilityBoundaryInput(
+        pe36_boundary_input=pe36_input,
+        pe36_proof=default_minimal_pe36_proof_binding(pe36_input),
+        pe16_archive_binding=default_minimal_pe16_archive_binding(pe36_input),
+        pe19_pe20_review_proof=default_minimal_pe19_pe20_review_proof_binding(pe36_input),
+        proof_chain=default_minimal_proof_chain_binding(pe36_input),
+    )
+    if satisfied:
+        return boundary_input, default_minimal_pe37_traceability_proof(boundary_input)
+
+    traceability_identity = "2" * 64
+    proof = Pe37TraceabilityProofBinding(
+        traceability_owner=PE37_BOUNDARY_OWNER,
+        source_revision=source_revision,
+        boundary_input_digest=_compute_pe37_boundary_input_digest(boundary_input),
+        boundary_result_digest="3" * 64,
+        traceability_identity=traceability_identity,
+        pe37_integration_pass=False,
+        durable_evidence_traceability_boundary_satisfied=False,
+    )
+    return boundary_input, proof
+
+
 def default_minimal_safety_snapshot() -> AssemblySafetySnapshot:
     return AssemblySafetySnapshot(
         preflight_remains_blocked=True,
@@ -1393,139 +1803,158 @@ def default_minimal_assembly_input(
     lifecycle_state_digest: str | None = None,
 ) -> PreflightExecutionReadinessAssemblyInput:
     """Minimal valid futures-generic assembly input for offline tests."""
-    state_digest = lifecycle_state_digest or "e" * 64
-    matrix_digest = compute_lifecycle_matrix_digest()
+    depth = _assembly_default_build_depth_value()
+    _set_assembly_default_build_depth(depth + 1)
+    try:
+        state_digest = lifecycle_state_digest or "e" * 64
+        matrix_digest = compute_lifecycle_matrix_digest()
 
-    return PreflightExecutionReadinessAssemblyInput(
-        source_revision=source_revision,
-        repository_identity=REPOSITORY_IDENTITY,
-        adapter_id=adapter_id,
-        assembly_id=assembly_id,
-        instrument=instrument,
-        market_type=DEFAULT_MARKET_TYPE,
-        contract_versions=ContractVersionsInput(
-            pe12_lifecycle=PE12_CONTRACT_VERSION,
-            pe13_packet=PE13_CONTRACT_VERSION,
-            pe14_builder=PE14_CONTRACT_VERSION,
-            pe15_replay=PE15_CONTRACT_VERSION,
-            pe16_archive=PE16_CONTRACT_VERSION,
-            pe17_completeness_truth=PE17_CONTRACT_VERSION,
-            pe18_source_state_capture=PE18_CONTRACT_VERSION,
-            pe19_operator_review=PE19_CONTRACT_VERSION,
-            pe20_review_proof_package=PE20_CONTRACT_VERSION,
-            glb012_adapter_capability=GLB012_CONTRACT_VERSION,
-            pe21_reconciliation_primary_evidence=PE21_CONTRACT_VERSION,
-            pe22_risk_killswitch_flatten=PE22_CONTRACT_VERSION,
-            pe23_capital_slot_ratchet_release=PE23_CONTRACT_VERSION,
-            pe24_pilot_envelope=PE24_CONTRACT_VERSION,
-            pe25_operator_closure=PE25_CONTRACT_VERSION,
-            integration=CONTRACT_VERSION,
-        ),
-        lifecycle_matrix_proof=LifecycleMatrixProof(
-            pe12_contract_version=PE12_CONTRACT_VERSION,
-            lifecycle_matrix_digest=matrix_digest,
-            assigned_lifecycle_phase=PHASE_STATIC_PREFLIGHT,
-            lifecycle_state_digest=state_digest,
-            readiness_decision_phase=PHASE_ZERO_ORDER,
-        ),
-        pe13_packet_proof=Pe13PacketProofBinding(
-            packet_id="0" * 64,
-            packet_digest="1" * 64,
-            pe13_contract_version=PE13_CONTRACT_VERSION,
-            packet_validation_pass=True,
-        ),
-        pe14_builder_proof=Pe14BuilderProofBinding(
-            input_capture_digest="2" * 64,
-            builder_alignment_pass=True,
-            pe14_contract_version=PE14_CONTRACT_VERSION,
-        ),
-        pe15_replay_proof=Pe15ReplayProofBinding(
-            replay_manifest_digest="3" * 64,
-            replay_pass=True,
-            manifest_verify_rc=0,
-            pe15_contract_version=PE15_CONTRACT_VERSION,
-        ),
-        pe16_archive_proof=Pe16ArchiveProofBinding(
-            archive_identity="4" * 64,
-            archive_manifest_digest="5" * 64,
-            manifest_verify_rc=0,
-            static_persisted_verified=True,
-            pe16_contract_version=PE16_CONTRACT_VERSION,
-        ),
-        pe17_completeness_truth_proof=Pe17CompletenessTruthProofBinding(
-            completeness_status=COMPLETENESS_COMPLETE,
-            truth_status=TRUTH_READY_FOR_SEPARATE_OPERATOR_REVIEW,
-            internal_static_chain_complete=True,
-            pe17_contract_version=PE17_CONTRACT_VERSION,
-        ),
-        pe18_source_state_proof=Pe18SourceStateProofBinding(
-            source_state_digest="6" * 64,
-            capture_status=CAPTURE_VALID,
-            dirty_state=False,
-            pe18_contract_version=PE18_CONTRACT_VERSION,
-        ),
-        pe19_review_proof=Pe19ReviewProofBinding(
-            review_input_digest="7" * 64,
-            decision_record_digest="8" * 64,
-            review_proof_digest="9" * 64,
-            review_valid=True,
-            decision=DECISION_APPROVE_FOR_SEPARATE_NEXT_PHASE_REVIEW,
-            reason_code="evidence_complete",
-            non_authorizing=True,
-            ready_for_operator_arming=False,
-            execution_authorized=False,
-            live_authorized=False,
-            evidence_manifest_verify_rc=0,
-        ),
-        pe20_durable_review_package=Pe20DurableReviewPackageBinding(
-            package_id="a" * 64,
-            package_digest="b" * 64,
-            manifest_verify_rc=0,
-            static_glb016_reproducibility_satisfied=True,
-        ),
-        glb012_capability_proof=Glb012CapabilityProofBinding(
-            integration_input_digest="c" * 64,
-            integration_proof_digest="d" * 64,
-            glb_integration_pass=True,
-            lifecycle_matrix_digest=compute_glb_lifecycle_matrix_digest(),
-        ),
-        pe21_reconciliation_primary_evidence_proof=Pe21ReconciliationPrimaryEvidenceProofBinding(
-            integration_input_digest="c" * 64,
-            integration_proof_digest="d" * 64,
-            pe21_integration_pass=True,
-            durable_primary_evidence_binding_proven=True,
-            lifecycle_matrix_digest=compute_pe21_lifecycle_matrix_digest(),
-        ),
-        pe22_risk_killswitch_flatten_proof=Pe22RiskKillswitchFlattenProofBinding(
-            integration_input_digest="e" * 64,
-            integration_proof_digest="f" * 64,
-            pe22_integration_pass=True,
-            lifecycle_matrix_digest=compute_pe22_lifecycle_matrix_digest(),
-        ),
-        pe23_capital_slot_ratchet_release_proof=Pe23CapitalSlotRatchetReleaseProofBinding(
-            integration_input_digest="0" * 64,
-            integration_proof_digest="1" * 64,
-            pe23_integration_pass=True,
-            lifecycle_matrix_digest=compute_pe23_lifecycle_matrix_digest(),
-        ),
-        pe24_pilot_envelope_proof=Pe24PilotEnvelopeProofBinding(
-            integration_input_digest="2" * 64,
-            integration_proof_digest="3" * 64,
-            pe24_integration_pass=True,
-            lifecycle_matrix_digest=compute_pe24_lifecycle_matrix_digest(),
-            pilot_envelope_static_ready=True,
-        ),
-        pe25_operator_closure_proof=Pe25OperatorClosureProofBinding(
-            closure_input_digest="4" * 64,
-            closure_result_digest="5" * 64,
-            pe25_integration_pass=True,
-            operator_closure_static_complete=True,
-            lifecycle_matrix_digest=matrix_digest,
-        ),
-        zero_order_capability_proof=ZeroOrderCapabilityProofBinding(
-            capability_owner=ZERO_ORDER_CAPABILITY_OWNER,
-            capability_proof_digest="6" * 64,
-            zero_order_plan_only_capable=True,
-        ),
-        safety_snapshot=default_minimal_safety_snapshot(),
-    )
+        if depth > 0:
+            pe37_boundary_input, pe37_traceability_proof = _default_minimal_pe37_traceability_stub(
+                source_revision=source_revision,
+                satisfied=False,
+            )
+        else:
+            pe37_boundary_input, pe37_traceability_proof = _default_minimal_pe37_traceability_stub(
+                source_revision=source_revision,
+                satisfied=True,
+            )
+
+        return PreflightExecutionReadinessAssemblyInput(
+            source_revision=source_revision,
+            repository_identity=REPOSITORY_IDENTITY,
+            adapter_id=adapter_id,
+            assembly_id=assembly_id,
+            instrument=instrument,
+            market_type=DEFAULT_MARKET_TYPE,
+            contract_versions=ContractVersionsInput(
+                pe12_lifecycle=PE12_CONTRACT_VERSION,
+                pe13_packet=PE13_CONTRACT_VERSION,
+                pe14_builder=PE14_CONTRACT_VERSION,
+                pe15_replay=PE15_CONTRACT_VERSION,
+                pe16_archive=PE16_CONTRACT_VERSION,
+                pe17_completeness_truth=PE17_CONTRACT_VERSION,
+                pe18_source_state_capture=PE18_CONTRACT_VERSION,
+                pe19_operator_review=PE19_CONTRACT_VERSION,
+                pe20_review_proof_package=PE20_CONTRACT_VERSION,
+                glb012_adapter_capability=GLB012_CONTRACT_VERSION,
+                pe21_reconciliation_primary_evidence=PE21_CONTRACT_VERSION,
+                pe22_risk_killswitch_flatten=PE22_CONTRACT_VERSION,
+                pe23_capital_slot_ratchet_release=PE23_CONTRACT_VERSION,
+                pe24_pilot_envelope=PE24_CONTRACT_VERSION,
+                pe25_operator_closure=PE25_CONTRACT_VERSION,
+                pe37_traceability_boundary=PE37_CONTRACT_VERSION,
+                integration=CONTRACT_VERSION,
+            ),
+            lifecycle_matrix_proof=LifecycleMatrixProof(
+                pe12_contract_version=PE12_CONTRACT_VERSION,
+                lifecycle_matrix_digest=matrix_digest,
+                assigned_lifecycle_phase=PHASE_STATIC_PREFLIGHT,
+                lifecycle_state_digest=state_digest,
+                readiness_decision_phase=PHASE_ZERO_ORDER,
+            ),
+            pe13_packet_proof=Pe13PacketProofBinding(
+                packet_id="0" * 64,
+                packet_digest="1" * 64,
+                pe13_contract_version=PE13_CONTRACT_VERSION,
+                packet_validation_pass=True,
+            ),
+            pe14_builder_proof=Pe14BuilderProofBinding(
+                input_capture_digest="2" * 64,
+                builder_alignment_pass=True,
+                pe14_contract_version=PE14_CONTRACT_VERSION,
+            ),
+            pe15_replay_proof=Pe15ReplayProofBinding(
+                replay_manifest_digest="3" * 64,
+                replay_pass=True,
+                manifest_verify_rc=0,
+                pe15_contract_version=PE15_CONTRACT_VERSION,
+            ),
+            pe16_archive_proof=Pe16ArchiveProofBinding(
+                archive_identity="4" * 64,
+                archive_manifest_digest="5" * 64,
+                manifest_verify_rc=0,
+                static_persisted_verified=True,
+                pe16_contract_version=PE16_CONTRACT_VERSION,
+            ),
+            pe17_completeness_truth_proof=Pe17CompletenessTruthProofBinding(
+                completeness_status=COMPLETENESS_COMPLETE,
+                truth_status=TRUTH_READY_FOR_SEPARATE_OPERATOR_REVIEW,
+                internal_static_chain_complete=True,
+                pe17_contract_version=PE17_CONTRACT_VERSION,
+            ),
+            pe18_source_state_proof=Pe18SourceStateProofBinding(
+                source_state_digest="6" * 64,
+                capture_status=CAPTURE_VALID,
+                dirty_state=False,
+                pe18_contract_version=PE18_CONTRACT_VERSION,
+            ),
+            pe19_review_proof=Pe19ReviewProofBinding(
+                review_input_digest="7" * 64,
+                decision_record_digest="8" * 64,
+                review_proof_digest="9" * 64,
+                review_valid=True,
+                decision=DECISION_APPROVE_FOR_SEPARATE_NEXT_PHASE_REVIEW,
+                reason_code="evidence_complete",
+                non_authorizing=True,
+                ready_for_operator_arming=False,
+                execution_authorized=False,
+                live_authorized=False,
+                evidence_manifest_verify_rc=0,
+            ),
+            pe20_durable_review_package=Pe20DurableReviewPackageBinding(
+                package_id="a" * 64,
+                package_digest="b" * 64,
+                manifest_verify_rc=0,
+                static_glb016_reproducibility_satisfied=True,
+            ),
+            glb012_capability_proof=Glb012CapabilityProofBinding(
+                integration_input_digest="c" * 64,
+                integration_proof_digest="d" * 64,
+                glb_integration_pass=True,
+                lifecycle_matrix_digest=compute_glb_lifecycle_matrix_digest(),
+            ),
+            pe21_reconciliation_primary_evidence_proof=Pe21ReconciliationPrimaryEvidenceProofBinding(
+                integration_input_digest="c" * 64,
+                integration_proof_digest="d" * 64,
+                pe21_integration_pass=True,
+                durable_primary_evidence_binding_proven=True,
+                lifecycle_matrix_digest=compute_pe21_lifecycle_matrix_digest(),
+            ),
+            pe22_risk_killswitch_flatten_proof=Pe22RiskKillswitchFlattenProofBinding(
+                integration_input_digest="e" * 64,
+                integration_proof_digest="f" * 64,
+                pe22_integration_pass=True,
+                lifecycle_matrix_digest=compute_pe22_lifecycle_matrix_digest(),
+            ),
+            pe23_capital_slot_ratchet_release_proof=Pe23CapitalSlotRatchetReleaseProofBinding(
+                integration_input_digest="0" * 64,
+                integration_proof_digest="1" * 64,
+                pe23_integration_pass=True,
+                lifecycle_matrix_digest=compute_pe23_lifecycle_matrix_digest(),
+            ),
+            pe24_pilot_envelope_proof=Pe24PilotEnvelopeProofBinding(
+                integration_input_digest="2" * 64,
+                integration_proof_digest="3" * 64,
+                pe24_integration_pass=True,
+                lifecycle_matrix_digest=compute_pe24_lifecycle_matrix_digest(),
+                pilot_envelope_static_ready=True,
+            ),
+            pe25_operator_closure_proof=Pe25OperatorClosureProofBinding(
+                closure_input_digest="4" * 64,
+                closure_result_digest="5" * 64,
+                pe25_integration_pass=True,
+                operator_closure_static_complete=True,
+                lifecycle_matrix_digest=matrix_digest,
+            ),
+            pe37_traceability_boundary_input=pe37_boundary_input,
+            pe37_traceability_proof=pe37_traceability_proof,
+            zero_order_capability_proof=ZeroOrderCapabilityProofBinding(
+                capability_owner=ZERO_ORDER_CAPABILITY_OWNER,
+                capability_proof_digest="6" * 64,
+                zero_order_plan_only_capable=True,
+            ),
+            safety_snapshot=default_minimal_safety_snapshot(),
+        )
+    finally:
+        _set_assembly_default_build_depth(depth)
