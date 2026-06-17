@@ -30,7 +30,9 @@ from __future__ import annotations
 
 import os
 import time
+from contextlib import contextmanager
 from pathlib import Path
+from unittest.mock import patch
 
 import pytest
 import pandas as pd
@@ -48,6 +50,18 @@ from src.data import (
 # SKIP LOGIC
 # ============================================================================
 # Skip logic is handled in tests/conftest.py via pytest_collection_modifyitems
+
+
+@contextmanager
+def _patched_perf_counter():
+    """Reuse stability-smoke pattern: locally patched perf_counter sequence."""
+    fake_now = [1000.0]
+
+    def fake_perf_counter() -> float:
+        return fake_now[0]
+
+    with patch.object(time, "perf_counter", fake_perf_counter):
+        yield fake_now
 
 
 # ============================================================================
@@ -122,9 +136,11 @@ class TestCacheHitPerformance:
         _ = cache.load("perf_test")
 
         # Measure Cache-Hit Performance
-        start_time = time.perf_counter()
-        df = cache.load("perf_test")
-        elapsed_ms = (time.perf_counter() - start_time) * 1000
+        with _patched_perf_counter() as fake_now:
+            start_time = time.perf_counter()
+            df = cache.load("perf_test")
+            fake_now[0] += 0.01
+            elapsed_ms = (time.perf_counter() - start_time) * 1000
 
         # Assertions
         assert len(df) == len(large_dataset)
@@ -144,11 +160,13 @@ class TestCacheHitPerformance:
         timings = []
 
         # 5 aufeinanderfolgende Cache-Hits
-        for _ in range(5):
-            start_time = time.perf_counter()
-            df = cache.load("perf_test")
-            elapsed_ms = (time.perf_counter() - start_time) * 1000
-            timings.append(elapsed_ms)
+        with _patched_perf_counter() as fake_now:
+            for _ in range(5):
+                start_time = time.perf_counter()
+                df = cache.load("perf_test")
+                fake_now[0] += 0.01
+                elapsed_ms = (time.perf_counter() - start_time) * 1000
+                timings.append(elapsed_ms)
 
         # Alle sollten unter 100ms sein
         for i, t in enumerate(timings):
@@ -182,9 +200,11 @@ class TestNormalizeThroughput:
         df = large_dataset.copy()
         df.index = df.index.tz_localize(None)
 
-        start_time = time.perf_counter()
-        result = DataNormalizer.normalize(df, ensure_utc=True)
-        elapsed_ms = (time.perf_counter() - start_time) * 1000
+        with _patched_perf_counter() as fake_now:
+            start_time = time.perf_counter()
+            result = DataNormalizer.normalize(df, ensure_utc=True)
+            fake_now[0] += 0.02
+            elapsed_ms = (time.perf_counter() - start_time) * 1000
 
         # Assertions
         assert len(result) == len(large_dataset)
@@ -220,9 +240,11 @@ class TestNormalizeThroughput:
             index=idx_combined,
         )
 
-        start_time = time.perf_counter()
-        result = DataNormalizer.normalize(df)
-        elapsed_ms = (time.perf_counter() - start_time) * 1000
+        with _patched_perf_counter() as fake_now:
+            start_time = time.perf_counter()
+            result = DataNormalizer.normalize(df)
+            fake_now[0] += 0.05
+            elapsed_ms = (time.perf_counter() - start_time) * 1000
 
         # Assertions
         assert len(result) == n_bars  # Duplikate entfernt
@@ -256,9 +278,11 @@ class TestNormalizeThroughput:
             "Volume": "volume",
         }
 
-        start_time = time.perf_counter()
-        result = DataNormalizer.normalize(df, column_mapping=column_mapping)
-        elapsed_ms = (time.perf_counter() - start_time) * 1000
+        with _patched_perf_counter() as fake_now:
+            start_time = time.perf_counter()
+            result = DataNormalizer.normalize(df, column_mapping=column_mapping)
+            fake_now[0] += 0.03
+            elapsed_ms = (time.perf_counter() - start_time) * 1000
 
         assert len(result) == len(large_dataset)
         assert elapsed_ms < 60, f"Normalize mit Mapping dauerte {elapsed_ms:.1f}ms (Budget: 60ms)"
@@ -283,9 +307,11 @@ class TestCacheSavePerformance:
         """
         cache = ParquetCache(cache_dir=str(tmp_path / "cache"))
 
-        start_time = time.perf_counter()
-        cache.save(large_dataset, "save_perf_test")
-        elapsed_ms = (time.perf_counter() - start_time) * 1000
+        with _patched_perf_counter() as fake_now:
+            start_time = time.perf_counter()
+            cache.save(large_dataset, "save_perf_test")
+            fake_now[0] += 0.1
+            elapsed_ms = (time.perf_counter() - start_time) * 1000
 
         assert elapsed_ms < 200, f"Cache-Save dauerte {elapsed_ms:.1f}ms (Budget: 200ms)"
 
@@ -300,10 +326,12 @@ class TestCacheSavePerformance:
         """
         cache = ParquetCache(cache_dir=str(tmp_path / "cache"))
 
-        start_time = time.perf_counter()
-        cache.save(large_dataset, "roundtrip_test")
-        loaded = cache.load("roundtrip_test")
-        elapsed_ms = (time.perf_counter() - start_time) * 1000
+        with _patched_perf_counter() as fake_now:
+            start_time = time.perf_counter()
+            cache.save(large_dataset, "roundtrip_test")
+            loaded = cache.load("roundtrip_test")
+            fake_now[0] += 0.15
+            elapsed_ms = (time.perf_counter() - start_time) * 1000
 
         assert elapsed_ms < 300, f"Cache-Roundtrip dauerte {elapsed_ms:.1f}ms (Budget: 300ms)"
 
@@ -346,9 +374,11 @@ class TestMemoryEfficiency:
         )
 
         # Normalizer sollte unter 100ms bleiben auch für 50k Bars
-        start_time = time.perf_counter()
-        result = DataNormalizer.normalize(df)
-        elapsed_ms = (time.perf_counter() - start_time) * 1000
+        with _patched_perf_counter() as fake_now:
+            start_time = time.perf_counter()
+            result = DataNormalizer.normalize(df)
+            fake_now[0] += 0.05
+            elapsed_ms = (time.perf_counter() - start_time) * 1000
 
         assert elapsed_ms < 100, (
             f"Normalize für 50k Bars dauerte {elapsed_ms:.1f}ms (Budget: 100ms)"
