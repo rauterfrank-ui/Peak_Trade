@@ -9,8 +9,6 @@ from __future__ import annotations
 from dataclasses import replace
 from pathlib import Path
 
-import pytest
-
 from src.ops.bounded_futures_testnet_handoff_staleness_revocation_recovery_boundary_contract_v0 import (
     HANDOFF_STATE_REVOKED,
     HANDOFF_STATE_STALE,
@@ -46,8 +44,6 @@ from src.ops.bounded_futures_testnet_readiness_review_admission_presentation_lif
     PREFLIGHT_REMAINS_BLOCKED,
     READINESS_REVIEW_EXECUTED,
     RUN_STARTED,
-    BridgeProofChainBinding,
-    Pe38ReadinessReviewProofBinding,
     compute_bridge_input_digest,
     compute_bridge_proof_digest,
     default_minimal_bridge_input,
@@ -85,12 +81,22 @@ VALID_COMMIT_SHA = "abcdef0123456789abcdef0123456789abcdef01"
 ALT_COMMIT_SHA = "1234567890abcdef1234567890abcdef12345678"
 GENERIC_FUTURES_INSTRUMENT = "PF_ETHUSD"
 
+_CACHED_VALID_BRIDGE_INPUT = None
+
 
 def _valid_bridge_input(source_revision: str = VALID_COMMIT_SHA):
-    return default_minimal_bridge_input(
-        source_revision=source_revision,
-        instrument=GENERIC_FUTURES_INSTRUMENT,
-    )
+    global _CACHED_VALID_BRIDGE_INPUT
+    if source_revision != VALID_COMMIT_SHA:
+        return default_minimal_bridge_input(
+            source_revision=source_revision,
+            instrument=GENERIC_FUTURES_INSTRUMENT,
+        )
+    if _CACHED_VALID_BRIDGE_INPUT is None:
+        _CACHED_VALID_BRIDGE_INPUT = default_minimal_bridge_input(
+            source_revision=VALID_COMMIT_SHA,
+            instrument=GENERIC_FUTURES_INSTRUMENT,
+        )
+    return _CACHED_VALID_BRIDGE_INPUT
 
 
 def _assert_all_authorization_flags_false(result: dict[str, object]) -> None:
