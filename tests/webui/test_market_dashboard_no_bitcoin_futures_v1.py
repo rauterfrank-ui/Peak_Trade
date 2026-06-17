@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import copy
 import json
 import re
 import sys
@@ -224,6 +225,97 @@ def test_resolve_selected_skips_bitcoin_only_fixture() -> None:
         }
     }
     assert resolve_selected_futures_symbol_from_ranking_funnel(ranking) == "ETHUSDT"
+
+
+def test_resolve_selected_stage_order_precedence_non_bitcoin() -> None:
+    ranking = {
+        "stages": {
+            "selected": [{"symbol": "SOLUSDT", "rank": 1}],
+            "shortlist": [{"symbol": "ETHUSDT", "rank": 1}],
+            "universe": [{"symbol": "ADAUSDT", "rank": 1}],
+        }
+    }
+    assert resolve_selected_futures_symbol_from_ranking_funnel(ranking) == "SOLUSDT"
+
+
+def test_resolve_selected_empty_ranking_fail_closed() -> None:
+    assert resolve_selected_futures_symbol_from_ranking_funnel({}) == ""
+    assert resolve_selected_futures_symbol_from_ranking_funnel({"stages": {}}) == ""
+    assert (
+        resolve_selected_futures_symbol_from_ranking_funnel(
+            {"stages": {"selected": [], "shortlist": [], "universe": []}}
+        )
+        == ""
+    )
+
+
+def test_resolve_selected_missing_stages_fail_closed() -> None:
+    assert resolve_selected_futures_symbol_from_ranking_funnel({"stages": None}) == ""
+    assert resolve_selected_futures_symbol_from_ranking_funnel({"stages": "bad"}) == ""
+
+
+def test_resolve_selected_only_invalid_candidates_fail_closed() -> None:
+    ranking = {
+        "stages": {
+            "selected": [{"symbol": "BTCUSDT", "rank": 1}],
+            "shortlist": [{"symbol": "XBTUSD", "rank": 1}],
+            "universe": [{"symbol": "PI_XBTUSD", "rank": 1}],
+        }
+    }
+    assert resolve_selected_futures_symbol_from_ranking_funnel(ranking) == ""
+
+
+def test_is_valid_governed_futures_symbol_empty_and_unknown_fail_closed() -> None:
+    ranking = MIXED_UNIVERSE_FIXTURE
+    assert is_valid_governed_futures_symbol("", ranking) is False
+    assert is_valid_governed_futures_symbol("   ", ranking) is False
+    assert is_valid_governed_futures_symbol("DOGEUSDT", ranking) is False
+
+
+def test_collect_governed_futures_symbols_skips_malformed_rows() -> None:
+    ranking = {
+        "stages": {
+            "universe": [
+                "bad-row",
+                {"symbol": "ETHUSDT", "rank": 1},
+                {"symbol": "", "rank": 2},
+                {"symbol": "SOLUSDT", "rank": 3},
+            ]
+        }
+    }
+    assert collect_governed_futures_symbols(ranking) == {"ETHUSDT", "SOLUSDT"}
+
+
+def test_governed_futures_resolution_input_not_mutated() -> None:
+    ranking = copy.deepcopy(MIXED_UNIVERSE_FIXTURE)
+    before = copy.deepcopy(ranking)
+    _ = collect_governed_futures_symbols(ranking)
+    _ = is_valid_governed_futures_symbol("ETHUSDT", ranking)
+    _ = resolve_selected_futures_symbol_from_ranking_funnel(ranking)
+    assert ranking == before
+
+
+def test_governed_futures_resolution_determinism_three_runs() -> None:
+    ranking = {
+        "stages": {
+            "selected": [{"symbol": "SOLUSDT", "rank": 1}],
+            "shortlist": [{"symbol": "ETHUSDT", "rank": 1}],
+            "universe": [{"symbol": "ADAUSDT", "rank": 1}],
+        }
+    }
+
+    def _snapshot() -> tuple[set[str], bool, str]:
+        return (
+            collect_governed_futures_symbols(ranking),
+            is_valid_governed_futures_symbol("ETHUSDT", ranking),
+            resolve_selected_futures_symbol_from_ranking_funnel(ranking),
+        )
+
+    first = _snapshot()
+    second = _snapshot()
+    third = _snapshot()
+    assert first == second == third
+    assert first == ({"SOLUSDT", "ETHUSDT", "ADAUSDT"}, True, "SOLUSDT")
 
 
 def _iter_fixture_symbols(payload: object) -> list[str]:
