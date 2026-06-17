@@ -235,3 +235,281 @@ def test_main_json_exit_2_when_build_packet_raises(
     data = json.loads(capsys.readouterr().out.strip())
     assert data["contract"] == mod.CONTRACT_ID
     assert "orchestrator outer failure" in str(data.get("error", ""))
+
+
+def _lifecycle_proof_fixtures():
+    from tests.ops.test_check_bounded_pilot_readiness import _coherent_lifecycle_proof_fixtures
+
+    return _coherent_lifecycle_proof_fixtures()
+
+
+def test_build_packet_with_valid_lifecycle_static_proof_handoff(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    import scripts.ops.bounded_pilot_operator_preflight_packet as packet_mod
+
+    composition_input, _, _, _, _, _ = _lifecycle_proof_fixtures()
+    monkeypatch.setattr(
+        "scripts.ops.check_bounded_pilot_readiness.run_bounded_pilot_readiness",
+        lambda *a, **k: (
+            True,
+            {
+                "contract": "bounded_pilot_readiness_v1",
+                "ok": True,
+                "blocked_at": None,
+                "static_readiness_proof_coherent": True,
+                "lifecycle_static_proof": {
+                    "composition_mode": (
+                        "bounded_pilot_readiness_lifecycle_static_proof_composition_v0"
+                    ),
+                    "composition_pass": True,
+                    "fail_reasons": [],
+                },
+            },
+        ),
+    )
+    monkeypatch.setattr(
+        "scripts.ops.snapshot_operator_stop_signals.build_stop_signal_snapshot",
+        lambda repo: _green_stop_snapshot(),
+    )
+
+    packet, code = packet_mod.build_operator_preflight_packet(
+        ROOT,
+        ROOT / "config" / "config.toml",
+        run_tests=False,
+        lifecycle_static_proof=composition_input,
+    )
+    assert code == 0
+    handoff = packet["lifecycle_static_proof_handoff"]
+    assert handoff["handoff_pass"] is True
+    assert handoff["proof_status"] == packet_mod.PROOF_STATUS_VALID
+    assert handoff["blocker_state"] == "blocked"
+    assert packet["packet_identity"]
+    assert packet["packet_digest"]
+    assert packet["summary"]["lifecycle_static_proof_handoff_ok"] is True
+
+
+def test_build_packet_missing_lifecycle_proof_identity_fails(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from dataclasses import replace
+
+    import scripts.ops.bounded_pilot_operator_preflight_packet as packet_mod
+
+    composition_input, _, _, binding, _, _ = _lifecycle_proof_fixtures()
+    bad_binding = replace(binding, pe32_proof_identity="")
+    bad = replace(composition_input, binding=bad_binding)
+    monkeypatch.setattr(
+        "scripts.ops.check_bounded_pilot_readiness.run_bounded_pilot_readiness",
+        lambda *a, **k: (
+            False,
+            {
+                "contract": "bounded_pilot_readiness_v1",
+                "ok": False,
+                "blocked_at": "lifecycle_static_proof",
+                "static_readiness_proof_coherent": False,
+                "lifecycle_static_proof": {
+                    "composition_pass": False,
+                    "fail_reasons": ["binding: pe32_proof_identity required"],
+                },
+            },
+        ),
+    )
+    monkeypatch.setattr(
+        "scripts.ops.snapshot_operator_stop_signals.build_stop_signal_snapshot",
+        lambda repo: _green_stop_snapshot(),
+    )
+    packet, code = packet_mod.build_operator_preflight_packet(
+        ROOT,
+        ROOT / "config" / "config.toml",
+        lifecycle_static_proof=bad,
+    )
+    assert code == 1
+    assert packet["summary"]["packet_ok"] is False
+    assert (
+        packet["lifecycle_static_proof_handoff"]["proof_status"] == packet_mod.PROOF_STATUS_REJECTED
+    )
+
+
+def test_build_packet_injected_binding_drift_fails(monkeypatch: pytest.MonkeyPatch) -> None:
+    from dataclasses import replace
+
+    import scripts.ops.bounded_pilot_operator_preflight_packet as packet_mod
+
+    composition_input, _, _, _, _, _ = _lifecycle_proof_fixtures()
+    composition = {
+        "composition_mode": "bounded_pilot_readiness_lifecycle_static_proof_composition_v0",
+        "composition_pass": True,
+        "fail_reasons": [],
+    }
+    expected = packet_mod.build_lifecycle_static_proof_handoff_binding(
+        composition_input, composition
+    )
+    drifted = replace(expected, pe32_proof_digest="f" * 64)
+    monkeypatch.setattr(
+        "scripts.ops.check_bounded_pilot_readiness.run_bounded_pilot_readiness",
+        lambda *a, **k: (
+            True,
+            {
+                "contract": "bounded_pilot_readiness_v1",
+                "ok": True,
+                "static_readiness_proof_coherent": True,
+                "lifecycle_static_proof": composition,
+            },
+        ),
+    )
+    monkeypatch.setattr(
+        "scripts.ops.snapshot_operator_stop_signals.build_stop_signal_snapshot",
+        lambda repo: _green_stop_snapshot(),
+    )
+    packet, code = packet_mod.build_operator_preflight_packet(
+        ROOT,
+        ROOT / "config" / "config.toml",
+        lifecycle_static_proof=composition_input,
+        lifecycle_static_proof_handoff_binding=drifted,
+    )
+    assert code == 1
+    assert packet["lifecycle_static_proof_handoff"]["handoff_pass"] is False
+    assert any(
+        "pe32_proof_digest mismatch" in r
+        for r in packet["lifecycle_static_proof_handoff"]["fail_reasons"]
+    )
+
+
+def test_build_packet_unknown_extra_fields_fail(monkeypatch: pytest.MonkeyPatch) -> None:
+    import scripts.ops.bounded_pilot_operator_preflight_packet as packet_mod
+
+    composition_input, _, _, _, _, _ = _lifecycle_proof_fixtures()
+    monkeypatch.setattr(
+        "scripts.ops.check_bounded_pilot_readiness.run_bounded_pilot_readiness",
+        lambda *a, **k: (
+            False,
+            {
+                "contract": "bounded_pilot_readiness_v1",
+                "ok": False,
+                "blocked_at": "lifecycle_static_proof",
+                "lifecycle_static_proof": {
+                    "composition_pass": False,
+                    "fail_reasons": ["unknown extra field: unexpected_field"],
+                },
+            },
+        ),
+    )
+    monkeypatch.setattr(
+        "scripts.ops.snapshot_operator_stop_signals.build_stop_signal_snapshot",
+        lambda repo: _green_stop_snapshot(),
+    )
+    packet, code = packet_mod.build_operator_preflight_packet(
+        ROOT,
+        ROOT / "config" / "config.toml",
+        lifecycle_static_proof=composition_input,
+        lifecycle_handoff_extra_fields={"unexpected_field": "value"},
+    )
+    assert code == 1
+    assert packet["summary"]["packet_ok"] is False
+
+
+def test_build_packet_forbidden_secret_field_fails(monkeypatch: pytest.MonkeyPatch) -> None:
+    import scripts.ops.bounded_pilot_operator_preflight_packet as packet_mod
+
+    composition_input, _, _, _, _, _ = _lifecycle_proof_fixtures()
+    monkeypatch.setattr(
+        "scripts.ops.check_bounded_pilot_readiness.run_bounded_pilot_readiness",
+        lambda *a, **k: (False, {"contract": "bounded_pilot_readiness_v1", "ok": False}),
+    )
+    monkeypatch.setattr(
+        "scripts.ops.snapshot_operator_stop_signals.build_stop_signal_snapshot",
+        lambda repo: _green_stop_snapshot(),
+    )
+    packet, code = packet_mod.build_operator_preflight_packet(
+        ROOT,
+        ROOT / "config" / "config.toml",
+        lifecycle_static_proof=composition_input,
+        lifecycle_handoff_extra_fields={"api_key": "secret"},
+    )
+    assert code == 1
+    assert any("lifecycle_static_proof_handoff" in b for b in packet["summary"]["blocked"])
+
+
+def test_packet_identity_and_digest_deterministic(monkeypatch: pytest.MonkeyPatch) -> None:
+    import scripts.ops.bounded_pilot_operator_preflight_packet as packet_mod
+
+    composition_input, _, _, _, _, _ = _lifecycle_proof_fixtures()
+    composition = {
+        "composition_mode": "bounded_pilot_readiness_lifecycle_static_proof_composition_v0",
+        "composition_pass": True,
+        "fail_reasons": [],
+    }
+
+    def _readiness(*a, **k):
+        return (
+            True,
+            {
+                "contract": "bounded_pilot_readiness_v1",
+                "ok": True,
+                "static_readiness_proof_coherent": True,
+                "lifecycle_static_proof": composition,
+            },
+        )
+
+    monkeypatch.setattr(
+        "scripts.ops.check_bounded_pilot_readiness.run_bounded_pilot_readiness",
+        _readiness,
+    )
+    monkeypatch.setattr(
+        "scripts.ops.snapshot_operator_stop_signals.build_stop_signal_snapshot",
+        lambda repo: _green_stop_snapshot(),
+    )
+    left, _ = packet_mod.build_operator_preflight_packet(
+        ROOT,
+        ROOT / "config" / "config.toml",
+        lifecycle_static_proof=composition_input,
+    )
+    right, _ = packet_mod.build_operator_preflight_packet(
+        ROOT,
+        ROOT / "config" / "config.toml",
+        lifecycle_static_proof=composition_input,
+    )
+    assert left["packet_identity"] == right["packet_identity"]
+    assert left["packet_digest"] == right["packet_digest"]
+    assert (
+        left["lifecycle_static_proof_handoff"]["lifecycle_static_proof_identity"]
+        == right["lifecycle_static_proof_handoff"]["lifecycle_static_proof_identity"]
+    )
+
+
+def test_build_packet_does_not_mutate_lifecycle_inputs(monkeypatch: pytest.MonkeyPatch) -> None:
+    import scripts.ops.bounded_pilot_operator_preflight_packet as packet_mod
+    from src.ops.bounded_futures_testnet_preflight_execution_readiness_assembly_lifecycle_integration_contract_v0 import (
+        serialize_assembly_input_canonical,
+    )
+    from src.ops.bounded_futures_testnet_readiness_decision_lifecycle_integration_contract_v0 import (
+        serialize_integration_input_canonical,
+    )
+
+    composition_input, pe32_input, pe26_input, _, _, _ = _lifecycle_proof_fixtures()
+    pe32_before = serialize_integration_input_canonical(pe32_input)
+    pe26_before = serialize_assembly_input_canonical(pe26_input)
+    monkeypatch.setattr(
+        "scripts.ops.check_bounded_pilot_readiness.run_bounded_pilot_readiness",
+        lambda *a, **k: (
+            True,
+            {
+                "contract": "bounded_pilot_readiness_v1",
+                "ok": True,
+                "static_readiness_proof_coherent": True,
+                "lifecycle_static_proof": {"composition_pass": True, "fail_reasons": []},
+            },
+        ),
+    )
+    monkeypatch.setattr(
+        "scripts.ops.snapshot_operator_stop_signals.build_stop_signal_snapshot",
+        lambda repo: _green_stop_snapshot(),
+    )
+    packet_mod.build_operator_preflight_packet(
+        ROOT,
+        ROOT / "config" / "config.toml",
+        lifecycle_static_proof=composition_input,
+    )
+    assert serialize_integration_input_canonical(pe32_input) == pe32_before
+    assert serialize_assembly_input_canonical(pe26_input) == pe26_before

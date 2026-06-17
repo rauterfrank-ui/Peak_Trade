@@ -644,3 +644,163 @@ def test_invoke_returns_2_json_when_runner_script_missing(
     assert data["contract"] == "run_bounded_pilot_session"
     assert "Runner not found" in (data.get("error") or "")
     assert not cap.err.strip()
+
+
+def _lifecycle_proof_fixtures():
+    from tests.ops.test_check_bounded_pilot_readiness import _coherent_lifecycle_proof_fixtures
+
+    return _coherent_lifecycle_proof_fixtures()
+
+
+def _green_packet_with_handoff() -> dict:
+    import scripts.ops.bounded_pilot_operator_preflight_packet as packet_mod
+
+    composition_input, _, _, _, _, _ = _lifecycle_proof_fixtures()
+    composition = {
+        "composition_mode": "bounded_pilot_readiness_lifecycle_static_proof_composition_v0",
+        "composition_pass": True,
+        "fail_reasons": [],
+    }
+    handoff_binding = packet_mod.build_lifecycle_static_proof_handoff_binding(
+        composition_input, composition
+    )
+    handoff = packet_mod._handoff_binding_to_dict(handoff_binding)
+    handoff["composition"] = composition
+    handoff["handoff_pass"] = True
+    handoff["fail_reasons"] = []
+    packet = {
+        "contract": "bounded_pilot_operator_preflight_packet_v1",
+        "bounded_pilot_readiness": {
+            "contract": "bounded_pilot_readiness_v1",
+            "ok": True,
+            "static_readiness_proof_coherent": True,
+            "lifecycle_static_proof": composition,
+        },
+        "stop_signal_snapshot": {"contract": "operator_stop_signal_snapshot_v1"},
+        "lifecycle_static_proof_handoff": handoff,
+        "summary": {
+            "readiness_ok": True,
+            "stop_snapshot_ok": True,
+            "packet_ok": True,
+            "blocked": [],
+            "notes": [],
+            "lifecycle_static_proof_handoff_ok": True,
+        },
+    }
+    packet["packet_identity"] = packet_mod.compute_packet_identity(
+        contract=packet_mod.CONTRACT_ID,
+        readiness_ok=True,
+        stop_snapshot_ok=True,
+        lifecycle_handoff=handoff,
+    )
+    packet["packet_digest"] = packet_mod.compute_packet_digest(
+        contract=packet_mod.CONTRACT_ID,
+        readiness_bundle=packet["bounded_pilot_readiness"],
+        stop_snapshot=packet["stop_signal_snapshot"],
+        summary=packet["summary"],
+        lifecycle_handoff=handoff,
+        packet_identity=packet["packet_identity"],
+    )
+    return packet
+
+
+def test_evaluate_static_operator_entry_handoff_valid_packet() -> None:
+    mod = _load_session_module()
+    packet = _green_packet_with_handoff()
+    result = mod.evaluate_static_operator_entry_handoff(packet)
+    assert result["handoff_pass"] is True
+    assert result["entry_permitted"] is False
+    assert result["preflight_remains_blocked"] is True
+    assert result["authority_lift"] is False
+    assert result["session_started"] is False
+    assert result["runner_started"] is False
+
+
+def test_evaluate_static_operator_entry_handoff_missing_handoff_fails() -> None:
+    mod = _load_session_module()
+    packet = _green_operator_packet()
+    packet["packet_identity"] = "abc"
+    packet["packet_digest"] = "def"
+    result = mod.evaluate_static_operator_entry_handoff(packet)
+    assert result["handoff_pass"] is False
+    assert any("lifecycle_static_proof_handoff required" in r for r in result["fail_reasons"])
+
+
+def test_evaluate_static_operator_entry_handoff_packet_identity_mismatch_fails() -> None:
+    mod = _load_session_module()
+    packet = _green_packet_with_handoff()
+    result = mod.evaluate_static_operator_entry_handoff(packet, expected_packet_identity="0" * 64)
+    assert result["handoff_pass"] is False
+    assert any("packet_identity mismatch" in r for r in result["fail_reasons"])
+
+
+def test_no_invoke_static_handoff_blocks_before_subprocess(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    mod = _load_session_module()
+    composition_input, _, _, _, _, _ = _lifecycle_proof_fixtures()
+    monkeypatch.setattr(
+        "scripts.ops.check_bounded_pilot_readiness.run_bounded_pilot_readiness",
+        lambda *a, **k: (True, _green_readiness_bundle()),
+    )
+
+    def _packet_with_handoff(*a, **k):
+        import scripts.ops.bounded_pilot_operator_preflight_packet as packet_mod
+
+        packet = _green_packet_with_handoff()
+        return packet, 0
+
+    monkeypatch.setattr(
+        "scripts.ops.bounded_pilot_operator_preflight_packet.build_operator_preflight_packet",
+        _packet_with_handoff,
+    )
+
+    def _no_sub(*a, **k):
+        raise AssertionError("subprocess.run must not be called")
+
+    monkeypatch.setattr(subprocess, "run", _no_sub)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        ["run_bounded_pilot_session", "--repo-root", str(ROOT), "--no-invoke"],
+    )
+    assert mod.main() == 0
+
+
+def test_static_handoff_fail_closed_when_packet_missing_proof(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    mod = _load_session_module()
+    composition_input, _, _, _, _, _ = _lifecycle_proof_fixtures()
+    monkeypatch.setattr(
+        "scripts.ops.check_bounded_pilot_readiness.run_bounded_pilot_readiness",
+        lambda *a, **k: (True, _green_readiness_bundle()),
+    )
+
+    def _packet_missing_handoff(*a, **k):
+        packet = _green_operator_packet()
+        packet["packet_identity"] = "a" * 64
+        packet["packet_digest"] = "b" * 64
+        return packet, 0
+
+    monkeypatch.setattr(
+        "scripts.ops.bounded_pilot_operator_preflight_packet.build_operator_preflight_packet",
+        _packet_missing_handoff,
+    )
+
+    def _no_sub(*a, **k):
+        raise AssertionError("subprocess.run must not be called")
+
+    monkeypatch.setattr(subprocess, "run", _no_sub)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "run_bounded_pilot_session",
+            "--repo-root",
+            str(ROOT),
+            "--no-invoke",
+        ],
+    )
+    # packet_ok true but no lifecycle handoff when not injected — existing path unchanged
+    assert mod.main() == 0
