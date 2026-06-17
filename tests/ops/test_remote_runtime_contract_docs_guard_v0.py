@@ -3662,10 +3662,8 @@ def test_ci_audit_pe17_bounded_futures_testnet_preflight_packet_completeness_tru
     None
 ):
     text = _ci_audit_text()
-    section = (
-        _pe17_bounded_futures_testnet_preflight_packet_completeness_truth_ci_audit_crosslink_section(
-            text
-        )
+    section = _pe17_bounded_futures_testnet_preflight_packet_completeness_truth_ci_audit_crosslink_section(
+        text
     )
     assert (
         "GO_PE17_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_COMPLETENESS_TRUTH_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1"
@@ -3678,9 +3676,7 @@ def test_ci_audit_pe17_bounded_futures_testnet_preflight_packet_completeness_tru
     assert "bounded_futures_testnet_preflight_packet_builder_contract_v0" in section
     assert "bounded_futures_testnet_preflight_packet_contract_v0" in section
     assert THIS_MODULE in section
-    for module_name in (
-        PE17_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_COMPLETENESS_TRUTH_CI_AUDIT_CROSSLINK_OWNER_TESTS
-    ):
+    for module_name in PE17_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_COMPLETENESS_TRUTH_CI_AUDIT_CROSSLINK_OWNER_TESTS:
         assert module_name in section
 
 
@@ -3688,10 +3684,8 @@ def test_ci_audit_pe17_bounded_futures_testnet_preflight_packet_completeness_tru
     None
 ):
     text = _ci_audit_text()
-    section = (
-        _pe17_bounded_futures_testnet_preflight_packet_completeness_truth_ci_audit_crosslink_section(
-            text
-        )
+    section = _pe17_bounded_futures_testnet_preflight_packet_completeness_truth_ci_audit_crosslink_section(
+        text
     )
     block = _block_containing(
         section,
