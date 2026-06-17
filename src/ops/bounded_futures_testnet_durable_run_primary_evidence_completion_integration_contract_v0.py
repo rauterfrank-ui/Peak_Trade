@@ -1,0 +1,1184 @@
+"""Bounded Futures Testnet durable run primary evidence completion integration (v0).
+
+Deterministic, offline, explicit-input-only fail-closed integration composing PE-21
+primary evidence reconciliation proof, PE-16 durable archive identity, SECTION5 Gap 4
+output/reporter completion semantics, and SECTION5 Gap 2a.1 primary-evidence enforcement
+completion semantics with bounded durable run-root artifact/manifest requirements.
+
+Static integration only — no run start, evidence write, archive I/O, manifest I/O,
+network, testnet, runtime, credentials, orders, evidence acceptance, operative completion,
+or authority lift.
+"""
+
+from __future__ import annotations
+
+import hashlib
+import json
+import re
+from dataclasses import asdict, dataclass
+from pathlib import Path
+from typing import Any
+
+from scripts.ops.primary_evidence_retention_v0 import (
+    BOUNDED_DURABLE_RUN_REQUIRED_REL_PATHS,
+    MANIFEST_FILENAME,
+    is_under_tmp,
+)
+from src.ops.bounded_futures_testnet_position_order_reconciliation_primary_evidence_integration_contract_v0 import (
+    CONTRACT_VERSION as PE21_CONTRACT_VERSION,
+    ManifestEntry,
+    ReconciliationPrimaryEvidenceIntegrationInput,
+    compute_integration_input_digest as compute_pe21_integration_input_digest,
+    compute_integration_proof_digest as compute_pe21_integration_proof_digest,
+    compute_manifest_digest,
+    evaluate_position_order_reconciliation_primary_evidence_integration,
+    validate_primary_evidence_binding,
+    validate_reconciliation_primary_evidence_integration_input,
+)
+from src.ops.bounded_futures_testnet_preflight_packet_archive_contract_v0 import (
+    ARCHIVE_CONTRACT_VERSION,
+    PACKAGE_MARKER as PE16_PACKAGE_MARKER,
+)
+from src.ops.bounded_futures_testnet_preflight_packet_contract_v0 import (
+    ENVIRONMENT_TESTNET,
+    FOLLOWUP_RUN_GATE,
+    PE12_CONTRACT_VERSION,
+    PRIMARY_EVIDENCE_OWNER,
+)
+from src.ops.bounded_futures_testnet_contract_v0 import DEFAULT_MARKET_TYPE
+
+PACKAGE_MARKER = (
+    "BOUNDED_FUTURES_TESTNET_DURABLE_RUN_PRIMARY_EVIDENCE_COMPLETION_INTEGRATION_CONTRACT_V0=true"
+)
+CONTRACT_VERSION = "bounded_futures_testnet_durable_run_primary_evidence_completion_integration.v0"
+SERIALIZATION_VERSION = (
+    "bounded_futures_testnet_durable_run_primary_evidence_completion_integration.serialization.v0"
+)
+HASH_ALGORITHM = "sha256"
+REPOSITORY_IDENTITY = "Peak_Trade"
+COMPLETION_INTEGRATION_OWNER = CONTRACT_VERSION
+
+PE16_ARCHIVE_OWNER = "src/ops/bounded_futures_testnet_preflight_packet_archive_contract_v0.py"
+PE21_INTEGRATION_OWNER = PE21_CONTRACT_VERSION
+GAP4_COMPLETION_OWNER = "tests/ops/test_gap4_output_evidence_paths_contract_v0.py"
+GAP2A1_ENFORCEMENT_OWNER = "tests/ops/test_gap2a1_primary_evidence_enforcement_contract_v0.py"
+PRIMARY_EVIDENCE_RETENTION_CONTRACT_VERSION = "primary_evidence_retention.v0"
+
+SUPPORTED_RUN_TYPE = "bounded_futures_testnet"
+REJECTED_RUN_TYPE_FRAGMENTS = (
+    "spot",
+    "bitcoin",
+    "btc",
+    "xbt",
+    "paper",
+    "shadow",
+    "live",
+    "scheduler",
+    "supervisor",
+    "order_capability",
+)
+
+EVIDENCE_MODE_DURABLE = "durable"
+EVIDENCE_MODE_PLANNED = "planned"
+EVIDENCE_MODE_SIMULATED = "simulated"
+EVIDENCE_MODE_TMP_ONLY = "tmp_only"
+ALLOWED_EVIDENCE_MODES = frozenset(
+    {EVIDENCE_MODE_DURABLE, EVIDENCE_MODE_PLANNED, EVIDENCE_MODE_SIMULATED, EVIDENCE_MODE_TMP_ONLY}
+)
+
+PROOF_LIFECYCLE_CURRENT = "current"
+PROOF_LIFECYCLE_STALE = "stale"
+PROOF_LIFECYCLE_REVOKED = "revoked"
+PROOF_LIFECYCLE_SUPERSEDED = "superseded"
+PROOF_LIFECYCLE_REPLAY = "replay"
+PROOF_LIFECYCLE_DUPLICATE = "duplicate"
+ALLOWED_PROOF_LIFECYCLE_STATES = frozenset(
+    {
+        PROOF_LIFECYCLE_CURRENT,
+        PROOF_LIFECYCLE_STALE,
+        PROOF_LIFECYCLE_REVOKED,
+        PROOF_LIFECYCLE_SUPERSEDED,
+        PROOF_LIFECYCLE_REPLAY,
+        PROOF_LIFECYCLE_DUPLICATE,
+    }
+)
+INVALID_PROOF_LIFECYCLE_STATES = frozenset(
+    {
+        PROOF_LIFECYCLE_STALE,
+        PROOF_LIFECYCLE_REVOKED,
+        PROOF_LIFECYCLE_SUPERSEDED,
+        PROOF_LIFECYCLE_REPLAY,
+        PROOF_LIFECYCLE_DUPLICATE,
+    }
+)
+
+GLOBAL_RUN_COMPLETION_READINESS = False
+CONTRACT_IMPLEMENTATION_ONLY = True
+OPERATIVE_RUN_COMPLETION_RECORDED = False
+PRIMARY_EVIDENCE_OPERATIONALLY_ACCEPTED = False
+RUN_STARTED = False
+RUNNER_STARTED = False
+SESSION_STARTED = False
+ARCHIVE_READ = False
+ARCHIVE_WRITTEN = False
+MANIFEST_READ = False
+MANIFEST_WRITTEN = False
+FILESYSTEM_ACCESSED = False
+REPLAY_EXECUTED = False
+ADMISSION_EXECUTED = False
+AUTHORITY_LIFT = False
+PREFLIGHT_REMAINS_BLOCKED = True
+
+_SHA256_HEX_RE = re.compile(r"^[0-9a-f]{64}$")
+_COMMIT_SHA_RE = re.compile(r"^[0-9a-f]{40}$")
+
+_FORBIDDEN_EXTRA_FIELD_FRAGMENTS = (
+    "secret",
+    "credential",
+    "api_key",
+    "password",
+    "token",
+    "command",
+    "action",
+    "authority",
+    "acceptance",
+    "completion_override",
+    "decision",
+    "execution_authorized",
+    "live_authorized",
+    "pilot_start",
+    "promotion",
+    "network_allowed",
+    "orders_allowed",
+)
+
+_EXPECTED_CONTRACT_VERSIONS: dict[str, str] = {
+    "pe12_lifecycle": PE12_CONTRACT_VERSION,
+    "pe16_archive": ARCHIVE_CONTRACT_VERSION,
+    "pe16_primary_evidence_retention": PRIMARY_EVIDENCE_RETENTION_CONTRACT_VERSION,
+    "pe21_integration": PE21_CONTRACT_VERSION,
+    "integration": CONTRACT_VERSION,
+}
+
+
+@dataclass(frozen=True)
+class ContractVersionsInput:
+    pe12_lifecycle: str
+    pe16_archive: str
+    pe16_primary_evidence_retention: str
+    pe21_integration: str
+    integration: str
+
+
+@dataclass(frozen=True)
+class RunIdentityBinding:
+    run_id: str
+    run_identity_digest: str
+
+
+@dataclass(frozen=True)
+class DurableRunRootBinding:
+    durable_archive_root: str
+    run_root_identity: str
+    run_root_digest: str
+
+
+@dataclass(frozen=True)
+class PrimaryEvidenceIdentityBinding:
+    primary_evidence_identity: str
+    primary_evidence_owner: str
+    retention_contract_version: str
+
+
+@dataclass(frozen=True)
+class Pe16ArchiveProofBinding:
+    archive_owner: str
+    archive_contract_version: str
+    archive_identity: str
+    archive_digest: str
+    pe16_integration_pass: bool
+
+
+@dataclass(frozen=True)
+class Pe21PrimaryEvidenceProofBinding:
+    integration_owner: str
+    source_revision: str
+    integration_input_digest: str
+    integration_proof_digest: str
+    pe21_integration_pass: bool
+    durable_primary_evidence_binding_proven: bool
+
+
+@dataclass(frozen=True)
+class Gap4CompletionProofBinding:
+    gap4_owner: str
+    source_revision: str
+    output_evidence_depends_on_gap2a1: bool
+    completion_invalid_without_durable_primary_evidence: bool
+    completion_invalid_without_manifest_verify: bool
+    durable_output_required_for_future_runs: bool
+    gap4_output_evidence_paths_verified: bool
+    gap4_integration_pass: bool
+
+
+@dataclass(frozen=True)
+class Gap2a1EnforcementProofBinding:
+    gap2a1_owner: str
+    source_revision: str
+    primary_evidence_enforced: bool
+    enforcement_default_on: bool
+    enforcement_opt_in_only: bool
+    tmp_only_evidence_invalid: bool
+    manifest_verify_required: bool
+    checksum_verify_required: bool
+    run_incomplete_without_primary_evidence: bool
+    gap2a1_integration_pass: bool
+
+
+@dataclass(frozen=True)
+class ArtifactChecksumEntry:
+    relative_path: str
+    digest: str
+
+
+@dataclass(frozen=True)
+class ManifestProofBinding:
+    manifest_identity: str
+    manifest_digest: str
+    manifest_verify_rc: int
+    manifest_entries: tuple[ArtifactChecksumEntry, ...]
+
+
+@dataclass(frozen=True)
+class PostWriteVerificationBinding:
+    post_write_verification_pass: bool
+    manifest_verify_rc: int
+
+
+@dataclass(frozen=True)
+class ProofLifecycleMetadata:
+    lifecycle_state: str
+    proof_generation: int = 0
+
+
+@dataclass(frozen=True)
+class CompletionSafetySnapshot:
+    preflight_remains_blocked: bool
+    ready_for_operator_arming: bool
+    execution_authorized: bool
+    live_authorized: bool
+    evidence_acceptance_authorized: bool
+    promotion_authorized: bool
+    network_allowed: bool
+    credentials_allowed: bool
+    orders_allowed: bool
+    scheduler_runtime_allowed: bool
+    futures_only: bool
+    bitcoin_direction_allowed: bool
+    followup_run_gate: str
+
+
+@dataclass(frozen=True)
+class DurableRunPrimaryEvidenceCompletionIntegrationInput:
+    source_revision: str
+    repository_identity: str
+    run_type: str
+    run_identity: RunIdentityBinding
+    durable_run_root: DurableRunRootBinding
+    primary_evidence_identity: PrimaryEvidenceIdentityBinding
+    pe21_proof: Pe21PrimaryEvidenceProofBinding
+    pe21_integration_input: ReconciliationPrimaryEvidenceIntegrationInput
+    pe16_archive: Pe16ArchiveProofBinding
+    manifest_proof: ManifestProofBinding
+    artifact_checksums: tuple[ArtifactChecksumEntry, ...]
+    post_write_verification: PostWriteVerificationBinding
+    gap4_completion: Gap4CompletionProofBinding
+    gap2a1_enforcement: Gap2a1EnforcementProofBinding
+    proof_lifecycle: ProofLifecycleMetadata
+    evidence_mode: str
+    completion_claimed: bool
+    safety_snapshot: CompletionSafetySnapshot
+    contract_versions: ContractVersionsInput
+    futures_only: bool = True
+    environment: str = ENVIRONMENT_TESTNET
+    non_authorizing: bool = True
+
+
+def _sorted_unique(items: list[str]) -> list[str]:
+    return sorted(dict.fromkeys(items))
+
+
+def _valid_sha256_digest(value: str) -> bool:
+    return bool(_SHA256_HEX_RE.match(value))
+
+
+def _valid_commit_sha(value: str) -> bool:
+    return bool(_COMMIT_SHA_RE.match(value))
+
+
+def compute_run_identity_digest(*, run_id: str, run_type: str, source_revision: str) -> str:
+    payload = {
+        "hash_algorithm": HASH_ALGORITHM,
+        "run_id": run_id,
+        "run_type": run_type,
+        "source_revision": source_revision,
+    }
+    return hashlib.sha256(
+        json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+
+
+def compute_run_root_digest(
+    *,
+    durable_archive_root: str,
+    run_root_identity: str,
+    source_revision: str,
+) -> str:
+    payload = {
+        "durable_archive_root": durable_archive_root,
+        "hash_algorithm": HASH_ALGORITHM,
+        "run_root_identity": run_root_identity,
+        "source_revision": source_revision,
+    }
+    return hashlib.sha256(
+        json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+
+
+def compute_primary_evidence_identity_digest(
+    *,
+    primary_evidence_identity: str,
+    primary_evidence_owner: str,
+    retention_contract_version: str,
+    source_revision: str,
+) -> str:
+    payload = {
+        "hash_algorithm": HASH_ALGORITHM,
+        "primary_evidence_identity": primary_evidence_identity,
+        "primary_evidence_owner": primary_evidence_owner,
+        "retention_contract_version": retention_contract_version,
+        "source_revision": source_revision,
+    }
+    return hashlib.sha256(
+        json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+
+
+def _manifest_entries_from_artifacts(
+    artifacts: tuple[ArtifactChecksumEntry, ...],
+) -> tuple[ManifestEntry, ...]:
+    return tuple(
+        ManifestEntry(digest=entry.digest, relative_path=entry.relative_path)
+        for entry in sorted(artifacts, key=lambda item: item.relative_path)
+    )
+
+
+def _validate_run_type(run_type: str) -> list[str]:
+    fail_reasons: list[str] = []
+    if not run_type:
+        fail_reasons.append("run_type required")
+        return fail_reasons
+    if run_type != SUPPORTED_RUN_TYPE:
+        fail_reasons.append(f"run_type must be {SUPPORTED_RUN_TYPE!r}")
+    lowered = run_type.lower()
+    for fragment in REJECTED_RUN_TYPE_FRAGMENTS:
+        if fragment in lowered:
+            fail_reasons.append(f"run_type contains rejected fragment {fragment!r}")
+    return fail_reasons
+
+
+def _validate_archive_root_identity(archive_root: str, relative_identity: str) -> list[str]:
+    fail_reasons: list[str] = []
+    if not archive_root:
+        fail_reasons.append("durable_archive_root required")
+    else:
+        root_path = Path(archive_root)
+        if is_under_tmp(root_path):
+            fail_reasons.append("durable_archive_root must be outside /tmp")
+    if not relative_identity:
+        fail_reasons.append("run_root_identity required")
+    elif relative_identity.startswith("/"):
+        fail_reasons.append("run_root_identity must be relative")
+    elif ".." in Path(relative_identity).parts:
+        fail_reasons.append("run_root_identity must not contain '..'")
+    combined = f"{archive_root.rstrip('/')}/{relative_identity}".replace("\\", "/")
+    if "/../" in f"/{combined}/" or combined.endswith("/.."):
+        fail_reasons.append("run root path traversal rejected")
+    return fail_reasons
+
+
+def _validate_safety_snapshot(snapshot: CompletionSafetySnapshot) -> list[str]:
+    fail_reasons: list[str] = []
+    required_bools = (
+        ("preflight_remains_blocked", True),
+        ("ready_for_operator_arming", False),
+        ("execution_authorized", False),
+        ("live_authorized", False),
+        ("evidence_acceptance_authorized", False),
+        ("promotion_authorized", False),
+        ("network_allowed", False),
+        ("credentials_allowed", False),
+        ("orders_allowed", False),
+        ("scheduler_runtime_allowed", False),
+        ("futures_only", True),
+        ("bitcoin_direction_allowed", False),
+    )
+    for field_name, expected in required_bools:
+        actual = getattr(snapshot, field_name)
+        if actual is not expected:
+            fail_reasons.append(f"safety_snapshot: {field_name} must be {expected}")
+    if snapshot.followup_run_gate != FOLLOWUP_RUN_GATE:
+        fail_reasons.append(f"safety_snapshot: followup_run_gate must be {FOLLOWUP_RUN_GATE!r}")
+    return fail_reasons
+
+
+def _validate_manifest_and_artifacts(
+    manifest_proof: ManifestProofBinding,
+    artifact_checksums: tuple[ArtifactChecksumEntry, ...],
+) -> list[str]:
+    fail_reasons: list[str] = []
+    required_paths = set(BOUNDED_DURABLE_RUN_REQUIRED_REL_PATHS)
+    required_manifest_paths = required_paths - {MANIFEST_FILENAME}
+    artifact_paths = [entry.relative_path for entry in artifact_checksums]
+    manifest_paths = [entry.relative_path for entry in manifest_proof.manifest_entries]
+
+    if len(artifact_paths) != len(set(artifact_paths)):
+        fail_reasons.append("duplicate artifact checksum paths")
+    if len(manifest_paths) != len(set(manifest_paths)):
+        fail_reasons.append("duplicate manifest entry paths")
+
+    missing_required = sorted(required_paths - set(artifact_paths))
+    if missing_required:
+        fail_reasons.append(f"missing required artifact paths: {missing_required}")
+
+    extra_artifacts = sorted(set(artifact_paths) - required_paths)
+    if extra_artifacts:
+        fail_reasons.append(f"unexpected artifact paths: {extra_artifacts}")
+
+    if set(manifest_paths) != required_manifest_paths:
+        fail_reasons.append("manifest entries must cover exactly the canonical required artifacts")
+
+    checksum_by_path = {entry.relative_path: entry.digest for entry in artifact_checksums}
+    for manifest_entry in manifest_proof.manifest_entries:
+        if manifest_entry.relative_path.startswith("/"):
+            fail_reasons.append(
+                f"absolute manifest path rejected: {manifest_entry.relative_path!r}"
+            )
+        if ".." in Path(manifest_entry.relative_path).parts:
+            fail_reasons.append(
+                f"path traversal rejected in manifest entry: {manifest_entry.relative_path!r}"
+            )
+        if not _valid_sha256_digest(manifest_entry.digest):
+            fail_reasons.append(
+                f"invalid manifest entry digest for {manifest_entry.relative_path!r}"
+            )
+        expected_digest = checksum_by_path.get(manifest_entry.relative_path)
+        if expected_digest is None:
+            fail_reasons.append(
+                f"manifest entry without artifact checksum: {manifest_entry.relative_path!r}"
+            )
+        elif expected_digest != manifest_entry.digest:
+            fail_reasons.append(f"checksum mismatch for artifact {manifest_entry.relative_path!r}")
+
+    for entry in artifact_checksums:
+        if not _valid_sha256_digest(entry.digest):
+            fail_reasons.append(f"invalid artifact checksum for {entry.relative_path!r}")
+        if entry.relative_path.startswith("/"):
+            fail_reasons.append(f"absolute artifact path rejected: {entry.relative_path!r}")
+        if ".." in Path(entry.relative_path).parts:
+            fail_reasons.append(f"path traversal rejected in artifact: {entry.relative_path!r}")
+
+    if not manifest_proof.manifest_identity:
+        fail_reasons.append("manifest_identity required")
+    elif not _valid_sha256_digest(manifest_proof.manifest_identity):
+        fail_reasons.append("manifest_identity must be 64-char lowercase sha256 hex")
+
+    if not manifest_proof.manifest_digest:
+        fail_reasons.append("manifest_digest required")
+    elif not _valid_sha256_digest(manifest_proof.manifest_digest):
+        fail_reasons.append("manifest_digest must be 64-char lowercase sha256 hex")
+
+    manifest_artifact_entries = tuple(
+        entry for entry in artifact_checksums if entry.relative_path != MANIFEST_FILENAME
+    )
+    computed_manifest_digest = compute_manifest_digest(
+        _manifest_entries_from_artifacts(manifest_artifact_entries)
+    )
+    if manifest_proof.manifest_digest != computed_manifest_digest:
+        fail_reasons.append("manifest_digest mismatch")
+    if manifest_proof.manifest_identity != computed_manifest_digest:
+        fail_reasons.append("manifest_identity mismatch with computed manifest digest")
+
+    if manifest_proof.manifest_verify_rc != 0:
+        fail_reasons.append("manifest_proof.manifest_verify_rc must be 0")
+
+    return _sorted_unique(fail_reasons)
+
+
+def _validate_pe16_archive_proof(
+    archive: Pe16ArchiveProofBinding,
+    *,
+    source_revision: str,
+    primary_evidence_identity: PrimaryEvidenceIdentityBinding,
+    run_root_identity: str,
+    manifest_digest: str,
+) -> list[str]:
+    fail_reasons: list[str] = []
+    if archive.archive_owner != PE16_ARCHIVE_OWNER:
+        fail_reasons.append(f"pe16_archive: archive_owner must be {PE16_ARCHIVE_OWNER!r}")
+    if archive.archive_contract_version != ARCHIVE_CONTRACT_VERSION:
+        fail_reasons.append(
+            f"pe16_archive: archive_contract_version must be {ARCHIVE_CONTRACT_VERSION!r}"
+        )
+    if not archive.archive_identity:
+        fail_reasons.append("pe16_archive: archive_identity required")
+    elif archive.archive_identity != run_root_identity:
+        fail_reasons.append("pe16_archive: archive_identity mismatch with run_root_identity")
+    elif not _valid_sha256_digest(archive.archive_digest):
+        fail_reasons.append("pe16_archive: archive_digest must be 64-char lowercase sha256 hex")
+    if archive.pe16_integration_pass is not True:
+        fail_reasons.append("pe16_archive: pe16_integration_pass must be true")
+    if primary_evidence_identity.primary_evidence_owner != PRIMARY_EVIDENCE_OWNER:
+        fail_reasons.append(f"primary_evidence_identity: owner must be {PRIMARY_EVIDENCE_OWNER!r}")
+    if (
+        primary_evidence_identity.retention_contract_version
+        != PRIMARY_EVIDENCE_RETENTION_CONTRACT_VERSION
+    ):
+        fail_reasons.append(
+            "primary_evidence_identity: retention_contract_version must be "
+            f"{PRIMARY_EVIDENCE_RETENTION_CONTRACT_VERSION!r}"
+        )
+    expected_archive_digest = hashlib.sha256(
+        json.dumps(
+            {
+                "archive_contract_version": archive.archive_contract_version,
+                "archive_identity": archive.archive_identity,
+                "manifest_digest": manifest_digest,
+                "source_revision": source_revision,
+            },
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("utf-8")
+    ).hexdigest()
+    if archive.archive_digest != expected_archive_digest:
+        fail_reasons.append("pe16_archive: archive_digest mismatch")
+    if PE16_PACKAGE_MARKER != "BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_ARCHIVE_CONTRACT_V0=true":
+        fail_reasons.append("pe16_archive: package marker drift")
+    return fail_reasons
+
+
+def _validate_pe21_proof_binding(
+    proof: Pe21PrimaryEvidenceProofBinding,
+    *,
+    source_revision: str,
+    pe21_result: dict[str, Any],
+) -> list[str]:
+    fail_reasons: list[str] = []
+    if proof.integration_owner != PE21_INTEGRATION_OWNER:
+        fail_reasons.append(f"pe21_proof: integration_owner must be {PE21_INTEGRATION_OWNER!r}")
+    if proof.source_revision != source_revision:
+        fail_reasons.append("pe21_proof: source_revision mismatch")
+    if proof.integration_input_digest != pe21_result.get("integration_input_digest"):
+        fail_reasons.append("pe21_proof: integration_input_digest mismatch")
+    expected_proof_digest = pe21_result.get("integration_proof_digest")
+    if proof.pe21_integration_pass is not True:
+        fail_reasons.append("pe21_proof: pe21_integration_pass must be true")
+    if not pe21_result.get("integration_pass"):
+        fail_reasons.extend(pe21_result.get("fail_reasons", []))
+    elif proof.integration_proof_digest != expected_proof_digest:
+        fail_reasons.append("pe21_proof: integration_proof_digest mismatch")
+    if proof.durable_primary_evidence_binding_proven is not True:
+        fail_reasons.append("pe21_proof: durable_primary_evidence_binding_proven must be true")
+    elif not pe21_result.get("durable_primary_evidence_binding_proven"):
+        fail_reasons.append("pe21_proof: durable primary evidence binding not proven upstream")
+    return fail_reasons
+
+
+def _validate_gap4_completion_proof(
+    gap4: Gap4CompletionProofBinding,
+    *,
+    source_revision: str,
+) -> list[str]:
+    fail_reasons: list[str] = []
+    if gap4.gap4_owner != GAP4_COMPLETION_OWNER:
+        fail_reasons.append(f"gap4_completion: gap4_owner must be {GAP4_COMPLETION_OWNER!r}")
+    if gap4.source_revision != source_revision:
+        fail_reasons.append("gap4_completion: source_revision mismatch")
+    required_flags = (
+        ("output_evidence_depends_on_gap2a1", True),
+        ("completion_invalid_without_durable_primary_evidence", True),
+        ("completion_invalid_without_manifest_verify", True),
+        ("durable_output_required_for_future_runs", True),
+        ("gap4_output_evidence_paths_verified", False),
+        ("gap4_integration_pass", True),
+    )
+    for field_name, expected in required_flags:
+        actual = getattr(gap4, field_name)
+        if actual is not expected:
+            fail_reasons.append(f"gap4_completion: {field_name} must be {expected}")
+    return fail_reasons
+
+
+def _validate_gap2a1_enforcement_proof(
+    gap2a1: Gap2a1EnforcementProofBinding,
+    *,
+    source_revision: str,
+) -> list[str]:
+    fail_reasons: list[str] = []
+    if gap2a1.gap2a1_owner != GAP2A1_ENFORCEMENT_OWNER:
+        fail_reasons.append(
+            f"gap2a1_enforcement: gap2a1_owner must be {GAP2A1_ENFORCEMENT_OWNER!r}"
+        )
+    if gap2a1.source_revision != source_revision:
+        fail_reasons.append("gap2a1_enforcement: source_revision mismatch")
+    required_flags = (
+        ("primary_evidence_enforced", False),
+        ("enforcement_default_on", False),
+        ("enforcement_opt_in_only", True),
+        ("tmp_only_evidence_invalid", True),
+        ("manifest_verify_required", True),
+        ("checksum_verify_required", True),
+        ("run_incomplete_without_primary_evidence", True),
+        ("gap2a1_integration_pass", True),
+    )
+    for field_name, expected in required_flags:
+        actual = getattr(gap2a1, field_name)
+        if actual is not expected:
+            fail_reasons.append(f"gap2a1_enforcement: {field_name} must be {expected}")
+    return fail_reasons
+
+
+def validate_durable_run_primary_evidence_completion_integration_input(
+    integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
+    *,
+    extra_field_names: tuple[str, ...] = (),
+) -> list[str]:
+    """Fail-closed validation of explicit completion integration input bindings."""
+    fail_reasons: list[str] = []
+
+    for field_name in extra_field_names:
+        lowered = field_name.lower()
+        if any(fragment in lowered for fragment in _FORBIDDEN_EXTRA_FIELD_FRAGMENTS):
+            fail_reasons.append(f"forbidden extra field: {field_name!r}")
+
+    if not integration_input.source_revision:
+        fail_reasons.append("source_revision required")
+    elif not _valid_commit_sha(integration_input.source_revision):
+        fail_reasons.append("source_revision must be full 40-char lowercase commit SHA")
+    if integration_input.repository_identity != REPOSITORY_IDENTITY:
+        fail_reasons.append(f"repository_identity must be {REPOSITORY_IDENTITY!r}")
+
+    fail_reasons.extend(_validate_run_type(integration_input.run_type))
+
+    for field_name, expected in _EXPECTED_CONTRACT_VERSIONS.items():
+        actual = getattr(integration_input.contract_versions, field_name)
+        if not actual:
+            fail_reasons.append(f"contract_versions: {field_name} required")
+        elif actual != expected:
+            fail_reasons.append(
+                f"contract_versions: {field_name} must be {expected!r}, got {actual!r}"
+            )
+
+    run_identity = integration_input.run_identity
+    if not run_identity.run_id:
+        fail_reasons.append("run_identity: run_id required")
+    if not run_identity.run_identity_digest:
+        fail_reasons.append("run_identity: run_identity_digest required")
+    elif not _valid_sha256_digest(run_identity.run_identity_digest):
+        fail_reasons.append(
+            "run_identity: run_identity_digest must be 64-char lowercase sha256 hex"
+        )
+    else:
+        expected_run_identity_digest = compute_run_identity_digest(
+            run_id=run_identity.run_id,
+            run_type=integration_input.run_type,
+            source_revision=integration_input.source_revision,
+        )
+        if run_identity.run_identity_digest != expected_run_identity_digest:
+            fail_reasons.append("run_identity: run_identity_digest mismatch")
+
+    durable_root = integration_input.durable_run_root
+    fail_reasons.extend(
+        _validate_archive_root_identity(
+            durable_root.durable_archive_root,
+            durable_root.run_root_identity,
+        )
+    )
+    if not durable_root.run_root_digest:
+        fail_reasons.append("durable_run_root: run_root_digest required")
+    elif not _valid_sha256_digest(durable_root.run_root_digest):
+        fail_reasons.append(
+            "durable_run_root: run_root_digest must be 64-char lowercase sha256 hex"
+        )
+    else:
+        expected_run_root_digest = compute_run_root_digest(
+            durable_archive_root=durable_root.durable_archive_root,
+            run_root_identity=durable_root.run_root_identity,
+            source_revision=integration_input.source_revision,
+        )
+        if durable_root.run_root_digest != expected_run_root_digest:
+            fail_reasons.append("durable_run_root: run_root_digest mismatch")
+
+    pe_identity = integration_input.primary_evidence_identity
+    if not pe_identity.primary_evidence_identity:
+        fail_reasons.append("primary_evidence_identity required")
+    elif not _valid_sha256_digest(pe_identity.primary_evidence_identity):
+        fail_reasons.append("primary_evidence_identity must be 64-char lowercase sha256 hex")
+    else:
+        expected_pe_identity = compute_primary_evidence_identity_digest(
+            primary_evidence_identity=durable_root.run_root_identity,
+            primary_evidence_owner=pe_identity.primary_evidence_owner,
+            retention_contract_version=pe_identity.retention_contract_version,
+            source_revision=integration_input.source_revision,
+        )
+        if pe_identity.primary_evidence_identity != expected_pe_identity:
+            fail_reasons.append("primary_evidence_identity digest mismatch")
+
+    if integration_input.evidence_mode not in ALLOWED_EVIDENCE_MODES:
+        fail_reasons.append(f"evidence_mode must be one of {sorted(ALLOWED_EVIDENCE_MODES)!r}")
+
+    lifecycle = integration_input.proof_lifecycle
+    if lifecycle.lifecycle_state not in ALLOWED_PROOF_LIFECYCLE_STATES:
+        fail_reasons.append(f"unsupported proof lifecycle state {lifecycle.lifecycle_state!r}")
+    if lifecycle.lifecycle_state in INVALID_PROOF_LIFECYCLE_STATES:
+        fail_reasons.append(f"invalid proof lifecycle state {lifecycle.lifecycle_state!r}")
+
+    fail_reasons.extend(
+        _validate_manifest_and_artifacts(
+            integration_input.manifest_proof,
+            integration_input.artifact_checksums,
+        )
+    )
+
+    post_write = integration_input.post_write_verification
+    if post_write.post_write_verification_pass is not True:
+        fail_reasons.append("post_write_verification_pass must be true")
+    if post_write.manifest_verify_rc != 0:
+        fail_reasons.append("post_write_verification.manifest_verify_rc must be 0")
+    if post_write.manifest_verify_rc != integration_input.manifest_proof.manifest_verify_rc:
+        fail_reasons.append("manifest_verify_rc drift between manifest and post-write proof")
+
+    pe21_input = integration_input.pe21_integration_input
+    if pe21_input.source_revision != integration_input.source_revision:
+        fail_reasons.append(
+            "pe21_integration_input: source_revision mismatch with completion input"
+        )
+    fail_reasons.extend(validate_reconciliation_primary_evidence_integration_input(pe21_input))
+
+    pe21_binding = pe21_input.primary_evidence_binding
+    if pe21_binding.durable_archive_root != durable_root.durable_archive_root:
+        fail_reasons.append("pe21 durable_archive_root mismatch with durable_run_root")
+    fail_reasons.extend(validate_primary_evidence_binding(pe21_binding))
+
+    fail_reasons.extend(
+        _validate_pe16_archive_proof(
+            integration_input.pe16_archive,
+            source_revision=integration_input.source_revision,
+            primary_evidence_identity=integration_input.primary_evidence_identity,
+            run_root_identity=durable_root.run_root_identity,
+            manifest_digest=integration_input.manifest_proof.manifest_digest,
+        )
+    )
+    fail_reasons.extend(
+        _validate_gap4_completion_proof(
+            integration_input.gap4_completion,
+            source_revision=integration_input.source_revision,
+        )
+    )
+    fail_reasons.extend(
+        _validate_gap2a1_enforcement_proof(
+            integration_input.gap2a1_enforcement,
+            source_revision=integration_input.source_revision,
+        )
+    )
+    fail_reasons.extend(_validate_safety_snapshot(integration_input.safety_snapshot))
+
+    if integration_input.futures_only is not True:
+        fail_reasons.append("futures_only must be true")
+    if integration_input.environment != ENVIRONMENT_TESTNET:
+        fail_reasons.append(f"environment must be {ENVIRONMENT_TESTNET!r}")
+    if integration_input.non_authorizing is not True:
+        fail_reasons.append("non_authorizing must be true")
+
+    if integration_input.evidence_mode != EVIDENCE_MODE_DURABLE:
+        fail_reasons.append(f"evidence_mode must be {EVIDENCE_MODE_DURABLE!r} for completion")
+    if integration_input.evidence_mode in {
+        EVIDENCE_MODE_PLANNED,
+        EVIDENCE_MODE_SIMULATED,
+        EVIDENCE_MODE_TMP_ONLY,
+    }:
+        fail_reasons.append(
+            f"evidence_mode {integration_input.evidence_mode!r} cannot satisfy completion"
+        )
+
+    if (
+        integration_input.completion_claimed
+        and integration_input.evidence_mode != EVIDENCE_MODE_DURABLE
+    ):
+        fail_reasons.append("completion_claimed=true requires durable evidence_mode")
+
+    return _sorted_unique(fail_reasons)
+
+
+def _integration_input_dict(
+    integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
+) -> dict[str, Any]:
+    return {
+        "artifact_checksums": [asdict(entry) for entry in integration_input.artifact_checksums],
+        "completion_claimed": integration_input.completion_claimed,
+        "contract_versions": asdict(integration_input.contract_versions),
+        "durable_run_root": asdict(integration_input.durable_run_root),
+        "environment": integration_input.environment,
+        "evidence_mode": integration_input.evidence_mode,
+        "futures_only": integration_input.futures_only,
+        "gap2a1_enforcement": asdict(integration_input.gap2a1_enforcement),
+        "gap4_completion": asdict(integration_input.gap4_completion),
+        "integration_contract_version": CONTRACT_VERSION,
+        "manifest_proof": asdict(integration_input.manifest_proof),
+        "non_authorizing": integration_input.non_authorizing,
+        "pe16_archive": asdict(integration_input.pe16_archive),
+        "pe21_proof": asdict(integration_input.pe21_proof),
+        "post_write_verification": asdict(integration_input.post_write_verification),
+        "primary_evidence_identity": asdict(integration_input.primary_evidence_identity),
+        "proof_lifecycle": asdict(integration_input.proof_lifecycle),
+        "repository_identity": integration_input.repository_identity,
+        "run_identity": asdict(integration_input.run_identity),
+        "run_type": integration_input.run_type,
+        "safety_snapshot": asdict(integration_input.safety_snapshot),
+        "serialization_version": SERIALIZATION_VERSION,
+        "source_revision": integration_input.source_revision,
+    }
+
+
+def serialize_completion_integration_input_canonical(
+    integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
+) -> str:
+    return json.dumps(
+        _integration_input_dict(integration_input), sort_keys=True, separators=(",", ":")
+    )
+
+
+def compute_completion_integration_input_digest(
+    integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
+) -> str:
+    return hashlib.sha256(
+        serialize_completion_integration_input_canonical(integration_input).encode("utf-8")
+    ).hexdigest()
+
+
+def _integration_proof_dict(
+    integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
+    *,
+    integration_pass: bool,
+    completion_static_proven: bool,
+) -> dict[str, Any]:
+    return {
+        "completion_integration_owner": COMPLETION_INTEGRATION_OWNER,
+        "completion_static_proven": completion_static_proven,
+        "contract_implementation_only": CONTRACT_IMPLEMENTATION_ONLY,
+        "durable_run_primary_evidence_completion_integration_pass": integration_pass,
+        "global_run_completion_readiness": GLOBAL_RUN_COMPLETION_READINESS,
+        "integration_contract_version": CONTRACT_VERSION,
+        "integration_input_digest": compute_completion_integration_input_digest(integration_input),
+        "manifest_digest": integration_input.manifest_proof.manifest_digest,
+        "operative_run_completion_recorded": OPERATIVE_RUN_COMPLETION_RECORDED,
+        "primary_evidence_operationally_accepted": PRIMARY_EVIDENCE_OPERATIONALLY_ACCEPTED,
+        "run_identity_digest": integration_input.run_identity.run_identity_digest,
+        "run_root_digest": integration_input.durable_run_root.run_root_digest,
+        "run_type": integration_input.run_type,
+        "source_revision": integration_input.source_revision,
+        "non_authorizing": True,
+    }
+
+
+def compute_completion_integration_proof_digest(
+    integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
+    *,
+    integration_pass: bool,
+    completion_static_proven: bool,
+) -> str:
+    return hashlib.sha256(
+        json.dumps(
+            _integration_proof_dict(
+                integration_input,
+                integration_pass=integration_pass,
+                completion_static_proven=completion_static_proven,
+            ),
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("utf-8")
+    ).hexdigest()
+
+
+def evaluate_durable_run_primary_evidence_completion_integration(
+    integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
+    *,
+    expected_source_revision: str | None = None,
+    completion_claim_without_full_evidence: bool = False,
+    extra_field_names: tuple[str, ...] = (),
+) -> dict[str, Any]:
+    """Evaluate explicit durable run primary evidence completion integration proof."""
+    fail_reasons = validate_durable_run_primary_evidence_completion_integration_input(
+        integration_input,
+        extra_field_names=extra_field_names,
+    )
+
+    if expected_source_revision is not None:
+        if integration_input.source_revision != expected_source_revision:
+            fail_reasons.append("source_revision mismatch with expected revision")
+
+    pe21_result = evaluate_position_order_reconciliation_primary_evidence_integration(
+        integration_input.pe21_integration_input
+    )
+    fail_reasons.extend(
+        _validate_pe21_proof_binding(
+            integration_input.pe21_proof,
+            source_revision=integration_input.source_revision,
+            pe21_result=pe21_result,
+        )
+    )
+
+    if completion_claim_without_full_evidence and integration_input.completion_claimed:
+        fail_reasons.append("completion_claimed=true without full evidence chain is insufficient")
+
+    if integration_input.completion_claimed and fail_reasons:
+        fail_reasons.append("completion_claimed=true with validation failures")
+
+    fail_reasons = _sorted_unique(fail_reasons)
+    integration_pass = not fail_reasons
+    completion_static_proven = integration_pass and integration_input.completion_claimed
+
+    return {
+        "integration_pass": integration_pass,
+        "completion_static_proven": completion_static_proven,
+        "completion_claimed": integration_input.completion_claimed and completion_static_proven,
+        "integration_input_digest": compute_completion_integration_input_digest(integration_input),
+        "integration_proof_digest": (
+            compute_completion_integration_proof_digest(
+                integration_input,
+                integration_pass=integration_pass,
+                completion_static_proven=completion_static_proven,
+            )
+            if integration_pass
+            else None
+        ),
+        "pe21_integration_pass": pe21_result.get("integration_pass"),
+        "pe16_archive_identity": integration_input.pe16_archive.archive_identity,
+        "gap4_completion_integration_pass": integration_input.gap4_completion.gap4_integration_pass,
+        "gap2a1_enforcement_integration_pass": (
+            integration_input.gap2a1_enforcement.gap2a1_integration_pass
+        ),
+        "manifest_digest": integration_input.manifest_proof.manifest_digest,
+        "run_identity_digest": integration_input.run_identity.run_identity_digest,
+        "run_root_digest": integration_input.durable_run_root.run_root_digest,
+        "global_run_completion_readiness": GLOBAL_RUN_COMPLETION_READINESS,
+        "contract_implementation_only": CONTRACT_IMPLEMENTATION_ONLY,
+        "operative_run_completion_recorded": OPERATIVE_RUN_COMPLETION_RECORDED,
+        "primary_evidence_operationally_accepted": PRIMARY_EVIDENCE_OPERATIONALLY_ACCEPTED,
+        "archive_read": ARCHIVE_READ,
+        "archive_written": ARCHIVE_WRITTEN,
+        "manifest_read": MANIFEST_READ,
+        "manifest_written": MANIFEST_WRITTEN,
+        "filesystem_accessed": FILESYSTEM_ACCESSED,
+        "run_started": RUN_STARTED,
+        "authority_lift": AUTHORITY_LIFT,
+        "preflight_remains_blocked": PREFLIGHT_REMAINS_BLOCKED,
+        "ready_for_operator_arming": False,
+        "execution_authorized": False,
+        "evidence_acceptance_authorized": False,
+        "fail_reasons": fail_reasons,
+    }
+
+
+def default_minimal_safety_snapshot() -> CompletionSafetySnapshot:
+    return CompletionSafetySnapshot(
+        preflight_remains_blocked=True,
+        ready_for_operator_arming=False,
+        execution_authorized=False,
+        live_authorized=False,
+        evidence_acceptance_authorized=False,
+        promotion_authorized=False,
+        network_allowed=False,
+        credentials_allowed=False,
+        orders_allowed=False,
+        scheduler_runtime_allowed=False,
+        futures_only=True,
+        bitcoin_direction_allowed=False,
+        followup_run_gate=FOLLOWUP_RUN_GATE,
+    )
+
+
+def _default_bounded_artifact_checksums() -> tuple[ArtifactChecksumEntry, ...]:
+    digests = {
+        "RUN_METADATA.json": "a" * 64,
+        "review/REVIEW_RESULT.json": "b" * 64,
+        "wrapper_evidence/steps.jsonl": "c" * 64,
+        "wrapper_evidence/manifest.json": "d" * 64,
+        "logs/wrapper_stdout.log": "e" * 64,
+        "logs/wrapper_stderr.log": "f" * 64,
+        MANIFEST_FILENAME: "0" * 64,
+    }
+    return tuple(
+        ArtifactChecksumEntry(relative_path=path, digest=digests[path])
+        for path in BOUNDED_DURABLE_RUN_REQUIRED_REL_PATHS
+    )
+
+
+def default_minimal_completion_integration_input(
+    *,
+    source_revision: str = "abcdef0123456789abcdef0123456789abcdef01",
+    run_id: str = "bounded-futures-testnet-offline-run-001",
+    durable_archive_root: str = (
+        "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
+    ),
+    run_root_identity: str = "bounded_futures_testnet_durable_run/offline-v0",
+) -> DurableRunPrimaryEvidenceCompletionIntegrationInput:
+    """Minimal valid bounded futures testnet completion integration input for offline tests."""
+    from src.ops.bounded_futures_testnet_position_order_reconciliation_primary_evidence_integration_contract_v0 import (
+        default_minimal_integration_input as default_minimal_pe21_integration_input,
+    )
+
+    artifact_checksums = _default_bounded_artifact_checksums()
+    manifest_entries = tuple(
+        ArtifactChecksumEntry(relative_path=entry.relative_path, digest=entry.digest)
+        for entry in artifact_checksums
+        if entry.relative_path != MANIFEST_FILENAME
+    )
+    manifest_digest = compute_manifest_digest(_manifest_entries_from_artifacts(manifest_entries))
+
+    pe21_integration_input = default_minimal_pe21_integration_input(
+        source_revision=source_revision,
+    )
+    from dataclasses import replace
+
+    from src.ops.bounded_futures_testnet_position_order_reconciliation_primary_evidence_integration_contract_v0 import (
+        PrimaryEvidenceBindingInput,
+    )
+
+    pe21_binding = pe21_integration_input.primary_evidence_binding
+    pe21_integration_input = replace(
+        pe21_integration_input,
+        primary_evidence_binding=PrimaryEvidenceBindingInput(
+            retention_contract_version=pe21_binding.retention_contract_version,
+            durable_archive_root=durable_archive_root,
+            archive_identity=pe21_binding.archive_identity,
+            expected_artifact_filenames=pe21_binding.expected_artifact_filenames,
+            manifest_proof_identity=pe21_binding.manifest_proof_identity,
+            manifest_digest=pe21_binding.manifest_digest,
+            manifest_verify_rc=pe21_binding.manifest_verify_rc,
+            manifest_entries=pe21_binding.manifest_entries,
+        ),
+    )
+    pe21_result = evaluate_position_order_reconciliation_primary_evidence_integration(
+        pe21_integration_input
+    )
+
+    archive_digest = hashlib.sha256(
+        json.dumps(
+            {
+                "archive_contract_version": ARCHIVE_CONTRACT_VERSION,
+                "archive_identity": run_root_identity,
+                "manifest_digest": manifest_digest,
+                "source_revision": source_revision,
+            },
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("utf-8")
+    ).hexdigest()
+
+    run_identity_digest = compute_run_identity_digest(
+        run_id=run_id,
+        run_type=SUPPORTED_RUN_TYPE,
+        source_revision=source_revision,
+    )
+    run_root_digest = compute_run_root_digest(
+        durable_archive_root=durable_archive_root,
+        run_root_identity=run_root_identity,
+        source_revision=source_revision,
+    )
+    primary_evidence_identity_digest = compute_primary_evidence_identity_digest(
+        primary_evidence_identity=run_root_identity,
+        primary_evidence_owner=PRIMARY_EVIDENCE_OWNER,
+        retention_contract_version=PRIMARY_EVIDENCE_RETENTION_CONTRACT_VERSION,
+        source_revision=source_revision,
+    )
+
+    return DurableRunPrimaryEvidenceCompletionIntegrationInput(
+        source_revision=source_revision,
+        repository_identity=REPOSITORY_IDENTITY,
+        run_type=SUPPORTED_RUN_TYPE,
+        run_identity=RunIdentityBinding(
+            run_id=run_id,
+            run_identity_digest=run_identity_digest,
+        ),
+        durable_run_root=DurableRunRootBinding(
+            durable_archive_root=durable_archive_root,
+            run_root_identity=run_root_identity,
+            run_root_digest=run_root_digest,
+        ),
+        primary_evidence_identity=PrimaryEvidenceIdentityBinding(
+            primary_evidence_identity=primary_evidence_identity_digest,
+            primary_evidence_owner=PRIMARY_EVIDENCE_OWNER,
+            retention_contract_version=PRIMARY_EVIDENCE_RETENTION_CONTRACT_VERSION,
+        ),
+        pe21_proof=Pe21PrimaryEvidenceProofBinding(
+            integration_owner=PE21_INTEGRATION_OWNER,
+            source_revision=source_revision,
+            integration_input_digest=pe21_result["integration_input_digest"],
+            integration_proof_digest=pe21_result["integration_proof_digest"],
+            pe21_integration_pass=True,
+            durable_primary_evidence_binding_proven=True,
+        ),
+        pe21_integration_input=pe21_integration_input,
+        pe16_archive=Pe16ArchiveProofBinding(
+            archive_owner=PE16_ARCHIVE_OWNER,
+            archive_contract_version=ARCHIVE_CONTRACT_VERSION,
+            archive_identity=run_root_identity,
+            archive_digest=archive_digest,
+            pe16_integration_pass=True,
+        ),
+        manifest_proof=ManifestProofBinding(
+            manifest_identity=manifest_digest,
+            manifest_digest=manifest_digest,
+            manifest_verify_rc=0,
+            manifest_entries=manifest_entries,
+        ),
+        artifact_checksums=artifact_checksums,
+        post_write_verification=PostWriteVerificationBinding(
+            post_write_verification_pass=True,
+            manifest_verify_rc=0,
+        ),
+        gap4_completion=Gap4CompletionProofBinding(
+            gap4_owner=GAP4_COMPLETION_OWNER,
+            source_revision=source_revision,
+            output_evidence_depends_on_gap2a1=True,
+            completion_invalid_without_durable_primary_evidence=True,
+            completion_invalid_without_manifest_verify=True,
+            durable_output_required_for_future_runs=True,
+            gap4_output_evidence_paths_verified=False,
+            gap4_integration_pass=True,
+        ),
+        gap2a1_enforcement=Gap2a1EnforcementProofBinding(
+            gap2a1_owner=GAP2A1_ENFORCEMENT_OWNER,
+            source_revision=source_revision,
+            primary_evidence_enforced=False,
+            enforcement_default_on=False,
+            enforcement_opt_in_only=True,
+            tmp_only_evidence_invalid=True,
+            manifest_verify_required=True,
+            checksum_verify_required=True,
+            run_incomplete_without_primary_evidence=True,
+            gap2a1_integration_pass=True,
+        ),
+        proof_lifecycle=ProofLifecycleMetadata(lifecycle_state=PROOF_LIFECYCLE_CURRENT),
+        evidence_mode=EVIDENCE_MODE_DURABLE,
+        completion_claimed=True,
+        safety_snapshot=default_minimal_safety_snapshot(),
+        contract_versions=ContractVersionsInput(
+            pe12_lifecycle=PE12_CONTRACT_VERSION,
+            pe16_archive=ARCHIVE_CONTRACT_VERSION,
+            pe16_primary_evidence_retention=PRIMARY_EVIDENCE_RETENTION_CONTRACT_VERSION,
+            pe21_integration=PE21_CONTRACT_VERSION,
+            integration=CONTRACT_VERSION,
+        ),
+    )
