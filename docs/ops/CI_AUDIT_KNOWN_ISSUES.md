@@ -2113,6 +2113,51 @@ DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
 
 **Non-authorizing:** Docs/tests-only reciprocal crosslink guard only; does **not** authorize execute, runtime, run start, live, preflight lift, futures session, order/cancel/execution/arming, authority lift, trading-logic changes, Master V2 / Double Play / Bull-Bear / Risk / KillSwitch / Scope / Capital changes, workflow YAML mutation, `workflow_dispatch`, `gh run rerun`, JSONL ingest, evidence dataset mutation, or Market Dashboard authority changes.
 
+## PE-12 Bounded Futures Testnet adapter lifecycle CI_AUDIT ↔ SECTION5 reciprocal crosslink — docs/tests-only guard v1
+
+**Operator-GO:** `GO_PE12_BOUNDED_FUTURES_TESTNET_ADAPTER_LIFECYCLE_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1`
+
+**Purpose:** Reciprocal crosslink so CI_AUDIT documents PE-12 bounded futures testnet adapter lifecycle offline contract guard aligned with SECTION5 Gap Owner Map PE-12 guard block and reuse-first owner surfaces. Guard/Ops drift fix only — **non-authorizing**; **no** execute, preflight lift, futures session, harness network I/O, lifecycle execute, or runtime.
+
+**Canonical repo owners (reuse — do not duplicate):**
+
+| Concern | Owner |
+|---------|-------|
+| Gap Owner Map SSOT — PE-12 guard block | `docs/ops/planning/SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md` |
+| Bounded futures testnet adapter lifecycle contract (PE-12) | `src/ops/bounded_futures_testnet_adapter_lifecycle_contract_v0.py` |
+| PE-8/9/10/11 composition surfaces (reference only) | `src/ops/bounded_futures_testnet_contract_v0.py`, `bounded_futures_testnet_adapter_contract_v0.py`, `bounded_futures_testnet_harness_contract_v0.py`, `bounded_futures_testnet_runtime_harness_contract_v0.py`, `bounded_futures_private_readonly_contract_v0.py` |
+| Static contract guard | `tests/ops/test_bounded_futures_testnet_adapter_lifecycle_contract_v0.py` |
+| CI_AUDIT / DOCS_TRUTH_MAP reciprocal guard | `tests/ops/test_remote_runtime_contract_docs_guard_v0.py` |
+
+```text
+PE12_BOUNDED_FUTURES_TESTNET_ADAPTER_LIFECYCLE_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_V1=true
+PE12_BOUNDED_FUTURES_TESTNET_ADAPTER_LIFECYCLE_CI_AUDIT_CROSSLINK_DOCS_TESTS_ONLY=true
+SECTION5_PE12_OWNER_REFERENCED=true
+BOUNDED_FUTURES_TESTNET_ADAPTER_LIFECYCLE_CONTRACT_V0_REFERENCED=true
+LIFECYCLE_EXECUTE_AUTHORIZED_NOW=false
+LIFECYCLE_NETWORK_AUTHORIZED_NOW=false
+LIFECYCLE_ORDERS_AUTHORIZED_NOW=false
+FUTURES_SESSION_AUTHORIZED_NOW=false
+NO_EXECUTE=true
+NO_PREFLIGHT_LIFT=true
+NO_RUNTIME=true
+NO_LIVE=true
+ORDER_CANCEL_EXECUTION_ARMING_TOUCHED=false
+AUTHORITY_LIFT=false
+TRADING_LOGIC_TOUCHED=false
+MASTER_V2_LOGIC_TOUCHED=false
+DOUBLE_PLAY_LOGIC_TOUCHED=false
+NEW_PARALLEL_SSOT_CREATED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+MARKET_DASHBOARD_TOUCHED=false
+DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
+```
+
+**Guard module (reuse — no parallel PE-12 SSOT):** `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`.
+
+**Non-authorizing:** Docs/tests-only reciprocal crosslink guard only; does **not** authorize execute, runtime, run start, live, preflight lift, futures session, lifecycle network/orders, order/cancel/execution/arming, authority lift, trading-logic changes, Master V2 / Double Play / Bull-Bear / Risk / KillSwitch / Scope / Capital changes, workflow YAML mutation, `workflow_dispatch`, `gh run rerun`, JSONL ingest, evidence dataset mutation, or Market Dashboard authority changes.
+
 ## PE-8/PE-9/PE-10 Bounded Futures Testnet CI_AUDIT ↔ SECTION5 reciprocal crosslink — docs/tests-only guard v1
 
 **Operator-GO:** `GO_PE8_PE9_PE10_BOUNDED_FUTURES_TESTNET_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1`
@@ -2375,7 +2420,7 @@ DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
 
 **Operator-GO:** `GO_PE_EER1_HOLD_BINDING_RECIPROCAL_CROSSLINK_CHAIN_COMPLETION_STATIC_REVIEW_DOCS_TESTS_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_eer1_ci_audit_section5_reciprocal_crosslink_merge_no_auto_go_no_run_v1_20260612T113730Z/`
 
-**Purpose:** Meta static-review guard confirming the completed reciprocal-crosslink chain on main — PE-4..PE-11 (PE-6 via existing cyber histogram crosslink only), hold-binding (#4166/#4167), EER1 (#4173), Runtime Lane Taxonomy (#4176), Scheduler Boundary Hard Block (#4177), Gap 1–3 execute-entrypoint criteria (#4179), and Gap 4–7 criteria (#4181) — remains indexed consistently across CI_AUDIT and SECTION5 Gap Owner Map without authorizing execute, preflight lift, enforcement activation, runtime, or trading authority.
+**Purpose:** Meta static-review guard confirming the completed reciprocal-crosslink chain on main — PE-4..PE-12 (PE-6 via existing cyber histogram crosslink only), hold-binding (#4166/#4167), EER1 (#4173), Runtime Lane Taxonomy (#4176), Scheduler Boundary Hard Block (#4177), Gap 1–3 execute-entrypoint criteria (#4179), and Gap 4–7 criteria (#4181) — remains indexed consistently across CI_AUDIT and SECTION5 Gap Owner Map without authorizing execute, preflight lift, enforcement activation, runtime, or trading authority.
 
 **Indexed reciprocal crosslink sections (reuse — do not duplicate):**
 
@@ -2386,6 +2431,7 @@ DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
 | PE-7 | **§ PE-7 Repo-native bounded Testnet order-cap CI_AUDIT ↔ SECTION5 reciprocal crosslink — docs/tests-only guard v1** |
 | PE-8/9/10 | **§ PE-8/PE-9/PE-10 Bounded Futures Testnet CI_AUDIT ↔ SECTION5 reciprocal crosslink — docs/tests-only guard v1** |
 | PE-11 | **§ PE-11 Bounded Futures reachability CI_AUDIT ↔ SECTION5 reciprocal crosslink — docs/tests-only guard v1** |
+| PE-12 | **§ PE-12 Bounded Futures Testnet adapter lifecycle CI_AUDIT ↔ SECTION5 reciprocal crosslink — docs/tests-only guard v1** |
 | Hold-binding | **§ Paper-L2 120min hold-binding Preflight §2a reciprocal crosslink — docs/tests-only guard v1**; **§ SECTION5 Gap Owner Map hold-binding profile crosslink — docs/tests-only guard v1** |
 | EER1 | **§ EER1 Evidence Durable Enforcement Readiness CI_AUDIT ↔ SECTION5 reciprocal crosslink — docs/tests-only guard v1** |
 | Runtime Lane Taxonomy | **§ Runtime Lane Taxonomy CI_AUDIT ↔ Preflight reciprocal crosslink — docs/tests-only guard v1** |
@@ -2409,7 +2455,7 @@ DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
 ```text
 PE_EER1_HOLD_BINDING_RECIPROCAL_CROSSLINK_CHAIN_COMPLETION_STATIC_REVIEW_GUARD_V1=true
 PE_EER1_HOLD_BINDING_RECIPROCAL_CROSSLINK_CHAIN_COMPLETION_DOCS_TESTS_ONLY=true
-PE4_PE11_CROSSLINK_CHAIN_COMPLETE=true
+PE4_PE12_CROSSLINK_CHAIN_COMPLETE=true
 HOLD_BINDING_CROSSLINK_CHAIN_COMPLETE=true
 EER1_CROSSLINK_COMPLETE=true
 PE4_RECIPROCAL_CROSSLINK_SECTION_REFERENCED=true
@@ -2417,6 +2463,7 @@ PE5_RECIPROCAL_CROSSLINK_SECTION_REFERENCED=true
 PE7_RECIPROCAL_CROSSLINK_SECTION_REFERENCED=true
 PE8_PE9_PE10_RECIPROCAL_CROSSLINK_SECTION_REFERENCED=true
 PE11_RECIPROCAL_CROSSLINK_SECTION_REFERENCED=true
+PE12_RECIPROCAL_CROSSLINK_SECTION_REFERENCED=true
 PAPER_L2_HOLD_BINDING_RECIPROCAL_CROSSLINK_REFERENCED=true
 SECTION5_HOLD_BINDING_PROFILE_CROSSLINK_REFERENCED=true
 EER1_RECIPROCAL_CROSSLINK_SECTION_REFERENCED=true
