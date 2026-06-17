@@ -3512,8 +3512,10 @@ def test_ci_audit_pe16_bounded_futures_testnet_preflight_packet_durable_archive_
     None
 ):
     text = _ci_audit_text()
-    section = _pe16_bounded_futures_testnet_preflight_packet_durable_archive_ci_audit_crosslink_section(
-        text
+    section = (
+        _pe16_bounded_futures_testnet_preflight_packet_durable_archive_ci_audit_crosslink_section(
+            text
+        )
     )
     assert (
         "GO_PE16_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_DURABLE_ARCHIVE_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1"
@@ -3536,21 +3538,27 @@ def test_ci_audit_pe16_bounded_futures_testnet_preflight_packet_durable_archive_
     None
 ):
     text = _ci_audit_text()
-    section = _pe16_bounded_futures_testnet_preflight_packet_durable_archive_ci_audit_crosslink_section(
-        text
+    section = (
+        _pe16_bounded_futures_testnet_preflight_packet_durable_archive_ci_audit_crosslink_section(
+            text
+        )
     )
     block = _block_containing(
         section,
         PE16_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_DURABLE_ARCHIVE_CI_AUDIT_CROSSLINK_GUARD_BLOCK_ANCHOR,
     )
     values = _machine_line_values(block)
-    missing = set(
-        PE16_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_DURABLE_ARCHIVE_CI_AUDIT_CROSSLINK_EXPECTED
-    ) - values.keys()
+    missing = (
+        set(
+            PE16_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_DURABLE_ARCHIVE_CI_AUDIT_CROSSLINK_EXPECTED
+        )
+        - values.keys()
+    )
     assert not missing, f"missing PE-16 CI_AUDIT crosslink keys: {sorted(missing)}"
-    for key, expected in (
-        PE16_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_DURABLE_ARCHIVE_CI_AUDIT_CROSSLINK_EXPECTED.items()
-    ):
+    for (
+        key,
+        expected,
+    ) in PE16_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_DURABLE_ARCHIVE_CI_AUDIT_CROSSLINK_EXPECTED.items():
         assert values[key] == expected, f"{key}={values[key]!r} expected {expected!r}"
 
 
