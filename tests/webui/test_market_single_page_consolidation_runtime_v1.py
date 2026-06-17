@@ -258,7 +258,12 @@ def test_page_template_malformed_workflow_archive_fail_soft(
     workflow = ctx["workflow_dashboard"]
     assert isinstance(workflow, dict)
     assert workflow["gate_enabled"] is True
-    assert workflow["display_status"] in {"unconfigured", "ready_with_warnings", "error", "disabled"}
+    assert workflow["display_status"] in {
+        "unconfigured",
+        "ready_with_warnings",
+        "error",
+        "disabled",
+    }
     assert workflow["readmodel"] is None or isinstance(workflow["readmodel"], dict)
 
 
