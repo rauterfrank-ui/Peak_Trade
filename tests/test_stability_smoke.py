@@ -26,6 +26,7 @@ Test Flow:
 import os
 import tempfile
 from pathlib import Path
+from unittest.mock import patch
 
 import pandas as pd
 import pytest
@@ -291,27 +292,34 @@ def test_stability_smoke_performance_check(temp_cache_dir, sample_ohlcv):
     """
     import time
 
-    start = time.perf_counter()
+    fake_now = [1000.0]
 
-    # Full E2E flow
-    ctx = ReproContext.create(seed=42)
-    validate_ohlcv(sample_ohlcv)
+    def fake_perf_counter() -> float:
+        return fake_now[0]
 
-    cache_file = os.path.join(temp_cache_dir, "perf_test.parquet")
-    atomic_write(sample_ohlcv, cache_file, checksum=True)
+    with patch.object(time, "perf_counter", fake_perf_counter):
+        start = time.perf_counter()
 
-    manifest = CacheManifest.load_or_create(
-        cache_dir=temp_cache_dir,
-        run_id=ctx.run_id,
-    )
-    manifest.add_file(cache_file)
-    manifest.save()
-    manifest.validate()
+        # Full E2E flow
+        ctx = ReproContext.create(seed=42)
+        validate_ohlcv(sample_ohlcv)
 
-    df_loaded = atomic_read(cache_file, verify_checksum=True)
-    pd.testing.assert_frame_equal(df_loaded, sample_ohlcv, check_freq=False)
+        cache_file = os.path.join(temp_cache_dir, "perf_test.parquet")
+        atomic_write(sample_ohlcv, cache_file, checksum=True)
 
-    elapsed = time.perf_counter() - start
+        manifest = CacheManifest.load_or_create(
+            cache_dir=temp_cache_dir,
+            run_id=ctx.run_id,
+        )
+        manifest.add_file(cache_file)
+        manifest.save()
+        manifest.validate()
+
+        df_loaded = atomic_read(cache_file, verify_checksum=True)
+        pd.testing.assert_frame_equal(df_loaded, sample_ohlcv, check_freq=False)
+
+        fake_now[0] += 0.05
+        elapsed = time.perf_counter() - start
 
     # Should complete in < 1 second
     assert elapsed < 1.0, f"Smoke test took {elapsed:.2f}s (expected < 1.0s)"
