@@ -21,8 +21,9 @@ Setup requirements:
 """
 
 import pytest
-import time
 from unittest.mock import patch
+
+_FIXED_TIMESTAMP = 1_700_000_000.0
 from src.core.performance import (
     PerformanceMonitor,
     PerformanceMetric,
@@ -259,7 +260,7 @@ class TestPerformanceMetric:
     def test_create_metric(self):
         """Test creating a performance metric."""
         metric = PerformanceMetric(
-            name="test_op", duration_ms=100.0, timestamp=time.time(), metadata={"key": "value"}
+            name="test_op", duration_ms=100.0, timestamp=_FIXED_TIMESTAMP, metadata={"key": "value"}
         )
 
         assert metric.name == "test_op"
@@ -268,7 +269,7 @@ class TestPerformanceMetric:
 
     def test_metric_default_metadata(self):
         """Test metric with default empty metadata."""
-        metric = PerformanceMetric(name="test_op", duration_ms=100.0, timestamp=time.time())
+        metric = PerformanceMetric(name="test_op", duration_ms=100.0, timestamp=_FIXED_TIMESTAMP)
 
         assert metric.metadata == {}
 
