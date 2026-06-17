@@ -454,8 +454,7 @@ def test_circular_proof_dependency_fails_closed() -> None:
     result = evaluate_cross_slice_proof_coherence_integration(broken)
     assert result["integration_pass"] is False
     assert any(
-        "cycle" in reason or "upstream slot ids" in reason
-        for reason in result["fail_reasons"]
+        "cycle" in reason or "upstream slot ids" in reason for reason in result["fail_reasons"]
     )
 
 
