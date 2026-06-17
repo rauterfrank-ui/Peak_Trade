@@ -8,8 +8,7 @@ Tests:
 - Message parsing
 """
 
-import time
-from unittest.mock import Mock
+from unittest.mock import patch
 
 import pytest
 
@@ -19,6 +18,9 @@ from src.data.feeds.live_feed import (
     LiveFeedClient,
 )
 from src.observability.metrics import MetricsCollector
+
+_FIXED_NOW = 1_700_000_000.0
+_FIXED_TICK_TS = 1_609_459_200.123
 
 
 class TestLiveFeedClient:
@@ -213,8 +215,7 @@ class TestMessageParsing:
         config = FeedConfig(symbols=["BTC/EUR"])
         client = LiveFeedClient(config, metrics_collector=metrics)
 
-        # Message with tick from 1 second ago
-        past_ts = time.time() - 1.0
+        past_ts = _FIXED_NOW - 1.0
         message = [
             123,
             [["50000.0", "0.5", past_ts, "b", "l", ""]],
@@ -222,15 +223,14 @@ class TestMessageParsing:
             "BTC/EUR",
         ]
 
-        client.process_message(message)
+        with patch("src.data.feeds.live_feed.time.time", return_value=_FIXED_NOW):
+            client.process_message(message)
 
-        # Latency should be ~1000ms
         snapshot = metrics.get_snapshot()
         latency_values = snapshot["metrics"]["latency_ms"]["values"]
 
         assert len(latency_values) > 0
-        # Should be around 1000ms (within tolerance)
-        assert 900 <= latency_values[0]["value"] <= 1100
+        assert latency_values[0]["value"] == 1000
 
     def test_on_tick_callback(self):
         """Test on_tick callback is invoked."""
@@ -242,7 +242,7 @@ class TestMessageParsing:
 
         message = [
             123,
-            [["50000.0", "0.5", time.time(), "b", "l", ""]],
+            [["50000.0", "0.5", _FIXED_TICK_TS, "b", "l", ""]],
             "trade",
             "BTC/EUR",
         ]
@@ -306,7 +306,7 @@ class TestFeedStats:
         # Valid message
         message = [
             123,
-            [["50000.0", "0.5", time.time(), "b", "l", ""]],
+            [["50000.0", "0.5", _FIXED_TICK_TS, "b", "l", ""]],
             "trade",
             "BTC/EUR",
         ]
