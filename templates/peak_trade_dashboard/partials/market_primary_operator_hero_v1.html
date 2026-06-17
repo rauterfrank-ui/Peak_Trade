@@ -102,6 +102,7 @@
     data-market-terminal-asset-bar-v1="true"
     data-market-primary-values-panel-v1="true"
     data-market-workspace-hero-v1="true"
+    data-market-instrument-live-tile-v1="true"
     aria-label="Selected instrument identity and KPIs"
   >
     <div class="flex flex-wrap items-end justify-between gap-2 mb-1.5">
@@ -126,11 +127,21 @@
         </div>
         <div data-market-workspace-kpi-rank-v1="true" class="col-span-1">
           <dt class="text-slate-500 uppercase text-[9px]">Rank</dt>
-          <dd class="m-0 font-mono text-sm text-slate-200">{% if selected_instrument_workspace.ranking_rank is not none %}{{ selected_instrument_workspace.ranking_rank|e }}{% else %}unavailable{% endif %}</dd>
+          <dd class="m-0 font-mono text-sm text-slate-200">
+            {% if selected_instrument_workspace.ranking_rank is not none %}
+            <span class="inline-flex items-center rounded border border-violet-700/60 bg-violet-950/45 px-1.5 py-0.5" data-market-kpi-rank-badge-v1="true">#{{ selected_instrument_workspace.ranking_rank|e }}</span>
+            {% else %}unavailable{% endif %}
+          </dd>
         </div>
         <div data-market-workspace-kpi-score-v1="true" class="col-span-1">
           <dt class="text-slate-500 uppercase text-[9px]">Score</dt>
-          <dd class="m-0 font-mono text-sm text-slate-200">{{ selected_instrument_workspace.ranking_score_display|e }}</dd>
+          <dd class="m-0 font-mono text-sm text-slate-200">
+            {{ selected_instrument_workspace.ranking_score_display|e }}
+            {% if selected_instrument_workspace.ranking_score_display != 'unavailable' %}
+            {% set score_width = (selected_instrument_workspace.ranking_score_display|float * 100)|round(1) %}
+            <span class="block h-1.5 mt-1 rounded bg-slate-800/80 overflow-hidden max-w-[6rem]" data-market-kpi-score-bar-v1="true" aria-hidden="true"><span class="block h-full bg-violet-400/75" style="width: {{ score_width }}%"></span></span>
+            {% endif %}
+          </dd>
         </div>
       </dl>
       <dl class="m-0 mt-1.5 pt-1.5 border-t border-sky-900/30 flex flex-wrap gap-x-3 gap-y-0.5 text-[9px] tabular-nums" data-market-workspace-kpi-status-v1="true">
@@ -175,6 +186,7 @@
       <article
         class="rounded border px-1.5 py-1 {% if card.operator_category == 'ready' %}border-emerald-800/50 bg-emerald-950/35{% elif card.operator_category == 'partial' %}border-amber-800/50 bg-amber-950/30{% elif card.operator_category == 'incomplete' %}border-slate-700/60 bg-slate-900/60{% else %}border-slate-700/60 bg-slate-900/60{% endif %}"
         data-market-workspace-f5-card-v1="true"
+        data-market-f5-stage-v1="true"
         data-market-workspace-f5-card-id="{{ card.id|e }}"
         data-market-workspace-f5-card-status="{{ card.status|e }}"
         data-market-workspace-f5-operator-status-v1="true"

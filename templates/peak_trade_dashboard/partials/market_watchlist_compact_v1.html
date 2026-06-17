@@ -4,10 +4,11 @@
   class="rounded-lg border border-slate-700/55 bg-slate-950/75 px-2.5 py-2 ring-1 ring-slate-800/35"
   data-market-metrics-above-fold-v1="true"
   data-market-terminal-watchlist-v1="true"
+  data-market-watchlist-visual-v1="true"
 >
   <h2 id="market-terminal-watchlist-h2" class="text-[11px] font-semibold uppercase tracking-wide text-slate-300 m-0 mb-2">Markets · watchlist</h2>
   <ul class="m-0 p-0 list-none space-y-1.5 text-[11px] font-mono tabular-nums" data-market-futures-selector-watchlist-v1="true">
-    <li class="flex items-center justify-between gap-2 rounded border border-sky-900/45 bg-sky-950/25 px-2 py-1.5" data-market-futures-selector-selected-v1="true">
+    <li class="flex items-center justify-between gap-2 rounded border border-sky-900/45 bg-sky-950/25 px-2 py-1.5" data-market-watchlist-tile-v1="true" data-market-futures-selector-selected-v1="true">
       <span class="text-slate-100">{{ query.symbol|e }}</span>
       <span class="text-sky-300/90">{% if primary_values.status == 'available' %}{{ primary_values.last_close_display|e }}{% else %}—{% endif %}</span>
       <span class="text-[10px] text-slate-500">{% if primary_values.change_status == 'available' %}{{ primary_values.change_pct_display|e }}{% else %}—{% endif %}</span>
@@ -15,7 +16,7 @@
     {% if ranking_watchlist.table_rows %}
       {% for row in ranking_watchlist.table_rows[:4] %}
         {% if row.symbol != query.symbol %}
-        <li class="flex items-center justify-between gap-2 rounded border border-slate-800/60 bg-slate-950/50 px-2 py-1.5">
+        <li class="flex items-center justify-between gap-2 rounded border border-slate-800/60 bg-slate-950/50 px-2 py-1.5" data-market-watchlist-tile-v1="true">
           <a href="{{ row.market_nav_href|e }}" class="text-slate-300 no-underline hover:text-sky-300/95" data-market-futures-selector-link-v1="true">{{ row.symbol|e }}</a>
           <span class="text-slate-400">{{ row.score_display|default('—', true)|e }}</span>
         </li>
