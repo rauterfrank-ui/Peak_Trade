@@ -143,8 +143,8 @@
     >Reset sort</a>
   </div>
 
-  <div class="overflow-x-auto max-w-full" data-market-governed-top20-table-v1="true" data-market-futures-selector-table-v1="true" data-market-governed-matrix-table-v1="true" data-market-governed-matrix-scroll-contained-v1="true" data-market-matrix-scroll-contained-v1="true">
-    <table class="w-full min-w-[52rem] text-[11px] border-collapse tabular-nums">
+  <div class="overflow-x-auto max-w-full" data-market-governed-top20-table-v1="true" data-market-futures-selector-table-v1="true" data-market-governed-matrix-table-v1="true" data-market-governed-matrix-scroll-contained-v1="true" data-market-matrix-scroll-contained-v1="true" data-market-matrix-detail-layer-v1="true">
+    <table class="w-full min-w-[52rem] text-[11px] border-collapse tabular-nums" data-market-matrix-scan-layer-v1="true">
       <thead class="sticky top-0 z-10 bg-slate-950/95 backdrop-blur-sm">
         <tr class="text-left text-slate-400 border-b border-slate-800/70">
           <th scope="col" class="pr-2 py-1 font-normal sticky left-0 z-20 bg-slate-950/95">
@@ -195,7 +195,12 @@
           <td class="pr-2 py-1 font-mono">
             <a href="{{ row.market_nav_href|e }}" class="text-sky-300/95 no-underline hover:underline" data-market-futures-selector-link-v1="true">{{ row.symbol|e }}</a>
           </td>
-          <td class="pr-2 py-1 text-right" title="display_score from ranking funnel">{{ row.score_display|e }}</td>
+          <td class="pr-2 py-1 text-right" title="display_score from ranking funnel">
+            {{ row.score_display|e }}
+            {% if row.score_sort is not none %}
+            <span class="block h-1.5 mt-0.5 rounded bg-slate-800/80 overflow-hidden max-w-[4rem] ml-auto" data-market-matrix-score-bar-v1="true" aria-hidden="true"><span class="block h-full" data-market-matrix-score-bar-fill-v1="true" style="width: {{ (row.score_sort * 100)|round(1) }}%; background: linear-gradient(90deg, rgba(139,92,246,0.85), rgba(56,189,248,0.85));"></span></span>
+            {% endif %}
+          </td>
           <td class="pr-2 py-1">
             <span class="rounded border border-slate-700/60 bg-slate-900/70 px-1 py-0.5 font-mono text-[10px] text-slate-300" title="Candidate stage: {{ row.eligibility_status|e }}">{{ row.eligibility_status|e }}</span>
             <span class="ml-1 rounded border border-violet-800/50 bg-violet-950/40 px-1 py-0.5 font-mono text-[10px] text-violet-200/90" title="F5 metadata status">{{ row.f5_status|e }}</span>
@@ -205,8 +210,10 @@
           <td class="pr-2 py-1 text-right font-mono">{{ row.volume_display|e }}</td>
           <td class="pr-2 py-1 font-mono text-[10px]">
             {% if row.stale %}
+            <span class="inline-block w-2 h-2 rounded-full bg-amber-400 mr-1 align-middle" data-market-matrix-freshness-dot-v1="true" title="stale"></span>
             <span class="rounded border border-amber-700/60 bg-amber-950/40 px-1 py-0.5 text-amber-300/90">stale</span>
             {% else %}
+            <span class="inline-block w-2 h-2 rounded-full bg-emerald-400 mr-1 align-middle" data-market-matrix-freshness-dot-v1="true" title="fresh"></span>
             <span class="rounded border border-emerald-800/50 bg-emerald-950/35 px-1 py-0.5 text-emerald-200/90">{{ row.freshness_display|e }}</span>
             {% endif %}
           </td>

@@ -39,6 +39,111 @@
       min-width: 0;
     }
   }
+  #market-v0-shell[data-market-visual-transparency-v1="true"] [data-market-system-status-rail-v1="true"] {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(9rem, 1fr));
+    gap: 0.35rem;
+  }
+  #market-v0-shell [data-market-system-status-node-v1="true"] {
+    display: flex;
+    align-items: center;
+    gap: 0.35rem;
+    min-height: 1.75rem;
+    border-radius: 0.375rem;
+    padding: 0.25rem 0.45rem;
+    font-size: 9px;
+    font-weight: 600;
+    letter-spacing: 0.04em;
+    text-transform: uppercase;
+  }
+  #market-v0-shell [data-market-system-status-node-v1="true"]::before {
+    content: "";
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 9999px;
+    flex-shrink: 0;
+  }
+  #market-v0-shell [data-market-system-status-tone-readonly-v1="true"] { border: 1px solid rgba(16,185,129,0.35); background: rgba(6,78,59,0.25); color: rgba(209,250,229,0.95); }
+  #market-v0-shell [data-market-system-status-tone-readonly-v1="true"]::before { background: rgba(52,211,153,0.95); }
+  #market-v0-shell [data-market-system-status-tone-blocked-v1="true"] { border: 1px solid rgba(244,63,94,0.35); background: rgba(76,5,25,0.35); color: rgba(254,205,211,0.95); }
+  #market-v0-shell [data-market-system-status-tone-blocked-v1="true"]::before { background: rgba(244,63,94,0.95); }
+  #market-v0-shell [data-market-system-status-tone-neutral-v1="true"] { border: 1px solid rgba(51,65,85,0.65); background: rgba(15,23,42,0.65); color: rgba(203,213,225,0.95); }
+  #market-v0-shell [data-market-system-status-tone-neutral-v1="true"]::before { background: rgba(148,163,184,0.95); }
+  #market-v0-shell [data-market-system-status-tone-ready-v1="true"] { border: 1px solid rgba(56,189,248,0.35); background: rgba(12,74,110,0.25); color: rgba(186,230,253,0.95); }
+  #market-v0-shell [data-market-system-status-tone-ready-v1="true"]::before { background: rgba(56,189,248,0.95); }
+  #market-v0-shell [data-market-double-play-visual-grid-v1="true"] [data-matrix-status-category] {
+    display: inline-flex;
+    align-items: center;
+    min-width: 4.5rem;
+    justify-content: center;
+    border-radius: 0.25rem;
+    padding: 0.15rem 0.35rem;
+    font-weight: 700;
+  }
+  #market-v0-shell [data-market-double-play-visual-grid-v1="true"] [data-matrix-status-category="active"] { background: rgba(6,78,59,0.45); border-color: rgba(16,185,129,0.55); color: rgba(209,250,229,0.95); }
+  #market-v0-shell [data-market-double-play-visual-grid-v1="true"] [data-matrix-status-category="blocked"],
+  #market-v0-shell [data-market-double-play-visual-grid-v1="true"] [data-matrix-status-category="not_authorized"] { background: rgba(76,5,25,0.45); border-color: rgba(244,63,94,0.55); color: rgba(254,205,211,0.95); }
+  #market-v0-shell [data-market-f5-pipeline-strip-v1="true"] {
+    display: grid;
+    gap: 0.35rem;
+  }
+  #market-v0-shell [data-market-f5-pipeline-strip-v1="true"] [data-f5-overall-status] {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+  }
+  #market-v0-shell [data-market-matrix-score-bar-v1="true"] {
+    height: 0.35rem;
+    border-radius: 9999px;
+    background: rgba(30,41,59,0.85);
+    overflow: hidden;
+    margin-top: 0.15rem;
+    min-width: 3rem;
+  }
+  #market-v0-shell [data-market-matrix-score-bar-fill-v1="true"] {
+    display: block;
+    height: 100%;
+    border-radius: inherit;
+    background: linear-gradient(90deg, rgba(139,92,246,0.85), rgba(56,189,248,0.85));
+  }
+  #market-v0-shell [data-market-matrix-freshness-dot-v1="true"] {
+    display: inline-block;
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 9999px;
+    margin-right: 0.25rem;
+    vertical-align: middle;
+  }
+  #market-v0-shell [data-market-safety-gate-pipeline-v1="true"] {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(6.5rem, 1fr));
+    gap: 0.35rem;
+    margin-bottom: 0.5rem;
+  }
+  #market-v0-shell [data-market-safety-gate-node-v1="true"] {
+    border-radius: 0.375rem;
+    border: 1px solid rgba(51,65,85,0.65);
+    background: rgba(15,23,42,0.65);
+    padding: 0.35rem;
+    font-size: 8px;
+    text-transform: uppercase;
+    letter-spacing: 0.04em;
+  }
+  #market-v0-shell [data-market-watchlist-tile-v1="true"] {
+    border-radius: 0.375rem;
+    border: 1px solid rgba(51,65,85,0.65);
+    background: rgba(15,23,42,0.55);
+  }
+  #market-v0-shell [data-market-instrument-live-tile-v1="true"] {
+    border-width: 1px;
+    border-style: solid;
+    border-color: rgba(14,165,233,0.35);
+    background: linear-gradient(180deg, rgba(8,47,73,0.35), rgba(15,23,42,0.85));
+  }
+  #market-v0-shell [data-market-kpi-score-bar-v1="true"],
+  #market-v0-shell [data-market-kpi-rank-badge-v1="true"] {
+    margin-top: 0.25rem;
+  }
 </style>
 <div
   class="min-h-screen bg-[#0b0f14] text-slate-100 w-full max-w-[1600px] mx-auto px-3 sm:px-4 md:px-5 pb-6 sm:pb-8 overflow-x-clip"
@@ -46,6 +151,7 @@
   role="region"
   aria-labelledby="market-v0-landmark-page-title"
   data-market-responsive-polish-v1="true"
+  data-market-visual-transparency-v1="true"
   data-market-responsive-container-v1="true"
   data-market-global-overflow-contained-v1="true"
   data-market-secondary-grid-responsive-v1="true"
@@ -81,27 +187,29 @@
       <p class="m-0 text-[9px] font-semibold uppercase tracking-[0.14em] text-slate-500">Peak Trade</p>
       <h1 id="market-v0-landmark-page-title" class="m-0 text-base sm:text-lg font-bold text-slate-50 tracking-tight" data-market-page-title-v1="true">{{ page_title|e }}</h1>
     </div>
-    <div class="flex flex-wrap gap-1 text-[9px] font-semibold uppercase tracking-wide" data-market-terminal-status-badges-v1="true" data-market-operator-system-bar-v1="true" data-market-safety-status-bar-v1="true">
-      <span class="rounded-full border border-emerald-800/55 bg-emerald-950/45 px-1.5 py-0.5 text-emerald-200/95">Read only</span>
-      <span class="rounded-full border border-slate-700/70 bg-slate-950/65 px-1.5 py-0.5 text-slate-300">Live locked</span>
-      <span class="rounded-full border border-slate-700/70 bg-slate-950/65 px-1.5 py-0.5 text-slate-300">System OK</span>
-    </div>
   </header>
 
   <section
-    class="flex flex-wrap items-center gap-1.5 py-1.5 border-b border-slate-800/60 text-[9px] font-semibold uppercase tracking-wide text-slate-400"
-    aria-label="Operator diagnostics"
+    class="py-2 border-b border-slate-800/60"
+    aria-label="System status rail"
+    data-market-system-status-rail-v1="true"
+    data-market-terminal-status-badges-v1="true"
+    data-market-operator-system-bar-v1="true"
+    data-market-safety-status-bar-v1="true"
     data-market-remodel-operator-overview-v2="true"
     data-market-operator-overview-v1="true"
     data-market-operator-story-v1="true"
     data-market-operator-diagnostics-compact-v1="true"
   >
-    <span class="rounded border border-emerald-800/50 bg-emerald-950/35 px-1.5 py-0.5 text-emerald-200/90" data-market-remodel-operator-safety-v2="true">Safety · read-only</span>
-    <span class="rounded border border-slate-700/60 bg-slate-950/55 px-1.5 py-0.5" data-market-remodel-operator-lane-v2="true">Lane · dashboard</span>
-    <span class="rounded border border-slate-700/60 bg-slate-950/55 px-1.5 py-0.5" data-market-remodel-operator-freshness-v2="true">Freshness · SSR</span>
-    <span class="rounded border border-slate-700/60 bg-slate-950/55 px-1.5 py-0.5" data-market-remodel-operator-readiness-v2="true">Readiness · display</span>
-    <span class="rounded border border-slate-700/60 bg-slate-950/55 px-1.5 py-0.5" data-market-remodel-operator-blocked-v2="true">Blocked · live</span>
-    <span class="rounded border border-slate-700/60 bg-slate-950/55 px-1.5 py-0.5" data-market-remodel-operator-authority-v2="true">Authority · false</span>
+    <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-6 gap-1 text-[9px] font-semibold uppercase tracking-wide">
+      <div class="flex items-center gap-1 rounded border border-emerald-800/50 bg-emerald-950/35 px-1.5 py-1 text-emerald-200/90" data-market-system-status-node-v1="true" data-market-system-status-tone-readonly-v1="true" data-market-remodel-operator-safety-v2="true">Read-only</div>
+      <div class="flex items-center gap-1 rounded border border-rose-800/45 bg-rose-950/30 px-1.5 py-1 text-rose-200/90" data-market-system-status-node-v1="true" data-market-system-status-tone-blocked-v1="true" data-market-remodel-operator-blocked-v2="true">Preflight blocked</div>
+      <div class="flex items-center gap-1 rounded border border-slate-700/60 bg-slate-950/55 px-1.5 py-1 text-slate-300" data-market-system-status-node-v1="true" data-market-system-status-tone-neutral-v1="true">Live locked</div>
+      <div class="flex items-center gap-1 rounded border border-sky-800/45 bg-sky-950/25 px-1.5 py-1 text-sky-200/90" data-market-system-status-node-v1="true" data-market-system-status-tone-ready-v1="true" data-market-remodel-operator-freshness-v2="true">Freshness · SSR</div>
+      <div class="flex items-center gap-1 rounded border border-slate-700/60 bg-slate-950/55 px-1.5 py-1 text-slate-300" data-market-system-status-node-v1="true" data-market-system-status-tone-neutral-v1="true" data-market-remodel-operator-lane-v2="true">Lane · dashboard</div>
+      <div class="flex items-center gap-1 rounded border border-slate-700/60 bg-slate-950/55 px-1.5 py-1 text-slate-300" data-market-system-status-node-v1="true" data-market-system-status-tone-neutral-v1="true" data-market-remodel-operator-authority-v2="true">Authority · false</div>
+    </div>
+    <p class="m-0 mt-1 text-[9px] text-slate-500" data-market-remodel-operator-readiness-v2="true">Readiness · display · System OK · no orders · no live · no execution</p>
   </section>
 
   {% include "partials/market_primary_operator_hero_v1.html" %}
@@ -114,9 +222,13 @@
 
   <div class="mt-3 sm:mt-4 grid grid-cols-1 lg:grid-cols-4 gap-3 sm:gap-4" data-market-terminal-secondary-grid-v1="true" data-market-remodel-secondary-grid-v2="true">
     <div class="lg:col-span-3 order-1 lg:order-2 grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
-      {% include "partials/double_play_market_compact_v1.html" %}
-      {% include "partials/market_safety_compact_v1.html" %}
+      <div data-market-f5-pipeline-strip-v1="true">
       {% include "partials/futures_market_compact_v1.html" %}
+      </div>
+      <div data-market-double-play-visual-grid-v1="true">
+      {% include "partials/double_play_market_compact_v1.html" %}
+      </div>
+      {% include "partials/market_safety_compact_v1.html" %}
     </div>
     <div class="lg:col-span-1 order-2 lg:order-1">
       {% include "partials/market_watchlist_compact_v1.html" %}
