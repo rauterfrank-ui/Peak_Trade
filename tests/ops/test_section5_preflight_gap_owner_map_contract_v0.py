@@ -348,7 +348,8 @@ def test_section5_pe_eer1_hold_binding_chain_completion_static_review_v1() -> No
     gap2a1 = _gap2a1_section(text)
     for token in (
         "PE_EER1_HOLD_BINDING_RECIPROCAL_CROSSLINK_CHAIN_COMPLETION_STATIC_REVIEW_GUARD_V1=true",
-        "PE4_PE11_CROSSLINK_CHAIN_COMPLETE=true",
+        "PE4_PE12_CROSSLINK_CHAIN_COMPLETE=true",
+        "PE12_RECIPROCAL_CROSSLINK_SECTION_REFERENCED=true",
         "HOLD_BINDING_CROSSLINK_CHAIN_COMPLETE=true",
         "EER1_CROSSLINK_COMPLETE=true",
         "RUNTIME_LANE_TAXONOMY_CROSSLINK_COMPLETE=true",
@@ -1081,6 +1082,18 @@ def test_section5_pe11_bounded_futures_reachability_reflection_non_authorizing_v
     assert "ARCHIVE_HARNESS_SCRIPT_EXECUTE_AUTHORIZED_NOW=true" not in block_lines
     assert "ALL_GAPS_CLOSED=true" in block_lines
     assert "READY_FOR_OPERATOR_ARMING=true" in block_lines
+
+
+def test_section5_pe12_bounded_futures_testnet_adapter_lifecycle_guard_non_authorizing_v0() -> None:
+    text = DOC.read_text(encoding="utf-8")
+    assert "**Bounded Futures Testnet adapter lifecycle contract (PE-12 guard) v0:**" in text
+    assert "bounded_futures_testnet_adapter_lifecycle_contract_v0.py" in text
+    assert "BOUNDED_FUTURES_TESTNET_ADAPTER_LIFECYCLE_CONTRACT_V0=true" in text
+    assert "LIFECYCLE_EXECUTE_AUTHORIZED_NOW=false" in text
+    assert "static_preflight" in text
+    assert "readiness_decision" in text
+    collapsed = text.replace("**", "")
+    assert "does not authorize Futures execute" in collapsed
 
 
 GAP6_ACCEPTED_FINAL_LINE_REFLECTION_HEADER = (

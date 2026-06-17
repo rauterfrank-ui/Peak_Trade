@@ -153,6 +153,8 @@ Owner Map §2a.1 and Preflight §2a.1 remain aligned on durable primary-evidence
 
 **Bounded Futures Testnet runtime harness / exchange impl descriptor contract (PE-10 guard) v0:** Addresses `futures_testnet_runtime_harness_and_exchange_impl_residual` at offline descriptor layer only (reuses PE-8/PE-9). Canonical surfaces: `src/ops/bounded_futures_testnet_exchange_impl_contract_v0.py` (`BOUNDED_FUTURES_TESTNET_EXCHANGE_IMPL_CONTRACT_V0=true`), `src/ops/bounded_futures_testnet_runtime_harness_contract_v0.py` (`BOUNDED_FUTURES_TESTNET_RUNTIME_HARNESS_CONTRACT_V0=true`). Governed archive harness entrypoint: `scripts/ops/archive_futures_testnet_harness_v0.py` (`ARCHIVE_FUTURES_TESTNET_HARNESS_V0=true`); static guard: `tests/ops/test_archive_futures_testnet_harness_v0.py`. `RUNTIME_HARNESS_EXECUTE_ALLOWED=false`; `EXCHANGE_IMPL_NETWORK_CALLS_ALLOWED=false`; `ARCHIVE_HARNESS_SCRIPT_PRESENT=true`; `ARCHIVE_HARNESS_SCRIPT_EXECUTE_AUTHORIZED_NOW=false`; `ARCHIVE_EXCHANGE_CLIENT_PRESENT=false`; **does not** authorize Futures execute, harness network I/O by default, credentials, orders, or Master-V2 / Double-Play authority. **PE-10 residual (precise):** operator-confirmed **reachability-only** network execute is proven for zero-order public and private-readonly modes (see PE-11 governed reflection); **order execute**, **validate-order**, **live exchange client for trading**, and **preflight lift** remain out of scope and unauthorized.
 
+**Bounded Futures Testnet adapter lifecycle contract (PE-12 guard) v0:** Addresses `futures_testnet_adapter_lifecycle_integration_missing` at offline lifecycle-matrix layer only (composes PE-8/9/10/11). Canonical evaluator: `src/ops/bounded_futures_testnet_adapter_lifecycle_contract_v0.py` (`BOUNDED_FUTURES_TESTNET_ADAPTER_LIFECYCLE_CONTRACT_V0=true`). Static guard: `tests/ops/test_bounded_futures_testnet_adapter_lifecycle_contract_v0.py`. Lifecycle phases (strict order, no skip): `static_preflight` → `zero_order` → `private_readonly` → `validate_only` → `tiny_order` → `reconciliation_review` → `readiness_decision`. `LIFECYCLE_EXECUTE_AUTHORIZED_NOW=false`; `LIFECYCLE_NETWORK_AUTHORIZED_NOW=false`; `LIFECYCLE_ORDERS_AUTHORIZED_NOW=false`; `PREFLIGHT_REMAINS_BLOCKED=true`; `READY_FOR_OPERATOR_ARMING=false`; each network/execution phase requires separate operator GO; reconciliation required after each network/execution phase before advancing; `readiness_decision` is non-authorizing; **does not** authorize Futures execute, network, credentials, orders, runtime, scheduler, preflight lift, or Master-V2 / Double-Play authority.
+
 ### Reuse-first owner surfaces
 
 - `scripts/ops/primary_evidence_retention_v0.py`
@@ -172,6 +174,7 @@ Owner Map §2a.1 and Preflight §2a.1 remain aligned on durable primary-evidence
 - `src/ops/bounded_futures_testnet_harness_contract_v0.py`
 - `src/ops/bounded_futures_testnet_exchange_impl_contract_v0.py`
 - `src/ops/bounded_futures_testnet_runtime_harness_contract_v0.py`
+- `src/ops/bounded_futures_testnet_adapter_lifecycle_contract_v0.py`
 - `scripts/ops/archive_futures_testnet_harness_v0.py`
 - `scripts/ops/run_testnet_private_readonly_connectivity_adapter_v1.py` (Path-C private-readonly lane; plan-only default; no execute authorization)
 - `scripts/ops/review_testnet_private_readonly_connectivity_evidence_v1.py` (Path-C offline evidence review; schema `testnet_path_c_private_readonly_connectivity.v1`)
@@ -185,6 +188,7 @@ Owner Map §2a.1 and Preflight §2a.1 remain aligned on durable primary-evidence
 - `tests/ops/test_bounded_futures_testnet_harness_contract_v0.py`
 - `tests/ops/test_bounded_futures_testnet_exchange_impl_contract_v0.py`
 - `tests/ops/test_bounded_futures_testnet_runtime_harness_contract_v0.py`
+- `tests/ops/test_bounded_futures_testnet_adapter_lifecycle_contract_v0.py`
 - `tests/ops/test_archive_futures_testnet_harness_v0.py`
 - existing preflight contract §2a/§2a.1 surfaces
 - existing docs truth map / reference / token-policy checks
@@ -253,11 +257,12 @@ PREFLIGHT_REMAINS_BLOCKED=true
 READY_FOR_OPERATOR_ARMING=false
 ```
 
-**PE+EER1+hold-binding reciprocal crosslink chain completion static review (SECTION5 guard) v0:** Meta guard confirming the completed reciprocal-crosslink chain on main — PE-4..PE-11 reciprocal CI_AUDIT sections (PE-6 via existing cyber histogram crosslink only), hold-binding (#4166/#4167), EER1 (#4173), Runtime Lane Taxonomy (#4176), Scheduler Boundary Hard Block (#4177), Gap 1–3 execute-entrypoint criteria (#4179), and Gap 4–7 criteria (#4181) — remains indexed consistently across SECTION5 and `docs/ops/CI_AUDIT_KNOWN_ISSUES.md`. Reciprocal crosslink guard: `docs/ops/CI_AUDIT_KNOWN_ISSUES.md` — **§ PE+EER1+hold-binding reciprocal crosslink chain completion static review — docs/tests-only guard v1**; CI_AUDIT / DOCS_TRUTH_MAP reciprocal guard: `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`. Static guard: `tests/ops/test_section5_preflight_gap_owner_map_contract_v0.py`. **Planning/docs/tests chain-completion review only** — does **not** activate enforcement, **does not** lift preflight, **does not** set `READY_FOR_OPERATOR_ARMING=true`.
+**PE+EER1+hold-binding reciprocal crosslink chain completion static review (SECTION5 guard) v0:** Meta guard confirming the completed reciprocal-crosslink chain on main — PE-4..PE-12 reciprocal CI_AUDIT sections (PE-6 via existing cyber histogram crosslink only), hold-binding (#4166/#4167), EER1 (#4173), Runtime Lane Taxonomy (#4176), Scheduler Boundary Hard Block (#4177), Gap 1–3 execute-entrypoint criteria (#4179), and Gap 4–7 criteria (#4181) — remains indexed consistently across SECTION5 and `docs/ops/CI_AUDIT_KNOWN_ISSUES.md`. Reciprocal crosslink guard: `docs/ops/CI_AUDIT_KNOWN_ISSUES.md` — **§ PE+EER1+hold-binding reciprocal crosslink chain completion static review — docs/tests-only guard v1**; CI_AUDIT / DOCS_TRUTH_MAP reciprocal guard: `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`. Static guard: `tests/ops/test_section5_preflight_gap_owner_map_contract_v0.py`. **Planning/docs/tests chain-completion review only** — does **not** activate enforcement, **does not** lift preflight, **does not** set `READY_FOR_OPERATOR_ARMING=true`.
 
 ```text
 PE_EER1_HOLD_BINDING_RECIPROCAL_CROSSLINK_CHAIN_COMPLETION_STATIC_REVIEW_GUARD_V1=true
-PE4_PE11_CROSSLINK_CHAIN_COMPLETE=true
+PE4_PE12_CROSSLINK_CHAIN_COMPLETE=true
+PE12_RECIPROCAL_CROSSLINK_SECTION_REFERENCED=true
 HOLD_BINDING_CROSSLINK_CHAIN_COMPLETE=true
 EER1_CROSSLINK_COMPLETE=true
 RUNTIME_LANE_TAXONOMY_CROSSLINK_COMPLETE=true

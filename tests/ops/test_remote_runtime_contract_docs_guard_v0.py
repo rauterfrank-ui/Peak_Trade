@@ -368,6 +368,40 @@ PE11_BOUNDED_FUTURES_CI_AUDIT_CROSSLINK_OWNER_TESTS = (
     "test_section5_preflight_gap_owner_map_contract_v0.py",
     "test_bounded_futures_private_readonly_contract_v0.py",
 )
+PE12_BOUNDED_FUTURES_TESTNET_ADAPTER_LIFECYCLE_CI_AUDIT_CROSSLINK_HEADING = (
+    "## PE-12 Bounded Futures Testnet adapter lifecycle CI_AUDIT ↔ SECTION5 reciprocal "
+    "crosslink — docs/tests-only guard v1"
+)
+PE12_BOUNDED_FUTURES_TESTNET_ADAPTER_LIFECYCLE_CI_AUDIT_CROSSLINK_GUARD_BLOCK_ANCHOR = (
+    "PE12_BOUNDED_FUTURES_TESTNET_ADAPTER_LIFECYCLE_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_V1=true"
+)
+PE12_BOUNDED_FUTURES_TESTNET_ADAPTER_LIFECYCLE_CI_AUDIT_CROSSLINK_EXPECTED: dict[str, str] = {
+    "PE12_BOUNDED_FUTURES_TESTNET_ADAPTER_LIFECYCLE_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_V1": "true",
+    "PE12_BOUNDED_FUTURES_TESTNET_ADAPTER_LIFECYCLE_CI_AUDIT_CROSSLINK_DOCS_TESTS_ONLY": "true",
+    "SECTION5_PE12_OWNER_REFERENCED": "true",
+    "BOUNDED_FUTURES_TESTNET_ADAPTER_LIFECYCLE_CONTRACT_V0_REFERENCED": "true",
+    "LIFECYCLE_EXECUTE_AUTHORIZED_NOW": "false",
+    "LIFECYCLE_NETWORK_AUTHORIZED_NOW": "false",
+    "LIFECYCLE_ORDERS_AUTHORIZED_NOW": "false",
+    "FUTURES_SESSION_AUTHORIZED_NOW": "false",
+    "NO_EXECUTE": "true",
+    "NO_PREFLIGHT_LIFT": "true",
+    "NO_RUNTIME": "true",
+    "NO_LIVE": "true",
+    "ORDER_CANCEL_EXECUTION_ARMING_TOUCHED": "false",
+    "AUTHORITY_LIFT": "false",
+    "TRADING_LOGIC_TOUCHED": "false",
+    "MASTER_V2_LOGIC_TOUCHED": "false",
+    "DOUBLE_PLAY_LOGIC_TOUCHED": "false",
+    "NEW_PARALLEL_SSOT_CREATED": "false",
+    "PREFLIGHT_REMAINS_BLOCKED": "true",
+    "READY_FOR_OPERATOR_ARMING": "false",
+    "MARKET_DASHBOARD_TOUCHED": "false",
+    "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED": "true",
+}
+PE12_BOUNDED_FUTURES_TESTNET_ADAPTER_LIFECYCLE_CI_AUDIT_CROSSLINK_OWNER_TESTS = (
+    "test_bounded_futures_testnet_adapter_lifecycle_contract_v0.py",
+)
 PE8_PE9_PE10_BOUNDED_FUTURES_TESTNET_CI_AUDIT_CROSSLINK_HEADING = (
     "## PE-8/PE-9/PE-10 Bounded Futures Testnet CI_AUDIT ↔ SECTION5 reciprocal crosslink "
     "— docs/tests-only guard v1"
@@ -581,7 +615,7 @@ PE_EER1_HOLD_BINDING_CHAIN_COMPLETION_STATIC_REVIEW_GUARD_BLOCK_ANCHOR = (
 PE_EER1_HOLD_BINDING_CHAIN_COMPLETION_STATIC_REVIEW_EXPECTED: dict[str, str] = {
     "PE_EER1_HOLD_BINDING_RECIPROCAL_CROSSLINK_CHAIN_COMPLETION_STATIC_REVIEW_GUARD_V1": "true",
     "PE_EER1_HOLD_BINDING_RECIPROCAL_CROSSLINK_CHAIN_COMPLETION_DOCS_TESTS_ONLY": "true",
-    "PE4_PE11_CROSSLINK_CHAIN_COMPLETE": "true",
+    "PE4_PE12_CROSSLINK_CHAIN_COMPLETE": "true",
     "HOLD_BINDING_CROSSLINK_CHAIN_COMPLETE": "true",
     "EER1_CROSSLINK_COMPLETE": "true",
     "PE4_RECIPROCAL_CROSSLINK_SECTION_REFERENCED": "true",
@@ -589,6 +623,7 @@ PE_EER1_HOLD_BINDING_CHAIN_COMPLETION_STATIC_REVIEW_EXPECTED: dict[str, str] = {
     "PE7_RECIPROCAL_CROSSLINK_SECTION_REFERENCED": "true",
     "PE8_PE9_PE10_RECIPROCAL_CROSSLINK_SECTION_REFERENCED": "true",
     "PE11_RECIPROCAL_CROSSLINK_SECTION_REFERENCED": "true",
+    "PE12_RECIPROCAL_CROSSLINK_SECTION_REFERENCED": "true",
     "PAPER_L2_HOLD_BINDING_RECIPROCAL_CROSSLINK_REFERENCED": "true",
     "SECTION5_HOLD_BINDING_PROFILE_CROSSLINK_REFERENCED": "true",
     "EER1_RECIPROCAL_CROSSLINK_SECTION_REFERENCED": "true",
@@ -1088,6 +1123,7 @@ PE_EER1_HOLD_BINDING_CHAIN_COMPLETION_STATIC_REVIEW_RECIPROCAL_SECTIONS = (
     PE7_REPO_NATIVE_BOUNDED_TESTNET_ORDER_CAP_CI_AUDIT_CROSSLINK_HEADING,
     PE8_PE9_PE10_BOUNDED_FUTURES_TESTNET_CI_AUDIT_CROSSLINK_HEADING,
     PE11_BOUNDED_FUTURES_CI_AUDIT_CROSSLINK_HEADING,
+    PE12_BOUNDED_FUTURES_TESTNET_ADAPTER_LIFECYCLE_CI_AUDIT_CROSSLINK_HEADING,
     PAPER_L2_PREFLIGHT_2A_RECIPROCAL_CROSSLINK_HEADING,
     SECTION5_HOLD_BINDING_PROFILE_CROSSLINK_HEADING,
     EER1_EVIDENCE_DURABLE_ENFORCEMENT_READINESS_CI_AUDIT_CROSSLINK_HEADING,
@@ -2928,6 +2964,71 @@ def _pe8_pe9_pe10_bounded_futures_testnet_ci_audit_crosslink_section(text: str) 
     return text[start:next_heading]
 
 
+def _pe12_bounded_futures_testnet_adapter_lifecycle_ci_audit_crosslink_section(text: str) -> str:
+    start = text.find(PE12_BOUNDED_FUTURES_TESTNET_ADAPTER_LIFECYCLE_CI_AUDIT_CROSSLINK_HEADING)
+    assert start != -1, "missing PE-12 bounded futures testnet adapter lifecycle CI_AUDIT crosslink section"
+    next_heading = text.find("\n## ", start + 1)
+    if next_heading == -1:
+        return text[start:]
+    return text[start:next_heading]
+
+
+def test_ci_audit_pe12_bounded_futures_testnet_adapter_lifecycle_crosslink_section_present_v1() -> (
+    None
+):
+    text = _ci_audit_text()
+    section = _pe12_bounded_futures_testnet_adapter_lifecycle_ci_audit_crosslink_section(text)
+    assert (
+        "GO_PE12_BOUNDED_FUTURES_TESTNET_ADAPTER_LIFECYCLE_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1"
+        in section
+    )
+    assert "PE-12 bounded futures testnet adapter lifecycle offline contract guard" in section
+    assert "SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md" in section
+    assert "bounded_futures_testnet_adapter_lifecycle_contract_v0" in section
+    assert "no parallel pe-12 ssot" in section.lower()
+    assert THIS_MODULE in section
+    for module_name in PE12_BOUNDED_FUTURES_TESTNET_ADAPTER_LIFECYCLE_CI_AUDIT_CROSSLINK_OWNER_TESTS:
+        assert module_name in section, f"missing owner test reference {module_name!r}"
+
+
+def test_ci_audit_pe12_bounded_futures_testnet_adapter_lifecycle_crosslink_machine_lines_v1() -> (
+    None
+):
+    block = _block_containing(
+        _ci_audit_text(),
+        PE12_BOUNDED_FUTURES_TESTNET_ADAPTER_LIFECYCLE_CI_AUDIT_CROSSLINK_GUARD_BLOCK_ANCHOR,
+    )
+    values = _machine_line_values(block)
+    missing = set(PE12_BOUNDED_FUTURES_TESTNET_ADAPTER_LIFECYCLE_CI_AUDIT_CROSSLINK_EXPECTED) - values.keys()
+    assert not missing, f"missing PE-12 CI_AUDIT crosslink keys: {sorted(missing)}"
+    for key, expected in PE12_BOUNDED_FUTURES_TESTNET_ADAPTER_LIFECYCLE_CI_AUDIT_CROSSLINK_EXPECTED.items():
+        assert values[key] == expected, f"{key}={values[key]!r} expected {expected!r}"
+
+
+def test_section5_doc_pe12_bounded_futures_testnet_adapter_lifecycle_owner_present_v1() -> None:
+    text = SECTION5_DOC.read_text(encoding="utf-8")
+    assert "**Bounded Futures Testnet adapter lifecycle contract (PE-12 guard) v0:**" in text
+    assert "BOUNDED_FUTURES_TESTNET_ADAPTER_LIFECYCLE_CONTRACT_V0=true" in text
+    assert "LIFECYCLE_EXECUTE_AUTHORIZED_NOW=false" in text
+    assert "readiness_decision" in text
+    assert PE12_BOUNDED_FUTURES_TESTNET_ADAPTER_LIFECYCLE_CI_AUDIT_CROSSLINK_GUARD_BLOCK_ANCHOR not in text
+
+
+def test_docs_truth_map_pe12_bounded_futures_testnet_adapter_lifecycle_ci_audit_crosslink_chronicle_v1() -> (
+    None
+):
+    text = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    assert (
+        "PE-12 Bounded Futures Testnet adapter lifecycle CI_AUDIT ↔ SECTION5 reciprocal crosslink guard v1"
+        in text
+    )
+    assert THIS_MODULE in text
+    assert PE12_BOUNDED_FUTURES_TESTNET_ADAPTER_LIFECYCLE_CI_AUDIT_CROSSLINK_GUARD_BLOCK_ANCHOR in text
+    assert "test_bounded_futures_testnet_adapter_lifecycle_contract_v0.py" in text
+    assert "**no** execute / Preflight-Lift / futures-session / lifecycle" in text
+    assert "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true" in text
+
+
 def test_ci_audit_pe8_pe9_pe10_bounded_futures_testnet_crosslink_section_present_v1() -> None:
     text = _ci_audit_text()
     section = _pe8_pe9_pe10_bounded_futures_testnet_ci_audit_crosslink_section(text)
@@ -3246,6 +3347,7 @@ def test_ci_audit_pe_eer1_hold_binding_chain_completion_static_review_section_pr
         "PE-7",
         "PE-8/9/10",
         "PE-11",
+        "PE-12",
         "Hold-binding",
         "EER1",
         "Runtime Lane Taxonomy",
