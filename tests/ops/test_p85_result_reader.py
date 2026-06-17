@@ -4,7 +4,6 @@ from __future__ import annotations
 
 import json
 import os
-import time
 from pathlib import Path
 from unittest.mock import patch
 
@@ -130,7 +129,7 @@ def test_reader_picks_newest_file_by_mtime(tmp_path: Path) -> None:
     p_old = old_dir / "P85_RESULT.json"
     p_new = new_dir / "P85_RESULT.json"
     p_old.write_text(json.dumps({"connectivity": {"ok": True}}), encoding="utf-8")
-    old_ts = time.time() - 5000.0
+    old_ts = _FIXED_NOW - 5000.0
     os.utime(p_old, (old_ts, old_ts))
     p_new.write_text(json.dumps({"connectivity": {"ok": False}}), encoding="utf-8")
     out = read_p85_exchange_observation(tmp_path)
