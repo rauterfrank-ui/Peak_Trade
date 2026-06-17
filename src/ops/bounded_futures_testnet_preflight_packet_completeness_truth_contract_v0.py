@@ -47,6 +47,9 @@ SOURCE_STATE_CAPTURE_CONTRACT_VERSION = "bounded_futures_testnet_preflight_sourc
 OPERATOR_REVIEW_CONTRACT_VERSION = (
     "bounded_futures_testnet_preflight_operator_review_reproducibility.v0"
 )
+OPERATOR_REVIEW_DECISION_APPROVE_FOR_SEPARATE_NEXT_PHASE_REVIEW = (
+    "approve_for_separate_next_phase_review"
+)
 
 COMPLETENESS_COMPLETE = "complete_for_internal_static_truth"
 COMPLETENESS_INCOMPLETE = "incomplete"
@@ -92,6 +95,7 @@ class PreflightCompletenessTruthInput:
     source_state_capture_proof: ExplicitContractProof | None = None
     source_state_capture_result: dict[str, Any] | None = None
     operator_review_proof: ExplicitContractProof | None = None
+    operator_review_result: dict[str, Any] | None = None
 
 
 def _sorted_unique(items: list[str]) -> list[str]:
@@ -514,6 +518,7 @@ def evaluate_glb016_internal_truth(
     source_proof = evaluation_input.source_state_capture_proof
     capture_result = evaluation_input.source_state_capture_result
     operator_proof = evaluation_input.operator_review_proof
+    operator_result = evaluation_input.operator_review_result
 
     source_state_capture_present = source_proof is not None or capture_result is not None
     source_state_capture_valid = _proof_valid(
@@ -543,7 +548,7 @@ def evaluate_glb016_internal_truth(
                     validation_errors.append(
                         "source_state_capture: capture_result without explicit contract proof"
                     )
-    operator_review_reproducible = operator_proof is not None
+    operator_review_reproducible = operator_proof is not None or operator_result is not None
     operator_review_valid = _proof_valid(
         operator_proof,
         expected_contract_version=OPERATOR_REVIEW_CONTRACT_VERSION,
@@ -551,6 +556,28 @@ def evaluate_glb016_internal_truth(
             "BOUNDED_FUTURES_TESTNET_PREFLIGHT_OPERATOR_REVIEW_REPRODUCIBILITY_CONTRACT_V0=true"
         ),
     )
+    if operator_review_valid and operator_result is not None:
+        if operator_result.get("review_valid") is not True:
+            operator_review_valid = False
+            validation_errors.append(
+                "operator_review: contract proof present but review_result review_valid is not true"
+            )
+        elif operator_result.get("review_reproducible") is not True:
+            operator_review_valid = False
+            validation_errors.append(
+                "operator_review: contract proof present but review_result not reproducible"
+            )
+        elif operator_result.get("decision_record_digest_matches") is False:
+            operator_review_valid = False
+            validation_errors.append("operator_review: decision_record_digest mismatch")
+        elif operator_result.get("review_input_digest_matches") is False:
+            operator_review_valid = False
+            validation_errors.append("operator_review: review_input_digest mismatch")
+    elif operator_review_valid and operator_result is None:
+        operator_review_valid = False
+        validation_errors.append(
+            "operator_review: explicit contract proof without digest-bound review_result"
+        )
 
     if source_state_capture_present and not source_state_capture_valid:
         validation_errors.append(
@@ -574,8 +601,17 @@ def evaluate_glb016_internal_truth(
     else:
         truth_status = TRUTH_READY_FOR_SEPARATE_OPERATOR_REVIEW
 
+    operator_review_approves_static_reproducibility = (
+        operator_review_valid
+        and operator_result is not None
+        and operator_result.get("decision")
+        == OPERATOR_REVIEW_DECISION_APPROVE_FOR_SEPARATE_NEXT_PHASE_REVIEW
+        and operator_result.get("evidence_manifest_verified") is True
+    )
     glb016_full = (
-        internal_static_chain_complete and source_state_capture_valid and operator_review_valid
+        internal_static_chain_complete
+        and source_state_capture_valid
+        and operator_review_approves_static_reproducibility
     )
 
     return {
