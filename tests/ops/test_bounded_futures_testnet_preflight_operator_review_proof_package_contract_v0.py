@@ -683,18 +683,14 @@ def test_no_git_subprocess_or_environment_read(
 
 def test_section5_pe20_crosslink_present() -> None:
     section5 = SECTION5_GAP_OWNER_MAP.read_text(encoding="utf-8")
-    assert (
-        "bounded_futures_testnet_preflight_operator_review_proof_package_contract_v0" in section5
-    )
+    assert "bounded_futures_testnet_preflight_operator_review_proof_package_contract_v0" in section5
     assert "PE-20 guard" in section5
 
 
 def test_ci_audit_pe20_crosslink_present() -> None:
     ci_audit = CI_AUDIT.read_text(encoding="utf-8")
     assert "PE-20 Bounded Futures Testnet preflight operator-review proof package" in ci_audit
-    assert (
-        "bounded_futures_testnet_preflight_operator_review_proof_package_contract_v0" in ci_audit
-    )
+    assert "bounded_futures_testnet_preflight_operator_review_proof_package_contract_v0" in ci_audit
 
 
 def test_post_write_manifest_verify_rc_zero(durable_archive_root: Path) -> None:

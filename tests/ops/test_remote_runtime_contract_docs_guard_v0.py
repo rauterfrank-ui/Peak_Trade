@@ -4115,9 +4115,7 @@ def test_ci_audit_pe20_bounded_futures_testnet_preflight_operator_review_proof_p
         in section
     )
     assert "Bounded Futures Testnet preflight operator-review proof package" in section
-    assert (
-        "bounded_futures_testnet_preflight_operator_review_proof_package_contract_v0" in section
-    )
+    assert "bounded_futures_testnet_preflight_operator_review_proof_package_contract_v0" in section
     assert (
         "bounded_futures_testnet_preflight_operator_review_reproducibility_contract_v0" in section
     )
@@ -4155,7 +4153,9 @@ def test_section5_doc_pe20_bounded_futures_testnet_preflight_operator_review_pro
         in text
     )
     assert "bounded_futures_testnet_preflight_operator_review_proof_package_contract_v0" in text
-    assert "CONTRACT_IMPLEMENTATION_ONLY" not in text or "contract implementation is **not**" in text
+    assert (
+        "CONTRACT_IMPLEMENTATION_ONLY" not in text or "contract implementation is **not**" in text
+    )
     assert (
         PE20_BOUNDED_FUTURES_TESTNET_PREFLIGHT_OPERATOR_REVIEW_PROOF_PACKAGE_CI_AUDIT_CROSSLINK_GUARD_BLOCK_ANCHOR
         not in text
