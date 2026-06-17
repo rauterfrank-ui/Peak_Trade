@@ -449,10 +449,10 @@ PE14_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_BUILDER_CI_AUDIT_CROSSLINK_HEADING
     "## PE-14 Bounded Futures Testnet preflight packet builder CI_AUDIT ↔ SECTION5 reciprocal "
     "crosslink — docs/tests-only guard v1"
 )
-PE14_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_BUILDER_CI_AUDIT_CROSSLINK_GUARD_BLOCK_ANCHOR = (
-    "PE14_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_BUILDER_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_V1=true"
-)
-PE14_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_BUILDER_CI_AUDIT_CROSSLINK_EXPECTED: dict[str, str] = {
+PE14_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_BUILDER_CI_AUDIT_CROSSLINK_GUARD_BLOCK_ANCHOR = "PE14_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_BUILDER_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_V1=true"
+PE14_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_BUILDER_CI_AUDIT_CROSSLINK_EXPECTED: dict[
+    str, str
+] = {
     "PE14_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_BUILDER_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_V1": "true",
     "PE14_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_BUILDER_CI_AUDIT_CROSSLINK_DOCS_TESTS_ONLY": "true",
     "SECTION5_PE14_OWNER_REFERENCED": "true",
@@ -3214,7 +3214,9 @@ def test_docs_truth_map_pe13_bounded_futures_testnet_preflight_packet_ci_audit_c
 def _pe14_bounded_futures_testnet_preflight_packet_builder_ci_audit_crosslink_section(
     text: str,
 ) -> str:
-    start = text.find(PE14_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_BUILDER_CI_AUDIT_CROSSLINK_HEADING)
+    start = text.find(
+        PE14_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_BUILDER_CI_AUDIT_CROSSLINK_HEADING
+    )
     assert start != -1, (
         "missing PE-14 bounded futures testnet preflight packet builder CI_AUDIT crosslink section"
     )
@@ -3228,7 +3230,9 @@ def test_ci_audit_pe14_bounded_futures_testnet_preflight_packet_builder_crosslin
     None
 ):
     text = _ci_audit_text()
-    section = _pe14_bounded_futures_testnet_preflight_packet_builder_ci_audit_crosslink_section(text)
+    section = _pe14_bounded_futures_testnet_preflight_packet_builder_ci_audit_crosslink_section(
+        text
+    )
     assert (
         "GO_PE14_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_BUILDER_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1"
         in section
@@ -3247,7 +3251,9 @@ def test_ci_audit_pe14_bounded_futures_testnet_preflight_packet_builder_crosslin
     None
 ):
     text = _ci_audit_text()
-    section = _pe14_bounded_futures_testnet_preflight_packet_builder_ci_audit_crosslink_section(text)
+    section = _pe14_bounded_futures_testnet_preflight_packet_builder_ci_audit_crosslink_section(
+        text
+    )
     block = _block_containing(
         section,
         PE14_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_BUILDER_CI_AUDIT_CROSSLINK_GUARD_BLOCK_ANCHOR,
@@ -3265,7 +3271,9 @@ def test_ci_audit_pe14_bounded_futures_testnet_preflight_packet_builder_crosslin
         assert values[key] == expected, f"{key}={values[key]!r} expected {expected!r}"
 
 
-def test_section5_doc_pe14_bounded_futures_testnet_preflight_packet_builder_owner_present_v1() -> None:
+def test_section5_doc_pe14_bounded_futures_testnet_preflight_packet_builder_owner_present_v1() -> (
+    None
+):
     text = SECTION5_DOC.read_text(encoding="utf-8")
     assert (
         "**Bounded Futures Testnet preflight packet builder + input capture (PE-14 guard) v0:**"
