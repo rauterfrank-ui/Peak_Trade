@@ -258,7 +258,7 @@ jobs:
   fast-lane:
     name: Fast-Lane
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 12
     needs: changes
     steps:
       - name: Checkout
