@@ -155,6 +155,8 @@ Owner Map §2a.1 and Preflight §2a.1 remain aligned on durable primary-evidence
 
 **Bounded Futures Testnet adapter lifecycle contract (PE-12 guard) v0:** Addresses `futures_testnet_adapter_lifecycle_integration_missing` at offline lifecycle-matrix layer only (composes PE-8/9/10/11). Canonical evaluator: `src/ops/bounded_futures_testnet_adapter_lifecycle_contract_v0.py` (`BOUNDED_FUTURES_TESTNET_ADAPTER_LIFECYCLE_CONTRACT_V0=true`). Static guard: `tests/ops/test_bounded_futures_testnet_adapter_lifecycle_contract_v0.py`. Lifecycle phases (strict order, no skip): `static_preflight` → `zero_order` → `private_readonly` → `validate_only` → `tiny_order` → `reconciliation_review` → `readiness_decision`. `LIFECYCLE_EXECUTE_AUTHORIZED_NOW=false`; `LIFECYCLE_NETWORK_AUTHORIZED_NOW=false`; `LIFECYCLE_ORDERS_AUTHORIZED_NOW=false`; `PREFLIGHT_REMAINS_BLOCKED=true`; `READY_FOR_OPERATOR_ARMING=false`; each network/execution phase requires separate operator GO; reconciliation required after each network/execution phase before advancing; `readiness_decision` is non-authorizing; **does not** authorize Futures execute, network, credentials, orders, runtime, scheduler, preflight lift, or Master-V2 / Double-Play authority.
 
+**Bounded Futures Testnet preflight packet contract (PE-13 guard) v0:** Addresses `futures_testnet_preflight_packet_reproducibility_missing` (GLB-016 static prep) at offline futures-testnet-scoped preflight-packet layer only (composes PE-12 + Preflight §2b.2). Canonical evaluator: `src/ops/bounded_futures_testnet_preflight_packet_contract_v0.py` (`BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_CONTRACT_V0=true`). Static guard: `tests/ops/test_bounded_futures_testnet_preflight_packet_contract_v0.py`. Deterministic canonical serialization and digest; fail-closed validation; default `readiness_status=blocked`; successful static validation may reach at most `ready_for_separate_operator_review`; `operator_go_present=false`; `credentials_allowed=false`; `network_allowed=false`; `orders_allowed=false`; `runtime_allowed=false`; `scheduler_allowed=false`; `execution_authorized=false`; `live_authorized=false`; `FOLLOWUP_RUN_GATE=OPERATOR_INPUT_REQUIRED_IN_NEW_CHAT_NO_AUTO_GO`; **does not** authorize Futures execute, network, credentials, orders, runtime, scheduler, preflight lift, or Master-V2 / Double-Play authority.
+
 ### Reuse-first owner surfaces
 
 - `scripts/ops/primary_evidence_retention_v0.py`
@@ -175,6 +177,7 @@ Owner Map §2a.1 and Preflight §2a.1 remain aligned on durable primary-evidence
 - `src/ops/bounded_futures_testnet_exchange_impl_contract_v0.py`
 - `src/ops/bounded_futures_testnet_runtime_harness_contract_v0.py`
 - `src/ops/bounded_futures_testnet_adapter_lifecycle_contract_v0.py`
+- `src/ops/bounded_futures_testnet_preflight_packet_contract_v0.py`
 - `scripts/ops/archive_futures_testnet_harness_v0.py`
 - `scripts/ops/run_testnet_private_readonly_connectivity_adapter_v1.py` (Path-C private-readonly lane; plan-only default; no execute authorization)
 - `scripts/ops/review_testnet_private_readonly_connectivity_evidence_v1.py` (Path-C offline evidence review; schema `testnet_path_c_private_readonly_connectivity.v1`)
@@ -189,6 +192,7 @@ Owner Map §2a.1 and Preflight §2a.1 remain aligned on durable primary-evidence
 - `tests/ops/test_bounded_futures_testnet_exchange_impl_contract_v0.py`
 - `tests/ops/test_bounded_futures_testnet_runtime_harness_contract_v0.py`
 - `tests/ops/test_bounded_futures_testnet_adapter_lifecycle_contract_v0.py`
+- `tests/ops/test_bounded_futures_testnet_preflight_packet_contract_v0.py`
 - `tests/ops/test_archive_futures_testnet_harness_v0.py`
 - existing preflight contract §2a/§2a.1 surfaces
 - existing docs truth map / reference / token-policy checks
