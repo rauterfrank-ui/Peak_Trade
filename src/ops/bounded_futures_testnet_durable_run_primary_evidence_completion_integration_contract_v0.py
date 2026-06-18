@@ -2,7 +2,8 @@
 
 Deterministic, offline, explicit-input-only fail-closed integration composing PE-31
 reconciliation-review lifecycle proof, PE-21 primary evidence reconciliation proof,
-PE-22 risk/killswitch/flatten lifecycle proof, PE-16 durable archive identity,
+PE-22 risk/killswitch/flatten lifecycle proof, PE-23 capital-slot ratchet/release lifecycle
+proof, PE-16 durable archive identity,
 SECTION5 Gap 4 output/reporter completion semantics, and SECTION5 Gap 2a.1
 primary-evidence enforcement completion semantics with bounded durable run-root
 artifact/manifest requirements.
@@ -10,6 +11,7 @@ artifact/manifest requirements.
 Static integration only — no run start, evidence write, archive I/O, manifest I/O,
 network, testnet, runtime, credentials, orders, evidence acceptance, operative completion,
 operative reconciliation, operative risk evaluation, KillSwitch trigger, flatten,
+operative capital-slot ratchet/release/reallocation/reserve top-up,
 or authority lift.
 """
 
@@ -58,6 +60,17 @@ from src.ops.bounded_futures_testnet_reconciliation_review_lifecycle_integration
     default_minimal_reconciliation_review_proof,
     evaluate_reconciliation_review_lifecycle_integration,
 )
+from src.ops.bounded_futures_testnet_capital_slot_ratchet_release_lifecycle_integration_contract_v0 import (
+    CONTRACT_VERSION as PE23_CONTRACT_VERSION,
+    CapitalSlotRatchetReleaseLifecycleIntegrationInput,
+    Pe22UpstreamSafetyProof,
+    compute_integration_input_digest as compute_pe23_integration_input_digest,
+    compute_integration_proof_digest as compute_pe23_integration_proof_digest,
+    compute_lifecycle_matrix_digest as compute_pe23_lifecycle_matrix_digest,
+    compute_pe22_upstream_safety_digest,
+    default_minimal_integration_input as default_minimal_pe23_integration_input,
+    evaluate_capital_slot_ratchet_release_lifecycle_integration,
+)
 from src.ops.bounded_futures_testnet_risk_killswitch_lifecycle_integration_contract_v0 import (
     CONTRACT_VERSION as PE22_CONTRACT_VERSION,
     RiskKillswitchLifecycleIntegrationInput,
@@ -83,6 +96,7 @@ PE16_ARCHIVE_OWNER = "src/ops/bounded_futures_testnet_preflight_packet_archive_c
 PE21_INTEGRATION_OWNER = PE21_CONTRACT_VERSION
 PE31_INTEGRATION_OWNER = PE31_CONTRACT_VERSION
 PE22_INTEGRATION_OWNER = PE22_CONTRACT_VERSION
+PE23_INTEGRATION_OWNER = PE23_CONTRACT_VERSION
 GAP4_COMPLETION_OWNER = "tests/ops/test_gap4_output_evidence_paths_contract_v0.py"
 GAP2A1_ENFORCEMENT_OWNER = "tests/ops/test_gap2a1_primary_evidence_enforcement_contract_v0.py"
 PRIMARY_EVIDENCE_RETENTION_CONTRACT_VERSION = "primary_evidence_retention.v0"
@@ -153,6 +167,10 @@ RECONCILIATION_EXECUTED = False
 RISK_EVALUATION_EXECUTED = False
 KILLSWITCH_TRIGGERED = False
 FLATTEN_EXECUTED = False
+CAPITAL_SLOT_RATCHET_EXECUTED = False
+CAPITAL_SLOT_RELEASE_EXECUTED = False
+CAPITAL_REALLOCATION_EXECUTED = False
+RESERVE_TOP_UP_EXECUTED = False
 AUTHORITY_LIFT = False
 PREFLIGHT_REMAINS_BLOCKED = True
 
@@ -186,6 +204,7 @@ _EXPECTED_CONTRACT_VERSIONS: dict[str, str] = {
     "pe21_integration": PE21_CONTRACT_VERSION,
     "pe31_integration": PE31_CONTRACT_VERSION,
     "pe22_integration": PE22_CONTRACT_VERSION,
+    "pe23_integration": PE23_CONTRACT_VERSION,
     "integration": CONTRACT_VERSION,
 }
 
@@ -198,6 +217,7 @@ class ContractVersionsInput:
     pe21_integration: str
     pe31_integration: str
     pe22_integration: str
+    pe23_integration: str
     integration: str
 
 
@@ -266,9 +286,28 @@ class Pe22RiskKillswitchFlattenProofBinding:
 
 
 @dataclass(frozen=True)
+class Pe23CapitalSlotRatchetReleaseProofBinding:
+    integration_owner: str
+    source_revision: str
+    integration_input_digest: str
+    integration_proof_digest: str
+    pe23_integration_pass: bool
+    ratchet_evaluation_proof_digest: str
+    release_eligibility_proof_digest: str
+    reserve_topup_block_proof_digest: str
+    lifecycle_matrix_digest: str
+    traceability_identity: str
+    run_identity_digest: str
+    completion_identity_digest: str
+    capital_slot_identity_digest: str
+    capital_slot_coherence_proven: bool
+
+
+@dataclass(frozen=True)
 class CompletionProofChainBinding:
     completion_referenced_pe31_proof_digest: str
     completion_referenced_pe22_proof_digest: str
+    completion_referenced_pe23_proof_digest: str
     pe31_referenced_pe21_integration_proof_digest: str
     completion_referenced_pe21_integration_proof_digest: str
     shared_pe21_integration_input_digest: str
@@ -358,6 +397,10 @@ class DurableRunPrimaryEvidenceCompletionIntegrationInput:
     pe31_reconciliation_review_integration_proof: Pe31ReconciliationReviewIntegrationProofBinding
     pe22_risk_killswitch_lifecycle_integration_input: RiskKillswitchLifecycleIntegrationInput
     pe22_risk_killswitch_flatten_proof: Pe22RiskKillswitchFlattenProofBinding
+    pe23_capital_slot_ratchet_release_lifecycle_integration_input: (
+        CapitalSlotRatchetReleaseLifecycleIntegrationInput
+    )
+    pe23_capital_slot_ratchet_release_proof: Pe23CapitalSlotRatchetReleaseProofBinding
     completion_proof_chain: CompletionProofChainBinding
     pe16_archive: Pe16ArchiveProofBinding
     manifest_proof: ManifestProofBinding
@@ -433,6 +476,44 @@ def compute_primary_evidence_identity_digest(
     return hashlib.sha256(
         json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
     ).hexdigest()
+
+
+def compute_completion_identity_digest(
+    *,
+    run_root_digest: str,
+    manifest_digest: str,
+    source_revision: str,
+) -> str:
+    payload = {
+        "hash_algorithm": HASH_ALGORITHM,
+        "manifest_digest": manifest_digest,
+        "run_root_digest": run_root_digest,
+        "source_revision": source_revision,
+    }
+    return hashlib.sha256(
+        json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+
+
+def _pe22_upstream_safety_proof_from_completion_pe22(
+    pe22_proof: Pe22RiskKillswitchFlattenProofBinding,
+) -> Pe22UpstreamSafetyProof:
+    draft = Pe22UpstreamSafetyProof(
+        proof_id="pe22-upstream-from-completion-001",
+        proof_digest="",
+        pe22_contract_version=PE22_CONTRACT_VERSION,
+        integration_proof_digest=pe22_proof.integration_proof_digest,
+        pe22_integration_pass=True,
+        lifecycle_matrix_digest=pe22_proof.lifecycle_matrix_digest,
+    )
+    return Pe22UpstreamSafetyProof(
+        proof_id=draft.proof_id,
+        proof_digest=compute_pe22_upstream_safety_digest(draft),
+        pe22_contract_version=draft.pe22_contract_version,
+        integration_proof_digest=draft.integration_proof_digest,
+        pe22_integration_pass=draft.pe22_integration_pass,
+        lifecycle_matrix_digest=draft.lifecycle_matrix_digest,
+    )
 
 
 def _manifest_entries_from_artifacts(
@@ -875,6 +956,141 @@ def _validate_pe22_integration_proof(
     return fail_reasons
 
 
+def _validate_pe23_integration_proof(
+    integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
+    *,
+    pe23_result: dict[str, Any],
+) -> list[str]:
+    fail_reasons: list[str] = []
+    proof = integration_input.pe23_capital_slot_ratchet_release_proof
+    pe23_input = integration_input.pe23_capital_slot_ratchet_release_lifecycle_integration_input
+    durable_root = integration_input.durable_run_root
+    run_identity = integration_input.run_identity
+    manifest_digest = integration_input.manifest_proof.manifest_digest
+    completion_identity = compute_completion_identity_digest(
+        run_root_digest=durable_root.run_root_digest,
+        manifest_digest=manifest_digest,
+        source_revision=integration_input.source_revision,
+    )
+
+    if proof.integration_owner != PE23_INTEGRATION_OWNER:
+        fail_reasons.append(f"pe23_proof: integration_owner must be {PE23_INTEGRATION_OWNER!r}")
+    if proof.source_revision != integration_input.source_revision:
+        fail_reasons.append("pe23_proof: source_revision mismatch")
+    if not proof.integration_input_digest:
+        fail_reasons.append("pe23_proof: integration_input_digest required")
+    elif not _valid_sha256_digest(proof.integration_input_digest):
+        fail_reasons.append(
+            "pe23_proof: integration_input_digest must be 64-char lowercase sha256 hex"
+        )
+    elif proof.integration_input_digest != compute_pe23_integration_input_digest(pe23_input):
+        fail_reasons.append("pe23_proof: integration_input_digest mismatch")
+
+    if not proof.integration_proof_digest:
+        fail_reasons.append("pe23_proof: integration_proof_digest required")
+    elif not _valid_sha256_digest(proof.integration_proof_digest):
+        fail_reasons.append(
+            "pe23_proof: integration_proof_digest must be 64-char lowercase sha256 hex"
+        )
+    else:
+        expected_proof_digest = compute_pe23_integration_proof_digest(
+            pe23_input,
+            pe23_proven=True,
+            release_eligibility_proven=pe23_input.release_eligibility_proof.release_eligible,
+        )
+        if proof.pe23_integration_pass is not True:
+            fail_reasons.append("pe23_proof: pe23_integration_pass must be true")
+        elif proof.integration_proof_digest != expected_proof_digest:
+            fail_reasons.append("pe23_proof: integration_proof_digest mismatch")
+
+    if proof.pe23_integration_pass is not True:
+        fail_reasons.append("pe23_proof: pe23_integration_pass must be true")
+
+    digest_fields = (
+        ("ratchet_evaluation_proof_digest", proof.ratchet_evaluation_proof_digest),
+        ("release_eligibility_proof_digest", proof.release_eligibility_proof_digest),
+        ("reserve_topup_block_proof_digest", proof.reserve_topup_block_proof_digest),
+        ("lifecycle_matrix_digest", proof.lifecycle_matrix_digest),
+        ("traceability_identity", proof.traceability_identity),
+        ("run_identity_digest", proof.run_identity_digest),
+        ("completion_identity_digest", proof.completion_identity_digest),
+        ("capital_slot_identity_digest", proof.capital_slot_identity_digest),
+    )
+    for field_name, value in digest_fields:
+        if not value:
+            fail_reasons.append(f"pe23_proof: {field_name} required")
+        elif not _valid_sha256_digest(value):
+            fail_reasons.append(f"pe23_proof: {field_name} must be 64-char lowercase sha256 hex")
+
+    if proof.ratchet_evaluation_proof_digest != pe23_input.ratchet_evaluation_proof.proof_digest:
+        fail_reasons.append("pe23_proof: ratchet_evaluation_proof_digest mismatch")
+    if proof.release_eligibility_proof_digest != pe23_input.release_eligibility_proof.proof_digest:
+        fail_reasons.append("pe23_proof: release_eligibility_proof_digest mismatch")
+    if proof.reserve_topup_block_proof_digest != pe23_input.reserve_topup_block_proof.proof_digest:
+        fail_reasons.append("pe23_proof: reserve_topup_block_proof_digest mismatch")
+    if proof.lifecycle_matrix_digest != compute_pe23_lifecycle_matrix_digest():
+        fail_reasons.append("pe23_proof: lifecycle_matrix_digest mismatch")
+    if proof.traceability_identity != durable_root.run_root_digest:
+        fail_reasons.append("pe23_proof: traceability_identity mismatch with run_root_digest")
+    if proof.run_identity_digest != run_identity.run_identity_digest:
+        fail_reasons.append("pe23_proof: run_identity_digest mismatch")
+    if proof.completion_identity_digest != completion_identity:
+        fail_reasons.append("pe23_proof: completion_identity_digest mismatch")
+    if proof.capital_slot_identity_digest != pe23_input.slot_identity.slot_digest:
+        fail_reasons.append("pe23_proof: capital_slot_identity_digest mismatch")
+
+    if pe23_input.source_revision != integration_input.source_revision:
+        fail_reasons.append(
+            "pe23_capital_slot_ratchet_release_lifecycle_integration_input: "
+            "source_revision mismatch with completion input"
+        )
+
+    pe23_matrix = pe23_input.lifecycle_matrix_proof
+    if pe23_matrix.lifecycle_state_digest != durable_root.run_root_digest:
+        fail_reasons.append(
+            "pe23_capital_slot_ratchet_release_lifecycle_integration_input: "
+            "lifecycle_state_digest mismatch with run_root_digest"
+        )
+
+    completion_pe22 = integration_input.pe22_risk_killswitch_flatten_proof
+    upstream = pe23_input.pe22_upstream_safety_proof
+    if upstream.integration_proof_digest != completion_pe22.integration_proof_digest:
+        fail_reasons.append(
+            "pe23_capital_slot_ratchet_release_lifecycle_integration_input: "
+            "pe22_upstream integration_proof_digest mismatch with completion pe22_proof"
+        )
+
+    ratchet_proof = pe23_input.ratchet_evaluation_proof
+    reserve_proof = pe23_input.reserve_topup_block_proof
+    release_proof = pe23_input.release_eligibility_proof
+    if proof.capital_slot_coherence_proven is not True:
+        fail_reasons.append("pe23_proof: capital_slot_coherence_proven must be true")
+    elif not (
+        ratchet_proof.proof_pass is True
+        and reserve_proof.proof_pass is True
+        and reserve_proof.reserve_topup_blocked is True
+        and reserve_proof.reserve_topup_attempted is False
+        and pe23_input.capital_slot_config.allow_auto_top_up is False
+    ):
+        fail_reasons.append("pe23_proof: capital slot coherence not proven upstream")
+
+    if not pe23_result.get("integration_pass"):
+        fail_reasons.append(
+            "pe23_capital_slot_ratchet_release_lifecycle_integration_input: PE-23 evaluation failed"
+        )
+        fail_reasons.extend(
+            f"pe23_capital_slot_ratchet_release_lifecycle_integration_input: {reason}"
+            for reason in pe23_result.get("fail_reasons", [])
+        )
+    elif not pe23_result.get("pe12_capital_slot_ratchet_release_static_integration_proven"):
+        fail_reasons.append(
+            "pe23_capital_slot_ratchet_release_lifecycle_integration_input: "
+            "pe12_capital_slot_ratchet_release_static_integration_proven required"
+        )
+
+    return fail_reasons
+
+
 def _validate_completion_proof_chain(
     integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
 ) -> list[str]:
@@ -882,6 +1098,7 @@ def _validate_completion_proof_chain(
     chain = integration_input.completion_proof_chain
     pe31_proof = integration_input.pe31_reconciliation_review_integration_proof
     pe22_proof = integration_input.pe22_risk_killswitch_flatten_proof
+    pe23_proof = integration_input.pe23_capital_slot_ratchet_release_proof
     pe21_proof = integration_input.pe21_proof
     pe31_pe21_proof = integration_input.pe31_reconciliation_review_integration_input.pe21_reconciliation_primary_evidence_integration_proof
     pe21_input_digest = compute_pe21_integration_input_digest(
@@ -891,6 +1108,7 @@ def _validate_completion_proof_chain(
     digest_fields = (
         ("completion_referenced_pe31_proof_digest", chain.completion_referenced_pe31_proof_digest),
         ("completion_referenced_pe22_proof_digest", chain.completion_referenced_pe22_proof_digest),
+        ("completion_referenced_pe23_proof_digest", chain.completion_referenced_pe23_proof_digest),
         (
             "pe31_referenced_pe21_integration_proof_digest",
             chain.pe31_referenced_pe21_integration_proof_digest,
@@ -917,6 +1135,10 @@ def _validate_completion_proof_chain(
     if chain.completion_referenced_pe22_proof_digest != pe22_proof.integration_proof_digest:
         fail_reasons.append(
             "completion_proof_chain: completion_referenced_pe22_proof_digest mismatch"
+        )
+    if chain.completion_referenced_pe23_proof_digest != pe23_proof.integration_proof_digest:
+        fail_reasons.append(
+            "completion_proof_chain: completion_referenced_pe23_proof_digest mismatch"
         )
     if (
         chain.pe31_referenced_pe21_integration_proof_digest
@@ -1130,6 +1352,13 @@ def validate_durable_run_primary_evidence_completion_integration_input(
             "completion input"
         )
 
+    pe23_input = integration_input.pe23_capital_slot_ratchet_release_lifecycle_integration_input
+    if pe23_input.source_revision != integration_input.source_revision:
+        fail_reasons.append(
+            "pe23_capital_slot_ratchet_release_lifecycle_integration_input: source_revision "
+            "mismatch with completion input"
+        )
+
     fail_reasons.extend(_validate_completion_proof_chain(integration_input))
 
     fail_reasons.extend(
@@ -1212,6 +1441,12 @@ def _integration_input_dict(
         "pe22_risk_killswitch_flatten_proof": asdict(
             integration_input.pe22_risk_killswitch_flatten_proof
         ),
+        "pe23_integration_input_digest": compute_pe23_integration_input_digest(
+            integration_input.pe23_capital_slot_ratchet_release_lifecycle_integration_input
+        ),
+        "pe23_capital_slot_ratchet_release_proof": asdict(
+            integration_input.pe23_capital_slot_ratchet_release_proof
+        ),
         "completion_proof_chain": asdict(integration_input.completion_proof_chain),
         "post_write_verification": asdict(integration_input.post_write_verification),
         "primary_evidence_identity": asdict(integration_input.primary_evidence_identity),
@@ -1256,6 +1491,7 @@ def _integration_proof_dict(
         "pe21_reconciliation_primary_evidence_bound": integration_pass,
         "pe31_reconciliation_review_bound": integration_pass,
         "pe22_risk_killswitch_flatten_lifecycle_bound": integration_pass,
+        "pe23_capital_slot_ratchet_release_lifecycle_bound": integration_pass,
         "global_run_completion_readiness": GLOBAL_RUN_COMPLETION_READINESS,
         "integration_contract_version": CONTRACT_VERSION,
         "integration_input_digest": compute_completion_integration_input_digest(integration_input),
@@ -1263,11 +1499,16 @@ def _integration_proof_dict(
         "operative_run_completion_recorded": OPERATIVE_RUN_COMPLETION_RECORDED,
         "pe31_integration_pass": integration_pass,
         "pe22_integration_pass": integration_pass,
+        "pe23_integration_pass": integration_pass,
         "primary_evidence_operationally_accepted": PRIMARY_EVIDENCE_OPERATIONALLY_ACCEPTED,
         "reconciliation_executed": RECONCILIATION_EXECUTED,
         "risk_evaluation_executed": RISK_EVALUATION_EXECUTED,
         "killswitch_triggered": KILLSWITCH_TRIGGERED,
         "flatten_executed": FLATTEN_EXECUTED,
+        "capital_slot_ratchet_executed": CAPITAL_SLOT_RATCHET_EXECUTED,
+        "capital_slot_release_executed": CAPITAL_SLOT_RELEASE_EXECUTED,
+        "capital_reallocation_executed": CAPITAL_REALLOCATION_EXECUTED,
+        "reserve_top_up_executed": RESERVE_TOP_UP_EXECUTED,
         "run_identity_digest": integration_input.run_identity.run_identity_digest,
         "run_root_digest": integration_input.durable_run_root.run_root_digest,
         "run_type": integration_input.run_type,
@@ -1343,6 +1584,16 @@ def evaluate_durable_run_primary_evidence_completion_integration(
         )
     )
 
+    pe23_result = evaluate_capital_slot_ratchet_release_lifecycle_integration(
+        integration_input.pe23_capital_slot_ratchet_release_lifecycle_integration_input
+    )
+    fail_reasons.extend(
+        _validate_pe23_integration_proof(
+            integration_input,
+            pe23_result=pe23_result,
+        )
+    )
+
     if completion_claim_without_full_evidence and integration_input.completion_claimed:
         fail_reasons.append("completion_claimed=true without full evidence chain is insufficient")
 
@@ -1370,10 +1621,14 @@ def evaluate_durable_run_primary_evidence_completion_integration(
         "pe21_integration_pass": pe21_result.get("integration_pass"),
         "pe31_integration_pass": pe31_result.get("integration_pass"),
         "pe22_integration_pass": pe22_result.get("integration_pass"),
+        "pe23_integration_pass": pe23_result.get("integration_pass"),
         "durable_run_primary_evidence_completion_bound": integration_pass,
         "pe21_reconciliation_primary_evidence_bound": bool(pe21_result.get("integration_pass")),
         "pe31_reconciliation_review_bound": bool(pe31_result.get("integration_pass")),
         "pe22_risk_killswitch_flatten_lifecycle_bound": bool(pe22_result.get("integration_pass")),
+        "pe23_capital_slot_ratchet_release_lifecycle_bound": bool(
+            pe23_result.get("integration_pass")
+        ),
         "pe16_archive_identity": integration_input.pe16_archive.archive_identity,
         "gap4_completion_integration_pass": integration_input.gap4_completion.gap4_integration_pass,
         "gap2a1_enforcement_integration_pass": (
@@ -1390,6 +1645,10 @@ def evaluate_durable_run_primary_evidence_completion_integration(
         "risk_evaluation_executed": RISK_EVALUATION_EXECUTED,
         "killswitch_triggered": KILLSWITCH_TRIGGERED,
         "flatten_executed": FLATTEN_EXECUTED,
+        "capital_slot_ratchet_executed": CAPITAL_SLOT_RATCHET_EXECUTED,
+        "capital_slot_release_executed": CAPITAL_SLOT_RELEASE_EXECUTED,
+        "capital_reallocation_executed": CAPITAL_REALLOCATION_EXECUTED,
+        "reserve_top_up_executed": RESERVE_TOP_UP_EXECUTED,
         "archive_read": ARCHIVE_READ,
         "archive_written": ARCHIVE_WRITTEN,
         "manifest_read": MANIFEST_READ,
@@ -1460,16 +1719,48 @@ def default_minimal_pe22_integration_proof(
     )
 
 
+def default_minimal_pe23_integration_proof(
+    pe23_input: CapitalSlotRatchetReleaseLifecycleIntegrationInput,
+    *,
+    traceability_identity: str,
+    run_identity_digest: str,
+    completion_identity_digest: str,
+) -> Pe23CapitalSlotRatchetReleaseProofBinding:
+    release_eligible = pe23_input.release_eligibility_proof.release_eligible
+    return Pe23CapitalSlotRatchetReleaseProofBinding(
+        integration_owner=PE23_INTEGRATION_OWNER,
+        source_revision=pe23_input.source_revision,
+        integration_input_digest=compute_pe23_integration_input_digest(pe23_input),
+        integration_proof_digest=compute_pe23_integration_proof_digest(
+            pe23_input,
+            pe23_proven=True,
+            release_eligibility_proven=release_eligible,
+        ),
+        pe23_integration_pass=True,
+        ratchet_evaluation_proof_digest=pe23_input.ratchet_evaluation_proof.proof_digest,
+        release_eligibility_proof_digest=pe23_input.release_eligibility_proof.proof_digest,
+        reserve_topup_block_proof_digest=pe23_input.reserve_topup_block_proof.proof_digest,
+        lifecycle_matrix_digest=compute_pe23_lifecycle_matrix_digest(),
+        traceability_identity=traceability_identity,
+        run_identity_digest=run_identity_digest,
+        completion_identity_digest=completion_identity_digest,
+        capital_slot_identity_digest=pe23_input.slot_identity.slot_digest,
+        capital_slot_coherence_proven=True,
+    )
+
+
 def default_minimal_completion_proof_chain(
     integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
 ) -> CompletionProofChainBinding:
     pe31_proof = integration_input.pe31_reconciliation_review_integration_proof
     pe22_proof = integration_input.pe22_risk_killswitch_flatten_proof
+    pe23_proof = integration_input.pe23_capital_slot_ratchet_release_proof
     pe21_proof = integration_input.pe21_proof
     pe31_pe21_proof = integration_input.pe31_reconciliation_review_integration_input.pe21_reconciliation_primary_evidence_integration_proof
     return CompletionProofChainBinding(
         completion_referenced_pe31_proof_digest=pe31_proof.integration_proof_digest,
         completion_referenced_pe22_proof_digest=pe22_proof.integration_proof_digest,
+        completion_referenced_pe23_proof_digest=pe23_proof.integration_proof_digest,
         pe31_referenced_pe21_integration_proof_digest=pe31_pe21_proof.integration_proof_digest,
         completion_referenced_pe21_integration_proof_digest=pe21_proof.integration_proof_digest,
         shared_pe21_integration_input_digest=compute_pe21_integration_input_digest(
@@ -1582,6 +1873,33 @@ def default_minimal_completion_integration_input(
         run_identity_digest=run_identity_digest,
     )
 
+    pe23_base = default_minimal_pe23_integration_input(
+        source_revision=source_revision,
+        lifecycle_state_digest=run_root_digest,
+    )
+    pe23_integration_input = replace(
+        pe23_base,
+        pe22_upstream_safety_proof=_pe22_upstream_safety_proof_from_completion_pe22(pe22_proof),
+        lifecycle_matrix_proof=replace(
+            pe23_base.lifecycle_matrix_proof,
+            lifecycle_state_digest=run_root_digest,
+        ),
+    )
+    pe23_result = evaluate_capital_slot_ratchet_release_lifecycle_integration(
+        pe23_integration_input
+    )
+    completion_identity_digest = compute_completion_identity_digest(
+        run_root_digest=run_root_digest,
+        manifest_digest=manifest_digest,
+        source_revision=source_revision,
+    )
+    pe23_proof = default_minimal_pe23_integration_proof(
+        pe23_integration_input,
+        traceability_identity=run_root_digest,
+        run_identity_digest=run_identity_digest,
+        completion_identity_digest=completion_identity_digest,
+    )
+
     archive_digest = hashlib.sha256(
         json.dumps(
             {
@@ -1633,9 +1951,12 @@ def default_minimal_completion_integration_input(
         pe31_reconciliation_review_integration_proof=pe31_proof,
         pe22_risk_killswitch_lifecycle_integration_input=pe22_integration_input,
         pe22_risk_killswitch_flatten_proof=pe22_proof,
+        pe23_capital_slot_ratchet_release_lifecycle_integration_input=pe23_integration_input,
+        pe23_capital_slot_ratchet_release_proof=pe23_proof,
         completion_proof_chain=CompletionProofChainBinding(
             completion_referenced_pe31_proof_digest=pe31_proof.integration_proof_digest,
             completion_referenced_pe22_proof_digest=pe22_result["integration_proof_digest"],
+            completion_referenced_pe23_proof_digest=pe23_result["integration_proof_digest"],
             pe31_referenced_pe21_integration_proof_digest=(
                 pe31_integration_input.pe21_reconciliation_primary_evidence_integration_proof.integration_proof_digest
             ),
@@ -1696,6 +2017,7 @@ def default_minimal_completion_integration_input(
             pe21_integration=PE21_CONTRACT_VERSION,
             pe31_integration=PE31_CONTRACT_VERSION,
             pe22_integration=PE22_CONTRACT_VERSION,
+            pe23_integration=PE23_CONTRACT_VERSION,
             integration=CONTRACT_VERSION,
         ),
     )
