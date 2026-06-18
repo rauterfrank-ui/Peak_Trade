@@ -1,7 +1,7 @@
 """Static + offline bounded Futures Testnet durable run primary evidence completion (v0).
 
 Docs/tests-only Class-4 scoped exception. No runtime, network, credentials, or Testnet start.
-PE-31 + PE-21 + PE-22 + PE-16 + Gap-4 + Gap-2a.1 durable run-root completion static integration only.
+PE-31 + PE-21 + PE-22 + PE-23 + PE-16 + Gap-4 + Gap-2a.1 durable run-root completion static integration only.
 """
 
 from __future__ import annotations
@@ -16,6 +16,10 @@ from scripts.ops.primary_evidence_retention_v0 import (
     MANIFEST_FILENAME,
 )
 from src.ops.bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0 import (
+    CAPITAL_REALLOCATION_EXECUTED,
+    CAPITAL_SLOT_RATCHET_EXECUTED,
+    CAPITAL_SLOT_RELEASE_EXECUTED,
+    RESERVE_TOP_UP_EXECUTED,
     ARCHIVE_READ,
     ARCHIVE_WRITTEN,
     AUTHORITY_LIFT,
@@ -42,6 +46,7 @@ from src.ops.bounded_futures_testnet_durable_run_primary_evidence_completion_int
     FLATTEN_EXECUTED,
     KILLSWITCH_TRIGGERED,
     PE22_INTEGRATION_OWNER,
+    PE23_INTEGRATION_OWNER,
     RISK_EVALUATION_EXECUTED,
     PROOF_LIFECYCLE_CURRENT,
     PROOF_LIFECYCLE_DUPLICATE,
@@ -55,9 +60,11 @@ from src.ops.bounded_futures_testnet_durable_run_primary_evidence_completion_int
     DurableRunPrimaryEvidenceCompletionIntegrationInput,
     compute_completion_integration_input_digest,
     compute_manifest_digest,
+    compute_completion_identity_digest,
     compute_run_identity_digest,
     default_minimal_completion_integration_input,
     default_minimal_pe22_integration_proof,
+    default_minimal_pe23_integration_proof,
     default_minimal_pe31_integration_proof,
     default_minimal_safety_snapshot,
     evaluate_durable_run_primary_evidence_completion_integration,
@@ -76,6 +83,12 @@ from src.ops.bounded_futures_testnet_reconciliation_review_lifecycle_integration
     CONTRACT_VERSION as PE31_CONTRACT_VERSION,
     default_minimal_integration_input as default_minimal_pe31_integration_input,
     evaluate_reconciliation_review_lifecycle_integration,
+)
+from src.ops.bounded_futures_testnet_capital_slot_ratchet_release_lifecycle_integration_contract_v0 import (
+    CONTRACT_VERSION as PE23_CONTRACT_VERSION,
+    CapitalSlotReleaseReason,
+    default_minimal_integration_input as default_minimal_pe23_integration_input,
+    evaluate_capital_slot_ratchet_release_lifecycle_integration,
 )
 from src.ops.bounded_futures_testnet_risk_killswitch_lifecycle_integration_contract_v0 import (
     CONTRACT_VERSION as PE22_CONTRACT_VERSION,
@@ -126,6 +139,18 @@ PE22_TEST_OWNER = (
     / "ops"
     / "test_bounded_futures_testnet_risk_killswitch_lifecycle_integration_contract_v0.py"
 )
+PE23_MODULE = (
+    REPO_ROOT
+    / "src"
+    / "ops"
+    / "bounded_futures_testnet_capital_slot_ratchet_release_lifecycle_integration_contract_v0.py"
+)
+PE23_TEST_OWNER = (
+    REPO_ROOT
+    / "tests"
+    / "ops"
+    / "test_bounded_futures_testnet_capital_slot_ratchet_release_lifecycle_integration_contract_v0.py"
+)
 PE21_TEST_OWNER = (
     REPO_ROOT
     / "tests"
@@ -170,6 +195,10 @@ def test_canonical_owners_referenced_not_duplicated() -> None:
         "bounded_futures_testnet_risk_killswitch_lifecycle_integration_contract_v0"
         in integration_text
     )
+    assert (
+        "bounded_futures_testnet_capital_slot_ratchet_release_lifecycle_integration_contract_v0"
+        in integration_text
+    )
     assert "bounded_futures_testnet_preflight_packet_archive_contract_v0" in integration_text
     assert "scripts.ops.primary_evidence_retention_v0" in integration_text
     assert PE21_PACKAGE_MARKER in PE21_MODULE.read_text(encoding="utf-8")
@@ -180,6 +209,8 @@ def test_canonical_owners_referenced_not_duplicated() -> None:
     assert PE31_TEST_OWNER.exists()
     assert PE22_MODULE.exists()
     assert PE22_TEST_OWNER.exists()
+    assert PE23_MODULE.exists()
+    assert PE23_TEST_OWNER.exists()
     assert PE21_TEST_OWNER.exists()
     assert PRIMARY_EVIDENCE_MODULE.exists()
     assert GAP4_TEST_OWNER.exists()
@@ -189,6 +220,7 @@ def test_canonical_owners_referenced_not_duplicated() -> None:
     assert GAP2A1_ENFORCEMENT_OWNER == str(GAP2A1_TEST_OWNER.relative_to(REPO_ROOT))
     assert PE31_INTEGRATION_OWNER == PE31_CONTRACT_VERSION
     assert PE22_INTEGRATION_OWNER == PE22_CONTRACT_VERSION
+    assert PE23_INTEGRATION_OWNER == PE23_CONTRACT_VERSION
 
 
 def test_global_safety_flags_remain_blocked() -> None:
@@ -199,6 +231,10 @@ def test_global_safety_flags_remain_blocked() -> None:
     assert RISK_EVALUATION_EXECUTED is False
     assert KILLSWITCH_TRIGGERED is False
     assert FLATTEN_EXECUTED is False
+    assert CAPITAL_SLOT_RATCHET_EXECUTED is False
+    assert CAPITAL_SLOT_RELEASE_EXECUTED is False
+    assert CAPITAL_REALLOCATION_EXECUTED is False
+    assert RESERVE_TOP_UP_EXECUTED is False
     assert RUN_STARTED is False
     assert ARCHIVE_READ is False
     assert ARCHIVE_WRITTEN is False
@@ -234,10 +270,12 @@ def test_coherent_static_completion_happy_path_passes() -> None:
     assert result["pe21_integration_pass"] is True
     assert result["pe31_integration_pass"] is True
     assert result["pe22_integration_pass"] is True
+    assert result["pe23_integration_pass"] is True
     assert result["durable_run_primary_evidence_completion_bound"] is True
     assert result["pe21_reconciliation_primary_evidence_bound"] is True
     assert result["pe31_reconciliation_review_bound"] is True
     assert result["pe22_risk_killswitch_flatten_lifecycle_bound"] is True
+    assert result["pe23_capital_slot_ratchet_release_lifecycle_bound"] is True
     assert result["fail_reasons"] == []
 
 
@@ -252,6 +290,10 @@ def test_valid_static_proof_remains_non_authorizing() -> None:
     assert result["risk_evaluation_executed"] is False
     assert result["killswitch_triggered"] is False
     assert result["flatten_executed"] is False
+    assert result["capital_slot_ratchet_executed"] is False
+    assert result["capital_slot_release_executed"] is False
+    assert result["capital_reallocation_executed"] is False
+    assert result["reserve_top_up_executed"] is False
     assert result["archive_read"] is False
     assert result["archive_written"] is False
     assert result["manifest_read"] is False
@@ -939,6 +981,387 @@ def test_pe22_missing_required_field_fails() -> None:
     assert any("risk_evaluation_proof_digest required" in r for r in result["fail_reasons"])
 
 
+def test_pe23_alone_does_not_authorize_completion() -> None:
+    pe23_input = default_minimal_pe23_integration_input()
+    pe23_result = evaluate_capital_slot_ratchet_release_lifecycle_integration(pe23_input)
+    assert pe23_result["integration_pass"] is True
+    assert pe23_result["operative_ratchet_applied"] is False
+    assert pe23_result["operative_slot_release_executed"] is False
+    assert pe23_result["operative_capital_reallocation_executed"] is False
+    assert pe23_result["operative_reserve_movement_executed"] is False
+    assert pe23_result["authority_lift"] is False
+
+
+def test_missing_pe23_proof_binding_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe23_capital_slot_ratchet_release_proof=replace(
+            integration_input.pe23_capital_slot_ratchet_release_proof,
+            integration_proof_digest="",
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe23_proof: integration_proof_digest required" in r for r in result["fail_reasons"])
+
+
+def test_pe23_source_revision_mismatch_fails() -> None:
+    integration_input = default_minimal_completion_integration_input(
+        source_revision=VALID_COMMIT_SHA
+    )
+    bad_pe23_input = replace(
+        integration_input.pe23_capital_slot_ratchet_release_lifecycle_integration_input,
+        source_revision="0123456789abcdef0123456789abcdef0123456789",
+    )
+    bad = replace(
+        integration_input,
+        pe23_capital_slot_ratchet_release_lifecycle_integration_input=bad_pe23_input,
+        pe23_capital_slot_ratchet_release_proof=default_minimal_pe23_integration_proof(
+            bad_pe23_input,
+            traceability_identity=integration_input.durable_run_root.run_root_digest,
+            run_identity_digest=integration_input.run_identity.run_identity_digest,
+            completion_identity_digest=compute_completion_identity_digest(
+                run_root_digest=integration_input.durable_run_root.run_root_digest,
+                manifest_digest=integration_input.manifest_proof.manifest_digest,
+                source_revision=integration_input.source_revision,
+            ),
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe23_proof: source_revision mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe23_wrong_owner_identity_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe23_capital_slot_ratchet_release_proof=replace(
+            integration_input.pe23_capital_slot_ratchet_release_proof,
+            integration_owner="wrong.owner.v0",
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("integration_owner must be" in r for r in result["fail_reasons"])
+
+
+def test_pe23_proof_digest_mismatch_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe23_capital_slot_ratchet_release_proof=replace(
+            integration_input.pe23_capital_slot_ratchet_release_proof,
+            integration_proof_digest="0" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe23_proof: integration_proof_digest mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe23_traceability_identity_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe23_capital_slot_ratchet_release_proof=replace(
+            integration_input.pe23_capital_slot_ratchet_release_proof,
+            traceability_identity="0" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("traceability_identity mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe23_run_root_identity_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad_pe23_input = replace(
+        integration_input.pe23_capital_slot_ratchet_release_lifecycle_integration_input,
+        lifecycle_matrix_proof=replace(
+            integration_input.pe23_capital_slot_ratchet_release_lifecycle_integration_input.lifecycle_matrix_proof,
+            lifecycle_state_digest="0" * 64,
+        ),
+    )
+    bad = replace(
+        integration_input,
+        pe23_capital_slot_ratchet_release_lifecycle_integration_input=bad_pe23_input,
+        pe23_capital_slot_ratchet_release_proof=default_minimal_pe23_integration_proof(
+            bad_pe23_input,
+            traceability_identity=integration_input.durable_run_root.run_root_digest,
+            run_identity_digest=integration_input.run_identity.run_identity_digest,
+            completion_identity_digest=compute_completion_identity_digest(
+                run_root_digest=integration_input.durable_run_root.run_root_digest,
+                manifest_digest=integration_input.manifest_proof.manifest_digest,
+                source_revision=integration_input.source_revision,
+            ),
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("lifecycle_state_digest mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe23_run_identity_digest_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe23_capital_slot_ratchet_release_proof=replace(
+            integration_input.pe23_capital_slot_ratchet_release_proof,
+            run_identity_digest="0" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("run_identity_digest mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe23_completion_identity_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe23_capital_slot_ratchet_release_proof=replace(
+            integration_input.pe23_capital_slot_ratchet_release_proof,
+            completion_identity_digest="0" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("completion_identity_digest mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe23_capital_slot_identity_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe23_capital_slot_ratchet_release_proof=replace(
+            integration_input.pe23_capital_slot_ratchet_release_proof,
+            capital_slot_identity_digest="0" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("capital_slot_identity_digest mismatch" in r for r in result["fail_reasons"])
+
+
+def test_completion_proof_chain_pe23_digest_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        completion_proof_chain=replace(
+            integration_input.completion_proof_chain,
+            completion_referenced_pe23_proof_digest="0" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "completion_referenced_pe23_proof_digest mismatch" in r for r in result["fail_reasons"]
+    )
+
+
+def test_pe23_ratchet_proof_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad_pe23_input = replace(
+        integration_input.pe23_capital_slot_ratchet_release_lifecycle_integration_input,
+        ratchet_evaluation_proof=replace(
+            integration_input.pe23_capital_slot_ratchet_release_lifecycle_integration_input.ratchet_evaluation_proof,
+            proof_digest="0" * 64,
+        ),
+    )
+    bad = replace(
+        integration_input,
+        pe23_capital_slot_ratchet_release_lifecycle_integration_input=bad_pe23_input,
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("ratchet_evaluation_proof_digest mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe23_release_proof_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad_pe23_input = replace(
+        integration_input.pe23_capital_slot_ratchet_release_lifecycle_integration_input,
+        release_eligibility_proof=replace(
+            integration_input.pe23_capital_slot_ratchet_release_lifecycle_integration_input.release_eligibility_proof,
+            proof_digest="0" * 64,
+        ),
+    )
+    bad = replace(
+        integration_input,
+        pe23_capital_slot_ratchet_release_lifecycle_integration_input=bad_pe23_input,
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("release_eligibility_proof_digest mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe23_contradictory_ratchet_release_state_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    pe23_input = integration_input.pe23_capital_slot_ratchet_release_lifecycle_integration_input
+    bad_pe23_input = replace(
+        pe23_input,
+        release_eligibility_proof=replace(
+            pe23_input.release_eligibility_proof,
+            release_eligible=True,
+            released=True,
+            release_reason_code=CapitalSlotReleaseReason.INACTIVITY.value,
+        ),
+        activity_metrics=replace(
+            pe23_input.activity_metrics,
+            realized_volatility=pe23_input.capital_slot_config.min_realized_volatility,
+            atr_or_range=pe23_input.capital_slot_config.min_atr_or_range,
+            time_without_cashflow_step=0,
+        ),
+    )
+    bad = replace(
+        integration_input,
+        pe23_capital_slot_ratchet_release_lifecycle_integration_input=bad_pe23_input,
+        pe23_capital_slot_ratchet_release_proof=default_minimal_pe23_integration_proof(
+            bad_pe23_input,
+            traceability_identity=integration_input.durable_run_root.run_root_digest,
+            run_identity_digest=integration_input.run_identity.run_identity_digest,
+            completion_identity_digest=compute_completion_identity_digest(
+                run_root_digest=integration_input.durable_run_root.run_root_digest,
+                manifest_digest=integration_input.manifest_proof.manifest_digest,
+                source_revision=integration_input.source_revision,
+            ),
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "inactivity release without breach" in r or "PE-23 evaluation failed" in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_pe23_reserve_topup_attempt_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    pe23_input = integration_input.pe23_capital_slot_ratchet_release_lifecycle_integration_input
+    bad_pe23_input = replace(
+        pe23_input,
+        reserve_topup_block_proof=replace(
+            pe23_input.reserve_topup_block_proof,
+            reserve_topup_attempted=True,
+        ),
+    )
+    bad = replace(
+        integration_input,
+        pe23_capital_slot_ratchet_release_lifecycle_integration_input=bad_pe23_input,
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "reserve_topup_attempted must be false" in r or "PE-23 evaluation failed" in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_pe23_slot_basis_not_following_settled_equity_downward_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    pe23_input = integration_input.pe23_capital_slot_ratchet_release_lifecycle_integration_input
+    bad_equity = replace(
+        pe23_input.equity_basis,
+        prior_valid_settled_basis=400.0,
+        new_settled_realized_equity=300.0,
+        current_slot_basis=400.0,
+    )
+    bad_pe23_input = replace(pe23_input, equity_basis=bad_equity)
+    bad = replace(
+        integration_input,
+        pe23_capital_slot_ratchet_release_lifecycle_integration_input=bad_pe23_input,
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "slot basis must follow realized loss downward" in r
+        or "unallowable slot basis increase" in r
+        or "PE-23 evaluation failed" in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_pe23_aggressive_ratchet_semantics_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    pe23_input = integration_input.pe23_capital_slot_ratchet_release_lifecycle_integration_input
+    bad_pe23_input = replace(
+        pe23_input,
+        ratchet_evaluation_proof=replace(
+            pe23_input.ratchet_evaluation_proof,
+            can_ratchet=True,
+            new_active_slot_base=pe23_input.equity_basis.new_settled_realized_equity + 100.0,
+        ),
+    )
+    bad = replace(
+        integration_input,
+        pe23_capital_slot_ratchet_release_lifecycle_integration_input=bad_pe23_input,
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "unallowable slot basis increase" in r or "PE-23 evaluation failed" in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_pe23_incoherent_opportunity_cost_release_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    pe23_input = integration_input.pe23_capital_slot_ratchet_release_lifecycle_integration_input
+    bad_pe23_input = replace(
+        pe23_input,
+        release_eligibility_proof=replace(
+            pe23_input.release_eligibility_proof,
+            release_eligible=True,
+            released=True,
+            release_reason_code=CapitalSlotReleaseReason.OPPORTUNITY_COST.value,
+        ),
+        activity_metrics=replace(
+            pe23_input.activity_metrics,
+            opportunity_score=pe23_input.capital_slot_config.min_opportunity_score,
+        ),
+    )
+    bad = replace(
+        integration_input,
+        pe23_capital_slot_ratchet_release_lifecycle_integration_input=bad_pe23_input,
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "opportunity release without score breach" in r or "PE-23 evaluation failed" in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_pe23_pe23_integration_pass_false_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe23_capital_slot_ratchet_release_proof=replace(
+            integration_input.pe23_capital_slot_ratchet_release_proof,
+            pe23_integration_pass=False,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe23_integration_pass must be true" in r for r in result["fail_reasons"])
+
+
+def test_pe23_missing_required_field_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe23_capital_slot_ratchet_release_proof=replace(
+            integration_input.pe23_capital_slot_ratchet_release_proof,
+            ratchet_evaluation_proof_digest="",
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("ratchet_evaluation_proof_digest required" in r for r in result["fail_reasons"])
+
+
 def test_gap4_completion_mismatch_fails() -> None:
     integration_input = default_minimal_completion_integration_input()
     bad = replace(
@@ -1075,6 +1498,7 @@ def test_contract_version_constants() -> None:
     assert COMPLETION_INTEGRATION_OWNER == CONTRACT_VERSION
     assert PE21_INTEGRATION_OWNER.endswith(".v0")
     assert PE22_INTEGRATION_OWNER == PE22_CONTRACT_VERSION
+    assert PE23_INTEGRATION_OWNER == PE23_CONTRACT_VERSION
     assert SUPPORTED_RUN_TYPE == "bounded_futures_testnet"
 
 
