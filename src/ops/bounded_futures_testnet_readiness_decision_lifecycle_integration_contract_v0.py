@@ -1,12 +1,13 @@
-"""Bounded Futures Testnet readiness-decision lifecycle integration (v0, PE-32).
+"""Bounded Futures Testnet readiness-decision lifecycle integration (v0, PE-32/PE-40).
 
 Deterministic, offline, explicit-input-only contract binding a canonically verified
 PE-26 preflight execution readiness assembly, PE-27 zero-order lifecycle integration,
 PE-28 private-readonly lifecycle integration, PE-29 validate-only lifecycle integration,
 PE-30 tiny-order lifecycle integration, PE-31 reconciliation-review lifecycle integration,
-PE-25 operator-closure lifecycle integration, PE-12 readiness_decision phase identity,
-and an explicit injected blocker-register snapshot to a single non-authorizing
-readiness-decision lifecycle eligibility assessment.
+PE-39 admission-presentation→operator-closure bridge, PE-25 operator-closure lifecycle
+integration, PE-12 readiness_decision phase identity, and an explicit injected
+blocker-register snapshot to a single non-authorizing readiness-decision lifecycle
+eligibility assessment.
 
 Static integration only — no network, testnet, runtime, credentials, orders, adapter calls,
 exchange queries, operative readiness decisions, blocker lifts, or authority lift.
@@ -18,7 +19,12 @@ import hashlib
 import json
 import re
 from dataclasses import asdict, dataclass
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from src.ops.bounded_futures_testnet_admission_presentation_operator_closure_lifecycle_bridge_contract_v0 import (
+        AdmissionPresentationOperatorClosureLifecycleBridgeInput,
+    )
 
 from src.ops.bounded_futures_testnet_adapter_lifecycle_contract_v0 import (
     LIFECYCLE_PHASE_DESCRIPTORS,
@@ -95,6 +101,61 @@ PE29_INTEGRATION_OWNER = PE29_CONTRACT_VERSION
 PE30_INTEGRATION_OWNER = PE30_CONTRACT_VERSION
 PE31_INTEGRATION_OWNER = PE31_CONTRACT_VERSION
 PE25_INTEGRATION_OWNER = PE25_CONTRACT_VERSION
+PE39_BRIDGE_OWNER = (
+    "bounded_futures_testnet_admission_presentation_operator_closure_lifecycle_bridge.v0"
+)
+PE34_BOUNDARY_OWNER = "bounded_futures_testnet_operator_review_handoff_boundary.v0"
+PE35_BOUNDARY_OWNER = "bounded_futures_testnet_handoff_staleness_revocation_recovery_boundary.v0"
+PE36_BOUNDARY_OWNER = "bounded_futures_testnet_operator_review_admission_presentation_boundary.v0"
+PE37_BOUNDARY_OWNER = (
+    "bounded_futures_testnet_operator_review_chain_durable_evidence_traceability_boundary.v0"
+)
+ADMISSION_LIFECYCLE_OWNER = (
+    "bounded_futures_testnet_operator_review_admission_presentation_lifecycle_integration.v0"
+)
+PE34_CONTRACT_VERSION = PE34_BOUNDARY_OWNER
+PE35_CONTRACT_VERSION = PE35_BOUNDARY_OWNER
+PE36_CONTRACT_VERSION = PE36_BOUNDARY_OWNER
+PE37_CONTRACT_VERSION = PE37_BOUNDARY_OWNER
+ADMISSION_LIFECYCLE_CONTRACT_VERSION = ADMISSION_LIFECYCLE_OWNER
+PE39_CONTRACT_VERSION = PE39_BRIDGE_OWNER
+
+_RECURSIVE_DEFAULT_BUILD = False
+_COHERENT_DEFAULT_CACHE: ReadinessDecisionLifecycleIntegrationInput | None = None
+_BOOTSTRAP_PLACEHOLDER_DIGEST = "a" * 64
+
+READINESS_DECISION_PROOF_CHAIN_SLOT_ORDER = (
+    "pe39_bridge_proof_digest",
+    "pe39_admission_integration_proof_digest",
+    "pe39_pe34_handoff_digest",
+    "pe39_pe36_presentation_projection_digest",
+    "pe39_pe37_traceability_identity",
+    "pe25_closure_proof_digest",
+    "pe25_closure_input_digest",
+    "closure_referenced_pe39_bridge_proof_digest",
+    "readiness_decision_referenced_pe25_closure_digest",
+    "shared_pe35_boundary_result_digest",
+    "shared_pe37_traceability_identity",
+)
+
+_FORBIDDEN_EXTRA_FIELD_FRAGMENTS = (
+    "secret",
+    "credential",
+    "api_key",
+    "password",
+    "token",
+    "command",
+    "action",
+    "authority",
+    "decision",
+    "closure",
+    "execution_authorized",
+    "live_authorized",
+    "pilot_start",
+    "promotion",
+    "network_allowed",
+    "orders_allowed",
+)
 
 GLOBAL_READINESS_DECISION_LIFECYCLE_READINESS = False
 CONTRACT_IMPLEMENTATION_ONLY = True
@@ -121,6 +182,12 @@ _EXPECTED_CONTRACT_VERSIONS: dict[str, str] = {
     "pe29_validate_only": PE29_CONTRACT_VERSION,
     "pe30_tiny_order": PE30_CONTRACT_VERSION,
     "pe31_reconciliation_review": PE31_CONTRACT_VERSION,
+    "pe34_handoff": PE34_CONTRACT_VERSION,
+    "pe35_staleness": PE35_CONTRACT_VERSION,
+    "pe36_admission_presentation": PE36_CONTRACT_VERSION,
+    "pe37_traceability": PE37_CONTRACT_VERSION,
+    "admission_presentation_lifecycle": ADMISSION_LIFECYCLE_CONTRACT_VERSION,
+    "pe39_bridge": PE39_CONTRACT_VERSION,
     "pe25_operator_closure": PE25_CONTRACT_VERSION,
     "integration": CONTRACT_VERSION,
 }
@@ -168,6 +235,12 @@ class ContractVersionsInput:
     pe29_validate_only: str
     pe30_tiny_order: str
     pe31_reconciliation_review: str
+    pe34_handoff: str
+    pe35_staleness: str
+    pe36_admission_presentation: str
+    pe37_traceability: str
+    admission_presentation_lifecycle: str
+    pe39_bridge: str
     pe25_operator_closure: str
     integration: str
 
@@ -198,12 +271,49 @@ class Pe31ReconciliationReviewIntegrationProofBinding:
 
 
 @dataclass(frozen=True)
+class Pe39BridgeIntegrationProofBinding:
+    bridge_owner: str
+    source_revision: str
+    bridge_input_digest: str
+    bridge_proof_digest: str
+    admission_integration_proof_digest: str
+    pe34_handoff_digest: str
+    pe35_boundary_result_digest: str
+    pe36_presentation_projection_digest: str
+    pe37_traceability_identity: str
+    pe39_admission_presentation_operator_closure_bridge_bound: bool
+    admission_presentation_lifecycle_bound: bool
+    pe34_handoff_bound: bool
+    pe35_staleness_revocation_recovery_bound: bool
+    pe36_admission_presentation_bound: bool
+    pe37_durable_traceability_bound: bool
+    pe25_operator_closure_bound: bool
+
+
+@dataclass(frozen=True)
+class ReadinessDecisionProofChainBinding:
+    pe39_bridge_proof_digest: str
+    pe39_admission_integration_proof_digest: str
+    pe39_pe34_handoff_digest: str
+    pe39_pe36_presentation_projection_digest: str
+    pe39_pe37_traceability_identity: str
+    pe25_closure_proof_digest: str
+    pe25_closure_input_digest: str
+    closure_referenced_pe39_bridge_proof_digest: str
+    readiness_decision_referenced_pe25_closure_digest: str
+    shared_pe35_boundary_result_digest: str
+    shared_pe37_traceability_identity: str
+
+
+@dataclass(frozen=True)
 class Pe25OperatorClosureIntegrationProofBinding:
     integration_owner: str
     closure_input_digest: str
     closure_result_digest: str
+    pe39_bridge_proof_digest: str
     pe25_integration_pass: bool
     operator_closure_static_complete: bool
+    pe25_operator_closure_bound: bool
 
 
 @dataclass(frozen=True)
@@ -237,6 +347,8 @@ class ReadinessDecisionProofBinding:
     static_eligibility_proven: bool
     manifest_verify_rc: int
     readiness_decision_proof_digest: str
+    pe25_closure_result_digest: str
+    traceability_identity: str
     request_count: int
     exchange_request_count: int
     orders_created: int
@@ -306,6 +418,9 @@ class ReadinessDecisionLifecycleIntegrationInput:
     declared_lifecycle_state_after: LifecycleStateBinding
     pe31_reconciliation_review_integration_input: ReconciliationReviewLifecycleIntegrationInput
     pe31_reconciliation_review_integration_proof: Pe31ReconciliationReviewIntegrationProofBinding
+    pe39_bridge_integration_input: AdmissionPresentationOperatorClosureLifecycleBridgeInput
+    pe39_bridge_integration_proof: Pe39BridgeIntegrationProofBinding
+    readiness_decision_proof_chain: ReadinessDecisionProofChainBinding
     pe25_operator_closure_integration_input: OperatorClosureLifecycleIntegrationInput
     pe25_operator_closure_integration_proof: Pe25OperatorClosureIntegrationProofBinding
     blocker_register_snapshot: BlockerRegisterSnapshotBinding
@@ -315,6 +430,43 @@ class ReadinessDecisionLifecycleIntegrationInput:
     futures_only: bool = True
     environment: str = ENVIRONMENT_TESTNET
     non_authorizing: bool = True
+
+
+def _lazy_pe39_bridge() -> Any:
+    from src.ops.bounded_futures_testnet_admission_presentation_operator_closure_lifecycle_bridge_contract_v0 import (
+        compute_bridge_input_digest,
+        evaluate_admission_presentation_operator_closure_lifecycle_bridge,
+        validate_admission_presentation_operator_closure_lifecycle_bridge_input,
+    )
+
+    return (
+        compute_bridge_input_digest,
+        evaluate_admission_presentation_operator_closure_lifecycle_bridge,
+        validate_admission_presentation_operator_closure_lifecycle_bridge_input,
+    )
+
+
+def compute_pe39_bridge_input_digest(
+    bridge_input: AdmissionPresentationOperatorClosureLifecycleBridgeInput,
+) -> str:
+    if getattr(bridge_input, "bridge_id", "") == "bootstrap-pe39-bridge-stub":
+        return _BOOTSTRAP_PLACEHOLDER_DIGEST
+    compute_bridge_input_digest, _, _ = _lazy_pe39_bridge()
+    return compute_bridge_input_digest(bridge_input)
+
+
+def evaluate_pe39_admission_presentation_operator_closure_lifecycle_bridge(
+    bridge_input: AdmissionPresentationOperatorClosureLifecycleBridgeInput,
+) -> dict[str, Any]:
+    _, evaluate_bridge, _ = _lazy_pe39_bridge()
+    return evaluate_bridge(bridge_input)
+
+
+def validate_pe39_admission_presentation_operator_closure_lifecycle_bridge_input(
+    bridge_input: AdmissionPresentationOperatorClosureLifecycleBridgeInput,
+) -> list[str]:
+    _, _, validate_bridge = _lazy_pe39_bridge()
+    return validate_bridge(bridge_input)
 
 
 def _sorted_unique(items: list[str]) -> list[str]:
@@ -402,6 +554,17 @@ def compute_blocker_register_snapshot_digest(binding: BlockerRegisterSnapshotBin
     ).hexdigest()
 
 
+def _reject_forbidden_extra_fields(extra_fields: dict[str, Any]) -> list[str]:
+    fail_reasons: list[str] = []
+    for field_name in extra_fields:
+        lowered = field_name.lower()
+        if any(fragment in lowered for fragment in _FORBIDDEN_EXTRA_FIELD_FRAGMENTS):
+            fail_reasons.append(f"forbidden extra field: {field_name}")
+        else:
+            fail_reasons.append(f"unknown extra field: {field_name}")
+    return fail_reasons
+
+
 def _integration_input_dict(
     integration_input: ReadinessDecisionLifecycleIntegrationInput,
 ) -> dict[str, Any]:
@@ -426,6 +589,11 @@ def _integration_input_dict(
         "pe31_reconciliation_review_integration_proof": asdict(
             integration_input.pe31_reconciliation_review_integration_proof
         ),
+        "pe39_bridge_integration_input_digest": compute_pe39_bridge_input_digest(
+            integration_input.pe39_bridge_integration_input
+        ),
+        "pe39_bridge_integration_proof": asdict(integration_input.pe39_bridge_integration_proof),
+        "readiness_decision_proof_chain": asdict(integration_input.readiness_decision_proof_chain),
         "pe25_operator_closure_integration_input_digest": compute_pe25_closure_input_digest(
             integration_input.pe25_operator_closure_integration_input
         ),
@@ -478,6 +646,7 @@ def _readiness_decision_proof_dict(binding: ReadinessDecisionProofBinding) -> di
         "orders_amended": binding.orders_amended,
         "orders_cancelled": binding.orders_cancelled,
         "orders_created": binding.orders_created,
+        "pe25_closure_result_digest": binding.pe25_closure_result_digest,
         "positions_changed": binding.positions_changed,
         "readiness_decision_mode": binding.readiness_decision_mode,
         "readiness_decision_owner": binding.readiness_decision_owner,
@@ -489,6 +658,7 @@ def _readiness_decision_proof_dict(binding: ReadinessDecisionProofBinding) -> di
         "static_eligibility_proven": binding.static_eligibility_proven,
         "subprocess_started": binding.subprocess_started,
         "testnet_started": binding.testnet_started,
+        "traceability_identity": binding.traceability_identity,
     }
 
 
@@ -522,6 +692,7 @@ def _integration_result_dict(
         "assigned_lifecycle_phase": matrix.assigned_lifecycle_phase,
         "lifecycle_matrix_digest": matrix.lifecycle_matrix_digest,
         "pe31_integration_proof_digest": pe31_proof.integration_proof_digest,
+        "pe39_bridge_proof_digest": integration_input.pe39_bridge_integration_proof.bridge_proof_digest,
         "pe25_closure_result_digest": pe25_proof.closure_result_digest,
         "blocker_register_digest": integration_input.blocker_register_snapshot.blocker_register_digest,
         "readiness_decision_proof_digest": (
@@ -531,6 +702,28 @@ def _integration_result_dict(
             readiness_decision_lifecycle_eligibility_for_separate_operator_review
         ),
         "pe32_readiness_decision_lifecycle_static_integration_proven": (
+            readiness_decision_lifecycle_eligibility_for_separate_operator_review
+        ),
+        "pe32_readiness_decision_lifecycle_bound": (
+            readiness_decision_lifecycle_eligibility_for_separate_operator_review
+        ),
+        "pe39_admission_presentation_operator_closure_bridge_bound": (
+            readiness_decision_lifecycle_eligibility_for_separate_operator_review
+        ),
+        "admission_presentation_lifecycle_bound": (
+            readiness_decision_lifecycle_eligibility_for_separate_operator_review
+        ),
+        "pe25_operator_closure_bound": (
+            readiness_decision_lifecycle_eligibility_for_separate_operator_review
+        ),
+        "pe34_handoff_bound": readiness_decision_lifecycle_eligibility_for_separate_operator_review,
+        "pe35_staleness_revocation_recovery_bound": (
+            readiness_decision_lifecycle_eligibility_for_separate_operator_review
+        ),
+        "pe36_admission_presentation_bound": (
+            readiness_decision_lifecycle_eligibility_for_separate_operator_review
+        ),
+        "pe37_durable_traceability_bound": (
             readiness_decision_lifecycle_eligibility_for_separate_operator_review
         ),
         "pe12_readiness_decision_static_integration_proven": (
@@ -739,6 +932,155 @@ def _validate_pe31_integration_proof(
     return fail_reasons
 
 
+def _validate_pe39_bridge_integration_proof(
+    integration_input: ReadinessDecisionLifecycleIntegrationInput,
+    *,
+    pe39_result: dict[str, Any],
+) -> list[str]:
+    fail_reasons: list[str] = []
+    proof = integration_input.pe39_bridge_integration_proof
+    pe39_input = integration_input.pe39_bridge_integration_input
+
+    if proof.bridge_owner != PE39_BRIDGE_OWNER:
+        fail_reasons.append(
+            f"pe39_bridge_integration_proof: bridge_owner must be {PE39_BRIDGE_OWNER!r}"
+        )
+    if proof.source_revision != integration_input.source_revision:
+        fail_reasons.append("pe39_bridge_integration_proof: source_revision mismatch")
+    if proof.bridge_input_digest != compute_pe39_bridge_input_digest(pe39_input):
+        fail_reasons.append("pe39_bridge_integration_proof: bridge_input_digest mismatch")
+    expected_bridge_proof = pe39_result.get("bridge_proof_digest")
+    if not proof.bridge_proof_digest:
+        fail_reasons.append("pe39_bridge_integration_proof: bridge_proof_digest required")
+    elif expected_bridge_proof is None:
+        fail_reasons.append("pe39_bridge_integration_proof: bridge_proof_digest unavailable")
+    elif proof.bridge_proof_digest != expected_bridge_proof:
+        fail_reasons.append("pe39_bridge_integration_proof: bridge_proof_digest mismatch")
+
+    admission_proof = pe39_result.get("admission_integration_proof_digest") or ""
+    if not proof.admission_integration_proof_digest:
+        fail_reasons.append(
+            "pe39_bridge_integration_proof: admission_integration_proof_digest required"
+        )
+    elif proof.admission_integration_proof_digest != admission_proof:
+        fail_reasons.append(
+            "pe39_bridge_integration_proof: admission_integration_proof_digest mismatch"
+        )
+
+    admission_chain = pe39_input.admission_presentation_integration_input.proof_chain
+    if not proof.pe34_handoff_digest:
+        fail_reasons.append("pe39_bridge_integration_proof: pe34_handoff_digest required")
+    elif proof.pe34_handoff_digest != admission_chain.pe34_handoff_digest:
+        fail_reasons.append("pe39_bridge_integration_proof: pe34_handoff_digest mismatch")
+    if not proof.pe35_boundary_result_digest:
+        fail_reasons.append("pe39_bridge_integration_proof: pe35_boundary_result_digest required")
+    elif proof.pe35_boundary_result_digest != admission_chain.pe35_boundary_result_digest:
+        fail_reasons.append("pe39_bridge_integration_proof: pe35_boundary_result_digest mismatch")
+    if not proof.pe36_presentation_projection_digest:
+        fail_reasons.append(
+            "pe39_bridge_integration_proof: pe36_presentation_projection_digest required"
+        )
+    elif (
+        proof.pe36_presentation_projection_digest
+        != admission_chain.pe36_presentation_projection_digest
+    ):
+        fail_reasons.append(
+            "pe39_bridge_integration_proof: pe36_presentation_projection_digest mismatch"
+        )
+    if not proof.pe37_traceability_identity:
+        fail_reasons.append("pe39_bridge_integration_proof: pe37_traceability_identity required")
+    elif proof.pe37_traceability_identity != admission_chain.pe37_traceability_identity:
+        fail_reasons.append("pe39_bridge_integration_proof: pe37_traceability_identity mismatch")
+
+    binding_flags = (
+        ("pe39_admission_presentation_operator_closure_bridge_bound", True),
+        ("admission_presentation_lifecycle_bound", True),
+        ("pe34_handoff_bound", True),
+        ("pe35_staleness_revocation_recovery_bound", True),
+        ("pe36_admission_presentation_bound", True),
+        ("pe37_durable_traceability_bound", True),
+        ("pe25_operator_closure_bound", True),
+    )
+    for field_name, expected in binding_flags:
+        if getattr(proof, field_name) is not expected:
+            fail_reasons.append(f"pe39_bridge_integration_proof: {field_name} must be {expected}")
+
+    if not pe39_result.get("bridge_pass"):
+        fail_reasons.append("pe39_bridge_integration_input: PE-39 bridge evaluation failed")
+        fail_reasons.extend(
+            f"pe39_bridge_integration_input: {reason}"
+            for reason in pe39_result.get("fail_reasons", [])
+        )
+
+    if pe39_input.source_revision != integration_input.source_revision:
+        fail_reasons.append("pe39_bridge_integration_input: source_revision mismatch")
+    if pe39_input.adapter_id != integration_input.adapter_id:
+        fail_reasons.append("pe39_bridge_integration_input: adapter_id mismatch")
+    if pe39_input.instrument != integration_input.instrument:
+        fail_reasons.append("pe39_bridge_integration_input: instrument mismatch")
+
+    return fail_reasons
+
+
+def _validate_readiness_decision_proof_chain(
+    integration_input: ReadinessDecisionLifecycleIntegrationInput,
+    *,
+    pe39_result: dict[str, Any],
+    pe25_result: dict[str, Any],
+) -> list[str]:
+    fail_reasons: list[str] = []
+    chain = integration_input.readiness_decision_proof_chain
+    pe39_input = integration_input.pe39_bridge_integration_input
+    pe25_input = integration_input.pe25_operator_closure_integration_input
+    admission = pe39_input.admission_presentation_integration_input
+    shared_pe35 = admission.proof_chain.pe35_boundary_result_digest
+    shared_pe37 = admission.proof_chain.pe37_traceability_identity
+    pe39_bridge_proof = pe39_result.get("bridge_proof_digest") or ""
+    pe25_closure_proof = pe25_result.get("closure_result_digest") or ""
+
+    expected_slots = {
+        "pe39_bridge_proof_digest": pe39_bridge_proof,
+        "pe39_admission_integration_proof_digest": pe39_result.get(
+            "admission_integration_proof_digest"
+        )
+        or "",
+        "pe39_pe34_handoff_digest": admission.proof_chain.pe34_handoff_digest,
+        "pe39_pe36_presentation_projection_digest": (
+            admission.proof_chain.pe36_presentation_projection_digest
+        ),
+        "pe39_pe37_traceability_identity": shared_pe37,
+        "pe25_closure_proof_digest": pe25_closure_proof,
+        "pe25_closure_input_digest": compute_pe25_closure_input_digest(pe25_input),
+        "closure_referenced_pe39_bridge_proof_digest": pe39_bridge_proof,
+        "readiness_decision_referenced_pe25_closure_digest": pe25_closure_proof,
+        "shared_pe35_boundary_result_digest": shared_pe35,
+        "shared_pe37_traceability_identity": shared_pe37,
+    }
+    for slot_name in READINESS_DECISION_PROOF_CHAIN_SLOT_ORDER:
+        value = getattr(chain, slot_name)
+        if not value:
+            fail_reasons.append(f"readiness_decision_proof_chain: {slot_name} required")
+        elif not _valid_sha256_digest(value):
+            fail_reasons.append(
+                f"readiness_decision_proof_chain: {slot_name} must be 64-char lowercase sha256 hex"
+            )
+        elif value != expected_slots[slot_name]:
+            fail_reasons.append(f"readiness_decision_proof_chain: {slot_name} mismatch")
+
+    if chain.closure_referenced_pe39_bridge_proof_digest != chain.pe39_bridge_proof_digest:
+        fail_reasons.append(
+            "readiness_decision_proof_chain: closure_referenced_pe39_bridge_proof_digest must "
+            "match pe39_bridge_proof_digest"
+        )
+    if chain.readiness_decision_referenced_pe25_closure_digest != chain.pe25_closure_proof_digest:
+        fail_reasons.append(
+            "readiness_decision_proof_chain: readiness_decision_referenced_pe25_closure_digest "
+            "must match pe25_closure_proof_digest"
+        )
+
+    return fail_reasons
+
+
 def _validate_pe25_integration_proof(
     integration_input: ReadinessDecisionLifecycleIntegrationInput,
 ) -> list[str]:
@@ -791,6 +1133,35 @@ def _validate_pe25_integration_proof(
     if proof.operator_closure_static_complete is not True:
         fail_reasons.append(
             "pe25_operator_closure_integration_proof: operator_closure_static_complete must be true"
+        )
+    if proof.pe25_operator_closure_bound is not True:
+        fail_reasons.append(
+            "pe25_operator_closure_integration_proof: pe25_operator_closure_bound must be true"
+        )
+
+    if not proof.pe39_bridge_proof_digest:
+        fail_reasons.append(
+            "pe25_operator_closure_integration_proof: pe39_bridge_proof_digest required"
+        )
+    elif not _valid_sha256_digest(proof.pe39_bridge_proof_digest):
+        fail_reasons.append(
+            "pe25_operator_closure_integration_proof: pe39_bridge_proof_digest must be "
+            "64-char lowercase sha256 hex"
+        )
+    elif (
+        proof.pe39_bridge_proof_digest
+        != integration_input.pe39_bridge_integration_proof.bridge_proof_digest
+    ):
+        fail_reasons.append(
+            "pe25_operator_closure_integration_proof: pe39_bridge_proof_digest mismatch"
+        )
+
+    pe39_pe25 = integration_input.pe39_bridge_integration_input.pe25_closure_integration_input
+    if compute_pe25_closure_input_digest(pe25_input) != compute_pe25_closure_input_digest(
+        pe39_pe25
+    ):
+        fail_reasons.append(
+            "pe25_operator_closure_integration_input: must match PE-39 bridge PE-25 input"
         )
 
     pe25_result = evaluate_operator_closure_lifecycle_integration(pe25_input)
@@ -991,6 +1362,31 @@ def _validate_readiness_decision_proof(
     ):
         fail_reasons.append("readiness_decision_proof: readiness_decision_proof_digest mismatch")
 
+    if not binding.pe25_closure_result_digest:
+        fail_reasons.append("readiness_decision_proof: pe25_closure_result_digest required")
+    elif not _valid_sha256_digest(binding.pe25_closure_result_digest):
+        fail_reasons.append(
+            "readiness_decision_proof: pe25_closure_result_digest must be "
+            "64-char lowercase sha256 hex"
+        )
+    elif (
+        binding.pe25_closure_result_digest
+        != integration_input.pe25_operator_closure_integration_proof.closure_result_digest
+    ):
+        fail_reasons.append("readiness_decision_proof: pe25_closure_result_digest mismatch")
+
+    if not binding.traceability_identity:
+        fail_reasons.append("readiness_decision_proof: traceability_identity required")
+    elif not _valid_sha256_digest(binding.traceability_identity):
+        fail_reasons.append(
+            "readiness_decision_proof: traceability_identity must be 64-char lowercase sha256 hex"
+        )
+    elif (
+        binding.traceability_identity
+        != integration_input.pe39_bridge_integration_proof.pe37_traceability_identity
+    ):
+        fail_reasons.append("readiness_decision_proof: traceability_identity mismatch")
+
     if blocker.global_blocker_lift_authorized:
         fail_reasons.append("readiness_decision_proof: global blocker lift not allowed")
 
@@ -1124,7 +1520,30 @@ def validate_readiness_decision_lifecycle_integration_input(
         )
 
     fail_reasons.extend(_validate_pe31_integration_proof(integration_input))
+
+    pe39_result = evaluate_pe39_admission_presentation_operator_closure_lifecycle_bridge(
+        integration_input.pe39_bridge_integration_input,
+    )
+    fail_reasons.extend(
+        validate_pe39_admission_presentation_operator_closure_lifecycle_bridge_input(
+            integration_input.pe39_bridge_integration_input
+        )
+    )
+    fail_reasons.extend(
+        _validate_pe39_bridge_integration_proof(integration_input, pe39_result=pe39_result)
+    )
+
+    pe25_result = evaluate_operator_closure_lifecycle_integration(
+        integration_input.pe25_operator_closure_integration_input,
+    )
     fail_reasons.extend(_validate_pe25_integration_proof(integration_input))
+    fail_reasons.extend(
+        _validate_readiness_decision_proof_chain(
+            integration_input,
+            pe39_result=pe39_result,
+            pe25_result=pe25_result,
+        )
+    )
     fail_reasons.extend(_validate_embedded_lifecycle_sequence(integration_input))
     fail_reasons.extend(_validate_blocker_register_snapshot(integration_input))
     fail_reasons.extend(_validate_readiness_decision_proof(integration_input))
@@ -1209,6 +1628,8 @@ def evaluate_readiness_decision_lifecycle_integration(
     expected_lifecycle_state_digest: str | None = None,
     expected_pe31_integration_proof_digest: str | None = None,
     expected_pe25_closure_result_digest: str | None = None,
+    expected_pe39_bridge_proof_digest: str | None = None,
+    expected_shared_pe37_traceability_identity: str | None = None,
     expected_blocker_register_digest: str | None = None,
     expected_readiness_decision_proof_digest: str | None = None,
     loose_boolean_eligibility: bool = False,
@@ -1240,6 +1661,9 @@ def evaluate_readiness_decision_lifecycle_integration(
     claimed_blocker_lift_without_proof: bool = False,
     operator_name_implies_decision: bool = False,
     unknown_lifecycle_state: str | None = None,
+    operator_review_authorized: bool = False,
+    extra_fields: dict[str, Any] | None = None,
+    extra_proof_chain_slots: tuple[str, ...] = (),
 ) -> dict[str, Any]:
     """Evaluate explicit PE-32 readiness-decision lifecycle static integration proof."""
     fail_reasons = validate_readiness_decision_lifecycle_integration_input(integration_input)
@@ -1269,6 +1693,22 @@ def evaluate_readiness_decision_lifecycle_integration(
         ):
             fail_reasons.append(
                 "pe25_operator_closure_integration_proof: closure_result_digest mismatch"
+            )
+
+    if expected_pe39_bridge_proof_digest is not None:
+        if (
+            integration_input.pe39_bridge_integration_proof.bridge_proof_digest
+            != expected_pe39_bridge_proof_digest
+        ):
+            fail_reasons.append("pe39_bridge_integration_proof: bridge_proof_digest mismatch")
+
+    if expected_shared_pe37_traceability_identity is not None:
+        if (
+            integration_input.readiness_decision_proof_chain.shared_pe37_traceability_identity
+            != expected_shared_pe37_traceability_identity
+        ):
+            fail_reasons.append(
+                "readiness_decision_proof_chain: shared_pe37_traceability_identity mismatch"
             )
 
     if expected_blocker_register_digest is not None:
@@ -1347,6 +1787,12 @@ def evaluate_readiness_decision_lifecycle_integration(
         fail_reasons.append("claimed_blocker_lift_without_proof=true is not allowed")
     if operator_name_implies_decision:
         fail_reasons.append("operator_name_implies_decision=true is not allowed")
+    if operator_review_authorized:
+        fail_reasons.append("operator_review_authorized=true without authority lift is forbidden")
+    if extra_fields:
+        fail_reasons.extend(_reject_forbidden_extra_fields(extra_fields))
+    if extra_proof_chain_slots:
+        fail_reasons.append(f"unknown extra proof chain slots: {sorted(extra_proof_chain_slots)!r}")
 
     if unknown_lifecycle_state is not None:
         if unknown_lifecycle_state not in LIFECYCLE_PHASE_DESCRIPTORS:
@@ -1380,6 +1826,7 @@ def evaluate_readiness_decision_lifecycle_integration(
         "pe25_closure_result_digest": (
             integration_input.pe25_operator_closure_integration_proof.closure_result_digest
         ),
+        "pe39_bridge_proof_digest": integration_input.pe39_bridge_integration_proof.bridge_proof_digest,
         "blocker_register_digest": integration_input.blocker_register_snapshot.blocker_register_digest,
         "readiness_decision_proof_digest": (
             integration_input.readiness_decision_proof.readiness_decision_proof_digest
@@ -1388,6 +1835,28 @@ def evaluate_readiness_decision_lifecycle_integration(
             readiness_decision_lifecycle_eligibility_for_separate_operator_review
         ),
         "pe32_readiness_decision_lifecycle_static_integration_proven": (
+            readiness_decision_lifecycle_eligibility_for_separate_operator_review
+        ),
+        "pe32_readiness_decision_lifecycle_bound": (
+            readiness_decision_lifecycle_eligibility_for_separate_operator_review
+        ),
+        "pe39_admission_presentation_operator_closure_bridge_bound": (
+            readiness_decision_lifecycle_eligibility_for_separate_operator_review
+        ),
+        "admission_presentation_lifecycle_bound": (
+            readiness_decision_lifecycle_eligibility_for_separate_operator_review
+        ),
+        "pe25_operator_closure_bound": (
+            readiness_decision_lifecycle_eligibility_for_separate_operator_review
+        ),
+        "pe34_handoff_bound": readiness_decision_lifecycle_eligibility_for_separate_operator_review,
+        "pe35_staleness_revocation_recovery_bound": (
+            readiness_decision_lifecycle_eligibility_for_separate_operator_review
+        ),
+        "pe36_admission_presentation_bound": (
+            readiness_decision_lifecycle_eligibility_for_separate_operator_review
+        ),
+        "pe37_durable_traceability_bound": (
             readiness_decision_lifecycle_eligibility_for_separate_operator_review
         ),
         "pe12_readiness_decision_static_integration_proven": (
@@ -1412,6 +1881,7 @@ def evaluate_readiness_decision_lifecycle_integration(
         "preflight_lift_authorized": False,
         "ready_for_operator_arming": False,
         "readiness_decision_authorized": False,
+        "operator_review_authorized": False,
         "operator_decision_authorized": False,
         "operator_closure_authorized": False,
         "execution_authorized": False,
@@ -1491,6 +1961,8 @@ def default_minimal_blocker_register_snapshot(
 
 def default_minimal_readiness_decision_proof(
     *,
+    pe25_closure_result_digest: str,
+    traceability_identity: str,
     readiness_decision_proof_digest: str | None = None,
 ) -> ReadinessDecisionProofBinding:
     binding = ReadinessDecisionProofBinding(
@@ -1501,6 +1973,8 @@ def default_minimal_readiness_decision_proof(
         static_eligibility_proven=True,
         manifest_verify_rc=0,
         readiness_decision_proof_digest="",
+        pe25_closure_result_digest=pe25_closure_result_digest,
+        traceability_identity=traceability_identity,
         request_count=0,
         exchange_request_count=0,
         orders_created=0,
@@ -1530,6 +2004,8 @@ def default_minimal_readiness_decision_proof(
         static_eligibility_proven=binding.static_eligibility_proven,
         manifest_verify_rc=binding.manifest_verify_rc,
         readiness_decision_proof_digest=digest,
+        pe25_closure_result_digest=binding.pe25_closure_result_digest,
+        traceability_identity=binding.traceability_identity,
         request_count=binding.request_count,
         exchange_request_count=binding.exchange_request_count,
         orders_created=binding.orders_created,
@@ -1596,8 +2072,63 @@ def default_minimal_pe31_integration_proof(
     )
 
 
+def default_minimal_pe39_bridge_integration_proof(
+    pe39_input: AdmissionPresentationOperatorClosureLifecycleBridgeInput,
+    *,
+    pe39_result: dict[str, Any],
+) -> Pe39BridgeIntegrationProofBinding:
+    admission_chain = pe39_input.admission_presentation_integration_input.proof_chain
+    return Pe39BridgeIntegrationProofBinding(
+        bridge_owner=PE39_BRIDGE_OWNER,
+        source_revision=pe39_input.source_revision,
+        bridge_input_digest=compute_pe39_bridge_input_digest(pe39_input),
+        bridge_proof_digest=pe39_result["bridge_proof_digest"],
+        admission_integration_proof_digest=pe39_result["admission_integration_proof_digest"],
+        pe34_handoff_digest=admission_chain.pe34_handoff_digest,
+        pe35_boundary_result_digest=admission_chain.pe35_boundary_result_digest,
+        pe36_presentation_projection_digest=admission_chain.pe36_presentation_projection_digest,
+        pe37_traceability_identity=admission_chain.pe37_traceability_identity,
+        pe39_admission_presentation_operator_closure_bridge_bound=True,
+        admission_presentation_lifecycle_bound=True,
+        pe34_handoff_bound=True,
+        pe35_staleness_revocation_recovery_bound=True,
+        pe36_admission_presentation_bound=True,
+        pe37_durable_traceability_bound=True,
+        pe25_operator_closure_bound=True,
+    )
+
+
+def default_minimal_readiness_decision_proof_chain(
+    pe39_input: AdmissionPresentationOperatorClosureLifecycleBridgeInput,
+    *,
+    pe39_result: dict[str, Any],
+    pe25_result: dict[str, Any],
+) -> ReadinessDecisionProofChainBinding:
+    admission = pe39_input.admission_presentation_integration_input
+    pe25 = pe39_input.pe25_closure_integration_input
+    pe39_bridge_proof = pe39_result["bridge_proof_digest"]
+    pe25_closure_proof = pe25_result["closure_result_digest"]
+    return ReadinessDecisionProofChainBinding(
+        pe39_bridge_proof_digest=pe39_bridge_proof,
+        pe39_admission_integration_proof_digest=pe39_result["admission_integration_proof_digest"],
+        pe39_pe34_handoff_digest=admission.proof_chain.pe34_handoff_digest,
+        pe39_pe36_presentation_projection_digest=(
+            admission.proof_chain.pe36_presentation_projection_digest
+        ),
+        pe39_pe37_traceability_identity=admission.proof_chain.pe37_traceability_identity,
+        pe25_closure_proof_digest=pe25_closure_proof,
+        pe25_closure_input_digest=compute_pe25_closure_input_digest(pe25),
+        closure_referenced_pe39_bridge_proof_digest=pe39_bridge_proof,
+        readiness_decision_referenced_pe25_closure_digest=pe25_closure_proof,
+        shared_pe35_boundary_result_digest=admission.proof_chain.pe35_boundary_result_digest,
+        shared_pe37_traceability_identity=admission.proof_chain.pe37_traceability_identity,
+    )
+
+
 def default_minimal_pe25_integration_proof(
     pe25_input: OperatorClosureLifecycleIntegrationInput,
+    *,
+    pe39_bridge_proof_digest: str,
 ) -> Pe25OperatorClosureIntegrationProofBinding:
     return Pe25OperatorClosureIntegrationProofBinding(
         integration_owner=PE25_INTEGRATION_OWNER,
@@ -1606,21 +2137,135 @@ def default_minimal_pe25_integration_proof(
             pe25_input,
             operator_closure_static_complete=True,
         ),
+        pe39_bridge_proof_digest=pe39_bridge_proof_digest,
         pe25_integration_pass=True,
         operator_closure_static_complete=True,
+        pe25_operator_closure_bound=True,
     )
 
 
-def default_minimal_integration_input(
+def _bootstrap_pe39_bridge_stub(
     *,
-    source_revision: str = "abcdef0123456789abcdef0123456789abcdef01",
-    adapter_id: str = "offline_bounded_futures_testnet_adapter_v0",
-    integration_id: str = "readiness-decision-lifecycle-integration-001",
-    instrument: str = "PF_ETHUSD",
-    lifecycle_state_digest: str | None = None,
-    operator_name: str = "Frank Rauter",
+    source_revision: str,
+    adapter_id: str,
+    instrument: str,
+    pe25_input: OperatorClosureLifecycleIntegrationInput,
+) -> tuple[Any, dict[str, Any], dict[str, Any]]:
+    """Cross-slice bootstrap stub — digest-stable only, not for evaluate()."""
+    from src.ops.bounded_futures_testnet_admission_presentation_operator_closure_lifecycle_bridge_contract_v0 import (
+        AdmissionPresentationLifecycleProofBinding,
+        AdmissionPresentationOperatorClosureLifecycleBridgeInput,
+        BridgeProofChainBinding,
+        BridgeSafetySnapshot,
+        ContractVersionsInput as Pe39ContractVersionsInput,
+        Pe25OperatorClosureProofBinding as Pe39Pe25ProofBinding,
+    )
+
+    placeholder = _BOOTSTRAP_PLACEHOLDER_DIGEST
+    pe25_result = evaluate_operator_closure_lifecycle_integration(pe25_input)
+    pe25_closure_digest = pe25_result["closure_result_digest"]
+    pe25_input_digest = pe25_result["closure_input_digest"]
+    bridge_input = AdmissionPresentationOperatorClosureLifecycleBridgeInput(
+        source_revision=source_revision,
+        repository_identity=REPOSITORY_IDENTITY,
+        bridge_id="bootstrap-pe39-bridge-stub",
+        adapter_id=adapter_id,
+        instrument=instrument,
+        market_type=DEFAULT_MARKET_TYPE,
+        contract_versions=Pe39ContractVersionsInput(
+            pe34_handoff=PE34_CONTRACT_VERSION,
+            pe35_staleness=PE35_CONTRACT_VERSION,
+            pe36_admission_presentation=PE36_CONTRACT_VERSION,
+            pe37_traceability=PE37_CONTRACT_VERSION,
+            admission_presentation_lifecycle=ADMISSION_LIFECYCLE_CONTRACT_VERSION,
+            pe25_operator_closure=PE25_CONTRACT_VERSION,
+            bridge=PE39_CONTRACT_VERSION,
+        ),
+        admission_presentation_integration_input=pe25_input,  # type: ignore[arg-type]
+        pe25_closure_integration_input=pe25_input,
+        admission_presentation_lifecycle_proof=AdmissionPresentationLifecycleProofBinding(
+            integration_owner=ADMISSION_LIFECYCLE_CONTRACT_VERSION,
+            source_revision=source_revision,
+            integration_input_digest=placeholder,
+            integration_proof_digest=placeholder,
+            pe34_handoff_digest=placeholder,
+            pe35_boundary_result_digest=placeholder,
+            pe36_presentation_projection_digest=placeholder,
+            pe37_traceability_identity=placeholder,
+            admission_presentation_lifecycle_bound=True,
+            pe34_handoff_bound=True,
+            pe35_staleness_revocation_recovery_bound=True,
+            pe36_admission_presentation_bound=True,
+            pe37_durable_traceability_bound=True,
+        ),
+        pe25_operator_closure_proof=Pe39Pe25ProofBinding(
+            closure_owner=PE25_CONTRACT_VERSION,
+            source_revision=source_revision,
+            closure_input_digest=pe25_input_digest,
+            closure_result_digest=pe25_closure_digest,
+            admission_integration_proof_digest=placeholder,
+            operator_closure_static_complete=True,
+            pe25_integration_pass=True,
+            operator_closure_lifecycle_bound=True,
+            pe25_operator_closure_bound=True,
+        ),
+        proof_chain=BridgeProofChainBinding(
+            admission_integration_proof_digest=placeholder,
+            admission_pe34_handoff_digest=placeholder,
+            admission_pe36_presentation_projection_digest=placeholder,
+            admission_pe37_traceability_identity=placeholder,
+            pe25_closure_proof_digest=pe25_closure_digest,
+            pe25_closure_input_digest=pe25_input_digest,
+            closure_referenced_admission_proof_digest=placeholder,
+            shared_pe35_boundary_result_digest=placeholder,
+            shared_pe37_traceability_identity=placeholder,
+        ),
+        safety_snapshot=BridgeSafetySnapshot(
+            preflight_remains_blocked=True,
+            global_blocker_lift_authorized=False,
+            preflight_lift_authorized=False,
+            ready_for_operator_arming=False,
+            readiness_decision_authorized=False,
+            operator_review_authorized=False,
+            operator_decision_authorized=False,
+            operator_closure_authorized=False,
+            execution_authorized=False,
+            live_authorized=False,
+            zero_order_authorized=False,
+            private_readonly_authorized=False,
+            validate_only_authorized=False,
+            tiny_order_authorized=False,
+            reconciliation_authorized=False,
+            evidence_acceptance_authorized=False,
+            pilot_start_authorized=False,
+            promotion_authorized=False,
+            network_allowed=False,
+            credentials_allowed=False,
+            orders_allowed=False,
+            scheduler_runtime_allowed=False,
+            futures_only=True,
+            bitcoin_direction_allowed=False,
+            followup_run_gate=FOLLOWUP_RUN_GATE,
+        ),
+    )
+    pe39_result = {
+        "bridge_pass": False,
+        "bridge_proof_digest": placeholder,
+        "admission_integration_proof_digest": placeholder,
+        "fail_reasons": ["bootstrap stub"],
+    }
+    return bridge_input, pe39_result, pe25_result
+
+
+def _bootstrap_default_minimal_integration_input(
+    *,
+    source_revision: str,
+    adapter_id: str,
+    integration_id: str,
+    instrument: str,
+    lifecycle_state_digest: str | None,
+    operator_name: str,
 ) -> ReadinessDecisionLifecycleIntegrationInput:
-    """Minimal valid futures-generic PE-32 integration input for offline tests."""
     pe31_input = default_minimal_pe31_integration_input(
         source_revision=source_revision,
         adapter_id=adapter_id,
@@ -1634,9 +2279,19 @@ def default_minimal_integration_input(
         instrument=instrument,
         lifecycle_state_digest=state_digest,
     )
+    pe39_bridge_input, pe39_result, pe25_result = _bootstrap_pe39_bridge_stub(
+        source_revision=source_revision,
+        adapter_id=adapter_id,
+        instrument=instrument,
+        pe25_input=pe25_input,
+    )
+    placeholder = _BOOTSTRAP_PLACEHOLDER_DIGEST
+    pe25_closure_digest = pe25_result["closure_result_digest"]
     blocker_snapshot = default_minimal_blocker_register_snapshot()
-    readiness_proof = default_minimal_readiness_decision_proof()
-
+    readiness_proof = default_minimal_readiness_decision_proof(
+        pe25_closure_result_digest=pe25_closure_digest,
+        traceability_identity=placeholder,
+    )
     return ReadinessDecisionLifecycleIntegrationInput(
         source_revision=source_revision,
         repository_identity=REPOSITORY_IDENTITY,
@@ -1652,6 +2307,12 @@ def default_minimal_integration_input(
             pe29_validate_only=PE29_CONTRACT_VERSION,
             pe30_tiny_order=PE30_CONTRACT_VERSION,
             pe31_reconciliation_review=PE31_CONTRACT_VERSION,
+            pe34_handoff=PE34_CONTRACT_VERSION,
+            pe35_staleness=PE35_CONTRACT_VERSION,
+            pe36_admission_presentation=PE36_CONTRACT_VERSION,
+            pe37_traceability=PE37_CONTRACT_VERSION,
+            admission_presentation_lifecycle=ADMISSION_LIFECYCLE_CONTRACT_VERSION,
+            pe39_bridge=PE39_CONTRACT_VERSION,
             pe25_operator_closure=PE25_CONTRACT_VERSION,
             integration=CONTRACT_VERSION,
         ),
@@ -1677,8 +2338,43 @@ def default_minimal_integration_input(
         pe31_reconciliation_review_integration_proof=default_minimal_pe31_integration_proof(
             pe31_input
         ),
+        pe39_bridge_integration_input=pe39_bridge_input,
+        pe39_bridge_integration_proof=Pe39BridgeIntegrationProofBinding(
+            bridge_owner=PE39_BRIDGE_OWNER,
+            source_revision=source_revision,
+            bridge_input_digest=placeholder,
+            bridge_proof_digest=placeholder,
+            admission_integration_proof_digest=placeholder,
+            pe34_handoff_digest=placeholder,
+            pe35_boundary_result_digest=placeholder,
+            pe36_presentation_projection_digest=placeholder,
+            pe37_traceability_identity=placeholder,
+            pe39_admission_presentation_operator_closure_bridge_bound=True,
+            admission_presentation_lifecycle_bound=True,
+            pe34_handoff_bound=True,
+            pe35_staleness_revocation_recovery_bound=True,
+            pe36_admission_presentation_bound=True,
+            pe37_durable_traceability_bound=True,
+            pe25_operator_closure_bound=True,
+        ),
+        readiness_decision_proof_chain=ReadinessDecisionProofChainBinding(
+            pe39_bridge_proof_digest=placeholder,
+            pe39_admission_integration_proof_digest=placeholder,
+            pe39_pe34_handoff_digest=placeholder,
+            pe39_pe36_presentation_projection_digest=placeholder,
+            pe39_pe37_traceability_identity=placeholder,
+            pe25_closure_proof_digest=pe25_closure_digest,
+            pe25_closure_input_digest=pe25_result["closure_input_digest"],
+            closure_referenced_pe39_bridge_proof_digest=placeholder,
+            readiness_decision_referenced_pe25_closure_digest=pe25_closure_digest,
+            shared_pe35_boundary_result_digest=placeholder,
+            shared_pe37_traceability_identity=placeholder,
+        ),
         pe25_operator_closure_integration_input=pe25_input,
-        pe25_operator_closure_integration_proof=default_minimal_pe25_integration_proof(pe25_input),
+        pe25_operator_closure_integration_proof=default_minimal_pe25_integration_proof(
+            pe25_input,
+            pe39_bridge_proof_digest=placeholder,
+        ),
         blocker_register_snapshot=blocker_snapshot,
         readiness_decision_proof=readiness_proof,
         operator_legibility=OperatorLegibilityMetadata(
@@ -1687,3 +2383,164 @@ def default_minimal_integration_input(
         ),
         safety_snapshot=default_minimal_safety_snapshot(),
     )
+
+
+def _coherent_default_minimal_integration_input(
+    *,
+    source_revision: str = "abcdef0123456789abcdef0123456789abcdef01",
+    adapter_id: str = "offline_bounded_futures_testnet_adapter_v0",
+    integration_id: str = "readiness-decision-lifecycle-integration-001",
+    instrument: str = "PF_ETHUSD",
+    lifecycle_state_digest: str | None = None,
+    operator_name: str = "Frank Rauter",
+) -> ReadinessDecisionLifecycleIntegrationInput:
+    """Minimal valid futures-generic PE-32 integration input for offline tests."""
+    from src.ops.bounded_futures_testnet_admission_presentation_operator_closure_lifecycle_bridge_contract_v0 import (
+        default_minimal_bridge_input,
+    )
+
+    pe31_input = default_minimal_pe31_integration_input(
+        source_revision=source_revision,
+        adapter_id=adapter_id,
+        instrument=instrument,
+    )
+    state_digest = lifecycle_state_digest or "f" * 64
+    matrix_digest = compute_lifecycle_matrix_digest()
+    pe39_bridge_input = default_minimal_bridge_input(
+        source_revision=source_revision,
+        adapter_id=adapter_id,
+        instrument=instrument,
+    )
+    pe39_result = evaluate_pe39_admission_presentation_operator_closure_lifecycle_bridge(
+        pe39_bridge_input
+    )
+    pe25_input = pe39_bridge_input.pe25_closure_integration_input
+    pe25_result = evaluate_operator_closure_lifecycle_integration(pe25_input)
+    pe39_bridge_proof = pe39_result["bridge_proof_digest"]
+    pe25_closure_digest = pe25_result["closure_result_digest"]
+    traceability_identity = pe39_bridge_input.admission_presentation_integration_input.proof_chain.pe37_traceability_identity
+    blocker_snapshot = default_minimal_blocker_register_snapshot()
+    readiness_proof = default_minimal_readiness_decision_proof(
+        pe25_closure_result_digest=pe25_closure_digest,
+        traceability_identity=traceability_identity,
+    )
+
+    return ReadinessDecisionLifecycleIntegrationInput(
+        source_revision=source_revision,
+        repository_identity=REPOSITORY_IDENTITY,
+        adapter_id=adapter_id,
+        integration_id=integration_id,
+        instrument=instrument,
+        market_type=DEFAULT_MARKET_TYPE,
+        contract_versions=ContractVersionsInput(
+            pe12_lifecycle=PE12_CONTRACT_VERSION,
+            pe26_assembly=PE26_CONTRACT_VERSION,
+            pe27_zero_order=PE27_CONTRACT_VERSION,
+            pe28_private_readonly=PE28_CONTRACT_VERSION,
+            pe29_validate_only=PE29_CONTRACT_VERSION,
+            pe30_tiny_order=PE30_CONTRACT_VERSION,
+            pe31_reconciliation_review=PE31_CONTRACT_VERSION,
+            pe34_handoff=PE34_CONTRACT_VERSION,
+            pe35_staleness=PE35_CONTRACT_VERSION,
+            pe36_admission_presentation=PE36_CONTRACT_VERSION,
+            pe37_traceability=PE37_CONTRACT_VERSION,
+            admission_presentation_lifecycle=ADMISSION_LIFECYCLE_CONTRACT_VERSION,
+            pe39_bridge=PE39_CONTRACT_VERSION,
+            pe25_operator_closure=PE25_CONTRACT_VERSION,
+            integration=CONTRACT_VERSION,
+        ),
+        lifecycle_matrix_proof=LifecycleMatrixProof(
+            pe12_contract_version=PE12_CONTRACT_VERSION,
+            lifecycle_matrix_digest=matrix_digest,
+            assigned_lifecycle_phase=PHASE_READINESS_DECISION,
+            lifecycle_state_digest=state_digest,
+        ),
+        lifecycle_state_before=LifecycleStateBinding(
+            state_id="lifecycle-before-reconciliation-review",
+            state_digest=pe31_input.lifecycle_matrix_proof.lifecycle_state_digest,
+            assigned_lifecycle_phase=PHASE_RECONCILIATION_REVIEW,
+            adapter_id=adapter_id,
+        ),
+        declared_lifecycle_state_after=LifecycleStateBinding(
+            state_id="lifecycle-after-readiness-decision",
+            state_digest=state_digest,
+            assigned_lifecycle_phase=PHASE_READINESS_DECISION,
+            adapter_id=adapter_id,
+        ),
+        pe31_reconciliation_review_integration_input=pe31_input,
+        pe31_reconciliation_review_integration_proof=default_minimal_pe31_integration_proof(
+            pe31_input
+        ),
+        pe39_bridge_integration_input=pe39_bridge_input,
+        pe39_bridge_integration_proof=default_minimal_pe39_bridge_integration_proof(
+            pe39_bridge_input,
+            pe39_result=pe39_result,
+        ),
+        readiness_decision_proof_chain=default_minimal_readiness_decision_proof_chain(
+            pe39_bridge_input,
+            pe39_result=pe39_result,
+            pe25_result=pe25_result,
+        ),
+        pe25_operator_closure_integration_input=pe25_input,
+        pe25_operator_closure_integration_proof=default_minimal_pe25_integration_proof(
+            pe25_input,
+            pe39_bridge_proof_digest=pe39_bridge_proof,
+        ),
+        blocker_register_snapshot=blocker_snapshot,
+        readiness_decision_proof=readiness_proof,
+        operator_legibility=OperatorLegibilityMetadata(
+            owner_operator_name=operator_name,
+            legibility_only=True,
+        ),
+        safety_snapshot=default_minimal_safety_snapshot(),
+    )
+
+
+def default_minimal_integration_input(
+    *,
+    source_revision: str = "abcdef0123456789abcdef0123456789abcdef01",
+    adapter_id: str = "offline_bounded_futures_testnet_adapter_v0",
+    integration_id: str = "readiness-decision-lifecycle-integration-001",
+    instrument: str = "PF_ETHUSD",
+    lifecycle_state_digest: str | None = None,
+    operator_name: str = "Frank Rauter",
+) -> ReadinessDecisionLifecycleIntegrationInput:
+    """Minimal valid futures-generic PE-32 integration input for offline tests."""
+    global _RECURSIVE_DEFAULT_BUILD, _COHERENT_DEFAULT_CACHE
+
+    if _RECURSIVE_DEFAULT_BUILD:
+        return _bootstrap_default_minimal_integration_input(
+            source_revision=source_revision,
+            adapter_id=adapter_id,
+            integration_id=integration_id,
+            instrument=instrument,
+            lifecycle_state_digest=lifecycle_state_digest,
+            operator_name=operator_name,
+        )
+
+    default_params = (
+        source_revision == "abcdef0123456789abcdef0123456789abcdef01"
+        and adapter_id == "offline_bounded_futures_testnet_adapter_v0"
+        and integration_id == "readiness-decision-lifecycle-integration-001"
+        and instrument == "PF_ETHUSD"
+        and lifecycle_state_digest is None
+        and operator_name == "Frank Rauter"
+    )
+    if default_params and _COHERENT_DEFAULT_CACHE is not None:
+        return _COHERENT_DEFAULT_CACHE
+
+    _RECURSIVE_DEFAULT_BUILD = True
+    try:
+        result = _coherent_default_minimal_integration_input(
+            source_revision=source_revision,
+            adapter_id=adapter_id,
+            integration_id=integration_id,
+            instrument=instrument,
+            lifecycle_state_digest=lifecycle_state_digest,
+            operator_name=operator_name,
+        )
+        if default_params:
+            _COHERENT_DEFAULT_CACHE = result
+        return result
+    finally:
+        _RECURSIVE_DEFAULT_BUILD = False

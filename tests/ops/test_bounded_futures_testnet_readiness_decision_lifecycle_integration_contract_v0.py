@@ -89,6 +89,14 @@ from src.ops.bounded_futures_testnet_validate_only_lifecycle_integration_contrac
 from src.ops.bounded_futures_testnet_zero_order_lifecycle_integration_contract_v0 import (
     CONTRACT_VERSION as PE27_CONTRACT_VERSION,
 )
+from src.ops.bounded_futures_testnet_handoff_staleness_revocation_recovery_boundary_contract_v0 import (
+    HANDOFF_STATE_REVOKED,
+    HANDOFF_STATE_STALE,
+    HANDOFF_STATE_SUPERSEDED,
+)
+from src.ops.bounded_futures_testnet_admission_presentation_operator_closure_lifecycle_bridge_contract_v0 import (
+    CONTRACT_VERSION as PE39_CONTRACT_VERSION,
+)
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 INTEGRATION_MODULE = (
@@ -139,6 +147,12 @@ PE25_MODULE = (
     / "ops"
     / "bounded_futures_testnet_operator_closure_lifecycle_integration_contract_v0.py"
 )
+PE39_MODULE = (
+    REPO_ROOT
+    / "src"
+    / "ops"
+    / "bounded_futures_testnet_admission_presentation_operator_closure_lifecycle_bridge_contract_v0.py"
+)
 BLOCKER_REGISTER_MODULE = (
     REPO_ROOT / "docs" / "ops" / "specs" / "MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md"
 )
@@ -152,11 +166,16 @@ TEST_PACKAGE_MARKER = (
 _CLASS4_SCOPED_EXCEPTION_MARKER = "BOUNDED_FUTURES_TESTNET_READINESS_DECISION_LIFECYCLE_INTEGRATION_GUARD_CLASS4_SCOPED_EXCEPTION_V0=true"
 
 VALID_COMMIT_SHA = "abcdef0123456789abcdef0123456789abcdef01"
+ALT_COMMIT_SHA = "1234567890abcdef1234567890abcdef12345678"
 GENERIC_FUTURES_INSTRUMENT = "PF_ETHUSD"
+_PLACEHOLDER_DIGEST = "f" * 64
 
 
 def _decision_proof_with(**kwargs: object) -> ReadinessDecisionProofBinding:
-    base = default_minimal_readiness_decision_proof()
+    base = default_minimal_readiness_decision_proof(
+        pe25_closure_result_digest=_PLACEHOLDER_DIGEST,
+        traceability_identity=_PLACEHOLDER_DIGEST,
+    )
     updated = replace(base, **kwargs)
     if "readiness_decision_proof_digest" not in kwargs:
         updated = replace(
@@ -205,6 +224,10 @@ def test_pe12_pe26_pe27_pe28_pe29_pe30_pe31_pe25_owners_referenced_not_duplicate
         "bounded_futures_testnet_operator_closure_lifecycle_integration_contract_v0"
         in integration_text
     )
+    assert (
+        "bounded_futures_testnet_admission_presentation_operator_closure_lifecycle_bridge_contract_v0"
+        in integration_text
+    )
     assert "evaluate_phase_transition" not in integration_text
     assert "KrakenTestnetClient" not in integration_text
     assert "import subprocess" not in integration_text
@@ -217,6 +240,7 @@ def test_pe12_pe26_pe27_pe28_pe29_pe30_pe31_pe25_owners_referenced_not_duplicate
     assert PE30_MODULE.exists()
     assert PE31_MODULE.exists()
     assert PE25_MODULE.exists()
+    assert PE39_MODULE.exists()
     assert BLOCKER_REGISTER_MODULE.exists()
     assert READINESS_DECISION_OWNER == PHASE_CANONICAL_OWNERS[PHASE_READINESS_DECISION]
     assert BLOCKER_REGISTER_OWNER == "MASTER_V2_GO_LIVE_BLOCKER_REGISTER_V0.md"
@@ -243,6 +267,14 @@ def test_valid_full_chain_passes() -> None:
     assert result["integration_pass"] is True
     assert result["readiness_decision_lifecycle_eligibility_for_separate_operator_review"] is True
     assert result["pe32_readiness_decision_lifecycle_static_integration_proven"] is True
+    assert result["pe32_readiness_decision_lifecycle_bound"] is True
+    assert result["pe39_admission_presentation_operator_closure_bridge_bound"] is True
+    assert result["admission_presentation_lifecycle_bound"] is True
+    assert result["pe25_operator_closure_bound"] is True
+    assert result["pe34_handoff_bound"] is True
+    assert result["pe35_staleness_revocation_recovery_bound"] is True
+    assert result["pe36_admission_presentation_bound"] is True
+    assert result["pe37_durable_traceability_bound"] is True
     assert result["pe12_readiness_decision_static_integration_proven"] is True
     assert result["static_pe12_lifecycle_chain_complete"] is True
     assert result["assigned_lifecycle_phase"] == PHASE_READINESS_DECISION
@@ -312,8 +344,14 @@ def test_deterministic_identical_inputs_same_payload_and_digest() -> None:
 
 
 def test_readiness_decision_proof_digest_stability() -> None:
-    left = default_minimal_readiness_decision_proof()
-    right = default_minimal_readiness_decision_proof()
+    left = default_minimal_readiness_decision_proof(
+        pe25_closure_result_digest=_PLACEHOLDER_DIGEST,
+        traceability_identity=_PLACEHOLDER_DIGEST,
+    )
+    right = default_minimal_readiness_decision_proof(
+        pe25_closure_result_digest=_PLACEHOLDER_DIGEST,
+        traceability_identity=_PLACEHOLDER_DIGEST,
+    )
     assert serialize_readiness_decision_proof_canonical(left) == (
         serialize_readiness_decision_proof_canonical(right)
     )
@@ -694,7 +732,7 @@ def test_generic_futures_instrument_passes() -> None:
 
 def test_btc_placeholder_instrument_rejected() -> None:
     assembly = default_minimal_assembly_input(instrument="PF_XBTUSD")
-    integration_input = default_minimal_integration_input(instrument="PF_XBTUSD")
+    integration_input = default_minimal_integration_input()
     bad_pe30 = replace(
         integration_input.pe31_reconciliation_review_integration_input.pe30_tiny_order_integration_input,
         pe26_assembly_input=assembly,
@@ -756,3 +794,208 @@ def test_blocker_snapshot_digest_stable_for_default_fixture() -> None:
     assert compute_blocker_register_snapshot_digest(
         left
     ) == compute_blocker_register_snapshot_digest(right)
+
+
+def test_missing_pe39_bridge_proof_digest_fails() -> None:
+    integration_input = default_minimal_integration_input()
+    bad_proof = replace(
+        integration_input.pe39_bridge_integration_proof,
+        bridge_proof_digest="",
+    )
+    bad = replace(integration_input, pe39_bridge_integration_proof=bad_proof)
+    result = evaluate_readiness_decision_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("bridge_proof_digest required" in r for r in result["fail_reasons"])
+
+
+def test_missing_pe39_admission_presentation_lifecycle_binding_fails() -> None:
+    integration_input = default_minimal_integration_input()
+    bad_proof = replace(
+        integration_input.pe39_bridge_integration_proof,
+        admission_presentation_lifecycle_bound=False,
+    )
+    bad = replace(integration_input, pe39_bridge_integration_proof=bad_proof)
+    result = evaluate_readiness_decision_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "admission_presentation_lifecycle_bound must be True" in r for r in result["fail_reasons"]
+    )
+
+
+def test_missing_pe34_pe35_pe36_pe37_binding_fails() -> None:
+    integration_input = default_minimal_integration_input()
+    bad_proof = replace(
+        integration_input.pe39_bridge_integration_proof,
+        pe37_durable_traceability_bound=False,
+    )
+    bad = replace(integration_input, pe39_bridge_integration_proof=bad_proof)
+    result = evaluate_readiness_decision_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe37_durable_traceability_bound must be True" in r for r in result["fail_reasons"])
+
+
+def test_pe39_owner_identity_drift_fails() -> None:
+    integration_input = default_minimal_integration_input()
+    bad_proof = replace(
+        integration_input.pe39_bridge_integration_proof,
+        bridge_owner="wrong.owner.v0",
+    )
+    bad = replace(integration_input, pe39_bridge_integration_proof=bad_proof)
+    result = evaluate_readiness_decision_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("bridge_owner must be" in r for r in result["fail_reasons"])
+
+
+def test_pe39_proof_digest_drift_fails() -> None:
+    integration_input = default_minimal_integration_input()
+    result = evaluate_readiness_decision_lifecycle_integration(
+        integration_input,
+        expected_pe39_bridge_proof_digest="0" * 64,
+    )
+    assert result["integration_pass"] is False
+    assert any("bridge_proof_digest mismatch" in r for r in result["fail_reasons"])
+
+
+def test_traceability_identity_drift_fails() -> None:
+    integration_input = default_minimal_integration_input()
+    result = evaluate_readiness_decision_lifecycle_integration(
+        integration_input,
+        expected_shared_pe37_traceability_identity="0" * 64,
+    )
+    assert result["integration_pass"] is False
+    assert any("shared_pe37_traceability_identity mismatch" in r for r in result["fail_reasons"])
+
+
+def test_closure_references_wrong_pe39_proof_fails() -> None:
+    integration_input = default_minimal_integration_input()
+    bad_proof = replace(
+        integration_input.pe25_operator_closure_integration_proof,
+        pe39_bridge_proof_digest="0" * 64,
+    )
+    bad = replace(integration_input, pe25_operator_closure_integration_proof=bad_proof)
+    result = evaluate_readiness_decision_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe39_bridge_proof_digest mismatch" in r for r in result["fail_reasons"])
+
+
+def test_readiness_decision_references_wrong_closure_proof_fails() -> None:
+    integration_input = default_minimal_integration_input()
+    bad = replace(
+        integration_input,
+        readiness_decision_proof=_decision_proof_with(pe25_closure_result_digest="0" * 64),
+    )
+    result = evaluate_readiness_decision_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe25_closure_result_digest mismatch" in r for r in result["fail_reasons"])
+
+
+def test_stale_handoff_fails() -> None:
+    integration_input = default_minimal_integration_input()
+    broken_pe35 = replace(
+        integration_input.pe39_bridge_integration_input.admission_presentation_integration_input.pe35_boundary_input,
+        lifecycle_metadata=replace(
+            integration_input.pe39_bridge_integration_input.admission_presentation_integration_input.pe35_boundary_input.lifecycle_metadata,
+            lifecycle_state=HANDOFF_STATE_STALE,
+        ),
+    )
+    broken_admission = replace(
+        integration_input.pe39_bridge_integration_input.admission_presentation_integration_input,
+        pe35_boundary_input=broken_pe35,
+    )
+    broken_bridge = replace(
+        integration_input.pe39_bridge_integration_input,
+        admission_presentation_integration_input=broken_admission,
+    )
+    bad = replace(integration_input, pe39_bridge_integration_input=broken_bridge)
+    result = evaluate_readiness_decision_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+
+
+def test_revoked_handoff_fails() -> None:
+    integration_input = default_minimal_integration_input()
+    broken_pe35 = replace(
+        integration_input.pe39_bridge_integration_input.admission_presentation_integration_input.pe35_boundary_input,
+        lifecycle_metadata=replace(
+            integration_input.pe39_bridge_integration_input.admission_presentation_integration_input.pe35_boundary_input.lifecycle_metadata,
+            lifecycle_state=HANDOFF_STATE_REVOKED,
+        ),
+    )
+    broken_admission = replace(
+        integration_input.pe39_bridge_integration_input.admission_presentation_integration_input,
+        pe35_boundary_input=broken_pe35,
+    )
+    broken_bridge = replace(
+        integration_input.pe39_bridge_integration_input,
+        admission_presentation_integration_input=broken_admission,
+    )
+    bad = replace(integration_input, pe39_bridge_integration_input=broken_bridge)
+    result = evaluate_readiness_decision_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+
+
+def test_superseded_handoff_fails() -> None:
+    integration_input = default_minimal_integration_input()
+    broken_pe35 = replace(
+        integration_input.pe39_bridge_integration_input.admission_presentation_integration_input.pe35_boundary_input,
+        lifecycle_metadata=replace(
+            integration_input.pe39_bridge_integration_input.admission_presentation_integration_input.pe35_boundary_input.lifecycle_metadata,
+            lifecycle_state=HANDOFF_STATE_SUPERSEDED,
+        ),
+    )
+    broken_admission = replace(
+        integration_input.pe39_bridge_integration_input.admission_presentation_integration_input,
+        pe35_boundary_input=broken_pe35,
+    )
+    broken_bridge = replace(
+        integration_input.pe39_bridge_integration_input,
+        admission_presentation_integration_input=broken_admission,
+    )
+    bad = replace(integration_input, pe39_bridge_integration_input=broken_bridge)
+    result = evaluate_readiness_decision_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+
+
+def test_empty_integration_id_fails() -> None:
+    integration_input = default_minimal_integration_input()
+    bad = replace(integration_input, integration_id="")
+    result = evaluate_readiness_decision_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("integration_id required" in r for r in result["fail_reasons"])
+
+
+def test_unknown_extra_fields_fail() -> None:
+    integration_input = default_minimal_integration_input()
+    result = evaluate_readiness_decision_lifecycle_integration(
+        integration_input,
+        extra_fields={"unexpected_field": "value"},
+    )
+    assert result["integration_pass"] is False
+    assert any("unknown extra field" in r for r in result["fail_reasons"])
+
+
+def test_pe39_upstream_bridge_still_passes_independently() -> None:
+    from src.ops.bounded_futures_testnet_admission_presentation_operator_closure_lifecycle_bridge_contract_v0 import (
+        default_minimal_bridge_input,
+        evaluate_admission_presentation_operator_closure_lifecycle_bridge,
+    )
+
+    bridge_input = default_minimal_bridge_input(instrument=GENERIC_FUTURES_INSTRUMENT)
+    result = evaluate_admission_presentation_operator_closure_lifecycle_bridge(bridge_input)
+    assert result["bridge_pass"] is True
+
+
+def test_pe25_upstream_still_passes_independently() -> None:
+    from src.ops.bounded_futures_testnet_operator_closure_lifecycle_integration_contract_v0 import (
+        default_minimal_integration_input as default_minimal_pe25_input,
+        evaluate_operator_closure_lifecycle_integration,
+    )
+
+    pe25_input = default_minimal_pe25_input(instrument=GENERIC_FUTURES_INSTRUMENT)
+    result = evaluate_operator_closure_lifecycle_integration(pe25_input)
+    assert result["integration_pass"] is True
+
+
+def test_pe39_canonical_owner_matches_expected() -> None:
+    assert PE39_CONTRACT_VERSION == (
+        "bounded_futures_testnet_admission_presentation_operator_closure_lifecycle_bridge.v0"
+    )
