@@ -20,6 +20,9 @@ if TYPE_CHECKING:
     from src.ops.bounded_futures_testnet_operator_review_chain_durable_evidence_traceability_boundary_contract_v0 import (
         DurableEvidenceTraceabilityBoundaryInput,
     )
+    from src.ops.bounded_futures_testnet_reconciliation_review_lifecycle_integration_contract_v0 import (
+        ReconciliationReviewLifecycleIntegrationInput,
+    )
 
 from src.ops.bounded_futures_testnet_adapter_capability_lifecycle_integration_contract_v0 import (
     CONTRACT_VERSION as GLB012_CONTRACT_VERSION,
@@ -31,7 +34,9 @@ from src.ops.bounded_futures_testnet_adapter_lifecycle_contract_v0 import (
     NETWORK_EXECUTION_PHASES,
     PACKAGE_MARKER as PE12_PACKAGE_MARKER,
     PHASE_CANONICAL_OWNERS,
+    PHASE_RECONCILIATION_REVIEW,
     PHASE_STATIC_PREFLIGHT,
+    PHASE_TINY_ORDER,
     PHASE_ZERO_ORDER,
 )
 from src.ops.bounded_futures_testnet_capital_slot_ratchet_release_lifecycle_integration_contract_v0 import (
@@ -105,7 +110,12 @@ REPOSITORY_IDENTITY = "Peak_Trade"
 PE37_CONTRACT_VERSION = (
     "bounded_futures_testnet_operator_review_chain_durable_evidence_traceability_boundary.v0"
 )
+PE31_CONTRACT_VERSION = "bounded_futures_testnet_reconciliation_review_lifecycle_integration.v0"
 PE37_BOUNDARY_OWNER = PE37_CONTRACT_VERSION
+PE31_INTEGRATION_OWNER = PE31_CONTRACT_VERSION
+PE31_BOOTSTRAP_INTEGRATION_ID = "bootstrap-pe31-reconciliation-stub"
+PE26_EMBEDDED_SNAPSHOT_SUFFIX = "::embedded-pe26-snapshot"
+_BOOTSTRAP_PLACEHOLDER_DIGEST = "a" * 64
 ZERO_ORDER_CAPABILITY_OWNER = PHASE_CANONICAL_OWNERS[PHASE_ZERO_ORDER]
 
 GLOBAL_PREFLIGHT_EXECUTION_READINESS = False
@@ -151,6 +161,7 @@ _EXPECTED_CONTRACT_VERSIONS: dict[str, str] = {
     "pe20_review_proof_package": PE20_CONTRACT_VERSION,
     "glb012_adapter_capability": GLB012_CONTRACT_VERSION,
     "pe21_reconciliation_primary_evidence": PE21_CONTRACT_VERSION,
+    "pe31_reconciliation_review": PE31_CONTRACT_VERSION,
     "pe22_risk_killswitch_flatten": PE22_CONTRACT_VERSION,
     "pe23_capital_slot_ratchet_release": PE23_CONTRACT_VERSION,
     "pe24_pilot_envelope": PE24_CONTRACT_VERSION,
@@ -173,6 +184,7 @@ class ContractVersionsInput:
     pe20_review_proof_package: str
     glb012_adapter_capability: str
     pe21_reconciliation_primary_evidence: str
+    pe31_reconciliation_review: str
     pe22_risk_killswitch_flatten: str
     pe23_capital_slot_ratchet_release: str
     pe24_pilot_envelope: str
@@ -256,6 +268,15 @@ class Pe21ReconciliationPrimaryEvidenceProofBinding:
 
 
 @dataclass(frozen=True)
+class Pe31ReconciliationReviewIntegrationProofBinding:
+    integration_owner: str
+    integration_input_digest: str
+    integration_proof_digest: str
+    pe31_integration_pass: bool
+    reconciliation_review_lifecycle_eligibility: bool
+
+
+@dataclass(frozen=True)
 class Pe25OperatorClosureProofBinding:
     closure_input_digest: str
     closure_result_digest: str
@@ -324,6 +345,12 @@ class PreflightExecutionReadinessAssemblyInput:
     pe20_durable_review_package: Pe20DurableReviewPackageBinding
     glb012_capability_proof: Glb012CapabilityProofBinding
     pe21_reconciliation_primary_evidence_proof: Pe21ReconciliationPrimaryEvidenceProofBinding
+    pe31_reconciliation_review_integration_input: (
+        ReconciliationReviewLifecycleIntegrationInput | None
+    )
+    pe31_reconciliation_review_integration_proof: (
+        Pe31ReconciliationReviewIntegrationProofBinding | None
+    )
     pe22_risk_killswitch_flatten_proof: Pe22RiskKillswitchFlattenProofBinding
     pe23_capital_slot_ratchet_release_proof: Pe23CapitalSlotRatchetReleaseProofBinding
     pe24_pilot_envelope_proof: Pe24PilotEnvelopeProofBinding
@@ -399,6 +426,18 @@ def _assembly_input_dict(
         "glb012_capability_proof": asdict(assembly_input.glb012_capability_proof),
         "pe21_reconciliation_primary_evidence_proof": asdict(
             assembly_input.pe21_reconciliation_primary_evidence_proof
+        ),
+        "pe31_reconciliation_review_integration_input_digest": (
+            None
+            if assembly_input.pe31_reconciliation_review_integration_input is None
+            else _compute_pe31_integration_input_digest(
+                assembly_input.pe31_reconciliation_review_integration_input
+            )
+        ),
+        "pe31_reconciliation_review_integration_proof": (
+            None
+            if assembly_input.pe31_reconciliation_review_integration_proof is None
+            else asdict(assembly_input.pe31_reconciliation_review_integration_proof)
         ),
         "pe22_risk_killswitch_flatten_proof": asdict(
             assembly_input.pe22_risk_killswitch_flatten_proof
@@ -825,6 +864,193 @@ def _validate_pe21_reconciliation_proof(
     return fail_reasons
 
 
+def _lazy_pe31() -> Any:
+    from src.ops.bounded_futures_testnet_reconciliation_review_lifecycle_integration_contract_v0 import (
+        compute_integration_input_digest,
+        compute_integration_proof_digest,
+        evaluate_reconciliation_review_lifecycle_integration,
+    )
+
+    return (
+        compute_integration_input_digest,
+        compute_integration_proof_digest,
+        evaluate_reconciliation_review_lifecycle_integration,
+    )
+
+
+def _compute_pe31_integration_input_digest(
+    pe31_input: ReconciliationReviewLifecycleIntegrationInput | None,
+) -> str:
+    if pe31_input is None:
+        return _BOOTSTRAP_PLACEHOLDER_DIGEST
+    if pe31_input.integration_id == PE31_BOOTSTRAP_INTEGRATION_ID:
+        return _BOOTSTRAP_PLACEHOLDER_DIGEST
+    compute_pe31_integration_input_digest, _, _ = _lazy_pe31()
+    return compute_pe31_integration_input_digest(pe31_input)
+
+
+def _is_embedded_pe26_snapshot(assembly_input: PreflightExecutionReadinessAssemblyInput) -> bool:
+    return assembly_input.assembly_id.endswith(PE26_EMBEDDED_SNAPSHOT_SUFFIX)
+
+
+def _assembly_identity(assembly_id: str) -> str:
+    if assembly_id.endswith(PE26_EMBEDDED_SNAPSHOT_SUFFIX):
+        return assembly_id[: -len(PE26_EMBEDDED_SNAPSHOT_SUFFIX)]
+    return assembly_id
+
+
+def _is_pe31_bootstrap_stub(pe31_input: ReconciliationReviewLifecycleIntegrationInput) -> bool:
+    return pe31_input.integration_id == PE31_BOOTSTRAP_INTEGRATION_ID
+
+
+def _validate_pe31_reconciliation_review_proof(
+    assembly_input: PreflightExecutionReadinessAssemblyInput,
+) -> list[str]:
+    fail_reasons: list[str] = []
+    proof = assembly_input.pe31_reconciliation_review_integration_proof
+    pe31_input = assembly_input.pe31_reconciliation_review_integration_input
+
+    if pe31_input is None or proof is None:
+        if _RECURSIVE_PE26_DEFAULT_BUILD or _is_embedded_pe26_snapshot(assembly_input):
+            return fail_reasons
+        fail_reasons.append("pe31_reconciliation_review_integration_input required")
+        return fail_reasons
+
+    if proof.integration_owner != PE31_INTEGRATION_OWNER:
+        fail_reasons.append(
+            f"pe31_reconciliation_review_integration_proof: integration_owner must be "
+            f"{PE31_INTEGRATION_OWNER!r}"
+        )
+    if not proof.integration_input_digest:
+        fail_reasons.append(
+            "pe31_reconciliation_review_integration_proof: integration_input_digest required"
+        )
+    elif not _valid_sha256_digest(proof.integration_input_digest):
+        fail_reasons.append(
+            "pe31_reconciliation_review_integration_proof: integration_input_digest must be "
+            "64-char lowercase sha256 hex"
+        )
+    elif proof.integration_input_digest != _compute_pe31_integration_input_digest(pe31_input):
+        fail_reasons.append(
+            "pe31_reconciliation_review_integration_proof: integration_input_digest mismatch"
+        )
+
+    if not proof.integration_proof_digest:
+        fail_reasons.append(
+            "pe31_reconciliation_review_integration_proof: integration_proof_digest required"
+        )
+    elif not _valid_sha256_digest(proof.integration_proof_digest):
+        fail_reasons.append(
+            "pe31_reconciliation_review_integration_proof: integration_proof_digest must be "
+            "64-char lowercase sha256 hex"
+        )
+    else:
+        _, compute_pe31_integration_proof_digest, _ = _lazy_pe31()
+        expected_proof_digest = compute_pe31_integration_proof_digest(
+            pe31_input,
+            reconciliation_review_lifecycle_eligibility_for_separate_operator_review=True,
+        )
+        if proof.integration_proof_digest != expected_proof_digest:
+            fail_reasons.append(
+                "pe31_reconciliation_review_integration_proof: integration_proof_digest mismatch"
+            )
+
+    if proof.pe31_integration_pass is not True:
+        fail_reasons.append(
+            "pe31_reconciliation_review_integration_proof: pe31_integration_pass must be true"
+        )
+    if proof.reconciliation_review_lifecycle_eligibility is not True:
+        fail_reasons.append(
+            "pe31_reconciliation_review_integration_proof: "
+            "reconciliation_review_lifecycle_eligibility must be true"
+        )
+
+    _, _, evaluate_reconciliation_review_lifecycle_integration = _lazy_pe31()
+    pe31_result = evaluate_reconciliation_review_lifecycle_integration(pe31_input)
+    if not pe31_result["integration_pass"]:
+        fail_reasons.append("pe31_reconciliation_review_integration_input: PE-31 evaluation failed")
+        fail_reasons.extend(
+            f"pe31_reconciliation_review_integration_input: {reason}"
+            for reason in pe31_result["fail_reasons"]
+        )
+    elif not pe31_result[
+        "reconciliation_review_lifecycle_eligibility_for_separate_operator_review"
+    ]:
+        fail_reasons.append(
+            "pe31_reconciliation_review_integration_input: "
+            "reconciliation_review_lifecycle_eligibility required"
+        )
+
+    if pe31_input.source_revision != assembly_input.source_revision:
+        fail_reasons.append(
+            "pe31_reconciliation_review_integration_input: source_revision mismatch"
+        )
+    if pe31_input.adapter_id != assembly_input.adapter_id:
+        fail_reasons.append("pe31_reconciliation_review_integration_input: adapter_id mismatch")
+    if pe31_input.instrument != assembly_input.instrument:
+        fail_reasons.append("pe31_reconciliation_review_integration_input: instrument mismatch")
+
+    pe31_matrix = pe31_input.lifecycle_matrix_proof
+    if pe31_matrix.assigned_lifecycle_phase != PHASE_RECONCILIATION_REVIEW:
+        fail_reasons.append(
+            "pe31_reconciliation_review_integration_input: assigned_lifecycle_phase must be "
+            f"{PHASE_RECONCILIATION_REVIEW!r}"
+        )
+
+    pe21_binding = assembly_input.pe21_reconciliation_primary_evidence_proof
+    pe31_pe21_proof = pe31_input.pe21_reconciliation_primary_evidence_integration_proof
+    if pe21_binding.integration_input_digest != pe31_pe21_proof.integration_input_digest:
+        fail_reasons.append("pe21_pe31_reconciliation: integration_input_digest mismatch")
+    if pe21_binding.integration_proof_digest != pe31_pe21_proof.integration_proof_digest:
+        fail_reasons.append("pe21_pe31_reconciliation: integration_proof_digest mismatch")
+    if pe31_pe21_proof.reconciliation_result_digest != (
+        pe31_input.pe21_reconciliation_primary_evidence_integration_input.reconciliation_binding.result_digest
+    ):
+        fail_reasons.append("pe21_pe31_reconciliation: reconciliation_result_digest mismatch")
+
+    embedded_assembly = pe31_input.pe30_tiny_order_integration_input.pe26_assembly_input
+    if assembly_input.assembly_id != embedded_assembly.assembly_id:
+        if _assembly_identity(assembly_input.assembly_id) != _assembly_identity(
+            embedded_assembly.assembly_id
+        ):
+            fail_reasons.append(
+                "pe31_reconciliation_review: assembly_id mismatch with embedded PE-26"
+            )
+    if assembly_input.source_revision != embedded_assembly.source_revision:
+        fail_reasons.append(
+            "pe31_reconciliation_review: source_revision mismatch with embedded PE-26"
+        )
+    outer_without_pe31 = replace(
+        assembly_input,
+        pe31_reconciliation_review_integration_input=None,
+        pe31_reconciliation_review_integration_proof=None,
+    )
+    embedded_without_pe31 = replace(
+        embedded_assembly,
+        assembly_id=_assembly_identity(embedded_assembly.assembly_id),
+        pe31_reconciliation_review_integration_input=None,
+        pe31_reconciliation_review_integration_proof=None,
+    )
+    if compute_assembly_input_digest(outer_without_pe31) != compute_assembly_input_digest(
+        embedded_without_pe31
+    ):
+        fail_reasons.append(
+            "pe31_reconciliation_review: assembly_input_digest mismatch with embedded PE-26"
+        )
+
+    review_proof = pe31_input.reconciliation_review_proof
+    if review_proof.static_review_consistency_proven is not True:
+        fail_reasons.append(
+            "pe31_reconciliation_review_proof: static_review_consistency_proven must be true"
+        )
+    if review_proof.review_only is not True:
+        fail_reasons.append("pe31_reconciliation_review_proof: review_only must be true")
+    if review_proof.manifest_verify_rc != 0:
+        fail_reasons.append("pe31_reconciliation_review_proof: manifest_verify_rc must be 0")
+
+    return fail_reasons
+
+
 def _validate_pe22_proof(binding: Pe22RiskKillswitchFlattenProofBinding) -> list[str]:
     fail_reasons: list[str] = []
     if not binding.integration_input_digest:
@@ -1146,6 +1372,7 @@ def validate_preflight_execution_readiness_assembly_input(
             assembly_input.pe21_reconciliation_primary_evidence_proof
         )
     )
+    fail_reasons.extend(_validate_pe31_reconciliation_review_proof(assembly_input))
     fail_reasons.extend(_validate_pe22_proof(assembly_input.pe22_risk_killswitch_flatten_proof))
     fail_reasons.extend(
         _validate_pe23_proof(assembly_input.pe23_capital_slot_ratchet_release_proof)
@@ -1238,6 +1465,7 @@ def evaluate_preflight_execution_readiness_assembly_lifecycle_integration(
     expected_pe20_package_id: str | None = None,
     expected_glb012_integration_proof_digest: str | None = None,
     expected_pe21_integration_proof_digest: str | None = None,
+    expected_pe31_integration_proof_digest: str | None = None,
     expected_pe22_integration_proof_digest: str | None = None,
     expected_pe23_integration_proof_digest: str | None = None,
     expected_pe24_integration_proof_digest: str | None = None,
@@ -1338,6 +1566,19 @@ def evaluate_preflight_execution_readiness_assembly_lifecycle_integration(
         ):
             fail_reasons.append(
                 "pe21_reconciliation_primary_evidence_proof: integration_proof_digest mismatch"
+            )
+
+    if expected_pe31_integration_proof_digest is not None:
+        if assembly_input.pe31_reconciliation_review_integration_proof is None:
+            fail_reasons.append(
+                "pe31_reconciliation_review_integration_proof: integration_proof_digest mismatch"
+            )
+        elif (
+            assembly_input.pe31_reconciliation_review_integration_proof.integration_proof_digest
+            != expected_pe31_integration_proof_digest
+        ):
+            fail_reasons.append(
+                "pe31_reconciliation_review_integration_proof: integration_proof_digest mismatch"
             )
 
     if expected_pe22_integration_proof_digest is not None:
@@ -1479,6 +1720,21 @@ def evaluate_preflight_execution_readiness_assembly_lifecycle_integration(
             fail_reasons.append(
                 f"unknown lifecycle state {unknown_lifecycle_state!r} is not allowed"
             )
+
+    if (
+        assembly_input.pe31_reconciliation_review_integration_input is not None
+        and _is_pe31_bootstrap_stub(assembly_input.pe31_reconciliation_review_integration_input)
+        and not _RECURSIVE_PE26_DEFAULT_BUILD
+    ):
+        fail_reasons.append(
+            "pe31_reconciliation_review_integration_input: bootstrap stub is not allowed"
+        )
+    elif (
+        assembly_input.pe31_reconciliation_review_integration_input is None
+        and not _RECURSIVE_PE26_DEFAULT_BUILD
+        and not _is_embedded_pe26_snapshot(assembly_input)
+    ):
+        fail_reasons.append("pe31_reconciliation_review_integration_input required")
 
     if not fail_reasons:
         fail_reasons.extend(_validate_static_preflight_compatibility(assembly_input))
@@ -1794,15 +2050,378 @@ def default_minimal_safety_snapshot() -> AssemblySafetySnapshot:
     )
 
 
-def default_minimal_assembly_input(
+_RECURSIVE_PE26_DEFAULT_BUILD = False
+_COHERENT_ASSEMBLY_DEFAULT_CACHE: PreflightExecutionReadinessAssemblyInput | None = None
+
+
+def default_minimal_pe31_integration_proof(
+    pe31_input: ReconciliationReviewLifecycleIntegrationInput,
+) -> Pe31ReconciliationReviewIntegrationProofBinding:
+    _, compute_pe31_integration_proof_digest, _ = _lazy_pe31()
+    return Pe31ReconciliationReviewIntegrationProofBinding(
+        integration_owner=PE31_INTEGRATION_OWNER,
+        integration_input_digest=_compute_pe31_integration_input_digest(pe31_input),
+        integration_proof_digest=compute_pe31_integration_proof_digest(
+            pe31_input,
+            reconciliation_review_lifecycle_eligibility_for_separate_operator_review=True,
+        ),
+        pe31_integration_pass=True,
+        reconciliation_review_lifecycle_eligibility=True,
+    )
+
+
+_BOOTSTRAP_PE31_IN_PROGRESS = threading.local()
+
+
+def _bootstrap_pe31_reconciliation_stub(
     *,
-    source_revision: str = "abcdef0123456789abcdef0123456789abcdef01",
-    adapter_id: str = "offline_bounded_futures_testnet_adapter_v0",
-    assembly_id: str = "preflight-execution-readiness-assembly-001",
-    instrument: str = "PF_ETHUSD",
-    lifecycle_state_digest: str | None = None,
+    source_revision: str,
+    adapter_id: str,
+    instrument: str,
+) -> tuple[
+    ReconciliationReviewLifecycleIntegrationInput, Pe31ReconciliationReviewIntegrationProofBinding
+]:
+    from src.ops.bounded_futures_testnet_reconciliation_review_lifecycle_integration_contract_v0 import (
+        ContractVersionsInput as Pe31ContractVersionsInput,
+        IntegrationSafetySnapshot as Pe31IntegrationSafetySnapshot,
+        LifecycleMatrixProof as Pe31LifecycleMatrixProof,
+        LifecycleStateBinding as Pe31LifecycleStateBinding,
+        Pe21ReconciliationPrimaryEvidenceIntegrationProofBinding,
+        Pe30TinyOrderIntegrationProofBinding,
+        ReconciliationReviewLifecycleIntegrationInput,
+        ReconciliationReviewProofBinding,
+    )
+
+    placeholder = _BOOTSTRAP_PLACEHOLDER_DIGEST
+    matrix_digest = compute_lifecycle_matrix_digest()
+    pe31_input = ReconciliationReviewLifecycleIntegrationInput(
+        source_revision=source_revision,
+        repository_identity=REPOSITORY_IDENTITY,
+        adapter_id=adapter_id,
+        integration_id=PE31_BOOTSTRAP_INTEGRATION_ID,
+        instrument=instrument,
+        market_type=DEFAULT_MARKET_TYPE,
+        contract_versions=Pe31ContractVersionsInput(
+            pe12_lifecycle=PE12_CONTRACT_VERSION,
+            pe26_assembly=CONTRACT_VERSION,
+            pe27_zero_order="bounded_futures_testnet_zero_order_lifecycle_integration.v0",
+            pe28_private_readonly="bounded_futures_testnet_private_readonly_lifecycle_integration.v0",
+            pe29_validate_only="bounded_futures_testnet_validate_only_lifecycle_integration.v0",
+            pe30_tiny_order="bounded_futures_testnet_tiny_order_lifecycle_integration.v0",
+            pe21_reconciliation_primary_evidence=PE21_CONTRACT_VERSION,
+            integration=PE31_CONTRACT_VERSION,
+        ),
+        lifecycle_matrix_proof=Pe31LifecycleMatrixProof(
+            pe12_contract_version=PE12_CONTRACT_VERSION,
+            lifecycle_matrix_digest=matrix_digest,
+            assigned_lifecycle_phase=PHASE_RECONCILIATION_REVIEW,
+            lifecycle_state_digest=placeholder,
+        ),
+        lifecycle_state_before=Pe31LifecycleStateBinding(
+            state_id="bootstrap-before",
+            state_digest=placeholder,
+            assigned_lifecycle_phase=PHASE_TINY_ORDER,
+            adapter_id=adapter_id,
+        ),
+        declared_lifecycle_state_after=Pe31LifecycleStateBinding(
+            state_id="bootstrap-after",
+            state_digest=placeholder,
+            assigned_lifecycle_phase=PHASE_RECONCILIATION_REVIEW,
+            adapter_id=adapter_id,
+        ),
+        pe30_tiny_order_integration_input=pe30_input,
+        pe30_tiny_order_integration_proof=Pe30TinyOrderIntegrationProofBinding(
+            integration_owner="bounded_futures_testnet_tiny_order_lifecycle_integration.v0",
+            integration_input_digest=placeholder,
+            integration_proof_digest=placeholder,
+            pe30_integration_pass=True,
+            tiny_order_lifecycle_eligibility=True,
+        ),
+        pe21_reconciliation_primary_evidence_integration_input=pe21_input,
+        pe21_reconciliation_primary_evidence_integration_proof=Pe21ReconciliationPrimaryEvidenceIntegrationProofBinding(
+            integration_owner=PE21_CONTRACT_VERSION,
+            integration_input_digest=placeholder,
+            integration_proof_digest=placeholder,
+            pe21_integration_pass=True,
+            reconciled=True,
+            durable_primary_evidence_binding_proven=True,
+            reconciliation_result_digest=placeholder,
+        ),
+        reconciliation_review_proof=ReconciliationReviewProofBinding(
+            reconciliation_review_owner=PHASE_CANONICAL_OWNERS[PHASE_RECONCILIATION_REVIEW],
+            reconciliation_owner="src/ops/recon/reconcile.py",
+            primary_evidence_owner="scripts/ops/primary_evidence_retention_v0.py",
+            reconciliation_review_mode="static_review_consistency_proof_only",
+            review_only=True,
+            static_review_consistency_proven=True,
+            manifest_verify_rc=0,
+            reconciliation_review_proof_digest=placeholder,
+            request_count=0,
+            exchange_request_count=0,
+            orders_created=0,
+            orders_cancelled=0,
+            orders_amended=0,
+            positions_changed=0,
+            network_used=False,
+            credentials_used=False,
+            secret_material_read=False,
+            secret_material_stored=False,
+            exchange_api_called=False,
+            account_state_queried=False,
+            adapter_called=False,
+            runtime_started=False,
+            testnet_started=False,
+            harness_started=False,
+            subprocess_started=False,
+            evidence_created=False,
+            evidence_mutated=False,
+        ),
+        safety_snapshot=Pe31IntegrationSafetySnapshot(
+            preflight_remains_blocked=True,
+            ready_for_operator_arming=False,
+            execution_authorized=False,
+            live_authorized=False,
+            zero_order_authorized=False,
+            private_readonly_authorized=False,
+            validate_only_authorized=False,
+            tiny_order_authorized=False,
+            reconciliation_authorized=False,
+            evidence_acceptance_authorized=False,
+            network_allowed=False,
+            credentials_allowed=False,
+            orders_allowed=False,
+            scheduler_runtime_allowed=False,
+            futures_only=True,
+            bitcoin_direction_allowed=False,
+            followup_run_gate=FOLLOWUP_RUN_GATE,
+        ),
+    )
+    proof = Pe31ReconciliationReviewIntegrationProofBinding(
+        integration_owner=PE31_INTEGRATION_OWNER,
+        integration_input_digest=placeholder,
+        integration_proof_digest=placeholder,
+        pe31_integration_pass=False,
+        reconciliation_review_lifecycle_eligibility=False,
+    )
+    return pe31_input, proof
+
+
+def _lazy_pe21_and_pe30() -> Any:
+    from src.ops.bounded_futures_testnet_position_order_reconciliation_primary_evidence_integration_contract_v0 import (
+        compute_integration_input_digest as compute_pe21_integration_input_digest,
+        compute_integration_proof_digest as compute_pe21_integration_proof_digest,
+        default_minimal_integration_input as default_minimal_pe21_integration_input,
+    )
+    from src.ops.bounded_futures_testnet_reconciliation_review_lifecycle_integration_contract_v0 import (
+        default_minimal_integration_input as default_minimal_pe31_integration_input,
+        default_minimal_pe21_integration_proof,
+        default_minimal_pe30_integration_proof,
+        default_minimal_reconciliation_review_proof,
+    )
+    from src.ops.bounded_futures_testnet_tiny_order_lifecycle_integration_contract_v0 import (
+        default_minimal_integration_input as default_minimal_pe30_integration_input,
+        default_minimal_pe26_assembly_proof,
+        default_minimal_pe27_integration_proof,
+        default_minimal_pe28_integration_proof,
+        default_minimal_pe29_integration_proof,
+    )
+
+    return (
+        compute_pe21_integration_input_digest,
+        compute_pe21_integration_proof_digest,
+        default_minimal_pe21_integration_input,
+        default_minimal_pe30_integration_input,
+        default_minimal_pe30_integration_proof,
+        default_minimal_pe26_assembly_proof,
+        default_minimal_pe31_integration_input,
+        default_minimal_pe21_integration_proof,
+        default_minimal_reconciliation_review_proof,
+        default_minimal_pe27_integration_proof,
+        default_minimal_pe28_integration_proof,
+        default_minimal_pe29_integration_proof,
+    )
+
+
+def _pe30_with_embedded_pe26_snapshot(
+    pe30_input: Any,
+    embedded_assembly: PreflightExecutionReadinessAssemblyInput,
+) -> Any:
+    (
+        _,
+        _,
+        _,
+        _,
+        _,
+        default_minimal_pe26_assembly_proof,
+        _,
+        _,
+        _,
+        default_minimal_pe27_integration_proof,
+        default_minimal_pe28_integration_proof,
+        default_minimal_pe29_integration_proof,
+    ) = _lazy_pe21_and_pe30()
+    pe26_proof = default_minimal_pe26_assembly_proof(embedded_assembly)
+
+    def _embed_pe26_in_pe27(pe27_input: Any) -> Any:
+        return replace(
+            pe27_input,
+            pe26_assembly_input=embedded_assembly,
+            pe26_assembly_proof=pe26_proof,
+        )
+
+    def _embed_pe26_in_pe28(pe28_input: Any) -> Any:
+        return replace(
+            pe28_input,
+            pe26_assembly_input=embedded_assembly,
+            pe26_assembly_proof=pe26_proof,
+        )
+
+    def _embed_pe26_in_pe29(pe29_input: Any) -> Any:
+        pe27_input = _embed_pe26_in_pe27(pe29_input.pe27_zero_order_integration_input)
+        pe28_input = _embed_pe26_in_pe28(pe29_input.pe28_private_readonly_integration_input)
+        return replace(
+            pe29_input,
+            pe26_assembly_input=embedded_assembly,
+            pe26_assembly_proof=pe26_proof,
+            pe27_zero_order_integration_input=pe27_input,
+            pe27_zero_order_integration_proof=default_minimal_pe27_integration_proof(pe27_input),
+            pe28_private_readonly_integration_input=pe28_input,
+            pe28_private_readonly_integration_proof=default_minimal_pe28_integration_proof(
+                pe28_input
+            ),
+        )
+
+    pe27_input = _embed_pe26_in_pe27(pe30_input.pe27_zero_order_integration_input)
+    pe28_input = _embed_pe26_in_pe28(pe30_input.pe28_private_readonly_integration_input)
+    pe29_input = _embed_pe26_in_pe29(pe30_input.pe29_validate_only_integration_input)
+    return replace(
+        pe30_input,
+        pe26_assembly_input=embedded_assembly,
+        pe26_assembly_proof=pe26_proof,
+        pe27_zero_order_integration_input=pe27_input,
+        pe27_zero_order_integration_proof=default_minimal_pe27_integration_proof(pe27_input),
+        pe28_private_readonly_integration_input=pe28_input,
+        pe28_private_readonly_integration_proof=default_minimal_pe28_integration_proof(pe28_input),
+        pe29_validate_only_integration_input=pe29_input,
+        pe29_validate_only_integration_proof=default_minimal_pe29_integration_proof(pe29_input),
+    )
+
+
+def _attach_coherent_pe31_bindings(
+    assembly_input: PreflightExecutionReadinessAssemblyInput,
 ) -> PreflightExecutionReadinessAssemblyInput:
-    """Minimal valid futures-generic assembly input for offline tests."""
+    (
+        compute_pe21_integration_input_digest,
+        compute_pe21_integration_proof_digest,
+        default_minimal_pe21_integration_input,
+        _,
+        default_minimal_pe30_integration_proof,
+        _,
+        default_minimal_pe31_integration_input,
+        default_minimal_pe21_integration_proof,
+        default_minimal_reconciliation_review_proof,
+        _,
+        _,
+        _,
+    ) = _lazy_pe21_and_pe30()
+
+    pe21_input = default_minimal_pe21_integration_input(
+        source_revision=assembly_input.source_revision,
+        adapter_id=assembly_input.adapter_id,
+        instrument=assembly_input.instrument,
+    )
+    current = replace(
+        assembly_input,
+        pe21_reconciliation_primary_evidence_proof=Pe21ReconciliationPrimaryEvidenceProofBinding(
+            integration_input_digest=compute_pe21_integration_input_digest(pe21_input),
+            integration_proof_digest=compute_pe21_integration_proof_digest(pe21_input),
+            pe21_integration_pass=True,
+            durable_primary_evidence_binding_proven=True,
+            lifecycle_matrix_digest=compute_pe21_lifecycle_matrix_digest(),
+        ),
+    )
+    embedded_assembly = replace(
+        current,
+        assembly_id=f"{current.assembly_id}{PE26_EMBEDDED_SNAPSHOT_SUFFIX}",
+        pe31_reconciliation_review_integration_input=None,
+        pe31_reconciliation_review_integration_proof=None,
+    )
+    pe31_input = default_minimal_pe31_integration_input(
+        source_revision=current.source_revision,
+        adapter_id=current.adapter_id,
+        instrument=current.instrument,
+        lifecycle_state_digest=current.lifecycle_matrix_proof.lifecycle_state_digest,
+    )
+    pe30_input = _pe30_with_embedded_pe26_snapshot(
+        pe31_input.pe30_tiny_order_integration_input,
+        embedded_assembly,
+    )
+    pe31_input = replace(
+        pe31_input,
+        pe30_tiny_order_integration_input=pe30_input,
+        pe30_tiny_order_integration_proof=default_minimal_pe30_integration_proof(pe30_input),
+        pe21_reconciliation_primary_evidence_integration_input=pe21_input,
+        pe21_reconciliation_primary_evidence_integration_proof=default_minimal_pe21_integration_proof(
+            pe21_input
+        ),
+        reconciliation_review_proof=default_minimal_reconciliation_review_proof(pe21_input),
+    )
+    return replace(
+        current,
+        pe31_reconciliation_review_integration_input=pe31_input,
+        pe31_reconciliation_review_integration_proof=default_minimal_pe31_integration_proof(
+            pe31_input
+        ),
+    )
+
+
+def _bootstrap_default_minimal_assembly_input(
+    *,
+    source_revision: str,
+    adapter_id: str,
+    assembly_id: str,
+    instrument: str,
+    lifecycle_state_digest: str | None,
+) -> PreflightExecutionReadinessAssemblyInput:
+    return _build_assembly_shell(
+        source_revision=source_revision,
+        adapter_id=adapter_id,
+        assembly_id=assembly_id,
+        instrument=instrument,
+        lifecycle_state_digest=lifecycle_state_digest,
+        pe31_input=None,
+        pe31_proof=None,
+    )
+
+
+def _coherent_default_minimal_assembly_input(
+    *,
+    source_revision: str,
+    adapter_id: str,
+    assembly_id: str,
+    instrument: str,
+    lifecycle_state_digest: str | None,
+) -> PreflightExecutionReadinessAssemblyInput:
+    shell = _bootstrap_default_minimal_assembly_input(
+        source_revision=source_revision,
+        adapter_id=adapter_id,
+        assembly_id=assembly_id,
+        instrument=instrument,
+        lifecycle_state_digest=lifecycle_state_digest,
+    )
+    return _attach_coherent_pe31_bindings(shell)
+
+
+def _build_assembly_shell(
+    *,
+    source_revision: str,
+    adapter_id: str,
+    assembly_id: str,
+    instrument: str,
+    lifecycle_state_digest: str | None,
+    pe31_input: ReconciliationReviewLifecycleIntegrationInput | None,
+    pe31_proof: Pe31ReconciliationReviewIntegrationProofBinding | None,
+) -> PreflightExecutionReadinessAssemblyInput:
     depth = _assembly_default_build_depth_value()
     _set_assembly_default_build_depth(depth + 1)
     try:
@@ -1820,7 +2439,7 @@ def default_minimal_assembly_input(
                 satisfied=True,
             )
 
-        return PreflightExecutionReadinessAssemblyInput(
+        assembly = PreflightExecutionReadinessAssemblyInput(
             source_revision=source_revision,
             repository_identity=REPOSITORY_IDENTITY,
             adapter_id=adapter_id,
@@ -1839,6 +2458,7 @@ def default_minimal_assembly_input(
                 pe20_review_proof_package=PE20_CONTRACT_VERSION,
                 glb012_adapter_capability=GLB012_CONTRACT_VERSION,
                 pe21_reconciliation_primary_evidence=PE21_CONTRACT_VERSION,
+                pe31_reconciliation_review=PE31_CONTRACT_VERSION,
                 pe22_risk_killswitch_flatten=PE22_CONTRACT_VERSION,
                 pe23_capital_slot_ratchet_release=PE23_CONTRACT_VERSION,
                 pe24_pilot_envelope=PE24_CONTRACT_VERSION,
@@ -1921,6 +2541,8 @@ def default_minimal_assembly_input(
                 durable_primary_evidence_binding_proven=True,
                 lifecycle_matrix_digest=compute_pe21_lifecycle_matrix_digest(),
             ),
+            pe31_reconciliation_review_integration_input=pe31_input,
+            pe31_reconciliation_review_integration_proof=pe31_proof,
             pe22_risk_killswitch_flatten_proof=Pe22RiskKillswitchFlattenProofBinding(
                 integration_input_digest="e" * 64,
                 integration_proof_digest="f" * 64,
@@ -1956,5 +2578,52 @@ def default_minimal_assembly_input(
             ),
             safety_snapshot=default_minimal_safety_snapshot(),
         )
+        return assembly
     finally:
         _set_assembly_default_build_depth(depth)
+
+
+def default_minimal_assembly_input(
+    *,
+    source_revision: str = "abcdef0123456789abcdef0123456789abcdef01",
+    adapter_id: str = "offline_bounded_futures_testnet_adapter_v0",
+    assembly_id: str = "preflight-execution-readiness-assembly-001",
+    instrument: str = "PF_ETHUSD",
+    lifecycle_state_digest: str | None = None,
+) -> PreflightExecutionReadinessAssemblyInput:
+    """Minimal valid futures-generic assembly input for offline tests."""
+    global _RECURSIVE_PE26_DEFAULT_BUILD, _COHERENT_ASSEMBLY_DEFAULT_CACHE
+
+    if _RECURSIVE_PE26_DEFAULT_BUILD:
+        return _bootstrap_default_minimal_assembly_input(
+            source_revision=source_revision,
+            adapter_id=adapter_id,
+            assembly_id=assembly_id,
+            instrument=instrument,
+            lifecycle_state_digest=lifecycle_state_digest,
+        )
+
+    default_params = (
+        source_revision == "abcdef0123456789abcdef0123456789abcdef01"
+        and adapter_id == "offline_bounded_futures_testnet_adapter_v0"
+        and assembly_id == "preflight-execution-readiness-assembly-001"
+        and instrument == "PF_ETHUSD"
+        and lifecycle_state_digest is None
+    )
+    if default_params and _COHERENT_ASSEMBLY_DEFAULT_CACHE is not None:
+        return _COHERENT_ASSEMBLY_DEFAULT_CACHE
+
+    _RECURSIVE_PE26_DEFAULT_BUILD = True
+    try:
+        result = _coherent_default_minimal_assembly_input(
+            source_revision=source_revision,
+            adapter_id=adapter_id,
+            assembly_id=assembly_id,
+            instrument=instrument,
+            lifecycle_state_digest=lifecycle_state_digest,
+        )
+        if default_params:
+            _COHERENT_ASSEMBLY_DEFAULT_CACHE = result
+        return result
+    finally:
+        _RECURSIVE_PE26_DEFAULT_BUILD = False
