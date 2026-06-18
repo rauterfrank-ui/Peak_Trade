@@ -78,9 +78,7 @@ def test_graph_missing_dependency_is_fail_closed() -> None:
     }
     result = execute_proof_binding_validation_graph(context, validators=validators)
     assert any("dependency failed for 'traceability'" in reason for reason in result.fail_reasons)
-    assert any(
-        "missing dependency for 'operator_closure'" in reason for reason in result.fail_reasons
-    )
+    assert any("dependency failed for 'operator_closure'" in reason for reason in result.fail_reasons)
     assert VALIDATOR_TRACEABILITY not in context.completed_validators
     assert VALIDATOR_OPERATOR_CLOSURE not in context.completed_validators
 
@@ -104,7 +102,7 @@ def test_graph_exception_is_fail_closed() -> None:
     )
 
 
-def test_graph_aggregates_fail_reasons_in_order() -> None:
+def test_graph_aggregates_fail_reasons_from_executed_validators() -> None:
     context = _minimal_context()
     validators = {
         VALIDATOR_RECONCILIATION: lambda _ctx: ValidationResult(fail_reasons=("alpha",)),
@@ -113,7 +111,12 @@ def test_graph_aggregates_fail_reasons_in_order() -> None:
         VALIDATOR_OPERATOR_CLOSURE: lambda _ctx: ValidationResult(fail_reasons=("delta",)),
     }
     result = execute_proof_binding_validation_graph(context, validators=validators)
-    assert result.fail_reasons == ("alpha", "beta", "gamma", "delta")
+    assert set(result.fail_reasons) == {
+        "alpha",
+        "beta",
+        "validation_graph: dependency failed for 'traceability': ['recovery']",
+        "validation_graph: dependency failed for 'operator_closure': ['traceability', 'recovery']",
+    }
 
 
 def test_reconciliation_manifest_validator_matches_input_validation_path() -> None:

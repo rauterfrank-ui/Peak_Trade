@@ -91,18 +91,18 @@ def execute_proof_binding_validation_graph(
             continue
 
         dependencies = PROOF_BINDING_VALIDATION_GRAPH[validator_id]
-        missing_dependencies = [dep for dep in dependencies if dep not in completed]
-        if missing_dependencies:
-            fail_reasons.append(
-                f"validation_graph: missing dependency for {validator_id!r}: {missing_dependencies}"
-            )
-            failed.add(validator_id)
-            continue
-
         failed_dependencies = [dep for dep in dependencies if dep in failed]
         if failed_dependencies:
             fail_reasons.append(
                 f"validation_graph: dependency failed for {validator_id!r}: {failed_dependencies}"
+            )
+            failed.add(validator_id)
+            continue
+
+        missing_dependencies = [dep for dep in dependencies if dep not in completed]
+        if missing_dependencies:
+            fail_reasons.append(
+                f"validation_graph: missing dependency for {validator_id!r}: {missing_dependencies}"
             )
             failed.add(validator_id)
             continue
