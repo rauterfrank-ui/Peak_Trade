@@ -1,10 +1,11 @@
-"""Bounded Futures Testnet preflight execution readiness review lifecycle integration (v0, PE-38).
+"""Bounded Futures Testnet preflight execution readiness review lifecycle integration (v0, PE-38/PE-41).
 
 Deterministic, offline, explicit-input-only fail-closed integration composing PE-26
-preflight execution readiness assembly, PE-32 readiness-decision lifecycle integration,
-PE-37 durable evidence traceability, PE-19/PE-20 operator-review input/proof bindings,
-PE-34 operator-review handoff boundary, PE-35 staleness/revocation/recovery boundary,
-PE-25 operator-closure bindings, and bounded-pilot lifecycle static proof composition.
+preflight execution readiness assembly, PE-40-hardened PE-32 readiness-decision lifecycle
+integration (PE-39 admission-presentation→operator-closure proof chain), PE-37 durable
+evidence traceability, PE-19/PE-20 operator-review input/proof bindings, PE-34
+operator-review handoff boundary, PE-35 staleness/revocation/recovery boundary, PE-25
+operator-closure bindings, and bounded-pilot lifecycle static proof composition.
 
 Static integration only — no network, testnet, runtime, credentials, orders, operator
 review execution, operative readiness decisions, blocker lifts, or authority lift.
@@ -34,6 +35,7 @@ from src.ops.bounded_futures_testnet_handoff_staleness_revocation_recovery_bound
 )
 from src.ops.bounded_futures_testnet_operator_closure_lifecycle_integration_contract_v0 import (
     CONTRACT_VERSION as PE25_CONTRACT_VERSION,
+    compute_closure_input_digest as compute_pe25_closure_input_digest,
 )
 from src.ops.bounded_futures_testnet_operator_review_chain_durable_evidence_traceability_boundary_contract_v0 import (
     BOUNDARY_OWNER as PE37_BOUNDARY_OWNER,
@@ -75,10 +77,20 @@ from src.ops.bounded_futures_testnet_preflight_packet_contract_v0 import (
     PE12_CONTRACT_VERSION,
 )
 from src.ops.bounded_futures_testnet_readiness_decision_lifecycle_integration_contract_v0 import (
+    ADMISSION_LIFECYCLE_CONTRACT_VERSION,
     CONTRACT_VERSION as PE32_CONTRACT_VERSION,
+    PE36_CONTRACT_VERSION,
+    PE39_BRIDGE_OWNER,
+    PE39_CONTRACT_VERSION,
+    Pe39BridgeIntegrationProofBinding,
     ReadinessDecisionLifecycleIntegrationInput,
+    ReadinessDecisionProofChainBinding,
+    READINESS_DECISION_PROOF_CHAIN_SLOT_ORDER,
     compute_integration_input_digest as compute_pe32_integration_input_digest,
     compute_integration_proof_digest as compute_pe32_integration_proof_digest,
+    default_minimal_pe39_bridge_integration_proof,
+    default_minimal_readiness_decision_proof_chain,
+    evaluate_pe39_admission_presentation_operator_closure_lifecycle_bridge,
     evaluate_readiness_decision_lifecycle_integration,
     validate_readiness_decision_lifecycle_integration_input,
 )
@@ -136,6 +148,10 @@ _FORBIDDEN_EXTRA_FIELD_FRAGMENTS = (
 )
 
 PROOF_CHAIN_SLOT_ORDER = (
+    "pe39_bridge_proof_digest",
+    "pe39_admission_integration_proof_digest",
+    "pe40_pe32_integration_proof_digest",
+    "pe38_referenced_pe40_pe32_proof_digest",
     "pe26_assembly_digest",
     "pe32_integration_proof_digest",
     "pe37_boundary_result_digest",
@@ -158,7 +174,10 @@ _EXPECTED_CONTRACT_VERSIONS: dict[str, str] = {
     "pe32_readiness_decision": PE32_CONTRACT_VERSION,
     "pe34_handoff": PE34_CONTRACT_VERSION,
     "pe35_staleness": PE35_CONTRACT_VERSION,
+    "pe36_admission_presentation": PE36_CONTRACT_VERSION,
     "pe37_traceability": PE37_CONTRACT_VERSION,
+    "admission_presentation_lifecycle": ADMISSION_LIFECYCLE_CONTRACT_VERSION,
+    "pe39_bridge": PE39_CONTRACT_VERSION,
     "integration": CONTRACT_VERSION,
 }
 
@@ -173,7 +192,10 @@ class ContractVersionsInput:
     pe32_readiness_decision: str
     pe34_handoff: str
     pe35_staleness: str
+    pe36_admission_presentation: str
     pe37_traceability: str
+    admission_presentation_lifecycle: str
+    pe39_bridge: str
     integration: str
 
 
@@ -256,6 +278,10 @@ class PilotReadinessCompositionProofBinding:
 
 @dataclass(frozen=True)
 class ReviewLifecycleProofChainBinding:
+    pe39_bridge_proof_digest: str
+    pe39_admission_integration_proof_digest: str
+    pe40_pe32_integration_proof_digest: str
+    pe38_referenced_pe40_pe32_proof_digest: str
     pe26_assembly_digest: str
     pe32_integration_proof_digest: str
     pe37_boundary_result_digest: str
@@ -319,6 +345,8 @@ class PreflightExecutionReadinessReviewLifecycleIntegrationInput:
     pe34_handoff_proof: Pe34HandoffProofBinding
     pe35_staleness_proof: Pe35StalenessProofBinding
     pe25_closure_proof: Pe25ClosureProofBinding
+    pe39_bridge_integration_proof: Pe39BridgeIntegrationProofBinding
+    pe40_readiness_decision_proof_chain: ReadinessDecisionProofChainBinding
     pilot_readiness_proof: PilotReadinessCompositionProofBinding
     proof_chain: ReviewLifecycleProofChainBinding
     safety_snapshot: IntegrationSafetySnapshot
@@ -637,6 +665,13 @@ def _validate_pe25_closure_proof(
         fail_reasons.append("pe25_closure_proof: closure_result_digest mismatch with PE-32")
     elif proof.closure_result_digest != pe26_closure.closure_result_digest:
         fail_reasons.append("pe25_closure_proof: closure_result_digest mismatch with PE-26")
+    elif integration_input.pe39_bridge_integration_proof.pe39_admission_presentation_operator_closure_bridge_bound:
+        if proof.closure_result_digest != (
+            integration_input.pe40_readiness_decision_proof_chain.pe25_closure_proof_digest
+        ):
+            fail_reasons.append(
+                "pe25_closure_proof: closure_result_digest mismatch with PE-40 chain"
+            )
     elif proof.closure_result_digest != pe34_closure.closure_result_digest:
         fail_reasons.append("pe25_closure_proof: closure_result_digest mismatch with PE-34")
     if proof.operative_operator_closure_executed is not False:
@@ -687,6 +722,160 @@ def _validate_pilot_readiness_proof(
     return fail_reasons
 
 
+def _validate_pe39_bridge_review_proof(
+    integration_input: PreflightExecutionReadinessReviewLifecycleIntegrationInput,
+    *,
+    pe39_result: dict[str, Any],
+) -> list[str]:
+    fail_reasons: list[str] = []
+    proof = integration_input.pe39_bridge_integration_proof
+    pe32_proof = integration_input.pe32_integration_input.pe39_bridge_integration_proof
+    pe39_input = integration_input.pe32_integration_input.pe39_bridge_integration_input
+
+    if proof.bridge_owner != PE39_BRIDGE_OWNER:
+        fail_reasons.append(
+            f"pe39_bridge_integration_proof: bridge_owner must be {PE39_BRIDGE_OWNER!r}"
+        )
+    if proof.source_revision != integration_input.source_revision:
+        fail_reasons.append("pe39_bridge_integration_proof: source_revision mismatch")
+    if proof.bridge_proof_digest != pe32_proof.bridge_proof_digest:
+        fail_reasons.append(
+            "pe39_bridge_integration_proof: bridge_proof_digest mismatch with PE-32"
+        )
+    if proof.admission_integration_proof_digest != pe32_proof.admission_integration_proof_digest:
+        fail_reasons.append(
+            "pe39_bridge_integration_proof: admission_integration_proof_digest mismatch with PE-32"
+        )
+    expected_bridge_proof = pe39_result.get("bridge_proof_digest")
+    if not proof.bridge_proof_digest:
+        fail_reasons.append("pe39_bridge_integration_proof: bridge_proof_digest required")
+    elif expected_bridge_proof is None:
+        fail_reasons.append("pe39_bridge_integration_proof: bridge_proof_digest unavailable")
+    elif proof.bridge_proof_digest != expected_bridge_proof:
+        fail_reasons.append("pe39_bridge_integration_proof: bridge_proof_digest mismatch")
+    admission_proof = pe39_result.get("admission_integration_proof_digest") or ""
+    if not proof.admission_integration_proof_digest:
+        fail_reasons.append(
+            "pe39_bridge_integration_proof: admission_integration_proof_digest required"
+        )
+    elif proof.admission_integration_proof_digest != admission_proof:
+        fail_reasons.append(
+            "pe39_bridge_integration_proof: admission_integration_proof_digest mismatch"
+        )
+    admission_chain = pe39_input.admission_presentation_integration_input.proof_chain
+    if not proof.pe34_handoff_digest:
+        fail_reasons.append("pe39_bridge_integration_proof: pe34_handoff_digest required")
+    elif proof.pe34_handoff_digest != admission_chain.pe34_handoff_digest:
+        fail_reasons.append("pe39_bridge_integration_proof: pe34_handoff_digest mismatch")
+    if not proof.pe35_boundary_result_digest:
+        fail_reasons.append("pe39_bridge_integration_proof: pe35_boundary_result_digest required")
+    elif proof.pe35_boundary_result_digest != admission_chain.pe35_boundary_result_digest:
+        fail_reasons.append("pe39_bridge_integration_proof: pe35_boundary_result_digest mismatch")
+    if not proof.pe36_presentation_projection_digest:
+        fail_reasons.append(
+            "pe39_bridge_integration_proof: pe36_presentation_projection_digest required"
+        )
+    elif (
+        proof.pe36_presentation_projection_digest
+        != admission_chain.pe36_presentation_projection_digest
+    ):
+        fail_reasons.append(
+            "pe39_bridge_integration_proof: pe36_presentation_projection_digest mismatch"
+        )
+    if not proof.pe37_traceability_identity:
+        fail_reasons.append("pe39_bridge_integration_proof: pe37_traceability_identity required")
+    elif proof.pe37_traceability_identity != admission_chain.pe37_traceability_identity:
+        fail_reasons.append("pe39_bridge_integration_proof: pe37_traceability_identity mismatch")
+    for field_name, expected in (
+        ("pe39_admission_presentation_operator_closure_bridge_bound", True),
+        ("admission_presentation_lifecycle_bound", True),
+        ("pe34_handoff_bound", True),
+        ("pe35_staleness_revocation_recovery_bound", True),
+        ("pe36_admission_presentation_bound", True),
+        ("pe37_durable_traceability_bound", True),
+        ("pe25_operator_closure_bound", True),
+    ):
+        if getattr(proof, field_name) is not expected:
+            fail_reasons.append(f"pe39_bridge_integration_proof: {field_name} must be {expected}")
+    if not pe39_result.get("bridge_pass"):
+        fail_reasons.append("pe39_bridge_integration_input: PE-39 bridge evaluation failed")
+        fail_reasons.extend(
+            f"pe39_bridge_integration_input: {reason}"
+            for reason in pe39_result.get("fail_reasons", [])
+        )
+    return fail_reasons
+
+
+def _validate_pe40_readiness_decision_proof_chain(
+    integration_input: PreflightExecutionReadinessReviewLifecycleIntegrationInput,
+    *,
+    pe39_result: dict[str, Any],
+    pe32_result: dict[str, Any],
+) -> list[str]:
+    fail_reasons: list[str] = []
+    chain = integration_input.pe40_readiness_decision_proof_chain
+    pe32_chain = integration_input.pe32_integration_input.readiness_decision_proof_chain
+    pe39_input = integration_input.pe32_integration_input.pe39_bridge_integration_input
+    admission = pe39_input.admission_presentation_integration_input
+    pe25 = pe39_input.pe25_closure_integration_input
+    pe39_bridge_proof = pe39_result.get("bridge_proof_digest") or ""
+    pe32_proof = pe32_result.get("integration_proof_digest") or ""
+    pe25_closure_proof = integration_input.pe32_integration_input.pe25_operator_closure_integration_proof.closure_result_digest
+    expected_slots = {
+        "pe39_bridge_proof_digest": pe39_bridge_proof,
+        "pe39_admission_integration_proof_digest": pe39_result.get(
+            "admission_integration_proof_digest"
+        )
+        or "",
+        "pe39_pe34_handoff_digest": admission.proof_chain.pe34_handoff_digest,
+        "pe39_pe36_presentation_projection_digest": (
+            admission.proof_chain.pe36_presentation_projection_digest
+        ),
+        "pe39_pe37_traceability_identity": admission.proof_chain.pe37_traceability_identity,
+        "pe25_closure_proof_digest": pe25_closure_proof,
+        "pe25_closure_input_digest": compute_pe25_closure_input_digest(pe25),
+        "closure_referenced_pe39_bridge_proof_digest": pe39_bridge_proof,
+        "readiness_decision_referenced_pe25_closure_digest": pe25_closure_proof,
+        "shared_pe35_boundary_result_digest": admission.proof_chain.pe35_boundary_result_digest,
+        "shared_pe37_traceability_identity": admission.proof_chain.pe37_traceability_identity,
+    }
+    for slot_name in READINESS_DECISION_PROOF_CHAIN_SLOT_ORDER:
+        value = getattr(chain, slot_name)
+        expected = getattr(pe32_chain, slot_name)
+        if not value:
+            fail_reasons.append(f"pe40_readiness_decision_proof_chain: {slot_name} required")
+        elif not _valid_sha256_digest(value):
+            fail_reasons.append(
+                f"pe40_readiness_decision_proof_chain: {slot_name} must be 64-char lowercase sha256 hex"
+            )
+        elif value != expected:
+            fail_reasons.append(
+                f"pe40_readiness_decision_proof_chain: {slot_name} mismatch with PE-32"
+            )
+        elif value != expected_slots[slot_name]:
+            fail_reasons.append(f"pe40_readiness_decision_proof_chain: {slot_name} mismatch")
+    if chain.closure_referenced_pe39_bridge_proof_digest != chain.pe39_bridge_proof_digest:
+        fail_reasons.append(
+            "pe40_readiness_decision_proof_chain: closure_referenced_pe39_bridge_proof_digest "
+            "must match pe39_bridge_proof_digest"
+        )
+    if chain.readiness_decision_referenced_pe25_closure_digest != pe25_closure_proof:
+        fail_reasons.append(
+            "pe40_readiness_decision_proof_chain: readiness_decision_referenced_pe25_closure_digest "
+            "mismatch"
+        )
+    if not pe32_result.get("integration_pass"):
+        fail_reasons.append("pe32_integration_input: PE-40 readiness-decision evaluation failed")
+        fail_reasons.extend(
+            f"pe32_integration_input: {reason}" for reason in pe32_result.get("fail_reasons", [])
+        )
+    if pe32_proof and chain.pe39_bridge_proof_digest != pe39_bridge_proof:
+        fail_reasons.append(
+            "pe40_readiness_decision_proof_chain: pe39_bridge_proof_digest mismatch with PE-39"
+        )
+    return fail_reasons
+
+
 def _validate_proof_chain_binding(
     integration_input: PreflightExecutionReadinessReviewLifecycleIntegrationInput,
     *,
@@ -700,9 +889,18 @@ def _validate_proof_chain_binding(
     fail_reasons: list[str] = []
     chain = integration_input.proof_chain
     pe34 = integration_input.pe34_handoff_input
+    pe32_proof = pe32_result.get("integration_proof_digest") or ""
+    pe39_bridge_proof = integration_input.pe39_bridge_integration_proof.bridge_proof_digest
+    pe39_admission_proof = (
+        integration_input.pe39_bridge_integration_proof.admission_integration_proof_digest
+    )
     expected_slots = {
+        "pe39_bridge_proof_digest": pe39_bridge_proof,
+        "pe39_admission_integration_proof_digest": pe39_admission_proof,
+        "pe40_pe32_integration_proof_digest": pe32_proof,
+        "pe38_referenced_pe40_pe32_proof_digest": pe32_proof,
         "pe26_assembly_digest": pe26_result.get("assembly_result_digest") or "",
-        "pe32_integration_proof_digest": pe32_result.get("integration_proof_digest") or "",
+        "pe32_integration_proof_digest": pe32_proof,
         "pe37_boundary_result_digest": pe37_result.get("boundary_result_digest") or "",
         "pe37_traceability_identity": pe37_result.get("traceability_identity") or "",
         "pe19_review_input_digest": compute_review_input_digest(
@@ -724,6 +922,11 @@ def _validate_proof_chain_binding(
             fail_reasons.append(f"proof_chain: {slot_name} must be 64-char lowercase sha256 hex")
         elif value != expected_slots[slot_name]:
             fail_reasons.append(f"proof_chain: {slot_name} mismatch")
+    if chain.pe40_pe32_integration_proof_digest != chain.pe38_referenced_pe40_pe32_proof_digest:
+        fail_reasons.append(
+            "proof_chain: pe38_referenced_pe40_pe32_proof_digest must match "
+            "pe40_pe32_integration_proof_digest"
+        )
     return fail_reasons
 
 
@@ -863,6 +1066,9 @@ def validate_preflight_execution_readiness_review_lifecycle_integration_input(
     pe32_result = evaluate_readiness_decision_lifecycle_integration(
         integration_input.pe32_integration_input
     )
+    pe39_result = evaluate_pe39_admission_presentation_operator_closure_lifecycle_bridge(
+        integration_input.pe32_integration_input.pe39_bridge_integration_input
+    )
     pe37_eval_input = integration_input.pe37_traceability_boundary_input
     if (
         integration_input.bound_traceability_identities
@@ -944,6 +1150,16 @@ def validate_preflight_execution_readiness_review_lifecycle_integration_input(
     fail_reasons.extend(_validate_pe26_assembly_proof(integration_input, pe26_result=pe26_result))
     fail_reasons.extend(_validate_pe32_readiness_proof(integration_input, pe32_result=pe32_result))
     fail_reasons.extend(
+        _validate_pe39_bridge_review_proof(integration_input, pe39_result=pe39_result)
+    )
+    fail_reasons.extend(
+        _validate_pe40_readiness_decision_proof_chain(
+            integration_input,
+            pe39_result=pe39_result,
+            pe32_result=pe32_result,
+        )
+    )
+    fail_reasons.extend(
         _validate_pe37_traceability_proof(integration_input, pe37_result=pe37_result)
     )
     fail_reasons.extend(_validate_pe34_handoff_proof(integration_input, pe34_result=pe34_result))
@@ -1001,6 +1217,10 @@ def _integration_input_dict(
         "pe34_handoff_proof": asdict(integration_input.pe34_handoff_proof),
         "pe35_staleness_proof": asdict(integration_input.pe35_staleness_proof),
         "pe25_closure_proof": asdict(integration_input.pe25_closure_proof),
+        "pe39_bridge_integration_proof": asdict(integration_input.pe39_bridge_integration_proof),
+        "pe40_readiness_decision_proof_chain": asdict(
+            integration_input.pe40_readiness_decision_proof_chain
+        ),
         "pilot_readiness_proof": asdict(integration_input.pilot_readiness_proof),
         "proof_chain": asdict(integration_input.proof_chain),
         "safety_snapshot": asdict(integration_input.safety_snapshot),
@@ -1046,6 +1266,10 @@ def _integration_result_dict(
         "review_lifecycle_owner": REVIEW_LIFECYCLE_OWNER,
         "pe26_assembly_digest": integration_input.proof_chain.pe26_assembly_digest,
         "pe32_integration_proof_digest": integration_input.proof_chain.pe32_integration_proof_digest,
+        "pe39_bridge_proof_digest": integration_input.proof_chain.pe39_bridge_proof_digest,
+        "pe40_pe32_integration_proof_digest": (
+            integration_input.proof_chain.pe40_pe32_integration_proof_digest
+        ),
         "pe37_traceability_identity": integration_input.proof_chain.pe37_traceability_identity,
         "pe34_handoff_digest": integration_input.proof_chain.pe34_handoff_digest,
         "pe25_closure_result_digest": integration_input.proof_chain.pe25_closure_result_digest,
@@ -1053,6 +1277,36 @@ def _integration_result_dict(
             preflight_execution_readiness_review_lifecycle_eligibility_for_separate_operator_review
         ),
         "pe38_preflight_execution_readiness_review_lifecycle_static_integration_proven": (
+            preflight_execution_readiness_review_lifecycle_eligibility_for_separate_operator_review
+        ),
+        "pe38_preflight_readiness_review_lifecycle_bound": (
+            preflight_execution_readiness_review_lifecycle_eligibility_for_separate_operator_review
+        ),
+        "pe39_admission_presentation_operator_closure_bridge_bound": (
+            preflight_execution_readiness_review_lifecycle_eligibility_for_separate_operator_review
+        ),
+        "pe40_readiness_decision_pe39_proof_chain_bound": (
+            preflight_execution_readiness_review_lifecycle_eligibility_for_separate_operator_review
+        ),
+        "pe32_readiness_decision_lifecycle_bound": (
+            preflight_execution_readiness_review_lifecycle_eligibility_for_separate_operator_review
+        ),
+        "admission_presentation_lifecycle_bound": (
+            preflight_execution_readiness_review_lifecycle_eligibility_for_separate_operator_review
+        ),
+        "pe25_operator_closure_bound": (
+            preflight_execution_readiness_review_lifecycle_eligibility_for_separate_operator_review
+        ),
+        "pe34_handoff_bound": (
+            preflight_execution_readiness_review_lifecycle_eligibility_for_separate_operator_review
+        ),
+        "pe35_staleness_revocation_recovery_bound": (
+            preflight_execution_readiness_review_lifecycle_eligibility_for_separate_operator_review
+        ),
+        "pe36_admission_presentation_bound": (
+            preflight_execution_readiness_review_lifecycle_eligibility_for_separate_operator_review
+        ),
+        "pe37_durable_traceability_bound": (
             preflight_execution_readiness_review_lifecycle_eligibility_for_separate_operator_review
         ),
         "static_pe12_lifecycle_chain_complete": (
@@ -1118,6 +1372,8 @@ def evaluate_preflight_execution_readiness_review_lifecycle_integration(
     expected_source_revision: str | None = None,
     expected_pe26_assembly_digest: str | None = None,
     expected_pe32_integration_proof_digest: str | None = None,
+    expected_pe39_bridge_proof_digest: str | None = None,
+    expected_pe40_pe32_integration_proof_digest: str | None = None,
     expected_pe37_traceability_identity: str | None = None,
     expected_pe34_handoff_digest: str | None = None,
     expected_pe25_closure_result_digest: str | None = None,
@@ -1173,6 +1429,17 @@ def evaluate_preflight_execution_readiness_review_lifecycle_integration(
     if expected_pe32_integration_proof_digest is not None:
         if chain.pe32_integration_proof_digest != expected_pe32_integration_proof_digest:
             fail_reasons.append("proof_chain: pe32_integration_proof_digest mismatch")
+    if expected_pe39_bridge_proof_digest is not None:
+        if chain.pe39_bridge_proof_digest != expected_pe39_bridge_proof_digest:
+            fail_reasons.append("proof_chain: pe39_bridge_proof_digest mismatch")
+    if expected_pe40_pe32_integration_proof_digest is not None:
+        if chain.pe40_pe32_integration_proof_digest != expected_pe40_pe32_integration_proof_digest:
+            fail_reasons.append("proof_chain: pe40_pe32_integration_proof_digest mismatch")
+        if (
+            chain.pe38_referenced_pe40_pe32_proof_digest
+            != expected_pe40_pe32_integration_proof_digest
+        ):
+            fail_reasons.append("proof_chain: pe38_referenced_pe40_pe32_proof_digest mismatch")
     if expected_pe37_traceability_identity is not None:
         if chain.pe37_traceability_identity != expected_pe37_traceability_identity:
             fail_reasons.append("proof_chain: pe37_traceability_identity mismatch")
@@ -1283,6 +1550,8 @@ def evaluate_preflight_execution_readiness_review_lifecycle_integration(
         "review_lifecycle_owner": REVIEW_LIFECYCLE_OWNER,
         "pe26_assembly_digest": chain.pe26_assembly_digest,
         "pe32_integration_proof_digest": chain.pe32_integration_proof_digest,
+        "pe39_bridge_proof_digest": chain.pe39_bridge_proof_digest,
+        "pe40_pe32_integration_proof_digest": chain.pe40_pe32_integration_proof_digest,
         "pe37_traceability_identity": chain.pe37_traceability_identity,
         "pe34_handoff_digest": chain.pe34_handoff_digest,
         "pe25_closure_result_digest": chain.pe25_closure_result_digest,
@@ -1290,6 +1559,16 @@ def evaluate_preflight_execution_readiness_review_lifecycle_integration(
             eligibility
         ),
         "pe38_preflight_execution_readiness_review_lifecycle_static_integration_proven": eligibility,
+        "pe38_preflight_readiness_review_lifecycle_bound": eligibility,
+        "pe39_admission_presentation_operator_closure_bridge_bound": eligibility,
+        "pe40_readiness_decision_pe39_proof_chain_bound": eligibility,
+        "pe32_readiness_decision_lifecycle_bound": eligibility,
+        "admission_presentation_lifecycle_bound": eligibility,
+        "pe25_operator_closure_bound": eligibility,
+        "pe34_handoff_bound": eligibility,
+        "pe35_staleness_revocation_recovery_bound": eligibility,
+        "pe36_admission_presentation_bound": eligibility,
+        "pe37_durable_traceability_bound": eligibility,
         "static_pe12_lifecycle_chain_complete": eligibility,
         "global_preflight_execution_readiness_review_lifecycle_readiness": (
             GLOBAL_PREFLIGHT_EXECUTION_READINESS_REVIEW_LIFECYCLE_READINESS
@@ -1387,15 +1666,13 @@ def default_minimal_integration_input(
     from scripts.ops.check_bounded_pilot_readiness import (
         STATIC_PROOF_COMPOSITION_MODE,
         LifecycleStaticProofCompositionBinding,
+        LifecycleStaticProofCompositionInput,
         evaluate_lifecycle_static_proof_composition,
     )
     from src.ops.bounded_futures_testnet_operator_closure_lifecycle_integration_contract_v0 import (
-        compute_closure_input_digest,
         compute_closure_result_digest,
-        default_minimal_integration_input as default_minimal_pe25_integration_input,
     )
     from src.ops.bounded_futures_testnet_operator_review_chain_durable_evidence_traceability_boundary_contract_v0 import (
-        default_minimal_boundary_input as default_minimal_pe37_boundary_input,
         default_minimal_pe19_pe20_review_proof_binding,
     )
     from src.ops.bounded_futures_testnet_preflight_execution_readiness_assembly_lifecycle_integration_contract_v0 import (
@@ -1406,35 +1683,10 @@ def default_minimal_integration_input(
     )
     from src.ops.bounded_futures_testnet_readiness_decision_lifecycle_integration_contract_v0 import (
         default_minimal_integration_input as default_minimal_pe32_integration_input,
-        default_minimal_pe25_integration_proof,
     )
 
     state_digest = lifecycle_state_digest or "a" * 64
-    pe25_input = default_minimal_pe25_integration_input(
-        source_revision=source_revision,
-        adapter_id=adapter_id,
-        lifecycle_state_digest=state_digest,
-    )
-    pe25_closure_input_digest = compute_closure_input_digest(pe25_input)
-    pe25_closure_result_digest = compute_closure_result_digest(
-        pe25_input,
-        operator_closure_static_complete=True,
-    )
     matrix_digest = compute_lifecycle_matrix_digest()
-
-    pe26_input = default_minimal_assembly_input(
-        source_revision=source_revision,
-        adapter_id=adapter_id,
-        lifecycle_state_digest=state_digest,
-    )
-    pe26_pe25 = Pe26Pe25ProofBinding(
-        closure_input_digest=pe25_closure_input_digest,
-        closure_result_digest=pe25_closure_result_digest,
-        pe25_integration_pass=True,
-        operator_closure_static_complete=True,
-        lifecycle_matrix_digest=matrix_digest,
-    )
-    pe26_input = replace(pe26_input, pe25_operator_closure_proof=pe26_pe25)
 
     pe32_input = default_minimal_pe32_integration_input(
         source_revision=source_revision,
@@ -1442,30 +1694,45 @@ def default_minimal_integration_input(
         instrument=instrument,
         lifecycle_state_digest=state_digest,
     )
-    pe32_input = replace(
-        pe32_input,
-        pe25_operator_closure_integration_input=pe25_input,
-        pe25_operator_closure_integration_proof=default_minimal_pe25_integration_proof(pe25_input),
+    pe32_result = evaluate_readiness_decision_lifecycle_integration(pe32_input)
+    pe39_bridge_input = pe32_input.pe39_bridge_integration_input
+    pe39_result = evaluate_pe39_admission_presentation_operator_closure_lifecycle_bridge(
+        pe39_bridge_input
     )
+    admission_input = pe39_bridge_input.admission_presentation_integration_input
+    pe25_input = pe32_input.pe25_operator_closure_integration_input
+    pe25_closure_result_digest = (
+        pe32_input.pe25_operator_closure_integration_proof.closure_result_digest
+    )
+    pe32_proof_digest = pe32_result["integration_proof_digest"]
+    pe39_bridge_proof = pe39_result["bridge_proof_digest"]
+    pe39_admission_proof = pe39_result["admission_integration_proof_digest"]
 
-    pe37_boundary_input = default_minimal_pe37_boundary_input(
+    pe37_boundary_input = admission_input.pe37_traceability_boundary_input
+    pe34_handoff = admission_input.pe34_handoff_input
+    pe35_boundary = admission_input.pe35_boundary_input
+
+    pe26_input = default_minimal_assembly_input(
         source_revision=source_revision,
         adapter_id=adapter_id,
-        instrument=instrument,
-        source_state_digest=state_digest,
+        lifecycle_state_digest=state_digest,
+    )
+    pe26_pe25 = Pe26Pe25ProofBinding(
+        closure_input_digest=pe32_input.pe25_operator_closure_integration_proof.closure_input_digest,
+        closure_result_digest=pe25_closure_result_digest,
+        pe25_integration_pass=True,
+        operator_closure_static_complete=True,
+        lifecycle_matrix_digest=matrix_digest,
     )
     pe26_input = replace(
         pe26_input,
+        pe25_operator_closure_proof=pe26_pe25,
         pe37_traceability_boundary_input=pe37_boundary_input,
         pe37_traceability_proof=default_minimal_pe37_traceability_proof(pe37_boundary_input),
     )
 
     pe26_result = evaluate_preflight_execution_readiness_assembly_lifecycle_integration(pe26_input)
-    pe32_result = evaluate_readiness_decision_lifecycle_integration(pe32_input)
     pe37_result = evaluate_durable_evidence_traceability_boundary(pe37_boundary_input)
-
-    pe34_handoff = pe37_boundary_input.pe36_boundary_input.pe35_boundary_input.pe34_handoff
-    pe35_boundary = pe37_boundary_input.pe36_boundary_input.pe35_boundary_input
     pe34_result = evaluate_operator_review_handoff_boundary(pe34_handoff)
     pe35_result = evaluate_handoff_staleness_revocation_recovery_boundary(pe35_boundary)
 
@@ -1473,7 +1740,7 @@ def default_minimal_integration_input(
         source_revision=source_revision,
         pe32_canonical_owner=PE32_CONTRACT_VERSION,
         pe32_proof_identity=pe32_input.integration_id,
-        pe32_proof_digest=pe32_result["integration_proof_digest"],
+        pe32_proof_digest=pe32_proof_digest,
         pe32_lifecycle_chain_identity=state_digest,
         pe32_blocker_state=CANONICAL_BLOCKER_STATE,
         pe26_canonical_owner=PE26_CONTRACT_VERSION,
@@ -1482,8 +1749,6 @@ def default_minimal_integration_input(
         pe26_source_revision=source_revision,
         pe26_traceability_identity=pe26_input.pe37_traceability_proof.traceability_identity,
     )
-    from scripts.ops.check_bounded_pilot_readiness import LifecycleStaticProofCompositionInput
-
     composition_input = LifecycleStaticProofCompositionInput(
         pe32_integration_input=pe32_input,
         pe26_assembly_input=pe26_input,
@@ -1495,10 +1760,26 @@ def default_minimal_integration_input(
     pe19_pe20 = default_minimal_pe19_pe20_review_proof_binding(
         pe37_boundary_input.pe36_boundary_input
     )
+    pe39_bridge_integration_proof = default_minimal_pe39_bridge_integration_proof(
+        pe39_bridge_input,
+        pe39_result=pe39_result,
+    )
+    pe40_readiness_decision_proof_chain = default_minimal_readiness_decision_proof_chain(
+        pe39_bridge_input,
+        pe39_result=pe39_result,
+        pe25_result={
+            "closure_result_digest": pe25_closure_result_digest,
+            "closure_input_digest": pe32_input.pe25_operator_closure_integration_proof.closure_input_digest,
+        },
+    )
 
     proof_chain = ReviewLifecycleProofChainBinding(
+        pe39_bridge_proof_digest=pe39_bridge_proof,
+        pe39_admission_integration_proof_digest=pe39_admission_proof,
+        pe40_pe32_integration_proof_digest=pe32_proof_digest,
+        pe38_referenced_pe40_pe32_proof_digest=pe32_proof_digest,
         pe26_assembly_digest=pe26_result["assembly_result_digest"],
-        pe32_integration_proof_digest=pe32_result["integration_proof_digest"],
+        pe32_integration_proof_digest=pe32_proof_digest,
         pe37_boundary_result_digest=pe37_result["boundary_result_digest"],
         pe37_traceability_identity=pe37_result["traceability_identity"],
         pe19_review_input_digest=compute_review_input_digest(
@@ -1528,7 +1809,10 @@ def default_minimal_integration_input(
             pe32_readiness_decision=PE32_CONTRACT_VERSION,
             pe34_handoff=PE34_CONTRACT_VERSION,
             pe35_staleness=PE35_CONTRACT_VERSION,
+            pe36_admission_presentation=PE36_CONTRACT_VERSION,
             pe37_traceability=PE37_CONTRACT_VERSION,
+            admission_presentation_lifecycle=ADMISSION_LIFECYCLE_CONTRACT_VERSION,
+            pe39_bridge=PE39_CONTRACT_VERSION,
             integration=CONTRACT_VERSION,
         ),
         pe26_assembly_input=pe26_input,
@@ -1549,7 +1833,7 @@ def default_minimal_integration_input(
             integration_owner=PE32_CONTRACT_VERSION,
             source_revision=source_revision,
             integration_input_digest=compute_pe32_integration_input_digest(pe32_input),
-            integration_proof_digest=pe32_result["integration_proof_digest"],
+            integration_proof_digest=pe32_proof_digest,
             lifecycle_chain_identity=state_digest,
             blocker_state=CANONICAL_BLOCKER_STATE,
             pe32_integration_pass=True,
@@ -1590,6 +1874,8 @@ def default_minimal_integration_input(
             operative_operator_closure_executed=False,
             operator_closure_static_complete=True,
         ),
+        pe39_bridge_integration_proof=pe39_bridge_integration_proof,
+        pe40_readiness_decision_proof_chain=pe40_readiness_decision_proof_chain,
         pilot_readiness_proof=PilotReadinessCompositionProofBinding(
             composition_mode=STATIC_PROOF_COMPOSITION_MODE,
             source_revision=source_revision,

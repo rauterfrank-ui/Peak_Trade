@@ -65,6 +65,7 @@ from src.ops.bounded_futures_testnet_operator_closure_lifecycle_integration_cont
 )
 from src.ops.bounded_futures_testnet_readiness_decision_lifecycle_integration_contract_v0 import (
     CONTRACT_VERSION as PE32_CONTRACT_VERSION,
+    PE39_BRIDGE_OWNER,
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -116,12 +117,19 @@ PE20_MODULE = (
     / "ops"
     / "bounded_futures_testnet_preflight_operator_review_proof_package_contract_v0.py"
 )
+PE39_MODULE = (
+    REPO_ROOT
+    / "src"
+    / "ops"
+    / "bounded_futures_testnet_admission_presentation_operator_closure_lifecycle_bridge_contract_v0.py"
+)
 PE25_MODULE = (
     REPO_ROOT
     / "src"
     / "ops"
     / "bounded_futures_testnet_operator_closure_lifecycle_integration_contract_v0.py"
 )
+
 PILOT_READINESS_MODULE = REPO_ROOT / "scripts" / "ops" / "check_bounded_pilot_readiness.py"
 
 TEST_PACKAGE_MARKER = "BOUNDED_FUTURES_TESTNET_PREFLIGHT_EXECUTION_READINESS_REVIEW_LIFECYCLE_INTEGRATION_GUARD_V0=true"
@@ -201,6 +209,11 @@ def test_upstream_owners_referenced_not_duplicated() -> None:
         integration_text
     )
     assert (
+        "evaluate_pe39_admission_presentation_operator_closure_lifecycle_bridge" in integration_text
+    )
+    assert "pe39_bridge_integration_proof" in integration_text
+    assert "pe40_readiness_decision_proof_chain" in integration_text
+    assert (
         "bounded_futures_testnet_operator_review_chain_durable_evidence_traceability_boundary_contract_v0"
         in (integration_text)
     )
@@ -222,6 +235,7 @@ def test_upstream_owners_referenced_not_duplicated() -> None:
     assert PE19_MODULE.exists()
     assert PE20_MODULE.exists()
     assert PE25_MODULE.exists()
+    assert PE39_MODULE.exists()
     assert PILOT_READINESS_MODULE.exists()
 
 
@@ -255,6 +269,16 @@ def test_happy_path_passes() -> None:
         result["pe38_preflight_execution_readiness_review_lifecycle_static_integration_proven"]
         is True
     )
+    assert result["pe38_preflight_readiness_review_lifecycle_bound"] is True
+    assert result["pe39_admission_presentation_operator_closure_bridge_bound"] is True
+    assert result["pe40_readiness_decision_pe39_proof_chain_bound"] is True
+    assert result["pe32_readiness_decision_lifecycle_bound"] is True
+    assert result["admission_presentation_lifecycle_bound"] is True
+    assert result["pe25_operator_closure_bound"] is True
+    assert result["pe34_handoff_bound"] is True
+    assert result["pe35_staleness_revocation_recovery_bound"] is True
+    assert result["pe36_admission_presentation_bound"] is True
+    assert result["pe37_durable_traceability_bound"] is True
     assert result["static_pe12_lifecycle_chain_complete"] is True
     assert result["fail_reasons"] == []
     _assert_all_authorization_flags_false(result)
@@ -498,6 +522,10 @@ def test_wrong_proof_chain_order_fails_closed() -> None:
     integration_input = _valid_integration_input()
     chain = integration_input.proof_chain
     broken_chain = ReviewLifecycleProofChainBinding(
+        pe39_bridge_proof_digest=chain.pe40_pe32_integration_proof_digest,
+        pe39_admission_integration_proof_digest=chain.pe39_admission_integration_proof_digest,
+        pe40_pe32_integration_proof_digest=chain.pe39_bridge_proof_digest,
+        pe38_referenced_pe40_pe32_proof_digest=chain.pe38_referenced_pe40_pe32_proof_digest,
         pe26_assembly_digest=chain.pe32_integration_proof_digest,
         pe32_integration_proof_digest=chain.pe26_assembly_digest,
         pe37_boundary_result_digest=chain.pe37_boundary_result_digest,
@@ -513,7 +541,7 @@ def test_wrong_proof_chain_order_fails_closed() -> None:
     broken = replace(integration_input, proof_chain=broken_chain)
     result = evaluate_preflight_execution_readiness_review_lifecycle_integration(broken)
     assert result["integration_pass"] is False
-    assert any("pe26_assembly_digest mismatch" in r for r in result["fail_reasons"])
+    assert any("pe39_bridge_proof_digest mismatch" in r for r in result["fail_reasons"])
 
 
 def test_incomplete_proof_chain_fails_closed() -> None:
@@ -809,3 +837,69 @@ def test_no_filesystem_git_network_subprocess_at_runtime(
         _valid_integration_input()
     )
     assert result["integration_pass"] is True
+
+
+def test_missing_pe39_bridge_proof_digest_fails() -> None:
+    integration_input = _valid_integration_input()
+    bad_proof = replace(
+        integration_input.pe39_bridge_integration_proof,
+        bridge_proof_digest="",
+    )
+    bad = replace(integration_input, pe39_bridge_integration_proof=bad_proof)
+    result = evaluate_preflight_execution_readiness_review_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("bridge_proof_digest required" in r for r in result["fail_reasons"])
+
+
+def test_missing_pe40_readiness_decision_proof_chain_slot_fails() -> None:
+    integration_input = _valid_integration_input()
+    bad_chain = replace(
+        integration_input.pe40_readiness_decision_proof_chain,
+        pe39_bridge_proof_digest="",
+    )
+    bad = replace(integration_input, pe40_readiness_decision_proof_chain=bad_chain)
+    result = evaluate_preflight_execution_readiness_review_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe39_bridge_proof_digest required" in r for r in result["fail_reasons"])
+
+
+def test_pe38_references_wrong_pe40_proof_fails() -> None:
+    integration_input = _valid_integration_input()
+    result = evaluate_preflight_execution_readiness_review_lifecycle_integration(
+        integration_input,
+        expected_pe40_pe32_integration_proof_digest="0" * 64,
+    )
+    assert result["integration_pass"] is False
+    assert any("pe40_pe32_integration_proof_digest mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe39_owner_identity_drift_fails() -> None:
+    integration_input = _valid_integration_input()
+    bad_proof = replace(
+        integration_input.pe39_bridge_integration_proof,
+        bridge_owner="wrong.owner.v0",
+    )
+    bad = replace(integration_input, pe39_bridge_integration_proof=bad_proof)
+    result = evaluate_preflight_execution_readiness_review_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("bridge_owner must be" in r for r in result["fail_reasons"])
+
+
+def test_missing_admission_presentation_lifecycle_binding_fails() -> None:
+    integration_input = _valid_integration_input()
+    bad_proof = replace(
+        integration_input.pe39_bridge_integration_proof,
+        admission_presentation_lifecycle_bound=False,
+    )
+    bad = replace(integration_input, pe39_bridge_integration_proof=bad_proof)
+    result = evaluate_preflight_execution_readiness_review_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "admission_presentation_lifecycle_bound must be True" in r for r in result["fail_reasons"]
+    )
+
+
+def test_pe39_canonical_owner_matches_expected() -> None:
+    assert PE39_BRIDGE_OWNER == (
+        "bounded_futures_testnet_admission_presentation_operator_closure_lifecycle_bridge.v0"
+    )
