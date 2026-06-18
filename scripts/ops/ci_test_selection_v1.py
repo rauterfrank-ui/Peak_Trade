@@ -30,6 +30,7 @@ FOCUSED_CATEGORIES = frozenset(
         "strategy_regime_owner_focused",
         "market_dashboard_focused",
         "durable_completion_focused",
+        "preflight_assembly_focused",
     }
 )
 
@@ -94,6 +95,27 @@ REQUIRED_DURABLE_COMPLETION_TEST_OWNERS: tuple[str, ...] = (
     "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
 )
 
+PE26_ASSEMBLY_OWNER = "src/ops/bounded_futures_testnet_preflight_execution_readiness_assembly_lifecycle_integration_contract_v0.py"
+
+PREFLIGHT_ASSEMBLY_CI_POLICY_PATHS = frozenset(
+    {
+        "scripts/ops/ci_test_selection_v1.py",
+        "config/ci/file_category_mapping.yaml",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    }
+)
+
+CANONICAL_PREFLIGHT_ASSEMBLY_FOCUSED_TESTS: tuple[str, ...] = (
+    "tests/ops/test_bounded_futures_testnet_preflight_execution_readiness_assembly_lifecycle_integration_contract_v0.py",
+    "tests/ops/test_bounded_futures_testnet_reconciliation_review_lifecycle_integration_contract_v0.py",
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+)
+
+REQUIRED_PREFLIGHT_ASSEMBLY_TEST_OWNERS: tuple[str, ...] = (
+    "tests/ops/test_bounded_futures_testnet_preflight_execution_readiness_assembly_lifecycle_integration_contract_v0.py",
+    "tests/ops/test_bounded_futures_testnet_reconciliation_review_lifecycle_integration_contract_v0.py",
+)
+
 CANONICAL_MARKET_DASHBOARD_FOCUSED_TESTS: tuple[str, ...] = (
     "tests/webui/test_market_dashboard_no_bitcoin_futures_v1.py",
     "tests/webui/test_market_futures_only_canonical_completion_v1.py",
@@ -147,6 +169,9 @@ def _requires_full_ci_selector_change(files: list[str]) -> bool:
         return False
     scoped_dc = {f for f in normalized if _is_durable_completion_scoped_path(f)}
     if scoped_dc and all(_is_durable_completion_rebundle_path(f) for f in normalized):
+        return False
+    scoped_pa = {f for f in normalized if _is_preflight_assembly_scoped_path(f)}
+    if scoped_pa and all(_is_preflight_assembly_rebundle_path(f) for f in normalized):
         return False
     if normalized & CI_SELECTOR_FULL_PATHS:
         return True
@@ -231,6 +256,59 @@ def _durable_completion_focused_targets() -> tuple[str, ...]:
     return tuple(sorted(targets))
 
 
+def _is_preflight_assembly_scoped_path(path: str) -> bool:
+    if path == PE26_ASSEMBLY_OWNER:
+        return True
+    if path in {
+        "tests/ops/test_bounded_futures_testnet_preflight_execution_readiness_assembly_lifecycle_integration_contract_v0.py",
+        "tests/ops/test_bounded_futures_testnet_reconciliation_review_lifecycle_integration_contract_v0.py",
+    }:
+        return True
+    return False
+
+
+def _is_preflight_assembly_rebundle_path(path: str) -> bool:
+    return _is_preflight_assembly_scoped_path(path) or path in PREFLIGHT_ASSEMBLY_CI_POLICY_PATHS
+
+
+def _preflight_assembly_focused_targets() -> tuple[str, ...]:
+    for path in REQUIRED_PREFLIGHT_ASSEMBLY_TEST_OWNERS:
+        if not _repo_path_exists(path):
+            return ()
+    targets: list[str] = []
+    for path in CANONICAL_PREFLIGHT_ASSEMBLY_FOCUSED_TESTS:
+        if _repo_path_exists(path):
+            targets.append(path)
+    if len(targets) < len(REQUIRED_PREFLIGHT_ASSEMBLY_TEST_OWNERS):
+        return ()
+    return tuple(sorted(targets))
+
+
+def _try_preflight_assembly_focused(files: list[str]) -> SelectionResult | None:
+    if not files:
+        return None
+    if not any(_is_preflight_assembly_scoped_path(f) for f in files):
+        return None
+    if not all(_is_preflight_assembly_rebundle_path(f) for f in files):
+        return None
+    targets = _preflight_assembly_focused_targets()
+    if not targets:
+        return None
+    modules: tuple[str, ...] = (
+        "src.ops.bounded_futures_testnet_preflight_execution_readiness_assembly_lifecycle_integration_contract_v0",
+    )
+    return SelectionResult(
+        "FOCUSED",
+        "preflight_assembly_focused",
+        targets,
+        modules,
+    )
+
+
+def _has_productive_src_python(files: list[str]) -> bool:
+    return any(f.startswith("src/") and f.endswith(".py") for f in files)
+
+
 def _try_durable_completion_focused(files: list[str]) -> SelectionResult | None:
     if not files:
         return None
@@ -283,6 +361,10 @@ def categorize(path: str) -> str:
         return "durable_completion_focused"
     if _is_durable_completion_scoped_path(p):
         return "durable_completion_focused"
+    if p in PREFLIGHT_ASSEMBLY_CI_POLICY_PATHS:
+        return "preflight_assembly_focused"
+    if _is_preflight_assembly_scoped_path(p):
+        return "preflight_assembly_focused"
     if p in MARKET_DASHBOARD_CI_POLICY_PATHS:
         return "market_dashboard_focused"
     if _is_market_dashboard_scoped_path(p):
@@ -520,10 +602,19 @@ def resolve_selection(
     if durable_completion is not None:
         return durable_completion
 
+    preflight_assembly = _try_preflight_assembly_focused(normalized)
+    if preflight_assembly is not None:
+        return preflight_assembly
+
     if any(_is_durable_completion_scoped_path(f) for f in normalized):
         if not all(_is_durable_completion_rebundle_path(f) for f in normalized):
             return SelectionResult("FULL", "durable_completion_foreign_path_requires_full", ())
         return SelectionResult("FULL", "durable_completion_incomplete_or_missing_test_owner", ())
+
+    if any(_is_preflight_assembly_scoped_path(f) for f in normalized):
+        if not all(_is_preflight_assembly_rebundle_path(f) for f in normalized):
+            return SelectionResult("FULL", "preflight_assembly_foreign_path_requires_full", ())
+        return SelectionResult("FULL", "preflight_assembly_incomplete_or_missing_test_owner", ())
 
     if _requires_full_ci_selector_change(normalized):
         return SelectionResult("FULL", "ci_selector_or_contract_change_requires_full", ())
@@ -535,6 +626,8 @@ def resolve_selection(
         return SelectionResult("FULL", f"category_{hit}_requires_full", ())
 
     if categories <= NO_OP_CATEGORIES:
+        if _has_productive_src_python(normalized):
+            return SelectionResult("FULL", "productive_src_no_op_blocked_fail_closed", ())
         return SelectionResult("NO_OP", "docs_workflow_or_static_contract_only", ())
 
     strategy_focused = _try_strategy_regime_owner_focused(normalized)
