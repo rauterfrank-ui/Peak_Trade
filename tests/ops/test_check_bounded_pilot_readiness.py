@@ -236,9 +236,7 @@ def _coherent_lifecycle_proof_fixtures() -> tuple[object, object, object, object
 
     import scripts.ops.check_bounded_pilot_readiness as mod
     from src.ops.bounded_futures_testnet_operator_closure_lifecycle_integration_contract_v0 import (
-        compute_closure_input_digest,
-        compute_closure_result_digest,
-        default_minimal_integration_input as default_minimal_pe25_input,
+        evaluate_operator_closure_lifecycle_integration,
     )
     from src.ops.bounded_futures_testnet_preflight_execution_readiness_assembly_lifecycle_integration_contract_v0 import (
         CONTRACT_VERSION as PE26_CONTRACT_VERSION,
@@ -250,22 +248,21 @@ def _coherent_lifecycle_proof_fixtures() -> tuple[object, object, object, object
     from src.ops.bounded_futures_testnet_readiness_decision_lifecycle_integration_contract_v0 import (
         CONTRACT_VERSION as PE32_CONTRACT_VERSION,
         default_minimal_integration_input,
-        default_minimal_pe25_integration_proof,
         evaluate_readiness_decision_lifecycle_integration,
     )
 
     adapter_id = "offline_bounded_futures_testnet_adapter_v0"
-    pe25_input = default_minimal_pe25_input(
+    matrix_digest = compute_lifecycle_matrix_digest()
+
+    pe32_input = default_minimal_integration_input(
         source_revision=VALID_COMMIT_SHA,
         adapter_id=adapter_id,
         lifecycle_state_digest=SHARED_STATE_DIGEST,
     )
-    pe25_closure_input_digest = compute_closure_input_digest(pe25_input)
-    pe25_closure_result_digest = compute_closure_result_digest(
-        pe25_input,
-        operator_closure_static_complete=True,
-    )
-    matrix_digest = compute_lifecycle_matrix_digest()
+    pe25_input = pe32_input.pe25_operator_closure_integration_input
+    pe25_result = evaluate_operator_closure_lifecycle_integration(pe25_input)
+    pe25_closure_input_digest = pe25_result["closure_input_digest"]
+    pe25_closure_result_digest = pe25_result["closure_result_digest"]
 
     pe26_input = default_minimal_assembly_input(
         source_revision=VALID_COMMIT_SHA,
@@ -280,17 +277,6 @@ def _coherent_lifecycle_proof_fixtures() -> tuple[object, object, object, object
         lifecycle_matrix_digest=matrix_digest,
     )
     pe26_input = replace(pe26_input, pe25_operator_closure_proof=pe26_pe25)
-
-    pe32_input = default_minimal_integration_input(
-        source_revision=VALID_COMMIT_SHA,
-        adapter_id=adapter_id,
-        lifecycle_state_digest=SHARED_STATE_DIGEST,
-    )
-    pe32_input = replace(
-        pe32_input,
-        pe25_operator_closure_integration_input=pe25_input,
-        pe25_operator_closure_integration_proof=default_minimal_pe25_integration_proof(pe25_input),
-    )
 
     pe32_result = evaluate_readiness_decision_lifecycle_integration(pe32_input)
     pe26_result = evaluate_preflight_execution_readiness_assembly_lifecycle_integration(pe26_input)

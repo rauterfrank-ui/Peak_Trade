@@ -1,7 +1,7 @@
 """Static + offline bounded Futures Testnet durable run primary evidence completion (v0).
 
 Docs/tests-only Class-4 scoped exception. No runtime, network, credentials, or Testnet start.
-PE-31 + PE-21 + PE-22 + PE-23 + PE-16 + Gap-4 + Gap-2a.1 durable run-root completion static integration only.
+PE-31 + PE-21 + PE-22 + PE-23 + PE-24 + PE-16 + Gap-4 + Gap-2a.1 durable run-root completion static integration only.
 """
 
 from __future__ import annotations
@@ -47,6 +47,9 @@ from src.ops.bounded_futures_testnet_durable_run_primary_evidence_completion_int
     KILLSWITCH_TRIGGERED,
     PE22_INTEGRATION_OWNER,
     PE23_INTEGRATION_OWNER,
+    PE24_INTEGRATION_OWNER,
+    PILOT_ENVELOPE_EXECUTED,
+    PILOT_STARTED,
     RISK_EVALUATION_EXECUTED,
     PROOF_LIFECYCLE_CURRENT,
     PROOF_LIFECYCLE_DUPLICATE,
@@ -65,6 +68,7 @@ from src.ops.bounded_futures_testnet_durable_run_primary_evidence_completion_int
     default_minimal_completion_integration_input,
     default_minimal_pe22_integration_proof,
     default_minimal_pe23_integration_proof,
+    default_minimal_pe24_integration_proof,
     default_minimal_pe31_integration_proof,
     default_minimal_safety_snapshot,
     evaluate_durable_run_primary_evidence_completion_integration,
@@ -97,6 +101,12 @@ from src.ops.bounded_futures_testnet_risk_killswitch_lifecycle_integration_contr
     RiskEvaluationProof,
     default_minimal_integration_input as default_minimal_pe22_integration_input,
     evaluate_risk_killswitch_lifecycle_integration,
+)
+from src.ops.bounded_futures_testnet_pilot_envelope_lifecycle_integration_contract_v0 import (
+    CONTRACT_VERSION as PE24_CONTRACT_VERSION,
+    Pe19ReviewProofBinding,
+    default_minimal_integration_input as default_minimal_pe24_integration_input,
+    evaluate_pilot_envelope_lifecycle_integration,
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -151,6 +161,18 @@ PE23_TEST_OWNER = (
     / "ops"
     / "test_bounded_futures_testnet_capital_slot_ratchet_release_lifecycle_integration_contract_v0.py"
 )
+PE24_MODULE = (
+    REPO_ROOT
+    / "src"
+    / "ops"
+    / "bounded_futures_testnet_pilot_envelope_lifecycle_integration_contract_v0.py"
+)
+PE24_TEST_OWNER = (
+    REPO_ROOT
+    / "tests"
+    / "ops"
+    / "test_bounded_futures_testnet_pilot_envelope_lifecycle_integration_contract_v0.py"
+)
 PE21_TEST_OWNER = (
     REPO_ROOT
     / "tests"
@@ -199,6 +221,9 @@ def test_canonical_owners_referenced_not_duplicated() -> None:
         "bounded_futures_testnet_capital_slot_ratchet_release_lifecycle_integration_contract_v0"
         in integration_text
     )
+    assert "bounded_futures_testnet_pilot_envelope_lifecycle_integration_contract_v0" in (
+        integration_text
+    )
     assert "bounded_futures_testnet_preflight_packet_archive_contract_v0" in integration_text
     assert "scripts.ops.primary_evidence_retention_v0" in integration_text
     assert PE21_PACKAGE_MARKER in PE21_MODULE.read_text(encoding="utf-8")
@@ -211,6 +236,8 @@ def test_canonical_owners_referenced_not_duplicated() -> None:
     assert PE22_TEST_OWNER.exists()
     assert PE23_MODULE.exists()
     assert PE23_TEST_OWNER.exists()
+    assert PE24_MODULE.exists()
+    assert PE24_TEST_OWNER.exists()
     assert PE21_TEST_OWNER.exists()
     assert PRIMARY_EVIDENCE_MODULE.exists()
     assert GAP4_TEST_OWNER.exists()
@@ -221,6 +248,7 @@ def test_canonical_owners_referenced_not_duplicated() -> None:
     assert PE31_INTEGRATION_OWNER == PE31_CONTRACT_VERSION
     assert PE22_INTEGRATION_OWNER == PE22_CONTRACT_VERSION
     assert PE23_INTEGRATION_OWNER == PE23_CONTRACT_VERSION
+    assert PE24_INTEGRATION_OWNER == PE24_CONTRACT_VERSION
 
 
 def test_global_safety_flags_remain_blocked() -> None:
@@ -235,6 +263,8 @@ def test_global_safety_flags_remain_blocked() -> None:
     assert CAPITAL_SLOT_RELEASE_EXECUTED is False
     assert CAPITAL_REALLOCATION_EXECUTED is False
     assert RESERVE_TOP_UP_EXECUTED is False
+    assert PILOT_ENVELOPE_EXECUTED is False
+    assert PILOT_STARTED is False
     assert RUN_STARTED is False
     assert ARCHIVE_READ is False
     assert ARCHIVE_WRITTEN is False
@@ -271,11 +301,13 @@ def test_coherent_static_completion_happy_path_passes() -> None:
     assert result["pe31_integration_pass"] is True
     assert result["pe22_integration_pass"] is True
     assert result["pe23_integration_pass"] is True
+    assert result["pe24_integration_pass"] is True
     assert result["durable_run_primary_evidence_completion_bound"] is True
     assert result["pe21_reconciliation_primary_evidence_bound"] is True
     assert result["pe31_reconciliation_review_bound"] is True
     assert result["pe22_risk_killswitch_flatten_lifecycle_bound"] is True
     assert result["pe23_capital_slot_ratchet_release_lifecycle_bound"] is True
+    assert result["pe24_pilot_envelope_lifecycle_bound"] is True
     assert result["fail_reasons"] == []
 
 
@@ -294,6 +326,8 @@ def test_valid_static_proof_remains_non_authorizing() -> None:
     assert result["capital_slot_release_executed"] is False
     assert result["capital_reallocation_executed"] is False
     assert result["reserve_top_up_executed"] is False
+    assert result["pilot_envelope_executed"] is False
+    assert result["pilot_started"] is False
     assert result["archive_read"] is False
     assert result["archive_written"] is False
     assert result["manifest_read"] is False
@@ -1362,6 +1396,372 @@ def test_pe23_missing_required_field_fails() -> None:
     assert any("ratchet_evaluation_proof_digest required" in r for r in result["fail_reasons"])
 
 
+def test_pe24_alone_does_not_authorize_completion() -> None:
+    pe24_input = default_minimal_pe24_integration_input()
+    pe24_result = evaluate_pilot_envelope_lifecycle_integration(pe24_input)
+    assert pe24_result["integration_pass"] is True
+    assert pe24_result["operative_pilot_executed"] is False
+    assert pe24_result["pilot_start_authorized"] is False
+    assert pe24_result["authority_lift"] is False
+
+
+def test_missing_pe24_proof_binding_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe24_pilot_envelope_lifecycle_proof=replace(
+            integration_input.pe24_pilot_envelope_lifecycle_proof,
+            integration_proof_digest="",
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe24_proof: integration_proof_digest required" in r for r in result["fail_reasons"])
+
+
+def test_pe24_source_revision_mismatch_fails() -> None:
+    integration_input = default_minimal_completion_integration_input(
+        source_revision=VALID_COMMIT_SHA
+    )
+    bad_pe24_input = replace(
+        integration_input.pe24_pilot_envelope_lifecycle_integration_input,
+        source_revision="0123456789abcdef0123456789abcdef0123456789",
+    )
+    bad = replace(
+        integration_input,
+        pe24_pilot_envelope_lifecycle_integration_input=bad_pe24_input,
+        pe24_pilot_envelope_lifecycle_proof=default_minimal_pe24_integration_proof(
+            bad_pe24_input,
+            traceability_identity=integration_input.durable_run_root.run_root_digest,
+            run_identity_digest=integration_input.run_identity.run_identity_digest,
+            completion_identity_digest=compute_completion_identity_digest(
+                run_root_digest=integration_input.durable_run_root.run_root_digest,
+                manifest_digest=integration_input.manifest_proof.manifest_digest,
+                source_revision=integration_input.source_revision,
+            ),
+            pe22_integration_proof_digest=integration_input.pe22_risk_killswitch_flatten_proof.integration_proof_digest,
+            pe23_integration_proof_digest=integration_input.pe23_capital_slot_ratchet_release_proof.integration_proof_digest,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe24_proof: source_revision mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe24_wrong_owner_identity_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe24_pilot_envelope_lifecycle_proof=replace(
+            integration_input.pe24_pilot_envelope_lifecycle_proof,
+            integration_owner="wrong.owner.v0",
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("integration_owner must be" in r for r in result["fail_reasons"])
+
+
+def test_pe24_proof_digest_mismatch_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe24_pilot_envelope_lifecycle_proof=replace(
+            integration_input.pe24_pilot_envelope_lifecycle_proof,
+            integration_proof_digest="0" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe24_proof: integration_proof_digest mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe24_traceability_identity_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe24_pilot_envelope_lifecycle_proof=replace(
+            integration_input.pe24_pilot_envelope_lifecycle_proof,
+            traceability_identity="0" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("traceability_identity mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe24_run_root_identity_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad_pe24_input = replace(
+        integration_input.pe24_pilot_envelope_lifecycle_integration_input,
+        lifecycle_matrix_proof=replace(
+            integration_input.pe24_pilot_envelope_lifecycle_integration_input.lifecycle_matrix_proof,
+            lifecycle_state_digest="0" * 64,
+        ),
+    )
+    bad = replace(
+        integration_input,
+        pe24_pilot_envelope_lifecycle_integration_input=bad_pe24_input,
+        pe24_pilot_envelope_lifecycle_proof=default_minimal_pe24_integration_proof(
+            bad_pe24_input,
+            traceability_identity=integration_input.durable_run_root.run_root_digest,
+            run_identity_digest=integration_input.run_identity.run_identity_digest,
+            completion_identity_digest=compute_completion_identity_digest(
+                run_root_digest=integration_input.durable_run_root.run_root_digest,
+                manifest_digest=integration_input.manifest_proof.manifest_digest,
+                source_revision=integration_input.source_revision,
+            ),
+            pe22_integration_proof_digest=integration_input.pe22_risk_killswitch_flatten_proof.integration_proof_digest,
+            pe23_integration_proof_digest=integration_input.pe23_capital_slot_ratchet_release_proof.integration_proof_digest,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("lifecycle_state_digest mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe24_run_identity_digest_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe24_pilot_envelope_lifecycle_proof=replace(
+            integration_input.pe24_pilot_envelope_lifecycle_proof,
+            run_identity_digest="0" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("run_identity_digest mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe24_completion_identity_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe24_pilot_envelope_lifecycle_proof=replace(
+            integration_input.pe24_pilot_envelope_lifecycle_proof,
+            completion_identity_digest="0" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("completion_identity_digest mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe24_pilot_envelope_identity_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe24_pilot_envelope_lifecycle_proof=replace(
+            integration_input.pe24_pilot_envelope_lifecycle_proof,
+            pilot_envelope_identity_digest="0" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pilot_envelope_identity_digest mismatch" in r for r in result["fail_reasons"])
+
+
+def test_completion_proof_chain_pe24_digest_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        completion_proof_chain=replace(
+            integration_input.completion_proof_chain,
+            completion_referenced_pe24_proof_digest="0" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "completion_referenced_pe24_proof_digest mismatch" in r for r in result["fail_reasons"]
+    )
+
+
+def test_pe24_pilot_review_proof_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad_pe24_input = replace(
+        integration_input.pe24_pilot_envelope_lifecycle_integration_input,
+        pe19_review_proof=replace(
+            integration_input.pe24_pilot_envelope_lifecycle_integration_input.pe19_review_proof,
+            review_proof_digest="0" * 64,
+        ),
+    )
+    bad = replace(
+        integration_input,
+        pe24_pilot_envelope_lifecycle_integration_input=bad_pe24_input,
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe19_review_proof_digest mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe24_pilot_safety_proof_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad_pe24_input = replace(
+        integration_input.pe24_pilot_envelope_lifecycle_integration_input,
+        pe22_risk_killswitch_flatten_proof=replace(
+            integration_input.pe24_pilot_envelope_lifecycle_integration_input.pe22_risk_killswitch_flatten_proof,
+            integration_proof_digest="0" * 64,
+        ),
+    )
+    bad = replace(
+        integration_input,
+        pe24_pilot_envelope_lifecycle_integration_input=bad_pe24_input,
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "pe22_integration_proof_digest mismatch" in r or "pilot envelope coherence not proven" in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_pe24_pilot_capital_proof_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad_pe24_input = replace(
+        integration_input.pe24_pilot_envelope_lifecycle_integration_input,
+        pe23_capital_slot_ratchet_release_proof=replace(
+            integration_input.pe24_pilot_envelope_lifecycle_integration_input.pe23_capital_slot_ratchet_release_proof,
+            integration_proof_digest="0" * 64,
+        ),
+    )
+    bad = replace(
+        integration_input,
+        pe24_pilot_envelope_lifecycle_integration_input=bad_pe24_input,
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "pe23_integration_proof_digest mismatch" in r or "pilot envelope coherence not proven" in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_pe24_contradictory_pilot_envelope_state_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad_pe24_input = replace(
+        integration_input.pe24_pilot_envelope_lifecycle_integration_input,
+        safety_snapshot=replace(
+            integration_input.pe24_pilot_envelope_lifecycle_integration_input.safety_snapshot,
+            pilot_start_authorized=True,
+        ),
+    )
+    bad = replace(
+        integration_input,
+        pe24_pilot_envelope_lifecycle_integration_input=bad_pe24_input,
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "pilot_start_authorized must be False" in r or "PE-24 evaluation failed" in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_pe24_missing_pe19_review_coherence_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad_pe24_input = replace(
+        integration_input.pe24_pilot_envelope_lifecycle_integration_input,
+        pe19_review_proof=replace(
+            integration_input.pe24_pilot_envelope_lifecycle_integration_input.pe19_review_proof,
+            review_valid=False,
+        ),
+    )
+    bad = replace(
+        integration_input,
+        pe24_pilot_envelope_lifecycle_integration_input=bad_pe24_input,
+        pe24_pilot_envelope_lifecycle_proof=replace(
+            integration_input.pe24_pilot_envelope_lifecycle_proof,
+            pilot_envelope_coherence_proven=True,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "pilot envelope coherence not proven" in r or "PE-24 evaluation failed" in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_pe24_missing_pe22_safety_coherence_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad_pe24_input = replace(
+        integration_input.pe24_pilot_envelope_lifecycle_integration_input,
+        pe22_risk_killswitch_flatten_proof=replace(
+            integration_input.pe24_pilot_envelope_lifecycle_integration_input.pe22_risk_killswitch_flatten_proof,
+            pe22_integration_pass=False,
+        ),
+    )
+    bad = replace(
+        integration_input,
+        pe24_pilot_envelope_lifecycle_integration_input=bad_pe24_input,
+        pe24_pilot_envelope_lifecycle_proof=replace(
+            integration_input.pe24_pilot_envelope_lifecycle_proof,
+            pilot_envelope_coherence_proven=True,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "pilot envelope coherence not proven" in r or "PE-24 evaluation failed" in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_pe24_missing_pe23_capital_coherence_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad_pe24_input = replace(
+        integration_input.pe24_pilot_envelope_lifecycle_integration_input,
+        pe23_capital_slot_ratchet_release_proof=replace(
+            integration_input.pe24_pilot_envelope_lifecycle_integration_input.pe23_capital_slot_ratchet_release_proof,
+            pe23_integration_pass=False,
+        ),
+    )
+    bad = replace(
+        integration_input,
+        pe24_pilot_envelope_lifecycle_integration_input=bad_pe24_input,
+        pe24_pilot_envelope_lifecycle_proof=replace(
+            integration_input.pe24_pilot_envelope_lifecycle_proof,
+            pilot_envelope_coherence_proven=True,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "pilot envelope coherence not proven" in r or "PE-24 evaluation failed" in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_pe24_pe24_integration_pass_false_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe24_pilot_envelope_lifecycle_proof=replace(
+            integration_input.pe24_pilot_envelope_lifecycle_proof,
+            pe24_integration_pass=False,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe24_integration_pass must be true" in r for r in result["fail_reasons"])
+
+
+def test_pe24_missing_required_field_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe24_pilot_envelope_lifecycle_proof=replace(
+            integration_input.pe24_pilot_envelope_lifecycle_proof,
+            pe20_package_id="",
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe20_package_id required" in r for r in result["fail_reasons"])
+
+
 def test_gap4_completion_mismatch_fails() -> None:
     integration_input = default_minimal_completion_integration_input()
     bad = replace(
@@ -1499,6 +1899,7 @@ def test_contract_version_constants() -> None:
     assert PE21_INTEGRATION_OWNER.endswith(".v0")
     assert PE22_INTEGRATION_OWNER == PE22_CONTRACT_VERSION
     assert PE23_INTEGRATION_OWNER == PE23_CONTRACT_VERSION
+    assert PE24_INTEGRATION_OWNER == PE24_CONTRACT_VERSION
     assert SUPPORTED_RUN_TYPE == "bounded_futures_testnet"
 
 
