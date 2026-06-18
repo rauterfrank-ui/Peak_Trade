@@ -1,7 +1,7 @@
 """Static + offline bounded Futures Testnet durable run primary evidence completion (v0).
 
 Docs/tests-only Class-4 scoped exception. No runtime, network, credentials, or Testnet start.
-PE-31 + PE-21 + PE-16 + Gap-4 + Gap-2a.1 durable run-root completion static integration only.
+PE-31 + PE-21 + PE-22 + PE-16 + Gap-4 + Gap-2a.1 durable run-root completion static integration only.
 """
 
 from __future__ import annotations
@@ -39,6 +39,10 @@ from src.ops.bounded_futures_testnet_durable_run_primary_evidence_completion_int
     PE31_INTEGRATION_OWNER,
     PRIMARY_EVIDENCE_OPERATIONALLY_ACCEPTED,
     RECONCILIATION_EXECUTED,
+    FLATTEN_EXECUTED,
+    KILLSWITCH_TRIGGERED,
+    PE22_INTEGRATION_OWNER,
+    RISK_EVALUATION_EXECUTED,
     PROOF_LIFECYCLE_CURRENT,
     PROOF_LIFECYCLE_DUPLICATE,
     PROOF_LIFECYCLE_REPLAY,
@@ -53,6 +57,7 @@ from src.ops.bounded_futures_testnet_durable_run_primary_evidence_completion_int
     compute_manifest_digest,
     compute_run_identity_digest,
     default_minimal_completion_integration_input,
+    default_minimal_pe22_integration_proof,
     default_minimal_pe31_integration_proof,
     default_minimal_safety_snapshot,
     evaluate_durable_run_primary_evidence_completion_integration,
@@ -71,6 +76,14 @@ from src.ops.bounded_futures_testnet_reconciliation_review_lifecycle_integration
     CONTRACT_VERSION as PE31_CONTRACT_VERSION,
     default_minimal_integration_input as default_minimal_pe31_integration_input,
     evaluate_reconciliation_review_lifecycle_integration,
+)
+from src.ops.bounded_futures_testnet_risk_killswitch_lifecycle_integration_contract_v0 import (
+    CONTRACT_VERSION as PE22_CONTRACT_VERSION,
+    FlattenStateProof,
+    KillSwitchEvaluationProof,
+    RiskEvaluationProof,
+    default_minimal_integration_input as default_minimal_pe22_integration_input,
+    evaluate_risk_killswitch_lifecycle_integration,
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -100,6 +113,18 @@ PE31_TEST_OWNER = (
     / "tests"
     / "ops"
     / "test_bounded_futures_testnet_reconciliation_review_lifecycle_integration_contract_v0.py"
+)
+PE22_MODULE = (
+    REPO_ROOT
+    / "src"
+    / "ops"
+    / "bounded_futures_testnet_risk_killswitch_lifecycle_integration_contract_v0.py"
+)
+PE22_TEST_OWNER = (
+    REPO_ROOT
+    / "tests"
+    / "ops"
+    / "test_bounded_futures_testnet_risk_killswitch_lifecycle_integration_contract_v0.py"
 )
 PE21_TEST_OWNER = (
     REPO_ROOT
@@ -141,6 +166,10 @@ def test_canonical_owners_referenced_not_duplicated() -> None:
         "bounded_futures_testnet_reconciliation_review_lifecycle_integration_contract_v0"
         in integration_text
     )
+    assert (
+        "bounded_futures_testnet_risk_killswitch_lifecycle_integration_contract_v0"
+        in integration_text
+    )
     assert "bounded_futures_testnet_preflight_packet_archive_contract_v0" in integration_text
     assert "scripts.ops.primary_evidence_retention_v0" in integration_text
     assert PE21_PACKAGE_MARKER in PE21_MODULE.read_text(encoding="utf-8")
@@ -149,6 +178,8 @@ def test_canonical_owners_referenced_not_duplicated() -> None:
     assert PE16_MODULE.exists()
     assert PE31_MODULE.exists()
     assert PE31_TEST_OWNER.exists()
+    assert PE22_MODULE.exists()
+    assert PE22_TEST_OWNER.exists()
     assert PE21_TEST_OWNER.exists()
     assert PRIMARY_EVIDENCE_MODULE.exists()
     assert GAP4_TEST_OWNER.exists()
@@ -157,6 +188,7 @@ def test_canonical_owners_referenced_not_duplicated() -> None:
     assert GAP4_COMPLETION_OWNER == str(GAP4_TEST_OWNER.relative_to(REPO_ROOT))
     assert GAP2A1_ENFORCEMENT_OWNER == str(GAP2A1_TEST_OWNER.relative_to(REPO_ROOT))
     assert PE31_INTEGRATION_OWNER == PE31_CONTRACT_VERSION
+    assert PE22_INTEGRATION_OWNER == PE22_CONTRACT_VERSION
 
 
 def test_global_safety_flags_remain_blocked() -> None:
@@ -164,6 +196,9 @@ def test_global_safety_flags_remain_blocked() -> None:
     assert OPERATIVE_RUN_COMPLETION_RECORDED is False
     assert PRIMARY_EVIDENCE_OPERATIONALLY_ACCEPTED is False
     assert RECONCILIATION_EXECUTED is False
+    assert RISK_EVALUATION_EXECUTED is False
+    assert KILLSWITCH_TRIGGERED is False
+    assert FLATTEN_EXECUTED is False
     assert RUN_STARTED is False
     assert ARCHIVE_READ is False
     assert ARCHIVE_WRITTEN is False
@@ -198,6 +233,11 @@ def test_coherent_static_completion_happy_path_passes() -> None:
     assert result["completion_claimed"] is True
     assert result["pe21_integration_pass"] is True
     assert result["pe31_integration_pass"] is True
+    assert result["pe22_integration_pass"] is True
+    assert result["durable_run_primary_evidence_completion_bound"] is True
+    assert result["pe21_reconciliation_primary_evidence_bound"] is True
+    assert result["pe31_reconciliation_review_bound"] is True
+    assert result["pe22_risk_killswitch_flatten_lifecycle_bound"] is True
     assert result["fail_reasons"] == []
 
 
@@ -209,6 +249,9 @@ def test_valid_static_proof_remains_non_authorizing() -> None:
     assert result["operative_run_completion_recorded"] is False
     assert result["primary_evidence_operationally_accepted"] is False
     assert result["reconciliation_executed"] is False
+    assert result["risk_evaluation_executed"] is False
+    assert result["killswitch_triggered"] is False
+    assert result["flatten_executed"] is False
     assert result["archive_read"] is False
     assert result["archive_written"] is False
     assert result["manifest_read"] is False
@@ -610,6 +653,292 @@ def test_pe31_alone_does_not_authorize_completion() -> None:
     assert pe31_result["authority_lift"] is False
 
 
+def test_pe22_alone_does_not_authorize_completion() -> None:
+    pe22_input = default_minimal_pe22_integration_input()
+    pe22_result = evaluate_risk_killswitch_lifecycle_integration(pe22_input)
+    assert pe22_result["integration_pass"] is True
+    assert pe22_result["operative_risk_evaluation_executed"] is False
+    assert pe22_result["operative_killswitch_executed"] is False
+    assert pe22_result["operative_flatten_executed"] is False
+    assert pe22_result["authority_lift"] is False
+
+
+def test_missing_pe22_proof_binding_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe22_risk_killswitch_flatten_proof=replace(
+            integration_input.pe22_risk_killswitch_flatten_proof,
+            integration_proof_digest="",
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe22_proof: integration_proof_digest required" in r for r in result["fail_reasons"])
+
+
+def test_pe22_source_revision_mismatch_fails() -> None:
+    integration_input = default_minimal_completion_integration_input(
+        source_revision=VALID_COMMIT_SHA
+    )
+    bad_pe22_input = replace(
+        integration_input.pe22_risk_killswitch_lifecycle_integration_input,
+        source_revision="0123456789abcdef0123456789abcdef0123456789",
+    )
+    bad = replace(
+        integration_input,
+        pe22_risk_killswitch_lifecycle_integration_input=bad_pe22_input,
+        pe22_risk_killswitch_flatten_proof=default_minimal_pe22_integration_proof(
+            bad_pe22_input,
+            traceability_identity=integration_input.durable_run_root.run_root_digest,
+            run_identity_digest=integration_input.run_identity.run_identity_digest,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe22_proof: source_revision mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe22_wrong_owner_identity_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe22_risk_killswitch_flatten_proof=replace(
+            integration_input.pe22_risk_killswitch_flatten_proof,
+            integration_owner="wrong.owner.v0",
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("integration_owner must be" in r for r in result["fail_reasons"])
+
+
+def test_pe22_proof_digest_mismatch_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe22_risk_killswitch_flatten_proof=replace(
+            integration_input.pe22_risk_killswitch_flatten_proof,
+            integration_proof_digest="0" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe22_proof: integration_proof_digest mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe22_traceability_identity_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe22_risk_killswitch_flatten_proof=replace(
+            integration_input.pe22_risk_killswitch_flatten_proof,
+            traceability_identity="0" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("traceability_identity mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe22_run_root_identity_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad_pe22_input = replace(
+        integration_input.pe22_risk_killswitch_lifecycle_integration_input,
+        lifecycle_matrix_proof=replace(
+            integration_input.pe22_risk_killswitch_lifecycle_integration_input.lifecycle_matrix_proof,
+            lifecycle_state_digest="0" * 64,
+        ),
+    )
+    bad = replace(
+        integration_input,
+        pe22_risk_killswitch_lifecycle_integration_input=bad_pe22_input,
+        pe22_risk_killswitch_flatten_proof=default_minimal_pe22_integration_proof(
+            bad_pe22_input,
+            traceability_identity=integration_input.durable_run_root.run_root_digest,
+            run_identity_digest=integration_input.run_identity.run_identity_digest,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("lifecycle_state_digest mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe22_run_identity_digest_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe22_risk_killswitch_flatten_proof=replace(
+            integration_input.pe22_risk_killswitch_flatten_proof,
+            run_identity_digest="0" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("run_identity_digest mismatch" in r for r in result["fail_reasons"])
+
+
+def test_completion_proof_chain_pe22_digest_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        completion_proof_chain=replace(
+            integration_input.completion_proof_chain,
+            completion_referenced_pe22_proof_digest="0" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "completion_referenced_pe22_proof_digest mismatch" in r for r in result["fail_reasons"]
+    )
+
+
+def test_pe22_risk_proof_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad_pe22_input = replace(
+        integration_input.pe22_risk_killswitch_lifecycle_integration_input,
+        risk_evaluation_proof=replace(
+            integration_input.pe22_risk_killswitch_lifecycle_integration_input.risk_evaluation_proof,
+            proof_digest="0" * 64,
+        ),
+    )
+    bad = replace(
+        integration_input,
+        pe22_risk_killswitch_lifecycle_integration_input=bad_pe22_input,
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("risk_evaluation_proof_digest mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe22_killswitch_proof_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad_pe22_input = replace(
+        integration_input.pe22_risk_killswitch_lifecycle_integration_input,
+        killswitch_evaluation_proof=replace(
+            integration_input.pe22_risk_killswitch_lifecycle_integration_input.killswitch_evaluation_proof,
+            proof_digest="0" * 64,
+        ),
+    )
+    bad = replace(
+        integration_input,
+        pe22_risk_killswitch_lifecycle_integration_input=bad_pe22_input,
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("killswitch_evaluation_proof_digest mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe22_flatten_proof_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad_pe22_input = replace(
+        integration_input.pe22_risk_killswitch_lifecycle_integration_input,
+        flatten_state_proof=replace(
+            integration_input.pe22_risk_killswitch_lifecycle_integration_input.flatten_state_proof,
+            proof_digest="0" * 64,
+        ),
+    )
+    bad = replace(
+        integration_input,
+        pe22_risk_killswitch_lifecycle_integration_input=bad_pe22_input,
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("flatten_state_proof_digest mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe22_contradictory_risk_killswitch_flatten_state_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad_pe22_input = replace(
+        integration_input.pe22_risk_killswitch_lifecycle_integration_input,
+        killswitch_evaluation_proof=replace(
+            integration_input.pe22_risk_killswitch_lifecycle_integration_input.killswitch_evaluation_proof,
+            killswitch_clear=False,
+        ),
+    )
+    bad = replace(
+        integration_input,
+        pe22_risk_killswitch_lifecycle_integration_input=bad_pe22_input,
+        pe22_risk_killswitch_flatten_proof=replace(
+            default_minimal_pe22_integration_proof(
+                bad_pe22_input,
+                traceability_identity=integration_input.durable_run_root.run_root_digest,
+                run_identity_digest=integration_input.run_identity.run_identity_digest,
+            ),
+            safe_completion_state_proven=True,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "safe completion state not proven" in r or "PE-22 evaluation failed" in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_pe22_missing_safe_completion_state_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad_pe22_input = replace(
+        integration_input.pe22_risk_killswitch_lifecycle_integration_input,
+        flatten_state_proof=FlattenStateProof(
+            proof_digest=integration_input.pe22_risk_killswitch_lifecycle_integration_input.flatten_state_proof.proof_digest,
+            proof_pass=False,
+            position_flattened_by_end=False,
+            cancel_or_close_evidence_valid=False,
+            position_quantity=1.0,
+            position_must_be_flattened=True,
+            binding_reference=integration_input.pe22_risk_killswitch_lifecycle_integration_input.flatten_state_proof.binding_reference,
+        ),
+    )
+    bad = replace(
+        integration_input,
+        pe22_risk_killswitch_lifecycle_integration_input=bad_pe22_input,
+        pe22_risk_killswitch_flatten_proof=replace(
+            default_minimal_pe22_integration_proof(
+                bad_pe22_input,
+                traceability_identity=integration_input.durable_run_root.run_root_digest,
+                run_identity_digest=integration_input.run_identity.run_identity_digest,
+            ),
+            safe_completion_state_proven=True,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "safe completion state not proven" in r or "PE-22 evaluation failed" in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_pe22_pe22_integration_pass_false_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe22_risk_killswitch_flatten_proof=replace(
+            integration_input.pe22_risk_killswitch_flatten_proof,
+            pe22_integration_pass=False,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe22_integration_pass must be true" in r for r in result["fail_reasons"])
+
+
+def test_pe22_missing_required_field_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe22_risk_killswitch_flatten_proof=replace(
+            integration_input.pe22_risk_killswitch_flatten_proof,
+            risk_evaluation_proof_digest="",
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("risk_evaluation_proof_digest required" in r for r in result["fail_reasons"])
+
+
 def test_gap4_completion_mismatch_fails() -> None:
     integration_input = default_minimal_completion_integration_input()
     bad = replace(
@@ -745,6 +1074,7 @@ def test_contract_version_constants() -> None:
     )
     assert COMPLETION_INTEGRATION_OWNER == CONTRACT_VERSION
     assert PE21_INTEGRATION_OWNER.endswith(".v0")
+    assert PE22_INTEGRATION_OWNER == PE22_CONTRACT_VERSION
     assert SUPPORTED_RUN_TYPE == "bounded_futures_testnet"
 
 

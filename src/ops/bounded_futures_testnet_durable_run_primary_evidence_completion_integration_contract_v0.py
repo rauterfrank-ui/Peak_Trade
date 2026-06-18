@@ -2,13 +2,15 @@
 
 Deterministic, offline, explicit-input-only fail-closed integration composing PE-31
 reconciliation-review lifecycle proof, PE-21 primary evidence reconciliation proof,
-PE-16 durable archive identity, SECTION5 Gap 4 output/reporter completion semantics,
-and SECTION5 Gap 2a.1 primary-evidence enforcement completion semantics with bounded
-durable run-root artifact/manifest requirements.
+PE-22 risk/killswitch/flatten lifecycle proof, PE-16 durable archive identity,
+SECTION5 Gap 4 output/reporter completion semantics, and SECTION5 Gap 2a.1
+primary-evidence enforcement completion semantics with bounded durable run-root
+artifact/manifest requirements.
 
 Static integration only — no run start, evidence write, archive I/O, manifest I/O,
 network, testnet, runtime, credentials, orders, evidence acceptance, operative completion,
-operative reconciliation, or authority lift.
+operative reconciliation, operative risk evaluation, KillSwitch trigger, flatten,
+or authority lift.
 """
 
 from __future__ import annotations
@@ -56,6 +58,15 @@ from src.ops.bounded_futures_testnet_reconciliation_review_lifecycle_integration
     default_minimal_reconciliation_review_proof,
     evaluate_reconciliation_review_lifecycle_integration,
 )
+from src.ops.bounded_futures_testnet_risk_killswitch_lifecycle_integration_contract_v0 import (
+    CONTRACT_VERSION as PE22_CONTRACT_VERSION,
+    RiskKillswitchLifecycleIntegrationInput,
+    compute_integration_input_digest as compute_pe22_integration_input_digest,
+    compute_integration_proof_digest as compute_pe22_integration_proof_digest,
+    compute_lifecycle_matrix_digest as compute_pe22_lifecycle_matrix_digest,
+    default_minimal_integration_input as default_minimal_pe22_integration_input,
+    evaluate_risk_killswitch_lifecycle_integration,
+)
 
 PACKAGE_MARKER = (
     "BOUNDED_FUTURES_TESTNET_DURABLE_RUN_PRIMARY_EVIDENCE_COMPLETION_INTEGRATION_CONTRACT_V0=true"
@@ -71,6 +82,7 @@ COMPLETION_INTEGRATION_OWNER = CONTRACT_VERSION
 PE16_ARCHIVE_OWNER = "src/ops/bounded_futures_testnet_preflight_packet_archive_contract_v0.py"
 PE21_INTEGRATION_OWNER = PE21_CONTRACT_VERSION
 PE31_INTEGRATION_OWNER = PE31_CONTRACT_VERSION
+PE22_INTEGRATION_OWNER = PE22_CONTRACT_VERSION
 GAP4_COMPLETION_OWNER = "tests/ops/test_gap4_output_evidence_paths_contract_v0.py"
 GAP2A1_ENFORCEMENT_OWNER = "tests/ops/test_gap2a1_primary_evidence_enforcement_contract_v0.py"
 PRIMARY_EVIDENCE_RETENTION_CONTRACT_VERSION = "primary_evidence_retention.v0"
@@ -138,6 +150,9 @@ FILESYSTEM_ACCESSED = False
 REPLAY_EXECUTED = False
 ADMISSION_EXECUTED = False
 RECONCILIATION_EXECUTED = False
+RISK_EVALUATION_EXECUTED = False
+KILLSWITCH_TRIGGERED = False
+FLATTEN_EXECUTED = False
 AUTHORITY_LIFT = False
 PREFLIGHT_REMAINS_BLOCKED = True
 
@@ -170,6 +185,7 @@ _EXPECTED_CONTRACT_VERSIONS: dict[str, str] = {
     "pe16_primary_evidence_retention": PRIMARY_EVIDENCE_RETENTION_CONTRACT_VERSION,
     "pe21_integration": PE21_CONTRACT_VERSION,
     "pe31_integration": PE31_CONTRACT_VERSION,
+    "pe22_integration": PE22_CONTRACT_VERSION,
     "integration": CONTRACT_VERSION,
 }
 
@@ -181,6 +197,7 @@ class ContractVersionsInput:
     pe16_primary_evidence_retention: str
     pe21_integration: str
     pe31_integration: str
+    pe22_integration: str
     integration: str
 
 
@@ -233,8 +250,25 @@ class Pe31ReconciliationReviewIntegrationProofBinding:
 
 
 @dataclass(frozen=True)
+class Pe22RiskKillswitchFlattenProofBinding:
+    integration_owner: str
+    source_revision: str
+    integration_input_digest: str
+    integration_proof_digest: str
+    pe22_integration_pass: bool
+    risk_evaluation_proof_digest: str
+    killswitch_evaluation_proof_digest: str
+    flatten_state_proof_digest: str
+    lifecycle_matrix_digest: str
+    traceability_identity: str
+    run_identity_digest: str
+    safe_completion_state_proven: bool
+
+
+@dataclass(frozen=True)
 class CompletionProofChainBinding:
     completion_referenced_pe31_proof_digest: str
+    completion_referenced_pe22_proof_digest: str
     pe31_referenced_pe21_integration_proof_digest: str
     completion_referenced_pe21_integration_proof_digest: str
     shared_pe21_integration_input_digest: str
@@ -322,6 +356,8 @@ class DurableRunPrimaryEvidenceCompletionIntegrationInput:
     pe21_integration_input: ReconciliationPrimaryEvidenceIntegrationInput
     pe31_reconciliation_review_integration_input: ReconciliationReviewLifecycleIntegrationInput
     pe31_reconciliation_review_integration_proof: Pe31ReconciliationReviewIntegrationProofBinding
+    pe22_risk_killswitch_lifecycle_integration_input: RiskKillswitchLifecycleIntegrationInput
+    pe22_risk_killswitch_flatten_proof: Pe22RiskKillswitchFlattenProofBinding
     completion_proof_chain: CompletionProofChainBinding
     pe16_archive: Pe16ArchiveProofBinding
     manifest_proof: ManifestProofBinding
@@ -723,12 +759,129 @@ def _validate_pe31_integration_proof(
     return fail_reasons
 
 
+def _validate_pe22_integration_proof(
+    integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
+    *,
+    pe22_result: dict[str, Any],
+) -> list[str]:
+    fail_reasons: list[str] = []
+    proof = integration_input.pe22_risk_killswitch_flatten_proof
+    pe22_input = integration_input.pe22_risk_killswitch_lifecycle_integration_input
+    durable_root = integration_input.durable_run_root
+    run_identity = integration_input.run_identity
+
+    if proof.integration_owner != PE22_INTEGRATION_OWNER:
+        fail_reasons.append(f"pe22_proof: integration_owner must be {PE22_INTEGRATION_OWNER!r}")
+    if proof.source_revision != integration_input.source_revision:
+        fail_reasons.append("pe22_proof: source_revision mismatch")
+    if not proof.integration_input_digest:
+        fail_reasons.append("pe22_proof: integration_input_digest required")
+    elif not _valid_sha256_digest(proof.integration_input_digest):
+        fail_reasons.append(
+            "pe22_proof: integration_input_digest must be 64-char lowercase sha256 hex"
+        )
+    elif proof.integration_input_digest != compute_pe22_integration_input_digest(pe22_input):
+        fail_reasons.append("pe22_proof: integration_input_digest mismatch")
+
+    if not proof.integration_proof_digest:
+        fail_reasons.append("pe22_proof: integration_proof_digest required")
+    elif not _valid_sha256_digest(proof.integration_proof_digest):
+        fail_reasons.append(
+            "pe22_proof: integration_proof_digest must be 64-char lowercase sha256 hex"
+        )
+    else:
+        expected_proof_digest = compute_pe22_integration_proof_digest(pe22_input)
+        if proof.pe22_integration_pass is not True:
+            fail_reasons.append("pe22_proof: pe22_integration_pass must be true")
+        elif proof.integration_proof_digest != expected_proof_digest:
+            fail_reasons.append("pe22_proof: integration_proof_digest mismatch")
+
+    if proof.pe22_integration_pass is not True:
+        fail_reasons.append("pe22_proof: pe22_integration_pass must be true")
+
+    digest_fields = (
+        ("risk_evaluation_proof_digest", proof.risk_evaluation_proof_digest),
+        ("killswitch_evaluation_proof_digest", proof.killswitch_evaluation_proof_digest),
+        ("flatten_state_proof_digest", proof.flatten_state_proof_digest),
+        ("lifecycle_matrix_digest", proof.lifecycle_matrix_digest),
+        ("traceability_identity", proof.traceability_identity),
+        ("run_identity_digest", proof.run_identity_digest),
+    )
+    for field_name, value in digest_fields:
+        if not value:
+            fail_reasons.append(f"pe22_proof: {field_name} required")
+        elif not _valid_sha256_digest(value):
+            fail_reasons.append(f"pe22_proof: {field_name} must be 64-char lowercase sha256 hex")
+
+    if proof.risk_evaluation_proof_digest != pe22_input.risk_evaluation_proof.proof_digest:
+        fail_reasons.append("pe22_proof: risk_evaluation_proof_digest mismatch")
+    if (
+        proof.killswitch_evaluation_proof_digest
+        != pe22_input.killswitch_evaluation_proof.proof_digest
+    ):
+        fail_reasons.append("pe22_proof: killswitch_evaluation_proof_digest mismatch")
+    if proof.flatten_state_proof_digest != pe22_input.flatten_state_proof.proof_digest:
+        fail_reasons.append("pe22_proof: flatten_state_proof_digest mismatch")
+    if proof.lifecycle_matrix_digest != compute_pe22_lifecycle_matrix_digest():
+        fail_reasons.append("pe22_proof: lifecycle_matrix_digest mismatch")
+    if proof.traceability_identity != durable_root.run_root_digest:
+        fail_reasons.append("pe22_proof: traceability_identity mismatch with run_root_digest")
+    if proof.run_identity_digest != run_identity.run_identity_digest:
+        fail_reasons.append("pe22_proof: run_identity_digest mismatch")
+
+    if pe22_input.source_revision != integration_input.source_revision:
+        fail_reasons.append(
+            "pe22_risk_killswitch_lifecycle_integration_input: source_revision mismatch with "
+            "completion input"
+        )
+
+    pe22_matrix = pe22_input.lifecycle_matrix_proof
+    if pe22_matrix.lifecycle_state_digest != durable_root.run_root_digest:
+        fail_reasons.append(
+            "pe22_risk_killswitch_lifecycle_integration_input: lifecycle_state_digest mismatch "
+            "with run_root_digest"
+        )
+
+    risk_proof = pe22_input.risk_evaluation_proof
+    killswitch_proof = pe22_input.killswitch_evaluation_proof
+    flatten_proof = pe22_input.flatten_state_proof
+    if proof.safe_completion_state_proven is not True:
+        fail_reasons.append("pe22_proof: safe_completion_state_proven must be true")
+    elif not (
+        risk_proof.proof_pass is True
+        and risk_proof.evaluation_allow is True
+        and killswitch_proof.killswitch_clear is True
+        and killswitch_proof.proof_pass is True
+        and flatten_proof.position_flattened_by_end is True
+        and flatten_proof.proof_pass is True
+        and flatten_proof.cancel_or_close_evidence_valid is True
+    ):
+        fail_reasons.append("pe22_proof: safe completion state not proven upstream")
+
+    if not pe22_result.get("integration_pass"):
+        fail_reasons.append(
+            "pe22_risk_killswitch_lifecycle_integration_input: PE-22 evaluation failed"
+        )
+        fail_reasons.extend(
+            f"pe22_risk_killswitch_lifecycle_integration_input: {reason}"
+            for reason in pe22_result.get("fail_reasons", [])
+        )
+    elif not pe22_result.get("pe12_tiny_order_risk_killswitch_flatten_static_integration_proven"):
+        fail_reasons.append(
+            "pe22_risk_killswitch_lifecycle_integration_input: "
+            "pe12_tiny_order_risk_killswitch_flatten_static_integration_proven required"
+        )
+
+    return fail_reasons
+
+
 def _validate_completion_proof_chain(
     integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
 ) -> list[str]:
     fail_reasons: list[str] = []
     chain = integration_input.completion_proof_chain
     pe31_proof = integration_input.pe31_reconciliation_review_integration_proof
+    pe22_proof = integration_input.pe22_risk_killswitch_flatten_proof
     pe21_proof = integration_input.pe21_proof
     pe31_pe21_proof = integration_input.pe31_reconciliation_review_integration_input.pe21_reconciliation_primary_evidence_integration_proof
     pe21_input_digest = compute_pe21_integration_input_digest(
@@ -737,6 +890,7 @@ def _validate_completion_proof_chain(
 
     digest_fields = (
         ("completion_referenced_pe31_proof_digest", chain.completion_referenced_pe31_proof_digest),
+        ("completion_referenced_pe22_proof_digest", chain.completion_referenced_pe22_proof_digest),
         (
             "pe31_referenced_pe21_integration_proof_digest",
             chain.pe31_referenced_pe21_integration_proof_digest,
@@ -759,6 +913,10 @@ def _validate_completion_proof_chain(
     if chain.completion_referenced_pe31_proof_digest != pe31_proof.integration_proof_digest:
         fail_reasons.append(
             "completion_proof_chain: completion_referenced_pe31_proof_digest mismatch"
+        )
+    if chain.completion_referenced_pe22_proof_digest != pe22_proof.integration_proof_digest:
+        fail_reasons.append(
+            "completion_proof_chain: completion_referenced_pe22_proof_digest mismatch"
         )
     if (
         chain.pe31_referenced_pe21_integration_proof_digest
@@ -965,6 +1123,13 @@ def validate_durable_run_primary_evidence_completion_integration_input(
             "completion input"
         )
 
+    pe22_input = integration_input.pe22_risk_killswitch_lifecycle_integration_input
+    if pe22_input.source_revision != integration_input.source_revision:
+        fail_reasons.append(
+            "pe22_risk_killswitch_lifecycle_integration_input: source_revision mismatch with "
+            "completion input"
+        )
+
     fail_reasons.extend(_validate_completion_proof_chain(integration_input))
 
     fail_reasons.extend(
@@ -1041,6 +1206,12 @@ def _integration_input_dict(
         "pe31_reconciliation_review_integration_proof": asdict(
             integration_input.pe31_reconciliation_review_integration_proof
         ),
+        "pe22_integration_input_digest": compute_pe22_integration_input_digest(
+            integration_input.pe22_risk_killswitch_lifecycle_integration_input
+        ),
+        "pe22_risk_killswitch_flatten_proof": asdict(
+            integration_input.pe22_risk_killswitch_flatten_proof
+        ),
         "completion_proof_chain": asdict(integration_input.completion_proof_chain),
         "post_write_verification": asdict(integration_input.post_write_verification),
         "primary_evidence_identity": asdict(integration_input.primary_evidence_identity),
@@ -1081,14 +1252,22 @@ def _integration_proof_dict(
         "completion_static_proven": completion_static_proven,
         "contract_implementation_only": CONTRACT_IMPLEMENTATION_ONLY,
         "durable_run_primary_evidence_completion_integration_pass": integration_pass,
+        "durable_run_primary_evidence_completion_bound": integration_pass,
+        "pe21_reconciliation_primary_evidence_bound": integration_pass,
+        "pe31_reconciliation_review_bound": integration_pass,
+        "pe22_risk_killswitch_flatten_lifecycle_bound": integration_pass,
         "global_run_completion_readiness": GLOBAL_RUN_COMPLETION_READINESS,
         "integration_contract_version": CONTRACT_VERSION,
         "integration_input_digest": compute_completion_integration_input_digest(integration_input),
         "manifest_digest": integration_input.manifest_proof.manifest_digest,
         "operative_run_completion_recorded": OPERATIVE_RUN_COMPLETION_RECORDED,
         "pe31_integration_pass": integration_pass,
+        "pe22_integration_pass": integration_pass,
         "primary_evidence_operationally_accepted": PRIMARY_EVIDENCE_OPERATIONALLY_ACCEPTED,
         "reconciliation_executed": RECONCILIATION_EXECUTED,
+        "risk_evaluation_executed": RISK_EVALUATION_EXECUTED,
+        "killswitch_triggered": KILLSWITCH_TRIGGERED,
+        "flatten_executed": FLATTEN_EXECUTED,
         "run_identity_digest": integration_input.run_identity.run_identity_digest,
         "run_root_digest": integration_input.durable_run_root.run_root_digest,
         "run_type": integration_input.run_type,
@@ -1154,6 +1333,16 @@ def evaluate_durable_run_primary_evidence_completion_integration(
         )
     )
 
+    pe22_result = evaluate_risk_killswitch_lifecycle_integration(
+        integration_input.pe22_risk_killswitch_lifecycle_integration_input
+    )
+    fail_reasons.extend(
+        _validate_pe22_integration_proof(
+            integration_input,
+            pe22_result=pe22_result,
+        )
+    )
+
     if completion_claim_without_full_evidence and integration_input.completion_claimed:
         fail_reasons.append("completion_claimed=true without full evidence chain is insufficient")
 
@@ -1180,6 +1369,11 @@ def evaluate_durable_run_primary_evidence_completion_integration(
         ),
         "pe21_integration_pass": pe21_result.get("integration_pass"),
         "pe31_integration_pass": pe31_result.get("integration_pass"),
+        "pe22_integration_pass": pe22_result.get("integration_pass"),
+        "durable_run_primary_evidence_completion_bound": integration_pass,
+        "pe21_reconciliation_primary_evidence_bound": bool(pe21_result.get("integration_pass")),
+        "pe31_reconciliation_review_bound": bool(pe31_result.get("integration_pass")),
+        "pe22_risk_killswitch_flatten_lifecycle_bound": bool(pe22_result.get("integration_pass")),
         "pe16_archive_identity": integration_input.pe16_archive.archive_identity,
         "gap4_completion_integration_pass": integration_input.gap4_completion.gap4_integration_pass,
         "gap2a1_enforcement_integration_pass": (
@@ -1193,6 +1387,9 @@ def evaluate_durable_run_primary_evidence_completion_integration(
         "operative_run_completion_recorded": OPERATIVE_RUN_COMPLETION_RECORDED,
         "primary_evidence_operationally_accepted": PRIMARY_EVIDENCE_OPERATIONALLY_ACCEPTED,
         "reconciliation_executed": RECONCILIATION_EXECUTED,
+        "risk_evaluation_executed": RISK_EVALUATION_EXECUTED,
+        "killswitch_triggered": KILLSWITCH_TRIGGERED,
+        "flatten_executed": FLATTEN_EXECUTED,
         "archive_read": ARCHIVE_READ,
         "archive_written": ARCHIVE_WRITTEN,
         "manifest_read": MANIFEST_READ,
@@ -1241,14 +1438,38 @@ def default_minimal_pe31_integration_proof(
     )
 
 
+def default_minimal_pe22_integration_proof(
+    pe22_input: RiskKillswitchLifecycleIntegrationInput,
+    *,
+    traceability_identity: str,
+    run_identity_digest: str,
+) -> Pe22RiskKillswitchFlattenProofBinding:
+    return Pe22RiskKillswitchFlattenProofBinding(
+        integration_owner=PE22_INTEGRATION_OWNER,
+        source_revision=pe22_input.source_revision,
+        integration_input_digest=compute_pe22_integration_input_digest(pe22_input),
+        integration_proof_digest=compute_pe22_integration_proof_digest(pe22_input),
+        pe22_integration_pass=True,
+        risk_evaluation_proof_digest=pe22_input.risk_evaluation_proof.proof_digest,
+        killswitch_evaluation_proof_digest=pe22_input.killswitch_evaluation_proof.proof_digest,
+        flatten_state_proof_digest=pe22_input.flatten_state_proof.proof_digest,
+        lifecycle_matrix_digest=compute_pe22_lifecycle_matrix_digest(),
+        traceability_identity=traceability_identity,
+        run_identity_digest=run_identity_digest,
+        safe_completion_state_proven=True,
+    )
+
+
 def default_minimal_completion_proof_chain(
     integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
 ) -> CompletionProofChainBinding:
     pe31_proof = integration_input.pe31_reconciliation_review_integration_proof
+    pe22_proof = integration_input.pe22_risk_killswitch_flatten_proof
     pe21_proof = integration_input.pe21_proof
     pe31_pe21_proof = integration_input.pe31_reconciliation_review_integration_input.pe21_reconciliation_primary_evidence_integration_proof
     return CompletionProofChainBinding(
         completion_referenced_pe31_proof_digest=pe31_proof.integration_proof_digest,
+        completion_referenced_pe22_proof_digest=pe22_proof.integration_proof_digest,
         pe31_referenced_pe21_integration_proof_digest=pe31_pe21_proof.integration_proof_digest,
         completion_referenced_pe21_integration_proof_digest=pe21_proof.integration_proof_digest,
         shared_pe21_integration_input_digest=compute_pe21_integration_input_digest(
@@ -1335,6 +1556,32 @@ def default_minimal_completion_integration_input(
     )
     pe31_proof = default_minimal_pe31_integration_proof(pe31_integration_input)
 
+    run_identity_digest = compute_run_identity_digest(
+        run_id=run_id,
+        run_type=SUPPORTED_RUN_TYPE,
+        source_revision=source_revision,
+    )
+    run_root_digest = compute_run_root_digest(
+        durable_archive_root=durable_archive_root,
+        run_root_identity=run_root_identity,
+        source_revision=source_revision,
+    )
+
+    pe22_base = default_minimal_pe22_integration_input(source_revision=source_revision)
+    pe22_integration_input = replace(
+        pe22_base,
+        lifecycle_matrix_proof=replace(
+            pe22_base.lifecycle_matrix_proof,
+            lifecycle_state_digest=run_root_digest,
+        ),
+    )
+    pe22_result = evaluate_risk_killswitch_lifecycle_integration(pe22_integration_input)
+    pe22_proof = default_minimal_pe22_integration_proof(
+        pe22_integration_input,
+        traceability_identity=run_root_digest,
+        run_identity_digest=run_identity_digest,
+    )
+
     archive_digest = hashlib.sha256(
         json.dumps(
             {
@@ -1348,16 +1595,6 @@ def default_minimal_completion_integration_input(
         ).encode("utf-8")
     ).hexdigest()
 
-    run_identity_digest = compute_run_identity_digest(
-        run_id=run_id,
-        run_type=SUPPORTED_RUN_TYPE,
-        source_revision=source_revision,
-    )
-    run_root_digest = compute_run_root_digest(
-        durable_archive_root=durable_archive_root,
-        run_root_identity=run_root_identity,
-        source_revision=source_revision,
-    )
     primary_evidence_identity_digest = compute_primary_evidence_identity_digest(
         primary_evidence_identity=run_root_identity,
         primary_evidence_owner=PRIMARY_EVIDENCE_OWNER,
@@ -1394,8 +1631,11 @@ def default_minimal_completion_integration_input(
         pe21_integration_input=pe21_integration_input,
         pe31_reconciliation_review_integration_input=pe31_integration_input,
         pe31_reconciliation_review_integration_proof=pe31_proof,
+        pe22_risk_killswitch_lifecycle_integration_input=pe22_integration_input,
+        pe22_risk_killswitch_flatten_proof=pe22_proof,
         completion_proof_chain=CompletionProofChainBinding(
             completion_referenced_pe31_proof_digest=pe31_proof.integration_proof_digest,
+            completion_referenced_pe22_proof_digest=pe22_result["integration_proof_digest"],
             pe31_referenced_pe21_integration_proof_digest=(
                 pe31_integration_input.pe21_reconciliation_primary_evidence_integration_proof.integration_proof_digest
             ),
@@ -1455,6 +1695,7 @@ def default_minimal_completion_integration_input(
             pe16_primary_evidence_retention=PRIMARY_EVIDENCE_RETENTION_CONTRACT_VERSION,
             pe21_integration=PE21_CONTRACT_VERSION,
             pe31_integration=PE31_CONTRACT_VERSION,
+            pe22_integration=PE22_CONTRACT_VERSION,
             integration=CONTRACT_VERSION,
         ),
     )
