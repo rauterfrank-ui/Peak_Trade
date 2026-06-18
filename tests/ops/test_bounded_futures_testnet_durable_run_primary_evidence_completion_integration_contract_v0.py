@@ -1,7 +1,8 @@
 """Static + offline bounded Futures Testnet durable run primary evidence completion (v0).
 
 Docs/tests-only Class-4 scoped exception. No runtime, network, credentials, or Testnet start.
-PE-31 + PE-21 + PE-22 + PE-23 + PE-24 + PE-16 + Gap-4 + Gap-2a.1 durable run-root completion static integration only.
+PE-31 + PE-21 + PE-22 + PE-23 + PE-24 + PE-35 + PE-16 + Gap-4 + Gap-2a.1 durable run-root
+completion static integration only.
 """
 
 from __future__ import annotations
@@ -48,6 +49,13 @@ from src.ops.bounded_futures_testnet_durable_run_primary_evidence_completion_int
     PE22_INTEGRATION_OWNER,
     PE23_INTEGRATION_OWNER,
     PE24_INTEGRATION_OWNER,
+    PE35_INTEGRATION_OWNER,
+    RECOVERY_EXECUTED,
+    RESUME_EXECUTED,
+    RETRY_EXECUTED,
+    REPLAY_EXECUTED,
+    STATE_MUTATED,
+    PARTIAL_FAILURE_OPERATIONALLY_RESOLVED,
     PILOT_ENVELOPE_EXECUTED,
     PILOT_STARTED,
     RISK_EVALUATION_EXECUTED,
@@ -69,11 +77,25 @@ from src.ops.bounded_futures_testnet_durable_run_primary_evidence_completion_int
     default_minimal_pe22_integration_proof,
     default_minimal_pe23_integration_proof,
     default_minimal_pe24_integration_proof,
+    default_minimal_pe35_integration_proof,
     default_minimal_pe31_integration_proof,
     default_minimal_safety_snapshot,
     evaluate_durable_run_primary_evidence_completion_integration,
     serialize_completion_integration_input_canonical,
     validate_durable_run_primary_evidence_completion_integration_input,
+)
+from src.ops.bounded_futures_testnet_handoff_staleness_revocation_recovery_boundary_contract_v0 import (
+    CONTRACT_VERSION as PE35_CONTRACT_VERSION,
+    HANDOFF_STATE_CURRENT,
+    HANDOFF_STATE_RECOVERY_REQUIRED,
+    HANDOFF_STATE_REVOKED,
+    HANDOFF_STATE_STALE,
+    HANDOFF_STATE_SUPERSEDED,
+    HandoffLifecycleMetadata,
+    HandoffStalenessRevocationRecoveryBoundaryInput,
+    compute_boundary_input_digest as compute_pe35_boundary_input_digest,
+    compute_boundary_result_digest as compute_pe35_boundary_result_digest,
+    evaluate_handoff_staleness_revocation_recovery_boundary,
 )
 from src.ops.bounded_futures_testnet_position_order_reconciliation_primary_evidence_integration_contract_v0 import (
     ManifestEntry,
@@ -191,6 +213,7 @@ TEST_PACKAGE_MARKER = (
 _CLASS4_SCOPED_EXCEPTION_MARKER = "BOUNDED_FUTURES_TESTNET_DURABLE_RUN_PRIMARY_EVIDENCE_COMPLETION_INTEGRATION_GUARD_CLASS4_SCOPED_EXCEPTION_V0=true"
 
 VALID_COMMIT_SHA = "abcdef0123456789abcdef0123456789abcdef01"
+ALT_COMMIT_SHA = "1234567890abcdef1234567890abcdef12345678"
 DURABLE_ARCHIVE_ROOT = (
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
 )
@@ -265,6 +288,12 @@ def test_global_safety_flags_remain_blocked() -> None:
     assert RESERVE_TOP_UP_EXECUTED is False
     assert PILOT_ENVELOPE_EXECUTED is False
     assert PILOT_STARTED is False
+    assert RECOVERY_EXECUTED is False
+    assert RESUME_EXECUTED is False
+    assert RETRY_EXECUTED is False
+    assert REPLAY_EXECUTED is False
+    assert STATE_MUTATED is False
+    assert PARTIAL_FAILURE_OPERATIONALLY_RESOLVED is False
     assert RUN_STARTED is False
     assert ARCHIVE_READ is False
     assert ARCHIVE_WRITTEN is False
@@ -302,12 +331,16 @@ def test_coherent_static_completion_happy_path_passes() -> None:
     assert result["pe22_integration_pass"] is True
     assert result["pe23_integration_pass"] is True
     assert result["pe24_integration_pass"] is True
+    assert result["pe35_boundary_pass"] is True
     assert result["durable_run_primary_evidence_completion_bound"] is True
     assert result["pe21_reconciliation_primary_evidence_bound"] is True
     assert result["pe31_reconciliation_review_bound"] is True
     assert result["pe22_risk_killswitch_flatten_lifecycle_bound"] is True
     assert result["pe23_capital_slot_ratchet_release_lifecycle_bound"] is True
     assert result["pe24_pilot_envelope_lifecycle_bound"] is True
+    assert result["pe35_handoff_recovery_boundary_bound"] is True
+    assert result["recovery_boundary_bound"] is True
+    assert result["partial_failure_recovery_bound"] is True
     assert result["fail_reasons"] == []
 
 
@@ -328,6 +361,12 @@ def test_valid_static_proof_remains_non_authorizing() -> None:
     assert result["reserve_top_up_executed"] is False
     assert result["pilot_envelope_executed"] is False
     assert result["pilot_started"] is False
+    assert result["recovery_executed"] is False
+    assert result["resume_executed"] is False
+    assert result["retry_executed"] is False
+    assert result["replay_executed"] is False
+    assert result["state_mutated"] is False
+    assert result["partial_failure_operationally_resolved"] is False
     assert result["archive_read"] is False
     assert result["archive_written"] is False
     assert result["manifest_read"] is False
@@ -1900,6 +1939,7 @@ def test_contract_version_constants() -> None:
     assert PE22_INTEGRATION_OWNER == PE22_CONTRACT_VERSION
     assert PE23_INTEGRATION_OWNER == PE23_CONTRACT_VERSION
     assert PE24_INTEGRATION_OWNER == PE24_CONTRACT_VERSION
+    assert PE35_INTEGRATION_OWNER == PE35_CONTRACT_VERSION
     assert SUPPORTED_RUN_TYPE == "bounded_futures_testnet"
 
 
@@ -1947,3 +1987,239 @@ def test_run_identity_digest_matches_canonical_inputs() -> None:
         source_revision=integration_input.source_revision,
     )
     assert integration_input.run_identity.run_identity_digest == expected
+
+
+def test_pe35_alone_does_not_authorize_completion() -> None:
+    pe35_input = default_minimal_completion_integration_input().pe35_handoff_staleness_revocation_recovery_boundary_input
+    pe35_result = evaluate_handoff_staleness_revocation_recovery_boundary(pe35_input)
+    assert pe35_result["handoff_staleness_revocation_recovery_boundary_satisfied"] is True
+    assert pe35_result["recovery_executed"] is False
+    assert pe35_result["authority_lift"] is False
+
+
+def test_missing_pe35_proof_binding_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe35_handoff_recovery_boundary_proof=replace(
+            integration_input.pe35_handoff_recovery_boundary_proof,
+            boundary_result_digest="",
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe35_proof: boundary_result_digest required" in r for r in result["fail_reasons"])
+
+
+def test_pe35_source_revision_mismatch_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe35_handoff_recovery_boundary_proof=replace(
+            integration_input.pe35_handoff_recovery_boundary_proof,
+            source_revision=ALT_COMMIT_SHA,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe35_proof: source_revision mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe35_wrong_owner_identity_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe35_handoff_recovery_boundary_proof=replace(
+            integration_input.pe35_handoff_recovery_boundary_proof,
+            boundary_owner="wrong-owner",
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe35_proof: boundary_owner must be" in r for r in result["fail_reasons"])
+
+
+def test_pe35_proof_digest_mismatch_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe35_handoff_recovery_boundary_proof=replace(
+            integration_input.pe35_handoff_recovery_boundary_proof,
+            boundary_result_digest="f" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe35_proof: boundary_result_digest mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe35_traceability_identity_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe35_handoff_recovery_boundary_proof=replace(
+            integration_input.pe35_handoff_recovery_boundary_proof,
+            traceability_identity="a" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe35_proof: traceability_identity mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe35_run_identity_digest_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe35_handoff_recovery_boundary_proof=replace(
+            integration_input.pe35_handoff_recovery_boundary_proof,
+            run_identity_digest="b" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe35_proof: run_identity_digest mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe35_manifest_identity_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe35_handoff_recovery_boundary_proof=replace(
+            integration_input.pe35_handoff_recovery_boundary_proof,
+            manifest_identity_digest="c" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe35_proof: manifest_identity_digest mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe35_completion_identity_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe35_handoff_recovery_boundary_proof=replace(
+            integration_input.pe35_handoff_recovery_boundary_proof,
+            completion_identity_digest="d" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "pe35_proof: completion_identity_digest mismatch" in r for r in result["fail_reasons"]
+    )
+
+
+def test_pe35_handoff_digest_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe35_handoff_recovery_boundary_proof=replace(
+            integration_input.pe35_handoff_recovery_boundary_proof,
+            handoff_digest="e" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe35_proof: handoff_digest mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe35_handoff_generation_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe35_handoff_recovery_boundary_proof=replace(
+            integration_input.pe35_handoff_recovery_boundary_proof,
+            handoff_generation=99,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe35_proof: handoff_generation mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe35_recovery_generation_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe35_handoff_recovery_boundary_proof=replace(
+            integration_input.pe35_handoff_recovery_boundary_proof,
+            recovery_generation=2,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe35_proof: recovery_generation mismatch" in r for r in result["fail_reasons"])
+
+
+@pytest.mark.parametrize(
+    "lifecycle_state",
+    [
+        HANDOFF_STATE_STALE,
+        HANDOFF_STATE_SUPERSEDED,
+        HANDOFF_STATE_REVOKED,
+        HANDOFF_STATE_RECOVERY_REQUIRED,
+    ],
+)
+def test_pe35_open_partial_failure_states_fail(lifecycle_state: str) -> None:
+    integration_input = default_minimal_completion_integration_input()
+    pe35_input = integration_input.pe35_handoff_staleness_revocation_recovery_boundary_input
+    bad_pe35 = replace(
+        pe35_input,
+        lifecycle_metadata=replace(
+            pe35_input.lifecycle_metadata,
+            lifecycle_state=lifecycle_state,
+        ),
+    )
+    bad = replace(
+        integration_input, pe35_handoff_staleness_revocation_recovery_boundary_input=bad_pe35
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("open partial-failure lifecycle state" in r for r in result["fail_reasons"])
+
+
+def test_pe35_recovery_boundary_bound_false_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe35_handoff_recovery_boundary_proof=replace(
+            integration_input.pe35_handoff_recovery_boundary_proof,
+            recovery_boundary_bound=False,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "pe35_proof: recovery_boundary_bound must be true" in r for r in result["fail_reasons"]
+    )
+
+
+def test_pe35_completion_proof_chain_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        completion_proof_chain=replace(
+            integration_input.completion_proof_chain,
+            completion_referenced_pe35_boundary_result_digest="0" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "completion_referenced_pe35_boundary_result_digest mismatch" in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_pe35_pe21_pe31_pe22_pe23_pe24_semantics_remain_bound_on_happy_path() -> None:
+    result = evaluate_durable_run_primary_evidence_completion_integration(
+        default_minimal_completion_integration_input(source_revision=VALID_COMMIT_SHA)
+    )
+    assert result["pe21_integration_pass"] is True
+    assert result["pe31_integration_pass"] is True
+    assert result["pe22_integration_pass"] is True
+    assert result["pe23_integration_pass"] is True
+    assert result["pe24_integration_pass"] is True
+    assert result["pe35_boundary_pass"] is True

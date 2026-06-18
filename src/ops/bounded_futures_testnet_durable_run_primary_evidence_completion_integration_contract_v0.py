@@ -3,17 +3,17 @@
 Deterministic, offline, explicit-input-only fail-closed integration composing PE-31
 reconciliation-review lifecycle proof, PE-21 primary evidence reconciliation proof,
 PE-22 risk/killswitch/flatten lifecycle proof, PE-23 capital-slot ratchet/release lifecycle
-proof, PE-24 pilot-envelope lifecycle proof, PE-16 durable archive identity,
-SECTION5 Gap 4 output/reporter completion semantics, and SECTION5 Gap 2a.1
-primary-evidence enforcement completion semantics with bounded durable run-root
-artifact/manifest requirements.
+proof, PE-24 pilot-envelope lifecycle proof, PE-35 handoff staleness/revocation/recovery
+boundary proof, PE-16 durable archive identity, SECTION5 Gap 4 output/reporter completion
+semantics, and SECTION5 Gap 2a.1 primary-evidence enforcement completion semantics with
+bounded durable run-root artifact/manifest requirements.
 
 Static integration only — no run start, evidence write, archive I/O, manifest I/O,
 network, testnet, runtime, credentials, orders, evidence acceptance, operative completion,
 operative reconciliation, operative risk evaluation, KillSwitch trigger, flatten,
 operative capital-slot ratchet/release/reallocation/reserve top-up,
-operative pilot-envelope execution or pilot start,
-or authority lift.
+operative pilot-envelope execution or pilot start, operative recovery, resume, retry,
+replay, state mutation, or authority lift.
 """
 
 from __future__ import annotations
@@ -86,6 +86,23 @@ from src.ops.bounded_futures_testnet_pilot_envelope_lifecycle_integration_contra
 from src.ops.bounded_futures_testnet_preflight_operator_review_reproducibility_contract_v0 import (
     DECISION_APPROVE_FOR_SEPARATE_NEXT_PHASE_REVIEW,
 )
+from src.ops.bounded_futures_testnet_handoff_staleness_revocation_recovery_boundary_contract_v0 import (
+    CONTRACT_VERSION as PE35_CONTRACT_VERSION,
+    HANDOFF_STATE_CURRENT,
+    HANDOFF_STATE_RECOVERED,
+    HANDOFF_STATE_RECOVERY_REQUIRED,
+    HANDOFF_STATE_REVOKED,
+    HANDOFF_STATE_STALE,
+    HANDOFF_STATE_SUPERSEDED,
+    HandoffStalenessRevocationRecoveryBoundaryInput,
+    compute_boundary_input_digest as compute_pe35_boundary_input_digest,
+    compute_boundary_result_digest as compute_pe35_boundary_result_digest,
+    default_minimal_boundary_input as default_minimal_pe35_boundary_input,
+    evaluate_handoff_staleness_revocation_recovery_boundary,
+)
+from src.ops.bounded_futures_testnet_operator_review_handoff_boundary_contract_v0 import (
+    compute_boundary_input_digest as compute_pe34_boundary_input_digest,
+)
 from src.ops.bounded_futures_testnet_risk_killswitch_lifecycle_integration_contract_v0 import (
     CONTRACT_VERSION as PE22_CONTRACT_VERSION,
     RiskKillswitchLifecycleIntegrationInput,
@@ -113,6 +130,7 @@ PE31_INTEGRATION_OWNER = PE31_CONTRACT_VERSION
 PE22_INTEGRATION_OWNER = PE22_CONTRACT_VERSION
 PE23_INTEGRATION_OWNER = PE23_CONTRACT_VERSION
 PE24_INTEGRATION_OWNER = PE24_CONTRACT_VERSION
+PE35_INTEGRATION_OWNER = PE35_CONTRACT_VERSION
 GAP4_COMPLETION_OWNER = "tests/ops/test_gap4_output_evidence_paths_contract_v0.py"
 GAP2A1_ENFORCEMENT_OWNER = "tests/ops/test_gap2a1_primary_evidence_enforcement_contract_v0.py"
 PRIMARY_EVIDENCE_RETENTION_CONTRACT_VERSION = "primary_evidence_retention.v0"
@@ -178,6 +196,11 @@ MANIFEST_READ = False
 MANIFEST_WRITTEN = False
 FILESYSTEM_ACCESSED = False
 REPLAY_EXECUTED = False
+RECOVERY_EXECUTED = False
+RESUME_EXECUTED = False
+RETRY_EXECUTED = False
+STATE_MUTATED = False
+PARTIAL_FAILURE_OPERATIONALLY_RESOLVED = False
 ADMISSION_EXECUTED = False
 RECONCILIATION_EXECUTED = False
 RISK_EVALUATION_EXECUTED = False
@@ -224,6 +247,7 @@ _EXPECTED_CONTRACT_VERSIONS: dict[str, str] = {
     "pe22_integration": PE22_CONTRACT_VERSION,
     "pe23_integration": PE23_CONTRACT_VERSION,
     "pe24_integration": PE24_CONTRACT_VERSION,
+    "pe35_boundary": PE35_CONTRACT_VERSION,
     "integration": CONTRACT_VERSION,
 }
 
@@ -238,6 +262,7 @@ class ContractVersionsInput:
     pe22_integration: str
     pe23_integration: str
     pe24_integration: str
+    pe35_boundary: str
     integration: str
 
 
@@ -344,11 +369,38 @@ class Pe24PilotEnvelopeLifecycleProofBinding:
 
 
 @dataclass(frozen=True)
+class Pe35HandoffRecoveryBoundaryProofBinding:
+    boundary_owner: str
+    source_revision: str
+    boundary_input_digest: str
+    boundary_result_digest: str
+    pe35_boundary_pass: bool
+    handoff_staleness_revocation_recovery_boundary_satisfied: bool
+    durable_run_primary_evidence_completion_boundary_bound: bool
+    recovery_boundary_bound: bool
+    partial_failure_recovery_bound: bool
+    idempotency_bound: bool
+    resume_boundary_bound: bool
+    retry_boundary_bound: bool
+    replay_boundary_bound: bool
+    supersession_bound: bool
+    traceability_identity: str
+    run_identity_digest: str
+    completion_identity_digest: str
+    manifest_identity_digest: str
+    handoff_digest: str
+    handoff_generation: int
+    recovery_generation: int
+    recovery_coherence_proven: bool
+
+
+@dataclass(frozen=True)
 class CompletionProofChainBinding:
     completion_referenced_pe31_proof_digest: str
     completion_referenced_pe22_proof_digest: str
     completion_referenced_pe23_proof_digest: str
     completion_referenced_pe24_proof_digest: str
+    completion_referenced_pe35_boundary_result_digest: str
     pe31_referenced_pe21_integration_proof_digest: str
     completion_referenced_pe21_integration_proof_digest: str
     shared_pe21_integration_input_digest: str
@@ -444,6 +496,10 @@ class DurableRunPrimaryEvidenceCompletionIntegrationInput:
     pe23_capital_slot_ratchet_release_proof: Pe23CapitalSlotRatchetReleaseProofBinding
     pe24_pilot_envelope_lifecycle_integration_input: PilotEnvelopeLifecycleIntegrationInput
     pe24_pilot_envelope_lifecycle_proof: Pe24PilotEnvelopeLifecycleProofBinding
+    pe35_handoff_staleness_revocation_recovery_boundary_input: (
+        HandoffStalenessRevocationRecoveryBoundaryInput
+    )
+    pe35_handoff_recovery_boundary_proof: Pe35HandoffRecoveryBoundaryProofBinding
     completion_proof_chain: CompletionProofChainBinding
     pe16_archive: Pe16ArchiveProofBinding
     manifest_proof: ManifestProofBinding
@@ -1327,6 +1383,216 @@ def _validate_pe24_integration_proof(
     return fail_reasons
 
 
+def _build_pe35_boundary_input_for_completion(
+    *,
+    source_revision: str,
+    manifest_digest: str,
+) -> HandoffStalenessRevocationRecoveryBoundaryInput:
+    from src.ops.bounded_futures_testnet_preflight_operator_review_reproducibility_contract_v0 import (
+        compute_review_input_digest,
+    )
+
+    pe35_base = default_minimal_pe35_boundary_input(source_revision=source_revision)
+    pe34_handoff = pe35_base.pe34_handoff
+    pe19_binding = pe34_handoff.pe19_undecided_review_input
+    review_input = pe19_binding.review_input
+    evidence_chain = review_input.evidence_chain
+    updated_evidence = replace(
+        evidence_chain,
+        archive_manifest_digest=manifest_digest,
+    )
+    updated_review_input = replace(review_input, evidence_chain=updated_evidence)
+    updated_review_input_digest = compute_review_input_digest(updated_review_input)
+    updated_pe19 = replace(pe19_binding, review_input=updated_review_input)
+    updated_pe20 = replace(
+        pe34_handoff.pe20_undecided_package_eligibility,
+        review_input_digest=updated_review_input_digest,
+    )
+    updated_pe34 = replace(
+        pe34_handoff,
+        pe19_undecided_review_input=updated_pe19,
+        pe20_undecided_package_eligibility=updated_pe20,
+    )
+    pe34_digest = compute_pe34_boundary_input_digest(updated_pe34)
+    return replace(
+        pe35_base,
+        pe34_handoff=updated_pe34,
+        canonical_current=replace(
+            pe35_base.canonical_current,
+            pe34_handoff_digest=pe34_digest,
+            archive_manifest_digest=manifest_digest,
+        ),
+        lifecycle_metadata=replace(
+            pe35_base.lifecycle_metadata,
+            handoff_digest=pe34_digest,
+        ),
+    )
+
+
+def _validate_pe35_recovery_boundary_proof(
+    integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
+    *,
+    pe35_result: dict[str, Any],
+) -> list[str]:
+    fail_reasons: list[str] = []
+    proof = integration_input.pe35_handoff_recovery_boundary_proof
+    pe35_input = integration_input.pe35_handoff_staleness_revocation_recovery_boundary_input
+    durable_root = integration_input.durable_run_root
+    run_identity = integration_input.run_identity
+    manifest_digest = integration_input.manifest_proof.manifest_digest
+    completion_identity = compute_completion_identity_digest(
+        run_root_digest=durable_root.run_root_digest,
+        manifest_digest=manifest_digest,
+        source_revision=integration_input.source_revision,
+    )
+    lifecycle = pe35_input.lifecycle_metadata
+    recovery = pe35_input.recovery_proof
+
+    if proof.boundary_owner != PE35_INTEGRATION_OWNER:
+        fail_reasons.append(f"pe35_proof: boundary_owner must be {PE35_INTEGRATION_OWNER!r}")
+    if proof.source_revision != integration_input.source_revision:
+        fail_reasons.append("pe35_proof: source_revision mismatch")
+    if not proof.boundary_input_digest:
+        fail_reasons.append("pe35_proof: boundary_input_digest required")
+    elif not _valid_sha256_digest(proof.boundary_input_digest):
+        fail_reasons.append(
+            "pe35_proof: boundary_input_digest must be 64-char lowercase sha256 hex"
+        )
+    elif proof.boundary_input_digest != compute_pe35_boundary_input_digest(pe35_input):
+        fail_reasons.append("pe35_proof: boundary_input_digest mismatch")
+
+    if not proof.boundary_result_digest:
+        fail_reasons.append("pe35_proof: boundary_result_digest required")
+    elif not _valid_sha256_digest(proof.boundary_result_digest):
+        fail_reasons.append(
+            "pe35_proof: boundary_result_digest must be 64-char lowercase sha256 hex"
+        )
+    else:
+        expected_result_digest = compute_pe35_boundary_result_digest(
+            pe35_input,
+            handoff_staleness_revocation_recovery_boundary_satisfied=True,
+        )
+        if proof.pe35_boundary_pass is not True:
+            fail_reasons.append("pe35_proof: pe35_boundary_pass must be true")
+        elif proof.boundary_result_digest != expected_result_digest:
+            fail_reasons.append("pe35_proof: boundary_result_digest mismatch")
+
+    if proof.pe35_boundary_pass is not True:
+        fail_reasons.append("pe35_proof: pe35_boundary_pass must be true")
+    if proof.handoff_staleness_revocation_recovery_boundary_satisfied is not True:
+        fail_reasons.append(
+            "pe35_proof: handoff_staleness_revocation_recovery_boundary_satisfied must be true"
+        )
+    if proof.durable_run_primary_evidence_completion_boundary_bound is not True:
+        fail_reasons.append(
+            "pe35_proof: durable_run_primary_evidence_completion_boundary_bound must be true"
+        )
+    if proof.recovery_boundary_bound is not True:
+        fail_reasons.append("pe35_proof: recovery_boundary_bound must be true")
+    if proof.partial_failure_recovery_bound is not True:
+        fail_reasons.append("pe35_proof: partial_failure_recovery_bound must be true")
+    if proof.idempotency_bound is not True:
+        fail_reasons.append("pe35_proof: idempotency_bound must be true")
+    if proof.resume_boundary_bound is not True:
+        fail_reasons.append("pe35_proof: resume_boundary_bound must be true")
+    if proof.retry_boundary_bound is not True:
+        fail_reasons.append("pe35_proof: retry_boundary_bound must be true")
+    if proof.replay_boundary_bound is not True:
+        fail_reasons.append("pe35_proof: replay_boundary_bound must be true")
+    if proof.supersession_bound is not True:
+        fail_reasons.append("pe35_proof: supersession_bound must be true")
+    if proof.recovery_coherence_proven is not True:
+        fail_reasons.append("pe35_proof: recovery_coherence_proven must be true")
+
+    digest_fields = (
+        ("traceability_identity", proof.traceability_identity),
+        ("run_identity_digest", proof.run_identity_digest),
+        ("completion_identity_digest", proof.completion_identity_digest),
+        ("manifest_identity_digest", proof.manifest_identity_digest),
+        ("handoff_digest", proof.handoff_digest),
+    )
+    for field_name, value in digest_fields:
+        if not value:
+            fail_reasons.append(f"pe35_proof: {field_name} required")
+        elif field_name != "handoff_digest" and not _valid_sha256_digest(value):
+            fail_reasons.append(f"pe35_proof: {field_name} must be 64-char lowercase sha256 hex")
+        elif field_name == "handoff_digest" and not _valid_sha256_digest(value):
+            fail_reasons.append(f"pe35_proof: {field_name} must be 64-char lowercase sha256 hex")
+
+    if proof.traceability_identity != durable_root.run_root_digest:
+        fail_reasons.append("pe35_proof: traceability_identity mismatch with run_root_digest")
+    if proof.run_identity_digest != run_identity.run_identity_digest:
+        fail_reasons.append("pe35_proof: run_identity_digest mismatch")
+    if proof.completion_identity_digest != completion_identity:
+        fail_reasons.append("pe35_proof: completion_identity_digest mismatch")
+    if proof.manifest_identity_digest != manifest_digest:
+        fail_reasons.append("pe35_proof: manifest_identity_digest mismatch")
+
+    computed_handoff_digest = compute_pe34_boundary_input_digest(pe35_input.pe34_handoff)
+    if proof.handoff_digest != computed_handoff_digest:
+        fail_reasons.append("pe35_proof: handoff_digest mismatch with PE-34 handoff")
+    if proof.handoff_generation != lifecycle.generation:
+        fail_reasons.append("pe35_proof: handoff_generation mismatch with lifecycle metadata")
+
+    expected_recovery_generation = recovery.recovery_generation if recovery is not None else 0
+    if proof.recovery_generation != expected_recovery_generation:
+        fail_reasons.append("pe35_proof: recovery_generation mismatch")
+
+    if pe35_input.pe34_handoff.source_revision != integration_input.source_revision:
+        fail_reasons.append(
+            "pe35_handoff_staleness_revocation_recovery_boundary_input: source_revision mismatch "
+            "with completion input"
+        )
+
+    canonical = pe35_input.canonical_current
+    if canonical.archive_manifest_digest is not None:
+        if canonical.archive_manifest_digest != manifest_digest:
+            fail_reasons.append(
+                "pe35_handoff_staleness_revocation_recovery_boundary_input: "
+                "archive_manifest_digest mismatch with completion manifest"
+            )
+
+    if lifecycle.lifecycle_state in {
+        HANDOFF_STATE_STALE,
+        HANDOFF_STATE_SUPERSEDED,
+        HANDOFF_STATE_REVOKED,
+        HANDOFF_STATE_RECOVERY_REQUIRED,
+    }:
+        fail_reasons.append(
+            f"pe35_proof: open partial-failure lifecycle state {lifecycle.lifecycle_state!r}"
+        )
+    elif lifecycle.lifecycle_state == HANDOFF_STATE_RECOVERED and recovery is None:
+        fail_reasons.append("pe35_proof: recovered lifecycle_state requires recovery_proof")
+    elif lifecycle.lifecycle_state not in {HANDOFF_STATE_CURRENT, HANDOFF_STATE_RECOVERED}:
+        fail_reasons.append(f"pe35_proof: unknown lifecycle_state {lifecycle.lifecycle_state!r}")
+
+    if pe35_input.active_successor_handoff_digests:
+        fail_reasons.append("pe35_proof: active successor handoff digests present")
+    for link in pe35_input.supersession_links:
+        if link.predecessor_handoff_digest == computed_handoff_digest:
+            fail_reasons.append("pe35_proof: handoff superseded by successor link")
+
+    if not pe35_result.get("boundary_pass"):
+        fail_reasons.append(
+            "pe35_handoff_staleness_revocation_recovery_boundary_input: PE-35 evaluation failed"
+        )
+        fail_reasons.extend(
+            f"pe35_handoff_staleness_revocation_recovery_boundary_input: {reason}"
+            for reason in pe35_result.get("fail_reasons", [])
+        )
+    elif not pe35_result.get("handoff_staleness_revocation_recovery_boundary_satisfied"):
+        fail_reasons.append(
+            "pe35_handoff_staleness_revocation_recovery_boundary_input: "
+            "handoff_staleness_revocation_recovery_boundary_satisfied required"
+        )
+    elif pe35_result.get("recovery_executed"):
+        fail_reasons.append("pe35_proof: operative recovery must not be executed")
+    elif pe35_result.get("authority_lift"):
+        fail_reasons.append("pe35_proof: authority_lift must remain false")
+
+    return fail_reasons
+
+
 def _validate_completion_proof_chain(
     integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
 ) -> list[str]:
@@ -1336,6 +1602,7 @@ def _validate_completion_proof_chain(
     pe22_proof = integration_input.pe22_risk_killswitch_flatten_proof
     pe23_proof = integration_input.pe23_capital_slot_ratchet_release_proof
     pe24_proof = integration_input.pe24_pilot_envelope_lifecycle_proof
+    pe35_proof = integration_input.pe35_handoff_recovery_boundary_proof
     pe21_proof = integration_input.pe21_proof
     pe31_pe21_proof = integration_input.pe31_reconciliation_review_integration_input.pe21_reconciliation_primary_evidence_integration_proof
     pe21_input_digest = compute_pe21_integration_input_digest(
@@ -1347,6 +1614,10 @@ def _validate_completion_proof_chain(
         ("completion_referenced_pe22_proof_digest", chain.completion_referenced_pe22_proof_digest),
         ("completion_referenced_pe23_proof_digest", chain.completion_referenced_pe23_proof_digest),
         ("completion_referenced_pe24_proof_digest", chain.completion_referenced_pe24_proof_digest),
+        (
+            "completion_referenced_pe35_boundary_result_digest",
+            chain.completion_referenced_pe35_boundary_result_digest,
+        ),
         (
             "pe31_referenced_pe21_integration_proof_digest",
             chain.pe31_referenced_pe21_integration_proof_digest,
@@ -1381,6 +1652,10 @@ def _validate_completion_proof_chain(
     if chain.completion_referenced_pe24_proof_digest != pe24_proof.integration_proof_digest:
         fail_reasons.append(
             "completion_proof_chain: completion_referenced_pe24_proof_digest mismatch"
+        )
+    if chain.completion_referenced_pe35_boundary_result_digest != pe35_proof.boundary_result_digest:
+        fail_reasons.append(
+            "completion_proof_chain: completion_referenced_pe35_boundary_result_digest mismatch"
         )
     if (
         chain.pe31_referenced_pe21_integration_proof_digest
@@ -1608,6 +1883,13 @@ def validate_durable_run_primary_evidence_completion_integration_input(
             "completion input"
         )
 
+    pe35_input = integration_input.pe35_handoff_staleness_revocation_recovery_boundary_input
+    if pe35_input.pe34_handoff.source_revision != integration_input.source_revision:
+        fail_reasons.append(
+            "pe35_handoff_staleness_revocation_recovery_boundary_input: source_revision mismatch "
+            "with completion input"
+        )
+
     fail_reasons.extend(_validate_completion_proof_chain(integration_input))
 
     fail_reasons.extend(
@@ -1702,6 +1984,12 @@ def _integration_input_dict(
         "pe24_pilot_envelope_lifecycle_proof": asdict(
             integration_input.pe24_pilot_envelope_lifecycle_proof
         ),
+        "pe35_boundary_input_digest": compute_pe35_boundary_input_digest(
+            integration_input.pe35_handoff_staleness_revocation_recovery_boundary_input
+        ),
+        "pe35_handoff_recovery_boundary_proof": asdict(
+            integration_input.pe35_handoff_recovery_boundary_proof
+        ),
         "completion_proof_chain": asdict(integration_input.completion_proof_chain),
         "post_write_verification": asdict(integration_input.post_write_verification),
         "primary_evidence_identity": asdict(integration_input.primary_evidence_identity),
@@ -1748,6 +2036,9 @@ def _integration_proof_dict(
         "pe22_risk_killswitch_flatten_lifecycle_bound": integration_pass,
         "pe23_capital_slot_ratchet_release_lifecycle_bound": integration_pass,
         "pe24_pilot_envelope_lifecycle_bound": integration_pass,
+        "pe35_handoff_recovery_boundary_bound": integration_pass,
+        "recovery_boundary_bound": integration_pass,
+        "partial_failure_recovery_bound": integration_pass,
         "global_run_completion_readiness": GLOBAL_RUN_COMPLETION_READINESS,
         "integration_contract_version": CONTRACT_VERSION,
         "integration_input_digest": compute_completion_integration_input_digest(integration_input),
@@ -1767,6 +2058,12 @@ def _integration_proof_dict(
         "reserve_top_up_executed": RESERVE_TOP_UP_EXECUTED,
         "pilot_envelope_executed": PILOT_ENVELOPE_EXECUTED,
         "pilot_started": PILOT_STARTED,
+        "recovery_executed": RECOVERY_EXECUTED,
+        "resume_executed": RESUME_EXECUTED,
+        "retry_executed": RETRY_EXECUTED,
+        "replay_executed": REPLAY_EXECUTED,
+        "state_mutated": STATE_MUTATED,
+        "partial_failure_operationally_resolved": PARTIAL_FAILURE_OPERATIONALLY_RESOLVED,
         "run_identity_digest": integration_input.run_identity.run_identity_digest,
         "run_root_digest": integration_input.durable_run_root.run_root_digest,
         "run_type": integration_input.run_type,
@@ -1862,6 +2159,16 @@ def evaluate_durable_run_primary_evidence_completion_integration(
         )
     )
 
+    pe35_result = evaluate_handoff_staleness_revocation_recovery_boundary(
+        integration_input.pe35_handoff_staleness_revocation_recovery_boundary_input
+    )
+    fail_reasons.extend(
+        _validate_pe35_recovery_boundary_proof(
+            integration_input,
+            pe35_result=pe35_result,
+        )
+    )
+
     if completion_claim_without_full_evidence and integration_input.completion_claimed:
         fail_reasons.append("completion_claimed=true without full evidence chain is insufficient")
 
@@ -1891,6 +2198,7 @@ def evaluate_durable_run_primary_evidence_completion_integration(
         "pe22_integration_pass": pe22_result.get("integration_pass"),
         "pe23_integration_pass": pe23_result.get("integration_pass"),
         "pe24_integration_pass": pe24_result.get("integration_pass"),
+        "pe35_boundary_pass": pe35_result.get("boundary_pass"),
         "durable_run_primary_evidence_completion_bound": integration_pass,
         "pe21_reconciliation_primary_evidence_bound": bool(pe21_result.get("integration_pass")),
         "pe31_reconciliation_review_bound": bool(pe31_result.get("integration_pass")),
@@ -1899,6 +2207,13 @@ def evaluate_durable_run_primary_evidence_completion_integration(
             pe23_result.get("integration_pass")
         ),
         "pe24_pilot_envelope_lifecycle_bound": bool(pe24_result.get("integration_pass")),
+        "pe35_handoff_recovery_boundary_bound": bool(
+            pe35_result.get("handoff_staleness_revocation_recovery_boundary_satisfied")
+        ),
+        "recovery_boundary_bound": bool(
+            pe35_result.get("handoff_staleness_revocation_recovery_boundary_satisfied")
+        ),
+        "partial_failure_recovery_bound": bool(pe35_result.get("boundary_pass")),
         "pe16_archive_identity": integration_input.pe16_archive.archive_identity,
         "gap4_completion_integration_pass": integration_input.gap4_completion.gap4_integration_pass,
         "gap2a1_enforcement_integration_pass": (
@@ -1921,6 +2236,12 @@ def evaluate_durable_run_primary_evidence_completion_integration(
         "reserve_top_up_executed": RESERVE_TOP_UP_EXECUTED,
         "pilot_envelope_executed": PILOT_ENVELOPE_EXECUTED,
         "pilot_started": PILOT_STARTED,
+        "recovery_executed": RECOVERY_EXECUTED,
+        "resume_executed": RESUME_EXECUTED,
+        "retry_executed": RETRY_EXECUTED,
+        "replay_executed": REPLAY_EXECUTED,
+        "state_mutated": STATE_MUTATED,
+        "partial_failure_operationally_resolved": PARTIAL_FAILURE_OPERATIONALLY_RESOLVED,
         "archive_read": ARCHIVE_READ,
         "archive_written": ARCHIVE_WRITTEN,
         "manifest_read": MANIFEST_READ,
@@ -2059,6 +2380,46 @@ def default_minimal_pe24_integration_proof(
     )
 
 
+def default_minimal_pe35_integration_proof(
+    pe35_input: HandoffStalenessRevocationRecoveryBoundaryInput,
+    *,
+    traceability_identity: str,
+    run_identity_digest: str,
+    completion_identity_digest: str,
+    manifest_identity_digest: str,
+) -> Pe35HandoffRecoveryBoundaryProofBinding:
+    pe35_result = evaluate_handoff_staleness_revocation_recovery_boundary(pe35_input)
+    boundary_result_digest = pe35_result["boundary_result_digest"]
+    if boundary_result_digest is None:
+        raise ValueError("PE-35 boundary must be satisfied for default minimal proof")
+    lifecycle = pe35_input.lifecycle_metadata
+    recovery = pe35_input.recovery_proof
+    return Pe35HandoffRecoveryBoundaryProofBinding(
+        boundary_owner=PE35_INTEGRATION_OWNER,
+        source_revision=pe35_input.pe34_handoff.source_revision,
+        boundary_input_digest=compute_pe35_boundary_input_digest(pe35_input),
+        boundary_result_digest=boundary_result_digest,
+        pe35_boundary_pass=True,
+        handoff_staleness_revocation_recovery_boundary_satisfied=True,
+        durable_run_primary_evidence_completion_boundary_bound=True,
+        recovery_boundary_bound=True,
+        partial_failure_recovery_bound=True,
+        idempotency_bound=True,
+        resume_boundary_bound=True,
+        retry_boundary_bound=True,
+        replay_boundary_bound=True,
+        supersession_bound=True,
+        traceability_identity=traceability_identity,
+        run_identity_digest=run_identity_digest,
+        completion_identity_digest=completion_identity_digest,
+        manifest_identity_digest=manifest_identity_digest,
+        handoff_digest=pe35_result["pe34_handoff_digest"],
+        handoff_generation=lifecycle.generation,
+        recovery_generation=recovery.recovery_generation if recovery is not None else 0,
+        recovery_coherence_proven=True,
+    )
+
+
 def default_minimal_completion_proof_chain(
     integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
 ) -> CompletionProofChainBinding:
@@ -2066,6 +2427,7 @@ def default_minimal_completion_proof_chain(
     pe22_proof = integration_input.pe22_risk_killswitch_flatten_proof
     pe23_proof = integration_input.pe23_capital_slot_ratchet_release_proof
     pe24_proof = integration_input.pe24_pilot_envelope_lifecycle_proof
+    pe35_proof = integration_input.pe35_handoff_recovery_boundary_proof
     pe21_proof = integration_input.pe21_proof
     pe31_pe21_proof = integration_input.pe31_reconciliation_review_integration_input.pe21_reconciliation_primary_evidence_integration_proof
     return CompletionProofChainBinding(
@@ -2073,6 +2435,7 @@ def default_minimal_completion_proof_chain(
         completion_referenced_pe22_proof_digest=pe22_proof.integration_proof_digest,
         completion_referenced_pe23_proof_digest=pe23_proof.integration_proof_digest,
         completion_referenced_pe24_proof_digest=pe24_proof.integration_proof_digest,
+        completion_referenced_pe35_boundary_result_digest=pe35_proof.boundary_result_digest,
         pe31_referenced_pe21_integration_proof_digest=pe31_pe21_proof.integration_proof_digest,
         completion_referenced_pe21_integration_proof_digest=pe21_proof.integration_proof_digest,
         shared_pe21_integration_input_digest=compute_pe21_integration_input_digest(
@@ -2238,6 +2601,18 @@ def default_minimal_completion_integration_input(
         pe23_integration_proof_digest=pe23_proof.integration_proof_digest,
     )
 
+    pe35_boundary_input = _build_pe35_boundary_input_for_completion(
+        source_revision=source_revision,
+        manifest_digest=manifest_digest,
+    )
+    pe35_proof = default_minimal_pe35_integration_proof(
+        pe35_boundary_input,
+        traceability_identity=run_root_digest,
+        run_identity_digest=run_identity_digest,
+        completion_identity_digest=completion_identity_digest,
+        manifest_identity_digest=manifest_digest,
+    )
+
     archive_digest = hashlib.sha256(
         json.dumps(
             {
@@ -2293,11 +2668,14 @@ def default_minimal_completion_integration_input(
         pe23_capital_slot_ratchet_release_proof=pe23_proof,
         pe24_pilot_envelope_lifecycle_integration_input=pe24_integration_input,
         pe24_pilot_envelope_lifecycle_proof=pe24_proof,
+        pe35_handoff_staleness_revocation_recovery_boundary_input=pe35_boundary_input,
+        pe35_handoff_recovery_boundary_proof=pe35_proof,
         completion_proof_chain=CompletionProofChainBinding(
             completion_referenced_pe31_proof_digest=pe31_proof.integration_proof_digest,
             completion_referenced_pe22_proof_digest=pe22_result["integration_proof_digest"],
             completion_referenced_pe23_proof_digest=pe23_result["integration_proof_digest"],
             completion_referenced_pe24_proof_digest=pe24_proof.integration_proof_digest,
+            completion_referenced_pe35_boundary_result_digest=pe35_proof.boundary_result_digest,
             pe31_referenced_pe21_integration_proof_digest=(
                 pe31_integration_input.pe21_reconciliation_primary_evidence_integration_proof.integration_proof_digest
             ),
@@ -2360,6 +2738,7 @@ def default_minimal_completion_integration_input(
             pe22_integration=PE22_CONTRACT_VERSION,
             pe23_integration=PE23_CONTRACT_VERSION,
             pe24_integration=PE24_CONTRACT_VERSION,
+            pe35_boundary=PE35_CONTRACT_VERSION,
             integration=CONTRACT_VERSION,
         ),
     )
