@@ -3,8 +3,9 @@
 Deterministic, offline, explicit-input-only fail-closed integration composing PE-31
 reconciliation-review lifecycle proof, PE-21 primary evidence reconciliation proof,
 PE-22 risk/killswitch/flatten lifecycle proof, PE-23 capital-slot ratchet/release lifecycle
-proof, PE-24 pilot-envelope lifecycle proof, PE-35 handoff staleness/revocation/recovery
-boundary proof, PE-37 operator review chain durable evidence traceability boundary proof,
+proof, PE-24 pilot-envelope lifecycle proof, PE-25 operator-closure lifecycle proof,
+PE-35 handoff staleness/revocation/recovery boundary proof, PE-37 operator review chain
+durable evidence traceability boundary proof,
 PE-16 durable archive identity, SECTION5 Gap 4 output/reporter completion
 semantics, and SECTION5 Gap 2a.1 primary-evidence enforcement completion semantics with
 bounded durable run-root artifact/manifest requirements.
@@ -115,6 +116,14 @@ from src.ops.bounded_futures_testnet_operator_review_chain_durable_evidence_trac
     evaluate_durable_evidence_traceability_boundary,
     validate_durable_evidence_traceability_boundary_input,
 )
+from src.ops.bounded_futures_testnet_operator_closure_lifecycle_integration_contract_v0 import (
+    CONTRACT_VERSION as PE25_CONTRACT_VERSION,
+    OperatorClosureLifecycleIntegrationInput,
+    compute_closure_input_digest as compute_pe25_closure_input_digest,
+    compute_closure_result_digest as compute_pe25_closure_result_digest,
+    evaluate_operator_closure_lifecycle_integration,
+    validate_operator_closure_lifecycle_integration_input,
+)
 from src.ops.bounded_futures_testnet_operator_review_handoff_boundary_contract_v0 import (
     CONTRACT_VERSION as PE34_CONTRACT_VERSION,
     HANDOFF_OWNER as PE34_HANDOFF_OWNER,
@@ -151,6 +160,7 @@ PE35_INTEGRATION_OWNER = PE35_CONTRACT_VERSION
 PE34_INTEGRATION_OWNER = PE34_CONTRACT_VERSION
 PE36_INTEGRATION_OWNER = PE36_CONTRACT_VERSION
 PE37_INTEGRATION_OWNER = PE37_CONTRACT_VERSION
+PE25_INTEGRATION_OWNER = PE25_CONTRACT_VERSION
 GAP4_COMPLETION_OWNER = "tests/ops/test_gap4_output_evidence_paths_contract_v0.py"
 GAP2A1_ENFORCEMENT_OWNER = "tests/ops/test_gap2a1_primary_evidence_enforcement_contract_v0.py"
 PRIMARY_EVIDENCE_RETENTION_CONTRACT_VERSION = "primary_evidence_retention.v0"
@@ -271,6 +281,7 @@ _EXPECTED_CONTRACT_VERSIONS: dict[str, str] = {
     "pe34_handoff": PE34_CONTRACT_VERSION,
     "pe36_admission_presentation": PE36_CONTRACT_VERSION,
     "pe37_traceability": PE37_CONTRACT_VERSION,
+    "pe25_operator_closure": PE25_CONTRACT_VERSION,
     "integration": CONTRACT_VERSION,
 }
 
@@ -289,6 +300,7 @@ class ContractVersionsInput:
     pe34_handoff: str
     pe36_admission_presentation: str
     pe37_traceability: str
+    pe25_operator_closure: str
     integration: str
 
 
@@ -446,6 +458,35 @@ class Pe37TraceabilityProofBinding:
 
 
 @dataclass(frozen=True)
+class Pe25OperatorClosureLifecycleProofBinding:
+    closure_owner: str
+    source_revision: str
+    closure_input_digest: str
+    closure_result_digest: str
+    admission_integration_proof_digest: str
+    pe25_integration_pass: bool
+    operator_closure_static_complete: bool
+    operator_closure_lifecycle_bound: bool
+    pe25_operator_closure_bound: bool
+    durable_run_primary_evidence_completion_operator_closure_bound: bool
+    pe34_handoff_bound: bool
+    pe35_staleness_revocation_recovery_bound: bool
+    pe36_admission_presentation_bound: bool
+    pe37_durable_traceability_bound: bool
+    traceability_identity: str
+    admission_identity: str
+    run_identity_digest: str
+    completion_identity_digest: str
+    manifest_identity_digest: str
+    durable_artifact_identity: str
+    pe34_handoff_digest: str
+    pe35_boundary_result_digest: str
+    pe36_boundary_result_digest: str
+    pe37_traceability_identity: str
+    closure_coherence_proven: bool
+
+
+@dataclass(frozen=True)
 class CompletionProofChainBinding:
     completion_referenced_pe31_proof_digest: str
     completion_referenced_pe22_proof_digest: str
@@ -454,6 +495,9 @@ class CompletionProofChainBinding:
     completion_referenced_pe35_boundary_result_digest: str
     completion_referenced_pe37_boundary_result_digest: str
     pe37_traceability_identity: str
+    completion_referenced_pe25_closure_result_digest: str
+    pe25_closure_input_digest: str
+    closure_referenced_admission_proof_digest: str
     pe31_referenced_pe21_integration_proof_digest: str
     completion_referenced_pe21_integration_proof_digest: str
     shared_pe21_integration_input_digest: str
@@ -555,6 +599,9 @@ class DurableRunPrimaryEvidenceCompletionIntegrationInput:
     pe35_handoff_recovery_boundary_proof: Pe35HandoffRecoveryBoundaryProofBinding
     pe37_traceability_boundary_input: DurableEvidenceTraceabilityBoundaryInput
     pe37_traceability_proof: Pe37TraceabilityProofBinding
+    pe25_closure_integration_input: OperatorClosureLifecycleIntegrationInput
+    pe25_operator_closure_proof: Pe25OperatorClosureLifecycleProofBinding
+    pe25_proof_lifecycle: ProofLifecycleMetadata
     completion_proof_chain: CompletionProofChainBinding
     pe16_archive: Pe16ArchiveProofBinding
     manifest_proof: ManifestProofBinding
@@ -1525,6 +1572,249 @@ def _build_pe37_boundary_input_from_pe35(
     )
 
 
+def _build_admission_presentation_lifecycle_input_from_completion(
+    integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
+) -> Any:
+    """Build canonical admission-presentation lifecycle input from completion PE-34/35/36/37."""
+    from src.ops.bounded_futures_testnet_operator_review_admission_presentation_lifecycle_integration_contract_v0 import (
+        CONTRACT_VERSION as ADMISSION_LIFECYCLE_CONTRACT_VERSION,
+        ContractVersionsInput as AdmissionContractVersionsInput,
+        IntegrationProofChainBinding,
+        OperatorReviewAdmissionPresentationLifecycleIntegrationInput,
+        Pe34HandoffProofBinding,
+        Pe35StalenessProofBinding,
+        Pe36AdmissionPresentationProofBinding,
+        Pe37TraceabilityProofBinding,
+        default_minimal_safety_snapshot as default_admission_safety_snapshot,
+    )
+    from src.ops.bounded_futures_testnet_operator_review_admission_presentation_boundary_contract_v0 import (
+        evaluate_operator_review_admission_presentation_boundary,
+    )
+    from src.ops.bounded_futures_testnet_operator_review_handoff_boundary_contract_v0 import (
+        evaluate_operator_review_handoff_boundary,
+    )
+    from src.ops.bounded_futures_testnet_contract_v0 import DEFAULT_MARKET_TYPE
+
+    pe37_input = integration_input.pe37_traceability_boundary_input
+    pe36_input = pe37_input.pe36_boundary_input
+    pe35_input = integration_input.pe35_handoff_staleness_revocation_recovery_boundary_input
+    pe34_handoff = pe35_input.pe34_handoff
+    pe24_input = integration_input.pe24_pilot_envelope_lifecycle_integration_input
+
+    pe34_result = evaluate_operator_review_handoff_boundary(pe34_handoff)
+    pe35_result = evaluate_handoff_staleness_revocation_recovery_boundary(pe35_input)
+    pe36_result = evaluate_operator_review_admission_presentation_boundary(pe36_input)
+    pe37_result = evaluate_durable_evidence_traceability_boundary(pe37_input)
+
+    pe34_digest = compute_pe34_boundary_input_digest(pe34_handoff)
+    pe35_input_digest = compute_pe35_boundary_input_digest(pe35_input)
+    pe36_input_digest = compute_pe36_boundary_input_digest(pe36_input)
+    pe37_input_digest = compute_pe37_boundary_input_digest(pe37_input)
+
+    proof_chain = IntegrationProofChainBinding(
+        pe34_handoff_digest=pe34_digest,
+        pe35_boundary_input_digest=pe35_input_digest,
+        pe35_boundary_result_digest=pe35_result["boundary_result_digest"],
+        pe36_boundary_input_digest=pe36_input_digest,
+        pe36_boundary_result_digest=pe36_result["boundary_result_digest"],
+        pe36_presentation_projection_digest=pe36_result["presentation_projection_digest"],
+        pe37_boundary_input_digest=pe37_input_digest,
+        pe37_boundary_result_digest=pe37_result["boundary_result_digest"],
+        pe37_traceability_identity=pe37_result["traceability_identity"],
+    )
+
+    return OperatorReviewAdmissionPresentationLifecycleIntegrationInput(
+        source_revision=integration_input.source_revision,
+        repository_identity=REPOSITORY_IDENTITY,
+        integration_id=f"completion-admission-lifecycle-{integration_input.run_identity.run_id}",
+        adapter_id=pe24_input.adapter_id,
+        instrument=pe24_input.instrument,
+        market_type=DEFAULT_MARKET_TYPE,
+        contract_versions=AdmissionContractVersionsInput(
+            pe34_handoff=PE34_CONTRACT_VERSION,
+            pe35_staleness=PE35_CONTRACT_VERSION,
+            pe36_admission_presentation=PE36_CONTRACT_VERSION,
+            pe37_traceability=PE37_CONTRACT_VERSION,
+            integration=ADMISSION_LIFECYCLE_CONTRACT_VERSION,
+        ),
+        pe34_handoff_input=pe34_handoff,
+        pe35_boundary_input=pe35_input,
+        pe36_boundary_input=pe36_input,
+        pe37_traceability_boundary_input=pe37_input,
+        pe34_handoff_proof=Pe34HandoffProofBinding(
+            handoff_owner=PE34_HANDOFF_OWNER,
+            source_revision=integration_input.source_revision,
+            boundary_input_digest=pe34_digest,
+            boundary_result_digest=pe34_result["boundary_result_digest"],
+            pe34_integration_pass=True,
+            operator_review_handoff_boundary_satisfied=True,
+        ),
+        pe35_staleness_proof=Pe35StalenessProofBinding(
+            boundary_owner=PE35_INTEGRATION_OWNER,
+            source_revision=integration_input.source_revision,
+            boundary_input_digest=pe35_input_digest,
+            boundary_result_digest=pe35_result["boundary_result_digest"],
+            handoff_current=pe35_result["handoff_current"],
+            pe35_integration_pass=True,
+            handoff_staleness_revocation_recovery_boundary_satisfied=True,
+        ),
+        pe36_admission_presentation_proof=Pe36AdmissionPresentationProofBinding(
+            boundary_owner=PE36_BOUNDARY_OWNER,
+            source_revision=integration_input.source_revision,
+            boundary_input_digest=pe36_input_digest,
+            boundary_result_digest=pe36_result["boundary_result_digest"],
+            presentation_projection_digest=pe36_result["presentation_projection_digest"],
+            pe36_integration_pass=True,
+            operator_review_admission_presentation_boundary_satisfied=True,
+        ),
+        pe37_traceability_proof=Pe37TraceabilityProofBinding(
+            traceability_owner=PE37_BOUNDARY_OWNER,
+            source_revision=integration_input.source_revision,
+            boundary_input_digest=pe37_input_digest,
+            boundary_result_digest=pe37_result["boundary_result_digest"],
+            traceability_identity=pe37_result["traceability_identity"],
+            admission_identity=pe37_result["admission_identity"],
+            pe37_integration_pass=True,
+            durable_evidence_traceability_boundary_satisfied=True,
+        ),
+        proof_chain=proof_chain,
+        safety_snapshot=default_admission_safety_snapshot(),
+    )
+
+
+def _build_pe25_closure_input_from_chain(
+    *,
+    source_revision: str,
+    run_id: str,
+    run_root_digest: str,
+    pe22_integration_input: RiskKillswitchLifecycleIntegrationInput,
+    pe22_proof: Pe22RiskKillswitchFlattenProofBinding,
+    pe23_integration_input: CapitalSlotRatchetReleaseLifecycleIntegrationInput,
+    pe23_proof: Pe23CapitalSlotRatchetReleaseProofBinding,
+    pe24_integration_input: PilotEnvelopeLifecycleIntegrationInput,
+    pe24_proof: Pe24PilotEnvelopeLifecycleProofBinding,
+) -> OperatorClosureLifecycleIntegrationInput:
+    """Build canonical PE-25 closure input from completion PE-22/23/24 lifecycle proofs."""
+    from src.ops.bounded_futures_testnet_contract_v0 import DEFAULT_MARKET_TYPE
+    from src.ops.bounded_futures_testnet_operator_closure_lifecycle_integration_contract_v0 import (
+        PHASE_READINESS_DECISION,
+        PHASE_RECONCILIATION_REVIEW,
+        ContractVersionsInput as Pe25ContractVersionsInput,
+        DeclaredLifecycleStateBinding,
+        LifecycleMatrixProof,
+        LifecycleStateBinding,
+        Pe19ReviewProofBinding,
+        Pe20DurableReviewPackageBinding,
+        Pe22RiskKillswitchFlattenProofBinding,
+        Pe23CapitalSlotRatchetReleaseProofBinding,
+        Pe24PilotEnvelopeProofBinding,
+        compute_lifecycle_matrix_digest,
+        default_minimal_safety_snapshot as default_pe25_safety_snapshot,
+    )
+    from src.ops.bounded_futures_testnet_preflight_operator_review_reproducibility_contract_v0 import (
+        CONTRACT_VERSION as PE19_CONTRACT_VERSION,
+    )
+    from src.ops.bounded_futures_testnet_preflight_operator_review_proof_package_contract_v0 import (
+        CONTRACT_VERSION as PE20_CONTRACT_VERSION,
+    )
+
+    pe24_pe19 = pe24_integration_input.pe19_review_proof
+    pe24_pe20 = pe24_integration_input.pe20_durable_review_package
+    adapter_id = pe24_integration_input.adapter_id
+
+    return OperatorClosureLifecycleIntegrationInput(
+        source_revision=source_revision,
+        repository_identity=REPOSITORY_IDENTITY,
+        adapter_id=adapter_id,
+        closure_id=f"completion-closure-{run_id}",
+        instrument=pe24_integration_input.instrument,
+        market_type=DEFAULT_MARKET_TYPE,
+        contract_versions=Pe25ContractVersionsInput(
+            pe12_lifecycle=PE12_CONTRACT_VERSION,
+            pe19_operator_review=PE19_CONTRACT_VERSION,
+            pe20_review_proof_package=PE20_CONTRACT_VERSION,
+            pe22_risk_killswitch_flatten=PE22_CONTRACT_VERSION,
+            pe23_capital_slot_ratchet_release=PE23_CONTRACT_VERSION,
+            pe24_pilot_envelope=PE24_CONTRACT_VERSION,
+            integration=PE25_CONTRACT_VERSION,
+        ),
+        pe19_review_proof=Pe19ReviewProofBinding(
+            review_input_digest=pe24_pe19.review_input_digest,
+            decision_record_digest=pe24_pe19.decision_record_digest,
+            review_proof_digest=pe24_pe19.review_proof_digest,
+            review_valid=pe24_pe19.review_valid,
+            decision=pe24_pe19.decision,
+            reason_code=pe24_pe19.reason_code,
+            non_authorizing=pe24_pe19.non_authorizing,
+            ready_for_operator_arming=pe24_pe19.ready_for_operator_arming,
+            execution_authorized=pe24_pe19.execution_authorized,
+            live_authorized=pe24_pe19.live_authorized,
+            evidence_manifest_verify_rc=pe24_pe19.evidence_manifest_verify_rc,
+        ),
+        pe20_durable_review_package=Pe20DurableReviewPackageBinding(
+            package_id=pe24_pe20.package_id,
+            package_digest=pe24_pe20.package_digest,
+            manifest_verify_rc=pe24_pe20.manifest_verify_rc,
+            static_glb016_reproducibility_satisfied=pe24_pe20.static_glb016_reproducibility_satisfied,
+        ),
+        pe22_risk_killswitch_flatten_proof=Pe22RiskKillswitchFlattenProofBinding(
+            integration_input_digest=compute_pe22_integration_input_digest(pe22_integration_input),
+            integration_proof_digest=pe22_proof.integration_proof_digest,
+            pe22_integration_pass=True,
+            lifecycle_matrix_digest=pe22_proof.lifecycle_matrix_digest,
+        ),
+        pe23_capital_slot_ratchet_release_proof=Pe23CapitalSlotRatchetReleaseProofBinding(
+            integration_input_digest=compute_pe23_integration_input_digest(pe23_integration_input),
+            integration_proof_digest=pe23_proof.integration_proof_digest,
+            pe23_integration_pass=True,
+            lifecycle_matrix_digest=pe23_proof.lifecycle_matrix_digest,
+        ),
+        pe24_pilot_envelope_proof=Pe24PilotEnvelopeProofBinding(
+            integration_input_digest=compute_pe24_integration_input_digest(pe24_integration_input),
+            integration_proof_digest=pe24_proof.integration_proof_digest,
+            pe24_integration_pass=True,
+            lifecycle_matrix_digest=pe24_proof.lifecycle_matrix_digest,
+            pilot_envelope_static_ready=True,
+        ),
+        lifecycle_state_before=LifecycleStateBinding(
+            state_id="completion-lifecycle-before",
+            state_digest=run_root_digest,
+            assigned_lifecycle_phase=PHASE_RECONCILIATION_REVIEW,
+            adapter_id=adapter_id,
+        ),
+        declared_lifecycle_state_after=DeclaredLifecycleStateBinding(
+            state_id="completion-lifecycle-after",
+            state_digest=run_root_digest,
+            assigned_lifecycle_phase=PHASE_READINESS_DECISION,
+            adapter_id=adapter_id,
+        ),
+        lifecycle_matrix_proof=LifecycleMatrixProof(
+            pe12_contract_version=PE12_CONTRACT_VERSION,
+            lifecycle_matrix_digest=compute_lifecycle_matrix_digest(),
+            assigned_lifecycle_phase=PHASE_READINESS_DECISION,
+            lifecycle_state_digest=run_root_digest,
+        ),
+        safety_snapshot=default_pe25_safety_snapshot(),
+    )
+
+
+def _build_pe25_closure_input_from_completion(
+    integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
+) -> OperatorClosureLifecycleIntegrationInput:
+    """Build canonical PE-25 closure input from completion PE-22/23/24 lifecycle proofs."""
+    return _build_pe25_closure_input_from_chain(
+        source_revision=integration_input.source_revision,
+        run_id=integration_input.run_identity.run_id,
+        run_root_digest=integration_input.durable_run_root.run_root_digest,
+        pe22_integration_input=integration_input.pe22_risk_killswitch_lifecycle_integration_input,
+        pe22_proof=integration_input.pe22_risk_killswitch_flatten_proof,
+        pe23_integration_input=integration_input.pe23_capital_slot_ratchet_release_lifecycle_integration_input,
+        pe23_proof=integration_input.pe23_capital_slot_ratchet_release_proof,
+        pe24_integration_input=integration_input.pe24_pilot_envelope_lifecycle_integration_input,
+        pe24_proof=integration_input.pe24_pilot_envelope_lifecycle_proof,
+    )
+
+
 def _validate_pe35_recovery_boundary_proof(
     integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
     *,
@@ -1834,6 +2124,179 @@ def _validate_pe37_traceability_proof(
     return fail_reasons
 
 
+def _validate_pe25_operator_closure_proof(
+    integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
+    *,
+    pe25_result: dict[str, Any],
+    admission_result: dict[str, Any],
+) -> list[str]:
+    fail_reasons: list[str] = []
+    proof = integration_input.pe25_operator_closure_proof
+    pe25_input = integration_input.pe25_closure_integration_input
+    pe37_proof = integration_input.pe37_traceability_proof
+    pe35_proof = integration_input.pe35_handoff_recovery_boundary_proof
+    durable_root = integration_input.durable_run_root
+    run_identity = integration_input.run_identity
+    manifest_digest = integration_input.manifest_proof.manifest_digest
+    completion_identity = compute_completion_identity_digest(
+        run_root_digest=durable_root.run_root_digest,
+        manifest_digest=manifest_digest,
+        source_revision=integration_input.source_revision,
+    )
+    pe35_input = integration_input.pe35_handoff_staleness_revocation_recovery_boundary_input
+    pe34_handoff = pe35_input.pe34_handoff
+    pe22_proof = integration_input.pe22_risk_killswitch_flatten_proof
+    pe23_proof = integration_input.pe23_capital_slot_ratchet_release_proof
+    pe24_proof = integration_input.pe24_pilot_envelope_lifecycle_proof
+
+    pe25_lifecycle = integration_input.pe25_proof_lifecycle
+    if pe25_lifecycle.lifecycle_state not in ALLOWED_PROOF_LIFECYCLE_STATES:
+        fail_reasons.append(
+            f"pe25_proof_lifecycle: unsupported lifecycle state {pe25_lifecycle.lifecycle_state!r}"
+        )
+    if pe25_lifecycle.lifecycle_state in INVALID_PROOF_LIFECYCLE_STATES:
+        fail_reasons.append(
+            f"pe25_proof_lifecycle: invalid lifecycle state {pe25_lifecycle.lifecycle_state!r}"
+        )
+
+    if proof.closure_owner != PE25_INTEGRATION_OWNER:
+        fail_reasons.append(f"pe25_proof: closure_owner must be {PE25_INTEGRATION_OWNER!r}")
+    if proof.source_revision != integration_input.source_revision:
+        fail_reasons.append("pe25_proof: source_revision mismatch")
+    if not proof.closure_input_digest:
+        fail_reasons.append("pe25_proof: closure_input_digest required")
+    elif not _valid_sha256_digest(proof.closure_input_digest):
+        fail_reasons.append("pe25_proof: closure_input_digest must be 64-char lowercase sha256 hex")
+    elif proof.closure_input_digest != compute_pe25_closure_input_digest(pe25_input):
+        fail_reasons.append("pe25_proof: closure_input_digest mismatch")
+
+    if not proof.closure_result_digest:
+        fail_reasons.append("pe25_proof: closure_result_digest required")
+    elif not _valid_sha256_digest(proof.closure_result_digest):
+        fail_reasons.append(
+            "pe25_proof: closure_result_digest must be 64-char lowercase sha256 hex"
+        )
+    elif proof.closure_result_digest != pe25_result.get("closure_result_digest"):
+        fail_reasons.append("pe25_proof: closure_result_digest mismatch")
+
+    expected_admission_proof = admission_result.get("integration_proof_digest")
+    if not proof.admission_integration_proof_digest:
+        fail_reasons.append("pe25_proof: admission_integration_proof_digest required")
+    elif expected_admission_proof is None:
+        fail_reasons.append("pe25_proof: admission_integration_proof_digest unavailable")
+    elif proof.admission_integration_proof_digest != expected_admission_proof:
+        fail_reasons.append("pe25_proof: admission_integration_proof_digest mismatch")
+
+    required_binding_flags = (
+        ("pe25_integration_pass", True),
+        ("operator_closure_static_complete", True),
+        ("operator_closure_lifecycle_bound", True),
+        ("pe25_operator_closure_bound", True),
+        ("durable_run_primary_evidence_completion_operator_closure_bound", True),
+        ("pe34_handoff_bound", True),
+        ("pe35_staleness_revocation_recovery_bound", True),
+        ("pe36_admission_presentation_bound", True),
+        ("pe37_durable_traceability_bound", True),
+        ("closure_coherence_proven", True),
+    )
+    for field_name, expected in required_binding_flags:
+        actual = getattr(proof, field_name)
+        if actual is not expected:
+            fail_reasons.append(f"pe25_proof: {field_name} must be {expected}")
+
+    digest_fields = (
+        ("traceability_identity", proof.traceability_identity),
+        ("admission_identity", proof.admission_identity),
+        ("run_identity_digest", proof.run_identity_digest),
+        ("completion_identity_digest", proof.completion_identity_digest),
+        ("manifest_identity_digest", proof.manifest_identity_digest),
+        ("durable_artifact_identity", proof.durable_artifact_identity),
+        ("pe34_handoff_digest", proof.pe34_handoff_digest),
+        ("pe35_boundary_result_digest", proof.pe35_boundary_result_digest),
+        ("pe36_boundary_result_digest", proof.pe36_boundary_result_digest),
+        ("pe37_traceability_identity", proof.pe37_traceability_identity),
+    )
+    for field_name, value in digest_fields:
+        if not value:
+            fail_reasons.append(f"pe25_proof: {field_name} required")
+        elif not _valid_sha256_digest(value):
+            fail_reasons.append(f"pe25_proof: {field_name} must be 64-char lowercase sha256 hex")
+
+    if proof.traceability_identity != pe37_proof.traceability_identity:
+        fail_reasons.append("pe25_proof: traceability_identity mismatch with PE-37")
+    if proof.admission_identity != pe37_proof.admission_identity:
+        fail_reasons.append("pe25_proof: admission_identity mismatch with PE-37")
+    if proof.durable_artifact_identity != durable_root.run_root_digest:
+        fail_reasons.append("pe25_proof: durable_artifact_identity mismatch with run_root_digest")
+    if proof.run_identity_digest != run_identity.run_identity_digest:
+        fail_reasons.append("pe25_proof: run_identity_digest mismatch")
+    if proof.completion_identity_digest != completion_identity:
+        fail_reasons.append("pe25_proof: completion_identity_digest mismatch")
+    if proof.manifest_identity_digest != manifest_digest:
+        fail_reasons.append("pe25_proof: manifest_identity_digest mismatch")
+
+    computed_pe34_digest = compute_pe34_boundary_input_digest(pe34_handoff)
+    if proof.pe34_handoff_digest != computed_pe34_digest:
+        fail_reasons.append("pe25_proof: pe34_handoff_digest mismatch with PE-34 handoff")
+    if proof.pe35_boundary_result_digest != pe35_proof.boundary_result_digest:
+        fail_reasons.append("pe25_proof: pe35_boundary_result_digest mismatch with PE-35")
+    if proof.pe36_boundary_result_digest != pe37_proof.pe36_boundary_result_digest:
+        fail_reasons.append("pe25_proof: pe36_boundary_result_digest mismatch with PE-36")
+    if proof.pe37_traceability_identity != pe37_proof.traceability_identity:
+        fail_reasons.append("pe25_proof: pe37_traceability_identity mismatch with PE-37")
+
+    if pe25_input.source_revision != integration_input.source_revision:
+        fail_reasons.append(
+            "pe25_closure_integration_input: source_revision mismatch with completion input"
+        )
+    if (
+        pe25_input.pe22_risk_killswitch_flatten_proof.integration_proof_digest
+        != pe22_proof.integration_proof_digest
+    ):
+        fail_reasons.append("pe25_proof: PE-22 integration_proof_digest drift from completion")
+    if (
+        pe25_input.pe23_capital_slot_ratchet_release_proof.integration_proof_digest
+        != pe23_proof.integration_proof_digest
+    ):
+        fail_reasons.append("pe25_proof: PE-23 integration_proof_digest drift from completion")
+    if (
+        pe25_input.pe24_pilot_envelope_proof.integration_proof_digest
+        != pe24_proof.integration_proof_digest
+    ):
+        fail_reasons.append("pe25_proof: PE-24 integration_proof_digest drift from completion")
+    if pe25_input.lifecycle_matrix_proof.lifecycle_state_digest != durable_root.run_root_digest:
+        fail_reasons.append("pe25_proof: lifecycle_state_digest mismatch with run_root_digest")
+
+    if compute_pe25_closure_input_digest(pe25_input) != compute_pe25_closure_input_digest(
+        _build_pe25_closure_input_from_completion(integration_input)
+    ):
+        fail_reasons.append(
+            "pe25_closure_integration_input: PE-25 closure input drift from completion chain"
+        )
+
+    if not pe25_result.get("integration_pass"):
+        fail_reasons.append("pe25_closure_integration_input: PE-25 evaluation failed")
+        fail_reasons.extend(
+            f"pe25_closure_integration_input: {reason}"
+            for reason in pe25_result.get("fail_reasons", [])
+        )
+    elif not pe25_result.get("operator_closure_static_complete"):
+        fail_reasons.append(
+            "pe25_closure_integration_input: operator_closure_static_complete required"
+        )
+    elif pe25_result.get("operative_operator_closure_executed"):
+        fail_reasons.append("pe25_proof: operative operator closure must not be executed")
+    elif pe25_result.get("authority_lift"):
+        fail_reasons.append("pe25_proof: authority_lift must remain false")
+
+    if not admission_result.get("integration_pass"):
+        fail_reasons.append(
+            "pe25_proof: admission presentation lifecycle evaluation failed for PE-39 coherence"
+        )
+
+    return fail_reasons
+
+
 def _validate_completion_proof_chain(
     integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
 ) -> list[str]:
@@ -1845,6 +2308,7 @@ def _validate_completion_proof_chain(
     pe24_proof = integration_input.pe24_pilot_envelope_lifecycle_proof
     pe35_proof = integration_input.pe35_handoff_recovery_boundary_proof
     pe37_proof = integration_input.pe37_traceability_proof
+    pe25_proof = integration_input.pe25_operator_closure_proof
     pe21_proof = integration_input.pe21_proof
     pe31_pe21_proof = integration_input.pe31_reconciliation_review_integration_input.pe21_reconciliation_primary_evidence_integration_proof
     pe21_input_digest = compute_pe21_integration_input_digest(
@@ -1865,6 +2329,15 @@ def _validate_completion_proof_chain(
             chain.completion_referenced_pe37_boundary_result_digest,
         ),
         ("pe37_traceability_identity", chain.pe37_traceability_identity),
+        (
+            "completion_referenced_pe25_closure_result_digest",
+            chain.completion_referenced_pe25_closure_result_digest,
+        ),
+        ("pe25_closure_input_digest", chain.pe25_closure_input_digest),
+        (
+            "closure_referenced_admission_proof_digest",
+            chain.closure_referenced_admission_proof_digest,
+        ),
         (
             "pe31_referenced_pe21_integration_proof_digest",
             chain.pe31_referenced_pe21_integration_proof_digest,
@@ -1910,6 +2383,19 @@ def _validate_completion_proof_chain(
         )
     if chain.pe37_traceability_identity != pe37_proof.traceability_identity:
         fail_reasons.append("completion_proof_chain: pe37_traceability_identity mismatch")
+    if chain.completion_referenced_pe25_closure_result_digest != pe25_proof.closure_result_digest:
+        fail_reasons.append(
+            "completion_proof_chain: completion_referenced_pe25_closure_result_digest mismatch"
+        )
+    if chain.pe25_closure_input_digest != pe25_proof.closure_input_digest:
+        fail_reasons.append("completion_proof_chain: pe25_closure_input_digest mismatch")
+    if (
+        chain.closure_referenced_admission_proof_digest
+        != pe25_proof.admission_integration_proof_digest
+    ):
+        fail_reasons.append(
+            "completion_proof_chain: closure_referenced_admission_proof_digest mismatch"
+        )
     if (
         chain.pe31_referenced_pe21_integration_proof_digest
         != pe31_pe21_proof.integration_proof_digest
@@ -2153,6 +2639,13 @@ def validate_durable_run_primary_evidence_completion_integration_input(
         )
     fail_reasons.extend(validate_durable_evidence_traceability_boundary_input(pe37_input))
 
+    pe25_input = integration_input.pe25_closure_integration_input
+    if pe25_input.source_revision != integration_input.source_revision:
+        fail_reasons.append(
+            "pe25_closure_integration_input: source_revision mismatch with completion input"
+        )
+    fail_reasons.extend(validate_operator_closure_lifecycle_integration_input(pe25_input))
+
     fail_reasons.extend(_validate_completion_proof_chain(integration_input))
 
     fail_reasons.extend(
@@ -2257,6 +2750,11 @@ def _integration_input_dict(
             integration_input.pe37_traceability_boundary_input
         ),
         "pe37_traceability_proof": asdict(integration_input.pe37_traceability_proof),
+        "pe25_closure_input_digest": compute_pe25_closure_input_digest(
+            integration_input.pe25_closure_integration_input
+        ),
+        "pe25_operator_closure_proof": asdict(integration_input.pe25_operator_closure_proof),
+        "pe25_proof_lifecycle": asdict(integration_input.pe25_proof_lifecycle),
         "completion_proof_chain": asdict(integration_input.completion_proof_chain),
         "post_write_verification": asdict(integration_input.post_write_verification),
         "primary_evidence_identity": asdict(integration_input.primary_evidence_identity),
@@ -2310,6 +2808,7 @@ def _integration_proof_dict(
         "pe34_handoff_bound": integration_pass,
         "pe35_staleness_revocation_recovery_bound": integration_pass,
         "pe36_admission_presentation_bound": integration_pass,
+        "pe25_operator_closure_lifecycle_bound": integration_pass,
         "global_run_completion_readiness": GLOBAL_RUN_COMPLETION_READINESS,
         "integration_contract_version": CONTRACT_VERSION,
         "integration_input_digest": compute_completion_integration_input_digest(integration_input),
@@ -2450,6 +2949,27 @@ def evaluate_durable_run_primary_evidence_completion_integration(
         )
     )
 
+    admission_input = _build_admission_presentation_lifecycle_input_from_completion(
+        integration_input
+    )
+    from src.ops.bounded_futures_testnet_operator_review_admission_presentation_lifecycle_integration_contract_v0 import (
+        evaluate_operator_review_admission_presentation_lifecycle_integration,
+    )
+
+    admission_result = evaluate_operator_review_admission_presentation_lifecycle_integration(
+        admission_input
+    )
+    pe25_result = evaluate_operator_closure_lifecycle_integration(
+        integration_input.pe25_closure_integration_input
+    )
+    fail_reasons.extend(
+        _validate_pe25_operator_closure_proof(
+            integration_input,
+            pe25_result=pe25_result,
+            admission_result=admission_result,
+        )
+    )
+
     if completion_claim_without_full_evidence and integration_input.completion_claimed:
         fail_reasons.append("completion_claimed=true without full evidence chain is insufficient")
 
@@ -2502,6 +3022,9 @@ def evaluate_durable_run_primary_evidence_completion_integration(
         "pe34_handoff_bound": bool(pe37_result.get("boundary_pass")),
         "pe35_staleness_revocation_recovery_bound": bool(pe37_result.get("proof_digests_coherent")),
         "pe36_admission_presentation_bound": bool(pe37_result.get("owner_identities_coherent")),
+        "pe25_operator_closure_lifecycle_bound": bool(
+            pe25_result.get("operator_closure_static_complete")
+        ),
         "pe16_archive_identity": integration_input.pe16_archive.archive_identity,
         "gap4_completion_integration_pass": integration_input.gap4_completion.gap4_integration_pass,
         "gap2a1_enforcement_integration_pass": (
@@ -2753,6 +3276,58 @@ def default_minimal_pe37_integration_proof(
     )
 
 
+def default_minimal_pe25_integration_proof(
+    integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
+    *,
+    pe25_input: OperatorClosureLifecycleIntegrationInput,
+    pe25_result: dict[str, Any],
+    admission_result: dict[str, Any],
+    traceability_identity: str,
+    admission_identity: str,
+    run_identity_digest: str,
+    completion_identity_digest: str,
+    manifest_identity_digest: str,
+    durable_artifact_identity: str,
+) -> Pe25OperatorClosureLifecycleProofBinding:
+    closure_result_digest = pe25_result["closure_result_digest"]
+    if closure_result_digest is None:
+        raise ValueError("PE-25 closure must be satisfied for default minimal proof")
+    admission_proof_digest = admission_result.get("integration_proof_digest")
+    if admission_proof_digest is None:
+        raise ValueError("Admission lifecycle proof required for default minimal PE-25 proof")
+    pe37_proof = integration_input.pe37_traceability_proof
+    pe35_proof = integration_input.pe35_handoff_recovery_boundary_proof
+    pe35_input = integration_input.pe35_handoff_staleness_revocation_recovery_boundary_input
+    pe34_handoff = pe35_input.pe34_handoff
+    return Pe25OperatorClosureLifecycleProofBinding(
+        closure_owner=PE25_INTEGRATION_OWNER,
+        source_revision=integration_input.source_revision,
+        closure_input_digest=compute_pe25_closure_input_digest(pe25_input),
+        closure_result_digest=closure_result_digest,
+        admission_integration_proof_digest=admission_proof_digest,
+        pe25_integration_pass=True,
+        operator_closure_static_complete=True,
+        operator_closure_lifecycle_bound=True,
+        pe25_operator_closure_bound=True,
+        durable_run_primary_evidence_completion_operator_closure_bound=True,
+        pe34_handoff_bound=True,
+        pe35_staleness_revocation_recovery_bound=True,
+        pe36_admission_presentation_bound=True,
+        pe37_durable_traceability_bound=True,
+        traceability_identity=traceability_identity,
+        admission_identity=admission_identity,
+        run_identity_digest=run_identity_digest,
+        completion_identity_digest=completion_identity_digest,
+        manifest_identity_digest=manifest_identity_digest,
+        durable_artifact_identity=durable_artifact_identity,
+        pe34_handoff_digest=compute_pe34_boundary_input_digest(pe34_handoff),
+        pe35_boundary_result_digest=pe35_proof.boundary_result_digest,
+        pe36_boundary_result_digest=pe37_proof.pe36_boundary_result_digest,
+        pe37_traceability_identity=pe37_proof.traceability_identity,
+        closure_coherence_proven=True,
+    )
+
+
 def default_minimal_completion_proof_chain(
     integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
 ) -> CompletionProofChainBinding:
@@ -2762,6 +3337,7 @@ def default_minimal_completion_proof_chain(
     pe24_proof = integration_input.pe24_pilot_envelope_lifecycle_proof
     pe35_proof = integration_input.pe35_handoff_recovery_boundary_proof
     pe37_proof = integration_input.pe37_traceability_proof
+    pe25_proof = integration_input.pe25_operator_closure_proof
     pe21_proof = integration_input.pe21_proof
     pe31_pe21_proof = integration_input.pe31_reconciliation_review_integration_input.pe21_reconciliation_primary_evidence_integration_proof
     return CompletionProofChainBinding(
@@ -2772,6 +3348,9 @@ def default_minimal_completion_proof_chain(
         completion_referenced_pe35_boundary_result_digest=pe35_proof.boundary_result_digest,
         completion_referenced_pe37_boundary_result_digest=pe37_proof.boundary_result_digest,
         pe37_traceability_identity=pe37_proof.traceability_identity,
+        completion_referenced_pe25_closure_result_digest=pe25_proof.closure_result_digest,
+        pe25_closure_input_digest=pe25_proof.closure_input_digest,
+        closure_referenced_admission_proof_digest=pe25_proof.admission_integration_proof_digest,
         pe31_referenced_pe21_integration_proof_digest=pe31_pe21_proof.integration_proof_digest,
         completion_referenced_pe21_integration_proof_digest=pe21_proof.integration_proof_digest,
         shared_pe21_integration_input_digest=compute_pe21_integration_input_digest(
@@ -2959,6 +3538,19 @@ def default_minimal_completion_integration_input(
         durable_artifact_identity=run_root_digest,
     )
 
+    pe25_closure_input = _build_pe25_closure_input_from_chain(
+        source_revision=source_revision,
+        run_id=run_id,
+        run_root_digest=run_root_digest,
+        pe22_integration_input=pe22_integration_input,
+        pe22_proof=pe22_proof,
+        pe23_integration_input=pe23_integration_input,
+        pe23_proof=pe23_proof,
+        pe24_integration_input=pe24_integration_input,
+        pe24_proof=pe24_proof,
+    )
+    pe25_result = evaluate_operator_closure_lifecycle_integration(pe25_closure_input)
+
     archive_digest = hashlib.sha256(
         json.dumps(
             {
@@ -3018,6 +3610,37 @@ def default_minimal_completion_integration_input(
         pe35_handoff_recovery_boundary_proof=pe35_proof,
         pe37_traceability_boundary_input=pe37_boundary_input,
         pe37_traceability_proof=pe37_proof,
+        pe25_closure_integration_input=pe25_closure_input,
+        pe25_operator_closure_proof=Pe25OperatorClosureLifecycleProofBinding(
+            closure_owner=PE25_INTEGRATION_OWNER,
+            source_revision=source_revision,
+            closure_input_digest="0" * 64,
+            closure_result_digest="0" * 64,
+            admission_integration_proof_digest="0" * 64,
+            pe25_integration_pass=True,
+            operator_closure_static_complete=True,
+            operator_closure_lifecycle_bound=True,
+            pe25_operator_closure_bound=True,
+            durable_run_primary_evidence_completion_operator_closure_bound=True,
+            pe34_handoff_bound=True,
+            pe35_staleness_revocation_recovery_bound=True,
+            pe36_admission_presentation_bound=True,
+            pe37_durable_traceability_bound=True,
+            traceability_identity=pe37_proof.traceability_identity,
+            admission_identity=pe37_proof.admission_identity,
+            run_identity_digest=run_identity_digest,
+            completion_identity_digest=completion_identity_digest,
+            manifest_identity_digest=manifest_digest,
+            durable_artifact_identity=run_root_digest,
+            pe34_handoff_digest=compute_pe34_boundary_input_digest(
+                pe35_boundary_input.pe34_handoff
+            ),
+            pe35_boundary_result_digest=pe35_proof.boundary_result_digest,
+            pe36_boundary_result_digest=pe37_proof.pe36_boundary_result_digest,
+            pe37_traceability_identity=pe37_proof.traceability_identity,
+            closure_coherence_proven=True,
+        ),
+        pe25_proof_lifecycle=ProofLifecycleMetadata(lifecycle_state=PROOF_LIFECYCLE_CURRENT),
         completion_proof_chain=CompletionProofChainBinding(
             completion_referenced_pe31_proof_digest=pe31_proof.integration_proof_digest,
             completion_referenced_pe22_proof_digest=pe22_result["integration_proof_digest"],
@@ -3026,6 +3649,10 @@ def default_minimal_completion_integration_input(
             completion_referenced_pe35_boundary_result_digest=pe35_proof.boundary_result_digest,
             completion_referenced_pe37_boundary_result_digest=pe37_proof.boundary_result_digest,
             pe37_traceability_identity=pe37_proof.traceability_identity,
+            completion_referenced_pe25_closure_result_digest=pe25_result["closure_result_digest"]
+            or ("0" * 64),
+            pe25_closure_input_digest=compute_pe25_closure_input_digest(pe25_closure_input),
+            closure_referenced_admission_proof_digest="0" * 64,
             pe31_referenced_pe21_integration_proof_digest=(
                 pe31_integration_input.pe21_reconciliation_primary_evidence_integration_proof.integration_proof_digest
             ),
@@ -3092,10 +3719,35 @@ def default_minimal_completion_integration_input(
             pe34_handoff=PE34_CONTRACT_VERSION,
             pe36_admission_presentation=PE36_CONTRACT_VERSION,
             pe37_traceability=PE37_CONTRACT_VERSION,
+            pe25_operator_closure=PE25_CONTRACT_VERSION,
             integration=CONTRACT_VERSION,
         ),
     )
-    return replace(
+    from src.ops.bounded_futures_testnet_operator_review_admission_presentation_lifecycle_integration_contract_v0 import (
+        evaluate_operator_review_admission_presentation_lifecycle_integration,
+    )
+
+    admission_input = _build_admission_presentation_lifecycle_input_from_completion(draft)
+    admission_result = evaluate_operator_review_admission_presentation_lifecycle_integration(
+        admission_input
+    )
+    pe25_proof = default_minimal_pe25_integration_proof(
         draft,
-        completion_proof_chain=default_minimal_completion_proof_chain(draft),
+        pe25_input=pe25_closure_input,
+        pe25_result=pe25_result,
+        admission_result=admission_result,
+        traceability_identity=pe37_proof.traceability_identity,
+        admission_identity=pe37_proof.admission_identity,
+        run_identity_digest=run_identity_digest,
+        completion_identity_digest=completion_identity_digest,
+        manifest_identity_digest=manifest_digest,
+        durable_artifact_identity=run_root_digest,
+    )
+    completed = replace(
+        draft,
+        pe25_operator_closure_proof=pe25_proof,
+    )
+    return replace(
+        completed,
+        completion_proof_chain=default_minimal_completion_proof_chain(completed),
     )
