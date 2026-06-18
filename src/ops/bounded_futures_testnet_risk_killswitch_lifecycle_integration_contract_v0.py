@@ -41,6 +41,12 @@ from src.ops.gates.risk_gate import RiskContext, RiskLimits, evaluate_risk
 from src.ops.order_capability_killswitch_abort_binding_contract_v1 import (
     FAIL_KILLSWITCH_STATES,
     PASS_KILLSWITCH_STATES,
+    OrderCapabilityAbortBindingError,
+    OrderCapabilityAbortBindingInput,
+    OrderCapabilityBindingVerdict,
+    OrderCapabilityKillSwitchSnapshot,
+    OrderCapabilityPayloadSafetySummary,
+    evaluate_order_capability_abort_binding,
 )
 from src.risk_layer.kill_switch.state import KillSwitchState
 
@@ -55,6 +61,9 @@ REPOSITORY_IDENTITY = "Peak_Trade"
 RISK_GATE_CONTRACT_VERSION = "ops.gates.risk_gate.v0"
 KILLSWITCH_BINDING_CONTRACT_VERSION = "order_capability_killswitch_abort_binding.v1"
 FLATTEN_BINDING_CONTRACT_VERSION = "bounded_futures_testnet_contract.v0"
+PE22_ABORT_BINDING_NOW_UTC = "2026-06-09T13:00:00Z"
+PE22_ABORT_BINDING_OBSERVED_UTC = "2026-06-09T12:59:30Z"
+PE22_ABORT_BINDING_TTL_SECONDS = 120
 
 GLOBAL_RISK_KILLSWITCH_READINESS = False
 CONTRACT_IMPLEMENTATION_ONLY = True
@@ -244,6 +253,7 @@ class RiskKillswitchLifecycleIntegrationInput:
     declared_lifecycle_state_after: DeclaredLifecycleStateBinding
     lifecycle_matrix_proof: LifecycleMatrixProof
     safety_snapshot: IntegrationSafetySnapshot
+    abort_binding_input: OrderCapabilityAbortBindingInput
     futures_only: bool = True
     environment: str = ENVIRONMENT_TESTNET
     non_authorizing: bool = True
@@ -456,6 +466,17 @@ def _integration_input_dict(
         "declared_lifecycle_state_after": asdict(integration_input.declared_lifecycle_state_after),
         "lifecycle_matrix_proof": asdict(integration_input.lifecycle_matrix_proof),
         "safety_snapshot": asdict(integration_input.safety_snapshot),
+        "abort_binding_input": {
+            "expected_environment": integration_input.abort_binding_input.expected_environment,
+            "expected_operator_go_token_binding": (
+                integration_input.abort_binding_input.expected_operator_go_token_binding
+            ),
+            "kill_switch_snapshot": asdict(
+                integration_input.abort_binding_input.kill_switch_snapshot
+            ),
+            "now_utc": integration_input.abort_binding_input.now_utc,
+            "payload_summary": asdict(integration_input.abort_binding_input.payload_summary),
+        },
         "futures_only": integration_input.futures_only,
         "environment": integration_input.environment,
         "non_authorizing": integration_input.non_authorizing,
@@ -774,6 +795,98 @@ def _validate_tiny_order_gate_proof(
     return fail_reasons
 
 
+def _pe22_abort_binding_correlation_id(adapter_id: str) -> str:
+    return f"pe22-{adapter_id}"
+
+
+def _default_abort_binding_input(adapter_id: str) -> OrderCapabilityAbortBindingInput:
+    correlation_id = _pe22_abort_binding_correlation_id(adapter_id)
+    return OrderCapabilityAbortBindingInput(
+        payload_summary=OrderCapabilityPayloadSafetySummary(
+            evidence_correlation_id=correlation_id,
+            no_submit=True,
+            no_network=True,
+            execute_authorized=False,
+            order_submission_executed=False,
+            cancel_executed=False,
+            trade_position_mutation_executed=False,
+            abort_ack_marker="CONFIRMED",
+            operator_go_token_binding=OPERATOR_GO_TINY_ORDER,
+            environment=ENVIRONMENT_TESTNET,
+        ),
+        expected_operator_go_token_binding=OPERATOR_GO_TINY_ORDER,
+        kill_switch_snapshot=OrderCapabilityKillSwitchSnapshot(
+            source="pe22_offline_fixture",
+            source_id=f"pe22-ks-{adapter_id}",
+            source_kind="injected_offline_fixture",
+            state="CLEAR",
+            observed_at_utc=PE22_ABORT_BINDING_OBSERVED_UTC,
+            ttl_seconds=PE22_ABORT_BINDING_TTL_SECONDS,
+            correlation_id=correlation_id,
+            environment=ENVIRONMENT_TESTNET,
+        ),
+        now_utc=PE22_ABORT_BINDING_NOW_UTC,
+        expected_environment=ENVIRONMENT_TESTNET,
+    )
+
+
+def _evaluate_order_capability_abort_binding_fail_closed(
+    integration_input: RiskKillswitchLifecycleIntegrationInput,
+) -> list[str]:
+    """Fail-closed PE-22 binding to canonical order-capability abort evaluation."""
+    fail_reasons: list[str] = []
+    abort_input = integration_input.abort_binding_input
+
+    if abort_input.expected_operator_go_token_binding != OPERATOR_GO_TINY_ORDER:
+        fail_reasons.append(
+            "order_capability_abort_binding: expected_operator_go_token_binding drift from "
+            f"PE-12 tiny_order gate (expected {OPERATOR_GO_TINY_ORDER!r})"
+        )
+    if abort_input.payload_summary.operator_go_token_binding != OPERATOR_GO_TINY_ORDER:
+        fail_reasons.append(
+            "order_capability_abort_binding: payload operator_go_token_binding owner drift"
+        )
+
+    correlation_id = abort_input.payload_summary.evidence_correlation_id.strip()
+    if not correlation_id:
+        fail_reasons.append("order_capability_abort_binding: binding_input required")
+    elif integration_input.adapter_id not in correlation_id:
+        fail_reasons.append("order_capability_abort_binding: lifecycle adapter_id identity drift")
+
+    pe22_state = _normalize_killswitch_state(integration_input.killswitch_state.killswitch_state)
+    abort_state = _normalize_killswitch_state(abort_input.kill_switch_snapshot.state)
+    if pe22_state != abort_state:
+        fail_reasons.append("order_capability_abort_binding: killswitch identity drift")
+
+    try:
+        first_verdict = evaluate_order_capability_abort_binding(abort_input)
+        second_verdict = evaluate_order_capability_abort_binding(abort_input)
+    except (OrderCapabilityAbortBindingError, ValueError, TypeError) as exc:
+        fail_reasons.append(f"order_capability_abort_binding: evaluation_exception: {exc}")
+        return fail_reasons
+
+    if first_verdict is None or second_verdict is None:
+        fail_reasons.append("order_capability_abort_binding: verdict_none")
+        return fail_reasons
+
+    if first_verdict != second_verdict:
+        fail_reasons.append("order_capability_abort_binding: repeated evaluation inconsistency")
+
+    verdict = first_verdict
+    if verdict.verdict == OrderCapabilityBindingVerdict.PASS_FOR_DRY_SUBMIT_CANDIDATE_ONLY:
+        return fail_reasons
+
+    if verdict.verdict == OrderCapabilityBindingVerdict.FAIL_CLOSED:
+        for code in verdict.reason_codes:
+            fail_reasons.append(f"order_capability_abort_binding: {code}")
+        if not verdict.reason_codes:
+            fail_reasons.append("order_capability_abort_binding: fail_closed_without_reason")
+        return fail_reasons
+
+    fail_reasons.append(f"order_capability_abort_binding: verdict_{verdict.verdict.value.lower()}")
+    return fail_reasons
+
+
 def validate_risk_killswitch_lifecycle_integration_input(
     integration_input: RiskKillswitchLifecycleIntegrationInput,
 ) -> list[str]:
@@ -911,6 +1024,7 @@ def evaluate_risk_killswitch_lifecycle_integration(
 ) -> dict[str, Any]:
     """Evaluate explicit PE-12 tiny_order Risk/KillSwitch/Flatten integration proof."""
     fail_reasons = validate_risk_killswitch_lifecycle_integration_input(integration_input)
+    fail_reasons.extend(_evaluate_order_capability_abort_binding_fail_closed(integration_input))
 
     if expected_source_revision is not None:
         if integration_input.source_revision != expected_source_revision:
@@ -1221,4 +1335,5 @@ def default_minimal_integration_input(
             lifecycle_state_digest=state_digest,
         ),
         safety_snapshot=default_minimal_safety_snapshot(),
+        abort_binding_input=_default_abort_binding_input(adapter_id),
     )
