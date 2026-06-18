@@ -359,7 +359,7 @@ jobs:
   tests:
     name: tests (${{ matrix.python-version }})
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 25
     needs: changes
     # IMPORTANT: No job-level if condition - matrix jobs must always be created
     # to satisfy branch protection rules (e.g., "tests (3.11)" check)
@@ -450,10 +450,33 @@ jobs:
           if-no-files-found: ignore
           retention-days: 7
 
-      - name: Run full test suite
+      - name: Run full test suite (sharded)
         if: ${{ (github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true') && needs.changes.outputs.tests_execute_no_op != 'true' }}
         run: |
-          pytest tests/ -v --tb=short -m "not network and not external_tools"
+          set -euo pipefail
+          python3 scripts/ops/ci_full_suite_shard_v1.py --verify-completeness
+          SHARD_COUNT="$(python3 scripts/ops/ci_full_suite_shard_v1.py --print-shard-count)"
+          PYTEST_ARGS=(-v --tb=short -m "not network and not external_tools")
+          COV_ARGS=()
+          if [ "${{ matrix.python-version }}" = "3.11" ]; then
+            COV_ARGS=(--cov=src --cov-append)
+          fi
+          SHARD_FAIL=0
+          PIDS=()
+          for ((shard_idx = 0; shard_idx < SHARD_COUNT; shard_idx++)); do
+            (
+              mapfile -t SHARD_FILES < <(
+                python3 scripts/ops/ci_full_suite_shard_v1.py --emit-shard-files "${shard_idx}"
+              )
+              echo "[full-suite shard=${shard_idx} py=${{ matrix.python-version }}] files=${#SHARD_FILES[@]}"
+              pytest "${SHARD_FILES[@]}" "${PYTEST_ARGS[@]}" "${COV_ARGS[@]}"
+            ) &
+            PIDS+=("$!")
+          done
+          for pid in "${PIDS[@]}"; do
+            wait "$pid" || SHARD_FAIL=1
+          done
+          exit "$SHARD_FAIL"
 
       - name: Run focused tests (matrix)
         if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_focused == 'true' }}
@@ -474,10 +497,11 @@ jobs:
           python3 scripts/ops/ci_test_selection_v1.py --import-smoke-modules "${{ needs.changes.outputs.focused_module_imports }}"
           echo "import smoke ok on Python ${{ matrix.python-version }}"
 
-      - name: Run tests with coverage (FULL only)
+      - name: Coverage report (FULL 3.11 sharded)
         if: ${{ (github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true') && matrix.python-version == '3.11' && needs.changes.outputs.tests_execute_no_op != 'true' }}
         run: |
-          pytest tests/ --cov=src --cov-report=xml --cov-report=term-missing -m "not network and not external_tools"
+          coverage xml
+          coverage report --show-missing
 
       # TODO: Linting (optional, aktivieren wenn gewünscht)
       # - name: Run ruff
@@ -572,7 +596,7 @@ jobs:
   pr-gate:
     name: PR Gate
     runs-on: ubuntu-latest
-    timeout-minutes: 2
+    timeout-minutes: 10
     needs: [changes, fast-lane, tests, strategy-smoke]
     if: always() && !cancelled() && needs.changes.result == 'success'
     steps:

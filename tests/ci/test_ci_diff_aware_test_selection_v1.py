@@ -50,9 +50,9 @@ def test_required_tests_job_has_no_job_level_if() -> None:
     assert "if:" not in tests_block.split("steps:")[0]
 
 
-def test_tests_job_timeout_40_preserved() -> None:
+def test_tests_job_timeout_25_preserved() -> None:
     assert re.search(
-        r"^\s*tests:\n(?:.*\n)*?\s*timeout-minutes:\s*40\s*$", _ci_text(), re.MULTILINE
+        r"^\s*tests:\n(?:.*\n)*?\s*timeout-minutes:\s*25\s*$", _ci_text(), re.MULTILINE
     )
 
 
@@ -80,9 +80,9 @@ def test_tests_job_has_no_op_step() -> None:
 
 def test_tests_job_has_focused_and_full_steps() -> None:
     text = _ci_text()
-    assert "Run full test suite" in text
+    assert "Run full test suite (sharded)" in text
     assert "Run focused tests (matrix)" in text
-    assert "Run tests with coverage (FULL only)" in text
+    assert "Coverage report (FULL 3.11 sharded)" in text
 
 
 def test_tests_job_focused_runs_on_all_matrix_versions() -> None:
