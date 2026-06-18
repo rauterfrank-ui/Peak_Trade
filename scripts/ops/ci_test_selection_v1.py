@@ -29,6 +29,7 @@ FOCUSED_CATEGORIES = frozenset(
         "tests_focused",
         "strategy_regime_owner_focused",
         "market_dashboard_focused",
+        "durable_completion_focused",
     }
 )
 
@@ -70,6 +71,27 @@ MARKET_DASHBOARD_CI_POLICY_PATHS = frozenset(
         "config/ci/file_category_mapping.yaml",
         "tests/ci/test_ci_diff_aware_test_selection_v1.py",
     }
+)
+
+DURABLE_COMPLETION_FACADE_PATH = "src/ops/bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py"
+
+DURABLE_COMPLETION_CI_POLICY_PATHS = frozenset(
+    {
+        "scripts/ops/ci_test_selection_v1.py",
+        "config/ci/file_category_mapping.yaml",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    }
+)
+
+CANONICAL_DURABLE_COMPLETION_FOCUSED_TESTS: tuple[str, ...] = (
+    "tests/ops/test_durable_completion_validation_graph_v1.py",
+    "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+)
+
+REQUIRED_DURABLE_COMPLETION_TEST_OWNERS: tuple[str, ...] = (
+    "tests/ops/test_durable_completion_validation_graph_v1.py",
+    "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
 )
 
 CANONICAL_MARKET_DASHBOARD_FOCUSED_TESTS: tuple[str, ...] = (
@@ -120,8 +142,11 @@ class SelectionResult:
 
 def _requires_full_ci_selector_change(files: list[str]) -> bool:
     normalized = {PurePosixPath(f).as_posix() for f in files}
-    scoped = {f for f in normalized if _is_market_dashboard_scoped_path(f)}
-    if scoped and all(_is_market_dashboard_rebundle_path(f) for f in normalized):
+    scoped_md = {f for f in normalized if _is_market_dashboard_scoped_path(f)}
+    if scoped_md and all(_is_market_dashboard_rebundle_path(f) for f in normalized):
+        return False
+    scoped_dc = {f for f in normalized if _is_durable_completion_scoped_path(f)}
+    if scoped_dc and all(_is_durable_completion_rebundle_path(f) for f in normalized):
         return False
     if normalized & CI_SELECTOR_FULL_PATHS:
         return True
@@ -176,6 +201,58 @@ def _market_dashboard_focused_targets() -> tuple[str, ...]:
     return tuple(sorted(targets))
 
 
+def _is_durable_completion_scoped_path(path: str) -> bool:
+    if path == DURABLE_COMPLETION_FACADE_PATH:
+        return True
+    if path.startswith("src/ops/durable_completion_validation/") and path.endswith(".py"):
+        return True
+    if path in {
+        "tests/ops/test_durable_completion_validation_graph_v1.py",
+        "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
+    }:
+        return True
+    return False
+
+
+def _is_durable_completion_rebundle_path(path: str) -> bool:
+    return _is_durable_completion_scoped_path(path) or path in DURABLE_COMPLETION_CI_POLICY_PATHS
+
+
+def _durable_completion_focused_targets() -> tuple[str, ...]:
+    for path in REQUIRED_DURABLE_COMPLETION_TEST_OWNERS:
+        if not _repo_path_exists(path):
+            return ()
+    targets: list[str] = []
+    for path in CANONICAL_DURABLE_COMPLETION_FOCUSED_TESTS:
+        if _repo_path_exists(path):
+            targets.append(path)
+    if len(targets) < len(REQUIRED_DURABLE_COMPLETION_TEST_OWNERS):
+        return ()
+    return tuple(sorted(targets))
+
+
+def _try_durable_completion_focused(files: list[str]) -> SelectionResult | None:
+    if not files:
+        return None
+    if not any(_is_durable_completion_scoped_path(f) for f in files):
+        return None
+    if not all(_is_durable_completion_rebundle_path(f) for f in files):
+        return None
+    targets = _durable_completion_focused_targets()
+    if not targets:
+        return None
+    modules: tuple[str, ...] = (
+        "src.ops.bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0",
+        "src.ops.durable_completion_validation",
+    )
+    return SelectionResult(
+        "FOCUSED",
+        "durable_completion_focused",
+        targets,
+        modules,
+    )
+
+
 def _try_market_dashboard_focused(files: list[str]) -> SelectionResult | None:
     if not files:
         return None
@@ -202,6 +279,10 @@ def _try_market_dashboard_focused(files: list[str]) -> SelectionResult | None:
 
 def categorize(path: str) -> str:
     p = PurePosixPath(path).as_posix()
+    if p in DURABLE_COMPLETION_CI_POLICY_PATHS:
+        return "durable_completion_focused"
+    if _is_durable_completion_scoped_path(p):
+        return "durable_completion_focused"
     if p in MARKET_DASHBOARD_CI_POLICY_PATHS:
         return "market_dashboard_focused"
     if _is_market_dashboard_scoped_path(p):
@@ -434,6 +515,15 @@ def resolve_selection(
     market_dashboard = _try_market_dashboard_focused(normalized)
     if market_dashboard is not None:
         return market_dashboard
+
+    durable_completion = _try_durable_completion_focused(normalized)
+    if durable_completion is not None:
+        return durable_completion
+
+    if any(_is_durable_completion_scoped_path(f) for f in normalized):
+        if not all(_is_durable_completion_rebundle_path(f) for f in normalized):
+            return SelectionResult("FULL", "durable_completion_foreign_path_requires_full", ())
+        return SelectionResult("FULL", "durable_completion_incomplete_or_missing_test_owner", ())
 
     if _requires_full_ci_selector_change(normalized):
         return SelectionResult("FULL", "ci_selector_or_contract_change_requires_full", ())

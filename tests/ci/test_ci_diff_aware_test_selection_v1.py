@@ -444,3 +444,178 @@ def test_workflow_only_does_not_run_full_pytest_step_unconditionally() -> None:
     full_step = text.split("name: Run full test suite", 1)[1].split("\n      - name:", 1)[0]
     assert "tests_execute_full == 'true'" in full_step
     assert "workflow_only == 'true'" not in full_step
+
+
+PR4451_DURABLE_COMPLETION_FILES = (
+    "src/ops/bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
+    "src/ops/durable_completion_validation/__init__.py",
+    "src/ops/durable_completion_validation/graph.py",
+    "src/ops/durable_completion_validation/identity.py",
+    "src/ops/durable_completion_validation/models.py",
+    "src/ops/durable_completion_validation/validators/__init__.py",
+    "src/ops/durable_completion_validation/validators/operator_closure.py",
+    "src/ops/durable_completion_validation/validators/reconciliation.py",
+    "src/ops/durable_completion_validation/validators/recovery.py",
+    "src/ops/durable_completion_validation/validators/traceability.py",
+    "tests/ops/test_durable_completion_validation_graph_v1.py",
+)
+
+
+def test_selector_pr4451_durable_completion_fileset_focused() -> None:
+    sel = _run_selector(*PR4451_DURABLE_COMPLETION_FILES)
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "durable_completion_focused"
+    targets = _targets(sel)
+    assert "tests/ops/test_durable_completion_validation_graph_v1.py" in targets
+    assert (
+        "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py"
+        in targets
+    )
+    assert sel["tests_execute_full"] == "false"
+
+
+def test_selector_durable_completion_internal_validator_only_focused() -> None:
+    sel = _run_selector(
+        "src/ops/durable_completion_validation/validators/reconciliation.py",
+        "tests/ops/test_durable_completion_validation_graph_v1.py",
+        "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
+    )
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "durable_completion_focused"
+
+
+def test_selector_durable_completion_graph_core_plus_test_owners_focused() -> None:
+    sel = _run_selector(
+        "src/ops/durable_completion_validation/graph.py",
+        "src/ops/durable_completion_validation/models.py",
+        "tests/ops/test_durable_completion_validation_graph_v1.py",
+        "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
+    )
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "durable_completion_focused"
+
+
+def test_selector_durable_completion_facade_plus_graph_focused() -> None:
+    sel = _run_selector(
+        "src/ops/bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
+        "src/ops/durable_completion_validation/graph.py",
+        "src/ops/durable_completion_validation/validators/recovery.py",
+        "tests/ops/test_durable_completion_validation_graph_v1.py",
+        "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
+    )
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "durable_completion_focused"
+
+
+def test_selector_durable_completion_rebundle_with_ci_policy_focused() -> None:
+    sel = _run_selector(
+        *PR4451_DURABLE_COMPLETION_FILES,
+        "scripts/ops/ci_test_selection_v1.py",
+        "config/ci/file_category_mapping.yaml",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    )
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "durable_completion_focused"
+    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" in _targets(sel)
+
+
+def test_selector_durable_completion_public_api_init_escalates_full() -> None:
+    sel = _run_selector(
+        "src/ops/durable_completion_validation/__init__.py",
+        "src/ops/durable_completion_validation/models.py",
+        "src/strategies/__init__.py",
+        "tests/ops/test_durable_completion_validation_graph_v1.py",
+        "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+
+
+def test_selector_durable_completion_identity_plus_foreign_src_full() -> None:
+    sel = _run_selector(
+        "src/ops/durable_completion_validation/identity.py",
+        "src/risk/killswitch.py",
+        "tests/ops/test_durable_completion_validation_graph_v1.py",
+        "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+
+
+def test_selector_durable_completion_packaging_escalates_full() -> None:
+    sel = _run_selector(
+        "src/ops/durable_completion_validation/graph.py",
+        "pyproject.toml",
+        "tests/ops/test_durable_completion_validation_graph_v1.py",
+        "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+
+
+def test_selector_durable_completion_execution_touch_escalates_full() -> None:
+    sel = _run_selector(
+        "src/ops/durable_completion_validation/validators/traceability.py",
+        "src/execution/live/orchestrator.py",
+        "tests/ops/test_durable_completion_validation_graph_v1.py",
+        "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+
+
+def test_selector_durable_completion_unknown_file_escalates_full() -> None:
+    sel = _run_selector(
+        "src/ops/durable_completion_validation/graph.py",
+        "misc/unclassified.bin",
+        "tests/ops/test_durable_completion_validation_graph_v1.py",
+        "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+
+
+def test_selector_durable_completion_missing_test_owner_escalates_full(monkeypatch) -> None:
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(
+        "ci_test_selection_v1_missing_owner",
+        str(SELECTOR),
+    )
+    assert spec and spec.loader
+    sel_mod = importlib.util.module_from_spec(spec)
+    sys.modules["ci_test_selection_v1_missing_owner"] = sel_mod
+    spec.loader.exec_module(sel_mod)
+
+    original_exists = sel_mod._repo_path_exists
+
+    def fake_exists(path: str) -> bool:
+        if (
+            path
+            == "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py"
+        ):
+            return False
+        return original_exists(path)
+
+    monkeypatch.setattr(sel_mod, "_repo_path_exists", fake_exists)
+    result = sel_mod.resolve_selection(["src/ops/durable_completion_validation/graph.py"])
+    assert result.mode == "FULL"
+
+
+def test_selector_durable_completion_ci_policy_only_escalates_full() -> None:
+    sel = _run_selector(
+        "scripts/ops/ci_test_selection_v1.py",
+        "config/ci/file_category_mapping.yaml",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+
+
+def test_selector_durable_completion_import_modules() -> None:
+    sel = _run_selector(*PR4451_DURABLE_COMPLETION_FILES)
+    modules = _modules(sel)
+    assert "src.ops.durable_completion_validation" in modules
+    assert (
+        "src.ops.bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0"
+        in modules
+    )
+
+
+def test_mapping_file_includes_durable_completion_focused() -> None:
+    text = MAPPING.read_text(encoding="utf-8")
+    assert "durable_completion_focused:" in text
