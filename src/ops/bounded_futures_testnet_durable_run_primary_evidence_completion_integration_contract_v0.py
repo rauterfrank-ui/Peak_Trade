@@ -4,7 +4,8 @@ Deterministic, offline, explicit-input-only fail-closed integration composing PE
 reconciliation-review lifecycle proof, PE-21 primary evidence reconciliation proof,
 PE-22 risk/killswitch/flatten lifecycle proof, PE-23 capital-slot ratchet/release lifecycle
 proof, PE-24 pilot-envelope lifecycle proof, PE-35 handoff staleness/revocation/recovery
-boundary proof, PE-16 durable archive identity, SECTION5 Gap 4 output/reporter completion
+boundary proof, PE-37 operator review chain durable evidence traceability boundary proof,
+PE-16 durable archive identity, SECTION5 Gap 4 output/reporter completion
 semantics, and SECTION5 Gap 2a.1 primary-evidence enforcement completion semantics with
 bounded durable run-root artifact/manifest requirements.
 
@@ -100,7 +101,23 @@ from src.ops.bounded_futures_testnet_handoff_staleness_revocation_recovery_bound
     default_minimal_boundary_input as default_minimal_pe35_boundary_input,
     evaluate_handoff_staleness_revocation_recovery_boundary,
 )
+from src.ops.bounded_futures_testnet_operator_review_admission_presentation_boundary_contract_v0 import (
+    BOUNDARY_OWNER as PE36_BOUNDARY_OWNER,
+    CONTRACT_VERSION as PE36_CONTRACT_VERSION,
+    compute_boundary_input_digest as compute_pe36_boundary_input_digest,
+    compute_boundary_result_digest as compute_pe36_boundary_result_digest,
+)
+from src.ops.bounded_futures_testnet_operator_review_chain_durable_evidence_traceability_boundary_contract_v0 import (
+    BOUNDARY_OWNER as PE37_BOUNDARY_OWNER,
+    CONTRACT_VERSION as PE37_CONTRACT_VERSION,
+    DurableEvidenceTraceabilityBoundaryInput,
+    compute_boundary_input_digest as compute_pe37_boundary_input_digest,
+    evaluate_durable_evidence_traceability_boundary,
+    validate_durable_evidence_traceability_boundary_input,
+)
 from src.ops.bounded_futures_testnet_operator_review_handoff_boundary_contract_v0 import (
+    CONTRACT_VERSION as PE34_CONTRACT_VERSION,
+    HANDOFF_OWNER as PE34_HANDOFF_OWNER,
     compute_boundary_input_digest as compute_pe34_boundary_input_digest,
 )
 from src.ops.bounded_futures_testnet_risk_killswitch_lifecycle_integration_contract_v0 import (
@@ -131,6 +148,9 @@ PE22_INTEGRATION_OWNER = PE22_CONTRACT_VERSION
 PE23_INTEGRATION_OWNER = PE23_CONTRACT_VERSION
 PE24_INTEGRATION_OWNER = PE24_CONTRACT_VERSION
 PE35_INTEGRATION_OWNER = PE35_CONTRACT_VERSION
+PE34_INTEGRATION_OWNER = PE34_CONTRACT_VERSION
+PE36_INTEGRATION_OWNER = PE36_CONTRACT_VERSION
+PE37_INTEGRATION_OWNER = PE37_CONTRACT_VERSION
 GAP4_COMPLETION_OWNER = "tests/ops/test_gap4_output_evidence_paths_contract_v0.py"
 GAP2A1_ENFORCEMENT_OWNER = "tests/ops/test_gap2a1_primary_evidence_enforcement_contract_v0.py"
 PRIMARY_EVIDENCE_RETENTION_CONTRACT_VERSION = "primary_evidence_retention.v0"
@@ -248,6 +268,9 @@ _EXPECTED_CONTRACT_VERSIONS: dict[str, str] = {
     "pe23_integration": PE23_CONTRACT_VERSION,
     "pe24_integration": PE24_CONTRACT_VERSION,
     "pe35_boundary": PE35_CONTRACT_VERSION,
+    "pe34_handoff": PE34_CONTRACT_VERSION,
+    "pe36_admission_presentation": PE36_CONTRACT_VERSION,
+    "pe37_traceability": PE37_CONTRACT_VERSION,
     "integration": CONTRACT_VERSION,
 }
 
@@ -263,6 +286,9 @@ class ContractVersionsInput:
     pe23_integration: str
     pe24_integration: str
     pe35_boundary: str
+    pe34_handoff: str
+    pe36_admission_presentation: str
+    pe37_traceability: str
     integration: str
 
 
@@ -395,12 +421,39 @@ class Pe35HandoffRecoveryBoundaryProofBinding:
 
 
 @dataclass(frozen=True)
+class Pe37TraceabilityProofBinding:
+    traceability_owner: str
+    source_revision: str
+    boundary_input_digest: str
+    boundary_result_digest: str
+    pe37_boundary_pass: bool
+    durable_evidence_traceability_boundary_satisfied: bool
+    pe34_handoff_bound: bool
+    pe35_staleness_revocation_recovery_bound: bool
+    pe36_admission_presentation_bound: bool
+    durable_run_primary_evidence_completion_traceability_bound: bool
+    operator_review_chain_durable_evidence_traceability_bound: bool
+    traceability_identity: str
+    admission_identity: str
+    run_identity_digest: str
+    completion_identity_digest: str
+    manifest_identity_digest: str
+    durable_artifact_identity: str
+    review_chain_identity: str
+    pe34_handoff_digest: str
+    pe36_boundary_result_digest: str
+    traceability_coherence_proven: bool
+
+
+@dataclass(frozen=True)
 class CompletionProofChainBinding:
     completion_referenced_pe31_proof_digest: str
     completion_referenced_pe22_proof_digest: str
     completion_referenced_pe23_proof_digest: str
     completion_referenced_pe24_proof_digest: str
     completion_referenced_pe35_boundary_result_digest: str
+    completion_referenced_pe37_boundary_result_digest: str
+    pe37_traceability_identity: str
     pe31_referenced_pe21_integration_proof_digest: str
     completion_referenced_pe21_integration_proof_digest: str
     shared_pe21_integration_input_digest: str
@@ -500,6 +553,8 @@ class DurableRunPrimaryEvidenceCompletionIntegrationInput:
         HandoffStalenessRevocationRecoveryBoundaryInput
     )
     pe35_handoff_recovery_boundary_proof: Pe35HandoffRecoveryBoundaryProofBinding
+    pe37_traceability_boundary_input: DurableEvidenceTraceabilityBoundaryInput
+    pe37_traceability_proof: Pe37TraceabilityProofBinding
     completion_proof_chain: CompletionProofChainBinding
     pe16_archive: Pe16ArchiveProofBinding
     manifest_proof: ManifestProofBinding
@@ -1391,14 +1446,24 @@ def _build_pe35_boundary_input_for_completion(
     from src.ops.bounded_futures_testnet_preflight_operator_review_reproducibility_contract_v0 import (
         compute_review_input_digest,
     )
+    from src.ops.bounded_futures_testnet_preflight_packet_archive_contract_v0 import (
+        compute_archive_identity,
+    )
 
     pe35_base = default_minimal_pe35_boundary_input(source_revision=source_revision)
     pe34_handoff = pe35_base.pe34_handoff
     pe19_binding = pe34_handoff.pe19_undecided_review_input
     review_input = pe19_binding.review_input
     evidence_chain = review_input.evidence_chain
+    updated_archive_identity = compute_archive_identity(
+        source_revision=source_revision,
+        packet_digest=evidence_chain.packet_digest,
+        input_capture_digest=evidence_chain.input_capture_digest,
+        manifest_digest=manifest_digest,
+    )
     updated_evidence = replace(
         evidence_chain,
+        archive_identity=updated_archive_identity,
         archive_manifest_digest=manifest_digest,
     )
     updated_review_input = replace(review_input, evidence_chain=updated_evidence)
@@ -1426,6 +1491,37 @@ def _build_pe35_boundary_input_for_completion(
             pe35_base.lifecycle_metadata,
             handoff_digest=pe34_digest,
         ),
+    )
+
+
+def _build_pe37_boundary_input_from_pe35(
+    pe35_input: HandoffStalenessRevocationRecoveryBoundaryInput,
+) -> DurableEvidenceTraceabilityBoundaryInput:
+    from src.ops.bounded_futures_testnet_operator_review_admission_presentation_boundary_contract_v0 import (
+        OperatorReviewAdmissionPresentationBoundaryInput,
+        default_minimal_pe35_proof_binding,
+    )
+    from src.ops.bounded_futures_testnet_operator_review_chain_durable_evidence_traceability_boundary_contract_v0 import (
+        default_minimal_pe16_archive_binding,
+        default_minimal_pe19_pe20_review_proof_binding,
+        default_minimal_pe36_proof_binding,
+        default_minimal_proof_chain_binding,
+    )
+    from src.ops.bounded_futures_testnet_preflight_operator_review_reproducibility_contract_v0 import (
+        EXPECTED_OPERATOR_NAME,
+    )
+
+    pe36_input = OperatorReviewAdmissionPresentationBoundaryInput(
+        pe35_boundary_input=pe35_input,
+        pe35_proof=default_minimal_pe35_proof_binding(pe35_input),
+        operator_name_legibility=EXPECTED_OPERATOR_NAME,
+    )
+    return DurableEvidenceTraceabilityBoundaryInput(
+        pe36_boundary_input=pe36_input,
+        pe36_proof=default_minimal_pe36_proof_binding(pe36_input),
+        pe16_archive_binding=default_minimal_pe16_archive_binding(pe36_input),
+        pe19_pe20_review_proof=default_minimal_pe19_pe20_review_proof_binding(pe36_input),
+        proof_chain=default_minimal_proof_chain_binding(pe36_input),
     )
 
 
@@ -1593,6 +1689,151 @@ def _validate_pe35_recovery_boundary_proof(
     return fail_reasons
 
 
+def _validate_pe37_traceability_proof(
+    integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
+    *,
+    pe37_result: dict[str, Any],
+) -> list[str]:
+    fail_reasons: list[str] = []
+    proof = integration_input.pe37_traceability_proof
+    pe37_input = integration_input.pe37_traceability_boundary_input
+    pe36_input = pe37_input.pe36_boundary_input
+    pe35_input = pe36_input.pe35_boundary_input
+    pe34_handoff = pe35_input.pe34_handoff
+    durable_root = integration_input.durable_run_root
+    run_identity = integration_input.run_identity
+    manifest_digest = integration_input.manifest_proof.manifest_digest
+    completion_identity = compute_completion_identity_digest(
+        run_root_digest=durable_root.run_root_digest,
+        manifest_digest=manifest_digest,
+        source_revision=integration_input.source_revision,
+    )
+    completion_pe35 = integration_input.pe35_handoff_staleness_revocation_recovery_boundary_input
+
+    if proof.traceability_owner != PE37_BOUNDARY_OWNER:
+        fail_reasons.append(f"pe37_proof: traceability_owner must be {PE37_BOUNDARY_OWNER!r}")
+    if proof.source_revision != integration_input.source_revision:
+        fail_reasons.append("pe37_proof: source_revision mismatch")
+    if not proof.boundary_input_digest:
+        fail_reasons.append("pe37_proof: boundary_input_digest required")
+    elif not _valid_sha256_digest(proof.boundary_input_digest):
+        fail_reasons.append(
+            "pe37_proof: boundary_input_digest must be 64-char lowercase sha256 hex"
+        )
+    elif proof.boundary_input_digest != compute_pe37_boundary_input_digest(pe37_input):
+        fail_reasons.append("pe37_proof: boundary_input_digest mismatch")
+
+    if not proof.boundary_result_digest:
+        fail_reasons.append("pe37_proof: boundary_result_digest required")
+    elif not _valid_sha256_digest(proof.boundary_result_digest):
+        fail_reasons.append(
+            "pe37_proof: boundary_result_digest must be 64-char lowercase sha256 hex"
+        )
+    elif proof.boundary_result_digest != pe37_result.get("boundary_result_digest"):
+        fail_reasons.append("pe37_proof: boundary_result_digest mismatch")
+
+    required_binding_flags = (
+        ("pe37_boundary_pass", True),
+        ("durable_evidence_traceability_boundary_satisfied", True),
+        ("pe34_handoff_bound", True),
+        ("pe35_staleness_revocation_recovery_bound", True),
+        ("pe36_admission_presentation_bound", True),
+        ("durable_run_primary_evidence_completion_traceability_bound", True),
+        ("operator_review_chain_durable_evidence_traceability_bound", True),
+        ("traceability_coherence_proven", True),
+    )
+    for field_name, expected in required_binding_flags:
+        actual = getattr(proof, field_name)
+        if actual is not expected:
+            fail_reasons.append(f"pe37_proof: {field_name} must be {expected}")
+
+    digest_fields = (
+        ("traceability_identity", proof.traceability_identity),
+        ("admission_identity", proof.admission_identity),
+        ("run_identity_digest", proof.run_identity_digest),
+        ("completion_identity_digest", proof.completion_identity_digest),
+        ("manifest_identity_digest", proof.manifest_identity_digest),
+        ("durable_artifact_identity", proof.durable_artifact_identity),
+        ("review_chain_identity", proof.review_chain_identity),
+        ("pe34_handoff_digest", proof.pe34_handoff_digest),
+        ("pe36_boundary_result_digest", proof.pe36_boundary_result_digest),
+    )
+    for field_name, value in digest_fields:
+        if not value:
+            fail_reasons.append(f"pe37_proof: {field_name} required")
+        elif not _valid_sha256_digest(value):
+            fail_reasons.append(f"pe37_proof: {field_name} must be 64-char lowercase sha256 hex")
+
+    expected_traceability = pe37_result.get("traceability_identity")
+    if expected_traceability is None:
+        fail_reasons.append("pe37_proof: traceability_identity unavailable")
+    elif proof.traceability_identity != expected_traceability:
+        fail_reasons.append("pe37_proof: traceability_identity mismatch")
+    if proof.admission_identity != pe37_result.get("admission_identity"):
+        fail_reasons.append("pe37_proof: admission_identity mismatch")
+    if proof.review_chain_identity != proof.traceability_identity:
+        fail_reasons.append("pe37_proof: review_chain_identity mismatch with traceability_identity")
+    if proof.durable_artifact_identity != durable_root.run_root_digest:
+        fail_reasons.append("pe37_proof: durable_artifact_identity mismatch with run_root_digest")
+    if proof.run_identity_digest != run_identity.run_identity_digest:
+        fail_reasons.append("pe37_proof: run_identity_digest mismatch")
+    if proof.completion_identity_digest != completion_identity:
+        fail_reasons.append("pe37_proof: completion_identity_digest mismatch")
+    if proof.manifest_identity_digest != manifest_digest:
+        fail_reasons.append("pe37_proof: manifest_identity_digest mismatch")
+
+    computed_pe34_digest = compute_pe34_boundary_input_digest(pe34_handoff)
+    if proof.pe34_handoff_digest != computed_pe34_digest:
+        fail_reasons.append("pe37_proof: pe34_handoff_digest mismatch with PE-34 handoff")
+    computed_pe36_result = pe37_result.get("pe36_boundary_result_digest")
+    if proof.pe36_boundary_result_digest != computed_pe36_result:
+        fail_reasons.append("pe37_proof: pe36_boundary_result_digest mismatch")
+
+    if compute_pe35_boundary_input_digest(completion_pe35) != compute_pe35_boundary_input_digest(
+        pe35_input
+    ):
+        fail_reasons.append(
+            "pe37_traceability_boundary_input: PE-35 boundary input drift from completion PE-35"
+        )
+
+    if pe34_handoff.source_revision != integration_input.source_revision:
+        fail_reasons.append(
+            "pe37_traceability_boundary_input: source_revision mismatch with completion input"
+        )
+
+    pe37_archive = pe37_input.pe16_archive_binding
+    if pe37_archive.archive_manifest_digest != manifest_digest:
+        fail_reasons.append(
+            "pe37_traceability_boundary_input: archive_manifest_digest mismatch with completion "
+            "manifest"
+        )
+
+    if pe37_input.pe36_proof.boundary_owner != PE36_BOUNDARY_OWNER:
+        fail_reasons.append("pe37_proof: PE-36 boundary_owner mismatch in embedded chain")
+    if pe37_input.proof_chain.pe34_handoff_digest != computed_pe34_digest:
+        fail_reasons.append("pe37_proof: proof_chain pe34_handoff_digest drift")
+
+    if not pe37_result.get("boundary_pass"):
+        fail_reasons.append("pe37_traceability_boundary_input: PE-37 evaluation failed")
+        fail_reasons.extend(
+            f"pe37_traceability_boundary_input: {reason}"
+            for reason in pe37_result.get("fail_reasons", [])
+        )
+    elif not pe37_result.get("durable_evidence_traceability_boundary_satisfied"):
+        fail_reasons.append(
+            "pe37_traceability_boundary_input: "
+            "durable_evidence_traceability_boundary_satisfied required"
+        )
+    elif pe37_result.get("operator_review_executed"):
+        fail_reasons.append("pe37_proof: operative operator review must not be executed")
+    elif pe37_result.get("admission_executed"):
+        fail_reasons.append("pe37_proof: operative admission must not be executed")
+    elif pe37_result.get("authority_lift"):
+        fail_reasons.append("pe37_proof: authority_lift must remain false")
+
+    return fail_reasons
+
+
 def _validate_completion_proof_chain(
     integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
 ) -> list[str]:
@@ -1603,6 +1844,7 @@ def _validate_completion_proof_chain(
     pe23_proof = integration_input.pe23_capital_slot_ratchet_release_proof
     pe24_proof = integration_input.pe24_pilot_envelope_lifecycle_proof
     pe35_proof = integration_input.pe35_handoff_recovery_boundary_proof
+    pe37_proof = integration_input.pe37_traceability_proof
     pe21_proof = integration_input.pe21_proof
     pe31_pe21_proof = integration_input.pe31_reconciliation_review_integration_input.pe21_reconciliation_primary_evidence_integration_proof
     pe21_input_digest = compute_pe21_integration_input_digest(
@@ -1618,6 +1860,11 @@ def _validate_completion_proof_chain(
             "completion_referenced_pe35_boundary_result_digest",
             chain.completion_referenced_pe35_boundary_result_digest,
         ),
+        (
+            "completion_referenced_pe37_boundary_result_digest",
+            chain.completion_referenced_pe37_boundary_result_digest,
+        ),
+        ("pe37_traceability_identity", chain.pe37_traceability_identity),
         (
             "pe31_referenced_pe21_integration_proof_digest",
             chain.pe31_referenced_pe21_integration_proof_digest,
@@ -1657,6 +1904,12 @@ def _validate_completion_proof_chain(
         fail_reasons.append(
             "completion_proof_chain: completion_referenced_pe35_boundary_result_digest mismatch"
         )
+    if chain.completion_referenced_pe37_boundary_result_digest != pe37_proof.boundary_result_digest:
+        fail_reasons.append(
+            "completion_proof_chain: completion_referenced_pe37_boundary_result_digest mismatch"
+        )
+    if chain.pe37_traceability_identity != pe37_proof.traceability_identity:
+        fail_reasons.append("completion_proof_chain: pe37_traceability_identity mismatch")
     if (
         chain.pe31_referenced_pe21_integration_proof_digest
         != pe31_pe21_proof.integration_proof_digest
@@ -1890,6 +2143,16 @@ def validate_durable_run_primary_evidence_completion_integration_input(
             "with completion input"
         )
 
+    pe37_input = integration_input.pe37_traceability_boundary_input
+    if (
+        pe37_input.pe36_boundary_input.pe35_boundary_input.pe34_handoff.source_revision
+        != integration_input.source_revision
+    ):
+        fail_reasons.append(
+            "pe37_traceability_boundary_input: source_revision mismatch with completion input"
+        )
+    fail_reasons.extend(validate_durable_evidence_traceability_boundary_input(pe37_input))
+
     fail_reasons.extend(_validate_completion_proof_chain(integration_input))
 
     fail_reasons.extend(
@@ -1990,6 +2253,10 @@ def _integration_input_dict(
         "pe35_handoff_recovery_boundary_proof": asdict(
             integration_input.pe35_handoff_recovery_boundary_proof
         ),
+        "pe37_boundary_input_digest": compute_pe37_boundary_input_digest(
+            integration_input.pe37_traceability_boundary_input
+        ),
+        "pe37_traceability_proof": asdict(integration_input.pe37_traceability_proof),
         "completion_proof_chain": asdict(integration_input.completion_proof_chain),
         "post_write_verification": asdict(integration_input.post_write_verification),
         "primary_evidence_identity": asdict(integration_input.primary_evidence_identity),
@@ -2039,6 +2306,10 @@ def _integration_proof_dict(
         "pe35_handoff_recovery_boundary_bound": integration_pass,
         "recovery_boundary_bound": integration_pass,
         "partial_failure_recovery_bound": integration_pass,
+        "pe37_operator_review_chain_durable_evidence_traceability_bound": integration_pass,
+        "pe34_handoff_bound": integration_pass,
+        "pe35_staleness_revocation_recovery_bound": integration_pass,
+        "pe36_admission_presentation_bound": integration_pass,
         "global_run_completion_readiness": GLOBAL_RUN_COMPLETION_READINESS,
         "integration_contract_version": CONTRACT_VERSION,
         "integration_input_digest": compute_completion_integration_input_digest(integration_input),
@@ -2169,6 +2440,16 @@ def evaluate_durable_run_primary_evidence_completion_integration(
         )
     )
 
+    pe37_result = evaluate_durable_evidence_traceability_boundary(
+        integration_input.pe37_traceability_boundary_input
+    )
+    fail_reasons.extend(
+        _validate_pe37_traceability_proof(
+            integration_input,
+            pe37_result=pe37_result,
+        )
+    )
+
     if completion_claim_without_full_evidence and integration_input.completion_claimed:
         fail_reasons.append("completion_claimed=true without full evidence chain is insufficient")
 
@@ -2199,6 +2480,7 @@ def evaluate_durable_run_primary_evidence_completion_integration(
         "pe23_integration_pass": pe23_result.get("integration_pass"),
         "pe24_integration_pass": pe24_result.get("integration_pass"),
         "pe35_boundary_pass": pe35_result.get("boundary_pass"),
+        "pe37_boundary_pass": pe37_result.get("boundary_pass"),
         "durable_run_primary_evidence_completion_bound": integration_pass,
         "pe21_reconciliation_primary_evidence_bound": bool(pe21_result.get("integration_pass")),
         "pe31_reconciliation_review_bound": bool(pe31_result.get("integration_pass")),
@@ -2214,6 +2496,12 @@ def evaluate_durable_run_primary_evidence_completion_integration(
             pe35_result.get("handoff_staleness_revocation_recovery_boundary_satisfied")
         ),
         "partial_failure_recovery_bound": bool(pe35_result.get("boundary_pass")),
+        "pe37_operator_review_chain_durable_evidence_traceability_bound": bool(
+            pe37_result.get("durable_evidence_traceability_boundary_satisfied")
+        ),
+        "pe34_handoff_bound": bool(pe37_result.get("boundary_pass")),
+        "pe35_staleness_revocation_recovery_bound": bool(pe37_result.get("proof_digests_coherent")),
+        "pe36_admission_presentation_bound": bool(pe37_result.get("owner_identities_coherent")),
         "pe16_archive_identity": integration_input.pe16_archive.archive_identity,
         "gap4_completion_integration_pass": integration_input.gap4_completion.gap4_integration_pass,
         "gap2a1_enforcement_integration_pass": (
@@ -2420,6 +2708,51 @@ def default_minimal_pe35_integration_proof(
     )
 
 
+def default_minimal_pe37_integration_proof(
+    pe37_input: DurableEvidenceTraceabilityBoundaryInput,
+    *,
+    traceability_identity: str,
+    run_identity_digest: str,
+    completion_identity_digest: str,
+    manifest_identity_digest: str,
+    durable_artifact_identity: str,
+) -> Pe37TraceabilityProofBinding:
+    pe37_result = evaluate_durable_evidence_traceability_boundary(pe37_input)
+    boundary_result_digest = pe37_result["boundary_result_digest"]
+    if boundary_result_digest is None:
+        raise ValueError("PE-37 boundary must be satisfied for default minimal proof")
+    traceability_id = pe37_result["traceability_identity"]
+    if traceability_id is None:
+        raise ValueError("PE-37 traceability_identity required for default minimal proof")
+    admission_identity = pe37_result["admission_identity"]
+    if admission_identity is None:
+        raise ValueError("PE-37 admission_identity required for default minimal proof")
+    pe34_handoff = pe37_input.pe36_boundary_input.pe35_boundary_input.pe34_handoff
+    return Pe37TraceabilityProofBinding(
+        traceability_owner=PE37_BOUNDARY_OWNER,
+        source_revision=pe34_handoff.source_revision,
+        boundary_input_digest=compute_pe37_boundary_input_digest(pe37_input),
+        boundary_result_digest=boundary_result_digest,
+        pe37_boundary_pass=True,
+        durable_evidence_traceability_boundary_satisfied=True,
+        pe34_handoff_bound=True,
+        pe35_staleness_revocation_recovery_bound=True,
+        pe36_admission_presentation_bound=True,
+        durable_run_primary_evidence_completion_traceability_bound=True,
+        operator_review_chain_durable_evidence_traceability_bound=True,
+        traceability_identity=traceability_id,
+        admission_identity=admission_identity,
+        run_identity_digest=run_identity_digest,
+        completion_identity_digest=completion_identity_digest,
+        manifest_identity_digest=manifest_identity_digest,
+        durable_artifact_identity=durable_artifact_identity,
+        review_chain_identity=traceability_id,
+        pe34_handoff_digest=compute_pe34_boundary_input_digest(pe34_handoff),
+        pe36_boundary_result_digest=pe37_result["pe36_boundary_result_digest"],
+        traceability_coherence_proven=True,
+    )
+
+
 def default_minimal_completion_proof_chain(
     integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
 ) -> CompletionProofChainBinding:
@@ -2428,6 +2761,7 @@ def default_minimal_completion_proof_chain(
     pe23_proof = integration_input.pe23_capital_slot_ratchet_release_proof
     pe24_proof = integration_input.pe24_pilot_envelope_lifecycle_proof
     pe35_proof = integration_input.pe35_handoff_recovery_boundary_proof
+    pe37_proof = integration_input.pe37_traceability_proof
     pe21_proof = integration_input.pe21_proof
     pe31_pe21_proof = integration_input.pe31_reconciliation_review_integration_input.pe21_reconciliation_primary_evidence_integration_proof
     return CompletionProofChainBinding(
@@ -2436,6 +2770,8 @@ def default_minimal_completion_proof_chain(
         completion_referenced_pe23_proof_digest=pe23_proof.integration_proof_digest,
         completion_referenced_pe24_proof_digest=pe24_proof.integration_proof_digest,
         completion_referenced_pe35_boundary_result_digest=pe35_proof.boundary_result_digest,
+        completion_referenced_pe37_boundary_result_digest=pe37_proof.boundary_result_digest,
+        pe37_traceability_identity=pe37_proof.traceability_identity,
         pe31_referenced_pe21_integration_proof_digest=pe31_pe21_proof.integration_proof_digest,
         completion_referenced_pe21_integration_proof_digest=pe21_proof.integration_proof_digest,
         shared_pe21_integration_input_digest=compute_pe21_integration_input_digest(
@@ -2613,6 +2949,16 @@ def default_minimal_completion_integration_input(
         manifest_identity_digest=manifest_digest,
     )
 
+    pe37_boundary_input = _build_pe37_boundary_input_from_pe35(pe35_boundary_input)
+    pe37_proof = default_minimal_pe37_integration_proof(
+        pe37_boundary_input,
+        traceability_identity=run_root_digest,
+        run_identity_digest=run_identity_digest,
+        completion_identity_digest=completion_identity_digest,
+        manifest_identity_digest=manifest_digest,
+        durable_artifact_identity=run_root_digest,
+    )
+
     archive_digest = hashlib.sha256(
         json.dumps(
             {
@@ -2670,12 +3016,16 @@ def default_minimal_completion_integration_input(
         pe24_pilot_envelope_lifecycle_proof=pe24_proof,
         pe35_handoff_staleness_revocation_recovery_boundary_input=pe35_boundary_input,
         pe35_handoff_recovery_boundary_proof=pe35_proof,
+        pe37_traceability_boundary_input=pe37_boundary_input,
+        pe37_traceability_proof=pe37_proof,
         completion_proof_chain=CompletionProofChainBinding(
             completion_referenced_pe31_proof_digest=pe31_proof.integration_proof_digest,
             completion_referenced_pe22_proof_digest=pe22_result["integration_proof_digest"],
             completion_referenced_pe23_proof_digest=pe23_result["integration_proof_digest"],
             completion_referenced_pe24_proof_digest=pe24_proof.integration_proof_digest,
             completion_referenced_pe35_boundary_result_digest=pe35_proof.boundary_result_digest,
+            completion_referenced_pe37_boundary_result_digest=pe37_proof.boundary_result_digest,
+            pe37_traceability_identity=pe37_proof.traceability_identity,
             pe31_referenced_pe21_integration_proof_digest=(
                 pe31_integration_input.pe21_reconciliation_primary_evidence_integration_proof.integration_proof_digest
             ),
@@ -2739,6 +3089,9 @@ def default_minimal_completion_integration_input(
             pe23_integration=PE23_CONTRACT_VERSION,
             pe24_integration=PE24_CONTRACT_VERSION,
             pe35_boundary=PE35_CONTRACT_VERSION,
+            pe34_handoff=PE34_CONTRACT_VERSION,
+            pe36_admission_presentation=PE36_CONTRACT_VERSION,
+            pe37_traceability=PE37_CONTRACT_VERSION,
             integration=CONTRACT_VERSION,
         ),
     )
