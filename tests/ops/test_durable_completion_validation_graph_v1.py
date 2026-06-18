@@ -78,7 +78,9 @@ def test_graph_missing_dependency_is_fail_closed() -> None:
     }
     result = execute_proof_binding_validation_graph(context, validators=validators)
     assert any("dependency failed for 'traceability'" in reason for reason in result.fail_reasons)
-    assert any("dependency failed for 'operator_closure'" in reason for reason in result.fail_reasons)
+    assert any(
+        "dependency failed for 'operator_closure'" in reason for reason in result.fail_reasons
+    )
     assert VALIDATOR_TRACEABILITY not in context.completed_validators
     assert VALIDATOR_OPERATOR_CLOSURE not in context.completed_validators
 
