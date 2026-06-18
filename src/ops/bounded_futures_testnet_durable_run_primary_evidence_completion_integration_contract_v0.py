@@ -1,13 +1,14 @@
 """Bounded Futures Testnet durable run primary evidence completion integration (v0).
 
-Deterministic, offline, explicit-input-only fail-closed integration composing PE-21
-primary evidence reconciliation proof, PE-16 durable archive identity, SECTION5 Gap 4
-output/reporter completion semantics, and SECTION5 Gap 2a.1 primary-evidence enforcement
-completion semantics with bounded durable run-root artifact/manifest requirements.
+Deterministic, offline, explicit-input-only fail-closed integration composing PE-31
+reconciliation-review lifecycle proof, PE-21 primary evidence reconciliation proof,
+PE-16 durable archive identity, SECTION5 Gap 4 output/reporter completion semantics,
+and SECTION5 Gap 2a.1 primary-evidence enforcement completion semantics with bounded
+durable run-root artifact/manifest requirements.
 
 Static integration only — no run start, evidence write, archive I/O, manifest I/O,
 network, testnet, runtime, credentials, orders, evidence acceptance, operative completion,
-or authority lift.
+operative reconciliation, or authority lift.
 """
 
 from __future__ import annotations
@@ -15,7 +16,7 @@ from __future__ import annotations
 import hashlib
 import json
 import re
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, replace
 from pathlib import Path
 from typing import Any
 
@@ -45,7 +46,16 @@ from src.ops.bounded_futures_testnet_preflight_packet_contract_v0 import (
     PE12_CONTRACT_VERSION,
     PRIMARY_EVIDENCE_OWNER,
 )
-from src.ops.bounded_futures_testnet_contract_v0 import DEFAULT_MARKET_TYPE
+from src.ops.bounded_futures_testnet_reconciliation_review_lifecycle_integration_contract_v0 import (
+    CONTRACT_VERSION as PE31_CONTRACT_VERSION,
+    ReconciliationReviewLifecycleIntegrationInput,
+    compute_integration_input_digest as compute_pe31_integration_input_digest,
+    compute_integration_proof_digest as compute_pe31_integration_proof_digest,
+    default_minimal_integration_input as default_minimal_pe31_integration_input,
+    default_minimal_pe21_integration_proof,
+    default_minimal_reconciliation_review_proof,
+    evaluate_reconciliation_review_lifecycle_integration,
+)
 
 PACKAGE_MARKER = (
     "BOUNDED_FUTURES_TESTNET_DURABLE_RUN_PRIMARY_EVIDENCE_COMPLETION_INTEGRATION_CONTRACT_V0=true"
@@ -60,6 +70,7 @@ COMPLETION_INTEGRATION_OWNER = CONTRACT_VERSION
 
 PE16_ARCHIVE_OWNER = "src/ops/bounded_futures_testnet_preflight_packet_archive_contract_v0.py"
 PE21_INTEGRATION_OWNER = PE21_CONTRACT_VERSION
+PE31_INTEGRATION_OWNER = PE31_CONTRACT_VERSION
 GAP4_COMPLETION_OWNER = "tests/ops/test_gap4_output_evidence_paths_contract_v0.py"
 GAP2A1_ENFORCEMENT_OWNER = "tests/ops/test_gap2a1_primary_evidence_enforcement_contract_v0.py"
 PRIMARY_EVIDENCE_RETENTION_CONTRACT_VERSION = "primary_evidence_retention.v0"
@@ -126,6 +137,7 @@ MANIFEST_WRITTEN = False
 FILESYSTEM_ACCESSED = False
 REPLAY_EXECUTED = False
 ADMISSION_EXECUTED = False
+RECONCILIATION_EXECUTED = False
 AUTHORITY_LIFT = False
 PREFLIGHT_REMAINS_BLOCKED = True
 
@@ -157,6 +169,7 @@ _EXPECTED_CONTRACT_VERSIONS: dict[str, str] = {
     "pe16_archive": ARCHIVE_CONTRACT_VERSION,
     "pe16_primary_evidence_retention": PRIMARY_EVIDENCE_RETENTION_CONTRACT_VERSION,
     "pe21_integration": PE21_CONTRACT_VERSION,
+    "pe31_integration": PE31_CONTRACT_VERSION,
     "integration": CONTRACT_VERSION,
 }
 
@@ -167,6 +180,7 @@ class ContractVersionsInput:
     pe16_archive: str
     pe16_primary_evidence_retention: str
     pe21_integration: str
+    pe31_integration: str
     integration: str
 
 
@@ -207,6 +221,24 @@ class Pe21PrimaryEvidenceProofBinding:
     integration_proof_digest: str
     pe21_integration_pass: bool
     durable_primary_evidence_binding_proven: bool
+
+
+@dataclass(frozen=True)
+class Pe31ReconciliationReviewIntegrationProofBinding:
+    integration_owner: str
+    integration_input_digest: str
+    integration_proof_digest: str
+    pe31_integration_pass: bool
+    reconciliation_review_lifecycle_eligibility: bool
+
+
+@dataclass(frozen=True)
+class CompletionProofChainBinding:
+    completion_referenced_pe31_proof_digest: str
+    pe31_referenced_pe21_integration_proof_digest: str
+    completion_referenced_pe21_integration_proof_digest: str
+    shared_pe21_integration_input_digest: str
+    shared_traceability_identity: str
 
 
 @dataclass(frozen=True)
@@ -288,6 +320,9 @@ class DurableRunPrimaryEvidenceCompletionIntegrationInput:
     primary_evidence_identity: PrimaryEvidenceIdentityBinding
     pe21_proof: Pe21PrimaryEvidenceProofBinding
     pe21_integration_input: ReconciliationPrimaryEvidenceIntegrationInput
+    pe31_reconciliation_review_integration_input: ReconciliationReviewLifecycleIntegrationInput
+    pe31_reconciliation_review_integration_proof: Pe31ReconciliationReviewIntegrationProofBinding
+    completion_proof_chain: CompletionProofChainBinding
     pe16_archive: Pe16ArchiveProofBinding
     manifest_proof: ManifestProofBinding
     artifact_checksums: tuple[ArtifactChecksumEntry, ...]
@@ -594,6 +629,159 @@ def _validate_pe21_proof_binding(
     return fail_reasons
 
 
+def _validate_pe31_integration_proof(
+    integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
+    *,
+    pe31_result: dict[str, Any],
+) -> list[str]:
+    fail_reasons: list[str] = []
+    proof = integration_input.pe31_reconciliation_review_integration_proof
+    pe31_input = integration_input.pe31_reconciliation_review_integration_input
+
+    if proof.integration_owner != PE31_INTEGRATION_OWNER:
+        fail_reasons.append(f"pe31_proof: integration_owner must be {PE31_INTEGRATION_OWNER!r}")
+    if not proof.integration_input_digest:
+        fail_reasons.append("pe31_proof: integration_input_digest required")
+    elif not _valid_sha256_digest(proof.integration_input_digest):
+        fail_reasons.append(
+            "pe31_proof: integration_input_digest must be 64-char lowercase sha256 hex"
+        )
+    elif proof.integration_input_digest != compute_pe31_integration_input_digest(pe31_input):
+        fail_reasons.append("pe31_proof: integration_input_digest mismatch")
+
+    if not proof.integration_proof_digest:
+        fail_reasons.append("pe31_proof: integration_proof_digest required")
+    elif not _valid_sha256_digest(proof.integration_proof_digest):
+        fail_reasons.append(
+            "pe31_proof: integration_proof_digest must be 64-char lowercase sha256 hex"
+        )
+    else:
+        expected_proof_digest = compute_pe31_integration_proof_digest(
+            pe31_input,
+            reconciliation_review_lifecycle_eligibility_for_separate_operator_review=True,
+        )
+        if proof.integration_proof_digest != expected_proof_digest:
+            fail_reasons.append("pe31_proof: integration_proof_digest mismatch")
+
+    if proof.pe31_integration_pass is not True:
+        fail_reasons.append("pe31_proof: pe31_integration_pass must be true")
+    if proof.reconciliation_review_lifecycle_eligibility is not True:
+        fail_reasons.append("pe31_proof: reconciliation_review_lifecycle_eligibility must be true")
+
+    if not pe31_result.get("integration_pass"):
+        fail_reasons.append("pe31_reconciliation_review_integration_input: PE-31 evaluation failed")
+        fail_reasons.extend(
+            f"pe31_reconciliation_review_integration_input: {reason}"
+            for reason in pe31_result.get("fail_reasons", [])
+        )
+    elif not pe31_result.get(
+        "reconciliation_review_lifecycle_eligibility_for_separate_operator_review"
+    ):
+        fail_reasons.append(
+            "pe31_reconciliation_review_integration_input: "
+            "reconciliation_review_lifecycle_eligibility required"
+        )
+
+    if pe31_input.source_revision != integration_input.source_revision:
+        fail_reasons.append(
+            "pe31_reconciliation_review_integration_input: source_revision mismatch"
+        )
+
+    pe31_pe21_input = pe31_input.pe21_reconciliation_primary_evidence_integration_input
+    if compute_pe21_integration_input_digest(
+        pe31_pe21_input
+    ) != compute_pe21_integration_input_digest(integration_input.pe21_integration_input):
+        fail_reasons.append(
+            "pe31_reconciliation_review_integration_input: pe21_integration_input_digest mismatch "
+            "with completion pe21_integration_input"
+        )
+
+    pe31_pe21_proof = pe31_input.pe21_reconciliation_primary_evidence_integration_proof
+    if (
+        pe31_pe21_proof.integration_proof_digest
+        != integration_input.pe21_proof.integration_proof_digest
+    ):
+        fail_reasons.append(
+            "pe31_reconciliation_review_integration_input: pe21_integration_proof_digest mismatch "
+            "with completion pe21_proof"
+        )
+    if pe31_pe21_proof.reconciled is not True:
+        fail_reasons.append("pe31_reconciliation_review_integration_input: reconciled must be true")
+
+    review_proof = pe31_input.reconciliation_review_proof
+    if review_proof.static_review_consistency_proven is not True:
+        fail_reasons.append(
+            "pe31_reconciliation_review_integration_input: static_review_consistency_proven required"
+        )
+    if review_proof.orders_created != 0 or review_proof.orders_cancelled != 0:
+        fail_reasons.append("pe31_reconciliation_review_integration_input: unresolved order state")
+    if review_proof.positions_changed != 0:
+        fail_reasons.append(
+            "pe31_reconciliation_review_integration_input: unresolved position state"
+        )
+
+    return fail_reasons
+
+
+def _validate_completion_proof_chain(
+    integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
+) -> list[str]:
+    fail_reasons: list[str] = []
+    chain = integration_input.completion_proof_chain
+    pe31_proof = integration_input.pe31_reconciliation_review_integration_proof
+    pe21_proof = integration_input.pe21_proof
+    pe31_pe21_proof = integration_input.pe31_reconciliation_review_integration_input.pe21_reconciliation_primary_evidence_integration_proof
+    pe21_input_digest = compute_pe21_integration_input_digest(
+        integration_input.pe21_integration_input
+    )
+
+    digest_fields = (
+        ("completion_referenced_pe31_proof_digest", chain.completion_referenced_pe31_proof_digest),
+        (
+            "pe31_referenced_pe21_integration_proof_digest",
+            chain.pe31_referenced_pe21_integration_proof_digest,
+        ),
+        (
+            "completion_referenced_pe21_integration_proof_digest",
+            chain.completion_referenced_pe21_integration_proof_digest,
+        ),
+        ("shared_pe21_integration_input_digest", chain.shared_pe21_integration_input_digest),
+        ("shared_traceability_identity", chain.shared_traceability_identity),
+    )
+    for field_name, value in digest_fields:
+        if not value:
+            fail_reasons.append(f"completion_proof_chain: {field_name} required")
+        elif not _valid_sha256_digest(value):
+            fail_reasons.append(
+                f"completion_proof_chain: {field_name} must be 64-char lowercase sha256 hex"
+            )
+
+    if chain.completion_referenced_pe31_proof_digest != pe31_proof.integration_proof_digest:
+        fail_reasons.append(
+            "completion_proof_chain: completion_referenced_pe31_proof_digest mismatch"
+        )
+    if (
+        chain.pe31_referenced_pe21_integration_proof_digest
+        != pe31_pe21_proof.integration_proof_digest
+    ):
+        fail_reasons.append(
+            "completion_proof_chain: pe31_referenced_pe21_integration_proof_digest mismatch"
+        )
+    if (
+        chain.completion_referenced_pe21_integration_proof_digest
+        != pe21_proof.integration_proof_digest
+    ):
+        fail_reasons.append(
+            "completion_proof_chain: completion_referenced_pe21_integration_proof_digest mismatch"
+        )
+    if chain.shared_pe21_integration_input_digest != pe21_input_digest:
+        fail_reasons.append("completion_proof_chain: shared_pe21_integration_input_digest mismatch")
+    if chain.shared_traceability_identity != integration_input.durable_run_root.run_root_digest:
+        fail_reasons.append("completion_proof_chain: shared_traceability_identity mismatch")
+
+    return fail_reasons
+
+
 def _validate_gap4_completion_proof(
     gap4: Gap4CompletionProofBinding,
     *,
@@ -770,6 +958,15 @@ def validate_durable_run_primary_evidence_completion_integration_input(
         fail_reasons.append("pe21 durable_archive_root mismatch with durable_run_root")
     fail_reasons.extend(validate_primary_evidence_binding(pe21_binding))
 
+    pe31_input = integration_input.pe31_reconciliation_review_integration_input
+    if pe31_input.source_revision != integration_input.source_revision:
+        fail_reasons.append(
+            "pe31_reconciliation_review_integration_input: source_revision mismatch with "
+            "completion input"
+        )
+
+    fail_reasons.extend(_validate_completion_proof_chain(integration_input))
+
     fail_reasons.extend(
         _validate_pe16_archive_proof(
             integration_input.pe16_archive,
@@ -838,6 +1035,13 @@ def _integration_input_dict(
         "non_authorizing": integration_input.non_authorizing,
         "pe16_archive": asdict(integration_input.pe16_archive),
         "pe21_proof": asdict(integration_input.pe21_proof),
+        "pe31_integration_input_digest": compute_pe31_integration_input_digest(
+            integration_input.pe31_reconciliation_review_integration_input
+        ),
+        "pe31_reconciliation_review_integration_proof": asdict(
+            integration_input.pe31_reconciliation_review_integration_proof
+        ),
+        "completion_proof_chain": asdict(integration_input.completion_proof_chain),
         "post_write_verification": asdict(integration_input.post_write_verification),
         "primary_evidence_identity": asdict(integration_input.primary_evidence_identity),
         "proof_lifecycle": asdict(integration_input.proof_lifecycle),
@@ -882,7 +1086,9 @@ def _integration_proof_dict(
         "integration_input_digest": compute_completion_integration_input_digest(integration_input),
         "manifest_digest": integration_input.manifest_proof.manifest_digest,
         "operative_run_completion_recorded": OPERATIVE_RUN_COMPLETION_RECORDED,
+        "pe31_integration_pass": integration_pass,
         "primary_evidence_operationally_accepted": PRIMARY_EVIDENCE_OPERATIONALLY_ACCEPTED,
+        "reconciliation_executed": RECONCILIATION_EXECUTED,
         "run_identity_digest": integration_input.run_identity.run_identity_digest,
         "run_root_digest": integration_input.durable_run_root.run_root_digest,
         "run_type": integration_input.run_type,
@@ -938,6 +1144,16 @@ def evaluate_durable_run_primary_evidence_completion_integration(
         )
     )
 
+    pe31_result = evaluate_reconciliation_review_lifecycle_integration(
+        integration_input.pe31_reconciliation_review_integration_input
+    )
+    fail_reasons.extend(
+        _validate_pe31_integration_proof(
+            integration_input,
+            pe31_result=pe31_result,
+        )
+    )
+
     if completion_claim_without_full_evidence and integration_input.completion_claimed:
         fail_reasons.append("completion_claimed=true without full evidence chain is insufficient")
 
@@ -963,6 +1179,7 @@ def evaluate_durable_run_primary_evidence_completion_integration(
             else None
         ),
         "pe21_integration_pass": pe21_result.get("integration_pass"),
+        "pe31_integration_pass": pe31_result.get("integration_pass"),
         "pe16_archive_identity": integration_input.pe16_archive.archive_identity,
         "gap4_completion_integration_pass": integration_input.gap4_completion.gap4_integration_pass,
         "gap2a1_enforcement_integration_pass": (
@@ -975,6 +1192,7 @@ def evaluate_durable_run_primary_evidence_completion_integration(
         "contract_implementation_only": CONTRACT_IMPLEMENTATION_ONLY,
         "operative_run_completion_recorded": OPERATIVE_RUN_COMPLETION_RECORDED,
         "primary_evidence_operationally_accepted": PRIMARY_EVIDENCE_OPERATIONALLY_ACCEPTED,
+        "reconciliation_executed": RECONCILIATION_EXECUTED,
         "archive_read": ARCHIVE_READ,
         "archive_written": ARCHIVE_WRITTEN,
         "manifest_read": MANIFEST_READ,
@@ -1005,6 +1223,38 @@ def default_minimal_safety_snapshot() -> CompletionSafetySnapshot:
         futures_only=True,
         bitcoin_direction_allowed=False,
         followup_run_gate=FOLLOWUP_RUN_GATE,
+    )
+
+
+def default_minimal_pe31_integration_proof(
+    pe31_input: ReconciliationReviewLifecycleIntegrationInput,
+) -> Pe31ReconciliationReviewIntegrationProofBinding:
+    return Pe31ReconciliationReviewIntegrationProofBinding(
+        integration_owner=PE31_INTEGRATION_OWNER,
+        integration_input_digest=compute_pe31_integration_input_digest(pe31_input),
+        integration_proof_digest=compute_pe31_integration_proof_digest(
+            pe31_input,
+            reconciliation_review_lifecycle_eligibility_for_separate_operator_review=True,
+        ),
+        pe31_integration_pass=True,
+        reconciliation_review_lifecycle_eligibility=True,
+    )
+
+
+def default_minimal_completion_proof_chain(
+    integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
+) -> CompletionProofChainBinding:
+    pe31_proof = integration_input.pe31_reconciliation_review_integration_proof
+    pe21_proof = integration_input.pe21_proof
+    pe31_pe21_proof = integration_input.pe31_reconciliation_review_integration_input.pe21_reconciliation_primary_evidence_integration_proof
+    return CompletionProofChainBinding(
+        completion_referenced_pe31_proof_digest=pe31_proof.integration_proof_digest,
+        pe31_referenced_pe21_integration_proof_digest=pe31_pe21_proof.integration_proof_digest,
+        completion_referenced_pe21_integration_proof_digest=pe21_proof.integration_proof_digest,
+        shared_pe21_integration_input_digest=compute_pe21_integration_input_digest(
+            integration_input.pe21_integration_input
+        ),
+        shared_traceability_identity=integration_input.durable_run_root.run_root_digest,
     )
 
 
@@ -1049,7 +1299,6 @@ def default_minimal_completion_integration_input(
     pe21_integration_input = default_minimal_pe21_integration_input(
         source_revision=source_revision,
     )
-    from dataclasses import replace
 
     from src.ops.bounded_futures_testnet_position_order_reconciliation_primary_evidence_integration_contract_v0 import (
         PrimaryEvidenceBindingInput,
@@ -1072,6 +1321,19 @@ def default_minimal_completion_integration_input(
     pe21_result = evaluate_position_order_reconciliation_primary_evidence_integration(
         pe21_integration_input
     )
+
+    pe31_base = default_minimal_pe31_integration_input(source_revision=source_revision)
+    pe31_integration_input = replace(
+        pe31_base,
+        pe21_reconciliation_primary_evidence_integration_input=pe21_integration_input,
+        pe21_reconciliation_primary_evidence_integration_proof=default_minimal_pe21_integration_proof(
+            pe21_integration_input
+        ),
+        reconciliation_review_proof=default_minimal_reconciliation_review_proof(
+            pe21_integration_input
+        ),
+    )
+    pe31_proof = default_minimal_pe31_integration_proof(pe31_integration_input)
 
     archive_digest = hashlib.sha256(
         json.dumps(
@@ -1103,7 +1365,7 @@ def default_minimal_completion_integration_input(
         source_revision=source_revision,
     )
 
-    return DurableRunPrimaryEvidenceCompletionIntegrationInput(
+    draft = DurableRunPrimaryEvidenceCompletionIntegrationInput(
         source_revision=source_revision,
         repository_identity=REPOSITORY_IDENTITY,
         run_type=SUPPORTED_RUN_TYPE,
@@ -1130,6 +1392,19 @@ def default_minimal_completion_integration_input(
             durable_primary_evidence_binding_proven=True,
         ),
         pe21_integration_input=pe21_integration_input,
+        pe31_reconciliation_review_integration_input=pe31_integration_input,
+        pe31_reconciliation_review_integration_proof=pe31_proof,
+        completion_proof_chain=CompletionProofChainBinding(
+            completion_referenced_pe31_proof_digest=pe31_proof.integration_proof_digest,
+            pe31_referenced_pe21_integration_proof_digest=(
+                pe31_integration_input.pe21_reconciliation_primary_evidence_integration_proof.integration_proof_digest
+            ),
+            completion_referenced_pe21_integration_proof_digest=pe21_result[
+                "integration_proof_digest"
+            ],
+            shared_pe21_integration_input_digest=pe21_result["integration_input_digest"],
+            shared_traceability_identity=run_root_digest,
+        ),
         pe16_archive=Pe16ArchiveProofBinding(
             archive_owner=PE16_ARCHIVE_OWNER,
             archive_contract_version=ARCHIVE_CONTRACT_VERSION,
@@ -1179,6 +1454,11 @@ def default_minimal_completion_integration_input(
             pe16_archive=ARCHIVE_CONTRACT_VERSION,
             pe16_primary_evidence_retention=PRIMARY_EVIDENCE_RETENTION_CONTRACT_VERSION,
             pe21_integration=PE21_CONTRACT_VERSION,
+            pe31_integration=PE31_CONTRACT_VERSION,
             integration=CONTRACT_VERSION,
         ),
+    )
+    return replace(
+        draft,
+        completion_proof_chain=default_minimal_completion_proof_chain(draft),
     )
