@@ -82,6 +82,17 @@ categories:
       - "tests/ci/test_ci_diff_aware_test_selection_v1.py"
     runtime_class: minutes
     notes: "Bounded PE-26 preflight assembly + PE-31 reconciliation chain; central_src FULL preserved for unrelated src"
+  risk_killswitch_focused:
+    mode: FOCUSED
+    globs:
+      - "src/ops/bounded_futures_testnet_risk_killswitch_lifecycle_integration_contract_v0.py"
+      - "tests/ops/test_bounded_futures_testnet_risk_killswitch_lifecycle_integration_contract_v0.py"
+      - "tests/ops/test_order_capability_killswitch_abort_binding_contract_v1.py"
+      - "scripts/ops/ci_test_selection_v1.py"
+      - "config/ci/file_category_mapping.yaml"
+      - "tests/ci/test_ci_diff_aware_test_selection_v1.py"
+    runtime_class: minutes
+    notes: "Bounded PE-22 risk/killswitch + order-capability abort binding chain; central_src FULL preserved for unrelated src"
   central_src:
     mode: FULL
     globs:

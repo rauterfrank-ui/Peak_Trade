@@ -31,6 +31,7 @@ FOCUSED_CATEGORIES = frozenset(
         "market_dashboard_focused",
         "durable_completion_focused",
         "preflight_assembly_focused",
+        "risk_killswitch_focused",
     }
 )
 
@@ -116,6 +117,32 @@ REQUIRED_PREFLIGHT_ASSEMBLY_TEST_OWNERS: tuple[str, ...] = (
     "tests/ops/test_bounded_futures_testnet_reconciliation_review_lifecycle_integration_contract_v0.py",
 )
 
+PE22_RISK_KILLSWITCH_OWNER = (
+    "src/ops/bounded_futures_testnet_risk_killswitch_lifecycle_integration_contract_v0.py"
+)
+PE22_RISK_KILLSWITCH_TEST_OWNER = (
+    "tests/ops/test_bounded_futures_testnet_risk_killswitch_lifecycle_integration_contract_v0.py"
+)
+
+RISK_KILLSWITCH_CI_POLICY_PATHS = frozenset(
+    {
+        "scripts/ops/ci_test_selection_v1.py",
+        "config/ci/file_category_mapping.yaml",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    }
+)
+
+CANONICAL_RISK_KILLSWITCH_FOCUSED_TESTS: tuple[str, ...] = (
+    "tests/ops/test_bounded_futures_testnet_risk_killswitch_lifecycle_integration_contract_v0.py",
+    "tests/ops/test_order_capability_killswitch_abort_binding_contract_v1.py",
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+)
+
+REQUIRED_RISK_KILLSWITCH_TEST_OWNERS: tuple[str, ...] = (
+    "tests/ops/test_bounded_futures_testnet_risk_killswitch_lifecycle_integration_contract_v0.py",
+    "tests/ops/test_order_capability_killswitch_abort_binding_contract_v1.py",
+)
+
 CANONICAL_MARKET_DASHBOARD_FOCUSED_TESTS: tuple[str, ...] = (
     "tests/webui/test_market_dashboard_no_bitcoin_futures_v1.py",
     "tests/webui/test_market_futures_only_canonical_completion_v1.py",
@@ -172,6 +199,9 @@ def _requires_full_ci_selector_change(files: list[str]) -> bool:
         return False
     scoped_pa = {f for f in normalized if _is_preflight_assembly_scoped_path(f)}
     if scoped_pa and all(_is_preflight_assembly_rebundle_path(f) for f in normalized):
+        return False
+    scoped_rk = {f for f in normalized if _is_risk_killswitch_scoped_path(f)}
+    if scoped_rk and all(_is_risk_killswitch_rebundle_path(f) for f in normalized):
         return False
     if normalized & CI_SELECTOR_FULL_PATHS:
         return True
@@ -284,6 +314,55 @@ def _preflight_assembly_focused_targets() -> tuple[str, ...]:
     return tuple(sorted(targets))
 
 
+def _is_risk_killswitch_scoped_path(path: str) -> bool:
+    if path == PE22_RISK_KILLSWITCH_OWNER:
+        return True
+    if path == PE22_RISK_KILLSWITCH_TEST_OWNER:
+        return True
+    return False
+
+
+def _is_risk_killswitch_rebundle_path(path: str) -> bool:
+    return _is_risk_killswitch_scoped_path(path) or path in RISK_KILLSWITCH_CI_POLICY_PATHS
+
+
+def _risk_killswitch_focused_targets() -> tuple[str, ...]:
+    for path in REQUIRED_RISK_KILLSWITCH_TEST_OWNERS:
+        if not _repo_path_exists(path):
+            return ()
+    targets: list[str] = []
+    for path in CANONICAL_RISK_KILLSWITCH_FOCUSED_TESTS:
+        if _repo_path_exists(path):
+            targets.append(path)
+    if len(targets) < len(REQUIRED_RISK_KILLSWITCH_TEST_OWNERS):
+        return ()
+    return tuple(sorted(targets))
+
+
+def _try_risk_killswitch_focused(files: list[str]) -> SelectionResult | None:
+    if not files:
+        return None
+    if not any(_is_risk_killswitch_scoped_path(f) for f in files):
+        return None
+    if not all(_is_risk_killswitch_rebundle_path(f) for f in files):
+        return None
+    files_set = set(files)
+    if PE22_RISK_KILLSWITCH_OWNER in files_set and PE22_RISK_KILLSWITCH_TEST_OWNER not in files_set:
+        return None
+    targets = _risk_killswitch_focused_targets()
+    if not targets:
+        return None
+    modules: tuple[str, ...] = (
+        "src.ops.bounded_futures_testnet_risk_killswitch_lifecycle_integration_contract_v0",
+    )
+    return SelectionResult(
+        "FOCUSED",
+        "risk_killswitch_focused",
+        targets,
+        modules,
+    )
+
+
 def _try_preflight_assembly_focused(files: list[str]) -> SelectionResult | None:
     if not files:
         return None
@@ -365,6 +444,10 @@ def categorize(path: str) -> str:
         return "preflight_assembly_focused"
     if _is_preflight_assembly_scoped_path(p):
         return "preflight_assembly_focused"
+    if p in RISK_KILLSWITCH_CI_POLICY_PATHS:
+        return "risk_killswitch_focused"
+    if _is_risk_killswitch_scoped_path(p):
+        return "risk_killswitch_focused"
     if p in MARKET_DASHBOARD_CI_POLICY_PATHS:
         return "market_dashboard_focused"
     if _is_market_dashboard_scoped_path(p):
@@ -606,6 +689,10 @@ def resolve_selection(
     if preflight_assembly is not None:
         return preflight_assembly
 
+    risk_killswitch = _try_risk_killswitch_focused(normalized)
+    if risk_killswitch is not None:
+        return risk_killswitch
+
     if any(_is_durable_completion_scoped_path(f) for f in normalized):
         if not all(_is_durable_completion_rebundle_path(f) for f in normalized):
             return SelectionResult("FULL", "durable_completion_foreign_path_requires_full", ())
@@ -615,6 +702,11 @@ def resolve_selection(
         if not all(_is_preflight_assembly_rebundle_path(f) for f in normalized):
             return SelectionResult("FULL", "preflight_assembly_foreign_path_requires_full", ())
         return SelectionResult("FULL", "preflight_assembly_incomplete_or_missing_test_owner", ())
+
+    if any(_is_risk_killswitch_scoped_path(f) for f in normalized):
+        if not all(_is_risk_killswitch_rebundle_path(f) for f in normalized):
+            return SelectionResult("FULL", "risk_killswitch_foreign_path_requires_full", ())
+        return SelectionResult("FULL", "risk_killswitch_incomplete_or_missing_test_owner", ())
 
     if _requires_full_ci_selector_change(normalized):
         return SelectionResult("FULL", "ci_selector_or_contract_change_requires_full", ())

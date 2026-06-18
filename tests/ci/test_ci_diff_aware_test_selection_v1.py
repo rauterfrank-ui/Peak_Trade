@@ -742,3 +742,136 @@ def test_selector_preflight_assembly_import_modules() -> None:
 def test_mapping_file_includes_preflight_assembly_focused() -> None:
     text = MAPPING.read_text(encoding="utf-8")
     assert "preflight_assembly_focused:" in text
+
+
+PE53_RISK_KILLSWITCH_FILES = (
+    "src/ops/bounded_futures_testnet_risk_killswitch_lifecycle_integration_contract_v0.py",
+    "tests/ops/test_bounded_futures_testnet_risk_killswitch_lifecycle_integration_contract_v0.py",
+)
+
+
+def test_selector_pe53_risk_killswitch_fileset_focused() -> None:
+    sel = _run_selector(*PE53_RISK_KILLSWITCH_FILES)
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "risk_killswitch_focused"
+    targets = _targets(sel)
+    assert (
+        "tests/ops/test_bounded_futures_testnet_risk_killswitch_lifecycle_integration_contract_v0.py"
+        in targets
+    )
+    assert "tests/ops/test_order_capability_killswitch_abort_binding_contract_v1.py" in targets
+    assert sel["tests_execute_full"] == "false"
+    assert sel["tests_execute_no_op"] == "false"
+
+
+def test_selector_pe53_owner_plus_test_owner_only_focused() -> None:
+    sel = _run_selector(*PE53_RISK_KILLSWITCH_FILES)
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "risk_killswitch_focused"
+
+
+def test_selector_pe53_owner_without_test_owner_escalates_full() -> None:
+    sel = _run_selector(PE53_RISK_KILLSWITCH_FILES[0])
+    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_reason"] == "risk_killswitch_incomplete_or_missing_test_owner"
+
+
+def test_selector_pe53_plus_unknown_ops_src_escalates_full() -> None:
+    sel = _run_selector(
+        *PE53_RISK_KILLSWITCH_FILES,
+        "src/ops/bounded_futures_testnet_preflight_packet_contract_v0.py",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+
+
+def test_selector_pe53_plus_unknown_src_escalates_full() -> None:
+    sel = _run_selector(
+        *PE53_RISK_KILLSWITCH_FILES,
+        "src/execution/live/orchestrator.py",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+
+
+def test_selector_pe53_risk_killswitch_outside_owner_escalates_full() -> None:
+    sel = _run_selector(
+        *PE53_RISK_KILLSWITCH_FILES,
+        "src/risk/killswitch.py",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+
+
+def test_selector_pe53_runtime_touch_escalates_full() -> None:
+    sel = _run_selector(
+        PE53_RISK_KILLSWITCH_FILES[0],
+        "src/runtime/scheduler.py",
+        PE53_RISK_KILLSWITCH_FILES[1],
+    )
+    assert sel["test_selection_mode"] == "FULL"
+
+
+def test_selector_pe53_trading_strategy_master_v2_touch_escalates_full() -> None:
+    sel = _run_selector(
+        PE53_RISK_KILLSWITCH_FILES[0],
+        "src/strategies/vol_breakout.py",
+        PE53_RISK_KILLSWITCH_FILES[1],
+    )
+    assert sel["test_selection_mode"] == "FULL"
+
+
+def test_selector_pe53_packaging_change_escalates_full() -> None:
+    sel = _run_selector(
+        *PE53_RISK_KILLSWITCH_FILES,
+        "pyproject.toml",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+
+
+def test_selector_pe53_rebundle_with_ci_policy_focused() -> None:
+    sel = _run_selector(
+        *PE53_RISK_KILLSWITCH_FILES,
+        "scripts/ops/ci_test_selection_v1.py",
+        "config/ci/file_category_mapping.yaml",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    )
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "risk_killswitch_focused"
+    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" in _targets(sel)
+
+
+def test_selector_pe53_missing_abort_test_owner_escalates_full(monkeypatch) -> None:
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(
+        "ci_test_selection_v1_rk_missing_owner",
+        str(SELECTOR),
+    )
+    assert spec and spec.loader
+    sel_mod = importlib.util.module_from_spec(spec)
+    sys.modules["ci_test_selection_v1_rk_missing_owner"] = sel_mod
+    spec.loader.exec_module(sel_mod)
+
+    original_exists = sel_mod._repo_path_exists
+
+    def fake_exists(path: str) -> bool:
+        if path == "tests/ops/test_order_capability_killswitch_abort_binding_contract_v1.py":
+            return False
+        return original_exists(path)
+
+    monkeypatch.setattr(sel_mod, "_repo_path_exists", fake_exists)
+    result = sel_mod.resolve_selection(list(PE53_RISK_KILLSWITCH_FILES))
+    assert result.mode == "FULL"
+    assert result.reason == "risk_killswitch_incomplete_or_missing_test_owner"
+
+
+def test_selector_pe53_import_modules() -> None:
+    sel = _run_selector(*PE53_RISK_KILLSWITCH_FILES)
+    modules = _modules(sel)
+    assert (
+        "src.ops.bounded_futures_testnet_risk_killswitch_lifecycle_integration_contract_v0"
+        in modules
+    )
+
+
+def test_mapping_file_includes_risk_killswitch_focused() -> None:
+    text = MAPPING.read_text(encoding="utf-8")
+    assert "risk_killswitch_focused:" in text
