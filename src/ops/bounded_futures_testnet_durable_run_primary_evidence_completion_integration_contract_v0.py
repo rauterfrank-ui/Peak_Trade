@@ -140,6 +140,16 @@ from src.ops.bounded_futures_testnet_risk_killswitch_lifecycle_integration_contr
     default_minimal_integration_input as default_minimal_pe22_integration_input,
     evaluate_risk_killswitch_lifecycle_integration,
 )
+from src.ops.durable_completion_validation import (
+    ValidationContext,
+    execute_proof_binding_validation_graph,
+    validate_pe21_reconciliation_result_manifest_integrity,
+)
+from src.ops.durable_completion_validation.identity import (
+    sorted_unique as _sorted_unique_from_identity,
+    valid_commit_sha as _valid_commit_sha_from_identity,
+    valid_sha256_digest as _valid_sha256_digest_from_identity,
+)
 
 PACKAGE_MARKER = (
     "BOUNDED_FUTURES_TESTNET_DURABLE_RUN_PRIMARY_EVIDENCE_COMPLETION_INTEGRATION_CONTRACT_V0=true"
@@ -622,15 +632,15 @@ class DurableRunPrimaryEvidenceCompletionIntegrationInput:
 
 
 def _sorted_unique(items: list[str]) -> list[str]:
-    return sorted(dict.fromkeys(items))
+    return _sorted_unique_from_identity(items)
 
 
 def _valid_sha256_digest(value: str) -> bool:
-    return bool(_SHA256_HEX_RE.match(value))
+    return _valid_sha256_digest_from_identity(value)
 
 
 def _valid_commit_sha(value: str) -> bool:
-    return bool(_COMMIT_SHA_RE.match(value))
+    return _valid_commit_sha_from_identity(value)
 
 
 def compute_run_identity_digest(*, run_id: str, run_type: str, source_revision: str) -> str:
@@ -965,224 +975,6 @@ def _validate_pe21_proof_binding(
         fail_reasons.append("pe21_proof: durable_primary_evidence_binding_proven must be true")
     elif not pe21_result.get("durable_primary_evidence_binding_proven"):
         fail_reasons.append("pe21_proof: durable primary evidence binding not proven upstream")
-    return fail_reasons
-
-
-def _validate_pe21_reconciliation_result_manifest_integrity(
-    integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
-) -> list[str]:
-    """Fail-closed PE-21 RECONCILIATION_RESULT.json manifest entry integrity enforcement."""
-    fail_reasons: list[str] = []
-    pe21_input = integration_input.pe21_integration_input
-    pe21_binding = pe21_input.primary_evidence_binding
-    recon = pe21_input.reconciliation_binding
-    durable_root = integration_input.durable_run_root
-    run_identity = integration_input.run_identity
-    manifest_digest = integration_input.manifest_proof.manifest_digest
-    prefix = "pe21_reconciliation_result_manifest"
-
-    for entry in pe21_binding.manifest_entries:
-        if not entry.relative_path:
-            fail_reasons.append(f"{prefix}: empty manifest artifact path")
-
-    canonical_entries = [
-        entry
-        for entry in pe21_binding.manifest_entries
-        if entry.relative_path == ARTIFACT_RECONCILIATION_RESULT
-    ]
-    alias_entries = [
-        entry
-        for entry in pe21_binding.manifest_entries
-        if entry.relative_path != ARTIFACT_RECONCILIATION_RESULT
-        and (
-            entry.relative_path.endswith(ARTIFACT_RECONCILIATION_RESULT)
-            or "RECONCILIATION_RESULT" in entry.relative_path
-        )
-    ]
-
-    if not canonical_entries:
-        fail_reasons.append(f"{prefix}: {ARTIFACT_RECONCILIATION_RESULT} manifest entry required")
-    elif len(canonical_entries) > 1:
-        fail_reasons.append(
-            f"{prefix}: duplicate {ARTIFACT_RECONCILIATION_RESULT} manifest entries"
-        )
-
-    if alias_entries:
-        fail_reasons.append(f"{prefix}: alias or alternate reconciliation result manifest path")
-
-    if ARTIFACT_RECONCILIATION_RESULT not in pe21_binding.expected_artifact_filenames:
-        fail_reasons.append(
-            f"{prefix}: {ARTIFACT_RECONCILIATION_RESULT} required in expected_artifact_filenames"
-        )
-
-    expected_result_digest = recon.result_digest
-    if not expected_result_digest:
-        fail_reasons.append(f"{prefix}: reconciliation_binding.result_digest required")
-    elif not _valid_sha256_digest(expected_result_digest):
-        fail_reasons.append(
-            f"{prefix}: reconciliation_binding.result_digest must be 64-char lowercase sha256 hex"
-        )
-    else:
-        static_recon = evaluate_reconciliation_static(
-            expected_position=recon.expected_position,
-            observed_position=recon.observed_position,
-            expected_orders=recon.expected_orders,
-            observed_orders=recon.observed_orders,
-            instrument=pe21_input.instrument,
-        )
-        if expected_result_digest != static_recon["result_digest"]:
-            fail_reasons.append(
-                f"{prefix}: reconciliation_binding.result_digest mismatch with canonical algorithm"
-            )
-
-    if canonical_entries:
-        entry = canonical_entries[0]
-        if not entry.relative_path:
-            fail_reasons.append(f"{prefix}: empty manifest artifact path")
-        elif entry.relative_path != ARTIFACT_RECONCILIATION_RESULT:
-            fail_reasons.append(
-                f"{prefix}: manifest artifact path must be {ARTIFACT_RECONCILIATION_RESULT!r}"
-            )
-        if not entry.digest:
-            fail_reasons.append(
-                f"{prefix}: manifest digest required for {ARTIFACT_RECONCILIATION_RESULT}"
-            )
-        elif not _valid_sha256_digest(entry.digest):
-            fail_reasons.append(f"{prefix}: manifest digest must be 64-char lowercase sha256 hex")
-        elif expected_result_digest and entry.digest != expected_result_digest:
-            fail_reasons.append(
-                f"{prefix}: manifest digest mismatch with reconciliation_binding.result_digest"
-            )
-
-    if pe21_input.source_revision != integration_input.source_revision:
-        fail_reasons.append(f"{prefix}: source_revision drift breaks run identity chain")
-
-    if pe21_binding.durable_archive_root != durable_root.durable_archive_root:
-        fail_reasons.append(f"{prefix}: durable_archive_root drift breaks evidence root chain")
-
-    computed_pe21_manifest = compute_manifest_digest(pe21_binding.manifest_entries)
-    if pe21_binding.manifest_digest != computed_pe21_manifest:
-        fail_reasons.append(
-            f"{prefix}: pe21 manifest_digest drift invalidates reconciliation result manifest entry"
-        )
-    if pe21_binding.manifest_proof_identity != computed_pe21_manifest:
-        fail_reasons.append(
-            f"{prefix}: pe21 manifest_proof_identity drift invalidates reconciliation result "
-            "manifest entry"
-        )
-
-    completion_identity = compute_completion_identity_digest(
-        run_root_digest=durable_root.run_root_digest,
-        manifest_digest=manifest_digest,
-        source_revision=integration_input.source_revision,
-    )
-    if not run_identity.run_identity_digest:
-        fail_reasons.append(f"{prefix}: run_identity_digest required for evidence chain")
-    elif not _valid_sha256_digest(run_identity.run_identity_digest):
-        fail_reasons.append(f"{prefix}: run_identity_digest must be 64-char lowercase sha256 hex")
-    if not manifest_digest:
-        fail_reasons.append(f"{prefix}: completion manifest_digest required for evidence chain")
-    elif not _valid_sha256_digest(manifest_digest):
-        fail_reasons.append(
-            f"{prefix}: completion manifest_digest must be 64-char lowercase sha256 hex"
-        )
-    if not completion_identity:
-        fail_reasons.append(f"{prefix}: completion_identity_digest unavailable for evidence chain")
-
-    return _sorted_unique(fail_reasons)
-
-
-def _validate_pe31_integration_proof(
-    integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
-    *,
-    pe31_result: dict[str, Any],
-) -> list[str]:
-    fail_reasons: list[str] = []
-    proof = integration_input.pe31_reconciliation_review_integration_proof
-    pe31_input = integration_input.pe31_reconciliation_review_integration_input
-
-    if proof.integration_owner != PE31_INTEGRATION_OWNER:
-        fail_reasons.append(f"pe31_proof: integration_owner must be {PE31_INTEGRATION_OWNER!r}")
-    if not proof.integration_input_digest:
-        fail_reasons.append("pe31_proof: integration_input_digest required")
-    elif not _valid_sha256_digest(proof.integration_input_digest):
-        fail_reasons.append(
-            "pe31_proof: integration_input_digest must be 64-char lowercase sha256 hex"
-        )
-    elif proof.integration_input_digest != compute_pe31_integration_input_digest(pe31_input):
-        fail_reasons.append("pe31_proof: integration_input_digest mismatch")
-
-    if not proof.integration_proof_digest:
-        fail_reasons.append("pe31_proof: integration_proof_digest required")
-    elif not _valid_sha256_digest(proof.integration_proof_digest):
-        fail_reasons.append(
-            "pe31_proof: integration_proof_digest must be 64-char lowercase sha256 hex"
-        )
-    else:
-        expected_proof_digest = compute_pe31_integration_proof_digest(
-            pe31_input,
-            reconciliation_review_lifecycle_eligibility_for_separate_operator_review=True,
-        )
-        if proof.integration_proof_digest != expected_proof_digest:
-            fail_reasons.append("pe31_proof: integration_proof_digest mismatch")
-
-    if proof.pe31_integration_pass is not True:
-        fail_reasons.append("pe31_proof: pe31_integration_pass must be true")
-    if proof.reconciliation_review_lifecycle_eligibility is not True:
-        fail_reasons.append("pe31_proof: reconciliation_review_lifecycle_eligibility must be true")
-
-    if not pe31_result.get("integration_pass"):
-        fail_reasons.append("pe31_reconciliation_review_integration_input: PE-31 evaluation failed")
-        fail_reasons.extend(
-            f"pe31_reconciliation_review_integration_input: {reason}"
-            for reason in pe31_result.get("fail_reasons", [])
-        )
-    elif not pe31_result.get(
-        "reconciliation_review_lifecycle_eligibility_for_separate_operator_review"
-    ):
-        fail_reasons.append(
-            "pe31_reconciliation_review_integration_input: "
-            "reconciliation_review_lifecycle_eligibility required"
-        )
-
-    if pe31_input.source_revision != integration_input.source_revision:
-        fail_reasons.append(
-            "pe31_reconciliation_review_integration_input: source_revision mismatch"
-        )
-
-    pe31_pe21_input = pe31_input.pe21_reconciliation_primary_evidence_integration_input
-    if compute_pe21_integration_input_digest(
-        pe31_pe21_input
-    ) != compute_pe21_integration_input_digest(integration_input.pe21_integration_input):
-        fail_reasons.append(
-            "pe31_reconciliation_review_integration_input: pe21_integration_input_digest mismatch "
-            "with completion pe21_integration_input"
-        )
-
-    pe31_pe21_proof = pe31_input.pe21_reconciliation_primary_evidence_integration_proof
-    if (
-        pe31_pe21_proof.integration_proof_digest
-        != integration_input.pe21_proof.integration_proof_digest
-    ):
-        fail_reasons.append(
-            "pe31_reconciliation_review_integration_input: pe21_integration_proof_digest mismatch "
-            "with completion pe21_proof"
-        )
-    if pe31_pe21_proof.reconciled is not True:
-        fail_reasons.append("pe31_reconciliation_review_integration_input: reconciled must be true")
-
-    review_proof = pe31_input.reconciliation_review_proof
-    if review_proof.static_review_consistency_proven is not True:
-        fail_reasons.append(
-            "pe31_reconciliation_review_integration_input: static_review_consistency_proven required"
-        )
-    if review_proof.orders_created != 0 or review_proof.orders_cancelled != 0:
-        fail_reasons.append("pe31_reconciliation_review_integration_input: unresolved order state")
-    if review_proof.positions_changed != 0:
-        fail_reasons.append(
-            "pe31_reconciliation_review_integration_input: unresolved position state"
-        )
-
     return fail_reasons
 
 
@@ -1941,488 +1733,6 @@ def _build_pe25_closure_input_from_completion(
     )
 
 
-def _validate_pe35_recovery_boundary_proof(
-    integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
-    *,
-    pe35_result: dict[str, Any],
-) -> list[str]:
-    fail_reasons: list[str] = []
-    proof = integration_input.pe35_handoff_recovery_boundary_proof
-    pe35_input = integration_input.pe35_handoff_staleness_revocation_recovery_boundary_input
-    durable_root = integration_input.durable_run_root
-    run_identity = integration_input.run_identity
-    manifest_digest = integration_input.manifest_proof.manifest_digest
-    completion_identity = compute_completion_identity_digest(
-        run_root_digest=durable_root.run_root_digest,
-        manifest_digest=manifest_digest,
-        source_revision=integration_input.source_revision,
-    )
-    lifecycle = pe35_input.lifecycle_metadata
-    recovery = pe35_input.recovery_proof
-
-    if proof.boundary_owner != PE35_INTEGRATION_OWNER:
-        fail_reasons.append(f"pe35_proof: boundary_owner must be {PE35_INTEGRATION_OWNER!r}")
-    if proof.source_revision != integration_input.source_revision:
-        fail_reasons.append("pe35_proof: source_revision mismatch")
-    if not proof.boundary_input_digest:
-        fail_reasons.append("pe35_proof: boundary_input_digest required")
-    elif not _valid_sha256_digest(proof.boundary_input_digest):
-        fail_reasons.append(
-            "pe35_proof: boundary_input_digest must be 64-char lowercase sha256 hex"
-        )
-    elif proof.boundary_input_digest != compute_pe35_boundary_input_digest(pe35_input):
-        fail_reasons.append("pe35_proof: boundary_input_digest mismatch")
-
-    if not proof.boundary_result_digest:
-        fail_reasons.append("pe35_proof: boundary_result_digest required")
-    elif not _valid_sha256_digest(proof.boundary_result_digest):
-        fail_reasons.append(
-            "pe35_proof: boundary_result_digest must be 64-char lowercase sha256 hex"
-        )
-    else:
-        expected_result_digest = compute_pe35_boundary_result_digest(
-            pe35_input,
-            handoff_staleness_revocation_recovery_boundary_satisfied=True,
-        )
-        if proof.pe35_boundary_pass is not True:
-            fail_reasons.append("pe35_proof: pe35_boundary_pass must be true")
-        elif proof.boundary_result_digest != expected_result_digest:
-            fail_reasons.append("pe35_proof: boundary_result_digest mismatch")
-
-    if proof.pe35_boundary_pass is not True:
-        fail_reasons.append("pe35_proof: pe35_boundary_pass must be true")
-    if proof.handoff_staleness_revocation_recovery_boundary_satisfied is not True:
-        fail_reasons.append(
-            "pe35_proof: handoff_staleness_revocation_recovery_boundary_satisfied must be true"
-        )
-    if proof.durable_run_primary_evidence_completion_boundary_bound is not True:
-        fail_reasons.append(
-            "pe35_proof: durable_run_primary_evidence_completion_boundary_bound must be true"
-        )
-    if proof.recovery_boundary_bound is not True:
-        fail_reasons.append("pe35_proof: recovery_boundary_bound must be true")
-    if proof.partial_failure_recovery_bound is not True:
-        fail_reasons.append("pe35_proof: partial_failure_recovery_bound must be true")
-    if proof.idempotency_bound is not True:
-        fail_reasons.append("pe35_proof: idempotency_bound must be true")
-    if proof.resume_boundary_bound is not True:
-        fail_reasons.append("pe35_proof: resume_boundary_bound must be true")
-    if proof.retry_boundary_bound is not True:
-        fail_reasons.append("pe35_proof: retry_boundary_bound must be true")
-    if proof.replay_boundary_bound is not True:
-        fail_reasons.append("pe35_proof: replay_boundary_bound must be true")
-    if proof.supersession_bound is not True:
-        fail_reasons.append("pe35_proof: supersession_bound must be true")
-    if proof.recovery_coherence_proven is not True:
-        fail_reasons.append("pe35_proof: recovery_coherence_proven must be true")
-
-    digest_fields = (
-        ("traceability_identity", proof.traceability_identity),
-        ("run_identity_digest", proof.run_identity_digest),
-        ("completion_identity_digest", proof.completion_identity_digest),
-        ("manifest_identity_digest", proof.manifest_identity_digest),
-        ("handoff_digest", proof.handoff_digest),
-    )
-    for field_name, value in digest_fields:
-        if not value:
-            fail_reasons.append(f"pe35_proof: {field_name} required")
-        elif field_name != "handoff_digest" and not _valid_sha256_digest(value):
-            fail_reasons.append(f"pe35_proof: {field_name} must be 64-char lowercase sha256 hex")
-        elif field_name == "handoff_digest" and not _valid_sha256_digest(value):
-            fail_reasons.append(f"pe35_proof: {field_name} must be 64-char lowercase sha256 hex")
-
-    if proof.traceability_identity != durable_root.run_root_digest:
-        fail_reasons.append("pe35_proof: traceability_identity mismatch with run_root_digest")
-    if proof.run_identity_digest != run_identity.run_identity_digest:
-        fail_reasons.append("pe35_proof: run_identity_digest mismatch")
-    if proof.completion_identity_digest != completion_identity:
-        fail_reasons.append("pe35_proof: completion_identity_digest mismatch")
-    if proof.manifest_identity_digest != manifest_digest:
-        fail_reasons.append("pe35_proof: manifest_identity_digest mismatch")
-
-    computed_handoff_digest = compute_pe34_boundary_input_digest(pe35_input.pe34_handoff)
-    if proof.handoff_digest != computed_handoff_digest:
-        fail_reasons.append("pe35_proof: handoff_digest mismatch with PE-34 handoff")
-    if proof.handoff_generation != lifecycle.generation:
-        fail_reasons.append("pe35_proof: handoff_generation mismatch with lifecycle metadata")
-
-    expected_recovery_generation = recovery.recovery_generation if recovery is not None else 0
-    if proof.recovery_generation != expected_recovery_generation:
-        fail_reasons.append("pe35_proof: recovery_generation mismatch")
-
-    if pe35_input.pe34_handoff.source_revision != integration_input.source_revision:
-        fail_reasons.append(
-            "pe35_handoff_staleness_revocation_recovery_boundary_input: source_revision mismatch "
-            "with completion input"
-        )
-
-    canonical = pe35_input.canonical_current
-    if canonical.archive_manifest_digest is not None:
-        if canonical.archive_manifest_digest != manifest_digest:
-            fail_reasons.append(
-                "pe35_handoff_staleness_revocation_recovery_boundary_input: "
-                "archive_manifest_digest mismatch with completion manifest"
-            )
-
-    if lifecycle.lifecycle_state in {
-        HANDOFF_STATE_STALE,
-        HANDOFF_STATE_SUPERSEDED,
-        HANDOFF_STATE_REVOKED,
-        HANDOFF_STATE_RECOVERY_REQUIRED,
-    }:
-        fail_reasons.append(
-            f"pe35_proof: open partial-failure lifecycle state {lifecycle.lifecycle_state!r}"
-        )
-    elif lifecycle.lifecycle_state == HANDOFF_STATE_RECOVERED and recovery is None:
-        fail_reasons.append("pe35_proof: recovered lifecycle_state requires recovery_proof")
-    elif lifecycle.lifecycle_state not in {HANDOFF_STATE_CURRENT, HANDOFF_STATE_RECOVERED}:
-        fail_reasons.append(f"pe35_proof: unknown lifecycle_state {lifecycle.lifecycle_state!r}")
-
-    if pe35_input.active_successor_handoff_digests:
-        fail_reasons.append("pe35_proof: active successor handoff digests present")
-    for link in pe35_input.supersession_links:
-        if link.predecessor_handoff_digest == computed_handoff_digest:
-            fail_reasons.append("pe35_proof: handoff superseded by successor link")
-
-    if not pe35_result.get("boundary_pass"):
-        fail_reasons.append(
-            "pe35_handoff_staleness_revocation_recovery_boundary_input: PE-35 evaluation failed"
-        )
-        fail_reasons.extend(
-            f"pe35_handoff_staleness_revocation_recovery_boundary_input: {reason}"
-            for reason in pe35_result.get("fail_reasons", [])
-        )
-    elif not pe35_result.get("handoff_staleness_revocation_recovery_boundary_satisfied"):
-        fail_reasons.append(
-            "pe35_handoff_staleness_revocation_recovery_boundary_input: "
-            "handoff_staleness_revocation_recovery_boundary_satisfied required"
-        )
-    elif pe35_result.get("recovery_executed"):
-        fail_reasons.append("pe35_proof: operative recovery must not be executed")
-    elif pe35_result.get("authority_lift"):
-        fail_reasons.append("pe35_proof: authority_lift must remain false")
-
-    return fail_reasons
-
-
-def _validate_pe37_traceability_proof(
-    integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
-    *,
-    pe37_result: dict[str, Any],
-) -> list[str]:
-    fail_reasons: list[str] = []
-    proof = integration_input.pe37_traceability_proof
-    pe37_input = integration_input.pe37_traceability_boundary_input
-    pe36_input = pe37_input.pe36_boundary_input
-    pe35_input = pe36_input.pe35_boundary_input
-    pe34_handoff = pe35_input.pe34_handoff
-    durable_root = integration_input.durable_run_root
-    run_identity = integration_input.run_identity
-    manifest_digest = integration_input.manifest_proof.manifest_digest
-    completion_identity = compute_completion_identity_digest(
-        run_root_digest=durable_root.run_root_digest,
-        manifest_digest=manifest_digest,
-        source_revision=integration_input.source_revision,
-    )
-    completion_pe35 = integration_input.pe35_handoff_staleness_revocation_recovery_boundary_input
-
-    if proof.traceability_owner != PE37_BOUNDARY_OWNER:
-        fail_reasons.append(f"pe37_proof: traceability_owner must be {PE37_BOUNDARY_OWNER!r}")
-    if proof.source_revision != integration_input.source_revision:
-        fail_reasons.append("pe37_proof: source_revision mismatch")
-    if not proof.boundary_input_digest:
-        fail_reasons.append("pe37_proof: boundary_input_digest required")
-    elif not _valid_sha256_digest(proof.boundary_input_digest):
-        fail_reasons.append(
-            "pe37_proof: boundary_input_digest must be 64-char lowercase sha256 hex"
-        )
-    elif proof.boundary_input_digest != compute_pe37_boundary_input_digest(pe37_input):
-        fail_reasons.append("pe37_proof: boundary_input_digest mismatch")
-
-    if not proof.boundary_result_digest:
-        fail_reasons.append("pe37_proof: boundary_result_digest required")
-    elif not _valid_sha256_digest(proof.boundary_result_digest):
-        fail_reasons.append(
-            "pe37_proof: boundary_result_digest must be 64-char lowercase sha256 hex"
-        )
-    elif proof.boundary_result_digest != pe37_result.get("boundary_result_digest"):
-        fail_reasons.append("pe37_proof: boundary_result_digest mismatch")
-
-    required_binding_flags = (
-        ("pe37_boundary_pass", True),
-        ("durable_evidence_traceability_boundary_satisfied", True),
-        ("pe34_handoff_bound", True),
-        ("pe35_staleness_revocation_recovery_bound", True),
-        ("pe36_admission_presentation_bound", True),
-        ("durable_run_primary_evidence_completion_traceability_bound", True),
-        ("operator_review_chain_durable_evidence_traceability_bound", True),
-        ("traceability_coherence_proven", True),
-    )
-    for field_name, expected in required_binding_flags:
-        actual = getattr(proof, field_name)
-        if actual is not expected:
-            fail_reasons.append(f"pe37_proof: {field_name} must be {expected}")
-
-    digest_fields = (
-        ("traceability_identity", proof.traceability_identity),
-        ("admission_identity", proof.admission_identity),
-        ("run_identity_digest", proof.run_identity_digest),
-        ("completion_identity_digest", proof.completion_identity_digest),
-        ("manifest_identity_digest", proof.manifest_identity_digest),
-        ("durable_artifact_identity", proof.durable_artifact_identity),
-        ("review_chain_identity", proof.review_chain_identity),
-        ("pe34_handoff_digest", proof.pe34_handoff_digest),
-        ("pe36_boundary_result_digest", proof.pe36_boundary_result_digest),
-    )
-    for field_name, value in digest_fields:
-        if not value:
-            fail_reasons.append(f"pe37_proof: {field_name} required")
-        elif not _valid_sha256_digest(value):
-            fail_reasons.append(f"pe37_proof: {field_name} must be 64-char lowercase sha256 hex")
-
-    expected_traceability = pe37_result.get("traceability_identity")
-    if expected_traceability is None:
-        fail_reasons.append("pe37_proof: traceability_identity unavailable")
-    elif proof.traceability_identity != expected_traceability:
-        fail_reasons.append("pe37_proof: traceability_identity mismatch")
-    if proof.admission_identity != pe37_result.get("admission_identity"):
-        fail_reasons.append("pe37_proof: admission_identity mismatch")
-    if proof.review_chain_identity != proof.traceability_identity:
-        fail_reasons.append("pe37_proof: review_chain_identity mismatch with traceability_identity")
-    if proof.durable_artifact_identity != durable_root.run_root_digest:
-        fail_reasons.append("pe37_proof: durable_artifact_identity mismatch with run_root_digest")
-    if proof.run_identity_digest != run_identity.run_identity_digest:
-        fail_reasons.append("pe37_proof: run_identity_digest mismatch")
-    if proof.completion_identity_digest != completion_identity:
-        fail_reasons.append("pe37_proof: completion_identity_digest mismatch")
-    if proof.manifest_identity_digest != manifest_digest:
-        fail_reasons.append("pe37_proof: manifest_identity_digest mismatch")
-
-    computed_pe34_digest = compute_pe34_boundary_input_digest(pe34_handoff)
-    if proof.pe34_handoff_digest != computed_pe34_digest:
-        fail_reasons.append("pe37_proof: pe34_handoff_digest mismatch with PE-34 handoff")
-    computed_pe36_result = pe37_result.get("pe36_boundary_result_digest")
-    if proof.pe36_boundary_result_digest != computed_pe36_result:
-        fail_reasons.append("pe37_proof: pe36_boundary_result_digest mismatch")
-
-    if compute_pe35_boundary_input_digest(completion_pe35) != compute_pe35_boundary_input_digest(
-        pe35_input
-    ):
-        fail_reasons.append(
-            "pe37_traceability_boundary_input: PE-35 boundary input drift from completion PE-35"
-        )
-
-    if pe34_handoff.source_revision != integration_input.source_revision:
-        fail_reasons.append(
-            "pe37_traceability_boundary_input: source_revision mismatch with completion input"
-        )
-
-    pe37_archive = pe37_input.pe16_archive_binding
-    if pe37_archive.archive_manifest_digest != manifest_digest:
-        fail_reasons.append(
-            "pe37_traceability_boundary_input: archive_manifest_digest mismatch with completion "
-            "manifest"
-        )
-
-    if pe37_input.pe36_proof.boundary_owner != PE36_BOUNDARY_OWNER:
-        fail_reasons.append("pe37_proof: PE-36 boundary_owner mismatch in embedded chain")
-    if pe37_input.proof_chain.pe34_handoff_digest != computed_pe34_digest:
-        fail_reasons.append("pe37_proof: proof_chain pe34_handoff_digest drift")
-
-    if not pe37_result.get("boundary_pass"):
-        fail_reasons.append("pe37_traceability_boundary_input: PE-37 evaluation failed")
-        fail_reasons.extend(
-            f"pe37_traceability_boundary_input: {reason}"
-            for reason in pe37_result.get("fail_reasons", [])
-        )
-    elif not pe37_result.get("durable_evidence_traceability_boundary_satisfied"):
-        fail_reasons.append(
-            "pe37_traceability_boundary_input: "
-            "durable_evidence_traceability_boundary_satisfied required"
-        )
-    elif pe37_result.get("operator_review_executed"):
-        fail_reasons.append("pe37_proof: operative operator review must not be executed")
-    elif pe37_result.get("admission_executed"):
-        fail_reasons.append("pe37_proof: operative admission must not be executed")
-    elif pe37_result.get("authority_lift"):
-        fail_reasons.append("pe37_proof: authority_lift must remain false")
-
-    return fail_reasons
-
-
-def _validate_pe25_operator_closure_proof(
-    integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
-    *,
-    pe25_result: dict[str, Any],
-    admission_result: dict[str, Any],
-) -> list[str]:
-    fail_reasons: list[str] = []
-    proof = integration_input.pe25_operator_closure_proof
-    pe25_input = integration_input.pe25_closure_integration_input
-    pe37_proof = integration_input.pe37_traceability_proof
-    pe35_proof = integration_input.pe35_handoff_recovery_boundary_proof
-    durable_root = integration_input.durable_run_root
-    run_identity = integration_input.run_identity
-    manifest_digest = integration_input.manifest_proof.manifest_digest
-    completion_identity = compute_completion_identity_digest(
-        run_root_digest=durable_root.run_root_digest,
-        manifest_digest=manifest_digest,
-        source_revision=integration_input.source_revision,
-    )
-    pe35_input = integration_input.pe35_handoff_staleness_revocation_recovery_boundary_input
-    pe34_handoff = pe35_input.pe34_handoff
-    pe22_proof = integration_input.pe22_risk_killswitch_flatten_proof
-    pe23_proof = integration_input.pe23_capital_slot_ratchet_release_proof
-    pe24_proof = integration_input.pe24_pilot_envelope_lifecycle_proof
-
-    pe25_lifecycle = integration_input.pe25_proof_lifecycle
-    if pe25_lifecycle.lifecycle_state not in ALLOWED_PROOF_LIFECYCLE_STATES:
-        fail_reasons.append(
-            f"pe25_proof_lifecycle: unsupported lifecycle state {pe25_lifecycle.lifecycle_state!r}"
-        )
-    if pe25_lifecycle.lifecycle_state in INVALID_PROOF_LIFECYCLE_STATES:
-        fail_reasons.append(
-            f"pe25_proof_lifecycle: invalid lifecycle state {pe25_lifecycle.lifecycle_state!r}"
-        )
-
-    if proof.closure_owner != PE25_INTEGRATION_OWNER:
-        fail_reasons.append(f"pe25_proof: closure_owner must be {PE25_INTEGRATION_OWNER!r}")
-    if proof.source_revision != integration_input.source_revision:
-        fail_reasons.append("pe25_proof: source_revision mismatch")
-    if not proof.closure_input_digest:
-        fail_reasons.append("pe25_proof: closure_input_digest required")
-    elif not _valid_sha256_digest(proof.closure_input_digest):
-        fail_reasons.append("pe25_proof: closure_input_digest must be 64-char lowercase sha256 hex")
-    elif proof.closure_input_digest != compute_pe25_closure_input_digest(pe25_input):
-        fail_reasons.append("pe25_proof: closure_input_digest mismatch")
-
-    if not proof.closure_result_digest:
-        fail_reasons.append("pe25_proof: closure_result_digest required")
-    elif not _valid_sha256_digest(proof.closure_result_digest):
-        fail_reasons.append(
-            "pe25_proof: closure_result_digest must be 64-char lowercase sha256 hex"
-        )
-    elif proof.closure_result_digest != pe25_result.get("closure_result_digest"):
-        fail_reasons.append("pe25_proof: closure_result_digest mismatch")
-
-    expected_admission_proof = admission_result.get("integration_proof_digest")
-    if not proof.admission_integration_proof_digest:
-        fail_reasons.append("pe25_proof: admission_integration_proof_digest required")
-    elif expected_admission_proof is None:
-        fail_reasons.append("pe25_proof: admission_integration_proof_digest unavailable")
-    elif proof.admission_integration_proof_digest != expected_admission_proof:
-        fail_reasons.append("pe25_proof: admission_integration_proof_digest mismatch")
-
-    required_binding_flags = (
-        ("pe25_integration_pass", True),
-        ("operator_closure_static_complete", True),
-        ("operator_closure_lifecycle_bound", True),
-        ("pe25_operator_closure_bound", True),
-        ("durable_run_primary_evidence_completion_operator_closure_bound", True),
-        ("pe34_handoff_bound", True),
-        ("pe35_staleness_revocation_recovery_bound", True),
-        ("pe36_admission_presentation_bound", True),
-        ("pe37_durable_traceability_bound", True),
-        ("closure_coherence_proven", True),
-    )
-    for field_name, expected in required_binding_flags:
-        actual = getattr(proof, field_name)
-        if actual is not expected:
-            fail_reasons.append(f"pe25_proof: {field_name} must be {expected}")
-
-    digest_fields = (
-        ("traceability_identity", proof.traceability_identity),
-        ("admission_identity", proof.admission_identity),
-        ("run_identity_digest", proof.run_identity_digest),
-        ("completion_identity_digest", proof.completion_identity_digest),
-        ("manifest_identity_digest", proof.manifest_identity_digest),
-        ("durable_artifact_identity", proof.durable_artifact_identity),
-        ("pe34_handoff_digest", proof.pe34_handoff_digest),
-        ("pe35_boundary_result_digest", proof.pe35_boundary_result_digest),
-        ("pe36_boundary_result_digest", proof.pe36_boundary_result_digest),
-        ("pe37_traceability_identity", proof.pe37_traceability_identity),
-    )
-    for field_name, value in digest_fields:
-        if not value:
-            fail_reasons.append(f"pe25_proof: {field_name} required")
-        elif not _valid_sha256_digest(value):
-            fail_reasons.append(f"pe25_proof: {field_name} must be 64-char lowercase sha256 hex")
-
-    if proof.traceability_identity != pe37_proof.traceability_identity:
-        fail_reasons.append("pe25_proof: traceability_identity mismatch with PE-37")
-    if proof.admission_identity != pe37_proof.admission_identity:
-        fail_reasons.append("pe25_proof: admission_identity mismatch with PE-37")
-    if proof.durable_artifact_identity != durable_root.run_root_digest:
-        fail_reasons.append("pe25_proof: durable_artifact_identity mismatch with run_root_digest")
-    if proof.run_identity_digest != run_identity.run_identity_digest:
-        fail_reasons.append("pe25_proof: run_identity_digest mismatch")
-    if proof.completion_identity_digest != completion_identity:
-        fail_reasons.append("pe25_proof: completion_identity_digest mismatch")
-    if proof.manifest_identity_digest != manifest_digest:
-        fail_reasons.append("pe25_proof: manifest_identity_digest mismatch")
-
-    computed_pe34_digest = compute_pe34_boundary_input_digest(pe34_handoff)
-    if proof.pe34_handoff_digest != computed_pe34_digest:
-        fail_reasons.append("pe25_proof: pe34_handoff_digest mismatch with PE-34 handoff")
-    if proof.pe35_boundary_result_digest != pe35_proof.boundary_result_digest:
-        fail_reasons.append("pe25_proof: pe35_boundary_result_digest mismatch with PE-35")
-    if proof.pe36_boundary_result_digest != pe37_proof.pe36_boundary_result_digest:
-        fail_reasons.append("pe25_proof: pe36_boundary_result_digest mismatch with PE-36")
-    if proof.pe37_traceability_identity != pe37_proof.traceability_identity:
-        fail_reasons.append("pe25_proof: pe37_traceability_identity mismatch with PE-37")
-
-    if pe25_input.source_revision != integration_input.source_revision:
-        fail_reasons.append(
-            "pe25_closure_integration_input: source_revision mismatch with completion input"
-        )
-    if (
-        pe25_input.pe22_risk_killswitch_flatten_proof.integration_proof_digest
-        != pe22_proof.integration_proof_digest
-    ):
-        fail_reasons.append("pe25_proof: PE-22 integration_proof_digest drift from completion")
-    if (
-        pe25_input.pe23_capital_slot_ratchet_release_proof.integration_proof_digest
-        != pe23_proof.integration_proof_digest
-    ):
-        fail_reasons.append("pe25_proof: PE-23 integration_proof_digest drift from completion")
-    if (
-        pe25_input.pe24_pilot_envelope_proof.integration_proof_digest
-        != pe24_proof.integration_proof_digest
-    ):
-        fail_reasons.append("pe25_proof: PE-24 integration_proof_digest drift from completion")
-    if pe25_input.lifecycle_matrix_proof.lifecycle_state_digest != durable_root.run_root_digest:
-        fail_reasons.append("pe25_proof: lifecycle_state_digest mismatch with run_root_digest")
-
-    if compute_pe25_closure_input_digest(pe25_input) != compute_pe25_closure_input_digest(
-        _build_pe25_closure_input_from_completion(integration_input)
-    ):
-        fail_reasons.append(
-            "pe25_closure_integration_input: PE-25 closure input drift from completion chain"
-        )
-
-    if not pe25_result.get("integration_pass"):
-        fail_reasons.append("pe25_closure_integration_input: PE-25 evaluation failed")
-        fail_reasons.extend(
-            f"pe25_closure_integration_input: {reason}"
-            for reason in pe25_result.get("fail_reasons", [])
-        )
-    elif not pe25_result.get("operator_closure_static_complete"):
-        fail_reasons.append(
-            "pe25_closure_integration_input: operator_closure_static_complete required"
-        )
-    elif pe25_result.get("operative_operator_closure_executed"):
-        fail_reasons.append("pe25_proof: operative operator closure must not be executed")
-    elif pe25_result.get("authority_lift"):
-        fail_reasons.append("pe25_proof: authority_lift must remain false")
-
-    if not admission_result.get("integration_pass"):
-        fail_reasons.append(
-            "pe25_proof: admission presentation lifecycle evaluation failed for PE-39 coherence"
-        )
-
-    return fail_reasons
-
-
 def _validate_completion_proof_chain(
     integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
 ) -> list[str]:
@@ -2719,7 +2029,9 @@ def validate_durable_run_primary_evidence_completion_integration_input(
     if pe21_binding.durable_archive_root != durable_root.durable_archive_root:
         fail_reasons.append("pe21 durable_archive_root mismatch with durable_run_root")
     fail_reasons.extend(validate_primary_evidence_binding(pe21_binding))
-    fail_reasons.extend(_validate_pe21_reconciliation_result_manifest_integrity(integration_input))
+    fail_reasons.extend(
+        validate_pe21_reconciliation_result_manifest_integrity(integration_input).fail_reasons
+    )
 
     pe31_input = integration_input.pe31_reconciliation_review_integration_input
     if pe31_input.source_revision != integration_input.source_revision:
@@ -3015,17 +2327,9 @@ def evaluate_durable_run_primary_evidence_completion_integration(
             pe21_result=pe21_result,
         )
     )
-
     pe31_result = evaluate_reconciliation_review_lifecycle_integration(
         integration_input.pe31_reconciliation_review_integration_input
     )
-    fail_reasons.extend(
-        _validate_pe31_integration_proof(
-            integration_input,
-            pe31_result=pe31_result,
-        )
-    )
-
     pe22_result = evaluate_risk_killswitch_lifecycle_integration(
         integration_input.pe22_risk_killswitch_lifecycle_integration_input
     )
@@ -3035,7 +2339,6 @@ def evaluate_durable_run_primary_evidence_completion_integration(
             pe22_result=pe22_result,
         )
     )
-
     pe23_result = evaluate_capital_slot_ratchet_release_lifecycle_integration(
         integration_input.pe23_capital_slot_ratchet_release_lifecycle_integration_input
     )
@@ -3045,7 +2348,6 @@ def evaluate_durable_run_primary_evidence_completion_integration(
             pe23_result=pe23_result,
         )
     )
-
     pe24_result = evaluate_pilot_envelope_lifecycle_integration(
         integration_input.pe24_pilot_envelope_lifecycle_integration_input
     )
@@ -3055,25 +2357,11 @@ def evaluate_durable_run_primary_evidence_completion_integration(
             pe24_result=pe24_result,
         )
     )
-
     pe35_result = evaluate_handoff_staleness_revocation_recovery_boundary(
         integration_input.pe35_handoff_staleness_revocation_recovery_boundary_input
     )
-    fail_reasons.extend(
-        _validate_pe35_recovery_boundary_proof(
-            integration_input,
-            pe35_result=pe35_result,
-        )
-    )
-
     pe37_result = evaluate_durable_evidence_traceability_boundary(
         integration_input.pe37_traceability_boundary_input
-    )
-    fail_reasons.extend(
-        _validate_pe37_traceability_proof(
-            integration_input,
-            pe37_result=pe37_result,
-        )
     )
 
     admission_input = _build_admission_presentation_lifecycle_input_from_completion(
@@ -3089,13 +2377,20 @@ def evaluate_durable_run_primary_evidence_completion_integration(
     pe25_result = evaluate_operator_closure_lifecycle_integration(
         integration_input.pe25_closure_integration_input
     )
-    fail_reasons.extend(
-        _validate_pe25_operator_closure_proof(
-            integration_input,
+    from src.ops.durable_completion_validation.graph import execute_proof_binding_validation_graph
+    from src.ops.durable_completion_validation.models import ValidationContext
+
+    graph_result = execute_proof_binding_validation_graph(
+        ValidationContext(
+            integration_input=integration_input,
+            pe31_result=pe31_result,
+            pe35_result=pe35_result,
+            pe37_result=pe37_result,
             pe25_result=pe25_result,
             admission_result=admission_result,
         )
     )
+    fail_reasons.extend(graph_result.fail_reasons)
 
     if completion_claim_without_full_evidence and integration_input.completion_claimed:
         fail_reasons.append("completion_claimed=true without full evidence chain is insufficient")
