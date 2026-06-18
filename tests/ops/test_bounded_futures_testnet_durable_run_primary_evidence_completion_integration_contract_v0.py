@@ -1,7 +1,7 @@
 """Static + offline bounded Futures Testnet durable run primary evidence completion (v0).
 
 Docs/tests-only Class-4 scoped exception. No runtime, network, credentials, or Testnet start.
-PE-31 + PE-21 + PE-22 + PE-23 + PE-24 + PE-35 + PE-16 + Gap-4 + Gap-2a.1 durable run-root
+PE-31 + PE-21 + PE-22 + PE-23 + PE-24 + PE-35 + PE-37 + PE-16 + Gap-4 + Gap-2a.1 durable run-root
 completion static integration only.
 """
 
@@ -50,6 +50,9 @@ from src.ops.bounded_futures_testnet_durable_run_primary_evidence_completion_int
     PE23_INTEGRATION_OWNER,
     PE24_INTEGRATION_OWNER,
     PE35_INTEGRATION_OWNER,
+    PE34_INTEGRATION_OWNER,
+    PE36_INTEGRATION_OWNER,
+    PE37_INTEGRATION_OWNER,
     RECOVERY_EXECUTED,
     RESUME_EXECUTED,
     RETRY_EXECUTED,
@@ -78,6 +81,7 @@ from src.ops.bounded_futures_testnet_durable_run_primary_evidence_completion_int
     default_minimal_pe23_integration_proof,
     default_minimal_pe24_integration_proof,
     default_minimal_pe35_integration_proof,
+    default_minimal_pe37_integration_proof,
     default_minimal_pe31_integration_proof,
     default_minimal_safety_snapshot,
     evaluate_durable_run_primary_evidence_completion_integration,
@@ -96,6 +100,17 @@ from src.ops.bounded_futures_testnet_handoff_staleness_revocation_recovery_bound
     compute_boundary_input_digest as compute_pe35_boundary_input_digest,
     compute_boundary_result_digest as compute_pe35_boundary_result_digest,
     evaluate_handoff_staleness_revocation_recovery_boundary,
+)
+from src.ops.bounded_futures_testnet_operator_review_chain_durable_evidence_traceability_boundary_contract_v0 import (
+    CONTRACT_VERSION as PE37_CONTRACT_VERSION,
+    BOUNDARY_OWNER as PE37_BOUNDARY_OWNER,
+    evaluate_durable_evidence_traceability_boundary,
+)
+from src.ops.bounded_futures_testnet_operator_review_admission_presentation_boundary_contract_v0 import (
+    CONTRACT_VERSION as PE36_CONTRACT_VERSION,
+)
+from src.ops.bounded_futures_testnet_operator_review_handoff_boundary_contract_v0 import (
+    CONTRACT_VERSION as PE34_CONTRACT_VERSION,
 )
 from src.ops.bounded_futures_testnet_position_order_reconciliation_primary_evidence_integration_contract_v0 import (
     ManifestEntry,
@@ -247,6 +262,10 @@ def test_canonical_owners_referenced_not_duplicated() -> None:
     assert "bounded_futures_testnet_pilot_envelope_lifecycle_integration_contract_v0" in (
         integration_text
     )
+    assert (
+        "bounded_futures_testnet_operator_review_chain_durable_evidence_traceability_boundary_contract_v0"
+        in integration_text
+    )
     assert "bounded_futures_testnet_preflight_packet_archive_contract_v0" in integration_text
     assert "scripts.ops.primary_evidence_retention_v0" in integration_text
     assert PE21_PACKAGE_MARKER in PE21_MODULE.read_text(encoding="utf-8")
@@ -341,6 +360,11 @@ def test_coherent_static_completion_happy_path_passes() -> None:
     assert result["pe35_handoff_recovery_boundary_bound"] is True
     assert result["recovery_boundary_bound"] is True
     assert result["partial_failure_recovery_bound"] is True
+    assert result["pe37_boundary_pass"] is True
+    assert result["pe37_operator_review_chain_durable_evidence_traceability_bound"] is True
+    assert result["pe34_handoff_bound"] is True
+    assert result["pe35_staleness_revocation_recovery_bound"] is True
+    assert result["pe36_admission_presentation_bound"] is True
     assert result["fail_reasons"] == []
 
 
@@ -1940,6 +1964,9 @@ def test_contract_version_constants() -> None:
     assert PE23_INTEGRATION_OWNER == PE23_CONTRACT_VERSION
     assert PE24_INTEGRATION_OWNER == PE24_CONTRACT_VERSION
     assert PE35_INTEGRATION_OWNER == PE35_CONTRACT_VERSION
+    assert PE34_INTEGRATION_OWNER == PE34_CONTRACT_VERSION
+    assert PE36_INTEGRATION_OWNER == PE36_CONTRACT_VERSION
+    assert PE37_INTEGRATION_OWNER == PE37_BOUNDARY_OWNER
     assert SUPPORTED_RUN_TYPE == "bounded_futures_testnet"
 
 
@@ -2213,7 +2240,7 @@ def test_pe35_completion_proof_chain_drift_fails() -> None:
     )
 
 
-def test_pe35_pe21_pe31_pe22_pe23_pe24_semantics_remain_bound_on_happy_path() -> None:
+def test_pe35_pe21_pe31_pe22_pe23_pe24_pe37_semantics_remain_bound_on_happy_path() -> None:
     result = evaluate_durable_run_primary_evidence_completion_integration(
         default_minimal_completion_integration_input(source_revision=VALID_COMMIT_SHA)
     )
@@ -2223,3 +2250,349 @@ def test_pe35_pe21_pe31_pe22_pe23_pe24_semantics_remain_bound_on_happy_path() ->
     assert result["pe23_integration_pass"] is True
     assert result["pe24_integration_pass"] is True
     assert result["pe35_boundary_pass"] is True
+    assert result["pe37_boundary_pass"] is True
+    assert result["pe37_operator_review_chain_durable_evidence_traceability_bound"] is True
+
+
+def test_pe37_alone_does_not_authorize_completion() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    pe37_input = integration_input.pe37_traceability_boundary_input
+    pe37_result = evaluate_durable_evidence_traceability_boundary(pe37_input)
+    assert pe37_result["durable_evidence_traceability_boundary_satisfied"] is True
+    assert pe37_result["operator_review_executed"] is False
+    assert pe37_result["admission_executed"] is False
+    assert pe37_result["authority_lift"] is False
+
+
+def test_missing_pe37_proof_binding_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe37_traceability_proof=replace(
+            integration_input.pe37_traceability_proof,
+            boundary_result_digest="",
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe37_proof: boundary_result_digest required" in r for r in result["fail_reasons"])
+
+
+def test_pe37_source_revision_mismatch_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe37_traceability_proof=replace(
+            integration_input.pe37_traceability_proof,
+            source_revision=ALT_COMMIT_SHA,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe37_proof: source_revision mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe37_wrong_owner_identity_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe37_traceability_proof=replace(
+            integration_input.pe37_traceability_proof,
+            traceability_owner="wrong-owner",
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe37_proof: traceability_owner must be" in r for r in result["fail_reasons"])
+
+
+def test_pe37_proof_digest_mismatch_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe37_traceability_proof=replace(
+            integration_input.pe37_traceability_proof,
+            boundary_result_digest="f" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe37_proof: boundary_result_digest mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe37_traceability_identity_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe37_traceability_proof=replace(
+            integration_input.pe37_traceability_proof,
+            traceability_identity="a" * 64,
+            review_chain_identity="a" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe37_proof: traceability_identity mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe37_durable_artifact_identity_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe37_traceability_proof=replace(
+            integration_input.pe37_traceability_proof,
+            durable_artifact_identity="b" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "pe37_proof: durable_artifact_identity mismatch" in r for r in result["fail_reasons"]
+    )
+
+
+def test_pe37_manifest_identity_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe37_traceability_proof=replace(
+            integration_input.pe37_traceability_proof,
+            manifest_identity_digest="c" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe37_proof: manifest_identity_digest mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe37_run_root_traceability_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe37_traceability_proof=replace(
+            integration_input.pe37_traceability_proof,
+            run_identity_digest="d" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe37_proof: run_identity_digest mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe37_completion_identity_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe37_traceability_proof=replace(
+            integration_input.pe37_traceability_proof,
+            completion_identity_digest="e" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "pe37_proof: completion_identity_digest mismatch" in r for r in result["fail_reasons"]
+    )
+
+
+def test_pe37_review_chain_identity_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe37_traceability_proof=replace(
+            integration_input.pe37_traceability_proof,
+            review_chain_identity="f" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe37_proof: review_chain_identity mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe37_stale_handoff_lifecycle_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    pe37_input = integration_input.pe37_traceability_boundary_input
+    pe35_input = pe37_input.pe36_boundary_input.pe35_boundary_input
+    stale_pe35 = replace(
+        pe35_input,
+        lifecycle_metadata=replace(
+            pe35_input.lifecycle_metadata,
+            lifecycle_state=HANDOFF_STATE_STALE,
+        ),
+    )
+    stale_pe36 = replace(
+        pe37_input.pe36_boundary_input,
+        pe35_boundary_input=stale_pe35,
+    )
+    stale_pe37 = replace(pe37_input, pe36_boundary_input=stale_pe36)
+    bad = replace(integration_input, pe37_traceability_boundary_input=stale_pe37)
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe37_traceability_boundary_input:" in r for r in result["fail_reasons"])
+
+
+def test_pe37_revoked_handoff_lifecycle_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    pe37_input = integration_input.pe37_traceability_boundary_input
+    pe35_input = pe37_input.pe36_boundary_input.pe35_boundary_input
+    revoked_pe35 = replace(
+        pe35_input,
+        lifecycle_metadata=replace(
+            pe35_input.lifecycle_metadata,
+            lifecycle_state=HANDOFF_STATE_REVOKED,
+        ),
+    )
+    revoked_pe36 = replace(
+        pe37_input.pe36_boundary_input,
+        pe35_boundary_input=revoked_pe35,
+    )
+    revoked_pe37 = replace(pe37_input, pe36_boundary_input=revoked_pe36)
+    bad = replace(integration_input, pe37_traceability_boundary_input=revoked_pe37)
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe37_traceability_boundary_input:" in r for r in result["fail_reasons"])
+
+
+def test_pe37_superseded_handoff_lifecycle_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    pe37_input = integration_input.pe37_traceability_boundary_input
+    pe35_input = pe37_input.pe36_boundary_input.pe35_boundary_input
+    superseded_pe35 = replace(
+        pe35_input,
+        lifecycle_metadata=replace(
+            pe35_input.lifecycle_metadata,
+            lifecycle_state=HANDOFF_STATE_SUPERSEDED,
+        ),
+    )
+    superseded_pe36 = replace(
+        pe37_input.pe36_boundary_input,
+        pe35_boundary_input=superseded_pe35,
+    )
+    superseded_pe37 = replace(pe37_input, pe36_boundary_input=superseded_pe36)
+    bad = replace(integration_input, pe37_traceability_boundary_input=superseded_pe37)
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe37_traceability_boundary_input:" in r for r in result["fail_reasons"])
+
+
+def test_pe37_pe34_handoff_bound_false_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe37_traceability_proof=replace(
+            integration_input.pe37_traceability_proof,
+            pe34_handoff_bound=False,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe37_proof: pe34_handoff_bound must be True" in r for r in result["fail_reasons"])
+
+
+def test_pe37_pe35_staleness_bound_false_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe37_traceability_proof=replace(
+            integration_input.pe37_traceability_proof,
+            pe35_staleness_revocation_recovery_bound=False,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "pe37_proof: pe35_staleness_revocation_recovery_bound must be True" in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_pe37_pe36_admission_presentation_bound_false_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe37_traceability_proof=replace(
+            integration_input.pe37_traceability_proof,
+            pe36_admission_presentation_bound=False,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "pe37_proof: pe36_admission_presentation_bound must be True" in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_pe37_handoff_digest_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe37_traceability_proof=replace(
+            integration_input.pe37_traceability_proof,
+            pe34_handoff_digest="0" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe37_proof: pe34_handoff_digest mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe37_admission_presentation_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe37_traceability_proof=replace(
+            integration_input.pe37_traceability_proof,
+            pe36_boundary_result_digest="1" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "pe37_proof: pe36_boundary_result_digest mismatch" in r for r in result["fail_reasons"]
+    )
+
+
+def test_pe37_completion_proof_chain_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        completion_proof_chain=replace(
+            integration_input.completion_proof_chain,
+            completion_referenced_pe37_boundary_result_digest="0" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "completion_referenced_pe37_boundary_result_digest mismatch" in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_pe37_traceability_proof_chain_identity_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        completion_proof_chain=replace(
+            integration_input.completion_proof_chain,
+            pe37_traceability_identity="2" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe37_traceability_identity mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe37_valid_proof_remains_non_authorizing() -> None:
+    result = evaluate_durable_run_primary_evidence_completion_integration(
+        default_minimal_completion_integration_input()
+    )
+    assert result["integration_pass"] is True
+    assert result["operative_run_completion_recorded"] is False
+    assert result["primary_evidence_operationally_accepted"] is False
+    assert result["authority_lift"] is False
+    assert result["preflight_remains_blocked"] is True
+    assert result["ready_for_operator_arming"] is False
+    assert result["execution_authorized"] is False
+    assert result["evidence_acceptance_authorized"] is False
