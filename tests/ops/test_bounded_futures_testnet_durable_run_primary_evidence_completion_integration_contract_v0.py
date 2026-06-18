@@ -1,7 +1,7 @@
 """Static + offline bounded Futures Testnet durable run primary evidence completion (v0).
 
 Docs/tests-only Class-4 scoped exception. No runtime, network, credentials, or Testnet start.
-PE-31 + PE-21 + PE-22 + PE-23 + PE-24 + PE-35 + PE-37 + PE-16 + Gap-4 + Gap-2a.1 durable run-root
+PE-31 + PE-21 + PE-22 + PE-23 + PE-24 + PE-25 + PE-35 + PE-37 + PE-16 + Gap-4 + Gap-2a.1 durable run-root
 completion static integration only.
 """
 
@@ -53,6 +53,7 @@ from src.ops.bounded_futures_testnet_durable_run_primary_evidence_completion_int
     PE34_INTEGRATION_OWNER,
     PE36_INTEGRATION_OWNER,
     PE37_INTEGRATION_OWNER,
+    PE25_INTEGRATION_OWNER,
     RECOVERY_EXECUTED,
     RESUME_EXECUTED,
     RETRY_EXECUTED,
@@ -100,6 +101,10 @@ from src.ops.bounded_futures_testnet_handoff_staleness_revocation_recovery_bound
     compute_boundary_input_digest as compute_pe35_boundary_input_digest,
     compute_boundary_result_digest as compute_pe35_boundary_result_digest,
     evaluate_handoff_staleness_revocation_recovery_boundary,
+)
+from src.ops.bounded_futures_testnet_operator_closure_lifecycle_integration_contract_v0 import (
+    CONTRACT_VERSION as PE25_CONTRACT_VERSION,
+    evaluate_operator_closure_lifecycle_integration,
 )
 from src.ops.bounded_futures_testnet_operator_review_chain_durable_evidence_traceability_boundary_contract_v0 import (
     CONTRACT_VERSION as PE37_CONTRACT_VERSION,
@@ -221,6 +226,60 @@ GAP4_TEST_OWNER = REPO_ROOT / "tests" / "ops" / "test_gap4_output_evidence_paths
 GAP2A1_TEST_OWNER = (
     REPO_ROOT / "tests" / "ops" / "test_gap2a1_primary_evidence_enforcement_contract_v0.py"
 )
+PE25_MODULE = (
+    REPO_ROOT
+    / "src"
+    / "ops"
+    / "bounded_futures_testnet_operator_closure_lifecycle_integration_contract_v0.py"
+)
+PE25_TEST_OWNER = (
+    REPO_ROOT
+    / "tests"
+    / "ops"
+    / "test_bounded_futures_testnet_operator_closure_lifecycle_integration_contract_v0.py"
+)
+PE39_MODULE = (
+    REPO_ROOT
+    / "src"
+    / "ops"
+    / "bounded_futures_testnet_admission_presentation_operator_closure_lifecycle_bridge_contract_v0.py"
+)
+PE39_TEST_OWNER = (
+    REPO_ROOT
+    / "tests"
+    / "ops"
+    / "test_bounded_futures_testnet_admission_presentation_operator_closure_lifecycle_bridge_contract_v0.py"
+)
+PE32_TEST_OWNER = (
+    REPO_ROOT
+    / "tests"
+    / "ops"
+    / "test_bounded_futures_testnet_readiness_review_admission_presentation_lifecycle_bridge_contract_v0.py"
+)
+PE36_TEST_OWNER = (
+    REPO_ROOT
+    / "tests"
+    / "ops"
+    / "test_bounded_futures_testnet_operator_review_admission_presentation_lifecycle_integration_contract_v0.py"
+)
+PE34_TEST_OWNER = (
+    REPO_ROOT
+    / "tests"
+    / "ops"
+    / "test_bounded_futures_testnet_operator_review_handoff_boundary_contract_v0.py"
+)
+PE35_TEST_OWNER = (
+    REPO_ROOT
+    / "tests"
+    / "ops"
+    / "test_bounded_futures_testnet_handoff_staleness_revocation_recovery_boundary_contract_v0.py"
+)
+PE37_TEST_OWNER = (
+    REPO_ROOT
+    / "tests"
+    / "ops"
+    / "test_bounded_futures_testnet_operator_review_chain_durable_evidence_traceability_boundary_contract_v0.py"
+)
 
 TEST_PACKAGE_MARKER = (
     "BOUNDED_FUTURES_TESTNET_DURABLE_RUN_PRIMARY_EVIDENCE_COMPLETION_INTEGRATION_GUARD_V0=true"
@@ -266,6 +325,9 @@ def test_canonical_owners_referenced_not_duplicated() -> None:
         "bounded_futures_testnet_operator_review_chain_durable_evidence_traceability_boundary_contract_v0"
         in integration_text
     )
+    assert "bounded_futures_testnet_operator_closure_lifecycle_integration_contract_v0" in (
+        integration_text
+    )
     assert "bounded_futures_testnet_preflight_packet_archive_contract_v0" in integration_text
     assert "scripts.ops.primary_evidence_retention_v0" in integration_text
     assert PE21_PACKAGE_MARKER in PE21_MODULE.read_text(encoding="utf-8")
@@ -284,6 +346,15 @@ def test_canonical_owners_referenced_not_duplicated() -> None:
     assert PRIMARY_EVIDENCE_MODULE.exists()
     assert GAP4_TEST_OWNER.exists()
     assert GAP2A1_TEST_OWNER.exists()
+    assert PE25_MODULE.exists()
+    assert PE25_TEST_OWNER.exists()
+    assert PE39_MODULE.exists()
+    assert PE39_TEST_OWNER.exists()
+    assert PE32_TEST_OWNER.exists()
+    assert PE36_TEST_OWNER.exists()
+    assert PE34_TEST_OWNER.exists()
+    assert PE35_TEST_OWNER.exists()
+    assert PE37_TEST_OWNER.exists()
     assert PE16_ARCHIVE_OWNER == str(PE16_MODULE.relative_to(REPO_ROOT))
     assert GAP4_COMPLETION_OWNER == str(GAP4_TEST_OWNER.relative_to(REPO_ROOT))
     assert GAP2A1_ENFORCEMENT_OWNER == str(GAP2A1_TEST_OWNER.relative_to(REPO_ROOT))
@@ -365,6 +436,7 @@ def test_coherent_static_completion_happy_path_passes() -> None:
     assert result["pe34_handoff_bound"] is True
     assert result["pe35_staleness_revocation_recovery_bound"] is True
     assert result["pe36_admission_presentation_bound"] is True
+    assert result["pe25_operator_closure_lifecycle_bound"] is True
     assert result["fail_reasons"] == []
 
 
@@ -1967,6 +2039,7 @@ def test_contract_version_constants() -> None:
     assert PE34_INTEGRATION_OWNER == PE34_CONTRACT_VERSION
     assert PE36_INTEGRATION_OWNER == PE36_CONTRACT_VERSION
     assert PE37_INTEGRATION_OWNER == PE37_BOUNDARY_OWNER
+    assert PE25_INTEGRATION_OWNER == PE25_CONTRACT_VERSION
     assert SUPPORTED_RUN_TYPE == "bounded_futures_testnet"
 
 
@@ -2240,7 +2313,7 @@ def test_pe35_completion_proof_chain_drift_fails() -> None:
     )
 
 
-def test_pe35_pe21_pe31_pe22_pe23_pe24_pe37_semantics_remain_bound_on_happy_path() -> None:
+def test_pe35_pe21_pe31_pe22_pe23_pe24_pe25_pe37_semantics_remain_bound_on_happy_path() -> None:
     result = evaluate_durable_run_primary_evidence_completion_integration(
         default_minimal_completion_integration_input(source_revision=VALID_COMMIT_SHA)
     )
@@ -2251,6 +2324,7 @@ def test_pe35_pe21_pe31_pe22_pe23_pe24_pe37_semantics_remain_bound_on_happy_path
     assert result["pe24_integration_pass"] is True
     assert result["pe35_boundary_pass"] is True
     assert result["pe37_boundary_pass"] is True
+    assert result["pe25_operator_closure_lifecycle_bound"] is True
     assert result["pe37_operator_review_chain_durable_evidence_traceability_bound"] is True
 
 
@@ -2596,3 +2670,343 @@ def test_pe37_valid_proof_remains_non_authorizing() -> None:
     assert result["ready_for_operator_arming"] is False
     assert result["execution_authorized"] is False
     assert result["evidence_acceptance_authorized"] is False
+
+
+def test_pe25_alone_does_not_authorize_completion() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    pe25_input = integration_input.pe25_closure_integration_input
+    pe25_result = evaluate_operator_closure_lifecycle_integration(pe25_input)
+    assert pe25_result["integration_pass"] is True
+    assert pe25_result["operator_closure_static_complete"] is True
+    assert pe25_result["operative_operator_closure_executed"] is False
+    assert pe25_result["authority_lift"] is False
+
+
+def test_missing_pe25_closure_result_digest_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe25_operator_closure_proof=replace(
+            integration_input.pe25_operator_closure_proof,
+            closure_result_digest="",
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe25_proof: closure_result_digest required" in r for r in result["fail_reasons"])
+
+
+@pytest.mark.parametrize(
+    "lifecycle_state",
+    [
+        PROOF_LIFECYCLE_STALE,
+        PROOF_LIFECYCLE_REVOKED,
+        PROOF_LIFECYCLE_SUPERSEDED,
+    ],
+)
+def test_pe25_invalid_proof_lifecycle_states_fail(lifecycle_state: str) -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe25_proof_lifecycle=replace(
+            integration_input.pe25_proof_lifecycle,
+            lifecycle_state=lifecycle_state,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe25_proof_lifecycle: invalid lifecycle state" in r for r in result["fail_reasons"])
+
+
+def test_pe25_wrong_closure_owner_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe25_operator_closure_proof=replace(
+            integration_input.pe25_operator_closure_proof,
+            closure_owner="wrong-owner",
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe25_proof: closure_owner must be" in r for r in result["fail_reasons"])
+
+
+def test_pe25_source_revision_mismatch_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe25_operator_closure_proof=replace(
+            integration_input.pe25_operator_closure_proof,
+            source_revision=ALT_COMMIT_SHA,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe25_proof: source_revision mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe25_closure_result_digest_mismatch_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe25_operator_closure_proof=replace(
+            integration_input.pe25_operator_closure_proof,
+            closure_result_digest="f" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe25_proof: closure_result_digest mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe25_closure_input_digest_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe25_operator_closure_proof=replace(
+            integration_input.pe25_operator_closure_proof,
+            closure_input_digest="a" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe25_proof: closure_input_digest mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe25_admission_integration_proof_digest_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe25_operator_closure_proof=replace(
+            integration_input.pe25_operator_closure_proof,
+            admission_integration_proof_digest="b" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "pe25_proof: admission_integration_proof_digest mismatch" in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_pe25_traceability_identity_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe25_operator_closure_proof=replace(
+            integration_input.pe25_operator_closure_proof,
+            traceability_identity="c" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "pe25_proof: traceability_identity mismatch with PE-37" in r for r in result["fail_reasons"]
+    )
+
+
+def test_pe25_run_identity_digest_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe25_operator_closure_proof=replace(
+            integration_input.pe25_operator_closure_proof,
+            run_identity_digest="d" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe25_proof: run_identity_digest mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe25_completion_identity_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe25_operator_closure_proof=replace(
+            integration_input.pe25_operator_closure_proof,
+            completion_identity_digest="e" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "pe25_proof: completion_identity_digest mismatch" in r for r in result["fail_reasons"]
+    )
+
+
+def test_pe25_manifest_identity_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe25_operator_closure_proof=replace(
+            integration_input.pe25_operator_closure_proof,
+            manifest_identity_digest="f" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe25_proof: manifest_identity_digest mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe25_durable_artifact_identity_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe25_operator_closure_proof=replace(
+            integration_input.pe25_operator_closure_proof,
+            durable_artifact_identity="1" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "pe25_proof: durable_artifact_identity mismatch with run_root_digest" in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_pe25_pe34_handoff_digest_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe25_operator_closure_proof=replace(
+            integration_input.pe25_operator_closure_proof,
+            pe34_handoff_digest="2" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe25_proof: pe34_handoff_digest mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe25_pe35_boundary_result_digest_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe25_operator_closure_proof=replace(
+            integration_input.pe25_operator_closure_proof,
+            pe35_boundary_result_digest="3" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "pe25_proof: pe35_boundary_result_digest mismatch" in r for r in result["fail_reasons"]
+    )
+
+
+def test_pe25_pe36_boundary_result_digest_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe25_operator_closure_proof=replace(
+            integration_input.pe25_operator_closure_proof,
+            pe36_boundary_result_digest="4" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "pe25_proof: pe36_boundary_result_digest mismatch" in r for r in result["fail_reasons"]
+    )
+
+
+def test_pe25_pe37_traceability_identity_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe25_operator_closure_proof=replace(
+            integration_input.pe25_operator_closure_proof,
+            pe37_traceability_identity="5" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "pe25_proof: pe37_traceability_identity mismatch" in r for r in result["fail_reasons"]
+    )
+
+
+def test_pe25_pe22_upstream_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    pe25_input = integration_input.pe25_closure_integration_input
+    bad_pe25_input = replace(
+        pe25_input,
+        pe22_risk_killswitch_flatten_proof=replace(
+            pe25_input.pe22_risk_killswitch_flatten_proof,
+            integration_proof_digest="6" * 64,
+        ),
+    )
+    bad = replace(integration_input, pe25_closure_integration_input=bad_pe25_input)
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("PE-22 integration_proof_digest drift" in r for r in result["fail_reasons"])
+
+
+def test_pe25_pe23_upstream_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    pe25_input = integration_input.pe25_closure_integration_input
+    bad_pe25_input = replace(
+        pe25_input,
+        pe23_capital_slot_ratchet_release_proof=replace(
+            pe25_input.pe23_capital_slot_ratchet_release_proof,
+            integration_proof_digest="7" * 64,
+        ),
+    )
+    bad = replace(integration_input, pe25_closure_integration_input=bad_pe25_input)
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("PE-23 integration_proof_digest drift" in r for r in result["fail_reasons"])
+
+
+def test_pe25_pe24_upstream_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    pe25_input = integration_input.pe25_closure_integration_input
+    bad_pe25_input = replace(
+        pe25_input,
+        pe24_pilot_envelope_proof=replace(
+            pe25_input.pe24_pilot_envelope_proof,
+            integration_proof_digest="8" * 64,
+        ),
+    )
+    bad = replace(integration_input, pe25_closure_integration_input=bad_pe25_input)
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("PE-24 integration_proof_digest drift" in r for r in result["fail_reasons"])
+
+
+def test_pe25_operator_closure_static_complete_false_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe25_operator_closure_proof=replace(
+            integration_input.pe25_operator_closure_proof,
+            operator_closure_static_complete=False,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "pe25_proof: operator_closure_static_complete must be True" in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_pe25_completion_proof_chain_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        completion_proof_chain=replace(
+            integration_input.completion_proof_chain,
+            completion_referenced_pe25_closure_result_digest="9" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "completion_referenced_pe25_closure_result_digest mismatch" in r
+        for r in result["fail_reasons"]
+    )
