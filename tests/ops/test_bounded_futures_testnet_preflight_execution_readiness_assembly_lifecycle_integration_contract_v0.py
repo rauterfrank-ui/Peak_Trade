@@ -33,6 +33,17 @@ from src.ops.bounded_futures_testnet_handoff_staleness_revocation_recovery_bound
 from src.ops.bounded_futures_testnet_operator_review_admission_presentation_boundary_contract_v0 import (
     default_minimal_pe35_proof_binding,
 )
+from src.ops.bounded_futures_testnet_reconciliation_review_lifecycle_integration_contract_v0 import (
+    CONTRACT_VERSION as PE31_CONTRACT_VERSION,
+    Pe21ReconciliationPrimaryEvidenceIntegrationProofBinding,
+    compute_integration_input_digest as compute_pe31_integration_input_digest,
+    compute_reconciliation_review_proof_digest,
+    default_minimal_integration_input as default_minimal_pe31_integration_input,
+    default_minimal_pe21_integration_proof,
+    default_minimal_pe30_integration_proof,
+    default_minimal_reconciliation_review_proof,
+    evaluate_reconciliation_review_lifecycle_integration,
+)
 from src.ops.bounded_futures_testnet_preflight_execution_readiness_assembly_lifecycle_integration_contract_v0 import (
     AUTHORITY_LIFT,
     CONTRACT_IMPLEMENTATION_ONLY,
@@ -60,12 +71,14 @@ from src.ops.bounded_futures_testnet_preflight_execution_readiness_assembly_life
     TESTNET_RUN_STARTED,
     ZERO_ORDER_CAPABILITY_OWNER,
     Pe19ReviewProofBinding,
+    Pe31ReconciliationReviewIntegrationProofBinding,
     Pe37TraceabilityProofBinding,
     AssemblySafetySnapshot,
     compute_assembly_input_digest,
     compute_assembly_result_digest,
     compute_lifecycle_matrix_digest,
     default_minimal_assembly_input,
+    default_minimal_pe31_integration_proof,
     default_minimal_safety_snapshot,
     evaluate_preflight_execution_readiness_assembly_lifecycle_integration,
     serialize_assembly_input_canonical,
@@ -1087,3 +1100,293 @@ def test_missing_pe37_traceability_proof_fails() -> None:
     result = evaluate_preflight_execution_readiness_assembly_lifecycle_integration(bad)
     assert result["integration_pass"] is False
     assert any("boundary_input_digest required" in r for r in result["fail_reasons"])
+
+
+def test_pe31_owner_referenced_in_assembly_module() -> None:
+    assembly_text = ASSEMBLY_MODULE.read_text(encoding="utf-8")
+    assert (
+        "bounded_futures_testnet_reconciliation_review_lifecycle_integration_contract_v0"
+        in assembly_text
+    )
+    assert PE31_CONTRACT_VERSION in assembly_text
+
+
+def test_valid_pe21_pe31_pe26_reconciliation_chain_passes() -> None:
+    assembly_input = default_minimal_assembly_input(source_revision=VALID_COMMIT_SHA)
+    pe31_input = assembly_input.pe31_reconciliation_review_integration_input
+    assert pe31_input is not None
+    pe31_result = evaluate_reconciliation_review_lifecycle_integration(pe31_input)
+    assert pe31_result["integration_pass"] is True
+    result = evaluate_preflight_execution_readiness_assembly_lifecycle_integration(assembly_input)
+    assert result["integration_pass"] is True
+    assert result["fail_reasons"] == []
+
+
+def test_missing_pe31_reconciliation_review_proof_fails() -> None:
+    assembly_input = default_minimal_assembly_input()
+    bad = replace(
+        assembly_input,
+        pe31_reconciliation_review_integration_input=None,
+        pe31_reconciliation_review_integration_proof=None,
+    )
+    result = evaluate_preflight_execution_readiness_assembly_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "pe31_reconciliation_review_integration_input required" in r for r in result["fail_reasons"]
+    )
+
+
+def test_pe31_integration_pass_false_fails() -> None:
+    assembly_input = default_minimal_assembly_input()
+    assert assembly_input.pe31_reconciliation_review_integration_proof is not None
+    bad_proof = replace(
+        assembly_input.pe31_reconciliation_review_integration_proof,
+        pe31_integration_pass=False,
+        reconciliation_review_lifecycle_eligibility=False,
+    )
+    bad = replace(assembly_input, pe31_reconciliation_review_integration_proof=bad_proof)
+    result = evaluate_preflight_execution_readiness_assembly_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe31_integration_pass must be true" in r for r in result["fail_reasons"])
+
+
+def test_pe31_static_review_not_proven_fails() -> None:
+    assembly_input = default_minimal_assembly_input()
+    assert assembly_input.pe31_reconciliation_review_integration_input is not None
+    bad_review = replace(
+        assembly_input.pe31_reconciliation_review_integration_input.reconciliation_review_proof,
+        static_review_consistency_proven=False,
+    )
+    bad_review = replace(
+        bad_review,
+        reconciliation_review_proof_digest=compute_reconciliation_review_proof_digest(bad_review),
+    )
+    bad_pe31 = replace(
+        assembly_input.pe31_reconciliation_review_integration_input,
+        reconciliation_review_proof=bad_review,
+    )
+    bad = replace(assembly_input, pe31_reconciliation_review_integration_input=bad_pe31)
+    result = evaluate_preflight_execution_readiness_assembly_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("static_review_consistency_proven must be true" in r for r in result["fail_reasons"])
+
+
+def test_pe31_manifest_verify_rc_nonzero_fails() -> None:
+    assembly_input = default_minimal_assembly_input()
+    assert assembly_input.pe31_reconciliation_review_integration_input is not None
+    pe21_input = assembly_input.pe31_reconciliation_review_integration_input.pe21_reconciliation_primary_evidence_integration_input
+    bad_pe21_input = replace(
+        pe21_input,
+        primary_evidence_binding=replace(
+            pe21_input.primary_evidence_binding,
+            manifest_verify_rc=1,
+        ),
+    )
+    bad_review = default_minimal_reconciliation_review_proof(bad_pe21_input)
+    bad_pe31 = replace(
+        assembly_input.pe31_reconciliation_review_integration_input,
+        pe21_reconciliation_primary_evidence_integration_input=bad_pe21_input,
+        pe21_reconciliation_primary_evidence_integration_proof=default_minimal_pe21_integration_proof(
+            bad_pe21_input
+        ),
+        reconciliation_review_proof=bad_review,
+    )
+    bad = replace(assembly_input, pe31_reconciliation_review_integration_input=bad_pe31)
+    result = evaluate_preflight_execution_readiness_assembly_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("manifest_verify_rc" in r for r in result["fail_reasons"])
+
+
+def test_pe31_revoked_review_only_false_fails() -> None:
+    assembly_input = default_minimal_assembly_input()
+    assert assembly_input.pe31_reconciliation_review_integration_input is not None
+    bad_review = replace(
+        assembly_input.pe31_reconciliation_review_integration_input.reconciliation_review_proof,
+        review_only=False,
+    )
+    bad_review = replace(
+        bad_review,
+        reconciliation_review_proof_digest=compute_reconciliation_review_proof_digest(bad_review),
+    )
+    bad_pe31 = replace(
+        assembly_input.pe31_reconciliation_review_integration_input,
+        reconciliation_review_proof=bad_review,
+    )
+    bad = replace(assembly_input, pe31_reconciliation_review_integration_input=bad_pe31)
+    result = evaluate_preflight_execution_readiness_assembly_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("review_only must be true" in r for r in result["fail_reasons"])
+
+
+def test_pe31_owner_drift_fails() -> None:
+    assembly_input = default_minimal_assembly_input()
+    assert assembly_input.pe31_reconciliation_review_integration_proof is not None
+    bad_proof = replace(
+        assembly_input.pe31_reconciliation_review_integration_proof,
+        integration_owner="wrong.owner.v0",
+    )
+    bad = replace(assembly_input, pe31_reconciliation_review_integration_proof=bad_proof)
+    result = evaluate_preflight_execution_readiness_assembly_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("integration_owner must be" in r for r in result["fail_reasons"])
+
+
+def test_pe31_proof_digest_drift_fails() -> None:
+    assembly_input = default_minimal_assembly_input()
+    assert assembly_input.pe31_reconciliation_review_integration_proof is not None
+    bad_proof = replace(
+        assembly_input.pe31_reconciliation_review_integration_proof,
+        integration_proof_digest="0" * 64,
+    )
+    bad = replace(assembly_input, pe31_reconciliation_review_integration_proof=bad_proof)
+    result = evaluate_preflight_execution_readiness_assembly_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("integration_proof_digest mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe31_input_digest_drift_fails() -> None:
+    assembly_input = default_minimal_assembly_input()
+    assert assembly_input.pe31_reconciliation_review_integration_proof is not None
+    bad_proof = replace(
+        assembly_input.pe31_reconciliation_review_integration_proof,
+        integration_input_digest="0" * 64,
+    )
+    bad = replace(assembly_input, pe31_reconciliation_review_integration_proof=bad_proof)
+    result = evaluate_preflight_execution_readiness_assembly_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("integration_input_digest mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe31_run_identity_drift_fails() -> None:
+    assembly_input = default_minimal_assembly_input()
+    assert assembly_input.pe31_reconciliation_review_integration_input is not None
+    bad_pe31 = replace(
+        assembly_input.pe31_reconciliation_review_integration_input,
+        integration_id="foreign-reconciliation-review-integration",
+    )
+    bad = replace(assembly_input, pe31_reconciliation_review_integration_input=bad_pe31)
+    result = evaluate_preflight_execution_readiness_assembly_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("integration_input_digest mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe31_assembly_identity_drift_fails() -> None:
+    assembly_input = default_minimal_assembly_input()
+    assert assembly_input.pe31_reconciliation_review_integration_input is not None
+    bad_pe31 = replace(
+        assembly_input.pe31_reconciliation_review_integration_input,
+        pe30_tiny_order_integration_input=replace(
+            assembly_input.pe31_reconciliation_review_integration_input.pe30_tiny_order_integration_input,
+            pe26_assembly_input=replace(assembly_input, assembly_id="foreign-assembly-id"),
+        ),
+    )
+    bad = replace(assembly_input, pe31_reconciliation_review_integration_input=bad_pe31)
+    result = evaluate_preflight_execution_readiness_assembly_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("assembly_id mismatch with embedded PE-26" in r for r in result["fail_reasons"])
+
+
+def test_pe31_review_proof_digest_drift_fails() -> None:
+    assembly_input = default_minimal_assembly_input()
+    assert assembly_input.pe31_reconciliation_review_integration_input is not None
+    bad_review = replace(
+        assembly_input.pe31_reconciliation_review_integration_input.reconciliation_review_proof,
+        reconciliation_review_proof_digest="0" * 64,
+    )
+    bad_pe31 = replace(
+        assembly_input.pe31_reconciliation_review_integration_input,
+        reconciliation_review_proof=bad_review,
+    )
+    bad = replace(assembly_input, pe31_reconciliation_review_integration_input=bad_pe31)
+    result = evaluate_preflight_execution_readiness_assembly_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("reconciliation_review_proof_digest mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe21_pe31_integration_input_digest_drift_fails() -> None:
+    assembly_input = default_minimal_assembly_input()
+    bad_pe21 = replace(
+        assembly_input.pe21_reconciliation_primary_evidence_proof,
+        integration_input_digest="0" * 64,
+    )
+    bad = replace(assembly_input, pe21_reconciliation_primary_evidence_proof=bad_pe21)
+    result = evaluate_preflight_execution_readiness_assembly_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "pe21_pe31_reconciliation: integration_input_digest mismatch" in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_pe21_pe31_integration_proof_digest_drift_fails() -> None:
+    assembly_input = default_minimal_assembly_input()
+    bad_pe21 = replace(
+        assembly_input.pe21_reconciliation_primary_evidence_proof,
+        integration_proof_digest="0" * 64,
+    )
+    bad = replace(assembly_input, pe21_reconciliation_primary_evidence_proof=bad_pe21)
+    result = evaluate_preflight_execution_readiness_assembly_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "pe21_pe31_reconciliation: integration_proof_digest mismatch" in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_pe21_pe31_reconciliation_result_digest_drift_fails() -> None:
+    assembly_input = default_minimal_assembly_input()
+    assert assembly_input.pe31_reconciliation_review_integration_input is not None
+    bad_pe21_proof = replace(
+        assembly_input.pe31_reconciliation_review_integration_input.pe21_reconciliation_primary_evidence_integration_proof,
+        reconciliation_result_digest="0" * 64,
+    )
+    bad_pe31 = replace(
+        assembly_input.pe31_reconciliation_review_integration_input,
+        pe21_reconciliation_primary_evidence_integration_proof=bad_pe21_proof,
+    )
+    bad = replace(assembly_input, pe31_reconciliation_review_integration_input=bad_pe31)
+    result = evaluate_preflight_execution_readiness_assembly_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("reconciliation_result_digest mismatch" in r for r in result["fail_reasons"])
+
+
+def test_foreign_pe31_review_lifecycle_proof_fails() -> None:
+    assembly_input = default_minimal_assembly_input()
+    foreign_pe31 = default_minimal_pe31_integration_input(
+        source_revision=ALT_COMMIT_SHA,
+        integration_id="foreign-reconciliation-review-lifecycle-integration",
+    )
+    foreign_proof = default_minimal_pe31_integration_proof(foreign_pe31)
+    bad = replace(
+        assembly_input,
+        pe31_reconciliation_review_integration_input=foreign_pe31,
+        pe31_reconciliation_review_integration_proof=foreign_proof,
+    )
+    result = evaluate_preflight_execution_readiness_assembly_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("source_revision mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe31_evidence_root_drift_fails() -> None:
+    assembly_input = default_minimal_assembly_input()
+    assert assembly_input.pe31_reconciliation_review_integration_input is not None
+    pe21_input = assembly_input.pe31_reconciliation_review_integration_input.pe21_reconciliation_primary_evidence_integration_input
+    bad_pe21_input = replace(
+        pe21_input,
+        primary_evidence_binding=replace(
+            pe21_input.primary_evidence_binding,
+            durable_archive_root="/tmp/evidence",
+        ),
+    )
+    bad_pe31 = replace(
+        assembly_input.pe31_reconciliation_review_integration_input,
+        pe21_reconciliation_primary_evidence_integration_input=bad_pe21_input,
+        pe21_reconciliation_primary_evidence_integration_proof=default_minimal_pe21_integration_proof(
+            bad_pe21_input
+        ),
+        reconciliation_review_proof=default_minimal_reconciliation_review_proof(bad_pe21_input),
+    )
+    bad = replace(assembly_input, pe31_reconciliation_review_integration_input=bad_pe31)
+    result = evaluate_preflight_execution_readiness_assembly_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("/tmp" in r for r in result["fail_reasons"])

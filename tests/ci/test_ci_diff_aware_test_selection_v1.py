@@ -619,3 +619,126 @@ def test_selector_durable_completion_import_modules() -> None:
 def test_mapping_file_includes_durable_completion_focused() -> None:
     text = MAPPING.read_text(encoding="utf-8")
     assert "durable_completion_focused:" in text
+
+
+PE52_PREFLIGHT_ASSEMBLY_FILES = (
+    "src/ops/bounded_futures_testnet_preflight_execution_readiness_assembly_lifecycle_integration_contract_v0.py",
+    "tests/ops/test_bounded_futures_testnet_preflight_execution_readiness_assembly_lifecycle_integration_contract_v0.py",
+)
+
+
+def test_selector_pe52_preflight_assembly_fileset_focused() -> None:
+    sel = _run_selector(*PE52_PREFLIGHT_ASSEMBLY_FILES)
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "preflight_assembly_focused"
+    targets = _targets(sel)
+    assert (
+        "tests/ops/test_bounded_futures_testnet_preflight_execution_readiness_assembly_lifecycle_integration_contract_v0.py"
+        in targets
+    )
+    assert (
+        "tests/ops/test_bounded_futures_testnet_reconciliation_review_lifecycle_integration_contract_v0.py"
+        in targets
+    )
+    assert sel["tests_execute_full"] == "false"
+    assert sel["tests_execute_no_op"] == "false"
+
+
+def test_selector_pe26_owner_plus_test_owner_only_focused() -> None:
+    sel = _run_selector(*PE52_PREFLIGHT_ASSEMBLY_FILES)
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "preflight_assembly_focused"
+
+
+def test_selector_unknown_productive_src_ops_never_no_op() -> None:
+    sel = _run_selector("src/ops/unknown_unmapped_contract_v0.py")
+    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_reason"] == "productive_src_no_op_blocked_fail_closed"
+    assert sel["tests_execute_no_op"] == "false"
+
+
+def test_selector_productive_src_without_test_owner_escalates_full() -> None:
+    sel = _run_selector(
+        "src/ops/bounded_futures_testnet_preflight_packet_contract_v0.py",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+    assert sel["tests_execute_full"] == "true"
+
+
+def test_selector_preflight_assembly_rebundle_with_ci_policy_focused() -> None:
+    sel = _run_selector(
+        *PE52_PREFLIGHT_ASSEMBLY_FILES,
+        "scripts/ops/ci_test_selection_v1.py",
+        "config/ci/file_category_mapping.yaml",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    )
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "preflight_assembly_focused"
+    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" in _targets(sel)
+
+
+def test_selector_preflight_assembly_plus_foreign_src_full() -> None:
+    sel = _run_selector(
+        *PE52_PREFLIGHT_ASSEMBLY_FILES,
+        "src/execution/live/orchestrator.py",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+
+
+def test_selector_preflight_assembly_execution_touch_escalates_full() -> None:
+    sel = _run_selector(
+        PE52_PREFLIGHT_ASSEMBLY_FILES[0],
+        "src/risk/killswitch.py",
+        PE52_PREFLIGHT_ASSEMBLY_FILES[1],
+    )
+    assert sel["test_selection_mode"] == "FULL"
+
+
+def test_selector_preflight_assembly_missing_test_owner_escalates_full(monkeypatch) -> None:
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(
+        "ci_test_selection_v1_pa_missing_owner",
+        str(SELECTOR),
+    )
+    assert spec and spec.loader
+    sel_mod = importlib.util.module_from_spec(spec)
+    sys.modules["ci_test_selection_v1_pa_missing_owner"] = sel_mod
+    spec.loader.exec_module(sel_mod)
+
+    original_exists = sel_mod._repo_path_exists
+
+    def fake_exists(path: str) -> bool:
+        if (
+            path
+            == "tests/ops/test_bounded_futures_testnet_reconciliation_review_lifecycle_integration_contract_v0.py"
+        ):
+            return False
+        return original_exists(path)
+
+    monkeypatch.setattr(sel_mod, "_repo_path_exists", fake_exists)
+    result = sel_mod.resolve_selection([PE52_PREFLIGHT_ASSEMBLY_FILES[0]])
+    assert result.mode == "FULL"
+
+
+def test_selector_preflight_assembly_ci_policy_only_escalates_full() -> None:
+    sel = _run_selector(
+        "scripts/ops/ci_test_selection_v1.py",
+        "config/ci/file_category_mapping.yaml",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+
+
+def test_selector_preflight_assembly_import_modules() -> None:
+    sel = _run_selector(*PE52_PREFLIGHT_ASSEMBLY_FILES)
+    modules = _modules(sel)
+    assert (
+        "src.ops.bounded_futures_testnet_preflight_execution_readiness_assembly_lifecycle_integration_contract_v0"
+        in modules
+    )
+
+
+def test_mapping_file_includes_preflight_assembly_focused() -> None:
+    text = MAPPING.read_text(encoding="utf-8")
+    assert "preflight_assembly_focused:" in text
