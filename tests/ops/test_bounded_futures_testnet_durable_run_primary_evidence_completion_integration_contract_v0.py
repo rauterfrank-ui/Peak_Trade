@@ -65,8 +65,8 @@ from src.ops.bounded_futures_testnet_durable_run_primary_evidence_completion_int
     RISK_EVALUATION_EXECUTED,
     PROOF_LIFECYCLE_CURRENT,
     PROOF_LIFECYCLE_DUPLICATE,
-    PROOF_LIFECYCLE_REPLAY,
     PROOF_LIFECYCLE_REVOKED,
+    PROOF_LIFECYCLE_REPLAY,
     PROOF_LIFECYCLE_STALE,
     PROOF_LIFECYCLE_SUPERSEDED,
     RUN_STARTED,
@@ -118,8 +118,11 @@ from src.ops.bounded_futures_testnet_operator_review_handoff_boundary_contract_v
     CONTRACT_VERSION as PE34_CONTRACT_VERSION,
 )
 from src.ops.bounded_futures_testnet_position_order_reconciliation_primary_evidence_integration_contract_v0 import (
+    ARTIFACT_RECONCILIATION_RESULT,
     ManifestEntry,
+    PrimaryEvidenceBindingInput,
     PACKAGE_MARKER as PE21_PACKAGE_MARKER,
+    ReconciliationStateBinding,
 )
 from src.ops.bounded_futures_testnet_preflight_packet_archive_contract_v0 import (
     PACKAGE_MARKER as PE16_PACKAGE_MARKER,
@@ -3010,3 +3013,349 @@ def test_pe25_completion_proof_chain_drift_fails() -> None:
         "completion_referenced_pe25_closure_result_digest mismatch" in r
         for r in result["fail_reasons"]
     )
+
+
+def _replace_pe21_binding(
+    integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
+    **binding_kwargs: object,
+) -> DurableRunPrimaryEvidenceCompletionIntegrationInput:
+    pe21_input = integration_input.pe21_integration_input
+    binding = replace(pe21_input.primary_evidence_binding, **binding_kwargs)
+    pe21_input = replace(pe21_input, primary_evidence_binding=binding)
+    return replace(integration_input, pe21_integration_input=pe21_input)
+
+
+def _replace_pe21_manifest_entries(
+    integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
+    manifest_entries: tuple[ManifestEntry, ...],
+) -> DurableRunPrimaryEvidenceCompletionIntegrationInput:
+    manifest_digest = compute_manifest_digest(manifest_entries)
+    binding = integration_input.pe21_integration_input.primary_evidence_binding
+    return _replace_pe21_binding(
+        integration_input,
+        manifest_entries=manifest_entries,
+        manifest_digest=manifest_digest,
+        manifest_proof_identity=manifest_digest,
+    )
+
+
+def _pe21_reconciliation_result_entry(
+    integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
+) -> ManifestEntry:
+    for entry in integration_input.pe21_integration_input.primary_evidence_binding.manifest_entries:
+        if entry.relative_path == ARTIFACT_RECONCILIATION_RESULT:
+            return entry
+    raise AssertionError("canonical reconciliation result manifest entry missing")
+
+
+def test_reconciliation_result_manifest_integrity_coherent_passes() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    result = evaluate_durable_run_primary_evidence_completion_integration(integration_input)
+    assert result["integration_pass"] is True
+    entry = _pe21_reconciliation_result_entry(integration_input)
+    assert (
+        entry.digest
+        == integration_input.pe21_integration_input.reconciliation_binding.result_digest
+    )
+
+
+def test_missing_reconciliation_result_manifest_entry_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    entries = tuple(
+        entry
+        for entry in integration_input.pe21_integration_input.primary_evidence_binding.manifest_entries
+        if entry.relative_path != ARTIFACT_RECONCILIATION_RESULT
+    )
+    bad = _replace_pe21_manifest_entries(integration_input, entries)
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "pe21_reconciliation_result_manifest: RECONCILIATION_RESULT.json manifest entry required"
+        in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_empty_reconciliation_result_manifest_path_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    entry = _pe21_reconciliation_result_entry(integration_input)
+    entries = tuple(
+        ManifestEntry(digest=entry.digest, relative_path="")
+        if item.relative_path == ARTIFACT_RECONCILIATION_RESULT
+        else item
+        for item in integration_input.pe21_integration_input.primary_evidence_binding.manifest_entries
+    )
+    bad = _replace_pe21_manifest_entries(integration_input, entries)
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("empty manifest artifact path" in r for r in result["fail_reasons"])
+
+
+def test_wrong_reconciliation_result_artifact_name_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    entry = _pe21_reconciliation_result_entry(integration_input)
+    entries = tuple(
+        ManifestEntry(digest=entry.digest, relative_path="RECONCILIATION_OUTPUT.json")
+        if item.relative_path == ARTIFACT_RECONCILIATION_RESULT
+        else item
+        for item in integration_input.pe21_integration_input.primary_evidence_binding.manifest_entries
+    )
+    bad = _replace_pe21_manifest_entries(integration_input, entries)
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "pe21_reconciliation_result_manifest: RECONCILIATION_RESULT.json manifest entry required"
+        in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_alias_reconciliation_result_manifest_path_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    entry = _pe21_reconciliation_result_entry(integration_input)
+    alias = ManifestEntry(
+        digest=entry.digest,
+        relative_path=f"reconciliation/{ARTIFACT_RECONCILIATION_RESULT}",
+    )
+    entries = tuple(
+        entry
+        for entry in integration_input.pe21_integration_input.primary_evidence_binding.manifest_entries
+        if entry.relative_path != ARTIFACT_RECONCILIATION_RESULT
+    ) + (alias,)
+    bad = _replace_pe21_manifest_entries(integration_input, entries)
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "alias or alternate reconciliation result manifest path" in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_missing_reconciliation_result_manifest_digest_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    entries = tuple(
+        ManifestEntry(digest="", relative_path=entry.relative_path)
+        if entry.relative_path == ARTIFACT_RECONCILIATION_RESULT
+        else entry
+        for entry in integration_input.pe21_integration_input.primary_evidence_binding.manifest_entries
+    )
+    bad = _replace_pe21_manifest_entries(integration_input, entries)
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "manifest digest required for RECONCILIATION_RESULT.json" in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_malformed_reconciliation_result_manifest_digest_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    entries = tuple(
+        ManifestEntry(digest="not-a-valid-digest", relative_path=entry.relative_path)
+        if entry.relative_path == ARTIFACT_RECONCILIATION_RESULT
+        else entry
+        for entry in integration_input.pe21_integration_input.primary_evidence_binding.manifest_entries
+    )
+    bad = _replace_pe21_manifest_entries(integration_input, entries)
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "manifest digest must be 64-char lowercase sha256 hex" in r for r in result["fail_reasons"]
+    )
+
+
+def test_uppercase_reconciliation_result_manifest_digest_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    entry = _pe21_reconciliation_result_entry(integration_input)
+    entries = tuple(
+        ManifestEntry(digest=entry.digest.upper(), relative_path=entry.relative_path)
+        if entry.relative_path == ARTIFACT_RECONCILIATION_RESULT
+        else entry
+        for entry in integration_input.pe21_integration_input.primary_evidence_binding.manifest_entries
+    )
+    bad = _replace_pe21_manifest_entries(integration_input, entries)
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "manifest digest must be 64-char lowercase sha256 hex" in r for r in result["fail_reasons"]
+    )
+
+
+def test_reconciliation_result_manifest_digest_mismatch_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    entries = tuple(
+        ManifestEntry(digest="a" * 64, relative_path=entry.relative_path)
+        if entry.relative_path == ARTIFACT_RECONCILIATION_RESULT
+        else entry
+        for entry in integration_input.pe21_integration_input.primary_evidence_binding.manifest_entries
+    )
+    bad = _replace_pe21_manifest_entries(integration_input, entries)
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "manifest digest mismatch with reconciliation_binding.result_digest" in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_duplicate_reconciliation_result_manifest_entry_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    entry = _pe21_reconciliation_result_entry(integration_input)
+    entries = (
+        *integration_input.pe21_integration_input.primary_evidence_binding.manifest_entries,
+        ManifestEntry(digest=entry.digest, relative_path=ARTIFACT_RECONCILIATION_RESULT),
+    )
+    bad = _replace_pe21_manifest_entries(integration_input, entries)
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "duplicate RECONCILIATION_RESULT.json manifest entries" in r
+        or "duplicate manifest entry paths" in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_contradictory_reconciliation_result_manifest_entries_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    entry = _pe21_reconciliation_result_entry(integration_input)
+    alias = ManifestEntry(
+        digest="b" * 64,
+        relative_path=f"alt/{ARTIFACT_RECONCILIATION_RESULT}",
+    )
+    canonical = ManifestEntry(digest=entry.digest, relative_path=ARTIFACT_RECONCILIATION_RESULT)
+    other_entries = tuple(
+        item
+        for item in integration_input.pe21_integration_input.primary_evidence_binding.manifest_entries
+        if item.relative_path != ARTIFACT_RECONCILIATION_RESULT
+    )
+    bad = _replace_pe21_manifest_entries(integration_input, (*other_entries, canonical, alias))
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "alias or alternate reconciliation result manifest path" in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_reconciliation_result_binding_digest_algorithm_mismatch_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    recon = integration_input.pe21_integration_input.reconciliation_binding
+    bad_recon = ReconciliationStateBinding(
+        expected_position=recon.expected_position,
+        observed_position=recon.observed_position,
+        expected_orders=recon.expected_orders,
+        observed_orders=recon.observed_orders,
+        input_digest=recon.input_digest,
+        result_digest="c" * 64,
+        classification=recon.classification,
+        reconciled=recon.reconciled,
+        unresolved_count=recon.unresolved_count,
+        mismatch_count=recon.mismatch_count,
+        orphaned_order_count=recon.orphaned_order_count,
+        duplicate_order_count=recon.duplicate_order_count,
+        orphaned_position_count=recon.orphaned_position_count,
+    )
+    pe21_input = replace(
+        integration_input.pe21_integration_input,
+        reconciliation_binding=bad_recon,
+    )
+    bad = replace(integration_input, pe21_integration_input=pe21_input)
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "reconciliation_binding.result_digest mismatch with canonical algorithm" in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_reconciliation_result_run_identity_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    pe21_input = replace(
+        integration_input.pe21_integration_input,
+        source_revision="1234567890123456789012345678901234567890",
+    )
+    bad = replace(integration_input, pe21_integration_input=pe21_input)
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "source_revision drift breaks run identity chain" in r for r in result["fail_reasons"]
+    )
+
+
+def test_reconciliation_result_completion_identity_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        manifest_proof=replace(integration_input.manifest_proof, manifest_digest="9" * 64),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("manifest_digest mismatch" in r for r in result["fail_reasons"])
+
+
+def test_reconciliation_result_pe21_manifest_identity_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = _replace_pe21_binding(
+        integration_input,
+        manifest_proof_identity="0" * 64,
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "pe21 manifest_proof_identity drift invalidates reconciliation result manifest entry" in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_reconciliation_result_evidence_root_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = _replace_pe21_binding(
+        integration_input,
+        durable_archive_root="/tmp/evidence-root-drift",
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "durable_archive_root drift breaks evidence root chain" in r for r in result["fail_reasons"]
+    )
+
+
+def test_reconciliation_result_stale_proof_lifecycle_still_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        proof_lifecycle=replace(
+            integration_input.proof_lifecycle, lifecycle_state=PROOF_LIFECYCLE_STALE
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("invalid proof lifecycle state" in r for r in result["fail_reasons"])
+
+
+def test_reconciliation_result_revoked_proof_lifecycle_still_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        proof_lifecycle=replace(
+            integration_input.proof_lifecycle,
+            lifecycle_state=PROOF_LIFECYCLE_REVOKED,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("invalid proof lifecycle state" in r for r in result["fail_reasons"])
+
+
+def test_reconciliation_result_superseded_proof_lifecycle_still_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        proof_lifecycle=replace(
+            integration_input.proof_lifecycle,
+            lifecycle_state=PROOF_LIFECYCLE_SUPERSEDED,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("invalid proof lifecycle state" in r for r in result["fail_reasons"])

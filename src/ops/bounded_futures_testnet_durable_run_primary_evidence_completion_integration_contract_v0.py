@@ -33,6 +33,7 @@ from scripts.ops.primary_evidence_retention_v0 import (
     is_under_tmp,
 )
 from src.ops.bounded_futures_testnet_position_order_reconciliation_primary_evidence_integration_contract_v0 import (
+    ARTIFACT_RECONCILIATION_RESULT,
     CONTRACT_VERSION as PE21_CONTRACT_VERSION,
     ManifestEntry,
     ReconciliationPrimaryEvidenceIntegrationInput,
@@ -40,6 +41,7 @@ from src.ops.bounded_futures_testnet_position_order_reconciliation_primary_evide
     compute_integration_proof_digest as compute_pe21_integration_proof_digest,
     compute_manifest_digest,
     evaluate_position_order_reconciliation_primary_evidence_integration,
+    evaluate_reconciliation_static,
     validate_primary_evidence_binding,
     validate_reconciliation_primary_evidence_integration_input,
 )
@@ -964,6 +966,130 @@ def _validate_pe21_proof_binding(
     elif not pe21_result.get("durable_primary_evidence_binding_proven"):
         fail_reasons.append("pe21_proof: durable primary evidence binding not proven upstream")
     return fail_reasons
+
+
+def _validate_pe21_reconciliation_result_manifest_integrity(
+    integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
+) -> list[str]:
+    """Fail-closed PE-21 RECONCILIATION_RESULT.json manifest entry integrity enforcement."""
+    fail_reasons: list[str] = []
+    pe21_input = integration_input.pe21_integration_input
+    pe21_binding = pe21_input.primary_evidence_binding
+    recon = pe21_input.reconciliation_binding
+    durable_root = integration_input.durable_run_root
+    run_identity = integration_input.run_identity
+    manifest_digest = integration_input.manifest_proof.manifest_digest
+    prefix = "pe21_reconciliation_result_manifest"
+
+    for entry in pe21_binding.manifest_entries:
+        if not entry.relative_path:
+            fail_reasons.append(f"{prefix}: empty manifest artifact path")
+
+    canonical_entries = [
+        entry
+        for entry in pe21_binding.manifest_entries
+        if entry.relative_path == ARTIFACT_RECONCILIATION_RESULT
+    ]
+    alias_entries = [
+        entry
+        for entry in pe21_binding.manifest_entries
+        if entry.relative_path != ARTIFACT_RECONCILIATION_RESULT
+        and (
+            entry.relative_path.endswith(ARTIFACT_RECONCILIATION_RESULT)
+            or "RECONCILIATION_RESULT" in entry.relative_path
+        )
+    ]
+
+    if not canonical_entries:
+        fail_reasons.append(f"{prefix}: {ARTIFACT_RECONCILIATION_RESULT} manifest entry required")
+    elif len(canonical_entries) > 1:
+        fail_reasons.append(
+            f"{prefix}: duplicate {ARTIFACT_RECONCILIATION_RESULT} manifest entries"
+        )
+
+    if alias_entries:
+        fail_reasons.append(f"{prefix}: alias or alternate reconciliation result manifest path")
+
+    if ARTIFACT_RECONCILIATION_RESULT not in pe21_binding.expected_artifact_filenames:
+        fail_reasons.append(
+            f"{prefix}: {ARTIFACT_RECONCILIATION_RESULT} required in expected_artifact_filenames"
+        )
+
+    expected_result_digest = recon.result_digest
+    if not expected_result_digest:
+        fail_reasons.append(f"{prefix}: reconciliation_binding.result_digest required")
+    elif not _valid_sha256_digest(expected_result_digest):
+        fail_reasons.append(
+            f"{prefix}: reconciliation_binding.result_digest must be 64-char lowercase sha256 hex"
+        )
+    else:
+        static_recon = evaluate_reconciliation_static(
+            expected_position=recon.expected_position,
+            observed_position=recon.observed_position,
+            expected_orders=recon.expected_orders,
+            observed_orders=recon.observed_orders,
+            instrument=pe21_input.instrument,
+        )
+        if expected_result_digest != static_recon["result_digest"]:
+            fail_reasons.append(
+                f"{prefix}: reconciliation_binding.result_digest mismatch with canonical algorithm"
+            )
+
+    if canonical_entries:
+        entry = canonical_entries[0]
+        if not entry.relative_path:
+            fail_reasons.append(f"{prefix}: empty manifest artifact path")
+        elif entry.relative_path != ARTIFACT_RECONCILIATION_RESULT:
+            fail_reasons.append(
+                f"{prefix}: manifest artifact path must be {ARTIFACT_RECONCILIATION_RESULT!r}"
+            )
+        if not entry.digest:
+            fail_reasons.append(
+                f"{prefix}: manifest digest required for {ARTIFACT_RECONCILIATION_RESULT}"
+            )
+        elif not _valid_sha256_digest(entry.digest):
+            fail_reasons.append(f"{prefix}: manifest digest must be 64-char lowercase sha256 hex")
+        elif expected_result_digest and entry.digest != expected_result_digest:
+            fail_reasons.append(
+                f"{prefix}: manifest digest mismatch with reconciliation_binding.result_digest"
+            )
+
+    if pe21_input.source_revision != integration_input.source_revision:
+        fail_reasons.append(f"{prefix}: source_revision drift breaks run identity chain")
+
+    if pe21_binding.durable_archive_root != durable_root.durable_archive_root:
+        fail_reasons.append(f"{prefix}: durable_archive_root drift breaks evidence root chain")
+
+    computed_pe21_manifest = compute_manifest_digest(pe21_binding.manifest_entries)
+    if pe21_binding.manifest_digest != computed_pe21_manifest:
+        fail_reasons.append(
+            f"{prefix}: pe21 manifest_digest drift invalidates reconciliation result manifest entry"
+        )
+    if pe21_binding.manifest_proof_identity != computed_pe21_manifest:
+        fail_reasons.append(
+            f"{prefix}: pe21 manifest_proof_identity drift invalidates reconciliation result "
+            "manifest entry"
+        )
+
+    completion_identity = compute_completion_identity_digest(
+        run_root_digest=durable_root.run_root_digest,
+        manifest_digest=manifest_digest,
+        source_revision=integration_input.source_revision,
+    )
+    if not run_identity.run_identity_digest:
+        fail_reasons.append(f"{prefix}: run_identity_digest required for evidence chain")
+    elif not _valid_sha256_digest(run_identity.run_identity_digest):
+        fail_reasons.append(f"{prefix}: run_identity_digest must be 64-char lowercase sha256 hex")
+    if not manifest_digest:
+        fail_reasons.append(f"{prefix}: completion manifest_digest required for evidence chain")
+    elif not _valid_sha256_digest(manifest_digest):
+        fail_reasons.append(
+            f"{prefix}: completion manifest_digest must be 64-char lowercase sha256 hex"
+        )
+    if not completion_identity:
+        fail_reasons.append(f"{prefix}: completion_identity_digest unavailable for evidence chain")
+
+    return _sorted_unique(fail_reasons)
 
 
 def _validate_pe31_integration_proof(
@@ -2593,6 +2719,7 @@ def validate_durable_run_primary_evidence_completion_integration_input(
     if pe21_binding.durable_archive_root != durable_root.durable_archive_root:
         fail_reasons.append("pe21 durable_archive_root mismatch with durable_run_root")
     fail_reasons.extend(validate_primary_evidence_binding(pe21_binding))
+    fail_reasons.extend(_validate_pe21_reconciliation_result_manifest_integrity(integration_input))
 
     pe31_input = integration_input.pe31_reconciliation_review_integration_input
     if pe31_input.source_revision != integration_input.source_revision:
