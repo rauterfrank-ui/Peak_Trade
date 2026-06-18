@@ -294,7 +294,20 @@ jobs:
           shopt -s nullglob
           webui_structure_contract=(tests/webui/test_*structure_contract*.py)
           shopt -u nullglob
-          pytest tests/ci tests/ops "${webui_structure_contract[@]}" -q --tb=short -m "not network and not external_tools"
+          # Parallel shards (previously monolithic: pytest tests/ci tests/ops "${webui_structure_contract[@]}").
+          PYTEST_ARGS=(-q --tb=short -m "not network and not external_tools")
+          SHARD_FAIL=0
+          (
+            pytest tests/ci "${webui_structure_contract[@]}" "${PYTEST_ARGS[@]}"
+          ) &
+          PID_CI=$!
+          (
+            pytest tests/ops "${PYTEST_ARGS[@]}"
+          ) &
+          PID_OPS=$!
+          wait "$PID_CI" || SHARD_FAIL=1
+          wait "$PID_OPS" || SHARD_FAIL=1
+          exit "$SHARD_FAIL"
 
       - name: WebUI bounded pytest (market/observability surface)
         if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.webui_surface_changed == 'true' && needs.changes.outputs.run_matrix != 'true' }}
