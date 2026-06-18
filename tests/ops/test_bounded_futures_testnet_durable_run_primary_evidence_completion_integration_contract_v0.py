@@ -1,7 +1,7 @@
 """Static + offline bounded Futures Testnet durable run primary evidence completion (v0).
 
 Docs/tests-only Class-4 scoped exception. No runtime, network, credentials, or Testnet start.
-PE-21 + PE-16 + Gap-4 + Gap-2a.1 durable run-root completion static integration only.
+PE-31 + PE-21 + PE-16 + Gap-4 + Gap-2a.1 durable run-root completion static integration only.
 """
 
 from __future__ import annotations
@@ -36,7 +36,9 @@ from src.ops.bounded_futures_testnet_durable_run_primary_evidence_completion_int
     PACKAGE_MARKER,
     PE16_ARCHIVE_OWNER,
     PE21_INTEGRATION_OWNER,
+    PE31_INTEGRATION_OWNER,
     PRIMARY_EVIDENCE_OPERATIONALLY_ACCEPTED,
+    RECONCILIATION_EXECUTED,
     PROOF_LIFECYCLE_CURRENT,
     PROOF_LIFECYCLE_DUPLICATE,
     PROOF_LIFECYCLE_REPLAY,
@@ -51,6 +53,7 @@ from src.ops.bounded_futures_testnet_durable_run_primary_evidence_completion_int
     compute_manifest_digest,
     compute_run_identity_digest,
     default_minimal_completion_integration_input,
+    default_minimal_pe31_integration_proof,
     default_minimal_safety_snapshot,
     evaluate_durable_run_primary_evidence_completion_integration,
     serialize_completion_integration_input_canonical,
@@ -64,6 +67,11 @@ from src.ops.bounded_futures_testnet_preflight_packet_archive_contract_v0 import
     PACKAGE_MARKER as PE16_PACKAGE_MARKER,
 )
 from src.ops.bounded_futures_testnet_preflight_packet_contract_v0 import FOLLOWUP_RUN_GATE
+from src.ops.bounded_futures_testnet_reconciliation_review_lifecycle_integration_contract_v0 import (
+    CONTRACT_VERSION as PE31_CONTRACT_VERSION,
+    default_minimal_integration_input as default_minimal_pe31_integration_input,
+    evaluate_reconciliation_review_lifecycle_integration,
+)
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 INTEGRATION_MODULE = (
@@ -80,6 +88,24 @@ PE21_MODULE = (
 )
 PE16_MODULE = (
     REPO_ROOT / "src" / "ops" / "bounded_futures_testnet_preflight_packet_archive_contract_v0.py"
+)
+PE31_MODULE = (
+    REPO_ROOT
+    / "src"
+    / "ops"
+    / "bounded_futures_testnet_reconciliation_review_lifecycle_integration_contract_v0.py"
+)
+PE31_TEST_OWNER = (
+    REPO_ROOT
+    / "tests"
+    / "ops"
+    / "test_bounded_futures_testnet_reconciliation_review_lifecycle_integration_contract_v0.py"
+)
+PE21_TEST_OWNER = (
+    REPO_ROOT
+    / "tests"
+    / "ops"
+    / "test_bounded_futures_testnet_position_order_reconciliation_primary_evidence_integration_contract_v0.py"
 )
 PRIMARY_EVIDENCE_MODULE = REPO_ROOT / "scripts" / "ops" / "primary_evidence_retention_v0.py"
 GAP4_TEST_OWNER = REPO_ROOT / "tests" / "ops" / "test_gap4_output_evidence_paths_contract_v0.py"
@@ -111,24 +137,33 @@ def test_canonical_owners_referenced_not_duplicated() -> None:
         "bounded_futures_testnet_position_order_reconciliation_primary_evidence_integration_contract_v0"
         in integration_text
     )
+    assert (
+        "bounded_futures_testnet_reconciliation_review_lifecycle_integration_contract_v0"
+        in integration_text
+    )
     assert "bounded_futures_testnet_preflight_packet_archive_contract_v0" in integration_text
     assert "scripts.ops.primary_evidence_retention_v0" in integration_text
     assert PE21_PACKAGE_MARKER in PE21_MODULE.read_text(encoding="utf-8")
     assert PE16_PACKAGE_MARKER in PE16_MODULE.read_text(encoding="utf-8")
     assert PE21_MODULE.exists()
     assert PE16_MODULE.exists()
+    assert PE31_MODULE.exists()
+    assert PE31_TEST_OWNER.exists()
+    assert PE21_TEST_OWNER.exists()
     assert PRIMARY_EVIDENCE_MODULE.exists()
     assert GAP4_TEST_OWNER.exists()
     assert GAP2A1_TEST_OWNER.exists()
     assert PE16_ARCHIVE_OWNER == str(PE16_MODULE.relative_to(REPO_ROOT))
     assert GAP4_COMPLETION_OWNER == str(GAP4_TEST_OWNER.relative_to(REPO_ROOT))
     assert GAP2A1_ENFORCEMENT_OWNER == str(GAP2A1_TEST_OWNER.relative_to(REPO_ROOT))
+    assert PE31_INTEGRATION_OWNER == PE31_CONTRACT_VERSION
 
 
 def test_global_safety_flags_remain_blocked() -> None:
     assert CONTRACT_IMPLEMENTATION_ONLY is True
     assert OPERATIVE_RUN_COMPLETION_RECORDED is False
     assert PRIMARY_EVIDENCE_OPERATIONALLY_ACCEPTED is False
+    assert RECONCILIATION_EXECUTED is False
     assert RUN_STARTED is False
     assert ARCHIVE_READ is False
     assert ARCHIVE_WRITTEN is False
@@ -162,6 +197,7 @@ def test_coherent_static_completion_happy_path_passes() -> None:
     assert result["completion_static_proven"] is True
     assert result["completion_claimed"] is True
     assert result["pe21_integration_pass"] is True
+    assert result["pe31_integration_pass"] is True
     assert result["fail_reasons"] == []
 
 
@@ -172,6 +208,7 @@ def test_valid_static_proof_remains_non_authorizing() -> None:
     assert result["integration_pass"] is True
     assert result["operative_run_completion_recorded"] is False
     assert result["primary_evidence_operationally_accepted"] is False
+    assert result["reconciliation_executed"] is False
     assert result["archive_read"] is False
     assert result["archive_written"] is False
     assert result["manifest_read"] is False
@@ -208,8 +245,9 @@ def test_invalid_run_type_fails(run_type: str) -> None:
 
 
 def test_missing_source_revision_fails() -> None:
-    integration_input = default_minimal_completion_integration_input(source_revision="")
-    result = evaluate_durable_run_primary_evidence_completion_integration(integration_input)
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(integration_input, source_revision="")
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
     assert result["integration_pass"] is False
     assert any("source_revision" in r for r in result["fail_reasons"])
 
@@ -439,6 +477,137 @@ def test_pe21_proof_mismatch_fails() -> None:
     result = evaluate_durable_run_primary_evidence_completion_integration(bad)
     assert result["integration_pass"] is False
     assert any("integration_proof_digest mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe31_proof_mismatch_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe31_reconciliation_review_integration_proof=replace(
+            integration_input.pe31_reconciliation_review_integration_proof,
+            integration_proof_digest="0" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("integration_proof_digest mismatch" in r for r in result["fail_reasons"])
+
+
+def test_missing_pe31_proof_binding_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe31_reconciliation_review_integration_proof=replace(
+            integration_input.pe31_reconciliation_review_integration_proof,
+            pe31_integration_pass=False,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe31_integration_pass must be true" in r for r in result["fail_reasons"])
+
+
+def test_pe31_references_wrong_pe21_proof_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad_pe31_input = replace(
+        integration_input.pe31_reconciliation_review_integration_input,
+        pe21_reconciliation_primary_evidence_integration_proof=replace(
+            integration_input.pe31_reconciliation_review_integration_input.pe21_reconciliation_primary_evidence_integration_proof,
+            integration_proof_digest="0" * 64,
+        ),
+    )
+    bad = replace(
+        integration_input,
+        pe31_reconciliation_review_integration_input=bad_pe31_input,
+        pe31_reconciliation_review_integration_proof=default_minimal_pe31_integration_proof(
+            bad_pe31_input
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe21_integration_proof_digest mismatch" in r for r in result["fail_reasons"])
+
+
+def test_completion_proof_chain_pe31_digest_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        completion_proof_chain=replace(
+            integration_input.completion_proof_chain,
+            completion_referenced_pe31_proof_digest="0" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "completion_referenced_pe31_proof_digest mismatch" in r for r in result["fail_reasons"]
+    )
+
+
+def test_completion_proof_chain_traceability_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        completion_proof_chain=replace(
+            integration_input.completion_proof_chain,
+            shared_traceability_identity="0" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("shared_traceability_identity mismatch" in r for r in result["fail_reasons"])
+
+
+def test_unresolved_order_state_in_pe31_review_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad_review = replace(
+        integration_input.pe31_reconciliation_review_integration_input.reconciliation_review_proof,
+        orders_created=1,
+    )
+    bad_pe31_input = replace(
+        integration_input.pe31_reconciliation_review_integration_input,
+        reconciliation_review_proof=bad_review,
+    )
+    bad = replace(
+        integration_input,
+        pe31_reconciliation_review_integration_input=bad_pe31_input,
+        pe31_reconciliation_review_integration_proof=default_minimal_pe31_integration_proof(
+            bad_pe31_input
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("unresolved order state" in r for r in result["fail_reasons"])
+
+
+def test_unresolved_position_state_in_pe31_review_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad_review = replace(
+        integration_input.pe31_reconciliation_review_integration_input.reconciliation_review_proof,
+        positions_changed=1,
+    )
+    bad_pe31_input = replace(
+        integration_input.pe31_reconciliation_review_integration_input,
+        reconciliation_review_proof=bad_review,
+    )
+    bad = replace(
+        integration_input,
+        pe31_reconciliation_review_integration_input=bad_pe31_input,
+        pe31_reconciliation_review_integration_proof=default_minimal_pe31_integration_proof(
+            bad_pe31_input
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("unresolved position state" in r for r in result["fail_reasons"])
+
+
+def test_pe31_alone_does_not_authorize_completion() -> None:
+    pe31_input = default_minimal_pe31_integration_input()
+    pe31_result = evaluate_reconciliation_review_lifecycle_integration(pe31_input)
+    assert pe31_result["integration_pass"] is True
+    assert pe31_result["operative_reconciliation_executed"] is False
+    assert pe31_result["authority_lift"] is False
 
 
 def test_gap4_completion_mismatch_fails() -> None:
