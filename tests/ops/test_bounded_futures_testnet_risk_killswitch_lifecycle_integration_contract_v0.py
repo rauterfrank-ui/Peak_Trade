@@ -50,8 +50,22 @@ from src.ops.bounded_futures_testnet_risk_killswitch_lifecycle_integration_contr
 )
 from src.ops.bounded_futures_testnet_adapter_lifecycle_contract_v0 import (
     PACKAGE_MARKER as PE12_PACKAGE_MARKER,
+    OPERATOR_GO_TINY_ORDER,
     PHASE_TINY_ORDER,
     PHASE_VALIDATE_ONLY,
+)
+from src.ops.order_capability_killswitch_abort_binding_contract_v1 import (
+    REASON_ABORT_ACK_NOT_CONFIRMED,
+    REASON_CORRELATION_MISMATCH,
+    REASON_KILLSWITCH_TRIPPED,
+    REASON_MISSING_EVIDENCE_CORRELATION,
+    REASON_PAYLOAD_UNSAFE_FLAGS,
+    REASON_TOKEN_MISMATCH,
+    OrderCapabilityAbortBindingInput,
+    OrderCapabilityBindingVerdict,
+    OrderCapabilityKillSwitchSnapshot,
+    OrderCapabilityPayloadSafetySummary,
+    evaluate_order_capability_abort_binding,
 )
 from src.ops.bounded_futures_testnet_preflight_packet_contract_v0 import (
     FLATTEN_BINDING_REFERENCE,
@@ -83,6 +97,54 @@ _CLASS4_SCOPED_EXCEPTION_MARKER = "BOUNDED_FUTURES_TESTNET_RISK_KILLSWITCH_LIFEC
 
 VALID_COMMIT_SHA = "abcdef0123456789abcdef0123456789abcdef01"
 GENERIC_FUTURES_INSTRUMENT = "PF_ETHUSD"
+PE22_ABORT_NOW_UTC = "2026-06-09T13:00:00Z"
+PE22_ABORT_OBSERVED_UTC = "2026-06-09T12:59:30Z"
+
+
+def _pe22_abort_correlation_id(adapter_id: str) -> str:
+    return f"pe22-{adapter_id}"
+
+
+def _valid_abort_binding_input(
+    adapter_id: str = "offline_bounded_futures_testnet_adapter_v0",
+    **overrides: object,
+) -> OrderCapabilityAbortBindingInput:
+    correlation_id = _pe22_abort_correlation_id(adapter_id)
+    payload = OrderCapabilityPayloadSafetySummary(
+        evidence_correlation_id=correlation_id,
+        no_submit=True,
+        no_network=True,
+        execute_authorized=False,
+        order_submission_executed=False,
+        cancel_executed=False,
+        trade_position_mutation_executed=False,
+        abort_ack_marker="CONFIRMED",
+        operator_go_token_binding=OPERATOR_GO_TINY_ORDER,
+        environment="testnet",
+    )
+    snapshot = OrderCapabilityKillSwitchSnapshot(
+        source="pe22_offline_fixture",
+        source_id=f"pe22-ks-{adapter_id}",
+        source_kind="injected_offline_fixture",
+        state="CLEAR",
+        observed_at_utc=PE22_ABORT_OBSERVED_UTC,
+        ttl_seconds=120,
+        correlation_id=correlation_id,
+        environment="testnet",
+    )
+    base = {
+        "payload_summary": payload,
+        "expected_operator_go_token_binding": OPERATOR_GO_TINY_ORDER,
+        "kill_switch_snapshot": snapshot,
+        "now_utc": PE22_ABORT_NOW_UTC,
+        "expected_environment": "testnet",
+    }
+    base.update(overrides)
+    if "payload_summary" in overrides:
+        base["payload_summary"] = overrides["payload_summary"]
+    if "kill_switch_snapshot" in overrides:
+        base["kill_switch_snapshot"] = overrides["kill_switch_snapshot"]
+    return OrderCapabilityAbortBindingInput(**base)
 
 
 def test_package_marker_present() -> None:
@@ -651,3 +713,426 @@ def test_lifecycle_before_must_be_validate_only() -> None:
     result = evaluate_risk_killswitch_lifecycle_integration(bad)
     assert result["integration_pass"] is False
     assert any("lifecycle_state_before" in r for r in result["fail_reasons"])
+
+
+def test_valid_abort_binding_with_pe22_prerequisites_passes() -> None:
+    integration_input = default_minimal_integration_input(source_revision=VALID_COMMIT_SHA)
+    abort_verdict = evaluate_order_capability_abort_binding(integration_input.abort_binding_input)
+    assert abort_verdict.verdict == OrderCapabilityBindingVerdict.PASS_FOR_DRY_SUBMIT_CANDIDATE_ONLY
+    result = evaluate_risk_killswitch_lifecycle_integration(integration_input)
+    assert result["integration_pass"] is True
+    assert result["fail_reasons"] == []
+
+
+def test_abort_binding_idempotent_repeat_produces_same_result() -> None:
+    integration_input = default_minimal_integration_input()
+    first = evaluate_risk_killswitch_lifecycle_integration(integration_input)
+    second = evaluate_risk_killswitch_lifecycle_integration(integration_input)
+    assert first == second
+
+
+def test_missing_abort_binding_correlation_fails() -> None:
+    integration_input = default_minimal_integration_input()
+    bad_abort = _valid_abort_binding_input(
+        payload_summary=OrderCapabilityPayloadSafetySummary(
+            evidence_correlation_id="",
+            no_submit=True,
+            no_network=True,
+            execute_authorized=False,
+            order_submission_executed=False,
+            cancel_executed=False,
+            trade_position_mutation_executed=False,
+            abort_ack_marker="CONFIRMED",
+            operator_go_token_binding=OPERATOR_GO_TINY_ORDER,
+            environment="testnet",
+        )
+    )
+    bad = replace(integration_input, abort_binding_input=bad_abort)
+    result = evaluate_risk_killswitch_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        REASON_MISSING_EVIDENCE_CORRELATION in r or "binding_input required" in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_abort_binding_evaluator_fail_closed_blocks_pe22() -> None:
+    integration_input = default_minimal_integration_input()
+    bad_abort = _valid_abort_binding_input(
+        kill_switch_snapshot=OrderCapabilityKillSwitchSnapshot(
+            source="pe22_offline_fixture",
+            source_id="pe22-ks-001",
+            source_kind="injected_offline_fixture",
+            state="TRIPPED",
+            observed_at_utc=PE22_ABORT_OBSERVED_UTC,
+            ttl_seconds=120,
+            correlation_id=_pe22_abort_correlation_id(integration_input.adapter_id),
+            environment="testnet",
+        )
+    )
+    bad = replace(integration_input, abort_binding_input=bad_abort)
+    result = evaluate_risk_killswitch_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(REASON_KILLSWITCH_TRIPPED in r for r in result["fail_reasons"])
+
+
+def test_abort_ack_not_confirmed_fail_closed() -> None:
+    integration_input = default_minimal_integration_input()
+    bad_abort = _valid_abort_binding_input(
+        payload_summary=OrderCapabilityPayloadSafetySummary(
+            evidence_correlation_id=_pe22_abort_correlation_id(integration_input.adapter_id),
+            no_submit=True,
+            no_network=True,
+            execute_authorized=False,
+            order_submission_executed=False,
+            cancel_executed=False,
+            trade_position_mutation_executed=False,
+            abort_ack_marker="PENDING",
+            operator_go_token_binding=OPERATOR_GO_TINY_ORDER,
+            environment="testnet",
+        )
+    )
+    bad = replace(integration_input, abort_binding_input=bad_abort)
+    result = evaluate_risk_killswitch_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(REASON_ABORT_ACK_NOT_CONFIRMED in r for r in result["fail_reasons"])
+
+
+def test_abort_payload_unsafe_flags_fail_closed() -> None:
+    integration_input = default_minimal_integration_input()
+    bad_abort = _valid_abort_binding_input(
+        payload_summary=OrderCapabilityPayloadSafetySummary(
+            evidence_correlation_id=_pe22_abort_correlation_id(integration_input.adapter_id),
+            no_submit=False,
+            no_network=True,
+            execute_authorized=False,
+            order_submission_executed=False,
+            cancel_executed=False,
+            trade_position_mutation_executed=False,
+            abort_ack_marker="CONFIRMED",
+            operator_go_token_binding=OPERATOR_GO_TINY_ORDER,
+            environment="testnet",
+        )
+    )
+    bad = replace(integration_input, abort_binding_input=bad_abort)
+    result = evaluate_risk_killswitch_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(REASON_PAYLOAD_UNSAFE_FLAGS in r for r in result["fail_reasons"])
+
+
+def test_abort_cleanup_cancel_executed_flag_fail_closed() -> None:
+    integration_input = default_minimal_integration_input()
+    bad_abort = _valid_abort_binding_input(
+        payload_summary=OrderCapabilityPayloadSafetySummary(
+            evidence_correlation_id=_pe22_abort_correlation_id(integration_input.adapter_id),
+            no_submit=True,
+            no_network=True,
+            execute_authorized=False,
+            order_submission_executed=False,
+            cancel_executed=True,
+            trade_position_mutation_executed=False,
+            abort_ack_marker="CONFIRMED",
+            operator_go_token_binding=OPERATOR_GO_TINY_ORDER,
+            environment="testnet",
+        )
+    )
+    bad = replace(integration_input, abort_binding_input=bad_abort)
+    result = evaluate_risk_killswitch_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(REASON_PAYLOAD_UNSAFE_FLAGS in r for r in result["fail_reasons"])
+
+
+def test_abort_idempotency_not_proven_when_order_submission_executed() -> None:
+    integration_input = default_minimal_integration_input()
+    bad_abort = _valid_abort_binding_input(
+        payload_summary=OrderCapabilityPayloadSafetySummary(
+            evidence_correlation_id=_pe22_abort_correlation_id(integration_input.adapter_id),
+            no_submit=True,
+            no_network=True,
+            execute_authorized=False,
+            order_submission_executed=True,
+            cancel_executed=False,
+            trade_position_mutation_executed=False,
+            abort_ack_marker="CONFIRMED",
+            operator_go_token_binding=OPERATOR_GO_TINY_ORDER,
+            environment="testnet",
+        )
+    )
+    bad = replace(integration_input, abort_binding_input=bad_abort)
+    result = evaluate_risk_killswitch_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(REASON_PAYLOAD_UNSAFE_FLAGS in r for r in result["fail_reasons"])
+
+
+def test_abort_binding_correlation_mismatch_fail_closed() -> None:
+    integration_input = default_minimal_integration_input()
+    bad_abort = _valid_abort_binding_input(
+        payload_summary=OrderCapabilityPayloadSafetySummary(
+            evidence_correlation_id="ev-a",
+            no_submit=True,
+            no_network=True,
+            execute_authorized=False,
+            order_submission_executed=False,
+            cancel_executed=False,
+            trade_position_mutation_executed=False,
+            abort_ack_marker="CONFIRMED",
+            operator_go_token_binding=OPERATOR_GO_TINY_ORDER,
+            environment="testnet",
+        ),
+        kill_switch_snapshot=OrderCapabilityKillSwitchSnapshot(
+            source="pe22_offline_fixture",
+            source_id="pe22-ks-001",
+            source_kind="injected_offline_fixture",
+            state="CLEAR",
+            observed_at_utc=PE22_ABORT_OBSERVED_UTC,
+            ttl_seconds=120,
+            correlation_id="ev-b",
+            environment="testnet",
+        ),
+    )
+    bad = replace(integration_input, abort_binding_input=bad_abort)
+    result = evaluate_risk_killswitch_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(REASON_CORRELATION_MISMATCH in r for r in result["fail_reasons"])
+
+
+def test_abort_binding_owner_token_drift_fail_closed() -> None:
+    integration_input = default_minimal_integration_input()
+    bad_abort = _valid_abort_binding_input(expected_operator_go_token_binding="GO_OTHER_TOKEN")
+    bad = replace(integration_input, abort_binding_input=bad_abort)
+    result = evaluate_risk_killswitch_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("owner drift" in r or REASON_TOKEN_MISMATCH in r for r in result["fail_reasons"])
+
+
+def test_abort_binding_payload_owner_drift_fail_closed() -> None:
+    integration_input = default_minimal_integration_input()
+    bad_abort = _valid_abort_binding_input(
+        payload_summary=OrderCapabilityPayloadSafetySummary(
+            evidence_correlation_id=_pe22_abort_correlation_id(integration_input.adapter_id),
+            no_submit=True,
+            no_network=True,
+            execute_authorized=False,
+            order_submission_executed=False,
+            cancel_executed=False,
+            trade_position_mutation_executed=False,
+            abort_ack_marker="CONFIRMED",
+            operator_go_token_binding="GO_OTHER_TOKEN",
+            environment="testnet",
+        )
+    )
+    bad = replace(integration_input, abort_binding_input=bad_abort)
+    result = evaluate_risk_killswitch_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("owner drift" in r or REASON_TOKEN_MISMATCH in r for r in result["fail_reasons"])
+
+
+def test_abort_binding_lifecycle_adapter_identity_drift_fail_closed() -> None:
+    integration_input = default_minimal_integration_input()
+    bad_abort = _valid_abort_binding_input(
+        payload_summary=OrderCapabilityPayloadSafetySummary(
+            evidence_correlation_id="foreign-run-identity",
+            no_submit=True,
+            no_network=True,
+            execute_authorized=False,
+            order_submission_executed=False,
+            cancel_executed=False,
+            trade_position_mutation_executed=False,
+            abort_ack_marker="CONFIRMED",
+            operator_go_token_binding=OPERATOR_GO_TINY_ORDER,
+            environment="testnet",
+        ),
+        kill_switch_snapshot=OrderCapabilityKillSwitchSnapshot(
+            source="pe22_offline_fixture",
+            source_id="pe22-ks-001",
+            source_kind="injected_offline_fixture",
+            state="CLEAR",
+            observed_at_utc=PE22_ABORT_OBSERVED_UTC,
+            ttl_seconds=120,
+            correlation_id="foreign-run-identity",
+            environment="testnet",
+        ),
+    )
+    bad = replace(integration_input, abort_binding_input=bad_abort)
+    result = evaluate_risk_killswitch_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("adapter_id identity drift" in r for r in result["fail_reasons"])
+
+
+def test_abort_killswitch_identity_drift_fail_closed() -> None:
+    integration_input = default_minimal_integration_input()
+    bad_abort = _valid_abort_binding_input(
+        kill_switch_snapshot=OrderCapabilityKillSwitchSnapshot(
+            source="pe22_offline_fixture",
+            source_id=f"pe22-ks-{integration_input.adapter_id}",
+            source_kind="injected_offline_fixture",
+            state="OK",
+            observed_at_utc=PE22_ABORT_OBSERVED_UTC,
+            ttl_seconds=120,
+            correlation_id=_pe22_abort_correlation_id(integration_input.adapter_id),
+            environment="testnet",
+        )
+    )
+    bad = replace(integration_input, abort_binding_input=bad_abort)
+    result = evaluate_risk_killswitch_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("killswitch identity drift" in r for r in result["fail_reasons"])
+
+
+def test_foreign_abort_proof_fail_closed() -> None:
+    integration_input = default_minimal_integration_input()
+    bad_abort = _valid_abort_binding_input(
+        payload_summary=OrderCapabilityPayloadSafetySummary(
+            evidence_correlation_id="foreign-proof-run-999",
+            no_submit=True,
+            no_network=True,
+            execute_authorized=False,
+            order_submission_executed=False,
+            cancel_executed=False,
+            trade_position_mutation_executed=False,
+            abort_ack_marker="CONFIRMED",
+            operator_go_token_binding=OPERATOR_GO_TINY_ORDER,
+            environment="testnet",
+        ),
+        kill_switch_snapshot=OrderCapabilityKillSwitchSnapshot(
+            source="foreign_owner",
+            source_id="foreign-proof-run-999",
+            source_kind="foreign_fixture",
+            state="CLEAR",
+            observed_at_utc=PE22_ABORT_OBSERVED_UTC,
+            ttl_seconds=120,
+            correlation_id="foreign-proof-run-999",
+            environment="testnet",
+        ),
+    )
+    bad = replace(integration_input, abort_binding_input=bad_abort)
+    result = evaluate_risk_killswitch_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("adapter_id identity drift" in r for r in result["fail_reasons"])
+
+
+def test_abort_evaluator_none_result_fail_closed(monkeypatch: pytest.MonkeyPatch) -> None:
+    integration_input = default_minimal_integration_input()
+
+    def _return_none(
+        _inp: OrderCapabilityAbortBindingInput,
+    ) -> OrderCapabilityBindingVerdict | None:
+        return None
+
+    monkeypatch.setattr(
+        "src.ops.bounded_futures_testnet_risk_killswitch_lifecycle_integration_contract_v0.evaluate_order_capability_abort_binding",
+        _return_none,
+    )
+    result = evaluate_risk_killswitch_lifecycle_integration(integration_input)
+    assert result["integration_pass"] is False
+    assert any("verdict_none" in r for r in result["fail_reasons"])
+
+
+def test_abort_evaluator_exception_fail_closed(monkeypatch: pytest.MonkeyPatch) -> None:
+    integration_input = default_minimal_integration_input()
+
+    def _raise(
+        _inp: OrderCapabilityAbortBindingInput,
+    ) -> OrderCapabilityBindingVerdict:
+        raise ValueError("abort evaluator failure")
+
+    monkeypatch.setattr(
+        "src.ops.bounded_futures_testnet_risk_killswitch_lifecycle_integration_contract_v0.evaluate_order_capability_abort_binding",
+        _raise,
+    )
+    result = evaluate_risk_killswitch_lifecycle_integration(integration_input)
+    assert result["integration_pass"] is False
+    assert any("evaluation_exception" in r for r in result["fail_reasons"])
+
+
+def test_abort_evaluator_unknown_verdict_fail_closed(monkeypatch: pytest.MonkeyPatch) -> None:
+    from src.ops.order_capability_killswitch_abort_binding_contract_v1 import (
+        OrderCapabilityAbortBindingVerdict,
+    )
+
+    integration_input = default_minimal_integration_input()
+
+    def _return_blocked(
+        inp: OrderCapabilityAbortBindingInput,
+    ) -> OrderCapabilityAbortBindingVerdict:
+        return OrderCapabilityAbortBindingVerdict(
+            verdict=OrderCapabilityBindingVerdict.BLOCKED,
+            reason_codes=(),
+            evidence_correlation_id=inp.payload_summary.evidence_correlation_id,
+            snapshot_age_seconds=None,
+            no_authority_change=True,
+            execute_authorized=False,
+            order_submission_executed=False,
+            cancel_executed=False,
+            trade_position_mutation_executed=False,
+            preflight_remains_blocked=True,
+            live_ready=False,
+            dashboard_truth_granted=False,
+        )
+
+    monkeypatch.setattr(
+        "src.ops.bounded_futures_testnet_risk_killswitch_lifecycle_integration_contract_v0.evaluate_order_capability_abort_binding",
+        _return_blocked,
+    )
+    result = evaluate_risk_killswitch_lifecycle_integration(integration_input)
+    assert result["integration_pass"] is False
+    assert any("verdict_blocked" in r for r in result["fail_reasons"])
+
+
+def test_abort_repeated_evaluation_inconsistency_fail_closed(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from src.ops.order_capability_killswitch_abort_binding_contract_v1 import (
+        OrderCapabilityAbortBindingVerdict,
+    )
+
+    integration_input = default_minimal_integration_input()
+    call_count = 0
+
+    def _alternate_verdict(
+        inp: OrderCapabilityAbortBindingInput,
+    ) -> OrderCapabilityAbortBindingVerdict:
+        nonlocal call_count
+        call_count += 1
+        verdict = (
+            OrderCapabilityBindingVerdict.PASS_FOR_DRY_SUBMIT_CANDIDATE_ONLY
+            if call_count == 1
+            else OrderCapabilityBindingVerdict.FAIL_CLOSED
+        )
+        return OrderCapabilityAbortBindingVerdict(
+            verdict=verdict,
+            reason_codes=() if call_count == 1 else (REASON_TOKEN_MISMATCH,),
+            evidence_correlation_id=inp.payload_summary.evidence_correlation_id,
+            snapshot_age_seconds=None,
+            no_authority_change=True,
+            execute_authorized=False,
+            order_submission_executed=False,
+            cancel_executed=False,
+            trade_position_mutation_executed=False,
+            preflight_remains_blocked=True,
+            live_ready=False,
+            dashboard_truth_granted=False,
+        )
+
+    monkeypatch.setattr(
+        "src.ops.bounded_futures_testnet_risk_killswitch_lifecycle_integration_contract_v0.evaluate_order_capability_abort_binding",
+        _alternate_verdict,
+    )
+    result = evaluate_risk_killswitch_lifecycle_integration(integration_input)
+    assert result["integration_pass"] is False
+    assert any("repeated evaluation inconsistency" in r for r in result["fail_reasons"])
+
+
+def test_existing_pe22_risk_failure_remains_effective_with_valid_abort_binding() -> None:
+    integration_input = default_minimal_integration_input()
+    bad_proof = replace(integration_input.risk_evaluation_proof, proof_digest="")
+    bad = replace(integration_input, risk_evaluation_proof=bad_proof)
+    result = evaluate_risk_killswitch_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("risk_evaluation_proof: proof_digest required" in r for r in result["fail_reasons"])
+
+
+def test_evaluate_order_capability_abort_binding_referenced_in_integration_module() -> None:
+    integration_text = INTEGRATION_MODULE.read_text(encoding="utf-8")
+    assert "evaluate_order_capability_abort_binding" in integration_text
+    assert "abort_binding_input" in integration_text
