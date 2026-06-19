@@ -25,6 +25,12 @@ from typing import Any, Dict, List, Optional, Sequence, Set, Tuple
 
 from required_checks_config import load_required_checks_config
 
+LIVE_ROLLUP_STATES = frozenset({"EXPECTED", "WAITING", "PENDING", "QUEUED", "IN_PROGRESS"})
+LIVE_CHECK_RUN_STATUSES = frozenset({"QUEUED", "IN_PROGRESS", "PENDING", "WAITING"})
+TERMINAL_BAD_CHECK_CONCLUSIONS = frozenset({"FAILURE", "CANCELLED", "TIMED_OUT", "ACTION_REQUIRED"})
+FULL_SHARD_NAME_PREFIX = "full-shard ("
+STABLE_TESTS_CONTEXT_PREFIX = "tests ("
+
 
 def _parse_args() -> argparse.Namespace:
     parser = argparse.ArgumentParser(
@@ -123,11 +129,85 @@ def _gh_paginated(endpoint: str, token: str, *, per_page: int = 100) -> List[Any
 
 def _fetch_head_check_runs(repo: str, sha: str, token: str) -> List[Dict[str, Any]]:
     endpoint = f"/repos/{repo}/commits/{sha}/check-runs"
-    payload, _ = _gh_api(endpoint, token, query={"per_page": 100})
-    runs = payload.get("check_runs", []) if isinstance(payload, dict) else []
-    if not isinstance(runs, list):
-        raise RuntimeError("check_runs payload malformed")
-    return [r for r in runs if isinstance(r, dict)]
+    runs: List[Dict[str, Any]] = []
+    page = 1
+    while True:
+        payload, _ = _gh_api(endpoint, token, query={"per_page": 100, "page": page})
+        batch = payload.get("check_runs", []) if isinstance(payload, dict) else []
+        if not isinstance(batch, list):
+            raise RuntimeError("check_runs payload malformed")
+        runs.extend(r for r in batch if isinstance(r, dict))
+        if len(batch) < 100:
+            break
+        page += 1
+    return runs
+
+
+def _python_version_from_tests_context(context: str) -> Optional[str]:
+    if not context.startswith(STABLE_TESTS_CONTEXT_PREFIX) or not context.endswith(")"):
+        return None
+    version = context[len(STABLE_TESTS_CONTEXT_PREFIX) : -1].strip()
+    return version or None
+
+
+def _has_live_full_shards_for_python(head_runs: Sequence[Dict[str, Any]], py_version: str) -> bool:
+    """True when job-level full-shard checks for py_version exist on the head SHA."""
+    prefix = f"{FULL_SHARD_NAME_PREFIX}{py_version}, "
+    shard_runs = [run for run in head_runs if str(run.get("name", "")).strip().startswith(prefix)]
+    if not shard_runs:
+        return False
+    for run in shard_runs:
+        status = str(run.get("status", "")).strip().upper()
+        conclusion = str(run.get("conclusion") or "").strip().upper()
+        if status in LIVE_CHECK_RUN_STATUSES:
+            return True
+        if status == "COMPLETED" and conclusion in TERMINAL_BAD_CHECK_CONCLUSIONS:
+            return True
+    # Shards exist on head SHA; aggregator may still be queued behind them.
+    return True
+
+
+def _is_context_live(
+    context: str,
+    on_head: Set[str],
+    rollup_states: Dict[str, str],
+    head_runs: Sequence[Dict[str, Any]],
+) -> bool:
+    if context in on_head:
+        return True
+    state = rollup_states.get(context, "").strip().upper()
+    if state in LIVE_ROLLUP_STATES:
+        return True
+    py_version = _python_version_from_tests_context(context)
+    if py_version and _has_live_full_shards_for_python(head_runs, py_version):
+        return True
+    return False
+
+
+def _classify_live_context(
+    context: str,
+    on_head: Set[str],
+    rollup_states: Dict[str, str],
+    head_runs: Sequence[Dict[str, Any]],
+) -> Tuple[str, str]:
+    if context in on_head:
+        return (
+            "REPORTED_ON_HEAD_SHA",
+            "check context exists on current PR head SHA",
+        )
+    state = rollup_states.get(context, "").strip().upper()
+    if state in LIVE_ROLLUP_STATES:
+        return (
+            "ROLLUP_LIVE_PENDING_ON_HEAD_SHA",
+            f"rollup_state={state}; required context is queued or in progress on head SHA",
+        )
+    py_version = _python_version_from_tests_context(context)
+    if py_version and _has_live_full_shards_for_python(head_runs, py_version):
+        return (
+            "LIVE_PENDING_AGGREGATOR_VIA_SHARDS",
+            f"internal full-shard ({py_version}, */8) checks are live on head SHA; stable aggregator pending",
+        )
+    return ("", "")
 
 
 def _fetch_head_status_contexts(repo: str, sha: str, token: str) -> List[Dict[str, Any]]:
@@ -269,7 +349,7 @@ def _collect_head_snapshot(
     head_sha: str,
     pr_number: Optional[int],
     token: str,
-) -> Tuple[Set[str], Dict[str, str]]:
+) -> Tuple[Set[str], Dict[str, str], List[Dict[str, Any]]]:
     head_runs = _fetch_head_check_runs(repo, head_sha, token)
     head_statuses = _fetch_head_status_contexts(repo, head_sha, token)
     rollup_states: Dict[str, str] = {}
@@ -278,7 +358,7 @@ def _collect_head_snapshot(
     run_names = {str(r.get("name", "")).strip() for r in head_runs if r.get("name")}
     status_names = {str(s.get("context", "")).strip() for s in head_statuses if s.get("context")}
     on_head = run_names | status_names
-    return on_head, rollup_states
+    return on_head, rollup_states, head_runs
 
 
 def _evaluate_rows(
@@ -288,6 +368,7 @@ def _evaluate_rows(
     on_head: Set[str],
     rollup_states: Dict[str, str],
     prior_seen: Dict[str, Optional[str]],
+    head_runs: Sequence[Dict[str, Any]],
 ) -> Tuple[List[Dict[str, str]], bool]:
     """
     Evaluate liveness rows with explicit JSON-SSOT semantics.
@@ -309,27 +390,21 @@ def _evaluate_rows(
             rows.append({"context": ctx, "classification": classification, "detail": detail})
 
     for ctx in effective_required_contexts:
-        if ctx in on_head:
-            rows.append(
-                {
-                    "context": ctx,
-                    "classification": "REPORTED_ON_HEAD_SHA",
-                    "detail": "check context exists on current PR head SHA",
-                }
-            )
+        if _is_context_live(ctx, on_head, rollup_states, head_runs):
+            classification, detail = _classify_live_context(ctx, on_head, rollup_states, head_runs)
+            rows.append({"context": ctx, "classification": classification, "detail": detail})
             continue
 
         state = rollup_states.get(ctx, "")
         prior_sha = prior_seen.get(ctx)
-        if state in {"EXPECTED", "WAITING", "PENDING"}:
-            classification = "EXPECTED_WITHOUT_HEAD_RUN"
-            detail = f"rollup_state={state}; no check-run/status context on head SHA"
-        elif prior_sha:
+        if prior_sha:
             classification = "HEAD_SHA_COUPLING_SUSPECT"
             detail = f"found on prior PR commit {prior_sha[:12]}, missing on current head SHA"
         else:
             classification = "MISSING_ON_HEAD_SHA"
             detail = "missing on head SHA and not found in inspected prior PR commits"
+            if state:
+                detail = f"{detail}; rollup_state={state} is not treated as live for this context"
 
         has_liveness_gap = True
         rows.append({"context": ctx, "classification": classification, "detail": detail})
@@ -357,17 +432,22 @@ def main() -> int:
     deadline = time.monotonic() + wait_seconds
     on_head: Set[str] = set()
     rollup_states: Dict[str, str] = {}
+    head_runs: List[Dict[str, Any]] = []
     missing = list(effective_required_contexts)
     waited = False
 
     while True:
-        on_head, rollup_states = _collect_head_snapshot(
+        on_head, rollup_states, head_runs = _collect_head_snapshot(
             repo=args.repo,
             head_sha=args.head_sha,
             pr_number=args.pr_number,
             token=token,
         )
-        missing = [ctx for ctx in effective_required_contexts if ctx not in on_head]
+        missing = [
+            ctx
+            for ctx in effective_required_contexts
+            if not _is_context_live(ctx, on_head, rollup_states, head_runs)
+        ]
         if not missing:
             break
         remaining = deadline - time.monotonic()
@@ -397,6 +477,7 @@ def main() -> int:
         on_head=on_head,
         rollup_states=rollup_states,
         prior_seen=prior_seen,
+        head_runs=head_runs,
     )
 
     summary = _render_summary(rows)
