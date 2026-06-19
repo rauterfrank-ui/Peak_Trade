@@ -68,6 +68,10 @@ from src.ops.bounded_futures_testnet_readiness_decision_lifecycle_integration_co
     PE39_BRIDGE_OWNER,
 )
 
+from tests.ops.pe38_coherent_fixture_patch_v0 import apply_pe38_coherent_fixture_patch
+
+apply_pe38_coherent_fixture_patch()
+
 REPO_ROOT = Path(__file__).resolve().parents[2]
 INTEGRATION_MODULE = (
     REPO_ROOT
