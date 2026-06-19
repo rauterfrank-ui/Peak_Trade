@@ -50,10 +50,18 @@ def test_required_tests_job_has_no_job_level_if() -> None:
     assert "if:" not in tests_block.split("steps:")[0]
 
 
-def test_tests_job_timeout_25_preserved() -> None:
-    assert re.search(
-        r"^\s*tests:\n(?:.*\n)*?\s*timeout-minutes:\s*25\s*$", _ci_text(), re.MULTILINE
-    )
+def test_tests_job_timeout_aggregator_5_full_shard_25() -> None:
+    text = _ci_text()
+    tests_block = text.split("  tests:", 1)[1].split("  strategy-smoke:", 1)[0]
+    assert re.search(r"timeout-minutes:\s*5", tests_block)
+    for job_id in ("full-shard-py39", "full-shard-py310", "full-shard-py311"):
+        match = re.search(
+            rf"  {re.escape(job_id)}:\n(.*?)(?=\n  [A-Za-z0-9_.-]+:|\Z)",
+            text,
+            re.DOTALL,
+        )
+        assert match is not None, job_id
+        assert re.search(r"timeout-minutes:\s*25", match.group(1))
 
 
 def test_changes_job_exports_test_selection_outputs() -> None:
@@ -74,15 +82,17 @@ def test_changes_job_exports_test_selection_outputs() -> None:
 
 
 def test_tests_job_has_no_op_step() -> None:
-    assert "NO_OP — skip full matrix tests (diff-aware)" in _ci_text()
-    assert "tests_execute_no_op == 'true'" in _ci_text()
+    text = _ci_text()
+    assert "NO_OP — skip aggregator (diff-aware)" in text
+    assert "NO_OP — skip shard (diff-aware)" in text
+    assert "tests_execute_no_op == 'true'" in text
 
 
 def test_tests_job_has_focused_and_full_steps() -> None:
     text = _ci_text()
-    assert "Run full test suite (sharded)" in text
+    assert "Run full-suite shard (single pytest process)" in text
     assert "Run focused tests (matrix)" in text
-    assert "Coverage report (FULL 3.11 sharded)" in text
+    assert "Coverage report (FULL 3.11 job-level shards)" in text
 
 
 def test_tests_job_focused_runs_on_all_matrix_versions() -> None:
@@ -441,7 +451,9 @@ def test_selector_market_dashboard_tests_only_focused() -> None:
 
 def test_workflow_only_does_not_run_full_pytest_step_unconditionally() -> None:
     text = _ci_text()
-    full_step = text.split("name: Run full test suite", 1)[1].split("\n      - name:", 1)[0]
+    full_step = text.split("name: Run full-suite shard (single pytest process)", 1)[1].split(
+        "\n      - name:", 1
+    )[0]
     assert "tests_execute_full == 'true'" in full_step
     assert "workflow_only == 'true'" not in full_step
 

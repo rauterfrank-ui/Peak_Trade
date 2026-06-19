@@ -311,7 +311,8 @@ def test_run_matrix_derived_from_non_webui_code_not_raw_code_bucket() -> None:
 def test_matrix_jobs_keep_no_job_level_if_and_short_circuit_skip() -> None:
     text = _ci_text()
     assert "name: tests (${{ matrix.python-version }})" in text
-    assert "NO_OP — skip full matrix tests (diff-aware)" in text
+    assert "NO_OP — skip aggregator (diff-aware)" in text
+    assert "NO_OP — skip shard (diff-aware)" in text
     assert "IMPORTANT: No job-level if condition - matrix jobs must always be created" in text
     assert "Skip strategy smoke (NO_OP/FOCUSED diff-aware)" in text
     assert "needs.changes.outputs.tests_execute_no_op == 'true'" in text

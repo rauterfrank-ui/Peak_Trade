@@ -70,7 +70,7 @@ if [[ "${PT_ALLOW_DIRTY:-NO}" != "YES" ]]; then
   fi
 fi
 
-BASE_MAIN="$(git rev-parse origin/main 2>/dev/null || git rev-parse main)"
+BASE_MAIN="$(git rev-parse origin/main 2>/dev/null || git rev-parse main 2>/dev/null || git rev-parse HEAD)"
 
 if [[ "${DO_BRANCH}" == "yes" ]]; then
   git fetch origin --prune >/dev/null 2>&1 || true
