@@ -109,6 +109,9 @@ RESIDUAL_ACTIVE_SCHEDULE_ALLOWLIST = (
     RESIDUAL_SCHEDULE_WORKFLOW_FILES - GH001_MANUAL_ONLY_FORMER_RESIDUAL
 )
 
+# PR #4455 extended nightly shards (outside 13-file residual inventory).
+CI_EXTENDED_ACTIVE_SCHEDULE_ALLOWLIST = frozenset({"ci-extended-nightly.yml"})
+
 
 def _all_workflow_filenames() -> frozenset[str]:
     names: list[str] = []
@@ -453,7 +456,7 @@ def test_github_workflows_active_schedule_allowlist_drift_guard_v0() -> None:
         if rec.has_active_schedule:
             active.add(fname)
 
-    allowlist = set(RESIDUAL_ACTIVE_SCHEDULE_ALLOWLIST)
+    allowlist = set(RESIDUAL_ACTIVE_SCHEDULE_ALLOWLIST) | CI_EXTENDED_ACTIVE_SCHEDULE_ALLOWLIST
     extra = active - allowlist
     missing_active = allowlist - active
     assert not extra, f"unexpected active schedule workflows: {sorted(extra)}"

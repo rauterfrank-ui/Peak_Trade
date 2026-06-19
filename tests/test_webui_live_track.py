@@ -343,6 +343,55 @@ class TestApiLiveSessionsEndpoint:
 # =============================================================================
 
 
+def _write_minimal_workflow_officer_report(base: Path) -> None:
+    """Populate tmp repo root so Workflow Officer panel renders executive snapshot."""
+    run_dir = base / "out" / "ops" / "workflow_officer" / "20260201T000000Z"
+    run_dir.mkdir(parents=True)
+    report = {
+        "officer_version": "v1-min",
+        "profile": "docs_only_pr",
+        "mode": "audit",
+        "success": True,
+        "finished_at": "2026-02-01",
+        "summary": {
+            "total_checks": 1,
+            "hard_failures": 0,
+            "warnings": 0,
+            "infos": 0,
+            "strict": False,
+            "executive_summary": {
+                "executive_summary_schema_version": "workflow_officer.executive_summary/v0",
+                "urgency_label": "clear",
+                "attention_rationale": "No blocking errors.",
+            },
+            "operator_report": {
+                "operator_report_schema_version": "workflow_officer.operator_report/v0",
+                "primary_followup": {
+                    "check_id": "chk_a",
+                    "recommended_priority": "p3",
+                    "effective_level": "ok",
+                    "recommended_action": "No action.",
+                },
+                "rollup": {
+                    "total_checks": 1,
+                    "hard_failures": 0,
+                    "warnings": 0,
+                    "infos": 0,
+                },
+                "top_followups": [
+                    {
+                        "rank": 1,
+                        "check_id": "chk_a",
+                        "recommended_priority": "p3",
+                        "effective_level": "ok",
+                    }
+                ],
+            },
+        },
+    }
+    (run_dir / "report.json").write_text(json.dumps(report), encoding="utf-8")
+
+
 class TestDashboardRendering:
     """Tests für das Dashboard HTML-Rendering mit Live-Track-Daten."""
 
@@ -365,8 +414,17 @@ class TestDashboardRendering:
         response = test_client.get("/")
         assert "Live-Track" in response.text
 
-    def test_dashboard_contains_workflow_officer_section(self, test_client):
+    def test_dashboard_contains_workflow_officer_section(self, test_client, tmp_path, monkeypatch):
         """Test: Dashboard enthält read-only Workflow-Officer-Panel."""
+        from src.webui import app as app_mod
+        from src.webui.ops_cockpit import build_workflow_officer_panel_context as _build_wf_panel
+
+        _write_minimal_workflow_officer_report(tmp_path)
+        monkeypatch.setattr(
+            app_mod,
+            "build_workflow_officer_panel_context",
+            lambda _root=None: _build_wf_panel(tmp_path),
+        )
         response = test_client.get("/")
         assert response.status_code == 200
         assert "Workflow Officer" in response.text
@@ -390,9 +448,18 @@ class TestDashboardRendering:
         assert "No local Workflow Officer report (executive snapshot)" in response.text
 
     def test_dashboard_workflow_officer_panel_shows_executive_heading_and_followups(
-        self, test_client
+        self, test_client, tmp_path, monkeypatch
     ):
         """Regression: Executive-Überschrift und Follow-up-Listen bleiben im Dashboard sichtbar."""
+        from src.webui import app as app_mod
+        from src.webui.ops_cockpit import build_workflow_officer_panel_context as _build_wf_panel
+
+        _write_minimal_workflow_officer_report(tmp_path)
+        monkeypatch.setattr(
+            app_mod,
+            "build_workflow_officer_panel_context",
+            lambda _root=None: _build_wf_panel(tmp_path),
+        )
         response = test_client.get("/")
         assert response.status_code == 200
         body = response.text

@@ -241,6 +241,7 @@ def _coherent_lifecycle_proof_fixtures() -> tuple[object, object, object, object
     from src.ops.bounded_futures_testnet_preflight_execution_readiness_assembly_lifecycle_integration_contract_v0 import (
         CONTRACT_VERSION as PE26_CONTRACT_VERSION,
         Pe25OperatorClosureProofBinding as Pe26Pe25ProofBinding,
+        _attach_coherent_pe31_bindings,
         compute_lifecycle_matrix_digest,
         default_minimal_assembly_input,
         evaluate_preflight_execution_readiness_assembly_lifecycle_integration,
@@ -277,6 +278,7 @@ def _coherent_lifecycle_proof_fixtures() -> tuple[object, object, object, object
         lifecycle_matrix_digest=matrix_digest,
     )
     pe26_input = replace(pe26_input, pe25_operator_closure_proof=pe26_pe25)
+    pe26_input = _attach_coherent_pe31_bindings(pe26_input)
 
     pe32_result = evaluate_readiness_decision_lifecycle_integration(pe32_input)
     pe26_result = evaluate_preflight_execution_readiness_assembly_lifecycle_integration(pe26_input)
