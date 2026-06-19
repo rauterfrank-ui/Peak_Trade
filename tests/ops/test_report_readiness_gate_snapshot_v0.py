@@ -571,14 +571,38 @@ def test_real_smoke_pass_blocked_safe() -> None:
     assert "registry" not in payload
 
 
-@pytest.mark.skipif(not ARCHIVE_ROOT.is_dir(), reason="operator archive not present")
-def test_real_smoke_include_registry_pass_blocked_safe() -> None:
+def _build_frozen_include_registry_archive(root: Path) -> None:
+    """Deterministic archive for subprocess include-registry smoke (non-mutable)."""
+    from scripts.ops.build_readiness_evidence_ledger_v0 import (
+        DEFAULT_PAPER_RUN_ID,
+        DEFAULT_SHADOW_RUN_ID,
+        DEFAULT_TESTNET_RUN_ID,
+    )
+
+    ledger_helpers = importlib.util.spec_from_file_location(
+        "readiness_ledger_test_helpers",
+        ROOT / "tests/ops/test_build_readiness_evidence_ledger_v0.py",
+    )
+    assert ledger_helpers is not None and ledger_helpers.loader is not None
+    ledger_mod = importlib.util.module_from_spec(ledger_helpers)
+    ledger_helpers.loader.exec_module(ledger_mod)
+
+    ledger_mod._write_run_lane(root, "paper", DEFAULT_PAPER_RUN_ID, review_verdict=None)
+    ledger_mod._write_run_lane(root, "shadow", DEFAULT_SHADOW_RUN_ID, review_verdict="PASS")
+    ledger_mod._write_run_lane(root, "testnet", DEFAULT_TESTNET_RUN_ID, review_verdict="PASS")
+    for marker in ledger_mod.PLANNING_MARKERS:
+        ledger_mod._write_planning_surface(root, marker)
+
+
+def test_real_smoke_include_registry_pass_blocked_safe(tmp_path: Path) -> None:
+    archive = tmp_path / "frozen_include_registry_archive"
+    _build_frozen_include_registry_archive(archive)
     proc = subprocess.run(
         [
             sys.executable,
             str(SCRIPT),
             "--archive-root",
-            str(ARCHIVE_ROOT),
+            str(archive),
             "--fixed-generated-at-utc",
             "2026-05-21T00:00:00Z",
             "--include-registry",

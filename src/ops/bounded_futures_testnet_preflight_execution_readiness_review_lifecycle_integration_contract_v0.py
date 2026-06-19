@@ -1677,6 +1677,7 @@ def default_minimal_integration_input(
     )
     from src.ops.bounded_futures_testnet_preflight_execution_readiness_assembly_lifecycle_integration_contract_v0 import (
         Pe25OperatorClosureProofBinding as Pe26Pe25ProofBinding,
+        _attach_coherent_pe31_bindings,
         compute_lifecycle_matrix_digest,
         default_minimal_assembly_input,
         default_minimal_pe37_traceability_proof,
@@ -1730,6 +1731,7 @@ def default_minimal_integration_input(
         pe37_traceability_boundary_input=pe37_boundary_input,
         pe37_traceability_proof=default_minimal_pe37_traceability_proof(pe37_boundary_input),
     )
+    pe26_input = _attach_coherent_pe31_bindings(pe26_input)
 
     pe26_result = evaluate_preflight_execution_readiness_assembly_lifecycle_integration(pe26_input)
     pe37_result = evaluate_durable_evidence_traceability_boundary(pe37_boundary_input)
