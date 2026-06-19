@@ -349,57 +349,53 @@ jobs:
             -q --tb=short -m "not network and not external_tools"
 
   # ============================================================================
-  # Tests (all Python versions)
+  # FULL suite — job-level shards (one pytest process per GitHub Actions job)
   # ============================================================================
-  # Always creates test jobs for all required Python versions (3.9, 3.10, 3.11).
-  # On docs-only / workflow-only / static-contract-only PRs, jobs short-circuit SUCCESS (NO_OP).
-  # FOCUSED runs bounded pytest on all matrix versions plus module import smoke.
-  # FULL runs the repository test suite with coverage on 3.11.
+  # Internal shard jobs: full-shard (3.x, N/8) on separate ubuntu-latest runners.
+  # Required contexts: tests (3.9), tests (3.10), tests (3.11) via fail-closed aggregators.
+  # FOCUSED bounded pytest: tests-focused (${{ matrix.python-version }}), 15 min.
   # ============================================================================
-  tests:
-    name: tests (${{ matrix.python-version }})
+
+  full-shard-py39:
+    name: full-shard (3.9, ${{ matrix.shard-num }})
     runs-on: ubuntu-latest
     timeout-minutes: 25
     needs: changes
-    # IMPORTANT: No job-level if condition - matrix jobs must always be created
-    # to satisfy branch protection rules (e.g., "tests (3.11)" check)
-
     strategy:
       fail-fast: false
       matrix:
-        # Always create jobs for all required versions (to satisfy branch protection)
-        python-version: ['3.9', '3.10', '3.11']
-
+        include:
+          - { shard-id: 0, shard-num: '1/8' }
+          - { shard-id: 1, shard-num: '2/8' }
+          - { shard-id: 2, shard-num: '3/8' }
+          - { shard-id: 3, shard-num: '4/8' }
+          - { shard-id: 4, shard-num: '5/8' }
+          - { shard-id: 5, shard-num: '6/8' }
+          - { shard-id: 6, shard-num: '7/8' }
+          - { shard-id: 7, shard-num: '8/8' }
     steps:
-      - name: Diff-aware test selection summary
-        if: ${{ github.event_name == 'pull_request' }}
-        run: |
-          echo "test_selection_mode=${{ needs.changes.outputs.test_selection_mode }}"
-          echo "test_selection_reason=${{ needs.changes.outputs.test_selection_reason }}"
-          echo "tests_execute_full=${{ needs.changes.outputs.tests_execute_full }}"
-          echo "tests_execute_focused=${{ needs.changes.outputs.tests_execute_focused }}"
-          echo "tests_execute_no_op=${{ needs.changes.outputs.tests_execute_no_op }}"
-          echo "focused_pytest_targets=${{ needs.changes.outputs.focused_pytest_targets }}"
-          echo "focused_module_imports=${{ needs.changes.outputs.focused_module_imports }}"
-
-      - name: NO_OP — skip full matrix tests (diff-aware)
+      - name: NO_OP — skip shard (diff-aware)
         if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_no_op == 'true' }}
         run: |
-          echo "NO_OP diff-aware selection — skipping full matrix for Python ${{ matrix.python-version }}"
-          echo "reason=${{ needs.changes.outputs.test_selection_reason }}"
+          echo "NO_OP — skipping full-shard (3.9, ${{ matrix.shard-num }})"
+
+      - name: Skip shard (FOCUSED mode)
+        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_focused == 'true' }}
+        run: |
+          echo "FOCUSED mode — shard not executed (3.9, ${{ matrix.shard-num }})"
 
       - name: Checkout
-        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_no_op != 'true' }}
+        if: ${{ github.event_name != 'pull_request' || (needs.changes.outputs.tests_execute_no_op != 'true' && needs.changes.outputs.tests_execute_focused != 'true') }}
         uses: actions/checkout@v5
 
-      - name: Set up Python ${{ matrix.python-version }}
-        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_no_op != 'true' }}
+      - name: Set up Python 3.9
+        if: ${{ github.event_name != 'pull_request' || (needs.changes.outputs.tests_execute_no_op != 'true' && needs.changes.outputs.tests_execute_focused != 'true') }}
         uses: actions/setup-python@v5
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: "3.9"
 
       - name: Cache pip
-        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_no_op != 'true' }}
+        if: ${{ github.event_name != 'pull_request' || (needs.changes.outputs.tests_execute_no_op != 'true' && needs.changes.outputs.tests_execute_focused != 'true') }}
         uses: actions/cache@v4
         with:
           path: ~/.cache/pip
@@ -408,75 +404,273 @@ jobs:
             ${{ runner.os }}-pip-
 
       - name: Install dependencies
-        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_no_op != 'true' }}
+        if: ${{ github.event_name != 'pull_request' || (needs.changes.outputs.tests_execute_no_op != 'true' && needs.changes.outputs.tests_execute_focused != 'true') }}
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest pytest-cov
 
-      - name: "Stability Smoke Tests (Fast Gate)"
-        if: ${{ (github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true') && needs.changes.outputs.tests_execute_no_op != 'true' }}
-        id: stability_smoke
+      - name: Preflight stability and RL smoke (shard 0 only)
+        if: >-
+          ${{ matrix.shard-id == 0 &&
+          (github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true') &&
+          (github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_no_op != 'true') &&
+          (github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_focused != 'true') }}
         shell: bash
         run: |
           set -euo pipefail
-          echo "Running fast stability smoke tests (<5s)..."
           pytest tests/test_stability_smoke.py tests/test_data_contracts.py tests/test_error_taxonomy.py tests/test_resilience.py -m smoke -v --tb=short
-
-      - name: "Smoke: RL v0.1 Contract Test"
-        if: ${{ (github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true') && needs.changes.outputs.tests_execute_no_op != 'true' && runner.os == 'Linux' }}
-        id: rl_v0_1_smoke
-        shell: bash
-        run: |
-          set -euo pipefail
           pytest -q tests/test_rl_v0_1_smoke.py
-
-      - name: Validate RL v0.1 Contract
-        if: ${{ (github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true') && needs.changes.outputs.tests_execute_no_op != 'true' && runner.os == 'Linux' }}
-        id: rl_v0_1_contract
-        shell: bash
-        run: |
           bash scripts/validate_rl_v0_1.sh
 
-      - name: Upload RL validation reports on failure
-        if: ${{ failure() && runner.os == 'Linux' && (steps.rl_v0_1_smoke.outcome == 'failure' || steps.rl_v0_1_contract.outcome == 'failure') }}
-        uses: actions/upload-artifact@v4
-        with:
-          name: rl-v0-1-validation-reports-py${{ matrix.python-version }}
-          path: |
-            reports/rl/**/*
-            reports/rl_v0_1/**/*
-            logs/rl/**/*
-          if-no-files-found: ignore
-          retention-days: 7
+      - name: Verify shard partition completeness
+        if: ${{ github.event_name != 'pull_request' || (needs.changes.outputs.tests_execute_full == 'true' && needs.changes.outputs.tests_execute_no_op != 'true' && needs.changes.outputs.tests_execute_focused != 'true') }}
+        run: python3 scripts/ops/ci_full_suite_shard_v1.py --verify-completeness
 
-      - name: Run full test suite (sharded)
-        if: ${{ (github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true') && needs.changes.outputs.tests_execute_no_op != 'true' }}
+      - name: Run full-suite shard (single pytest process)
+        if: ${{ github.event_name != 'pull_request' || (needs.changes.outputs.tests_execute_full == 'true' && needs.changes.outputs.tests_execute_no_op != 'true' && needs.changes.outputs.tests_execute_focused != 'true') }}
+        shell: bash
         run: |
           set -euo pipefail
-          python3 scripts/ops/ci_full_suite_shard_v1.py --verify-completeness
-          SHARD_COUNT="$(python3 scripts/ops/ci_full_suite_shard_v1.py --print-shard-count)"
-          PYTEST_ARGS=(-v --tb=short -m "not network and not external_tools")
+          mapfile -t SHARD_FILES < <(
+            python3 scripts/ops/ci_full_suite_shard_v1.py --emit-shard-files "${{ matrix.shard-id }}"
+          )
+          echo "[full-shard 3.9 ${{ matrix.shard-num }}] files=${#SHARD_FILES[@]}"
           COV_ARGS=()
-          if [ "${{ matrix.python-version }}" = "3.11" ]; then
+          if [ "3.9" = "3.11" ]; then
             COV_ARGS=(--cov=src --cov-append)
           fi
-          SHARD_FAIL=0
-          PIDS=()
-          for ((shard_idx = 0; shard_idx < SHARD_COUNT; shard_idx++)); do
-            (
-              mapfile -t SHARD_FILES < <(
-                python3 scripts/ops/ci_full_suite_shard_v1.py --emit-shard-files "${shard_idx}"
-              )
-              echo "[full-suite shard=${shard_idx} py=${{ matrix.python-version }}] files=${#SHARD_FILES[@]}"
-              pytest "${SHARD_FILES[@]}" "${PYTEST_ARGS[@]}" "${COV_ARGS[@]}"
-            ) &
-            PIDS+=("$!")
-          done
-          for pid in "${PIDS[@]}"; do
-            wait "$pid" || SHARD_FAIL=1
-          done
-          exit "$SHARD_FAIL"
+          pytest "${SHARD_FILES[@]}" -v --tb=short -m "not network and not external_tools" "${COV_ARGS[@]}"
+
+  full-shard-py310:
+    name: full-shard (3.10, ${{ matrix.shard-num }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    needs: changes
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { shard-id: 0, shard-num: '1/8' }
+          - { shard-id: 1, shard-num: '2/8' }
+          - { shard-id: 2, shard-num: '3/8' }
+          - { shard-id: 3, shard-num: '4/8' }
+          - { shard-id: 4, shard-num: '5/8' }
+          - { shard-id: 5, shard-num: '6/8' }
+          - { shard-id: 6, shard-num: '7/8' }
+          - { shard-id: 7, shard-num: '8/8' }
+    steps:
+      - name: NO_OP — skip shard (diff-aware)
+        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_no_op == 'true' }}
+        run: |
+          echo "NO_OP — skipping full-shard (3.10, ${{ matrix.shard-num }})"
+
+      - name: Skip shard (FOCUSED mode)
+        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_focused == 'true' }}
+        run: |
+          echo "FOCUSED mode — shard not executed (3.10, ${{ matrix.shard-num }})"
+
+      - name: Checkout
+        if: ${{ github.event_name != 'pull_request' || (needs.changes.outputs.tests_execute_no_op != 'true' && needs.changes.outputs.tests_execute_focused != 'true') }}
+        uses: actions/checkout@v5
+
+      - name: Set up Python 3.10
+        if: ${{ github.event_name != 'pull_request' || (needs.changes.outputs.tests_execute_no_op != 'true' && needs.changes.outputs.tests_execute_focused != 'true') }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Cache pip
+        if: ${{ github.event_name != 'pull_request' || (needs.changes.outputs.tests_execute_no_op != 'true' && needs.changes.outputs.tests_execute_focused != 'true') }}
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt', '**/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        if: ${{ github.event_name != 'pull_request' || (needs.changes.outputs.tests_execute_no_op != 'true' && needs.changes.outputs.tests_execute_focused != 'true') }}
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-cov
+
+      - name: Preflight stability and RL smoke (shard 0 only)
+        if: >-
+          ${{ matrix.shard-id == 0 &&
+          (github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true') &&
+          (github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_no_op != 'true') &&
+          (github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_focused != 'true') }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          pytest tests/test_stability_smoke.py tests/test_data_contracts.py tests/test_error_taxonomy.py tests/test_resilience.py -m smoke -v --tb=short
+          pytest -q tests/test_rl_v0_1_smoke.py
+          bash scripts/validate_rl_v0_1.sh
+
+      - name: Verify shard partition completeness
+        if: ${{ github.event_name != 'pull_request' || (needs.changes.outputs.tests_execute_full == 'true' && needs.changes.outputs.tests_execute_no_op != 'true' && needs.changes.outputs.tests_execute_focused != 'true') }}
+        run: python3 scripts/ops/ci_full_suite_shard_v1.py --verify-completeness
+
+      - name: Run full-suite shard (single pytest process)
+        if: ${{ github.event_name != 'pull_request' || (needs.changes.outputs.tests_execute_full == 'true' && needs.changes.outputs.tests_execute_no_op != 'true' && needs.changes.outputs.tests_execute_focused != 'true') }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t SHARD_FILES < <(
+            python3 scripts/ops/ci_full_suite_shard_v1.py --emit-shard-files "${{ matrix.shard-id }}"
+          )
+          echo "[full-shard 3.10 ${{ matrix.shard-num }}] files=${#SHARD_FILES[@]}"
+          COV_ARGS=()
+          if [ "3.10" = "3.11" ]; then
+            COV_ARGS=(--cov=src --cov-append)
+          fi
+          pytest "${SHARD_FILES[@]}" -v --tb=short -m "not network and not external_tools" "${COV_ARGS[@]}"
+
+  full-shard-py311:
+    name: full-shard (3.11, ${{ matrix.shard-num }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    needs: changes
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - { shard-id: 0, shard-num: '1/8' }
+          - { shard-id: 1, shard-num: '2/8' }
+          - { shard-id: 2, shard-num: '3/8' }
+          - { shard-id: 3, shard-num: '4/8' }
+          - { shard-id: 4, shard-num: '5/8' }
+          - { shard-id: 5, shard-num: '6/8' }
+          - { shard-id: 6, shard-num: '7/8' }
+          - { shard-id: 7, shard-num: '8/8' }
+    steps:
+      - name: NO_OP — skip shard (diff-aware)
+        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_no_op == 'true' }}
+        run: |
+          echo "NO_OP — skipping full-shard (3.11, ${{ matrix.shard-num }})"
+
+      - name: Skip shard (FOCUSED mode)
+        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_focused == 'true' }}
+        run: |
+          echo "FOCUSED mode — shard not executed (3.11, ${{ matrix.shard-num }})"
+
+      - name: Checkout
+        if: ${{ github.event_name != 'pull_request' || (needs.changes.outputs.tests_execute_no_op != 'true' && needs.changes.outputs.tests_execute_focused != 'true') }}
+        uses: actions/checkout@v5
+
+      - name: Set up Python 3.11
+        if: ${{ github.event_name != 'pull_request' || (needs.changes.outputs.tests_execute_no_op != 'true' && needs.changes.outputs.tests_execute_focused != 'true') }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Cache pip
+        if: ${{ github.event_name != 'pull_request' || (needs.changes.outputs.tests_execute_no_op != 'true' && needs.changes.outputs.tests_execute_focused != 'true') }}
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt', '**/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        if: ${{ github.event_name != 'pull_request' || (needs.changes.outputs.tests_execute_no_op != 'true' && needs.changes.outputs.tests_execute_focused != 'true') }}
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-cov
+
+      - name: Preflight stability and RL smoke (shard 0 only)
+        if: >-
+          ${{ matrix.shard-id == 0 &&
+          (github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true') &&
+          (github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_no_op != 'true') &&
+          (github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_focused != 'true') }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          pytest tests/test_stability_smoke.py tests/test_data_contracts.py tests/test_error_taxonomy.py tests/test_resilience.py -m smoke -v --tb=short
+          pytest -q tests/test_rl_v0_1_smoke.py
+          bash scripts/validate_rl_v0_1.sh
+
+      - name: Verify shard partition completeness
+        if: ${{ github.event_name != 'pull_request' || (needs.changes.outputs.tests_execute_full == 'true' && needs.changes.outputs.tests_execute_no_op != 'true' && needs.changes.outputs.tests_execute_focused != 'true') }}
+        run: python3 scripts/ops/ci_full_suite_shard_v1.py --verify-completeness
+
+      - name: Run full-suite shard (single pytest process)
+        if: ${{ github.event_name != 'pull_request' || (needs.changes.outputs.tests_execute_full == 'true' && needs.changes.outputs.tests_execute_no_op != 'true' && needs.changes.outputs.tests_execute_focused != 'true') }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          mapfile -t SHARD_FILES < <(
+            python3 scripts/ops/ci_full_suite_shard_v1.py --emit-shard-files "${{ matrix.shard-id }}"
+          )
+          echo "[full-shard 3.11 ${{ matrix.shard-num }}] files=${#SHARD_FILES[@]}"
+          COV_ARGS=()
+          if [ "3.11" = "3.11" ]; then
+            COV_ARGS=(--cov=src --cov-append)
+          fi
+          pytest "${SHARD_FILES[@]}" -v --tb=short -m "not network and not external_tools" "${COV_ARGS[@]}"
+
+      - name: Upload coverage fragment (3.11 shard)
+        if: >-
+          ${{ (github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true') &&
+          needs.changes.outputs.tests_execute_no_op != 'true' &&
+          matrix.shard-id >= 0 }}
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage-py311-shard-${{ matrix.shard-id }}
+          path: .coverage
+          if-no-files-found: ignore
+          retention-days: 1
+
+  tests-focused:
+    name: tests-focused (${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    needs: changes
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.9', '3.10', '3.11']
+    steps:
+      - name: NO_OP — skip focused (not FOCUSED mode)
+        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_focused != 'true' }}
+        run: |
+          echo "Not FOCUSED mode — skipping tests-focused for Python ${{ matrix.python-version }}"
+
+      - name: NO_OP — skip focused (NO_OP mode)
+        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_no_op == 'true' }}
+        run: |
+          echo "NO_OP — skipping tests-focused for Python ${{ matrix.python-version }}"
+
+      - name: Checkout
+        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_focused == 'true' }}
+        uses: actions/checkout@v5
+
+      - name: Set up Python ${{ matrix.python-version }}
+        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_focused == 'true' }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+
+      - name: Cache pip
+        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_focused == 'true' }}
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/pip
+          key: ${{ runner.os }}-pip-${{ hashFiles('**/requirements.txt', '**/pyproject.toml') }}
+          restore-keys: |
+            ${{ runner.os }}-pip-
+
+      - name: Install dependencies
+        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_focused == 'true' }}
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest
 
       - name: Run focused tests (matrix)
         if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_focused == 'true' }}
@@ -497,17 +691,109 @@ jobs:
           python3 scripts/ops/ci_test_selection_v1.py --import-smoke-modules "${{ needs.changes.outputs.focused_module_imports }}"
           echo "import smoke ok on Python ${{ matrix.python-version }}"
 
-      - name: Coverage report (FULL 3.11 sharded)
-        if: ${{ (github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true') && matrix.python-version == '3.11' && needs.changes.outputs.tests_execute_no_op != 'true' }}
+  tests:
+    name: tests (${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    needs:
+      - changes
+      - full-shard-py39
+      - full-shard-py310
+      - full-shard-py311
+      - tests-focused
+    # IMPORTANT: No job-level if condition - matrix jobs must always be created
+    # to satisfy branch protection rules (e.g., "tests (3.11)" check)
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.9', '3.10', '3.11']
+    steps:
+      - name: Diff-aware test selection summary
+        if: ${{ github.event_name == 'pull_request' }}
         run: |
+          echo "test_selection_mode=${{ needs.changes.outputs.test_selection_mode }}"
+          echo "test_selection_reason=${{ needs.changes.outputs.test_selection_reason }}"
+          echo "tests_execute_full=${{ needs.changes.outputs.tests_execute_full }}"
+          echo "tests_execute_focused=${{ needs.changes.outputs.tests_execute_focused }}"
+          echo "tests_execute_no_op=${{ needs.changes.outputs.tests_execute_no_op }}"
+
+      - name: NO_OP — skip aggregator (diff-aware)
+        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_no_op == 'true' }}
+        run: |
+          echo "NO_OP — tests (${{ matrix.python-version }}) aggregator success"
+          echo "reason=${{ needs.changes.outputs.test_selection_reason }}"
+
+      - name: Fail closed — require Python 3.9 shards passed (FULL)
+        if: >-
+          ${{ matrix.python-version == '3.9' &&
+          (github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true') &&
+          (github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_no_op != 'true') }}
+        run: |
+          [[ "${{ needs.full-shard-py39.result }}" == "success" ]] || {
+            echo "full-shard-py39 did not succeed (result=${{ needs.full-shard-py39.result }})"
+            exit 1
+          }
+
+      - name: Fail closed — require Python 3.10 shards passed (FULL)
+        if: >-
+          ${{ matrix.python-version == '3.10' &&
+          (github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true') &&
+          (github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_no_op != 'true') }}
+        run: |
+          [[ "${{ needs.full-shard-py310.result }}" == "success" ]] || {
+            echo "full-shard-py310 did not succeed (result=${{ needs.full-shard-py310.result }})"
+            exit 1
+          }
+
+      - name: Fail closed — require Python 3.11 shards passed (FULL)
+        if: >-
+          ${{ matrix.python-version == '3.11' &&
+          (github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true') &&
+          (github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_no_op != 'true') }}
+        run: |
+          [[ "${{ needs.full-shard-py311.result }}" == "success" ]] || {
+            echo "full-shard-py311 did not succeed (result=${{ needs.full-shard-py311.result }})"
+            exit 1
+          }
+
+      - name: Fail closed — require focused matrix passed (FOCUSED)
+        if: >-
+          ${{ github.event_name == 'pull_request' &&
+          needs.changes.outputs.tests_execute_focused == 'true' }}
+        run: |
+          [[ "${{ needs.tests-focused.result }}" == "success" ]] || {
+            echo "tests-focused did not succeed (result=${{ needs.tests-focused.result }})"
+            exit 1
+          }
+
+      - name: Coverage report (FULL 3.11 job-level shards)
+        if: >-
+          ${{ matrix.python-version == '3.11' &&
+          (github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true') &&
+          (github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_no_op != 'true') }}
+        uses: actions/download-artifact@v4
+        with:
+          pattern: coverage-py311-shard-*
+          merge-multiple: true
+
+      - name: Combine coverage and report
+        if: >-
+          ${{ matrix.python-version == '3.11' &&
+          (github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true') &&
+          (github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_no_op != 'true') }}
+        run: |
+          set -euo pipefail
+          python -m pip install --upgrade pip
+          pip install coverage
+          shopt -s nullglob
+          files=(.coverage*)
+          if (( ${#files[@]} == 0 )); then
+            echo "No coverage fragments found"
+            exit 1
+          fi
+          coverage combine "${files[@]}"
           coverage xml
           coverage report --show-missing
-
-      # TODO: Linting (optional, aktivieren wenn gewünscht)
-      # - name: Run ruff
-      #   run: |
-      #     pip install ruff
-      #     ruff check src/ tests/
 
   # ============================================================================
   # Strategy Smoke Tests (Phase 77)
