@@ -325,14 +325,14 @@ def test_strategy_smoke_gated_on_tests_execute_full_not_code_changed() -> None:
     assert "needs.changes.outputs.code_changed == 'true'" not in text
 
 
-def test_fast_lane_runs_static_contract_tests_when_applicable() -> None:
+def test_fast_lane_uses_selector_static_contract_dispatch() -> None:
     text = _ci_text()
-    assert "Static contract tests (tests/ci, tests/ops, WebUI structure-contract" in text
-    assert "needs.changes.outputs.static_contract_changed == 'true'" in text
-    assert "needs.changes.outputs.run_matrix != 'true'" in text
-    assert "pytest tests/ci tests/ops" in text
-    assert "webui_structure_contract=(tests/webui/test_*structure_contract*.py)" in text
-    assert '"${webui_structure_contract[@]}"' in text
+    fast_lane_block = text.split("  fast-lane:", 1)[1].split("  tests:", 1)[0]
+    assert "Static contract tests (selector-targeted, bounded NO_OP)" in fast_lane_block
+    assert "needs.changes.outputs.fast_lane_execute_static_contract == 'true'" in fast_lane_block
+    assert "fast_lane_pytest_targets" in fast_lane_block
+    assert "find tests/ops" not in fast_lane_block
+    assert "pytest tests/ci tests/ops" not in fast_lane_block
 
 
 def test_fast_lane_webui_bounded_pytest_modules() -> None:

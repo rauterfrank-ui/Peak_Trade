@@ -66,6 +66,9 @@ def test_changes_job_exports_test_selection_outputs() -> None:
         "tests_execute_no_op",
         "focused_pytest_targets",
         "focused_module_imports",
+        "fast_lane_pytest_targets",
+        "fast_lane_execute_static_contract",
+        "focused_cross_version_matrix",
     ):
         assert (
             f"{key}:"
@@ -85,13 +88,14 @@ def test_tests_job_has_focused_and_full_steps() -> None:
     assert "Run tests with coverage (FULL only)" in text
 
 
-def test_tests_job_focused_runs_on_all_matrix_versions() -> None:
+def test_tests_job_focused_runs_primary_python_unless_cross_version() -> None:
     text = _ci_text()
     focused_step = text.split("name: Run focused tests (matrix)", 1)[1].split("\n      - name:", 1)[
         0
     ]
-    assert "matrix.python-version == '3.11'" not in focused_step
-    assert "tests_execute_focused == 'true'" in focused_step
+    assert (
+        "focused_cross_version_matrix == 'true' || matrix.python-version == '3.11'" in focused_step
+    )
 
 
 def test_tests_job_focused_module_import_smoke_step() -> None:
@@ -653,16 +657,20 @@ def test_selector_pe26_owner_plus_test_owner_only_focused() -> None:
 def test_selector_unknown_productive_src_ops_never_no_op() -> None:
     sel = _run_selector("src/ops/unknown_unmapped_contract_v0.py")
     assert sel["test_selection_mode"] == "FULL"
-    assert sel["test_selection_reason"] == "productive_src_no_op_blocked_fail_closed"
+    assert sel["test_selection_reason"] == "static_contract_unmapped_owner_requires_full"
     assert sel["tests_execute_no_op"] == "false"
 
 
-def test_selector_productive_src_without_test_owner_escalates_full() -> None:
+def test_selector_static_contract_src_ops_with_owner_no_op_fast_lane() -> None:
     sel = _run_selector(
         "src/ops/bounded_futures_testnet_preflight_packet_contract_v0.py",
     )
-    assert sel["test_selection_mode"] == "FULL"
-    assert sel["tests_execute_full"] == "true"
+    assert sel["test_selection_mode"] == "NO_OP"
+    assert sel["fast_lane_execute_static_contract"] == "true"
+    raw = sel.get("fast_lane_pytest_targets", "")
+    assert "tests/ops/test_bounded_futures_testnet_preflight_packet_contract_v0.py" in (
+        raw.split() if raw else []
+    )
 
 
 def test_selector_preflight_assembly_rebundle_with_ci_policy_focused() -> None:

@@ -60,6 +60,9 @@ jobs:
       tests_execute_no_op: ${{ steps.test_selection.outputs.tests_execute_no_op }}
       focused_pytest_targets: ${{ steps.test_selection.outputs.focused_pytest_targets }}
       focused_module_imports: ${{ steps.test_selection.outputs.focused_module_imports }}
+      fast_lane_pytest_targets: ${{ steps.test_selection.outputs.fast_lane_pytest_targets }}
+      fast_lane_execute_static_contract: ${{ steps.test_selection.outputs.fast_lane_execute_static_contract }}
+      focused_cross_version_matrix: ${{ steps.test_selection.outputs.focused_cross_version_matrix }}
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -287,46 +290,35 @@ jobs:
         run: |
           pytest tests/test_stability_smoke.py tests/test_data_contracts.py tests/test_error_taxonomy.py tests/test_resilience.py -m smoke -v --tb=short
 
-      - name: Static contract tests (tests/ci, tests/ops, WebUI structure-contract, src/ops contract modules via tests)
-        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.static_contract_changed == 'true' && needs.changes.outputs.run_matrix != 'true' && needs.changes.outputs.workflow_only != 'true' }}
+      - name: NO_OP — skip Fast-Lane static contract dispatch (selector)
+        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_no_op == 'true' && needs.changes.outputs.fast_lane_execute_static_contract != 'true' }}
+        run: |
+          echo "NO_OP — Fast-Lane static contract dispatch skipped (selector)"
+          echo "test_selection_mode=${{ needs.changes.outputs.test_selection_mode }}"
+          echo "test_selection_reason=${{ needs.changes.outputs.test_selection_reason }}"
+
+      - name: FOCUSED/FULL — skip Fast-Lane static contract dispatch (selector)
+        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_no_op != 'true' }}
+        run: |
+          echo "Fast-Lane static contract dispatch skipped — selector mode=${{ needs.changes.outputs.test_selection_mode }}"
+          echo "reason=${{ needs.changes.outputs.test_selection_reason }}"
+
+      - name: Static contract tests (selector-targeted, bounded NO_OP)
+        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.fast_lane_execute_static_contract == 'true' }}
         run: |
           set -euo pipefail
-          shopt -s nullglob
-          webui_structure_contract=(tests/webui/test_*structure_contract*.py)
-          shopt -u nullglob
-          # Parallel shards (previously monolithic: pytest tests/ci tests/ops "${webui_structure_contract[@]}").
-          PYTEST_ARGS=(-q --tb=short -m "not network and not external_tools")
-          OPS_SHARD_COUNT=8
-          SHARD_FAIL=0
-          mapfile -t OPS_FILES < <(find tests/ops -name 'test_*.py' -type f | LC_ALL=C sort)
-          if (( ${#OPS_FILES[@]} == 0 )); then
-            echo "tests/ops shard inventory empty"
+          TARGETS="${{ needs.changes.outputs.fast_lane_pytest_targets }}"
+          if [ -z "$TARGETS" ]; then
+            echo "fail-closed: fast_lane_execute_static_contract=true without fast_lane_pytest_targets"
             exit 1
           fi
-          (
-            echo "[shard=tests/ci+webui] starting"
-            pytest tests/ci "${webui_structure_contract[@]}" "${PYTEST_ARGS[@]}"
-          ) &
-          PID_CI=$!
-          PIDS_OPS=()
-          for ((shard_idx = 0; shard_idx < OPS_SHARD_COUNT; shard_idx++)); do
-            (
-              shard_files=()
-              for i in "${!OPS_FILES[@]}"; do
-                if (( i % OPS_SHARD_COUNT == shard_idx )); then
-                  shard_files+=("${OPS_FILES[i]}")
-                fi
-              done
-              echo "[shard=tests/ops/${shard_idx}] files=${#shard_files[@]}"
-              pytest "${shard_files[@]}" "${PYTEST_ARGS[@]}"
-            ) &
-            PIDS_OPS+=("$!")
-          done
-          wait "$PID_CI" || SHARD_FAIL=1
-          for pid in "${PIDS_OPS[@]}"; do
-            wait "$pid" || SHARD_FAIL=1
-          done
-          exit "$SHARD_FAIL"
+          mapfile -t VALIDATED_TARGETS < <(python3 scripts/ops/ci_test_selection_v1.py --emit-validated-pytest-targets "$TARGETS")
+          if (( ${#VALIDATED_TARGETS[@]} == 0 )); then
+            echo "fail-closed: no validated Fast-Lane static contract targets"
+            exit 1
+          fi
+          echo "fast_lane_static_contract_target_count=${#VALIDATED_TARGETS[@]}"
+          pytest "${VALIDATED_TARGETS[@]}" -q --tb=short -m "not network and not external_tools"
 
       - name: WebUI bounded pytest (market/observability surface)
         if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.webui_surface_changed == 'true' && needs.changes.outputs.run_matrix != 'true' }}
@@ -455,8 +447,14 @@ jobs:
         run: |
           pytest tests/ -v --tb=short -m "not network and not external_tools"
 
+      - name: Primary Python — skip focused pytest (3.9/3.10)
+        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_focused == 'true' && needs.changes.outputs.focused_cross_version_matrix != 'true' && matrix.python-version != '3.11' }}
+        run: |
+          echo "FOCUSED primary-python dispatch — skipping full pytest on Python ${{ matrix.python-version }}"
+          echo "tests (3.11) runs canonical owner targets"
+
       - name: Run focused tests (matrix)
-        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_focused == 'true' }}
+        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_focused == 'true' && (needs.changes.outputs.focused_cross_version_matrix == 'true' || matrix.python-version == '3.11') }}
         run: |
           set -euo pipefail
           TARGETS="${{ needs.changes.outputs.focused_pytest_targets }}"

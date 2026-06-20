@@ -161,6 +161,8 @@ CANONICAL_MARKET_DASHBOARD_FOCUSED_TESTS: tuple[str, ...] = (
 
 _REPO_RELATIVE_PATH = re.compile(r"^[A-Za-z0-9_./-]+$")
 _IMPORT_MODULE = re.compile(r"^[a-zA-Z0-9_.]+$")
+STATIC_CONTRACT_FAST_LANE_MAX_FILES = 5
+_CROSS_VERSION_CATEGORIES = frozenset({"dependencies", "packaging"})
 
 
 @dataclass(frozen=True)
@@ -169,6 +171,9 @@ class SelectionResult:
     reason: str
     focused_pytest_targets: tuple[str, ...]
     focused_module_imports: tuple[str, ...] = ()
+    fast_lane_pytest_targets: tuple[str, ...] = ()
+    fast_lane_execute_static_contract: bool = False
+    focused_cross_version_matrix: bool = False
 
     def github_output_lines(self) -> list[str]:
         lines = [
@@ -177,6 +182,8 @@ class SelectionResult:
             f"tests_execute_full={'true' if self.mode == 'FULL' else 'false'}",
             f"tests_execute_focused={'true' if self.mode == 'FOCUSED' else 'false'}",
             f"tests_execute_no_op={'true' if self.mode == 'NO_OP' else 'false'}",
+            f"fast_lane_execute_static_contract={'true' if self.fast_lane_execute_static_contract else 'false'}",
+            f"focused_cross_version_matrix={'true' if self.focused_cross_version_matrix else 'false'}",
         ]
         if self.focused_pytest_targets:
             lines.append(f"focused_pytest_targets={' '.join(self.focused_pytest_targets)}")
@@ -186,6 +193,10 @@ class SelectionResult:
             lines.append(f"focused_module_imports={' '.join(self.focused_module_imports)}")
         else:
             lines.append("focused_module_imports=")
+        if self.fast_lane_pytest_targets:
+            lines.append(f"fast_lane_pytest_targets={' '.join(self.fast_lane_pytest_targets)}")
+        else:
+            lines.append("fast_lane_pytest_targets=")
         return lines
 
 
@@ -385,7 +396,15 @@ def _try_preflight_assembly_focused(files: list[str]) -> SelectionResult | None:
 
 
 def _has_productive_src_python(files: list[str]) -> bool:
-    return any(f.startswith("src/") and f.endswith(".py") for f in files)
+    for path in files:
+        if not (path.startswith("src/") and path.endswith(".py")):
+            continue
+        if fnmatch.fnmatch(path, "src/ops/*_contract_v0.py") or fnmatch.fnmatch(
+            path, "src/ops/*_contract_v1.py"
+        ):
+            continue
+        return True
+    return False
 
 
 def _try_durable_completion_focused(files: list[str]) -> SelectionResult | None:
@@ -640,6 +659,54 @@ def _try_strategy_regime_owner_focused(files: list[str]) -> SelectionResult | No
     )
 
 
+def _focused_cross_version_matrix_required(files: list[str]) -> bool:
+    return any(categorize(f) in _CROSS_VERSION_CATEGORIES for f in files)
+
+
+def _static_contract_test_owner_for_path(path: str) -> str | None:
+    p = PurePosixPath(path).as_posix()
+    if p.startswith("tests/") and p.endswith(".py"):
+        return p if _repo_path_exists(p) else None
+    if fnmatch.fnmatch(p, "src/ops/*_contract_v0.py") or fnmatch.fnmatch(
+        p, "src/ops/*_contract_v1.py"
+    ):
+        stem = PurePosixPath(p).stem
+        candidates = [f"tests/ops/test_{stem}.py"]
+        if "_contract_v" in stem:
+            base = stem.rsplit("_contract_v", 1)[0]
+            candidates.extend(
+                (
+                    f"tests/ops/test_{base}_integration_contract_v0.py",
+                    f"tests/ops/test_{base}_lifecycle_integration_contract_v0.py",
+                    f"tests/ops/test_{base}_contract_v0.py",
+                )
+            )
+        for candidate in candidates:
+            if _repo_path_exists(candidate):
+                return candidate
+        return None
+    return None
+
+
+def _static_contract_targets_for_changed_files(files: list[str]) -> tuple[str, ...]:
+    static_paths = sorted(f for f in files if categorize(f) == "static_contract")
+    if not static_paths:
+        return ()
+    if len(static_paths) > STATIC_CONTRACT_FAST_LANE_MAX_FILES:
+        return ()
+
+    targets: list[str] = []
+    seen: set[str] = set()
+    for path in static_paths:
+        owner = _static_contract_test_owner_for_path(path)
+        if owner is None:
+            return ()
+        if owner not in seen:
+            seen.add(owner)
+            targets.append(owner)
+    return tuple(sorted(targets))
+
+
 def _focused_targets(files: list[str]) -> tuple[str, ...]:
     targets: list[str] = []
     seen: set[str] = set()
@@ -720,6 +787,20 @@ def resolve_selection(
     if categories <= NO_OP_CATEGORIES:
         if _has_productive_src_python(normalized):
             return SelectionResult("FULL", "productive_src_no_op_blocked_fail_closed", ())
+        static_paths = [f for f in normalized if categorize(f) == "static_contract"]
+        if static_paths:
+            if len(static_paths) > STATIC_CONTRACT_FAST_LANE_MAX_FILES:
+                return SelectionResult("FULL", "static_contract_wide_diff_requires_full", ())
+            fast_lane_targets = _static_contract_targets_for_changed_files(normalized)
+            if not fast_lane_targets:
+                return SelectionResult("FULL", "static_contract_unmapped_owner_requires_full", ())
+            return SelectionResult(
+                "NO_OP",
+                "docs_workflow_or_static_contract_only",
+                (),
+                fast_lane_pytest_targets=fast_lane_targets,
+                fast_lane_execute_static_contract=True,
+            )
         return SelectionResult("NO_OP", "docs_workflow_or_static_contract_only", ())
 
     strategy_focused = _try_strategy_regime_owner_focused(normalized)
@@ -734,6 +815,7 @@ def resolve_selection(
             "FOCUSED",
             "focused_script_or_test_diff",
             _focused_targets(normalized),
+            focused_cross_version_matrix=_focused_cross_version_matrix_required(normalized),
         )
 
     return SelectionResult("FULL", "mixed_or_unclassified_fail_closed", ())

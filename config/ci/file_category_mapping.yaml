@@ -22,6 +22,7 @@ categories:
       - "src/ops/*_contract_v0.py"
       - "src/ops/*_contract_v1.py"
     runtime_class: seconds
+    notes: "tests job NO_OP; Fast-Lane runs selector-targeted static contract owners only (no ops fullsweep)"
   scripts_focused:
     mode: FOCUSED
     globs:
