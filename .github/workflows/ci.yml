@@ -258,7 +258,8 @@ jobs:
   fast-lane:
     name: Fast-Lane
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    # static_contract PRs run parallel tests/ci + 8x tests/ops shards; 15m was insufficient (PR #4457).
+    timeout-minutes: 30
     needs: changes
     steps:
       - name: Checkout
