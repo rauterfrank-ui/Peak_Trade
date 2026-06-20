@@ -27,6 +27,7 @@ FOCUSED_CATEGORIES = frozenset(
     {
         "scripts_focused",
         "tests_focused",
+        "ci_bootstrap_focused",
         "strategy_regime_owner_focused",
         "market_dashboard_focused",
         "durable_completion_focused",
@@ -35,11 +36,14 @@ FOCUSED_CATEGORIES = frozenset(
     }
 )
 
-# Paths that always force FULL when changed (never self-FOCUSED).
-CI_SELECTOR_FULL_PATHS = frozenset(
+# Mapping changes always force FULL (never self-FOCUSED).
+CI_MAPPING_FULL_PATHS = frozenset({"config/ci/file_category_mapping.yaml"})
+
+# Bounded canonical CI bootstrap selector + contract-test owner (self-FOCUSED).
+CI_BOOTSTRAP_FOCUSED_PATHS = frozenset(
     {
         "scripts/ops/ci_test_selection_v1.py",
-        "config/ci/file_category_mapping.yaml",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
     }
 )
 
@@ -189,6 +193,27 @@ class SelectionResult:
         return lines
 
 
+def _is_ci_bootstrap_scoped_path(path: str) -> bool:
+    return path in CI_BOOTSTRAP_FOCUSED_PATHS
+
+
+def _try_ci_bootstrap_focused(files: list[str]) -> SelectionResult | None:
+    if not files:
+        return None
+    if not any(_is_ci_bootstrap_scoped_path(f) for f in files):
+        return None
+    if not all(f in CI_BOOTSTRAP_FOCUSED_PATHS for f in files):
+        return None
+    contract_test = "tests/ci/test_ci_diff_aware_test_selection_v1.py"
+    if not _repo_path_exists(contract_test):
+        return None
+    return SelectionResult(
+        "FOCUSED",
+        "ci_bootstrap_focused",
+        (contract_test,),
+    )
+
+
 def _requires_full_ci_selector_change(files: list[str]) -> bool:
     normalized = {PurePosixPath(f).as_posix() for f in files}
     scoped_md = {f for f in normalized if _is_market_dashboard_scoped_path(f)}
@@ -203,9 +228,9 @@ def _requires_full_ci_selector_change(files: list[str]) -> bool:
     scoped_rk = {f for f in normalized if _is_risk_killswitch_scoped_path(f)}
     if scoped_rk and all(_is_risk_killswitch_rebundle_path(f) for f in normalized):
         return False
-    if normalized & CI_SELECTOR_FULL_PATHS:
-        return True
-    if any(f.startswith("tests/ci/test_ci_diff_aware_test_selection") for f in normalized):
+    if normalized <= CI_BOOTSTRAP_FOCUSED_PATHS:
+        return False
+    if normalized & CI_MAPPING_FULL_PATHS:
         return True
     if ".github/workflows/ci.yml" in normalized and (
         "scripts/ops/ci_test_selection_v1.py" in normalized
@@ -452,10 +477,10 @@ def categorize(path: str) -> str:
         return "market_dashboard_focused"
     if _is_market_dashboard_scoped_path(p):
         return "market_dashboard_focused"
-    if p in CI_SELECTOR_FULL_PATHS:
-        return "ci_selector_change"
-    if p.startswith("tests/ci/test_ci_diff_aware_test_selection"):
-        return "ci_selector_change"
+    if p in CI_BOOTSTRAP_FOCUSED_PATHS:
+        return "ci_bootstrap_focused"
+    if p in CI_MAPPING_FULL_PATHS:
+        return "ci_mapping_change"
     if p.startswith("src/ops/") and (
         fnmatch.fnmatch(p, "src/ops/*_contract_v0.py")
         or fnmatch.fnmatch(p, "src/ops/*_contract_v1.py")
@@ -606,7 +631,7 @@ def _strategy_regime_focused_targets(
 
 def _try_strategy_regime_owner_focused(files: list[str]) -> SelectionResult | None:
     categories = {categorize(f) for f in files}
-    if "ci_selector_change" in categories:
+    if "ci_bootstrap_focused" in categories or "ci_mapping_change" in categories:
         return None
     if categories & FULL_CATEGORIES:
         return None
@@ -708,10 +733,20 @@ def resolve_selection(
             return SelectionResult("FULL", "risk_killswitch_foreign_path_requires_full", ())
         return SelectionResult("FULL", "risk_killswitch_incomplete_or_missing_test_owner", ())
 
+    ci_bootstrap = _try_ci_bootstrap_focused(normalized)
+    if ci_bootstrap is not None:
+        return ci_bootstrap
+
+    if any(_is_ci_bootstrap_scoped_path(f) for f in normalized):
+        return SelectionResult("FULL", "ci_bootstrap_mixed_diff_requires_full", ())
+
     if _requires_full_ci_selector_change(normalized):
-        return SelectionResult("FULL", "ci_selector_or_contract_change_requires_full", ())
+        return SelectionResult("FULL", "ci_mapping_or_workflow_selector_change_requires_full", ())
 
     categories = {categorize(f) for f in normalized}
+
+    if "ci_mapping_change" in categories:
+        return SelectionResult("FULL", "category_ci_mapping_change_requires_full", ())
 
     if categories & FULL_CATEGORIES:
         hit = sorted(categories & FULL_CATEGORIES)[0]
