@@ -283,13 +283,83 @@ def test_selector_strategy_plus_workflow_full() -> None:
     assert sel["test_selection_mode"] == "FULL"
 
 
-def test_selector_ci_selector_self_full() -> None:
+def test_selector_ci_bootstrap_selector_only_focused() -> None:
+    sel = _run_selector("scripts/ops/ci_test_selection_v1.py")
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "ci_bootstrap_focused"
+    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" in _targets(sel)
+    assert sel["tests_execute_full"] == "false"
+
+
+def test_selector_ci_bootstrap_selector_plus_contract_focused() -> None:
     sel = _run_selector(
         "scripts/ops/ci_test_selection_v1.py",
         "tests/ci/test_ci_diff_aware_test_selection_v1.py",
     )
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "ci_bootstrap_focused"
+    assert _targets(sel) == ["tests/ci/test_ci_diff_aware_test_selection_v1.py"]
+    assert sel["tests_execute_full"] == "false"
+
+
+def test_selector_ci_bootstrap_plus_workflow_full() -> None:
+    sel = _run_selector(
+        "scripts/ops/ci_test_selection_v1.py",
+        ".github/workflows/ci.yml",
+    )
     assert sel["test_selection_mode"] == "FULL"
-    assert sel["test_selection_reason"] == "ci_selector_or_contract_change_requires_full"
+    assert sel["test_selection_reason"] == "ci_bootstrap_mixed_diff_requires_full"
+
+
+def test_selector_ci_bootstrap_plus_dependency_full() -> None:
+    sel = _run_selector(
+        "scripts/ops/ci_test_selection_v1.py",
+        "requirements.txt",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_reason"] == "ci_bootstrap_mixed_diff_requires_full"
+
+
+def test_selector_ci_bootstrap_plus_central_src_full() -> None:
+    sel = _run_selector(
+        "scripts/ops/ci_test_selection_v1.py",
+        "src/core/foo.py",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_reason"] == "ci_bootstrap_mixed_diff_requires_full"
+
+
+def test_selector_ci_bootstrap_plus_unknown_full() -> None:
+    sel = _run_selector(
+        "scripts/ops/ci_test_selection_v1.py",
+        "misc/unclassified.bin",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_reason"] == "ci_bootstrap_mixed_diff_requires_full"
+
+
+def test_selector_ci_bootstrap_contract_test_only_focused() -> None:
+    sel = _run_selector("tests/ci/test_ci_diff_aware_test_selection_v1.py")
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "ci_bootstrap_focused"
+
+
+def test_selector_ci_bootstrap_deterministic_regardless_of_file_order() -> None:
+    files_a = (
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+        "scripts/ops/ci_test_selection_v1.py",
+    )
+    files_b = tuple(reversed(files_a))
+    sel_a = _run_selector(*files_a)
+    sel_b = _run_selector(*files_b)
+    assert sel_a == sel_b
+    assert sel_a["test_selection_mode"] == "FOCUSED"
+
+
+def test_selector_ci_mapping_only_full() -> None:
+    sel = _run_selector("config/ci/file_category_mapping.yaml")
+    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_reason"] == "ci_mapping_or_workflow_selector_change_requires_full"
 
 
 def test_selector_ci_workflow_change_self_full() -> None:
@@ -299,6 +369,7 @@ def test_selector_ci_workflow_change_self_full() -> None:
         "tests/ci/test_ci_diff_aware_test_selection_v1.py",
     )
     assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_reason"] == "ci_bootstrap_mixed_diff_requires_full"
 
 
 def test_selector_strategy_plus_core_full() -> None:
