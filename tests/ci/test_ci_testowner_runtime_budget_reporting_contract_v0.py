@@ -1,7 +1,9 @@
 """Reporting-only contract for testowner runtime budget inventory (Stage 2 v0).
 
-Pure classification over archived duration evidence. Does not alter diff-aware
-selection, run_matrix, required-check contexts, or enforcement exit codes.
+Stage 4 extends this owner with runtime_class → TestLayer mapping sourced from
+``config/ci/file_category_mapping.yaml``. Pure classification only; does not
+alter diff-aware selection, run_matrix, required-check contexts, or enforcement
+exit codes.
 """
 
 from __future__ import annotations
@@ -14,8 +16,10 @@ from pathlib import Path
 from typing import Any
 
 import pytest
+import yaml
 
 SELECTOR = Path("scripts/ops/ci_test_selection_v1.py")
+CANONICAL_MAPPING_FILE = Path("config/ci/file_category_mapping.yaml")
 
 NEAR_BUDGET_RATIO = 0.85
 
@@ -42,6 +46,134 @@ LAYER_BUDGET_SECONDS: dict[TestLayer, int] = {
     TestLayer.L3_INTEGRATION_TARGETED: 900,
     TestLayer.L4_FULL_REGRESSION: 2400,
 }
+
+
+class RuntimeClassMappingStatus(StrEnum):
+    MAPPED = "MAPPED"
+    MISSING_RUNTIME_CLASS = "MISSING_RUNTIME_CLASS"
+    UNKNOWN_RUNTIME_CLASS = "UNKNOWN_RUNTIME_CLASS"
+
+
+# Deterministic reporting-only mapping from canonical YAML runtime_class values.
+# seconds → NO_OP/static categories; minutes → FOCUSED owner categories;
+# full_matrix → FULL regression categories.
+RUNTIME_CLASS_TO_TEST_LAYER: dict[str, TestLayer] = {
+    "seconds": TestLayer.L0_STATIC,
+    "minutes": TestLayer.L2_OWNER_TARGETED,
+    "full_matrix": TestLayer.L4_FULL_REGRESSION,
+}
+
+
+@dataclass(frozen=True, slots=True)
+class RuntimeClassMappingResult:
+    runtime_class: str | None
+    test_layer: TestLayer | None
+    mapping_status: RuntimeClassMappingStatus
+    provenance_source: str
+    category: str | None = None
+    selection_mode: str | None = None
+    reporting_only: bool = True
+
+
+def map_runtime_class_to_test_layer(
+    runtime_class: str | None,
+    *,
+    category: str | None = None,
+    selection_mode: str | None = None,
+    provenance_source: str = CANONICAL_MAPPING_FILE.as_posix(),
+) -> RuntimeClassMappingResult:
+    if runtime_class is None:
+        return RuntimeClassMappingResult(
+            runtime_class=None,
+            test_layer=None,
+            mapping_status=RuntimeClassMappingStatus.MISSING_RUNTIME_CLASS,
+            provenance_source=provenance_source,
+            category=category,
+            selection_mode=selection_mode,
+        )
+    normalized = runtime_class.strip()
+    if not normalized:
+        return RuntimeClassMappingResult(
+            runtime_class=runtime_class,
+            test_layer=None,
+            mapping_status=RuntimeClassMappingStatus.MISSING_RUNTIME_CLASS,
+            provenance_source=provenance_source,
+            category=category,
+            selection_mode=selection_mode,
+        )
+    layer = RUNTIME_CLASS_TO_TEST_LAYER.get(normalized)
+    if layer is None:
+        return RuntimeClassMappingResult(
+            runtime_class=normalized,
+            test_layer=None,
+            mapping_status=RuntimeClassMappingStatus.UNKNOWN_RUNTIME_CLASS,
+            provenance_source=provenance_source,
+            category=category,
+            selection_mode=selection_mode,
+        )
+    return RuntimeClassMappingResult(
+        runtime_class=normalized,
+        test_layer=layer,
+        mapping_status=RuntimeClassMappingStatus.MAPPED,
+        provenance_source=provenance_source,
+        category=category,
+        selection_mode=selection_mode,
+    )
+
+
+def load_runtime_class_category_rows(
+    mapping_path: Path = CANONICAL_MAPPING_FILE,
+) -> list[dict[str, Any]]:
+    data = yaml.safe_load(mapping_path.read_text(encoding="utf-8"))
+    categories = data.get("categories", {})
+    rows: list[dict[str, Any]] = []
+    for category_name in sorted(categories):
+        entry = categories[category_name]
+        rows.append(
+            {
+                "category": category_name,
+                "runtime_class": entry.get("runtime_class"),
+                "selection_mode": entry.get("mode"),
+                "provenance_source": mapping_path.as_posix(),
+            }
+        )
+    return rows
+
+
+def build_runtime_class_test_layer_mapping_report(
+    mapping_path: Path = CANONICAL_MAPPING_FILE,
+) -> list[dict[str, Any]]:
+    report: list[dict[str, Any]] = []
+    for row in load_runtime_class_category_rows(mapping_path):
+        mapped = map_runtime_class_to_test_layer(
+            row["runtime_class"],
+            category=row["category"],
+            selection_mode=row["selection_mode"],
+            provenance_source=row["provenance_source"],
+        )
+        report.append(
+            {
+                "category": mapped.category,
+                "runtime_class": mapped.runtime_class,
+                "test_layer": mapped.test_layer.value if mapped.test_layer else None,
+                "mapping_status": mapped.mapping_status.value,
+                "selection_mode": mapped.selection_mode,
+                "provenance_source": mapped.provenance_source,
+                "reporting_only": mapped.reporting_only,
+            }
+        )
+    return report
+
+
+def extract_distinct_runtime_class_values(
+    mapping_path: Path = CANONICAL_MAPPING_FILE,
+) -> tuple[str, ...]:
+    values = {
+        row["runtime_class"]
+        for row in load_runtime_class_category_rows(mapping_path)
+        if row["runtime_class"] is not None
+    }
+    return tuple(sorted(values))
 
 
 @dataclass(frozen=True, slots=True)
@@ -325,3 +457,120 @@ def test_selector_static_contract_unchanged_for_ci_reporting_file() -> None:
     assert sel["tests_execute_no_op"] == "true"
     assert sel["tests_execute_full"] == "false"
     assert sel["tests_execute_focused"] == "false"
+
+
+# --- Stage 4: runtime_class → TestLayer reporting-only mapping ---
+
+
+def test_canonical_runtime_class_values_are_seconds_minutes_full_matrix() -> None:
+    values = extract_distinct_runtime_class_values()
+    assert values == ("full_matrix", "minutes", "seconds")
+
+
+def test_seconds_maps_to_l0_static() -> None:
+    mapped = map_runtime_class_to_test_layer(
+        "seconds", category="static_contract", selection_mode="NO_OP"
+    )
+    assert mapped.mapping_status == RuntimeClassMappingStatus.MAPPED
+    assert mapped.test_layer == TestLayer.L0_STATIC
+
+
+def test_minutes_maps_to_l2_owner_targeted() -> None:
+    mapped = map_runtime_class_to_test_layer(
+        "minutes", category="tests_focused", selection_mode="FOCUSED"
+    )
+    assert mapped.mapping_status == RuntimeClassMappingStatus.MAPPED
+    assert mapped.test_layer == TestLayer.L2_OWNER_TARGETED
+
+
+def test_full_matrix_maps_to_l4_full_regression() -> None:
+    mapped = map_runtime_class_to_test_layer(
+        "full_matrix", category="central_src", selection_mode="FULL"
+    )
+    assert mapped.mapping_status == RuntimeClassMappingStatus.MAPPED
+    assert mapped.test_layer == TestLayer.L4_FULL_REGRESSION
+
+
+def test_missing_runtime_class_fail_closed() -> None:
+    mapped = map_runtime_class_to_test_layer(None, category="unknown")
+    assert mapped.mapping_status == RuntimeClassMappingStatus.MISSING_RUNTIME_CLASS
+    assert mapped.test_layer is None
+
+
+def test_empty_runtime_class_fail_closed() -> None:
+    mapped = map_runtime_class_to_test_layer("   ", category="unknown")
+    assert mapped.mapping_status == RuntimeClassMappingStatus.MISSING_RUNTIME_CLASS
+    assert mapped.test_layer is None
+
+
+def test_unknown_runtime_class_fail_closed() -> None:
+    mapped = map_runtime_class_to_test_layer("hours", category="unknown")
+    assert mapped.mapping_status == RuntimeClassMappingStatus.UNKNOWN_RUNTIME_CLASS
+    assert mapped.test_layer is None
+    assert mapped.test_layer != TestLayer.L1_FAST_CORE
+
+
+def test_unknown_runtime_class_not_classified_as_fast_or_no_op() -> None:
+    mapped = map_runtime_class_to_test_layer("fast_lane", category="unknown")
+    assert mapped.mapping_status == RuntimeClassMappingStatus.UNKNOWN_RUNTIME_CLASS
+    assert mapped.test_layer not in {TestLayer.L0_STATIC, TestLayer.L1_FAST_CORE}
+
+
+def test_runtime_class_mapping_provenance_preserved() -> None:
+    report = build_runtime_class_test_layer_mapping_report()
+    assert report
+    for row in report:
+        assert row["provenance_source"] == CANONICAL_MAPPING_FILE.as_posix()
+        assert row["category"] is not None
+        assert row["reporting_only"] is True
+
+
+def test_runtime_class_mapping_covers_all_yaml_categories() -> None:
+    report = build_runtime_class_test_layer_mapping_report()
+    categories = {row["category"] for row in report}
+    yaml_categories = set(
+        yaml.safe_load(CANONICAL_MAPPING_FILE.read_text(encoding="utf-8"))["categories"]
+    )
+    assert categories == yaml_categories
+    assert all(row["mapping_status"] == RuntimeClassMappingStatus.MAPPED.value for row in report)
+
+
+def test_mapped_layers_consumable_by_stage2_budget_model() -> None:
+    report = build_runtime_class_test_layer_mapping_report()
+    for row in report:
+        layer = TestLayer(row["test_layer"])
+        if layer in LAYER_BUDGET_SECONDS:
+            assert LAYER_BUDGET_SECONDS[layer] > 0
+
+
+def test_runtime_class_mapping_does_not_change_diff_aware_selection() -> None:
+    reporting_file = "tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py"
+    before = _run_selector(reporting_file)
+    _ = build_runtime_class_test_layer_mapping_report()
+    after = _run_selector(reporting_file)
+    assert before == after
+    assert before["test_selection_mode"] == "NO_OP"
+
+
+def test_runtime_class_mapping_does_not_change_run_matrix() -> None:
+    _ = build_runtime_class_test_layer_mapping_report()
+    sel = _run_selector("tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py")
+    assert sel["tests_execute_no_op"] == "true"
+    assert sel["tests_execute_full"] == "false"
+    assert sel["tests_execute_focused"] == "false"
+
+
+def test_runtime_class_mapping_has_no_enforcement_exit_code() -> None:
+    report = build_runtime_class_test_layer_mapping_report()
+    assert all(row["mapping_status"] != "PASS" for row in report)
+    assert all(
+        row["mapping_status"] in {status.value for status in RuntimeClassMappingStatus}
+        for row in report
+    )
+
+
+def test_stage2_inventory_backward_compatible_after_stage4_extension() -> None:
+    inventory = build_testowner_cost_inventory()
+    assert len(inventory) == 4
+    report = build_runtime_class_test_layer_mapping_report()
+    assert len(report) >= 3
