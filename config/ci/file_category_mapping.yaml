@@ -105,6 +105,16 @@ categories:
       - "tests/ci/test_ci_diff_aware_test_selection_v1.py"
     runtime_class: minutes
     notes: "Bounded PE-30 tiny-order + order-capability abort/cleanup proof chain; central_src FULL preserved for unrelated src"
+  reconciliation_primary_evidence_focused:
+    mode: FOCUSED
+    globs:
+      - "src/ops/bounded_futures_testnet_position_order_reconciliation_primary_evidence_integration_contract_v0.py"
+      - "tests/ops/test_bounded_futures_testnet_position_order_reconciliation_primary_evidence_integration_contract_v0.py"
+      - "scripts/ops/ci_test_selection_v1.py"
+      - "config/ci/file_category_mapping.yaml"
+      - "tests/ci/test_ci_diff_aware_test_selection_v1.py"
+    runtime_class: minutes
+    notes: "Bounded PE-21 position/order/fill reconciliation primary evidence; central_src FULL preserved for unrelated src"
   central_src:
     mode: FULL
     globs:
