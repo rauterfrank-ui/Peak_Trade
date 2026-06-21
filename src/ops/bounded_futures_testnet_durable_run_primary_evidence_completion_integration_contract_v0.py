@@ -1736,122 +1736,15 @@ def _build_pe25_closure_input_from_completion(
 def _validate_completion_proof_chain(
     integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
 ) -> list[str]:
-    fail_reasons: list[str] = []
-    chain = integration_input.completion_proof_chain
-    pe31_proof = integration_input.pe31_reconciliation_review_integration_proof
-    pe22_proof = integration_input.pe22_risk_killswitch_flatten_proof
-    pe23_proof = integration_input.pe23_capital_slot_ratchet_release_proof
-    pe24_proof = integration_input.pe24_pilot_envelope_lifecycle_proof
-    pe35_proof = integration_input.pe35_handoff_recovery_boundary_proof
-    pe37_proof = integration_input.pe37_traceability_proof
-    pe25_proof = integration_input.pe25_operator_closure_proof
-    pe21_proof = integration_input.pe21_proof
-    pe31_pe21_proof = integration_input.pe31_reconciliation_review_integration_input.pe21_reconciliation_primary_evidence_integration_proof
-    pe21_input_digest = compute_pe21_integration_input_digest(
-        integration_input.pe21_integration_input
+    from src.ops.durable_completion_validation.validators.completion_chain import (
+        validate_completion_proof_chain_binding,
     )
 
-    digest_fields = (
-        ("completion_referenced_pe31_proof_digest", chain.completion_referenced_pe31_proof_digest),
-        ("completion_referenced_pe22_proof_digest", chain.completion_referenced_pe22_proof_digest),
-        ("completion_referenced_pe23_proof_digest", chain.completion_referenced_pe23_proof_digest),
-        ("completion_referenced_pe24_proof_digest", chain.completion_referenced_pe24_proof_digest),
-        (
-            "completion_referenced_pe35_boundary_result_digest",
-            chain.completion_referenced_pe35_boundary_result_digest,
-        ),
-        (
-            "completion_referenced_pe37_boundary_result_digest",
-            chain.completion_referenced_pe37_boundary_result_digest,
-        ),
-        ("pe37_traceability_identity", chain.pe37_traceability_identity),
-        (
-            "completion_referenced_pe25_closure_result_digest",
-            chain.completion_referenced_pe25_closure_result_digest,
-        ),
-        ("pe25_closure_input_digest", chain.pe25_closure_input_digest),
-        (
-            "closure_referenced_admission_proof_digest",
-            chain.closure_referenced_admission_proof_digest,
-        ),
-        (
-            "pe31_referenced_pe21_integration_proof_digest",
-            chain.pe31_referenced_pe21_integration_proof_digest,
-        ),
-        (
-            "completion_referenced_pe21_integration_proof_digest",
-            chain.completion_referenced_pe21_integration_proof_digest,
-        ),
-        ("shared_pe21_integration_input_digest", chain.shared_pe21_integration_input_digest),
-        ("shared_traceability_identity", chain.shared_traceability_identity),
+    return list(
+        validate_completion_proof_chain_binding(
+            ValidationContext(integration_input=integration_input)
+        ).fail_reasons
     )
-    for field_name, value in digest_fields:
-        if not value:
-            fail_reasons.append(f"completion_proof_chain: {field_name} required")
-        elif not _valid_sha256_digest(value):
-            fail_reasons.append(
-                f"completion_proof_chain: {field_name} must be 64-char lowercase sha256 hex"
-            )
-
-    if chain.completion_referenced_pe31_proof_digest != pe31_proof.integration_proof_digest:
-        fail_reasons.append(
-            "completion_proof_chain: completion_referenced_pe31_proof_digest mismatch"
-        )
-    if chain.completion_referenced_pe22_proof_digest != pe22_proof.integration_proof_digest:
-        fail_reasons.append(
-            "completion_proof_chain: completion_referenced_pe22_proof_digest mismatch"
-        )
-    if chain.completion_referenced_pe23_proof_digest != pe23_proof.integration_proof_digest:
-        fail_reasons.append(
-            "completion_proof_chain: completion_referenced_pe23_proof_digest mismatch"
-        )
-    if chain.completion_referenced_pe24_proof_digest != pe24_proof.integration_proof_digest:
-        fail_reasons.append(
-            "completion_proof_chain: completion_referenced_pe24_proof_digest mismatch"
-        )
-    if chain.completion_referenced_pe35_boundary_result_digest != pe35_proof.boundary_result_digest:
-        fail_reasons.append(
-            "completion_proof_chain: completion_referenced_pe35_boundary_result_digest mismatch"
-        )
-    if chain.completion_referenced_pe37_boundary_result_digest != pe37_proof.boundary_result_digest:
-        fail_reasons.append(
-            "completion_proof_chain: completion_referenced_pe37_boundary_result_digest mismatch"
-        )
-    if chain.pe37_traceability_identity != pe37_proof.traceability_identity:
-        fail_reasons.append("completion_proof_chain: pe37_traceability_identity mismatch")
-    if chain.completion_referenced_pe25_closure_result_digest != pe25_proof.closure_result_digest:
-        fail_reasons.append(
-            "completion_proof_chain: completion_referenced_pe25_closure_result_digest mismatch"
-        )
-    if chain.pe25_closure_input_digest != pe25_proof.closure_input_digest:
-        fail_reasons.append("completion_proof_chain: pe25_closure_input_digest mismatch")
-    if (
-        chain.closure_referenced_admission_proof_digest
-        != pe25_proof.admission_integration_proof_digest
-    ):
-        fail_reasons.append(
-            "completion_proof_chain: closure_referenced_admission_proof_digest mismatch"
-        )
-    if (
-        chain.pe31_referenced_pe21_integration_proof_digest
-        != pe31_pe21_proof.integration_proof_digest
-    ):
-        fail_reasons.append(
-            "completion_proof_chain: pe31_referenced_pe21_integration_proof_digest mismatch"
-        )
-    if (
-        chain.completion_referenced_pe21_integration_proof_digest
-        != pe21_proof.integration_proof_digest
-    ):
-        fail_reasons.append(
-            "completion_proof_chain: completion_referenced_pe21_integration_proof_digest mismatch"
-        )
-    if chain.shared_pe21_integration_input_digest != pe21_input_digest:
-        fail_reasons.append("completion_proof_chain: shared_pe21_integration_input_digest mismatch")
-    if chain.shared_traceability_identity != integration_input.durable_run_root.run_root_digest:
-        fail_reasons.append("completion_proof_chain: shared_traceability_identity mismatch")
-
-    return fail_reasons
 
 
 def _validate_gap4_completion_proof(

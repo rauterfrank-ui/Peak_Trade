@@ -12,12 +12,18 @@ VALIDATOR_RECONCILIATION = "reconciliation"
 VALIDATOR_RECOVERY = "recovery"
 VALIDATOR_TRACEABILITY = "traceability"
 VALIDATOR_OPERATOR_CLOSURE = "operator_closure"
+VALIDATOR_COMPLETION_CHAIN = "completion_chain"
 
 PROOF_BINDING_VALIDATION_GRAPH: dict[str, tuple[str, ...]] = {
     VALIDATOR_RECONCILIATION: (),
     VALIDATOR_RECOVERY: (),
     VALIDATOR_TRACEABILITY: (VALIDATOR_RECOVERY,),
     VALIDATOR_OPERATOR_CLOSURE: (VALIDATOR_TRACEABILITY, VALIDATOR_RECOVERY),
+    VALIDATOR_COMPLETION_CHAIN: (
+        VALIDATOR_OPERATOR_CLOSURE,
+        VALIDATOR_TRACEABILITY,
+        VALIDATOR_RECOVERY,
+    ),
 }
 
 PROOF_BINDING_VALIDATION_ORDER: tuple[str, ...] = (
@@ -25,6 +31,7 @@ PROOF_BINDING_VALIDATION_ORDER: tuple[str, ...] = (
     VALIDATOR_RECOVERY,
     VALIDATOR_TRACEABILITY,
     VALIDATOR_OPERATOR_CLOSURE,
+    VALIDATOR_COMPLETION_CHAIN,
 )
 
 ValidatorFn = Callable[[ValidationContext], ValidationResult]
@@ -52,6 +59,7 @@ def proof_binding_validation_graph_is_cycle_free() -> bool:
 
 def _load_validators() -> dict[str, ValidatorFn]:
     from src.ops.durable_completion_validation.validators import (
+        completion_chain,
         operator_closure,
         reconciliation,
         recovery,
@@ -63,6 +71,7 @@ def _load_validators() -> dict[str, ValidatorFn]:
         VALIDATOR_RECOVERY: recovery.validate_recovery_proof_binding,
         VALIDATOR_TRACEABILITY: traceability.validate_traceability_proof_binding,
         VALIDATOR_OPERATOR_CLOSURE: operator_closure.validate_operator_closure_proof_binding,
+        VALIDATOR_COMPLETION_CHAIN: completion_chain.validate_completion_proof_chain_binding,
     }
 
 
