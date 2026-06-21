@@ -1,22 +1,27 @@
 """Reporting-only contract for testowner runtime budget inventory (Stage 2 v0).
 
 Stage 4 extends this owner with runtime_class → TestLayer mapping sourced from
-``config/ci/file_category_mapping.yaml``. Pure classification only; does not
-alter diff-aware selection, run_matrix, required-check contexts, or enforcement
+``config/ci/file_category_mapping.yaml``. Stage 5A adds testowner → category →
+runtime_class → TestLayer provenance reporting reusing the canonical selector
+``categorize()`` semantics and YAML mapping rows. Pure classification only; does
+not alter diff-aware selection, run_matrix, required-check contexts, or enforcement
 exit codes.
 """
 
 from __future__ import annotations
 
+import fnmatch
 import subprocess
 import sys
 from dataclasses import dataclass
 from enum import StrEnum
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Any
 
 import pytest
 import yaml
+
+from scripts.ops.ci_test_selection_v1 import categorize
 
 SELECTOR = Path("scripts/ops/ci_test_selection_v1.py")
 CANONICAL_MAPPING_FILE = Path("config/ci/file_category_mapping.yaml")
@@ -52,6 +57,14 @@ class RuntimeClassMappingStatus(StrEnum):
     MAPPED = "MAPPED"
     MISSING_RUNTIME_CLASS = "MISSING_RUNTIME_CLASS"
     UNKNOWN_RUNTIME_CLASS = "UNKNOWN_RUNTIME_CLASS"
+
+
+class ProvenanceResolutionStatus(StrEnum):
+    RESOLVED = "RESOLVED"
+    UNKNOWN_NO_MATCH = "UNKNOWN_NO_MATCH"
+    UNKNOWN_MISSING_RUNTIME_CLASS = "UNKNOWN_MISSING_RUNTIME_CLASS"
+    UNKNOWN_RUNTIME_CLASS = "UNKNOWN_RUNTIME_CLASS"
+    AMBIGUOUS_MATCH = "AMBIGUOUS_MATCH"
 
 
 # Deterministic reporting-only mapping from canonical YAML runtime_class values.
@@ -281,6 +294,224 @@ def classify_testowner_runtime(
         budget_status=status,
         evidence_source=evidence_source,
     )
+
+
+def normalize_testowner_path(path: str) -> str:
+    normalized = PurePosixPath(path.replace("\\", "/")).as_posix()
+    if normalized.startswith("/"):
+        raise ValueError("absolute paths are not valid testowner identities")
+    if ".." in PurePosixPath(normalized).parts:
+        raise ValueError("parent segments are not valid in testowner paths")
+    return normalized.removeprefix("./")
+
+
+def load_category_mapping_categories(
+    mapping_path: Path = CANONICAL_MAPPING_FILE,
+) -> dict[str, Any]:
+    data = yaml.safe_load(mapping_path.read_text(encoding="utf-8"))
+    return data.get("categories", {})
+
+
+def yaml_glob_matches(pattern: str, path: str) -> bool:
+    pattern = pattern.replace("\\", "/")
+    path = path.replace("\\", "/")
+    if pattern == path:
+        return True
+    if pattern.endswith("/**"):
+        prefix = pattern[:-3]
+        return path == prefix or path.startswith(f"{prefix}/")
+    if pattern == "**/*.md":
+        return path.endswith(".md")
+    if pattern == "**/conftest.py":
+        return path == "conftest.py" or path.endswith("/conftest.py")
+    if pattern.endswith("*/**"):
+        head = pattern[:-4]
+        head_prefix = head.split("*", 1)[0]
+        if not path.startswith(head_prefix):
+            return False
+        remainder = path[len(head_prefix) :]
+        return fnmatch.fnmatch(remainder, head[len(head_prefix) :] + "/**")
+    return fnmatch.fnmatch(path, pattern)
+
+
+def find_yaml_matching_categories(
+    path: str,
+    categories: dict[str, Any] | None = None,
+) -> list[dict[str, Any]]:
+    mapping = categories if categories is not None else load_category_mapping_categories()
+    matches: list[dict[str, Any]] = []
+    for category_name in sorted(mapping):
+        entry = mapping[category_name]
+        matched_globs = [glob for glob in entry.get("globs", []) if yaml_glob_matches(glob, path)]
+        if matched_globs:
+            matches.append(
+                {
+                    "category": category_name,
+                    "runtime_class": entry.get("runtime_class"),
+                    "selection_mode": entry.get("mode"),
+                    "matched_globs": tuple(sorted(matched_globs)),
+                }
+            )
+    return matches
+
+
+def _selector_rule_id(category: str) -> str:
+    return f"selector.categorize:{category}"
+
+
+def _resolve_provenance_status(
+    *,
+    selector_category: str,
+    yaml_matches: list[dict[str, Any]],
+    mapping_status: RuntimeClassMappingStatus,
+) -> ProvenanceResolutionStatus:
+    distinct_runtime_classes = {
+        match["runtime_class"] for match in yaml_matches if match.get("runtime_class") is not None
+    }
+    if (
+        len(yaml_matches) > 1
+        and len(distinct_runtime_classes) > 1
+        and selector_category == "unknown"
+    ):
+        return ProvenanceResolutionStatus.AMBIGUOUS_MATCH
+    if selector_category == "unknown":
+        return ProvenanceResolutionStatus.UNKNOWN_NO_MATCH
+    if mapping_status == RuntimeClassMappingStatus.MISSING_RUNTIME_CLASS:
+        return ProvenanceResolutionStatus.UNKNOWN_MISSING_RUNTIME_CLASS
+    if mapping_status == RuntimeClassMappingStatus.UNKNOWN_RUNTIME_CLASS:
+        return ProvenanceResolutionStatus.UNKNOWN_RUNTIME_CLASS
+    return ProvenanceResolutionStatus.RESOLVED
+
+
+def _optional_budget_report_for_testowner(
+    testowner_path: str,
+    test_layer: TestLayer | None,
+) -> dict[str, Any] | None:
+    if test_layer is None or test_layer not in LAYER_BUDGET_SECONDS:
+        return None
+    normalized = normalize_testowner_path(testowner_path)
+    for row in ARCHIVED_TESTOWNER_DURATION_EVIDENCE:
+        if normalize_testowner_path(row.testowner) != normalized:
+            continue
+        report = classify_testowner_runtime(
+            testowner=normalized,
+            layer=test_layer,
+            runtime_seconds=row.runtime_seconds,
+            evidence_source=row.evidence_source,
+        )
+        return {
+            "testowner": report.testowner,
+            "layer": report.layer.value,
+            "runtime_seconds": report.runtime_seconds,
+            "budget_seconds": report.budget_seconds,
+            "budget_status": report.budget_status.value,
+            "evidence_source": report.evidence_source,
+            "reporting_only": report.reporting_only,
+        }
+    return None
+
+
+@dataclass(frozen=True, slots=True)
+class TestownerCategoryProvenanceReport:
+    testowner_path: str
+    matched_category: str | None
+    matched_pattern: str | None
+    runtime_class: str | None
+    test_layer: TestLayer | None
+    provenance_source: str
+    resolution_status: ProvenanceResolutionStatus
+    selection_mode: str | None = None
+    budget_report: dict[str, Any] | None = None
+    reporting_only: bool = True
+
+
+def build_testowner_category_provenance_report(
+    testowner_path: str,
+    *,
+    mapping_path: Path = CANONICAL_MAPPING_FILE,
+    categories: dict[str, Any] | None = None,
+) -> TestownerCategoryProvenanceReport:
+    normalized = normalize_testowner_path(testowner_path)
+    selector_category = categorize(normalized)
+    mapping = (
+        categories if categories is not None else load_category_mapping_categories(mapping_path)
+    )
+    yaml_matches = find_yaml_matching_categories(normalized, mapping)
+    matched_pattern: str | None = None
+    runtime_class: str | None = None
+    selection_mode: str | None = None
+    provenance_source = f"scripts/ops/ci_test_selection_v1.py:categorize+{mapping_path.as_posix()}"
+
+    if selector_category != "unknown" and selector_category in mapping:
+        entry = mapping[selector_category]
+        runtime_class = entry.get("runtime_class")
+        selection_mode = entry.get("mode")
+        category_globs = [
+            glob for glob in entry.get("globs", []) if yaml_glob_matches(glob, normalized)
+        ]
+        if category_globs:
+            matched_pattern = sorted(category_globs)[0]
+        else:
+            matched_pattern = _selector_rule_id(selector_category)
+    elif selector_category != "unknown":
+        matched_pattern = _selector_rule_id(selector_category)
+    elif yaml_matches:
+        matched_pattern = yaml_matches[0]["matched_globs"][0]
+
+    mapped = map_runtime_class_to_test_layer(
+        runtime_class,
+        category=selector_category if selector_category != "unknown" else None,
+        selection_mode=selection_mode,
+        provenance_source=provenance_source,
+    )
+    resolution_status = _resolve_provenance_status(
+        selector_category=selector_category,
+        yaml_matches=yaml_matches,
+        mapping_status=mapped.mapping_status,
+    )
+    test_layer = (
+        mapped.test_layer if resolution_status == ProvenanceResolutionStatus.RESOLVED else None
+    )
+    budget_report = _optional_budget_report_for_testowner(normalized, test_layer)
+
+    return TestownerCategoryProvenanceReport(
+        testowner_path=normalized,
+        matched_category=None if selector_category == "unknown" else selector_category,
+        matched_pattern=matched_pattern,
+        runtime_class=mapped.runtime_class,
+        test_layer=test_layer,
+        provenance_source=provenance_source,
+        resolution_status=resolution_status,
+        selection_mode=selection_mode,
+        budget_report=budget_report,
+    )
+
+
+def build_testowner_category_provenance_report_dict(
+    testowner_path: str,
+    *,
+    mapping_path: Path = CANONICAL_MAPPING_FILE,
+    categories: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    report = build_testowner_category_provenance_report(
+        testowner_path,
+        mapping_path=mapping_path,
+        categories=categories,
+    )
+    payload: dict[str, Any] = {
+        "testowner_path": report.testowner_path,
+        "matched_category": report.matched_category,
+        "matched_pattern": report.matched_pattern,
+        "runtime_class": report.runtime_class,
+        "test_layer": report.test_layer.value if report.test_layer else None,
+        "provenance_source": report.provenance_source,
+        "resolution_status": report.resolution_status.value,
+        "selection_mode": report.selection_mode,
+        "reporting_only": report.reporting_only,
+    }
+    if report.budget_report is not None:
+        payload["budget_report"] = report.budget_report
+    return payload
 
 
 def build_testowner_cost_inventory(
@@ -574,3 +805,156 @@ def test_stage2_inventory_backward_compatible_after_stage4_extension() -> None:
     assert len(inventory) == 4
     report = build_runtime_class_test_layer_mapping_report()
     assert len(report) >= 3
+
+
+# --- Stage 5A: testowner → category → runtime_class → TestLayer provenance ---
+
+
+def test_stage5_known_testowner_resolves_static_contract_chain() -> None:
+    testowner = "tests/ci/test_ci_static_contract_narrow_code_filter_contract_v0.py"
+    report = build_testowner_category_provenance_report(testowner)
+    assert report.testowner_path == testowner
+    assert report.matched_category == "static_contract"
+    assert report.matched_pattern == "tests/ci/**"
+    assert report.runtime_class == "seconds"
+    assert report.test_layer == TestLayer.L0_STATIC
+    assert report.resolution_status == ProvenanceResolutionStatus.RESOLVED
+    assert report.provenance_source.endswith(CANONICAL_MAPPING_FILE.as_posix())
+    assert report.budget_report is not None
+    assert report.budget_report["layer"] == TestLayer.L0_STATIC.value
+
+
+def test_stage5_report_preserves_original_testowner_path() -> None:
+    report = build_testowner_category_provenance_report(
+        "./tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py"
+    )
+    assert report.testowner_path == (
+        "tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py"
+    )
+
+
+def test_stage5_no_category_match_fail_closed_unknown() -> None:
+    report = build_testowner_category_provenance_report("not/a/known/repo/path.xyz")
+    assert report.matched_category is None
+    assert report.resolution_status == ProvenanceResolutionStatus.UNKNOWN_NO_MATCH
+    assert report.test_layer is None
+
+
+def test_stage5_missing_runtime_class_fail_closed() -> None:
+    report = build_testowner_category_provenance_report(
+        "tests/ci/example.py",
+        categories={
+            "static_contract": {
+                "mode": "NO_OP",
+                "globs": ["tests/ci/**"],
+            }
+        },
+    )
+    assert report.matched_category == "static_contract"
+    assert report.resolution_status == ProvenanceResolutionStatus.UNKNOWN_MISSING_RUNTIME_CLASS
+    assert report.test_layer is None
+
+
+def test_stage5_unknown_runtime_class_fail_closed() -> None:
+    report = build_testowner_category_provenance_report(
+        "tests/ci/example.py",
+        categories={
+            "static_contract": {
+                "mode": "NO_OP",
+                "globs": ["tests/ci/**"],
+                "runtime_class": "hours",
+            }
+        },
+    )
+    assert report.resolution_status == ProvenanceResolutionStatus.UNKNOWN_RUNTIME_CLASS
+    assert report.test_layer is None
+    assert report.test_layer != TestLayer.L1_FAST_CORE
+
+
+def test_stage5_ambiguous_yaml_runtime_class_fail_closed() -> None:
+    report = build_testowner_category_provenance_report(
+        "synthetic/ambiguous/path.py",
+        categories={
+            "alpha": {
+                "mode": "FOCUSED",
+                "globs": ["synthetic/**"],
+                "runtime_class": "seconds",
+            },
+            "beta": {
+                "mode": "FULL",
+                "globs": ["synthetic/ambiguous/**"],
+                "runtime_class": "full_matrix",
+            },
+        },
+    )
+    assert report.resolution_status == ProvenanceResolutionStatus.AMBIGUOUS_MATCH
+    assert report.test_layer is None
+
+
+def test_stage5_budget_report_uses_same_test_layer_not_archived_layer() -> None:
+    testowner = (
+        "tests/ops/test_bounded_futures_testnet_readiness_review_admission_presentation_"
+        "lifecycle_bridge_contract_v0.py"
+    )
+    report = build_testowner_category_provenance_report(testowner)
+    assert report.matched_category == "static_contract"
+    assert report.test_layer == TestLayer.L0_STATIC
+    assert report.budget_report is not None
+    assert report.budget_report["layer"] == TestLayer.L0_STATIC.value
+    assert report.budget_report["layer"] != TestLayer.L2_OWNER_TARGETED.value
+
+
+def test_stage5_path_normalization_is_repo_relative_deterministic() -> None:
+    assert normalize_testowner_path("tests/ci/foo.py") == normalize_testowner_path(
+        "./tests/ci/foo.py"
+    )
+    with pytest.raises(ValueError, match="absolute paths"):
+        normalize_testowner_path("/Users/local/tests/ci/foo.py")
+
+
+def test_stage5_provenance_chain_fields_in_dict_report() -> None:
+    payload = build_testowner_category_provenance_report_dict(
+        "tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py"
+    )
+    assert payload["matched_category"] == "static_contract"
+    assert payload["runtime_class"] == "seconds"
+    assert payload["test_layer"] == TestLayer.L0_STATIC.value
+    assert payload["resolution_status"] == ProvenanceResolutionStatus.RESOLVED.value
+    assert payload["reporting_only"] is True
+
+
+def test_stage5_provenance_does_not_change_diff_aware_selection() -> None:
+    reporting_file = "tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py"
+    before = _run_selector(reporting_file)
+    _ = build_testowner_category_provenance_report(reporting_file)
+    after = _run_selector(reporting_file)
+    assert before == after
+    assert before["test_selection_mode"] == "NO_OP"
+
+
+def test_stage5_provenance_does_not_change_run_matrix() -> None:
+    reporting_file = "tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py"
+    _ = build_testowner_category_provenance_report(reporting_file)
+    sel = _run_selector(reporting_file)
+    assert sel["tests_execute_no_op"] == "true"
+    assert sel["tests_execute_full"] == "false"
+    assert sel["tests_execute_focused"] == "false"
+
+
+def test_stage5_provenance_has_no_enforcement_exit_code() -> None:
+    payload = build_testowner_category_provenance_report_dict(
+        "tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py"
+    )
+    assert payload["resolution_status"] != "PASS"
+    assert payload["resolution_status"] in {status.value for status in ProvenanceResolutionStatus}
+
+
+def test_stage5_stage2_and_stage4_backward_compatible_after_extension() -> None:
+    inventory = build_testowner_cost_inventory()
+    mapping_report = build_runtime_class_test_layer_mapping_report()
+    provenance = build_testowner_category_provenance_report(
+        "tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py"
+    )
+    assert len(inventory) == 4
+    assert len(mapping_report) >= 3
+    assert provenance.resolution_status == ProvenanceResolutionStatus.RESOLVED
