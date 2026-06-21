@@ -32,6 +32,12 @@ from src.ops.bounded_futures_testnet_position_order_reconciliation_primary_evide
 from src.ops.bounded_futures_testnet_reconciliation_review_lifecycle_integration_contract_v0 import (
     evaluate_reconciliation_review_lifecycle_integration,
 )
+from src.ops.bounded_futures_testnet_handoff_staleness_revocation_recovery_boundary_contract_v0 import (
+    evaluate_handoff_staleness_revocation_recovery_boundary,
+)
+from src.ops.durable_completion_validation.validators.recovery import (
+    validate_recovery_proof_binding,
+)
 from src.ops.durable_completion_validation.validators.reconciliation import (
     validate_pe21_reconciliation_result_manifest_integrity,
     validate_reconciliation_proof_binding,
@@ -200,6 +206,38 @@ def test_graph_reconciliation_validator_missing_fill_manifest_fail_closed() -> N
         "pe21_fill_state_manifest: FILL_STATE_SNAPSHOT.json manifest entry required" in reason
         for reason in result.fail_reasons
     )
+
+
+def _replace_pe34_handoff(integration_input, **overrides):
+    pe35_input = integration_input.pe35_handoff_staleness_revocation_recovery_boundary_input
+    pe34_handoff = replace(pe35_input.pe34_handoff, **overrides)
+    pe35_input = replace(pe35_input, pe34_handoff=pe34_handoff)
+    return replace(
+        integration_input,
+        pe35_handoff_staleness_revocation_recovery_boundary_input=pe35_input,
+    )
+
+
+def test_graph_recovery_validator_composes_pe35_handoff_input_validation() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    pe35_input = integration_input.pe35_handoff_staleness_revocation_recovery_boundary_input
+    context = ValidationContext(
+        integration_input=integration_input,
+        pe35_result=evaluate_handoff_staleness_revocation_recovery_boundary(pe35_input),
+    )
+    assert not validate_recovery_proof_binding(context).fail_reasons
+
+
+def test_graph_recovery_validator_missing_pe34_handoff_id_fail_closed() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = _replace_pe34_handoff(integration_input, handoff_id="")
+    pe35_input = bad.pe35_handoff_staleness_revocation_recovery_boundary_input
+    context = ValidationContext(
+        integration_input=bad,
+        pe35_result=evaluate_handoff_staleness_revocation_recovery_boundary(pe35_input),
+    )
+    result = execute_proof_binding_validation_graph(context)
+    assert any("handoff_id required" in reason for reason in result.fail_reasons)
 
 
 def test_evaluate_graph_compatibility_happy_path() -> None:
