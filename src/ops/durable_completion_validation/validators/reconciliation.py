@@ -317,3 +317,15 @@ def validate_pe31_integration_proof(context: ValidationContext) -> ValidationRes
         )
 
     return ValidationResult(fail_reasons=tuple(fail_reasons))
+
+
+def validate_reconciliation_proof_binding(context: ValidationContext) -> ValidationResult:
+    """Graph reconciliation node: fill-aware PE-21 manifest integrity plus PE-31 proof binding."""
+    fail_reasons: list[str] = []
+    pe21_manifest = validate_pe21_reconciliation_result_manifest_integrity(
+        context.integration_input
+    )
+    fail_reasons.extend(pe21_manifest.fail_reasons)
+    pe31_proof = validate_pe31_integration_proof(context)
+    fail_reasons.extend(pe31_proof.fail_reasons)
+    return ValidationResult(fail_reasons=tuple(sorted_unique(fail_reasons)))

@@ -600,6 +600,37 @@ def test_fast_lane_focused_contract_check_runs_for_focused_prs() -> None:
     assert "OPS_SHARD_COUNT" not in focused_block
 
 
+def test_fast_lane_focused_skips_matrix_targets_when_run_matrix_true() -> None:
+    text = _ci_text()
+    focused_block = text.split("Focused Fast-Lane contract check", 1)[1].split(
+        "Static contract tests", 1
+    )[0]
+    assert 'run_matrix }}" = "true"' in focused_block
+    matrix_branch = focused_block.split('run_matrix }}" = "true"', 1)[1].split("else", 1)[0]
+    assert "VALIDATED_TARGETS" not in matrix_branch
+    assert "VALIDATED_TARGETS" in focused_block
+
+
+PE56_DURABLE_COMPLETION_GRAPH_WIRING_FILES = (
+    "src/ops/durable_completion_validation/graph.py",
+    "src/ops/durable_completion_validation/validators/reconciliation.py",
+    "tests/ops/test_durable_completion_validation_graph_v1.py",
+)
+
+
+def test_selector_pe56_graph_wiring_rebinding_bounded_focused_targets() -> None:
+    sel = _run_selector(*PE56_DURABLE_COMPLETION_GRAPH_WIRING_FILES)
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "durable_completion_focused"
+    targets = _targets(sel)
+    assert targets == ["tests/ops/test_durable_completion_validation_graph_v1.py"]
+    assert (
+        "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py"
+        not in targets
+    )
+    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" not in targets
+
+
 def test_fast_lane_skips_full_static_sweep_when_focused() -> None:
     text = _ci_text()
     static_if = text.split("name: Static contract tests", 1)[1].split("run:", 1)[0]

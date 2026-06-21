@@ -111,7 +111,6 @@ REQUIRED_DURABLE_COMPLETION_TEST_OWNERS: tuple[str, ...] = (
 DURABLE_COMPLETION_FULL_REFACTOR_SRC_PATHS = frozenset(
     {
         "src/ops/durable_completion_validation/__init__.py",
-        "src/ops/durable_completion_validation/graph.py",
         "src/ops/durable_completion_validation/identity.py",
         "src/ops/durable_completion_validation/models.py",
     }
@@ -391,6 +390,16 @@ def _is_durable_completion_validator_rebinding_scope(files: list[str]) -> bool:
         path.startswith("src/ops/durable_completion_validation/") and path.endswith(".py")
         for path in files
     ):
+        return False
+    has_validator_subpath = any(
+        path.startswith("src/ops/durable_completion_validation/validators/")
+        and path.endswith(".py")
+        for path in files
+    )
+    has_rebinding_test = any(
+        path in DURABLE_COMPLETION_VALIDATOR_REBINDING_TEST_PATHS for path in files
+    )
+    if not has_validator_subpath and not has_rebinding_test:
         return False
     for path in files:
         if path in DURABLE_COMPLETION_CI_POLICY_PATHS:
