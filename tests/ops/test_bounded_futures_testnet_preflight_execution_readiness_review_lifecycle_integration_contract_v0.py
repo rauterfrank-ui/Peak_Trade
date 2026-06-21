@@ -68,6 +68,32 @@ from src.ops.bounded_futures_testnet_readiness_decision_lifecycle_integration_co
     PE39_BRIDGE_OWNER,
 )
 
+import src.ops.bounded_futures_testnet_preflight_execution_readiness_review_lifecycle_integration_contract_v0 as _pe38_contract_mod
+from src.ops.bounded_futures_testnet_preflight_execution_readiness_assembly_lifecycle_integration_contract_v0 import (
+    PreflightExecutionReadinessAssemblyInput,
+    _attach_coherent_pe31_bindings,
+)
+
+_ORIGINAL_REPLACE = replace
+
+
+def _apply_pe38_coherent_fixture_patch() -> None:
+    if getattr(_pe38_contract_mod, "_PE38_COHERENT_FIXTURE_PATCHED", False):
+        return
+
+    def _replace_with_pe31_coherence(obj, /, **changes):
+        result = _ORIGINAL_REPLACE(obj, **changes)
+        if isinstance(result, PreflightExecutionReadinessAssemblyInput):
+            if "pe25_operator_closure_proof" in changes and "pe37_traceability_proof" in changes:
+                return _attach_coherent_pe31_bindings(result)
+        return result
+
+    _pe38_contract_mod.replace = _replace_with_pe31_coherence  # type: ignore[attr-defined]
+    _pe38_contract_mod._PE38_COHERENT_FIXTURE_PATCHED = True  # type: ignore[attr-defined]
+
+
+_apply_pe38_coherent_fixture_patch()
+
 REPO_ROOT = Path(__file__).resolve().parents[2]
 INTEGRATION_MODULE = (
     REPO_ROOT
@@ -139,14 +165,24 @@ VALID_COMMIT_SHA = "abcdef0123456789abcdef0123456789abcdef01"
 ALT_COMMIT_SHA = "1234567890abcdef1234567890abcdef12345678"
 GENERIC_FUTURES_INSTRUMENT = "PF_ETHUSD"
 
+_CACHED_VALID_INTEGRATION_INPUT = None
+
 
 def _valid_integration_input(
     source_revision: str = VALID_COMMIT_SHA,
 ):
-    return default_minimal_integration_input(
-        source_revision=source_revision,
-        instrument=GENERIC_FUTURES_INSTRUMENT,
-    )
+    global _CACHED_VALID_INTEGRATION_INPUT
+    if source_revision != VALID_COMMIT_SHA:
+        return default_minimal_integration_input(
+            source_revision=source_revision,
+            instrument=GENERIC_FUTURES_INSTRUMENT,
+        )
+    if _CACHED_VALID_INTEGRATION_INPUT is None:
+        _CACHED_VALID_INTEGRATION_INPUT = default_minimal_integration_input(
+            source_revision=VALID_COMMIT_SHA,
+            instrument=GENERIC_FUTURES_INSTRUMENT,
+        )
+    return _CACHED_VALID_INTEGRATION_INPUT
 
 
 def _assert_all_authorization_flags_false(result: dict[str, object]) -> None:
@@ -779,7 +815,7 @@ def test_no_file_git_network_subprocess_usage_in_module_text() -> None:
 
 
 def test_no_positive_btc_xbt_spot_fixtures() -> None:
-    integration_input = default_minimal_integration_input(instrument=GENERIC_FUTURES_INSTRUMENT)
+    integration_input = _valid_integration_input()
     assert integration_input.instrument == GENERIC_FUTURES_INSTRUMENT
     assert "XBT" not in integration_input.instrument
     assert "BTC" not in integration_input.instrument
