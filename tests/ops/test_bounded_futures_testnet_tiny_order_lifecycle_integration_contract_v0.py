@@ -9,6 +9,8 @@ from __future__ import annotations
 from dataclasses import replace
 from pathlib import Path
 
+import pytest
+
 from src.ops.bounded_futures_testnet_adapter_lifecycle_contract_v0 import (
     PACKAGE_MARKER as PE12_PACKAGE_MARKER,
     PHASE_CANONICAL_OWNERS,
@@ -47,15 +49,21 @@ from src.ops.bounded_futures_testnet_tiny_order_lifecycle_integration_contract_v
     NETWORK_RUN_STARTED,
     OPERATIVE_ADAPTER_CALLED,
     OPERATIVE_TINY_ORDER_EXECUTED,
+    ORDER_CAPABILITY_PROOF_OWNER,
     PE26_ASSEMBLY_OWNER,
     PE27_INTEGRATION_OWNER,
     PE28_INTEGRATION_OWNER,
     PE29_INTEGRATION_OWNER,
+    PROOF_LIFECYCLE_CURRENT,
+    PROOF_LIFECYCLE_REVOKED,
+    PROOF_LIFECYCLE_STALE,
+    PROOF_LIFECYCLE_SUPERSEDED,
     RUNTIME_STARTED,
     TESTNET_CONTRACT_VERSION,
     TESTNET_RUN_STARTED,
     TINY_ORDER_MODE,
     TINY_ORDER_OWNER,
+    OrderCapabilityProofChainBinding,
     Pe26AssemblyProofBinding,
     Pe27ZeroOrderIntegrationProofBinding,
     Pe28PrivateReadonlyIntegrationProofBinding,
@@ -63,8 +71,11 @@ from src.ops.bounded_futures_testnet_tiny_order_lifecycle_integration_contract_v
     compute_integration_input_digest,
     compute_integration_proof_digest,
     compute_lifecycle_matrix_digest,
+    compute_order_capability_idempotency_proof_digest,
+    compute_order_capability_proof_chain_digest,
     compute_tiny_order_proof_digest,
     default_minimal_integration_input,
+    default_minimal_order_capability_proof_chain,
     default_minimal_pe26_assembly_proof,
     default_minimal_pe27_integration_proof,
     default_minimal_pe28_integration_proof,
@@ -439,13 +450,18 @@ def test_wrong_tiny_order_proof_digest_fails() -> None:
     assert any("tiny_order_proof_digest mismatch" in r for r in result["fail_reasons"])
 
 
-def test_order_capability_true_fails() -> None:
+def test_order_capability_true_without_proof_chain_blocked() -> None:
     integration_input = default_minimal_integration_input()
     bad_proof = _tiny_order_with(order_capability=True)
     bad = replace(integration_input, tiny_order_proof=bad_proof)
     result = evaluate_tiny_order_lifecycle_integration(bad)
     assert result["integration_pass"] is False
-    assert any("order_capability must be false" in r for r in result["fail_reasons"])
+    assert result["order_capability_proof_chain_evaluated"] is True
+    assert result["order_capability_static_coherence_proven"] is False
+    assert any(
+        "order_capability=true requires order_capability_proof_chain binding" in r
+        for r in result["fail_reasons"]
+    )
 
 
 def test_cancel_capability_true_fails() -> None:
@@ -909,3 +925,194 @@ def _tiny_order_with(**overrides: object) -> TinyOrderProofBinding:
     base = default_minimal_tiny_order_proof()
     mutated = replace(base, **overrides)
     return replace(mutated, tiny_order_proof_digest=compute_tiny_order_proof_digest(mutated))
+
+
+def _order_capability_integration_input(
+    *,
+    adapter_id: str = "offline_bounded_futures_testnet_adapter_v0",
+    instrument: str = GENERIC_FUTURES_INSTRUMENT,
+) -> object:
+    base = default_minimal_integration_input(adapter_id=adapter_id, instrument=instrument)
+    proof_chain = default_minimal_order_capability_proof_chain(
+        adapter_id=adapter_id,
+        instrument=instrument,
+    )
+    tiny_order_proof = _tiny_order_with(order_capability=True)
+    return replace(
+        base,
+        tiny_order_proof=tiny_order_proof,
+        order_capability_proof_chain=proof_chain,
+    )
+
+
+def test_order_capability_true_with_coherent_proof_chain_passes_static_coherence() -> None:
+    integration_input = _order_capability_integration_input()
+    result = evaluate_tiny_order_lifecycle_integration(integration_input)
+    assert result["integration_pass"] is True
+    assert result["order_capability_proof_chain_evaluated"] is True
+    assert result["order_capability_static_coherence_proven"] is True
+    assert result["preflight_remains_blocked"] is True
+    assert result["ready_for_operator_arming"] is False
+    assert result["orders_allowed"] is False
+    assert result["live_authorized"] is False
+    assert result["execution_authorized"] is False
+    assert result["orders_created"] == 0
+    assert result["orders_cancelled"] == 0
+    assert result["positions_changed"] == 0
+
+
+def test_order_capability_false_does_not_evaluate_proof_chain() -> None:
+    result = evaluate_tiny_order_lifecycle_integration(default_minimal_integration_input())
+    assert result["integration_pass"] is True
+    assert result["order_capability_proof_chain_evaluated"] is False
+    assert result["order_capability_static_coherence_proven"] is False
+
+
+def test_missing_abort_proof_fail_closed() -> None:
+    integration_input = _order_capability_integration_input()
+    chain = integration_input.order_capability_proof_chain
+    broken_abort = replace(
+        chain.abort_binding_input,
+        payload_summary=replace(
+            chain.abort_binding_input.payload_summary,
+            abort_ack_marker="PENDING",
+        ),
+    )
+    broken_chain = replace(
+        chain,
+        abort_binding_input=broken_abort,
+        capability_proof_digest=compute_order_capability_proof_chain_digest(
+            replace(chain, abort_binding_input=broken_abort)
+        ),
+    )
+    bad = replace(integration_input, order_capability_proof_chain=broken_chain)
+    result = evaluate_tiny_order_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("order_capability_abort_binding:" in r for r in result["fail_reasons"])
+
+
+def test_missing_cleanup_proof_fail_closed() -> None:
+    integration_input = _order_capability_integration_input()
+    chain = integration_input.order_capability_proof_chain
+    broken_cleanup = replace(
+        chain.cleanup_binding_input,
+        payload_summary=replace(
+            chain.cleanup_binding_input.payload_summary,
+            cleanup_cancel_correlation_marker="",
+        ),
+    )
+    broken_chain = replace(
+        chain,
+        cleanup_binding_input=broken_cleanup,
+        capability_proof_digest=compute_order_capability_proof_chain_digest(
+            replace(chain, cleanup_binding_input=broken_cleanup)
+        ),
+    )
+    bad = replace(integration_input, order_capability_proof_chain=broken_chain)
+    result = evaluate_tiny_order_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("order_capability_cleanup_binding:" in r for r in result["fail_reasons"])
+
+
+def test_missing_idempotency_proof_digest_fail_closed() -> None:
+    integration_input = _order_capability_integration_input()
+    chain = integration_input.order_capability_proof_chain
+    broken_chain = replace(chain, idempotency_proof_digest="")
+    bad = replace(integration_input, order_capability_proof_chain=broken_chain)
+    result = evaluate_tiny_order_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("idempotency_proof_digest required" in r for r in result["fail_reasons"])
+
+
+@pytest.mark.parametrize(
+    ("lifecycle_state", "reason_fragment"),
+    [
+        (PROOF_LIFECYCLE_STALE, "stale proof lifecycle state"),
+        (PROOF_LIFECYCLE_REVOKED, "revoked proof lifecycle state"),
+        (PROOF_LIFECYCLE_SUPERSEDED, "superseded proof lifecycle state"),
+    ],
+)
+def test_invalid_proof_lifecycle_states_fail_closed(
+    lifecycle_state: str,
+    reason_fragment: str,
+) -> None:
+    integration_input = _order_capability_integration_input()
+    chain = integration_input.order_capability_proof_chain
+    broken_chain = replace(
+        chain,
+        proof_lifecycle_state=lifecycle_state,
+        capability_proof_digest=compute_order_capability_proof_chain_digest(
+            replace(chain, proof_lifecycle_state=lifecycle_state)
+        ),
+    )
+    bad = replace(integration_input, order_capability_proof_chain=broken_chain)
+    result = evaluate_tiny_order_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(reason_fragment in r for r in result["fail_reasons"])
+
+
+def test_capability_identity_drift_fail_closed() -> None:
+    integration_input = _order_capability_integration_input()
+    chain = integration_input.order_capability_proof_chain
+    broken_chain = replace(
+        chain,
+        capability_identity="pe30-other-adapter",
+        capability_proof_digest=compute_order_capability_proof_chain_digest(
+            replace(chain, capability_identity="pe30-other-adapter")
+        ),
+    )
+    bad = replace(integration_input, order_capability_proof_chain=broken_chain)
+    result = evaluate_tiny_order_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("capability_identity drift" in r for r in result["fail_reasons"])
+
+
+def test_owner_drift_fail_closed() -> None:
+    integration_input = _order_capability_integration_input()
+    chain = integration_input.order_capability_proof_chain
+    broken_chain = replace(
+        chain,
+        proof_issuer="GO_OTHER",
+        capability_proof_digest=compute_order_capability_proof_chain_digest(
+            replace(chain, proof_issuer="GO_OTHER")
+        ),
+    )
+    bad = replace(integration_input, order_capability_proof_chain=broken_chain)
+    result = evaluate_tiny_order_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("proof_issuer drift" in r for r in result["fail_reasons"])
+
+
+def test_digest_drift_fail_closed() -> None:
+    integration_input = _order_capability_integration_input()
+    chain = integration_input.order_capability_proof_chain
+    broken_chain = replace(chain, capability_proof_digest="0" * 64)
+    bad = replace(integration_input, order_capability_proof_chain=broken_chain)
+    result = evaluate_tiny_order_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("capability_proof_digest mismatch" in r for r in result["fail_reasons"])
+
+
+def test_idempotency_digest_drift_fail_closed() -> None:
+    integration_input = _order_capability_integration_input()
+    chain = integration_input.order_capability_proof_chain
+    broken_chain = replace(chain, idempotency_proof_digest="0" * 64)
+    bad = replace(integration_input, order_capability_proof_chain=broken_chain)
+    result = evaluate_tiny_order_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("idempotency_proof_digest mismatch" in r for r in result["fail_reasons"])
+
+
+def test_proof_from_other_lifecycle_instance_fail_closed() -> None:
+    integration_input = _order_capability_integration_input(adapter_id="adapter-a")
+    chain = default_minimal_order_capability_proof_chain(
+        adapter_id="adapter-b",
+        instrument=GENERIC_FUTURES_INSTRUMENT,
+    )
+    bad = replace(
+        integration_input,
+        order_capability_proof_chain=chain,
+    )
+    result = evaluate_tiny_order_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("capability_identity drift" in r for r in result["fail_reasons"])

@@ -946,3 +946,173 @@ def test_selector_pe53_import_modules() -> None:
 def test_mapping_file_includes_risk_killswitch_focused() -> None:
     text = MAPPING.read_text(encoding="utf-8")
     assert "risk_killswitch_focused:" in text
+
+
+PE54_TINY_ORDER_FILES = (
+    "src/ops/bounded_futures_testnet_tiny_order_lifecycle_integration_contract_v0.py",
+    "tests/ops/test_bounded_futures_testnet_tiny_order_lifecycle_integration_contract_v0.py",
+)
+
+
+def test_selector_pe54_tiny_order_prod_owner_only_focused() -> None:
+    sel = _run_selector(PE54_TINY_ORDER_FILES[0])
+    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_reason"] == "tiny_order_incomplete_or_missing_test_owner"
+
+
+def test_selector_pe54_tiny_order_test_owner_only_focused() -> None:
+    sel = _run_selector(PE54_TINY_ORDER_FILES[1])
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "tiny_order_focused"
+    targets = _targets(sel)
+    assert PE54_TINY_ORDER_FILES[1] in targets
+    assert "tests/ops/test_order_capability_killswitch_abort_binding_contract_v1.py" in targets
+    assert "tests/ops/test_order_capability_cancel_cleanup_failclosed_contract_v1.py" in targets
+    assert sel["tests_execute_full"] == "false"
+    assert sel["tests_execute_no_op"] == "false"
+
+
+def test_selector_pe54_tiny_order_fileset_focused() -> None:
+    sel = _run_selector(*PE54_TINY_ORDER_FILES)
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "tiny_order_focused"
+    targets = _targets(sel)
+    assert PE54_TINY_ORDER_FILES[1] in targets
+    assert "tests/ops/test_order_capability_killswitch_abort_binding_contract_v1.py" in targets
+    assert "tests/ops/test_order_capability_cancel_cleanup_failclosed_contract_v1.py" in targets
+    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" in targets
+    assert sel["tests_execute_full"] == "false"
+    assert sel["tests_execute_no_op"] == "false"
+    assert "productive_src_no_op_blocked_fail_closed" not in sel["test_selection_reason"]
+
+
+def test_selector_pe54_tiny_order_plus_unknown_ops_src_escalates_full() -> None:
+    sel = _run_selector(
+        *PE54_TINY_ORDER_FILES,
+        "src/ops/bounded_futures_testnet_preflight_packet_contract_v0.py",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+
+
+def test_selector_pe54_tiny_order_plus_unknown_src_escalates_full() -> None:
+    sel = _run_selector(
+        *PE54_TINY_ORDER_FILES,
+        "src/execution/live/orchestrator.py",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+
+
+def test_selector_pe54_tiny_order_outside_owner_escalates_full() -> None:
+    sel = _run_selector(
+        *PE54_TINY_ORDER_FILES,
+        "src/risk/killswitch.py",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+
+
+def test_selector_pe54_tiny_order_runtime_touch_escalates_full() -> None:
+    sel = _run_selector(
+        PE54_TINY_ORDER_FILES[0],
+        "src/runtime/scheduler.py",
+        PE54_TINY_ORDER_FILES[1],
+    )
+    assert sel["test_selection_mode"] == "FULL"
+
+
+def test_selector_pe54_tiny_order_trading_strategy_master_v2_touch_escalates_full() -> None:
+    sel = _run_selector(
+        PE54_TINY_ORDER_FILES[0],
+        "src/strategies/vol_breakout.py",
+        PE54_TINY_ORDER_FILES[1],
+    )
+    assert sel["test_selection_mode"] == "FULL"
+
+
+def test_selector_pe54_tiny_order_packaging_change_escalates_full() -> None:
+    sel = _run_selector(
+        *PE54_TINY_ORDER_FILES,
+        "pyproject.toml",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+
+
+def test_selector_pe54_tiny_order_rebundle_with_ci_policy_focused() -> None:
+    sel = _run_selector(
+        *PE54_TINY_ORDER_FILES,
+        "scripts/ops/ci_test_selection_v1.py",
+        "config/ci/file_category_mapping.yaml",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    )
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "tiny_order_focused"
+    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" in _targets(sel)
+
+
+def test_selector_pe54_tiny_order_missing_abort_test_owner_escalates_full(monkeypatch) -> None:
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(
+        "ci_test_selection_v1_to_missing_abort",
+        str(SELECTOR),
+    )
+    assert spec and spec.loader
+    sel_mod = importlib.util.module_from_spec(spec)
+    sys.modules["ci_test_selection_v1_to_missing_abort"] = sel_mod
+    spec.loader.exec_module(sel_mod)
+
+    original_exists = sel_mod._repo_path_exists
+
+    def fake_exists(path: str) -> bool:
+        if path == "tests/ops/test_order_capability_killswitch_abort_binding_contract_v1.py":
+            return False
+        return original_exists(path)
+
+    monkeypatch.setattr(sel_mod, "_repo_path_exists", fake_exists)
+    result = sel_mod.resolve_selection(list(PE54_TINY_ORDER_FILES))
+    assert result.mode == "FULL"
+    assert result.reason == "tiny_order_incomplete_or_missing_test_owner"
+
+
+def test_selector_pe54_tiny_order_missing_cleanup_test_owner_escalates_full(monkeypatch) -> None:
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(
+        "ci_test_selection_v1_to_missing_cleanup",
+        str(SELECTOR),
+    )
+    assert spec and spec.loader
+    sel_mod = importlib.util.module_from_spec(spec)
+    sys.modules["ci_test_selection_v1_to_missing_cleanup"] = sel_mod
+    spec.loader.exec_module(sel_mod)
+
+    original_exists = sel_mod._repo_path_exists
+
+    def fake_exists(path: str) -> bool:
+        if path == "tests/ops/test_order_capability_cancel_cleanup_failclosed_contract_v1.py":
+            return False
+        return original_exists(path)
+
+    monkeypatch.setattr(sel_mod, "_repo_path_exists", fake_exists)
+    result = sel_mod.resolve_selection(list(PE54_TINY_ORDER_FILES))
+    assert result.mode == "FULL"
+    assert result.reason == "tiny_order_incomplete_or_missing_test_owner"
+
+
+def test_selector_pe54_tiny_order_import_modules() -> None:
+    sel = _run_selector(*PE54_TINY_ORDER_FILES)
+    modules = _modules(sel)
+    assert "src.ops.bounded_futures_testnet_tiny_order_lifecycle_integration_contract_v0" in modules
+
+
+def test_selector_pe54_tiny_order_ci_policy_only_escalates_full() -> None:
+    sel = _run_selector(
+        "scripts/ops/ci_test_selection_v1.py",
+        "config/ci/file_category_mapping.yaml",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+
+
+def test_mapping_file_includes_tiny_order_focused() -> None:
+    text = MAPPING.read_text(encoding="utf-8")
+    assert "tiny_order_focused:" in text
