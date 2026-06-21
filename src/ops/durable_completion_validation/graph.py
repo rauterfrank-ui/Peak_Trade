@@ -61,7 +61,7 @@ def _load_validators() -> dict[str, ValidatorFn]:
     return {
         VALIDATOR_RECONCILIATION: reconciliation.validate_reconciliation_proof_binding,
         VALIDATOR_RECOVERY: recovery.validate_recovery_proof_binding,
-        VALIDATOR_TRACEABILITY: traceability.validate_pe37_traceability_proof,
+        VALIDATOR_TRACEABILITY: traceability.validate_traceability_proof_binding,
         VALIDATOR_OPERATOR_CLOSURE: operator_closure.validate_pe25_operator_closure_proof,
     }
 

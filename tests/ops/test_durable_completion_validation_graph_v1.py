@@ -35,12 +35,18 @@ from src.ops.bounded_futures_testnet_reconciliation_review_lifecycle_integration
 from src.ops.bounded_futures_testnet_handoff_staleness_revocation_recovery_boundary_contract_v0 import (
     evaluate_handoff_staleness_revocation_recovery_boundary,
 )
+from src.ops.bounded_futures_testnet_operator_review_chain_durable_evidence_traceability_boundary_contract_v0 import (
+    evaluate_durable_evidence_traceability_boundary,
+)
 from src.ops.durable_completion_validation.validators.recovery import (
     validate_recovery_proof_binding,
 )
 from src.ops.durable_completion_validation.validators.reconciliation import (
     validate_pe21_reconciliation_result_manifest_integrity,
     validate_reconciliation_proof_binding,
+)
+from src.ops.durable_completion_validation.validators.traceability import (
+    validate_traceability_proof_binding,
 )
 
 
@@ -238,6 +244,43 @@ def test_graph_recovery_validator_missing_pe34_handoff_id_fail_closed() -> None:
     )
     result = execute_proof_binding_validation_graph(context)
     assert any("handoff_id required" in reason for reason in result.fail_reasons)
+
+
+def _replace_pe37_archive_binding(integration_input, **overrides):
+    pe37_input = integration_input.pe37_traceability_boundary_input
+    pe16 = replace(pe37_input.pe16_archive_binding, **overrides)
+    pe37_input = replace(pe37_input, pe16_archive_binding=pe16)
+    return replace(integration_input, pe37_traceability_boundary_input=pe37_input)
+
+
+def test_graph_traceability_validator_composes_pe37_handoff_input_validation() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    pe37_input = integration_input.pe37_traceability_boundary_input
+    context = ValidationContext(
+        integration_input=integration_input,
+        pe37_result=evaluate_durable_evidence_traceability_boundary(pe37_input),
+    )
+    assert not validate_traceability_proof_binding(context).fail_reasons
+
+
+def test_graph_traceability_validator_missing_pe16_archive_manifest_fail_closed() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = _replace_pe37_archive_binding(integration_input, archive_manifest_digest="")
+    pe37_input = bad.pe37_traceability_boundary_input
+    pe35_input = bad.pe35_handoff_staleness_revocation_recovery_boundary_input
+    context = ValidationContext(
+        integration_input=bad,
+        pe31_result=evaluate_reconciliation_review_lifecycle_integration(
+            bad.pe31_reconciliation_review_integration_input
+        ),
+        pe35_result=evaluate_handoff_staleness_revocation_recovery_boundary(pe35_input),
+        pe37_result=evaluate_durable_evidence_traceability_boundary(pe37_input),
+    )
+    result = execute_proof_binding_validation_graph(context)
+    assert any(
+        "pe16_archive: archive_manifest_digest required" in reason for reason in result.fail_reasons
+    )
+    assert VALIDATOR_TRACEABILITY not in context.completed_validators
 
 
 def test_evaluate_graph_compatibility_happy_path() -> None:
