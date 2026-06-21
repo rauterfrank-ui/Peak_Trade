@@ -24,8 +24,17 @@ from src.ops.durable_completion_validation.graph import (
     proof_binding_validation_graph_is_cycle_free,
 )
 from src.ops.durable_completion_validation.models import ValidationContext, ValidationResult
+from src.ops.bounded_futures_testnet_position_order_reconciliation_primary_evidence_integration_contract_v0 import (
+    ARTIFACT_FILL_STATE_SNAPSHOT,
+    ManifestEntry,
+    compute_manifest_digest,
+)
+from src.ops.bounded_futures_testnet_reconciliation_review_lifecycle_integration_contract_v0 import (
+    evaluate_reconciliation_review_lifecycle_integration,
+)
 from src.ops.durable_completion_validation.validators.reconciliation import (
     validate_pe21_reconciliation_result_manifest_integrity,
+    validate_reconciliation_proof_binding,
 )
 
 
@@ -146,6 +155,51 @@ def test_fill_state_manifest_validator_matches_input_validation_path() -> None:
     ]
     assert not fill_manifest_reasons
     assert not direct.fail_reasons
+
+
+def _replace_pe21_manifest_entries(integration_input, manifest_entries: tuple[ManifestEntry, ...]):
+    manifest_digest = compute_manifest_digest(manifest_entries)
+    pe21_input = integration_input.pe21_integration_input
+    binding = replace(
+        pe21_input.primary_evidence_binding,
+        manifest_entries=manifest_entries,
+        manifest_digest=manifest_digest,
+        manifest_proof_identity=manifest_digest,
+    )
+    pe21_input = replace(pe21_input, primary_evidence_binding=binding)
+    return replace(integration_input, pe21_integration_input=pe21_input)
+
+
+def test_graph_reconciliation_validator_composes_pe21_fill_manifest_integrity() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    context = ValidationContext(
+        integration_input=integration_input,
+        pe31_result=evaluate_reconciliation_review_lifecycle_integration(
+            integration_input.pe31_reconciliation_review_integration_input
+        ),
+    )
+    assert not validate_reconciliation_proof_binding(context).fail_reasons
+
+
+def test_graph_reconciliation_validator_missing_fill_manifest_fail_closed() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    entries = tuple(
+        entry
+        for entry in integration_input.pe21_integration_input.primary_evidence_binding.manifest_entries
+        if entry.relative_path != ARTIFACT_FILL_STATE_SNAPSHOT
+    )
+    bad = _replace_pe21_manifest_entries(integration_input, entries)
+    context = ValidationContext(
+        integration_input=bad,
+        pe31_result=evaluate_reconciliation_review_lifecycle_integration(
+            bad.pe31_reconciliation_review_integration_input
+        ),
+    )
+    result = execute_proof_binding_validation_graph(context)
+    assert any(
+        "pe21_fill_state_manifest: FILL_STATE_SNAPSHOT.json manifest entry required" in reason
+        for reason in result.fail_reasons
+    )
 
 
 def test_evaluate_graph_compatibility_happy_path() -> None:
