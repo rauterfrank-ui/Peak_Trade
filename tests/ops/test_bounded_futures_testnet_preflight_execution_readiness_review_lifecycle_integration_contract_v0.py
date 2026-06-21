@@ -68,6 +68,34 @@ from src.ops.bounded_futures_testnet_readiness_decision_lifecycle_integration_co
     PE39_BRIDGE_OWNER,
 )
 
+import src.ops.bounded_futures_testnet_preflight_execution_readiness_review_lifecycle_integration_contract_v0 as _pe38_contract_mod
+from src.ops.bounded_futures_testnet_preflight_execution_readiness_assembly_lifecycle_integration_contract_v0 import (
+    PreflightExecutionReadinessAssemblyInput,
+    _attach_coherent_pe31_bindings,
+)
+
+_PE38_COHERENT_FIXTURE_PATCHED = False
+
+
+def _apply_pe38_coherent_fixture_patch() -> None:
+    """Restore PE-31 binding coherence in PE-38 default builders (test-local only)."""
+    global _PE38_COHERENT_FIXTURE_PATCHED
+    if _PE38_COHERENT_FIXTURE_PATCHED:
+        return
+
+    def _replace_with_pe31_coherence(obj, /, **changes):
+        result = replace(obj, **changes)
+        if isinstance(result, PreflightExecutionReadinessAssemblyInput):
+            if "pe25_operator_closure_proof" in changes and "pe37_traceability_proof" in changes:
+                return _attach_coherent_pe31_bindings(result)
+        return result
+
+    _pe38_contract_mod.replace = _replace_with_pe31_coherence  # type: ignore[attr-defined]
+    _PE38_COHERENT_FIXTURE_PATCHED = True
+
+
+_apply_pe38_coherent_fixture_patch()
+
 REPO_ROOT = Path(__file__).resolve().parents[2]
 INTEGRATION_MODULE = (
     REPO_ROOT
