@@ -3,9 +3,11 @@
 Stage 4 extends this owner with runtime_class → TestLayer mapping sourced from
 ``config/ci/file_category_mapping.yaml``. Stage 5A adds testowner → category →
 runtime_class → TestLayer provenance reporting reusing the canonical selector
-``categorize()`` semantics and YAML mapping rows. Pure classification only; does
-not alter diff-aware selection, run_matrix, required-check contexts, or enforcement
-exit codes.
+``categorize()`` semantics and YAML mapping rows. Stage 5B adds a bounded
+reporting-only batch inventory join that routes multiple testowners through the
+Stage 5A provenance chain and joins archived runtime evidence with Stage 2 budget
+status. Pure classification only; does not alter diff-aware selection, run_matrix,
+required-check contexts, or enforcement exit codes.
 """
 
 from __future__ import annotations
@@ -514,6 +516,181 @@ def build_testowner_category_provenance_report_dict(
     return payload
 
 
+@dataclass(frozen=True, slots=True)
+class TestownerBudgetInventoryRow:
+    testowner_path: str
+    matched_category: str | None
+    matched_pattern: str | None
+    runtime_class: str | None
+    test_layer: TestLayer | None
+    runtime_seconds: float | None
+    runtime_evidence_source: str | None
+    budget_seconds: int | None
+    budget_status: BudgetStatus
+    resolution_status: ProvenanceResolutionStatus
+    provenance: str
+    reporting_only: bool = True
+
+
+def parse_runtime_seconds(value: object) -> float:
+    if isinstance(value, bool) or not isinstance(value, (int, float)):
+        raise ValueError("runtime_seconds must be numeric")
+    numeric = float(value)
+    if numeric < 0:
+        raise ValueError("runtime_seconds must be non-negative")
+    return numeric
+
+
+def _deduplicate_testowner_paths(testowner_paths: list[str]) -> tuple[list[str], int]:
+    seen: set[str] = set()
+    unique: list[str] = []
+    duplicate_count = 0
+    for path in testowner_paths:
+        normalized = normalize_testowner_path(path)
+        if normalized in seen:
+            duplicate_count += 1
+            continue
+        seen.add(normalized)
+        unique.append(path)
+    return unique, duplicate_count
+
+
+def _resolve_budget_fields_for_inventory_row(
+    provenance_report: TestownerCategoryProvenanceReport,
+) -> tuple[float | None, str | None, int | None, BudgetStatus]:
+    if provenance_report.resolution_status != ProvenanceResolutionStatus.RESOLVED:
+        return None, None, None, BudgetStatus.UNKNOWN_NO_EVIDENCE
+    if provenance_report.budget_report is None:
+        budget_seconds = (
+            _budget_for_layer(provenance_report.test_layer)
+            if provenance_report.test_layer is not None
+            else None
+        )
+        return None, None, budget_seconds, BudgetStatus.UNKNOWN_NO_EVIDENCE
+    budget_report = provenance_report.budget_report
+    return (
+        budget_report["runtime_seconds"],
+        budget_report["evidence_source"],
+        budget_report["budget_seconds"],
+        BudgetStatus(budget_report["budget_status"]),
+    )
+
+
+def build_testowner_budget_inventory_row(
+    testowner_path: str,
+    *,
+    mapping_path: Path = CANONICAL_MAPPING_FILE,
+    categories: dict[str, Any] | None = None,
+) -> TestownerBudgetInventoryRow:
+    provenance_report = build_testowner_category_provenance_report(
+        testowner_path,
+        mapping_path=mapping_path,
+        categories=categories,
+    )
+    runtime_seconds, evidence_source, budget_seconds, budget_status = (
+        _resolve_budget_fields_for_inventory_row(provenance_report)
+    )
+    return TestownerBudgetInventoryRow(
+        testowner_path=provenance_report.testowner_path,
+        matched_category=provenance_report.matched_category,
+        matched_pattern=provenance_report.matched_pattern,
+        runtime_class=provenance_report.runtime_class,
+        test_layer=provenance_report.test_layer,
+        runtime_seconds=runtime_seconds,
+        runtime_evidence_source=evidence_source,
+        budget_seconds=budget_seconds,
+        budget_status=budget_status,
+        resolution_status=provenance_report.resolution_status,
+        provenance=provenance_report.provenance_source,
+    )
+
+
+def testowner_budget_inventory_row_to_dict(row: TestownerBudgetInventoryRow) -> dict[str, Any]:
+    return {
+        "testowner_path": row.testowner_path,
+        "matched_category": row.matched_category,
+        "matched_pattern": row.matched_pattern,
+        "runtime_class": row.runtime_class,
+        "test_layer": row.test_layer.value if row.test_layer else None,
+        "runtime_seconds": row.runtime_seconds,
+        "runtime_evidence_source": row.runtime_evidence_source,
+        "budget_seconds": row.budget_seconds,
+        "budget_status": row.budget_status.value,
+        "resolution_status": row.resolution_status.value,
+        "provenance": row.provenance,
+        "reporting_only": row.reporting_only,
+    }
+
+
+def build_testowner_budget_inventory_summary(
+    rows: list[TestownerBudgetInventoryRow],
+    *,
+    duplicate_testowner_skipped_count: int = 0,
+) -> dict[str, int]:
+    summary: dict[str, int] = {
+        "total_rows": len(rows),
+        "resolved_rows": 0,
+        "unknown_provenance_rows": 0,
+        "ambiguous_match_rows": 0,
+        "within_budget_rows": 0,
+        "near_budget_rows": 0,
+        "over_budget_rows": 0,
+        "unknown_no_evidence_rows": 0,
+        "duplicate_testowner_skipped_count": duplicate_testowner_skipped_count,
+    }
+    positive_budget_statuses = {
+        BudgetStatus.WITHIN_BUDGET,
+        BudgetStatus.NEAR_BUDGET,
+        BudgetStatus.OVER_BUDGET,
+    }
+    for row in rows:
+        if row.resolution_status == ProvenanceResolutionStatus.RESOLVED:
+            summary["resolved_rows"] += 1
+        elif row.resolution_status == ProvenanceResolutionStatus.AMBIGUOUS_MATCH:
+            summary["ambiguous_match_rows"] += 1
+            summary["unknown_provenance_rows"] += 1
+        elif row.resolution_status != ProvenanceResolutionStatus.RESOLVED:
+            summary["unknown_provenance_rows"] += 1
+        if row.budget_status == BudgetStatus.WITHIN_BUDGET:
+            summary["within_budget_rows"] += 1
+        elif row.budget_status == BudgetStatus.NEAR_BUDGET:
+            summary["near_budget_rows"] += 1
+        elif row.budget_status == BudgetStatus.OVER_BUDGET:
+            summary["over_budget_rows"] += 1
+        elif row.budget_status == BudgetStatus.UNKNOWN_NO_EVIDENCE:
+            summary["unknown_no_evidence_rows"] += 1
+        if row.resolution_status != ProvenanceResolutionStatus.RESOLVED:
+            assert row.budget_status not in positive_budget_statuses
+    return summary
+
+
+def build_testowner_budget_inventory(
+    testowner_paths: list[str],
+    *,
+    mapping_path: Path = CANONICAL_MAPPING_FILE,
+    categories: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    unique_paths, duplicate_count = _deduplicate_testowner_paths(testowner_paths)
+    rows = [
+        build_testowner_budget_inventory_row(
+            path,
+            mapping_path=mapping_path,
+            categories=categories,
+        )
+        for path in unique_paths
+    ]
+    rows.sort(key=lambda row: row.testowner_path)
+    summary = build_testowner_budget_inventory_summary(
+        rows,
+        duplicate_testowner_skipped_count=duplicate_count,
+    )
+    return {
+        "rows": [testowner_budget_inventory_row_to_dict(row) for row in rows],
+        "summary": summary,
+        "reporting_only": True,
+    }
+
+
 def build_testowner_cost_inventory(
     evidence_rows: tuple[TestownerRuntimeEvidence, ...] = ARCHIVED_TESTOWNER_DURATION_EVIDENCE,
 ) -> list[dict[str, Any]]:
@@ -958,3 +1135,278 @@ def test_stage5_stage2_and_stage4_backward_compatible_after_extension() -> None:
     assert len(inventory) == 4
     assert len(mapping_report) >= 3
     assert provenance.resolution_status == ProvenanceResolutionStatus.RESOLVED
+
+
+# --- Stage 5B: unified provenance-to-budget batch inventory ---
+
+
+_STAGE5B_RESOLVABLE_TESTOWNERS: tuple[str, ...] = (
+    "tests/ci/test_ci_static_contract_narrow_code_filter_contract_v0.py",
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    (
+        "tests/ops/test_bounded_futures_testnet_readiness_review_admission_presentation_"
+        "lifecycle_integration_contract_v0.py"
+    ),
+)
+
+
+def test_stage5b_multiple_resolvable_testowners_fully_resolved() -> None:
+    inventory = build_testowner_budget_inventory(list(_STAGE5B_RESOLVABLE_TESTOWNERS))
+    assert len(inventory["rows"]) == 3
+    assert inventory["summary"]["resolved_rows"] == 3
+    for row in inventory["rows"]:
+        assert row["resolution_status"] == ProvenanceResolutionStatus.RESOLVED.value
+        assert row["test_layer"] is not None
+        assert row["matched_category"] is not None
+        assert row["runtime_class"] is not None
+        assert row["provenance"] is not None
+
+
+def test_stage5b_inventory_row_contains_full_provenance_chain() -> None:
+    inventory = build_testowner_budget_inventory(
+        ["tests/ci/test_ci_static_contract_narrow_code_filter_contract_v0.py"]
+    )
+    row = inventory["rows"][0]
+    assert row["testowner_path"] == (
+        "tests/ci/test_ci_static_contract_narrow_code_filter_contract_v0.py"
+    )
+    assert row["matched_category"] == "static_contract"
+    assert row["matched_pattern"] == "tests/ci/**"
+    assert row["runtime_class"] == "seconds"
+    assert row["test_layer"] == TestLayer.L0_STATIC.value
+    assert row["provenance"].endswith(CANONICAL_MAPPING_FILE.as_posix())
+
+
+def test_stage5b_known_runtime_evidence_joined_correctly() -> None:
+    inventory = build_testowner_budget_inventory(
+        ["tests/ci/test_ci_static_contract_narrow_code_filter_contract_v0.py"]
+    )
+    row = inventory["rows"][0]
+    assert row["runtime_seconds"] == 0.18
+    assert row["runtime_evidence_source"] is not None
+    assert str(row["runtime_evidence_source"]).startswith("archive:")
+    assert row["budget_seconds"] == 120
+    assert row["budget_status"] == BudgetStatus.WITHIN_BUDGET.value
+
+
+def test_stage5b_budget_status_uses_stage4_test_layer() -> None:
+    testowner = "tests/ci/test_ci_diff_aware_test_selection_v1.py"
+    inventory = build_testowner_budget_inventory([testowner])
+    row = inventory["rows"][0]
+    assert row["test_layer"] == TestLayer.L2_OWNER_TARGETED.value
+    assert row["budget_seconds"] == 480
+    assert row["budget_status"] == BudgetStatus.NEAR_BUDGET.value
+
+
+def test_stage5b_missing_runtime_evidence_unknown_no_evidence() -> None:
+    inventory = build_testowner_budget_inventory(
+        ["tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py"]
+    )
+    row = inventory["rows"][0]
+    assert row["resolution_status"] == ProvenanceResolutionStatus.RESOLVED.value
+    assert row["runtime_seconds"] is None
+    assert row["runtime_evidence_source"] is None
+    assert row["budget_status"] == BudgetStatus.UNKNOWN_NO_EVIDENCE.value
+
+
+def test_stage5b_no_category_match_fail_closed() -> None:
+    inventory = build_testowner_budget_inventory(["not/a/known/repo/path.xyz"])
+    row = inventory["rows"][0]
+    assert row["matched_category"] is None
+    assert row["resolution_status"] == ProvenanceResolutionStatus.UNKNOWN_NO_MATCH.value
+    assert row["test_layer"] is None
+    assert row["budget_status"] == BudgetStatus.UNKNOWN_NO_EVIDENCE.value
+
+
+def test_stage5b_missing_runtime_class_fail_closed() -> None:
+    inventory = build_testowner_budget_inventory(
+        ["tests/ci/example.py"],
+        categories={
+            "static_contract": {
+                "mode": "NO_OP",
+                "globs": ["tests/ci/**"],
+            }
+        },
+    )
+    row = inventory["rows"][0]
+    assert (
+        row["resolution_status"] == ProvenanceResolutionStatus.UNKNOWN_MISSING_RUNTIME_CLASS.value
+    )
+    assert row["test_layer"] is None
+    assert row["budget_status"] == BudgetStatus.UNKNOWN_NO_EVIDENCE.value
+
+
+def test_stage5b_unknown_runtime_class_fail_closed() -> None:
+    inventory = build_testowner_budget_inventory(
+        ["tests/ci/example.py"],
+        categories={
+            "static_contract": {
+                "mode": "NO_OP",
+                "globs": ["tests/ci/**"],
+                "runtime_class": "hours",
+            }
+        },
+    )
+    row = inventory["rows"][0]
+    assert row["resolution_status"] == ProvenanceResolutionStatus.UNKNOWN_RUNTIME_CLASS.value
+    assert row["test_layer"] is None
+    assert row["budget_status"] == BudgetStatus.UNKNOWN_NO_EVIDENCE.value
+
+
+def test_stage5b_ambiguous_match_fail_closed() -> None:
+    inventory = build_testowner_budget_inventory(
+        ["synthetic/ambiguous/path.py"],
+        categories={
+            "alpha": {
+                "mode": "FOCUSED",
+                "globs": ["synthetic/**"],
+                "runtime_class": "seconds",
+            },
+            "beta": {
+                "mode": "FULL",
+                "globs": ["synthetic/ambiguous/**"],
+                "runtime_class": "full_matrix",
+            },
+        },
+    )
+    row = inventory["rows"][0]
+    assert row["resolution_status"] == ProvenanceResolutionStatus.AMBIGUOUS_MATCH.value
+    assert row["test_layer"] is None
+    assert row["budget_status"] == BudgetStatus.UNKNOWN_NO_EVIDENCE.value
+
+
+def test_stage5b_unknown_provenance_never_within_budget() -> None:
+    inventory = build_testowner_budget_inventory(
+        [
+            "not/a/known/repo/path.xyz",
+            "synthetic/ambiguous/path.py",
+        ],
+        categories={
+            "alpha": {
+                "mode": "FOCUSED",
+                "globs": ["synthetic/**"],
+                "runtime_class": "seconds",
+            },
+            "beta": {
+                "mode": "FULL",
+                "globs": ["synthetic/ambiguous/**"],
+                "runtime_class": "full_matrix",
+            },
+        },
+    )
+    positive = {
+        BudgetStatus.WITHIN_BUDGET.value,
+        BudgetStatus.NEAR_BUDGET.value,
+        BudgetStatus.OVER_BUDGET.value,
+    }
+    for row in inventory["rows"]:
+        if row["resolution_status"] != ProvenanceResolutionStatus.RESOLVED.value:
+            assert row["budget_status"] not in positive
+
+
+def test_stage5b_negative_runtime_fail_closed() -> None:
+    with pytest.raises(ValueError, match="non-negative"):
+        parse_runtime_seconds(-1.0)
+
+
+def test_stage5b_non_numeric_runtime_fail_closed() -> None:
+    with pytest.raises(ValueError, match="numeric"):
+        parse_runtime_seconds("not-a-number")
+
+
+def test_stage5b_duplicate_testowners_deduplicated_deterministically() -> None:
+    testowner = "tests/ci/test_ci_static_contract_narrow_code_filter_contract_v0.py"
+    inventory = build_testowner_budget_inventory([testowner, f"./{testowner}", testowner])
+    assert len(inventory["rows"]) == 1
+    assert inventory["summary"]["duplicate_testowner_skipped_count"] == 2
+    assert inventory["summary"]["total_rows"] == 1
+
+
+def test_stage5b_input_order_does_not_change_semantic_mapping() -> None:
+    owners = list(_STAGE5B_RESOLVABLE_TESTOWNERS)
+    forward = build_testowner_budget_inventory(owners)
+    reverse = build_testowner_budget_inventory(list(reversed(owners)))
+    shuffled = build_testowner_budget_inventory([owners[2], owners[0], owners[1]])
+    assert forward["rows"] == reverse["rows"] == shuffled["rows"]
+
+
+def test_stage5b_output_deterministically_sorted() -> None:
+    inventory = build_testowner_budget_inventory(list(reversed(_STAGE5B_RESOLVABLE_TESTOWNERS)))
+    paths = [row["testowner_path"] for row in inventory["rows"]]
+    assert paths == sorted(paths)
+
+
+def test_stage5b_provenance_preserved_per_row() -> None:
+    inventory = build_testowner_budget_inventory(list(_STAGE5B_RESOLVABLE_TESTOWNERS))
+    for row in inventory["rows"]:
+        assert row["provenance"] is not None
+        assert "categorize+" in row["provenance"]
+        assert row["provenance"].endswith(CANONICAL_MAPPING_FILE.as_posix())
+
+
+def test_stage5b_summary_derived_from_rows_only() -> None:
+    inventory = build_testowner_budget_inventory(list(_STAGE5B_RESOLVABLE_TESTOWNERS))
+    summary = inventory["summary"]
+    rows = inventory["rows"]
+    assert summary["total_rows"] == len(rows)
+    assert summary["resolved_rows"] == sum(
+        1 for row in rows if row["resolution_status"] == ProvenanceResolutionStatus.RESOLVED.value
+    )
+    assert summary["unknown_no_evidence_rows"] == sum(
+        1 for row in rows if row["budget_status"] == BudgetStatus.UNKNOWN_NO_EVIDENCE.value
+    )
+
+
+def test_stage5b_summary_unknown_not_counted_as_pass() -> None:
+    inventory = build_testowner_budget_inventory(
+        [
+            "tests/ci/test_ci_static_contract_narrow_code_filter_contract_v0.py",
+            "not/a/known/repo/path.xyz",
+        ]
+    )
+    summary = inventory["summary"]
+    assert summary["unknown_provenance_rows"] >= 1
+    assert summary["unknown_no_evidence_rows"] >= 1
+    assert "pass" not in str(summary).lower()
+
+
+def test_stage5b_does_not_change_diff_aware_selection() -> None:
+    reporting_file = "tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py"
+    before = _run_selector(reporting_file)
+    _ = build_testowner_budget_inventory(list(_STAGE5B_RESOLVABLE_TESTOWNERS))
+    after = _run_selector(reporting_file)
+    assert before == after
+    assert before["test_selection_mode"] == "NO_OP"
+
+
+def test_stage5b_does_not_change_run_matrix() -> None:
+    reporting_file = "tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py"
+    _ = build_testowner_budget_inventory(list(_STAGE5B_RESOLVABLE_TESTOWNERS))
+    sel = _run_selector(reporting_file)
+    assert sel["tests_execute_no_op"] == "true"
+    assert sel["tests_execute_full"] == "false"
+    assert sel["tests_execute_focused"] == "false"
+
+
+def test_stage5b_has_no_enforcement_exit_code() -> None:
+    inventory = build_testowner_budget_inventory(list(_STAGE5B_RESOLVABLE_TESTOWNERS))
+    assert all(row["budget_status"] != "PASS" for row in inventory["rows"])
+    assert all(
+        row["budget_status"] in {status.value for status in BudgetStatus}
+        for row in inventory["rows"]
+    )
+
+
+def test_stage5b_stage2_stage4_stage5a_backward_compatible() -> None:
+    stage2 = build_testowner_cost_inventory()
+    stage4 = build_runtime_class_test_layer_mapping_report()
+    stage5a = build_testowner_category_provenance_report(
+        "tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py"
+    )
+    stage5b = build_testowner_budget_inventory(
+        ["tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py"]
+    )
+    assert len(stage2) == 4
+    assert len(stage4) >= 3
+    assert stage5a.resolution_status == ProvenanceResolutionStatus.RESOLVED
+    assert len(stage5b["rows"]) == 1
