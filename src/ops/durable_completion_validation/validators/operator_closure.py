@@ -5,11 +5,12 @@ from __future__ import annotations
 from src.ops.bounded_futures_testnet_operator_closure_lifecycle_integration_contract_v0 import (
     CONTRACT_VERSION as PE25_INTEGRATION_OWNER,
     compute_closure_input_digest as compute_pe25_closure_input_digest,
+    validate_operator_closure_lifecycle_integration_input,
 )
 from src.ops.bounded_futures_testnet_operator_review_handoff_boundary_contract_v0 import (
     compute_boundary_input_digest as compute_pe34_boundary_input_digest,
 )
-from src.ops.durable_completion_validation.identity import valid_sha256_digest
+from src.ops.durable_completion_validation.identity import sorted_unique, valid_sha256_digest
 from src.ops.durable_completion_validation.models import ValidationContext, ValidationResult
 
 
@@ -200,3 +201,13 @@ def validate_pe25_operator_closure_proof(context: ValidationContext) -> Validati
         )
 
     return ValidationResult(fail_reasons=tuple(fail_reasons))
+
+
+def validate_operator_closure_proof_binding(context: ValidationContext) -> ValidationResult:
+    """Graph operator_closure node: PE-25 closure input validation plus PE-25 proof binding."""
+    fail_reasons: list[str] = []
+    pe25_input = context.integration_input.pe25_closure_integration_input
+    fail_reasons.extend(validate_operator_closure_lifecycle_integration_input(pe25_input))
+    pe25_proof = validate_pe25_operator_closure_proof(context)
+    fail_reasons.extend(pe25_proof.fail_reasons)
+    return ValidationResult(fail_reasons=tuple(sorted_unique(fail_reasons)))

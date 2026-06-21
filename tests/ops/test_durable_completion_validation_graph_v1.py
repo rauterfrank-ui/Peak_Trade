@@ -38,6 +38,9 @@ from src.ops.bounded_futures_testnet_handoff_staleness_revocation_recovery_bound
 from src.ops.bounded_futures_testnet_operator_review_chain_durable_evidence_traceability_boundary_contract_v0 import (
     evaluate_durable_evidence_traceability_boundary,
 )
+from src.ops.bounded_futures_testnet_operator_closure_lifecycle_integration_contract_v0 import (
+    evaluate_operator_closure_lifecycle_integration,
+)
 from src.ops.durable_completion_validation.validators.recovery import (
     validate_recovery_proof_binding,
 )
@@ -47,6 +50,9 @@ from src.ops.durable_completion_validation.validators.reconciliation import (
 )
 from src.ops.durable_completion_validation.validators.traceability import (
     validate_traceability_proof_binding,
+)
+from src.ops.durable_completion_validation.validators.operator_closure import (
+    validate_operator_closure_proof_binding,
 )
 
 
@@ -281,6 +287,55 @@ def test_graph_traceability_validator_missing_pe16_archive_manifest_fail_closed(
         "pe16_archive: archive_manifest_digest required" in reason for reason in result.fail_reasons
     )
     assert VALIDATOR_TRACEABILITY not in context.completed_validators
+
+
+def _replace_pe25_closure_input(integration_input, **overrides):
+    pe25_input = integration_input.pe25_closure_integration_input
+    pe25_input = replace(pe25_input, **overrides)
+    return replace(integration_input, pe25_closure_integration_input=pe25_input)
+
+
+def test_graph_operator_closure_validator_composes_pe25_closure_input_validation() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    pe25_input = integration_input.pe25_closure_integration_input
+    pe25_result = evaluate_operator_closure_lifecycle_integration(pe25_input)
+    context = ValidationContext(
+        integration_input=integration_input,
+        pe25_result=pe25_result,
+        admission_result={
+            "integration_pass": True,
+            "integration_proof_digest": (
+                integration_input.pe25_operator_closure_proof.admission_integration_proof_digest
+            ),
+        },
+    )
+    assert not validate_operator_closure_proof_binding(context).fail_reasons
+
+
+def test_graph_operator_closure_validator_missing_closure_id_fail_closed() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = _replace_pe25_closure_input(integration_input, closure_id="")
+    pe25_input = bad.pe25_closure_integration_input
+    pe37_input = bad.pe37_traceability_boundary_input
+    pe35_input = bad.pe35_handoff_staleness_revocation_recovery_boundary_input
+    context = ValidationContext(
+        integration_input=bad,
+        pe31_result=evaluate_reconciliation_review_lifecycle_integration(
+            bad.pe31_reconciliation_review_integration_input
+        ),
+        pe35_result=evaluate_handoff_staleness_revocation_recovery_boundary(pe35_input),
+        pe37_result=evaluate_durable_evidence_traceability_boundary(pe37_input),
+        pe25_result=evaluate_operator_closure_lifecycle_integration(pe25_input),
+        admission_result={
+            "integration_pass": True,
+            "integration_proof_digest": (
+                bad.pe25_operator_closure_proof.admission_integration_proof_digest
+            ),
+        },
+    )
+    result = execute_proof_binding_validation_graph(context)
+    assert any("closure_id required" in reason for reason in result.fail_reasons)
+    assert VALIDATOR_OPERATOR_CLOSURE not in context.completed_validators
 
 
 def test_evaluate_graph_compatibility_happy_path() -> None:
