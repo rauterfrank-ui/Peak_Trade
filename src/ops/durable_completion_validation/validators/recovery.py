@@ -12,11 +12,12 @@ from src.ops.bounded_futures_testnet_handoff_staleness_revocation_recovery_bound
     BOUNDARY_OWNER as PE35_INTEGRATION_OWNER,
     compute_boundary_input_digest as compute_pe35_boundary_input_digest,
     compute_boundary_result_digest as compute_pe35_boundary_result_digest,
+    validate_handoff_staleness_revocation_recovery_boundary_input,
 )
 from src.ops.bounded_futures_testnet_operator_review_handoff_boundary_contract_v0 import (
     compute_boundary_input_digest as compute_pe34_boundary_input_digest,
 )
-from src.ops.durable_completion_validation.identity import valid_sha256_digest
+from src.ops.durable_completion_validation.identity import sorted_unique, valid_sha256_digest
 from src.ops.durable_completion_validation.models import ValidationContext, ValidationResult
 
 
@@ -189,3 +190,13 @@ def validate_pe35_recovery_boundary_proof(context: ValidationContext) -> Validat
         fail_reasons.append("pe35_proof: authority_lift must remain false")
 
     return ValidationResult(fail_reasons=tuple(fail_reasons))
+
+
+def validate_recovery_proof_binding(context: ValidationContext) -> ValidationResult:
+    """Graph recovery node: PE-35 handoff input validation plus PE-35 proof binding."""
+    fail_reasons: list[str] = []
+    pe35_input = context.integration_input.pe35_handoff_staleness_revocation_recovery_boundary_input
+    fail_reasons.extend(validate_handoff_staleness_revocation_recovery_boundary_input(pe35_input))
+    pe35_proof = validate_pe35_recovery_boundary_proof(context)
+    fail_reasons.extend(pe35_proof.fail_reasons)
+    return ValidationResult(fail_reasons=tuple(sorted_unique(fail_reasons)))
