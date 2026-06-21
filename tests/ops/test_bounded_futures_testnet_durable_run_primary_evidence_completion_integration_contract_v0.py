@@ -118,6 +118,7 @@ from src.ops.bounded_futures_testnet_operator_review_handoff_boundary_contract_v
     CONTRACT_VERSION as PE34_CONTRACT_VERSION,
 )
 from src.ops.bounded_futures_testnet_position_order_reconciliation_primary_evidence_integration_contract_v0 import (
+    ARTIFACT_FILL_STATE_SNAPSHOT,
     ARTIFACT_RECONCILIATION_RESULT,
     ManifestEntry,
     PrimaryEvidenceBindingInput,
@@ -3237,6 +3238,57 @@ def test_contradictory_reconciliation_result_manifest_entries_fails() -> None:
     )
 
 
+def _pe21_fill_state_entry(
+    integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
+) -> ManifestEntry:
+    for entry in integration_input.pe21_integration_input.primary_evidence_binding.manifest_entries:
+        if entry.relative_path == ARTIFACT_FILL_STATE_SNAPSHOT:
+            return entry
+    raise AssertionError("canonical fill state manifest entry missing")
+
+
+def test_fill_state_manifest_integrity_coherent_passes() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    result = evaluate_durable_run_primary_evidence_completion_integration(integration_input)
+    assert result["integration_pass"] is True
+    entry = _pe21_fill_state_entry(integration_input)
+    assert entry.digest == integration_input.pe21_integration_input.fill_state.snapshot_digest
+
+
+def test_missing_fill_state_manifest_entry_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    entries = tuple(
+        entry
+        for entry in integration_input.pe21_integration_input.primary_evidence_binding.manifest_entries
+        if entry.relative_path != ARTIFACT_FILL_STATE_SNAPSHOT
+    )
+    bad = _replace_pe21_manifest_entries(integration_input, entries)
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "pe21_fill_state_manifest: FILL_STATE_SNAPSHOT.json manifest entry required" in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_fill_state_manifest_digest_mismatch_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    entry = _pe21_fill_state_entry(integration_input)
+    entries = tuple(
+        ManifestEntry(digest="f" * 64, relative_path=entry.relative_path)
+        if item.relative_path == ARTIFACT_FILL_STATE_SNAPSHOT
+        else item
+        for item in integration_input.pe21_integration_input.primary_evidence_binding.manifest_entries
+    )
+    bad = _replace_pe21_manifest_entries(integration_input, entries)
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "pe21_fill_state_manifest: manifest digest mismatch with fill_state.snapshot_digest" in r
+        for r in result["fail_reasons"]
+    )
+
+
 def test_reconciliation_result_binding_digest_algorithm_mismatch_fails() -> None:
     integration_input = default_minimal_completion_integration_input()
     recon = integration_input.pe21_integration_input.reconciliation_binding
@@ -3245,6 +3297,8 @@ def test_reconciliation_result_binding_digest_algorithm_mismatch_fails() -> None
         observed_position=recon.observed_position,
         expected_orders=recon.expected_orders,
         observed_orders=recon.observed_orders,
+        expected_fills=recon.expected_fills,
+        observed_fills=recon.observed_fills,
         input_digest=recon.input_digest,
         result_digest="c" * 64,
         classification=recon.classification,
@@ -3254,6 +3308,8 @@ def test_reconciliation_result_binding_digest_algorithm_mismatch_fails() -> None
         orphaned_order_count=recon.orphaned_order_count,
         duplicate_order_count=recon.duplicate_order_count,
         orphaned_position_count=recon.orphaned_position_count,
+        orphaned_fill_count=recon.orphaned_fill_count,
+        duplicate_fill_count=recon.duplicate_fill_count,
     )
     pe21_input = replace(
         integration_input.pe21_integration_input,

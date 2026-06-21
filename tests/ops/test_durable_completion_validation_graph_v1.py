@@ -135,6 +135,19 @@ def test_reconciliation_manifest_validator_matches_input_validation_path() -> No
     assert list(direct.fail_reasons) == manifest_reasons
 
 
+def test_fill_state_manifest_validator_matches_input_validation_path() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    direct = validate_pe21_reconciliation_result_manifest_integrity(integration_input)
+    input_fail_reasons = validate_durable_run_primary_evidence_completion_integration_input(
+        integration_input
+    )
+    fill_manifest_reasons = [
+        reason for reason in input_fail_reasons if reason.startswith("pe21_fill_state_manifest")
+    ]
+    assert not fill_manifest_reasons
+    assert not direct.fail_reasons
+
+
 def test_evaluate_graph_compatibility_happy_path() -> None:
     integration_input = default_minimal_completion_integration_input()
     result = evaluate_durable_run_primary_evidence_completion_integration(integration_input)

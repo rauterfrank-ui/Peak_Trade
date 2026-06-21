@@ -5,7 +5,9 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Any
 
 from src.ops.bounded_futures_testnet_position_order_reconciliation_primary_evidence_integration_contract_v0 import (
+    ARTIFACT_FILL_STATE_SNAPSHOT,
     ARTIFACT_RECONCILIATION_RESULT,
+    compute_fill_state_digest,
     compute_integration_input_digest as compute_pe21_integration_input_digest,
     compute_manifest_digest,
     evaluate_reconciliation_static,
@@ -47,10 +49,12 @@ def validate_pe21_reconciliation_result_manifest_integrity(
     pe21_input = integration_input.pe21_integration_input
     pe21_binding = pe21_input.primary_evidence_binding
     recon = pe21_input.reconciliation_binding
+    fill_state = pe21_input.fill_state
     durable_root = integration_input.durable_run_root
     run_identity = integration_input.run_identity
     manifest_digest = integration_input.manifest_proof.manifest_digest
     prefix = "pe21_reconciliation_result_manifest"
+    fill_prefix = "pe21_fill_state_manifest"
 
     for entry in pe21_binding.manifest_entries:
         if not entry.relative_path:
@@ -99,12 +103,18 @@ def validate_pe21_reconciliation_result_manifest_integrity(
             observed_position=recon.observed_position,
             expected_orders=recon.expected_orders,
             observed_orders=recon.observed_orders,
+            expected_fills=recon.expected_fills,
+            observed_fills=recon.observed_fills,
             instrument=pe21_input.instrument,
         )
         if expected_result_digest != static_recon["result_digest"]:
             fail_reasons.append(
                 f"{prefix}: reconciliation_binding.result_digest mismatch with canonical algorithm"
             )
+        if recon.orphaned_fill_count != static_recon["orphaned_fill_count"]:
+            fail_reasons.append(f"{prefix}: reconciliation_binding.orphaned_fill_count mismatch")
+        if recon.duplicate_fill_count != static_recon["duplicate_fill_count"]:
+            fail_reasons.append(f"{prefix}: reconciliation_binding.duplicate_fill_count mismatch")
 
     if canonical_entries:
         entry = canonical_entries[0]
@@ -123,6 +133,64 @@ def validate_pe21_reconciliation_result_manifest_integrity(
         elif expected_result_digest and entry.digest != expected_result_digest:
             fail_reasons.append(
                 f"{prefix}: manifest digest mismatch with reconciliation_binding.result_digest"
+            )
+
+    if not fill_state.snapshot_id:
+        fail_reasons.append(f"{fill_prefix}: fill_state.snapshot_id required")
+    if not fill_state.snapshot_digest:
+        fail_reasons.append(f"{fill_prefix}: fill_state.snapshot_digest required")
+    elif not valid_sha256_digest(fill_state.snapshot_digest):
+        fail_reasons.append(
+            f"{fill_prefix}: fill_state.snapshot_digest must be 64-char lowercase sha256 hex"
+        )
+    elif fill_state.snapshot_digest != compute_fill_state_digest(fill_state):
+        fail_reasons.append(f"{fill_prefix}: fill_state.snapshot_digest mismatch")
+
+    fill_canonical_entries = [
+        entry
+        for entry in pe21_binding.manifest_entries
+        if entry.relative_path == ARTIFACT_FILL_STATE_SNAPSHOT
+    ]
+    fill_alias_entries = [
+        entry
+        for entry in pe21_binding.manifest_entries
+        if entry.relative_path != ARTIFACT_FILL_STATE_SNAPSHOT
+        and (
+            entry.relative_path.endswith(ARTIFACT_FILL_STATE_SNAPSHOT)
+            or "FILL_STATE_SNAPSHOT" in entry.relative_path
+        )
+    ]
+    if not fill_canonical_entries:
+        fail_reasons.append(
+            f"{fill_prefix}: {ARTIFACT_FILL_STATE_SNAPSHOT} manifest entry required"
+        )
+    elif len(fill_canonical_entries) > 1:
+        fail_reasons.append(
+            f"{fill_prefix}: duplicate {ARTIFACT_FILL_STATE_SNAPSHOT} manifest entries"
+        )
+    if fill_alias_entries:
+        fail_reasons.append(f"{fill_prefix}: alias or alternate fill state manifest path")
+    if ARTIFACT_FILL_STATE_SNAPSHOT not in pe21_binding.expected_artifact_filenames:
+        fail_reasons.append(
+            f"{fill_prefix}: {ARTIFACT_FILL_STATE_SNAPSHOT} required in expected_artifact_filenames"
+        )
+    if fill_canonical_entries:
+        fill_entry = fill_canonical_entries[0]
+        if fill_entry.relative_path != ARTIFACT_FILL_STATE_SNAPSHOT:
+            fail_reasons.append(
+                f"{fill_prefix}: manifest artifact path must be {ARTIFACT_FILL_STATE_SNAPSHOT!r}"
+            )
+        if not fill_entry.digest:
+            fail_reasons.append(
+                f"{fill_prefix}: manifest digest required for {ARTIFACT_FILL_STATE_SNAPSHOT}"
+            )
+        elif not valid_sha256_digest(fill_entry.digest):
+            fail_reasons.append(
+                f"{fill_prefix}: manifest digest must be 64-char lowercase sha256 hex"
+            )
+        elif fill_state.snapshot_digest and fill_entry.digest != fill_state.snapshot_digest:
+            fail_reasons.append(
+                f"{fill_prefix}: manifest digest mismatch with fill_state.snapshot_digest"
             )
 
     if pe21_input.source_revision != integration_input.source_revision:

@@ -553,6 +553,58 @@ def test_selector_durable_completion_internal_validator_only_focused() -> None:
     )
     assert sel["test_selection_mode"] == "FOCUSED"
     assert sel["test_selection_reason"] == "durable_completion_focused"
+    targets = _targets(sel)
+    assert targets == ["tests/ops/test_durable_completion_validation_graph_v1.py"]
+    assert (
+        "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py"
+        not in targets
+    )
+
+
+PE55_DURABLE_COMPLETION_FILL_REBINDING_FILES = (
+    "src/ops/durable_completion_validation/validators/reconciliation.py",
+    "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
+    "tests/ops/test_durable_completion_validation_graph_v1.py",
+)
+
+
+def test_selector_pe55_fill_rebinding_bounded_focused_targets() -> None:
+    sel = _run_selector(*PE55_DURABLE_COMPLETION_FILL_REBINDING_FILES)
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "durable_completion_focused"
+    targets = _targets(sel)
+    assert targets == ["tests/ops/test_durable_completion_validation_graph_v1.py"]
+    assert sel["tests_execute_full"] == "false"
+    assert sel["tests_execute_no_op"] == "false"
+
+
+def test_selector_pe55_fill_rebinding_import_modules_bounded() -> None:
+    sel = _run_selector(*PE55_DURABLE_COMPLETION_FILL_REBINDING_FILES)
+    modules = _modules(sel)
+    assert modules == ["src.ops.durable_completion_validation"]
+    assert (
+        "src.ops.bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0"
+        not in modules
+    )
+
+
+def test_fast_lane_focused_contract_check_runs_for_focused_prs() -> None:
+    text = _ci_text()
+    assert "Focused Fast-Lane contract check (diff-aware FOCUSED PRs)" in text
+    focused_block = text.split("Focused Fast-Lane contract check", 1)[1].split(
+        "Static contract tests", 1
+    )[0]
+    assert "tests_execute_focused == 'true'" in focused_block
+    assert "focused_pytest_targets" in focused_block
+    assert "tests/ci/test_ci_*contract*.py" in focused_block
+    assert "OPS_SHARD_COUNT" not in focused_block
+
+
+def test_fast_lane_skips_full_static_sweep_when_focused() -> None:
+    text = _ci_text()
+    static_if = text.split("name: Static contract tests", 1)[1].split("run:", 1)[0]
+    assert "tests_execute_focused != 'true'" in static_if
+    assert "OPS_SHARD_COUNT=8" in text
 
 
 def test_selector_durable_completion_graph_core_plus_test_owners_focused() -> None:
@@ -564,6 +616,25 @@ def test_selector_durable_completion_graph_core_plus_test_owners_focused() -> No
     )
     assert sel["test_selection_mode"] == "FOCUSED"
     assert sel["test_selection_reason"] == "durable_completion_focused"
+
+
+def test_selector_pe55_full_diff_with_ci_workflow_rebundle_stays_focused() -> None:
+    sel = _run_selector(
+        *PE55_DURABLE_COMPLETION_FILL_REBINDING_FILES,
+        ".github/workflows/ci.yml",
+        "scripts/ops/ci_test_selection_v1.py",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    )
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "durable_completion_focused"
+    targets = _targets(sel)
+    assert "tests/ops/test_durable_completion_validation_graph_v1.py" in targets
+    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" in targets
+    assert (
+        "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py"
+        not in targets
+    )
+    assert sel["tests_execute_full"] == "false"
 
 
 def test_selector_durable_completion_facade_plus_graph_focused() -> None:

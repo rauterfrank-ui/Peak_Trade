@@ -289,8 +289,19 @@ jobs:
         run: |
           pytest tests/test_stability_smoke.py tests/test_data_contracts.py tests/test_error_taxonomy.py tests/test_resilience.py -m smoke -v --tb=short
 
+      - name: Focused Fast-Lane contract check (diff-aware FOCUSED PRs)
+        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_focused == 'true' && needs.changes.outputs.static_contract_changed == 'true' && needs.changes.outputs.workflow_only != 'true' }}
+        run: |
+          set -euo pipefail
+          PYTEST_ARGS=(-q --tb=short -m "not network and not external_tools")
+          shopt -s nullglob; ci_contract=(tests/ci/test_ci_*contract*.py); shopt -u nullglob
+          (( ${#ci_contract[@]} )) || { echo "tests/ci contract subset empty — fail closed"; exit 1; }
+          TARGETS="${{ needs.changes.outputs.focused_pytest_targets }}"
+          mapfile -t VALIDATED_TARGETS < <(python3 scripts/ops/ci_test_selection_v1.py --emit-validated-pytest-targets "$TARGETS")
+          pytest "${ci_contract[@]}" "${VALIDATED_TARGETS[@]}" "${PYTEST_ARGS[@]}"
+
       - name: Static contract tests (tests/ci, tests/ops, WebUI structure-contract, src/ops contract modules via tests)
-        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.static_contract_changed == 'true' && needs.changes.outputs.run_matrix != 'true' && needs.changes.outputs.workflow_only != 'true' }}
+        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.static_contract_changed == 'true' && needs.changes.outputs.run_matrix != 'true' && needs.changes.outputs.tests_execute_focused != 'true' && needs.changes.outputs.workflow_only != 'true' }}
         run: |
           set -euo pipefail
           PYTEST_ARGS=(-q --tb=short -m "not network and not external_tools")
