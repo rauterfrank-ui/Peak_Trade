@@ -263,6 +263,8 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
 
       - name: Set up Python 3.11
         uses: actions/setup-python@v5
@@ -291,41 +293,44 @@ jobs:
         if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.static_contract_changed == 'true' && needs.changes.outputs.run_matrix != 'true' && needs.changes.outputs.workflow_only != 'true' }}
         run: |
           set -euo pipefail
+          PYTEST_ARGS=(-q --tb=short -m "not network and not external_tools")
+          NARROW=false; declare -a EXTRA=()
+          if [ "${{ github.event_name }}" = "pull_request" ] && [ "${{ needs.changes.outputs.docs_or_static_contract_only }}" = "true" ]; then NARROW=true
+            BASE_REF="${{ github.event.pull_request.base.ref }}"
+            git fetch origin "${BASE_REF}" --depth=1
+            while IFS= read -r path; do
+              [ -z "$path" ] && continue
+              case "$path" in
+                src/ops/*_contract_v0.py|src/ops/*_contract_v1.py) NARROW=false; break ;;
+                tests/ops/test_*.py|tests/webui/test_*structure_contract*.py) EXTRA+=("$path") ;;
+                tests/ci/*|docs/*|out/*|*.md) ;;
+                *) NARROW=false; break ;;
+              esac
+            done < <(git diff --name-only "origin/${BASE_REF}...HEAD")
+          fi
+          if [ "$NARROW" = "true" ]; then
+            shopt -s nullglob; ci_contract=(tests/ci/test_ci_*contract*.py); shopt -u nullglob
+            (( ${#ci_contract[@]} )) || { echo "tests/ci contract subset empty — fail closed"; exit 1; }
+            VALID=(); for t in "${EXTRA[@]}"; do [ -f "$t" ] && VALID+=("$t"); done
+            pytest "${ci_contract[@]}" "${VALID[@]}" "${PYTEST_ARGS[@]}"
+            exit 0
+          fi
           shopt -s nullglob
           webui_structure_contract=(tests/webui/test_*structure_contract*.py)
           shopt -u nullglob
-          # Parallel shards (previously monolithic: pytest tests/ci tests/ops "${webui_structure_contract[@]}").
-          PYTEST_ARGS=(-q --tb=short -m "not network and not external_tools")
           OPS_SHARD_COUNT=8
           SHARD_FAIL=0
           mapfile -t OPS_FILES < <(find tests/ops -name 'test_*.py' -type f | LC_ALL=C sort)
-          if (( ${#OPS_FILES[@]} == 0 )); then
-            echo "tests/ops shard inventory empty"
-            exit 1
-          fi
-          (
-            echo "[shard=tests/ci+webui] starting"
-            pytest tests/ci "${webui_structure_contract[@]}" "${PYTEST_ARGS[@]}"
-          ) &
-          PID_CI=$!
+          (( ${#OPS_FILES[@]} )) || { echo "tests/ops shard inventory empty"; exit 1; }
+          ( pytest tests/ci "${webui_structure_contract[@]}" "${PYTEST_ARGS[@]}" ) & PID_CI=$!
           PIDS_OPS=()
           for ((shard_idx = 0; shard_idx < OPS_SHARD_COUNT; shard_idx++)); do
-            (
-              shard_files=()
-              for i in "${!OPS_FILES[@]}"; do
-                if (( i % OPS_SHARD_COUNT == shard_idx )); then
-                  shard_files+=("${OPS_FILES[i]}")
-                fi
-              done
-              echo "[shard=tests/ops/${shard_idx}] files=${#shard_files[@]}"
-              pytest "${shard_files[@]}" "${PYTEST_ARGS[@]}"
-            ) &
-            PIDS_OPS+=("$!")
+            ( shard_files=(); for i in "${!OPS_FILES[@]}"; do
+                (( i % OPS_SHARD_COUNT == shard_idx )) && shard_files+=("${OPS_FILES[i]}")
+              done; pytest "${shard_files[@]}" "${PYTEST_ARGS[@]}" ) & PIDS_OPS+=("$!")
           done
           wait "$PID_CI" || SHARD_FAIL=1
-          for pid in "${PIDS_OPS[@]}"; do
-            wait "$pid" || SHARD_FAIL=1
-          done
+          for pid in "${PIDS_OPS[@]}"; do wait "$pid" || SHARD_FAIL=1; done
           exit "$SHARD_FAIL"
 
       - name: WebUI bounded pytest (market/observability surface)

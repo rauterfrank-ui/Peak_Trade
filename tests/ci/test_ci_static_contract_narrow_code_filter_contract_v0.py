@@ -330,9 +330,9 @@ def test_fast_lane_runs_static_contract_tests_when_applicable() -> None:
     assert "Static contract tests (tests/ci, tests/ops, WebUI structure-contract" in text
     assert "needs.changes.outputs.static_contract_changed == 'true'" in text
     assert "needs.changes.outputs.run_matrix != 'true'" in text
-    assert "pytest tests/ci tests/ops" in text
-    assert "webui_structure_contract=(tests/webui/test_*structure_contract*.py)" in text
-    assert '"${webui_structure_contract[@]}"' in text
+    assert "needs.changes.outputs.docs_or_static_contract_only" in text
+    assert "tests/ci/test_ci_*contract*.py" in text
+    assert "OPS_SHARD_COUNT=8" in text
 
 
 def test_fast_lane_webui_bounded_pytest_modules() -> None:
