@@ -8,6 +8,7 @@ from src.ops.bounded_futures_testnet_operator_review_admission_presentation_boun
 from src.ops.bounded_futures_testnet_operator_review_chain_durable_evidence_traceability_boundary_contract_v0 import (
     BOUNDARY_OWNER as PE37_BOUNDARY_OWNER,
     compute_boundary_input_digest as compute_pe37_boundary_input_digest,
+    validate_durable_evidence_traceability_boundary_input,
 )
 from src.ops.bounded_futures_testnet_handoff_staleness_revocation_recovery_boundary_contract_v0 import (
     compute_boundary_input_digest as compute_pe35_boundary_input_digest,
@@ -15,7 +16,7 @@ from src.ops.bounded_futures_testnet_handoff_staleness_revocation_recovery_bound
 from src.ops.bounded_futures_testnet_operator_review_handoff_boundary_contract_v0 import (
     compute_boundary_input_digest as compute_pe34_boundary_input_digest,
 )
-from src.ops.durable_completion_validation.identity import valid_sha256_digest
+from src.ops.durable_completion_validation.identity import sorted_unique, valid_sha256_digest
 from src.ops.durable_completion_validation.models import ValidationContext, ValidationResult
 
 
@@ -169,3 +170,13 @@ def validate_pe37_traceability_proof(context: ValidationContext) -> ValidationRe
         fail_reasons.append("pe37_proof: authority_lift must remain false")
 
     return ValidationResult(fail_reasons=tuple(fail_reasons))
+
+
+def validate_traceability_proof_binding(context: ValidationContext) -> ValidationResult:
+    """Graph traceability node: PE-37 handoff input validation plus PE-37 proof binding."""
+    fail_reasons: list[str] = []
+    pe37_input = context.integration_input.pe37_traceability_boundary_input
+    fail_reasons.extend(validate_durable_evidence_traceability_boundary_input(pe37_input))
+    pe37_proof = validate_pe37_traceability_proof(context)
+    fail_reasons.extend(pe37_proof.fail_reasons)
+    return ValidationResult(fail_reasons=tuple(sorted_unique(fail_reasons)))
