@@ -16,6 +16,7 @@ from src.ops.bounded_futures_testnet_durable_run_primary_evidence_completion_int
 from src.ops.durable_completion_validation.graph import (
     PROOF_BINDING_VALIDATION_GRAPH,
     PROOF_BINDING_VALIDATION_ORDER,
+    VALIDATOR_COMPLETION_CHAIN,
     VALIDATOR_OPERATOR_CLOSURE,
     VALIDATOR_RECONCILIATION,
     VALIDATOR_RECOVERY,
@@ -54,6 +55,9 @@ from src.ops.durable_completion_validation.validators.traceability import (
 from src.ops.durable_completion_validation.validators.operator_closure import (
     validate_operator_closure_proof_binding,
 )
+from src.ops.durable_completion_validation.validators.completion_chain import (
+    validate_completion_proof_chain_binding,
+)
 
 
 def _minimal_context(**overrides: Any) -> ValidationContext:
@@ -82,6 +86,7 @@ def test_graph_missing_validator_is_fail_closed() -> None:
         VALIDATOR_RECONCILIATION: lambda _ctx: ValidationResult(),
         VALIDATOR_RECOVERY: lambda _ctx: ValidationResult(),
         VALIDATOR_TRACEABILITY: lambda _ctx: ValidationResult(),
+        VALIDATOR_COMPLETION_CHAIN: lambda _ctx: ValidationResult(),
     }
     result = execute_proof_binding_validation_graph(
         context,
@@ -102,11 +107,15 @@ def test_graph_missing_dependency_is_fail_closed() -> None:
         VALIDATOR_RECOVERY: failing_recovery,
         VALIDATOR_TRACEABILITY: lambda _ctx: ValidationResult(fail_reasons=("should not run",)),
         VALIDATOR_OPERATOR_CLOSURE: lambda _ctx: ValidationResult(fail_reasons=("should not run",)),
+        VALIDATOR_COMPLETION_CHAIN: lambda _ctx: ValidationResult(fail_reasons=("should not run",)),
     }
     result = execute_proof_binding_validation_graph(context, validators=validators)
     assert any("dependency failed for 'traceability'" in reason for reason in result.fail_reasons)
     assert any(
         "dependency failed for 'operator_closure'" in reason for reason in result.fail_reasons
+    )
+    assert any(
+        "dependency failed for 'completion_chain'" in reason for reason in result.fail_reasons
     )
     assert VALIDATOR_TRACEABILITY not in context.completed_validators
     assert VALIDATOR_OPERATOR_CLOSURE not in context.completed_validators
@@ -123,6 +132,7 @@ def test_graph_exception_is_fail_closed() -> None:
         VALIDATOR_RECOVERY: lambda _ctx: ValidationResult(),
         VALIDATOR_TRACEABILITY: lambda _ctx: ValidationResult(),
         VALIDATOR_OPERATOR_CLOSURE: lambda _ctx: ValidationResult(),
+        VALIDATOR_COMPLETION_CHAIN: lambda _ctx: ValidationResult(),
     }
     result = execute_proof_binding_validation_graph(context, validators=validators)
     assert any(
@@ -138,6 +148,7 @@ def test_graph_aggregates_fail_reasons_from_executed_validators() -> None:
         VALIDATOR_RECOVERY: lambda _ctx: ValidationResult(fail_reasons=("beta",)),
         VALIDATOR_TRACEABILITY: lambda _ctx: ValidationResult(fail_reasons=("gamma",)),
         VALIDATOR_OPERATOR_CLOSURE: lambda _ctx: ValidationResult(fail_reasons=("delta",)),
+        VALIDATOR_COMPLETION_CHAIN: lambda _ctx: ValidationResult(fail_reasons=("epsilon",)),
     }
     result = execute_proof_binding_validation_graph(context, validators=validators)
     assert set(result.fail_reasons) == {
@@ -145,6 +156,7 @@ def test_graph_aggregates_fail_reasons_from_executed_validators() -> None:
         "beta",
         "validation_graph: dependency failed for 'traceability': ['recovery']",
         "validation_graph: dependency failed for 'operator_closure': ['traceability', 'recovery']",
+        "validation_graph: dependency failed for 'completion_chain': ['operator_closure', 'traceability', 'recovery']",
     }
 
 
@@ -336,6 +348,64 @@ def test_graph_operator_closure_validator_missing_closure_id_fail_closed() -> No
     result = execute_proof_binding_validation_graph(context)
     assert any("closure_id required" in reason for reason in result.fail_reasons)
     assert VALIDATOR_OPERATOR_CLOSURE not in context.completed_validators
+
+
+def test_completion_proof_chain_validator_matches_input_validation_path() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    direct = validate_completion_proof_chain_binding(
+        ValidationContext(integration_input=integration_input)
+    )
+    input_fail_reasons = validate_durable_run_primary_evidence_completion_integration_input(
+        integration_input
+    )
+    chain_reasons = [
+        reason for reason in input_fail_reasons if reason.startswith("completion_proof_chain:")
+    ]
+    assert list(direct.fail_reasons) == chain_reasons
+
+
+def _replace_completion_proof_chain(integration_input, **overrides):
+    chain = replace(integration_input.completion_proof_chain, **overrides)
+    return replace(integration_input, completion_proof_chain=chain)
+
+
+def test_graph_completion_chain_validator_composes_binding() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    assert not validate_completion_proof_chain_binding(
+        ValidationContext(integration_input=integration_input)
+    ).fail_reasons
+
+
+def test_graph_completion_chain_validator_pe35_digest_drift_fail_closed() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = _replace_completion_proof_chain(
+        integration_input,
+        completion_referenced_pe35_boundary_result_digest="0" * 64,
+    )
+    pe25_input = bad.pe25_closure_integration_input
+    pe37_input = bad.pe37_traceability_boundary_input
+    pe35_input = bad.pe35_handoff_staleness_revocation_recovery_boundary_input
+    context = ValidationContext(
+        integration_input=bad,
+        pe31_result=evaluate_reconciliation_review_lifecycle_integration(
+            bad.pe31_reconciliation_review_integration_input
+        ),
+        pe35_result=evaluate_handoff_staleness_revocation_recovery_boundary(pe35_input),
+        pe37_result=evaluate_durable_evidence_traceability_boundary(pe37_input),
+        pe25_result=evaluate_operator_closure_lifecycle_integration(pe25_input),
+        admission_result={
+            "integration_pass": True,
+            "integration_proof_digest": (
+                bad.pe25_operator_closure_proof.admission_integration_proof_digest
+            ),
+        },
+    )
+    result = execute_proof_binding_validation_graph(context)
+    assert any(
+        "completion_referenced_pe35_boundary_result_digest mismatch" in reason
+        for reason in result.fail_reasons
+    )
+    assert VALIDATOR_COMPLETION_CHAIN not in context.completed_validators
 
 
 def test_evaluate_graph_compatibility_happy_path() -> None:

@@ -382,8 +382,6 @@ def _is_durable_completion_rebundle_path(path: str) -> bool:
 def _is_durable_completion_validator_rebinding_scope(files: list[str]) -> bool:
     if not files:
         return False
-    if DURABLE_COMPLETION_FACADE_PATH in files:
-        return False
     if any(path in DURABLE_COMPLETION_FULL_REFACTOR_SRC_PATHS for path in files):
         return False
     if not any(
@@ -409,6 +407,8 @@ def _is_durable_completion_validator_rebinding_scope(files: list[str]) -> bool:
         if path.startswith("src/ops/durable_completion_validation/") and path.endswith(".py"):
             continue
         if path in DURABLE_COMPLETION_VALIDATOR_REBINDING_TEST_PATHS:
+            continue
+        if path == DURABLE_COMPLETION_FACADE_PATH and has_validator_subpath:
             continue
         return False
     return True
