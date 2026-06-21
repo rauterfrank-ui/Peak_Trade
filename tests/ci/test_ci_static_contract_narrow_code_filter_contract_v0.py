@@ -8,6 +8,8 @@ webui_surface / non_webui_code buckets (Market/Observability path gating).
 from __future__ import annotations
 
 import fnmatch
+import subprocess
+import sys
 from pathlib import Path
 
 import pytest
@@ -47,6 +49,10 @@ NON_WEBUI_CODE_GLOBS = (
     "pytest.ini",
     "Makefile",
 )
+SELECTOR = Path("scripts/ops/ci_test_selection_v1.py")
+_BOOT_CI_YML = ".github/workflows/ci.yml"
+_BOOT_CONTRACT = "tests/ci/test_ci_static_contract_narrow_code_filter_contract_v0.py"
+_BOOT = (_BOOT_CI_YML, _BOOT_CONTRACT)
 WEBUI_BOUNDED_PYTEST_MODULES = (
     "tests/webui/test_workflow_dashboard_readmodel_v1.py",
     "tests/webui/test_observability_workflow_dashboard_structure_contract_v1.py",
@@ -209,6 +215,36 @@ def _run_matrix_for_paths(paths: list[str], *, force_matrix: bool = False) -> bo
     return any(_matches_non_webui_code(p) for p in paths)
 
 
+def _run_selector(*files: str) -> dict[str, str]:
+    cmd = [sys.executable, str(SELECTOR), "--event-name", "pull_request"]
+    if files:
+        cmd.extend(["--files", *files])
+    out = subprocess.check_output(cmd, text=True)
+    return {k: v for line in out.splitlines() for k, _, v in [line.partition("=")]}
+
+
+def _narrow_gate(paths: list[str], *, no_op: bool, static: bool, matrix: bool) -> bool:
+    if not (no_op and static and not matrix) or not paths:
+        return False
+    for path in paths:
+        if path.startswith("src/") or (
+            path.startswith(".github/workflows/") and path != _BOOT_CI_YML
+        ):
+            return False
+        if _matches_non_webui_code(path) and path not in _BOOT:
+            return False
+        if not (
+            path in _BOOT
+            or path.startswith("tests/ci/")
+            or path.startswith(("docs/", "out/"))
+            or path.endswith(".md")
+            or fnmatch.fnmatch(path, "tests/ops/test_*.py")
+            or fnmatch.fnmatch(path, "tests/webui/test_*structure_contract*.py")
+        ):
+            return False
+    return True
+
+
 def test_changes_job_exports_static_contract_outputs() -> None:
     text = _ci_text()
     assert "static_contract_changed:" in text
@@ -327,12 +363,15 @@ def test_strategy_smoke_gated_on_tests_execute_full_not_code_changed() -> None:
 
 def test_fast_lane_runs_static_contract_tests_when_applicable() -> None:
     text = _ci_text()
-    assert "Static contract tests (tests/ci, tests/ops, WebUI structure-contract" in text
+    narrow = text.split("narrow_fast_lane_gate", 1)[1].split("OPS_SHARD_COUNT", 1)[0]
     assert "needs.changes.outputs.static_contract_changed == 'true'" in text
     assert "needs.changes.outputs.run_matrix != 'true'" in text
-    assert "needs.changes.outputs.docs_or_static_contract_only" in text
+    assert "needs.changes.outputs.tests_execute_no_op" in narrow
+    assert ".github/workflows/ci.yml" in narrow
     assert "tests/ci/test_ci_*contract*.py" in text
+    assert "tests/ci contract subset empty — fail closed" in text
     assert "OPS_SHARD_COUNT=8" in text
+    assert "docs_or_static_contract_only" not in narrow
 
 
 def test_fast_lane_webui_bounded_pytest_modules() -> None:
@@ -468,6 +507,32 @@ def test_contract_only_v1_run_matrix_semantics(
 ) -> None:
     assert _is_contract_only_fast_lane_candidate(paths) is expect_contract_only
     assert _run_matrix_for_paths(paths) is expect_run_matrix
+
+
+def test_case_1_ci_bootstrap_narrow() -> None:
+    sel = _run_selector(_BOOT_CI_YML, _BOOT_CONTRACT)
+    assert (
+        sel["tests_execute_no_op"] == "true"
+        and sel["test_selection_reason"] == "docs_workflow_or_static_contract_only"
+    )
+    assert _narrow_gate(list(_BOOT), no_op=True, static=True, matrix=False)
+
+
+@pytest.mark.parametrize(
+    ("paths", "no_op", "static", "matrix", "expect"),
+    [
+        ([_BOOT_CI_YML, ".github/workflows/other.yml"], True, True, False, False),
+        (["src/ops/example.py"], True, True, False, False),
+        (["tests/ops/test_foo.py", "src/ops/example.py"], True, True, False, False),
+        (["pyproject.toml"], True, False, False, False),
+        (["unknown/path.txt"], True, False, False, False),
+        (list(_BOOT), False, True, False, False),
+        ([_BOOT_CI_YML], True, False, False, False),
+        (list(_BOOT), True, True, True, False),
+    ],
+)
+def test_narrow_gate_fail_closed_cases(paths, no_op, static, matrix, expect) -> None:
+    assert _narrow_gate(paths, no_op=no_op, static=static, matrix=matrix) is expect
 
 
 def test_force_matrix_overrides_contract_only_v1_paths() -> None:

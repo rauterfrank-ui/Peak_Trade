@@ -295,15 +295,22 @@ jobs:
           set -euo pipefail
           PYTEST_ARGS=(-q --tb=short -m "not network and not external_tools")
           NARROW=false; declare -a EXTRA=()
-          if [ "${{ github.event_name }}" = "pull_request" ] && [ "${{ needs.changes.outputs.docs_or_static_contract_only }}" = "true" ]; then NARROW=true
+          # narrow_fast_lane_gate: canonical selector outputs + strict changed-file allowlist (fail-closed)
+          if [ "${{ github.event_name }}" = "pull_request" ] && [ "${{ needs.changes.outputs.tests_execute_no_op }}" = "true" ] && [ "${{ needs.changes.outputs.static_contract_changed }}" = "true" ] && [ "${{ needs.changes.outputs.run_matrix }}" != "true" ]; then
+            NARROW=true
             BASE_REF="${{ github.event.pull_request.base.ref }}"
             git fetch origin "${BASE_REF}" --depth=1
             while IFS= read -r path; do
               [ -z "$path" ] && continue
               case "$path" in
-                src/ops/*_contract_v0.py|src/ops/*_contract_v1.py) NARROW=false; break ;;
+                .github/workflows/ci.yml) ;;
+                tests/ci/*) ;;
+                docs/*|out/*|*.md) ;;
                 tests/ops/test_*.py|tests/webui/test_*structure_contract*.py) EXTRA+=("$path") ;;
-                tests/ci/*|docs/*|out/*|*.md) ;;
+                .github/workflows/*) NARROW=false; break ;;
+                src/*) NARROW=false; break ;;
+                requirements.txt|pyproject.toml|uv.lock|pytest.ini|Makefile) NARROW=false; break ;;
+                requirements*.txt) NARROW=false; break ;;
                 *) NARROW=false; break ;;
               esac
             done < <(git diff --name-only "origin/${BASE_REF}...HEAD")
