@@ -34,6 +34,7 @@ FOCUSED_CATEGORIES = frozenset(
         "preflight_assembly_focused",
         "risk_killswitch_focused",
         "tiny_order_focused",
+        "reconciliation_primary_evidence_focused",
     }
 )
 
@@ -176,6 +177,26 @@ REQUIRED_TINY_ORDER_TEST_OWNERS: tuple[str, ...] = (
     "tests/ops/test_order_capability_cancel_cleanup_failclosed_contract_v1.py",
 )
 
+PE21_RECONCILIATION_PRIMARY_EVIDENCE_OWNER = "src/ops/bounded_futures_testnet_position_order_reconciliation_primary_evidence_integration_contract_v0.py"
+PE21_RECONCILIATION_PRIMARY_EVIDENCE_TEST_OWNER = "tests/ops/test_bounded_futures_testnet_position_order_reconciliation_primary_evidence_integration_contract_v0.py"
+
+RECONCILIATION_PRIMARY_EVIDENCE_CI_POLICY_PATHS = frozenset(
+    {
+        "scripts/ops/ci_test_selection_v1.py",
+        "config/ci/file_category_mapping.yaml",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    }
+)
+
+CANONICAL_RECONCILIATION_PRIMARY_EVIDENCE_FOCUSED_TESTS: tuple[str, ...] = (
+    "tests/ops/test_bounded_futures_testnet_position_order_reconciliation_primary_evidence_integration_contract_v0.py",
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+)
+
+REQUIRED_RECONCILIATION_PRIMARY_EVIDENCE_TEST_OWNERS: tuple[str, ...] = (
+    "tests/ops/test_bounded_futures_testnet_position_order_reconciliation_primary_evidence_integration_contract_v0.py",
+)
+
 CANONICAL_MARKET_DASHBOARD_FOCUSED_TESTS: tuple[str, ...] = (
     "tests/webui/test_market_dashboard_no_bitcoin_futures_v1.py",
     "tests/webui/test_market_futures_only_canonical_completion_v1.py",
@@ -259,6 +280,9 @@ def _requires_full_ci_selector_change(files: list[str]) -> bool:
         return False
     scoped_to = {f for f in normalized if _is_tiny_order_scoped_path(f)}
     if scoped_to and all(_is_tiny_order_rebundle_path(f) for f in normalized):
+        return False
+    scoped_rpe = {f for f in normalized if _is_reconciliation_primary_evidence_scoped_path(f)}
+    if scoped_rpe and all(_is_reconciliation_primary_evidence_rebundle_path(f) for f in normalized):
         return False
     if normalized <= CI_BOOTSTRAP_FOCUSED_PATHS:
         return False
@@ -421,6 +445,61 @@ def _tiny_order_focused_targets() -> tuple[str, ...]:
     return tuple(sorted(targets))
 
 
+def _try_reconciliation_primary_evidence_focused(files: list[str]) -> SelectionResult | None:
+    if not files:
+        return None
+    if not any(_is_reconciliation_primary_evidence_scoped_path(f) for f in files):
+        return None
+    if not all(_is_reconciliation_primary_evidence_rebundle_path(f) for f in files):
+        return None
+    files_set = set(files)
+    if (
+        PE21_RECONCILIATION_PRIMARY_EVIDENCE_OWNER in files_set
+        and PE21_RECONCILIATION_PRIMARY_EVIDENCE_TEST_OWNER not in files_set
+    ):
+        return None
+    targets = _reconciliation_primary_evidence_focused_targets()
+    if not targets:
+        return None
+    modules: tuple[str, ...] = (
+        "src.ops.bounded_futures_testnet_position_order_reconciliation_primary_evidence_integration_contract_v0",
+    )
+    return SelectionResult(
+        "FOCUSED",
+        "reconciliation_primary_evidence_focused",
+        targets,
+        modules,
+    )
+
+
+def _is_reconciliation_primary_evidence_scoped_path(path: str) -> bool:
+    if path == PE21_RECONCILIATION_PRIMARY_EVIDENCE_OWNER:
+        return True
+    if path == PE21_RECONCILIATION_PRIMARY_EVIDENCE_TEST_OWNER:
+        return True
+    return False
+
+
+def _is_reconciliation_primary_evidence_rebundle_path(path: str) -> bool:
+    return (
+        _is_reconciliation_primary_evidence_scoped_path(path)
+        or path in RECONCILIATION_PRIMARY_EVIDENCE_CI_POLICY_PATHS
+    )
+
+
+def _reconciliation_primary_evidence_focused_targets() -> tuple[str, ...]:
+    for path in REQUIRED_RECONCILIATION_PRIMARY_EVIDENCE_TEST_OWNERS:
+        if not _repo_path_exists(path):
+            return ()
+    targets: list[str] = []
+    for path in CANONICAL_RECONCILIATION_PRIMARY_EVIDENCE_FOCUSED_TESTS:
+        if _repo_path_exists(path):
+            targets.append(path)
+    if len(targets) < len(REQUIRED_RECONCILIATION_PRIMARY_EVIDENCE_TEST_OWNERS):
+        return ()
+    return tuple(sorted(targets))
+
+
 def _try_tiny_order_focused(files: list[str]) -> SelectionResult | None:
     if not files:
         return None
@@ -558,6 +637,10 @@ def categorize(path: str) -> str:
         return "tiny_order_focused"
     if _is_tiny_order_scoped_path(p):
         return "tiny_order_focused"
+    if p in RECONCILIATION_PRIMARY_EVIDENCE_CI_POLICY_PATHS:
+        return "reconciliation_primary_evidence_focused"
+    if _is_reconciliation_primary_evidence_scoped_path(p):
+        return "reconciliation_primary_evidence_focused"
     if p in MARKET_DASHBOARD_CI_POLICY_PATHS:
         return "market_dashboard_focused"
     if _is_market_dashboard_scoped_path(p):
@@ -807,6 +890,10 @@ def resolve_selection(
     if tiny_order is not None:
         return tiny_order
 
+    reconciliation_primary_evidence = _try_reconciliation_primary_evidence_focused(normalized)
+    if reconciliation_primary_evidence is not None:
+        return reconciliation_primary_evidence
+
     if any(_is_durable_completion_scoped_path(f) for f in normalized):
         if not all(_is_durable_completion_rebundle_path(f) for f in normalized):
             return SelectionResult("FULL", "durable_completion_foreign_path_requires_full", ())
@@ -826,6 +913,15 @@ def resolve_selection(
         if not all(_is_tiny_order_rebundle_path(f) for f in normalized):
             return SelectionResult("FULL", "tiny_order_foreign_path_requires_full", ())
         return SelectionResult("FULL", "tiny_order_incomplete_or_missing_test_owner", ())
+
+    if any(_is_reconciliation_primary_evidence_scoped_path(f) for f in normalized):
+        if not all(_is_reconciliation_primary_evidence_rebundle_path(f) for f in normalized):
+            return SelectionResult(
+                "FULL", "reconciliation_primary_evidence_foreign_path_requires_full", ()
+            )
+        return SelectionResult(
+            "FULL", "reconciliation_primary_evidence_incomplete_or_missing_test_owner", ()
+        )
 
     ci_bootstrap = _try_ci_bootstrap_focused(normalized)
     if ci_bootstrap is not None:

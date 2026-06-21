@@ -1116,3 +1116,53 @@ def test_selector_pe54_tiny_order_ci_policy_only_escalates_full() -> None:
 def test_mapping_file_includes_tiny_order_focused() -> None:
     text = MAPPING.read_text(encoding="utf-8")
     assert "tiny_order_focused:" in text
+
+
+PE21_RECONCILIATION_PRIMARY_EVIDENCE_FILES = (
+    "src/ops/bounded_futures_testnet_position_order_reconciliation_primary_evidence_integration_contract_v0.py",
+    "tests/ops/test_bounded_futures_testnet_position_order_reconciliation_primary_evidence_integration_contract_v0.py",
+)
+
+
+def test_selector_pe21_reconciliation_primary_evidence_fileset_focused() -> None:
+    sel = _run_selector(*PE21_RECONCILIATION_PRIMARY_EVIDENCE_FILES)
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "reconciliation_primary_evidence_focused"
+    targets = _targets(sel)
+    assert PE21_RECONCILIATION_PRIMARY_EVIDENCE_FILES[1] in targets
+    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" in targets
+    assert sel["tests_execute_full"] == "false"
+    assert "productive_src_no_op_blocked_fail_closed" not in sel["test_selection_reason"]
+
+
+def test_selector_pe21_prod_owner_without_test_owner_escalates_full() -> None:
+    sel = _run_selector(PE21_RECONCILIATION_PRIMARY_EVIDENCE_FILES[0])
+    assert sel["test_selection_mode"] == "FULL"
+    assert (
+        sel["test_selection_reason"]
+        == "reconciliation_primary_evidence_incomplete_or_missing_test_owner"
+    )
+
+
+def test_selector_pe21_plus_unknown_src_escalates_full() -> None:
+    sel = _run_selector(
+        *PE21_RECONCILIATION_PRIMARY_EVIDENCE_FILES,
+        "src/execution/live/orchestrator.py",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+
+
+def test_selector_pe21_rebundle_with_ci_policy_focused() -> None:
+    sel = _run_selector(
+        *PE21_RECONCILIATION_PRIMARY_EVIDENCE_FILES,
+        "scripts/ops/ci_test_selection_v1.py",
+        "config/ci/file_category_mapping.yaml",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    )
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "reconciliation_primary_evidence_focused"
+
+
+def test_mapping_file_includes_reconciliation_primary_evidence_focused() -> None:
+    text = MAPPING.read_text(encoding="utf-8")
+    assert "reconciliation_primary_evidence_focused:" in text

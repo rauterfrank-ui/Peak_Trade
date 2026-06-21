@@ -65,6 +65,7 @@ PRIMARY_EVIDENCE_PACKAGE_CREATED = False
 PRIMARY_EVIDENCE_RUN_EXECUTED = False
 POSITION_STATE_QUERIED = False
 ORDER_STATE_QUERIED = False
+FILL_STATE_QUERIED = False
 EXCHANGE_STATE_QUERIED = False
 NETWORK_RUN_STARTED = False
 TESTNET_RUN_STARTED = False
@@ -78,6 +79,7 @@ _FORBIDDEN_INSTRUMENT_FRAGMENTS = ("BTC/EUR", "ETH/EUR", "BTCUSDT", "XBTUSD", "P
 
 ARTIFACT_POSITION_STATE_SNAPSHOT = "POSITION_STATE_SNAPSHOT.json"
 ARTIFACT_ORDER_STATE_SNAPSHOT = "ORDER_STATE_SNAPSHOT.json"
+ARTIFACT_FILL_STATE_SNAPSHOT = "FILL_STATE_SNAPSHOT.json"
 ARTIFACT_ADAPTER_LIFECYCLE_STATE = "ADAPTER_LIFECYCLE_STATE.json"
 ARTIFACT_RECONCILIATION_INPUT = "RECONCILIATION_INPUT.json"
 ARTIFACT_RECONCILIATION_RESULT = "RECONCILIATION_RESULT.json"
@@ -90,6 +92,7 @@ ARTIFACT_PACKAGE_SUMMARY = "PACKAGE_SUMMARY.md"
 REQUIRED_ARTIFACT_FILENAMES: tuple[str, ...] = (
     ARTIFACT_POSITION_STATE_SNAPSHOT,
     ARTIFACT_ORDER_STATE_SNAPSHOT,
+    ARTIFACT_FILL_STATE_SNAPSHOT,
     ARTIFACT_ADAPTER_LIFECYCLE_STATE,
     ARTIFACT_RECONCILIATION_INPUT,
     ARTIFACT_RECONCILIATION_RESULT,
@@ -144,6 +147,23 @@ class OrderStateBinding:
 
 
 @dataclass(frozen=True)
+class FillRecord:
+    fill_id: str
+    order_id: str
+    instrument: str
+    side: str
+    quantity: float
+    price: float
+
+
+@dataclass(frozen=True)
+class FillStateBinding:
+    snapshot_id: str
+    snapshot_digest: str
+    fills: tuple[FillRecord, ...]
+
+
+@dataclass(frozen=True)
 class AdapterLifecycleStateBinding:
     state_id: str
     state_digest: str
@@ -157,6 +177,8 @@ class ReconciliationStateBinding:
     observed_position: PositionStateBinding
     expected_orders: tuple[OrderRecord, ...]
     observed_orders: tuple[OrderRecord, ...]
+    expected_fills: tuple[FillRecord, ...]
+    observed_fills: tuple[FillRecord, ...]
     input_digest: str
     result_digest: str
     classification: str
@@ -166,6 +188,8 @@ class ReconciliationStateBinding:
     orphaned_order_count: int
     duplicate_order_count: int
     orphaned_position_count: int
+    orphaned_fill_count: int
+    duplicate_fill_count: int
 
 
 @dataclass(frozen=True)
@@ -220,6 +244,7 @@ class ReconciliationPrimaryEvidenceIntegrationInput:
     contract_versions: ContractVersionsInput
     position_state: PositionStateBinding
     order_state: OrderStateBinding
+    fill_state: FillStateBinding
     adapter_lifecycle_state: AdapterLifecycleStateBinding
     reconciliation_binding: ReconciliationStateBinding
     lifecycle_matrix_proof: LifecycleMatrixProof
@@ -314,6 +339,29 @@ def compute_order_state_digest(order_state: OrderStateBinding) -> str:
     return hashlib.sha256(serialize_order_state_canonical(order_state).encode("utf-8")).hexdigest()
 
 
+def _fill_record_dict(fill: FillRecord) -> dict[str, Any]:
+    return {
+        "fill_id": fill.fill_id,
+        "instrument": fill.instrument,
+        "order_id": fill.order_id,
+        "price": fill.price,
+        "quantity": fill.quantity,
+        "side": fill.side,
+    }
+
+
+def serialize_fill_state_canonical(fill_state: FillStateBinding) -> str:
+    payload = {
+        "fills": [_fill_record_dict(fill) for fill in fill_state.fills],
+        "snapshot_id": fill_state.snapshot_id,
+    }
+    return json.dumps(payload, sort_keys=True, separators=(",", ":"))
+
+
+def compute_fill_state_digest(fill_state: FillStateBinding) -> str:
+    return hashlib.sha256(serialize_fill_state_canonical(fill_state).encode("utf-8")).hexdigest()
+
+
 def serialize_adapter_lifecycle_state_canonical(binding: AdapterLifecycleStateBinding) -> str:
     payload = {
         "adapter_id": binding.adapter_id,
@@ -335,10 +383,14 @@ def _reconciliation_input_payload(
     observed_position: PositionStateBinding,
     expected_orders: tuple[OrderRecord, ...],
     observed_orders: tuple[OrderRecord, ...],
+    expected_fills: tuple[FillRecord, ...],
+    observed_fills: tuple[FillRecord, ...],
 ) -> dict[str, Any]:
     return {
+        "expected_fills": [_fill_record_dict(fill) for fill in expected_fills],
         "expected_orders": [_order_record_dict(order) for order in expected_orders],
         "expected_position": _position_binding_dict(expected_position, include_digest=False),
+        "observed_fills": [_fill_record_dict(fill) for fill in observed_fills],
         "observed_orders": [_order_record_dict(order) for order in observed_orders],
         "observed_position": _position_binding_dict(observed_position, include_digest=False),
         "reconciliation_owner": RECONCILIATION_OWNER,
@@ -351,6 +403,8 @@ def serialize_reconciliation_input_canonical(
     observed_position: PositionStateBinding,
     expected_orders: tuple[OrderRecord, ...],
     observed_orders: tuple[OrderRecord, ...],
+    expected_fills: tuple[FillRecord, ...],
+    observed_fills: tuple[FillRecord, ...],
 ) -> str:
     return json.dumps(
         _reconciliation_input_payload(
@@ -358,6 +412,8 @@ def serialize_reconciliation_input_canonical(
             observed_position=observed_position,
             expected_orders=expected_orders,
             observed_orders=observed_orders,
+            expected_fills=expected_fills,
+            observed_fills=observed_fills,
         ),
         sort_keys=True,
         separators=(",", ":"),
@@ -370,6 +426,8 @@ def compute_reconciliation_input_digest(
     observed_position: PositionStateBinding,
     expected_orders: tuple[OrderRecord, ...],
     observed_orders: tuple[OrderRecord, ...],
+    expected_fills: tuple[FillRecord, ...],
+    observed_fills: tuple[FillRecord, ...],
 ) -> str:
     return hashlib.sha256(
         serialize_reconciliation_input_canonical(
@@ -377,6 +435,8 @@ def compute_reconciliation_input_digest(
             observed_position=observed_position,
             expected_orders=expected_orders,
             observed_orders=observed_orders,
+            expected_fills=expected_fills,
+            observed_fills=observed_fills,
         ).encode("utf-8")
     ).hexdigest()
 
@@ -454,6 +514,82 @@ def evaluate_order_reconciliation_static(
     }
 
 
+def evaluate_fill_reconciliation_static(
+    *,
+    expected_fills: tuple[FillRecord, ...],
+    observed_fills: tuple[FillRecord, ...],
+    instrument: str,
+) -> dict[str, Any]:
+    """Static fill reconciliation classification (explicit inputs only)."""
+    fail_reasons: list[str] = []
+    duplicate_fill_count = 0
+    orphaned_fill_count = 0
+    mismatch_count = 0
+    unresolved_count = 0
+
+    observed_ids = [fill.fill_id for fill in observed_fills]
+    if len(observed_ids) != len(set(observed_ids)):
+        duplicate_fill_count = len(observed_ids) - len(set(observed_ids))
+        fail_reasons.append("duplicate fill_id in observed fills")
+
+    expected_by_id = {fill.fill_id: fill for fill in expected_fills}
+    observed_by_id: dict[str, FillRecord] = {}
+    for fill in observed_fills:
+        if fill.fill_id in observed_by_id:
+            continue
+        observed_by_id[fill.fill_id] = fill
+
+    for fill_id, expected in expected_by_id.items():
+        observed = observed_by_id.get(fill_id)
+        if observed is None:
+            orphaned_fill_count += 1
+            fail_reasons.append(f"orphaned expected fill: {fill_id!r}")
+            continue
+        if expected.instrument != instrument or observed.instrument != instrument:
+            mismatch_count += 1
+            fail_reasons.append(f"instrument mismatch for fill {fill_id!r}")
+        if expected.order_id != observed.order_id:
+            mismatch_count += 1
+            fail_reasons.append(f"order_id mismatch for fill {fill_id!r}")
+        if expected.side != observed.side:
+            mismatch_count += 1
+            fail_reasons.append(f"contradictory side for fill {fill_id!r}")
+        if expected.quantity != observed.quantity:
+            mismatch_count += 1
+            fail_reasons.append(f"quantity mismatch for fill {fill_id!r}")
+        if expected.price != observed.price:
+            mismatch_count += 1
+            fail_reasons.append(f"price mismatch for fill {fill_id!r}")
+
+    for fill_id in observed_by_id:
+        if fill_id not in expected_by_id:
+            orphaned_fill_count += 1
+            fail_reasons.append(f"orphaned observed fill: {fill_id!r}")
+
+    if fail_reasons:
+        if duplicate_fill_count > 0 or mismatch_count > 0:
+            classification = CLASSIFICATION_AMBIGUOUS
+        elif orphaned_fill_count > 0:
+            classification = CLASSIFICATION_PARTIAL
+        else:
+            classification = CLASSIFICATION_UNRESOLVED
+        unresolved_count = duplicate_fill_count + orphaned_fill_count + mismatch_count
+        reconciled = False
+    else:
+        classification = CLASSIFICATION_RECONCILED
+        reconciled = True
+
+    return {
+        "classification": classification,
+        "reconciled": reconciled,
+        "unresolved_count": unresolved_count,
+        "mismatch_count": mismatch_count,
+        "orphaned_fill_count": orphaned_fill_count,
+        "duplicate_fill_count": duplicate_fill_count,
+        "fail_reasons": _sorted_unique(fail_reasons),
+    }
+
+
 def evaluate_position_reconciliation_static(
     *,
     expected_position: PositionStateBinding,
@@ -491,19 +627,26 @@ def evaluate_reconciliation_static(
     observed_position: PositionStateBinding,
     expected_orders: tuple[OrderRecord, ...],
     observed_orders: tuple[OrderRecord, ...],
+    expected_fills: tuple[FillRecord, ...],
+    observed_fills: tuple[FillRecord, ...],
     instrument: str,
 ) -> dict[str, Any]:
-    """Evaluate full position/order reconciliation from explicit bindings."""
+    """Evaluate full position/order/fill reconciliation from explicit bindings."""
     order_result = evaluate_order_reconciliation_static(
         expected_orders=expected_orders,
         observed_orders=observed_orders,
+        instrument=instrument,
+    )
+    fill_result = evaluate_fill_reconciliation_static(
+        expected_fills=expected_fills,
+        observed_fills=observed_fills,
         instrument=instrument,
     )
     position_drift, orphaned_position_count = evaluate_position_reconciliation_static(
         expected_position=expected_position,
         observed_position=observed_position,
     )
-    fail_reasons = list(order_result["fail_reasons"])
+    fail_reasons = list(order_result["fail_reasons"]) + list(fill_result["fail_reasons"])
     if expected_position.instrument != observed_position.instrument:
         fail_reasons.append("position instrument mismatch")
     if not position_drift.ok:
@@ -511,23 +654,34 @@ def evaluate_reconciliation_static(
 
     reconciled = (
         order_result["reconciled"]
+        and fill_result["reconciled"]
         and not fail_reasons
         and orphaned_position_count == 0
         and order_result["classification"] == CLASSIFICATION_RECONCILED
+        and fill_result["classification"] == CLASSIFICATION_RECONCILED
     )
     classification = order_result["classification"]
+    if fill_result["classification"] != CLASSIFICATION_RECONCILED:
+        classification = fill_result["classification"]
     if fail_reasons and classification == CLASSIFICATION_RECONCILED:
         classification = CLASSIFICATION_UNRESOLVED
 
     unresolved_count = (
-        order_result["unresolved_count"] + orphaned_position_count + len(position_drift.drifts)
+        order_result["unresolved_count"]
+        + fill_result["unresolved_count"]
+        + orphaned_position_count
+        + len(position_drift.drifts)
     )
-    mismatch_count = order_result["mismatch_count"] + len(position_drift.drifts)
+    mismatch_count = (
+        order_result["mismatch_count"] + fill_result["mismatch_count"] + len(position_drift.drifts)
+    )
 
     result_payload = {
         "classification": classification,
+        "duplicate_fill_count": fill_result["duplicate_fill_count"],
         "duplicate_order_count": order_result["duplicate_order_count"],
         "mismatch_count": mismatch_count,
+        "orphaned_fill_count": fill_result["orphaned_fill_count"],
         "orphaned_order_count": order_result["orphaned_order_count"],
         "orphaned_position_count": orphaned_position_count,
         "reconciled": reconciled,
@@ -595,6 +749,11 @@ def _integration_input_dict(
             "orders": [_order_record_dict(order) for order in integration_input.order_state.orders],
             "snapshot_digest": integration_input.order_state.snapshot_digest,
             "snapshot_id": integration_input.order_state.snapshot_id,
+        },
+        "fill_state": {
+            "fills": [_fill_record_dict(fill) for fill in integration_input.fill_state.fills],
+            "snapshot_digest": integration_input.fill_state.snapshot_digest,
+            "snapshot_id": integration_input.fill_state.snapshot_id,
         },
         "position_state": _position_binding_dict(integration_input.position_state),
         "primary_evidence_binding": serialize_primary_evidence_binding_canonical(
@@ -837,6 +996,19 @@ def validate_reconciliation_primary_evidence_integration_input(
         if order.instrument != integration_input.instrument:
             fail_reasons.append(f"order_state: instrument mismatch for order {order.order_id!r}")
 
+    fill_state = integration_input.fill_state
+    if not fill_state.snapshot_id:
+        fail_reasons.append("fill_state: snapshot_id required")
+    if not fill_state.snapshot_digest:
+        fail_reasons.append("fill_state: snapshot_digest required")
+    elif not _valid_sha256_digest(fill_state.snapshot_digest):
+        fail_reasons.append("fill_state: snapshot_digest must be 64-char lowercase sha256 hex")
+    elif fill_state.snapshot_digest != compute_fill_state_digest(fill_state):
+        fail_reasons.append("fill_state: snapshot_digest mismatch")
+    for fill in fill_state.fills:
+        if fill.instrument != integration_input.instrument:
+            fail_reasons.append(f"fill_state: instrument mismatch for fill {fill.fill_id!r}")
+
     lifecycle = integration_input.adapter_lifecycle_state
     if not lifecycle.state_id:
         fail_reasons.append("adapter_lifecycle_state: state_id required")
@@ -877,6 +1049,8 @@ def validate_reconciliation_primary_evidence_integration_input(
         observed_position=recon.observed_position,
         expected_orders=recon.expected_orders,
         observed_orders=recon.observed_orders,
+        expected_fills=recon.expected_fills,
+        observed_fills=recon.observed_fills,
     )
     if recon.input_digest != computed_input_digest:
         fail_reasons.append("reconciliation_binding: input_digest mismatch")
@@ -886,6 +1060,8 @@ def validate_reconciliation_primary_evidence_integration_input(
         observed_position=recon.observed_position,
         expected_orders=recon.expected_orders,
         observed_orders=recon.observed_orders,
+        expected_fills=recon.expected_fills,
+        observed_fills=recon.observed_fills,
         instrument=integration_input.instrument,
     )
     if recon.result_digest != static_recon["result_digest"]:
@@ -904,6 +1080,10 @@ def validate_reconciliation_primary_evidence_integration_input(
         fail_reasons.append("reconciliation_binding: duplicate_order_count mismatch")
     if recon.orphaned_position_count != static_recon["orphaned_position_count"]:
         fail_reasons.append("reconciliation_binding: orphaned_position_count mismatch")
+    if recon.orphaned_fill_count != static_recon["orphaned_fill_count"]:
+        fail_reasons.append("reconciliation_binding: orphaned_fill_count mismatch")
+    if recon.duplicate_fill_count != static_recon["duplicate_fill_count"]:
+        fail_reasons.append("reconciliation_binding: duplicate_fill_count mismatch")
 
     fail_reasons.extend(
         validate_primary_evidence_binding(integration_input.primary_evidence_binding)
@@ -981,6 +1161,7 @@ def evaluate_position_order_reconciliation_primary_evidence_integration(
         "primary_evidence_run_executed": PRIMARY_EVIDENCE_RUN_EXECUTED,
         "position_state_queried": POSITION_STATE_QUERIED,
         "order_state_queried": ORDER_STATE_QUERIED,
+        "fill_state_queried": FILL_STATE_QUERIED,
         "exchange_state_queried": EXCHANGE_STATE_QUERIED,
         "network_run_started": NETWORK_RUN_STARTED,
         "testnet_run_started": TESTNET_RUN_STARTED,
@@ -1045,10 +1226,27 @@ def _default_position_binding(*, instrument: str = "PF_ETHUSD") -> PositionState
     )
 
 
+def _default_fill_record(
+    *,
+    fill_id: str = "offline-fill-001",
+    order_id: str = "offline-order-001",
+    instrument: str = "PF_ETHUSD",
+) -> FillRecord:
+    return FillRecord(
+        fill_id=fill_id,
+        order_id=order_id,
+        instrument=instrument,
+        side="buy",
+        quantity=1.0,
+        price=2500.0,
+    )
+
+
 def _default_manifest_entries(
     *,
     position_digest: str,
     order_digest: str,
+    fill_digest: str,
     lifecycle_digest: str,
     reconciliation_input_digest: str,
     reconciliation_result_digest: str,
@@ -1056,6 +1254,7 @@ def _default_manifest_entries(
     artifact_digests = {
         ARTIFACT_POSITION_STATE_SNAPSHOT: position_digest,
         ARTIFACT_ORDER_STATE_SNAPSHOT: order_digest,
+        ARTIFACT_FILL_STATE_SNAPSHOT: fill_digest,
         ARTIFACT_ADAPTER_LIFECYCLE_STATE: lifecycle_digest,
         ARTIFACT_RECONCILIATION_INPUT: reconciliation_input_digest,
         ARTIFACT_RECONCILIATION_RESULT: reconciliation_result_digest,
@@ -1081,6 +1280,7 @@ def default_minimal_primary_evidence_binding(
     entries = manifest_entries or _default_manifest_entries(
         position_digest="1" * 64,
         order_digest="2" * 64,
+        fill_digest="a" * 64,
         lifecycle_digest="3" * 64,
         reconciliation_input_digest="4" * 64,
         reconciliation_result_digest="5" * 64,
@@ -1118,6 +1318,17 @@ def default_minimal_integration_input(
         snapshot_digest=compute_order_state_digest(order_state_binding),
         orders=order_state_binding.orders,
     )
+    fill = _default_fill_record(order_id=order.order_id, instrument=instrument)
+    fill_state_binding = FillStateBinding(
+        snapshot_id="fill-snapshot-001",
+        snapshot_digest="",
+        fills=(fill,),
+    )
+    fill_state = FillStateBinding(
+        snapshot_id=fill_state_binding.snapshot_id,
+        snapshot_digest=compute_fill_state_digest(fill_state_binding),
+        fills=fill_state_binding.fills,
+    )
     lifecycle_binding = AdapterLifecycleStateBinding(
         state_id="lifecycle-state-001",
         state_digest="",
@@ -1137,6 +1348,8 @@ def default_minimal_integration_input(
         observed_position=position,
         expected_orders=(order,),
         observed_orders=(order,),
+        expected_fills=(fill,),
+        observed_fills=(fill,),
         instrument=instrument,
     )
     recon_binding = ReconciliationStateBinding(
@@ -1144,11 +1357,15 @@ def default_minimal_integration_input(
         observed_position=position,
         expected_orders=(order,),
         observed_orders=(order,),
+        expected_fills=(fill,),
+        observed_fills=(fill,),
         input_digest=compute_reconciliation_input_digest(
             expected_position=position,
             observed_position=position,
             expected_orders=(order,),
             observed_orders=(order,),
+            expected_fills=(fill,),
+            observed_fills=(fill,),
         ),
         result_digest=static_recon["result_digest"],
         classification=static_recon["classification"],
@@ -1158,11 +1375,14 @@ def default_minimal_integration_input(
         orphaned_order_count=static_recon["orphaned_order_count"],
         duplicate_order_count=static_recon["duplicate_order_count"],
         orphaned_position_count=static_recon["orphaned_position_count"],
+        orphaned_fill_count=static_recon["orphaned_fill_count"],
+        duplicate_fill_count=static_recon["duplicate_fill_count"],
     )
 
     manifest_entries = _default_manifest_entries(
         position_digest=position.snapshot_digest,
         order_digest=order_state.snapshot_digest,
+        fill_digest=fill_state.snapshot_digest,
         lifecycle_digest=lifecycle.state_digest,
         reconciliation_input_digest=recon_binding.input_digest,
         reconciliation_result_digest=recon_binding.result_digest,
@@ -1183,6 +1403,7 @@ def default_minimal_integration_input(
         ),
         position_state=position,
         order_state=order_state,
+        fill_state=fill_state,
         adapter_lifecycle_state=lifecycle,
         reconciliation_binding=recon_binding,
         lifecycle_matrix_proof=LifecycleMatrixProof(

@@ -17,11 +17,14 @@ from src.ops.bounded_futures_testnet_position_order_reconciliation_primary_evide
     CONTRACT_IMPLEMENTATION_ONLY,
     CONTRACT_VERSION,
     EXCHANGE_STATE_QUERIED,
+    FillRecord,
+    FillStateBinding,
     GLOBAL_RECONCILIATION_READINESS,
     LIFECYCLE_TRANSITION_EXECUTED,
     NETWORK_RUN_STARTED,
     OPERATIVE_RECONCILIATION_EXECUTED,
     ORDER_STATE_QUERIED,
+    FILL_STATE_QUERIED,
     PACKAGE_MARKER,
     POSITION_STATE_QUERIED,
     PRIMARY_EVIDENCE_PACKAGE_CREATED,
@@ -39,6 +42,7 @@ from src.ops.bounded_futures_testnet_position_order_reconciliation_primary_evide
     PrimaryEvidenceBindingInput,
     REQUIRED_ARTIFACT_FILENAMES,
     TESTNET_RUN_STARTED,
+    compute_fill_state_digest,
     compute_integration_input_digest,
     compute_integration_proof_digest,
     compute_lifecycle_matrix_digest,
@@ -87,6 +91,35 @@ DURABLE_ARCHIVE_ROOT = (
 )
 
 
+def _recon_static_kwargs(integration_input, **overrides):
+    recon = integration_input.reconciliation_binding
+    kwargs = {
+        "expected_position": recon.expected_position,
+        "observed_position": recon.observed_position,
+        "expected_orders": recon.expected_orders,
+        "observed_orders": recon.observed_orders,
+        "expected_fills": recon.expected_fills,
+        "observed_fills": recon.observed_fills,
+        "instrument": integration_input.instrument,
+    }
+    kwargs.update(overrides)
+    return kwargs
+
+
+def _recon_input_digest_kwargs(integration_input, **overrides):
+    recon = integration_input.reconciliation_binding
+    kwargs = {
+        "expected_position": recon.expected_position,
+        "observed_position": recon.observed_position,
+        "expected_orders": recon.expected_orders,
+        "observed_orders": recon.observed_orders,
+        "expected_fills": recon.expected_fills,
+        "observed_fills": recon.observed_fills,
+    }
+    kwargs.update(overrides)
+    return kwargs
+
+
 def test_package_marker_present() -> None:
     text = Path(__file__).read_text(encoding="utf-8")
     assert TEST_PACKAGE_MARKER in text
@@ -113,6 +146,7 @@ def test_global_safety_flags_remain_blocked() -> None:
     assert PRIMARY_EVIDENCE_RUN_EXECUTED is False
     assert POSITION_STATE_QUERIED is False
     assert ORDER_STATE_QUERIED is False
+    assert FILL_STATE_QUERIED is False
     assert EXCHANGE_STATE_QUERIED is False
     assert LIFECYCLE_TRANSITION_EXECUTED is False
     assert NETWORK_RUN_STARTED is False
@@ -163,6 +197,7 @@ def test_valid_static_proof_remains_non_authorizing() -> None:
     assert result["primary_evidence_run_executed"] is False
     assert result["position_state_queried"] is False
     assert result["order_state_queried"] is False
+    assert result["fill_state_queried"] is False
     assert result["exchange_state_queried"] is False
     assert result["network_run_started"] is False
     assert result["testnet_run_started"] is False
@@ -299,20 +334,19 @@ def test_orphaned_order_fails() -> None:
         status="open",
     )
     static = evaluate_reconciliation_static(
-        expected_position=integration_input.position_state,
-        observed_position=integration_input.position_state,
-        expected_orders=integration_input.reconciliation_binding.expected_orders,
-        observed_orders=(*integration_input.reconciliation_binding.expected_orders, extra),
-        instrument=GENERIC_FUTURES_INSTRUMENT,
+        **_recon_static_kwargs(
+            integration_input,
+            observed_orders=(*integration_input.reconciliation_binding.expected_orders, extra),
+        )
     )
     bad_recon = replace(
         integration_input.reconciliation_binding,
         observed_orders=(*integration_input.reconciliation_binding.expected_orders, extra),
         input_digest=compute_reconciliation_input_digest(
-            expected_position=integration_input.position_state,
-            observed_position=integration_input.position_state,
-            expected_orders=integration_input.reconciliation_binding.expected_orders,
-            observed_orders=(*integration_input.reconciliation_binding.expected_orders, extra),
+            **_recon_input_digest_kwargs(
+                integration_input,
+                observed_orders=(*integration_input.reconciliation_binding.expected_orders, extra),
+            )
         ),
         result_digest=static["result_digest"],
         classification=static["classification"],
@@ -322,6 +356,8 @@ def test_orphaned_order_fails() -> None:
         orphaned_order_count=static["orphaned_order_count"],
         duplicate_order_count=static["duplicate_order_count"],
         orphaned_position_count=static["orphaned_position_count"],
+        orphaned_fill_count=static["orphaned_fill_count"],
+        duplicate_fill_count=static["duplicate_fill_count"],
     )
     bad = replace(integration_input, reconciliation_binding=bad_recon)
     result = evaluate_position_order_reconciliation_primary_evidence_integration(bad)
@@ -337,11 +373,7 @@ def test_orphaned_position_fails() -> None:
         snapshot_digest=compute_position_state_digest(bad_observed),
     )
     static = evaluate_reconciliation_static(
-        expected_position=integration_input.position_state,
-        observed_position=bad_observed,
-        expected_orders=integration_input.reconciliation_binding.expected_orders,
-        observed_orders=integration_input.reconciliation_binding.observed_orders,
-        instrument=GENERIC_FUTURES_INSTRUMENT,
+        **_recon_static_kwargs(integration_input, observed_position=bad_observed)
     )
     bad_recon = replace(
         integration_input.reconciliation_binding,
@@ -354,11 +386,10 @@ def test_orphaned_position_fails() -> None:
         orphaned_order_count=static["orphaned_order_count"],
         duplicate_order_count=static["duplicate_order_count"],
         orphaned_position_count=static["orphaned_position_count"],
+        orphaned_fill_count=static["orphaned_fill_count"],
+        duplicate_fill_count=static["duplicate_fill_count"],
         input_digest=compute_reconciliation_input_digest(
-            expected_position=integration_input.position_state,
-            observed_position=bad_observed,
-            expected_orders=integration_input.reconciliation_binding.expected_orders,
-            observed_orders=integration_input.reconciliation_binding.observed_orders,
+            **_recon_input_digest_kwargs(integration_input, observed_position=bad_observed)
         ),
     )
     bad = replace(integration_input, reconciliation_binding=bad_recon)
@@ -371,11 +402,11 @@ def test_contradictory_side_fails() -> None:
     order = integration_input.order_state.orders[0]
     bad_observed = replace(order, side="sell")
     static = evaluate_reconciliation_static(
-        expected_position=integration_input.position_state,
-        observed_position=integration_input.position_state,
-        expected_orders=(order,),
-        observed_orders=(bad_observed,),
-        instrument=GENERIC_FUTURES_INSTRUMENT,
+        **_recon_static_kwargs(
+            integration_input,
+            expected_orders=(order,),
+            observed_orders=(bad_observed,),
+        )
     )
     bad_recon = replace(
         integration_input.reconciliation_binding,
@@ -388,11 +419,14 @@ def test_contradictory_side_fails() -> None:
         orphaned_order_count=static["orphaned_order_count"],
         duplicate_order_count=static["duplicate_order_count"],
         orphaned_position_count=static["orphaned_position_count"],
+        orphaned_fill_count=static["orphaned_fill_count"],
+        duplicate_fill_count=static["duplicate_fill_count"],
         input_digest=compute_reconciliation_input_digest(
-            expected_position=integration_input.position_state,
-            observed_position=integration_input.position_state,
-            expected_orders=(order,),
-            observed_orders=(bad_observed,),
+            **_recon_input_digest_kwargs(
+                integration_input,
+                expected_orders=(order,),
+                observed_orders=(bad_observed,),
+            )
         ),
     )
     bad = replace(integration_input, reconciliation_binding=bad_recon)
@@ -405,11 +439,11 @@ def test_quantity_mismatch_fails() -> None:
     order = integration_input.order_state.orders[0]
     bad_observed = replace(order, quantity=99.0)
     static = evaluate_reconciliation_static(
-        expected_position=integration_input.position_state,
-        observed_position=integration_input.position_state,
-        expected_orders=(order,),
-        observed_orders=(bad_observed,),
-        instrument=GENERIC_FUTURES_INSTRUMENT,
+        **_recon_static_kwargs(
+            integration_input,
+            expected_orders=(order,),
+            observed_orders=(bad_observed,),
+        )
     )
     bad_recon = replace(
         integration_input.reconciliation_binding,
@@ -422,11 +456,14 @@ def test_quantity_mismatch_fails() -> None:
         orphaned_order_count=static["orphaned_order_count"],
         duplicate_order_count=static["duplicate_order_count"],
         orphaned_position_count=static["orphaned_position_count"],
+        orphaned_fill_count=static["orphaned_fill_count"],
+        duplicate_fill_count=static["duplicate_fill_count"],
         input_digest=compute_reconciliation_input_digest(
-            expected_position=integration_input.position_state,
-            observed_position=integration_input.position_state,
-            expected_orders=(order,),
-            observed_orders=(bad_observed,),
+            **_recon_input_digest_kwargs(
+                integration_input,
+                expected_orders=(order,),
+                observed_orders=(bad_observed,),
+            )
         ),
     )
     bad = replace(integration_input, reconciliation_binding=bad_recon)
@@ -439,11 +476,11 @@ def test_status_mismatch_fails() -> None:
     order = integration_input.order_state.orders[0]
     bad_observed = replace(order, status="closed")
     static = evaluate_reconciliation_static(
-        expected_position=integration_input.position_state,
-        observed_position=integration_input.position_state,
-        expected_orders=(order,),
-        observed_orders=(bad_observed,),
-        instrument=GENERIC_FUTURES_INSTRUMENT,
+        **_recon_static_kwargs(
+            integration_input,
+            expected_orders=(order,),
+            observed_orders=(bad_observed,),
+        )
     )
     bad_recon = replace(
         integration_input.reconciliation_binding,
@@ -456,11 +493,14 @@ def test_status_mismatch_fails() -> None:
         orphaned_order_count=static["orphaned_order_count"],
         duplicate_order_count=static["duplicate_order_count"],
         orphaned_position_count=static["orphaned_position_count"],
+        orphaned_fill_count=static["orphaned_fill_count"],
+        duplicate_fill_count=static["duplicate_fill_count"],
         input_digest=compute_reconciliation_input_digest(
-            expected_position=integration_input.position_state,
-            observed_position=integration_input.position_state,
-            expected_orders=(order,),
-            observed_orders=(bad_observed,),
+            **_recon_input_digest_kwargs(
+                integration_input,
+                expected_orders=(order,),
+                observed_orders=(bad_observed,),
+            )
         ),
     )
     bad = replace(integration_input, reconciliation_binding=bad_recon)
@@ -659,6 +699,102 @@ def test_btc_xbt_spot_oriented_input_fails(instrument: str) -> None:
     integration_input = default_minimal_integration_input(instrument=instrument)
     result = evaluate_position_order_reconciliation_primary_evidence_integration(integration_input)
     assert result["integration_pass"] is False
+
+
+def test_missing_fill_state_fails() -> None:
+    integration_input = default_minimal_integration_input()
+    bad_fill = replace(integration_input.fill_state, snapshot_id="")
+    bad = replace(integration_input, fill_state=bad_fill)
+    result = evaluate_position_order_reconciliation_primary_evidence_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("fill_state: snapshot_id required" in r for r in result["fail_reasons"])
+
+
+def test_orphaned_fill_fails() -> None:
+    integration_input = default_minimal_integration_input()
+    extra = FillRecord(
+        fill_id="orphan-fill-001",
+        order_id="offline-order-001",
+        instrument=GENERIC_FUTURES_INSTRUMENT,
+        side="buy",
+        quantity=1.0,
+        price=2500.0,
+    )
+    static = evaluate_reconciliation_static(
+        **_recon_static_kwargs(
+            integration_input,
+            observed_fills=(*integration_input.reconciliation_binding.expected_fills, extra),
+        )
+    )
+    bad_recon = replace(
+        integration_input.reconciliation_binding,
+        observed_fills=(*integration_input.reconciliation_binding.expected_fills, extra),
+        input_digest=compute_reconciliation_input_digest(
+            **_recon_input_digest_kwargs(
+                integration_input,
+                observed_fills=(*integration_input.reconciliation_binding.expected_fills, extra),
+            )
+        ),
+        result_digest=static["result_digest"],
+        classification=static["classification"],
+        reconciled=static["reconciled"],
+        unresolved_count=static["unresolved_count"],
+        mismatch_count=static["mismatch_count"],
+        orphaned_order_count=static["orphaned_order_count"],
+        duplicate_order_count=static["duplicate_order_count"],
+        orphaned_position_count=static["orphaned_position_count"],
+        orphaned_fill_count=static["orphaned_fill_count"],
+        duplicate_fill_count=static["duplicate_fill_count"],
+    )
+    bad = replace(integration_input, reconciliation_binding=bad_recon)
+    result = evaluate_position_order_reconciliation_primary_evidence_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("unresolved reconciliation" in r or "orphaned" in r for r in result["fail_reasons"])
+
+
+def test_fill_price_mismatch_fails() -> None:
+    integration_input = default_minimal_integration_input()
+    fill = integration_input.fill_state.fills[0]
+    bad_observed = replace(fill, price=9999.0)
+    static = evaluate_reconciliation_static(
+        **_recon_static_kwargs(
+            integration_input,
+            expected_fills=(fill,),
+            observed_fills=(bad_observed,),
+        )
+    )
+    bad_recon = replace(
+        integration_input.reconciliation_binding,
+        observed_fills=(bad_observed,),
+        result_digest=static["result_digest"],
+        classification=static["classification"],
+        reconciled=static["reconciled"],
+        unresolved_count=static["unresolved_count"],
+        mismatch_count=static["mismatch_count"],
+        orphaned_order_count=static["orphaned_order_count"],
+        duplicate_order_count=static["duplicate_order_count"],
+        orphaned_position_count=static["orphaned_position_count"],
+        orphaned_fill_count=static["orphaned_fill_count"],
+        duplicate_fill_count=static["duplicate_fill_count"],
+        input_digest=compute_reconciliation_input_digest(
+            **_recon_input_digest_kwargs(
+                integration_input,
+                expected_fills=(fill,),
+                observed_fills=(bad_observed,),
+            )
+        ),
+    )
+    bad = replace(integration_input, reconciliation_binding=bad_recon)
+    result = evaluate_position_order_reconciliation_primary_evidence_integration(bad)
+    assert result["integration_pass"] is False
+
+
+def test_fill_state_snapshot_required_in_artifacts() -> None:
+    integration_input = default_minimal_integration_input()
+    assert "FILL_STATE_SNAPSHOT.json" in REQUIRED_ARTIFACT_FILENAMES
+    assert integration_input.fill_state.snapshot_digest == compute_fill_state_digest(
+        integration_input.fill_state
+    )
 
 
 def test_bitcoin_direction_allowed_fails() -> None:
