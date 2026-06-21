@@ -91,6 +91,12 @@ DURABLE_COMPLETION_CI_POLICY_PATHS = frozenset(
     }
 )
 
+DURABLE_COMPLETION_CI_WORKFLOW_REBUNDLE_PATHS = frozenset(
+    {
+        ".github/workflows/ci.yml",
+    }
+)
+
 CANONICAL_DURABLE_COMPLETION_FOCUSED_TESTS: tuple[str, ...] = (
     "tests/ops/test_durable_completion_validation_graph_v1.py",
     "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
@@ -367,7 +373,11 @@ def _is_durable_completion_scoped_path(path: str) -> bool:
 
 
 def _is_durable_completion_rebundle_path(path: str) -> bool:
-    return _is_durable_completion_scoped_path(path) or path in DURABLE_COMPLETION_CI_POLICY_PATHS
+    return (
+        _is_durable_completion_scoped_path(path)
+        or path in DURABLE_COMPLETION_CI_POLICY_PATHS
+        or path in DURABLE_COMPLETION_CI_WORKFLOW_REBUNDLE_PATHS
+    )
 
 
 def _is_durable_completion_validator_rebinding_scope(files: list[str]) -> bool:
@@ -385,6 +395,8 @@ def _is_durable_completion_validator_rebinding_scope(files: list[str]) -> bool:
     for path in files:
         if path in DURABLE_COMPLETION_CI_POLICY_PATHS:
             continue
+        if path in DURABLE_COMPLETION_CI_WORKFLOW_REBUNDLE_PATHS:
+            continue
         if path.startswith("src/ops/durable_completion_validation/") and path.endswith(".py"):
             continue
         if path in DURABLE_COMPLETION_VALIDATOR_REBINDING_TEST_PATHS:
@@ -399,7 +411,11 @@ def _durable_completion_focused_targets(files: list[str] | None = None) -> tuple
         return ()
     if files and _is_durable_completion_validator_rebinding_scope(files):
         targets: list[str] = [graph_owner]
-        if files and any(path in DURABLE_COMPLETION_CI_POLICY_PATHS for path in files):
+        if files and any(
+            path in DURABLE_COMPLETION_CI_POLICY_PATHS
+            or path in DURABLE_COMPLETION_CI_WORKFLOW_REBUNDLE_PATHS
+            for path in files
+        ):
             ci_owner = "tests/ci/test_ci_diff_aware_test_selection_v1.py"
             if _repo_path_exists(ci_owner):
                 targets.append(ci_owner)

@@ -618,6 +618,25 @@ def test_selector_durable_completion_graph_core_plus_test_owners_focused() -> No
     assert sel["test_selection_reason"] == "durable_completion_focused"
 
 
+def test_selector_pe55_full_diff_with_ci_workflow_rebundle_stays_focused() -> None:
+    sel = _run_selector(
+        *PE55_DURABLE_COMPLETION_FILL_REBINDING_FILES,
+        ".github/workflows/ci.yml",
+        "scripts/ops/ci_test_selection_v1.py",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    )
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "durable_completion_focused"
+    targets = _targets(sel)
+    assert "tests/ops/test_durable_completion_validation_graph_v1.py" in targets
+    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" in targets
+    assert (
+        "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py"
+        not in targets
+    )
+    assert sel["tests_execute_full"] == "false"
+
+
 def test_selector_durable_completion_facade_plus_graph_focused() -> None:
     sel = _run_selector(
         "src/ops/bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
