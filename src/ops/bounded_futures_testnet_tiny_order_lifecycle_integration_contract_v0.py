@@ -23,6 +23,7 @@ from src.ops.bounded_futures_testnet_adapter_lifecycle_contract_v0 import (
     LIFECYCLE_PHASE_DESCRIPTORS,
     LIFECYCLE_PHASE_ORDER,
     NETWORK_EXECUTION_PHASES,
+    OPERATOR_GO_TINY_ORDER,
     PACKAGE_MARKER as PE12_PACKAGE_MARKER,
     PHASE_CANONICAL_OWNERS,
     PHASE_TINY_ORDER,
@@ -75,6 +76,28 @@ from src.ops.bounded_futures_testnet_zero_order_lifecycle_integration_contract_v
     default_minimal_integration_input as default_minimal_pe27_integration_input,
     evaluate_zero_order_lifecycle_integration,
 )
+from src.ops.order_capability_cancel_cleanup_failclosed_contract_v1 import (
+    ABORT_BINDING_PASS_VERDICT,
+    OrderCapabilityAbortBindingSummary,
+    OrderCapabilityCleanupError,
+    OrderCapabilityCleanupInput,
+    OrderCapabilityCleanupOrderStateSnapshot,
+    OrderCapabilityCleanupPolicy,
+    OrderCapabilityCleanupVerdictKind,
+    OrderCapabilityPayloadCleanupSummary,
+    evaluate_order_capability_cancel_cleanup,
+)
+from src.ops.order_capability_killswitch_abort_binding_contract_v1 import (
+    OrderCapabilityAbortBindingError,
+    OrderCapabilityAbortBindingInput,
+    OrderCapabilityBindingVerdict,
+    OrderCapabilityKillSwitchSnapshot,
+    OrderCapabilityPayloadSafetySummary,
+    evaluate_order_capability_abort_binding,
+)
+from src.ops.order_capability_payload_builder_contract_v1 import (
+    SCHEMA_VERSION as ORDER_CAPABILITY_PAYLOAD_SCHEMA_VERSION,
+)
 
 PACKAGE_MARKER = "BOUNDED_FUTURES_TESTNET_TINY_ORDER_LIFECYCLE_INTEGRATION_CONTRACT_V0=true"
 CONTRACT_VERSION = "bounded_futures_testnet_tiny_order_lifecycle_integration.v0"
@@ -100,6 +123,24 @@ NETWORK_RUN_STARTED = False
 TESTNET_RUN_STARTED = False
 RUNTIME_STARTED = False
 AUTHORITY_LIFT = False
+
+ORDER_CAPABILITY_PROOF_OWNER = ORDER_CAPABILITY_PAYLOAD_SCHEMA_VERSION
+PROOF_LIFECYCLE_CURRENT = "current"
+PROOF_LIFECYCLE_STALE = "stale"
+PROOF_LIFECYCLE_REVOKED = "revoked"
+PROOF_LIFECYCLE_SUPERSEDED = "superseded"
+INVALID_ORDER_CAPABILITY_PROOF_LIFECYCLE_STATES = frozenset(
+    {
+        PROOF_LIFECYCLE_STALE,
+        PROOF_LIFECYCLE_REVOKED,
+        PROOF_LIFECYCLE_SUPERSEDED,
+    }
+)
+PE30_ORDER_CAPABILITY_BINDING_NOW_UTC = "2026-06-09T13:00:00Z"
+PE30_ORDER_CAPABILITY_BINDING_OBSERVED_UTC = "2026-06-09T12:59:30Z"
+PE30_ORDER_CAPABILITY_BINDING_TTL_SECONDS = 120
+PE30_ORDER_CAPABILITY_CLEANUP_MARKER = "cleanup-correlation-derived-from-idempotency-v1"
+PE30_ORDER_CAPABILITY_CLIENT_ORDER_ID = "pe30-offline-client-order-v0"
 
 _SHA256_HEX_RE = re.compile(r"^[0-9a-f]{64}$")
 _COMMIT_SHA_RE = re.compile(r"^[0-9a-f]{40}$")
@@ -212,6 +253,18 @@ class TinyOrderProofBinding:
 
 
 @dataclass(frozen=True)
+class OrderCapabilityProofChainBinding:
+    capability_identity: str
+    capability_proof_owner: str
+    capability_proof_digest: str
+    idempotency_proof_digest: str
+    proof_lifecycle_state: str
+    proof_issuer: str
+    abort_binding_input: OrderCapabilityAbortBindingInput
+    cleanup_binding_input: OrderCapabilityCleanupInput
+
+
+@dataclass(frozen=True)
 class IntegrationSafetySnapshot:
     preflight_remains_blocked: bool
     ready_for_operator_arming: bool
@@ -250,6 +303,7 @@ class TinyOrderLifecycleIntegrationInput:
     pe29_validate_only_integration_proof: Pe29ValidateOnlyIntegrationProofBinding
     tiny_order_proof: TinyOrderProofBinding
     safety_snapshot: IntegrationSafetySnapshot
+    order_capability_proof_chain: OrderCapabilityProofChainBinding | None = None
     futures_only: bool = True
     environment: str = ENVIRONMENT_TESTNET
     non_authorizing: bool = True
@@ -292,6 +346,77 @@ def compute_lifecycle_matrix_digest() -> str:
     ).hexdigest()
 
 
+def _pe30_order_capability_correlation_id(adapter_id: str) -> str:
+    return f"pe30-{adapter_id}"
+
+
+def _order_capability_proof_chain_dict(chain: OrderCapabilityProofChainBinding) -> dict[str, Any]:
+    abort = chain.abort_binding_input
+    cleanup = chain.cleanup_binding_input
+    return {
+        "abort_binding_input": {
+            "expected_environment": abort.expected_environment,
+            "expected_operator_go_token_binding": abort.expected_operator_go_token_binding,
+            "kill_switch_snapshot": asdict(abort.kill_switch_snapshot),
+            "now_utc": abort.now_utc,
+            "payload_summary": asdict(abort.payload_summary),
+        },
+        "capability_identity": chain.capability_identity,
+        "capability_proof_owner": chain.capability_proof_owner,
+        "cleanup_binding_input": {
+            "abort_binding_summary": asdict(cleanup.abort_binding_summary),
+            "cleanup_policy": asdict(cleanup.cleanup_policy),
+            "expected_environment": cleanup.expected_environment,
+            "expected_operator_cleanup_go_token_binding": (
+                cleanup.expected_operator_cleanup_go_token_binding
+            ),
+            "now_utc": cleanup.now_utc,
+            "operator_cleanup_go_token_binding": cleanup.operator_cleanup_go_token_binding,
+            "order_state_snapshot": asdict(cleanup.order_state_snapshot),
+            "payload_summary": asdict(cleanup.payload_summary),
+            "private_endpoint_boundary_satisfied": cleanup.private_endpoint_boundary_satisfied,
+        },
+        "idempotency_proof_digest": chain.idempotency_proof_digest,
+        "proof_issuer": chain.proof_issuer,
+        "proof_lifecycle_state": chain.proof_lifecycle_state,
+    }
+
+
+def compute_order_capability_idempotency_proof_digest(
+    chain: OrderCapabilityProofChainBinding,
+) -> str:
+    payload = chain.cleanup_binding_input.payload_summary
+    snapshot = chain.cleanup_binding_input.order_state_snapshot
+    material = {
+        "capability_identity": chain.capability_identity,
+        "client_order_id": payload.client_order_id,
+        "idempotency_key": payload.idempotency_key,
+        "snapshot_client_order_id": snapshot.client_order_id,
+        "snapshot_idempotency_key": snapshot.idempotency_key,
+    }
+    return hashlib.sha256(
+        json.dumps(material, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+
+
+def compute_order_capability_proof_chain_digest(
+    chain: OrderCapabilityProofChainBinding,
+) -> str:
+    return hashlib.sha256(
+        json.dumps(
+            _order_capability_proof_chain_dict(chain), sort_keys=True, separators=(",", ":")
+        ).encode("utf-8")
+    ).hexdigest()
+
+
+def serialize_order_capability_proof_chain_canonical(
+    chain: OrderCapabilityProofChainBinding,
+) -> str:
+    payload = _order_capability_proof_chain_dict(chain)
+    payload["capability_proof_digest"] = chain.capability_proof_digest
+    return json.dumps(payload, sort_keys=True, separators=(",", ":"))
+
+
 def _integration_input_dict(
     integration_input: TinyOrderLifecycleIntegrationInput,
 ) -> dict[str, Any]:
@@ -329,6 +454,11 @@ def _integration_input_dict(
             integration_input.pe29_validate_only_integration_proof
         ),
         "tiny_order_proof": asdict(integration_input.tiny_order_proof),
+        "order_capability_proof_chain": (
+            asdict(integration_input.order_capability_proof_chain)
+            if integration_input.order_capability_proof_chain is not None
+            else None
+        ),
         "safety_snapshot": asdict(integration_input.safety_snapshot),
         "futures_only": integration_input.futures_only,
         "environment": integration_input.environment,
@@ -869,6 +999,301 @@ def _canonical_tiny_order_static_plan_evidence(
     }
 
 
+def _default_order_capability_proof_chain(
+    adapter_id: str,
+    instrument: str,
+) -> OrderCapabilityProofChainBinding:
+    correlation_id = _pe30_order_capability_correlation_id(adapter_id)
+    client_order_id = PE30_ORDER_CAPABILITY_CLIENT_ORDER_ID
+    idempotency_key = client_order_id
+    abort_input = OrderCapabilityAbortBindingInput(
+        payload_summary=OrderCapabilityPayloadSafetySummary(
+            evidence_correlation_id=correlation_id,
+            no_submit=True,
+            no_network=True,
+            execute_authorized=False,
+            order_submission_executed=False,
+            cancel_executed=False,
+            trade_position_mutation_executed=False,
+            abort_ack_marker="CONFIRMED",
+            operator_go_token_binding=OPERATOR_GO_TINY_ORDER,
+            environment=ENVIRONMENT_TESTNET,
+        ),
+        expected_operator_go_token_binding=OPERATOR_GO_TINY_ORDER,
+        kill_switch_snapshot=OrderCapabilityKillSwitchSnapshot(
+            source="pe30_offline_fixture",
+            source_id=f"pe30-ks-{adapter_id}",
+            source_kind="injected_offline_fixture",
+            state="CLEAR",
+            observed_at_utc=PE30_ORDER_CAPABILITY_BINDING_OBSERVED_UTC,
+            ttl_seconds=PE30_ORDER_CAPABILITY_BINDING_TTL_SECONDS,
+            correlation_id=correlation_id,
+            environment=ENVIRONMENT_TESTNET,
+        ),
+        now_utc=PE30_ORDER_CAPABILITY_BINDING_NOW_UTC,
+        expected_environment=ENVIRONMENT_TESTNET,
+    )
+    cleanup_input = OrderCapabilityCleanupInput(
+        payload_summary=OrderCapabilityPayloadCleanupSummary(
+            evidence_correlation_id=correlation_id,
+            client_order_id=client_order_id,
+            idempotency_key=idempotency_key,
+            cleanup_cancel_correlation_marker=PE30_ORDER_CAPABILITY_CLEANUP_MARKER,
+            operator_go_token_binding=OPERATOR_GO_TINY_ORDER,
+            environment=ENVIRONMENT_TESTNET,
+            no_submit=True,
+            no_network=True,
+            execute_authorized=False,
+            cancel_executed=False,
+            trade_position_mutation_executed=False,
+        ),
+        abort_binding_summary=OrderCapabilityAbortBindingSummary(
+            verdict=ABORT_BINDING_PASS_VERDICT,
+            evidence_correlation_id=correlation_id,
+            reason_codes=(),
+            execute_authorized=False,
+            cancel_executed=False,
+        ),
+        order_state_snapshot=OrderCapabilityCleanupOrderStateSnapshot(
+            source_id=f"pe30-order-state-{adapter_id}",
+            source_kind="injected_offline_fixture",
+            order_state="NONE",
+            observed_at_utc=PE30_ORDER_CAPABILITY_BINDING_OBSERVED_UTC,
+            ttl_seconds=PE30_ORDER_CAPABILITY_BINDING_TTL_SECONDS,
+            environment=ENVIRONMENT_TESTNET,
+            instrument=instrument,
+            client_order_id=client_order_id,
+            idempotency_key=idempotency_key,
+            evidence_correlation_id=correlation_id,
+        ),
+        cleanup_policy=OrderCapabilityCleanupPolicy(),
+        operator_cleanup_go_token_binding=OPERATOR_GO_TINY_ORDER,
+        expected_operator_cleanup_go_token_binding=OPERATOR_GO_TINY_ORDER,
+        expected_environment=ENVIRONMENT_TESTNET,
+        now_utc=PE30_ORDER_CAPABILITY_BINDING_NOW_UTC,
+        private_endpoint_boundary_satisfied=True,
+    )
+    binding_without_digests = OrderCapabilityProofChainBinding(
+        capability_identity=correlation_id,
+        capability_proof_owner=ORDER_CAPABILITY_PROOF_OWNER,
+        capability_proof_digest="",
+        idempotency_proof_digest="",
+        proof_lifecycle_state=PROOF_LIFECYCLE_CURRENT,
+        proof_issuer=OPERATOR_GO_TINY_ORDER,
+        abort_binding_input=abort_input,
+        cleanup_binding_input=cleanup_input,
+    )
+    idempotency_digest = compute_order_capability_idempotency_proof_digest(binding_without_digests)
+    with_idempotency = replace(
+        binding_without_digests,
+        idempotency_proof_digest=idempotency_digest,
+    )
+    capability_digest = compute_order_capability_proof_chain_digest(with_idempotency)
+    return replace(with_idempotency, capability_proof_digest=capability_digest)
+
+
+def default_minimal_order_capability_proof_chain(
+    adapter_id: str,
+    instrument: str,
+) -> OrderCapabilityProofChainBinding:
+    return _default_order_capability_proof_chain(adapter_id, instrument)
+
+
+def _validate_order_capability_proof_chain_fail_closed(
+    integration_input: TinyOrderLifecycleIntegrationInput,
+) -> list[str]:
+    """Fail-closed PE-30 binding to canonical order-capability proof chain."""
+    fail_reasons: list[str] = []
+    chain = integration_input.order_capability_proof_chain
+    if chain is None:
+        fail_reasons.append("order_capability_proof_chain: binding required")
+        return fail_reasons
+
+    expected_identity = _pe30_order_capability_correlation_id(integration_input.adapter_id)
+    if not chain.capability_identity.strip():
+        fail_reasons.append("order_capability_proof_chain: capability_identity required")
+    elif chain.capability_identity.strip() != expected_identity:
+        fail_reasons.append("order_capability_proof_chain: capability_identity drift")
+    elif integration_input.adapter_id not in chain.capability_identity:
+        fail_reasons.append("order_capability_proof_chain: lifecycle adapter_id identity drift")
+
+    if not chain.capability_proof_owner.strip():
+        fail_reasons.append("order_capability_proof_chain: capability_proof_owner required")
+    elif chain.capability_proof_owner != ORDER_CAPABILITY_PROOF_OWNER:
+        fail_reasons.append(
+            f"order_capability_proof_chain: capability_proof_owner must be "
+            f"{ORDER_CAPABILITY_PROOF_OWNER!r}"
+        )
+
+    if not chain.proof_issuer.strip():
+        fail_reasons.append("order_capability_proof_chain: proof_issuer required")
+    elif chain.proof_issuer != OPERATOR_GO_TINY_ORDER:
+        fail_reasons.append("order_capability_proof_chain: proof_issuer drift")
+
+    if not chain.proof_lifecycle_state.strip():
+        fail_reasons.append("order_capability_proof_chain: proof_lifecycle_state required")
+    elif chain.proof_lifecycle_state == PROOF_LIFECYCLE_STALE:
+        fail_reasons.append("order_capability_proof_chain: stale proof lifecycle state")
+    elif chain.proof_lifecycle_state == PROOF_LIFECYCLE_REVOKED:
+        fail_reasons.append("order_capability_proof_chain: revoked proof lifecycle state")
+    elif chain.proof_lifecycle_state == PROOF_LIFECYCLE_SUPERSEDED:
+        fail_reasons.append("order_capability_proof_chain: superseded proof lifecycle state")
+    elif chain.proof_lifecycle_state != PROOF_LIFECYCLE_CURRENT:
+        fail_reasons.append(
+            f"order_capability_proof_chain: unsupported proof lifecycle state "
+            f"{chain.proof_lifecycle_state!r}"
+        )
+
+    if not chain.capability_proof_digest:
+        fail_reasons.append("order_capability_proof_chain: capability_proof_digest required")
+    elif not _valid_sha256_digest(chain.capability_proof_digest):
+        fail_reasons.append(
+            "order_capability_proof_chain: capability_proof_digest must be "
+            "64-char lowercase sha256 hex"
+        )
+    elif chain.capability_proof_digest != compute_order_capability_proof_chain_digest(chain):
+        fail_reasons.append("order_capability_proof_chain: capability_proof_digest mismatch")
+
+    if not chain.idempotency_proof_digest:
+        fail_reasons.append("order_capability_proof_chain: idempotency_proof_digest required")
+    elif not _valid_sha256_digest(chain.idempotency_proof_digest):
+        fail_reasons.append(
+            "order_capability_proof_chain: idempotency_proof_digest must be "
+            "64-char lowercase sha256 hex"
+        )
+    elif chain.idempotency_proof_digest != compute_order_capability_idempotency_proof_digest(chain):
+        fail_reasons.append("order_capability_proof_chain: idempotency_proof_digest mismatch")
+
+    abort_input = chain.abort_binding_input
+    cleanup_input = chain.cleanup_binding_input
+    correlation_id = abort_input.payload_summary.evidence_correlation_id.strip()
+    cleanup_correlation_id = cleanup_input.payload_summary.evidence_correlation_id.strip()
+    abort_summary_correlation = cleanup_input.abort_binding_summary.evidence_correlation_id.strip()
+    snapshot_correlation = cleanup_input.order_state_snapshot.evidence_correlation_id.strip()
+
+    if not correlation_id:
+        fail_reasons.append("order_capability_abort_binding: binding_input required")
+    elif correlation_id != chain.capability_identity.strip():
+        fail_reasons.append("order_capability_abort_binding: capability identity drift")
+    if cleanup_correlation_id and cleanup_correlation_id != correlation_id:
+        fail_reasons.append("order_capability_cleanup_binding: capability identity drift")
+    if abort_summary_correlation and abort_summary_correlation != correlation_id:
+        fail_reasons.append("order_capability_cleanup_binding: abort summary identity drift")
+    if snapshot_correlation and snapshot_correlation != correlation_id:
+        fail_reasons.append("order_capability_cleanup_binding: order state identity drift")
+
+    if abort_input.expected_operator_go_token_binding != OPERATOR_GO_TINY_ORDER:
+        fail_reasons.append(
+            "order_capability_abort_binding: expected_operator_go_token_binding drift"
+        )
+    if abort_input.payload_summary.operator_go_token_binding != OPERATOR_GO_TINY_ORDER:
+        fail_reasons.append(
+            "order_capability_abort_binding: payload operator_go_token_binding drift"
+        )
+    if cleanup_input.operator_cleanup_go_token_binding != OPERATOR_GO_TINY_ORDER:
+        fail_reasons.append(
+            "order_capability_cleanup_binding: operator_cleanup_go_token_binding drift"
+        )
+    if cleanup_input.expected_operator_cleanup_go_token_binding != OPERATOR_GO_TINY_ORDER:
+        fail_reasons.append(
+            "order_capability_cleanup_binding: expected_operator_cleanup_go_token_binding drift"
+        )
+
+    if (
+        abort_input.payload_summary.execute_authorized
+        or abort_input.payload_summary.order_submission_executed
+        or abort_input.payload_summary.cancel_executed
+        or abort_input.payload_summary.trade_position_mutation_executed
+        or cleanup_input.payload_summary.execute_authorized
+        or cleanup_input.payload_summary.cancel_executed
+        or cleanup_input.payload_summary.trade_position_mutation_executed
+        or cleanup_input.abort_binding_summary.execute_authorized
+        or cleanup_input.abort_binding_summary.cancel_executed
+    ):
+        fail_reasons.append("order_capability_proof_chain: authority contradiction")
+
+    try:
+        first_abort_verdict = evaluate_order_capability_abort_binding(abort_input)
+        second_abort_verdict = evaluate_order_capability_abort_binding(abort_input)
+    except (OrderCapabilityAbortBindingError, ValueError, TypeError) as exc:
+        fail_reasons.append(f"order_capability_abort_binding: evaluation_exception: {exc}")
+        first_abort_verdict = None
+        second_abort_verdict = None
+
+    if first_abort_verdict is None or second_abort_verdict is None:
+        if not any(
+            r.startswith("order_capability_abort_binding: evaluation_exception")
+            for r in fail_reasons
+        ):
+            fail_reasons.append("order_capability_abort_binding: verdict_none")
+    elif first_abort_verdict != second_abort_verdict:
+        fail_reasons.append("order_capability_abort_binding: repeated evaluation inconsistency")
+    elif (
+        first_abort_verdict.verdict
+        != OrderCapabilityBindingVerdict.PASS_FOR_DRY_SUBMIT_CANDIDATE_ONLY
+    ):
+        if first_abort_verdict.verdict == OrderCapabilityBindingVerdict.FAIL_CLOSED:
+            for code in first_abort_verdict.reason_codes:
+                fail_reasons.append(f"order_capability_abort_binding: {code}")
+            if not first_abort_verdict.reason_codes:
+                fail_reasons.append("order_capability_abort_binding: fail_closed_without_reason")
+        else:
+            fail_reasons.append(
+                f"order_capability_abort_binding: verdict_{first_abort_verdict.verdict.value.lower()}"
+            )
+    elif (
+        first_abort_verdict.execute_authorized
+        or first_abort_verdict.order_submission_executed
+        or first_abort_verdict.cancel_executed
+        or first_abort_verdict.trade_position_mutation_executed
+        or not first_abort_verdict.preflight_remains_blocked
+    ):
+        fail_reasons.append("order_capability_abort_binding: unsafe verdict authority fields")
+
+    try:
+        first_cleanup_verdict = evaluate_order_capability_cancel_cleanup(cleanup_input)
+        second_cleanup_verdict = evaluate_order_capability_cancel_cleanup(cleanup_input)
+    except (OrderCapabilityCleanupError, ValueError, TypeError) as exc:
+        fail_reasons.append(f"order_capability_cleanup_binding: evaluation_exception: {exc}")
+        first_cleanup_verdict = None
+        second_cleanup_verdict = None
+
+    if first_cleanup_verdict is None or second_cleanup_verdict is None:
+        if not any(
+            r.startswith("order_capability_cleanup_binding: evaluation_exception")
+            for r in fail_reasons
+        ):
+            fail_reasons.append("order_capability_cleanup_binding: verdict_none")
+    elif first_cleanup_verdict != second_cleanup_verdict:
+        fail_reasons.append("order_capability_cleanup_binding: repeated evaluation inconsistency")
+    elif (
+        first_cleanup_verdict.verdict
+        != OrderCapabilityCleanupVerdictKind.READY_FOR_DRY_CLEANUP_PLAN_ONLY
+    ):
+        if first_cleanup_verdict.verdict == OrderCapabilityCleanupVerdictKind.FAIL_CLOSED:
+            for code in first_cleanup_verdict.reason_codes:
+                fail_reasons.append(f"order_capability_cleanup_binding: {code}")
+            if not first_cleanup_verdict.reason_codes:
+                fail_reasons.append("order_capability_cleanup_binding: fail_closed_without_reason")
+        else:
+            fail_reasons.append(
+                "order_capability_cleanup_binding: "
+                f"verdict_{first_cleanup_verdict.verdict.value.lower()}"
+            )
+    elif (
+        first_cleanup_verdict.cancel_authorized
+        or first_cleanup_verdict.flatten_authorized
+        or first_cleanup_verdict.execute_authorized
+        or first_cleanup_verdict.order_submission_executed
+        or first_cleanup_verdict.cancel_executed
+        or first_cleanup_verdict.trade_position_mutation_executed
+        or not first_cleanup_verdict.preflight_remains_blocked
+    ):
+        fail_reasons.append("order_capability_cleanup_binding: unsafe verdict authority fields")
+
+    return fail_reasons
+
+
 def _validate_tiny_order_proof(
     integration_input: TinyOrderLifecycleIntegrationInput,
 ) -> list[str]:
@@ -918,9 +1343,21 @@ def _validate_tiny_order_proof(
     if binding.subprocess_started is not False:
         fail_reasons.append("tiny_order_proof: subprocess_started must be false")
 
+    order_capability_requested = binding.order_capability is True
+    if order_capability_requested:
+        if integration_input.order_capability_proof_chain is None:
+            fail_reasons.append(
+                "order_capability=true requires order_capability_proof_chain binding"
+            )
+        else:
+            fail_reasons.extend(
+                _validate_order_capability_proof_chain_fail_closed(integration_input)
+            )
+    elif binding.order_capability is not False:
+        fail_reasons.append("tiny_order_proof: order_capability must be false")
+
     mutation_flags = (
         ("trading_capability", binding.trading_capability),
-        ("order_capability", binding.order_capability),
         ("cancel_capability", binding.cancel_capability),
         ("amend_capability", binding.amend_capability),
         ("flatten_capability", binding.flatten_capability),
@@ -1239,6 +1676,9 @@ def evaluate_tiny_order_lifecycle_integration(
     fail_reasons = _sorted_unique(fail_reasons)
     integration_pass = not fail_reasons
     tiny_order_lifecycle_eligibility_for_separate_operator_review = integration_pass
+    order_capability_requested = integration_input.tiny_order_proof.order_capability is True
+    order_capability_proof_chain_evaluated = order_capability_requested
+    order_capability_static_coherence_proven = order_capability_requested and integration_pass
 
     proof = integration_input.tiny_order_proof
     return {
@@ -1269,6 +1709,8 @@ def evaluate_tiny_order_lifecycle_integration(
         ),
         "tiny_order_proof_digest": proof.tiny_order_proof_digest,
         "tiny_order_owner": proof.tiny_order_owner,
+        "order_capability_proof_chain_evaluated": order_capability_proof_chain_evaluated,
+        "order_capability_static_coherence_proven": order_capability_static_coherence_proven,
         "tiny_order_lifecycle_eligibility_for_separate_operator_review": tiny_order_lifecycle_eligibility_for_separate_operator_review,
         "pe30_tiny_order_lifecycle_static_integration_proven": (
             tiny_order_lifecycle_eligibility_for_separate_operator_review
