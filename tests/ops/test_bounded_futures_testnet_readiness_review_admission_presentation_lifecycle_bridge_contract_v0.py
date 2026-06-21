@@ -52,6 +52,12 @@ from src.ops.bounded_futures_testnet_readiness_review_admission_presentation_lif
     serialize_bridge_input_canonical,
 )
 
+from tests.ops.test_bounded_futures_testnet_preflight_execution_readiness_review_lifecycle_integration_contract_v0 import (
+    _apply_pe38_coherent_fixture_patch,
+)
+
+_apply_pe38_coherent_fixture_patch()
+
 REPO_ROOT = Path(__file__).resolve().parents[2]
 BRIDGE_MODULE = (
     REPO_ROOT
