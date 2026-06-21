@@ -27,7 +27,6 @@ from src.ops.bounded_futures_testnet_operator_review_chain_durable_evidence_trac
 )
 from src.ops.bounded_futures_testnet_preflight_execution_readiness_review_lifecycle_integration_contract_v0 import (
     CONTRACT_VERSION as PE38_CONTRACT_VERSION,
-    default_minimal_integration_input as default_minimal_pe38_input,
     evaluate_preflight_execution_readiness_review_lifecycle_integration,
 )
 from src.ops.bounded_futures_testnet_readiness_review_admission_presentation_lifecycle_bridge_contract_v0 import (
@@ -51,6 +50,40 @@ from src.ops.bounded_futures_testnet_readiness_review_admission_presentation_lif
     evaluate_readiness_review_admission_presentation_lifecycle_bridge,
     serialize_bridge_input_canonical,
 )
+
+from tests.ops.test_bounded_futures_testnet_preflight_execution_readiness_review_lifecycle_integration_contract_v0 import (
+    _apply_pe38_coherent_fixture_patch,
+    _valid_integration_input,
+)
+
+_apply_pe38_coherent_fixture_patch()
+
+import src.ops.bounded_futures_testnet_readiness_review_admission_presentation_lifecycle_bridge_contract_v0 as _bridge_contract_mod
+
+_BRIDGE_VALIDATE_RESULT_CACHE: dict[str, list[str]] = {}
+
+
+def _apply_bridge_validate_cache_patch() -> None:
+    if getattr(_bridge_contract_mod, "_BRIDGE_VALIDATE_CACHE_PATCHED", False):
+        return
+
+    _original_validate = (
+        _bridge_contract_mod.validate_readiness_review_admission_presentation_lifecycle_bridge_input
+    )
+
+    def _cached_validate(bridge_input):
+        digest = _bridge_contract_mod.compute_bridge_input_digest(bridge_input)
+        if digest not in _BRIDGE_VALIDATE_RESULT_CACHE:
+            _BRIDGE_VALIDATE_RESULT_CACHE[digest] = _original_validate(bridge_input)
+        return list(_BRIDGE_VALIDATE_RESULT_CACHE[digest])
+
+    _bridge_contract_mod.validate_readiness_review_admission_presentation_lifecycle_bridge_input = (  # type: ignore[attr-defined]
+        _cached_validate
+    )
+    _bridge_contract_mod._BRIDGE_VALIDATE_CACHE_PATCHED = True  # type: ignore[attr-defined]
+
+
+_apply_bridge_validate_cache_patch()
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 BRIDGE_MODULE = (
@@ -82,6 +115,7 @@ ALT_COMMIT_SHA = "1234567890abcdef1234567890abcdef12345678"
 GENERIC_FUTURES_INSTRUMENT = "PF_ETHUSD"
 
 _CACHED_VALID_BRIDGE_INPUT = None
+_CACHED_VALID_ADMISSION_INPUT = None
 
 
 def _valid_bridge_input(source_revision: str = VALID_COMMIT_SHA):
@@ -97,6 +131,21 @@ def _valid_bridge_input(source_revision: str = VALID_COMMIT_SHA):
             instrument=GENERIC_FUTURES_INSTRUMENT,
         )
     return _CACHED_VALID_BRIDGE_INPUT
+
+
+def _valid_admission_input(source_revision: str = VALID_COMMIT_SHA):
+    global _CACHED_VALID_ADMISSION_INPUT
+    if source_revision != VALID_COMMIT_SHA:
+        return default_minimal_admission_input(
+            source_revision=source_revision,
+            instrument=GENERIC_FUTURES_INSTRUMENT,
+        )
+    if _CACHED_VALID_ADMISSION_INPUT is None:
+        _CACHED_VALID_ADMISSION_INPUT = default_minimal_admission_input(
+            source_revision=VALID_COMMIT_SHA,
+            instrument=GENERIC_FUTURES_INSTRUMENT,
+        )
+    return _CACHED_VALID_ADMISSION_INPUT
 
 
 def _assert_all_authorization_flags_false(result: dict[str, object]) -> None:
@@ -372,10 +421,7 @@ def test_empty_adapter_id_fails() -> None:
 
 def test_cross_lifecycle_pe34_handoff_mismatch_fails() -> None:
     bridge_input = _valid_bridge_input()
-    admission_only = default_minimal_admission_input(
-        source_revision=VALID_COMMIT_SHA,
-        instrument=GENERIC_FUTURES_INSTRUMENT,
-    )
+    admission_only = _valid_admission_input()
     broken = replace(bridge_input, admission_presentation_integration_input=admission_only)
     result = evaluate_readiness_review_admission_presentation_lifecycle_bridge(broken)
     assert result["bridge_pass"] is False
@@ -462,13 +508,13 @@ def test_wrong_bridge_contract_version_fails() -> None:
 
 
 def test_pe38_upstream_still_passes_independently() -> None:
-    pe38_input = default_minimal_pe38_input(instrument=GENERIC_FUTURES_INSTRUMENT)
+    pe38_input = _valid_integration_input()
     result = evaluate_preflight_execution_readiness_review_lifecycle_integration(pe38_input)
     assert result["integration_pass"] is True
 
 
 def test_admission_upstream_still_passes_independently() -> None:
-    admission_input = default_minimal_admission_input(instrument=GENERIC_FUTURES_INSTRUMENT)
+    admission_input = _valid_admission_input()
     result = evaluate_operator_review_admission_presentation_lifecycle_integration(admission_input)
     assert result["integration_pass"] is True
 
