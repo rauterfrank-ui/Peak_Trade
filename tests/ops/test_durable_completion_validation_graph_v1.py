@@ -22,6 +22,7 @@ from src.ops.durable_completion_validation.graph import (
     VALIDATOR_RECONCILIATION,
     VALIDATOR_RECOVERY,
     VALIDATOR_TRACEABILITY,
+    VALIDATOR_WALLCLOCK,
     execute_proof_binding_validation_graph,
     proof_binding_validation_graph_is_cycle_free,
 )
@@ -59,6 +60,14 @@ from src.ops.durable_completion_validation.validators.operator_closure import (
 from src.ops.durable_completion_validation.validators.completion_chain import (
     validate_completion_proof_chain_binding,
 )
+from src.ops.durable_completion_validation.validators.wallclock import (
+    validate_wallclock_proof_binding,
+)
+from src.ops.testnet_wallclock_duration_evidence_contract_v0 import (
+    REQUIRED_WALLCLOCK_FIELD_NAMES,
+    evaluate_wallclock_duration_evidence,
+)
+from src.ops.wallclock_session_evidence_v0 import evaluate_wallclock_evidence_fields
 
 
 def _minimal_context(**overrides: Any) -> ValidationContext:
@@ -79,6 +88,17 @@ def test_graph_explicit_order_matches_dependencies() -> None:
         for dependency in PROOF_BINDING_VALIDATION_GRAPH[validator_id]:
             assert dependency in seen, f"{validator_id} depends on {dependency} before it runs"
         seen.add(validator_id)
+
+
+def test_graph_has_single_wallclock_validator_node() -> None:
+    wallclock_nodes = [
+        node for node in PROOF_BINDING_VALIDATION_ORDER if node == VALIDATOR_WALLCLOCK
+    ]
+    assert wallclock_nodes == [VALIDATOR_WALLCLOCK]
+    assert VALIDATOR_WALLCLOCK in PROOF_BINDING_VALIDATION_GRAPH
+    assert PROOF_BINDING_VALIDATION_ORDER.index(VALIDATOR_WALLCLOCK) < (
+        PROOF_BINDING_VALIDATION_ORDER.index(VALIDATOR_COMPLETION_CHAIN)
+    )
 
 
 def test_graph_missing_validator_is_fail_closed() -> None:
@@ -108,6 +128,7 @@ def test_graph_missing_dependency_is_fail_closed() -> None:
         VALIDATOR_RECOVERY: failing_recovery,
         VALIDATOR_TRACEABILITY: lambda _ctx: ValidationResult(fail_reasons=("should not run",)),
         VALIDATOR_OPERATOR_CLOSURE: lambda _ctx: ValidationResult(fail_reasons=("should not run",)),
+        VALIDATOR_WALLCLOCK: lambda _ctx: ValidationResult(),
         VALIDATOR_COMPLETION_CHAIN: lambda _ctx: ValidationResult(fail_reasons=("should not run",)),
     }
     result = execute_proof_binding_validation_graph(context, validators=validators)
@@ -133,6 +154,7 @@ def test_graph_exception_is_fail_closed() -> None:
         VALIDATOR_RECOVERY: lambda _ctx: ValidationResult(),
         VALIDATOR_TRACEABILITY: lambda _ctx: ValidationResult(),
         VALIDATOR_OPERATOR_CLOSURE: lambda _ctx: ValidationResult(),
+        VALIDATOR_WALLCLOCK: lambda _ctx: ValidationResult(),
         VALIDATOR_COMPLETION_CHAIN: lambda _ctx: ValidationResult(),
     }
     result = execute_proof_binding_validation_graph(context, validators=validators)
@@ -149,6 +171,7 @@ def test_graph_aggregates_fail_reasons_from_executed_validators() -> None:
         VALIDATOR_RECOVERY: lambda _ctx: ValidationResult(fail_reasons=("beta",)),
         VALIDATOR_TRACEABILITY: lambda _ctx: ValidationResult(fail_reasons=("gamma",)),
         VALIDATOR_OPERATOR_CLOSURE: lambda _ctx: ValidationResult(fail_reasons=("delta",)),
+        VALIDATOR_WALLCLOCK: lambda _ctx: ValidationResult(),
         VALIDATOR_COMPLETION_CHAIN: lambda _ctx: ValidationResult(fail_reasons=("epsilon",)),
     }
     result = execute_proof_binding_validation_graph(context, validators=validators)
@@ -351,6 +374,104 @@ def test_graph_operator_closure_validator_missing_closure_id_fail_closed() -> No
     assert VALIDATOR_OPERATOR_CLOSURE not in context.completed_validators
 
 
+def test_graph_wallclock_validator_imports_canonical_owners_only() -> None:
+    repo_root = Path(__file__).resolve().parents[2]
+    wallclock_source = (
+        repo_root / "src" / "ops" / "durable_completion_validation" / "validators" / "wallclock.py"
+    ).read_text(encoding="utf-8")
+    assert "testnet_wallclock_duration_evidence_contract_v0" in wallclock_source
+    assert "wallclock_session_evidence_v0" in wallclock_source
+    assert evaluate_wallclock_evidence_fields.__module__ == "src.ops.wallclock_session_evidence_v0"
+    assert (
+        evaluate_wallclock_duration_evidence.__module__
+        == "src.ops.testnet_wallclock_duration_evidence_contract_v0"
+    )
+    assert "def evaluate_wallclock" not in wallclock_source
+    assert "hashlib" not in wallclock_source
+
+
+def test_wallclock_validator_happy_path_matches_integration_wallclock_checks() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    assert not validate_wallclock_proof_binding(
+        ValidationContext(integration_input=integration_input)
+    ).fail_reasons
+    input_fail_reasons = validate_durable_run_primary_evidence_completion_integration_input(
+        integration_input
+    )
+    assert not [reason for reason in input_fail_reasons if "wallclock" in reason]
+
+
+def _replace_wallclock_evidence_proof(integration_input, **overrides):
+    proof = replace(integration_input.wallclock_evidence_proof, **overrides)
+    return replace(integration_input, wallclock_evidence_proof=proof)
+
+
+def _replace_completion_proof_chain(integration_input, **overrides):
+    chain = replace(integration_input.completion_proof_chain, **overrides)
+    return replace(integration_input, completion_proof_chain=chain)
+
+
+def test_graph_wallclock_validator_composes_binding() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    assert not validate_wallclock_proof_binding(
+        ValidationContext(integration_input=integration_input)
+    ).fail_reasons
+
+
+def test_graph_wallclock_validator_missing_required_fields_fail_closed() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    incomplete_evidence = {
+        key: value
+        for key, value in integration_input.wallclock_evidence_proof.wallclock_evidence.items()
+        if key != REQUIRED_WALLCLOCK_FIELD_NAMES[0]
+    }
+    bad = _replace_wallclock_evidence_proof(
+        integration_input,
+        wallclock_evidence=incomplete_evidence,
+    )
+    result = validate_wallclock_proof_binding(ValidationContext(integration_input=bad))
+    assert any("missing required fields" in reason for reason in result.fail_reasons)
+
+
+def test_graph_wallclock_validator_semantic_drift_fail_closed() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    invalid_evidence = dict(integration_input.wallclock_evidence_proof.wallclock_evidence)
+    invalid_evidence["elapsed_wall_clock_seconds"] = 0
+    invalid_evidence["invalid_if_elapsed_below_min"] = True
+    bad = _replace_wallclock_evidence_proof(
+        integration_input,
+        wallclock_evidence=invalid_evidence,
+    )
+    result = validate_wallclock_proof_binding(ValidationContext(integration_input=bad))
+    assert any("wallclock_proof:" in reason for reason in result.fail_reasons)
+
+
+def test_graph_wallclock_validator_digest_coherence_drift_fail_closed() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = _replace_completion_proof_chain(
+        integration_input,
+        completion_referenced_wallclock_evidence_digest="0" * 64,
+    )
+    result = validate_wallclock_proof_binding(ValidationContext(integration_input=bad))
+    assert any(
+        "completion_referenced_wallclock_evidence_digest mismatch" in reason
+        for reason in result.fail_reasons
+    )
+
+
+def test_graph_wallclock_failure_blocks_completion_chain() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = _replace_wallclock_evidence_proof(
+        integration_input,
+        duration_proven=False,
+    )
+    context = ValidationContext(integration_input=bad)
+    result = execute_proof_binding_validation_graph(context)
+    assert any("wallclock_proof:" in reason for reason in result.fail_reasons)
+    assert VALIDATOR_WALLCLOCK not in context.completed_validators
+    assert VALIDATOR_COMPLETION_CHAIN not in context.completed_validators
+
+
 def test_completion_proof_chain_validator_matches_input_validation_path() -> None:
     integration_input = default_minimal_completion_integration_input()
     direct = validate_completion_proof_chain_binding(
@@ -363,11 +484,6 @@ def test_completion_proof_chain_validator_matches_input_validation_path() -> Non
         reason for reason in input_fail_reasons if reason.startswith("completion_proof_chain:")
     ]
     assert list(direct.fail_reasons) == chain_reasons
-
-
-def _replace_completion_proof_chain(integration_input, **overrides):
-    chain = replace(integration_input.completion_proof_chain, **overrides)
-    return replace(integration_input, completion_proof_chain=chain)
 
 
 def test_graph_completion_chain_validator_composes_binding() -> None:

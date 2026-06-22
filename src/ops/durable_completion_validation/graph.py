@@ -12,6 +12,7 @@ VALIDATOR_RECONCILIATION = "reconciliation"
 VALIDATOR_RECOVERY = "recovery"
 VALIDATOR_TRACEABILITY = "traceability"
 VALIDATOR_OPERATOR_CLOSURE = "operator_closure"
+VALIDATOR_WALLCLOCK = "wallclock"
 VALIDATOR_COMPLETION_CHAIN = "completion_chain"
 
 PROOF_BINDING_VALIDATION_GRAPH: dict[str, tuple[str, ...]] = {
@@ -19,10 +20,12 @@ PROOF_BINDING_VALIDATION_GRAPH: dict[str, tuple[str, ...]] = {
     VALIDATOR_RECOVERY: (),
     VALIDATOR_TRACEABILITY: (VALIDATOR_RECOVERY,),
     VALIDATOR_OPERATOR_CLOSURE: (VALIDATOR_TRACEABILITY, VALIDATOR_RECOVERY),
+    VALIDATOR_WALLCLOCK: (),
     VALIDATOR_COMPLETION_CHAIN: (
         VALIDATOR_OPERATOR_CLOSURE,
         VALIDATOR_TRACEABILITY,
         VALIDATOR_RECOVERY,
+        VALIDATOR_WALLCLOCK,
     ),
 }
 
@@ -31,6 +34,7 @@ PROOF_BINDING_VALIDATION_ORDER: tuple[str, ...] = (
     VALIDATOR_RECOVERY,
     VALIDATOR_TRACEABILITY,
     VALIDATOR_OPERATOR_CLOSURE,
+    VALIDATOR_WALLCLOCK,
     VALIDATOR_COMPLETION_CHAIN,
 )
 
@@ -64,6 +68,7 @@ def _load_validators() -> dict[str, ValidatorFn]:
         reconciliation,
         recovery,
         traceability,
+        wallclock,
     )
 
     return {
@@ -71,6 +76,7 @@ def _load_validators() -> dict[str, ValidatorFn]:
         VALIDATOR_RECOVERY: recovery.validate_recovery_proof_binding,
         VALIDATOR_TRACEABILITY: traceability.validate_traceability_proof_binding,
         VALIDATOR_OPERATOR_CLOSURE: operator_closure.validate_operator_closure_proof_binding,
+        VALIDATOR_WALLCLOCK: wallclock.validate_wallclock_proof_binding,
         VALIDATOR_COMPLETION_CHAIN: completion_chain.validate_completion_proof_chain_binding,
     }
 
