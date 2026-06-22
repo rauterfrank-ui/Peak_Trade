@@ -37,6 +37,7 @@ FOCUSED_CATEGORIES = frozenset(
         "reconciliation_primary_evidence_focused",
         "bounded_network_testnet_preflight_focused",
         "runtime_wallclock_evidence_emitter_focused",
+        "testnet_wallclock_duration_evidence_focused",
         "wallclock_focused",
         "ci_infra_focused",
     }
@@ -264,6 +265,28 @@ CANONICAL_RUNTIME_WALLCLOCK_EVIDENCE_EMITTER_FOCUSED_TESTS: tuple[str, ...] = (
 
 REQUIRED_RUNTIME_WALLCLOCK_EVIDENCE_EMITTER_TEST_OWNERS: tuple[str, ...] = (
     "tests/ops/test_runtime_wallclock_evidence_emitter_contract_v0.py",
+)
+
+TESTNET_WALLCLOCK_DURATION_EVIDENCE_OWNER = (
+    "src/ops/testnet_wallclock_duration_evidence_contract_v0.py"
+)
+TESTNET_WALLCLOCK_DURATION_EVIDENCE_TEST_OWNER = (
+    "tests/ops/test_testnet_wallclock_duration_evidence_contract_v0.py"
+)
+
+TESTNET_WALLCLOCK_DURATION_EVIDENCE_CI_POLICY_PATHS = frozenset(
+    {
+        "scripts/ops/ci_test_selection_v1.py",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    }
+)
+
+CANONICAL_TESTNET_WALLCLOCK_DURATION_EVIDENCE_FOCUSED_TESTS: tuple[str, ...] = (
+    "tests/ops/test_testnet_wallclock_duration_evidence_contract_v0.py",
+)
+
+REQUIRED_TESTNET_WALLCLOCK_DURATION_EVIDENCE_TEST_OWNERS: tuple[str, ...] = (
+    "tests/ops/test_testnet_wallclock_duration_evidence_contract_v0.py",
 )
 
 WALLCLOCK_OWNER = "src/ops/wallclock_session_evidence_v0.py"
@@ -755,6 +778,58 @@ def _try_runtime_wallclock_evidence_emitter_focused(files: list[str]) -> Selecti
     )
 
 
+def _is_testnet_wallclock_duration_evidence_scoped_path(path: str) -> bool:
+    return path in {
+        TESTNET_WALLCLOCK_DURATION_EVIDENCE_OWNER,
+        TESTNET_WALLCLOCK_DURATION_EVIDENCE_TEST_OWNER,
+    }
+
+
+def _is_testnet_wallclock_duration_evidence_rebundle_path(path: str) -> bool:
+    return (
+        _is_testnet_wallclock_duration_evidence_scoped_path(path)
+        or path in TESTNET_WALLCLOCK_DURATION_EVIDENCE_CI_POLICY_PATHS
+    )
+
+
+def _testnet_wallclock_duration_evidence_focused_targets() -> tuple[str, ...]:
+    for path in REQUIRED_TESTNET_WALLCLOCK_DURATION_EVIDENCE_TEST_OWNERS:
+        if not _repo_path_exists(path):
+            return ()
+    targets: list[str] = []
+    for path in CANONICAL_TESTNET_WALLCLOCK_DURATION_EVIDENCE_FOCUSED_TESTS:
+        if _repo_path_exists(path):
+            targets.append(path)
+    if len(targets) < len(REQUIRED_TESTNET_WALLCLOCK_DURATION_EVIDENCE_TEST_OWNERS):
+        return ()
+    return tuple(sorted(targets))
+
+
+def _try_testnet_wallclock_duration_evidence_focused(files: list[str]) -> SelectionResult | None:
+    if not files:
+        return None
+    if not any(_is_testnet_wallclock_duration_evidence_scoped_path(f) for f in files):
+        return None
+    if not all(_is_testnet_wallclock_duration_evidence_rebundle_path(f) for f in files):
+        return None
+    files_set = set(files)
+    if (
+        TESTNET_WALLCLOCK_DURATION_EVIDENCE_OWNER in files_set
+        and TESTNET_WALLCLOCK_DURATION_EVIDENCE_TEST_OWNER not in files_set
+    ):
+        return None
+    targets = _testnet_wallclock_duration_evidence_focused_targets()
+    if not targets:
+        return None
+    modules: tuple[str, ...] = ("src.ops.testnet_wallclock_duration_evidence_contract_v0",)
+    return SelectionResult(
+        "FOCUSED",
+        "testnet_wallclock_duration_evidence_focused",
+        targets,
+        modules,
+    )
+
+
 def _is_wallclock_scoped_path(path: str) -> bool:
     if path == WALLCLOCK_OWNER:
         return True
@@ -1096,6 +1171,10 @@ def categorize(path: str) -> str:
         return "runtime_wallclock_evidence_emitter_focused"
     if _is_runtime_wallclock_evidence_emitter_scoped_path(p):
         return "runtime_wallclock_evidence_emitter_focused"
+    if p in TESTNET_WALLCLOCK_DURATION_EVIDENCE_CI_POLICY_PATHS:
+        return "testnet_wallclock_duration_evidence_focused"
+    if _is_testnet_wallclock_duration_evidence_scoped_path(p):
+        return "testnet_wallclock_duration_evidence_focused"
     if p in MARKET_DASHBOARD_CI_POLICY_PATHS:
         return "market_dashboard_focused"
     if _is_market_dashboard_scoped_path(p):
@@ -1361,6 +1440,12 @@ def resolve_selection(
     if runtime_wallclock_evidence_emitter is not None:
         return runtime_wallclock_evidence_emitter
 
+    testnet_wallclock_duration_evidence = _try_testnet_wallclock_duration_evidence_focused(
+        normalized
+    )
+    if testnet_wallclock_duration_evidence is not None:
+        return testnet_wallclock_duration_evidence
+
     wallclock = _try_wallclock_focused(normalized)
     if wallclock is not None:
         return wallclock
@@ -1425,6 +1510,19 @@ def resolve_selection(
         return SelectionResult(
             "FULL",
             "runtime_wallclock_evidence_emitter_incomplete_or_missing_test_owner",
+            (),
+        )
+
+    if any(_is_testnet_wallclock_duration_evidence_scoped_path(f) for f in normalized):
+        if not all(_is_testnet_wallclock_duration_evidence_rebundle_path(f) for f in normalized):
+            return SelectionResult(
+                "FULL",
+                "testnet_wallclock_duration_evidence_foreign_path_requires_full",
+                (),
+            )
+        return SelectionResult(
+            "FULL",
+            "testnet_wallclock_duration_evidence_incomplete_or_missing_test_owner",
             (),
         )
 

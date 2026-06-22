@@ -1548,3 +1548,83 @@ def test_selector_runtime_wallclock_evidence_emitter_import_modules() -> None:
 def test_selector_bounded_network_preflight_rules_unchanged() -> None:
     sel = _run_selector(*PR4497_BOUNDED_NETWORK_PREFLIGHT_FILES)
     assert sel["test_selection_reason"] == "bounded_network_testnet_preflight_focused"
+
+
+TESTNET_WALLCLOCK_DURATION_EVIDENCE_FILES: tuple[str, ...] = (
+    "src/ops/testnet_wallclock_duration_evidence_contract_v0.py",
+    "tests/ops/test_testnet_wallclock_duration_evidence_contract_v0.py",
+)
+
+
+def test_selector_testnet_wallclock_duration_evidence_owner_pair_focused() -> None:
+    sel = _run_selector(*TESTNET_WALLCLOCK_DURATION_EVIDENCE_FILES)
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "testnet_wallclock_duration_evidence_focused"
+    assert sel["tests_execute_full"] == "false"
+    assert sel["tests_execute_focused"] == "true"
+    assert sel["tests_execute_no_op"] == "false"
+    targets = _targets(sel)
+    assert TESTNET_WALLCLOCK_DURATION_EVIDENCE_FILES[1] in targets
+    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" not in targets
+
+
+def test_selector_testnet_wallclock_duration_evidence_owner_without_test_owner_full() -> None:
+    sel = _run_selector(TESTNET_WALLCLOCK_DURATION_EVIDENCE_FILES[0])
+    assert sel["test_selection_mode"] == "FULL"
+    assert (
+        sel["test_selection_reason"]
+        == "testnet_wallclock_duration_evidence_incomplete_or_missing_test_owner"
+    )
+
+
+def test_selector_testnet_wallclock_duration_evidence_plus_foreign_src_full() -> None:
+    sel = _run_selector(
+        *TESTNET_WALLCLOCK_DURATION_EVIDENCE_FILES,
+        "src/execution/live/orchestrator.py",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+    assert (
+        sel["test_selection_reason"]
+        == "testnet_wallclock_duration_evidence_foreign_path_requires_full"
+    )
+
+
+def test_selector_testnet_wallclock_duration_evidence_plus_dependency_full() -> None:
+    sel = _run_selector(*TESTNET_WALLCLOCK_DURATION_EVIDENCE_FILES, "requirements.txt")
+    assert sel["test_selection_mode"] == "FULL"
+    assert (
+        sel["test_selection_reason"]
+        == "testnet_wallclock_duration_evidence_foreign_path_requires_full"
+    )
+
+
+def test_selector_testnet_wallclock_duration_evidence_four_file_bundle_focused() -> None:
+    sel = _run_selector(
+        *TESTNET_WALLCLOCK_DURATION_EVIDENCE_FILES,
+        "scripts/ops/ci_test_selection_v1.py",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    )
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "testnet_wallclock_duration_evidence_focused"
+    targets = _targets(sel)
+    assert TESTNET_WALLCLOCK_DURATION_EVIDENCE_FILES[1] in targets
+    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" not in targets
+
+
+def test_selector_testnet_wallclock_duration_evidence_ci_policy_only_not_owner_focused() -> None:
+    sel = _run_selector(
+        "scripts/ops/ci_test_selection_v1.py",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    )
+    assert sel["test_selection_reason"] != "testnet_wallclock_duration_evidence_focused"
+
+
+def test_selector_testnet_wallclock_duration_evidence_import_modules() -> None:
+    sel = _run_selector(*TESTNET_WALLCLOCK_DURATION_EVIDENCE_FILES)
+    modules = _modules(sel)
+    assert modules == ["src.ops.testnet_wallclock_duration_evidence_contract_v0"]
+
+
+def test_selector_runtime_wallclock_evidence_emitter_rules_unchanged() -> None:
+    sel = _run_selector(*RUNTIME_WALLCLOCK_EVIDENCE_EMITTER_FILES)
+    assert sel["test_selection_reason"] == "runtime_wallclock_evidence_emitter_focused"
