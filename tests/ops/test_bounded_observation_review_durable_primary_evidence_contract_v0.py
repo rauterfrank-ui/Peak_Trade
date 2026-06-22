@@ -19,6 +19,8 @@ from src.ops.wallclock_session_evidence_v0 import (
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
+CANONICAL_GIT_SHA_PREFIX = "0123456789ab"
+REPO_HEAD_SHA_PREFIX_MACHINE_LINE_KEY = "REPO_HEAD_SHA_PREFIX"
 PREFLIGHT = REPO_ROOT / "docs" / "ops" / "runbooks" / "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md"
 SHARED_HELPER = REPO_ROOT / "scripts" / "ops" / "primary_evidence_retention_v0.py"
 SHADOW_REVIEW = REPO_ROOT / "scripts" / "ops" / "review_shadow_bounded_observation_evidence_v0.py"
@@ -151,6 +153,7 @@ def _write_shadow_staging_bundle(staging: Path) -> None:
                 "NO_BROKER": True,
                 "NO_NETWORK": True,
                 "NO_ORDER_SUBMISSION": True,
+                "git_sha_prefix": CANONICAL_GIT_SHA_PREFIX,
             }
         )
         + "\n",
@@ -160,6 +163,15 @@ def _write_shadow_staging_bundle(staging: Path) -> None:
     logs.mkdir(parents=True, exist_ok=True)
     (logs / "wrapper_stdout.log").write_text("stdout\n", encoding="utf-8")
     (logs / "wrapper_stderr.log").write_text("stderr\n", encoding="utf-8")
+    (staging / "RUN_METADATA.json").write_text(
+        json.dumps({"repo_head_sha_prefix": CANONICAL_GIT_SHA_PREFIX}, indent=2, sort_keys=True)
+        + "\n",
+        encoding="utf-8",
+    )
+    (staging / "FINAL_MACHINE_LINES.txt").write_text(
+        f"{REPO_HEAD_SHA_PREFIX_MACHINE_LINE_KEY}={CANONICAL_GIT_SHA_PREFIX}\n",
+        encoding="utf-8",
+    )
 
 
 def _write_testnet_staging_bundle(staging: Path) -> None:
@@ -210,7 +222,15 @@ def _write_durable_bounded_bundle(
         _write_shadow_staging_bundle(durable)
     else:
         _write_testnet_staging_bundle(durable)
-    (durable / "RUN_METADATA.json").write_text('{"run_id": "test"}\n', encoding="utf-8")
+    (durable / "RUN_METADATA.json").write_text(
+        json.dumps(
+            {"run_id": "test", "repo_head_sha_prefix": CANONICAL_GIT_SHA_PREFIX},
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
     review_dir = durable / "review"
     review_dir.mkdir(parents=True, exist_ok=True)
     (review_dir / "REVIEW_RESULT.json").write_text(
