@@ -132,7 +132,9 @@ def _write_wrapper_bundle(
         encoding="utf-8",
     )
     (evidence / "steps.jsonl").write_text('{"step": 1}\n', encoding="utf-8")
-    manifest: dict[str, object] = _passing_wrapper_manifest_fields(duration_minutes=duration_minutes)
+    manifest: dict[str, object] = _passing_wrapper_manifest_fields(
+        duration_minutes=duration_minutes
+    )
     if git_sha_prefix is not None:
         manifest["git_sha_prefix"] = git_sha_prefix
     if manifest_overrides:
