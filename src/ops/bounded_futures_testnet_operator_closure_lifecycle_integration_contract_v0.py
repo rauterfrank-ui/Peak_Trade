@@ -15,7 +15,12 @@ import hashlib
 import json
 import re
 from dataclasses import asdict, dataclass
-from typing import Any
+from typing import TYPE_CHECKING, Any
+
+if TYPE_CHECKING:
+    from src.ops.bounded_futures_testnet_reconciliation_review_lifecycle_integration_contract_v0 import (
+        ReconciliationReviewLifecycleIntegrationInput,
+    )
 
 from src.ops.bounded_futures_testnet_adapter_lifecycle_contract_v0 import (
     LIFECYCLE_PHASE_DESCRIPTORS,
@@ -90,6 +95,9 @@ AUTHORITY_LIFT = False
 
 _SHA256_HEX_RE = re.compile(r"^[0-9a-f]{64}$")
 _COMMIT_SHA_RE = re.compile(r"^[0-9a-f]{40}$")
+
+PE31_CONTRACT_VERSION = "bounded_futures_testnet_reconciliation_review_lifecycle_integration.v0"
+PE31_INTEGRATION_OWNER = PE31_CONTRACT_VERSION
 
 _FORBIDDEN_INSTRUMENT_FRAGMENTS = ("BTC/EUR", "ETH/EUR", "BTCUSDT", "XBTUSD", "PF_XBT")
 
@@ -187,6 +195,31 @@ class Pe24PilotEnvelopeProofBinding:
     pilot_envelope_static_ready: bool
 
 
+def _lazy_pe31() -> tuple[Any, Any, Any, Any]:
+    from src.ops.bounded_futures_testnet_reconciliation_review_lifecycle_integration_contract_v0 import (
+        compute_integration_input_digest,
+        compute_integration_proof_digest,
+        default_minimal_integration_input,
+        evaluate_reconciliation_review_lifecycle_integration,
+    )
+
+    return (
+        compute_integration_input_digest,
+        compute_integration_proof_digest,
+        evaluate_reconciliation_review_lifecycle_integration,
+        default_minimal_integration_input,
+    )
+
+
+@dataclass(frozen=True)
+class Pe31ReconciliationReviewIntegrationProofBinding:
+    integration_owner: str
+    integration_input_digest: str
+    integration_proof_digest: str
+    pe31_integration_pass: bool
+    reconciliation_review_lifecycle_eligibility: bool
+
+
 @dataclass(frozen=True)
 class OperatorClosureSafetySnapshot:
     preflight_remains_blocked: bool
@@ -227,6 +260,12 @@ class OperatorClosureLifecycleIntegrationInput:
     declared_lifecycle_state_after: DeclaredLifecycleStateBinding
     lifecycle_matrix_proof: LifecycleMatrixProof
     safety_snapshot: OperatorClosureSafetySnapshot
+    pe31_reconciliation_review_integration_input: (
+        ReconciliationReviewLifecycleIntegrationInput | None
+    ) = None
+    pe31_reconciliation_review_integration_proof: (
+        Pe31ReconciliationReviewIntegrationProofBinding | None
+    ) = None
     futures_only: bool = True
     environment: str = ENVIRONMENT_TESTNET
     non_authorizing: bool = True
@@ -291,6 +330,16 @@ def _closure_input_dict(
             integration_input.pe23_capital_slot_ratchet_release_proof
         ),
         "pe24_pilot_envelope_proof": asdict(integration_input.pe24_pilot_envelope_proof),
+        "pe31_reconciliation_review_integration_input_digest": (
+            _lazy_pe31()[0](integration_input.pe31_reconciliation_review_integration_input)
+            if integration_input.pe31_reconciliation_review_integration_input is not None
+            else ""
+        ),
+        "pe31_reconciliation_review_integration_proof": (
+            asdict(integration_input.pe31_reconciliation_review_integration_proof)
+            if integration_input.pe31_reconciliation_review_integration_proof is not None
+            else {}
+        ),
         "lifecycle_state_before": asdict(integration_input.lifecycle_state_before),
         "declared_lifecycle_state_after": asdict(integration_input.declared_lifecycle_state_after),
         "lifecycle_matrix_proof": asdict(integration_input.lifecycle_matrix_proof),
@@ -601,6 +650,114 @@ def _validate_pe24_proof(binding: Pe24PilotEnvelopeProofBinding) -> list[str]:
     return fail_reasons
 
 
+def _validate_pe31_integration_proof(
+    integration_input: OperatorClosureLifecycleIntegrationInput,
+) -> list[str]:
+    fail_reasons: list[str] = []
+    pe31_input = integration_input.pe31_reconciliation_review_integration_input
+    proof = integration_input.pe31_reconciliation_review_integration_proof
+
+    if pe31_input is None:
+        fail_reasons.append("pe31_reconciliation_review_integration_input required")
+        return fail_reasons
+    if proof is None:
+        fail_reasons.append("pe31_reconciliation_review_integration_proof required")
+        return fail_reasons
+
+    (
+        compute_pe31_integration_input_digest,
+        compute_pe31_integration_proof_digest,
+        evaluate_reconciliation_review_lifecycle_integration,
+        _,
+    ) = _lazy_pe31()
+
+    if proof.integration_owner != PE31_INTEGRATION_OWNER:
+        fail_reasons.append(
+            f"pe31_reconciliation_review_integration_proof: integration_owner must be "
+            f"{PE31_INTEGRATION_OWNER!r}"
+        )
+    if not proof.integration_input_digest:
+        fail_reasons.append(
+            "pe31_reconciliation_review_integration_proof: integration_input_digest required"
+        )
+    elif not _valid_sha256_digest(proof.integration_input_digest):
+        fail_reasons.append(
+            "pe31_reconciliation_review_integration_proof: integration_input_digest must be "
+            "64-char lowercase sha256 hex"
+        )
+    elif proof.integration_input_digest != compute_pe31_integration_input_digest(pe31_input):
+        fail_reasons.append(
+            "pe31_reconciliation_review_integration_proof: integration_input_digest mismatch"
+        )
+
+    if not proof.integration_proof_digest:
+        fail_reasons.append(
+            "pe31_reconciliation_review_integration_proof: integration_proof_digest required"
+        )
+    elif not _valid_sha256_digest(proof.integration_proof_digest):
+        fail_reasons.append(
+            "pe31_reconciliation_review_integration_proof: integration_proof_digest must be "
+            "64-char lowercase sha256 hex"
+        )
+    else:
+        expected_proof_digest = compute_pe31_integration_proof_digest(
+            pe31_input,
+            reconciliation_review_lifecycle_eligibility_for_separate_operator_review=True,
+        )
+        if proof.integration_proof_digest != expected_proof_digest:
+            fail_reasons.append(
+                "pe31_reconciliation_review_integration_proof: integration_proof_digest mismatch"
+            )
+
+    if proof.pe31_integration_pass is not True:
+        fail_reasons.append(
+            "pe31_reconciliation_review_integration_proof: pe31_integration_pass must be true"
+        )
+    if proof.reconciliation_review_lifecycle_eligibility is not True:
+        fail_reasons.append(
+            "pe31_reconciliation_review_integration_proof: "
+            "reconciliation_review_lifecycle_eligibility must be true"
+        )
+
+    pe31_result = evaluate_reconciliation_review_lifecycle_integration(pe31_input)
+    if not pe31_result["integration_pass"]:
+        fail_reasons.append("pe31_reconciliation_review_integration_input: PE-31 evaluation failed")
+        fail_reasons.extend(
+            f"pe31_reconciliation_review_integration_input: {reason}"
+            for reason in pe31_result["fail_reasons"]
+        )
+    elif not pe31_result[
+        "reconciliation_review_lifecycle_eligibility_for_separate_operator_review"
+    ]:
+        fail_reasons.append(
+            "pe31_reconciliation_review_integration_input: "
+            "reconciliation_review_lifecycle_eligibility required"
+        )
+    elif not pe31_result["durable_primary_evidence_binding_proven"]:
+        fail_reasons.append(
+            "pe31_reconciliation_review_integration_input: "
+            "durable_primary_evidence_binding_proven required"
+        )
+
+    if pe31_input.source_revision != integration_input.source_revision:
+        fail_reasons.append(
+            "pe31_reconciliation_review_integration_input: source_revision mismatch"
+        )
+    if pe31_input.adapter_id != integration_input.adapter_id:
+        fail_reasons.append("pe31_reconciliation_review_integration_input: adapter_id mismatch")
+    if pe31_input.instrument != integration_input.instrument:
+        fail_reasons.append("pe31_reconciliation_review_integration_input: instrument mismatch")
+
+    pe31_matrix = pe31_input.lifecycle_matrix_proof
+    if pe31_matrix.assigned_lifecycle_phase != PHASE_RECONCILIATION_REVIEW:
+        fail_reasons.append(
+            "pe31_reconciliation_review_integration_input: assigned_lifecycle_phase must be "
+            f"{PHASE_RECONCILIATION_REVIEW!r}"
+        )
+
+    return fail_reasons
+
+
 def validate_operator_closure_lifecycle_integration_input(
     integration_input: OperatorClosureLifecycleIntegrationInput,
 ) -> list[str]:
@@ -642,6 +799,7 @@ def validate_operator_closure_lifecycle_integration_input(
         _validate_pe23_proof(integration_input.pe23_capital_slot_ratchet_release_proof)
     )
     fail_reasons.extend(_validate_pe24_proof(integration_input.pe24_pilot_envelope_proof))
+    fail_reasons.extend(_validate_pe31_integration_proof(integration_input))
 
     matrix = integration_input.lifecycle_matrix_proof
     if matrix.pe12_contract_version != PE12_CONTRACT_VERSION:
@@ -763,6 +921,7 @@ def evaluate_operator_closure_lifecycle_integration(
     expected_pe22_integration_proof_digest: str | None = None,
     expected_pe23_integration_proof_digest: str | None = None,
     expected_pe24_integration_proof_digest: str | None = None,
+    expected_pe31_integration_proof_digest: str | None = None,
     expected_closure_id: str | None = None,
     operator_closure_static_complete_without_proof_chain: bool = False,
     operator_closure_authorized: bool = False,
@@ -833,6 +992,19 @@ def evaluate_operator_closure_lifecycle_integration(
             != expected_pe24_integration_proof_digest
         ):
             fail_reasons.append("pe24_pilot_envelope_proof: integration_proof_digest mismatch")
+
+    if expected_pe31_integration_proof_digest is not None:
+        if integration_input.pe31_reconciliation_review_integration_proof is None:
+            fail_reasons.append(
+                "pe31_reconciliation_review_integration_proof: integration_proof_digest mismatch"
+            )
+        elif (
+            integration_input.pe31_reconciliation_review_integration_proof.integration_proof_digest
+            != expected_pe31_integration_proof_digest
+        ):
+            fail_reasons.append(
+                "pe31_reconciliation_review_integration_proof: integration_proof_digest mismatch"
+            )
 
     if expected_closure_id is not None:
         if integration_input.closure_id != expected_closure_id:
@@ -971,6 +1143,24 @@ def default_minimal_safety_snapshot() -> OperatorClosureSafetySnapshot:
     )
 
 
+def default_minimal_pe31_integration_proof(
+    pe31_input: ReconciliationReviewLifecycleIntegrationInput,
+) -> Pe31ReconciliationReviewIntegrationProofBinding:
+    compute_pe31_integration_input_digest, compute_pe31_integration_proof_digest, _, _ = (
+        _lazy_pe31()
+    )
+    return Pe31ReconciliationReviewIntegrationProofBinding(
+        integration_owner=PE31_INTEGRATION_OWNER,
+        integration_input_digest=compute_pe31_integration_input_digest(pe31_input),
+        integration_proof_digest=compute_pe31_integration_proof_digest(
+            pe31_input,
+            reconciliation_review_lifecycle_eligibility_for_separate_operator_review=True,
+        ),
+        pe31_integration_pass=True,
+        reconciliation_review_lifecycle_eligibility=True,
+    )
+
+
 def default_minimal_integration_input(
     *,
     source_revision: str = "abcdef0123456789abcdef0123456789abcdef01",
@@ -980,8 +1170,33 @@ def default_minimal_integration_input(
     lifecycle_state_digest: str | None = None,
 ) -> OperatorClosureLifecycleIntegrationInput:
     """Minimal valid futures-generic integration input for offline tests."""
-    state_digest = lifecycle_state_digest or "e" * 64
     matrix_digest = compute_lifecycle_matrix_digest()
+    pe31_input: ReconciliationReviewLifecycleIntegrationInput | None = None
+    pe31_proof: Pe31ReconciliationReviewIntegrationProofBinding | None = None
+    if _valid_commit_sha(source_revision):
+        pe31_input = _lazy_pe31()[3](
+            source_revision=source_revision,
+            adapter_id=adapter_id,
+            instrument=instrument,
+            lifecycle_state_digest=lifecycle_state_digest,
+        )
+        pe31_proof = default_minimal_pe31_integration_proof(pe31_input)
+
+    state_digest = (
+        pe31_input.lifecycle_matrix_proof.lifecycle_state_digest
+        if pe31_input is not None
+        else (lifecycle_state_digest or "e" * 64)
+    )
+    lifecycle_before = (
+        pe31_input.lifecycle_state_before
+        if pe31_input is not None
+        else LifecycleStateBinding(
+            state_id="lifecycle-before-001",
+            state_digest="c" * 64,
+            assigned_lifecycle_phase=PHASE_RECONCILIATION_REVIEW,
+            adapter_id=adapter_id,
+        )
+    )
 
     pe19_review_proof = Pe19ReviewProofBinding(
         review_input_digest="1" * 64,
@@ -1044,8 +1259,8 @@ def default_minimal_integration_input(
         pe23_capital_slot_ratchet_release_proof=pe23_proof,
         pe24_pilot_envelope_proof=pe24_proof,
         lifecycle_state_before=LifecycleStateBinding(
-            state_id="lifecycle-before-001",
-            state_digest="c" * 64,
+            state_id=lifecycle_before.state_id,
+            state_digest=lifecycle_before.state_digest,
             assigned_lifecycle_phase=PHASE_RECONCILIATION_REVIEW,
             adapter_id=adapter_id,
         ),
@@ -1062,4 +1277,6 @@ def default_minimal_integration_input(
             lifecycle_state_digest=state_digest,
         ),
         safety_snapshot=default_minimal_safety_snapshot(),
+        pe31_reconciliation_review_integration_input=pe31_input,
+        pe31_reconciliation_review_integration_proof=pe31_proof,
     )

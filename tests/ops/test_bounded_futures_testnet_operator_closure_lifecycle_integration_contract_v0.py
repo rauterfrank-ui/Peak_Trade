@@ -44,9 +44,14 @@ from src.ops.bounded_futures_testnet_operator_closure_lifecycle_integration_cont
     compute_closure_result_digest,
     compute_lifecycle_matrix_digest,
     default_minimal_integration_input,
+    default_minimal_pe31_integration_proof,
     default_minimal_safety_snapshot,
     evaluate_operator_closure_lifecycle_integration,
     serialize_closure_input_canonical,
+)
+from src.ops.bounded_futures_testnet_reconciliation_review_lifecycle_integration_contract_v0 import (
+    compute_reconciliation_review_proof_digest,
+    default_minimal_integration_input as default_minimal_pe31_integration_input,
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -89,6 +94,12 @@ PE24_MODULE = (
     / "ops"
     / "bounded_futures_testnet_pilot_envelope_lifecycle_integration_contract_v0.py"
 )
+PE31_MODULE = (
+    REPO_ROOT
+    / "src"
+    / "ops"
+    / "bounded_futures_testnet_reconciliation_review_lifecycle_integration_contract_v0.py"
+)
 
 TEST_PACKAGE_MARKER = "BOUNDED_FUTURES_TESTNET_OPERATOR_CLOSURE_LIFECYCLE_INTEGRATION_GUARD_V0=true"
 _CLASS4_SCOPED_EXCEPTION_MARKER = "BOUNDED_FUTURES_TESTNET_OPERATOR_CLOSURE_LIFECYCLE_INTEGRATION_GUARD_CLASS4_SCOPED_EXCEPTION_V0=true"
@@ -105,7 +116,7 @@ def test_package_marker_present() -> None:
     )
 
 
-def test_pe12_pe19_pe20_pe22_pe23_pe24_owners_referenced_not_duplicated() -> None:
+def test_pe12_pe19_pe20_pe22_pe23_pe24_pe31_owners_referenced_not_duplicated() -> None:
     lifecycle_text = LIFECYCLE_MODULE.read_text(encoding="utf-8")
     assert PE12_PACKAGE_MARKER in lifecycle_text
     integration_text = INTEGRATION_MODULE.read_text(encoding="utf-8")
@@ -127,12 +138,18 @@ def test_pe12_pe19_pe20_pe22_pe23_pe24_owners_referenced_not_duplicated() -> Non
     assert "bounded_futures_testnet_pilot_envelope_lifecycle_integration_contract_v0" in (
         integration_text
     )
+    assert (
+        "bounded_futures_testnet_reconciliation_review_lifecycle_integration_contract_v0"
+        in integration_text
+    )
+    assert "evaluate_reconciliation_review_lifecycle_integration" in integration_text
     assert "evaluate_phase_transition" not in integration_text
     assert PE19_MODULE.exists()
     assert PE20_MODULE.exists()
     assert PE22_MODULE.exists()
     assert PE23_MODULE.exists()
     assert PE24_MODULE.exists()
+    assert PE31_MODULE.exists()
 
 
 def test_global_safety_flags_remain_blocked() -> None:
@@ -170,6 +187,17 @@ def test_deterministic_identical_inputs_same_payload_and_digest() -> None:
     assert left_result["closure_result_digest"] == right_result["closure_result_digest"]
 
 
+def test_valid_pe31_pe21_pe25_chain_passes() -> None:
+    integration_input = default_minimal_integration_input(source_revision=VALID_COMMIT_SHA)
+    pe31_input = integration_input.pe31_reconciliation_review_integration_input
+    assert pe31_input is not None
+    assert pe31_input.pe21_reconciliation_primary_evidence_integration_proof.reconciled is True
+    result = evaluate_operator_closure_lifecycle_integration(integration_input)
+    assert result["integration_pass"] is True
+    assert result["operator_closure_static_complete"] is True
+    assert result["fail_reasons"] == []
+
+
 def test_valid_pe12_pe19_pe20_pe22_pe23_pe24_composition_passes() -> None:
     integration_input = default_minimal_integration_input(source_revision=VALID_COMMIT_SHA)
     result = evaluate_operator_closure_lifecycle_integration(integration_input)
@@ -181,6 +209,219 @@ def test_valid_pe12_pe19_pe20_pe22_pe23_pe24_composition_passes() -> None:
         operator_closure_static_complete=True,
     )
     assert result["fail_reasons"] == []
+
+
+def test_missing_pe31_binding_fails() -> None:
+    integration_input = default_minimal_integration_input()
+    bad = replace(
+        integration_input,
+        pe31_reconciliation_review_integration_input=None,
+        pe31_reconciliation_review_integration_proof=None,
+    )
+    result = evaluate_operator_closure_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "pe31_reconciliation_review_integration_input required" in r for r in result["fail_reasons"]
+    )
+
+
+def test_missing_pe31_proof_binding_fails() -> None:
+    integration_input = default_minimal_integration_input()
+    bad = replace(integration_input, pe31_reconciliation_review_integration_proof=None)
+    result = evaluate_operator_closure_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "pe31_reconciliation_review_integration_proof required" in r for r in result["fail_reasons"]
+    )
+
+
+def test_pe31_unresolved_reconciliation_review_fails() -> None:
+    integration_input = default_minimal_integration_input()
+    pe31_input = integration_input.pe31_reconciliation_review_integration_input
+    assert pe31_input is not None
+    bad_review = replace(
+        pe31_input.reconciliation_review_proof,
+        static_review_consistency_proven=False,
+        reconciliation_review_proof_digest=compute_reconciliation_review_proof_digest(
+            replace(pe31_input.reconciliation_review_proof, static_review_consistency_proven=False)
+        ),
+    )
+    bad_pe31 = replace(pe31_input, reconciliation_review_proof=bad_review)
+    bad = replace(
+        integration_input,
+        pe31_reconciliation_review_integration_input=bad_pe31,
+        pe31_reconciliation_review_integration_proof=default_minimal_pe31_integration_proof(
+            bad_pe31
+        ),
+    )
+    result = evaluate_operator_closure_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("PE-31 evaluation failed" in r for r in result["fail_reasons"])
+
+
+def test_embedded_pe21_reconciliation_invalid_fails() -> None:
+    integration_input = default_minimal_integration_input()
+    pe31_input = integration_input.pe31_reconciliation_review_integration_input
+    assert pe31_input is not None
+    bad_pe21_proof = replace(
+        pe31_input.pe21_reconciliation_primary_evidence_integration_proof,
+        reconciled=False,
+        pe21_integration_pass=False,
+    )
+    bad_pe31 = replace(
+        pe31_input,
+        pe21_reconciliation_primary_evidence_integration_proof=bad_pe21_proof,
+    )
+    bad = replace(
+        integration_input,
+        pe31_reconciliation_review_integration_input=bad_pe31,
+        pe31_reconciliation_review_integration_proof=default_minimal_pe31_integration_proof(
+            bad_pe31
+        ),
+    )
+    result = evaluate_operator_closure_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("PE-31 evaluation failed" in r for r in result["fail_reasons"])
+
+
+def test_stale_pe31_proof_digest_fails() -> None:
+    integration_input = default_minimal_integration_input()
+    pe31_input = integration_input.pe31_reconciliation_review_integration_input
+    assert pe31_input is not None
+    bad_proof = replace(
+        integration_input.pe31_reconciliation_review_integration_proof,
+        integration_proof_digest="f" * 64,
+    )
+    bad = replace(integration_input, pe31_reconciliation_review_integration_proof=bad_proof)
+    result = evaluate_operator_closure_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "pe31_reconciliation_review_integration_proof: integration_proof_digest mismatch" in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_stale_pe21_proof_inside_pe31_fails() -> None:
+    integration_input = default_minimal_integration_input()
+    pe31_input = integration_input.pe31_reconciliation_review_integration_input
+    assert pe31_input is not None
+    bad_pe21_proof = replace(
+        pe31_input.pe21_reconciliation_primary_evidence_integration_proof,
+        integration_proof_digest="f" * 64,
+    )
+    bad_pe31 = replace(
+        pe31_input,
+        pe21_reconciliation_primary_evidence_integration_proof=bad_pe21_proof,
+    )
+    bad = replace(
+        integration_input,
+        pe31_reconciliation_review_integration_input=bad_pe31,
+        pe31_reconciliation_review_integration_proof=default_minimal_pe31_integration_proof(
+            bad_pe31
+        ),
+    )
+    result = evaluate_operator_closure_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("PE-31 evaluation failed" in r for r in result["fail_reasons"])
+
+
+def test_revoked_pe31_review_proof_fails() -> None:
+    integration_input = default_minimal_integration_input()
+    pe31_input = integration_input.pe31_reconciliation_review_integration_input
+    assert pe31_input is not None
+    bad_review = replace(
+        pe31_input.reconciliation_review_proof,
+        review_only=False,
+        reconciliation_review_proof_digest=compute_reconciliation_review_proof_digest(
+            replace(pe31_input.reconciliation_review_proof, review_only=False)
+        ),
+    )
+    bad_pe31 = replace(pe31_input, reconciliation_review_proof=bad_review)
+    bad = replace(
+        integration_input,
+        pe31_reconciliation_review_integration_input=bad_pe31,
+        pe31_reconciliation_review_integration_proof=default_minimal_pe31_integration_proof(
+            bad_pe31
+        ),
+    )
+    result = evaluate_operator_closure_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("PE-31 evaluation failed" in r for r in result["fail_reasons"])
+
+
+def test_superseded_pe31_review_proof_fails() -> None:
+    integration_input = default_minimal_integration_input()
+    pe31_input = integration_input.pe31_reconciliation_review_integration_input
+    assert pe31_input is not None
+    bad_review = replace(
+        pe31_input.reconciliation_review_proof,
+        evidence_mutated=True,
+        reconciliation_review_proof_digest=compute_reconciliation_review_proof_digest(
+            replace(pe31_input.reconciliation_review_proof, evidence_mutated=True)
+        ),
+    )
+    bad_pe31 = replace(pe31_input, reconciliation_review_proof=bad_review)
+    bad = replace(
+        integration_input,
+        pe31_reconciliation_review_integration_input=bad_pe31,
+        pe31_reconciliation_review_integration_proof=default_minimal_pe31_integration_proof(
+            bad_pe31
+        ),
+    )
+    result = evaluate_operator_closure_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("PE-31 evaluation failed" in r for r in result["fail_reasons"])
+
+
+def test_pe31_identity_digest_owner_drift_fails() -> None:
+    integration_input = default_minimal_integration_input()
+    pe31_input = integration_input.pe31_reconciliation_review_integration_input
+    assert pe31_input is not None
+    bad_pe31 = replace(pe31_input, adapter_id="drifted_adapter")
+    bad = replace(
+        integration_input,
+        pe31_reconciliation_review_integration_input=bad_pe31,
+        pe31_reconciliation_review_integration_proof=default_minimal_pe31_integration_proof(
+            bad_pe31
+        ),
+    )
+    result = evaluate_operator_closure_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("adapter_id mismatch" in r for r in result["fail_reasons"])
+
+
+def test_expected_pe31_integration_proof_digest_mismatch_fails() -> None:
+    integration_input = default_minimal_integration_input(source_revision=VALID_COMMIT_SHA)
+    result = evaluate_operator_closure_lifecycle_integration(
+        integration_input,
+        expected_pe31_integration_proof_digest="0" * 64,
+    )
+    assert result["integration_pass"] is False
+    assert any(
+        "pe31_reconciliation_review_integration_proof: integration_proof_digest mismatch" in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_pe31_alone_does_not_authorize_operator_closure() -> None:
+    pe31_input = default_minimal_pe31_integration_input()
+    bad = default_minimal_integration_input()
+    bad = replace(
+        bad,
+        pe31_reconciliation_review_integration_input=pe31_input,
+        pe31_reconciliation_review_integration_proof=default_minimal_pe31_integration_proof(
+            pe31_input
+        ),
+        pe19_review_proof=replace(
+            bad.pe19_review_proof,
+            review_input_digest="",
+            decision_record_digest="",
+            review_proof_digest="",
+        ),
+    )
+    result = evaluate_operator_closure_lifecycle_integration(bad)
+    assert result["integration_pass"] is False
+    assert result["operator_closure_authorized"] is False
 
 
 def test_missing_pe12_readiness_decision_proof_fails() -> None:
