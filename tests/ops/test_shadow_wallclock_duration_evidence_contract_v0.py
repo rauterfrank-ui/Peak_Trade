@@ -14,6 +14,9 @@ from typing import Any
 
 import pytest
 
+from src.ops.testnet_wallclock_duration_evidence_contract_v0 import (
+    REQUIRED_WALLCLOCK_FIELD_NAMES,
+)
 from src.ops.wallclock_session_evidence_v0 import (
     DEFAULT_WALL_CLOCK_SLACK_SECONDS,
     INVALID_IF_ELAPSED_BELOW_MIN,
@@ -22,9 +25,6 @@ from src.ops.wallclock_session_evidence_v0 import (
     build_wallclock_evidence_from_manifest_fields,
     evaluate_wallclock_evidence_fields,
     write_wallclock_evidence,
-)
-from tests.ops.test_testnet_wallclock_duration_evidence_contract_v0 import (
-    REQUIRED_WALLCLOCK_FIELD_NAMES,
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -56,12 +56,6 @@ def _format_utc_iso(dt: datetime) -> str:
     return dt.strftime("%Y-%m-%dT%H:%M:%S") + "Z"
 
 
-def build_shadow_wallclock_evidence_from_manifest_fields(
-    **kwargs: Any,
-) -> dict[str, Any]:
-    return build_wallclock_evidence_from_manifest_fields(**kwargs)
-
-
 def _synthetic_shadow_pass_evidence(
     duration_minutes: int,
     *,
@@ -70,7 +64,7 @@ def _synthetic_shadow_pass_evidence(
 ) -> dict[str, Any]:
     planned_seconds = duration_minutes * 60
     end_dt = _parse_utc_iso(start_iso) + timedelta(seconds=planned_seconds + 1)
-    return build_shadow_wallclock_evidence_from_manifest_fields(
+    return build_wallclock_evidence_from_manifest_fields(
         utc_started=start_iso,
         utc_completed=_format_utc_iso(end_dt),
         duration_minutes=duration_minutes,
@@ -96,13 +90,23 @@ def test_canonical_evaluator_imported_not_duplicated() -> None:
         if isinstance(node, ast.FunctionDef) and node.name.startswith("evaluate_wallclock")
     ]
     assert local_evaluators == []
+    test_module_imports = [
+        node.module
+        for node in ast.walk(tree)
+        if isinstance(node, ast.ImportFrom) and node.module and node.module.startswith("tests.")
+    ]
+    assert test_module_imports == []
     text = Path(__file__).read_text(encoding="utf-8")
     assert "from src.ops.wallclock_session_evidence_v0 import" in text
+    assert "from src.ops.testnet_wallclock_duration_evidence_contract_v0 import" in text
     assert "evaluate_wallclock_evidence_fields" in text
+    import src.ops.testnet_wallclock_duration_evidence_contract_v0 as canonical_field_owner
+
+    assert REQUIRED_WALLCLOCK_FIELD_NAMES == canonical_field_owner.REQUIRED_WALLCLOCK_FIELD_NAMES
 
 
 def test_testnet_precedent_field_names_reused() -> None:
-    sample = build_shadow_wallclock_evidence_from_manifest_fields(
+    sample = build_wallclock_evidence_from_manifest_fields(
         utc_started="2026-06-22T10:00:00Z",
         utc_completed="2026-06-22T10:10:01Z",
         duration_minutes=STANDARD_DURATION_MINUTES,
@@ -174,7 +178,7 @@ def test_extended_tier_sixty_minute_pass() -> None:
 
 def test_fast_sim_false_claim_multi_minute_tier_fails_closed() -> None:
     """Seconds-long actual run must not pass a multi-minute declared tier."""
-    evidence = build_shadow_wallclock_evidence_from_manifest_fields(
+    evidence = build_wallclock_evidence_from_manifest_fields(
         utc_started="2026-06-22T10:00:00Z",
         utc_completed="2026-06-22T10:00:05Z",
         duration_minutes=EXTENDED_DURATION_MINUTES_30,
@@ -214,7 +218,7 @@ def test_non_finite_elapsed_wall_clock_inf_fails_closed() -> None:
 
 
 def test_end_before_start_fails_closed() -> None:
-    evidence = build_shadow_wallclock_evidence_from_manifest_fields(
+    evidence = build_wallclock_evidence_from_manifest_fields(
         utc_started="2026-06-22T10:10:00Z",
         utc_completed="2026-06-22T10:00:00Z",
         duration_minutes=STANDARD_DURATION_MINUTES,
@@ -234,7 +238,7 @@ def test_null_declared_duration_fails_closed() -> None:
 
 
 def test_negative_declared_duration_maps_to_canonical_bounds() -> None:
-    evidence = build_shadow_wallclock_evidence_from_manifest_fields(
+    evidence = build_wallclock_evidence_from_manifest_fields(
         utc_started="2026-06-22T10:00:00Z",
         utc_completed="2026-06-22T10:00:01Z",
         duration_minutes=-5,
@@ -269,7 +273,7 @@ def test_tolerance_boundaries_at_min_required_wall_clock(
     min_required = bounds["min_required_wall_clock_seconds"]
     start_iso = "2026-06-22T10:00:00Z"
     end_dt = _parse_utc_iso(start_iso) + timedelta(seconds=min_required + elapsed_offset_seconds)
-    evidence = build_shadow_wallclock_evidence_from_manifest_fields(
+    evidence = build_wallclock_evidence_from_manifest_fields(
         utc_started=start_iso,
         utc_completed=_format_utc_iso(end_dt),
         duration_minutes=duration_minutes,
@@ -332,8 +336,8 @@ def test_identical_inputs_produce_identical_evidence() -> None:
         "start_monotonic_seconds": 2000.0,
         "end_monotonic_seconds": 2601.0,
     }
-    first = build_shadow_wallclock_evidence_from_manifest_fields(**kwargs)
-    second = build_shadow_wallclock_evidence_from_manifest_fields(**kwargs)
+    first = build_wallclock_evidence_from_manifest_fields(**kwargs)
+    second = build_wallclock_evidence_from_manifest_fields(**kwargs)
     assert json.dumps(first, sort_keys=True) == json.dumps(second, sort_keys=True)
 
 

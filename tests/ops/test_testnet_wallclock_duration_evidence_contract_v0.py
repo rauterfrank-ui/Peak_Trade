@@ -13,6 +13,7 @@ from pathlib import Path
 import pytest
 
 from src.ops.testnet_wallclock_duration_evidence_contract_v0 import (
+    REQUIRED_WALLCLOCK_FIELD_NAMES,
     evaluate_wallclock_duration_evidence,
 )
 from src.ops.wallclock_session_evidence_v0 import evaluate_wallclock_evidence_fields
@@ -40,24 +41,6 @@ PACKAGE_MARKER = "TESTNET_WALLCLOCK_DURATION_EVIDENCE_CONTRACT_V0=true"
 _CLASS4_SCOPED_EXCEPTION_MARKER = "TESTNET_WALLCLOCK_DURATION_GUARD_CLASS4_SCOPED_EXCEPTION_V0=true"
 CHARTER_BUNDLE_SUFFIX = (
     "testnet_wallclock_duration_guard_external_charter_no_run_v0_20260603T182859Z"
-)
-
-# Charter-required fields (closeout FINAL_MACHINE_LINES + durable JSON).
-REQUIRED_WALLCLOCK_FIELD_NAMES: tuple[str, ...] = (
-    "planned_duration_seconds",
-    "min_required_wall_clock_seconds",
-    "start_wall_clock_iso",
-    "end_wall_clock_iso",
-    "start_monotonic_seconds",
-    "end_monotonic_seconds",
-    "elapsed_wall_clock_seconds",
-    "elapsed_monotonic_seconds",
-    "wall_clock_slack_seconds",
-    "duration_proven",
-    "duration_evidence_valid",
-    "early_exit_detected",
-    "early_exit_reason",
-    "invalid_if_elapsed_below_min",
 )
 
 # External archive harness → charter field mapping (reference only; no archive read at test time).
@@ -120,11 +103,29 @@ def test_canonical_owner_imported_not_duplicated() -> None:
         if isinstance(node, ast.FunctionDef) and node.name.startswith("evaluate_wallclock")
     ]
     assert local_evaluators == []
+    local_field_name_constants = [
+        node.targets[0].id
+        for node in ast.walk(tree)
+        if isinstance(node, ast.Assign)
+        and len(node.targets) == 1
+        and isinstance(node.targets[0], ast.Name)
+        and node.targets[0].id == "REQUIRED_WALLCLOCK_FIELD_NAMES"
+    ]
+    assert local_field_name_constants == []
+    test_module_imports = [
+        node.module
+        for node in ast.walk(tree)
+        if isinstance(node, ast.ImportFrom) and node.module and node.module.startswith("tests.")
+    ]
+    assert test_module_imports == []
     text = Path(__file__).read_text(encoding="utf-8")
     assert "from src.ops.testnet_wallclock_duration_evidence_contract_v0 import" in text
     assert evaluate_wallclock_duration_evidence.__module__ == (
         "src.ops.testnet_wallclock_duration_evidence_contract_v0"
     )
+    import src.ops.testnet_wallclock_duration_evidence_contract_v0 as canonical_owner
+
+    assert REQUIRED_WALLCLOCK_FIELD_NAMES == canonical_owner.REQUIRED_WALLCLOCK_FIELD_NAMES
 
 
 def test_wallclock_binding_uses_canonical_evaluator() -> None:
