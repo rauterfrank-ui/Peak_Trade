@@ -14,8 +14,10 @@ import pytest
 
 from scripts.ops.primary_evidence_retention_v0 import (
     BOUNDED_DURABLE_RUN_REQUIRED_REL_PATHS,
+    BOUNDED_TESTNET_DURABLE_RUN_REQUIRED_REL_PATHS,
     MANIFEST_FILENAME,
 )
+from src.ops.wallclock_session_evidence_v0 import WALLCLOCK_EVIDENCE_FILENAME
 from src.ops.bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0 import (
     CAPITAL_REALLOCATION_EXECUTED,
     CAPITAL_SLOT_RATCHET_EXECUTED,
@@ -2024,10 +2026,73 @@ def test_no_input_mutation_from_evaluation() -> None:
     )
 
 
-def test_bounded_durable_run_required_paths_covered() -> None:
+def test_bounded_testnet_durable_run_required_paths_covered() -> None:
     integration_input = default_minimal_completion_integration_input()
     artifact_paths = {entry.relative_path for entry in integration_input.artifact_checksums}
-    assert set(BOUNDED_DURABLE_RUN_REQUIRED_REL_PATHS) == artifact_paths
+    assert set(BOUNDED_TESTNET_DURABLE_RUN_REQUIRED_REL_PATHS) == artifact_paths
+    assert WALLCLOCK_EVIDENCE_FILENAME in artifact_paths
+    assert len(BOUNDED_TESTNET_DURABLE_RUN_REQUIRED_REL_PATHS) == len(
+        set(BOUNDED_TESTNET_DURABLE_RUN_REQUIRED_REL_PATHS)
+    )
+
+
+def test_completion_required_paths_bind_to_canonical_testnet_contract() -> None:
+    owner_text = (
+        REPO_ROOT
+        / "src"
+        / "ops"
+        / "bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py"
+    ).read_text(encoding="utf-8")
+    assert "BOUNDED_TESTNET_DURABLE_RUN_REQUIRED_REL_PATHS" in owner_text
+    assert "BOUNDED_DURABLE_RUN_REQUIRED_REL_PATHS" not in owner_text
+
+
+def test_full_testnet_artifact_set_passes() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    artifact_paths = {entry.relative_path for entry in integration_input.artifact_checksums}
+    assert artifact_paths == set(BOUNDED_TESTNET_DURABLE_RUN_REQUIRED_REL_PATHS)
+    result = evaluate_durable_run_primary_evidence_completion_integration(integration_input)
+    assert result["integration_pass"] is True
+
+
+def test_missing_wallclock_evidence_fails_closed() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad_artifacts = tuple(
+        entry
+        for entry in integration_input.artifact_checksums
+        if entry.relative_path != WALLCLOCK_EVIDENCE_FILENAME
+    )
+    bad = replace(integration_input, artifact_checksums=bad_artifacts)
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(WALLCLOCK_EVIDENCE_FILENAME in r for r in result["fail_reasons"])
+
+
+def test_wrong_wallclock_relative_path_fails_closed() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad_artifacts = tuple(
+        ArtifactChecksumEntry(relative_path="evidence/WALLCLOCK_EVIDENCE.json", digest="7" * 64)
+        if entry.relative_path == WALLCLOCK_EVIDENCE_FILENAME
+        else entry
+        for entry in integration_input.artifact_checksums
+    )
+    bad = replace(integration_input, artifact_checksums=bad_artifacts)
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("missing required artifact paths" in r for r in result["fail_reasons"])
+    assert any("unexpected artifact paths" in r for r in result["fail_reasons"])
+
+
+def test_generic_bounded_required_paths_not_testnet_completion_source_of_truth() -> None:
+    assert set(BOUNDED_DURABLE_RUN_REQUIRED_REL_PATHS).issubset(
+        set(BOUNDED_TESTNET_DURABLE_RUN_REQUIRED_REL_PATHS)
+    )
+    assert len(BOUNDED_TESTNET_DURABLE_RUN_REQUIRED_REL_PATHS) == (
+        len(BOUNDED_DURABLE_RUN_REQUIRED_REL_PATHS) + 1
+    )
+    integration_input = default_minimal_completion_integration_input()
+    artifact_paths = {entry.relative_path for entry in integration_input.artifact_checksums}
+    assert set(BOUNDED_DURABLE_RUN_REQUIRED_REL_PATHS) != artifact_paths
 
 
 def test_contract_version_constants() -> None:
