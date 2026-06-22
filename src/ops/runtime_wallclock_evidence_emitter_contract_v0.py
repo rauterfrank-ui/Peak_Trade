@@ -9,6 +9,9 @@ from __future__ import annotations
 
 from typing import Any
 
+from src.ops.testnet_wallclock_duration_evidence_contract_v0 import (
+    REQUIRED_WALLCLOCK_FIELD_NAMES,
+)
 from src.ops.wallclock_session_evidence_v0 import evaluate_wallclock_evidence_fields
 
 PACKAGE_MARKER = "RUNTIME_WALLCLOCK_EVIDENCE_EMITTER_CONTRACT_V0=true"
@@ -20,23 +23,6 @@ CHARTER_BUNDLE_SUFFIX = (
 )
 EMITTER_ARTIFACT_FILENAME = "WALLCLOCK_EVIDENCE.json"
 EVIDENCE_SOURCE_REPO_NATIVE = "repo_native_session"
-
-REQUIRED_WALLCLOCK_FIELD_NAMES: tuple[str, ...] = (
-    "planned_duration_seconds",
-    "min_required_wall_clock_seconds",
-    "start_wall_clock_iso",
-    "end_wall_clock_iso",
-    "start_monotonic_seconds",
-    "end_monotonic_seconds",
-    "elapsed_wall_clock_seconds",
-    "elapsed_monotonic_seconds",
-    "wall_clock_slack_seconds",
-    "duration_proven",
-    "duration_evidence_valid",
-    "early_exit_detected",
-    "early_exit_reason",
-    "invalid_if_elapsed_below_min",
-)
 
 
 def evaluate_runtime_session_wallclock_emitter_evidence(
