@@ -158,6 +158,8 @@ def test_build_bounded_adapter_final_machine_lines_repo_head_key_is_deterministi
 def test_paper_write_closeout_artifacts_fail_closed_repo_head_sha_prefix(
     paper, tmp_path: Path
 ) -> None:
+    from unittest.mock import patch
+
     staging = tmp_path / "staging"
     staging.mkdir(parents=True, exist_ok=True)
     archive_dest = tmp_path / "archive" / "runs" / "paper" / "fixture_run"
@@ -189,12 +191,13 @@ def test_paper_write_closeout_artifacts_fail_closed_repo_head_sha_prefix(
         retention_steps=[],
         expected_artifacts=[],
     )
-    paper._write_closeout_artifacts(
-        ctx,
-        plan,
-        archive_dest,
-        {"verdict": "PASS", "issues": []},
-    )
+    with patch.object(paper, "_read_git_sha_prefix", return_value="UNKNOWN_HEAD_MISSING"):
+        paper._write_closeout_artifacts(
+            ctx,
+            plan,
+            archive_dest,
+            {"verdict": "PASS", "issues": []},
+        )
     path = staging / paper.FINAL_MACHINE_LINES_FILENAME
     assert path.is_file()
     lines = _parse_machine_lines(path)
@@ -203,6 +206,8 @@ def test_paper_write_closeout_artifacts_fail_closed_repo_head_sha_prefix(
     assert lines[paper.REPO_HEAD_SHA_PREFIX_MACHINE_LINE_KEY] == (
         paper.REPO_HEAD_SHA_PREFIX_FAIL_CLOSED
     )
+    metadata = json.loads((staging / "RUN_METADATA.json").read_text(encoding="utf-8"))
+    assert metadata["repo_head_sha_prefix"] == paper.REPO_HEAD_SHA_PREFIX_FAIL_CLOSED
     assert len(_machine_line_keys_from_text(path)) == len(lines)
 
 
