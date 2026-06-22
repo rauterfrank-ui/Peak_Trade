@@ -584,11 +584,94 @@ def test_default_profile_unchanged_still_10_minutes(tmp_path: Path) -> None:
     assert plan.get("contract_profile", "") == ""
 
 
-def test_default_profile_rejects_duration_11(tmp_path: Path) -> None:
+def test_default_profile_delegates_duration_11_to_extended_tier(tmp_path: Path) -> None:
+    """Duration 11+ is accepted via extended-tier wrapper delegation (not standard tier)."""
     mod = _load_adapter()
     staging = _staging(tmp_path)
-    rc = mod.main(_base_argv(staging) + ["--duration-minutes", "11"])
+    buf = io.StringIO()
+    with redirect_stdout(buf):
+        rc = mod.main(_base_argv(staging) + ["--duration-minutes", "11", "--json"])
+    assert rc == 0, buf.getvalue()
+    plan = json.loads(buf.getvalue())
+    joined = json.dumps(plan["commands"])
+    joined_lower = joined.lower()
+    assert "extended-bounded-shadow-validation" in joined_lower
+    assert "extended-confirm-token" in joined_lower
+    assert mod.EXTENDED_BOUNDED_SHADOW_CONFIRM_TOKEN_V0 in joined
+
+
+def test_extended_tier_plan_30_minutes_delegates_to_wrapper(tmp_path: Path) -> None:
+    mod = _load_adapter()
+    staging = _staging(tmp_path)
+    buf = io.StringIO()
+    with redirect_stdout(buf):
+        rc = mod.main(_base_argv(staging) + ["--duration-minutes", "30", "--json"])
+    assert rc == 0, buf.getvalue()
+    plan = json.loads(buf.getvalue())
+    assert plan["duration_minutes"] == 30
+    assert plan["wrapper_script"] == mod.WRAPPER_SCRIPT
+    joined = json.dumps(plan["commands"])
+    joined_lower = joined.lower()
+    assert "shadow_247_futures_start_wrapper_skeleton_v0.py" in joined_lower
+    assert "bounded-shadow-dry-run" in joined_lower
+    assert "extended-bounded-shadow-validation" in joined_lower
+    assert mod.EXTENDED_BOUNDED_SHADOW_CONFIRM_TOKEN_V0 in joined
+    assert "candidate-24h-bounded-shadow-validation" not in joined_lower
+
+
+def test_standard_tier_10_minutes_has_no_extended_flags(tmp_path: Path) -> None:
+    plan = _plan_dict(_staging(tmp_path))
+    joined = json.dumps(plan["commands"]).lower()
+    assert plan["duration_minutes"] == 10
+    assert "extended-bounded-shadow-validation" not in joined
+    assert "extended-confirm-token" not in joined
+
+
+def test_extended_tier_accepts_duration_at_cap_60(tmp_path: Path) -> None:
+    mod = _load_adapter()
+    staging = _staging(tmp_path)
+    buf = io.StringIO()
+    with redirect_stdout(buf):
+        rc = mod.main(_base_argv(staging) + ["--duration-minutes", "60", "--json"])
+    assert rc == 0, buf.getvalue()
+    plan = json.loads(buf.getvalue())
+    assert plan["duration_minutes"] == 60
+
+
+def test_extended_tier_rejects_duration_above_cap(tmp_path: Path) -> None:
+    mod = _load_adapter()
+    staging = _staging(tmp_path)
+    rc = mod.main(_base_argv(staging) + ["--duration-minutes", "61"])
     assert rc != 0
+
+
+def test_extended_tier_rejects_non_positive_duration(tmp_path: Path) -> None:
+    mod = _load_adapter()
+    staging = _staging(tmp_path)
+    rc = mod.main(_base_argv(staging) + ["--duration-minutes", "0"])
+    assert rc != 0
+
+
+def test_extended_tier_active_helper_boundary() -> None:
+    mod = _load_adapter()
+    assert mod.extended_tier_active(10) is False
+    assert mod.extended_tier_active(11) is True
+    assert mod.extended_tier_active(30) is True
+    assert mod.extended_tier_active(60) is True
+
+
+def test_extended_tier_plan_has_single_wrapper_route(tmp_path: Path) -> None:
+    mod = _load_adapter()
+    staging = _staging(tmp_path)
+    buf = io.StringIO()
+    with redirect_stdout(buf):
+        rc = mod.main(_base_argv(staging) + ["--duration-minutes", "30", "--json"])
+    assert rc == 0
+    plan = json.loads(buf.getvalue())
+    wrapper_argv = plan["commands"]["wrapper_bounded_dry_run"]
+    assert any("shadow_247_futures_start_wrapper_skeleton_v0.py" in part for part in wrapper_argv)
+    assert wrapper_argv.count("--extended-bounded-shadow-validation") == 1
+    assert wrapper_argv.count("--extended-confirm-token") == 1
 
 
 def test_24h_profile_plan_only_default_duration_1440(tmp_path: Path) -> None:

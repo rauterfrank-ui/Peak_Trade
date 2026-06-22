@@ -27,6 +27,11 @@ if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
 from scripts.ops import bounded_daemon_paper_shadow_24h_approval_v0 as contract_24h
+from scripts.ops.shadow_247_futures_start_wrapper_skeleton_v0 import (
+    BOUNDED_SHADOW_EXTENDED_DURATION_CAP_MINUTES,
+    BOUNDED_SHADOW_EXTENDED_MAX_STEPS_CAP,
+    EXTENDED_BOUNDED_SHADOW_CONFIRM_TOKEN_V0,
+)
 from scripts.ops.primary_evidence_retention_v0 import (
     verify_manifest_sha256,
     write_manifest_sha256 as _write_manifest_sha256,
@@ -253,6 +258,10 @@ def _default_max_steps(duration_minutes: int, max_steps: int | None) -> int:
     return min(DEFAULT_MAX_STEPS, max(1, duration_minutes * 12))
 
 
+def extended_tier_active(duration_minutes: int) -> bool:
+    return duration_minutes > MAX_DURATION_MINUTES
+
+
 def build_plan(
     *,
     mode: str,
@@ -264,6 +273,7 @@ def build_plan(
     step_interval_seconds: float,
     run_id: str,
     contract_profile: str = "",
+    extended_tier: bool = False,
 ) -> AdapterPlan:
     wrapper_evidence = staging_root / WRAPPER_EVIDENCE_DIR
     review_out = staging_root / "review" / "REVIEW_RESULT.json"
@@ -291,6 +301,14 @@ def build_plan(
                 "--candidate-24h-bounded-shadow-validation",
                 "--candidate-24h-confirm-token",
                 CANDIDATE_24H_BOUNDED_SHADOW_CONFIRM_TOKEN_V0,
+            ]
+        )
+    elif extended_tier:
+        wrapper_cmd.extend(
+            [
+                "--extended-bounded-shadow-validation",
+                "--extended-confirm-token",
+                EXTENDED_BOUNDED_SHADOW_CONFIRM_TOKEN_V0,
             ]
         )
     review_cmd = _python_cmd(repo_root, REVIEW_SCRIPT) + [
@@ -823,17 +841,29 @@ def main(
     else:
         if args.duration_minutes is None:
             args.duration_minutes = DEFAULT_DURATION_MINUTES
-        if args.duration_minutes <= 0 or args.duration_minutes > MAX_DURATION_MINUTES:
+        if args.duration_minutes <= 0:
+            print("duration-minutes must be > 0", file=sys.stderr)
+            return USAGE_EXIT
+        if args.duration_minutes > BOUNDED_SHADOW_EXTENDED_DURATION_CAP_MINUTES:
             print(
-                f"duration-minutes must be between 1 and {MAX_DURATION_MINUTES} inclusive",
+                "duration-minutes must be between 1 and "
+                f"{BOUNDED_SHADOW_EXTENDED_DURATION_CAP_MINUTES} inclusive",
                 file=sys.stderr,
             )
             return USAGE_EXIT
-        max_steps_cap = MAX_STEPS_CAP
+        max_steps_cap = (
+            BOUNDED_SHADOW_EXTENDED_MAX_STEPS_CAP
+            if extended_tier_active(args.duration_minutes)
+            else MAX_STEPS_CAP
+        )
 
     if args.duration_minutes <= 0:
         print("duration-minutes must be > 0", file=sys.stderr)
         return USAGE_EXIT
+
+    extended_tier = profile != contract_24h.CONTRACT_PROFILE and extended_tier_active(
+        args.duration_minutes
+    )
 
     max_steps = _default_max_steps(args.duration_minutes, args.max_steps)
     if profile == contract_24h.CONTRACT_PROFILE and args.max_steps is None:
@@ -865,6 +895,7 @@ def main(
         step_interval_seconds=args.step_interval_seconds,
         run_id=run_id,
         contract_profile=profile,
+        extended_tier=extended_tier,
     )
 
     if args.execute:
