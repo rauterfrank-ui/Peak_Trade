@@ -35,6 +35,7 @@ FOCUSED_CATEGORIES = frozenset(
         "risk_killswitch_focused",
         "tiny_order_focused",
         "reconciliation_primary_evidence_focused",
+        "bounded_network_testnet_preflight_focused",
         "wallclock_focused",
         "ci_infra_focused",
     }
@@ -218,6 +219,27 @@ CANONICAL_RECONCILIATION_PRIMARY_EVIDENCE_FOCUSED_TESTS: tuple[str, ...] = (
 
 REQUIRED_RECONCILIATION_PRIMARY_EVIDENCE_TEST_OWNERS: tuple[str, ...] = (
     "tests/ops/test_bounded_futures_testnet_position_order_reconciliation_primary_evidence_integration_contract_v0.py",
+)
+
+BOUNDED_NETWORK_TESTNET_PREFLIGHT_OWNER = "src/ops/bounded_network_testnet_preflight_contract_v0.py"
+BOUNDED_NETWORK_TESTNET_PREFLIGHT_TEST_OWNER = (
+    "tests/ops/test_bounded_network_testnet_preflight_contract_v0.py"
+)
+
+BOUNDED_NETWORK_TESTNET_PREFLIGHT_CI_POLICY_PATHS = frozenset(
+    {
+        "scripts/ops/ci_test_selection_v1.py",
+        "config/ci/file_category_mapping.yaml",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    }
+)
+
+CANONICAL_BOUNDED_NETWORK_TESTNET_PREFLIGHT_FOCUSED_TESTS: tuple[str, ...] = (
+    "tests/ops/test_bounded_network_testnet_preflight_contract_v0.py",
+)
+
+REQUIRED_BOUNDED_NETWORK_TESTNET_PREFLIGHT_TEST_OWNERS: tuple[str, ...] = (
+    "tests/ops/test_bounded_network_testnet_preflight_contract_v0.py",
 )
 
 WALLCLOCK_OWNER = "src/ops/wallclock_session_evidence_v0.py"
@@ -595,6 +617,58 @@ def _tiny_order_focused_targets() -> tuple[str, ...]:
     return tuple(sorted(targets))
 
 
+def _is_bounded_network_testnet_preflight_scoped_path(path: str) -> bool:
+    return path in {
+        BOUNDED_NETWORK_TESTNET_PREFLIGHT_OWNER,
+        BOUNDED_NETWORK_TESTNET_PREFLIGHT_TEST_OWNER,
+    }
+
+
+def _is_bounded_network_testnet_preflight_rebundle_path(path: str) -> bool:
+    return (
+        _is_bounded_network_testnet_preflight_scoped_path(path)
+        or path in BOUNDED_NETWORK_TESTNET_PREFLIGHT_CI_POLICY_PATHS
+    )
+
+
+def _bounded_network_testnet_preflight_focused_targets() -> tuple[str, ...]:
+    for path in REQUIRED_BOUNDED_NETWORK_TESTNET_PREFLIGHT_TEST_OWNERS:
+        if not _repo_path_exists(path):
+            return ()
+    targets: list[str] = []
+    for path in CANONICAL_BOUNDED_NETWORK_TESTNET_PREFLIGHT_FOCUSED_TESTS:
+        if _repo_path_exists(path):
+            targets.append(path)
+    if len(targets) < len(REQUIRED_BOUNDED_NETWORK_TESTNET_PREFLIGHT_TEST_OWNERS):
+        return ()
+    return tuple(sorted(targets))
+
+
+def _try_bounded_network_testnet_preflight_focused(files: list[str]) -> SelectionResult | None:
+    if not files:
+        return None
+    if not any(_is_bounded_network_testnet_preflight_scoped_path(f) for f in files):
+        return None
+    if not all(_is_bounded_network_testnet_preflight_rebundle_path(f) for f in files):
+        return None
+    files_set = set(files)
+    if (
+        BOUNDED_NETWORK_TESTNET_PREFLIGHT_OWNER in files_set
+        and BOUNDED_NETWORK_TESTNET_PREFLIGHT_TEST_OWNER not in files_set
+    ):
+        return None
+    targets = _bounded_network_testnet_preflight_focused_targets()
+    if not targets:
+        return None
+    modules: tuple[str, ...] = ("src.ops.bounded_network_testnet_preflight_contract_v0",)
+    return SelectionResult(
+        "FOCUSED",
+        "bounded_network_testnet_preflight_focused",
+        targets,
+        modules,
+    )
+
+
 def _is_wallclock_scoped_path(path: str) -> bool:
     if path == WALLCLOCK_OWNER:
         return True
@@ -928,6 +1002,10 @@ def categorize(path: str) -> str:
         return "reconciliation_primary_evidence_focused"
     if _is_reconciliation_primary_evidence_scoped_path(p):
         return "reconciliation_primary_evidence_focused"
+    if p in BOUNDED_NETWORK_TESTNET_PREFLIGHT_CI_POLICY_PATHS:
+        return "bounded_network_testnet_preflight_focused"
+    if _is_bounded_network_testnet_preflight_scoped_path(p):
+        return "bounded_network_testnet_preflight_focused"
     if p in MARKET_DASHBOARD_CI_POLICY_PATHS:
         return "market_dashboard_focused"
     if _is_market_dashboard_scoped_path(p):
@@ -1185,6 +1263,10 @@ def resolve_selection(
     if reconciliation_primary_evidence is not None:
         return reconciliation_primary_evidence
 
+    bounded_network_testnet_preflight = _try_bounded_network_testnet_preflight_focused(normalized)
+    if bounded_network_testnet_preflight is not None:
+        return bounded_network_testnet_preflight
+
     wallclock = _try_wallclock_focused(normalized)
     if wallclock is not None:
         return wallclock
@@ -1224,6 +1306,19 @@ def resolve_selection(
             )
         return SelectionResult(
             "FULL", "reconciliation_primary_evidence_incomplete_or_missing_test_owner", ()
+        )
+
+    if any(_is_bounded_network_testnet_preflight_scoped_path(f) for f in normalized):
+        if not all(_is_bounded_network_testnet_preflight_rebundle_path(f) for f in normalized):
+            return SelectionResult(
+                "FULL",
+                "bounded_network_testnet_preflight_foreign_path_requires_full",
+                (),
+            )
+        return SelectionResult(
+            "FULL",
+            "bounded_network_testnet_preflight_incomplete_or_missing_test_owner",
+            (),
         )
 
     if any(_is_wallclock_scoped_path(f) for f in normalized):

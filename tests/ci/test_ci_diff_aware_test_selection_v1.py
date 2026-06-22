@@ -1394,3 +1394,75 @@ def test_selector_ci_workflow_change_self_focused_ci_infra() -> None:
     )
     assert sel["test_selection_mode"] == "FOCUSED"
     assert sel["test_selection_reason"] == "ci_infra_focused"
+
+
+PR4497_BOUNDED_NETWORK_PREFLIGHT_FILES: tuple[str, ...] = (
+    "src/ops/bounded_network_testnet_preflight_contract_v0.py",
+    "tests/ops/test_bounded_network_testnet_preflight_contract_v0.py",
+)
+
+
+def test_selector_pr4497_bounded_network_preflight_diff_focused() -> None:
+    sel = _run_selector(*PR4497_BOUNDED_NETWORK_PREFLIGHT_FILES)
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "bounded_network_testnet_preflight_focused"
+    assert sel["tests_execute_full"] == "false"
+    assert sel["tests_execute_focused"] == "true"
+    assert sel["tests_execute_no_op"] == "false"
+    targets = _targets(sel)
+    assert targets == [
+        "tests/ops/test_bounded_network_testnet_preflight_contract_v0.py",
+    ]
+    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" not in targets
+
+
+def test_selector_bounded_network_preflight_owner_without_test_owner_full() -> None:
+    sel = _run_selector("src/ops/bounded_network_testnet_preflight_contract_v0.py")
+    assert sel["test_selection_mode"] == "FULL"
+    assert (
+        sel["test_selection_reason"]
+        == "bounded_network_testnet_preflight_incomplete_or_missing_test_owner"
+    )
+
+
+def test_selector_bounded_network_preflight_plus_foreign_src_full() -> None:
+    sel = _run_selector(
+        *PR4497_BOUNDED_NETWORK_PREFLIGHT_FILES,
+        "src/execution/live/orchestrator.py",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+    assert (
+        sel["test_selection_reason"]
+        == "bounded_network_testnet_preflight_foreign_path_requires_full"
+    )
+
+
+def test_selector_bounded_network_preflight_plus_dependency_full() -> None:
+    sel = _run_selector(*PR4497_BOUNDED_NETWORK_PREFLIGHT_FILES, "requirements.txt")
+    assert sel["test_selection_mode"] == "FULL"
+    assert (
+        sel["test_selection_reason"]
+        == "bounded_network_testnet_preflight_foreign_path_requires_full"
+    )
+
+
+def test_selector_bounded_network_preflight_rebundle_with_ci_policy_focused() -> None:
+    sel = _run_selector(
+        *PR4497_BOUNDED_NETWORK_PREFLIGHT_FILES,
+        "scripts/ops/ci_test_selection_v1.py",
+        "config/ci/file_category_mapping.yaml",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    )
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "bounded_network_testnet_preflight_focused"
+    targets = _targets(sel)
+    assert targets == [
+        "tests/ops/test_bounded_network_testnet_preflight_contract_v0.py",
+    ]
+    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" not in targets
+
+
+def test_selector_bounded_network_preflight_import_modules() -> None:
+    sel = _run_selector(*PR4497_BOUNDED_NETWORK_PREFLIGHT_FILES)
+    modules = sel.get("focused_module_imports", "").split()
+    assert modules == ["src.ops.bounded_network_testnet_preflight_contract_v0"]
