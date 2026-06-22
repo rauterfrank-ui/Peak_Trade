@@ -18,6 +18,8 @@ import pytest
 ROOT = Path(__file__).resolve().parent.parent.parent
 ADAPTER_SCRIPT = ROOT / "scripts" / "ops" / "run_shadow_bounded_observation_adapter_v0.py"
 REVIEW_SCRIPT = ROOT / "scripts" / "ops" / "review_shadow_bounded_observation_evidence_v0.py"
+CANONICAL_GIT_SHA_PREFIX = "0123456789ab"
+REPO_HEAD_SHA_PREFIX_MACHINE_LINE_KEY = "REPO_HEAD_SHA_PREFIX"
 APPROVAL_FIXTURE = ROOT / "tests" / "fixtures" / "ops" / "shadow_adapter_stage3_approval_sample.md"
 APPROVAL_FIXTURE_24H = (
     ROOT / "tests" / "fixtures" / "ops" / "daemon_paper_shadow_24h_adapter_approval_sample.md"
@@ -74,7 +76,11 @@ def _durable_archive(tmp_path: Path) -> Path:
     return path
 
 
-def _write_wrapper_bundle(staging: Path) -> None:
+def _write_wrapper_bundle(
+    staging: Path,
+    *,
+    git_sha_prefix: str | None = CANONICAL_GIT_SHA_PREFIX,
+) -> None:
     evidence = staging / "wrapper_evidence"
     evidence.mkdir(parents=True, exist_ok=True)
     (evidence / "SHADOW_247_FUTURES_BOUNDED_SHADOW_DRY_RUN.md").write_text(
@@ -90,22 +96,47 @@ def _write_wrapper_bundle(staging: Path) -> None:
         encoding="utf-8",
     )
     (evidence / "steps.jsonl").write_text('{"step": 1}\n', encoding="utf-8")
-    (evidence / "manifest.json").write_text(
-        json.dumps(
-            {
-                "schema": "shadow_247_futures_bounded_shadow_dry_run.v0",
-                "NO_BROKER": True,
-                "NO_NETWORK": True,
-                "NO_ORDER_SUBMISSION": True,
-            }
-        )
-        + "\n",
-        encoding="utf-8",
-    )
+    manifest: dict[str, object] = {
+        "schema": "shadow_247_futures_bounded_shadow_dry_run.v0",
+        "NO_BROKER": True,
+        "NO_NETWORK": True,
+        "NO_ORDER_SUBMISSION": True,
+    }
+    if git_sha_prefix is not None:
+        manifest["git_sha_prefix"] = git_sha_prefix
+    (evidence / "manifest.json").write_text(json.dumps(manifest) + "\n", encoding="utf-8")
     logs = staging / "logs"
     logs.mkdir(parents=True, exist_ok=True)
     (logs / "wrapper_stdout.log").write_text("wrapper stdout\n", encoding="utf-8")
     (logs / "wrapper_stderr.log").write_text("wrapper stderr\n", encoding="utf-8")
+
+
+def _write_review_closeout_provenance(
+    staging: Path,
+    *,
+    git_sha_prefix: str = CANONICAL_GIT_SHA_PREFIX,
+    include_run_metadata: bool = True,
+    include_final_machine_lines: bool = True,
+    run_metadata_overrides: dict[str, object] | None = None,
+    machine_line_overrides: dict[str, str] | None = None,
+) -> None:
+    if include_run_metadata:
+        metadata: dict[str, object] = {"repo_head_sha_prefix": git_sha_prefix}
+        if run_metadata_overrides:
+            metadata.update(run_metadata_overrides)
+        (staging / "RUN_METADATA.json").write_text(
+            json.dumps(metadata, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+    if include_final_machine_lines:
+        machine_lines = {REPO_HEAD_SHA_PREFIX_MACHINE_LINE_KEY: git_sha_prefix}
+        if machine_line_overrides:
+            machine_lines.update(machine_line_overrides)
+        ordered = sorted(machine_lines.items())
+        (staging / "FINAL_MACHINE_LINES.txt").write_text(
+            "\n".join(f"{key}={value}" for key, value in ordered) + "\n",
+            encoding="utf-8",
+        )
 
 
 @pytest.fixture(autouse=True)
@@ -577,6 +608,132 @@ def test_review_does_not_claim_gate_clearance(tmp_path: Path) -> None:
     blob = json.dumps(result)
     assert "SHADOW_READY" not in blob
     assert result["non_authorizing"] is True
+
+
+def test_review_passes_consistent_runtime_git_provenance(tmp_path: Path) -> None:
+    review = _load_review()
+    staging = tmp_path / "staging"
+    _write_wrapper_bundle(staging, git_sha_prefix=CANONICAL_GIT_SHA_PREFIX)
+    _write_review_closeout_provenance(staging, git_sha_prefix=CANONICAL_GIT_SHA_PREFIX)
+    result = review.review_evidence(staging)
+    assert result["verdict"] == review.PASS
+    assert result["checks"]["manifest_git_sha_prefix_valid"] is True
+    assert result["checks"]["run_metadata_repo_head_sha_prefix_valid"] is True
+    assert result["checks"]["final_machine_lines_repo_head_sha_prefix_valid"] is True
+    assert result["checks"]["git_provenance_consistent"] is True
+
+
+def test_review_fails_missing_manifest_git_sha_prefix(tmp_path: Path) -> None:
+    review = _load_review()
+    staging = tmp_path / "staging"
+    _write_wrapper_bundle(staging, git_sha_prefix=None)
+    result = review.review_evidence(staging)
+    assert result["verdict"] == review.REVIEW_REQUIRED
+    assert result["checks"]["manifest_git_sha_prefix_valid"] is False
+    assert any(review.GIT_PROVENANCE_MISSING in issue for issue in result["issues"])
+
+
+@pytest.mark.parametrize(
+    "bad_prefix",
+    [
+        "",
+        "   ",
+        "UNKNOWN",
+        "UNKNOWN_HEAD_MISSING",
+        "UNKNOWN_REF_MISSING",
+        "NOT_AVAILABLE",
+        "MISSING",
+        "not-hex-prefix",
+        "0x0123456789ab",
+        "0123456789abc",
+        "0123456789a",
+        "0123456789 ab",
+    ],
+)
+def test_review_fails_invalid_manifest_git_sha_prefix(tmp_path: Path, bad_prefix: str) -> None:
+    review = _load_review()
+    staging = tmp_path / "staging"
+    _write_wrapper_bundle(staging, git_sha_prefix=bad_prefix)
+    result = review.review_evidence(staging)
+    assert result["verdict"] == review.REVIEW_REQUIRED
+    assert result["checks"]["manifest_git_sha_prefix_valid"] is False
+
+
+def test_review_fails_missing_run_metadata_repo_head_sha_prefix(tmp_path: Path) -> None:
+    review = _load_review()
+    staging = tmp_path / "staging"
+    _write_wrapper_bundle(staging)
+    (staging / "RUN_METADATA.json").write_text('{"run_id": "fixture"}\n', encoding="utf-8")
+    result = review.review_evidence(staging)
+    assert result["verdict"] == review.REVIEW_REQUIRED
+    assert result["checks"]["run_metadata_repo_head_sha_prefix_valid"] is False
+    assert any(review.GIT_PROVENANCE_MISSING in issue for issue in result["issues"])
+
+
+def test_review_fails_missing_final_machine_lines_repo_head_sha_prefix(tmp_path: Path) -> None:
+    review = _load_review()
+    staging = tmp_path / "staging"
+    _write_wrapper_bundle(staging)
+    (staging / "RUN_METADATA.json").write_text(
+        json.dumps({"repo_head_sha_prefix": CANONICAL_GIT_SHA_PREFIX}) + "\n",
+        encoding="utf-8",
+    )
+    (staging / "FINAL_MACHINE_LINES.txt").write_text("REVIEW_VERDICT=PASS\n", encoding="utf-8")
+    result = review.review_evidence(staging)
+    assert result["verdict"] == review.REVIEW_REQUIRED
+    assert result["checks"]["final_machine_lines_repo_head_sha_prefix_valid"] is False
+    assert any(review.GIT_PROVENANCE_MISSING in issue for issue in result["issues"])
+
+
+def test_review_fails_mismatched_runtime_git_provenance(tmp_path: Path) -> None:
+    review = _load_review()
+    staging = tmp_path / "staging"
+    _write_wrapper_bundle(staging, git_sha_prefix=CANONICAL_GIT_SHA_PREFIX)
+    _write_review_closeout_provenance(
+        staging,
+        git_sha_prefix="abcdef012345",
+        machine_line_overrides={REPO_HEAD_SHA_PREFIX_MACHINE_LINE_KEY: "111122223333"},
+    )
+    result = review.review_evidence(staging)
+    assert result["verdict"] == review.REVIEW_REQUIRED
+    assert result["checks"]["git_provenance_consistent"] is False
+    assert any(review.GIT_PROVENANCE_MISMATCH in issue for issue in result["issues"])
+
+
+def test_review_fails_similar_prefix_mismatch_not_normalized(tmp_path: Path) -> None:
+    review = _load_review()
+    staging = tmp_path / "staging"
+    _write_wrapper_bundle(staging, git_sha_prefix="0123456789ab")
+    _write_review_closeout_provenance(
+        staging,
+        git_sha_prefix="0123456789a0",
+        machine_line_overrides={
+            REPO_HEAD_SHA_PREFIX_MACHINE_LINE_KEY: "0123456789a0",
+        },
+    )
+    result = review.review_evidence(staging)
+    assert result["verdict"] == review.REVIEW_REQUIRED
+    assert any(review.GIT_PROVENANCE_MISMATCH in issue for issue in result["issues"])
+
+
+def test_review_no_plan_level_sha_fallback_when_runtime_provenance_missing(tmp_path: Path) -> None:
+    review = _load_review()
+    staging = tmp_path / "staging"
+    _write_wrapper_bundle(staging, git_sha_prefix=None)
+    (staging / "PLAN_LEVEL_ORIGIN_MAIN_HEAD.txt").write_text("3702fc944962\n", encoding="utf-8")
+    result = review.review_evidence(staging)
+    assert result["verdict"] == review.REVIEW_REQUIRED
+    assert any(review.GIT_PROVENANCE_MISSING in issue for issue in result["issues"])
+
+
+def test_review_git_provenance_is_deterministic(tmp_path: Path) -> None:
+    review = _load_review()
+    staging = tmp_path / "staging"
+    _write_wrapper_bundle(staging)
+    _write_review_closeout_provenance(staging)
+    first = review.review_evidence(staging)
+    second = review.review_evidence(staging)
+    assert first == second
 
 
 def test_default_profile_unchanged_still_10_minutes(tmp_path: Path) -> None:

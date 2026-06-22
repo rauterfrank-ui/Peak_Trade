@@ -23,6 +23,11 @@ if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
 from scripts.ops.primary_evidence_retention_v0 import validate_durable_primary_evidence_root
+from scripts.ops.run_paper_only_bounded_observation_adapter_v0 import (
+    FINAL_MACHINE_LINES_FILENAME,
+    REPO_HEAD_SHA_PREFIX_MACHINE_LINE_KEY,
+)
+from scripts.ops.run_shadow_bounded_observation_adapter_v0 import parse_machine_lines
 
 PASS = "PASS"
 REVIEW_REQUIRED = "REVIEW_REQUIRED"
@@ -41,6 +46,31 @@ FORBIDDEN_GATE_CLAIMS = (
     "SHADOW_READY=true",
     "SHADOW_RUNTIME_APPROVAL_GRANTED=true",
     "PREFLIGHT_BLOCKED=false",
+)
+MANIFEST_GIT_SHA_PREFIX_FIELD = "git_sha_prefix"
+RUN_METADATA_FILENAME = "RUN_METADATA.json"
+RUN_METADATA_GIT_SHA_PREFIX_FIELD = "repo_head_sha_prefix"
+GIT_SHA_PREFIX_CANONICAL_LENGTH = 12
+GIT_PROVENANCE_MISSING = "GIT_PROVENANCE_MISSING"
+GIT_PROVENANCE_UNKNOWN = "GIT_PROVENANCE_UNKNOWN"
+GIT_PROVENANCE_INVALID = "GIT_PROVENANCE_INVALID"
+GIT_PROVENANCE_MISMATCH = "GIT_PROVENANCE_MISMATCH"
+_GIT_PROVENANCE_UNKNOWN_SENTINELS = frozenset(
+    {
+        "UNKNOWN",
+        "NOT_AVAILABLE",
+        "MISSING",
+        "UNKNOWN_GITFILE_LAYOUT",
+        "UNKNOWN_GITDIR_MISSING",
+        "UNKNOWN_GITDIR_UNRESOLVABLE",
+        "UNKNOWN_COMMONDIR_UNRESOLVABLE",
+        "UNKNOWN_COMMONDIR_MISSING",
+        "UNKNOWN_INCOMPLETE_GIT_STATE",
+        "UNKNOWN_GIT_INDEX_LOCKED",
+        "UNKNOWN_HEAD_MISSING",
+        "UNKNOWN_REF_MISSING",
+        "UNKNOWN_RAW_HEAD_LAYOUT",
+    }
 )
 
 
@@ -68,6 +98,139 @@ def _resolve_wrapper_evidence_root(staging_root: Path) -> Path:
     if nested.is_dir():
         return nested
     return staging_root
+
+
+def _is_git_provenance_unknown_sentinel(value: str) -> bool:
+    if value in _GIT_PROVENANCE_UNKNOWN_SENTINELS:
+        return True
+    return value.startswith("UNKNOWN_")
+
+
+def _is_valid_canonical_git_sha_prefix(value: str) -> bool:
+    if len(value) != GIT_SHA_PREFIX_CANONICAL_LENGTH:
+        return False
+    return all(ch in "0123456789abcdef" for ch in value.lower())
+
+
+def _classify_git_provenance_value(raw: Any) -> tuple[str | None, str | None]:
+    if raw is None:
+        return None, GIT_PROVENANCE_MISSING
+    if not isinstance(raw, str):
+        return None, GIT_PROVENANCE_MISSING
+    value = raw.strip()
+    if not value:
+        return None, GIT_PROVENANCE_MISSING
+    if _is_git_provenance_unknown_sentinel(value):
+        return None, GIT_PROVENANCE_UNKNOWN
+    if not _is_valid_canonical_git_sha_prefix(value):
+        return None, GIT_PROVENANCE_INVALID
+    return value, None
+
+
+def _append_git_provenance_issue(
+    issues: list[str],
+    *,
+    reason: str,
+    source: str,
+    detail: str,
+) -> None:
+    issues.append(f"{reason}: {source} {detail}")
+
+
+def _validate_git_provenance_field(
+    issues: list[str],
+    checks: dict[str, bool],
+    *,
+    check_key: str,
+    source: str,
+    field_name: str,
+    raw: Any,
+    provenance_values: dict[str, str],
+    provenance_key: str,
+) -> None:
+    value, reason = _classify_git_provenance_value(raw)
+    checks[check_key] = reason is None
+    if reason is not None:
+        _append_git_provenance_issue(
+            issues,
+            reason=reason,
+            source=source,
+            detail=f"{field_name} invalid or missing",
+        )
+        return
+    assert value is not None
+    provenance_values[provenance_key] = value
+
+
+def _validate_runtime_git_provenance(
+    staging_root: Path,
+    *,
+    manifest_payload: Any | None,
+    issues: list[str],
+    checks: dict[str, bool],
+) -> None:
+    provenance_values: dict[str, str] = {}
+
+    if isinstance(manifest_payload, dict) and checks.get("manifest_schema_match"):
+        _validate_git_provenance_field(
+            issues,
+            checks,
+            check_key="manifest_git_sha_prefix_valid",
+            source=MANIFEST_JSON,
+            field_name=MANIFEST_GIT_SHA_PREFIX_FIELD,
+            raw=manifest_payload.get(MANIFEST_GIT_SHA_PREFIX_FIELD),
+            provenance_values=provenance_values,
+            provenance_key="manifest",
+        )
+
+    run_metadata_path = staging_root / RUN_METADATA_FILENAME
+    if run_metadata_path.is_file():
+        run_metadata_payload, run_metadata_err = _load_json(run_metadata_path)
+        if run_metadata_err:
+            checks["run_metadata_repo_head_sha_prefix_valid"] = False
+            issues.append(run_metadata_err)
+        elif isinstance(run_metadata_payload, dict):
+            _validate_git_provenance_field(
+                issues,
+                checks,
+                check_key="run_metadata_repo_head_sha_prefix_valid",
+                source=RUN_METADATA_FILENAME,
+                field_name=RUN_METADATA_GIT_SHA_PREFIX_FIELD,
+                raw=run_metadata_payload.get(RUN_METADATA_GIT_SHA_PREFIX_FIELD),
+                provenance_values=provenance_values,
+                provenance_key="run_metadata",
+            )
+        else:
+            checks["run_metadata_repo_head_sha_prefix_valid"] = False
+            issues.append(f"{RUN_METADATA_FILENAME} must be a JSON object")
+
+    machine_lines_path = staging_root / FINAL_MACHINE_LINES_FILENAME
+    if machine_lines_path.is_file():
+        machine_fields = parse_machine_lines(
+            machine_lines_path.read_text(encoding="utf-8", errors="replace")
+        )
+        _validate_git_provenance_field(
+            issues,
+            checks,
+            check_key="final_machine_lines_repo_head_sha_prefix_valid",
+            source=FINAL_MACHINE_LINES_FILENAME,
+            field_name=REPO_HEAD_SHA_PREFIX_MACHINE_LINE_KEY,
+            raw=machine_fields.get(REPO_HEAD_SHA_PREFIX_MACHINE_LINE_KEY),
+            provenance_values=provenance_values,
+            provenance_key="final_machine_lines",
+        )
+
+    if len(provenance_values) >= 2:
+        unique_values = set(provenance_values.values())
+        checks["git_provenance_consistent"] = len(unique_values) == 1
+        if len(unique_values) > 1:
+            joined = ", ".join(f"{key}={value}" for key, value in sorted(provenance_values.items()))
+            _append_git_provenance_issue(
+                issues,
+                reason=GIT_PROVENANCE_MISMATCH,
+                source="runtime git provenance",
+                detail=f"values disagree ({joined})",
+            )
 
 
 def review_evidence(
@@ -142,6 +305,13 @@ def review_evidence(
         issues.append("missing logs/wrapper_stdout.log")
     if not checks["stderr_log_present"]:
         issues.append("missing logs/wrapper_stderr.log")
+
+    _validate_runtime_git_provenance(
+        staging_root,
+        manifest_payload=manifest_payload,
+        issues=issues,
+        checks=checks,
+    )
 
     verdict = PASS if not issues else REVIEW_REQUIRED
     result: dict[str, Any] = {
