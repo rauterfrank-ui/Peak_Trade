@@ -50,9 +50,9 @@ def test_required_tests_job_has_no_job_level_if() -> None:
     assert "if:" not in tests_block.split("steps:")[0]
 
 
-def test_tests_job_timeout_40_preserved() -> None:
+def test_tests_job_timeout_25_preserved() -> None:
     assert re.search(
-        r"^\s*tests:\n(?:.*\n)*?\s*timeout-minutes:\s*40\s*$", _ci_text(), re.MULTILINE
+        r"^\s*tests:\n(?:.*\n)*?\s*timeout-minutes:\s*25\s*$", _ci_text(), re.MULTILINE
     )
 
 
