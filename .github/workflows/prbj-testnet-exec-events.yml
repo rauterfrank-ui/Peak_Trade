@@ -26,7 +26,7 @@ concurrency:
 jobs:
   run-testnet:
     runs-on: ubuntu-latest
-    timeout-minutes: 180
+    timeout-minutes: 25
     if: ${{ github.event_name != 'schedule' || vars.KRAKEN_TESTNET_CRON_ENABLED == 'true' }}
     steps:
       - uses: actions/checkout@v5

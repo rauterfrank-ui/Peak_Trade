@@ -75,7 +75,7 @@ jobs:
     name: "Health Check: ${{ github.event.inputs.profile || 'scheduled' }}"
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch' && github.event.inputs.profile != 'ALL_PROFILES'
-    timeout-minutes: 30
+    timeout-minutes: 25
 
     steps:
       - name: 📥 Checkout repository
@@ -197,7 +197,7 @@ jobs:
     name: "Health Check: ALL_PROFILES (Manual)"
     runs-on: ubuntu-latest
     if: github.event_name == 'workflow_dispatch' && github.event.inputs.profile == 'ALL_PROFILES'
-    timeout-minutes: 60
+    timeout-minutes: 25
 
     strategy:
       fail-fast: false
@@ -259,7 +259,7 @@ jobs:
     name: "Nightly Health Suite"
     runs-on: ubuntu-latest
     if: github.event_name == 'schedule'
-    timeout-minutes: 45
+    timeout-minutes: 25
 
     steps:
       - name: 📥 Checkout repository
@@ -418,7 +418,7 @@ jobs:
     name: "R&D Experimental Check"
     runs-on: ubuntu-latest
     if: github.event_name == 'schedule'
-    timeout-minutes: 30
+    timeout-minutes: 25
 
     steps:
       - name: 📥 Checkout repository
