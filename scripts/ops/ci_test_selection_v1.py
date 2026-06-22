@@ -128,6 +128,37 @@ DURABLE_COMPLETION_VALIDATOR_REBINDING_TEST_PATHS = frozenset(
     }
 )
 
+DURABLE_COMPLETION_COMPLETION_INTEGRATION_TEST_OWNER = "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py"
+DURABLE_COMPLETION_VALIDATION_GRAPH_TEST_OWNER = (
+    "tests/ops/test_durable_completion_validation_graph_v1.py"
+)
+
+DURABLE_COMPLETION_WALLCLOCK_BINDING_REBINDING_TEST_PATHS = frozenset(
+    {
+        DURABLE_COMPLETION_FACADE_PATH,
+        DURABLE_COMPLETION_COMPLETION_INTEGRATION_TEST_OWNER,
+    }
+)
+
+_PYTEST_NODE_ID = re.compile(r"^[A-Za-z0-9_\-]+(?:\[[^\]]+\])?$")
+
+DURABLE_COMPLETION_WALLCLOCK_BINDING_FOCUSED_TARGETS: tuple[str, ...] = (
+    f"{DURABLE_COMPLETION_COMPLETION_INTEGRATION_TEST_OWNER}::test_package_marker_present",
+    f"{DURABLE_COMPLETION_COMPLETION_INTEGRATION_TEST_OWNER}::test_canonical_owners_referenced_not_duplicated",
+    f"{DURABLE_COMPLETION_COMPLETION_INTEGRATION_TEST_OWNER}::test_coherent_static_completion_happy_path_passes",
+    f"{DURABLE_COMPLETION_COMPLETION_INTEGRATION_TEST_OWNER}::test_valid_static_proof_remains_non_authorizing",
+    f"{DURABLE_COMPLETION_COMPLETION_INTEGRATION_TEST_OWNER}::test_missing_wallclock_evidence_fails_closed",
+    f"{DURABLE_COMPLETION_COMPLETION_INTEGRATION_TEST_OWNER}::test_wrong_wallclock_relative_path_fails_closed",
+    f"{DURABLE_COMPLETION_COMPLETION_INTEGRATION_TEST_OWNER}::test_completion_wallclock_semantic_binding_uses_canonical_evaluators",
+    f"{DURABLE_COMPLETION_COMPLETION_INTEGRATION_TEST_OWNER}::test_invalid_wallclock_evidence_semantics_fails_closed",
+    f"{DURABLE_COMPLETION_COMPLETION_INTEGRATION_TEST_OWNER}::test_missing_wallclock_required_fields_fails_closed",
+    f"{DURABLE_COMPLETION_COMPLETION_INTEGRATION_TEST_OWNER}::test_wallclock_duration_proof_flags_drift_fails_closed",
+    f"{DURABLE_COMPLETION_COMPLETION_INTEGRATION_TEST_OWNER}::test_required_wallclock_field_names_complete_in_binding",
+    f"{DURABLE_COMPLETION_VALIDATION_GRAPH_TEST_OWNER}::test_graph_testnet_completion_includes_wallclock_required_path_binding",
+    f"{DURABLE_COMPLETION_VALIDATION_GRAPH_TEST_OWNER}::test_graph_retention_review_completion_share_canonical_testnet_paths",
+    f"{DURABLE_COMPLETION_VALIDATION_GRAPH_TEST_OWNER}::test_graph_seven_vs_eight_path_drift_fail_closed",
+)
+
 PE26_ASSEMBLY_OWNER = "src/ops/bounded_futures_testnet_preflight_execution_readiness_assembly_lifecycle_integration_contract_v0.py"
 
 PREFLIGHT_ASSEMBLY_CI_POLICY_PATHS = frozenset(
@@ -541,6 +572,64 @@ def _is_durable_completion_rebundle_path(path: str) -> bool:
     )
 
 
+def _split_pytest_target(target: str) -> tuple[str, str | None]:
+    if "::" not in target:
+        return target, None
+    path, node = target.split("::", 1)
+    return path, node or None
+
+
+def _validate_pytest_target(target: str) -> bool:
+    path, node = _split_pytest_target(target)
+    if not _validate_repo_relative_path(path):
+        return False
+    if node is None:
+        return True
+    node_name = node.split("[", 1)[0]
+    return bool(_PYTEST_NODE_ID.match(node_name))
+
+
+def _repo_pytest_target_exists(target: str) -> bool:
+    path, _ = _split_pytest_target(target)
+    return _repo_path_exists(path)
+
+
+def _is_durable_completion_wallclock_binding_rebinding_scope(files: list[str]) -> bool:
+    if not files:
+        return False
+    if not any(path == DURABLE_COMPLETION_FACADE_PATH for path in files):
+        return False
+    if not any(path == DURABLE_COMPLETION_COMPLETION_INTEGRATION_TEST_OWNER for path in files):
+        return False
+    if _is_durable_completion_validator_rebinding_scope(files):
+        return False
+    for path in files:
+        if path in DURABLE_COMPLETION_CI_POLICY_PATHS:
+            continue
+        if path in DURABLE_COMPLETION_CI_WORKFLOW_REBUNDLE_PATHS:
+            continue
+        if path in DURABLE_COMPLETION_WALLCLOCK_BINDING_REBINDING_TEST_PATHS:
+            continue
+        return False
+    return True
+
+
+def _durable_completion_wallclock_binding_focused_targets(
+    files: list[str] | None = None,
+) -> tuple[str, ...]:
+    targets: list[str] = []
+    for target in DURABLE_COMPLETION_WALLCLOCK_BINDING_FOCUSED_TARGETS:
+        if _repo_pytest_target_exists(target):
+            targets.append(target)
+    if not targets:
+        return ()
+    if files and any(path in DURABLE_COMPLETION_CI_POLICY_PATHS for path in files):
+        ci_owner = "tests/ci/test_ci_diff_aware_test_selection_v1.py"
+        if _repo_path_exists(ci_owner):
+            targets.append(ci_owner)
+    return tuple(sorted(set(targets)))
+
+
 def _is_durable_completion_validator_rebinding_scope(files: list[str]) -> bool:
     if not files:
         return False
@@ -580,6 +669,8 @@ def _durable_completion_focused_targets(files: list[str] | None = None) -> tuple
     graph_owner = "tests/ops/test_durable_completion_validation_graph_v1.py"
     if not _repo_path_exists(graph_owner):
         return ()
+    if files and _is_durable_completion_wallclock_binding_rebinding_scope(files):
+        return _durable_completion_wallclock_binding_focused_targets(files)
     if files and _is_durable_completion_validator_rebinding_scope(files):
         targets: list[str] = [graph_owner]
         if files and any(
@@ -1126,7 +1217,11 @@ def _try_durable_completion_focused(files: list[str]) -> SelectionResult | None:
     if not targets:
         return None
     modules: tuple[str, ...] = ("src.ops.durable_completion_validation",)
-    if not _is_durable_completion_validator_rebinding_scope(files):
+    if _is_durable_completion_wallclock_binding_rebinding_scope(files):
+        modules = (
+            "src.ops.bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0",
+        )
+    elif not _is_durable_completion_validator_rebinding_scope(files):
         modules = (
             "src.ops.bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0",
             "src.ops.durable_completion_validation",
@@ -1603,7 +1698,7 @@ def resolve_selection(
 
 def emit_validated_pytest_targets(raw: str) -> int:
     for part in raw.split():
-        if not _validate_repo_relative_path(part) or not _repo_path_exists(part):
+        if not _validate_pytest_target(part) or not _repo_pytest_target_exists(part):
             print(f"invalid pytest target: {part!r}", file=sys.stderr)
             return 1
         print(part)
