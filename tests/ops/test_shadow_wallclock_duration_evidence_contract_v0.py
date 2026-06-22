@@ -19,7 +19,9 @@ from src.ops.wallclock_session_evidence_v0 import (
     INVALID_IF_ELAPSED_BELOW_MIN,
     WALLCLOCK_EVIDENCE_FILENAME,
     bounds_from_planned_duration,
+    build_wallclock_evidence_from_manifest_fields,
     evaluate_wallclock_evidence_fields,
+    write_wallclock_evidence,
 )
 from tests.ops.test_testnet_wallclock_duration_evidence_contract_v0 import (
     REQUIRED_WALLCLOCK_FIELD_NAMES,
@@ -55,41 +57,9 @@ def _format_utc_iso(dt: datetime) -> str:
 
 
 def build_shadow_wallclock_evidence_from_manifest_fields(
-    *,
-    utc_started: str,
-    utc_completed: str,
-    duration_minutes: int,
-    start_monotonic_seconds: float,
-    end_monotonic_seconds: float,
-    early_exit_detected: bool = False,
-    early_exit_reason: str = "",
+    **kwargs: Any,
 ) -> dict[str, Any]:
-    """Derive charter-aligned wall-clock evidence from existing Shadow manifest time fields."""
-    planned = int(duration_minutes) * 60
-    bounds = bounds_from_planned_duration(planned)
-    elapsed_wall = round(
-        (_parse_utc_iso(utc_completed) - _parse_utc_iso(utc_started)).total_seconds(),
-        6,
-    )
-    elapsed_mono = round(end_monotonic_seconds - start_monotonic_seconds, 6)
-    evidence: dict[str, Any] = {
-        **bounds,
-        "start_wall_clock_iso": utc_started,
-        "end_wall_clock_iso": utc_completed,
-        "start_monotonic_seconds": start_monotonic_seconds,
-        "end_monotonic_seconds": end_monotonic_seconds,
-        "elapsed_wall_clock_seconds": elapsed_wall,
-        "elapsed_monotonic_seconds": elapsed_mono,
-        "early_exit_detected": early_exit_detected,
-        "early_exit_reason": early_exit_reason,
-        "invalid_if_elapsed_below_min": INVALID_IF_ELAPSED_BELOW_MIN,
-    }
-    evaluation = evaluate_wallclock_evidence_fields(evidence)
-    evidence["duration_proven"] = evaluation["duration_proven"]
-    evidence["duration_evidence_valid"] = evaluation["duration_evidence_valid"]
-    if evaluation["fail_reasons"]:
-        evidence["wallclock_fail_reasons"] = evaluation["fail_reasons"]
-    return evidence
+    return build_wallclock_evidence_from_manifest_fields(**kwargs)
 
 
 def _synthetic_shadow_pass_evidence(
@@ -132,8 +102,15 @@ def test_canonical_evaluator_imported_not_duplicated() -> None:
 
 
 def test_testnet_precedent_field_names_reused() -> None:
+    sample = build_shadow_wallclock_evidence_from_manifest_fields(
+        utc_started="2026-06-22T10:00:00Z",
+        utc_completed="2026-06-22T10:10:01Z",
+        duration_minutes=STANDARD_DURATION_MINUTES,
+        start_monotonic_seconds=1000.0,
+        end_monotonic_seconds=1601.0,
+    )
     for field in REQUIRED_WALLCLOCK_FIELD_NAMES:
-        assert field in Path(__file__).read_text(encoding="utf-8")
+        assert field in sample
 
 
 def test_testnet_wallclock_contract_crosslink_present() -> None:
@@ -380,3 +357,33 @@ def test_default_wall_clock_slack_matches_testnet_precedent() -> None:
     assert DEFAULT_WALL_CLOCK_SLACK_SECONDS == 60
     bounds = bounds_from_planned_duration(STANDARD_DURATION_MINUTES * 60)
     assert bounds["wall_clock_slack_seconds"] == DEFAULT_WALL_CLOCK_SLACK_SECONDS
+
+
+def test_canonical_writer_serializes_evaluator_result_deterministically(tmp_path: Path) -> None:
+    evidence = _synthetic_shadow_pass_evidence(STANDARD_DURATION_MINUTES)
+    out_path = tmp_path / WALLCLOCK_EVIDENCE_FILENAME
+    write_wallclock_evidence(out_path, evidence)
+    written = json.loads(out_path.read_text(encoding="utf-8"))
+    assert written == evidence
+    assert out_path.name == WALLCLOCK_EVIDENCE_FILENAME
+    assert json.dumps(written, indent=2, sort_keys=True) + "\n" == out_path.read_text(
+        encoding="utf-8"
+    )
+
+
+def test_canonical_writer_does_not_recompute_evaluation(tmp_path: Path) -> None:
+    evidence = _synthetic_shadow_pass_evidence(STANDARD_DURATION_MINUTES)
+    evidence["duration_proven"] = False
+    evidence["duration_evidence_valid"] = False
+    out_path = tmp_path / WALLCLOCK_EVIDENCE_FILENAME
+    write_wallclock_evidence(out_path, evidence)
+    written = json.loads(out_path.read_text(encoding="utf-8"))
+    assert written["duration_proven"] is False
+    assert written["duration_evidence_valid"] is False
+
+
+def test_shadow_adapter_emits_wallclock_evidence_filename() -> None:
+    source = SHADOW_ADAPTER.read_text(encoding="utf-8")
+    assert "WALLCLOCK_EVIDENCE_FILENAME" in source
+    assert "build_wallclock_evidence_from_manifest_fields" in source
+    assert "write_wallclock_evidence" in source

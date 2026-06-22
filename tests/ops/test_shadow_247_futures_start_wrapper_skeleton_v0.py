@@ -2185,6 +2185,14 @@ def test_shadow_247_bounded_shadow_dry_run_writes_manifest_sha_md_and_steps(
         assert doc.get("dry_run") is True
         assert doc.get("shadow_mode") is True
         assert doc.get("step_interval_seconds") == pytest.approx(0.0)
+        assert isinstance(doc.get("start_monotonic_seconds"), float)
+        assert isinstance(doc.get("end_monotonic_seconds"), float)
+        assert isinstance(doc.get("elapsed_monotonic_seconds"), float)
+        assert doc["end_monotonic_seconds"] >= doc["start_monotonic_seconds"]
+        assert doc["elapsed_monotonic_seconds"] == pytest.approx(
+            doc["end_monotonic_seconds"] - doc["start_monotonic_seconds"],
+            abs=1e-6,
+        )
         ms = doc["verbatim_machine_summary"]
         assert "RUN_STARTED=true" in ms
         assert "TESTNET_STARTED=false" in ms
@@ -2677,6 +2685,9 @@ def test_shadow_wrapper_wallclock_duration_contract_crosslink_v0() -> None:
         "duration_minutes_cap_enforced",
         "utc_started",
         "utc_completed",
+        "start_monotonic_seconds",
+        "end_monotonic_seconds",
+        "elapsed_monotonic_seconds",
     ):
         assert marker in SRC_TEXT, marker
     assert "WALLCLOCK_EVIDENCE.json" not in SRC_TEXT
