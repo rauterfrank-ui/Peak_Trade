@@ -15,6 +15,7 @@ from typing import Any, Optional
 PACKAGE_MARKER = "RUNTIME_WALLCLOCK_SESSION_EVIDENCE_V0=true"
 WALLCLOCK_EVIDENCE_FILENAME = "WALLCLOCK_EVIDENCE.json"
 EVIDENCE_SOURCE_REPO_NATIVE = "repo_native_session"
+EVIDENCE_SOURCE_SHADOW_BOUNDED = "shadow_bounded_dry_run"
 DEFAULT_WALL_CLOCK_SLACK_SECONDS = 60
 INVALID_IF_ELAPSED_BELOW_MIN = True
 
@@ -179,6 +180,50 @@ class WallClockSessionTracker:
         if evaluation["fail_reasons"]:
             evidence["wallclock_fail_reasons"] = evaluation["fail_reasons"]
         return evidence
+
+
+def build_wallclock_evidence_from_manifest_fields(
+    *,
+    utc_started: str,
+    utc_completed: str,
+    duration_minutes: int,
+    start_monotonic_seconds: float,
+    end_monotonic_seconds: float,
+    early_exit_detected: bool = False,
+    early_exit_reason: str = "",
+    evidence_source: str = EVIDENCE_SOURCE_SHADOW_BOUNDED,
+    real_sleep_used: bool = False,
+) -> dict[str, Any]:
+    """Derive charter-aligned wall-clock evidence from bounded session manifest time fields."""
+    planned = int(duration_minutes) * 60
+    bounds = bounds_from_planned_duration(planned)
+    elapsed_wall = round(
+        (_parse_utc_iso(utc_completed) - _parse_utc_iso(utc_started)).total_seconds(),
+        6,
+    )
+    elapsed_mono = round(end_monotonic_seconds - start_monotonic_seconds, 6)
+    evidence: dict[str, Any] = {
+        **bounds,
+        "start_wall_clock_iso": utc_started,
+        "end_wall_clock_iso": utc_completed,
+        "start_monotonic_seconds": start_monotonic_seconds,
+        "end_monotonic_seconds": end_monotonic_seconds,
+        "elapsed_wall_clock_seconds": elapsed_wall,
+        "elapsed_monotonic_seconds": elapsed_mono,
+        "early_exit_detected": early_exit_detected,
+        "early_exit_reason": early_exit_reason,
+        "invalid_if_elapsed_below_min": INVALID_IF_ELAPSED_BELOW_MIN,
+        "evidence_source": evidence_source,
+        "emitter_artifact_filename": WALLCLOCK_EVIDENCE_FILENAME,
+        "real_sleep_used": real_sleep_used,
+        "simulation_forbidden": False,
+    }
+    evaluation = evaluate_wallclock_evidence_fields(evidence)
+    evidence["duration_proven"] = evaluation["duration_proven"]
+    evidence["duration_evidence_valid"] = evaluation["duration_evidence_valid"]
+    if evaluation["fail_reasons"]:
+        evidence["wallclock_fail_reasons"] = evaluation["fail_reasons"]
+    return evidence
 
 
 def write_wallclock_evidence(path: Path, evidence: dict[str, Any]) -> Path:

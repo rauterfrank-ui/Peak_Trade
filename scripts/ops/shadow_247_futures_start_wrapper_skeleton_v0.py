@@ -1163,6 +1163,8 @@ def _bounded_shadow_manifest(
         "dry_run": True,
         "duration_minutes_requested": int(run_meta["duration_minutes"]),
         "duration_minutes_cap_enforced": int(run_meta["duration_minutes_cap_enforced"]),
+        "elapsed_monotonic_seconds": float(run_meta["elapsed_monotonic_seconds"]),
+        "end_monotonic_seconds": float(run_meta["end_monotonic_seconds"]),
         "extended_bounded_shadow_validation": bool(
             run_meta.get("extended_bounded_shadow_validation", False),
         ),
@@ -1192,6 +1194,7 @@ def _bounded_shadow_manifest(
         "scheduler_started": False,
         "shadow_mode": True,
         "shadow_started": True,
+        "start_monotonic_seconds": float(run_meta["start_monotonic_seconds"]),
         "step_interval_seconds": float(run_meta["step_interval_seconds"]),
         "steps_emitted": int(run_meta["steps_emitted"]),
         "steps_jsonl_filename": BOUNDED_SHADOW_STEPS_JSONL_V0,
@@ -1226,7 +1229,8 @@ def _execute_bounded_shadow_dry_run(
         recorded_meta = _inventory_recorded_public_rest_source(recorded_public_rest_source)
 
     utc_started = datetime.now(timezone.utc)
-    deadline = time.monotonic() + float(duration_minutes) * 60.0
+    start_monotonic_seconds = time.monotonic()
+    deadline = start_monotonic_seconds + float(duration_minutes) * 60.0
     steps_emitted = 0
     lines: list[str] = []
 
@@ -1262,14 +1266,19 @@ def _execute_bounded_shadow_dry_run(
             if remaining_deadline > 0.0:
                 time.sleep(min(step_interval_seconds, remaining_deadline))
 
+    end_monotonic_seconds = time.monotonic()
     utc_ended = datetime.now(timezone.utc)
+    elapsed_monotonic_seconds = round(end_monotonic_seconds - start_monotonic_seconds, 6)
     run_meta: dict[str, Any] = {
         "duration_minutes": duration_minutes,
         "duration_minutes_cap_enforced": int(duration_cap_minutes),
+        "elapsed_monotonic_seconds": elapsed_monotonic_seconds,
+        "end_monotonic_seconds": end_monotonic_seconds,
         "extended_bounded_shadow_validation": extended_bounded_shadow_validation,
         "candidate_24h_bounded_shadow_validation": candidate_24h_bounded_shadow_validation,
         "max_steps": max_steps,
         "max_steps_cap_enforced": int(max_steps_cap),
+        "start_monotonic_seconds": start_monotonic_seconds,
         "step_interval_seconds": step_interval_seconds,
         "steps_emitted": steps_emitted,
         "utc_end": utc_ended.strftime("%Y-%m-%dT%H:%M:%SZ"),

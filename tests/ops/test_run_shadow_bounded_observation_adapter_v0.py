@@ -15,6 +15,8 @@ from unittest.mock import patch
 
 import pytest
 
+from src.ops.wallclock_session_evidence_v0 import WALLCLOCK_EVIDENCE_FILENAME
+
 ROOT = Path(__file__).resolve().parent.parent.parent
 ADAPTER_SCRIPT = ROOT / "scripts" / "ops" / "run_shadow_bounded_observation_adapter_v0.py"
 REVIEW_SCRIPT = ROOT / "scripts" / "ops" / "review_shadow_bounded_observation_evidence_v0.py"
@@ -76,10 +78,44 @@ def _durable_archive(tmp_path: Path) -> Path:
     return path
 
 
+def _passing_wrapper_manifest_fields(
+    *,
+    duration_minutes: int = 10,
+    start_iso: str = "2026-06-22T10:00:00Z",
+    end_iso: str | None = None,
+    start_monotonic_seconds: float = 1000.0,
+    end_monotonic_seconds: float | None = None,
+) -> dict[str, object]:
+    planned_seconds = duration_minutes * 60
+    if end_iso is None:
+        from datetime import datetime, timedelta, timezone
+
+        start_dt = datetime.fromisoformat(start_iso.replace("Z", "+00:00"))
+        end_dt = start_dt + timedelta(seconds=planned_seconds + 1)
+        end_iso = end_dt.strftime("%Y-%m-%dT%H:%M:%S") + "Z"
+    if end_monotonic_seconds is None:
+        end_monotonic_seconds = start_monotonic_seconds + planned_seconds + 1.0
+    return {
+        "schema": "shadow_247_futures_bounded_shadow_dry_run.v0",
+        "NO_BROKER": True,
+        "NO_NETWORK": True,
+        "NO_ORDER_SUBMISSION": True,
+        "duration_minutes_requested": duration_minutes,
+        "utc_started": start_iso,
+        "utc_completed": end_iso,
+        "start_monotonic_seconds": start_monotonic_seconds,
+        "end_monotonic_seconds": end_monotonic_seconds,
+        "elapsed_monotonic_seconds": round(end_monotonic_seconds - start_monotonic_seconds, 6),
+        "step_interval_seconds": 0.0,
+    }
+
+
 def _write_wrapper_bundle(
     staging: Path,
     *,
     git_sha_prefix: str | None = CANONICAL_GIT_SHA_PREFIX,
+    manifest_overrides: dict[str, object] | None = None,
+    duration_minutes: int = 10,
 ) -> None:
     evidence = staging / "wrapper_evidence"
     evidence.mkdir(parents=True, exist_ok=True)
@@ -96,14 +132,13 @@ def _write_wrapper_bundle(
         encoding="utf-8",
     )
     (evidence / "steps.jsonl").write_text('{"step": 1}\n', encoding="utf-8")
-    manifest: dict[str, object] = {
-        "schema": "shadow_247_futures_bounded_shadow_dry_run.v0",
-        "NO_BROKER": True,
-        "NO_NETWORK": True,
-        "NO_ORDER_SUBMISSION": True,
-    }
+    manifest: dict[str, object] = _passing_wrapper_manifest_fields(
+        duration_minutes=duration_minutes
+    )
     if git_sha_prefix is not None:
         manifest["git_sha_prefix"] = git_sha_prefix
+    if manifest_overrides:
+        manifest.update(manifest_overrides)
     (evidence / "manifest.json").write_text(json.dumps(manifest) + "\n", encoding="utf-8")
     logs = staging / "logs"
     logs.mkdir(parents=True, exist_ok=True)
@@ -399,6 +434,10 @@ def test_execute_accepts_sample_approval_with_mocked_runner(tmp_path: Path) -> N
     assert (staging / mod.COMMAND_TRANSCRIPT_FILENAME).is_file()
     assert (staging / mod.PROCESS_INVENTORY_BEFORE_FILENAME).is_file()
     assert (staging / mod.PROCESS_INVENTORY_AFTER_FILENAME).is_file()
+    assert (staging / WALLCLOCK_EVIDENCE_FILENAME).is_file()
+    wallclock = json.loads((staging / WALLCLOCK_EVIDENCE_FILENAME).read_text(encoding="utf-8"))
+    assert wallclock["duration_evidence_valid"] is True
+    assert wallclock["duration_proven"] is True
     transcript = (staging / mod.COMMAND_TRANSCRIPT_FILENAME).read_text(encoding="utf-8")
     assert "RUN_ID=" in transcript
     assert "bounded-shadow-dry-run" in transcript.lower()
@@ -1004,7 +1043,7 @@ def test_24h_profile_execute_accepts_shared_fixture_mocked(tmp_path: Path) -> No
         if "shadow_247_futures_start_wrapper_skeleton_v0.py" in joined:
             assert "candidate-24h-bounded-shadow-validation" in joined
             assert "--duration-minutes 1440" in joined
-            _write_wrapper_bundle(staging)
+            _write_wrapper_bundle(staging, duration_minutes=1440)
             if stdout_path is not None:
                 stdout_path.write_text("mock wrapper stdout\n", encoding="utf-8")
             if stderr_path is not None:
@@ -1217,6 +1256,293 @@ def test_shadow_adapter_wallclock_duration_contract_crosslink_v0(tmp_path: Path)
     adapter_source = ADAPTER_SCRIPT.read_text(encoding="utf-8")
     assert "extended_tier_active" in adapter_source
     assert "EXTENDED_BOUNDED_SHADOW_CONFIRM_TOKEN_V0" in adapter_source
+
+
+def _mock_execute_runner(staging: Path):
+    def _runner(argv: Sequence[str], _cwd, stdout_path, stderr_path) -> int:
+        joined = " ".join(argv)
+        if "shadow_247_futures_start_wrapper_skeleton_v0.py" in joined:
+            _write_wrapper_bundle(staging)
+            if stdout_path is not None:
+                stdout_path.write_text("mock wrapper stdout\n", encoding="utf-8")
+            if stderr_path is not None:
+                stderr_path.write_text("mock wrapper stderr\n", encoding="utf-8")
+            return 0
+        if "review_shadow_bounded_observation_evidence_v0.py" in joined:
+            review_mod = _load_review()
+            result = review_mod.review_evidence(staging)
+            if stdout_path is not None:
+                stdout_path.parent.mkdir(parents=True, exist_ok=True)
+                stdout_path.write_text(
+                    json.dumps(result, indent=2, sort_keys=True) + "\n",
+                    encoding="utf-8",
+                )
+            return 0 if result["verdict"] == review_mod.PASS else 1
+        return 0
+
+    return _runner
+
+
+def test_execute_emits_wallclock_evidence_pass_standard_tier(tmp_path: Path) -> None:
+    mod = _load_adapter()
+    staging = _staging(tmp_path)
+    archive = _durable_archive(tmp_path)
+    rc = mod.main(
+        _base_argv(staging, archive)
+        + [
+            "--execute",
+            "--approval-record",
+            str(APPROVAL_FIXTURE),
+            "--no-strict-repo-clean",
+        ],
+        subprocess_runner=_mock_execute_runner(staging),
+        repo_clean_checker=lambda _root: (True, ""),
+    )
+    assert rc == 0
+    evidence_path = staging / WALLCLOCK_EVIDENCE_FILENAME
+    assert evidence_path.is_file()
+    payload = json.loads(evidence_path.read_text(encoding="utf-8"))
+    assert payload["duration_evidence_valid"] is True
+    assert payload["planned_duration_seconds"] == 600
+    metadata = json.loads((staging / "RUN_METADATA.json").read_text(encoding="utf-8"))
+    assert metadata["wallclock_duration_proven"] is True
+
+
+def test_execute_extended_tier_wallclock_pass_without_sleep(tmp_path: Path) -> None:
+    mod = _load_adapter()
+    staging = _staging(tmp_path)
+    archive = _durable_archive(tmp_path)
+    overrides = _passing_wrapper_manifest_fields(duration_minutes=30)
+
+    def _runner(argv: Sequence[str], _cwd, stdout_path, stderr_path) -> int:
+        joined = " ".join(argv)
+        if "shadow_247_futures_start_wrapper_skeleton_v0.py" in joined:
+            _write_wrapper_bundle(staging, manifest_overrides=overrides)
+            if stdout_path is not None:
+                stdout_path.write_text("mock wrapper stdout\n", encoding="utf-8")
+            if stderr_path is not None:
+                stderr_path.write_text("mock wrapper stderr\n", encoding="utf-8")
+            return 0
+        if "review_shadow_bounded_observation_evidence_v0.py" in joined:
+            review_mod = _load_review()
+            result = review_mod.review_evidence(staging)
+            if stdout_path is not None:
+                stdout_path.parent.mkdir(parents=True, exist_ok=True)
+                stdout_path.write_text(
+                    json.dumps(result, indent=2, sort_keys=True) + "\n",
+                    encoding="utf-8",
+                )
+            return 0 if result["verdict"] == review_mod.PASS else 1
+        return 0
+
+    rc = mod.main(
+        _base_argv(staging, archive)
+        + [
+            "--execute",
+            "--approval-record",
+            str(APPROVAL_FIXTURE),
+            "--no-strict-repo-clean",
+            "--duration-minutes",
+            "30",
+        ],
+        subprocess_runner=_runner,
+        repo_clean_checker=lambda _root: (True, ""),
+    )
+    assert rc == 0
+    payload = json.loads((staging / WALLCLOCK_EVIDENCE_FILENAME).read_text(encoding="utf-8"))
+    assert payload["duration_evidence_valid"] is True
+    assert payload["planned_duration_seconds"] == 1800
+
+
+def test_execute_fast_sim_false_claim_fails_closed(tmp_path: Path) -> None:
+    mod = _load_adapter()
+    staging = _staging(tmp_path)
+    archive = _durable_archive(tmp_path)
+    overrides = _passing_wrapper_manifest_fields(
+        duration_minutes=30,
+        end_iso="2026-06-22T10:00:05Z",
+        end_monotonic_seconds=1005.0,
+    )
+
+    def _runner(argv: Sequence[str], _cwd, stdout_path, stderr_path) -> int:
+        joined = " ".join(argv)
+        if "shadow_247_futures_start_wrapper_skeleton_v0.py" in joined:
+            _write_wrapper_bundle(staging, manifest_overrides=overrides)
+            if stdout_path is not None:
+                stdout_path.write_text("mock wrapper stdout\n", encoding="utf-8")
+            if stderr_path is not None:
+                stderr_path.write_text("mock wrapper stderr\n", encoding="utf-8")
+            return 0
+        if "review_shadow_bounded_observation_evidence_v0.py" in joined:
+            review_mod = _load_review()
+            result = review_mod.review_evidence(staging)
+            if stdout_path is not None:
+                stdout_path.parent.mkdir(parents=True, exist_ok=True)
+                stdout_path.write_text(
+                    json.dumps(result, indent=2, sort_keys=True) + "\n",
+                    encoding="utf-8",
+                )
+            return 0 if result["verdict"] == review_mod.PASS else 1
+        return 0
+
+    rc = mod.main(
+        _base_argv(staging, archive)
+        + [
+            "--execute",
+            "--approval-record",
+            str(APPROVAL_FIXTURE),
+            "--no-strict-repo-clean",
+            "--duration-minutes",
+            "30",
+        ],
+        subprocess_runner=_runner,
+        repo_clean_checker=lambda _root: (True, ""),
+    )
+    assert rc != 0
+    assert not (staging / "CLOSEOUT.md").is_file()
+
+
+@pytest.mark.parametrize(
+    "manifest_overrides",
+    [
+        {"start_monotonic_seconds": None},
+        {"end_monotonic_seconds": None},
+        {"utc_started": ""},
+        {"utc_completed": ""},
+    ],
+)
+def test_execute_missing_wallclock_inputs_fail_closed(
+    tmp_path: Path,
+    manifest_overrides: dict[str, object],
+) -> None:
+    mod = _load_adapter()
+    staging = _staging(tmp_path) / "missing"
+    archive = _durable_archive(tmp_path)
+    rc = mod.main(
+        _base_argv(staging, archive)
+        + [
+            "--execute",
+            "--approval-record",
+            str(APPROVAL_FIXTURE),
+            "--no-strict-repo-clean",
+        ],
+        subprocess_runner=_runner_with_overrides(staging, manifest_overrides),
+        repo_clean_checker=lambda _root: (True, ""),
+    )
+    assert rc != 0
+    assert not (staging / "CLOSEOUT.md").is_file()
+
+
+def test_execute_invalid_declared_duration_wallclock_fails_closed(tmp_path: Path) -> None:
+    mod = _load_adapter()
+    staging = _staging(tmp_path) / "invalid_duration"
+    archive = _durable_archive(tmp_path)
+    rc = mod.main(
+        _base_argv(staging, archive)
+        + [
+            "--execute",
+            "--approval-record",
+            str(APPROVAL_FIXTURE),
+            "--no-strict-repo-clean",
+        ],
+        subprocess_runner=_runner_with_overrides(
+            staging,
+            {
+                "duration_minutes_requested": 30,
+                "utc_completed": "2026-06-22T10:00:05Z",
+                "end_monotonic_seconds": 1005.0,
+            },
+        ),
+        repo_clean_checker=lambda _root: (True, ""),
+    )
+    assert rc != 0
+
+
+def _runner_with_overrides(staging: Path, manifest_overrides: dict[str, object]):
+    def _runner(argv: Sequence[str], _cwd, stdout_path, stderr_path) -> int:
+        joined = " ".join(argv)
+        if "shadow_247_futures_start_wrapper_skeleton_v0.py" in joined:
+            _write_wrapper_bundle(staging, manifest_overrides=manifest_overrides)
+            if stdout_path is not None:
+                stdout_path.write_text("mock wrapper stdout\n", encoding="utf-8")
+            if stderr_path is not None:
+                stderr_path.write_text("mock wrapper stderr\n", encoding="utf-8")
+            return 0
+        if "review_shadow_bounded_observation_evidence_v0.py" in joined:
+            review_mod = _load_review()
+            result = review_mod.review_evidence(staging)
+            if stdout_path is not None:
+                stdout_path.parent.mkdir(parents=True, exist_ok=True)
+                stdout_path.write_text(
+                    json.dumps(result, indent=2, sort_keys=True) + "\n",
+                    encoding="utf-8",
+                )
+            return 0 if result["verdict"] == review_mod.PASS else 1
+        return 0
+
+    return _runner
+
+
+def test_execute_wallclock_writer_failure_fails_closed(tmp_path: Path) -> None:
+    mod = _load_adapter()
+    staging = _staging(tmp_path)
+    archive = _durable_archive(tmp_path)
+
+    def _failing_writer(_path: Path, _evidence: dict) -> Path:
+        raise OSError("simulated wallclock write failure")
+
+    with patch.object(mod, "write_wallclock_evidence", side_effect=_failing_writer):
+        rc = mod.main(
+            _base_argv(staging, archive)
+            + [
+                "--execute",
+                "--approval-record",
+                str(APPROVAL_FIXTURE),
+                "--no-strict-repo-clean",
+            ],
+            subprocess_runner=_mock_execute_runner(staging),
+            repo_clean_checker=lambda _root: (True, ""),
+        )
+    assert rc != 0
+    assert not (staging / WALLCLOCK_EVIDENCE_FILENAME).is_file()
+
+
+def test_execute_wallclock_emitter_called_once_and_preserves_closeout_chain(tmp_path: Path) -> None:
+    mod = _load_adapter()
+    staging = _staging(tmp_path)
+    archive = _durable_archive(tmp_path)
+    calls = {"count": 0}
+    real_emit = mod._emit_wallclock_evidence_from_wrapper_manifest
+
+    def _counting_emit(*args, **kwargs):
+        calls["count"] += 1
+        return real_emit(*args, **kwargs)
+
+    with patch.object(
+        mod, "_emit_wallclock_evidence_from_wrapper_manifest", side_effect=_counting_emit
+    ):
+        rc = mod.main(
+            _base_argv(staging, archive)
+            + [
+                "--execute",
+                "--approval-record",
+                str(APPROVAL_FIXTURE),
+                "--no-strict-repo-clean",
+            ],
+            subprocess_runner=_mock_execute_runner(staging),
+            repo_clean_checker=lambda _root: (True, ""),
+        )
+    assert rc == 0
+    assert calls["count"] == 1
+    assert (staging / mod.COMMAND_TRANSCRIPT_FILENAME).is_file()
+    assert (staging / mod.PROCESS_INVENTORY_AFTER_FILENAME).is_file()
+    assert (staging / "MANIFEST.sha256").is_file()
+
+
+def test_plan_lists_wallclock_evidence_artifact(tmp_path: Path) -> None:
+    mod = _load_adapter()
+    plan = _plan_dict(_staging(tmp_path))
+    assert WALLCLOCK_EVIDENCE_FILENAME in plan["expected_artifacts"]
 
 
 def test_execute_run_metadata_includes_wrapper_repo_head_sha_prefix(tmp_path: Path) -> None:
