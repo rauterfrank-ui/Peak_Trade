@@ -386,7 +386,7 @@ jobs:
   tests:
     name: tests (${{ matrix.python-version }})
     runs-on: ubuntu-latest
-    timeout-minutes: 40
+    timeout-minutes: 25
     needs: changes
     # IMPORTANT: No job-level if condition - matrix jobs must always be created
     # to satisfy branch protection rules (e.g., "tests (3.11)" check)
