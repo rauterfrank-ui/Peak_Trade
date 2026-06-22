@@ -409,6 +409,38 @@ def test_graph_completion_chain_validator_pe35_digest_drift_fail_closed() -> Non
     assert VALIDATOR_COMPLETION_CHAIN not in context.completed_validators
 
 
+def test_graph_completion_chain_validator_wallclock_digest_drift_fail_closed() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = _replace_completion_proof_chain(
+        integration_input,
+        completion_referenced_wallclock_evidence_digest="0" * 64,
+    )
+    pe25_input = bad.pe25_closure_integration_input
+    pe37_input = bad.pe37_traceability_boundary_input
+    pe35_input = bad.pe35_handoff_staleness_revocation_recovery_boundary_input
+    context = ValidationContext(
+        integration_input=bad,
+        pe31_result=evaluate_reconciliation_review_lifecycle_integration(
+            bad.pe31_reconciliation_review_integration_input
+        ),
+        pe35_result=evaluate_handoff_staleness_revocation_recovery_boundary(pe35_input),
+        pe37_result=evaluate_durable_evidence_traceability_boundary(pe37_input),
+        pe25_result=evaluate_operator_closure_lifecycle_integration(pe25_input),
+        admission_result={
+            "integration_pass": True,
+            "integration_proof_digest": (
+                bad.pe25_operator_closure_proof.admission_integration_proof_digest
+            ),
+        },
+    )
+    result = execute_proof_binding_validation_graph(context)
+    assert any(
+        "completion_referenced_wallclock_evidence_digest mismatch" in reason
+        for reason in result.fail_reasons
+    )
+    assert VALIDATOR_COMPLETION_CHAIN not in context.completed_validators
+
+
 def test_evaluate_graph_compatibility_happy_path() -> None:
     integration_input = default_minimal_completion_integration_input()
     result = evaluate_durable_run_primary_evidence_completion_integration(integration_input)

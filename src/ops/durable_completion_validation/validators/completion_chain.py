@@ -23,6 +23,11 @@ def validate_completion_proof_chain_binding(context: ValidationContext) -> Valid
     pe25_proof = integration_input.pe25_operator_closure_proof
     pe21_proof = integration_input.pe21_proof
     pe31_pe21_proof = integration_input.pe31_reconciliation_review_integration_input.pe21_reconciliation_primary_evidence_integration_proof
+    wallclock_proof = integration_input.wallclock_evidence_proof
+    checksum_by_path = {
+        entry.relative_path: entry.digest for entry in integration_input.artifact_checksums
+    }
+    canonical_wallclock_evidence_digest = checksum_by_path.get(wallclock_proof.artifact_filename)
     pe21_input_digest = compute_pe21_integration_input_digest(
         integration_input.pe21_integration_input
     )
@@ -60,6 +65,10 @@ def validate_completion_proof_chain_binding(context: ValidationContext) -> Valid
         ),
         ("shared_pe21_integration_input_digest", chain.shared_pe21_integration_input_digest),
         ("shared_traceability_identity", chain.shared_traceability_identity),
+        (
+            "completion_referenced_wallclock_evidence_digest",
+            chain.completion_referenced_wallclock_evidence_digest,
+        ),
     )
     for field_name, value in digest_fields:
         if not value:
@@ -126,5 +135,15 @@ def validate_completion_proof_chain_binding(context: ValidationContext) -> Valid
         fail_reasons.append("completion_proof_chain: shared_pe21_integration_input_digest mismatch")
     if chain.shared_traceability_identity != integration_input.durable_run_root.run_root_digest:
         fail_reasons.append("completion_proof_chain: shared_traceability_identity mismatch")
+    if canonical_wallclock_evidence_digest is None:
+        fail_reasons.append(
+            "completion_proof_chain: wallclock evidence artifact digest unavailable"
+        )
+    elif (
+        chain.completion_referenced_wallclock_evidence_digest != canonical_wallclock_evidence_digest
+    ):
+        fail_reasons.append(
+            "completion_proof_chain: completion_referenced_wallclock_evidence_digest mismatch"
+        )
 
     return ValidationResult(fail_reasons=tuple(sorted_unique(fail_reasons)))

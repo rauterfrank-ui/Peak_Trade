@@ -523,6 +523,7 @@ class CompletionProofChainBinding:
     completion_referenced_pe21_integration_proof_digest: str
     shared_pe21_integration_input_digest: str
     shared_traceability_identity: str
+    completion_referenced_wallclock_evidence_digest: str
 
 
 @dataclass(frozen=True)
@@ -2735,6 +2736,15 @@ def default_minimal_pe25_integration_proof(
     )
 
 
+def _resolve_wallclock_evidence_artifact_digest(
+    *,
+    wallclock_proof: WallclockEvidenceProofBinding,
+    artifact_checksums: tuple[ArtifactChecksumEntry, ...],
+) -> str:
+    checksum_by_path = {entry.relative_path: entry.digest for entry in artifact_checksums}
+    return checksum_by_path[wallclock_proof.artifact_filename]
+
+
 def default_minimal_completion_proof_chain(
     integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
 ) -> CompletionProofChainBinding:
@@ -2764,6 +2774,10 @@ def default_minimal_completion_proof_chain(
             integration_input.pe21_integration_input
         ),
         shared_traceability_identity=integration_input.durable_run_root.run_root_digest,
+        completion_referenced_wallclock_evidence_digest=_resolve_wallclock_evidence_artifact_digest(
+            wallclock_proof=integration_input.wallclock_evidence_proof,
+            artifact_checksums=integration_input.artifact_checksums,
+        ),
     )
 
 
@@ -3104,6 +3118,10 @@ def default_minimal_completion_integration_input(
             ],
             shared_pe21_integration_input_digest=pe21_result["integration_input_digest"],
             shared_traceability_identity=run_root_digest,
+            completion_referenced_wallclock_evidence_digest=_resolve_wallclock_evidence_artifact_digest(
+                wallclock_proof=_default_wallclock_evidence_proof(source_revision=source_revision),
+                artifact_checksums=artifact_checksums,
+            ),
         ),
         pe16_archive=Pe16ArchiveProofBinding(
             archive_owner=PE16_ARCHIVE_OWNER,
