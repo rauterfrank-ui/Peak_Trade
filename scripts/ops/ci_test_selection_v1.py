@@ -289,6 +289,13 @@ REQUIRED_TESTNET_WALLCLOCK_DURATION_EVIDENCE_TEST_OWNERS: tuple[str, ...] = (
     "tests/ops/test_testnet_wallclock_duration_evidence_contract_v0.py",
 )
 
+WALLCLOCK_FIELD_NAME_PAIRED_REWIRE_TEST_OWNERS: frozenset[str] = frozenset(
+    {
+        TESTNET_WALLCLOCK_DURATION_EVIDENCE_TEST_OWNER,
+        "tests/ops/test_shadow_wallclock_duration_evidence_contract_v0.py",
+    }
+)
+
 WALLCLOCK_OWNER = "src/ops/wallclock_session_evidence_v0.py"
 
 WALLCLOCK_CI_POLICY_PATHS = frozenset(
@@ -803,6 +810,21 @@ def _testnet_wallclock_duration_evidence_focused_targets() -> tuple[str, ...]:
     if len(targets) < len(REQUIRED_TESTNET_WALLCLOCK_DURATION_EVIDENCE_TEST_OWNERS):
         return ()
     return tuple(sorted(targets))
+
+
+def _try_wallclock_field_name_paired_rewire(files: list[str]) -> SelectionResult | None:
+    if not files:
+        return None
+    if set(files) != WALLCLOCK_FIELD_NAME_PAIRED_REWIRE_TEST_OWNERS:
+        return None
+    for path in WALLCLOCK_FIELD_NAME_PAIRED_REWIRE_TEST_OWNERS:
+        if not _repo_path_exists(path):
+            return None
+    return SelectionResult(
+        "NO_OP",
+        "wallclock_field_name_paired_rewire_no_op",
+        (),
+    )
 
 
 def _try_testnet_wallclock_duration_evidence_focused(files: list[str]) -> SelectionResult | None:
@@ -1439,6 +1461,10 @@ def resolve_selection(
     runtime_wallclock_evidence_emitter = _try_runtime_wallclock_evidence_emitter_focused(normalized)
     if runtime_wallclock_evidence_emitter is not None:
         return runtime_wallclock_evidence_emitter
+
+    wallclock_field_name_paired_rewire = _try_wallclock_field_name_paired_rewire(normalized)
+    if wallclock_field_name_paired_rewire is not None:
+        return wallclock_field_name_paired_rewire
 
     testnet_wallclock_duration_evidence = _try_testnet_wallclock_duration_evidence_focused(
         normalized

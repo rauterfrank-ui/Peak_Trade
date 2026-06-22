@@ -1628,3 +1628,102 @@ def test_selector_testnet_wallclock_duration_evidence_import_modules() -> None:
 def test_selector_runtime_wallclock_evidence_emitter_rules_unchanged() -> None:
     sel = _run_selector(*RUNTIME_WALLCLOCK_EVIDENCE_EMITTER_FILES)
     assert sel["test_selection_reason"] == "runtime_wallclock_evidence_emitter_focused"
+
+
+WALLCLOCK_FIELD_NAME_PAIRED_REWIRE_FILES: tuple[str, ...] = (
+    "tests/ops/test_testnet_wallclock_duration_evidence_contract_v0.py",
+    "tests/ops/test_shadow_wallclock_duration_evidence_contract_v0.py",
+)
+
+SHADOW_WALLCLOCK_DURATION_EVIDENCE_TEST_OWNER = (
+    "tests/ops/test_shadow_wallclock_duration_evidence_contract_v0.py"
+)
+
+
+def test_selector_wallclock_field_name_paired_rewire_exact_pair_no_op() -> None:
+    sel = _run_selector(*WALLCLOCK_FIELD_NAME_PAIRED_REWIRE_FILES)
+    assert sel["test_selection_mode"] == "NO_OP"
+    assert sel["test_selection_reason"] == "wallclock_field_name_paired_rewire_no_op"
+    assert sel["tests_execute_full"] == "false"
+    assert sel["tests_execute_focused"] == "false"
+    assert sel["tests_execute_no_op"] == "true"
+    assert _targets(sel) == []
+
+
+def test_selector_wallclock_field_name_paired_rewire_not_broad_tests_ops_selection() -> None:
+    sel = _run_selector(*WALLCLOCK_FIELD_NAME_PAIRED_REWIRE_FILES)
+    assert sel["test_selection_reason"] != "focused_script_or_test_diff"
+    assert "tests/ops/test_run_shadow_bounded_observation_adapter_v0.py" not in _targets(sel)
+
+
+def test_selector_wallclock_field_name_paired_rewire_testnet_only_unchanged() -> None:
+    sel = _run_selector(WALLCLOCK_FIELD_NAME_PAIRED_REWIRE_FILES[0])
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "testnet_wallclock_duration_evidence_focused"
+
+
+def test_selector_wallclock_field_name_paired_rewire_shadow_only_unchanged() -> None:
+    sel = _run_selector(SHADOW_WALLCLOCK_DURATION_EVIDENCE_TEST_OWNER)
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "wallclock_focused"
+
+
+def test_selector_wallclock_field_name_paired_rewire_plus_foreign_test_full() -> None:
+    sel = _run_selector(
+        *WALLCLOCK_FIELD_NAME_PAIRED_REWIRE_FILES,
+        "tests/ops/test_bounded_network_testnet_preflight_contract_v0.py",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+    assert sel["tests_execute_full"] == "true"
+    assert sel["test_selection_reason"] != "wallclock_field_name_paired_rewire_no_op"
+
+
+def test_selector_wallclock_field_name_paired_rewire_plus_src_full() -> None:
+    sel = _run_selector(
+        *WALLCLOCK_FIELD_NAME_PAIRED_REWIRE_FILES,
+        "src/ops/testnet_wallclock_duration_evidence_contract_v0.py",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+    assert (
+        sel["test_selection_reason"]
+        == "testnet_wallclock_duration_evidence_foreign_path_requires_full"
+    )
+
+
+def test_selector_wallclock_field_name_paired_rewire_plus_dependency_full() -> None:
+    sel = _run_selector(*WALLCLOCK_FIELD_NAME_PAIRED_REWIRE_FILES, "requirements.txt")
+    assert sel["test_selection_mode"] == "FULL"
+    assert (
+        sel["test_selection_reason"]
+        == "testnet_wallclock_duration_evidence_foreign_path_requires_full"
+    )
+
+
+def test_selector_wallclock_field_name_paired_rewire_plus_third_wallclock_test_full() -> None:
+    sel = _run_selector(
+        *WALLCLOCK_FIELD_NAME_PAIRED_REWIRE_FILES,
+        "tests/ops/test_runtime_wallclock_evidence_emitter_contract_v0.py",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+    assert sel["tests_execute_full"] == "true"
+    assert sel["test_selection_reason"] != "wallclock_field_name_paired_rewire_no_op"
+
+
+def test_selector_wallclock_field_name_paired_rewire_testnet_wallclock_rules_unchanged() -> None:
+    sel = _run_selector(*TESTNET_WALLCLOCK_DURATION_EVIDENCE_FILES)
+    assert sel["test_selection_reason"] == "testnet_wallclock_duration_evidence_focused"
+
+
+def test_selector_wallclock_field_name_paired_rewire_shadow_wallclock_rules_unchanged() -> None:
+    sel = _run_selector(*PR4489_WALLCLOCK_FILES)
+    assert sel["test_selection_reason"] == "wallclock_focused"
+
+
+def test_selector_ci_fix_diff_ci_bootstrap_focused() -> None:
+    sel = _run_selector(
+        "scripts/ops/ci_test_selection_v1.py",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    )
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "ci_bootstrap_focused"
+    assert sel["tests_execute_full"] == "false"
