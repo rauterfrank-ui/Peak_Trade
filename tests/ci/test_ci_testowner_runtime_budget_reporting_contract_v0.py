@@ -16,7 +16,16 @@ import fnmatch
 import subprocess
 import sys
 from dataclasses import dataclass
-from enum import StrEnum
+from enum import Enum
+
+try:
+    from enum import StrEnum
+except ImportError:  # Python < 3.11
+
+    class StrEnum(str, Enum):
+        """Local compatibility shim matching enum.StrEnum string semantics."""
+
+
 from pathlib import Path, PurePosixPath
 from typing import Any
 
@@ -29,6 +38,12 @@ SELECTOR = Path("scripts/ops/ci_test_selection_v1.py")
 CANONICAL_MAPPING_FILE = Path("config/ci/file_category_mapping.yaml")
 
 NEAR_BUDGET_RATIO = 0.85
+
+
+def _frozen_reporting_dataclass(**kwargs):
+    if sys.version_info < (3, 10):
+        kwargs.pop("slots", None)
+    return dataclass(**kwargs)
 
 
 class TestLayer(StrEnum):
@@ -79,7 +94,7 @@ RUNTIME_CLASS_TO_TEST_LAYER: dict[str, TestLayer] = {
 }
 
 
-@dataclass(frozen=True, slots=True)
+@_frozen_reporting_dataclass(frozen=True, slots=True)
 class RuntimeClassMappingResult:
     runtime_class: str | None
     test_layer: TestLayer | None
@@ -191,7 +206,7 @@ def extract_distinct_runtime_class_values(
     return tuple(sorted(values))
 
 
-@dataclass(frozen=True, slots=True)
+@_frozen_reporting_dataclass(frozen=True, slots=True)
 class TestownerRuntimeEvidence:
     testowner: str
     layer: TestLayer
@@ -199,7 +214,7 @@ class TestownerRuntimeEvidence:
     evidence_source: str
 
 
-@dataclass(frozen=True, slots=True)
+@_frozen_reporting_dataclass(frozen=True, slots=True)
 class TestownerRuntimeReport:
     testowner: str
     layer: TestLayer
@@ -413,7 +428,7 @@ def _optional_budget_report_for_testowner(
     return None
 
 
-@dataclass(frozen=True, slots=True)
+@_frozen_reporting_dataclass(frozen=True, slots=True)
 class TestownerCategoryProvenanceReport:
     testowner_path: str
     matched_category: str | None
@@ -516,7 +531,7 @@ def build_testowner_category_provenance_report_dict(
     return payload
 
 
-@dataclass(frozen=True, slots=True)
+@_frozen_reporting_dataclass(frozen=True, slots=True)
 class TestownerBudgetInventoryRow:
     testowner_path: str
     matched_category: str | None
