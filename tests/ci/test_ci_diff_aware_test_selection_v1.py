@@ -1290,3 +1290,100 @@ def test_selector_pe21_rebundle_with_ci_policy_focused() -> None:
 def test_mapping_file_includes_reconciliation_primary_evidence_focused() -> None:
     text = MAPPING.read_text(encoding="utf-8")
     assert "reconciliation_primary_evidence_focused:" in text
+
+
+PE31_RECONCILIATION_REVIEW_FILES = (
+    "src/ops/bounded_futures_testnet_reconciliation_review_lifecycle_integration_contract_v0.py",
+    "tests/ops/test_bounded_futures_testnet_reconciliation_review_lifecycle_integration_contract_v0.py",
+)
+
+
+def test_selector_pe31_owner_plus_test_owner_focused() -> None:
+    sel = _run_selector(*PE31_RECONCILIATION_REVIEW_FILES)
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "reconciliation_review_focused"
+    targets = _targets(sel)
+    assert PE31_RECONCILIATION_REVIEW_FILES[1] in targets
+    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" in targets
+    assert sel["tests_execute_full"] == "false"
+    assert sel["tests_execute_focused"] == "true"
+    assert sel["tests_execute_no_op"] == "false"
+    assert sel["focused_pytest_targets"]
+
+
+def test_selector_pe31_owner_only_escalates_full() -> None:
+    sel = _run_selector(PE31_RECONCILIATION_REVIEW_FILES[0])
+    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_reason"] == "reconciliation_review_incomplete_or_missing_test_owner"
+
+
+def test_selector_pe31_test_owner_only_escalates_full() -> None:
+    sel = _run_selector(PE31_RECONCILIATION_REVIEW_FILES[1])
+    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_reason"] == "reconciliation_review_incomplete_or_missing_test_owner"
+
+
+def test_selector_pe31_plus_foreign_src_owner_escalates_full() -> None:
+    sel = _run_selector(
+        *PE31_RECONCILIATION_REVIEW_FILES,
+        "src/ops/bounded_futures_testnet_operator_closure_lifecycle_integration_contract_v0.py",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_reason"] == "reconciliation_review_foreign_path_requires_full"
+
+
+def test_selector_pe31_plus_unknown_file_escalates_full() -> None:
+    sel = _run_selector(
+        *PE31_RECONCILIATION_REVIEW_FILES,
+        "src/ops/unknown_unmapped_contract_v0.py",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+
+
+def test_selector_pe31_plus_execution_touch_escalates_full() -> None:
+    sel = _run_selector(
+        PE31_RECONCILIATION_REVIEW_FILES[0],
+        "src/execution/live/orchestrator.py",
+        PE31_RECONCILIATION_REVIEW_FILES[1],
+    )
+    assert sel["test_selection_mode"] == "FULL"
+
+
+def test_selector_pe31_ci_policy_only_escalates_full() -> None:
+    sel = _run_selector(
+        "scripts/ops/ci_test_selection_v1.py",
+        "config/ci/file_category_mapping.yaml",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+
+
+def test_selector_pe31_rebundle_with_ci_policy_focused() -> None:
+    sel = _run_selector(
+        *PE31_RECONCILIATION_REVIEW_FILES,
+        "scripts/ops/ci_test_selection_v1.py",
+        "config/ci/file_category_mapping.yaml",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    )
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "reconciliation_review_focused"
+
+
+def test_selector_pe31_focused_matrix_scope_not_full() -> None:
+    sel = _run_selector(*PE31_RECONCILIATION_REVIEW_FILES)
+    assert sel["tests_execute_full"] == "false"
+    assert sel["tests_execute_focused"] == "true"
+
+
+def test_selector_pe31_import_modules() -> None:
+    sel = _run_selector(*PE31_RECONCILIATION_REVIEW_FILES)
+    modules = _modules(sel)
+    assert (
+        "src.ops.bounded_futures_testnet_reconciliation_review_lifecycle_integration_contract_v0"
+        in modules
+    )
+
+
+def test_mapping_file_includes_reconciliation_review_focused() -> None:
+    text = MAPPING.read_text(encoding="utf-8")
+    assert "reconciliation_review_focused:" in text

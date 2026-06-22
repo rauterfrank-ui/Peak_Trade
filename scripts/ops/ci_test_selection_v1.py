@@ -35,6 +35,7 @@ FOCUSED_CATEGORIES = frozenset(
         "risk_killswitch_focused",
         "tiny_order_focused",
         "reconciliation_primary_evidence_focused",
+        "reconciliation_review_focused",
     }
 )
 
@@ -141,6 +142,28 @@ CANONICAL_PREFLIGHT_ASSEMBLY_FOCUSED_TESTS: tuple[str, ...] = (
 
 REQUIRED_PREFLIGHT_ASSEMBLY_TEST_OWNERS: tuple[str, ...] = (
     "tests/ops/test_bounded_futures_testnet_preflight_execution_readiness_assembly_lifecycle_integration_contract_v0.py",
+    "tests/ops/test_bounded_futures_testnet_reconciliation_review_lifecycle_integration_contract_v0.py",
+)
+
+PE31_RECONCILIATION_REVIEW_OWNER = (
+    "src/ops/bounded_futures_testnet_reconciliation_review_lifecycle_integration_contract_v0.py"
+)
+PE31_RECONCILIATION_REVIEW_TEST_OWNER = "tests/ops/test_bounded_futures_testnet_reconciliation_review_lifecycle_integration_contract_v0.py"
+
+RECONCILIATION_REVIEW_CI_POLICY_PATHS = frozenset(
+    {
+        "scripts/ops/ci_test_selection_v1.py",
+        "config/ci/file_category_mapping.yaml",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    }
+)
+
+CANONICAL_RECONCILIATION_REVIEW_FOCUSED_TESTS: tuple[str, ...] = (
+    "tests/ops/test_bounded_futures_testnet_reconciliation_review_lifecycle_integration_contract_v0.py",
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+)
+
+REQUIRED_RECONCILIATION_REVIEW_TEST_OWNERS: tuple[str, ...] = (
     "tests/ops/test_bounded_futures_testnet_reconciliation_review_lifecycle_integration_contract_v0.py",
 )
 
@@ -296,6 +319,9 @@ def _requires_full_ci_selector_change(files: list[str]) -> bool:
     scoped_pa = {f for f in normalized if _is_preflight_assembly_scoped_path(f)}
     if scoped_pa and all(_is_preflight_assembly_rebundle_path(f) for f in normalized):
         return False
+    scoped_rr = {f for f in normalized if _is_reconciliation_review_scoped_path(f)}
+    if scoped_rr and all(_is_reconciliation_review_rebundle_path(f) for f in normalized):
+        return False
     scoped_rk = {f for f in normalized if _is_risk_killswitch_scoped_path(f)}
     if scoped_rk and all(_is_risk_killswitch_rebundle_path(f) for f in normalized):
         return False
@@ -441,13 +467,71 @@ def _durable_completion_focused_targets(files: list[str] | None = None) -> tuple
     return tuple(sorted(full_targets))
 
 
+def _is_reconciliation_review_scoped_path(path: str) -> bool:
+    if path == PE31_RECONCILIATION_REVIEW_OWNER:
+        return True
+    if path == PE31_RECONCILIATION_REVIEW_TEST_OWNER:
+        return True
+    return False
+
+
+def _is_reconciliation_review_rebundle_path(path: str) -> bool:
+    return (
+        _is_reconciliation_review_scoped_path(path) or path in RECONCILIATION_REVIEW_CI_POLICY_PATHS
+    )
+
+
+def _reconciliation_review_focused_targets() -> tuple[str, ...]:
+    for path in REQUIRED_RECONCILIATION_REVIEW_TEST_OWNERS:
+        if not _repo_path_exists(path):
+            return ()
+    targets: list[str] = []
+    for path in CANONICAL_RECONCILIATION_REVIEW_FOCUSED_TESTS:
+        if _repo_path_exists(path):
+            targets.append(path)
+    if len(targets) < len(REQUIRED_RECONCILIATION_REVIEW_TEST_OWNERS):
+        return ()
+    return tuple(sorted(targets))
+
+
+def _try_reconciliation_review_focused(files: list[str]) -> SelectionResult | None:
+    if not files:
+        return None
+    if not any(_is_reconciliation_review_scoped_path(f) for f in files):
+        return None
+    if not all(_is_reconciliation_review_rebundle_path(f) for f in files):
+        return None
+    files_set = set(files)
+    if (
+        PE31_RECONCILIATION_REVIEW_OWNER in files_set
+        and PE31_RECONCILIATION_REVIEW_TEST_OWNER not in files_set
+    ):
+        return None
+    if (
+        PE31_RECONCILIATION_REVIEW_TEST_OWNER in files_set
+        and PE31_RECONCILIATION_REVIEW_OWNER not in files_set
+    ):
+        return None
+    targets = _reconciliation_review_focused_targets()
+    if not targets:
+        return None
+    modules: tuple[str, ...] = (
+        "src.ops.bounded_futures_testnet_reconciliation_review_lifecycle_integration_contract_v0",
+    )
+    return SelectionResult(
+        "FOCUSED",
+        "reconciliation_review_focused",
+        targets,
+        modules,
+    )
+
+
 def _is_preflight_assembly_scoped_path(path: str) -> bool:
     if path == PE26_ASSEMBLY_OWNER:
         return True
-    if path in {
-        "tests/ops/test_bounded_futures_testnet_preflight_execution_readiness_assembly_lifecycle_integration_contract_v0.py",
-        "tests/ops/test_bounded_futures_testnet_reconciliation_review_lifecycle_integration_contract_v0.py",
-    }:
+    if path == (
+        "tests/ops/test_bounded_futures_testnet_preflight_execution_readiness_assembly_lifecycle_integration_contract_v0.py"
+    ):
         return True
     return False
 
@@ -701,6 +785,10 @@ def categorize(path: str) -> str:
         return "durable_completion_focused"
     if _is_durable_completion_scoped_path(p):
         return "durable_completion_focused"
+    if p in RECONCILIATION_REVIEW_CI_POLICY_PATHS:
+        return "reconciliation_review_focused"
+    if _is_reconciliation_review_scoped_path(p):
+        return "reconciliation_review_focused"
     if p in PREFLIGHT_ASSEMBLY_CI_POLICY_PATHS:
         return "preflight_assembly_focused"
     if _is_preflight_assembly_scoped_path(p):
@@ -954,6 +1042,10 @@ def resolve_selection(
     if durable_completion is not None:
         return durable_completion
 
+    reconciliation_review = _try_reconciliation_review_focused(normalized)
+    if reconciliation_review is not None:
+        return reconciliation_review
+
     preflight_assembly = _try_preflight_assembly_focused(normalized)
     if preflight_assembly is not None:
         return preflight_assembly
@@ -974,6 +1066,11 @@ def resolve_selection(
         if not all(_is_durable_completion_rebundle_path(f) for f in normalized):
             return SelectionResult("FULL", "durable_completion_foreign_path_requires_full", ())
         return SelectionResult("FULL", "durable_completion_incomplete_or_missing_test_owner", ())
+
+    if any(_is_reconciliation_review_scoped_path(f) for f in normalized):
+        if not all(_is_reconciliation_review_rebundle_path(f) for f in normalized):
+            return SelectionResult("FULL", "reconciliation_review_foreign_path_requires_full", ())
+        return SelectionResult("FULL", "reconciliation_review_incomplete_or_missing_test_owner", ())
 
     if any(_is_preflight_assembly_scoped_path(f) for f in normalized):
         if not all(_is_preflight_assembly_rebundle_path(f) for f in normalized):
