@@ -36,6 +36,7 @@ FOCUSED_CATEGORIES = frozenset(
         "tiny_order_focused",
         "reconciliation_primary_evidence_focused",
         "bounded_network_testnet_preflight_focused",
+        "runtime_wallclock_evidence_emitter_focused",
         "wallclock_focused",
         "ci_infra_focused",
     }
@@ -242,6 +243,29 @@ REQUIRED_BOUNDED_NETWORK_TESTNET_PREFLIGHT_TEST_OWNERS: tuple[str, ...] = (
     "tests/ops/test_bounded_network_testnet_preflight_contract_v0.py",
 )
 
+RUNTIME_WALLCLOCK_EVIDENCE_EMITTER_OWNER = (
+    "src/ops/runtime_wallclock_evidence_emitter_contract_v0.py"
+)
+RUNTIME_WALLCLOCK_EVIDENCE_EMITTER_TEST_OWNER = (
+    "tests/ops/test_runtime_wallclock_evidence_emitter_contract_v0.py"
+)
+
+RUNTIME_WALLCLOCK_EVIDENCE_EMITTER_CI_POLICY_PATHS = frozenset(
+    {
+        "scripts/ops/ci_test_selection_v1.py",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    }
+)
+
+CANONICAL_RUNTIME_WALLCLOCK_EVIDENCE_EMITTER_FOCUSED_TESTS: tuple[str, ...] = (
+    "tests/ops/test_runtime_wallclock_evidence_emitter_contract_v0.py",
+    "tests/ops/test_testnet_wallclock_duration_evidence_contract_v0.py",
+)
+
+REQUIRED_RUNTIME_WALLCLOCK_EVIDENCE_EMITTER_TEST_OWNERS: tuple[str, ...] = (
+    "tests/ops/test_runtime_wallclock_evidence_emitter_contract_v0.py",
+)
+
 WALLCLOCK_OWNER = "src/ops/wallclock_session_evidence_v0.py"
 
 WALLCLOCK_CI_POLICY_PATHS = frozenset(
@@ -398,6 +422,16 @@ def _requires_full_ci_selector_change(files: list[str]) -> bool:
         return False
     scoped_rpe = {f for f in normalized if _is_reconciliation_primary_evidence_scoped_path(f)}
     if scoped_rpe and all(_is_reconciliation_primary_evidence_rebundle_path(f) for f in normalized):
+        return False
+    scoped_bn = {f for f in normalized if _is_bounded_network_testnet_preflight_scoped_path(f)}
+    if scoped_bn and all(
+        _is_bounded_network_testnet_preflight_rebundle_path(f) for f in normalized
+    ):
+        return False
+    scoped_rwe = {f for f in normalized if _is_runtime_wallclock_evidence_emitter_scoped_path(f)}
+    if scoped_rwe and all(
+        _is_runtime_wallclock_evidence_emitter_rebundle_path(f) for f in normalized
+    ):
         return False
     if any(_is_ci_infra_scoped_path(f) for f in normalized) and all(
         _is_ci_infra_rebundle_path(f) for f in normalized
@@ -664,6 +698,58 @@ def _try_bounded_network_testnet_preflight_focused(files: list[str]) -> Selectio
     return SelectionResult(
         "FOCUSED",
         "bounded_network_testnet_preflight_focused",
+        targets,
+        modules,
+    )
+
+
+def _is_runtime_wallclock_evidence_emitter_scoped_path(path: str) -> bool:
+    return path in {
+        RUNTIME_WALLCLOCK_EVIDENCE_EMITTER_OWNER,
+        RUNTIME_WALLCLOCK_EVIDENCE_EMITTER_TEST_OWNER,
+    }
+
+
+def _is_runtime_wallclock_evidence_emitter_rebundle_path(path: str) -> bool:
+    return (
+        _is_runtime_wallclock_evidence_emitter_scoped_path(path)
+        or path in RUNTIME_WALLCLOCK_EVIDENCE_EMITTER_CI_POLICY_PATHS
+    )
+
+
+def _runtime_wallclock_evidence_emitter_focused_targets() -> tuple[str, ...]:
+    for path in REQUIRED_RUNTIME_WALLCLOCK_EVIDENCE_EMITTER_TEST_OWNERS:
+        if not _repo_path_exists(path):
+            return ()
+    targets: list[str] = []
+    for path in CANONICAL_RUNTIME_WALLCLOCK_EVIDENCE_EMITTER_FOCUSED_TESTS:
+        if _repo_path_exists(path):
+            targets.append(path)
+    if len(targets) < len(REQUIRED_RUNTIME_WALLCLOCK_EVIDENCE_EMITTER_TEST_OWNERS):
+        return ()
+    return tuple(sorted(targets))
+
+
+def _try_runtime_wallclock_evidence_emitter_focused(files: list[str]) -> SelectionResult | None:
+    if not files:
+        return None
+    if not any(_is_runtime_wallclock_evidence_emitter_scoped_path(f) for f in files):
+        return None
+    if not all(_is_runtime_wallclock_evidence_emitter_rebundle_path(f) for f in files):
+        return None
+    files_set = set(files)
+    if (
+        RUNTIME_WALLCLOCK_EVIDENCE_EMITTER_OWNER in files_set
+        and RUNTIME_WALLCLOCK_EVIDENCE_EMITTER_TEST_OWNER not in files_set
+    ):
+        return None
+    targets = _runtime_wallclock_evidence_emitter_focused_targets()
+    if not targets:
+        return None
+    modules: tuple[str, ...] = ("src.ops.runtime_wallclock_evidence_emitter_contract_v0",)
+    return SelectionResult(
+        "FOCUSED",
+        "runtime_wallclock_evidence_emitter_focused",
         targets,
         modules,
     )
@@ -1006,6 +1092,10 @@ def categorize(path: str) -> str:
         return "bounded_network_testnet_preflight_focused"
     if _is_bounded_network_testnet_preflight_scoped_path(p):
         return "bounded_network_testnet_preflight_focused"
+    if p in RUNTIME_WALLCLOCK_EVIDENCE_EMITTER_CI_POLICY_PATHS:
+        return "runtime_wallclock_evidence_emitter_focused"
+    if _is_runtime_wallclock_evidence_emitter_scoped_path(p):
+        return "runtime_wallclock_evidence_emitter_focused"
     if p in MARKET_DASHBOARD_CI_POLICY_PATHS:
         return "market_dashboard_focused"
     if _is_market_dashboard_scoped_path(p):
@@ -1267,6 +1357,10 @@ def resolve_selection(
     if bounded_network_testnet_preflight is not None:
         return bounded_network_testnet_preflight
 
+    runtime_wallclock_evidence_emitter = _try_runtime_wallclock_evidence_emitter_focused(normalized)
+    if runtime_wallclock_evidence_emitter is not None:
+        return runtime_wallclock_evidence_emitter
+
     wallclock = _try_wallclock_focused(normalized)
     if wallclock is not None:
         return wallclock
@@ -1318,6 +1412,19 @@ def resolve_selection(
         return SelectionResult(
             "FULL",
             "bounded_network_testnet_preflight_incomplete_or_missing_test_owner",
+            (),
+        )
+
+    if any(_is_runtime_wallclock_evidence_emitter_scoped_path(f) for f in normalized):
+        if not all(_is_runtime_wallclock_evidence_emitter_rebundle_path(f) for f in normalized):
+            return SelectionResult(
+                "FULL",
+                "runtime_wallclock_evidence_emitter_foreign_path_requires_full",
+                (),
+            )
+        return SelectionResult(
+            "FULL",
+            "runtime_wallclock_evidence_emitter_incomplete_or_missing_test_owner",
             (),
         )
 
