@@ -653,6 +653,109 @@ def test_selector_pe60_completion_chain_delegation_rebinding_bounded_focused_tar
     assert sel["tests_execute_no_op"] == "false"
 
 
+PR4504_DURABLE_COMPLETION_WALLCLOCK_BINDING_FILES = (
+    "src/ops/bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
+    "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
+)
+
+_COMPLETION_OWNER = "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py"
+_GRAPH_OWNER = "tests/ops/test_durable_completion_validation_graph_v1.py"
+
+
+def test_selector_pr4504_wallclock_binding_diff_narrow_focused() -> None:
+    sel = _run_selector(*PR4504_DURABLE_COMPLETION_WALLCLOCK_BINDING_FILES)
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "durable_completion_focused"
+    assert sel["tests_execute_full"] == "false"
+    targets = _targets(sel)
+    assert any(t.startswith(f"{_COMPLETION_OWNER}::") for t in targets)
+    assert any(t.startswith(f"{_GRAPH_OWNER}::") for t in targets)
+    assert _COMPLETION_OWNER not in targets
+    assert _GRAPH_OWNER not in targets
+    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" not in targets
+    assert len(targets) < 20
+    assert len(targets) >= 9
+
+
+def test_selector_pr4504_wallclock_binding_includes_wallclock_regression_nodes() -> None:
+    sel = _run_selector(*PR4504_DURABLE_COMPLETION_WALLCLOCK_BINDING_FILES)
+    targets = set(_targets(sel))
+    assert f"{_COMPLETION_OWNER}::test_missing_wallclock_evidence_fails_closed" in targets
+    assert (
+        f"{_COMPLETION_OWNER}::test_completion_wallclock_semantic_binding_uses_canonical_evaluators"
+        in targets
+    )
+    assert (
+        f"{_GRAPH_OWNER}::test_graph_testnet_completion_includes_wallclock_required_path_binding"
+        in targets
+    )
+    assert f"{_GRAPH_OWNER}::test_graph_seven_vs_eight_path_drift_fail_closed" in targets
+
+
+def test_selector_pr4504_wallclock_binding_not_full_404_owner_files() -> None:
+    sel = _run_selector(*PR4504_DURABLE_COMPLETION_WALLCLOCK_BINDING_FILES)
+    targets = _targets(sel)
+    assert _COMPLETION_OWNER not in targets
+    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" not in targets
+    assert len(targets) < 50
+
+
+def test_selector_pr4504_wallclock_binding_import_modules_bounded() -> None:
+    sel = _run_selector(*PR4504_DURABLE_COMPLETION_WALLCLOCK_BINDING_FILES)
+    modules = _modules(sel)
+    assert modules == [
+        "src.ops.bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0"
+    ]
+    assert "src.ops.durable_completion_validation" not in modules
+
+
+def test_selector_durable_completion_foreign_production_change_stays_broad() -> None:
+    sel = _run_selector(
+        "src/ops/durable_completion_validation/graph.py",
+        "src/ops/durable_completion_validation/models.py",
+        "tests/ops/test_durable_completion_validation_graph_v1.py",
+        "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
+    )
+    assert sel["test_selection_mode"] == "FOCUSED"
+    targets = _targets(sel)
+    assert _COMPLETION_OWNER in targets
+    assert _GRAPH_OWNER in targets
+
+
+def test_selector_pr4504_wallclock_binding_plus_foreign_file_full() -> None:
+    sel = _run_selector(
+        *PR4504_DURABLE_COMPLETION_WALLCLOCK_BINDING_FILES,
+        "src/strategies/__init__.py",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+
+
+def test_selector_pr4504_wallclock_binding_plus_dependency_full() -> None:
+    sel = _run_selector(
+        *PR4504_DURABLE_COMPLETION_WALLCLOCK_BINDING_FILES,
+        "pyproject.toml",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+
+
+def test_selector_pr4504_wallclock_binding_plus_ci_policy_includes_ci_owner() -> None:
+    sel = _run_selector(
+        *PR4504_DURABLE_COMPLETION_WALLCLOCK_BINDING_FILES,
+        "scripts/ops/ci_test_selection_v1.py",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    )
+    assert sel["test_selection_mode"] == "FOCUSED"
+    targets = _targets(sel)
+    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" in targets
+    assert _COMPLETION_OWNER not in targets
+
+
+def test_selector_durable_completion_validator_rebinding_rules_unchanged() -> None:
+    sel = _run_selector(*PE55_DURABLE_COMPLETION_FILL_REBINDING_FILES)
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert _targets(sel) == ["tests/ops/test_durable_completion_validation_graph_v1.py"]
+
+
 def test_fast_lane_skips_full_static_sweep_when_focused() -> None:
     text = _ci_text()
     static_if = text.split("name: Static contract tests", 1)[1].split("run:", 1)[0]
