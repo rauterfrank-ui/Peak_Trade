@@ -12,6 +12,7 @@ import sys
 from contextlib import redirect_stdout
 from pathlib import Path
 from typing import Mapping, Sequence
+from unittest.mock import patch
 
 import pytest
 
@@ -1063,3 +1064,226 @@ def test_l2_120min_execute_sets_hold_runtime_env_bridge_mocked(tmp_path: Path) -
         hold_outroot.resolve()
     )
     assert scheduler_extra_env.get(SCHEDULER_HOLD_RUNTIME_RUN_ID_ENV) == RUN_ID_L2
+
+
+def _parse_machine_lines(path: Path) -> dict[str, str]:
+    parsed: dict[str, str] = {}
+    for raw in path.read_text(encoding="utf-8").splitlines():
+        line = raw.strip()
+        if not line or "=" not in line:
+            continue
+        key, _, value = line.partition("=")
+        parsed[key.strip()] = value.strip()
+    return parsed
+
+
+def _write_closeout_run_metadata(
+    tmp_path: Path,
+    *,
+    repo_root: Path = ROOT,
+    repo_head_sha_prefix: str | None = None,
+) -> dict:
+    mod = _load_mod()
+    staging = _staging(tmp_path)
+    staging.mkdir(parents=True, exist_ok=True)
+    archive_dest = _durable_archive(tmp_path) / "runs" / "paper" / "meta_test_run"
+    plan = mod.build_plan(
+        mode="execute",
+        staging_root=staging,
+        archive_root=_durable_archive(tmp_path),
+        repo_root=repo_root,
+        source_jobs_toml=ROOT / "config/scheduler/jobs.toml",
+        duration_seconds=7200,
+        poll_interval_seconds=30,
+        run_id="meta_test_run",
+    )
+    ctx = mod.ExecuteContext(
+        args=type("Args", (), {})(),
+        repo_root=repo_root,
+        staging_root=staging,
+        archive_root=_durable_archive(tmp_path),
+        runtime_out=staging / "runtime_out",
+        logs_dir=staging / "logs",
+        plan_dir=staging / "plan",
+        review_dir=staging / "review",
+        temp_jobs=staging / "plan" / "temp_jobs.toml",
+        run_id="meta_test_run",
+    )
+    review_payload = {"verdict": "PASS", "issues": []}
+    prefix = repo_head_sha_prefix if repo_head_sha_prefix is not None else "0123456789ab"
+    with patch.object(mod, "_read_git_sha_prefix", return_value=prefix) as resolver:
+        mod._write_closeout_artifacts(ctx, plan, archive_dest, review_payload)
+        resolver.assert_called_once_with(repo_root)
+    metadata_path = staging / "RUN_METADATA.json"
+    assert metadata_path.is_file()
+    return json.loads(metadata_path.read_text(encoding="utf-8"))
+
+
+def test_run_metadata_includes_repo_head_sha_prefix(tmp_path: Path) -> None:
+    metadata = _write_closeout_run_metadata(tmp_path)
+    assert "repo_head_sha_prefix" in metadata
+    assert metadata["repo_head_sha_prefix"] == "0123456789ab"
+
+
+def test_run_metadata_repo_head_sha_prefix_matches_wrapper_resolver(tmp_path: Path) -> None:
+    mod = _load_mod()
+    staging = _staging(tmp_path)
+    staging.mkdir(parents=True, exist_ok=True)
+    archive_dest = _durable_archive(tmp_path) / "runs" / "paper" / "meta_test_run"
+    plan = mod.build_plan(
+        mode="execute",
+        staging_root=staging,
+        archive_root=_durable_archive(tmp_path),
+        repo_root=ROOT,
+        source_jobs_toml=ROOT / "config/scheduler/jobs.toml",
+        duration_seconds=7200,
+        poll_interval_seconds=30,
+        run_id="meta_test_run",
+    )
+    ctx = mod.ExecuteContext(
+        args=type("Args", (), {})(),
+        repo_root=ROOT,
+        staging_root=staging,
+        archive_root=_durable_archive(tmp_path),
+        runtime_out=staging / "runtime_out",
+        logs_dir=staging / "logs",
+        plan_dir=staging / "plan",
+        review_dir=staging / "review",
+        temp_jobs=staging / "plan" / "temp_jobs.toml",
+        run_id="meta_test_run",
+    )
+    expected_prefix = "abcdef012345"
+    with patch.object(mod, "_read_git_sha_prefix", return_value=expected_prefix) as resolver:
+        mod._write_closeout_artifacts(ctx, plan, archive_dest, {"verdict": "PASS", "issues": []})
+        resolver.assert_called_once_with(ROOT)
+    metadata = json.loads((staging / "RUN_METADATA.json").read_text(encoding="utf-8"))
+    assert metadata["repo_head_sha_prefix"] == expected_prefix
+
+
+def test_run_metadata_uses_wrapper_resolver_not_adapter_git_logic(tmp_path: Path) -> None:
+    mod = _load_mod()
+    adapter_source = SCRIPT.read_text(encoding="utf-8")
+    assert "_resolve_git_metadata_dirs" not in adapter_source
+    assert "packed-refs" not in adapter_source
+    metadata = _write_closeout_run_metadata(tmp_path, repo_head_sha_prefix="wrapper_only_prefix")
+    assert metadata["repo_head_sha_prefix"] == "wrapper_only_prefix"
+
+
+def test_run_metadata_worktree_provenance_passthrough(tmp_path: Path) -> None:
+    metadata = _write_closeout_run_metadata(tmp_path, repo_head_sha_prefix="111122223333")
+    assert metadata["repo_head_sha_prefix"] == "111122223333"
+
+
+def test_run_metadata_detached_head_provenance_passthrough(tmp_path: Path) -> None:
+    metadata = _write_closeout_run_metadata(tmp_path, repo_head_sha_prefix="deadbeefdead")
+    assert metadata["repo_head_sha_prefix"] == "deadbeefdead"
+
+
+def test_run_metadata_fail_closed_provenance_preserved(tmp_path: Path) -> None:
+    metadata = _write_closeout_run_metadata(tmp_path, repo_head_sha_prefix="UNKNOWN_REF_MISSING")
+    assert metadata["repo_head_sha_prefix"] == "UNKNOWN_REF_MISSING"
+
+
+def test_run_metadata_does_not_invent_plan_level_sha(tmp_path: Path) -> None:
+    mod = _load_mod()
+    staging = _staging(tmp_path)
+    staging.mkdir(parents=True, exist_ok=True)
+    archive_dest = _durable_archive(tmp_path) / "runs" / "paper" / "meta_test_run"
+    plan = mod.build_plan(
+        mode="execute",
+        staging_root=staging,
+        archive_root=_durable_archive(tmp_path),
+        repo_root=ROOT,
+        source_jobs_toml=ROOT / "config/scheduler/jobs.toml",
+        duration_seconds=7200,
+        poll_interval_seconds=30,
+        run_id="meta_test_run",
+    )
+    ctx = mod.ExecuteContext(
+        args=type("Args", (), {})(),
+        repo_root=ROOT,
+        staging_root=staging,
+        archive_root=_durable_archive(tmp_path),
+        runtime_out=staging / "runtime_out",
+        logs_dir=staging / "logs",
+        plan_dir=staging / "plan",
+        review_dir=staging / "review",
+        temp_jobs=staging / "plan" / "temp_jobs.toml",
+        run_id="meta_test_run",
+    )
+    with patch.object(mod, "_read_git_sha_prefix", return_value="UNKNOWN_HEAD_MISSING"):
+        mod._write_closeout_artifacts(ctx, plan, archive_dest, {"verdict": "PASS", "issues": []})
+    metadata = json.loads((staging / "RUN_METADATA.json").read_text(encoding="utf-8"))
+    assert metadata["repo_head_sha_prefix"] == "UNKNOWN_HEAD_MISSING"
+    assert "origin_main" not in json.dumps(metadata).lower()
+
+
+def test_run_metadata_existing_fields_preserved(tmp_path: Path) -> None:
+    metadata = _write_closeout_run_metadata(tmp_path)
+    assert metadata["run_id"] == "meta_test_run"
+    assert metadata["adapter_version"]
+    assert metadata["staging_root"]
+    assert metadata["archive_path"]
+    assert metadata["duration_seconds"] == 7200
+    assert metadata["poll_interval_seconds"] == 30
+    assert metadata["review_verdict"] == "PASS"
+    assert metadata["live_authority"] is False
+    assert metadata["testnet_authority"] is False
+    assert metadata["broker_authority"] is False
+    assert metadata["utc"]
+
+
+def _write_closeout_machine_lines(
+    tmp_path: Path,
+    *,
+    repo_head_sha_prefix: str | None = None,
+) -> tuple[dict[str, str], dict[str, str]]:
+    metadata = _write_closeout_run_metadata(tmp_path, repo_head_sha_prefix=repo_head_sha_prefix)
+    staging = _staging(tmp_path)
+    lines = _parse_machine_lines(staging / "FINAL_MACHINE_LINES.txt")
+    return metadata, lines
+
+
+def test_final_machine_lines_repo_head_sha_prefix_matches_run_metadata(tmp_path: Path) -> None:
+    metadata, lines = _write_closeout_machine_lines(tmp_path, repo_head_sha_prefix="0123456789ab")
+    assert lines["REPO_HEAD_SHA_PREFIX"] == metadata["repo_head_sha_prefix"]
+
+
+def test_final_machine_lines_worktree_provenance_passthrough(tmp_path: Path) -> None:
+    metadata, lines = _write_closeout_machine_lines(tmp_path, repo_head_sha_prefix="111122223333")
+    assert lines["REPO_HEAD_SHA_PREFIX"] == metadata["repo_head_sha_prefix"]
+
+
+def test_final_machine_lines_detached_head_provenance_passthrough(tmp_path: Path) -> None:
+    metadata, lines = _write_closeout_machine_lines(tmp_path, repo_head_sha_prefix="deadbeefdead")
+    assert lines["REPO_HEAD_SHA_PREFIX"] == metadata["repo_head_sha_prefix"]
+
+
+def test_final_machine_lines_fail_closed_provenance_preserved(tmp_path: Path) -> None:
+    metadata, lines = _write_closeout_machine_lines(
+        tmp_path, repo_head_sha_prefix="UNKNOWN_REF_MISSING"
+    )
+    assert lines["REPO_HEAD_SHA_PREFIX"] == metadata["repo_head_sha_prefix"]
+
+
+def test_final_machine_lines_does_not_invent_plan_level_sha(tmp_path: Path) -> None:
+    metadata, lines = _write_closeout_machine_lines(
+        tmp_path, repo_head_sha_prefix="UNKNOWN_HEAD_MISSING"
+    )
+    assert lines["REPO_HEAD_SHA_PREFIX"] == "UNKNOWN_HEAD_MISSING"
+    assert lines["REPO_HEAD_SHA_PREFIX"] != "18a79ede"
+    assert "origin_main" not in json.dumps(lines).lower()
+
+
+def test_final_machine_lines_existing_keys_preserved(tmp_path: Path) -> None:
+    _, lines = _write_closeout_machine_lines(tmp_path)
+    for key in (
+        "ADAPTER_EXECUTED",
+        "ADAPTER_LANE",
+        "RUN_ID",
+        "REVIEW_VERDICT",
+        "BOUNDED_OBSERVATION_ONLY",
+        "CLOSEOUT_SUCCEEDED",
+    ):
+        assert key in lines
+    assert len(lines) == len(set(lines))

@@ -29,6 +29,9 @@ if str(_REPO_ROOT) not in sys.path:
 from scripts.ops import bounded_daemon_paper_shadow_24h_approval_v0 as contract_24h
 from scripts.ops import gap4_req_a_paper_hold_binding_approval_v0 as contract_gap4
 from scripts.ops import paper_l2_120min_hold_binding_approval_v0 as contract_l2_120min
+from scripts.ops.shadow_247_futures_start_wrapper_skeleton_v0 import (
+    _read_git_sha_prefix,
+)
 from scripts.ops.durable_closeout_copy_verify_v0 import (
     _dest_has_content,
     _validate_source_dest_distinct,
@@ -1051,6 +1054,7 @@ def _write_closeout_artifacts(
     review_payload: Mapping[str, Any],
 ) -> None:
     now = datetime.now(timezone.utc).isoformat()
+    repo_head_sha_prefix = _read_git_sha_prefix(Path(plan.repo_root))
     run_metadata = {
         "run_id": ctx.run_id,
         "adapter_version": plan.adapter_version,
@@ -1059,6 +1063,7 @@ def _write_closeout_artifacts(
         "duration_seconds": plan.duration_seconds,
         "poll_interval_seconds": plan.poll_interval_seconds,
         "review_verdict": review_payload.get("verdict"),
+        "repo_head_sha_prefix": repo_head_sha_prefix,
         "live_authority": False,
         "testnet_authority": False,
         "broker_authority": False,
@@ -1110,6 +1115,7 @@ def _write_closeout_artifacts(
         execution_performed=True,
         review_verdict=str(review_payload.get("verdict") or "UNKNOWN"),
         closeout_succeeded=True,
+        repo_head_sha_prefix=repo_head_sha_prefix,
     )
 
 
