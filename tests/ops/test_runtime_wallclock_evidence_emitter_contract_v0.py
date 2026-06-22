@@ -97,11 +97,42 @@ def test_canonical_owner_imported_not_duplicated() -> None:
         and node.name.startswith("evaluate_runtime_session_wallclock_emitter")
     ]
     assert local_evaluators == []
+    local_field_name_constants = [
+        node.targets[0].id
+        for node in ast.walk(tree)
+        if isinstance(node, ast.Assign)
+        and len(node.targets) == 1
+        and isinstance(node.targets[0], ast.Name)
+        and node.targets[0].id == "REQUIRED_WALLCLOCK_FIELD_NAMES"
+    ]
+    assert local_field_name_constants == []
+    test_module_imports = [
+        node.module
+        for node in ast.walk(tree)
+        if isinstance(node, ast.ImportFrom) and node.module and node.module.startswith("tests.")
+    ]
+    assert test_module_imports == []
     text = Path(__file__).read_text(encoding="utf-8")
     assert "from src.ops.runtime_wallclock_evidence_emitter_contract_v0 import" in text
     assert evaluate_runtime_session_wallclock_emitter_evidence.__module__ == (
         "src.ops.runtime_wallclock_evidence_emitter_contract_v0"
     )
+
+    contract_tree = ast.parse(CONTRACT_MODULE.read_text(encoding="utf-8"))
+    src_local_field_name_constants = [
+        node.targets[0].id
+        for node in ast.walk(contract_tree)
+        if isinstance(node, ast.Assign)
+        and len(node.targets) == 1
+        and isinstance(node.targets[0], ast.Name)
+        and node.targets[0].id == "REQUIRED_WALLCLOCK_FIELD_NAMES"
+    ]
+    assert src_local_field_name_constants == []
+    contract_source = CONTRACT_MODULE.read_text(encoding="utf-8")
+    assert "from src.ops.testnet_wallclock_duration_evidence_contract_v0 import" in contract_source
+    import src.ops.testnet_wallclock_duration_evidence_contract_v0 as canonical_owner
+
+    assert REQUIRED_WALLCLOCK_FIELD_NAMES == canonical_owner.REQUIRED_WALLCLOCK_FIELD_NAMES
 
 
 def test_emitter_evaluator_uses_wallclock_session_evidence_ssot() -> None:
