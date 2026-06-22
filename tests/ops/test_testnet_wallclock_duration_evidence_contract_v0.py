@@ -6,13 +6,19 @@ Charter: testnet_wallclock_duration_guard_external_charter_no_run_v0_20260603T18
 
 from __future__ import annotations
 
+import ast
 import json
 from pathlib import Path
-from typing import Any
 
 import pytest
 
+from src.ops.testnet_wallclock_duration_evidence_contract_v0 import (
+    evaluate_wallclock_duration_evidence,
+)
+from src.ops.wallclock_session_evidence_v0 import evaluate_wallclock_evidence_fields
+
 REPO_ROOT = Path(__file__).resolve().parents[2]
+CONTRACT_MODULE = REPO_ROOT / "src" / "ops" / "testnet_wallclock_duration_evidence_contract_v0.py"
 RUN_TESTNET_SESSION = REPO_ROOT / "scripts" / "run_testnet_session.py"
 TESTNET_BOUNDED_ADAPTER = (
     REPO_ROOT / "scripts" / "ops" / "run_testnet_bounded_observation_adapter_v0.py"
@@ -76,81 +82,7 @@ THIRTY_MIN_PLANNED_SECONDS = 1800
 THIRTY_MIN_MIN_REQUIRED_SECONDS = THIRTY_MIN_PLANNED_SECONDS - DEFAULT_WALL_CLOCK_SLACK_SECONDS
 
 
-def _monotonic_tolerance(planned_duration_seconds: float) -> float:
-    return 5.0 if planned_duration_seconds > 60 else 2.0
-
-
-def evaluate_wallclock_duration_evidence(evidence: dict[str, Any]) -> dict[str, Any]:
-    """Fail-closed reference evaluator mirroring charter rules R1–R8 (offline, no I/O)."""
-    result: dict[str, Any] = {
-        "duration_proven": False,
-        "duration_evidence_valid": False,
-        "invalid_if_elapsed_below_min": True,
-        "fail_reasons": [],
-    }
-
-    if evidence.get("invalid_if_elapsed_below_min") is not True:
-        result["fail_reasons"].append("invalid_if_elapsed_below_min must be true")
-
-    planned = evidence.get("planned_duration_seconds")
-    elapsed_wall = evidence.get("elapsed_wall_clock_seconds")
-    elapsed_mono = evidence.get("elapsed_monotonic_seconds")
-    min_required = evidence.get("min_required_wall_clock_seconds")
-    max_acceptable = evidence.get("max_acceptable_wall_clock_seconds")
-    start_iso = evidence.get("start_wall_clock_iso")
-    end_iso = evidence.get("end_wall_clock_iso")
-    early_exit = evidence.get("early_exit_detected")
-    early_reason = evidence.get("early_exit_reason")
-    projection_only = evidence.get("projection_ready") is True and "duration_proven" not in evidence
-
-    if projection_only:
-        result["fail_reasons"].append("projection_ready alone is not duration proof (R4)")
-
-    if not start_iso or not end_iso:
-        result["fail_reasons"].append("missing start/end wall-clock timestamps (R2)")
-
-    if planned is None or elapsed_wall is None:
-        result["fail_reasons"].append(
-            "planned_duration_seconds and elapsed_wall_clock_seconds required (R7)"
-        )
-    elif planned > 0 and min_required is not None and elapsed_wall < min_required:
-        result["fail_reasons"].append("elapsed below min_required_wall_clock_seconds (R1)")
-
-    if (
-        elapsed_wall is not None
-        and elapsed_mono is not None
-        and planned is not None
-        and abs(elapsed_wall - elapsed_mono) > _monotonic_tolerance(float(planned))
-    ):
-        result["fail_reasons"].append("wall-clock vs monotonic drift exceeds tolerance (R3)")
-
-    if early_exit is True and not early_reason:
-        result["fail_reasons"].append("early_exit_detected without early_exit_reason (R5)")
-
-    if (
-        early_exit is True
-        and elapsed_wall is not None
-        and min_required is not None
-        and elapsed_wall < min_required
-    ):
-        result["fail_reasons"].append("early exit before min_required elapsed (R5)")
-
-    simulation_forbidden = evidence.get("simulation_forbidden")
-    real_sleep_used = evidence.get("real_sleep_used")
-    if simulation_forbidden is True and real_sleep_used is False:
-        result["fail_reasons"].append("simulation_forbidden but real_sleep_used=false (R6)")
-
-    if max_acceptable is not None and elapsed_wall is not None and elapsed_wall > max_acceptable:
-        result["fail_reasons"].append("elapsed exceeds max_acceptable_wall_clock_seconds (R8)")
-
-    if not result["fail_reasons"]:
-        result["duration_evidence_valid"] = True
-        result["duration_proven"] = True
-
-    return result
-
-
-def _valid_thirty_min_evidence() -> dict[str, Any]:
+def _valid_thirty_min_evidence() -> dict[str, object]:
     return {
         "planned_duration_seconds": THIRTY_MIN_PLANNED_SECONDS,
         "min_required_wall_clock_seconds": THIRTY_MIN_MIN_REQUIRED_SECONDS,
@@ -178,6 +110,30 @@ def test_package_and_class4_markers_present() -> None:
     assert PACKAGE_MARKER in text
     assert _CLASS4_SCOPED_EXCEPTION_MARKER in text
     assert CHARTER_BUNDLE_SUFFIX in text
+
+
+def test_canonical_owner_imported_not_duplicated() -> None:
+    tree = ast.parse(Path(__file__).read_text(encoding="utf-8"))
+    local_evaluators = [
+        node.name
+        for node in ast.walk(tree)
+        if isinstance(node, ast.FunctionDef) and node.name.startswith("evaluate_wallclock")
+    ]
+    assert local_evaluators == []
+    text = Path(__file__).read_text(encoding="utf-8")
+    assert "from src.ops.testnet_wallclock_duration_evidence_contract_v0 import" in text
+    assert evaluate_wallclock_duration_evidence.__module__ == (
+        "src.ops.testnet_wallclock_duration_evidence_contract_v0"
+    )
+
+
+def test_wallclock_binding_uses_canonical_evaluator() -> None:
+    contract_source = CONTRACT_MODULE.read_text(encoding="utf-8")
+    assert (
+        "from src.ops.wallclock_session_evidence_v0 import evaluate_wallclock_evidence_fields"
+        in contract_source
+    )
+    assert evaluate_wallclock_evidence_fields.__module__ == "src.ops.wallclock_session_evidence_v0"
 
 
 def test_required_wallclock_field_names_complete() -> None:
