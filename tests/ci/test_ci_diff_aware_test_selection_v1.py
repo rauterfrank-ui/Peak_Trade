@@ -56,6 +56,20 @@ def test_tests_job_timeout_25_absolute_cap() -> None:
     )
 
 
+def test_fast_lane_job_timeout_25_absolute_cap() -> None:
+    assert re.search(
+        r"^\s*fast-lane:\n(?:.*\n)*?\s*timeout-minutes:\s*25\s*$", _ci_text(), re.MULTILINE
+    )
+    assert (
+        "timeout-minutes: 15" not in _ci_text().split("  fast-lane:", 1)[1].split("  tests:", 1)[0]
+    )
+
+
+def test_ci_workflow_job_timeouts_do_not_exceed_25_minute_hard_cap() -> None:
+    for match in re.finditer(r"timeout-minutes:\s*(\d+)", _ci_text()):
+        assert int(match.group(1)) <= 25, "CI job exceeds 25-minute hard cap"
+
+
 def test_changes_job_exports_test_selection_outputs() -> None:
     text = _ci_text()
     for key in (
