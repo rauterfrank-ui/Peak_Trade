@@ -6,18 +6,24 @@ Charter: runtime_wallclock_production_integration_charter_no_run_v0_20260603T193
 
 from __future__ import annotations
 
+import ast
 import json
 from pathlib import Path
 from typing import Any
 
 import pytest
 
-from tests.ops.test_testnet_wallclock_duration_evidence_contract_v0 import (
+from src.ops.runtime_wallclock_evidence_emitter_contract_v0 import (
+    EMITTER_ARTIFACT_FILENAME,
     REQUIRED_WALLCLOCK_FIELD_NAMES,
-    evaluate_wallclock_duration_evidence,
+    evaluate_runtime_session_wallclock_emitter_evidence,
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
+CONTRACT_MODULE = REPO_ROOT / "src" / "ops" / "runtime_wallclock_evidence_emitter_contract_v0.py"
+PREFLIGHT_CONTRACT_MODULE = (
+    REPO_ROOT / "src" / "ops" / "bounded_network_testnet_preflight_contract_v0.py"
+)
 RUN_TESTNET_SESSION = REPO_ROOT / "scripts" / "run_testnet_session.py"
 WALLCLOCK_SESSION_EVIDENCE = REPO_ROOT / "src" / "ops" / "wallclock_session_evidence_v0.py"
 ENTRYPOINT_FAIL_CLOSED_TEST = (
@@ -38,9 +44,6 @@ CHARTER_BUNDLE_SUFFIX = (
     "runtime_wallclock_production_integration_charter_no_run_v0_20260603T193440Z"
 )
 
-# Future repo-native session emitter artifact (production GO; not implemented in this guard PR).
-EMITTER_ARTIFACT_FILENAME = "WALLCLOCK_EVIDENCE.json"
-
 # Zero-order first-session tier defaults (authority charter).
 ZERO_ORDER_PLANNED_DURATION_SECONDS = 300
 ZERO_ORDER_MIN_REQUIRED_WALL_CLOCK_SECONDS = 240
@@ -54,67 +57,6 @@ CONTRACT_GOVERNANCE_TOKEN_MAP: dict[str, str] = {
     "EXTERNAL_WRAPPER_NOT_REPO_NATIVE": "evidence_source=external_harness",
     "DURABLE_MANIFEST_REQUIRED": "MANIFEST.sha256",
 }
-
-
-def evaluate_runtime_session_wallclock_emitter_evidence(
-    evidence: dict[str, Any],
-) -> dict[str, Any]:
-    """Fail-closed reference evaluator for future repo-native session emitter closeout (offline)."""
-    result: dict[str, Any] = {
-        "emitter_evidence_valid": False,
-        "repo_native_session_evidence_complete": False,
-        "fail_reasons": [],
-    }
-
-    source = evidence.get("evidence_source")
-    if source == "external_harness":
-        result["fail_reasons"].append(
-            "external harness evidence does not satisfy repo-native emitter integration (E1)"
-        )
-    elif source != "repo_native_session":
-        result["fail_reasons"].append(
-            "evidence_source must be repo_native_session for repo-native closeout (E2)"
-        )
-
-    for field in REQUIRED_WALLCLOCK_FIELD_NAMES:
-        if field not in evidence:
-            result["fail_reasons"].append(f"missing required wall-clock field: {field} (E3)")
-
-    if evidence.get("invalid_if_elapsed_below_min") is not True:
-        result["fail_reasons"].append("invalid_if_elapsed_below_min must be true (E4)")
-
-    if evidence.get("emitter_artifact_present") is False:
-        result["fail_reasons"].append(f"missing {EMITTER_ARTIFACT_FILENAME} artifact (E5)")
-
-    if evidence.get("manifest_present") is False:
-        result["fail_reasons"].append("missing MANIFEST.sha256 (E6)")
-    if evidence.get("manifest_verify_rc", 0) != 0:
-        result["fail_reasons"].append("MANIFEST_VERIFY_RC != 0 (E7)")
-
-    if evidence.get("final_machine_lines_present") is False:
-        result["fail_reasons"].append("missing FINAL_MACHINE_LINES.txt (E8)")
-
-    if evidence.get("run_testnet_session_invoked") is False and source == "repo_native_session":
-        result["fail_reasons"].append(
-            "repo-native evidence must attest run_testnet_session_invoked (E9)"
-        )
-
-    wallclock = evaluate_wallclock_duration_evidence(evidence)
-    result["fail_reasons"].extend(wallclock["fail_reasons"])
-
-    if evidence.get("early_exit_detected") is True and wallclock.get("duration_evidence_valid"):
-        planned = evidence.get("planned_duration_seconds")
-        elapsed = evidence.get("elapsed_wall_clock_seconds")
-        if planned is not None and elapsed is not None and elapsed < planned * 0.95:
-            result["fail_reasons"].append(
-                "early exit must not count as successful planned duration (E10)"
-            )
-
-    if not result["fail_reasons"]:
-        result["emitter_evidence_valid"] = True
-        result["repo_native_session_evidence_complete"] = True
-
-    return result
 
 
 def _valid_repo_native_emitter_evidence() -> dict[str, Any]:
@@ -144,6 +86,29 @@ def _valid_repo_native_emitter_evidence() -> dict[str, Any]:
         "real_sleep_used": True,
         "simulation_forbidden": True,
     }
+
+
+def test_canonical_owner_imported_not_duplicated() -> None:
+    tree = ast.parse(Path(__file__).read_text(encoding="utf-8"))
+    local_evaluators = [
+        node.name
+        for node in ast.walk(tree)
+        if isinstance(node, ast.FunctionDef)
+        and node.name.startswith("evaluate_runtime_session_wallclock_emitter")
+    ]
+    assert local_evaluators == []
+    text = Path(__file__).read_text(encoding="utf-8")
+    assert "from src.ops.runtime_wallclock_evidence_emitter_contract_v0 import" in text
+    assert evaluate_runtime_session_wallclock_emitter_evidence.__module__ == (
+        "src.ops.runtime_wallclock_evidence_emitter_contract_v0"
+    )
+
+
+def test_emitter_evaluator_uses_wallclock_session_evidence_ssot() -> None:
+    contract_source = CONTRACT_MODULE.read_text(encoding="utf-8")
+    assert "evaluate_wallclock_evidence_fields" in contract_source
+    assert "wallclock_session_evidence_v0" in contract_source
+    assert "evaluate_wallclock_duration_evidence" not in contract_source
 
 
 def test_package_and_class4_markers_present() -> None:
@@ -182,7 +147,7 @@ def test_guard_crosslinks_present() -> None:
         WALLCLOCK_CONTRACT_TEST.read_text(encoding="utf-8")
     )
     assert "BOUNDED_NETWORK_TESTNET_PREFLIGHT_CONTRACT_V0=true" in (
-        PREFLIGHT_CONTRACT_TEST.read_text(encoding="utf-8")
+        PREFLIGHT_CONTRACT_MODULE.read_text(encoding="utf-8")
     )
 
 
