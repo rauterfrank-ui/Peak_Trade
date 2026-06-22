@@ -1006,3 +1006,189 @@ def test_hard_gate_owner_crosslinks_gap4_and_scheduler_dry_run_hardening_v0() ->
     hardening_text = hardening_owner.read_text(encoding="utf-8")
     assert "test_gap4_output_evidence_paths_contract_v0.py" in hardening_text
     assert Path(__file__).name in hardening_text
+
+
+# GAP2A1 operative retention enforcement (behavioral; offline; no runtime/network).
+def _operative_durable_root(tmp_path: Path) -> Path:
+    path = REPO_ROOT / "tests" / ".pytest_archive_roots" / f"gap2a1_operative_{tmp_path.name}"
+    path.mkdir(parents=True, exist_ok=True)
+    return path
+
+
+def _write_operative_retention_bundle(
+    root: Path,
+    *,
+    durable_save_confirmed: str = "true",
+    manifest_verify_rc: int = 0,
+    include_manifest: bool = True,
+    include_machine_summary: bool = True,
+    include_recommended: bool = True,
+    evidence_name: str = "EVIDENCE.txt",
+) -> None:
+    import sys
+
+    sys.path.insert(0, str(REPO_ROOT))
+    from scripts.ops.primary_evidence_retention_v0 import write_manifest_sha256
+
+    if include_recommended:
+        (root / "RECOMMENDED_NEXT_STEP.md").write_text(
+            "# Recommended next step\n\nOffline validation only.\n",
+            encoding="utf-8",
+        )
+    if evidence_name:
+        (root / evidence_name).write_text("primary evidence payload\n", encoding="utf-8")
+    if include_machine_summary:
+        (root / "MACHINE_SUMMARY.env").write_text(
+            "\n".join(
+                (
+                    "VERDICT=SUCCESS",
+                    f"DURABLE_SAVE_CONFIRMED={durable_save_confirmed}",
+                    f"MANIFEST_VERIFY_RC={manifest_verify_rc}",
+                )
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+    if include_manifest:
+        write_manifest_sha256(root)
+
+
+def test_shared_helper_exposes_gap2a1_operative_retention_enforcement() -> None:
+    text = SHARED_HELPER.read_text(encoding="utf-8")
+    assert "GAP2A1_PRIMARY_EVIDENCE_RETENTION_OPERATIVE_ENFORCEMENT_V0=true" in text
+    assert "COMPLETION_BLOCKED_UNTIL_RETENTION_VERIFIED=true" in text
+    assert "def validate_durable_primary_evidence_retention_bundle" in text
+    assert "def evaluate_completion_retention_gate" in text
+
+
+def test_validate_durable_primary_evidence_retention_bundle_accepts_complete_bundle(
+    tmp_path: Path,
+) -> None:
+    import sys
+
+    sys.path.insert(0, str(REPO_ROOT))
+    from scripts.ops.primary_evidence_retention_v0 import (
+        validate_durable_primary_evidence_retention_bundle,
+    )
+
+    root = _operative_durable_root(tmp_path)
+    _write_operative_retention_bundle(root)
+    ok, reason, detail = validate_durable_primary_evidence_retention_bundle(root)
+    assert ok is True, reason
+    assert detail["checks"]["manifest_sha256_verify"] is True
+    assert detail["checks"]["durable_save_confirmed_true"] is True
+
+
+@pytest.mark.parametrize(
+    ("setup", "expected_substring"),
+    [
+        ("tmp_only", "outside /tmp"),
+        ("missing_machine_summary", "MACHINE_SUMMARY.env"),
+        ("missing_recommended", "RECOMMENDED_NEXT_STEP.md"),
+        ("missing_manifest", "MANIFEST.sha256"),
+        ("empty_machine_summary", "empty primary evidence artifact: MACHINE_SUMMARY.env"),
+        ("empty_recommended", "empty primary evidence artifact: RECOMMENDED_NEXT_STEP.md"),
+        ("durable_save_false", "DURABLE_SAVE_CONFIRMED"),
+        ("manifest_verify_rc_nonzero", "MANIFEST_VERIFY_RC must be 0"),
+        ("manifest_tampered", "checksum mismatch"),
+    ],
+)
+def test_validate_durable_primary_evidence_retention_bundle_fail_closed_cases(
+    tmp_path: Path,
+    setup: str,
+    expected_substring: str,
+) -> None:
+    import sys
+
+    sys.path.insert(0, str(REPO_ROOT))
+    from scripts.ops.primary_evidence_retention_v0 import (
+        validate_durable_primary_evidence_retention_bundle,
+        write_manifest_sha256,
+    )
+
+    if setup == "tmp_only":
+        root = Path("/tmp") / f"peaktrade_gap2a1_operative_{tmp_path.name}"
+        root.mkdir(parents=True, exist_ok=True)
+        _write_operative_retention_bundle(root)
+    else:
+        root = _operative_durable_root(tmp_path)
+        if setup == "missing_machine_summary":
+            _write_operative_retention_bundle(root, include_machine_summary=False)
+        elif setup == "missing_recommended":
+            _write_operative_retention_bundle(root, include_recommended=False)
+        elif setup == "missing_manifest":
+            _write_operative_retention_bundle(root, include_manifest=False)
+        elif setup == "empty_machine_summary":
+            _write_operative_retention_bundle(root)
+            (root / "MACHINE_SUMMARY.env").write_text("", encoding="utf-8")
+        elif setup == "empty_recommended":
+            _write_operative_retention_bundle(root)
+            (root / "RECOMMENDED_NEXT_STEP.md").write_text("", encoding="utf-8")
+        elif setup == "durable_save_false":
+            _write_operative_retention_bundle(root, durable_save_confirmed="false")
+            write_manifest_sha256(root)
+        elif setup == "manifest_verify_rc_nonzero":
+            _write_operative_retention_bundle(root, manifest_verify_rc=1)
+            write_manifest_sha256(root)
+        elif setup == "manifest_tampered":
+            _write_operative_retention_bundle(root)
+            (root / "EVIDENCE.txt").write_text("tampered\n", encoding="utf-8")
+        else:
+            _write_operative_retention_bundle(root)
+
+    ok, reason, _detail = validate_durable_primary_evidence_retention_bundle(root)
+    assert ok is False
+    assert expected_substring in reason
+
+
+def test_evaluate_completion_retention_gate_blocks_success_before_retention(
+    tmp_path: Path,
+) -> None:
+    import sys
+
+    sys.path.insert(0, str(REPO_ROOT))
+    from scripts.ops.primary_evidence_retention_v0 import evaluate_completion_retention_gate
+
+    status, reason, detail = evaluate_completion_retention_gate(None, completion_status="SUCCESS")
+    assert status == "INCOMPLETE"
+    assert "primary evidence root required" in reason
+    assert detail["retention_gate_applied"] is True
+
+    root = _operative_durable_root(tmp_path)
+    _write_operative_retention_bundle(root, include_manifest=False)
+    status, reason, detail = evaluate_completion_retention_gate(root, completion_status="SUCCESS")
+    assert status == "INCOMPLETE"
+    assert "MANIFEST.sha256" in reason
+    assert detail["retention_gate_applied"] is True
+
+
+def test_evaluate_completion_retention_gate_allows_success_after_verified_retention(
+    tmp_path: Path,
+) -> None:
+    import sys
+
+    sys.path.insert(0, str(REPO_ROOT))
+    from scripts.ops.primary_evidence_retention_v0 import evaluate_completion_retention_gate
+
+    root = _operative_durable_root(tmp_path)
+    _write_operative_retention_bundle(root)
+    status, reason, detail = evaluate_completion_retention_gate(root, completion_status="SUCCESS")
+    assert status == "SUCCESS"
+    assert reason == ""
+    assert detail["retention_gate_applied"] is True
+    assert detail["checks"]["manifest_sha256_verify"] is True
+
+
+def test_evaluate_completion_retention_gate_non_success_passthrough(tmp_path: Path) -> None:
+    import sys
+
+    sys.path.insert(0, str(REPO_ROOT))
+    from scripts.ops.primary_evidence_retention_v0 import evaluate_completion_retention_gate
+
+    status, reason, detail = evaluate_completion_retention_gate(
+        _operative_durable_root(tmp_path),
+        completion_status="FAILED",
+    )
+    assert status == "FAILED"
+    assert reason == ""
+    assert detail["retention_gate_applied"] is False
