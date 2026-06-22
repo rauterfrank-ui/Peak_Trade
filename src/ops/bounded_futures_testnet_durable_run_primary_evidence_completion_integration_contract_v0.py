@@ -150,6 +150,14 @@ from src.ops.durable_completion_validation.identity import (
     valid_commit_sha as _valid_commit_sha_from_identity,
     valid_sha256_digest as _valid_sha256_digest_from_identity,
 )
+from src.ops.testnet_wallclock_duration_evidence_contract_v0 import (
+    REQUIRED_WALLCLOCK_FIELD_NAMES,
+    evaluate_wallclock_duration_evidence,
+)
+from src.ops.wallclock_session_evidence_v0 import (
+    WALLCLOCK_EVIDENCE_FILENAME,
+    evaluate_wallclock_evidence_fields,
+)
 
 PACKAGE_MARKER = (
     "BOUNDED_FUTURES_TESTNET_DURABLE_RUN_PRIMARY_EVIDENCE_COMPLETION_INTEGRATION_CONTRACT_V0=true"
@@ -175,6 +183,7 @@ PE37_INTEGRATION_OWNER = PE37_CONTRACT_VERSION
 PE25_INTEGRATION_OWNER = PE25_CONTRACT_VERSION
 GAP4_COMPLETION_OWNER = "tests/ops/test_gap4_output_evidence_paths_contract_v0.py"
 GAP2A1_ENFORCEMENT_OWNER = "tests/ops/test_gap2a1_primary_evidence_enforcement_contract_v0.py"
+WALLCLOCK_EVIDENCE_CONTRACT_OWNER = "src/ops/testnet_wallclock_duration_evidence_contract_v0.py"
 PRIMARY_EVIDENCE_RETENTION_CONTRACT_VERSION = "primary_evidence_retention.v0"
 
 SUPPORTED_RUN_TYPE = "bounded_futures_testnet"
@@ -557,6 +566,16 @@ class ManifestProofBinding:
 
 
 @dataclass(frozen=True)
+class WallclockEvidenceProofBinding:
+    wallclock_evidence_owner: str
+    source_revision: str
+    artifact_filename: str
+    duration_evidence_valid: bool
+    duration_proven: bool
+    wallclock_evidence: dict[str, Any]
+
+
+@dataclass(frozen=True)
 class PostWriteVerificationBinding:
     post_write_verification_pass: bool
     manifest_verify_rc: int
@@ -618,6 +637,7 @@ class DurableRunPrimaryEvidenceCompletionIntegrationInput:
     pe16_archive: Pe16ArchiveProofBinding
     manifest_proof: ManifestProofBinding
     artifact_checksums: tuple[ArtifactChecksumEntry, ...]
+    wallclock_evidence_proof: WallclockEvidenceProofBinding
     post_write_verification: PostWriteVerificationBinding
     gap4_completion: Gap4CompletionProofBinding
     gap2a1_enforcement: Gap2a1EnforcementProofBinding
@@ -896,6 +916,70 @@ def _validate_manifest_and_artifacts(
     if manifest_proof.manifest_verify_rc != 0:
         fail_reasons.append("manifest_proof.manifest_verify_rc must be 0")
 
+    return _sorted_unique(fail_reasons)
+
+
+def _validate_wallclock_evidence_proof(
+    proof: WallclockEvidenceProofBinding,
+    *,
+    source_revision: str,
+    artifact_checksums: tuple[ArtifactChecksumEntry, ...],
+) -> list[str]:
+    fail_reasons: list[str] = []
+    if proof.wallclock_evidence_owner != WALLCLOCK_EVIDENCE_CONTRACT_OWNER:
+        fail_reasons.append(
+            f"wallclock_evidence_owner must be {WALLCLOCK_EVIDENCE_CONTRACT_OWNER!r}"
+        )
+    if proof.source_revision != source_revision:
+        fail_reasons.append("wallclock_evidence_proof: source_revision mismatch")
+    if proof.artifact_filename != WALLCLOCK_EVIDENCE_FILENAME:
+        fail_reasons.append(
+            f"wallclock_evidence_proof.artifact_filename must be {WALLCLOCK_EVIDENCE_FILENAME!r}"
+        )
+
+    artifact_paths = {entry.relative_path for entry in artifact_checksums}
+    if WALLCLOCK_EVIDENCE_FILENAME not in artifact_paths:
+        fail_reasons.append(
+            f"wallclock evidence path binding required: {WALLCLOCK_EVIDENCE_FILENAME!r}"
+        )
+
+    evidence = proof.wallclock_evidence
+    if not isinstance(evidence, dict):
+        fail_reasons.append("wallclock_evidence must be a dict")
+        return _sorted_unique(fail_reasons)
+
+    missing_fields = sorted(
+        field for field in REQUIRED_WALLCLOCK_FIELD_NAMES if field not in evidence
+    )
+    if missing_fields:
+        fail_reasons.append(f"wallclock evidence missing required fields: {missing_fields}")
+
+    field_evaluation = evaluate_wallclock_evidence_fields(evidence)
+    duration_evaluation = evaluate_wallclock_duration_evidence(evidence)
+    if not field_evaluation.get("duration_evidence_valid"):
+        fail_reasons.append(
+            "wallclock evidence field validation failed: "
+            f"{field_evaluation.get('fail_reasons', [])}"
+        )
+    if not duration_evaluation.get("duration_evidence_valid"):
+        fail_reasons.append(
+            "wallclock evidence semantic validation failed: "
+            f"{duration_evaluation.get('fail_reasons', [])}"
+        )
+    if proof.duration_evidence_valid is not True:
+        fail_reasons.append("wallclock_evidence_proof.duration_evidence_valid must be true")
+    if proof.duration_proven is not True:
+        fail_reasons.append("wallclock_evidence_proof.duration_proven must be true")
+    canonical_duration_valid = bool(duration_evaluation.get("duration_evidence_valid"))
+    canonical_duration_proven = bool(duration_evaluation.get("duration_proven"))
+    if proof.duration_evidence_valid != canonical_duration_valid:
+        fail_reasons.append(
+            "wallclock_evidence_proof.duration_evidence_valid drift from canonical evaluation"
+        )
+    if proof.duration_proven != canonical_duration_proven:
+        fail_reasons.append(
+            "wallclock_evidence_proof.duration_proven drift from canonical evaluation"
+        )
     return _sorted_unique(fail_reasons)
 
 
@@ -1902,6 +1986,13 @@ def validate_durable_run_primary_evidence_completion_integration_input(
             integration_input.artifact_checksums,
         )
     )
+    fail_reasons.extend(
+        _validate_wallclock_evidence_proof(
+            integration_input.wallclock_evidence_proof,
+            source_revision=integration_input.source_revision,
+            artifact_checksums=integration_input.artifact_checksums,
+        )
+    )
 
     post_write = integration_input.post_write_verification
     if post_write.post_write_verification_pass is not True:
@@ -2035,6 +2126,7 @@ def _integration_input_dict(
 ) -> dict[str, Any]:
     return {
         "artifact_checksums": [asdict(entry) for entry in integration_input.artifact_checksums],
+        "wallclock_evidence_proof": asdict(integration_input.wallclock_evidence_proof),
         "completion_claimed": integration_input.completion_claimed,
         "contract_versions": asdict(integration_input.contract_versions),
         "durable_run_root": asdict(integration_input.durable_run_root),
@@ -2675,6 +2767,41 @@ def default_minimal_completion_proof_chain(
     )
 
 
+def _default_valid_wallclock_evidence() -> dict[str, Any]:
+    planned = 1800
+    slack = 60
+    return {
+        "planned_duration_seconds": planned,
+        "min_required_wall_clock_seconds": planned - slack,
+        "max_acceptable_wall_clock_seconds": planned + slack,
+        "wall_clock_slack_seconds": slack,
+        "start_wall_clock_iso": "2026-06-03T07:00:51Z",
+        "end_wall_clock_iso": "2026-06-03T07:30:52Z",
+        "start_monotonic_seconds": 1000.0,
+        "end_monotonic_seconds": 2800.172,
+        "elapsed_wall_clock_seconds": 1801.0,
+        "elapsed_monotonic_seconds": 1800.172,
+        "duration_proven": True,
+        "duration_evidence_valid": True,
+        "early_exit_detected": False,
+        "early_exit_reason": "",
+        "invalid_if_elapsed_below_min": True,
+        "simulation_forbidden": True,
+        "real_sleep_used": True,
+    }
+
+
+def _default_wallclock_evidence_proof(*, source_revision: str) -> WallclockEvidenceProofBinding:
+    return WallclockEvidenceProofBinding(
+        wallclock_evidence_owner=WALLCLOCK_EVIDENCE_CONTRACT_OWNER,
+        source_revision=source_revision,
+        artifact_filename=WALLCLOCK_EVIDENCE_FILENAME,
+        duration_evidence_valid=True,
+        duration_proven=True,
+        wallclock_evidence=_default_valid_wallclock_evidence(),
+    )
+
+
 def _default_bounded_artifact_checksums() -> tuple[ArtifactChecksumEntry, ...]:
     digests = {
         "RUN_METADATA.json": "a" * 64,
@@ -2992,6 +3119,7 @@ def default_minimal_completion_integration_input(
             manifest_entries=manifest_entries,
         ),
         artifact_checksums=artifact_checksums,
+        wallclock_evidence_proof=_default_wallclock_evidence_proof(source_revision=source_revision),
         post_write_verification=PostWriteVerificationBinding(
             post_write_verification_pass=True,
             manifest_verify_rc=0,
