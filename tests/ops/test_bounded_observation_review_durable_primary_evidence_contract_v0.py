@@ -6,10 +6,17 @@ import importlib.util
 import json
 import shutil
 import sys
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 from typing import NamedTuple
 
 import pytest
+
+from src.ops.wallclock_session_evidence_v0 import (
+    WALLCLOCK_EVIDENCE_FILENAME,
+    build_wallclock_evidence_from_manifest_fields,
+    write_wallclock_evidence,
+)
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 PREFLIGHT = REPO_ROOT / "docs" / "ops" / "runbooks" / "PAPER_SHADOW_247_PREFLIGHT_CONTRACT_V0.md"
@@ -105,6 +112,30 @@ def _durable_root(tmp_path: Path) -> Path:
     return path
 
 
+def _parse_utc_iso(value: str) -> datetime:
+    if value.endswith("Z"):
+        value = value[:-1] + "+00:00"
+    return datetime.fromisoformat(value)
+
+
+def _format_utc_iso(dt: datetime) -> str:
+    return dt.strftime("%Y-%m-%dT%H:%M:%S") + "Z"
+
+
+def _write_valid_shadow_wallclock_evidence(durable: Path, *, duration_minutes: int = 10) -> None:
+    start_iso = "2026-06-22T10:00:00Z"
+    planned_seconds = duration_minutes * 60
+    end_dt = _parse_utc_iso(start_iso) + timedelta(seconds=planned_seconds + 1)
+    evidence = build_wallclock_evidence_from_manifest_fields(
+        utc_started=start_iso,
+        utc_completed=_format_utc_iso(end_dt),
+        duration_minutes=duration_minutes,
+        start_monotonic_seconds=1000.0,
+        end_monotonic_seconds=1000.0 + planned_seconds + 1.0,
+    )
+    write_wallclock_evidence(durable / WALLCLOCK_EVIDENCE_FILENAME, evidence)
+
+
 def _write_shadow_staging_bundle(staging: Path) -> None:
     evidence = staging / "wrapper_evidence"
     evidence.mkdir(parents=True, exist_ok=True)
@@ -169,7 +200,12 @@ def _write_testnet_staging_bundle(staging: Path) -> None:
     (logs / "wrapper_stderr.log").write_text("stderr\n", encoding="utf-8")
 
 
-def _write_durable_bounded_bundle(durable: Path, *, lane: str) -> None:
+def _write_durable_bounded_bundle(
+    durable: Path,
+    *,
+    lane: str,
+    include_wallclock: bool = True,
+) -> None:
     if lane == "shadow":
         _write_shadow_staging_bundle(durable)
     else:
@@ -181,6 +217,8 @@ def _write_durable_bounded_bundle(durable: Path, *, lane: str) -> None:
         json.dumps({"verdict": "PASS"}) + "\n",
         encoding="utf-8",
     )
+    if lane == "shadow" and include_wallclock:
+        _write_valid_shadow_wallclock_evidence(durable)
     sys.path.insert(0, str(REPO_ROOT))
     from scripts.ops.primary_evidence_retention_v0 import write_manifest_sha256
 
@@ -262,6 +300,87 @@ def test_shadow_review_durable_run_root_passes_with_valid_archive(tmp_path: Path
     assert result["durable_checks"]["manifest_sha256_verify"] is True
 
 
+def test_shadow_review_durable_run_root_fails_closed_without_wallclock_evidence(
+    tmp_path: Path,
+) -> None:
+    review_mod = _load_module(
+        SHADOW_REVIEW, "review_shadow_bounded_observation_evidence_v0_durable_no_wallclock"
+    )
+    staging = Path("/tmp") / f"peak_trade_shadow_review_staging_no_wallclock_{tmp_path.name}"
+    staging.mkdir(parents=True, exist_ok=True)
+    durable = _durable_root(tmp_path)
+    _write_shadow_staging_bundle(staging)
+    _write_durable_bounded_bundle(durable, lane="shadow", include_wallclock=False)
+    result = review_mod.review_evidence(staging, durable_run_root=durable)
+    assert result["verdict"] == review_mod.REVIEW_REQUIRED
+    assert result["checks"]["durable_primary_evidence_valid"] is False
+    assert any("WALLCLOCK_EVIDENCE.json" in issue for issue in result["issues"])
+
+
+def test_shadow_review_durable_run_root_fails_closed_on_invalid_wallclock_evidence(
+    tmp_path: Path,
+) -> None:
+    review_mod = _load_module(
+        SHADOW_REVIEW, "review_shadow_bounded_observation_evidence_v0_durable_bad_wallclock"
+    )
+    staging = Path("/tmp") / f"peak_trade_shadow_review_staging_bad_wallclock_{tmp_path.name}"
+    staging.mkdir(parents=True, exist_ok=True)
+    durable = _durable_root(tmp_path)
+    _write_shadow_staging_bundle(staging)
+    _write_durable_bounded_bundle(durable, lane="shadow", include_wallclock=False)
+    (durable / WALLCLOCK_EVIDENCE_FILENAME).write_text("{not-json", encoding="utf-8")
+    sys.path.insert(0, str(REPO_ROOT))
+    from scripts.ops.primary_evidence_retention_v0 import write_manifest_sha256
+
+    write_manifest_sha256(durable)
+    result = review_mod.review_evidence(staging, durable_run_root=durable)
+    assert result["verdict"] == review_mod.REVIEW_REQUIRED
+    assert result["checks"]["durable_primary_evidence_valid"] is False
+    assert any("WALLCLOCK_EVIDENCE.json invalid" in issue for issue in result["issues"])
+
+
+def test_shadow_review_durable_run_root_fails_closed_on_wrong_wallclock_relative_path(
+    tmp_path: Path,
+) -> None:
+    review_mod = _load_module(
+        SHADOW_REVIEW, "review_shadow_bounded_observation_evidence_v0_durable_wrong_wallclock_path"
+    )
+    staging = Path("/tmp") / f"peak_trade_shadow_review_staging_wrong_wallclock_{tmp_path.name}"
+    staging.mkdir(parents=True, exist_ok=True)
+    durable = _durable_root(tmp_path)
+    _write_shadow_staging_bundle(staging)
+    _write_durable_bounded_bundle(durable, lane="shadow", include_wallclock=False)
+    wrong_dir = durable / "logs"
+    wrong_dir.mkdir(parents=True, exist_ok=True)
+    _write_valid_shadow_wallclock_evidence(wrong_dir)
+    sys.path.insert(0, str(REPO_ROOT))
+    from scripts.ops.primary_evidence_retention_v0 import write_manifest_sha256
+
+    write_manifest_sha256(durable)
+    result = review_mod.review_evidence(staging, durable_run_root=durable)
+    assert result["verdict"] == review_mod.REVIEW_REQUIRED
+    assert result["checks"]["durable_primary_evidence_valid"] is False
+    assert any("WALLCLOCK_EVIDENCE.json" in issue for issue in result["issues"])
+
+
+def test_bounded_shadow_durable_required_rel_paths_extends_shared_contract_without_duplicates() -> (
+    None
+):
+    from scripts.ops.primary_evidence_retention_v0 import (
+        BOUNDED_DURABLE_RUN_REQUIRED_REL_PATHS,
+        BOUNDED_SHADOW_DURABLE_RUN_REQUIRED_REL_PATHS,
+    )
+
+    assert WALLCLOCK_EVIDENCE_FILENAME in BOUNDED_SHADOW_DURABLE_RUN_REQUIRED_REL_PATHS
+    assert WALLCLOCK_EVIDENCE_FILENAME not in BOUNDED_DURABLE_RUN_REQUIRED_REL_PATHS
+    assert len(BOUNDED_SHADOW_DURABLE_RUN_REQUIRED_REL_PATHS) == len(
+        set(BOUNDED_SHADOW_DURABLE_RUN_REQUIRED_REL_PATHS)
+    )
+    assert set(BOUNDED_DURABLE_RUN_REQUIRED_REL_PATHS).issubset(
+        set(BOUNDED_SHADOW_DURABLE_RUN_REQUIRED_REL_PATHS)
+    )
+
+
 def test_testnet_review_durable_run_root_passes_with_valid_archive(tmp_path: Path) -> None:
     review_mod = _load_module(
         TESTNET_REVIEW, "review_testnet_bounded_observation_evidence_v0_durable_pass"
@@ -294,13 +413,19 @@ def test_shadow_review_durable_run_root_fails_closed_under_tmp(tmp_path: Path) -
 
 def test_validate_durable_primary_evidence_root_fails_on_manifest_mismatch(tmp_path: Path) -> None:
     sys.path.insert(0, str(REPO_ROOT))
-    from scripts.ops.primary_evidence_retention_v0 import validate_durable_primary_evidence_root
+    from scripts.ops.primary_evidence_retention_v0 import (
+        BOUNDED_SHADOW_DURABLE_RUN_REQUIRED_REL_PATHS,
+        validate_durable_primary_evidence_root,
+    )
 
     durable = _durable_root(tmp_path)
     _write_durable_bounded_bundle(durable, lane="shadow")
     tampered = durable / "RUN_METADATA.json"
     tampered.write_text('{"run_id": "tampered"}\n', encoding="utf-8")
-    ok, reason, detail = validate_durable_primary_evidence_root(durable)
+    ok, reason, detail = validate_durable_primary_evidence_root(
+        durable,
+        required_rel_paths=BOUNDED_SHADOW_DURABLE_RUN_REQUIRED_REL_PATHS,
+    )
     assert ok is False
     assert "checksum mismatch" in reason or any("checksum mismatch" in i for i in detail["issues"])
 
