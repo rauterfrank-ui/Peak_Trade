@@ -49,6 +49,12 @@ BOUNDED_SHADOW_DURABLE_RUN_REQUIRED_REL_PATHS: tuple[str, ...] = (
     WALLCLOCK_EVIDENCE_FILENAME,
 )
 
+# Post-#4493 bounded Testnet closeout extends the shared bounded durable contract.
+BOUNDED_TESTNET_DURABLE_RUN_REQUIRED_REL_PATHS: tuple[str, ...] = (
+    *BOUNDED_DURABLE_RUN_REQUIRED_REL_PATHS,
+    WALLCLOCK_EVIDENCE_FILENAME,
+)
+
 # Paper bounded observation durable run roots (scheduler composition; Preflight §2a.1).
 PAPER_BOUNDED_DURABLE_RUN_REQUIRED_REL_PATHS = (
     "RUN_METADATA.json",

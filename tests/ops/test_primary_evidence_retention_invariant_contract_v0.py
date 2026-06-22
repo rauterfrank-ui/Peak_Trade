@@ -273,6 +273,42 @@ def test_bounded_shadow_durable_run_required_rel_paths_include_wallclock_evidenc
     assert WALLCLOCK_EVIDENCE_FILENAME not in PAPER_BOUNDED_DURABLE_RUN_REQUIRED_REL_PATHS
 
 
+def test_bounded_testnet_durable_run_required_rel_paths_include_wallclock_evidence() -> None:
+    from scripts.ops.primary_evidence_retention_v0 import (
+        BOUNDED_DURABLE_RUN_REQUIRED_REL_PATHS,
+        BOUNDED_SHADOW_DURABLE_RUN_REQUIRED_REL_PATHS,
+        BOUNDED_TESTNET_DURABLE_RUN_REQUIRED_REL_PATHS,
+        PAPER_BOUNDED_DURABLE_RUN_REQUIRED_REL_PATHS,
+    )
+    from src.ops.wallclock_session_evidence_v0 import WALLCLOCK_EVIDENCE_FILENAME
+
+    assert WALLCLOCK_EVIDENCE_FILENAME in BOUNDED_TESTNET_DURABLE_RUN_REQUIRED_REL_PATHS
+    assert WALLCLOCK_EVIDENCE_FILENAME not in BOUNDED_DURABLE_RUN_REQUIRED_REL_PATHS
+    assert WALLCLOCK_EVIDENCE_FILENAME not in PAPER_BOUNDED_DURABLE_RUN_REQUIRED_REL_PATHS
+    assert len(BOUNDED_TESTNET_DURABLE_RUN_REQUIRED_REL_PATHS) == len(
+        set(BOUNDED_TESTNET_DURABLE_RUN_REQUIRED_REL_PATHS)
+    )
+    assert set(BOUNDED_DURABLE_RUN_REQUIRED_REL_PATHS).issubset(
+        set(BOUNDED_TESTNET_DURABLE_RUN_REQUIRED_REL_PATHS)
+    )
+    assert (
+        BOUNDED_SHADOW_DURABLE_RUN_REQUIRED_REL_PATHS
+        == BOUNDED_TESTNET_DURABLE_RUN_REQUIRED_REL_PATHS
+    )
+
+
+def test_testnet_adapter_wallclock_artifact_matches_required_path_contract() -> None:
+    from scripts.ops.primary_evidence_retention_v0 import (
+        BOUNDED_TESTNET_DURABLE_RUN_REQUIRED_REL_PATHS,
+    )
+    from src.ops.wallclock_session_evidence_v0 import WALLCLOCK_EVIDENCE_FILENAME
+
+    adapter_text = TESTNET_ADAPTER.read_text(encoding="utf-8")
+    expected_artifacts_region = adapter_text.split("expected_artifacts", 1)[1]
+    assert "WALLCLOCK_EVIDENCE_FILENAME" in expected_artifacts_region
+    assert WALLCLOCK_EVIDENCE_FILENAME in BOUNDED_TESTNET_DURABLE_RUN_REQUIRED_REL_PATHS
+
+
 def _durable_archive(tmp_path: Path) -> Path:
     path = REPO_ROOT / "tests" / ".pytest_archive_roots" / tmp_path.name
     if path.exists():
