@@ -246,6 +246,7 @@ def _staging_cmd(
     run_id: str,
     duration_minutes: int,
     max_steps: int,
+    step_interval_seconds: float,
 ) -> list[str]:
     script = (repo_root / STAGING_SCRIPT).resolve()
     return [
@@ -259,6 +260,8 @@ def _staging_cmd(
         str(duration_minutes),
         "--max-steps",
         str(max_steps),
+        "--step-interval-seconds",
+        str(step_interval_seconds),
     ]
 
 
@@ -280,7 +283,14 @@ def build_plan(
     run_id: str,
 ) -> AdapterPlan:
     review_out = staging_root / "review" / "REVIEW_RESULT.json"
-    staging_cmd = _staging_cmd(repo_root, staging_root, run_id, duration_minutes, max_steps)
+    staging_cmd = _staging_cmd(
+        repo_root,
+        staging_root,
+        run_id,
+        duration_minutes,
+        max_steps,
+        step_interval_seconds,
+    )
     review_cmd = _python_cmd(repo_root, REVIEW_SCRIPT) + [
         "--staging-root",
         str(staging_root.resolve()),
