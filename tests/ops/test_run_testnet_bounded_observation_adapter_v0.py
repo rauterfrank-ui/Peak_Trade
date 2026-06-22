@@ -5,12 +5,14 @@ from __future__ import annotations
 import importlib.util
 import io
 import json
+import os
 import shutil
 import subprocess
 import sys
 from contextlib import redirect_stdout
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
-from typing import Sequence
+from typing import Mapping, Sequence
 from unittest.mock import patch
 
 import pytest
@@ -47,6 +49,65 @@ def _load_review():
 
 def _staging(tmp_path: Path) -> Path:
     return Path("/tmp") / f"peak_trade_testnet_staging_test_{tmp_path.name}"
+
+
+WALLCLOCK_FIELD_NAMES = (
+    "utc_started",
+    "utc_completed",
+    "duration_minutes_requested",
+    "start_monotonic_seconds",
+    "end_monotonic_seconds",
+)
+
+
+def _injected_wallclock_env(
+    *,
+    duration_minutes: int = 10,
+    start_iso: str = "2026-06-22T10:00:00Z",
+) -> dict[str, str]:
+    planned_seconds = duration_minutes * 60
+    start_dt = datetime.fromisoformat(start_iso.replace("Z", "+00:00"))
+    end_dt = start_dt + timedelta(seconds=planned_seconds + 1)
+    end_iso = end_dt.strftime("%Y-%m-%dT%H:%M:%S") + "Z"
+    start_mono = 1000.0
+    end_mono = start_mono + planned_seconds + 1.0
+    return {
+        "PEAK_TRADE_BOUNDED_TESTNET_STAGING_UTC_STARTED": start_iso,
+        "PEAK_TRADE_BOUNDED_TESTNET_STAGING_UTC_COMPLETED": end_iso,
+        "PEAK_TRADE_BOUNDED_TESTNET_STAGING_START_MONOTONIC_SECONDS": str(start_mono),
+        "PEAK_TRADE_BOUNDED_TESTNET_STAGING_END_MONOTONIC_SECONDS": str(end_mono),
+    }
+
+
+def _run_staging_shell(
+    staging: Path,
+    *,
+    duration_minutes: int = 10,
+    env: Mapping[str, str] | None = None,
+) -> subprocess.CompletedProcess[str]:
+    merged = {**os.environ, **(env or {})}
+    return subprocess.run(
+        [
+            "/bin/bash",
+            str(STAGING_SCRIPT),
+            "--staging-root",
+            str(staging),
+            "--run-id",
+            "testnet_bounded_observation_test_run",
+            "--duration-minutes",
+            str(duration_minutes),
+        ],
+        cwd=str(ROOT),
+        check=False,
+        capture_output=True,
+        text=True,
+        env=merged,
+    )
+
+
+def _load_shell_manifest(staging: Path) -> dict[str, object]:
+    manifest_path = staging / "wrapper_evidence" / "manifest.json"
+    return json.loads(manifest_path.read_text(encoding="utf-8"))
 
 
 def _durable_archive(tmp_path: Path) -> Path:
@@ -652,3 +713,199 @@ def test_execute_wallclock_emitter_preserves_closeout_chain(tmp_path: Path) -> N
     assert (staging / "CLOSEOUT.md").is_file()
     assert (staging / "MANIFEST.sha256").is_file()
     assert (archive / "runs" / "testnet" / "testnet_bounded_observation_test_run").is_dir()
+
+
+def test_staging_shell_manifest_emits_all_wallclock_fields(tmp_path: Path) -> None:
+    staging = _staging(tmp_path)
+    proc = _run_staging_shell(staging, env=_injected_wallclock_env(duration_minutes=7))
+    assert proc.returncode == 0, proc.stderr
+    manifest = _load_shell_manifest(staging)
+    for field in WALLCLOCK_FIELD_NAMES:
+        assert field in manifest
+        assert manifest[field] not in (None, "")
+
+
+def test_staging_shell_wallclock_fields_are_ordered_and_valid(tmp_path: Path) -> None:
+    staging = _staging(tmp_path)
+    proc = _run_staging_shell(staging, env=_injected_wallclock_env())
+    assert proc.returncode == 0, proc.stderr
+    manifest = _load_shell_manifest(staging)
+    start_dt = datetime.fromisoformat(str(manifest["utc_started"]).replace("Z", "+00:00"))
+    end_dt = datetime.fromisoformat(str(manifest["utc_completed"]).replace("Z", "+00:00"))
+    assert end_dt >= start_dt
+    start_mono = float(manifest["start_monotonic_seconds"])
+    end_mono = float(manifest["end_monotonic_seconds"])
+    assert end_mono >= start_mono
+
+
+def test_staging_shell_duration_minutes_requested_matches_cli(tmp_path: Path) -> None:
+    staging = _staging(tmp_path)
+    proc = _run_staging_shell(
+        staging, duration_minutes=8, env=_injected_wallclock_env(duration_minutes=8)
+    )
+    assert proc.returncode == 0, proc.stderr
+    manifest = _load_shell_manifest(staging)
+    assert manifest["duration_minutes_requested"] == 8
+
+
+def test_adapter_emits_wallclock_from_real_shell_manifest_without_mock(tmp_path: Path) -> None:
+    mod = _load_adapter()
+    staging = _staging(tmp_path)
+    proc = _run_staging_shell(staging, env=_injected_wallclock_env())
+    assert proc.returncode == 0, proc.stderr
+    ok, reason, evidence = mod._emit_wallclock_evidence_from_wrapper_manifest(
+        staging,
+        staging / "wrapper_evidence",
+    )
+    assert ok, reason
+    assert evidence is not None
+    assert evidence["duration_evidence_valid"] is True
+    assert evidence["duration_proven"] is True
+
+
+def _real_staging_execute_runner(staging: Path, *, shell_env: Mapping[str, str] | None = None):
+    def _runner(argv: Sequence[str], _cwd, stdout_path, stderr_path) -> int:
+        joined = " ".join(argv)
+        if "run_testnet_bounded_evidence_staging_v0.sh" in joined:
+            proc = _run_staging_shell(staging, env=shell_env)
+            if stdout_path is not None:
+                stdout_path.write_text(proc.stdout or "stdout\n", encoding="utf-8")
+            if stderr_path is not None:
+                stderr_path.write_text(proc.stderr or "stderr\n", encoding="utf-8")
+            return proc.returncode
+        if "review_testnet_bounded_observation_evidence_v0.py" in joined:
+            review_mod = _load_review()
+            result = review_mod.review_evidence(staging)
+            if stdout_path is not None:
+                stdout_path.parent.mkdir(parents=True, exist_ok=True)
+                stdout_path.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
+            return 0 if result["verdict"] == review_mod.PASS else 1
+        return 0
+
+    return _runner
+
+
+def test_execute_shell_to_adapter_happy_path_without_manifest_mock(tmp_path: Path) -> None:
+    mod = _load_adapter()
+    staging = _staging(tmp_path)
+    archive = _durable_archive(tmp_path)
+    rc = mod.main(
+        _base_argv(staging, archive)
+        + [
+            "--execute",
+            "--approval-record",
+            str(APPROVAL_FIXTURE),
+            "--no-strict-repo-clean",
+        ],
+        subprocess_runner=_real_staging_execute_runner(
+            staging,
+            shell_env=_injected_wallclock_env(),
+        ),
+        prerequisite_checker=lambda _root: (True, ""),
+        repo_clean_checker=lambda _root: (True, ""),
+    )
+    assert rc == 0
+    wallclock = json.loads((staging / WALLCLOCK_EVIDENCE_FILENAME).read_text(encoding="utf-8"))
+    assert wallclock["duration_evidence_valid"] is True
+    manifest = _load_shell_manifest(staging)
+    for field in WALLCLOCK_FIELD_NAMES:
+        assert field in manifest
+
+
+@pytest.mark.parametrize("duration_minutes", [0, 11, -1])
+def test_staging_shell_invalid_duration_fail_closed(tmp_path: Path, duration_minutes: int) -> None:
+    staging = _staging(tmp_path)
+    proc = subprocess.run(
+        [
+            "/bin/bash",
+            str(STAGING_SCRIPT),
+            "--staging-root",
+            str(staging),
+            "--duration-minutes",
+            str(duration_minutes),
+        ],
+        cwd=str(ROOT),
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert proc.returncode != 0
+
+
+def test_staging_shell_partial_wallclock_override_fail_closed(tmp_path: Path) -> None:
+    staging = _staging(tmp_path)
+    proc = _run_staging_shell(
+        staging,
+        env={"PEAK_TRADE_BOUNDED_TESTNET_STAGING_UTC_STARTED": "2026-06-22T10:00:00Z"},
+    )
+    assert proc.returncode != 0
+    assert "partial wallclock override" in proc.stderr
+
+
+def test_staging_shell_negative_monotonic_elapsed_fail_closed(tmp_path: Path) -> None:
+    staging = _staging(tmp_path)
+    env = _injected_wallclock_env()
+    env["PEAK_TRADE_BOUNDED_TESTNET_STAGING_START_MONOTONIC_SECONDS"] = "2000.0"
+    env["PEAK_TRADE_BOUNDED_TESTNET_STAGING_END_MONOTONIC_SECONDS"] = "1000.0"
+    proc = _run_staging_shell(staging, env=env)
+    assert proc.returncode != 0
+    assert "end_monotonic_seconds" in proc.stderr
+
+
+def test_staging_shell_manifest_write_failure_fail_closed(tmp_path: Path) -> None:
+    staging = _staging(tmp_path)
+    proc = _run_staging_shell(staging, env=_injected_wallclock_env())
+    assert proc.returncode == 0, proc.stderr
+    evidence_root = staging / "wrapper_evidence"
+    evidence_root.chmod(0o500)
+    try:
+        retry = _run_staging_shell(staging, env=_injected_wallclock_env())
+        assert retry.returncode != 0
+        assert "manifest" in retry.stderr.lower()
+    finally:
+        evidence_root.chmod(0o700)
+
+
+def test_execute_missing_duration_minutes_requested_in_manifest_fail_closed(tmp_path: Path) -> None:
+    mod = _load_adapter()
+    staging = _staging(tmp_path)
+    archive = _durable_archive(tmp_path)
+
+    def _runner(argv: Sequence[str], _cwd, stdout_path, stderr_path) -> int:
+        joined = " ".join(argv)
+        if "run_testnet_bounded_evidence_staging_v0.sh" in joined:
+            proc = _run_staging_shell(staging, env=_injected_wallclock_env())
+            if proc.returncode != 0:
+                return proc.returncode
+            manifest_path = staging / "wrapper_evidence" / "manifest.json"
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            manifest.pop("duration_minutes_requested", None)
+            manifest_path.write_text(json.dumps(manifest, indent=2) + "\n", encoding="utf-8")
+            if stdout_path is not None:
+                stdout_path.write_text("stdout\n", encoding="utf-8")
+            if stderr_path is not None:
+                stderr_path.write_text("stderr\n", encoding="utf-8")
+            return 0
+        if "review_testnet_bounded_observation_evidence_v0.py" in joined:
+            review_mod = _load_review()
+            result = review_mod.review_evidence(staging)
+            if stdout_path is not None:
+                stdout_path.parent.mkdir(parents=True, exist_ok=True)
+                stdout_path.write_text(json.dumps(result, indent=2) + "\n", encoding="utf-8")
+            return 0 if result["verdict"] == review_mod.PASS else 1
+        return 0
+
+    rc = mod.main(
+        _base_argv(staging, archive)
+        + [
+            "--execute",
+            "--approval-record",
+            str(APPROVAL_FIXTURE),
+            "--no-strict-repo-clean",
+        ],
+        subprocess_runner=_runner,
+        prerequisite_checker=lambda _root: (True, ""),
+        repo_clean_checker=lambda _root: (True, ""),
+    )
+    assert rc != 0
+    assert not (staging / WALLCLOCK_EVIDENCE_FILENAME).is_file()
