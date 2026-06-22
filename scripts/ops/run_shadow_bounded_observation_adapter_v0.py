@@ -630,6 +630,7 @@ def _write_closeout_artifacts(
         execution_performed=True,
         review_verdict=str(review_payload.get("verdict") or "UNKNOWN"),
         closeout_succeeded=True,
+        repo_head_sha_prefix=repo_head_sha_prefix,
     )
 
 

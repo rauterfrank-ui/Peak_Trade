@@ -88,6 +88,8 @@ VALIDATION_EXIT = 1
 TIMEOUT_EXIT = 124
 START_RETURN_CODE_ARTIFACT = "start_return_code.txt"
 FINAL_MACHINE_LINES_FILENAME = "FINAL_MACHINE_LINES.txt"
+REPO_HEAD_SHA_PREFIX_MACHINE_LINE_KEY = "REPO_HEAD_SHA_PREFIX"
+REPO_HEAD_SHA_PREFIX_FAIL_CLOSED = "UNKNOWN_HEAD_MISSING"
 BOUNDED_ADAPTER_LANE_PAPER = "paper_only_bounded_observation_v0"
 DURABLE_CLOSEOUT_SCRIPT = _REPO_ROOT / "scripts" / "ops" / "durable_closeout_copy_verify_v0.py"
 
@@ -961,6 +963,15 @@ def _default_subprocess_runner(
     return int(proc.returncode or 0)
 
 
+def _machine_line_repo_head_sha_prefix(repo_head_sha_prefix: str | None) -> str:
+    if repo_head_sha_prefix is None:
+        return REPO_HEAD_SHA_PREFIX_FAIL_CLOSED
+    value = str(repo_head_sha_prefix).strip()
+    if not value:
+        return REPO_HEAD_SHA_PREFIX_FAIL_CLOSED
+    return value
+
+
 def build_bounded_adapter_final_machine_lines_v0(
     *,
     run_id: str,
@@ -968,6 +979,7 @@ def build_bounded_adapter_final_machine_lines_v0(
     execution_performed: bool,
     review_verdict: str | None = None,
     closeout_succeeded: bool = True,
+    repo_head_sha_prefix: str | None = None,
 ) -> dict[str, str]:
     """Deterministic non-authorizing FINAL_MACHINE_LINES payload for bounded adapters."""
     from scripts.ops.build_post_closeout_projection_payload_v0 import (
@@ -998,6 +1010,9 @@ def build_bounded_adapter_final_machine_lines_v0(
             "BROKER_EXCHANGE_CALLED": "false",
             "LIVE_AUTHORITY": "false",
             "TESTNET_AUTHORITY": "false",
+            REPO_HEAD_SHA_PREFIX_MACHINE_LINE_KEY: _machine_line_repo_head_sha_prefix(
+                repo_head_sha_prefix
+            ),
         }
     )
     return lines
@@ -1011,6 +1026,7 @@ def _write_final_machine_lines_artifact(
     execution_performed: bool,
     review_verdict: str | None,
     closeout_succeeded: bool = True,
+    repo_head_sha_prefix: str | None = None,
 ) -> None:
     lines = build_bounded_adapter_final_machine_lines_v0(
         run_id=run_id,
@@ -1018,6 +1034,7 @@ def _write_final_machine_lines_artifact(
         execution_performed=execution_performed,
         review_verdict=review_verdict,
         closeout_succeeded=closeout_succeeded,
+        repo_head_sha_prefix=repo_head_sha_prefix,
     )
     staging_root.mkdir(parents=True, exist_ok=True)
     ordered = sorted(lines.items())

@@ -77,6 +77,17 @@ def _parse_machine_lines(path: Path) -> dict[str, str]:
     return parsed
 
 
+def _machine_line_keys_from_text(path: Path) -> list[str]:
+    keys: list[str] = []
+    for raw in path.read_text(encoding="utf-8").splitlines():
+        line = raw.strip()
+        if not line or "=" not in line:
+            continue
+        key, _, _ = line.partition("=")
+        keys.append(key.strip())
+    return keys
+
+
 def test_forbidden_post_closeout_chain_execute_script_absent() -> None:
     assert not FORBIDDEN_CHAIN_SCRIPT.exists()
 
@@ -101,6 +112,98 @@ def test_build_bounded_adapter_final_machine_lines_has_required_keys(
         assert key in lines
     for flag in SAFETY_FLAGS:
         assert lines[flag] == "false"
+
+
+@pytest.mark.parametrize(
+    "repo_head_sha_prefix,expected",
+    [
+        ("abcdef012345", "abcdef012345"),
+        ("UNKNOWN_REF_MISSING", "UNKNOWN_REF_MISSING"),
+        (None, "UNKNOWN_HEAD_MISSING"),
+        ("", "UNKNOWN_HEAD_MISSING"),
+        ("   ", "UNKNOWN_HEAD_MISSING"),
+    ],
+)
+def test_build_bounded_adapter_final_machine_lines_emits_repo_head_sha_prefix(
+    paper, repo_head_sha_prefix: str | None, expected: str
+) -> None:
+    lines = paper.build_bounded_adapter_final_machine_lines_v0(
+        run_id="fixture_run",
+        adapter_lane="shadow_bounded_observation_v0",
+        execution_performed=True,
+        review_verdict="PASS",
+        repo_head_sha_prefix=repo_head_sha_prefix,
+    )
+    assert paper.REPO_HEAD_SHA_PREFIX_MACHINE_LINE_KEY in lines
+    assert lines[paper.REPO_HEAD_SHA_PREFIX_MACHINE_LINE_KEY] == expected
+    assert lines[paper.REPO_HEAD_SHA_PREFIX_MACHINE_LINE_KEY] != "18a79ede"
+
+
+def test_build_bounded_adapter_final_machine_lines_repo_head_key_is_deterministic(
+    paper,
+) -> None:
+    kwargs = {
+        "run_id": "fixture_run",
+        "adapter_lane": paper.BOUNDED_ADAPTER_LANE_PAPER,
+        "execution_performed": True,
+        "review_verdict": "PASS",
+        "repo_head_sha_prefix": "0123456789ab",
+    }
+    first = paper.build_bounded_adapter_final_machine_lines_v0(**kwargs)
+    second = paper.build_bounded_adapter_final_machine_lines_v0(**kwargs)
+    assert first == second
+    assert len(first) == len(set(first))
+
+
+def test_paper_write_closeout_artifacts_fail_closed_repo_head_sha_prefix(
+    paper, tmp_path: Path
+) -> None:
+    staging = tmp_path / "staging"
+    staging.mkdir(parents=True, exist_ok=True)
+    archive_dest = tmp_path / "archive" / "runs" / "paper" / "fixture_run"
+    ctx = paper.ExecuteContext(
+        args=type("Args", (), {})(),
+        repo_root=REPO_ROOT,
+        staging_root=staging,
+        archive_root=tmp_path / "archive",
+        runtime_out=staging / "runtime_out",
+        logs_dir=staging / "logs",
+        plan_dir=staging / "plan",
+        review_dir=staging / "review",
+        temp_jobs=staging / "jobs.toml",
+        run_id="fixture_run",
+    )
+    plan = paper.AdapterPlan(
+        adapter_version="test",
+        mode="execute",
+        staging_root=str(staging),
+        archive_root=str(tmp_path / "archive"),
+        duration_seconds=60,
+        poll_interval_seconds=30,
+        job_name="paper_shadow_247_paper_only_runtime_high_vol_no_trade_v0",
+        include_tags="paper_runtime",
+        run_id="fixture_run",
+        repo_root=str(REPO_ROOT),
+        source_jobs_toml=str(REPO_ROOT / "config/scheduler/jobs.toml"),
+        commands={},
+        retention_steps=[],
+        expected_artifacts=[],
+    )
+    paper._write_closeout_artifacts(
+        ctx,
+        plan,
+        archive_dest,
+        {"verdict": "PASS", "issues": []},
+    )
+    path = staging / paper.FINAL_MACHINE_LINES_FILENAME
+    assert path.is_file()
+    lines = _parse_machine_lines(path)
+    assert lines["ADAPTER_LANE"] == paper.BOUNDED_ADAPTER_LANE_PAPER
+    assert lines["REVIEW_VERDICT"] == "PASS"
+    assert lines[paper.REPO_HEAD_SHA_PREFIX_MACHINE_LINE_KEY] == (
+        paper.REPO_HEAD_SHA_PREFIX_FAIL_CLOSED
+    )
+    assert len(_machine_line_keys_from_text(path)) == len(lines)
 
 
 def test_paper_write_closeout_artifacts_emits_final_machine_lines(paper, tmp_path: Path) -> None:
@@ -189,6 +292,8 @@ def test_shadow_write_closeout_artifacts_emits_final_machine_lines(shadow, tmp_p
     assert path.is_file()
     lines = _parse_machine_lines(path)
     assert lines["ADAPTER_LANE"] == shadow.BOUNDED_ADAPTER_LANE_SHADOW
+    metadata = json.loads((staging / "RUN_METADATA.json").read_text(encoding="utf-8"))
+    assert lines["REPO_HEAD_SHA_PREFIX"] == metadata["repo_head_sha_prefix"]
 
 
 def test_emitted_lines_accepted_by_projection_builder(builder, paper, tmp_path: Path) -> None:

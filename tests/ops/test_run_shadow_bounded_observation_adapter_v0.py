@@ -1084,3 +1084,70 @@ def test_execute_run_metadata_includes_wrapper_repo_head_sha_prefix(tmp_path: Pa
     assert rc == 0
     metadata = json.loads((staging / "RUN_METADATA.json").read_text(encoding="utf-8"))
     assert metadata["repo_head_sha_prefix"] == expected_prefix
+
+
+def _parse_machine_lines(path: Path) -> dict[str, str]:
+    parsed: dict[str, str] = {}
+    for raw in path.read_text(encoding="utf-8").splitlines():
+        line = raw.strip()
+        if not line or "=" not in line:
+            continue
+        key, _, value = line.partition("=")
+        parsed[key.strip()] = value.strip()
+    return parsed
+
+
+def _write_closeout_machine_lines(
+    tmp_path: Path,
+    *,
+    repo_head_sha_prefix: str | None = None,
+) -> tuple[dict[str, str], dict[str, str]]:
+    metadata = _write_closeout_run_metadata(tmp_path, repo_head_sha_prefix=repo_head_sha_prefix)
+    staging = _staging(tmp_path)
+    lines = _parse_machine_lines(staging / "FINAL_MACHINE_LINES.txt")
+    return metadata, lines
+
+
+def test_final_machine_lines_repo_head_sha_prefix_matches_run_metadata(tmp_path: Path) -> None:
+    metadata, lines = _write_closeout_machine_lines(tmp_path, repo_head_sha_prefix="0123456789ab")
+    assert lines["REPO_HEAD_SHA_PREFIX"] == metadata["repo_head_sha_prefix"]
+
+
+def test_final_machine_lines_worktree_provenance_passthrough(tmp_path: Path) -> None:
+    metadata, lines = _write_closeout_machine_lines(tmp_path, repo_head_sha_prefix="111122223333")
+    assert lines["REPO_HEAD_SHA_PREFIX"] == metadata["repo_head_sha_prefix"]
+
+
+def test_final_machine_lines_detached_head_provenance_passthrough(tmp_path: Path) -> None:
+    metadata, lines = _write_closeout_machine_lines(tmp_path, repo_head_sha_prefix="deadbeefdead")
+    assert lines["REPO_HEAD_SHA_PREFIX"] == metadata["repo_head_sha_prefix"]
+
+
+def test_final_machine_lines_fail_closed_provenance_preserved(tmp_path: Path) -> None:
+    metadata, lines = _write_closeout_machine_lines(
+        tmp_path, repo_head_sha_prefix="UNKNOWN_REF_MISSING"
+    )
+    assert lines["REPO_HEAD_SHA_PREFIX"] == metadata["repo_head_sha_prefix"]
+
+
+def test_final_machine_lines_does_not_invent_plan_level_sha(tmp_path: Path) -> None:
+    metadata, lines = _write_closeout_machine_lines(
+        tmp_path, repo_head_sha_prefix="UNKNOWN_HEAD_MISSING"
+    )
+    assert lines["REPO_HEAD_SHA_PREFIX"] == "UNKNOWN_HEAD_MISSING"
+    assert lines["REPO_HEAD_SHA_PREFIX"] != "18a79ede"
+    assert "origin_main" not in json.dumps(lines).lower()
+
+
+def test_final_machine_lines_existing_keys_preserved(tmp_path: Path) -> None:
+    _, lines = _write_closeout_machine_lines(tmp_path)
+    for key in (
+        "ADAPTER_EXECUTED",
+        "ADAPTER_LANE",
+        "RUN_ID",
+        "REVIEW_VERDICT",
+        "BOUNDED_OBSERVATION_ONLY",
+        "CLOSEOUT_SUCCEEDED",
+    ):
+        assert key in lines
+    assert len(lines) == len(set(lines))
