@@ -28,7 +28,7 @@ from pathlib import Path
 from typing import Any
 
 from scripts.ops.primary_evidence_retention_v0 import (
-    BOUNDED_DURABLE_RUN_REQUIRED_REL_PATHS,
+    BOUNDED_TESTNET_DURABLE_RUN_REQUIRED_REL_PATHS,
     MANIFEST_FILENAME,
     is_under_tmp,
 )
@@ -821,7 +821,7 @@ def _validate_manifest_and_artifacts(
     artifact_checksums: tuple[ArtifactChecksumEntry, ...],
 ) -> list[str]:
     fail_reasons: list[str] = []
-    required_paths = set(BOUNDED_DURABLE_RUN_REQUIRED_REL_PATHS)
+    required_paths = set(BOUNDED_TESTNET_DURABLE_RUN_REQUIRED_REL_PATHS)
     required_manifest_paths = required_paths - {MANIFEST_FILENAME}
     artifact_paths = [entry.relative_path for entry in artifact_checksums]
     manifest_paths = [entry.relative_path for entry in manifest_proof.manifest_entries]
@@ -2683,11 +2683,12 @@ def _default_bounded_artifact_checksums() -> tuple[ArtifactChecksumEntry, ...]:
         "wrapper_evidence/manifest.json": "d" * 64,
         "logs/wrapper_stdout.log": "e" * 64,
         "logs/wrapper_stderr.log": "f" * 64,
+        "WALLCLOCK_EVIDENCE.json": "7" * 64,
         MANIFEST_FILENAME: "0" * 64,
     }
     return tuple(
         ArtifactChecksumEntry(relative_path=path, digest=digests[path])
-        for path in BOUNDED_DURABLE_RUN_REQUIRED_REL_PATHS
+        for path in BOUNDED_TESTNET_DURABLE_RUN_REQUIRED_REL_PATHS
     )
 
 

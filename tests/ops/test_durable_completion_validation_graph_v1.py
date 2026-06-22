@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from pathlib import Path
 from typing import Any
 
 from dataclasses import replace
@@ -427,3 +428,68 @@ def test_evaluate_graph_compatibility_pe31_mismatch_fails() -> None:
     result = evaluate_durable_run_primary_evidence_completion_integration(broken)
     assert result["integration_pass"] is False
     assert any("pe31_proof" in reason for reason in result["fail_reasons"])
+
+
+def test_graph_testnet_completion_includes_wallclock_required_path_binding() -> None:
+    from scripts.ops.primary_evidence_retention_v0 import (
+        BOUNDED_TESTNET_DURABLE_RUN_REQUIRED_REL_PATHS,
+    )
+    from src.ops.wallclock_session_evidence_v0 import WALLCLOCK_EVIDENCE_FILENAME
+
+    integration_input = default_minimal_completion_integration_input()
+    artifact_paths = {entry.relative_path for entry in integration_input.artifact_checksums}
+    assert WALLCLOCK_EVIDENCE_FILENAME in artifact_paths
+    assert artifact_paths == set(BOUNDED_TESTNET_DURABLE_RUN_REQUIRED_REL_PATHS)
+    result = execute_proof_binding_validation_graph(_minimal_context())
+    assert not any("missing required artifact paths" in reason for reason in result.fail_reasons)
+
+
+def test_graph_retention_review_completion_share_canonical_testnet_paths() -> None:
+    from scripts.ops.primary_evidence_retention_v0 import (
+        BOUNDED_DURABLE_RUN_REQUIRED_REL_PATHS,
+        BOUNDED_SHADOW_DURABLE_RUN_REQUIRED_REL_PATHS,
+        BOUNDED_TESTNET_DURABLE_RUN_REQUIRED_REL_PATHS,
+        PAPER_BOUNDED_DURABLE_RUN_REQUIRED_REL_PATHS,
+    )
+    from src.ops.wallclock_session_evidence_v0 import WALLCLOCK_EVIDENCE_FILENAME
+
+    repo_root = Path(__file__).resolve().parents[2]
+    review_source = (
+        repo_root / "scripts" / "ops" / "review_testnet_bounded_observation_evidence_v0.py"
+    ).read_text(encoding="utf-8")
+    assert "BOUNDED_TESTNET_DURABLE_RUN_REQUIRED_REL_PATHS" in review_source
+    integration_input = default_minimal_completion_integration_input()
+    completion_paths = {entry.relative_path for entry in integration_input.artifact_checksums}
+    assert completion_paths == set(BOUNDED_TESTNET_DURABLE_RUN_REQUIRED_REL_PATHS)
+    assert WALLCLOCK_EVIDENCE_FILENAME in BOUNDED_TESTNET_DURABLE_RUN_REQUIRED_REL_PATHS
+    assert WALLCLOCK_EVIDENCE_FILENAME not in BOUNDED_DURABLE_RUN_REQUIRED_REL_PATHS
+    assert WALLCLOCK_EVIDENCE_FILENAME not in PAPER_BOUNDED_DURABLE_RUN_REQUIRED_REL_PATHS
+    assert (
+        BOUNDED_SHADOW_DURABLE_RUN_REQUIRED_REL_PATHS
+        == BOUNDED_TESTNET_DURABLE_RUN_REQUIRED_REL_PATHS
+    )
+
+
+def test_graph_seven_vs_eight_path_drift_fail_closed() -> None:
+    from scripts.ops.primary_evidence_retention_v0 import (
+        BOUNDED_DURABLE_RUN_REQUIRED_REL_PATHS,
+        BOUNDED_TESTNET_DURABLE_RUN_REQUIRED_REL_PATHS,
+    )
+    from src.ops.wallclock_session_evidence_v0 import WALLCLOCK_EVIDENCE_FILENAME
+
+    integration_input = default_minimal_completion_integration_input()
+    seven_path_artifacts = tuple(
+        entry
+        for entry in integration_input.artifact_checksums
+        if entry.relative_path in BOUNDED_DURABLE_RUN_REQUIRED_REL_PATHS
+    )
+    assert len(seven_path_artifacts) == len(BOUNDED_DURABLE_RUN_REQUIRED_REL_PATHS)
+    assert len(BOUNDED_TESTNET_DURABLE_RUN_REQUIRED_REL_PATHS) == (
+        len(BOUNDED_DURABLE_RUN_REQUIRED_REL_PATHS) + 1
+    )
+    bad = replace(integration_input, artifact_checksums=seven_path_artifacts)
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(WALLCLOCK_EVIDENCE_FILENAME in reason for reason in result["fail_reasons"])
+    graph_result = execute_proof_binding_validation_graph(ValidationContext(integration_input=bad))
+    assert graph_result.fail_reasons
