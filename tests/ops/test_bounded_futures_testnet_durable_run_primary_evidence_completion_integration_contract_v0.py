@@ -18,6 +18,11 @@ from scripts.ops.primary_evidence_retention_v0 import (
     MANIFEST_FILENAME,
 )
 from src.ops.wallclock_session_evidence_v0 import WALLCLOCK_EVIDENCE_FILENAME
+from src.ops.testnet_wallclock_duration_evidence_contract_v0 import (
+    REQUIRED_WALLCLOCK_FIELD_NAMES,
+    evaluate_wallclock_duration_evidence,
+)
+from src.ops.wallclock_session_evidence_v0 import evaluate_wallclock_evidence_fields
 from src.ops.bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0 import (
     CAPITAL_REALLOCATION_EXECUTED,
     CAPITAL_SLOT_RATCHET_EXECUTED,
@@ -73,8 +78,10 @@ from src.ops.bounded_futures_testnet_durable_run_primary_evidence_completion_int
     PROOF_LIFECYCLE_SUPERSEDED,
     RUN_STARTED,
     SUPPORTED_RUN_TYPE,
+    WALLCLOCK_EVIDENCE_CONTRACT_OWNER,
     ArtifactChecksumEntry,
     DurableRunPrimaryEvidenceCompletionIntegrationInput,
+    WallclockEvidenceProofBinding,
     compute_completion_integration_input_digest,
     compute_manifest_digest,
     compute_completion_identity_digest,
@@ -336,6 +343,11 @@ def test_canonical_owners_referenced_not_duplicated() -> None:
     )
     assert "bounded_futures_testnet_preflight_packet_archive_contract_v0" in integration_text
     assert "scripts.ops.primary_evidence_retention_v0" in integration_text
+    assert "testnet_wallclock_duration_evidence_contract_v0" in integration_text
+    assert "wallclock_session_evidence_v0" in integration_text
+    assert "evaluate_wallclock_evidence_fields" in integration_text
+    assert "evaluate_wallclock_duration_evidence" in integration_text
+    assert "REQUIRED_WALLCLOCK_FIELD_NAMES" in integration_text
     assert PE21_PACKAGE_MARKER in PE21_MODULE.read_text(encoding="utf-8")
     assert PE16_PACKAGE_MARKER in PE16_MODULE.read_text(encoding="utf-8")
     assert PE21_MODULE.exists()
@@ -2081,6 +2093,70 @@ def test_wrong_wallclock_relative_path_fails_closed() -> None:
     assert result["integration_pass"] is False
     assert any("missing required artifact paths" in r for r in result["fail_reasons"])
     assert any("unexpected artifact paths" in r for r in result["fail_reasons"])
+
+
+def test_completion_wallclock_semantic_binding_uses_canonical_evaluators() -> None:
+    integration_text = INTEGRATION_MODULE.read_text(encoding="utf-8")
+    assert "from src.ops.testnet_wallclock_duration_evidence_contract_v0 import" in integration_text
+    assert "from src.ops.wallclock_session_evidence_v0 import" in integration_text
+    assert evaluate_wallclock_evidence_fields.__module__ == "src.ops.wallclock_session_evidence_v0"
+    assert (
+        evaluate_wallclock_duration_evidence.__module__
+        == "src.ops.testnet_wallclock_duration_evidence_contract_v0"
+    )
+    assert WALLCLOCK_EVIDENCE_CONTRACT_OWNER.endswith(
+        "testnet_wallclock_duration_evidence_contract_v0.py"
+    )
+
+
+def test_invalid_wallclock_evidence_semantics_fails_closed() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    invalid_evidence = dict(integration_input.wallclock_evidence_proof.wallclock_evidence)
+    invalid_evidence["elapsed_wall_clock_seconds"] = 1
+    bad_proof = replace(
+        integration_input.wallclock_evidence_proof,
+        wallclock_evidence=invalid_evidence,
+    )
+    bad = replace(integration_input, wallclock_evidence_proof=bad_proof)
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("wallclock evidence" in r for r in result["fail_reasons"])
+
+
+def test_missing_wallclock_required_fields_fails_closed() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    incomplete_evidence = {
+        key: value
+        for key, value in integration_input.wallclock_evidence_proof.wallclock_evidence.items()
+        if key != "duration_proven"
+    }
+    bad_proof = replace(
+        integration_input.wallclock_evidence_proof,
+        wallclock_evidence=incomplete_evidence,
+    )
+    bad = replace(integration_input, wallclock_evidence_proof=bad_proof)
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("missing required fields" in r for r in result["fail_reasons"])
+
+
+def test_wallclock_duration_proof_flags_drift_fails_closed() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad_proof = replace(
+        integration_input.wallclock_evidence_proof,
+        duration_proven=False,
+    )
+    bad = replace(integration_input, wallclock_evidence_proof=bad_proof)
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("duration_proven" in r for r in result["fail_reasons"])
+
+
+def test_required_wallclock_field_names_complete_in_binding() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    evidence = integration_input.wallclock_evidence_proof.wallclock_evidence
+    for field in REQUIRED_WALLCLOCK_FIELD_NAMES:
+        assert field in evidence
 
 
 def test_generic_bounded_required_paths_not_testnet_completion_source_of_truth() -> None:
