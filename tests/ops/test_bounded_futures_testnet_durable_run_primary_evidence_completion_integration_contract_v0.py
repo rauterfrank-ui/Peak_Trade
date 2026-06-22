@@ -2159,6 +2159,101 @@ def test_required_wallclock_field_names_complete_in_binding() -> None:
         assert field in evidence
 
 
+def test_completion_proof_chain_wallclock_digest_bound_positive() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    wallclock_digest = next(
+        entry.digest
+        for entry in integration_input.artifact_checksums
+        if entry.relative_path == WALLCLOCK_EVIDENCE_FILENAME
+    )
+    assert (
+        integration_input.completion_proof_chain.completion_referenced_wallclock_evidence_digest
+        == wallclock_digest
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(integration_input)
+    assert result["integration_pass"] is True
+
+
+def test_completion_proof_chain_missing_wallclock_digest_fails_closed() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        completion_proof_chain=replace(
+            integration_input.completion_proof_chain,
+            completion_referenced_wallclock_evidence_digest="",
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "completion_referenced_wallclock_evidence_digest required" in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_completion_proof_chain_wallclock_digest_drift_fails_closed() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        completion_proof_chain=replace(
+            integration_input.completion_proof_chain,
+            completion_referenced_wallclock_evidence_digest="0" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "completion_referenced_wallclock_evidence_digest mismatch" in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_completion_proof_chain_wallclock_artifact_identity_drift_fails_closed() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    drifted_artifacts = tuple(
+        replace(entry, digest="8" * 64)
+        if entry.relative_path == WALLCLOCK_EVIDENCE_FILENAME
+        else entry
+        for entry in integration_input.artifact_checksums
+    )
+    bad = replace(integration_input, artifact_checksums=drifted_artifacts)
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "completion_referenced_wallclock_evidence_digest mismatch" in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_completion_proof_chain_wallclock_digest_owner_reuses_artifact_binding() -> None:
+    integration_text = INTEGRATION_MODULE.read_text(encoding="utf-8")
+    completion_chain_text = (
+        REPO_ROOT
+        / "src"
+        / "ops"
+        / "durable_completion_validation"
+        / "validators"
+        / "completion_chain.py"
+    ).read_text(encoding="utf-8")
+    assert "_resolve_wallclock_evidence_artifact_digest" in integration_text
+    assert "wallclock_proof.artifact_filename" in integration_text
+    assert "wallclock_proof.artifact_filename" in completion_chain_text
+    assert "checksum_by_path" in completion_chain_text
+
+
+def test_completion_proof_chain_pe31_digest_preserved_with_wallclock_binding() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    assert (
+        integration_input.completion_proof_chain.completion_referenced_pe31_proof_digest
+        == integration_input.pe31_reconciliation_review_integration_proof.integration_proof_digest
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(integration_input)
+    assert result["integration_pass"] is True
+    assert not any(
+        "completion_referenced_pe31_proof_digest mismatch" in r for r in result["fail_reasons"]
+    )
+
+
 def test_generic_bounded_required_paths_not_testnet_completion_source_of_truth() -> None:
     assert set(BOUNDED_DURABLE_RUN_REQUIRED_REL_PATHS).issubset(
         set(BOUNDED_TESTNET_DURABLE_RUN_REQUIRED_REL_PATHS)
