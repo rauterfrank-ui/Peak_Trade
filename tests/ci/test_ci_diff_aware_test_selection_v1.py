@@ -657,6 +657,7 @@ def test_fast_lane_skips_full_static_sweep_when_focused() -> None:
     text = _ci_text()
     static_if = text.split("name: Static contract tests", 1)[1].split("run:", 1)[0]
     assert "tests_execute_focused != 'true'" in static_if
+    assert "tests_execute_full != 'true'" in static_if
     assert "OPS_SHARD_COUNT=8" in text
 
 
