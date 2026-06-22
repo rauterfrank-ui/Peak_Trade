@@ -260,6 +260,19 @@ def test_order_capability_offline_durable_run_required_rel_paths_defined() -> No
     )
 
 
+def test_bounded_shadow_durable_run_required_rel_paths_include_wallclock_evidence() -> None:
+    from scripts.ops.primary_evidence_retention_v0 import (
+        BOUNDED_DURABLE_RUN_REQUIRED_REL_PATHS,
+        BOUNDED_SHADOW_DURABLE_RUN_REQUIRED_REL_PATHS,
+        PAPER_BOUNDED_DURABLE_RUN_REQUIRED_REL_PATHS,
+    )
+    from src.ops.wallclock_session_evidence_v0 import WALLCLOCK_EVIDENCE_FILENAME
+
+    assert WALLCLOCK_EVIDENCE_FILENAME in BOUNDED_SHADOW_DURABLE_RUN_REQUIRED_REL_PATHS
+    assert WALLCLOCK_EVIDENCE_FILENAME not in BOUNDED_DURABLE_RUN_REQUIRED_REL_PATHS
+    assert WALLCLOCK_EVIDENCE_FILENAME not in PAPER_BOUNDED_DURABLE_RUN_REQUIRED_REL_PATHS
+
+
 def _durable_archive(tmp_path: Path) -> Path:
     path = REPO_ROOT / "tests" / ".pytest_archive_roots" / tmp_path.name
     if path.exists():

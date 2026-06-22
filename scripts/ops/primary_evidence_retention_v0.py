@@ -25,6 +25,11 @@ import json
 from pathlib import Path
 from typing import Any
 
+from src.ops.wallclock_session_evidence_v0 import (
+    WALLCLOCK_EVIDENCE_FILENAME,
+    evaluate_wallclock_evidence_fields,
+)
+
 MANIFEST_FILENAME = "MANIFEST.sha256"
 
 # Bounded observation durable run roots (Shadow/Testnet adapter parity; Preflight §2a.1).
@@ -36,6 +41,12 @@ BOUNDED_DURABLE_RUN_REQUIRED_REL_PATHS = (
     "logs/wrapper_stdout.log",
     "logs/wrapper_stderr.log",
     MANIFEST_FILENAME,
+)
+
+# Post-#4489 bounded Shadow closeout extends the shared bounded durable contract.
+BOUNDED_SHADOW_DURABLE_RUN_REQUIRED_REL_PATHS: tuple[str, ...] = (
+    *BOUNDED_DURABLE_RUN_REQUIRED_REL_PATHS,
+    WALLCLOCK_EVIDENCE_FILENAME,
 )
 
 # Paper bounded observation durable run roots (scheduler composition; Preflight §2a.1).
@@ -194,6 +205,23 @@ def validate_durable_primary_evidence_root(
         checks[key] = present
         if not present:
             issues.append(f"missing durable required file: {rel}")
+
+    if WALLCLOCK_EVIDENCE_FILENAME in required_rel_paths:
+        wallclock_path = root / WALLCLOCK_EVIDENCE_FILENAME
+        if wallclock_path.is_file():
+            try:
+                wallclock_payload = json.loads(wallclock_path.read_text(encoding="utf-8"))
+            except (OSError, json.JSONDecodeError) as exc:
+                msg = f"WALLCLOCK_EVIDENCE.json invalid: {exc}"
+                checks["durable_wallclock_evidence_valid"] = False
+                issues.append(msg)
+            else:
+                evaluation = evaluate_wallclock_evidence_fields(wallclock_payload)
+                wallclock_valid = bool(evaluation.get("duration_evidence_valid"))
+                checks["durable_wallclock_evidence_valid"] = wallclock_valid
+                if not wallclock_valid:
+                    reasons = evaluation.get("fail_reasons", [])
+                    issues.append(f"WALLCLOCK_EVIDENCE.json failed validation: {reasons}")
 
     if issues:
         return False, issues[0], {"checks": checks, "issues": issues}
