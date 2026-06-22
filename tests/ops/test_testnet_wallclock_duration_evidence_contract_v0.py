@@ -14,6 +14,12 @@ import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 RUN_TESTNET_SESSION = REPO_ROOT / "scripts" / "run_testnet_session.py"
+TESTNET_BOUNDED_ADAPTER = (
+    REPO_ROOT / "scripts" / "ops" / "run_testnet_bounded_observation_adapter_v0.py"
+)
+TESTNET_ADAPTER_TEST = (
+    REPO_ROOT / "tests" / "ops" / "test_run_testnet_bounded_observation_adapter_v0.py"
+)
 SECTION5_GAP_OWNER_MAP = (
     REPO_ROOT / "docs" / "ops" / "planning" / "SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md"
 )
@@ -330,3 +336,26 @@ def test_future_testnet_closeout_must_include_planned_vs_elapsed_fields() -> Non
     serialized = json.dumps(sample)
     for key in required_closeout_keys:
         assert key in serialized
+
+
+def test_testnet_bounded_adapter_integrates_wallclock_session_evidence_module() -> None:
+    """Bounded testnet adapter delegates wall-clock emission to repo-native helper module."""
+    source = TESTNET_BOUNDED_ADAPTER.read_text(encoding="utf-8")
+    assert "wallclock_session_evidence_v0" in source
+    assert "build_wallclock_evidence_from_manifest_fields" in source
+    assert "write_wallclock_evidence" in source
+    assert "WALLCLOCK_EVIDENCE_FILENAME" in source
+
+
+def test_testnet_bounded_adapter_testowner_wallclock_crosslink_present() -> None:
+    assert TESTNET_ADAPTER_TEST.is_file()
+    text = TESTNET_ADAPTER_TEST.read_text(encoding="utf-8")
+    assert "test_execute_emits_wallclock_evidence_pass_standard_tier" in text
+    assert "test_execute_fast_sim_false_claim_fails_closed" in text
+    assert "test_execute_missing_wallclock_inputs_fail_closed" in text
+
+
+def test_testnet_bounded_adapter_reuses_canonical_evaluator_not_duplicate_logic() -> None:
+    adapter_source = TESTNET_BOUNDED_ADAPTER.read_text(encoding="utf-8")
+    assert "evaluate_wallclock_evidence_fields" not in adapter_source
+    assert "build_wallclock_evidence_from_manifest_fields" in adapter_source
