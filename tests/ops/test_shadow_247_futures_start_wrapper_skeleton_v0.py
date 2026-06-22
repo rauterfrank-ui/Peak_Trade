@@ -2660,3 +2660,23 @@ def test_read_git_sha_prefix_incomplete_merge_state_fail_closed() -> None:
         assert mod._read_git_sha_prefix(root) == "UNKNOWN_INCOMPLETE_GIT_STATE"
     finally:
         shutil.rmtree(root, ignore_errors=True)
+
+
+SHADOW_WALLCLOCK_CONTRACT_TEST = (
+    REPO_ROOT / "tests" / "ops" / "test_shadow_wallclock_duration_evidence_contract_v0.py"
+)
+
+
+def test_shadow_wrapper_wallclock_duration_contract_crosslink_v0() -> None:
+    """Bounded-shadow manifest timestamps and declared duration feed offline wallclock contract."""
+    assert SHADOW_WALLCLOCK_CONTRACT_TEST.is_file()
+    contract_text = SHADOW_WALLCLOCK_CONTRACT_TEST.read_text(encoding="utf-8")
+    assert "SHADOW_WALLCLOCK_DURATION_EVIDENCE_CONTRACT_V0=true" in contract_text
+    for marker in (
+        "duration_minutes_requested",
+        "duration_minutes_cap_enforced",
+        "utc_started",
+        "utc_completed",
+    ):
+        assert marker in SRC_TEXT, marker
+    assert "WALLCLOCK_EVIDENCE.json" not in SRC_TEXT

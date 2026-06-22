@@ -1042,6 +1042,26 @@ def test_run_metadata_existing_fields_preserved(tmp_path: Path) -> None:
     assert metadata["utc"]
 
 
+SHADOW_WALLCLOCK_CONTRACT_TEST = (
+    ROOT / "tests" / "ops" / "test_shadow_wallclock_duration_evidence_contract_v0.py"
+)
+
+
+def test_shadow_adapter_wallclock_duration_contract_crosslink_v0(tmp_path: Path) -> None:
+    """Adapter plan delegates declared duration to wrapper; offline contract guards fast-sim claims."""
+    assert SHADOW_WALLCLOCK_CONTRACT_TEST.is_file()
+    contract_text = SHADOW_WALLCLOCK_CONTRACT_TEST.read_text(encoding="utf-8")
+    assert "SHADOW_WALLCLOCK_DURATION_EVIDENCE_CONTRACT_V0=true" in contract_text
+    plan = _plan_dict(_staging(tmp_path))
+    assert plan["duration_minutes"] == 10
+    wrapper_cmd = plan["commands"]["wrapper_bounded_dry_run"]
+    assert "--duration-minutes" in wrapper_cmd
+    assert "10" in wrapper_cmd
+    adapter_source = ADAPTER_SCRIPT.read_text(encoding="utf-8")
+    assert "extended_tier_active" in adapter_source
+    assert "EXTENDED_BOUNDED_SHADOW_CONFIRM_TOKEN_V0" in adapter_source
+
+
 def test_execute_run_metadata_includes_wrapper_repo_head_sha_prefix(tmp_path: Path) -> None:
     mod = _load_adapter()
     staging = _staging(tmp_path)
