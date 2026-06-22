@@ -79,10 +79,16 @@ def _injected_wallclock_env(
     }
 
 
+def _stub_sleep_env() -> dict[str, str]:
+    return {"PEAK_TRADE_BOUNDED_TESTNET_STAGING_STUB_SLEEP": "1"}
+
+
 def _run_staging_shell(
     staging: Path,
     *,
     duration_minutes: int = 10,
+    max_steps: int = 120,
+    step_interval_seconds: float = 5.0,
     env: Mapping[str, str] | None = None,
 ) -> subprocess.CompletedProcess[str]:
     merged = {**os.environ, **(env or {})}
@@ -96,6 +102,10 @@ def _run_staging_shell(
             "testnet_bounded_observation_test_run",
             "--duration-minutes",
             str(duration_minutes),
+            "--max-steps",
+            str(max_steps),
+            "--step-interval-seconds",
+            str(step_interval_seconds),
         ],
         cwd=str(ROOT),
         check=False,
@@ -153,7 +163,7 @@ def _passing_wrapper_manifest_fields(
         "start_monotonic_seconds": start_monotonic_seconds,
         "end_monotonic_seconds": end_monotonic_seconds,
         "elapsed_monotonic_seconds": round(end_monotonic_seconds - start_monotonic_seconds, 6),
-        "step_interval_seconds": 0.0,
+        "step_interval_seconds": 5.0,
     }
 
 
@@ -909,3 +919,180 @@ def test_execute_missing_duration_minutes_requested_in_manifest_fail_closed(tmp_
     )
     assert rc != 0
     assert not (staging / WALLCLOCK_EVIDENCE_FILENAME).is_file()
+
+
+def test_plan_forwards_step_interval_seconds_to_staging_cmd(tmp_path: Path) -> None:
+    plan = _plan_dict(_staging(tmp_path))
+    staging_cmd = plan["commands"]["bounded_evidence_staging"]
+    assert "--step-interval-seconds" in staging_cmd
+    assert staging_cmd[staging_cmd.index("--step-interval-seconds") + 1] == "0.0"
+
+
+def test_plan_forwards_duration_minutes_and_max_steps_unchanged(tmp_path: Path) -> None:
+    mod = _load_adapter()
+    staging = _staging(tmp_path)
+    buf = io.StringIO()
+    with redirect_stdout(buf):
+        rc = mod.main(
+            _base_argv(staging)
+            + [
+                "--json",
+                "--duration-minutes",
+                "8",
+                "--max-steps",
+                "96",
+                "--step-interval-seconds",
+                "5.0",
+            ]
+        )
+    assert rc == 0
+    plan = json.loads(buf.getvalue())
+    staging_cmd = plan["commands"]["bounded_evidence_staging"]
+    assert staging_cmd[staging_cmd.index("--duration-minutes") + 1] == "8"
+    assert staging_cmd[staging_cmd.index("--max-steps") + 1] == "96"
+    assert staging_cmd[staging_cmd.index("--step-interval-seconds") + 1] == "5.0"
+    assert plan["duration_minutes"] == 8
+    assert plan["max_steps"] == 96
+    assert plan["step_interval_seconds"] == 5.0
+
+
+def test_staging_shell_step_interval_zero_fail_closed(tmp_path: Path) -> None:
+    staging = _staging(tmp_path)
+    proc = _run_staging_shell(staging, step_interval_seconds=0.0)
+    assert proc.returncode != 0
+    assert "step-interval-seconds" in proc.stderr
+
+
+def test_staging_shell_missing_step_interval_fail_closed(tmp_path: Path) -> None:
+    staging = _staging(tmp_path)
+    proc = subprocess.run(
+        [
+            "/bin/bash",
+            str(STAGING_SCRIPT),
+            "--staging-root",
+            str(staging),
+            "--duration-minutes",
+            "10",
+            "--max-steps",
+            "10",
+        ],
+        cwd=str(ROOT),
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    assert proc.returncode != 0
+    assert "step-interval-seconds" in proc.stderr
+
+
+def test_staging_shell_bounded_loop_emits_deterministic_steps(tmp_path: Path) -> None:
+    staging = _staging(tmp_path)
+    proc = _run_staging_shell(
+        staging,
+        max_steps=5,
+        step_interval_seconds=2.0,
+        env=_stub_sleep_env(),
+    )
+    assert proc.returncode == 0, proc.stderr
+    manifest = _load_shell_manifest(staging)
+    assert manifest["steps_emitted"] == 5
+    assert manifest["step_interval_seconds"] == pytest.approx(2.0)
+    steps = (
+        (staging / "wrapper_evidence" / "steps.jsonl")
+        .read_text(encoding="utf-8")
+        .strip()
+        .split("\n")
+    )
+    assert len(steps) == 5
+    first = json.loads(steps[0])
+    assert first["mode"] == "bounded_staging_observation"
+    assert first["step"] == 1
+
+
+def test_staging_shell_duration_cap_limits_steps(tmp_path: Path) -> None:
+    staging = _staging(tmp_path)
+    proc = _run_staging_shell(
+        staging,
+        duration_minutes=1,
+        max_steps=100,
+        step_interval_seconds=30.0,
+        env=_stub_sleep_env(),
+    )
+    assert proc.returncode == 0, proc.stderr
+    manifest = _load_shell_manifest(staging)
+    assert manifest["steps_emitted"] == 2
+
+
+def test_staging_shell_max_steps_limits_run(tmp_path: Path) -> None:
+    staging = _staging(tmp_path)
+    proc = _run_staging_shell(
+        staging,
+        duration_minutes=10,
+        max_steps=3,
+        step_interval_seconds=5.0,
+        env=_stub_sleep_env(),
+    )
+    assert proc.returncode == 0, proc.stderr
+    manifest = _load_shell_manifest(staging)
+    assert manifest["steps_emitted"] == 3
+
+
+def test_staging_shell_stub_monotonic_produces_coherent_wallclock_fields(tmp_path: Path) -> None:
+    staging = _staging(tmp_path)
+    proc = _run_staging_shell(
+        staging,
+        duration_minutes=10,
+        max_steps=120,
+        step_interval_seconds=5.0,
+        env=_stub_sleep_env(),
+    )
+    assert proc.returncode == 0, proc.stderr
+    manifest = _load_shell_manifest(staging)
+    start_dt = datetime.fromisoformat(str(manifest["utc_started"]).replace("Z", "+00:00"))
+    end_dt = datetime.fromisoformat(str(manifest["utc_completed"]).replace("Z", "+00:00"))
+    assert end_dt >= start_dt
+    start_mono = float(manifest["start_monotonic_seconds"])
+    end_mono = float(manifest["end_monotonic_seconds"])
+    assert end_mono >= start_mono
+    assert end_mono - start_mono == pytest.approx(119 * 5.0, rel=1e-6)
+
+
+def test_wallclock_r1_accepts_stub_elapsed_at_least_540_seconds(tmp_path: Path) -> None:
+    staging = _staging(tmp_path)
+    proc = _run_staging_shell(
+        staging,
+        duration_minutes=10,
+        max_steps=120,
+        step_interval_seconds=5.0,
+        env=_stub_sleep_env(),
+    )
+    assert proc.returncode == 0, proc.stderr
+    mod = _load_adapter()
+    ok, reason, evidence = mod._emit_wallclock_evidence_from_wrapper_manifest(
+        staging,
+        staging / "wrapper_evidence",
+    )
+    assert ok, reason
+    assert evidence is not None
+    assert evidence["elapsed_monotonic_seconds"] >= 540
+    assert evidence["real_sleep_used"] is True
+    evaluation = evaluate_wallclock_evidence_fields(evidence)
+    assert evaluation["duration_evidence_valid"] is True
+
+
+def test_staging_shell_zero_order_network_disabled_unchanged(tmp_path: Path) -> None:
+    staging = _staging(tmp_path)
+    proc = _run_staging_shell(staging, env=_stub_sleep_env())
+    assert proc.returncode == 0, proc.stderr
+    manifest = _load_shell_manifest(staging)
+    assert manifest["broker_connected"] is False
+    assert manifest["production_fallback"] is False
+    assert manifest["dry_run_only"] is True
+    assert manifest["TESTNET_SANDBOX_ONLY"] is True
+    text = (staging / "wrapper_evidence" / "TESTNET_BOUNDED_OBSERVATION.md").read_text(
+        encoding="utf-8"
+    )
+    assert "NO_LIVE_ORDER_SUBMISSION" in text
+    lowered = STAGING_SCRIPT.read_text(encoding="utf-8").lower()
+    assert "curl" not in lowered
+    assert "wget" not in lowered
