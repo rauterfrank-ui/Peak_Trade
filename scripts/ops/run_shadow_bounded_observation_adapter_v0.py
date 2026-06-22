@@ -31,6 +31,7 @@ from scripts.ops.shadow_247_futures_start_wrapper_skeleton_v0 import (
     BOUNDED_SHADOW_EXTENDED_DURATION_CAP_MINUTES,
     BOUNDED_SHADOW_EXTENDED_MAX_STEPS_CAP,
     EXTENDED_BOUNDED_SHADOW_CONFIRM_TOKEN_V0,
+    _read_git_sha_prefix,
 )
 from scripts.ops.primary_evidence_retention_v0 import (
     verify_manifest_sha256,
@@ -576,6 +577,7 @@ def _write_closeout_artifacts(
     review_payload: Mapping[str, Any],
 ) -> None:
     now = datetime.now(timezone.utc).isoformat()
+    repo_head_sha_prefix = _read_git_sha_prefix(Path(plan.repo_root))
     run_metadata = {
         "run_id": ctx.run_id,
         "adapter_version": plan.adapter_version,
@@ -584,6 +586,7 @@ def _write_closeout_artifacts(
         "duration_minutes": plan.duration_minutes,
         "max_steps": plan.max_steps,
         "review_verdict": review_payload.get("verdict"),
+        "repo_head_sha_prefix": repo_head_sha_prefix,
         "utc": now,
     }
     (ctx.staging_root / "RUN_METADATA.json").write_text(

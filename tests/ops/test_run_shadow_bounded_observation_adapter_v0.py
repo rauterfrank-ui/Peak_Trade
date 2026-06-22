@@ -11,6 +11,7 @@ import sys
 from contextlib import redirect_stdout
 from pathlib import Path
 from typing import Sequence
+from unittest.mock import patch
 
 import pytest
 
@@ -889,3 +890,197 @@ def test_review_json_output_parseable(tmp_path: Path) -> None:
     assert rc == 0
     payload = json.loads(buf.getvalue())
     assert payload["verdict"] == review.PASS
+
+
+def _write_closeout_run_metadata(
+    tmp_path: Path,
+    *,
+    repo_root: Path = ROOT,
+    repo_head_sha_prefix: str | None = None,
+) -> dict:
+    mod = _load_adapter()
+    staging = _staging(tmp_path)
+    staging.mkdir(parents=True, exist_ok=True)
+    archive_dest = _durable_archive(tmp_path) / "runs" / "shadow" / "meta_test_run"
+    plan = mod.build_plan(
+        mode="execute",
+        staging_root=staging,
+        archive_root=_durable_archive(tmp_path),
+        repo_root=repo_root,
+        duration_minutes=10,
+        max_steps=120,
+        step_interval_seconds=0.0,
+        run_id="meta_test_run",
+    )
+    ctx = mod.ExecuteContext(
+        args=type("Args", (), {})(),
+        repo_root=repo_root,
+        staging_root=staging,
+        archive_root=_durable_archive(tmp_path),
+        wrapper_evidence=staging / "wrapper_evidence",
+        logs_dir=staging / "logs",
+        plan_dir=staging / "plan",
+        review_dir=staging / "review",
+        run_id="meta_test_run",
+    )
+    review_payload = {"verdict": "PASS", "issues": []}
+    prefix = repo_head_sha_prefix if repo_head_sha_prefix is not None else "0123456789ab"
+    with patch.object(mod, "_read_git_sha_prefix", return_value=prefix) as resolver:
+        mod._write_closeout_artifacts(ctx, plan, archive_dest, review_payload)
+        resolver.assert_called_once_with(repo_root)
+    metadata_path = staging / "RUN_METADATA.json"
+    assert metadata_path.is_file()
+    return json.loads(metadata_path.read_text(encoding="utf-8"))
+
+
+def test_run_metadata_includes_repo_head_sha_prefix(tmp_path: Path) -> None:
+    metadata = _write_closeout_run_metadata(tmp_path)
+    assert "repo_head_sha_prefix" in metadata
+    assert metadata["repo_head_sha_prefix"] == "0123456789ab"
+
+
+def test_run_metadata_repo_head_sha_prefix_matches_wrapper_resolver(tmp_path: Path) -> None:
+    mod = _load_adapter()
+    staging = _staging(tmp_path)
+    staging.mkdir(parents=True, exist_ok=True)
+    archive_dest = _durable_archive(tmp_path) / "runs" / "shadow" / "meta_test_run"
+    plan = mod.build_plan(
+        mode="execute",
+        staging_root=staging,
+        archive_root=_durable_archive(tmp_path),
+        repo_root=ROOT,
+        duration_minutes=10,
+        max_steps=120,
+        step_interval_seconds=0.0,
+        run_id="meta_test_run",
+    )
+    ctx = mod.ExecuteContext(
+        args=type("Args", (), {})(),
+        repo_root=ROOT,
+        staging_root=staging,
+        archive_root=_durable_archive(tmp_path),
+        wrapper_evidence=staging / "wrapper_evidence",
+        logs_dir=staging / "logs",
+        plan_dir=staging / "plan",
+        review_dir=staging / "review",
+        run_id="meta_test_run",
+    )
+    expected_prefix = "abcdef012345"
+    with patch.object(mod, "_read_git_sha_prefix", return_value=expected_prefix) as resolver:
+        mod._write_closeout_artifacts(ctx, plan, archive_dest, {"verdict": "PASS", "issues": []})
+        resolver.assert_called_once_with(ROOT)
+    metadata = json.loads((staging / "RUN_METADATA.json").read_text(encoding="utf-8"))
+    assert metadata["repo_head_sha_prefix"] == expected_prefix
+
+
+def test_run_metadata_uses_wrapper_resolver_not_adapter_git_logic(tmp_path: Path) -> None:
+    mod = _load_adapter()
+    adapter_source = ADAPTER_SCRIPT.read_text(encoding="utf-8")
+    assert "_resolve_git_metadata_dirs" not in adapter_source
+    assert "packed-refs" not in adapter_source
+    metadata = _write_closeout_run_metadata(tmp_path, repo_head_sha_prefix="wrapper_only_prefix")
+    assert metadata["repo_head_sha_prefix"] == "wrapper_only_prefix"
+
+
+def test_run_metadata_worktree_provenance_passthrough(tmp_path: Path) -> None:
+    metadata = _write_closeout_run_metadata(tmp_path, repo_head_sha_prefix="111122223333")
+    assert metadata["repo_head_sha_prefix"] == "111122223333"
+
+
+def test_run_metadata_detached_head_provenance_passthrough(tmp_path: Path) -> None:
+    metadata = _write_closeout_run_metadata(tmp_path, repo_head_sha_prefix="deadbeefdead")
+    assert metadata["repo_head_sha_prefix"] == "deadbeefdead"
+
+
+def test_run_metadata_fail_closed_provenance_preserved(tmp_path: Path) -> None:
+    metadata = _write_closeout_run_metadata(tmp_path, repo_head_sha_prefix="UNKNOWN_REF_MISSING")
+    assert metadata["repo_head_sha_prefix"] == "UNKNOWN_REF_MISSING"
+
+
+def test_run_metadata_does_not_invent_plan_level_sha(tmp_path: Path) -> None:
+    mod = _load_adapter()
+    staging = _staging(tmp_path)
+    staging.mkdir(parents=True, exist_ok=True)
+    archive_dest = _durable_archive(tmp_path) / "runs" / "shadow" / "meta_test_run"
+    plan = mod.build_plan(
+        mode="execute",
+        staging_root=staging,
+        archive_root=_durable_archive(tmp_path),
+        repo_root=ROOT,
+        duration_minutes=10,
+        max_steps=120,
+        step_interval_seconds=0.0,
+        run_id="meta_test_run",
+    )
+    ctx = mod.ExecuteContext(
+        args=type("Args", (), {})(),
+        repo_root=ROOT,
+        staging_root=staging,
+        archive_root=_durable_archive(tmp_path),
+        wrapper_evidence=staging / "wrapper_evidence",
+        logs_dir=staging / "logs",
+        plan_dir=staging / "plan",
+        review_dir=staging / "review",
+        run_id="meta_test_run",
+    )
+    with patch.object(mod, "_read_git_sha_prefix", return_value="UNKNOWN_HEAD_MISSING"):
+        mod._write_closeout_artifacts(ctx, plan, archive_dest, {"verdict": "PASS", "issues": []})
+    metadata = json.loads((staging / "RUN_METADATA.json").read_text(encoding="utf-8"))
+    assert metadata["repo_head_sha_prefix"] == "UNKNOWN_HEAD_MISSING"
+    assert "origin_main" not in json.dumps(metadata).lower()
+
+
+def test_run_metadata_existing_fields_preserved(tmp_path: Path) -> None:
+    metadata = _write_closeout_run_metadata(tmp_path)
+    assert metadata["run_id"] == "meta_test_run"
+    assert metadata["adapter_version"]
+    assert metadata["staging_root"]
+    assert metadata["archive_path"]
+    assert metadata["duration_minutes"] == 10
+    assert metadata["max_steps"] == 120
+    assert metadata["review_verdict"] == "PASS"
+    assert metadata["utc"]
+
+
+def test_execute_run_metadata_includes_wrapper_repo_head_sha_prefix(tmp_path: Path) -> None:
+    mod = _load_adapter()
+    staging = _staging(tmp_path)
+    archive = _durable_archive(tmp_path)
+    expected_prefix = "feedfacecafe"
+
+    def _runner(argv: Sequence[str], _cwd, stdout_path, stderr_path) -> int:
+        joined = " ".join(argv)
+        if "shadow_247_futures_start_wrapper_skeleton_v0.py" in joined:
+            _write_wrapper_bundle(staging)
+            if stdout_path is not None:
+                stdout_path.write_text("mock wrapper stdout\n", encoding="utf-8")
+            if stderr_path is not None:
+                stderr_path.write_text("mock wrapper stderr\n", encoding="utf-8")
+            return 0
+        if "review_shadow_bounded_observation_evidence_v0.py" in joined:
+            review_mod = _load_review()
+            result = review_mod.review_evidence(staging)
+            if stdout_path is not None:
+                stdout_path.parent.mkdir(parents=True, exist_ok=True)
+                stdout_path.write_text(
+                    json.dumps(result, indent=2, sort_keys=True) + "\n",
+                    encoding="utf-8",
+                )
+            return 0 if result["verdict"] == review_mod.PASS else 1
+        return 0
+
+    with patch.object(mod, "_read_git_sha_prefix", return_value=expected_prefix):
+        rc = mod.main(
+            _base_argv(staging, archive)
+            + [
+                "--execute",
+                "--approval-record",
+                str(APPROVAL_FIXTURE),
+                "--no-strict-repo-clean",
+            ],
+            subprocess_runner=_runner,
+            repo_clean_checker=lambda _root: (True, ""),
+        )
+    assert rc == 0
+    metadata = json.loads((staging / "RUN_METADATA.json").read_text(encoding="utf-8"))
+    assert metadata["repo_head_sha_prefix"] == expected_prefix
