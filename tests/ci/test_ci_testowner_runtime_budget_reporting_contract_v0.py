@@ -39,6 +39,10 @@ CANONICAL_MAPPING_FILE = Path("config/ci/file_category_mapping.yaml")
 
 NEAR_BUDGET_RATIO = 0.85
 
+_FROZEN_DATACLASS_KW: dict[str, bool] = {"frozen": True}
+if sys.version_info >= (3, 10):
+    _FROZEN_DATACLASS_KW["slots"] = True
+
 
 class TestLayer(StrEnum):
     L0_STATIC = "L0_STATIC"
@@ -88,7 +92,7 @@ RUNTIME_CLASS_TO_TEST_LAYER: dict[str, TestLayer] = {
 }
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(**_FROZEN_DATACLASS_KW)
 class RuntimeClassMappingResult:
     runtime_class: str | None
     test_layer: TestLayer | None
@@ -200,7 +204,7 @@ def extract_distinct_runtime_class_values(
     return tuple(sorted(values))
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(**_FROZEN_DATACLASS_KW)
 class TestownerRuntimeEvidence:
     testowner: str
     layer: TestLayer
@@ -208,7 +212,7 @@ class TestownerRuntimeEvidence:
     evidence_source: str
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(**_FROZEN_DATACLASS_KW)
 class TestownerRuntimeReport:
     testowner: str
     layer: TestLayer
@@ -422,7 +426,7 @@ def _optional_budget_report_for_testowner(
     return None
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(**_FROZEN_DATACLASS_KW)
 class TestownerCategoryProvenanceReport:
     testowner_path: str
     matched_category: str | None
@@ -525,7 +529,7 @@ def build_testowner_category_provenance_report_dict(
     return payload
 
 
-@dataclass(frozen=True, slots=True)
+@dataclass(**_FROZEN_DATACLASS_KW)
 class TestownerBudgetInventoryRow:
     testowner_path: str
     matched_category: str | None
