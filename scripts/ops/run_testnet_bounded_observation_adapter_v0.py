@@ -13,6 +13,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import math
 import os
 import shutil
 import subprocess
@@ -37,10 +38,17 @@ from scripts.ops.run_paper_only_bounded_observation_adapter_v0 import (
     maybe_invoke_durable_closeout_after_archive,
     validate_durable_closeout_invoke_cli_args,
 )
+from src.ops.wallclock_session_evidence_v0 import (
+    WALLCLOCK_EVIDENCE_FILENAME,
+    build_wallclock_evidence_from_manifest_fields,
+    write_wallclock_evidence,
+)
 from src.webui.workflow_dashboard_readmodel_v1.universe_selection_producer_v1 import (
     emit_universe_selection_closeout_machine_lines,
     maybe_write_missing_truth_after_bounded_closeout,
 )
+
+TESTNET_BOUNDED_EVIDENCE_SOURCE = "testnet_bounded_dry_run"
 
 ADAPTER_VERSION = "cli_testnet_evidence_flow_composition_v0"
 STAGING_SCRIPT = "scripts/ops/run_testnet_bounded_evidence_staging_v0.sh"
@@ -300,6 +308,7 @@ def build_plan(
         "CLOSEOUT.md",
         "POSTRUN_ANALYSIS.md",
         "RUN_METADATA.json",
+        WALLCLOCK_EVIDENCE_FILENAME,
     ]
     commands = {
         "bounded_evidence_staging": staging_cmd,
@@ -426,47 +435,118 @@ def _default_subprocess_runner(
     return int(proc.returncode or 0)
 
 
+def _load_wrapper_manifest(wrapper_evidence: Path) -> dict[str, Any]:
+    manifest_path = wrapper_evidence / "manifest.json"
+    if not manifest_path.is_file():
+        raise ValueError(f"wrapper manifest not found: {manifest_path}")
+    payload = json.loads(manifest_path.read_text(encoding="utf-8"))
+    if not isinstance(payload, dict):
+        raise ValueError("wrapper manifest must be a JSON object")
+    return payload
+
+
+def _emit_wallclock_evidence_from_wrapper_manifest(
+    staging_root: Path,
+    wrapper_evidence: Path,
+) -> tuple[bool, str, dict[str, Any] | None]:
+    try:
+        manifest = _load_wrapper_manifest(wrapper_evidence)
+    except (OSError, ValueError, json.JSONDecodeError) as exc:
+        return False, f"wrapper manifest load failed: {exc}", None
+
+    required_fields = (
+        "utc_started",
+        "utc_completed",
+        "duration_minutes_requested",
+        "start_monotonic_seconds",
+        "end_monotonic_seconds",
+    )
+    missing = [field for field in required_fields if manifest.get(field) in (None, "")]
+    if missing:
+        return False, f"wrapper manifest missing wallclock fields: {', '.join(missing)}", None
+
+    try:
+        duration_minutes = int(manifest["duration_minutes_requested"])
+        start_mono = float(manifest["start_monotonic_seconds"])
+        end_mono = float(manifest["end_monotonic_seconds"])
+    except (TypeError, ValueError) as exc:
+        return False, f"wrapper manifest wallclock fields invalid: {exc}", None
+
+    if not math.isfinite(start_mono) or not math.isfinite(end_mono):
+        return False, "wrapper manifest monotonic fields must be finite", None
+
+    if end_mono < start_mono:
+        return False, "wrapper manifest negative elapsed monotonic duration", None
+
+    evidence = build_wallclock_evidence_from_manifest_fields(
+        utc_started=str(manifest["utc_started"]),
+        utc_completed=str(manifest["utc_completed"]),
+        duration_minutes=duration_minutes,
+        start_monotonic_seconds=start_mono,
+        end_monotonic_seconds=end_mono,
+        evidence_source=TESTNET_BOUNDED_EVIDENCE_SOURCE,
+        real_sleep_used=float(manifest.get("step_interval_seconds") or 0.0) > 0.0,
+    )
+    evidence_path = staging_root / WALLCLOCK_EVIDENCE_FILENAME
+    try:
+        write_wallclock_evidence(evidence_path, evidence)
+    except OSError as exc:
+        return False, f"wallclock evidence write failed: {exc}", None
+
+    if not evidence.get("duration_evidence_valid"):
+        reasons = evidence.get("wallclock_fail_reasons", [])
+        return False, f"wallclock evidence invalid: {'; '.join(reasons)}", evidence
+    return True, "", evidence
+
+
 def _write_closeout_artifacts(
     ctx: ExecuteContext,
     plan: AdapterPlan,
     archive_dest: Path,
     review_payload: Mapping[str, Any],
+    *,
+    wallclock_evidence: Mapping[str, Any] | None = None,
 ) -> None:
     now = datetime.now(timezone.utc).isoformat()
-    (ctx.staging_root / "RUN_METADATA.json").write_text(
-        json.dumps(
-            {
-                "run_id": ctx.run_id,
-                "adapter_version": plan.adapter_version,
-                "staging_root": str(ctx.staging_root),
-                "archive_path": str(archive_dest),
-                "duration_minutes": plan.duration_minutes,
-                "max_steps": plan.max_steps,
-                "review_verdict": review_payload.get("verdict"),
-                "utc": now,
-            },
-            indent=2,
-            sort_keys=True,
+    run_metadata: dict[str, Any] = {
+        "run_id": ctx.run_id,
+        "adapter_version": plan.adapter_version,
+        "staging_root": str(ctx.staging_root),
+        "archive_path": str(archive_dest),
+        "duration_minutes": plan.duration_minutes,
+        "max_steps": plan.max_steps,
+        "review_verdict": review_payload.get("verdict"),
+        "utc": now,
+    }
+    if wallclock_evidence is not None:
+        run_metadata["wallclock_evidence_filename"] = WALLCLOCK_EVIDENCE_FILENAME
+        run_metadata["wallclock_duration_proven"] = wallclock_evidence.get("duration_proven")
+        run_metadata["wallclock_duration_evidence_valid"] = wallclock_evidence.get(
+            "duration_evidence_valid"
         )
-        + "\n",
+    (ctx.staging_root / "RUN_METADATA.json").write_text(
+        json.dumps(run_metadata, indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
     )
-    (ctx.staging_root / "CLOSEOUT.md").write_text(
-        "\n".join(
-            [
-                "# Testnet Bounded Observation Adapter Closeout",
-                "",
-                f"RUN_ID={ctx.run_id}",
-                f"REVIEW_VERDICT={review_payload.get('verdict')}",
-                "EXECUTION_PERFORMED=true",
-                "TESTNET_AUTHORIZED=false",
-                "START_TESTNET_NOW=false",
-                "LIVE_ALLOWED=false",
-                "NOTION_WRITES=false",
-                "PRIMARY_EVIDENCE_TIER=achieved",
-            ]
+    closeout_lines = [
+        "# Testnet Bounded Observation Adapter Closeout",
+        "",
+        f"RUN_ID={ctx.run_id}",
+        f"REVIEW_VERDICT={review_payload.get('verdict')}",
+        "EXECUTION_PERFORMED=true",
+        "TESTNET_AUTHORIZED=false",
+        "START_TESTNET_NOW=false",
+        "LIVE_ALLOWED=false",
+        "NOTION_WRITES=false",
+        "PRIMARY_EVIDENCE_TIER=achieved",
+    ]
+    if wallclock_evidence is not None:
+        closeout_lines.append(f"WALLCLOCK_EVIDENCE_FILENAME={WALLCLOCK_EVIDENCE_FILENAME}")
+        closeout_lines.append(
+            f"WALLCLOCK_DURATION_PROVEN={wallclock_evidence.get('duration_proven', False)}"
         )
-        + "\n",
+    (ctx.staging_root / "CLOSEOUT.md").write_text(
+        "\n".join(closeout_lines) + "\n",
         encoding="utf-8",
     )
     (ctx.staging_root / "POSTRUN_ANALYSIS.md").write_text(
@@ -521,8 +601,24 @@ def execute_plan(
     if review_payload.get("verdict") != "PASS":
         return VALIDATION_EXIT
 
+    wallclock_ok, wallclock_reason, wallclock_evidence = (
+        _emit_wallclock_evidence_from_wrapper_manifest(
+            ctx.staging_root,
+            ctx.wrapper_evidence,
+        )
+    )
+    if not wallclock_ok:
+        print(wallclock_reason, file=sys.stderr)
+        return VALIDATION_EXIT
+
     archive_dest = ctx.archive_root / "runs" / "testnet" / ctx.run_id
-    _write_closeout_artifacts(ctx, plan, archive_dest, review_payload)
+    _write_closeout_artifacts(
+        ctx,
+        plan,
+        archive_dest,
+        review_payload,
+        wallclock_evidence=wallclock_evidence,
+    )
     (ctx.staging_root / "ARCHIVE_POINTER.md").write_text(
         f"ARCHIVE_PATH={archive_dest}\nARCHIVE_COPY_COMPLETE=true\n",
         encoding="utf-8",
