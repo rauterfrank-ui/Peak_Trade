@@ -22,7 +22,10 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
-from scripts.ops.primary_evidence_retention_v0 import validate_durable_primary_evidence_root
+from scripts.ops.primary_evidence_retention_v0 import (
+    BOUNDED_TESTNET_DURABLE_RUN_REQUIRED_REL_PATHS,
+    validate_durable_primary_evidence_root,
+)
 
 PASS = "PASS"
 REVIEW_REQUIRED = "REVIEW_REQUIRED"
@@ -180,7 +183,10 @@ def review_evidence(
 
     if durable_run_root is not None:
         durable_root = durable_run_root.resolve()
-        ok, msg, durable_detail = validate_durable_primary_evidence_root(durable_root)
+        ok, msg, durable_detail = validate_durable_primary_evidence_root(
+            durable_root,
+            required_rel_paths=BOUNDED_TESTNET_DURABLE_RUN_REQUIRED_REL_PATHS,
+        )
         result["durable_run_root"] = str(durable_root)
         result["durable_checks"] = durable_detail.get("checks", {})
         durable_issues = list(durable_detail.get("issues", []))

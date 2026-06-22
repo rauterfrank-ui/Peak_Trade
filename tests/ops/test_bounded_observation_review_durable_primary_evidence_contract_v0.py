@@ -237,7 +237,7 @@ def _write_durable_bounded_bundle(
         json.dumps({"verdict": "PASS"}) + "\n",
         encoding="utf-8",
     )
-    if lane == "shadow" and include_wallclock:
+    if include_wallclock:
         _write_valid_shadow_wallclock_evidence(durable)
     sys.path.insert(0, str(REPO_ROOT))
     from scripts.ops.primary_evidence_retention_v0 import write_manifest_sha256
@@ -401,6 +401,29 @@ def test_bounded_shadow_durable_required_rel_paths_extends_shared_contract_witho
     )
 
 
+def test_bounded_testnet_durable_required_rel_paths_extends_shared_contract_without_duplicates() -> (
+    None
+):
+    from scripts.ops.primary_evidence_retention_v0 import (
+        BOUNDED_DURABLE_RUN_REQUIRED_REL_PATHS,
+        BOUNDED_SHADOW_DURABLE_RUN_REQUIRED_REL_PATHS,
+        BOUNDED_TESTNET_DURABLE_RUN_REQUIRED_REL_PATHS,
+    )
+
+    assert WALLCLOCK_EVIDENCE_FILENAME in BOUNDED_TESTNET_DURABLE_RUN_REQUIRED_REL_PATHS
+    assert WALLCLOCK_EVIDENCE_FILENAME not in BOUNDED_DURABLE_RUN_REQUIRED_REL_PATHS
+    assert len(BOUNDED_TESTNET_DURABLE_RUN_REQUIRED_REL_PATHS) == len(
+        set(BOUNDED_TESTNET_DURABLE_RUN_REQUIRED_REL_PATHS)
+    )
+    assert set(BOUNDED_DURABLE_RUN_REQUIRED_REL_PATHS).issubset(
+        set(BOUNDED_TESTNET_DURABLE_RUN_REQUIRED_REL_PATHS)
+    )
+    assert (
+        BOUNDED_TESTNET_DURABLE_RUN_REQUIRED_REL_PATHS
+        == BOUNDED_SHADOW_DURABLE_RUN_REQUIRED_REL_PATHS
+    )
+
+
 def test_testnet_review_durable_run_root_passes_with_valid_archive(tmp_path: Path) -> None:
     review_mod = _load_module(
         TESTNET_REVIEW, "review_testnet_bounded_observation_evidence_v0_durable_pass"
@@ -413,6 +436,98 @@ def test_testnet_review_durable_run_root_passes_with_valid_archive(tmp_path: Pat
     result = review_mod.review_evidence(staging, durable_run_root=durable)
     assert result["verdict"] == review_mod.PASS
     assert result["checks"]["durable_primary_evidence_valid"] is True
+
+
+def test_testnet_review_durable_run_root_fails_closed_without_wallclock_evidence(
+    tmp_path: Path,
+) -> None:
+    review_mod = _load_module(
+        TESTNET_REVIEW, "review_testnet_bounded_observation_evidence_v0_durable_no_wallclock"
+    )
+    staging = Path("/tmp") / f"peak_trade_testnet_review_staging_no_wallclock_{tmp_path.name}"
+    staging.mkdir(parents=True, exist_ok=True)
+    durable = _durable_root(tmp_path)
+    _write_testnet_staging_bundle(staging)
+    _write_durable_bounded_bundle(durable, lane="testnet", include_wallclock=False)
+    result = review_mod.review_evidence(staging, durable_run_root=durable)
+    assert result["verdict"] == review_mod.REVIEW_REQUIRED
+    assert result["checks"]["durable_primary_evidence_valid"] is False
+    assert any("WALLCLOCK_EVIDENCE.json" in issue for issue in result["issues"])
+
+
+def test_testnet_review_durable_run_root_fails_closed_on_invalid_wallclock_evidence(
+    tmp_path: Path,
+) -> None:
+    review_mod = _load_module(
+        TESTNET_REVIEW, "review_testnet_bounded_observation_evidence_v0_durable_bad_wallclock"
+    )
+    staging = Path("/tmp") / f"peak_trade_testnet_review_staging_bad_wallclock_{tmp_path.name}"
+    staging.mkdir(parents=True, exist_ok=True)
+    durable = _durable_root(tmp_path)
+    _write_testnet_staging_bundle(staging)
+    _write_durable_bounded_bundle(durable, lane="testnet", include_wallclock=False)
+    (durable / WALLCLOCK_EVIDENCE_FILENAME).write_text("{not-json", encoding="utf-8")
+    sys.path.insert(0, str(REPO_ROOT))
+    from scripts.ops.primary_evidence_retention_v0 import write_manifest_sha256
+
+    write_manifest_sha256(durable)
+    result = review_mod.review_evidence(staging, durable_run_root=durable)
+    assert result["verdict"] == review_mod.REVIEW_REQUIRED
+    assert result["checks"]["durable_primary_evidence_valid"] is False
+    assert any("WALLCLOCK_EVIDENCE.json invalid" in issue for issue in result["issues"])
+
+
+def test_testnet_review_durable_run_root_fails_closed_on_wrong_wallclock_relative_path(
+    tmp_path: Path,
+) -> None:
+    review_mod = _load_module(
+        TESTNET_REVIEW,
+        "review_testnet_bounded_observation_evidence_v0_durable_wrong_wallclock_path",
+    )
+    staging = Path("/tmp") / f"peak_trade_testnet_review_staging_wrong_wallclock_{tmp_path.name}"
+    staging.mkdir(parents=True, exist_ok=True)
+    durable = _durable_root(tmp_path)
+    _write_testnet_staging_bundle(staging)
+    _write_durable_bounded_bundle(durable, lane="testnet", include_wallclock=False)
+    wrong_dir = durable / "logs"
+    wrong_dir.mkdir(parents=True, exist_ok=True)
+    _write_valid_shadow_wallclock_evidence(wrong_dir)
+    sys.path.insert(0, str(REPO_ROOT))
+    from scripts.ops.primary_evidence_retention_v0 import write_manifest_sha256
+
+    write_manifest_sha256(durable)
+    result = review_mod.review_evidence(staging, durable_run_root=durable)
+    assert result["verdict"] == review_mod.REVIEW_REQUIRED
+    assert result["checks"]["durable_primary_evidence_valid"] is False
+    assert any("WALLCLOCK_EVIDENCE.json" in issue for issue in result["issues"])
+
+
+def test_testnet_review_durable_run_root_fails_closed_on_inconsistent_wallclock_fields(
+    tmp_path: Path,
+) -> None:
+    review_mod = _load_module(
+        TESTNET_REVIEW,
+        "review_testnet_bounded_observation_evidence_v0_durable_inconsistent_wallclock",
+    )
+    staging = (
+        Path("/tmp") / f"peak_trade_testnet_review_staging_inconsistent_wallclock_{tmp_path.name}"
+    )
+    staging.mkdir(parents=True, exist_ok=True)
+    durable = _durable_root(tmp_path)
+    _write_testnet_staging_bundle(staging)
+    _write_durable_bounded_bundle(durable, lane="testnet", include_wallclock=False)
+    (durable / WALLCLOCK_EVIDENCE_FILENAME).write_text(
+        json.dumps({"planned_duration_seconds": 600}) + "\n",
+        encoding="utf-8",
+    )
+    sys.path.insert(0, str(REPO_ROOT))
+    from scripts.ops.primary_evidence_retention_v0 import write_manifest_sha256
+
+    write_manifest_sha256(durable)
+    result = review_mod.review_evidence(staging, durable_run_root=durable)
+    assert result["verdict"] == review_mod.REVIEW_REQUIRED
+    assert result["checks"]["durable_primary_evidence_valid"] is False
+    assert any("WALLCLOCK_EVIDENCE.json failed validation" in issue for issue in result["issues"])
 
 
 def test_shadow_review_durable_run_root_fails_closed_under_tmp(tmp_path: Path) -> None:
