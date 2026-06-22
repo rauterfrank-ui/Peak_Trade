@@ -2254,6 +2254,195 @@ def test_completion_proof_chain_pe31_digest_preserved_with_wallclock_binding() -
     )
 
 
+def test_completion_proof_chain_pe38_digest_bound_positive() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    assert (
+        integration_input.completion_proof_chain.completion_referenced_pe38_readiness_review_proof_digest
+        == integration_input.pe38_readiness_review_integration_proof.integration_proof_digest
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(integration_input)
+    assert result["integration_pass"] is True
+
+
+def test_completion_proof_chain_missing_pe38_digest_fails_closed() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        completion_proof_chain=replace(
+            integration_input.completion_proof_chain,
+            completion_referenced_pe38_readiness_review_proof_digest="",
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "completion_referenced_pe38_readiness_review_proof_digest required" in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_completion_proof_chain_malformed_pe38_digest_fails_closed() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        completion_proof_chain=replace(
+            integration_input.completion_proof_chain,
+            completion_referenced_pe38_readiness_review_proof_digest="not-a-digest",
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "completion_referenced_pe38_readiness_review_proof_digest must be 64-char lowercase sha256 hex"
+        in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_completion_proof_chain_pe38_digest_drift_fails_closed() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        completion_proof_chain=replace(
+            integration_input.completion_proof_chain,
+            completion_referenced_pe38_readiness_review_proof_digest="0" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "completion_referenced_pe38_readiness_review_proof_digest mismatch" in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_completion_proof_chain_foreign_pe38_proof_digest_fails_closed() -> None:
+    from src.ops.bounded_futures_testnet_preflight_execution_readiness_review_lifecycle_integration_contract_v0 import (
+        default_minimal_integration_input as default_minimal_pe38_input,
+        evaluate_preflight_execution_readiness_review_lifecycle_integration,
+    )
+
+    integration_input = default_minimal_completion_integration_input()
+    foreign_pe38 = default_minimal_pe38_input(
+        source_revision="fedcba0987654321fedcba0987654321fedcba09",
+        lifecycle_state_digest="9" * 64,
+    )
+    foreign_digest = evaluate_preflight_execution_readiness_review_lifecycle_integration(
+        foreign_pe38
+    )["integration_proof_digest"]
+    bad = replace(
+        integration_input,
+        completion_proof_chain=replace(
+            integration_input.completion_proof_chain,
+            completion_referenced_pe38_readiness_review_proof_digest=foreign_digest,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "completion_referenced_pe38_readiness_review_proof_digest mismatch" in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_completion_proof_chain_pe38_proof_owner_drift_fails_closed() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad_proof = replace(
+        integration_input.pe38_readiness_review_integration_proof,
+        integration_owner="foreign-pe38-owner.v0",
+    )
+    bad = replace(integration_input, pe38_readiness_review_integration_proof=bad_proof)
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "pe38_readiness_review_proof: integration_owner must be" in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_completion_proof_chain_pe38_proof_identity_drift_fails_closed() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad_proof = replace(
+        integration_input.pe38_readiness_review_integration_proof,
+        integration_input_digest="0" * 64,
+    )
+    bad = replace(integration_input, pe38_readiness_review_integration_proof=bad_proof)
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "pe38_readiness_review_proof: integration_input_digest mismatch" in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_completion_proof_chain_pe38_proof_flag_drift_fails_closed() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad_proof = replace(
+        integration_input.pe38_readiness_review_integration_proof,
+        pe38_integration_pass=False,
+    )
+    bad = replace(integration_input, pe38_readiness_review_integration_proof=bad_proof)
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "pe38_readiness_review_proof: pe38_integration_pass must be true" in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_completion_proof_chain_pe38_traceability_identity_drift_fails_closed() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad_proof = replace(
+        integration_input.pe38_readiness_review_integration_proof,
+        pe37_traceability_identity="0" * 64,
+    )
+    bad = replace(integration_input, pe38_readiness_review_integration_proof=bad_proof)
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "pe38_readiness_review_proof: pe37_traceability_identity mismatch" in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_completion_proof_chain_wallclock_digest_preserved_with_pe38_binding() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    wallclock_digest = next(
+        entry.digest
+        for entry in integration_input.artifact_checksums
+        if entry.relative_path == WALLCLOCK_EVIDENCE_FILENAME
+    )
+    assert (
+        integration_input.completion_proof_chain.completion_referenced_wallclock_evidence_digest
+        == wallclock_digest
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(integration_input)
+    assert result["integration_pass"] is True
+    assert not any(
+        "completion_referenced_wallclock_evidence_digest mismatch" in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_completion_proof_chain_pe38_digest_owner_reuses_canonical_pe38_owner() -> None:
+    integration_text = INTEGRATION_MODULE.read_text(encoding="utf-8")
+    completion_chain_text = (
+        REPO_ROOT
+        / "src"
+        / "ops"
+        / "durable_completion_validation"
+        / "validators"
+        / "completion_chain.py"
+    ).read_text(encoding="utf-8")
+    assert (
+        "bounded_futures_testnet_preflight_execution_readiness_review_lifecycle_integration_contract_v0"
+        in (integration_text)
+    )
+    assert "Pe38ReadinessReviewProofBinding" in integration_text
+    assert "pe38_proof.integration_proof_digest" in completion_chain_text
+    assert "hashlib.sha256" not in completion_chain_text
+
+
 def test_generic_bounded_required_paths_not_testnet_completion_source_of_truth() -> None:
     assert set(BOUNDED_DURABLE_RUN_REQUIRED_REL_PATHS).issubset(
         set(BOUNDED_TESTNET_DURABLE_RUN_REQUIRED_REL_PATHS)
