@@ -2484,3 +2484,179 @@ def test_shadow_247_bounded_shadow_step_interval_paces_with_sleep(
         assert manifest["steps_emitted"] == 3
     finally:
         shutil.rmtree(root_str, ignore_errors=True)
+
+
+def _load_wrapper_module():
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location("_skel_gitsha_under_test", SCRIPT)
+    assert spec and spec.loader
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)  # type: ignore[union-attr]
+    return mod
+
+
+def _write_loose_ref(git_dir: Path, ref: str, sha: str) -> None:
+    ref_path = git_dir / ref
+    ref_path.parent.mkdir(parents=True, exist_ok=True)
+    ref_path.write_text(sha + "\n", encoding="utf-8")
+
+
+def _make_normal_git_dir(repo_root: Path, *, head_ref: str | None, head_sha: str | None) -> Path:
+    git_dir = repo_root / ".git"
+    git_dir.mkdir(parents=True)
+    if head_ref is not None:
+        (git_dir / "HEAD").write_text(f"ref: {head_ref}\n", encoding="utf-8")
+        _write_loose_ref(git_dir, head_ref, head_sha or "a" * 40)
+    else:
+        (git_dir / "HEAD").write_text((head_sha or "b" * 40) + "\n", encoding="utf-8")
+    return git_dir
+
+
+def test_read_git_sha_prefix_normal_git_directory_symbolic_head() -> None:
+    mod = _load_wrapper_module()
+    root = Path(tempfile.mkdtemp(prefix="peak_trade_utest_gitdir_", dir="/tmp"))
+    try:
+        _make_normal_git_dir(
+            root,
+            head_ref="refs/heads/main",
+            head_sha="0123456789abcdef0123456789abcdef01234567",
+        )
+        assert mod._read_git_sha_prefix(root) == "0123456789ab"
+    finally:
+        shutil.rmtree(root, ignore_errors=True)
+
+
+def test_read_git_sha_prefix_worktree_gitfile_relative_gitdir() -> None:
+    mod = _load_wrapper_module()
+    root = Path(tempfile.mkdtemp(prefix="peak_trade_utest_wt_rel_", dir="/tmp"))
+    try:
+        common = root / "main.git"
+        wt_git = root / "wt.git"
+        common.mkdir()
+        wt_git.mkdir()
+        _write_loose_ref(common, "refs/heads/feature", "abcdef0123456789abcdef0123456789abcdef01")
+        (wt_git / "commondir").write_text("../main.git\n", encoding="utf-8")
+        (wt_git / "HEAD").write_text("ref: refs/heads/feature\n", encoding="utf-8")
+        (root / ".git").write_text("gitdir: wt.git\n", encoding="utf-8")
+        assert mod._read_git_sha_prefix(root) == "abcdef012345"
+    finally:
+        shutil.rmtree(root, ignore_errors=True)
+
+
+def test_read_git_sha_prefix_worktree_gitfile_absolute_gitdir() -> None:
+    mod = _load_wrapper_module()
+    root = Path(tempfile.mkdtemp(prefix="peak_trade_utest_wt_abs_", dir="/tmp"))
+    try:
+        common = root / "main.git"
+        wt_git = root / "wt.git"
+        common.mkdir()
+        wt_git.mkdir()
+        _write_loose_ref(common, "refs/heads/feature", "1111222233334444555566667777888899990000")
+        (wt_git / "commondir").write_text(f"{common}\n", encoding="utf-8")
+        (wt_git / "HEAD").write_text("ref: refs/heads/feature\n", encoding="utf-8")
+        (root / ".git").write_text(f"gitdir: {wt_git}\n", encoding="utf-8")
+        assert mod._read_git_sha_prefix(root) == "111122223333"
+    finally:
+        shutil.rmtree(root, ignore_errors=True)
+
+
+def test_read_git_sha_prefix_detached_head() -> None:
+    mod = _load_wrapper_module()
+    root = Path(tempfile.mkdtemp(prefix="peak_trade_utest_detached_", dir="/tmp"))
+    try:
+        _make_normal_git_dir(
+            root,
+            head_ref=None,
+            head_sha="deadbeefdeadbeefdeadbeefdeadbeefdeadbeef",
+        )
+        assert mod._read_git_sha_prefix(root) == "deadbeefdead"
+    finally:
+        shutil.rmtree(root, ignore_errors=True)
+
+
+def test_read_git_sha_prefix_invalid_gitfile_layout() -> None:
+    mod = _load_wrapper_module()
+    root = Path(tempfile.mkdtemp(prefix="peak_trade_utest_bad_gitfile_", dir="/tmp"))
+    try:
+        (root / ".git").write_text("not-a-gitdir-pointer\n", encoding="utf-8")
+        assert mod._read_git_sha_prefix(root) == "UNKNOWN_GITFILE_LAYOUT"
+    finally:
+        shutil.rmtree(root, ignore_errors=True)
+
+
+def test_read_git_sha_prefix_missing_gitdir() -> None:
+    mod = _load_wrapper_module()
+    root = Path(tempfile.mkdtemp(prefix="peak_trade_utest_missing_gitdir_", dir="/tmp"))
+    try:
+        (root / ".git").write_text("gitdir: missing/worktree.git\n", encoding="utf-8")
+        assert mod._read_git_sha_prefix(root) == "UNKNOWN_GITDIR_MISSING"
+    finally:
+        shutil.rmtree(root, ignore_errors=True)
+
+
+def test_read_git_sha_prefix_missing_ref() -> None:
+    mod = _load_wrapper_module()
+    root = Path(tempfile.mkdtemp(prefix="peak_trade_utest_missing_ref_", dir="/tmp"))
+    try:
+        git_dir = _make_normal_git_dir(root, head_ref="refs/heads/missing", head_sha=None)
+        (git_dir / "refs" / "heads" / "missing").unlink(missing_ok=True)
+        assert mod._read_git_sha_prefix(root) == "UNKNOWN_REF_MISSING"
+    finally:
+        shutil.rmtree(root, ignore_errors=True)
+
+
+def test_read_git_sha_prefix_packed_refs() -> None:
+    mod = _load_wrapper_module()
+    root = Path(tempfile.mkdtemp(prefix="peak_trade_utest_packed_", dir="/tmp"))
+    try:
+        git_dir = _make_normal_git_dir(root, head_ref="refs/heads/main", head_sha=None)
+        (git_dir / "refs" / "heads" / "main").unlink(missing_ok=True)
+        (git_dir / "packed-refs").write_text(
+            "# pack-refs with: peeled fully\n"
+            "aaaabbbbccccddddeeeeffffaaaabbbbccccddddeeee0000 refs/heads/main\n",
+            encoding="utf-8",
+        )
+        assert mod._read_git_sha_prefix(root) == "aaaabbbbcccc"
+    finally:
+        shutil.rmtree(root, ignore_errors=True)
+
+
+def test_read_git_sha_prefix_non_git_context_still_unknown() -> None:
+    mod = _load_wrapper_module()
+    root = Path(tempfile.mkdtemp(prefix="peak_trade_utest_nogit_", dir="/tmp"))
+    try:
+        assert mod._read_git_sha_prefix(root) == "UNKNOWN"
+    finally:
+        shutil.rmtree(root, ignore_errors=True)
+
+
+def test_read_git_sha_prefix_does_not_invent_plan_level_sha() -> None:
+    mod = _load_wrapper_module()
+    root = Path(tempfile.mkdtemp(prefix="peak_trade_utest_no_plan_sha_", dir="/tmp"))
+    try:
+        git_dir = _make_normal_git_dir(root, head_ref="refs/heads/main", head_sha=None)
+        (git_dir / "refs" / "heads" / "main").unlink(missing_ok=True)
+        plan_sha_prefix = "40cd36abd0b3"
+        got = mod._read_git_sha_prefix(root)
+        assert got == "UNKNOWN_REF_MISSING"
+        assert got != plan_sha_prefix
+    finally:
+        shutil.rmtree(root, ignore_errors=True)
+
+
+def test_read_git_sha_prefix_incomplete_merge_state_fail_closed() -> None:
+    mod = _load_wrapper_module()
+    root = Path(tempfile.mkdtemp(prefix="peak_trade_utest_merge_", dir="/tmp"))
+    try:
+        git_dir = _make_normal_git_dir(
+            root,
+            head_ref="refs/heads/main",
+            head_sha="0123456789abcdef0123456789abcdef01234567",
+        )
+        (git_dir / "MERGE_HEAD").write_text(
+            "ffffffffffffffffffffffffffffffffffffffff\n", encoding="utf-8"
+        )
+        assert mod._read_git_sha_prefix(root) == "UNKNOWN_INCOMPLETE_GIT_STATE"
+    finally:
+        shutil.rmtree(root, ignore_errors=True)
