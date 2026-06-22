@@ -23,6 +23,7 @@ def validate_completion_proof_chain_binding(context: ValidationContext) -> Valid
     pe25_proof = integration_input.pe25_operator_closure_proof
     pe21_proof = integration_input.pe21_proof
     pe31_pe21_proof = integration_input.pe31_reconciliation_review_integration_input.pe21_reconciliation_primary_evidence_integration_proof
+    pe38_proof = integration_input.pe38_readiness_review_integration_proof
     wallclock_proof = integration_input.wallclock_evidence_proof
     checksum_by_path = {
         entry.relative_path: entry.digest for entry in integration_input.artifact_checksums
@@ -68,6 +69,10 @@ def validate_completion_proof_chain_binding(context: ValidationContext) -> Valid
         (
             "completion_referenced_wallclock_evidence_digest",
             chain.completion_referenced_wallclock_evidence_digest,
+        ),
+        (
+            "completion_referenced_pe38_readiness_review_proof_digest",
+            chain.completion_referenced_pe38_readiness_review_proof_digest,
         ),
     )
     for field_name, value in digest_fields:
@@ -144,6 +149,13 @@ def validate_completion_proof_chain_binding(context: ValidationContext) -> Valid
     ):
         fail_reasons.append(
             "completion_proof_chain: completion_referenced_wallclock_evidence_digest mismatch"
+        )
+    if (
+        chain.completion_referenced_pe38_readiness_review_proof_digest
+        != pe38_proof.integration_proof_digest
+    ):
+        fail_reasons.append(
+            "completion_proof_chain: completion_referenced_pe38_readiness_review_proof_digest mismatch"
         )
 
     return ValidationResult(fail_reasons=tuple(sorted_unique(fail_reasons)))
