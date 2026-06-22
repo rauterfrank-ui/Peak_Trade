@@ -583,21 +583,129 @@ def _validate_evidence_root(path_str: str) -> str | None:
     return None
 
 
+def _is_hex_sha40(value: str) -> bool:
+    cand = value[:40].lower()
+    return len(cand) == 40 and all(ch in "0123456789abcdef" for ch in cand)
+
+
+def _resolve_git_metadata_dirs(
+    repo_root: Path,
+) -> Tuple[Path | None, Path | None, str | None]:
+    """Resolve per-worktree git dir and shared commondir (filesystem-only)."""
+    dot_git = repo_root / ".git"
+    if dot_git.is_dir():
+        return dot_git.resolve(), dot_git.resolve(), None
+    if dot_git.is_file():
+        raw = dot_git.read_text(encoding="utf-8", errors="replace").strip()
+        if not raw.startswith("gitdir:"):
+            return None, None, "UNKNOWN_GITFILE_LAYOUT"
+        gitdir_raw = raw[len("gitdir:") :].strip()
+        if not gitdir_raw:
+            return None, None, "UNKNOWN_GITDIR_MISSING"
+        gitdir_path = Path(gitdir_raw)
+        if not gitdir_path.is_absolute():
+            gitdir_path = (repo_root / gitdir_path).resolve()
+        else:
+            try:
+                gitdir_path = gitdir_path.resolve()
+            except (OSError, RuntimeError):
+                return None, None, "UNKNOWN_GITDIR_UNRESOLVABLE"
+        if not gitdir_path.is_dir():
+            return None, None, "UNKNOWN_GITDIR_MISSING"
+        common_dir = gitdir_path
+        commondir_file = gitdir_path / "commondir"
+        if commondir_file.is_file():
+            common_raw = commondir_file.read_text(encoding="utf-8", errors="replace").strip()
+            if common_raw:
+                common_path = Path(common_raw)
+                if not common_path.is_absolute():
+                    common_path = (gitdir_path / common_path).resolve()
+                else:
+                    try:
+                        common_path = common_path.resolve()
+                    except (OSError, RuntimeError):
+                        return None, None, "UNKNOWN_COMMONDIR_UNRESOLVABLE"
+                if not common_path.is_dir():
+                    return None, None, "UNKNOWN_COMMONDIR_MISSING"
+                common_dir = common_path
+        return gitdir_path, common_dir, None
+    return None, None, "UNKNOWN"
+
+
+def _read_packed_ref_sha(git_dir: Path, ref: str) -> str | None:
+    packed = git_dir / "packed-refs"
+    if not packed.is_file():
+        return None
+    for line in packed.read_text(encoding="utf-8", errors="replace").splitlines():
+        stripped = line.strip()
+        if not stripped or stripped.startswith("#") or stripped.startswith("^"):
+            continue
+        parts = stripped.split()
+        if len(parts) >= 2 and parts[1] == ref and _is_hex_sha40(parts[0]):
+            return parts[0][:40].lower()
+    return None
+
+
+def _read_loose_or_packed_ref_sha(
+    git_dir: Path,
+    common_dir: Path,
+    ref: str,
+) -> str | None:
+    for base in (git_dir, common_dir):
+        ref_path = base / ref
+        if ref_path.is_file():
+            sha = ref_path.read_text(encoding="utf-8", errors="replace").strip()
+            if not sha:
+                return None
+            if sha.startswith("ref: "):
+                return _read_loose_or_packed_ref_sha(git_dir, common_dir, sha[5:].strip())
+            if _is_hex_sha40(sha):
+                return sha[:40].lower()
+            return None
+        packed_sha = _read_packed_ref_sha(base, ref)
+        if packed_sha is not None:
+            return packed_sha
+    return None
+
+
+def _git_incomplete_state_token(git_dir: Path, common_dir: Path) -> str | None:
+    for base in (git_dir, common_dir):
+        for marker in (
+            "MERGE_HEAD",
+            "CHERRY_PICK_HEAD",
+            "REBASE_HEAD",
+            "REBASE_MERGE",
+        ):
+            if (base / marker).exists():
+                return "UNKNOWN_INCOMPLETE_GIT_STATE"
+        if (base / "index.lock").is_file():
+            return "UNKNOWN_GIT_INDEX_LOCKED"
+    return None
+
+
 def _read_git_sha_prefix(repo_root: Path, maxlen: int = 12) -> str:
-    head_file = repo_root / ".git" / "HEAD"
+    git_dir, common_dir, layout_err = _resolve_git_metadata_dirs(repo_root)
+    if layout_err is not None:
+        return layout_err
+    assert git_dir is not None and common_dir is not None
+
+    incomplete = _git_incomplete_state_token(git_dir, common_dir)
+    if incomplete is not None:
+        return incomplete
+
+    head_file = git_dir / "HEAD"
     if not head_file.is_file():
-        return "UNKNOWN"
+        return "UNKNOWN_HEAD_MISSING"
     raw = head_file.read_text(encoding="utf-8", errors="replace").strip()
     if raw.startswith("ref: "):
         ref = raw[5:].strip()
-        ref_path = repo_root / ".git" / ref
-        if ref_path.is_file():
-            sha = ref_path.read_text(encoding="utf-8", errors="replace").strip()
-            return sha[:maxlen] if sha else "UNKNOWN_REF_EMPTY"
-        return "UNKNOWN_REF_MISSING"
-    # Detached HEAD or direct SHA digest string.
-    cand40 = raw[:40].lower()
-    if len(cand40) == 40 and all(ch in "0123456789abcdef" for ch in cand40):
+        if not ref:
+            return "UNKNOWN_REF_MISSING"
+        sha = _read_loose_or_packed_ref_sha(git_dir, common_dir, ref)
+        if sha is None:
+            return "UNKNOWN_REF_MISSING"
+        return sha[:maxlen]
+    if _is_hex_sha40(raw):
         return raw[:maxlen]
     return "UNKNOWN_RAW_HEAD_LAYOUT"
 
