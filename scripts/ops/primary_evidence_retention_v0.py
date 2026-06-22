@@ -15,6 +15,8 @@ VALIDATE_DURABLE_PRIMARY_EVIDENCE_ROOT_V0=true
 PRIMARY_EVIDENCE_RETENTION_HARD_GATE_EXTENSION_V0=true
 VALIDATE_DURABLE_LIFECYCLE_CLOSEOUT_ROOT_V0=true
 VALIDATE_ORDER_CAPABILITY_OFFLINE_DURABLE_RUN_ROOT_V0=true
+GAP2A1_PRIMARY_EVIDENCE_RETENTION_OPERATIVE_ENFORCEMENT_V0=true
+COMPLETION_BLOCKED_UNTIL_RETENTION_VERIFIED=true
 ```
 """
 
@@ -83,6 +85,20 @@ KNOWN_CLOSEOUT_FILENAMES = (
 MANIFEST_VERIFY_LOG_FILENAMES: tuple[str, ...] = (
     "MANIFEST_VERIFY.log",
     "LOCAL_MANIFEST_VERIFY.log",
+)
+
+MACHINE_SUMMARY_FILENAME = "MACHINE_SUMMARY.env"
+RECOMMENDED_NEXT_STEP_FILENAME = "RECOMMENDED_NEXT_STEP.md"
+
+# GAP2A1 operative retention bundle (durable archive outside /tmp; non-authorizing).
+PRIMARY_EVIDENCE_RETENTION_BUNDLE_REQUIRED_REL_PATHS: tuple[str, ...] = (
+    MACHINE_SUMMARY_FILENAME,
+    RECOMMENDED_NEXT_STEP_FILENAME,
+    MANIFEST_FILENAME,
+)
+
+_COMPLETION_SUCCESS_STATUSES = frozenset(
+    {"SUCCESS", "success", "PASS", "pass", "COMPLETE", "complete"}
 )
 
 LIFECYCLE_CLOSEOUT_MARKER_SUFFIXES: tuple[str, ...] = (
@@ -409,3 +425,126 @@ def validate_durable_lifecycle_closeout_root(
             "manifest_verify_log": log_name,
         },
     )
+
+
+def _parse_env_kv(path: Path, key: str) -> str | None:
+    if not path.is_file():
+        return None
+    for raw in path.read_text(encoding="utf-8").splitlines():
+        line = raw.strip()
+        if not line or line.startswith("#"):
+            continue
+        if line.startswith(f"{key}="):
+            return line.split("=", 1)[1].strip()
+    return None
+
+
+def validate_durable_primary_evidence_retention_bundle(
+    root: Path,
+    *,
+    required_rel_paths: tuple[str, ...] = PRIMARY_EVIDENCE_RETENTION_BUNDLE_REQUIRED_REL_PATHS,
+) -> tuple[bool, str, dict[str, Any]]:
+    """Validate durable primary evidence retention bundle (GAP2A1 operative enforcement v0).
+
+    Machine marker: ``GAP2A1_PRIMARY_EVIDENCE_RETENTION_OPERATIVE_ENFORCEMENT_V0=true``
+
+    Fail-closed when root is /tmp-only, required artifacts are missing or empty,
+    ``DURABLE_SAVE_CONFIRMED`` is not true, ``MANIFEST_VERIFY_RC`` is not 0, or
+    ``MANIFEST.sha256`` verification fails.
+    """
+    checks: dict[str, bool] = {}
+    issues: list[str] = []
+
+    ok, msg = require_durable_archive_root(root)
+    checks["durable_root_outside_tmp"] = ok
+    if not ok:
+        issues.append(msg)
+        return False, msg, {"checks": checks, "issues": issues}
+
+    for rel in required_rel_paths:
+        path = root / rel
+        present = path.is_file()
+        key = "required_" + rel.replace("/", "_").replace(".", "_")
+        checks[key] = present
+        if not present:
+            msg = f"missing primary evidence artifact: {rel}"
+            issues.append(msg)
+            return False, msg, {"checks": checks, "issues": issues}
+        if path.stat().st_size == 0:
+            msg = f"empty primary evidence artifact: {rel}"
+            issues.append(msg)
+            return False, msg, {"checks": checks, "issues": issues}
+
+    machine_summary = root / MACHINE_SUMMARY_FILENAME
+    if not machine_summary.read_text(encoding="utf-8").strip():
+        msg = f"{MACHINE_SUMMARY_FILENAME} must not be empty"
+        issues.append(msg)
+        checks["machine_summary_nonempty"] = False
+        return False, msg, {"checks": checks, "issues": issues}
+    checks["machine_summary_nonempty"] = True
+
+    recommended = root / RECOMMENDED_NEXT_STEP_FILENAME
+    if not recommended.read_text(encoding="utf-8").strip():
+        msg = f"{RECOMMENDED_NEXT_STEP_FILENAME} must not be empty"
+        issues.append(msg)
+        checks["recommended_next_step_nonempty"] = False
+        return False, msg, {"checks": checks, "issues": issues}
+    checks["recommended_next_step_nonempty"] = True
+
+    durable_save = _parse_env_kv(machine_summary, "DURABLE_SAVE_CONFIRMED")
+    checks["durable_save_confirmed_true"] = durable_save == "true"
+    if durable_save != "true":
+        msg = "DURABLE_SAVE_CONFIRMED must be true in MACHINE_SUMMARY.env"
+        issues.append(msg)
+        return False, msg, {"checks": checks, "issues": issues}
+
+    rc_val = _parse_env_kv(machine_summary, "MANIFEST_VERIFY_RC")
+    rc_int: int | None
+    try:
+        rc_int = int(rc_val) if rc_val is not None else None
+    except ValueError:
+        rc_int = None
+    checks["manifest_verify_rc_zero"] = rc_int == 0
+    if rc_int != 0:
+        msg = f"MANIFEST_VERIFY_RC must be 0 in MACHINE_SUMMARY.env (got {rc_val!r})"
+        issues.append(msg)
+        return False, msg, {"checks": checks, "issues": issues}
+
+    ok, msg = verify_manifest_sha256(root)
+    checks["manifest_sha256_verify"] = ok
+    if not ok:
+        issues.append(msg)
+        return False, msg, {"checks": checks, "issues": issues}
+
+    return True, "", {"checks": checks, "issues": []}
+
+
+def evaluate_completion_retention_gate(
+    root: Path | None,
+    *,
+    completion_status: str,
+    required_rel_paths: tuple[str, ...] = PRIMARY_EVIDENCE_RETENTION_BUNDLE_REQUIRED_REL_PATHS,
+) -> tuple[str, str, dict[str, Any]]:
+    """Fail-closed completion gate: SUCCESS blocked until retention bundle validates.
+
+    Machine marker: ``COMPLETION_BLOCKED_UNTIL_RETENTION_VERIFIED=true``
+    """
+    if completion_status not in _COMPLETION_SUCCESS_STATUSES:
+        return completion_status, "", {"retention_gate_applied": False}
+
+    if root is None:
+        return (
+            "INCOMPLETE",
+            "primary evidence root required before SUCCESS completion",
+            {"retention_gate_applied": True},
+        )
+
+    ok, msg, detail = validate_durable_primary_evidence_retention_bundle(
+        root,
+        required_rel_paths=required_rel_paths,
+    )
+    detail = dict(detail)
+    detail["retention_gate_applied"] = True
+    if not ok:
+        return "INCOMPLETE", msg, detail
+    return completion_status, "", detail
