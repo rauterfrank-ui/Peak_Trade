@@ -107,7 +107,7 @@ def test_workflow_jobs_have_expected_timeouts() -> None:
         assert isinstance(job_body, dict)
         timeout = job_body.get("timeout-minutes")
         assert isinstance(timeout, int)
-        assert 30 <= timeout <= 120
+        assert timeout == 25
 
 
 def test_workflow_schedule_gate_vars_present() -> None:

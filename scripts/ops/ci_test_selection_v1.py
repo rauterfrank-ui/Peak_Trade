@@ -35,6 +35,8 @@ FOCUSED_CATEGORIES = frozenset(
         "risk_killswitch_focused",
         "tiny_order_focused",
         "reconciliation_primary_evidence_focused",
+        "wallclock_focused",
+        "ci_infra_focused",
     }
 )
 
@@ -218,6 +220,76 @@ REQUIRED_RECONCILIATION_PRIMARY_EVIDENCE_TEST_OWNERS: tuple[str, ...] = (
     "tests/ops/test_bounded_futures_testnet_position_order_reconciliation_primary_evidence_integration_contract_v0.py",
 )
 
+WALLCLOCK_OWNER = "src/ops/wallclock_session_evidence_v0.py"
+
+WALLCLOCK_CI_POLICY_PATHS = frozenset(
+    {
+        "scripts/ops/ci_test_selection_v1.py",
+        "config/ci/file_category_mapping.yaml",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    }
+)
+
+WALLCLOCK_SCRIPT_PATHS = frozenset(
+    {
+        "scripts/ops/shadow_247_futures_start_wrapper_skeleton_v0.py",
+        "scripts/ops/run_shadow_bounded_observation_adapter_v0.py",
+    }
+)
+
+CANONICAL_WALLCLOCK_FOCUSED_TESTS: tuple[str, ...] = (
+    "tests/ops/test_run_shadow_bounded_observation_adapter_v0.py",
+    "tests/ops/test_shadow_wallclock_duration_evidence_contract_v0.py",
+    "tests/ops/test_shadow_247_futures_start_wrapper_skeleton_v0.py",
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+)
+
+REQUIRED_WALLCLOCK_TEST_OWNERS: tuple[str, ...] = (
+    "tests/ops/test_run_shadow_bounded_observation_adapter_v0.py",
+    "tests/ops/test_shadow_wallclock_duration_evidence_contract_v0.py",
+    "tests/ops/test_shadow_247_futures_start_wrapper_skeleton_v0.py",
+)
+
+CI_INFRA_WORKFLOW_ALLOWLIST = frozenset(
+    {
+        ".github/workflows/ci.yml",
+        ".github/workflows/ci-export-pack-download-verify.yml",
+        ".github/workflows/ci-scheduled-paper-and-export-smoke.yml",
+        ".github/workflows/full_audit_weekly.yml",
+        ".github/workflows/offline_suites.yml",
+        ".github/workflows/paper_session_audit_evidence.yml",
+        ".github/workflows/paper_tests_audit_evidence.yml",
+        ".github/workflows/prbj-testnet-exec-events.yml",
+        ".github/workflows/test-health-automation.yml",
+    }
+)
+
+CI_INFRA_CONTRACT_TEST_ALLOWLIST = frozenset(
+    {
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+        "tests/ci/test_workflows_no_pull_request_target_contract_v0.py",
+        "tests/ci/test_ci_scheduled_paper_export_smoke_workflow_contract_v0.py",
+        "tests/ci/test_class_a_shadow_paper_scheduled_probe_workflow_contract_v0.py",
+        "tests/ci/test_paper_session_audit_evidence_workflow_contract_v0.py",
+        "tests/ci/test_paper_tests_audit_evidence_workflow_contract_v0.py",
+        "tests/ci/test_prj_scheduled_shadow_paper_features_smoke_workflow_contract_v0.py",
+        "tests/ci/test_shadow_paper_smoke_workflow_contract_v0.py",
+    }
+)
+
+CI_INFRA_MINIMUM_CONTRACT_ANCHORS = frozenset(
+    {
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+        "tests/ci/test_workflows_no_pull_request_target_contract_v0.py",
+    }
+)
+
+CI_INFRA_CORE_FOCUSED_TESTS: tuple[str, ...] = (
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    "tests/ci/test_workflows_no_pull_request_target_contract_v0.py",
+    "tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py",
+)
+
 CANONICAL_MARKET_DASHBOARD_FOCUSED_TESTS: tuple[str, ...] = (
     "tests/webui/test_market_dashboard_no_bitcoin_futures_v1.py",
     "tests/webui/test_market_futures_only_canonical_completion_v1.py",
@@ -304,6 +376,10 @@ def _requires_full_ci_selector_change(files: list[str]) -> bool:
         return False
     scoped_rpe = {f for f in normalized if _is_reconciliation_primary_evidence_scoped_path(f)}
     if scoped_rpe and all(_is_reconciliation_primary_evidence_rebundle_path(f) for f in normalized):
+        return False
+    if any(_is_ci_infra_scoped_path(f) for f in normalized) and all(
+        _is_ci_infra_rebundle_path(f) for f in normalized
+    ):
         return False
     if normalized <= CI_BOOTSTRAP_FOCUSED_PATHS:
         return False
@@ -519,6 +595,141 @@ def _tiny_order_focused_targets() -> tuple[str, ...]:
     return tuple(sorted(targets))
 
 
+def _is_wallclock_scoped_path(path: str) -> bool:
+    if path == WALLCLOCK_OWNER:
+        return True
+    if path in WALLCLOCK_SCRIPT_PATHS:
+        return True
+    if path in REQUIRED_WALLCLOCK_TEST_OWNERS:
+        return True
+    return False
+
+
+def _is_wallclock_rebundle_path(path: str) -> bool:
+    return _is_wallclock_scoped_path(path) or path in WALLCLOCK_CI_POLICY_PATHS
+
+
+def _wallclock_focused_targets() -> tuple[str, ...]:
+    for path in REQUIRED_WALLCLOCK_TEST_OWNERS:
+        if not _repo_path_exists(path):
+            return ()
+    targets: list[str] = []
+    for path in CANONICAL_WALLCLOCK_FOCUSED_TESTS:
+        if _repo_path_exists(path):
+            targets.append(path)
+    if len(targets) < len(REQUIRED_WALLCLOCK_TEST_OWNERS):
+        return ()
+    return tuple(sorted(targets))
+
+
+def _try_wallclock_focused(files: list[str]) -> SelectionResult | None:
+    if not files:
+        return None
+    if not any(_is_wallclock_scoped_path(f) for f in files):
+        return None
+    if not all(_is_wallclock_rebundle_path(f) for f in files):
+        return None
+    files_set = set(files)
+    if WALLCLOCK_OWNER in files_set and not set(REQUIRED_WALLCLOCK_TEST_OWNERS).issubset(files_set):
+        return None
+    targets = _wallclock_focused_targets()
+    if not targets:
+        return None
+    modules: tuple[str, ...] = ("src.ops.wallclock_session_evidence_v0",)
+    return SelectionResult(
+        "FOCUSED",
+        "wallclock_focused",
+        targets,
+        modules,
+    )
+
+
+def _is_ci_infra_workflow_path(path: str) -> bool:
+    return path in CI_INFRA_WORKFLOW_ALLOWLIST
+
+
+def _is_ci_infra_contract_test_path(path: str) -> bool:
+    return path in CI_INFRA_CONTRACT_TEST_ALLOWLIST
+
+
+def _is_ci_infra_scoped_path(path: str) -> bool:
+    return (
+        path in CI_BOOTSTRAP_FOCUSED_PATHS
+        or _is_ci_infra_workflow_path(path)
+        or _is_ci_infra_contract_test_path(path)
+    )
+
+
+def _is_ci_infra_rebundle_path(path: str) -> bool:
+    if path in CI_MAPPING_FULL_PATHS:
+        return False
+    return (
+        path in CI_BOOTSTRAP_FOCUSED_PATHS
+        or _is_ci_infra_workflow_path(path)
+        or _is_ci_infra_contract_test_path(path)
+        or path == "tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py"
+    )
+
+
+def _ci_infra_focused_targets(files: list[str]) -> tuple[str, ...]:
+    targets: list[str] = []
+    seen: set[str] = set()
+
+    def add(path: str) -> None:
+        if path not in seen and _repo_path_exists(path):
+            seen.add(path)
+            targets.append(path)
+
+    for path in CI_INFRA_CORE_FOCUSED_TESTS:
+        add(path)
+    for path in files:
+        if _is_ci_infra_contract_test_path(path):
+            add(path)
+    if len([path for path in CI_INFRA_CORE_FOCUSED_TESTS if _repo_path_exists(path)]) < len(
+        CI_INFRA_CORE_FOCUSED_TESTS
+    ):
+        return ()
+    return tuple(sorted(targets))
+
+
+def _try_ci_infra_focused(files: list[str]) -> SelectionResult | None:
+    if not files:
+        return None
+    if not any(_is_ci_infra_scoped_path(f) for f in files):
+        return None
+    if not all(_is_ci_infra_rebundle_path(f) for f in files):
+        return None
+    for path in files:
+        if path.startswith(".github/workflows/") and not _is_ci_infra_workflow_path(path):
+            return None
+    has_workflow = any(_is_ci_infra_workflow_path(f) for f in files)
+    has_selector = any(f in CI_BOOTSTRAP_FOCUSED_PATHS for f in files)
+    has_contract = any(_is_ci_infra_contract_test_path(f) for f in files)
+    if has_workflow and not (has_selector or has_contract):
+        return None
+    if (has_workflow or has_selector) and not CI_INFRA_MINIMUM_CONTRACT_ANCHORS.issubset(
+        set(files)
+    ):
+        return None
+    targets = _ci_infra_focused_targets(files)
+    if not targets:
+        return None
+    return SelectionResult(
+        "FOCUSED",
+        "ci_infra_focused",
+        targets,
+    )
+
+
+def _has_ci_infra_substantive_intent(files: list[str]) -> bool:
+    has_workflow = any(_is_ci_infra_workflow_path(f) for f in files)
+    has_selector = any(f in CI_BOOTSTRAP_FOCUSED_PATHS for f in files)
+    has_contract = any(_is_ci_infra_contract_test_path(f) for f in files)
+    if has_workflow and not (has_selector or has_contract):
+        return False
+    return any(_is_ci_infra_scoped_path(f) for f in files)
+
+
 def _try_reconciliation_primary_evidence_focused(files: list[str]) -> SelectionResult | None:
     if not files:
         return None
@@ -721,6 +932,10 @@ def categorize(path: str) -> str:
         return "market_dashboard_focused"
     if _is_market_dashboard_scoped_path(p):
         return "market_dashboard_focused"
+    if p in WALLCLOCK_CI_POLICY_PATHS or _is_wallclock_scoped_path(p):
+        return "wallclock_focused"
+    if _is_ci_infra_contract_test_path(p):
+        return "ci_infra_focused"
     if p in CI_BOOTSTRAP_FOCUSED_PATHS:
         return "ci_bootstrap_focused"
     if p in CI_MAPPING_FULL_PATHS:
@@ -970,6 +1185,18 @@ def resolve_selection(
     if reconciliation_primary_evidence is not None:
         return reconciliation_primary_evidence
 
+    wallclock = _try_wallclock_focused(normalized)
+    if wallclock is not None:
+        return wallclock
+
+    ci_bootstrap = _try_ci_bootstrap_focused(normalized)
+    if ci_bootstrap is not None:
+        return ci_bootstrap
+
+    ci_infra = _try_ci_infra_focused(normalized)
+    if ci_infra is not None:
+        return ci_infra
+
     if any(_is_durable_completion_scoped_path(f) for f in normalized):
         if not all(_is_durable_completion_rebundle_path(f) for f in normalized):
             return SelectionResult("FULL", "durable_completion_foreign_path_requires_full", ())
@@ -999,12 +1226,20 @@ def resolve_selection(
             "FULL", "reconciliation_primary_evidence_incomplete_or_missing_test_owner", ()
         )
 
-    ci_bootstrap = _try_ci_bootstrap_focused(normalized)
-    if ci_bootstrap is not None:
-        return ci_bootstrap
+    if any(_is_wallclock_scoped_path(f) for f in normalized):
+        if not all(_is_wallclock_rebundle_path(f) for f in normalized):
+            return SelectionResult("FULL", "wallclock_foreign_path_requires_full", ())
+        return SelectionResult("FULL", "wallclock_incomplete_or_missing_test_owner", ())
 
     if any(_is_ci_bootstrap_scoped_path(f) for f in normalized):
         return SelectionResult("FULL", "ci_bootstrap_mixed_diff_requires_full", ())
+
+    if any(_is_ci_infra_scoped_path(f) for f in normalized) and _has_ci_infra_substantive_intent(
+        normalized
+    ):
+        if not all(_is_ci_infra_rebundle_path(f) for f in normalized):
+            return SelectionResult("FULL", "ci_infra_foreign_path_requires_full", ())
+        return SelectionResult("FULL", "ci_infra_incomplete_or_ambiguous", ())
 
     if _requires_full_ci_selector_change(normalized):
         return SelectionResult("FULL", "ci_mapping_or_workflow_selector_change_requires_full", ())

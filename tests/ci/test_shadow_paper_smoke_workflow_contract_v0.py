@@ -121,7 +121,7 @@ def test_workflow_jobs_have_defensive_live_env_and_timeouts() -> None:
 
         timeout = job_body.get("timeout-minutes")
         assert isinstance(timeout, int)
-        assert 10 <= timeout <= 45
+        assert 10 <= timeout <= 25
 
         env = job_body.get("env")
         assert isinstance(env, dict)

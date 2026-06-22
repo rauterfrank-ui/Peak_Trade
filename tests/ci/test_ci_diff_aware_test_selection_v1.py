@@ -50,9 +50,9 @@ def test_required_tests_job_has_no_job_level_if() -> None:
     assert "if:" not in tests_block.split("steps:")[0]
 
 
-def test_tests_job_timeout_40_preserved() -> None:
+def test_tests_job_timeout_25_absolute_cap() -> None:
     assert re.search(
-        r"^\s*tests:\n(?:.*\n)*?\s*timeout-minutes:\s*40\s*$", _ci_text(), re.MULTILINE
+        r"^\s*tests:\n(?:.*\n)*?\s*timeout-minutes:\s*25\s*$", _ci_text(), re.MULTILINE
     )
 
 
@@ -1290,3 +1290,107 @@ def test_selector_pe21_rebundle_with_ci_policy_focused() -> None:
 def test_mapping_file_includes_reconciliation_primary_evidence_focused() -> None:
     text = MAPPING.read_text(encoding="utf-8")
     assert "reconciliation_primary_evidence_focused:" in text
+
+
+PR4489_WALLCLOCK_FILES: tuple[str, ...] = (
+    "src/ops/wallclock_session_evidence_v0.py",
+    "scripts/ops/shadow_247_futures_start_wrapper_skeleton_v0.py",
+    "scripts/ops/run_shadow_bounded_observation_adapter_v0.py",
+    "tests/ops/test_run_shadow_bounded_observation_adapter_v0.py",
+    "tests/ops/test_shadow_wallclock_duration_evidence_contract_v0.py",
+    "tests/ops/test_shadow_247_futures_start_wrapper_skeleton_v0.py",
+)
+
+PR4491_CI_BOOTSTRAP_FILES: tuple[str, ...] = (
+    ".github/workflows/ci-export-pack-download-verify.yml",
+    ".github/workflows/ci-scheduled-paper-and-export-smoke.yml",
+    ".github/workflows/ci.yml",
+    ".github/workflows/full_audit_weekly.yml",
+    ".github/workflows/offline_suites.yml",
+    ".github/workflows/paper_session_audit_evidence.yml",
+    ".github/workflows/paper_tests_audit_evidence.yml",
+    ".github/workflows/prbj-testnet-exec-events.yml",
+    ".github/workflows/test-health-automation.yml",
+    "scripts/ops/ci_test_selection_v1.py",
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    "tests/ci/test_ci_scheduled_paper_export_smoke_workflow_contract_v0.py",
+    "tests/ci/test_class_a_shadow_paper_scheduled_probe_workflow_contract_v0.py",
+    "tests/ci/test_paper_session_audit_evidence_workflow_contract_v0.py",
+    "tests/ci/test_paper_tests_audit_evidence_workflow_contract_v0.py",
+    "tests/ci/test_prj_scheduled_shadow_paper_features_smoke_workflow_contract_v0.py",
+    "tests/ci/test_shadow_paper_smoke_workflow_contract_v0.py",
+    "tests/ci/test_workflows_no_pull_request_target_contract_v0.py",
+)
+
+
+def test_selector_case_pr4489_wallclock_diff_focused() -> None:
+    sel = _run_selector(*PR4489_WALLCLOCK_FILES)
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "wallclock_focused"
+    assert sel["tests_execute_full"] == "false"
+    assert sel["tests_execute_focused"] == "true"
+    targets = _targets(sel)
+    assert "tests/ops/test_run_shadow_bounded_observation_adapter_v0.py" in targets
+    assert "tests/ops/test_shadow_wallclock_duration_evidence_contract_v0.py" in targets
+    assert "tests/ops/test_shadow_247_futures_start_wrapper_skeleton_v0.py" in targets
+
+
+def test_selector_case_pr4491_ci_bootstrap_diff_focused() -> None:
+    sel = _run_selector(*PR4491_CI_BOOTSTRAP_FILES)
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "ci_infra_focused"
+    assert sel["tests_execute_full"] == "false"
+    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" in _targets(sel)
+    assert "tests/ci/test_workflows_no_pull_request_target_contract_v0.py" in _targets(sel)
+    assert "tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py" in _targets(sel)
+
+
+def test_selector_case_ci_selector_change_full() -> None:
+    sel = _run_selector(
+        "scripts/ops/ci_test_selection_v1.py",
+        "config/ci/file_category_mapping.yaml",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+
+
+def test_selector_case_dependency_change_full() -> None:
+    sel = _run_selector("pyproject.toml")
+    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_reason"] == "category_dependencies_requires_full"
+
+
+def test_selector_case_central_shared_src_change_full() -> None:
+    sel = _run_selector("src/core/foo.py")
+    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_reason"] == "category_central_src_requires_full"
+
+
+def test_selector_case_docs_only_safe_no_op() -> None:
+    sel = _run_selector("docs/foo.md")
+    assert sel["test_selection_mode"] == "NO_OP"
+
+
+def test_selector_case_unknown_workflow_diff_full() -> None:
+    sel = _run_selector(
+        "scripts/ops/ci_test_selection_v1.py",
+        ".github/workflows/unknown-workflow.yml",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+
+
+def test_selector_case_unknown_src_diff_full() -> None:
+    sel = _run_selector("misc/unclassified.bin")
+    assert sel["test_selection_mode"] == "FULL"
+
+
+def test_selector_ci_workflow_change_self_focused_ci_infra() -> None:
+    sel = _run_selector(
+        ".github/workflows/ci.yml",
+        "scripts/ops/ci_test_selection_v1.py",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+        "tests/ci/test_workflows_no_pull_request_target_contract_v0.py",
+        "tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py",
+    )
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "ci_infra_focused"

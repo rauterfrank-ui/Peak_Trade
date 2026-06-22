@@ -16,7 +16,7 @@ concurrency:
 jobs:
   export-pack-verify:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 25
     permissions:
       contents: read
     # Skip on PR when not enabled (vars); always run on workflow_dispatch (secrets not allowed in job.if)

@@ -16,6 +16,9 @@ WORKFLOW_ROOT = REPO_ROOT / ".github" / "workflows"
 CHECKOUT_USES_PATTERN = re.compile(r"uses:\s*actions/checkout@v(\d+)\b")
 FORBIDDEN_CHECKOUT_VERSIONS = frozenset({"3", "4"})
 REQUIRED_CHECKOUT_VERSION = "5"
+TIMEOUT_MINUTES_PATTERN = re.compile(r"^\s*timeout-minutes:\s*(\d+)\s*$", re.MULTILINE)
+PEAK_TRADE_CI_ABSOLUTE_HARD_TIMEOUT_MINUTES = 25
+FORBIDDEN_EXPLICIT_TIMEOUT_MINUTES = frozenset({40})
 
 
 def _workflow_files() -> list[Path]:
@@ -145,3 +148,37 @@ def test_workflows_checkout_pin_uniform_v5_contract_requires_explicit_v5() -> No
             offenders.append(f"{workflow_path}: actions/checkout@v{', v'.join(non_v5)}")
 
     assert not offenders, f"checkout pins must use actions/checkout@v5: {offenders}"
+
+
+def _explicit_timeout_minutes_by_workflow() -> dict[str, list[int]]:
+    by_workflow: dict[str, list[int]] = {}
+    for workflow in _workflow_files():
+        values = [int(match) for match in TIMEOUT_MINUTES_PATTERN.findall(_workflow_text(workflow))]
+        if values:
+            by_workflow[workflow.relative_to(REPO_ROOT).as_posix()] = values
+    return by_workflow
+
+
+def test_workflows_absolute_hard_timeout_contract_caps_explicit_job_timeouts() -> None:
+    offenders: list[str] = []
+
+    for workflow_path, values in _explicit_timeout_minutes_by_workflow().items():
+        for value in values:
+            if value > PEAK_TRADE_CI_ABSOLUTE_HARD_TIMEOUT_MINUTES:
+                offenders.append(f"{workflow_path}: timeout-minutes={value}")
+
+    assert not offenders, (
+        "explicit workflow job timeouts must be <= "
+        f"{PEAK_TRADE_CI_ABSOLUTE_HARD_TIMEOUT_MINUTES} minutes: {offenders}"
+    )
+
+
+def test_workflows_absolute_hard_timeout_contract_forbids_legacy_40_minute_values() -> None:
+    offenders: list[str] = []
+
+    for workflow_path, values in _explicit_timeout_minutes_by_workflow().items():
+        for value in values:
+            if value in FORBIDDEN_EXPLICIT_TIMEOUT_MINUTES:
+                offenders.append(f"{workflow_path}: timeout-minutes={value}")
+
+    assert not offenders, f"legacy 40-minute workflow timeouts are forbidden: {offenders}"
