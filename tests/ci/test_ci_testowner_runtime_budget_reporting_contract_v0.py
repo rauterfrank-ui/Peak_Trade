@@ -16,7 +16,16 @@ import fnmatch
 import subprocess
 import sys
 from dataclasses import dataclass
-from enum import StrEnum
+
+try:
+    from enum import StrEnum
+except ImportError:
+    from enum import Enum
+
+    class StrEnum(str, Enum):
+        pass
+
+
 from pathlib import Path, PurePosixPath
 from typing import Any
 
