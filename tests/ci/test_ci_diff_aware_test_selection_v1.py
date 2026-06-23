@@ -877,19 +877,23 @@ def test_selector_bounded_master_v2_testnet_completion_path_wiring_five_file_dif
     assert sel["tests_execute_full"] == "false"
     assert sel["tests_execute_focused"] == "true"
     targets = _targets(sel)
+    wiring_owner = "tests/ops/test_bounded_master_v2_testnet_completion_path_wiring_contract_v0.py"
+    adapter_owner = "tests/ops/test_run_testnet_bounded_observation_adapter_v0.py"
+    replay_owner = "tests/ops/test_offline_master_v2_double_play_scenario_replay_completion_binding_contract_v0.py"
+    completion_owner = "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py"
+    assert wiring_owner in targets
+    assert adapter_owner not in targets
+    assert replay_owner not in targets
+    assert completion_owner not in targets
+    assert all("::test_" in target for target in targets if target != wiring_owner)
+    assert f"{adapter_owner}::test_plan_only_default_does_not_call_subprocess" in targets
+    assert f"{replay_owner}::test_replay_sourced_six_node_validation_graph_passes" in targets
+    assert f"{completion_owner}::test_valid_static_proof_remains_non_authorizing" in targets
     assert (
-        "tests/ops/test_bounded_master_v2_testnet_completion_path_wiring_contract_v0.py" in targets
-    )
-    assert "tests/ops/test_run_testnet_bounded_observation_adapter_v0.py" in targets
-    assert (
-        "tests/ops/test_offline_master_v2_double_play_scenario_replay_completion_binding_contract_v0.py"
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py::test_selector_bounded_master_v2_testnet_completion_path_wiring_five_file_diff_focused"
         in targets
     )
-    assert (
-        "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py"
-        in targets
-    )
-    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" in targets
+    assert len(targets) >= 20
 
 
 def test_selector_bounded_master_v2_testnet_wiring_foreign_path_escalates_full() -> None:
