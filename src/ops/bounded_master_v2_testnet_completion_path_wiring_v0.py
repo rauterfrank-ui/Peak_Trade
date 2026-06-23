@@ -11,9 +11,10 @@ from __future__ import annotations
 
 import re
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any, Mapping
 
-from scripts.ops import primary_evidence_retention_v0
+from scripts.ops.primary_evidence_retention_v0 import verify_manifest_sha256
 from src.ops.bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0 import (
     CONTRACT_VERSION as COMPLETION_INTEGRATION_CONTRACT_VERSION,
     DurableRunPrimaryEvidenceCompletionIntegrationInput,
@@ -50,6 +51,7 @@ CANONICAL_SIX_NODE_GRAPH_OWNER = (
 )
 CANONICAL_DIGEST_BINDING_OWNER = CANONICAL_TESTNET_COMPLETION_OWNER
 CANONICAL_RETENTION_OWNER = "scripts/ops/primary_evidence_retention_v0.py"
+CANONICAL_RETENTION_VERIFY_OWNER = "scripts.ops.primary_evidence_retention_v0"
 
 _BTC_SPOT_RE = re.compile(r"(?i)(btc|xbt|bitcoin|/usd|/eur|spot)")
 
@@ -74,6 +76,16 @@ class TestnetCompletionPathMarketInputV0:
     source_run_id: str
     source_lane: str = "testnet_bounded_observation"
     synthetic_offline_fixture: bool = False
+
+
+@dataclass(frozen=True)
+class TestnetCompletionPathRetentionVerificationResultV0:
+    """Canonical retention manifest verification result bound into completion wiring."""
+
+    verify_pass: bool
+    verify_message: str
+    verify_owner: str
+    archive_root: str | None = None
 
 
 @dataclass(frozen=True)
@@ -130,7 +142,55 @@ class BoundedMasterV2TestnetCompletionPathWiringResultV0:
         }
 
 
-def _static_wiring_flags() -> dict[str, bool]:
+def run_canonical_retention_manifest_verification(
+    archive_root: Path,
+) -> TestnetCompletionPathRetentionVerificationResultV0:
+    """Execute canonical verify_manifest_sha256 once; do not recompute digests elsewhere."""
+    ok, msg = verify_manifest_sha256(archive_root)
+    return TestnetCompletionPathRetentionVerificationResultV0(
+        verify_pass=ok,
+        verify_message=msg,
+        verify_owner=CANONICAL_RETENTION_VERIFY_OWNER,
+        archive_root=str(archive_root.resolve()),
+    )
+
+
+def verify_testnet_completion_path_retention_wiring(
+    retention_verification: TestnetCompletionPathRetentionVerificationResultV0 | None,
+    *,
+    expected_archive_root: str | None = None,
+) -> list[str]:
+    """Fail-closed retention wiring guard; requires an executed canonical verify result."""
+    reasons: list[str] = []
+    if retention_verification is None:
+        reasons.append("retention verification result required")
+        return reasons
+    if retention_verification.verify_owner != CANONICAL_RETENTION_VERIFY_OWNER:
+        reasons.append(f"retention verify owner drift: {retention_verification.verify_owner!r}")
+    if not retention_verification.verify_pass:
+        detail = retention_verification.verify_message or "retention verification failed"
+        reasons.append(f"retention verification failed: {detail}")
+    if expected_archive_root is not None and retention_verification.archive_root is not None:
+        expected = str(Path(expected_archive_root).resolve())
+        if retention_verification.archive_root != expected:
+            reasons.append("retention verification stale: archive_root mismatch")
+    return reasons
+
+
+def _retention_wiring_present(
+    retention_verification: TestnetCompletionPathRetentionVerificationResultV0 | None,
+) -> bool:
+    if retention_verification is None:
+        return False
+    return (
+        retention_verification.verify_pass
+        and retention_verification.verify_owner == CANONICAL_RETENTION_VERIFY_OWNER
+    )
+
+
+def _static_wiring_flags(
+    retention_verification: TestnetCompletionPathRetentionVerificationResultV0 | None = None,
+) -> dict[str, bool]:
     return {
         "bounded_testnet_completion_path_master_v2_wiring_present": (
             OFFLINE_DOUBLE_PLAY_SCENARIO_REPLAY_OWNER
@@ -143,8 +203,8 @@ def _static_wiring_flags() -> dict[str, bool]:
         "bounded_testnet_completion_path_decision_digest_wiring_present": bool(
             COMPLETION_INTEGRATION_CONTRACT_VERSION
         ),
-        "bounded_testnet_completion_path_retention_wiring_present": (
-            hasattr(primary_evidence_retention_v0, "verify_manifest_sha256")
+        "bounded_testnet_completion_path_retention_wiring_present": _retention_wiring_present(
+            retention_verification
         ),
         "bounded_testnet_zero_order_admission_boundary_present": True,
         "testnet_runner_reuses_canonical_completion_path": True,
@@ -234,9 +294,12 @@ def verify_dashboard_display_projection_digest_wiring(
 
 def evaluate_bounded_master_v2_testnet_completion_path_wiring(
     market_input: TestnetCompletionPathMarketInputV0 | None,
+    *,
+    retention_verification: TestnetCompletionPathRetentionVerificationResultV0 | None = None,
+    expected_archive_root: str | None = None,
 ) -> BoundedMasterV2TestnetCompletionPathWiringResultV0:
     """Evaluate wiring admission. Fail-closed without real testnet market input."""
-    static_flags = _static_wiring_flags()
+    static_flags = _static_wiring_flags(retention_verification)
     if market_input is None:
         return _result(
             wiring_pass=False,
@@ -306,6 +369,12 @@ def evaluate_bounded_master_v2_testnet_completion_path_wiring(
     if not zero_order_ok:
         fail_reasons.append("zero-order admission boundary violated")
 
+    retention_reasons = verify_testnet_completion_path_retention_wiring(
+        retention_verification,
+        expected_archive_root=expected_archive_root,
+    )
+    fail_reasons.extend(retention_reasons)
+
     wiring_pass = binding.binding_pass and bool(integration_result.get("integration_pass"))
     wiring_pass = wiring_pass and zero_order_ok and not fail_reasons
 
@@ -329,9 +398,15 @@ def build_testnet_bounded_adapter_completion_path_wiring_section(
     mode: str,
     market_input: TestnetCompletionPathMarketInputV0 | None = None,
     market_input_producer_fail_reasons: tuple[str, ...] | None = None,
+    retention_verification: TestnetCompletionPathRetentionVerificationResultV0 | None = None,
+    expected_archive_root: str | None = None,
 ) -> dict[str, Any]:
     """Static completion-path wiring metadata for the bounded testnet adapter plan."""
-    admission = evaluate_bounded_master_v2_testnet_completion_path_wiring(market_input)
+    admission = evaluate_bounded_master_v2_testnet_completion_path_wiring(
+        market_input,
+        retention_verification=retention_verification,
+        expected_archive_root=expected_archive_root,
+    )
     machine = admission.to_machine_lines()
     producer_fail_reasons = list(market_input_producer_fail_reasons or ())
     if market_input is None and not producer_fail_reasons:
@@ -354,7 +429,17 @@ def build_testnet_bounded_adapter_completion_path_wiring_section(
         "fail_reasons": list(admission.fail_reasons),
         "dashboard_display_projection_digest": admission.dashboard_display_projection_digest,
         "machine_summary": machine,
-        "retention_verify_owner": primary_evidence_retention_v0.verify_manifest_sha256.__module__,
+        "retention_verify_owner": CANONICAL_RETENTION_VERIFY_OWNER,
+        "retention_verification": (
+            {
+                "verify_pass": retention_verification.verify_pass,
+                "verify_message": retention_verification.verify_message,
+                "verify_owner": retention_verification.verify_owner,
+                "archive_root": retention_verification.archive_root,
+            }
+            if retention_verification is not None
+            else None
+        ),
     }
 
 
