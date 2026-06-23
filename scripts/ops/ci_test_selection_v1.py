@@ -282,6 +282,32 @@ BOUNDED_TESTNET_EXECUTE_PATH_MARKET_OBSERVATION_CLOSEOUT_BINDING_FOCUSED_TARGETS
     f"{BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_TEST_OWNER}::test_static_wiring_flags_present_without_market_input",
     f"{BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_ADAPTER_TEST_OWNER}::test_ci_selector_closeout_binding_five_file_diff_focused",
 )
+BOUNDED_TESTNET_RUNTIME_MARKET_OBSERVATION_PRODUCER_OWNER_PATH = (
+    "src/ops/bounded_testnet_runtime_market_observation_producer_v0.py"
+)
+BOUNDED_TESTNET_RUNTIME_MARKET_OBSERVATION_PRODUCER_TEST_OWNER = (
+    "tests/ops/test_bounded_testnet_runtime_market_observation_producer_v0.py"
+)
+BOUNDED_TESTNET_RUNTIME_MARKET_OBSERVATION_PRODUCER_SCOPED_PATHS = frozenset(
+    {
+        BOUNDED_TESTNET_RUNTIME_MARKET_OBSERVATION_PRODUCER_OWNER_PATH,
+        BOUNDED_TESTNET_RUNTIME_MARKET_OBSERVATION_PRODUCER_TEST_OWNER,
+        BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_ADAPTER_OWNER,
+        BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_ADAPTER_TEST_OWNER,
+        "scripts/ops/ci_test_selection_v1.py",
+    }
+)
+BOUNDED_TESTNET_RUNTIME_MARKET_OBSERVATION_PRODUCER_FOCUSED_TARGETS: tuple[str, ...] = (
+    BOUNDED_TESTNET_RUNTIME_MARKET_OBSERVATION_PRODUCER_TEST_OWNER,
+    f"{BOUNDED_TESTNET_RUNTIME_MARKET_OBSERVATION_PRODUCER_TEST_OWNER}::test_valid_pf_ethusd_response_produces_canonical_observation",
+    f"{BOUNDED_TESTNET_RUNTIME_MARKET_OBSERVATION_PRODUCER_TEST_OWNER}::test_http_503_fails_closed_without_retry",
+    f"{BOUNDED_TESTNET_RUNTIME_MARKET_OBSERVATION_PRODUCER_TEST_OWNER}::test_live_host_rejected",
+    f"{BOUNDED_TESTNET_RUNTIME_MARKET_OBSERVATION_PRODUCER_TEST_OWNER}::test_stale_timestamp_rejected",
+    f"{BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_ADAPTER_TEST_OWNER}::test_plan_only_collect_public_testnet_market_observation_rejected",
+    f"{BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_ADAPTER_TEST_OWNER}::test_execute_collect_public_testnet_market_observation_forwards_closeout",
+    f"{BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_ADAPTER_TEST_OWNER}::test_execute_collect_http_503_fail_closed",
+    f"{BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_ADAPTER_TEST_OWNER}::test_ci_selector_runtime_market_observation_producer_five_file_diff_focused",
+)
 BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_CI_POLICY_PATHS = frozenset(
     {
         "scripts/ops/ci_test_selection_v1.py",
@@ -1577,6 +1603,59 @@ def _try_bounded_testnet_market_input_admission_wiring_focused(
     )
 
 
+def _is_bounded_testnet_runtime_market_observation_producer_scope(files: list[str]) -> bool:
+    if not files:
+        return False
+    files_set = set(files)
+    required = {
+        BOUNDED_TESTNET_RUNTIME_MARKET_OBSERVATION_PRODUCER_OWNER_PATH,
+        BOUNDED_TESTNET_RUNTIME_MARKET_OBSERVATION_PRODUCER_TEST_OWNER,
+        BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_ADAPTER_OWNER,
+        BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_ADAPTER_TEST_OWNER,
+    }
+    if not required.issubset(files_set):
+        return False
+    for path in files:
+        if path not in BOUNDED_TESTNET_RUNTIME_MARKET_OBSERVATION_PRODUCER_SCOPED_PATHS:
+            return False
+    return True
+
+
+def _bounded_testnet_runtime_market_observation_producer_focused_targets(
+    files: list[str] | None = None,
+) -> tuple[str, ...]:
+    targets: list[str] = []
+    for target in BOUNDED_TESTNET_RUNTIME_MARKET_OBSERVATION_PRODUCER_FOCUSED_TARGETS:
+        path, node = _split_pytest_target(target)
+        if node is None:
+            if _repo_path_exists(path):
+                targets.append(target)
+        elif _repo_pytest_target_exists(target):
+            targets.append(target)
+    if not targets:
+        return ()
+    return tuple(sorted(set(targets)))
+
+
+def _try_bounded_testnet_runtime_market_observation_producer_focused(
+    files: list[str],
+) -> SelectionResult | None:
+    if not _is_bounded_testnet_runtime_market_observation_producer_scope(files):
+        return None
+    targets = _bounded_testnet_runtime_market_observation_producer_focused_targets(files)
+    if not targets:
+        return None
+    return SelectionResult(
+        "FOCUSED",
+        "bounded_testnet_runtime_market_observation_producer_focused",
+        targets,
+        (
+            "ops.bounded_testnet_runtime_market_observation_producer_v0",
+            "ops.bounded_testnet_market_input_admission_wiring_v0",
+        ),
+    )
+
+
 def _is_bounded_testnet_execute_path_market_observation_closeout_binding_scope(
     files: list[str],
 ) -> bool:
@@ -1794,6 +1873,10 @@ def categorize(path: str) -> str:
         return "bounded_testnet_market_input_admission_wiring_focused"
     if p == BOUNDED_TESTNET_MARKET_INPUT_ADMISSION_WIRING_TEST_OWNER:
         return "bounded_testnet_market_input_admission_wiring_focused"
+    if p == BOUNDED_TESTNET_RUNTIME_MARKET_OBSERVATION_PRODUCER_OWNER_PATH:
+        return "bounded_testnet_runtime_market_observation_producer_focused"
+    if p == BOUNDED_TESTNET_RUNTIME_MARKET_OBSERVATION_PRODUCER_TEST_OWNER:
+        return "bounded_testnet_runtime_market_observation_producer_focused"
     if p == BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_ADAPTER_OWNER:
         return "bounded_testnet_execute_path_market_observation_closeout_binding_focused"
     if p == BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_ADAPTER_TEST_OWNER:
@@ -2082,6 +2165,12 @@ def resolve_selection(
     )
     if offline_master_v2_replay_six_node is not None:
         return offline_master_v2_replay_six_node
+
+    bounded_testnet_runtime_producer = (
+        _try_bounded_testnet_runtime_market_observation_producer_focused(normalized)
+    )
+    if bounded_testnet_runtime_producer is not None:
+        return bounded_testnet_runtime_producer
 
     bounded_testnet_closeout_binding = (
         _try_bounded_testnet_execute_path_market_observation_closeout_binding_focused(normalized)

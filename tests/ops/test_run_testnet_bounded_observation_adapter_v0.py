@@ -27,6 +27,10 @@ from src.ops.bounded_testnet_market_input_admission_wiring_v0 import (
     BoundedTestnetFuturesMarketObservationV0,
     BoundedTestnetFuturesMarketPriceTickObservationV0,
 )
+from src.ops.bounded_testnet_runtime_market_observation_producer_v0 import (
+    BoundedTestnetRuntimeClockV0,
+    build_canonical_testnet_public_ticker_url,
+)
 from trading.master_v2.double_play_futures_input import (
     FuturesFreshnessState,
     FuturesMarketType,
@@ -40,6 +44,13 @@ APPROVAL_FIXTURE = ROOT / "tests" / "fixtures" / "ops" / "testnet_adapter_stage3
 ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
 SELECTOR = ROOT / "scripts" / "ops" / "ci_test_selection_v1.py"
 CLOSEOUT_BINDING_FILES = (
+    "scripts/ops/run_testnet_bounded_observation_adapter_v0.py",
+    "tests/ops/test_run_testnet_bounded_observation_adapter_v0.py",
+    "scripts/ops/ci_test_selection_v1.py",
+)
+RUNTIME_PRODUCER_FILES = (
+    "src/ops/bounded_testnet_runtime_market_observation_producer_v0.py",
+    "tests/ops/test_bounded_testnet_runtime_market_observation_producer_v0.py",
     "scripts/ops/run_testnet_bounded_observation_adapter_v0.py",
     "tests/ops/test_run_testnet_bounded_observation_adapter_v0.py",
     "scripts/ops/ci_test_selection_v1.py",
@@ -1285,3 +1296,130 @@ def test_ci_selector_closeout_binding_five_file_diff_focused() -> None:
     )
     assert all("::test_" in target for target in targets if not target.endswith(".py"))
     assert len(targets) >= 8
+
+
+class _AdapterFakeTickerFetcher:
+    def __init__(self, *, status: int = 200, body: bytes | None = None) -> None:
+        self.status = status
+        self.body = body
+        self.calls = 0
+
+    def fetch(self, url: str, *, timeout_seconds: float) -> tuple[int, bytes]:
+        self.calls += 1
+        assert url == build_canonical_testnet_public_ticker_url("https://demo-futures.kraken.com")
+        if self.body is not None:
+            return self.status, self.body
+        payload = {
+            "result": "success",
+            "tickers": [
+                {
+                    "symbol": "PF_ETHUSD",
+                    "markPrice": 3500.0,
+                    "last": 3499.5,
+                    "indexPrice": 3500.1,
+                    "lastTime": "2026-06-23T11:59:30Z",
+                }
+            ],
+        }
+        return self.status, json.dumps(payload).encode("utf-8")
+
+
+def test_plan_only_collect_public_testnet_market_observation_rejected(tmp_path: Path) -> None:
+    mod = _load_adapter()
+    staging = _staging(tmp_path)
+    rc = mod.main(
+        _base_argv(staging)
+        + [
+            "--plan-only",
+            "--collect-public-testnet-market-observation",
+            "--step-interval-seconds",
+            "5.0",
+        ]
+    )
+    assert rc == mod.USAGE_EXIT
+
+
+def test_execute_collect_public_testnet_market_observation_forwards_closeout(
+    tmp_path: Path,
+) -> None:
+    mod = _load_adapter()
+    staging = _staging(tmp_path)
+    archive = _durable_archive(tmp_path)
+    fetcher = _AdapterFakeTickerFetcher()
+    clock = BoundedTestnetRuntimeClockV0(_now=datetime(2026, 6, 23, 12, 0, 0, tzinfo=timezone.utc))
+    rc = mod.main(
+        _base_argv(staging, archive)
+        + [
+            "--execute",
+            "--approval-record",
+            str(APPROVAL_FIXTURE),
+            "--no-strict-repo-clean",
+            "--collect-public-testnet-market-observation",
+            "--step-interval-seconds",
+            "5.0",
+            "--max-steps",
+            "1",
+        ],
+        subprocess_runner=_mock_execute_runner(staging),
+        prerequisite_checker=lambda _root: (True, ""),
+        repo_clean_checker=lambda _root: (True, ""),
+        public_ticker_fetcher=fetcher,
+        runtime_market_clock=clock,
+    )
+    assert rc == 0
+    assert fetcher.calls == 1
+    metadata = json.loads((staging / "RUN_METADATA.json").read_text(encoding="utf-8"))
+    assert metadata["market_input_bound"] is True
+    assert metadata["completion_path_wiring"]["ORDERS_TOTAL"] == 0
+
+
+def test_execute_collect_http_503_fail_closed(tmp_path: Path) -> None:
+    mod = _load_adapter()
+    staging = _staging(tmp_path)
+    archive = _durable_archive(tmp_path)
+    fetcher = _AdapterFakeTickerFetcher(status=503, body=b"")
+    clock = BoundedTestnetRuntimeClockV0(_now=datetime(2026, 6, 23, 12, 0, 0, tzinfo=timezone.utc))
+    rc = mod.main(
+        _base_argv(staging, archive)
+        + [
+            "--execute",
+            "--approval-record",
+            str(APPROVAL_FIXTURE),
+            "--no-strict-repo-clean",
+            "--collect-public-testnet-market-observation",
+            "--step-interval-seconds",
+            "5.0",
+            "--max-steps",
+            "1",
+        ],
+        subprocess_runner=_mock_execute_runner(staging),
+        prerequisite_checker=lambda _root: (True, ""),
+        repo_clean_checker=lambda _root: (True, ""),
+        public_ticker_fetcher=fetcher,
+        runtime_market_clock=clock,
+    )
+    assert rc == 0
+    assert fetcher.calls == 1
+    metadata = json.loads((staging / "RUN_METADATA.json").read_text(encoding="utf-8"))
+    assert metadata["market_input_bound"] is False
+    assert metadata["completion_path_wiring"]["MISSING_TESTNET_MARKET_INPUT_FAILS_CLOSED"] is True
+
+
+def test_ci_selector_runtime_market_observation_producer_five_file_diff_focused() -> None:
+    sel = _run_selector(*RUNTIME_PRODUCER_FILES)
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert (
+        sel["test_selection_reason"]
+        == "bounded_testnet_runtime_market_observation_producer_focused"
+    )
+    assert sel["tests_execute_full"] == "false"
+    assert sel["tests_execute_focused"] == "true"
+    targets = sorted(sel.get("focused_pytest_targets", "").split())
+    assert (
+        "tests/ops/test_bounded_testnet_runtime_market_observation_producer_v0.py::test_http_503_fails_closed_without_retry"
+        in targets
+    )
+    assert (
+        "tests/ops/test_run_testnet_bounded_observation_adapter_v0.py::test_execute_collect_public_testnet_market_observation_forwards_closeout"
+        in targets
+    )
