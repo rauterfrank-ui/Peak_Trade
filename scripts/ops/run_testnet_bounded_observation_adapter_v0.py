@@ -47,6 +47,13 @@ from src.ops.bounded_testnet_market_input_admission_wiring_v0 import (
     BoundedTestnetFuturesMarketObservationV0,
     resolve_testnet_completion_path_market_input,
 )
+from src.ops.bounded_testnet_runtime_market_observation_producer_v0 import (
+    CANONICAL_TESTNET_BASE_URL,
+    BoundedTestnetRuntimeClock,
+    PublicTestnetTickerFetcher,
+    collect_bounded_testnet_runtime_market_observation_v0,
+    default_public_testnet_ticker_fetcher,
+)
 from src.ops.wallclock_session_evidence_v0 import (
     WALLCLOCK_EVIDENCE_FILENAME,
     build_wallclock_evidence_from_manifest_fields,
@@ -158,6 +165,7 @@ class ExecuteContext:
 SubprocessRunner = Callable[[Sequence[str], Optional[Path], Optional[Path], Optional[Path]], int]
 RepoCleanChecker = Callable[[Path], tuple[bool, str]]
 PrerequisiteChecker = Callable[[Path], tuple[bool, str]]
+StepSleeper = Callable[[float], None]
 
 
 def repo_root_from_script() -> Path:
@@ -280,6 +288,31 @@ def _default_max_steps(duration_minutes: int, max_steps: int | None) -> int:
     if max_steps is not None:
         return max_steps
     return min(DEFAULT_MAX_STEPS, max(1, duration_minutes * 12))
+
+
+def collect_public_testnet_market_observation_for_execute(
+    *,
+    run_id: str,
+    max_steps: int,
+    step_interval_seconds: float,
+    fetcher: PublicTestnetTickerFetcher,
+    clock: BoundedTestnetRuntimeClock | None = None,
+    step_sleep: StepSleeper | None = None,
+    testnet_base_url: str = CANONICAL_TESTNET_BASE_URL,
+) -> BoundedTestnetFuturesMarketObservationV0 | None:
+    """Collect bounded public testnet ticker observations for execute closeout wiring."""
+    observation, _failure_class, _failure_detail = (
+        collect_bounded_testnet_runtime_market_observation_v0(
+            testnet_base_url=testnet_base_url,
+            source_run_id=run_id,
+            max_steps=max_steps,
+            fetcher=fetcher,
+            clock=clock,
+            step_sleep=step_sleep,
+            step_interval_seconds=step_interval_seconds,
+        )
+    )
+    return observation
 
 
 def _resolve_adapter_completion_path_market_input(
@@ -450,6 +483,16 @@ def validate_execute_preconditions(
         if not clean:
             issues.append(reason or "repository is not clean")
     issues.extend(validate_durable_closeout_invoke_cli_args(ctx.args))
+    if getattr(ctx.args, "collect_public_testnet_market_observation", False):
+        if not ctx.args.execute:
+            issues.append(
+                "--collect-public-testnet-market-observation requires --execute "
+                "(plan/staging-only remain network-disabled)"
+            )
+        if ctx.args.step_interval_seconds <= 0.0:
+            issues.append(
+                "--collect-public-testnet-market-observation requires --step-interval-seconds > 0"
+            )
     return issues
 
 
@@ -723,6 +766,14 @@ def build_arg_parser() -> argparse.ArgumentParser:
     parser.add_argument("--strict-repo-clean", action="store_true", default=True)
     parser.add_argument("--no-strict-repo-clean", action="store_false", dest="strict_repo_clean")
     parser.add_argument("--json", action="store_true")
+    parser.add_argument(
+        "--collect-public-testnet-market-observation",
+        action="store_true",
+        help=(
+            "Execute-only: collect bounded public testnet PF_ETHUSD ticker observations "
+            "via canonical runtime producer (default disabled; no automatic retry)."
+        ),
+    )
     add_bounded_adapter_durable_closeout_cli_args(parser)
     return parser
 
@@ -736,6 +787,9 @@ def main(
     prerequisite_checker: PrerequisiteChecker | None = None,
     environ: Mapping[str, str] | None = None,
     market_observation: BoundedTestnetFuturesMarketObservationV0 | None = None,
+    public_ticker_fetcher: PublicTestnetTickerFetcher | None = None,
+    runtime_market_clock: BoundedTestnetRuntimeClock | None = None,
+    step_sleep: StepSleeper | None = None,
 ) -> int:
     parser = build_arg_parser()
     try:
@@ -752,6 +806,12 @@ def main(
     if max_steps <= 0 or max_steps > MAX_STEPS_CAP:
         print(f"max-steps must be 1..{MAX_STEPS_CAP}", file=sys.stderr)
         return USAGE_EXIT
+    if args.collect_public_testnet_market_observation and not args.execute:
+        print(
+            "--collect-public-testnet-market-observation requires --execute",
+            file=sys.stderr,
+        )
+        return USAGE_EXIT
 
     repo_root = (args.repo_root or repo_root_from_script()).resolve()
     staging_root = args.staging_root.expanduser().resolve()
@@ -761,17 +821,6 @@ def main(
     )
 
     mode = "execute" if args.execute else "plan-only"
-    plan = build_plan(
-        mode=mode,
-        staging_root=staging_root,
-        archive_root=archive_root,
-        repo_root=repo_root,
-        duration_minutes=args.duration_minutes,
-        max_steps=max_steps,
-        step_interval_seconds=args.step_interval_seconds,
-        run_id=run_id,
-        market_observation=market_observation,
-    )
 
     if args.execute:
         ctx = ExecuteContext(
@@ -796,6 +845,29 @@ def main(
             for issue in issues:
                 print(issue, file=sys.stderr)
             return VALIDATION_EXIT
+        resolved_market_observation = market_observation
+        if args.collect_public_testnet_market_observation and resolved_market_observation is None:
+            fetcher = public_ticker_fetcher or default_public_testnet_ticker_fetcher()
+            resolved_market_observation = collect_public_testnet_market_observation_for_execute(
+                run_id=run_id,
+                max_steps=max_steps,
+                step_interval_seconds=args.step_interval_seconds,
+                fetcher=fetcher,
+                clock=runtime_market_clock,
+                step_sleep=step_sleep,
+            )
+        ctx.market_observation = resolved_market_observation
+        plan = build_plan(
+            mode=mode,
+            staging_root=staging_root,
+            archive_root=archive_root,
+            repo_root=repo_root,
+            duration_minutes=args.duration_minutes,
+            max_steps=max_steps,
+            step_interval_seconds=args.step_interval_seconds,
+            run_id=run_id,
+            market_observation=resolved_market_observation,
+        )
         return execute_plan(
             ctx,
             plan,
@@ -803,6 +875,17 @@ def main(
             durable_closeout_invoker=durable_closeout_invoker,
         )
 
+    plan = build_plan(
+        mode=mode,
+        staging_root=staging_root,
+        archive_root=archive_root,
+        repo_root=repo_root,
+        duration_minutes=args.duration_minutes,
+        max_steps=max_steps,
+        step_interval_seconds=args.step_interval_seconds,
+        run_id=run_id,
+        market_observation=market_observation,
+    )
     print(render_plan(plan, args.json))
     return 0
 
