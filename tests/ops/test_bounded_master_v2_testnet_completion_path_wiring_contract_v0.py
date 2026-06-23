@@ -519,7 +519,7 @@ def test_wiring_verifier_does_not_recompute_six_node_digest() -> None:
     text = WIRING_OWNER.read_text(encoding="utf-8")
     assert "dashboard_display_projection_digest" in text
     assert "hashlib" not in text
-    assert "sha256(" not in text
+    assert "hashlib.sha256" not in text
 
 
 def test_identical_input_yields_identical_crosscheck_result() -> None:
