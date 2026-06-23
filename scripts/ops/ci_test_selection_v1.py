@@ -36,6 +36,7 @@ FOCUSED_CATEGORIES = frozenset(
         "tiny_order_focused",
         "reconciliation_primary_evidence_focused",
         "master_v2_binding_contract_focused",
+        "offline_master_v2_double_play_scenario_replay_focused",
         "bounded_network_testnet_preflight_focused",
         "runtime_wallclock_evidence_emitter_focused",
         "testnet_wallclock_duration_evidence_focused",
@@ -158,6 +159,42 @@ MASTER_V2_BINDING_CONTRACT_SCOPED_PATHS = frozenset(
         MASTER_V2_BINDING_CONTRACT_GRAPH_TEST_OWNER,
         MASTER_V2_BINDING_CONTRACT_TEST_OWNER,
     }
+)
+
+OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_OWNER_PATH = (
+    "src/trading/master_v2/offline_double_play_scenario_replay_v0.py"
+)
+OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_TRADING_TEST_OWNER = "tests/trading/master_v2/test_offline_master_v2_double_play_scenario_replay_binding_contract_v0.py"
+OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_OPS_TEST_OWNER = (
+    "tests/ops/test_offline_master_v2_double_play_scenario_replay_completion_binding_contract_v0.py"
+)
+OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_CI_POLICY_PATHS = frozenset(
+    {
+        "scripts/ops/ci_test_selection_v1.py",
+        "config/ci/file_category_mapping.yaml",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    }
+)
+OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_SCOPED_PATHS = frozenset(
+    {
+        OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_OWNER_PATH,
+        OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_TRADING_TEST_OWNER,
+        OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_OPS_TEST_OWNER,
+        *OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_CI_POLICY_PATHS,
+    }
+)
+OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_CATEGORIZE_PATHS = frozenset(
+    {
+        OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_OWNER_PATH,
+        OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_TRADING_TEST_OWNER,
+        OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_OPS_TEST_OWNER,
+        "scripts/ops/ci_test_selection_v1.py",
+    }
+)
+CANONICAL_OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_FOCUSED_TESTS: tuple[str, ...] = (
+    OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_TRADING_TEST_OWNER,
+    OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_OPS_TEST_OWNER,
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py",
 )
 
 MASTER_V2_BINDING_CONTRACT_FOCUSED_TARGETS: tuple[str, ...] = (
@@ -1313,6 +1350,47 @@ def _try_master_v2_binding_contract_focused(files: list[str]) -> SelectionResult
     )
 
 
+def _is_offline_master_v2_double_play_scenario_replay_scope(files: list[str]) -> bool:
+    if not files:
+        return False
+    required = {
+        OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_OWNER_PATH,
+        OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_TRADING_TEST_OWNER,
+        OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_OPS_TEST_OWNER,
+    }
+    files_set = set(files)
+    if not required.issubset(files_set):
+        return False
+    for path in files:
+        if path not in OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_SCOPED_PATHS:
+            return False
+    return True
+
+
+def _offline_master_v2_double_play_scenario_replay_focused_targets() -> tuple[str, ...]:
+    return tuple(
+        path
+        for path in CANONICAL_OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_FOCUSED_TESTS
+        if _repo_path_exists(path)
+    )
+
+
+def _try_offline_master_v2_double_play_scenario_replay_focused(
+    files: list[str],
+) -> SelectionResult | None:
+    if not _is_offline_master_v2_double_play_scenario_replay_scope(files):
+        return None
+    targets = _offline_master_v2_double_play_scenario_replay_focused_targets()
+    if not targets:
+        return None
+    return SelectionResult(
+        "FOCUSED",
+        "offline_master_v2_double_play_scenario_replay_focused",
+        targets,
+        ("trading.master_v2.offline_double_play_scenario_replay_v0",),
+    )
+
+
 def _try_durable_completion_focused(files: list[str]) -> SelectionResult | None:
     if not files:
         return None
@@ -1367,6 +1445,8 @@ def _try_market_dashboard_focused(files: list[str]) -> SelectionResult | None:
 
 def categorize(path: str) -> str:
     p = PurePosixPath(path).as_posix()
+    if p in OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_CATEGORIZE_PATHS:
+        return "offline_master_v2_double_play_scenario_replay_focused"
     if p in DURABLE_COMPLETION_CI_POLICY_PATHS:
         return "durable_completion_focused"
     if p == MASTER_V2_BINDING_CONTRACT_TEST_OWNER:
@@ -1641,6 +1721,12 @@ def resolve_selection(
     master_v2_binding = _try_master_v2_binding_contract_focused(normalized)
     if master_v2_binding is not None:
         return master_v2_binding
+
+    offline_master_v2_replay = _try_offline_master_v2_double_play_scenario_replay_focused(
+        normalized
+    )
+    if offline_master_v2_replay is not None:
+        return offline_master_v2_replay
 
     durable_completion = _try_durable_completion_focused(normalized)
     if durable_completion is not None:
