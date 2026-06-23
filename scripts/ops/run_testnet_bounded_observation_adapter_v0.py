@@ -152,6 +152,7 @@ class ExecuteContext:
     review_dir: Path
     run_id: str
     approval_fields: Mapping[str, str] = field(default_factory=dict)
+    market_observation: BoundedTestnetFuturesMarketObservationV0 | None = None
 
 
 SubprocessRunner = Callable[[Sequence[str], Optional[Path], Optional[Path], Optional[Path]], int]
@@ -552,6 +553,7 @@ def _write_closeout_artifacts(
     review_payload: Mapping[str, Any],
     *,
     wallclock_evidence: Mapping[str, Any] | None = None,
+    market_observation: BoundedTestnetFuturesMarketObservationV0 | None = None,
 ) -> None:
     now = datetime.now(timezone.utc).isoformat()
     run_metadata: dict[str, Any] = {
@@ -564,8 +566,12 @@ def _write_closeout_artifacts(
         "review_verdict": review_payload.get("verdict"),
         "utc": now,
     }
-    wiring_admission = evaluate_bounded_master_v2_testnet_completion_path_wiring(None)
+    market_input, _producer_fail_reasons = _resolve_adapter_completion_path_market_input(
+        market_observation
+    )
+    wiring_admission = evaluate_bounded_master_v2_testnet_completion_path_wiring(market_input)
     run_metadata["completion_path_wiring"] = wiring_admission.to_machine_lines()
+    run_metadata["market_input_bound"] = market_input is not None
     if wallclock_evidence is not None:
         run_metadata["wallclock_evidence_filename"] = WALLCLOCK_EVIDENCE_FILENAME
         run_metadata["wallclock_duration_proven"] = wallclock_evidence.get("duration_proven")
@@ -668,6 +674,7 @@ def execute_plan(
         archive_dest,
         review_payload,
         wallclock_evidence=wallclock_evidence,
+        market_observation=ctx.market_observation,
     )
     (ctx.staging_root / "ARCHIVE_POINTER.md").write_text(
         f"ARCHIVE_PATH={archive_dest}\nARCHIVE_COPY_COMPLETE=true\n",
@@ -728,6 +735,7 @@ def main(
     repo_clean_checker: RepoCleanChecker | None = None,
     prerequisite_checker: PrerequisiteChecker | None = None,
     environ: Mapping[str, str] | None = None,
+    market_observation: BoundedTestnetFuturesMarketObservationV0 | None = None,
 ) -> int:
     parser = build_arg_parser()
     try:
@@ -762,6 +770,7 @@ def main(
         max_steps=max_steps,
         step_interval_seconds=args.step_interval_seconds,
         run_id=run_id,
+        market_observation=market_observation,
     )
 
     if args.execute:
@@ -775,6 +784,7 @@ def main(
             plan_dir=staging_root / "plan",
             review_dir=staging_root / "review",
             run_id=run_id,
+            market_observation=market_observation,
         )
         issues = validate_execute_preconditions(
             ctx,
