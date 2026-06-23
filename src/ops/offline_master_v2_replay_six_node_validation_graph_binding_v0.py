@@ -59,6 +59,22 @@ class OfflineReplaySixNodeValidationGraphBindingResultV0:
     cancels_total: int
     fills_total: int
     positions_opened_total: int
+    dashboard_display_projection_digest: str | None = None
+
+    def to_machine_lines(self) -> dict[str, str | bool | int]:
+        return {
+            "OFFLINE_REPLAY_SIX_NODE_VALIDATION_GRAPH_BINDING_PASS": self.binding_pass,
+            "OFFLINE_REPLAY_SIX_NODE_VALIDATION_GRAPH_REPLAY_PASS": self.replay_pass,
+            "OFFLINE_REPLAY_SIX_NODE_VALIDATION_GRAPH_INTEGRATION_PASS": self.integration_pass,
+            "OFFLINE_REPLAY_SIX_NODE_VALIDATION_GRAPH_SIX_NODE_GRAPH_PASS": (
+                self.six_node_graph_pass
+            ),
+            "ORDERS_TOTAL": self.orders_total,
+            "CANCELS_TOTAL": self.cancels_total,
+            "FILLS_TOTAL": self.fills_total,
+            "POSITIONS_OPENED_TOTAL": self.positions_opened_total,
+            "DASHBOARD_DISPLAY_PROJECTION_DIGEST": self.dashboard_display_projection_digest or "",
+        }
 
 
 def build_completion_integration_input_from_offline_replay_result(
@@ -110,6 +126,42 @@ def build_validation_context_from_completion_integration_input(
     )
 
 
+def verify_dashboard_display_projection_digest_six_node_evidence(
+    replay_result: OfflineDoublePlayScenarioReplayResultV0,
+    integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
+) -> tuple[str | None, list[str]]:
+    """Fail-closed verification that replay, binding, and completion chain share one digest."""
+    fail_reasons: list[str] = []
+    prefix = "dashboard_display_projection_digest"
+    replay_digest = replay_result.dashboard_display_projection_digest
+    binding = replay_result.master_v2_decision_state_digest_binding
+    chain = integration_input.completion_proof_chain
+
+    if not replay_digest:
+        fail_reasons.append(f"{prefix} missing from replay result")
+        return None, fail_reasons
+
+    binding_digest = binding.dashboard_display_projection_digest if binding else None
+    chain_digest = (
+        chain.completion_referenced_dashboard_display_projection_digest if chain else None
+    )
+
+    if not binding_digest:
+        fail_reasons.append(f"{prefix} missing from decision state binding")
+    if not chain_digest:
+        fail_reasons.append(f"{prefix} missing from completion proof chain")
+    if binding_digest and replay_digest != binding_digest:
+        fail_reasons.append(f"{prefix} drift: replay vs decision state binding")
+    if chain_digest and binding_digest and chain_digest != binding_digest:
+        fail_reasons.append(f"{prefix} drift: completion proof chain vs decision state binding")
+    if chain_digest and replay_digest != chain_digest:
+        fail_reasons.append(f"{prefix} drift: replay vs completion proof chain")
+
+    if fail_reasons:
+        return None, fail_reasons
+    return chain_digest, []
+
+
 def prove_offline_replay_six_node_validation_graph_binding_v0(
     replay_input: OfflineDoublePlayScenarioReplayInputV0 | None = None,
 ) -> OfflineReplaySixNodeValidationGraphBindingResultV0:
@@ -132,6 +184,15 @@ def prove_offline_replay_six_node_validation_graph_binding_v0(
         )
 
     integration_input = build_completion_integration_input_from_offline_replay_result(replay_result)
+    display_digest, display_digest_reasons = (
+        verify_dashboard_display_projection_digest_six_node_evidence(
+            replay_result,
+            integration_input,
+        )
+    )
+    if display_digest_reasons:
+        fail_reasons.extend(display_digest_reasons)
+
     integration_result: dict[str, Any] = (
         evaluate_durable_run_primary_evidence_completion_integration(integration_input)
     )
@@ -162,6 +223,7 @@ def prove_offline_replay_six_node_validation_graph_binding_v0(
         completed_validators=completed,
         fail_reasons=fail_reasons,
         binding_pass=binding_pass,
+        dashboard_display_projection_digest=display_digest,
     )
 
 
@@ -173,6 +235,7 @@ def _binding_result(
     completed_validators: tuple[str, ...],
     fail_reasons: list[str],
     binding_pass: bool | None = None,
+    dashboard_display_projection_digest: str | None = None,
 ) -> OfflineReplaySixNodeValidationGraphBindingResultV0:
     summary = replay_result.summary
     resolved_binding_pass = (
@@ -195,4 +258,5 @@ def _binding_result(
         cancels_total=summary.cancels_total,
         fills_total=summary.fills_total,
         positions_opened_total=summary.positions_opened_total,
+        dashboard_display_projection_digest=dashboard_display_projection_digest,
     )
