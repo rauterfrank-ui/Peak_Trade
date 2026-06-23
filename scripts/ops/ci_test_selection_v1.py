@@ -107,15 +107,27 @@ DURABLE_COMPLETION_CI_WORKFLOW_REBUNDLE_PATHS = frozenset(
     }
 )
 
+DURABLE_COMPLETION_VALIDATION_GRAPH_TEST_OWNER = (
+    "tests/ops/test_durable_completion_validation_graph_v1.py"
+)
+DURABLE_COMPLETION_INTEGRATION_TEST_OWNER = "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py"
+DURABLE_COMPLETION_GRAPH_WIRING_PATH = "src/ops/durable_completion_validation/graph.py"
+DURABLE_COMPLETION_PUBLIC_API_PATH = "src/ops/durable_completion_validation/__init__.py"
+
 CANONICAL_DURABLE_COMPLETION_FOCUSED_TESTS: tuple[str, ...] = (
-    "tests/ops/test_durable_completion_validation_graph_v1.py",
-    "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
+    DURABLE_COMPLETION_VALIDATION_GRAPH_TEST_OWNER,
+    DURABLE_COMPLETION_INTEGRATION_TEST_OWNER,
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+)
+
+CANONICAL_DURABLE_COMPLETION_VALIDATION_GRAPH_FOCUSED_TESTS: tuple[str, ...] = (
+    DURABLE_COMPLETION_VALIDATION_GRAPH_TEST_OWNER,
     "tests/ci/test_ci_diff_aware_test_selection_v1.py",
 )
 
 REQUIRED_DURABLE_COMPLETION_TEST_OWNERS: tuple[str, ...] = (
-    "tests/ops/test_durable_completion_validation_graph_v1.py",
-    "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
+    DURABLE_COMPLETION_VALIDATION_GRAPH_TEST_OWNER,
+    DURABLE_COMPLETION_INTEGRATION_TEST_OWNER,
 )
 
 DURABLE_COMPLETION_FULL_REFACTOR_SRC_PATHS = frozenset(
@@ -133,10 +145,7 @@ DURABLE_COMPLETION_VALIDATOR_REBINDING_TEST_PATHS = frozenset(
     }
 )
 
-DURABLE_COMPLETION_COMPLETION_INTEGRATION_TEST_OWNER = "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py"
-DURABLE_COMPLETION_VALIDATION_GRAPH_TEST_OWNER = (
-    "tests/ops/test_durable_completion_validation_graph_v1.py"
-)
+DURABLE_COMPLETION_COMPLETION_INTEGRATION_TEST_OWNER = DURABLE_COMPLETION_INTEGRATION_TEST_OWNER
 
 DURABLE_COMPLETION_WALLCLOCK_BINDING_REBINDING_TEST_PATHS = frozenset(
     {
@@ -816,10 +825,36 @@ def _is_durable_completion_scoped_path(path: str) -> bool:
     if path.startswith("src/ops/durable_completion_validation/") and path.endswith(".py"):
         return True
     if path in {
-        "tests/ops/test_durable_completion_validation_graph_v1.py",
-        "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
+        DURABLE_COMPLETION_VALIDATION_GRAPH_TEST_OWNER,
+        DURABLE_COMPLETION_INTEGRATION_TEST_OWNER,
     }:
         return True
+    return False
+
+
+def _is_durable_completion_validation_graph_only_scoped_path(path: str) -> bool:
+    if path == DURABLE_COMPLETION_VALIDATION_GRAPH_TEST_OWNER:
+        return True
+    if not path.startswith("src/ops/durable_completion_validation/"):
+        return False
+    if path in {DURABLE_COMPLETION_GRAPH_WIRING_PATH, DURABLE_COMPLETION_PUBLIC_API_PATH}:
+        return False
+    return path.endswith(".py")
+
+
+def _requires_durable_completion_integration_test_owner(files: list[str]) -> bool:
+    for path in files:
+        if path in {
+            DURABLE_COMPLETION_FACADE_PATH,
+            DURABLE_COMPLETION_INTEGRATION_TEST_OWNER,
+            DURABLE_COMPLETION_GRAPH_WIRING_PATH,
+            DURABLE_COMPLETION_PUBLIC_API_PATH,
+        }:
+            return True
+        if _is_durable_completion_scoped_path(
+            path
+        ) and not _is_durable_completion_validation_graph_only_scoped_path(path):
+            return True
     return False
 
 
@@ -925,22 +960,19 @@ def _is_durable_completion_validator_rebinding_scope(files: list[str]) -> bool:
 
 
 def _durable_completion_focused_targets(files: list[str] | None = None) -> tuple[str, ...]:
-    graph_owner = "tests/ops/test_durable_completion_validation_graph_v1.py"
+    graph_owner = DURABLE_COMPLETION_VALIDATION_GRAPH_TEST_OWNER
     if not _repo_path_exists(graph_owner):
         return ()
     if files and _is_durable_completion_wallclock_binding_rebinding_scope(files):
         return _durable_completion_wallclock_binding_focused_targets(files)
-    if files and _is_durable_completion_validator_rebinding_scope(files):
-        targets: list[str] = [graph_owner]
-        if files and any(
-            path in DURABLE_COMPLETION_CI_POLICY_PATHS
-            or path in DURABLE_COMPLETION_CI_WORKFLOW_REBUNDLE_PATHS
-            for path in files
-        ):
-            ci_owner = "tests/ci/test_ci_diff_aware_test_selection_v1.py"
-            if _repo_path_exists(ci_owner):
-                targets.append(ci_owner)
-        return tuple(sorted(set(targets)))
+    if files and not _requires_durable_completion_integration_test_owner(files):
+        validation_targets: list[str] = []
+        for path in CANONICAL_DURABLE_COMPLETION_VALIDATION_GRAPH_FOCUSED_TESTS:
+            if _repo_path_exists(path):
+                validation_targets.append(path)
+        if graph_owner not in validation_targets:
+            return ()
+        return tuple(sorted(validation_targets))
     for path in REQUIRED_DURABLE_COMPLETION_TEST_OWNERS:
         if not _repo_path_exists(path):
             return ()
@@ -1918,19 +1950,24 @@ def _try_durable_completion_focused(files: list[str]) -> SelectionResult | None:
     targets = _durable_completion_focused_targets(files)
     if not targets:
         return None
-    modules: tuple[str, ...] = ("src.ops.durable_completion_validation",)
+    integration_required = _requires_durable_completion_integration_test_owner(files)
     if _is_durable_completion_wallclock_binding_rebinding_scope(files):
-        modules = (
+        modules: tuple[str, ...] = (
             "src.ops.bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0",
         )
-    elif not _is_durable_completion_validator_rebinding_scope(files):
+        reason = "durable_completion_focused"
+    elif integration_required:
         modules = (
             "src.ops.bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0",
             "src.ops.durable_completion_validation",
         )
+        reason = "durable_completion_focused"
+    else:
+        modules = ("src.ops.durable_completion_validation",)
+        reason = "durable_completion_validation_graph_focused"
     return SelectionResult(
         "FOCUSED",
-        "durable_completion_focused",
+        reason,
         targets,
         modules,
     )
