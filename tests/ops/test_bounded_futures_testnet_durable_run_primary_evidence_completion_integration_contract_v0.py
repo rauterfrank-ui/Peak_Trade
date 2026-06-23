@@ -412,6 +412,55 @@ def test_global_safety_flags_remain_blocked() -> None:
     assert GLOBAL_RUN_COMPLETION_READINESS is False
 
 
+def test_completion_integration_input_digest_deterministic_for_identical_inputs() -> None:
+    left = default_minimal_completion_integration_input(source_revision=VALID_COMMIT_SHA)
+    right = default_minimal_completion_integration_input(source_revision=VALID_COMMIT_SHA)
+    assert compute_completion_integration_input_digest(
+        left
+    ) == compute_completion_integration_input_digest(right)
+
+
+def test_completion_integration_input_digest_sensitive_to_pe21_integration_input() -> None:
+    base = default_minimal_completion_integration_input(source_revision=VALID_COMMIT_SHA)
+    pe21_input = replace(
+        base.pe21_integration_input,
+        source_revision="1234567890123456789012345678901234567890",
+    )
+    variant = replace(base, pe21_integration_input=pe21_input)
+    assert compute_completion_integration_input_digest(
+        base
+    ) != compute_completion_integration_input_digest(variant)
+
+
+def test_completion_integration_input_digest_sensitive_to_pe21_reconciliation_binding() -> None:
+    base = default_minimal_completion_integration_input()
+    recon = base.pe21_integration_input.reconciliation_binding
+    bad_recon = replace(recon, reconciled=not recon.reconciled)
+    pe21_input = replace(base.pe21_integration_input, reconciliation_binding=bad_recon)
+    variant = replace(base, pe21_integration_input=pe21_input)
+    assert compute_completion_integration_input_digest(
+        base
+    ) != compute_completion_integration_input_digest(variant)
+
+
+def test_completion_integration_input_digest_still_sensitive_to_pe31_integration_input() -> None:
+    base = default_minimal_completion_integration_input()
+    pe31_input = replace(
+        base.pe31_reconciliation_review_integration_input,
+        source_revision="1234567890123456789012345678901234567890",
+    )
+    variant = replace(base, pe31_reconciliation_review_integration_input=pe31_input)
+    assert compute_completion_integration_input_digest(
+        base
+    ) != compute_completion_integration_input_digest(variant)
+
+
+def test_completion_integration_input_digest_includes_pe21_integration_input_digest_field() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    payload = serialize_completion_integration_input_canonical(integration_input)
+    assert '"pe21_integration_input_digest"' in payload
+
+
 def test_deterministic_identical_inputs_same_payload_and_digest() -> None:
     left = default_minimal_completion_integration_input(source_revision=VALID_COMMIT_SHA)
     right = default_minimal_completion_integration_input(source_revision=VALID_COMMIT_SHA)
