@@ -43,7 +43,7 @@ def test_deterministic_identical_output() -> None:
     b = _run_default()
     assert a.replay_pass is b.replay_pass
     assert len(a.tick_records) == len(b.tick_records)
-    for left, right in zip(a.tick_records, b.tick_records, strict=True):
+    for left, right in zip(a.tick_records, b.tick_records):
         assert left.master_v2_decision_digest == right.master_v2_decision_digest
         assert left.bull_layer_state_digest == right.bull_layer_state_digest
         assert left.execution_intent_digest == right.execution_intent_digest
