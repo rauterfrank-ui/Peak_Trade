@@ -51,10 +51,14 @@ FOCUSED_CATEGORIES = frozenset(
 # Mapping changes always force FULL (never self-FOCUSED).
 CI_MAPPING_FULL_PATHS = frozenset({"config/ci/file_category_mapping.yaml"})
 
-# Bounded canonical CI bootstrap selector + contract-test owner (self-FOCUSED).
+# Bounded canonical CI bootstrap selector + partition helper + contract-test owner (self-FOCUSED).
+DURABLE_COMPLETION_INTEGRATION_PARTITIONS_HELPER = (
+    "scripts/ops/durable_completion_integration_partitions_v0.py"
+)
 CI_BOOTSTRAP_FOCUSED_PATHS = frozenset(
     {
         "scripts/ops/ci_test_selection_v1.py",
+        DURABLE_COMPLETION_INTEGRATION_PARTITIONS_HELPER,
         "tests/ci/test_ci_diff_aware_test_selection_v1.py",
     }
 )

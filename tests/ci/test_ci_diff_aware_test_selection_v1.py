@@ -358,6 +358,79 @@ def test_selector_ci_bootstrap_contract_test_only_focused() -> None:
     assert sel["test_selection_reason"] == "ci_bootstrap_focused"
 
 
+GLB019_PARTITION_SELECTOR_BOOTSTRAP_FILES = (
+    "scripts/ops/ci_test_selection_v1.py",
+    "scripts/ops/durable_completion_integration_partitions_v0.py",
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+)
+_PARTITIONS_HELPER = GLB019_PARTITION_SELECTOR_BOOTSTRAP_FILES[1]
+
+
+def test_selector_glb019_partition_bootstrap_three_file_diff_focused() -> None:
+    sel = _run_selector(*GLB019_PARTITION_SELECTOR_BOOTSTRAP_FILES)
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "ci_bootstrap_focused"
+    assert _targets(sel) == ["tests/ci/test_ci_diff_aware_test_selection_v1.py"]
+    assert sel["tests_execute_full"] == "false"
+    assert (
+        "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py"
+        not in _targets(sel)
+    )
+
+
+def test_selector_glb019_partition_bootstrap_selector_plus_helper_focused() -> None:
+    sel = _run_selector(
+        GLB019_PARTITION_SELECTOR_BOOTSTRAP_FILES[0],
+        GLB019_PARTITION_SELECTOR_BOOTSTRAP_FILES[1],
+    )
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "ci_bootstrap_focused"
+
+
+def test_selector_glb019_partition_bootstrap_helper_plus_contract_focused() -> None:
+    sel = _run_selector(
+        GLB019_PARTITION_SELECTOR_BOOTSTRAP_FILES[1],
+        GLB019_PARTITION_SELECTOR_BOOTSTRAP_FILES[2],
+    )
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "ci_bootstrap_focused"
+
+
+def test_selector_glb019_partition_bootstrap_helper_only_focused() -> None:
+    sel = _run_selector(_PARTITIONS_HELPER)
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "ci_bootstrap_focused"
+
+
+def test_selector_glb019_partition_bootstrap_plus_workflow_full() -> None:
+    sel = _run_selector(
+        *GLB019_PARTITION_SELECTOR_BOOTSTRAP_FILES,
+        ".github/workflows/ci.yml",
+    )
+    assert sel["test_selection_reason"] != "ci_bootstrap_focused"
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "ci_infra_focused"
+    assert sel["tests_execute_full"] == "false"
+
+
+def test_selector_glb019_partition_bootstrap_plus_unknown_ci_script_full() -> None:
+    sel = _run_selector(
+        *GLB019_PARTITION_SELECTOR_BOOTSTRAP_FILES,
+        "scripts/ops/ci_unknown_bootstrap_probe_v0.py",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_reason"] == "ci_bootstrap_mixed_diff_requires_full"
+
+
+def test_selector_glb019_partition_bootstrap_plus_central_prod_full() -> None:
+    sel = _run_selector(
+        *GLB019_PARTITION_SELECTOR_BOOTSTRAP_FILES,
+        "src/ops/bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_reason"] == "durable_completion_foreign_path_requires_full"
+
+
 def test_selector_ci_bootstrap_deterministic_regardless_of_file_order() -> None:
     files_a = (
         "tests/ci/test_ci_diff_aware_test_selection_v1.py",
