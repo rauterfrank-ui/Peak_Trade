@@ -667,13 +667,124 @@ def test_selector_pe60_completion_chain_delegation_rebinding_bounded_focused_tar
     assert sel["tests_execute_no_op"] == "false"
 
 
+PR4512_MASTER_V2_BINDING_CONTRACT_FILES = (
+    "src/ops/bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
+    "src/ops/durable_completion_validation/validators/completion_chain.py",
+    "tests/ops/test_durable_completion_validation_graph_v1.py",
+    "tests/ops/test_master_v2_decision_digest_completion_chain_binding_contract_v0.py",
+)
+
+_MASTER_V2_BINDING_OWNER = (
+    "tests/ops/test_master_v2_decision_digest_completion_chain_binding_contract_v0.py"
+)
+_COMPLETION_OWNER = "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py"
+_GRAPH_OWNER = "tests/ops/test_durable_completion_validation_graph_v1.py"
+
+
+def test_selector_pr4512_master_v2_binding_contract_four_file_diff_focused() -> None:
+    sel = _run_selector(*PR4512_MASTER_V2_BINDING_CONTRACT_FILES)
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "durable_completion_master_v2_binding_contract_focused"
+    assert sel["tests_execute_full"] == "false"
+    assert sel["tests_execute_focused"] == "true"
+    assert sel["tests_execute_no_op"] == "false"
+    targets = _targets(sel)
+    assert all("::test_" in target for target in targets)
+    assert _COMPLETION_OWNER not in targets
+    assert _MASTER_V2_BINDING_OWNER not in targets
+    assert _GRAPH_OWNER not in targets
+    assert f"{_MASTER_V2_BINDING_OWNER}::test_six_node_validation_graph_unchanged" in targets
+    assert f"{_GRAPH_OWNER}::test_graph_completion_chain_validator_composes_binding" in targets
+    assert len(targets) >= 16
+    modules = _modules(sel)
+    assert (
+        "src.ops.bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0"
+        in modules
+    )
+    assert "src.ops.durable_completion_validation" in modules
+
+
+def test_selector_master_v2_binding_contract_test_plus_production_owners_focused() -> None:
+    sel = _run_selector(
+        "src/ops/bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
+        "src/ops/durable_completion_validation/validators/completion_chain.py",
+        _MASTER_V2_BINDING_OWNER,
+    )
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "durable_completion_master_v2_binding_contract_focused"
+    assert any("::test_" in target for target in _targets(sel))
+
+
+def test_selector_master_v2_binding_unknown_validator_escalates_full() -> None:
+    sel = _run_selector(
+        *PR4512_MASTER_V2_BINDING_CONTRACT_FILES,
+        "src/ops/durable_completion_validation/validators/reconciliation.py",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_reason"] == "durable_completion_foreign_path_requires_full"
+
+
+def test_selector_master_v2_binding_other_validator_only_escalates_full() -> None:
+    sel = _run_selector(
+        "src/ops/bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
+        "src/ops/durable_completion_validation/validators/recovery.py",
+        "tests/ops/test_durable_completion_validation_graph_v1.py",
+        _MASTER_V2_BINDING_OWNER,
+    )
+    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_reason"] == "durable_completion_foreign_path_requires_full"
+
+
+def test_selector_master_v2_binding_missing_contract_test_owner_escalates_full() -> None:
+    sel = _run_selector(
+        "src/ops/bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
+        "src/ops/durable_completion_validation/validators/completion_chain.py",
+        "tests/ops/test_durable_completion_validation_graph_v1.py",
+    )
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "durable_completion_focused"
+
+
+def test_selector_master_v2_binding_selector_self_change_escalates_full() -> None:
+    sel = _run_selector(
+        *PR4512_MASTER_V2_BINDING_CONTRACT_FILES,
+        "scripts/ops/ci_test_selection_v1.py",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_reason"] == "durable_completion_foreign_path_requires_full"
+
+
+def test_selector_master_v2_binding_dependency_change_escalates_full() -> None:
+    sel = _run_selector(*PR4512_MASTER_V2_BINDING_CONTRACT_FILES, "requirements.txt")
+    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_reason"] in {
+        "category_dependencies_requires_full",
+        "durable_completion_foreign_path_requires_full",
+    }
+
+
+def test_selector_master_v2_binding_execution_logic_escalates_full() -> None:
+    sel = _run_selector(
+        *PR4512_MASTER_V2_BINDING_CONTRACT_FILES,
+        "src/ops/bounded_futures_testnet_risk_killswitch_lifecycle_integration_contract_v0.py",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_reason"] == "durable_completion_foreign_path_requires_full"
+
+
+def test_selector_master_v2_binding_heterogeneous_foreign_src_escalates_full() -> None:
+    sel = _run_selector(
+        *PR4512_MASTER_V2_BINDING_CONTRACT_FILES,
+        "src/ops/durable_completion_validation/graph.py",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_reason"] == "durable_completion_foreign_path_requires_full"
+
+
 PR4504_DURABLE_COMPLETION_WALLCLOCK_BINDING_FILES = (
     "src/ops/bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
     "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
 )
-
-_COMPLETION_OWNER = "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py"
-_GRAPH_OWNER = "tests/ops/test_durable_completion_validation_graph_v1.py"
 
 
 def test_selector_pr4504_wallclock_binding_diff_narrow_focused() -> None:

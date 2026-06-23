@@ -35,6 +35,7 @@ FOCUSED_CATEGORIES = frozenset(
         "risk_killswitch_focused",
         "tiny_order_focused",
         "reconciliation_primary_evidence_focused",
+        "master_v2_binding_contract_focused",
         "bounded_network_testnet_preflight_focused",
         "runtime_wallclock_evidence_emitter_focused",
         "testnet_wallclock_duration_evidence_focused",
@@ -138,6 +139,45 @@ DURABLE_COMPLETION_WALLCLOCK_BINDING_REBINDING_TEST_PATHS = frozenset(
         DURABLE_COMPLETION_FACADE_PATH,
         DURABLE_COMPLETION_COMPLETION_INTEGRATION_TEST_OWNER,
     }
+)
+
+MASTER_V2_BINDING_CONTRACT_TEST_OWNER = (
+    "tests/ops/test_master_v2_decision_digest_completion_chain_binding_contract_v0.py"
+)
+MASTER_V2_BINDING_CONTRACT_COMPLETION_CHAIN_VALIDATOR = (
+    "src/ops/durable_completion_validation/validators/completion_chain.py"
+)
+MASTER_V2_BINDING_CONTRACT_GRAPH_TEST_OWNER = (
+    "tests/ops/test_durable_completion_validation_graph_v1.py"
+)
+
+MASTER_V2_BINDING_CONTRACT_SCOPED_PATHS = frozenset(
+    {
+        DURABLE_COMPLETION_FACADE_PATH,
+        MASTER_V2_BINDING_CONTRACT_COMPLETION_CHAIN_VALIDATOR,
+        MASTER_V2_BINDING_CONTRACT_GRAPH_TEST_OWNER,
+        MASTER_V2_BINDING_CONTRACT_TEST_OWNER,
+    }
+)
+
+MASTER_V2_BINDING_CONTRACT_FOCUSED_TARGETS: tuple[str, ...] = (
+    f"{MASTER_V2_BINDING_CONTRACT_TEST_OWNER}::test_legacy_ops_only_reports_master_v2_binding_not_present",
+    f"{MASTER_V2_BINDING_CONTRACT_TEST_OWNER}::test_complete_master_v2_binding_accepted",
+    f"{MASTER_V2_BINDING_CONTRACT_TEST_OWNER}::test_master_v2_fields_bound_through_integration_and_validator",
+    f"{MASTER_V2_BINDING_CONTRACT_TEST_OWNER}::test_missing_single_field_when_binding_present_fail_closed",
+    f"{MASTER_V2_BINDING_CONTRACT_TEST_OWNER}::test_invalid_digest_format_fail_closed",
+    f"{MASTER_V2_BINDING_CONTRACT_TEST_OWNER}::test_digest_drift_fail_closed",
+    f"{MASTER_V2_BINDING_CONTRACT_TEST_OWNER}::test_decision_id_drift_fail_closed",
+    f"{MASTER_V2_BINDING_CONTRACT_TEST_OWNER}::test_selected_future_drift_fail_closed",
+    f"{MASTER_V2_BINDING_CONTRACT_TEST_OWNER}::test_owner_drift_fail_closed",
+    f"{MASTER_V2_BINDING_CONTRACT_TEST_OWNER}::test_partial_chain_reference_fail_closed",
+    f"{MASTER_V2_BINDING_CONTRACT_TEST_OWNER}::test_binding_presence_does_not_imply_trading_logic_executed",
+    f"{MASTER_V2_BINDING_CONTRACT_TEST_OWNER}::test_six_node_validation_graph_unchanged",
+    f"{MASTER_V2_BINDING_CONTRACT_GRAPH_TEST_OWNER}::test_graph_is_cycle_free",
+    f"{MASTER_V2_BINDING_CONTRACT_GRAPH_TEST_OWNER}::test_graph_explicit_order_matches_dependencies",
+    f"{MASTER_V2_BINDING_CONTRACT_GRAPH_TEST_OWNER}::test_graph_has_single_wallclock_validator_node",
+    f"{MASTER_V2_BINDING_CONTRACT_GRAPH_TEST_OWNER}::test_graph_completion_chain_validator_composes_binding",
+    f"{MASTER_V2_BINDING_CONTRACT_GRAPH_TEST_OWNER}::test_legacy_ops_only_completion_chain_master_v2_binding_not_present",
 )
 
 _PYTEST_NODE_ID = re.compile(r"^[A-Za-z0-9_\-]+(?:\[[^\]]+\])?$")
@@ -1206,6 +1246,73 @@ def _has_productive_src_python(files: list[str]) -> bool:
     return any(f.startswith("src/") and f.endswith(".py") for f in files)
 
 
+def _is_master_v2_binding_contract_scoped_path(path: str) -> bool:
+    return path in MASTER_V2_BINDING_CONTRACT_SCOPED_PATHS
+
+
+def _is_master_v2_binding_contract_scope(files: list[str]) -> bool:
+    if not files:
+        return False
+    if MASTER_V2_BINDING_CONTRACT_TEST_OWNER not in files:
+        return False
+    if DURABLE_COMPLETION_FACADE_PATH not in files:
+        return False
+    for path in files:
+        if path in DURABLE_COMPLETION_CI_POLICY_PATHS:
+            return False
+        if path in DURABLE_COMPLETION_CI_WORKFLOW_REBUNDLE_PATHS:
+            return False
+        if path not in MASTER_V2_BINDING_CONTRACT_SCOPED_PATHS:
+            return False
+    validator_paths = {
+        p
+        for p in files
+        if p.startswith("src/ops/durable_completion_validation/validators/") and p.endswith(".py")
+    }
+    if validator_paths and validator_paths != {
+        MASTER_V2_BINDING_CONTRACT_COMPLETION_CHAIN_VALIDATOR
+    }:
+        return False
+    return True
+
+
+def _master_v2_binding_focused_targets(files: list[str]) -> tuple[str, ...]:
+    if MASTER_V2_BINDING_CONTRACT_TEST_OWNER not in files:
+        return ()
+    if not _repo_path_exists(MASTER_V2_BINDING_CONTRACT_GRAPH_TEST_OWNER):
+        return ()
+    selected: list[str] = []
+    for target in MASTER_V2_BINDING_CONTRACT_FOCUSED_TARGETS:
+        path, _ = _split_pytest_target(target)
+        if path == MASTER_V2_BINDING_CONTRACT_TEST_OWNER:
+            selected.append(target)
+        elif _repo_pytest_target_exists(target):
+            selected.append(target)
+    if not selected:
+        return ()
+    return tuple(sorted(selected))
+
+
+def _try_master_v2_binding_contract_focused(files: list[str]) -> SelectionResult | None:
+    if not files:
+        return None
+    if not _is_master_v2_binding_contract_scope(files):
+        return None
+    targets = _master_v2_binding_focused_targets(files)
+    if not targets:
+        return None
+    modules: tuple[str, ...] = (
+        "src.ops.bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0",
+        "src.ops.durable_completion_validation",
+    )
+    return SelectionResult(
+        "FOCUSED",
+        "durable_completion_master_v2_binding_contract_focused",
+        targets,
+        modules,
+    )
+
+
 def _try_durable_completion_focused(files: list[str]) -> SelectionResult | None:
     if not files:
         return None
@@ -1262,6 +1369,8 @@ def categorize(path: str) -> str:
     p = PurePosixPath(path).as_posix()
     if p in DURABLE_COMPLETION_CI_POLICY_PATHS:
         return "durable_completion_focused"
+    if p == MASTER_V2_BINDING_CONTRACT_TEST_OWNER:
+        return "master_v2_binding_contract_focused"
     if _is_durable_completion_scoped_path(p):
         return "durable_completion_focused"
     if p in PREFLIGHT_ASSEMBLY_CI_POLICY_PATHS:
@@ -1528,6 +1637,10 @@ def resolve_selection(
     market_dashboard = _try_market_dashboard_focused(normalized)
     if market_dashboard is not None:
         return market_dashboard
+
+    master_v2_binding = _try_master_v2_binding_contract_focused(normalized)
+    if master_v2_binding is not None:
+        return master_v2_binding
 
     durable_completion = _try_durable_completion_focused(normalized)
     if durable_completion is not None:
