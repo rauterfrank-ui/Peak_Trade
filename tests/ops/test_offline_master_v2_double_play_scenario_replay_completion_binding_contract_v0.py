@@ -28,10 +28,15 @@ from src.ops.durable_completion_validation.models import ValidationContext
 from src.ops.durable_completion_validation.validators.completion_chain import (
     validate_completion_proof_chain_binding,
 )
+from src.ops.bounded_master_v2_testnet_completion_path_wiring_v0 import (
+    TestnetCompletionPathMarketInputV0,
+    evaluate_bounded_master_v2_testnet_completion_path_wiring,
+)
 from src.ops.offline_master_v2_replay_six_node_validation_graph_binding_v0 import (
     build_completion_integration_input_from_offline_replay_result,
     build_validation_context_from_completion_integration_input,
     prove_offline_replay_six_node_validation_graph_binding_v0,
+    verify_dashboard_display_projection_digest_six_node_evidence,
 )
 from trading.master_v2.offline_double_play_scenario_replay_v0 import (
     SYNTHETIC_FUTURES_INSTRUMENT,
@@ -299,8 +304,100 @@ def test_replay_display_projection_digest_drift_fail_closed(integration_input) -
 
 
 def test_replay_sourced_six_node_graph_includes_display_projection_digest(
+    replay_result: OfflineDoublePlayScenarioReplayResultV0,
     integration_input,
 ) -> None:
     proof = prove_offline_replay_six_node_validation_graph_binding_v0()
     assert proof.binding_pass, proof.fail_reasons
     assert proof.six_node_graph_pass is True
+    assert proof.dashboard_display_projection_digest is not None
+    assert len(proof.dashboard_display_projection_digest) == 64
+    assert (
+        proof.dashboard_display_projection_digest
+        == replay_result.dashboard_display_projection_digest
+    )
+    binding = replay_result.master_v2_decision_state_digest_binding
+    assert binding is not None
+    assert proof.dashboard_display_projection_digest == binding.dashboard_display_projection_digest
+    chain = integration_input.completion_proof_chain
+    assert (
+        proof.dashboard_display_projection_digest
+        == chain.completion_referenced_dashboard_display_projection_digest
+    )
+
+
+def test_six_node_machine_lines_contains_dashboard_display_projection_digest(
+    replay_result: OfflineDoublePlayScenarioReplayResultV0,
+) -> None:
+    proof = prove_offline_replay_six_node_validation_graph_binding_v0()
+    machine = proof.to_machine_lines()
+    assert (
+        machine["DASHBOARD_DISPLAY_PROJECTION_DIGEST"] == proof.dashboard_display_projection_digest
+    )
+    assert machine["DASHBOARD_DISPLAY_PROJECTION_DIGEST"] == (
+        replay_result.dashboard_display_projection_digest or ""
+    )
+    assert machine["DASHBOARD_DISPLAY_PROJECTION_DIGEST"] != ""
+
+
+def test_six_node_display_projection_digest_matches_testnet_completion_wiring(
+    replay_result: OfflineDoublePlayScenarioReplayResultV0,
+) -> None:
+    proof = prove_offline_replay_six_node_validation_graph_binding_v0()
+    market_input = TestnetCompletionPathMarketInputV0(
+        selected_future_id=replay_result.selected_future_id,
+        ticks=tuple(tick for tick in build_default_bull_bear_bull_scenario_ticks()),
+        source_run_id="six-node-digest-crosscheck-v0",
+    )
+    wiring = evaluate_bounded_master_v2_testnet_completion_path_wiring(market_input)
+    assert wiring.dashboard_display_projection_digest == proof.dashboard_display_projection_digest
+
+
+def test_six_node_missing_dashboard_display_projection_digest_fails_closed(
+    replay_result: OfflineDoublePlayScenarioReplayResultV0,
+    integration_input,
+) -> None:
+    bad_replay = replace(replay_result, dashboard_display_projection_digest=None)
+    digest, reasons = verify_dashboard_display_projection_digest_six_node_evidence(
+        bad_replay,
+        integration_input,
+    )
+    assert digest is None
+    assert any("dashboard_display_projection_digest missing" in reason for reason in reasons)
+
+
+def test_six_node_dashboard_display_projection_digest_mismatch_fails_closed(
+    replay_result: OfflineDoublePlayScenarioReplayResultV0,
+    integration_input,
+) -> None:
+    bad_binding = replace(
+        replay_result.master_v2_decision_state_digest_binding,
+        dashboard_display_projection_digest="1" * 64,
+    )
+    bad_replay = replace(
+        replay_result,
+        master_v2_decision_state_digest_binding=bad_binding,
+    )
+    digest, reasons = verify_dashboard_display_projection_digest_six_node_evidence(
+        bad_replay,
+        integration_input,
+    )
+    assert digest is None
+    assert any("dashboard_display_projection_digest" in reason for reason in reasons)
+
+
+def test_six_node_dashboard_display_projection_digest_drift_fails_closed(
+    replay_result: OfflineDoublePlayScenarioReplayResultV0,
+    integration_input,
+) -> None:
+    bad_chain = replace(
+        integration_input.completion_proof_chain,
+        completion_referenced_dashboard_display_projection_digest="0" * 64,
+    )
+    bad_input = replace(integration_input, completion_proof_chain=bad_chain)
+    digest, reasons = verify_dashboard_display_projection_digest_six_node_evidence(
+        replay_result,
+        bad_input,
+    )
+    assert digest is None
+    assert any("dashboard_display_projection_digest" in reason for reason in reasons)
