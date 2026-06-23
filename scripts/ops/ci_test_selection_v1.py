@@ -183,6 +183,14 @@ OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_SCOPED_PATHS = frozenset(
         *OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_CI_POLICY_PATHS,
     }
 )
+OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_CATEGORIZE_PATHS = frozenset(
+    {
+        OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_OWNER_PATH,
+        OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_TRADING_TEST_OWNER,
+        OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_OPS_TEST_OWNER,
+        "scripts/ops/ci_test_selection_v1.py",
+    }
+)
 CANONICAL_OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_FOCUSED_TESTS: tuple[str, ...] = (
     OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_TRADING_TEST_OWNER,
     OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_OPS_TEST_OWNER,
@@ -1437,9 +1445,7 @@ def _try_market_dashboard_focused(files: list[str]) -> SelectionResult | None:
 
 def categorize(path: str) -> str:
     p = PurePosixPath(path).as_posix()
-    if p in OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_CI_POLICY_PATHS:
-        return "offline_master_v2_double_play_scenario_replay_focused"
-    if p in OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_SCOPED_PATHS:
+    if p in OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_CATEGORIZE_PATHS:
         return "offline_master_v2_double_play_scenario_replay_focused"
     if p in DURABLE_COMPLETION_CI_POLICY_PATHS:
         return "durable_completion_focused"
