@@ -1196,8 +1196,9 @@ def test_closeout_without_market_observation_fail_closed(tmp_path: Path) -> None
     assert rc == 0
     metadata = json.loads((staging / "RUN_METADATA.json").read_text(encoding="utf-8"))
     wiring = metadata["completion_path_wiring"]
+    machine = wiring["machine_summary"]
     assert metadata["market_input_bound"] is False
-    assert wiring["MISSING_TESTNET_MARKET_INPUT_FAILS_CLOSED"] is True
+    assert machine["MISSING_TESTNET_MARKET_INPUT_FAILS_CLOSED"] is True
     closeout = (staging / "CLOSEOUT.md").read_text(encoding="utf-8")
     assert "MISSING_TESTNET_MARKET_INPUT_FAILS_CLOSED=True" in closeout
     assert "TESTNET_EXECUTES_CANONICAL_MASTER_V2=False" in closeout
@@ -1234,15 +1235,18 @@ def test_closeout_forwards_validated_market_observation(tmp_path: Path) -> None:
     ).completion_path_wiring
     closeout_wiring = metadata["completion_path_wiring"]
     assert metadata["market_input_bound"] is True
-    assert closeout_wiring["MISSING_TESTNET_MARKET_INPUT_FAILS_CLOSED"] is False
+    assert closeout_wiring == plan_wiring
+    assert closeout_wiring["machine_summary"]["MISSING_TESTNET_MARKET_INPUT_FAILS_CLOSED"] is False
     assert (
-        closeout_wiring["BOUNDED_TESTNET_COMPLETION_PATH_MASTER_V2_WIRING_PRESENT"]
+        closeout_wiring["machine_summary"][
+            "BOUNDED_TESTNET_COMPLETION_PATH_MASTER_V2_WIRING_PRESENT"
+        ]
         == plan_wiring["machine_summary"][
             "BOUNDED_TESTNET_COMPLETION_PATH_MASTER_V2_WIRING_PRESENT"
         ]
     )
-    assert closeout_wiring["ORDERS_TOTAL"] == 0
-    assert closeout_wiring["TESTNET_EXECUTES_CANONICAL_MASTER_V2"] is False
+    assert closeout_wiring["machine_summary"]["ORDERS_TOTAL"] == 0
+    assert closeout_wiring["machine_summary"]["TESTNET_EXECUTES_CANONICAL_MASTER_V2"] is False
 
 
 def test_closeout_stale_market_observation_fail_closed(tmp_path: Path) -> None:
@@ -1254,7 +1258,12 @@ def test_closeout_stale_market_observation_fail_closed(tmp_path: Path) -> None:
     assert rc == 0
     metadata = json.loads((staging / "RUN_METADATA.json").read_text(encoding="utf-8"))
     assert metadata["market_input_bound"] is False
-    assert metadata["completion_path_wiring"]["MISSING_TESTNET_MARKET_INPUT_FAILS_CLOSED"] is True
+    assert (
+        metadata["completion_path_wiring"]["machine_summary"][
+            "MISSING_TESTNET_MARKET_INPUT_FAILS_CLOSED"
+        ]
+        is True
+    )
 
 
 def test_staging_execute_without_market_observation_remains_non_authorizing(tmp_path: Path) -> None:
@@ -1370,7 +1379,7 @@ def test_execute_collect_public_testnet_market_observation_forwards_closeout(
     assert fetcher.calls == 1
     metadata = json.loads((staging / "RUN_METADATA.json").read_text(encoding="utf-8"))
     assert metadata["market_input_bound"] is True
-    assert metadata["completion_path_wiring"]["ORDERS_TOTAL"] == 0
+    assert metadata["completion_path_wiring"]["machine_summary"]["ORDERS_TOTAL"] == 0
 
 
 def test_execute_collect_http_503_fail_closed(tmp_path: Path) -> None:
@@ -1402,7 +1411,12 @@ def test_execute_collect_http_503_fail_closed(tmp_path: Path) -> None:
     assert fetcher.calls == 1
     metadata = json.loads((staging / "RUN_METADATA.json").read_text(encoding="utf-8"))
     assert metadata["market_input_bound"] is False
-    assert metadata["completion_path_wiring"]["MISSING_TESTNET_MARKET_INPUT_FAILS_CLOSED"] is True
+    assert (
+        metadata["completion_path_wiring"]["machine_summary"][
+            "MISSING_TESTNET_MARKET_INPUT_FAILS_CLOSED"
+        ]
+        is True
+    )
 
 
 def test_ci_selector_runtime_market_observation_producer_five_file_diff_focused() -> None:
@@ -1423,3 +1437,195 @@ def test_ci_selector_runtime_market_observation_producer_five_file_diff_focused(
         "tests/ops/test_run_testnet_bounded_observation_adapter_v0.py::test_execute_collect_public_testnet_market_observation_forwards_closeout"
         in targets
     )
+
+
+def _plan_wiring_section(mod, *, market_observation=None) -> dict:
+    return mod.build_plan(
+        mode="execute",
+        staging_root=Path("/tmp/peak_trade_gap007_plan"),
+        archive_root=ARCHIVE_ROOT,
+        repo_root=ROOT,
+        duration_minutes=10,
+        max_steps=120,
+        step_interval_seconds=0.0,
+        run_id="gap007_plan_section",
+        market_observation=market_observation,
+    ).completion_path_wiring
+
+
+def test_plan_prepare_contains_full_completion_path_wiring_section() -> None:
+    mod = _load_adapter()
+    section = _plan_wiring_section(mod)
+    assert section["dashboard_display_projection_digest"] is None or len(
+        section["dashboard_display_projection_digest"] or ""
+    ) in (0, 64)
+    assert section["canonical_retention_owner"]
+    assert section["retention_verify_owner"]
+    assert section["machine_summary"]
+
+
+def test_execute_closeout_preserves_full_completion_path_wiring_section(tmp_path: Path) -> None:
+    mod = _load_adapter()
+    staging = _staging(tmp_path)
+    archive = _durable_archive(tmp_path)
+    observation = _valid_market_observation()
+    rc = _execute_with_mocked_runner(mod, staging, archive, market_observation=observation)
+    assert rc == 0
+    metadata = json.loads((staging / "RUN_METADATA.json").read_text(encoding="utf-8"))
+    plan_section = mod.build_plan(
+        mode="execute",
+        staging_root=staging,
+        archive_root=archive,
+        repo_root=ROOT,
+        duration_minutes=10,
+        max_steps=120,
+        step_interval_seconds=0.0,
+        run_id="testnet_bounded_observation_test_run",
+        market_observation=observation,
+    ).completion_path_wiring
+    assert metadata["completion_path_wiring"] == plan_section
+
+
+def test_execute_closeout_digest_matches_plan_section(tmp_path: Path) -> None:
+    mod = _load_adapter()
+    staging = _staging(tmp_path)
+    archive = _durable_archive(tmp_path)
+    observation = _valid_market_observation()
+    rc = _execute_with_mocked_runner(mod, staging, archive, market_observation=observation)
+    assert rc == 0
+    metadata = json.loads((staging / "RUN_METADATA.json").read_text(encoding="utf-8"))
+    plan_section = mod.build_plan(
+        mode="execute",
+        staging_root=staging,
+        archive_root=archive,
+        repo_root=ROOT,
+        duration_minutes=10,
+        max_steps=120,
+        step_interval_seconds=0.0,
+        run_id="testnet_bounded_observation_test_run",
+        market_observation=observation,
+    ).completion_path_wiring
+    assert (
+        metadata["completion_path_wiring"]["dashboard_display_projection_digest"]
+        == plan_section["dashboard_display_projection_digest"]
+    )
+
+
+def test_execute_closeout_owner_map_matches_plan_section(tmp_path: Path) -> None:
+    mod = _load_adapter()
+    staging = _staging(tmp_path)
+    archive = _durable_archive(tmp_path)
+    observation = _valid_market_observation()
+    rc = _execute_with_mocked_runner(mod, staging, archive, market_observation=observation)
+    assert rc == 0
+    metadata = json.loads((staging / "RUN_METADATA.json").read_text(encoding="utf-8"))
+    section = metadata["completion_path_wiring"]
+    for key in (
+        "canonical_testnet_runner",
+        "canonical_testnet_completion_owner",
+        "canonical_master_v2_replay_owner",
+        "canonical_six_node_graph_owner",
+        "canonical_digest_binding_owner",
+        "canonical_retention_owner",
+    ):
+        assert section[key]
+
+
+def test_execute_closeout_retention_verify_owner_matches_plan_section(tmp_path: Path) -> None:
+    mod = _load_adapter()
+    staging = _staging(tmp_path)
+    archive = _durable_archive(tmp_path)
+    observation = _valid_market_observation()
+    rc = _execute_with_mocked_runner(mod, staging, archive, market_observation=observation)
+    assert rc == 0
+    metadata = json.loads((staging / "RUN_METADATA.json").read_text(encoding="utf-8"))
+    plan_section = mod.build_plan(
+        mode="execute",
+        staging_root=staging,
+        archive_root=archive,
+        repo_root=ROOT,
+        duration_minutes=10,
+        max_steps=120,
+        step_interval_seconds=0.0,
+        run_id="testnet_bounded_observation_test_run",
+        market_observation=observation,
+    ).completion_path_wiring
+    assert (
+        metadata["completion_path_wiring"]["retention_verify_owner"]
+        == plan_section["retention_verify_owner"]
+    )
+
+
+def test_missing_completion_path_wiring_section_fails_closed(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    mod = _load_adapter()
+    staging = _staging(tmp_path)
+    archive = _durable_archive(tmp_path)
+    real_build_plan = mod.build_plan
+
+    def _plan_without_section(*args, **kwargs):
+        plan = real_build_plan(*args, **kwargs)
+        return mod.AdapterPlan(**{**plan.to_dict(), "completion_path_wiring": {}})
+
+    monkeypatch.setattr(mod, "build_plan", _plan_without_section)
+    rc = _execute_with_mocked_runner(mod, staging, archive)
+    assert rc == mod.VALIDATION_EXIT
+
+
+def test_completion_path_wiring_digest_drift_fails_closed(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    mod = _load_adapter()
+    staging = _staging(tmp_path)
+    archive = _durable_archive(tmp_path)
+    real_build_plan = mod.build_plan
+
+    def _plan_with_digest_drift(*args, **kwargs):
+        plan = real_build_plan(*args, **kwargs)
+        bad_section = {
+            **plan.completion_path_wiring,
+            "dashboard_display_projection_digest": "f" * 64,
+        }
+        return mod.AdapterPlan(**{**plan.to_dict(), "completion_path_wiring": bad_section})
+
+    monkeypatch.setattr(mod, "build_plan", _plan_with_digest_drift)
+    rc = _execute_with_mocked_runner(
+        mod, staging, archive, market_observation=_valid_market_observation()
+    )
+    assert rc == mod.VALIDATION_EXIT
+
+
+def test_completion_path_wiring_owner_map_drift_fails_closed(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    mod = _load_adapter()
+    staging = _staging(tmp_path)
+    archive = _durable_archive(tmp_path)
+    real_build_plan = mod.build_plan
+
+    def _plan_with_owner_drift(*args, **kwargs):
+        plan = real_build_plan(*args, **kwargs)
+        bad_section = {**plan.completion_path_wiring, "canonical_retention_owner": "drift"}
+        return mod.AdapterPlan(**{**plan.to_dict(), "completion_path_wiring": bad_section})
+
+    monkeypatch.setattr(mod, "build_plan", _plan_with_owner_drift)
+    rc = _execute_with_mocked_runner(mod, staging, archive)
+    assert rc == mod.VALIDATION_EXIT
+
+
+def test_adapter_closeout_does_not_recompute_digest() -> None:
+    text = ADAPTER_SCRIPT.read_text(encoding="utf-8")
+    assert "build_testnet_bounded_adapter_completion_path_wiring_section" in text
+    assert "evaluate_bounded_master_v2_testnet_completion_path_wiring" not in text
+
+
+def test_execute_closeout_machine_summary_compat_preserved(tmp_path: Path) -> None:
+    mod = _load_adapter()
+    staging = _staging(tmp_path)
+    archive = _durable_archive(tmp_path)
+    rc = _execute_with_mocked_runner(mod, staging, archive)
+    assert rc == 0
+    metadata = json.loads((staging / "RUN_METADATA.json").read_text(encoding="utf-8"))
+    assert "machine_summary" in metadata["completion_path_wiring"]
+    assert metadata["completion_path_wiring"]["machine_summary"]["ORDERS_TOTAL"] == 0
