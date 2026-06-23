@@ -19,4 +19,5 @@ class ValidationContext:
     pe37_result: dict[str, Any] | None = None
     pe25_result: dict[str, Any] | None = None
     admission_result: dict[str, Any] | None = None
+    glb019_result: dict[str, Any] | None = None
     completed_validators: set[str] = field(default_factory=set)
