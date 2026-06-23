@@ -1600,8 +1600,6 @@ def categorize(path: str) -> str:
         return "bounded_master_v2_testnet_completion_path_wiring_focused"
     if p == BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_TEST_OWNER:
         return "bounded_master_v2_testnet_completion_path_wiring_focused"
-    if p in BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_CI_POLICY_PATHS:
-        return "bounded_master_v2_testnet_completion_path_wiring_focused"
     if p in DURABLE_COMPLETION_CI_POLICY_PATHS:
         return "durable_completion_focused"
     if p == MASTER_V2_BINDING_CONTRACT_TEST_OWNER:
