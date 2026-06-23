@@ -557,9 +557,12 @@ MASTER_V2_BINDING_TO_COMPLETION_CHAIN_FIELD_NAMES: tuple[tuple[str, str], ...] =
     zip(
         MASTER_V2_BINDING_DIGEST_FIELD_NAMES,
         MASTER_V2_COMPLETION_CHAIN_BINDING_FIELD_NAMES,
-        strict=True,
     )
 )
+if len(MASTER_V2_BINDING_TO_COMPLETION_CHAIN_FIELD_NAMES) != len(
+    MASTER_V2_BINDING_DIGEST_FIELD_NAMES
+):
+    raise ValueError("MASTER_V2 binding field name tuples must have equal length")
 
 
 @dataclass(frozen=True)

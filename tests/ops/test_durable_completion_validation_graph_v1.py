@@ -688,17 +688,3 @@ def test_legacy_ops_only_completion_chain_master_v2_binding_not_present() -> Non
     assert not validate_completion_proof_chain_binding(
         ValidationContext(integration_input=integration_input)
     ).fail_reasons
-
-
-def test_legacy_ops_only_completion_chain_master_v2_binding_not_present() -> None:
-    integration_input = default_minimal_completion_integration_input()
-    assert (
-        classify_master_v2_binding_presence(
-            binding=integration_input.master_v2_decision_state_digest_binding,
-            chain=integration_input.completion_proof_chain,
-        )
-        == "MASTER_V2_BINDING_NOT_PRESENT"
-    )
-    assert not validate_completion_proof_chain_binding(
-        ValidationContext(integration_input=integration_input)
-    ).fail_reasons
