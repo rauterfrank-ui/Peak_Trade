@@ -40,6 +40,10 @@ from trading.master_v2.double_play_composition import (
     RequestedSide,
     compose_double_play_decision,
 )
+from trading.master_v2.double_play_dashboard_display import (
+    DoublePlayDashboardDisplaySnapshot,
+    build_dashboard_display_snapshot,
+)
 from trading.master_v2.double_play_futures_input import (
     FuturesCandidateSnapshot,
     FuturesDerivativesProfile,
@@ -221,6 +225,8 @@ class OfflineDoublePlayScenarioReplayResultV0:
     summary: OfflineDoublePlayScenarioReplaySummaryV0
     master_v2_decision_state_digest_binding: MasterV2DecisionStateDigestBinding | None
     fail_reasons: tuple[str, ...]
+    dashboard_display_snapshot: DoublePlayDashboardDisplaySnapshot | None = None
+    dashboard_display_projection_digest: str | None = None
 
 
 def _layer() -> LayerArithmeticStatus:
@@ -353,6 +359,18 @@ def _suitability_input() -> SuitabilityProjectionInput:
 
 def _component_digest(component: str, **state: object) -> str:
     return compute_master_v2_component_state_digest(component=component, state=state)
+
+
+def _dashboard_display_projection_digest(
+    snap: DoublePlayDashboardDisplaySnapshot,
+) -> str:
+    return _component_digest(
+        "dashboard_display_projection",
+        overall_status=snap.overall_status.value,
+        panel_statuses=tuple((p.name, p.status.value) for p in snap.panels),
+        display_only=snap.display_only,
+        live_authorization=snap.live_authorization,
+    )
 
 
 def _validate_instrument(selected_future_id: str) -> list[str]:
@@ -654,8 +672,13 @@ def run_offline_double_play_scenario_replay_v0(
             summary=summary,
             master_v2_decision_state_digest_binding=None,
             fail_reasons=tuple(validation),
+            dashboard_display_snapshot=None,
+            dashboard_display_projection_digest=None,
         )
 
+    futures_input_decision = evaluate_futures_input_snapshot(
+        resolve_replay_futures_input_snapshot(inp)
+    )
     side = SideState.NEUTRAL_OBSERVE
     scope_state = RuntimeScopeState(anchor_price=0.0)
     rules = _DEFAULT_RULES
@@ -666,6 +689,7 @@ def run_offline_double_play_scenario_replay_v0(
     all_proof: list[OfflineDoublePlayProofEvent] = []
     fail_reasons: list[str] = []
     prior_volatility_estimate = rules.volatility_estimate
+    final_dashboard_display_snapshot: DoublePlayDashboardDisplaySnapshot | None = None
 
     sorted_ticks = tuple(sorted(inp.ticks, key=lambda t: t.tick_index))
 
@@ -736,6 +760,16 @@ def run_offline_double_play_scenario_replay_v0(
                 capital_slot_ratchet_decision=ratchet,
                 capital_slot_release_decision=release,
             )
+        )
+
+        final_dashboard_display_snapshot = build_dashboard_display_snapshot(
+            futures_input=futures_input_decision,
+            transition=transition,
+            survival=survival,
+            suitability=suitability,
+            capital_slot_ratchet=ratchet,
+            capital_slot_release=release,
+            composition=composition,
         )
 
         safety_allowed = tick.safety_decision_allowed and side != SideState.KILL_ALL
@@ -908,6 +942,11 @@ def run_offline_double_play_scenario_replay_v0(
         final_side_state=final_side,
         final_active_side=derive_active_side(final_side),
     )
+    display_digest = (
+        _dashboard_display_projection_digest(final_dashboard_display_snapshot)
+        if final_dashboard_display_snapshot is not None
+        else None
+    )
     return OfflineDoublePlayScenarioReplayResultV0(
         layer_version=OFFLINE_DOUBLE_PLAY_SCENARIO_REPLAY_LAYER_VERSION,
         replay_pass=summary.replay_pass,
@@ -916,6 +955,8 @@ def run_offline_double_play_scenario_replay_v0(
         summary=summary,
         master_v2_decision_state_digest_binding=binding,
         fail_reasons=tuple(fail_reasons),
+        dashboard_display_snapshot=final_dashboard_display_snapshot,
+        dashboard_display_projection_digest=display_digest,
     )
 
 

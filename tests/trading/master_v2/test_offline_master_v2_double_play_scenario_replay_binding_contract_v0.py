@@ -7,6 +7,10 @@ from unittest.mock import patch
 
 import pytest
 
+from trading.master_v2.double_play_dashboard_display import (
+    DashboardDisplayStatus,
+    build_dashboard_display_snapshot,
+)
 from trading.master_v2.double_play_futures_input import (
     FuturesFreshnessState,
     FuturesInputSnapshot,
@@ -291,3 +295,106 @@ def test_stale_futures_input_provenance_fail_closed() -> None:
     )
     reasons = validate_offline_double_play_scenario_replay_input_v0(inp)
     assert any("futures_input_admission_blocked" in r for r in reasons)
+
+
+def test_replay_binds_canonical_dashboard_display_projection_owner() -> None:
+    inp = _default_input()
+    with patch(
+        "trading.master_v2.offline_double_play_scenario_replay_v0.build_dashboard_display_snapshot",
+        wraps=build_dashboard_display_snapshot,
+    ) as mocked:
+        result = run_offline_double_play_scenario_replay_v0(inp)
+        assert result.replay_pass, result.fail_reasons
+        assert mocked.called
+        assert mocked.call_count == len(inp.ticks)
+
+
+def test_replay_dashboard_display_snapshot_from_canonical_model_outputs() -> None:
+    result = _run_default()
+    snap = result.dashboard_display_snapshot
+    assert snap is not None
+    assert snap.display_only is True
+    assert snap.live_authorization is False
+    assert snap.trading_ready is False
+    assert snap.testnet_ready is False
+    assert snap.live_ready is False
+    panel_names = {p.name for p in snap.panels}
+    assert panel_names == {
+        "futures_input",
+        "state_transition",
+        "survival_envelope",
+        "strategy_suitability",
+        "capital_slot_ratchet",
+        "capital_slot_release",
+        "composition",
+    }
+    for panel in snap.panels:
+        assert panel.live_authorization is False
+        assert panel.is_authority is False
+        assert panel.is_signal is False
+
+
+def test_replay_final_display_reflects_kill_all_composition() -> None:
+    result = _run_default()
+    snap = result.dashboard_display_snapshot
+    assert snap is not None
+    assert result.summary.final_side_state == SideState.KILL_ALL
+    comp_panel = next(p for p in snap.panels if p.name == "composition")
+    assert comp_panel.status is DashboardDisplayStatus.DISPLAY_BLOCKED
+
+
+def test_replay_display_projection_digest_deterministic() -> None:
+    a = _run_default()
+    b = _run_default()
+    assert a.dashboard_display_projection_digest == b.dashboard_display_projection_digest
+    assert a.dashboard_display_projection_digest is not None
+    assert len(a.dashboard_display_projection_digest) == 64
+
+
+def test_replay_display_snapshot_does_not_mutate_replay_decisions() -> None:
+    without_patch = _run_default()
+    with patch(
+        "trading.master_v2.offline_double_play_scenario_replay_v0.build_dashboard_display_snapshot",
+        side_effect=lambda **kwargs: build_dashboard_display_snapshot(**kwargs),
+    ):
+        with_patch = _run_default()
+    assert without_patch.replay_pass == with_patch.replay_pass
+    assert len(without_patch.tick_records) == len(with_patch.tick_records)
+    for left, right in zip(without_patch.tick_records, with_patch.tick_records):
+        assert left.composition_status == right.composition_status
+        assert left.side_state == right.side_state
+        assert left.master_v2_decision_digest == right.master_v2_decision_digest
+
+
+def test_replay_display_projection_absent_on_validation_failure() -> None:
+    inp = OfflineDoublePlayScenarioReplayInputV0(
+        selected_future_id="BTC-PERP",
+        ticks=build_default_bull_bear_bull_scenario_ticks(),
+    )
+    result = run_offline_double_play_scenario_replay_v0(inp)
+    assert not result.replay_pass
+    assert result.dashboard_display_snapshot is None
+    assert result.dashboard_display_projection_digest is None
+
+
+def test_replay_display_long_short_exclusive_via_composition_panel() -> None:
+    result = _run_default()
+    snap = result.dashboard_display_snapshot
+    assert snap is not None
+    long_ticks = [r for r in result.tick_records if r.side_state == SideState.LONG_ACTIVE]
+    short_ticks = [r for r in result.tick_records if r.side_state == SideState.SHORT_ACTIVE]
+    assert long_ticks
+    assert short_ticks
+    for rec in result.tick_records:
+        assert not (
+            rec.bull_layer_state == SideState.LONG_ACTIVE
+            and rec.bear_layer_state == SideState.SHORT_ACTIVE
+        )
+
+
+def test_replay_display_evidence_in_result_not_parallel_surface() -> None:
+    result = _run_default()
+    assert hasattr(result, "dashboard_display_snapshot")
+    assert hasattr(result, "dashboard_display_projection_digest")
+    assert result.dashboard_display_snapshot is not None
+    assert result.dashboard_display_projection_digest is not None
