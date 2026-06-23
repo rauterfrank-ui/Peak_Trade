@@ -21,6 +21,7 @@ from src.ops.bounded_futures_testnet_durable_run_primary_evidence_completion_int
 )
 from src.ops.offline_master_v2_replay_six_node_validation_graph_binding_v0 import (
     OFFLINE_REPLAY_SIX_NODE_VALIDATION_GRAPH_BINDING_OWNER,
+    OfflineReplaySixNodeValidationGraphBindingResultV0,
     build_completion_integration_input_from_offline_replay_result,
     build_validation_context_from_completion_integration_input,
     prove_offline_replay_six_node_validation_graph_binding_v0,
@@ -190,13 +191,15 @@ def build_replay_input_from_testnet_market_input(
 def verify_dashboard_display_projection_digest_wiring(
     replay_result: OfflineDoublePlayScenarioReplayResultV0,
     integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
+    six_node_binding: OfflineReplaySixNodeValidationGraphBindingResultV0,
 ) -> tuple[str | None, list[str]]:
-    """Fail-closed verification that replay, binding, and completion chain share one digest."""
+    """Fail-closed verification that replay, binding, six-node, and completion chain share one digest."""
     fail_reasons: list[str] = []
     prefix = "dashboard_display_projection_digest"
     replay_digest = replay_result.dashboard_display_projection_digest
     binding = replay_result.master_v2_decision_state_digest_binding
     chain = integration_input.completion_proof_chain
+    six_node_digest = six_node_binding.dashboard_display_projection_digest
 
     if not replay_digest:
         fail_reasons.append(f"{prefix} missing from replay result")
@@ -211,12 +214,20 @@ def verify_dashboard_display_projection_digest_wiring(
         fail_reasons.append(f"{prefix} missing from decision state binding")
     if not chain_digest:
         fail_reasons.append(f"{prefix} missing from completion proof chain")
+    if not six_node_digest:
+        fail_reasons.append(f"{prefix} missing from six-node binding result")
     if binding_digest and replay_digest != binding_digest:
         fail_reasons.append(f"{prefix} drift: replay vs decision state binding")
     if chain_digest and binding_digest and chain_digest != binding_digest:
         fail_reasons.append(f"{prefix} drift: completion proof chain vs decision state binding")
     if chain_digest and replay_digest != chain_digest:
         fail_reasons.append(f"{prefix} drift: replay vs completion proof chain")
+    if six_node_digest and replay_digest != six_node_digest:
+        fail_reasons.append(f"{prefix} drift: replay vs six-node binding result")
+    if six_node_digest and binding_digest and six_node_digest != binding_digest:
+        fail_reasons.append(f"{prefix} drift: six-node binding result vs decision state binding")
+    if six_node_digest and chain_digest and six_node_digest != chain_digest:
+        fail_reasons.append(f"{prefix} drift: six-node binding result vs completion proof chain")
 
     return replay_digest, fail_reasons
 
@@ -278,6 +289,7 @@ def evaluate_bounded_master_v2_testnet_completion_path_wiring(
     display_digest, display_digest_reasons = verify_dashboard_display_projection_digest_wiring(
         replay_result,
         integration_input,
+        binding,
     )
 
     fail_reasons = list(binding.fail_reasons)

@@ -24,7 +24,9 @@ from src.ops.bounded_master_v2_testnet_completion_path_wiring_v0 import (
     verify_dashboard_display_projection_digest_wiring,
 )
 from src.ops.offline_master_v2_replay_six_node_validation_graph_binding_v0 import (
+    OfflineReplaySixNodeValidationGraphBindingResultV0,
     build_completion_integration_input_from_offline_replay_result,
+    prove_offline_replay_six_node_validation_graph_binding_v0,
 )
 from trading.master_v2.double_play_state import ScopeEvent
 from trading.master_v2.offline_double_play_scenario_replay_v0 import (
@@ -84,6 +86,13 @@ def _replay_result() -> OfflineDoublePlayScenarioReplayResultV0:
     )
     assert replay.replay_pass, replay.fail_reasons
     return replay
+
+
+@pytest.fixture(scope="module", name="six_node_binding")
+def _six_node_binding() -> OfflineReplaySixNodeValidationGraphBindingResultV0:
+    binding = prove_offline_replay_six_node_validation_graph_binding_v0()
+    assert binding.binding_pass, binding.fail_reasons
+    return binding
 
 
 @pytest.fixture(scope="module", name="integration_input")
@@ -229,6 +238,7 @@ def test_wiring_owner_references_completion_chain_symbols() -> None:
     assert "evaluate_durable_run_primary_evidence_completion_integration" in text
     assert "verify_manifest_sha256" in text
     assert "verify_dashboard_display_projection_digest_wiring" in text
+    assert "six_node_binding" in text
     assert "build_default_bull_bear_bull_scenario_ticks" not in text
 
 
@@ -272,11 +282,13 @@ def test_adapter_section_contains_dashboard_display_projection_digest() -> None:
 def test_missing_dashboard_display_projection_digest_fails_closed(
     replay_result: OfflineDoublePlayScenarioReplayResultV0,
     integration_input,
+    six_node_binding: OfflineReplaySixNodeValidationGraphBindingResultV0,
 ) -> None:
     bad_replay = replace(replay_result, dashboard_display_projection_digest=None)
     digest, reasons = verify_dashboard_display_projection_digest_wiring(
         bad_replay,
         integration_input,
+        six_node_binding,
     )
     assert digest is None
     assert any("dashboard_display_projection_digest missing" in reason for reason in reasons)
@@ -285,6 +297,7 @@ def test_missing_dashboard_display_projection_digest_fails_closed(
 def test_dashboard_display_projection_digest_drift_fails_closed(
     replay_result: OfflineDoublePlayScenarioReplayResultV0,
     integration_input,
+    six_node_binding: OfflineReplaySixNodeValidationGraphBindingResultV0,
 ) -> None:
     bad_chain = replace(
         integration_input.completion_proof_chain,
@@ -294,6 +307,7 @@ def test_dashboard_display_projection_digest_drift_fails_closed(
     digest, reasons = verify_dashboard_display_projection_digest_wiring(
         replay_result,
         bad_input,
+        six_node_binding,
     )
     assert digest is not None
     assert any("dashboard_display_projection_digest" in reason for reason in reasons)
@@ -302,6 +316,7 @@ def test_dashboard_display_projection_digest_drift_fails_closed(
 def test_dashboard_display_projection_digest_mismatch_fails_closed(
     replay_result: OfflineDoublePlayScenarioReplayResultV0,
     integration_input,
+    six_node_binding: OfflineReplaySixNodeValidationGraphBindingResultV0,
 ) -> None:
     binding = replay_result.master_v2_decision_state_digest_binding
     assert binding is not None
@@ -313,6 +328,7 @@ def test_dashboard_display_projection_digest_mismatch_fails_closed(
     digest, reasons = verify_dashboard_display_projection_digest_wiring(
         bad_replay,
         integration_input,
+        six_node_binding,
     )
     assert digest is not None
     assert any("drift: replay vs decision state binding" in reason for reason in reasons)
@@ -350,3 +366,150 @@ def test_zero_order_and_no_execution_authority_with_valid_market_input() -> None
     assert result.positions_opened_total == 0
     assert machine["TESTNET_EXECUTES_CANONICAL_MASTER_V2"] is False
     assert machine["ORDERS_TOTAL"] == 0
+
+
+def test_six_node_digest_crosscheck_accepts_valid_binding(
+    replay_result: OfflineDoublePlayScenarioReplayResultV0,
+    integration_input,
+    six_node_binding: OfflineReplaySixNodeValidationGraphBindingResultV0,
+) -> None:
+    digest, reasons = verify_dashboard_display_projection_digest_wiring(
+        replay_result,
+        integration_input,
+        six_node_binding,
+    )
+    assert digest == replay_result.dashboard_display_projection_digest
+    assert reasons == []
+
+
+def test_six_node_digest_matches_replay_in_wiring_verifier(
+    replay_result: OfflineDoublePlayScenarioReplayResultV0,
+    six_node_binding: OfflineReplaySixNodeValidationGraphBindingResultV0,
+) -> None:
+    assert (
+        six_node_binding.dashboard_display_projection_digest
+        == replay_result.dashboard_display_projection_digest
+    )
+
+
+def test_six_node_digest_matches_decision_state_in_wiring_verifier(
+    replay_result: OfflineDoublePlayScenarioReplayResultV0,
+    six_node_binding: OfflineReplaySixNodeValidationGraphBindingResultV0,
+) -> None:
+    binding = replay_result.master_v2_decision_state_digest_binding
+    assert binding is not None
+    assert (
+        six_node_binding.dashboard_display_projection_digest
+        == binding.dashboard_display_projection_digest
+    )
+
+
+def test_six_node_digest_matches_completion_proof_in_wiring_verifier(
+    integration_input,
+    six_node_binding: OfflineReplaySixNodeValidationGraphBindingResultV0,
+) -> None:
+    chain = integration_input.completion_proof_chain
+    assert chain is not None
+    assert (
+        six_node_binding.dashboard_display_projection_digest
+        == chain.completion_referenced_dashboard_display_projection_digest
+    )
+
+
+def test_six_node_digest_matches_testnet_completion_in_wiring_verifier(
+    six_node_binding: OfflineReplaySixNodeValidationGraphBindingResultV0,
+) -> None:
+    result = evaluate_bounded_master_v2_testnet_completion_path_wiring(_valid_market_input())
+    assert (
+        result.dashboard_display_projection_digest
+        == six_node_binding.dashboard_display_projection_digest
+    )
+
+
+def test_missing_six_node_digest_fails_closed_in_wiring_verifier(
+    replay_result: OfflineDoublePlayScenarioReplayResultV0,
+    integration_input,
+    six_node_binding: OfflineReplaySixNodeValidationGraphBindingResultV0,
+) -> None:
+    bad_six_node = replace(
+        six_node_binding,
+        dashboard_display_projection_digest=None,
+    )
+    digest, reasons = verify_dashboard_display_projection_digest_wiring(
+        replay_result,
+        integration_input,
+        bad_six_node,
+    )
+    assert digest is not None
+    assert any("missing from six-node binding result" in reason for reason in reasons)
+
+
+def test_six_node_digest_mismatch_fails_closed_in_wiring_verifier(
+    replay_result: OfflineDoublePlayScenarioReplayResultV0,
+    integration_input,
+    six_node_binding: OfflineReplaySixNodeValidationGraphBindingResultV0,
+) -> None:
+    bad_six_node = replace(
+        six_node_binding,
+        dashboard_display_projection_digest="2" * 64,
+    )
+    digest, reasons = verify_dashboard_display_projection_digest_wiring(
+        replay_result,
+        integration_input,
+        bad_six_node,
+    )
+    assert digest is not None
+    assert any("drift: replay vs six-node binding result" in reason for reason in reasons)
+
+
+def test_six_node_only_digest_drift_fails_closed_in_wiring_verifier(
+    replay_result: OfflineDoublePlayScenarioReplayResultV0,
+    integration_input,
+    six_node_binding: OfflineReplaySixNodeValidationGraphBindingResultV0,
+) -> None:
+    bad_six_node = replace(
+        six_node_binding,
+        dashboard_display_projection_digest="3" * 64,
+    )
+    digest, reasons = verify_dashboard_display_projection_digest_wiring(
+        replay_result,
+        integration_input,
+        bad_six_node,
+    )
+    assert digest is not None
+    assert any("replay vs six-node binding result" in reason for reason in reasons)
+    assert any("six-node binding result vs decision state binding" in reason for reason in reasons)
+
+
+def test_evaluator_fails_closed_on_six_node_digest_drift(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    real_prove = prove_offline_replay_six_node_validation_graph_binding_v0
+
+    def _bad_prove(*args, **kwargs):
+        binding = real_prove(*args, **kwargs)
+        return replace(binding, dashboard_display_projection_digest="4" * 64)
+
+    monkeypatch.setattr(
+        "src.ops.bounded_master_v2_testnet_completion_path_wiring_v0."
+        "prove_offline_replay_six_node_validation_graph_binding_v0",
+        _bad_prove,
+    )
+    result = evaluate_bounded_master_v2_testnet_completion_path_wiring(_valid_market_input())
+    assert result.wiring_pass is False
+    assert any("six-node binding result" in reason for reason in result.fail_reasons)
+
+
+def test_wiring_verifier_does_not_recompute_six_node_digest() -> None:
+    text = WIRING_OWNER.read_text(encoding="utf-8")
+    assert "dashboard_display_projection_digest" in text
+    assert "hashlib" not in text
+    assert "sha256(" not in text
+
+
+def test_identical_input_yields_identical_crosscheck_result() -> None:
+    first = evaluate_bounded_master_v2_testnet_completion_path_wiring(_valid_market_input())
+    second = evaluate_bounded_master_v2_testnet_completion_path_wiring(_valid_market_input())
+    assert first.dashboard_display_projection_digest == second.dashboard_display_projection_digest
+    assert first.wiring_pass == second.wiring_pass
+    assert first.fail_reasons == second.fail_reasons
