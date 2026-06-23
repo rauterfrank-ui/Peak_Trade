@@ -101,6 +101,10 @@ def test_replay_output_accepted_by_completion_binding(integration_input) -> None
         ("capital_slot_state_digest", "completion_referenced_capital_slot_state_digest"),
         ("inactivity_exit_state_digest", "completion_referenced_inactivity_exit_state_digest"),
         ("execution_intent_digest", "completion_referenced_execution_intent_digest"),
+        (
+            "dashboard_display_projection_digest",
+            "completion_referenced_dashboard_display_projection_digest",
+        ),
     ],
 )
 def test_all_master_v2_fields_bound(
@@ -256,3 +260,47 @@ def test_replay_graph_binding_zero_order_boundary(replay_result) -> None:
         assert record.cancels == 0
         assert record.fills == 0
         assert record.positions_opened == 0
+
+
+def test_replay_display_projection_digest_bound_in_decision_state_binding(
+    replay_result: OfflineDoublePlayScenarioReplayResultV0,
+) -> None:
+    binding = replay_result.master_v2_decision_state_digest_binding
+    assert binding is not None
+    assert replay_result.dashboard_display_projection_digest is not None
+    assert (
+        binding.dashboard_display_projection_digest
+        == replay_result.dashboard_display_projection_digest
+    )
+
+
+def test_replay_display_projection_digest_bound_in_completion_chain(
+    integration_input,
+) -> None:
+    binding = integration_input.master_v2_decision_state_digest_binding
+    chain = integration_input.completion_proof_chain
+    assert binding is not None
+    assert (
+        chain.completion_referenced_dashboard_display_projection_digest
+        == binding.dashboard_display_projection_digest
+    )
+
+
+def test_replay_display_projection_digest_drift_fail_closed(integration_input) -> None:
+    bad_chain = replace(
+        integration_input.completion_proof_chain,
+        completion_referenced_dashboard_display_projection_digest="0" * 64,
+    )
+    bad = replace(integration_input, completion_proof_chain=bad_chain)
+    reasons = validate_completion_proof_chain_binding(
+        ValidationContext(integration_input=bad)
+    ).fail_reasons
+    assert any("dashboard_display_projection_digest" in reason for reason in reasons)
+
+
+def test_replay_sourced_six_node_graph_includes_display_projection_digest(
+    integration_input,
+) -> None:
+    proof = prove_offline_replay_six_node_validation_graph_binding_v0()
+    assert proof.binding_pass, proof.fail_reasons
+    assert proof.six_node_graph_pass is True
