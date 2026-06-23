@@ -358,6 +358,79 @@ def test_selector_ci_bootstrap_contract_test_only_focused() -> None:
     assert sel["test_selection_reason"] == "ci_bootstrap_focused"
 
 
+GLB019_PARTITION_SELECTOR_BOOTSTRAP_FILES = (
+    "scripts/ops/ci_test_selection_v1.py",
+    "scripts/ops/durable_completion_integration_partitions_v0.py",
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+)
+_PARTITIONS_HELPER = GLB019_PARTITION_SELECTOR_BOOTSTRAP_FILES[1]
+
+
+def test_selector_glb019_partition_bootstrap_three_file_diff_focused() -> None:
+    sel = _run_selector(*GLB019_PARTITION_SELECTOR_BOOTSTRAP_FILES)
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "ci_bootstrap_focused"
+    assert _targets(sel) == ["tests/ci/test_ci_diff_aware_test_selection_v1.py"]
+    assert sel["tests_execute_full"] == "false"
+    assert (
+        "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py"
+        not in _targets(sel)
+    )
+
+
+def test_selector_glb019_partition_bootstrap_selector_plus_helper_focused() -> None:
+    sel = _run_selector(
+        GLB019_PARTITION_SELECTOR_BOOTSTRAP_FILES[0],
+        GLB019_PARTITION_SELECTOR_BOOTSTRAP_FILES[1],
+    )
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "ci_bootstrap_focused"
+
+
+def test_selector_glb019_partition_bootstrap_helper_plus_contract_focused() -> None:
+    sel = _run_selector(
+        GLB019_PARTITION_SELECTOR_BOOTSTRAP_FILES[1],
+        GLB019_PARTITION_SELECTOR_BOOTSTRAP_FILES[2],
+    )
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "ci_bootstrap_focused"
+
+
+def test_selector_glb019_partition_bootstrap_helper_only_focused() -> None:
+    sel = _run_selector(_PARTITIONS_HELPER)
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "ci_bootstrap_focused"
+
+
+def test_selector_glb019_partition_bootstrap_plus_workflow_full() -> None:
+    sel = _run_selector(
+        *GLB019_PARTITION_SELECTOR_BOOTSTRAP_FILES,
+        ".github/workflows/ci.yml",
+    )
+    assert sel["test_selection_reason"] != "ci_bootstrap_focused"
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "ci_infra_focused"
+    assert sel["tests_execute_full"] == "false"
+
+
+def test_selector_glb019_partition_bootstrap_plus_unknown_ci_script_full() -> None:
+    sel = _run_selector(
+        *GLB019_PARTITION_SELECTOR_BOOTSTRAP_FILES,
+        "scripts/ops/ci_unknown_bootstrap_probe_v0.py",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_reason"] == "ci_bootstrap_mixed_diff_requires_full"
+
+
+def test_selector_glb019_partition_bootstrap_plus_central_prod_full() -> None:
+    sel = _run_selector(
+        *GLB019_PARTITION_SELECTOR_BOOTSTRAP_FILES,
+        "src/ops/bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_reason"] == "durable_completion_foreign_path_requires_full"
+
+
 def test_selector_ci_bootstrap_deterministic_regardless_of_file_order() -> None:
     files_a = (
         "tests/ci/test_ci_diff_aware_test_selection_v1.py",
@@ -755,6 +828,77 @@ def test_selector_glb019_graph_wiring_still_selects_integration_owner() -> None:
         _GRAPH_OWNER,
     )
     assert sel["test_selection_reason"] == "durable_completion_focused"
+    assert _INTEGRATION_OWNER in _targets(sel)
+
+
+def test_integration_partition_inventory_covers_all_nodes() -> None:
+    from scripts.ops.durable_completion_integration_partitions_v0 import (
+        ALL_PARTITIONS,
+        classify_integration_node_id,
+        collect_integration_owner_node_ids,
+        integration_partition_inventory,
+    )
+
+    nodes = collect_integration_owner_node_ids()
+    assert len(nodes) == 238
+    inventory = integration_partition_inventory()
+    assert set(inventory) <= set(ALL_PARTITIONS)
+    covered = [node for part in inventory.values() for node in part]
+    assert len(covered) == len(nodes)
+    assert len(set(covered)) == len(nodes)
+    for node in nodes:
+        assert classify_integration_node_id(node) in inventory
+
+
+def test_selector_pe21_prod_owner_partitioned_integration_nodes() -> None:
+    sel = _run_selector(
+        "src/ops/bounded_futures_testnet_position_order_reconciliation_primary_evidence_integration_contract_v0.py",
+        _GRAPH_OWNER,
+    )
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "durable_completion_focused"
+    targets = _targets(sel)
+    assert _GRAPH_OWNER in targets
+    assert _INTEGRATION_OWNER not in targets
+    assert any(t.startswith(f"{_INTEGRATION_OWNER}::test_pe21") for t in targets)
+    assert any("test_reconciliation_result_" in t for t in targets)
+
+
+def test_selector_wallclock_prod_owner_partitioned() -> None:
+    sel = _run_selector(
+        "src/ops/testnet_wallclock_duration_evidence_contract_v0.py",
+        _GRAPH_OWNER,
+    )
+    targets = _targets(sel)
+    assert _INTEGRATION_OWNER not in targets
+    assert any("wallclock" in t for t in targets)
+
+
+def test_selector_glb019_a2b_probe_partition_union_bounded() -> None:
+    from scripts.ops.durable_completion_integration_partitions_v0 import (
+        estimate_partition_seconds,
+        partitions_for_changed_files,
+    )
+
+    files = [
+        "src/ops/durable_completion_validation/validators/event_stream.py",
+        "src/ops/bounded_futures_testnet_preflight_execution_readiness_review_lifecycle_integration_contract_v0.py",
+        _GRAPH_OWNER,
+    ]
+    partitions = partitions_for_changed_files(files)
+    assert partitions is not None
+    assert "pe38_readiness" in partitions
+    assert estimate_partition_seconds(partitions) <= 840
+    sel = _run_selector(*files)
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert _INTEGRATION_OWNER not in _targets(sel)
+
+
+def test_selector_completion_facade_full_integration_owner() -> None:
+    sel = _run_selector(
+        "src/ops/bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
+        _GRAPH_OWNER,
+    )
     assert _INTEGRATION_OWNER in _targets(sel)
 
 
