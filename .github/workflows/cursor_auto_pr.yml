@@ -20,6 +20,20 @@ jobs:
   create_pr_if_missing:
     runs-on: ubuntu-latest
     steps:
+      - name: Checkout for PRE_PR enforcement
+        uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
+
+      - name: Enforce PRE_PR validation (fail-closed)
+        run: |
+          set -euo pipefail
+          git fetch origin main --depth=1
+          python3 scripts/ops/verify_pre_pr_validation_result_v0.py \
+            --result-file .cursor/PRE_PR_VALIDATION_RESULT.env \
+            --base-ref origin/main \
+            --check-diff-sha
+
       - name: Create PR if missing
         uses: actions/github-script@v7
         with:
@@ -101,11 +115,6 @@ jobs:
 
             core.info(`CREATED: PR #${pr.data.number} ${pr.data.html_url}`);
 
-      - name: Checkout for contract-only classification
-        uses: actions/checkout@v5
-        with:
-          fetch-depth: 0
-
       - name: Classify contract-only fast-lane candidate
         id: classify
         run: |
@@ -178,4 +187,3 @@ jobs:
                 );
               }
             }
-
