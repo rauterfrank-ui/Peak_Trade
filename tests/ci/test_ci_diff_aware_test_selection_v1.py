@@ -589,12 +589,12 @@ def test_selector_durable_completion_internal_validator_only_focused() -> None:
     sel = _run_selector(
         "src/ops/durable_completion_validation/validators/reconciliation.py",
         "tests/ops/test_durable_completion_validation_graph_v1.py",
-        "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
     )
     assert sel["test_selection_mode"] == "FOCUSED"
-    assert sel["test_selection_reason"] == "durable_completion_focused"
+    assert sel["test_selection_reason"] == "durable_completion_validation_graph_focused"
     targets = _targets(sel)
-    assert targets == ["tests/ops/test_durable_completion_validation_graph_v1.py"]
+    assert "tests/ops/test_durable_completion_validation_graph_v1.py" in targets
+    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" in targets
     assert (
         "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py"
         not in targets
@@ -613,7 +613,11 @@ def test_selector_pe55_fill_rebinding_bounded_focused_targets() -> None:
     assert sel["test_selection_mode"] == "FOCUSED"
     assert sel["test_selection_reason"] == "durable_completion_focused"
     targets = _targets(sel)
-    assert targets == ["tests/ops/test_durable_completion_validation_graph_v1.py"]
+    assert "tests/ops/test_durable_completion_validation_graph_v1.py" in targets
+    assert (
+        "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py"
+        in targets
+    )
     assert sel["tests_execute_full"] == "false"
     assert sel["tests_execute_no_op"] == "false"
 
@@ -621,10 +625,10 @@ def test_selector_pe55_fill_rebinding_bounded_focused_targets() -> None:
 def test_selector_pe55_fill_rebinding_import_modules_bounded() -> None:
     sel = _run_selector(*PE55_DURABLE_COMPLETION_FILL_REBINDING_FILES)
     modules = _modules(sel)
-    assert modules == ["src.ops.durable_completion_validation"]
+    assert "src.ops.durable_completion_validation" in modules
     assert (
         "src.ops.bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0"
-        not in modules
+        in modules
     )
 
 
@@ -663,12 +667,12 @@ def test_selector_pe56_graph_wiring_rebinding_bounded_focused_targets() -> None:
     assert sel["test_selection_mode"] == "FOCUSED"
     assert sel["test_selection_reason"] == "durable_completion_focused"
     targets = _targets(sel)
-    assert targets == ["tests/ops/test_durable_completion_validation_graph_v1.py"]
+    assert "tests/ops/test_durable_completion_validation_graph_v1.py" in targets
     assert (
         "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py"
-        not in targets
+        in targets
     )
-    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" not in targets
+    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" in targets
 
 
 PE60_DURABLE_COMPLETION_DELEGATION_FILES = (
@@ -684,13 +688,84 @@ def test_selector_pe60_completion_chain_delegation_rebinding_bounded_focused_tar
     assert sel["test_selection_mode"] == "FOCUSED"
     assert sel["test_selection_reason"] == "durable_completion_focused"
     targets = _targets(sel)
-    assert targets == ["tests/ops/test_durable_completion_validation_graph_v1.py"]
+    assert "tests/ops/test_durable_completion_validation_graph_v1.py" in targets
     assert (
         "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py"
-        not in targets
+        in targets
     )
+    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" in targets
     assert sel["tests_execute_full"] == "false"
     assert sel["tests_execute_no_op"] == "false"
+
+
+GLB019_A1_FOUR_FILE_DIFF = (
+    "src/ops/durable_completion_validation/models.py",
+    "src/ops/durable_completion_validation/validators/__init__.py",
+    "src/ops/durable_completion_validation/validators/event_stream.py",
+    "tests/ops/test_durable_completion_validation_graph_v1.py",
+)
+
+_INTEGRATION_OWNER = "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py"
+_GRAPH_OWNER = "tests/ops/test_durable_completion_validation_graph_v1.py"
+_CI_OWNER = "tests/ci/test_ci_diff_aware_test_selection_v1.py"
+
+
+def test_selector_glb019_a1_four_file_diff_validation_graph_focused() -> None:
+    sel = _run_selector(*GLB019_A1_FOUR_FILE_DIFF)
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "durable_completion_validation_graph_focused"
+    targets = _targets(sel)
+    assert _GRAPH_OWNER in targets
+    assert _CI_OWNER in targets
+    assert _INTEGRATION_OWNER not in targets
+    assert _modules(sel) == ["src.ops.durable_completion_validation"]
+
+
+def test_selector_glb019_validation_only_event_stream_validator_focused() -> None:
+    sel = _run_selector(
+        "src/ops/durable_completion_validation/validators/event_stream.py",
+        _GRAPH_OWNER,
+    )
+    assert sel["test_selection_reason"] == "durable_completion_validation_graph_focused"
+    assert _INTEGRATION_OWNER not in _targets(sel)
+
+
+def test_selector_glb019_validation_only_models_context_field_focused() -> None:
+    sel = _run_selector(
+        "src/ops/durable_completion_validation/models.py",
+        _GRAPH_OWNER,
+    )
+    assert sel["test_selection_reason"] == "durable_completion_validation_graph_focused"
+    assert _INTEGRATION_OWNER not in _targets(sel)
+
+
+def test_selector_glb019_completion_facade_still_selects_integration_owner() -> None:
+    sel = _run_selector(
+        "src/ops/bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
+        _GRAPH_OWNER,
+    )
+    assert sel["test_selection_reason"] == "durable_completion_focused"
+    assert _INTEGRATION_OWNER in _targets(sel)
+
+
+def test_selector_glb019_graph_wiring_still_selects_integration_owner() -> None:
+    sel = _run_selector(
+        "src/ops/durable_completion_validation/graph.py",
+        "src/ops/durable_completion_validation/validators/reconciliation.py",
+        _GRAPH_OWNER,
+    )
+    assert sel["test_selection_reason"] == "durable_completion_focused"
+    assert _INTEGRATION_OWNER in _targets(sel)
+
+
+def test_selector_glb019_mixed_validation_and_facade_selects_integration_owner() -> None:
+    sel = _run_selector(
+        "src/ops/durable_completion_validation/validators/event_stream.py",
+        "src/ops/bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
+        _GRAPH_OWNER,
+    )
+    assert sel["test_selection_reason"] == "durable_completion_focused"
+    assert _INTEGRATION_OWNER in _targets(sel)
 
 
 PR4512_MASTER_V2_BINDING_CONTRACT_FILES = (
@@ -703,8 +778,7 @@ PR4512_MASTER_V2_BINDING_CONTRACT_FILES = (
 _MASTER_V2_BINDING_OWNER = (
     "tests/ops/test_master_v2_decision_digest_completion_chain_binding_contract_v0.py"
 )
-_COMPLETION_OWNER = "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py"
-_GRAPH_OWNER = "tests/ops/test_durable_completion_validation_graph_v1.py"
+_COMPLETION_OWNER = _INTEGRATION_OWNER
 
 
 def test_selector_pr4512_master_v2_binding_contract_four_file_diff_focused() -> None:
@@ -1104,7 +1178,9 @@ def test_selector_pr4504_wallclock_binding_plus_ci_policy_includes_ci_owner() ->
 def test_selector_durable_completion_validator_rebinding_rules_unchanged() -> None:
     sel = _run_selector(*PE55_DURABLE_COMPLETION_FILL_REBINDING_FILES)
     assert sel["test_selection_mode"] == "FOCUSED"
-    assert _targets(sel) == ["tests/ops/test_durable_completion_validation_graph_v1.py"]
+    targets = _targets(sel)
+    assert "tests/ops/test_durable_completion_validation_graph_v1.py" in targets
+    assert _INTEGRATION_OWNER in targets
 
 
 def test_fast_lane_skips_full_static_sweep_when_focused() -> None:
@@ -1137,10 +1213,7 @@ def test_selector_pe55_full_diff_with_ci_workflow_rebundle_stays_focused() -> No
     targets = _targets(sel)
     assert "tests/ops/test_durable_completion_validation_graph_v1.py" in targets
     assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" in targets
-    assert (
-        "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py"
-        not in targets
-    )
+    assert _INTEGRATION_OWNER in targets
     assert sel["tests_execute_full"] == "false"
 
 
