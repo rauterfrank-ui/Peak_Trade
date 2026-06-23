@@ -3,9 +3,18 @@
 from __future__ import annotations
 
 import math
+from unittest.mock import patch
 
 import pytest
 
+from trading.master_v2.double_play_futures_input import (
+    FuturesFreshnessState,
+    FuturesInputSnapshot,
+    FuturesInstrumentMetadataStatus,
+    FuturesMarketDataProvenanceStatus,
+    FuturesReadinessStatus,
+    evaluate_futures_input_snapshot,
+)
 from trading.master_v2.double_play_state import ActiveSide, ScopeEvent, SideState
 from trading.master_v2.offline_double_play_scenario_replay_v0 import (
     OFFLINE_DOUBLE_PLAY_SCENARIO_REPLAY_OWNER,
@@ -14,7 +23,9 @@ from trading.master_v2.offline_double_play_scenario_replay_v0 import (
     OfflineDoublePlayScenarioReplayInputV0,
     OfflineDoublePlayScenarioTickV0,
     build_default_bull_bear_bull_scenario_ticks,
+    build_offline_replay_futures_input_snapshot,
     replay_result_digest_coherent,
+    resolve_replay_futures_input_snapshot,
     run_offline_double_play_scenario_replay_v0,
     validate_offline_double_play_scenario_replay_input_v0,
 )
@@ -193,3 +204,90 @@ def test_invalid_price_fail_closed() -> None:
     )
     result = run_offline_double_play_scenario_replay_v0(inp)
     assert not result.replay_pass
+
+
+def test_replay_resolves_canonical_futures_input_snapshot_for_eth_perp() -> None:
+    inp = _default_input()
+    snapshot = resolve_replay_futures_input_snapshot(inp)
+    decision = evaluate_futures_input_snapshot(snapshot)
+    assert decision.status is FuturesReadinessStatus.DATA_READY
+    assert not decision.live_authorization
+
+
+def test_replay_futures_input_admission_uses_canonical_owner() -> None:
+    inp = _default_input()
+    with patch(
+        "trading.master_v2.offline_double_play_scenario_replay_v0.evaluate_futures_input_snapshot",
+        wraps=evaluate_futures_input_snapshot,
+    ) as mocked:
+        reasons = validate_offline_double_play_scenario_replay_input_v0(inp)
+        assert not reasons
+        assert mocked.called
+
+
+def test_incomplete_futures_input_snapshot_fail_closed() -> None:
+    base = build_offline_replay_futures_input_snapshot(SYNTHETIC_FUTURES_INSTRUMENT)
+    blocked = FuturesInputSnapshot(
+        candidate=base.candidate,
+        ranking=base.ranking,
+        instrument=FuturesInstrumentMetadataStatus(
+            complete=False,
+            contract_size_known=False,
+            tick_size_known=False,
+            step_size_known=False,
+            min_qty_known=False,
+            min_notional_known=False,
+            margin_asset_known=False,
+            settlement_asset_known=False,
+            leverage_bounds_known=False,
+            missing_fields=("contract_size",),
+        ),
+        provenance=base.provenance,
+        volatility=base.volatility,
+        liquidity=base.liquidity,
+        derivatives=base.derivatives,
+        opportunity=base.opportunity,
+    )
+    inp = OfflineDoublePlayScenarioReplayInputV0(
+        selected_future_id=SYNTHETIC_FUTURES_INSTRUMENT,
+        ticks=build_default_bull_bear_bull_scenario_ticks(),
+        futures_input_snapshot=blocked,
+    )
+    reasons = validate_offline_double_play_scenario_replay_input_v0(inp)
+    assert any("futures_input_admission_blocked" in r for r in reasons)
+    result = run_offline_double_play_scenario_replay_v0(inp)
+    assert not result.replay_pass
+    assert result.summary.orders_total == 0
+
+
+def test_stale_futures_input_provenance_fail_closed() -> None:
+    base = build_offline_replay_futures_input_snapshot(SYNTHETIC_FUTURES_INSTRUMENT)
+    stale = FuturesInputSnapshot(
+        candidate=base.candidate,
+        ranking=base.ranking,
+        instrument=base.instrument,
+        provenance=FuturesMarketDataProvenanceStatus(
+            complete=True,
+            freshness_state=FuturesFreshnessState.STALE,
+            dataset_id=base.provenance.dataset_id,
+            source=base.provenance.source,
+            mark_available=True,
+            index_available=True,
+            last_available=True,
+            ohlcv_available=True,
+            funding_available=True,
+            open_interest_available=True,
+            missing_fields=(),
+        ),
+        volatility=base.volatility,
+        liquidity=base.liquidity,
+        derivatives=base.derivatives,
+        opportunity=base.opportunity,
+    )
+    inp = OfflineDoublePlayScenarioReplayInputV0(
+        selected_future_id=SYNTHETIC_FUTURES_INSTRUMENT,
+        ticks=build_default_bull_bear_bull_scenario_ticks(),
+        futures_input_snapshot=stale,
+    )
+    reasons = validate_offline_double_play_scenario_replay_input_v0(inp)
+    assert any("futures_input_admission_blocked" in r for r in reasons)

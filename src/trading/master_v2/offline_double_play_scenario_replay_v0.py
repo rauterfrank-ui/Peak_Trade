@@ -40,6 +40,21 @@ from trading.master_v2.double_play_composition import (
     RequestedSide,
     compose_double_play_decision,
 )
+from trading.master_v2.double_play_futures_input import (
+    FuturesCandidateSnapshot,
+    FuturesDerivativesProfile,
+    FuturesFreshnessState,
+    FuturesInputSnapshot,
+    FuturesInstrumentMetadataStatus,
+    FuturesLiquidityProfile,
+    FuturesMarketDataProvenanceStatus,
+    FuturesMarketType,
+    FuturesOpportunityProfile,
+    FuturesRankingSnapshot,
+    FuturesReadinessStatus,
+    FuturesVolatilityProfile,
+    evaluate_futures_input_snapshot,
+)
 from trading.master_v2.double_play_state import (
     ActiveSide,
     DynamicScopeRules,
@@ -145,6 +160,7 @@ class OfflineDoublePlayScenarioReplayInputV0:
     ticks: tuple[OfflineDoublePlayScenarioTickV0, ...]
     correlation_id_prefix: str = "offline-double-play-replay-v0"
     source_revision: str = "offline-replay-v0"
+    futures_input_snapshot: FuturesInputSnapshot | None = None
 
 
 @dataclass(frozen=True)
@@ -351,13 +367,122 @@ def _validate_instrument(selected_future_id: str) -> list[str]:
     return reasons
 
 
+def build_offline_replay_futures_input_snapshot(
+    selected_future_id: str,
+) -> FuturesInputSnapshot:
+    """Deterministic admission-ready snapshot for offline replay (no I/O)."""
+    base_currency = (
+        selected_future_id.split("-", maxsplit=1)[0]
+        if "-" in selected_future_id
+        else selected_future_id
+    )
+    return FuturesInputSnapshot(
+        candidate=FuturesCandidateSnapshot(
+            candidate_id=f"offline-replay-{selected_future_id.lower()}",
+            instrument_id=f"inst-{selected_future_id.lower()}",
+            symbol=selected_future_id,
+            market_type=FuturesMarketType.PERPETUAL,
+            exchange="offline-replay",
+            base_currency=base_currency,
+            quote_currency="USD",
+            live_authorization=False,
+        ),
+        ranking=FuturesRankingSnapshot(
+            source_universe_size=1,
+            selected_top_n=1,
+            rank=1,
+            score=1.0,
+            score_components_complete=True,
+            is_top_n_member=True,
+        ),
+        instrument=FuturesInstrumentMetadataStatus(
+            complete=True,
+            contract_size_known=True,
+            tick_size_known=True,
+            step_size_known=True,
+            min_qty_known=True,
+            min_notional_known=True,
+            margin_asset_known=True,
+            settlement_asset_known=True,
+            leverage_bounds_known=True,
+            missing_fields=(),
+        ),
+        provenance=FuturesMarketDataProvenanceStatus(
+            complete=True,
+            freshness_state=FuturesFreshnessState.FRESH,
+            dataset_id="offline-replay-v0",
+            source="offline-replay",
+            mark_available=True,
+            index_available=True,
+            last_available=True,
+            ohlcv_available=True,
+            funding_available=True,
+            open_interest_available=True,
+            missing_fields=(),
+        ),
+        volatility=FuturesVolatilityProfile(
+            realized_volatility=0.02,
+            atr_or_rolling_range=50.0,
+            volatility_regime="medium",
+            dynamic_scope_usable=True,
+        ),
+        liquidity=FuturesLiquidityProfile(
+            spread_bps=1.0,
+            average_spread_bps=1.2,
+            volume=1_000_000.0,
+            quote_volume=50_000_000.0,
+            liquidity_regime="deep",
+            spread_quality="tight",
+        ),
+        derivatives=FuturesDerivativesProfile(
+            funding_available=True,
+            funding_rate=0.0001,
+            funding_regime="neutral",
+            open_interest_available=True,
+            open_interest=1e9,
+            open_interest_regime="high",
+        ),
+        opportunity=FuturesOpportunityProfile(
+            opportunity_score=0.75,
+            inactivity_score=0.1,
+            movement_above_fee_slippage_breakeven=True,
+            chop_risk="low",
+            candidate_is_inactive=False,
+        ),
+    )
+
+
+def resolve_replay_futures_input_snapshot(
+    inp: OfflineDoublePlayScenarioReplayInputV0,
+) -> FuturesInputSnapshot:
+    if inp.futures_input_snapshot is not None:
+        return inp.futures_input_snapshot
+    return build_offline_replay_futures_input_snapshot(inp.selected_future_id)
+
+
+def futures_input_admission_fail_reasons(
+    snapshot: FuturesInputSnapshot,
+) -> list[str]:
+    decision = evaluate_futures_input_snapshot(snapshot)
+    if decision.status is FuturesReadinessStatus.DATA_READY:
+        return []
+    blocks = ",".join(reason.value for reason in decision.block_reasons)
+    return [f"futures_input_admission_blocked:{blocks or 'blocked'}"]
+
+
 def validate_offline_double_play_scenario_replay_input_v0(
     inp: OfflineDoublePlayScenarioReplayInputV0,
 ) -> list[str]:
     reasons = _validate_instrument(inp.selected_future_id)
-    if not inp.ticks:
-        reasons.append("ticks required")
+    if reasons:
         return reasons
+    admission_reasons = futures_input_admission_fail_reasons(
+        resolve_replay_futures_input_snapshot(inp)
+    )
+    if admission_reasons:
+        return admission_reasons
+    if not inp.ticks:
+        return ["ticks required"]
     prev_ts: int | None = None
     seen: set[int] = set()
     for tick in inp.ticks:
