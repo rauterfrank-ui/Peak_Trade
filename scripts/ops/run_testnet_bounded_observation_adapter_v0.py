@@ -38,6 +38,10 @@ from scripts.ops.run_paper_only_bounded_observation_adapter_v0 import (
     maybe_invoke_durable_closeout_after_archive,
     validate_durable_closeout_invoke_cli_args,
 )
+from src.ops.bounded_master_v2_testnet_completion_path_wiring_v0 import (
+    build_testnet_bounded_adapter_completion_path_wiring_section,
+    evaluate_bounded_master_v2_testnet_completion_path_wiring,
+)
 from src.ops.wallclock_session_evidence_v0 import (
     WALLCLOCK_EVIDENCE_FILENAME,
     build_wallclock_evidence_from_manifest_fields,
@@ -124,6 +128,7 @@ class AdapterPlan:
     commands: dict[str, list[str]]
     retention_steps: list[str]
     expected_artifacts: list[str]
+    completion_path_wiring: dict[str, Any]
     forbidden_paths_absent: bool = True
 
     def to_dict(self) -> dict[str, Any]:
@@ -299,8 +304,16 @@ def build_plan(
         "--json",
     ]
     archive_dest = archive_root / "runs" / "testnet" / run_id
+    completion_path_wiring = build_testnet_bounded_adapter_completion_path_wiring_section(
+        run_id=run_id,
+        mode=mode,
+    )
     retention_steps = [
         f"run bounded staging shell under {staging_root / WRAPPER_EVIDENCE_DIR}",
+        (
+            "evaluate Master-V2 completion path wiring admission "
+            "(fail-closed without real testnet market input)"
+        ),
         f"review PASS required at {review_out.parent}",
         f"generate MANIFEST.sha256 under {staging_root}",
         f"copy staging bundle to {archive_dest}",
@@ -345,6 +358,7 @@ def build_plan(
         commands=commands,
         retention_steps=retention_steps,
         expected_artifacts=expected_artifacts,
+        completion_path_wiring=completion_path_wiring,
         forbidden_paths_absent=forbidden_absent,
     )
 
@@ -528,6 +542,8 @@ def _write_closeout_artifacts(
         "review_verdict": review_payload.get("verdict"),
         "utc": now,
     }
+    wiring_admission = evaluate_bounded_master_v2_testnet_completion_path_wiring(None)
+    run_metadata["completion_path_wiring"] = wiring_admission.to_machine_lines()
     if wallclock_evidence is not None:
         run_metadata["wallclock_evidence_filename"] = WALLCLOCK_EVIDENCE_FILENAME
         run_metadata["wallclock_duration_proven"] = wallclock_evidence.get("duration_proven")
@@ -550,6 +566,8 @@ def _write_closeout_artifacts(
         "NOTION_WRITES=false",
         "PRIMARY_EVIDENCE_TIER=achieved",
     ]
+    for key, value in wiring_admission.to_machine_lines().items():
+        closeout_lines.append(f"{key}={value}")
     if wallclock_evidence is not None:
         closeout_lines.append(f"WALLCLOCK_EVIDENCE_FILENAME={WALLCLOCK_EVIDENCE_FILENAME}")
         closeout_lines.append(

@@ -38,6 +38,7 @@ FOCUSED_CATEGORIES = frozenset(
         "master_v2_binding_contract_focused",
         "offline_master_v2_double_play_scenario_replay_focused",
         "offline_master_v2_replay_six_node_validation_graph_binding_focused",
+        "bounded_master_v2_testnet_completion_path_wiring_focused",
         "bounded_network_testnet_preflight_focused",
         "runtime_wallclock_evidence_emitter_focused",
         "testnet_wallclock_duration_evidence_focused",
@@ -218,6 +219,63 @@ CANONICAL_OFFLINE_MASTER_V2_REPLAY_SIX_NODE_VALIDATION_GRAPH_BINDING_FOCUSED_TES
     "tests/ci/test_ci_diff_aware_test_selection_v1.py",
 )
 
+BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_OWNER_PATH = (
+    "src/ops/bounded_master_v2_testnet_completion_path_wiring_v0.py"
+)
+BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_TEST_OWNER = (
+    "tests/ops/test_bounded_master_v2_testnet_completion_path_wiring_contract_v0.py"
+)
+BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_ADAPTER_OWNER = (
+    "scripts/ops/run_testnet_bounded_observation_adapter_v0.py"
+)
+BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_ADAPTER_TEST_OWNER = (
+    "tests/ops/test_run_testnet_bounded_observation_adapter_v0.py"
+)
+BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_CI_POLICY_PATHS = frozenset(
+    {
+        "scripts/ops/ci_test_selection_v1.py",
+        "config/ci/file_category_mapping.yaml",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    }
+)
+BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_SCOPED_PATHS = frozenset(
+    {
+        BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_OWNER_PATH,
+        BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_TEST_OWNER,
+        BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_ADAPTER_OWNER,
+        OFFLINE_MASTER_V2_REPLAY_SIX_NODE_VALIDATION_GRAPH_BINDING_OWNER_PATH,
+        OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_OPS_TEST_OWNER,
+        DURABLE_COMPLETION_COMPLETION_INTEGRATION_TEST_OWNER,
+        *BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_CI_POLICY_PATHS,
+    }
+)
+BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_CI_SELECTOR_TARGETS: tuple[str, ...] = (
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py::test_selector_bounded_master_v2_testnet_completion_path_wiring_five_file_diff_focused",
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py::test_selector_bounded_master_v2_testnet_wiring_foreign_path_escalates_full",
+)
+BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_FOCUSED_TARGETS: tuple[str, ...] = (
+    BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_TEST_OWNER,
+    f"{BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_ADAPTER_TEST_OWNER}::test_plan_only_default_does_not_call_subprocess",
+    f"{BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_ADAPTER_TEST_OWNER}::test_plan_archive_dest_is_runs_testnet",
+    f"{BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_ADAPTER_TEST_OWNER}::test_command_plan_never_uses_forbidden_paths",
+    f"{BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_ADAPTER_TEST_OWNER}::test_adapter_plan_no_live_authorization_escalation",
+    f"{BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_ADAPTER_TEST_OWNER}::test_plan_lists_wallclock_evidence_artifact",
+    f"{BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_ADAPTER_TEST_OWNER}::test_plan_forwards_step_interval_seconds_to_staging_cmd",
+    f"{BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_ADAPTER_TEST_OWNER}::test_plan_forwards_duration_minutes_and_max_steps_unchanged",
+    f"{OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_OPS_TEST_OWNER}::test_replay_output_accepted_by_completion_binding",
+    f"{OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_OPS_TEST_OWNER}::test_partial_replay_binding_fail_closed",
+    f"{OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_OPS_TEST_OWNER}::test_decision_id_drift_fail_closed",
+    f"{OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_OPS_TEST_OWNER}::test_digest_drift_fail_closed",
+    f"{OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_OPS_TEST_OWNER}::test_selected_future_drift_fail_closed",
+    f"{OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_OPS_TEST_OWNER}::test_six_node_validation_graph_unchanged",
+    f"{OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_OPS_TEST_OWNER}::test_no_paper_shadow_testnet_live_proof_claim",
+    f"{OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_OPS_TEST_OWNER}::test_replay_sourced_six_node_validation_graph_passes",
+    f"{OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_OPS_TEST_OWNER}::test_replay_graph_binding_fail_closed_on_digest_drift",
+    f"{OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_OPS_TEST_OWNER}::test_replay_graph_binding_zero_order_boundary",
+    f"{DURABLE_COMPLETION_COMPLETION_INTEGRATION_TEST_OWNER}::test_package_marker_present",
+    f"{DURABLE_COMPLETION_COMPLETION_INTEGRATION_TEST_OWNER}::test_canonical_owners_referenced_not_duplicated",
+    f"{DURABLE_COMPLETION_COMPLETION_INTEGRATION_TEST_OWNER}::test_valid_static_proof_remains_non_authorizing",
+)
 MASTER_V2_BINDING_CONTRACT_FOCUSED_TARGETS: tuple[str, ...] = (
     f"{MASTER_V2_BINDING_CONTRACT_TEST_OWNER}::test_legacy_ops_only_reports_master_v2_binding_not_present",
     f"{MASTER_V2_BINDING_CONTRACT_TEST_OWNER}::test_complete_master_v2_binding_accepted",
@@ -1417,6 +1475,64 @@ def _try_offline_master_v2_replay_six_node_validation_graph_binding_focused(
     )
 
 
+def _is_bounded_master_v2_testnet_completion_path_wiring_scope(files: list[str]) -> bool:
+    if not files:
+        return False
+    required = {
+        BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_OWNER_PATH,
+        BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_TEST_OWNER,
+    }
+    files_set = set(files)
+    if not required.issubset(files_set):
+        return False
+    for path in files:
+        if path not in BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_SCOPED_PATHS:
+            return False
+    return True
+
+
+def _bounded_master_v2_testnet_completion_path_wiring_focused_targets(
+    files: list[str] | None = None,
+) -> tuple[str, ...]:
+    targets: list[str] = []
+    for target in BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_FOCUSED_TARGETS:
+        path, node = _split_pytest_target(target)
+        if node is None:
+            if _repo_path_exists(path):
+                targets.append(target)
+        elif _repo_pytest_target_exists(target):
+            targets.append(target)
+    if files and any(
+        path in BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_CI_POLICY_PATHS for path in files
+    ):
+        for ci_target in BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_CI_SELECTOR_TARGETS:
+            if _repo_pytest_target_exists(ci_target):
+                targets.append(ci_target)
+    if not targets:
+        return ()
+    return tuple(sorted(set(targets)))
+
+
+def _try_bounded_master_v2_testnet_completion_path_wiring_focused(
+    files: list[str],
+) -> SelectionResult | None:
+    if not _is_bounded_master_v2_testnet_completion_path_wiring_scope(files):
+        return None
+    targets = _bounded_master_v2_testnet_completion_path_wiring_focused_targets(files)
+    if not targets:
+        return None
+    return SelectionResult(
+        "FOCUSED",
+        "bounded_master_v2_testnet_completion_path_wiring_focused",
+        targets,
+        (
+            "ops.bounded_master_v2_testnet_completion_path_wiring_v0",
+            "ops.offline_master_v2_replay_six_node_validation_graph_binding_v0",
+            "src.ops.bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0",
+        ),
+    )
+
+
 def _is_offline_master_v2_double_play_scenario_replay_scope(files: list[str]) -> bool:
     if not files:
         return False
@@ -1514,6 +1630,10 @@ def categorize(path: str) -> str:
     p = PurePosixPath(path).as_posix()
     if p in OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_CATEGORIZE_PATHS:
         return "offline_master_v2_double_play_scenario_replay_focused"
+    if p == BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_OWNER_PATH:
+        return "bounded_master_v2_testnet_completion_path_wiring_focused"
+    if p == BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_TEST_OWNER:
+        return "bounded_master_v2_testnet_completion_path_wiring_focused"
     if p in DURABLE_COMPLETION_CI_POLICY_PATHS:
         return "durable_completion_focused"
     if p == MASTER_V2_BINDING_CONTRACT_TEST_OWNER:
@@ -1794,6 +1914,12 @@ def resolve_selection(
     )
     if offline_master_v2_replay_six_node is not None:
         return offline_master_v2_replay_six_node
+
+    bounded_master_v2_testnet_wiring = (
+        _try_bounded_master_v2_testnet_completion_path_wiring_focused(normalized)
+    )
+    if bounded_master_v2_testnet_wiring is not None:
+        return bounded_master_v2_testnet_wiring
 
     offline_master_v2_replay = _try_offline_master_v2_double_play_scenario_replay_focused(
         normalized
