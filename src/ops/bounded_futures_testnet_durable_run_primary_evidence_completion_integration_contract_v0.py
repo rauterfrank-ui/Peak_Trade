@@ -156,6 +156,15 @@ from src.ops.durable_completion_validation import (
     execute_proof_binding_validation_graph,
     validate_pe21_reconciliation_result_manifest_integrity,
 )
+from src.ops.durable_completion_validation.validators.event_stream import (
+    CONTRACT_VERSION as GLB019_CONTRACT_VERSION,
+    Glb019EventStreamProofBinding,
+    Glb019EventStreamValidationInput,
+    default_minimal_glb019_proof_binding,
+    default_minimal_glb019_validation_input,
+    evaluate_glb019_event_stream_validation,
+    validate_glb019_event_stream_validation_input,
+)
 from src.ops.durable_completion_validation.identity import (
     sorted_unique as _sorted_unique_from_identity,
     valid_commit_sha as _valid_commit_sha_from_identity,
@@ -316,6 +325,7 @@ _EXPECTED_CONTRACT_VERSIONS: dict[str, str] = {
     "pe37_traceability": PE37_CONTRACT_VERSION,
     "pe38_readiness_review": PE38_CONTRACT_VERSION,
     "pe25_operator_closure": PE25_CONTRACT_VERSION,
+    "glb019_event_stream": GLB019_CONTRACT_VERSION,
     "integration": CONTRACT_VERSION,
 }
 
@@ -336,6 +346,7 @@ class ContractVersionsInput:
     pe37_traceability: str
     pe38_readiness_review: str
     pe25_operator_closure: str
+    glb019_event_stream: str
     integration: str
 
 
@@ -606,6 +617,7 @@ class CompletionProofChainBinding:
     shared_traceability_identity: str
     completion_referenced_wallclock_evidence_digest: str
     completion_referenced_pe38_readiness_review_proof_digest: str
+    completion_referenced_glb019_validation_result_digest: str
     completion_referenced_master_v2_decision_id: str | None = None
     completion_referenced_master_v2_decision_digest: str | None = None
     completion_referenced_selected_future_id: str | None = None
@@ -733,6 +745,8 @@ class DurableRunPrimaryEvidenceCompletionIntegrationInput:
     pe25_closure_integration_input: OperatorClosureLifecycleIntegrationInput
     pe25_operator_closure_proof: Pe25OperatorClosureLifecycleProofBinding
     pe25_proof_lifecycle: ProofLifecycleMetadata
+    glb019_event_stream_validation_input: Glb019EventStreamValidationInput
+    glb019_event_stream_proof: Glb019EventStreamProofBinding
     completion_proof_chain: CompletionProofChainBinding
     pe16_archive: Pe16ArchiveProofBinding
     manifest_proof: ManifestProofBinding
@@ -2306,6 +2320,24 @@ def validate_durable_run_primary_evidence_completion_integration_input(
         )
     fail_reasons.extend(validate_operator_closure_lifecycle_integration_input(pe25_input))
 
+    fail_reasons.extend(
+        validate_glb019_event_stream_validation_input(
+            integration_input.glb019_event_stream_validation_input
+        )
+    )
+    glb019_proof = integration_input.glb019_event_stream_proof
+    if glb019_proof.source_revision != integration_input.source_revision:
+        fail_reasons.append(
+            "glb019_event_stream_proof: source_revision mismatch with completion input"
+        )
+    if (
+        glb019_proof.completion_identity_digest
+        != integration_input.glb019_event_stream_validation_input.completion_identity_digest
+    ):
+        fail_reasons.append(
+            "glb019_event_stream_proof: completion_identity_digest mismatch with validation input"
+        )
+
     fail_reasons.extend(_validate_completion_proof_chain(integration_input))
 
     master_v2_binding = integration_input.master_v2_decision_state_digest_binding
@@ -2431,6 +2463,10 @@ def _integration_input_dict(
         ),
         "pe25_operator_closure_proof": asdict(integration_input.pe25_operator_closure_proof),
         "pe25_proof_lifecycle": asdict(integration_input.pe25_proof_lifecycle),
+        "glb019_event_stream_validation_input": asdict(
+            integration_input.glb019_event_stream_validation_input
+        ),
+        "glb019_event_stream_proof": asdict(integration_input.glb019_event_stream_proof),
         "completion_proof_chain": asdict(integration_input.completion_proof_chain),
         "master_v2_decision_state_digest_binding": (
             asdict(integration_input.master_v2_decision_state_digest_binding)
@@ -2628,8 +2664,9 @@ def evaluate_durable_run_primary_evidence_completion_integration(
     pe25_result = evaluate_operator_closure_lifecycle_integration(
         integration_input.pe25_closure_integration_input
     )
-    from src.ops.durable_completion_validation.graph import execute_proof_binding_validation_graph
-    from src.ops.durable_completion_validation.models import ValidationContext
+    glb019_result = evaluate_glb019_event_stream_validation(
+        integration_input.glb019_event_stream_validation_input
+    )
 
     graph_result = execute_proof_binding_validation_graph(
         ValidationContext(
@@ -2639,6 +2676,7 @@ def evaluate_durable_run_primary_evidence_completion_integration(
             pe37_result=pe37_result,
             pe25_result=pe25_result,
             admission_result=admission_result,
+            glb019_result=glb019_result,
         )
     )
     fail_reasons.extend(graph_result.fail_reasons)
@@ -3103,6 +3141,9 @@ def default_minimal_completion_proof_chain(
             artifact_checksums=integration_input.artifact_checksums,
         ),
         completion_referenced_pe38_readiness_review_proof_digest=pe38_proof.integration_proof_digest,
+        completion_referenced_glb019_validation_result_digest=(
+            integration_input.glb019_event_stream_proof.validation_result_digest
+        ),
         **master_v2_refs,
     )
 
@@ -3346,6 +3387,16 @@ def default_minimal_completion_integration_input(
     )
     pe25_result = evaluate_operator_closure_lifecycle_integration(pe25_closure_input)
 
+    glb019_validation_input = default_minimal_glb019_validation_input(
+        source_revision=source_revision,
+        completion_identity_digest=completion_identity_digest,
+        manifest_identity_digest=manifest_digest,
+        run_identity_digest=run_identity_digest,
+        correlation_id=completion_identity_digest,
+    )
+    glb019_result = evaluate_glb019_event_stream_validation(glb019_validation_input)
+    glb019_proof = default_minimal_glb019_proof_binding(glb019_validation_input, glb019_result)
+
     archive_digest = hashlib.sha256(
         json.dumps(
             {
@@ -3438,6 +3489,8 @@ def default_minimal_completion_integration_input(
             closure_coherence_proven=True,
         ),
         pe25_proof_lifecycle=ProofLifecycleMetadata(lifecycle_state=PROOF_LIFECYCLE_CURRENT),
+        glb019_event_stream_validation_input=glb019_validation_input,
+        glb019_event_stream_proof=glb019_proof,
         completion_proof_chain=CompletionProofChainBinding(
             completion_referenced_pe31_proof_digest=pe31_proof.integration_proof_digest,
             completion_referenced_pe22_proof_digest=pe22_result["integration_proof_digest"],
@@ -3463,6 +3516,7 @@ def default_minimal_completion_integration_input(
                 artifact_checksums=artifact_checksums,
             ),
             completion_referenced_pe38_readiness_review_proof_digest=pe38_proof.integration_proof_digest,
+            completion_referenced_glb019_validation_result_digest=glb019_proof.validation_result_digest,
         ),
         pe16_archive=Pe16ArchiveProofBinding(
             archive_owner=PE16_ARCHIVE_OWNER,
@@ -3524,6 +3578,7 @@ def default_minimal_completion_integration_input(
             pe37_traceability=PE37_CONTRACT_VERSION,
             pe38_readiness_review=PE38_CONTRACT_VERSION,
             pe25_operator_closure=PE25_CONTRACT_VERSION,
+            glb019_event_stream=GLB019_CONTRACT_VERSION,
             integration=CONTRACT_VERSION,
         ),
     )

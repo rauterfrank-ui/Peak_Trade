@@ -163,6 +163,10 @@ from src.ops.bounded_futures_testnet_pilot_envelope_lifecycle_integration_contra
     default_minimal_integration_input as default_minimal_pe24_integration_input,
     evaluate_pilot_envelope_lifecycle_integration,
 )
+from src.ops.durable_completion_validation.validators.event_stream import (
+    BOUNDARY_OWNER as GLB019_BOUNDARY_OWNER,
+    evaluate_glb019_event_stream_validation,
+)
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 INTEGRATION_MODULE = (
@@ -3840,3 +3844,83 @@ def test_reconciliation_result_superseded_proof_lifecycle_still_fails() -> None:
     result = evaluate_durable_run_primary_evidence_completion_integration(bad)
     assert result["integration_pass"] is False
     assert any("invalid proof lifecycle state" in r for r in result["fail_reasons"])
+
+
+def test_glb019_event_stream_semantic_binding_uses_canonical_evaluator() -> None:
+    integration_text = INTEGRATION_MODULE.read_text(encoding="utf-8")
+    assert "evaluate_glb019_event_stream_validation" in integration_text
+    assert (
+        evaluate_glb019_event_stream_validation.__module__
+        == "src.ops.durable_completion_validation.validators.event_stream"
+    )
+    assert GLB019_BOUNDARY_OWNER == "glb019_event_stream_static_boundary_v0"
+
+
+def test_completion_proof_chain_glb019_digest_bound_positive() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    assert (
+        integration_input.completion_proof_chain.completion_referenced_glb019_validation_result_digest
+        == integration_input.glb019_event_stream_proof.validation_result_digest
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(integration_input)
+    assert result["integration_pass"] is True
+
+
+def test_completion_proof_chain_missing_glb019_digest_fails_closed() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        completion_proof_chain=replace(
+            integration_input.completion_proof_chain,
+            completion_referenced_glb019_validation_result_digest="",
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "completion_referenced_glb019_validation_result_digest required" in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_completion_proof_chain_glb019_digest_drift_fails_closed() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        completion_proof_chain=replace(
+            integration_input.completion_proof_chain,
+            completion_referenced_glb019_validation_result_digest="0" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "completion_referenced_glb019_validation_result_digest mismatch" in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_glb019_missing_event_class_fail_closed() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    base_input = integration_input.glb019_event_stream_validation_input
+    trimmed_events = tuple(
+        record for record in base_input.events if record.event_class != "state_transition"
+    )
+    broken_input = replace(base_input, events=trimmed_events)
+    result = evaluate_glb019_event_stream_validation(broken_input)
+    assert result["validation_pass"] is False
+    assert any("state_transition" in reason for reason in result["fail_reasons"])
+
+
+def test_glb019_proof_validation_result_digest_drift_fails_closed() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        glb019_event_stream_proof=replace(
+            integration_input.glb019_event_stream_proof,
+            validation_result_digest="0" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("glb019" in reason for reason in result["fail_reasons"])

@@ -142,6 +142,10 @@ def validate_completion_proof_chain_binding(context: ValidationContext) -> Valid
             "completion_referenced_pe38_readiness_review_proof_digest",
             chain.completion_referenced_pe38_readiness_review_proof_digest,
         ),
+        (
+            "completion_referenced_glb019_validation_result_digest",
+            chain.completion_referenced_glb019_validation_result_digest,
+        ),
     )
     for field_name, value in digest_fields:
         if not value:
@@ -224,6 +228,14 @@ def validate_completion_proof_chain_binding(context: ValidationContext) -> Valid
     ):
         fail_reasons.append(
             "completion_proof_chain: completion_referenced_pe38_readiness_review_proof_digest mismatch"
+        )
+    glb019_proof = integration_input.glb019_event_stream_proof
+    if (
+        chain.completion_referenced_glb019_validation_result_digest
+        != glb019_proof.validation_result_digest
+    ):
+        fail_reasons.append(
+            "completion_proof_chain: completion_referenced_glb019_validation_result_digest mismatch"
         )
 
     fail_reasons.extend(_validate_master_v2_completion_chain_digest_binding(context))

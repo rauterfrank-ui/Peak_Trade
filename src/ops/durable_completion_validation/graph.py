@@ -8,6 +8,7 @@ from typing import Any
 from src.ops.durable_completion_validation.identity import sorted_unique
 from src.ops.durable_completion_validation.models import ValidationContext, ValidationResult
 
+VALIDATOR_EVENT_STREAM = "event_stream"
 VALIDATOR_RECONCILIATION = "reconciliation"
 VALIDATOR_RECOVERY = "recovery"
 VALIDATOR_TRACEABILITY = "traceability"
@@ -16,12 +17,14 @@ VALIDATOR_WALLCLOCK = "wallclock"
 VALIDATOR_COMPLETION_CHAIN = "completion_chain"
 
 PROOF_BINDING_VALIDATION_GRAPH: dict[str, tuple[str, ...]] = {
-    VALIDATOR_RECONCILIATION: (),
+    VALIDATOR_EVENT_STREAM: (),
+    VALIDATOR_RECONCILIATION: (VALIDATOR_EVENT_STREAM,),
     VALIDATOR_RECOVERY: (),
     VALIDATOR_TRACEABILITY: (VALIDATOR_RECOVERY,),
     VALIDATOR_OPERATOR_CLOSURE: (VALIDATOR_TRACEABILITY, VALIDATOR_RECOVERY),
     VALIDATOR_WALLCLOCK: (),
     VALIDATOR_COMPLETION_CHAIN: (
+        VALIDATOR_EVENT_STREAM,
         VALIDATOR_OPERATOR_CLOSURE,
         VALIDATOR_TRACEABILITY,
         VALIDATOR_RECOVERY,
@@ -30,6 +33,7 @@ PROOF_BINDING_VALIDATION_GRAPH: dict[str, tuple[str, ...]] = {
 }
 
 PROOF_BINDING_VALIDATION_ORDER: tuple[str, ...] = (
+    VALIDATOR_EVENT_STREAM,
     VALIDATOR_RECONCILIATION,
     VALIDATOR_RECOVERY,
     VALIDATOR_TRACEABILITY,
@@ -64,6 +68,7 @@ def proof_binding_validation_graph_is_cycle_free() -> bool:
 def _load_validators() -> dict[str, ValidatorFn]:
     from src.ops.durable_completion_validation.validators import (
         completion_chain,
+        event_stream,
         operator_closure,
         reconciliation,
         recovery,
@@ -72,6 +77,7 @@ def _load_validators() -> dict[str, ValidatorFn]:
     )
 
     return {
+        VALIDATOR_EVENT_STREAM: event_stream.validate_glb019_event_stream_proof,
         VALIDATOR_RECONCILIATION: reconciliation.validate_reconciliation_proof_binding,
         VALIDATOR_RECOVERY: recovery.validate_recovery_proof_binding,
         VALIDATOR_TRACEABILITY: traceability.validate_traceability_proof_binding,

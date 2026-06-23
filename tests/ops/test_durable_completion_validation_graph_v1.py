@@ -19,6 +19,7 @@ from src.ops.durable_completion_validation.graph import (
     PROOF_BINDING_VALIDATION_GRAPH,
     PROOF_BINDING_VALIDATION_ORDER,
     VALIDATOR_COMPLETION_CHAIN,
+    VALIDATOR_EVENT_STREAM,
     VALIDATOR_OPERATOR_CLOSURE,
     VALIDATOR_RECONCILIATION,
     VALIDATOR_RECOVERY,
@@ -105,6 +106,7 @@ def test_graph_has_single_wallclock_validator_node() -> None:
 def test_graph_missing_validator_is_fail_closed() -> None:
     context = _minimal_context()
     partial_validators = {
+        VALIDATOR_EVENT_STREAM: lambda _ctx: ValidationResult(),
         VALIDATOR_RECONCILIATION: lambda _ctx: ValidationResult(),
         VALIDATOR_RECOVERY: lambda _ctx: ValidationResult(),
         VALIDATOR_TRACEABILITY: lambda _ctx: ValidationResult(),
@@ -125,6 +127,7 @@ def test_graph_missing_dependency_is_fail_closed() -> None:
         return ValidationResult(fail_reasons=("pe35_proof: recovery_boundary_bound must be true",))
 
     validators = {
+        VALIDATOR_EVENT_STREAM: lambda _ctx: ValidationResult(),
         VALIDATOR_RECONCILIATION: lambda _ctx: ValidationResult(),
         VALIDATOR_RECOVERY: failing_recovery,
         VALIDATOR_TRACEABILITY: lambda _ctx: ValidationResult(fail_reasons=("should not run",)),
@@ -151,6 +154,7 @@ def test_graph_exception_is_fail_closed() -> None:
         raise RuntimeError("validator exploded")
 
     validators = {
+        VALIDATOR_EVENT_STREAM: lambda _ctx: ValidationResult(),
         VALIDATOR_RECONCILIATION: exploding,
         VALIDATOR_RECOVERY: lambda _ctx: ValidationResult(),
         VALIDATOR_TRACEABILITY: lambda _ctx: ValidationResult(),
@@ -168,6 +172,7 @@ def test_graph_exception_is_fail_closed() -> None:
 def test_graph_aggregates_fail_reasons_from_executed_validators() -> None:
     context = _minimal_context()
     validators = {
+        VALIDATOR_EVENT_STREAM: lambda _ctx: ValidationResult(),
         VALIDATOR_RECONCILIATION: lambda _ctx: ValidationResult(fail_reasons=("alpha",)),
         VALIDATOR_RECOVERY: lambda _ctx: ValidationResult(fail_reasons=("beta",)),
         VALIDATOR_TRACEABILITY: lambda _ctx: ValidationResult(fail_reasons=("gamma",)),
@@ -688,3 +693,36 @@ def test_legacy_ops_only_completion_chain_master_v2_binding_not_present() -> Non
     assert not validate_completion_proof_chain_binding(
         ValidationContext(integration_input=integration_input)
     ).fail_reasons
+
+
+def test_glb019_event_stream_validator_in_graph_order() -> None:
+    assert PROOF_BINDING_VALIDATION_ORDER[0] == VALIDATOR_EVENT_STREAM
+    assert VALIDATOR_EVENT_STREAM in PROOF_BINDING_VALIDATION_GRAPH[VALIDATOR_RECONCILIATION]
+
+
+def test_glb019_missing_validation_result_fail_closed() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    broken_proof = replace(
+        integration_input.glb019_event_stream_proof,
+        validation_result_digest="0" * 64,
+    )
+    broken = replace(integration_input, glb019_event_stream_proof=broken_proof)
+    result = evaluate_durable_run_primary_evidence_completion_integration(broken)
+    assert result["integration_pass"] is False
+    assert any("glb019" in reason for reason in result["fail_reasons"])
+
+
+def test_glb019_missing_event_class_fail_closed() -> None:
+    from src.ops.durable_completion_validation.validators.event_stream import (
+        evaluate_glb019_event_stream_validation,
+    )
+
+    integration_input = default_minimal_completion_integration_input()
+    base_input = integration_input.glb019_event_stream_validation_input
+    trimmed_events = tuple(
+        record for record in base_input.events if record.event_class != "state_transition"
+    )
+    broken_input = replace(base_input, events=trimmed_events)
+    result = evaluate_glb019_event_stream_validation(broken_input)
+    assert result["validation_pass"] is False
+    assert any("state_transition" in reason for reason in result["fail_reasons"])
