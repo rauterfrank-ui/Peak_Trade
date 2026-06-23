@@ -1546,9 +1546,9 @@ def _is_master_v2_replay_display_projection_digest_completion_evidence_scope(
     return True
 
 
-def _master_v2_replay_display_projection_digest_completion_evidence_focused_targets() -> (
-    tuple[str, ...]
-):
+def _master_v2_replay_display_projection_digest_completion_evidence_focused_targets() -> tuple[
+    str, ...
+]:
     return tuple(
         path
         for path in CANONICAL_MASTER_V2_REPLAY_DISPLAY_PROJECTION_DIGEST_COMPLETION_EVIDENCE_FOCUSED_TESTS
