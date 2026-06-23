@@ -386,6 +386,21 @@ def test_selector_ci_workflow_change_self_full() -> None:
     assert sel["test_selection_reason"] == "ci_bootstrap_mixed_diff_requires_full"
 
 
+def test_selector_gap_ci_017_ci_workflow_timeout_rebundle_ci_infra_focused() -> None:
+    sel = _run_selector(
+        ".github/workflows/ci.yml",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    )
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "ci_infra_focused"
+    assert sel["tests_execute_full"] == "false"
+    assert sel["tests_execute_focused"] == "true"
+    targets = _targets(sel)
+    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" in targets
+    assert "tests/ci/test_workflows_no_pull_request_target_contract_v0.py" in targets
+    assert "tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py" in targets
+
+
 def test_selector_strategy_plus_core_full() -> None:
     sel = _run_selector(
         "src/strategies/vol_breakout.py",

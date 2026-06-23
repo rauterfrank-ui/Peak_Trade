@@ -1310,13 +1310,13 @@ def _try_ci_infra_focused(files: list[str]) -> SelectionResult | None:
         if path.startswith(".github/workflows/") and not _is_ci_infra_workflow_path(path):
             return None
     has_workflow = any(_is_ci_infra_workflow_path(f) for f in files)
-    has_selector = any(f in CI_BOOTSTRAP_FOCUSED_PATHS for f in files)
+    has_selector_script = "scripts/ops/ci_test_selection_v1.py" in files
     has_contract = any(_is_ci_infra_contract_test_path(f) for f in files)
-    if has_workflow and not (has_selector or has_contract):
+    if has_workflow and not (has_selector_script or has_contract):
         return None
-    if (has_workflow or has_selector) and not CI_INFRA_MINIMUM_CONTRACT_ANCHORS.issubset(
-        set(files)
-    ):
+    # Selector script rebundles require both anchor contract tests in the diff; pure
+    # ci.yml + infra contract rebundles run the core ci_infra focused suite.
+    if has_selector_script and not CI_INFRA_MINIMUM_CONTRACT_ANCHORS.issubset(set(files)):
         return None
     targets = _ci_infra_focused_targets(files)
     if not targets:
