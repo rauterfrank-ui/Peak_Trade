@@ -73,6 +73,13 @@ def _sample_master_v2_binding(*, source_revision: str) -> MasterV2DecisionStateD
         execution_intent_digest=_component_digest(
             "execution_intent", zero_order=True, orders_allowed=False
         ),
+        dashboard_display_projection_digest=_component_digest(
+            "dashboard_display_projection",
+            overall_status="display_warning",
+            panel_statuses=(("futures_input", "display_ready"),),
+            display_only=True,
+            live_authorization=False,
+        ),
     )
 
 
@@ -134,6 +141,10 @@ def test_complete_master_v2_binding_accepted() -> None:
         ("capital_slot_state_digest", "completion_referenced_capital_slot_state_digest"),
         ("inactivity_exit_state_digest", "completion_referenced_inactivity_exit_state_digest"),
         ("execution_intent_digest", "completion_referenced_execution_intent_digest"),
+        (
+            "dashboard_display_projection_digest",
+            "completion_referenced_dashboard_display_projection_digest",
+        ),
     ],
 )
 def test_master_v2_fields_bound_through_integration_and_validator(
@@ -165,6 +176,16 @@ def test_invalid_digest_format_fail_closed() -> None:
     bad = replace(integration_input, master_v2_decision_state_digest_binding=bad_binding)
     reasons = validate_durable_run_primary_evidence_completion_integration_input(bad)
     assert any("master_v2_decision_digest" in reason for reason in reasons)
+
+
+def test_missing_display_projection_digest_fail_closed() -> None:
+    integration_input = _with_master_v2_binding(default_minimal_completion_integration_input())
+    binding = integration_input.master_v2_decision_state_digest_binding
+    assert binding is not None
+    bad_binding = replace(binding, dashboard_display_projection_digest="")
+    bad = replace(integration_input, master_v2_decision_state_digest_binding=bad_binding)
+    reasons = validate_durable_run_primary_evidence_completion_integration_input(bad)
+    assert any("dashboard_display_projection_digest" in reason for reason in reasons)
 
 
 def test_digest_drift_fail_closed() -> None:

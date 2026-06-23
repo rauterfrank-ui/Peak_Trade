@@ -536,6 +536,7 @@ MASTER_V2_BINDING_DIGEST_FIELD_NAMES: tuple[str, ...] = (
     "capital_slot_state_digest",
     "inactivity_exit_state_digest",
     "execution_intent_digest",
+    "dashboard_display_projection_digest",
 )
 
 MASTER_V2_COMPLETION_CHAIN_BINDING_FIELD_NAMES: tuple[str, ...] = (
@@ -551,6 +552,7 @@ MASTER_V2_COMPLETION_CHAIN_BINDING_FIELD_NAMES: tuple[str, ...] = (
     "completion_referenced_capital_slot_state_digest",
     "completion_referenced_inactivity_exit_state_digest",
     "completion_referenced_execution_intent_digest",
+    "completion_referenced_dashboard_display_projection_digest",
 )
 
 MASTER_V2_BINDING_TO_COMPLETION_CHAIN_FIELD_NAMES: tuple[tuple[str, str], ...] = tuple(
@@ -583,6 +585,7 @@ class MasterV2DecisionStateDigestBinding:
     capital_slot_state_digest: str
     inactivity_exit_state_digest: str
     execution_intent_digest: str
+    dashboard_display_projection_digest: str
 
 
 @dataclass(frozen=True)
@@ -615,6 +618,7 @@ class CompletionProofChainBinding:
     completion_referenced_capital_slot_state_digest: str | None = None
     completion_referenced_inactivity_exit_state_digest: str | None = None
     completion_referenced_execution_intent_digest: str | None = None
+    completion_referenced_dashboard_display_projection_digest: str | None = None
 
 
 @dataclass(frozen=True)

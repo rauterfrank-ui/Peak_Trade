@@ -398,3 +398,19 @@ def test_replay_display_evidence_in_result_not_parallel_surface() -> None:
     assert hasattr(result, "dashboard_display_projection_digest")
     assert result.dashboard_display_snapshot is not None
     assert result.dashboard_display_projection_digest is not None
+
+
+def test_replay_binding_carries_display_projection_digest() -> None:
+    result = _run_default()
+    binding = result.master_v2_decision_state_digest_binding
+    assert binding is not None
+    assert binding.dashboard_display_projection_digest == result.dashboard_display_projection_digest
+    assert len(binding.dashboard_display_projection_digest) == 64
+
+
+def test_replay_result_digest_coherent_includes_display_projection() -> None:
+    result = _run_default()
+    assert replay_result_digest_coherent(result)
+    binding = result.master_v2_decision_state_digest_binding
+    assert binding is not None
+    assert binding.dashboard_display_projection_digest == result.dashboard_display_projection_digest

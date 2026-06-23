@@ -900,10 +900,19 @@ def run_offline_double_play_scenario_replay_v0(
         records.append(record)
         prior_volatility_estimate = rules.volatility_estimate
 
+    display_digest = (
+        _dashboard_display_projection_digest(final_dashboard_display_snapshot)
+        if final_dashboard_display_snapshot is not None
+        else None
+    )
+    if records and display_digest is None:
+        fail_reasons.append("dashboard_display_projection_digest missing")
+
     binding = build_master_v2_decision_state_digest_binding_from_replay(
         records=tuple(records),
         selected_future_id=inp.selected_future_id,
         source_revision=inp.source_revision,
+        dashboard_display_projection_digest=display_digest,
     )
 
     required_events = {
@@ -942,11 +951,6 @@ def run_offline_double_play_scenario_replay_v0(
         final_side_state=final_side,
         final_active_side=derive_active_side(final_side),
     )
-    display_digest = (
-        _dashboard_display_projection_digest(final_dashboard_display_snapshot)
-        if final_dashboard_display_snapshot is not None
-        else None
-    )
     return OfflineDoublePlayScenarioReplayResultV0(
         layer_version=OFFLINE_DOUBLE_PLAY_SCENARIO_REPLAY_LAYER_VERSION,
         replay_pass=summary.replay_pass,
@@ -965,11 +969,14 @@ def build_master_v2_decision_state_digest_binding_from_replay(
     records: tuple[OfflineDoublePlayScenarioReplayTickRecordV0, ...],
     selected_future_id: str,
     source_revision: str,
+    dashboard_display_projection_digest: str | None = None,
 ) -> MasterV2DecisionStateDigestBinding | None:
     if not records:
         return None
     final = records[-1]
     if final.decision_snapshot is None or final.master_v2_decision_digest is None:
+        return None
+    if not dashboard_display_projection_digest:
         return None
     return MasterV2DecisionStateDigestBinding(
         binding_owner=MASTER_V2_DECISION_STATE_DIGEST_BINDING_OWNER,
@@ -986,6 +993,7 @@ def build_master_v2_decision_state_digest_binding_from_replay(
         capital_slot_state_digest=final.capital_slot_state_digest,
         inactivity_exit_state_digest=final.inactivity_exit_state_digest,
         execution_intent_digest=final.execution_intent_digest,
+        dashboard_display_projection_digest=dashboard_display_projection_digest,
     )
 
 
@@ -1007,6 +1015,10 @@ def replay_result_digest_coherent(result: OfflineDoublePlayScenarioReplayResultV
         ("capital_slot_state_digest", final.capital_slot_state_digest),
         ("inactivity_exit_state_digest", final.inactivity_exit_state_digest),
         ("execution_intent_digest", final.execution_intent_digest),
+        (
+            "dashboard_display_projection_digest",
+            result.dashboard_display_projection_digest or "",
+        ),
     )
     for field, expected in pairs:
         if getattr(binding, field) != expected:

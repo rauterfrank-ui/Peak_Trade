@@ -817,6 +817,82 @@ def test_selector_offline_master_v2_double_play_foreign_path_escalates_full() ->
     assert sel["test_selection_reason"].endswith("requires_full")
 
 
+MASTER_V2_REPLAY_DISPLAY_PROJECTION_DIGEST_COMPLETION_EVIDENCE_FILES = (
+    "src/ops/bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
+    "src/trading/master_v2/offline_double_play_scenario_replay_v0.py",
+    "tests/ops/test_master_v2_decision_digest_completion_chain_binding_contract_v0.py",
+    "tests/trading/master_v2/test_offline_master_v2_double_play_scenario_replay_binding_contract_v0.py",
+    "tests/ops/test_offline_master_v2_double_play_scenario_replay_completion_binding_contract_v0.py",
+)
+
+
+def test_selector_master_v2_replay_display_projection_digest_completion_evidence_five_file_diff_focused() -> (
+    None
+):
+    sel = _run_selector(*MASTER_V2_REPLAY_DISPLAY_PROJECTION_DIGEST_COMPLETION_EVIDENCE_FILES)
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert (
+        sel["test_selection_reason"]
+        == "master_v2_replay_display_projection_digest_completion_evidence_focused"
+    )
+    assert sel["tests_execute_full"] == "false"
+    assert sel["tests_execute_focused"] == "true"
+    targets = _targets(sel)
+    assert (
+        "tests/ops/test_master_v2_decision_digest_completion_chain_binding_contract_v0.py"
+        in targets
+    )
+    assert (
+        "tests/trading/master_v2/test_offline_master_v2_double_play_scenario_replay_binding_contract_v0.py"
+        in targets
+    )
+    assert (
+        "tests/ops/test_offline_master_v2_double_play_scenario_replay_completion_binding_contract_v0.py"
+        in targets
+    )
+    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" not in targets
+
+
+def test_selector_master_v2_replay_display_projection_digest_completion_evidence_with_ci_policy_focused() -> (
+    None
+):
+    sel = _run_selector(
+        *MASTER_V2_REPLAY_DISPLAY_PROJECTION_DIGEST_COMPLETION_EVIDENCE_FILES,
+        "scripts/ops/ci_test_selection_v1.py",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    )
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert (
+        sel["test_selection_reason"]
+        == "master_v2_replay_display_projection_digest_completion_evidence_focused"
+    )
+    targets = _targets(sel)
+    assert (
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py::test_selector_master_v2_replay_display_projection_digest_completion_evidence_five_file_diff_focused"
+        in targets
+    )
+    assert (
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py::test_selector_master_v2_replay_display_projection_digest_completion_evidence_with_ci_policy_focused"
+        in targets
+    )
+    assert (
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py::test_selector_master_v2_replay_display_projection_digest_completion_evidence_foreign_path_escalates_full"
+        in targets
+    )
+    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" not in targets
+
+
+def test_selector_master_v2_replay_display_projection_digest_completion_evidence_foreign_path_escalates_full() -> (
+    None
+):
+    sel = _run_selector(
+        *MASTER_V2_REPLAY_DISPLAY_PROJECTION_DIGEST_COMPLETION_EVIDENCE_FILES,
+        "src/trading/master_v2/double_play_state.py",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_reason"].endswith("requires_full")
+
+
 OFFLINE_MASTER_V2_REPLAY_SIX_NODE_VALIDATION_GRAPH_BINDING_FILES = (
     "src/ops/offline_master_v2_replay_six_node_validation_graph_binding_v0.py",
     "tests/ops/test_offline_master_v2_double_play_scenario_replay_completion_binding_contract_v0.py",
