@@ -36,6 +36,7 @@ FOCUSED_CATEGORIES = frozenset(
         "tiny_order_focused",
         "reconciliation_primary_evidence_focused",
         "master_v2_binding_contract_focused",
+        "master_v2_replay_display_projection_digest_completion_evidence_focused",
         "offline_master_v2_double_play_scenario_replay_focused",
         "offline_master_v2_replay_six_node_validation_graph_binding_focused",
         "bounded_master_v2_testnet_completion_path_wiring_focused",
@@ -196,6 +197,25 @@ OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_CATEGORIZE_PATHS = frozenset(
 CANONICAL_OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_FOCUSED_TESTS: tuple[str, ...] = (
     OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_TRADING_TEST_OWNER,
     OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_OPS_TEST_OWNER,
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+)
+
+MASTER_V2_REPLAY_DISPLAY_PROJECTION_DIGEST_COMPLETION_EVIDENCE_SCOPED_PATHS = frozenset(
+    {
+        DURABLE_COMPLETION_FACADE_PATH,
+        OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_OWNER_PATH,
+        MASTER_V2_BINDING_CONTRACT_TEST_OWNER,
+        OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_TRADING_TEST_OWNER,
+        OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_OPS_TEST_OWNER,
+        *OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_CI_POLICY_PATHS,
+    }
+)
+CANONICAL_MASTER_V2_REPLAY_DISPLAY_PROJECTION_DIGEST_COMPLETION_EVIDENCE_FOCUSED_TESTS: tuple[
+    str, ...
+] = (
+    OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_TRADING_TEST_OWNER,
+    OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_OPS_TEST_OWNER,
+    MASTER_V2_BINDING_CONTRACT_TEST_OWNER,
     "tests/ci/test_ci_diff_aware_test_selection_v1.py",
 )
 
@@ -1506,6 +1526,56 @@ def _try_master_v2_binding_contract_focused(files: list[str]) -> SelectionResult
     )
 
 
+def _is_master_v2_replay_display_projection_digest_completion_evidence_scope(
+    files: list[str],
+) -> bool:
+    if not files:
+        return False
+    required = {
+        DURABLE_COMPLETION_FACADE_PATH,
+        OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_OWNER_PATH,
+        MASTER_V2_BINDING_CONTRACT_TEST_OWNER,
+        OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_TRADING_TEST_OWNER,
+        OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_OPS_TEST_OWNER,
+    }
+    if not required.issubset(set(files)):
+        return False
+    for path in files:
+        if path not in MASTER_V2_REPLAY_DISPLAY_PROJECTION_DIGEST_COMPLETION_EVIDENCE_SCOPED_PATHS:
+            return False
+    return True
+
+
+def _master_v2_replay_display_projection_digest_completion_evidence_focused_targets() -> (
+    tuple[str, ...]
+):
+    return tuple(
+        path
+        for path in CANONICAL_MASTER_V2_REPLAY_DISPLAY_PROJECTION_DIGEST_COMPLETION_EVIDENCE_FOCUSED_TESTS
+        if _repo_path_exists(path)
+    )
+
+
+def _try_master_v2_replay_display_projection_digest_completion_evidence_focused(
+    files: list[str],
+) -> SelectionResult | None:
+    if not _is_master_v2_replay_display_projection_digest_completion_evidence_scope(files):
+        return None
+    targets = _master_v2_replay_display_projection_digest_completion_evidence_focused_targets()
+    if not targets:
+        return None
+    return SelectionResult(
+        "FOCUSED",
+        "master_v2_replay_display_projection_digest_completion_evidence_focused",
+        targets,
+        (
+            "trading.master_v2.offline_double_play_scenario_replay_v0",
+            "src.ops.bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0",
+            "src.ops.durable_completion_validation",
+        ),
+    )
+
+
 def _is_offline_master_v2_replay_six_node_validation_graph_binding_scope(files: list[str]) -> bool:
     if not files:
         return False
@@ -2159,6 +2229,12 @@ def resolve_selection(
     master_v2_binding = _try_master_v2_binding_contract_focused(normalized)
     if master_v2_binding is not None:
         return master_v2_binding
+
+    master_v2_replay_display_projection = (
+        _try_master_v2_replay_display_projection_digest_completion_evidence_focused(normalized)
+    )
+    if master_v2_replay_display_projection is not None:
+        return master_v2_replay_display_projection
 
     offline_master_v2_replay_six_node = (
         _try_offline_master_v2_replay_six_node_validation_graph_binding_focused(normalized)
