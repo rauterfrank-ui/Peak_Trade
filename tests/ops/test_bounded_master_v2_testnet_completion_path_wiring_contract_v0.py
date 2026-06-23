@@ -13,16 +13,21 @@ from src.ops.bounded_master_v2_testnet_completion_path_wiring_v0 import (
     BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_OWNER,
     CANONICAL_MASTER_V2_REPLAY_OWNER,
     CANONICAL_RETENTION_OWNER,
+    CANONICAL_RETENTION_VERIFY_OWNER,
     CANONICAL_SIX_NODE_GRAPH_OWNER,
     CANONICAL_TESTNET_COMPLETION_OWNER,
     CANONICAL_TESTNET_RUNNER,
     TestnetCompletionPathMarketInputV0,
+    TestnetCompletionPathRetentionVerificationResultV0,
     assert_forbidden_testnet_execution_claims_absent,
     build_testnet_bounded_adapter_completion_path_wiring_section,
     evaluate_bounded_master_v2_testnet_completion_path_wiring,
+    run_canonical_retention_manifest_verification,
     validate_testnet_completion_path_market_input,
     verify_dashboard_display_projection_digest_wiring,
+    verify_testnet_completion_path_retention_wiring,
 )
+from scripts.ops.primary_evidence_retention_v0 import write_manifest_sha256
 from src.ops.offline_master_v2_replay_six_node_validation_graph_binding_v0 import (
     OfflineReplaySixNodeValidationGraphBindingResultV0,
     build_completion_integration_input_from_offline_replay_result,
@@ -75,6 +80,16 @@ def _valid_market_input() -> TestnetCompletionPathMarketInputV0:
     )
 
 
+def _valid_retention_verification(
+    tmp_path: Path,
+) -> TestnetCompletionPathRetentionVerificationResultV0:
+    archive = tmp_path / "archive"
+    archive.mkdir()
+    (archive / "RUN_METADATA.json").write_text("{}", encoding="utf-8")
+    write_manifest_sha256(archive)
+    return run_canonical_retention_manifest_verification(archive)
+
+
 @pytest.fixture(scope="module", name="replay_result")
 def _replay_result() -> OfflineDoublePlayScenarioReplayResultV0:
     replay = run_offline_double_play_scenario_replay_v0(
@@ -118,7 +133,7 @@ def test_static_wiring_flags_present_without_market_input() -> None:
     assert machine["BOUNDED_TESTNET_COMPLETION_PATH_MASTER_V2_WIRING_PRESENT"] is True
     assert machine["BOUNDED_TESTNET_COMPLETION_PATH_SIX_NODE_GRAPH_WIRING_PRESENT"] is True
     assert machine["BOUNDED_TESTNET_COMPLETION_PATH_DECISION_DIGEST_WIRING_PRESENT"] is True
-    assert machine["BOUNDED_TESTNET_COMPLETION_PATH_RETENTION_WIRING_PRESENT"] is True
+    assert machine["BOUNDED_TESTNET_COMPLETION_PATH_RETENTION_WIRING_PRESENT"] is False
     assert machine["BOUNDED_TESTNET_ZERO_ORDER_ADMISSION_BOUNDARY_PRESENT"] is True
     assert machine["MISSING_TESTNET_MARKET_INPUT_FAILS_CLOSED"] is True
     assert machine["TESTNET_RUNNER_REUSES_CANONICAL_COMPLETION_PATH"] is True
@@ -513,3 +528,92 @@ def test_identical_input_yields_identical_crosscheck_result() -> None:
     assert first.dashboard_display_projection_digest == second.dashboard_display_projection_digest
     assert first.wiring_pass == second.wiring_pass
     assert first.fail_reasons == second.fail_reasons
+
+
+def test_hasattr_only_does_not_satisfy_retention_wiring_without_executed_result() -> None:
+    result = evaluate_bounded_master_v2_testnet_completion_path_wiring(_valid_market_input())
+    assert result.bounded_testnet_completion_path_retention_wiring_present is False
+    assert any("retention verification result required" in reason for reason in result.fail_reasons)
+
+
+def test_valid_executed_retention_verification_accepted(tmp_path: Path) -> None:
+    retention = _valid_retention_verification(tmp_path)
+    result = evaluate_bounded_master_v2_testnet_completion_path_wiring(
+        _valid_market_input(),
+        retention_verification=retention,
+        expected_archive_root=retention.archive_root,
+    )
+    assert result.bounded_testnet_completion_path_retention_wiring_present is True
+    assert result.wiring_pass is True
+    assert retention.verify_owner == CANONICAL_RETENTION_VERIFY_OWNER
+
+
+def test_missing_retention_result_fails_closed() -> None:
+    reasons = verify_testnet_completion_path_retention_wiring(None)
+    assert reasons == ["retention verification result required"]
+    result = evaluate_bounded_master_v2_testnet_completion_path_wiring(_valid_market_input())
+    assert result.wiring_pass is False
+    assert any("retention verification result required" in reason for reason in result.fail_reasons)
+
+
+def test_failed_retention_result_fails_closed() -> None:
+    failed = TestnetCompletionPathRetentionVerificationResultV0(
+        verify_pass=False,
+        verify_message="MANIFEST.sha256 missing",
+        verify_owner=CANONICAL_RETENTION_VERIFY_OWNER,
+    )
+    reasons = verify_testnet_completion_path_retention_wiring(failed)
+    assert any("retention verification failed" in reason for reason in reasons)
+    result = evaluate_bounded_master_v2_testnet_completion_path_wiring(
+        _valid_market_input(),
+        retention_verification=failed,
+    )
+    assert result.wiring_pass is False
+    assert result.bounded_testnet_completion_path_retention_wiring_present is False
+
+
+def test_retention_owner_drift_fails_closed() -> None:
+    drifted = TestnetCompletionPathRetentionVerificationResultV0(
+        verify_pass=True,
+        verify_message="",
+        verify_owner="parallel.retention.owner",
+    )
+    reasons = verify_testnet_completion_path_retention_wiring(drifted)
+    assert any("retention verify owner drift" in reason for reason in reasons)
+
+
+def test_retention_archive_root_mismatch_fails_closed(tmp_path: Path) -> None:
+    retention = _valid_retention_verification(tmp_path)
+    reasons = verify_testnet_completion_path_retention_wiring(
+        retention,
+        expected_archive_root=str(tmp_path / "other"),
+    )
+    assert any("archive_root mismatch" in reason for reason in reasons)
+
+
+def test_adapter_section_binds_retention_verification_result(tmp_path: Path) -> None:
+    retention = _valid_retention_verification(tmp_path)
+    section = build_testnet_bounded_adapter_completion_path_wiring_section(
+        run_id="retention-section-test",
+        mode="plan-only",
+        market_input=_valid_market_input(),
+        retention_verification=retention,
+        expected_archive_root=retention.archive_root,
+    )
+    assert section["retention_verify_owner"] == CANONICAL_RETENTION_VERIFY_OWNER
+    assert section["retention_verification"]["verify_pass"] is True
+    assert section["machine_summary"]["BOUNDED_TESTNET_COMPLETION_PATH_RETENTION_WIRING_PRESENT"]
+
+
+def test_wiring_owner_uses_canonical_retention_verifier_not_hasattr() -> None:
+    text = WIRING_OWNER.read_text(encoding="utf-8")
+    assert "hasattr(primary_evidence_retention_v0" not in text
+    assert "verify_testnet_completion_path_retention_wiring" in text
+    assert "run_canonical_retention_manifest_verification" in text
+
+
+def test_wiring_verifier_does_not_recompute_retention_digest() -> None:
+    text = WIRING_OWNER.read_text(encoding="utf-8")
+    assert "verify_manifest_sha256" in text
+    assert "hashlib" not in text
+    assert "hashlib.sha256" not in text
