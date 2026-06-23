@@ -53,7 +53,7 @@ def _valid_timing_not_required_data(**overrides: str) -> dict[str, str]:
         TIMING_PROOF_STATUS="TIMING_PROOF_NOT_REQUIRED_JUSTIFIED",
         TIMING_PROOF_NOT_REQUIRED_JUSTIFICATION="selector NO_OP small FOCUSED",
     )
-  # remove timing pass-only fields that are not required
+    # remove timing pass-only fields that are not required
     base.pop("TIMING_WALLCLOCK_SECONDS", None)
     base.update(overrides)
     return base

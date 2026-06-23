@@ -163,7 +163,9 @@ def verify_pre_pr_validation_result(
                 f"TIMING_SAFETY_MARGIN_SECONDS={margin} below minimum {MINIMUM_SAFETY_MARGIN_SECONDS}"
             )
         if data.get("FINAL_DIFF_PATH_EQUIVALENCE_CONFIRMED", "").lower() != "true":
-            errors.append("TIMING_PROOF_REQUIRED=true requires FINAL_DIFF_PATH_EQUIVALENCE_CONFIRMED=true")
+            errors.append(
+                "TIMING_PROOF_REQUIRED=true requires FINAL_DIFF_PATH_EQUIVALENCE_CONFIRMED=true"
+            )
     else:
         if verdict != "PRE_PR_VALIDATION_PASS_TIMING_NOT_REQUIRED":
             errors.append(
@@ -171,7 +173,9 @@ def verify_pre_pr_validation_result(
                 "PRE_PR_VALIDATION_VERDICT=PRE_PR_VALIDATION_PASS_TIMING_NOT_REQUIRED"
             )
         justification = data.get("TIMING_PROOF_STATUS", "")
-        has_text_justification = bool(data.get("TIMING_PROOF_NOT_REQUIRED_JUSTIFICATION", "").strip())
+        has_text_justification = bool(
+            data.get("TIMING_PROOF_NOT_REQUIRED_JUSTIFICATION", "").strip()
+        )
         if justification != "TIMING_PROOF_NOT_REQUIRED_JUSTIFIED" and not has_text_justification:
             errors.append(
                 "TIMING_PROOF_REQUIRED=false requires TIMING_PROOF_STATUS="
