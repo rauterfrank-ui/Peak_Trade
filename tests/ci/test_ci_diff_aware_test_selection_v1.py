@@ -817,6 +817,48 @@ def test_selector_offline_master_v2_double_play_foreign_path_escalates_full() ->
     assert sel["test_selection_reason"].endswith("requires_full")
 
 
+OFFLINE_MASTER_V2_REPLAY_SIX_NODE_VALIDATION_GRAPH_BINDING_FILES = (
+    "src/ops/offline_master_v2_replay_six_node_validation_graph_binding_v0.py",
+    "tests/ops/test_offline_master_v2_double_play_scenario_replay_completion_binding_contract_v0.py",
+    "scripts/ops/ci_test_selection_v1.py",
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+)
+
+
+def test_selector_offline_master_v2_replay_six_node_validation_graph_binding_four_file_diff_focused() -> (
+    None
+):
+    sel = _run_selector(*OFFLINE_MASTER_V2_REPLAY_SIX_NODE_VALIDATION_GRAPH_BINDING_FILES)
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert (
+        sel["test_selection_reason"]
+        == "offline_master_v2_replay_six_node_validation_graph_binding_focused"
+    )
+    assert sel["tests_execute_full"] == "false"
+    assert sel["tests_execute_focused"] == "true"
+    targets = _targets(sel)
+    assert (
+        "tests/ops/test_offline_master_v2_double_play_scenario_replay_completion_binding_contract_v0.py"
+        in targets
+    )
+    assert (
+        "tests/trading/master_v2/test_offline_master_v2_double_play_scenario_replay_binding_contract_v0.py"
+        in targets
+    )
+    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" in targets
+
+
+def test_selector_offline_master_v2_replay_six_node_graph_binding_foreign_path_escalates_full() -> (
+    None
+):
+    sel = _run_selector(
+        *OFFLINE_MASTER_V2_REPLAY_SIX_NODE_VALIDATION_GRAPH_BINDING_FILES,
+        "src/trading/master_v2/double_play_state.py",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_reason"].endswith("requires_full")
+
+
 PR4504_DURABLE_COMPLETION_WALLCLOCK_BINDING_FILES = (
     "src/ops/bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
     "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
