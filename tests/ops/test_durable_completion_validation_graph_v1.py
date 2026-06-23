@@ -10,6 +10,7 @@ from dataclasses import replace
 import pytest
 
 from src.ops.bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0 import (
+    classify_master_v2_binding_presence,
     default_minimal_completion_integration_input,
     evaluate_durable_run_primary_evidence_completion_integration,
     validate_durable_run_primary_evidence_completion_integration_input,
@@ -673,3 +674,17 @@ def test_graph_seven_vs_eight_path_drift_fail_closed() -> None:
     assert any(WALLCLOCK_EVIDENCE_FILENAME in reason for reason in result["fail_reasons"])
     graph_result = execute_proof_binding_validation_graph(ValidationContext(integration_input=bad))
     assert graph_result.fail_reasons
+
+
+def test_legacy_ops_only_completion_chain_master_v2_binding_not_present() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    assert (
+        classify_master_v2_binding_presence(
+            binding=integration_input.master_v2_decision_state_digest_binding,
+            chain=integration_input.completion_proof_chain,
+        )
+        == "MASTER_V2_BINDING_NOT_PRESENT"
+    )
+    assert not validate_completion_proof_chain_binding(
+        ValidationContext(integration_input=integration_input)
+    ).fail_reasons
