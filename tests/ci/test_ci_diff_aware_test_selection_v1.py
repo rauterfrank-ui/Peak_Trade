@@ -50,18 +50,18 @@ def test_required_tests_job_has_no_job_level_if() -> None:
     assert "if:" not in tests_block.split("steps:")[0]
 
 
-def test_tests_job_timeout_25_absolute_cap() -> None:
+def test_tests_job_timeout_17_absolute_cap() -> None:
     assert re.search(
-        r"^\s*tests:\n(?:.*\n)*?\s*timeout-minutes:\s*25\s*$", _ci_text(), re.MULTILINE
+        r"^\s*tests:\n(?:.*\n)*?\s*timeout-minutes:\s*17\s*$", _ci_text(), re.MULTILINE
     )
 
 
-def test_fast_lane_job_timeout_25_absolute_cap() -> None:
+def test_fast_lane_job_timeout_17_absolute_cap() -> None:
     assert re.search(
-        r"^\s*fast-lane:\n(?:.*\n)*?\s*timeout-minutes:\s*25\s*$", _ci_text(), re.MULTILINE
+        r"^\s*fast-lane:\n(?:.*\n)*?\s*timeout-minutes:\s*17\s*$", _ci_text(), re.MULTILINE
     )
     assert (
-        "timeout-minutes: 15" not in _ci_text().split("  fast-lane:", 1)[1].split("  tests:", 1)[0]
+        "timeout-minutes: 25" not in _ci_text().split("  fast-lane:", 1)[1].split("  tests:", 1)[0]
     )
 
 
@@ -380,10 +380,36 @@ def test_selector_ci_workflow_change_self_full() -> None:
     sel = _run_selector(
         ".github/workflows/ci.yml",
         "scripts/ops/ci_test_selection_v1.py",
-        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
     )
     assert sel["test_selection_mode"] == "FULL"
     assert sel["test_selection_reason"] == "ci_bootstrap_mixed_diff_requires_full"
+
+
+def test_selector_gap_ci_017_full_pr_diff_ci_infra_focused() -> None:
+    sel = _run_selector(
+        ".github/workflows/ci.yml",
+        "scripts/ops/ci_test_selection_v1.py",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    )
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "ci_infra_focused"
+    assert sel["tests_execute_full"] == "false"
+    assert sel["tests_execute_focused"] == "true"
+
+
+def test_selector_gap_ci_017_ci_workflow_timeout_rebundle_ci_infra_focused() -> None:
+    sel = _run_selector(
+        ".github/workflows/ci.yml",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    )
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "ci_infra_focused"
+    assert sel["tests_execute_full"] == "false"
+    assert sel["tests_execute_focused"] == "true"
+    targets = _targets(sel)
+    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" in targets
+    assert "tests/ci/test_workflows_no_pull_request_target_contract_v0.py" in targets
+    assert "tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py" in targets
 
 
 def test_selector_strategy_plus_core_full() -> None:
