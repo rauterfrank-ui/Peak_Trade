@@ -850,6 +850,7 @@ def test_selector_master_v2_replay_display_projection_digest_completion_evidence
         "tests/ops/test_offline_master_v2_double_play_scenario_replay_completion_binding_contract_v0.py"
         in targets
     )
+    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" not in targets
 
 
 def test_selector_master_v2_replay_display_projection_digest_completion_evidence_with_ci_policy_focused() -> (
@@ -865,7 +866,20 @@ def test_selector_master_v2_replay_display_projection_digest_completion_evidence
         sel["test_selection_reason"]
         == "master_v2_replay_display_projection_digest_completion_evidence_focused"
     )
-    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" in _targets(sel)
+    targets = _targets(sel)
+    assert (
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py::test_selector_master_v2_replay_display_projection_digest_completion_evidence_five_file_diff_focused"
+        in targets
+    )
+    assert (
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py::test_selector_master_v2_replay_display_projection_digest_completion_evidence_with_ci_policy_focused"
+        in targets
+    )
+    assert (
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py::test_selector_master_v2_replay_display_projection_digest_completion_evidence_foreign_path_escalates_full"
+        in targets
+    )
+    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" not in targets
 
 
 def test_selector_master_v2_replay_display_projection_digest_completion_evidence_foreign_path_escalates_full() -> (

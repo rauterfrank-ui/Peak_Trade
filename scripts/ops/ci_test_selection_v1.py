@@ -210,13 +210,19 @@ MASTER_V2_REPLAY_DISPLAY_PROJECTION_DIGEST_COMPLETION_EVIDENCE_SCOPED_PATHS = fr
         *OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_CI_POLICY_PATHS,
     }
 )
-CANONICAL_MASTER_V2_REPLAY_DISPLAY_PROJECTION_DIGEST_COMPLETION_EVIDENCE_FOCUSED_TESTS: tuple[
+CANONICAL_MASTER_V2_REPLAY_DISPLAY_PROJECTION_DIGEST_COMPLETION_EVIDENCE_FOCUSED_TARGETS: tuple[
     str, ...
 ] = (
     OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_TRADING_TEST_OWNER,
     OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_OPS_TEST_OWNER,
     MASTER_V2_BINDING_CONTRACT_TEST_OWNER,
-    "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+)
+MASTER_V2_REPLAY_DISPLAY_PROJECTION_DIGEST_COMPLETION_EVIDENCE_CI_SELECTOR_TARGETS: tuple[
+    str, ...
+] = (
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py::test_selector_master_v2_replay_display_projection_digest_completion_evidence_five_file_diff_focused",
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py::test_selector_master_v2_replay_display_projection_digest_completion_evidence_with_ci_policy_focused",
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py::test_selector_master_v2_replay_display_projection_digest_completion_evidence_foreign_path_escalates_full",
 )
 
 OFFLINE_MASTER_V2_REPLAY_SIX_NODE_VALIDATION_GRAPH_BINDING_OWNER_PATH = (
@@ -1546,14 +1552,30 @@ def _is_master_v2_replay_display_projection_digest_completion_evidence_scope(
     return True
 
 
-def _master_v2_replay_display_projection_digest_completion_evidence_focused_targets() -> tuple[
-    str, ...
-]:
-    return tuple(
-        path
-        for path in CANONICAL_MASTER_V2_REPLAY_DISPLAY_PROJECTION_DIGEST_COMPLETION_EVIDENCE_FOCUSED_TESTS
-        if _repo_path_exists(path)
-    )
+def _master_v2_replay_display_projection_digest_completion_evidence_focused_targets(
+    files: list[str] | None = None,
+) -> tuple[str, ...]:
+    targets: list[str] = []
+    for (
+        target
+    ) in CANONICAL_MASTER_V2_REPLAY_DISPLAY_PROJECTION_DIGEST_COMPLETION_EVIDENCE_FOCUSED_TARGETS:
+        path, node = _split_pytest_target(target)
+        if node is None:
+            if _repo_path_exists(path):
+                targets.append(target)
+        elif _repo_pytest_target_exists(target):
+            targets.append(target)
+    if files and any(
+        path in OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_CI_POLICY_PATHS for path in files
+    ):
+        for (
+            ci_target
+        ) in MASTER_V2_REPLAY_DISPLAY_PROJECTION_DIGEST_COMPLETION_EVIDENCE_CI_SELECTOR_TARGETS:
+            if _repo_pytest_target_exists(ci_target):
+                targets.append(ci_target)
+    if not targets:
+        return ()
+    return tuple(sorted(set(targets)))
 
 
 def _try_master_v2_replay_display_projection_digest_completion_evidence_focused(
@@ -1561,7 +1583,7 @@ def _try_master_v2_replay_display_projection_digest_completion_evidence_focused(
 ) -> SelectionResult | None:
     if not _is_master_v2_replay_display_projection_digest_completion_evidence_scope(files):
         return None
-    targets = _master_v2_replay_display_projection_digest_completion_evidence_focused_targets()
+    targets = _master_v2_replay_display_projection_digest_completion_evidence_focused_targets(files)
     if not targets:
         return None
     return SelectionResult(
