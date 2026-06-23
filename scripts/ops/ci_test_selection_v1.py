@@ -1314,10 +1314,11 @@ def _try_ci_infra_focused(files: list[str]) -> SelectionResult | None:
     has_contract = any(_is_ci_infra_contract_test_path(f) for f in files)
     if has_workflow and not (has_selector_script or has_contract):
         return None
-    # Selector script rebundles require both anchor contract tests in the diff; pure
-    # ci.yml + infra contract rebundles run the core ci_infra focused suite.
+    # Selector script rebundles with foreign paths require both anchor contract tests
+    # in the diff; pure ci_infra rebundles (workflow + selector + contract) run core suite.
     if has_selector_script and not CI_INFRA_MINIMUM_CONTRACT_ANCHORS.issubset(set(files)):
-        return None
+        if not (all(_is_ci_infra_rebundle_path(f) for f in files) and has_workflow and has_contract):
+            return None
     targets = _ci_infra_focused_targets(files)
     if not targets:
         return None
