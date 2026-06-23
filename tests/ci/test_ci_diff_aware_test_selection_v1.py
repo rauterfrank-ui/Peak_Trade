@@ -758,6 +758,77 @@ def test_selector_glb019_graph_wiring_still_selects_integration_owner() -> None:
     assert _INTEGRATION_OWNER in _targets(sel)
 
 
+def test_integration_partition_inventory_covers_all_nodes() -> None:
+    from scripts.ops.durable_completion_integration_partitions_v0 import (
+        ALL_PARTITIONS,
+        classify_integration_node_id,
+        collect_integration_owner_node_ids,
+        integration_partition_inventory,
+    )
+
+    nodes = collect_integration_owner_node_ids()
+    assert len(nodes) == 238
+    inventory = integration_partition_inventory()
+    assert set(inventory) <= set(ALL_PARTITIONS)
+    covered = [node for part in inventory.values() for node in part]
+    assert len(covered) == len(nodes)
+    assert len(set(covered)) == len(nodes)
+    for node in nodes:
+        assert classify_integration_node_id(node) in inventory
+
+
+def test_selector_pe21_prod_owner_partitioned_integration_nodes() -> None:
+    sel = _run_selector(
+        "src/ops/bounded_futures_testnet_position_order_reconciliation_primary_evidence_integration_contract_v0.py",
+        _GRAPH_OWNER,
+    )
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "durable_completion_focused"
+    targets = _targets(sel)
+    assert _GRAPH_OWNER in targets
+    assert _INTEGRATION_OWNER not in targets
+    assert any(t.startswith(f"{_INTEGRATION_OWNER}::test_pe21") for t in targets)
+    assert any("test_reconciliation_result_" in t for t in targets)
+
+
+def test_selector_wallclock_prod_owner_partitioned() -> None:
+    sel = _run_selector(
+        "src/ops/testnet_wallclock_duration_evidence_contract_v0.py",
+        _GRAPH_OWNER,
+    )
+    targets = _targets(sel)
+    assert _INTEGRATION_OWNER not in targets
+    assert any("wallclock" in t for t in targets)
+
+
+def test_selector_glb019_a2b_probe_partition_union_bounded() -> None:
+    from scripts.ops.durable_completion_integration_partitions_v0 import (
+        estimate_partition_seconds,
+        partitions_for_changed_files,
+    )
+
+    files = [
+        "src/ops/durable_completion_validation/validators/event_stream.py",
+        "src/ops/bounded_futures_testnet_preflight_execution_readiness_review_lifecycle_integration_contract_v0.py",
+        _GRAPH_OWNER,
+    ]
+    partitions = partitions_for_changed_files(files)
+    assert partitions is not None
+    assert "pe38_readiness" in partitions
+    assert estimate_partition_seconds(partitions) <= 840
+    sel = _run_selector(*files)
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert _INTEGRATION_OWNER not in _targets(sel)
+
+
+def test_selector_completion_facade_full_integration_owner() -> None:
+    sel = _run_selector(
+        "src/ops/bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
+        _GRAPH_OWNER,
+    )
+    assert _INTEGRATION_OWNER in _targets(sel)
+
+
 def test_selector_glb019_mixed_validation_and_facade_selects_integration_owner() -> None:
     sel = _run_selector(
         "src/ops/durable_completion_validation/validators/event_stream.py",

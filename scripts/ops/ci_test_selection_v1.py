@@ -93,6 +93,19 @@ MARKET_DASHBOARD_CI_POLICY_PATHS = frozenset(
 
 DURABLE_COMPLETION_FACADE_PATH = "src/ops/bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py"
 
+_REPO_ROOT = Path(__file__).resolve().parents[2]
+if str(_REPO_ROOT) not in sys.path:
+    sys.path.insert(0, str(_REPO_ROOT))
+
+from scripts.ops.durable_completion_integration_partitions_v0 import (  # noqa: E402
+    INTEGRATION_TEST_OWNER,
+    expand_partitions_to_pytest_targets,
+    integration_owner_node_count,
+    integration_partition_inventory,
+    partition_union_node_count,
+    partitions_for_changed_files,
+)
+
 DURABLE_COMPLETION_CI_POLICY_PATHS = frozenset(
     {
         "scripts/ops/ci_test_selection_v1.py",
@@ -128,6 +141,25 @@ CANONICAL_DURABLE_COMPLETION_VALIDATION_GRAPH_FOCUSED_TESTS: tuple[str, ...] = (
 REQUIRED_DURABLE_COMPLETION_TEST_OWNERS: tuple[str, ...] = (
     DURABLE_COMPLETION_VALIDATION_GRAPH_TEST_OWNER,
     DURABLE_COMPLETION_INTEGRATION_TEST_OWNER,
+)
+
+DURABLE_COMPLETION_INTEGRATION_PE_PROD_PATHS = frozenset(
+    {
+        "src/ops/bounded_futures_testnet_position_order_reconciliation_primary_evidence_integration_contract_v0.py",
+        "src/ops/bounded_futures_testnet_reconciliation_review_lifecycle_integration_contract_v0.py",
+        "src/ops/bounded_futures_testnet_risk_killswitch_lifecycle_integration_contract_v0.py",
+        "src/ops/bounded_futures_testnet_capital_slot_ratchet_release_lifecycle_integration_contract_v0.py",
+        "src/ops/bounded_futures_testnet_pilot_envelope_lifecycle_integration_contract_v0.py",
+        "src/ops/bounded_futures_testnet_operator_closure_lifecycle_integration_contract_v0.py",
+        "src/ops/bounded_futures_testnet_handoff_staleness_revocation_recovery_boundary_contract_v0.py",
+        "src/ops/bounded_futures_testnet_operator_review_handoff_boundary_contract_v0.py",
+        "src/ops/bounded_futures_testnet_operator_review_admission_presentation_boundary_contract_v0.py",
+        "src/ops/bounded_futures_testnet_operator_review_admission_presentation_lifecycle_integration_contract_v0.py",
+        "src/ops/bounded_futures_testnet_operator_review_chain_durable_evidence_traceability_boundary_contract_v0.py",
+        "src/ops/bounded_futures_testnet_preflight_execution_readiness_review_lifecycle_integration_contract_v0.py",
+        "src/ops/testnet_wallclock_duration_evidence_contract_v0.py",
+        "src/ops/wallclock_session_evidence_v0.py",
+    }
 )
 
 DURABLE_COMPLETION_FULL_REFACTOR_SRC_PATHS = frozenset(
@@ -832,6 +864,27 @@ def _is_durable_completion_scoped_path(path: str) -> bool:
     return False
 
 
+def _has_durable_completion_integration_partition_scope(files: list[str]) -> bool:
+    if any(_is_durable_completion_scoped_path(f) for f in files):
+        return True
+    files_set = set(files)
+    if DURABLE_COMPLETION_VALIDATION_GRAPH_TEST_OWNER not in files_set:
+        return False
+    return any(f in DURABLE_COMPLETION_INTEGRATION_PE_PROD_PATHS for f in files)
+
+
+def _is_durable_completion_integration_partition_rebundle_path(
+    path: str,
+    *,
+    files: list[str],
+) -> bool:
+    if _is_durable_completion_rebundle_path(path):
+        return True
+    if path in DURABLE_COMPLETION_INTEGRATION_PE_PROD_PATHS:
+        return DURABLE_COMPLETION_VALIDATION_GRAPH_TEST_OWNER in files
+    return False
+
+
 def _is_durable_completion_validation_graph_only_scoped_path(path: str) -> bool:
     if path == DURABLE_COMPLETION_VALIDATION_GRAPH_TEST_OWNER:
         return True
@@ -850,6 +903,8 @@ def _requires_durable_completion_integration_test_owner(files: list[str]) -> boo
             DURABLE_COMPLETION_GRAPH_WIRING_PATH,
             DURABLE_COMPLETION_PUBLIC_API_PATH,
         }:
+            return True
+        if path in DURABLE_COMPLETION_INTEGRATION_PE_PROD_PATHS:
             return True
         if _is_durable_completion_scoped_path(
             path
@@ -976,13 +1031,34 @@ def _durable_completion_focused_targets(files: list[str] | None = None) -> tuple
     for path in REQUIRED_DURABLE_COMPLETION_TEST_OWNERS:
         if not _repo_path_exists(path):
             return ()
-    full_targets: list[str] = []
-    for path in CANONICAL_DURABLE_COMPLETION_FOCUSED_TESTS:
-        if _repo_path_exists(path):
-            full_targets.append(path)
-    if len(full_targets) < len(REQUIRED_DURABLE_COMPLETION_TEST_OWNERS):
+    contract_test = "tests/ci/test_ci_diff_aware_test_selection_v1.py"
+    targets: list[str] = [graph_owner]
+    if _repo_path_exists(contract_test):
+        targets.append(contract_test)
+    if not files:
+        targets.append(DURABLE_COMPLETION_INTEGRATION_TEST_OWNER)
+        return tuple(sorted(set(targets)))
+    if any(
+        path in files
+        for path in (DURABLE_COMPLETION_GRAPH_WIRING_PATH, DURABLE_COMPLETION_PUBLIC_API_PATH)
+    ):
+        targets.append(DURABLE_COMPLETION_INTEGRATION_TEST_OWNER)
+        return tuple(sorted(set(targets)))
+    partition_selection = partitions_for_changed_files(files)
+    if partition_selection is None:
+        targets.append(DURABLE_COMPLETION_INTEGRATION_TEST_OWNER)
+        return tuple(sorted(set(targets)))
+    if not partition_selection:
+        return tuple(sorted(set(targets)))
+    try:
+        selected_nodes = partition_union_node_count(partition_selection)
+        if selected_nodes >= integration_owner_node_count():
+            targets.append(DURABLE_COMPLETION_INTEGRATION_TEST_OWNER)
+        else:
+            targets.extend(expand_partitions_to_pytest_targets(partition_selection))
+    except (KeyError, RuntimeError, OSError, ValueError):
         return ()
-    return tuple(sorted(full_targets))
+    return tuple(sorted(set(targets)))
 
 
 def _is_preflight_assembly_scoped_path(path: str) -> bool:
@@ -1943,9 +2019,11 @@ def _try_offline_master_v2_double_play_scenario_replay_focused(
 def _try_durable_completion_focused(files: list[str]) -> SelectionResult | None:
     if not files:
         return None
-    if not any(_is_durable_completion_scoped_path(f) for f in files):
+    if not _has_durable_completion_integration_partition_scope(files):
         return None
-    if not all(_is_durable_completion_rebundle_path(f) for f in files):
+    if not all(
+        _is_durable_completion_integration_partition_rebundle_path(f, files=files) for f in files
+    ):
         return None
     targets = _durable_completion_focused_targets(files)
     if not targets:
@@ -2384,8 +2462,11 @@ def resolve_selection(
     if ci_infra is not None:
         return ci_infra
 
-    if any(_is_durable_completion_scoped_path(f) for f in normalized):
-        if not all(_is_durable_completion_rebundle_path(f) for f in normalized):
+    if _has_durable_completion_integration_partition_scope(normalized):
+        if not all(
+            _is_durable_completion_integration_partition_rebundle_path(f, files=normalized)
+            for f in normalized
+        ):
             return SelectionResult("FULL", "durable_completion_foreign_path_requires_full", ())
         return SelectionResult("FULL", "durable_completion_incomplete_or_missing_test_owner", ())
 
