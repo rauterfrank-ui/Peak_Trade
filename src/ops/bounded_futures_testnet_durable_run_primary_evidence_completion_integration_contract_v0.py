@@ -2386,6 +2386,9 @@ def _integration_input_dict(
         "non_authorizing": integration_input.non_authorizing,
         "pe16_archive": asdict(integration_input.pe16_archive),
         "pe21_proof": asdict(integration_input.pe21_proof),
+        "pe21_integration_input_digest": compute_pe21_integration_input_digest(
+            integration_input.pe21_integration_input
+        ),
         "pe31_integration_input_digest": compute_pe31_integration_input_digest(
             integration_input.pe31_reconciliation_review_integration_input
         ),
