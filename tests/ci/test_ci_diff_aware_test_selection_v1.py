@@ -793,10 +793,7 @@ OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_FILES = (
 def test_selector_offline_master_v2_double_play_scenario_replay_five_file_diff_focused() -> None:
     sel = _run_selector(*OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_FILES)
     assert sel["test_selection_mode"] == "FOCUSED"
-    assert (
-        sel["test_selection_reason"]
-        == "offline_master_v2_double_play_scenario_replay_focused"
-    )
+    assert sel["test_selection_reason"] == "offline_master_v2_double_play_scenario_replay_focused"
     assert sel["tests_execute_full"] == "false"
     assert sel["tests_execute_focused"] == "true"
     targets = _targets(sel)

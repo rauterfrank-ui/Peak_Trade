@@ -164,9 +164,7 @@ MASTER_V2_BINDING_CONTRACT_SCOPED_PATHS = frozenset(
 OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_OWNER_PATH = (
     "src/trading/master_v2/offline_double_play_scenario_replay_v0.py"
 )
-OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_TRADING_TEST_OWNER = (
-    "tests/trading/master_v2/test_offline_master_v2_double_play_scenario_replay_binding_contract_v0.py"
-)
+OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_TRADING_TEST_OWNER = "tests/trading/master_v2/test_offline_master_v2_double_play_scenario_replay_binding_contract_v0.py"
 OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_OPS_TEST_OWNER = (
     "tests/ops/test_offline_master_v2_double_play_scenario_replay_completion_binding_contract_v0.py"
 )
