@@ -21,6 +21,16 @@ from src.ops.wallclock_session_evidence_v0 import (
     WALLCLOCK_EVIDENCE_FILENAME,
     evaluate_wallclock_evidence_fields,
 )
+from src.ops.bounded_testnet_market_input_admission_wiring_v0 import (
+    REPO_GROUNDED_ETH_PERP_SELECTED_FUTURE_ID,
+    REPO_GROUNDED_ETH_PERP_VENUE_SYMBOL,
+    BoundedTestnetFuturesMarketObservationV0,
+    BoundedTestnetFuturesMarketPriceTickObservationV0,
+)
+from trading.master_v2.double_play_futures_input import (
+    FuturesFreshnessState,
+    FuturesMarketType,
+)
 
 ROOT = Path(__file__).resolve().parent.parent.parent
 ADAPTER_SCRIPT = ROOT / "scripts" / "ops" / "run_testnet_bounded_observation_adapter_v0.py"
@@ -28,6 +38,12 @@ REVIEW_SCRIPT = ROOT / "scripts" / "ops" / "review_testnet_bounded_observation_e
 STAGING_SCRIPT = ROOT / "scripts" / "ops" / "run_testnet_bounded_evidence_staging_v0.sh"
 APPROVAL_FIXTURE = ROOT / "tests" / "fixtures" / "ops" / "testnet_adapter_stage3_approval_sample.md"
 ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
+SELECTOR = ROOT / "scripts" / "ops" / "ci_test_selection_v1.py"
+CLOSEOUT_BINDING_FILES = (
+    "scripts/ops/run_testnet_bounded_observation_adapter_v0.py",
+    "tests/ops/test_run_testnet_bounded_observation_adapter_v0.py",
+    "scripts/ops/ci_test_selection_v1.py",
+)
 
 
 def _load_module(script: Path, name: str):
@@ -1096,3 +1112,176 @@ def test_staging_shell_zero_order_network_disabled_unchanged(tmp_path: Path) -> 
     lowered = STAGING_SCRIPT.read_text(encoding="utf-8").lower()
     assert "curl" not in lowered
     assert "wget" not in lowered
+
+
+def _valid_market_price_tick(
+    *,
+    tick_index: int = 0,
+    timestamp_ms: int = 1_700_000_000_000,
+    mark_price: float = 2500.0,
+    sequence: int = 1,
+) -> BoundedTestnetFuturesMarketPriceTickObservationV0:
+    return BoundedTestnetFuturesMarketPriceTickObservationV0(
+        tick_index=tick_index,
+        timestamp_ms=timestamp_ms,
+        mark_price=mark_price,
+        sequence=sequence,
+    )
+
+
+def _valid_market_observation(
+    *,
+    price_ticks: tuple[BoundedTestnetFuturesMarketPriceTickObservationV0, ...] | None = None,
+    **overrides: object,
+) -> BoundedTestnetFuturesMarketObservationV0:
+    ticks = price_ticks or (_valid_market_price_tick(),)
+    base = {
+        "selected_future_id": REPO_GROUNDED_ETH_PERP_SELECTED_FUTURE_ID,
+        "venue_symbol": REPO_GROUNDED_ETH_PERP_VENUE_SYMBOL,
+        "exchange": "kraken_futures",
+        "market_type": FuturesMarketType.PERPETUAL,
+        "source_run_id": "testnet-closeout-binding-run",
+        "dataset_id": "testnet-bounded-observation-v0",
+        "price_source": "testnet_bounded_observation",
+        "freshness_state": FuturesFreshnessState.FRESH,
+        "observed_at_utc": "2026-06-23T00:00:00Z",
+        "price_timestamp_utc": "2026-06-23T00:00:00Z",
+        "mark_price_available": True,
+        "last_price_available": True,
+        "index_price_available": True,
+        "price_ticks": ticks,
+    }
+    base.update(overrides)
+    return BoundedTestnetFuturesMarketObservationV0(**base)
+
+
+def _execute_with_mocked_runner(
+    mod,
+    staging: Path,
+    archive: Path,
+    *,
+    market_observation: BoundedTestnetFuturesMarketObservationV0 | None = None,
+) -> int:
+    return mod.main(
+        _base_argv(staging, archive)
+        + [
+            "--execute",
+            "--approval-record",
+            str(APPROVAL_FIXTURE),
+            "--no-strict-repo-clean",
+        ],
+        subprocess_runner=_mock_execute_runner(staging),
+        prerequisite_checker=lambda _root: (True, ""),
+        repo_clean_checker=lambda _root: (True, ""),
+        market_observation=market_observation,
+    )
+
+
+def test_closeout_without_market_observation_fail_closed(tmp_path: Path) -> None:
+    mod = _load_adapter()
+    staging = _staging(tmp_path)
+    archive = _durable_archive(tmp_path)
+    rc = _execute_with_mocked_runner(mod, staging, archive)
+    assert rc == 0
+    metadata = json.loads((staging / "RUN_METADATA.json").read_text(encoding="utf-8"))
+    wiring = metadata["completion_path_wiring"]
+    assert metadata["market_input_bound"] is False
+    assert wiring["MISSING_TESTNET_MARKET_INPUT_FAILS_CLOSED"] is True
+    closeout = (staging / "CLOSEOUT.md").read_text(encoding="utf-8")
+    assert "MISSING_TESTNET_MARKET_INPUT_FAILS_CLOSED=True" in closeout
+    assert "TESTNET_EXECUTES_CANONICAL_MASTER_V2=False" in closeout
+
+
+def test_closeout_forwards_validated_market_observation(tmp_path: Path) -> None:
+    mod = _load_adapter()
+    staging = _staging(tmp_path)
+    archive = _durable_archive(tmp_path)
+    observation = _valid_market_observation(
+        price_ticks=(
+            _valid_market_price_tick(tick_index=0, timestamp_ms=1_700_000_000_000, sequence=1),
+            _valid_market_price_tick(
+                tick_index=1,
+                timestamp_ms=1_700_000_060_000,
+                mark_price=2501.0,
+                sequence=2,
+            ),
+        )
+    )
+    rc = _execute_with_mocked_runner(mod, staging, archive, market_observation=observation)
+    assert rc == 0
+    metadata = json.loads((staging / "RUN_METADATA.json").read_text(encoding="utf-8"))
+    plan_wiring = mod.build_plan(
+        mode="execute",
+        staging_root=staging,
+        archive_root=archive,
+        repo_root=ROOT,
+        duration_minutes=10,
+        max_steps=120,
+        step_interval_seconds=0.0,
+        run_id="testnet_bounded_observation_test_run",
+        market_observation=observation,
+    ).completion_path_wiring
+    closeout_wiring = metadata["completion_path_wiring"]
+    assert metadata["market_input_bound"] is True
+    assert closeout_wiring["MISSING_TESTNET_MARKET_INPUT_FAILS_CLOSED"] is False
+    assert (
+        closeout_wiring["BOUNDED_TESTNET_COMPLETION_PATH_MASTER_V2_WIRING_PRESENT"]
+        == plan_wiring["machine_summary"][
+            "BOUNDED_TESTNET_COMPLETION_PATH_MASTER_V2_WIRING_PRESENT"
+        ]
+    )
+    assert closeout_wiring["ORDERS_TOTAL"] == 0
+    assert closeout_wiring["TESTNET_EXECUTES_CANONICAL_MASTER_V2"] is False
+
+
+def test_closeout_stale_market_observation_fail_closed(tmp_path: Path) -> None:
+    mod = _load_adapter()
+    staging = _staging(tmp_path)
+    archive = _durable_archive(tmp_path)
+    observation = _valid_market_observation(freshness_state=FuturesFreshnessState.STALE)
+    rc = _execute_with_mocked_runner(mod, staging, archive, market_observation=observation)
+    assert rc == 0
+    metadata = json.loads((staging / "RUN_METADATA.json").read_text(encoding="utf-8"))
+    assert metadata["market_input_bound"] is False
+    assert metadata["completion_path_wiring"]["MISSING_TESTNET_MARKET_INPUT_FAILS_CLOSED"] is True
+
+
+def test_staging_execute_without_market_observation_remains_non_authorizing(tmp_path: Path) -> None:
+    mod = _load_adapter()
+    staging = _staging(tmp_path)
+    archive = _durable_archive(tmp_path)
+    rc = _execute_with_mocked_runner(mod, staging, archive)
+    assert rc == 0
+    closeout = (staging / "CLOSEOUT.md").read_text(encoding="utf-8")
+    assert "TESTNET_AUTHORIZED=false" in closeout
+    assert "START_TESTNET_NOW=false" in closeout
+    metadata = json.loads((staging / "RUN_METADATA.json").read_text(encoding="utf-8"))
+    assert metadata["market_input_bound"] is False
+
+
+def _run_selector(*files: str) -> dict[str, str]:
+    cmd = [sys.executable, str(SELECTOR), "--event-name", "pull_request", "--files", *files]
+    out = subprocess.check_output(cmd, text=True, cwd=str(ROOT))
+    result: dict[str, str] = {}
+    for line in out.splitlines():
+        key, _, value = line.partition("=")
+        result[key] = value
+    return result
+
+
+def test_ci_selector_closeout_binding_five_file_diff_focused() -> None:
+    sel = _run_selector(*CLOSEOUT_BINDING_FILES)
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert (
+        sel["test_selection_reason"]
+        == "bounded_testnet_execute_path_market_observation_closeout_binding_focused"
+    )
+    assert sel["tests_execute_full"] == "false"
+    assert sel["tests_execute_focused"] == "true"
+    targets = sorted(sel.get("focused_pytest_targets", "").split())
+    assert (
+        "tests/ops/test_run_testnet_bounded_observation_adapter_v0.py::test_closeout_forwards_validated_market_observation"
+        in targets
+    )
+    assert all("::test_" in target for target in targets if not target.endswith(".py"))
+    assert len(targets) >= 8
