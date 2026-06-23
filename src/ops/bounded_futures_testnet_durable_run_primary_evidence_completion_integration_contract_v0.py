@@ -23,6 +23,7 @@ from __future__ import annotations
 import hashlib
 import json
 import re
+from collections.abc import Mapping
 from dataclasses import asdict, dataclass, replace
 from pathlib import Path
 from typing import Any
@@ -520,6 +521,67 @@ class Pe25OperatorClosureLifecycleProofBinding:
     closure_coherence_proven: bool
 
 
+MASTER_V2_DECISION_STATE_DIGEST_BINDING_OWNER = "master_v2_decision_state_digest_binding.v0"
+
+MASTER_V2_BINDING_DIGEST_FIELD_NAMES: tuple[str, ...] = (
+    "master_v2_decision_id",
+    "master_v2_decision_digest",
+    "selected_future_id",
+    "bull_layer_state_digest",
+    "bear_layer_state_digest",
+    "active_side_digest",
+    "dynamic_scope_state_digest",
+    "hysteresis_cooldown_state_digest",
+    "killswitch_state_digest",
+    "capital_slot_state_digest",
+    "inactivity_exit_state_digest",
+    "execution_intent_digest",
+)
+
+MASTER_V2_COMPLETION_CHAIN_BINDING_FIELD_NAMES: tuple[str, ...] = (
+    "completion_referenced_master_v2_decision_id",
+    "completion_referenced_master_v2_decision_digest",
+    "completion_referenced_selected_future_id",
+    "completion_referenced_bull_layer_state_digest",
+    "completion_referenced_bear_layer_state_digest",
+    "completion_referenced_active_side_digest",
+    "completion_referenced_dynamic_scope_state_digest",
+    "completion_referenced_hysteresis_cooldown_state_digest",
+    "completion_referenced_killswitch_state_digest",
+    "completion_referenced_capital_slot_state_digest",
+    "completion_referenced_inactivity_exit_state_digest",
+    "completion_referenced_execution_intent_digest",
+)
+
+MASTER_V2_BINDING_TO_COMPLETION_CHAIN_FIELD_NAMES: tuple[tuple[str, str], ...] = tuple(
+    zip(
+        MASTER_V2_BINDING_DIGEST_FIELD_NAMES,
+        MASTER_V2_COMPLETION_CHAIN_BINDING_FIELD_NAMES,
+        strict=True,
+    )
+)
+
+
+@dataclass(frozen=True)
+class MasterV2DecisionStateDigestBinding:
+    """Explicit Master-V2 decision/state digest binding for completion proof chain (non-authorizing)."""
+
+    binding_owner: str
+    source_revision: str
+    master_v2_decision_id: str
+    master_v2_decision_digest: str
+    selected_future_id: str
+    bull_layer_state_digest: str
+    bear_layer_state_digest: str
+    active_side_digest: str
+    dynamic_scope_state_digest: str
+    hysteresis_cooldown_state_digest: str
+    killswitch_state_digest: str
+    capital_slot_state_digest: str
+    inactivity_exit_state_digest: str
+    execution_intent_digest: str
+
+
 @dataclass(frozen=True)
 class CompletionProofChainBinding:
     completion_referenced_pe31_proof_digest: str
@@ -538,6 +600,18 @@ class CompletionProofChainBinding:
     shared_traceability_identity: str
     completion_referenced_wallclock_evidence_digest: str
     completion_referenced_pe38_readiness_review_proof_digest: str
+    completion_referenced_master_v2_decision_id: str | None = None
+    completion_referenced_master_v2_decision_digest: str | None = None
+    completion_referenced_selected_future_id: str | None = None
+    completion_referenced_bull_layer_state_digest: str | None = None
+    completion_referenced_bear_layer_state_digest: str | None = None
+    completion_referenced_active_side_digest: str | None = None
+    completion_referenced_dynamic_scope_state_digest: str | None = None
+    completion_referenced_hysteresis_cooldown_state_digest: str | None = None
+    completion_referenced_killswitch_state_digest: str | None = None
+    completion_referenced_capital_slot_state_digest: str | None = None
+    completion_referenced_inactivity_exit_state_digest: str | None = None
+    completion_referenced_execution_intent_digest: str | None = None
 
 
 @dataclass(frozen=True)
@@ -668,6 +742,63 @@ class DurableRunPrimaryEvidenceCompletionIntegrationInput:
     futures_only: bool = True
     environment: str = ENVIRONMENT_TESTNET
     non_authorizing: bool = True
+    master_v2_decision_state_digest_binding: MasterV2DecisionStateDigestBinding | None = None
+
+
+def _canonical_sha256_digest_payload(payload: dict[str, Any]) -> str:
+    return hashlib.sha256(
+        json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+
+
+def compute_master_v2_decision_digest_from_snapshot(snapshot: Mapping[str, Any]) -> str:
+    """Canonical digest for an explicit Master-V2 decision packet snapshot (no trading execution)."""
+    return _canonical_sha256_digest_payload(
+        {
+            "hash_algorithm": HASH_ALGORITHM,
+            "master_v2_decision_snapshot": dict(snapshot),
+        }
+    )
+
+
+def compute_master_v2_component_state_digest(
+    *,
+    component: str,
+    state: Mapping[str, Any],
+) -> str:
+    """Canonical digest for an explicit Master-V2 state component payload."""
+    return _canonical_sha256_digest_payload(
+        {
+            "component": component,
+            "hash_algorithm": HASH_ALGORITHM,
+            "state": dict(state),
+        }
+    )
+
+
+def master_v2_decision_state_digest_binding_is_present(
+    binding: MasterV2DecisionStateDigestBinding | None,
+) -> bool:
+    return binding is not None
+
+
+def master_v2_completion_chain_binding_is_present(chain: CompletionProofChainBinding) -> bool:
+    return any(
+        getattr(chain, field_name) is not None
+        for field_name in MASTER_V2_COMPLETION_CHAIN_BINDING_FIELD_NAMES
+    )
+
+
+def classify_master_v2_binding_presence(
+    *,
+    binding: MasterV2DecisionStateDigestBinding | None,
+    chain: CompletionProofChainBinding,
+) -> str:
+    binding_present = master_v2_decision_state_digest_binding_is_present(binding)
+    chain_present = master_v2_completion_chain_binding_is_present(chain)
+    if not binding_present and not chain_present:
+        return "MASTER_V2_BINDING_NOT_PRESENT"
+    return "MASTER_V2_BINDING_PRESENT"
 
 
 def _sorted_unique(items: list[str]) -> list[str]:
@@ -1886,6 +2017,29 @@ def _build_pe25_closure_input_from_completion(
     )
 
 
+def _validate_master_v2_decision_state_digest_binding_struct(
+    binding: MasterV2DecisionStateDigestBinding,
+    *,
+    source_revision: str,
+) -> list[str]:
+    fail_reasons: list[str] = []
+    prefix = "master_v2_decision_state_digest_binding"
+    if binding.binding_owner != MASTER_V2_DECISION_STATE_DIGEST_BINDING_OWNER:
+        fail_reasons.append(
+            f"{prefix}: binding_owner must be {MASTER_V2_DECISION_STATE_DIGEST_BINDING_OWNER!r}"
+        )
+    if binding.source_revision != source_revision:
+        fail_reasons.append(f"{prefix}: source_revision mismatch")
+    for field_name in MASTER_V2_BINDING_DIGEST_FIELD_NAMES:
+        value = getattr(binding, field_name)
+        if not value:
+            fail_reasons.append(f"{prefix}: {field_name} required when binding present")
+        elif field_name.endswith("_digest"):
+            if not _valid_sha256_digest(value):
+                fail_reasons.append(f"{prefix}: {field_name} must be 64-char lowercase sha256 hex")
+    return fail_reasons
+
+
 def _validate_completion_proof_chain(
     integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
 ) -> list[str]:
@@ -2147,6 +2301,15 @@ def validate_durable_run_primary_evidence_completion_integration_input(
 
     fail_reasons.extend(_validate_completion_proof_chain(integration_input))
 
+    master_v2_binding = integration_input.master_v2_decision_state_digest_binding
+    if master_v2_binding is not None:
+        fail_reasons.extend(
+            _validate_master_v2_decision_state_digest_binding_struct(
+                master_v2_binding,
+                source_revision=integration_input.source_revision,
+            )
+        )
+
     fail_reasons.extend(
         _validate_pe16_archive_proof(
             integration_input.pe16_archive,
@@ -2262,6 +2425,11 @@ def _integration_input_dict(
         "pe25_operator_closure_proof": asdict(integration_input.pe25_operator_closure_proof),
         "pe25_proof_lifecycle": asdict(integration_input.pe25_proof_lifecycle),
         "completion_proof_chain": asdict(integration_input.completion_proof_chain),
+        "master_v2_decision_state_digest_binding": (
+            asdict(integration_input.master_v2_decision_state_digest_binding)
+            if integration_input.master_v2_decision_state_digest_binding is not None
+            else None
+        ),
         "post_write_verification": asdict(integration_input.post_write_verification),
         "primary_evidence_identity": asdict(integration_input.primary_evidence_identity),
         "proof_lifecycle": asdict(integration_input.proof_lifecycle),
@@ -2879,6 +3047,15 @@ def _resolve_wallclock_evidence_artifact_digest(
     return checksum_by_path[wallclock_proof.artifact_filename]
 
 
+def _master_v2_completion_chain_references(
+    binding: MasterV2DecisionStateDigestBinding,
+) -> dict[str, str]:
+    return {
+        chain_field: getattr(binding, binding_field)
+        for binding_field, chain_field in MASTER_V2_BINDING_TO_COMPLETION_CHAIN_FIELD_NAMES
+    }
+
+
 def default_minimal_completion_proof_chain(
     integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
 ) -> CompletionProofChainBinding:
@@ -2892,6 +3069,11 @@ def default_minimal_completion_proof_chain(
     pe25_proof = integration_input.pe25_operator_closure_proof
     pe21_proof = integration_input.pe21_proof
     pe31_pe21_proof = integration_input.pe31_reconciliation_review_integration_input.pe21_reconciliation_primary_evidence_integration_proof
+    master_v2_refs: dict[str, str] = {}
+    if integration_input.master_v2_decision_state_digest_binding is not None:
+        master_v2_refs = _master_v2_completion_chain_references(
+            integration_input.master_v2_decision_state_digest_binding
+        )
     return CompletionProofChainBinding(
         completion_referenced_pe31_proof_digest=pe31_proof.integration_proof_digest,
         completion_referenced_pe22_proof_digest=pe22_proof.integration_proof_digest,
@@ -2914,6 +3096,7 @@ def default_minimal_completion_proof_chain(
             artifact_checksums=integration_input.artifact_checksums,
         ),
         completion_referenced_pe38_readiness_review_proof_digest=pe38_proof.integration_proof_digest,
+        **master_v2_refs,
     )
 
 

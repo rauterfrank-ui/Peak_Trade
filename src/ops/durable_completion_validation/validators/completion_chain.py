@@ -2,11 +2,79 @@
 
 from __future__ import annotations
 
+from src.ops.bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0 import (
+    MASTER_V2_BINDING_TO_COMPLETION_CHAIN_FIELD_NAMES,
+    MASTER_V2_DECISION_STATE_DIGEST_BINDING_OWNER,
+    classify_master_v2_binding_presence,
+    master_v2_completion_chain_binding_is_present,
+    master_v2_decision_state_digest_binding_is_present,
+)
 from src.ops.bounded_futures_testnet_position_order_reconciliation_primary_evidence_integration_contract_v0 import (
     compute_integration_input_digest as compute_pe21_integration_input_digest,
 )
 from src.ops.durable_completion_validation.identity import sorted_unique, valid_sha256_digest
 from src.ops.durable_completion_validation.models import ValidationContext, ValidationResult
+
+
+def _validate_master_v2_completion_chain_digest_binding(context: ValidationContext) -> list[str]:
+    """Optional Master-V2 digest binding: absent for legacy ops-only; complete-or-fail when present."""
+    fail_reasons: list[str] = []
+    integration_input = context.integration_input
+    chain = integration_input.completion_proof_chain
+    binding = integration_input.master_v2_decision_state_digest_binding
+    prefix = "completion_proof_chain.master_v2"
+    binding_present = master_v2_decision_state_digest_binding_is_present(binding)
+    chain_present = master_v2_completion_chain_binding_is_present(chain)
+
+    if not binding_present and not chain_present:
+        return fail_reasons
+
+    if binding_present != chain_present:
+        fail_reasons.append(
+            f"{prefix}: partial binding forbidden (integration and completion chain must both "
+            "provide complete Master-V2 digest references or neither)"
+        )
+        return fail_reasons
+
+    assert binding is not None
+    if binding.binding_owner != MASTER_V2_DECISION_STATE_DIGEST_BINDING_OWNER:
+        fail_reasons.append(
+            f"{prefix}: binding_owner must be {MASTER_V2_DECISION_STATE_DIGEST_BINDING_OWNER!r}"
+        )
+    if binding.source_revision != integration_input.source_revision:
+        fail_reasons.append(f"{prefix}: source_revision mismatch")
+
+    chain_values = [
+        getattr(chain, chain_field)
+        for _, chain_field in MASTER_V2_BINDING_TO_COMPLETION_CHAIN_FIELD_NAMES
+    ]
+    if any(value is None for value in chain_values):
+        fail_reasons.append(f"{prefix}: all Master-V2 completion chain reference fields required")
+    if any(value is not None for value in chain_values) and any(
+        value is None for value in chain_values
+    ):
+        fail_reasons.append(f"{prefix}: partial Master-V2 completion chain reference forbidden")
+
+    for binding_field, chain_field in MASTER_V2_BINDING_TO_COMPLETION_CHAIN_FIELD_NAMES:
+        chain_value = getattr(chain, chain_field)
+        binding_value = getattr(binding, binding_field)
+        if chain_value != binding_value:
+            fail_reasons.append(f"{prefix}: {chain_field} mismatch with {binding_field}")
+        if binding_field.endswith("_digest"):
+            if not valid_sha256_digest(binding_value):
+                fail_reasons.append(
+                    f"{prefix}: {binding_field} must be 64-char lowercase sha256 hex"
+                )
+        elif not binding_value:
+            fail_reasons.append(f"{prefix}: {binding_field} required when binding present")
+
+    if (
+        classify_master_v2_binding_presence(binding=binding, chain=chain)
+        != "MASTER_V2_BINDING_PRESENT"
+    ):
+        fail_reasons.append(f"{prefix}: binding classification must be MASTER_V2_BINDING_PRESENT")
+
+    return fail_reasons
 
 
 def validate_completion_proof_chain_binding(context: ValidationContext) -> ValidationResult:
@@ -157,5 +225,7 @@ def validate_completion_proof_chain_binding(context: ValidationContext) -> Valid
         fail_reasons.append(
             "completion_proof_chain: completion_referenced_pe38_readiness_review_proof_digest mismatch"
         )
+
+    fail_reasons.extend(_validate_master_v2_completion_chain_digest_binding(context))
 
     return ValidationResult(fail_reasons=tuple(sorted_unique(fail_reasons)))
