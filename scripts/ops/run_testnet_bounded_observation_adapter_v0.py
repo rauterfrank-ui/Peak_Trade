@@ -41,7 +41,6 @@ from scripts.ops.run_paper_only_bounded_observation_adapter_v0 import (
 from src.ops.bounded_master_v2_testnet_completion_path_wiring_v0 import (
     TestnetCompletionPathMarketInputV0,
     build_testnet_bounded_adapter_completion_path_wiring_section,
-    evaluate_bounded_master_v2_testnet_completion_path_wiring,
 )
 from src.ops.bounded_testnet_market_input_admission_wiring_v0 import (
     BoundedTestnetFuturesMarketObservationV0,
@@ -589,6 +588,85 @@ def _emit_wallclock_evidence_from_wrapper_manifest(
     return True, "", evidence
 
 
+_COMPLETION_PATH_WIRING_SECTION_REQUIRED_KEYS = (
+    "layer_version",
+    "owner",
+    "run_id",
+    "mode",
+    "canonical_testnet_runner",
+    "canonical_testnet_completion_owner",
+    "canonical_master_v2_replay_owner",
+    "canonical_six_node_graph_owner",
+    "canonical_digest_binding_owner",
+    "canonical_retention_owner",
+    "market_input_bound",
+    "market_input_producer_fail_reasons",
+    "admission_pass",
+    "wiring_pass",
+    "fail_reasons",
+    "dashboard_display_projection_digest",
+    "machine_summary",
+    "retention_verify_owner",
+)
+
+
+def _verify_completion_path_wiring_section_parity(
+    plan_section: Mapping[str, Any],
+    rebuilt_section: Mapping[str, Any],
+) -> list[str]:
+    """Fail-closed parity between plan and execute closeout completion_path_wiring sections."""
+    fail_reasons: list[str] = []
+    prefix = "completion_path_wiring"
+    if not plan_section:
+        return [f"{prefix} section missing from adapter plan"]
+    for key in _COMPLETION_PATH_WIRING_SECTION_REQUIRED_KEYS:
+        if key not in plan_section:
+            fail_reasons.append(f"{prefix} section missing {key}")
+    if fail_reasons:
+        return fail_reasons
+    if plan_section.get("dashboard_display_projection_digest") != rebuilt_section.get(
+        "dashboard_display_projection_digest"
+    ):
+        fail_reasons.append(f"{prefix} digest drift: plan vs execute closeout")
+    owner_keys = (
+        "canonical_testnet_runner",
+        "canonical_testnet_completion_owner",
+        "canonical_master_v2_replay_owner",
+        "canonical_six_node_graph_owner",
+        "canonical_digest_binding_owner",
+        "canonical_retention_owner",
+    )
+    for key in owner_keys:
+        if plan_section.get(key) != rebuilt_section.get(key):
+            fail_reasons.append(f"{prefix} owner-map drift: {key}")
+    if plan_section.get("retention_verify_owner") != rebuilt_section.get("retention_verify_owner"):
+        fail_reasons.append(f"{prefix} retention_verify_owner drift: plan vs execute closeout")
+    if plan_section != rebuilt_section:
+        fail_reasons.append(f"{prefix} section drift: plan vs execute closeout")
+    return fail_reasons
+
+
+def _resolve_execute_closeout_completion_path_wiring_section(
+    plan: AdapterPlan,
+    market_observation: BoundedTestnetFuturesMarketObservationV0 | None,
+) -> tuple[dict[str, Any] | None, list[str]]:
+    """Reuse canonical plan section; verify rebuilt section parity fail-closed."""
+    plan_section = dict(plan.completion_path_wiring)
+    market_input, producer_fail_reasons = _resolve_adapter_completion_path_market_input(
+        market_observation
+    )
+    rebuilt_section = build_testnet_bounded_adapter_completion_path_wiring_section(
+        run_id=plan.run_id,
+        mode=plan.mode,
+        market_input=market_input,
+        market_input_producer_fail_reasons=producer_fail_reasons,
+    )
+    fail_reasons = _verify_completion_path_wiring_section_parity(plan_section, rebuilt_section)
+    if fail_reasons:
+        return None, fail_reasons
+    return plan_section, []
+
+
 def _write_closeout_artifacts(
     ctx: ExecuteContext,
     plan: AdapterPlan,
@@ -597,7 +675,14 @@ def _write_closeout_artifacts(
     *,
     wallclock_evidence: Mapping[str, Any] | None = None,
     market_observation: BoundedTestnetFuturesMarketObservationV0 | None = None,
-) -> None:
+) -> list[str]:
+    completion_path_wiring_section, fail_reasons = (
+        _resolve_execute_closeout_completion_path_wiring_section(plan, market_observation)
+    )
+    if fail_reasons:
+        return fail_reasons
+    assert completion_path_wiring_section is not None
+    machine_summary = completion_path_wiring_section["machine_summary"]
     now = datetime.now(timezone.utc).isoformat()
     run_metadata: dict[str, Any] = {
         "run_id": ctx.run_id,
@@ -609,12 +694,8 @@ def _write_closeout_artifacts(
         "review_verdict": review_payload.get("verdict"),
         "utc": now,
     }
-    market_input, _producer_fail_reasons = _resolve_adapter_completion_path_market_input(
-        market_observation
-    )
-    wiring_admission = evaluate_bounded_master_v2_testnet_completion_path_wiring(market_input)
-    run_metadata["completion_path_wiring"] = wiring_admission.to_machine_lines()
-    run_metadata["market_input_bound"] = market_input is not None
+    run_metadata["completion_path_wiring"] = completion_path_wiring_section
+    run_metadata["market_input_bound"] = completion_path_wiring_section["market_input_bound"]
     if wallclock_evidence is not None:
         run_metadata["wallclock_evidence_filename"] = WALLCLOCK_EVIDENCE_FILENAME
         run_metadata["wallclock_duration_proven"] = wallclock_evidence.get("duration_proven")
@@ -637,7 +718,7 @@ def _write_closeout_artifacts(
         "NOTION_WRITES=false",
         "PRIMARY_EVIDENCE_TIER=achieved",
     ]
-    for key, value in wiring_admission.to_machine_lines().items():
+    for key, value in machine_summary.items():
         closeout_lines.append(f"{key}={value}")
     if wallclock_evidence is not None:
         closeout_lines.append(f"WALLCLOCK_EVIDENCE_FILENAME={WALLCLOCK_EVIDENCE_FILENAME}")
@@ -652,6 +733,7 @@ def _write_closeout_artifacts(
         f"# Postrun\n\nReview issues: {review_payload.get('issues', [])}\n",
         encoding="utf-8",
     )
+    return []
 
 
 def _copy_staging_to_archive(staging_root: Path, archive_dest: Path) -> None:
@@ -711,7 +793,7 @@ def execute_plan(
         return VALIDATION_EXIT
 
     archive_dest = ctx.archive_root / "runs" / "testnet" / ctx.run_id
-    _write_closeout_artifacts(
+    closeout_fail_reasons = _write_closeout_artifacts(
         ctx,
         plan,
         archive_dest,
@@ -719,6 +801,10 @@ def execute_plan(
         wallclock_evidence=wallclock_evidence,
         market_observation=ctx.market_observation,
     )
+    if closeout_fail_reasons:
+        for reason in closeout_fail_reasons:
+            print(reason, file=sys.stderr)
+        return VALIDATION_EXIT
     (ctx.staging_root / "ARCHIVE_POINTER.md").write_text(
         f"ARCHIVE_PATH={archive_dest}\nARCHIVE_COPY_COMPLETE=true\n",
         encoding="utf-8",
