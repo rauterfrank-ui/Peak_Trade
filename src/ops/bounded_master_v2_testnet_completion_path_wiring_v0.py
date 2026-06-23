@@ -16,6 +16,7 @@ from typing import Any, Mapping
 from scripts.ops import primary_evidence_retention_v0
 from src.ops.bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0 import (
     CONTRACT_VERSION as COMPLETION_INTEGRATION_CONTRACT_VERSION,
+    DurableRunPrimaryEvidenceCompletionIntegrationInput,
     evaluate_durable_run_primary_evidence_completion_integration,
 )
 from src.ops.offline_master_v2_replay_six_node_validation_graph_binding_v0 import (
@@ -27,6 +28,7 @@ from src.ops.offline_master_v2_replay_six_node_validation_graph_binding_v0 impor
 from trading.master_v2.offline_double_play_scenario_replay_v0 import (
     OFFLINE_DOUBLE_PLAY_SCENARIO_REPLAY_OWNER,
     OfflineDoublePlayScenarioReplayInputV0,
+    OfflineDoublePlayScenarioReplayResultV0,
     OfflineDoublePlayScenarioTickV0,
     run_offline_double_play_scenario_replay_v0,
 )
@@ -90,6 +92,7 @@ class BoundedMasterV2TestnetCompletionPathWiringResultV0:
     bounded_testnet_zero_order_admission_boundary_present: bool
     missing_testnet_market_input_fails_closed: bool
     testnet_runner_reuses_canonical_completion_path: bool
+    dashboard_display_projection_digest: str | None = None
 
     def to_machine_lines(self) -> dict[str, str | bool | int]:
         return {
@@ -122,6 +125,7 @@ class BoundedMasterV2TestnetCompletionPathWiringResultV0:
             "CANCELS_TOTAL": self.cancels_total,
             "FILLS_TOTAL": self.fills_total,
             "POSITIONS_OPENED_TOTAL": self.positions_opened_total,
+            "DASHBOARD_DISPLAY_PROJECTION_DIGEST": self.dashboard_display_projection_digest or "",
         }
 
 
@@ -183,6 +187,40 @@ def build_replay_input_from_testnet_market_input(
     )
 
 
+def verify_dashboard_display_projection_digest_wiring(
+    replay_result: OfflineDoublePlayScenarioReplayResultV0,
+    integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
+) -> tuple[str | None, list[str]]:
+    """Fail-closed verification that replay, binding, and completion chain share one digest."""
+    fail_reasons: list[str] = []
+    prefix = "dashboard_display_projection_digest"
+    replay_digest = replay_result.dashboard_display_projection_digest
+    binding = replay_result.master_v2_decision_state_digest_binding
+    chain = integration_input.completion_proof_chain
+
+    if not replay_digest:
+        fail_reasons.append(f"{prefix} missing from replay result")
+        return None, fail_reasons
+
+    binding_digest = binding.dashboard_display_projection_digest if binding else None
+    chain_digest = (
+        chain.completion_referenced_dashboard_display_projection_digest if chain else None
+    )
+
+    if not binding_digest:
+        fail_reasons.append(f"{prefix} missing from decision state binding")
+    if not chain_digest:
+        fail_reasons.append(f"{prefix} missing from completion proof chain")
+    if binding_digest and replay_digest != binding_digest:
+        fail_reasons.append(f"{prefix} drift: replay vs decision state binding")
+    if chain_digest and binding_digest and chain_digest != binding_digest:
+        fail_reasons.append(f"{prefix} drift: completion proof chain vs decision state binding")
+    if chain_digest and replay_digest != chain_digest:
+        fail_reasons.append(f"{prefix} drift: replay vs completion proof chain")
+
+    return replay_digest, fail_reasons
+
+
 def evaluate_bounded_master_v2_testnet_completion_path_wiring(
     market_input: TestnetCompletionPathMarketInputV0 | None,
 ) -> BoundedMasterV2TestnetCompletionPathWiringResultV0:
@@ -237,7 +275,13 @@ def evaluate_bounded_master_v2_testnet_completion_path_wiring(
     )
     _ = build_validation_context_from_completion_integration_input(integration_input)
 
+    display_digest, display_digest_reasons = verify_dashboard_display_projection_digest_wiring(
+        replay_result,
+        integration_input,
+    )
+
     fail_reasons = list(binding.fail_reasons)
+    fail_reasons.extend(display_digest_reasons)
     if not integration_result.get("integration_pass"):
         fail_reasons.extend(integration_result.get("fail_reasons", ()))
 
@@ -262,6 +306,7 @@ def evaluate_bounded_master_v2_testnet_completion_path_wiring(
         fills_total=binding.fills_total,
         positions_opened_total=binding.positions_opened_total,
         missing_testnet_market_input_fails_closed=False,
+        dashboard_display_projection_digest=display_digest,
         **static_flags,
     )
 
@@ -295,6 +340,7 @@ def build_testnet_bounded_adapter_completion_path_wiring_section(
         "admission_pass": admission.admission_pass,
         "wiring_pass": admission.wiring_pass,
         "fail_reasons": list(admission.fail_reasons),
+        "dashboard_display_projection_digest": admission.dashboard_display_projection_digest,
         "machine_summary": machine,
         "retention_verify_owner": primary_evidence_retention_v0.verify_manifest_sha256.__module__,
     }
@@ -325,6 +371,7 @@ def _result(
     bounded_testnet_completion_path_retention_wiring_present: bool,
     bounded_testnet_zero_order_admission_boundary_present: bool,
     testnet_runner_reuses_canonical_completion_path: bool,
+    dashboard_display_projection_digest: str | None = None,
 ) -> BoundedMasterV2TestnetCompletionPathWiringResultV0:
     return BoundedMasterV2TestnetCompletionPathWiringResultV0(
         layer_version=BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_LAYER_VERSION,
@@ -352,4 +399,5 @@ def _result(
         ),
         missing_testnet_market_input_fails_closed=missing_testnet_market_input_fails_closed,
         testnet_runner_reuses_canonical_completion_path=testnet_runner_reuses_canonical_completion_path,
+        dashboard_display_projection_digest=dashboard_display_projection_digest,
     )
