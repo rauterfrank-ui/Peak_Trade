@@ -18,13 +18,20 @@ from src.ops.durable_completion_validation.graph import (
     PROOF_BINDING_VALIDATION_ORDER,
     VALIDATOR_COMPLETION_CHAIN,
     VALIDATOR_OPERATOR_CLOSURE,
+    VALIDATOR_RECONCILIATION,
     VALIDATOR_RECOVERY,
     VALIDATOR_TRACEABILITY,
     VALIDATOR_WALLCLOCK,
+    execute_proof_binding_validation_graph,
 )
 from src.ops.durable_completion_validation.models import ValidationContext
 from src.ops.durable_completion_validation.validators.completion_chain import (
     validate_completion_proof_chain_binding,
+)
+from src.ops.offline_master_v2_replay_six_node_validation_graph_binding_v0 import (
+    build_completion_integration_input_from_offline_replay_result,
+    build_validation_context_from_completion_integration_input,
+    prove_offline_replay_six_node_validation_graph_binding_v0,
 )
 from trading.master_v2.offline_double_play_scenario_replay_v0 import (
     SYNTHETIC_FUTURES_INSTRUMENT,
@@ -183,3 +190,69 @@ def test_no_paper_shadow_testnet_live_proof_claim(integration_input) -> None:
     assert safety.network_allowed is False
     assert safety.execution_authorized is False
     assert safety.live_authorized is False
+
+
+def test_replay_sourced_integration_input_matches_builder(replay_result, integration_input) -> None:
+    built = build_completion_integration_input_from_offline_replay_result(replay_result)
+    assert (
+        built.master_v2_decision_state_digest_binding
+        == integration_input.master_v2_decision_state_digest_binding
+    )
+    assert built.completion_proof_chain == integration_input.completion_proof_chain
+
+
+def test_replay_sourced_six_node_validation_graph_passes(integration_input) -> None:
+    context = build_validation_context_from_completion_integration_input(integration_input)
+    graph_result = execute_proof_binding_validation_graph(context)
+    assert graph_result.fail_reasons == ()
+    assert set(context.completed_validators) == set(PROOF_BINDING_VALIDATION_ORDER)
+    assert context.completed_validators == {
+        VALIDATOR_RECONCILIATION,
+        VALIDATOR_RECOVERY,
+        VALIDATOR_TRACEABILITY,
+        VALIDATOR_OPERATOR_CLOSURE,
+        VALIDATOR_WALLCLOCK,
+        VALIDATOR_COMPLETION_CHAIN,
+    }
+
+
+def test_replay_sourced_six_node_graph_node_order_preserved(integration_input) -> None:
+    context = build_validation_context_from_completion_integration_input(integration_input)
+    execute_proof_binding_validation_graph(context)
+    completed_in_order = [
+        node for node in PROOF_BINDING_VALIDATION_ORDER if node in context.completed_validators
+    ]
+    assert completed_in_order == list(PROOF_BINDING_VALIDATION_ORDER)
+
+
+def test_orchestrator_proves_offline_replay_six_node_graph_binding() -> None:
+    proof = prove_offline_replay_six_node_validation_graph_binding_v0()
+    assert proof.binding_pass is True
+    assert proof.replay_pass is True
+    assert proof.integration_pass is True
+    assert proof.six_node_graph_pass is True
+    assert proof.completed_validators == PROOF_BINDING_VALIDATION_ORDER
+    assert proof.orders_total == 0
+    assert proof.cancels_total == 0
+    assert proof.fills_total == 0
+    assert proof.positions_opened_total == 0
+
+
+def test_replay_graph_binding_fail_closed_on_digest_drift(integration_input) -> None:
+    bad_chain = replace(
+        integration_input.completion_proof_chain,
+        completion_referenced_master_v2_decision_digest="0" * 64,
+    )
+    bad = replace(integration_input, completion_proof_chain=bad_chain)
+    context = build_validation_context_from_completion_integration_input(bad)
+    graph_result = execute_proof_binding_validation_graph(context)
+    assert graph_result.fail_reasons
+    assert VALIDATOR_COMPLETION_CHAIN not in context.completed_validators
+
+
+def test_replay_graph_binding_zero_order_boundary(replay_result) -> None:
+    for record in replay_result.tick_records:
+        assert record.orders == 0
+        assert record.cancels == 0
+        assert record.fills == 0
+        assert record.positions_opened == 0

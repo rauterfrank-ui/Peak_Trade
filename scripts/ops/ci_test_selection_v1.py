@@ -37,6 +37,7 @@ FOCUSED_CATEGORIES = frozenset(
         "reconciliation_primary_evidence_focused",
         "master_v2_binding_contract_focused",
         "offline_master_v2_double_play_scenario_replay_focused",
+        "offline_master_v2_replay_six_node_validation_graph_binding_focused",
         "bounded_network_testnet_preflight_focused",
         "runtime_wallclock_evidence_emitter_focused",
         "testnet_wallclock_duration_evidence_focused",
@@ -192,6 +193,26 @@ OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_CATEGORIZE_PATHS = frozenset(
     }
 )
 CANONICAL_OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_FOCUSED_TESTS: tuple[str, ...] = (
+    OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_TRADING_TEST_OWNER,
+    OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_OPS_TEST_OWNER,
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+)
+
+OFFLINE_MASTER_V2_REPLAY_SIX_NODE_VALIDATION_GRAPH_BINDING_OWNER_PATH = (
+    "src/ops/offline_master_v2_replay_six_node_validation_graph_binding_v0.py"
+)
+OFFLINE_MASTER_V2_REPLAY_SIX_NODE_VALIDATION_GRAPH_BINDING_SCOPED_PATHS = frozenset(
+    {
+        OFFLINE_MASTER_V2_REPLAY_SIX_NODE_VALIDATION_GRAPH_BINDING_OWNER_PATH,
+        OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_OWNER_PATH,
+        OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_TRADING_TEST_OWNER,
+        OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_OPS_TEST_OWNER,
+        *OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_CI_POLICY_PATHS,
+    }
+)
+CANONICAL_OFFLINE_MASTER_V2_REPLAY_SIX_NODE_VALIDATION_GRAPH_BINDING_FOCUSED_TESTS: tuple[
+    str, ...
+] = (
     OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_TRADING_TEST_OWNER,
     OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_OPS_TEST_OWNER,
     "tests/ci/test_ci_diff_aware_test_selection_v1.py",
@@ -1350,6 +1371,52 @@ def _try_master_v2_binding_contract_focused(files: list[str]) -> SelectionResult
     )
 
 
+def _is_offline_master_v2_replay_six_node_validation_graph_binding_scope(files: list[str]) -> bool:
+    if not files:
+        return False
+    required = {
+        OFFLINE_MASTER_V2_REPLAY_SIX_NODE_VALIDATION_GRAPH_BINDING_OWNER_PATH,
+        OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_OPS_TEST_OWNER,
+    }
+    files_set = set(files)
+    if not required.issubset(files_set):
+        return False
+    for path in files:
+        if path not in OFFLINE_MASTER_V2_REPLAY_SIX_NODE_VALIDATION_GRAPH_BINDING_SCOPED_PATHS:
+            return False
+    return True
+
+
+def _offline_master_v2_replay_six_node_validation_graph_binding_focused_targets() -> tuple[
+    str, ...
+]:
+    return tuple(
+        path
+        for path in CANONICAL_OFFLINE_MASTER_V2_REPLAY_SIX_NODE_VALIDATION_GRAPH_BINDING_FOCUSED_TESTS
+        if _repo_path_exists(path)
+    )
+
+
+def _try_offline_master_v2_replay_six_node_validation_graph_binding_focused(
+    files: list[str],
+) -> SelectionResult | None:
+    if not _is_offline_master_v2_replay_six_node_validation_graph_binding_scope(files):
+        return None
+    targets = _offline_master_v2_replay_six_node_validation_graph_binding_focused_targets()
+    if not targets:
+        return None
+    return SelectionResult(
+        "FOCUSED",
+        "offline_master_v2_replay_six_node_validation_graph_binding_focused",
+        targets,
+        (
+            "ops.offline_master_v2_replay_six_node_validation_graph_binding_v0",
+            "trading.master_v2.offline_double_play_scenario_replay_v0",
+            "src.ops.durable_completion_validation",
+        ),
+    )
+
+
 def _is_offline_master_v2_double_play_scenario_replay_scope(files: list[str]) -> bool:
     if not files:
         return False
@@ -1721,6 +1788,12 @@ def resolve_selection(
     master_v2_binding = _try_master_v2_binding_contract_focused(normalized)
     if master_v2_binding is not None:
         return master_v2_binding
+
+    offline_master_v2_replay_six_node = (
+        _try_offline_master_v2_replay_six_node_validation_graph_binding_focused(normalized)
+    )
+    if offline_master_v2_replay_six_node is not None:
+        return offline_master_v2_replay_six_node
 
     offline_master_v2_replay = _try_offline_master_v2_double_play_scenario_replay_focused(
         normalized
