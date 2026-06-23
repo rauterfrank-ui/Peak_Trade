@@ -258,7 +258,7 @@ jobs:
   fast-lane:
     name: Fast-Lane
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 17
     needs: changes
     steps:
       - name: Checkout
@@ -386,7 +386,7 @@ jobs:
   tests:
     name: tests (${{ matrix.python-version }})
     runs-on: ubuntu-latest
-    timeout-minutes: 25
+    timeout-minutes: 17
     needs: changes
     # IMPORTANT: No job-level if condition - matrix jobs must always be created
     # to satisfy branch protection rules (e.g., "tests (3.11)" check)

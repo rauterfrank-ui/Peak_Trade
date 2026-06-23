@@ -50,18 +50,18 @@ def test_required_tests_job_has_no_job_level_if() -> None:
     assert "if:" not in tests_block.split("steps:")[0]
 
 
-def test_tests_job_timeout_25_absolute_cap() -> None:
+def test_tests_job_timeout_17_absolute_cap() -> None:
     assert re.search(
-        r"^\s*tests:\n(?:.*\n)*?\s*timeout-minutes:\s*25\s*$", _ci_text(), re.MULTILINE
+        r"^\s*tests:\n(?:.*\n)*?\s*timeout-minutes:\s*17\s*$", _ci_text(), re.MULTILINE
     )
 
 
-def test_fast_lane_job_timeout_25_absolute_cap() -> None:
+def test_fast_lane_job_timeout_17_absolute_cap() -> None:
     assert re.search(
-        r"^\s*fast-lane:\n(?:.*\n)*?\s*timeout-minutes:\s*25\s*$", _ci_text(), re.MULTILINE
+        r"^\s*fast-lane:\n(?:.*\n)*?\s*timeout-minutes:\s*17\s*$", _ci_text(), re.MULTILINE
     )
     assert (
-        "timeout-minutes: 15" not in _ci_text().split("  fast-lane:", 1)[1].split("  tests:", 1)[0]
+        "timeout-minutes: 25" not in _ci_text().split("  fast-lane:", 1)[1].split("  tests:", 1)[0]
     )
 
 
