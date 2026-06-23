@@ -270,10 +270,15 @@ def build_testnet_bounded_adapter_completion_path_wiring_section(
     *,
     run_id: str,
     mode: str,
+    market_input: TestnetCompletionPathMarketInputV0 | None = None,
+    market_input_producer_fail_reasons: tuple[str, ...] | None = None,
 ) -> dict[str, Any]:
     """Static completion-path wiring metadata for the bounded testnet adapter plan."""
-    admission = evaluate_bounded_master_v2_testnet_completion_path_wiring(None)
+    admission = evaluate_bounded_master_v2_testnet_completion_path_wiring(market_input)
     machine = admission.to_machine_lines()
+    producer_fail_reasons = list(market_input_producer_fail_reasons or ())
+    if market_input is None and not producer_fail_reasons:
+        producer_fail_reasons = list(admission.fail_reasons)
     return {
         "layer_version": BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_LAYER_VERSION,
         "owner": BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_OWNER,
@@ -285,6 +290,8 @@ def build_testnet_bounded_adapter_completion_path_wiring_section(
         "canonical_six_node_graph_owner": CANONICAL_SIX_NODE_GRAPH_OWNER,
         "canonical_digest_binding_owner": CANONICAL_DIGEST_BINDING_OWNER,
         "canonical_retention_owner": CANONICAL_RETENTION_OWNER,
+        "market_input_bound": market_input is not None,
+        "market_input_producer_fail_reasons": producer_fail_reasons,
         "admission_pass": admission.admission_pass,
         "wiring_pass": admission.wiring_pass,
         "fail_reasons": list(admission.fail_reasons),

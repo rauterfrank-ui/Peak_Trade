@@ -39,8 +39,13 @@ from scripts.ops.run_paper_only_bounded_observation_adapter_v0 import (
     validate_durable_closeout_invoke_cli_args,
 )
 from src.ops.bounded_master_v2_testnet_completion_path_wiring_v0 import (
+    TestnetCompletionPathMarketInputV0,
     build_testnet_bounded_adapter_completion_path_wiring_section,
     evaluate_bounded_master_v2_testnet_completion_path_wiring,
+)
+from src.ops.bounded_testnet_market_input_admission_wiring_v0 import (
+    BoundedTestnetFuturesMarketObservationV0,
+    resolve_testnet_completion_path_market_input,
 )
 from src.ops.wallclock_session_evidence_v0 import (
     WALLCLOCK_EVIDENCE_FILENAME,
@@ -276,6 +281,17 @@ def _default_max_steps(duration_minutes: int, max_steps: int | None) -> int:
     return min(DEFAULT_MAX_STEPS, max(1, duration_minutes * 12))
 
 
+def _resolve_adapter_completion_path_market_input(
+    market_observation: BoundedTestnetFuturesMarketObservationV0 | None,
+) -> tuple[TestnetCompletionPathMarketInputV0 | None, tuple[str, ...]]:
+    if market_observation is None:
+        return None, ()
+    admission = resolve_testnet_completion_path_market_input(market_observation)
+    if admission is None:
+        return None, ()
+    return admission.market_input, admission.fail_reasons
+
+
 def build_plan(
     *,
     mode: str,
@@ -286,6 +302,7 @@ def build_plan(
     max_steps: int,
     step_interval_seconds: float,
     run_id: str,
+    market_observation: BoundedTestnetFuturesMarketObservationV0 | None = None,
 ) -> AdapterPlan:
     review_out = staging_root / "review" / "REVIEW_RESULT.json"
     staging_cmd = _staging_cmd(
@@ -304,9 +321,14 @@ def build_plan(
         "--json",
     ]
     archive_dest = archive_root / "runs" / "testnet" / run_id
+    market_input, producer_fail_reasons = _resolve_adapter_completion_path_market_input(
+        market_observation
+    )
     completion_path_wiring = build_testnet_bounded_adapter_completion_path_wiring_section(
         run_id=run_id,
         mode=mode,
+        market_input=market_input,
+        market_input_producer_fail_reasons=producer_fail_reasons,
     )
     retention_steps = [
         f"run bounded staging shell under {staging_root / WRAPPER_EVIDENCE_DIR}",
