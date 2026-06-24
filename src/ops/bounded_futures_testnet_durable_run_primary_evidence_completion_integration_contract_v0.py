@@ -165,6 +165,15 @@ from src.ops.testnet_wallclock_duration_evidence_contract_v0 import (
     REQUIRED_WALLCLOCK_FIELD_NAMES,
     evaluate_wallclock_duration_evidence,
 )
+from src.ops.durable_completion_validation.validators.event_stream import (
+    Glb019EventStreamProofBinding,
+    Glb019EventStreamValidationInput,
+    compute_validation_input_digest as compute_glb019_event_stream_validation_input_digest,
+    default_minimal_glb019_proof_binding,
+    default_minimal_glb019_validation_input,
+    evaluate_glb019_event_stream_validation,
+    validate_glb019_event_stream_validation_input,
+)
 from src.ops.wallclock_session_evidence_v0 import (
     WALLCLOCK_EVIDENCE_FILENAME,
     evaluate_wallclock_evidence_fields,
@@ -746,6 +755,8 @@ class DurableRunPrimaryEvidenceCompletionIntegrationInput:
     completion_claimed: bool
     safety_snapshot: CompletionSafetySnapshot
     contract_versions: ContractVersionsInput
+    glb019_event_stream_validation_input: Glb019EventStreamValidationInput
+    glb019_event_stream_proof: Glb019EventStreamProofBinding
     futures_only: bool = True
     environment: str = ENVIRONMENT_TESTNET
     non_authorizing: bool = True
@@ -1136,6 +1147,56 @@ def _validate_wallclock_evidence_proof(
     if proof.duration_proven != canonical_duration_proven:
         fail_reasons.append(
             "wallclock_evidence_proof.duration_proven drift from canonical evaluation"
+        )
+    return _sorted_unique(fail_reasons)
+
+
+def _validate_glb019_event_stream_binding(
+    integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
+    *,
+    completion_identity_digest: str,
+    manifest_identity_digest: str,
+    run_identity_digest: str,
+) -> list[str]:
+    fail_reasons: list[str] = []
+    validation_input = getattr(integration_input, "glb019_event_stream_validation_input", None)
+    proof = getattr(integration_input, "glb019_event_stream_proof", None)
+    if validation_input is None:
+        fail_reasons.append("glb019_event_stream_validation_input required")
+        return fail_reasons
+    if proof is None:
+        fail_reasons.append("glb019_event_stream_proof required")
+        return fail_reasons
+
+    fail_reasons.extend(validate_glb019_event_stream_validation_input(validation_input))
+    if validation_input.source_revision != integration_input.source_revision:
+        fail_reasons.append(
+            "glb019_event_stream_validation_input: source_revision mismatch with completion input"
+        )
+    if validation_input.run_identity_digest != run_identity_digest:
+        fail_reasons.append("glb019_event_stream_validation_input: run_identity_digest drift")
+    if validation_input.manifest_identity_digest != manifest_identity_digest:
+        fail_reasons.append("glb019_event_stream_validation_input: manifest_identity_digest drift")
+    if validation_input.completion_identity_digest != completion_identity_digest:
+        fail_reasons.append(
+            "glb019_event_stream_validation_input: completion_identity_digest drift"
+        )
+
+    glb019_result = evaluate_glb019_event_stream_validation(validation_input)
+    prefix = "glb019_event_stream_proof"
+    if proof.source_revision != integration_input.source_revision:
+        fail_reasons.append(f"{prefix}: source_revision mismatch")
+    if proof.validation_input_digest != glb019_result["validation_input_digest"]:
+        fail_reasons.append(f"{prefix}: validation_input_digest mismatch")
+    if proof.validation_result_digest != glb019_result["validation_result_digest"]:
+        fail_reasons.append(f"{prefix}: validation_result_digest mismatch")
+    if proof.event_stream_identity != glb019_result["event_stream_identity"]:
+        fail_reasons.append(f"{prefix}: event_stream_identity mismatch")
+    if not glb019_result["validation_pass"]:
+        fail_reasons.append("glb019_event_stream_validation: canonical evaluation failed")
+        fail_reasons.extend(
+            f"glb019_event_stream_validation: {reason}"
+            for reason in glb019_result.get("fail_reasons", [])
         )
     return _sorted_unique(fail_reasons)
 
@@ -2223,6 +2284,19 @@ def validate_durable_run_primary_evidence_completion_integration_input(
             artifact_checksums=integration_input.artifact_checksums,
         )
     )
+    expected_completion_identity_digest = compute_completion_identity_digest(
+        run_root_digest=durable_root.run_root_digest,
+        manifest_digest=integration_input.manifest_proof.manifest_digest,
+        source_revision=integration_input.source_revision,
+    )
+    fail_reasons.extend(
+        _validate_glb019_event_stream_binding(
+            integration_input,
+            completion_identity_digest=expected_completion_identity_digest,
+            manifest_identity_digest=integration_input.manifest_proof.manifest_digest,
+            run_identity_digest=run_identity.run_identity_digest,
+        )
+    )
 
     post_write = integration_input.post_write_verification
     if post_write.post_write_verification_pass is not True:
@@ -2379,6 +2453,12 @@ def _integration_input_dict(
         "environment": integration_input.environment,
         "evidence_mode": integration_input.evidence_mode,
         "futures_only": integration_input.futures_only,
+        "glb019_event_stream_proof": asdict(integration_input.glb019_event_stream_proof),
+        "glb019_event_stream_validation_input_digest": (
+            compute_glb019_event_stream_validation_input_digest(
+                integration_input.glb019_event_stream_validation_input
+            )
+        ),
         "gap2a1_enforcement": asdict(integration_input.gap2a1_enforcement),
         "gap4_completion": asdict(integration_input.gap4_completion),
         "integration_contract_version": CONTRACT_VERSION,
@@ -2631,6 +2711,9 @@ def evaluate_durable_run_primary_evidence_completion_integration(
     pe25_result = evaluate_operator_closure_lifecycle_integration(
         integration_input.pe25_closure_integration_input
     )
+    glb019_result = evaluate_glb019_event_stream_validation(
+        integration_input.glb019_event_stream_validation_input
+    )
     from src.ops.durable_completion_validation.graph import execute_proof_binding_validation_graph
     from src.ops.durable_completion_validation.models import ValidationContext
 
@@ -2642,6 +2725,7 @@ def evaluate_durable_run_primary_evidence_completion_integration(
             pe37_result=pe37_result,
             pe25_result=pe25_result,
             admission_result=admission_result,
+            glb019_result=glb019_result,
         )
     )
     fail_reasons.extend(graph_result.fail_reasons)
@@ -3281,6 +3365,15 @@ def default_minimal_completion_integration_input(
         manifest_digest=manifest_digest,
         source_revision=source_revision,
     )
+    glb019_validation_input = default_minimal_glb019_validation_input(
+        source_revision=source_revision,
+        completion_identity_digest=completion_identity_digest,
+        manifest_identity_digest=manifest_digest,
+        run_identity_digest=run_identity_digest,
+        correlation_id=run_id,
+    )
+    glb019_result = evaluate_glb019_event_stream_validation(glb019_validation_input)
+    glb019_proof = default_minimal_glb019_proof_binding(glb019_validation_input, glb019_result)
     pe23_proof = default_minimal_pe23_integration_proof(
         pe23_integration_input,
         traceability_identity=run_root_digest,
@@ -3512,6 +3605,8 @@ def default_minimal_completion_integration_input(
         evidence_mode=EVIDENCE_MODE_DURABLE,
         completion_claimed=True,
         safety_snapshot=default_minimal_safety_snapshot(),
+        glb019_event_stream_validation_input=glb019_validation_input,
+        glb019_event_stream_proof=glb019_proof,
         contract_versions=ContractVersionsInput(
             pe12_lifecycle=PE12_CONTRACT_VERSION,
             pe16_archive=ARCHIVE_CONTRACT_VERSION,

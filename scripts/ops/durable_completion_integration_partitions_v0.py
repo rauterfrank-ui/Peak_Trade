@@ -104,6 +104,9 @@ def classify_integration_node_id(node_id: str) -> str:
     if "wallclock" in base:
         return "wallclock"
 
+    if "glb019" in base or "event_stream" in base:
+        return "pe38_readiness"
+
     if "pe38" in base:
         return "pe38_readiness"
 

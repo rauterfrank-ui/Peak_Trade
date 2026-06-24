@@ -21,6 +21,7 @@ from src.ops.durable_completion_validation.graph import (
     PROOF_BINDING_VALIDATION_GRAPH,
     PROOF_BINDING_VALIDATION_ORDER,
     VALIDATOR_COMPLETION_CHAIN,
+    VALIDATOR_EVENT_STREAM,
     VALIDATOR_OPERATOR_CLOSURE,
     VALIDATOR_RECONCILIATION,
     VALIDATOR_RECOVERY,
@@ -79,9 +80,32 @@ def _cached_default_minimal_completion_integration_input():
     return default_minimal_completion_integration_input()
 
 
+def _glb019_result_for(integration_input):
+    from src.ops.durable_completion_validation.validators.event_stream import (
+        evaluate_glb019_event_stream_validation,
+    )
+
+    return evaluate_glb019_event_stream_validation(
+        integration_input.glb019_event_stream_validation_input
+    )
+
+
 def _minimal_context(**overrides: Any) -> ValidationContext:
     integration_input = _cached_default_minimal_completion_integration_input()
-    context = ValidationContext(integration_input=integration_input)
+    context = ValidationContext(
+        integration_input=integration_input,
+        glb019_result=_glb019_result_for(integration_input),
+    )
+    for key, value in overrides.items():
+        setattr(context, key, value)
+    return context
+
+
+def _graph_context(integration_input, **overrides: Any) -> ValidationContext:
+    context = ValidationContext(
+        integration_input=integration_input,
+        glb019_result=_glb019_result_for(integration_input),
+    )
     for key, value in overrides.items():
         setattr(context, key, value)
     return context
@@ -106,8 +130,27 @@ def test_graph_has_single_wallclock_validator_node() -> None:
     assert wallclock_nodes == [VALIDATOR_WALLCLOCK]
     assert VALIDATOR_WALLCLOCK in PROOF_BINDING_VALIDATION_GRAPH
     assert PROOF_BINDING_VALIDATION_ORDER.index(VALIDATOR_WALLCLOCK) < (
+        PROOF_BINDING_VALIDATION_ORDER.index(VALIDATOR_EVENT_STREAM)
+    )
+    assert PROOF_BINDING_VALIDATION_ORDER.index(VALIDATOR_EVENT_STREAM) < (
         PROOF_BINDING_VALIDATION_ORDER.index(VALIDATOR_COMPLETION_CHAIN)
     )
+
+
+def test_graph_event_stream_production_activation() -> None:
+    from src.ops.durable_completion_validation import graph
+    from src.ops.durable_completion_validation.validators.event_stream import (
+        validate_glb019_event_stream_proof,
+    )
+
+    assert VALIDATOR_EVENT_STREAM in graph.PROOF_BINDING_VALIDATION_GRAPH
+    assert VALIDATOR_EVENT_STREAM in graph.PROOF_BINDING_VALIDATION_ORDER
+    assert VALIDATOR_EVENT_STREAM in graph._load_validators()
+    assert (
+        graph._load_validators()[VALIDATOR_EVENT_STREAM].__name__
+        == validate_glb019_event_stream_proof.__name__
+    )
+    assert VALIDATOR_EVENT_STREAM in PROOF_BINDING_VALIDATION_GRAPH[VALIDATOR_COMPLETION_CHAIN]
 
 
 def test_graph_missing_validator_is_fail_closed() -> None:
@@ -116,6 +159,7 @@ def test_graph_missing_validator_is_fail_closed() -> None:
         VALIDATOR_RECONCILIATION: lambda _ctx: ValidationResult(),
         VALIDATOR_RECOVERY: lambda _ctx: ValidationResult(),
         VALIDATOR_TRACEABILITY: lambda _ctx: ValidationResult(),
+        VALIDATOR_EVENT_STREAM: lambda _ctx: ValidationResult(),
         VALIDATOR_COMPLETION_CHAIN: lambda _ctx: ValidationResult(),
     }
     result = execute_proof_binding_validation_graph(
@@ -138,6 +182,7 @@ def test_graph_missing_dependency_is_fail_closed() -> None:
         VALIDATOR_TRACEABILITY: lambda _ctx: ValidationResult(fail_reasons=("should not run",)),
         VALIDATOR_OPERATOR_CLOSURE: lambda _ctx: ValidationResult(fail_reasons=("should not run",)),
         VALIDATOR_WALLCLOCK: lambda _ctx: ValidationResult(),
+        VALIDATOR_EVENT_STREAM: lambda _ctx: ValidationResult(),
         VALIDATOR_COMPLETION_CHAIN: lambda _ctx: ValidationResult(fail_reasons=("should not run",)),
     }
     result = execute_proof_binding_validation_graph(context, validators=validators)
@@ -164,6 +209,7 @@ def test_graph_exception_is_fail_closed() -> None:
         VALIDATOR_TRACEABILITY: lambda _ctx: ValidationResult(),
         VALIDATOR_OPERATOR_CLOSURE: lambda _ctx: ValidationResult(),
         VALIDATOR_WALLCLOCK: lambda _ctx: ValidationResult(),
+        VALIDATOR_EVENT_STREAM: lambda _ctx: ValidationResult(),
         VALIDATOR_COMPLETION_CHAIN: lambda _ctx: ValidationResult(),
     }
     result = execute_proof_binding_validation_graph(context, validators=validators)
@@ -181,6 +227,7 @@ def test_graph_aggregates_fail_reasons_from_executed_validators() -> None:
         VALIDATOR_TRACEABILITY: lambda _ctx: ValidationResult(fail_reasons=("gamma",)),
         VALIDATOR_OPERATOR_CLOSURE: lambda _ctx: ValidationResult(fail_reasons=("delta",)),
         VALIDATOR_WALLCLOCK: lambda _ctx: ValidationResult(),
+        VALIDATOR_EVENT_STREAM: lambda _ctx: ValidationResult(),
         VALIDATOR_COMPLETION_CHAIN: lambda _ctx: ValidationResult(fail_reasons=("epsilon",)),
     }
     result = execute_proof_binding_validation_graph(context, validators=validators)
@@ -252,8 +299,8 @@ def test_graph_reconciliation_validator_missing_fill_manifest_fail_closed() -> N
         if entry.relative_path != ARTIFACT_FILL_STATE_SNAPSHOT
     )
     bad = _replace_pe21_manifest_entries(integration_input, entries)
-    context = ValidationContext(
-        integration_input=bad,
+    context = _graph_context(
+        bad,
         pe31_result=evaluate_reconciliation_review_lifecycle_integration(
             bad.pe31_reconciliation_review_integration_input
         ),
@@ -289,8 +336,8 @@ def test_graph_recovery_validator_missing_pe34_handoff_id_fail_closed() -> None:
     integration_input = _cached_default_minimal_completion_integration_input()
     bad = _replace_pe34_handoff(integration_input, handoff_id="")
     pe35_input = bad.pe35_handoff_staleness_revocation_recovery_boundary_input
-    context = ValidationContext(
-        integration_input=bad,
+    context = _graph_context(
+        bad,
         pe35_result=evaluate_handoff_staleness_revocation_recovery_boundary(pe35_input),
     )
     result = execute_proof_binding_validation_graph(context)
@@ -319,8 +366,8 @@ def test_graph_traceability_validator_missing_pe16_archive_manifest_fail_closed(
     bad = _replace_pe37_archive_binding(integration_input, archive_manifest_digest="")
     pe37_input = bad.pe37_traceability_boundary_input
     pe35_input = bad.pe35_handoff_staleness_revocation_recovery_boundary_input
-    context = ValidationContext(
-        integration_input=bad,
+    context = _graph_context(
+        bad,
         pe31_result=evaluate_reconciliation_review_lifecycle_integration(
             bad.pe31_reconciliation_review_integration_input
         ),
@@ -363,8 +410,8 @@ def test_graph_operator_closure_validator_missing_closure_id_fail_closed() -> No
     pe25_input = bad.pe25_closure_integration_input
     pe37_input = bad.pe37_traceability_boundary_input
     pe35_input = bad.pe35_handoff_staleness_revocation_recovery_boundary_input
-    context = ValidationContext(
-        integration_input=bad,
+    context = _graph_context(
+        bad,
         pe31_result=evaluate_reconciliation_review_lifecycle_integration(
             bad.pe31_reconciliation_review_integration_input
         ),
@@ -474,7 +521,7 @@ def test_graph_wallclock_failure_blocks_completion_chain() -> None:
         integration_input,
         duration_proven=False,
     )
-    context = ValidationContext(integration_input=bad)
+    context = _graph_context(integration_input=bad)
     result = execute_proof_binding_validation_graph(context)
     assert any("wallclock_proof:" in reason for reason in result.fail_reasons)
     assert VALIDATOR_WALLCLOCK not in context.completed_validators
@@ -511,8 +558,8 @@ def test_graph_completion_chain_validator_pe35_digest_drift_fail_closed() -> Non
     pe25_input = bad.pe25_closure_integration_input
     pe37_input = bad.pe37_traceability_boundary_input
     pe35_input = bad.pe35_handoff_staleness_revocation_recovery_boundary_input
-    context = ValidationContext(
-        integration_input=bad,
+    context = _graph_context(
+        bad,
         pe31_result=evaluate_reconciliation_review_lifecycle_integration(
             bad.pe31_reconciliation_review_integration_input
         ),
@@ -543,8 +590,8 @@ def test_graph_completion_chain_validator_wallclock_digest_drift_fail_closed() -
     pe25_input = bad.pe25_closure_integration_input
     pe37_input = bad.pe37_traceability_boundary_input
     pe35_input = bad.pe35_handoff_staleness_revocation_recovery_boundary_input
-    context = ValidationContext(
-        integration_input=bad,
+    context = _graph_context(
+        bad,
         pe31_result=evaluate_reconciliation_review_lifecycle_integration(
             bad.pe31_reconciliation_review_integration_input
         ),
@@ -575,8 +622,8 @@ def test_graph_completion_chain_validator_pe38_digest_drift_fail_closed() -> Non
     pe25_input = bad.pe25_closure_integration_input
     pe37_input = bad.pe37_traceability_boundary_input
     pe35_input = bad.pe35_handoff_staleness_revocation_recovery_boundary_input
-    context = ValidationContext(
-        integration_input=bad,
+    context = _graph_context(
+        bad,
         pe31_result=evaluate_reconciliation_review_lifecycle_integration(
             bad.pe31_reconciliation_review_integration_input
         ),
@@ -680,7 +727,7 @@ def test_graph_seven_vs_eight_path_drift_fail_closed() -> None:
     result = evaluate_durable_run_primary_evidence_completion_integration(bad)
     assert result["integration_pass"] is False
     assert any(WALLCLOCK_EVIDENCE_FILENAME in reason for reason in result["fail_reasons"])
-    graph_result = execute_proof_binding_validation_graph(ValidationContext(integration_input=bad))
+    graph_result = execute_proof_binding_validation_graph(_graph_context(bad))
     assert graph_result.fail_reasons
 
 
@@ -759,19 +806,34 @@ def test_glb019_canonical_export_present() -> None:
     )
 
 
-def test_glb019_no_production_graph_activation() -> None:
-    from src.ops.durable_completion_validation import graph
+def test_glb019_production_graph_happy_path() -> None:
+    from src.ops.durable_completion_validation.validators.event_stream import (
+        validate_glb019_event_stream_proof,
+    )
 
-    assert "event_stream" not in graph.PROOF_BINDING_VALIDATION_GRAPH
-    assert "event_stream" not in graph.PROOF_BINDING_VALIDATION_ORDER
-    graph_source = (
-        Path(__file__).resolve().parents[2]
-        / "src"
-        / "ops"
-        / "durable_completion_validation"
-        / "graph.py"
-    ).read_text(encoding="utf-8")
-    assert "event_stream" not in graph_source
+    context = _minimal_context()
+    assert not validate_glb019_event_stream_proof(context).fail_reasons
+    result = execute_proof_binding_validation_graph(context)
+    assert VALIDATOR_EVENT_STREAM in context.completed_validators
+    assert not any("glb019" in reason for reason in result.fail_reasons)
+
+
+def test_glb019_missing_glb019_result_fail_closed() -> None:
+    from src.ops.durable_completion_validation.validators.event_stream import (
+        validate_glb019_event_stream_proof,
+    )
+
+    context = _glb019_proof_context(glb019_result=None)
+    result = validate_glb019_event_stream_proof(context)
+    assert any("glb019_result required" in reason for reason in result.fail_reasons)
+
+
+def test_glb019_graph_missing_result_blocks_completion_chain() -> None:
+    context = _glb019_proof_context(glb019_result=None)
+    result = execute_proof_binding_validation_graph(context)
+    assert any("glb019_result required" in reason for reason in result.fail_reasons)
+    assert VALIDATOR_EVENT_STREAM not in context.completed_validators
+    assert VALIDATOR_COMPLETION_CHAIN not in context.completed_validators
 
 
 def test_glb019_valid_event_stream_accepted() -> None:

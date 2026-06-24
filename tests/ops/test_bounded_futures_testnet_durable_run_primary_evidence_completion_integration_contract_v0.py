@@ -3889,3 +3889,108 @@ def test_reconciliation_result_superseded_proof_lifecycle_still_fails() -> None:
     result = evaluate_durable_run_primary_evidence_completion_integration(bad)
     assert result["integration_pass"] is False
     assert any("invalid proof lifecycle state" in r for r in result["fail_reasons"])
+
+
+def test_glb019_happy_path_passes_non_authorizing() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    result = evaluate_durable_run_primary_evidence_completion_integration(integration_input)
+    assert result["integration_pass"] is True
+    assert result["fail_reasons"] == []
+    assert integration_input.non_authorizing is True
+    assert integration_input.glb019_event_stream_proof.event_stream_non_authorizing is True
+    assert result["operative_run_completion_recorded"] is False
+    assert result["authority_lift"] is False
+
+
+def test_glb019_missing_validation_input_fail_closed() -> None:
+    from types import SimpleNamespace
+
+    integration_input = default_minimal_completion_integration_input()
+    legacy = SimpleNamespace(
+        **{
+            field.name: getattr(integration_input, field.name)
+            for field in integration_input.__dataclass_fields__.values()
+            if field.name != "glb019_event_stream_validation_input"
+        }
+    )
+    fail_reasons = validate_durable_run_primary_evidence_completion_integration_input(legacy)  # type: ignore[arg-type]
+    assert any("glb019_event_stream_validation_input required" in reason for reason in fail_reasons)
+
+
+def test_glb019_missing_proof_fail_closed() -> None:
+    from types import SimpleNamespace
+
+    integration_input = default_minimal_completion_integration_input()
+    legacy = SimpleNamespace(
+        **{
+            field.name: getattr(integration_input, field.name)
+            for field in integration_input.__dataclass_fields__.values()
+            if field.name != "glb019_event_stream_proof"
+        }
+    )
+    fail_reasons = validate_durable_run_primary_evidence_completion_integration_input(legacy)  # type: ignore[arg-type]
+    assert any("glb019_event_stream_proof required" in reason for reason in fail_reasons)
+
+
+def test_glb019_run_identity_drift_fail_closed() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        glb019_event_stream_validation_input=replace(
+            integration_input.glb019_event_stream_validation_input,
+            run_identity_digest="0" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("run_identity_digest drift" in reason for reason in result["fail_reasons"])
+
+
+def test_glb019_source_revision_drift_fail_closed() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        glb019_event_stream_validation_input=replace(
+            integration_input.glb019_event_stream_validation_input,
+            source_revision="1" * 40,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("source_revision mismatch" in reason for reason in result["fail_reasons"])
+
+
+def test_glb019_proof_digest_drift_fail_closed() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        glb019_event_stream_proof=replace(
+            integration_input.glb019_event_stream_proof,
+            validation_result_digest="0" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("validation_result_digest mismatch" in reason for reason in result["fail_reasons"])
+
+
+def test_glb019_digest_sensitivity() -> None:
+    base = default_minimal_completion_integration_input()
+    variant = replace(
+        base,
+        glb019_event_stream_validation_input=replace(
+            base.glb019_event_stream_validation_input,
+            correlation_id="glb019-digest-variant-v0",
+        ),
+    )
+    assert compute_completion_integration_input_digest(
+        base
+    ) != compute_completion_integration_input_digest(variant)
+
+
+def test_glb019_deterministic_repeat() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    first = evaluate_durable_run_primary_evidence_completion_integration(integration_input)
+    second = evaluate_durable_run_primary_evidence_completion_integration(integration_input)
+    assert first == second
+    assert first["integration_input_digest"] == second["integration_input_digest"]
