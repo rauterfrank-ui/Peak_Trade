@@ -1600,7 +1600,7 @@ PR4504_DURABLE_COMPLETION_WALLCLOCK_BINDING_FILES = (
 
 
 def test_selector_pr4504_wallclock_binding_diff_narrow_focused() -> None:
-    sel = _run_selector(*PR4504_DURABLE_COMPLETION_WALLCLOCK_BINDING_FILES)
+    sel = _run_selector_with_patch("", *PR4504_DURABLE_COMPLETION_WALLCLOCK_BINDING_FILES)
     assert sel["test_selection_mode"] == "FOCUSED"
     assert sel["test_selection_reason"] == "durable_completion_focused"
     assert sel["tests_execute_full"] == "false"
@@ -1615,7 +1615,7 @@ def test_selector_pr4504_wallclock_binding_diff_narrow_focused() -> None:
 
 
 def test_selector_pr4504_wallclock_binding_includes_wallclock_regression_nodes() -> None:
-    sel = _run_selector(*PR4504_DURABLE_COMPLETION_WALLCLOCK_BINDING_FILES)
+    sel = _run_selector_with_patch("", *PR4504_DURABLE_COMPLETION_WALLCLOCK_BINDING_FILES)
     targets = set(_targets(sel))
     assert f"{_COMPLETION_OWNER}::test_missing_wallclock_evidence_fails_closed" in targets
     assert (
@@ -1630,7 +1630,7 @@ def test_selector_pr4504_wallclock_binding_includes_wallclock_regression_nodes()
 
 
 def test_selector_pr4504_wallclock_binding_not_full_404_owner_files() -> None:
-    sel = _run_selector(*PR4504_DURABLE_COMPLETION_WALLCLOCK_BINDING_FILES)
+    sel = _run_selector_with_patch("", *PR4504_DURABLE_COMPLETION_WALLCLOCK_BINDING_FILES)
     targets = _targets(sel)
     assert _COMPLETION_OWNER not in targets
     assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" not in targets
@@ -1638,7 +1638,7 @@ def test_selector_pr4504_wallclock_binding_not_full_404_owner_files() -> None:
 
 
 def test_selector_pr4504_wallclock_binding_import_modules_bounded() -> None:
-    sel = _run_selector(*PR4504_DURABLE_COMPLETION_WALLCLOCK_BINDING_FILES)
+    sel = _run_selector_with_patch("", *PR4504_DURABLE_COMPLETION_WALLCLOCK_BINDING_FILES)
     modules = _modules(sel)
     assert modules == [
         "src.ops.bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0"
@@ -1660,7 +1660,8 @@ def test_selector_durable_completion_foreign_production_change_stays_broad() -> 
 
 
 def test_selector_pr4504_wallclock_binding_plus_foreign_file_full() -> None:
-    sel = _run_selector(
+    sel = _run_selector_with_patch(
+        "",
         *PR4504_DURABLE_COMPLETION_WALLCLOCK_BINDING_FILES,
         "src/strategies/__init__.py",
     )
@@ -1668,7 +1669,8 @@ def test_selector_pr4504_wallclock_binding_plus_foreign_file_full() -> None:
 
 
 def test_selector_pr4504_wallclock_binding_plus_dependency_full() -> None:
-    sel = _run_selector(
+    sel = _run_selector_with_patch(
+        "",
         *PR4504_DURABLE_COMPLETION_WALLCLOCK_BINDING_FILES,
         "pyproject.toml",
     )
@@ -1676,7 +1678,8 @@ def test_selector_pr4504_wallclock_binding_plus_dependency_full() -> None:
 
 
 def test_selector_pr4504_wallclock_binding_plus_ci_policy_includes_ci_owner() -> None:
-    sel = _run_selector(
+    sel = _run_selector_with_patch(
+        "",
         *PR4504_DURABLE_COMPLETION_WALLCLOCK_BINDING_FILES,
         "scripts/ops/ci_test_selection_v1.py",
         "tests/ci/test_ci_diff_aware_test_selection_v1.py",
