@@ -1053,6 +1053,242 @@ def _imports_symbol_from_partitions(module: ast.Module, symbol: str) -> bool:
     return False
 
 
+def _partitions_import_symbols(module: ast.Module) -> frozenset[str]:
+    symbols: set[str] = set()
+    for node in module.body:
+        if not isinstance(node, ast.ImportFrom):
+            continue
+        if node.module != "scripts.ops.durable_completion_integration_partitions_v0":
+            continue
+        symbols.update(alias.name for alias in node.names)
+    return frozenset(symbols)
+
+
+_SELECTOR_OWNER_ALLOWED_PARTITIONS_IMPORTS: Final[frozenset[str]] = frozenset(
+    {
+        "CI_GLB019_SYNTHETIC_PATCH_BUILDER",
+        "is_glb019_a2b_structural_contract_candidate",
+        "patch_includes_glb019_guarded_selector_owner_rewire",
+    }
+)
+
+
+def _is_effective_glb019_patch_assignment(stmt: ast.stmt) -> bool:
+    if not isinstance(stmt, ast.Assign) or len(stmt.targets) != 1:
+        return False
+    target = stmt.targets[0]
+    if not isinstance(target, ast.Name) or target.id != "patch_text":
+        return False
+    if not isinstance(stmt.value, ast.Call):
+        return False
+    return _call_name(stmt.value) == "_effective_glb019_patch_text"
+
+
+def _return_is_none(stmt: ast.stmt) -> bool:
+    if not isinstance(stmt, ast.Return):
+        return False
+    if stmt.value is None:
+        return True
+    return isinstance(stmt.value, ast.Constant) and stmt.value.value is None
+
+
+def _if_returns_none(stmt: ast.stmt) -> bool:
+    return (
+        isinstance(stmt, ast.If)
+        and len(stmt.body) == 1
+        and _return_is_none(stmt.body[0])
+        and not stmt.orelse
+    )
+
+
+def _validate_structural_candidate_wrapper_fn(after_fn: ast.FunctionDef) -> bool:
+    """Selector-owner wrapper must delegate only to the partitions owner."""
+    if len(after_fn.body) != 1:
+        return False
+    stmt = after_fn.body[0]
+    if not isinstance(stmt, ast.Return) or stmt.value is None:
+        return False
+    call = stmt.value
+    if not isinstance(call, ast.Call):
+        return False
+    if (
+        not isinstance(call.func, ast.Name)
+        or call.func.id != "is_glb019_a2b_structural_contract_candidate"
+    ):
+        return False
+    if call.keywords or len(call.args) != 1:
+        return False
+    arg = call.args[0]
+    return isinstance(arg, ast.Name) and arg.id == "changed_files"
+
+
+def _validate_selector_owner_membership_assign(stmt: ast.stmt) -> bool:
+    if not isinstance(stmt, ast.Assign) or len(stmt.targets) != 1:
+        return False
+    target = stmt.targets[0]
+    if not isinstance(target, ast.Name) or target.id != "selector_owner_changed":
+        return False
+    val = stmt.value
+    if not isinstance(val, ast.Compare) or len(val.ops) != 1 or not isinstance(val.ops[0], ast.In):
+        return False
+    if not isinstance(val.left, ast.Name) or val.left.id != "GLB019_A2B_SELECTOR_OWNER":
+        return False
+    if len(val.comparators) != 1 or not isinstance(val.comparators[0], ast.Name):
+        return False
+    return val.comparators[0].id == "files"
+
+
+def _validate_guarded_structural_candidate_assign(stmt: ast.stmt) -> bool:
+    if not isinstance(stmt, ast.Assign) or len(stmt.targets) != 1:
+        return False
+    target = stmt.targets[0]
+    if not isinstance(target, ast.Name) or target.id != "guarded_mixed_candidate":
+        return False
+    call = stmt.value
+    if not isinstance(call, ast.Call):
+        return False
+    return (
+        isinstance(call.func, ast.Name)
+        and call.func.id == "_is_glb019_a2b_structural_contract_candidate"
+        and len(call.args) == 1
+        and isinstance(call.args[0], ast.Name)
+        and call.args[0].id == "files"
+        and not call.keywords
+    )
+
+
+def _validate_guarded_mixed_if_statement(stmt: ast.stmt) -> bool:
+    if not isinstance(stmt, ast.If):
+        return False
+    test = stmt.test
+    if (
+        not isinstance(test, ast.BoolOp)
+        or not isinstance(test.op, ast.And)
+        or len(test.values) != 2
+    ):
+        return False
+    first, second = test.values
+    if not (isinstance(first, ast.Name) and first.id == "selector_owner_changed"):
+        return False
+    if not (isinstance(second, ast.Name) and second.id == "guarded_mixed_candidate"):
+        return False
+    body = stmt.body
+    if len(body) != 4:
+        return False
+    patch_guard, binding_guard, evaluate_assign, result_return = body
+    if not (
+        isinstance(patch_guard, ast.If)
+        and isinstance(patch_guard.test, ast.UnaryOp)
+        and isinstance(patch_guard.test.op, ast.Not)
+        and isinstance(patch_guard.test.operand, ast.Name)
+        and patch_guard.test.operand.id == "patch_text"
+        and _if_returns_none(patch_guard)
+    ):
+        return False
+    if not (
+        isinstance(binding_guard, ast.If)
+        and isinstance(binding_guard.test, ast.UnaryOp)
+        and isinstance(binding_guard.test.op, ast.Not)
+        and isinstance(binding_guard.test.operand, ast.Call)
+        and _call_name(binding_guard.test.operand)
+        == "patch_includes_glb019_guarded_selector_owner_rewire"
+        and _if_returns_none(binding_guard)
+    ):
+        return False
+    binding_call = binding_guard.test.operand
+    if not (
+        len(binding_call.args) >= 1
+        and isinstance(binding_call.args[0], ast.Name)
+        and binding_call.args[0].id == "patch_text"
+        and any(kw.arg == "changed_files" for kw in binding_call.keywords)
+    ):
+        return False
+    if not (
+        isinstance(evaluate_assign, ast.Assign)
+        and len(evaluate_assign.targets) == 1
+        and isinstance(evaluate_assign.targets[0], ast.Name)
+        and evaluate_assign.targets[0].id == "contract"
+        and isinstance(evaluate_assign.value, ast.Call)
+        and _call_name(evaluate_assign.value) == "evaluate_glb019_a2b_change_contract"
+    ):
+        return False
+    evaluate_call = evaluate_assign.value
+    if not (
+        len(evaluate_call.args) >= 1
+        and isinstance(evaluate_call.args[0], ast.Name)
+        and evaluate_call.args[0].id == "patch_text"
+        and any(kw.arg == "repo_root" for kw in evaluate_call.keywords)
+    ):
+        return False
+    if not (
+        isinstance(result_return, ast.Return)
+        and isinstance(result_return.value, ast.Call)
+        and _call_name(result_return.value) == "_selection_result_for_glb019_a2b_change_contract"
+    ):
+        return False
+    result_call = result_return.value
+    if not (
+        len(result_call.args) >= 2
+        and isinstance(result_call.args[0], ast.Name)
+        and result_call.args[0].id == "files"
+        and isinstance(result_call.args[1], ast.Name)
+        and result_call.args[1].id == "contract"
+        and any(kw.arg == "patch_text" for kw in result_call.keywords)
+    ):
+        return False
+    return not stmt.orelse
+
+
+def _validate_guarded_mixed_extension_statements(stmts: list[ast.stmt]) -> bool:
+    if len(stmts) != 3:
+        return False
+    return (
+        _validate_selector_owner_membership_assign(stmts[0])
+        and _validate_guarded_structural_candidate_assign(stmts[1])
+        and _validate_guarded_mixed_if_statement(stmts[2])
+    )
+
+
+def _validate_try_focused_guarded_mixed_diff_extension(
+    before_fn: ast.FunctionDef,
+    after_fn: ast.FunctionDef,
+) -> bool:
+    before_stmts = list(before_fn.body)
+    after_stmts = list(after_fn.body)
+    before_idx = next(
+        (
+            idx
+            for idx, stmt in enumerate(before_stmts)
+            if _is_effective_glb019_patch_assignment(stmt)
+        ),
+        -1,
+    )
+    after_idx = next(
+        (
+            idx
+            for idx, stmt in enumerate(after_stmts)
+            if _is_effective_glb019_patch_assignment(stmt)
+        ),
+        -1,
+    )
+    if before_idx < 0 or after_idx < 0:
+        return False
+    if [_stmt_fingerprint(stmt) for stmt in after_stmts[:after_idx]] != [
+        _stmt_fingerprint(stmt) for stmt in before_stmts[:before_idx]
+    ]:
+        return False
+    if _stmt_fingerprint(after_stmts[after_idx]) != _stmt_fingerprint(before_stmts[before_idx]):
+        return False
+    if len(after_stmts) != len(before_stmts) + 3:
+        return False
+    extension = after_stmts[after_idx + 1 : after_idx + 4]
+    if not _validate_guarded_mixed_extension_statements(extension):
+        return False
+    return [_stmt_fingerprint(stmt) for stmt in after_stmts[after_idx + 4 :]] == [
+        _stmt_fingerprint(stmt) for stmt in before_stmts[before_idx + 1 :]
+    ]
+
+
 def _module_level_assign_names(module: ast.Module) -> set[str]:
     names: set[str] = set()
     for node in module.body:
@@ -1103,15 +1339,22 @@ def _rebundle_path_glb019_synthetic_builder_extension_allowed(
 
 def _validate_selector_owner_glb019_rewire_ast(before: ast.Module, after: ast.Module) -> bool:
     """Fail-closed AST contract for the guarded GLB-019 selector-owner import rewire."""
-    if not _imports_symbol_from_partitions(after, "CI_GLB019_SYNTHETIC_PATCH_BUILDER"):
-        return False
+    for symbol in _SELECTOR_OWNER_ALLOWED_PARTITIONS_IMPORTS:
+        if not _imports_symbol_from_partitions(after, symbol):
+            return False
     if "CI_GLB019_SYNTHETIC_PATCH_BUILDER" in _module_level_assign_names(after):
         return False
     if "CI_BOOTSTRAP_FOCUSED_PATHS" not in _module_level_assign_names(after):
         return False
+    before_imports = _partitions_import_symbols(before)
+    after_imports = _partitions_import_symbols(after)
+    if not (after_imports - before_imports) <= _SELECTOR_OWNER_ALLOWED_PARTITIONS_IMPORTS:
+        return False
     before_defs = _module_defs(before)
     after_defs = _module_defs(after)
     rebundle_name = "_is_durable_completion_integration_partition_rebundle_path"
+    structural_wrapper = "_is_glb019_a2b_structural_contract_candidate"
+    try_focused = "_try_durable_completion_focused"
     for name in set(before_defs) | set(after_defs):
         if name == rebundle_name:
             before_fn = before_defs.get(name)
@@ -1121,6 +1364,23 @@ def _validate_selector_owner_glb019_rewire_ast(before: ast.Module, after: ast.Mo
             ):
                 return False
             if not _rebundle_path_glb019_synthetic_builder_extension_allowed(before_fn, after_fn):
+                return False
+            continue
+        if name == structural_wrapper:
+            after_fn = after_defs.get(name)
+            if not isinstance(after_fn, ast.FunctionDef):
+                return False
+            if not _validate_structural_candidate_wrapper_fn(after_fn):
+                return False
+            continue
+        if name == try_focused:
+            before_fn = before_defs.get(name)
+            after_fn = after_defs.get(name)
+            if not isinstance(before_fn, ast.FunctionDef) or not isinstance(
+                after_fn, ast.FunctionDef
+            ):
+                return False
+            if not _validate_try_focused_guarded_mixed_diff_extension(before_fn, after_fn):
                 return False
             continue
         if name not in before_defs or name not in after_defs:
