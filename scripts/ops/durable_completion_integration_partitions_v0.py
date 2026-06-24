@@ -401,6 +401,29 @@ GLB019_A2B_ADDITIVE_PARTITIONS: Final[frozenset[str]] = frozenset(
     }
 )
 
+GLB019_A2B_SELECTOR_OWNER: Final = "scripts/ops/ci_test_selection_v1.py"
+
+GLB019_A2B_MIXED_DIFF_GUARDED_EXTRA_FILES: Final[frozenset[str]] = frozenset(
+    {GLB019_A2B_SELECTOR_OWNER}
+)
+
+GLB019_A2B_PROD_RELEVANT_FILES: Final[frozenset[str]] = frozenset(
+    {
+        COMPLETION_FACADE_PATH,
+        INTEGRATION_TEST_OWNER,
+        "src/ops/durable_completion_validation/graph.py",
+        "src/ops/durable_completion_validation/validators/event_stream.py",
+        "tests/ops/test_durable_completion_validation_graph_v1.py",
+    }
+)
+
+GLB019_A2B_BOOTSTRAP_ONLY_FILES: Final[frozenset[str]] = frozenset(
+    {
+        "scripts/ops/durable_completion_integration_partitions_v0.py",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    }
+)
+
 _GLB019_FACADE_IMPORTS: Final[frozenset[str]] = frozenset(
     {
         "Glb019EventStreamProofBinding",
@@ -983,6 +1006,130 @@ def _reject_patch_mutation_is_canonical(reject: ast.FunctionDef) -> bool:
     return True
 
 
+def _normalize_glb019_changed_files(files: list[str]) -> tuple[str, ...]:
+    return tuple(sorted({Path(f).as_posix() for f in files if f.strip()}))
+
+
+def _closed_glb019_a2b_structural_contract_candidate(changed_files: tuple[str, ...]) -> bool:
+    if not changed_files:
+        return False
+    if any(path.startswith(".github/workflows/") for path in changed_files):
+        return False
+    if not all(path in GLB019_A2B_ALLOWED_FILES for path in changed_files):
+        return False
+    if not any(path in GLB019_A2B_PROD_RELEVANT_FILES for path in changed_files):
+        return False
+    if all(path in GLB019_A2B_BOOTSTRAP_ONLY_FILES for path in changed_files):
+        return False
+    return True
+
+
+def is_glb019_a2b_structural_contract_candidate(changed_files: list[str]) -> bool:
+    """True when changed_files may activate the GLB-019 A2/B structural contract."""
+    normalized = _normalize_glb019_changed_files(changed_files)
+    if not normalized:
+        return False
+    if GLB019_A2B_SELECTOR_OWNER in normalized:
+        without_selector = tuple(path for path in normalized if path != GLB019_A2B_SELECTOR_OWNER)
+        if not without_selector:
+            return False
+        if not GLB019_A2B_ALLOWED_FILES.issubset(set(without_selector)):
+            return False
+        extra_paths = set(normalized) - GLB019_A2B_ALLOWED_FILES
+        if extra_paths != {GLB019_A2B_SELECTOR_OWNER}:
+            return False
+        return _closed_glb019_a2b_structural_contract_candidate(without_selector)
+    return _closed_glb019_a2b_structural_contract_candidate(normalized)
+
+
+def _imports_symbol_from_partitions(module: ast.Module, symbol: str) -> bool:
+    for node in module.body:
+        if not isinstance(node, ast.ImportFrom):
+            continue
+        if node.module != "scripts.ops.durable_completion_integration_partitions_v0":
+            continue
+        if any(alias.name == symbol for alias in node.names):
+            return True
+    return False
+
+
+def _module_level_assign_names(module: ast.Module) -> set[str]:
+    names: set[str] = set()
+    for node in module.body:
+        if isinstance(node, ast.Assign):
+            for target in node.targets:
+                if isinstance(target, ast.Name):
+                    names.add(target.id)
+    return names
+
+
+def _rebundle_path_glb019_synthetic_builder_extension_allowed(
+    before_fn: ast.FunctionDef,
+    after_fn: ast.FunctionDef,
+) -> bool:
+    before_stmts = list(before_fn.body)
+    after_stmts = list(after_fn.body)
+    if before_stmts == after_stmts:
+        return True
+    if len(after_stmts) != len(before_stmts) + 1:
+        return False
+    before_fps = [_stmt_fingerprint(stmt) for stmt in before_stmts]
+    new_stmts = [stmt for stmt in after_stmts if _stmt_fingerprint(stmt) not in set(before_fps)]
+    if len(new_stmts) != 1:
+        return False
+    new_if = new_stmts[0]
+    if not isinstance(new_if, ast.If):
+        return False
+    test = new_if.test
+    if not (
+        isinstance(test, ast.Compare)
+        and len(test.ops) == 1
+        and isinstance(test.ops[0], ast.Eq)
+        and isinstance(test.left, ast.Name)
+        and test.left.id == "path"
+        and len(test.comparators) == 1
+        and isinstance(test.comparators[0], ast.Name)
+        and test.comparators[0].id == "CI_GLB019_SYNTHETIC_PATCH_BUILDER"
+    ):
+        return False
+    if len(new_if.body) != 1 or not isinstance(new_if.body[0], ast.Return):
+        return False
+    ret = new_if.body[0].value
+    if not isinstance(ret, ast.Constant) or ret.value is not True:
+        return False
+    after_without_new = [stmt for stmt in after_stmts if stmt is not new_if]
+    return [_stmt_fingerprint(stmt) for stmt in after_without_new] == before_fps
+
+
+def _validate_selector_owner_glb019_rewire_ast(before: ast.Module, after: ast.Module) -> bool:
+    """Fail-closed AST contract for the guarded GLB-019 selector-owner import rewire."""
+    if not _imports_symbol_from_partitions(after, "CI_GLB019_SYNTHETIC_PATCH_BUILDER"):
+        return False
+    if "CI_GLB019_SYNTHETIC_PATCH_BUILDER" in _module_level_assign_names(after):
+        return False
+    if "CI_BOOTSTRAP_FOCUSED_PATHS" not in _module_level_assign_names(after):
+        return False
+    before_defs = _module_defs(before)
+    after_defs = _module_defs(after)
+    rebundle_name = "_is_durable_completion_integration_partition_rebundle_path"
+    for name in set(before_defs) | set(after_defs):
+        if name == rebundle_name:
+            before_fn = before_defs.get(name)
+            after_fn = after_defs.get(name)
+            if not isinstance(before_fn, ast.FunctionDef) or not isinstance(
+                after_fn, ast.FunctionDef
+            ):
+                return False
+            if not _rebundle_path_glb019_synthetic_builder_extension_allowed(before_fn, after_fn):
+                return False
+            continue
+        if name not in before_defs or name not in after_defs:
+            return False
+        if ast.unparse(before_defs[name]) != ast.unparse(after_defs[name]):
+            return False
+    return True
+
+
 def _validate_synthetic_patch_builder_ast(before: ast.Module, after: ast.Module) -> bool:
     """Fail-closed AST contract for the GLB-019 synthetic patch builder helper."""
     if not after.body:
@@ -1095,12 +1242,23 @@ def evaluate_glb019_a2b_change_contract(
         return Glb019A2bChangeContractResult(
             Glb019A2bChangeContractOutcome.UNAVAILABLE_OR_UNPARSEABLE
         )
-    if not set(by_path) <= GLB019_A2B_ALLOWED_FILES:
-        return Glb019A2bChangeContractResult(Glb019A2bChangeContractOutcome.REJECT)
-    if not GLB019_A2B_ALLOWED_FILES.issubset(set(by_path)):
-        return Glb019A2bChangeContractResult(Glb019A2bChangeContractOutcome.REJECT)
+    paths = set(by_path)
+    selector_present = GLB019_A2B_SELECTOR_OWNER in paths
+    if selector_present:
+        if paths - GLB019_A2B_ALLOWED_FILES - {GLB019_A2B_SELECTOR_OWNER}:
+            return Glb019A2bChangeContractResult(Glb019A2bChangeContractOutcome.REJECT)
+        if not GLB019_A2B_ALLOWED_FILES.issubset(paths - {GLB019_A2B_SELECTOR_OWNER}):
+            return Glb019A2bChangeContractResult(Glb019A2bChangeContractOutcome.REJECT)
+    else:
+        if not paths <= GLB019_A2B_ALLOWED_FILES:
+            return Glb019A2bChangeContractResult(Glb019A2bChangeContractOutcome.REJECT)
+        if not GLB019_A2B_ALLOWED_FILES.issubset(paths):
+            return Glb019A2bChangeContractResult(Glb019A2bChangeContractOutcome.REJECT)
     for path, hunk_lines in by_path.items():
-        validator = _FILE_AST_VALIDATORS.get(path)
+        if path == GLB019_A2B_SELECTOR_OWNER:
+            validator = _validate_selector_owner_glb019_rewire_ast
+        else:
+            validator = _FILE_AST_VALIDATORS.get(path)
         if validator is None:
             return Glb019A2bChangeContractResult(Glb019A2bChangeContractOutcome.REJECT)
         try:
@@ -1109,6 +1267,8 @@ def evaluate_glb019_a2b_change_contract(
             before_tree = ast.parse(before_text)
             after_tree = ast.parse(after_text)
         except (OSError, SyntaxError, ValueError):
+            if path == GLB019_A2B_SELECTOR_OWNER:
+                return Glb019A2bChangeContractResult(Glb019A2bChangeContractOutcome.REJECT)
             return Glb019A2bChangeContractResult(
                 Glb019A2bChangeContractOutcome.UNAVAILABLE_OR_UNPARSEABLE
             )
@@ -1123,6 +1283,23 @@ def evaluate_glb019_a2b_change_contract(
         Glb019A2bChangeContractOutcome.PASS,
         GLB019_A2B_ADDITIVE_PARTITIONS,
     )
+
+
+def patch_includes_glb019_guarded_selector_owner_rewire(
+    patch_text: str,
+    *,
+    changed_files: list[str],
+) -> bool:
+    """Fail closed when selector owner is listed but its guarded rewire is absent from patch."""
+    if GLB019_A2B_SELECTOR_OWNER not in changed_files:
+        return True
+    if not patch_text.strip():
+        return False
+    try:
+        by_path = _parse_unified_diff(patch_text)
+    except ValueError:
+        return False
+    return GLB019_A2B_SELECTOR_OWNER in by_path
 
 
 def classify_glb019_a2b_additive_patch(
@@ -1146,7 +1323,12 @@ def collect_glb019_a2b_patch_text(
     """Collect merge-base unified diff for GLB-019 contract paths (CI path)."""
     root = repo_root or Path.cwd()
     if changed_files is not None:
-        diff_paths = sorted(set(changed_files) & GLB019_A2B_ALLOWED_FILES)
+        changed_set = set(changed_files)
+        diff_paths = sorted(changed_set & GLB019_A2B_ALLOWED_FILES)
+        if GLB019_A2B_SELECTOR_OWNER in changed_set and GLB019_A2B_ALLOWED_FILES.issubset(
+            changed_set - {GLB019_A2B_SELECTOR_OWNER}
+        ):
+            diff_paths = sorted(set(diff_paths) | {GLB019_A2B_SELECTOR_OWNER})
         if not diff_paths:
             return None
     else:

@@ -106,8 +106,10 @@ from scripts.ops.durable_completion_integration_partitions_v0 import (  # noqa: 
     expand_partitions_to_pytest_targets,
     integration_owner_node_count,
     integration_partition_inventory,
+    is_glb019_a2b_structural_contract_candidate,
     partition_union_node_count,
     partitions_for_changed_files,
+    patch_includes_glb019_guarded_selector_owner_rewire,
 )
 
 CI_BOOTSTRAP_FOCUSED_PATHS = frozenset(
@@ -2075,21 +2077,7 @@ def _normalize_changed_files(files: list[str]) -> tuple[str, ...]:
 
 
 def _is_glb019_a2b_structural_contract_candidate(changed_files: list[str]) -> bool:
-    """True only when changed_files may activate the GLB-019 A2/B structural contract."""
-    normalized = _normalize_changed_files(changed_files)
-    if not normalized:
-        return False
-    if GLB019_A2B_SELECTOR_OWNER in normalized:
-        return False
-    if any(path.startswith(".github/workflows/") for path in normalized):
-        return False
-    if not all(path in GLB019_A2B_CLOSED_FILESET for path in normalized):
-        return False
-    if not any(path in GLB019_A2B_PROD_RELEVANT_FILES for path in normalized):
-        return False
-    if all(path in GLB019_A2B_BOOTSTRAP_ONLY_FILES for path in normalized):
-        return False
-    return True
+    return is_glb019_a2b_structural_contract_candidate(changed_files)
 
 
 def _is_established_durable_completion_rebinding_scope(files: list[str]) -> bool:
@@ -2213,6 +2201,22 @@ def _try_durable_completion_focused(
     ):
         return None
     patch_text = _effective_glb019_patch_text(files, patch_text)
+    selector_owner_changed = GLB019_A2B_SELECTOR_OWNER in files
+    guarded_mixed_candidate = _is_glb019_a2b_structural_contract_candidate(files)
+    if selector_owner_changed and guarded_mixed_candidate:
+        if not patch_text:
+            return None
+        if not patch_includes_glb019_guarded_selector_owner_rewire(
+            patch_text,
+            changed_files=files,
+        ):
+            return None
+        contract = evaluate_glb019_a2b_change_contract(patch_text, repo_root=_REPO_ROOT)
+        return _selection_result_for_glb019_a2b_change_contract(
+            files,
+            contract,
+            patch_text=patch_text,
+        )
     central_prod_paths = {DURABLE_COMPLETION_FACADE_PATH, DURABLE_COMPLETION_INTEGRATION_TEST_OWNER}
     has_central_prod = any(path in central_prod_paths for path in files)
     if has_central_prod and _is_glb019_a2b_structural_contract_candidate(files):
