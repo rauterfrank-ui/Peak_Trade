@@ -443,8 +443,7 @@ def test_selector_glb019_a2b_selector_owner_plus_central_facade_selects_full() -
 
 
 def test_selector_glb019_a2b_selector_owner_plus_facade_explicit_patch_still_full() -> None:
-    assert GLB019_A2B_FROZEN_PATCH.is_file()
-    patch = GLB019_A2B_FROZEN_PATCH.read_text(encoding="utf-8")
+    patch = _synthetic_glb019_a2b_positive_patch_text()
     sel = _run_selector_with_patch(patch, _SELECTOR_OWNER, _FACADE_PATH, *GLB019_A2B_FILESET)
     assert sel["test_selection_mode"] == "FULL"
     assert sel["test_selection_reason"] == "durable_completion_foreign_path_requires_full"
@@ -467,12 +466,7 @@ def test_selector_glb019_a2b_central_facade_without_structural_contract_selects_
 
 
 def test_selector_glb019_a2b_eligible_fileset_structural_contract_failure_selects_full() -> None:
-    assert GLB019_A2B_FROZEN_PATCH.is_file()
-    patch = GLB019_A2B_FROZEN_PATCH.read_text(encoding="utf-8").replace(
-        "glb019_result = evaluate_glb019_event_stream_validation(",
-        "pe21_result = evaluate_glb019_event_stream_validation(",
-        1,
-    )
+    patch = _synthetic_glb019_a2b_reject_patch_text()
     sel = _run_selector_with_patch(patch, *GLB019_A2B_FILESET)
     assert sel["test_selection_mode"] == "FULL"
     assert sel["tests_execute_full"] == "true"
@@ -959,13 +953,10 @@ def test_selector_glb019_mixed_validation_and_facade_selects_integration_owner()
     assert _INTEGRATION_OWNER in _targets(sel)
 
 
-GLB019_A2B_FROZEN_PATCH = (
-    Path(__file__).resolve().parents[1]
-    / "fixtures"
-    / "ci"
-    / "glb019_a2b_additive_frozen_patch_v0.patch"
+from tests.ci._glb019_synthetic_patch_builder_v0 import (
+    synthetic_glb019_a2b_positive_patch_text as _synthetic_glb019_a2b_positive_patch_text,
+    synthetic_glb019_a2b_reject_patch_text as _synthetic_glb019_a2b_reject_patch_text,
 )
-GLB019_A2B_FROZEN_PATCH_SHA256 = "fbac232eb308dc92904b0f0b541fc8587e463f3884b74a9db263011ca1094a59"
 
 GLB019_A2B_FILESET = (
     "src/ops/bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
@@ -1011,11 +1002,7 @@ def _run_selector_with_patch(
 
 
 def test_selector_glb019_a2b_frozen_patch_additive_contract_focused() -> None:
-    assert GLB019_A2B_FROZEN_PATCH.is_file()
-    patch = GLB019_A2B_FROZEN_PATCH.read_text(encoding="utf-8")
-    import hashlib
-
-    assert hashlib.sha256(patch.encode("utf-8")).hexdigest() == GLB019_A2B_FROZEN_PATCH_SHA256
+    patch = _synthetic_glb019_a2b_positive_patch_text()
     sel = _run_selector_with_patch(patch, *GLB019_A2B_FILESET)
     assert sel["test_selection_mode"] == "FOCUSED"
     assert sel["test_selection_reason"] == "glb019_a2b_additive_change_contract"
@@ -1028,8 +1015,7 @@ def test_selector_glb019_a2b_frozen_patch_additive_contract_focused() -> None:
 
 
 def test_selector_glb019_a2b_change_contract_unknown_file_selects_full() -> None:
-    assert GLB019_A2B_FROZEN_PATCH.is_file()
-    patch = GLB019_A2B_FROZEN_PATCH.read_text(encoding="utf-8") + (
+    patch = _synthetic_glb019_a2b_positive_patch_text() + (
         "\ndiff --git a/src/ops/unknown_contract_v0.py b/src/ops/unknown_contract_v0.py\n"
         "+++ b/src/ops/unknown_contract_v0.py\n"
         "@@ -0,0 +1 @@\n"
@@ -1165,8 +1151,7 @@ def test_selector_glb019_a2b_change_contract_classify_unit() -> None:
         classify_glb019_a2b_additive_patch,
     )
 
-    assert GLB019_A2B_FROZEN_PATCH.is_file()
-    patch = GLB019_A2B_FROZEN_PATCH.read_text(encoding="utf-8")
+    patch = _synthetic_glb019_a2b_positive_patch_text()
     assert classify_glb019_a2b_additive_patch(patch) == GLB019_A2B_ADDITIVE_PARTITIONS
     assert classify_glb019_a2b_additive_patch("") is None
     assert classify_glb019_a2b_additive_patch("corrupt") is None
