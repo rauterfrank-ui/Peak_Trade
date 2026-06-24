@@ -178,6 +178,7 @@ def test_focused_matrix_integration_shard_round_robin_distribution() -> None:
 
 def test_focused_matrix_glb019_a2b_target_groups_complete() -> None:
     from scripts.ops.durable_completion_integration_partitions_v0 import (
+        CI_GLB019_SYNTHETIC_PATCH_BUILDER,
         GLB019_A2B_ADDITIVE_PARTITIONS,
         expand_partitions_to_pytest_targets,
     )
@@ -193,6 +194,7 @@ def test_focused_matrix_glb019_a2b_target_groups_complete() -> None:
         "src/ops/bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
         "src/ops/durable_completion_validation/graph.py",
         "src/ops/durable_completion_validation/validators/event_stream.py",
+        CI_GLB019_SYNTHETIC_PATCH_BUILDER,
         "tests/ci/test_ci_diff_aware_test_selection_v1.py",
         "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
         "tests/ops/test_durable_completion_validation_graph_v1.py",
@@ -608,11 +610,313 @@ def test_selector_glb019_a2b_selector_owner_plus_central_facade_selects_full() -
     assert sel["test_selection_reason"] == "durable_completion_foreign_path_requires_full"
 
 
+_GLB019_SELECTOR_OWNER_FULL_REASONS = frozenset(
+    {
+        "durable_completion_foreign_path_requires_full",
+        "durable_completion_incomplete_or_missing_test_owner",
+    }
+)
+
+
 def test_selector_glb019_a2b_selector_owner_plus_facade_explicit_patch_still_full() -> None:
     patch = _synthetic_glb019_a2b_positive_patch_text()
     sel = _run_selector_with_patch(patch, _SELECTOR_OWNER, _FACADE_PATH, *GLB019_A2B_FILESET)
     assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_reason"] in _GLB019_SELECTOR_OWNER_FULL_REASONS
+
+
+def test_selector_glb019_a2b_full_nine_file_pr_diff_focused() -> None:
+    sel = _run_selector(*GLB019_A2B_FULL_PR_FILES)
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "glb019_a2b_additive_change_contract"
+    assert sel["tests_execute_full"] == "false"
+
+
+def test_selector_glb019_a2b_full_nine_file_pr_explicit_git_diff_focused() -> None:
+    sel = _run_selector_with_patch(_full_pr_git_patch(), *GLB019_A2B_FULL_PR_FILES)
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "glb019_a2b_additive_change_contract"
+    assert sel["tests_execute_full"] == "false"
+    targets = _targets(sel)
+    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" in targets
+    assert _GRAPH_OWNER in targets
+    integration_nodes = [t for t in targets if t.startswith(f"{_INTEGRATION_OWNER}::test_")]
+    assert len(integration_nodes) == 45
+
+
+def test_selector_glb019_a2b_live_collect_patch_contract_focused() -> None:
+    from pathlib import Path
+
+    from scripts.ops.durable_completion_integration_partitions_v0 import (
+        Glb019A2bChangeContractOutcome,
+        GLB019_A2B_SELECTOR_OWNER,
+        collect_glb019_a2b_patch_text,
+        evaluate_glb019_a2b_change_contract,
+        patch_includes_glb019_guarded_selector_owner_rewire,
+    )
+
+    files = list(GLB019_A2B_FULL_PR_FILES)
+    patch = collect_glb019_a2b_patch_text(
+        base_ref="origin/main",
+        repo_root=Path("."),
+        changed_files=files,
+    )
+    assert patch
+    assert patch.strip()
+    assert len(patch) > 0
+    assert patch_includes_glb019_guarded_selector_owner_rewire(patch, changed_files=files)
+    assert GLB019_A2B_SELECTOR_OWNER in patch
+    contract = evaluate_glb019_a2b_change_contract(patch, repo_root=Path("."))
+    assert contract.outcome == Glb019A2bChangeContractOutcome.PASS
+    sel = _run_selector(*GLB019_A2B_FULL_PR_FILES)
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "glb019_a2b_additive_change_contract"
+    assert sel["tests_execute_full"] == "false"
+    targets = _targets(sel)
+    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" in targets
+    assert _GRAPH_OWNER in targets
+    integration_nodes = [t for t in targets if t.startswith(f"{_INTEGRATION_OWNER}::test_")]
+    assert integration_nodes
+
+
+def test_selector_glb019_a2b_live_patch_selector_owner_ast_validator_accepts() -> None:
+    import ast
+    from pathlib import Path
+
+    from scripts.ops.durable_completion_integration_partitions_v0 import (
+        GLB019_A2B_SELECTOR_OWNER,
+        _apply_patch_for_file,
+        _base_file_text,
+        _parse_unified_diff,
+        _validate_selector_owner_glb019_rewire_ast,
+        collect_glb019_a2b_patch_text,
+    )
+
+    files = list(GLB019_A2B_FULL_PR_FILES)
+    patch = collect_glb019_a2b_patch_text(
+        base_ref="origin/main",
+        repo_root=Path("."),
+        changed_files=files,
+    )
+    assert patch
+    repo_root = Path(".")
+    before = _base_file_text(repo_root, GLB019_A2B_SELECTOR_OWNER)
+    after = _apply_patch_for_file(
+        repo_root,
+        GLB019_A2B_SELECTOR_OWNER,
+        _parse_unified_diff(patch)[GLB019_A2B_SELECTOR_OWNER],
+    )
+    assert _validate_selector_owner_glb019_rewire_ast(ast.parse(before), ast.parse(after))
+
+
+def test_selector_glb019_a2b_missing_selector_owner_hunks_full() -> None:
+    patch = _synthetic_glb019_a2b_positive_patch_text()
+    sel = _run_selector_with_patch(patch, *GLB019_A2B_FULL_PR_FILES)
+    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_reason"] in _GLB019_SELECTOR_OWNER_FULL_REASONS
+
+
+def test_selector_glb019_a2b_removed_binding_check_full() -> None:
+    canonical = _selector_owner_canonical_after_text()
+    needle = (
+        "        if not patch_includes_glb019_guarded_selector_owner_rewire(\n"
+        "            patch_text,\n"
+        "            changed_files=files,\n"
+        "        ):\n"
+        "            return None\n"
+    )
+    assert needle in canonical
+    mutated = canonical.replace(needle, "", 1)
+    patch = _guarded_mixed_patch_with_selector_after(mutated)
+    sel = _run_selector_with_patch(patch, *GLB019_A2B_FULL_PR_FILES)
+    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_reason"] in _GLB019_SELECTOR_OWNER_FULL_REASONS
+
+
+def test_selector_glb019_a2b_removed_evaluate_call_full() -> None:
+    canonical = _selector_owner_canonical_after_text()
+    needle = (
+        "        contract = evaluate_glb019_a2b_change_contract(patch_text, repo_root=_REPO_ROOT)\n"
+        "        return _selection_result_for_glb019_a2b_change_contract(\n"
+        "            files,\n"
+        "            contract,\n"
+        "            patch_text=patch_text,\n"
+        "        )\n"
+    )
+    assert needle in canonical
+    mutated = canonical.replace(needle, "        return None\n", 1)
+    patch = _guarded_mixed_patch_with_selector_after(mutated)
+    sel = _run_selector_with_patch(patch, *GLB019_A2B_FULL_PR_FILES)
+    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_reason"] in _GLB019_SELECTOR_OWNER_FULL_REASONS
+
+
+def test_selector_glb019_a2b_classify_bypass_reintroduced_full() -> None:
+    canonical = _selector_owner_canonical_after_text()
+    needle = (
+        "    if selector_owner_changed and guarded_mixed_candidate:\n"
+        "        if not patch_text:\n"
+        "            return None\n"
+        "        if not patch_includes_glb019_guarded_selector_owner_rewire(\n"
+        "            patch_text,\n"
+        "            changed_files=files,\n"
+        "        ):\n"
+        "            return None\n"
+        "        contract = evaluate_glb019_a2b_change_contract(patch_text, repo_root=_REPO_ROOT)\n"
+        "        return _selection_result_for_glb019_a2b_change_contract(\n"
+        "            files,\n"
+        "            contract,\n"
+        "            patch_text=patch_text,\n"
+        "        )\n"
+    )
+    assert needle in canonical
+    mutated = canonical.replace(needle, "", 1)
+    patch = _guarded_mixed_patch_with_selector_after(mutated)
+    sel = _run_selector_with_patch(patch, *GLB019_A2B_FULL_PR_FILES)
+    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_reason"] in _GLB019_SELECTOR_OWNER_FULL_REASONS
+
+
+def test_selector_glb019_a2b_extra_import_full() -> None:
+    canonical = _selector_owner_canonical_after_text()
+    mutated = "import secrets\n" + canonical
+    patch = _guarded_mixed_patch_with_selector_after(mutated)
+    sel = _run_selector_with_patch(patch, *GLB019_A2B_FULL_PR_FILES)
+    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_reason"] in _GLB019_SELECTOR_OWNER_FULL_REASONS
+
+
+def test_selector_glb019_a2b_extra_module_level_assignment_full() -> None:
+    canonical = _selector_owner_canonical_after_text()
+    mutated = 'CI_GLB019_SYNTHETIC_PATCH_BUILDER = "evil_probe_path"\n' + canonical
+    patch = _guarded_mixed_patch_with_selector_after(mutated)
+    sel = _run_selector_with_patch(patch, *GLB019_A2B_FULL_PR_FILES)
+    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_reason"] in _GLB019_SELECTOR_OWNER_FULL_REASONS
+
+
+def test_selector_glb019_a2b_extra_structural_wrapper_branch_full() -> None:
+    canonical = _selector_owner_canonical_after_text()
+    needle = "def _is_glb019_a2b_structural_contract_candidate(changed_files: list[str]) -> bool:\n"
+    assert needle in canonical
+    mutated = canonical.replace(
+        needle,
+        needle + "    if changed_files:\n        return False\n",
+        1,
+    )
+    patch = _guarded_mixed_patch_with_selector_after(mutated)
+    sel = _run_selector_with_patch(patch, *GLB019_A2B_FULL_PR_FILES)
+    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_reason"] in _GLB019_SELECTOR_OWNER_FULL_REASONS
+
+
+def test_selector_glb019_a2b_other_resolver_mutation_full() -> None:
+    canonical = _selector_owner_canonical_after_text()
+    needle = "def _try_ci_bootstrap_focused(files: list[str]) -> SelectionResult | None:\n"
+    assert needle in canonical
+    mutated = canonical.replace(
+        needle,
+        needle + "    return None\n",
+        1,
+    )
+    patch = _guarded_mixed_patch_with_selector_after(mutated)
+    sel = _run_selector_with_patch(patch, *GLB019_A2B_FULL_PR_FILES)
+    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_reason"] in _GLB019_SELECTOR_OWNER_FULL_REASONS
+
+
+def test_selector_glb019_a2b_eight_file_subset_without_selector_owner_still_focused() -> None:
+    sel = _run_selector(*GLB019_A2B_FILESET)
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "glb019_a2b_additive_change_contract"
+    assert sel["tests_execute_full"] == "false"
+
+
+def test_selector_glb019_a2b_selector_owner_resolve_selection_body_change_full() -> None:
+    canonical = _selector_owner_canonical_after_text()
+    needle = "    return is_glb019_a2b_structural_contract_candidate(changed_files)"
+    assert needle in canonical
+    mutated = canonical.replace(needle, "    return True", 1)
+    patch = _guarded_mixed_patch_with_selector_after(mutated)
+    sel = _run_selector_with_patch(patch, *GLB019_A2B_FULL_PR_FILES)
+    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_reason"] in _GLB019_SELECTOR_OWNER_FULL_REASONS
+
+
+def test_selector_glb019_a2b_selector_owner_reason_string_change_full() -> None:
+    canonical = _selector_owner_canonical_after_text()
+    needle = '"glb019_a2b_additive_change_contract"'
+    assert needle in canonical
+    mutated = canonical.replace(needle, '"glb019_a2b_additive_change_contract_mutated"', 1)
+    assert mutated != canonical
+    patch = _guarded_mixed_patch_with_selector_after(mutated)
+    sel = _run_selector_with_patch(patch, *GLB019_A2B_FULL_PR_FILES)
+    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_reason"] in _GLB019_SELECTOR_OWNER_FULL_REASONS
+
+
+def test_selector_glb019_a2b_selector_owner_extra_ast_statement_full() -> None:
+    canonical = _selector_owner_canonical_after_text()
+    needle = "    if path == CI_GLB019_SYNTHETIC_PATCH_BUILDER:\n        return True"
+    assert needle in canonical
+    mutated = canonical.replace(
+        needle,
+        needle + '\n    if path == "evil_probe_path":\n        return True',
+        1,
+    )
+    patch = _guarded_mixed_patch_with_selector_after(mutated)
+    sel = _run_selector_with_patch(patch, *GLB019_A2B_FULL_PR_FILES)
+    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_reason"] in _GLB019_SELECTOR_OWNER_FULL_REASONS
+
+
+def test_selector_glb019_a2b_selector_owner_missing_canonical_import_binding_full() -> None:
+    canonical = _selector_owner_canonical_after_text()
+    needle = "    CI_GLB019_SYNTHETIC_PATCH_BUILDER,\n"
+    assert needle in canonical
+    mutated = canonical.replace(needle, "", 1)
+    patch = _guarded_mixed_patch_with_selector_after(mutated)
+    sel = _run_selector_with_patch(patch, *GLB019_A2B_FULL_PR_FILES)
+    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_reason"] in _GLB019_SELECTOR_OWNER_FULL_REASONS
+
+
+def test_selector_glb019_a2b_full_pr_plus_unknown_foreign_path_full() -> None:
+    patch = _full_pr_git_patch() + (
+        "\ndiff --git a/src/ops/unknown_contract_v0.py b/src/ops/unknown_contract_v0.py\n"
+        "+++ b/src/ops/unknown_contract_v0.py\n"
+        "@@ -0,0 +1 @@\n"
+        "+pass\n"
+    )
+    sel = _run_selector_with_patch(
+        patch,
+        *GLB019_A2B_FULL_PR_FILES,
+        "src/ops/unknown_contract_v0.py",
+    )
+    assert sel["test_selection_mode"] == "FULL"
     assert sel["test_selection_reason"] == "durable_completion_foreign_path_requires_full"
+
+
+def test_selector_glb019_a2b_full_pr_plus_second_ci_file_full() -> None:
+    sel = _run_selector(
+        *GLB019_A2B_FULL_PR_FILES,
+        "scripts/ops/ci_unknown_bootstrap_probe_v0.py",
+    )
+    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_reason"] in {
+        "ci_bootstrap_mixed_diff_requires_full",
+        "durable_completion_foreign_path_requires_full",
+    }
+
+
+def test_selector_glb019_a2b_allowed_files_do_not_globally_allow_selector_owner() -> None:
+    from scripts.ops.durable_completion_integration_partitions_v0 import (
+        GLB019_A2B_ALLOWED_FILES,
+        GLB019_A2B_SELECTOR_OWNER,
+    )
+
+    assert GLB019_A2B_SELECTOR_OWNER not in GLB019_A2B_ALLOWED_FILES
+    assert not any(path.endswith("/") for path in GLB019_A2B_ALLOWED_FILES)
 
 
 def test_selector_glb019_a2b_selector_partitions_helper_plus_central_facade_selects_full() -> None:
@@ -1048,7 +1352,7 @@ def test_integration_partition_inventory_covers_all_nodes() -> None:
     )
 
     nodes = collect_integration_owner_node_ids()
-    assert len(nodes) == 238
+    assert len(nodes) == 246
     inventory = integration_partition_inventory()
     assert set(inventory) <= set(ALL_PARTITIONS)
     covered = [node for part in inventory.values() for node in part]
@@ -1122,6 +1426,9 @@ def test_selector_glb019_mixed_validation_and_facade_selects_integration_owner()
     assert _INTEGRATION_OWNER in _targets(sel)
 
 
+from scripts.ops.durable_completion_integration_partitions_v0 import (
+    CI_GLB019_SYNTHETIC_PATCH_BUILDER,
+)
 from tests.ci._glb019_synthetic_patch_builder_v0 import (
     synthetic_glb019_a2b_positive_patch_text as _synthetic_glb019_a2b_positive_patch_text,
     synthetic_glb019_a2b_reject_patch_text as _synthetic_glb019_a2b_reject_patch_text,
@@ -1135,7 +1442,155 @@ GLB019_A2B_FILESET = (
     "tests/ops/test_durable_completion_validation_graph_v1.py",
     "scripts/ops/durable_completion_integration_partitions_v0.py",
     "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    CI_GLB019_SYNTHETIC_PATCH_BUILDER,
 )
+
+GLB019_A2B_FULL_PR_FILES = (_SELECTOR_OWNER, *GLB019_A2B_FILESET)
+
+
+def _selector_owner_git_patch() -> str:
+    return subprocess.check_output(
+        ["git", "diff", "origin/main...HEAD", "--", _SELECTOR_OWNER],
+        text=True,
+    )
+
+
+def _selector_owner_origin_main_text() -> str:
+    return subprocess.check_output(["git", "show", f"origin/main:{_SELECTOR_OWNER}"], text=True)
+
+
+def _selector_owner_canonical_after_text() -> str:
+    from pathlib import Path
+
+    from scripts.ops.durable_completion_integration_partitions_v0 import (
+        GLB019_A2B_SELECTOR_OWNER,
+        _apply_patch_for_file,
+        _parse_unified_diff,
+    )
+
+    patch = _selector_owner_git_patch()
+    hunks = _parse_unified_diff(patch)[GLB019_A2B_SELECTOR_OWNER]
+    return _apply_patch_for_file(Path("."), GLB019_A2B_SELECTOR_OWNER, hunks)
+
+
+def _unified_patch_for_path(path: str, before: str, after: str) -> str:
+    import difflib
+
+    return "".join(
+        difflib.unified_diff(
+            before.splitlines(keepends=True),
+            after.splitlines(keepends=True),
+            fromfile=f"a/{path}",
+            tofile=f"b/{path}",
+            n=3,
+        )
+    )
+
+
+def _guarded_mixed_patch_with_selector_after(mutated_after: str) -> str:
+    before = _selector_owner_origin_main_text()
+    canonical_after = _selector_owner_canonical_after_text()
+    assert canonical_after != before
+    assert mutated_after != canonical_after
+    selector_patch = _unified_patch_for_path(_SELECTOR_OWNER, before, mutated_after)
+    assert selector_patch.strip(), "selector unified diff must not be empty"
+    return _synthetic_glb019_a2b_positive_patch_text() + "\n" + selector_patch
+
+
+def _full_pr_git_patch() -> str:
+    return subprocess.check_output(["git", "diff", "origin/main...HEAD"], text=True)
+
+
+def test_glb019_a2b_allowed_files_includes_synthetic_patch_builder() -> None:
+    from scripts.ops.durable_completion_integration_partitions_v0 import (
+        CI_GLB019_SYNTHETIC_PATCH_BUILDER,
+        GLB019_A2B_ALLOWED_FILES,
+    )
+
+    assert CI_GLB019_SYNTHETIC_PATCH_BUILDER in GLB019_A2B_ALLOWED_FILES
+
+
+def test_glb019_a2b_synthetic_patch_builder_has_registered_ast_validator() -> None:
+    from scripts.ops.durable_completion_integration_partitions_v0 import (
+        CI_GLB019_SYNTHETIC_PATCH_BUILDER,
+        _FILE_AST_VALIDATORS,
+    )
+
+    assert CI_GLB019_SYNTHETIC_PATCH_BUILDER in _FILE_AST_VALIDATORS
+
+
+def test_glb019_a2b_synthetic_patch_builder_ast_validator_accepts_canonical_helper() -> None:
+    import ast
+    from pathlib import Path
+
+    from scripts.ops.durable_completion_integration_partitions_v0 import (
+        CI_GLB019_SYNTHETIC_PATCH_BUILDER,
+        _FILE_AST_VALIDATORS,
+    )
+
+    helper_path = Path(CI_GLB019_SYNTHETIC_PATCH_BUILDER)
+    after_tree = ast.parse(helper_path.read_text(encoding="utf-8"))
+    before_tree = ast.parse("")
+    assert _FILE_AST_VALIDATORS[CI_GLB019_SYNTHETIC_PATCH_BUILDER](before_tree, after_tree)
+
+
+def test_glb019_a2b_synthetic_patch_builder_ast_validator_rejects_missing_delegation() -> None:
+    import ast
+
+    from scripts.ops.durable_completion_integration_partitions_v0 import (
+        CI_GLB019_SYNTHETIC_PATCH_BUILDER,
+        _validate_synthetic_patch_builder_ast,
+    )
+
+    invalid = ast.parse(
+        "def synthetic_glb019_a2b_positive_patch_text() -> str:\n"
+        "    return ''\n"
+        "def synthetic_glb019_a2b_reject_patch_text() -> str:\n"
+        "    return synthetic_glb019_a2b_positive_patch_text()\n"
+    )
+    assert not _validate_synthetic_patch_builder_ast(ast.parse(""), invalid)
+
+
+def test_glb019_a2b_synthetic_patch_builder_ast_validator_rejects_fragile_string_mutation() -> None:
+    import ast
+
+    from scripts.ops.durable_completion_integration_partitions_v0 import (
+        _validate_synthetic_patch_builder_ast,
+    )
+
+    fragile = ast.parse(
+        "from scripts.ops.durable_completion_integration_partitions_v0 import (\n"
+        "    GLB019_A2B_ALLOWED_FILES,\n"
+        "    collect_glb019_a2b_patch_text,\n"
+        ")\n"
+        "def synthetic_glb019_a2b_positive_patch_text() -> str:\n"
+        "    patch = collect_glb019_a2b_patch_text(changed_files=sorted(GLB019_A2B_ALLOWED_FILES))\n"
+        "    return patch\n"
+        "def synthetic_glb019_a2b_reject_patch_text() -> str:\n"
+        "    return synthetic_glb019_a2b_positive_patch_text().replace('glb019', 'pe21', 1)\n"
+    )
+    assert not _validate_synthetic_patch_builder_ast(ast.parse(""), fragile)
+
+
+def test_selector_glb019_a2b_pr_fileset_focused_additive_contract() -> None:
+    from scripts.ops.durable_completion_integration_partitions_v0 import (
+        CI_GLB019_SYNTHETIC_PATCH_BUILDER,
+    )
+
+    pr_files = (
+        "scripts/ops/durable_completion_integration_partitions_v0.py",
+        "src/ops/bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
+        "src/ops/durable_completion_validation/graph.py",
+        "src/ops/durable_completion_validation/validators/event_stream.py",
+        CI_GLB019_SYNTHETIC_PATCH_BUILDER,
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+        "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
+        "tests/ops/test_durable_completion_validation_graph_v1.py",
+    )
+    sel = _run_selector(*pr_files)
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "glb019_a2b_additive_change_contract"
+    assert sel["tests_execute_full"] == "false"
 
 
 def _run_selector_with_patch(

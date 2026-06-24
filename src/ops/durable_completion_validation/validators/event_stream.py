@@ -261,9 +261,15 @@ def evaluate_glb019_event_stream_validation(
 
 def validate_glb019_event_stream_proof(context: ValidationContext) -> ValidationResult:
     """Bind canonical GLB-019 validation result into durable completion proof graph."""
+    if context.glb019_result is None:
+        return ValidationResult(
+            fail_reasons=(
+                "glb019_event_stream_validation: glb019_result required in validation context",
+            )
+        )
     fail_reasons: list[str] = []
     integration_input = context.integration_input
-    glb019_result = context.glb019_result or {}
+    glb019_result = context.glb019_result
     proof = integration_input.glb019_event_stream_proof
     validation_input = integration_input.glb019_event_stream_validation_input
     prefix = "glb019_proof"

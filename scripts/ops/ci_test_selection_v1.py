@@ -55,15 +55,6 @@ CI_MAPPING_FULL_PATHS = frozenset({"config/ci/file_category_mapping.yaml"})
 DURABLE_COMPLETION_INTEGRATION_PARTITIONS_HELPER = (
     "scripts/ops/durable_completion_integration_partitions_v0.py"
 )
-CI_GLB019_SYNTHETIC_PATCH_BUILDER = "tests/ci/_glb019_synthetic_patch_builder_v0.py"
-CI_BOOTSTRAP_FOCUSED_PATHS = frozenset(
-    {
-        "scripts/ops/ci_test_selection_v1.py",
-        DURABLE_COMPLETION_INTEGRATION_PARTITIONS_HELPER,
-        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
-        CI_GLB019_SYNTHETIC_PATCH_BUILDER,
-    }
-)
 
 # Shared / registry / framework prod paths — never strategy_regime_owner_focused.
 STRATEGY_REGIME_OWNER_BLOCKED_PROD = frozenset(
@@ -104,6 +95,7 @@ if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
 from scripts.ops.durable_completion_integration_partitions_v0 import (  # noqa: E402
+    CI_GLB019_SYNTHETIC_PATCH_BUILDER,
     GLB019_A2B_ALLOWED_FILES,
     INTEGRATION_TEST_OWNER,
     Glb019A2bChangeContractOutcome,
@@ -114,8 +106,19 @@ from scripts.ops.durable_completion_integration_partitions_v0 import (  # noqa: 
     expand_partitions_to_pytest_targets,
     integration_owner_node_count,
     integration_partition_inventory,
+    is_glb019_a2b_structural_contract_candidate,
     partition_union_node_count,
     partitions_for_changed_files,
+    patch_includes_glb019_guarded_selector_owner_rewire,
+)
+
+CI_BOOTSTRAP_FOCUSED_PATHS = frozenset(
+    {
+        "scripts/ops/ci_test_selection_v1.py",
+        DURABLE_COMPLETION_INTEGRATION_PARTITIONS_HELPER,
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+        CI_GLB019_SYNTHETIC_PATCH_BUILDER,
+    }
 )
 
 DURABLE_COMPLETION_CI_POLICY_PATHS = frozenset(
@@ -914,6 +917,8 @@ def _is_durable_completion_integration_partition_rebundle_path(
     if _is_durable_completion_rebundle_path(path):
         return True
     if path == DURABLE_COMPLETION_INTEGRATION_PARTITIONS_HELPER:
+        return True
+    if path == CI_GLB019_SYNTHETIC_PATCH_BUILDER:
         return True
     if path in DURABLE_COMPLETION_INTEGRATION_PE_PROD_PATHS:
         return DURABLE_COMPLETION_VALIDATION_GRAPH_TEST_OWNER in files
@@ -2072,21 +2077,7 @@ def _normalize_changed_files(files: list[str]) -> tuple[str, ...]:
 
 
 def _is_glb019_a2b_structural_contract_candidate(changed_files: list[str]) -> bool:
-    """True only when changed_files may activate the GLB-019 A2/B structural contract."""
-    normalized = _normalize_changed_files(changed_files)
-    if not normalized:
-        return False
-    if GLB019_A2B_SELECTOR_OWNER in normalized:
-        return False
-    if any(path.startswith(".github/workflows/") for path in normalized):
-        return False
-    if not all(path in GLB019_A2B_CLOSED_FILESET for path in normalized):
-        return False
-    if not any(path in GLB019_A2B_PROD_RELEVANT_FILES for path in normalized):
-        return False
-    if all(path in GLB019_A2B_BOOTSTRAP_ONLY_FILES for path in normalized):
-        return False
-    return True
+    return is_glb019_a2b_structural_contract_candidate(changed_files)
 
 
 def _is_established_durable_completion_rebinding_scope(files: list[str]) -> bool:
@@ -2210,6 +2201,22 @@ def _try_durable_completion_focused(
     ):
         return None
     patch_text = _effective_glb019_patch_text(files, patch_text)
+    selector_owner_changed = GLB019_A2B_SELECTOR_OWNER in files
+    guarded_mixed_candidate = _is_glb019_a2b_structural_contract_candidate(files)
+    if selector_owner_changed and guarded_mixed_candidate:
+        if not patch_text:
+            return None
+        if not patch_includes_glb019_guarded_selector_owner_rewire(
+            patch_text,
+            changed_files=files,
+        ):
+            return None
+        contract = evaluate_glb019_a2b_change_contract(patch_text, repo_root=_REPO_ROOT)
+        return _selection_result_for_glb019_a2b_change_contract(
+            files,
+            contract,
+            patch_text=patch_text,
+        )
     central_prod_paths = {DURABLE_COMPLETION_FACADE_PATH, DURABLE_COMPLETION_INTEGRATION_TEST_OWNER}
     has_central_prod = any(path in central_prod_paths for path in files)
     if has_central_prod and _is_glb019_a2b_structural_contract_candidate(files):
