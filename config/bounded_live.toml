@@ -4,7 +4,7 @@
 #
 # Purpose: Safe transition from shadow/paper to live trading with real money
 # Phase: 1 (Initial Bounded-Live)
-# Max Risk: $100 daily loss, $500 total exposure
+# Max Risk: $25 daily loss, $500 total exposure
 #
 # DO NOT MODIFY without Risk Owner approval and documented justification.
 
@@ -16,15 +16,15 @@ description = "Phase 1: Initial bounded-live rollout with strict limits"
 # Risk Limits (MANDATORY)
 [bounded_live.limits]
 # Per-order limits
-max_order_notional = 50.0           # Max $50 per single order
+max_order_notional = 25.0           # Max $25 per single order
 min_order_notional = 10.0           # Min $10 (avoid dust trades)
 
 # Total exposure limits
 max_total_notional = 500.0          # Max $500 total exposure across all positions
-max_open_positions = 2              # Max 2 different symbols
+max_open_positions = 1              # Max 1 different symbol
 
 # Daily loss limits
-max_daily_loss_abs = 100.0          # Max $100 absolute daily loss
+max_daily_loss_abs = 25.0           # Max $25 absolute daily loss
 max_daily_loss_pct = 5.0            # Max 5% daily loss (if starting_cash provided)
 
 # Position size limits

@@ -1101,11 +1101,11 @@ def test_exposure_state_caps_configured_from_config(tmp_path: Path) -> None:
         """
 [live_risk]
 base_currency = "EUR"
-max_total_exposure_notional = 5000.0
+max_total_exposure_notional = 500.0
 max_symbol_exposure_notional = 2000.0
-max_order_notional = 1000.0
-max_open_positions = 5
-max_daily_loss_abs = 500.0
+max_order_notional = 25.0
+max_open_positions = 1
+max_daily_loss_abs = 25.0
 max_daily_loss_pct = 5.0
 """,
         encoding="utf-8",
@@ -1122,6 +1122,13 @@ max_daily_loss_pct = 5.0
         "max_daily_loss_abs",
         "max_daily_loss_pct",
     }
+    cap_by_id = {c["limit_id"]: c["cap_value"] for c in caps}
+    assert cap_by_id["max_total_exposure"] == 500.0
+    assert cap_by_id["max_order_notional"] == 25.0
+    assert cap_by_id["max_open_positions"] == 1.0
+    assert cap_by_id["max_daily_loss_abs"] == 25.0
+    assert cap_by_id["max_symbol_exposure"] == 2000.0
+    assert cap_by_id["max_daily_loss_pct"] == 5.0
     for c in caps:
         assert c["source"] == "config"
         assert c["ccy"] == "EUR"
@@ -1138,11 +1145,11 @@ def test_exposure_state_caps_configured_reflects_bounded_live_when_enabled(
         """
 [live_risk]
 base_currency = "EUR"
-max_total_exposure_notional = 5000.0
+max_total_exposure_notional = 500.0
 max_symbol_exposure_notional = 2500.0
-max_order_notional = 1000.0
-max_open_positions = 10
-max_daily_loss_abs = 500.0
+max_order_notional = 25.0
+max_open_positions = 1
+max_daily_loss_abs = 25.0
 max_daily_loss_pct = 5.0
 """,
         encoding="utf-8",
@@ -1153,10 +1160,10 @@ max_daily_loss_pct = 5.0
 enabled = true
 
 [bounded_live.limits]
-max_order_notional = 50.0
+max_order_notional = 25.0
 max_total_notional = 500.0
-max_open_positions = 2
-max_daily_loss_abs = 100.0
+max_open_positions = 1
+max_daily_loss_abs = 25.0
 max_daily_loss_pct = 5.0
 """,
         encoding="utf-8",
@@ -1164,10 +1171,10 @@ max_daily_loss_pct = 5.0
     payload = build_ops_cockpit_payload(repo_root=tmp_path)
     caps = payload["exposure_state"]["caps_configured"]
     cap_by_id = {c["limit_id"]: c["cap_value"] for c in caps}
-    assert cap_by_id["max_order_notional"] == 50.0
+    assert cap_by_id["max_order_notional"] == 25.0
     assert cap_by_id["max_total_exposure"] == 500.0
-    assert cap_by_id["max_open_positions"] == 2.0
-    assert cap_by_id["max_daily_loss_abs"] == 100.0
+    assert cap_by_id["max_open_positions"] == 1.0
+    assert cap_by_id["max_daily_loss_abs"] == 25.0
     assert cap_by_id["max_symbol_exposure"] == 2500.0
 
 

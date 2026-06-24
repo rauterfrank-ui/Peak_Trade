@@ -721,19 +721,19 @@ enabled = true
 base_currency = "EUR"
 
 # Maximales Notional pro einzelner Order (EUR)
-max_order_notional = 1000.0
+max_order_notional = 25.0
 
 # Max. aggregiertes Notional pro Symbol (EUR)
 max_symbol_exposure_notional = 2000.0
 
 # Max. Gesamt-Notional aller Orders (EUR)
-max_total_exposure_notional = 5000.0
+max_total_exposure_notional = 500.0
 
 # Max. Anzahl verschiedener Symbole/Positionen
-max_open_positions = 5
+max_open_positions = 1
 
 # Absoluter max. Tagesverlust (EUR)
-max_daily_loss_abs = 500.0
+max_daily_loss_abs = 25.0
 
 # Prozentualer max. Tagesverlust (bezogen auf start_balance)
 max_daily_loss_pct = 5.0
