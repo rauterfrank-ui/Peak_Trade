@@ -93,6 +93,21 @@ categories:
       - "tests/ci/test_ci_diff_aware_test_selection_v1.py"
     runtime_class: minutes
     notes: "Bounded PE-22 risk/killswitch + order-capability abort binding chain; central_src FULL preserved for unrelated src"
+  canonical_caps_alignment_focused:
+    mode: FOCUSED
+    globs:
+      - "config/config.toml"
+      - "config/bounded_live.toml"
+      - "tests/webui/test_ops_cockpit.py"
+      - "scripts/live/test_bounded_live_limits.py"
+      - "tests/test_live_smoke.py"
+      - "tests/test_live_ops_cli.py"
+      - "tests/test_live_readiness_script.py"
+      - "scripts/ops/ci_test_selection_v1.py"
+      - "config/ci/file_category_mapping.yaml"
+      - "tests/ci/test_ci_diff_aware_test_selection_v1.py"
+    runtime_class: minutes
+    notes: "Canonical live_risk + bounded_live caps value alignment; config_paths FULL bypass for exact four-file bundle"
   tiny_order_focused:
     mode: FOCUSED
     globs:
