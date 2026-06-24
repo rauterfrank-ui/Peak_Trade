@@ -3,10 +3,11 @@
 from __future__ import annotations
 
 import difflib
-import subprocess
 from collections.abc import Callable
 from functools import lru_cache
 from pathlib import Path
+
+from scripts.ops.durable_completion_integration_partitions_v0 import _base_file_text
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
 
@@ -29,12 +30,14 @@ _GLB019_A2B_ALLOWED_FILES: tuple[str, ...] = (
 )
 
 
-def _git_origin_main_text(path: str) -> str:
-    return subprocess.check_output(
-        ["git", "show", f"origin/main:{path}"],
-        cwd=_REPO_ROOT,
-        text=True,
-    )
+def _baseline_text(path: str) -> str:
+    text = _base_file_text(_REPO_ROOT, path)
+    if not text.strip():
+        raise RuntimeError(
+            f"unable to resolve baseline for {path!r}: "
+            "tried git show origin/main and workspace file"
+        )
+    return text
 
 
 def _format_git_unified_diff(path: str, before: str, after: str) -> str:
@@ -613,7 +616,7 @@ _MUTATORS: dict[str, Callable[[str], str]] = {
 def synthetic_glb019_a2b_positive_patch_text() -> str:
     chunks: list[str] = []
     for path in _GLB019_A2B_ALLOWED_FILES:
-        before = _git_origin_main_text(path)
+        before = _baseline_text(path)
         after = _MUTATORS[path](before)
         chunk = _format_git_unified_diff(path, before, after)
         if not chunk:

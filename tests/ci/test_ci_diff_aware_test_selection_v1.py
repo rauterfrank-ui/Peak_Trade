@@ -359,6 +359,40 @@ def test_selector_ci_bootstrap_contract_test_only_focused() -> None:
     assert sel["test_selection_reason"] == "ci_bootstrap_focused"
 
 
+GLB019_CI_BOOTSTRAP_PR_FILES = (
+    "scripts/ops/ci_test_selection_v1.py",
+    "scripts/ops/durable_completion_integration_partitions_v0.py",
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    "tests/ci/_glb019_synthetic_patch_builder_v0.py",
+)
+
+
+def test_selector_glb019_ci_bootstrap_pr_four_file_diff_focused() -> None:
+    sel = _run_selector(*GLB019_CI_BOOTSTRAP_PR_FILES)
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "ci_bootstrap_focused"
+    assert _targets(sel) == ["tests/ci/test_ci_diff_aware_test_selection_v1.py"]
+    assert sel["tests_execute_full"] == "false"
+
+
+def test_selector_glb019_ci_bootstrap_pr_four_files_plus_unknown_ci_helper_full() -> None:
+    sel = _run_selector(*GLB019_CI_BOOTSTRAP_PR_FILES, "tests/ci/test_unknown_helper_v0.py")
+    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_reason"] == "ci_bootstrap_mixed_diff_requires_full"
+
+
+def test_selector_glb019_ci_bootstrap_pr_four_files_plus_workflow_ci_infra_focused() -> None:
+    sel = _run_selector(*GLB019_CI_BOOTSTRAP_PR_FILES, ".github/workflows/ci.yml")
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "ci_infra_focused"
+    assert sel["tests_execute_full"] == "false"
+    assert sel["tests_execute_focused"] == "true"
+    targets = _targets(sel)
+    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" in targets
+    assert "tests/ci/test_workflows_no_pull_request_target_contract_v0.py" in targets
+    assert "tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py" in targets
+
+
 GLB019_PARTITION_SELECTOR_BOOTSTRAP_FILES = (
     "scripts/ops/ci_test_selection_v1.py",
     "scripts/ops/durable_completion_integration_partitions_v0.py",
