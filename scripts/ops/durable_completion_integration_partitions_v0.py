@@ -603,7 +603,8 @@ def _is_allowed_validation_context_glb019_delta(after_stmt: ast.stmt) -> bool:
     if not isinstance(after_stmt, ast.Assign):
         return True
     if not (
-        isinstance(after_stmt.value, ast.Call) and _call_name(after_stmt.value) == "ValidationContext"
+        isinstance(after_stmt.value, ast.Call)
+        and _call_name(after_stmt.value) == "ValidationContext"
     ):
         return True
     call = after_stmt.value
@@ -1017,8 +1018,9 @@ def evaluate_glb019_a2b_change_contract(
             return Glb019A2bChangeContractResult(
                 Glb019A2bChangeContractOutcome.UNAVAILABLE_OR_UNPARSEABLE
             )
-        if path in _GLB019_STRICT_EVALUATE_ASSIGNMENT_PATHS and not _module_glb019_structural_constraints_valid(
-            after_tree
+        if (
+            path in _GLB019_STRICT_EVALUATE_ASSIGNMENT_PATHS
+            and not _module_glb019_structural_constraints_valid(after_tree)
         ):
             return Glb019A2bChangeContractResult(Glb019A2bChangeContractOutcome.REJECT)
         if not validator(before_tree, after_tree):
