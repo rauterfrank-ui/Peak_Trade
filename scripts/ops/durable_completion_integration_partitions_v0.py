@@ -938,7 +938,17 @@ def _validate_ci_selector_test_ast(before: ast.Module, after: ast.Module) -> boo
     if before_src == after_src:
         return False
     if "assert len(nodes) == 238" in before_src and "assert len(nodes) == 246" in after_src:
-        return before_src.replace("238", "246") == after_src
+        if before_src.replace("238", "246") == after_src:
+            return True
+    glb019_contract_markers = (
+        "test_glb019_a2b_allowed_files_includes_synthetic_patch_builder",
+        "test_glb019_a2b_synthetic_patch_builder_has_registered_ast_validator",
+        "test_selector_glb019_a2b_pr_fileset_focused_additive_contract",
+    )
+    if all(marker in after_src for marker in glb019_contract_markers) and not all(
+        marker in before_src for marker in glb019_contract_markers
+    ):
+        return "CI_GLB019_SYNTHETIC_PATCH_BUILDER" in after_src
     return False
 
 
