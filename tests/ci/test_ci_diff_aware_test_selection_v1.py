@@ -5,6 +5,7 @@ from __future__ import annotations
 import re
 import subprocess
 import sys
+import tempfile
 from pathlib import Path
 
 import pytest
@@ -429,6 +430,52 @@ def test_selector_glb019_partition_bootstrap_plus_central_prod_full() -> None:
     )
     assert sel["test_selection_mode"] == "FULL"
     assert sel["test_selection_reason"] == "durable_completion_foreign_path_requires_full"
+
+
+_FACADE_PATH = "src/ops/bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py"
+_SELECTOR_OWNER = "scripts/ops/ci_test_selection_v1.py"
+
+
+def test_selector_glb019_a2b_selector_owner_plus_central_facade_selects_full() -> None:
+    sel = _run_selector(_SELECTOR_OWNER, _FACADE_PATH)
+    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_reason"] == "durable_completion_foreign_path_requires_full"
+
+
+def test_selector_glb019_a2b_selector_owner_plus_facade_explicit_patch_still_full() -> None:
+    assert GLB019_A2B_FROZEN_PATCH.is_file()
+    patch = GLB019_A2B_FROZEN_PATCH.read_text(encoding="utf-8")
+    sel = _run_selector_with_patch(patch, _SELECTOR_OWNER, _FACADE_PATH, *GLB019_A2B_FILESET)
+    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_reason"] == "durable_completion_foreign_path_requires_full"
+
+
+def test_selector_glb019_a2b_selector_partitions_helper_plus_central_facade_selects_full() -> None:
+    sel = _run_selector(
+        _SELECTOR_OWNER,
+        _PARTITIONS_HELPER,
+        _FACADE_PATH,
+    )
+    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_reason"] == "durable_completion_foreign_path_requires_full"
+
+
+def test_selector_glb019_a2b_central_facade_without_structural_contract_selects_full() -> None:
+    sel = _run_selector(_FACADE_PATH)
+    assert sel["test_selection_mode"] == "FULL"
+    assert sel["tests_execute_full"] == "true"
+
+
+def test_selector_glb019_a2b_eligible_fileset_structural_contract_failure_selects_full() -> None:
+    assert GLB019_A2B_FROZEN_PATCH.is_file()
+    patch = GLB019_A2B_FROZEN_PATCH.read_text(encoding="utf-8").replace(
+        "glb019_result = evaluate_glb019_event_stream_validation(",
+        "pe21_result = evaluate_glb019_event_stream_validation(",
+        1,
+    )
+    sel = _run_selector_with_patch(patch, *GLB019_A2B_FILESET)
+    assert sel["test_selection_mode"] == "FULL"
+    assert sel["tests_execute_full"] == "true"
 
 
 def test_selector_ci_bootstrap_deterministic_regardless_of_file_order() -> None:
@@ -910,6 +957,219 @@ def test_selector_glb019_mixed_validation_and_facade_selects_integration_owner()
     )
     assert sel["test_selection_reason"] == "durable_completion_focused"
     assert _INTEGRATION_OWNER in _targets(sel)
+
+
+GLB019_A2B_FROZEN_PATCH = (
+    Path(__file__).resolve().parents[1]
+    / "fixtures"
+    / "ci"
+    / "glb019_a2b_additive_frozen_patch_v0.patch"
+)
+GLB019_A2B_FROZEN_PATCH_SHA256 = "fbac232eb308dc92904b0f0b541fc8587e463f3884b74a9db263011ca1094a59"
+
+GLB019_A2B_FILESET = (
+    "src/ops/bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
+    "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
+    "src/ops/durable_completion_validation/graph.py",
+    "src/ops/durable_completion_validation/validators/event_stream.py",
+    "tests/ops/test_durable_completion_validation_graph_v1.py",
+    "scripts/ops/durable_completion_integration_partitions_v0.py",
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+)
+
+
+def _run_selector_with_patch(
+    patch_text: str,
+    *files: str,
+    force_full: bool = False,
+    event_name: str = "pull_request",
+) -> dict[str, str]:
+    with tempfile.NamedTemporaryFile("w", suffix=".patch", delete=False) as handle:
+        handle.write(patch_text)
+        patch_path = Path(handle.name)
+    try:
+        cmd = [
+            sys.executable,
+            str(SELECTOR),
+            "--event-name",
+            event_name,
+            "--patch-file",
+            str(patch_path),
+        ]
+        if files:
+            cmd.extend(["--files", *files])
+        if force_full:
+            cmd.append("--force-full")
+        out = subprocess.check_output(cmd, text=True)
+    finally:
+        patch_path.unlink(missing_ok=True)
+    result: dict[str, str] = {}
+    for line in out.splitlines():
+        key, _, value = line.partition("=")
+        result[key] = value
+    return result
+
+
+def test_selector_glb019_a2b_frozen_patch_additive_contract_focused() -> None:
+    assert GLB019_A2B_FROZEN_PATCH.is_file()
+    patch = GLB019_A2B_FROZEN_PATCH.read_text(encoding="utf-8")
+    import hashlib
+
+    assert hashlib.sha256(patch.encode("utf-8")).hexdigest() == GLB019_A2B_FROZEN_PATCH_SHA256
+    sel = _run_selector_with_patch(patch, *GLB019_A2B_FILESET)
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "glb019_a2b_additive_change_contract"
+    assert sel["tests_execute_full"] == "false"
+    targets = _targets(sel)
+    assert _GRAPH_OWNER in targets
+    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" in targets
+    assert _INTEGRATION_OWNER not in targets
+    assert any(t.startswith(f"{_INTEGRATION_OWNER}::test_") for t in targets)
+
+
+def test_selector_glb019_a2b_change_contract_unknown_file_selects_full() -> None:
+    assert GLB019_A2B_FROZEN_PATCH.is_file()
+    patch = GLB019_A2B_FROZEN_PATCH.read_text(encoding="utf-8") + (
+        "\ndiff --git a/src/ops/unknown_contract_v0.py b/src/ops/unknown_contract_v0.py\n"
+        "+++ b/src/ops/unknown_contract_v0.py\n"
+        "@@ -0,0 +1 @@\n"
+        "+pass\n"
+    )
+    sel = _run_selector_with_patch(patch, *GLB019_A2B_FILESET, "src/ops/unknown_contract_v0.py")
+    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_reason"] == "durable_completion_foreign_path_requires_full"
+
+
+def _parse_function_body(body: str, *, name: str = "sample_fn") -> "ast.FunctionDef":
+    import ast
+
+    indented = "\n".join(f"    {line}" for line in body.strip().splitlines())
+    module = ast.parse(f"def {name}():\n{indented}\n")
+    fn = module.body[0]
+    assert isinstance(fn, ast.FunctionDef)
+    return fn
+
+
+def test_glb019_statement_diff_additive_assignment_preserves_general_statements() -> None:
+    from scripts.ops.durable_completion_integration_partitions_v0 import (
+        function_statements_preserved_with_allowed_glb019,
+    )
+
+    before = _parse_function_body(
+        "guard_a()\nevaluate_existing_chain()\nbuild_existing_context()\n",
+    )
+    after = _parse_function_body(
+        "guard_a()\n"
+        "glb019_result = evaluate_glb019_event_stream_validation(integration_input)\n"
+        "evaluate_existing_chain()\n"
+        "build_existing_context()\n",
+    )
+    assert function_statements_preserved_with_allowed_glb019(before, after)
+
+
+def test_glb019_statement_diff_central_deletion_selects_full() -> None:
+    from scripts.ops.durable_completion_integration_partitions_v0 import (
+        function_statements_preserved_with_allowed_glb019,
+    )
+
+    before = _parse_function_body(
+        "guard_a()\nevaluate_existing_chain()\nbuild_existing_context()\n",
+    )
+    after = _parse_function_body(
+        "glb019_result = evaluate_glb019_event_stream_validation(integration_input)\n"
+        "evaluate_existing_chain()\n"
+        "build_existing_context()\n",
+    )
+    assert not function_statements_preserved_with_allowed_glb019(before, after)
+
+
+def test_glb019_statement_diff_reorder_selects_full() -> None:
+    from scripts.ops.durable_completion_integration_partitions_v0 import (
+        function_statements_preserved_with_allowed_glb019,
+    )
+
+    before = _parse_function_body(
+        "guard_a()\nfirst_existing()\nsecond_existing()\n",
+    )
+    after = _parse_function_body(
+        "guard_a()\n"
+        "glb019_result = evaluate_glb019_event_stream_validation(integration_input)\n"
+        "second_existing()\n"
+        "first_existing()\n",
+    )
+    assert not function_statements_preserved_with_allowed_glb019(before, after)
+
+
+def test_glb019_statement_diff_call_argument_mutation_selects_full() -> None:
+    from scripts.ops.durable_completion_integration_partitions_v0 import (
+        function_statements_preserved_with_allowed_glb019,
+    )
+
+    before = _parse_function_body(
+        "guard_a()\nevaluate_existing_chain(mode='baseline')\n",
+    )
+    after = _parse_function_body(
+        "guard_a()\n"
+        "glb019_result = evaluate_glb019_event_stream_validation(integration_input)\n"
+        "evaluate_existing_chain(mode='mutated')\n",
+    )
+    assert not function_statements_preserved_with_allowed_glb019(before, after)
+
+
+def test_glb019_statement_diff_validation_context_only_glb019_keyword_allowed() -> None:
+    from scripts.ops.durable_completion_integration_partitions_v0 import (
+        function_statements_preserved_with_allowed_glb019,
+    )
+
+    before = _parse_function_body(
+        "context = ValidationContext(integration_input=integration_input)\nreturn context\n",
+    )
+    after = _parse_function_body(
+        "glb019_result = evaluate_glb019_event_stream_validation(integration_input)\n"
+        "context = ValidationContext(\n"
+        "    integration_input=integration_input,\n"
+        "    glb019_result=glb019_result,\n"
+        ")\n"
+        "return context\n",
+    )
+    assert function_statements_preserved_with_allowed_glb019(before, after)
+
+
+def test_glb019_statement_diff_validation_context_keyword_mutation_selects_full() -> None:
+    from scripts.ops.durable_completion_integration_partitions_v0 import (
+        function_statements_preserved_with_allowed_glb019,
+    )
+
+    before = _parse_function_body(
+        "context = ValidationContext(integration_input=integration_input)\nreturn context\n",
+    )
+    after = _parse_function_body(
+        "glb019_result = evaluate_glb019_event_stream_validation(integration_input)\n"
+        "context = ValidationContext(\n"
+        "    integration_input=mutated_input,\n"
+        "    glb019_result=glb019_result,\n"
+        ")\n"
+        "return context\n",
+    )
+    assert not function_statements_preserved_with_allowed_glb019(before, after)
+
+
+def test_selector_glb019_a2b_change_contract_unparseable_patch_selects_full() -> None:
+    sel = _run_selector_with_patch("not a unified diff", *GLB019_A2B_FILESET)
+    assert _INTEGRATION_OWNER in _targets(sel)
+
+
+def test_selector_glb019_a2b_change_contract_classify_unit() -> None:
+    from scripts.ops.durable_completion_integration_partitions_v0 import (
+        GLB019_A2B_ADDITIVE_PARTITIONS,
+        classify_glb019_a2b_additive_patch,
+    )
+
+    assert GLB019_A2B_FROZEN_PATCH.is_file()
+    patch = GLB019_A2B_FROZEN_PATCH.read_text(encoding="utf-8")
+    assert classify_glb019_a2b_additive_patch(patch) == GLB019_A2B_ADDITIVE_PARTITIONS
+    assert classify_glb019_a2b_additive_patch("") is None
+    assert classify_glb019_a2b_additive_patch("corrupt") is None
 
 
 PR4512_MASTER_V2_BINDING_CONTRACT_FILES = (

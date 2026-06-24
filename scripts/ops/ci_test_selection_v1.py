@@ -102,7 +102,13 @@ if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
 from scripts.ops.durable_completion_integration_partitions_v0 import (  # noqa: E402
+    GLB019_A2B_ALLOWED_FILES,
     INTEGRATION_TEST_OWNER,
+    Glb019A2bChangeContractOutcome,
+    Glb019A2bChangeContractResult,
+    classify_glb019_a2b_additive_patch,
+    collect_glb019_a2b_patch_text,
+    evaluate_glb019_a2b_change_contract,
     expand_partitions_to_pytest_targets,
     integration_owner_node_count,
     integration_partition_inventory,
@@ -130,6 +136,27 @@ DURABLE_COMPLETION_VALIDATION_GRAPH_TEST_OWNER = (
 DURABLE_COMPLETION_INTEGRATION_TEST_OWNER = "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py"
 DURABLE_COMPLETION_GRAPH_WIRING_PATH = "src/ops/durable_completion_validation/graph.py"
 DURABLE_COMPLETION_PUBLIC_API_PATH = "src/ops/durable_completion_validation/__init__.py"
+
+GLB019_A2B_SELECTOR_OWNER = "scripts/ops/ci_test_selection_v1.py"
+
+GLB019_A2B_CLOSED_FILESET = GLB019_A2B_ALLOWED_FILES
+
+GLB019_A2B_PROD_RELEVANT_FILES = frozenset(
+    {
+        DURABLE_COMPLETION_FACADE_PATH,
+        DURABLE_COMPLETION_INTEGRATION_TEST_OWNER,
+        DURABLE_COMPLETION_GRAPH_WIRING_PATH,
+        "src/ops/durable_completion_validation/validators/event_stream.py",
+        DURABLE_COMPLETION_VALIDATION_GRAPH_TEST_OWNER,
+    }
+)
+
+GLB019_A2B_BOOTSTRAP_ONLY_FILES = frozenset(
+    {
+        DURABLE_COMPLETION_INTEGRATION_PARTITIONS_HELPER,
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    }
+)
 
 CANONICAL_DURABLE_COMPLETION_FOCUSED_TESTS: tuple[str, ...] = (
     DURABLE_COMPLETION_VALIDATION_GRAPH_TEST_OWNER,
@@ -884,6 +911,8 @@ def _is_durable_completion_integration_partition_rebundle_path(
 ) -> bool:
     if _is_durable_completion_rebundle_path(path):
         return True
+    if path == DURABLE_COMPLETION_INTEGRATION_PARTITIONS_HELPER:
+        return True
     if path in DURABLE_COMPLETION_INTEGRATION_PE_PROD_PATHS:
         return DURABLE_COMPLETION_VALIDATION_GRAPH_TEST_OWNER in files
     return False
@@ -1018,10 +1047,26 @@ def _is_durable_completion_validator_rebinding_scope(files: list[str]) -> bool:
     return True
 
 
-def _durable_completion_focused_targets(files: list[str] | None = None) -> tuple[str, ...]:
+def _durable_completion_focused_targets(
+    files: list[str] | None = None,
+    *,
+    patch_text: str | None = None,
+) -> tuple[str, ...]:
     graph_owner = DURABLE_COMPLETION_VALIDATION_GRAPH_TEST_OWNER
     if not _repo_path_exists(graph_owner):
         return ()
+    if files and patch_text:
+        glb019_partitions = classify_glb019_a2b_additive_patch(patch_text, repo_root=_REPO_ROOT)
+        if glb019_partitions is not None:
+            contract_test = "tests/ci/test_ci_diff_aware_test_selection_v1.py"
+            targets: list[str] = [graph_owner]
+            if _repo_path_exists(contract_test):
+                targets.append(contract_test)
+            try:
+                targets.extend(expand_partitions_to_pytest_targets(glb019_partitions))
+            except (KeyError, RuntimeError, OSError, ValueError):
+                return ()
+            return tuple(sorted(set(targets)))
     if files and _is_durable_completion_wallclock_binding_rebinding_scope(files):
         return _durable_completion_wallclock_binding_focused_targets(files)
     if files and not _requires_durable_completion_integration_test_owner(files):
@@ -2020,8 +2065,141 @@ def _try_offline_master_v2_double_play_scenario_replay_focused(
     )
 
 
-def _try_durable_completion_focused(files: list[str]) -> SelectionResult | None:
+def _normalize_changed_files(files: list[str]) -> tuple[str, ...]:
+    return tuple(sorted({PurePosixPath(f).as_posix() for f in files if f.strip()}))
+
+
+def _is_glb019_a2b_structural_contract_candidate(changed_files: list[str]) -> bool:
+    """True only when changed_files may activate the GLB-019 A2/B structural contract."""
+    normalized = _normalize_changed_files(changed_files)
+    if not normalized:
+        return False
+    if GLB019_A2B_SELECTOR_OWNER in normalized:
+        return False
+    if any(path.startswith(".github/workflows/") for path in normalized):
+        return False
+    if not all(path in GLB019_A2B_CLOSED_FILESET for path in normalized):
+        return False
+    if not any(path in GLB019_A2B_PROD_RELEVANT_FILES for path in normalized):
+        return False
+    if all(path in GLB019_A2B_BOOTSTRAP_ONLY_FILES for path in normalized):
+        return False
+    return True
+
+
+def _is_established_durable_completion_rebinding_scope(files: list[str]) -> bool:
+    if _is_durable_completion_wallclock_binding_rebinding_scope(files):
+        return True
+    if _is_durable_completion_validator_rebinding_scope(files):
+        return True
     if not files:
+        return False
+    files_set = set(files)
+    if (
+        DURABLE_COMPLETION_FACADE_PATH in files_set
+        and DURABLE_COMPLETION_VALIDATION_GRAPH_TEST_OWNER in files_set
+        and any(
+            path.startswith("src/ops/durable_completion_validation/") and path.endswith(".py")
+            for path in files
+        )
+        and all(_is_durable_completion_rebundle_path(path) for path in files)
+    ):
+        return True
+    return False
+
+
+def _is_glb019_partition_bootstrap_plus_central_prod_mix(changed_files: list[str]) -> bool:
+    """Fail-closed only for GLB-019 partition bootstrap mixed with central completion prod."""
+    normalized = list(_normalize_changed_files(changed_files))
+    if not normalized:
+        return False
+    if _is_glb019_a2b_structural_contract_candidate(normalized):
+        return False
+    central_prod_paths = {DURABLE_COMPLETION_FACADE_PATH, DURABLE_COMPLETION_INTEGRATION_TEST_OWNER}
+    if not any(path in central_prod_paths for path in normalized):
+        return False
+    bootstrap_slice = frozenset(
+        {
+            DURABLE_COMPLETION_INTEGRATION_PARTITIONS_HELPER,
+            "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+            GLB019_A2B_SELECTOR_OWNER,
+        }
+    )
+    if not any(path in bootstrap_slice for path in normalized):
+        return False
+    if _is_established_durable_completion_rebinding_scope(normalized):
+        return False
+    return True
+
+
+def _glb019_a2b_unparseable_fallback_targets() -> tuple[str, ...]:
+    targets: list[str] = []
+    for path in (
+        DURABLE_COMPLETION_VALIDATION_GRAPH_TEST_OWNER,
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+        DURABLE_COMPLETION_INTEGRATION_TEST_OWNER,
+    ):
+        if _repo_path_exists(path):
+            targets.append(path)
+    return tuple(sorted(set(targets)))
+
+
+def _selection_result_for_glb019_a2b_change_contract(
+    files: list[str],
+    contract: Glb019A2bChangeContractResult,
+    *,
+    patch_text: str | None,
+) -> SelectionResult | None:
+    if contract.outcome == Glb019A2bChangeContractOutcome.PASS:
+        targets = _durable_completion_focused_targets(files, patch_text=patch_text)
+        if not targets:
+            return None
+        return SelectionResult(
+            "FOCUSED",
+            "glb019_a2b_additive_change_contract",
+            targets,
+            (
+                "src.ops.bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0",
+                "src.ops.durable_completion_validation",
+            ),
+        )
+    if contract.outcome == Glb019A2bChangeContractOutcome.REJECT:
+        return SelectionResult("FULL", "durable_completion_foreign_path_requires_full", ())
+    if contract.outcome == Glb019A2bChangeContractOutcome.UNAVAILABLE_OR_UNPARSEABLE:
+        targets = _glb019_a2b_unparseable_fallback_targets()
+        if not targets:
+            return None
+        return SelectionResult(
+            "FOCUSED",
+            "durable_completion_focused",
+            targets,
+            (
+                "src.ops.bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0",
+                "src.ops.durable_completion_validation",
+            ),
+        )
+    return None
+
+
+def _effective_glb019_patch_text(
+    changed_files: list[str],
+    patch_text: str | None,
+) -> str | None:
+    if not patch_text:
+        return None
+    if not _is_glb019_a2b_structural_contract_candidate(changed_files):
+        return None
+    return patch_text
+
+
+def _try_durable_completion_focused(
+    files: list[str],
+    *,
+    patch_text: str | None = None,
+) -> SelectionResult | None:
+    if not files:
+        return None
+    if _is_glb019_partition_bootstrap_plus_central_prod_mix(files):
         return None
     if not _has_durable_completion_integration_partition_scope(files):
         return None
@@ -2029,9 +2207,38 @@ def _try_durable_completion_focused(files: list[str]) -> SelectionResult | None:
         _is_durable_completion_integration_partition_rebundle_path(f, files=files) for f in files
     ):
         return None
-    targets = _durable_completion_focused_targets(files)
+    patch_text = _effective_glb019_patch_text(files, patch_text)
+    central_prod_paths = {DURABLE_COMPLETION_FACADE_PATH, DURABLE_COMPLETION_INTEGRATION_TEST_OWNER}
+    has_central_prod = any(path in central_prod_paths for path in files)
+    if has_central_prod and _is_glb019_a2b_structural_contract_candidate(files):
+        if patch_text:
+            contract = evaluate_glb019_a2b_change_contract(patch_text, repo_root=_REPO_ROOT)
+            glb019_selection = _selection_result_for_glb019_a2b_change_contract(
+                files,
+                contract,
+                patch_text=patch_text,
+            )
+            if glb019_selection is not None:
+                return glb019_selection
+            return None
+        if len(files) == 1 and files[0] in central_prod_paths:
+            return None
+    glb019_contract = (
+        classify_glb019_a2b_additive_patch(patch_text, repo_root=_REPO_ROOT) if patch_text else None
+    )
+    targets = _durable_completion_focused_targets(files, patch_text=patch_text)
     if not targets:
         return None
+    if glb019_contract is not None:
+        return SelectionResult(
+            "FOCUSED",
+            "glb019_a2b_additive_change_contract",
+            targets,
+            (
+                "src.ops.bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0",
+                "src.ops.durable_completion_validation",
+            ),
+        )
     integration_required = _requires_durable_completion_integration_test_owner(files)
     if _is_durable_completion_wallclock_binding_rebinding_scope(files):
         modules: tuple[str, ...] = (
@@ -2358,7 +2565,11 @@ def _focused_targets(files: list[str]) -> tuple[str, ...]:
 
 
 def resolve_selection(
-    files: list[str], *, force_full: bool = False, event_name: str = "pull_request"
+    files: list[str],
+    *,
+    force_full: bool = False,
+    event_name: str = "pull_request",
+    patch_text: str | None = None,
 ) -> SelectionResult:
     normalized = sorted({PurePosixPath(f).as_posix() for f in files if f.strip()})
     if force_full or event_name in {"push", "merge_group", "schedule"}:
@@ -2416,9 +2627,17 @@ def resolve_selection(
     if offline_master_v2_replay is not None:
         return offline_master_v2_replay
 
-    durable_completion = _try_durable_completion_focused(normalized)
+    effective_patch = _effective_glb019_patch_text(normalized, patch_text)
+    durable_completion = _try_durable_completion_focused(normalized, patch_text=effective_patch)
     if durable_completion is not None:
         return durable_completion
+
+    ci_bootstrap = _try_ci_bootstrap_focused(normalized)
+    if ci_bootstrap is not None:
+        return ci_bootstrap
+
+    if _is_glb019_partition_bootstrap_plus_central_prod_mix(normalized):
+        return SelectionResult("FULL", "durable_completion_foreign_path_requires_full", ())
 
     preflight_assembly = _try_preflight_assembly_focused(normalized)
     if preflight_assembly is not None:
@@ -2457,10 +2676,6 @@ def resolve_selection(
     wallclock = _try_wallclock_focused(normalized)
     if wallclock is not None:
         return wallclock
-
-    ci_bootstrap = _try_ci_bootstrap_focused(normalized)
-    if ci_bootstrap is not None:
-        return ci_bootstrap
 
     ci_infra = _try_ci_infra_focused(normalized)
     if ci_infra is not None:
@@ -2629,6 +2844,17 @@ def main(argv: list[str] | None = None) -> int:
         metavar="MODULES",
         help="Import listed Python modules (space-separated)",
     )
+    parser.add_argument(
+        "--patch-file",
+        type=Path,
+        default=None,
+        help="Unified diff patch for GLB-019 A2/B change-contract classification (tests/probes)",
+    )
+    parser.add_argument(
+        "--diff-base-ref",
+        default=os.environ.get("DIFF_BASE_REF", "origin/main"),
+        help="Base ref for merge-base patch collection (CI path)",
+    )
     args = parser.parse_args(argv)
 
     if args.emit_validated_pytest_targets is not None:
@@ -2650,7 +2876,25 @@ def main(argv: list[str] | None = None) -> int:
         raw = os.environ.get("CHANGED_FILES", "")
         files = [ln.strip() for ln in raw.splitlines() if ln.strip()]
 
-    result = resolve_selection(files, force_full=args.force_full, event_name=args.event_name)
+    patch_text: str | None = None
+    if args.patch_file is not None:
+        if not args.patch_file.is_file():
+            print(f"missing patch file: {args.patch_file}", file=sys.stderr)
+            return 1
+        patch_text = args.patch_file.read_text(encoding="utf-8")
+    elif _is_glb019_a2b_structural_contract_candidate(files):
+        patch_text = collect_glb019_a2b_patch_text(
+            base_ref=args.diff_base_ref,
+            repo_root=_REPO_ROOT,
+            changed_files=files,
+        )
+
+    result = resolve_selection(
+        files,
+        force_full=args.force_full,
+        event_name=args.event_name,
+        patch_text=patch_text,
+    )
     lines = result.github_output_lines()
     if args.github_output:
         out_path = os.environ.get("GITHUB_OUTPUT")
