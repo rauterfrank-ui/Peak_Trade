@@ -110,10 +110,119 @@ def test_tests_job_focused_runs_on_all_matrix_versions() -> None:
     assert "tests_execute_focused == 'true'" in focused_step
 
 
+def _focused_matrix_step_block() -> str:
+    return _ci_text().split("name: Run focused tests (matrix)", 1)[1].split("\n      - name:", 1)[0]
+
+
+def test_tests_job_focused_matrix_integration_parallel_sharding_contract() -> None:
+    block = _focused_matrix_step_block()
+    assert "INTEGRATION_SHARD_COUNT=3" in block
+    assert "PYTHONUNBUFFERED=1" in block
+    assert "_launch_focused_lane" in block
+    assert "integration_shard_" in block
+    assert "SHARD_FAIL=0" in block
+    assert "if (( ${#INTEGRATION_NODES[@]} == 0 )); then" in block
+    assert 'pytest "${VALIDATED_TARGETS[@]}" "${PYTEST_ARGS[@]}"' in block
+    assert 'wait "${PIDS[$idx]}"' in block
+    assert "exit 1" in block
+    assert "|| true" not in block
+
+
+def test_tests_job_focused_matrix_parallel_sharding_does_not_affect_full_suite_step() -> None:
+    text = _ci_text()
+    full_block = text.split("name: Run full test suite", 1)[1].split(
+        "name: Run focused tests (matrix)", 1
+    )[0]
+    assert "INTEGRATION_SHARD_COUNT" not in full_block
+    assert "pytest tests/ -v --tb=short" in full_block
+
+
+def test_focused_matrix_integration_shard_round_robin_distribution() -> None:
+    """45 integration nodes partition into three shards with no loss or duplication."""
+    integration_owner = (
+        "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_"
+        "completion_integration_contract_v0.py"
+    )
+    nodes = [f"{integration_owner}::test_node_{i}" for i in range(45)]
+    shard_count = 3
+    shards: list[list[str]] = [[] for _ in range(shard_count)]
+    for idx, node in enumerate(nodes):
+        shards[idx % shard_count].append(node)
+    flattened = [node for shard in shards for node in shard]
+    assert len(flattened) == 45
+    assert len(flattened) == len(set(flattened))
+    assert all(len(shard) in {15, 15, 15} for shard in shards)
+
+
+def test_focused_matrix_glb019_a2b_target_groups_complete() -> None:
+    from scripts.ops.durable_completion_integration_partitions_v0 import (
+        GLB019_A2B_ADDITIVE_PARTITIONS,
+        expand_partitions_to_pytest_targets,
+    )
+    from tests.ci._glb019_synthetic_patch_builder_v0 import (
+        synthetic_glb019_a2b_positive_patch_text as patch_text,
+    )
+
+    expected_integration_nodes = sorted(
+        expand_partitions_to_pytest_targets(GLB019_A2B_ADDITIVE_PARTITIONS)
+    )
+    glb019_files = (
+        "scripts/ops/durable_completion_integration_partitions_v0.py",
+        "src/ops/bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
+        "src/ops/durable_completion_validation/graph.py",
+        "src/ops/durable_completion_validation/validators/event_stream.py",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+        "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
+        "tests/ops/test_durable_completion_validation_graph_v1.py",
+    )
+    with tempfile.NamedTemporaryFile("w", suffix=".patch", delete=False) as handle:
+        handle.write(patch_text())
+        patch_path = handle.name
+    try:
+        cmd = [
+            sys.executable,
+            str(SELECTOR),
+            "--event-name",
+            "pull_request",
+            "--files",
+            *glb019_files,
+            "--patch-file",
+            patch_path,
+        ]
+        out = subprocess.check_output(cmd, text=True)
+    finally:
+        Path(patch_path).unlink(missing_ok=True)
+    sel = {}
+    for line in out.splitlines():
+        key, _, value = line.partition("=")
+        sel[key] = value
+    targets = _targets(sel)
+    ci_owner = "tests/ci/test_ci_diff_aware_test_selection_v1.py"
+    graph_owner = "tests/ops/test_durable_completion_validation_graph_v1.py"
+    integration_nodes = sorted(t for t in targets if "::" in t)
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "glb019_a2b_additive_change_contract"
+    assert ci_owner in targets
+    assert graph_owner in targets
+    assert integration_nodes == expected_integration_nodes
+    assert len(targets) == 2 + len(expected_integration_nodes)
+
+
 def test_tests_job_focused_module_import_smoke_step() -> None:
     assert "Focused module import smoke" in _ci_text()
     assert "focused_module_imports" in _ci_text()
     assert "--import-smoke-modules" in _ci_text()
+
+
+def test_selector_ci_workflow_shard_bootstrap_focused() -> None:
+    sel = _run_selector(
+        ".github/workflows/ci.yml",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    )
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "ci_infra_focused"
+    assert sel["tests_execute_full"] == "false"
+    assert sel["tests_execute_focused"] == "true"
 
 
 def test_selector_docs_only_no_op() -> None:

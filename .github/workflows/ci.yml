@@ -496,13 +496,91 @@ jobs:
         if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_focused == 'true' }}
         run: |
           set -euo pipefail
+          export PYTHONUNBUFFERED=1
+          PYTEST_ARGS=(-v --tb=short -m "not network and not external_tools")
           TARGETS="${{ needs.changes.outputs.focused_pytest_targets }}"
           if [ -z "$TARGETS" ]; then
             echo "FOCUSED mode without explicit targets — fail-closed to tests/ci/"
             TARGETS="tests/ci/"
           fi
           mapfile -t VALIDATED_TARGETS < <(python3 scripts/ops/ci_test_selection_v1.py --emit-validated-pytest-targets "$TARGETS")
-          pytest "${VALIDATED_TARGETS[@]}" -v --tb=short -m "not network and not external_tools"
+          CI_OWNER="tests/ci/test_ci_diff_aware_test_selection_v1.py"
+          GRAPH_OWNER="tests/ops/test_durable_completion_validation_graph_v1.py"
+          INTEGRATION_SHARD_COUNT=3
+          INTEGRATION_NODES=()
+          OTHER_FILE_TARGETS=()
+          CI_TARGET=""
+          GRAPH_TARGET=""
+          for target in "${VALIDATED_TARGETS[@]}"; do
+            if [[ "$target" == *"::"* ]]; then
+              INTEGRATION_NODES+=("$target")
+            elif [[ "$target" == "$CI_OWNER" ]]; then
+              CI_TARGET="$target"
+            elif [[ "$target" == "$GRAPH_OWNER" ]]; then
+              GRAPH_TARGET="$target"
+            else
+              OTHER_FILE_TARGETS+=("$target")
+            fi
+          done
+          echo "focused-matrix target inventory validated=${#VALIDATED_TARGETS[@]} integration_nodes=${#INTEGRATION_NODES[@]} ci_owner=$([ -n "$CI_TARGET" ] && echo 1 || echo 0) graph_owner=$([ -n "$GRAPH_TARGET" ] && echo 1 || echo 0) other_files=${#OTHER_FILE_TARGETS[@]}"
+          if (( ${#INTEGRATION_NODES[@]} == 0 )); then
+            pytest "${VALIDATED_TARGETS[@]}" "${PYTEST_ARGS[@]}"
+            exit 0
+          fi
+          SHARD_FAIL=0
+          PIDS=()
+          LABELS=()
+          LOG_DIR="$(mktemp -d)"
+          _launch_focused_lane() {
+            local label="$1"
+            shift
+            local logfile="$LOG_DIR/${label}.log"
+            echo "focused-matrix parallel start label=${label} target_count=$#"
+            (
+              set -euo pipefail
+              pytest "$@" "${PYTEST_ARGS[@]}"
+            ) >"$logfile" 2>&1 &
+            PIDS+=("$!")
+            LABELS+=("$label")
+          }
+          if [ -n "$CI_TARGET" ]; then
+            _launch_focused_lane "ci_owner" "$CI_TARGET"
+          fi
+          if [ -n "$GRAPH_TARGET" ]; then
+            _launch_focused_lane "graph_owner" "$GRAPH_TARGET"
+          fi
+          if (( ${#OTHER_FILE_TARGETS[@]} > 0 )); then
+            _launch_focused_lane "other_files" "${OTHER_FILE_TARGETS[@]}"
+          fi
+          for ((shard_idx = 0; shard_idx < INTEGRATION_SHARD_COUNT; shard_idx++)); do
+            shard_targets=()
+            for ((i = shard_idx; i < ${#INTEGRATION_NODES[@]}; i += INTEGRATION_SHARD_COUNT)); do
+              shard_targets+=("${INTEGRATION_NODES[i]}")
+            done
+            echo "focused-matrix integration shard ${shard_idx} target_count=${#shard_targets[@]}"
+            if (( ${#shard_targets[@]} == 0 )); then
+              echo "focused-matrix integration shard ${shard_idx} empty — skip"
+              continue
+            fi
+            _launch_focused_lane "integration_shard_${shard_idx}" "${shard_targets[@]}"
+          done
+          for idx in "${!PIDS[@]}"; do
+            if ! wait "${PIDS[$idx]}"; then
+              SHARD_FAIL=1
+              echo "focused-matrix parallel failed label=${LABELS[$idx]}"
+              cat "$LOG_DIR/${LABELS[$idx]}.log"
+            fi
+          done
+          if (( SHARD_FAIL != 0 )); then
+            for label in "${LABELS[@]}"; do
+              echo "focused-matrix log dump label=${label}"
+              if [ -f "$LOG_DIR/${label}.log" ]; then
+                cat "$LOG_DIR/${label}.log"
+              fi
+            done
+            exit 1
+          fi
+          echo "focused-matrix parallel success lanes=${#PIDS[@]} integration_nodes=${#INTEGRATION_NODES[@]}"
 
       - name: Focused module import smoke
         if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_focused == 'true' && needs.changes.outputs.focused_module_imports != '' }}
