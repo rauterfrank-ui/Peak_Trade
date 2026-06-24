@@ -72,6 +72,26 @@ def test_ci_workflow_job_timeouts_do_not_exceed_25_minute_hard_cap() -> None:
         assert int(match.group(1)) <= 25, "CI job exceeds 25-minute hard cap"
 
 
+def _job_checkout_step_block(job_name: str, *, next_job: str) -> str:
+    text = _ci_text()
+    job_block = text.split(f"  {job_name}:", 1)[1].split(f"  {next_job}:", 1)[0]
+    return job_block.split("- name: Checkout", 1)[1].split("\n      - name:", 1)[0]
+
+
+def test_changes_job_checkout_fetch_depth_zero_unchanged() -> None:
+    assert "fetch-depth: 0" in _job_checkout_step_block(
+        "changes", next_job="ci-required-contexts-contract"
+    )
+
+
+def test_fast_lane_checkout_fetch_depth_zero_unchanged() -> None:
+    assert "fetch-depth: 0" in _job_checkout_step_block("fast-lane", next_job="tests")
+
+
+def test_tests_job_matrix_checkout_fetch_depth_zero_for_live_patch_contract() -> None:
+    assert "fetch-depth: 0" in _job_checkout_step_block("tests", next_job="strategy-smoke")
+
+
 def test_changes_job_exports_test_selection_outputs() -> None:
     text = _ci_text()
     for key in (

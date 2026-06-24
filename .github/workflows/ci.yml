@@ -428,6 +428,8 @@ jobs:
       - name: Checkout
         if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_no_op != 'true' }}
         uses: actions/checkout@v5
+        with:
+          fetch-depth: 0
 
       - name: Set up Python ${{ matrix.python-version }}
         if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_no_op != 'true' }}
