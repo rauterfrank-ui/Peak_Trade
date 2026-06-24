@@ -178,6 +178,7 @@ def test_focused_matrix_integration_shard_round_robin_distribution() -> None:
 
 def test_focused_matrix_glb019_a2b_target_groups_complete() -> None:
     from scripts.ops.durable_completion_integration_partitions_v0 import (
+        CI_GLB019_SYNTHETIC_PATCH_BUILDER,
         GLB019_A2B_ADDITIVE_PARTITIONS,
         expand_partitions_to_pytest_targets,
     )
@@ -193,6 +194,7 @@ def test_focused_matrix_glb019_a2b_target_groups_complete() -> None:
         "src/ops/bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
         "src/ops/durable_completion_validation/graph.py",
         "src/ops/durable_completion_validation/validators/event_stream.py",
+        CI_GLB019_SYNTHETIC_PATCH_BUILDER,
         "tests/ci/test_ci_diff_aware_test_selection_v1.py",
         "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
         "tests/ops/test_durable_completion_validation_graph_v1.py",
@@ -1122,6 +1124,9 @@ def test_selector_glb019_mixed_validation_and_facade_selects_integration_owner()
     assert _INTEGRATION_OWNER in _targets(sel)
 
 
+from scripts.ops.durable_completion_integration_partitions_v0 import (
+    CI_GLB019_SYNTHETIC_PATCH_BUILDER,
+)
 from tests.ci._glb019_synthetic_patch_builder_v0 import (
     synthetic_glb019_a2b_positive_patch_text as _synthetic_glb019_a2b_positive_patch_text,
     synthetic_glb019_a2b_reject_patch_text as _synthetic_glb019_a2b_reject_patch_text,
@@ -1135,7 +1140,100 @@ GLB019_A2B_FILESET = (
     "tests/ops/test_durable_completion_validation_graph_v1.py",
     "scripts/ops/durable_completion_integration_partitions_v0.py",
     "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    CI_GLB019_SYNTHETIC_PATCH_BUILDER,
 )
+
+
+def test_glb019_a2b_allowed_files_includes_synthetic_patch_builder() -> None:
+    from scripts.ops.durable_completion_integration_partitions_v0 import (
+        CI_GLB019_SYNTHETIC_PATCH_BUILDER,
+        GLB019_A2B_ALLOWED_FILES,
+    )
+
+    assert CI_GLB019_SYNTHETIC_PATCH_BUILDER in GLB019_A2B_ALLOWED_FILES
+
+
+def test_glb019_a2b_synthetic_patch_builder_has_registered_ast_validator() -> None:
+    from scripts.ops.durable_completion_integration_partitions_v0 import (
+        CI_GLB019_SYNTHETIC_PATCH_BUILDER,
+        _FILE_AST_VALIDATORS,
+    )
+
+    assert CI_GLB019_SYNTHETIC_PATCH_BUILDER in _FILE_AST_VALIDATORS
+
+
+def test_glb019_a2b_synthetic_patch_builder_ast_validator_accepts_canonical_helper() -> None:
+    import ast
+    from pathlib import Path
+
+    from scripts.ops.durable_completion_integration_partitions_v0 import (
+        CI_GLB019_SYNTHETIC_PATCH_BUILDER,
+        _FILE_AST_VALIDATORS,
+    )
+
+    helper_path = Path(CI_GLB019_SYNTHETIC_PATCH_BUILDER)
+    after_tree = ast.parse(helper_path.read_text(encoding="utf-8"))
+    before_tree = ast.parse("")
+    assert _FILE_AST_VALIDATORS[CI_GLB019_SYNTHETIC_PATCH_BUILDER](before_tree, after_tree)
+
+
+def test_glb019_a2b_synthetic_patch_builder_ast_validator_rejects_missing_delegation() -> None:
+    import ast
+
+    from scripts.ops.durable_completion_integration_partitions_v0 import (
+        CI_GLB019_SYNTHETIC_PATCH_BUILDER,
+        _validate_synthetic_patch_builder_ast,
+    )
+
+    invalid = ast.parse(
+        "def synthetic_glb019_a2b_positive_patch_text() -> str:\n"
+        "    return ''\n"
+        "def synthetic_glb019_a2b_reject_patch_text() -> str:\n"
+        "    return synthetic_glb019_a2b_positive_patch_text()\n"
+    )
+    assert not _validate_synthetic_patch_builder_ast(ast.parse(""), invalid)
+
+
+def test_glb019_a2b_synthetic_patch_builder_ast_validator_rejects_fragile_string_mutation() -> None:
+    import ast
+
+    from scripts.ops.durable_completion_integration_partitions_v0 import (
+        _validate_synthetic_patch_builder_ast,
+    )
+
+    fragile = ast.parse(
+        "from scripts.ops.durable_completion_integration_partitions_v0 import (\n"
+        "    GLB019_A2B_ALLOWED_FILES,\n"
+        "    collect_glb019_a2b_patch_text,\n"
+        ")\n"
+        "def synthetic_glb019_a2b_positive_patch_text() -> str:\n"
+        "    patch = collect_glb019_a2b_patch_text(changed_files=sorted(GLB019_A2B_ALLOWED_FILES))\n"
+        "    return patch\n"
+        "def synthetic_glb019_a2b_reject_patch_text() -> str:\n"
+        "    return synthetic_glb019_a2b_positive_patch_text().replace('glb019', 'pe21', 1)\n"
+    )
+    assert not _validate_synthetic_patch_builder_ast(ast.parse(""), fragile)
+
+
+def test_selector_glb019_a2b_pr_fileset_focused_additive_contract() -> None:
+    from scripts.ops.durable_completion_integration_partitions_v0 import (
+        CI_GLB019_SYNTHETIC_PATCH_BUILDER,
+    )
+
+    pr_files = (
+        "scripts/ops/durable_completion_integration_partitions_v0.py",
+        "src/ops/bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
+        "src/ops/durable_completion_validation/graph.py",
+        "src/ops/durable_completion_validation/validators/event_stream.py",
+        CI_GLB019_SYNTHETIC_PATCH_BUILDER,
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+        "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
+        "tests/ops/test_durable_completion_validation_graph_v1.py",
+    )
+    sel = _run_selector(*pr_files)
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "glb019_a2b_additive_change_contract"
+    assert sel["tests_execute_full"] == "false"
 
 
 def _run_selector_with_patch(

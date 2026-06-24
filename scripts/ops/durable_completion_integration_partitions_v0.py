@@ -378,6 +378,8 @@ def estimate_partition_seconds(partitions: frozenset[str]) -> int:
     return int(total)
 
 
+CI_GLB019_SYNTHETIC_PATCH_BUILDER: Final = "tests/ci/_glb019_synthetic_patch_builder_v0.py"
+
 GLB019_A2B_ALLOWED_FILES: Final[frozenset[str]] = frozenset(
     {
         COMPLETION_FACADE_PATH,
@@ -387,6 +389,7 @@ GLB019_A2B_ALLOWED_FILES: Final[frozenset[str]] = frozenset(
         "tests/ops/test_durable_completion_validation_graph_v1.py",
         "scripts/ops/durable_completion_integration_partitions_v0.py",
         "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+        CI_GLB019_SYNTHETIC_PATCH_BUILDER,
     }
 )
 
@@ -939,6 +942,83 @@ def _validate_ci_selector_test_ast(before: ast.Module, after: ast.Module) -> boo
     return False
 
 
+def _function_returns_call_name(function: ast.FunctionDef, call_name: str) -> bool:
+    for node in ast.walk(function):
+        if isinstance(node, ast.Call) and _call_name(node) == call_name:
+            return True
+    return False
+
+
+def _reject_patch_mutation_is_canonical(reject: ast.FunctionDef) -> bool:
+    replace_calls = [
+        node
+        for node in ast.walk(reject)
+        if isinstance(node, ast.Call) and _call_name(node) == "replace"
+    ]
+    if not replace_calls:
+        return False
+    for node in replace_calls:
+        if len(node.args) < 2:
+            return False
+        old_val, new_val = node.args[0], node.args[1]
+        if not isinstance(old_val, ast.Constant) or not isinstance(new_val, ast.Constant):
+            return False
+        if not isinstance(old_val.value, str) or not isinstance(new_val.value, str):
+            return False
+        old_s, new_s = old_val.value, new_val.value
+        if "glb019_result" not in old_s or "evaluate_glb019_event_stream_validation" not in old_s:
+            return False
+        if "pe21_result" not in new_s or "evaluate_glb019_event_stream_validation" not in new_s:
+            return False
+    return True
+
+
+def _validate_synthetic_patch_builder_ast(before: ast.Module, after: ast.Module) -> bool:
+    """Fail-closed AST contract for the GLB-019 synthetic patch builder helper."""
+    if not after.body:
+        return False
+    after_defs = _module_defs(after)
+    required = (
+        "synthetic_glb019_a2b_positive_patch_text",
+        "synthetic_glb019_a2b_reject_patch_text",
+    )
+    if not all(name in after_defs for name in required):
+        return False
+    positive = after_defs["synthetic_glb019_a2b_positive_patch_text"]
+    reject = after_defs["synthetic_glb019_a2b_reject_patch_text"]
+    if not isinstance(positive, ast.FunctionDef) or not isinstance(reject, ast.FunctionDef):
+        return False
+    if not _function_returns_call_name(positive, "collect_glb019_a2b_patch_text"):
+        return False
+    if not _function_returns_call_name(reject, "synthetic_glb019_a2b_positive_patch_text"):
+        return False
+    if not _reject_patch_mutation_is_canonical(reject):
+        return False
+    imports_partitions = False
+    imported_symbols: set[str] = set()
+    for node in after.body:
+        if not isinstance(node, ast.ImportFrom):
+            continue
+        if node.module != "scripts.ops.durable_completion_integration_partitions_v0":
+            continue
+        imports_partitions = True
+        imported_symbols.update(alias.name for alias in node.names)
+    if not imports_partitions:
+        return False
+    if "collect_glb019_a2b_patch_text" not in imported_symbols:
+        return False
+    if "GLB019_A2B_ALLOWED_FILES" not in imported_symbols:
+        return False
+    for node in ast.walk(after):
+        if isinstance(node, ast.Call) and isinstance(node.func, ast.Name):
+            if node.func.id in {"exec", "eval", "__import__"}:
+                return False
+    before_defs = _module_defs(before)
+    if before_defs == after_defs:
+        return False
+    return True
+
+
 _FILE_AST_VALIDATORS = {
     COMPLETION_FACADE_PATH: _validate_facade_ast,
     "src/ops/durable_completion_validation/graph.py": _validate_graph_ast,
@@ -947,6 +1027,7 @@ _FILE_AST_VALIDATORS = {
     "tests/ops/test_durable_completion_validation_graph_v1.py": _validate_graph_test_ast,
     "scripts/ops/durable_completion_integration_partitions_v0.py": _validate_partitions_ast,
     "tests/ci/test_ci_diff_aware_test_selection_v1.py": _validate_ci_selector_test_ast,
+    CI_GLB019_SYNTHETIC_PATCH_BUILDER: _validate_synthetic_patch_builder_ast,
 }
 
 

@@ -55,15 +55,6 @@ CI_MAPPING_FULL_PATHS = frozenset({"config/ci/file_category_mapping.yaml"})
 DURABLE_COMPLETION_INTEGRATION_PARTITIONS_HELPER = (
     "scripts/ops/durable_completion_integration_partitions_v0.py"
 )
-CI_GLB019_SYNTHETIC_PATCH_BUILDER = "tests/ci/_glb019_synthetic_patch_builder_v0.py"
-CI_BOOTSTRAP_FOCUSED_PATHS = frozenset(
-    {
-        "scripts/ops/ci_test_selection_v1.py",
-        DURABLE_COMPLETION_INTEGRATION_PARTITIONS_HELPER,
-        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
-        CI_GLB019_SYNTHETIC_PATCH_BUILDER,
-    }
-)
 
 # Shared / registry / framework prod paths — never strategy_regime_owner_focused.
 STRATEGY_REGIME_OWNER_BLOCKED_PROD = frozenset(
@@ -104,6 +95,7 @@ if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
 from scripts.ops.durable_completion_integration_partitions_v0 import (  # noqa: E402
+    CI_GLB019_SYNTHETIC_PATCH_BUILDER,
     GLB019_A2B_ALLOWED_FILES,
     INTEGRATION_TEST_OWNER,
     Glb019A2bChangeContractOutcome,
@@ -116,6 +108,15 @@ from scripts.ops.durable_completion_integration_partitions_v0 import (  # noqa: 
     integration_partition_inventory,
     partition_union_node_count,
     partitions_for_changed_files,
+)
+
+CI_BOOTSTRAP_FOCUSED_PATHS = frozenset(
+    {
+        "scripts/ops/ci_test_selection_v1.py",
+        DURABLE_COMPLETION_INTEGRATION_PARTITIONS_HELPER,
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+        CI_GLB019_SYNTHETIC_PATCH_BUILDER,
+    }
 )
 
 DURABLE_COMPLETION_CI_POLICY_PATHS = frozenset(
@@ -914,6 +915,8 @@ def _is_durable_completion_integration_partition_rebundle_path(
     if _is_durable_completion_rebundle_path(path):
         return True
     if path == DURABLE_COMPLETION_INTEGRATION_PARTITIONS_HELPER:
+        return True
+    if path == CI_GLB019_SYNTHETIC_PATCH_BUILDER:
         return True
     if path in DURABLE_COMPLETION_INTEGRATION_PE_PROD_PATHS:
         return DURABLE_COMPLETION_VALIDATION_GRAPH_TEST_OWNER in files
