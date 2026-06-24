@@ -1411,6 +1411,14 @@ def test_collect_glb019_a2b_patch_text_produces_parseable_additive_contract(
     assert set(integration_nodes) == set(expected_nodes)
 
 
+def test_selector_glb019_a2b_selector_owner_in_changed_files_stays_full() -> None:
+    patch = _synthetic_glb019_a2b_positive_patch_text()
+    sel = _run_selector_with_patch(patch, _SELECTOR_OWNER, *GLB019_A2B_FILESET)
+    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_reason"] == "durable_completion_foreign_path_requires_full"
+    assert not _targets(sel)
+
+
 PR4512_MASTER_V2_BINDING_CONTRACT_FILES = (
     "src/ops/bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
     "src/ops/durable_completion_validation/validators/completion_chain.py",
