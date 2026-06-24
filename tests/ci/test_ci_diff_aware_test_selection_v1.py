@@ -889,7 +889,8 @@ def test_selector_glb019_validation_only_models_context_field_focused() -> None:
 
 
 def test_selector_glb019_completion_facade_still_selects_integration_owner() -> None:
-    sel = _run_selector(
+    sel = _run_selector_with_patch(
+        "",
         "src/ops/bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
         _GRAPH_OWNER,
     )
@@ -979,7 +980,8 @@ def test_selector_completion_facade_full_integration_owner() -> None:
 
 
 def test_selector_glb019_mixed_validation_and_facade_selects_integration_owner() -> None:
-    sel = _run_selector(
+    sel = _run_selector_with_patch(
+        "",
         "src/ops/durable_completion_validation/validators/event_stream.py",
         "src/ops/bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
         _GRAPH_OWNER,
