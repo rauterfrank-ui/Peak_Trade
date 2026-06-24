@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import ast
 import re
 import subprocess
 import sys
@@ -1189,6 +1190,91 @@ def test_selector_glb019_a2b_change_contract_classify_unit() -> None:
     assert classify_glb019_a2b_additive_patch(patch) == GLB019_A2B_ADDITIVE_PARTITIONS
     assert classify_glb019_a2b_additive_patch("") is None
     assert classify_glb019_a2b_additive_patch("corrupt") is None
+
+
+def test_collect_glb019_a2b_patch_text_uses_three_line_unified_context() -> None:
+    from scripts.ops import durable_completion_integration_partitions_v0 as partitions
+
+    source = Path(partitions.__file__).read_text(encoding="utf-8")
+    tree = ast.parse(source)
+    fn_node = next(
+        node
+        for node in ast.walk(tree)
+        if isinstance(node, ast.FunctionDef) and node.name == "collect_glb019_a2b_patch_text"
+    )
+    fn_source = ast.get_source_segment(source, fn_node) or ""
+    assert fn_source
+    assert '"--unified=3"' in fn_source or "'--unified=3'" in fn_source
+    assert "--unified=0" not in fn_source
+    assert "merge-base" in fn_source
+    assert "...HEAD" in fn_source
+
+
+def test_collect_glb019_a2b_patch_text_produces_parseable_additive_contract(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    from scripts.ops.durable_completion_integration_partitions_v0 import (
+        Glb019A2bChangeContractOutcome,
+        collect_glb019_a2b_patch_text,
+        evaluate_glb019_a2b_change_contract,
+        expand_partitions_to_pytest_targets,
+    )
+    from scripts.ops.ci_test_selection_v1 import resolve_selection
+
+    patch = _synthetic_glb019_a2b_positive_patch_text()
+    git_calls: list[list[str]] = []
+
+    def _fake_run(cmd: list[str], **kwargs: object) -> subprocess.CompletedProcess[str]:
+        git_calls.append(cmd)
+        if cmd[:2] == ["git", "merge-base"]:
+            return subprocess.CompletedProcess(cmd, 0, "abc123def\n", "")
+        if cmd[:2] == ["git", "diff"]:
+            return subprocess.CompletedProcess(cmd, 0, patch, "")
+        return subprocess.CompletedProcess(cmd, 1, "", "")
+
+    with monkeypatch.context() as scoped:
+        scoped.setattr(
+            "scripts.ops.durable_completion_integration_partitions_v0.subprocess.run",
+            _fake_run,
+        )
+        collected = collect_glb019_a2b_patch_text(
+            changed_files=list(GLB019_A2B_FILESET),
+            repo_root=Path("."),
+        )
+
+    assert collected
+    assert collected == patch
+    diff_cmd = next(cmd for cmd in git_calls if cmd[:2] == ["git", "diff"])
+    assert "--unified=3" in diff_cmd
+    assert "--unified=0" not in diff_cmd
+    assert "abc123def...HEAD" in diff_cmd
+
+    contract = evaluate_glb019_a2b_change_contract(collected, repo_root=Path("."))
+    assert contract.outcome == Glb019A2bChangeContractOutcome.PASS
+    assert contract.partitions is not None
+
+    sel = resolve_selection(
+        list(GLB019_A2B_FILESET),
+        event_name="pull_request",
+        patch_text=collected,
+    )
+    targets = _targets(
+        {
+            "focused_pytest_targets": " ".join(sel.focused_pytest_targets),
+            "test_selection_mode": sel.mode,
+            "test_selection_reason": sel.reason,
+        }
+    )
+    integration_nodes = [t for t in targets if t.startswith(f"{_INTEGRATION_OWNER}::")]
+    expected_nodes = expand_partitions_to_pytest_targets(contract.partitions)
+    assert sel.mode == "FOCUSED"
+    assert sel.reason == "glb019_a2b_additive_change_contract"
+    assert _GRAPH_OWNER in targets
+    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" in targets
+    assert _INTEGRATION_OWNER not in targets
+    assert integration_nodes
+    assert all("::" in node for node in integration_nodes)
+    assert set(integration_nodes) == set(expected_nodes)
 
 
 PR4512_MASTER_V2_BINDING_CONTRACT_FILES = (

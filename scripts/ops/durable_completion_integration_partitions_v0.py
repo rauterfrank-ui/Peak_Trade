@@ -1072,7 +1072,7 @@ def collect_glb019_a2b_patch_text(
             "git",
             "diff",
             "--no-ext-diff",
-            "--unified=0",
+            "--unified=3",
             f"{mb}...HEAD",
             "--",
             *diff_paths,
