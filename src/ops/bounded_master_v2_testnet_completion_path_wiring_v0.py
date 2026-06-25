@@ -22,6 +22,11 @@ from src.ops.bounded_futures_testnet_durable_run_primary_evidence_completion_int
 )
 from src.ops.offline_master_v2_replay_six_node_validation_graph_binding_v0 import (
     OFFLINE_REPLAY_SIX_NODE_VALIDATION_GRAPH_BINDING_OWNER,
+    PROOF_CLASSIFICATION_FULL_E2E_BOUND,
+    PROOF_CLASSIFICATION_GRAPH_FAIL_CLOSED,
+    PROOF_CLASSIFICATION_INTEGRATION_FAIL_CLOSED,
+    PROOF_CLASSIFICATION_PROJECTION_FAIL_CLOSED,
+    PROOF_CLASSIFICATION_REPLAY_FAIL_CLOSED,
     OfflineReplaySixNodeValidationGraphBindingResultV0,
     build_completion_integration_input_from_offline_replay_result,
     build_validation_context_from_completion_integration_input,
@@ -66,6 +71,16 @@ _FORBIDDEN_TESTNET_CLAIMS = frozenset(
     }
 )
 
+_KNOWN_PROOF_CLASSIFICATIONS = frozenset(
+    {
+        PROOF_CLASSIFICATION_FULL_E2E_BOUND,
+        PROOF_CLASSIFICATION_REPLAY_FAIL_CLOSED,
+        PROOF_CLASSIFICATION_PROJECTION_FAIL_CLOSED,
+        PROOF_CLASSIFICATION_INTEGRATION_FAIL_CLOSED,
+        PROOF_CLASSIFICATION_GRAPH_FAIL_CLOSED,
+    }
+)
+
 
 @dataclass(frozen=True)
 class TestnetCompletionPathMarketInputV0:
@@ -106,6 +121,9 @@ class BoundedMasterV2TestnetCompletionPathWiringResultV0:
     missing_testnet_market_input_fails_closed: bool
     testnet_runner_reuses_canonical_completion_path: bool
     dashboard_display_projection_digest: str | None = None
+    replay_proof_classification: str | None = None
+    replay_proof_classification_bound: bool = False
+    replay_proof_event_stream_non_authorizing: bool = True
 
     def to_machine_lines(self) -> dict[str, str | bool | int]:
         return {
@@ -139,6 +157,12 @@ class BoundedMasterV2TestnetCompletionPathWiringResultV0:
             "FILLS_TOTAL": self.fills_total,
             "POSITIONS_OPENED_TOTAL": self.positions_opened_total,
             "DASHBOARD_DISPLAY_PROJECTION_DIGEST": self.dashboard_display_projection_digest or "",
+            "OFFLINE_END_TO_END_REPLAY_PROOF_CLASSIFICATION": self.replay_proof_classification
+            or "",
+            "REPLAY_PROOF_CLASSIFICATION_BOUND": self.replay_proof_classification_bound,
+            "OFFLINE_END_TO_END_EVENT_STREAM_NON_AUTHORIZING": (
+                self.replay_proof_event_stream_non_authorizing
+            ),
         }
 
 
@@ -292,6 +316,61 @@ def verify_dashboard_display_projection_digest_wiring(
     return replay_digest, fail_reasons
 
 
+def verify_replay_proof_classification_wiring(
+    six_node_binding: OfflineReplaySixNodeValidationGraphBindingResultV0,
+    integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
+) -> tuple[str | None, list[str]]:
+    """Fail-closed verification that Stage-4 replay proof classification is FULL_E2E_BOUND."""
+    fail_reasons: list[str] = []
+    prefix = "replay_proof_classification"
+    classification = six_node_binding.proof_classification
+
+    if not classification or not classification.strip():
+        fail_reasons.append(f"{prefix}: classification required")
+        return None, fail_reasons
+
+    if classification not in _KNOWN_PROOF_CLASSIFICATIONS:
+        fail_reasons.append(f"{prefix}: unknown classification {classification!r}")
+        return classification, fail_reasons
+
+    if classification != PROOF_CLASSIFICATION_FULL_E2E_BOUND:
+        fail_reasons.append(f"{prefix}: incomplete binding classification={classification!r}")
+        return classification, fail_reasons
+
+    if not six_node_binding.binding_pass:
+        fail_reasons.append(f"{prefix}: six-node binding_pass required for FULL_E2E_BOUND")
+
+    if not six_node_binding.state_event_projection_digest:
+        fail_reasons.append(f"{prefix}: state_event_projection_digest required for FULL_E2E_BOUND")
+    if not six_node_binding.master_v2_state_event_stream_identity:
+        fail_reasons.append(
+            f"{prefix}: master_v2_state_event_stream_identity required for FULL_E2E_BOUND"
+        )
+
+    mv2_proof = integration_input.master_v2_state_event_stream_proof
+    mv2_input = integration_input.master_v2_state_event_stream_validation_input
+    if (
+        six_node_binding.master_v2_state_event_stream_identity
+        and mv2_proof.state_event_stream_identity
+        != six_node_binding.master_v2_state_event_stream_identity
+    ):
+        fail_reasons.append(
+            f"{prefix}: master_v2_state_event_stream_identity drift: six-node vs integration proof"
+        )
+    if (
+        six_node_binding.evidence_chain_profile is not None
+        and mv2_input.evidence_chain_profile != six_node_binding.evidence_chain_profile
+    ):
+        fail_reasons.append(
+            f"{prefix}: evidence_chain_profile drift: six-node vs integration input"
+        )
+
+    if not six_node_binding.event_stream_non_authorizing:
+        fail_reasons.append(f"{prefix}: event_stream_non_authorizing must be true")
+
+    return classification, fail_reasons
+
+
 def evaluate_bounded_master_v2_testnet_completion_path_wiring(
     market_input: TestnetCompletionPathMarketInputV0 | None,
     *,
@@ -354,9 +433,14 @@ def evaluate_bounded_master_v2_testnet_completion_path_wiring(
         integration_input,
         binding,
     )
+    proof_classification, proof_classification_reasons = verify_replay_proof_classification_wiring(
+        binding,
+        integration_input,
+    )
 
     fail_reasons = list(binding.fail_reasons)
     fail_reasons.extend(display_digest_reasons)
+    fail_reasons.extend(proof_classification_reasons)
     if not integration_result.get("integration_pass"):
         fail_reasons.extend(integration_result.get("fail_reasons", ()))
 
@@ -377,6 +461,10 @@ def evaluate_bounded_master_v2_testnet_completion_path_wiring(
 
     wiring_pass = binding.binding_pass and bool(integration_result.get("integration_pass"))
     wiring_pass = wiring_pass and zero_order_ok and not fail_reasons
+    classification_bound = (
+        proof_classification == PROOF_CLASSIFICATION_FULL_E2E_BOUND
+        and not proof_classification_reasons
+    )
 
     return _result(
         wiring_pass=wiring_pass,
@@ -388,6 +476,9 @@ def evaluate_bounded_master_v2_testnet_completion_path_wiring(
         positions_opened_total=binding.positions_opened_total,
         missing_testnet_market_input_fails_closed=False,
         dashboard_display_projection_digest=display_digest,
+        replay_proof_classification=proof_classification,
+        replay_proof_classification_bound=classification_bound,
+        replay_proof_event_stream_non_authorizing=binding.event_stream_non_authorizing,
         **static_flags,
     )
 
@@ -469,6 +560,9 @@ def _result(
     bounded_testnet_zero_order_admission_boundary_present: bool,
     testnet_runner_reuses_canonical_completion_path: bool,
     dashboard_display_projection_digest: str | None = None,
+    replay_proof_classification: str | None = None,
+    replay_proof_classification_bound: bool = False,
+    replay_proof_event_stream_non_authorizing: bool = True,
 ) -> BoundedMasterV2TestnetCompletionPathWiringResultV0:
     return BoundedMasterV2TestnetCompletionPathWiringResultV0(
         layer_version=BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_LAYER_VERSION,
@@ -497,4 +591,7 @@ def _result(
         missing_testnet_market_input_fails_closed=missing_testnet_market_input_fails_closed,
         testnet_runner_reuses_canonical_completion_path=testnet_runner_reuses_canonical_completion_path,
         dashboard_display_projection_digest=dashboard_display_projection_digest,
+        replay_proof_classification=replay_proof_classification,
+        replay_proof_classification_bound=replay_proof_classification_bound,
+        replay_proof_event_stream_non_authorizing=replay_proof_event_stream_non_authorizing,
     )

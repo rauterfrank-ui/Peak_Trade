@@ -2380,7 +2380,22 @@ def test_selector_bounded_master_v2_testnet_completion_path_wiring_five_file_dif
     adapter_owner = "tests/ops/test_run_testnet_bounded_observation_adapter_v0.py"
     replay_owner = "tests/ops/test_offline_master_v2_double_play_scenario_replay_completion_binding_contract_v0.py"
     completion_owner = "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py"
-    assert wiring_owner in targets
+    assert wiring_owner not in targets
+    wiring_nodes = [target for target in targets if target.startswith(f"{wiring_owner}::")]
+    assert len(wiring_nodes) == 7
+    assert all("::test_" in target for target in wiring_nodes)
+    assert (
+        f"{wiring_owner}::test_full_e2e_bound_classification_bound_with_valid_market_input"
+        in targets
+    )
+    assert (
+        f"{wiring_owner}::test_invalid_replay_proof_classification_fails_closed_in_evaluator"
+        in targets
+    )
+    assert f"{wiring_owner}::test_partial_replay_proof_classification_fails_closed" in targets
+    assert (
+        f"{wiring_owner}::test_completion_path_happy_path_unchanged_with_retention" not in targets
+    )
     assert adapter_owner not in targets
     assert replay_owner not in targets
     assert completion_owner not in targets
@@ -2392,7 +2407,7 @@ def test_selector_bounded_master_v2_testnet_completion_path_wiring_five_file_dif
         "tests/ci/test_ci_diff_aware_test_selection_v1.py::test_selector_bounded_master_v2_testnet_completion_path_wiring_five_file_diff_focused"
         in targets
     )
-    assert len(targets) >= 20
+    assert len(targets) >= 26
 
 
 def test_selector_bounded_master_v2_testnet_wiring_foreign_path_escalates_full() -> None:

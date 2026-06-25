@@ -438,8 +438,17 @@ BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_CI_SELECTOR_TARGETS: tuple[str,
     "tests/ci/test_ci_diff_aware_test_selection_v1.py::test_selector_bounded_master_v2_testnet_completion_path_wiring_five_file_diff_focused",
     "tests/ci/test_ci_diff_aware_test_selection_v1.py::test_selector_bounded_master_v2_testnet_wiring_foreign_path_escalates_full",
 )
+BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_CONTRACT_FOCUSED_NODES: tuple[str, ...] = (
+    f"{BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_TEST_OWNER}::test_wiring_owner_references_replay_proof_classification_symbols",
+    f"{BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_TEST_OWNER}::test_full_e2e_bound_classification_bound_with_valid_market_input",
+    f"{BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_TEST_OWNER}::test_partial_replay_proof_classification_fails_closed",
+    f"{BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_TEST_OWNER}::test_missing_replay_proof_classification_fails_closed",
+    f"{BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_TEST_OWNER}::test_unknown_replay_proof_classification_fails_closed",
+    f"{BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_TEST_OWNER}::test_replay_proof_identity_drift_fails_closed",
+    f"{BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_TEST_OWNER}::test_invalid_replay_proof_classification_fails_closed_in_evaluator",
+)
 BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_FOCUSED_TARGETS: tuple[str, ...] = (
-    BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_TEST_OWNER,
+    *BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_CONTRACT_FOCUSED_NODES,
     f"{BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_ADAPTER_TEST_OWNER}::test_plan_only_default_does_not_call_subprocess",
     f"{BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_ADAPTER_TEST_OWNER}::test_plan_archive_dest_is_runs_testnet",
     f"{BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_ADAPTER_TEST_OWNER}::test_command_plan_never_uses_forbidden_paths",
