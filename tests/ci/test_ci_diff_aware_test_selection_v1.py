@@ -682,7 +682,7 @@ def test_selector_glb019_a2b_full_nine_file_pr_explicit_git_diff_focused() -> No
     assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" in targets
     assert _GRAPH_OWNER in targets
     integration_nodes = [t for t in targets if t.startswith(f"{_INTEGRATION_OWNER}::test_")]
-    assert len(integration_nodes) == 45
+    assert len(integration_nodes) == 47
 
 
 def test_selector_glb019_a2b_live_collect_patch_contract_focused() -> None:
@@ -1409,7 +1409,7 @@ def test_integration_partition_inventory_covers_all_nodes() -> None:
     )
 
     nodes = collect_integration_owner_node_ids()
-    assert len(nodes) == 257
+    assert len(nodes) == 271
     inventory = integration_partition_inventory()
     assert set(inventory) <= set(ALL_PARTITIONS)
     covered = [node for part in inventory.values() for node in part]
@@ -1460,6 +1460,70 @@ def test_selector_pr4550_fast_lane_durable_completion_bounded() -> None:
     assert _INTEGRATION_OWNER not in fast_lane_targets
     assert _GRAPH_OWNER not in fast_lane_targets
     assert len(fast_lane_targets) <= 10
+
+
+PR4554_MASTER_V2_EVENT_STREAM_BINDING_FILES = (
+    "src/ops/bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
+    "src/ops/durable_completion_validation/validators/event_stream.py",
+    "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
+)
+
+
+def test_selector_pr4554_fast_lane_durable_completion_bounded_master_v2_event_stream() -> None:
+    sel = _run_selector(*PR4554_MASTER_V2_EVENT_STREAM_BINDING_FILES)
+    assert sel["fast_lane_contract_mode"] == "DURABLE_COMPLETION_BOUNDED"
+    assert sel["fast_lane_contract_reason"] == "durable_completion_bounded_partition"
+    fast_lane_targets = _fast_lane_targets(sel)
+    graph_targets = [t for t in fast_lane_targets if t.startswith(_GRAPH_OWNER + "::")]
+    master_v2_targets = [
+        t
+        for t in fast_lane_targets
+        if "::test_master_v2_kill_all_event_stream_happy_path" in t
+        or "::test_master_v2_state_switch_event_stream_happy_path_non_authorizing" in t
+    ]
+    assert len(graph_targets) == 3
+    assert len(master_v2_targets) == 2
+    assert not any(
+        "::test_coherent_static_completion_happy_path_passes" in t for t in fast_lane_targets
+    )
+    assert _INTEGRATION_OWNER not in fast_lane_targets
+    assert _GRAPH_OWNER not in fast_lane_targets
+    assert len(fast_lane_targets) == 7
+
+
+DURABLE_COMPLETION_EVENT_STREAM_VALIDATOR_BINDING_FILES = (
+    "src/ops/bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
+    "src/ops/durable_completion_validation/validators/event_stream.py",
+    "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+)
+
+DURABLE_COMPLETION_MATRIX_MASTER_V2_EVENT_STREAM_BOUNDED_TARGETS = (
+    f"{_INTEGRATION_OWNER}::test_master_v2_state_switch_event_stream_happy_path_non_authorizing",
+    f"{_INTEGRATION_OWNER}::test_master_v2_kill_all_event_stream_happy_path",
+    f"{_INTEGRATION_OWNER}::test_master_v2_missing_required_event_fail_closed",
+    f"{_INTEGRATION_OWNER}::test_master_v2_kill_all_terminal_break_fail_closed",
+    f"{_INTEGRATION_OWNER}::test_completion_proof_chain_pe38_digest_bound_positive",
+    f"{_INTEGRATION_OWNER}::test_glb019_missing_proof_fail_closed",
+    f"{_GRAPH_OWNER}::test_graph_explicit_order_matches_dependencies",
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py::test_selector_pr4554_fast_lane_durable_completion_bounded_master_v2_event_stream",
+)
+
+
+def test_selector_durable_completion_event_stream_validator_focused_matrix_eight_node_bounded() -> (
+    None
+):
+    sel = _run_selector(*DURABLE_COMPLETION_EVENT_STREAM_VALIDATOR_BINDING_FILES)
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
+    assert sel["test_selection_reason"] == "durable_completion_focused"
+    targets = _targets(sel)
+    assert targets == sorted(DURABLE_COMPLETION_MATRIX_MASTER_V2_EVENT_STREAM_BOUNDED_TARGETS)
+    assert _INTEGRATION_OWNER not in targets
+    assert _GRAPH_OWNER not in targets
+    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" not in targets
+    assert not any("::test_coherent_static_completion_happy_path_passes" in t for t in targets)
+    assert not any("::test_global_safety_flags_remain_blocked" in t for t in targets)
+    assert not any("::test_master_v2_dynamic_scope_digest_drift_fail_closed" in t for t in targets)
 
 
 def test_selector_pr4550_matrix_contract_focused_not_exhaustive() -> None:

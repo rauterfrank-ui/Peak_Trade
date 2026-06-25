@@ -3997,6 +3997,288 @@ def test_glb019_deterministic_repeat() -> None:
     assert first["integration_input_digest"] == second["integration_input_digest"]
 
 
+def test_master_v2_state_switch_event_stream_happy_path_non_authorizing() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    result = evaluate_durable_run_primary_evidence_completion_integration(integration_input)
+    assert result["integration_pass"] is True
+    assert result["master_v2_state_event_stream_bound"] is True
+    assert integration_input.master_v2_state_event_stream_proof.event_stream_non_authorizing is True
+    assert result["authority_lift"] is False
+
+
+def test_master_v2_kill_all_event_stream_happy_path() -> None:
+    from src.ops.durable_completion_validation.validators.event_stream import (
+        MASTER_V2_EVIDENCE_CHAIN_PROFILE_KILL_ALL,
+        default_minimal_master_v2_kill_all_event_records,
+        default_minimal_master_v2_state_event_proof_binding,
+        default_minimal_master_v2_state_event_validation_input,
+        evaluate_master_v2_state_event_stream_validation,
+    )
+
+    integration_input = default_minimal_completion_integration_input()
+    validation_input = default_minimal_master_v2_state_event_validation_input(
+        source_revision=integration_input.source_revision,
+        completion_identity_digest=integration_input.master_v2_state_event_stream_validation_input.completion_identity_digest,
+        manifest_identity_digest=integration_input.master_v2_state_event_stream_validation_input.manifest_identity_digest,
+        run_identity_digest=integration_input.run_identity.run_identity_digest,
+        correlation_id=integration_input.run_identity.run_id,
+        evidence_chain_profile=MASTER_V2_EVIDENCE_CHAIN_PROFILE_KILL_ALL,
+    )
+    master_v2_result = evaluate_master_v2_state_event_stream_validation(validation_input)
+    assert master_v2_result["validation_pass"] is True
+    proof = default_minimal_master_v2_state_event_proof_binding(validation_input, master_v2_result)
+    bad = replace(
+        integration_input,
+        master_v2_state_event_stream_validation_input=validation_input,
+        master_v2_state_event_stream_proof=proof,
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is True
+    assert result["master_v2_state_event_stream_bound"] is True
+    assert validation_input.events == default_minimal_master_v2_kill_all_event_records(
+        correlation_id=integration_input.run_identity.run_id,
+        scope_state_digest=validation_input.events[0].scope_state_digest,
+    )
+
+
+def test_master_v2_missing_validation_input_fail_closed() -> None:
+    from types import SimpleNamespace
+
+    integration_input = default_minimal_completion_integration_input()
+    legacy = SimpleNamespace(
+        **{
+            field.name: getattr(integration_input, field.name)
+            for field in integration_input.__dataclass_fields__.values()
+            if field.name != "master_v2_state_event_stream_validation_input"
+        }
+    )
+    fail_reasons = validate_durable_run_primary_evidence_completion_integration_input(legacy)  # type: ignore[arg-type]
+    assert any(
+        "master_v2_state_event_stream_validation_input required" in reason
+        for reason in fail_reasons
+    )
+
+
+def test_master_v2_missing_proof_fail_closed() -> None:
+    from types import SimpleNamespace
+
+    integration_input = default_minimal_completion_integration_input()
+    legacy = SimpleNamespace(
+        **{
+            field.name: getattr(integration_input, field.name)
+            for field in integration_input.__dataclass_fields__.values()
+            if field.name != "master_v2_state_event_stream_proof"
+        }
+    )
+    fail_reasons = validate_durable_run_primary_evidence_completion_integration_input(legacy)  # type: ignore[arg-type]
+    assert any("master_v2_state_event_stream_proof required" in reason for reason in fail_reasons)
+
+
+def test_master_v2_missing_required_event_fail_closed() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    validation_input = integration_input.master_v2_state_event_stream_validation_input
+    kept = tuple(
+        record
+        for record in validation_input.events
+        if record.semantic_event_class != "state_switch"
+    )
+    bad = replace(
+        integration_input,
+        master_v2_state_event_stream_validation_input=replace(
+            validation_input,
+            events=kept,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "missing required event class 'state_switch'" in reason for reason in result["fail_reasons"]
+    )
+
+
+def test_master_v2_wrong_event_order_fail_closed() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    validation_input = integration_input.master_v2_state_event_stream_validation_input
+    reordered = (
+        replace(validation_input.events[0], sequence=0),
+        replace(validation_input.events[1], sequence=2),
+    )
+    bad = replace(
+        integration_input,
+        master_v2_state_event_stream_validation_input=replace(
+            validation_input,
+            events=reordered,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("non-contiguous sequence ordering" in reason for reason in result["fail_reasons"])
+
+
+def test_master_v2_duplicate_transition_event_fail_closed() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    validation_input = integration_input.master_v2_state_event_stream_validation_input
+    duplicate = validation_input.events[1]
+    bad_events = validation_input.events + (
+        replace(duplicate, event_id="mv2-state-switch-dup", sequence=len(validation_input.events)),
+    )
+    bad = replace(
+        integration_input,
+        master_v2_state_event_stream_validation_input=replace(
+            validation_input,
+            events=bad_events,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("duplicate transition event" in reason for reason in result["fail_reasons"])
+
+
+def test_master_v2_digest_drift_fail_closed() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        master_v2_state_event_stream_proof=replace(
+            integration_input.master_v2_state_event_stream_proof,
+            validation_result_digest="0" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("validation_result_digest mismatch" in reason for reason in result["fail_reasons"])
+
+
+def test_master_v2_identity_drift_fail_closed() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        master_v2_state_event_stream_validation_input=replace(
+            integration_input.master_v2_state_event_stream_validation_input,
+            run_identity_digest="0" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("run_identity_digest drift" in reason for reason in result["fail_reasons"])
+
+
+def test_master_v2_proof_reference_drift_fail_closed() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        master_v2_state_event_stream_proof=replace(
+            integration_input.master_v2_state_event_stream_proof,
+            state_event_stream_identity="0" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "state_event_stream_identity mismatch" in reason for reason in result["fail_reasons"]
+    )
+
+
+def test_master_v2_state_switch_coherence_break_fail_closed() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    validation_input = integration_input.master_v2_state_event_stream_validation_input
+    broken_events = tuple(
+        replace(
+            record,
+            side_state_after="short_active",
+        )
+        if record.semantic_event_class == "state_switch"
+        else record
+        for record in validation_input.events
+    )
+    bad = replace(
+        integration_input,
+        master_v2_state_event_stream_validation_input=replace(
+            validation_input,
+            events=broken_events,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "side_state_after mismatch with canonical transition semantics" in reason
+        for reason in result["fail_reasons"]
+    )
+
+
+def test_master_v2_kill_all_terminal_break_fail_closed() -> None:
+    from src.ops.durable_completion_validation.validators.event_stream import (
+        MASTER_V2_EVIDENCE_CHAIN_PROFILE_KILL_ALL,
+        default_minimal_master_v2_kill_all_event_records,
+    )
+    from src.trading.master_v2.double_play_state import SideState
+
+    integration_input = default_minimal_completion_integration_input()
+    validation_input = integration_input.master_v2_state_event_stream_validation_input
+    scope_digest = validation_input.events[0].scope_state_digest
+    broken_kill_all = replace(
+        default_minimal_master_v2_kill_all_event_records(
+            correlation_id=validation_input.correlation_id,
+            scope_state_digest=scope_digest,
+        )[0],
+        side_state_after=SideState.LONG_BLOCKED.value,
+    )
+    bad = replace(
+        integration_input,
+        master_v2_state_event_stream_validation_input=replace(
+            validation_input,
+            evidence_chain_profile=MASTER_V2_EVIDENCE_CHAIN_PROFILE_KILL_ALL,
+            events=(broken_kill_all,),
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "kill_all_terminal must end in kill_all side state" in reason
+        or "side_state_after mismatch with canonical transition semantics" in reason
+        for reason in result["fail_reasons"]
+    )
+
+
+def test_master_v2_dynamic_scope_digest_drift_fail_closed() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    validation_input = integration_input.master_v2_state_event_stream_validation_input
+    drifted_events = tuple(
+        replace(record, scope_state_digest="f" * 64) for record in validation_input.events
+    )
+    bad = replace(
+        integration_input,
+        master_v2_state_event_stream_validation_input=replace(
+            validation_input,
+            bound_dynamic_scope_state_digest="a" * 64,
+            events=drifted_events,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "scope_state_digest drift from bound dynamic scope" in reason
+        for reason in result["fail_reasons"]
+    )
+
+
+def test_master_v2_authority_claim_fail_closed() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    validation_input = integration_input.master_v2_state_event_stream_validation_input
+    authority_events = tuple(
+        replace(record, claims_live_authority=True) for record in validation_input.events
+    )
+    bad = replace(
+        integration_input,
+        master_v2_state_event_stream_validation_input=replace(
+            validation_input,
+            events=authority_events,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("authority claims forbidden" in reason for reason in result["fail_reasons"])
+
+
 def test_pe33_cross_slice_coherence_bound_in_completion_happy_path() -> None:
     integration_input = default_minimal_completion_integration_input(
         source_revision=VALID_COMMIT_SHA
