@@ -16,6 +16,18 @@
 
 ---
 
+## Master Execution Runbook (Program-Wide, non-authorizing)
+
+| Artefakt | Pfad | Rolle |
+|----------|------|-------|
+| **Aktiver kanonischer Repo-Runbook-Owner** | [master_execution/PEAK_TRADE_MASTER_EXECUTION_RUNBOOK_V1.md](master_execution/PEAK_TRADE_MASTER_EXECUTION_RUNBOOK_V1.md) | Current-State-, Resume- und Programm-Steuerungs-Owner; **keine** Trading-/Runtime-Authority |
+| **Maschinen-Checkpoint** | [master_execution/CURRENT_CHECKPOINT.env](master_execution/CURRENT_CHECKPOINT.env) | Parsebarer Programm-Status |
+| **Changelog (append-only)** | [master_execution/RUNBOOK_CHANGELOG.csv](master_execution/RUNBOOK_CHANGELOG.csv) | Statusänderungen und Migrationen |
+| **Durable Ursprungssnapshot** | `…&#47;planning&#47;peak_trade_master_execution_runbook_v1_20260626T233500Z` (Archive) | Unveränderlicher verified Origin (`MANIFEST_VERIFY_RC=0`) |
+| **Desktop-Lesekopie** | `/Users/frnkhrz/Desktop/Peak_Trade_Master_Execution_Runbook_V1.md` | **Nicht kanonisch** — Convenience only |
+
+---
+
 ## Runbooks
 
 | Kategorie | Pfad | Hinweis |
