@@ -3566,15 +3566,26 @@ def test_matrix_contract_selector_without_selector_test_full() -> None:
         "scripts/ops/ci_test_selection_v1.py",
         ".github/workflows/ci.yml",
     )
-    assert sel["matrix_contract_mode"] == "MATRIX_FULL"
-    assert sel["matrix_contract_reason"] == "matrix_contract_incomplete_rebundle_mapping"
+    assert sel["matrix_contract_mode"] == "MATRIX_UNMAPPED"
+    assert sel["matrix_contract_reason"] == "matrix_contract_central_wiring_defer_to_ci_infra"
     assert sel["test_selection_mode"] == "FULL"
 
 
-def test_matrix_contract_ci_yml_without_selector_test_full() -> None:
+def test_matrix_contract_ci_yml_without_selector_test_unmapped() -> None:
     sel = _run_selector(".github/workflows/ci.yml")
-    assert sel["matrix_contract_mode"] == "MATRIX_FULL"
-    assert sel["matrix_contract_reason"] == "matrix_contract_incomplete_rebundle_mapping"
+    assert sel["matrix_contract_mode"] == "MATRIX_UNMAPPED"
+    assert sel["matrix_contract_reason"] == "matrix_contract_central_wiring_defer_to_ci_infra"
+
+
+def test_matrix_contract_ci_infra_subset_not_overridden() -> None:
+    sel = _run_selector(
+        ".github/workflows/ci.yml",
+        "scripts/ops/ci_test_selection_v1.py",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    )
+    assert sel["matrix_contract_mode"] == "MATRIX_UNMAPPED"
+    assert sel["test_selection_reason"] == "ci_infra_focused"
+    assert "tests/ci/test_workflows_no_pull_request_target_contract_v0.py" in _targets(sel)
 
 
 def test_matrix_contract_workflow_without_test_owner_full() -> None:

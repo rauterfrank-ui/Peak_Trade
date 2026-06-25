@@ -930,6 +930,13 @@ def resolve_matrix_contract_selection(files: list[str]) -> MatrixContractSelecti
             (),
         )
 
+    if not any(workflow in substantive for workflow in WORKFLOW_CONTRACT_FAST_LANE_OWNERS):
+        return MatrixContractSelection(
+            "MATRIX_UNMAPPED",
+            "matrix_contract_central_wiring_defer_to_ci_infra",
+            (),
+        )
+
     targets = _matrix_contract_rebundle_targets(substantive)
     if targets is None:
         return MatrixContractSelection(
