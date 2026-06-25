@@ -6,7 +6,7 @@ OWNER=Frank Rauter
 NON_AUTHORIZING=true
 SOURCE_DURABLE_SNAPSHOT=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/peak_trade_master_execution_runbook_v1_20260626T233500Z
 SOURCE_DURABLE_MANIFEST_VERIFY_RC=0
-origin_main: 6c1c4855241d3e0acf0af7f5448c0b24b30c9397
+origin_main: d435377d990eafd7962c30f79ea4041965c032d7
 ---
 
 # Peak_Trade Master Execution Runbook v1
@@ -40,15 +40,16 @@ Reifepipeline: Research → Offline Proof → Shadow → Paper → Testnet → s
 
 | Feld | Wert |
 |------|------|
-| PROGRAM_PHASE | TARGET_ARCHITECTURE_COMPLETE_OPERATOR_REVIEW |
-| CURRENT_MAJOR_PACKAGE | PACKAGE_A_NUMERICAL_TRUST_FOUNDATION (provisorisch) |
-| CURRENT_STATUS | OPERATOR_REVIEW_REQUIRED |
+| PROGRAM_PHASE | PACKAGE_A_FINAL_SELECTION_COMPLETE |
+| CURRENT_MAJOR_PACKAGE | PACKAGE_A_NUMERICAL_TRUST_FOUNDATION (**final ausgewählt**) |
+| CURRENT_STATUS | FINAL_SELECTION_COMPLETE_IMPLEMENTATION_GO_REQUIRED |
+| PACKAGE_A_FINAL_SELECTION_DECISION | PACKAGE_A_FINAL_SELECTED |
 | GO_GRANTED | false |
 | IMPLEMENTATION_STARTED | false |
 | CURRENT_RUN_ACTIVE | false |
-| NEXT_ALLOWED_ACTION | COMPLETE_OPERATOR_REVIEW_AND_FINAL_SELECTION_OF_PACKAGE_A_NUMERICAL_TRUST_FOUNDATION |
+| NEXT_ALLOWED_ACTION | PREPARE_SEPARATE_EXPLICIT_IMPLEMENTATION_GO_FOR_PACKAGE_A_SLICE_A1_NO_IMPLEMENTATION |
 
-Target Architecture ist im Masterplan abgeschlossen (`MANIFEST_VERIFY_RC=0`). Package A ist **provisorisch** — finales Operator-Review-Bundle fehlt.
+Target Architecture ist im Masterplan abgeschlossen (`MANIFEST_VERIFY_RC=0`). **Package A ist final ausgewählt** (Operator-Review `MANIFEST_VERIFY_RC=0`); **kein Implementierungs-GO** erteilt.
 
 ## 3. Capability Trains (12)
 
@@ -73,7 +74,7 @@ Target Architecture ist im Masterplan abgeschlossen (`MANIFEST_VERIFY_RC=0`). Pa
 
 | Package | Train | Status / Hinweis |
 |---------|-------|------------------|
-| PACKAGE_A_NUMERICAL_TRUST_FOUNDATION | TRAIN_1 | **ACTIVE PROVISIONAL** — OPERATOR_REVIEW_REQUIRED |
+| PACKAGE_A_NUMERICAL_TRUST_FOUNDATION | TRAIN_1 | **ACTIVE FINAL** — INV-021+048; Slice A1/A2 geplant; **kein GO** |
 | PACKAGE_B_RECONCILIATION_CANONICALIZATION | TRAIN_2 | Nach PACKAGE_A |
 | PACKAGE_C_DOUBLE_PLAY_DYNAMIC_SCOPE_AND_STATE | TRAIN_3 | MUST_HAVE — INV-045/046 |
 | PACKAGE_D_CAPITAL_SLOT_RATCHET | TRAIN_4 | Strategic core — INV-007 |
@@ -87,11 +88,15 @@ Target Architecture ist im Masterplan abgeschlossen (`MANIFEST_VERIFY_RC=0`). Pa
 
 Wave-Reihenfolge: 1=A → 2=B → 3=A ext (INV-003 GO) → 4=C → 5=D → 6=E,F → 7+=G,K
 
-### PACKAGE_A (provisorisch — nicht final)
+### PACKAGE_A (final ausgewählt — kein Implementierungs-GO)
 
-- **Scope wenn final:** INV-021 + INV-048 (contracts/PnL owner/P1-P2 only)
-- **Explizit ausgeschlossen:** INV-003 wiring, INV-005 testnet, Authority-Lift
-- **GO_GRANTED:** false | **IMPLEMENTATION_STARTED:** false
+- **Entscheidung:** `PACKAGE_A_FINAL_SELECTED` (Operator-Review Bundle `package_a_numerical_trust_foundation_final_operator_review_v0_20260625T230158Z`, `MANIFEST_VERIFY_RC=0`)
+- **Enthalten:** INV-021 (PnL-Owner-Design/Contract) + INV-048 (P1-3/P1-4/P1-5 Contract-Tests)
+- **Geplante sequenzielle Slices (noch nicht gestartet):**
+  - **A1:** INV-021 kanonisches PnL-Owner-Design und Contract-Formalisation
+  - **A2:** INV-048 P1-Arithmetik-Contract-Tests (flip, quantize, equity identity)
+- **Explizit ausgeschlossen:** INV-003 wiring, INV-005 testnet, Authority-Lift, Runtime
+- **GO_GRANTED:** false | **IMPLEMENTATION_STARTED:** false | **A1 nur Kandidat für separates explizites Implementierungs-GO**
 
 ## 5. State Machine (26 Zustände)
 
@@ -116,16 +121,14 @@ Handoff-Payloads: `NEW_CHAT_RESUME_PAYLOAD.md`, `CURSOR_RESUME_PAYLOAD.md` (Dura
 
 ## 8. Operator Checklist (aktuell)
 
-### Vor Operator-Review Package A
+### Nach finaler Package-A-Auswahl (aktuell)
 
-- [ ] Masterplan Bundle gelesen (`MANIFEST_VERIFY_RC=0`)
-- [ ] 12 Trains + 11 Packages verstanden
-- [ ] Dynamic Scope, Capital Ratchet, Bayesian parked bestätigt
-- [ ] Scope Package A: nur INV-021 + INV-048 (contracts)
-- [ ] INV-003 wiring, INV-005 testnet, Authority-Lift ausgeschlossen
-- [ ] Ops-Cockpit-Package-A (20260603) nicht verwechseln
-- [ ] Kein GO erteilen in Review-Chat
-- [ ] Durable Review-Bundle mit Operator-Entscheid planen
+- [x] Operator-Review abgeschlossen (`PACKAGE_A_FINAL_SELECTED`)
+- [x] Kanonischer Checkpoint aktualisiert (docs-only)
+- [ ] Docs-PR für Checkpoint-Update gemergt
+- [ ] Separates explizites Implementierungs-GO für Slice A1 (INV-021) — **noch nicht erteilt**
+- [ ] Slice A2 (INV-048) erst nach A1-Exit
+- [ ] INV-003 wiring, INV-005 testnet, Authority-Lift, Runtime weiterhin ausgeschlossen
 
 ## 9. Evidence Index
 
@@ -133,16 +136,18 @@ Handoff-Payloads: `NEW_CHAT_RESUME_PAYLOAD.md`, `CURSOR_RESUME_PAYLOAD.md` (Dura
 |--------|-------|
 | Masterplan `intent_preserving_target_architecture_capability_train_masterplan_v0_20260625T222345Z` | Target Architecture |
 | Inventory `six_month_prepared_partial_unactivated_work_inventory_v0_20260625T214514Z` | 48 Items |
-| PR-4563 Closeout | Letzter Merge-Nachweis |
+| PR-4563 Closeout | Arithmetic conversion implementation |
+| PR-4564 Closeout | Kanonischer Runbook-Owner in Repo |
+| Operator-Review `package_a_numerical_trust_foundation_final_operator_review_v0_20260625T230158Z` | Finale Package-A-Auswahl |
 | Runbook Durable Snapshot `peak_trade_master_execution_runbook_v1_20260626T233500Z` | Unveränderlicher Ursprung |
 
 ## 10. DO_NOT_DO (aktuell)
 
-- Implementierung, PR, CI, Run starten
+- Package-A-Slice A1/A2 Implementierung ohne explizites GO
 - GO erteilen oder inferieren
+- Runtime, Testnet, Paper, Shadow, Live starten
 - Primären dirty Worktree mutieren
 - INV-003 wiring / INV-005 testnet ohne separates GO
-- Provisorisches Package A als final behandeln
 - Parallele Runbook-/Checkpoint-SSOTs erzeugen
 
 ## 11. Upstream-Referenzen
