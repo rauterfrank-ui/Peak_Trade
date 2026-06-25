@@ -33,13 +33,19 @@ from src.ops.durable_completion_validation.graph import (
 )
 from src.ops.durable_completion_validation.models import ValidationContext
 from src.ops.durable_completion_validation.validators.event_stream import (
+    MasterV2StateEventStreamProofBinding,
+    MasterV2StateEventStreamValidationInput,
+    default_minimal_master_v2_state_event_proof_binding,
     evaluate_glb019_event_stream_validation,
+    evaluate_master_v2_state_event_stream_validation,
 )
 from trading.master_v2.offline_double_play_scenario_replay_v0 import (
     SYNTHETIC_FUTURES_INSTRUMENT,
     OfflineDoublePlayScenarioReplayInputV0,
     OfflineDoublePlayScenarioReplayResultV0,
     build_default_bull_bear_bull_scenario_ticks,
+    build_master_v2_state_event_stream_validation_input_from_replay,
+    compute_master_v2_replay_state_event_projection_digest,
     run_offline_double_play_scenario_replay_v0,
 )
 
@@ -47,6 +53,15 @@ OFFLINE_REPLAY_SIX_NODE_VALIDATION_GRAPH_BINDING_LAYER_VERSION = "v0"
 OFFLINE_REPLAY_SIX_NODE_VALIDATION_GRAPH_BINDING_OWNER = (
     "ops.offline_master_v2_replay_six_node_validation_graph_binding_v0"
 )
+OFFLINE_END_TO_END_REPLAY_PROOF_BINDING_LAYER_VERSION = (
+    OFFLINE_REPLAY_SIX_NODE_VALIDATION_GRAPH_BINDING_LAYER_VERSION
+)
+
+PROOF_CLASSIFICATION_FULL_E2E_BOUND = "FULL_E2E_BOUND"
+PROOF_CLASSIFICATION_REPLAY_FAIL_CLOSED = "REPLAY_FAIL_CLOSED"
+PROOF_CLASSIFICATION_PROJECTION_FAIL_CLOSED = "PROJECTION_FAIL_CLOSED"
+PROOF_CLASSIFICATION_INTEGRATION_FAIL_CLOSED = "INTEGRATION_FAIL_CLOSED"
+PROOF_CLASSIFICATION_GRAPH_FAIL_CLOSED = "GRAPH_FAIL_CLOSED"
 
 
 @dataclass(frozen=True)
@@ -54,6 +69,7 @@ class OfflineReplaySixNodeValidationGraphBindingResultV0:
     layer_version: str
     binding_pass: bool
     replay_pass: bool
+    projection_pass: bool
     integration_pass: bool
     six_node_graph_pass: bool
     completed_validators: tuple[str, ...]
@@ -63,21 +79,81 @@ class OfflineReplaySixNodeValidationGraphBindingResultV0:
     fills_total: int
     positions_opened_total: int
     dashboard_display_projection_digest: str | None = None
+    state_event_projection_digest: str | None = None
+    master_v2_state_event_stream_identity: str | None = None
+    evidence_chain_profile: str | None = None
+    proof_classification: str = PROOF_CLASSIFICATION_REPLAY_FAIL_CLOSED
+    event_stream_non_authorizing: bool = True
 
     def to_machine_lines(self) -> dict[str, str | bool | int]:
         return {
             "OFFLINE_REPLAY_SIX_NODE_VALIDATION_GRAPH_BINDING_PASS": self.binding_pass,
             "OFFLINE_REPLAY_SIX_NODE_VALIDATION_GRAPH_REPLAY_PASS": self.replay_pass,
+            "OFFLINE_END_TO_END_REPLAY_PROJECTION_PASS": self.projection_pass,
             "OFFLINE_REPLAY_SIX_NODE_VALIDATION_GRAPH_INTEGRATION_PASS": self.integration_pass,
             "OFFLINE_REPLAY_SIX_NODE_VALIDATION_GRAPH_SIX_NODE_GRAPH_PASS": (
                 self.six_node_graph_pass
             ),
+            "OFFLINE_END_TO_END_REPLAY_PROOF_CLASSIFICATION": self.proof_classification,
+            "OFFLINE_END_TO_END_EVENT_STREAM_NON_AUTHORIZING": self.event_stream_non_authorizing,
             "ORDERS_TOTAL": self.orders_total,
             "CANCELS_TOTAL": self.cancels_total,
             "FILLS_TOTAL": self.fills_total,
             "POSITIONS_OPENED_TOTAL": self.positions_opened_total,
             "DASHBOARD_DISPLAY_PROJECTION_DIGEST": self.dashboard_display_projection_digest or "",
+            "STATE_EVENT_PROJECTION_DIGEST": self.state_event_projection_digest or "",
+            "MASTER_V2_STATE_EVENT_STREAM_IDENTITY": self.master_v2_state_event_stream_identity
+            or "",
         }
+
+
+def build_replay_sourced_master_v2_state_event_stream_binding_from_replay_result(
+    replay_result: OfflineDoublePlayScenarioReplayResultV0,
+    *,
+    source_revision: str,
+    completion_identity_digest: str,
+    manifest_identity_digest: str,
+    run_identity_digest: str,
+    correlation_id: str,
+) -> tuple[
+    MasterV2StateEventStreamValidationInput | None,
+    MasterV2StateEventStreamProofBinding | None,
+    str | None,
+    tuple[str, ...],
+]:
+    """Project replay ticks into canonical Master-V2 state event stream proof surfaces."""
+    validation_input, build_failures = (
+        build_master_v2_state_event_stream_validation_input_from_replay(
+            replay_result=replay_result,
+            correlation_id=correlation_id,
+            completion_identity_digest=completion_identity_digest,
+            manifest_identity_digest=manifest_identity_digest,
+            run_identity_digest=run_identity_digest,
+            source_revision=source_revision,
+        )
+    )
+    if validation_input is None:
+        return None, None, None, build_failures
+
+    validation_result = evaluate_master_v2_state_event_stream_validation(validation_input)
+    if not validation_result.get("validation_pass"):
+        return (
+            validation_input,
+            None,
+            None,
+            tuple(build_failures) + tuple(validation_result.get("fail_reasons", ())),
+        )
+
+    proof_binding = default_minimal_master_v2_state_event_proof_binding(
+        validation_input,
+        validation_result,
+    )
+    projection_digest = compute_master_v2_replay_state_event_projection_digest(
+        events=validation_input.events,
+        evidence_chain_profile=validation_input.evidence_chain_profile,
+        correlation_id=correlation_id,
+    )
+    return validation_input, proof_binding, projection_digest, ()
 
 
 def build_completion_integration_input_from_offline_replay_result(
@@ -89,9 +165,29 @@ def build_completion_integration_input_from_offline_replay_result(
         raise ValueError("replay_result.master_v2_decision_state_digest_binding is required")
     base = default_minimal_completion_integration_input()
     binding_aligned = replace(binding, source_revision=base.source_revision)
+    glb019_input = base.glb019_event_stream_validation_input
+    (
+        master_v2_validation_input,
+        master_v2_proof,
+        _projection_digest,
+        projection_failures,
+    ) = build_replay_sourced_master_v2_state_event_stream_binding_from_replay_result(
+        replay_result,
+        source_revision=base.source_revision,
+        completion_identity_digest=glb019_input.completion_identity_digest,
+        manifest_identity_digest=glb019_input.manifest_identity_digest,
+        run_identity_digest=glb019_input.run_identity_digest,
+        correlation_id=glb019_input.correlation_id,
+    )
+    if master_v2_validation_input is None or master_v2_proof is None:
+        reasons = projection_failures or ("master_v2_state_event_stream_binding required",)
+        raise ValueError("; ".join(reasons))
+
     with_binding = replace(
         base,
         master_v2_decision_state_digest_binding=binding_aligned,
+        master_v2_state_event_stream_validation_input=master_v2_validation_input,
+        master_v2_state_event_stream_proof=master_v2_proof,
     )
     chain = default_minimal_completion_proof_chain(with_binding)
     return replace(with_binding, completion_proof_chain=chain)
@@ -184,13 +280,75 @@ def prove_offline_replay_six_node_validation_graph_binding_v0(
         fail_reasons.extend(replay_result.fail_reasons)
         return _binding_result(
             replay_result=replay_result,
+            projection_pass=False,
             integration_pass=False,
             six_node_graph_pass=False,
             completed_validators=(),
             fail_reasons=fail_reasons,
+            proof_classification=PROOF_CLASSIFICATION_REPLAY_FAIL_CLOSED,
         )
 
-    integration_input = build_completion_integration_input_from_offline_replay_result(replay_result)
+    base = default_minimal_completion_integration_input()
+    glb019_input = base.glb019_event_stream_validation_input
+    (
+        master_v2_validation_input,
+        master_v2_proof,
+        projection_digest,
+        projection_failures,
+    ) = build_replay_sourced_master_v2_state_event_stream_binding_from_replay_result(
+        replay_result,
+        source_revision=base.source_revision,
+        completion_identity_digest=glb019_input.completion_identity_digest,
+        manifest_identity_digest=glb019_input.manifest_identity_digest,
+        run_identity_digest=glb019_input.run_identity_digest,
+        correlation_id=glb019_input.correlation_id,
+    )
+    projection_pass = master_v2_validation_input is not None and master_v2_proof is not None
+    evidence_chain_profile = (
+        master_v2_validation_input.evidence_chain_profile if master_v2_validation_input else None
+    )
+    master_v2_state_event_stream_identity = None
+    event_stream_non_authorizing = True
+    if projection_failures:
+        fail_reasons.extend(projection_failures)
+    if not projection_pass:
+        return _binding_result(
+            replay_result=replay_result,
+            projection_pass=False,
+            integration_pass=False,
+            six_node_graph_pass=False,
+            completed_validators=(),
+            fail_reasons=fail_reasons,
+            proof_classification=PROOF_CLASSIFICATION_PROJECTION_FAIL_CLOSED,
+            evidence_chain_profile=evidence_chain_profile,
+            state_event_projection_digest=projection_digest,
+        )
+
+    assert master_v2_validation_input is not None
+    assert master_v2_proof is not None
+    master_v2_state_event_stream_identity = master_v2_proof.state_event_stream_identity
+    event_stream_non_authorizing = master_v2_proof.event_stream_non_authorizing
+
+    try:
+        integration_input = build_completion_integration_input_from_offline_replay_result(
+            replay_result
+        )
+    except ValueError as exc:
+        fail_reasons.append(str(exc))
+        return _binding_result(
+            replay_result=replay_result,
+            projection_pass=False,
+            integration_pass=False,
+            six_node_graph_pass=False,
+            completed_validators=(),
+            fail_reasons=fail_reasons,
+            proof_classification=PROOF_CLASSIFICATION_PROJECTION_FAIL_CLOSED,
+            evidence_chain_profile=evidence_chain_profile,
+            state_event_projection_digest=projection_digest,
+            master_v2_state_event_stream_identity=master_v2_state_event_stream_identity,
+            event_stream_non_authorizing=event_stream_non_authorizing,
+        )
+
     display_digest, display_digest_reasons = (
         verify_dashboard_display_projection_digest_six_node_evidence(
             replay_result,
@@ -221,34 +379,58 @@ def prove_offline_replay_six_node_validation_graph_binding_v0(
         six_node_graph_pass = False
 
     binding_pass = (
-        replay_result.replay_pass and integration_pass and six_node_graph_pass and not fail_reasons
+        replay_result.replay_pass
+        and projection_pass
+        and integration_pass
+        and six_node_graph_pass
+        and not fail_reasons
     )
+    proof_classification = PROOF_CLASSIFICATION_FULL_E2E_BOUND
+    if not binding_pass:
+        if not integration_pass:
+            proof_classification = PROOF_CLASSIFICATION_INTEGRATION_FAIL_CLOSED
+        elif not six_node_graph_pass:
+            proof_classification = PROOF_CLASSIFICATION_GRAPH_FAIL_CLOSED
+
     return _binding_result(
         replay_result=replay_result,
+        projection_pass=projection_pass,
         integration_pass=integration_pass,
         six_node_graph_pass=six_node_graph_pass,
         completed_validators=completed,
         fail_reasons=fail_reasons,
         binding_pass=binding_pass,
         dashboard_display_projection_digest=display_digest,
+        state_event_projection_digest=projection_digest,
+        master_v2_state_event_stream_identity=master_v2_state_event_stream_identity,
+        evidence_chain_profile=evidence_chain_profile,
+        proof_classification=proof_classification,
+        event_stream_non_authorizing=event_stream_non_authorizing,
     )
 
 
 def _binding_result(
     *,
     replay_result: OfflineDoublePlayScenarioReplayResultV0,
+    projection_pass: bool,
     integration_pass: bool,
     six_node_graph_pass: bool,
     completed_validators: tuple[str, ...],
     fail_reasons: list[str],
     binding_pass: bool | None = None,
     dashboard_display_projection_digest: str | None = None,
+    state_event_projection_digest: str | None = None,
+    master_v2_state_event_stream_identity: str | None = None,
+    evidence_chain_profile: str | None = None,
+    proof_classification: str = PROOF_CLASSIFICATION_REPLAY_FAIL_CLOSED,
+    event_stream_non_authorizing: bool = True,
 ) -> OfflineReplaySixNodeValidationGraphBindingResultV0:
     summary = replay_result.summary
     resolved_binding_pass = (
         binding_pass
         if binding_pass is not None
         else replay_result.replay_pass
+        and projection_pass
         and integration_pass
         and six_node_graph_pass
         and not fail_reasons
@@ -257,6 +439,7 @@ def _binding_result(
         layer_version=OFFLINE_REPLAY_SIX_NODE_VALIDATION_GRAPH_BINDING_LAYER_VERSION,
         binding_pass=resolved_binding_pass,
         replay_pass=replay_result.replay_pass,
+        projection_pass=projection_pass,
         integration_pass=integration_pass,
         six_node_graph_pass=six_node_graph_pass,
         completed_validators=completed_validators,
@@ -266,4 +449,9 @@ def _binding_result(
         fills_total=summary.fills_total,
         positions_opened_total=summary.positions_opened_total,
         dashboard_display_projection_digest=dashboard_display_projection_digest,
+        state_event_projection_digest=state_event_projection_digest,
+        master_v2_state_event_stream_identity=master_v2_state_event_stream_identity,
+        evidence_chain_profile=evidence_chain_profile,
+        proof_classification=proof_classification,
+        event_stream_non_authorizing=event_stream_non_authorizing,
     )
