@@ -682,7 +682,7 @@ def test_selector_glb019_a2b_full_nine_file_pr_explicit_git_diff_focused() -> No
     assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" in targets
     assert _GRAPH_OWNER in targets
     integration_nodes = [t for t in targets if t.startswith(f"{_INTEGRATION_OWNER}::test_")]
-    assert len(integration_nodes) == 45
+    assert len(integration_nodes) == 47
 
 
 def test_selector_glb019_a2b_live_collect_patch_contract_focused() -> None:
@@ -1409,7 +1409,7 @@ def test_integration_partition_inventory_covers_all_nodes() -> None:
     )
 
     nodes = collect_integration_owner_node_ids()
-    assert len(nodes) == 257
+    assert len(nodes) == 271
     inventory = integration_partition_inventory()
     assert set(inventory) <= set(ALL_PARTITIONS)
     covered = [node for part in inventory.values() for node in part]
