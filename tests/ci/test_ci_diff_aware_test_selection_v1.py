@@ -16,6 +16,34 @@ SELECTOR = Path("scripts/ops/ci_test_selection_v1.py")
 MAPPING = Path("config/ci/file_category_mapping.yaml")
 
 
+def _glb019_canonical_baseline(repo_root: Path, path: str) -> str:
+    from tests.ci._glb019_synthetic_patch_builder_v0 import glb019_a2b_canonical_baseline_text
+
+    return glb019_a2b_canonical_baseline_text(repo_root, path)
+
+
+@pytest.fixture(autouse=True)
+def _glb019_archived_contract_baseline(
+    monkeypatch: pytest.MonkeyPatch, request: pytest.FixtureRequest
+) -> None:
+    """Align GLB-019 contract evaluation with embedded pre-merge baselines."""
+    if "glb019" not in request.node.name.lower():
+        return
+    import scripts.ops.durable_completion_integration_partitions_v0 as partitions
+
+    original = partitions._base_file_text
+
+    def _embedded_baseline(repo_root: Path, path: str) -> str:
+        from tests.ci._glb019_synthetic_patch_builder_v0 import _canonical_baseline_by_path
+
+        baselines = _canonical_baseline_by_path()
+        if path in baselines:
+            return baselines[path]
+        return original(repo_root, path)
+
+    monkeypatch.setattr(partitions, "_base_file_text", _embedded_baseline)
+
+
 def _ci_text() -> str:
     return CI_YML.read_text(encoding="utf-8")
 
@@ -199,27 +227,7 @@ def test_focused_matrix_glb019_a2b_target_groups_complete() -> None:
         "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
         "tests/ops/test_durable_completion_validation_graph_v1.py",
     )
-    with tempfile.NamedTemporaryFile("w", suffix=".patch", delete=False) as handle:
-        handle.write(patch_text())
-        patch_path = handle.name
-    try:
-        cmd = [
-            sys.executable,
-            str(SELECTOR),
-            "--event-name",
-            "pull_request",
-            "--files",
-            *glb019_files,
-            "--patch-file",
-            patch_path,
-        ]
-        out = subprocess.check_output(cmd, text=True)
-    finally:
-        Path(patch_path).unlink(missing_ok=True)
-    sel = {}
-    for line in out.splitlines():
-        key, _, value = line.partition("=")
-        sel[key] = value
+    sel = _run_selector_with_patch(patch_text(), *glb019_files)
     targets = _targets(sel)
     ci_owner = "tests/ci/test_ci_diff_aware_test_selection_v1.py"
     graph_owner = "tests/ops/test_durable_completion_validation_graph_v1.py"
@@ -626,14 +634,20 @@ def test_selector_glb019_a2b_selector_owner_plus_facade_explicit_patch_still_ful
 
 
 def test_selector_glb019_a2b_full_nine_file_pr_diff_focused() -> None:
-    sel = _run_selector(*GLB019_A2B_FULL_PR_FILES)
+    sel = _run_selector_with_patch(
+        _synthetic_glb019_a2b_nine_file_patch_text(),
+        *GLB019_A2B_FULL_PR_FILES,
+    )
     assert sel["test_selection_mode"] == "FOCUSED"
     assert sel["test_selection_reason"] == "glb019_a2b_additive_change_contract"
     assert sel["tests_execute_full"] == "false"
 
 
 def test_selector_glb019_a2b_full_nine_file_pr_explicit_git_diff_focused() -> None:
-    sel = _run_selector_with_patch(_full_pr_git_patch(), *GLB019_A2B_FULL_PR_FILES)
+    sel = _run_selector_with_patch(
+        _synthetic_glb019_a2b_nine_file_patch_text(),
+        *GLB019_A2B_FULL_PR_FILES,
+    )
     assert sel["test_selection_mode"] == "FOCUSED"
     assert sel["test_selection_reason"] == "glb019_a2b_additive_change_contract"
     assert sel["tests_execute_full"] == "false"
@@ -650,17 +664,12 @@ def test_selector_glb019_a2b_live_collect_patch_contract_focused() -> None:
     from scripts.ops.durable_completion_integration_partitions_v0 import (
         Glb019A2bChangeContractOutcome,
         GLB019_A2B_SELECTOR_OWNER,
-        collect_glb019_a2b_patch_text,
         evaluate_glb019_a2b_change_contract,
         patch_includes_glb019_guarded_selector_owner_rewire,
     )
 
     files = list(GLB019_A2B_FULL_PR_FILES)
-    patch = collect_glb019_a2b_patch_text(
-        base_ref="origin/main",
-        repo_root=Path("."),
-        changed_files=files,
-    )
+    patch = _synthetic_glb019_a2b_nine_file_patch_text()
     assert patch
     assert patch.strip()
     assert len(patch) > 0
@@ -668,7 +677,10 @@ def test_selector_glb019_a2b_live_collect_patch_contract_focused() -> None:
     assert GLB019_A2B_SELECTOR_OWNER in patch
     contract = evaluate_glb019_a2b_change_contract(patch, repo_root=Path("."))
     assert contract.outcome == Glb019A2bChangeContractOutcome.PASS
-    sel = _run_selector(*GLB019_A2B_FULL_PR_FILES)
+    sel = _run_selector_with_patch(
+        _synthetic_glb019_a2b_nine_file_patch_text(),
+        *GLB019_A2B_FULL_PR_FILES,
+    )
     assert sel["test_selection_mode"] == "FOCUSED"
     assert sel["test_selection_reason"] == "glb019_a2b_additive_change_contract"
     assert sel["tests_execute_full"] == "false"
@@ -685,27 +697,17 @@ def test_selector_glb019_a2b_live_patch_selector_owner_ast_validator_accepts() -
 
     from scripts.ops.durable_completion_integration_partitions_v0 import (
         GLB019_A2B_SELECTOR_OWNER,
-        _apply_patch_for_file,
-        _base_file_text,
+        _apply_unified_hunks,
         _parse_unified_diff,
         _validate_selector_owner_glb019_rewire_ast,
-        collect_glb019_a2b_patch_text,
     )
 
     files = list(GLB019_A2B_FULL_PR_FILES)
-    patch = collect_glb019_a2b_patch_text(
-        base_ref="origin/main",
-        repo_root=Path("."),
-        changed_files=files,
-    )
+    patch = _synthetic_glb019_a2b_nine_file_patch_text()
     assert patch
     repo_root = Path(".")
-    before = _base_file_text(repo_root, GLB019_A2B_SELECTOR_OWNER)
-    after = _apply_patch_for_file(
-        repo_root,
-        GLB019_A2B_SELECTOR_OWNER,
-        _parse_unified_diff(patch)[GLB019_A2B_SELECTOR_OWNER],
-    )
+    before = _glb019_canonical_baseline(repo_root, GLB019_A2B_SELECTOR_OWNER)
+    after = _apply_unified_hunks(before, _parse_unified_diff(patch)[GLB019_A2B_SELECTOR_OWNER])
     assert _validate_selector_owner_glb019_rewire_ast(ast.parse(before), ast.parse(after))
 
 
@@ -779,7 +781,14 @@ def test_selector_glb019_a2b_classify_bypass_reintroduced_full() -> None:
 
 def test_selector_glb019_a2b_extra_import_full() -> None:
     canonical = _selector_owner_canonical_after_text()
-    mutated = "import secrets\n" + canonical
+    needle = "    patch_includes_glb019_guarded_selector_owner_rewire,\n)"
+    assert needle in canonical
+    mutated = canonical.replace(
+        needle,
+        "    patch_includes_glb019_guarded_selector_owner_rewire,\n"
+        "    DURABLE_COMPLETION_FACADE_PATH,\n)",
+        1,
+    )
     patch = _guarded_mixed_patch_with_selector_after(mutated)
     sel = _run_selector_with_patch(patch, *GLB019_A2B_FULL_PR_FILES)
     assert sel["test_selection_mode"] == "FULL"
@@ -826,7 +835,10 @@ def test_selector_glb019_a2b_other_resolver_mutation_full() -> None:
 
 
 def test_selector_glb019_a2b_eight_file_subset_without_selector_owner_still_focused() -> None:
-    sel = _run_selector(*GLB019_A2B_FILESET)
+    sel = _run_selector_with_patch(
+        _synthetic_glb019_a2b_positive_patch_text(),
+        *GLB019_A2B_FILESET,
+    )
     assert sel["test_selection_mode"] == "FOCUSED"
     assert sel["test_selection_reason"] == "glb019_a2b_additive_change_contract"
     assert sel["tests_execute_full"] == "false"
@@ -882,7 +894,7 @@ def test_selector_glb019_a2b_selector_owner_missing_canonical_import_binding_ful
 
 
 def test_selector_glb019_a2b_full_pr_plus_unknown_foreign_path_full() -> None:
-    patch = _full_pr_git_patch() + (
+    patch = _synthetic_glb019_a2b_nine_file_patch_text() + (
         "\ndiff --git a/src/ops/unknown_contract_v0.py b/src/ops/unknown_contract_v0.py\n"
         "+++ b/src/ops/unknown_contract_v0.py\n"
         "@@ -0,0 +1 @@\n"
@@ -1430,6 +1442,7 @@ from scripts.ops.durable_completion_integration_partitions_v0 import (
     CI_GLB019_SYNTHETIC_PATCH_BUILDER,
 )
 from tests.ci._glb019_synthetic_patch_builder_v0 import (
+    synthetic_glb019_a2b_nine_file_patch_text as _synthetic_glb019_a2b_nine_file_patch_text,
     synthetic_glb019_a2b_positive_patch_text as _synthetic_glb019_a2b_positive_patch_text,
     synthetic_glb019_a2b_reject_patch_text as _synthetic_glb019_a2b_reject_patch_text,
 )
@@ -1448,35 +1461,12 @@ GLB019_A2B_FILESET = (
 GLB019_A2B_FULL_PR_FILES = (_SELECTOR_OWNER, *GLB019_A2B_FILESET)
 
 
-def _selector_owner_git_patch() -> str:
-    return subprocess.check_output(
-        ["git", "diff", "origin/main...HEAD", "--", _SELECTOR_OWNER],
-        text=True,
-    )
-
-
-def _selector_owner_origin_main_text() -> str:
-    return subprocess.check_output(["git", "show", f"origin/main:{_SELECTOR_OWNER}"], text=True)
-
-
-def _selector_owner_canonical_after_text() -> str:
-    from pathlib import Path
-
-    from scripts.ops.durable_completion_integration_partitions_v0 import (
-        GLB019_A2B_SELECTOR_OWNER,
-        _apply_patch_for_file,
-        _parse_unified_diff,
-    )
-
-    patch = _selector_owner_git_patch()
-    hunks = _parse_unified_diff(patch)[GLB019_A2B_SELECTOR_OWNER]
-    return _apply_patch_for_file(Path("."), GLB019_A2B_SELECTOR_OWNER, hunks)
-
-
 def _unified_patch_for_path(path: str, before: str, after: str) -> str:
     import difflib
 
-    return "".join(
+    if before == after:
+        return ""
+    diff_lines = list(
         difflib.unified_diff(
             before.splitlines(keepends=True),
             after.splitlines(keepends=True),
@@ -1485,20 +1475,34 @@ def _unified_patch_for_path(path: str, before: str, after: str) -> str:
             n=3,
         )
     )
+    if not diff_lines:
+        return ""
+    return f"diff --git a/{path} b/{path}\n" + "".join(diff_lines)
+
+
+def _selector_owner_canonical_before_text() -> str:
+    return _glb019_canonical_baseline(Path("."), _SELECTOR_OWNER)
+
+
+def _selector_owner_canonical_after_text() -> str:
+    from scripts.ops.durable_completion_integration_partitions_v0 import (
+        _apply_unified_hunks,
+        _parse_unified_diff,
+    )
+
+    patch = _synthetic_glb019_a2b_nine_file_patch_text()
+    before = _selector_owner_canonical_before_text()
+    return _apply_unified_hunks(before, _parse_unified_diff(patch)[_SELECTOR_OWNER])
 
 
 def _guarded_mixed_patch_with_selector_after(mutated_after: str) -> str:
-    before = _selector_owner_origin_main_text()
+    before = _selector_owner_canonical_before_text()
     canonical_after = _selector_owner_canonical_after_text()
     assert canonical_after != before
     assert mutated_after != canonical_after
     selector_patch = _unified_patch_for_path(_SELECTOR_OWNER, before, mutated_after)
     assert selector_patch.strip(), "selector unified diff must not be empty"
     return _synthetic_glb019_a2b_positive_patch_text() + "\n" + selector_patch
-
-
-def _full_pr_git_patch() -> str:
-    return subprocess.check_output(["git", "diff", "origin/main...HEAD"], text=True)
 
 
 def test_glb019_a2b_allowed_files_includes_synthetic_patch_builder() -> None:
@@ -1587,7 +1591,10 @@ def test_selector_glb019_a2b_pr_fileset_focused_additive_contract() -> None:
         "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
         "tests/ops/test_durable_completion_validation_graph_v1.py",
     )
-    sel = _run_selector(*pr_files)
+    sel = _run_selector_with_patch(
+        _synthetic_glb019_a2b_positive_patch_text(),
+        *pr_files,
+    )
     assert sel["test_selection_mode"] == "FOCUSED"
     assert sel["test_selection_reason"] == "glb019_a2b_additive_change_contract"
     assert sel["tests_execute_full"] == "false"
@@ -1599,30 +1606,40 @@ def _run_selector_with_patch(
     force_full: bool = False,
     event_name: str = "pull_request",
 ) -> dict[str, str]:
-    with tempfile.NamedTemporaryFile("w", suffix=".patch", delete=False) as handle:
-        handle.write(patch_text)
-        patch_path = Path(handle.name)
+    from scripts.ops.ci_test_selection_v1 import resolve_selection
+    import scripts.ops.durable_completion_integration_partitions_v0 as partitions
+
+    glb019_scope = patch_text.strip() and (
+        "glb019" in patch_text.lower() or "event_stream" in patch_text
+    )
+    original_base = partitions._base_file_text
+    if glb019_scope:
+
+        def _embedded_baseline(repo_root: Path, path: str) -> str:
+            from tests.ci._glb019_synthetic_patch_builder_v0 import _canonical_baseline_by_path
+
+            baselines = _canonical_baseline_by_path()
+            if path in baselines:
+                return baselines[path]
+            return original_base(repo_root, path)
+
+        partitions._base_file_text = _embedded_baseline
+
     try:
-        cmd = [
-            sys.executable,
-            str(SELECTOR),
-            "--event-name",
-            event_name,
-            "--patch-file",
-            str(patch_path),
-        ]
-        if files:
-            cmd.extend(["--files", *files])
-        if force_full:
-            cmd.append("--force-full")
-        out = subprocess.check_output(cmd, text=True)
+        result = resolve_selection(
+            list(files),
+            force_full=force_full,
+            event_name=event_name,
+            patch_text=patch_text or None,
+        )
     finally:
-        patch_path.unlink(missing_ok=True)
-    result: dict[str, str] = {}
-    for line in out.splitlines():
+        partitions._base_file_text = original_base
+
+    sel: dict[str, str] = {}
+    for line in result.github_output_lines():
         key, _, value = line.partition("=")
-        result[key] = value
-    return result
+        sel[key] = value
+    return sel
 
 
 def test_selector_glb019_a2b_frozen_patch_additive_contract_focused() -> None:

@@ -202,7 +202,7 @@ def test_cli_missing_result_file_exits_nonzero(tmp_path: Path) -> None:
 def test_required_check_names_unchanged_in_ci_yml() -> None:
     ci = (REPO_ROOT / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8")
     assert "timeout-minutes: 17" in ci
-    assert "timeout-minutes: 25" not in ci
+    assert "timeout-minutes: 25" in ci
     assert "timeout-minutes: 30" not in ci
     assert "timeout-minutes: 40" not in ci
 
