@@ -3543,6 +3543,69 @@ def test_selector_duplicate_pnl_owner_boundary_contract_foreign_path_escalates_f
     )
 
 
+RECONCILIATION_DECIMAL_FLOAT_OWNER_BOUNDARY_CONTRACT_TEST_OWNER = (
+    "tests/ops/test_reconciliation_decimal_float_owner_boundary_contract_v0.py"
+)
+
+
+def test_selector_reconciliation_decimal_float_owner_boundary_contract_test_only_focused() -> None:
+    sel = _run_selector(RECONCILIATION_DECIMAL_FLOAT_OWNER_BOUNDARY_CONTRACT_TEST_OWNER)
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
+    assert (
+        sel["test_selection_reason"]
+        == "reconciliation_decimal_float_owner_boundary_contract_focused"
+    )
+    assert sel["tests_execute_full"] == "false"
+    assert sel["tests_execute_focused"] == "true"
+    assert sel["tests_execute_no_op"] == "false"
+    targets = _targets(sel)
+    assert len([t for t in targets if "::test_" in t]) == 7
+    assert (
+        f"{RECONCILIATION_DECIMAL_FLOAT_OWNER_BOUNDARY_CONTRACT_TEST_OWNER}::test_exactly_one_execution_decimal_reconciliation_candidate"
+        in targets
+    )
+    assert (
+        f"{RECONCILIATION_DECIMAL_FLOAT_OWNER_BOUNDARY_CONTRACT_TEST_OWNER}::test_contract_defines_no_reconciliation_formulas_and_is_non_authorizing"
+        in targets
+    )
+    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" not in targets
+
+
+def test_selector_reconciliation_decimal_float_owner_boundary_contract_selector_rebundle_focused() -> (
+    None
+):
+    sel = _run_selector(
+        RECONCILIATION_DECIMAL_FLOAT_OWNER_BOUNDARY_CONTRACT_TEST_OWNER,
+        "scripts/ops/ci_test_selection_v1.py",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    )
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
+    assert (
+        sel["test_selection_reason"]
+        == "reconciliation_decimal_float_owner_boundary_contract_focused"
+    )
+    targets = _targets(sel)
+    assert len([t for t in targets if "::test_" in t]) == 9
+    assert (
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py::test_selector_reconciliation_decimal_float_owner_boundary_contract_test_only_focused"
+        in targets
+    )
+
+
+def test_selector_reconciliation_decimal_float_owner_boundary_contract_foreign_path_escalates_full() -> (
+    None
+):
+    sel = _run_selector(
+        RECONCILIATION_DECIMAL_FLOAT_OWNER_BOUNDARY_CONTRACT_TEST_OWNER,
+        "src/execution/reconciliation.py",
+    )
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    assert (
+        sel["test_selection_reason"]
+        == "reconciliation_decimal_float_owner_boundary_contract_foreign_path_requires_full"
+    )
+
+
 def test_selector_testnet_wallclock_duration_evidence_owner_pair_focused() -> None:
     sel = _run_selector(*TESTNET_WALLCLOCK_DURATION_EVIDENCE_FILES)
     assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
