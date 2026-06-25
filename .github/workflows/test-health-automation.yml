@@ -50,8 +50,15 @@ on:
         required: false
         default: false
         type: boolean
+      run_exhaustive_full:
+        description: 'Run EXHAUSTIVE_FULL pytest suite (all Python versions; explicit opt-in)'
+        required: false
+        default: false
+        type: boolean
 
-  # Scheduled cron removed (cost minimization); manual dispatch only.
+# Scheduled cron removed (cost minimization); EXHAUSTIVE_FULL nightly re-enabled below.
+  schedule:
+    - cron: '0 3 * * *'
 
 # ============================================================================
 # Environment: Offline/Test-Modus sicherstellen
@@ -456,3 +463,43 @@ jobs:
           path: reports/test_health/
           retention-days: 90
           if-no-files-found: warn
+
+  # ===========================================================================
+  # EXHAUSTIVE_FULL — nightly / explicit manual exhaustive suite (not a PR gate)
+  # ===========================================================================
+  exhaustive-full:
+    name: exhaustive-full (${{ matrix.python-version }})
+    runs-on: ubuntu-latest
+    if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.run_exhaustive_full == 'true')
+    strategy:
+      fail-fast: false
+      matrix:
+        python-version: ['3.9', '3.10', '3.11']
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v5
+
+      - name: Set up Python ${{ matrix.python-version }}
+        uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          pip install pytest pytest-cov
+
+      - name: Verify shard inventory (3.11 coordinator)
+        if: matrix.python-version == '3.11'
+        run: python3 scripts/ops/ci_full_suite_shard_v1.py --verify-completeness
+
+      - name: Run EXHAUSTIVE_FULL test suite
+        run: |
+          pytest tests/ -v --tb=short -m "not network and not external_tools"
+
+      - name: Run EXHAUSTIVE_FULL coverage (3.11 only)
+        if: matrix.python-version == '3.11'
+        run: |
+          pytest tests/ --cov=src --cov-report=xml --cov-report=term-missing -m "not network and not external_tools"

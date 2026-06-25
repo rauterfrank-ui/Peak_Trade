@@ -128,7 +128,12 @@ def test_changes_job_exports_test_selection_outputs() -> None:
         "test_selection_mode",
         "test_selection_reason",
         "tests_execute_full",
+        "tests_execute_contract_focused",
         "tests_execute_focused",
+        "tests_execute_pr_bounded_full",
+        "tests_execute_exhaustive_full",
+        "tests_execute_invalid",
+        "pr_bounded_pytest_targets",
         "tests_execute_no_op",
         "focused_pytest_targets",
         "focused_module_imports",
@@ -152,9 +157,10 @@ def test_tests_job_has_no_op_step() -> None:
 
 def test_tests_job_has_focused_and_full_steps() -> None:
     text = _ci_text()
-    assert "Run full test suite" in text
+    assert "Run EXHAUSTIVE_FULL test suite" in text
     assert "Run focused tests (matrix)" in text
-    assert "Run tests with coverage (FULL only)" in text
+    assert "Run tests with coverage (EXHAUSTIVE_FULL only)" in text
+    assert "Run PR_BOUNDED_FULL tests (matrix)" in text
 
 
 def test_tests_job_focused_runs_on_all_matrix_versions() -> None:
@@ -166,7 +172,7 @@ def test_tests_job_focused_runs_on_all_matrix_versions() -> None:
         "matrix_contract_mode != 'MATRIX_CONTRACT_FOCUSED' || matrix.python-version == '3.11'"
         in focused_step
     )
-    assert "tests_execute_focused == 'true'" in focused_step
+    assert "tests_execute_contract_focused == 'true'" in focused_step
 
 
 def test_tests_job_matrix_contract_focused_non_canonical_version_ack_step() -> None:
@@ -181,7 +187,7 @@ def test_tests_job_matrix_contract_focused_non_canonical_version_ack_step() -> N
 def test_tests_job_full_suite_excludes_matrix_contract_focused() -> None:
     full_block = (
         _ci_text()
-        .split("name: Run full test suite", 1)[1]
+        .split("name: Run EXHAUSTIVE_FULL test suite", 1)[1]
         .split("name: Run focused tests (matrix)", 1)[0]
     )
     assert "matrix_contract_mode != 'MATRIX_CONTRACT_FOCUSED'" in full_block
@@ -207,7 +213,7 @@ def test_tests_job_focused_matrix_integration_parallel_sharding_contract() -> No
 
 def test_tests_job_focused_matrix_parallel_sharding_does_not_affect_full_suite_step() -> None:
     text = _ci_text()
-    full_block = text.split("name: Run full test suite", 1)[1].split(
+    full_block = text.split("name: Run EXHAUSTIVE_FULL test suite", 1)[1].split(
         "name: Run focused tests (matrix)", 1
     )[0]
     assert "INTEGRATION_SHARD_COUNT" not in full_block
@@ -259,7 +265,7 @@ def test_focused_matrix_glb019_a2b_target_groups_complete() -> None:
     ci_owner = "tests/ci/test_ci_diff_aware_test_selection_v1.py"
     graph_owner = "tests/ops/test_durable_completion_validation_graph_v1.py"
     integration_nodes = sorted(t for t in targets if "::" in t)
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "glb019_a2b_additive_change_contract"
     assert ci_owner in targets
     assert graph_owner in targets
@@ -278,7 +284,7 @@ def test_selector_ci_workflow_shard_bootstrap_focused() -> None:
         ".github/workflows/ci.yml",
         "tests/ci/test_ci_diff_aware_test_selection_v1.py",
     )
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "ci_infra_focused"
     assert sel["tests_execute_full"] == "false"
     assert sel["tests_execute_focused"] == "true"
@@ -297,8 +303,9 @@ def test_selector_workflow_only_no_op() -> None:
 
 def test_selector_central_src_full() -> None:
     sel = _run_selector("src/strategies/__init__.py")
-    assert sel["test_selection_mode"] == "FULL"
-    assert sel["tests_execute_full"] == "true"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    assert sel["tests_execute_pr_bounded_full"] == "true"
+    assert sel["tests_execute_full"] == "false"
 
 
 def test_selector_registry_init_full() -> None:
@@ -306,7 +313,7 @@ def test_selector_registry_init_full() -> None:
         "src/strategies/__init__.py",
         "tests/test_strategy_vol_regime_filter.py",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
 
 
 def test_selector_composite_full() -> None:
@@ -314,22 +321,22 @@ def test_selector_composite_full() -> None:
         "src/strategies/composite.py",
         "tests/test_strategy_composite.py",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
 
 
 def test_selector_dependencies_full() -> None:
     sel = _run_selector("requirements.txt")
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
 
 
 def test_selector_global_test_infra_full() -> None:
     sel = _run_selector("tests/conftest.py")
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
 
 
 def test_selector_scripts_focused() -> None:
     sel = _run_selector("scripts/demo_strategy_research.py")
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert (
         "tests/scripts/test_demo_strategy_research_load_strategy_v1.py"
         in sel["focused_pytest_targets"]
@@ -342,7 +349,7 @@ def test_selector_scripts_focused_omits_nonexistent_test_paths() -> None:
         "scripts/run_momentum_realistic.py",
         "scripts/run_offline_realtime_ma_crossover.py",
     )
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     targets = _targets(sel)
     assert "tests/scripts/test_run_momentum_realistic_load_strategy_v1.py" in targets
     assert "tests/scripts/test_run_offline_realtime_ma_crossover_load_strategy_v1.py" in targets
@@ -355,7 +362,7 @@ def test_selector_strategy_vol_breakout_owner_focused() -> None:
         "src/strategies/vol_breakout.py",
         "tests/test_strategies_phase27.py",
     )
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "strategy_regime_owner_focused"
     assert "tests/test_strategies_phase27.py" in _targets(sel)
     assert _modules(sel) == ["src.strategies.vol_breakout"]
@@ -366,7 +373,7 @@ def test_selector_strategy_vol_regime_filter_owner_focused() -> None:
         "src/strategies/vol_regime_filter.py",
         "tests/test_strategy_vol_regime_filter.py",
     )
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert "tests/test_strategy_vol_regime_filter.py" in _targets(sel)
     assert _modules(sel) == ["src.strategies.vol_regime_filter"]
 
@@ -376,7 +383,7 @@ def test_selector_regime_detectors_owner_focused() -> None:
         "src/regime/detectors.py",
         "tests/test_regime_detection.py",
     )
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert "tests/test_regime_detection.py" in _targets(sel)
     assert _modules(sel) == ["src.regime.detectors"]
 
@@ -386,7 +393,7 @@ def test_selector_el_karoui_vol_model_owner_focused() -> None:
         "src/strategies/el_karoui/vol_model.py",
         "tests/strategies/el_karoui/test_vol_model.py",
     )
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert "tests/strategies/el_karoui/test_vol_model.py" in _targets(sel)
     assert _modules(sel) == ["src.strategies.el_karoui.vol_model"]
 
@@ -410,7 +417,7 @@ def test_selector_focused_targets_sorted_deterministically() -> None:
 
 def test_selector_prod_only_without_test_owner_full() -> None:
     sel = _run_selector("src/strategies/vol_breakout.py")
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert sel["test_selection_reason"] == "strategy_regime_owner_incomplete_or_ambiguous"
 
 
@@ -420,7 +427,7 @@ def test_selector_two_prod_files_full() -> None:
         "src/strategies/vol_regime_filter.py",
         "tests/test_strategies_phase27.py",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
 
 
 def test_selector_strategy_plus_foreign_test_owner_full() -> None:
@@ -428,7 +435,7 @@ def test_selector_strategy_plus_foreign_test_owner_full() -> None:
         "src/strategies/vol_breakout.py",
         "tests/test_strategy_vol_regime_filter.py",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
 
 
 def test_selector_strategy_plus_conftest_full() -> None:
@@ -437,7 +444,7 @@ def test_selector_strategy_plus_conftest_full() -> None:
         "tests/test_strategies_phase27.py",
         "tests/conftest.py",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
 
 
 def test_selector_strategy_plus_dependency_full() -> None:
@@ -446,7 +453,7 @@ def test_selector_strategy_plus_dependency_full() -> None:
         "tests/test_strategies_phase27.py",
         "requirements.txt",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
 
 
 def test_selector_strategy_plus_pyproject_full() -> None:
@@ -455,7 +462,7 @@ def test_selector_strategy_plus_pyproject_full() -> None:
         "tests/test_strategies_phase27.py",
         "pyproject.toml",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
 
 
 def test_selector_strategy_plus_workflow_full() -> None:
@@ -464,12 +471,12 @@ def test_selector_strategy_plus_workflow_full() -> None:
         "tests/test_strategies_phase27.py",
         ".github/workflows/lint.yml",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
 
 
 def test_selector_ci_bootstrap_selector_only_focused() -> None:
     sel = _run_selector("scripts/ops/ci_test_selection_v1.py")
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "ci_bootstrap_focused"
     assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" in _targets(sel)
     assert sel["tests_execute_full"] == "false"
@@ -480,7 +487,7 @@ def test_selector_ci_bootstrap_selector_plus_contract_focused() -> None:
         "scripts/ops/ci_test_selection_v1.py",
         "tests/ci/test_ci_diff_aware_test_selection_v1.py",
     )
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "ci_bootstrap_focused"
     assert _targets(sel) == ["tests/ci/test_ci_diff_aware_test_selection_v1.py"]
     assert sel["tests_execute_full"] == "false"
@@ -491,7 +498,7 @@ def test_selector_ci_bootstrap_plus_workflow_full() -> None:
         "scripts/ops/ci_test_selection_v1.py",
         ".github/workflows/ci.yml",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert sel["test_selection_reason"] == "ci_bootstrap_mixed_diff_requires_full"
 
 
@@ -500,7 +507,7 @@ def test_selector_ci_bootstrap_plus_dependency_full() -> None:
         "scripts/ops/ci_test_selection_v1.py",
         "requirements.txt",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert sel["test_selection_reason"] == "ci_bootstrap_mixed_diff_requires_full"
 
 
@@ -509,7 +516,7 @@ def test_selector_ci_bootstrap_plus_central_src_full() -> None:
         "scripts/ops/ci_test_selection_v1.py",
         "src/core/foo.py",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert sel["test_selection_reason"] == "ci_bootstrap_mixed_diff_requires_full"
 
 
@@ -518,13 +525,13 @@ def test_selector_ci_bootstrap_plus_unknown_full() -> None:
         "scripts/ops/ci_test_selection_v1.py",
         "misc/unclassified.bin",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert sel["test_selection_reason"] == "ci_bootstrap_mixed_diff_requires_full"
 
 
 def test_selector_ci_bootstrap_contract_test_only_focused() -> None:
     sel = _run_selector("tests/ci/test_ci_diff_aware_test_selection_v1.py")
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "ci_bootstrap_focused"
 
 
@@ -538,7 +545,7 @@ GLB019_CI_BOOTSTRAP_PR_FILES = (
 
 def test_selector_glb019_ci_bootstrap_pr_four_file_diff_focused() -> None:
     sel = _run_selector(*GLB019_CI_BOOTSTRAP_PR_FILES)
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "ci_bootstrap_focused"
     assert _targets(sel) == ["tests/ci/test_ci_diff_aware_test_selection_v1.py"]
     assert sel["tests_execute_full"] == "false"
@@ -546,20 +553,15 @@ def test_selector_glb019_ci_bootstrap_pr_four_file_diff_focused() -> None:
 
 def test_selector_glb019_ci_bootstrap_pr_four_files_plus_unknown_ci_helper_full() -> None:
     sel = _run_selector(*GLB019_CI_BOOTSTRAP_PR_FILES, "tests/ci/test_unknown_helper_v0.py")
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert sel["test_selection_reason"] == "ci_bootstrap_mixed_diff_requires_full"
 
 
 def test_selector_glb019_ci_bootstrap_pr_four_files_plus_workflow_ci_infra_focused() -> None:
     sel = _run_selector(*GLB019_CI_BOOTSTRAP_PR_FILES, ".github/workflows/ci.yml")
-    assert sel["test_selection_mode"] == "FOCUSED"
-    assert sel["test_selection_reason"] == "ci_infra_focused"
-    assert sel["tests_execute_full"] == "false"
-    assert sel["tests_execute_focused"] == "true"
-    targets = _targets(sel)
-    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" in targets
-    assert "tests/ci/test_workflows_no_pull_request_target_contract_v0.py" in targets
-    assert "tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py" in targets
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    assert sel["test_selection_reason"] == "selector_self_change_bootstrap"
+    assert sel["tests_execute_pr_bounded_full"] == "true"
 
 
 GLB019_PARTITION_SELECTOR_BOOTSTRAP_FILES = (
@@ -572,7 +574,7 @@ _PARTITIONS_HELPER = GLB019_PARTITION_SELECTOR_BOOTSTRAP_FILES[1]
 
 def test_selector_glb019_partition_bootstrap_three_file_diff_focused() -> None:
     sel = _run_selector(*GLB019_PARTITION_SELECTOR_BOOTSTRAP_FILES)
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "ci_bootstrap_focused"
     assert _targets(sel) == ["tests/ci/test_ci_diff_aware_test_selection_v1.py"]
     assert sel["tests_execute_full"] == "false"
@@ -587,7 +589,7 @@ def test_selector_glb019_partition_bootstrap_selector_plus_helper_focused() -> N
         GLB019_PARTITION_SELECTOR_BOOTSTRAP_FILES[0],
         GLB019_PARTITION_SELECTOR_BOOTSTRAP_FILES[1],
     )
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "ci_bootstrap_focused"
 
 
@@ -596,13 +598,13 @@ def test_selector_glb019_partition_bootstrap_helper_plus_contract_focused() -> N
         GLB019_PARTITION_SELECTOR_BOOTSTRAP_FILES[1],
         GLB019_PARTITION_SELECTOR_BOOTSTRAP_FILES[2],
     )
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "ci_bootstrap_focused"
 
 
 def test_selector_glb019_partition_bootstrap_helper_only_focused() -> None:
     sel = _run_selector(_PARTITIONS_HELPER)
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "ci_bootstrap_focused"
 
 
@@ -611,10 +613,8 @@ def test_selector_glb019_partition_bootstrap_plus_workflow_full() -> None:
         *GLB019_PARTITION_SELECTOR_BOOTSTRAP_FILES,
         ".github/workflows/ci.yml",
     )
-    assert sel["test_selection_reason"] != "ci_bootstrap_focused"
-    assert sel["test_selection_mode"] == "FOCUSED"
-    assert sel["test_selection_reason"] == "ci_infra_focused"
-    assert sel["tests_execute_full"] == "false"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    assert sel["test_selection_reason"] == "selector_self_change_bootstrap"
 
 
 def test_selector_glb019_partition_bootstrap_plus_unknown_ci_script_full() -> None:
@@ -622,7 +622,7 @@ def test_selector_glb019_partition_bootstrap_plus_unknown_ci_script_full() -> No
         *GLB019_PARTITION_SELECTOR_BOOTSTRAP_FILES,
         "scripts/ops/ci_unknown_bootstrap_probe_v0.py",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert sel["test_selection_reason"] == "ci_bootstrap_mixed_diff_requires_full"
 
 
@@ -631,7 +631,7 @@ def test_selector_glb019_partition_bootstrap_plus_central_prod_full() -> None:
         *GLB019_PARTITION_SELECTOR_BOOTSTRAP_FILES,
         "src/ops/bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert sel["test_selection_reason"] == "durable_completion_foreign_path_requires_full"
 
 
@@ -641,7 +641,7 @@ _SELECTOR_OWNER = "scripts/ops/ci_test_selection_v1.py"
 
 def test_selector_glb019_a2b_selector_owner_plus_central_facade_selects_full() -> None:
     sel = _run_selector(_SELECTOR_OWNER, _FACADE_PATH)
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert sel["test_selection_reason"] == "durable_completion_foreign_path_requires_full"
 
 
@@ -656,7 +656,7 @@ _GLB019_SELECTOR_OWNER_FULL_REASONS = frozenset(
 def test_selector_glb019_a2b_selector_owner_plus_facade_explicit_patch_still_full() -> None:
     patch = _synthetic_glb019_a2b_positive_patch_text()
     sel = _run_selector_with_patch(patch, _SELECTOR_OWNER, _FACADE_PATH, *GLB019_A2B_FILESET)
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert sel["test_selection_reason"] in _GLB019_SELECTOR_OWNER_FULL_REASONS
 
 
@@ -665,7 +665,7 @@ def test_selector_glb019_a2b_full_nine_file_pr_diff_focused() -> None:
         _synthetic_glb019_a2b_nine_file_patch_text(),
         *GLB019_A2B_FULL_PR_FILES,
     )
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "glb019_a2b_additive_change_contract"
     assert sel["tests_execute_full"] == "false"
 
@@ -675,7 +675,7 @@ def test_selector_glb019_a2b_full_nine_file_pr_explicit_git_diff_focused() -> No
         _synthetic_glb019_a2b_nine_file_patch_text(),
         *GLB019_A2B_FULL_PR_FILES,
     )
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "glb019_a2b_additive_change_contract"
     assert sel["tests_execute_full"] == "false"
     targets = _targets(sel)
@@ -708,7 +708,7 @@ def test_selector_glb019_a2b_live_collect_patch_contract_focused() -> None:
         _synthetic_glb019_a2b_nine_file_patch_text(),
         *GLB019_A2B_FULL_PR_FILES,
     )
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "glb019_a2b_additive_change_contract"
     assert sel["tests_execute_full"] == "false"
     targets = _targets(sel)
@@ -741,7 +741,7 @@ def test_selector_glb019_a2b_live_patch_selector_owner_ast_validator_accepts() -
 def test_selector_glb019_a2b_missing_selector_owner_hunks_full() -> None:
     patch = _synthetic_glb019_a2b_positive_patch_text()
     sel = _run_selector_with_patch(patch, *GLB019_A2B_FULL_PR_FILES)
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert sel["test_selection_reason"] in _GLB019_SELECTOR_OWNER_FULL_REASONS
 
 
@@ -758,7 +758,7 @@ def test_selector_glb019_a2b_removed_binding_check_full() -> None:
     mutated = canonical.replace(needle, "", 1)
     patch = _guarded_mixed_patch_with_selector_after(mutated)
     sel = _run_selector_with_patch(patch, *GLB019_A2B_FULL_PR_FILES)
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert sel["test_selection_reason"] in _GLB019_SELECTOR_OWNER_FULL_REASONS
 
 
@@ -776,7 +776,7 @@ def test_selector_glb019_a2b_removed_evaluate_call_full() -> None:
     mutated = canonical.replace(needle, "        return None\n", 1)
     patch = _guarded_mixed_patch_with_selector_after(mutated)
     sel = _run_selector_with_patch(patch, *GLB019_A2B_FULL_PR_FILES)
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert sel["test_selection_reason"] in _GLB019_SELECTOR_OWNER_FULL_REASONS
 
 
@@ -802,7 +802,7 @@ def test_selector_glb019_a2b_classify_bypass_reintroduced_full() -> None:
     mutated = canonical.replace(needle, "", 1)
     patch = _guarded_mixed_patch_with_selector_after(mutated)
     sel = _run_selector_with_patch(patch, *GLB019_A2B_FULL_PR_FILES)
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert sel["test_selection_reason"] in _GLB019_SELECTOR_OWNER_FULL_REASONS
 
 
@@ -818,7 +818,7 @@ def test_selector_glb019_a2b_extra_import_full() -> None:
     )
     patch = _guarded_mixed_patch_with_selector_after(mutated)
     sel = _run_selector_with_patch(patch, *GLB019_A2B_FULL_PR_FILES)
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert sel["test_selection_reason"] in _GLB019_SELECTOR_OWNER_FULL_REASONS
 
 
@@ -827,7 +827,7 @@ def test_selector_glb019_a2b_extra_module_level_assignment_full() -> None:
     mutated = 'CI_GLB019_SYNTHETIC_PATCH_BUILDER = "evil_probe_path"\n' + canonical
     patch = _guarded_mixed_patch_with_selector_after(mutated)
     sel = _run_selector_with_patch(patch, *GLB019_A2B_FULL_PR_FILES)
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert sel["test_selection_reason"] in _GLB019_SELECTOR_OWNER_FULL_REASONS
 
 
@@ -842,7 +842,7 @@ def test_selector_glb019_a2b_extra_structural_wrapper_branch_full() -> None:
     )
     patch = _guarded_mixed_patch_with_selector_after(mutated)
     sel = _run_selector_with_patch(patch, *GLB019_A2B_FULL_PR_FILES)
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert sel["test_selection_reason"] in _GLB019_SELECTOR_OWNER_FULL_REASONS
 
 
@@ -857,7 +857,7 @@ def test_selector_glb019_a2b_other_resolver_mutation_full() -> None:
     )
     patch = _guarded_mixed_patch_with_selector_after(mutated)
     sel = _run_selector_with_patch(patch, *GLB019_A2B_FULL_PR_FILES)
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert sel["test_selection_reason"] in _GLB019_SELECTOR_OWNER_FULL_REASONS
 
 
@@ -866,7 +866,7 @@ def test_selector_glb019_a2b_eight_file_subset_without_selector_owner_still_focu
         _synthetic_glb019_a2b_positive_patch_text(),
         *GLB019_A2B_FILESET,
     )
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "glb019_a2b_additive_change_contract"
     assert sel["tests_execute_full"] == "false"
 
@@ -878,7 +878,7 @@ def test_selector_glb019_a2b_selector_owner_resolve_selection_body_change_full()
     mutated = canonical.replace(needle, "    return True", 1)
     patch = _guarded_mixed_patch_with_selector_after(mutated)
     sel = _run_selector_with_patch(patch, *GLB019_A2B_FULL_PR_FILES)
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert sel["test_selection_reason"] in _GLB019_SELECTOR_OWNER_FULL_REASONS
 
 
@@ -890,7 +890,7 @@ def test_selector_glb019_a2b_selector_owner_reason_string_change_full() -> None:
     assert mutated != canonical
     patch = _guarded_mixed_patch_with_selector_after(mutated)
     sel = _run_selector_with_patch(patch, *GLB019_A2B_FULL_PR_FILES)
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert sel["test_selection_reason"] in _GLB019_SELECTOR_OWNER_FULL_REASONS
 
 
@@ -905,7 +905,7 @@ def test_selector_glb019_a2b_selector_owner_extra_ast_statement_full() -> None:
     )
     patch = _guarded_mixed_patch_with_selector_after(mutated)
     sel = _run_selector_with_patch(patch, *GLB019_A2B_FULL_PR_FILES)
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert sel["test_selection_reason"] in _GLB019_SELECTOR_OWNER_FULL_REASONS
 
 
@@ -916,7 +916,7 @@ def test_selector_glb019_a2b_selector_owner_missing_canonical_import_binding_ful
     mutated = canonical.replace(needle, "", 1)
     patch = _guarded_mixed_patch_with_selector_after(mutated)
     sel = _run_selector_with_patch(patch, *GLB019_A2B_FULL_PR_FILES)
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert sel["test_selection_reason"] in _GLB019_SELECTOR_OWNER_FULL_REASONS
 
 
@@ -932,7 +932,7 @@ def test_selector_glb019_a2b_full_pr_plus_unknown_foreign_path_full() -> None:
         *GLB019_A2B_FULL_PR_FILES,
         "src/ops/unknown_contract_v0.py",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert sel["test_selection_reason"] == "durable_completion_foreign_path_requires_full"
 
 
@@ -941,7 +941,7 @@ def test_selector_glb019_a2b_full_pr_plus_second_ci_file_full() -> None:
         *GLB019_A2B_FULL_PR_FILES,
         "scripts/ops/ci_unknown_bootstrap_probe_v0.py",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert sel["test_selection_reason"] in {
         "ci_bootstrap_mixed_diff_requires_full",
         "durable_completion_foreign_path_requires_full",
@@ -964,21 +964,23 @@ def test_selector_glb019_a2b_selector_partitions_helper_plus_central_facade_sele
         _PARTITIONS_HELPER,
         _FACADE_PATH,
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert sel["test_selection_reason"] == "durable_completion_foreign_path_requires_full"
 
 
 def test_selector_glb019_a2b_central_facade_without_structural_contract_selects_full() -> None:
     sel = _run_selector(_FACADE_PATH)
-    assert sel["test_selection_mode"] == "FULL"
-    assert sel["tests_execute_full"] == "true"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    assert sel["tests_execute_pr_bounded_full"] == "true"
+    assert sel["tests_execute_full"] == "false"
 
 
 def test_selector_glb019_a2b_eligible_fileset_structural_contract_failure_selects_full() -> None:
     patch = _synthetic_glb019_a2b_reject_patch_text()
     sel = _run_selector_with_patch(patch, *GLB019_A2B_FILESET)
-    assert sel["test_selection_mode"] == "FULL"
-    assert sel["tests_execute_full"] == "true"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    assert sel["tests_execute_pr_bounded_full"] == "true"
+    assert sel["tests_execute_full"] == "false"
 
 
 def test_selector_ci_bootstrap_deterministic_regardless_of_file_order() -> None:
@@ -990,12 +992,12 @@ def test_selector_ci_bootstrap_deterministic_regardless_of_file_order() -> None:
     sel_a = _run_selector(*files_a)
     sel_b = _run_selector(*files_b)
     assert sel_a == sel_b
-    assert sel_a["test_selection_mode"] == "FOCUSED"
+    assert sel_a["test_selection_mode"] == "CONTRACT_FOCUSED"
 
 
 def test_selector_ci_mapping_only_full() -> None:
     sel = _run_selector("config/ci/file_category_mapping.yaml")
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert sel["test_selection_reason"] == "ci_mapping_or_workflow_selector_change_requires_full"
 
 
@@ -1004,7 +1006,7 @@ def test_selector_ci_workflow_change_self_full() -> None:
         ".github/workflows/ci.yml",
         "scripts/ops/ci_test_selection_v1.py",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert sel["test_selection_reason"] == "ci_bootstrap_mixed_diff_requires_full"
 
 
@@ -1014,10 +1016,9 @@ def test_selector_gap_ci_017_full_pr_diff_ci_infra_focused() -> None:
         "scripts/ops/ci_test_selection_v1.py",
         "tests/ci/test_ci_diff_aware_test_selection_v1.py",
     )
-    assert sel["test_selection_mode"] == "FOCUSED"
-    assert sel["test_selection_reason"] == "ci_infra_focused"
-    assert sel["tests_execute_full"] == "false"
-    assert sel["tests_execute_focused"] == "true"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    assert sel["test_selection_reason"] == "selector_self_change_bootstrap"
+    assert sel["tests_execute_pr_bounded_full"] == "true"
 
 
 def test_selector_gap_ci_017_ci_workflow_timeout_rebundle_ci_infra_focused() -> None:
@@ -1025,7 +1026,7 @@ def test_selector_gap_ci_017_ci_workflow_timeout_rebundle_ci_infra_focused() -> 
         ".github/workflows/ci.yml",
         "tests/ci/test_ci_diff_aware_test_selection_v1.py",
     )
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "ci_infra_focused"
     assert sel["tests_execute_full"] == "false"
     assert sel["tests_execute_focused"] == "true"
@@ -1041,7 +1042,7 @@ def test_selector_strategy_plus_core_full() -> None:
         "tests/test_strategies_phase27.py",
         "src/core/foo.py",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
 
 
 def test_selector_multiple_test_owners_full() -> None:
@@ -1050,37 +1051,37 @@ def test_selector_multiple_test_owners_full() -> None:
         "tests/test_strategies_phase27.py",
         "tests/test_strategy_vol_regime_filter.py",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
 
 
 def test_selector_unknown_fail_closed_full() -> None:
     sel = _run_selector("misc/unclassified.bin")
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
 
 
 def test_selector_empty_diff_fail_closed_full() -> None:
     sel = _run_selector()
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert sel["test_selection_reason"] == "empty_diff_fail_closed"
 
 
 def test_selector_force_full() -> None:
-    sel = _run_selector("docs/foo.md", force_full=True)
-    assert sel["test_selection_mode"] == "FULL"
+    sel = _run_selector(event_name="workflow_dispatch", force_full=True)
+    assert sel["test_selection_mode"] == "EXHAUSTIVE_FULL"
 
 
-def test_selector_push_event_full() -> None:
+def test_selector_push_event_bounded_or_no_op() -> None:
     sel = _run_selector("docs/foo.md", event_name="push")
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "NO_OP"
 
 
-def test_selector_merge_group_event_full() -> None:
+def test_selector_merge_group_event_bounded() -> None:
     sel = _run_selector(
         "src/strategies/vol_breakout.py",
         "tests/test_strategies_phase27.py",
         event_name="merge_group",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
 
 
 def test_selector_import_smoke_cli_ok() -> None:
@@ -1137,7 +1138,7 @@ def test_mapping_file_exists() -> None:
 
 def test_selector_market_dashboard_eligibility_only_focused() -> None:
     sel = _run_selector("src/webui/market_instrument_eligibility_v0.py")
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "market_dashboard_focused"
     assert "tests/webui/test_market_dashboard_no_bitcoin_futures_v1.py" in _targets(sel)
 
@@ -1153,7 +1154,7 @@ def test_selector_market_dashboard_rebundle_diff_focused() -> None:
         "tests/ci/test_ci_diff_aware_test_selection_v1.py",
     )
     sel = _run_selector(*files)
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "market_dashboard_focused"
     assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" in _targets(sel)
     assert sel["tests_execute_full"] == "false"
@@ -1164,20 +1165,22 @@ def test_selector_market_dashboard_plus_central_src_full() -> None:
         "src/webui/market_surface.py",
         "src/execution/live/orchestrator.py",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
 
 
 def test_selector_market_dashboard_tests_only_focused() -> None:
     sel = _run_selector("tests/webui/test_market_dashboard_no_bitcoin_futures_v1.py")
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "market_dashboard_focused"
 
 
 def test_workflow_only_does_not_run_full_pytest_step_unconditionally() -> None:
     text = _ci_text()
-    full_step = text.split("name: Run full test suite", 1)[1].split("\n      - name:", 1)[0]
-    assert "tests_execute_full == 'true'" in full_step
-    assert "workflow_only == 'true'" not in full_step
+    exhaustive_step = text.split("name: Run EXHAUSTIVE_FULL test suite", 1)[1].split(
+        "\n      - name:", 1
+    )[0]
+    assert "tests_execute_exhaustive_full == 'true'" in exhaustive_step
+    assert "workflow_only == 'true'" not in exhaustive_step
 
 
 PR4451_DURABLE_COMPLETION_FILES = (
@@ -1197,7 +1200,7 @@ PR4451_DURABLE_COMPLETION_FILES = (
 
 def test_selector_pr4451_durable_completion_fileset_focused() -> None:
     sel = _run_selector(*PR4451_DURABLE_COMPLETION_FILES)
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "durable_completion_focused"
     targets = _targets(sel)
     assert "tests/ops/test_durable_completion_validation_graph_v1.py" in targets
@@ -1213,7 +1216,7 @@ def test_selector_durable_completion_internal_validator_only_focused() -> None:
         "src/ops/durable_completion_validation/validators/reconciliation.py",
         "tests/ops/test_durable_completion_validation_graph_v1.py",
     )
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "durable_completion_validation_graph_focused"
     targets = _targets(sel)
     assert "tests/ops/test_durable_completion_validation_graph_v1.py" in targets
@@ -1233,7 +1236,7 @@ PE55_DURABLE_COMPLETION_FILL_REBINDING_FILES = (
 
 def test_selector_pe55_fill_rebinding_bounded_focused_targets() -> None:
     sel = _run_selector(*PE55_DURABLE_COMPLETION_FILL_REBINDING_FILES)
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "durable_completion_focused"
     targets = _targets(sel)
     assert "tests/ops/test_durable_completion_validation_graph_v1.py" in targets
@@ -1287,7 +1290,7 @@ PE56_DURABLE_COMPLETION_GRAPH_WIRING_FILES = (
 
 def test_selector_pe56_graph_wiring_rebinding_bounded_focused_targets() -> None:
     sel = _run_selector(*PE56_DURABLE_COMPLETION_GRAPH_WIRING_FILES)
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "durable_completion_focused"
     targets = _targets(sel)
     assert "tests/ops/test_durable_completion_validation_graph_v1.py" in targets
@@ -1308,7 +1311,7 @@ PE60_DURABLE_COMPLETION_DELEGATION_FILES = (
 
 def test_selector_pe60_completion_chain_delegation_rebinding_bounded_focused_targets() -> None:
     sel = _run_selector(*PE60_DURABLE_COMPLETION_DELEGATION_FILES)
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "durable_completion_focused"
     targets = _targets(sel)
     assert "tests/ops/test_durable_completion_validation_graph_v1.py" in targets
@@ -1335,7 +1338,7 @@ _CI_OWNER = "tests/ci/test_ci_diff_aware_test_selection_v1.py"
 
 def test_selector_glb019_a1_four_file_diff_validation_graph_focused() -> None:
     sel = _run_selector(*GLB019_A1_FOUR_FILE_DIFF)
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "durable_completion_validation_graph_focused"
     targets = _targets(sel)
     assert _GRAPH_OWNER in targets
@@ -1406,7 +1409,7 @@ def test_selector_pe21_prod_owner_partitioned_integration_nodes() -> None:
         "src/ops/bounded_futures_testnet_position_order_reconciliation_primary_evidence_integration_contract_v0.py",
         _GRAPH_OWNER,
     )
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "durable_completion_focused"
     targets = _targets(sel)
     assert _GRAPH_OWNER in targets
@@ -1441,7 +1444,7 @@ def test_selector_glb019_a2b_probe_partition_union_bounded() -> None:
     assert "pe38_readiness" in partitions
     assert estimate_partition_seconds(partitions) <= 840
     sel = _run_selector(*files)
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert _INTEGRATION_OWNER not in _targets(sel)
 
 
@@ -1622,7 +1625,7 @@ def test_selector_glb019_a2b_pr_fileset_focused_additive_contract() -> None:
         _synthetic_glb019_a2b_positive_patch_text(),
         *pr_files,
     )
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "glb019_a2b_additive_change_contract"
     assert sel["tests_execute_full"] == "false"
 
@@ -1633,7 +1636,6 @@ def _run_selector_with_patch(
     force_full: bool = False,
     event_name: str = "pull_request",
 ) -> dict[str, str]:
-    from scripts.ops.ci_test_selection_v1 import resolve_selection
     import scripts.ops.durable_completion_integration_partitions_v0 as partitions
 
     glb019_scope = patch_text.strip() and (
@@ -1653,11 +1655,33 @@ def _run_selector_with_patch(
         partitions._base_file_text = _embedded_baseline
 
     try:
+        from scripts.ops.ci_test_selection_v1 import (
+            _finalize_selection_result,
+            resolve_matrix_contract_selection,
+            resolve_selection,
+        )
+
+        file_list = list(files)
+        matrix_contract = resolve_matrix_contract_selection(file_list)
         result = resolve_selection(
-            list(files),
+            file_list,
             force_full=force_full,
             event_name=event_name,
             patch_text=patch_text or None,
+        )
+        if matrix_contract.mode == "MATRIX_CONTRACT_FOCUSED":
+            from scripts.ops.ci_test_selection_v1 import SelectionResult
+
+            result = SelectionResult(
+                "FOCUSED",
+                matrix_contract.reason,
+                matrix_contract.pytest_targets,
+            )
+        result = _finalize_selection_result(
+            result,
+            file_list,
+            event_name=event_name,
+            force_exhaustive=force_full and event_name in {"schedule", "workflow_dispatch"},
         )
     finally:
         partitions._base_file_text = original_base
@@ -1666,13 +1690,17 @@ def _run_selector_with_patch(
     for line in result.github_output_lines():
         key, _, value = line.partition("=")
         sel[key] = value
+    matrix_lines = matrix_contract.github_output_lines()
+    for line in matrix_lines:
+        key, _, value = line.partition("=")
+        sel[key] = value
     return sel
 
 
 def test_selector_glb019_a2b_frozen_patch_additive_contract_focused() -> None:
     patch = _synthetic_glb019_a2b_positive_patch_text()
     sel = _run_selector_with_patch(patch, *GLB019_A2B_FILESET)
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "glb019_a2b_additive_change_contract"
     assert sel["tests_execute_full"] == "false"
     targets = _targets(sel)
@@ -1690,7 +1718,7 @@ def test_selector_glb019_a2b_change_contract_unknown_file_selects_full() -> None
         "+pass\n"
     )
     sel = _run_selector_with_patch(patch, *GLB019_A2B_FILESET, "src/ops/unknown_contract_v0.py")
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert sel["test_selection_reason"] == "durable_completion_foreign_path_requires_full"
 
 
@@ -1925,7 +1953,7 @@ _COMPLETION_OWNER = _INTEGRATION_OWNER
 
 def test_selector_pr4512_master_v2_binding_contract_four_file_diff_focused() -> None:
     sel = _run_selector(*PR4512_MASTER_V2_BINDING_CONTRACT_FILES)
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "durable_completion_master_v2_binding_contract_focused"
     assert sel["tests_execute_full"] == "false"
     assert sel["tests_execute_focused"] == "true"
@@ -1952,7 +1980,7 @@ def test_selector_master_v2_binding_contract_test_plus_production_owners_focused
         "src/ops/durable_completion_validation/validators/completion_chain.py",
         _MASTER_V2_BINDING_OWNER,
     )
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "durable_completion_master_v2_binding_contract_focused"
     assert any("::test_" in target for target in _targets(sel))
 
@@ -1962,7 +1990,7 @@ def test_selector_master_v2_binding_unknown_validator_escalates_full() -> None:
         *PR4512_MASTER_V2_BINDING_CONTRACT_FILES,
         "src/ops/durable_completion_validation/validators/reconciliation.py",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert sel["test_selection_reason"] == "durable_completion_foreign_path_requires_full"
 
 
@@ -1973,7 +2001,7 @@ def test_selector_master_v2_binding_other_validator_only_escalates_full() -> Non
         "tests/ops/test_durable_completion_validation_graph_v1.py",
         _MASTER_V2_BINDING_OWNER,
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert sel["test_selection_reason"] == "durable_completion_foreign_path_requires_full"
 
 
@@ -1983,7 +2011,7 @@ def test_selector_master_v2_binding_missing_contract_test_owner_escalates_full()
         "src/ops/durable_completion_validation/validators/completion_chain.py",
         "tests/ops/test_durable_completion_validation_graph_v1.py",
     )
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "durable_completion_focused"
 
 
@@ -1992,13 +2020,13 @@ def test_selector_master_v2_binding_selector_self_change_escalates_full() -> Non
         *PR4512_MASTER_V2_BINDING_CONTRACT_FILES,
         "scripts/ops/ci_test_selection_v1.py",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert sel["test_selection_reason"] == "durable_completion_foreign_path_requires_full"
 
 
 def test_selector_master_v2_binding_dependency_change_escalates_full() -> None:
     sel = _run_selector(*PR4512_MASTER_V2_BINDING_CONTRACT_FILES, "requirements.txt")
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert sel["test_selection_reason"] in {
         "category_dependencies_requires_full",
         "durable_completion_foreign_path_requires_full",
@@ -2010,7 +2038,7 @@ def test_selector_master_v2_binding_execution_logic_escalates_full() -> None:
         *PR4512_MASTER_V2_BINDING_CONTRACT_FILES,
         "src/ops/bounded_futures_testnet_risk_killswitch_lifecycle_integration_contract_v0.py",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert sel["test_selection_reason"] == "durable_completion_foreign_path_requires_full"
 
 
@@ -2019,7 +2047,7 @@ def test_selector_master_v2_binding_heterogeneous_foreign_src_escalates_full() -
         *PR4512_MASTER_V2_BINDING_CONTRACT_FILES,
         "src/ops/durable_completion_validation/graph.py",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert sel["test_selection_reason"] == "durable_completion_foreign_path_requires_full"
 
 
@@ -2034,7 +2062,7 @@ OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_FILES = (
 
 def test_selector_offline_master_v2_double_play_scenario_replay_five_file_diff_focused() -> None:
     sel = _run_selector(*OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_FILES)
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "offline_master_v2_double_play_scenario_replay_focused"
     assert sel["tests_execute_full"] == "false"
     assert sel["tests_execute_focused"] == "true"
@@ -2055,7 +2083,7 @@ def test_selector_offline_master_v2_double_play_foreign_path_escalates_full() ->
         *OFFLINE_MASTER_V2_DOUBLE_PLAY_SCENARIO_REPLAY_FILES,
         "src/trading/master_v2/double_play_state.py",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert sel["test_selection_reason"].endswith("requires_full")
 
 
@@ -2072,7 +2100,7 @@ def test_selector_master_v2_replay_display_projection_digest_completion_evidence
     None
 ):
     sel = _run_selector(*MASTER_V2_REPLAY_DISPLAY_PROJECTION_DIGEST_COMPLETION_EVIDENCE_FILES)
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert (
         sel["test_selection_reason"]
         == "master_v2_replay_display_projection_digest_completion_evidence_focused"
@@ -2103,7 +2131,7 @@ def test_selector_master_v2_replay_display_projection_digest_completion_evidence
         "scripts/ops/ci_test_selection_v1.py",
         "tests/ci/test_ci_diff_aware_test_selection_v1.py",
     )
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert (
         sel["test_selection_reason"]
         == "master_v2_replay_display_projection_digest_completion_evidence_focused"
@@ -2131,7 +2159,7 @@ def test_selector_master_v2_replay_display_projection_digest_completion_evidence
         *MASTER_V2_REPLAY_DISPLAY_PROJECTION_DIGEST_COMPLETION_EVIDENCE_FILES,
         "src/trading/master_v2/double_play_state.py",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert sel["test_selection_reason"].endswith("requires_full")
 
 
@@ -2147,7 +2175,7 @@ def test_selector_offline_master_v2_replay_six_node_validation_graph_binding_fou
     None
 ):
     sel = _run_selector(*OFFLINE_MASTER_V2_REPLAY_SIX_NODE_VALIDATION_GRAPH_BINDING_FILES)
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert (
         sel["test_selection_reason"]
         == "offline_master_v2_replay_six_node_validation_graph_binding_focused"
@@ -2173,7 +2201,7 @@ def test_selector_offline_master_v2_replay_six_node_graph_binding_foreign_path_e
         *OFFLINE_MASTER_V2_REPLAY_SIX_NODE_VALIDATION_GRAPH_BINDING_FILES,
         "src/trading/master_v2/double_play_state.py",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert sel["test_selection_reason"].endswith("requires_full")
 
 
@@ -2188,7 +2216,7 @@ BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_FILES = (
 
 def test_selector_bounded_master_v2_testnet_completion_path_wiring_five_file_diff_focused() -> None:
     sel = _run_selector(*BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_FILES)
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert (
         sel["test_selection_reason"] == "bounded_master_v2_testnet_completion_path_wiring_focused"
     )
@@ -2219,7 +2247,7 @@ def test_selector_bounded_master_v2_testnet_wiring_foreign_path_escalates_full()
         *BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_FILES,
         "src/trading/master_v2/double_play_state.py",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert sel["test_selection_reason"].endswith("requires_full")
 
 
@@ -2231,7 +2259,7 @@ PR4504_DURABLE_COMPLETION_WALLCLOCK_BINDING_FILES = (
 
 def test_selector_pr4504_wallclock_binding_diff_narrow_focused() -> None:
     sel = _run_selector_with_patch("", *PR4504_DURABLE_COMPLETION_WALLCLOCK_BINDING_FILES)
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "durable_completion_focused"
     assert sel["tests_execute_full"] == "false"
     targets = _targets(sel)
@@ -2283,7 +2311,7 @@ def test_selector_durable_completion_foreign_production_change_stays_broad() -> 
         "tests/ops/test_durable_completion_validation_graph_v1.py",
         "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
     )
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     targets = _targets(sel)
     assert _COMPLETION_OWNER in targets
     assert _GRAPH_OWNER in targets
@@ -2295,7 +2323,7 @@ def test_selector_pr4504_wallclock_binding_plus_foreign_file_full() -> None:
         *PR4504_DURABLE_COMPLETION_WALLCLOCK_BINDING_FILES,
         "src/strategies/__init__.py",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
 
 
 def test_selector_pr4504_wallclock_binding_plus_dependency_full() -> None:
@@ -2304,7 +2332,7 @@ def test_selector_pr4504_wallclock_binding_plus_dependency_full() -> None:
         *PR4504_DURABLE_COMPLETION_WALLCLOCK_BINDING_FILES,
         "pyproject.toml",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
 
 
 def test_selector_pr4504_wallclock_binding_plus_ci_policy_includes_ci_owner() -> None:
@@ -2314,7 +2342,7 @@ def test_selector_pr4504_wallclock_binding_plus_ci_policy_includes_ci_owner() ->
         "scripts/ops/ci_test_selection_v1.py",
         "tests/ci/test_ci_diff_aware_test_selection_v1.py",
     )
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     targets = _targets(sel)
     assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" in targets
     assert _COMPLETION_OWNER not in targets
@@ -2322,7 +2350,7 @@ def test_selector_pr4504_wallclock_binding_plus_ci_policy_includes_ci_owner() ->
 
 def test_selector_durable_completion_validator_rebinding_rules_unchanged() -> None:
     sel = _run_selector(*PE55_DURABLE_COMPLETION_FILL_REBINDING_FILES)
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     targets = _targets(sel)
     assert "tests/ops/test_durable_completion_validation_graph_v1.py" in targets
     assert _INTEGRATION_OWNER in targets
@@ -2343,7 +2371,7 @@ def test_selector_durable_completion_graph_core_plus_test_owners_focused() -> No
         "tests/ops/test_durable_completion_validation_graph_v1.py",
         "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
     )
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "durable_completion_focused"
 
 
@@ -2354,13 +2382,12 @@ def test_selector_pe55_full_diff_with_ci_workflow_rebundle_stays_focused() -> No
         "scripts/ops/ci_test_selection_v1.py",
         "tests/ci/test_ci_diff_aware_test_selection_v1.py",
     )
-    assert sel["test_selection_mode"] == "FOCUSED"
-    assert sel["test_selection_reason"] == "durable_completion_focused"
-    targets = _targets(sel)
-    assert "tests/ops/test_durable_completion_validation_graph_v1.py" in targets
-    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" in targets
-    assert _INTEGRATION_OWNER in targets
-    assert sel["tests_execute_full"] == "false"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    assert sel["test_selection_reason"] == "selector_self_change_bootstrap"
+    assert (
+        "tests/ops/test_durable_completion_validation_graph_v1.py"
+        in sel["pr_bounded_pytest_targets"]
+    )
 
 
 def test_selector_durable_completion_facade_plus_graph_focused() -> None:
@@ -2371,7 +2398,7 @@ def test_selector_durable_completion_facade_plus_graph_focused() -> None:
         "tests/ops/test_durable_completion_validation_graph_v1.py",
         "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
     )
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "durable_completion_focused"
 
 
@@ -2382,7 +2409,7 @@ def test_selector_durable_completion_rebundle_with_ci_policy_focused() -> None:
         "config/ci/file_category_mapping.yaml",
         "tests/ci/test_ci_diff_aware_test_selection_v1.py",
     )
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "durable_completion_focused"
     assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" in _targets(sel)
 
@@ -2395,7 +2422,7 @@ def test_selector_durable_completion_public_api_init_escalates_full() -> None:
         "tests/ops/test_durable_completion_validation_graph_v1.py",
         "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
 
 
 def test_selector_durable_completion_identity_plus_foreign_src_full() -> None:
@@ -2405,7 +2432,7 @@ def test_selector_durable_completion_identity_plus_foreign_src_full() -> None:
         "tests/ops/test_durable_completion_validation_graph_v1.py",
         "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
 
 
 def test_selector_durable_completion_packaging_escalates_full() -> None:
@@ -2415,7 +2442,7 @@ def test_selector_durable_completion_packaging_escalates_full() -> None:
         "tests/ops/test_durable_completion_validation_graph_v1.py",
         "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
 
 
 def test_selector_durable_completion_execution_touch_escalates_full() -> None:
@@ -2425,7 +2452,7 @@ def test_selector_durable_completion_execution_touch_escalates_full() -> None:
         "tests/ops/test_durable_completion_validation_graph_v1.py",
         "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
 
 
 def test_selector_durable_completion_unknown_file_escalates_full() -> None:
@@ -2435,7 +2462,7 @@ def test_selector_durable_completion_unknown_file_escalates_full() -> None:
         "tests/ops/test_durable_completion_validation_graph_v1.py",
         "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
 
 
 def test_selector_durable_completion_missing_test_owner_escalates_full(monkeypatch) -> None:
@@ -2471,7 +2498,7 @@ def test_selector_durable_completion_ci_policy_only_escalates_full() -> None:
         "config/ci/file_category_mapping.yaml",
         "tests/ci/test_ci_diff_aware_test_selection_v1.py",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
 
 
 def test_selector_durable_completion_import_modules() -> None:
@@ -2497,7 +2524,7 @@ PE52_PREFLIGHT_ASSEMBLY_FILES = (
 
 def test_selector_pe52_preflight_assembly_fileset_focused() -> None:
     sel = _run_selector(*PE52_PREFLIGHT_ASSEMBLY_FILES)
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "preflight_assembly_focused"
     targets = _targets(sel)
     assert (
@@ -2514,13 +2541,13 @@ def test_selector_pe52_preflight_assembly_fileset_focused() -> None:
 
 def test_selector_pe26_owner_plus_test_owner_only_focused() -> None:
     sel = _run_selector(*PE52_PREFLIGHT_ASSEMBLY_FILES)
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "preflight_assembly_focused"
 
 
 def test_selector_unknown_productive_src_ops_never_no_op() -> None:
     sel = _run_selector("src/ops/unknown_unmapped_contract_v0.py")
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert sel["test_selection_reason"] == "productive_src_no_op_blocked_fail_closed"
     assert sel["tests_execute_no_op"] == "false"
 
@@ -2529,8 +2556,9 @@ def test_selector_productive_src_without_test_owner_escalates_full() -> None:
     sel = _run_selector(
         "src/ops/bounded_futures_testnet_preflight_packet_contract_v0.py",
     )
-    assert sel["test_selection_mode"] == "FULL"
-    assert sel["tests_execute_full"] == "true"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    assert sel["tests_execute_pr_bounded_full"] == "true"
+    assert sel["tests_execute_full"] == "false"
 
 
 def test_selector_preflight_assembly_rebundle_with_ci_policy_focused() -> None:
@@ -2540,7 +2568,7 @@ def test_selector_preflight_assembly_rebundle_with_ci_policy_focused() -> None:
         "config/ci/file_category_mapping.yaml",
         "tests/ci/test_ci_diff_aware_test_selection_v1.py",
     )
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "preflight_assembly_focused"
     assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" in _targets(sel)
 
@@ -2550,7 +2578,7 @@ def test_selector_preflight_assembly_plus_foreign_src_full() -> None:
         *PE52_PREFLIGHT_ASSEMBLY_FILES,
         "src/execution/live/orchestrator.py",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
 
 
 def test_selector_preflight_assembly_execution_touch_escalates_full() -> None:
@@ -2559,7 +2587,7 @@ def test_selector_preflight_assembly_execution_touch_escalates_full() -> None:
         "src/risk/killswitch.py",
         PE52_PREFLIGHT_ASSEMBLY_FILES[1],
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
 
 
 def test_selector_preflight_assembly_missing_test_owner_escalates_full(monkeypatch) -> None:
@@ -2595,7 +2623,7 @@ def test_selector_preflight_assembly_ci_policy_only_escalates_full() -> None:
         "config/ci/file_category_mapping.yaml",
         "tests/ci/test_ci_diff_aware_test_selection_v1.py",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
 
 
 def test_selector_preflight_assembly_import_modules() -> None:
@@ -2620,7 +2648,7 @@ PE53_RISK_KILLSWITCH_FILES = (
 
 def test_selector_pe53_risk_killswitch_fileset_focused() -> None:
     sel = _run_selector(*PE53_RISK_KILLSWITCH_FILES)
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "risk_killswitch_focused"
     targets = _targets(sel)
     assert (
@@ -2634,13 +2662,13 @@ def test_selector_pe53_risk_killswitch_fileset_focused() -> None:
 
 def test_selector_pe53_owner_plus_test_owner_only_focused() -> None:
     sel = _run_selector(*PE53_RISK_KILLSWITCH_FILES)
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "risk_killswitch_focused"
 
 
 def test_selector_pe53_owner_without_test_owner_escalates_full() -> None:
     sel = _run_selector(PE53_RISK_KILLSWITCH_FILES[0])
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert sel["test_selection_reason"] == "risk_killswitch_incomplete_or_missing_test_owner"
 
 
@@ -2649,7 +2677,7 @@ def test_selector_pe53_plus_unknown_ops_src_escalates_full() -> None:
         *PE53_RISK_KILLSWITCH_FILES,
         "src/ops/bounded_futures_testnet_preflight_packet_contract_v0.py",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
 
 
 def test_selector_pe53_plus_unknown_src_escalates_full() -> None:
@@ -2657,7 +2685,7 @@ def test_selector_pe53_plus_unknown_src_escalates_full() -> None:
         *PE53_RISK_KILLSWITCH_FILES,
         "src/execution/live/orchestrator.py",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
 
 
 def test_selector_pe53_risk_killswitch_outside_owner_escalates_full() -> None:
@@ -2665,7 +2693,7 @@ def test_selector_pe53_risk_killswitch_outside_owner_escalates_full() -> None:
         *PE53_RISK_KILLSWITCH_FILES,
         "src/risk/killswitch.py",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
 
 
 def test_selector_pe53_runtime_touch_escalates_full() -> None:
@@ -2674,7 +2702,7 @@ def test_selector_pe53_runtime_touch_escalates_full() -> None:
         "src/runtime/scheduler.py",
         PE53_RISK_KILLSWITCH_FILES[1],
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
 
 
 def test_selector_pe53_trading_strategy_master_v2_touch_escalates_full() -> None:
@@ -2683,7 +2711,7 @@ def test_selector_pe53_trading_strategy_master_v2_touch_escalates_full() -> None
         "src/strategies/vol_breakout.py",
         PE53_RISK_KILLSWITCH_FILES[1],
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
 
 
 def test_selector_pe53_packaging_change_escalates_full() -> None:
@@ -2691,7 +2719,7 @@ def test_selector_pe53_packaging_change_escalates_full() -> None:
         *PE53_RISK_KILLSWITCH_FILES,
         "pyproject.toml",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
 
 
 def test_selector_pe53_rebundle_with_ci_policy_focused() -> None:
@@ -2701,7 +2729,7 @@ def test_selector_pe53_rebundle_with_ci_policy_focused() -> None:
         "config/ci/file_category_mapping.yaml",
         "tests/ci/test_ci_diff_aware_test_selection_v1.py",
     )
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "risk_killswitch_focused"
     assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" in _targets(sel)
 
@@ -2753,13 +2781,13 @@ PE54_TINY_ORDER_FILES = (
 
 def test_selector_pe54_tiny_order_prod_owner_only_focused() -> None:
     sel = _run_selector(PE54_TINY_ORDER_FILES[0])
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert sel["test_selection_reason"] == "tiny_order_incomplete_or_missing_test_owner"
 
 
 def test_selector_pe54_tiny_order_test_owner_only_focused() -> None:
     sel = _run_selector(PE54_TINY_ORDER_FILES[1])
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "tiny_order_focused"
     targets = _targets(sel)
     assert PE54_TINY_ORDER_FILES[1] in targets
@@ -2771,7 +2799,7 @@ def test_selector_pe54_tiny_order_test_owner_only_focused() -> None:
 
 def test_selector_pe54_tiny_order_fileset_focused() -> None:
     sel = _run_selector(*PE54_TINY_ORDER_FILES)
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "tiny_order_focused"
     targets = _targets(sel)
     assert PE54_TINY_ORDER_FILES[1] in targets
@@ -2788,7 +2816,7 @@ def test_selector_pe54_tiny_order_plus_unknown_ops_src_escalates_full() -> None:
         *PE54_TINY_ORDER_FILES,
         "src/ops/bounded_futures_testnet_preflight_packet_contract_v0.py",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
 
 
 def test_selector_pe54_tiny_order_plus_unknown_src_escalates_full() -> None:
@@ -2796,7 +2824,7 @@ def test_selector_pe54_tiny_order_plus_unknown_src_escalates_full() -> None:
         *PE54_TINY_ORDER_FILES,
         "src/execution/live/orchestrator.py",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
 
 
 def test_selector_pe54_tiny_order_outside_owner_escalates_full() -> None:
@@ -2804,7 +2832,7 @@ def test_selector_pe54_tiny_order_outside_owner_escalates_full() -> None:
         *PE54_TINY_ORDER_FILES,
         "src/risk/killswitch.py",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
 
 
 def test_selector_pe54_tiny_order_runtime_touch_escalates_full() -> None:
@@ -2813,7 +2841,7 @@ def test_selector_pe54_tiny_order_runtime_touch_escalates_full() -> None:
         "src/runtime/scheduler.py",
         PE54_TINY_ORDER_FILES[1],
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
 
 
 def test_selector_pe54_tiny_order_trading_strategy_master_v2_touch_escalates_full() -> None:
@@ -2822,7 +2850,7 @@ def test_selector_pe54_tiny_order_trading_strategy_master_v2_touch_escalates_ful
         "src/strategies/vol_breakout.py",
         PE54_TINY_ORDER_FILES[1],
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
 
 
 def test_selector_pe54_tiny_order_packaging_change_escalates_full() -> None:
@@ -2830,7 +2858,7 @@ def test_selector_pe54_tiny_order_packaging_change_escalates_full() -> None:
         *PE54_TINY_ORDER_FILES,
         "pyproject.toml",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
 
 
 def test_selector_pe54_tiny_order_rebundle_with_ci_policy_focused() -> None:
@@ -2840,7 +2868,7 @@ def test_selector_pe54_tiny_order_rebundle_with_ci_policy_focused() -> None:
         "config/ci/file_category_mapping.yaml",
         "tests/ci/test_ci_diff_aware_test_selection_v1.py",
     )
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "tiny_order_focused"
     assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" in _targets(sel)
 
@@ -2907,7 +2935,7 @@ def test_selector_pe54_tiny_order_ci_policy_only_escalates_full() -> None:
         "config/ci/file_category_mapping.yaml",
         "tests/ci/test_ci_diff_aware_test_selection_v1.py",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
 
 
 def test_mapping_file_includes_tiny_order_focused() -> None:
@@ -2923,7 +2951,7 @@ PE21_RECONCILIATION_PRIMARY_EVIDENCE_FILES = (
 
 def test_selector_pe21_reconciliation_primary_evidence_fileset_focused() -> None:
     sel = _run_selector(*PE21_RECONCILIATION_PRIMARY_EVIDENCE_FILES)
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "reconciliation_primary_evidence_focused"
     targets = _targets(sel)
     assert PE21_RECONCILIATION_PRIMARY_EVIDENCE_FILES[1] in targets
@@ -2934,7 +2962,7 @@ def test_selector_pe21_reconciliation_primary_evidence_fileset_focused() -> None
 
 def test_selector_pe21_prod_owner_without_test_owner_escalates_full() -> None:
     sel = _run_selector(PE21_RECONCILIATION_PRIMARY_EVIDENCE_FILES[0])
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert (
         sel["test_selection_reason"]
         == "reconciliation_primary_evidence_incomplete_or_missing_test_owner"
@@ -2946,7 +2974,7 @@ def test_selector_pe21_plus_unknown_src_escalates_full() -> None:
         *PE21_RECONCILIATION_PRIMARY_EVIDENCE_FILES,
         "src/execution/live/orchestrator.py",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
 
 
 def test_selector_pe21_rebundle_with_ci_policy_focused() -> None:
@@ -2956,7 +2984,7 @@ def test_selector_pe21_rebundle_with_ci_policy_focused() -> None:
         "config/ci/file_category_mapping.yaml",
         "tests/ci/test_ci_diff_aware_test_selection_v1.py",
     )
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "reconciliation_primary_evidence_focused"
 
 
@@ -2998,7 +3026,7 @@ PR4491_CI_BOOTSTRAP_FILES: tuple[str, ...] = (
 
 def test_selector_case_pr4489_wallclock_diff_focused() -> None:
     sel = _run_selector(*PR4489_WALLCLOCK_FILES)
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "wallclock_focused"
     assert sel["tests_execute_full"] == "false"
     assert sel["tests_execute_focused"] == "true"
@@ -3010,12 +3038,10 @@ def test_selector_case_pr4489_wallclock_diff_focused() -> None:
 
 def test_selector_case_pr4491_ci_bootstrap_diff_focused() -> None:
     sel = _run_selector(*PR4491_CI_BOOTSTRAP_FILES)
-    assert sel["test_selection_mode"] == "FOCUSED"
-    assert sel["test_selection_reason"] == "ci_infra_focused"
-    assert sel["tests_execute_full"] == "false"
-    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" in _targets(sel)
-    assert "tests/ci/test_workflows_no_pull_request_target_contract_v0.py" in _targets(sel)
-    assert "tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py" in _targets(sel)
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    assert sel["test_selection_reason"] == "selector_self_change_bootstrap"
+    assert sel["tests_execute_pr_bounded_full"] == "true"
+    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" in sel["pr_bounded_pytest_targets"]
 
 
 def test_selector_case_ci_selector_change_full() -> None:
@@ -3023,18 +3049,18 @@ def test_selector_case_ci_selector_change_full() -> None:
         "scripts/ops/ci_test_selection_v1.py",
         "config/ci/file_category_mapping.yaml",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
 
 
 def test_selector_case_dependency_change_full() -> None:
     sel = _run_selector("pyproject.toml")
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert sel["test_selection_reason"] == "category_dependencies_requires_full"
 
 
 def test_selector_case_central_shared_src_change_full() -> None:
     sel = _run_selector("src/core/foo.py")
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert sel["test_selection_reason"] == "category_central_src_requires_full"
 
 
@@ -3049,12 +3075,12 @@ def test_selector_case_unknown_workflow_diff_full() -> None:
         ".github/workflows/unknown-workflow.yml",
         "tests/ci/test_ci_diff_aware_test_selection_v1.py",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
 
 
 def test_selector_case_unknown_src_diff_full() -> None:
     sel = _run_selector("misc/unclassified.bin")
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
 
 
 def test_selector_ci_workflow_change_self_focused_ci_infra() -> None:
@@ -3065,8 +3091,8 @@ def test_selector_ci_workflow_change_self_focused_ci_infra() -> None:
         "tests/ci/test_workflows_no_pull_request_target_contract_v0.py",
         "tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py",
     )
-    assert sel["test_selection_mode"] == "FOCUSED"
-    assert sel["test_selection_reason"] == "ci_infra_focused"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    assert sel["test_selection_reason"] == "selector_self_change_bootstrap"
 
 
 PR4497_BOUNDED_NETWORK_PREFLIGHT_FILES: tuple[str, ...] = (
@@ -3077,7 +3103,7 @@ PR4497_BOUNDED_NETWORK_PREFLIGHT_FILES: tuple[str, ...] = (
 
 def test_selector_pr4497_bounded_network_preflight_diff_focused() -> None:
     sel = _run_selector(*PR4497_BOUNDED_NETWORK_PREFLIGHT_FILES)
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "bounded_network_testnet_preflight_focused"
     assert sel["tests_execute_full"] == "false"
     assert sel["tests_execute_focused"] == "true"
@@ -3091,7 +3117,7 @@ def test_selector_pr4497_bounded_network_preflight_diff_focused() -> None:
 
 def test_selector_bounded_network_preflight_owner_without_test_owner_full() -> None:
     sel = _run_selector("src/ops/bounded_network_testnet_preflight_contract_v0.py")
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert (
         sel["test_selection_reason"]
         == "bounded_network_testnet_preflight_incomplete_or_missing_test_owner"
@@ -3103,7 +3129,7 @@ def test_selector_bounded_network_preflight_plus_foreign_src_full() -> None:
         *PR4497_BOUNDED_NETWORK_PREFLIGHT_FILES,
         "src/execution/live/orchestrator.py",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert (
         sel["test_selection_reason"]
         == "bounded_network_testnet_preflight_foreign_path_requires_full"
@@ -3112,7 +3138,7 @@ def test_selector_bounded_network_preflight_plus_foreign_src_full() -> None:
 
 def test_selector_bounded_network_preflight_plus_dependency_full() -> None:
     sel = _run_selector(*PR4497_BOUNDED_NETWORK_PREFLIGHT_FILES, "requirements.txt")
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert (
         sel["test_selection_reason"]
         == "bounded_network_testnet_preflight_foreign_path_requires_full"
@@ -3126,7 +3152,7 @@ def test_selector_bounded_network_preflight_rebundle_with_ci_policy_focused() ->
         "config/ci/file_category_mapping.yaml",
         "tests/ci/test_ci_diff_aware_test_selection_v1.py",
     )
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "bounded_network_testnet_preflight_focused"
     targets = _targets(sel)
     assert targets == [
@@ -3149,7 +3175,7 @@ RUNTIME_WALLCLOCK_EVIDENCE_EMITTER_FILES: tuple[str, ...] = (
 
 def test_selector_runtime_wallclock_evidence_emitter_owner_pair_focused() -> None:
     sel = _run_selector(*RUNTIME_WALLCLOCK_EVIDENCE_EMITTER_FILES)
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "runtime_wallclock_evidence_emitter_focused"
     assert sel["tests_execute_full"] == "false"
     assert sel["tests_execute_focused"] == "true"
@@ -3162,7 +3188,7 @@ def test_selector_runtime_wallclock_evidence_emitter_owner_pair_focused() -> Non
 
 def test_selector_runtime_wallclock_evidence_emitter_owner_without_test_owner_full() -> None:
     sel = _run_selector(RUNTIME_WALLCLOCK_EVIDENCE_EMITTER_FILES[0])
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert (
         sel["test_selection_reason"]
         == "runtime_wallclock_evidence_emitter_incomplete_or_missing_test_owner"
@@ -3174,7 +3200,7 @@ def test_selector_runtime_wallclock_evidence_emitter_plus_foreign_src_full() -> 
         *RUNTIME_WALLCLOCK_EVIDENCE_EMITTER_FILES,
         "src/execution/live/orchestrator.py",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert (
         sel["test_selection_reason"]
         == "runtime_wallclock_evidence_emitter_foreign_path_requires_full"
@@ -3183,7 +3209,7 @@ def test_selector_runtime_wallclock_evidence_emitter_plus_foreign_src_full() -> 
 
 def test_selector_runtime_wallclock_evidence_emitter_plus_dependency_full() -> None:
     sel = _run_selector(*RUNTIME_WALLCLOCK_EVIDENCE_EMITTER_FILES, "requirements.txt")
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert (
         sel["test_selection_reason"]
         == "runtime_wallclock_evidence_emitter_foreign_path_requires_full"
@@ -3196,7 +3222,7 @@ def test_selector_runtime_wallclock_evidence_emitter_four_file_bundle_focused() 
         "scripts/ops/ci_test_selection_v1.py",
         "tests/ci/test_ci_diff_aware_test_selection_v1.py",
     )
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "runtime_wallclock_evidence_emitter_focused"
     targets = _targets(sel)
     assert RUNTIME_WALLCLOCK_EVIDENCE_EMITTER_FILES[1] in targets
@@ -3231,7 +3257,7 @@ TESTNET_WALLCLOCK_DURATION_EVIDENCE_FILES: tuple[str, ...] = (
 
 def test_selector_testnet_wallclock_duration_evidence_owner_pair_focused() -> None:
     sel = _run_selector(*TESTNET_WALLCLOCK_DURATION_EVIDENCE_FILES)
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "testnet_wallclock_duration_evidence_focused"
     assert sel["tests_execute_full"] == "false"
     assert sel["tests_execute_focused"] == "true"
@@ -3243,7 +3269,7 @@ def test_selector_testnet_wallclock_duration_evidence_owner_pair_focused() -> No
 
 def test_selector_testnet_wallclock_duration_evidence_owner_without_test_owner_full() -> None:
     sel = _run_selector(TESTNET_WALLCLOCK_DURATION_EVIDENCE_FILES[0])
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert (
         sel["test_selection_reason"]
         == "testnet_wallclock_duration_evidence_incomplete_or_missing_test_owner"
@@ -3255,7 +3281,7 @@ def test_selector_testnet_wallclock_duration_evidence_plus_foreign_src_full() ->
         *TESTNET_WALLCLOCK_DURATION_EVIDENCE_FILES,
         "src/execution/live/orchestrator.py",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert (
         sel["test_selection_reason"]
         == "testnet_wallclock_duration_evidence_foreign_path_requires_full"
@@ -3264,7 +3290,7 @@ def test_selector_testnet_wallclock_duration_evidence_plus_foreign_src_full() ->
 
 def test_selector_testnet_wallclock_duration_evidence_plus_dependency_full() -> None:
     sel = _run_selector(*TESTNET_WALLCLOCK_DURATION_EVIDENCE_FILES, "requirements.txt")
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert (
         sel["test_selection_reason"]
         == "testnet_wallclock_duration_evidence_foreign_path_requires_full"
@@ -3277,7 +3303,7 @@ def test_selector_testnet_wallclock_duration_evidence_four_file_bundle_focused()
         "scripts/ops/ci_test_selection_v1.py",
         "tests/ci/test_ci_diff_aware_test_selection_v1.py",
     )
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "testnet_wallclock_duration_evidence_focused"
     targets = _targets(sel)
     assert TESTNET_WALLCLOCK_DURATION_EVIDENCE_FILES[1] in targets
@@ -3331,13 +3357,13 @@ def test_selector_wallclock_field_name_paired_rewire_not_broad_tests_ops_selecti
 
 def test_selector_wallclock_field_name_paired_rewire_testnet_only_unchanged() -> None:
     sel = _run_selector(WALLCLOCK_FIELD_NAME_PAIRED_REWIRE_FILES[0])
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "testnet_wallclock_duration_evidence_focused"
 
 
 def test_selector_wallclock_field_name_paired_rewire_shadow_only_unchanged() -> None:
     sel = _run_selector(SHADOW_WALLCLOCK_DURATION_EVIDENCE_TEST_OWNER)
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "wallclock_focused"
 
 
@@ -3346,8 +3372,9 @@ def test_selector_wallclock_field_name_paired_rewire_plus_foreign_test_full() ->
         *WALLCLOCK_FIELD_NAME_PAIRED_REWIRE_FILES,
         "tests/ops/test_bounded_network_testnet_preflight_contract_v0.py",
     )
-    assert sel["test_selection_mode"] == "FULL"
-    assert sel["tests_execute_full"] == "true"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    assert sel["tests_execute_pr_bounded_full"] == "true"
+    assert sel["tests_execute_full"] == "false"
     assert sel["test_selection_reason"] != "wallclock_field_name_paired_rewire_no_op"
 
 
@@ -3356,7 +3383,7 @@ def test_selector_wallclock_field_name_paired_rewire_plus_src_full() -> None:
         *WALLCLOCK_FIELD_NAME_PAIRED_REWIRE_FILES,
         "src/ops/testnet_wallclock_duration_evidence_contract_v0.py",
     )
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert (
         sel["test_selection_reason"]
         == "testnet_wallclock_duration_evidence_foreign_path_requires_full"
@@ -3365,7 +3392,7 @@ def test_selector_wallclock_field_name_paired_rewire_plus_src_full() -> None:
 
 def test_selector_wallclock_field_name_paired_rewire_plus_dependency_full() -> None:
     sel = _run_selector(*WALLCLOCK_FIELD_NAME_PAIRED_REWIRE_FILES, "requirements.txt")
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert (
         sel["test_selection_reason"]
         == "testnet_wallclock_duration_evidence_foreign_path_requires_full"
@@ -3377,8 +3404,9 @@ def test_selector_wallclock_field_name_paired_rewire_plus_third_wallclock_test_f
         *WALLCLOCK_FIELD_NAME_PAIRED_REWIRE_FILES,
         "tests/ops/test_runtime_wallclock_evidence_emitter_contract_v0.py",
     )
-    assert sel["test_selection_mode"] == "FULL"
-    assert sel["tests_execute_full"] == "true"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    assert sel["tests_execute_pr_bounded_full"] == "true"
+    assert sel["tests_execute_full"] == "false"
     assert sel["test_selection_reason"] != "wallclock_field_name_paired_rewire_no_op"
 
 
@@ -3397,7 +3425,7 @@ def test_selector_ci_fix_diff_ci_bootstrap_focused() -> None:
         "scripts/ops/ci_test_selection_v1.py",
         "tests/ci/test_ci_diff_aware_test_selection_v1.py",
     )
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "ci_bootstrap_focused"
     assert sel["tests_execute_full"] == "false"
 
@@ -3512,11 +3540,9 @@ def test_matrix_contract_pr4548_full_rebundle_contract_focused() -> None:
     assert sel["matrix_contract_reason"] == "matrix_contract_rebundle_complete"
     assert sel["matrix_contract_rebundle_id"] == "ci_workflow_selector_contract_rebundle_v1"
     assert sel["tests_execute_matrix_contract_focused"] == "true"
-    assert sel["test_selection_mode"] == "FOCUSED"
-    assert sel["tests_execute_full"] == "false"
-    assert sel["tests_execute_focused"] == "true"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    assert sel["tests_execute_pr_bounded_full"] == "true"
     assert _matrix_targets(sel) == _PR4548_MATRIX_EXPECTED_TARGETS
-    assert _targets(sel) == _PR4548_MATRIX_EXPECTED_TARGETS
 
 
 def test_matrix_contract_cursor_auto_pr_only_contract_focused() -> None:
@@ -3540,25 +3566,25 @@ def test_matrix_contract_both_workflow_groups_contract_focused() -> None:
 def test_matrix_contract_unknown_extra_path_full() -> None:
     sel = _run_selector(*_PR4548_MATRIX_REBUNDLE_FILES, "misc/unmapped.bin")
     assert sel["matrix_contract_mode"] == "MATRIX_UNMAPPED"
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
 
 
 def test_matrix_contract_production_path_full() -> None:
     sel = _run_selector(*_PR4548_MATRIX_REBUNDLE_FILES, "src/core/foo.py")
     assert sel["matrix_contract_mode"] == "MATRIX_UNMAPPED"
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
 
 
 def test_matrix_contract_dependency_path_full() -> None:
     sel = _run_selector(*_PR4548_MATRIX_REBUNDLE_FILES, "requirements.txt")
     assert sel["matrix_contract_mode"] == "MATRIX_UNMAPPED"
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
 
 
 def test_matrix_contract_shared_fixture_path_full() -> None:
     sel = _run_selector(*_PR4548_MATRIX_REBUNDLE_FILES, "tests/fixtures/example.json")
     assert sel["matrix_contract_mode"] == "MATRIX_UNMAPPED"
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
 
 
 def test_matrix_contract_selector_without_selector_test_full() -> None:
@@ -3568,7 +3594,7 @@ def test_matrix_contract_selector_without_selector_test_full() -> None:
     )
     assert sel["matrix_contract_mode"] == "MATRIX_UNMAPPED"
     assert sel["matrix_contract_reason"] == "matrix_contract_central_wiring_defer_to_ci_infra"
-    assert sel["test_selection_mode"] == "FULL"
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
 
 
 def test_matrix_contract_ci_yml_without_selector_test_unmapped() -> None:
@@ -3584,8 +3610,8 @@ def test_matrix_contract_ci_infra_subset_not_overridden() -> None:
         "tests/ci/test_ci_diff_aware_test_selection_v1.py",
     )
     assert sel["matrix_contract_mode"] == "MATRIX_UNMAPPED"
-    assert sel["test_selection_reason"] == "ci_infra_focused"
-    assert "tests/ci/test_workflows_no_pull_request_target_contract_v0.py" in _targets(sel)
+    assert sel["test_selection_reason"] == "selector_self_change_bootstrap"
+    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" in sel["pr_bounded_pytest_targets"]
 
 
 def test_matrix_contract_workflow_without_test_owner_full() -> None:
@@ -3601,7 +3627,7 @@ def test_matrix_contract_selector_self_change_full() -> None:
     )
     assert sel["matrix_contract_mode"] == "MATRIX_FULL"
     assert sel["matrix_contract_reason"] == "matrix_contract_selector_self_change_requires_full"
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "ci_bootstrap_focused"
 
 
@@ -3612,7 +3638,7 @@ def test_matrix_contract_arbitrary_selector_change_outside_rebundle_full() -> No
         "tests/ci/test_ci_diff_aware_test_selection_v1.py",
     )
     assert sel["matrix_contract_mode"] == "MATRIX_UNMAPPED"
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
 
 
 def test_matrix_contract_selection_order_independent() -> None:
@@ -3640,3 +3666,56 @@ def test_fast_lane_contract_focused_step_wired_in_ci_yml() -> None:
     assert "Workflow contract tests (diff-aware CONTRACT_FOCUSED)" in text
     assert "fast_lane_contract_mode == 'CONTRACT_FOCUSED'" in text
     assert "fast_lane_contract_pytest_targets" in text
+
+
+def test_selector_schedule_exhaustive_full() -> None:
+    sel = _run_selector(event_name="schedule")
+    assert sel["test_selection_mode"] == "EXHAUSTIVE_FULL"
+    assert sel["tests_execute_exhaustive_full"] == "true"
+    assert sel["tests_execute_pr_bounded_full"] == "false"
+
+
+def test_selector_pull_request_never_exhaustive_full() -> None:
+    sel = _run_selector("src/strategies/__init__.py", event_name="pull_request")
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    assert sel["tests_execute_exhaustive_full"] == "false"
+
+
+def test_selector_workflow_dispatch_without_exhaustive_not_exhaustive() -> None:
+    sel = _run_selector("src/strategies/__init__.py", event_name="workflow_dispatch")
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    assert sel["tests_execute_exhaustive_full"] == "false"
+
+
+def test_selector_workflow_dispatch_explicit_exhaustive() -> None:
+    sel = _run_selector(event_name="workflow_dispatch", force_full=True)
+    assert sel["test_selection_mode"] == "EXHAUSTIVE_FULL"
+    assert sel["tests_execute_exhaustive_full"] == "true"
+
+
+def test_selector_bootstrap_self_change_pr_bounded_full() -> None:
+    sel = _run_selector(
+        "scripts/ops/ci_test_selection_v1.py",
+        ".github/workflows/ci.yml",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    )
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    assert sel["test_selection_reason"] == "selector_self_change_bootstrap"
+    assert sel["tests_execute_pr_bounded_full"] == "true"
+    assert sel["pr_bounded_pytest_targets"]
+
+
+def test_pr_bounded_full_targets_nonempty() -> None:
+    sel = _run_selector("misc/unknown.bin")
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    assert sel["pr_bounded_pytest_targets"]
+
+
+def test_tests_job_has_pr_bounded_full_step() -> None:
+    text = _ci_text()
+    assert "Run PR_BOUNDED_FULL tests (matrix)" in text
+    bounded_block = text.split("Run PR_BOUNDED_FULL tests (matrix)", 1)[1].split(
+        "Run EXHAUSTIVE_FULL test suite", 1
+    )[0]
+    assert 'pytest tests/"' not in bounded_block
+    assert "pytest tests/ -v" not in bounded_block

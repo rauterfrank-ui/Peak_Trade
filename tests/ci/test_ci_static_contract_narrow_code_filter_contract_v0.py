@@ -349,15 +349,15 @@ def test_matrix_jobs_keep_no_job_level_if_and_short_circuit_skip() -> None:
     assert "name: tests (${{ matrix.python-version }})" in text
     assert "NO_OP — skip full matrix tests (diff-aware)" in text
     assert "IMPORTANT: No job-level if condition - matrix jobs must always be created" in text
-    assert "Skip strategy smoke (NO_OP/FOCUSED diff-aware)" in text
+    assert "Skip strategy smoke (not EXHAUSTIVE_FULL)" in text
     assert "needs.changes.outputs.tests_execute_no_op == 'true'" in text
-    assert "needs.changes.outputs.tests_execute_full == 'true'" in text
+    assert "needs.changes.outputs.tests_execute_exhaustive_full == 'true'" in text
 
 
 def test_strategy_smoke_gated_on_tests_execute_full_not_code_changed() -> None:
     text = _ci_text()
     assert "name: strategy-smoke" in text
-    assert "needs.changes.outputs.tests_execute_full == 'true'" in text
+    assert "needs.changes.outputs.tests_execute_exhaustive_full == 'true'" in text
     assert "needs.changes.outputs.code_changed == 'true'" not in text
 
 
