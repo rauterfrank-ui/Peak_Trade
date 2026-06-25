@@ -275,3 +275,47 @@ def test_reduce_position_split_closes_match_single_close_total_realized() -> Non
     assert via_split.realized_pnl == via_full.realized_pnl
     assert via_split.fees_paid == via_full.fees_paid
     assert via_split.qty == via_full.qty == Decimal("0")
+
+
+def _wallet_equity_end(*, start: Decimal, position: FuturesPosition) -> Decimal:
+    return start + position.realized_pnl + position.funding_pnl - position.fees_paid
+
+
+def test_wallet_equity_identity_split_close_matches_single_close() -> None:
+    """P1-5 optional: split-close wallet identity equals single-close total."""
+    wallet_start = Decimal("8000")
+    close_price = Decimal("118")
+    fee_each = Decimal("0.5")
+    fee_total = Decimal("1")
+    pos = FuturesPosition(
+        symbol="P",
+        side=FuturesSide.LONG,
+        qty=Decimal("2"),
+        entry_price=Decimal("100"),
+        mark_price=Decimal("110"),
+        realized_pnl=Decimal("0"),
+        funding_pnl=Decimal("0"),
+    )
+    via_split = reduce_position(
+        reduce_position(
+            pos,
+            contract_size=Decimal("1"),
+            close_qty=Decimal("1"),
+            close_price=close_price,
+            fee_quote=fee_each,
+        ),
+        contract_size=Decimal("1"),
+        close_qty=Decimal("1"),
+        close_price=close_price,
+        fee_quote=fee_each,
+    )
+    via_full = reduce_position(
+        pos,
+        contract_size=Decimal("1"),
+        close_qty=Decimal("2"),
+        close_price=close_price,
+        fee_quote=fee_total,
+    )
+    assert _wallet_equity_end(start=wallet_start, position=via_split) == _wallet_equity_end(
+        start=wallet_start, position=via_full
+    )
