@@ -1239,11 +1239,10 @@ def test_selector_pe55_fill_rebinding_bounded_focused_targets() -> None:
     assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "durable_completion_focused"
     targets = _targets(sel)
-    assert "tests/ops/test_durable_completion_validation_graph_v1.py" in targets
-    assert (
-        "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py"
-        in targets
-    )
+    assert any(t.startswith(f"{_GRAPH_OWNER}::") for t in targets)
+    assert any(t.startswith(f"{_INTEGRATION_OWNER}::") for t in targets)
+    assert _GRAPH_OWNER not in targets
+    assert _INTEGRATION_OWNER not in targets
     assert sel["tests_execute_full"] == "false"
     assert sel["tests_execute_no_op"] == "false"
 
@@ -1293,11 +1292,10 @@ def test_selector_pe56_graph_wiring_rebinding_bounded_focused_targets() -> None:
     assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "durable_completion_focused"
     targets = _targets(sel)
-    assert "tests/ops/test_durable_completion_validation_graph_v1.py" in targets
-    assert (
-        "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py"
-        in targets
-    )
+    assert any(t.startswith(f"{_GRAPH_OWNER}::") for t in targets)
+    assert any(t.startswith(f"{_INTEGRATION_OWNER}::") for t in targets)
+    assert _GRAPH_OWNER not in targets
+    assert _INTEGRATION_OWNER not in targets
     assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" in targets
 
 
@@ -1314,11 +1312,8 @@ def test_selector_pe60_completion_chain_delegation_rebinding_bounded_focused_tar
     assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "durable_completion_focused"
     targets = _targets(sel)
-    assert "tests/ops/test_durable_completion_validation_graph_v1.py" in targets
-    assert (
-        "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py"
-        in targets
-    )
+    assert _INTEGRATION_OWNER not in targets
+    assert any(t.startswith(f"{_INTEGRATION_OWNER}::") for t in targets)
     assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" in targets
     assert sel["tests_execute_full"] == "false"
     assert sel["tests_execute_no_op"] == "false"
@@ -1382,7 +1377,9 @@ def test_selector_glb019_graph_wiring_still_selects_integration_owner() -> None:
         _GRAPH_OWNER,
     )
     assert sel["test_selection_reason"] == "durable_completion_focused"
-    assert _INTEGRATION_OWNER in _targets(sel)
+    targets = _targets(sel)
+    assert any(t.startswith(f"{_INTEGRATION_OWNER}::") for t in targets)
+    assert _INTEGRATION_OWNER not in targets
 
 
 def test_integration_partition_inventory_covers_all_nodes() -> None:
@@ -1394,7 +1391,7 @@ def test_integration_partition_inventory_covers_all_nodes() -> None:
     )
 
     nodes = collect_integration_owner_node_ids()
-    assert len(nodes) == 246
+    assert len(nodes) == 257
     inventory = integration_partition_inventory()
     assert set(inventory) <= set(ALL_PARTITIONS)
     covered = [node for part in inventory.values() for node in part]
@@ -1402,6 +1399,76 @@ def test_integration_partition_inventory_covers_all_nodes() -> None:
     assert len(set(covered)) == len(nodes)
     for node in nodes:
         assert classify_integration_node_id(node) in inventory
+
+
+PR4550_CROSS_SLICE_DIFF = (
+    "src/ops/bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
+    "src/ops/durable_completion_validation/graph.py",
+    "src/ops/durable_completion_validation/validators/__init__.py",
+    "src/ops/durable_completion_validation/validators/completion_chain.py",
+    "src/ops/durable_completion_validation/validators/cross_slice_coherence.py",
+    "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
+    "tests/ops/test_durable_completion_validation_graph_v1.py",
+)
+
+
+def test_selector_pr4550_cross_slice_coherence_bounded_node_ids() -> None:
+    sel = _run_selector(*PR4550_CROSS_SLICE_DIFF)
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
+    assert sel["test_selection_reason"] == "durable_completion_focused"
+    assert sel["tests_execute_exhaustive_full"] == "false"
+    targets = _targets(sel)
+    assert _GRAPH_OWNER not in targets
+    assert _CI_OWNER in targets
+    assert _INTEGRATION_OWNER not in targets
+    assert any(
+        "::test_pe33_cross_slice_coherence_bound_in_completion_happy_path" in t for t in targets
+    )
+    assert any("::test_pe33_proof_digest_chain_drift_fails" in t for t in targets)
+    pe33_targets = [t for t in targets if t.startswith(_INTEGRATION_OWNER + "::")]
+    assert len(pe33_targets) == 5
+    assert all("::test_pe33_" in t for t in pe33_targets)
+
+
+def test_selector_pr4550_fast_lane_durable_completion_bounded() -> None:
+    sel = _run_selector(*PR4550_CROSS_SLICE_DIFF)
+    assert sel["fast_lane_contract_mode"] == "DURABLE_COMPLETION_BOUNDED"
+    assert sel["fast_lane_contract_reason"] == "durable_completion_bounded_partition"
+    fast_lane_targets = _fast_lane_targets(sel)
+    pe33_targets = [t for t in fast_lane_targets if "::test_pe33_" in t]
+    graph_targets = [t for t in fast_lane_targets if t.startswith(_GRAPH_OWNER + "::")]
+    assert len(pe33_targets) == 5
+    assert len(graph_targets) == 3
+    assert _INTEGRATION_OWNER not in fast_lane_targets
+    assert _GRAPH_OWNER not in fast_lane_targets
+    assert len(fast_lane_targets) <= 10
+
+
+def test_selector_pr4550_matrix_contract_focused_not_exhaustive() -> None:
+    sel = _run_selector(*PR4550_CROSS_SLICE_DIFF)
+    assert sel["tests_execute_exhaustive_full"] == "false"
+    assert sel["tests_execute_pr_bounded_full"] == "false"
+    assert sel["tests_execute_contract_focused"] == "true"
+    targets = _targets(sel)
+    assert _INTEGRATION_OWNER not in targets
+    assert sum(1 for t in targets if "::test_pe33_" in t) == 5
+
+
+def test_selector_pe33_nodes_classified_in_inventory() -> None:
+    from scripts.ops.durable_completion_integration_partitions_v0 import (
+        PE33_PR_SMOKE_NODE_IDS,
+        classify_integration_node_id,
+        integration_partition_inventory,
+    )
+
+    inventory = integration_partition_inventory()
+    for node in PE33_PR_SMOKE_NODE_IDS:
+        assert classify_integration_node_id(node) == "pe33_pr_smoke"
+        assert node in inventory["pe33_pr_smoke"]
+    assert (
+        classify_integration_node_id("test_pe33_invalid_proof_lifecycle_states_fail[stale]")
+        == "pe33_cross_slice_exhaustive"
+    )
 
 
 def test_selector_pe21_prod_owner_partitioned_integration_nodes() -> None:
@@ -1412,7 +1479,8 @@ def test_selector_pe21_prod_owner_partitioned_integration_nodes() -> None:
     assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "durable_completion_focused"
     targets = _targets(sel)
-    assert _GRAPH_OWNER in targets
+    assert any(t.startswith(f"{_GRAPH_OWNER}::") for t in targets)
+    assert _GRAPH_OWNER not in targets
     assert _INTEGRATION_OWNER not in targets
     assert any(t.startswith(f"{_INTEGRATION_OWNER}::test_pe21") for t in targets)
     assert any("test_reconciliation_result_" in t for t in targets)
@@ -1465,7 +1533,9 @@ def test_selector_glb019_mixed_validation_and_facade_selects_integration_owner()
         _GRAPH_OWNER,
     )
     assert sel["test_selection_reason"] == "durable_completion_focused"
-    assert _INTEGRATION_OWNER in _targets(sel)
+    targets = _targets(sel)
+    assert any(t.startswith(f"{_INTEGRATION_OWNER}::") for t in targets)
+    assert _INTEGRATION_OWNER not in targets
 
 
 from scripts.ops.durable_completion_integration_partitions_v0 import (
@@ -2313,8 +2383,10 @@ def test_selector_durable_completion_foreign_production_change_stays_broad() -> 
     )
     assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     targets = _targets(sel)
-    assert _COMPLETION_OWNER in targets
-    assert _GRAPH_OWNER in targets
+    assert any(t.startswith(f"{_COMPLETION_OWNER}::") for t in targets)
+    assert any(t.startswith(f"{_GRAPH_OWNER}::") for t in targets)
+    assert _COMPLETION_OWNER not in targets
+    assert _GRAPH_OWNER not in targets
 
 
 def test_selector_pr4504_wallclock_binding_plus_foreign_file_full() -> None:
@@ -2352,8 +2424,10 @@ def test_selector_durable_completion_validator_rebinding_rules_unchanged() -> No
     sel = _run_selector(*PE55_DURABLE_COMPLETION_FILL_REBINDING_FILES)
     assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     targets = _targets(sel)
-    assert "tests/ops/test_durable_completion_validation_graph_v1.py" in targets
-    assert _INTEGRATION_OWNER in targets
+    assert any(t.startswith(f"{_GRAPH_OWNER}::") for t in targets)
+    assert any(t.startswith(f"{_INTEGRATION_OWNER}::") for t in targets)
+    assert _GRAPH_OWNER not in targets
+    assert _INTEGRATION_OWNER not in targets
 
 
 def test_fast_lane_skips_full_static_sweep_when_focused() -> None:

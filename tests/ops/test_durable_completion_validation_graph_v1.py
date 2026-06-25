@@ -21,6 +21,7 @@ from src.ops.durable_completion_validation.graph import (
     PROOF_BINDING_VALIDATION_GRAPH,
     PROOF_BINDING_VALIDATION_ORDER,
     VALIDATOR_COMPLETION_CHAIN,
+    VALIDATOR_CROSS_SLICE_COHERENCE,
     VALIDATOR_EVENT_STREAM,
     VALIDATOR_OPERATOR_CLOSURE,
     VALIDATOR_RECONCILIATION,
@@ -179,6 +180,9 @@ def test_graph_missing_dependency_is_fail_closed() -> None:
     validators = {
         VALIDATOR_RECONCILIATION: lambda _ctx: ValidationResult(),
         VALIDATOR_RECOVERY: failing_recovery,
+        VALIDATOR_CROSS_SLICE_COHERENCE: lambda _ctx: ValidationResult(
+            fail_reasons=("should not run",)
+        ),
         VALIDATOR_TRACEABILITY: lambda _ctx: ValidationResult(fail_reasons=("should not run",)),
         VALIDATOR_OPERATOR_CLOSURE: lambda _ctx: ValidationResult(fail_reasons=("should not run",)),
         VALIDATOR_WALLCLOCK: lambda _ctx: ValidationResult(),
@@ -206,6 +210,7 @@ def test_graph_exception_is_fail_closed() -> None:
     validators = {
         VALIDATOR_RECONCILIATION: exploding,
         VALIDATOR_RECOVERY: lambda _ctx: ValidationResult(),
+        VALIDATOR_CROSS_SLICE_COHERENCE: lambda _ctx: ValidationResult(),
         VALIDATOR_TRACEABILITY: lambda _ctx: ValidationResult(),
         VALIDATOR_OPERATOR_CLOSURE: lambda _ctx: ValidationResult(),
         VALIDATOR_WALLCLOCK: lambda _ctx: ValidationResult(),
@@ -224,6 +229,9 @@ def test_graph_aggregates_fail_reasons_from_executed_validators() -> None:
     validators = {
         VALIDATOR_RECONCILIATION: lambda _ctx: ValidationResult(fail_reasons=("alpha",)),
         VALIDATOR_RECOVERY: lambda _ctx: ValidationResult(fail_reasons=("beta",)),
+        VALIDATOR_CROSS_SLICE_COHERENCE: lambda _ctx: ValidationResult(
+            fail_reasons=("should not run",)
+        ),
         VALIDATOR_TRACEABILITY: lambda _ctx: ValidationResult(fail_reasons=("gamma",)),
         VALIDATOR_OPERATOR_CLOSURE: lambda _ctx: ValidationResult(fail_reasons=("delta",)),
         VALIDATOR_WALLCLOCK: lambda _ctx: ValidationResult(),
@@ -234,9 +242,10 @@ def test_graph_aggregates_fail_reasons_from_executed_validators() -> None:
     assert set(result.fail_reasons) == {
         "alpha",
         "beta",
+        "validation_graph: dependency failed for 'cross_slice_coherence': ['reconciliation']",
         "validation_graph: dependency failed for 'traceability': ['recovery']",
-        "validation_graph: dependency failed for 'operator_closure': ['traceability', 'recovery']",
-        "validation_graph: dependency failed for 'completion_chain': ['operator_closure', 'traceability', 'recovery']",
+        "validation_graph: dependency failed for 'operator_closure': ['traceability', 'recovery', 'cross_slice_coherence']",
+        "validation_graph: dependency failed for 'completion_chain': ['operator_closure', 'traceability', 'recovery', 'cross_slice_coherence']",
     }
 
 

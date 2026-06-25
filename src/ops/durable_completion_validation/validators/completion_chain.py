@@ -92,6 +92,8 @@ def validate_completion_proof_chain_binding(context: ValidationContext) -> Valid
     pe21_proof = integration_input.pe21_proof
     pe31_pe21_proof = integration_input.pe31_reconciliation_review_integration_input.pe21_reconciliation_primary_evidence_integration_proof
     pe38_proof = integration_input.pe38_readiness_review_integration_proof
+    pe33_proof = integration_input.pe33_cross_slice_proof_coherence_proof
+    pe33_input = integration_input.pe33_cross_slice_proof_coherence_integration_input
     wallclock_proof = integration_input.wallclock_evidence_proof
     checksum_by_path = {
         entry.relative_path: entry.digest for entry in integration_input.artifact_checksums
@@ -141,6 +143,18 @@ def validate_completion_proof_chain_binding(context: ValidationContext) -> Valid
         (
             "completion_referenced_pe38_readiness_review_proof_digest",
             chain.completion_referenced_pe38_readiness_review_proof_digest,
+        ),
+        (
+            "completion_referenced_pe33_integration_proof_digest",
+            chain.completion_referenced_pe33_integration_proof_digest,
+        ),
+        (
+            "completion_referenced_pe33_integration_input_digest",
+            chain.completion_referenced_pe33_integration_input_digest,
+        ),
+        (
+            "completion_referenced_pe33_pe25_slot_digest",
+            chain.completion_referenced_pe33_pe25_slot_digest,
         ),
     )
     for field_name, value in digest_fields:
@@ -224,6 +238,30 @@ def validate_completion_proof_chain_binding(context: ValidationContext) -> Valid
     ):
         fail_reasons.append(
             "completion_proof_chain: completion_referenced_pe38_readiness_review_proof_digest mismatch"
+        )
+    if (
+        chain.completion_referenced_pe33_integration_proof_digest
+        != pe33_proof.integration_proof_digest
+    ):
+        fail_reasons.append(
+            "completion_proof_chain: completion_referenced_pe33_integration_proof_digest mismatch"
+        )
+    if (
+        chain.completion_referenced_pe33_integration_input_digest
+        != pe33_proof.integration_input_digest
+    ):
+        fail_reasons.append(
+            "completion_proof_chain: completion_referenced_pe33_integration_input_digest mismatch"
+        )
+    pe25_slot_digest = next(
+        (slot.proof_digest for slot in pe33_input.proof_slots if slot.slot_id == "pe25"),
+        None,
+    )
+    if pe25_slot_digest is None:
+        fail_reasons.append("completion_proof_chain: PE-33 pe25 slot digest unavailable")
+    elif chain.completion_referenced_pe33_pe25_slot_digest != pe25_slot_digest:
+        fail_reasons.append(
+            "completion_proof_chain: completion_referenced_pe33_pe25_slot_digest mismatch"
         )
 
     fail_reasons.extend(_validate_master_v2_completion_chain_digest_binding(context))

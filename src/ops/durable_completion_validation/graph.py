@@ -10,6 +10,7 @@ from src.ops.durable_completion_validation.models import ValidationContext, Vali
 
 VALIDATOR_RECONCILIATION = "reconciliation"
 VALIDATOR_RECOVERY = "recovery"
+VALIDATOR_CROSS_SLICE_COHERENCE = "cross_slice_coherence"
 VALIDATOR_TRACEABILITY = "traceability"
 VALIDATOR_OPERATOR_CLOSURE = "operator_closure"
 VALIDATOR_WALLCLOCK = "wallclock"
@@ -19,14 +20,20 @@ VALIDATOR_COMPLETION_CHAIN = "completion_chain"
 PROOF_BINDING_VALIDATION_GRAPH: dict[str, tuple[str, ...]] = {
     VALIDATOR_RECONCILIATION: (),
     VALIDATOR_RECOVERY: (),
+    VALIDATOR_CROSS_SLICE_COHERENCE: (VALIDATOR_RECONCILIATION,),
     VALIDATOR_TRACEABILITY: (VALIDATOR_RECOVERY,),
-    VALIDATOR_OPERATOR_CLOSURE: (VALIDATOR_TRACEABILITY, VALIDATOR_RECOVERY),
+    VALIDATOR_OPERATOR_CLOSURE: (
+        VALIDATOR_TRACEABILITY,
+        VALIDATOR_RECOVERY,
+        VALIDATOR_CROSS_SLICE_COHERENCE,
+    ),
     VALIDATOR_WALLCLOCK: (),
     VALIDATOR_EVENT_STREAM: (),
     VALIDATOR_COMPLETION_CHAIN: (
         VALIDATOR_OPERATOR_CLOSURE,
         VALIDATOR_TRACEABILITY,
         VALIDATOR_RECOVERY,
+        VALIDATOR_CROSS_SLICE_COHERENCE,
         VALIDATOR_WALLCLOCK,
         VALIDATOR_EVENT_STREAM,
     ),
@@ -35,6 +42,7 @@ PROOF_BINDING_VALIDATION_GRAPH: dict[str, tuple[str, ...]] = {
 PROOF_BINDING_VALIDATION_ORDER: tuple[str, ...] = (
     VALIDATOR_RECONCILIATION,
     VALIDATOR_RECOVERY,
+    VALIDATOR_CROSS_SLICE_COHERENCE,
     VALIDATOR_TRACEABILITY,
     VALIDATOR_OPERATOR_CLOSURE,
     VALIDATOR_WALLCLOCK,
@@ -68,6 +76,7 @@ def proof_binding_validation_graph_is_cycle_free() -> bool:
 def _load_validators() -> dict[str, ValidatorFn]:
     from src.ops.durable_completion_validation.validators import (
         completion_chain,
+        cross_slice_coherence,
         event_stream,
         operator_closure,
         reconciliation,
@@ -79,6 +88,9 @@ def _load_validators() -> dict[str, ValidatorFn]:
     return {
         VALIDATOR_RECONCILIATION: reconciliation.validate_reconciliation_proof_binding,
         VALIDATOR_RECOVERY: recovery.validate_recovery_proof_binding,
+        VALIDATOR_CROSS_SLICE_COHERENCE: (
+            cross_slice_coherence.validate_pe33_cross_slice_proof_coherence
+        ),
         VALIDATOR_TRACEABILITY: traceability.validate_traceability_proof_binding,
         VALIDATOR_OPERATOR_CLOSURE: operator_closure.validate_operator_closure_proof_binding,
         VALIDATOR_WALLCLOCK: wallclock.validate_wallclock_proof_binding,

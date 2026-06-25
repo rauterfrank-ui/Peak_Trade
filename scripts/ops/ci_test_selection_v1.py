@@ -96,7 +96,10 @@ if str(_REPO_ROOT) not in sys.path:
 
 from scripts.ops.durable_completion_integration_partitions_v0 import (  # noqa: E402
     CI_GLB019_SYNTHETIC_PATCH_BUILDER,
+    CORE_ALWAYS_PARTITIONS,
     GLB019_A2B_ALLOWED_FILES,
+    PE33_EXHAUSTIVE_OWNER,
+    PE33_PR_SMOKE_NODE_IDS,
     INTEGRATION_TEST_OWNER,
     Glb019A2bChangeContractOutcome,
     Glb019A2bChangeContractResult,
@@ -104,6 +107,7 @@ from scripts.ops.durable_completion_integration_partitions_v0 import (  # noqa: 
     collect_glb019_a2b_patch_text,
     evaluate_glb019_a2b_change_contract,
     expand_partitions_to_pytest_targets,
+    expand_pe33_pr_smoke_pytest_targets,
     integration_owner_node_count,
     integration_partition_inventory,
     is_glb019_a2b_structural_contract_candidate,
@@ -193,6 +197,7 @@ DURABLE_COMPLETION_INTEGRATION_PE_PROD_PATHS = frozenset(
         "src/ops/bounded_futures_testnet_operator_review_admission_presentation_lifecycle_integration_contract_v0.py",
         "src/ops/bounded_futures_testnet_operator_review_chain_durable_evidence_traceability_boundary_contract_v0.py",
         "src/ops/bounded_futures_testnet_preflight_execution_readiness_review_lifecycle_integration_contract_v0.py",
+        "src/ops/bounded_futures_testnet_cross_slice_proof_coherence_integration_contract_v0.py",
         "src/ops/testnet_wallclock_duration_evidence_contract_v0.py",
         "src/ops/wallclock_session_evidence_v0.py",
     }
@@ -1170,12 +1175,89 @@ def _fast_lane_requires_full_static(path: str) -> bool:
     return False
 
 
+DURABLE_COMPLETION_FAST_LANE_GRAPH_STRUCTURE_NODE_IDS: tuple[str, ...] = (
+    f"{DURABLE_COMPLETION_VALIDATION_GRAPH_TEST_OWNER}::test_graph_is_cycle_free",
+    f"{DURABLE_COMPLETION_VALIDATION_GRAPH_TEST_OWNER}::test_graph_explicit_order_matches_dependencies",
+    f"{DURABLE_COMPLETION_VALIDATION_GRAPH_TEST_OWNER}::test_graph_aggregates_fail_reasons_from_executed_validators",
+)
+
+DURABLE_COMPLETION_FAST_LANE_SELECTOR_ANCHOR_NODE_IDS: tuple[str, ...] = (
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py::test_integration_partition_inventory_covers_all_nodes",
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py::test_selector_pr4550_cross_slice_coherence_bounded_node_ids",
+)
+
+
+def _durable_completion_pe33_pr_smoke_pytest_targets() -> tuple[str, ...]:
+    try:
+        return expand_pe33_pr_smoke_pytest_targets()
+    except (KeyError, RuntimeError, OSError, ValueError):
+        return ()
+
+
+def _durable_completion_normal_pr_graph_structure_targets() -> tuple[str, ...]:
+    return DURABLE_COMPLETION_FAST_LANE_GRAPH_STRUCTURE_NODE_IDS
+
+
+def _durable_completion_normal_pr_selector_anchor_targets() -> tuple[str, ...]:
+    return DURABLE_COMPLETION_FAST_LANE_SELECTOR_ANCHOR_NODE_IDS
+
+
+def _partition_selection_uses_pe33_pr_smoke(partition_selection: frozenset[str]) -> bool:
+    return "pe33_pr_smoke" in partition_selection
+
+
+def _durable_completion_fast_lane_bounded_targets(files: list[str]) -> tuple[str, ...]:
+    """Fast-Lane: PE-33 PR smoke nodes + 3 graph structure tests + selector anchors only."""
+    graph_owner = DURABLE_COMPLETION_VALIDATION_GRAPH_TEST_OWNER
+    selector_owner = "tests/ci/test_ci_diff_aware_test_selection_v1.py"
+    if not _repo_path_exists(graph_owner) or not _repo_path_exists(selector_owner):
+        return ()
+    for target in (
+        *_durable_completion_normal_pr_graph_structure_targets(),
+        *_durable_completion_normal_pr_selector_anchor_targets(),
+    ):
+        if not _repo_pytest_target_exists(target):
+            return ()
+    targets: set[str] = set(_durable_completion_normal_pr_graph_structure_targets())
+    targets.update(_durable_completion_normal_pr_selector_anchor_targets())
+    partition_selection = partitions_for_changed_files(files)
+    if partition_selection is None:
+        return ()
+    if _partition_selection_uses_pe33_pr_smoke(partition_selection):
+        smoke_targets = _durable_completion_pe33_pr_smoke_pytest_targets()
+        if not smoke_targets:
+            return ()
+        targets.update(smoke_targets)
+        return tuple(sorted(targets))
+    if not partition_selection:
+        return tuple(sorted(targets))
+    try:
+        if partition_union_node_count(partition_selection) >= integration_owner_node_count():
+            return ()
+        targets.update(expand_partitions_to_pytest_targets(partition_selection))
+    except (KeyError, RuntimeError, OSError, ValueError):
+        return ()
+    return tuple(sorted(targets))
+
+
 def resolve_fast_lane_contract_selection(files: list[str]) -> FastLaneContractSelection:
     normalized = sorted({f.strip() for f in files if f and f.strip()})
     substantive = [f for f in normalized if not _is_fast_lane_docs_noise(f)]
 
     if not substantive:
         return FastLaneContractSelection("NO_OP", "no_substantive_fast_lane_paths", ())
+
+    if _has_durable_completion_integration_partition_scope(substantive) and all(
+        _is_durable_completion_integration_partition_rebundle_path(f, files=substantive)
+        for f in substantive
+    ):
+        bounded_targets = _durable_completion_fast_lane_bounded_targets(substantive)
+        if bounded_targets:
+            return FastLaneContractSelection(
+                "DURABLE_COMPLETION_BOUNDED",
+                "durable_completion_bounded_partition",
+                bounded_targets,
+            )
 
     rebundle_only = all(f in FAST_LANE_CONTRACT_REBUNDLE_PATHS for f in substantive)
     if not rebundle_only and any(_fast_lane_requires_full_static(f) for f in substantive):
@@ -1574,29 +1656,54 @@ def _durable_completion_focused_targets(
         if not _repo_path_exists(path):
             return ()
     contract_test = "tests/ci/test_ci_diff_aware_test_selection_v1.py"
-    targets: list[str] = [graph_owner]
+    targets: list[str] = []
     if _repo_path_exists(contract_test):
         targets.append(contract_test)
     if not files:
         targets.append(DURABLE_COMPLETION_INTEGRATION_TEST_OWNER)
+        if _repo_path_exists(graph_owner):
+            targets.insert(0, graph_owner)
         return tuple(sorted(set(targets)))
     if any(
         path in files
         for path in (DURABLE_COMPLETION_GRAPH_WIRING_PATH, DURABLE_COMPLETION_PUBLIC_API_PATH)
     ):
+        partition_selection = partitions_for_changed_files(files)
+        if partition_selection is not None and partition_selection:
+            try:
+                if _partition_selection_uses_pe33_pr_smoke(partition_selection):
+                    targets.extend(_durable_completion_normal_pr_graph_structure_targets())
+                    targets.extend(_durable_completion_pe33_pr_smoke_pytest_targets())
+                    return tuple(sorted(set(targets)))
+                if partition_union_node_count(partition_selection) < integration_owner_node_count():
+                    targets.extend(_durable_completion_normal_pr_graph_structure_targets())
+                    targets.extend(expand_partitions_to_pytest_targets(partition_selection))
+                    return tuple(sorted(set(targets)))
+            except (KeyError, RuntimeError, OSError, ValueError):
+                return ()
         targets.append(DURABLE_COMPLETION_INTEGRATION_TEST_OWNER)
+        if _repo_path_exists(graph_owner):
+            targets.insert(0, graph_owner)
         return tuple(sorted(set(targets)))
     partition_selection = partitions_for_changed_files(files)
     if partition_selection is None:
         targets.append(DURABLE_COMPLETION_INTEGRATION_TEST_OWNER)
+        if _repo_path_exists(graph_owner):
+            targets.insert(0, graph_owner)
         return tuple(sorted(set(targets)))
     if not partition_selection:
+        targets.extend(_durable_completion_normal_pr_graph_structure_targets())
         return tuple(sorted(set(targets)))
     try:
+        if _partition_selection_uses_pe33_pr_smoke(partition_selection):
+            targets.extend(_durable_completion_normal_pr_graph_structure_targets())
+            targets.extend(_durable_completion_pe33_pr_smoke_pytest_targets())
+            return tuple(sorted(set(targets)))
         selected_nodes = partition_union_node_count(partition_selection)
         if selected_nodes >= integration_owner_node_count():
             targets.append(DURABLE_COMPLETION_INTEGRATION_TEST_OWNER)
         else:
+            targets.extend(_durable_completion_normal_pr_graph_structure_targets())
             targets.extend(expand_partitions_to_pytest_targets(partition_selection))
     except (KeyError, RuntimeError, OSError, ValueError):
         return ()

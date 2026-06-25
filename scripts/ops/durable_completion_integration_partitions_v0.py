@@ -33,6 +33,8 @@ ALL_PARTITIONS: Final[tuple[str, ...]] = (
     "core_cross_chain",
     "pe21_reconciliation",
     "pe31_review",
+    "pe33_pr_smoke",
+    "pe33_cross_slice_exhaustive",
     "pe22_risk_killswitch",
     "pe23_capital",
     "pe24_pilot",
@@ -42,6 +44,19 @@ ALL_PARTITIONS: Final[tuple[str, ...]] = (
     "pe38_readiness",
     "wallclock",
 )
+
+# Bounded normal-PR smoke for PE-33 cross-slice coherence (exhaustive remainder stays nightly/manual).
+PE33_PR_SMOKE_NODE_IDS: Final[tuple[str, ...]] = (
+    "test_pe33_cross_slice_coherence_bound_in_completion_happy_path",
+    "test_pe33_missing_integration_proof_digest_fails",
+    "test_pe33_proof_digest_chain_drift_fails",
+    "test_pe33_source_revision_mismatch_fails",
+    "test_pe33_invalid_proof_lifecycle_states_fail[revoked]",
+)
+
+PE33_EXHAUSTIVE_OWNER: Final = INTEGRATION_TEST_OWNER
+
+_PE33_PR_SMOKE_NODE_ID_SET: Final[frozenset[str]] = frozenset(PE33_PR_SMOKE_NODE_IDS)
 
 _NODE_ID_RE = re.compile(r"<Function (test_[^>]+)>")
 
@@ -119,6 +134,11 @@ def classify_integration_node_id(node_id: str) -> str:
     ):
         return "pe37_traceability"
 
+    if "pe33" in base or "cross_slice" in base:
+        if node_id in _PE33_PR_SMOKE_NODE_ID_SET:
+            return "pe33_pr_smoke"
+        return "pe33_cross_slice_exhaustive"
+
     if "pe25" in base:
         return "pe25_closure"
 
@@ -140,6 +160,7 @@ def classify_integration_node_id(node_id: str) -> str:
     if base.startswith("test_completion_proof_chain_"):
         for tag, partition in (
             ("pe31", "pe31_review"),
+            ("pe33", "pe33_pr_smoke"),
             ("pe22", "pe22_risk_killswitch"),
             ("pe23", "pe23_capital"),
             ("pe24", "pe24_pilot"),
@@ -220,6 +241,16 @@ def partition_union_node_count(partitions: frozenset[str]) -> int:
     return len(seen)
 
 
+def expand_pe33_pr_smoke_pytest_targets() -> tuple[str, ...]:
+    collected = frozenset(collect_integration_owner_node_ids())
+    missing = [node_id for node_id in PE33_PR_SMOKE_NODE_IDS if node_id not in collected]
+    if missing:
+        raise KeyError(f"missing PE-33 PR smoke node ids: {missing[:3]}")
+    return tuple(
+        sorted(f"{INTEGRATION_TEST_OWNER}::{node_id}" for node_id in PE33_PR_SMOKE_NODE_IDS)
+    )
+
+
 def expand_partitions_to_pytest_targets(partitions: frozenset[str]) -> tuple[str, ...]:
     inventory = integration_partition_inventory()
     node_ids: set[str] = set()
@@ -243,14 +274,13 @@ def partitions_for_changed_files(changed_files: list[str]) -> frozenset[str] | N
     files = frozenset(changed_files)
     partitions: set[str] = set(CORE_ALWAYS_PARTITIONS)
 
-    if INTEGRATION_TEST_OWNER in files:
-        return None
-
-    if COMPLETION_FACADE_PATH in files:
+    prod_files = {f for f in files if f.startswith("src/")}
+    if INTEGRATION_TEST_OWNER in files and not prod_files:
         return None
 
     integration_scoped = False
     graph_only = True
+    facade_in_files = COMPLETION_FACADE_PATH in files
 
     path_rules: tuple[tuple[str, str], ...] = (
         (
@@ -302,6 +332,10 @@ def partitions_for_changed_files(changed_files: list[str]) -> frozenset[str] | N
             "pe38_readiness",
         ),
         (
+            "src/ops/bounded_futures_testnet_cross_slice_proof_coherence_integration_contract_v0.py",
+            "pe33_pr_smoke",
+        ),
+        (
             "src/ops/testnet_wallclock_duration_evidence_contract_v0.py",
             "wallclock",
         ),
@@ -320,7 +354,17 @@ def partitions_for_changed_files(changed_files: list[str]) -> frozenset[str] | N
         ("src/ops/durable_completion_validation/validators/traceability.py", "pe37_traceability"),
         ("src/ops/durable_completion_validation/validators/operator_closure.py", "pe25_closure"),
         ("src/ops/durable_completion_validation/validators/event_stream.py", "pe38_readiness"),
+        (
+            "src/ops/durable_completion_validation/validators/cross_slice_coherence.py",
+            "pe33_pr_smoke",
+        ),
     )
+
+    completion_chain_validator = (
+        "src/ops/durable_completion_validation/validators/completion_chain.py"
+    )
+
+    pe33_pr_scoped = False
 
     for path, partition in path_rules:
         if path in files:
@@ -331,9 +375,18 @@ def partitions_for_changed_files(changed_files: list[str]) -> frozenset[str] | N
     for path, partition in validator_rules:
         if path in files:
             partitions.add(partition)
-            partitions.add("core_cross_chain")
+            if partition == "pe33_pr_smoke":
+                pe33_pr_scoped = True
+            elif partition != "pe33_pr_smoke":
+                partitions.add("core_cross_chain")
             integration_scoped = True
             graph_only = False
+
+    if completion_chain_validator in files:
+        integration_scoped = True
+        graph_only = False
+        if not pe33_pr_scoped:
+            partitions.add("core_cross_chain")
 
     dc_prefix = "src/ops/durable_completion_validation/"
     for path in files:
@@ -344,6 +397,10 @@ def partitions_for_changed_files(changed_files: list[str]) -> frozenset[str] | N
             continue
         if name in {"models.py", "identity.py", "__init__.py"}:
             if name == "__init__.py":
+                if path.endswith("validators/__init__.py"):
+                    integration_scoped = True
+                    graph_only = False
+                    continue
                 return None
             integration_scoped = True
             graph_only = False
@@ -352,10 +409,16 @@ def partitions_for_changed_files(changed_files: list[str]) -> frozenset[str] | N
         if name.startswith("validators/") or path.endswith(".py") and "/validators/" in path:
             continue
 
+    if facade_in_files and not integration_scoped:
+        return None
+
+    if pe33_pr_scoped:
+        return frozenset({"pe33_pr_smoke"})
+
     if not integration_scoped:
         return frozenset()
 
-    if len(partitions - set(CORE_ALWAYS_PARTITIONS)) > 3:
+    if len(partitions - set(CORE_ALWAYS_PARTITIONS)) > 3 and "pe33_pr_smoke" not in partitions:
         partitions.update({"core_baseline_input", "core_kwargs", "core_cross_chain"})
 
     return frozenset(partitions)

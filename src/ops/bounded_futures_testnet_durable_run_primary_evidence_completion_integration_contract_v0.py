@@ -130,7 +130,17 @@ from src.ops.bounded_futures_testnet_operator_closure_lifecycle_integration_cont
 from src.ops.bounded_futures_testnet_operator_review_handoff_boundary_contract_v0 import (
     CONTRACT_VERSION as PE34_CONTRACT_VERSION,
     HANDOFF_OWNER as PE34_HANDOFF_OWNER,
+    Pe33CoherenceProofBinding,
     compute_boundary_input_digest as compute_pe34_boundary_input_digest,
+)
+from src.ops.bounded_futures_testnet_cross_slice_proof_coherence_integration_contract_v0 import (
+    CONTRACT_VERSION as PE33_CONTRACT_VERSION,
+    COHERENCE_OWNER as PE33_COHERENCE_OWNER,
+    CrossSliceProofCoherenceIntegrationInput,
+    UpstreamDigestBinding,
+    compute_integration_input_digest as compute_pe33_integration_input_digest,
+    default_minimal_integration_input as default_minimal_pe33_integration_input,
+    evaluate_cross_slice_proof_coherence_integration,
 )
 from src.ops.bounded_futures_testnet_preflight_execution_readiness_review_lifecycle_integration_contract_v0 import (
     CONTRACT_VERSION as PE38_CONTRACT_VERSION,
@@ -201,6 +211,7 @@ PE34_INTEGRATION_OWNER = PE34_CONTRACT_VERSION
 PE36_INTEGRATION_OWNER = PE36_CONTRACT_VERSION
 PE37_INTEGRATION_OWNER = PE37_CONTRACT_VERSION
 PE25_INTEGRATION_OWNER = PE25_CONTRACT_VERSION
+PE33_INTEGRATION_OWNER = PE33_CONTRACT_VERSION
 PE38_INTEGRATION_OWNER = PE38_CONTRACT_VERSION
 GAP4_COMPLETION_OWNER = "tests/ops/test_gap4_output_evidence_paths_contract_v0.py"
 GAP2A1_ENFORCEMENT_OWNER = "tests/ops/test_gap2a1_primary_evidence_enforcement_contract_v0.py"
@@ -324,6 +335,7 @@ _EXPECTED_CONTRACT_VERSIONS: dict[str, str] = {
     "pe36_admission_presentation": PE36_CONTRACT_VERSION,
     "pe37_traceability": PE37_CONTRACT_VERSION,
     "pe38_readiness_review": PE38_CONTRACT_VERSION,
+    "pe33_cross_slice_proof_coherence": PE33_CONTRACT_VERSION,
     "pe25_operator_closure": PE25_CONTRACT_VERSION,
     "integration": CONTRACT_VERSION,
 }
@@ -344,6 +356,7 @@ class ContractVersionsInput:
     pe36_admission_presentation: str
     pe37_traceability: str
     pe38_readiness_review: str
+    pe33_cross_slice_proof_coherence: str
     pe25_operator_closure: str
     integration: str
 
@@ -615,6 +628,9 @@ class CompletionProofChainBinding:
     shared_traceability_identity: str
     completion_referenced_wallclock_evidence_digest: str
     completion_referenced_pe38_readiness_review_proof_digest: str
+    completion_referenced_pe33_integration_proof_digest: str
+    completion_referenced_pe33_integration_input_digest: str
+    completion_referenced_pe33_pe25_slot_digest: str
     completion_referenced_master_v2_decision_id: str | None = None
     completion_referenced_master_v2_decision_digest: str | None = None
     completion_referenced_selected_future_id: str | None = None
@@ -742,6 +758,9 @@ class DurableRunPrimaryEvidenceCompletionIntegrationInput:
     pe25_closure_integration_input: OperatorClosureLifecycleIntegrationInput
     pe25_operator_closure_proof: Pe25OperatorClosureLifecycleProofBinding
     pe25_proof_lifecycle: ProofLifecycleMetadata
+    pe33_cross_slice_proof_coherence_integration_input: CrossSliceProofCoherenceIntegrationInput
+    pe33_cross_slice_proof_coherence_proof: Pe33CoherenceProofBinding
+    pe33_proof_lifecycle: ProofLifecycleMetadata
     completion_proof_chain: CompletionProofChainBinding
     pe16_archive: Pe16ArchiveProofBinding
     manifest_proof: ManifestProofBinding
@@ -2380,6 +2399,16 @@ def validate_durable_run_primary_evidence_completion_integration_input(
         )
     fail_reasons.extend(validate_operator_closure_lifecycle_integration_input(pe25_input))
 
+    pe33_input = integration_input.pe33_cross_slice_proof_coherence_integration_input
+    if pe33_input.source_revision != integration_input.source_revision:
+        fail_reasons.append(
+            "pe33_cross_slice_proof_coherence_integration_input: source_revision mismatch with "
+            "completion input"
+        )
+    pe33_proof = integration_input.pe33_cross_slice_proof_coherence_proof
+    if pe33_proof.source_revision != integration_input.source_revision:
+        fail_reasons.append("pe33_cross_slice_proof_coherence_proof: source_revision mismatch")
+
     fail_reasons.extend(_validate_completion_proof_chain(integration_input))
 
     master_v2_binding = integration_input.master_v2_decision_state_digest_binding
@@ -2514,6 +2543,13 @@ def _integration_input_dict(
         ),
         "pe25_operator_closure_proof": asdict(integration_input.pe25_operator_closure_proof),
         "pe25_proof_lifecycle": asdict(integration_input.pe25_proof_lifecycle),
+        "pe33_integration_input_digest": compute_pe33_integration_input_digest(
+            integration_input.pe33_cross_slice_proof_coherence_integration_input
+        ),
+        "pe33_cross_slice_proof_coherence_proof": asdict(
+            integration_input.pe33_cross_slice_proof_coherence_proof
+        ),
+        "pe33_proof_lifecycle": asdict(integration_input.pe33_proof_lifecycle),
         "completion_proof_chain": asdict(integration_input.completion_proof_chain),
         "master_v2_decision_state_digest_binding": (
             asdict(integration_input.master_v2_decision_state_digest_binding)
@@ -2572,6 +2608,7 @@ def _integration_proof_dict(
         "pe34_handoff_bound": integration_pass,
         "pe35_staleness_revocation_recovery_bound": integration_pass,
         "pe36_admission_presentation_bound": integration_pass,
+        "pe33_cross_slice_proof_coherence_bound": integration_pass,
         "pe25_operator_closure_lifecycle_bound": integration_pass,
         "global_run_completion_readiness": GLOBAL_RUN_COMPLETION_READINESS,
         "integration_contract_version": CONTRACT_VERSION,
@@ -2711,6 +2748,9 @@ def evaluate_durable_run_primary_evidence_completion_integration(
     pe25_result = evaluate_operator_closure_lifecycle_integration(
         integration_input.pe25_closure_integration_input
     )
+    pe33_result = evaluate_cross_slice_proof_coherence_integration(
+        integration_input.pe33_cross_slice_proof_coherence_integration_input
+    )
     glb019_result = evaluate_glb019_event_stream_validation(
         integration_input.glb019_event_stream_validation_input
     )
@@ -2784,6 +2824,9 @@ def evaluate_durable_run_primary_evidence_completion_integration(
         "pe34_handoff_bound": bool(pe37_result.get("boundary_pass")),
         "pe35_staleness_revocation_recovery_bound": bool(pe37_result.get("proof_digests_coherent")),
         "pe36_admission_presentation_bound": bool(pe37_result.get("owner_identities_coherent")),
+        "pe33_cross_slice_proof_coherence_bound": bool(
+            pe33_result.get("cross_slice_proof_coherence_for_separate_operator_review")
+        ),
         "pe25_operator_closure_lifecycle_bound": bool(
             pe25_result.get("operator_closure_static_complete")
         ),
@@ -3150,6 +3193,93 @@ def _master_v2_completion_chain_references(
     }
 
 
+def _rebind_pe33_proof_slots_to_completion_digests(
+    slots: tuple[Any, ...],
+    *,
+    completion_digests: dict[str, str],
+) -> tuple[Any, ...]:
+    from src.ops.bounded_futures_testnet_cross_slice_proof_coherence_integration_contract_v0 import (
+        ProofSlotBinding,
+    )
+
+    slot_map: dict[str, ProofSlotBinding] = {slot.slot_id: slot for slot in slots}
+    for slot_id, digest in completion_digests.items():
+        if slot_id in slot_map:
+            slot_map[slot_id] = replace(slot_map[slot_id], proof_digest=digest)
+    rebound: list[ProofSlotBinding] = []
+    for slot_id in sorted(slot_map):
+        slot = slot_map[slot_id]
+        rebound.append(
+            replace(
+                slot,
+                upstream_bindings=tuple(
+                    UpstreamDigestBinding(
+                        upstream_slot_id=binding.upstream_slot_id,
+                        upstream_proof_digest=slot_map[binding.upstream_slot_id].proof_digest,
+                    )
+                    for binding in slot.upstream_bindings
+                ),
+            )
+        )
+    return tuple(rebound)
+
+
+def _build_pe33_integration_input_from_completion(
+    integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
+) -> CrossSliceProofCoherenceIntegrationInput:
+    """Build canonical PE-33 input with completion-bound PE-21..PE-32 slot digests."""
+    pe24_input = integration_input.pe24_pilot_envelope_lifecycle_integration_input
+    pe33_base = default_minimal_pe33_integration_input(
+        source_revision=integration_input.source_revision,
+        adapter_id=pe24_input.adapter_id,
+        instrument=pe24_input.instrument,
+        lifecycle_state_digest=integration_input.durable_run_root.run_root_digest,
+    )
+    completion_digests = {
+        "pe21": integration_input.pe21_proof.integration_proof_digest,
+        "pe22": integration_input.pe22_risk_killswitch_flatten_proof.integration_proof_digest,
+        "pe23": integration_input.pe23_capital_slot_ratchet_release_proof.integration_proof_digest,
+        "pe24": integration_input.pe24_pilot_envelope_lifecycle_proof.integration_proof_digest,
+        "pe25": integration_input.pe25_operator_closure_proof.closure_result_digest,
+        "pe31": integration_input.pe31_reconciliation_review_integration_proof.integration_proof_digest,
+    }
+    return replace(
+        pe33_base,
+        proof_slots=_rebind_pe33_proof_slots_to_completion_digests(
+            pe33_base.proof_slots,
+            completion_digests=completion_digests,
+        ),
+    )
+
+
+def _pe33_coherence_proof_from_result(
+    integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
+    *,
+    pe33_input: CrossSliceProofCoherenceIntegrationInput,
+    pe33_result: dict[str, Any],
+) -> Pe33CoherenceProofBinding:
+    return Pe33CoherenceProofBinding(
+        coherence_owner=PE33_COHERENCE_OWNER,
+        source_revision=integration_input.source_revision,
+        integration_input_digest=pe33_result["integration_input_digest"],
+        integration_proof_digest=pe33_result["integration_proof_digest"],
+        cross_slice_proof_coherence_for_separate_operator_review=pe33_result[
+            "cross_slice_proof_coherence_for_separate_operator_review"
+        ],
+        static_pe12_lifecycle_chain_complete=pe33_result["static_pe12_lifecycle_chain_complete"],
+        integration_pass=pe33_result["integration_pass"],
+    )
+
+
+def _pe33_pe25_slot_digest(
+    pe33_input: CrossSliceProofCoherenceIntegrationInput,
+) -> str:
+    for slot in pe33_input.proof_slots:
+        if slot.slot_id == "pe25":
+            return slot.proof_digest
+    raise ValueError("PE-33 pe25 slot digest required for completion binding")
+
+
 def default_minimal_completion_proof_chain(
     integration_input: DurableRunPrimaryEvidenceCompletionIntegrationInput,
 ) -> CompletionProofChainBinding:
@@ -3162,6 +3292,8 @@ def default_minimal_completion_proof_chain(
     pe37_proof = integration_input.pe37_traceability_proof
     pe25_proof = integration_input.pe25_operator_closure_proof
     pe21_proof = integration_input.pe21_proof
+    pe33_proof = integration_input.pe33_cross_slice_proof_coherence_proof
+    pe33_input = integration_input.pe33_cross_slice_proof_coherence_integration_input
     pe31_pe21_proof = integration_input.pe31_reconciliation_review_integration_input.pe21_reconciliation_primary_evidence_integration_proof
     master_v2_refs: dict[str, str] = {}
     if integration_input.master_v2_decision_state_digest_binding is not None:
@@ -3190,6 +3322,9 @@ def default_minimal_completion_proof_chain(
             artifact_checksums=integration_input.artifact_checksums,
         ),
         completion_referenced_pe38_readiness_review_proof_digest=pe38_proof.integration_proof_digest,
+        completion_referenced_pe33_integration_proof_digest=pe33_proof.integration_proof_digest,
+        completion_referenced_pe33_integration_input_digest=pe33_proof.integration_input_digest,
+        completion_referenced_pe33_pe25_slot_digest=_pe33_pe25_slot_digest(pe33_input),
         **master_v2_refs,
     )
 
@@ -3411,6 +3546,11 @@ def default_minimal_completion_integration_input(
         source_revision=source_revision,
         manifest_digest=manifest_digest,
     )
+    pe34_handoff = pe35_boundary_input.pe34_handoff
+    pe33_input = pe34_handoff.pe33_integration_input
+    pe33_proof = pe34_handoff.pe33_coherence_proof
+    if pe33_input is None:
+        raise ValueError("PE-34 handoff PE-33 integration input required for completion binding")
     pe35_proof = default_minimal_pe35_integration_proof(
         pe35_boundary_input,
         traceability_identity=run_root_digest,
@@ -3534,6 +3674,9 @@ def default_minimal_completion_integration_input(
             closure_coherence_proven=True,
         ),
         pe25_proof_lifecycle=ProofLifecycleMetadata(lifecycle_state=PROOF_LIFECYCLE_CURRENT),
+        pe33_cross_slice_proof_coherence_integration_input=pe33_input,
+        pe33_cross_slice_proof_coherence_proof=pe33_proof,
+        pe33_proof_lifecycle=ProofLifecycleMetadata(lifecycle_state=PROOF_LIFECYCLE_CURRENT),
         completion_proof_chain=CompletionProofChainBinding(
             completion_referenced_pe31_proof_digest=pe31_proof.integration_proof_digest,
             completion_referenced_pe22_proof_digest=pe22_result["integration_proof_digest"],
@@ -3559,6 +3702,9 @@ def default_minimal_completion_integration_input(
                 artifact_checksums=artifact_checksums,
             ),
             completion_referenced_pe38_readiness_review_proof_digest=pe38_proof.integration_proof_digest,
+            completion_referenced_pe33_integration_proof_digest=pe33_proof.integration_proof_digest,
+            completion_referenced_pe33_integration_input_digest=pe33_proof.integration_input_digest,
+            completion_referenced_pe33_pe25_slot_digest=_pe33_pe25_slot_digest(pe33_input),
         ),
         pe16_archive=Pe16ArchiveProofBinding(
             archive_owner=PE16_ARCHIVE_OWNER,
@@ -3621,6 +3767,7 @@ def default_minimal_completion_integration_input(
             pe36_admission_presentation=PE36_CONTRACT_VERSION,
             pe37_traceability=PE37_CONTRACT_VERSION,
             pe38_readiness_review=PE38_CONTRACT_VERSION,
+            pe33_cross_slice_proof_coherence=PE33_CONTRACT_VERSION,
             pe25_operator_closure=PE25_CONTRACT_VERSION,
             integration=CONTRACT_VERSION,
         ),
@@ -3649,7 +3796,19 @@ def default_minimal_completion_integration_input(
         draft,
         pe25_operator_closure_proof=pe25_proof,
     )
-    return replace(
+    pe33_input = _build_pe33_integration_input_from_completion(completed)
+    pe33_result = evaluate_cross_slice_proof_coherence_integration(pe33_input)
+    pe33_proof = _pe33_coherence_proof_from_result(
         completed,
-        completion_proof_chain=default_minimal_completion_proof_chain(completed),
+        pe33_input=pe33_input,
+        pe33_result=pe33_result,
+    )
+    fully_completed = replace(
+        completed,
+        pe33_cross_slice_proof_coherence_integration_input=pe33_input,
+        pe33_cross_slice_proof_coherence_proof=pe33_proof,
+    )
+    return replace(
+        fully_completed,
+        completion_proof_chain=default_minimal_completion_proof_chain(fully_completed),
     )
