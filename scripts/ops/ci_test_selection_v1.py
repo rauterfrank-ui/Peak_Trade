@@ -493,6 +493,38 @@ MASTER_V2_BINDING_CONTRACT_FOCUSED_TARGETS: tuple[str, ...] = (
     f"{MASTER_V2_BINDING_CONTRACT_GRAPH_TEST_OWNER}::test_legacy_ops_only_completion_chain_master_v2_binding_not_present",
 )
 
+MASTER_V2_ARITHMETIC_KERNEL_SEAM_FAIL_CLOSED_CONTRACT_TEST_OWNER = (
+    "tests/ops/test_master_v2_arithmetic_kernel_seam_fail_closed_contract_v0.py"
+)
+
+MASTER_V2_ARITHMETIC_KERNEL_SEAM_FAIL_CLOSED_CONTRACT_CI_POLICY_PATHS = frozenset(
+    {
+        "scripts/ops/ci_test_selection_v1.py",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    }
+)
+
+MASTER_V2_ARITHMETIC_KERNEL_SEAM_FAIL_CLOSED_CONTRACT_SCOPED_PATHS = frozenset(
+    {
+        MASTER_V2_ARITHMETIC_KERNEL_SEAM_FAIL_CLOSED_CONTRACT_TEST_OWNER,
+        *MASTER_V2_ARITHMETIC_KERNEL_SEAM_FAIL_CLOSED_CONTRACT_CI_POLICY_PATHS,
+    }
+)
+
+MASTER_V2_ARITHMETIC_KERNEL_SEAM_FAIL_CLOSED_CONTRACT_FOCUSED_NODES: tuple[str, ...] = (
+    f"{MASTER_V2_ARITHMETIC_KERNEL_SEAM_FAIL_CLOSED_CONTRACT_TEST_OWNER}::test_canonical_futures_accounting_kernel_identity_and_decimal_semantics",
+    f"{MASTER_V2_ARITHMETIC_KERNEL_SEAM_FAIL_CLOSED_CONTRACT_TEST_OWNER}::test_master_v2_completion_adapter_replay_paths_unwired_from_futures_accounting",
+    f"{MASTER_V2_ARITHMETIC_KERNEL_SEAM_FAIL_CLOSED_CONTRACT_TEST_OWNER}::test_completion_and_adapter_machine_summary_forbids_trading_arithmetic_proven_claims",
+    f"{MASTER_V2_ARITHMETIC_KERNEL_SEAM_FAIL_CLOSED_CONTRACT_TEST_OWNER}::test_zero_order_lifecycle_and_classification_do_not_imply_arithmetic_evidence",
+    f"{MASTER_V2_ARITHMETIC_KERNEL_SEAM_FAIL_CLOSED_CONTRACT_TEST_OWNER}::test_contract_is_non_authorizing",
+    f"{MASTER_V2_ARITHMETIC_KERNEL_SEAM_FAIL_CLOSED_CONTRACT_TEST_OWNER}::test_future_seam_must_reuse_decimal_kernel_without_formula_duplication",
+)
+
+MASTER_V2_ARITHMETIC_KERNEL_SEAM_FAIL_CLOSED_CONTRACT_CI_SELECTOR_TARGETS: tuple[str, ...] = (
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py::test_selector_master_v2_arithmetic_kernel_seam_fail_closed_contract_test_only_focused",
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py::test_selector_master_v2_arithmetic_kernel_seam_fail_closed_contract_foreign_path_escalates_full",
+)
+
 _PYTEST_NODE_ID = re.compile(r"^[A-Za-z0-9_\-]+(?:\[[^\]]+\])?$")
 
 DURABLE_COMPLETION_WALLCLOCK_BINDING_FOCUSED_TARGETS: tuple[str, ...] = (
@@ -2378,6 +2410,62 @@ def _try_master_v2_binding_contract_focused(files: list[str]) -> SelectionResult
     )
 
 
+def _is_master_v2_arithmetic_kernel_seam_scoped_path(path: str) -> bool:
+    return path in MASTER_V2_ARITHMETIC_KERNEL_SEAM_FAIL_CLOSED_CONTRACT_SCOPED_PATHS
+
+
+def _is_master_v2_arithmetic_kernel_seam_rebundle_path(path: str) -> bool:
+    return _is_master_v2_arithmetic_kernel_seam_scoped_path(path)
+
+
+def _is_master_v2_arithmetic_kernel_seam_scope(files: list[str]) -> bool:
+    if not files:
+        return False
+    files_set = set(files)
+    if MASTER_V2_ARITHMETIC_KERNEL_SEAM_FAIL_CLOSED_CONTRACT_TEST_OWNER not in files_set:
+        return False
+    return all(
+        path in MASTER_V2_ARITHMETIC_KERNEL_SEAM_FAIL_CLOSED_CONTRACT_SCOPED_PATHS for path in files
+    )
+
+
+def _master_v2_arithmetic_kernel_seam_focused_targets(
+    files: list[str] | None = None,
+) -> tuple[str, ...]:
+    if not _repo_path_exists(MASTER_V2_ARITHMETIC_KERNEL_SEAM_FAIL_CLOSED_CONTRACT_TEST_OWNER):
+        return ()
+    targets: list[str] = []
+    for node in MASTER_V2_ARITHMETIC_KERNEL_SEAM_FAIL_CLOSED_CONTRACT_FOCUSED_NODES:
+        if _repo_pytest_target_exists(node):
+            targets.append(node)
+    if len(targets) != len(MASTER_V2_ARITHMETIC_KERNEL_SEAM_FAIL_CLOSED_CONTRACT_FOCUSED_NODES):
+        return ()
+    if files and any(
+        path in MASTER_V2_ARITHMETIC_KERNEL_SEAM_FAIL_CLOSED_CONTRACT_CI_POLICY_PATHS
+        for path in files
+    ):
+        for ci_target in MASTER_V2_ARITHMETIC_KERNEL_SEAM_FAIL_CLOSED_CONTRACT_CI_SELECTOR_TARGETS:
+            if _repo_pytest_target_exists(ci_target):
+                targets.append(ci_target)
+    return tuple(sorted(set(targets)))
+
+
+def _try_master_v2_arithmetic_kernel_seam_fail_closed_contract_focused(
+    files: list[str],
+) -> SelectionResult | None:
+    if not _is_master_v2_arithmetic_kernel_seam_scope(files):
+        return None
+    targets = _master_v2_arithmetic_kernel_seam_focused_targets(files)
+    if not targets:
+        return None
+    return SelectionResult(
+        "FOCUSED",
+        "master_v2_arithmetic_kernel_seam_fail_closed_contract_focused",
+        targets,
+        ("src.execution.paper.futures_accounting",),
+    )
+
+
 def _is_master_v2_replay_display_projection_digest_completion_evidence_scope(
     files: list[str],
 ) -> bool:
@@ -3283,6 +3371,12 @@ def resolve_selection(
     if master_v2_binding is not None:
         return master_v2_binding
 
+    master_v2_arithmetic_kernel_seam = (
+        _try_master_v2_arithmetic_kernel_seam_fail_closed_contract_focused(normalized)
+    )
+    if master_v2_arithmetic_kernel_seam is not None:
+        return master_v2_arithmetic_kernel_seam
+
     master_v2_replay_display_projection = (
         _try_master_v2_replay_display_projection_digest_completion_evidence_focused(normalized)
     )
@@ -3447,6 +3541,19 @@ def resolve_selection(
         return SelectionResult(
             "FULL",
             "testnet_wallclock_duration_evidence_incomplete_or_missing_test_owner",
+            (),
+        )
+
+    if any(_is_master_v2_arithmetic_kernel_seam_scoped_path(f) for f in normalized):
+        if not all(_is_master_v2_arithmetic_kernel_seam_rebundle_path(f) for f in normalized):
+            return SelectionResult(
+                "FULL",
+                "master_v2_arithmetic_kernel_seam_fail_closed_contract_foreign_path_requires_full",
+                (),
+            )
+        return SelectionResult(
+            "FULL",
+            "master_v2_arithmetic_kernel_seam_fail_closed_contract_incomplete_or_missing_test_owner",
             (),
         )
 
