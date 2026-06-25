@@ -1681,6 +1681,10 @@ def _durable_completion_focused_targets(
                     return tuple(sorted(set(targets)))
             except (KeyError, RuntimeError, OSError, ValueError):
                 return ()
+        if partition_selection is not None and not partition_selection:
+            if _repo_path_exists(graph_owner):
+                targets.insert(0, graph_owner)
+            return tuple(sorted(set(targets)))
         targets.append(DURABLE_COMPLETION_INTEGRATION_TEST_OWNER)
         if _repo_path_exists(graph_owner):
             targets.insert(0, graph_owner)
