@@ -88,9 +88,9 @@ def test_tests_job_timeout_25_absolute_cap() -> None:
     assert "timeout-minutes: 17" not in tests_block
 
 
-def test_fast_lane_job_timeout_17_absolute_cap() -> None:
+def test_fast_lane_job_timeout_10_absolute_cap() -> None:
     assert re.search(
-        r"^\s*fast-lane:\n(?:.*\n)*?\s*timeout-minutes:\s*17\s*$", _ci_text(), re.MULTILINE
+        r"^\s*fast-lane:\n(?:.*\n)*?\s*timeout-minutes:\s*10\s*$", _ci_text(), re.MULTILINE
     )
     assert (
         "timeout-minutes: 25" not in _ci_text().split("  fast-lane:", 1)[1].split("  tests:", 1)[0]
@@ -132,6 +132,8 @@ def test_changes_job_exports_test_selection_outputs() -> None:
         "tests_execute_no_op",
         "focused_pytest_targets",
         "focused_module_imports",
+        "fast_lane_contract_mode",
+        "fast_lane_contract_pytest_targets",
     ):
         assert (
             f"{key}:"
@@ -2305,6 +2307,7 @@ def test_fast_lane_skips_full_static_sweep_when_focused() -> None:
     text = _ci_text()
     static_if = text.split("name: Static contract tests", 1)[1].split("run:", 1)[0]
     assert "tests_execute_focused != 'true'" in static_if
+    assert "fast_lane_contract_mode == 'FULL_STATIC_CONTRACTS'" in static_if
     assert "OPS_SHARD_COUNT=8" in text
 
 
@@ -3372,3 +3375,90 @@ def test_selector_ci_fix_diff_ci_bootstrap_focused() -> None:
     assert sel["test_selection_mode"] == "FOCUSED"
     assert sel["test_selection_reason"] == "ci_bootstrap_focused"
     assert sel["tests_execute_full"] == "false"
+
+
+_CURSOR_AUTO_PR_WORKFLOW = ".github/workflows/cursor_auto_pr.yml"
+_LIVENESS_WORKFLOW = ".github/workflows/pr-head-sha-required-checks-liveness-guard.yml"
+_CURSOR_AUTO_PR_TEST = "tests/ci/test_cursor_auto_pr_pre_pr_validation_enforcement_contract_v0.py"
+_LIVENESS_TEST = "tests/ci/test_pr_head_sha_required_checks_liveness_guard.py"
+_PR4548_WORKFLOW_CONTRACT_FILES = (
+    _CURSOR_AUTO_PR_WORKFLOW,
+    _LIVENESS_WORKFLOW,
+    _CURSOR_AUTO_PR_TEST,
+    _LIVENESS_TEST,
+)
+
+
+def _fast_lane_targets(sel: dict[str, str]) -> list[str]:
+    raw = sel.get("fast_lane_contract_pytest_targets", "")
+    return sorted(raw.split()) if raw else []
+
+
+def test_fast_lane_contract_pr4548_workflow_diff_contract_focused() -> None:
+    sel = _run_selector(*_PR4548_WORKFLOW_CONTRACT_FILES)
+    assert sel["fast_lane_contract_mode"] == "CONTRACT_FOCUSED"
+    assert sel["fast_lane_contract_reason"] == "workflow_contract_owner_map_complete"
+    assert _fast_lane_targets(sel) == sorted([_CURSOR_AUTO_PR_TEST, _LIVENESS_TEST])
+
+
+def test_fast_lane_contract_pr4548_rebundle_with_wiring_contract_focused() -> None:
+    sel = _run_selector(
+        *_PR4548_WORKFLOW_CONTRACT_FILES,
+        ".github/workflows/ci.yml",
+        "scripts/ops/ci_test_selection_v1.py",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    )
+    assert sel["fast_lane_contract_mode"] == "CONTRACT_FOCUSED"
+    assert _fast_lane_targets(sel) == sorted([_CURSOR_AUTO_PR_TEST, _LIVENESS_TEST])
+
+
+def test_fast_lane_contract_cursor_auto_pr_only_contract_focused() -> None:
+    sel = _run_selector(_CURSOR_AUTO_PR_WORKFLOW, _CURSOR_AUTO_PR_TEST)
+    assert sel["fast_lane_contract_mode"] == "CONTRACT_FOCUSED"
+    assert _fast_lane_targets(sel) == [_CURSOR_AUTO_PR_TEST]
+
+
+def test_fast_lane_contract_liveness_only_contract_focused() -> None:
+    sel = _run_selector(_LIVENESS_WORKFLOW, _LIVENESS_TEST)
+    assert sel["fast_lane_contract_mode"] == "CONTRACT_FOCUSED"
+    assert _fast_lane_targets(sel) == [_LIVENESS_TEST]
+
+
+def test_fast_lane_contract_unknown_workflow_fail_closed_full() -> None:
+    sel = _run_selector(".github/workflows/unknown_workflow.yml")
+    assert sel["fast_lane_contract_mode"] == "FULL_STATIC_CONTRACTS"
+
+
+def test_fast_lane_contract_selector_only_fail_closed_full() -> None:
+    sel = _run_selector("scripts/ops/ci_test_selection_v1.py")
+    assert sel["fast_lane_contract_mode"] == "FULL_STATIC_CONTRACTS"
+
+
+def test_fast_lane_contract_ci_yml_only_fail_closed_full() -> None:
+    sel = _run_selector(".github/workflows/ci.yml")
+    assert sel["fast_lane_contract_mode"] == "FULL_STATIC_CONTRACTS"
+
+
+def test_fast_lane_contract_mixed_workflow_and_src_fail_closed_full() -> None:
+    sel = _run_selector(_CURSOR_AUTO_PR_WORKFLOW, "src/ops/example.py")
+    assert sel["fast_lane_contract_mode"] == "FULL_STATIC_CONTRACTS"
+
+
+def test_fast_lane_contract_docs_only_no_op() -> None:
+    sel = _run_selector("docs/README.md")
+    assert sel["fast_lane_contract_mode"] == "NO_OP"
+
+
+def test_fast_lane_contract_selection_order_independent() -> None:
+    files = list(_PR4548_WORKFLOW_CONTRACT_FILES)
+    sel_a = _run_selector(*files)
+    sel_b = _run_selector(*reversed(files))
+    assert sel_a["fast_lane_contract_mode"] == sel_b["fast_lane_contract_mode"]
+    assert _fast_lane_targets(sel_a) == _fast_lane_targets(sel_b)
+
+
+def test_fast_lane_contract_focused_step_wired_in_ci_yml() -> None:
+    text = _ci_text()
+    assert "Workflow contract tests (diff-aware CONTRACT_FOCUSED)" in text
+    assert "fast_lane_contract_mode == 'CONTRACT_FOCUSED'" in text
+    assert "fast_lane_contract_pytest_targets" in text

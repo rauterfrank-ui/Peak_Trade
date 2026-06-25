@@ -60,6 +60,8 @@ jobs:
       tests_execute_no_op: ${{ steps.test_selection.outputs.tests_execute_no_op }}
       focused_pytest_targets: ${{ steps.test_selection.outputs.focused_pytest_targets }}
       focused_module_imports: ${{ steps.test_selection.outputs.focused_module_imports }}
+      fast_lane_contract_mode: ${{ steps.test_selection.outputs.fast_lane_contract_mode }}
+      fast_lane_contract_pytest_targets: ${{ steps.test_selection.outputs.fast_lane_contract_pytest_targets }}
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -268,7 +270,7 @@ jobs:
   fast-lane:
     name: Fast-Lane
     runs-on: ubuntu-latest
-    timeout-minutes: 17
+    timeout-minutes: 10
     needs: changes
     steps:
       - name: Checkout
@@ -314,8 +316,18 @@ jobs:
             pytest "${ci_contract[@]}" "${VALIDATED_TARGETS[@]}" "${PYTEST_ARGS[@]}"
           fi
 
+      - name: Workflow contract tests (diff-aware CONTRACT_FOCUSED)
+        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.fast_lane_contract_mode == 'CONTRACT_FOCUSED' }}
+        run: |
+          set -euo pipefail
+          PYTEST_ARGS=(-q --tb=short -m "not network and not external_tools")
+          TARGETS="${{ needs.changes.outputs.fast_lane_contract_pytest_targets }}"
+          mapfile -t VALIDATED_TARGETS < <(python3 scripts/ops/ci_test_selection_v1.py --emit-validated-pytest-targets "$TARGETS")
+          (( ${#VALIDATED_TARGETS[@]} )) || { echo "CONTRACT_FOCUSED targets empty — fail closed"; exit 1; }
+          pytest "${VALIDATED_TARGETS[@]}" "${PYTEST_ARGS[@]}"
+
       - name: Static contract tests (tests/ci, tests/ops, WebUI structure-contract, src/ops contract modules via tests)
-        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.static_contract_changed == 'true' && needs.changes.outputs.run_matrix != 'true' && needs.changes.outputs.tests_execute_focused != 'true' && needs.changes.outputs.workflow_only != 'true' }}
+        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.static_contract_changed == 'true' && needs.changes.outputs.run_matrix != 'true' && needs.changes.outputs.tests_execute_focused != 'true' && needs.changes.outputs.workflow_only != 'true' && needs.changes.outputs.fast_lane_contract_mode == 'FULL_STATIC_CONTRACTS' }}
         run: |
           set -euo pipefail
           PYTEST_ARGS=(-q --tb=short -m "not network and not external_tools")
