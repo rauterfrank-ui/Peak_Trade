@@ -8,9 +8,12 @@ Deterministic multi-tick synthetic futures price stream → canonical pure-stack
 
 from __future__ import annotations
 
+import hashlib
+import json
 import math
 import re
 from dataclasses import dataclass, replace
+from datetime import datetime, timezone
 from enum import Enum
 from typing import Any, Mapping, Optional, Tuple
 
@@ -19,6 +22,17 @@ from src.ops.bounded_futures_testnet_durable_run_primary_evidence_completion_int
     MasterV2DecisionStateDigestBinding,
     compute_master_v2_component_state_digest,
     compute_master_v2_decision_digest_from_snapshot,
+)
+from src.ops.durable_completion_validation.validators.event_stream import (
+    MASTER_V2_EVIDENCE_CHAIN_PROFILE_KILL_ALL,
+    MASTER_V2_EVIDENCE_CHAIN_PROFILE_STATE_SWITCH,
+    MASTER_V2_STATE_EVENT_BOUNDARY_OWNER,
+    MasterV2StateEventRecord,
+    MasterV2StateEventStreamProofBinding,
+    MasterV2StateEventStreamValidationInput,
+    build_master_v2_state_event_record,
+    default_minimal_master_v2_state_event_proof_binding,
+    evaluate_master_v2_state_event_stream_validation,
 )
 from trading.master_v2.decision_packet_v1 import (
     MASTER_V2_DECISION_PACKET_LAYER_VERSION,
@@ -95,6 +109,8 @@ OFFLINE_DOUBLE_PLAY_SCENARIO_REPLAY_LAYER_VERSION = "v0"
 OFFLINE_DOUBLE_PLAY_SCENARIO_REPLAY_OWNER = (
     "trading.master_v2.offline_double_play_scenario_replay_v0"
 )
+MASTER_V2_RUNTIME_ADAPTER_PROJECTION_OWNER = OFFLINE_DOUBLE_PLAY_SCENARIO_REPLAY_OWNER
+OFFLINE_REPLAY_STATE_EVENT_PROJECTION_LAYER_VERSION = "v0"
 SYNTHETIC_FUTURES_INSTRUMENT = "ETH-PERP"
 
 _BTC_SPOT_RE = re.compile(r"(?i)(btc|xbt|bitcoin|/usd|/eur|spot)")
@@ -1024,3 +1040,342 @@ def replay_result_digest_coherent(result: OfflineDoublePlayScenarioReplayResultV
         if getattr(binding, field) != expected:
             return False
     return True
+
+
+@dataclass(frozen=True)
+class MasterV2ReplayStateEventProjectionResultV0:
+    """Offline projection of pure-stack replay ticks into Master-V2 state event records."""
+
+    layer_version: str
+    projection_pass: bool
+    evidence_chain_profile: str | None
+    events: tuple[MasterV2StateEventRecord, ...]
+    validation_input: MasterV2StateEventStreamValidationInput | None
+    validation_result: dict[str, Any] | None
+    proof_binding: MasterV2StateEventStreamProofBinding | None
+    projection_digest: str | None
+    fail_reasons: tuple[str, ...]
+
+
+def _replay_timestamp_ms_to_utc(timestamp_ms: int) -> str:
+    return datetime.fromtimestamp(timestamp_ms / 1000, tz=timezone.utc).strftime(
+        "%Y-%m-%dT%H:%M:%SZ"
+    )
+
+
+def _canonical_offline_transition_for_projection(
+    *,
+    side_before: SideState,
+    scope_event: ScopeEvent,
+    now_tick: int,
+) -> tuple[SideState, bool]:
+    """Mirror event-stream validator semantics: default offline scope, no accumulation."""
+    scope_state = RuntimeScopeState(
+        anchor_price=100.0,
+        chop_latched=False,
+        current_downscope_boundary=95.0,
+        current_hysteresis_band=2.0,
+        current_upscope_boundary=105.0,
+        last_completed_side_switch_tick=-1_000_000,
+        last_switch_tick=-1_000_000,
+        now_tick=0,
+        scope_stability_ticks=0,
+        switches_in_window=0,
+        window_start_tick=0,
+    )
+    rules = DynamicScopeRules(
+        downscope_band_multiplier=1.0,
+        upscope_band_multiplier=1.0,
+        min_band_width=0.5,
+        max_band_width=100.0,
+        min_switch_cooldown_ticks=0,
+        max_switches_per_window=10,
+    )
+    envelope = RuntimeEnvelope(static=StaticHardLimits(), live_authorization=False)
+    side_after, _, decision = transition_state(
+        side_state=side_before,
+        event=scope_event,
+        scope_state=scope_state,
+        rules=rules,
+        envelope=envelope,
+        now_tick=now_tick,
+    )
+    return side_after, decision.allowed
+
+
+def _semantic_event_class_for_replay_transition(
+    *,
+    scope_event: ScopeEvent,
+    side_before: SideState,
+    side_after: SideState,
+) -> str | None:
+    if scope_event == ScopeEvent.KILL_ALL_REQUIRED:
+        return "kill_all_terminal"
+    if scope_event == ScopeEvent.CHOP_DETECTED:
+        return "chop_guard"
+    if side_before == side_after and scope_event in (
+        ScopeEvent.NOOP,
+        ScopeEvent.UPSCOPE_CANDIDATE,
+        ScopeEvent.DOWNSCOPE_CANDIDATE,
+        ScopeEvent.UPSCOPE_CONFIRMED,
+        ScopeEvent.DOWNSCOPE_CONFIRMED,
+    ):
+        return "dynamic_scope"
+    if side_after in (
+        SideState.SWITCH_LONG_TO_SHORT_PENDING,
+        SideState.SWITCH_SHORT_TO_LONG_PENDING,
+    ):
+        return "state_switch"
+    return None
+
+
+def _profile_allows_semantic_class(*, profile: str, semantic_class: str) -> bool:
+    if profile == MASTER_V2_EVIDENCE_CHAIN_PROFILE_KILL_ALL:
+        return semantic_class == "kill_all_terminal"
+    if profile == MASTER_V2_EVIDENCE_CHAIN_PROFILE_STATE_SWITCH:
+        return semantic_class != "kill_all_terminal"
+    return False
+
+
+def _infer_evidence_chain_profile_from_replay(
+    records: tuple[OfflineDoublePlayScenarioReplayTickRecordV0, ...],
+) -> str | None:
+    if not records:
+        return None
+    if records[-1].side_state == SideState.KILL_ALL:
+        return MASTER_V2_EVIDENCE_CHAIN_PROFILE_KILL_ALL
+    return MASTER_V2_EVIDENCE_CHAIN_PROFILE_STATE_SWITCH
+
+
+def compute_master_v2_replay_state_event_projection_digest(
+    *,
+    events: tuple[MasterV2StateEventRecord, ...],
+    evidence_chain_profile: str,
+    correlation_id: str,
+) -> str:
+    payload = {
+        "correlation_id": correlation_id,
+        "evidence_chain_profile": evidence_chain_profile,
+        "events": [
+            {
+                "event_id": record.event_id,
+                "scope_event": record.scope_event,
+                "semantic_event_class": record.semantic_event_class,
+                "sequence": record.sequence,
+                "side_state_after": record.side_state_after,
+                "side_state_before": record.side_state_before,
+            }
+            for record in events
+        ],
+        "hash_algorithm": "sha256",
+        "layer_version": OFFLINE_REPLAY_STATE_EVENT_PROJECTION_LAYER_VERSION,
+    }
+    return hashlib.sha256(
+        json.dumps(payload, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+
+
+def project_master_v2_state_events_from_replay_records(
+    *,
+    records: tuple[OfflineDoublePlayScenarioReplayTickRecordV0, ...],
+    correlation_id: str,
+    bound_scope_state_digest: str,
+    evidence_chain_profile: str,
+) -> tuple[tuple[MasterV2StateEventRecord, ...], tuple[str, ...]]:
+    """Project replay tick records into canonical Master-V2 state event records (read-only)."""
+    fail_reasons: list[str] = []
+    if not correlation_id.strip():
+        fail_reasons.append("correlation_id required")
+    if not bound_scope_state_digest or len(bound_scope_state_digest) != 64:
+        fail_reasons.append("bound_scope_state_digest required")
+    if evidence_chain_profile not in (
+        MASTER_V2_EVIDENCE_CHAIN_PROFILE_STATE_SWITCH,
+        MASTER_V2_EVIDENCE_CHAIN_PROFILE_KILL_ALL,
+    ):
+        fail_reasons.append("unsupported evidence_chain_profile")
+    if not records:
+        fail_reasons.append("records required")
+    if fail_reasons:
+        return (), tuple(fail_reasons)
+
+    projected: list[MasterV2StateEventRecord] = []
+    seen_transition_keys: set[tuple[str, str]] = set()
+    prior_side = SideState.NEUTRAL_OBSERVE
+
+    for record in records:
+        scope_event = record.scope_event
+        side_after = record.side_state
+        side_before = prior_side
+        canonical_after, canonical_allowed = _canonical_offline_transition_for_projection(
+            side_before=side_before,
+            scope_event=scope_event,
+            now_tick=record.tick_index,
+        )
+        if side_after != canonical_after or record.transition_allowed != canonical_allowed:
+            prior_side = side_after
+            continue
+
+        semantic_class = _semantic_event_class_for_replay_transition(
+            scope_event=scope_event,
+            side_before=side_before,
+            side_after=side_after,
+        )
+        if semantic_class is None or not _profile_allows_semantic_class(
+            profile=evidence_chain_profile,
+            semantic_class=semantic_class,
+        ):
+            prior_side = side_after
+            continue
+
+        transition_key = (scope_event.value, side_before.value)
+        if transition_key in seen_transition_keys:
+            prior_side = side_after
+            continue
+        seen_transition_keys.add(transition_key)
+
+        projected.append(
+            build_master_v2_state_event_record(
+                semantic_event_class=semantic_class,
+                event_id=(
+                    f"mv2-replay-proj-{correlation_id}-{semantic_class}-{len(projected):04d}"
+                ),
+                sequence=len(projected),
+                correlation_id=correlation_id,
+                scope_event=scope_event.value,
+                side_state_before=side_before.value,
+                side_state_after=side_after.value,
+                scope_state_digest=bound_scope_state_digest,
+                transition_allowed=record.transition_allowed,
+                timestamp_utc=_replay_timestamp_ms_to_utc(record.timestamp_ms),
+            )
+        )
+        prior_side = side_after
+
+    present_classes = {record.semantic_event_class for record in projected}
+    if evidence_chain_profile == MASTER_V2_EVIDENCE_CHAIN_PROFILE_STATE_SWITCH:
+        for required in ("dynamic_scope", "state_switch"):
+            if required not in present_classes:
+                fail_reasons.append(
+                    f"state_switch profile missing required semantic event class {required!r}"
+                )
+    elif evidence_chain_profile == MASTER_V2_EVIDENCE_CHAIN_PROFILE_KILL_ALL:
+        if "kill_all_terminal" not in present_classes:
+            fail_reasons.append(
+                "kill_all profile missing required semantic event class 'kill_all_terminal'"
+            )
+
+    if not projected:
+        fail_reasons.append("no projectable replay transitions for profile")
+
+    return tuple(projected), tuple(fail_reasons)
+
+
+def build_master_v2_state_event_stream_validation_input_from_replay(
+    *,
+    replay_result: OfflineDoublePlayScenarioReplayResultV0,
+    correlation_id: str,
+    completion_identity_digest: str,
+    manifest_identity_digest: str,
+    run_identity_digest: str,
+    source_revision: str,
+    evidence_chain_profile: str | None = None,
+) -> tuple[MasterV2StateEventStreamValidationInput | None, tuple[str, ...]]:
+    binding = replay_result.master_v2_decision_state_digest_binding
+    if binding is None:
+        return None, ("master_v2_decision_state_digest_binding required",)
+    profile = evidence_chain_profile or _infer_evidence_chain_profile_from_replay(
+        replay_result.tick_records
+    )
+    if profile is None:
+        return None, ("evidence_chain_profile not inferable from replay",)
+
+    events, projection_failures = project_master_v2_state_events_from_replay_records(
+        records=replay_result.tick_records,
+        correlation_id=correlation_id,
+        bound_scope_state_digest=binding.dynamic_scope_state_digest,
+        evidence_chain_profile=profile,
+    )
+    fail_reasons = list(projection_failures)
+    if fail_reasons:
+        return None, tuple(fail_reasons)
+
+    return (
+        MasterV2StateEventStreamValidationInput(
+            boundary_owner=MASTER_V2_STATE_EVENT_BOUNDARY_OWNER,
+            source_revision=source_revision,
+            completion_identity_digest=completion_identity_digest,
+            manifest_identity_digest=manifest_identity_digest,
+            run_identity_digest=run_identity_digest,
+            correlation_id=correlation_id,
+            evidence_chain_profile=profile,
+            bound_dynamic_scope_state_digest=binding.dynamic_scope_state_digest,
+            events=events,
+        ),
+        (),
+    )
+
+
+def project_master_v2_state_event_stream_from_replay(
+    *,
+    replay_result: OfflineDoublePlayScenarioReplayResultV0,
+    correlation_id: str,
+    completion_identity_digest: str,
+    manifest_identity_digest: str,
+    run_identity_digest: str,
+    source_revision: str,
+    evidence_chain_profile: str | None = None,
+) -> MasterV2ReplayStateEventProjectionResultV0:
+    """Project offline replay output into event-stream-shaped Master-V2 records (non-authorizing)."""
+    validation_input, build_failures = (
+        build_master_v2_state_event_stream_validation_input_from_replay(
+            replay_result=replay_result,
+            correlation_id=correlation_id,
+            completion_identity_digest=completion_identity_digest,
+            manifest_identity_digest=manifest_identity_digest,
+            run_identity_digest=run_identity_digest,
+            source_revision=source_revision,
+            evidence_chain_profile=evidence_chain_profile,
+        )
+    )
+    if validation_input is None:
+        return MasterV2ReplayStateEventProjectionResultV0(
+            layer_version=OFFLINE_REPLAY_STATE_EVENT_PROJECTION_LAYER_VERSION,
+            projection_pass=False,
+            evidence_chain_profile=evidence_chain_profile,
+            events=(),
+            validation_input=None,
+            validation_result=None,
+            proof_binding=None,
+            projection_digest=None,
+            fail_reasons=build_failures,
+        )
+
+    validation_result = evaluate_master_v2_state_event_stream_validation(validation_input)
+    fail_reasons = list(build_failures)
+    if not validation_result.get("validation_pass"):
+        fail_reasons.extend(validation_result.get("fail_reasons", ()))
+
+    proof_binding: MasterV2StateEventStreamProofBinding | None = None
+    if validation_result.get("validation_pass"):
+        proof_binding = default_minimal_master_v2_state_event_proof_binding(
+            validation_input,
+            validation_result,
+        )
+
+    projection_digest = compute_master_v2_replay_state_event_projection_digest(
+        events=validation_input.events,
+        evidence_chain_profile=validation_input.evidence_chain_profile,
+        correlation_id=correlation_id,
+    )
+
+    return MasterV2ReplayStateEventProjectionResultV0(
+        layer_version=OFFLINE_REPLAY_STATE_EVENT_PROJECTION_LAYER_VERSION,
+        projection_pass=not fail_reasons,
+        evidence_chain_profile=validation_input.evidence_chain_profile,
+        events=validation_input.events,
+        validation_input=validation_input,
+        validation_result=validation_result,
+        proof_binding=proof_binding,
+        projection_digest=projection_digest,
+        fail_reasons=tuple(fail_reasons),
+    )
