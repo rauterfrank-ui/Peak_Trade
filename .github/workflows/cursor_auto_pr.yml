@@ -20,12 +20,66 @@ jobs:
   create_pr_if_missing:
     runs-on: ubuntu-latest
     steps:
+      - name: Detect existing open PR for head branch
+        id: detect
+        uses: actions/github-script@v7
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const owner = context.repo.owner;
+            const repo = context.repo.repo;
+            const head = context.ref.replace("refs/heads/", "");
+            const base = "main";
+
+            if (head === base) {
+              core.info("NOOP: head==base");
+              core.setOutput("open_pr_exists", "true");
+              core.setOutput("skip_reason", "head==base");
+              return;
+            }
+
+            let prs;
+            try {
+              prs = await github.rest.pulls.list({
+                owner,
+                repo,
+                state: "open",
+                head: `${owner}:${head}`,
+                base,
+              });
+            } catch (e) {
+              const detail = e?.response?.data?.message || e?.message || String(e);
+              core.setFailed(`FAIL_CLOSED: open PR lookup failed for head=${head} base=${base}: ${detail}`);
+              return;
+            }
+
+            if (prs.data.length > 1) {
+              core.setFailed(
+                `FAIL_CLOSED: ambiguous open PR count=${prs.data.length} for head=${head} base=${base}`
+              );
+              return;
+            }
+
+            if (prs.data.length === 1) {
+              const pr = prs.data[0];
+              core.info(`EXISTS: PR #${pr.number} ${pr.html_url}`);
+              core.info("Skipping PRE_PR enforcement; existing open PR is idempotent no-op.");
+              core.setOutput("open_pr_exists", "true");
+              core.setOutput("pr_number", String(pr.number));
+              core.setOutput("pr_url", pr.html_url);
+              return;
+            }
+
+            core.info("NO_OPEN_PR: PRE_PR validation required before create.");
+            core.setOutput("open_pr_exists", "false");
+
       - name: Checkout for PRE_PR enforcement
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
       - name: Enforce PRE_PR validation (fail-closed)
+        if: steps.detect.outputs.open_pr_exists != 'true'
         run: |
           set -euo pipefail
           git fetch origin main --depth=1

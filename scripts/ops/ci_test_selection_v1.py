@@ -733,6 +733,65 @@ CI_INFRA_CORE_FOCUSED_TESTS: tuple[str, ...] = (
     "tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py",
 )
 
+WORKFLOW_CONTRACT_FAST_LANE_OWNERS: dict[str, str] = {
+    ".github/workflows/cursor_auto_pr.yml": (
+        "tests/ci/test_cursor_auto_pr_pre_pr_validation_enforcement_contract_v0.py"
+    ),
+    ".github/workflows/pr-head-sha-required-checks-liveness-guard.yml": (
+        "tests/ci/test_pr_head_sha_required_checks_liveness_guard.py"
+    ),
+}
+
+FAST_LANE_CONTRACT_REBUNDLE_PATHS = (
+    frozenset(
+        {
+            ".github/workflows/ci.yml",
+            "scripts/ops/ci_test_selection_v1.py",
+            "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+            "tests/ci/test_ci_static_contract_narrow_code_filter_contract_v0.py",
+        }
+    )
+    | frozenset(WORKFLOW_CONTRACT_FAST_LANE_OWNERS.keys())
+    | frozenset(WORKFLOW_CONTRACT_FAST_LANE_OWNERS.values())
+)
+
+FAST_LANE_CONTRACT_WIRING_WORKFLOWS = frozenset({".github/workflows/ci.yml"})
+
+# Closed allowlist for MATRIX_CONTRACT_FOCUSED rebundle (fail-closed outside this set).
+MATRIX_CI_CONTRACT_REBUNDLE_PATHS = frozenset(
+    {
+        ".github/workflows/ci.yml",
+        ".github/workflows/cursor_auto_pr.yml",
+        ".github/workflows/pr-head-sha-required-checks-liveness-guard.yml",
+        "scripts/ops/ci_test_selection_v1.py",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+        "tests/ci/test_cursor_auto_pr_pre_pr_validation_enforcement_contract_v0.py",
+        "tests/ci/test_pr_head_sha_required_checks_liveness_guard.py",
+    }
+)
+
+MATRIX_CONTRACT_REBUNDLE_ID = "ci_workflow_selector_contract_rebundle_v1"
+
+MATRIX_SELECTOR_SELF_CHANGE_PATHS = frozenset(
+    {
+        "scripts/ops/ci_test_selection_v1.py",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    }
+)
+
+FAST_LANE_FULL_STATIC_PATHS = frozenset(
+    {
+        ".github/workflows/ci.yml",
+        "scripts/ops/ci_test_selection_v1.py",
+        "config/ci/file_category_mapping.yaml",
+        "pytest.ini",
+        "Makefile",
+        "pyproject.toml",
+        "uv.lock",
+        "requirements.txt",
+    }
+)
+
 CANONICAL_MARKET_DASHBOARD_FOCUSED_TESTS: tuple[str, ...] = (
     "tests/webui/test_market_dashboard_no_bitcoin_futures_v1.py",
     "tests/webui/test_market_futures_only_canonical_completion_v1.py",
@@ -777,6 +836,242 @@ class SelectionResult:
         else:
             lines.append("focused_module_imports=")
         return lines
+
+
+@dataclass(frozen=True)
+class FastLaneContractSelection:
+    mode: str
+    reason: str
+    pytest_targets: tuple[str, ...]
+
+    def github_output_lines(self) -> list[str]:
+        lines = [
+            f"fast_lane_contract_mode={self.mode}",
+            f"fast_lane_contract_reason={self.reason}",
+        ]
+        if self.pytest_targets:
+            lines.append(f"fast_lane_contract_pytest_targets={' '.join(self.pytest_targets)}")
+        else:
+            lines.append("fast_lane_contract_pytest_targets=")
+        return lines
+
+
+@dataclass(frozen=True)
+class MatrixContractSelection:
+    mode: str
+    reason: str
+    pytest_targets: tuple[str, ...]
+    rebundle_id: str = ""
+
+    def github_output_lines(self) -> list[str]:
+        lines = [
+            f"matrix_contract_mode={self.mode}",
+            f"matrix_contract_reason={self.reason}",
+            f"matrix_contract_rebundle_id={self.rebundle_id}",
+            f"tests_execute_matrix_contract_focused={'true' if self.mode == 'MATRIX_CONTRACT_FOCUSED' else 'false'}",
+        ]
+        if self.pytest_targets:
+            lines.append(f"matrix_contract_pytest_targets={' '.join(self.pytest_targets)}")
+        else:
+            lines.append("matrix_contract_pytest_targets=")
+        return lines
+
+
+def _is_matrix_contract_docs_noise(path: str) -> bool:
+    return path.startswith("docs/") or path.startswith("out/") or path.endswith(".md")
+
+
+def _matrix_contract_rebundle_targets(substantive: frozenset[str]) -> tuple[str, ...] | None:
+    selector_owner = "scripts/ops/ci_test_selection_v1.py"
+    selector_test = "tests/ci/test_ci_diff_aware_test_selection_v1.py"
+    ci_wiring = ".github/workflows/ci.yml"
+
+    if substantive == MATRIX_SELECTOR_SELF_CHANGE_PATHS:
+        return None
+
+    targets: set[str] = set()
+    if selector_owner in substantive or ci_wiring in substantive:
+        if selector_test not in substantive:
+            return None
+        targets.add(selector_test)
+
+    for workflow, test_owner in WORKFLOW_CONTRACT_FAST_LANE_OWNERS.items():
+        if workflow in substantive:
+            if test_owner not in substantive:
+                return None
+            targets.add(test_owner)
+        elif test_owner in substantive:
+            return None
+
+    if not targets:
+        return None
+
+    missing = [target for target in targets if not _repo_path_exists(target)]
+    if missing:
+        return None
+    return tuple(sorted(targets))
+
+
+def resolve_matrix_contract_selection(files: list[str]) -> MatrixContractSelection:
+    normalized = sorted({PurePosixPath(f.strip()).as_posix() for f in files if f and f.strip()})
+    substantive_list = [f for f in normalized if not _is_matrix_contract_docs_noise(f)]
+    substantive = frozenset(substantive_list)
+
+    if not substantive:
+        return MatrixContractSelection("MATRIX_NO_OP", "no_substantive_matrix_paths", ())
+
+    if any(f not in MATRIX_CI_CONTRACT_REBUNDLE_PATHS for f in substantive):
+        return MatrixContractSelection("MATRIX_UNMAPPED", "matrix_contract_not_applicable", ())
+
+    if substantive == MATRIX_SELECTOR_SELF_CHANGE_PATHS:
+        return MatrixContractSelection(
+            "MATRIX_FULL",
+            "matrix_contract_selector_self_change_requires_full",
+            (),
+        )
+
+    if not any(workflow in substantive for workflow in WORKFLOW_CONTRACT_FAST_LANE_OWNERS):
+        return MatrixContractSelection(
+            "MATRIX_UNMAPPED",
+            "matrix_contract_central_wiring_defer_to_ci_infra",
+            (),
+        )
+
+    targets = _matrix_contract_rebundle_targets(substantive)
+    if targets is None:
+        return MatrixContractSelection(
+            "MATRIX_FULL",
+            "matrix_contract_incomplete_rebundle_mapping",
+            (),
+        )
+
+    return MatrixContractSelection(
+        "MATRIX_CONTRACT_FOCUSED",
+        "matrix_contract_rebundle_complete",
+        targets,
+        rebundle_id=MATRIX_CONTRACT_REBUNDLE_ID,
+    )
+
+
+def _is_fast_lane_docs_noise(path: str) -> bool:
+    return path.startswith("docs/") or path.startswith("out/") or path.endswith(".md")
+
+
+def _fast_lane_requires_full_static(path: str) -> bool:
+    if path in FAST_LANE_FULL_STATIC_PATHS:
+        return True
+    if path.endswith("/conftest.py") or path == "tests/conftest.py":
+        return True
+    if path.startswith("src/"):
+        return True
+    if path.startswith("scripts/"):
+        return True
+    if path.startswith(("tests/ops/", "tests/webui/", "tests/fixtures/")):
+        return True
+    if path.startswith(("config/", "schemas/")):
+        return True
+    if path.startswith("requirements"):
+        return True
+    if path.startswith(".github/workflows/") and path not in WORKFLOW_CONTRACT_FAST_LANE_OWNERS:
+        return True
+    if path.startswith("tests/") and not path.startswith("tests/ci/"):
+        return True
+    return False
+
+
+def resolve_fast_lane_contract_selection(files: list[str]) -> FastLaneContractSelection:
+    normalized = sorted({f.strip() for f in files if f and f.strip()})
+    substantive = [f for f in normalized if not _is_fast_lane_docs_noise(f)]
+
+    if not substantive:
+        return FastLaneContractSelection("NO_OP", "no_substantive_fast_lane_paths", ())
+
+    rebundle_only = all(f in FAST_LANE_CONTRACT_REBUNDLE_PATHS for f in substantive)
+    if not rebundle_only and any(_fast_lane_requires_full_static(f) for f in substantive):
+        return FastLaneContractSelection(
+            "FULL_STATIC_CONTRACTS",
+            "central_or_unmapped_fast_lane_path_requires_full_static",
+            (),
+        )
+
+    workflow_files = [f for f in substantive if f.startswith(".github/workflows/")]
+    test_ci_files = [f for f in substantive if f.startswith("tests/ci/")]
+    other = [f for f in substantive if f not in workflow_files and f not in test_ci_files]
+    if other and not (rebundle_only and all(f in FAST_LANE_CONTRACT_REBUNDLE_PATHS for f in other)):
+        return FastLaneContractSelection(
+            "FULL_STATIC_CONTRACTS",
+            "unclassified_fast_lane_path_requires_full_static",
+            (),
+        )
+
+    allowed_tests = set(WORKFLOW_CONTRACT_FAST_LANE_OWNERS.values())
+    if test_ci_files and any(t not in allowed_tests for t in test_ci_files):
+        if not (
+            rebundle_only and all(t in FAST_LANE_CONTRACT_REBUNDLE_PATHS for t in test_ci_files)
+        ):
+            return FastLaneContractSelection(
+                "FULL_STATIC_CONTRACTS",
+                "tests_ci_not_in_workflow_contract_owner_map",
+                (),
+            )
+
+    mapped_workflows = [w for w in workflow_files if w in WORKFLOW_CONTRACT_FAST_LANE_OWNERS]
+    if test_ci_files and not mapped_workflows:
+        return FastLaneContractSelection(
+            "FULL_STATIC_CONTRACTS",
+            "tests_ci_without_workflow_owner_map_fail_closed",
+            (),
+        )
+
+    if workflow_files:
+        unknown = [
+            w
+            for w in workflow_files
+            if w not in WORKFLOW_CONTRACT_FAST_LANE_OWNERS
+            and not (rebundle_only and w in FAST_LANE_CONTRACT_WIRING_WORKFLOWS)
+        ]
+        if unknown:
+            return FastLaneContractSelection(
+                "FULL_STATIC_CONTRACTS",
+                "unknown_workflow_requires_full_static",
+                (),
+            )
+        expected = sorted({WORKFLOW_CONTRACT_FAST_LANE_OWNERS[w] for w in mapped_workflows})
+        workflow_tests = sorted(
+            t for t in test_ci_files if t in WORKFLOW_CONTRACT_FAST_LANE_OWNERS.values()
+        )
+        if workflow_tests and workflow_tests != expected:
+            return FastLaneContractSelection(
+                "FULL_STATIC_CONTRACTS",
+                "workflow_test_owner_set_mismatch_requires_full_static",
+                (),
+            )
+        missing = [t for t in expected if not _repo_path_exists(t)]
+        if missing:
+            return FastLaneContractSelection(
+                "FULL_STATIC_CONTRACTS",
+                "workflow_contract_test_owner_missing_on_disk",
+                (),
+            )
+        if expected:
+            return FastLaneContractSelection(
+                "CONTRACT_FOCUSED",
+                "workflow_contract_owner_map_complete",
+                tuple(expected),
+            )
+
+    central_wiring = {
+        ".github/workflows/ci.yml",
+        "scripts/ops/ci_test_selection_v1.py",
+    }
+    if any(f in central_wiring for f in substantive):
+        return FastLaneContractSelection(
+            "FULL_STATIC_CONTRACTS",
+            "central_ci_wiring_requires_full_static",
+            (),
+        )
+
+    return FastLaneContractSelection("NO_OP", "no_workflow_contract_fast_lane_paths", ())
 
 
 def _is_ci_bootstrap_scoped_path(path: str) -> bool:
@@ -2898,13 +3193,22 @@ def main(argv: list[str] | None = None) -> int:
             changed_files=files,
         )
 
+    matrix_contract = resolve_matrix_contract_selection(files)
     result = resolve_selection(
         files,
         force_full=args.force_full,
         event_name=args.event_name,
         patch_text=patch_text,
     )
+    if matrix_contract.mode == "MATRIX_CONTRACT_FOCUSED":
+        result = SelectionResult(
+            "FOCUSED",
+            matrix_contract.reason,
+            matrix_contract.pytest_targets,
+        )
     lines = result.github_output_lines()
+    lines.extend(matrix_contract.github_output_lines())
+    lines.extend(resolve_fast_lane_contract_selection(files).github_output_lines())
     if args.github_output:
         out_path = os.environ.get("GITHUB_OUTPUT")
         if out_path:
