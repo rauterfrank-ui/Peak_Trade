@@ -590,6 +590,42 @@ RECONCILIATION_DECIMAL_FLOAT_OWNER_BOUNDARY_CONTRACT_CI_SELECTOR_TARGETS: tuple[
     "tests/ci/test_ci_diff_aware_test_selection_v1.py::test_selector_reconciliation_decimal_float_owner_boundary_contract_foreign_path_escalates_full",
 )
 
+MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_BOUNDARY_CONTRACT_TEST_OWNER = (
+    "tests/ops/test_master_v2_arithmetic_decimal_float_conversion_boundary_contract_v0.py"
+)
+
+MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_BOUNDARY_CONTRACT_CI_POLICY_PATHS = frozenset(
+    {
+        "scripts/ops/ci_test_selection_v1.py",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    }
+)
+
+MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_BOUNDARY_CONTRACT_SCOPED_PATHS = frozenset(
+    {
+        MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_BOUNDARY_CONTRACT_TEST_OWNER,
+        *MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_BOUNDARY_CONTRACT_CI_POLICY_PATHS,
+    }
+)
+
+MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_BOUNDARY_CONTRACT_FOCUSED_NODES: tuple[str, ...] = (
+    f"{MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_BOUNDARY_CONTRACT_TEST_OWNER}::test_master_v2_float_source_and_futures_kernel_decimal_target_not_interchangeable",
+    f"{MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_BOUNDARY_CONTRACT_TEST_OWNER}::test_to_decimal_exists_but_is_not_complete_master_v2_seam_contract",
+    f"{MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_BOUNDARY_CONTRACT_TEST_OWNER}::test_strict_decimal_quantization_owner_rejects_float_and_remains_protected",
+    f"{MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_BOUNDARY_CONTRACT_TEST_OWNER}::test_value_boundary_matrix_complete_for_future_kernel_binding",
+    f"{MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_BOUNDARY_CONTRACT_TEST_OWNER}::test_rounding_and_quantization_are_distinct_with_tick_lot_owners",
+    f"{MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_BOUNDARY_CONTRACT_TEST_OWNER}::test_nan_infinity_overflow_and_special_values_require_fail_closed_wiring",
+    f"{MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_BOUNDARY_CONTRACT_TEST_OWNER}::test_epsilon_tolerance_is_not_decimal_precision_contract",
+    f"{MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_BOUNDARY_CONTRACT_TEST_OWNER}::test_no_current_kernel_binding_and_contract_is_non_authorizing",
+)
+
+MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_BOUNDARY_CONTRACT_CI_SELECTOR_TARGETS: tuple[
+    str, ...
+] = (
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py::test_selector_master_v2_arithmetic_decimal_float_conversion_boundary_contract_test_only_focused",
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py::test_selector_master_v2_arithmetic_decimal_float_conversion_boundary_contract_foreign_path_escalates_full",
+)
+
 _PYTEST_NODE_ID = re.compile(r"^[A-Za-z0-9_\-]+(?:\[[^\]]+\])?$")
 
 DURABLE_COMPLETION_WALLCLOCK_BINDING_FOCUSED_TARGETS: tuple[str, ...] = (
@@ -2640,6 +2676,69 @@ def _try_reconciliation_decimal_float_owner_boundary_contract_focused(
     )
 
 
+def _is_master_v2_arithmetic_decimal_float_conversion_boundary_scoped_path(path: str) -> bool:
+    return path in MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_BOUNDARY_CONTRACT_SCOPED_PATHS
+
+
+def _is_master_v2_arithmetic_decimal_float_conversion_boundary_rebundle_path(path: str) -> bool:
+    return _is_master_v2_arithmetic_decimal_float_conversion_boundary_scoped_path(path)
+
+
+def _is_master_v2_arithmetic_decimal_float_conversion_boundary_scope(files: list[str]) -> bool:
+    if not files:
+        return False
+    files_set = set(files)
+    if MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_BOUNDARY_CONTRACT_TEST_OWNER not in files_set:
+        return False
+    return all(
+        path in MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_BOUNDARY_CONTRACT_SCOPED_PATHS
+        for path in files
+    )
+
+
+def _master_v2_arithmetic_decimal_float_conversion_boundary_focused_targets(
+    files: list[str] | None = None,
+) -> tuple[str, ...]:
+    if not _repo_path_exists(
+        MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_BOUNDARY_CONTRACT_TEST_OWNER
+    ):
+        return ()
+    targets: list[str] = []
+    for node in MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_BOUNDARY_CONTRACT_FOCUSED_NODES:
+        if _repo_pytest_target_exists(node):
+            targets.append(node)
+    if len(targets) != len(
+        MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_BOUNDARY_CONTRACT_FOCUSED_NODES
+    ):
+        return ()
+    if files and any(
+        path in MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_BOUNDARY_CONTRACT_CI_POLICY_PATHS
+        for path in files
+    ):
+        for (
+            ci_target
+        ) in MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_BOUNDARY_CONTRACT_CI_SELECTOR_TARGETS:
+            if _repo_pytest_target_exists(ci_target):
+                targets.append(ci_target)
+    return tuple(sorted(set(targets)))
+
+
+def _try_master_v2_arithmetic_decimal_float_conversion_boundary_contract_focused(
+    files: list[str],
+) -> SelectionResult | None:
+    if not _is_master_v2_arithmetic_decimal_float_conversion_boundary_scope(files):
+        return None
+    targets = _master_v2_arithmetic_decimal_float_conversion_boundary_focused_targets(files)
+    if not targets:
+        return None
+    return SelectionResult(
+        "FOCUSED",
+        "master_v2_arithmetic_decimal_float_conversion_boundary_contract_focused",
+        targets,
+        (),
+    )
+
+
 def _is_master_v2_replay_display_projection_digest_completion_evidence_scope(
     files: list[str],
 ) -> bool:
@@ -3561,6 +3660,12 @@ def resolve_selection(
     if reconciliation_decimal_float_owner_boundary is not None:
         return reconciliation_decimal_float_owner_boundary
 
+    master_v2_arithmetic_decimal_float_conversion_boundary = (
+        _try_master_v2_arithmetic_decimal_float_conversion_boundary_contract_focused(normalized)
+    )
+    if master_v2_arithmetic_decimal_float_conversion_boundary is not None:
+        return master_v2_arithmetic_decimal_float_conversion_boundary
+
     master_v2_replay_display_projection = (
         _try_master_v2_replay_display_projection_digest_completion_evidence_focused(normalized)
     )
@@ -3766,6 +3871,25 @@ def resolve_selection(
         return SelectionResult(
             "FULL",
             "reconciliation_decimal_float_owner_boundary_contract_incomplete_or_missing_test_owner",
+            (),
+        )
+
+    if any(
+        _is_master_v2_arithmetic_decimal_float_conversion_boundary_scoped_path(f)
+        for f in normalized
+    ):
+        if not all(
+            _is_master_v2_arithmetic_decimal_float_conversion_boundary_rebundle_path(f)
+            for f in normalized
+        ):
+            return SelectionResult(
+                "FULL",
+                "master_v2_arithmetic_decimal_float_conversion_boundary_contract_foreign_path_requires_full",
+                (),
+            )
+        return SelectionResult(
+            "FULL",
+            "master_v2_arithmetic_decimal_float_conversion_boundary_contract_incomplete_or_missing_test_owner",
             (),
         )
 
