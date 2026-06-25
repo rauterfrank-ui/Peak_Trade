@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import importlib.util
 import io
 import json
@@ -48,6 +49,10 @@ CLOSEOUT_BINDING_FILES = (
     "tests/ops/test_run_testnet_bounded_observation_adapter_v0.py",
     "scripts/ops/ci_test_selection_v1.py",
 )
+CLOSEOUT_BINDING_ASSERTION_ONLY_FILES = (
+    "tests/ops/test_run_testnet_bounded_observation_adapter_v0.py",
+    "scripts/ops/ci_test_selection_v1.py",
+)
 RUNTIME_PRODUCER_FILES = (
     "src/ops/bounded_testnet_runtime_market_observation_producer_v0.py",
     "tests/ops/test_bounded_testnet_runtime_market_observation_producer_v0.py",
@@ -74,8 +79,25 @@ def _load_review():
     return _load_module(REVIEW_SCRIPT, "review_testnet_bounded_observation_evidence_v0")
 
 
-def _staging(tmp_path: Path) -> Path:
-    return Path("/tmp") / f"peak_trade_testnet_staging_test_{tmp_path.name}"
+def _tmp_path_namespace(tmp_path: Path) -> str:
+    digest = hashlib.sha256(str(tmp_path.resolve()).encode()).hexdigest()[:12]
+    return f"{tmp_path.name}_{digest}"
+
+
+_test_owned_paths: list[Path] = []
+
+
+def _register_test_owned_path(path: Path) -> None:
+    resolved = path.resolve()
+    if resolved not in _test_owned_paths:
+        _test_owned_paths.append(resolved)
+
+
+def _staging(tmp_path: Path, *, tag: str = "") -> Path:
+    suffix = f"_{tag}" if tag else ""
+    path = Path("/tmp") / f"peak_trade_testnet_staging_test_{_tmp_path_namespace(tmp_path)}{suffix}"
+    _register_test_owned_path(path)
+    return path
 
 
 WALLCLOCK_FIELD_NAMES = (
@@ -147,9 +169,11 @@ def _load_shell_manifest(staging: Path) -> dict[str, object]:
     return json.loads(manifest_path.read_text(encoding="utf-8"))
 
 
-def _durable_archive(tmp_path: Path) -> Path:
-    path = ROOT / "tests" / ".pytest_archive_roots" / tmp_path.name
+def _durable_archive(tmp_path: Path, *, tag: str = "") -> Path:
+    suffix = f"_{tag}" if tag else ""
+    path = ROOT / "tests" / ".pytest_archive_roots" / f"{_tmp_path_namespace(tmp_path)}{suffix}"
     path.mkdir(parents=True, exist_ok=True)
+    _register_test_owned_path(path)
     return path
 
 
@@ -243,12 +267,12 @@ def _write_wrapper_bundle(
 
 @pytest.fixture(autouse=True)
 def _cleanup_durable_archive_dirs():
+    _test_owned_paths.clear()
     yield
-    archive_roots = ROOT / "tests" / ".pytest_archive_roots"
-    if archive_roots.is_dir():
-        shutil.rmtree(archive_roots, ignore_errors=True)
-    for path in Path("/tmp").glob("peak_trade_testnet_staging_test_*"):
-        shutil.rmtree(path, ignore_errors=True)
+    for path in reversed(_test_owned_paths):
+        if path.is_dir():
+            shutil.rmtree(path, ignore_errors=True)
+    _test_owned_paths.clear()
 
 
 def _plan_dict(staging: Path, archive: Path | None = None) -> dict:
@@ -1291,7 +1315,7 @@ def _run_selector(*files: str) -> dict[str, str]:
 
 def test_ci_selector_closeout_binding_five_file_diff_focused() -> None:
     sel = _run_selector(*CLOSEOUT_BINDING_FILES)
-    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert (
         sel["test_selection_reason"]
         == "bounded_testnet_execute_path_market_observation_closeout_binding_focused"
@@ -1303,8 +1327,26 @@ def test_ci_selector_closeout_binding_five_file_diff_focused() -> None:
         "tests/ops/test_run_testnet_bounded_observation_adapter_v0.py::test_closeout_forwards_validated_market_observation"
         in targets
     )
+    assert (
+        "tests/ops/test_run_testnet_bounded_observation_adapter_v0.py::test_adapter_replay_proof_classification_plan_execute_closeout_parity"
+        in targets
+    )
     assert all("::test_" in target for target in targets if not target.endswith(".py"))
     assert len(targets) >= 8
+
+
+def test_ci_selector_closeout_binding_assertion_only_two_file_diff_focused() -> None:
+    sel = _run_selector(*CLOSEOUT_BINDING_ASSERTION_ONLY_FILES)
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
+    assert (
+        sel["test_selection_reason"]
+        == "bounded_testnet_execute_path_market_observation_closeout_binding_focused"
+    )
+    targets = sorted(sel.get("focused_pytest_targets", "").split())
+    assert (
+        "tests/ops/test_run_testnet_bounded_observation_adapter_v0.py::test_adapter_replay_proof_classification_plan_execute_closeout_parity"
+        in targets
+    )
 
 
 class _AdapterFakeTickerFetcher:
@@ -1629,3 +1671,74 @@ def test_execute_closeout_machine_summary_compat_preserved(tmp_path: Path) -> No
     metadata = json.loads((staging / "RUN_METADATA.json").read_text(encoding="utf-8"))
     assert "machine_summary" in metadata["completion_path_wiring"]
     assert metadata["completion_path_wiring"]["machine_summary"]["ORDERS_TOTAL"] == 0
+
+
+def test_adapter_plan_wiring_exposes_replay_proof_classification_fields() -> None:
+    mod = _load_adapter()
+    machine = _plan_wiring_section(mod)["machine_summary"]
+    assert "OFFLINE_END_TO_END_REPLAY_PROOF_CLASSIFICATION" in machine
+    assert "REPLAY_PROOF_CLASSIFICATION_BOUND" in machine
+    assert machine["REPLAY_PROOF_CLASSIFICATION_BOUND"] is False
+
+
+def test_adapter_replay_proof_classification_plan_execute_closeout_parity(
+    tmp_path: Path,
+) -> None:
+    mod = _load_adapter()
+    staging = _staging(tmp_path, tag="replay_parity")
+    archive = _durable_archive(tmp_path, tag="replay_parity")
+    observation = _valid_market_observation()
+    plan_section = mod.build_plan(
+        mode="execute",
+        staging_root=staging,
+        archive_root=archive,
+        repo_root=ROOT,
+        duration_minutes=10,
+        max_steps=120,
+        step_interval_seconds=0.0,
+        run_id="testnet_bounded_observation_test_run",
+        market_observation=observation,
+    ).completion_path_wiring
+    plan_machine = plan_section["machine_summary"]
+    rc = _execute_with_mocked_runner(mod, staging, archive, market_observation=observation)
+    assert rc == 0
+    metadata = json.loads((staging / "RUN_METADATA.json").read_text(encoding="utf-8"))
+    closeout_machine = metadata["completion_path_wiring"]["machine_summary"]
+    assert (
+        closeout_machine["OFFLINE_END_TO_END_REPLAY_PROOF_CLASSIFICATION"]
+        == plan_machine["OFFLINE_END_TO_END_REPLAY_PROOF_CLASSIFICATION"]
+    )
+    assert (
+        closeout_machine["REPLAY_PROOF_CLASSIFICATION_BOUND"]
+        == plan_machine["REPLAY_PROOF_CLASSIFICATION_BOUND"]
+    )
+    closeout = (staging / "CLOSEOUT.md").read_text(encoding="utf-8")
+    assert (
+        "OFFLINE_END_TO_END_REPLAY_PROOF_CLASSIFICATION="
+        f"{plan_machine['OFFLINE_END_TO_END_REPLAY_PROOF_CLASSIFICATION']}" in closeout
+    )
+    assert (
+        f"REPLAY_PROOF_CLASSIFICATION_BOUND={plan_machine['REPLAY_PROOF_CLASSIFICATION_BOUND']}"
+        in closeout
+    )
+
+
+def test_adapter_replay_proof_classification_preserves_non_authorizing_boundaries(
+    tmp_path: Path,
+) -> None:
+    mod = _load_adapter()
+    staging = _staging(tmp_path, tag="replay_boundaries")
+    archive = _durable_archive(tmp_path, tag="replay_boundaries")
+    observation = _valid_market_observation()
+    rc = _execute_with_mocked_runner(mod, staging, archive, market_observation=observation)
+    assert rc == 0
+    metadata = json.loads((staging / "RUN_METADATA.json").read_text(encoding="utf-8"))
+    machine = metadata["completion_path_wiring"]["machine_summary"]
+    assert "OFFLINE_END_TO_END_REPLAY_PROOF_CLASSIFICATION" in machine
+    assert "REPLAY_PROOF_CLASSIFICATION_BOUND" in machine
+    assert machine["ORDERS_TOTAL"] == 0
+    assert machine["TESTNET_EXECUTES_CANONICAL_MASTER_V2"] is False
+    closeout = (staging / "CLOSEOUT.md").read_text(encoding="utf-8")
+    assert "TESTNET_AUTHORIZED=false" in closeout
+    assert "START_TESTNET_NOW=false" in closeout
+    assert "LIVE_ALLOWED=false" in closeout
