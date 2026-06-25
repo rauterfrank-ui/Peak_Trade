@@ -180,7 +180,9 @@ def test_graph_missing_dependency_is_fail_closed() -> None:
     validators = {
         VALIDATOR_RECONCILIATION: lambda _ctx: ValidationResult(),
         VALIDATOR_RECOVERY: failing_recovery,
-        VALIDATOR_CROSS_SLICE_COHERENCE: lambda _ctx: ValidationResult(fail_reasons=("should not run",)),
+        VALIDATOR_CROSS_SLICE_COHERENCE: lambda _ctx: ValidationResult(
+            fail_reasons=("should not run",)
+        ),
         VALIDATOR_TRACEABILITY: lambda _ctx: ValidationResult(fail_reasons=("should not run",)),
         VALIDATOR_OPERATOR_CLOSURE: lambda _ctx: ValidationResult(fail_reasons=("should not run",)),
         VALIDATOR_WALLCLOCK: lambda _ctx: ValidationResult(),
@@ -227,7 +229,9 @@ def test_graph_aggregates_fail_reasons_from_executed_validators() -> None:
     validators = {
         VALIDATOR_RECONCILIATION: lambda _ctx: ValidationResult(fail_reasons=("alpha",)),
         VALIDATOR_RECOVERY: lambda _ctx: ValidationResult(fail_reasons=("beta",)),
-        VALIDATOR_CROSS_SLICE_COHERENCE: lambda _ctx: ValidationResult(fail_reasons=("should not run",)),
+        VALIDATOR_CROSS_SLICE_COHERENCE: lambda _ctx: ValidationResult(
+            fail_reasons=("should not run",)
+        ),
         VALIDATOR_TRACEABILITY: lambda _ctx: ValidationResult(fail_reasons=("gamma",)),
         VALIDATOR_OPERATOR_CLOSURE: lambda _ctx: ValidationResult(fail_reasons=("delta",)),
         VALIDATOR_WALLCLOCK: lambda _ctx: ValidationResult(),

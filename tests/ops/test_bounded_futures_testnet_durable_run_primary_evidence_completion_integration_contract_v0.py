@@ -4006,8 +4006,14 @@ def test_pe33_cross_slice_coherence_bound_in_completion_happy_path() -> None:
     assert result["pe33_cross_slice_proof_coherence_bound"] is True
     chain = integration_input.completion_proof_chain
     pe33_proof = integration_input.pe33_cross_slice_proof_coherence_proof
-    assert chain.completion_referenced_pe33_integration_proof_digest == pe33_proof.integration_proof_digest
-    assert chain.completion_referenced_pe33_integration_input_digest == pe33_proof.integration_input_digest
+    assert (
+        chain.completion_referenced_pe33_integration_proof_digest
+        == pe33_proof.integration_proof_digest
+    )
+    assert (
+        chain.completion_referenced_pe33_integration_input_digest
+        == pe33_proof.integration_input_digest
+    )
 
 
 def test_pe33_missing_integration_proof_digest_fails() -> None:
