@@ -1513,7 +1513,8 @@ DURABLE_COMPLETION_MATRIX_MASTER_V2_EVENT_STREAM_BOUNDED_TARGETS = (
 def test_selector_durable_completion_event_stream_validator_focused_matrix_eight_node_bounded() -> (
     None
 ):
-    sel = _run_selector(*DURABLE_COMPLETION_EVENT_STREAM_VALIDATOR_BINDING_FILES)
+    # Empty patch isolates bounded-matrix contract from live branch GLB019 auto-patch drift.
+    sel = _run_selector_with_patch("", *DURABLE_COMPLETION_EVENT_STREAM_VALIDATOR_BINDING_FILES)
     assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "durable_completion_focused"
     targets = _targets(sel)
