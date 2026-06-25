@@ -503,6 +503,7 @@ def test_coherent_static_completion_happy_path_passes() -> None:
     assert result["pe34_handoff_bound"] is True
     assert result["pe35_staleness_revocation_recovery_bound"] is True
     assert result["pe36_admission_presentation_bound"] is True
+    assert result["pe33_cross_slice_proof_coherence_bound"] is True
     assert result["pe25_operator_closure_lifecycle_bound"] is True
     assert result["fail_reasons"] == []
 
@@ -3994,3 +3995,152 @@ def test_glb019_deterministic_repeat() -> None:
     second = evaluate_durable_run_primary_evidence_completion_integration(integration_input)
     assert first == second
     assert first["integration_input_digest"] == second["integration_input_digest"]
+
+
+def test_pe33_cross_slice_coherence_bound_in_completion_happy_path() -> None:
+    integration_input = default_minimal_completion_integration_input(
+        source_revision=VALID_COMMIT_SHA
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(integration_input)
+    assert result["integration_pass"] is True
+    assert result["pe33_cross_slice_proof_coherence_bound"] is True
+    chain = integration_input.completion_proof_chain
+    pe33_proof = integration_input.pe33_cross_slice_proof_coherence_proof
+    assert chain.completion_referenced_pe33_integration_proof_digest == pe33_proof.integration_proof_digest
+    assert chain.completion_referenced_pe33_integration_input_digest == pe33_proof.integration_input_digest
+
+
+def test_pe33_missing_integration_proof_digest_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe33_cross_slice_proof_coherence_proof=replace(
+            integration_input.pe33_cross_slice_proof_coherence_proof,
+            integration_proof_digest="",
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe33_proof: integration_proof_digest required" in r for r in result["fail_reasons"])
+
+
+def test_pe33_proof_digest_chain_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        completion_proof_chain=replace(
+            integration_input.completion_proof_chain,
+            completion_referenced_pe33_integration_proof_digest="f" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "completion_referenced_pe33_integration_proof_digest mismatch" in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_pe33_input_digest_chain_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        completion_proof_chain=replace(
+            integration_input.completion_proof_chain,
+            completion_referenced_pe33_integration_input_digest="a" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "completion_referenced_pe33_integration_input_digest mismatch" in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_pe33_pe25_slot_digest_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        completion_proof_chain=replace(
+            integration_input.completion_proof_chain,
+            completion_referenced_pe33_pe25_slot_digest="b" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "completion_referenced_pe33_pe25_slot_digest mismatch" in r for r in result["fail_reasons"]
+    )
+
+
+@pytest.mark.parametrize(
+    "lifecycle_state",
+    [
+        PROOF_LIFECYCLE_STALE,
+        PROOF_LIFECYCLE_REVOKED,
+        PROOF_LIFECYCLE_SUPERSEDED,
+    ],
+)
+def test_pe33_invalid_proof_lifecycle_states_fail(lifecycle_state: str) -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe33_proof_lifecycle=replace(
+            integration_input.pe33_proof_lifecycle,
+            lifecycle_state=lifecycle_state,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe33_proof_lifecycle: invalid lifecycle state" in r for r in result["fail_reasons"])
+
+
+def test_pe33_source_revision_mismatch_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe33_cross_slice_proof_coherence_proof=replace(
+            integration_input.pe33_cross_slice_proof_coherence_proof,
+            source_revision=ALT_COMMIT_SHA,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe33_proof: source_revision mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe33_integration_proof_digest_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe33_cross_slice_proof_coherence_proof=replace(
+            integration_input.pe33_cross_slice_proof_coherence_proof,
+            integration_proof_digest="c" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("pe33_proof: integration_proof_digest mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe33_completion_slot_pe21_digest_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    slots = integration_input.pe33_cross_slice_proof_coherence_integration_input.proof_slots
+    pe21_slot = next(slot for slot in slots if slot.slot_id == "pe21")
+    bad_slot = replace(pe21_slot, proof_digest="d" * 64)
+    from src.ops.bounded_futures_testnet_cross_slice_proof_coherence_integration_contract_v0 import (
+        replace_proof_slot,
+    )
+
+    bad_pe33_input = replace(
+        integration_input.pe33_cross_slice_proof_coherence_integration_input,
+        proof_slots=replace_proof_slot(slots, bad_slot),
+    )
+    bad = replace(
+        integration_input,
+        pe33_cross_slice_proof_coherence_integration_input=bad_pe33_input,
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("PE-33 slot pe21 proof_digest mismatch" in r for r in result["fail_reasons"])
