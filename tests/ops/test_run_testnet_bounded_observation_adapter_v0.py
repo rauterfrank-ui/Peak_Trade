@@ -78,8 +78,9 @@ def _load_review():
     return _load_module(REVIEW_SCRIPT, "review_testnet_bounded_observation_evidence_v0")
 
 
-def _staging(tmp_path: Path) -> Path:
-    return Path("/tmp") / f"peak_trade_testnet_staging_test_{tmp_path.name}"
+def _staging(tmp_path: Path, *, tag: str = "") -> Path:
+    suffix = f"_{tag}" if tag else ""
+    return Path("/tmp") / f"peak_trade_testnet_staging_test_{tmp_path.name}{suffix}"
 
 
 WALLCLOCK_FIELD_NAMES = (
@@ -151,8 +152,9 @@ def _load_shell_manifest(staging: Path) -> dict[str, object]:
     return json.loads(manifest_path.read_text(encoding="utf-8"))
 
 
-def _durable_archive(tmp_path: Path) -> Path:
-    path = ROOT / "tests" / ".pytest_archive_roots" / tmp_path.name
+def _durable_archive(tmp_path: Path, *, tag: str = "") -> Path:
+    suffix = f"_{tag}" if tag else ""
+    path = ROOT / "tests" / ".pytest_archive_roots" / f"{tmp_path.name}{suffix}"
     path.mkdir(parents=True, exist_ok=True)
     return path
 
@@ -1665,8 +1667,8 @@ def test_adapter_replay_proof_classification_plan_execute_closeout_parity(
     tmp_path: Path,
 ) -> None:
     mod = _load_adapter()
-    staging = _staging(tmp_path)
-    archive = _durable_archive(tmp_path)
+    staging = _staging(tmp_path, tag="replay_parity")
+    archive = _durable_archive(tmp_path, tag="replay_parity")
     observation = _valid_market_observation()
     plan_section = mod.build_plan(
         mode="execute",
@@ -1680,6 +1682,9 @@ def test_adapter_replay_proof_classification_plan_execute_closeout_parity(
         market_observation=observation,
     ).completion_path_wiring
     plan_machine = plan_section["machine_summary"]
+    # Re-ensure after build_plan: parallel focused-matrix shards may delete
+    # tests/.pytest_archive_roots via the autouse cleanup fixture.
+    archive.mkdir(parents=True, exist_ok=True)
     rc = _execute_with_mocked_runner(mod, staging, archive, market_observation=observation)
     assert rc == 0
     metadata = json.loads((staging / "RUN_METADATA.json").read_text(encoding="utf-8"))
@@ -1707,8 +1712,8 @@ def test_adapter_replay_proof_classification_preserves_non_authorizing_boundarie
     tmp_path: Path,
 ) -> None:
     mod = _load_adapter()
-    staging = _staging(tmp_path)
-    archive = _durable_archive(tmp_path)
+    staging = _staging(tmp_path, tag="replay_boundaries")
+    archive = _durable_archive(tmp_path, tag="replay_boundaries")
     observation = _valid_market_observation()
     rc = _execute_with_mocked_runner(mod, staging, archive, market_observation=observation)
     assert rc == 0
