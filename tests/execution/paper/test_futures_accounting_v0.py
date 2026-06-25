@@ -1,13 +1,19 @@
-"""Tests for futures paper accounting v0 (pure, offline)."""
+"""Tests for futures paper accounting v0 (pure, offline).
+
+INV-048 P1 arithmetic contract closure (Package A slice A2): flip fail-closed,
+ledger quantize delegation, wallet equity identity — tests-only; unwired kernel.
+"""
 
 from __future__ import annotations
 
 import ast
-from decimal import Decimal
+from decimal import ROUND_HALF_UP, Decimal
 from pathlib import Path
 
 import pytest
 
+from src.execution.ledger.models import QuantizationPolicy
+from src.execution.ledger.quantization import d, q_money, q_price, q_qty
 from src.execution.paper.futures_accounting import (
     FuturesInstrumentSpec,
     FuturesMarginSpec,
@@ -696,3 +702,324 @@ def test_f1_f2_mark_notional_with_margin_projection_liquidation_proximity_determ
     )
     assert st_blk is LiquidationProximityV0.BLOCKED_BELOW_MAINTENANCE
     assert buf < 0
+
+
+def _wallet_equity_end(*, start: Decimal, position: FuturesPosition) -> Decimal:
+    """INV-048 P1-5: wallet cash identity excludes unrealized PnL."""
+    return start + position.realized_pnl + position.funding_pnl - position.fees_paid
+
+
+def _flip_via_close_then_opposite_open(
+    pos: FuturesPosition,
+    *,
+    contract_size: Decimal,
+    flip_price: Decimal,
+    new_side: FuturesSide,
+    open_qty: Decimal,
+    close_fee: Decimal = Decimal("0"),
+) -> FuturesPosition:
+    """Test-only composed flip: full close then fresh opposite-side open (no flip API)."""
+    closed = reduce_position(
+        pos,
+        contract_size=contract_size,
+        close_qty=pos.qty,
+        close_price=flip_price,
+        fee_quote=close_fee,
+    )
+    return FuturesPosition(
+        symbol=pos.symbol,
+        side=new_side,
+        qty=open_qty,
+        entry_price=flip_price,
+        mark_price=flip_price,
+        realized_pnl=closed.realized_pnl,
+        funding_pnl=closed.funding_pnl,
+        fees_paid=closed.fees_paid,
+    )
+
+
+def _instrument_quantize_policy(inst: FuturesInstrumentSpec) -> QuantizationPolicy:
+    """Map kernel instrument tick/lot to ledger QuantizationPolicy (test contract)."""
+    return QuantizationPolicy(
+        price_quant=inst.tick_size,
+        qty_quant=inst.min_qty,
+        money_quant=Decimal("0.01"),
+        rounding=ROUND_HALF_UP,
+    )
+
+
+def test_reduce_position_is_not_flip_api_fail_closed() -> None:
+    """P1-3: reduce_position closes same side only; over-close is fail-closed, not flip."""
+    pos = FuturesPosition(
+        symbol="PF",
+        side=FuturesSide.LONG,
+        qty=Decimal("1"),
+        entry_price=Decimal("100"),
+        mark_price=Decimal("105"),
+        realized_pnl=Decimal("0"),
+        funding_pnl=Decimal("0"),
+    )
+    partial = reduce_position(
+        pos,
+        contract_size=Decimal("1"),
+        close_qty=Decimal("0.5"),
+        close_price=Decimal("110"),
+    )
+    assert partial.side is FuturesSide.LONG
+    assert partial.qty == Decimal("0.5")
+
+    full = reduce_position(
+        pos,
+        contract_size=Decimal("1"),
+        close_qty=Decimal("1"),
+        close_price=Decimal("110"),
+    )
+    assert full.side is FuturesSide.LONG
+    assert full.qty == Decimal("0")
+
+    with pytest.raises(ValueError, match="must not exceed"):
+        reduce_position(
+            pos,
+            contract_size=Decimal("1"),
+            close_qty=Decimal("1.001"),
+            close_price=Decimal("110"),
+        )
+
+
+def test_position_flip_semantics_composed_close_then_opposite_open_long_to_short() -> None:
+    """P1-3: flip = close long leg at flip_price + open short at same price."""
+    pos = FuturesPosition(
+        symbol="PF",
+        side=FuturesSide.LONG,
+        qty=Decimal("2"),
+        entry_price=Decimal("100"),
+        mark_price=Decimal("108"),
+        realized_pnl=Decimal("0"),
+        funding_pnl=Decimal("0"),
+    )
+    flip_price = Decimal("115")
+    open_qty = Decimal("1.5")
+    close_fee = Decimal("0.5")
+
+    flipped = _flip_via_close_then_opposite_open(
+        pos,
+        contract_size=Decimal("1"),
+        flip_price=flip_price,
+        new_side=FuturesSide.SHORT,
+        open_qty=open_qty,
+        close_fee=close_fee,
+    )
+
+    expected_close_realized = realize_pnl_on_close(
+        side=FuturesSide.LONG,
+        entry_price=Decimal("100"),
+        close_price=flip_price,
+        close_qty=Decimal("2"),
+        contract_size=Decimal("1"),
+        fee_quote=close_fee,
+    )
+    assert flipped.side is FuturesSide.SHORT
+    assert flipped.qty == open_qty
+    assert flipped.entry_price == flip_price
+    assert flipped.mark_price == flip_price
+    assert flipped.realized_pnl == expected_close_realized
+    assert flipped.fees_paid == close_fee
+    assert unrealized_pnl(
+        side=FuturesSide.SHORT,
+        entry_price=flip_price,
+        mark_price=flip_price,
+        qty=open_qty,
+        contract_size=Decimal("1"),
+    ) == Decimal("0")
+
+
+def test_position_flip_semantics_composed_close_then_opposite_open_short_to_long() -> None:
+    """P1-3: flip = close short leg at flip_price + open long at same price."""
+    pos = FuturesPosition(
+        symbol="PF",
+        side=FuturesSide.SHORT,
+        qty=Decimal("3"),
+        entry_price=Decimal("200"),
+        mark_price=Decimal("190"),
+        realized_pnl=Decimal("1"),
+        funding_pnl=Decimal("0.25"),
+    )
+    flip_price = Decimal("185")
+    open_qty = Decimal("2")
+
+    flipped = _flip_via_close_then_opposite_open(
+        pos,
+        contract_size=Decimal("1"),
+        flip_price=flip_price,
+        new_side=FuturesSide.LONG,
+        open_qty=open_qty,
+    )
+
+    expected_close_realized = Decimal("1") + realize_pnl_on_close(
+        side=FuturesSide.SHORT,
+        entry_price=Decimal("200"),
+        close_price=flip_price,
+        close_qty=Decimal("3"),
+        contract_size=Decimal("1"),
+    )
+    assert flipped.side is FuturesSide.LONG
+    assert flipped.qty == open_qty
+    assert flipped.entry_price == flip_price
+    assert flipped.realized_pnl == expected_close_realized
+    assert flipped.funding_pnl == Decimal("0.25")
+
+
+def test_production_module_has_no_public_flip_callable() -> None:
+    """P1-3: futures_accounting v0 kernel exposes no public flip_* API."""
+    text = _MODULE_PATH.read_text(encoding="utf-8")
+    tree = ast.parse(text)
+    flip_name_fragments = ("flip", "reverse_side", "switch_side")
+    for node in ast.walk(tree):
+        if isinstance(node, (ast.FunctionDef, ast.AsyncFunctionDef)):
+            name = node.name
+            if name.startswith("_"):
+                continue
+            lower = name.lower()
+            for frag in flip_name_fragments:
+                assert frag not in lower, f"unexpected public callable {name!r}"
+
+
+def test_q_price_respects_tick_quant_and_rounding_policy() -> None:
+    """P1-4: q_price rounds to tick quant using policy.rounding."""
+    tick = Decimal("0.5")
+    policy = QuantizationPolicy(
+        price_quant=tick,
+        qty_quant=Decimal("0.001"),
+        money_quant=Decimal("0.01"),
+        rounding=ROUND_HALF_UP,
+    )
+    for raw in (
+        Decimal("100.24"),
+        Decimal("100.25"),
+        Decimal("100.74"),
+        Decimal("100.75"),
+    ):
+        assert q_price(raw, policy=policy) == raw.quantize(tick, rounding=ROUND_HALF_UP)
+
+
+def test_q_qty_respects_lot_quant_and_rounding_policy() -> None:
+    """P1-4: q_qty rounds to lot quant using policy.rounding."""
+    lot = Decimal("0.001")
+    policy = QuantizationPolicy(
+        price_quant=Decimal("0.5"),
+        qty_quant=lot,
+        money_quant=Decimal("0.01"),
+        rounding=ROUND_HALF_UP,
+    )
+    for raw in (Decimal("1.2344"), Decimal("1.2345"), Decimal("0.00049")):
+        assert q_qty(raw, policy=policy) == raw.quantize(lot, rounding=ROUND_HALF_UP)
+
+
+def test_q_money_respects_money_quant() -> None:
+    """P1-4: q_money rounds to money quant using policy.rounding."""
+    money = Decimal("0.01")
+    policy = QuantizationPolicy(
+        price_quant=Decimal("0.01"),
+        qty_quant=Decimal("0.001"),
+        money_quant=money,
+        rounding=ROUND_HALF_UP,
+    )
+    for raw in (Decimal("123.454"), Decimal("123.455")):
+        assert q_money(raw, policy=policy) == raw.quantize(money, rounding=ROUND_HALF_UP)
+
+
+def test_quantization_d_rejects_float() -> None:
+    """P1-4: ledger d() rejects float inputs for deterministic accounting."""
+    with pytest.raises(TypeError, match="float inputs are forbidden"):
+        d(1.23)
+    assert d("1.23") == Decimal("1.23")
+    assert d(Decimal("1.23")) == Decimal("1.23")
+    assert d(42) == Decimal("42")
+
+
+def test_kernel_instrument_tick_lot_aligns_with_quantize_policy() -> None:
+    """P1-4: kernel tick_size/min_qty validation aligns with ledger quantize delegate."""
+    inst, margin = _spec()
+    validate_futures_accounting_inputs(instrument=inst, margin=margin)
+    policy = _instrument_quantize_policy(inst)
+
+    assert inst.tick_size == policy.price_quant
+    assert inst.min_qty == policy.qty_quant
+    raw_price = Decimal("100.37")
+    raw_qty = Decimal("1.23456")
+    assert q_price(raw_price, policy=policy) == raw_price.quantize(
+        inst.tick_size, rounding=ROUND_HALF_UP
+    )
+    assert q_qty(raw_qty, policy=policy) == raw_qty.quantize(inst.min_qty, rounding=ROUND_HALF_UP)
+
+
+def test_wallet_equity_identity_start_plus_realized_plus_funding_minus_fees() -> None:
+    """P1-5: wallet_equity_end = start + realized + funding - fees (excludes unrealized)."""
+    wallet_start = Decimal("10000")
+    pos = FuturesPosition(
+        symbol="PF",
+        side=FuturesSide.LONG,
+        qty=Decimal("2"),
+        entry_price=Decimal("100"),
+        mark_price=Decimal("110"),
+        realized_pnl=Decimal("0"),
+        funding_pnl=Decimal("0"),
+    )
+    after_close = reduce_position(
+        pos,
+        contract_size=Decimal("1"),
+        close_qty=Decimal("1"),
+        close_price=Decimal("115"),
+        fee_quote=Decimal("2"),
+    )
+    n = notional_value(
+        mark_price=after_close.mark_price,
+        qty=after_close.qty,
+        contract_size=Decimal("1"),
+    )
+    after_funding = apply_funding_payment(after_close, notional=n, funding_rate=Decimal("0.0001"))
+    wallet_end = _wallet_equity_end(start=wallet_start, position=after_funding)
+    expected = (
+        wallet_start
+        + after_funding.realized_pnl
+        + after_funding.funding_pnl
+        - after_funding.fees_paid
+    )
+    assert wallet_end == expected
+
+
+def test_wallet_equity_identity_multi_step_close_funding_fee_chain() -> None:
+    """P1-5: wallet identity holds across multi-step close, funding, and fee chain."""
+    wallet_start = Decimal("5000")
+    pos = FuturesPosition(
+        symbol="PF",
+        side=FuturesSide.SHORT,
+        qty=Decimal("4"),
+        entry_price=Decimal("50"),
+        mark_price=Decimal("48"),
+        realized_pnl=Decimal("0"),
+        funding_pnl=Decimal("0"),
+    )
+    cs = Decimal("2")
+
+    step1 = reduce_position(
+        pos,
+        contract_size=cs,
+        close_qty=Decimal("1"),
+        close_price=Decimal("47"),
+        fee_quote=Decimal("0.5"),
+    )
+    n1 = notional_value(mark_price=step1.mark_price, qty=step1.qty, contract_size=cs)
+    step2 = apply_funding_payment(step1, notional=n1, funding_rate=Decimal("0.0002"))
+    step3 = reduce_position(
+        step2,
+        contract_size=cs,
+        close_qty=Decimal("2"),
+        close_price=Decimal("46"),
+        fee_quote=Decimal("1"),
+    )
+    n3 = notional_value(mark_price=step3.mark_price, qty=step3.qty, contract_size=cs)
+    step4 = apply_funding_payment(step3, notional=n3, funding_rate=Decimal("-0.0001"))
+
+    wallet_end = _wallet_equity_end(start=wallet_start, position=step4)
+    assert wallet_end == (wallet_start + step4.realized_pnl + step4.funding_pnl - step4.fees_paid)
