@@ -17,6 +17,7 @@ from src.ops.durable_completion_validation.graph import (
     PROOF_BINDING_VALIDATION_GRAPH,
     PROOF_BINDING_VALIDATION_ORDER,
     VALIDATOR_COMPLETION_CHAIN,
+    VALIDATOR_CROSS_SLICE_COHERENCE,
     VALIDATOR_EVENT_STREAM,
     VALIDATOR_OPERATOR_CLOSURE,
     VALIDATOR_RECONCILIATION,
@@ -199,6 +200,7 @@ def test_six_node_validation_graph_unchanged() -> None:
         VALIDATOR_OPERATOR_CLOSURE,
         VALIDATOR_TRACEABILITY,
         VALIDATOR_RECOVERY,
+        VALIDATOR_CROSS_SLICE_COHERENCE,
         VALIDATOR_WALLCLOCK,
         VALIDATOR_EVENT_STREAM,
     )
@@ -543,9 +545,9 @@ def _prove_scenario_ticks(
         ("A", lambda: _default_ticks()[:5], False),
         ("B", lambda: _default_ticks()[:12], False),
         ("C", lambda: _default_ticks()[:6], False),
-        ("D", lambda: _default_ticks()[:12] + _default_ticks()[16:20], True),
+        ("D", lambda: _default_ticks()[:12] + _default_ticks()[16:20], False),
         ("G", lambda: _default_ticks()[:5] + (_default_ticks()[15],), False),
-        ("H", lambda: _default_ticks()[:12] + _default_ticks()[12:15], True),
+        ("H", lambda: _default_ticks()[:12] + _default_ticks()[12:15], False),
     ],
 )
 def test_scenario_end_to_end_replay_proof_binding(
@@ -561,6 +563,10 @@ def test_scenario_end_to_end_replay_proof_binding(
     assert proof.event_stream_non_authorizing is True
     if scenario_id == "C":
         assert OfflineDoublePlayProofEvent.BULL_TO_BEAR in replay_result.summary.proof_events
+    if scenario_id == "D":
+        assert OfflineDoublePlayProofEvent.BEAR_TO_BULL in replay_result.summary.proof_events
+    if scenario_id == "H":
+        assert OfflineDoublePlayProofEvent.FLAPPING_BLOCKED in replay_result.summary.proof_events
     if expect_full_e2e:
         assert proof.binding_pass is True, proof.fail_reasons
         assert proof.projection_pass is True
