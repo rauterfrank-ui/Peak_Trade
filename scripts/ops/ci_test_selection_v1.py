@@ -811,6 +811,75 @@ CANONICAL_MARKET_DASHBOARD_FOCUSED_TESTS: tuple[str, ...] = (
 _REPO_RELATIVE_PATH = re.compile(r"^[A-Za-z0-9_./-]+$")
 _IMPORT_MODULE = re.compile(r"^[a-zA-Z0-9_.]+$")
 
+INVALID_SELECTION_MODE = "INVALID"
+PR_LIKE_EVENTS = frozenset({"pull_request", "merge_group", "push"})
+EXHAUSTIVE_AUTHORIZED_EVENTS = frozenset({"schedule", "workflow_dispatch"})
+
+PR_BOUNDED_FULL_VERSION_SMOKE_TARGETS: tuple[str, ...] = (
+    "tests/test_stability_smoke.py",
+    "tests/test_data_contracts.py",
+    "tests/test_error_taxonomy.py",
+    "tests/test_resilience.py",
+)
+
+PR_BOUNDED_FULL_PY311_CORE_TARGETS: tuple[str, ...] = (
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    "tests/ci/test_ci_static_contract_narrow_code_filter_contract_v0.py",
+    "tests/ci/test_required_checks_config.py",
+    "tests/ci/test_required_checks_hygiene.py",
+    "tests/ci/test_workflows_no_pull_request_target_contract_v0.py",
+    "tests/ci/test_ci_testowner_runtime_budget_reporting_contract_v0.py",
+    "tests/ci/test_pr_head_sha_required_checks_liveness_guard.py",
+)
+
+PR_BOUNDED_FULL_CI_CHANGE_EXTRA_TARGETS: tuple[str, ...] = (
+    "tests/ci/test_cursor_auto_pr_pre_pr_validation_enforcement_contract_v0.py",
+    "tests/ci/test_ci_scheduled_paper_export_smoke_workflow_contract_v0.py",
+    "tests/ci/test_class_a_shadow_paper_scheduled_probe_workflow_contract_v0.py",
+    "tests/ci/test_paper_session_audit_evidence_workflow_contract_v0.py",
+    "tests/ci/test_paper_tests_audit_evidence_workflow_contract_v0.py",
+    "tests/ci/test_prj_scheduled_shadow_paper_features_smoke_workflow_contract_v0.py",
+    "tests/ci/test_shadow_paper_smoke_workflow_contract_v0.py",
+)
+
+
+def resolve_pr_bounded_full_targets(files: list[str]) -> tuple[str, ...]:
+    """Conservative, deterministic PR_BOUNDED_FULL pytest targets (3.11 main lane)."""
+    targets: list[str] = []
+    seen: set[str] = set()
+
+    def add(path: str) -> None:
+        if path not in seen and _repo_path_exists(path):
+            seen.add(path)
+            targets.append(path)
+
+    for path in PR_BOUNDED_FULL_VERSION_SMOKE_TARGETS:
+        add(path)
+    for path in PR_BOUNDED_FULL_PY311_CORE_TARGETS:
+        add(path)
+
+    normalized = {PurePosixPath(f).as_posix() for f in files if f.strip()}
+    ci_central = {
+        ".github/workflows/ci.yml",
+        "scripts/ops/ci_test_selection_v1.py",
+        "config/ci/file_category_mapping.yaml",
+    }
+    if normalized & ci_central:
+        for path in CI_INFRA_CONTRACT_TEST_ALLOWLIST:
+            add(path)
+        for path in CI_INFRA_CORE_FOCUSED_TESTS:
+            add(path)
+        for path in PR_BOUNDED_FULL_CI_CHANGE_EXTRA_TARGETS:
+            add(path)
+
+    if not targets:
+        return ()
+    return tuple(sorted(targets))
+
+
+def _is_pr_like_event(event_name: str) -> bool:
+    return event_name in PR_LIKE_EVENTS
+
 
 @dataclass(frozen=True)
 class SelectionResult:
@@ -818,14 +887,24 @@ class SelectionResult:
     reason: str
     focused_pytest_targets: tuple[str, ...]
     focused_module_imports: tuple[str, ...] = ()
+    pr_bounded_pytest_targets: tuple[str, ...] = ()
 
     def github_output_lines(self) -> list[str]:
+        is_contract_focused = self.mode == "CONTRACT_FOCUSED"
+        is_pr_bounded = self.mode == "PR_BOUNDED_FULL"
+        is_exhaustive = self.mode == "EXHAUSTIVE_FULL"
+        is_invalid = self.mode == INVALID_SELECTION_MODE
+        is_no_op = self.mode == "NO_OP"
         lines = [
             f"test_selection_mode={self.mode}",
             f"test_selection_reason={self.reason}",
-            f"tests_execute_full={'true' if self.mode == 'FULL' else 'false'}",
-            f"tests_execute_focused={'true' if self.mode == 'FOCUSED' else 'false'}",
-            f"tests_execute_no_op={'true' if self.mode == 'NO_OP' else 'false'}",
+            f"tests_execute_full={'true' if is_exhaustive else 'false'}",
+            f"tests_execute_contract_focused={'true' if is_contract_focused else 'false'}",
+            f"tests_execute_focused={'true' if is_contract_focused else 'false'}",
+            f"tests_execute_pr_bounded_full={'true' if is_pr_bounded else 'false'}",
+            f"tests_execute_exhaustive_full={'true' if is_exhaustive else 'false'}",
+            f"tests_execute_no_op={'true' if is_no_op else 'false'}",
+            f"tests_execute_invalid={'true' if is_invalid else 'false'}",
         ]
         if self.focused_pytest_targets:
             lines.append(f"focused_pytest_targets={' '.join(self.focused_pytest_targets)}")
@@ -835,7 +914,122 @@ class SelectionResult:
             lines.append(f"focused_module_imports={' '.join(self.focused_module_imports)}")
         else:
             lines.append("focused_module_imports=")
+        if self.pr_bounded_pytest_targets:
+            lines.append(
+                f"pr_bounded_pytest_targets={' '.join(self.pr_bounded_pytest_targets)}"
+            )
+        else:
+            lines.append("pr_bounded_pytest_targets=")
         return lines
+
+
+def _is_selector_self_change_bootstrap(files: list[str]) -> bool:
+    normalized = {PurePosixPath(f).as_posix() for f in files if f.strip()}
+    return (
+        ".github/workflows/ci.yml" in normalized
+        and "scripts/ops/ci_test_selection_v1.py" in normalized
+    )
+
+
+def _finalize_selection_result(
+    result: SelectionResult,
+    files: list[str],
+    *,
+    event_name: str,
+    force_exhaustive: bool,
+) -> SelectionResult:
+    if force_exhaustive:
+        if event_name not in EXHAUSTIVE_AUTHORIZED_EVENTS:
+            return SelectionResult(
+                INVALID_SELECTION_MODE,
+                "force_exhaustive_on_unauthorized_event",
+                (),
+            )
+        return SelectionResult(
+            "EXHAUSTIVE_FULL",
+            "workflow_dispatch_explicit_exhaustive",
+            (),
+        )
+
+    if event_name == "schedule":
+        return SelectionResult("EXHAUSTIVE_FULL", "scheduled_nightly", ())
+
+    if result.mode == INVALID_SELECTION_MODE:
+        return result
+
+    if result.mode == "NO_OP":
+        return result
+
+    if result.mode == "FOCUSED":
+        if _is_selector_self_change_bootstrap(files):
+            bounded = tuple(
+                sorted(
+                    set(resolve_pr_bounded_full_targets(files))
+                    | set(result.focused_pytest_targets)
+                )
+            )
+            if not bounded:
+                return SelectionResult(
+                    INVALID_SELECTION_MODE,
+                    "pr_bounded_full_empty_targets_fail_closed",
+                    (),
+                )
+            return SelectionResult(
+                "PR_BOUNDED_FULL",
+                "selector_self_change_bootstrap",
+                (),
+                (),
+                bounded,
+            )
+        return SelectionResult(
+            "CONTRACT_FOCUSED",
+            result.reason,
+            result.focused_pytest_targets,
+            result.focused_module_imports,
+            result.pr_bounded_pytest_targets,
+        )
+
+    if result.mode == "FULL":
+        if _is_pr_like_event(event_name) or event_name == "workflow_dispatch":
+            bounded = resolve_pr_bounded_full_targets(files)
+            if not bounded:
+                return SelectionResult(
+                    INVALID_SELECTION_MODE,
+                    "pr_bounded_full_empty_targets_fail_closed",
+                    (),
+                )
+            return SelectionResult(
+                "PR_BOUNDED_FULL",
+                result.reason,
+                (),
+                (),
+                bounded,
+            )
+        return SelectionResult("EXHAUSTIVE_FULL", result.reason, ())
+
+    if result.mode in {"CONTRACT_FOCUSED", "PR_BOUNDED_FULL", "EXHAUSTIVE_FULL"}:
+        if result.mode == "EXHAUSTIVE_FULL" and _is_pr_like_event(event_name):
+            bounded = resolve_pr_bounded_full_targets(files)
+            if not bounded:
+                return SelectionResult(
+                    INVALID_SELECTION_MODE,
+                    "pr_event_exhaustive_blocked_fail_closed",
+                    (),
+                )
+            return SelectionResult(
+                "PR_BOUNDED_FULL",
+                "pr_event_exhaustive_blocked_fail_closed",
+                (),
+                (),
+                bounded,
+            )
+        return result
+
+    return SelectionResult(
+        INVALID_SELECTION_MODE,
+        f"incoherent_selection_mode_{result.mode}",
+        (),
+    )
 
 
 @dataclass(frozen=True)
@@ -2872,12 +3066,14 @@ def resolve_selection(
     files: list[str],
     *,
     force_full: bool = False,
+    force_exhaustive: bool = False,
     event_name: str = "pull_request",
     patch_text: str | None = None,
 ) -> SelectionResult:
     normalized = sorted({PurePosixPath(f).as_posix() for f in files if f.strip()})
-    if force_full or event_name in {"push", "merge_group", "schedule"}:
-        return SelectionResult("FULL", "force_full_or_non_pr_event", ())
+    exhaustive_requested = force_exhaustive or force_full
+    if exhaustive_requested and event_name in EXHAUSTIVE_AUTHORIZED_EVENTS:
+        return SelectionResult("EXHAUSTIVE_FULL", "force_exhaustive_authorized_event", ())
     if not normalized:
         return SelectionResult("FULL", "empty_diff_fail_closed", ())
 
@@ -3136,6 +3332,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--files", nargs="*", default=None, help="Changed file paths")
     parser.add_argument("--files-file", type=Path, default=None)
     parser.add_argument("--force-full", action="store_true")
+    parser.add_argument(
+        "--force-exhaustive",
+        action="store_true",
+        help="Select EXHAUSTIVE_FULL (schedule/workflow_dispatch only)",
+    )
     parser.add_argument("--event-name", default=os.environ.get("GITHUB_EVENT_NAME", "pull_request"))
     parser.add_argument("--github-output", action="store_true")
     parser.add_argument(
@@ -3197,6 +3398,7 @@ def main(argv: list[str] | None = None) -> int:
     result = resolve_selection(
         files,
         force_full=args.force_full,
+        force_exhaustive=args.force_exhaustive,
         event_name=args.event_name,
         patch_text=patch_text,
     )
@@ -3206,6 +3408,13 @@ def main(argv: list[str] | None = None) -> int:
             matrix_contract.reason,
             matrix_contract.pytest_targets,
         )
+    result = _finalize_selection_result(
+        result,
+        files,
+        event_name=args.event_name,
+        force_exhaustive=args.force_exhaustive
+        or (args.force_full and args.event_name in EXHAUSTIVE_AUTHORIZED_EVENTS),
+    )
     lines = result.github_output_lines()
     lines.extend(matrix_contract.github_output_lines())
     lines.extend(resolve_fast_lane_contract_selection(files).github_output_lines())

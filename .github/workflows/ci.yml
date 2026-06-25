@@ -18,6 +18,11 @@ on:
         required: false
         default: false
         type: boolean
+      run_exhaustive_full:
+        description: 'Run EXHAUSTIVE_FULL suite (manual only; never default for PR paths)'
+        required: false
+        default: false
+        type: boolean
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
@@ -56,10 +61,15 @@ jobs:
       test_selection_mode: ${{ steps.test_selection.outputs.test_selection_mode }}
       test_selection_reason: ${{ steps.test_selection.outputs.test_selection_reason }}
       tests_execute_full: ${{ steps.test_selection.outputs.tests_execute_full }}
+      tests_execute_contract_focused: ${{ steps.test_selection.outputs.tests_execute_contract_focused }}
       tests_execute_focused: ${{ steps.test_selection.outputs.tests_execute_focused }}
+      tests_execute_pr_bounded_full: ${{ steps.test_selection.outputs.tests_execute_pr_bounded_full }}
+      tests_execute_exhaustive_full: ${{ steps.test_selection.outputs.tests_execute_exhaustive_full }}
+      tests_execute_invalid: ${{ steps.test_selection.outputs.tests_execute_invalid }}
       tests_execute_no_op: ${{ steps.test_selection.outputs.tests_execute_no_op }}
       focused_pytest_targets: ${{ steps.test_selection.outputs.focused_pytest_targets }}
       focused_module_imports: ${{ steps.test_selection.outputs.focused_module_imports }}
+      pr_bounded_pytest_targets: ${{ steps.test_selection.outputs.pr_bounded_pytest_targets }}
       fast_lane_contract_mode: ${{ steps.test_selection.outputs.fast_lane_contract_mode }}
       fast_lane_contract_pytest_targets: ${{ steps.test_selection.outputs.fast_lane_contract_pytest_targets }}
       matrix_contract_mode: ${{ steps.test_selection.outputs.matrix_contract_mode }}
@@ -193,8 +203,8 @@ jobs:
         run: |
           set -euo pipefail
           FORCE_ARGS=()
-          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ github.event.inputs.force_matrix }}" = "true" ]; then
-            FORCE_ARGS+=(--force-full)
+          if [ "${{ github.event_name }}" = "workflow_dispatch" ] && [ "${{ github.event.inputs.run_exhaustive_full }}" = "true" ]; then
+            FORCE_ARGS+=(--force-exhaustive)
           fi
           if [ "${{ github.event_name }}" = "pull_request" ]; then
             BASE_REF="${{ github.event.pull_request.base.ref }}"
@@ -406,8 +416,9 @@ jobs:
   # ============================================================================
   # Always creates test jobs for all required Python versions (3.9, 3.10, 3.11).
   # On docs-only / workflow-only / static-contract-only PRs, jobs short-circuit SUCCESS (NO_OP).
-  # FOCUSED runs bounded pytest on all matrix versions plus module import smoke.
-  # FULL runs the repository test suite with coverage on 3.11.
+  # FOCUSED/CONTRACT_FOCUSED runs bounded pytest on mapped owners.
+  # PR_BOUNDED_FULL runs conservative bounded gates (never pytest tests/ exhaustive).
+  # EXHAUSTIVE_FULL is not reachable from normal PR events.
   # ============================================================================
   tests:
     name: tests (${{ matrix.python-version }})
@@ -429,9 +440,9 @@ jobs:
         run: |
           echo "test_selection_mode=${{ needs.changes.outputs.test_selection_mode }}"
           echo "test_selection_reason=${{ needs.changes.outputs.test_selection_reason }}"
-          echo "tests_execute_full=${{ needs.changes.outputs.tests_execute_full }}"
-          echo "tests_execute_focused=${{ needs.changes.outputs.tests_execute_focused }}"
-          echo "tests_execute_no_op=${{ needs.changes.outputs.tests_execute_no_op }}"
+          echo "tests_execute_pr_bounded_full=${{ needs.changes.outputs.tests_execute_pr_bounded_full }}"
+          echo "tests_execute_exhaustive_full=${{ needs.changes.outputs.tests_execute_exhaustive_full }}"
+          echo "tests_execute_contract_focused=${{ needs.changes.outputs.tests_execute_contract_focused }}"
           echo "matrix_contract_mode=${{ needs.changes.outputs.matrix_contract_mode }}"
           echo "matrix_contract_reason=${{ needs.changes.outputs.matrix_contract_reason }}"
           echo "matrix_contract_pytest_targets=${{ needs.changes.outputs.matrix_contract_pytest_targets }}"
@@ -443,6 +454,12 @@ jobs:
         run: |
           echo "NO_OP diff-aware selection — skipping full matrix for Python ${{ matrix.python-version }}"
           echo "reason=${{ needs.changes.outputs.test_selection_reason }}"
+
+      - name: Fail closed on invalid test selection
+        if: ${{ needs.changes.outputs.tests_execute_invalid == 'true' }}
+        run: |
+          echo "Invalid test selection — fail-closed"
+          exit 1
 
       - name: MATRIX_CONTRACT_FOCUSED — non-canonical version ack (diff-aware)
         if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.matrix_contract_mode == 'MATRIX_CONTRACT_FOCUSED' && matrix.python-version != '3.11' }}
@@ -481,7 +498,7 @@ jobs:
           pip install pytest pytest-cov
 
       - name: "Stability Smoke Tests (Fast Gate)"
-        if: ${{ (github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true') && needs.changes.outputs.tests_execute_no_op != 'true' }}
+        if: ${{ needs.changes.outputs.tests_execute_no_op != 'true' && (needs.changes.outputs.tests_execute_pr_bounded_full == 'true' || needs.changes.outputs.tests_execute_exhaustive_full == 'true' || needs.changes.outputs.tests_execute_contract_focused == 'true') }}
         id: stability_smoke
         shell: bash
         run: |
@@ -489,8 +506,15 @@ jobs:
           echo "Running fast stability smoke tests (<5s)..."
           pytest tests/test_stability_smoke.py tests/test_data_contracts.py tests/test_error_taxonomy.py tests/test_resilience.py -m smoke -v --tb=short
 
+      - name: "Import and collection smoke (matrix version gate)"
+        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_pr_bounded_full == 'true' }}
+        run: |
+          set -euo pipefail
+          python -c "import src"
+          pytest --collect-only -q tests/test_stability_smoke.py
+
       - name: "Smoke: RL v0.1 Contract Test"
-        if: ${{ (github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true') && needs.changes.outputs.tests_execute_no_op != 'true' && runner.os == 'Linux' }}
+        if: ${{ needs.changes.outputs.tests_execute_exhaustive_full == 'true' && needs.changes.outputs.tests_execute_no_op != 'true' && runner.os == 'Linux' }}
         id: rl_v0_1_smoke
         shell: bash
         run: |
@@ -498,7 +522,7 @@ jobs:
           pytest -q tests/test_rl_v0_1_smoke.py
 
       - name: Validate RL v0.1 Contract
-        if: ${{ (github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true') && needs.changes.outputs.tests_execute_no_op != 'true' && runner.os == 'Linux' }}
+        if: ${{ needs.changes.outputs.tests_execute_exhaustive_full == 'true' && needs.changes.outputs.tests_execute_no_op != 'true' && runner.os == 'Linux' }}
         id: rl_v0_1_contract
         shell: bash
         run: |
@@ -516,13 +540,30 @@ jobs:
           if-no-files-found: ignore
           retention-days: 7
 
-      - name: Run full test suite
-        if: ${{ (github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true') && needs.changes.outputs.tests_execute_no_op != 'true' && needs.changes.outputs.matrix_contract_mode != 'MATRIX_CONTRACT_FOCUSED' }}
+      - name: Run PR_BOUNDED_FULL tests (matrix)
+        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_pr_bounded_full == 'true' && needs.changes.outputs.matrix_contract_mode != 'MATRIX_CONTRACT_FOCUSED' }}
+        run: |
+          set -euo pipefail
+          PYTEST_ARGS=(-v --tb=short -m "not network and not external_tools")
+          if [ "${{ matrix.python-version }}" != "3.11" ]; then
+            pytest tests/test_stability_smoke.py tests/test_data_contracts.py tests/test_error_taxonomy.py tests/test_resilience.py -m smoke "${PYTEST_ARGS[@]}"
+            exit 0
+          fi
+          TARGETS="${{ needs.changes.outputs.pr_bounded_pytest_targets }}"
+          if [ -z "$TARGETS" ]; then
+            echo "PR_BOUNDED_FULL without explicit targets — fail-closed"
+            exit 1
+          fi
+          mapfile -t VALIDATED_TARGETS < <(python3 scripts/ops/ci_test_selection_v1.py --emit-validated-pytest-targets "$TARGETS")
+          pytest "${VALIDATED_TARGETS[@]}" "${PYTEST_ARGS[@]}"
+
+      - name: Run EXHAUSTIVE_FULL test suite
+        if: ${{ needs.changes.outputs.tests_execute_exhaustive_full == 'true' && needs.changes.outputs.tests_execute_no_op != 'true' && needs.changes.outputs.matrix_contract_mode != 'MATRIX_CONTRACT_FOCUSED' }}
         run: |
           pytest tests/ -v --tb=short -m "not network and not external_tools"
 
       - name: Run focused tests (matrix)
-        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_focused == 'true' && (needs.changes.outputs.matrix_contract_mode != 'MATRIX_CONTRACT_FOCUSED' || matrix.python-version == '3.11') }}
+        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_contract_focused == 'true' && (needs.changes.outputs.matrix_contract_mode != 'MATRIX_CONTRACT_FOCUSED' || matrix.python-version == '3.11') }}
         run: |
           set -euo pipefail
           export PYTHONUNBUFFERED=1
@@ -612,14 +653,14 @@ jobs:
           echo "focused-matrix parallel success lanes=${#PIDS[@]} integration_nodes=${#INTEGRATION_NODES[@]}"
 
       - name: Focused module import smoke
-        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_focused == 'true' && needs.changes.outputs.focused_module_imports != '' }}
+        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_contract_focused == 'true' && needs.changes.outputs.focused_module_imports != '' }}
         run: |
           set -euo pipefail
           python3 scripts/ops/ci_test_selection_v1.py --import-smoke-modules "${{ needs.changes.outputs.focused_module_imports }}"
           echo "import smoke ok on Python ${{ matrix.python-version }}"
 
-      - name: Run tests with coverage (FULL only)
-        if: ${{ (github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true') && matrix.python-version == '3.11' && needs.changes.outputs.tests_execute_no_op != 'true' }}
+      - name: Run tests with coverage (EXHAUSTIVE_FULL only)
+        if: ${{ needs.changes.outputs.tests_execute_exhaustive_full == 'true' && matrix.python-version == '3.11' && needs.changes.outputs.tests_execute_no_op != 'true' }}
         run: |
           pytest tests/ --cov=src --cov-report=xml --cov-report=term-missing -m "not network and not external_tools"
 
@@ -648,24 +689,24 @@ jobs:
     # to satisfy branch protection rules (e.g., "strategy-smoke" check)
 
     steps:
-      - name: Skip strategy smoke (NO_OP/FOCUSED diff-aware)
-        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_full != 'true' }}
+      - name: Skip strategy smoke (not EXHAUSTIVE_FULL)
+        if: ${{ github.event_name == 'pull_request' || needs.changes.outputs.tests_execute_exhaustive_full != 'true' }}
         run: |
           echo "Skipping strategy smoke — test_selection_mode=${{ needs.changes.outputs.test_selection_mode }}"
           echo "reason=${{ needs.changes.outputs.test_selection_reason }}"
 
       - name: Checkout
-        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true' }}
+        if: ${{ github.event_name != 'pull_request' && needs.changes.outputs.tests_execute_exhaustive_full == 'true' }}
         uses: actions/checkout@v5
 
       - name: Set up Python 3.11
-        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true' }}
+        if: ${{ github.event_name != 'pull_request' && needs.changes.outputs.tests_execute_exhaustive_full == 'true' }}
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
 
       - name: Cache pip
-        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true' }}
+        if: ${{ github.event_name != 'pull_request' && needs.changes.outputs.tests_execute_exhaustive_full == 'true' }}
         uses: actions/cache@v4
         with:
           path: ~/.cache/pip
@@ -674,31 +715,31 @@ jobs:
             ${{ runner.os }}-pip-
 
       - name: Install dependencies
-        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true' }}
+        if: ${{ github.event_name != 'pull_request' && needs.changes.outputs.tests_execute_exhaustive_full == 'true' }}
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
           pip install pytest
 
       - name: Run strategy smoke pytest
-        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true' }}
+        if: ${{ github.event_name != 'pull_request' && needs.changes.outputs.tests_execute_exhaustive_full == 'true' }}
         run: |
           pytest tests/test_strategy_smoke_cli.py -v --tb=short
 
       - name: Create smoke results directory
-        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true' }}
+        if: ${{ github.event_name != 'pull_request' && needs.changes.outputs.tests_execute_exhaustive_full == 'true' }}
         run: |
           mkdir -p test_results/strategy_smoke
 
       - name: Run strategy smoke CLI
-        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true' }}
+        if: ${{ github.event_name != 'pull_request' && needs.changes.outputs.tests_execute_exhaustive_full == 'true' }}
         run: |
           python scripts/strategy_smoke_check.py \
             --output-json test_results/strategy_smoke/ci_smoke_latest.json \
             --output-md test_results/strategy_smoke/ci_smoke_latest.md
 
       - name: Upload smoke test artifacts
-        if: ${{ always() && (github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true') }}
+        if: ${{ always() && needs.changes.outputs.tests_execute_exhaustive_full == 'true' }}
         uses: actions/upload-artifact@v4
         with:
           name: strategy-smoke-results
