@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import importlib.util
 import io
 import json
@@ -78,9 +79,25 @@ def _load_review():
     return _load_module(REVIEW_SCRIPT, "review_testnet_bounded_observation_evidence_v0")
 
 
+def _tmp_path_namespace(tmp_path: Path) -> str:
+    digest = hashlib.sha256(str(tmp_path.resolve()).encode()).hexdigest()[:12]
+    return f"{tmp_path.name}_{digest}"
+
+
+_test_owned_paths: list[Path] = []
+
+
+def _register_test_owned_path(path: Path) -> None:
+    resolved = path.resolve()
+    if resolved not in _test_owned_paths:
+        _test_owned_paths.append(resolved)
+
+
 def _staging(tmp_path: Path, *, tag: str = "") -> Path:
     suffix = f"_{tag}" if tag else ""
-    return Path("/tmp") / f"peak_trade_testnet_staging_test_{tmp_path.name}{suffix}"
+    path = Path("/tmp") / f"peak_trade_testnet_staging_test_{_tmp_path_namespace(tmp_path)}{suffix}"
+    _register_test_owned_path(path)
+    return path
 
 
 WALLCLOCK_FIELD_NAMES = (
@@ -154,8 +171,9 @@ def _load_shell_manifest(staging: Path) -> dict[str, object]:
 
 def _durable_archive(tmp_path: Path, *, tag: str = "") -> Path:
     suffix = f"_{tag}" if tag else ""
-    path = ROOT / "tests" / ".pytest_archive_roots" / f"{tmp_path.name}{suffix}"
+    path = ROOT / "tests" / ".pytest_archive_roots" / f"{_tmp_path_namespace(tmp_path)}{suffix}"
     path.mkdir(parents=True, exist_ok=True)
+    _register_test_owned_path(path)
     return path
 
 
@@ -249,12 +267,12 @@ def _write_wrapper_bundle(
 
 @pytest.fixture(autouse=True)
 def _cleanup_durable_archive_dirs():
+    _test_owned_paths.clear()
     yield
-    archive_roots = ROOT / "tests" / ".pytest_archive_roots"
-    if archive_roots.is_dir():
-        shutil.rmtree(archive_roots, ignore_errors=True)
-    for path in Path("/tmp").glob("peak_trade_testnet_staging_test_*"):
-        shutil.rmtree(path, ignore_errors=True)
+    for path in reversed(_test_owned_paths):
+        if path.is_dir():
+            shutil.rmtree(path, ignore_errors=True)
+    _test_owned_paths.clear()
 
 
 def _plan_dict(staging: Path, archive: Path | None = None) -> dict:
@@ -1682,9 +1700,6 @@ def test_adapter_replay_proof_classification_plan_execute_closeout_parity(
         market_observation=observation,
     ).completion_path_wiring
     plan_machine = plan_section["machine_summary"]
-    # Re-ensure after build_plan: parallel focused-matrix shards may delete
-    # tests/.pytest_archive_roots via the autouse cleanup fixture.
-    archive.mkdir(parents=True, exist_ok=True)
     rc = _execute_with_mocked_runner(mod, staging, archive, market_observation=observation)
     assert rc == 0
     metadata = json.loads((staging / "RUN_METADATA.json").read_text(encoding="utf-8"))
