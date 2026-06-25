@@ -14,33 +14,34 @@ import pytest
 CI_YML = Path(".github/workflows/ci.yml")
 SELECTOR = Path("scripts/ops/ci_test_selection_v1.py")
 MAPPING = Path("config/ci/file_category_mapping.yaml")
-_GLB019_ARCHIVED_BASE_REF = "origin/main~1"
+
+
+def _glb019_canonical_baseline(repo_root: Path, path: str) -> str:
+    from tests.ci._glb019_synthetic_patch_builder_v0 import glb019_a2b_canonical_baseline_text
+
+    return glb019_a2b_canonical_baseline_text(repo_root, path)
 
 
 @pytest.fixture(autouse=True)
 def _glb019_archived_contract_baseline(
     monkeypatch: pytest.MonkeyPatch, request: pytest.FixtureRequest
 ) -> None:
-    """Align GLB-019 contract evaluation with pre-merge parent when using archived synthetic patch."""
+    """Align GLB-019 contract evaluation with embedded pre-merge baselines."""
     if "glb019" not in request.node.name.lower():
         return
     import scripts.ops.durable_completion_integration_partitions_v0 as partitions
 
     original = partitions._base_file_text
 
-    def _parent_baseline(repo_root: Path, path: str) -> str:
-        proc = subprocess.run(
-            ["git", "show", f"{_GLB019_ARCHIVED_BASE_REF}:{path}"],
-            cwd=repo_root,
-            capture_output=True,
-            text=True,
-            check=False,
-        )
-        if proc.returncode == 0:
-            return proc.stdout
+    def _embedded_baseline(repo_root: Path, path: str) -> str:
+        from tests.ci._glb019_synthetic_patch_builder_v0 import _canonical_baseline_by_path
+
+        baselines = _canonical_baseline_by_path()
+        if path in baselines:
+            return baselines[path]
         return original(repo_root, path)
 
-    monkeypatch.setattr(partitions, "_base_file_text", _parent_baseline)
+    monkeypatch.setattr(partitions, "_base_file_text", _embedded_baseline)
 
 
 def _ci_text() -> str:
@@ -663,20 +664,12 @@ def test_selector_glb019_a2b_live_collect_patch_contract_focused() -> None:
     from scripts.ops.durable_completion_integration_partitions_v0 import (
         Glb019A2bChangeContractOutcome,
         GLB019_A2B_SELECTOR_OWNER,
-        collect_glb019_a2b_patch_text,
         evaluate_glb019_a2b_change_contract,
         patch_includes_glb019_guarded_selector_owner_rewire,
     )
 
     files = list(GLB019_A2B_FULL_PR_FILES)
-    patch = (
-        collect_glb019_a2b_patch_text(
-            base_ref="origin/main",
-            repo_root=Path("."),
-            changed_files=files,
-        )
-        or _synthetic_glb019_a2b_nine_file_patch_text()
-    )
+    patch = _synthetic_glb019_a2b_nine_file_patch_text()
     assert patch
     assert patch.strip()
     assert len(patch) > 0
@@ -704,41 +697,17 @@ def test_selector_glb019_a2b_live_patch_selector_owner_ast_validator_accepts() -
 
     from scripts.ops.durable_completion_integration_partitions_v0 import (
         GLB019_A2B_SELECTOR_OWNER,
-        _apply_patch_for_file,
-        _base_file_text,
+        _apply_unified_hunks,
         _parse_unified_diff,
         _validate_selector_owner_glb019_rewire_ast,
-        collect_glb019_a2b_patch_text,
     )
 
     files = list(GLB019_A2B_FULL_PR_FILES)
-    patch = (
-        collect_glb019_a2b_patch_text(
-            base_ref="origin/main",
-            repo_root=Path("."),
-            changed_files=files,
-        )
-        or _synthetic_glb019_a2b_nine_file_patch_text()
-    )
+    patch = _synthetic_glb019_a2b_nine_file_patch_text()
     assert patch
     repo_root = Path(".")
-    before_proc = subprocess.run(
-        ["git", "show", f"{_GLB019_ARCHIVED_BASE_REF}:{GLB019_A2B_SELECTOR_OWNER}"],
-        cwd=repo_root,
-        capture_output=True,
-        text=True,
-        check=False,
-    )
-    before = (
-        before_proc.stdout
-        if before_proc.returncode == 0
-        else _base_file_text(repo_root, GLB019_A2B_SELECTOR_OWNER)
-    )
-    after = _apply_patch_for_file(
-        repo_root,
-        GLB019_A2B_SELECTOR_OWNER,
-        _parse_unified_diff(patch)[GLB019_A2B_SELECTOR_OWNER],
-    )
+    before = _glb019_canonical_baseline(repo_root, GLB019_A2B_SELECTOR_OWNER)
+    after = _apply_unified_hunks(before, _parse_unified_diff(patch)[GLB019_A2B_SELECTOR_OWNER])
     assert _validate_selector_owner_glb019_rewire_ast(ast.parse(before), ast.parse(after))
 
 
@@ -925,7 +894,7 @@ def test_selector_glb019_a2b_selector_owner_missing_canonical_import_binding_ful
 
 
 def test_selector_glb019_a2b_full_pr_plus_unknown_foreign_path_full() -> None:
-    patch = _full_pr_git_patch() + (
+    patch = _synthetic_glb019_a2b_nine_file_patch_text() + (
         "\ndiff --git a/src/ops/unknown_contract_v0.py b/src/ops/unknown_contract_v0.py\n"
         "+++ b/src/ops/unknown_contract_v0.py\n"
         "@@ -0,0 +1 @@\n"
@@ -1473,6 +1442,7 @@ from scripts.ops.durable_completion_integration_partitions_v0 import (
     CI_GLB019_SYNTHETIC_PATCH_BUILDER,
 )
 from tests.ci._glb019_synthetic_patch_builder_v0 import (
+    synthetic_glb019_a2b_nine_file_patch_text as _synthetic_glb019_a2b_nine_file_patch_text,
     synthetic_glb019_a2b_positive_patch_text as _synthetic_glb019_a2b_positive_patch_text,
     synthetic_glb019_a2b_reject_patch_text as _synthetic_glb019_a2b_reject_patch_text,
 )
@@ -1510,52 +1480,29 @@ def _unified_patch_for_path(path: str, before: str, after: str) -> str:
     return f"diff --git a/{path} b/{path}\n" + "".join(diff_lines)
 
 
-def _selector_owner_git_patch() -> str:
-    before = subprocess.check_output(
-        ["git", "show", f"{_GLB019_ARCHIVED_BASE_REF}:{_SELECTOR_OWNER}"],
-        text=True,
-    )
-    after = subprocess.check_output(
-        ["git", "show", f"origin/main:{_SELECTOR_OWNER}"],
-        text=True,
-    )
-    return _unified_patch_for_path(_SELECTOR_OWNER, before, after)
-
-
-def _selector_owner_origin_main_text() -> str:
-    return subprocess.check_output(
-        ["git", "show", f"{_GLB019_ARCHIVED_BASE_REF}:{_SELECTOR_OWNER}"],
-        text=True,
-    )
+def _selector_owner_canonical_before_text() -> str:
+    return _glb019_canonical_baseline(Path("."), _SELECTOR_OWNER)
 
 
 def _selector_owner_canonical_after_text() -> str:
-    return subprocess.check_output(
-        ["git", "show", f"origin/main:{_SELECTOR_OWNER}"],
-        text=True,
+    from scripts.ops.durable_completion_integration_partitions_v0 import (
+        _apply_unified_hunks,
+        _parse_unified_diff,
     )
 
-
-def _synthetic_glb019_a2b_nine_file_patch_text() -> str:
-    patch = _synthetic_glb019_a2b_positive_patch_text().rstrip()
-    selector_patch = _selector_owner_git_patch().strip()
-    if selector_patch:
-        return patch + "\n" + selector_patch + "\n"
-    return patch + "\n"
+    patch = _synthetic_glb019_a2b_nine_file_patch_text()
+    before = _selector_owner_canonical_before_text()
+    return _apply_unified_hunks(before, _parse_unified_diff(patch)[_SELECTOR_OWNER])
 
 
 def _guarded_mixed_patch_with_selector_after(mutated_after: str) -> str:
-    before = _selector_owner_origin_main_text()
+    before = _selector_owner_canonical_before_text()
     canonical_after = _selector_owner_canonical_after_text()
     assert canonical_after != before
     assert mutated_after != canonical_after
     selector_patch = _unified_patch_for_path(_SELECTOR_OWNER, before, mutated_after)
     assert selector_patch.strip(), "selector unified diff must not be empty"
     return _synthetic_glb019_a2b_positive_patch_text() + "\n" + selector_patch
-
-
-def _full_pr_git_patch() -> str:
-    return subprocess.check_output(["git", "diff", "origin/main...HEAD"], text=True)
 
 
 def test_glb019_a2b_allowed_files_includes_synthetic_patch_builder() -> None:
@@ -1668,19 +1615,15 @@ def _run_selector_with_patch(
     original_base = partitions._base_file_text
     if glb019_scope:
 
-        def _parent_baseline(repo_root: Path, path: str) -> str:
-            proc = subprocess.run(
-                ["git", "show", f"{_GLB019_ARCHIVED_BASE_REF}:{path}"],
-                cwd=repo_root,
-                capture_output=True,
-                text=True,
-                check=False,
-            )
-            if proc.returncode == 0:
-                return proc.stdout
+        def _embedded_baseline(repo_root: Path, path: str) -> str:
+            from tests.ci._glb019_synthetic_patch_builder_v0 import _canonical_baseline_by_path
+
+            baselines = _canonical_baseline_by_path()
+            if path in baselines:
+                return baselines[path]
             return original_base(repo_root, path)
 
-        partitions._base_file_text = _parent_baseline
+        partitions._base_file_text = _embedded_baseline
 
     try:
         result = resolve_selection(
