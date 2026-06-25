@@ -1462,6 +1462,35 @@ def test_selector_pr4550_fast_lane_durable_completion_bounded() -> None:
     assert len(fast_lane_targets) <= 10
 
 
+PR4554_MASTER_V2_EVENT_STREAM_BINDING_FILES = (
+    "src/ops/bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
+    "src/ops/durable_completion_validation/validators/event_stream.py",
+    "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py",
+)
+
+
+def test_selector_pr4554_fast_lane_durable_completion_bounded_master_v2_event_stream() -> None:
+    sel = _run_selector(*PR4554_MASTER_V2_EVENT_STREAM_BINDING_FILES)
+    assert sel["fast_lane_contract_mode"] == "DURABLE_COMPLETION_BOUNDED"
+    assert sel["fast_lane_contract_reason"] == "durable_completion_bounded_partition"
+    fast_lane_targets = _fast_lane_targets(sel)
+    graph_targets = [t for t in fast_lane_targets if t.startswith(_GRAPH_OWNER + "::")]
+    master_v2_targets = [
+        t
+        for t in fast_lane_targets
+        if "::test_master_v2_kill_all_event_stream_happy_path" in t
+        or "::test_master_v2_state_switch_event_stream_happy_path_non_authorizing" in t
+    ]
+    assert len(graph_targets) == 3
+    assert len(master_v2_targets) == 2
+    assert not any(
+        "::test_coherent_static_completion_happy_path_passes" in t for t in fast_lane_targets
+    )
+    assert _INTEGRATION_OWNER not in fast_lane_targets
+    assert _GRAPH_OWNER not in fast_lane_targets
+    assert len(fast_lane_targets) == 7
+
+
 def test_selector_pr4550_matrix_contract_focused_not_exhaustive() -> None:
     sel = _run_selector(*PR4550_CROSS_SLICE_DIFF)
     assert sel["tests_execute_exhaustive_full"] == "false"
