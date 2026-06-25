@@ -757,6 +757,28 @@ FAST_LANE_CONTRACT_REBUNDLE_PATHS = (
 
 FAST_LANE_CONTRACT_WIRING_WORKFLOWS = frozenset({".github/workflows/ci.yml"})
 
+# Closed allowlist for MATRIX_CONTRACT_FOCUSED rebundle (fail-closed outside this set).
+MATRIX_CI_CONTRACT_REBUNDLE_PATHS = frozenset(
+    {
+        ".github/workflows/ci.yml",
+        ".github/workflows/cursor_auto_pr.yml",
+        ".github/workflows/pr-head-sha-required-checks-liveness-guard.yml",
+        "scripts/ops/ci_test_selection_v1.py",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+        "tests/ci/test_cursor_auto_pr_pre_pr_validation_enforcement_contract_v0.py",
+        "tests/ci/test_pr_head_sha_required_checks_liveness_guard.py",
+    }
+)
+
+MATRIX_CONTRACT_REBUNDLE_ID = "ci_workflow_selector_contract_rebundle_v1"
+
+MATRIX_SELECTOR_SELF_CHANGE_PATHS = frozenset(
+    {
+        "scripts/ops/ci_test_selection_v1.py",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    }
+)
+
 FAST_LANE_FULL_STATIC_PATHS = frozenset(
     {
         ".github/workflows/ci.yml",
@@ -832,6 +854,96 @@ class FastLaneContractSelection:
         else:
             lines.append("fast_lane_contract_pytest_targets=")
         return lines
+
+
+@dataclass(frozen=True)
+class MatrixContractSelection:
+    mode: str
+    reason: str
+    pytest_targets: tuple[str, ...]
+    rebundle_id: str = ""
+
+    def github_output_lines(self) -> list[str]:
+        lines = [
+            f"matrix_contract_mode={self.mode}",
+            f"matrix_contract_reason={self.reason}",
+            f"matrix_contract_rebundle_id={self.rebundle_id}",
+            f"tests_execute_matrix_contract_focused={'true' if self.mode == 'MATRIX_CONTRACT_FOCUSED' else 'false'}",
+        ]
+        if self.pytest_targets:
+            lines.append(f"matrix_contract_pytest_targets={' '.join(self.pytest_targets)}")
+        else:
+            lines.append("matrix_contract_pytest_targets=")
+        return lines
+
+
+def _is_matrix_contract_docs_noise(path: str) -> bool:
+    return path.startswith("docs/") or path.startswith("out/") or path.endswith(".md")
+
+
+def _matrix_contract_rebundle_targets(substantive: frozenset[str]) -> tuple[str, ...] | None:
+    selector_owner = "scripts/ops/ci_test_selection_v1.py"
+    selector_test = "tests/ci/test_ci_diff_aware_test_selection_v1.py"
+    ci_wiring = ".github/workflows/ci.yml"
+
+    if substantive == MATRIX_SELECTOR_SELF_CHANGE_PATHS:
+        return None
+
+    targets: set[str] = set()
+    if selector_owner in substantive or ci_wiring in substantive:
+        if selector_test not in substantive:
+            return None
+        targets.add(selector_test)
+
+    for workflow, test_owner in WORKFLOW_CONTRACT_FAST_LANE_OWNERS.items():
+        if workflow in substantive:
+            if test_owner not in substantive:
+                return None
+            targets.add(test_owner)
+        elif test_owner in substantive:
+            return None
+
+    if not targets:
+        return None
+
+    missing = [target for target in targets if not _repo_path_exists(target)]
+    if missing:
+        return None
+    return tuple(sorted(targets))
+
+
+def resolve_matrix_contract_selection(files: list[str]) -> MatrixContractSelection:
+    normalized = sorted({PurePosixPath(f.strip()).as_posix() for f in files if f and f.strip()})
+    substantive_list = [f for f in normalized if not _is_matrix_contract_docs_noise(f)]
+    substantive = frozenset(substantive_list)
+
+    if not substantive:
+        return MatrixContractSelection("MATRIX_NO_OP", "no_substantive_matrix_paths", ())
+
+    if any(f not in MATRIX_CI_CONTRACT_REBUNDLE_PATHS for f in substantive):
+        return MatrixContractSelection("MATRIX_UNMAPPED", "matrix_contract_not_applicable", ())
+
+    if substantive == MATRIX_SELECTOR_SELF_CHANGE_PATHS:
+        return MatrixContractSelection(
+            "MATRIX_FULL",
+            "matrix_contract_selector_self_change_requires_full",
+            (),
+        )
+
+    targets = _matrix_contract_rebundle_targets(substantive)
+    if targets is None:
+        return MatrixContractSelection(
+            "MATRIX_FULL",
+            "matrix_contract_incomplete_rebundle_mapping",
+            (),
+        )
+
+    return MatrixContractSelection(
+        "MATRIX_CONTRACT_FOCUSED",
+        "matrix_contract_rebundle_complete",
+        targets,
+        rebundle_id=MATRIX_CONTRACT_REBUNDLE_ID,
+    )
 
 
 def _is_fast_lane_docs_noise(path: str) -> bool:
@@ -3074,13 +3186,21 @@ def main(argv: list[str] | None = None) -> int:
             changed_files=files,
         )
 
+    matrix_contract = resolve_matrix_contract_selection(files)
     result = resolve_selection(
         files,
         force_full=args.force_full,
         event_name=args.event_name,
         patch_text=patch_text,
     )
+    if matrix_contract.mode == "MATRIX_CONTRACT_FOCUSED":
+        result = SelectionResult(
+            "FOCUSED",
+            matrix_contract.reason,
+            matrix_contract.pytest_targets,
+        )
     lines = result.github_output_lines()
+    lines.extend(matrix_contract.github_output_lines())
     lines.extend(resolve_fast_lane_contract_selection(files).github_output_lines())
     if args.github_output:
         out_path = os.environ.get("GITHUB_OUTPUT")

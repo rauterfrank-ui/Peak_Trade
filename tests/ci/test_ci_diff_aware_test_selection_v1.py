@@ -134,6 +134,10 @@ def test_changes_job_exports_test_selection_outputs() -> None:
         "focused_module_imports",
         "fast_lane_contract_mode",
         "fast_lane_contract_pytest_targets",
+        "matrix_contract_mode",
+        "matrix_contract_reason",
+        "matrix_contract_pytest_targets",
+        "tests_execute_matrix_contract_focused",
     ):
         assert (
             f"{key}:"
@@ -158,8 +162,29 @@ def test_tests_job_focused_runs_on_all_matrix_versions() -> None:
     focused_step = text.split("name: Run focused tests (matrix)", 1)[1].split("\n      - name:", 1)[
         0
     ]
-    assert "matrix.python-version == '3.11'" not in focused_step
+    assert (
+        "matrix_contract_mode != 'MATRIX_CONTRACT_FOCUSED' || matrix.python-version == '3.11'"
+        in focused_step
+    )
     assert "tests_execute_focused == 'true'" in focused_step
+
+
+def test_tests_job_matrix_contract_focused_non_canonical_version_ack_step() -> None:
+    text = _ci_text()
+    assert "MATRIX_CONTRACT_FOCUSED — non-canonical version ack (diff-aware)" in text
+    assert (
+        "matrix_contract_mode == 'MATRIX_CONTRACT_FOCUSED' && matrix.python-version != '3.11'"
+        in text
+    )
+
+
+def test_tests_job_full_suite_excludes_matrix_contract_focused() -> None:
+    full_block = (
+        _ci_text()
+        .split("name: Run full test suite", 1)[1]
+        .split("name: Run focused tests (matrix)", 1)[0]
+    )
+    assert "matrix_contract_mode != 'MATRIX_CONTRACT_FOCUSED'" in full_block
 
 
 def _focused_matrix_step_block() -> str:
@@ -3455,6 +3480,148 @@ def test_fast_lane_contract_selection_order_independent() -> None:
     sel_b = _run_selector(*reversed(files))
     assert sel_a["fast_lane_contract_mode"] == sel_b["fast_lane_contract_mode"]
     assert _fast_lane_targets(sel_a) == _fast_lane_targets(sel_b)
+
+
+def _matrix_targets(sel: dict[str, str]) -> list[str]:
+    raw = sel.get("matrix_contract_pytest_targets", "")
+    return sorted(raw.split()) if raw else []
+
+
+_PR4548_MATRIX_REBUNDLE_FILES = (
+    ".github/workflows/ci.yml",
+    ".github/workflows/cursor_auto_pr.yml",
+    ".github/workflows/pr-head-sha-required-checks-liveness-guard.yml",
+    "scripts/ops/ci_test_selection_v1.py",
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    _CURSOR_AUTO_PR_TEST,
+    _LIVENESS_TEST,
+)
+
+_PR4548_MATRIX_EXPECTED_TARGETS = sorted(
+    [
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+        _CURSOR_AUTO_PR_TEST,
+        _LIVENESS_TEST,
+    ]
+)
+
+
+def test_matrix_contract_pr4548_full_rebundle_contract_focused() -> None:
+    sel = _run_selector(*_PR4548_MATRIX_REBUNDLE_FILES)
+    assert sel["matrix_contract_mode"] == "MATRIX_CONTRACT_FOCUSED"
+    assert sel["matrix_contract_reason"] == "matrix_contract_rebundle_complete"
+    assert sel["matrix_contract_rebundle_id"] == "ci_workflow_selector_contract_rebundle_v1"
+    assert sel["tests_execute_matrix_contract_focused"] == "true"
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["tests_execute_full"] == "false"
+    assert sel["tests_execute_focused"] == "true"
+    assert _matrix_targets(sel) == _PR4548_MATRIX_EXPECTED_TARGETS
+    assert _targets(sel) == _PR4548_MATRIX_EXPECTED_TARGETS
+
+
+def test_matrix_contract_cursor_auto_pr_only_contract_focused() -> None:
+    sel = _run_selector(_CURSOR_AUTO_PR_WORKFLOW, _CURSOR_AUTO_PR_TEST)
+    assert sel["matrix_contract_mode"] == "MATRIX_CONTRACT_FOCUSED"
+    assert _matrix_targets(sel) == [_CURSOR_AUTO_PR_TEST]
+
+
+def test_matrix_contract_liveness_only_contract_focused() -> None:
+    sel = _run_selector(_LIVENESS_WORKFLOW, _LIVENESS_TEST)
+    assert sel["matrix_contract_mode"] == "MATRIX_CONTRACT_FOCUSED"
+    assert _matrix_targets(sel) == [_LIVENESS_TEST]
+
+
+def test_matrix_contract_both_workflow_groups_contract_focused() -> None:
+    sel = _run_selector(*_PR4548_WORKFLOW_CONTRACT_FILES)
+    assert sel["matrix_contract_mode"] == "MATRIX_CONTRACT_FOCUSED"
+    assert _matrix_targets(sel) == sorted([_CURSOR_AUTO_PR_TEST, _LIVENESS_TEST])
+
+
+def test_matrix_contract_unknown_extra_path_full() -> None:
+    sel = _run_selector(*_PR4548_MATRIX_REBUNDLE_FILES, "misc/unmapped.bin")
+    assert sel["matrix_contract_mode"] == "MATRIX_UNMAPPED"
+    assert sel["test_selection_mode"] == "FULL"
+
+
+def test_matrix_contract_production_path_full() -> None:
+    sel = _run_selector(*_PR4548_MATRIX_REBUNDLE_FILES, "src/core/foo.py")
+    assert sel["matrix_contract_mode"] == "MATRIX_UNMAPPED"
+    assert sel["test_selection_mode"] == "FULL"
+
+
+def test_matrix_contract_dependency_path_full() -> None:
+    sel = _run_selector(*_PR4548_MATRIX_REBUNDLE_FILES, "requirements.txt")
+    assert sel["matrix_contract_mode"] == "MATRIX_UNMAPPED"
+    assert sel["test_selection_mode"] == "FULL"
+
+
+def test_matrix_contract_shared_fixture_path_full() -> None:
+    sel = _run_selector(*_PR4548_MATRIX_REBUNDLE_FILES, "tests/fixtures/example.json")
+    assert sel["matrix_contract_mode"] == "MATRIX_UNMAPPED"
+    assert sel["test_selection_mode"] == "FULL"
+
+
+def test_matrix_contract_selector_without_selector_test_full() -> None:
+    sel = _run_selector(
+        "scripts/ops/ci_test_selection_v1.py",
+        ".github/workflows/ci.yml",
+    )
+    assert sel["matrix_contract_mode"] == "MATRIX_FULL"
+    assert sel["matrix_contract_reason"] == "matrix_contract_incomplete_rebundle_mapping"
+    assert sel["test_selection_mode"] == "FULL"
+
+
+def test_matrix_contract_ci_yml_without_selector_test_full() -> None:
+    sel = _run_selector(".github/workflows/ci.yml")
+    assert sel["matrix_contract_mode"] == "MATRIX_FULL"
+    assert sel["matrix_contract_reason"] == "matrix_contract_incomplete_rebundle_mapping"
+
+
+def test_matrix_contract_workflow_without_test_owner_full() -> None:
+    sel = _run_selector(_CURSOR_AUTO_PR_WORKFLOW)
+    assert sel["matrix_contract_mode"] == "MATRIX_FULL"
+    assert sel["matrix_contract_reason"] == "matrix_contract_incomplete_rebundle_mapping"
+
+
+def test_matrix_contract_selector_self_change_full() -> None:
+    sel = _run_selector(
+        "scripts/ops/ci_test_selection_v1.py",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    )
+    assert sel["matrix_contract_mode"] == "MATRIX_FULL"
+    assert sel["matrix_contract_reason"] == "matrix_contract_selector_self_change_requires_full"
+    assert sel["test_selection_mode"] == "FOCUSED"
+    assert sel["test_selection_reason"] == "ci_bootstrap_focused"
+
+
+def test_matrix_contract_arbitrary_selector_change_outside_rebundle_full() -> None:
+    sel = _run_selector(
+        "scripts/ops/ci_test_selection_v1.py",
+        "scripts/ops/durable_completion_integration_partitions_v0.py",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    )
+    assert sel["matrix_contract_mode"] == "MATRIX_UNMAPPED"
+    assert sel["test_selection_mode"] == "FOCUSED"
+
+
+def test_matrix_contract_selection_order_independent() -> None:
+    files = list(_PR4548_MATRIX_REBUNDLE_FILES)
+    sel_a = _run_selector(*files)
+    sel_b = _run_selector(*reversed(files))
+    assert sel_a["matrix_contract_mode"] == sel_b["matrix_contract_mode"]
+    assert _matrix_targets(sel_a) == _matrix_targets(sel_b)
+
+
+def test_matrix_contract_duplicate_paths_no_duplicate_targets() -> None:
+    sel = _run_selector(*_PR4548_MATRIX_REBUNDLE_FILES, *_PR4548_MATRIX_REBUNDLE_FILES)
+    assert sel["matrix_contract_mode"] == "MATRIX_CONTRACT_FOCUSED"
+    assert _matrix_targets(sel) == _PR4548_MATRIX_EXPECTED_TARGETS
+
+
+def test_matrix_contract_docs_only_matrix_no_op() -> None:
+    sel = _run_selector("docs/README.md")
+    assert sel["matrix_contract_mode"] == "MATRIX_NO_OP"
+    assert sel["test_selection_mode"] == "NO_OP"
 
 
 def test_fast_lane_contract_focused_step_wired_in_ci_yml() -> None:

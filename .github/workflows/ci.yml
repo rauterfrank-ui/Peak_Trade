@@ -62,6 +62,10 @@ jobs:
       focused_module_imports: ${{ steps.test_selection.outputs.focused_module_imports }}
       fast_lane_contract_mode: ${{ steps.test_selection.outputs.fast_lane_contract_mode }}
       fast_lane_contract_pytest_targets: ${{ steps.test_selection.outputs.fast_lane_contract_pytest_targets }}
+      matrix_contract_mode: ${{ steps.test_selection.outputs.matrix_contract_mode }}
+      matrix_contract_reason: ${{ steps.test_selection.outputs.matrix_contract_reason }}
+      matrix_contract_pytest_targets: ${{ steps.test_selection.outputs.matrix_contract_pytest_targets }}
+      tests_execute_matrix_contract_focused: ${{ steps.test_selection.outputs.tests_execute_matrix_contract_focused }}
     steps:
       - name: Checkout
         uses: actions/checkout@v5
@@ -428,6 +432,9 @@ jobs:
           echo "tests_execute_full=${{ needs.changes.outputs.tests_execute_full }}"
           echo "tests_execute_focused=${{ needs.changes.outputs.tests_execute_focused }}"
           echo "tests_execute_no_op=${{ needs.changes.outputs.tests_execute_no_op }}"
+          echo "matrix_contract_mode=${{ needs.changes.outputs.matrix_contract_mode }}"
+          echo "matrix_contract_reason=${{ needs.changes.outputs.matrix_contract_reason }}"
+          echo "matrix_contract_pytest_targets=${{ needs.changes.outputs.matrix_contract_pytest_targets }}"
           echo "focused_pytest_targets=${{ needs.changes.outputs.focused_pytest_targets }}"
           echo "focused_module_imports=${{ needs.changes.outputs.focused_module_imports }}"
 
@@ -437,20 +444,28 @@ jobs:
           echo "NO_OP diff-aware selection — skipping full matrix for Python ${{ matrix.python-version }}"
           echo "reason=${{ needs.changes.outputs.test_selection_reason }}"
 
+      - name: MATRIX_CONTRACT_FOCUSED — non-canonical version ack (diff-aware)
+        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.matrix_contract_mode == 'MATRIX_CONTRACT_FOCUSED' && matrix.python-version != '3.11' }}
+        run: |
+          echo "MATRIX_CONTRACT_FOCUSED — required check ack on Python ${{ matrix.python-version }}"
+          echo "reason=${{ needs.changes.outputs.matrix_contract_reason }}"
+          echo "canonical execution on tests (3.11) only"
+          echo "targets=${{ needs.changes.outputs.matrix_contract_pytest_targets }}"
+
       - name: Checkout
-        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_no_op != 'true' }}
+        if: ${{ github.event_name != 'pull_request' || (needs.changes.outputs.tests_execute_no_op != 'true' && !(needs.changes.outputs.matrix_contract_mode == 'MATRIX_CONTRACT_FOCUSED' && matrix.python-version != '3.11')) }}
         uses: actions/checkout@v5
         with:
           fetch-depth: 0
 
       - name: Set up Python ${{ matrix.python-version }}
-        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_no_op != 'true' }}
+        if: ${{ github.event_name != 'pull_request' || (needs.changes.outputs.tests_execute_no_op != 'true' && !(needs.changes.outputs.matrix_contract_mode == 'MATRIX_CONTRACT_FOCUSED' && matrix.python-version != '3.11')) }}
         uses: actions/setup-python@v5
         with:
           python-version: ${{ matrix.python-version }}
 
       - name: Cache pip
-        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_no_op != 'true' }}
+        if: ${{ github.event_name != 'pull_request' || (needs.changes.outputs.tests_execute_no_op != 'true' && !(needs.changes.outputs.matrix_contract_mode == 'MATRIX_CONTRACT_FOCUSED' && matrix.python-version != '3.11')) }}
         uses: actions/cache@v4
         with:
           path: ~/.cache/pip
@@ -459,7 +474,7 @@ jobs:
             ${{ runner.os }}-pip-
 
       - name: Install dependencies
-        if: ${{ github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_no_op != 'true' }}
+        if: ${{ github.event_name != 'pull_request' || (needs.changes.outputs.tests_execute_no_op != 'true' && !(needs.changes.outputs.matrix_contract_mode == 'MATRIX_CONTRACT_FOCUSED' && matrix.python-version != '3.11')) }}
         run: |
           python -m pip install --upgrade pip
           pip install -r requirements.txt
@@ -502,12 +517,12 @@ jobs:
           retention-days: 7
 
       - name: Run full test suite
-        if: ${{ (github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true') && needs.changes.outputs.tests_execute_no_op != 'true' }}
+        if: ${{ (github.event_name != 'pull_request' || needs.changes.outputs.tests_execute_full == 'true') && needs.changes.outputs.tests_execute_no_op != 'true' && needs.changes.outputs.matrix_contract_mode != 'MATRIX_CONTRACT_FOCUSED' }}
         run: |
           pytest tests/ -v --tb=short -m "not network and not external_tools"
 
       - name: Run focused tests (matrix)
-        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_focused == 'true' }}
+        if: ${{ github.event_name == 'pull_request' && needs.changes.outputs.tests_execute_focused == 'true' && (needs.changes.outputs.matrix_contract_mode != 'MATRIX_CONTRACT_FOCUSED' || matrix.python-version == '3.11') }}
         run: |
           set -euo pipefail
           export PYTHONUNBUFFERED=1
