@@ -25,10 +25,16 @@ from src.ops.bounded_master_v2_testnet_completion_path_wiring_v0 import (
     run_canonical_retention_manifest_verification,
     validate_testnet_completion_path_market_input,
     verify_dashboard_display_projection_digest_wiring,
+    verify_replay_proof_classification_wiring,
     verify_testnet_completion_path_retention_wiring,
 )
 from scripts.ops.primary_evidence_retention_v0 import write_manifest_sha256
 from src.ops.offline_master_v2_replay_six_node_validation_graph_binding_v0 import (
+    PROOF_CLASSIFICATION_FULL_E2E_BOUND,
+    PROOF_CLASSIFICATION_GRAPH_FAIL_CLOSED,
+    PROOF_CLASSIFICATION_INTEGRATION_FAIL_CLOSED,
+    PROOF_CLASSIFICATION_PROJECTION_FAIL_CLOSED,
+    PROOF_CLASSIFICATION_REPLAY_FAIL_CLOSED,
     OfflineReplaySixNodeValidationGraphBindingResultV0,
     build_completion_integration_input_from_offline_replay_result,
     prove_offline_replay_six_node_validation_graph_binding_v0,
@@ -497,18 +503,17 @@ def test_six_node_only_digest_drift_fails_closed_in_wiring_verifier(
 
 
 def test_evaluator_fails_closed_on_six_node_digest_drift(
+    six_node_binding: OfflineReplaySixNodeValidationGraphBindingResultV0,
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
-    real_prove = prove_offline_replay_six_node_validation_graph_binding_v0
-
-    def _bad_prove(*args, **kwargs):
-        binding = real_prove(*args, **kwargs)
-        return replace(binding, dashboard_display_projection_digest="4" * 64)
-
+    drifted_binding = replace(
+        six_node_binding,
+        dashboard_display_projection_digest="4" * 64,
+    )
     monkeypatch.setattr(
         "src.ops.bounded_master_v2_testnet_completion_path_wiring_v0."
         "prove_offline_replay_six_node_validation_graph_binding_v0",
-        _bad_prove,
+        lambda *args, **kwargs: drifted_binding,
     )
     result = evaluate_bounded_master_v2_testnet_completion_path_wiring(_valid_market_input())
     assert result.wiring_pass is False
@@ -617,3 +622,139 @@ def test_wiring_verifier_does_not_recompute_retention_digest() -> None:
     assert "verify_manifest_sha256" in text
     assert "hashlib" not in text
     assert "hashlib.sha256" not in text
+
+
+def test_wiring_owner_references_replay_proof_classification_symbols() -> None:
+    text = WIRING_OWNER.read_text(encoding="utf-8")
+    assert "verify_replay_proof_classification_wiring" in text
+    assert "PROOF_CLASSIFICATION_FULL_E2E_BOUND" in text
+    assert '"FULL_E2E_BOUND"' not in text
+
+
+def test_stage4_orchestrator_full_e2e_bound_integration_reference() -> None:
+    proof = prove_offline_replay_six_node_validation_graph_binding_v0()
+    assert proof.proof_classification == PROOF_CLASSIFICATION_FULL_E2E_BOUND
+
+
+def test_full_e2e_bound_classification_bound_with_valid_market_input(
+    integration_input,
+    six_node_binding: OfflineReplaySixNodeValidationGraphBindingResultV0,
+) -> None:
+    classification, reasons = verify_replay_proof_classification_wiring(
+        six_node_binding,
+        integration_input,
+    )
+    assert classification == PROOF_CLASSIFICATION_FULL_E2E_BOUND
+    assert reasons == []
+    result = evaluate_bounded_master_v2_testnet_completion_path_wiring(_valid_market_input())
+    assert result.replay_proof_classification == PROOF_CLASSIFICATION_FULL_E2E_BOUND
+    assert result.replay_proof_classification_bound is True
+    assert result.replay_proof_event_stream_non_authorizing is True
+    machine = result.to_machine_lines()
+    assert (
+        machine["OFFLINE_END_TO_END_REPLAY_PROOF_CLASSIFICATION"]
+        == PROOF_CLASSIFICATION_FULL_E2E_BOUND
+    )
+    assert machine["REPLAY_PROOF_CLASSIFICATION_BOUND"] is True
+    assert machine["OFFLINE_END_TO_END_EVENT_STREAM_NON_AUTHORIZING"] is True
+
+
+def test_partial_replay_proof_classification_fails_closed(
+    integration_input,
+    six_node_binding: OfflineReplaySixNodeValidationGraphBindingResultV0,
+) -> None:
+    partial = replace(
+        six_node_binding,
+        proof_classification=PROOF_CLASSIFICATION_GRAPH_FAIL_CLOSED,
+        binding_pass=False,
+    )
+    classification, reasons = verify_replay_proof_classification_wiring(partial, integration_input)
+    assert classification == PROOF_CLASSIFICATION_GRAPH_FAIL_CLOSED
+    assert any("incomplete binding classification" in reason for reason in reasons)
+
+
+def test_missing_replay_proof_classification_fails_closed(
+    integration_input,
+    six_node_binding: OfflineReplaySixNodeValidationGraphBindingResultV0,
+) -> None:
+    missing = replace(six_node_binding, proof_classification="")
+    classification, reasons = verify_replay_proof_classification_wiring(missing, integration_input)
+    assert classification is None
+    assert any("classification required" in reason for reason in reasons)
+
+
+def test_unknown_replay_proof_classification_fails_closed(
+    integration_input,
+    six_node_binding: OfflineReplaySixNodeValidationGraphBindingResultV0,
+) -> None:
+    unknown = replace(six_node_binding, proof_classification="UNKNOWN_PARTIAL_BOUND")
+    classification, reasons = verify_replay_proof_classification_wiring(unknown, integration_input)
+    assert classification == "UNKNOWN_PARTIAL_BOUND"
+    assert any("unknown classification" in reason for reason in reasons)
+
+
+def test_invalid_replay_proof_classification_fails_closed_in_evaluator(
+    six_node_binding: OfflineReplaySixNodeValidationGraphBindingResultV0,
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    partial_binding = replace(
+        six_node_binding,
+        proof_classification=PROOF_CLASSIFICATION_INTEGRATION_FAIL_CLOSED,
+        binding_pass=False,
+    )
+    monkeypatch.setattr(
+        "src.ops.bounded_master_v2_testnet_completion_path_wiring_v0."
+        "prove_offline_replay_six_node_validation_graph_binding_v0",
+        lambda *args, **kwargs: partial_binding,
+    )
+    result = evaluate_bounded_master_v2_testnet_completion_path_wiring(_valid_market_input())
+    assert result.wiring_pass is False
+    assert result.replay_proof_classification_bound is False
+    assert any("incomplete binding classification" in reason for reason in result.fail_reasons)
+
+
+def test_replay_proof_identity_drift_fails_closed(
+    integration_input,
+    six_node_binding: OfflineReplaySixNodeValidationGraphBindingResultV0,
+) -> None:
+    drifted = replace(
+        six_node_binding,
+        master_v2_state_event_stream_identity="0" * 64,
+    )
+    classification, reasons = verify_replay_proof_classification_wiring(
+        drifted,
+        integration_input,
+    )
+    assert classification == PROOF_CLASSIFICATION_FULL_E2E_BOUND
+    assert any("master_v2_state_event_stream_identity drift" in reason for reason in reasons)
+
+
+def test_completion_path_happy_path_unchanged_with_retention(tmp_path: Path) -> None:
+    retention = _valid_retention_verification(tmp_path)
+    result = evaluate_bounded_master_v2_testnet_completion_path_wiring(
+        _valid_market_input(),
+        retention_verification=retention,
+        expected_archive_root=retention.archive_root,
+    )
+    assert result.wiring_pass is True
+    assert result.replay_proof_classification_bound is True
+    assert result.orders_total == 0
+    machine = result.to_machine_lines()
+    assert machine["TESTNET_EXECUTES_CANONICAL_MASTER_V2"] is False
+    assert machine["REPLAY_PROOF_CLASSIFICATION_BOUND"] is True
+
+
+def test_replay_proof_classification_does_not_lift_authority(tmp_path: Path) -> None:
+    retention = _valid_retention_verification(tmp_path)
+    result = evaluate_bounded_master_v2_testnet_completion_path_wiring(
+        _valid_market_input(),
+        retention_verification=retention,
+        expected_archive_root=retention.archive_root,
+    )
+    machine = result.to_machine_lines()
+    assert machine["TESTNET_EXECUTES_CANONICAL_MASTER_V2"] is False
+    assert machine["TESTNET_SIX_NODE_VALIDATION_GRAPH_PROVEN"] is False
+    assert machine["TESTNET_PRIMARY_EVIDENCE_RETENTION_PROVEN"] is False
+    assert machine["OFFLINE_END_TO_END_EVENT_STREAM_NON_AUTHORIZING"] is True
+    violations = assert_forbidden_testnet_execution_claims_absent(machine)
+    assert violations == []
