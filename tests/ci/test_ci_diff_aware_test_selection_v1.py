@@ -2700,66 +2700,6 @@ def test_mapping_file_includes_risk_killswitch_focused() -> None:
     assert "risk_killswitch_focused:" in text
 
 
-CAPS_ALIGNMENT_CORE_FILES = (
-    "config/config.toml",
-    "config/bounded_live.toml",
-    "tests/webui/test_ops_cockpit.py",
-    "scripts/live/test_bounded_live_limits.py",
-)
-
-CAPS_ALIGNMENT_CI_POLICY_FILES = (
-    "scripts/ops/ci_test_selection_v1.py",
-    "config/ci/file_category_mapping.yaml",
-    "tests/ci/test_ci_diff_aware_test_selection_v1.py",
-)
-
-
-def test_selector_caps_alignment_core_fileset_focused() -> None:
-    sel = _run_selector(*CAPS_ALIGNMENT_CORE_FILES)
-    assert sel["test_selection_mode"] == "FOCUSED"
-    assert sel["test_selection_reason"] == "canonical_caps_alignment_focused"
-    targets = _targets(sel)
-    assert "tests/webui/test_ops_cockpit.py" in targets
-    assert "tests/test_live_smoke.py" in targets
-    assert "tests/test_live_ops_cli.py" in targets
-    assert "tests/test_live_readiness_script.py" in targets
-    assert sel["tests_execute_full"] == "false"
-    assert sel["tests_execute_no_op"] == "false"
-
-
-def test_selector_caps_alignment_core_plus_ci_policy_focused() -> None:
-    sel = _run_selector(*CAPS_ALIGNMENT_CORE_FILES, *CAPS_ALIGNMENT_CI_POLICY_FILES)
-    assert sel["test_selection_mode"] == "FOCUSED"
-    assert sel["test_selection_reason"] == "canonical_caps_alignment_focused"
-    targets = _targets(sel)
-    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" in targets
-
-
-def test_selector_caps_alignment_config_only_escalates_full() -> None:
-    sel = _run_selector("config/config.toml", "config/bounded_live.toml")
-    assert sel["test_selection_mode"] == "FULL"
-    assert (
-        sel["test_selection_reason"] == "canonical_caps_alignment_incomplete_or_missing_test_owner"
-    )
-
-
-def test_selector_caps_alignment_partial_core_escalates_full() -> None:
-    sel = _run_selector(*CAPS_ALIGNMENT_CORE_FILES, "config/config.test.toml")
-    assert sel["test_selection_mode"] == "FULL"
-    assert sel["test_selection_reason"] == "canonical_caps_alignment_foreign_path_requires_full"
-
-
-def test_selector_caps_alignment_before_fix_was_full() -> None:
-    sel = _run_selector(*CAPS_ALIGNMENT_CORE_FILES)
-    assert sel["test_selection_mode"] != "FULL"
-    assert sel["test_selection_reason"] != "category_config_paths_requires_full"
-
-
-def test_mapping_file_includes_canonical_caps_alignment_focused() -> None:
-    text = MAPPING.read_text(encoding="utf-8")
-    assert "canonical_caps_alignment_focused:" in text
-
-
 PE54_TINY_ORDER_FILES = (
     "src/ops/bounded_futures_testnet_tiny_order_lifecycle_integration_contract_v0.py",
     "tests/ops/test_bounded_futures_testnet_tiny_order_lifecycle_integration_contract_v0.py",

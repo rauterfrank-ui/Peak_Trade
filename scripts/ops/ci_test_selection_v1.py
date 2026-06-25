@@ -33,7 +33,6 @@ FOCUSED_CATEGORIES = frozenset(
         "durable_completion_focused",
         "preflight_assembly_focused",
         "risk_killswitch_focused",
-        "canonical_caps_alignment_focused",
         "tiny_order_focused",
         "reconciliation_primary_evidence_focused",
         "master_v2_binding_contract_focused",
@@ -541,38 +540,6 @@ CANONICAL_RISK_KILLSWITCH_FOCUSED_TESTS: tuple[str, ...] = (
 REQUIRED_RISK_KILLSWITCH_TEST_OWNERS: tuple[str, ...] = (
     "tests/ops/test_bounded_futures_testnet_risk_killswitch_lifecycle_integration_contract_v0.py",
     "tests/ops/test_order_capability_killswitch_abort_binding_contract_v1.py",
-)
-
-CANONICAL_CAPS_ALIGNMENT_CORE_FILES = frozenset(
-    {
-        "config/config.toml",
-        "config/bounded_live.toml",
-        "tests/webui/test_ops_cockpit.py",
-        "scripts/live/test_bounded_live_limits.py",
-    }
-)
-
-CANONICAL_CAPS_ALIGNMENT_CI_POLICY_PATHS = frozenset(
-    {
-        "scripts/ops/ci_test_selection_v1.py",
-        "config/ci/file_category_mapping.yaml",
-        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
-    }
-)
-
-CANONICAL_CAPS_ALIGNMENT_FOCUSED_TESTS: tuple[str, ...] = (
-    "tests/webui/test_ops_cockpit.py",
-    "tests/test_live_smoke.py",
-    "tests/test_live_ops_cli.py",
-    "tests/test_live_readiness_script.py",
-    "tests/ci/test_ci_diff_aware_test_selection_v1.py",
-)
-
-REQUIRED_CAPS_ALIGNMENT_TEST_OWNERS: tuple[str, ...] = (
-    "tests/webui/test_ops_cockpit.py",
-    "tests/test_live_smoke.py",
-    "tests/test_live_ops_cli.py",
-    "tests/test_live_readiness_script.py",
 )
 
 PE30_TINY_ORDER_OWNER = (
@@ -1178,31 +1145,6 @@ def _preflight_assembly_focused_targets() -> tuple[str, ...]:
     return tuple(sorted(targets))
 
 
-def _is_canonical_caps_alignment_scoped_path(path: str) -> bool:
-    return path in CANONICAL_CAPS_ALIGNMENT_CORE_FILES
-
-
-def _is_canonical_caps_alignment_rebundle_path(path: str) -> bool:
-    return (
-        path in CANONICAL_CAPS_ALIGNMENT_CORE_FILES
-        or path in CANONICAL_CAPS_ALIGNMENT_CI_POLICY_PATHS
-    )
-
-
-def _canonical_caps_alignment_focused_targets() -> tuple[str, ...]:
-    for path in REQUIRED_CAPS_ALIGNMENT_TEST_OWNERS:
-        if not _repo_path_exists(path):
-            return ()
-    targets: list[str] = []
-    for path in CANONICAL_CAPS_ALIGNMENT_FOCUSED_TESTS:
-        if _repo_path_exists(path):
-            targets.append(path)
-    required = {path for path in REQUIRED_CAPS_ALIGNMENT_TEST_OWNERS if _repo_path_exists(path)}
-    if not required.issubset(set(targets)):
-        return ()
-    return tuple(sorted(set(targets)))
-
-
 def _is_risk_killswitch_scoped_path(path: str) -> bool:
     if path == PE22_RISK_KILLSWITCH_OWNER:
         return True
@@ -1636,30 +1578,6 @@ def _try_tiny_order_focused(files: list[str]) -> SelectionResult | None:
     return SelectionResult(
         "FOCUSED",
         "tiny_order_focused",
-        targets,
-        modules,
-    )
-
-
-def _try_canonical_caps_alignment_focused(files: list[str]) -> SelectionResult | None:
-    if not files:
-        return None
-    files_set = set(files)
-    allowed = CANONICAL_CAPS_ALIGNMENT_CORE_FILES | CANONICAL_CAPS_ALIGNMENT_CI_POLICY_PATHS
-    if not files_set <= allowed:
-        return None
-    if not CANONICAL_CAPS_ALIGNMENT_CORE_FILES <= files_set:
-        return None
-    targets = _canonical_caps_alignment_focused_targets()
-    if not targets:
-        return None
-    modules: tuple[str, ...] = (
-        "src.live.risk_limits",
-        "src.core.peak_config",
-    )
-    return SelectionResult(
-        "FOCUSED",
-        "canonical_caps_alignment_focused",
         targets,
         modules,
     )
@@ -2407,10 +2325,6 @@ def categorize(path: str) -> str:
         return "preflight_assembly_focused"
     if _is_preflight_assembly_scoped_path(p):
         return "preflight_assembly_focused"
-    if p in CANONICAL_CAPS_ALIGNMENT_CI_POLICY_PATHS:
-        return "canonical_caps_alignment_focused"
-    if _is_canonical_caps_alignment_scoped_path(p):
-        return "canonical_caps_alignment_focused"
     if p in RISK_KILLSWITCH_CI_POLICY_PATHS:
         return "risk_killswitch_focused"
     if _is_risk_killswitch_scoped_path(p):
@@ -2742,10 +2656,6 @@ def resolve_selection(
     if risk_killswitch is not None:
         return risk_killswitch
 
-    canonical_caps_alignment = _try_canonical_caps_alignment_focused(normalized)
-    if canonical_caps_alignment is not None:
-        return canonical_caps_alignment
-
     tiny_order = _try_tiny_order_focused(normalized)
     if tiny_order is not None:
         return tiny_order
@@ -2797,15 +2707,6 @@ def resolve_selection(
         if not all(_is_risk_killswitch_rebundle_path(f) for f in normalized):
             return SelectionResult("FULL", "risk_killswitch_foreign_path_requires_full", ())
         return SelectionResult("FULL", "risk_killswitch_incomplete_or_missing_test_owner", ())
-
-    if any(_is_canonical_caps_alignment_scoped_path(f) for f in normalized):
-        if not all(_is_canonical_caps_alignment_rebundle_path(f) for f in normalized):
-            return SelectionResult(
-                "FULL", "canonical_caps_alignment_foreign_path_requires_full", ()
-            )
-        return SelectionResult(
-            "FULL", "canonical_caps_alignment_incomplete_or_missing_test_owner", ()
-        )
 
     if any(_is_tiny_order_scoped_path(f) for f in normalized):
         if not all(_is_tiny_order_rebundle_path(f) for f in normalized):
