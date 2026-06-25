@@ -1176,7 +1176,9 @@ def test_selector_market_dashboard_tests_only_focused() -> None:
 
 def test_workflow_only_does_not_run_full_pytest_step_unconditionally() -> None:
     text = _ci_text()
-    exhaustive_step = text.split("name: Run EXHAUSTIVE_FULL test suite", 1)[1].split("\n      - name:", 1)[0]
+    exhaustive_step = text.split("name: Run EXHAUSTIVE_FULL test suite", 1)[1].split(
+        "\n      - name:", 1
+    )[0]
     assert "tests_execute_exhaustive_full == 'true'" in exhaustive_step
     assert "workflow_only == 'true'" not in exhaustive_step
 
@@ -2382,7 +2384,10 @@ def test_selector_pe55_full_diff_with_ci_workflow_rebundle_stays_focused() -> No
     )
     assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert sel["test_selection_reason"] == "selector_self_change_bootstrap"
-    assert "tests/ops/test_durable_completion_validation_graph_v1.py" in sel["pr_bounded_pytest_targets"]
+    assert (
+        "tests/ops/test_durable_completion_validation_graph_v1.py"
+        in sel["pr_bounded_pytest_targets"]
+    )
 
 
 def test_selector_durable_completion_facade_plus_graph_focused() -> None:

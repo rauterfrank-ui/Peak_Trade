@@ -915,9 +915,7 @@ class SelectionResult:
         else:
             lines.append("focused_module_imports=")
         if self.pr_bounded_pytest_targets:
-            lines.append(
-                f"pr_bounded_pytest_targets={' '.join(self.pr_bounded_pytest_targets)}"
-            )
+            lines.append(f"pr_bounded_pytest_targets={' '.join(self.pr_bounded_pytest_targets)}")
         else:
             lines.append("pr_bounded_pytest_targets=")
         return lines
@@ -964,8 +962,7 @@ def _finalize_selection_result(
         if _is_selector_self_change_bootstrap(files):
             bounded = tuple(
                 sorted(
-                    set(resolve_pr_bounded_full_targets(files))
-                    | set(result.focused_pytest_targets)
+                    set(resolve_pr_bounded_full_targets(files)) | set(result.focused_pytest_targets)
                 )
             )
             if not bounded:
