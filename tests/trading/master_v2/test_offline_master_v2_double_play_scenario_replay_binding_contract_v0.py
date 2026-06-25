@@ -33,10 +33,21 @@ from trading.master_v2.offline_double_play_scenario_replay_v0 import (
     OfflineDoublePlayScenarioTickV0,
     build_default_bull_bear_bull_scenario_ticks,
     build_offline_replay_futures_input_snapshot,
+    build_master_v2_state_event_stream_validation_input_from_replay,
+    compute_master_v2_replay_state_event_projection_digest,
+    project_master_v2_state_event_stream_from_replay,
+    project_master_v2_state_events_from_replay_records,
     replay_result_digest_coherent,
     resolve_replay_futures_input_snapshot,
     run_offline_double_play_scenario_replay_v0,
     validate_offline_double_play_scenario_replay_input_v0,
+)
+from src.ops.durable_completion_validation.validators.event_stream import (
+    MASTER_V2_EVIDENCE_CHAIN_PROFILE_KILL_ALL,
+    MASTER_V2_EVIDENCE_CHAIN_PROFILE_STATE_SWITCH,
+    MasterV2StateEventRecord,
+    build_master_v2_state_event_record,
+    evaluate_master_v2_state_event_stream_validation,
 )
 
 
@@ -649,3 +660,222 @@ def test_scenario_h_conformance_high_volatility_flapping_chop_guard_not_kill_all
         or r.scope_event in (ScopeEvent.DOWNSCOPE_CANDIDATE, ScopeEvent.UPSCOPE_CANDIDATE)
         for r in result.tick_records
     )
+
+
+def _projection_identity_digests() -> tuple[str, str, str]:
+    return ("a" * 64, "b" * 64, "c" * 64)
+
+
+def _default_projection(
+    *,
+    evidence_chain_profile: str | None = None,
+):
+    result = _run_default()
+    completion, manifest, run = _projection_identity_digests()
+    return project_master_v2_state_event_stream_from_replay(
+        replay_result=result,
+        correlation_id="offline-double-play-replay-v0-eth-perp",
+        completion_identity_digest=completion,
+        manifest_identity_digest=manifest,
+        run_identity_digest=run,
+        source_revision="offline-replay-test-v0",
+        evidence_chain_profile=evidence_chain_profile,
+    )
+
+
+def test_state_event_projection_stable_dynamic_scope_non_authorizing() -> None:
+    projection = _default_projection(
+        evidence_chain_profile=MASTER_V2_EVIDENCE_CHAIN_PROFILE_STATE_SWITCH
+    )
+    assert projection.projection_pass, projection.fail_reasons
+    stable = [
+        record
+        for record in projection.events
+        if record.semantic_event_class == "dynamic_scope"
+        and record.side_state_before == record.side_state_after
+    ]
+    assert stable
+    assert all(not record.claims_live_authority for record in projection.events)
+    assert all(not record.claims_execution_authority for record in projection.events)
+
+
+def test_state_event_projection_state_switch_profile() -> None:
+    projection = _default_projection(
+        evidence_chain_profile=MASTER_V2_EVIDENCE_CHAIN_PROFILE_STATE_SWITCH
+    )
+    classes = {record.semantic_event_class for record in projection.events}
+    assert "dynamic_scope" in classes
+    assert "state_switch" in classes
+    assert "kill_all_terminal" not in classes
+    assert projection.validation_result is not None
+    assert projection.validation_result["validation_pass"] is True
+    assert projection.proof_binding is not None
+    assert projection.proof_binding.event_stream_non_authorizing is True
+
+
+def test_state_event_projection_kill_all_terminal_profile() -> None:
+    projection = _default_projection(
+        evidence_chain_profile=MASTER_V2_EVIDENCE_CHAIN_PROFILE_KILL_ALL
+    )
+    assert projection.projection_pass, projection.fail_reasons
+    assert len(projection.events) == 1
+    record = projection.events[0]
+    assert record.semantic_event_class == "kill_all_terminal"
+    assert record.scope_event == ScopeEvent.KILL_ALL_REQUIRED.value
+    assert record.side_state_after == SideState.KILL_ALL.value
+
+
+def test_state_event_projection_deterministic_digest_and_order() -> None:
+    first = _default_projection(
+        evidence_chain_profile=MASTER_V2_EVIDENCE_CHAIN_PROFILE_STATE_SWITCH
+    )
+    second = _default_projection(
+        evidence_chain_profile=MASTER_V2_EVIDENCE_CHAIN_PROFILE_STATE_SWITCH
+    )
+    assert first.projection_digest == second.projection_digest
+    assert [record.event_id for record in first.events] == [
+        record.event_id for record in second.events
+    ]
+    sequences = [record.sequence for record in first.events]
+    assert sequences == list(range(len(sequences)))
+
+
+def test_state_event_projection_compatible_with_event_stream_validator() -> None:
+    projection = _default_projection(
+        evidence_chain_profile=MASTER_V2_EVIDENCE_CHAIN_PROFILE_STATE_SWITCH
+    )
+    assert projection.validation_input is not None
+    result = evaluate_master_v2_state_event_stream_validation(projection.validation_input)
+    assert result["validation_pass"] is True
+    assert result["event_stream_non_authorizing"] is True
+
+
+def test_state_event_projection_primary_evidence_validation_input_build() -> None:
+    replay = _run_default()
+    completion, manifest, run = _projection_identity_digests()
+    validation_input, fail_reasons = (
+        build_master_v2_state_event_stream_validation_input_from_replay(
+            replay_result=replay,
+            correlation_id="offline-double-play-replay-v0-eth-perp",
+            completion_identity_digest=completion,
+            manifest_identity_digest=manifest,
+            run_identity_digest=run,
+            source_revision="offline-replay-test-v0",
+            evidence_chain_profile=MASTER_V2_EVIDENCE_CHAIN_PROFILE_KILL_ALL,
+        )
+    )
+    assert not fail_reasons
+    assert validation_input is not None
+    binding = replay.master_v2_decision_state_digest_binding
+    assert binding is not None
+    assert validation_input.bound_dynamic_scope_state_digest == binding.dynamic_scope_state_digest
+    assert all(
+        record.scope_state_digest == binding.dynamic_scope_state_digest
+        for record in validation_input.events
+    )
+
+
+def test_state_event_projection_missing_correlation_id_fail_closed() -> None:
+    replay = _run_default()
+    binding = replay.master_v2_decision_state_digest_binding
+    assert binding is not None
+    events, fail_reasons = project_master_v2_state_events_from_replay_records(
+        records=replay.tick_records,
+        correlation_id="",
+        bound_scope_state_digest=binding.dynamic_scope_state_digest,
+        evidence_chain_profile=MASTER_V2_EVIDENCE_CHAIN_PROFILE_KILL_ALL,
+    )
+    assert not events
+    assert "correlation_id required" in fail_reasons
+
+
+def test_state_event_projection_unknown_profile_fail_closed() -> None:
+    replay = _run_default()
+    binding = replay.master_v2_decision_state_digest_binding
+    assert binding is not None
+    events, fail_reasons = project_master_v2_state_events_from_replay_records(
+        records=replay.tick_records,
+        correlation_id="offline-double-play-replay-v0-eth-perp",
+        bound_scope_state_digest=binding.dynamic_scope_state_digest,
+        evidence_chain_profile="unsupported_profile_v0",
+    )
+    assert not events
+    assert "unsupported evidence_chain_profile" in fail_reasons
+
+
+def test_state_event_projection_authority_claims_fail_closed() -> None:
+    replay = _run_default()
+    binding = replay.master_v2_decision_state_digest_binding
+    assert binding is not None
+    events, _ = project_master_v2_state_events_from_replay_records(
+        records=replay.tick_records,
+        correlation_id="offline-double-play-replay-v0-eth-perp",
+        bound_scope_state_digest=binding.dynamic_scope_state_digest,
+        evidence_chain_profile=MASTER_V2_EVIDENCE_CHAIN_PROFILE_KILL_ALL,
+    )
+    assert events
+    base = events[0]
+    tampered = (
+        MasterV2StateEventRecord(
+            semantic_event_class=base.semantic_event_class,
+            event_id=base.event_id,
+            sequence=base.sequence,
+            timestamp_utc=base.timestamp_utc,
+            source=base.source,
+            correlation_id=base.correlation_id,
+            schema_version=base.schema_version,
+            scope_event=base.scope_event,
+            side_state_before=base.side_state_before,
+            side_state_after=base.side_state_after,
+            scope_state_digest=base.scope_state_digest,
+            transition_allowed=base.transition_allowed,
+            present=base.present,
+            claims_live_authority=True,
+            claims_execution_authority=False,
+        ),
+    )
+    completion, manifest, run = _projection_identity_digests()
+    from src.ops.durable_completion_validation.validators.event_stream import (
+        MASTER_V2_STATE_EVENT_BOUNDARY_OWNER,
+        MasterV2StateEventStreamValidationInput,
+    )
+
+    validation_input = MasterV2StateEventStreamValidationInput(
+        boundary_owner=MASTER_V2_STATE_EVENT_BOUNDARY_OWNER,
+        source_revision="offline-replay-test-v0",
+        completion_identity_digest=completion,
+        manifest_identity_digest=manifest,
+        run_identity_digest=run,
+        correlation_id="offline-double-play-replay-v0-eth-perp",
+        evidence_chain_profile=MASTER_V2_EVIDENCE_CHAIN_PROFILE_KILL_ALL,
+        bound_dynamic_scope_state_digest=binding.dynamic_scope_state_digest,
+        events=tampered,
+    )
+    result = evaluate_master_v2_state_event_stream_validation(validation_input)
+    assert result["validation_pass"] is False
+    assert any("authority claims forbidden" in reason for reason in result["fail_reasons"])
+
+
+def test_state_event_projection_digest_stable_for_explicit_events() -> None:
+    record = build_master_v2_state_event_record(
+        semantic_event_class="dynamic_scope",
+        event_id="mv2-test-001",
+        sequence=0,
+        correlation_id="corr-1",
+        scope_event=ScopeEvent.NOOP.value,
+        side_state_before=SideState.LONG_ACTIVE.value,
+        side_state_after=SideState.LONG_ACTIVE.value,
+        scope_state_digest="d" * 64,
+        transition_allowed=True,
+    )
+    first = compute_master_v2_replay_state_event_projection_digest(
+        events=(record,),
+        evidence_chain_profile=MASTER_V2_EVIDENCE_CHAIN_PROFILE_STATE_SWITCH,
+        correlation_id="corr-1",
+    )
+    second = compute_master_v2_replay_state_event_projection_digest(
+        events=(record,),
+        evidence_chain_profile=MASTER_V2_EVIDENCE_CHAIN_PROFILE_STATE_SWITCH,
+        correlation_id="corr-1",
+    )
+    assert first == second

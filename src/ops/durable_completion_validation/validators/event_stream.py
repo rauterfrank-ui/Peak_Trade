@@ -591,6 +591,40 @@ def _default_offline_scope_state() -> dict[str, Any]:
     }
 
 
+def build_master_v2_state_event_record(
+    *,
+    semantic_event_class: str,
+    event_id: str,
+    sequence: int,
+    correlation_id: str,
+    scope_event: str,
+    side_state_before: str,
+    side_state_after: str,
+    scope_state_digest: str,
+    transition_allowed: bool,
+    present: bool = True,
+    timestamp_utc: str | None = None,
+) -> MasterV2StateEventRecord:
+    """Canonical builder for offline Master-V2 state event records (non-authorizing)."""
+    return MasterV2StateEventRecord(
+        semantic_event_class=semantic_event_class,
+        event_id=event_id,
+        sequence=sequence,
+        timestamp_utc=timestamp_utc or _DEFAULT_TIMESTAMP_UTC,
+        source=_OFFLINE_SOURCE,
+        correlation_id=correlation_id,
+        schema_version=MASTER_V2_STATE_EVENT_CONTRACT_VERSION,
+        scope_event=scope_event,
+        side_state_before=side_state_before,
+        side_state_after=side_state_after,
+        scope_state_digest=scope_state_digest,
+        transition_allowed=transition_allowed,
+        present=present,
+        claims_live_authority=False,
+        claims_execution_authority=False,
+    )
+
+
 def _master_v2_state_event_record(
     *,
     semantic_event_class: str,
@@ -604,22 +638,17 @@ def _master_v2_state_event_record(
     transition_allowed: bool,
     present: bool = True,
 ) -> MasterV2StateEventRecord:
-    return MasterV2StateEventRecord(
+    return build_master_v2_state_event_record(
         semantic_event_class=semantic_event_class,
         event_id=event_id,
         sequence=sequence,
-        timestamp_utc=_DEFAULT_TIMESTAMP_UTC,
-        source=_OFFLINE_SOURCE,
         correlation_id=correlation_id,
-        schema_version=MASTER_V2_STATE_EVENT_CONTRACT_VERSION,
         scope_event=scope_event,
         side_state_before=side_state_before,
         side_state_after=side_state_after,
         scope_state_digest=scope_state_digest,
         transition_allowed=transition_allowed,
         present=present,
-        claims_live_authority=False,
-        claims_execution_authority=False,
     )
 
 
