@@ -3490,6 +3490,59 @@ def test_selector_master_v2_arithmetic_kernel_seam_fail_closed_contract_foreign_
     )
 
 
+DUPLICATE_PNL_OWNER_BOUNDARY_CONTRACT_TEST_OWNER = (
+    "tests/ops/test_duplicate_pnl_owner_boundary_contract_v0.py"
+)
+
+
+def test_selector_duplicate_pnl_owner_boundary_contract_test_only_focused() -> None:
+    sel = _run_selector(DUPLICATE_PNL_OWNER_BOUNDARY_CONTRACT_TEST_OWNER)
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
+    assert sel["test_selection_reason"] == "duplicate_pnl_owner_boundary_contract_focused"
+    assert sel["tests_execute_full"] == "false"
+    assert sel["tests_execute_focused"] == "true"
+    assert sel["tests_execute_no_op"] == "false"
+    targets = _targets(sel)
+    assert len([t for t in targets if "::test_" in t]) == 6
+    assert (
+        f"{DUPLICATE_PNL_OWNER_BOUNDARY_CONTRACT_TEST_OWNER}::test_exactly_one_futures_arithmetic_kernel_candidate"
+        in targets
+    )
+    assert (
+        f"{DUPLICATE_PNL_OWNER_BOUNDARY_CONTRACT_TEST_OWNER}::test_contract_is_non_authorizing"
+        in targets
+    )
+    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" not in targets
+
+
+def test_selector_duplicate_pnl_owner_boundary_contract_selector_rebundle_focused() -> None:
+    sel = _run_selector(
+        DUPLICATE_PNL_OWNER_BOUNDARY_CONTRACT_TEST_OWNER,
+        "scripts/ops/ci_test_selection_v1.py",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    )
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
+    assert sel["test_selection_reason"] == "duplicate_pnl_owner_boundary_contract_focused"
+    targets = _targets(sel)
+    assert len([t for t in targets if "::test_" in t]) == 8
+    assert (
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py::test_selector_duplicate_pnl_owner_boundary_contract_test_only_focused"
+        in targets
+    )
+
+
+def test_selector_duplicate_pnl_owner_boundary_contract_foreign_path_escalates_full() -> None:
+    sel = _run_selector(
+        DUPLICATE_PNL_OWNER_BOUNDARY_CONTRACT_TEST_OWNER,
+        "src/execution/position_ledger.py",
+    )
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    assert (
+        sel["test_selection_reason"]
+        == "duplicate_pnl_owner_boundary_contract_foreign_path_requires_full"
+    )
+
+
 def test_selector_testnet_wallclock_duration_evidence_owner_pair_focused() -> None:
     sel = _run_selector(*TESTNET_WALLCLOCK_DURATION_EVIDENCE_FILES)
     assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
