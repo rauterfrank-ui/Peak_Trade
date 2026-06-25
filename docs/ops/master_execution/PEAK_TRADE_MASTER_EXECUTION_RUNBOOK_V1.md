@@ -6,7 +6,7 @@ OWNER=Frank Rauter
 NON_AUTHORIZING=true
 SOURCE_DURABLE_SNAPSHOT=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/peak_trade_master_execution_runbook_v1_20260626T233500Z
 SOURCE_DURABLE_MANIFEST_VERIFY_RC=0
-origin_main: f570e857ff48ac2f52dde516d85b21666885da6f
+origin_main: 5495c8fb1c2a2ac28c97fcd0a0405746adc88774
 ---
 
 # Peak_Trade Master Execution Runbook v1
@@ -40,18 +40,19 @@ Reifepipeline: Research → Offline Proof → Shadow → Paper → Testnet → s
 
 | Feld | Wert |
 |------|------|
-| PROGRAM_PHASE | PACKAGE_A_SLICE_A1_MERGED |
-| CURRENT_MAJOR_PACKAGE | PACKAGE_A_NUMERICAL_TRUST_FOUNDATION (**final ausgewählt**) |
-| CURRENT_STATUS | PACKAGE_A_SLICE_A1_MERGED_CLOSEOUT_COMPLETE |
+| PROGRAM_PHASE | PACKAGE_A_COMPLETE |
+| CURRENT_MAJOR_PACKAGE | PACKAGE_A_NUMERICAL_TRUST_FOUNDATION (**final ausgewählt, abgeschlossen**) |
+| CURRENT_STATUS | PACKAGE_A_SLICE_A2_MERGED_CLOSEOUT_COMPLETE |
+| PACKAGE_A_STATUS | COMPLETE |
 | PACKAGE_A_FINAL_SELECTION_DECISION | PACKAGE_A_FINAL_SELECTED |
 | PACKAGE_A_SLICE_A1_STATUS | MERGED_CLOSEOUT_COMPLETE (PR #4566, INV-021) |
-| PACKAGE_A_SLICE_A2_STATUS | NOT_STARTED — **kein A2-GO** |
+| PACKAGE_A_SLICE_A2_STATUS | MERGED_CLOSEOUT_COMPLETE (PR #4568, INV-048) |
 | GO_GRANTED | false |
 | IMPLEMENTATION_STARTED | false |
 | CURRENT_RUN_ACTIVE | false |
-| NEXT_ALLOWED_ACTION | PREPARE_PACKAGE_A_SLICE_A2_INV048_IMPLEMENTATION_GO_READINESS_NO_IMPLEMENTATION |
+| NEXT_ALLOWED_ACTION | COMPLETE_OPERATOR_REVIEW_AND_FINAL_SELECTION_OF_PACKAGE_B_RECONCILIATION_CANONICALIZATION |
 
-Target Architecture ist im Masterplan abgeschlossen (`MANIFEST_VERIFY_RC=0`). **Package A Slice A1 (INV-021) ist gemergt**; **Slice A2 nicht gestartet**; **kein Implementierungs-GO für A2**.
+Target Architecture ist im Masterplan abgeschlossen (`MANIFEST_VERIFY_RC=0`). **Package A (INV-021 + INV-048) ist vollständig gemergt**; **kein automatisches GO für Package B oder Implementierung**.
 
 ## 3. Capability Trains (12)
 
@@ -76,7 +77,7 @@ Target Architecture ist im Masterplan abgeschlossen (`MANIFEST_VERIFY_RC=0`). **
 
 | Package | Train | Status / Hinweis |
 |---------|-------|------------------|
-| PACKAGE_A_NUMERICAL_TRUST_FOUNDATION | TRAIN_1 | **ACTIVE FINAL** — INV-021+048; Slice A1/A2 geplant; **kein GO** |
+| PACKAGE_A_NUMERICAL_TRUST_FOUNDATION | TRAIN_1 | **COMPLETE** — INV-021+048 gemergt; keine Produktions-Verdrahtung |
 | PACKAGE_B_RECONCILIATION_CANONICALIZATION | TRAIN_2 | Nach PACKAGE_A |
 | PACKAGE_C_DOUBLE_PLAY_DYNAMIC_SCOPE_AND_STATE | TRAIN_3 | MUST_HAVE — INV-045/046 |
 | PACKAGE_D_CAPITAL_SLOT_RATCHET | TRAIN_4 | Strategic core — INV-007 |
@@ -90,15 +91,15 @@ Target Architecture ist im Masterplan abgeschlossen (`MANIFEST_VERIFY_RC=0`). **
 
 Wave-Reihenfolge: 1=A → 2=B → 3=A ext (INV-003 GO) → 4=C → 5=D → 6=E,F → 7+=G,K
 
-### PACKAGE_A (final ausgewählt — A1 gemergt, A2 nicht gestartet)
+### PACKAGE_A (final ausgewählt — vollständig abgeschlossen)
 
 - **Entscheidung:** `PACKAGE_A_FINAL_SELECTED` (Operator-Review Bundle `package_a_numerical_trust_foundation_final_operator_review_v0_20260625T230158Z`, `MANIFEST_VERIFY_RC=0`)
 - **Enthalten:** INV-021 (PnL-Owner-Design/Contract) + INV-048 (P1-3/P1-4/P1-5 Contract-Tests)
 - **Slice-Status:**
   - **A1 (INV-021):** **MERGED** — PR #4566, Merge `f570e857`; kanonische Futures-PnL-Ownership-/Boundary-Contracts (test-only); keine Produktionsänderung
-  - **A2 (INV-048):** **NOT_STARTED** — P1-Arithmetik-Contract-Tests (flip, quantize, equity identity); **kein A2-GO**
-- **Explizit ausgeschlossen:** INV-003 wiring, INV-005 testnet, Authority-Lift, Runtime, optionaler A1-Spec-Mirror ohne separates GO
-- **GO_GRANTED:** false | **IMPLEMENTATION_STARTED:** false | **A2 nur Kandidat für separates explizites Implementierungs-GO**
+  - **A2 (INV-048):** **MERGED** — PR #4568, Merge `5495c8fb`; P1-3 flip, P1-4 quantize, P1-5 equity identity (test-only); keine Produktionsänderung
+- **Explizit ausgeschlossen:** INV-003 wiring, INV-005 testnet, Authority-Lift, Runtime, produktive Arithmetic-Verdrahtung
+- **GO_GRANTED:** false | **IMPLEMENTATION_STARTED:** false | **Package A abgeschlossen — kein Runtime-Proof**
 
 ## 5. State Machine (26 Zustände)
 
@@ -123,14 +124,14 @@ Handoff-Payloads: `NEW_CHAT_RESUME_PAYLOAD.md`, `CURSOR_RESUME_PAYLOAD.md` (Dura
 
 ## 8. Operator Checklist (aktuell)
 
-### Nach Package-A-Slice-A1-Merge (aktuell)
+### Nach Package-A-Abschluss (aktuell)
 
 - [x] Operator-Review abgeschlossen (`PACKAGE_A_FINAL_SELECTED`)
-- [x] Kanonischer Checkpoint für finale Auswahl aktualisiert (docs-only)
 - [x] Slice A1 (INV-021) implementiert und gemergt (PR #4566)
-- [ ] Docs-PR für A1-Closeout-Checkpoint gemergt
-- [ ] Separates explizites Implementierungs-GO-Readiness-Review für Slice A2 (INV-048) — **noch nicht erteilt**
-- [ ] Slice A2 (INV-048) Implementierung erst nach A2-GO
+- [x] Slice A2 (INV-048) implementiert und gemergt (PR #4568)
+- [x] Package A (INV-021 + INV-048) vollständig abgeschlossen
+- [ ] Docs-PR für A2-Closeout-Checkpoint gemergt
+- [ ] Separates read-only Operator-Review für Package B (Reconciliation Canonicalization) — **noch nicht erteilt**
 - [ ] INV-003 wiring, INV-005 testnet, Authority-Lift, Runtime weiterhin ausgeschlossen
 
 ## 9. Evidence Index
@@ -143,13 +144,15 @@ Handoff-Payloads: `NEW_CHAT_RESUME_PAYLOAD.md`, `CURSOR_RESUME_PAYLOAD.md` (Dura
 | PR-4564 Closeout | Kanonischer Runbook-Owner in Repo |
 | Operator-Review `package_a_numerical_trust_foundation_final_operator_review_v0_20260625T230158Z` | Finale Package-A-Auswahl |
 | A1 Implementation `package_a_slice_a1_inv021_pnl_owner_contract_formalisation_v0_20260625T232429Z` | INV-021 Contract-Formalisation |
+| A2 Implementation `package_a_slice_a2_inv048_p1_arithmetic_contracts_v0_20260625T234736Z` | INV-048 P1 Contract-Closure |
 | PR-4566 Closeout | Package A Slice A1 merge |
+| PR-4568 / A2 Professor Merge Closeout | Package A Slice A2 merge |
 | Runbook Durable Snapshot `peak_trade_master_execution_runbook_v1_20260626T233500Z` | Unveränderlicher Ursprung |
 
 ## 10. DO_NOT_DO (aktuell)
 
-- Package-A-Slice A2 Implementierung ohne explizites A2-GO
-- GO erteilen oder inferieren (insbesondere A2)
+- Package-B-Implementierung ohne separates explizites Package-B-GO
+- GO erteilen oder inferieren (insbesondere Package B)
 - Runtime, Testnet, Paper, Shadow, Live starten
 - Primären dirty Worktree mutieren
 - INV-003 wiring / INV-005 testnet ohne separates GO
