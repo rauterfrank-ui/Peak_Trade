@@ -26,7 +26,9 @@ from src.ops.durable_completion_validation.graph import (
     execute_proof_binding_validation_graph,
 )
 from src.ops.durable_completion_validation.validators.event_stream import (
+    MASTER_V2_EVIDENCE_CHAIN_PROFILE_KILL_ALL,
     evaluate_glb019_event_stream_validation,
+    evaluate_master_v2_state_event_stream_validation,
 )
 from src.ops.durable_completion_validation.models import ValidationContext
 from src.ops.durable_completion_validation.validators.completion_chain import (
@@ -37,17 +39,31 @@ from src.ops.bounded_master_v2_testnet_completion_path_wiring_v0 import (
     evaluate_bounded_master_v2_testnet_completion_path_wiring,
 )
 from src.ops.offline_master_v2_replay_six_node_validation_graph_binding_v0 import (
+    PROOF_CLASSIFICATION_FULL_E2E_BOUND,
+    PROOF_CLASSIFICATION_PROJECTION_FAIL_CLOSED,
+    PROOF_CLASSIFICATION_REPLAY_FAIL_CLOSED,
     build_completion_integration_input_from_offline_replay_result,
+    build_replay_sourced_master_v2_state_event_stream_binding_from_replay_result,
     build_validation_context_from_completion_integration_input,
     prove_offline_replay_six_node_validation_graph_binding_v0,
     verify_dashboard_display_projection_digest_six_node_evidence,
 )
+from trading.master_v2.double_play_futures_input import (
+    FuturesFreshnessState,
+    FuturesInputSnapshot,
+    FuturesMarketDataProvenanceStatus,
+)
+from trading.master_v2.double_play_state import ScopeEvent, SideState
 from trading.master_v2.offline_double_play_scenario_replay_v0 import (
     SYNTHETIC_FUTURES_INSTRUMENT,
+    OfflineDoublePlayProofEvent,
     OfflineDoublePlayScenarioReplayInputV0,
     OfflineDoublePlayScenarioReplayResultV0,
+    OfflineDoublePlayScenarioTickV0,
     build_default_bull_bear_bull_scenario_ticks,
+    build_offline_replay_futures_input_snapshot,
     run_offline_double_play_scenario_replay_v0,
+    validate_offline_double_play_scenario_replay_input_v0,
 )
 
 
@@ -66,16 +82,7 @@ def _replay_result() -> OfflineDoublePlayScenarioReplayResultV0:
 
 @pytest.fixture(scope="module", name="integration_input")
 def _integration_input(replay_result: OfflineDoublePlayScenarioReplayResultV0):
-    binding = replay_result.master_v2_decision_state_digest_binding
-    assert binding is not None
-    base = default_minimal_completion_integration_input()
-    binding_aligned = replace(binding, source_revision=base.source_revision)
-    with_binding = replace(
-        base,
-        master_v2_decision_state_digest_binding=binding_aligned,
-    )
-    chain = default_minimal_completion_proof_chain(with_binding)
-    return replace(with_binding, completion_proof_chain=chain)
+    return build_completion_integration_input_from_offline_replay_result(replay_result)
 
 
 def test_replay_output_accepted_by_completion_binding(integration_input) -> None:
@@ -280,9 +287,14 @@ def test_orchestrator_proves_offline_replay_six_node_graph_binding() -> None:
     proof = prove_offline_replay_six_node_validation_graph_binding_v0()
     assert proof.binding_pass is True
     assert proof.replay_pass is True
+    assert proof.projection_pass is True
     assert proof.integration_pass is True
     assert proof.six_node_graph_pass is True
+    assert proof.proof_classification == PROOF_CLASSIFICATION_FULL_E2E_BOUND
     assert proof.completed_validators == PROOF_BINDING_VALIDATION_ORDER
+    assert proof.state_event_projection_digest is not None
+    assert proof.master_v2_state_event_stream_identity is not None
+    assert proof.event_stream_non_authorizing is True
     assert proof.orders_total == 0
     assert proof.cancels_total == 0
     assert proof.fills_total == 0
@@ -443,3 +455,225 @@ def test_six_node_dashboard_display_projection_digest_drift_fails_closed(
     )
     assert digest is None
     assert any("dashboard_display_projection_digest" in reason for reason in reasons)
+
+
+def test_replay_sourced_master_v2_state_event_stream_wired_into_integration(
+    integration_input,
+) -> None:
+    validation_input = integration_input.master_v2_state_event_stream_validation_input
+    proof = integration_input.master_v2_state_event_stream_proof
+    assert validation_input is not None
+    assert proof is not None
+    assert validation_input.events
+    assert proof.master_v2_state_event_validation_pass is True
+    assert proof.event_stream_non_authorizing is True
+
+
+def test_replay_sourced_master_v2_state_event_proof_matches_canonical_evaluation(
+    integration_input,
+) -> None:
+    validation_input = integration_input.master_v2_state_event_stream_validation_input
+    proof = integration_input.master_v2_state_event_stream_proof
+    assert validation_input is not None
+    expected = evaluate_master_v2_state_event_stream_validation(validation_input)
+    assert proof.validation_input_digest == expected["validation_input_digest"]
+    assert proof.validation_result_digest == expected["validation_result_digest"]
+    assert proof.state_event_stream_identity == expected["state_event_stream_identity"]
+
+
+def test_end_to_end_projection_digest_deterministic() -> None:
+    first = prove_offline_replay_six_node_validation_graph_binding_v0()
+    second = prove_offline_replay_six_node_validation_graph_binding_v0()
+    assert first.state_event_projection_digest == second.state_event_projection_digest
+    assert (
+        first.master_v2_state_event_stream_identity == second.master_v2_state_event_stream_identity
+    )
+
+
+def _default_ticks() -> tuple[OfflineDoublePlayScenarioTickV0, ...]:
+    return build_default_bull_bear_bull_scenario_ticks()
+
+
+def _assert_replay_executed(result: OfflineDoublePlayScenarioReplayResultV0) -> None:
+    """Partial scenario slices may omit full default proof-event bundle; ticks must still replay."""
+    assert result.tick_records, "scenario replay must produce tick records"
+    blocking = [
+        r
+        for r in result.fail_reasons
+        if "zero-order violated" in r
+        or "decision snapshot missing" in r
+        or "master_v2_decision_state_digest_binding missing" in r
+        or "dashboard_display_projection_digest missing" in r
+    ]
+    assert not blocking, blocking
+
+
+def _run_scenario_ticks(
+    ticks: tuple[OfflineDoublePlayScenarioTickV0, ...],
+    *,
+    futures_input_snapshot: FuturesInputSnapshot | None = None,
+) -> OfflineDoublePlayScenarioReplayResultV0:
+    return run_offline_double_play_scenario_replay_v0(
+        OfflineDoublePlayScenarioReplayInputV0(
+            selected_future_id=SYNTHETIC_FUTURES_INSTRUMENT,
+            ticks=ticks,
+            source_revision="offline-e2e-scenario-v0",
+            futures_input_snapshot=futures_input_snapshot,
+        )
+    )
+
+
+def _prove_scenario_ticks(
+    ticks: tuple[OfflineDoublePlayScenarioTickV0, ...],
+    *,
+    futures_input_snapshot: FuturesInputSnapshot | None = None,
+):
+    replay_input = OfflineDoublePlayScenarioReplayInputV0(
+        selected_future_id=SYNTHETIC_FUTURES_INSTRUMENT,
+        ticks=ticks,
+        source_revision="offline-e2e-scenario-v0",
+        futures_input_snapshot=futures_input_snapshot,
+    )
+    return prove_offline_replay_six_node_validation_graph_binding_v0(replay_input)
+
+
+@pytest.mark.parametrize(
+    ("scenario_id", "ticks_builder", "expect_full_e2e"),
+    [
+        ("A", lambda: _default_ticks()[:5], False),
+        ("B", lambda: _default_ticks()[:12], False),
+        ("C", lambda: _default_ticks()[:6], False),
+        ("D", lambda: _default_ticks()[:12] + _default_ticks()[16:20], True),
+        ("G", lambda: _default_ticks()[:5] + (_default_ticks()[15],), False),
+        ("H", lambda: _default_ticks()[:12] + _default_ticks()[12:15], True),
+    ],
+)
+def test_scenario_end_to_end_replay_proof_binding(
+    scenario_id: str,
+    ticks_builder,
+    expect_full_e2e: bool,
+) -> None:
+    ticks = ticks_builder()
+    replay_result = _run_scenario_ticks(ticks)
+    _assert_replay_executed(replay_result)
+    proof = _prove_scenario_ticks(ticks)
+    assert proof.orders_total == 0
+    assert proof.event_stream_non_authorizing is True
+    if scenario_id == "C":
+        assert OfflineDoublePlayProofEvent.BULL_TO_BEAR in replay_result.summary.proof_events
+    if expect_full_e2e:
+        assert proof.binding_pass is True, proof.fail_reasons
+        assert proof.projection_pass is True
+        assert proof.proof_classification == PROOF_CLASSIFICATION_FULL_E2E_BOUND
+        assert proof.state_event_projection_digest is not None
+    else:
+        assert proof.binding_pass is False
+        assert proof.proof_classification in (
+            PROOF_CLASSIFICATION_PROJECTION_FAIL_CLOSED,
+            PROOF_CLASSIFICATION_REPLAY_FAIL_CLOSED,
+        )
+
+
+def test_scenario_e_end_to_end_replay_fail_closed() -> None:
+    base = build_offline_replay_futures_input_snapshot(SYNTHETIC_FUTURES_INSTRUMENT)
+    stale = FuturesInputSnapshot(
+        candidate=base.candidate,
+        ranking=base.ranking,
+        instrument=base.instrument,
+        provenance=FuturesMarketDataProvenanceStatus(
+            complete=True,
+            freshness_state=FuturesFreshnessState.STALE,
+            dataset_id=base.provenance.dataset_id,
+            source=base.provenance.source,
+            mark_available=True,
+            index_available=True,
+            last_available=True,
+            ohlcv_available=True,
+            funding_available=True,
+            open_interest_available=True,
+            missing_fields=(),
+        ),
+        volatility=base.volatility,
+        liquidity=base.liquidity,
+        derivatives=base.derivatives,
+        opportunity=base.opportunity,
+    )
+    ticks = _default_ticks()[:5]
+    inp = OfflineDoublePlayScenarioReplayInputV0(
+        selected_future_id=SYNTHETIC_FUTURES_INSTRUMENT,
+        ticks=ticks,
+        futures_input_snapshot=stale,
+    )
+    assert validate_offline_double_play_scenario_replay_input_v0(inp)
+    proof = prove_offline_replay_six_node_validation_graph_binding_v0(inp)
+    assert proof.replay_pass is False
+    assert proof.binding_pass is False
+    assert proof.proof_classification == PROOF_CLASSIFICATION_REPLAY_FAIL_CLOSED
+
+
+def test_scenario_f_end_to_end_kill_all_path_bound() -> None:
+    kill_tick = OfflineDoublePlayScenarioTickV0(
+        tick_index=12,
+        timestamp_ms=1_700_000_000_000 + 12 * 60_000,
+        price=95.0,
+        scope_event=ScopeEvent.KILL_ALL_REQUIRED,
+        safety_decision_allowed=False,
+    )
+    ticks = _default_ticks()[:12] + (kill_tick,)
+    replay_result = _run_scenario_ticks(ticks)
+    _assert_replay_executed(replay_result)
+    assert replay_result.summary.final_side_state == SideState.KILL_ALL
+    assert OfflineDoublePlayProofEvent.KILLSWITCH_BLOCKED in replay_result.summary.proof_events
+    for rec in replay_result.tick_records:
+        assert rec.orders == 0
+        assert rec.cancels == 0
+        assert rec.fills == 0
+        assert rec.positions_opened == 0
+
+    base = default_minimal_completion_integration_input()
+    glb019_input = base.glb019_event_stream_validation_input
+    validation_input, proof_binding, projection_digest, failures = (
+        build_replay_sourced_master_v2_state_event_stream_binding_from_replay_result(
+            replay_result,
+            source_revision=base.source_revision,
+            completion_identity_digest=glb019_input.completion_identity_digest,
+            manifest_identity_digest=glb019_input.manifest_identity_digest,
+            run_identity_digest=glb019_input.run_identity_digest,
+            correlation_id=glb019_input.correlation_id,
+        )
+    )
+    assert not failures, failures
+    assert validation_input is not None
+    assert proof_binding is not None
+    assert validation_input.evidence_chain_profile == MASTER_V2_EVIDENCE_CHAIN_PROFILE_KILL_ALL
+    assert proof_binding.event_stream_non_authorizing is True
+    assert projection_digest is not None
+    assert len(projection_digest) == 64
+
+
+def test_missing_projection_event_fail_closed(replay_result) -> None:
+    base = default_minimal_completion_integration_input()
+    glb019_input = base.glb019_event_stream_validation_input
+    validation_input, proof, _digest, failures = (
+        build_replay_sourced_master_v2_state_event_stream_binding_from_replay_result(
+            replay_result,
+            source_revision=base.source_revision,
+            completion_identity_digest=glb019_input.completion_identity_digest,
+            manifest_identity_digest=glb019_input.manifest_identity_digest,
+            run_identity_digest=glb019_input.run_identity_digest,
+            correlation_id=glb019_input.correlation_id,
+        )
+    )
+    assert validation_input is not None
+    assert proof is not None
+    assert not failures
+    tampered_events = validation_input.events[1:]
+    bad_validation = replace(validation_input, events=tampered_events)
+    bad_result = evaluate_master_v2_state_event_stream_validation(bad_validation)
+    assert bad_result["validation_pass"] is False
+
+
+def test_unknown_scenario_ticks_fail_closed() -> None:
+    proof = _prove_scenario_ticks(())
+    assert proof.replay_pass is False
+    assert proof.binding_pass is False
