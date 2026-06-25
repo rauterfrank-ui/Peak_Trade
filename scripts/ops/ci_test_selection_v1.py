@@ -383,6 +383,9 @@ BOUNDED_TESTNET_EXECUTE_PATH_MARKET_OBSERVATION_CLOSEOUT_BINDING_FOCUSED_TARGETS
     f"{BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_ADAPTER_TEST_OWNER}::test_closeout_forwards_validated_market_observation",
     f"{BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_ADAPTER_TEST_OWNER}::test_closeout_stale_market_observation_fail_closed",
     f"{BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_ADAPTER_TEST_OWNER}::test_staging_execute_without_market_observation_remains_non_authorizing",
+    f"{BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_ADAPTER_TEST_OWNER}::test_adapter_plan_wiring_exposes_replay_proof_classification_fields",
+    f"{BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_ADAPTER_TEST_OWNER}::test_adapter_replay_proof_classification_plan_execute_closeout_parity",
+    f"{BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_ADAPTER_TEST_OWNER}::test_adapter_replay_proof_classification_preserves_non_authorizing_boundaries",
     f"{BOUNDED_TESTNET_MARKET_INPUT_ADMISSION_WIRING_TEST_OWNER}::test_producer_maps_valid_observation_to_market_input",
     f"{BOUNDED_TESTNET_MARKET_INPUT_ADMISSION_WIRING_TEST_OWNER}::test_missing_observation_stays_fail_closed",
     f"{BOUNDED_TESTNET_MARKET_INPUT_ADMISSION_WIRING_TEST_OWNER}::test_stale_observation_fail_closed",
@@ -2596,19 +2599,27 @@ def _is_bounded_testnet_execute_path_market_observation_closeout_binding_scope(
 ) -> bool:
     if not files:
         return False
-    required = {
-        BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_ADAPTER_OWNER,
-        BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_ADAPTER_TEST_OWNER,
-    }
     files_set = set(files)
-    if not required.issubset(files_set):
-        return False
     for path in files:
         if (
             path
             not in BOUNDED_TESTNET_EXECUTE_PATH_MARKET_OBSERVATION_CLOSEOUT_BINDING_SCOPED_PATHS
         ):
             return False
+    assertion_only_rebundle = frozenset(
+        {
+            BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_ADAPTER_TEST_OWNER,
+            "scripts/ops/ci_test_selection_v1.py",
+        }
+    )
+    if files_set == assertion_only_rebundle:
+        return True
+    required = {
+        BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_ADAPTER_OWNER,
+        BOUNDED_MASTER_V2_TESTNET_COMPLETION_PATH_WIRING_ADAPTER_TEST_OWNER,
+    }
+    if not required.issubset(files_set):
+        return False
     return True
 
 
