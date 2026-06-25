@@ -471,7 +471,6 @@ jobs:
     name: exhaustive-full (${{ matrix.python-version }})
     runs-on: ubuntu-latest
     if: github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && github.event.inputs.run_exhaustive_full == 'true')
-    timeout-minutes: 360
     strategy:
       fail-fast: false
       matrix:
