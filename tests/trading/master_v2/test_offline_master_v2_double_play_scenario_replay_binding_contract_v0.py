@@ -19,7 +19,12 @@ from trading.master_v2.double_play_futures_input import (
     FuturesReadinessStatus,
     evaluate_futures_input_snapshot,
 )
-from trading.master_v2.double_play_state import ActiveSide, ScopeEvent, SideState
+from trading.master_v2.double_play_state import (
+    ActiveSide,
+    ScopeEvent,
+    SideState,
+    derive_active_side,
+)
 from trading.master_v2.offline_double_play_scenario_replay_v0 import (
     OFFLINE_DOUBLE_PLAY_SCENARIO_REPLAY_OWNER,
     SYNTHETIC_FUTURES_INSTRUMENT,
@@ -414,3 +419,233 @@ def test_replay_result_digest_coherent_includes_display_projection() -> None:
     binding = result.master_v2_decision_state_digest_binding
     assert binding is not None
     assert binding.dashboard_display_projection_digest == result.dashboard_display_projection_digest
+
+
+# --- Kill-All vs State-Switch scenario conformance (MD scenarios A–H) ---
+
+_SCENARIO_MD_SOURCE = "Peak_Trade_Kill_All_vs_State_Switch_Favorable_Adverse_Extreme_Moves_v1.md"
+
+
+def _default_ticks() -> tuple[OfflineDoublePlayScenarioTickV0, ...]:
+    return build_default_bull_bear_bull_scenario_ticks()
+
+
+def _run_ticks(
+    ticks: tuple[OfflineDoublePlayScenarioTickV0, ...],
+    *,
+    futures_input_snapshot: FuturesInputSnapshot | None = None,
+) -> OfflineDoublePlayScenarioReplayResultV0:
+    inp = OfflineDoublePlayScenarioReplayInputV0(
+        selected_future_id=SYNTHETIC_FUTURES_INSTRUMENT,
+        ticks=ticks,
+        source_revision="scenario-conformance-v0",
+        futures_input_snapshot=futures_input_snapshot,
+    )
+    return run_offline_double_play_scenario_replay_v0(inp)
+
+
+def _assert_zero_order_boundary(result: OfflineDoublePlayScenarioReplayResultV0) -> None:
+    assert result.summary.orders_total == 0
+    assert result.summary.cancels_total == 0
+    assert result.summary.fills_total == 0
+    assert result.summary.positions_opened_total == 0
+    for rec in result.tick_records:
+        assert rec.orders == 0
+        assert rec.cancels == 0
+        assert rec.fills == 0
+        assert rec.positions_opened == 0
+
+
+def _assert_long_short_exclusive(
+    result: OfflineDoublePlayScenarioReplayResultV0,
+) -> None:
+    for rec in result.tick_records:
+        long_active = rec.side_state == SideState.LONG_ACTIVE
+        short_active = rec.side_state == SideState.SHORT_ACTIVE
+        assert not (long_active and short_active)
+        assert not (
+            rec.bull_layer_state == SideState.LONG_ACTIVE
+            and rec.bear_layer_state == SideState.SHORT_ACTIVE
+        )
+
+
+def _assert_replay_executed(result: OfflineDoublePlayScenarioReplayResultV0) -> None:
+    """Partial scenario slices may omit full default proof-event bundle; ticks must still replay."""
+    assert result.tick_records, "scenario replay must produce tick records"
+    blocking = [
+        r
+        for r in result.fail_reasons
+        if "zero-order violated" in r
+        or "decision snapshot missing" in r
+        or "master_v2_decision_state_digest_binding missing" in r
+        or "dashboard_display_projection_digest missing" in r
+    ]
+    assert not blocking, blocking
+
+
+def _assert_no_automatic_kill_all(result: OfflineDoublePlayScenarioReplayResultV0) -> None:
+    assert result.summary.final_side_state != SideState.KILL_ALL
+    assert SideState.KILL_ALL not in {r.side_state for r in result.tick_records}
+    assert OfflineDoublePlayProofEvent.KILLSWITCH_BLOCKED not in result.summary.proof_events
+
+
+def test_scenario_a_conformance_long_positive_trend_no_kill_all() -> None:
+    """Scenario A: LONG_ACTIVE + strong positive trend — no Kill-All from move strength."""
+    ticks = _default_ticks()[:5]
+    result = _run_ticks(ticks)
+    _assert_replay_executed(result)
+    _assert_no_automatic_kill_all(result)
+    _assert_long_short_exclusive(result)
+    _assert_zero_order_boundary(result)
+    long_records = [r for r in result.tick_records if r.side_state == SideState.LONG_ACTIVE]
+    assert long_records, "long must remain active during favorable uptrend"
+    anchors = [r.scope_state.anchor_price for r in long_records]
+    assert anchors[-1] > anchors[0], "trailing anchor must rise with favorable long trend"
+    assert any(
+        r.scope_state.current_downscope_boundary < r.scope_state.anchor_price for r in long_records
+    ), "downscope boundary must trail below rising anchor"
+
+
+def test_scenario_b_conformance_short_negative_trend_no_kill_all() -> None:
+    """Scenario B: SHORT_ACTIVE + strong negative trend — no Kill-All from move strength."""
+    ticks = _default_ticks()[:12]
+    result = _run_ticks(ticks)
+    _assert_replay_executed(result)
+    _assert_no_automatic_kill_all(result)
+    _assert_long_short_exclusive(result)
+    _assert_zero_order_boundary(result)
+    short_records = [r for r in result.tick_records if r.side_state == SideState.SHORT_ACTIVE]
+    assert short_records, "short must remain active during favorable downtrend"
+    anchors = [r.scope_state.anchor_price for r in short_records]
+    assert anchors[-1] < anchors[0], "trailing anchor must fall with favorable short trend"
+    assert OfflineDoublePlayProofEvent.BEAR_HOLD in result.summary.proof_events
+
+
+def test_scenario_c_conformance_long_adverse_move_state_switch_not_kill_all() -> None:
+    """Scenario C: LONG adverse move — state-switch path, not pauschaler Kill-All."""
+    ticks = _default_ticks()[:6]
+    result = _run_ticks(ticks)
+    _assert_replay_executed(result)
+    _assert_no_automatic_kill_all(result)
+    _assert_long_short_exclusive(result)
+    _assert_zero_order_boundary(result)
+    assert OfflineDoublePlayProofEvent.BULL_TO_BEAR in result.summary.proof_events
+    switch_states = {
+        SideState.SWITCH_LONG_TO_SHORT_PENDING,
+        SideState.LONG_BLOCKED,
+        SideState.SHORT_ARMED,
+        SideState.SHORT_ACTIVE,
+    }
+    assert any(r.side_state in switch_states for r in result.tick_records)
+    assert any(
+        r.transition_reason_code == "COOLDOWN_BLOCK"
+        or r.scope_event in (ScopeEvent.DOWNSCOPE_CANDIDATE, ScopeEvent.UPSCOPE_CANDIDATE)
+        for r in result.tick_records
+    ) or any(r.side_state == SideState.SWITCH_LONG_TO_SHORT_PENDING for r in result.tick_records)
+
+
+def test_scenario_d_conformance_short_adverse_move_state_switch_not_kill_all() -> None:
+    """Scenario D: SHORT adverse move — upscope/state-switch, not pauschaler Kill-All."""
+    ticks = _default_ticks()[:12] + _default_ticks()[16:20]
+    result = _run_ticks(ticks)
+    _assert_replay_executed(result)
+    _assert_no_automatic_kill_all(result)
+    _assert_long_short_exclusive(result)
+    _assert_zero_order_boundary(result)
+    assert OfflineDoublePlayProofEvent.BEAR_TO_BULL in result.summary.proof_events
+    switch_states = {
+        SideState.SWITCH_SHORT_TO_LONG_PENDING,
+        SideState.SHORT_BLOCKED,
+        SideState.LONG_ARMED,
+        SideState.LONG_ACTIVE,
+    }
+    assert any(r.side_state in switch_states for r in result.tick_records)
+
+
+def test_scenario_e_conformance_long_winning_stale_data_fail_closed() -> None:
+    """Scenario E: favorable long direction cannot override stale data — fail-closed."""
+    base = build_offline_replay_futures_input_snapshot(SYNTHETIC_FUTURES_INSTRUMENT)
+    stale = FuturesInputSnapshot(
+        candidate=base.candidate,
+        ranking=base.ranking,
+        instrument=base.instrument,
+        provenance=FuturesMarketDataProvenanceStatus(
+            complete=True,
+            freshness_state=FuturesFreshnessState.STALE,
+            dataset_id=base.provenance.dataset_id,
+            source=base.provenance.source,
+            mark_available=True,
+            index_available=True,
+            last_available=True,
+            ohlcv_available=True,
+            funding_available=True,
+            open_interest_available=True,
+            missing_fields=(),
+        ),
+        volatility=base.volatility,
+        liquidity=base.liquidity,
+        derivatives=base.derivatives,
+        opportunity=base.opportunity,
+    )
+    ticks = _default_ticks()[:5]
+    inp = OfflineDoublePlayScenarioReplayInputV0(
+        selected_future_id=SYNTHETIC_FUTURES_INSTRUMENT,
+        ticks=ticks,
+        futures_input_snapshot=stale,
+    )
+    reasons = validate_offline_double_play_scenario_replay_input_v0(inp)
+    assert any("futures_input_admission_blocked" in r for r in reasons)
+    result = run_offline_double_play_scenario_replay_v0(inp)
+    assert not result.replay_pass
+    _assert_zero_order_boundary(result)
+    assert derive_active_side(result.summary.final_side_state) == ActiveSide.NEUTRAL
+
+
+def test_scenario_f_conformance_short_winning_systemic_kill_all_blocks_both_sides() -> None:
+    """Scenario F: favorable short PnL does not prevent systemic Kill-All."""
+    favorable_short_ticks = _default_ticks()[:12]
+    kill_tick = OfflineDoublePlayScenarioTickV0(
+        tick_index=12,
+        timestamp_ms=1_700_000_000_000 + 12 * 60_000,
+        price=95.0,
+        scope_event=ScopeEvent.KILL_ALL_REQUIRED,
+        safety_decision_allowed=False,
+    )
+    result = _run_ticks(favorable_short_ticks + (kill_tick,))
+    _assert_replay_executed(result)
+    assert result.summary.final_side_state == SideState.KILL_ALL
+    assert OfflineDoublePlayProofEvent.KILLSWITCH_BLOCKED in result.summary.proof_events
+    _assert_zero_order_boundary(result)
+    pre_kill = [r for r in result.tick_records if r.tick_index < kill_tick.tick_index]
+    assert any(r.side_state == SideState.SHORT_ACTIVE for r in pre_kill)
+    assert all(
+        derive_active_side(r.side_state) != ActiveSide.LONG for r in result.tick_records[-1:]
+    )
+
+
+def test_scenario_g_conformance_high_volatility_same_direction_no_kill_all() -> None:
+    """Scenario G: high volatility without direction break — dynamic scope adapts, no Kill-All."""
+    ticks = _default_ticks()[:5] + (_default_ticks()[15],)
+    result = _run_ticks(ticks)
+    _assert_replay_executed(result)
+    _assert_no_automatic_kill_all(result)
+    _assert_long_short_exclusive(result)
+    _assert_zero_order_boundary(result)
+    assert OfflineDoublePlayProofEvent.VOLATILITY_SCOPE_ADAPTED in result.summary.proof_events
+    assert any(r.side_state == SideState.LONG_ACTIVE for r in result.tick_records)
+
+
+def test_scenario_h_conformance_high_volatility_flapping_chop_guard_not_kill_all() -> None:
+    """Scenario H: flapping — chop/cooldown guard, no Kill-All without systemic breach."""
+    ticks = _default_ticks()[:12] + _default_ticks()[12:15]
+    result = _run_ticks(ticks)
+    _assert_replay_executed(result)
+    _assert_no_automatic_kill_all(result)
+    _assert_long_short_exclusive(result)
+    _assert_zero_order_boundary(result)
+    assert OfflineDoublePlayProofEvent.FLAPPING_BLOCKED in result.summary.proof_events
+    assert any(
+        r.transition_reason_code == "COOLDOWN_BLOCK"
+        or r.scope_event in (ScopeEvent.DOWNSCOPE_CANDIDATE, ScopeEvent.UPSCOPE_CANDIDATE)
+        for r in result.tick_records
+    )

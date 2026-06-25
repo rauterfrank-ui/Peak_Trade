@@ -111,6 +111,20 @@ def test_kill_all_overrides_switch():
     assert s == SideState.KILL_ALL and not d.allowed
 
 
+def test_scenario_conformance_state_switch_cannot_override_kill_all() -> None:
+    """Scenario F/H invariant: state-switch events are rejected while IN_KILL_ALL."""
+    for event in (
+        ScopeEvent.DOWNSCOPE_CONFIRMED,
+        ScopeEvent.UPSCOPE_CONFIRMED,
+        ScopeEvent.DOWNSCOPE_CANDIDATE,
+        ScopeEvent.UPSCOPE_CANDIDATE,
+    ):
+        side, _, decision = _t(SideState.KILL_ALL, event, EMPTY_ST, 0)
+        assert side == SideState.KILL_ALL
+        assert not decision.allowed
+        assert decision.reason_code == "IN_KILL_ALL"
+
+
 def test_chop_blocks_from_short_armed():
     """Test 5: CHOP on armed blocks activation path."""
     s, _, d = _t(SideState.SHORT_ARMED, ScopeEvent.CHOP_DETECTED, EMPTY_ST, 0)
