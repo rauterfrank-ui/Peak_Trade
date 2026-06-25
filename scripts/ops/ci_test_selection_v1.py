@@ -525,6 +525,38 @@ MASTER_V2_ARITHMETIC_KERNEL_SEAM_FAIL_CLOSED_CONTRACT_CI_SELECTOR_TARGETS: tuple
     "tests/ci/test_ci_diff_aware_test_selection_v1.py::test_selector_master_v2_arithmetic_kernel_seam_fail_closed_contract_foreign_path_escalates_full",
 )
 
+DUPLICATE_PNL_OWNER_BOUNDARY_CONTRACT_TEST_OWNER = (
+    "tests/ops/test_duplicate_pnl_owner_boundary_contract_v0.py"
+)
+
+DUPLICATE_PNL_OWNER_BOUNDARY_CONTRACT_CI_POLICY_PATHS = frozenset(
+    {
+        "scripts/ops/ci_test_selection_v1.py",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    }
+)
+
+DUPLICATE_PNL_OWNER_BOUNDARY_CONTRACT_SCOPED_PATHS = frozenset(
+    {
+        DUPLICATE_PNL_OWNER_BOUNDARY_CONTRACT_TEST_OWNER,
+        *DUPLICATE_PNL_OWNER_BOUNDARY_CONTRACT_CI_POLICY_PATHS,
+    }
+)
+
+DUPLICATE_PNL_OWNER_BOUNDARY_CONTRACT_FOCUSED_NODES: tuple[str, ...] = (
+    f"{DUPLICATE_PNL_OWNER_BOUNDARY_CONTRACT_TEST_OWNER}::test_pnl_owner_inventory_complete_and_roles_unique",
+    f"{DUPLICATE_PNL_OWNER_BOUNDARY_CONTRACT_TEST_OWNER}::test_exactly_one_futures_arithmetic_kernel_candidate",
+    f"{DUPLICATE_PNL_OWNER_BOUNDARY_CONTRACT_TEST_OWNER}::test_local_pnl_owners_retain_local_scope_not_global_ssot",
+    f"{DUPLICATE_PNL_OWNER_BOUNDARY_CONTRACT_TEST_OWNER}::test_master_v2_and_completion_adapter_paths_import_no_alternative_pnl_owner",
+    f"{DUPLICATE_PNL_OWNER_BOUNDARY_CONTRACT_TEST_OWNER}::test_contract_defines_no_pnl_fee_funding_formulas",
+    f"{DUPLICATE_PNL_OWNER_BOUNDARY_CONTRACT_TEST_OWNER}::test_contract_is_non_authorizing",
+)
+
+DUPLICATE_PNL_OWNER_BOUNDARY_CONTRACT_CI_SELECTOR_TARGETS: tuple[str, ...] = (
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py::test_selector_duplicate_pnl_owner_boundary_contract_test_only_focused",
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py::test_selector_duplicate_pnl_owner_boundary_contract_foreign_path_escalates_full",
+)
+
 _PYTEST_NODE_ID = re.compile(r"^[A-Za-z0-9_\-]+(?:\[[^\]]+\])?$")
 
 DURABLE_COMPLETION_WALLCLOCK_BINDING_FOCUSED_TARGETS: tuple[str, ...] = (
@@ -2466,6 +2498,59 @@ def _try_master_v2_arithmetic_kernel_seam_fail_closed_contract_focused(
     )
 
 
+def _is_duplicate_pnl_owner_boundary_scoped_path(path: str) -> bool:
+    return path in DUPLICATE_PNL_OWNER_BOUNDARY_CONTRACT_SCOPED_PATHS
+
+
+def _is_duplicate_pnl_owner_boundary_rebundle_path(path: str) -> bool:
+    return _is_duplicate_pnl_owner_boundary_scoped_path(path)
+
+
+def _is_duplicate_pnl_owner_boundary_scope(files: list[str]) -> bool:
+    if not files:
+        return False
+    files_set = set(files)
+    if DUPLICATE_PNL_OWNER_BOUNDARY_CONTRACT_TEST_OWNER not in files_set:
+        return False
+    return all(path in DUPLICATE_PNL_OWNER_BOUNDARY_CONTRACT_SCOPED_PATHS for path in files)
+
+
+def _duplicate_pnl_owner_boundary_focused_targets(
+    files: list[str] | None = None,
+) -> tuple[str, ...]:
+    if not _repo_path_exists(DUPLICATE_PNL_OWNER_BOUNDARY_CONTRACT_TEST_OWNER):
+        return ()
+    targets: list[str] = []
+    for node in DUPLICATE_PNL_OWNER_BOUNDARY_CONTRACT_FOCUSED_NODES:
+        if _repo_pytest_target_exists(node):
+            targets.append(node)
+    if len(targets) != len(DUPLICATE_PNL_OWNER_BOUNDARY_CONTRACT_FOCUSED_NODES):
+        return ()
+    if files and any(
+        path in DUPLICATE_PNL_OWNER_BOUNDARY_CONTRACT_CI_POLICY_PATHS for path in files
+    ):
+        for ci_target in DUPLICATE_PNL_OWNER_BOUNDARY_CONTRACT_CI_SELECTOR_TARGETS:
+            if _repo_pytest_target_exists(ci_target):
+                targets.append(ci_target)
+    return tuple(sorted(set(targets)))
+
+
+def _try_duplicate_pnl_owner_boundary_contract_focused(
+    files: list[str],
+) -> SelectionResult | None:
+    if not _is_duplicate_pnl_owner_boundary_scope(files):
+        return None
+    targets = _duplicate_pnl_owner_boundary_focused_targets(files)
+    if not targets:
+        return None
+    return SelectionResult(
+        "FOCUSED",
+        "duplicate_pnl_owner_boundary_contract_focused",
+        targets,
+        (),
+    )
+
+
 def _is_master_v2_replay_display_projection_digest_completion_evidence_scope(
     files: list[str],
 ) -> bool:
@@ -3377,6 +3462,10 @@ def resolve_selection(
     if master_v2_arithmetic_kernel_seam is not None:
         return master_v2_arithmetic_kernel_seam
 
+    duplicate_pnl_owner_boundary = _try_duplicate_pnl_owner_boundary_contract_focused(normalized)
+    if duplicate_pnl_owner_boundary is not None:
+        return duplicate_pnl_owner_boundary
+
     master_v2_replay_display_projection = (
         _try_master_v2_replay_display_projection_digest_completion_evidence_focused(normalized)
     )
@@ -3554,6 +3643,19 @@ def resolve_selection(
         return SelectionResult(
             "FULL",
             "master_v2_arithmetic_kernel_seam_fail_closed_contract_incomplete_or_missing_test_owner",
+            (),
+        )
+
+    if any(_is_duplicate_pnl_owner_boundary_scoped_path(f) for f in normalized):
+        if not all(_is_duplicate_pnl_owner_boundary_rebundle_path(f) for f in normalized):
+            return SelectionResult(
+                "FULL",
+                "duplicate_pnl_owner_boundary_contract_foreign_path_requires_full",
+                (),
+            )
+        return SelectionResult(
+            "FULL",
+            "duplicate_pnl_owner_boundary_contract_incomplete_or_missing_test_owner",
             (),
         )
 
