@@ -32,6 +32,9 @@ from src.ops.durable_completion_validation.graph import (
     execute_proof_binding_validation_graph,
 )
 from src.ops.durable_completion_validation.models import ValidationContext
+from src.ops.durable_completion_validation.validators.event_stream import (
+    evaluate_glb019_event_stream_validation,
+)
 from trading.master_v2.offline_double_play_scenario_replay_v0 import (
     SYNTHETIC_FUTURES_INSTRUMENT,
     OfflineDoublePlayScenarioReplayInputV0,
@@ -116,6 +119,9 @@ def build_validation_context_from_completion_integration_input(
     pe25_result = evaluate_operator_closure_lifecycle_integration(
         integration_input.pe25_closure_integration_input
     )
+    glb019_result = evaluate_glb019_event_stream_validation(
+        integration_input.glb019_event_stream_validation_input
+    )
     return ValidationContext(
         integration_input=integration_input,
         pe31_result=pe31_result,
@@ -123,6 +129,7 @@ def build_validation_context_from_completion_integration_input(
         pe37_result=pe37_result,
         pe25_result=pe25_result,
         admission_result=admission_result,
+        glb019_result=glb019_result,
     )
 
 
