@@ -6,7 +6,7 @@ OWNER=Frank Rauter
 NON_AUTHORIZING=true
 SOURCE_DURABLE_SNAPSHOT=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/peak_trade_master_execution_runbook_v1_20260626T233500Z
 SOURCE_DURABLE_MANIFEST_VERIFY_RC=0
-origin_main: d435377d990eafd7962c30f79ea4041965c032d7
+origin_main: f570e857ff48ac2f52dde516d85b21666885da6f
 ---
 
 # Peak_Trade Master Execution Runbook v1
@@ -40,16 +40,18 @@ Reifepipeline: Research → Offline Proof → Shadow → Paper → Testnet → s
 
 | Feld | Wert |
 |------|------|
-| PROGRAM_PHASE | PACKAGE_A_FINAL_SELECTION_COMPLETE |
+| PROGRAM_PHASE | PACKAGE_A_SLICE_A1_MERGED |
 | CURRENT_MAJOR_PACKAGE | PACKAGE_A_NUMERICAL_TRUST_FOUNDATION (**final ausgewählt**) |
-| CURRENT_STATUS | FINAL_SELECTION_COMPLETE_IMPLEMENTATION_GO_REQUIRED |
+| CURRENT_STATUS | PACKAGE_A_SLICE_A1_MERGED_CLOSEOUT_COMPLETE |
 | PACKAGE_A_FINAL_SELECTION_DECISION | PACKAGE_A_FINAL_SELECTED |
+| PACKAGE_A_SLICE_A1_STATUS | MERGED_CLOSEOUT_COMPLETE (PR #4566, INV-021) |
+| PACKAGE_A_SLICE_A2_STATUS | NOT_STARTED — **kein A2-GO** |
 | GO_GRANTED | false |
 | IMPLEMENTATION_STARTED | false |
 | CURRENT_RUN_ACTIVE | false |
-| NEXT_ALLOWED_ACTION | PREPARE_SEPARATE_EXPLICIT_IMPLEMENTATION_GO_FOR_PACKAGE_A_SLICE_A1_NO_IMPLEMENTATION |
+| NEXT_ALLOWED_ACTION | PREPARE_PACKAGE_A_SLICE_A2_INV048_IMPLEMENTATION_GO_READINESS_NO_IMPLEMENTATION |
 
-Target Architecture ist im Masterplan abgeschlossen (`MANIFEST_VERIFY_RC=0`). **Package A ist final ausgewählt** (Operator-Review `MANIFEST_VERIFY_RC=0`); **kein Implementierungs-GO** erteilt.
+Target Architecture ist im Masterplan abgeschlossen (`MANIFEST_VERIFY_RC=0`). **Package A Slice A1 (INV-021) ist gemergt**; **Slice A2 nicht gestartet**; **kein Implementierungs-GO für A2**.
 
 ## 3. Capability Trains (12)
 
@@ -88,15 +90,15 @@ Target Architecture ist im Masterplan abgeschlossen (`MANIFEST_VERIFY_RC=0`). **
 
 Wave-Reihenfolge: 1=A → 2=B → 3=A ext (INV-003 GO) → 4=C → 5=D → 6=E,F → 7+=G,K
 
-### PACKAGE_A (final ausgewählt — kein Implementierungs-GO)
+### PACKAGE_A (final ausgewählt — A1 gemergt, A2 nicht gestartet)
 
 - **Entscheidung:** `PACKAGE_A_FINAL_SELECTED` (Operator-Review Bundle `package_a_numerical_trust_foundation_final_operator_review_v0_20260625T230158Z`, `MANIFEST_VERIFY_RC=0`)
 - **Enthalten:** INV-021 (PnL-Owner-Design/Contract) + INV-048 (P1-3/P1-4/P1-5 Contract-Tests)
-- **Geplante sequenzielle Slices (noch nicht gestartet):**
-  - **A1:** INV-021 kanonisches PnL-Owner-Design und Contract-Formalisation
-  - **A2:** INV-048 P1-Arithmetik-Contract-Tests (flip, quantize, equity identity)
-- **Explizit ausgeschlossen:** INV-003 wiring, INV-005 testnet, Authority-Lift, Runtime
-- **GO_GRANTED:** false | **IMPLEMENTATION_STARTED:** false | **A1 nur Kandidat für separates explizites Implementierungs-GO**
+- **Slice-Status:**
+  - **A1 (INV-021):** **MERGED** — PR #4566, Merge `f570e857`; kanonische Futures-PnL-Ownership-/Boundary-Contracts (test-only); keine Produktionsänderung
+  - **A2 (INV-048):** **NOT_STARTED** — P1-Arithmetik-Contract-Tests (flip, quantize, equity identity); **kein A2-GO**
+- **Explizit ausgeschlossen:** INV-003 wiring, INV-005 testnet, Authority-Lift, Runtime, optionaler A1-Spec-Mirror ohne separates GO
+- **GO_GRANTED:** false | **IMPLEMENTATION_STARTED:** false | **A2 nur Kandidat für separates explizites Implementierungs-GO**
 
 ## 5. State Machine (26 Zustände)
 
@@ -121,13 +123,14 @@ Handoff-Payloads: `NEW_CHAT_RESUME_PAYLOAD.md`, `CURSOR_RESUME_PAYLOAD.md` (Dura
 
 ## 8. Operator Checklist (aktuell)
 
-### Nach finaler Package-A-Auswahl (aktuell)
+### Nach Package-A-Slice-A1-Merge (aktuell)
 
 - [x] Operator-Review abgeschlossen (`PACKAGE_A_FINAL_SELECTED`)
-- [x] Kanonischer Checkpoint aktualisiert (docs-only)
-- [ ] Docs-PR für Checkpoint-Update gemergt
-- [ ] Separates explizites Implementierungs-GO für Slice A1 (INV-021) — **noch nicht erteilt**
-- [ ] Slice A2 (INV-048) erst nach A1-Exit
+- [x] Kanonischer Checkpoint für finale Auswahl aktualisiert (docs-only)
+- [x] Slice A1 (INV-021) implementiert und gemergt (PR #4566)
+- [ ] Docs-PR für A1-Closeout-Checkpoint gemergt
+- [ ] Separates explizites Implementierungs-GO-Readiness-Review für Slice A2 (INV-048) — **noch nicht erteilt**
+- [ ] Slice A2 (INV-048) Implementierung erst nach A2-GO
 - [ ] INV-003 wiring, INV-005 testnet, Authority-Lift, Runtime weiterhin ausgeschlossen
 
 ## 9. Evidence Index
@@ -139,12 +142,14 @@ Handoff-Payloads: `NEW_CHAT_RESUME_PAYLOAD.md`, `CURSOR_RESUME_PAYLOAD.md` (Dura
 | PR-4563 Closeout | Arithmetic conversion implementation |
 | PR-4564 Closeout | Kanonischer Runbook-Owner in Repo |
 | Operator-Review `package_a_numerical_trust_foundation_final_operator_review_v0_20260625T230158Z` | Finale Package-A-Auswahl |
+| A1 Implementation `package_a_slice_a1_inv021_pnl_owner_contract_formalisation_v0_20260625T232429Z` | INV-021 Contract-Formalisation |
+| PR-4566 Closeout | Package A Slice A1 merge |
 | Runbook Durable Snapshot `peak_trade_master_execution_runbook_v1_20260626T233500Z` | Unveränderlicher Ursprung |
 
 ## 10. DO_NOT_DO (aktuell)
 
-- Package-A-Slice A1/A2 Implementierung ohne explizites GO
-- GO erteilen oder inferieren
+- Package-A-Slice A2 Implementierung ohne explizites A2-GO
+- GO erteilen oder inferieren (insbesondere A2)
 - Runtime, Testnet, Paper, Shadow, Live starten
 - Primären dirty Worktree mutieren
 - INV-003 wiring / INV-005 testnet ohne separates GO
