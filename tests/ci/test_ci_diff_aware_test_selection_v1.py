@@ -1382,6 +1382,24 @@ def test_selector_glb019_graph_wiring_still_selects_integration_owner() -> None:
     assert _INTEGRATION_OWNER not in targets
 
 
+PR4553_GLB019_GRAPH_BINDING_FILES = (
+    "src/ops/durable_completion_validation/graph.py",
+    _GRAPH_OWNER,
+)
+
+
+def test_selector_pr4553_glb019_graph_binding_empty_partition_bounded_focused() -> None:
+    sel = _run_selector(*PR4553_GLB019_GRAPH_BINDING_FILES)
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
+    assert sel["test_selection_reason"] == "durable_completion_focused"
+    targets = _targets(sel)
+    assert _GRAPH_OWNER in targets
+    assert _CI_OWNER in targets
+    assert _INTEGRATION_OWNER not in targets
+    assert sel["tests_execute_full"] == "false"
+    assert sel["fast_lane_contract_mode"] == "DURABLE_COMPLETION_BOUNDED"
+
+
 def test_integration_partition_inventory_covers_all_nodes() -> None:
     from scripts.ops.durable_completion_integration_partitions_v0 import (
         ALL_PARTITIONS,
