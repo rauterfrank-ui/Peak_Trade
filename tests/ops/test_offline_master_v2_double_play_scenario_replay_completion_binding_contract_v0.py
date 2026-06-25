@@ -17,12 +17,16 @@ from src.ops.durable_completion_validation.graph import (
     PROOF_BINDING_VALIDATION_GRAPH,
     PROOF_BINDING_VALIDATION_ORDER,
     VALIDATOR_COMPLETION_CHAIN,
+    VALIDATOR_EVENT_STREAM,
     VALIDATOR_OPERATOR_CLOSURE,
     VALIDATOR_RECONCILIATION,
     VALIDATOR_RECOVERY,
     VALIDATOR_TRACEABILITY,
     VALIDATOR_WALLCLOCK,
     execute_proof_binding_validation_graph,
+)
+from src.ops.durable_completion_validation.validators.event_stream import (
+    evaluate_glb019_event_stream_validation,
 )
 from src.ops.durable_completion_validation.models import ValidationContext
 from src.ops.durable_completion_validation.validators.completion_chain import (
@@ -182,12 +186,14 @@ def test_legacy_ops_only_unchanged() -> None:
 
 def test_six_node_validation_graph_unchanged() -> None:
     assert VALIDATOR_WALLCLOCK in PROOF_BINDING_VALIDATION_ORDER
+    assert VALIDATOR_EVENT_STREAM in PROOF_BINDING_VALIDATION_ORDER
     assert VALIDATOR_COMPLETION_CHAIN in PROOF_BINDING_VALIDATION_ORDER
     assert PROOF_BINDING_VALIDATION_GRAPH[VALIDATOR_COMPLETION_CHAIN] == (
         VALIDATOR_OPERATOR_CLOSURE,
         VALIDATOR_TRACEABILITY,
         VALIDATOR_RECOVERY,
         VALIDATOR_WALLCLOCK,
+        VALIDATOR_EVENT_STREAM,
     )
 
 
@@ -215,14 +221,50 @@ def test_replay_sourced_six_node_validation_graph_passes(integration_input) -> N
     graph_result = execute_proof_binding_validation_graph(context)
     assert graph_result.fail_reasons == ()
     assert set(context.completed_validators) == set(PROOF_BINDING_VALIDATION_ORDER)
-    assert context.completed_validators == {
-        VALIDATOR_RECONCILIATION,
-        VALIDATOR_RECOVERY,
-        VALIDATOR_TRACEABILITY,
-        VALIDATOR_OPERATOR_CLOSURE,
-        VALIDATOR_WALLCLOCK,
-        VALIDATOR_COMPLETION_CHAIN,
-    }
+
+
+def test_replay_builder_wires_glb019_result_present(integration_input) -> None:
+    context = build_validation_context_from_completion_integration_input(integration_input)
+    assert context.glb019_result is not None
+    assert context.glb019_result["validation_pass"] is True
+
+
+def test_replay_builder_glb019_result_matches_canonical_evaluation(integration_input) -> None:
+    context = build_validation_context_from_completion_integration_input(integration_input)
+    expected = evaluate_glb019_event_stream_validation(
+        integration_input.glb019_event_stream_validation_input
+    )
+    assert context.glb019_result == expected
+
+
+def test_replay_builder_glb019_identity_digest_coherence(integration_input) -> None:
+    context = build_validation_context_from_completion_integration_input(integration_input)
+    proof = integration_input.glb019_event_stream_proof
+    assert context.glb019_result is not None
+    assert proof.validation_input_digest == context.glb019_result["validation_input_digest"]
+    assert proof.validation_result_digest == context.glb019_result["validation_result_digest"]
+    assert proof.event_stream_identity == context.glb019_result["event_stream_identity"]
+
+
+def test_replay_builder_glb019_result_missing_fail_closed_graph(integration_input) -> None:
+    context = build_validation_context_from_completion_integration_input(integration_input)
+    context.glb019_result = None
+    graph_result = execute_proof_binding_validation_graph(context)
+    assert any("glb019_result required" in reason for reason in graph_result.fail_reasons)
+    assert VALIDATOR_EVENT_STREAM not in context.completed_validators
+    assert VALIDATOR_COMPLETION_CHAIN not in context.completed_validators
+
+
+def test_replay_builder_incoherent_glb019_proof_fail_closed(integration_input) -> None:
+    bad_proof = replace(
+        integration_input.glb019_event_stream_proof,
+        validation_result_digest="0" * 64,
+    )
+    bad = replace(integration_input, glb019_event_stream_proof=bad_proof)
+    context = build_validation_context_from_completion_integration_input(bad)
+    graph_result = execute_proof_binding_validation_graph(context)
+    assert graph_result.fail_reasons
+    assert VALIDATOR_EVENT_STREAM not in context.completed_validators
 
 
 def test_replay_sourced_six_node_graph_node_order_preserved(integration_input) -> None:
