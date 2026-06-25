@@ -63,12 +63,27 @@ def _workflow_text() -> str:
     return WORKFLOW.read_text(encoding="utf-8")
 
 
-def test_cursor_auto_pr_workflow_enforces_pre_pr_before_create_pr() -> None:
+def test_cursor_auto_pr_workflow_detects_existing_pr_before_pre_pr_enforcement() -> None:
     text = _workflow_text()
+    detect_idx = text.index("Detect existing open PR for head branch")
+    checkout_idx = text.index("Checkout for PRE_PR enforcement")
     enforce_idx = text.index("Enforce PRE_PR validation (fail-closed)")
     create_idx = text.index("Create PR if missing")
     dispatch_idx = text.index("Dispatch required checks (workflow_dispatch)")
-    assert enforce_idx < create_idx < dispatch_idx
+    assert detect_idx < checkout_idx < enforce_idx < create_idx < dispatch_idx
+
+
+def test_cursor_auto_pr_workflow_pre_pr_skipped_when_open_pr_exists() -> None:
+    text = _workflow_text()
+    assert "id: detect" in text
+    assert "if: steps.detect.outputs.open_pr_exists != 'true'" in text
+    assert "Skipping PRE_PR enforcement; existing open PR is idempotent no-op." in text
+
+
+def test_cursor_auto_pr_workflow_fail_closed_on_ambiguous_open_pr_lookup() -> None:
+    text = _workflow_text()
+    assert "FAIL_CLOSED: ambiguous open PR count=" in text
+    assert "FAIL_CLOSED: open PR lookup failed" in text
 
 
 def test_cursor_auto_pr_workflow_checks_out_before_enforcement() -> None:
