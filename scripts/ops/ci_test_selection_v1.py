@@ -1197,6 +1197,51 @@ DURABLE_COMPLETION_FAST_LANE_MASTER_V2_EVENT_STREAM_HAPPY_PATH_NODE_IDS: tuple[s
     f"{DURABLE_COMPLETION_INTEGRATION_TEST_OWNER}::test_master_v2_state_switch_event_stream_happy_path_non_authorizing",
 )
 
+DURABLE_COMPLETION_MATRIX_MASTER_V2_EVENT_STREAM_BOUNDED_SCOPED_PATHS = frozenset(
+    {
+        DURABLE_COMPLETION_FACADE_PATH,
+        "src/ops/durable_completion_validation/validators/event_stream.py",
+        DURABLE_COMPLETION_INTEGRATION_TEST_OWNER,
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    }
+)
+
+DURABLE_COMPLETION_MATRIX_MASTER_V2_EVENT_STREAM_BOUNDED_NODE_IDS: tuple[str, ...] = (
+    f"{DURABLE_COMPLETION_INTEGRATION_TEST_OWNER}::test_master_v2_state_switch_event_stream_happy_path_non_authorizing",
+    f"{DURABLE_COMPLETION_INTEGRATION_TEST_OWNER}::test_master_v2_kill_all_event_stream_happy_path",
+    f"{DURABLE_COMPLETION_INTEGRATION_TEST_OWNER}::test_master_v2_missing_required_event_fail_closed",
+    f"{DURABLE_COMPLETION_INTEGRATION_TEST_OWNER}::test_master_v2_kill_all_terminal_break_fail_closed",
+    f"{DURABLE_COMPLETION_INTEGRATION_TEST_OWNER}::test_completion_proof_chain_pe38_digest_bound_positive",
+    f"{DURABLE_COMPLETION_INTEGRATION_TEST_OWNER}::test_glb019_missing_proof_fail_closed",
+    f"{DURABLE_COMPLETION_VALIDATION_GRAPH_TEST_OWNER}::test_graph_explicit_order_matches_dependencies",
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py::test_selector_pr4554_fast_lane_durable_completion_bounded_master_v2_event_stream",
+)
+
+
+def _is_durable_completion_matrix_master_v2_event_stream_bounded_scope(files: list[str]) -> bool:
+    if not any(
+        path in DURABLE_COMPLETION_FAST_LANE_MASTER_V2_EVENT_STREAM_SCOPED_PATHS for path in files
+    ):
+        return False
+    for path in files:
+        if path in DURABLE_COMPLETION_CI_POLICY_PATHS:
+            continue
+        if path in DURABLE_COMPLETION_CI_WORKFLOW_REBUNDLE_PATHS:
+            continue
+        if path in DURABLE_COMPLETION_MATRIX_MASTER_V2_EVENT_STREAM_BOUNDED_SCOPED_PATHS:
+            continue
+        return False
+    return True
+
+
+def _durable_completion_matrix_master_v2_event_stream_bounded_targets() -> tuple[str, ...]:
+    targets: list[str] = []
+    for target in DURABLE_COMPLETION_MATRIX_MASTER_V2_EVENT_STREAM_BOUNDED_NODE_IDS:
+        if not _repo_pytest_target_exists(target):
+            return ()
+        targets.append(target)
+    return tuple(sorted(set(targets)))
+
 
 def _durable_completion_pe33_pr_smoke_pytest_targets() -> tuple[str, ...]:
     try:
@@ -1665,6 +1710,10 @@ def _durable_completion_focused_targets(
             return tuple(sorted(set(targets)))
     if files and _is_durable_completion_wallclock_binding_rebinding_scope(files):
         return _durable_completion_wallclock_binding_focused_targets(files)
+    if files and _is_durable_completion_matrix_master_v2_event_stream_bounded_scope(files):
+        bounded = _durable_completion_matrix_master_v2_event_stream_bounded_targets()
+        if bounded:
+            return bounded
     if files and not _requires_durable_completion_integration_test_owner(files):
         validation_targets: list[str] = []
         for path in CANONICAL_DURABLE_COMPLETION_VALIDATION_GRAPH_FOCUSED_TESTS:
