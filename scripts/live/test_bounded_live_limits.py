@@ -59,10 +59,10 @@ def test_bounded_live_config() -> Tuple[bool, List[str]]:
 
     # Verify critical limits
     critical_limits = {
-        "max_order_notional": 50.0,
+        "max_order_notional": 25.0,
         "max_total_notional": 500.0,
-        "max_open_positions": 2,
-        "max_daily_loss_abs": 100.0,
+        "max_open_positions": 1,
+        "max_daily_loss_abs": 25.0,
         "min_order_notional": 10.0,
     }
 
@@ -153,14 +153,14 @@ def test_live_risk_limits_integration() -> Tuple[bool, List[str]]:
         print(f"❌ Dust order ALLOWED (should be blocked!)")
 
     # Test 1: Small order (should pass)
-    print("Test 1: Small order ($30) - SHOULD PASS")
+    print("Test 1: Small order ($20) - SHOULD PASS")
     print("-" * 50)
     order = LiveOrderRequest(
         client_order_id="test_small_1",
         symbol="BTC-EUR",
         side="buy",
-        quantity=0.0006,
-        notional=30.0,
+        quantity=0.0004,
+        notional=20.0,
     )
     result = limits.check_orders([order])
 
@@ -171,14 +171,14 @@ def test_live_risk_limits_integration() -> Tuple[bool, List[str]]:
         print(f"❌ Small order BLOCKED: {result.reasons}")
 
     # Test 2: Large order (should fail)
-    print("\nTest 2: Large order ($100) - SHOULD FAIL")
+    print("\nTest 2: Large order ($30) - SHOULD FAIL")
     print("-" * 50)
     order_large = LiveOrderRequest(
         client_order_id="test_large_1",
         symbol="BTC-EUR",
         side="buy",
-        quantity=0.002,
-        notional=100.0,
+        quantity=0.0006,
+        notional=30.0,
     )
     result_large = limits.check_orders([order_large])
 
@@ -189,23 +189,23 @@ def test_live_risk_limits_integration() -> Tuple[bool, List[str]]:
         errors.append("Large order ALLOWED (should fail in bounded-live)")
         print(f"❌ Large order ALLOWED (should be blocked!)")
 
-    # Test 3: Multiple orders exceeding total limit
-    print("\nTest 3: Multiple orders ($40 + $40 = $80) - SHOULD PASS")
+    # Test 3: Multiple orders exceeding per-order limit
+    print("\nTest 3: Multiple orders ($20 + $20 = $40) - SHOULD PASS")
     print("-" * 50)
     orders_multi = [
         LiveOrderRequest(
             client_order_id="test_multi_1",
             symbol="BTC-EUR",
             side="buy",
-            quantity=0.0008,
-            notional=40.0,
+            quantity=0.0002,
+            notional=20.0,
         ),
         LiveOrderRequest(
             client_order_id="test_multi_2",
-            symbol="ETH-EUR",
+            symbol="BTC-EUR",
             side="buy",
-            quantity=0.02,
-            notional=40.0,
+            quantity=0.0002,
+            notional=20.0,
         ),
     ]
     result_multi = limits.check_orders(orders_multi)
