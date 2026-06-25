@@ -3671,6 +3671,75 @@ def test_selector_master_v2_arithmetic_decimal_float_conversion_boundary_contrac
     )
 
 
+MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_IMPLEMENTATION_PRODUCTION_PATH = (
+    "src/trading/master_v2/arithmetic_decimal_float_conversion_v0.py"
+)
+MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_IMPLEMENTATION_TEST_OWNER = (
+    "tests/ops/test_master_v2_arithmetic_decimal_float_conversion_implementation_v0.py"
+)
+
+
+def test_selector_master_v2_arithmetic_decimal_float_conversion_implementation_test_only_focused() -> (
+    None
+):
+    sel = _run_selector(MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_IMPLEMENTATION_TEST_OWNER)
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
+    assert (
+        sel["test_selection_reason"]
+        == "master_v2_arithmetic_decimal_float_conversion_implementation_focused"
+    )
+    assert sel["tests_execute_full"] == "false"
+    assert sel["tests_execute_focused"] == "true"
+    assert sel["tests_execute_no_op"] == "false"
+    targets = _targets(sel)
+    assert len([t for t in targets if "::test_" in t]) == 26
+    assert (
+        f"{MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_IMPLEMENTATION_TEST_OWNER}::test_deterministic_decimal_no_float_leakage"
+        in targets
+    )
+    assert (
+        f"{MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_IMPLEMENTATION_TEST_OWNER}::test_immutable_non_authorizing_no_wiring"
+        in targets
+    )
+    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" not in targets
+
+
+def test_selector_master_v2_arithmetic_decimal_float_conversion_implementation_selector_rebundle_focused() -> (
+    None
+):
+    sel = _run_selector(
+        MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_IMPLEMENTATION_PRODUCTION_PATH,
+        MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_IMPLEMENTATION_TEST_OWNER,
+        "scripts/ops/ci_test_selection_v1.py",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    )
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
+    assert (
+        sel["test_selection_reason"]
+        == "master_v2_arithmetic_decimal_float_conversion_implementation_focused"
+    )
+    targets = _targets(sel)
+    assert len([t for t in targets if "::test_" in t]) == 28
+    assert (
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py::test_selector_master_v2_arithmetic_decimal_float_conversion_implementation_test_only_focused"
+        in targets
+    )
+
+
+def test_selector_master_v2_arithmetic_decimal_float_conversion_implementation_foreign_path_escalates_full() -> (
+    None
+):
+    sel = _run_selector(
+        MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_IMPLEMENTATION_PRODUCTION_PATH,
+        "src/execution/paper/futures_accounting.py",
+    )
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    assert (
+        sel["test_selection_reason"]
+        == "master_v2_arithmetic_decimal_float_conversion_implementation_foreign_path_requires_full"
+    )
+
+
 def test_selector_testnet_wallclock_duration_evidence_owner_pair_focused() -> None:
     sel = _run_selector(*TESTNET_WALLCLOCK_DURATION_EVIDENCE_FILES)
     assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"

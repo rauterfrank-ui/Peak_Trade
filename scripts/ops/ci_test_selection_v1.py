@@ -626,6 +626,65 @@ MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_BOUNDARY_CONTRACT_CI_SELECTOR_TARG
     "tests/ci/test_ci_diff_aware_test_selection_v1.py::test_selector_master_v2_arithmetic_decimal_float_conversion_boundary_contract_foreign_path_escalates_full",
 )
 
+MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_IMPLEMENTATION_PRODUCTION_PATH = (
+    "src/trading/master_v2/arithmetic_decimal_float_conversion_v0.py"
+)
+
+MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_IMPLEMENTATION_TEST_OWNER = (
+    "tests/ops/test_master_v2_arithmetic_decimal_float_conversion_implementation_v0.py"
+)
+
+MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_IMPLEMENTATION_CI_POLICY_PATHS = frozenset(
+    {
+        "scripts/ops/ci_test_selection_v1.py",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    }
+)
+
+MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_IMPLEMENTATION_SCOPED_PATHS = frozenset(
+    {
+        MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_IMPLEMENTATION_PRODUCTION_PATH,
+        MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_IMPLEMENTATION_TEST_OWNER,
+        *MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_IMPLEMENTATION_CI_POLICY_PATHS,
+    }
+)
+
+MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_IMPLEMENTATION_FOCUSED_NODES: tuple[str, ...] = (
+    f"{MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_IMPLEMENTATION_TEST_OWNER}::test_all_19_field_policies_convert_successfully[price]",
+    f"{MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_IMPLEMENTATION_TEST_OWNER}::test_all_19_field_policies_convert_successfully[mark_price]",
+    f"{MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_IMPLEMENTATION_TEST_OWNER}::test_all_19_field_policies_convert_successfully[entry_price]",
+    f"{MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_IMPLEMENTATION_TEST_OWNER}::test_all_19_field_policies_convert_successfully[qty]",
+    f"{MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_IMPLEMENTATION_TEST_OWNER}::test_all_19_field_policies_convert_successfully[contract_size]",
+    f"{MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_IMPLEMENTATION_TEST_OWNER}::test_all_19_field_policies_convert_successfully[tick_size]",
+    f"{MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_IMPLEMENTATION_TEST_OWNER}::test_all_19_field_policies_convert_successfully[min_qty]",
+    f"{MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_IMPLEMENTATION_TEST_OWNER}::test_all_19_field_policies_convert_successfully[realized_pnl]",
+    f"{MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_IMPLEMENTATION_TEST_OWNER}::test_all_19_field_policies_convert_successfully[unrealized_pnl]",
+    f"{MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_IMPLEMENTATION_TEST_OWNER}::test_all_19_field_policies_convert_successfully[notional]",
+    f"{MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_IMPLEMENTATION_TEST_OWNER}::test_all_19_field_policies_convert_successfully[fee_bps]",
+    f"{MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_IMPLEMENTATION_TEST_OWNER}::test_all_19_field_policies_convert_successfully[funding_rate]",
+    f"{MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_IMPLEMENTATION_TEST_OWNER}::test_all_19_field_policies_convert_successfully[equity]",
+    f"{MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_IMPLEMENTATION_TEST_OWNER}::test_all_19_field_policies_convert_successfully[initial_margin_rate]",
+    f"{MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_IMPLEMENTATION_TEST_OWNER}::test_all_19_field_policies_convert_successfully[maintenance_margin_rate]",
+    f"{MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_IMPLEMENTATION_TEST_OWNER}::test_all_19_field_policies_convert_successfully[quote_currency_notional]",
+    f"{MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_IMPLEMENTATION_TEST_OWNER}::test_all_19_field_policies_convert_successfully[fee_rate]",
+    f"{MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_IMPLEMENTATION_TEST_OWNER}::test_all_19_field_policies_convert_successfully[maintenance_margin]",
+    f"{MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_IMPLEMENTATION_TEST_OWNER}::test_all_19_field_policies_convert_successfully[adverse_slippage_bps]",
+    f"{MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_IMPLEMENTATION_TEST_OWNER}::test_rejects_bool_missing_and_invalid_type",
+    f"{MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_IMPLEMENTATION_TEST_OWNER}::test_rejects_non_finite_values",
+    f"{MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_IMPLEMENTATION_TEST_OWNER}::test_negative_zero_and_overflow_boundaries",
+    f"{MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_IMPLEMENTATION_TEST_OWNER}::test_deterministic_decimal_no_float_leakage",
+    f"{MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_IMPLEMENTATION_TEST_OWNER}::test_conversion_quantization_tick_lot_separation",
+    f"{MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_IMPLEMENTATION_TEST_OWNER}::test_batch_partial_and_complete_semantics",
+    f"{MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_IMPLEMENTATION_TEST_OWNER}::test_immutable_non_authorizing_no_wiring",
+)
+
+MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_IMPLEMENTATION_CI_SELECTOR_TARGETS: tuple[
+    str, ...
+] = (
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py::test_selector_master_v2_arithmetic_decimal_float_conversion_implementation_test_only_focused",
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py::test_selector_master_v2_arithmetic_decimal_float_conversion_implementation_foreign_path_escalates_full",
+)
+
 _PYTEST_NODE_ID = re.compile(r"^[A-Za-z0-9_\-]+(?:\[[^\]]+\])?$")
 
 DURABLE_COMPLETION_WALLCLOCK_BINDING_FOCUSED_TARGETS: tuple[str, ...] = (
@@ -2739,6 +2798,73 @@ def _try_master_v2_arithmetic_decimal_float_conversion_boundary_contract_focused
     )
 
 
+def _is_master_v2_arithmetic_decimal_float_conversion_implementation_scoped_path(path: str) -> bool:
+    return path in MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_IMPLEMENTATION_SCOPED_PATHS
+
+
+def _is_master_v2_arithmetic_decimal_float_conversion_implementation_rebundle_path(
+    path: str,
+) -> bool:
+    return _is_master_v2_arithmetic_decimal_float_conversion_implementation_scoped_path(path)
+
+
+def _is_master_v2_arithmetic_decimal_float_conversion_implementation_scope(
+    files: list[str],
+) -> bool:
+    if not files:
+        return False
+    files_set = set(files)
+    if MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_IMPLEMENTATION_TEST_OWNER not in files_set:
+        return False
+    return all(
+        path in MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_IMPLEMENTATION_SCOPED_PATHS
+        for path in files
+    )
+
+
+def _master_v2_arithmetic_decimal_float_conversion_implementation_focused_targets(
+    files: list[str] | None = None,
+) -> tuple[str, ...]:
+    if not _repo_path_exists(
+        MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_IMPLEMENTATION_TEST_OWNER
+    ):
+        return ()
+    targets: list[str] = []
+    for node in MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_IMPLEMENTATION_FOCUSED_NODES:
+        if _repo_pytest_target_exists(node):
+            targets.append(node)
+    if len(targets) != len(
+        MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_IMPLEMENTATION_FOCUSED_NODES
+    ):
+        return ()
+    if files and any(
+        path in MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_IMPLEMENTATION_CI_POLICY_PATHS
+        for path in files
+    ):
+        for (
+            ci_target
+        ) in MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_IMPLEMENTATION_CI_SELECTOR_TARGETS:
+            if _repo_pytest_target_exists(ci_target):
+                targets.append(ci_target)
+    return tuple(sorted(set(targets)))
+
+
+def _try_master_v2_arithmetic_decimal_float_conversion_implementation_focused(
+    files: list[str],
+) -> SelectionResult | None:
+    if not _is_master_v2_arithmetic_decimal_float_conversion_implementation_scope(files):
+        return None
+    targets = _master_v2_arithmetic_decimal_float_conversion_implementation_focused_targets(files)
+    if not targets:
+        return None
+    return SelectionResult(
+        "FOCUSED",
+        "master_v2_arithmetic_decimal_float_conversion_implementation_focused",
+        targets,
+        ("src.trading.master_v2.arithmetic_decimal_float_conversion_v0",),
+    )
+
+
 def _is_master_v2_replay_display_projection_digest_completion_evidence_scope(
     files: list[str],
 ) -> bool:
@@ -3666,6 +3792,12 @@ def resolve_selection(
     if master_v2_arithmetic_decimal_float_conversion_boundary is not None:
         return master_v2_arithmetic_decimal_float_conversion_boundary
 
+    master_v2_arithmetic_decimal_float_conversion_implementation = (
+        _try_master_v2_arithmetic_decimal_float_conversion_implementation_focused(normalized)
+    )
+    if master_v2_arithmetic_decimal_float_conversion_implementation is not None:
+        return master_v2_arithmetic_decimal_float_conversion_implementation
+
     master_v2_replay_display_projection = (
         _try_master_v2_replay_display_projection_digest_completion_evidence_focused(normalized)
     )
@@ -3890,6 +4022,25 @@ def resolve_selection(
         return SelectionResult(
             "FULL",
             "master_v2_arithmetic_decimal_float_conversion_boundary_contract_incomplete_or_missing_test_owner",
+            (),
+        )
+
+    if any(
+        _is_master_v2_arithmetic_decimal_float_conversion_implementation_scoped_path(f)
+        for f in normalized
+    ):
+        if not all(
+            _is_master_v2_arithmetic_decimal_float_conversion_implementation_rebundle_path(f)
+            for f in normalized
+        ):
+            return SelectionResult(
+                "FULL",
+                "master_v2_arithmetic_decimal_float_conversion_implementation_foreign_path_requires_full",
+                (),
+            )
+        return SelectionResult(
+            "FULL",
+            "master_v2_arithmetic_decimal_float_conversion_implementation_incomplete_or_missing_test_owner",
             (),
         )
 
