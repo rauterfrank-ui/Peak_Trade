@@ -369,8 +369,15 @@ def classify_pf_xbtusd_symbol_visibility(
     body: bytes,
     *,
     endpoint: str,
+    instrument: str | None = None,
 ) -> SymbolVisibility:
-    if endpoint != "/derivatives/api/v3/tickers":
+    """Classify bound-instrument visibility for tickers or instruments responses."""
+    bound_instrument = instrument or DEFAULT_FUTURES_SYMBOL
+    if endpoint == "/derivatives/api/v3/tickers":
+        collection_key = "tickers"
+    elif endpoint == "/derivatives/api/v3/instruments":
+        collection_key = "instruments"
+    else:
         return "not_checked"
     if not body:
         return "response_unparseable"
@@ -378,13 +385,13 @@ def classify_pf_xbtusd_symbol_visibility(
         payload = json.loads(body.decode("utf-8"))
     except (json.JSONDecodeError, UnicodeDecodeError):
         return "response_unparseable"
-    tickers: Any = payload.get("tickers") if isinstance(payload, dict) else None
-    if tickers is None and isinstance(payload, list):
-        tickers = payload
-    if not isinstance(tickers, list):
+    entries: Any = payload.get(collection_key) if isinstance(payload, dict) else None
+    if entries is None and isinstance(payload, list):
+        entries = payload
+    if not isinstance(entries, list) or not entries:
         return "response_unparseable"
-    for entry in tickers:
-        if isinstance(entry, dict) and entry.get("symbol") == DEFAULT_FUTURES_SYMBOL:
+    for entry in entries:
+        if isinstance(entry, dict) and entry.get("symbol") == bound_instrument:
             return "visible"
     return "not_visible"
 
@@ -556,12 +563,30 @@ def run_zero_order_public_reachability(
         suffix = ep.split("/derivatives/api/v3", 1)[-1]
         url = f"{rest_base_url.rstrip('/')}{suffix}"
         _assert_network_url_allowed(url, rest_base_url)
-        status, body = fetcher.fetch(
-            url,
-            timeout_seconds=min(DEFAULT_PUBLIC_GET_TIMEOUT_SECONDS, duration_cap_seconds),
+        try:
+            status, body = fetcher.fetch(
+                url,
+                timeout_seconds=min(DEFAULT_PUBLIC_GET_TIMEOUT_SECONDS, duration_cap_seconds),
+            )
+        except (TimeoutError, error.URLError, OSError):
+            network_calls.append(
+                NetworkCallRecord(
+                    endpoint=ep,
+                    http_status=0,
+                    http_status_class="other",
+                    response_size_bytes=0,
+                    response_sha256=_sha256_hex(b""),
+                )
+            )
+            endpoints_called.append(ep)
+            symbol_visibility = "response_unparseable"
+            break
+        visibility = classify_pf_xbtusd_symbol_visibility(
+            body,
+            endpoint=ep,
+            instrument=DEFAULT_FUTURES_SYMBOL,
         )
-        visibility = classify_pf_xbtusd_symbol_visibility(body, endpoint=ep)
-        if visibility != "not_checked":
+        if ep == "/derivatives/api/v3/instruments" and visibility != "not_checked":
             symbol_visibility = visibility
         network_calls.append(
             NetworkCallRecord(
@@ -832,9 +857,7 @@ def main(
         )
     evaluation = evaluate_bounded_futures_testnet_evidence(evidence, spec=spec)
     evidence["bounded_futures_testnet_pass"] = evaluation["bounded_futures_testnet_pass"]
-    persist_runtime_bundle = evaluation["bounded_futures_testnet_pass"] or (
-        args.execute_network and args.mode == PRIVATE_READONLY_MODE
-    )
+    persist_runtime_bundle = evaluation["bounded_futures_testnet_pass"] or args.execute_network
     out: Path | None = None
     if persist_runtime_bundle:
         out = write_durable_evidence_bundle(

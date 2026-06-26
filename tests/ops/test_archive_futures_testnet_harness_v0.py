@@ -51,13 +51,40 @@ def _durable_test_archive_root(tmp_path: Path) -> Path:
 
 
 class _FakeFetcher:
-    def __init__(self, *, body: bytes | None = None) -> None:
+    def __init__(
+        self,
+        *,
+        tickers_body: bytes | None = None,
+        instruments_body: bytes | None = None,
+        body: bytes | None = None,
+        status_by_path: dict[str, int] | None = None,
+    ) -> None:
         self.urls: list[str] = []
-        self._body = body if body is not None else b'{"tickers":[{"symbol":"PF_ETHUSD"}]}'
+        default_tickers = b'{"tickers":[{"symbol":"PF_ETHUSD"}]}'
+        default_instruments = b'{"instruments":[{"symbol":"PF_ETHUSD"}]}'
+        if body is not None:
+            self._tickers_body = body
+            self._instruments_body = body
+        else:
+            self._tickers_body = tickers_body if tickers_body is not None else default_tickers
+            self._instruments_body = (
+                instruments_body if instruments_body is not None else default_instruments
+            )
+        self._status_by_path = status_by_path or {}
 
     def fetch(self, url: str, *, timeout_seconds: float) -> tuple[int, bytes]:
         self.urls.append(url)
-        return 200, self._body
+        if "tickers" in url:
+            path = "/derivatives/api/v3/tickers"
+            body = self._tickers_body
+        elif "instruments" in url:
+            path = "/derivatives/api/v3/instruments"
+            body = self._instruments_body
+        else:
+            path = url
+            body = b""
+        status = self._status_by_path.get(path, 200)
+        return status, body
 
 
 class _PrivateTimeoutFetcher:
@@ -272,7 +299,10 @@ def test_assert_network_url_rejects_non_allowlisted_path() -> None:
 
 
 def test_tickers_path_increments_request_count_and_endpoints() -> None:
-    fetcher = _FakeFetcher(body=b'{"tickers":[{"symbol":"PF_ETHUSD"}]}')
+    fetcher = _FakeFetcher(
+        tickers_body=b'{"tickers":[{"symbol":"PF_ETHUSD"}]}',
+        instruments_body=b'{"instruments":[{"symbol":"PF_ETHUSD"}]}',
+    )
     result = harness.run_zero_order_public_reachability(
         rest_base_url=harness.DEFAULT_REST_BASE_URL,
         duration_cap_seconds=60,
@@ -285,7 +315,10 @@ def test_tickers_path_increments_request_count_and_endpoints() -> None:
 
 
 def test_pf_ethusd_not_visible_when_response_lacks_default_symbol() -> None:
-    fetcher = _FakeFetcher(body=b'{"tickers":[{"symbol":"PF_XBTUSD"}]}')
+    fetcher = _FakeFetcher(
+        tickers_body=b'{"tickers":[{"symbol":"PF_XBTUSD"}]}',
+        instruments_body=b'{"instruments":[{"symbol":"PF_XBTUSD"}]}',
+    )
     result = harness.run_zero_order_public_reachability(
         rest_base_url=harness.DEFAULT_REST_BASE_URL,
         duration_cap_seconds=60,
@@ -324,6 +357,22 @@ def test_pe8_zero_order_spec_accepts_harness_evidence() -> None:
         wall_clock_start_utc="2026-06-04T00:00:00Z",
         wall_clock_end_utc="2026-06-04T00:00:01Z",
     )
+    network_calls = [
+        {
+            "endpoint": "/derivatives/api/v3/tickers",
+            "http_status": 200,
+            "http_status_class": "2xx",
+            "response_size_bytes": 32,
+            "response_sha256": "a" * 64,
+        },
+        {
+            "endpoint": "/derivatives/api/v3/instruments",
+            "http_status": 200,
+            "http_status_class": "2xx",
+            "response_size_bytes": 36,
+            "response_sha256": "b" * 64,
+        },
+    ]
     evidence = harness.build_zero_order_evidence_payload(
         timing=timing,
         endpoints_called=list(harness.ZERO_ORDER_PUBLIC_ENDPOINT_ORDER),
@@ -332,11 +381,23 @@ def test_pe8_zero_order_spec_accepts_harness_evidence() -> None:
         run_id="offline",
         pe8_pass=False,
         network_reachability_proven=True,
+        network_calls=[
+            harness.NetworkCallRecord(
+                endpoint=call["endpoint"],
+                http_status=call["http_status"],
+                http_status_class=call["http_status_class"],
+                response_size_bytes=call["response_size_bytes"],
+                response_sha256=call["response_sha256"],
+            )
+            for call in network_calls
+        ],
         pf_xbtusd_symbol_visibility="visible",
     )
     spec = default_bounded_futures_zero_order_reachability_v0_spec()
     result = evaluate_bounded_futures_testnet_evidence(evidence, spec=spec)
     assert result["bounded_futures_testnet_pass"] is True
+    assert result["zero_order_objective_complete"] is True
+    assert result["next_phase_ready"] is True
 
 
 def test_rejected_placeholder_set_unchanged() -> None:
@@ -514,3 +575,196 @@ def test_credentials_in_environ_alone_do_not_authorize_execute(tmp_path: Path) -
     assert evidence["request_count"] == 0
     assert evidence["private_readonly_reachability_proven"] is False
     assert evidence["futures_private_api_authorized"] is False
+
+
+def test_execute_network_both_endpoints_503_fail_closed(tmp_path: Path) -> None:
+    archive = _durable_test_archive_root(tmp_path)
+    fetcher = _FakeFetcher(
+        status_by_path={
+            "/derivatives/api/v3/tickers": 503,
+            "/derivatives/api/v3/instruments": 503,
+        },
+    )
+    rc = harness.main(
+        [
+            "--archive-root",
+            str(archive),
+            "--run-id",
+            "http503",
+            "--execute-network",
+            "--confirm-futures-zero-order-reachability",
+            harness.CONFIRM_TOKEN_ZERO_ORDER_REACHABILITY,
+        ],
+        fetcher=fetcher,
+    )
+    assert rc == harness.USAGE_EXIT
+    bundle = list((archive / "runtime").iterdir())[0]
+    evidence = json.loads((bundle / "FUTURES_EVIDENCE.json").read_text(encoding="utf-8"))
+    evaluation = json.loads((bundle / "PE8_EVALUATION.json").read_text(encoding="utf-8"))
+    assert evidence["network_reachability_proven"] is False
+    assert evidence["bounded_futures_testnet_pass"] is False
+    assert evaluation["bounded_futures_testnet_pass"] is False
+    assert evaluation["zero_order_objective_complete"] is False
+    assert evaluation["next_phase_ready"] is False
+    assert evidence["order_attempt_count"] == 0
+    assert evidence["real_orders_created_count"] == 0
+
+
+def test_execute_network_mixed_200_and_503_fail_closed(tmp_path: Path) -> None:
+    archive = _durable_test_archive_root(tmp_path)
+    fetcher = _FakeFetcher(
+        status_by_path={
+            "/derivatives/api/v3/tickers": 200,
+            "/derivatives/api/v3/instruments": 503,
+        },
+    )
+    rc = harness.main(
+        [
+            "--archive-root",
+            str(archive),
+            "--run-id",
+            "mixed503",
+            "--execute-network",
+            "--confirm-futures-zero-order-reachability",
+            harness.CONFIRM_TOKEN_ZERO_ORDER_REACHABILITY,
+        ],
+        fetcher=fetcher,
+    )
+    assert rc == harness.USAGE_EXIT
+    evaluation = json.loads(
+        list((archive / "runtime").iterdir())[0]
+        .joinpath("PE8_EVALUATION.json")
+        .read_text(encoding="utf-8")
+    )
+    assert evaluation["bounded_futures_testnet_pass"] is False
+    assert evaluation["zero_order_objective_complete"] is False
+
+
+def test_execute_network_http_429_fail_closed(tmp_path: Path) -> None:
+    archive = _durable_test_archive_root(tmp_path)
+    fetcher = _FakeFetcher(
+        status_by_path={
+            "/derivatives/api/v3/tickers": 429,
+            "/derivatives/api/v3/instruments": 429,
+        },
+    )
+    rc = harness.main(
+        [
+            "--archive-root",
+            str(archive),
+            "--run-id",
+            "http429",
+            "--execute-network",
+            "--confirm-futures-zero-order-reachability",
+            harness.CONFIRM_TOKEN_ZERO_ORDER_REACHABILITY,
+        ],
+        fetcher=fetcher,
+    )
+    assert rc == harness.USAGE_EXIT
+    evaluation = json.loads(
+        list((archive / "runtime").iterdir())[0]
+        .joinpath("PE8_EVALUATION.json")
+        .read_text(encoding="utf-8")
+    )
+    assert evaluation["bounded_futures_testnet_pass"] is False
+
+
+def test_execute_network_invalid_json_fail_closed(tmp_path: Path) -> None:
+    archive = _durable_test_archive_root(tmp_path)
+    fetcher = _FakeFetcher(
+        tickers_body=b"not-json",
+        instruments_body=b"not-json",
+    )
+    rc = harness.main(
+        [
+            "--archive-root",
+            str(archive),
+            "--run-id",
+            "badjson",
+            "--execute-network",
+            "--confirm-futures-zero-order-reachability",
+            harness.CONFIRM_TOKEN_ZERO_ORDER_REACHABILITY,
+        ],
+        fetcher=fetcher,
+    )
+    assert rc == harness.USAGE_EXIT
+    evaluation = json.loads(
+        list((archive / "runtime").iterdir())[0]
+        .joinpath("PE8_EVALUATION.json")
+        .read_text(encoding="utf-8")
+    )
+    assert evaluation["bounded_futures_testnet_pass"] is False
+    assert evaluation["bound_instrument_present_pass"] is False
+
+
+def test_execute_network_missing_pf_ethusd_fail_closed(tmp_path: Path) -> None:
+    archive = _durable_test_archive_root(tmp_path)
+    fetcher = _FakeFetcher(
+        tickers_body=b'{"tickers":[{"symbol":"PF_XBTUSD"}]}',
+        instruments_body=b'{"instruments":[{"symbol":"PF_XBTUSD"}]}',
+    )
+    rc = harness.main(
+        [
+            "--archive-root",
+            str(archive),
+            "--run-id",
+            "missingeth",
+            "--execute-network",
+            "--confirm-futures-zero-order-reachability",
+            harness.CONFIRM_TOKEN_ZERO_ORDER_REACHABILITY,
+        ],
+        fetcher=fetcher,
+    )
+    assert rc == harness.USAGE_EXIT
+    evaluation = json.loads(
+        list((archive / "runtime").iterdir())[0]
+        .joinpath("PE8_EVALUATION.json")
+        .read_text(encoding="utf-8")
+    )
+    assert evaluation["bounded_futures_testnet_pass"] is False
+    assert evaluation["bound_instrument_present_pass"] is False
+
+
+class _TimeoutFetcher:
+    def fetch(self, url: str, *, timeout_seconds: float) -> tuple[int, bytes]:
+        raise TimeoutError("timed out")
+
+
+def test_execute_network_transport_timeout_fail_closed(tmp_path: Path) -> None:
+    archive = _durable_test_archive_root(tmp_path)
+    rc = harness.main(
+        [
+            "--archive-root",
+            str(archive),
+            "--run-id",
+            "timeout",
+            "--execute-network",
+            "--confirm-futures-zero-order-reachability",
+            harness.CONFIRM_TOKEN_ZERO_ORDER_REACHABILITY,
+        ],
+        fetcher=_TimeoutFetcher(),
+    )
+    assert rc == harness.USAGE_EXIT
+    evaluation = json.loads(
+        list((archive / "runtime").iterdir())[0]
+        .joinpath("PE8_EVALUATION.json")
+        .read_text(encoding="utf-8")
+    )
+    assert evaluation["bounded_futures_testnet_pass"] is False
+    assert evaluation["zero_order_objective_complete"] is False
+
+
+def test_plan_only_keeps_safety_pass_without_objective_complete(tmp_path: Path) -> None:
+    archive = _durable_test_archive_root(tmp_path)
+    rc = harness.main(["--archive-root", str(archive), "--run-id", "planonly3"])
+    assert rc == 0
+    evaluation = json.loads(
+        list((archive / "runtime").iterdir())[0]
+        .joinpath("PE8_EVALUATION.json")
+        .read_text(encoding="utf-8")
+    )
+    assert evaluation["safety_execution_pass"] is True
+    assert evaluation["harness_contract_pass"] is True
+    assert evaluation["bounded_futures_testnet_pass"] is True
+    assert evaluation["zero_order_objective_complete"] is False
+    assert evaluation["next_phase_ready"] is False

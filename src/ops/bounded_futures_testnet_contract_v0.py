@@ -44,6 +44,11 @@ SPOT_SESSION_CLASSES: frozenset[str] = frozenset(
 )
 SPOT_INSTRUMENTS: frozenset[str] = frozenset({"BTC/EUR", "ETH/EUR"})
 
+ZERO_ORDER_REQUIRED_PUBLIC_ENDPOINTS: tuple[str, ...] = (
+    "/derivatives/api/v3/tickers",
+    "/derivatives/api/v3/instruments",
+)
+
 REQUIRED_FUTURES_EVIDENCE_FIELD_NAMES: tuple[str, ...] = (
     "session_class",
     "order_policy",
@@ -180,6 +185,106 @@ def spot_evidence_misclassified_as_futures(evidence: dict[str, Any]) -> list[str
     return reasons
 
 
+def _is_zero_order_reachability_spec(spec: BoundedFuturesTestnetSpec) -> bool:
+    return (
+        spec.max_real_orders == 0
+        and spec.max_order_attempts == 0
+        and spec.max_cancel_attempts == 0
+        and spec.session_class == DEFAULT_SESSION_CLASS
+    )
+
+
+def _zero_order_network_execution_attempted(evidence: dict[str, Any]) -> bool:
+    request_count = evidence.get("request_count")
+    if request_count is not None and int(request_count) > 0:
+        return True
+    network_calls = evidence.get("network_calls")
+    if isinstance(network_calls, list) and network_calls:
+        return True
+    endpoints_called = evidence.get("endpoints_called")
+    return isinstance(endpoints_called, list) and bool(endpoints_called)
+
+
+def _evaluate_zero_order_reachability_gate(
+    evidence: dict[str, Any],
+    spec: BoundedFuturesTestnetSpec,
+) -> tuple[list[str], dict[str, bool]]:
+    """Fail-closed reachability gate for zero-order execute-network evidence."""
+    flags = {
+        "network_reachability_pass": False,
+        "required_public_endpoints_2xx_pass": False,
+        "bound_instrument_present_pass": False,
+    }
+    if not _is_zero_order_reachability_spec(spec):
+        return [], flags
+    if not _zero_order_network_execution_attempted(evidence):
+        return [], flags
+
+    fail_reasons: list[str] = []
+    if evidence.get("network_reachability_proven") is not True:
+        fail_reasons.append("network_reachability_proven must be true")
+
+    endpoints_called = evidence.get("endpoints_called") or []
+    if not isinstance(endpoints_called, list):
+        fail_reasons.append("endpoints_called must be a list")
+        endpoints_called = []
+    missing_endpoints = [
+        ep for ep in ZERO_ORDER_REQUIRED_PUBLIC_ENDPOINTS if ep not in endpoints_called
+    ]
+    if missing_endpoints:
+        fail_reasons.append(
+            "required zero-order public endpoints missing: " + ", ".join(sorted(missing_endpoints))
+        )
+
+    network_calls = evidence.get("network_calls") or []
+    if not isinstance(network_calls, list):
+        fail_reasons.append("network_calls must be a list")
+        network_calls = []
+
+    endpoint_statuses: dict[str, int] = {}
+    for call in network_calls:
+        if not isinstance(call, dict):
+            fail_reasons.append("network_calls entries must be objects")
+            continue
+        endpoint = call.get("endpoint")
+        status = call.get("http_status")
+        if not isinstance(endpoint, str) or not isinstance(status, int):
+            fail_reasons.append("network_calls entry missing endpoint or http_status")
+            continue
+        endpoint_statuses[endpoint] = status
+        if not (200 <= status < 300):
+            fail_reasons.append(f"required endpoint {endpoint!r} returned non-2xx HTTP {status}")
+        if int(call.get("response_size_bytes") or 0) <= 0:
+            fail_reasons.append(f"required endpoint {endpoint!r} returned empty body")
+
+    for required_ep in ZERO_ORDER_REQUIRED_PUBLIC_ENDPOINTS:
+        if required_ep not in endpoint_statuses:
+            fail_reasons.append(f"required endpoint {required_ep!r} missing from network_calls")
+
+    flags["required_public_endpoints_2xx_pass"] = not missing_endpoints and all(
+        200 <= endpoint_statuses.get(ep, 0) < 300 for ep in ZERO_ORDER_REQUIRED_PUBLIC_ENDPOINTS
+    )
+
+    visibility = evidence.get("pf_xbtusd_symbol_visibility")
+    if visibility != "visible":
+        fail_reasons.append(
+            f"bound instrument {spec.instrument!r} must be visible in instruments evidence "
+            f"(got {visibility!r})"
+        )
+    flags["bound_instrument_present_pass"] = visibility == "visible"
+
+    flags["network_reachability_pass"] = (
+        evidence.get("network_reachability_proven") is True
+        and flags["required_public_endpoints_2xx_pass"]
+        and flags["bound_instrument_present_pass"]
+        and not any(
+            reason.startswith("required endpoint") or reason.startswith("network_calls")
+            for reason in fail_reasons
+        )
+    )
+    return fail_reasons, flags
+
+
 def evaluate_bounded_futures_testnet_evidence(
     evidence: dict[str, Any],
     spec: BoundedFuturesTestnetSpec | None = None,
@@ -196,6 +301,13 @@ def evaluate_bounded_futures_testnet_evidence(
         "cancel_flatten_pass": False,
         "risk_killswitch_scope_pass": False,
         "master_v2_boundary_pass": False,
+        "safety_execution_pass": False,
+        "harness_contract_pass": False,
+        "network_reachability_pass": False,
+        "required_public_endpoints_2xx_pass": False,
+        "bound_instrument_present_pass": False,
+        "zero_order_objective_complete": False,
+        "next_phase_ready": False,
         "fail_reasons": [],
     }
 
@@ -318,6 +430,25 @@ def evaluate_bounded_futures_testnet_evidence(
     result["cancel_flatten_pass"] = evidence.get("position_flattened_by_end") is True
     result["risk_killswitch_scope_pass"] = evidence.get("risk_killswitch_scope_pass") is True
     result["master_v2_boundary_pass"] = not evidence.get("master_v2_double_play_authority_used")
+
+    safety_fail_reasons = list(result["fail_reasons"])
+    result["safety_execution_pass"] = not safety_fail_reasons
+    result["harness_contract_pass"] = result["safety_execution_pass"]
+
+    reachability_fail_reasons, reachability_flags = _evaluate_zero_order_reachability_gate(
+        evidence,
+        spec,
+    )
+    result.update(reachability_flags)
+    result["fail_reasons"].extend(reachability_fail_reasons)
+
+    zero_order_objective_complete = (
+        _is_zero_order_reachability_spec(spec)
+        and _zero_order_network_execution_attempted(evidence)
+        and not reachability_fail_reasons
+    )
+    result["zero_order_objective_complete"] = zero_order_objective_complete
+    result["next_phase_ready"] = zero_order_objective_complete
 
     result["bounded_futures_testnet_pass"] = not result["fail_reasons"]
     return result
