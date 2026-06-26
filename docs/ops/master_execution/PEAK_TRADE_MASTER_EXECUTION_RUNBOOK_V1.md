@@ -6,7 +6,7 @@ OWNER=Frank Rauter
 NON_AUTHORIZING=true
 SOURCE_DURABLE_SNAPSHOT=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/peak_trade_master_execution_runbook_v1_20260626T233500Z
 SOURCE_DURABLE_MANIFEST_VERIFY_RC=0
-origin_main: 5495c8fb1c2a2ac28c97fcd0a0405746adc88774
+origin_main: 4f2918d9987e39b09d2639b1bc6c1f9163f4e698
 ---
 
 # Peak_Trade Master Execution Runbook v1
@@ -40,19 +40,21 @@ Reifepipeline: Research → Offline Proof → Shadow → Paper → Testnet → s
 
 | Feld | Wert |
 |------|------|
-| PROGRAM_PHASE | PACKAGE_A_COMPLETE |
-| CURRENT_MAJOR_PACKAGE | PACKAGE_A_NUMERICAL_TRUST_FOUNDATION (**final ausgewählt, abgeschlossen**) |
-| CURRENT_STATUS | PACKAGE_A_SLICE_A2_MERGED_CLOSEOUT_COMPLETE |
+| PROGRAM_PHASE | PACKAGE_B_FINAL_SELECTION_COMPLETE |
+| CURRENT_MAJOR_PACKAGE | PACKAGE_B_RECONCILIATION_CANONICALIZATION (**final ausgewählt**) |
+| CURRENT_STATUS | FINAL_SELECTION_COMPLETE_IMPLEMENTATION_GO_REQUIRED |
 | PACKAGE_A_STATUS | COMPLETE |
-| PACKAGE_A_FINAL_SELECTION_DECISION | PACKAGE_A_FINAL_SELECTED |
-| PACKAGE_A_SLICE_A1_STATUS | MERGED_CLOSEOUT_COMPLETE (PR #4566, INV-021) |
-| PACKAGE_A_SLICE_A2_STATUS | MERGED_CLOSEOUT_COMPLETE (PR #4568, INV-048) |
+| PACKAGE_B_FINAL_SELECTION_DECISION | PACKAGE_B_FINAL_SELECTED_WITH_BOUNDED_SCOPE_CORRECTION |
+| PACKAGE_B_INCLUDED_INVENTORY_IDS | INV-022, INV-006 |
+| PACKAGE_B_GO_GRANTED | false |
+| PACKAGE_B_SLICE_B1_STATUS | NOT_STARTED |
+| PACKAGE_B_SLICE_B2_STATUS | NOT_STARTED |
 | GO_GRANTED | false |
 | IMPLEMENTATION_STARTED | false |
 | CURRENT_RUN_ACTIVE | false |
-| NEXT_ALLOWED_ACTION | COMPLETE_OPERATOR_REVIEW_AND_FINAL_SELECTION_OF_PACKAGE_B_RECONCILIATION_CANONICALIZATION |
+| NEXT_ALLOWED_ACTION | PREPARE_PACKAGE_B_SLICE_B1_INV022_IMPLEMENTATION_GO_READINESS_NO_IMPLEMENTATION |
 
-Target Architecture ist im Masterplan abgeschlossen (`MANIFEST_VERIFY_RC=0`). **Package A (INV-021 + INV-048) ist vollständig gemergt**; **kein automatisches GO für Package B oder Implementierung**.
+Target Architecture ist im Masterplan abgeschlossen (`MANIFEST_VERIFY_RC=0`). **Package A (INV-021 + INV-048) ist vollständig abgeschlossen**. **Package B (Reconciliation Canonicalization, INV-022 + INV-006) ist final ausgewählt** — **kein Package-B-GO, keine B1-/B2-Implementierung, keine Runtime**.
 
 ## 3. Capability Trains (12)
 
@@ -78,7 +80,7 @@ Target Architecture ist im Masterplan abgeschlossen (`MANIFEST_VERIFY_RC=0`). **
 | Package | Train | Status / Hinweis |
 |---------|-------|------------------|
 | PACKAGE_A_NUMERICAL_TRUST_FOUNDATION | TRAIN_1 | **COMPLETE** — INV-021+048 gemergt; keine Produktions-Verdrahtung |
-| PACKAGE_B_RECONCILIATION_CANONICALIZATION | TRAIN_2 | Nach PACKAGE_A |
+| PACKAGE_B_RECONCILIATION_CANONICALIZATION | TRAIN_2 | **FINAL AUSGEWÄHLT** — INV-022+006; B1 vor B2; kein GO |
 | PACKAGE_C_DOUBLE_PLAY_DYNAMIC_SCOPE_AND_STATE | TRAIN_3 | MUST_HAVE — INV-045/046 |
 | PACKAGE_D_CAPITAL_SLOT_RATCHET | TRAIN_4 | Strategic core — INV-007 |
 | PACKAGE_E_RISK_KILLSWITCH_OPERATIVE_COMPLETION | TRAIN_5 | INV-033/008 |
@@ -100,6 +102,18 @@ Wave-Reihenfolge: 1=A → 2=B → 3=A ext (INV-003 GO) → 4=C → 5=D → 6=E,F
   - **A2 (INV-048):** **MERGED** — PR #4568, Merge `5495c8fb`; P1-3 flip, P1-4 quantize, P1-5 equity identity (test-only); keine Produktionsänderung
 - **Explizit ausgeschlossen:** INV-003 wiring, INV-005 testnet, Authority-Lift, Runtime, produktive Arithmetic-Verdrahtung
 - **GO_GRANTED:** false | **IMPLEMENTATION_STARTED:** false | **Package A abgeschlossen — kein Runtime-Proof**
+
+### PACKAGE_B (final ausgewählt — Implementierung ausstehend)
+
+- **Entscheidung:** `PACKAGE_B_FINAL_SELECTED_WITH_BOUNDED_SCOPE_CORRECTION` (Operator-Review Bundle `package_b_reconciliation_canonicalization_final_operator_review_v0_20260626T000500Z`, `MANIFEST_VERIFY_RC=0`)
+- **Titel:** Reconciliation Canonicalization
+- **Enthalten:** INV-022 (Reconciliation Owner/Authority/Import-Grenzen) + INV-006 (PE-31 ↔ Durable-Completion-Binding)
+- **Explizit ausgeschlossen:** INV-041 (absorbiert), Engine-Vereinheitlichung, produktives Reconciliation-Wiring, Runtime, Repair-Authority, Trading-/Promotion-Authority
+- **Slice-Reihenfolge (verbindlich):**
+  - **B1 (INV-022):** Kanonische Reconciliation-Owner-Rollen sowie Authority- und Import-Grenzen; Erweiterung des bestehenden PR-#4561-Contracts — **NOT_STARTED** — erwarteter CI: **FOCUSED**
+  - **B2 (INV-006):** PE-31 ↔ Durable-Completion-Binding als statischer Canonical-Contract — **NOT_STARTED** — erwarteter CI: **FOCUSED** / Lane `durable_completion_focused`
+- **Reuse-before-new:** bestehende Contract-Owner erweitern; keine parallele Reconciliation-SSOT
+- **PACKAGE_B_GO_GRANTED:** false | **B1/B2 IMPLEMENTATION_STARTED:** false | **kein Wiring, keine Runtime, keine Repair-Authority**
 
 ## 5. State Machine (26 Zustände)
 
@@ -124,15 +138,15 @@ Handoff-Payloads: `NEW_CHAT_RESUME_PAYLOAD.md`, `CURSOR_RESUME_PAYLOAD.md` (Dura
 
 ## 8. Operator Checklist (aktuell)
 
-### Nach Package-A-Abschluss (aktuell)
+### Nach Package-B-Finalauswahl (aktuell)
 
-- [x] Operator-Review abgeschlossen (`PACKAGE_A_FINAL_SELECTED`)
-- [x] Slice A1 (INV-021) implementiert und gemergt (PR #4566)
-- [x] Slice A2 (INV-048) implementiert und gemergt (PR #4568)
 - [x] Package A (INV-021 + INV-048) vollständig abgeschlossen
-- [ ] Docs-PR für A2-Closeout-Checkpoint gemergt
-- [ ] Separates read-only Operator-Review für Package B (Reconciliation Canonicalization) — **noch nicht erteilt**
-- [ ] INV-003 wiring, INV-005 testnet, Authority-Lift, Runtime weiterhin ausgeschlossen
+- [x] Docs-PR für A2-Closeout-Checkpoint gemergt (PR #4569)
+- [x] Separates read-only Operator-Review für Package B abgeschlossen (`PACKAGE_B_FINAL_SELECTED_WITH_BOUNDED_SCOPE_CORRECTION`)
+- [x] Finale Package-B-Auswahl im kanonischen Checkpoint dokumentiert
+- [ ] Separates explizites GO für Package-B-Slice B1 (INV-022) — **nicht erteilt**
+- [ ] Slice B2 (INV-006) — **nicht gestartet**
+- [ ] INV-003 wiring, INV-005 testnet, Authority-Lift, Runtime, Engine-Vereinheitlichung, Reconciliation-Wiring weiterhin ausgeschlossen
 
 ## 9. Evidence Index
 
@@ -147,12 +161,15 @@ Handoff-Payloads: `NEW_CHAT_RESUME_PAYLOAD.md`, `CURSOR_RESUME_PAYLOAD.md` (Dura
 | A2 Implementation `package_a_slice_a2_inv048_p1_arithmetic_contracts_v0_20260625T234736Z` | INV-048 P1 Contract-Closure |
 | PR-4566 Closeout | Package A Slice A1 merge |
 | PR-4568 / A2 Professor Merge Closeout | Package A Slice A2 merge |
+| PR-4569 Closeout | Package A complete checkpoint |
+| Operator-Review `package_b_reconciliation_canonicalization_final_operator_review_v0_20260626T000500Z` | Finale Package-B-Auswahl |
 | Runbook Durable Snapshot `peak_trade_master_execution_runbook_v1_20260626T233500Z` | Unveränderlicher Ursprung |
 
 ## 10. DO_NOT_DO (aktuell)
 
-- Package-B-Implementierung ohne separates explizites Package-B-GO
+- Package-B-Slice B1 oder B2 ohne separates explizites Implementierungs-GO
 - GO erteilen oder inferieren (insbesondere Package B)
+- Engine-Vereinheitlichung, produktives Reconciliation-Wiring, Repair-Authority
 - Runtime, Testnet, Paper, Shadow, Live starten
 - Primären dirty Worktree mutieren
 - INV-003 wiring / INV-005 testnet ohne separates GO
