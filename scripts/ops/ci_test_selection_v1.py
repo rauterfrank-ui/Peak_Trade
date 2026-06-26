@@ -658,6 +658,39 @@ STATE_SWITCH_OWNER_BOUNDARY_CONTRACT_CI_SELECTOR_TARGETS: tuple[str, ...] = (
     "tests/ci/test_ci_diff_aware_test_selection_v1.py::test_selector_state_switch_owner_boundary_contract_foreign_path_escalates_full",
 )
 
+CAPITAL_SLOT_OWNER_BOUNDARY_CONTRACT_TEST_OWNER = (
+    "tests/ops/test_master_v2_capital_slot_owner_boundary_contract_v0.py"
+)
+
+CAPITAL_SLOT_OWNER_BOUNDARY_CONTRACT_CI_POLICY_PATHS = frozenset(
+    {
+        "scripts/ops/ci_test_selection_v1.py",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    }
+)
+
+CAPITAL_SLOT_OWNER_BOUNDARY_CONTRACT_SCOPED_PATHS = frozenset(
+    {
+        CAPITAL_SLOT_OWNER_BOUNDARY_CONTRACT_TEST_OWNER,
+        *CAPITAL_SLOT_OWNER_BOUNDARY_CONTRACT_CI_POLICY_PATHS,
+    }
+)
+
+CAPITAL_SLOT_OWNER_BOUNDARY_CONTRACT_FOCUSED_NODES: tuple[str, ...] = (
+    f"{CAPITAL_SLOT_OWNER_BOUNDARY_CONTRACT_TEST_OWNER}::test_capital_slot_owner_inventory_complete_and_roles_unique",
+    f"{CAPITAL_SLOT_OWNER_BOUNDARY_CONTRACT_TEST_OWNER}::test_exactly_one_capital_slot_pure_model_candidate",
+    f"{CAPITAL_SLOT_OWNER_BOUNDARY_CONTRACT_TEST_OWNER}::test_local_consumers_remain_bounded_not_operative_ssot",
+    f"{CAPITAL_SLOT_OWNER_BOUNDARY_CONTRACT_TEST_OWNER}::test_master_v2_completion_adapter_paths_import_no_parallel_capital_slot_owner",
+    f"{CAPITAL_SLOT_OWNER_BOUNDARY_CONTRACT_TEST_OWNER}::test_contract_crosslinks_csr_static_markers_without_redefinition",
+    f"{CAPITAL_SLOT_OWNER_BOUNDARY_CONTRACT_TEST_OWNER}::test_contract_defines_no_capital_slot_formulas_and_is_non_authorizing",
+    f"{CAPITAL_SLOT_OWNER_BOUNDARY_CONTRACT_TEST_OWNER}::test_forbidden_authority_and_ratchet_claim_keys_absent",
+)
+
+CAPITAL_SLOT_OWNER_BOUNDARY_CONTRACT_CI_SELECTOR_TARGETS: tuple[str, ...] = (
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py::test_selector_capital_slot_owner_boundary_contract_test_only_focused",
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py::test_selector_capital_slot_owner_boundary_contract_foreign_path_escalates_full",
+)
+
 MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_BOUNDARY_CONTRACT_TEST_OWNER = (
     "tests/ops/test_master_v2_arithmetic_decimal_float_conversion_boundary_contract_v0.py"
 )
@@ -2968,6 +3001,59 @@ def _try_state_switch_owner_boundary_contract_focused(
     )
 
 
+def _is_capital_slot_owner_boundary_scoped_path(path: str) -> bool:
+    return path in CAPITAL_SLOT_OWNER_BOUNDARY_CONTRACT_SCOPED_PATHS
+
+
+def _is_capital_slot_owner_boundary_rebundle_path(path: str) -> bool:
+    return _is_capital_slot_owner_boundary_scoped_path(path)
+
+
+def _is_capital_slot_owner_boundary_scope(files: list[str]) -> bool:
+    if not files:
+        return False
+    files_set = set(files)
+    if CAPITAL_SLOT_OWNER_BOUNDARY_CONTRACT_TEST_OWNER not in files_set:
+        return False
+    return all(path in CAPITAL_SLOT_OWNER_BOUNDARY_CONTRACT_SCOPED_PATHS for path in files)
+
+
+def _capital_slot_owner_boundary_focused_targets(
+    files: list[str] | None = None,
+) -> tuple[str, ...]:
+    if not _repo_path_exists(CAPITAL_SLOT_OWNER_BOUNDARY_CONTRACT_TEST_OWNER):
+        return ()
+    targets: list[str] = []
+    for node in CAPITAL_SLOT_OWNER_BOUNDARY_CONTRACT_FOCUSED_NODES:
+        if _repo_pytest_target_exists(node):
+            targets.append(node)
+    if len(targets) != len(CAPITAL_SLOT_OWNER_BOUNDARY_CONTRACT_FOCUSED_NODES):
+        return ()
+    if files and any(
+        path in CAPITAL_SLOT_OWNER_BOUNDARY_CONTRACT_CI_POLICY_PATHS for path in files
+    ):
+        for ci_target in CAPITAL_SLOT_OWNER_BOUNDARY_CONTRACT_CI_SELECTOR_TARGETS:
+            if _repo_pytest_target_exists(ci_target):
+                targets.append(ci_target)
+    return tuple(sorted(set(targets)))
+
+
+def _try_capital_slot_owner_boundary_contract_focused(
+    files: list[str],
+) -> SelectionResult | None:
+    if not _is_capital_slot_owner_boundary_scope(files):
+        return None
+    targets = _capital_slot_owner_boundary_focused_targets(files)
+    if not targets:
+        return None
+    return SelectionResult(
+        "FOCUSED",
+        "capital_slot_owner_boundary_contract_focused",
+        targets,
+        (),
+    )
+
+
 def _is_master_v2_arithmetic_decimal_float_conversion_boundary_scoped_path(path: str) -> bool:
     return path in MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_BOUNDARY_CONTRACT_SCOPED_PATHS
 
@@ -4055,6 +4141,10 @@ def resolve_selection(
     if state_switch_owner_boundary is not None:
         return state_switch_owner_boundary
 
+    capital_slot_owner_boundary = _try_capital_slot_owner_boundary_contract_focused(normalized)
+    if capital_slot_owner_boundary is not None:
+        return capital_slot_owner_boundary
+
     master_v2_arithmetic_decimal_float_conversion_boundary = (
         _try_master_v2_arithmetic_decimal_float_conversion_boundary_contract_focused(normalized)
     )
@@ -4301,6 +4391,19 @@ def resolve_selection(
         return SelectionResult(
             "FULL",
             "state_switch_owner_boundary_contract_incomplete_or_missing_test_owner",
+            (),
+        )
+
+    if any(_is_capital_slot_owner_boundary_scoped_path(f) for f in normalized):
+        if not all(_is_capital_slot_owner_boundary_rebundle_path(f) for f in normalized):
+            return SelectionResult(
+                "FULL",
+                "capital_slot_owner_boundary_contract_foreign_path_requires_full",
+                (),
+            )
+        return SelectionResult(
+            "FULL",
+            "capital_slot_owner_boundary_contract_incomplete_or_missing_test_owner",
             (),
         )
 
