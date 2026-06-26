@@ -14,7 +14,7 @@ PACKAGE_MARKER = "BOUNDED_FUTURES_TESTNET_CONTRACT_V0=true"
 FUTURES_SESSION_AUTHORIZED_NOW = False
 DEFAULT_SESSION_CLASS = "bounded-futures-normal-testnet-v0"
 DEFAULT_ORDER_POLICY = "normal-testnet-futures-bounded"
-DEFAULT_INSTRUMENT = "PF_XBTUSD"
+DEFAULT_INSTRUMENT = "PF_ETHUSD"
 DEFAULT_MARKET_TYPE = "futures"
 # Binance-style placeholder — must not be used as bounded futures testnet default.
 REJECTED_FUTURES_INSTRUMENT_PLACEHOLDERS: frozenset[str] = frozenset({"BTCUSDT"})

@@ -58,7 +58,7 @@ def test_futures_session_and_network_not_authorized() -> None:
 
 def test_default_binding_passes_offline_validation() -> None:
     binding = default_offline_adapter_binding()
-    assert binding.instrument == "PF_XBTUSD"
+    assert binding.instrument == "PF_ETHUSD"
     assert binding.instrument == DEFAULT_INSTRUMENT
     result = validate_futures_testnet_adapter_binding(binding)
     assert result["adapter_binding_pass"] is True

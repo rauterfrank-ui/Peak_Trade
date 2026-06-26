@@ -110,6 +110,23 @@ def test_fail_closed_unsupported_instrument() -> None:
     assert any("instrument" in r for r in result["fail_reasons"])
 
 
+def test_fail_closed_pf_xbtusd_instrument() -> None:
+    result = evaluate_order_capability_dry_validation(_valid_inputs(instrument="PF_XBTUSD"))
+    assert result["verdict"] == "FAIL_CLOSED"
+    assert any("instrument must be" in r for r in result["fail_reasons"])
+
+
+def test_pass_pf_ethusd_with_kraken_futures_demo_venue() -> None:
+    result = evaluate_order_capability_dry_validation(
+        _valid_inputs(
+            instrument="PF_ETHUSD",
+            venue="kraken_futures_demo / demo-futures.kraken.com",
+        )
+    )
+    assert result["verdict"] == "PASS"
+    assert result["fail_reasons"] == []
+
+
 def test_build_result_contains_machine_fields() -> None:
     payload = build_dry_validation_result(_valid_inputs())
     assert payload["schema_version"] == "order_capability_dry_validation_result.v1"
