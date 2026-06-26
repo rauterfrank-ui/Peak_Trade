@@ -3221,6 +3221,73 @@ def test_mapping_file_includes_risk_killswitch_focused() -> None:
     assert "risk_killswitch_focused:" in text
 
 
+SLICE2_OKX_EUROPE_ADAPTER_LIFECYCLE_FILES = (
+    "src/ops/okx_europe_adapter_lifecycle_contract_v0.py",
+    "tests/ops/test_okx_europe_adapter_lifecycle_contract_v0.py",
+)
+
+
+def test_selector_okx_europe_adapter_lifecycle_fileset_focused() -> None:
+    sel = _run_selector(*SLICE2_OKX_EUROPE_ADAPTER_LIFECYCLE_FILES)
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
+    assert sel["test_selection_reason"] == "okx_europe_adapter_lifecycle_focused"
+    targets = _targets(sel)
+    assert SLICE2_OKX_EUROPE_ADAPTER_LIFECYCLE_FILES[1] in targets
+    assert "tests/ops/test_bounded_futures_testnet_okx_eea_xperp_binding_contract_v0.py" in targets
+    assert (
+        "tests/ops/test_aws_shadow_paper_testnet_okx_europe_compatibility_contract_v0.py" in targets
+    )
+    assert sel["tests_execute_full"] == "false"
+    assert sel["tests_execute_no_op"] == "false"
+
+
+def test_selector_okx_europe_adapter_lifecycle_owner_plus_test_owner_only_focused() -> None:
+    sel = _run_selector(*SLICE2_OKX_EUROPE_ADAPTER_LIFECYCLE_FILES)
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
+    assert sel["test_selection_reason"] == "okx_europe_adapter_lifecycle_focused"
+
+
+def test_selector_okx_europe_adapter_lifecycle_rebundle_with_ci_policy_focused() -> None:
+    sel = _run_selector(
+        *SLICE2_OKX_EUROPE_ADAPTER_LIFECYCLE_FILES,
+        "scripts/ops/ci_test_selection_v1.py",
+        "config/ci/file_category_mapping.yaml",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    )
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
+    assert sel["test_selection_reason"] == "okx_europe_adapter_lifecycle_focused"
+    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" in _targets(sel)
+
+
+def test_selector_okx_europe_adapter_lifecycle_plus_foreign_src_full() -> None:
+    sel = _run_selector(
+        *SLICE2_OKX_EUROPE_ADAPTER_LIFECYCLE_FILES,
+        "src/execution/live/orchestrator.py",
+    )
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    assert sel["test_selection_reason"] == "okx_europe_adapter_lifecycle_foreign_path_requires_full"
+
+
+def test_selector_okx_europe_adapter_lifecycle_owner_without_test_owner_escalates_full() -> None:
+    sel = _run_selector(SLICE2_OKX_EUROPE_ADAPTER_LIFECYCLE_FILES[0])
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    assert (
+        sel["test_selection_reason"]
+        == "okx_europe_adapter_lifecycle_incomplete_or_missing_test_owner"
+    )
+
+
+def test_selector_okx_europe_adapter_lifecycle_import_modules() -> None:
+    sel = _run_selector(*SLICE2_OKX_EUROPE_ADAPTER_LIFECYCLE_FILES)
+    modules = _modules(sel)
+    assert "src.ops.okx_europe_adapter_lifecycle_contract_v0" in modules
+
+
+def test_mapping_file_includes_okx_europe_adapter_lifecycle_focused() -> None:
+    text = MAPPING.read_text(encoding="utf-8")
+    assert "okx_europe_adapter_lifecycle_focused:" in text
+
+
 PE54_TINY_ORDER_FILES = (
     "src/ops/bounded_futures_testnet_tiny_order_lifecycle_integration_contract_v0.py",
     "tests/ops/test_bounded_futures_testnet_tiny_order_lifecycle_integration_contract_v0.py",

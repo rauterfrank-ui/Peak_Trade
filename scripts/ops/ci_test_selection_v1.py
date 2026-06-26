@@ -32,6 +32,7 @@ FOCUSED_CATEGORIES = frozenset(
         "market_dashboard_focused",
         "durable_completion_focused",
         "preflight_assembly_focused",
+        "okx_europe_adapter_lifecycle_focused",
         "bounded_futures_testnet_contract_focused",
         "risk_killswitch_focused",
         "tiny_order_focused",
@@ -976,6 +977,30 @@ CANONICAL_RECONCILIATION_PRIMARY_EVIDENCE_FOCUSED_TESTS: tuple[str, ...] = (
     "tests/ci/test_ci_diff_aware_test_selection_v1.py",
 )
 
+OKX_EUROPE_ADAPTER_LIFECYCLE_OWNER = "src/ops/okx_europe_adapter_lifecycle_contract_v0.py"
+OKX_EUROPE_ADAPTER_LIFECYCLE_TEST_OWNER = (
+    "tests/ops/test_okx_europe_adapter_lifecycle_contract_v0.py"
+)
+
+OKX_EUROPE_ADAPTER_LIFECYCLE_CI_POLICY_PATHS = frozenset(
+    {
+        "scripts/ops/ci_test_selection_v1.py",
+        "config/ci/file_category_mapping.yaml",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    }
+)
+
+REQUIRED_OKX_EUROPE_ADAPTER_LIFECYCLE_TEST_OWNERS: tuple[str, ...] = (
+    OKX_EUROPE_ADAPTER_LIFECYCLE_TEST_OWNER,
+    "tests/ops/test_bounded_futures_testnet_okx_eea_xperp_binding_contract_v0.py",
+    AWS_SHADOW_PAPER_TESTNET_OKX_EUROPE_COMPATIBILITY_TEST_OWNER,
+)
+
+CANONICAL_OKX_EUROPE_ADAPTER_LIFECYCLE_FOCUSED_TESTS: tuple[str, ...] = (
+    *REQUIRED_OKX_EUROPE_ADAPTER_LIFECYCLE_TEST_OWNERS,
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+)
+
 REQUIRED_RECONCILIATION_PRIMARY_EVIDENCE_TEST_OWNERS: tuple[str, ...] = (
     "tests/ops/test_bounded_futures_testnet_position_order_reconciliation_primary_evidence_integration_contract_v0.py",
 )
@@ -1882,6 +1907,9 @@ def _requires_full_ci_selector_change(files: list[str]) -> bool:
     scoped_pa = {f for f in normalized if _is_preflight_assembly_scoped_path(f)}
     if scoped_pa and all(_is_preflight_assembly_rebundle_path(f) for f in normalized):
         return False
+    scoped_okx = {f for f in normalized if _is_okx_europe_adapter_lifecycle_scoped_path(f)}
+    if scoped_okx and all(_is_okx_europe_adapter_lifecycle_rebundle_path(f) for f in normalized):
+        return False
     scoped_bftc = {f for f in normalized if _is_bounded_futures_testnet_contract_scoped_path(f)}
     if scoped_bftc and all(
         _is_bounded_futures_testnet_contract_rebundle_path(f) for f in normalized
@@ -2257,6 +2285,32 @@ def _preflight_assembly_focused_targets() -> tuple[str, ...]:
         if _repo_path_exists(path):
             targets.append(path)
     if len(targets) < len(REQUIRED_PREFLIGHT_ASSEMBLY_TEST_OWNERS):
+        return ()
+    return tuple(sorted(targets))
+
+
+def _is_okx_europe_adapter_lifecycle_scoped_path(path: str) -> bool:
+    if path == OKX_EUROPE_ADAPTER_LIFECYCLE_OWNER:
+        return True
+    return path in REQUIRED_OKX_EUROPE_ADAPTER_LIFECYCLE_TEST_OWNERS
+
+
+def _is_okx_europe_adapter_lifecycle_rebundle_path(path: str) -> bool:
+    return (
+        _is_okx_europe_adapter_lifecycle_scoped_path(path)
+        or path in OKX_EUROPE_ADAPTER_LIFECYCLE_CI_POLICY_PATHS
+    )
+
+
+def _okx_europe_adapter_lifecycle_focused_targets() -> tuple[str, ...]:
+    for path in REQUIRED_OKX_EUROPE_ADAPTER_LIFECYCLE_TEST_OWNERS:
+        if not _repo_path_exists(path):
+            return ()
+    targets: list[str] = []
+    for path in CANONICAL_OKX_EUROPE_ADAPTER_LIFECYCLE_FOCUSED_TESTS:
+        if _repo_path_exists(path):
+            targets.append(path)
+    if len(targets) < len(REQUIRED_OKX_EUROPE_ADAPTER_LIFECYCLE_TEST_OWNERS):
         return ()
     return tuple(sorted(targets))
 
@@ -2724,6 +2778,31 @@ def _try_tiny_order_focused(files: list[str]) -> SelectionResult | None:
     return SelectionResult(
         "FOCUSED",
         "tiny_order_focused",
+        targets,
+        modules,
+    )
+
+
+def _try_okx_europe_adapter_lifecycle_focused(files: list[str]) -> SelectionResult | None:
+    if not files:
+        return None
+    if not any(_is_okx_europe_adapter_lifecycle_scoped_path(f) for f in files):
+        return None
+    if not all(_is_okx_europe_adapter_lifecycle_rebundle_path(f) for f in files):
+        return None
+    files_set = set(files)
+    if (
+        OKX_EUROPE_ADAPTER_LIFECYCLE_OWNER in files_set
+        and OKX_EUROPE_ADAPTER_LIFECYCLE_TEST_OWNER not in files_set
+    ):
+        return None
+    targets = _okx_europe_adapter_lifecycle_focused_targets()
+    if not targets:
+        return None
+    modules: tuple[str, ...] = ("src.ops.okx_europe_adapter_lifecycle_contract_v0",)
+    return SelectionResult(
+        "FOCUSED",
+        "okx_europe_adapter_lifecycle_focused",
         targets,
         modules,
     )
@@ -4040,6 +4119,10 @@ def categorize(path: str) -> str:
         return "preflight_assembly_focused"
     if _is_preflight_assembly_scoped_path(p):
         return "preflight_assembly_focused"
+    if p in OKX_EUROPE_ADAPTER_LIFECYCLE_CI_POLICY_PATHS:
+        return "okx_europe_adapter_lifecycle_focused"
+    if _is_okx_europe_adapter_lifecycle_scoped_path(p):
+        return "okx_europe_adapter_lifecycle_focused"
     if p in BOUNDED_FUTURES_TESTNET_CONTRACT_CI_POLICY_PATHS:
         return "bounded_futures_testnet_contract_focused"
     if _is_bounded_futures_testnet_contract_scoped_path(p):
@@ -4419,6 +4502,10 @@ def resolve_selection(
     if preflight_assembly is not None:
         return preflight_assembly
 
+    okx_europe_adapter_lifecycle = _try_okx_europe_adapter_lifecycle_focused(normalized)
+    if okx_europe_adapter_lifecycle is not None:
+        return okx_europe_adapter_lifecycle
+
     bounded_futures_testnet_contract = _try_bounded_futures_testnet_contract_focused(normalized)
     if bounded_futures_testnet_contract is not None:
         return bounded_futures_testnet_contract
@@ -4473,6 +4560,19 @@ def resolve_selection(
         if not all(_is_preflight_assembly_rebundle_path(f) for f in normalized):
             return SelectionResult("FULL", "preflight_assembly_foreign_path_requires_full", ())
         return SelectionResult("FULL", "preflight_assembly_incomplete_or_missing_test_owner", ())
+
+    if any(_is_okx_europe_adapter_lifecycle_scoped_path(f) for f in normalized):
+        if not all(_is_okx_europe_adapter_lifecycle_rebundle_path(f) for f in normalized):
+            return SelectionResult(
+                "FULL",
+                "okx_europe_adapter_lifecycle_foreign_path_requires_full",
+                (),
+            )
+        return SelectionResult(
+            "FULL",
+            "okx_europe_adapter_lifecycle_incomplete_or_missing_test_owner",
+            (),
+        )
 
     if any(_is_bounded_futures_testnet_contract_scoped_path(f) for f in normalized):
         if not all(_is_bounded_futures_testnet_contract_rebundle_path(f) for f in normalized):
