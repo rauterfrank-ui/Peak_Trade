@@ -3780,6 +3780,59 @@ def test_selector_reconciliation_decimal_float_owner_boundary_contract_foreign_p
     )
 
 
+DYNAMIC_SCOPE_OWNER_BOUNDARY_CONTRACT_TEST_OWNER = (
+    "tests/ops/test_master_v2_dynamic_scope_owner_boundary_contract_v0.py"
+)
+
+
+def test_selector_dynamic_scope_owner_boundary_contract_test_only_focused() -> None:
+    sel = _run_selector(DYNAMIC_SCOPE_OWNER_BOUNDARY_CONTRACT_TEST_OWNER)
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
+    assert sel["test_selection_reason"] == "dynamic_scope_owner_boundary_contract_focused"
+    assert sel["tests_execute_full"] == "false"
+    assert sel["tests_execute_focused"] == "true"
+    assert sel["tests_execute_no_op"] == "false"
+    targets = _targets(sel)
+    assert len([t for t in targets if "::test_" in t]) == 7
+    assert (
+        f"{DYNAMIC_SCOPE_OWNER_BOUNDARY_CONTRACT_TEST_OWNER}::test_exactly_one_dynamic_scope_pure_model_candidate"
+        in targets
+    )
+    assert (
+        f"{DYNAMIC_SCOPE_OWNER_BOUNDARY_CONTRACT_TEST_OWNER}::test_forbidden_authority_and_repair_claim_keys_absent"
+        in targets
+    )
+    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" not in targets
+
+
+def test_selector_dynamic_scope_owner_boundary_contract_selector_rebundle_focused() -> None:
+    sel = _run_selector(
+        DYNAMIC_SCOPE_OWNER_BOUNDARY_CONTRACT_TEST_OWNER,
+        "scripts/ops/ci_test_selection_v1.py",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    )
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
+    assert sel["test_selection_reason"] == "dynamic_scope_owner_boundary_contract_focused"
+    targets = _targets(sel)
+    assert len([t for t in targets if "::test_" in t]) == 9
+    assert (
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py::test_selector_dynamic_scope_owner_boundary_contract_test_only_focused"
+        in targets
+    )
+
+
+def test_selector_dynamic_scope_owner_boundary_contract_foreign_path_escalates_full() -> None:
+    sel = _run_selector(
+        DYNAMIC_SCOPE_OWNER_BOUNDARY_CONTRACT_TEST_OWNER,
+        "src/trading/master_v2/double_play_state.py",
+    )
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    assert (
+        sel["test_selection_reason"]
+        == "dynamic_scope_owner_boundary_contract_foreign_path_requires_full"
+    )
+
+
 MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_BOUNDARY_CONTRACT_TEST_OWNER = (
     "tests/ops/test_master_v2_arithmetic_decimal_float_conversion_boundary_contract_v0.py"
 )
