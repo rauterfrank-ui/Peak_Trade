@@ -981,6 +981,12 @@ OKX_EUROPE_ADAPTER_LIFECYCLE_OWNER = "src/ops/okx_europe_adapter_lifecycle_contr
 OKX_EUROPE_ADAPTER_LIFECYCLE_TEST_OWNER = (
     "tests/ops/test_okx_europe_adapter_lifecycle_contract_v0.py"
 )
+BOUNDED_FUTURES_TESTNET_ADAPTER_CAPABILITY_LIFECYCLE_INTEGRATION_OWNER = (
+    "src/ops/bounded_futures_testnet_adapter_capability_lifecycle_integration_contract_v0.py"
+)
+BOUNDED_FUTURES_TESTNET_ADAPTER_CAPABILITY_LIFECYCLE_INTEGRATION_TEST_OWNER = (
+    "tests/ops/test_bounded_futures_testnet_adapter_capability_lifecycle_integration_contract_v0.py"
+)
 
 OKX_EUROPE_ADAPTER_LIFECYCLE_CI_POLICY_PATHS = frozenset(
     {
@@ -998,6 +1004,7 @@ REQUIRED_OKX_EUROPE_ADAPTER_LIFECYCLE_TEST_OWNERS: tuple[str, ...] = (
 
 CANONICAL_OKX_EUROPE_ADAPTER_LIFECYCLE_FOCUSED_TESTS: tuple[str, ...] = (
     *REQUIRED_OKX_EUROPE_ADAPTER_LIFECYCLE_TEST_OWNERS,
+    BOUNDED_FUTURES_TESTNET_ADAPTER_CAPABILITY_LIFECYCLE_INTEGRATION_TEST_OWNER,
     "tests/ci/test_ci_diff_aware_test_selection_v1.py",
 )
 
@@ -2292,6 +2299,10 @@ def _preflight_assembly_focused_targets() -> tuple[str, ...]:
 def _is_okx_europe_adapter_lifecycle_scoped_path(path: str) -> bool:
     if path == OKX_EUROPE_ADAPTER_LIFECYCLE_OWNER:
         return True
+    if path == BOUNDED_FUTURES_TESTNET_ADAPTER_CAPABILITY_LIFECYCLE_INTEGRATION_OWNER:
+        return True
+    if path == BOUNDED_FUTURES_TESTNET_ADAPTER_CAPABILITY_LIFECYCLE_INTEGRATION_TEST_OWNER:
+        return True
     return path in REQUIRED_OKX_EUROPE_ADAPTER_LIFECYCLE_TEST_OWNERS
 
 
@@ -2794,6 +2805,12 @@ def _try_okx_europe_adapter_lifecycle_focused(files: list[str]) -> SelectionResu
     if (
         OKX_EUROPE_ADAPTER_LIFECYCLE_OWNER in files_set
         and OKX_EUROPE_ADAPTER_LIFECYCLE_TEST_OWNER not in files_set
+    ):
+        return None
+    if (
+        BOUNDED_FUTURES_TESTNET_ADAPTER_CAPABILITY_LIFECYCLE_INTEGRATION_OWNER in files_set
+        and BOUNDED_FUTURES_TESTNET_ADAPTER_CAPABILITY_LIFECYCLE_INTEGRATION_TEST_OWNER
+        not in files_set
     ):
         return None
     targets = _okx_europe_adapter_lifecycle_focused_targets()

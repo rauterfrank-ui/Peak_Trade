@@ -34,6 +34,7 @@ from src.ops.bounded_futures_testnet_adapter_capability_lifecycle_integration_co
     compute_integration_input_digest,
     compute_integration_proof_digest,
     compute_lifecycle_matrix_digest,
+    compute_okx_europe_adapter_lifecycle_slot_digest,
     default_minimal_integration_input,
     default_minimal_safety_snapshot,
     evaluate_capability_lifecycle_integration,
@@ -49,6 +50,14 @@ from src.ops.bounded_futures_testnet_adapter_lifecycle_contract_v0 import (
 from src.ops.bounded_futures_testnet_preflight_packet_contract_v0 import (
     FOLLOWUP_RUN_GATE,
     PE12_CONTRACT_VERSION,
+)
+from src.ops.bounded_futures_testnet_venue_binding_v0 import (
+    OKX_EUROPE_ADAPTER_LIFECYCLE_CONTRACT_VERSION,
+    VENUE_OKX_EUROPE,
+)
+from src.ops.okx_europe_adapter_lifecycle_contract_v0 import (
+    CONTRACT_VERSION as OKX_EUROPE_LIFECYCLE_CONTRACT_VERSION,
+    PACKAGE_MARKER as OKX_EUROPE_LIFECYCLE_PACKAGE_MARKER,
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -440,3 +449,61 @@ def test_generic_futures_instrument_passes() -> None:
     integration_input = default_minimal_integration_input(instrument=GENERIC_FUTURES_INSTRUMENT)
     result = evaluate_capability_lifecycle_integration(integration_input)
     assert result["integration_pass"] is True
+
+
+def test_okx_europe_adapter_lifecycle_slot_digest_deterministic() -> None:
+    left = compute_okx_europe_adapter_lifecycle_slot_digest()
+    right = compute_okx_europe_adapter_lifecycle_slot_digest()
+    assert left == right
+    assert len(left) == 64
+    assert left.islower()
+
+
+def test_okx_europe_adapter_lifecycle_slot_digest_version_coherence() -> None:
+    import hashlib
+    import json
+
+    expected = hashlib.sha256(
+        json.dumps(
+            {
+                "hash_algorithm": "sha256",
+                "okx_europe_lifecycle_contract_version": OKX_EUROPE_LIFECYCLE_CONTRACT_VERSION,
+                "okx_europe_lifecycle_package_marker": OKX_EUROPE_LIFECYCLE_PACKAGE_MARKER,
+                "venue": VENUE_OKX_EUROPE,
+                "venue_binding_lifecycle_contract_version": OKX_EUROPE_ADAPTER_LIFECYCLE_CONTRACT_VERSION,
+            },
+            sort_keys=True,
+            separators=(",", ":"),
+        ).encode("utf-8")
+    ).hexdigest()
+    assert compute_okx_europe_adapter_lifecycle_slot_digest() == expected
+    assert OKX_EUROPE_LIFECYCLE_CONTRACT_VERSION == OKX_EUROPE_ADAPTER_LIFECYCLE_CONTRACT_VERSION
+
+
+def test_okx_europe_adapter_lifecycle_slot_digest_changes_on_version_drift(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    baseline = compute_okx_europe_adapter_lifecycle_slot_digest()
+    monkeypatch.setattr(
+        "src.ops.bounded_futures_testnet_adapter_capability_lifecycle_integration_contract_v0.OKX_EUROPE_LIFECYCLE_CONTRACT_VERSION",
+        "okx_europe_adapter_lifecycle.v0.drift",
+    )
+    drifted = compute_okx_europe_adapter_lifecycle_slot_digest()
+    assert drifted != baseline
+
+
+def test_pe12_lifecycle_matrix_digest_unaffected_by_okx_slot_digest() -> None:
+    before = compute_lifecycle_matrix_digest()
+    compute_okx_europe_adapter_lifecycle_slot_digest()
+    after = compute_lifecycle_matrix_digest()
+    assert before == after
+
+
+def test_okx_europe_slot_digest_does_not_authorize_runtime() -> None:
+    compute_okx_europe_adapter_lifecycle_slot_digest()
+    assert CONTRACT_IMPLEMENTATION_ONLY is True
+    assert OPERATIVE_ADAPTER_VALIDATION_EXECUTED is False
+    assert NETWORK_RUN_STARTED is False
+    assert TESTNET_RUN_STARTED is False
+    assert AUTHORITY_LIFT is False
+    assert GLB012_013_GLOBAL_READINESS is False

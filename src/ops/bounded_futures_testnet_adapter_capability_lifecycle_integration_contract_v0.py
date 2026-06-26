@@ -31,6 +31,14 @@ from src.ops.bounded_futures_testnet_preflight_packet_contract_v0 import (
     FOLLOWUP_RUN_GATE,
     PE12_CONTRACT_VERSION,
 )
+from src.ops.bounded_futures_testnet_venue_binding_v0 import (
+    OKX_EUROPE_ADAPTER_LIFECYCLE_CONTRACT_VERSION,
+    VENUE_OKX_EUROPE,
+)
+from src.ops.okx_europe_adapter_lifecycle_contract_v0 import (
+    CONTRACT_VERSION as OKX_EUROPE_LIFECYCLE_CONTRACT_VERSION,
+    PACKAGE_MARKER as OKX_EUROPE_LIFECYCLE_PACKAGE_MARKER,
+)
 
 PACKAGE_MARKER = "BOUNDED_FUTURES_TESTNET_ADAPTER_CAPABILITY_LIFECYCLE_INTEGRATION_CONTRACT_V0=true"
 CONTRACT_VERSION = "bounded_futures_testnet_adapter_capability_lifecycle_integration.v0"
@@ -163,6 +171,20 @@ def _valid_sha256_digest(value: str) -> bool:
 
 def _valid_commit_sha(value: str) -> bool:
     return bool(_COMMIT_SHA_RE.match(value))
+
+
+def compute_okx_europe_adapter_lifecycle_slot_digest() -> str:
+    """Deterministic digest binding OKX-Europe lifecycle contract to venue binding (not PE-12)."""
+    slot = {
+        "hash_algorithm": HASH_ALGORITHM,
+        "okx_europe_lifecycle_contract_version": OKX_EUROPE_LIFECYCLE_CONTRACT_VERSION,
+        "okx_europe_lifecycle_package_marker": OKX_EUROPE_LIFECYCLE_PACKAGE_MARKER,
+        "venue": VENUE_OKX_EUROPE,
+        "venue_binding_lifecycle_contract_version": OKX_EUROPE_ADAPTER_LIFECYCLE_CONTRACT_VERSION,
+    }
+    return hashlib.sha256(
+        json.dumps(slot, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
 
 
 def compute_lifecycle_matrix_digest() -> str:

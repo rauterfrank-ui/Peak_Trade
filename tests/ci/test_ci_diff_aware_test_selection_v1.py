@@ -3288,6 +3288,36 @@ def test_mapping_file_includes_okx_europe_adapter_lifecycle_focused() -> None:
     assert "okx_europe_adapter_lifecycle_focused:" in text
 
 
+SLICE3_OKX_EUROPE_ADAPTER_CAPABILITY_DIGEST_FILES = (
+    "src/ops/bounded_futures_testnet_adapter_capability_lifecycle_integration_contract_v0.py",
+    "tests/ops/test_bounded_futures_testnet_adapter_capability_lifecycle_integration_contract_v0.py",
+)
+
+
+def test_selector_okx_europe_adapter_lifecycle_slice3_digest_hook_focused() -> None:
+    sel = _run_selector(*SLICE3_OKX_EUROPE_ADAPTER_CAPABILITY_DIGEST_FILES)
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
+    assert sel["test_selection_reason"] == "okx_europe_adapter_lifecycle_focused"
+    targets = _targets(sel)
+    assert SLICE3_OKX_EUROPE_ADAPTER_CAPABILITY_DIGEST_FILES[1] in targets
+    assert "tests/ops/test_okx_europe_adapter_lifecycle_contract_v0.py" in targets
+    assert "tests/ops/test_bounded_futures_testnet_okx_eea_xperp_binding_contract_v0.py" in targets
+    assert (
+        "tests/ops/test_aws_shadow_paper_testnet_okx_europe_compatibility_contract_v0.py" in targets
+    )
+
+
+def test_selector_okx_europe_adapter_lifecycle_slice3_integration_owner_without_test_owner_full() -> (
+    None
+):
+    sel = _run_selector(SLICE3_OKX_EUROPE_ADAPTER_CAPABILITY_DIGEST_FILES[0])
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    assert (
+        sel["test_selection_reason"]
+        == "okx_europe_adapter_lifecycle_incomplete_or_missing_test_owner"
+    )
+
+
 PE54_TINY_ORDER_FILES = (
     "src/ops/bounded_futures_testnet_tiny_order_lifecycle_integration_contract_v0.py",
     "tests/ops/test_bounded_futures_testnet_tiny_order_lifecycle_integration_contract_v0.py",
