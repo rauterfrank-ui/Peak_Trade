@@ -13,6 +13,7 @@ from typing import Any
 from src.ops.bounded_futures_testnet_contract_v0 import FUTURES_SESSION_AUTHORIZED_NOW
 
 PACKAGE_MARKER = "BOUNDED_FUTURES_TESTNET_VENUE_BINDING_CONTRACT_V0=true"
+OKX_EUROPE_ADAPTER_LIFECYCLE_CONTRACT_VERSION = "okx_europe_adapter_lifecycle.v0"
 VENUE_BINDING_NETWORK_CALLS_ALLOWED = False
 VENUE_BINDING_ORDERS_ALLOWED = False
 PROMOTION_ALLOWED = False
@@ -312,6 +313,7 @@ def offline_adapter_capability_descriptor(
         "effective_operational_leverage_cap": effective_operational_leverage_cap(binding.leverage),
         "venue_binding_pass": evaluation["venue_binding_pass"],
         "futures_session_authorized_now": FUTURES_SESSION_AUTHORIZED_NOW,
+        "okx_europe_adapter_lifecycle_contract_version": OKX_EUROPE_ADAPTER_LIFECYCLE_CONTRACT_VERSION,
     }
 
 
