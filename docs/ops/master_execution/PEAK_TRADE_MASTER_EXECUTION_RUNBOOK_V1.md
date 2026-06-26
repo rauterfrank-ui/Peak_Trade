@@ -6,7 +6,7 @@ OWNER=Frank Rauter
 NON_AUTHORIZING=true
 SOURCE_DURABLE_SNAPSHOT=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/peak_trade_master_execution_runbook_v1_20260626T233500Z
 SOURCE_DURABLE_MANIFEST_VERIFY_RC=0
-origin_main: 6b529f19c71c23967636fe398a320ed611285d96
+origin_main: c518f8b8646d1e594e18d640ee14f865c3698c6b
 ---
 
 # Peak_Trade Master Execution Runbook v1
@@ -40,9 +40,9 @@ Reifepipeline: Research → Offline Proof → Shadow → Paper → Testnet → s
 
 | Feld | Wert |
 |------|------|
-| PROGRAM_PHASE | PACKAGE_C_IN_PROGRESS |
-| CURRENT_MAJOR_PACKAGE | PACKAGE_C_DOUBLE_PLAY_DYNAMIC_SCOPE_AND_STATE (**IN_PROGRESS**) |
-| CURRENT_STATUS | PACKAGE_C_C1_CLOSEOUT_COMPLETE |
+| PROGRAM_PHASE | PACKAGE_C_COMPLETE |
+| CURRENT_MAJOR_PACKAGE | PACKAGE_C_DOUBLE_PLAY_DYNAMIC_SCOPE_AND_STATE (**COMPLETE**) |
+| CURRENT_STATUS | PACKAGE_C_COMPLETE_CLOSEOUT_COMPLETE |
 | PACKAGE_A_STATUS | COMPLETE |
 | PACKAGE_B_STATUS | COMPLETE |
 | PACKAGE_B_FINAL_SELECTION_DECISION | PACKAGE_B_FINAL_SELECTED_WITH_BOUNDED_SCOPE_CORRECTION |
@@ -50,16 +50,16 @@ Reifepipeline: Research → Offline Proof → Shadow → Paper → Testnet → s
 | PACKAGE_B_SLICE_B1_STATUS | MERGED_CLOSEOUT_COMPLETE |
 | PACKAGE_B_SLICE_B2_STATUS | MERGED_CLOSEOUT_COMPLETE |
 | PACKAGE_C_STARTED | true |
-| PACKAGE_C_STATUS | IN_PROGRESS |
+| PACKAGE_C_STATUS | COMPLETE |
 | C1_INV045_STATUS | COMPLETE |
-| C2_INV046_STATUS | NOT_STARTED |
+| C2_INV046_STATUS | COMPLETE |
 | PACKAGE_C_GO_GRANTED | false |
 | GO_GRANTED | false |
 | IMPLEMENTATION_STARTED | false |
 | CURRENT_RUN_ACTIVE | false |
-| NEXT_ALLOWED_ACTION | READ_ONLY_OPERATOR_REVIEW_FOR_PACKAGE_C_C2_INV046_SCOPE_NO_IMPLEMENTATION_NO_GO |
+| NEXT_ALLOWED_ACTION | READ_ONLY_OPERATOR_REVIEW_FOR_NEXT_MAJOR_PACKAGE_SCOPE_RANKING_NO_IMPLEMENTATION |
 
-Target Architecture ist im Masterplan abgeschlossen (`MANIFEST_VERIFY_RC=0`). **Package A (INV-021 + INV-048) ist vollständig abgeschlossen**. **Package B (INV-022 + INV-006) ist vollständig abgeschlossen**. **Package C (INV-045 + INV-046) ist gestartet — C1 abgeschlossen, C2 nicht gestartet**; statische Contract-Formalisation only; **kein C2-GO, keine Runtime**.
+Target Architecture ist im Masterplan abgeschlossen (`MANIFEST_VERIFY_RC=0`). **Package A (INV-021 + INV-048) ist vollständig abgeschlossen**. **Package B (INV-022 + INV-006) ist vollständig abgeschlossen**. **Package C (INV-045 + INV-046) ist vollständig abgeschlossen** — C1 und C2 gemergt; statische Contract-Formalisation only; **kein nächstes Package-GO, keine Runtime**.
 
 ## 3. Capability Trains (12)
 
@@ -86,7 +86,7 @@ Target Architecture ist im Masterplan abgeschlossen (`MANIFEST_VERIFY_RC=0`). **
 |---------|-------|------------------|
 | PACKAGE_A_NUMERICAL_TRUST_FOUNDATION | TRAIN_1 | **COMPLETE** — INV-021+048 gemergt; keine Produktions-Verdrahtung |
 | PACKAGE_B_RECONCILIATION_CANONICALIZATION | TRAIN_2 | **COMPLETE** — INV-022+INV-006 gemergt; kein Package-C-GO |
-| PACKAGE_C_DOUBLE_PLAY_DYNAMIC_SCOPE_AND_STATE | TRAIN_3 | **IN_PROGRESS** — C1 (INV-045) gemergt; C2 (INV-046) NOT_STARTED |
+| PACKAGE_C_DOUBLE_PLAY_DYNAMIC_SCOPE_AND_STATE | TRAIN_3 | **COMPLETE** — C1 (INV-045) + C2 (INV-046) gemergt; kein Package-D-GO |
 | PACKAGE_D_CAPITAL_SLOT_RATCHET | TRAIN_4 | Strategic core — INV-007 |
 | PACKAGE_E_RISK_KILLSWITCH_OPERATIVE_COMPLETION | TRAIN_5 | INV-033/008 |
 | PACKAGE_F_DURABLE_RUNTIME_EVIDENCE | TRAIN_6 | INV-016/005 |
@@ -120,7 +120,7 @@ Wave-Reihenfolge: 1=A → 2=B → 3=A ext (INV-003 GO) → 4=C → 5=D → 6=E,F
 - **Reuse-before-new:** bestehende Contract-Owner erweitert; keine parallele Reconciliation-SSOT
 - **PACKAGE_B_STATUS:** COMPLETE | **PACKAGE_B_GO_GRANTED:** false | **kein Wiring, keine Runtime, keine Repair-Authority**
 
-### PACKAGE_C (gestartet — C1 abgeschlossen, C2 nicht gestartet)
+### PACKAGE_C (vollständig abgeschlossen)
 
 - **Operator-Review:** `package_c_double_play_dynamic_scope_state_operator_review_inv045_inv046_v0_20260626T040925Z`, `MANIFEST_VERIFY_RC=0`
 - **Titel:** Double Play Dynamic Scope and State
@@ -128,9 +128,9 @@ Wave-Reihenfolge: 1=A → 2=B → 3=A ext (INV-003 GO) → 4=C → 5=D → 6=E,F
 - **Explizit ausgeschlossen:** produktive Dynamic-Scope-/State-Switch-Verdrahtung, Runtime, Trading-/Promotion-Authority, parallele SSOTs
 - **Slice-Reihenfolge (verbindlich):**
   - **C1 (INV-045):** **MERGED** — PR #4577, Squash `6b529f19`; kanonische Dynamic-Scope-Owner-/Authority-/Import-Boundary-Contracts (contract-only); CI: CONTRACT_FOCUSED / `dynamic_scope_owner_boundary_contract_focused`; keine Produktionsänderung; keine Runtime
-  - **C2 (INV-046):** **NOT_STARTED** — nicht autorisiert; separates read-only Operator-Review erforderlich
+  - **C2 (INV-046):** **MERGED** — PR #4579, Squash `c518f8b8`; state-switch owner/authority/import boundary contract-only; CI: CONTRACT_FOCUSED / `state_switch_owner_boundary_contract_focused`; 7 Owner-Nodes, 9 CI-Targets; keine Produktionsänderung; keine Runtime
 - **Reuse-before-new:** bestehende Contract-Owner erweitert; keine parallele Dynamic-Scope-SSOT
-- **PACKAGE_C_STATUS:** IN_PROGRESS | **C1_INV045_STATUS:** COMPLETE | **C2_INV046_STATUS:** NOT_STARTED | **PACKAGE_C_GO_GRANTED:** false | **kein C2-GO, keine Runtime**
+- **PACKAGE_C_STATUS:** COMPLETE | **C1_INV045_STATUS:** COMPLETE | **C2_INV046_STATUS:** COMPLETE | **PACKAGE_C_GO_GRANTED:** false | **kein nächstes Package-GO, keine Runtime**
 
 ## 5. State Machine (26 Zustände)
 
@@ -155,16 +155,17 @@ Handoff-Payloads: `NEW_CHAT_RESUME_PAYLOAD.md`, `CURSOR_RESUME_PAYLOAD.md` (Dura
 
 ## 8. Operator Checklist (aktuell)
 
-### Nach Package-C-C1-Abschluss (aktuell)
+### Nach Package-C-Abschluss (aktuell)
 
 - [x] Package A (INV-021 + INV-048) vollständig abgeschlossen
 - [x] Package B (INV-022 + INV-006) vollständig abgeschlossen
 - [x] Separates read-only Operator-Review für Package C abgeschlossen (`package_c_double_play_dynamic_scope_state_operator_review_inv045_inv046_v0_20260626T040925Z`)
 - [x] Package-C-Slice C1 (INV-045) gemergt — PR #4577, Squash `6b529f19`; contract-only Dynamic-Scope-Owner-/Authority-/Import-Boundary
-- [x] Fachliches C1-Closeout-Bundle mit `MANIFEST_VERIFY_RC=0`
-- [x] Docs-Closeout-Checkpoint für C1 vorbereitet
-- [ ] Separates read-only Operator-Review für Package-C-Slice C2 (INV-046) — **nicht gestartet**
-- [ ] C2 (INV-046) — **nicht autorisiert**
+- [x] Package-C-Slice C2 (INV-046) gemergt — PR #4579, Squash `c518f8b8`; contract-only State-Switch-Owner-/Authority-/Import-Boundary
+- [x] Fachliche C1- und C2-Closeout-Bundles mit `MANIFEST_VERIFY_RC=0`
+- [x] Docs-Closeout-Checkpoint für C2 vorbereitet
+- [ ] Separates read-only Operator-Review/Ranking für nächsten Major-Package-Scope — **nicht gestartet**
+- [ ] Package D — **nicht autorisiert**
 - [ ] INV-003 wiring, INV-005 testnet, Authority-Lift, Runtime, Engine-Vereinheitlichung, Reconciliation-Wiring weiterhin ausgeschlossen
 
 ## 9. Evidence Index
@@ -191,12 +192,15 @@ Handoff-Payloads: `NEW_CHAT_RESUME_PAYLOAD.md`, `CURSOR_RESUME_PAYLOAD.md` (Dura
 | C1 Implementation `package_c_slice_c1_inv045_dynamic_scope_owner_boundaries_v0_20260626T061200Z` | INV-045 Contract-Formalisation |
 | PR-4577 Closeout `pr4577_package_c_c1_inv045_merge_closeout_v0_20260626T062800Z` | Package C Slice C1 merge closeout |
 | PR-4577 Merge | Package C Slice C1 merge |
+| C2 Implementation `package_c_c2_inv046_state_switch_owner_boundaries_v0_20260626T050040Z` | INV-046 State-Switch Contract-Formalisation |
+| PR-4579 Closeout `pr4579_package_c_c2_inv046_state_switch_squash_merge_closeout_v0_20260626T051500Z` | Package C Slice C2 merge closeout |
+| PR-4579 Merge | Package C Slice C2 merge |
 | Runbook Durable Snapshot `peak_trade_master_execution_runbook_v1_20260626T233500Z` | Unveränderlicher Ursprung |
 
 ## 10. DO_NOT_DO (aktuell)
 
-- C2 (INV-046) ohne separates read-only Operator-Review und explizites GO
-- GO erteilen oder inferieren (insbesondere C2-GO oder Package-C-GO)
+- Package D ohne separates explizites Operator-Review und GO
+- GO erteilen oder inferieren (insbesondere Package-D-GO oder nächstes Package-GO)
 - Engine-Vereinheitlichung, produktives Reconciliation-Wiring, Repair-Authority
 - Runtime, Testnet, Paper, Shadow, Live starten
 - Primären dirty Worktree mutieren
