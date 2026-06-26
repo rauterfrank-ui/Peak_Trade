@@ -6,7 +6,7 @@ OWNER=Frank Rauter
 NON_AUTHORIZING=true
 SOURCE_DURABLE_SNAPSHOT=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/peak_trade_master_execution_runbook_v1_20260626T233500Z
 SOURCE_DURABLE_MANIFEST_VERIFY_RC=0
-origin_main: c518f8b8646d1e594e18d640ee14f865c3698c6b
+origin_main: 148685f2bda737d288634e2e9c55ad0795a45894
 ---
 
 # Peak_Trade Master Execution Runbook v1
@@ -40,9 +40,9 @@ Reifepipeline: Research → Offline Proof → Shadow → Paper → Testnet → s
 
 | Feld | Wert |
 |------|------|
-| PROGRAM_PHASE | PACKAGE_C_COMPLETE |
-| CURRENT_MAJOR_PACKAGE | PACKAGE_C_DOUBLE_PLAY_DYNAMIC_SCOPE_AND_STATE (**COMPLETE**) |
-| CURRENT_STATUS | PACKAGE_C_COMPLETE_CLOSEOUT_COMPLETE |
+| PROGRAM_PHASE | PACKAGE_D_COMPLETE |
+| CURRENT_MAJOR_PACKAGE | PACKAGE_D_CAPITAL_SLOT_RATCHET (**COMPLETE**) |
+| CURRENT_STATUS | PACKAGE_D_COMPLETE_CLOSEOUT_COMPLETE |
 | PACKAGE_A_STATUS | COMPLETE |
 | PACKAGE_B_STATUS | COMPLETE |
 | PACKAGE_B_FINAL_SELECTION_DECISION | PACKAGE_B_FINAL_SELECTED_WITH_BOUNDED_SCOPE_CORRECTION |
@@ -54,12 +54,16 @@ Reifepipeline: Research → Offline Proof → Shadow → Paper → Testnet → s
 | C1_INV045_STATUS | COMPLETE |
 | C2_INV046_STATUS | COMPLETE |
 | PACKAGE_C_GO_GRANTED | false |
+| PACKAGE_D_STARTED | true |
+| PACKAGE_D_STATUS | COMPLETE |
+| D1_INV007_STATUS | COMPLETE |
+| PACKAGE_D_GO_GRANTED | false |
 | GO_GRANTED | false |
 | IMPLEMENTATION_STARTED | false |
 | CURRENT_RUN_ACTIVE | false |
-| NEXT_ALLOWED_ACTION | READ_ONLY_OPERATOR_REVIEW_FOR_NEXT_MAJOR_PACKAGE_SCOPE_RANKING_NO_IMPLEMENTATION |
+| NEXT_ALLOWED_ACTION | READ_ONLY_OPERATOR_REVIEW_FOR_PACKAGE_E_RISK_KILLSWITCH_SCOPE_NO_IMPLEMENTATION_NO_GO |
 
-Target Architecture ist im Masterplan abgeschlossen (`MANIFEST_VERIFY_RC=0`). **Package A (INV-021 + INV-048) ist vollständig abgeschlossen**. **Package B (INV-022 + INV-006) ist vollständig abgeschlossen**. **Package C (INV-045 + INV-046) ist vollständig abgeschlossen** — C1 und C2 gemergt; statische Contract-Formalisation only; **kein nächstes Package-GO, keine Runtime**.
+Target Architecture ist im Masterplan abgeschlossen (`MANIFEST_VERIFY_RC=0`). **Package A (INV-021 + INV-048) ist vollständig abgeschlossen**. **Package B (INV-022 + INV-006) ist vollständig abgeschlossen**. **Package C (INV-045 + INV-046) ist vollständig abgeschlossen**. **Package D (INV-007) ist vollständig abgeschlossen** — D1 gemergt; contract-only Owner-/Authority-/Import-Boundary; keine Produktionssemantikänderung; `double_play_capital_slot.py` unverändert; **kein Package-E-GO, keine Runtime**.
 
 ## 3. Capability Trains (12)
 
@@ -86,8 +90,8 @@ Target Architecture ist im Masterplan abgeschlossen (`MANIFEST_VERIFY_RC=0`). **
 |---------|-------|------------------|
 | PACKAGE_A_NUMERICAL_TRUST_FOUNDATION | TRAIN_1 | **COMPLETE** — INV-021+048 gemergt; keine Produktions-Verdrahtung |
 | PACKAGE_B_RECONCILIATION_CANONICALIZATION | TRAIN_2 | **COMPLETE** — INV-022+INV-006 gemergt; kein Package-C-GO |
-| PACKAGE_C_DOUBLE_PLAY_DYNAMIC_SCOPE_AND_STATE | TRAIN_3 | **COMPLETE** — C1 (INV-045) + C2 (INV-046) gemergt; kein Package-D-GO |
-| PACKAGE_D_CAPITAL_SLOT_RATCHET | TRAIN_4 | Strategic core — INV-007 |
+| PACKAGE_C_DOUBLE_PLAY_DYNAMIC_SCOPE_AND_STATE | TRAIN_3 | **COMPLETE** — C1 (INV-045) + C2 (INV-046) gemergt |
+| PACKAGE_D_CAPITAL_SLOT_RATCHET | TRAIN_4 | **COMPLETE** — INV-007 gemergt; kein Package-E-GO |
 | PACKAGE_E_RISK_KILLSWITCH_OPERATIVE_COMPLETION | TRAIN_5 | INV-033/008 |
 | PACKAGE_F_DURABLE_RUNTIME_EVIDENCE | TRAIN_6 | INV-016/005 |
 | PACKAGE_G_BAYESIAN_EVIDENCE_READONLY_LAYER | TRAIN_7 | **PARKED** — INV-043 |
@@ -132,6 +136,17 @@ Wave-Reihenfolge: 1=A → 2=B → 3=A ext (INV-003 GO) → 4=C → 5=D → 6=E,F
 - **Reuse-before-new:** bestehende Contract-Owner erweitert; keine parallele Dynamic-Scope-SSOT
 - **PACKAGE_C_STATUS:** COMPLETE | **C1_INV045_STATUS:** COMPLETE | **C2_INV046_STATUS:** COMPLETE | **PACKAGE_C_GO_GRANTED:** false | **kein nächstes Package-GO, keine Runtime**
 
+### PACKAGE_D (vollständig abgeschlossen)
+
+- **Operator-Review:** `package_d_inv007_capital_slot_ratchet_owner_boundaries_operator_review_bounded_readonly_v0_20260626T055000Z`, `MANIFEST_VERIFY_RC=0`
+- **Titel:** Capital Slot Ratchet
+- **Enthalten:** INV-007 (Capital-Slot Owner/Authority/Import-Grenzen) — einziger kanonischer Slice
+- **Explizit ausgeschlossen:** produktive Capital-Slot-Verdrahtung, Runtime, Trading-/Promotion-Authority, parallele SSOTs, Produktionssemantikänderung
+- **Slice-Reihenfolge (verbindlich):**
+  - **D1 (INV-007):** **MERGED** — PR #4581, Squash `148685f2`; kanonische Capital-Slot-Owner-/Authority-/Import-Boundary-Contracts (contract-only); CI: CONTRACT_FOCUSED / `capital_slot_owner_boundary_contract_focused`; 7 Owner-Nodes, 9 CI-Targets; keine Produktionsdatei geändert; `double_play_capital_slot.py` unverändert; keine Runtime
+- **Reuse-before-new:** bestehende Contract-Owner erweitert; keine parallele Capital-Slot-SSOT
+- **PACKAGE_D_STATUS:** COMPLETE | **D1_INV007_STATUS:** COMPLETE | **PACKAGE_D_GO_GRANTED:** false | **kein Package-E-GO, keine Runtime**
+
 ## 5. State Machine (26 Zustände)
 
 Fail-closed Guards — vollständige Definition im Durable Snapshot `PROGRAM_STATE_MACHINE.md`.
@@ -155,17 +170,15 @@ Handoff-Payloads: `NEW_CHAT_RESUME_PAYLOAD.md`, `CURSOR_RESUME_PAYLOAD.md` (Dura
 
 ## 8. Operator Checklist (aktuell)
 
-### Nach Package-C-Abschluss (aktuell)
+### Nach Package-D-Abschluss (aktuell)
 
-- [x] Package A (INV-021 + INV-048) vollständig abgeschlossen
-- [x] Package B (INV-022 + INV-006) vollständig abgeschlossen
-- [x] Separates read-only Operator-Review für Package C abgeschlossen (`package_c_double_play_dynamic_scope_state_operator_review_inv045_inv046_v0_20260626T040925Z`)
-- [x] Package-C-Slice C1 (INV-045) gemergt — PR #4577, Squash `6b529f19`; contract-only Dynamic-Scope-Owner-/Authority-/Import-Boundary
-- [x] Package-C-Slice C2 (INV-046) gemergt — PR #4579, Squash `c518f8b8`; contract-only State-Switch-Owner-/Authority-/Import-Boundary
-- [x] Fachliche C1- und C2-Closeout-Bundles mit `MANIFEST_VERIFY_RC=0`
-- [x] Docs-Closeout-Checkpoint für C2 vorbereitet
-- [ ] Separates read-only Operator-Review/Ranking für nächsten Major-Package-Scope — **nicht gestartet**
-- [ ] Package D — **nicht autorisiert**
+- [x] Packages A, B, C, D vollständig abgeschlossen
+- [x] Package-D Operator-Review abgeschlossen (`package_d_inv007_capital_slot_ratchet_owner_boundaries_operator_review_bounded_readonly_v0_20260626T055000Z`)
+- [x] Package-D-Slice D1 (INV-007) gemergt — PR #4581, Squash `148685f2`; contract-only Capital-Slot-Owner-/Authority-/Import-Boundary
+- [x] Fachliches D1-Closeout-Bundle mit `MANIFEST_VERIFY_RC=0`
+- [x] Docs-Closeout-Checkpoint für D1 vorbereitet
+- [ ] Separates read-only Operator-Review für Package E — **nicht gestartet**
+- [ ] Package F — **nicht autorisiert**
 - [ ] INV-003 wiring, INV-005 testnet, Authority-Lift, Runtime, Engine-Vereinheitlichung, Reconciliation-Wiring weiterhin ausgeschlossen
 
 ## 9. Evidence Index
@@ -195,12 +208,16 @@ Handoff-Payloads: `NEW_CHAT_RESUME_PAYLOAD.md`, `CURSOR_RESUME_PAYLOAD.md` (Dura
 | C2 Implementation `package_c_c2_inv046_state_switch_owner_boundaries_v0_20260626T050040Z` | INV-046 State-Switch Contract-Formalisation |
 | PR-4579 Closeout `pr4579_package_c_c2_inv046_state_switch_squash_merge_closeout_v0_20260626T051500Z` | Package C Slice C2 merge closeout |
 | PR-4579 Merge | Package C Slice C2 merge |
+| Operator-Review `package_d_inv007_capital_slot_ratchet_owner_boundaries_operator_review_bounded_readonly_v0_20260626T055000Z` | Finale Package-D-Auswahl |
+| D1 Implementation `package_d_d1_inv007_capital_slot_owner_boundaries_contract_only_v0_20260626T060200Z` | INV-007 Capital-Slot Contract-Formalisation |
+| PR-4581 Closeout `pr4581_package_d_d1_inv007_capital_slot_squash_merge_closeout_v0_20260626T061439Z` | Package D Slice D1 merge closeout |
+| PR-4581 Merge | Package D Slice D1 merge |
 | Runbook Durable Snapshot `peak_trade_master_execution_runbook_v1_20260626T233500Z` | Unveränderlicher Ursprung |
 
 ## 10. DO_NOT_DO (aktuell)
 
-- Package D ohne separates explizites Operator-Review und GO
-- GO erteilen oder inferieren (insbesondere Package-D-GO oder nächstes Package-GO)
+- Package E ohne separates read-only Operator-Review und explizites GO
+- GO erteilen oder inferieren (insbesondere Package-E-GO oder nächstes Package-GO)
 - Engine-Vereinheitlichung, produktives Reconciliation-Wiring, Repair-Authority
 - Runtime, Testnet, Paper, Shadow, Live starten
 - Primären dirty Worktree mutieren
