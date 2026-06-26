@@ -86,14 +86,16 @@ categories:
     mode: FOCUSED
     globs:
       - "src/ops/okx_europe_adapter_lifecycle_contract_v0.py"
+      - "src/ops/bounded_futures_testnet_adapter_capability_lifecycle_integration_contract_v0.py"
       - "tests/ops/test_okx_europe_adapter_lifecycle_contract_v0.py"
+      - "tests/ops/test_bounded_futures_testnet_adapter_capability_lifecycle_integration_contract_v0.py"
       - "tests/ops/test_bounded_futures_testnet_okx_eea_xperp_binding_contract_v0.py"
       - "tests/ops/test_aws_shadow_paper_testnet_okx_europe_compatibility_contract_v0.py"
       - "scripts/ops/ci_test_selection_v1.py"
       - "config/ci/file_category_mapping.yaml"
       - "tests/ci/test_ci_diff_aware_test_selection_v1.py"
     runtime_class: minutes
-    notes: "Bounded OKX Europe adapter lifecycle owner + venue/AWS transitive testowner chain; central_src FULL preserved for unrelated src"
+    notes: "Bounded OKX Europe adapter lifecycle owner + adapter capability digest hook + venue/AWS transitive testowner chain; central_src FULL preserved for unrelated src"
   bounded_futures_testnet_contract_focused:
     mode: FOCUSED
     globs:
