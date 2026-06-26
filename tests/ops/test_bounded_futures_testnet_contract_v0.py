@@ -18,7 +18,9 @@ from src.ops.bounded_futures_testnet_contract_v0 import (
     REJECTED_FUTURES_INSTRUMENT_PLACEHOLDERS,
     REQUIRED_FUTURES_EVIDENCE_FIELD_NAMES,
     SPOT_KRAKEN_ENDPOINT_PREFIXES,
+    ZERO_ORDER_REQUIRED_PUBLIC_ENDPOINTS,
     default_bounded_futures_normal_v0_spec,
+    default_bounded_futures_zero_order_reachability_v0_spec,
     evaluate_bounded_futures_testnet_evidence,
     spot_evidence_misclassified_as_futures,
 )
@@ -179,3 +181,167 @@ def test_btcusdt_placeholder_rejected_in_futures_evidence() -> None:
 
 def test_closeout_review_bundle_suffix_documented_in_test() -> None:
     assert REVIEW_BUNDLE_SUFFIX in Path(__file__).read_text(encoding="utf-8")
+
+
+def _zero_order_network_evidence(**overrides: object) -> dict:
+    evidence = _valid_futures_evidence()
+    evidence.update(
+        {
+            "order_attempt_count": 0,
+            "real_orders_created_count": 0,
+            "cancel_or_close_attempt_count": 0,
+            "request_count": 2,
+            "network_reachability_proven": True,
+            "endpoints_called": list(ZERO_ORDER_REQUIRED_PUBLIC_ENDPOINTS),
+            "network_calls": [
+                {
+                    "endpoint": "/derivatives/api/v3/tickers",
+                    "http_status": 200,
+                    "http_status_class": "2xx",
+                    "response_size_bytes": 32,
+                    "response_sha256": "a" * 64,
+                },
+                {
+                    "endpoint": "/derivatives/api/v3/instruments",
+                    "http_status": 200,
+                    "http_status_class": "2xx",
+                    "response_size_bytes": 36,
+                    "response_sha256": "b" * 64,
+                },
+            ],
+            "pf_xbtusd_symbol_visibility": "visible",
+            "network_host": "https://demo-futures.kraken.com",
+        }
+    )
+    evidence.update(overrides)
+    return evidence
+
+
+def test_zero_order_reachability_success_passes_objective_complete() -> None:
+    spec = default_bounded_futures_zero_order_reachability_v0_spec()
+    result = evaluate_bounded_futures_testnet_evidence(_zero_order_network_evidence(), spec=spec)
+    assert result["bounded_futures_testnet_pass"] is True
+    assert result["zero_order_objective_complete"] is True
+    assert result["next_phase_ready"] is True
+    assert result["network_reachability_pass"] is True
+    assert result["required_public_endpoints_2xx_pass"] is True
+    assert result["bound_instrument_present_pass"] is True
+
+
+def test_zero_order_both_endpoints_503_fail_closed() -> None:
+    spec = default_bounded_futures_zero_order_reachability_v0_spec()
+    evidence = _zero_order_network_evidence(
+        network_reachability_proven=False,
+        network_calls=[
+            {
+                "endpoint": "/derivatives/api/v3/tickers",
+                "http_status": 503,
+                "http_status_class": "5xx",
+                "response_size_bytes": 19,
+                "response_sha256": "c" * 64,
+            },
+            {
+                "endpoint": "/derivatives/api/v3/instruments",
+                "http_status": 503,
+                "http_status_class": "5xx",
+                "response_size_bytes": 19,
+                "response_sha256": "c" * 64,
+            },
+        ],
+        pf_xbtusd_symbol_visibility="response_unparseable",
+    )
+    result = evaluate_bounded_futures_testnet_evidence(evidence, spec=spec)
+    assert result["bounded_futures_testnet_pass"] is False
+    assert result["zero_order_objective_complete"] is False
+    assert result["next_phase_ready"] is False
+    assert result["safety_execution_pass"] is True
+
+
+def test_zero_order_mixed_endpoint_results_fail_closed() -> None:
+    spec = default_bounded_futures_zero_order_reachability_v0_spec()
+    evidence = _zero_order_network_evidence(
+        network_reachability_proven=False,
+        network_calls=[
+            {
+                "endpoint": "/derivatives/api/v3/tickers",
+                "http_status": 200,
+                "http_status_class": "2xx",
+                "response_size_bytes": 32,
+                "response_sha256": "a" * 64,
+            },
+            {
+                "endpoint": "/derivatives/api/v3/instruments",
+                "http_status": 503,
+                "http_status_class": "5xx",
+                "response_size_bytes": 19,
+                "response_sha256": "c" * 64,
+            },
+        ],
+        pf_xbtusd_symbol_visibility="response_unparseable",
+    )
+    result = evaluate_bounded_futures_testnet_evidence(evidence, spec=spec)
+    assert result["bounded_futures_testnet_pass"] is False
+    assert result["zero_order_objective_complete"] is False
+
+
+def test_zero_order_http_429_fail_closed() -> None:
+    spec = default_bounded_futures_zero_order_reachability_v0_spec()
+    evidence = _zero_order_network_evidence(
+        network_reachability_proven=False,
+        network_calls=[
+            {
+                "endpoint": "/derivatives/api/v3/tickers",
+                "http_status": 429,
+                "http_status_class": "4xx",
+                "response_size_bytes": 12,
+                "response_sha256": "d" * 64,
+            },
+            {
+                "endpoint": "/derivatives/api/v3/instruments",
+                "http_status": 429,
+                "http_status_class": "4xx",
+                "response_size_bytes": 12,
+                "response_sha256": "d" * 64,
+            },
+        ],
+        pf_xbtusd_symbol_visibility="response_unparseable",
+    )
+    result = evaluate_bounded_futures_testnet_evidence(evidence, spec=spec)
+    assert result["bounded_futures_testnet_pass"] is False
+
+
+def test_zero_order_invalid_json_fail_closed() -> None:
+    spec = default_bounded_futures_zero_order_reachability_v0_spec()
+    evidence = _zero_order_network_evidence(pf_xbtusd_symbol_visibility="response_unparseable")
+    result = evaluate_bounded_futures_testnet_evidence(evidence, spec=spec)
+    assert result["bounded_futures_testnet_pass"] is False
+    assert result["bound_instrument_present_pass"] is False
+
+
+def test_zero_order_missing_pf_ethusd_fail_closed() -> None:
+    spec = default_bounded_futures_zero_order_reachability_v0_spec()
+    evidence = _zero_order_network_evidence(pf_xbtusd_symbol_visibility="not_visible")
+    result = evaluate_bounded_futures_testnet_evidence(evidence, spec=spec)
+    assert result["bounded_futures_testnet_pass"] is False
+    assert result["bound_instrument_present_pass"] is False
+
+
+def test_zero_order_plan_only_does_not_require_reachability_pass() -> None:
+    spec = default_bounded_futures_zero_order_reachability_v0_spec()
+    evidence = _valid_futures_evidence()
+    evidence.update(
+        {
+            "order_attempt_count": 0,
+            "real_orders_created_count": 0,
+            "cancel_or_close_attempt_count": 0,
+            "request_count": 0,
+            "network_reachability_proven": False,
+            "endpoints_called": [],
+            "pf_xbtusd_symbol_visibility": "not_checked",
+        }
+    )
+    result = evaluate_bounded_futures_testnet_evidence(evidence, spec=spec)
+    assert result["bounded_futures_testnet_pass"] is True
+    assert result["zero_order_objective_complete"] is False
+    assert result["next_phase_ready"] is False
+    assert result["safety_execution_pass"] is True
