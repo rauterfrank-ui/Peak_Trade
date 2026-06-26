@@ -160,9 +160,7 @@ def default_okx_europe_xperp_production_binding(
 
 def venue_capability_exceeds_retail_limit(leverage: LeverageSemantics) -> bool:
     """True when venue-reported capability exceeds the regulatory retail ceiling."""
-    return (
-        leverage.venue_reported_leverage_capability > leverage.regulatory_retail_leverage_limit
-    )
+    return leverage.venue_reported_leverage_capability > leverage.regulatory_retail_leverage_limit
 
 
 def effective_operational_leverage_cap(leverage: LeverageSemantics) -> float:
@@ -252,9 +250,7 @@ def evaluate_okx_europe_xperp_binding(
 
     lev = binding.leverage
     if lev.regulatory_retail_leverage_limit != REGULATORY_MAX_RETAIL_LEVERAGE:
-        fail.append(
-            f"regulatory_retail_leverage_limit must be {REGULATORY_MAX_RETAIL_LEVERAGE!r}"
-        )
+        fail.append(f"regulatory_retail_leverage_limit must be {REGULATORY_MAX_RETAIL_LEVERAGE!r}")
     if lev.runtime_leverage is not None:
         fail.append("runtime_leverage must be unset for offline binding")
     if lev.runtime_leverage_authorized:
@@ -284,9 +280,7 @@ def evaluate_okx_europe_xperp_binding(
     )
     result["leverage_semantics_pass"] = not any("leverage" in r for r in fail)
     result["static_validate_only_pass"] = not any(
-        r
-        for r in fail
-        if "validate_only" in r or "order_attempt" in r or "network_call" in r
+        r for r in fail if "validate_only" in r or "order_attempt" in r or "network_call" in r
     )
     result["xperp_semantics_pass"] = not any(
         r for r in fail if "SWAP" in r or "perpetual" in r or "rule_type" in r or "expiry" in r

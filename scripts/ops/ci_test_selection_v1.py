@@ -898,6 +898,7 @@ REQUIRED_BOUNDED_FUTURES_TESTNET_CONTRACT_TEST_OWNERS: tuple[str, ...] = (
     "tests/ops/test_run_order_capability_dry_validation_adapter_v1.py",
     "tests/ops/test_bounded_futures_testnet_okx_eea_xperp_binding_contract_v0.py",
     AWS_SHADOW_PAPER_TESTNET_OKX_EUROPE_COMPATIBILITY_TEST_OWNER,
+    "tests/ops/test_bounded_futures_testnet_validate_only_lifecycle_integration_contract_v0.py",
 )
 
 CANONICAL_BOUNDED_FUTURES_TESTNET_CONTRACT_FOCUSED_TESTS: tuple[str, ...] = (
