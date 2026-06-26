@@ -1648,7 +1648,7 @@ def test_selector_b2_unknown_dual_owner_combination_stays_fail_closed() -> None:
         "tests/ops/test_bounded_futures_testnet_risk_killswitch_lifecycle_integration_contract_v0.py",
     )
     assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
-    assert sel["test_selection_reason"] == "durable_completion_incomplete_or_missing_test_owner"
+    assert sel["test_selection_reason"] == "durable_completion_foreign_path_requires_full"
 
 
 def test_selector_pe31_durable_completion_binding_nodes_classified_in_manifest() -> None:

@@ -4012,6 +4012,9 @@ def resolve_selection(
             (),
         )
 
+    if any(_is_ci_bootstrap_scoped_path(f) for f in normalized):
+        return SelectionResult("FULL", "ci_bootstrap_mixed_diff_requires_full", ())
+
     if any(_is_master_v2_arithmetic_kernel_seam_scoped_path(f) for f in normalized):
         if not all(_is_master_v2_arithmetic_kernel_seam_rebundle_path(f) for f in normalized):
             return SelectionResult(
@@ -4095,9 +4098,6 @@ def resolve_selection(
         if not all(_is_wallclock_rebundle_path(f) for f in normalized):
             return SelectionResult("FULL", "wallclock_foreign_path_requires_full", ())
         return SelectionResult("FULL", "wallclock_incomplete_or_missing_test_owner", ())
-
-    if any(_is_ci_bootstrap_scoped_path(f) for f in normalized):
-        return SelectionResult("FULL", "ci_bootstrap_mixed_diff_requires_full", ())
 
     if any(_is_ci_infra_scoped_path(f) for f in normalized) and _has_ci_infra_substantive_intent(
         normalized
