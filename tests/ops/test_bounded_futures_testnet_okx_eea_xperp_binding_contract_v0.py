@@ -14,6 +14,7 @@ from src.ops.bounded_futures_testnet_venue_binding_v0 import (
     DEMO_REFERENCE_INSTRUMENT_ID,
     ENVIRONMENT_PRODUCTION_METADATA_OFFLINE,
     LeverageSemantics,
+    OKX_EUROPE_ADAPTER_LIFECYCLE_CONTRACT_VERSION,
     OkxEuropeXperpInstrumentBinding,
     PACKAGE_MARKER,
     PRODUCTION_EXPIRY_DATE,
@@ -53,6 +54,13 @@ def test_package_marker_present() -> None:
     text = Path(__file__).read_text(encoding="utf-8")
     assert TEST_PACKAGE_MARKER in text
     assert PACKAGE_MARKER in VENUE_BINDING_MODULE.read_text(encoding="utf-8")
+
+
+def test_okx_europe_adapter_lifecycle_contract_version_binding() -> None:
+    assert OKX_EUROPE_ADAPTER_LIFECYCLE_CONTRACT_VERSION == "okx_europe_adapter_lifecycle.v0"
+    assert "OKX_EUROPE_ADAPTER_LIFECYCLE_CONTRACT_VERSION" in VENUE_BINDING_MODULE.read_text(
+        encoding="utf-8"
+    )
 
 
 def test_global_inert_flags_remain_false() -> None:
