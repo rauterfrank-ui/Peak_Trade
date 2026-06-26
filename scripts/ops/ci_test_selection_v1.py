@@ -691,6 +691,52 @@ CAPITAL_SLOT_OWNER_BOUNDARY_CONTRACT_CI_SELECTOR_TARGETS: tuple[str, ...] = (
     "tests/ci/test_ci_diff_aware_test_selection_v1.py::test_selector_capital_slot_owner_boundary_contract_foreign_path_escalates_full",
 )
 
+PE22_DURABLE_COMPLETION_BINDING_CONTRACT_TEST_OWNER = (
+    "tests/ops/test_pe22_durable_completion_binding_contract_v0.py"
+)
+
+PE22_DURABLE_COMPLETION_BINDING_CI_POLICY_PATHS = frozenset(
+    {
+        "scripts/ops/ci_test_selection_v1.py",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    }
+)
+
+PE22_DURABLE_COMPLETION_BINDING_SCOPED_PATHS = frozenset(
+    {
+        PE22_DURABLE_COMPLETION_BINDING_CONTRACT_TEST_OWNER,
+        *PE22_DURABLE_COMPLETION_BINDING_CI_POLICY_PATHS,
+    }
+)
+
+PE22_DURABLE_COMPLETION_BINDING_FOCUSED_NODES: tuple[str, ...] = (
+    f"{PE22_DURABLE_COMPLETION_BINDING_CONTRACT_TEST_OWNER}::test_pe22_durable_completion_binding_package_marker_present",
+    f"{PE22_DURABLE_COMPLETION_BINDING_CONTRACT_TEST_OWNER}::test_pe22_durable_completion_canonical_binding_registry_complete",
+    f"{PE22_DURABLE_COMPLETION_BINDING_CONTRACT_TEST_OWNER}::test_pe22_durable_completion_registry_upstream_owner_matches_pe22_contract",
+    f"{PE22_DURABLE_COMPLETION_BINDING_CONTRACT_TEST_OWNER}::test_pe22_durable_completion_dependency_direction_is_downstream_only",
+    f"{PE22_DURABLE_COMPLETION_BINDING_CONTRACT_TEST_OWNER}::test_pe22_durable_completion_sole_canonical_upstream_module_in_completion_facade",
+    f"{PE22_DURABLE_COMPLETION_BINDING_CONTRACT_TEST_OWNER}::test_pe22_durable_completion_completion_chain_validator_imports_canonical_pe22_owner_only",
+    f"{PE22_DURABLE_COMPLETION_BINDING_CONTRACT_TEST_OWNER}::test_pe22_durable_completion_binding_authority_neutral_on_happy_path",
+    f"{PE22_DURABLE_COMPLETION_BINDING_CONTRACT_TEST_OWNER}::test_pe22_source_revision_mismatch_with_completion_input_fails",
+    f"{PE22_DURABLE_COMPLETION_BINDING_CONTRACT_TEST_OWNER}::test_pe22_integration_input_digest_drift_fails",
+    f"{PE22_DURABLE_COMPLETION_BINDING_CONTRACT_TEST_OWNER}::test_pe22_integration_owner_mismatch_fails",
+    f"{PE22_DURABLE_COMPLETION_BINDING_CONTRACT_TEST_OWNER}::test_pe22_referenced_upstream_digest_drift_in_completion_chain_fails",
+    f"{PE22_DURABLE_COMPLETION_BINDING_CONTRACT_TEST_OWNER}::test_pe22_completion_binding_source_revision_consistent_on_happy_path",
+    f"{PE22_DURABLE_COMPLETION_BINDING_CONTRACT_TEST_OWNER}::test_graph_pe22_canonical_binding_registry_aligns_with_integration_owner",
+    f"{PE22_DURABLE_COMPLETION_BINDING_CONTRACT_TEST_OWNER}::test_graph_completion_chain_validator_imports_canonical_pe22_owner_only",
+    f"{PE22_DURABLE_COMPLETION_BINDING_CONTRACT_TEST_OWNER}::test_graph_completion_chain_validator_is_canonical_pe22_binding_entrypoint",
+    f"{PE22_DURABLE_COMPLETION_BINDING_CONTRACT_TEST_OWNER}::test_graph_pe22_binding_authority_neutral_on_happy_path",
+    f"{PE22_DURABLE_COMPLETION_BINDING_CONTRACT_TEST_OWNER}::test_graph_pe22_source_revision_drift_fail_closed_via_completion_chain_validator",
+    f"{PE22_DURABLE_COMPLETION_BINDING_CONTRACT_TEST_OWNER}::test_graph_pe22_integration_input_digest_drift_fail_closed",
+    f"{PE22_DURABLE_COMPLETION_BINDING_CONTRACT_TEST_OWNER}::test_graph_pe22_referenced_proof_digest_drift_in_completion_chain_fail_closed",
+    f"{PE22_DURABLE_COMPLETION_BINDING_CONTRACT_TEST_OWNER}::test_graph_pe22_completion_chain_digest_alignment_fail_closed",
+)
+
+PE22_DURABLE_COMPLETION_BINDING_CI_SELECTOR_TARGETS: tuple[str, ...] = (
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py::test_selector_pe22_durable_completion_binding_contract_test_only_focused",
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py::test_selector_pe22_durable_completion_binding_contract_foreign_path_escalates_full",
+)
+
 MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_BOUNDARY_CONTRACT_TEST_OWNER = (
     "tests/ops/test_master_v2_arithmetic_decimal_float_conversion_boundary_contract_v0.py"
 )
@@ -3054,6 +3100,57 @@ def _try_capital_slot_owner_boundary_contract_focused(
     )
 
 
+def _is_pe22_durable_completion_binding_scoped_path(path: str) -> bool:
+    return path in PE22_DURABLE_COMPLETION_BINDING_SCOPED_PATHS
+
+
+def _is_pe22_durable_completion_binding_rebundle_path(path: str) -> bool:
+    return _is_pe22_durable_completion_binding_scoped_path(path)
+
+
+def _is_pe22_durable_completion_binding_scope(files: list[str]) -> bool:
+    if not files:
+        return False
+    files_set = set(files)
+    if PE22_DURABLE_COMPLETION_BINDING_CONTRACT_TEST_OWNER not in files_set:
+        return False
+    return all(path in PE22_DURABLE_COMPLETION_BINDING_SCOPED_PATHS for path in files)
+
+
+def _pe22_durable_completion_binding_focused_targets(
+    files: list[str] | None = None,
+) -> tuple[str, ...]:
+    if not _repo_path_exists(PE22_DURABLE_COMPLETION_BINDING_CONTRACT_TEST_OWNER):
+        return ()
+    targets: list[str] = []
+    for node in PE22_DURABLE_COMPLETION_BINDING_FOCUSED_NODES:
+        if _repo_pytest_target_exists(node):
+            targets.append(node)
+    if len(targets) != len(PE22_DURABLE_COMPLETION_BINDING_FOCUSED_NODES):
+        return ()
+    if files and any(path in PE22_DURABLE_COMPLETION_BINDING_CI_POLICY_PATHS for path in files):
+        for ci_target in PE22_DURABLE_COMPLETION_BINDING_CI_SELECTOR_TARGETS:
+            if _repo_pytest_target_exists(ci_target):
+                targets.append(ci_target)
+    return tuple(sorted(set(targets)))
+
+
+def _try_pe22_durable_completion_binding_contract_focused(
+    files: list[str],
+) -> SelectionResult | None:
+    if not _is_pe22_durable_completion_binding_scope(files):
+        return None
+    targets = _pe22_durable_completion_binding_focused_targets(files)
+    if not targets:
+        return None
+    return SelectionResult(
+        "FOCUSED",
+        "pe22_durable_completion_binding_focused",
+        targets,
+        (),
+    )
+
+
 def _is_master_v2_arithmetic_decimal_float_conversion_boundary_scoped_path(path: str) -> bool:
     return path in MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_BOUNDARY_CONTRACT_SCOPED_PATHS
 
@@ -4145,6 +4242,12 @@ def resolve_selection(
     if capital_slot_owner_boundary is not None:
         return capital_slot_owner_boundary
 
+    pe22_durable_completion_binding = _try_pe22_durable_completion_binding_contract_focused(
+        normalized
+    )
+    if pe22_durable_completion_binding is not None:
+        return pe22_durable_completion_binding
+
     master_v2_arithmetic_decimal_float_conversion_boundary = (
         _try_master_v2_arithmetic_decimal_float_conversion_boundary_contract_focused(normalized)
     )
@@ -4404,6 +4507,19 @@ def resolve_selection(
         return SelectionResult(
             "FULL",
             "capital_slot_owner_boundary_contract_incomplete_or_missing_test_owner",
+            (),
+        )
+
+    if any(_is_pe22_durable_completion_binding_scoped_path(f) for f in normalized):
+        if not all(_is_pe22_durable_completion_binding_rebundle_path(f) for f in normalized):
+            return SelectionResult(
+                "FULL",
+                "pe22_durable_completion_binding_foreign_path_requires_full",
+                (),
+            )
+        return SelectionResult(
+            "FULL",
+            "pe22_durable_completion_binding_incomplete_or_missing_test_owner",
             (),
         )
 

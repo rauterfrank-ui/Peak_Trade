@@ -3939,6 +3939,65 @@ def test_selector_capital_slot_owner_boundary_contract_foreign_path_escalates_fu
     )
 
 
+PE22_DURABLE_COMPLETION_BINDING_CONTRACT_TEST_OWNER = (
+    "tests/ops/test_pe22_durable_completion_binding_contract_v0.py"
+)
+
+PE22_DURABLE_COMPLETION_BINDING_NODE_IDS = (
+    "test_pe22_durable_completion_binding_package_marker_present",
+    "test_pe22_durable_completion_canonical_binding_registry_complete",
+    "test_pe22_durable_completion_registry_upstream_owner_matches_pe22_contract",
+    "test_pe22_durable_completion_dependency_direction_is_downstream_only",
+    "test_pe22_durable_completion_sole_canonical_upstream_module_in_completion_facade",
+    "test_pe22_durable_completion_completion_chain_validator_imports_canonical_pe22_owner_only",
+    "test_pe22_durable_completion_binding_authority_neutral_on_happy_path",
+    "test_pe22_source_revision_mismatch_with_completion_input_fails",
+    "test_pe22_integration_input_digest_drift_fails",
+    "test_pe22_integration_owner_mismatch_fails",
+    "test_pe22_referenced_upstream_digest_drift_in_completion_chain_fails",
+    "test_pe22_completion_binding_source_revision_consistent_on_happy_path",
+    "test_graph_pe22_canonical_binding_registry_aligns_with_integration_owner",
+    "test_graph_completion_chain_validator_imports_canonical_pe22_owner_only",
+    "test_graph_completion_chain_validator_is_canonical_pe22_binding_entrypoint",
+    "test_graph_pe22_binding_authority_neutral_on_happy_path",
+    "test_graph_pe22_source_revision_drift_fail_closed_via_completion_chain_validator",
+    "test_graph_pe22_integration_input_digest_drift_fail_closed",
+    "test_graph_pe22_referenced_proof_digest_drift_in_completion_chain_fail_closed",
+    "test_graph_pe22_completion_chain_digest_alignment_fail_closed",
+)
+
+
+def test_selector_pe22_durable_completion_binding_contract_test_only_focused() -> None:
+    sel = _run_selector(PE22_DURABLE_COMPLETION_BINDING_CONTRACT_TEST_OWNER)
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
+    assert sel["test_selection_reason"] == "pe22_durable_completion_binding_focused"
+    assert sel["tests_execute_full"] == "false"
+    assert sel["tests_execute_focused"] == "true"
+    assert sel["tests_execute_no_op"] == "false"
+    assert "pe31_durable_completion_binding" not in sel["test_selection_reason"]
+    targets = _targets(sel)
+    assert len([t for t in targets if "::test_" in t]) == 20
+    for node_id in PE22_DURABLE_COMPLETION_BINDING_NODE_IDS:
+        assert any(t.endswith(f"::{node_id}") for t in targets), node_id
+    assert (
+        f"{PE22_DURABLE_COMPLETION_BINDING_CONTRACT_TEST_OWNER}::test_pe22_durable_completion_binding_authority_neutral_on_happy_path"
+        in targets
+    )
+    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" not in targets
+
+
+def test_selector_pe22_durable_completion_binding_contract_foreign_path_escalates_full() -> None:
+    sel = _run_selector(
+        PE22_DURABLE_COMPLETION_BINDING_CONTRACT_TEST_OWNER,
+        "src/ops/bounded_futures_testnet_pilot_envelope_lifecycle_integration_contract_v0.py",
+    )
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    assert (
+        sel["test_selection_reason"] == "pe22_durable_completion_binding_foreign_path_requires_full"
+    )
+    assert "pe31_durable_completion_binding" not in sel["test_selection_reason"]
+
+
 MASTER_V2_ARITHMETIC_DECIMAL_FLOAT_CONVERSION_BOUNDARY_CONTRACT_TEST_OWNER = (
     "tests/ops/test_master_v2_arithmetic_decimal_float_conversion_boundary_contract_v0.py"
 )
