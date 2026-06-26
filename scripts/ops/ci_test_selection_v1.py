@@ -874,6 +874,7 @@ REQUIRED_PREFLIGHT_ASSEMBLY_TEST_OWNERS: tuple[str, ...] = (
 )
 
 BOUNDED_FUTURES_TESTNET_CONTRACT_OWNER = "src/ops/bounded_futures_testnet_contract_v0.py"
+BOUNDED_FUTURES_TESTNET_VENUE_BINDING_OWNER = "src/ops/bounded_futures_testnet_venue_binding_v0.py"
 
 BOUNDED_FUTURES_TESTNET_CONTRACT_CI_POLICY_PATHS = frozenset(
     {
@@ -889,6 +890,7 @@ REQUIRED_BOUNDED_FUTURES_TESTNET_CONTRACT_TEST_OWNERS: tuple[str, ...] = (
     "tests/ops/test_order_capability_dry_validation_contract_v1.py",
     "tests/ops/test_archive_futures_testnet_harness_v0.py",
     "tests/ops/test_run_order_capability_dry_validation_adapter_v1.py",
+    "tests/ops/test_bounded_futures_testnet_okx_eea_xperp_binding_contract_v0.py",
 )
 
 CANONICAL_BOUNDED_FUTURES_TESTNET_CONTRACT_FOCUSED_TESTS: tuple[str, ...] = (
@@ -2254,6 +2256,8 @@ def _preflight_assembly_focused_targets() -> tuple[str, ...]:
 def _is_bounded_futures_testnet_contract_scoped_path(path: str) -> bool:
     if path == BOUNDED_FUTURES_TESTNET_CONTRACT_OWNER:
         return True
+    if path == BOUNDED_FUTURES_TESTNET_VENUE_BINDING_OWNER:
+        return True
     return path in REQUIRED_BOUNDED_FUTURES_TESTNET_CONTRACT_TEST_OWNERS
 
 
@@ -2731,7 +2735,10 @@ def _try_bounded_futures_testnet_contract_focused(files: list[str]) -> Selection
     targets = _bounded_futures_testnet_contract_focused_targets()
     if not targets:
         return None
-    modules: tuple[str, ...] = ("src.ops.bounded_futures_testnet_contract_v0",)
+    modules: tuple[str, ...] = (
+        "src.ops.bounded_futures_testnet_contract_v0",
+        "src.ops.bounded_futures_testnet_venue_binding_v0",
+    )
     return SelectionResult(
         "FOCUSED",
         "bounded_futures_testnet_contract_focused",
