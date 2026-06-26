@@ -18,6 +18,10 @@ from typing import Final
 
 INTEGRATION_TEST_OWNER: Final = "tests/ops/test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py"
 
+DURABLE_COMPLETION_VALIDATION_GRAPH_TEST_OWNER: Final = (
+    "tests/ops/test_durable_completion_validation_graph_v1.py"
+)
+
 COMPLETION_FACADE_PATH: Final = "src/ops/bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0.py"
 
 CORE_ALWAYS_PARTITIONS: Final[tuple[str, ...]] = (
@@ -33,6 +37,7 @@ ALL_PARTITIONS: Final[tuple[str, ...]] = (
     "core_cross_chain",
     "pe21_reconciliation",
     "pe31_review",
+    "pe31_durable_completion_binding",
     "pe33_pr_smoke",
     "pe33_cross_slice_exhaustive",
     "pe22_risk_killswitch",
@@ -57,6 +62,36 @@ PE33_PR_SMOKE_NODE_IDS: Final[tuple[str, ...]] = (
 PE33_EXHAUSTIVE_OWNER: Final = INTEGRATION_TEST_OWNER
 
 _PE33_PR_SMOKE_NODE_ID_SET: Final[frozenset[str]] = frozenset(PE33_PR_SMOKE_NODE_IDS)
+
+PE31_DURABLE_COMPLETION_BINDING_INTEGRATION_NODE_IDS: Final[tuple[str, ...]] = (
+    "test_pe31_durable_completion_binding_package_marker_present",
+    "test_pe31_durable_completion_canonical_binding_registry_complete",
+    "test_pe31_durable_completion_registry_upstream_owner_matches_pe31_contract",
+    "test_pe31_durable_completion_dependency_direction_is_downstream_only",
+    "test_pe31_durable_completion_sole_canonical_upstream_module_in_completion_facade",
+    "test_pe31_durable_completion_graph_validator_imports_canonical_pe31_owner_only",
+    "test_pe31_durable_completion_binding_authority_neutral_on_happy_path",
+    "test_pe31_source_revision_mismatch_with_completion_input_fails",
+    "test_pe31_integration_input_digest_drift_fails",
+    "test_pe31_integration_owner_mismatch_fails",
+    "test_pe31_referenced_pe21_digest_drift_in_completion_chain_fails",
+    "test_pe31_completion_binding_source_revision_consistent_on_happy_path",
+)
+
+PE31_DURABLE_COMPLETION_BINDING_GRAPH_NODE_IDS: Final[tuple[str, ...]] = (
+    "test_graph_pe31_canonical_binding_registry_aligns_with_integration_owner",
+    "test_graph_reconciliation_validator_imports_canonical_pe31_owner_only",
+    "test_graph_reconciliation_validator_is_canonical_pe31_binding_entrypoint",
+    "test_graph_pe31_binding_authority_neutral_on_happy_path",
+    "test_graph_pe31_source_revision_drift_fail_closed_via_reconciliation_validator",
+    "test_graph_pe31_integration_input_digest_drift_fail_closed",
+    "test_graph_pe31_referenced_pe21_digest_drift_in_completion_chain_fail_closed",
+    "test_graph_pe31_completion_chain_digest_alignment_fail_closed",
+)
+
+_PE31_DURABLE_COMPLETION_BINDING_INTEGRATION_NODE_ID_SET: Final[frozenset[str]] = frozenset(
+    PE31_DURABLE_COMPLETION_BINDING_INTEGRATION_NODE_IDS
+)
 
 _NODE_ID_RE = re.compile(r"<Function (test_[^>]+)>")
 
@@ -141,6 +176,9 @@ def classify_integration_node_id(node_id: str) -> str:
 
     if "pe25" in base:
         return "pe25_closure"
+
+    if base in _PE31_DURABLE_COMPLETION_BINDING_INTEGRATION_NODE_ID_SET:
+        return "pe31_durable_completion_binding"
 
     if "pe31" in base:
         return "pe31_review"
@@ -251,6 +289,26 @@ def expand_pe33_pr_smoke_pytest_targets() -> tuple[str, ...]:
     )
 
 
+def expand_pe31_durable_completion_binding_integration_pytest_targets() -> tuple[str, ...]:
+    """Manifest-only expansion for PE-31 durable-completion binding integration nodes."""
+    return tuple(
+        sorted(
+            f"{INTEGRATION_TEST_OWNER}::{node_id}"
+            for node_id in PE31_DURABLE_COMPLETION_BINDING_INTEGRATION_NODE_IDS
+        )
+    )
+
+
+def expand_pe31_durable_completion_binding_graph_pytest_targets() -> tuple[str, ...]:
+    """Manifest-only expansion for PE-31 durable-completion binding graph nodes."""
+    return tuple(
+        sorted(
+            f"{DURABLE_COMPLETION_VALIDATION_GRAPH_TEST_OWNER}::{node_id}"
+            for node_id in PE31_DURABLE_COMPLETION_BINDING_GRAPH_NODE_IDS
+        )
+    )
+
+
 def expand_partitions_to_pytest_targets(partitions: frozenset[str]) -> tuple[str, ...]:
     inventory = integration_partition_inventory()
     node_ids: set[str] = set()
@@ -275,6 +333,12 @@ def partitions_for_changed_files(changed_files: list[str]) -> frozenset[str] | N
     partitions: set[str] = set(CORE_ALWAYS_PARTITIONS)
 
     prod_files = {f for f in files if f.startswith("src/")}
+    if (
+        INTEGRATION_TEST_OWNER in files
+        and DURABLE_COMPLETION_VALIDATION_GRAPH_TEST_OWNER in files
+        and not prod_files
+    ):
+        return frozenset({*CORE_ALWAYS_PARTITIONS, "pe31_durable_completion_binding"})
     if INTEGRATION_TEST_OWNER in files and not prod_files:
         return None
 

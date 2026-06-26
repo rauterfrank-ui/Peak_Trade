@@ -1554,6 +1554,114 @@ def test_selector_pe33_nodes_classified_in_inventory() -> None:
     )
 
 
+B2_PE31_DURABLE_COMPLETION_BINDING_TEST_ONLY_DUAL_OWNER_FILES = (
+    _INTEGRATION_OWNER,
+    _GRAPH_OWNER,
+)
+
+B2_PE31_DURABLE_COMPLETION_BINDING_INTEGRATION_NODE_IDS = (
+    "test_pe31_durable_completion_binding_package_marker_present",
+    "test_pe31_durable_completion_canonical_binding_registry_complete",
+    "test_pe31_durable_completion_registry_upstream_owner_matches_pe31_contract",
+    "test_pe31_durable_completion_dependency_direction_is_downstream_only",
+    "test_pe31_durable_completion_sole_canonical_upstream_module_in_completion_facade",
+    "test_pe31_durable_completion_graph_validator_imports_canonical_pe31_owner_only",
+    "test_pe31_durable_completion_binding_authority_neutral_on_happy_path",
+    "test_pe31_source_revision_mismatch_with_completion_input_fails",
+    "test_pe31_integration_input_digest_drift_fails",
+    "test_pe31_integration_owner_mismatch_fails",
+    "test_pe31_referenced_pe21_digest_drift_in_completion_chain_fails",
+    "test_pe31_completion_binding_source_revision_consistent_on_happy_path",
+)
+
+B2_PE31_DURABLE_COMPLETION_BINDING_GRAPH_NODE_IDS = (
+    "test_graph_pe31_canonical_binding_registry_aligns_with_integration_owner",
+    "test_graph_reconciliation_validator_imports_canonical_pe31_owner_only",
+    "test_graph_reconciliation_validator_is_canonical_pe31_binding_entrypoint",
+    "test_graph_pe31_binding_authority_neutral_on_happy_path",
+    "test_graph_pe31_source_revision_drift_fail_closed_via_reconciliation_validator",
+    "test_graph_pe31_integration_input_digest_drift_fail_closed",
+    "test_graph_pe31_referenced_pe21_digest_drift_in_completion_chain_fail_closed",
+    "test_graph_pe31_completion_chain_digest_alignment_fail_closed",
+)
+
+
+def test_selector_b2_pe31_durable_completion_binding_test_only_dual_owner_bounded() -> None:
+    from scripts.ops.durable_completion_integration_partitions_v0 import (
+        partitions_for_changed_files,
+    )
+
+    sel = _run_selector(*B2_PE31_DURABLE_COMPLETION_BINDING_TEST_ONLY_DUAL_OWNER_FILES)
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
+    assert sel["test_selection_reason"] == "durable_completion_focused"
+    assert sel["tests_execute_full"] == "false"
+    partition_selection = partitions_for_changed_files(
+        list(B2_PE31_DURABLE_COMPLETION_BINDING_TEST_ONLY_DUAL_OWNER_FILES)
+    )
+    assert partition_selection is not None
+    assert "pe31_durable_completion_binding" in partition_selection
+    targets = _targets(sel)
+    assert _INTEGRATION_OWNER not in targets
+    assert _GRAPH_OWNER not in targets
+    integration_nodes = [t for t in targets if t.startswith(f"{_INTEGRATION_OWNER}::")]
+    graph_nodes = [t for t in targets if t.startswith(f"{_GRAPH_OWNER}::")]
+    assert integration_nodes
+    assert graph_nodes
+    for node_id in B2_PE31_DURABLE_COMPLETION_BINDING_INTEGRATION_NODE_IDS:
+        assert f"{_INTEGRATION_OWNER}::{node_id}" in targets
+    for node_id in B2_PE31_DURABLE_COMPLETION_BINDING_GRAPH_NODE_IDS:
+        assert f"{_GRAPH_OWNER}::{node_id}" in targets
+    assert len(integration_nodes) + len(graph_nodes) < 200
+
+
+def test_fast_lane_b2_pe31_durable_completion_binding_bounded() -> None:
+    sel = _run_selector(*B2_PE31_DURABLE_COMPLETION_BINDING_TEST_ONLY_DUAL_OWNER_FILES)
+    assert sel["fast_lane_contract_mode"] == "DURABLE_COMPLETION_BOUNDED"
+    assert sel["fast_lane_contract_reason"] == "durable_completion_bounded_partition"
+    fast_lane_targets = _fast_lane_targets(sel)
+    assert _INTEGRATION_OWNER not in fast_lane_targets
+    assert _GRAPH_OWNER not in fast_lane_targets
+    for node_id in B2_PE31_DURABLE_COMPLETION_BINDING_INTEGRATION_NODE_IDS:
+        assert f"{_INTEGRATION_OWNER}::{node_id}" in fast_lane_targets
+    for node_id in B2_PE31_DURABLE_COMPLETION_BINDING_GRAPH_NODE_IDS:
+        assert f"{_GRAPH_OWNER}::{node_id}" in fast_lane_targets
+    assert len(fast_lane_targets) <= 30
+
+
+def test_selector_b2_file1_alone_stays_pr_bounded_full() -> None:
+    sel = _run_selector(_INTEGRATION_OWNER)
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    assert sel["test_selection_reason"] == "durable_completion_incomplete_or_missing_test_owner"
+    assert sel["fast_lane_contract_mode"] == "FULL_STATIC_CONTRACTS"
+
+
+def test_selector_b2_file2_alone_stays_graph_focused() -> None:
+    sel = _run_selector(_GRAPH_OWNER)
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
+    assert sel["test_selection_reason"] == "durable_completion_validation_graph_focused"
+    assert sel["fast_lane_contract_mode"] == "DURABLE_COMPLETION_BOUNDED"
+
+
+def test_selector_b2_unknown_dual_owner_combination_stays_fail_closed() -> None:
+    sel = _run_selector(
+        _INTEGRATION_OWNER,
+        "tests/ops/test_bounded_futures_testnet_risk_killswitch_lifecycle_integration_contract_v0.py",
+    )
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    assert sel["test_selection_reason"] == "durable_completion_foreign_path_requires_full"
+
+
+def test_selector_pe31_durable_completion_binding_nodes_classified_in_manifest() -> None:
+    from scripts.ops.durable_completion_integration_partitions_v0 import (
+        PE31_DURABLE_COMPLETION_BINDING_INTEGRATION_NODE_IDS,
+        classify_integration_node_id,
+    )
+
+    for node in PE31_DURABLE_COMPLETION_BINDING_INTEGRATION_NODE_IDS:
+        assert classify_integration_node_id(node) == "pe31_durable_completion_binding"
+    assert classify_integration_node_id("test_pe31_proof_mismatch_fails") == "pe31_review"
+
+
 def test_selector_pe21_prod_owner_partitioned_integration_nodes() -> None:
     sel = _run_selector(
         "src/ops/bounded_futures_testnet_position_order_reconciliation_primary_evidence_integration_contract_v0.py",

@@ -108,6 +108,8 @@ from scripts.ops.durable_completion_integration_partitions_v0 import (  # noqa: 
     evaluate_glb019_a2b_change_contract,
     expand_partitions_to_pytest_targets,
     expand_pe33_pr_smoke_pytest_targets,
+    expand_pe31_durable_completion_binding_graph_pytest_targets,
+    expand_pe31_durable_completion_binding_integration_pytest_targets,
     integration_owner_node_count,
     integration_partition_inventory,
     is_glb019_a2b_structural_contract_candidate,
@@ -1466,6 +1468,33 @@ def _partition_selection_uses_pe33_pr_smoke(partition_selection: frozenset[str])
     return "pe33_pr_smoke" in partition_selection
 
 
+def _partition_selection_uses_pe31_durable_completion_binding(
+    partition_selection: frozenset[str],
+) -> bool:
+    return "pe31_durable_completion_binding" in partition_selection
+
+
+def _durable_completion_pe31_durable_completion_binding_integration_targets() -> tuple[str, ...]:
+    try:
+        return expand_pe31_durable_completion_binding_integration_pytest_targets()
+    except (KeyError, RuntimeError, OSError, ValueError):
+        return ()
+
+
+def _durable_completion_pe31_durable_completion_binding_graph_targets() -> tuple[str, ...]:
+    try:
+        return expand_pe31_durable_completion_binding_graph_pytest_targets()
+    except (KeyError, RuntimeError, OSError, ValueError):
+        return ()
+
+
+def _durable_completion_pe31_durable_completion_binding_core_targets() -> tuple[str, ...]:
+    try:
+        return expand_partitions_to_pytest_targets(frozenset(CORE_ALWAYS_PARTITIONS))
+    except (KeyError, RuntimeError, OSError, ValueError):
+        return ()
+
+
 def _durable_completion_fast_lane_master_v2_event_stream_happy_path_targets(
     files: list[str],
 ) -> tuple[str, ...]:
@@ -1501,6 +1530,16 @@ def _durable_completion_fast_lane_bounded_targets(files: list[str]) -> tuple[str
         if not smoke_targets:
             return ()
         targets.update(smoke_targets)
+        return tuple(sorted(targets))
+    if _partition_selection_uses_pe31_durable_completion_binding(partition_selection):
+        binding_integration = (
+            _durable_completion_pe31_durable_completion_binding_integration_targets()
+        )
+        binding_graph = _durable_completion_pe31_durable_completion_binding_graph_targets()
+        if not binding_integration or not binding_graph:
+            return ()
+        targets.update(binding_integration)
+        targets.update(binding_graph)
         return tuple(sorted(targets))
     master_v2_targets = _durable_completion_fast_lane_master_v2_event_stream_happy_path_targets(
         files
@@ -1976,6 +2015,14 @@ def _durable_completion_focused_targets(
         if _partition_selection_uses_pe33_pr_smoke(partition_selection):
             targets.extend(_durable_completion_normal_pr_graph_structure_targets())
             targets.extend(_durable_completion_pe33_pr_smoke_pytest_targets())
+            return tuple(sorted(set(targets)))
+        if _partition_selection_uses_pe31_durable_completion_binding(partition_selection):
+            targets.extend(_durable_completion_pe31_durable_completion_binding_core_targets())
+            targets.extend(
+                _durable_completion_pe31_durable_completion_binding_integration_targets()
+            )
+            targets.extend(_durable_completion_pe31_durable_completion_binding_graph_targets())
+            targets.extend(_durable_completion_normal_pr_graph_structure_targets())
             return tuple(sorted(set(targets)))
         selected_nodes = partition_union_node_count(partition_selection)
         if selected_nodes >= integration_owner_node_count():
@@ -3965,6 +4012,9 @@ def resolve_selection(
             (),
         )
 
+    if any(_is_ci_bootstrap_scoped_path(f) for f in normalized):
+        return SelectionResult("FULL", "ci_bootstrap_mixed_diff_requires_full", ())
+
     if any(_is_master_v2_arithmetic_kernel_seam_scoped_path(f) for f in normalized):
         if not all(_is_master_v2_arithmetic_kernel_seam_rebundle_path(f) for f in normalized):
             return SelectionResult(
@@ -4048,9 +4098,6 @@ def resolve_selection(
         if not all(_is_wallclock_rebundle_path(f) for f in normalized):
             return SelectionResult("FULL", "wallclock_foreign_path_requires_full", ())
         return SelectionResult("FULL", "wallclock_incomplete_or_missing_test_owner", ())
-
-    if any(_is_ci_bootstrap_scoped_path(f) for f in normalized):
-        return SelectionResult("FULL", "ci_bootstrap_mixed_diff_requires_full", ())
 
     if any(_is_ci_infra_scoped_path(f) for f in normalized) and _has_ci_infra_substantive_intent(
         normalized
