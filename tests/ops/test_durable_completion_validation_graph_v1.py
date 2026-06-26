@@ -54,6 +54,7 @@ from src.ops.durable_completion_validation.validators.recovery import (
 )
 from src.ops.durable_completion_validation.validators.reconciliation import (
     validate_pe21_reconciliation_result_manifest_integrity,
+    validate_pe31_integration_proof,
     validate_reconciliation_proof_binding,
 )
 from src.ops.durable_completion_validation.validators.traceability import (
@@ -672,6 +673,155 @@ def test_evaluate_graph_compatibility_pe31_mismatch_fails() -> None:
     result = evaluate_durable_run_primary_evidence_completion_integration(broken)
     assert result["integration_pass"] is False
     assert any("pe31_proof" in reason for reason in result["fail_reasons"])
+
+
+def test_graph_pe31_canonical_binding_registry_aligns_with_integration_owner() -> None:
+    from tests.ops.test_bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0 import (
+        DURABLE_COMPLETION_CANONICAL_OWNER_PATH,
+        DURABLE_COMPLETION_RECONCILIATION_VALIDATOR_PATH,
+        PE31_CANONICAL_OWNER_PATH,
+        PE31_DURABLE_COMPLETION_BINDING_PACKAGE_MARKER,
+        PE31_DURABLE_COMPLETION_CANONICAL_BINDING_REGISTRY,
+        PE31_DURABLE_COMPLETION_DEPENDENCY_DIRECTION,
+    )
+
+    assert PE31_DURABLE_COMPLETION_BINDING_PACKAGE_MARKER.endswith("=true")
+    assert len(PE31_DURABLE_COMPLETION_CANONICAL_BINDING_REGISTRY) == 3
+    assert PE31_DURABLE_COMPLETION_CANONICAL_BINDING_REGISTRY[0]["owner_path"] == (
+        PE31_CANONICAL_OWNER_PATH
+    )
+    assert PE31_DURABLE_COMPLETION_CANONICAL_BINDING_REGISTRY[1]["owner_path"] == (
+        DURABLE_COMPLETION_CANONICAL_OWNER_PATH
+    )
+    assert PE31_DURABLE_COMPLETION_CANONICAL_BINDING_REGISTRY[2]["owner_path"] == (
+        DURABLE_COMPLETION_RECONCILIATION_VALIDATOR_PATH
+    )
+    assert "pe42_durable_completion_facade" in PE31_DURABLE_COMPLETION_DEPENDENCY_DIRECTION
+
+
+def test_graph_reconciliation_validator_imports_canonical_pe31_owner_only() -> None:
+    repo_root = Path(__file__).resolve().parents[2]
+    reconciliation_source = (
+        repo_root
+        / "src"
+        / "ops"
+        / "durable_completion_validation"
+        / "validators"
+        / "reconciliation.py"
+    ).read_text(encoding="utf-8")
+    assert (
+        "bounded_futures_testnet_reconciliation_review_lifecycle_integration_contract_v0"
+        in reconciliation_source
+    )
+    assert "src.execution.reconciliation" not in reconciliation_source
+    assert "src.ops.recon.reconcile" not in reconciliation_source
+
+
+def test_graph_reconciliation_validator_is_canonical_pe31_binding_entrypoint() -> None:
+    from src.ops.durable_completion_validation import graph
+
+    validators = graph._load_validators()
+    assert validators[VALIDATOR_RECONCILIATION].__name__ == (
+        validate_reconciliation_proof_binding.__name__
+    )
+    assert VALIDATOR_RECONCILIATION in PROOF_BINDING_VALIDATION_ORDER
+    assert VALIDATOR_EVENT_STREAM in PROOF_BINDING_VALIDATION_GRAPH[VALIDATOR_RECONCILIATION]
+
+
+def test_graph_pe31_binding_authority_neutral_on_happy_path() -> None:
+    integration_input = _cached_default_minimal_completion_integration_input()
+    pe31_result = evaluate_reconciliation_review_lifecycle_integration(
+        integration_input.pe31_reconciliation_review_integration_input
+    )
+    context = ValidationContext(
+        integration_input=integration_input,
+        pe31_result=pe31_result,
+    )
+    assert not validate_pe31_integration_proof(context).fail_reasons
+    assert pe31_result["authority_lift"] is False
+    assert pe31_result["operative_reconciliation_executed"] is False
+
+
+def test_graph_pe31_source_revision_drift_fail_closed_via_reconciliation_validator() -> None:
+    integration_input = _cached_default_minimal_completion_integration_input()
+    bad_pe31_input = replace(
+        integration_input.pe31_reconciliation_review_integration_input,
+        source_revision="0123456789abcdef0123456789abcdef0123456789",
+    )
+    bad = replace(
+        integration_input,
+        pe31_reconciliation_review_integration_input=bad_pe31_input,
+    )
+    context = _graph_context(
+        bad,
+        pe31_result=evaluate_reconciliation_review_lifecycle_integration(bad_pe31_input),
+    )
+    result = validate_pe31_integration_proof(context)
+    assert any("source_revision mismatch" in reason for reason in result.fail_reasons)
+
+
+def test_graph_pe31_integration_input_digest_drift_fail_closed() -> None:
+    integration_input = _cached_default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe31_reconciliation_review_integration_proof=replace(
+            integration_input.pe31_reconciliation_review_integration_proof,
+            integration_input_digest="0" * 64,
+        ),
+    )
+    context = _graph_context(
+        bad,
+        pe31_result=evaluate_reconciliation_review_lifecycle_integration(
+            bad.pe31_reconciliation_review_integration_input
+        ),
+    )
+    result = validate_pe31_integration_proof(context)
+    assert any("integration_input_digest mismatch" in reason for reason in result.fail_reasons)
+
+
+def test_graph_pe31_referenced_pe21_digest_drift_in_completion_chain_fail_closed() -> None:
+    integration_input = _cached_default_minimal_completion_integration_input()
+    bad = _replace_completion_proof_chain(
+        integration_input,
+        pe31_referenced_pe21_integration_proof_digest="0" * 64,
+    )
+    pe25_input = bad.pe25_closure_integration_input
+    pe37_input = bad.pe37_traceability_boundary_input
+    pe35_input = bad.pe35_handoff_staleness_revocation_recovery_boundary_input
+    context = _graph_context(
+        bad,
+        pe31_result=evaluate_reconciliation_review_lifecycle_integration(
+            bad.pe31_reconciliation_review_integration_input
+        ),
+        pe35_result=evaluate_handoff_staleness_revocation_recovery_boundary(pe35_input),
+        pe37_result=evaluate_durable_evidence_traceability_boundary(pe37_input),
+        pe25_result=evaluate_operator_closure_lifecycle_integration(pe25_input),
+        admission_result={
+            "integration_pass": True,
+            "integration_proof_digest": (
+                bad.pe25_operator_closure_proof.admission_integration_proof_digest
+            ),
+        },
+    )
+    result = execute_proof_binding_validation_graph(context)
+    assert any(
+        "pe31_referenced_pe21_integration_proof_digest mismatch" in reason
+        for reason in result.fail_reasons
+    )
+    assert VALIDATOR_COMPLETION_CHAIN not in context.completed_validators
+
+
+def test_graph_pe31_completion_chain_digest_alignment_fail_closed() -> None:
+    integration_input = _cached_default_minimal_completion_integration_input()
+    bad = _replace_completion_proof_chain(
+        integration_input,
+        pe31_referenced_pe21_integration_proof_digest="0" * 64,
+    )
+    result = validate_completion_proof_chain_binding(ValidationContext(integration_input=bad))
+    assert any(
+        "pe31_referenced_pe21_integration_proof_digest mismatch" in reason
+        for reason in result.fail_reasons
+    )
 
 
 def test_graph_testnet_completion_includes_wallclock_required_path_binding() -> None:

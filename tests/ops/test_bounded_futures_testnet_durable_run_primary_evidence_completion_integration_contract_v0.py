@@ -7,8 +7,10 @@ completion static integration only.
 
 from __future__ import annotations
 
+import ast
 from dataclasses import replace
 from pathlib import Path
+from typing import Final, Literal, TypedDict
 
 import pytest
 
@@ -140,6 +142,8 @@ from src.ops.bounded_futures_testnet_preflight_packet_archive_contract_v0 import
 from src.ops.bounded_futures_testnet_preflight_packet_contract_v0 import FOLLOWUP_RUN_GATE
 from src.ops.bounded_futures_testnet_reconciliation_review_lifecycle_integration_contract_v0 import (
     CONTRACT_VERSION as PE31_CONTRACT_VERSION,
+    compute_integration_input_digest as compute_pe31_integration_input_digest,
+    compute_integration_proof_digest as compute_pe31_integration_proof_digest,
     default_minimal_integration_input as default_minimal_pe31_integration_input,
     evaluate_reconciliation_review_lifecycle_integration,
 )
@@ -304,6 +308,117 @@ ALT_COMMIT_SHA = "1234567890abcdef1234567890abcdef12345678"
 DURABLE_ARCHIVE_ROOT = (
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
 )
+
+PE31_DURABLE_COMPLETION_BINDING_PACKAGE_MARKER = (
+    "PE31_DURABLE_COMPLETION_CANONICAL_BINDING_CONTRACT_V0=true"
+)
+PE31_CANONICAL_OWNER_PATH = str(PE31_MODULE.relative_to(REPO_ROOT))
+DURABLE_COMPLETION_CANONICAL_OWNER_PATH = str(INTEGRATION_MODULE.relative_to(REPO_ROOT))
+DURABLE_COMPLETION_VALIDATION_GRAPH_PATH = "src/ops/durable_completion_validation/graph.py"
+DURABLE_COMPLETION_RECONCILIATION_VALIDATOR_PATH = (
+    "src/ops/durable_completion_validation/validators/reconciliation.py"
+)
+
+BindingLayer = Literal[
+    "PE31_UPSTREAM_CANONICAL",
+    "PE42_COMPLETION_FACADE",
+    "DURABLE_COMPLETION_VALIDATION_GRAPH",
+]
+
+
+class Pe31DurableCompletionBindingRecord(TypedDict):
+    binding_id: str
+    layer: BindingLayer
+    owner_path: str
+    downstream_path: str
+    digest_fields: tuple[str, ...]
+    authority_lift: bool
+    operative_reconciliation_executed: bool
+    repair_authority: bool
+    trading_authority: bool
+    promotion_authority: bool
+    reverse_authority_forbidden: bool
+
+
+PE31_DURABLE_COMPLETION_CANONICAL_BINDING_REGISTRY: tuple[
+    Pe31DurableCompletionBindingRecord, ...
+] = (
+    {
+        "binding_id": "pe31_upstream_canonical",
+        "layer": "PE31_UPSTREAM_CANONICAL",
+        "owner_path": PE31_CANONICAL_OWNER_PATH,
+        "downstream_path": DURABLE_COMPLETION_CANONICAL_OWNER_PATH,
+        "digest_fields": (
+            "integration_input_digest",
+            "integration_proof_digest",
+        ),
+        "authority_lift": False,
+        "operative_reconciliation_executed": False,
+        "repair_authority": False,
+        "trading_authority": False,
+        "promotion_authority": False,
+        "reverse_authority_forbidden": True,
+    },
+    {
+        "binding_id": "pe42_completion_facade",
+        "layer": "PE42_COMPLETION_FACADE",
+        "owner_path": DURABLE_COMPLETION_CANONICAL_OWNER_PATH,
+        "downstream_path": DURABLE_COMPLETION_VALIDATION_GRAPH_PATH,
+        "digest_fields": (
+            "completion_referenced_pe31_proof_digest",
+            "pe31_referenced_pe21_integration_proof_digest",
+        ),
+        "authority_lift": False,
+        "operative_reconciliation_executed": False,
+        "repair_authority": False,
+        "trading_authority": False,
+        "promotion_authority": False,
+        "reverse_authority_forbidden": True,
+    },
+    {
+        "binding_id": "durable_completion_validation_graph",
+        "layer": "DURABLE_COMPLETION_VALIDATION_GRAPH",
+        "owner_path": DURABLE_COMPLETION_RECONCILIATION_VALIDATOR_PATH,
+        "downstream_path": DURABLE_COMPLETION_VALIDATION_GRAPH_PATH,
+        "digest_fields": (
+            "integration_input_digest",
+            "integration_proof_digest",
+        ),
+        "authority_lift": False,
+        "operative_reconciliation_executed": False,
+        "repair_authority": False,
+        "trading_authority": False,
+        "promotion_authority": False,
+        "reverse_authority_forbidden": True,
+    },
+)
+
+PE31_DURABLE_COMPLETION_DEPENDENCY_DIRECTION: tuple[str, ...] = (
+    "pe21_reconciliation_primary_evidence",
+    "pe31_reconciliation_review_lifecycle",
+    "pe42_durable_completion_facade",
+    "durable_completion_validation_graph",
+)
+
+_PE31_CANONICAL_IMPORT_MODULE: Final[str] = (
+    "src.ops.bounded_futures_testnet_reconciliation_review_lifecycle_integration_contract_v0"
+)
+_FORBIDDEN_PARALLEL_PE31_BINDING_SOURCES: Final[frozenset[str]] = frozenset(
+    {
+        "src.execution.reconciliation",
+        "src.ops.recon.reconcile",
+        "src.aiops.p7.reconciliation",
+    }
+)
+
+
+def _imported_modules_from_source(source_path: Path) -> frozenset[str]:
+    tree = ast.parse(source_path.read_text(encoding="utf-8"))
+    modules: set[str] = set()
+    for node in ast.walk(tree):
+        if isinstance(node, ast.ImportFrom) and node.module:
+            modules.add(node.module)
+    return frozenset(modules)
 
 
 def test_package_marker_present() -> None:
@@ -4432,3 +4547,174 @@ def test_pe33_completion_slot_pe21_digest_drift_fails() -> None:
     result = evaluate_durable_run_primary_evidence_completion_integration(bad)
     assert result["integration_pass"] is False
     assert any("PE-33 slot pe21 proof_digest mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe31_durable_completion_binding_package_marker_present() -> None:
+    text = Path(__file__).read_text(encoding="utf-8")
+    assert PE31_DURABLE_COMPLETION_BINDING_PACKAGE_MARKER in text
+
+
+def test_pe31_durable_completion_canonical_binding_registry_complete() -> None:
+    assert len(PE31_DURABLE_COMPLETION_CANONICAL_BINDING_REGISTRY) == 3
+    binding_ids = {
+        record["binding_id"] for record in PE31_DURABLE_COMPLETION_CANONICAL_BINDING_REGISTRY
+    }
+    assert binding_ids == {
+        "pe31_upstream_canonical",
+        "pe42_completion_facade",
+        "durable_completion_validation_graph",
+    }
+    for record in PE31_DURABLE_COMPLETION_CANONICAL_BINDING_REGISTRY:
+        assert record["authority_lift"] is False
+        assert record["operative_reconciliation_executed"] is False
+        assert record["repair_authority"] is False
+        assert record["trading_authority"] is False
+        assert record["promotion_authority"] is False
+        assert record["reverse_authority_forbidden"] is True
+        assert Path(REPO_ROOT / record["owner_path"]).exists()
+
+
+def test_pe31_durable_completion_registry_upstream_owner_matches_pe31_contract() -> None:
+    upstream = PE31_DURABLE_COMPLETION_CANONICAL_BINDING_REGISTRY[0]
+    assert upstream["owner_path"] == PE31_CANONICAL_OWNER_PATH
+    assert upstream["layer"] == "PE31_UPSTREAM_CANONICAL"
+    assert PE31_INTEGRATION_OWNER == PE31_CONTRACT_VERSION
+
+
+def test_pe31_durable_completion_dependency_direction_is_downstream_only() -> None:
+    assert PE31_DURABLE_COMPLETION_DEPENDENCY_DIRECTION == (
+        "pe21_reconciliation_primary_evidence",
+        "pe31_reconciliation_review_lifecycle",
+        "pe42_durable_completion_facade",
+        "durable_completion_validation_graph",
+    )
+    pe31_index = PE31_DURABLE_COMPLETION_DEPENDENCY_DIRECTION.index(
+        "pe31_reconciliation_review_lifecycle"
+    )
+    pe42_index = PE31_DURABLE_COMPLETION_DEPENDENCY_DIRECTION.index(
+        "pe42_durable_completion_facade"
+    )
+    assert pe31_index < pe42_index
+
+
+def test_pe31_durable_completion_sole_canonical_upstream_module_in_completion_facade() -> None:
+    completion_imports = _imported_modules_from_source(INTEGRATION_MODULE)
+    pe31_imports = {
+        module
+        for module in completion_imports
+        if module.endswith("reconciliation_review_lifecycle_integration_contract_v0")
+    }
+    assert pe31_imports == {_PE31_CANONICAL_IMPORT_MODULE}
+    assert _FORBIDDEN_PARALLEL_PE31_BINDING_SOURCES.isdisjoint(completion_imports)
+
+
+def test_pe31_durable_completion_graph_validator_imports_canonical_pe31_owner_only() -> None:
+    validator_path = REPO_ROOT / DURABLE_COMPLETION_RECONCILIATION_VALIDATOR_PATH
+    validator_imports = _imported_modules_from_source(validator_path)
+    pe31_imports = {
+        module
+        for module in validator_imports
+        if "reconciliation_review_lifecycle_integration_contract_v0" in module
+    }
+    assert pe31_imports == {_PE31_CANONICAL_IMPORT_MODULE}
+    assert _FORBIDDEN_PARALLEL_PE31_BINDING_SOURCES.isdisjoint(validator_imports)
+
+
+def test_pe31_durable_completion_binding_authority_neutral_on_happy_path() -> None:
+    integration_input = default_minimal_completion_integration_input(
+        source_revision=VALID_COMMIT_SHA
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(integration_input)
+    pe31_result = evaluate_reconciliation_review_lifecycle_integration(
+        integration_input.pe31_reconciliation_review_integration_input
+    )
+    assert result["integration_pass"] is True
+    assert result["authority_lift"] is False
+    assert result["pe31_integration_pass"] is True
+    assert pe31_result["authority_lift"] is False
+    assert pe31_result["operative_reconciliation_executed"] is False
+
+
+def test_pe31_source_revision_mismatch_with_completion_input_fails() -> None:
+    integration_input = default_minimal_completion_integration_input(
+        source_revision=VALID_COMMIT_SHA
+    )
+    bad_pe31_input = replace(
+        integration_input.pe31_reconciliation_review_integration_input,
+        source_revision=ALT_COMMIT_SHA,
+    )
+    bad = replace(
+        integration_input,
+        pe31_reconciliation_review_integration_input=bad_pe31_input,
+        pe31_reconciliation_review_integration_proof=default_minimal_pe31_integration_proof(
+            bad_pe31_input
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("source_revision mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe31_integration_input_digest_drift_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe31_reconciliation_review_integration_proof=replace(
+            integration_input.pe31_reconciliation_review_integration_proof,
+            integration_input_digest="0" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("integration_input_digest mismatch" in r for r in result["fail_reasons"])
+
+
+def test_pe31_integration_owner_mismatch_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        pe31_reconciliation_review_integration_proof=replace(
+            integration_input.pe31_reconciliation_review_integration_proof,
+            integration_owner="wrong.owner.v0",
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any("integration_owner must be" in r for r in result["fail_reasons"])
+
+
+def test_pe31_referenced_pe21_digest_drift_in_completion_chain_fails() -> None:
+    integration_input = default_minimal_completion_integration_input()
+    bad = replace(
+        integration_input,
+        completion_proof_chain=replace(
+            integration_input.completion_proof_chain,
+            pe31_referenced_pe21_integration_proof_digest="0" * 64,
+        ),
+    )
+    result = evaluate_durable_run_primary_evidence_completion_integration(bad)
+    assert result["integration_pass"] is False
+    assert any(
+        "pe31_referenced_pe21_integration_proof_digest mismatch" in r
+        for r in result["fail_reasons"]
+    )
+
+
+def test_pe31_completion_binding_source_revision_consistent_on_happy_path() -> None:
+    integration_input = default_minimal_completion_integration_input(
+        source_revision=VALID_COMMIT_SHA
+    )
+    pe31_input = integration_input.pe31_reconciliation_review_integration_input
+    pe31_proof = integration_input.pe31_reconciliation_review_integration_proof
+    chain = integration_input.completion_proof_chain
+    assert pe31_input.source_revision == integration_input.source_revision
+    assert pe31_proof.integration_input_digest == compute_pe31_integration_input_digest(pe31_input)
+    assert pe31_proof.integration_proof_digest == compute_pe31_integration_proof_digest(
+        pe31_input,
+        reconciliation_review_lifecycle_eligibility_for_separate_operator_review=True,
+    )
+    assert chain.completion_referenced_pe31_proof_digest == pe31_proof.integration_proof_digest
+    assert (
+        chain.pe31_referenced_pe21_integration_proof_digest
+        == pe31_input.pe21_reconciliation_primary_evidence_integration_proof.integration_proof_digest
+    )
