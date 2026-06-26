@@ -1474,6 +1474,21 @@ def _partition_selection_uses_pe31_durable_completion_binding(
     return "pe31_durable_completion_binding" in partition_selection
 
 
+def _is_pe31_durable_completion_binding_testowner_only_scope(
+    changed_files: list[str],
+) -> bool:
+    """True when changed_files are only B2 durable-completion binding testowners."""
+    if not changed_files:
+        return False
+    allowed = {
+        DURABLE_COMPLETION_INTEGRATION_TEST_OWNER,
+        DURABLE_COMPLETION_VALIDATION_GRAPH_TEST_OWNER,
+    }
+    if not set(changed_files).issubset(allowed):
+        return False
+    return not any(path.startswith("src/") for path in changed_files)
+
+
 def _durable_completion_pe31_durable_completion_binding_integration_targets() -> tuple[str, ...]:
     try:
         return expand_pe31_durable_completion_binding_integration_pytest_targets()
@@ -3420,6 +3435,29 @@ def _try_durable_completion_focused(
         _is_durable_completion_integration_partition_rebundle_path(f, files=files) for f in files
     ):
         return None
+    if _is_pe31_durable_completion_binding_testowner_only_scope(files):
+        partition_selection = partitions_for_changed_files(files)
+        if (
+            partition_selection is not None
+            and _partition_selection_uses_pe31_durable_completion_binding(partition_selection)
+        ):
+            targets = _durable_completion_focused_targets(files, patch_text=patch_text)
+            if targets:
+                return SelectionResult(
+                    "FOCUSED",
+                    "durable_completion_focused",
+                    targets,
+                    (
+                        "src.ops.bounded_futures_testnet_durable_run_primary_evidence_completion_integration_contract_v0",
+                        "src.ops.durable_completion_validation",
+                    ),
+                )
+        if (
+            partition_selection is None
+            and len(files) == 1
+            and files[0] == DURABLE_COMPLETION_INTEGRATION_TEST_OWNER
+        ):
+            return None
     patch_text = _effective_glb019_patch_text(files, patch_text)
     selector_owner_changed = GLB019_A2B_SELECTOR_OWNER in files
     guarded_mixed_candidate = _is_glb019_a2b_structural_contract_candidate(files)
@@ -3439,7 +3477,12 @@ def _try_durable_completion_focused(
         )
     central_prod_paths = {DURABLE_COMPLETION_FACADE_PATH, DURABLE_COMPLETION_INTEGRATION_TEST_OWNER}
     has_central_prod = any(path in central_prod_paths for path in files)
-    if has_central_prod and _is_glb019_a2b_structural_contract_candidate(files):
+    skip_glb019_central_prod_gate = _is_pe31_durable_completion_binding_testowner_only_scope(files)
+    if (
+        has_central_prod
+        and _is_glb019_a2b_structural_contract_candidate(files)
+        and not skip_glb019_central_prod_gate
+    ):
         if patch_text:
             contract = evaluate_glb019_a2b_change_contract(patch_text, repo_root=_REPO_ROOT)
             glb019_selection = _selection_result_for_glb019_a2b_change_contract(
@@ -4225,7 +4268,9 @@ def main(argv: list[str] | None = None) -> int:
             print(f"missing patch file: {args.patch_file}", file=sys.stderr)
             return 1
         patch_text = args.patch_file.read_text(encoding="utf-8")
-    elif _is_glb019_a2b_structural_contract_candidate(files):
+    elif _is_glb019_a2b_structural_contract_candidate(
+        files
+    ) and not _is_pe31_durable_completion_binding_testowner_only_scope(files):
         patch_text = collect_glb019_a2b_patch_text(
             base_ref=args.diff_base_ref,
             repo_root=_REPO_ROOT,

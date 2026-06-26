@@ -1409,7 +1409,9 @@ def test_integration_partition_inventory_covers_all_nodes() -> None:
     )
 
     nodes = collect_integration_owner_node_ids()
-    assert len(nodes) == 271
+    # 283 = explicit canonical inventory after 12 B2 PE31 durable-completion integration nodes.
+    # Intentionally static (not derived from collect) so inventory drift fails visibly.
+    assert len(nodes) == 283
     inventory = integration_partition_inventory()
     assert set(inventory) <= set(ALL_PARTITIONS)
     covered = [node for part in inventory.values() for node in part]
