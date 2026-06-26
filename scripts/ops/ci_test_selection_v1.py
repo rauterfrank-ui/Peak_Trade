@@ -875,6 +875,12 @@ REQUIRED_PREFLIGHT_ASSEMBLY_TEST_OWNERS: tuple[str, ...] = (
 
 BOUNDED_FUTURES_TESTNET_CONTRACT_OWNER = "src/ops/bounded_futures_testnet_contract_v0.py"
 BOUNDED_FUTURES_TESTNET_VENUE_BINDING_OWNER = "src/ops/bounded_futures_testnet_venue_binding_v0.py"
+AWS_SHADOW_PAPER_TESTNET_OKX_EUROPE_COMPATIBILITY_OWNER = (
+    "src/ops/aws_shadow_paper_testnet_okx_europe_compatibility_contract_v0.py"
+)
+AWS_SHADOW_PAPER_TESTNET_OKX_EUROPE_COMPATIBILITY_TEST_OWNER = (
+    "tests/ops/test_aws_shadow_paper_testnet_okx_europe_compatibility_contract_v0.py"
+)
 
 BOUNDED_FUTURES_TESTNET_CONTRACT_CI_POLICY_PATHS = frozenset(
     {
@@ -891,6 +897,7 @@ REQUIRED_BOUNDED_FUTURES_TESTNET_CONTRACT_TEST_OWNERS: tuple[str, ...] = (
     "tests/ops/test_archive_futures_testnet_harness_v0.py",
     "tests/ops/test_run_order_capability_dry_validation_adapter_v1.py",
     "tests/ops/test_bounded_futures_testnet_okx_eea_xperp_binding_contract_v0.py",
+    AWS_SHADOW_PAPER_TESTNET_OKX_EUROPE_COMPATIBILITY_TEST_OWNER,
 )
 
 CANONICAL_BOUNDED_FUTURES_TESTNET_CONTRACT_FOCUSED_TESTS: tuple[str, ...] = (
@@ -2257,6 +2264,8 @@ def _is_bounded_futures_testnet_contract_scoped_path(path: str) -> bool:
     if path == BOUNDED_FUTURES_TESTNET_CONTRACT_OWNER:
         return True
     if path == BOUNDED_FUTURES_TESTNET_VENUE_BINDING_OWNER:
+        return True
+    if path == AWS_SHADOW_PAPER_TESTNET_OKX_EUROPE_COMPATIBILITY_OWNER:
         return True
     return path in REQUIRED_BOUNDED_FUTURES_TESTNET_CONTRACT_TEST_OWNERS
 

@@ -87,9 +87,11 @@ categories:
     globs:
       - "src/ops/bounded_futures_testnet_contract_v0.py"
       - "src/ops/bounded_futures_testnet_venue_binding_v0.py"
+      - "src/ops/aws_shadow_paper_testnet_okx_europe_compatibility_contract_v0.py"
       - "tests/ops/test_bounded_futures_testnet_contract_v0.py"
       - "tests/ops/test_bounded_futures_testnet_adapter_contract_v0.py"
       - "tests/ops/test_bounded_futures_testnet_okx_eea_xperp_binding_contract_v0.py"
+      - "tests/ops/test_aws_shadow_paper_testnet_okx_europe_compatibility_contract_v0.py"
       - "tests/ops/test_order_capability_dry_validation_contract_v1.py"
       - "tests/ops/test_archive_futures_testnet_harness_v0.py"
       - "tests/ops/test_run_order_capability_dry_validation_adapter_v1.py"
