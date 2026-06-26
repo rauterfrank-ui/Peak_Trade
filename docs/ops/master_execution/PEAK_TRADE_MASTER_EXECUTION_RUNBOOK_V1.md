@@ -6,7 +6,7 @@ OWNER=Frank Rauter
 NON_AUTHORIZING=true
 SOURCE_DURABLE_SNAPSHOT=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/peak_trade_master_execution_runbook_v1_20260626T233500Z
 SOURCE_DURABLE_MANIFEST_VERIFY_RC=0
-origin_main: 4ab3df7d9798b4cecfa903a7f65ac0ed46bf6942
+origin_main: 8e5d5f3a7b599fb5869143ffc180e1cf44824af2
 ---
 
 # Peak_Trade Master Execution Runbook v1
@@ -42,7 +42,7 @@ Reifepipeline: Research → Offline Proof → Shadow → Paper → Testnet → s
 |------|------|
 | PROGRAM_PHASE | PACKAGE_E_IN_PROGRESS |
 | CURRENT_MAJOR_PACKAGE | PACKAGE_E_RISK_KILLSWITCH_OPERATIVE_COMPLETION (**IN_PROGRESS**) |
-| CURRENT_STATUS | PACKAGE_E_E1_CLOSEOUT_COMPLETE |
+| CURRENT_STATUS | PACKAGE_E_E2_INV033_OFFLINE_DECOMPOSITION_CLOSEOUT_COMPLETE |
 | PACKAGE_A_STATUS | COMPLETE |
 | PACKAGE_B_STATUS | COMPLETE |
 | PACKAGE_B_FINAL_SELECTION_DECISION | PACKAGE_B_FINAL_SELECTED_WITH_BOUNDED_SCOPE_CORRECTION |
@@ -62,14 +62,19 @@ Reifepipeline: Research → Offline Proof → Shadow → Paper → Testnet → s
 | PACKAGE_E_STATUS | IN_PROGRESS |
 | E1_INV008_STATUS | COMPLETE |
 | INV037_STATUS | COMPLETE |
+| INV033_OFFLINE_DECOMPOSITION_COMPLETE | true |
+| INV033_SLICE1_STATUS | MERGED |
+| INV033_SLICE2_STATUS | MERGED |
+| INV033_SLICE3_STATUS | MERGED |
+| OFFLINE_ADAPTER_LIFECYCLE_IMPLEMENTATION_COMPLETE | true |
 | INV033_STATUS | PARKED_RUNTIME_OPERATOR_GO_REQUIRED |
 | PACKAGE_E_GO_GRANTED | false |
 | GO_GRANTED | false |
 | IMPLEMENTATION_STARTED | false |
 | CURRENT_RUN_ACTIVE | false |
-| NEXT_ALLOWED_ACTION | READ_ONLY_OPERATOR_REVIEW_FOR_PACKAGE_E_E2_INV033_PARKED_RUNTIME_SCOPE_NO_IMPLEMENTATION_NO_GO |
+| NEXT_ALLOWED_ACTION | READ_ONLY_OPERATOR_REVIEW_FOR_INV033_RUNTIME_PARKED_SCOPE_OR_PREPARE_RANK2_SSOT_CROSSLINK_NO_RUNTIME |
 
-Target Architecture ist im Masterplan abgeschlossen (`MANIFEST_VERIFY_RC=0`). **Package A (INV-021 + INV-048) ist vollständig abgeschlossen**. **Package B (INV-022 + INV-006) ist vollständig abgeschlossen**. **Package C (INV-045 + INV-046) ist vollständig abgeschlossen**. **Package D (INV-007) ist vollständig abgeschlossen**. **Package E (INV-008) ist mit E1 begonnen und IN_PROGRESS** — E1 gemergt PR #4583; PE-22 Durable Completion Binding contract-only integriert; INV-037 trace-only COMPLETE; INV-033 geparkt (`PARKED_RUNTIME_OPERATOR_GO_REQUIRED`); **Package E nicht COMPLETE**; **kein E2-Runtime-GO, kein OPERATOR_GO_TINY_ORDER, keine Runtime**.
+Target Architecture ist im Masterplan abgeschlossen (`MANIFEST_VERIFY_RC=0`). **Package A (INV-021 + INV-048) ist vollständig abgeschlossen**. **Package B (INV-022 + INV-006) ist vollständig abgeschlossen**. **Package C (INV-045 + INV-046) ist vollständig abgeschlossen**. **Package D (INV-007) ist vollständig abgeschlossen**. **Package E (INV-008 + INV-033 + INV-037) ist IN_PROGRESS** — E1 gemergt PR #4583; E2/INV-033 **Offline-Decomposition abgeschlossen** (PR #4590, Slices 1–3 MERGED, digest hook integriert); INV-037 trace-only COMPLETE; **INV-033 Runtime geparkt** (`PARKED_RUNTIME_OPERATOR_GO_REQUIRED`); **Package E nicht COMPLETE**; **kein E2-Runtime-GO, kein OPERATOR_GO_TINY_ORDER, keine Runtime**.
 
 ## 3. Capability Trains (12)
 
@@ -98,7 +103,7 @@ Target Architecture ist im Masterplan abgeschlossen (`MANIFEST_VERIFY_RC=0`). **
 | PACKAGE_B_RECONCILIATION_CANONICALIZATION | TRAIN_2 | **COMPLETE** — INV-022+INV-006 gemergt; kein Package-C-GO |
 | PACKAGE_C_DOUBLE_PLAY_DYNAMIC_SCOPE_AND_STATE | TRAIN_3 | **COMPLETE** — C1 (INV-045) + C2 (INV-046) gemergt |
 | PACKAGE_D_CAPITAL_SLOT_RATCHET | TRAIN_4 | **COMPLETE** — INV-007 gemergt |
-| PACKAGE_E_RISK_KILLSWITCH_OPERATIVE_COMPLETION | TRAIN_5 | **IN_PROGRESS** — E1 (INV-008) gemergt PR #4583; E2/INV-033 geparkt; kein Package-E-COMPLETE |
+| PACKAGE_E_RISK_KILLSWITCH_OPERATIVE_COMPLETION | TRAIN_5 | **IN_PROGRESS** — E1 (INV-008) gemergt PR #4583; E2/INV-033 offline decomposition complete PR #4590; Runtime geparkt; kein Package-E-COMPLETE |
 | PACKAGE_F_DURABLE_RUNTIME_EVIDENCE | TRAIN_6 | INV-016/005 |
 | PACKAGE_G_BAYESIAN_EVIDENCE_READONLY_LAYER | TRAIN_7 | **PARKED** — INV-043 |
 | PACKAGE_H_OPERATOR_VISIBILITY | TRAIN_9 | INV-011,042,044 |
@@ -153,18 +158,19 @@ Wave-Reihenfolge: 1=A → 2=B → 3=A ext (INV-003 GO) → 4=C → 5=D → 6=E,F
 - **Reuse-before-new:** bestehende Contract-Owner erweitert; keine parallele Capital-Slot-SSOT
 - **PACKAGE_D_STATUS:** COMPLETE | **D1_INV007_STATUS:** COMPLETE | **PACKAGE_D_GO_GRANTED:** false | **kein Package-E-GO, keine Runtime**
 
-### PACKAGE_E (IN_PROGRESS — E1 abgeschlossen, E2 geparkt)
+### PACKAGE_E (IN_PROGRESS — E1 abgeschlossen, E2 offline complete, Runtime geparkt)
 
 - **Operator-Review:** `package_e_risk_killswitch_operative_completion_operator_review_bounded_readonly_v0_20260626T064500Z`, `MANIFEST_VERIFY_RC=0`
 - **Titel:** Risk/KillSwitch Operative Completion
-- **Enthalten:** INV-008 (PE-22 Durable Completion Binding) + INV-033 (operative Runtime) + INV-037 (trace-only, **COMPLETE**)
+- **Enthalten:** INV-008 (PE-22 Durable Completion Binding) + INV-033 (offline decomposition + operative Runtime) + INV-037 (trace-only, **COMPLETE**)
 - **Explizit ausgeschlossen:** produktive KillSwitch-/Risk-Verdrahtung ohne separates Runtime-GO, OPERATOR_GO_TINY_ORDER ohne explizites GO, Runtime, Trading-/Promotion-Authority, parallele SSOTs, Produktionssemantikänderung, Risk-Limit-Änderung, Authority-Erhöhung
 - **Slice-Reihenfolge (verbindlich):**
   - **E1 (INV-008):** **MERGED** — PR #4583, Squash `4ab3df7`; PE-22 Durable Completion Binding contract-only; CI: CONTRACT_FOCUSED / `pe22_durable_completion_binding_focused`; 20 Binding-Nodes, 22 CI-Targets; test-only; keine Produktionsdatei; keine Config-Änderung; keine Runtime
-  - **E2 (INV-033):** **PARKED** — `PARKED_RUNTIME_OPERATOR_GO_REQUIRED`; OPERATOR_GO_TINY_ORDER nicht erteilt; keine Runtime
+  - **E2 offline (INV-033):** **MERGED** — PR #4590, Squash `8e5d5f3a`; OKX Europe adapter lifecycle offline decomposition Slices 1–3; digest hook `compute_okx_europe_adapter_lifecycle_slot_digest`; CI: CONTRACT_FOCUSED / `okx_europe_adapter_lifecycle_focused`; offline/static complete; **keine Runtime**
+  - **E2 Runtime (INV-033):** **PARKED** — `PARKED_RUNTIME_OPERATOR_GO_REQUIRED`; OPERATOR_GO_TINY_ORDER nicht erteilt; keine Runtime
 - **INV-037:** trace-only **COMPLETE** (PR #4545)
 - **Reuse-before-new:** bestehende Contract-Owner erweitert; keine parallele Risk/KillSwitch-SSOT
-- **PACKAGE_E_STATUS:** IN_PROGRESS | **E1_INV008_STATUS:** COMPLETE | **INV033_STATUS:** PARKED_RUNTIME_OPERATOR_GO_REQUIRED | **PACKAGE_E_GO_GRANTED:** false | **Package E nicht COMPLETE; kein E2-GO, kein OPERATOR_GO_TINY_ORDER, keine Runtime**
+- **PACKAGE_E_STATUS:** IN_PROGRESS | **E1_INV008_STATUS:** COMPLETE | **INV033_OFFLINE_DECOMPOSITION_COMPLETE:** true | **INV033_STATUS:** PARKED_RUNTIME_OPERATOR_GO_REQUIRED | **PACKAGE_E_GO_GRANTED:** false | **Package E nicht COMPLETE; kein E2-Runtime-GO, kein OPERATOR_GO_TINY_ORDER, keine Runtime**
 
 ## 5. State Machine (26 Zustände)
 
@@ -189,13 +195,15 @@ Handoff-Payloads: `NEW_CHAT_RESUME_PAYLOAD.md`, `CURSOR_RESUME_PAYLOAD.md` (Dura
 
 ## 8. Operator Checklist (aktuell)
 
-### Nach Package-E-E1-Abschluss (aktuell)
+### Nach Package-E-E2-INV-033-Offline-Decomposition-Abschluss (aktuell)
 
 - [x] Packages A, B, C, D vollständig abgeschlossen
 - [x] Package-E Operator-Review abgeschlossen (`package_e_risk_killswitch_operative_completion_operator_review_bounded_readonly_v0_20260626T064500Z`)
 - [x] Package-E-Slice E1 (INV-008) gemergt — PR #4583, Squash `4ab3df7`; contract-only PE-22 Durable Completion Binding
+- [x] Package-E-Slice E2 offline (INV-033) gemergt — PR #4590, Squash `8e5d5f3a`; OKX Europe adapter lifecycle offline decomposition Slices 1–3; digest hook integriert
 - [x] Fachliches E1-Closeout-Bundle mit `MANIFEST_VERIFY_RC=0`
-- [x] Docs-Closeout-Checkpoint für E1 vorbereitet
+- [x] Fachliches PR-4590-Closeout-Bundle mit `MANIFEST_VERIFY_RC=0`
+- [x] Docs-Closeout-Checkpoint für E2 offline vorbereitet
 - [ ] E2/INV-033 Runtime — geparkt; OPERATOR_GO_TINY_ORDER nicht erteilt
 - [ ] Package H — nicht autorisiert als Implementierung
 - [ ] INV-003 wiring, INV-005 testnet, Authority-Lift, Runtime, Engine-Vereinheitlichung, Reconciliation-Wiring weiterhin ausgeschlossen
@@ -235,6 +243,9 @@ Handoff-Payloads: `NEW_CHAT_RESUME_PAYLOAD.md`, `CURSOR_RESUME_PAYLOAD.md` (Dura
 | E1 Implementation `package_e_e1_inv008_pe22_durable_completion_binding_contract_only_v0_20260626T160000Z` | INV-008 PE-22 Durable Completion Binding |
 | PR-4583 Closeout `pr4583_package_e_e1_inv008_pe22_squash_merge_closeout_v0_20260626T161427Z` | Package E Slice E1 merge closeout |
 | PR-4583 Merge | Package E Slice E1 merge |
+| PR-4590 Closeout `pr4590_okx_adapter_lifecycle_slice3_digest_hook_squash_merge_and_decomposition_closeout_v0_20260626T234308Z` | Package E Slice E2 INV-033 offline decomposition merge closeout |
+| PR-4590 Merge | Package E Slice E2 INV-033 offline decomposition merge |
+| Post-INV033 Ranking `post_inv033_offline_completion_systemwide_residual_gap_ranking_bounded_read_only_no_runtime_v0_20260627T001500Z` | Systemwide Rank 1 scope selection |
 | Runbook Durable Snapshot `peak_trade_master_execution_runbook_v1_20260626T233500Z` | Unveränderlicher Ursprung |
 
 ## 10. DO_NOT_DO (aktuell)
