@@ -1585,9 +1585,23 @@ B2_PE31_DURABLE_COMPLETION_BINDING_GRAPH_NODE_IDS = (
     "test_graph_pe31_completion_chain_digest_alignment_fail_closed",
 )
 
+B2_PE31_TARGET_COMBINED_UNIQUE_NODE_COUNT = 22
+B2_PE31_B2_MANIFEST_NODE_COUNT = 20
+B2_PE31_CI_META_NODE_COUNT = 2
+
+
+def _node_targets(targets: list[str]) -> list[str]:
+    return sorted(t for t in targets if "::" in t)
+
 
 def test_selector_b2_pe31_durable_completion_binding_test_only_dual_owner_bounded() -> None:
+    from scripts.ops.ci_test_selection_v1 import (
+        DURABLE_COMPLETION_FAST_LANE_GRAPH_STRUCTURE_NODE_IDS,
+        DURABLE_COMPLETION_FAST_LANE_SELECTOR_ANCHOR_NODE_IDS,
+    )
     from scripts.ops.durable_completion_integration_partitions_v0 import (
+        CORE_ALWAYS_PARTITIONS,
+        expand_partitions_to_pytest_targets,
         partitions_for_changed_files,
     )
 
@@ -1595,6 +1609,7 @@ def test_selector_b2_pe31_durable_completion_binding_test_only_dual_owner_bounde
     assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     assert sel["test_selection_reason"] == "durable_completion_focused"
     assert sel["tests_execute_full"] == "false"
+    assert sel["fast_lane_contract_mode"] == "DURABLE_COMPLETION_BOUNDED"
     partition_selection = partitions_for_changed_files(
         list(B2_PE31_DURABLE_COMPLETION_BINDING_TEST_ONLY_DUAL_OWNER_FILES)
     )
@@ -1603,15 +1618,64 @@ def test_selector_b2_pe31_durable_completion_binding_test_only_dual_owner_bounde
     targets = _targets(sel)
     assert _INTEGRATION_OWNER not in targets
     assert _GRAPH_OWNER not in targets
-    integration_nodes = [t for t in targets if t.startswith(f"{_INTEGRATION_OWNER}::")]
-    graph_nodes = [t for t in targets if t.startswith(f"{_GRAPH_OWNER}::")]
-    assert integration_nodes
-    assert graph_nodes
+    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" in targets
+    node_targets = _node_targets(targets)
+    assert len(node_targets) == B2_PE31_TARGET_COMBINED_UNIQUE_NODE_COUNT
+    integration_nodes = [t for t in node_targets if t.startswith(f"{_INTEGRATION_OWNER}::")]
+    graph_nodes = [t for t in node_targets if t.startswith(f"{_GRAPH_OWNER}::")]
+    assert len(integration_nodes) == len(B2_PE31_DURABLE_COMPLETION_BINDING_INTEGRATION_NODE_IDS)
+    assert len(graph_nodes) == len(B2_PE31_DURABLE_COMPLETION_BINDING_GRAPH_NODE_IDS)
+    assert len(integration_nodes) + len(graph_nodes) == B2_PE31_B2_MANIFEST_NODE_COUNT
     for node_id in B2_PE31_DURABLE_COMPLETION_BINDING_INTEGRATION_NODE_IDS:
-        assert f"{_INTEGRATION_OWNER}::{node_id}" in targets
+        assert f"{_INTEGRATION_OWNER}::{node_id}" in node_targets
     for node_id in B2_PE31_DURABLE_COMPLETION_BINDING_GRAPH_NODE_IDS:
-        assert f"{_GRAPH_OWNER}::{node_id}" in targets
-    assert len(integration_nodes) + len(graph_nodes) < 200
+        assert f"{_GRAPH_OWNER}::{node_id}" in node_targets
+    legacy_nodes = set(expand_partitions_to_pytest_targets(frozenset(CORE_ALWAYS_PARTITIONS)))
+    assert not legacy_nodes.intersection(node_targets)
+    assert not set(DURABLE_COMPLETION_FAST_LANE_GRAPH_STRUCTURE_NODE_IDS).intersection(node_targets)
+    selector_anchor_nodes = set(DURABLE_COMPLETION_FAST_LANE_SELECTOR_ANCHOR_NODE_IDS)
+    assert selector_anchor_nodes.issubset(node_targets)
+    assert len(selector_anchor_nodes) == B2_PE31_CI_META_NODE_COUNT
+
+
+def test_selector_b2_pe31_prod_scoped_durable_completion_preserves_legacy_core_always_coverage() -> (
+    None
+):
+    from scripts.ops.durable_completion_integration_partitions_v0 import (
+        CORE_ALWAYS_PARTITIONS,
+        expand_partitions_to_pytest_targets,
+    )
+
+    sel = _run_selector(*PE55_DURABLE_COMPLETION_FILL_REBINDING_FILES)
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
+    assert sel["test_selection_reason"] == "durable_completion_focused"
+    targets = set(_node_targets(_targets(sel)))
+    legacy_nodes = set(expand_partitions_to_pytest_targets(frozenset(CORE_ALWAYS_PARTITIONS)))
+    assert legacy_nodes.intersection(targets)
+
+
+def test_selector_b2_pe31_prod_graph_facade_preserves_graph_structure_coverage() -> None:
+    from scripts.ops.ci_test_selection_v1 import (
+        DURABLE_COMPLETION_FAST_LANE_GRAPH_STRUCTURE_NODE_IDS,
+    )
+
+    sel = _run_selector(*PE56_DURABLE_COMPLETION_GRAPH_WIRING_FILES)
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
+    assert sel["test_selection_reason"] == "durable_completion_focused"
+    targets = set(_node_targets(_targets(sel)))
+    graph_structure_nodes = set(DURABLE_COMPLETION_FAST_LANE_GRAPH_STRUCTURE_NODE_IDS)
+    assert graph_structure_nodes.issubset(targets)
+
+
+def test_selector_b2_pe31_ci_hard_timeout_unchanged() -> None:
+    text = _ci_text()
+    tests_block = text.split("  tests:", 1)[1].split("  strategy-smoke:", 1)[0]
+    assert "timeout-minutes: 25" in tests_block
+    assert "timeout-minutes: 30" not in tests_block
+    assert "timeout-minutes: 40" not in tests_block
+    required_checks = Path("config/ci/required_status_checks.json").read_text(encoding="utf-8")
+    assert '"tests (3.11)"' in required_checks
+    assert '"strategy-smoke"' in required_checks
 
 
 def test_fast_lane_b2_pe31_durable_completion_binding_bounded() -> None:
