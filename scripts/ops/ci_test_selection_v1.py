@@ -2017,12 +2017,11 @@ def _durable_completion_focused_targets(
             targets.extend(_durable_completion_pe33_pr_smoke_pytest_targets())
             return tuple(sorted(set(targets)))
         if _partition_selection_uses_pe31_durable_completion_binding(partition_selection):
-            targets.extend(_durable_completion_pe31_durable_completion_binding_core_targets())
             targets.extend(
                 _durable_completion_pe31_durable_completion_binding_integration_targets()
             )
             targets.extend(_durable_completion_pe31_durable_completion_binding_graph_targets())
-            targets.extend(_durable_completion_normal_pr_graph_structure_targets())
+            targets.extend(_durable_completion_normal_pr_selector_anchor_targets())
             return tuple(sorted(set(targets)))
         selected_nodes = partition_union_node_count(partition_selection)
         if selected_nodes >= integration_owner_node_count():
