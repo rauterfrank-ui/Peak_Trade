@@ -6,7 +6,7 @@ OWNER=Frank Rauter
 NON_AUTHORIZING=true
 SOURCE_DURABLE_SNAPSHOT=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/peak_trade_master_execution_runbook_v1_20260626T233500Z
 SOURCE_DURABLE_MANIFEST_VERIFY_RC=0
-origin_main: 148685f2bda737d288634e2e9c55ad0795a45894
+origin_main: 4ab3df7d9798b4cecfa903a7f65ac0ed46bf6942
 ---
 
 # Peak_Trade Master Execution Runbook v1
@@ -40,9 +40,9 @@ Reifepipeline: Research → Offline Proof → Shadow → Paper → Testnet → s
 
 | Feld | Wert |
 |------|------|
-| PROGRAM_PHASE | PACKAGE_D_COMPLETE |
-| CURRENT_MAJOR_PACKAGE | PACKAGE_D_CAPITAL_SLOT_RATCHET (**COMPLETE**) |
-| CURRENT_STATUS | PACKAGE_D_COMPLETE_CLOSEOUT_COMPLETE |
+| PROGRAM_PHASE | PACKAGE_E_IN_PROGRESS |
+| CURRENT_MAJOR_PACKAGE | PACKAGE_E_RISK_KILLSWITCH_OPERATIVE_COMPLETION (**IN_PROGRESS**) |
+| CURRENT_STATUS | PACKAGE_E_E1_CLOSEOUT_COMPLETE |
 | PACKAGE_A_STATUS | COMPLETE |
 | PACKAGE_B_STATUS | COMPLETE |
 | PACKAGE_B_FINAL_SELECTION_DECISION | PACKAGE_B_FINAL_SELECTED_WITH_BOUNDED_SCOPE_CORRECTION |
@@ -58,12 +58,18 @@ Reifepipeline: Research → Offline Proof → Shadow → Paper → Testnet → s
 | PACKAGE_D_STATUS | COMPLETE |
 | D1_INV007_STATUS | COMPLETE |
 | PACKAGE_D_GO_GRANTED | false |
+| PACKAGE_E_STARTED | true |
+| PACKAGE_E_STATUS | IN_PROGRESS |
+| E1_INV008_STATUS | COMPLETE |
+| INV037_STATUS | COMPLETE |
+| INV033_STATUS | PARKED_RUNTIME_OPERATOR_GO_REQUIRED |
+| PACKAGE_E_GO_GRANTED | false |
 | GO_GRANTED | false |
 | IMPLEMENTATION_STARTED | false |
 | CURRENT_RUN_ACTIVE | false |
-| NEXT_ALLOWED_ACTION | READ_ONLY_OPERATOR_REVIEW_FOR_PACKAGE_E_RISK_KILLSWITCH_SCOPE_NO_IMPLEMENTATION_NO_GO |
+| NEXT_ALLOWED_ACTION | READ_ONLY_OPERATOR_REVIEW_FOR_PACKAGE_E_E2_INV033_PARKED_RUNTIME_SCOPE_NO_IMPLEMENTATION_NO_GO |
 
-Target Architecture ist im Masterplan abgeschlossen (`MANIFEST_VERIFY_RC=0`). **Package A (INV-021 + INV-048) ist vollständig abgeschlossen**. **Package B (INV-022 + INV-006) ist vollständig abgeschlossen**. **Package C (INV-045 + INV-046) ist vollständig abgeschlossen**. **Package D (INV-007) ist vollständig abgeschlossen** — D1 gemergt; contract-only Owner-/Authority-/Import-Boundary; keine Produktionssemantikänderung; `double_play_capital_slot.py` unverändert; **kein Package-E-GO, keine Runtime**.
+Target Architecture ist im Masterplan abgeschlossen (`MANIFEST_VERIFY_RC=0`). **Package A (INV-021 + INV-048) ist vollständig abgeschlossen**. **Package B (INV-022 + INV-006) ist vollständig abgeschlossen**. **Package C (INV-045 + INV-046) ist vollständig abgeschlossen**. **Package D (INV-007) ist vollständig abgeschlossen**. **Package E (INV-008) ist mit E1 begonnen und IN_PROGRESS** — E1 gemergt PR #4583; PE-22 Durable Completion Binding contract-only integriert; INV-037 trace-only COMPLETE; INV-033 geparkt (`PARKED_RUNTIME_OPERATOR_GO_REQUIRED`); **Package E nicht COMPLETE**; **kein E2-Runtime-GO, kein OPERATOR_GO_TINY_ORDER, keine Runtime**.
 
 ## 3. Capability Trains (12)
 
@@ -91,8 +97,8 @@ Target Architecture ist im Masterplan abgeschlossen (`MANIFEST_VERIFY_RC=0`). **
 | PACKAGE_A_NUMERICAL_TRUST_FOUNDATION | TRAIN_1 | **COMPLETE** — INV-021+048 gemergt; keine Produktions-Verdrahtung |
 | PACKAGE_B_RECONCILIATION_CANONICALIZATION | TRAIN_2 | **COMPLETE** — INV-022+INV-006 gemergt; kein Package-C-GO |
 | PACKAGE_C_DOUBLE_PLAY_DYNAMIC_SCOPE_AND_STATE | TRAIN_3 | **COMPLETE** — C1 (INV-045) + C2 (INV-046) gemergt |
-| PACKAGE_D_CAPITAL_SLOT_RATCHET | TRAIN_4 | **COMPLETE** — INV-007 gemergt; kein Package-E-GO |
-| PACKAGE_E_RISK_KILLSWITCH_OPERATIVE_COMPLETION | TRAIN_5 | INV-033/008 |
+| PACKAGE_D_CAPITAL_SLOT_RATCHET | TRAIN_4 | **COMPLETE** — INV-007 gemergt |
+| PACKAGE_E_RISK_KILLSWITCH_OPERATIVE_COMPLETION | TRAIN_5 | **IN_PROGRESS** — E1 (INV-008) gemergt PR #4583; E2/INV-033 geparkt; kein Package-E-COMPLETE |
 | PACKAGE_F_DURABLE_RUNTIME_EVIDENCE | TRAIN_6 | INV-016/005 |
 | PACKAGE_G_BAYESIAN_EVIDENCE_READONLY_LAYER | TRAIN_7 | **PARKED** — INV-043 |
 | PACKAGE_H_OPERATOR_VISIBILITY | TRAIN_9 | INV-011,042,044 |
@@ -147,6 +153,19 @@ Wave-Reihenfolge: 1=A → 2=B → 3=A ext (INV-003 GO) → 4=C → 5=D → 6=E,F
 - **Reuse-before-new:** bestehende Contract-Owner erweitert; keine parallele Capital-Slot-SSOT
 - **PACKAGE_D_STATUS:** COMPLETE | **D1_INV007_STATUS:** COMPLETE | **PACKAGE_D_GO_GRANTED:** false | **kein Package-E-GO, keine Runtime**
 
+### PACKAGE_E (IN_PROGRESS — E1 abgeschlossen, E2 geparkt)
+
+- **Operator-Review:** `package_e_risk_killswitch_operative_completion_operator_review_bounded_readonly_v0_20260626T064500Z`, `MANIFEST_VERIFY_RC=0`
+- **Titel:** Risk/KillSwitch Operative Completion
+- **Enthalten:** INV-008 (PE-22 Durable Completion Binding) + INV-033 (operative Runtime) + INV-037 (trace-only, **COMPLETE**)
+- **Explizit ausgeschlossen:** produktive KillSwitch-/Risk-Verdrahtung ohne separates Runtime-GO, OPERATOR_GO_TINY_ORDER ohne explizites GO, Runtime, Trading-/Promotion-Authority, parallele SSOTs, Produktionssemantikänderung, Risk-Limit-Änderung, Authority-Erhöhung
+- **Slice-Reihenfolge (verbindlich):**
+  - **E1 (INV-008):** **MERGED** — PR #4583, Squash `4ab3df7`; PE-22 Durable Completion Binding contract-only; CI: CONTRACT_FOCUSED / `pe22_durable_completion_binding_focused`; 20 Binding-Nodes, 22 CI-Targets; test-only; keine Produktionsdatei; keine Config-Änderung; keine Runtime
+  - **E2 (INV-033):** **PARKED** — `PARKED_RUNTIME_OPERATOR_GO_REQUIRED`; OPERATOR_GO_TINY_ORDER nicht erteilt; keine Runtime
+- **INV-037:** trace-only **COMPLETE** (PR #4545)
+- **Reuse-before-new:** bestehende Contract-Owner erweitert; keine parallele Risk/KillSwitch-SSOT
+- **PACKAGE_E_STATUS:** IN_PROGRESS | **E1_INV008_STATUS:** COMPLETE | **INV033_STATUS:** PARKED_RUNTIME_OPERATOR_GO_REQUIRED | **PACKAGE_E_GO_GRANTED:** false | **Package E nicht COMPLETE; kein E2-GO, kein OPERATOR_GO_TINY_ORDER, keine Runtime**
+
 ## 5. State Machine (26 Zustände)
 
 Fail-closed Guards — vollständige Definition im Durable Snapshot `PROGRAM_STATE_MACHINE.md`.
@@ -170,15 +189,15 @@ Handoff-Payloads: `NEW_CHAT_RESUME_PAYLOAD.md`, `CURSOR_RESUME_PAYLOAD.md` (Dura
 
 ## 8. Operator Checklist (aktuell)
 
-### Nach Package-D-Abschluss (aktuell)
+### Nach Package-E-E1-Abschluss (aktuell)
 
 - [x] Packages A, B, C, D vollständig abgeschlossen
-- [x] Package-D Operator-Review abgeschlossen (`package_d_inv007_capital_slot_ratchet_owner_boundaries_operator_review_bounded_readonly_v0_20260626T055000Z`)
-- [x] Package-D-Slice D1 (INV-007) gemergt — PR #4581, Squash `148685f2`; contract-only Capital-Slot-Owner-/Authority-/Import-Boundary
-- [x] Fachliches D1-Closeout-Bundle mit `MANIFEST_VERIFY_RC=0`
-- [x] Docs-Closeout-Checkpoint für D1 vorbereitet
-- [ ] Separates read-only Operator-Review für Package E — **nicht gestartet**
-- [ ] Package F — **nicht autorisiert**
+- [x] Package-E Operator-Review abgeschlossen (`package_e_risk_killswitch_operative_completion_operator_review_bounded_readonly_v0_20260626T064500Z`)
+- [x] Package-E-Slice E1 (INV-008) gemergt — PR #4583, Squash `4ab3df7`; contract-only PE-22 Durable Completion Binding
+- [x] Fachliches E1-Closeout-Bundle mit `MANIFEST_VERIFY_RC=0`
+- [x] Docs-Closeout-Checkpoint für E1 vorbereitet
+- [ ] E2/INV-033 Runtime — geparkt; OPERATOR_GO_TINY_ORDER nicht erteilt
+- [ ] Package H — nicht autorisiert als Implementierung
 - [ ] INV-003 wiring, INV-005 testnet, Authority-Lift, Runtime, Engine-Vereinheitlichung, Reconciliation-Wiring weiterhin ausgeschlossen
 
 ## 9. Evidence Index
@@ -212,12 +231,18 @@ Handoff-Payloads: `NEW_CHAT_RESUME_PAYLOAD.md`, `CURSOR_RESUME_PAYLOAD.md` (Dura
 | D1 Implementation `package_d_d1_inv007_capital_slot_owner_boundaries_contract_only_v0_20260626T060200Z` | INV-007 Capital-Slot Contract-Formalisation |
 | PR-4581 Closeout `pr4581_package_d_d1_inv007_capital_slot_squash_merge_closeout_v0_20260626T061439Z` | Package D Slice D1 merge closeout |
 | PR-4581 Merge | Package D Slice D1 merge |
+| Operator-Review `package_e_risk_killswitch_operative_completion_operator_review_bounded_readonly_v0_20260626T064500Z` | Finale Package-E-Auswahl |
+| E1 Implementation `package_e_e1_inv008_pe22_durable_completion_binding_contract_only_v0_20260626T160000Z` | INV-008 PE-22 Durable Completion Binding |
+| PR-4583 Closeout `pr4583_package_e_e1_inv008_pe22_squash_merge_closeout_v0_20260626T161427Z` | Package E Slice E1 merge closeout |
+| PR-4583 Merge | Package E Slice E1 merge |
 | Runbook Durable Snapshot `peak_trade_master_execution_runbook_v1_20260626T233500Z` | Unveränderlicher Ursprung |
 
 ## 10. DO_NOT_DO (aktuell)
 
-- Package E ohne separates read-only Operator-Review und explizites GO
-- GO erteilen oder inferieren (insbesondere Package-E-GO oder nächstes Package-GO)
+- Package E als COMPLETE markieren solange INV-033 geparkt
+- E2/INV-033 Runtime oder OPERATOR_GO_TINY_ORDER ohne separates explizites GO
+- Package H, J oder K ohne separates GO starten
+- GO erteilen oder inferieren (insbesondere Package-E-E2-GO oder nächstes Package-GO)
 - Engine-Vereinheitlichung, produktives Reconciliation-Wiring, Repair-Authority
 - Runtime, Testnet, Paper, Shadow, Live starten
 - Primären dirty Worktree mutieren
