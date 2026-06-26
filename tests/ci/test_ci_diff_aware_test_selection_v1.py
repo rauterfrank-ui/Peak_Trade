@@ -2986,6 +2986,108 @@ def test_mapping_file_includes_preflight_assembly_focused() -> None:
     assert "preflight_assembly_focused:" in text
 
 
+PR4585_BOUNDED_FUTURES_TESTNET_CONTRACT_FILES = (
+    "src/ops/bounded_futures_testnet_contract_v0.py",
+    "tests/ops/test_archive_futures_testnet_harness_v0.py",
+    "tests/ops/test_bounded_futures_testnet_adapter_contract_v0.py",
+    "tests/ops/test_bounded_futures_testnet_contract_v0.py",
+    "tests/ops/test_order_capability_dry_validation_contract_v1.py",
+    "tests/ops/test_run_order_capability_dry_validation_adapter_v1.py",
+)
+
+PR4585_REQUIRED_OPS_TESTOWNERS = (
+    "tests/ops/test_bounded_futures_testnet_contract_v0.py",
+    "tests/ops/test_bounded_futures_testnet_adapter_contract_v0.py",
+    "tests/ops/test_order_capability_dry_validation_contract_v1.py",
+    "tests/ops/test_archive_futures_testnet_harness_v0.py",
+    "tests/ops/test_run_order_capability_dry_validation_adapter_v1.py",
+)
+
+
+def test_selector_pr4585_bounded_futures_testnet_contract_fileset_focused() -> None:
+    sel = _run_selector(*PR4585_BOUNDED_FUTURES_TESTNET_CONTRACT_FILES)
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
+    assert sel["test_selection_reason"] == "bounded_futures_testnet_contract_focused"
+    assert sel["tests_execute_focused"] == "true"
+    assert sel["tests_execute_pr_bounded_full"] == "false"
+    assert sel["fast_lane_contract_mode"] == "FULL_STATIC_CONTRACTS"
+    targets = _targets(sel)
+    for owner in PR4585_REQUIRED_OPS_TESTOWNERS:
+        assert owner in targets
+    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" in targets
+    assert len([t for t in targets if t in PR4585_REQUIRED_OPS_TESTOWNERS]) == 5
+
+
+def test_selector_pr4585_bounded_futures_testnet_contract_no_missing_testowners() -> None:
+    sel = _run_selector(*PR4585_BOUNDED_FUTURES_TESTNET_CONTRACT_FILES)
+    targets = _targets(sel)
+    missing = [t for t in PR4585_REQUIRED_OPS_TESTOWNERS if t not in targets]
+    assert missing == []
+
+
+def test_selector_pr4585_bounded_futures_testnet_contract_not_pr_bounded_full() -> None:
+    sel = _run_selector(*PR4585_BOUNDED_FUTURES_TESTNET_CONTRACT_FILES)
+    assert sel["test_selection_mode"] != "PR_BOUNDED_FULL"
+    assert sel["tests_execute_pr_bounded_full"] == "false"
+    bounded = sel.get("pr_bounded_pytest_targets", "")
+    assert bounded == ""
+
+
+def test_selector_pr4585_owner_without_primary_test_owner_escalates_full() -> None:
+    sel = _run_selector(PR4585_BOUNDED_FUTURES_TESTNET_CONTRACT_FILES[0])
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    assert (
+        sel["test_selection_reason"]
+        == "bounded_futures_testnet_contract_incomplete_or_missing_test_owner"
+    )
+
+
+def test_selector_pr4585_plus_unknown_ops_src_escalates_full() -> None:
+    sel = _run_selector(
+        *PR4585_BOUNDED_FUTURES_TESTNET_CONTRACT_FILES,
+        "src/ops/bounded_futures_testnet_preflight_packet_contract_v0.py",
+    )
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+
+
+def test_selector_pr4585_plus_runtime_touch_escalates_full() -> None:
+    sel = _run_selector(
+        PR4585_BOUNDED_FUTURES_TESTNET_CONTRACT_FILES[0],
+        "src/runtime/scheduler.py",
+        *PR4585_BOUNDED_FUTURES_TESTNET_CONTRACT_FILES[1:],
+    )
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+
+
+def test_selector_pr4585_rebundle_with_ci_policy_focused() -> None:
+    sel = _run_selector(
+        *PR4585_BOUNDED_FUTURES_TESTNET_CONTRACT_FILES,
+        "scripts/ops/ci_test_selection_v1.py",
+        "config/ci/file_category_mapping.yaml",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    )
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
+    assert sel["test_selection_reason"] == "bounded_futures_testnet_contract_focused"
+
+
+def test_selector_pr4585_import_modules() -> None:
+    sel = _run_selector(*PR4585_BOUNDED_FUTURES_TESTNET_CONTRACT_FILES)
+    modules = _modules(sel)
+    assert "src.ops.bounded_futures_testnet_contract_v0" in modules
+
+
+def test_mapping_file_includes_bounded_futures_testnet_contract_focused() -> None:
+    text = MAPPING.read_text(encoding="utf-8")
+    assert "bounded_futures_testnet_contract_focused:" in text
+
+
+def test_selector_pr4585_focused_fast_lane_wired_not_full_static_only() -> None:
+    text = _ci_text()
+    static_if = text.split("Static contract tests", 1)[1].split("\n", 3)[0]
+    assert "tests_execute_focused != 'true'" in text
+    assert "Focused Fast-Lane contract check" in text
+
+
 PE53_RISK_KILLSWITCH_FILES = (
     "src/ops/bounded_futures_testnet_risk_killswitch_lifecycle_integration_contract_v0.py",
     "tests/ops/test_bounded_futures_testnet_risk_killswitch_lifecycle_integration_contract_v0.py",

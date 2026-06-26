@@ -53,7 +53,7 @@ def _durable_test_archive_root(tmp_path: Path) -> Path:
 class _FakeFetcher:
     def __init__(self, *, body: bytes | None = None) -> None:
         self.urls: list[str] = []
-        self._body = body if body is not None else b'{"tickers":[{"symbol":"PF_XBTUSD"}]}'
+        self._body = body if body is not None else b'{"tickers":[{"symbol":"PF_ETHUSD"}]}'
 
     def fetch(self, url: str, *, timeout_seconds: float) -> tuple[int, bytes]:
         self.urls.append(url)
@@ -100,9 +100,9 @@ def test_authority_flags_remain_blocked() -> None:
     assert ARCHIVE_HARNESS_SCRIPT_EXECUTE_AUTHORIZED_NOW is False
 
 
-def test_defaults_pf_xbtusd_and_demo_futures_rest_base() -> None:
-    assert harness.DEFAULT_FUTURES_SYMBOL == "PF_XBTUSD"
-    assert harness.DEFAULT_INSTRUMENT == "PF_XBTUSD"
+def test_defaults_pf_ethusd_and_demo_futures_rest_base() -> None:
+    assert harness.DEFAULT_FUTURES_SYMBOL == "PF_ETHUSD"
+    assert harness.DEFAULT_INSTRUMENT == "PF_ETHUSD"
     assert harness.DEFAULT_REST_BASE_URL == ("https://demo-futures.kraken.com/derivatives/api/v3")
     assert _validate_harness_defaults_pass()
 
@@ -272,7 +272,7 @@ def test_assert_network_url_rejects_non_allowlisted_path() -> None:
 
 
 def test_tickers_path_increments_request_count_and_endpoints() -> None:
-    fetcher = _FakeFetcher(body=b'{"tickers":[{"symbol":"PF_XBTUSD"}]}')
+    fetcher = _FakeFetcher(body=b'{"tickers":[{"symbol":"PF_ETHUSD"}]}')
     result = harness.run_zero_order_public_reachability(
         rest_base_url=harness.DEFAULT_REST_BASE_URL,
         duration_cap_seconds=60,
@@ -284,8 +284,8 @@ def test_tickers_path_increments_request_count_and_endpoints() -> None:
     assert result.network_reachability_proven is True
 
 
-def test_pf_xbtusd_not_visible_classification() -> None:
-    fetcher = _FakeFetcher(body=b'{"tickers":[{"symbol":"PF_ETHUSD"}]}')
+def test_pf_ethusd_not_visible_when_response_lacks_default_symbol() -> None:
+    fetcher = _FakeFetcher(body=b'{"tickers":[{"symbol":"PF_XBTUSD"}]}')
     result = harness.run_zero_order_public_reachability(
         rest_base_url=harness.DEFAULT_REST_BASE_URL,
         duration_cap_seconds=60,
@@ -341,7 +341,7 @@ def test_pe8_zero_order_spec_accepts_harness_evidence() -> None:
 
 def test_rejected_placeholder_set_unchanged() -> None:
     assert "BTCUSDT" in REJECTED_FUTURES_INSTRUMENT_PLACEHOLDERS
-    assert DEFAULT_INSTRUMENT == "PF_XBTUSD"
+    assert DEFAULT_INSTRUMENT == "PF_ETHUSD"
 
 
 def test_private_readonly_mode_plan_only_writes_evidence(tmp_path: Path) -> None:

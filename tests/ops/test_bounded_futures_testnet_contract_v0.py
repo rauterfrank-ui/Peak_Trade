@@ -153,11 +153,20 @@ def test_required_evidence_field_names_documented() -> None:
 
 def test_default_spec_uses_kraken_futures_operator_instrument() -> None:
     spec = default_bounded_futures_normal_v0_spec()
-    assert spec.instrument == "PF_XBTUSD"
+    assert spec.instrument == "PF_ETHUSD"
     assert spec.instrument == DEFAULT_INSTRUMENT
     assert spec.instrument not in REJECTED_FUTURES_INSTRUMENT_PLACEHOLDERS
     assert spec.max_leverage == 5.0
     assert spec.margin_mode == "isolated"
+
+
+def test_pf_xbtusd_instrument_fails_bounded_evidence_evaluator() -> None:
+    evidence = _valid_futures_evidence()
+    evidence["instrument"] = "PF_XBTUSD"
+    result = evaluate_bounded_futures_testnet_evidence(evidence)
+    assert result["bounded_futures_testnet_pass"] is False
+    assert result["futures_instrument_pass"] is False
+    assert any("instrument must be" in r for r in result["fail_reasons"])
 
 
 def test_btcusdt_placeholder_rejected_in_futures_evidence() -> None:

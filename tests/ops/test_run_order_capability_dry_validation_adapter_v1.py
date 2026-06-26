@@ -13,6 +13,8 @@ from pathlib import Path
 
 import pytest
 
+from src.ops.bounded_futures_testnet_contract_v0 import DEFAULT_INSTRUMENT
+
 ROOT = Path(__file__).resolve().parents[2]
 ADAPTER_SCRIPT = ROOT / "scripts" / "ops" / "run_order_capability_dry_validation_adapter_v1.py"
 CONTRACT_MODULE = ROOT / "src" / "ops" / "order_capability_dry_validation_contract_v1.py"
@@ -47,7 +49,7 @@ def _base_argv(archive: Path, *, run_id: str = "order_cap_dry_validation_test_ru
         "--run-id",
         run_id,
         "--instrument",
-        "PF_XBTUSD",
+        DEFAULT_INSTRUMENT,
         "--venue",
         "Kraken Futures Demo / demo-futures.kraken.com",
         "--max-loss-cap-eur",
