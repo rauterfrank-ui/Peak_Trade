@@ -31,6 +31,13 @@ OwnerRole = Literal[
     "POSITION_LEDGER_SOURCE",
     "FILL_SOURCE",
     "VALUE_TRANSPORT_ONLY",
+    "RECON_ADAPTER",
+    "RECON_HOOK",
+    "RECON_CONTEXT",
+    "RECON_MODELS",
+    "HISTORICAL_PAPER_INVARIANT",
+    "HISTORICAL_LIVE_MOCK",
+    "EVIDENCE_AIOPS",
 ]
 
 _BINDING_ROLES: Final[frozenset[str]] = frozenset(
@@ -48,6 +55,40 @@ _VALID_OWNER_ROLES: Final[frozenset[str]] = frozenset(
         "POSITION_LEDGER_SOURCE",
         "FILL_SOURCE",
         "VALUE_TRANSPORT_ONLY",
+        "RECON_ADAPTER",
+        "RECON_HOOK",
+        "RECON_CONTEXT",
+        "RECON_MODELS",
+        "HISTORICAL_PAPER_INVARIANT",
+        "HISTORICAL_LIVE_MOCK",
+        "EVIDENCE_AIOPS",
+    }
+)
+
+_HISTORICAL_AND_EVIDENCE_ROLES: Final[frozenset[str]] = frozenset(
+    {
+        "HISTORICAL_PAPER_INVARIANT",
+        "HISTORICAL_LIVE_MOCK",
+        "EVIDENCE_AIOPS",
+    }
+)
+
+_SUPPORTING_OPS_RECON_PATHS: Final[tuple[str, ...]] = (
+    "src/ops/recon/reconcile.py",
+    "src/ops/recon/providers.py",
+    "src/ops/recon/recon_hook.py",
+    "src/ops/recon/context.py",
+    "src/ops/recon/models.py",
+)
+
+_OPS_RECON_IMPORT_MODULES: Final[frozenset[str]] = frozenset(
+    {
+        "src.ops.recon",
+        "src.ops.recon.reconcile",
+        "src.ops.recon.providers",
+        "src.ops.recon.recon_hook",
+        "src.ops.recon.context",
+        "src.ops.recon.models",
     }
 )
 
@@ -66,6 +107,11 @@ class ReconciliationOwnerRecord(TypedDict):
     master_v2_relevant: bool
     completion_adapter_relevant: bool
     local_scope_only: bool
+    repair_authority: bool
+    operative_ssot: bool
+    canonical_candidate: bool
+    expected_state_role: str
+    observed_state_role: str
 
 
 RECONCILIATION_OWNER_REGISTRY: tuple[ReconciliationOwnerRecord, ...] = (
@@ -83,6 +129,11 @@ RECONCILIATION_OWNER_REGISTRY: tuple[ReconciliationOwnerRecord, ...] = (
         "master_v2_relevant": False,
         "completion_adapter_relevant": False,
         "local_scope_only": False,
+        "repair_authority": False,
+        "operative_ssot": False,
+        "canonical_candidate": True,
+        "expected_state_role": "internal_ledger_snapshot",
+        "observed_state_role": "external_snapshot_reference",
     },
     {
         "path": OPS_RECONCILIATION_FLOAT_OBSERVATION_OWNER,
@@ -98,6 +149,91 @@ RECONCILIATION_OWNER_REGISTRY: tuple[ReconciliationOwnerRecord, ...] = (
         "master_v2_relevant": False,
         "completion_adapter_relevant": False,
         "local_scope_only": True,
+        "repair_authority": False,
+        "operative_ssot": False,
+        "canonical_candidate": False,
+        "expected_state_role": "provider_expected_snapshot",
+        "observed_state_role": "provider_observed_snapshot",
+    },
+    {
+        "path": "src/ops/recon/providers.py",
+        "role": "RECON_ADAPTER",
+        "number_type": "float",
+        "input_units": "adapter-provided balance/position snapshots",
+        "output_units": "BalanceSnapshot/PositionSnapshot transport",
+        "sign_convention": "provider-owned snapshot semantics",
+        "absolute_tolerance": False,
+        "relative_tolerance": False,
+        "quantization_strategy": "adapter-owned",
+        "fail_closed": True,
+        "master_v2_relevant": False,
+        "completion_adapter_relevant": False,
+        "local_scope_only": True,
+        "repair_authority": False,
+        "operative_ssot": False,
+        "canonical_candidate": False,
+        "expected_state_role": "expected_balance_position_snapshots",
+        "observed_state_role": "observed_balance_position_snapshots",
+    },
+    {
+        "path": "src/ops/recon/recon_hook.py",
+        "role": "RECON_HOOK",
+        "number_type": "float",
+        "input_units": "ReconConfig and provider/snapshot inputs",
+        "output_units": "DriftReport observation",
+        "sign_convention": "hook compares expected vs observed only",
+        "absolute_tolerance": True,
+        "relative_tolerance": False,
+        "quantization_strategy": "delegates to ops float reconcile",
+        "fail_closed": True,
+        "master_v2_relevant": False,
+        "completion_adapter_relevant": False,
+        "local_scope_only": True,
+        "repair_authority": False,
+        "operative_ssot": False,
+        "canonical_candidate": False,
+        "expected_state_role": "hook_expected_inputs",
+        "observed_state_role": "hook_observed_inputs",
+    },
+    {
+        "path": "src/ops/recon/context.py",
+        "role": "RECON_CONTEXT",
+        "number_type": "float",
+        "input_units": "pipeline context recon payloads",
+        "output_units": "BalanceSnapshot/PositionSnapshot extraction",
+        "sign_convention": "context normalization only",
+        "absolute_tolerance": False,
+        "relative_tolerance": False,
+        "quantization_strategy": "context-owned",
+        "fail_closed": True,
+        "master_v2_relevant": False,
+        "completion_adapter_relevant": False,
+        "local_scope_only": True,
+        "repair_authority": False,
+        "operative_ssot": False,
+        "canonical_candidate": False,
+        "expected_state_role": "pipeline_context_expected",
+        "observed_state_role": "pipeline_context_observed",
+    },
+    {
+        "path": "src/ops/recon/models.py",
+        "role": "RECON_MODELS",
+        "number_type": "float",
+        "input_units": "snapshot value transport",
+        "output_units": "BalanceSnapshot/PositionSnapshot/DriftReport",
+        "sign_convention": "value transport only",
+        "absolute_tolerance": False,
+        "relative_tolerance": False,
+        "quantization_strategy": "model-owned",
+        "fail_closed": True,
+        "master_v2_relevant": False,
+        "completion_adapter_relevant": False,
+        "local_scope_only": True,
+        "repair_authority": False,
+        "operative_ssot": False,
+        "canonical_candidate": False,
+        "expected_state_role": "value_transport_expected",
+        "observed_state_role": "value_transport_observed",
     },
     {
         "path": "src/execution/position_ledger.py",
@@ -113,6 +249,11 @@ RECONCILIATION_OWNER_REGISTRY: tuple[ReconciliationOwnerRecord, ...] = (
         "master_v2_relevant": False,
         "completion_adapter_relevant": False,
         "local_scope_only": True,
+        "repair_authority": False,
+        "operative_ssot": False,
+        "canonical_candidate": False,
+        "expected_state_role": "internal_position_state",
+        "observed_state_role": "not_applicable",
     },
     {
         "path": "src/execution/order_ledger.py",
@@ -128,6 +269,71 @@ RECONCILIATION_OWNER_REGISTRY: tuple[ReconciliationOwnerRecord, ...] = (
         "master_v2_relevant": False,
         "completion_adapter_relevant": False,
         "local_scope_only": True,
+        "repair_authority": False,
+        "operative_ssot": False,
+        "canonical_candidate": False,
+        "expected_state_role": "internal_order_fill_state",
+        "observed_state_role": "not_applicable",
+    },
+    {
+        "path": "src/sim/paper/reconcile.py",
+        "role": "HISTORICAL_PAPER_INVARIANT",
+        "number_type": "float",
+        "input_units": "paper ledger rows",
+        "output_units": "invariant verification only",
+        "sign_convention": "paper simulation ledger",
+        "absolute_tolerance": False,
+        "relative_tolerance": False,
+        "quantization_strategy": "historical-local",
+        "fail_closed": True,
+        "master_v2_relevant": False,
+        "completion_adapter_relevant": False,
+        "local_scope_only": True,
+        "repair_authority": False,
+        "operative_ssot": False,
+        "canonical_candidate": False,
+        "expected_state_role": "paper_ledger_invariant",
+        "observed_state_role": "not_applicable",
+    },
+    {
+        "path": "src/execution/live/reconcile.py",
+        "role": "HISTORICAL_LIVE_MOCK",
+        "number_type": "float",
+        "input_units": "local order intent vs broker mock snapshot",
+        "output_units": "ReconcileReport descriptive mismatches",
+        "sign_convention": "mock broker compare only",
+        "absolute_tolerance": False,
+        "relative_tolerance": False,
+        "quantization_strategy": "historical-local",
+        "fail_closed": True,
+        "master_v2_relevant": False,
+        "completion_adapter_relevant": False,
+        "local_scope_only": True,
+        "repair_authority": False,
+        "operative_ssot": False,
+        "canonical_candidate": False,
+        "expected_state_role": "local_order_intent",
+        "observed_state_role": "broker_mock_snapshot",
+    },
+    {
+        "path": "src/aiops/p7/reconciliation.py",
+        "role": "EVIDENCE_AIOPS",
+        "number_type": "mixed",
+        "input_units": "artifact metrics vs spec expected",
+        "output_units": "ReconciliationResult evidence issues",
+        "sign_convention": "evidence-only validator",
+        "absolute_tolerance": False,
+        "relative_tolerance": False,
+        "quantization_strategy": "evidence-owned",
+        "fail_closed": True,
+        "master_v2_relevant": False,
+        "completion_adapter_relevant": False,
+        "local_scope_only": True,
+        "repair_authority": False,
+        "operative_ssot": False,
+        "canonical_candidate": False,
+        "expected_state_role": "spec_expected_metrics",
+        "observed_state_role": "artifact_observed_metrics",
     },
 )
 
@@ -166,6 +372,10 @@ _FORBIDDEN_OPERATIVE_RECONCILIATION_CLAIM_KEYS: Final[frozenset[str]] = frozense
         "FILL_RECONCILIATION_PROVEN",
         "RECONCILIATION_SSOT_BOUND",
         "RECONCILIATION_OWNER_CONSOLIDATED",
+        "REPAIR_AUTHORITY_GRANTED",
+        "AUTOMATIC_STATE_REPAIR_ENABLED",
+        "RECONCILIATION_REPAIR_AUTHORITY_BOUND",
+        "OPERATIVE_RECONCILIATION_SSOT",
     }
 )
 
@@ -198,6 +408,24 @@ def _imports_operative_reconciliation_owner(tree: ast.AST) -> list[str]:
                     if alias.name == "reconcile":
                         violations.append("from src.ops.recon import reconcile")
     return sorted(set(violations))
+
+
+def _module_import_targets(path: Path) -> set[str]:
+    tree = ast.parse(path.read_text(encoding="utf-8"))
+    targets: set[str] = set()
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            for alias in node.names:
+                if alias.name:
+                    targets.add(alias.name)
+        elif isinstance(node, ast.ImportFrom) and node.module:
+            targets.add(node.module)
+    return targets
+
+
+def _class_names_in_module(path: Path) -> set[str]:
+    tree = ast.parse(path.read_text(encoding="utf-8"))
+    return {node.name for node in ast.walk(tree) if isinstance(node, ast.ClassDef)}
 
 
 def _execution_reconciliation_tolerance_fields() -> tuple[str, ...]:
@@ -235,6 +463,7 @@ def test_reconciliation_owner_inventory_complete_and_roles_unique() -> None:
     paths = [record["path"] for record in RECONCILIATION_OWNER_REGISTRY]
     assert len(paths) == len(set(paths)), "duplicate owner paths in registry"
     roles = [record["role"] for record in RECONCILIATION_OWNER_REGISTRY]
+    assert len(roles) == len(set(roles)), "duplicate owner roles in registry"
     assert all(role in _VALID_OWNER_ROLES for role in roles)
     assert all(role not in _BINDING_ROLES for role in roles)
     for record in RECONCILIATION_OWNER_REGISTRY:
@@ -257,6 +486,8 @@ def test_exactly_one_execution_decimal_reconciliation_candidate() -> None:
     assert candidate["number_type"] == "Decimal"
     assert candidate["absolute_tolerance"] is True
     assert candidate["relative_tolerance"] is True
+    assert candidate["canonical_candidate"] is True
+    assert candidate["operative_ssot"] is False
     assert FUTURE_RECONCILIATION_CONSOLIDATION_MUST_BE_EXPLICIT is True
 
 
@@ -360,3 +591,82 @@ def test_contract_defines_no_reconciliation_formulas_and_is_non_authorizing() ->
     text = Path(__file__).read_text(encoding="utf-8")
     assert PACKAGE_MARKER in text
     assert AUTHORITY_LIFT is False
+
+
+def test_all_registry_records_declare_no_repair_authority() -> None:
+    for record in RECONCILIATION_OWNER_REGISTRY:
+        assert record["repair_authority"] is False, record["path"]
+    assert all(not record["operative_ssot"] for record in RECONCILIATION_OWNER_REGISTRY)
+
+
+def test_registry_supporting_and_historical_roles_present() -> None:
+    roles = {record["role"] for record in RECONCILIATION_OWNER_REGISTRY}
+    for required in (
+        "RECON_ADAPTER",
+        "RECON_HOOK",
+        "RECON_CONTEXT",
+        "RECON_MODELS",
+        "HISTORICAL_PAPER_INVARIANT",
+        "HISTORICAL_LIVE_MOCK",
+        "EVIDENCE_AIOPS",
+    ):
+        assert required in roles
+    for rel_path in _SUPPORTING_OPS_RECON_PATHS:
+        assert rel_path in {record["path"] for record in RECONCILIATION_OWNER_REGISTRY}
+
+
+def test_historical_and_evidence_owners_not_canonical_ssot() -> None:
+    for record in RECONCILIATION_OWNER_REGISTRY:
+        if record["role"] in _HISTORICAL_AND_EVIDENCE_ROLES:
+            assert record["canonical_candidate"] is False
+            assert record["operative_ssot"] is False
+            assert record["repair_authority"] is False
+    canonical_candidates = [
+        record for record in RECONCILIATION_OWNER_REGISTRY if record["canonical_candidate"]
+    ]
+    assert len(canonical_candidates) == 1
+    assert canonical_candidates[0]["path"] == CANONICAL_EXECUTION_RECONCILIATION_CANDIDATE
+
+
+def test_registry_expected_observed_state_roles_declared() -> None:
+    for record in RECONCILIATION_OWNER_REGISTRY:
+        assert record["expected_state_role"]
+        assert record["observed_state_role"]
+    adapter = next(
+        record for record in RECONCILIATION_OWNER_REGISTRY if record["role"] == "RECON_ADAPTER"
+    )
+    assert adapter["expected_state_role"] != adapter["observed_state_role"]
+    evidence = next(
+        record for record in RECONCILIATION_OWNER_REGISTRY if record["role"] == "EVIDENCE_AIOPS"
+    )
+    assert evidence["expected_state_role"] == "spec_expected_metrics"
+    assert evidence["observed_state_role"] == "artifact_observed_metrics"
+
+
+def test_canonical_candidate_must_not_import_ops_recon_modules() -> None:
+    imports = _module_import_targets(REPO_ROOT / CANONICAL_EXECUTION_RECONCILIATION_CANDIDATE)
+    forbidden = sorted(imports & _OPS_RECON_IMPORT_MODULES)
+    assert not forbidden, f"canonical candidate reverse-imports ops recon: {forbidden}"
+
+
+def test_supporting_ops_recon_must_not_import_execution_reconciliation() -> None:
+    for rel_path in _SUPPORTING_OPS_RECON_PATHS:
+        imports = _module_import_targets(REPO_ROOT / rel_path)
+        assert "src.execution.reconciliation" not in imports, rel_path
+
+
+def test_no_parallel_reconciliation_engine_class_outside_canonical_candidate() -> None:
+    offenders: list[str] = []
+    for path in sorted((REPO_ROOT / "src").glob("**/*.py")):
+        rel = path.relative_to(REPO_ROOT).as_posix()
+        if rel == CANONICAL_EXECUTION_RECONCILIATION_CANDIDATE:
+            continue
+        if "ReconciliationEngine" in _class_names_in_module(path):
+            offenders.append(rel)
+    assert not offenders, f"parallel ReconciliationEngine outside canonical candidate: {offenders}"
+
+
+def test_forbidden_authority_and_repair_claim_keys_absent() -> None:
+    text = Path(__file__).read_text(encoding="utf-8")
+    for key in _FORBIDDEN_OPERATIVE_RECONCILIATION_CLAIM_KEYS:
+        assert f"{key}=true" not in text
