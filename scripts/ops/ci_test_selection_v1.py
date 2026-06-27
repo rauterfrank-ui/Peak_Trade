@@ -1514,6 +1514,25 @@ PR_BOUNDED_FULL_PACKAGE_COMPARISON_METRIC_INPUT_DURABLE_EVIDENCE_TARGETS: tuple[
     "tests/governance/promotion_loop/test_candidate_lineage_manifest_v1_contract.py",
 )
 
+PR_BOUNDED_FULL_PACKAGE_COMPARISON_SSOT_DEFINITION_DURABLE_EVIDENCE_TRIGGER_PATHS: frozenset[
+    str
+] = frozenset(
+    {
+        "src/meta/learning_loop/comparison_ssot_definition_durable_evidence_binding_v1.py",
+        "scripts/run_comparison_ssot_definition_durable_evidence_binding_v1.py",
+        "tests/meta/test_comparison_ssot_definition_durable_evidence_binding_v1.py",
+        "tests/scripts/test_run_comparison_ssot_definition_durable_evidence_binding_v1.py",
+    }
+)
+
+PR_BOUNDED_FULL_PACKAGE_COMPARISON_SSOT_DEFINITION_DURABLE_EVIDENCE_TARGETS: tuple[str, ...] = (
+    "tests/meta/test_comparison_ssot_definition_durable_evidence_binding_v1.py",
+    "tests/scripts/test_run_comparison_ssot_definition_durable_evidence_binding_v1.py",
+    "tests/meta/test_comparison_definition_manifest_v1.py",
+    "tests/meta/test_contract_safety_v1.py",
+    "tests/governance/promotion_loop/test_candidate_lineage_manifest_v1_contract.py",
+)
+
 PR_BOUNDED_FULL_PACKAGE_COMPARISON_METRIC_INPUT_TRIGGER_PATHS: frozenset[str] = frozenset(
     {
         "src/meta/learning_loop/comparison_metric_input_v1/__init__.py",
@@ -1701,6 +1720,13 @@ def resolve_pr_bounded_full_targets(files: list[str]) -> tuple[str, ...]:
 
     if normalized & PR_BOUNDED_FULL_PACKAGE_COMPARISON_METRIC_INPUT_DURABLE_EVIDENCE_TRIGGER_PATHS:
         for path in PR_BOUNDED_FULL_PACKAGE_COMPARISON_METRIC_INPUT_DURABLE_EVIDENCE_TARGETS:
+            add(path)
+
+    if (
+        normalized
+        & PR_BOUNDED_FULL_PACKAGE_COMPARISON_SSOT_DEFINITION_DURABLE_EVIDENCE_TRIGGER_PATHS
+    ):
+        for path in PR_BOUNDED_FULL_PACKAGE_COMPARISON_SSOT_DEFINITION_DURABLE_EVIDENCE_TARGETS:
             add(path)
 
     if normalized & PR_BOUNDED_FULL_PACKAGE_COMPARISON_METRIC_INPUT_TRIGGER_PATHS:
@@ -4896,6 +4922,11 @@ def _focused_targets(files: list[str]) -> tuple[str, ...]:
                 for (
                     candidate
                 ) in PR_BOUNDED_FULL_PACKAGE_COMPARISON_METRIC_INPUT_DURABLE_EVIDENCE_TARGETS:
+                    add(candidate)
+            elif path == "scripts/run_comparison_ssot_definition_durable_evidence_binding_v1.py":
+                for (
+                    candidate
+                ) in PR_BOUNDED_FULL_PACKAGE_COMPARISON_SSOT_DEFINITION_DURABLE_EVIDENCE_TARGETS:
                     add(candidate)
             elif path == "scripts/run_comparison_metric_input_v1.py":
                 for candidate in PR_BOUNDED_FULL_PACKAGE_COMPARISON_METRIC_INPUT_TARGETS:
