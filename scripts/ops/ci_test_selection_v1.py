@@ -1533,15 +1533,15 @@ PR_BOUNDED_FULL_PACKAGE_COMPARISON_SSOT_DEFINITION_DURABLE_EVIDENCE_TARGETS: tup
     "tests/governance/promotion_loop/test_candidate_lineage_manifest_v1_contract.py",
 )
 
-PR_BOUNDED_FULL_PACKAGE_COMPARISON_SSOT_RESULT_DURABLE_EVIDENCE_TRIGGER_PATHS: frozenset[
-    str
-] = frozenset(
-    {
-        "src/meta/learning_loop/comparison_ssot_result_durable_evidence_binding_v1.py",
-        "scripts/run_comparison_ssot_result_durable_evidence_binding_v1.py",
-        "tests/meta/test_comparison_ssot_result_durable_evidence_binding_v1.py",
-        "tests/scripts/test_run_comparison_ssot_result_durable_evidence_binding_v1.py",
-    }
+PR_BOUNDED_FULL_PACKAGE_COMPARISON_SSOT_RESULT_DURABLE_EVIDENCE_TRIGGER_PATHS: frozenset[str] = (
+    frozenset(
+        {
+            "src/meta/learning_loop/comparison_ssot_result_durable_evidence_binding_v1.py",
+            "scripts/run_comparison_ssot_result_durable_evidence_binding_v1.py",
+            "tests/meta/test_comparison_ssot_result_durable_evidence_binding_v1.py",
+            "tests/scripts/test_run_comparison_ssot_result_durable_evidence_binding_v1.py",
+        }
+    )
 )
 
 PR_BOUNDED_FULL_PACKAGE_COMPARISON_SSOT_RESULT_DURABLE_EVIDENCE_TARGETS: tuple[str, ...] = (
