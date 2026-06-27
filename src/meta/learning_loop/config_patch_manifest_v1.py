@@ -407,7 +407,7 @@ def load_config_patches_for_promotion_from_manifest_path(
     path: Path | str,
 ) -> list[ConfigPatch]:
     """Return validated ConfigPatch entries from a canonical manifest file."""
-    return load_promotion_input_from_manifest_path(path).patches
+    return list(load_promotion_input_from_manifest_path(path).patches)
 
 
 @dataclass(frozen=True)
