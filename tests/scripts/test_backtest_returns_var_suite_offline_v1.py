@@ -49,8 +49,9 @@ def test_cli_requires_output_dir(tmp_path: Path, capsys: pytest.CaptureFixture[s
     run_dir = tmp_path / "run"
     run_dir.mkdir()
     _write_equity_csv(run_dir)
-    rc = main(["--run-dir", str(run_dir)])
-    assert rc == EXIT_USAGE_ERROR
+    with pytest.raises(SystemExit) as exc_info:
+        main(["--run-dir", str(run_dir)])
+    assert exc_info.value.code == EXIT_USAGE_ERROR
     assert "required" in capsys.readouterr().err.lower()
 
 
