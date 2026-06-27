@@ -5203,3 +5203,68 @@ def test_selector_package_f_combined_diff_pr_bounded_full_includes_all_testowner
     for path in PACKAGE_F_ALL_TESTOWNERS:
         assert path in bounded
         assert bounded.count(path) == 1
+
+
+PACKAGE_G_BINDING_PRODUCTION = "src/meta/learning_loop/manifest_durable_evidence_binding_v1.py"
+PACKAGE_G_BINDING_SCRIPT = "scripts/run_learning_manifest_durable_evidence_binding_v1.py"
+PACKAGE_G_BINDING_TESTOWNER = "tests/meta/test_learning_manifest_durable_evidence_binding_v1.py"
+PACKAGE_G_BINDING_CLI_TESTOWNER = (
+    "tests/scripts/test_run_learning_manifest_durable_evidence_binding_v1.py"
+)
+PACKAGE_G_CONFIG_PATCH_CONTRACT = "tests/meta/test_config_patch_manifest_v1_contract.py"
+PACKAGE_G_BRIDGE_REGRESSION = "tests/meta/test_learning_manifest_bridge_v1.py"
+PACKAGE_G_LINEAGE_CONTRACT = (
+    "tests/governance/promotion_loop/test_candidate_lineage_manifest_v1_contract.py"
+)
+PACKAGE_G_LINEAGE_PRODUCER = (
+    "tests/governance/promotion_loop/test_candidate_lineage_manifest_v1_producer_v1.py"
+)
+PACKAGE_G_ALL_PRODUCTION = (
+    PACKAGE_G_BINDING_PRODUCTION,
+    PACKAGE_G_BINDING_SCRIPT,
+)
+PACKAGE_G_ALL_TESTOWNERS = (
+    PACKAGE_G_CONFIG_PATCH_CONTRACT,
+    PACKAGE_G_BRIDGE_REGRESSION,
+    PACKAGE_G_BINDING_TESTOWNER,
+    PACKAGE_G_BINDING_CLI_TESTOWNER,
+    PACKAGE_G_LINEAGE_CONTRACT,
+    PACKAGE_G_LINEAGE_PRODUCER,
+)
+
+
+def test_selector_package_g_binding_production_pr_bounded_full_includes_testowners() -> None:
+    sel = _run_selector(PACKAGE_G_BINDING_PRODUCTION)
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    bounded = _bounded_targets(sel)
+    for path in PACKAGE_G_ALL_TESTOWNERS:
+        assert path in bounded
+
+
+def test_selector_package_g_script_contract_focused_includes_binding_testowners() -> None:
+    sel = _run_selector(PACKAGE_G_BINDING_SCRIPT)
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
+    targets = _targets(sel)
+    for path in PACKAGE_G_ALL_TESTOWNERS:
+        assert path in targets
+
+
+def test_selector_package_g_combined_diff_pr_bounded_full_includes_all_testowners_once() -> None:
+    sel = _run_selector(
+        *PACKAGE_G_ALL_PRODUCTION,
+        "scripts/ops/ci_test_selection_v1.py",
+        *PACKAGE_G_ALL_TESTOWNERS,
+    )
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    bounded = _bounded_targets(sel)
+    for path in PACKAGE_G_ALL_TESTOWNERS:
+        assert path in bounded
+        assert bounded.count(path) == 1
+
+
+def test_selector_package_g_foreign_central_src_mixed_diff_pr_bounded_full() -> None:
+    sel = _run_selector(
+        PACKAGE_G_BINDING_PRODUCTION,
+        "src/governance/promotion_loop/engine.py",
+    )
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
