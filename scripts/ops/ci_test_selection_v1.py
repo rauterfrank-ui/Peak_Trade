@@ -1389,16 +1389,23 @@ PR_BOUNDED_FULL_PACKAGE_A_GOVERNANCE_TARGETS: tuple[str, ...] = (
 PR_BOUNDED_FULL_PACKAGE_F_CANDIDATE_LINEAGE_PRODUCTION_TRIGGER_PATHS: frozenset[str] = frozenset(
     {
         "src/governance/promotion_loop/candidate_lineage_manifest_v1.py",
+        "src/governance/promotion_loop/backtest_lineage_ref_producer_v1.py",
         "scripts/run_candidate_lineage_manifest_v1.py",
+        "scripts/run_backtest_lineage_ref_producer_v1.py",
         "tests/governance/promotion_loop/test_candidate_lineage_manifest_v1_producer_v1.py",
+        "tests/governance/promotion_loop/test_backtest_lineage_ref_producer_v1.py",
         "tests/scripts/test_run_candidate_lineage_manifest_v1.py",
+        "tests/scripts/test_run_backtest_lineage_ref_producer_v1.py",
     }
 )
 
 PR_BOUNDED_FULL_PACKAGE_F_CANDIDATE_LINEAGE_PRODUCTION_TARGETS: tuple[str, ...] = (
     "tests/governance/promotion_loop/test_candidate_lineage_manifest_v1_contract.py",
     "tests/governance/promotion_loop/test_candidate_lineage_manifest_v1_producer_v1.py",
+    "tests/governance/promotion_loop/test_backtest_lineage_ref_producer_v1.py",
     "tests/scripts/test_run_candidate_lineage_manifest_v1.py",
+    "tests/scripts/test_run_backtest_lineage_ref_producer_v1.py",
+    "tests/test_run_summary_contract.py",
 )
 
 PR_BOUNDED_FULL_PACKAGE_G_LEARNING_DURABLE_EVIDENCE_TRIGGER_PATHS: frozenset[str] = frozenset(
@@ -4645,6 +4652,9 @@ def _focused_targets(files: list[str]) -> tuple[str, ...]:
                 for candidate in PR_BOUNDED_FULL_PACKAGE_D_LEARNING_BRIDGE_TARGETS:
                     add(candidate)
             elif path == "scripts/run_candidate_lineage_manifest_v1.py":
+                for candidate in PR_BOUNDED_FULL_PACKAGE_F_CANDIDATE_LINEAGE_PRODUCTION_TARGETS:
+                    add(candidate)
+            elif path == "scripts/run_backtest_lineage_ref_producer_v1.py":
                 for candidate in PR_BOUNDED_FULL_PACKAGE_F_CANDIDATE_LINEAGE_PRODUCTION_TARGETS:
                     add(candidate)
             elif path == "scripts/run_learning_manifest_durable_evidence_binding_v1.py":
