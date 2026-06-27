@@ -407,5 +407,18 @@ def load_config_patches_for_promotion_from_manifest_path(
     path: Path | str,
 ) -> list[ConfigPatch]:
     """Return validated ConfigPatch entries from a canonical manifest file."""
+    return load_promotion_input_from_manifest_path(path).patches
+
+
+@dataclass(frozen=True)
+class PromotionManifestInputV1:
+    """Validated ConfigPatch-Manifest v1 promotion input (patches + reference FKs)."""
+
+    patches: tuple[ConfigPatch, ...]
+    manifest: ConfigPatchManifestV1
+
+
+def load_promotion_input_from_manifest_path(path: Path | str) -> PromotionManifestInputV1:
+    """Load manifest envelope and patches without discarding reference FKs."""
     manifest = load_config_patch_manifest_v1_from_json_path(path)
-    return list(manifest.patches)
+    return PromotionManifestInputV1(patches=tuple(manifest.patches), manifest=manifest)

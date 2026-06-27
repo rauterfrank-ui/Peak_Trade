@@ -25,6 +25,7 @@ from __future__ import annotations
 import argparse
 import json
 from datetime import datetime
+from dataclasses import dataclass
 from pathlib import Path
 from typing import List
 
@@ -39,12 +40,25 @@ from src.governance.promotion_loop import (
 from src.governance.promotion_loop.engine import apply_proposals_to_live_overrides
 from src.governance.promotion_loop.models import DecisionStatus
 from src.governance.promotion_loop.policy import AutoApplyBounds, AutoApplyPolicy
+from src.governance.promotion_loop.proposal_input_refs_v1 import (
+    PromotionInputReferencesV1,
+    apply_promotion_input_references_to_proposal,
+    promotion_input_references_from_manifest,
+)
 from src.meta.learning_loop.config_patch_manifest_v1 import (
     ConfigPatchManifestError,
     ConfigPatchManifestValidationError,
-    load_config_patches_for_promotion_from_manifest_path,
+    load_promotion_input_from_manifest_path,
 )
 from src.meta.learning_loop.models import ConfigPatch, PatchStatus
+
+
+@dataclass(frozen=True)
+class PromotionPatchLoadResult:
+    """Result of loading promotion input patches and optional manifest reference FKs."""
+
+    patches: List[ConfigPatch]
+    input_references: PromotionInputReferencesV1 | None = None
 
 
 def parse_args() -> argparse.Namespace:
@@ -91,7 +105,7 @@ def parse_args() -> argparse.Namespace:
     return parser.parse_args()
 
 
-def _load_non_canonical_demo_legacy_patches() -> List[ConfigPatch]:
+def _load_non_canonical_demo_legacy_patches() -> PromotionPatchLoadResult:
     """
     NON_CANONICAL test-only loader for legacy raw demo patch JSON.
 
@@ -102,14 +116,14 @@ def _load_non_canonical_demo_legacy_patches() -> List[ConfigPatch]:
 
     if not demo_path.is_file():
         print(f"[promotion_loop] NON_CANONICAL demo legacy path: no patches found at {demo_path}")
-        return []
+        return PromotionPatchLoadResult(patches=[])
 
     with demo_path.open("r", encoding="utf-8") as handle:
         patches_data = json.load(handle)
 
     if not isinstance(patches_data, list):
         print("[promotion_loop] NON_CANONICAL demo legacy path: expected JSON array of patches")
-        return []
+        return PromotionPatchLoadResult(patches=[])
 
     patches: List[ConfigPatch] = []
     for patch_dict in patches_data:
@@ -139,14 +153,14 @@ def _load_non_canonical_demo_legacy_patches() -> List[ConfigPatch]:
         "[promotion_loop] NON_CANONICAL demo legacy path loaded "
         f"{len(patches)} patch(es) from {demo_path}"
     )
-    return patches
+    return PromotionPatchLoadResult(patches=patches)
 
 
 def _load_patches_for_promotion(
     *,
     promotion_input_manifest: Path | None,
     non_canonical_demo_legacy_patches: bool = False,
-) -> List[ConfigPatch]:
+) -> PromotionPatchLoadResult:
     """
     Load ConfigPatch objects that are candidates for live promotion.
 
@@ -164,10 +178,12 @@ def _load_patches_for_promotion(
             "[promotion_loop] demo_patches_for_promotion.json is a NON-SSOT test fixture "
             "only; use --non-canonical-demo-legacy-patches explicitly for legacy tests."
         )
-        return []
+        return PromotionPatchLoadResult(patches=[])
 
     try:
-        patches = load_config_patches_for_promotion_from_manifest_path(promotion_input_manifest)
+        promotion_input = load_promotion_input_from_manifest_path(promotion_input_manifest)
+        input_references = promotion_input_references_from_manifest(promotion_input.manifest)
+        patches = list(promotion_input.patches)
     except ConfigPatchManifestValidationError as exc:
         print(
             f"[promotion_loop] ConfigPatch-Manifest v1 validation failed ({exc.phase.value}): {exc}"
@@ -176,16 +192,16 @@ def _load_patches_for_promotion(
             print(f"[promotion_loop]   - {error}")
         if exc.verdict:
             print(f"[promotion_loop] Verdict: {exc.verdict}")
-        return []
+        return PromotionPatchLoadResult(patches=[])
     except ConfigPatchManifestError as exc:
         print(f"[promotion_loop] Failed to load promotion input manifest: {exc}")
-        return []
+        return PromotionPatchLoadResult(patches=[])
 
     print(
         "[promotion_loop] Loaded "
         f"{len(patches)} patch(es) from ConfigPatch-Manifest v1 {promotion_input_manifest}"
     )
-    return patches
+    return PromotionPatchLoadResult(patches=patches, input_references=input_references)
 
 
 def main() -> None:
@@ -206,10 +222,11 @@ def main() -> None:
             args.auto_apply_mode = "manual_only"
 
     print("[promotion_loop] Loading patches for promotion...")
-    patches = _load_patches_for_promotion(
+    load_result = _load_patches_for_promotion(
         promotion_input_manifest=args.promotion_input_manifest,
         non_canonical_demo_legacy_patches=args.non_canonical_demo_legacy_patches,
     )
+    patches = load_result.patches
     print(f"[promotion_loop] Loaded {len(patches)} patch(es).")
 
     candidates = build_promotion_candidates_from_patches(patches)
@@ -254,6 +271,10 @@ def main() -> None:
     if not proposals:
         print("[promotion_loop] No proposals generated.")
         return
+
+    if load_result.input_references is not None:
+        for proposal in proposals:
+            apply_promotion_input_references_to_proposal(proposal, load_result.input_references)
 
     written = materialize_promotion_proposals(proposals, args.output_dir)
     print(
