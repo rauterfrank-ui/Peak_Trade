@@ -1541,6 +1541,45 @@ PR_BOUNDED_FULL_PACKAGE_COMPARISON_METRIC_INPUT_TARGETS: tuple[str, ...] = (
     "tests/governance/promotion_loop/test_candidate_lineage_manifest_v1_contract.py",
 )
 
+PR_BOUNDED_FULL_PACKAGE_COMPARISON_SSOT_V1_TRIGGER_PATHS: frozenset[str] = frozenset(
+    {
+        "src/meta/learning_loop/comparison_ssot_v1/__init__.py",
+        "src/meta/learning_loop/comparison_ssot_v1/constants.py",
+        "src/meta/learning_loop/comparison_ssot_v1/models.py",
+        "src/meta/learning_loop/comparison_ssot_v1/identity.py",
+        "src/meta/learning_loop/comparison_ssot_v1/validation.py",
+        "src/meta/learning_loop/comparison_ssot_v1/comparison_definition_manifest_v1.py",
+        "src/meta/learning_loop/comparison_ssot_v1/comparison_result_manifest_v1.py",
+        "src/meta/learning_loop/comparison_ssot_v1/comparison_gates_v1.py",
+        "src/meta/learning_loop/comparison_ssot_v1/comparison_pareto_v1.py",
+        "src/meta/learning_loop/comparison_ssot_v1/comparison_ranking_v1.py",
+        "src/meta/learning_loop/comparison_ssot_v1/comparison_input_loader_v1.py",
+        "src/meta/learning_loop/comparison_ssot_v1/comparison_offline_producer_v1.py",
+        "src/meta/learning_loop/comparison_ssot_v1/io.py",
+        "src/meta/learning_loop/comparison_ssot_v1/producer.py",
+        "scripts/run_comparison_offline_v1.py",
+        "tests/meta/test_comparison_definition_manifest_v1.py",
+        "tests/meta/test_comparison_result_manifest_v1.py",
+        "tests/meta/test_comparison_gates_v1.py",
+        "tests/meta/test_comparison_offline_producer_v1.py",
+        "tests/scripts/test_run_comparison_offline_v1.py",
+    }
+)
+
+PR_BOUNDED_FULL_PACKAGE_COMPARISON_SSOT_V1_TARGETS: tuple[str, ...] = (
+    "tests/meta/test_comparison_definition_manifest_v1.py",
+    "tests/meta/test_comparison_result_manifest_v1.py",
+    "tests/meta/test_comparison_gates_v1.py",
+    "tests/meta/test_comparison_offline_producer_v1.py",
+    "tests/scripts/test_run_comparison_offline_v1.py",
+    "tests/meta/test_contract_safety_v1.py",
+    "tests/meta/test_comparison_metric_input_identity_v1.py",
+    "tests/meta/test_comparison_metric_input_validation_v1.py",
+    "tests/meta/test_comparison_metric_input_producer_v1.py",
+    "tests/governance/promotion_loop/test_backtest_lineage_ref_producer_v1.py",
+    "tests/experiments/test_equity_loader.py",
+)
+
 PR_BOUNDED_FULL_PACKAGE_N_EXPERIMENT_IDENTITY_TRIGGER_PATHS: frozenset[str] = frozenset(
     {
         "src/experiments/experiment_identity_manifest_v1.py",
@@ -1642,6 +1681,10 @@ def resolve_pr_bounded_full_targets(files: list[str]) -> tuple[str, ...]:
 
     if normalized & PR_BOUNDED_FULL_PACKAGE_COMPARISON_METRIC_INPUT_TRIGGER_PATHS:
         for path in PR_BOUNDED_FULL_PACKAGE_COMPARISON_METRIC_INPUT_TARGETS:
+            add(path)
+
+    if normalized & PR_BOUNDED_FULL_PACKAGE_COMPARISON_SSOT_V1_TRIGGER_PATHS:
+        for path in PR_BOUNDED_FULL_PACKAGE_COMPARISON_SSOT_V1_TARGETS:
             add(path)
 
     if normalized & PR_BOUNDED_FULL_PACKAGE_N_EXPERIMENT_IDENTITY_TRIGGER_PATHS:
@@ -4827,6 +4870,9 @@ def _focused_targets(files: list[str]) -> tuple[str, ...]:
                     add(candidate)
             elif path == "scripts/run_comparison_metric_input_v1.py":
                 for candidate in PR_BOUNDED_FULL_PACKAGE_COMPARISON_METRIC_INPUT_TARGETS:
+                    add(candidate)
+            elif path == "scripts/run_comparison_offline_v1.py":
+                for candidate in PR_BOUNDED_FULL_PACKAGE_COMPARISON_SSOT_V1_TARGETS:
                     add(candidate)
             elif path == "scripts/run_experiment_identity_manifest_v1.py":
                 for candidate in PR_BOUNDED_FULL_PACKAGE_N_EXPERIMENT_IDENTITY_TARGETS:

@@ -159,7 +159,8 @@ def build_experiment_bundle(
     tmp_path: Path,
     completed_run_dir: Path,
 ) -> tuple[Path, dict[str, str], Path]:
-    manifest_dir = tmp_path / f"identity_{uuid.uuid4().hex}"
+    _DURABLE_OUTPUT_ROOT.mkdir(exist_ok=True)
+    manifest_dir = _DURABLE_OUTPUT_ROOT / f"identity_{uuid.uuid4().hex}"
     produce_experiment_identity_manifest_v1(
         sample_experiment_config(),
         manifest_dir,
