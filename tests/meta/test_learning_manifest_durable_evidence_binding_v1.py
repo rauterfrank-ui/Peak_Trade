@@ -418,7 +418,9 @@ def test_invalid_config_json_fail_closed(tmp_path: Path, sources: Path) -> None:
         )
 
 
-def test_output_under_tmp_rejected(tmp_path: Path, sources: Path, monkeypatch: pytest.MonkeyPatch) -> None:
+def test_output_under_tmp_rejected(
+    tmp_path: Path, sources: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
     from scripts.ops.primary_evidence_retention_v0 import is_under_tmp as real_is_under_tmp
 
     monkeypatch.setattr(
