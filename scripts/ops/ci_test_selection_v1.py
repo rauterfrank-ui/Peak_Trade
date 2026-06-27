@@ -1310,6 +1310,17 @@ PR_BOUNDED_FULL_CI_CHANGE_EXTRA_TARGETS: tuple[str, ...] = (
     "tests/ci/test_shadow_paper_smoke_workflow_contract_v0.py",
 )
 
+PR_BOUNDED_FULL_VAR_SUITE_ADAPTER_TRIGGER_PATHS: frozenset[str] = frozenset(
+    {
+        "src/risk/validation/var_suite_adapter.py",
+        "tests/risk/validation/test_var_suite_adapter_v0.py",
+    }
+)
+
+PR_BOUNDED_FULL_VAR_SUITE_ADAPTER_TARGETS: tuple[str, ...] = (
+    "tests/risk/validation/test_var_suite_adapter_v0.py",
+)
+
 
 def resolve_pr_bounded_full_targets(files: list[str]) -> tuple[str, ...]:
     """Conservative, deterministic PR_BOUNDED_FULL pytest targets (3.11 main lane)."""
@@ -1338,6 +1349,10 @@ def resolve_pr_bounded_full_targets(files: list[str]) -> tuple[str, ...]:
         for path in CI_INFRA_CORE_FOCUSED_TESTS:
             add(path)
         for path in PR_BOUNDED_FULL_CI_CHANGE_EXTRA_TARGETS:
+            add(path)
+
+    if normalized & PR_BOUNDED_FULL_VAR_SUITE_ADAPTER_TRIGGER_PATHS:
+        for path in PR_BOUNDED_FULL_VAR_SUITE_ADAPTER_TARGETS:
             add(path)
 
     if not targets:
