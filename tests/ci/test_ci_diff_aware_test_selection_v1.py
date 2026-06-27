@@ -5066,3 +5066,49 @@ def test_selector_package_b_combined_diff_pr_bounded_full_includes_required_test
         assert path in bounded
         assert bounded.count(path) == 1
     assert PACKAGE_A_CANDIDATE_LINEAGE_TESTOWNER not in bounded
+
+
+PACKAGE_D_LEARNING_BRIDGE_PRODUCTION = "src/meta/learning_loop/manifest_bridge_v1.py"
+PACKAGE_D_LEARNING_BRIDGE_SCRIPT = "scripts/run_learning_manifest_bridge_v1.py"
+PACKAGE_D_LEARNING_BRIDGE_TESTOWNER = "tests/meta/test_learning_manifest_bridge_v1.py"
+PACKAGE_D_BRIDGE_NORMALIZE_TESTOWNER = "tests/meta/test_learning_loop_bridge.py"
+PACKAGE_D_CONFIG_PATCH_MANIFEST_TESTOWNER = "tests/meta/test_config_patch_manifest_v1_contract.py"
+PACKAGE_D_ALL_PRODUCTION = (
+    PACKAGE_D_LEARNING_BRIDGE_PRODUCTION,
+    PACKAGE_D_LEARNING_BRIDGE_SCRIPT,
+    "src/meta/learning_loop/bridge.py",
+)
+PACKAGE_D_ALL_TESTOWNERS = (
+    PACKAGE_D_BRIDGE_NORMALIZE_TESTOWNER,
+    PACKAGE_D_CONFIG_PATCH_MANIFEST_TESTOWNER,
+    PACKAGE_D_LEARNING_BRIDGE_TESTOWNER,
+)
+
+
+def test_selector_package_d_learning_bridge_pr_bounded_full_includes_testowners() -> None:
+    sel = _run_selector(PACKAGE_D_LEARNING_BRIDGE_PRODUCTION)
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    bounded = _bounded_targets(sel)
+    for path in PACKAGE_D_ALL_TESTOWNERS:
+        assert path in bounded
+
+
+def test_selector_package_d_script_contract_focused_includes_bridge_testowners() -> None:
+    sel = _run_selector(PACKAGE_D_LEARNING_BRIDGE_SCRIPT)
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
+    targets = _targets(sel)
+    for path in PACKAGE_D_ALL_TESTOWNERS:
+        assert path in targets
+
+
+def test_selector_package_d_combined_diff_pr_bounded_full_includes_all_testowners_once() -> None:
+    sel = _run_selector(
+        *PACKAGE_D_ALL_PRODUCTION,
+        "scripts/ops/ci_test_selection_v1.py",
+        *PACKAGE_D_ALL_TESTOWNERS,
+    )
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    bounded = _bounded_targets(sel)
+    for path in PACKAGE_D_ALL_TESTOWNERS:
+        assert path in bounded
+        assert bounded.count(path) == 1
