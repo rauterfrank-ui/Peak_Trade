@@ -5614,3 +5614,77 @@ def test_selector_package_l_combined_diff_pr_bounded_full_includes_all_testowner
     for path in PACKAGE_L_ALL_TESTOWNERS:
         assert path in bounded
         assert bounded.count(path) == 1
+
+
+PACKAGE_E21_BINDING_PRODUCTION = "src/meta/learning_loop/experiment_durable_evidence_binding_v1.py"
+PACKAGE_E21_BINDING_SCRIPT = "scripts/run_experiment_durable_evidence_binding_v1.py"
+PACKAGE_E21_BINDING_TESTOWNER = "tests/meta/test_experiment_durable_evidence_binding_v1.py"
+PACKAGE_E21_BINDING_CLI_TESTOWNER = (
+    "tests/scripts/test_run_experiment_durable_evidence_binding_v1.py"
+)
+PACKAGE_E21_M_PRODUCER_TESTOWNER = (
+    "tests/governance/promotion_loop/test_experiment_lineage_ref_producer_v1.py"
+)
+PACKAGE_E21_M_CLI_TESTOWNER = "tests/scripts/test_run_experiment_lineage_ref_producer_v1.py"
+PACKAGE_E21_N_IDENTITY_TESTOWNER = "tests/experiments/test_experiment_identity_manifest_v1.py"
+PACKAGE_E21_LINEAGE_CONTRACT = (
+    "tests/governance/promotion_loop/test_candidate_lineage_manifest_v1_contract.py"
+)
+PACKAGE_E21_ALL_PRODUCTION = (
+    PACKAGE_E21_BINDING_PRODUCTION,
+    PACKAGE_E21_BINDING_SCRIPT,
+)
+PACKAGE_E21_ALL_TESTOWNERS = (
+    PACKAGE_E21_BINDING_TESTOWNER,
+    PACKAGE_E21_BINDING_CLI_TESTOWNER,
+    PACKAGE_E21_M_PRODUCER_TESTOWNER,
+    PACKAGE_E21_M_CLI_TESTOWNER,
+    PACKAGE_E21_N_IDENTITY_TESTOWNER,
+    PACKAGE_E21_LINEAGE_CONTRACT,
+)
+
+
+def test_selector_package_e21_binding_production_pr_bounded_full_includes_testowners() -> None:
+    sel = _run_selector(PACKAGE_E21_BINDING_PRODUCTION)
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    bounded = _bounded_targets(sel)
+    for path in PACKAGE_E21_ALL_TESTOWNERS:
+        assert path in bounded
+
+
+def test_selector_package_e21_script_contract_focused_includes_binding_testowners() -> None:
+    sel = _run_selector(PACKAGE_E21_BINDING_SCRIPT)
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
+    targets = _targets(sel)
+    for path in PACKAGE_E21_ALL_TESTOWNERS:
+        assert path in targets
+
+
+def test_selector_package_e21_combined_diff_pr_bounded_full_includes_all_testowners_once() -> None:
+    sel = _run_selector(
+        *PACKAGE_E21_ALL_PRODUCTION,
+        "scripts/ops/ci_test_selection_v1.py",
+        *PACKAGE_E21_ALL_TESTOWNERS,
+    )
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    bounded = _bounded_targets(sel)
+    for path in PACKAGE_E21_ALL_TESTOWNERS:
+        assert path in bounded
+        assert bounded.count(path) == 1
+
+
+def test_selector_package_e21_full_six_file_diff_pr_bounded_full_not_no_op() -> None:
+    sel = _run_selector(
+        PACKAGE_E21_BINDING_PRODUCTION,
+        PACKAGE_E21_BINDING_SCRIPT,
+        PACKAGE_E21_BINDING_TESTOWNER,
+        PACKAGE_E21_BINDING_CLI_TESTOWNER,
+        "scripts/ops/ci_test_selection_v1.py",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    )
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    assert sel["test_selection_mode"] != "NO_OP"
+    assert sel["test_selection_mode"] != "FOCUSED"
+    bounded = _bounded_targets(sel)
+    for path in PACKAGE_E21_ALL_TESTOWNERS:
+        assert path in bounded
