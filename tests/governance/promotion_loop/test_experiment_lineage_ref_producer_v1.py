@@ -5,6 +5,7 @@ from __future__ import annotations
 import copy
 import json
 import os
+import shutil
 import stat
 import uuid
 from datetime import datetime, timezone
@@ -17,7 +18,6 @@ import pytest
 from src.experiments.base import ExperimentConfig, ParamSweep
 from src.experiments.experiment_identity_manifest_v1 import (
     ARTIFACT_FILENAME,
-    ExperimentIdentityManifestError,
     build_manifest,
     produce_experiment_identity_manifest_v1,
     validate_experiment_identity_manifest_v1,
@@ -65,9 +65,9 @@ def durable_output_dir() -> Callable[[], Path]:
 
     for path in created:
         if path.exists():
-            import shutil
-
             shutil.rmtree(path, ignore_errors=True)
+    for staging in _DURABLE_OUTPUT_ROOT.glob(".experiment_identity_staging_*"):
+        shutil.rmtree(staging, ignore_errors=True)
 
 
 def _sample_config(**overrides: Any) -> ExperimentConfig:
@@ -91,13 +91,12 @@ def _sample_config(**overrides: Any) -> ExperimentConfig:
 
 
 def _write_manifest_dir(
-    tmp_path: Path,
+    durable_output_dir: Callable[[], Path],
     *,
     config: ExperimentConfig | None = None,
     source_experiment_id: str | None = None,
-    dir_name: str = "manifest-dir",
 ) -> tuple[Path, dict[str, Any]]:
-    manifest_dir = tmp_path / dir_name
+    manifest_dir = durable_output_dir()
     produce_experiment_identity_manifest_v1(
         config or _sample_config(),
         manifest_dir,
@@ -107,8 +106,10 @@ def _write_manifest_dir(
     return manifest_dir, manifest
 
 
-def test_happy_path_produces_valid_experiment_ref(tmp_path: Path) -> None:
-    manifest_dir, manifest = _write_manifest_dir(tmp_path)
+def test_happy_path_produces_valid_experiment_ref(
+    durable_output_dir: Callable[[], Path],
+) -> None:
+    manifest_dir, manifest = _write_manifest_dir(durable_output_dir)
     result = produce_experiment_lineage_ref_v1(manifest_dir=manifest_dir)
     ref = result.ref
     assert ref.ref_type == LineageRefType.EXPERIMENT
@@ -120,30 +121,38 @@ def test_happy_path_produces_valid_experiment_ref(tmp_path: Path) -> None:
     assert ref.digest == manifest["integrity"]["content_sha256"]
 
 
-def test_ref_id_exactly_adopted_from_experiment_identity_id(tmp_path: Path) -> None:
-    manifest_dir, manifest = _write_manifest_dir(tmp_path)
+def test_ref_id_exactly_adopted_from_experiment_identity_id(
+    durable_output_dir: Callable[[], Path],
+) -> None:
+    manifest_dir, manifest = _write_manifest_dir(durable_output_dir)
     result = produce_experiment_lineage_ref_v1(manifest_dir=manifest_dir)
     assert result.ref.ref_id == manifest["experiment_identity_id"]
     assert is_valid_sha256_hex(result.ref.ref_id)
 
 
-def test_digest_exactly_adopted_from_integrity_content_sha256(tmp_path: Path) -> None:
-    manifest_dir, manifest = _write_manifest_dir(tmp_path)
+def test_digest_exactly_adopted_from_integrity_content_sha256(
+    durable_output_dir: Callable[[], Path],
+) -> None:
+    manifest_dir, manifest = _write_manifest_dir(durable_output_dir)
     result = produce_experiment_lineage_ref_v1(manifest_dir=manifest_dir)
     assert result.ref.digest == manifest["integrity"]["content_sha256"]
     assert is_valid_sha256_hex(result.ref.digest)
 
 
-def test_no_recomputation_of_ref_id_or_digest(tmp_path: Path) -> None:
-    manifest_dir, manifest = _write_manifest_dir(tmp_path)
+def test_no_recomputation_of_ref_id_or_digest(
+    durable_output_dir: Callable[[], Path],
+) -> None:
+    manifest_dir, manifest = _write_manifest_dir(durable_output_dir)
     result = produce_experiment_lineage_ref_v1(manifest_dir=manifest_dir)
     assert result.ref.ref_id == manifest["experiment_identity_id"]
     assert result.ref.digest == manifest["integrity"]["content_sha256"]
     assert result.ref.ref_id != manifest["legacy_aliases"]["legacy_experiment_id_md5_12"]
 
 
-def test_deterministic_canonical_json_output(tmp_path: Path) -> None:
-    manifest_dir, _manifest = _write_manifest_dir(tmp_path)
+def test_deterministic_canonical_json_output(
+    durable_output_dir: Callable[[], Path],
+) -> None:
+    manifest_dir, _manifest = _write_manifest_dir(durable_output_dir)
     result = produce_experiment_lineage_ref_v1(manifest_dir=manifest_dir)
     first = serialize_experiment_lineage_ref_v1(result.ref)
     second = serialize_experiment_lineage_ref_v1(result.ref)
@@ -151,8 +160,10 @@ def test_deterministic_canonical_json_output(tmp_path: Path) -> None:
     assert json.loads(first) == json.loads(second)
 
 
-def test_candidate_lineage_manifest_v1_accepts_producer_output(tmp_path: Path) -> None:
-    manifest_dir, manifest = _write_manifest_dir(tmp_path)
+def test_candidate_lineage_manifest_v1_accepts_producer_output(
+    durable_output_dir: Callable[[], Path],
+) -> None:
+    manifest_dir, manifest = _write_manifest_dir(durable_output_dir)
     ref = produce_experiment_lineage_ref_v1(manifest_dir=manifest_dir).ref
     fixed_now = datetime(2026, 6, 27, 18, 0, 0, tzinfo=timezone.utc)
     candidate_manifest = build_candidate_lineage_manifest_v1_from_producer_input(
@@ -192,8 +203,10 @@ def test_missing_manifest_artifact_fails_closed(tmp_path: Path) -> None:
         produce_experiment_lineage_ref_v1(manifest_dir=manifest_dir)
 
 
-def test_wrong_manifest_filename_fails_closed(tmp_path: Path) -> None:
-    manifest_dir, _manifest = _write_manifest_dir(tmp_path)
+def test_wrong_manifest_filename_fails_closed(
+    durable_output_dir: Callable[[], Path],
+) -> None:
+    manifest_dir, _manifest = _write_manifest_dir(durable_output_dir)
     artifact = manifest_dir / ARTIFACT_FILENAME
     artifact.rename(manifest_dir / "wrong_manifest_name.json")
     with pytest.raises(ExperimentLineageRefProducerError, match=f"{ARTIFACT_FILENAME} not found"):
@@ -217,8 +230,10 @@ def test_package_n_validator_rejects_invalid_manifest(tmp_path: Path) -> None:
         produce_experiment_lineage_ref_v1(manifest_dir=manifest_dir)
 
 
-def test_identity_id_mismatch_fails_closed(tmp_path: Path) -> None:
-    manifest_dir, manifest = _write_manifest_dir(tmp_path)
+def test_identity_id_mismatch_fails_closed(
+    durable_output_dir: Callable[[], Path],
+) -> None:
+    manifest_dir, manifest = _write_manifest_dir(durable_output_dir)
     tampered = copy.deepcopy(manifest)
     tampered["experiment_identity_id"] = "a" * 64
     (manifest_dir / ARTIFACT_FILENAME).write_text(json.dumps(tampered), encoding="utf-8")
@@ -226,8 +241,10 @@ def test_identity_id_mismatch_fails_closed(tmp_path: Path) -> None:
         produce_experiment_lineage_ref_v1(manifest_dir=manifest_dir)
 
 
-def test_digest_mismatch_fails_closed(tmp_path: Path) -> None:
-    manifest_dir, manifest = _write_manifest_dir(tmp_path)
+def test_digest_mismatch_fails_closed(
+    durable_output_dir: Callable[[], Path],
+) -> None:
+    manifest_dir, manifest = _write_manifest_dir(durable_output_dir)
     tampered = copy.deepcopy(manifest)
     tampered["integrity"] = dict(tampered["integrity"])
     tampered["integrity"]["content_sha256"] = "b" * 64
@@ -236,17 +253,21 @@ def test_digest_mismatch_fails_closed(tmp_path: Path) -> None:
         produce_experiment_lineage_ref_v1(manifest_dir=manifest_dir)
 
 
-def test_legacy_md5_must_not_become_ref_id(tmp_path: Path) -> None:
-    manifest_dir, manifest = _write_manifest_dir(tmp_path)
+def test_legacy_md5_must_not_become_ref_id(
+    durable_output_dir: Callable[[], Path],
+) -> None:
+    manifest_dir, manifest = _write_manifest_dir(durable_output_dir)
     result = produce_experiment_lineage_ref_v1(manifest_dir=manifest_dir)
     legacy_id = manifest["legacy_aliases"]["legacy_experiment_id_md5_12"]
     assert result.ref.ref_id != legacy_id
     assert result.ref.ref_id == manifest["experiment_identity_id"]
 
 
-def test_source_experiment_id_must_not_become_ref_id(tmp_path: Path) -> None:
+def test_source_experiment_id_must_not_become_ref_id(
+    durable_output_dir: Callable[[], Path],
+) -> None:
     manifest_dir, manifest = _write_manifest_dir(
-        tmp_path,
+        durable_output_dir,
         source_experiment_id="legacy-src-123",
     )
     result = produce_experiment_lineage_ref_v1(manifest_dir=manifest_dir)
@@ -255,8 +276,10 @@ def test_source_experiment_id_must_not_become_ref_id(tmp_path: Path) -> None:
     assert result.ref.ref_id == manifest["experiment_identity_id"]
 
 
-def test_registry_run_id_forbidden_in_manifest(tmp_path: Path) -> None:
-    manifest_dir, manifest = _write_manifest_dir(tmp_path)
+def test_registry_run_id_forbidden_in_manifest(
+    durable_output_dir: Callable[[], Path],
+) -> None:
+    manifest_dir, manifest = _write_manifest_dir(durable_output_dir)
     tampered = copy.deepcopy(manifest)
     tampered["registry_run_id"] = "registry-abc"
     (manifest_dir / ARTIFACT_FILENAME).write_text(json.dumps(tampered), encoding="utf-8")
@@ -264,8 +287,10 @@ def test_registry_run_id_forbidden_in_manifest(tmp_path: Path) -> None:
         produce_experiment_lineage_ref_v1(manifest_dir=manifest_dir)
 
 
-def test_mlflow_run_id_forbidden_in_manifest(tmp_path: Path) -> None:
-    manifest_dir, manifest = _write_manifest_dir(tmp_path)
+def test_mlflow_run_id_forbidden_in_manifest(
+    durable_output_dir: Callable[[], Path],
+) -> None:
+    manifest_dir, manifest = _write_manifest_dir(durable_output_dir)
     tampered = copy.deepcopy(manifest)
     tampered["mlflow_run_id"] = "mlflow-abc"
     (manifest_dir / ARTIFACT_FILENAME).write_text(json.dumps(tampered), encoding="utf-8")
@@ -273,8 +298,10 @@ def test_mlflow_run_id_forbidden_in_manifest(tmp_path: Path) -> None:
         produce_experiment_lineage_ref_v1(manifest_dir=manifest_dir)
 
 
-def test_backtest_run_id_forbidden_in_manifest(tmp_path: Path) -> None:
-    manifest_dir, manifest = _write_manifest_dir(tmp_path)
+def test_backtest_run_id_forbidden_in_manifest(
+    durable_output_dir: Callable[[], Path],
+) -> None:
+    manifest_dir, manifest = _write_manifest_dir(durable_output_dir)
     tampered = copy.deepcopy(manifest)
     tampered["run_id"] = "backtest-run-001"
     (manifest_dir / ARTIFACT_FILENAME).write_text(json.dumps(tampered), encoding="utf-8")
@@ -282,16 +309,22 @@ def test_backtest_run_id_forbidden_in_manifest(tmp_path: Path) -> None:
         produce_experiment_lineage_ref_v1(manifest_dir=manifest_dir)
 
 
-def test_manifest_dir_symlink_fails_closed(tmp_path: Path) -> None:
-    real_dir, _manifest = _write_manifest_dir(tmp_path, dir_name="real-manifest")
+def test_manifest_dir_symlink_fails_closed(
+    tmp_path: Path,
+    durable_output_dir: Callable[[], Path],
+) -> None:
+    real_dir, _manifest = _write_manifest_dir(durable_output_dir)
     link = tmp_path / "linked-manifest"
     link.symlink_to(real_dir, target_is_directory=True)
     with pytest.raises(ExperimentLineageRefProducerError, match="must not be a symlink"):
         produce_experiment_lineage_ref_v1(manifest_dir=link)
 
 
-def test_manifest_artifact_symlink_fails_closed(tmp_path: Path) -> None:
-    manifest_dir, manifest = _write_manifest_dir(tmp_path, dir_name="manifest-with-link")
+def test_manifest_artifact_symlink_fails_closed(
+    tmp_path: Path,
+    durable_output_dir: Callable[[], Path],
+) -> None:
+    manifest_dir, manifest = _write_manifest_dir(durable_output_dir)
     artifact = manifest_dir / ARTIFACT_FILENAME
     external = tmp_path / "external_manifest.json"
     external.write_text(json.dumps(manifest), encoding="utf-8")
@@ -301,16 +334,21 @@ def test_manifest_artifact_symlink_fails_closed(tmp_path: Path) -> None:
         produce_experiment_lineage_ref_v1(manifest_dir=manifest_dir)
 
 
-def test_manifest_file_not_modified(tmp_path: Path) -> None:
-    manifest_dir, _manifest = _write_manifest_dir(tmp_path)
+def test_manifest_file_not_modified(
+    durable_output_dir: Callable[[], Path],
+) -> None:
+    manifest_dir, _manifest = _write_manifest_dir(durable_output_dir)
     manifest_path = manifest_dir / ARTIFACT_FILENAME
     before = manifest_path.read_bytes()
     produce_experiment_lineage_ref_v1(manifest_dir=manifest_dir)
     assert manifest_path.read_bytes() == before
 
 
-def test_atomic_writer_success_and_fail_closed_existing(tmp_path: Path) -> None:
-    manifest_dir, _manifest = _write_manifest_dir(tmp_path)
+def test_atomic_writer_success_and_fail_closed_existing(
+    tmp_path: Path,
+    durable_output_dir: Callable[[], Path],
+) -> None:
+    manifest_dir, _manifest = _write_manifest_dir(durable_output_dir)
     ref = produce_experiment_lineage_ref_v1(manifest_dir=manifest_dir).ref
     output_path = tmp_path / "ref.json"
     write_experiment_lineage_ref_v1_atomic(ref, output_path)
@@ -319,8 +357,11 @@ def test_atomic_writer_success_and_fail_closed_existing(tmp_path: Path) -> None:
         write_experiment_lineage_ref_v1_atomic(ref, output_path)
 
 
-def test_end_to_end_producer_writes_output(tmp_path: Path) -> None:
-    manifest_dir, manifest = _write_manifest_dir(tmp_path)
+def test_end_to_end_producer_writes_output(
+    tmp_path: Path,
+    durable_output_dir: Callable[[], Path],
+) -> None:
+    manifest_dir, manifest = _write_manifest_dir(durable_output_dir)
     output_path = tmp_path / "out" / "experiment_ref.json"
     produce_experiment_lineage_ref_v1_to_path(
         manifest_dir=manifest_dir,
@@ -332,8 +373,11 @@ def test_end_to_end_producer_writes_output(tmp_path: Path) -> None:
     assert payload["digest"] == manifest["integrity"]["content_sha256"]
 
 
-def test_self_verification_roundtrip(tmp_path: Path) -> None:
-    manifest_dir, _manifest = _write_manifest_dir(tmp_path)
+def test_self_verification_roundtrip(
+    tmp_path: Path,
+    durable_output_dir: Callable[[], Path],
+) -> None:
+    manifest_dir, _manifest = _write_manifest_dir(durable_output_dir)
     ref = produce_experiment_lineage_ref_v1(manifest_dir=manifest_dir).ref
     output_path = tmp_path / "ref.json"
     write_experiment_lineage_ref_v1_atomic(ref, output_path)
@@ -357,14 +401,19 @@ def test_build_from_manifest_rejects_missing_digest() -> None:
         build_experiment_lineage_ref_from_manifest(tampered)
 
 
-def test_no_experiment_execution(tmp_path: Path) -> None:
-    manifest_dir, _manifest = _write_manifest_dir(tmp_path)
+def test_no_experiment_execution(
+    durable_output_dir: Callable[[], Path],
+) -> None:
+    manifest_dir, _manifest = _write_manifest_dir(durable_output_dir)
     result = produce_experiment_lineage_ref_v1(manifest_dir=manifest_dir)
     assert result.ref.ref_type == LineageRefType.EXPERIMENT
 
 
-def test_no_backtest_execution(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) -> None:
-    manifest_dir, _manifest = _write_manifest_dir(tmp_path)
+def test_no_backtest_execution(
+    durable_output_dir: Callable[[], Path],
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    manifest_dir, _manifest = _write_manifest_dir(durable_output_dir)
 
     def _forbidden(*args, **kwargs):  # type: ignore[no-untyped-def]
         raise AssertionError("backtest execution forbidden")
@@ -376,8 +425,10 @@ def test_no_backtest_execution(tmp_path: Path, monkeypatch: pytest.MonkeyPatch) 
     produce_experiment_lineage_ref_v1(manifest_dir=manifest_dir)
 
 
-def test_no_registry_or_mlflow_resolution(tmp_path: Path) -> None:
-    manifest_dir, _manifest = _write_manifest_dir(tmp_path)
+def test_no_registry_or_mlflow_resolution(
+    durable_output_dir: Callable[[], Path],
+) -> None:
+    manifest_dir, _manifest = _write_manifest_dir(durable_output_dir)
 
     def _forbidden(*args, **kwargs):  # type: ignore[no-untyped-def]
         raise AssertionError("registry or mlflow resolution forbidden")
@@ -386,8 +437,8 @@ def test_no_registry_or_mlflow_resolution(tmp_path: Path) -> None:
         produce_experiment_lineage_ref_v1(manifest_dir=manifest_dir)
 
 
-def test_atomic_write_outside_tmp(durable_output_dir: Callable[[], Path], tmp_path: Path) -> None:
-    manifest_dir, _manifest = _write_manifest_dir(tmp_path)
+def test_atomic_write_outside_tmp(durable_output_dir: Callable[[], Path]) -> None:
+    manifest_dir, _manifest = _write_manifest_dir(durable_output_dir)
     output_path = durable_output_dir() / "experiment_ref.json"
     produce_experiment_lineage_ref_v1_to_path(
         manifest_dir=manifest_dir,
@@ -396,8 +447,11 @@ def test_atomic_write_outside_tmp(durable_output_dir: Callable[[], Path], tmp_pa
     assert output_path.is_file()
 
 
-def test_non_writable_output_parent(tmp_path: Path) -> None:
-    manifest_dir, _manifest = _write_manifest_dir(tmp_path)
+def test_non_writable_output_parent(
+    tmp_path: Path,
+    durable_output_dir: Callable[[], Path],
+) -> None:
+    manifest_dir, _manifest = _write_manifest_dir(durable_output_dir)
     ref = produce_experiment_lineage_ref_v1(manifest_dir=manifest_dir).ref
     readonly_dir = tmp_path / "readonly"
     readonly_dir.mkdir()
@@ -411,8 +465,10 @@ def test_non_writable_output_parent(tmp_path: Path) -> None:
     assert not output_path.exists()
 
 
-def test_validate_experiment_identity_manifest_v1_is_mandatory(tmp_path: Path) -> None:
-    manifest_dir, manifest = _write_manifest_dir(tmp_path)
+def test_validate_experiment_identity_manifest_v1_is_mandatory(
+    durable_output_dir: Callable[[], Path],
+) -> None:
+    manifest_dir, manifest = _write_manifest_dir(durable_output_dir)
     calls: list[dict[str, Any]] = []
     original = validate_experiment_identity_manifest_v1
 
