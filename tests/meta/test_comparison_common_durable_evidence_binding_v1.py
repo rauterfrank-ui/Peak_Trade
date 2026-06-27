@@ -276,7 +276,9 @@ def test_definition_result_definition_id_mismatch(tmp_path, ssot_durable_output_
         )
 
 
-def test_input_path_order_does_not_change_published_order(tmp_path, ssot_durable_output_dir) -> None:
+def test_input_path_order_does_not_change_published_order(
+    tmp_path, ssot_durable_output_dir
+) -> None:
     metric_bindings, definition_binding, result_binding, _ = _produce_bound_chain(
         tmp_path, ssot_durable_output_dir
     )
