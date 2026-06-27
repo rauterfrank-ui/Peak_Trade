@@ -5419,9 +5419,7 @@ def test_selector_package_g_foreign_central_src_mixed_diff_pr_bounded_full() -> 
 PACKAGE_K_BINDING_PRODUCTION = "src/meta/learning_loop/var_suite_durable_evidence_binding_v1.py"
 PACKAGE_K_BINDING_SCRIPT = "scripts/run_var_suite_durable_evidence_binding_v1.py"
 PACKAGE_K_BINDING_TESTOWNER = "tests/meta/test_var_suite_durable_evidence_binding_v1.py"
-PACKAGE_K_BINDING_CLI_TESTOWNER = (
-    "tests/scripts/test_run_var_suite_durable_evidence_binding_v1.py"
-)
+PACKAGE_K_BINDING_CLI_TESTOWNER = "tests/scripts/test_run_var_suite_durable_evidence_binding_v1.py"
 PACKAGE_K_J_PRODUCER_TESTOWNER = (
     "tests/governance/promotion_loop/test_var_suite_lineage_ref_producer_v1.py"
 )
