@@ -5206,21 +5206,35 @@ def test_selector_package_e_combined_diff_pr_bounded_full_includes_all_testowner
 
 PACKAGE_F_LINEAGE_PRODUCTION = "src/governance/promotion_loop/candidate_lineage_manifest_v1.py"
 PACKAGE_F_LINEAGE_SCRIPT = "scripts/run_candidate_lineage_manifest_v1.py"
+PACKAGE_I_BACKTEST_REF_PRODUCTION = (
+    "src/governance/promotion_loop/backtest_lineage_ref_producer_v1.py"
+)
+PACKAGE_I_BACKTEST_REF_SCRIPT = "scripts/run_backtest_lineage_ref_producer_v1.py"
 PACKAGE_F_LINEAGE_CONTRACT_TESTOWNER = (
     "tests/governance/promotion_loop/test_candidate_lineage_manifest_v1_contract.py"
 )
 PACKAGE_F_LINEAGE_PRODUCER_TESTOWNER = (
     "tests/governance/promotion_loop/test_candidate_lineage_manifest_v1_producer_v1.py"
 )
+PACKAGE_I_BACKTEST_REF_PRODUCER_TESTOWNER = (
+    "tests/governance/promotion_loop/test_backtest_lineage_ref_producer_v1.py"
+)
 PACKAGE_F_LINEAGE_CLI_TESTOWNER = "tests/scripts/test_run_candidate_lineage_manifest_v1.py"
+PACKAGE_I_BACKTEST_REF_CLI_TESTOWNER = "tests/scripts/test_run_backtest_lineage_ref_producer_v1.py"
+PACKAGE_I_RUN_SUMMARY_CONTRACT = "tests/test_run_summary_contract.py"
 PACKAGE_F_ALL_PRODUCTION = (
     PACKAGE_F_LINEAGE_PRODUCTION,
     PACKAGE_F_LINEAGE_SCRIPT,
+    PACKAGE_I_BACKTEST_REF_PRODUCTION,
+    PACKAGE_I_BACKTEST_REF_SCRIPT,
 )
 PACKAGE_F_ALL_TESTOWNERS = (
     PACKAGE_F_LINEAGE_CONTRACT_TESTOWNER,
     PACKAGE_F_LINEAGE_PRODUCER_TESTOWNER,
+    PACKAGE_I_BACKTEST_REF_PRODUCER_TESTOWNER,
     PACKAGE_F_LINEAGE_CLI_TESTOWNER,
+    PACKAGE_I_BACKTEST_REF_CLI_TESTOWNER,
+    PACKAGE_I_RUN_SUMMARY_CONTRACT,
 )
 
 
@@ -5243,6 +5257,38 @@ def test_selector_package_f_script_contract_focused_includes_lineage_testowners(
 def test_selector_package_f_combined_diff_pr_bounded_full_includes_all_testowners_once() -> None:
     sel = _run_selector(
         *PACKAGE_F_ALL_PRODUCTION,
+        "scripts/ops/ci_test_selection_v1.py",
+        *PACKAGE_F_ALL_TESTOWNERS,
+    )
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    bounded = _bounded_targets(sel)
+    for path in PACKAGE_F_ALL_TESTOWNERS:
+        assert path in bounded
+        assert bounded.count(path) == 1
+
+
+def test_selector_package_i_backtest_ref_production_pr_bounded_full_includes_testowners() -> None:
+    sel = _run_selector(PACKAGE_I_BACKTEST_REF_PRODUCTION)
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    bounded = _bounded_targets(sel)
+    for path in PACKAGE_F_ALL_TESTOWNERS:
+        assert path in bounded
+
+
+def test_selector_package_i_backtest_ref_script_contract_focused_includes_testowners() -> None:
+    sel = _run_selector(PACKAGE_I_BACKTEST_REF_SCRIPT)
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
+    focused = sel.get("focused_pytest_targets") or ""
+    for path in PACKAGE_F_ALL_TESTOWNERS:
+        assert path in focused.split()
+
+
+def test_selector_package_i_backtest_ref_combined_diff_pr_bounded_full_includes_all_testowners_once() -> (
+    None
+):
+    sel = _run_selector(
+        PACKAGE_I_BACKTEST_REF_PRODUCTION,
+        PACKAGE_I_BACKTEST_REF_SCRIPT,
         "scripts/ops/ci_test_selection_v1.py",
         *PACKAGE_F_ALL_TESTOWNERS,
     )
