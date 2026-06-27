@@ -5367,6 +5367,80 @@ def test_selector_package_j_var_suite_ref_combined_diff_pr_bounded_full_includes
         assert bounded.count(path) == 1
 
 
+PACKAGE_M_EXPERIMENT_REF_PRODUCTION = (
+    "src/governance/promotion_loop/experiment_lineage_ref_producer_v1.py"
+)
+PACKAGE_M_EXPERIMENT_REF_SCRIPT = "scripts/run_experiment_lineage_ref_producer_v1.py"
+PACKAGE_M_EXPERIMENT_REF_PRODUCER_TESTOWNER = (
+    "tests/governance/promotion_loop/test_experiment_lineage_ref_producer_v1.py"
+)
+PACKAGE_M_EXPERIMENT_REF_CLI_TESTOWNER = (
+    "tests/scripts/test_run_experiment_lineage_ref_producer_v1.py"
+)
+PACKAGE_M_PACKAGE_N_REGRESSION = "tests/experiments/test_experiment_identity_manifest_v1.py"
+PACKAGE_M_ALL_PRODUCTION = (
+    PACKAGE_M_EXPERIMENT_REF_PRODUCTION,
+    PACKAGE_M_EXPERIMENT_REF_SCRIPT,
+)
+PACKAGE_M_ALL_TESTOWNERS = (
+    PACKAGE_M_EXPERIMENT_REF_PRODUCER_TESTOWNER,
+    PACKAGE_M_EXPERIMENT_REF_CLI_TESTOWNER,
+    PACKAGE_M_PACKAGE_N_REGRESSION,
+)
+PACKAGE_M_FULL_DIFF = (
+    PACKAGE_M_EXPERIMENT_REF_PRODUCTION,
+    PACKAGE_M_EXPERIMENT_REF_SCRIPT,
+    PACKAGE_M_EXPERIMENT_REF_PRODUCER_TESTOWNER,
+    PACKAGE_M_EXPERIMENT_REF_CLI_TESTOWNER,
+    "scripts/ops/ci_test_selection_v1.py",
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+)
+
+
+def test_selector_package_m_experiment_ref_production_pr_bounded_full_includes_testowners() -> None:
+    sel = _run_selector(PACKAGE_M_EXPERIMENT_REF_PRODUCTION)
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    bounded = _bounded_targets(sel)
+    for path in PACKAGE_M_ALL_TESTOWNERS:
+        assert path in bounded
+    for path in PACKAGE_F_ALL_TESTOWNERS:
+        assert path in bounded
+
+
+def test_selector_package_m_experiment_ref_script_contract_focused_includes_testowners() -> None:
+    sel = _run_selector(PACKAGE_M_EXPERIMENT_REF_SCRIPT)
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
+    focused = sel.get("focused_pytest_targets") or ""
+    for path in PACKAGE_M_ALL_TESTOWNERS:
+        assert path in focused.split()
+    for path in PACKAGE_F_ALL_TESTOWNERS:
+        assert path in focused.split()
+
+
+def test_selector_package_m_experiment_ref_combined_diff_pr_bounded_full_includes_all_testowners_once() -> (
+    None
+):
+    sel = _run_selector(*PACKAGE_M_FULL_DIFF)
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    bounded = _bounded_targets(sel)
+    for path in PACKAGE_M_ALL_TESTOWNERS:
+        assert path in bounded
+        assert bounded.count(path) == 1
+    for path in PACKAGE_F_ALL_TESTOWNERS:
+        assert path in bounded
+
+
+def test_selector_package_m_full_six_file_diff_pr_bounded_full() -> None:
+    sel = _run_selector(*PACKAGE_M_FULL_DIFF)
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    assert sel["tests_execute_pr_bounded_full"] == "true"
+    assert sel["tests_execute_full"] == "false"
+    bounded = _bounded_targets(sel)
+    assert PACKAGE_M_EXPERIMENT_REF_PRODUCER_TESTOWNER in bounded
+    assert PACKAGE_M_EXPERIMENT_REF_CLI_TESTOWNER in bounded
+    assert PACKAGE_M_PACKAGE_N_REGRESSION in bounded
+
+
 PACKAGE_G_BINDING_PRODUCTION = "src/meta/learning_loop/manifest_durable_evidence_binding_v1.py"
 PACKAGE_G_BINDING_SCRIPT = "scripts/run_learning_manifest_durable_evidence_binding_v1.py"
 PACKAGE_G_BINDING_TESTOWNER = "tests/meta/test_learning_manifest_durable_evidence_binding_v1.py"
