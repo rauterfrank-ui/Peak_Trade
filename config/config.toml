@@ -416,10 +416,10 @@ auto_switch_enabled = false
 # Manuelle Switch-Bestätigung erforderlich
 require_confirmation = true
 
-# Kraken API (Keys NICHT hier speichern!)
-# Verwende Umgebungsvariablen: KRAKEN_API_KEY, KRAKEN_API_SECRET
-exchange = "kraken"
-default_pair = "BTC/USD"
+# Target venue: OKX Europe EEA (credentials via OKX_EEA_* env vars — separate operator setup).
+# Kraken live profile decommissioned 2026-06; adapter code retained as DORMANT/HISTORICAL only.
+exchange = "okx_europe_eea"
+default_pair = "ETH/USD"
 
 [validation]
 # Mindestanforderungen für Live-Trading-Freigabe
@@ -672,13 +672,14 @@ slippage_bps = 5.0
 [live_exchange]
 # Exchange-Konfiguration für Live-Marktdaten
 # WICHTIG: Nur public market data! Keine Order-APIs!
-name = "kraken"
+# Kraken public OHLCV path DORMANT — OKX EEA is the active venue target.
+name = "okx_europe_eea"
 
 # Sandbox/Public-Only Modus (MUSS true sein für Phase 31)
 use_sandbox = true
 
-# Basis-URL für Kraken Public API
-base_url = "https://api.kraken.com"
+# OKX Europe EEA REST host (public market data probes)
+base_url = "https://eea.okx.com"
 
 # Rate-Limit-Einstellungen
 rate_limit_ms = 1000
@@ -986,8 +987,8 @@ slippage_bps = 5.0
 # ============================================================================
 
 [exchange.kraken_testnet]
-# Testnet-Integration aktivieren
-enabled = true
+# Kraken venue decommissioned — retained for historical adapter/tests only.
+enabled = false
 
 # Kraken API Base-URL
 # Hinweis: Kraken hat kein echtes Testnet, daher nutzen wir validate_only=true
@@ -1027,9 +1028,39 @@ rate_limit_ms = 1000
 # ============================================================================
 
 [exchange.kraken_live]
+enabled = false
 base_url = "https://api.kraken.com"
 api_key_env_var = "KRAKEN_API_KEY"
 api_secret_env_var = "KRAKEN_API_SECRET"
+timeout_seconds = 30.0
+max_retries = 3
+rate_limit_ms = 1000
+
+# ============================================================================
+# OKX EUROPE EEA (Package E / INV-033) — target venue (credentials external)
+# ============================================================================
+# Keys/passphrases ONLY via environment variables or local bounded secret files.
+# Demo/simulation REST uses header x-simulated-trading: 1 on https://eea.okx.com
+# Runtime remains fail-closed until operator credentials + explicit GO.
+
+[exchange.okx_europe_eea]
+enabled = false
+rest_host = "https://eea.okx.com"
+public_ws_host = "wss://wseeapap.okx.com:8443/ws/v5/public"
+private_ws_host = "wss://wseeapap.okx.com:8443/ws/v5/private"
+websocket_port = 8443
+simulation_header_name = "x-simulated-trading"
+simulation_header_value = "1"
+demo_instrument_id = "ETH-USD_UM_XPERP-310328"
+production_instrument_id = "ETH-USD_UM_XPERP-310404"
+public_api_key_env_var = "OKX_EEA_PUBLIC_API_KEY"
+readonly_api_key_env_var = "OKX_EEA_READONLY_API_KEY"
+readonly_api_secret_env_var = "OKX_EEA_READONLY_API_SECRET"
+readonly_api_passphrase_env_var = "OKX_EEA_READONLY_API_PASSPHRASE"
+trade_api_key_env_var = "OKX_EEA_TRADE_API_KEY"
+trade_api_secret_env_var = "OKX_EEA_TRADE_API_SECRET"
+trade_api_passphrase_env_var = "OKX_EEA_TRADE_API_PASSPHRASE"
+validate_only = true
 timeout_seconds = 30.0
 max_retries = 3
 rate_limit_ms = 1000
@@ -1042,14 +1073,14 @@ rate_limit_ms = 1000
 # ============================================================================
 
 [testnet_session]
-# Testnet-Sessions aktivieren
-enabled = true
+# Fail-closed until OKX EEA credentials + bounded runtime GO (Kraken testnet decommissioned).
+enabled = false
 
-# Default-Exchange fuer Testnet
-default_exchange = "kraken_testnet"
+# Default-Exchange fuer Testnet (target venue)
+default_exchange = "okx_europe_eea"
 
-# Trading-Symbol (muss vom Exchange unterstuetzt werden)
-symbol = "BTC/EUR"
+# Trading-Symbol (OKX EEA X-Perp demo reference instrument)
+symbol = "ETH-USD_UM_XPERP-310328"
 
 # Timeframe fuer Candles
 timeframe = "1m"
