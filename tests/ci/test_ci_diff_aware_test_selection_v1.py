@@ -4975,6 +4975,23 @@ PACKAGE_A_ALL_TESTOWNERS = (
     PACKAGE_A_CONFIG_PATCH_MANIFEST_TESTOWNER,
     PACKAGE_A_CANDIDATE_LINEAGE_TESTOWNER,
 )
+PACKAGE_B_PROMOTION_INPUT_SCRIPT = "scripts/run_promotion_proposal_cycle.py"
+PACKAGE_B_PROMOTION_INPUT_LOADER_TESTOWNER = (
+    "tests/meta/test_config_patch_manifest_v1_promotion_input_loader_v1.py"
+)
+PACKAGE_B_PROMOTION_INPUT_REWIRE_TESTOWNER = (
+    "tests/scripts/test_run_promotion_proposal_cycle_manifest_input_v1.py"
+)
+PACKAGE_B_ALL_PRODUCTION = (
+    PACKAGE_A_META_PRODUCTION_CONFIG,
+    PACKAGE_B_PROMOTION_INPUT_SCRIPT,
+)
+PACKAGE_B_ALL_TESTOWNERS = (
+    PACKAGE_A_CONTRACT_SAFETY_TESTOWNER,
+    PACKAGE_A_CONFIG_PATCH_MANIFEST_TESTOWNER,
+    PACKAGE_B_PROMOTION_INPUT_LOADER_TESTOWNER,
+    PACKAGE_B_PROMOTION_INPUT_REWIRE_TESTOWNER,
+)
 
 
 def test_selector_package_a_meta_production_pr_bounded_full_includes_meta_testowners() -> None:
@@ -5012,3 +5029,29 @@ def test_selector_central_src_without_package_a_path_excludes_package_a_testowne
     bounded = _bounded_targets(sel)
     for path in PACKAGE_A_ALL_TESTOWNERS:
         assert path not in bounded
+
+
+def test_selector_package_b_promotion_script_contract_focused_includes_loader_and_rewire_testowners() -> (
+    None
+):
+    sel = _run_selector(PACKAGE_B_PROMOTION_INPUT_SCRIPT)
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
+    targets = _targets(sel)
+    assert PACKAGE_B_PROMOTION_INPUT_LOADER_TESTOWNER in targets
+    assert PACKAGE_B_PROMOTION_INPUT_REWIRE_TESTOWNER in targets
+
+
+def test_selector_package_b_combined_diff_pr_bounded_full_includes_required_testowners_once() -> (
+    None
+):
+    sel = _run_selector(
+        *PACKAGE_B_ALL_PRODUCTION,
+        "scripts/ops/ci_test_selection_v1.py",
+        *PACKAGE_B_ALL_TESTOWNERS,
+    )
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    bounded = _bounded_targets(sel)
+    for path in PACKAGE_B_ALL_TESTOWNERS:
+        assert path in bounded
+        assert bounded.count(path) == 1
+    assert PACKAGE_A_CANDIDATE_LINEAGE_TESTOWNER not in bounded

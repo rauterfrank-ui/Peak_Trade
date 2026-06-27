@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass, field
 from datetime import datetime
 from enum import Enum
+from pathlib import Path
 from typing import Any, Mapping
 
 from src.meta.learning_loop.contract_safety_v1 import (
@@ -27,6 +29,23 @@ from src.meta.learning_loop.models import ConfigPatch, PatchStatus
 
 class ConfigPatchManifestError(ValueError):
     """Fail-closed ConfigPatch-Manifest v1 error."""
+
+
+class ConfigPatchManifestValidationError(ConfigPatchManifestError):
+    """Raised when Package-A manifest validation fails fail-closed."""
+
+    def __init__(
+        self,
+        message: str,
+        *,
+        phase: ValidationPhase,
+        errors: tuple[str, ...],
+        verdict: str | None = None,
+    ) -> None:
+        super().__init__(message)
+        self.phase = phase
+        self.errors = errors
+        self.verdict = verdict
 
 
 @dataclass(frozen=True)
@@ -351,3 +370,42 @@ def build_empty_config_patch_manifest_v1(
     )
     manifest.integrity = compute_manifest_integrity(manifest)
     return manifest
+
+
+def load_config_patch_manifest_v1_from_json_path(path: Path | str) -> ConfigPatchManifestV1:
+    """Load, validate, and deserialize a ConfigPatch-Manifest v1 JSON file."""
+    manifest_path = Path(path)
+    if not manifest_path.is_file():
+        raise ConfigPatchManifestError(f"manifest file not found: {manifest_path}")
+
+    try:
+        raw_text = manifest_path.read_text(encoding="utf-8")
+    except OSError as exc:
+        raise ConfigPatchManifestError(f"failed to read manifest file: {manifest_path}") from exc
+
+    try:
+        data = json.loads(raw_text)
+    except json.JSONDecodeError as exc:
+        raise ConfigPatchManifestError(f"invalid JSON in manifest file: {manifest_path}") from exc
+
+    if not isinstance(data, Mapping):
+        raise ConfigPatchManifestError("manifest root must be a JSON object")
+
+    valid, phase, errors, verdict = validate_config_patch_manifest_v1(data)
+    if not valid:
+        raise ConfigPatchManifestValidationError(
+            f"ConfigPatch-Manifest v1 validation failed for {manifest_path}",
+            phase=phase,
+            errors=errors,
+            verdict=verdict,
+        )
+
+    return deserialize_config_patch_manifest_v1(data)
+
+
+def load_config_patches_for_promotion_from_manifest_path(
+    path: Path | str,
+) -> list[ConfigPatch]:
+    """Return validated ConfigPatch entries from a canonical manifest file."""
+    manifest = load_config_patch_manifest_v1_from_json_path(path)
+    return list(manifest.patches)

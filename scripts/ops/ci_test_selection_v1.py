@@ -1327,12 +1327,26 @@ PR_BOUNDED_FULL_PACKAGE_A_META_TRIGGER_PATHS: frozenset[str] = frozenset(
         "src/meta/learning_loop/config_patch_manifest_v1.py",
         "tests/meta/test_contract_safety_v1.py",
         "tests/meta/test_config_patch_manifest_v1_contract.py",
+        "tests/meta/test_config_patch_manifest_v1_promotion_input_loader_v1.py",
     }
 )
 
 PR_BOUNDED_FULL_PACKAGE_A_META_TARGETS: tuple[str, ...] = (
     "tests/meta/test_contract_safety_v1.py",
     "tests/meta/test_config_patch_manifest_v1_contract.py",
+    "tests/meta/test_config_patch_manifest_v1_promotion_input_loader_v1.py",
+)
+
+PR_BOUNDED_FULL_PACKAGE_B_PROMOTION_INPUT_TRIGGER_PATHS: frozenset[str] = frozenset(
+    {
+        "scripts/run_promotion_proposal_cycle.py",
+        "tests/scripts/test_run_promotion_proposal_cycle_manifest_input_v1.py",
+    }
+)
+
+PR_BOUNDED_FULL_PACKAGE_B_PROMOTION_INPUT_TARGETS: tuple[str, ...] = (
+    "tests/meta/test_config_patch_manifest_v1_promotion_input_loader_v1.py",
+    "tests/scripts/test_run_promotion_proposal_cycle_manifest_input_v1.py",
 )
 
 PR_BOUNDED_FULL_PACKAGE_A_GOVERNANCE_TRIGGER_PATHS: frozenset[str] = frozenset(
@@ -1386,6 +1400,10 @@ def resolve_pr_bounded_full_targets(files: list[str]) -> tuple[str, ...]:
 
     if normalized & PR_BOUNDED_FULL_PACKAGE_A_GOVERNANCE_TRIGGER_PATHS:
         for path in PR_BOUNDED_FULL_PACKAGE_A_GOVERNANCE_TARGETS:
+            add(path)
+
+    if normalized & PR_BOUNDED_FULL_PACKAGE_B_PROMOTION_INPUT_TRIGGER_PATHS:
+        for path in PR_BOUNDED_FULL_PACKAGE_B_PROMOTION_INPUT_TARGETS:
             add(path)
 
     if not targets:
@@ -4523,6 +4541,9 @@ def _focused_targets(files: list[str]) -> tuple[str, ...]:
             add(path)
         elif path.startswith("scripts/") and path.endswith(".py"):
             script_stem = PurePosixPath(path).stem
+            if path == "scripts/run_promotion_proposal_cycle.py":
+                for candidate in PR_BOUNDED_FULL_PACKAGE_B_PROMOTION_INPUT_TARGETS:
+                    add(candidate)
             for candidate in (
                 f"tests/scripts/test_{script_stem}_load_strategy_v1.py",
                 f"tests/scripts/test_{script_stem}.py",
