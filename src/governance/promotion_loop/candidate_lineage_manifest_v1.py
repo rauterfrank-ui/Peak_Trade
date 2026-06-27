@@ -76,6 +76,7 @@ class LineageRelation(str, Enum):
     RETAINS = "retains"
     REPRODUCES = "reproduces"
     EXTENDS = "extends"
+    DERIVES_FROM_RESULT_MANIFEST = "derives_from_result_manifest"
 
 
 _REF_TYPE_CARDINALITY: dict[LineageRefType, tuple[int, int | None]] = {
