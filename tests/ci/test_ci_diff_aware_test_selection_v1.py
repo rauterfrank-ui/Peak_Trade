@@ -5112,3 +5112,45 @@ def test_selector_package_d_combined_diff_pr_bounded_full_includes_all_testowner
     for path in PACKAGE_D_ALL_TESTOWNERS:
         assert path in bounded
         assert bounded.count(path) == 1
+
+
+PACKAGE_E_ENGINE_PRODUCTION = "src/governance/promotion_loop/engine.py"
+PACKAGE_E_SAFETY_PRODUCTION = "src/governance/promotion_loop/safety.py"
+PACKAGE_E_POLICY_PRODUCTION = "src/governance/promotion_loop/policy.py"
+PACKAGE_E_ENGINE_TESTOWNER = "tests/governance/promotion_loop/test_engine_manifest_era_v1.py"
+PACKAGE_E_SAFETY_TESTOWNER = "tests/governance/promotion_loop/test_safety_manifest_era_v1.py"
+PACKAGE_E_POLICY_TESTOWNER = "tests/governance/promotion_loop/test_policy_manifest_era_v1.py"
+PACKAGE_E_E2E_TESTOWNER = "tests/scripts/test_offline_learning_promotion_e2e_v1.py"
+PACKAGE_E_ALL_PRODUCTION = (
+    PACKAGE_E_ENGINE_PRODUCTION,
+    PACKAGE_E_SAFETY_PRODUCTION,
+    PACKAGE_E_POLICY_PRODUCTION,
+)
+PACKAGE_E_ALL_TESTOWNERS = (
+    PACKAGE_E_ENGINE_TESTOWNER,
+    PACKAGE_E_SAFETY_TESTOWNER,
+    PACKAGE_E_POLICY_TESTOWNER,
+    PACKAGE_E_E2E_TESTOWNER,
+)
+
+
+def test_selector_package_e_engine_pr_bounded_full_includes_governance_testowners() -> None:
+    sel = _run_selector(PACKAGE_E_ENGINE_PRODUCTION)
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    bounded = _bounded_targets(sel)
+    for path in PACKAGE_E_ALL_TESTOWNERS:
+        assert path in bounded
+
+
+def test_selector_package_e_combined_diff_pr_bounded_full_includes_all_testowners_once() -> None:
+    sel = _run_selector(
+        *PACKAGE_E_ALL_PRODUCTION,
+        "scripts/ops/ci_test_selection_v1.py",
+        *PACKAGE_E_ALL_TESTOWNERS,
+    )
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    bounded = _bounded_targets(sel)
+    for path in PACKAGE_E_ALL_TESTOWNERS:
+        assert path in bounded
+        assert bounded.count(path) == 1
+    assert PACKAGE_E_E2E_TESTOWNER in bounded
