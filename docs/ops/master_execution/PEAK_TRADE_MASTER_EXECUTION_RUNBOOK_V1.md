@@ -72,9 +72,9 @@ Reifepipeline: Research → Offline Proof → Shadow → Paper → Testnet → s
 | GO_GRANTED | false |
 | IMPLEMENTATION_STARTED | false |
 | CURRENT_RUN_ACTIVE | false |
-| NEXT_ALLOWED_ACTION | READ_ONLY_OPERATOR_REVIEW_FOR_INV033_RUNTIME_PARKED_SCOPE_OR_PREPARE_RANK2_SSOT_CROSSLINK_NO_RUNTIME |
+| NEXT_ALLOWED_ACTION | PREPARE_POST_PR4592_MASTER_EXECUTION_EVIDENCE_CONTINUITY_DIFF_TEST_DOCS_GATES_CI_AND_PR_ADMISSIBILITY_REVIEW_NO_MUTATION |
 
-Target Architecture ist im Masterplan abgeschlossen (`MANIFEST_VERIFY_RC=0`). **Package A (INV-021 + INV-048) ist vollständig abgeschlossen**. **Package B (INV-022 + INV-006) ist vollständig abgeschlossen**. **Package C (INV-045 + INV-046) ist vollständig abgeschlossen**. **Package D (INV-007) ist vollständig abgeschlossen**. **Package E (INV-008 + INV-033 + INV-037) ist IN_PROGRESS** — E1 gemergt PR #4583; E2/INV-033 **Offline-Decomposition abgeschlossen** (PR #4590, Slices 1–3 MERGED, digest hook integriert); INV-037 trace-only COMPLETE; **INV-033 Runtime geparkt** (`PARKED_RUNTIME_OPERATOR_GO_REQUIRED`); **Package E nicht COMPLETE**; **kein E2-Runtime-GO, kein OPERATOR_GO_TINY_ORDER, keine Runtime**.
+Target Architecture ist im Masterplan abgeschlossen (`MANIFEST_VERIFY_RC=0`). **Package A (INV-021 + INV-048) ist vollständig abgeschlossen**. **Package B (INV-022 + INV-006) ist vollständig abgeschlossen**. **Package C (INV-045 + INV-046) ist vollständig abgeschlossen**. **Package D (INV-007) ist vollständig abgeschlossen**. **Package E (INV-008 + INV-033 + INV-037) ist IN_PROGRESS** — E1 gemergt PR #4583; E2/INV-033 **Offline-Decomposition abgeschlossen** (PR #4590, Slices 1–3 MERGED, digest hook integriert); **INV-033 E2 SSOT-Crosslink abgeschlossen** (PR #4592, Squash `ff03482c`, 4 Dateien, `CROSSLINK_CLOSURE_COMPLETE=true`; systemweite Owner-/Truth-Crosslinks integriert; Guard-Tests schützen Offline-vs.-Runtime-Semantik); INV-037 trace-only COMPLETE; **INV-033 Runtime geparkt** (`PARKED_RUNTIME_OPERATOR_GO_REQUIRED`); **Package E nicht COMPLETE**; **keine Account-, Credential-, Private-API-, Netzwerk-, AWS-, Order-, Testnet- oder Live-Readiness bewiesen**; **kein E2-Runtime-GO, kein OPERATOR_GO_TINY_ORDER, keine Runtime**.
 
 ## 3. Capability Trains (12)
 
@@ -204,6 +204,9 @@ Handoff-Payloads: `NEW_CHAT_RESUME_PAYLOAD.md`, `CURSOR_RESUME_PAYLOAD.md` (Dura
 - [x] Fachliches E1-Closeout-Bundle mit `MANIFEST_VERIFY_RC=0`
 - [x] Fachliches PR-4590-Closeout-Bundle mit `MANIFEST_VERIFY_RC=0`
 - [x] Docs-Closeout-Checkpoint für E2 offline vorbereitet
+- [x] PR #4592 INV-033 E2 SSOT-Crosslink gemergt — Squash `ff03482c`; 4 Dateien; `CROSSLINK_CLOSURE_COMPLETE=true`; Closeout `pe_e2_inv033_ssot_crosslink_squash_merge_closeout_v0_20260627T002437Z` (`MANIFEST_VERIFY_RC=0`, 24 Dateien)
+- [x] Post-PR4592 systemweites Residual-Gap-Ranking gebunden — `post_pe_e2_inv033_crosslink_closeout_systemwide_residual_gap_ranking_bounded_read_only_no_runtime_v0_20260627T103000Z` (`MANIFEST_VERIFY_RC=0`, 18 Dateien)
+- [x] Master-Execution Evidence-Index-/Changelog-Kontinuität für PR #4592 (docs-only; fachlicher Checkpoint bleibt PR #4590 / `8e5d5f3a`)
 - [ ] E2/INV-033 Runtime — geparkt; OPERATOR_GO_TINY_ORDER nicht erteilt
 - [ ] Package H — nicht autorisiert als Implementierung
 - [ ] INV-003 wiring, INV-005 testnet, Authority-Lift, Runtime, Engine-Vereinheitlichung, Reconciliation-Wiring weiterhin ausgeschlossen
@@ -245,7 +248,9 @@ Handoff-Payloads: `NEW_CHAT_RESUME_PAYLOAD.md`, `CURSOR_RESUME_PAYLOAD.md` (Dura
 | PR-4583 Merge | Package E Slice E1 merge |
 | PR-4590 Closeout `pr4590_okx_adapter_lifecycle_slice3_digest_hook_squash_merge_and_decomposition_closeout_v0_20260626T234308Z` | Package E Slice E2 INV-033 offline decomposition merge closeout |
 | PR-4590 Merge | Package E Slice E2 INV-033 offline decomposition merge |
-| Post-INV033 Ranking `post_inv033_offline_completion_systemwide_residual_gap_ranking_bounded_read_only_no_runtime_v0_20260627T001500Z` | Systemwide Rank 1 scope selection |
+| PR-4592 Merge / Crosslink | docs(ops): crosslink OKX Europe INV-033 owners; Squash `ff03482c`; 4 Dateien; `CROSSLINK_CLOSURE_COMPLETE=true`; systemweite Owner-/Truth-Crosslinks; Guard-Tests Offline-vs.-Runtime; **keine Runtime-Readiness** |
+| PR-4592 Closeout `pe_e2_inv033_ssot_crosslink_squash_merge_closeout_v0_20260627T002437Z` | INV-033 E2 SSOT crosslink merge closeout; 24 Dateien; `MANIFEST_VERIFY_RC=0`; **Evidence only — nicht Repo-SSOT** |
+| Post-PR4592 Ranking `post_pe_e2_inv033_crosslink_closeout_systemwide_residual_gap_ranking_bounded_read_only_no_runtime_v0_20260627T103000Z` | Systemwide residual gap ranking after crosslink closeout; 18 Dateien; `MANIFEST_VERIFY_RC=0`; **Evidence only — nicht Repo-SSOT** |
 | Runbook Durable Snapshot `peak_trade_master_execution_runbook_v1_20260626T233500Z` | Unveränderlicher Ursprung |
 
 ## 10. DO_NOT_DO (aktuell)
