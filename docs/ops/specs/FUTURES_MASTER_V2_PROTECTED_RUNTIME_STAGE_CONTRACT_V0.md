@@ -265,9 +265,11 @@ Fail closed when:
 
 Default posture: **remain at Stage 0 STOP** — exact runtime mapping is future governed wiring, **not** authorization from this doc alone.
 
-## 16. Validation / future tests pointer
+## 16. Validation / static-contract tests (merged on main)
 
-Future static-contract tests: **GAP-PRT-STATIC-001** — separate operator approval; after this docs contract merge. Illustrative module: `tests&#47;ops&#47;test_master_v2_protected_runtime_stage_contract_static_v0.py` (~12–16 tests).
+**GAP-PRT-STATIC-001 static-contract tests:** merged on `main`; canonical module `tests&#47;ops&#47;test_master_v2_protected_runtime_stage_contract_static_v0.py` (**15** offline/static file-content tests). **Offline/static contract gate only** — **does not** prove runtime, credentials, network connectivity, or order capability.
+
+Legacy marker `GAP_PRT_STATIC_001_FUTURE_TESTS_ONLY` retained for historical machine-anchors; superseded by `GAP_PRT_STATIC_001_TESTS_MERGED=true`.
 
 Future behavior tests: **separate approval** — stage 5; not GAP-PRT-STATIC-001.
 
@@ -315,6 +317,9 @@ MARKER: STRATEGY_SUITABILITY_UNCHANGED
 MARKER: PROTECTED_RUNTIME_SEPARATE_APPROVAL_REQUIRED
 MARKER: GAP_PRT_001_CLOSED_BY_THIS_DOC
 MARKER: GAP_PRT_STATIC_001_FUTURE_TESTS_ONLY
+MARKER: GAP_PRT_STATIC_001_TESTS_MERGED=true
+MARKER: GAP_PRT_STATIC_001_TEST_COUNT=15
+MARKER: PRT_STATIC_OFFLINE_CONTRACT_GATE_ONLY=true
 MARKER: NO_DUPLICATION_OF_RGB_CONTRACT_OWNER
 MARKER: NO_DUPLICATION_OF_DSE_CONTRACT_OWNER
 MARKER: NO_DUPLICATION_OF_STATE_SWITCH_CONTRACT_OWNER

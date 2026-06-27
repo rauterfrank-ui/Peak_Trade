@@ -255,16 +255,18 @@ This contract is planning/governance/spec only. It does **not** close GLB blocke
 **Invariant:** `PROTECTED_RUNTIME_SEPARATE_APPROVAL_REQUIRED=true`  
 **Invariant:** `RUNTIME_GOVERNANCE_IMPLEMENTED=false`
 
-## 17. Validation / future tests pointer
+## 17. Validation / static-contract tests (merged on main)
 
-Future static-contract tests: **GAP-RGB-STATIC-001** — separate operator approval; after this docs contract merge. Illustrative module: `tests&#47;ops&#47;test_futures_master_v2_runtime_governance_boundary_contract_static_v0.py` (~18–22 tests).
+**GAP-RGB-STATIC-001 static-contract tests:** merged on `main`; canonical module `tests&#47;ops&#47;test_master_v2_runtime_governance_boundary_contract_static_v0.py` (**21** offline/static file-content tests). **Offline/static contract gate only** — **does not** prove runtime, credentials, network connectivity, or order capability.
+
+Legacy marker `GAP_RGB_STATIC_001_FUTURE_TESTS_ONLY` retained for historical machine-anchors; superseded by `GAP_RGB_STATIC_001_TESTS_MERGED=true`.
 
 Future behavior tests (separate approval) may include manifest §19 invariants subset without Exchange/Live.
 
 ## 18. Implementation staging
 
 1. **This docs contract** (current slice) — governance/spec composition only
-2. **Static-contract tests** — GAP-RGB-STATIC-001; separate operator approval
+2. **Static-contract tests** — GAP-RGB-STATIC-001 — **MERGED** (21 tests on main)
 3. **Pure-stack handoff alignment** — separate approval; no hot-path wiring by default
 4. **Protected runtime governance implementation** — separate approval; `src&#47;trading&#47;master_v2&#47;` — **not** authorized by this doc
 
@@ -292,6 +294,9 @@ MARKER: PROTECTED_RUNTIME_SEPARATE_APPROVAL_REQUIRED
 MARKER: PURE_STACK_HANDOFF_SEPARATE_APPROVAL_REQUIRED
 MARKER: GAP_RGB_001_CLOSED_BY_THIS_DOC
 MARKER: GAP_RGB_STATIC_001_FUTURE_TESTS_ONLY
+MARKER: GAP_RGB_STATIC_001_TESTS_MERGED=true
+MARKER: GAP_RGB_STATIC_001_TEST_COUNT=21
+MARKER: RGB_STATIC_OFFLINE_CONTRACT_GATE_ONLY=true
 MARKER: NO_DUPLICATION_OF_DSE_CONTRACT_OWNER
 MARKER: NO_DUPLICATION_OF_STATE_SWITCH_CONTRACT_OWNER
 MARKER: NO_DUPLICATION_OF_PR3648_AUTHORITY_MAP_OWNER

@@ -1543,6 +1543,83 @@ ARMING_EXECUTED=false
 
 **Non-authorizing:** Docs/tests-only reciprocal crosslink integration only; does **not** authorize pilot GO/No-Go lift, preflight lift, session invoke, bounded-pilot runtime start, live trading, execute/arming, incident runbook semantic changes, bounded-pilot readiness semantic changes, stop-signal semantic changes, parallel incident/runbook index creation, GAP2A1 enforcement activation, Rows 8/10/11 guard re-chronicle (#4190), EER1 Runbooks index re-chronicle (#4212), Runbook-Index-Reciprocal-Lanes re-chronicle (#4209–#4211), Ops Cockpit runbook pointer re-chronicle (#4205–#4208), Truth-Gates chain #4200–#4204 re-chronicle, workflow edits, branch-protection changes, or truth promotion.
 
+## Master V2 RGB+PRT static-contract CI_AUDIT ↔ DOCS_TRUTH_MAP reciprocal crosslink — docs/tests-only guard v1
+
+**Operator-GO:** `GO_GAP_RGB_PRT_STATIC_CI_AUDIT_CROSSLINK_DOCS_STATIC_CONTRACT_ONLY_V0` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/post_evidence_continuity_closeout_systemwide_residual_gap_ranking_bounded_read_only_no_runtime_v0_20260627T015500Z/`
+
+**Purpose:** Anchor the merged **GAP-RGB-STATIC-001** (21 tests) and **GAP-PRT-STATIC-001** (15 tests) static-contract testowners in the existing CI_AUDIT ↔ DOCS_TRUTH_MAP ↔ remote-runtime guard chain — static **CI_AUDIT ↔ DOCS_TRUTH_MAP reciprocal crosslink** closes the visibility gap where contract docs still claimed *future static-contract tests* despite **36** merged offline/static tests on `main`. **Does not** authorize runtime, credentials, network, orders, Preflight lift, or protected-runtime implementation. **Scope separate from** closed PR #4592/#4593 master-execution evidence continuity slices.
+
+**Canonical repo owners (reuse — do not duplicate):**
+
+| Concern | Owner |
+|---------|-------|
+| Runtime Governance Boundary contract (reference only) | `docs/ops/specs/FUTURES_MASTER_V2_RUNTIME_GOVERNANCE_BOUNDARY_CONTRACT_V0.md` |
+| Protected Runtime Stage contract (reference only) | `docs/ops/specs/FUTURES_MASTER_V2_PROTECTED_RUNTIME_STAGE_CONTRACT_V0.md` |
+| RGB static-contract testowner (21 tests — reuse) | `tests/ops/test_master_v2_runtime_governance_boundary_contract_static_v0.py` |
+| PRT static-contract testowner (15 tests — reuse) | `tests/ops/test_master_v2_protected_runtime_stage_contract_static_v0.py` |
+| Remote runtime contract docs guard (reuse + extend) | `tests/ops/test_remote_runtime_contract_docs_guard_v0.py` |
+| CI_AUDIT / DOCS_TRUTH_MAP reciprocal guard | `tests/ops/test_remote_runtime_contract_docs_guard_v0.py` |
+| DOCS_TRUTH_MAP chronicle | `docs/ops/registry/DOCS_TRUTH_MAP.md` (this crosslink section + Änderungsnachweis row) |
+
+**RGB+PRT static crosslink invariants (static — not runtime authority):**
+
+| Invariant | Posture |
+|-----------|---------|
+| RGB static tests on main | **21** merged offline/static contract tests |
+| PRT static tests on main | **15** merged offline/static contract tests |
+| Total static tests | **36** |
+| Prior FUTURE_TESTS_ONLY prose gap | **Closed** — contract docs updated; legacy markers retained for machine-anchors |
+| Runtime / credentials / network / orders | **Not proven** — static file-content gates only |
+| Parallel RGB/PRT SSOT | **Not created** |
+| Preflight lift | **Not authorized** |
+
+```text
+GAP_RGB_PRT_STATIC_CI_AUDIT_CROSSLINK_V1=true
+GAP_RGB_STATIC_TEST_COUNT=21
+GAP_PRT_STATIC_TEST_COUNT=15
+GAP_RGB_PRT_TOTAL_STATIC_TEST_COUNT=36
+GAP_RGB_STATIC_TESTS_MERGED=true
+GAP_PRT_STATIC_TESTS_MERGED=true
+FUTURE_TESTS_ONLY_STALE_ASSERTION_REMOVED=true
+RGB_RECIPROCAL_GUARD_PRESERVED=true
+PRT_RECIPROCAL_GUARD_ADDED=true
+RGB_PRT_CANONICAL_OWNERS_INDEXED=true
+RGB_PRT_EXISTING_STATIC_GUARDS_REUSED=true
+RGB_PRT_OFFLINE_STATIC_CONTRACT_ONLY=true
+RUNTIME_PROVEN=false
+CREDENTIALS_PRESENT=false
+NETWORK_EXERCISED=false
+ORDERS_AUTHORIZED=false
+PARALLEL_RGB_PRT_SSOT_CREATED=false
+WORKFLOW_YAML_MUTATED=false
+REQUIRED_CHECK_CONFIG_MUTATED=false
+GAP2A1_PRIMARY_EVIDENCE_ENFORCED=false
+PREFLIGHT_LIFTED=false
+AUTHORITY_LIFT=false
+TRADING_LOGIC_TOUCH=false
+MASTER_V2_LOGIC_CHANGED=false
+DOUBLE_PLAY_LOGIC_CHANGED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+NO_SESSION_INVOKE_AUTHORIZED=true
+U2B_PARKED=true
+MARKET_AIRPORT_EXCLUDED=true
+EVIDENCE_OR_DOCS_ANCHOR_NOT_RUNTIME_AUTHORITY=true
+NO_RUNTIME=true
+NO_LIVE=true
+NO_PREFLIGHT_LIFT=true
+NEW_PARALLEL_SSOT_CREATED=false
+DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
+DOCS_DRIFT_OR_POINTER_INTEGRITY_COMPLETE=false
+RUNTIME_STARTED=false
+RUN_STARTED=false
+EXECUTE_STARTED=false
+ARMING_EXECUTED=false
+```
+
+**Guard module (reuse — no parallel RGB/PRT SSOT):** `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`.
+
+**Non-authorizing:** Docs/tests-only reciprocal crosslink integration only; does **not** authorize protected-runtime implementation, runtime governance hot-path wiring, paper/shadow/testnet/live, session invoke, execute/arming, preflight lift, credentials, private API, network, orders, Master V2 / Double Play / trading-logic / risk / KillSwitch / scope / capital semantic changes, parallel RGB/PRT SSOT creation, workflow edits, branch-protection changes, or truth promotion.
+
 ## Tech-Debt Top-3 Runbook/Backlog CI_AUDIT ↔ DOCS_TRUTH_MAP static crosslink — docs/tests-only guard v1
 
 **Operator-GO:** `GO_TECH_DEBT_TOP3_RUNBOOK_BACKLOG_CI_AUDIT_DOCS_TRUTH_MAP_STATIC_CROSSLINK_DOCS_TESTS_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_next_safe_scope_ranking_after_bounded_pilot_incident_runbooks_index_reciprocal_crosslink_merge_no_run_v1_20260613T160514Z/`
