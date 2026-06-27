@@ -3,14 +3,35 @@
 from __future__ import annotations
 
 import json
+import shutil
 import subprocess
 import sys
+import uuid
+from collections.abc import Callable
 from pathlib import Path
 
 import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 CLI = REPO_ROOT / "scripts" / "run_experiment_identity_manifest_v1.py"
+_DURABLE_OUTPUT_ROOT = REPO_ROOT / ".package_n_pytest_outputs"
+
+
+@pytest.fixture
+def durable_output_dir() -> Callable[[], Path]:
+    _DURABLE_OUTPUT_ROOT.mkdir(exist_ok=True)
+    created: list[Path] = []
+
+    def _make() -> Path:
+        path = _DURABLE_OUTPUT_ROOT / uuid.uuid4().hex
+        created.append(path)
+        return path
+
+    yield _make
+
+    for path in created:
+        if path.exists():
+            shutil.rmtree(path, ignore_errors=True)
 
 
 def _write_config(path: Path) -> None:
@@ -28,9 +49,12 @@ def _write_config(path: Path) -> None:
     )
 
 
-def test_cli_success_exit_code(tmp_path: Path) -> None:
+def test_cli_success_exit_code(
+    tmp_path: Path,
+    durable_output_dir: Callable[[], Path],
+) -> None:
     config = tmp_path / "config.json"
-    out = tmp_path / "output"
+    out = durable_output_dir()
     _write_config(config)
     proc = subprocess.run(
         [sys.executable, str(CLI), "--config-json", str(config), "--output-dir", str(out)],

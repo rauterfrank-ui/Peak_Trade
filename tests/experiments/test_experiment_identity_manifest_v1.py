@@ -4,11 +4,13 @@ from __future__ import annotations
 
 import copy
 import json
+import shutil
 import subprocess
 import sys
+import uuid
 from enum import Enum
 from pathlib import Path
-from typing import Any
+from typing import Any, Callable
 from unittest.mock import patch
 
 import numpy as np
@@ -21,9 +23,6 @@ from src.experiments.experiment_identity_manifest_v1 import (
     IDENTITY_SCHEMA_VERSION,
     ExperimentIdentityManifestError,
     _FORBIDDEN_MANIFEST_KEYS,
-    _is_phase41_constraint_bridge_active,
-    _is_regime_config_behaviorally_active,
-    _is_switching_config_behaviorally_active,
     active_input_matrix_classifications,
     build_identity_config,
     build_manifest,
@@ -35,6 +34,29 @@ from src.experiments.experiment_identity_manifest_v1 import (
     validate_active_input_completeness,
     validate_experiment_identity_manifest_v1,
 )
+
+REPO_ROOT = Path(__file__).resolve().parents[2]
+_DURABLE_OUTPUT_ROOT = REPO_ROOT / ".package_n_pytest_outputs"
+
+
+@pytest.fixture
+def durable_output_dir() -> Callable[[], Path]:
+    """Output paths outside /tmp for producer atomic-write contract tests."""
+    _DURABLE_OUTPUT_ROOT.mkdir(exist_ok=True)
+    created: list[Path] = []
+
+    def _make() -> Path:
+        path = _DURABLE_OUTPUT_ROOT / uuid.uuid4().hex
+        created.append(path)
+        return path
+
+    yield _make
+
+    for path in created:
+        if path.exists():
+            shutil.rmtree(path, ignore_errors=True)
+    for staging in _DURABLE_OUTPUT_ROOT.glob(".experiment_identity_staging_*"):
+        shutil.rmtree(staging, ignore_errors=True)
 
 
 def _sample_config(**overrides: Any) -> ExperimentConfig:
@@ -57,10 +79,10 @@ def _sample_config(**overrides: Any) -> ExperimentConfig:
     return base
 
 
-def test_identity_happy_path_deterministic(tmp_path: Path) -> None:
+def test_identity_happy_path_deterministic(durable_output_dir: Callable[[], Path]) -> None:
     config = _sample_config()
-    out_a = tmp_path / "a"
-    out_b = tmp_path / "b"
+    out_a = durable_output_dir()
+    out_b = durable_output_dir()
     produce_experiment_identity_manifest_v1(config, out_a)
     produce_experiment_identity_manifest_v1(config, out_b)
     assert (out_a / ARTIFACT_FILENAME).read_text() == (out_b / ARTIFACT_FILENAME).read_text()
@@ -267,27 +289,29 @@ def test_unknown_active_field_fail_closed() -> None:
         )
 
 
-def test_input_mutation_fail_closed(tmp_path: Path) -> None:
+def test_input_mutation_fail_closed(durable_output_dir: Callable[[], Path]) -> None:
     config = _sample_config()
     with patch(
         "src.experiments.experiment_identity_manifest_v1._assert_config_unchanged",
         side_effect=ExperimentIdentityManifestError("mutated"),
     ):
         with pytest.raises(ExperimentIdentityManifestError, match="mutated"):
-            produce_experiment_identity_manifest_v1(config, tmp_path / "out")
+            produce_experiment_identity_manifest_v1(config, durable_output_dir())
 
 
-def test_atomic_write_and_cleanup(tmp_path: Path) -> None:
+def test_atomic_write_and_cleanup(durable_output_dir: Callable[[], Path]) -> None:
     config = _sample_config()
-    out = tmp_path / "bundle"
+    out = durable_output_dir()
     artifact = produce_experiment_identity_manifest_v1(config, out)
     assert artifact.exists()
-    assert not any(p.name.startswith(".experiment_identity_staging_") for p in tmp_path.iterdir())
+    assert not any(
+        p.name.startswith(".experiment_identity_staging_") for p in _DURABLE_OUTPUT_ROOT.iterdir()
+    )
 
 
-def test_existing_target_unchanged_on_error(tmp_path: Path) -> None:
+def test_existing_target_unchanged_on_error(durable_output_dir: Callable[[], Path]) -> None:
     config = _sample_config()
-    out = tmp_path / "bundle"
+    out = durable_output_dir()
     produce_experiment_identity_manifest_v1(config, out)
     original = (out / ARTIFACT_FILENAME).read_text()
     with patch(
@@ -295,7 +319,7 @@ def test_existing_target_unchanged_on_error(tmp_path: Path) -> None:
         side_effect=[None, ExperimentIdentityManifestError("verify failed")],
     ):
         with pytest.raises(ExperimentIdentityManifestError):
-            produce_experiment_identity_manifest_v1(config, tmp_path / "bundle2")
+            produce_experiment_identity_manifest_v1(config, durable_output_dir())
     assert (out / ARTIFACT_FILENAME).read_text() == original
 
 
@@ -330,10 +354,10 @@ def test_no_config_mutation() -> None:
     assert config.to_dict() == before
 
 
-def test_no_experiment_execution(tmp_path: Path) -> None:
+def test_no_experiment_execution(durable_output_dir: Callable[[], Path]) -> None:
     with patch("src.experiments.base.ExperimentRunner.run") as run_mock:
         build_manifest(_sample_config())
-        produce_experiment_identity_manifest_v1(_sample_config(), tmp_path / "out")
+        produce_experiment_identity_manifest_v1(_sample_config(), durable_output_dir())
     run_mock.assert_not_called()
 
 
