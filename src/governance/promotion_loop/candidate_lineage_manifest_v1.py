@@ -2,9 +2,11 @@
 
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass, field
-from datetime import datetime
+from datetime import datetime, timezone
 from enum import Enum
+from pathlib import Path
 from typing import Any, Mapping
 
 from src.meta.learning_loop.contract_safety_v1 import (
@@ -25,6 +27,23 @@ from src.meta.learning_loop.contract_safety_v1 import (
 
 class CandidateLineageManifestError(ValueError):
     """Fail-closed CandidateLineageManifest v1 error."""
+
+
+class CandidateLineageManifestValidationError(CandidateLineageManifestError):
+    """Raised when Package-F lineage manifest production validation fails fail-closed."""
+
+    def __init__(
+        self,
+        message: str,
+        *,
+        phase: ValidationPhase,
+        errors: tuple[str, ...],
+        verdict: str | None = None,
+    ) -> None:
+        super().__init__(message)
+        self.phase = phase
+        self.errors = errors
+        self.verdict = verdict
 
 
 class CandidateType(str, Enum):
@@ -453,3 +472,283 @@ def validate_candidate_lineage_manifest_v1(
         return False, integrity_result.phase, integrity_result.errors, integrity_result.verdict
 
     return True, ValidationPhase.RESULT, (), None
+
+
+_ALLOWED_PRODUCER_INPUT_KEYS: frozenset[str] = frozenset(
+    {
+        "lineage_manifest_id",
+        "candidate_id",
+        "candidate_type",
+        "candidate_contract_ref",
+        "refs",
+        "created_at",
+        "created_by",
+        "parent_lineage_manifest_ids",
+        "metadata",
+        "futures_scope_ref",
+        "trading_logic_immutability_ref",
+    }
+)
+
+_FORBIDDEN_PRODUCER_EMBED_KEYS: frozenset[str] = frozenset(
+    {
+        "patches",
+        "patch",
+        "strategy",
+        "signal",
+        "signals",
+        "entry",
+        "exit",
+        "position_sizing",
+        "leverage",
+        "stop_loss",
+        "take_profit",
+        "execution",
+        "order_routing",
+        "risk_limits",
+        "killswitch",
+        "config_patch_manifest",
+        "proposal",
+        "proposals",
+        "old_value",
+        "new_value",
+        "target",
+    }
+)
+
+
+def _reject_forbidden_embed_keys(raw: Mapping[str, Any], *, context: str) -> None:
+    for key in raw:
+        if key in _FORBIDDEN_PRODUCER_EMBED_KEYS:
+            raise CandidateLineageManifestError(
+                f"{context} must not embed forbidden payload key: {key}"
+            )
+
+
+def _canonical_sort_refs(refs: list[LineageRef]) -> list[LineageRef]:
+    return sorted(
+        refs,
+        key=lambda ref: (
+            ref.ref_type.value,
+            ref.ref_id,
+            ref.relation.value,
+            ref.owner_domain,
+        ),
+    )
+
+
+def load_lineage_producer_input_from_path(path: Path | str) -> Mapping[str, Any]:
+    """Load explicit offline lineage producer input from a JSON file."""
+    input_path = Path(path)
+    if not input_path.is_file():
+        raise CandidateLineageManifestError(f"input file not found: {input_path}")
+
+    try:
+        text = input_path.read_text(encoding="utf-8")
+    except OSError as exc:
+        raise CandidateLineageManifestError(f"failed to read input file: {input_path}") from exc
+
+    if input_path.suffix.lower() != ".json":
+        raise CandidateLineageManifestError(
+            f"unsupported input format {input_path.suffix!r}; expected .json"
+        )
+
+    try:
+        payload = json.loads(text)
+    except json.JSONDecodeError as exc:
+        raise CandidateLineageManifestError(f"invalid JSON in {input_path}: {exc.msg}") from exc
+
+    if not isinstance(payload, dict):
+        raise CandidateLineageManifestError("JSON root must be an object")
+
+    unknown = set(payload) - _ALLOWED_PRODUCER_INPUT_KEYS
+    if unknown:
+        unknown_sorted = ", ".join(sorted(unknown))
+        raise CandidateLineageManifestError(f"unknown producer input fields: {unknown_sorted}")
+
+    _reject_forbidden_embed_keys(payload, context="producer input")
+    return payload
+
+
+def _parse_producer_refs(raw_refs: Any) -> list[LineageRef]:
+    if not isinstance(raw_refs, list):
+        raise CandidateLineageManifestError("refs must be an array")
+
+    refs: list[LineageRef] = []
+    for index, item in enumerate(raw_refs):
+        if not isinstance(item, Mapping):
+            raise CandidateLineageManifestError(f"refs[{index}] must be an object")
+        _reject_forbidden_embed_keys(item, context=f"refs[{index}]")
+        refs.append(lineage_ref_from_mapping(item))
+    return _canonical_sort_refs(refs)
+
+
+def build_candidate_lineage_manifest_v1_from_producer_input(
+    raw: Mapping[str, Any],
+    *,
+    created_at: datetime | None = None,
+    created_by: str | None = "package_f_candidate_lineage_manifest_producer_v1",
+) -> CandidateLineageManifestV1:
+    """Build a validated CandidateLineageManifestV1 from explicit reference-only input."""
+    if not isinstance(raw, Mapping):
+        raise CandidateLineageManifestError("producer input must be a mapping")
+
+    unknown = set(raw) - _ALLOWED_PRODUCER_INPUT_KEYS
+    if unknown:
+        unknown_sorted = ", ".join(sorted(unknown))
+        raise CandidateLineageManifestError(f"unknown producer input fields: {unknown_sorted}")
+
+    _reject_forbidden_embed_keys(raw, context="producer input")
+
+    required_fields = (
+        "lineage_manifest_id",
+        "candidate_id",
+        "candidate_type",
+        "candidate_contract_ref",
+        "refs",
+    )
+    for key in required_fields:
+        if key not in raw:
+            raise CandidateLineageManifestError(f"missing required producer input field: {key}")
+
+    lineage_manifest_id = str(raw["lineage_manifest_id"])
+    if not is_valid_uuid(lineage_manifest_id):
+        raise CandidateLineageManifestError("lineage_manifest_id must be a UUID")
+
+    candidate_contract_ref = str(raw["candidate_contract_ref"])
+    if not is_valid_uuid(candidate_contract_ref):
+        raise CandidateLineageManifestError("candidate_contract_ref must be a UUID")
+
+    try:
+        candidate_type = CandidateType(str(raw["candidate_type"]))
+    except ValueError as exc:
+        raise CandidateLineageManifestError(
+            f"unknown candidate_type: {raw['candidate_type']!r}"
+        ) from exc
+
+    refs = _parse_producer_refs(raw["refs"])
+
+    parent_ids_raw = raw.get("parent_lineage_manifest_ids", [])
+    if parent_ids_raw is None:
+        parent_ids: list[str] = []
+    elif not isinstance(parent_ids_raw, list):
+        raise CandidateLineageManifestError("parent_lineage_manifest_ids must be an array")
+    else:
+        parent_ids = sorted(str(item) for item in parent_ids_raw)
+        for parent_id in parent_ids:
+            if not is_valid_uuid(parent_id):
+                raise CandidateLineageManifestError(
+                    "parent_lineage_manifest_ids entries must be UUIDs"
+                )
+
+    metadata_raw = raw.get("metadata", {})
+    if metadata_raw is None:
+        metadata: dict[str, Any] = {}
+    elif not isinstance(metadata_raw, dict):
+        raise CandidateLineageManifestError("metadata must be an object")
+    else:
+        metadata = dict(metadata_raw)
+        _reject_forbidden_embed_keys(metadata, context="metadata")
+
+    when = created_at
+    if when is None:
+        if "created_at" in raw:
+            when = _parse_datetime(raw["created_at"], field_name="created_at")
+        else:
+            when = datetime.now(timezone.utc)
+
+    futures_scope = (
+        dict(raw["futures_scope_ref"])
+        if "futures_scope_ref" in raw
+        else canonical_futures_scope_ref()
+    )
+    immutability_ref = (
+        dict(raw["trading_logic_immutability_ref"])
+        if "trading_logic_immutability_ref" in raw
+        else canonical_trading_logic_immutability_ref()
+    )
+
+    manifest = CandidateLineageManifestV1(
+        schema_version=SCHEMA_VERSION_V1,
+        lineage_manifest_id=lineage_manifest_id,
+        candidate_id=str(raw["candidate_id"]),
+        candidate_type=candidate_type,
+        candidate_contract_ref=candidate_contract_ref,
+        refs=refs,
+        created_at=when,
+        created_by=str(raw["created_by"]) if raw.get("created_by") is not None else created_by,
+        parent_lineage_manifest_ids=parent_ids,
+        futures_scope_ref=futures_scope,
+        trading_logic_immutability_ref=immutability_ref,
+        metadata=metadata,
+    )
+    manifest.integrity = compute_lineage_manifest_integrity(manifest)
+
+    serialized = serialize_candidate_lineage_manifest_v1(manifest)
+    payload = json.loads(serialized)
+    valid, phase, errors, verdict = validate_candidate_lineage_manifest_v1(payload)
+    if not valid:
+        raise CandidateLineageManifestValidationError(
+            "CandidateLineageManifest v1 validation failed during production",
+            phase=phase,
+            errors=errors,
+            verdict=verdict,
+        )
+
+    return deserialize_candidate_lineage_manifest_v1(payload)
+
+
+def _atomic_write_text(path: Path, content: str) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_name(path.name + ".tmp")
+    try:
+        tmp.write_text(content, encoding="utf-8")
+    except OSError:
+        if tmp.exists():
+            tmp.unlink(missing_ok=True)
+        raise
+    try:
+        tmp.replace(path)
+    except OSError:
+        if tmp.exists():
+            tmp.unlink(missing_ok=True)
+        raise
+
+
+def write_candidate_lineage_manifest_v1_atomic(
+    manifest: CandidateLineageManifestV1,
+    output_path: Path | str,
+) -> Path:
+    """Validate, serialize, and atomically write a CandidateLineageManifest v1 JSON file."""
+    out = Path(output_path)
+    serialized = serialize_candidate_lineage_manifest_v1(manifest)
+    payload = json.loads(serialized)
+    valid, phase, errors, verdict = validate_candidate_lineage_manifest_v1(payload)
+    if not valid:
+        raise CandidateLineageManifestValidationError(
+            f"refusing to write invalid manifest to {out}",
+            phase=phase,
+            errors=errors,
+            verdict=verdict,
+        )
+
+    _atomic_write_text(out, serialized)
+    return out
+
+
+def produce_candidate_lineage_manifest_v1_from_paths(
+    *,
+    input_path: Path | str,
+    output_path: Path | str,
+    created_at: datetime | None = None,
+    created_by: str | None = "package_f_candidate_lineage_manifest_producer_v1",
+) -> CandidateLineageManifestV1:
+    """End-to-end offline producer: explicit JSON input -> validated manifest file."""
+    raw = load_lineage_producer_input_from_path(input_path)
+    manifest = build_candidate_lineage_manifest_v1_from_producer_input(
+        raw,
+        created_at=created_at,
+        created_by=created_by,
+    )
+    write_candidate_lineage_manifest_v1_atomic(manifest, output_path)
+    return manifest
