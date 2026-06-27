@@ -1433,6 +1433,24 @@ PR_BOUNDED_FULL_PACKAGE_G_LEARNING_DURABLE_EVIDENCE_TARGETS: tuple[str, ...] = (
     "tests/governance/promotion_loop/test_candidate_lineage_manifest_v1_producer_v1.py",
 )
 
+PR_BOUNDED_FULL_PACKAGE_K_VAR_SUITE_DURABLE_EVIDENCE_TRIGGER_PATHS: frozenset[str] = frozenset(
+    {
+        "src/meta/learning_loop/var_suite_durable_evidence_binding_v1.py",
+        "scripts/run_var_suite_durable_evidence_binding_v1.py",
+        "tests/meta/test_var_suite_durable_evidence_binding_v1.py",
+        "tests/scripts/test_run_var_suite_durable_evidence_binding_v1.py",
+    }
+)
+
+PR_BOUNDED_FULL_PACKAGE_K_VAR_SUITE_DURABLE_EVIDENCE_TARGETS: tuple[str, ...] = (
+    "tests/meta/test_var_suite_durable_evidence_binding_v1.py",
+    "tests/scripts/test_run_var_suite_durable_evidence_binding_v1.py",
+    "tests/governance/promotion_loop/test_var_suite_lineage_ref_producer_v1.py",
+    "tests/scripts/test_run_var_suite_lineage_ref_producer_v1.py",
+    "tests/risk/validation/test_var_suite_backtest_wiring_v1.py",
+    "tests/governance/promotion_loop/test_candidate_lineage_manifest_v1_contract.py",
+)
+
 PR_BOUNDED_FULL_PACKAGE_E_GOVERNANCE_CLOSEOUT_TRIGGER_PATHS: frozenset[str] = frozenset(
     {
         "src/governance/promotion_loop/engine.py",
@@ -1503,6 +1521,10 @@ def resolve_pr_bounded_full_targets(files: list[str]) -> tuple[str, ...]:
 
     if normalized & PR_BOUNDED_FULL_PACKAGE_G_LEARNING_DURABLE_EVIDENCE_TRIGGER_PATHS:
         for path in PR_BOUNDED_FULL_PACKAGE_G_LEARNING_DURABLE_EVIDENCE_TARGETS:
+            add(path)
+
+    if normalized & PR_BOUNDED_FULL_PACKAGE_K_VAR_SUITE_DURABLE_EVIDENCE_TRIGGER_PATHS:
+        for path in PR_BOUNDED_FULL_PACKAGE_K_VAR_SUITE_DURABLE_EVIDENCE_TARGETS:
             add(path)
 
     if normalized & PR_BOUNDED_FULL_PACKAGE_B_PROMOTION_INPUT_TRIGGER_PATHS:
@@ -4669,6 +4691,9 @@ def _focused_targets(files: list[str]) -> tuple[str, ...]:
                     add(candidate)
             elif path == "scripts/run_learning_manifest_durable_evidence_binding_v1.py":
                 for candidate in PR_BOUNDED_FULL_PACKAGE_G_LEARNING_DURABLE_EVIDENCE_TARGETS:
+                    add(candidate)
+            elif path == "scripts/run_var_suite_durable_evidence_binding_v1.py":
+                for candidate in PR_BOUNDED_FULL_PACKAGE_K_VAR_SUITE_DURABLE_EVIDENCE_TARGETS:
                     add(candidate)
             for candidate in (
                 f"tests/scripts/test_{script_stem}_load_strategy_v1.py",
