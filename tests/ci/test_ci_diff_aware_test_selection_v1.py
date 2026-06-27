@@ -5469,3 +5469,58 @@ def test_selector_package_k_combined_diff_pr_bounded_full_includes_all_testowner
     for path in PACKAGE_K_ALL_TESTOWNERS:
         assert path in bounded
         assert bounded.count(path) == 1
+
+
+PACKAGE_L_BINDING_PRODUCTION = "src/meta/learning_loop/backtest_durable_evidence_binding_v1.py"
+PACKAGE_L_BINDING_SCRIPT = "scripts/run_backtest_durable_evidence_binding_v1.py"
+PACKAGE_L_BINDING_TESTOWNER = "tests/meta/test_backtest_durable_evidence_binding_v1.py"
+PACKAGE_L_BINDING_CLI_TESTOWNER = "tests/scripts/test_run_backtest_durable_evidence_binding_v1.py"
+PACKAGE_L_I_PRODUCER_TESTOWNER = (
+    "tests/governance/promotion_loop/test_backtest_lineage_ref_producer_v1.py"
+)
+PACKAGE_L_I_CLI_TESTOWNER = "tests/scripts/test_run_backtest_lineage_ref_producer_v1.py"
+PACKAGE_L_G_BINDING_TESTOWNER = "tests/meta/test_learning_manifest_durable_evidence_binding_v1.py"
+PACKAGE_L_LINEAGE_CONTRACT = (
+    "tests/governance/promotion_loop/test_candidate_lineage_manifest_v1_contract.py"
+)
+PACKAGE_L_ALL_PRODUCTION = (
+    PACKAGE_L_BINDING_PRODUCTION,
+    PACKAGE_L_BINDING_SCRIPT,
+)
+PACKAGE_L_ALL_TESTOWNERS = (
+    PACKAGE_L_BINDING_TESTOWNER,
+    PACKAGE_L_BINDING_CLI_TESTOWNER,
+    PACKAGE_L_I_PRODUCER_TESTOWNER,
+    PACKAGE_L_I_CLI_TESTOWNER,
+    PACKAGE_L_G_BINDING_TESTOWNER,
+    PACKAGE_L_LINEAGE_CONTRACT,
+)
+
+
+def test_selector_package_l_binding_production_pr_bounded_full_includes_testowners() -> None:
+    sel = _run_selector(PACKAGE_L_BINDING_PRODUCTION)
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    bounded = _bounded_targets(sel)
+    for path in PACKAGE_L_ALL_TESTOWNERS:
+        assert path in bounded
+
+
+def test_selector_package_l_script_contract_focused_includes_binding_testowners() -> None:
+    sel = _run_selector(PACKAGE_L_BINDING_SCRIPT)
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
+    targets = _targets(sel)
+    for path in PACKAGE_L_ALL_TESTOWNERS:
+        assert path in targets
+
+
+def test_selector_package_l_combined_diff_pr_bounded_full_includes_all_testowners_once() -> None:
+    sel = _run_selector(
+        *PACKAGE_L_ALL_PRODUCTION,
+        "scripts/ops/ci_test_selection_v1.py",
+        *PACKAGE_L_ALL_TESTOWNERS,
+    )
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    bounded = _bounded_targets(sel)
+    for path in PACKAGE_L_ALL_TESTOWNERS:
+        assert path in bounded
+        assert bounded.count(path) == 1
