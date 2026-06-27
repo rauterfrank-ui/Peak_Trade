@@ -4856,3 +4856,102 @@ def test_tests_job_has_pr_bounded_full_step() -> None:
     )[0]
     assert 'pytest tests/"' not in bounded_block
     assert "pytest tests/ -v" not in bounded_block
+
+
+VAR_SUITE_ADAPTER_PRODUCTION = "src/risk/validation/var_suite_adapter.py"
+VAR_SUITE_ADAPTER_TESTOWNER = "tests/risk/validation/test_var_suite_adapter_v0.py"
+
+
+def _bounded_targets(sel: dict[str, str]) -> list[str]:
+    raw = sel.get("pr_bounded_pytest_targets", "")
+    return sorted(raw.split()) if raw else []
+
+
+def _resolve_finalized_with_adapter_testowner_present(monkeypatch: pytest.MonkeyPatch, *files: str):
+    import importlib.util
+
+    spec = importlib.util.spec_from_file_location(
+        "ci_test_selection_v1_var_suite_adapter",
+        str(SELECTOR),
+    )
+    assert spec and spec.loader
+    sel_mod = importlib.util.module_from_spec(spec)
+    sys.modules["ci_test_selection_v1_var_suite_adapter"] = sel_mod
+    spec.loader.exec_module(sel_mod)
+
+    original_exists = sel_mod._repo_path_exists
+
+    def fake_exists(path: str) -> bool:
+        if path == VAR_SUITE_ADAPTER_TESTOWNER:
+            return True
+        return original_exists(path)
+
+    monkeypatch.setattr(sel_mod, "_repo_path_exists", fake_exists)
+    raw = sel_mod.resolve_selection(list(files))
+    return sel_mod._finalize_selection_result(
+        raw,
+        list(files),
+        event_name="pull_request",
+        force_exhaustive=False,
+    )
+
+
+def test_selector_var_suite_adapter_production_path_pr_bounded_full_includes_testowner(
+    monkeypatch,
+) -> None:
+    result = _resolve_finalized_with_adapter_testowner_present(
+        monkeypatch, VAR_SUITE_ADAPTER_PRODUCTION
+    )
+    assert result.mode == "PR_BOUNDED_FULL"
+    assert result.reason == "category_central_src_requires_full"
+    assert VAR_SUITE_ADAPTER_TESTOWNER in result.pr_bounded_pytest_targets
+    assert result.pr_bounded_pytest_targets.count(VAR_SUITE_ADAPTER_TESTOWNER) == 1
+
+
+def test_selector_var_suite_adapter_testowner_path_focused_includes_testowner(
+    monkeypatch,
+) -> None:
+    result = _resolve_finalized_with_adapter_testowner_present(
+        monkeypatch, VAR_SUITE_ADAPTER_TESTOWNER
+    )
+    assert result.mode == "CONTRACT_FOCUSED"
+    assert VAR_SUITE_ADAPTER_TESTOWNER in result.focused_pytest_targets
+
+
+def test_selector_var_suite_adapter_combined_diff_pr_bounded_full_includes_testowner_once(
+    monkeypatch,
+) -> None:
+    result = _resolve_finalized_with_adapter_testowner_present(
+        monkeypatch,
+        VAR_SUITE_ADAPTER_PRODUCTION,
+        VAR_SUITE_ADAPTER_TESTOWNER,
+    )
+    assert result.mode == "PR_BOUNDED_FULL"
+    assert result.reason == "category_central_src_requires_full"
+    assert result.pr_bounded_pytest_targets.count(VAR_SUITE_ADAPTER_TESTOWNER) == 1
+    assert "tests/ci/test_ci_diff_aware_test_selection_v1.py" in result.pr_bounded_pytest_targets
+
+
+def test_selector_var_suite_adapter_combined_diff_preserves_existing_pr_bounded_targets(
+    monkeypatch,
+) -> None:
+    result = _resolve_finalized_with_adapter_testowner_present(
+        monkeypatch,
+        VAR_SUITE_ADAPTER_PRODUCTION,
+        VAR_SUITE_ADAPTER_TESTOWNER,
+    )
+    baseline = _run_selector(VAR_SUITE_ADAPTER_PRODUCTION)
+    for path in _bounded_targets(baseline):
+        assert path in result.pr_bounded_pytest_targets
+
+
+def test_selector_central_src_without_adapter_path_excludes_adapter_testowner() -> None:
+    sel = _run_selector("src/core/foo.py")
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    assert VAR_SUITE_ADAPTER_TESTOWNER not in _bounded_targets(sel)
+
+
+def test_selector_var_suite_adapter_empty_diff_does_not_add_adapter_testowner() -> None:
+    sel = _run_selector()
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    assert VAR_SUITE_ADAPTER_TESTOWNER not in _bounded_targets(sel)
