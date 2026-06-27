@@ -4860,6 +4860,10 @@ def test_tests_job_has_pr_bounded_full_step() -> None:
 
 VAR_SUITE_ADAPTER_PRODUCTION = "src/risk/validation/var_suite_adapter.py"
 VAR_SUITE_ADAPTER_TESTOWNER = "tests/risk/validation/test_var_suite_adapter_v0.py"
+VAR_SUITE_BACKTEST_WIRING_PRODUCTION = "src/risk/validation/var_suite_backtest_wiring_v1.py"
+VAR_SUITE_BACKTEST_WIRING_TESTOWNER = "tests/risk/validation/test_var_suite_backtest_wiring_v1.py"
+VAR_SUITE_BACKTEST_CLI = "scripts/run_var_suite_from_backtest_run_v1.py"
+VAR_SUITE_BACKTEST_CLI_TESTOWNER = "tests/scripts/test_backtest_returns_var_suite_offline_v1.py"
 
 
 def _bounded_targets(sel: dict[str, str]) -> list[str]:
@@ -4882,7 +4886,11 @@ def _resolve_finalized_with_adapter_testowner_present(monkeypatch: pytest.Monkey
     original_exists = sel_mod._repo_path_exists
 
     def fake_exists(path: str) -> bool:
-        if path == VAR_SUITE_ADAPTER_TESTOWNER:
+        if path in (
+            VAR_SUITE_ADAPTER_TESTOWNER,
+            VAR_SUITE_BACKTEST_WIRING_TESTOWNER,
+            VAR_SUITE_BACKTEST_CLI_TESTOWNER,
+        ):
             return True
         return original_exists(path)
 
@@ -4955,6 +4963,46 @@ def test_selector_var_suite_adapter_empty_diff_does_not_add_adapter_testowner() 
     sel = _run_selector()
     assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert VAR_SUITE_ADAPTER_TESTOWNER not in _bounded_targets(sel)
+
+
+def test_selector_var_suite_backtest_wiring_production_path_includes_package_h_testowners(
+    monkeypatch,
+) -> None:
+    result = _resolve_finalized_with_adapter_testowner_present(
+        monkeypatch, VAR_SUITE_BACKTEST_WIRING_PRODUCTION
+    )
+    assert result.mode == "PR_BOUNDED_FULL"
+    assert VAR_SUITE_BACKTEST_WIRING_TESTOWNER in result.pr_bounded_pytest_targets
+    assert VAR_SUITE_BACKTEST_CLI_TESTOWNER in result.pr_bounded_pytest_targets
+    assert VAR_SUITE_ADAPTER_TESTOWNER in result.pr_bounded_pytest_targets
+
+
+def test_selector_var_suite_backtest_cli_trigger_adds_targets_when_combined_with_wiring(
+    monkeypatch,
+) -> None:
+    result = _resolve_finalized_with_adapter_testowner_present(
+        monkeypatch,
+        VAR_SUITE_BACKTEST_CLI,
+        VAR_SUITE_BACKTEST_WIRING_PRODUCTION,
+    )
+    assert result.mode == "PR_BOUNDED_FULL"
+    assert VAR_SUITE_BACKTEST_CLI_TESTOWNER in result.pr_bounded_pytest_targets
+    assert VAR_SUITE_BACKTEST_WIRING_TESTOWNER in result.pr_bounded_pytest_targets
+
+
+def test_selector_var_suite_backtest_wiring_combined_diff_includes_testowners_once(
+    monkeypatch,
+) -> None:
+    result = _resolve_finalized_with_adapter_testowner_present(
+        monkeypatch,
+        VAR_SUITE_BACKTEST_WIRING_PRODUCTION,
+        VAR_SUITE_BACKTEST_CLI,
+        VAR_SUITE_BACKTEST_WIRING_TESTOWNER,
+        VAR_SUITE_BACKTEST_CLI_TESTOWNER,
+    )
+    assert result.pr_bounded_pytest_targets.count(VAR_SUITE_BACKTEST_WIRING_TESTOWNER) == 1
+    assert result.pr_bounded_pytest_targets.count(VAR_SUITE_BACKTEST_CLI_TESTOWNER) == 1
+    assert result.pr_bounded_pytest_targets.count(VAR_SUITE_ADAPTER_TESTOWNER) == 1
 
 
 PACKAGE_A_META_PRODUCTION = "src/meta/learning_loop/contract_safety_v1.py"

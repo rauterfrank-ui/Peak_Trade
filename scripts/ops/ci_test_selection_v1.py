@@ -1313,12 +1313,18 @@ PR_BOUNDED_FULL_CI_CHANGE_EXTRA_TARGETS: tuple[str, ...] = (
 PR_BOUNDED_FULL_VAR_SUITE_ADAPTER_TRIGGER_PATHS: frozenset[str] = frozenset(
     {
         "src/risk/validation/var_suite_adapter.py",
+        "src/risk/validation/var_suite_backtest_wiring_v1.py",
+        "scripts/run_var_suite_from_backtest_run_v1.py",
         "tests/risk/validation/test_var_suite_adapter_v0.py",
+        "tests/risk/validation/test_var_suite_backtest_wiring_v1.py",
+        "tests/scripts/test_backtest_returns_var_suite_offline_v1.py",
     }
 )
 
 PR_BOUNDED_FULL_VAR_SUITE_ADAPTER_TARGETS: tuple[str, ...] = (
     "tests/risk/validation/test_var_suite_adapter_v0.py",
+    "tests/risk/validation/test_var_suite_backtest_wiring_v1.py",
+    "tests/scripts/test_backtest_returns_var_suite_offline_v1.py",
 )
 
 PR_BOUNDED_FULL_PACKAGE_A_META_TRIGGER_PATHS: frozenset[str] = frozenset(
