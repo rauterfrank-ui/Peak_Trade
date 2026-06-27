@@ -308,6 +308,22 @@ def test_selector_central_src_full() -> None:
     assert sel["tests_execute_full"] == "false"
 
 
+def test_ci_central_src_full_package_n() -> None:
+    sel = _run_selector(
+        "src/experiments/experiment_identity_manifest_v1.py",
+        "scripts/run_experiment_identity_manifest_v1.py",
+        "tests/experiments/test_experiment_identity_manifest_v1.py",
+        "tests/scripts/test_run_experiment_identity_manifest_v1.py",
+    )
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    assert sel["test_selection_reason"] == "category_central_src_requires_full"
+    assert sel["tests_execute_pr_bounded_full"] == "true"
+    targets = sel.get("pr_bounded_pytest_targets", "").split()
+    assert "tests/experiments/test_experiment_identity_manifest_v1.py" in targets
+    assert "tests/scripts/test_run_experiment_identity_manifest_v1.py" in targets
+    assert "tests/test_experiments_base.py" in targets
+
+
 def test_selector_registry_init_full() -> None:
     sel = _run_selector(
         "src/strategies/__init__.py",
