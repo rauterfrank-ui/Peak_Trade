@@ -2158,6 +2158,84 @@ DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
 
 **Non-authorizing:** Docs/tests-only reciprocal crosslink guard only; does **not** authorize execute, runtime, run start, live, preflight lift, futures session, lifecycle network/orders, order/cancel/execution/arming, authority lift, trading-logic changes, Master V2 / Double Play / Bull-Bear / Risk / KillSwitch / Scope / Capital changes, workflow YAML mutation, `workflow_dispatch`, `gh run rerun`, JSONL ingest, evidence dataset mutation, or Market Dashboard authority changes.
 
+## Package E / INV-033 E2 OKX Europe adapter lifecycle CI_AUDIT ↔ SECTION5 reciprocal crosslink — docs/tests-only guard v1
+
+**Operator-GO:** `GO_INV033_E2_OKX_EUROPE_ADAPTER_LIFECYCLE_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1`
+
+**Purpose:** Reciprocal crosslink so CI_AUDIT documents Package E / INV-033 E2 OKX Europe adapter lifecycle offline contract guards aligned with SECTION5 Gap Owner Map INV-033 E2 guard block, PR #4590 offline decomposition merge, and reuse-first owner surfaces. Offline contract and Focus-CI closure complete (`okx_europe_adapter_lifecycle_focused`); **no** open code defect; runtime/credential/account validation **not** performed — remaining runtime dependency is parked and **must not** be interpreted as CI/runtime success. Guard/Ops drift fix only — **non-authorizing**; **no** execute, preflight lift, futures session, harness network I/O, lifecycle execute, or runtime.
+
+**Canonical repo owners (reuse — do not duplicate):**
+
+| Concern | Owner |
+|---------|-------|
+| Gap Owner Map SSOT — INV-033 E2 guard block | `docs/ops/planning/SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md` |
+| OKX Europe adapter lifecycle contract (Package E / INV-033 E2) | `src/ops/okx_europe_adapter_lifecycle_contract_v0.py` |
+| OKX Europe venue/instrument binding | `src/ops/bounded_futures_testnet_venue_binding_v0.py` |
+| Adapter capability lifecycle integration + digest hook | `src/ops/bounded_futures_testnet_adapter_capability_lifecycle_integration_contract_v0.py` |
+| AWS Shadow/Paper/Testnet structural compatibility (reference only) | `src/ops/aws_shadow_paper_testnet_okx_europe_compatibility_contract_v0.py` |
+| PE-12 lifecycle matrix composition (reference only) | `src/ops/bounded_futures_testnet_adapter_lifecycle_contract_v0.py` |
+| Static contract guards | `tests/ops/test_okx_europe_adapter_lifecycle_contract_v0.py`, `tests/ops/test_bounded_futures_testnet_okx_eea_xperp_binding_contract_v0.py`, `tests/ops/test_aws_shadow_paper_testnet_okx_europe_compatibility_contract_v0.py`, `tests/ops/test_bounded_futures_testnet_adapter_capability_lifecycle_integration_contract_v0.py` |
+| CI_AUDIT / DOCS_TRUTH_MAP reciprocal guard | `tests/ops/test_remote_runtime_contract_docs_guard_v0.py` |
+
+```text
+INV033_E2_OKX_EUROPE_ADAPTER_LIFECYCLE_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_V1=true
+INV033_E2_OKX_EUROPE_ADAPTER_LIFECYCLE_CI_AUDIT_CROSSLINK_DOCS_TESTS_ONLY=true
+SECTION5_INV033_E2_OWNER_REFERENCED=true
+OKX_EUROPE_ADAPTER_LIFECYCLE_CONTRACT_V0_REFERENCED=true
+VENUE=OKX_EUROPE
+PACKAGE=E
+SUBPACKAGE=E2
+INV=INV-033
+INSTRUMENT_TYPE=FUTURES
+PRODUCTION_INSTRUMENT_ID=ETH-USD_UM_XPERP-310404
+DEMO_REFERENCE_INSTRUMENT_ID=ETH-USD_UM_XPERP-310328
+RULE_TYPE=xperp
+HAS_FIXED_EXPIRY=true
+HAS_FUNDING_MECHANISM=true
+IS_CLASSIC_PERPETUAL_SWAP=false
+AUTOMATIC_INSTRUMENT_SUBSTITUTION_ALLOWED=false
+VENUE_REPORTED_LEVERAGE_CAPABILITY=50
+EFFECTIVE_OPERATIONAL_LEVERAGE_CAP=10
+INV033_OFFLINE_DECOMPOSITION_COMPLETE=true
+OFFLINE_ADAPTER_LIFECYCLE_IMPLEMENTATION_COMPLETE=true
+INV033_RUNTIME_STATUS=PARKED_RUNTIME_OPERATOR_GO_REQUIRED
+RUNTIME_GO_READY=false
+PACKAGE_E_MARKED_COMPLETE=false
+ACCOUNT_CREATED=false
+API_KEY_CREATED=false
+CREDENTIALS_USED=false
+PRIVATE_API_USED=false
+ORDERS_ALLOWED=false
+SCHEDULER_RUNTIME_ALLOWED=false
+AWS_RUNTIME_EXECUTED=false
+RUNTIME_EXECUTED=false
+CI_FOCUS=okx_europe_adapter_lifecycle_focused
+OFFLINE_CONTRACT_FOCUS_CI_CLOSURE_COMPLETE=true
+REMOTE_RUNTIME_NOT_PROVEN=true
+LIFECYCLE_EXECUTE_AUTHORIZED_NOW=false
+LIFECYCLE_NETWORK_AUTHORIZED_NOW=false
+LIFECYCLE_ORDERS_AUTHORIZED_NOW=false
+FUTURES_SESSION_AUTHORIZED_NOW=false
+NO_EXECUTE=true
+NO_PREFLIGHT_LIFT=true
+NO_RUNTIME=true
+NO_LIVE=true
+ORDER_CANCEL_EXECUTION_ARMING_TOUCHED=false
+AUTHORITY_LIFT=false
+TRADING_LOGIC_TOUCHED=false
+MASTER_V2_LOGIC_TOUCHED=false
+DOUBLE_PLAY_LOGIC_TOUCHED=false
+NEW_PARALLEL_SSOT_CREATED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+READY_FOR_OPERATOR_ARMING=false
+MARKET_DASHBOARD_TOUCHED=false
+DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
+```
+
+**Guard module (reuse — no parallel INV-033 E2 SSOT):** `tests/ops/test_remote_runtime_contract_docs_guard_v0.py`.
+
+**Non-authorizing:** Docs/tests-only reciprocal crosslink guard only; does **not** authorize execute, runtime, run start, live, preflight lift, futures session, lifecycle network/orders, order/cancel/execution/arming, operator arming, authority lift, trading-logic changes, Master V2 / Double Play / Bull-Bear / Risk / KillSwitch / Scope / Capital changes, workflow YAML mutation, `workflow_dispatch`, `gh run rerun`, JSONL ingest, evidence dataset mutation, or Market Dashboard authority changes.
+
 ## PE-13 Bounded Futures Testnet preflight packet CI_AUDIT ↔ SECTION5 reciprocal crosslink — docs/tests-only guard v1
 
 **Operator-GO:** `GO_PE13_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1`
@@ -2947,6 +3025,7 @@ DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true
 | PE-8/9/10 | **§ PE-8/PE-9/PE-10 Bounded Futures Testnet CI_AUDIT ↔ SECTION5 reciprocal crosslink — docs/tests-only guard v1** |
 | PE-11 | **§ PE-11 Bounded Futures reachability CI_AUDIT ↔ SECTION5 reciprocal crosslink — docs/tests-only guard v1** |
 | PE-12 | **§ PE-12 Bounded Futures Testnet adapter lifecycle CI_AUDIT ↔ SECTION5 reciprocal crosslink — docs/tests-only guard v1** |
+| INV-033 E2 | **§ Package E / INV-033 E2 OKX Europe adapter lifecycle CI_AUDIT ↔ SECTION5 reciprocal crosslink — docs/tests-only guard v1** |
 | Hold-binding | **§ Paper-L2 120min hold-binding Preflight §2a reciprocal crosslink — docs/tests-only guard v1**; **§ SECTION5 Gap Owner Map hold-binding profile crosslink — docs/tests-only guard v1** |
 | EER1 | **§ EER1 Evidence Durable Enforcement Readiness CI_AUDIT ↔ SECTION5 reciprocal crosslink — docs/tests-only guard v1** |
 | Runtime Lane Taxonomy | **§ Runtime Lane Taxonomy CI_AUDIT ↔ Preflight reciprocal crosslink — docs/tests-only guard v1** |
