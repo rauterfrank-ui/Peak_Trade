@@ -402,6 +402,79 @@ PE12_BOUNDED_FUTURES_TESTNET_ADAPTER_LIFECYCLE_CI_AUDIT_CROSSLINK_EXPECTED: dict
 PE12_BOUNDED_FUTURES_TESTNET_ADAPTER_LIFECYCLE_CI_AUDIT_CROSSLINK_OWNER_TESTS = (
     "test_bounded_futures_testnet_adapter_lifecycle_contract_v0.py",
 )
+INV033_E2_OKX_EUROPE_ADAPTER_LIFECYCLE_CI_AUDIT_CROSSLINK_HEADING = (
+    "## Package E / INV-033 E2 OKX Europe adapter lifecycle CI_AUDIT ↔ SECTION5 reciprocal "
+    "crosslink — docs/tests-only guard v1"
+)
+INV033_E2_OKX_EUROPE_ADAPTER_LIFECYCLE_CI_AUDIT_CROSSLINK_GUARD_BLOCK_ANCHOR = (
+    "INV033_E2_OKX_EUROPE_ADAPTER_LIFECYCLE_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_V1=true"
+)
+INV033_E2_OKX_EUROPE_ADAPTER_LIFECYCLE_CI_AUDIT_CROSSLINK_EXPECTED: dict[str, str] = {
+    "INV033_E2_OKX_EUROPE_ADAPTER_LIFECYCLE_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_V1": "true",
+    "INV033_E2_OKX_EUROPE_ADAPTER_LIFECYCLE_CI_AUDIT_CROSSLINK_DOCS_TESTS_ONLY": "true",
+    "SECTION5_INV033_E2_OWNER_REFERENCED": "true",
+    "OKX_EUROPE_ADAPTER_LIFECYCLE_CONTRACT_V0_REFERENCED": "true",
+    "VENUE": "OKX_EUROPE",
+    "PACKAGE": "E",
+    "SUBPACKAGE": "E2",
+    "INV": "INV-033",
+    "INSTRUMENT_TYPE": "FUTURES",
+    "PRODUCTION_INSTRUMENT_ID": "ETH-USD_UM_XPERP-310404",
+    "DEMO_REFERENCE_INSTRUMENT_ID": "ETH-USD_UM_XPERP-310328",
+    "RULE_TYPE": "xperp",
+    "HAS_FIXED_EXPIRY": "true",
+    "HAS_FUNDING_MECHANISM": "true",
+    "IS_CLASSIC_PERPETUAL_SWAP": "false",
+    "AUTOMATIC_INSTRUMENT_SUBSTITUTION_ALLOWED": "false",
+    "VENUE_REPORTED_LEVERAGE_CAPABILITY": "50",
+    "EFFECTIVE_OPERATIONAL_LEVERAGE_CAP": "10",
+    "INV033_OFFLINE_DECOMPOSITION_COMPLETE": "true",
+    "OFFLINE_ADAPTER_LIFECYCLE_IMPLEMENTATION_COMPLETE": "true",
+    "INV033_RUNTIME_STATUS": "PARKED_RUNTIME_OPERATOR_GO_REQUIRED",
+    "RUNTIME_GO_READY": "false",
+    "PACKAGE_E_MARKED_COMPLETE": "false",
+    "ACCOUNT_CREATED": "false",
+    "API_KEY_CREATED": "false",
+    "CREDENTIALS_USED": "false",
+    "PRIVATE_API_USED": "false",
+    "ORDERS_ALLOWED": "false",
+    "SCHEDULER_RUNTIME_ALLOWED": "false",
+    "AWS_RUNTIME_EXECUTED": "false",
+    "RUNTIME_EXECUTED": "false",
+    "CI_FOCUS": "okx_europe_adapter_lifecycle_focused",
+    "OFFLINE_CONTRACT_FOCUS_CI_CLOSURE_COMPLETE": "true",
+    "REMOTE_RUNTIME_NOT_PROVEN": "true",
+    "LIFECYCLE_EXECUTE_AUTHORIZED_NOW": "false",
+    "LIFECYCLE_NETWORK_AUTHORIZED_NOW": "false",
+    "LIFECYCLE_ORDERS_AUTHORIZED_NOW": "false",
+    "FUTURES_SESSION_AUTHORIZED_NOW": "false",
+    "NO_EXECUTE": "true",
+    "NO_PREFLIGHT_LIFT": "true",
+    "NO_RUNTIME": "true",
+    "NO_LIVE": "true",
+    "ORDER_CANCEL_EXECUTION_ARMING_TOUCHED": "false",
+    "AUTHORITY_LIFT": "false",
+    "TRADING_LOGIC_TOUCHED": "false",
+    "MASTER_V2_LOGIC_TOUCHED": "false",
+    "DOUBLE_PLAY_LOGIC_TOUCHED": "false",
+    "NEW_PARALLEL_SSOT_CREATED": "false",
+    "PREFLIGHT_REMAINS_BLOCKED": "true",
+    "READY_FOR_OPERATOR_ARMING": "false",
+    "MARKET_DASHBOARD_TOUCHED": "false",
+    "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED": "true",
+}
+INV033_E2_OKX_EUROPE_ADAPTER_LIFECYCLE_CI_AUDIT_CROSSLINK_OWNER_TESTS = (
+    "test_okx_europe_adapter_lifecycle_contract_v0.py",
+    "test_bounded_futures_testnet_okx_eea_xperp_binding_contract_v0.py",
+    "test_aws_shadow_paper_testnet_okx_europe_compatibility_contract_v0.py",
+    "test_bounded_futures_testnet_adapter_capability_lifecycle_integration_contract_v0.py",
+)
+INV033_E2_OKX_EUROPE_ADAPTER_LIFECYCLE_CI_AUDIT_CROSSLINK_OWNER_SOURCES = (
+    "okx_europe_adapter_lifecycle_contract_v0.py",
+    "bounded_futures_testnet_venue_binding_v0.py",
+    "bounded_futures_testnet_adapter_capability_lifecycle_integration_contract_v0.py",
+    "aws_shadow_paper_testnet_okx_europe_compatibility_contract_v0.py",
+)
 PE13_BOUNDED_FUTURES_TESTNET_PREFLIGHT_PACKET_CI_AUDIT_CROSSLINK_HEADING = (
     "## PE-13 Bounded Futures Testnet preflight packet CI_AUDIT ↔ SECTION5 reciprocal "
     "crosslink — docs/tests-only guard v1"
@@ -3431,6 +3504,122 @@ def test_docs_truth_map_pe12_bounded_futures_testnet_adapter_lifecycle_ci_audit_
     assert "test_bounded_futures_testnet_adapter_lifecycle_contract_v0.py" in text
     assert "**no** execute / Preflight-Lift / futures-session / lifecycle" in text
     assert "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true" in text
+
+
+def _inv033_e2_okx_europe_adapter_lifecycle_ci_audit_crosslink_section(text: str) -> str:
+    start = text.find(INV033_E2_OKX_EUROPE_ADAPTER_LIFECYCLE_CI_AUDIT_CROSSLINK_HEADING)
+    assert start != -1, (
+        "missing Package E / INV-033 E2 OKX Europe adapter lifecycle CI_AUDIT crosslink section"
+    )
+    next_heading = text.find("\n## ", start + 1)
+    if next_heading == -1:
+        return text[start:]
+    return text[start:next_heading]
+
+
+def test_ci_audit_inv033_e2_okx_europe_adapter_lifecycle_crosslink_section_present_v1() -> None:
+    text = _ci_audit_text()
+    section = _inv033_e2_okx_europe_adapter_lifecycle_ci_audit_crosslink_section(text)
+    assert (
+        "GO_INV033_E2_OKX_EUROPE_ADAPTER_LIFECYCLE_CI_AUDIT_SECTION5_RECIPROCAL_CROSSLINK_DOCS_TESTS_NO_RUN_V1"
+        in section
+    )
+    assert "Package E / INV-033 E2 OKX Europe adapter lifecycle offline contract guard" in section
+    assert "SECTION5_PREFLIGHT_GAP_OWNER_MAP_CONTRACT_V0.md" in section
+    assert "okx_europe_adapter_lifecycle_contract_v0" in section
+    assert "okx_europe_adapter_lifecycle_focused" in section
+    assert "no parallel inv-033 e2 ssot" in section.lower()
+    assert THIS_MODULE in section
+    for module_name in INV033_E2_OKX_EUROPE_ADAPTER_LIFECYCLE_CI_AUDIT_CROSSLINK_OWNER_TESTS:
+        assert module_name in section, f"missing owner test reference {module_name!r}"
+    for source_name in INV033_E2_OKX_EUROPE_ADAPTER_LIFECYCLE_CI_AUDIT_CROSSLINK_OWNER_SOURCES:
+        assert source_name in section, f"missing owner source reference {source_name!r}"
+
+
+def test_ci_audit_inv033_e2_okx_europe_adapter_lifecycle_crosslink_machine_lines_v1() -> None:
+    block = _block_containing(
+        _ci_audit_text(),
+        INV033_E2_OKX_EUROPE_ADAPTER_LIFECYCLE_CI_AUDIT_CROSSLINK_GUARD_BLOCK_ANCHOR,
+    )
+    values = _machine_line_values(block)
+    missing = (
+        set(INV033_E2_OKX_EUROPE_ADAPTER_LIFECYCLE_CI_AUDIT_CROSSLINK_EXPECTED) - values.keys()
+    )
+    assert not missing, f"missing INV-033 E2 CI_AUDIT crosslink keys: {sorted(missing)}"
+    for (
+        key,
+        expected,
+    ) in INV033_E2_OKX_EUROPE_ADAPTER_LIFECYCLE_CI_AUDIT_CROSSLINK_EXPECTED.items():
+        assert values[key] == expected, f"{key}={values[key]!r} expected {expected!r}"
+
+
+def test_section5_doc_inv033_e2_okx_europe_adapter_lifecycle_owner_present_v1() -> None:
+    text = SECTION5_DOC.read_text(encoding="utf-8")
+    assert "**OKX Europe adapter lifecycle contract (Package E / INV-033 E2 guard) v0:**" in text
+    assert "OKX_EUROPE_ADAPTER_LIFECYCLE_CONTRACT_V0=true" in text
+    assert "ETH-USD_UM_XPERP-310404" in text
+    assert "ETH-USD_UM_XPERP-310328" in text
+    assert "EFFECTIVE_OPERATIONAL_LEVERAGE_CAP=10" in text
+    assert "VENUE_REPORTED_LEVERAGE_CAPABILITY=50" in text
+    assert "INV033_RUNTIME_STATUS=PARKED_RUNTIME_OPERATOR_GO_REQUIRED" in text
+    assert "PACKAGE_E_MARKED_COMPLETE=false" in text
+    assert INV033_E2_OKX_EUROPE_ADAPTER_LIFECYCLE_CI_AUDIT_CROSSLINK_GUARD_BLOCK_ANCHOR not in text
+
+
+def test_docs_truth_map_inv033_e2_okx_europe_adapter_lifecycle_ci_audit_crosslink_chronicle_v1() -> (
+    None
+):
+    text = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    assert (
+        "Package E / INV-033 E2 OKX Europe adapter lifecycle CI_AUDIT ↔ SECTION5 reciprocal "
+        "crosslink guard v1" in text
+    )
+    assert THIS_MODULE in text
+    assert INV033_E2_OKX_EUROPE_ADAPTER_LIFECYCLE_CI_AUDIT_CROSSLINK_GUARD_BLOCK_ANCHOR in text
+    assert "test_okx_europe_adapter_lifecycle_contract_v0.py" in text
+    assert "evidence only, not active repo SSOT" in text
+    assert "**no** account / KYC / API key" in text
+    assert "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED=true" in text
+
+
+def test_inv033_e2_okx_europe_ssot_crosslink_surfaces_and_runtime_parking_v1() -> None:
+    ci_audit = _ci_audit_text()
+    section5 = SECTION5_DOC.read_text(encoding="utf-8")
+    truth_map = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    guard_source = Path(__file__).read_text(encoding="utf-8")
+    for surface in (ci_audit, section5, truth_map, guard_source):
+        assert "OKX_EUROPE" in surface or "okx_europe" in surface
+        assert "INV-033" in surface or "INV033" in surface
+    for surface in (ci_audit, section5, truth_map):
+        assert "RUNTIME_GO_READY=false" in surface
+        assert "PACKAGE_E_MARKED_COMPLETE=false" in surface
+        assert "PARKED_RUNTIME_OPERATOR_GO_REQUIRED" in surface
+    for forbidden in (
+        "ACCOUNT_CREATED=true",
+        "API_KEY_CREATED=true",
+        "CREDENTIALS_USED=true",
+        "PRIVATE_API_USED=true",
+        "SHADOW_READY=true",
+        "PAPER_READY=true",
+        "TESTNET_READY=true",
+        "LIVE_READY=true",
+    ):
+        assert forbidden not in ci_audit
+        assert forbidden not in section5
+    assert "REMOTE_RUNTIME_NOT_PROVEN=true" in ci_audit
+    assert "no parallel inv-033 e2 ssot" in ci_audit.lower()
+    assert "pr4590_okx_adapter_lifecycle_slice3" in truth_map.lower()
+    assert "not active repo SSOT" in truth_map
+    pe12_block = _block_containing(
+        ci_audit,
+        PE12_BOUNDED_FUTURES_TESTNET_ADAPTER_LIFECYCLE_CI_AUDIT_CROSSLINK_GUARD_BLOCK_ANCHOR,
+    )
+    pe12_values = _machine_line_values(pe12_block)
+    for (
+        key,
+        expected,
+    ) in PE12_BOUNDED_FUTURES_TESTNET_ADAPTER_LIFECYCLE_CI_AUDIT_CROSSLINK_EXPECTED.items():
+        assert pe12_values.get(key) == expected, f"PE-12 drift on {key}"
 
 
 def _pe13_bounded_futures_testnet_preflight_packet_ci_audit_crosslink_section(text: str) -> str:
