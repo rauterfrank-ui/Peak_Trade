@@ -52,11 +52,12 @@ def _write_manifest(path: Path, *, patches: list[ConfigPatch]) -> None:
 
 
 def test_load_patches_requires_manifest_by_default(promotion_cycle, tmp_path: Path) -> None:
-    patches = promotion_cycle._load_patches_for_promotion(
+    result = promotion_cycle._load_patches_for_promotion(
         promotion_input_manifest=None,
         non_canonical_demo_legacy_patches=False,
     )
-    assert patches == []
+    assert result.patches == []
+    assert result.input_references is None
 
 
 def test_load_patches_uses_manifest_loader(promotion_cycle, tmp_path: Path) -> None:
@@ -75,14 +76,17 @@ def test_load_patches_uses_manifest_loader(promotion_cycle, tmp_path: Path) -> N
         ],
     )
 
-    patches = promotion_cycle._load_patches_for_promotion(
+    result = promotion_cycle._load_patches_for_promotion(
         promotion_input_manifest=manifest_path,
         non_canonical_demo_legacy_patches=False,
     )
 
-    assert len(patches) == 1
-    assert patches[0].target == "research.offline.window_days"
-    assert isinstance(patches[0], ConfigPatch)
+    assert len(result.patches) == 1
+    assert result.patches[0].target == "research.offline.window_days"
+    assert isinstance(result.patches[0], ConfigPatch)
+    assert result.input_references is not None
+    assert result.input_references.config_patch_manifest_id == MANIFEST_ID
+    assert result.input_references.candidate_lineage_manifest_ref == LINEAGE_ID
 
 
 def test_load_patches_empty_manifest_returns_empty_list(
@@ -92,12 +96,14 @@ def test_load_patches_empty_manifest_returns_empty_list(
     manifest_path = tmp_path / "empty.json"
     _write_manifest(manifest_path, patches=[])
 
-    patches = promotion_cycle._load_patches_for_promotion(
+    result = promotion_cycle._load_patches_for_promotion(
         promotion_input_manifest=manifest_path,
         non_canonical_demo_legacy_patches=False,
     )
 
-    assert patches == []
+    assert result.patches == []
+    assert result.input_references is not None
+    assert result.input_references.config_patch_manifest_id == MANIFEST_ID
 
 
 def test_demo_json_not_default_without_explicit_legacy_flag(
@@ -121,12 +127,13 @@ def test_demo_json_not_default_without_explicit_legacy_flag(
     )
     monkeypatch.chdir(tmp_path)
 
-    patches = promotion_cycle._load_patches_for_promotion(
+    result = promotion_cycle._load_patches_for_promotion(
         promotion_input_manifest=None,
         non_canonical_demo_legacy_patches=False,
     )
 
-    assert patches == []
+    assert result.patches == []
+    assert result.input_references is None
 
 
 def test_non_canonical_demo_legacy_flag_is_explicit_only(
@@ -152,13 +159,14 @@ def test_non_canonical_demo_legacy_flag_is_explicit_only(
     )
     monkeypatch.chdir(tmp_path)
 
-    patches = promotion_cycle._load_patches_for_promotion(
+    result = promotion_cycle._load_patches_for_promotion(
         promotion_input_manifest=None,
         non_canonical_demo_legacy_patches=True,
     )
 
-    assert len(patches) == 1
-    assert patches[0].id == "demo-legacy-1"
+    assert len(result.patches) == 1
+    assert result.patches[0].id == "demo-legacy-1"
+    assert result.input_references is None
 
 
 def test_invalid_manifest_returns_empty_without_demo_fallback(
@@ -168,9 +176,10 @@ def test_invalid_manifest_returns_empty_without_demo_fallback(
     bad_manifest = tmp_path / "bad.json"
     bad_manifest.write_text("{not-json", encoding="utf-8")
 
-    patches = promotion_cycle._load_patches_for_promotion(
+    result = promotion_cycle._load_patches_for_promotion(
         promotion_input_manifest=bad_manifest,
         non_canonical_demo_legacy_patches=False,
     )
 
-    assert patches == []
+    assert result.patches == []
+    assert result.input_references is None

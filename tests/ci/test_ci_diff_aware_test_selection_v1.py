@@ -4982,15 +4982,24 @@ PACKAGE_B_PROMOTION_INPUT_LOADER_TESTOWNER = (
 PACKAGE_B_PROMOTION_INPUT_REWIRE_TESTOWNER = (
     "tests/scripts/test_run_promotion_proposal_cycle_manifest_input_v1.py"
 )
+PACKAGE_B_PROMOTION_INPUT_LINEAGE_FK_TESTOWNER = (
+    "tests/scripts/test_run_promotion_proposal_cycle_manifest_lineage_fk_v1.py"
+)
+PACKAGE_B_PROPOSAL_INPUT_REFS_TESTOWNER = (
+    "tests/governance/promotion_loop/test_proposal_input_refs_v1.py"
+)
 PACKAGE_B_ALL_PRODUCTION = (
     PACKAGE_A_META_PRODUCTION_CONFIG,
     PACKAGE_B_PROMOTION_INPUT_SCRIPT,
+    "src/governance/promotion_loop/proposal_input_refs_v1.py",
 )
 PACKAGE_B_ALL_TESTOWNERS = (
     PACKAGE_A_CONTRACT_SAFETY_TESTOWNER,
     PACKAGE_A_CONFIG_PATCH_MANIFEST_TESTOWNER,
     PACKAGE_B_PROMOTION_INPUT_LOADER_TESTOWNER,
     PACKAGE_B_PROMOTION_INPUT_REWIRE_TESTOWNER,
+    PACKAGE_B_PROMOTION_INPUT_LINEAGE_FK_TESTOWNER,
+    PACKAGE_B_PROPOSAL_INPUT_REFS_TESTOWNER,
 )
 
 
@@ -5039,6 +5048,8 @@ def test_selector_package_b_promotion_script_contract_focused_includes_loader_an
     targets = _targets(sel)
     assert PACKAGE_B_PROMOTION_INPUT_LOADER_TESTOWNER in targets
     assert PACKAGE_B_PROMOTION_INPUT_REWIRE_TESTOWNER in targets
+    assert PACKAGE_B_PROMOTION_INPUT_LINEAGE_FK_TESTOWNER in targets
+    assert PACKAGE_B_PROPOSAL_INPUT_REFS_TESTOWNER in targets
 
 
 def test_selector_package_b_combined_diff_pr_bounded_full_includes_required_testowners_once() -> (

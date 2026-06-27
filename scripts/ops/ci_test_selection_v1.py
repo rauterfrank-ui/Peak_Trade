@@ -1340,13 +1340,18 @@ PR_BOUNDED_FULL_PACKAGE_A_META_TARGETS: tuple[str, ...] = (
 PR_BOUNDED_FULL_PACKAGE_B_PROMOTION_INPUT_TRIGGER_PATHS: frozenset[str] = frozenset(
     {
         "scripts/run_promotion_proposal_cycle.py",
+        "src/governance/promotion_loop/proposal_input_refs_v1.py",
         "tests/scripts/test_run_promotion_proposal_cycle_manifest_input_v1.py",
+        "tests/scripts/test_run_promotion_proposal_cycle_manifest_lineage_fk_v1.py",
+        "tests/governance/promotion_loop/test_proposal_input_refs_v1.py",
     }
 )
 
 PR_BOUNDED_FULL_PACKAGE_B_PROMOTION_INPUT_TARGETS: tuple[str, ...] = (
     "tests/meta/test_config_patch_manifest_v1_promotion_input_loader_v1.py",
     "tests/scripts/test_run_promotion_proposal_cycle_manifest_input_v1.py",
+    "tests/scripts/test_run_promotion_proposal_cycle_manifest_lineage_fk_v1.py",
+    "tests/governance/promotion_loop/test_proposal_input_refs_v1.py",
 )
 
 PR_BOUNDED_FULL_PACKAGE_A_GOVERNANCE_TRIGGER_PATHS: frozenset[str] = frozenset(
