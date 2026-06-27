@@ -1321,6 +1321,31 @@ PR_BOUNDED_FULL_VAR_SUITE_ADAPTER_TARGETS: tuple[str, ...] = (
     "tests/risk/validation/test_var_suite_adapter_v0.py",
 )
 
+PR_BOUNDED_FULL_PACKAGE_A_META_TRIGGER_PATHS: frozenset[str] = frozenset(
+    {
+        "src/meta/learning_loop/contract_safety_v1.py",
+        "src/meta/learning_loop/config_patch_manifest_v1.py",
+        "tests/meta/test_contract_safety_v1.py",
+        "tests/meta/test_config_patch_manifest_v1_contract.py",
+    }
+)
+
+PR_BOUNDED_FULL_PACKAGE_A_META_TARGETS: tuple[str, ...] = (
+    "tests/meta/test_contract_safety_v1.py",
+    "tests/meta/test_config_patch_manifest_v1_contract.py",
+)
+
+PR_BOUNDED_FULL_PACKAGE_A_GOVERNANCE_TRIGGER_PATHS: frozenset[str] = frozenset(
+    {
+        "src/governance/promotion_loop/candidate_lineage_manifest_v1.py",
+        "tests/governance/promotion_loop/test_candidate_lineage_manifest_v1_contract.py",
+    }
+)
+
+PR_BOUNDED_FULL_PACKAGE_A_GOVERNANCE_TARGETS: tuple[str, ...] = (
+    "tests/governance/promotion_loop/test_candidate_lineage_manifest_v1_contract.py",
+)
+
 
 def resolve_pr_bounded_full_targets(files: list[str]) -> tuple[str, ...]:
     """Conservative, deterministic PR_BOUNDED_FULL pytest targets (3.11 main lane)."""
@@ -1353,6 +1378,14 @@ def resolve_pr_bounded_full_targets(files: list[str]) -> tuple[str, ...]:
 
     if normalized & PR_BOUNDED_FULL_VAR_SUITE_ADAPTER_TRIGGER_PATHS:
         for path in PR_BOUNDED_FULL_VAR_SUITE_ADAPTER_TARGETS:
+            add(path)
+
+    if normalized & PR_BOUNDED_FULL_PACKAGE_A_META_TRIGGER_PATHS:
+        for path in PR_BOUNDED_FULL_PACKAGE_A_META_TARGETS:
+            add(path)
+
+    if normalized & PR_BOUNDED_FULL_PACKAGE_A_GOVERNANCE_TRIGGER_PATHS:
+        for path in PR_BOUNDED_FULL_PACKAGE_A_GOVERNANCE_TARGETS:
             add(path)
 
     if not targets:

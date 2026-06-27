@@ -4955,3 +4955,60 @@ def test_selector_var_suite_adapter_empty_diff_does_not_add_adapter_testowner() 
     sel = _run_selector()
     assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     assert VAR_SUITE_ADAPTER_TESTOWNER not in _bounded_targets(sel)
+
+
+PACKAGE_A_META_PRODUCTION = "src/meta/learning_loop/contract_safety_v1.py"
+PACKAGE_A_META_PRODUCTION_CONFIG = "src/meta/learning_loop/config_patch_manifest_v1.py"
+PACKAGE_A_GOVERNANCE_PRODUCTION = "src/governance/promotion_loop/candidate_lineage_manifest_v1.py"
+PACKAGE_A_CONTRACT_SAFETY_TESTOWNER = "tests/meta/test_contract_safety_v1.py"
+PACKAGE_A_CONFIG_PATCH_MANIFEST_TESTOWNER = "tests/meta/test_config_patch_manifest_v1_contract.py"
+PACKAGE_A_CANDIDATE_LINEAGE_TESTOWNER = (
+    "tests/governance/promotion_loop/test_candidate_lineage_manifest_v1_contract.py"
+)
+PACKAGE_A_ALL_PRODUCTION = (
+    PACKAGE_A_META_PRODUCTION,
+    PACKAGE_A_META_PRODUCTION_CONFIG,
+    PACKAGE_A_GOVERNANCE_PRODUCTION,
+)
+PACKAGE_A_ALL_TESTOWNERS = (
+    PACKAGE_A_CONTRACT_SAFETY_TESTOWNER,
+    PACKAGE_A_CONFIG_PATCH_MANIFEST_TESTOWNER,
+    PACKAGE_A_CANDIDATE_LINEAGE_TESTOWNER,
+)
+
+
+def test_selector_package_a_meta_production_pr_bounded_full_includes_meta_testowners() -> None:
+    sel = _run_selector(PACKAGE_A_META_PRODUCTION)
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    bounded = _bounded_targets(sel)
+    assert PACKAGE_A_CONTRACT_SAFETY_TESTOWNER in bounded
+    assert PACKAGE_A_CONFIG_PATCH_MANIFEST_TESTOWNER in bounded
+    assert PACKAGE_A_CANDIDATE_LINEAGE_TESTOWNER not in bounded
+
+
+def test_selector_package_a_governance_production_pr_bounded_full_includes_lineage_testowner() -> (
+    None
+):
+    sel = _run_selector(PACKAGE_A_GOVERNANCE_PRODUCTION)
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    bounded = _bounded_targets(sel)
+    assert PACKAGE_A_CANDIDATE_LINEAGE_TESTOWNER in bounded
+    assert PACKAGE_A_CONTRACT_SAFETY_TESTOWNER not in bounded
+    assert PACKAGE_A_CONFIG_PATCH_MANIFEST_TESTOWNER not in bounded
+
+
+def test_selector_package_a_combined_diff_pr_bounded_full_includes_all_testowners_once() -> None:
+    sel = _run_selector(*PACKAGE_A_ALL_PRODUCTION, *PACKAGE_A_ALL_TESTOWNERS)
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    bounded = _bounded_targets(sel)
+    for path in PACKAGE_A_ALL_TESTOWNERS:
+        assert path in bounded
+        assert bounded.count(path) == 1
+
+
+def test_selector_central_src_without_package_a_path_excludes_package_a_testowners() -> None:
+    sel = _run_selector("src/core/foo.py")
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    bounded = _bounded_targets(sel)
+    for path in PACKAGE_A_ALL_TESTOWNERS:
+        assert path not in bounded
