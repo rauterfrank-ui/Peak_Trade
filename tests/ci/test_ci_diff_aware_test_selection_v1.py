@@ -5773,6 +5773,88 @@ def test_selector_package_cmp_metric_input_durable_binding_full_six_file_diff_pr
         assert path in bounded
 
 
+PACKAGE_CMP_SSOT_DEFINITION_DURABLE_BINDING_PRODUCTION = (
+    "src/meta/learning_loop/comparison_ssot_definition_durable_evidence_binding_v1.py"
+)
+PACKAGE_CMP_SSOT_DEFINITION_DURABLE_BINDING_SCRIPT = (
+    "scripts/run_comparison_ssot_definition_durable_evidence_binding_v1.py"
+)
+PACKAGE_CMP_SSOT_DEFINITION_DURABLE_BINDING_TESTOWNER = (
+    "tests/meta/test_comparison_ssot_definition_durable_evidence_binding_v1.py"
+)
+PACKAGE_CMP_SSOT_DEFINITION_DURABLE_BINDING_CLI_TESTOWNER = (
+    "tests/scripts/test_run_comparison_ssot_definition_durable_evidence_binding_v1.py"
+)
+PACKAGE_CMP_SSOT_DEFINITION_DURABLE_BINDING_DEPENDENCY_TESTOWNERS = (
+    "tests/meta/test_comparison_definition_manifest_v1.py",
+    "tests/meta/test_contract_safety_v1.py",
+    "tests/governance/promotion_loop/test_candidate_lineage_manifest_v1_contract.py",
+)
+PACKAGE_CMP_SSOT_DEFINITION_DURABLE_BINDING_ALL_PRODUCTION = (
+    PACKAGE_CMP_SSOT_DEFINITION_DURABLE_BINDING_PRODUCTION,
+    PACKAGE_CMP_SSOT_DEFINITION_DURABLE_BINDING_SCRIPT,
+)
+PACKAGE_CMP_SSOT_DEFINITION_DURABLE_BINDING_ALL_TESTOWNERS = (
+    PACKAGE_CMP_SSOT_DEFINITION_DURABLE_BINDING_TESTOWNER,
+    PACKAGE_CMP_SSOT_DEFINITION_DURABLE_BINDING_CLI_TESTOWNER,
+    *PACKAGE_CMP_SSOT_DEFINITION_DURABLE_BINDING_DEPENDENCY_TESTOWNERS,
+)
+
+
+def test_selector_package_cmp_ssot_definition_durable_binding_production_pr_bounded_full_includes_testowners() -> (
+    None
+):
+    sel = _run_selector(PACKAGE_CMP_SSOT_DEFINITION_DURABLE_BINDING_PRODUCTION)
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    bounded = _bounded_targets(sel)
+    for path in PACKAGE_CMP_SSOT_DEFINITION_DURABLE_BINDING_ALL_TESTOWNERS:
+        assert path in bounded
+
+
+def test_selector_package_cmp_ssot_definition_durable_binding_script_contract_focused_includes_testowners() -> (
+    None
+):
+    sel = _run_selector(PACKAGE_CMP_SSOT_DEFINITION_DURABLE_BINDING_SCRIPT)
+    assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
+    targets = _targets(sel)
+    for path in PACKAGE_CMP_SSOT_DEFINITION_DURABLE_BINDING_ALL_TESTOWNERS:
+        assert path in targets
+
+
+def test_selector_package_cmp_ssot_definition_durable_binding_combined_diff_pr_bounded_full_includes_all_testowners_once() -> (
+    None
+):
+    sel = _run_selector(
+        *PACKAGE_CMP_SSOT_DEFINITION_DURABLE_BINDING_ALL_PRODUCTION,
+        "scripts/ops/ci_test_selection_v1.py",
+        *PACKAGE_CMP_SSOT_DEFINITION_DURABLE_BINDING_ALL_TESTOWNERS,
+    )
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    bounded = _bounded_targets(sel)
+    for path in PACKAGE_CMP_SSOT_DEFINITION_DURABLE_BINDING_ALL_TESTOWNERS:
+        assert path in bounded
+        assert bounded.count(path) == 1
+
+
+def test_selector_package_cmp_ssot_definition_durable_binding_full_six_file_diff_pr_bounded_full_not_no_op() -> (
+    None
+):
+    sel = _run_selector(
+        PACKAGE_CMP_SSOT_DEFINITION_DURABLE_BINDING_PRODUCTION,
+        PACKAGE_CMP_SSOT_DEFINITION_DURABLE_BINDING_SCRIPT,
+        PACKAGE_CMP_SSOT_DEFINITION_DURABLE_BINDING_TESTOWNER,
+        PACKAGE_CMP_SSOT_DEFINITION_DURABLE_BINDING_CLI_TESTOWNER,
+        "scripts/ops/ci_test_selection_v1.py",
+        "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+    )
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    assert sel["test_selection_mode"] != "NO_OP"
+    assert sel["test_selection_mode"] != "FOCUSED"
+    bounded = _bounded_targets(sel)
+    for path in PACKAGE_CMP_SSOT_DEFINITION_DURABLE_BINDING_ALL_TESTOWNERS:
+        assert path in bounded
+
+
 PACKAGE_COMPARISON_METRIC_INPUT_PRODUCTION = (
     "src/meta/learning_loop/comparison_metric_input_v1/producer.py"
 )
