@@ -1354,6 +1354,21 @@ PR_BOUNDED_FULL_PACKAGE_B_PROMOTION_INPUT_TARGETS: tuple[str, ...] = (
     "tests/governance/promotion_loop/test_proposal_input_refs_v1.py",
 )
 
+PR_BOUNDED_FULL_PACKAGE_D_LEARNING_BRIDGE_TRIGGER_PATHS: frozenset[str] = frozenset(
+    {
+        "src/meta/learning_loop/manifest_bridge_v1.py",
+        "src/meta/learning_loop/bridge.py",
+        "scripts/run_learning_manifest_bridge_v1.py",
+        "tests/meta/test_learning_manifest_bridge_v1.py",
+    }
+)
+
+PR_BOUNDED_FULL_PACKAGE_D_LEARNING_BRIDGE_TARGETS: tuple[str, ...] = (
+    "tests/meta/test_learning_loop_bridge.py",
+    "tests/meta/test_config_patch_manifest_v1_contract.py",
+    "tests/meta/test_learning_manifest_bridge_v1.py",
+)
+
 PR_BOUNDED_FULL_PACKAGE_A_GOVERNANCE_TRIGGER_PATHS: frozenset[str] = frozenset(
     {
         "src/governance/promotion_loop/candidate_lineage_manifest_v1.py",
@@ -1409,6 +1424,10 @@ def resolve_pr_bounded_full_targets(files: list[str]) -> tuple[str, ...]:
 
     if normalized & PR_BOUNDED_FULL_PACKAGE_B_PROMOTION_INPUT_TRIGGER_PATHS:
         for path in PR_BOUNDED_FULL_PACKAGE_B_PROMOTION_INPUT_TARGETS:
+            add(path)
+
+    if normalized & PR_BOUNDED_FULL_PACKAGE_D_LEARNING_BRIDGE_TRIGGER_PATHS:
+        for path in PR_BOUNDED_FULL_PACKAGE_D_LEARNING_BRIDGE_TARGETS:
             add(path)
 
     if not targets:
@@ -4548,6 +4567,9 @@ def _focused_targets(files: list[str]) -> tuple[str, ...]:
             script_stem = PurePosixPath(path).stem
             if path == "scripts/run_promotion_proposal_cycle.py":
                 for candidate in PR_BOUNDED_FULL_PACKAGE_B_PROMOTION_INPUT_TARGETS:
+                    add(candidate)
+            elif path == "scripts/run_learning_manifest_bridge_v1.py":
+                for candidate in PR_BOUNDED_FULL_PACKAGE_D_LEARNING_BRIDGE_TARGETS:
                     add(candidate)
             for candidate in (
                 f"tests/scripts/test_{script_stem}_load_strategy_v1.py",
