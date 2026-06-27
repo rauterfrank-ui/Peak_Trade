@@ -2366,6 +2366,66 @@ TECH_DEBT_TOP3_RUNBOOK_BACKLOG_STATIC_CROSSLINK_HEADING = (
     "## Tech-Debt Top-3 Runbook/Backlog CI_AUDIT ↔ DOCS_TRUTH_MAP static crosslink "
     "— docs/tests-only guard v1"
 )
+GAP_RGB_PRT_STATIC_CI_AUDIT_CROSSLINK_HEADING = (
+    "## Master V2 RGB+PRT static-contract CI_AUDIT ↔ DOCS_TRUTH_MAP reciprocal crosslink "
+    "— docs/tests-only guard v1"
+)
+GAP_RGB_PRT_STATIC_CI_AUDIT_CROSSLINK_GUARD_BLOCK_ANCHOR = (
+    "GAP_RGB_PRT_STATIC_CI_AUDIT_CROSSLINK_V1=true"
+)
+GAP_RGB_PRT_STATIC_CI_AUDIT_CROSSLINK_INPUT_BUNDLE = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning/post_evidence_continuity_closeout_systemwide_residual_gap_ranking_"
+    "bounded_read_only_no_runtime_v0_20260627T015500Z"
+)
+GAP_RGB_PRT_STATIC_CI_AUDIT_CROSSLINK_EXPECTED: dict[str, str] = {
+    "GAP_RGB_PRT_STATIC_CI_AUDIT_CROSSLINK_V1": "true",
+    "GAP_RGB_STATIC_TEST_COUNT": "21",
+    "GAP_PRT_STATIC_TEST_COUNT": "15",
+    "GAP_RGB_PRT_TOTAL_STATIC_TEST_COUNT": "36",
+    "GAP_RGB_STATIC_TESTS_MERGED": "true",
+    "GAP_PRT_STATIC_TESTS_MERGED": "true",
+    "FUTURE_TESTS_ONLY_STALE_ASSERTION_REMOVED": "true",
+    "RGB_RECIPROCAL_GUARD_PRESERVED": "true",
+    "PRT_RECIPROCAL_GUARD_ADDED": "true",
+    "RGB_PRT_CANONICAL_OWNERS_INDEXED": "true",
+    "RGB_PRT_EXISTING_STATIC_GUARDS_REUSED": "true",
+    "RGB_PRT_OFFLINE_STATIC_CONTRACT_ONLY": "true",
+    "RUNTIME_PROVEN": "false",
+    "CREDENTIALS_PRESENT": "false",
+    "NETWORK_EXERCISED": "false",
+    "ORDERS_AUTHORIZED": "false",
+    "PARALLEL_RGB_PRT_SSOT_CREATED": "false",
+    "WORKFLOW_YAML_MUTATED": "false",
+    "REQUIRED_CHECK_CONFIG_MUTATED": "false",
+    "GAP2A1_PRIMARY_EVIDENCE_ENFORCED": "false",
+    "PREFLIGHT_LIFTED": "false",
+    "AUTHORITY_LIFT": "false",
+    "TRADING_LOGIC_TOUCH": "false",
+    "MASTER_V2_LOGIC_CHANGED": "false",
+    "DOUBLE_PLAY_LOGIC_CHANGED": "false",
+    "PREFLIGHT_REMAINS_BLOCKED": "true",
+    "NO_SESSION_INVOKE_AUTHORIZED": "true",
+    "U2B_PARKED": "true",
+    "MARKET_AIRPORT_EXCLUDED": "true",
+    "EVIDENCE_OR_DOCS_ANCHOR_NOT_RUNTIME_AUTHORITY": "true",
+    "NO_RUNTIME": "true",
+    "NO_LIVE": "true",
+    "NO_PREFLIGHT_LIFT": "true",
+    "NEW_PARALLEL_SSOT_CREATED": "false",
+    "DOCS_DRIFT_OR_POINTER_INTEGRITY_DEFERRED": "true",
+    "DOCS_DRIFT_OR_POINTER_INTEGRITY_COMPLETE": "false",
+    "RUNTIME_STARTED": "false",
+    "RUN_STARTED": "false",
+    "EXECUTE_STARTED": "false",
+    "ARMING_EXECUTED": "false",
+}
+GAP_RGB_PRT_STATIC_CI_AUDIT_CROSSLINK_CANONICAL_PATHS = (
+    "docs/ops/specs/FUTURES_MASTER_V2_RUNTIME_GOVERNANCE_BOUNDARY_CONTRACT_V0.md",
+    "docs/ops/specs/FUTURES_MASTER_V2_PROTECTED_RUNTIME_STAGE_CONTRACT_V0.md",
+    "tests/ops/test_master_v2_runtime_governance_boundary_contract_static_v0.py",
+    "tests/ops/test_master_v2_protected_runtime_stage_contract_static_v0.py",
+)
 TECH_DEBT_TOP3_RUNBOOK_BACKLOG_STATIC_CROSSLINK_GUARD_BLOCK_ANCHOR = (
     "TECH_DEBT_TOP3_RUNBOOK_BACKLOG_STATIC_CROSSLINK_V1=true"
 )
@@ -2511,6 +2571,7 @@ RECIPROCAL_OWNER_TESTS = (
     "test_master_v2_double_play_pure_stack_readiness_map_static_crosslink_contract_v0.py",
     "test_futures_dynamic_scope_envelope_contract_static_crosslink_contract_v0.py",
     "test_master_v2_runtime_governance_boundary_contract_static_v0.py",
+    "test_master_v2_protected_runtime_stage_contract_static_v0.py",
     "test_master_v2_state_switch_contract_static_v0.py",
 )
 
@@ -2597,6 +2658,16 @@ FUTURES_MASTER_V2_RUNTIME_GOVERNANCE_BOUNDARY_CONTRACT = (
 )
 RGB_STATIC_CROSSLINK_GUARD = (
     REPO_ROOT / "tests" / "ops" / "test_master_v2_runtime_governance_boundary_contract_static_v0.py"
+)
+FUTURES_MASTER_V2_PROTECTED_RUNTIME_STAGE_CONTRACT = (
+    REPO_ROOT
+    / "docs"
+    / "ops"
+    / "specs"
+    / "FUTURES_MASTER_V2_PROTECTED_RUNTIME_STAGE_CONTRACT_V0.md"
+)
+PRT_STATIC_CROSSLINK_GUARD = (
+    REPO_ROOT / "tests" / "ops" / "test_master_v2_protected_runtime_stage_contract_static_v0.py"
 )
 FUTURES_DOUBLE_PLAY_STATE_SWITCH_CONTRACT = (
     REPO_ROOT / "docs" / "ops" / "specs" / "FUTURES_DOUBLE_PLAY_STATE_SWITCH_CONTRACT_V0.md"
@@ -2752,6 +2823,7 @@ def test_reciprocal_owner_crosslinks_present() -> None:
         if module_name in (
             DSE_STATIC_CROSSLINK_GUARD.name,
             RGB_STATIC_CROSSLINK_GUARD.name,
+            PRT_STATIC_CROSSLINK_GUARD.name,
             SS_STATIC_CROSSLINK_GUARD.name,
         ):
             continue
@@ -2785,6 +2857,30 @@ def test_master_v2_runtime_governance_boundary_static_crosslink_reciprocal_remot
         or "runtime_governance_boundary_contract_static" in contract_plain
     )
     assert FUTURES_MASTER_V2_RUNTIME_GOVERNANCE_BOUNDARY_CONTRACT.name in peer_text
+
+
+def test_master_v2_protected_runtime_stage_static_crosslink_reciprocal_remote_runtime_docs_guard_v0() -> (
+    None
+):
+    guard_text = Path(__file__).read_text(encoding="utf-8")
+    assert PRT_STATIC_CROSSLINK_GUARD.name in guard_text
+    peer_text = PRT_STATIC_CROSSLINK_GUARD.read_text(encoding="utf-8")
+    contract_text = FUTURES_MASTER_V2_PROTECTED_RUNTIME_STAGE_CONTRACT.read_text(encoding="utf-8")
+    contract_plain = contract_text.replace("&#47;", "/")
+    assert (
+        PRT_STATIC_CROSSLINK_GUARD.name in contract_plain
+        or "protected_runtime_stage_contract_static" in contract_plain
+    )
+    assert FUTURES_MASTER_V2_PROTECTED_RUNTIME_STAGE_CONTRACT.name in peer_text
+    ci_audit = _ci_audit_text()
+    assert "GAP_RGB_PRT_STATIC_CI_AUDIT_CROSSLINK_V1=true" in ci_audit
+    assert "GAP_RGB_STATIC_TEST_COUNT=21" in ci_audit
+    assert "GAP_PRT_STATIC_TEST_COUNT=15" in ci_audit
+    truth_map = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    assert "Master V2 RGB+PRT static-contract CI_AUDIT ↔ DOCS_TRUTH_MAP" in truth_map
+    assert "GAP_RGB_PRT_TOTAL_STATIC_TEST_COUNT=36" in truth_map
+    assert "GAP_PRT_STATIC_001_TESTS_MERGED=true" in contract_text
+    assert "GAP_PRT_STATIC_001_TEST_COUNT=15" in contract_text
 
 
 def test_master_v2_state_switch_contract_static_crosslink_reciprocal_remote_runtime_docs_guard_v0() -> (
@@ -7003,6 +7099,60 @@ def test_runbooks_readme_bounded_pilot_incident_triage_canonical_index_entry_v1(
         )
         == 1
     )
+
+
+def _gap_rgb_prt_static_ci_audit_crosslink_section(text: str) -> str:
+    start = text.find(GAP_RGB_PRT_STATIC_CI_AUDIT_CROSSLINK_HEADING)
+    assert start != -1, "missing gap rgb prt static ci audit crosslink section"
+    next_heading = text.find("\n## ", start + 1)
+    if next_heading == -1:
+        return text[start:]
+    return text[start:next_heading]
+
+
+def test_ci_audit_gap_rgb_prt_static_ci_audit_crosslink_section_v0() -> None:
+    text = _ci_audit_text()
+    section = _gap_rgb_prt_static_ci_audit_crosslink_section(text)
+    assert GAP_RGB_PRT_STATIC_CI_AUDIT_CROSSLINK_INPUT_BUNDLE in section
+    assert "GO_GAP_RGB_PRT_STATIC_CI_AUDIT_CROSSLINK_DOCS_STATIC_CONTRACT_ONLY_V0" in section
+    assert "CI_AUDIT ↔ DOCS_TRUTH_MAP reciprocal crosslink" in section
+    assert "DOCS_TRUTH_MAP chronicle" in section
+    assert THIS_MODULE in section
+    assert "21" in section and "15" in section and "36" in section
+    for path in GAP_RGB_PRT_STATIC_CI_AUDIT_CROSSLINK_CANONICAL_PATHS:
+        assert path in section, f"missing canonical path reference {path!r}"
+    assert "no parallel rgb/prt ssot" in section.lower() or "Parallel RGB/PRT SSOT" in section
+
+
+def test_ci_audit_gap_rgb_prt_static_ci_audit_crosslink_machine_lines_v0() -> None:
+    block = _block_containing(
+        _ci_audit_text(),
+        GAP_RGB_PRT_STATIC_CI_AUDIT_CROSSLINK_GUARD_BLOCK_ANCHOR,
+    )
+    values = _machine_line_values(block)
+    missing = set(GAP_RGB_PRT_STATIC_CI_AUDIT_CROSSLINK_EXPECTED) - values.keys()
+    assert not missing, f"missing gap rgb prt static crosslink keys: {sorted(missing)}"
+    for key, expected in GAP_RGB_PRT_STATIC_CI_AUDIT_CROSSLINK_EXPECTED.items():
+        assert values[key] == expected, f"{key}={values[key]!r} expected {expected!r}"
+
+
+def test_docs_truth_map_gap_rgb_prt_static_ci_audit_crosslink_chronicle_v0() -> None:
+    text = DOCS_TRUTH_MAP.read_text(encoding="utf-8")
+    assert (
+        "Master V2 RGB+PRT static-contract CI_AUDIT ↔ DOCS_TRUTH_MAP reciprocal crosslink bundle guard v1"
+    ) in text
+    assert THIS_MODULE in text
+    assert GAP_RGB_PRT_STATIC_CI_AUDIT_CROSSLINK_GUARD_BLOCK_ANCHOR in text
+    assert "GAP_RGB_STATIC_TEST_COUNT=21" in text
+    assert "GAP_PRT_STATIC_TEST_COUNT=15" in text
+    assert "GAP_RGB_PRT_TOTAL_STATIC_TEST_COUNT=36" in text
+    assert "RGB_PRT_OFFLINE_STATIC_CONTRACT_ONLY=true" in text
+    assert "RUNTIME_PROVEN=false" in text
+    for path in GAP_RGB_PRT_STATIC_CI_AUDIT_CROSSLINK_CANONICAL_PATHS:
+        assert path in text, f"missing chronicle path reference {path!r}"
+    assert GAP_RGB_PRT_STATIC_CI_AUDIT_CROSSLINK_INPUT_BUNDLE.split("/")[-1] in text
+    assert "PREFLIGHT_REMAINS_BLOCKED=true" in text
+    assert "PARALLEL_RGB_PRT_SSOT_CREATED=false" in text
 
 
 def _tech_debt_top3_runbook_backlog_static_crosslink_section(text: str) -> str:
