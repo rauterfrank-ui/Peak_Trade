@@ -28,8 +28,6 @@ import sys
 import warnings
 from pathlib import Path
 
-pytest_plugins = ["tests.meta.comparison_metric_input_v1_fixtures"]
-
 import pytest
 
 # ============================================================================

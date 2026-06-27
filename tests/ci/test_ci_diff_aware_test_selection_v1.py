@@ -5724,7 +5724,9 @@ PACKAGE_COMPARISON_METRIC_INPUT_ALL_TESTOWNERS = (
 )
 
 
-def test_selector_package_comparison_metric_input_production_pr_bounded_full_includes_testowners() -> None:
+def test_selector_package_comparison_metric_input_production_pr_bounded_full_includes_testowners() -> (
+    None
+):
     sel = _run_selector(PACKAGE_COMPARISON_METRIC_INPUT_PRODUCTION)
     assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     bounded = _bounded_targets(sel)
@@ -5732,7 +5734,9 @@ def test_selector_package_comparison_metric_input_production_pr_bounded_full_inc
         assert path in bounded
 
 
-def test_selector_package_comparison_metric_input_script_contract_focused_includes_testowners() -> None:
+def test_selector_package_comparison_metric_input_script_contract_focused_includes_testowners() -> (
+    None
+):
     sel = _run_selector(PACKAGE_COMPARISON_METRIC_INPUT_SCRIPT)
     assert sel["test_selection_mode"] == "CONTRACT_FOCUSED"
     targets = _targets(sel)
@@ -5740,7 +5744,9 @@ def test_selector_package_comparison_metric_input_script_contract_focused_includ
         assert path in targets
 
 
-def test_selector_package_comparison_metric_input_combined_diff_pr_bounded_full_includes_all_testowners_once() -> None:
+def test_selector_package_comparison_metric_input_combined_diff_pr_bounded_full_includes_all_testowners_once() -> (
+    None
+):
     sel = _run_selector(
         *PACKAGE_COMPARISON_METRIC_INPUT_ALL_PRODUCTION,
         "scripts/ops/ci_test_selection_v1.py",
