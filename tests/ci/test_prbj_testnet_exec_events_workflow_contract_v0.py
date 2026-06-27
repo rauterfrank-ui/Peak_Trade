@@ -1,4 +1,4 @@
-"""Static contract for PR-BJ Kraken testnet exec-events workflow (manual-only dispatch).
+"""Static contract for PR-BJ testnet exec-events workflow (manual-only dispatch).
 
 Parses workflow YAML as UTF-8 text only. Never dispatches workflows, never
 reads secret values, and never touches runtime/testnet execution paths.
@@ -52,30 +52,26 @@ def test_workflow_has_workflow_dispatch_only_no_schedule() -> None:
     assert "schedule:" not in _workflow_text()
 
 
-def test_workflow_schedule_requires_kraken_testnet_cron_enabled_var() -> None:
-    text = _workflow_text()
-
-    assert "KRAKEN_TESTNET_CRON_ENABLED" in text
-    assert "vars.KRAKEN_TESTNET_CRON_ENABLED == 'true'" in text
-    assert "github.event_name != 'schedule'" in text
-
-
-def test_workflow_job_gate_preserves_manual_dispatch() -> None:
+def test_workflow_job_fail_closed_after_kraken_decommission() -> None:
     job_if = _run_testnet_job().get("if")
-    assert isinstance(job_if, str)
-
-    assert "github.event_name != 'schedule'" in job_if
-    assert "workflow_dispatch" not in job_if.lower()
-    assert "KRAKEN_TESTNET_CRON_ENABLED" in job_if
+    assert job_if == "${{ false }}"
 
 
-def test_workflow_references_kraken_testnet_secrets_without_exposing_values() -> None:
+def test_workflow_does_not_reference_kraken_testnet_secrets() -> None:
     text = _workflow_text()
 
-    assert "${{ secrets.KRAKEN_TESTNET_API_KEY }}" in text
-    assert "${{ secrets.KRAKEN_TESTNET_API_SECRET }}" in text
+    assert "KRAKEN_TESTNET_API_KEY" not in text
+    assert "KRAKEN_TESTNET_API_SECRET" not in text
+    assert "secrets.KRAKEN" not in text
     assert "sk-" not in text
     assert "AKIA" not in text
+
+
+def test_workflow_documents_kraken_decommission_placeholder() -> None:
+    text = _workflow_text()
+
+    assert "kraken decommissioned" in text.lower()
+    assert "okx eea pending" in text.lower()
 
 
 def test_workflow_does_not_introduce_live_authority_or_aws_paths() -> None:

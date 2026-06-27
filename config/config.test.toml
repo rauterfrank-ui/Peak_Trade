@@ -320,7 +320,7 @@ slippage_bps = 5.0
 # ============================================================================
 
 [exchange.kraken_testnet]
-enabled = true
+enabled = false
 base_url = "https://api.kraken.com"
 api_key_env_var = "KRAKEN_TESTNET_API_KEY"
 api_secret_env_var = "KRAKEN_TESTNET_API_SECRET"
@@ -329,10 +329,18 @@ timeout_seconds = 30.0
 max_retries = 3
 rate_limit_ms = 1000
 
+[exchange.okx_europe_eea]
+enabled = false
+rest_host = "https://eea.okx.com"
+readonly_api_key_env_var = "OKX_EEA_READONLY_API_KEY"
+readonly_api_secret_env_var = "OKX_EEA_READONLY_API_SECRET"
+readonly_api_passphrase_env_var = "OKX_EEA_READONLY_API_PASSPHRASE"
+validate_only = true
+
 [testnet_session]
-enabled = true
-default_exchange = "kraken_testnet"
-symbol = "BTC/EUR"
+enabled = false
+default_exchange = "okx_europe_eea"
+symbol = "ETH-USD_UM_XPERP-310328"
 timeframe = "1m"
 poll_interval_seconds = 60.0
 warmup_candles = 200

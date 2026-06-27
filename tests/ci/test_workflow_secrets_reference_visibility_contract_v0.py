@@ -65,7 +65,6 @@ KNOWN_WORKFLOWS_WITH_SECRETS_REFERENCES = frozenset(
         "paper_session_audit_evidence.yml",
         "paper_tests_audit_evidence.yml",
         "pr-head-sha-required-checks-liveness-guard.yml",
-        "prbj-testnet-exec-events.yml",
         "prcc-aws-export-smoke.yml",
         "prcd-aws-export-write-smoke.yml",
     }
@@ -75,8 +74,6 @@ KNOWN_SECRET_REFERENCE_NAMES = frozenset(
     {
         "ADD_TO_PROJECT_PAT",
         "GITHUB_TOKEN",
-        "KRAKEN_TESTNET_API_KEY",
-        "KRAKEN_TESTNET_API_SECRET",
         "OPENAI_API_KEY",
         "PT_EXPORT_ID",
         "PT_EXPORT_PREFIX",
@@ -278,8 +275,8 @@ def test_workflow_secrets_reference_visibility_contract_classifies_current_secre
 
 def test_workflow_secrets_reference_visibility_contract_known_sets_stay_documentary() -> None:
     """Known sets are owner-review surfaces, not workflow-change mandates."""
-    assert len(KNOWN_WORKFLOWS_WITH_SECRETS_REFERENCES) == 16
-    assert len(KNOWN_SECRET_REFERENCE_NAMES) == 9
+    assert len(KNOWN_WORKFLOWS_WITH_SECRETS_REFERENCES) == 15
+    assert len(KNOWN_SECRET_REFERENCE_NAMES) == 7
 
 
 def test_workflow_secrets_reference_visibility_contract_requires_names_for_known_set() -> None:
