@@ -19,13 +19,17 @@ _DURABLE_OUTPUT_ROOT = REPO_ROOT / ".comparison_ssot_pytest_outputs"
 
 
 @pytest.fixture(autouse=True)
-def _allow_tmp_output(monkeypatch: pytest.MonkeyPatch) -> None:
+def _allow_tmp_output_ssot(monkeypatch: pytest.MonkeyPatch) -> None:
     monkeypatch.setattr(
         "src.meta.learning_loop.comparison_ssot_v1.io.is_under_tmp",
         lambda _path: False,
     )
     monkeypatch.setattr(
         "src.meta.learning_loop.comparison_metric_input_v1.io.is_under_tmp",
+        lambda _path: False,
+    )
+    monkeypatch.setattr(
+        "src.experiments.experiment_identity_manifest_v1.is_under_tmp",
         lambda _path: False,
     )
 
