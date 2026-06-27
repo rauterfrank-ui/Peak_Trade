@@ -1380,6 +1380,28 @@ PR_BOUNDED_FULL_PACKAGE_A_GOVERNANCE_TARGETS: tuple[str, ...] = (
     "tests/governance/promotion_loop/test_candidate_lineage_manifest_v1_contract.py",
 )
 
+PR_BOUNDED_FULL_PACKAGE_E_GOVERNANCE_CLOSEOUT_TRIGGER_PATHS: frozenset[str] = frozenset(
+    {
+        "src/governance/promotion_loop/engine.py",
+        "src/governance/promotion_loop/safety.py",
+        "src/governance/promotion_loop/policy.py",
+        "tests/governance/promotion_loop/test_engine_manifest_era_v1.py",
+        "tests/governance/promotion_loop/test_safety_manifest_era_v1.py",
+        "tests/governance/promotion_loop/test_policy_manifest_era_v1.py",
+        "tests/scripts/test_offline_learning_promotion_e2e_v1.py",
+    }
+)
+
+PR_BOUNDED_FULL_PACKAGE_E_GOVERNANCE_CLOSEOUT_TARGETS: tuple[str, ...] = (
+    "tests/governance/promotion_loop/test_engine_manifest_era_v1.py",
+    "tests/governance/promotion_loop/test_safety_manifest_era_v1.py",
+    "tests/governance/promotion_loop/test_policy_manifest_era_v1.py",
+    "tests/scripts/test_offline_learning_promotion_e2e_v1.py",
+    "tests/meta/test_config_patch_manifest_v1_promotion_input_loader_v1.py",
+    "tests/governance/promotion_loop/test_proposal_input_refs_v1.py",
+    "tests/meta/test_learning_manifest_bridge_v1.py",
+)
+
 
 def resolve_pr_bounded_full_targets(files: list[str]) -> tuple[str, ...]:
     """Conservative, deterministic PR_BOUNDED_FULL pytest targets (3.11 main lane)."""
@@ -1428,6 +1450,10 @@ def resolve_pr_bounded_full_targets(files: list[str]) -> tuple[str, ...]:
 
     if normalized & PR_BOUNDED_FULL_PACKAGE_D_LEARNING_BRIDGE_TRIGGER_PATHS:
         for path in PR_BOUNDED_FULL_PACKAGE_D_LEARNING_BRIDGE_TARGETS:
+            add(path)
+
+    if normalized & PR_BOUNDED_FULL_PACKAGE_E_GOVERNANCE_CLOSEOUT_TRIGGER_PATHS:
+        for path in PR_BOUNDED_FULL_PACKAGE_E_GOVERNANCE_CLOSEOUT_TARGETS:
             add(path)
 
     if not targets:
