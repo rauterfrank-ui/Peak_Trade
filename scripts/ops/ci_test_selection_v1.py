@@ -5165,9 +5165,7 @@ def _focused_targets(files: list[str]) -> tuple[str, ...]:
                 for candidate in PR_BOUNDED_FULL_PACKAGE_COMPARISON_PROMOTION_CANDIDATE_IDENTITY_BINDING_V1_TARGETS:
                     add(candidate)
             elif path == "scripts/run_comparison_promotion_candidate_eligibility_evidence_v1.py":
-                for candidate in (
-                    PR_BOUNDED_FULL_PACKAGE_COMPARISON_PROMOTION_CANDIDATE_ELIGIBILITY_EVIDENCE_V1_TARGETS
-                ):
+                for candidate in PR_BOUNDED_FULL_PACKAGE_COMPARISON_PROMOTION_CANDIDATE_ELIGIBILITY_EVIDENCE_V1_TARGETS:
                     add(candidate)
             elif path == "scripts/run_comparison_metric_input_v1.py":
                 for candidate in PR_BOUNDED_FULL_PACKAGE_COMPARISON_METRIC_INPUT_TARGETS:
