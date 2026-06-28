@@ -6235,6 +6235,35 @@ PACKAGE_CMP_COMPLETION_PROMOTION_INPUT_BINDING_V1_ALL_TESTOWNERS = (
     *PACKAGE_CMP_COMPLETION_PROMOTION_INPUT_BINDING_V1_DEPENDENCY_TESTOWNERS,
 )
 
+PACKAGE_CMP_PROMOTION_CANDIDATE_IDENTITY_BINDING_V1_PRODUCTION = (
+    "src/meta/learning_loop/comparison_promotion_candidate_identity_binding_v1.py"
+)
+PACKAGE_CMP_PROMOTION_CANDIDATE_IDENTITY_BINDING_V1_SCRIPT = (
+    "scripts/run_comparison_promotion_candidate_identity_binding_v1.py"
+)
+PACKAGE_CMP_PROMOTION_CANDIDATE_IDENTITY_BINDING_V1_TESTOWNER = (
+    "tests/meta/test_comparison_promotion_candidate_identity_binding_v1.py"
+)
+PACKAGE_CMP_PROMOTION_CANDIDATE_IDENTITY_BINDING_V1_CLI_TESTOWNER = (
+    "tests/scripts/test_run_comparison_promotion_candidate_identity_binding_v1.py"
+)
+PACKAGE_CMP_PROMOTION_CANDIDATE_IDENTITY_BINDING_V1_DEPENDENCY_TESTOWNERS = (
+    "tests/meta/test_comparison_completion_promotion_input_binding_v1.py",
+    "tests/meta/test_comparison_metric_input_durable_evidence_binding_v1.py",
+    "tests/governance/promotion_loop/test_candidate_lineage_manifest_v1_contract.py",
+    "tests/meta/test_contract_safety_v1.py",
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+)
+PACKAGE_CMP_PROMOTION_CANDIDATE_IDENTITY_BINDING_V1_ALL_PRODUCTION = (
+    PACKAGE_CMP_PROMOTION_CANDIDATE_IDENTITY_BINDING_V1_PRODUCTION,
+    PACKAGE_CMP_PROMOTION_CANDIDATE_IDENTITY_BINDING_V1_SCRIPT,
+)
+PACKAGE_CMP_PROMOTION_CANDIDATE_IDENTITY_BINDING_V1_ALL_TESTOWNERS = (
+    PACKAGE_CMP_PROMOTION_CANDIDATE_IDENTITY_BINDING_V1_TESTOWNER,
+    PACKAGE_CMP_PROMOTION_CANDIDATE_IDENTITY_BINDING_V1_CLI_TESTOWNER,
+    *PACKAGE_CMP_PROMOTION_CANDIDATE_IDENTITY_BINDING_V1_DEPENDENCY_TESTOWNERS,
+)
+
 
 def test_selector_package_cmp_checkpoint_v1_production_pr_bounded_full_includes_testowners() -> (
     None
@@ -6332,5 +6361,30 @@ def test_selector_package_cmp_completion_promotion_input_binding_v1_combined_dif
     assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     bounded = _bounded_targets(sel)
     for path in PACKAGE_CMP_COMPLETION_PROMOTION_INPUT_BINDING_V1_ALL_TESTOWNERS:
+        assert path in bounded
+        assert bounded.count(path) == 1
+
+
+def test_selector_package_cmp_promotion_candidate_identity_binding_v1_production_pr_bounded_full_includes_testowners() -> (
+    None
+):
+    sel = _run_selector(PACKAGE_CMP_PROMOTION_CANDIDATE_IDENTITY_BINDING_V1_PRODUCTION)
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    bounded = _bounded_targets(sel)
+    for path in PACKAGE_CMP_PROMOTION_CANDIDATE_IDENTITY_BINDING_V1_ALL_TESTOWNERS:
+        assert path in bounded
+
+
+def test_selector_package_cmp_promotion_candidate_identity_binding_v1_combined_diff_pr_bounded_full_includes_all_testowners_once() -> (
+    None
+):
+    sel = _run_selector(
+        *PACKAGE_CMP_PROMOTION_CANDIDATE_IDENTITY_BINDING_V1_ALL_PRODUCTION,
+        "scripts/ops/ci_test_selection_v1.py",
+        *PACKAGE_CMP_PROMOTION_CANDIDATE_IDENTITY_BINDING_V1_ALL_TESTOWNERS,
+    )
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    bounded = _bounded_targets(sel)
+    for path in PACKAGE_CMP_PROMOTION_CANDIDATE_IDENTITY_BINDING_V1_ALL_TESTOWNERS:
         assert path in bounded
         assert bounded.count(path) == 1
