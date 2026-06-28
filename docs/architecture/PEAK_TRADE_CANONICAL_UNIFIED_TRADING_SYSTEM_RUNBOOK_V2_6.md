@@ -1358,7 +1358,7 @@ risk_sizing_owner_refs
 ### Migration
 
 - `config/live_overrides/auto.toml` wird zum abgeleiteten Kompatibilitätsoutput,
-- `config/auto/learning.override.toml` wird ebenfalls abgeleitet,
+- `config&#47;auto&#47;learning.override.toml` wird ebenfalls abgeleitet, <!-- pt:ref-target-ignore -->
 - das versionierte Artefakt wird kanonischer Owner der **versionierten Konfiguration und Provenance**, nicht der Trading-Semantik,
 - Master V2, Double Play, Bull/Bear, Dynamic Scope sowie Risk-, Sizing- und Scope-Capital-Owner bleiben kanonische fachliche Owner,
 - jedes Artefakt muss `trading_logic_compatibility_evidence_v1` referenzieren,
