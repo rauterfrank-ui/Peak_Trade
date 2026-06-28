@@ -1608,6 +1608,23 @@ PR_BOUNDED_FULL_PACKAGE_COMPARISON_COMPLETION_EVIDENCE_V1_TARGETS: tuple[str, ..
     "tests/ci/test_ci_diff_aware_test_selection_v1.py",
 )
 
+PR_BOUNDED_FULL_PACKAGE_RESEARCH_VALIDITY_EVIDENCE_V1_TRIGGER_PATHS: frozenset[str] = frozenset(
+    {
+        "src/meta/learning_loop/research_validity_evidence_v1.py",
+        "scripts/run_research_validity_evidence_v1.py",
+        "tests/meta/test_research_validity_evidence_v1.py",
+        "tests/scripts/test_run_research_validity_evidence_v1.py",
+    }
+)
+
+PR_BOUNDED_FULL_PACKAGE_RESEARCH_VALIDITY_EVIDENCE_V1_TARGETS: tuple[str, ...] = (
+    "tests/meta/test_research_validity_evidence_v1.py",
+    "tests/scripts/test_run_research_validity_evidence_v1.py",
+    "tests/meta/test_comparison_checkpoint_v1.py",
+    "tests/meta/test_contract_safety_v1.py",
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+)
+
 PR_BOUNDED_FULL_PACKAGE_COMPARISON_METRIC_INPUT_TRIGGER_PATHS: frozenset[str] = frozenset(
     {
         "src/meta/learning_loop/comparison_metric_input_v1/__init__.py",
@@ -1818,6 +1835,10 @@ def resolve_pr_bounded_full_targets(files: list[str]) -> tuple[str, ...]:
 
     if normalized & PR_BOUNDED_FULL_PACKAGE_COMPARISON_COMPLETION_EVIDENCE_V1_TRIGGER_PATHS:
         for path in PR_BOUNDED_FULL_PACKAGE_COMPARISON_COMPLETION_EVIDENCE_V1_TARGETS:
+            add(path)
+
+    if normalized & PR_BOUNDED_FULL_PACKAGE_RESEARCH_VALIDITY_EVIDENCE_V1_TRIGGER_PATHS:
+        for path in PR_BOUNDED_FULL_PACKAGE_RESEARCH_VALIDITY_EVIDENCE_V1_TARGETS:
             add(path)
 
     if normalized & PR_BOUNDED_FULL_PACKAGE_COMPARISON_METRIC_INPUT_TRIGGER_PATHS:
@@ -5032,6 +5053,9 @@ def _focused_targets(files: list[str]) -> tuple[str, ...]:
                     add(candidate)
             elif path == "scripts/run_comparison_completion_evidence_v1.py":
                 for candidate in PR_BOUNDED_FULL_PACKAGE_COMPARISON_COMPLETION_EVIDENCE_V1_TARGETS:
+                    add(candidate)
+            elif path == "scripts/run_research_validity_evidence_v1.py":
+                for candidate in PR_BOUNDED_FULL_PACKAGE_RESEARCH_VALIDITY_EVIDENCE_V1_TARGETS:
                     add(candidate)
             elif path == "scripts/run_comparison_metric_input_v1.py":
                 for candidate in PR_BOUNDED_FULL_PACKAGE_COMPARISON_METRIC_INPUT_TARGETS:
