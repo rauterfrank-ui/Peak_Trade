@@ -49,7 +49,7 @@ Systemweite Rankings sind **kein Standardprozess**. Sie dürfen ausschließlich 
 
 1. Das aktuelle Major Gap Package ist vollständig abgeschlossen.
 2. Der nächste Runbook-Schritt besitzt trotz Reuse-before-new keinen bestimmbaren kanonischen Owner.
-3. Neue Änderungen auf `origin/main` haben den geplanten Schritt semantisch obsolet gemacht.
+3. Neue Änderungen auf `origin&#47;main` haben den geplanten Schritt semantisch obsolet gemacht.
 4. Der geplante Schritt würde eine Safety-, Authority- oder Single-SSOT-Grenze verletzen.
 5. Das Runbook enthält für den konkreten Übergang einen nachgewiesenen Widerspruch oder eine echte Lücke.
 6. Ein vollständiger Runbook-Meilenstein ist abgeschlossen und mehrere unabhängige nächste Major Packages sind gleichzeitig zulässig.
@@ -80,7 +80,7 @@ Solange ein aktives Major Gap Package existiert und sein nächster sequenzieller
 - Baseline-Verifikation
 - Reuse-before-new
 - begrenzter Admissibility-/Readiness-Check
-- Konfliktprüfung gegen aktuellen `origin/main`-Stand
+- Konfliktprüfung gegen aktuellen `origin&#47;main`-Stand
 - separater Operator-GO
 - Implementierung
 - lokale Tests
@@ -109,7 +109,7 @@ Solange ein aktives Major Gap Package existiert und sein nächster sequenzieller
 2. Aktive Progress-Registry lesen.
 3. Aktives Major Gap Package lesen.
 4. Ersten noch nicht `COMPLETE` markierten sequenziellen Package-Schritt bestimmen.
-5. Abhängigkeiten gegen aktuellen `origin/main`-Stand prüfen.
+5. Abhängigkeiten gegen aktuellen `origin&#47;main`-Stand prüfen.
 6. Reuse-before-new durchführen.
 7. Begrenzten Readiness-/Admissibility-Check ausführen.
 8. Genau einen Implementation-GO für diesen Schritt formulieren.

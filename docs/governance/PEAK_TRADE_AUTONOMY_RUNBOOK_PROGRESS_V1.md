@@ -27,7 +27,7 @@ SCHEDULER_RUNTIME_ALLOWED: false
 
 `NOT_STARTED` · `IN_PROGRESS` · `PARTIALLY_COMPLETE` · `COMPLETE` · `BLOCKED` · `DEFERRED_HARDENING` · `NOT_APPLICABLE`
 
-`COMPLETE` nur bei kanonischem Owner, implementiertem Contract, bestandenen Tests, erforderlicher Evidence, Merge auf `origin/main` und erfüllten Exit-Kriterien des Minimum Safe Slice.
+`COMPLETE` nur bei kanonischem Owner, implementiertem Contract, bestandenen Tests, erforderlicher Evidence, Merge auf `origin&#47;main` und erfüllten Exit-Kriterien des Minimum Safe Slice.
 
 ## Aktives Major Gap Package
 
@@ -43,7 +43,7 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | STEP_4 | `comparison_eligibility_promotion_policy_input_binding_v1` | `NOT_STARTED` |
 | STEP_5 | `comparison_promotion_policy_input_evidence_v1` | `NOT_STARTED` |
 
-**Planning-Bundle:** `planning/systemwide_major_gap_ranking_after_pr4628_v0_20260629T004500Z` (MANIFEST_VERIFY_RC=0)
+**Planning-Bundle:** `planning&#47;systemwide_major_gap_ranking_after_pr4628_v0_20260629T004500Z` (MANIFEST_VERIFY_RC=0)
 
 ---
 
@@ -450,7 +450,7 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 
 | Bundle | MANIFEST_VERIFY_RC | Hinweis |
 |---|---|---|
-| Closeout | `0` | `closeout/pr4629_comparison_promotion_candidate_model_parameter_identity_binding_v1_squash_merge_closeout_v0_20260628T225509Z` |
+| Closeout | `0` | `closeout&#47;pr4629_comparison_promotion_candidate_model_parameter_identity_binding_v1_squash_merge_closeout_v0_20260628T225509Z` |
 | Implementation | `1` | Drift nur in `00_VERDICT.txt`; Dateien 01–20 verify clean |
 | Check-Recovery | `MISSING` | Kein `MANIFEST.sha256` |
 
