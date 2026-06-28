@@ -1,6 +1,8 @@
 # Peak_Trade – Autonomous Trading Handout & Roadmap
 
-**Status:** docs-only handout (paper stability guard)  
+> **SUPERSEDED (strategic target):** Für das kanonische strategische Ziel- und Implementierungsrunbook siehe [`docs/architecture/PEAK_TRADE_CANONICAL_UNIFIED_TRADING_SYSTEM_RUNBOOK_V2_6.md`](../../../architecture/PEAK_TRADE_CANONICAL_UNIFIED_TRADING_SYSTEM_RUNBOOK_V2_6.md). Dieses Handout bleibt als historische Planungs-Evidence erhalten.
+
+**Status:** docs-only handout (paper stability guard) — **superseded for strategic target by v2.6 runbook**  
 **Stand:** 2026-03-21  
 **Branch:** feat/autonomous-trading-handout-roadmap  
 **Scope:** Planning, Architecture, Roadmap – keine Deployment-Autorisation
