@@ -1868,7 +1868,9 @@ def resolve_pr_bounded_full_targets(files: list[str]) -> tuple[str, ...]:
         normalized
         & PR_BOUNDED_FULL_PACKAGE_COMPARISON_COMPLETION_PROMOTION_INPUT_BINDING_V1_TRIGGER_PATHS
     ):
-        for path in PR_BOUNDED_FULL_PACKAGE_COMPARISON_COMPLETION_PROMOTION_INPUT_BINDING_V1_TARGETS:
+        for (
+            path
+        ) in PR_BOUNDED_FULL_PACKAGE_COMPARISON_COMPLETION_PROMOTION_INPUT_BINDING_V1_TARGETS:
             add(path)
 
     if normalized & PR_BOUNDED_FULL_PACKAGE_COMPARISON_METRIC_INPUT_TRIGGER_PATHS:
