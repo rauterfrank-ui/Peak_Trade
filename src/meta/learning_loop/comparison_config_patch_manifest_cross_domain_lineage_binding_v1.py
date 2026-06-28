@@ -396,9 +396,7 @@ def verify_model_parameter_identity_binding_bundle(
         )
 
     try:
-        reverify_comparison_promotion_candidate_model_parameter_identity_binding_v1(
-            output_dir=path
-        )
+        reverify_comparison_promotion_candidate_model_parameter_identity_binding_v1(output_dir=path)
     except ComparisonPromotionCandidateModelParameterIdentityBindingError as exc:
         raise ComparisonConfigPatchManifestCrossDomainLineageBindingError(str(exc)) from exc
 

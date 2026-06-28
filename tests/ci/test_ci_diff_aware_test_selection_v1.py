@@ -6540,7 +6540,9 @@ PACKAGE_CMP_CONFIG_PATCH_MANIFEST_CROSS_DOMAIN_LINEAGE_BINDING_V1_ALL_TESTOWNERS
 def test_selector_package_cmp_config_patch_manifest_cross_domain_lineage_binding_v1_production_pr_bounded_full_includes_testowners() -> (
     None
 ):
-    sel = _run_selector(PACKAGE_CMP_CONFIG_PATCH_MANIFEST_CROSS_DOMAIN_LINEAGE_BINDING_V1_PRODUCTION)
+    sel = _run_selector(
+        PACKAGE_CMP_CONFIG_PATCH_MANIFEST_CROSS_DOMAIN_LINEAGE_BINDING_V1_PRODUCTION
+    )
     assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
     bounded = _bounded_targets(sel)
     for path in PACKAGE_CMP_CONFIG_PATCH_MANIFEST_CROSS_DOMAIN_LINEAGE_BINDING_V1_ALL_TESTOWNERS:
