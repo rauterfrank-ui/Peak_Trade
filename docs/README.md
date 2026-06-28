@@ -159,6 +159,7 @@
 - **Governance & AI Autonomy:** [governance/README.md](governance/README.md)
 - **Risk Management:** [risk/](risk/) *(directory)*
 - **Architecture Details:** [architecture/](architecture/) *(directory)*
+- **Canonical Unified Trading System Runbook v2.6:** [architecture/PEAK_TRADE_CANONICAL_UNIFIED_TRADING_SYSTEM_RUNBOOK_V2_6.md](architecture/PEAK_TRADE_CANONICAL_UNIFIED_TRADING_SYSTEM_RUNBOOK_V2_6.md) — strategic target + implementation runbook (non-authorizing)
 - **Execution Layer:** [execution/README.md](execution/README.md)
 - **Cleanup & Maintenance:** [ops/cleanup/](ops/cleanup/) *(directory)*
 

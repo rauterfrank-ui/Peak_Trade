@@ -19,6 +19,35 @@
 - Historical formatter drift / Black wording: [Issue #252](https://github.com/rauterfrank-ui/Peak_Trade/issues/252)
 - Current formatter source of truth: Ruff format checks, not Black enforcement.
 
+## Canonical Unified Trading System Runbook v2.6 — docs/tests-only reciprocal crosslink guard v0
+
+**Operator-GO:** `GO_CANONICAL_UNIFIED_TRADING_SYSTEM_RUNBOOK_V2_6_REPO_INTEGRATION_MULTI_AGENT_V0`
+
+**Purpose:** Anchor the **canonical strategic target and implementation runbook** for exactly **one** Peak-Trade Futures trading system with two internal authority domains (**TRADING_DECISION_CORE**, **SAFETY_EXECUTION_RUNTIME_CORE**) in DOCS_TRUTH_MAP and CI_AUDIT — static reciprocal crosslink **without** trading/runtime semantic change, live authorization, orders, scheduler runtime, shadow, paper, or testnet actions.
+
+**Canonical repo owners (reuse — do not duplicate):**
+
+| Concern | Owner |
+|---------|-------|
+| Strategic target + implementation runbook v2.6 | `docs/architecture/PEAK_TRADE_CANONICAL_UNIFIED_TRADING_SYSTEM_RUNBOOK_V2_6.md` |
+| DOCS_TRUTH_MAP chronicle | `docs/ops/registry/DOCS_TRUTH_MAP.md` |
+| Static crosslink contract test | `tests/ops/test_canonical_unified_trading_system_runbook_v2_6_static_crosslink_contract_v0.py` |
+
+```text
+CANONICAL_UNIFIED_TRADING_SYSTEM_RUNBOOK_V2_6_INTEGRATED=true
+PEAK_TRADE_CANONICAL_TRADING_SYSTEM_SINGLE_SSOT=true
+TRADING_DECISION_CORE_CANONICAL=true
+SAFETY_EXECUTION_RUNTIME_CORE_CANONICAL=true
+FUTURES_ONLY=true
+LIVE_AUTHORIZED=false
+ORDERS_ALLOWED=false
+SCHEDULER_RUNTIME_ALLOWED=false
+TRADING_LOGIC_TOUCH=false
+RUNTIME_LOGIC_TOUCHED=false
+PARALLEL_SSOT_CREATED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+```
+
 ## Order-Capability fixture-binding DOCS_TRUTH_MAP static crosslink v1
 
 **Operator-GO:** `GO_ORDER_CAPABILITY_FIXTURE_BINDING_DOCS_TRUTH_MAP_STATIC_CROSSLINK_GUARD_OPERATOR_GO_AUTOFILL_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_safe_scope_inventory_refresh_after_durable_closeout_guard_chain_pr4127_4137_no_run_v1_20260611T191500Z/`

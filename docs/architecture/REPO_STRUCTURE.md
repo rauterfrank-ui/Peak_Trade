@@ -47,6 +47,7 @@ docs/
 ├── architecture/                # 🏗️ ADRs & Design-Docs
 │   ├── ADR_0001_Peak_Tool_Stack.md
 │   ├── OPTIONAL_DEPENDENCIES_POLICY.md
+│   ├── PEAK_TRADE_CANONICAL_UNIFIED_TRADING_SYSTEM_RUNBOOK_V2_6.md  # Kanonisches strategisches Ziel- und Implementierungsrunbook
 │   └── REPO_STRUCTURE.md        # Diese Datei
 │
 ├── dev/                         # 👨‍💻 Developer Guides
