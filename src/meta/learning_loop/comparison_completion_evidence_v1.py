@@ -222,9 +222,7 @@ def _reject_unsafe_overlap(*, checkpoint_bundle_dir: Path, output_dir: Path) -> 
 
 def _evidence_bytes_for_manifest_digest(evidence: Mapping[str, Any]) -> bytes:
     canonical = {
-        key: value
-        for key, value in evidence.items()
-        if key not in {"integrity", "manifest_digest"}
+        key: value for key, value in evidence.items() if key not in {"integrity", "manifest_digest"}
     }
     return serialize_completion_evidence_v1(canonical).encode("utf-8")
 
