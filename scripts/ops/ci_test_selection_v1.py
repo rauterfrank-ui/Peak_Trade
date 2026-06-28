@@ -1697,6 +1697,33 @@ PR_BOUNDED_FULL_PACKAGE_COMPARISON_PROMOTION_CANDIDATE_ELIGIBILITY_EVIDENCE_V1_T
     "tests/ci/test_ci_diff_aware_test_selection_v1.py",
 )
 
+PR_BOUNDED_FULL_PACKAGE_COMPARISON_PROMOTION_CANDIDATE_MODEL_PARAMETER_IDENTITY_BINDING_V1_TRIGGER_PATHS: frozenset[
+    str
+] = frozenset(
+    {
+        "src/meta/learning_loop/comparison_promotion_candidate_model_parameter_identity_binding_v1.py",
+        "scripts/run_comparison_promotion_candidate_model_parameter_identity_binding_v1.py",
+        "tests/meta/test_comparison_promotion_candidate_model_parameter_identity_binding_v1.py",
+        "tests/scripts/test_run_comparison_promotion_candidate_model_parameter_identity_binding_v1.py",
+        "tests/meta/comparison_promotion_candidate_model_parameter_identity_binding_v1_fixtures.py",
+    }
+)
+
+PR_BOUNDED_FULL_PACKAGE_COMPARISON_PROMOTION_CANDIDATE_MODEL_PARAMETER_IDENTITY_BINDING_V1_TARGETS: tuple[
+    str, ...
+] = (
+    "tests/meta/test_comparison_promotion_candidate_model_parameter_identity_binding_v1.py",
+    "tests/scripts/test_run_comparison_promotion_candidate_model_parameter_identity_binding_v1.py",
+    "tests/meta/test_comparison_promotion_candidate_eligibility_evidence_v1.py",
+    "tests/meta/test_comparison_promotion_candidate_identity_binding_v1.py",
+    "tests/meta/test_comparison_completion_promotion_input_binding_v1.py",
+    "tests/meta/test_comparison_metric_input_durable_evidence_binding_v1.py",
+    "tests/governance/promotion_loop/test_candidate_lineage_manifest_v1_contract.py",
+    "tests/experiments/test_experiment_identity_manifest_v1.py",
+    "tests/meta/test_contract_safety_v1.py",
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+)
+
 PR_BOUNDED_FULL_PACKAGE_COMPARISON_METRIC_INPUT_TRIGGER_PATHS: frozenset[str] = frozenset(
     {
         "src/meta/learning_loop/comparison_metric_input_v1/__init__.py",
@@ -1938,6 +1965,13 @@ def resolve_pr_bounded_full_targets(files: list[str]) -> tuple[str, ...]:
         for (
             path
         ) in PR_BOUNDED_FULL_PACKAGE_COMPARISON_PROMOTION_CANDIDATE_ELIGIBILITY_EVIDENCE_V1_TARGETS:
+            add(path)
+
+    if (
+        normalized
+        & PR_BOUNDED_FULL_PACKAGE_COMPARISON_PROMOTION_CANDIDATE_MODEL_PARAMETER_IDENTITY_BINDING_V1_TRIGGER_PATHS
+    ):
+        for path in PR_BOUNDED_FULL_PACKAGE_COMPARISON_PROMOTION_CANDIDATE_MODEL_PARAMETER_IDENTITY_BINDING_V1_TARGETS:
             add(path)
 
     if normalized & PR_BOUNDED_FULL_PACKAGE_COMPARISON_METRIC_INPUT_TRIGGER_PATHS:
@@ -5166,6 +5200,11 @@ def _focused_targets(files: list[str]) -> tuple[str, ...]:
                     add(candidate)
             elif path == "scripts/run_comparison_promotion_candidate_eligibility_evidence_v1.py":
                 for candidate in PR_BOUNDED_FULL_PACKAGE_COMPARISON_PROMOTION_CANDIDATE_ELIGIBILITY_EVIDENCE_V1_TARGETS:
+                    add(candidate)
+            elif path == (
+                "scripts/run_comparison_promotion_candidate_model_parameter_identity_binding_v1.py"
+            ):
+                for candidate in PR_BOUNDED_FULL_PACKAGE_COMPARISON_PROMOTION_CANDIDATE_MODEL_PARAMETER_IDENTITY_BINDING_V1_TARGETS:
                     add(candidate)
             elif path == "scripts/run_comparison_metric_input_v1.py":
                 for candidate in PR_BOUNDED_FULL_PACKAGE_COMPARISON_METRIC_INPUT_TARGETS:
