@@ -18,6 +18,11 @@
 - **Nicht** operative Live-/Order-/Scheduler-Freigabe; beschreibt Zielbild und Implementierungsleitlinien, nicht den vollständig implementierten Ist-Zustand.
 - Operative Grenzen, Gates und Safety-Runbooks in diesem Overview und den verlinkten Specs bleiben maßgeblich.
 
+## Runbook Execution Governance und Progress Registry (non-authorizing)
+
+- **Strategische SSOT-Steuerung:** [docs/governance/PEAK_TRADE_RUNBOOK_EXECUTION_GOVERNANCE_V1.md](governance/PEAK_TRADE_RUNBOOK_EXECUTION_GOVERNANCE_V1.md) — Runbook v2.6 bestimmt verbindlich die Entwicklungsrichtung; systemweite Rankings sind Ausnahmeverfahren.
+- **Progress-Registry:** [docs/governance/PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md](governance/PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md) — verbindet Runbook-Soll mit gemergtem Repo-Ist; erzeugt **keine** Runtime- oder Live-Authority.
+
 ---
 
 ## 1. Einleitung
