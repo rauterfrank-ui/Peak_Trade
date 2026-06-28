@@ -48,6 +48,39 @@ PARALLEL_SSOT_CREATED=false
 PREFLIGHT_REMAINS_BLOCKED=true
 ```
 
+## Runbook Execution Governance + Progress Registry v1 — docs/tests-only reciprocal crosslink guard v0
+
+**Operator-GO:** `GO_CANONICAL_RUNBOOK_EXECUTION_GOVERNANCE_AND_PROGRESS_CONTROL_V0`
+
+**Purpose:** Anchor Runbook v2.6 as **strategic SSOT** with deterministic package sequencing, progress registry (Runbook-Soll ↔ Repo-Ist), and systemwide-ranking exception policy — static reciprocal crosslink **without** trading/runtime/promotion semantic change, live authorization, orders, or scheduler runtime.
+
+**Canonical repo owners (reuse — do not duplicate):**
+
+| Concern | Owner |
+|---------|-------|
+| Strategic target + implementation runbook v2.6 | `docs/architecture/PEAK_TRADE_CANONICAL_UNIFIED_TRADING_SYSTEM_RUNBOOK_V2_6.md` |
+| Execution governance (sequencing, ranking exceptions) | `docs/governance/PEAK_TRADE_RUNBOOK_EXECUTION_GOVERNANCE_V1.md` |
+| Progress registry (Runbook-Soll ↔ Repo-Ist) | `docs/governance/PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md` |
+| DOCS_TRUTH_MAP chronicle | `docs/ops/registry/DOCS_TRUTH_MAP.md` |
+| Static crosslink contract test | `tests/ops/test_runbook_execution_governance_and_progress_registry_static_crosslink_contract_v0.py` |
+
+```text
+RUNBOOK_EXECUTION_GOVERNANCE_AND_PROGRESS_REGISTRY_V1_INTEGRATED=true
+RUNBOOK_STRATEGIC_SSOT=true
+SYSTEMWIDE_RANKING_DEFAULT_ALLOWED=false
+SYSTEMWIDE_RANKING_EXCEPTION_ONLY=true
+CURRENT_MAJOR_GAP_PACKAGE=MAJOR_GAP_COMPARISON_PROMOTION_POLICY_INPUT_BRIDGE_V0
+STEP_1_STATUS=COMPLETE
+NEXT_CANONICAL_STEP=comparison_config_patch_manifest_cross_domain_lineage_binding_v1
+LIVE_AUTHORIZED=false
+ORDERS_ALLOWED=false
+SCHEDULER_RUNTIME_ALLOWED=false
+TRADING_LOGIC_CHANGED=false
+PROMOTION_LOGIC_CHANGED=false
+RUNTIME_CHANGED=false
+SEPARATE_GO_REQUIRED=true
+```
+
 ## Order-Capability fixture-binding DOCS_TRUTH_MAP static crosslink v1
 
 **Operator-GO:** `GO_ORDER_CAPABILITY_FIXTURE_BINDING_DOCS_TRUTH_MAP_STATIC_CROSSLINK_GUARD_OPERATOR_GO_AUTOFILL_NO_RUN_V1` · **Planning bundle (archive only):** `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/systemwide_safe_scope_inventory_refresh_after_durable_closeout_guard_chain_pr4127_4137_no_run_v1_20260611T191500Z/`
