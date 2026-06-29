@@ -6979,9 +6979,7 @@ PACKAGE_SECURE_HANDOFF_ENVELOPE_V1_PRODUCTION = (
     "src/meta/learning_loop/secure_handoff_envelope_v1.py"
 )
 PACKAGE_SECURE_HANDOFF_ENVELOPE_V1_SCRIPT = "scripts/run_secure_handoff_envelope_v1.py"
-PACKAGE_SECURE_HANDOFF_ENVELOPE_V1_TESTOWNER = (
-    "tests/meta/test_secure_handoff_envelope_v1.py"
-)
+PACKAGE_SECURE_HANDOFF_ENVELOPE_V1_TESTOWNER = "tests/meta/test_secure_handoff_envelope_v1.py"
 PACKAGE_SECURE_HANDOFF_ENVELOPE_V1_CLI_TESTOWNER = (
     "tests/scripts/test_run_secure_handoff_envelope_v1.py"
 )
