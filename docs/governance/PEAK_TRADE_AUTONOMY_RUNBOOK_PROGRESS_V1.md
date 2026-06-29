@@ -16,16 +16,26 @@ SCHEDULER_RUNTIME_ALLOWED: false
 
 | Feld | Wert |
 |---|---|
-| `LAST_VERIFIED_ORIGIN_MAIN` | `3dd7b8138478aa0a1c68bd042bf6ee67f6bdeff3` |
-| `LAST_VERIFIED_AT` | `2026-06-29T19:30:00Z` |
+| `LAST_VERIFIED_ORIGIN_MAIN` | `02eabe2d6c690a16c6aa4598d30d5c4d59de56a4` |
+| `LAST_VERIFIED_AT` | `2026-06-29T20:00:00Z` |
 | `CURRENT_MAJOR_GAP_PACKAGE` | `MAJOR_GAP_COMPARISON_PROMOTION_POLICY_INPUT_BRIDGE_V0` |
-| `NEXT_RUNBOOK_STEP` | `RUNBOOK_STEP_13` |
-| `NEXT_CANONICAL_STEP` | `trading_session_single_writer` |
-| `RUNBOOK_STEP_13_IMPLEMENTED` | `false` |
-| `TRADING_SESSION_SINGLE_WRITER_IMPLEMENTED` | `false` |
+| `NEXT_RUNBOOK_STEP` | `RUNBOOK_STEP_14` |
+| `NEXT_CANONICAL_STEP` | `canonical_order_lifecycle_v1` |
+| `RUNBOOK_STEP_13_IMPLEMENTED` | `true` |
+| `TRADING_SESSION_SINGLE_WRITER_IMPLEMENTED` | `true` |
 | `RUNTIME_SINGLE_WRITER_ACTIVATED` | `false` |
 | `SESSION_STARTED` | `false` |
 | `WRITER_LOCK_ACQUIRED` | `false` |
+| `RUNBOOK_STEP_14_IMPLEMENTED` | `false` |
+| `CANONICAL_ORDER_LIFECYCLE_V1_IMPLEMENTED` | `false` |
+| `ORDER_CREATED` | `false` |
+| `ORDER_SUBMITTED` | `false` |
+| `ORDER_AMENDED` | `false` |
+| `ORDER_CANCELLED` | `false` |
+| `ORDER_FILLED` | `false` |
+| `ORDER_STATE_MUTATED` | `false` |
+| `ADAPTER_INVOKED` | `false` |
+| `EXCHANGE_REQUEST_SENT` | `false` |
 | `FOLLOW_UP_DEVEX_SCOPE` | `CANONICAL_PRE_PR_RUFF_AND_DIFF_GUARD` |
 | `FOLLOW_UP_DEVEX_STATUS` | `PENDING_SEPARATE_PR` |
 | `SYSTEMWIDE_RANKING_REQUIRED` | `false` |
@@ -302,8 +312,14 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 |---|---|
 | `RUNBOOK_PHASE` | 6 |
 | `RUNBOOK_STEP_ID` | `trading_session_single_writer_and_fencing` |
-| `STATUS` | `NOT_STARTED` |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src/meta/learning_loop/trading_session_single_writer_v1.py` |
+| `MERGED_PRS` | `#4644` |
+| `MERGE_COMMITS` | `02eabe2d6c690a16c6aa4598d30d5c4d59de56a4` |
+| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/trading_session_single_writer_v1_offline_slice_implementation_v0_20260629T040625Z` (MANIFEST_VERIFY_RC=0); `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/pr4644_trading_session_single_writer_v1_offline_slice_squash_merge_closeout_v0_20260629T041340Z` (MANIFEST_VERIFY_RC=0); PATCH_DIFF_RC=0; PATCH_SHA256=1dc9255bfeb7b7789a6708e8c1beec2df3715c249c596a1feb306c2d8c237152; MERGED_AT=2026-06-29T04:11:59Z; MERGE_METHOD=SQUASH; SQUASH_PARENT=38ec47bd20767a3a752d4d048cd4fa0da717c796; TRADING_SESSION_SINGLE_WRITER_OFFLINE_ONLY=true; TRADING_SESSION_STARTED=false; WRITER_REGISTERED=false; WRITER_ACTIVATED=false; WRITER_LOCK_ACQUIRED=false; RESERVATION_CREATED=false; FENCING_TOKEN_ISSUED=false; STATE_MUTATED=false; CONSUMER_INVOKED=false; AUTHORITY_ACTIVATED=false; RUNTIME_AUTHORIZED=false; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SCHEDULER_RUNTIME_ALLOWED=false |
 | `DEPENDENCIES` | RUNBOOK_STEP_12 |
+| `REMAINING_GAPS` | — |
+| `NEXT_REQUIRED_CONTRACT` | `canonical_order_lifecycle_v1` |
 | `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
 | `RUNTIME_EFFECT` | `false` |
 | `SEPARATE_GO_REQUIRED` | `true` |
