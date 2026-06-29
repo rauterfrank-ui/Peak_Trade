@@ -38,9 +38,9 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | Package-Schritt | Contract/Capability | Status |
 |---|---|---|
 | STEP_1 | `comparison_promotion_candidate_model_parameter_identity_binding_v1` | `COMPLETE` |
-| STEP_2 | `comparison_config_patch_manifest_cross_domain_lineage_binding_v1` | `NOT_STARTED` |
-| STEP_3 | `comparison_promotion_candidate_input_v1` | `NOT_STARTED` |
-| STEP_4 | `comparison_eligibility_promotion_policy_input_binding_v1` | `NOT_STARTED` |
+| STEP_2 | `comparison_config_patch_manifest_cross_domain_lineage_binding_v1` | `COMPLETE` |
+| STEP_3 | `comparison_promotion_candidate_input_v1` | `COMPLETE` |
+| STEP_4 | `comparison_eligibility_promotion_policy_input_binding_v1` | `IMPLEMENTED_PENDING_MERGE` |
 | STEP_5 | `comparison_promotion_policy_input_evidence_v1` | `NOT_STARTED` |
 
 **Planning-Bundle:** `planning&#47;systemwide_major_gap_ranking_after_pr4628_v0_20260629T004500Z` (MANIFEST_VERIFY_RC=0)
