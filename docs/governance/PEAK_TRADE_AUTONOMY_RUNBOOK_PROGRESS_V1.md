@@ -16,10 +16,10 @@ SCHEDULER_RUNTIME_ALLOWED: false
 
 | Feld | Wert |
 |---|---|
-| `LAST_VERIFIED_ORIGIN_MAIN` | `d5fb570dc14d032033f33b7c38ea6e03484be413` |
-| `LAST_VERIFIED_AT` | `2026-06-29T23:30:00Z` |
+| `LAST_VERIFIED_ORIGIN_MAIN` | `74e384e9b83ad2d9f59aa18361b200ed5b50ad63` |
+| `LAST_VERIFIED_AT` | `2026-06-29T02:40:00Z` |
 | `CURRENT_MAJOR_GAP_PACKAGE` | `MAJOR_GAP_COMPARISON_PROMOTION_POLICY_INPUT_BRIDGE_V0` |
-| `NEXT_CANONICAL_STEP` | `authority_lease_and_revocation` |
+| `NEXT_CANONICAL_STEP` | `secure_handoff_envelope` |
 | `SYSTEMWIDE_RANKING_REQUIRED` | `false` |
 | `SEPARATE_GO_REQUIRED` | `true` |
 
@@ -228,22 +228,26 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 |---|---|
 | `RUNBOOK_PHASE` | 6 |
 | `RUNBOOK_STEP_ID` | `authority_lease_and_revocation` |
-| `STATUS` | `IN_PROGRESS` |
+| `STATUS` | `COMPLETE` |
 | `CANONICAL_OWNER` | `src/meta/learning_loop/authority_lease_and_revocation_v1.py` |
+| `MERGED_PRS` | `#4639` |
+| `MERGE_COMMITS` | `74e384e9b83ad2d9f59aa18361b200ed5b50ad63` |
 | `DEPENDENCIES` | RUNBOOK_STEP_08, `handoff_trust_policy_v1` |
 | `NEXT_REQUIRED_CONTRACT` | `secure_handoff_envelope` |
 | `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
 | `RUNTIME_EFFECT` | `false` |
 | `SEPARATE_GO_REQUIRED` | `true` |
 
-#### RUNBOOK_STEP_10 — Secure Handoff Contracts
+#### RUNBOOK_STEP_10 — Secure Handoff Envelope
 
 | Feld | Wert |
 |---|---|
 | `RUNBOOK_PHASE` | 6 |
-| `RUNBOOK_STEP_ID` | `secure_handoff_contracts` |
-| `STATUS` | `NOT_STARTED` |
-| `DEPENDENCIES` | RUNBOOK_STEP_09 |
+| `RUNBOOK_STEP_ID` | `secure_handoff_envelope` |
+| `STATUS` | `IN_PROGRESS` |
+| `CANONICAL_OWNER` | `src/meta/learning_loop/secure_handoff_envelope_v1.py` |
+| `DEPENDENCIES` | RUNBOOK_STEP_09, `authority_lease_and_revocation_v1` |
+| `NEXT_REQUIRED_CONTRACT` | `handoff_atomic_claim_consume` |
 | `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
 | `RUNTIME_EFFECT` | `false` |
 | `SEPARATE_GO_REQUIRED` | `true` |
