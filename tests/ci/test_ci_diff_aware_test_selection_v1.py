@@ -7033,3 +7033,67 @@ def test_selector_package_secure_handoff_envelope_v1_combined_diff_pr_bounded_fu
     for path in PACKAGE_SECURE_HANDOFF_ENVELOPE_V1_ALL_TESTOWNERS:
         assert path in bounded
         assert bounded.count(path) == 1
+
+
+PACKAGE_HANDOFF_ATOMIC_CLAIM_CONSUME_V1_PRODUCTION = (
+    "src/meta/learning_loop/handoff_atomic_claim_consume_v1.py"
+)
+PACKAGE_HANDOFF_ATOMIC_CLAIM_CONSUME_V1_SCRIPT = "scripts/run_handoff_atomic_claim_consume_v1.py"
+PACKAGE_HANDOFF_ATOMIC_CLAIM_CONSUME_V1_TESTOWNER = (
+    "tests/meta/test_handoff_atomic_claim_consume_v1.py"
+)
+PACKAGE_HANDOFF_ATOMIC_CLAIM_CONSUME_V1_CLI_TESTOWNER = (
+    "tests/scripts/test_run_handoff_atomic_claim_consume_v1.py"
+)
+PACKAGE_HANDOFF_ATOMIC_CLAIM_CONSUME_V1_DEPENDENCY_TESTOWNERS = (
+    "tests/meta/test_secure_handoff_envelope_v1.py",
+    "tests/scripts/test_run_secure_handoff_envelope_v1.py",
+    "tests/meta/test_authority_lease_and_revocation_v1.py",
+    "tests/scripts/test_run_authority_lease_and_revocation_v1.py",
+    "tests/meta/test_handoff_trust_policy_v1.py",
+    "tests/scripts/test_run_handoff_trust_policy_v1.py",
+    "tests/meta/test_versioned_strategy_model_parameter_artifact_v1.py",
+    "tests/meta/test_ai_promotion_assessment_v1.py",
+    "tests/meta/test_comparison_promotion_policy_decision_v1.py",
+    "tests/meta/test_comparison_promotion_candidate_identity_binding_v1.py",
+    "tests/meta/test_comparison_promotion_candidate_model_parameter_identity_binding_v1.py",
+    "tests/meta/test_comparison_promotion_candidate_eligibility_evidence_v1.py",
+    "tests/meta/test_config_patch_manifest_v1_contract.py",
+    "tests/meta/test_learning_manifest_durable_evidence_binding_v1.py",
+    "tests/governance/promotion_loop/test_candidate_lineage_manifest_v1_contract.py",
+    "tests/experiments/test_experiment_identity_manifest_v1.py",
+    "tests/meta/test_contract_safety_v1.py",
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+)
+PACKAGE_HANDOFF_ATOMIC_CLAIM_CONSUME_V1_ALL_PRODUCTION = (
+    PACKAGE_HANDOFF_ATOMIC_CLAIM_CONSUME_V1_PRODUCTION,
+    PACKAGE_HANDOFF_ATOMIC_CLAIM_CONSUME_V1_SCRIPT,
+)
+PACKAGE_HANDOFF_ATOMIC_CLAIM_CONSUME_V1_ALL_TESTOWNERS = (
+    PACKAGE_HANDOFF_ATOMIC_CLAIM_CONSUME_V1_TESTOWNER,
+    PACKAGE_HANDOFF_ATOMIC_CLAIM_CONSUME_V1_CLI_TESTOWNER,
+    *PACKAGE_HANDOFF_ATOMIC_CLAIM_CONSUME_V1_DEPENDENCY_TESTOWNERS,
+)
+
+
+def test_selector_package_handoff_atomic_claim_consume_v1_production_pr_bounded_full_includes_testowners() -> (
+    None
+):
+    sel = _run_selector(PACKAGE_HANDOFF_ATOMIC_CLAIM_CONSUME_V1_PRODUCTION)
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    bounded = _bounded_targets(sel)
+    for path in PACKAGE_HANDOFF_ATOMIC_CLAIM_CONSUME_V1_ALL_TESTOWNERS:
+        assert path in bounded
+
+
+def test_selector_package_handoff_atomic_claim_consume_v1_combined_diff_pr_bounded_full_includes_all_testowners_once() -> (
+    None
+):
+    sel = _run_selector(
+        *PACKAGE_HANDOFF_ATOMIC_CLAIM_CONSUME_V1_ALL_PRODUCTION,
+    )
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    bounded = _bounded_targets(sel)
+    for path in PACKAGE_HANDOFF_ATOMIC_CLAIM_CONSUME_V1_ALL_TESTOWNERS:
+        assert path in bounded
+        assert bounded.count(path) == 1
