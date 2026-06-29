@@ -66,6 +66,8 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `CANARY_MICRO_LIVE_READINESS_IMPLEMENTED` | `true` |
 | `RUNBOOK_STEP_29B_IMPLEMENTED` | `true` |
 | `CANONICAL_MARKET_CONTEXT_BINDING_V1_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_29C_IMPLEMENTATION_STARTED` | `true` |
+| `CANONICAL_SCOPE_INITIALIZATION_V1_IMPLEMENTATION_STARTED` | `true` |
 | `FOLLOW_UP_DEVEX_SCOPE` | `CANONICAL_PRE_PR_RUFF_AND_DIFF_GUARD` |
 | `FOLLOW_UP_DEVEX_STATUS` | `PENDING_SEPARATE_PR` |
 | `SYSTEMWIDE_RANKING_REQUIRED` | `false` |
@@ -679,6 +681,8 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `RUNTIME_EFFECT` | `false` |
 | `FUTURES_ONLY` | `true` |
 | `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `RUNBOOK_STEP_29C_IMPLEMENTED` | `false` |
+| `CANONICAL_SCOPE_INITIALIZATION_V1_IMPLEMENTED` | `false` |
 | `SCOPE_INITIALIZATION_IMPLEMENTED` | `false` |
 | `SCOPE_EVENT_GENERATOR_IMPLEMENTED` | `false` |
 | `SEPARATE_GO_REQUIRED` | `true` |
@@ -690,10 +694,15 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `RUNBOOK_PHASE` | 9 |
 | `RUNBOOK_STEP_ID` | `canonical_scope_initialization` |
 | `CONTRACT_OR_CAPABILITY` | `canonical_scope_initialization_v1` |
-| `STATUS` | `NOT_STARTED` |
+| `STATUS` | `IN_PROGRESS` |
+| `CANONICAL_OWNER` | `src/trading/master_v2/canonical_scope_initialization_v1.py` |
 | `DEPENDENCIES` | RUNBOOK_STEP_29B |
+| `NEXT_REQUIRED_CONTRACT` | `deterministic_scope_event_generator` |
 | `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
 | `RUNTIME_EFFECT` | `false` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `SCOPE_EVENT_GENERATOR_IMPLEMENTED` | `false` |
 | `SEPARATE_GO_REQUIRED` | `true` |
 
 ---
