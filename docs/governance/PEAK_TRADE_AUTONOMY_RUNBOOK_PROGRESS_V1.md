@@ -19,7 +19,7 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `LAST_VERIFIED_ORIGIN_MAIN` | `57f74f6ae93d12ea5b332fab38bc75caf2a21026` |
 | `LAST_VERIFIED_AT` | `2026-06-29T12:00:00Z` |
 | `CURRENT_MAJOR_GAP_PACKAGE` | `MAJOR_GAP_COMPARISON_PROMOTION_POLICY_INPUT_BRIDGE_V0` |
-| `NEXT_CANONICAL_STEP` | `PR_STEP_5_REQUIRED_CHECKS_AND_REVIEW` |
+| `NEXT_CANONICAL_STEP` | `comparison_promotion_policy_decision_v1` |
 | `SYSTEMWIDE_RANKING_REQUIRED` | `false` |
 | `SEPARATE_GO_REQUIRED` | `true` |
 
@@ -33,7 +33,7 @@ SCHEDULER_RUNTIME_ALLOWED: false
 
 **Package:** `MAJOR_GAP_COMPARISON_PROMOTION_POLICY_INPUT_BRIDGE_V0`
 
-Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollständige Candidate-/Config-/Identity-Lineage → neutraler Promotion Candidate Input → Policy-Input Binding → Policy-Input Evidence → spätere Promotion Policy Decision.
+Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollständige Candidate-/Config-/Identity-Lineage → neutraler Promotion Candidate Input → Policy-Input Binding → Policy-Input Evidence → Promotion Policy Decision.
 
 | Package-Schritt | Contract/Capability | Status |
 |---|---|---|
@@ -41,7 +41,10 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | STEP_2 | `comparison_config_patch_manifest_cross_domain_lineage_binding_v1` | `COMPLETE` |
 | STEP_3 | `comparison_promotion_candidate_input_v1` | `COMPLETE` |
 | STEP_4 | `comparison_eligibility_promotion_policy_input_binding_v1` | `COMPLETE` |
-| STEP_5 | `comparison_promotion_policy_input_evidence_v1` | `IMPLEMENTED_PENDING_MERGE` |
+| STEP_5 | `comparison_promotion_policy_input_evidence_v1` | `COMPLETE` |
+| STEP_6 | `comparison_promotion_policy_decision_v1` | `IN_PROGRESS` |
+
+**Package-Status:** `COMPLETE` (Bridge V0 Steps 1–5 merged); STEP_6 = Phase-4 Decision Slice (offline, non-authorizing).
 
 **Planning-Bundle:** `planning&#47;systemwide_major_gap_ranking_after_pr4628_v0_20260629T004500Z` (MANIFEST_VERIFY_RC=0)
 
@@ -152,15 +155,15 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 |---|---|
 | `RUNBOOK_PHASE` | 4 |
 | `RUNBOOK_STEP_ID` | `promotion_eligibility_and_promotion_policy` |
-| `CONTRACT_OR_CAPABILITY` | Eligibility evidence + model/parameter identity + policy-input bridge (Major Gap Package) |
+| `CONTRACT_OR_CAPABILITY` | `comparison_promotion_policy_decision_v1` (offline decision from verified policy input evidence) |
 | `STATUS` | `IN_PROGRESS` |
-| `CANONICAL_OWNER` | Major Gap Package `MAJOR_GAP_COMPARISON_PROMOTION_POLICY_INPUT_BRIDGE_V0` |
-| `MERGED_PRS` | #4628 (eligibility), #4629 (model/parameter identity, STEP_1) |
-| `MERGE_COMMITS` | `023fdcb5`, `2f554b27` |
-| `DURABLE_EVIDENCE_REFS` | PR4628/4629 closeout; PR4629 implementation bundle MANIFEST_VERIFY_RC=1 (historischer Drift, siehe Execution Governance) |
-| `DEPENDENCIES` | RUNBOOK_STEP_05 |
-| `REMAINING_GAPS` | STEP_2–5 des Major Gap Packages |
-| `NEXT_REQUIRED_CONTRACT` | `comparison_config_patch_manifest_cross_domain_lineage_binding_v1` |
+| `CANONICAL_OWNER` | `src/meta/learning_loop/comparison_promotion_policy_decision_v1.py` |
+| `MERGED_PRS` | #4628 (eligibility), #4629 (model/parameter identity, STEP_1), #4634 (policy input bridge Steps 2–5) |
+| `MERGE_COMMITS` | `023fdcb5`, `2f554b27`, `ff4fb596` |
+| `DURABLE_EVIDENCE_REFS` | PR4628/4629/4634 closeout; PR4629 implementation bundle MANIFEST_VERIFY_RC=1 (historischer Drift, siehe Execution Governance) |
+| `DEPENDENCIES` | RUNBOOK_STEP_05, `comparison_promotion_policy_input_evidence_v1` |
+| `REMAINING_GAPS` | STEP_6 merge + required checks; AI assessment slice deferred |
+| `NEXT_REQUIRED_CONTRACT` | `comparison_promotion_policy_decision_v1` merge |
 | `AUTHORITY_LEVEL` | `NON_AUTHORITIZING_EVIDENCE_ONLY` |
 | `RUNTIME_EFFECT` | `false` |
 | `SEPARATE_GO_REQUIRED` | `true` |
