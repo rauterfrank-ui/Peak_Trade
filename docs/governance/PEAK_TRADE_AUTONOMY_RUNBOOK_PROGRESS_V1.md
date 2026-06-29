@@ -16,11 +16,11 @@ SCHEDULER_RUNTIME_ALLOWED: false
 
 | Feld | Wert |
 |---|---|
-| `LAST_VERIFIED_ORIGIN_MAIN` | `54278f41c52540afefd20b726f3e669cf97c5b2f` |
-| `LAST_VERIFIED_AT` | `2026-06-29T19:00:00Z` |
+| `LAST_VERIFIED_ORIGIN_MAIN` | `3f124b3d01155659390694476ca4aa8aa811869a` |
+| `LAST_VERIFIED_AT` | `2026-06-29T20:30:00Z` |
 | `CURRENT_MAJOR_GAP_PACKAGE` | `MAJOR_GAP_COMPARISON_PROMOTION_POLICY_INPUT_BRIDGE_V0` |
-| `NEXT_RUNBOOK_STEP` | `RUNBOOK_STEP_27` |
-| `NEXT_CANONICAL_STEP` | `autonomous_shadow_paper_testnet_orchestration` |
+| `NEXT_RUNBOOK_STEP` | `RUNBOOK_STEP_28` |
+| `NEXT_CANONICAL_STEP` | `canary_micro_live_readiness` |
 | `RUNBOOK_STEP_13_IMPLEMENTED` | `true` |
 | `TRADING_SESSION_SINGLE_WRITER_IMPLEMENTED` | `true` |
 | `RUNTIME_SINGLE_WRITER_ACTIVATED` | `false` |
@@ -60,6 +60,8 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `DEPLOY_INACTIVE_IMPLEMENTED` | `true` |
 | `RUNBOOK_STEP_26_IMPLEMENTED` | `true` |
 | `RUNTIME_OBSERVATION_AND_FEEDBACK_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_27_IMPLEMENTED` | `true` |
+| `AUTONOMOUS_NON_LIVE_ORCHESTRATION_PLAN_IMPLEMENTED` | `true` |
 | `FOLLOW_UP_DEVEX_SCOPE` | `CANONICAL_PRE_PR_RUFF_AND_DIFF_GUARD` |
 | `FOLLOW_UP_DEVEX_STATUS` | `PENDING_SEPARATE_PR` |
 | `SYSTEMWIDE_RANKING_REQUIRED` | `false` |
@@ -594,8 +596,15 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 |---|---|
 | `RUNBOOK_PHASE` | 9 |
 | `RUNBOOK_STEP_ID` | `autonomous_shadow_paper_testnet_orchestration` |
-| `STATUS` | `NOT_STARTED` |
+| `CONTRACT_OR_CAPABILITY` | `runtime_observation_to_orchestration_input_v1` + `autonomous_non_live_orchestration_plan_v1` |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src/meta/learning_loop/autonomous_non_live_orchestration_plan_v1.py` |
+| `MERGED_PRS` | `#4672` |
+| `MERGE_COMMITS` | `3f124b3d01155659390694476ca4aa8aa811869a` |
+| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/audit/runbook_step27_scope_go_token_and_minimum_safe_slice_audit_v0_20260629T180452Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/autonomous_non_live_orchestration_plan_v1_offline_slice_implementation_v0_20260629T181655Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/audit/step27_pr4672_premerge_bitcoin_input_path_and_side_effect_forensic_audit_v0_20260629T182259Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step27_pr4672_squash_merge_closeout_v0_20260629T182853Z (MANIFEST_VERIFY_RC=0); implementation_pr=4672; implementation_pr_state=MERGED; implementation_base_sha=bdc45bc8db7bfa184b03815da8ca9a9d074c95d4; implementation_head_sha=f13761625b61628b784db377e0736e64d1a58819; implementation_merge_commit=3f124b3d01155659390694476ca4aa8aa811869a; implementation_patch_sha256=4ad2aaf321898f0498274ffdbfbe6bbadab02e6ee26eac97020abe4217e6b27b; scope_audit_bundle_ref=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/audit/runbook_step27_scope_go_token_and_minimum_safe_slice_audit_v0_20260629T180452Z; implementation_bundle_ref=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/autonomous_non_live_orchestration_plan_v1_offline_slice_implementation_v0_20260629T181655Z; premerge_forensic_audit_bundle_ref=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/audit/step27_pr4672_premerge_bitcoin_input_path_and_side_effect_forensic_audit_v0_20260629T182259Z; closeout_bundle_ref=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step27_pr4672_squash_merge_closeout_v0_20260629T182853Z; all_manifest_verify_rc=0; required_checks_success=true; patch_equivalence_verified=true; PATCH_DIFF_RC=0; MERGED_AT=2026-06-29T18:27:49Z; MERGE_METHOD=SQUASH; SQUASH_PARENT=bdc45bc8db7bfa184b03815da8ca9a9d074c95d4; IMPLEMENTATION_BRANCH=feat/autonomous-non-live-orchestration-plan-v1-offline-slice; canonical_scope=autonomous_non_live_orchestration_plan_v1_offline_slice; RUNTIME_OBSERVATION_TO_ORCHESTRATION_INPUT_V1_COMPLETE=true; AUTONOMOUS_NON_LIVE_ORCHESTRATION_PLAN_V1_COMPLETE=true; STAGE_SEQUENCE=REPLAY_ONLY,SHADOW_ONLY,PAPER_ONLY,TESTNET_ONLY; STAGE_EXECUTION_ALLOWED=false; STAGE_ACTIVATION_ALLOWED=false; STAGE_SCHEDULER_ALLOWED=false; STAGE_ORDERS_ALLOWED=false; SHADOW_SEPARATE_OPERATOR_GO_REQUIRED=true; PAPER_SEPARATE_OPERATOR_GO_REQUIRED=true; TESTNET_SEPARATE_OPERATOR_GO_REQUIRED=true; REPLAY_ONLY_DECLARATIVE_OFFLINE_PLAN_FORMATION_ONLY=true; offline_only=true; non_authorizing=true; replay_session_started=false; shadow_session_started=false; paper_session_started=false; testnet_session_started=false; runtime_process_started=false; scheduler_action_performed=false; venue_access_performed=false; credential_access_performed=false; trading_action_performed=false; progress_registry_closeout_status=COMPLETE; FORENSIC_VERDICT=STEP27_PR4672_PREMERGE_FORENSIC_AUDIT_PASS; POSITIVE_BITCOIN_BTC_XBT_REFERENCES=0; AMBIGUOUS_BITCOIN_REFERENCES=0; PARALLEL_SSOT_RISK=false; RUNTIME_SIDE_EFFECT_RISK=false; INDEXING_REPO_MUTATION_DETECTED=false; FUTURES_ONLY=true; BITCOIN_DIRECTION_ALLOWED=false; SPOT_REJECTED_FAIL_CLOSED=true; SYNTHETIC_SPOT_REJECTED_FAIL_CLOSED=true; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SCHEDULER_RUNTIME_ALLOWED=false; SYSTEMWIDE_RANKING_REQUIRED=false; SYSTEMWIDE_RANKING_PERFORMED=false` |
 | `DEPENDENCIES` | RUNBOOK_STEP_26 |
+| `REMAINING_GAPS` | — |
+| `NEXT_REQUIRED_CONTRACT` | `canary_micro_live_readiness` |
 | `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
 | `RUNTIME_EFFECT` | `false` |
 | `SEPARATE_GO_REQUIRED` | `true` |
