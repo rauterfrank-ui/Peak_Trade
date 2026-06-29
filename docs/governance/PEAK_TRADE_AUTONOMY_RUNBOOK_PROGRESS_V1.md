@@ -16,10 +16,10 @@ SCHEDULER_RUNTIME_ALLOWED: false
 
 | Feld | Wert |
 |---|---|
-| `LAST_VERIFIED_ORIGIN_MAIN` | `6712dd75e1771e6e4e0a3f086f1b3f223453b77c` |
-| `LAST_VERIFIED_AT` | `2026-06-29T20:00:00Z` |
+| `LAST_VERIFIED_ORIGIN_MAIN` | `e30f5a3797e50f9fabe2f81b587539bb57a5d5a3` |
+| `LAST_VERIFIED_AT` | `2026-06-29T22:00:00Z` |
 | `CURRENT_MAJOR_GAP_PACKAGE` | `MAJOR_GAP_COMPARISON_PROMOTION_POLICY_INPUT_BRIDGE_V0` |
-| `NEXT_CANONICAL_STEP` | `versioned_strategy_model_parameter_artifact` |
+| `NEXT_CANONICAL_STEP` | `handoff_trust_policy` |
 | `SYSTEMWIDE_RANKING_REQUIRED` | `false` |
 | `SEPARATE_GO_REQUIRED` | `true` |
 
@@ -196,9 +196,12 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 |---|---|
 | `RUNBOOK_PHASE` | 5 |
 | `RUNBOOK_STEP_ID` | `versioned_strategy_model_parameter_artifact` |
-| `STATUS` | `IN_PROGRESS` |
+| `STATUS` | `COMPLETED` |
 | `CANONICAL_OWNER` | `src/meta/learning_loop/versioned_strategy_model_parameter_artifact_v1.py` |
+| `MERGED_PRS` | `#4637` |
+| `MERGE_COMMITS` | `e30f5a3797e50f9fabe2f81b587539bb57a5d5a3` |
 | `DEPENDENCIES` | RUNBOOK_STEP_06, `ai_promotion_assessment_v1` |
+| `NEXT_REQUIRED_CONTRACT` | `handoff_trust_policy` |
 | `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
 | `RUNTIME_EFFECT` | `false` |
 | `SEPARATE_GO_REQUIRED` | `true` |
@@ -207,10 +210,12 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 
 | Feld | Wert |
 |---|---|
-| `RUNBOOK_PHASE` | 6 |
+| `RUNBOOK_PHASE` | 5 |
 | `RUNBOOK_STEP_ID` | `handoff_trust_policy` |
-| `STATUS` | `NOT_STARTED` |
-| `DEPENDENCIES` | RUNBOOK_STEP_07 |
+| `STATUS` | `IN_PROGRESS` |
+| `CANONICAL_OWNER` | `src/meta/learning_loop/handoff_trust_policy_v1.py` |
+| `DEPENDENCIES` | RUNBOOK_STEP_07, `versioned_strategy_model_parameter_artifact_v1` |
+| `NEXT_REQUIRED_CONTRACT` | `authority_lease_and_revocation` |
 | `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
 | `RUNTIME_EFFECT` | `false` |
 | `SEPARATE_GO_REQUIRED` | `true` |
