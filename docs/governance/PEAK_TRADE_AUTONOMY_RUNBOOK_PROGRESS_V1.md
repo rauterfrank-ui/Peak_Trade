@@ -16,10 +16,18 @@ SCHEDULER_RUNTIME_ALLOWED: false
 
 | Feld | Wert |
 |---|---|
-| `LAST_VERIFIED_ORIGIN_MAIN` | `7d586c5776d16d9e806e20eeee47f77aedd4b8e5` |
-| `LAST_VERIFIED_AT` | `2026-06-29T18:00:00Z` |
+| `LAST_VERIFIED_ORIGIN_MAIN` | `3dd7b8138478aa0a1c68bd042bf6ee67f6bdeff3` |
+| `LAST_VERIFIED_AT` | `2026-06-29T19:30:00Z` |
 | `CURRENT_MAJOR_GAP_PACKAGE` | `MAJOR_GAP_COMPARISON_PROMOTION_POLICY_INPUT_BRIDGE_V0` |
-| `NEXT_CANONICAL_STEP` | `clock_trust_and_expiry` |
+| `NEXT_RUNBOOK_STEP` | `RUNBOOK_STEP_13` |
+| `NEXT_CANONICAL_STEP` | `trading_session_single_writer` |
+| `RUNBOOK_STEP_13_IMPLEMENTED` | `false` |
+| `TRADING_SESSION_SINGLE_WRITER_IMPLEMENTED` | `false` |
+| `RUNTIME_SINGLE_WRITER_ACTIVATED` | `false` |
+| `SESSION_STARTED` | `false` |
+| `WRITER_LOCK_ACQUIRED` | `false` |
+| `FOLLOW_UP_DEVEX_SCOPE` | `CANONICAL_PRE_PR_RUFF_AND_DIFF_GUARD` |
+| `FOLLOW_UP_DEVEX_STATUS` | `PENDING_SEPARATE_PR` |
 | `SYSTEMWIDE_RANKING_REQUIRED` | `false` |
 | `SEPARATE_GO_REQUIRED` | `true` |
 
@@ -276,9 +284,13 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 |---|---|
 | `RUNBOOK_PHASE` | 6 |
 | `RUNBOOK_STEP_ID` | `clock_trust_and_toctou_revalidation` |
-| `STATUS` | `IN_PROGRESS` |
+| `STATUS` | `COMPLETE` |
 | `CANONICAL_OWNER` | `src/meta/learning_loop/clock_trust_and_expiry_v1.py` |
+| `MERGED_PRS` | `#4642` |
+| `MERGE_COMMITS` | `3dd7b8138478aa0a1c68bd042bf6ee67f6bdeff3` |
+| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/clock_trust_and_expiry_v1_offline_slice_implementation_v0_20260629T033245Z` (MANIFEST_VERIFY_RC=0); `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/pr4642_clock_trust_and_expiry_v1_offline_slice_squash_merge_closeout_v0_20260629T034100Z` (MANIFEST_VERIFY_RC=0); PATCH_DIFF_RC=0; MERGED_AT=2026-06-29T03:40:55Z; MERGE_METHOD=SQUASH_ADMIN; SQUASH_PARENT=7d586c5776d16d9e806e20eeee47f77aedd4b8e5 |
 | `DEPENDENCIES` | RUNBOOK_STEP_11, `handoff_atomic_claim_consume_v1` |
+| `REMAINING_GAPS` | — |
 | `NEXT_REQUIRED_CONTRACT` | `trading_session_single_writer` |
 | `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
 | `RUNTIME_EFFECT` | `false` |
