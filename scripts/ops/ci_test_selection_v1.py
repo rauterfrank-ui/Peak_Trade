@@ -1857,6 +1857,34 @@ PR_BOUNDED_FULL_PACKAGE_COMPARISON_PROMOTION_POLICY_DECISION_V1_TARGETS: tuple[s
     "tests/ci/test_ci_diff_aware_test_selection_v1.py",
 )
 
+PR_BOUNDED_FULL_PACKAGE_AI_PROMOTION_ASSESSMENT_V1_TRIGGER_PATHS: frozenset[str] = frozenset(
+    {
+        "src/meta/learning_loop/ai_promotion_assessment_v1.py",
+        "scripts/run_ai_promotion_assessment_v1.py",
+        "tests/meta/test_ai_promotion_assessment_v1.py",
+        "tests/scripts/test_run_ai_promotion_assessment_v1.py",
+        "tests/meta/ai_promotion_assessment_v1_fixtures.py",
+    }
+)
+
+PR_BOUNDED_FULL_PACKAGE_AI_PROMOTION_ASSESSMENT_V1_TARGETS: tuple[str, ...] = (
+    "tests/meta/test_ai_promotion_assessment_v1.py",
+    "tests/scripts/test_run_ai_promotion_assessment_v1.py",
+    "tests/meta/test_comparison_promotion_policy_decision_v1.py",
+    "tests/scripts/test_run_comparison_promotion_policy_decision_v1.py",
+    "tests/meta/test_comparison_promotion_policy_input_evidence_v1.py",
+    "tests/meta/test_comparison_eligibility_promotion_policy_input_binding_v1.py",
+    "tests/meta/test_comparison_promotion_candidate_input_v1.py",
+    "tests/meta/test_comparison_config_patch_manifest_cross_domain_lineage_binding_v1.py",
+    "tests/meta/test_comparison_promotion_candidate_model_parameter_identity_binding_v1.py",
+    "tests/meta/test_comparison_promotion_candidate_eligibility_evidence_v1.py",
+    "tests/meta/test_config_patch_manifest_v1_contract.py",
+    "tests/meta/test_learning_manifest_durable_evidence_binding_v1.py",
+    "tests/governance/promotion_loop/test_candidate_lineage_manifest_v1_contract.py",
+    "tests/meta/test_contract_safety_v1.py",
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+)
+
 PR_BOUNDED_FULL_PACKAGE_COMPARISON_METRIC_INPUT_TRIGGER_PATHS: frozenset[str] = frozenset(
     {
         "src/meta/learning_loop/comparison_metric_input_v1/__init__.py",
@@ -2136,6 +2164,10 @@ def resolve_pr_bounded_full_targets(files: list[str]) -> tuple[str, ...]:
 
     if normalized & PR_BOUNDED_FULL_PACKAGE_COMPARISON_PROMOTION_POLICY_DECISION_V1_TRIGGER_PATHS:
         for path in PR_BOUNDED_FULL_PACKAGE_COMPARISON_PROMOTION_POLICY_DECISION_V1_TARGETS:
+            add(path)
+
+    if normalized & PR_BOUNDED_FULL_PACKAGE_AI_PROMOTION_ASSESSMENT_V1_TRIGGER_PATHS:
+        for path in PR_BOUNDED_FULL_PACKAGE_AI_PROMOTION_ASSESSMENT_V1_TARGETS:
             add(path)
 
     if normalized & PR_BOUNDED_FULL_PACKAGE_COMPARISON_METRIC_INPUT_TRIGGER_PATHS:

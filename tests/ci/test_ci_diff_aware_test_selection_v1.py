@@ -6800,3 +6800,64 @@ def test_selector_package_cmp_promotion_policy_decision_v1_combined_diff_pr_boun
     for path in PACKAGE_CMP_PROMOTION_POLICY_DECISION_V1_ALL_TESTOWNERS:
         assert path in bounded
         assert bounded.count(path) == 1
+
+
+PACKAGE_AI_PROMOTION_ASSESSMENT_V1_PRODUCTION = (
+    "src/meta/learning_loop/ai_promotion_assessment_v1.py"
+)
+PACKAGE_AI_PROMOTION_ASSESSMENT_V1_SCRIPT = "scripts/run_ai_promotion_assessment_v1.py"
+PACKAGE_AI_PROMOTION_ASSESSMENT_V1_TESTOWNER = (
+    "tests/meta/test_ai_promotion_assessment_v1.py"
+)
+PACKAGE_AI_PROMOTION_ASSESSMENT_V1_CLI_TESTOWNER = (
+    "tests/scripts/test_run_ai_promotion_assessment_v1.py"
+)
+PACKAGE_AI_PROMOTION_ASSESSMENT_V1_DEPENDENCY_TESTOWNERS = (
+    "tests/meta/test_comparison_promotion_policy_decision_v1.py",
+    "tests/scripts/test_run_comparison_promotion_policy_decision_v1.py",
+    "tests/meta/test_comparison_promotion_policy_input_evidence_v1.py",
+    "tests/meta/test_comparison_eligibility_promotion_policy_input_binding_v1.py",
+    "tests/meta/test_comparison_promotion_candidate_input_v1.py",
+    "tests/meta/test_comparison_config_patch_manifest_cross_domain_lineage_binding_v1.py",
+    "tests/meta/test_comparison_promotion_candidate_model_parameter_identity_binding_v1.py",
+    "tests/meta/test_comparison_promotion_candidate_eligibility_evidence_v1.py",
+    "tests/meta/test_config_patch_manifest_v1_contract.py",
+    "tests/meta/test_learning_manifest_durable_evidence_binding_v1.py",
+    "tests/governance/promotion_loop/test_candidate_lineage_manifest_v1_contract.py",
+    "tests/meta/test_contract_safety_v1.py",
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+)
+PACKAGE_AI_PROMOTION_ASSESSMENT_V1_ALL_PRODUCTION = (
+    PACKAGE_AI_PROMOTION_ASSESSMENT_V1_PRODUCTION,
+    PACKAGE_AI_PROMOTION_ASSESSMENT_V1_SCRIPT,
+)
+PACKAGE_AI_PROMOTION_ASSESSMENT_V1_ALL_TESTOWNERS = (
+    PACKAGE_AI_PROMOTION_ASSESSMENT_V1_TESTOWNER,
+    PACKAGE_AI_PROMOTION_ASSESSMENT_V1_CLI_TESTOWNER,
+    *PACKAGE_AI_PROMOTION_ASSESSMENT_V1_DEPENDENCY_TESTOWNERS,
+)
+
+
+def test_selector_package_ai_promotion_assessment_v1_production_pr_bounded_full_includes_testowners() -> (
+    None
+):
+    sel = _run_selector(PACKAGE_AI_PROMOTION_ASSESSMENT_V1_PRODUCTION)
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    bounded = _bounded_targets(sel)
+    for path in PACKAGE_AI_PROMOTION_ASSESSMENT_V1_ALL_TESTOWNERS:
+        assert path in bounded
+
+
+def test_selector_package_ai_promotion_assessment_v1_combined_diff_pr_bounded_full_includes_all_testowners_once() -> (
+    None
+):
+    sel = _run_selector(
+        *PACKAGE_AI_PROMOTION_ASSESSMENT_V1_ALL_PRODUCTION,
+        "scripts/ops/ci_test_selection_v1.py",
+        *PACKAGE_AI_PROMOTION_ASSESSMENT_V1_ALL_TESTOWNERS,
+    )
+    assert sel["test_selection_mode"] == "PR_BOUNDED_FULL"
+    bounded = _bounded_targets(sel)
+    for path in PACKAGE_AI_PROMOTION_ASSESSMENT_V1_ALL_TESTOWNERS:
+        assert path in bounded
+        assert bounded.count(path) == 1
