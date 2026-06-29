@@ -16,11 +16,11 @@ SCHEDULER_RUNTIME_ALLOWED: false
 
 | Feld | Wert |
 |---|---|
-| `LAST_VERIFIED_ORIGIN_MAIN` | `a63ea1deb40a10b46b0546c6e18f5e03c31a3b3c` |
-| `LAST_VERIFIED_AT` | `2026-06-29T17:00:00Z` |
+| `LAST_VERIFIED_ORIGIN_MAIN` | `8abbf803a66ce71cba26dbe680f168183f258c3e` |
+| `LAST_VERIFIED_AT` | `2026-06-29T18:00:00Z` |
 | `CURRENT_MAJOR_GAP_PACKAGE` | `MAJOR_GAP_COMPARISON_PROMOTION_POLICY_INPUT_BRIDGE_V0` |
-| `NEXT_RUNBOOK_STEP` | `RUNBOOK_STEP_25` |
-| `NEXT_CANONICAL_STEP` | `deploy_inactive` |
+| `NEXT_RUNBOOK_STEP` | `RUNBOOK_STEP_26` |
+| `NEXT_CANONICAL_STEP` | `runtime_observation_and_feedback` |
 | `RUNBOOK_STEP_13_IMPLEMENTED` | `true` |
 | `TRADING_SESSION_SINGLE_WRITER_IMPLEMENTED` | `true` |
 | `RUNTIME_SINGLE_WRITER_ACTIVATED` | `false` |
@@ -56,6 +56,8 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `KILLSWITCH_WRITER_FENCING_AND_INDEPENDENT_READ_PATHS_IMPLEMENTED` | `true` |
 | `RUNBOOK_STEP_24_IMPLEMENTED` | `true` |
 | `RUNTIME_ELIGIBILITY_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_25_IMPLEMENTED` | `true` |
+| `DEPLOY_INACTIVE_IMPLEMENTED` | `true` |
 | `FOLLOW_UP_DEVEX_SCOPE` | `CANONICAL_PRE_PR_RUFF_AND_DIFF_GUARD` |
 | `FOLLOW_UP_DEVEX_STATUS` | `PENDING_SEPARATE_PR` |
 | `SYSTEMWIDE_RANKING_REQUIRED` | `false` |
@@ -552,8 +554,15 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 |---|---|
 | `RUNBOOK_PHASE` | 7 |
 | `RUNBOOK_STEP_ID` | `deploy_inactive` |
-| `STATUS` | `NOT_STARTED` |
+| `CONTRACT_OR_CAPABILITY` | `deployment_candidate_v1` + `deployed_inactive_verification_v1` |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src/meta/learning_loop/deploy_inactive_v1.py` |
+| `MERGED_PRS` | `#4668` |
+| `MERGE_COMMITS` | `8abbf803a66ce71cba26dbe680f168183f258c3e` |
+| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/deploy_inactive_v1_offline_slice_implementation_v0_20260629T170309Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/deploy_inactive_v1_offline_slice_pr4668_squash_merge_closeout_v0_20260629T171213Z (MANIFEST_VERIFY_RC=0); implementation_pr=4668; implementation_merge_commit=8abbf803a66ce71cba26dbe680f168183f258c3e; implementation_parent=d249cb033e92cd2c06354ba0e88a43c8fdc300da; implementation_patch_sha256=e57b4430c719684c5b3f56654075f9269ab73baa9ffa3e5e2c54f55c8218cf78; implementation_bundle_ref=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/deploy_inactive_v1_offline_slice_implementation_v0_20260629T170309Z; closeout_bundle_ref=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/deploy_inactive_v1_offline_slice_pr4668_squash_merge_closeout_v0_20260629T171213Z; implementation_manifest_verify_rc=0; closeout_manifest_verify_rc=0; required_checks_success=true; patch_equivalence_verified=true; PATCH_DIFF_RC=0; MERGED_AT=2026-06-29T17:09:59Z; MERGE_METHOD=SQUASH; SQUASH_PARENT=d249cb033e92cd2c06354ba0e88a43c8fdc300da; IMPLEMENTATION_BRANCH=feat/deploy-inactive-v1-offline-slice; canonical_scope=deploy_inactive_v1_offline_slice; DEPLOY_INACTIVE_CONTRACT_COMPLETE=true; DEPLOY_INACTIVE_OFFLINE_ONLY=true; DEPLOY_INACTIVE_IS_EVIDENCE=true; DEPLOY_INACTIVE_IS_NOT_DEPLOYMENT=true; DEPLOY_INACTIVE_IS_NOT_ACTIVATION=true; DEPLOY_INACTIVE_IS_NOT_AUTHORITY=true; DEPLOY_INACTIVE_DOES_NOT_AUTHORIZE_ORDERS=true; DEPLOY_INACTIVE_DOES_NOT_MUTATE_RUNTIME=true; offline_only=true; non_authorizing=true; evidence_not_authority=true; runtime_mutation_performed=false; activation_performed=false; progress_registry_closeout_status=COMPLETE; REAL_DEPLOYMENT_PERFORMED=false; FILE_TRANSFER_TO_RUNTIME_PERFORMED=false; DEPLOYMENT_CREATED=false; DEPLOYMENT_ACTIVATED=false; RUNTIME_ACTIVATED=false; RUNTIME_STATE_MUTATED=false; AUTHORITY_CREATED=false; EXECUTION_PERMISSION_CREATED=false; SUBMISSION_AUTHORIZED=false; ADAPTER_INVOKED=false; ORDER_CREATED=false; ORDER_SUBMITTED=false; NETWORK_SIDE_EFFECT_CREATED=false; EXCHANGE_REQUEST_SENT=false; FUTURES_ONLY=true; BITCOIN_DIRECTION_ALLOWED=false; GENERIC_FUTURES_MARKET_TYPE_GUARD=true; SPOT_REJECTED_FAIL_CLOSED=true; SYNTHETIC_SPOT_REJECTED_FAIL_CLOSED=true; UNKNOWN_MARKET_TYPE_REJECTED_FAIL_CLOSED=true; MISSING_MARKET_TYPE_REJECTED_FAIL_CLOSED=true; FUTURES_ONLY_DRIFT_GUARD_PASS=true; CURRENT_DIFF_ASSET_SPECIFIC_DIRECTIONAL_MATCH_COUNT=0; NEW_EVIDENCE_ASSET_SPECIFIC_DIRECTIONAL_MATCH_COUNT=0; forbidden_owner_diff_count=0; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SCHEDULER_RUNTIME_ALLOWED=false; SYSTEMWIDE_RANKING_REQUIRED=false; SYSTEMWIDE_RANKING_PERFORMED=false` |
 | `DEPENDENCIES` | RUNBOOK_STEP_24 |
+| `REMAINING_GAPS` | — |
+| `NEXT_REQUIRED_CONTRACT` | `runtime_observation_and_feedback` |
 | `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
 | `RUNTIME_EFFECT` | `false` |
 | `SEPARATE_GO_REQUIRED` | `true` |
