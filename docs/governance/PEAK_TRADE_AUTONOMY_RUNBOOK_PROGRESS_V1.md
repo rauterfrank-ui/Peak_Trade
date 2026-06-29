@@ -16,10 +16,10 @@ SCHEDULER_RUNTIME_ALLOWED: false
 
 | Feld | Wert |
 |---|---|
-| `LAST_VERIFIED_ORIGIN_MAIN` | `2f554b27854a8b39870348c10035a1a9c96e1b7d` |
-| `LAST_VERIFIED_AT` | `2026-06-29T00:00:00Z` |
+| `LAST_VERIFIED_ORIGIN_MAIN` | `57f74f6ae93d12ea5b332fab38bc75caf2a21026` |
+| `LAST_VERIFIED_AT` | `2026-06-29T12:00:00Z` |
 | `CURRENT_MAJOR_GAP_PACKAGE` | `MAJOR_GAP_COMPARISON_PROMOTION_POLICY_INPUT_BRIDGE_V0` |
-| `NEXT_CANONICAL_STEP` | `comparison_config_patch_manifest_cross_domain_lineage_binding_v1` |
+| `NEXT_CANONICAL_STEP` | `PR_STEP_5_REQUIRED_CHECKS_AND_REVIEW` |
 | `SYSTEMWIDE_RANKING_REQUIRED` | `false` |
 | `SEPARATE_GO_REQUIRED` | `true` |
 
@@ -40,8 +40,8 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | STEP_1 | `comparison_promotion_candidate_model_parameter_identity_binding_v1` | `COMPLETE` |
 | STEP_2 | `comparison_config_patch_manifest_cross_domain_lineage_binding_v1` | `COMPLETE` |
 | STEP_3 | `comparison_promotion_candidate_input_v1` | `COMPLETE` |
-| STEP_4 | `comparison_eligibility_promotion_policy_input_binding_v1` | `IMPLEMENTED_PENDING_MERGE` |
-| STEP_5 | `comparison_promotion_policy_input_evidence_v1` | `NOT_STARTED` |
+| STEP_4 | `comparison_eligibility_promotion_policy_input_binding_v1` | `COMPLETE` |
+| STEP_5 | `comparison_promotion_policy_input_evidence_v1` | `IMPLEMENTED_PENDING_MERGE` |
 
 **Planning-Bundle:** `planning&#47;systemwide_major_gap_ranking_after_pr4628_v0_20260629T004500Z` (MANIFEST_VERIFY_RC=0)
 
