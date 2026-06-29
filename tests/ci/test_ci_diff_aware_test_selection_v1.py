@@ -6806,9 +6806,7 @@ PACKAGE_AI_PROMOTION_ASSESSMENT_V1_PRODUCTION = (
     "src/meta/learning_loop/ai_promotion_assessment_v1.py"
 )
 PACKAGE_AI_PROMOTION_ASSESSMENT_V1_SCRIPT = "scripts/run_ai_promotion_assessment_v1.py"
-PACKAGE_AI_PROMOTION_ASSESSMENT_V1_TESTOWNER = (
-    "tests/meta/test_ai_promotion_assessment_v1.py"
-)
+PACKAGE_AI_PROMOTION_ASSESSMENT_V1_TESTOWNER = "tests/meta/test_ai_promotion_assessment_v1.py"
 PACKAGE_AI_PROMOTION_ASSESSMENT_V1_CLI_TESTOWNER = (
     "tests/scripts/test_run_ai_promotion_assessment_v1.py"
 )
