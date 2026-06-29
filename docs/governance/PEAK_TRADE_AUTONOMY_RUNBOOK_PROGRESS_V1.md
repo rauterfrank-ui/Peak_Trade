@@ -16,11 +16,11 @@ SCHEDULER_RUNTIME_ALLOWED: false
 
 | Feld | Wert |
 |---|---|
-| `LAST_VERIFIED_ORIGIN_MAIN` | `e32ae6551d37728d647781d6e0a64f96b42f428a` |
-| `LAST_VERIFIED_AT` | `2026-06-30T12:00:00Z` |
+| `LAST_VERIFIED_ORIGIN_MAIN` | `561f245935132e2f63ad38a48c0425bd34869b0d` |
+| `LAST_VERIFIED_AT` | `2026-06-29T23:05:19Z` |
 | `CURRENT_MAJOR_GAP_PACKAGE` | `MAJOR_GAP_COMPARISON_PROMOTION_POLICY_INPUT_BRIDGE_V0` |
-| `NEXT_RUNBOOK_STEP` | `RUNBOOK_STEP_29C` |
-| `NEXT_CANONICAL_STEP` | `canonical_scope_initialization` |
+| `NEXT_RUNBOOK_STEP` | `RUNBOOK_STEP_29D` |
+| `NEXT_CANONICAL_STEP` | `deterministic_scope_event_generator` |
 | `RUNBOOK_STEP_13_IMPLEMENTED` | `true` |
 | `TRADING_SESSION_SINGLE_WRITER_IMPLEMENTED` | `true` |
 | `RUNTIME_SINGLE_WRITER_ACTIVATED` | `false` |
@@ -68,6 +68,8 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `CANONICAL_MARKET_CONTEXT_BINDING_V1_IMPLEMENTED` | `true` |
 | `RUNBOOK_STEP_29C_IMPLEMENTATION_STARTED` | `true` |
 | `CANONICAL_SCOPE_INITIALIZATION_V1_IMPLEMENTATION_STARTED` | `true` |
+| `RUNBOOK_STEP_29C_IMPLEMENTED` | `true` |
+| `CANONICAL_SCOPE_INITIALIZATION_V1_IMPLEMENTED` | `true` |
 | `FOLLOW_UP_DEVEX_SCOPE` | `CANONICAL_PRE_PR_RUFF_AND_DIFF_GUARD` |
 | `FOLLOW_UP_DEVEX_STATUS` | `PENDING_SEPARATE_PR` |
 | `SYSTEMWIDE_RANKING_REQUIRED` | `false` |
@@ -681,9 +683,9 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `RUNTIME_EFFECT` | `false` |
 | `FUTURES_ONLY` | `true` |
 | `BITCOIN_DIRECTION_ALLOWED` | `false` |
-| `RUNBOOK_STEP_29C_IMPLEMENTED` | `false` |
-| `CANONICAL_SCOPE_INITIALIZATION_V1_IMPLEMENTED` | `false` |
-| `SCOPE_INITIALIZATION_IMPLEMENTED` | `false` |
+| `RUNBOOK_STEP_29C_IMPLEMENTED` | `true` |
+| `CANONICAL_SCOPE_INITIALIZATION_V1_IMPLEMENTED` | `true` |
+| `SCOPE_INITIALIZATION_IMPLEMENTED` | `true` |
 | `SCOPE_EVENT_GENERATOR_IMPLEMENTED` | `false` |
 | `SEPARATE_GO_REQUIRED` | `true` |
 
@@ -694,10 +696,32 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `RUNBOOK_PHASE` | 9 |
 | `RUNBOOK_STEP_ID` | `canonical_scope_initialization` |
 | `CONTRACT_OR_CAPABILITY` | `canonical_scope_initialization_v1` |
-| `STATUS` | `IN_PROGRESS` |
+| `STATUS` | `COMPLETE` |
 | `CANONICAL_OWNER` | `src/trading/master_v2/canonical_scope_initialization_v1.py` |
+| `MERGED_PRS` | `#4678` |
+| `MERGE_COMMITS` | `561f245935132e2f63ad38a48c0425bd34869b0d` |
+| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/runbook_step29c_canonical_scope_initialization_v1_offline_slice_implementation_v0_20260630T225257Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29c_pr4678_squash_merge_closeout_v0_20260630T230059Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29c_progress_registry_closeout_v0_20260629T230519Z (MANIFEST_VERIFY_RC=0); implementation_pr=4678; implementation_pr_state=MERGED; implementation_base_sha=0061c9919ff59a737a21dc2fe82d7ce6ff40286d; implementation_head_sha=aac3599d0fe7d7bbf27e4a4fcc0a16e1580b4720; implementation_merge_commit=561f245935132e2f63ad38a48c0425bd34869b0d; implementation_bundle_ref=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/runbook_step29c_canonical_scope_initialization_v1_offline_slice_implementation_v0_20260630T225257Z; squash_merge_closeout_bundle_ref=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29c_pr4678_squash_merge_closeout_v0_20260630T230059Z; progress_registry_closeout_bundle_ref=/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29c_progress_registry_closeout_v0_20260629T230519Z; implementation_manifest_verify_rc=0; squash_merge_closeout_manifest_verify_rc=0; progress_registry_closeout_manifest_verify_rc=0; patch_equivalence_verified=true; PATCH_EQUIVALENCE_RC=0; MERGED_AT=2026-06-29T23:00:16Z; MERGE_METHOD=SQUASH; SQUASH_PARENT=0061c9919ff59a737a21dc2fe82d7ce6ff40286d; IMPLEMENTATION_BRANCH=feat/canonical-scope-initialization-v1; canonical_scope=canonical_scope_initialization_v1_offline_slice; CANONICAL_SCOPE_INITIALIZATION_BOUND=true; STEP29C_CLOSEOUT_COMPLETE=true; STEP29D_IMPLEMENTATION_STARTED=false; STEP_29C_COMPLETION_DOES_NOT_AUTHORIZE_LIVE=true; STEP_29C_COMPLETION_DOES_NOT_AUTHORIZE_RUNTIME=true; STEP_29C_COMPLETION_DOES_NOT_AUTHORIZE_ORDERS=true; STEP_29C_COMPLETION_DOES_NOT_START_SCOPE_EVENT_GENERATOR=true; offline_only=true; non_authorizing=true; runtime_process_started=false; scheduler_action_performed=false; venue_access_performed=false; credential_access_performed=false; trading_action_performed=false; progress_registry_closeout_status=COMPLETE; FUTURES_ONLY=true; BITCOIN_DIRECTION_ALLOWED=false; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SCHEDULER_RUNTIME_ALLOWED=false; SCOPE_EVENT_GENERATOR_IMPLEMENTED=false; AUTO_PR_HELPER_FAILURE_OBSERVED=true; AUTO_PR_HELPER_FAILURE_REQUIRED=false; AUTO_PR_HELPER_FAILURE_BLOCKING=false; AUTO_PR_HELPER_REPAIR_DEFERRED=true` |
 | `DEPENDENCIES` | RUNBOOK_STEP_29B |
+| `REMAINING_GAPS` | — |
 | `NEXT_REQUIRED_CONTRACT` | `deterministic_scope_event_generator` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `SCOPE_INITIALIZATION_IMPLEMENTED` | `true` |
+| `CANONICAL_SCOPE_INITIALIZATION_BOUND` | `true` |
+| `SCOPE_EVENT_GENERATOR_IMPLEMENTED` | `false` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_29D — Deterministic Scope Event Generator
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 9 |
+| `RUNBOOK_STEP_ID` | `deterministic_scope_event_generator` |
+| `CONTRACT_OR_CAPABILITY` | `deterministic_scope_event_generator_v1` |
+| `STATUS` | `NOT_STARTED` |
+| `DEPENDENCIES` | RUNBOOK_STEP_29C |
 | `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
 | `RUNTIME_EFFECT` | `false` |
 | `FUTURES_ONLY` | `true` |
