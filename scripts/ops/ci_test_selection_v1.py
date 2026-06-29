@@ -2017,6 +2017,41 @@ PR_BOUNDED_FULL_PACKAGE_HANDOFF_ATOMIC_CLAIM_CONSUME_V1_TARGETS: tuple[str, ...]
     "tests/ci/test_ci_diff_aware_test_selection_v1.py",
 )
 
+PR_BOUNDED_FULL_PACKAGE_CLOCK_TRUST_AND_EXPIRY_V1_TRIGGER_PATHS: frozenset[str] = frozenset(
+    {
+        "src/meta/learning_loop/clock_trust_and_expiry_v1.py",
+        "scripts/run_clock_trust_and_expiry_v1.py",
+        "tests/meta/test_clock_trust_and_expiry_v1.py",
+        "tests/scripts/test_run_clock_trust_and_expiry_v1.py",
+        "tests/meta/clock_trust_and_expiry_v1_fixtures.py",
+    }
+)
+
+PR_BOUNDED_FULL_PACKAGE_CLOCK_TRUST_AND_EXPIRY_V1_TARGETS: tuple[str, ...] = (
+    "tests/meta/test_clock_trust_and_expiry_v1.py",
+    "tests/scripts/test_run_clock_trust_and_expiry_v1.py",
+    "tests/meta/test_handoff_atomic_claim_consume_v1.py",
+    "tests/scripts/test_run_handoff_atomic_claim_consume_v1.py",
+    "tests/meta/test_secure_handoff_envelope_v1.py",
+    "tests/scripts/test_run_secure_handoff_envelope_v1.py",
+    "tests/meta/test_authority_lease_and_revocation_v1.py",
+    "tests/scripts/test_run_authority_lease_and_revocation_v1.py",
+    "tests/meta/test_handoff_trust_policy_v1.py",
+    "tests/scripts/test_run_handoff_trust_policy_v1.py",
+    "tests/meta/test_versioned_strategy_model_parameter_artifact_v1.py",
+    "tests/meta/test_ai_promotion_assessment_v1.py",
+    "tests/meta/test_comparison_promotion_policy_decision_v1.py",
+    "tests/meta/test_comparison_promotion_candidate_identity_binding_v1.py",
+    "tests/meta/test_comparison_promotion_candidate_model_parameter_identity_binding_v1.py",
+    "tests/meta/test_comparison_promotion_candidate_eligibility_evidence_v1.py",
+    "tests/meta/test_config_patch_manifest_v1_contract.py",
+    "tests/meta/test_learning_manifest_durable_evidence_binding_v1.py",
+    "tests/governance/promotion_loop/test_candidate_lineage_manifest_v1_contract.py",
+    "tests/experiments/test_experiment_identity_manifest_v1.py",
+    "tests/meta/test_contract_safety_v1.py",
+    "tests/ci/test_ci_diff_aware_test_selection_v1.py",
+)
+
 PR_BOUNDED_FULL_PACKAGE_SECURE_HANDOFF_ENVELOPE_V1_TARGETS: tuple[str, ...] = (
     "tests/meta/test_secure_handoff_envelope_v1.py",
     "tests/scripts/test_run_secure_handoff_envelope_v1.py",
@@ -2345,6 +2380,10 @@ def resolve_pr_bounded_full_targets(files: list[str]) -> tuple[str, ...]:
 
     if normalized & PR_BOUNDED_FULL_PACKAGE_HANDOFF_ATOMIC_CLAIM_CONSUME_V1_TRIGGER_PATHS:
         for path in PR_BOUNDED_FULL_PACKAGE_HANDOFF_ATOMIC_CLAIM_CONSUME_V1_TARGETS:
+            add(path)
+
+    if normalized & PR_BOUNDED_FULL_PACKAGE_CLOCK_TRUST_AND_EXPIRY_V1_TRIGGER_PATHS:
+        for path in PR_BOUNDED_FULL_PACKAGE_CLOCK_TRUST_AND_EXPIRY_V1_TARGETS:
             add(path)
 
     if normalized & PR_BOUNDED_FULL_PACKAGE_COMPARISON_METRIC_INPUT_TRIGGER_PATHS:

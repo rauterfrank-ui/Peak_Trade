@@ -16,10 +16,10 @@ SCHEDULER_RUNTIME_ALLOWED: false
 
 | Feld | Wert |
 |---|---|
-| `LAST_VERIFIED_ORIGIN_MAIN` | `841be8b4e8460fcd68814c21feeba1f8e28e8052` |
-| `LAST_VERIFIED_AT` | `2026-06-29T12:00:00Z` |
+| `LAST_VERIFIED_ORIGIN_MAIN` | `7d586c5776d16d9e806e20eeee47f77aedd4b8e5` |
+| `LAST_VERIFIED_AT` | `2026-06-29T18:00:00Z` |
 | `CURRENT_MAJOR_GAP_PACKAGE` | `MAJOR_GAP_COMPARISON_PROMOTION_POLICY_INPUT_BRIDGE_V0` |
-| `NEXT_CANONICAL_STEP` | `handoff_atomic_claim_consume` |
+| `NEXT_CANONICAL_STEP` | `clock_trust_and_expiry` |
 | `SYSTEMWIDE_RANKING_REQUIRED` | `false` |
 | `SEPARATE_GO_REQUIRED` | `true` |
 
@@ -260,8 +260,10 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 |---|---|
 | `RUNBOOK_PHASE` | 6 |
 | `RUNBOOK_STEP_ID` | `atomic_claim_consume` |
-| `STATUS` | `IN_PROGRESS` |
+| `STATUS` | `COMPLETE` |
 | `CANONICAL_OWNER` | `src/meta/learning_loop/handoff_atomic_claim_consume_v1.py` |
+| `MERGED_PRS` | `#4641` |
+| `MERGE_COMMITS` | `7d586c5776d16d9e806e20eeee47f77aedd4b8e5` |
 | `DEPENDENCIES` | RUNBOOK_STEP_10, `secure_handoff_envelope_v1` |
 | `NEXT_REQUIRED_CONTRACT` | `clock_trust_and_expiry` |
 | `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
@@ -274,8 +276,10 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 |---|---|
 | `RUNBOOK_PHASE` | 6 |
 | `RUNBOOK_STEP_ID` | `clock_trust_and_toctou_revalidation` |
-| `STATUS` | `NOT_STARTED` |
-| `DEPENDENCIES` | RUNBOOK_STEP_11 |
+| `STATUS` | `IN_PROGRESS` |
+| `CANONICAL_OWNER` | `src/meta/learning_loop/clock_trust_and_expiry_v1.py` |
+| `DEPENDENCIES` | RUNBOOK_STEP_11, `handoff_atomic_claim_consume_v1` |
+| `NEXT_REQUIRED_CONTRACT` | `trading_session_single_writer` |
 | `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
 | `RUNTIME_EFFECT` | `false` |
 | `SEPARATE_GO_REQUIRED` | `true` |
