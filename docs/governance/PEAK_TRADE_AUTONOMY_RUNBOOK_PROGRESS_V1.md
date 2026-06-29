@@ -16,10 +16,10 @@ SCHEDULER_RUNTIME_ALLOWED: false
 
 | Feld | Wert |
 |---|---|
-| `LAST_VERIFIED_ORIGIN_MAIN` | `2739d481f4d7ed8f163266753f7120a77929d1d1` |
-| `LAST_VERIFIED_AT` | `2026-06-29T18:00:00Z` |
+| `LAST_VERIFIED_ORIGIN_MAIN` | `6712dd75e1771e6e4e0a3f086f1b3f223453b77c` |
+| `LAST_VERIFIED_AT` | `2026-06-29T20:00:00Z` |
 | `CURRENT_MAJOR_GAP_PACKAGE` | `MAJOR_GAP_COMPARISON_PROMOTION_POLICY_INPUT_BRIDGE_V0` |
-| `NEXT_CANONICAL_STEP` | `ai_promotion_assessment_v1` |
+| `NEXT_CANONICAL_STEP` | `versioned_strategy_model_parameter_artifact` |
 | `SYSTEMWIDE_RANKING_REQUIRED` | `false` |
 | `SEPARATE_GO_REQUIRED` | `true` |
 
@@ -43,9 +43,9 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | STEP_4 | `comparison_eligibility_promotion_policy_input_binding_v1` | `COMPLETE` |
 | STEP_5 | `comparison_promotion_policy_input_evidence_v1` | `COMPLETE` |
 | STEP_6 | `comparison_promotion_policy_decision_v1` | `COMPLETE` |
-| STEP_7 | `ai_promotion_assessment_v1` | `IN_PROGRESS` |
+| STEP_7 | `ai_promotion_assessment_v1` | `COMPLETE` |
 
-**Package-Status:** `COMPLETE` (Bridge V0 Steps 1–6 merged); STEP_7 = Phase-4 AI Assessment Slice (offline, non-authorizing).
+**Package-Status:** `COMPLETE` (Bridge V0 Steps 1–7 merged); Phase 5 STEP_07 = versioned strategy/model/parameter artifact slice (offline, non-authorizing).
 
 **Planning-Bundle:** `planning&#47;systemwide_major_gap_ranking_after_pr4628_v0_20260629T004500Z` (MANIFEST_VERIFY_RC=0)
 
@@ -176,14 +176,14 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `RUNBOOK_PHASE` | 4 |
 | `RUNBOOK_STEP_ID` | `ai_promotion_assessment_v1` |
 | `CONTRACT_OR_CAPABILITY` | `ai_promotion_assessment_v1` (offline assessment from verified policy decision) |
-| `STATUS` | `IN_PROGRESS` |
+| `STATUS` | `COMPLETE` |
 | `CANONICAL_OWNER` | `src/meta/learning_loop/ai_promotion_assessment_v1.py` |
-| `MERGED_PRS` | — |
-| `MERGE_COMMITS` | — |
-| `DURABLE_EVIDENCE_REFS` | — |
+| `MERGED_PRS` | `#4636` |
+| `MERGE_COMMITS` | `6712dd75e1771e6e4e0a3f086f1b3f223453b77c` |
+| `DURABLE_EVIDENCE_REFS` | `closeout&#47;pr4636_ai_promotion_assessment_v1_offline_slice_squash_merge_closeout_v0_20260629T011127Z` |
 | `DEPENDENCIES` | RUNBOOK_STEP_06, `comparison_promotion_policy_decision_v1` |
-| `REMAINING_GAPS` | merge + required checks |
-| `NEXT_REQUIRED_CONTRACT` | `ai_promotion_assessment_v1` merge |
+| `REMAINING_GAPS` | — |
+| `NEXT_REQUIRED_CONTRACT` | `versioned_strategy_model_parameter_artifact` |
 | `AUTHORITY_LEVEL` | `NON_AUTHORITIZING_EVIDENCE_ONLY` |
 | `RUNTIME_EFFECT` | `false` |
 | `SEPARATE_GO_REQUIRED` | `true` |
@@ -196,9 +196,9 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 |---|---|
 | `RUNBOOK_PHASE` | 5 |
 | `RUNBOOK_STEP_ID` | `versioned_strategy_model_parameter_artifact` |
-| `STATUS` | `NOT_STARTED` |
-| `CANONICAL_OWNER` | TBD (Runbook Phase 5) |
-| `DEPENDENCIES` | RUNBOOK_STEP_06 |
+| `STATUS` | `IN_PROGRESS` |
+| `CANONICAL_OWNER` | `src/meta/learning_loop/versioned_strategy_model_parameter_artifact_v1.py` |
+| `DEPENDENCIES` | RUNBOOK_STEP_06, `ai_promotion_assessment_v1` |
 | `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
 | `RUNTIME_EFFECT` | `false` |
 | `SEPARATE_GO_REQUIRED` | `true` |
