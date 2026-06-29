@@ -180,7 +180,7 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `CANONICAL_OWNER` | `src/meta/learning_loop/ai_promotion_assessment_v1.py` |
 | `MERGED_PRS` | `#4636` |
 | `MERGE_COMMITS` | `6712dd75e1771e6e4e0a3f086f1b3f223453b77c` |
-| `DURABLE_EVIDENCE_REFS` | `closeout/pr4636_ai_promotion_assessment_v1_offline_slice_squash_merge_closeout_v0_20260629T011127Z` |
+| `DURABLE_EVIDENCE_REFS` | `closeout&#47;pr4636_ai_promotion_assessment_v1_offline_slice_squash_merge_closeout_v0_20260629T011127Z` |
 | `DEPENDENCIES` | RUNBOOK_STEP_06, `comparison_promotion_policy_decision_v1` |
 | `REMAINING_GAPS` | — |
 | `NEXT_REQUIRED_CONTRACT` | `versioned_strategy_model_parameter_artifact` |
