@@ -70,6 +70,8 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `CANONICAL_SCOPE_INITIALIZATION_V1_IMPLEMENTATION_STARTED` | `true` |
 | `RUNBOOK_STEP_29C_IMPLEMENTED` | `true` |
 | `CANONICAL_SCOPE_INITIALIZATION_V1_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_29D_IMPLEMENTATION_STARTED` | `true` |
+| `DETERMINISTIC_SCOPE_EVENT_GENERATOR_V1_IMPLEMENTATION_STARTED` | `true` |
 | `FOLLOW_UP_DEVEX_SCOPE` | `CANONICAL_PRE_PR_RUFF_AND_DIFF_GUARD` |
 | `FOLLOW_UP_DEVEX_STATUS` | `PENDING_SEPARATE_PR` |
 | `SYSTEMWIDE_RANKING_REQUIRED` | `false` |
@@ -720,12 +722,16 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `RUNBOOK_PHASE` | 9 |
 | `RUNBOOK_STEP_ID` | `deterministic_scope_event_generator` |
 | `CONTRACT_OR_CAPABILITY` | `deterministic_scope_event_generator_v1` |
-| `STATUS` | `NOT_STARTED` |
+| `STATUS` | `IN_PROGRESS` |
+| `CANONICAL_OWNER` | `src/trading/master_v2/deterministic_scope_event_generator_v1.py` |
 | `DEPENDENCIES` | RUNBOOK_STEP_29C |
+| `NEXT_REQUIRED_CONTRACT` | `bull_bear_directional_assessment_completion` |
 | `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
 | `RUNTIME_EFFECT` | `false` |
 | `FUTURES_ONLY` | `true` |
 | `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `RUNBOOK_STEP_29D_IMPLEMENTED` | `false` |
+| `DETERMINISTIC_SCOPE_EVENT_GENERATOR_V1_IMPLEMENTED` | `false` |
 | `SCOPE_EVENT_GENERATOR_IMPLEMENTED` | `false` |
 | `SEPARATE_GO_REQUIRED` | `true` |
 
