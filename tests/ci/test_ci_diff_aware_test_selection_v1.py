@@ -6861,14 +6861,10 @@ def test_selector_package_ai_promotion_assessment_v1_combined_diff_pr_bounded_fu
         assert bounded.count(path) == 1
 
 
-PACKAGE_HANDOFF_TRUST_POLICY_V1_PRODUCTION = (
-    "src/meta/learning_loop/handoff_trust_policy_v1.py"
-)
+PACKAGE_HANDOFF_TRUST_POLICY_V1_PRODUCTION = "src/meta/learning_loop/handoff_trust_policy_v1.py"
 PACKAGE_HANDOFF_TRUST_POLICY_V1_SCRIPT = "scripts/run_handoff_trust_policy_v1.py"
 PACKAGE_HANDOFF_TRUST_POLICY_V1_TESTOWNER = "tests/meta/test_handoff_trust_policy_v1.py"
-PACKAGE_HANDOFF_TRUST_POLICY_V1_CLI_TESTOWNER = (
-    "tests/scripts/test_run_handoff_trust_policy_v1.py"
-)
+PACKAGE_HANDOFF_TRUST_POLICY_V1_CLI_TESTOWNER = "tests/scripts/test_run_handoff_trust_policy_v1.py"
 PACKAGE_HANDOFF_TRUST_POLICY_V1_DEPENDENCY_TESTOWNERS = (
     "tests/meta/test_versioned_strategy_model_parameter_artifact_v1.py",
     "tests/meta/test_ai_promotion_assessment_v1.py",
