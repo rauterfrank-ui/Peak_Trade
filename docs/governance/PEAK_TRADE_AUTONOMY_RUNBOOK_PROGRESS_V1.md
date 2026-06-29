@@ -19,8 +19,8 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `LAST_VERIFIED_ORIGIN_MAIN` | `3f392ee05a78c275c049ee603eb0b02f65d8f386` |
 | `LAST_VERIFIED_AT` | `2026-06-29T21:00:00Z` |
 | `CURRENT_MAJOR_GAP_PACKAGE` | `MAJOR_GAP_COMPARISON_PROMOTION_POLICY_INPUT_BRIDGE_V0` |
-| `NEXT_RUNBOOK_STEP` | `RUNBOOK_STEP_29` |
-| `NEXT_CANONICAL_STEP` | `full_autonomous_production_operation` |
+| `NEXT_RUNBOOK_STEP` | `RUNBOOK_STEP_29C` |
+| `NEXT_CANONICAL_STEP` | `canonical_scope_initialization` |
 | `RUNBOOK_STEP_13_IMPLEMENTED` | `true` |
 | `TRADING_SESSION_SINGLE_WRITER_IMPLEMENTED` | `true` |
 | `RUNTIME_SINGLE_WRITER_ACTIVATED` | `false` |
@@ -630,14 +630,62 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `RUNTIME_EFFECT` | `false` |
 | `SEPARATE_GO_REQUIRED` | `true` |
 
-#### RUNBOOK_STEP_29 — Vollautonomer Produktionsbetrieb
+#### RUNBOOK_STEP_29 — Vollautonomer Produktionsbetrieb (Phase-Container)
 
 | Feld | Wert |
 |---|---|
 | `RUNBOOK_PHASE` | 9 |
 | `RUNBOOK_STEP_ID` | `full_autonomous_production_operation` |
-| `STATUS` | `NOT_STARTED` |
+| `STATUS` | `IN_PROGRESS` |
 | `DEPENDENCIES` | RUNBOOK_STEP_28 |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+| `SUBSTEP_SEQUENCE` | `29A → 29B → 29C → …` |
+
+#### RUNBOOK_STEP_29A — Finalized Trading Epoch Binding
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 9 |
+| `RUNBOOK_STEP_ID` | `finalized_trading_epoch_binding` |
+| `CONTRACT_OR_CAPABILITY` | `trading_epoch` field semantics within canonical market context |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src/trading/master_v2/canonical_market_context_v1.py` (epoch binding subsumed in 29B contract) |
+| `DEPENDENCIES` | RUNBOOK_STEP_28 |
+| `NEXT_REQUIRED_CONTRACT` | `canonical_market_context_binding_v1` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_29B — Canonical Market Context Binding v1
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 9 |
+| `RUNBOOK_STEP_ID` | `canonical_market_context_binding_v1` |
+| `CONTRACT_OR_CAPABILITY` | `CanonicalMarketContextV1` bound to `double_play_futures_input` |
+| `STATUS` | `IN_PROGRESS` |
+| `CANONICAL_OWNER` | `src/trading/master_v2/canonical_market_context_v1.py` |
+| `DEPENDENCIES` | RUNBOOK_STEP_29A |
+| `NEXT_REQUIRED_CONTRACT` | `canonical_scope_initialization` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `SCOPE_INITIALIZATION_IMPLEMENTED` | `false` |
+| `SCOPE_EVENT_GENERATOR_IMPLEMENTED` | `false` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_29C — Canonical Scope Initialization
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 9 |
+| `RUNBOOK_STEP_ID` | `canonical_scope_initialization` |
+| `CONTRACT_OR_CAPABILITY` | `canonical_scope_initialization_v1` |
+| `STATUS` | `NOT_STARTED` |
+| `DEPENDENCIES` | RUNBOOK_STEP_29B |
 | `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
 | `RUNTIME_EFFECT` | `false` |
 | `SEPARATE_GO_REQUIRED` | `true` |
