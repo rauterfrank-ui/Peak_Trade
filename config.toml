@@ -142,6 +142,13 @@ initial_cash = 10_000.0
 # Verzeichnis für Backtest-Ergebnisse
 results_dir = "results"
 
+# Kanonische Default-Kostenparameter (STEP 29J — versioniert, reproduzierbar)
+cost_model_version = "backtest_cost_v0"
+fee_model_version = "backtest_fee_taker_symmetric_v0"
+slippage_model_version = "backtest_slippage_symmetric_v0"
+fee_bps = 10.0
+slippage_bps = 5.0
+
 # ============================================================================
 # VALIDATION (Mindestanforderungen für Live-Trading)
 # ============================================================================

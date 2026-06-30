@@ -14,6 +14,11 @@
 [backtest]
 initial_cash = 10000.0
 results_dir = "test_results"
+cost_model_version = "backtest_cost_v0"
+fee_model_version = "backtest_fee_taker_symmetric_v0"
+slippage_model_version = "backtest_slippage_symmetric_v0"
+fee_bps = 10.0
+slippage_bps = 5.0
 
 [risk]
 position_sizing_method = "fixed_fractional"

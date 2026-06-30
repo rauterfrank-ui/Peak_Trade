@@ -47,6 +47,13 @@ from ..risk import (
 from .result import BacktestResult
 from .portfolio_resolver import resolve_portfolio_cfg
 from . import stats as stats_mod
+from .cost_config_v0 import (
+    EffectiveBacktestCostConfigV0,
+    BacktestCostConfigError,
+    append_cost_accounting_fields,
+    build_cost_result_metadata,
+    resolve_effective_backtest_cost_config,
+)
 
 # Order-Layer Imports (Phase 16)
 from ..orders.base import OrderRequest, OrderExecutionResult, OrderFill
@@ -158,6 +165,25 @@ class BacktestEngine:
 
         # DataFrame-Referenz für Regime-Berechnung
         self.data: Optional[pd.DataFrame] = None
+
+    def _resolve_effective_cost_config(
+        self,
+        *,
+        fee_bps: Optional[float],
+        slippage_bps: Optional[float],
+        cost_config: Optional[EffectiveBacktestCostConfigV0],
+        explicit_zero_cost_non_economic: bool,
+    ) -> EffectiveBacktestCostConfigV0:
+        if cost_config is not None:
+            return cost_config
+        cli_fee = fee_bps if fee_bps is not None else None
+        cli_slip = slippage_bps if slippage_bps is not None else None
+        return resolve_effective_backtest_cost_config(
+            self.config,
+            cli_fee_bps=cli_fee,
+            cli_slippage_bps=cli_slip,
+            explicit_zero_cost_non_economic=explicit_zero_cost_non_economic,
+        )
 
     def _register_trade_pnl(self, trade_dt: pd.Timestamp, pnl_pct: float) -> None:
         """
@@ -362,8 +388,10 @@ class BacktestEngine:
         strategy_signal_fn: Callable,
         strategy_params: Dict,
         symbol: str = "BTC/EUR",
-        fee_bps: float = 0.0,
-        slippage_bps: float = 0.0,
+        fee_bps: Optional[float] = None,
+        slippage_bps: Optional[float] = None,
+        cost_config: Optional[EffectiveBacktestCostConfigV0] = None,
+        explicit_zero_cost_non_economic: bool = False,
     ) -> BacktestResult:
         """
         Realistischer Backtest mit vollständigem Risk-Management.
@@ -387,8 +415,10 @@ class BacktestEngine:
             strategy_signal_fn: Funktion(df, params) -> pd.Series mit Signalen (1=Buy, -1=Sell, 0=Hold)
             strategy_params: Parameter-Dict für Strategie (inkl. stop_pct)
             symbol: Trading-Symbol (default: "BTC/EUR") - nur bei ExecutionPipeline verwendet
-            fee_bps: Fees in Basispunkten (default: 0.0) - nur bei ExecutionPipeline verwendet
-            slippage_bps: Slippage in Basispunkten (default: 0.0) - nur bei ExecutionPipeline verwendet
+            fee_bps: Fees in Basispunkten — None = aus versionierter Config binden (fail-closed)
+            slippage_bps: Slippage in Basispunkten — None = aus versionierter Config binden
+            cost_config: Voraufgelöste Cost-Config (optional)
+            explicit_zero_cost_non_economic: Expliziter Non-Economic-Testmodus (0 Kosten erlaubt)
 
         Returns:
             BacktestResult mit Equity-Curve, Trades, Stats
@@ -414,11 +444,20 @@ class BacktestEngine:
             ...     strategy_params={'fast_period': 10, 'slow_period': 30, 'stop_pct': 0.02}
             ... )
         """
+        effective_cost = self._resolve_effective_cost_config(
+            fee_bps=fee_bps,
+            slippage_bps=slippage_bps,
+            cost_config=cost_config,
+            explicit_zero_cost_non_economic=explicit_zero_cost_non_economic,
+        )
+        bound_fee_bps = effective_cost.taker_fee_bps
+        bound_slippage_bps = effective_cost.entry_slippage_bps
+
         self._safe_tracker_log_params(
             strategy_params,
             symbol=symbol,
-            fee_bps=fee_bps,
-            slippage_bps=slippage_bps,
+            fee_bps=bound_fee_bps,
+            slippage_bps=bound_slippage_bps,
             mode="execution_pipeline" if self.use_execution_pipeline else "legacy_realistic",
         )
 
@@ -429,8 +468,9 @@ class BacktestEngine:
                 strategy_signal_fn=strategy_signal_fn,
                 strategy_params=strategy_params,
                 symbol=symbol,
-                fee_bps=fee_bps,
-                slippage_bps=slippage_bps,
+                fee_bps=bound_fee_bps,
+                slippage_bps=bound_slippage_bps,
+                effective_cost=effective_cost,
             )
 
         # Legacy-Pfad (ohne ExecutionPipeline)
@@ -728,12 +768,25 @@ class BacktestEngine:
 
         logger.info(f"Backtest abgeschlossen: {len(trades)} Trades, {blocked_trades} blockiert")
 
+        initial_equity = float(self.config["backtest"]["initial_cash"])
+        stats = append_cost_accounting_fields(
+            stats,
+            initial_equity=initial_equity,
+            effective_cost=effective_cost,
+            total_fees=0.0,
+            total_notional=0.0,
+        )
+
         # Metadata zusammenführen
-        metadata = {
-            "mode": "realistic_with_risk_management",
-            "strategy_name": "",
-            "blocked_trades": blocked_trades,
-        }
+        metadata = build_cost_result_metadata(
+            effective_cost,
+            extra={
+                "mode": "realistic_with_risk_management",
+                "strategy_name": "",
+                "blocked_trades": blocked_trades,
+                "legacy_path_cost_application": False,
+            },
+        )
         metadata.update(regime_meta)
 
         self._safe_tracker_log_metrics(stats)
@@ -813,26 +866,28 @@ class BacktestEngine:
         strategy_signal_fn: Callable,
         strategy_params: Dict,
         symbol: str = "BTC/EUR",
-        fee_bps: float = 0.0,
-        slippage_bps: float = 0.0,
+        fee_bps: Optional[float] = None,
+        slippage_bps: Optional[float] = None,
+        explicit_zero_cost_non_economic: bool = False,
     ) -> BacktestResult:
         """
         DEPRECATED: Verwende run_realistic() mit use_execution_pipeline=True.
 
         Diese Methode bleibt fuer Backward-Kompatibilitaet erhalten und
-        delegiert an _run_with_execution_pipeline().
+        delegiert an run_realistic().
         """
         logger.warning(
             "run_with_order_layer() ist deprecated. "
             "Nutze run_realistic() mit use_execution_pipeline=True stattdessen."
         )
-        return self._run_with_execution_pipeline(
+        return self.run_realistic(
             df=df,
             strategy_signal_fn=strategy_signal_fn,
             strategy_params=strategy_params,
             symbol=symbol,
             fee_bps=fee_bps,
             slippage_bps=slippage_bps,
+            explicit_zero_cost_non_economic=explicit_zero_cost_non_economic,
         )
 
     def _run_with_execution_pipeline(
@@ -843,6 +898,7 @@ class BacktestEngine:
         symbol: str = "BTC/EUR",
         fee_bps: float = 0.0,
         slippage_bps: float = 0.0,
+        effective_cost: Optional[EffectiveBacktestCostConfigV0] = None,
     ) -> BacktestResult:
         """
         Interner Backtest mit ExecutionPipeline.
@@ -1127,20 +1183,36 @@ class BacktestEngine:
 
         self._safe_tracker_log_metrics(stats)
 
+        if effective_cost is None:
+            effective_cost = resolve_effective_backtest_cost_config(
+                self.config,
+                cli_fee_bps=fee_bps,
+                cli_slippage_bps=slippage_bps,
+            )
+
+        stats = append_cost_accounting_fields(
+            stats,
+            initial_equity=initial_equity,
+            effective_cost=effective_cost,
+            total_fees=float(exec_summary.get("total_fees", 0.0)),
+            total_notional=float(exec_summary.get("total_notional", 0.0)),
+        )
+
         return BacktestResult(
             equity_curve=equity_series,
             drawdown=drawdown_series,
             trades=trades_df,
             stats=stats,
-            metadata={
-                "mode": "execution_pipeline_backtest",
-                "strategy_name": "",
-                "symbol": symbol,
-                "fee_bps": fee_bps,
-                "slippage_bps": slippage_bps,
-                "execution_summary": exec_summary,
-                "run_id": run_id,
-            },
+            metadata=build_cost_result_metadata(
+                effective_cost,
+                extra={
+                    "mode": "execution_pipeline_backtest",
+                    "strategy_name": "",
+                    "symbol": symbol,
+                    "execution_summary": exec_summary,
+                    "run_id": run_id,
+                },
+            ),
         )
 
 
