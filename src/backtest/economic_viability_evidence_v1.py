@@ -30,6 +30,13 @@ from src.backtest.funding_model_v1 import (
     compute_funding_drag_v1,
     load_funding_model_config_v1,
 )
+from src.backtest.admissible_versioned_futures_dataset_v1 import (
+    AdmissibleVersionedFuturesDatasetError,
+    dataset_admissibility_binding_requested,
+    load_dataset_admissibility_from_cfg,
+    serialize_dataset_admissibility_binding_v1,
+    evaluate_admissible_versioned_futures_dataset_v1,
+)
 from src.backtest.parameter_sensitivity_v1 import (
     ParameterSensitivityError,
     parameter_sensitivity_binding_requested,
@@ -479,10 +486,48 @@ def build_economic_viability_evidence_v1(
     else:
         reason_codes.append("stress_returns_empty")
 
-    if not data_admissibility.is_admissible_for_economic_claim():
-        reason_codes.append("admissible_versioned_futures_dataset_missing")
+    dataset_binding_requested = dataset_admissibility_binding_requested(cfg)
+    dataset_admissible = data_admissibility.is_admissible_for_economic_claim()
+    dataset_admissibility_payload: dict[str, Any] = {
+        "source_kind": data_admissibility.source_kind.value,
+        "instrument_id": data_admissibility.instrument_id,
+        "data_digest": data_admissibility.data_digest,
+        "data_ref": data_admissibility.data_ref,
+        "versioned_dataset_id": data_admissibility.versioned_dataset_id,
+    }
+    if dataset_binding_requested:
+        try:
+            descriptor, provenance = load_dataset_admissibility_from_cfg(cfg)
+            binding_result = evaluate_admissible_versioned_futures_dataset_v1(
+                bars=bars,
+                descriptor=descriptor,
+                provenance=provenance,
+                instrument_id=instrument_id,
+            )
+            dataset_admissibility_payload = serialize_dataset_admissibility_binding_v1(
+                binding_result
+            )
+            dataset_admissible = binding_result.is_admissible()
+            if dataset_admissible:
+                reason_codes.append("admissible_versioned_futures_dataset_bound")
+            else:
+                reason_codes.append(
+                    f"dataset_admissibility_{binding_result.admissibility_status.value.lower()}"
+                )
+        except AdmissibleVersionedFuturesDatasetError as exc:
+            dataset_admissible = False
+            reason_codes.append(f"dataset_admissibility_failed:{exc}")
+            dataset_admissibility_payload = {
+                **dataset_admissibility_payload,
+                "binding_status": "FAILED",
+                "reason_code": str(exc),
+            }
+    else:
+        if not dataset_admissible:
+            reason_codes.append("admissible_versioned_futures_dataset_missing")
     if data_admissibility.source_kind is DataSourceKind.INADMISSIBLE:
         reason_codes.append("data_source_inadmissible")
+        dataset_admissible = False
     policy = load_economic_validity_policy_v1(cfg)
     validate_economic_validity_policy_v1(policy)
     if not policy.is_version_bound():
@@ -578,7 +623,7 @@ def build_economic_viability_evidence_v1(
     status = _resolve_status(
         reason_codes=reason_codes,
         robustness_failures=robustness_failures,
-        data_admissible=data_admissibility.is_admissible_for_economic_claim(),
+        data_admissible=dataset_admissible,
         policy_version_bound=policy_version_bound,
         funding_bound=funding_bound,
         parameter_sensitivity_bound=parameter_sensitivity_bound,
@@ -708,13 +753,7 @@ def build_economic_viability_evidence_v1(
         manifest_digest=manifest_digest,
         wiring_chain_digest=chain["wiring_chain_digest"],
         randomness_seed=monte_carlo_seed,
-        data_admissibility={
-            "source_kind": data_admissibility.source_kind.value,
-            "instrument_id": data_admissibility.instrument_id,
-            "data_digest": data_admissibility.data_digest,
-            "data_ref": data_admissibility.data_ref,
-            "versioned_dataset_id": data_admissibility.versioned_dataset_id,
-        },
+        data_admissibility=dataset_admissibility_payload,
         cost_binding={
             "cost_model_version": cost.cost_model_version,
             "economic_interpretation_allowed": cost.economic_interpretation_allowed,
