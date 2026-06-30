@@ -37,7 +37,7 @@ def _field_value(text: str, field: str) -> str:
 
 def _step_29m_section(text: str) -> str:
     start = text.index("#### RUNBOOK_STEP_29M — Economic Viability Evidence v1")
-    end = text.index("#### RUNBOOK_STEP_29J (legacy heading)", start)
+    end = text.index("#### RUNBOOK_STEP_29N — Promotion Economic Gate Binding v1", start)
     return text[start:end]
 
 
@@ -55,13 +55,13 @@ def test_runbook_step_29m_complete_true() -> None:
 
 
 def test_progress_registry_closeout_performed_true() -> None:
-    text = _read_registry()
-    assert _field_value(text, "PROGRESS_REGISTRY_CLOSEOUT_PERFORMED") == "true"
+    section = _step_29m_section(_read_registry())
+    assert _field_value(section, "PROGRESS_REGISTRY_CLOSEOUT_PERFORMED") == "true"
 
 
 def test_step_29n_not_started() -> None:
-    text = _read_registry()
-    assert _field_value(text, "STEP_29N_STARTED") == "false"
+    section = _step_29m_section(_read_registry())
+    assert _field_value(section, "STEP_29N_STARTED") == "false"
 
 
 def test_next_runbook_step_is_29n() -> None:
@@ -95,10 +95,10 @@ def test_all_registered_step_29m_slices_preserved() -> None:
 
 
 def test_no_step_29n_implementation_markers() -> None:
-    text = _read_registry()
-    assert "RUNBOOK_STEP_29N_IMPLEMENTED" not in text
-    assert "RUNBOOK_STEP_29N_COMPLETE" not in text
-    assert _field_value(text, "STEP_29N_STARTED") == "false"
+    section = _step_29m_section(_read_registry())
+    assert "RUNBOOK_STEP_29N_IMPLEMENTED" not in section
+    assert "RUNBOOK_STEP_29N_COMPLETE" not in section
+    assert _field_value(section, "STEP_29N_STARTED") == "false"
 
 
 def test_no_promotion_eligibility_or_runtime_authority() -> None:
