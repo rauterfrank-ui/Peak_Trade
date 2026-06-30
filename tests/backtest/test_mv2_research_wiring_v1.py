@@ -8,6 +8,7 @@ import pytest
 
 from src.backtest import mv2_research_wiring_v1 as wiring
 from src.experiments.stress_tests import StressScenarioResult
+from src.trading.master_v2.canonical_market_context_v1 import WarmupStatus
 from src.trading.master_v2.canonical_trading_decision_evidence_v1 import (
     CanonicalTradingDecisionEvidenceV1,
     with_computed_evidence_semantic_digest,
@@ -406,3 +407,53 @@ def test_matrix_48_stress_outcome_type_contract() -> None:
     returns = _run().backtest_result.equity_curve.pct_change().dropna()
     outcome = wiring.bind_stress_class_suite_v1(returns)
     assert isinstance(outcome, wiring.StressClassBindingOutcomeV1)
+
+
+def test_matrix_49_warmup_blocks_entry_signal() -> None:
+    bars = _bars()
+    bars["warmup_complete"] = [False] + [True] * (len(bars) - 1)
+    result = _run(bars=bars)
+    assert result.bar_outcomes[0].position_signal == 0
+    assert result.bar_outcomes[0].context.warmup_status == WarmupStatus.WARMUP_REQUIRED
+
+
+def test_matrix_50_walk_forward_oos_mv2_replay() -> None:
+    wf = wiring.run_mv2_walk_forward_wiring_v1(
+        _bars(20),
+        strategy_id="ma_crossover",
+        cfg=_cfg(),
+        train_bars=8,
+        test_bars=4,
+        step_bars=4,
+    )
+    assert len(wf.windows) == 3
+    assert len(wf.oos_results) == 3
+    assert all(len(w.oos_wiring_result.signals) == 4 for w in wf.windows)
+
+
+def test_matrix_51_stress_deferred_economic_classes() -> None:
+    returns = _run().backtest_result.equity_curve.pct_change().dropna()
+    outcome = wiring.bind_stress_class_suite_v1(returns)
+    for cls in wiring._DEFERRED_STRESS_CLASSES:
+        assert outcome.statuses[cls] == wiring.StressClassBindingStatus.DEFERRED_EXPLICIT
+
+
+def test_matrix_52_monte_carlo_seed_missing_fail_closed() -> None:
+    result = _run()
+    cfg = wiring.MonteCarloConfig(num_runs=4, seed=None)
+    with pytest.raises(ValueError, match="monte_carlo_seed_missing"):
+        wiring.bind_monte_carlo_analysis_v1(result.backtest_result, cfg)
+
+
+def test_matrix_53_evidence_chain_has_strategy_id_field() -> None:
+    result = _run()
+    first = result.bar_outcomes[0]
+    chain = wiring.compute_mv2_evidence_chain_digests_v1(
+        context=first.context,
+        evidence=first.evidence,
+        registry_snapshot=result.registry_snapshot,
+        cost_config=result.effective_cost_config,
+        strategy_id="ma_crossover",
+    )
+    assert chain["strategy_id"] == "ma_crossover"
+    assert "walk_forward_result_digest_or_status" in chain

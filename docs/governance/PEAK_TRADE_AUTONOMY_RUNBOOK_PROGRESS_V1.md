@@ -106,7 +106,7 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `RUNBOOK_STEP_29K_COMPLETE` | `true` |
 | `STEP_29L_STARTED` | `true` |
 | `RUNBOOK_STEP_29L_STARTED` | `true` |
-| `RUNBOOK_STEP_29L_IMPLEMENTED_SCOPE` | `mv2_research_wiring_v1_slice` |
+| `RUNBOOK_STEP_29L_IMPLEMENTED_SCOPE` | `mv2_research_wiring_v1_slice,mv2_research_wiring_v1_residual_walkforward_stress_warmup_evidence_slice` |
 | `RUNBOOK_STEP_29L_COMPLETE` | `false` |
 | `STEP_29M_STARTED` | `false` |
 | `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `false` |
@@ -973,7 +973,7 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `STRATEGY_REGISTRY_CONSOLIDATION_V1_IMPLEMENTED` | `true` |
 | `STEP_29L_STARTED` | `true` |
 | `RUNBOOK_STEP_29L_STARTED` | `true` |
-| `RUNBOOK_STEP_29L_IMPLEMENTED_SCOPE` | `mv2_research_wiring_v1_slice` |
+| `RUNBOOK_STEP_29L_IMPLEMENTED_SCOPE` | `mv2_research_wiring_v1_slice,mv2_research_wiring_v1_residual_walkforward_stress_warmup_evidence_slice` |
 | `RUNBOOK_STEP_29L_COMPLETE` | `false` |
 | `STEP_29M_STARTED` | `false` |
 | `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `false` |
@@ -989,7 +989,7 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `CANONICAL_OWNER` | `src/backtest/mv2_research_wiring_v1.py` |
 | `DEPENDENCIES` | RUNBOOK_STEP_29K |
 | `RUNBOOK_STEP_29L_STARTED` | `true` |
-| `RUNBOOK_STEP_29L_IMPLEMENTED_SCOPE` | `mv2_research_wiring_v1_slice` |
+| `RUNBOOK_STEP_29L_IMPLEMENTED_SCOPE` | `mv2_research_wiring_v1_slice,mv2_research_wiring_v1_residual_walkforward_stress_warmup_evidence_slice` |
 | `RUNBOOK_STEP_29L_COMPLETE` | `false` |
 | `STEP_29M_STARTED` | `false` |
 | `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `false` |
