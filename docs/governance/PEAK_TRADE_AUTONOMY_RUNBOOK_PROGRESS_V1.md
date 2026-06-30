@@ -1155,12 +1155,14 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `RUNBOOK_PHASE` | 9 |
 | `RUNBOOK_STEP_ID` | `intent_compatibility_firewall_v1` |
 | `STATUS` | `IN_PROGRESS` |
-| `CANONICAL_OWNER` | TBD (proposed: `governance.intent_compatibility_firewall_v1` — implementation pending) |
-| `MERGED_PRS` | — |
-| `MERGE_COMMITS` | — |
-| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning_or_validation/runbook_step29o_intent_compatibility_firewall_read_only_scope_audit_v0_20260701T141500Z (MANIFEST_VERIFY_RC=0); audit_verdict=RUNBOOK_STEP_29O_READ_ONLY_SCOPE_AUDIT_PASS; minimum_safe_slice=intent_compatibility_firewall_v1_offline_slice; STEP_29O_REGISTRY_START_ONLY=true; STEP_29O_IMPLEMENTATION_STARTED=false; STEP_29O_COMPLETION_DOES_NOT_AUTHORIZE_LIVE=true; STEP_29O_COMPLETION_DOES_NOT_AUTHORIZE_RUNTIME=true; STEP_29O_COMPLETION_DOES_NOT_AUTHORIZE_ORDERS=true; STEP_29O_COMPLETION_DOES_NOT_START_STEP_29P=true; STEP_29O_COMPLETION_DOES_NOT_START_STEP_29Q=true; STEP_29O_COMPLETION_DOES_NOT_START_STEP_29R=true; offline_only=true; non_authorizing=true; runtime_process_started=false; scheduler_action_performed=false; venue_access_performed=false; credential_access_performed=false; trading_action_performed=false; progress_registry_closeout_status=PENDING; FUTURES_ONLY=true; BITCOIN_DIRECTION_ALLOWED=false; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SCHEDULER_RUNTIME_ALLOWED=false` |
+| `CANONICAL_OWNER` | `src/governance/intent_compatibility_firewall_v1.py` <!-- pt:ref-target-ignore --> |
+| `CANONICAL_OWNER_STATUS` | `PROPOSED_PENDING_IMPLEMENTATION` |
+| `CANONICAL_OWNER_RATIFIED` | `false` |
+| `MERGED_PRS` | `none` |
+| `MERGE_COMMITS` | `none` |
+| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning_or_validation/runbook_step29o_intent_compatibility_firewall_read_only_scope_audit_v0_20260701T141500Z (MANIFEST_VERIFY_RC=0); audit_verdict=RUNBOOK_STEP_29O_READ_ONLY_SCOPE_AUDIT_PASS; minimum_safe_slice=intent_compatibility_firewall_v1_offline_slice; STEP_29O_REGISTRY_START_ONLY=true; STEP_29O_IMPLEMENTATION_STARTED=false; STEP_29O_COMPLETION_DOES_NOT_AUTHORIZE_LIVE=true; STEP_29O_COMPLETION_DOES_NOT_AUTHORIZE_RUNTIME=true; STEP_29O_COMPLETION_DOES_NOT_AUTHORIZE_ORDERS=true; STEP_29O_COMPLETION_DOES_NOT_START_STEP_29P=true; STEP_29O_COMPLETION_DOES_NOT_START_STEP_29Q=true; STEP_29O_COMPLETION_DOES_NOT_START_STEP_29R=true; offline_only=true; non_authorizing=true; runtime_process_started=false; scheduler_action_performed=false; venue_access_performed=false; credential_access_performed=false; trading_action_performed=false; progress_registry_closeout_status=pending_separate_closeout; FUTURES_ONLY=true; BITCOIN_DIRECTION_ALLOWED=false; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SCHEDULER_RUNTIME_ALLOWED=false` |
 | `DEPENDENCIES` | RUNBOOK_STEP_29N |
-| `REMAINING_GAPS` | intent compatibility firewall offline slice implementation; registry closeout |
+| `REMAINING_GAPS` | `intent_compatibility_firewall_v1_offline_slice_implementation_pending;progress_registry_closeout_pending` |
 | `NEXT_REQUIRED_CONTRACT` | `RUNBOOK_STEP_29O_INTENT_COMPATIBILITY_FIREWALL_V1_IMPLEMENTATION` |
 | `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
 | `RUNBOOK_STEP_29O_STARTED` | `true` |

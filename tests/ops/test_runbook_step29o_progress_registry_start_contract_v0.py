@@ -14,6 +14,7 @@ PROGRESS_REGISTRY = REPO_ROOT / "docs" / "governance" / "PEAK_TRADE_AUTONOMY_RUN
 
 STEP_29O_MINIMUM_SAFE_SLICE = "intent_compatibility_firewall_v1_offline_slice"
 STEP_29O_CANONICAL_DEFINITION = "INTENT_COMPATIBILITY_FIREWALL"
+STEP_29O_CANONICAL_OWNER = "src/governance/intent_compatibility_firewall_v1.py"
 NEXT_REQUIRED_CONTRACT = "RUNBOOK_STEP_29O_INTENT_COMPATIBILITY_FIREWALL_V1_IMPLEMENTATION"
 
 
@@ -31,7 +32,7 @@ def _field_value(text: str, field: str) -> str:
 def _step_29o_section(text: str) -> str:
     start = text.index("#### RUNBOOK_STEP_29O — Intent Compatibility Firewall v1")
     end = text.index("\n---\n\n## PR #4629 Evidence-Drift", start)
-    return text[start:end]
+    return re.sub(r"\s<!--.*?-->", "", text[start:end])
 
 
 def test_progress_registry_is_canonical_single_ssot() -> None:
@@ -76,6 +77,20 @@ def test_runbook_step_29o_canonical_definition() -> None:
         _field_value(section, "RUNBOOK_STEP_29O_CANONICAL_DEFINITION")
         == STEP_29O_CANONICAL_DEFINITION
     )
+
+
+def test_runbook_step_29o_canonical_owner_explicit_proposed_state() -> None:
+    section = _step_29o_section(_read_registry())
+    assert _field_value(section, "CANONICAL_OWNER") == STEP_29O_CANONICAL_OWNER
+    assert _field_value(section, "CANONICAL_OWNER_STATUS") == "PROPOSED_PENDING_IMPLEMENTATION"
+    assert _field_value(section, "CANONICAL_OWNER_RATIFIED") == "false"
+
+
+def test_step_29o_section_has_no_tbd_placeholders() -> None:
+    section = _step_29o_section(_read_registry()).upper()
+    assert "TBD" not in section
+    assert "TBC" not in section
+    assert "| `CANONICAL_OWNER` | TBD" not in section
 
 
 def test_runbook_step_29o_minimum_safe_slice() -> None:
