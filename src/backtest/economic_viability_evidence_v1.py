@@ -30,6 +30,12 @@ from src.backtest.funding_model_v1 import (
     compute_funding_drag_v1,
     load_funding_model_config_v1,
 )
+from src.backtest.parameter_sensitivity_v1 import (
+    ParameterSensitivityError,
+    parameter_sensitivity_binding_requested,
+    run_parameter_sensitivity_v1,
+    serialize_parameter_sensitivity_results_v1,
+)
 from src.backtest.economic_validity_policy_v1 import (
     ECONOMIC_VALIDITY_POLICY_VERSION,
     evaluate_economic_validity_gates_v1,
@@ -434,6 +440,12 @@ def build_economic_viability_evidence_v1(
     stats = mv2_wiring.compute_mv2_backtest_metrics_v1(wiring_result.backtest_result)
     cost = wiring_result.effective_cost_config
 
+    strategy_version = "unknown"
+    for entry in wiring_result.registry_snapshot.entries:
+        if entry.strategy_id == strategy_id:
+            strategy_version = entry.strategy_version
+            break
+
     wf_result: Optional[mv2_wiring.MV2WalkForwardWiringResultV1] = None
     mc_result: Optional[MonteCarloSummaryResult] = None
     stress_result: Optional[mv2_wiring.StressClassBindingOutcomeV1] = None
@@ -483,7 +495,9 @@ def build_economic_viability_evidence_v1(
         reason_codes.append("funding_model_not_bound")
     if cost.zero_cost_explicitly_requested:
         reason_codes.append("explicit_zero_cost_non_economic_mode")
-    reason_codes.append("parameter_sensitivity_not_bound_in_step29m_scope")
+    sensitivity_requested = parameter_sensitivity_binding_requested(cfg)
+    if not sensitivity_requested:
+        reason_codes.append("parameter_sensitivity_not_bound_in_step29m_scope")
 
     robustness_failures = _evaluate_robustness_failures(
         wf=wf_result, mc=mc_result, stress=stress_result
@@ -504,6 +518,10 @@ def build_economic_viability_evidence_v1(
     policy_version_bound = policy.is_version_bound()
     funding_bound = cost.funding_model_version != "NOT_BOUND"
     parameter_sensitivity_bound = False
+    parameter_sensitivity_payload: dict[str, Any] = {
+        "semantic": MetricSemantic.NOT_COMPUTED.value,
+        "reason_code": "parameter_sensitivity_not_bound_in_step29m_scope",
+    }
 
     funding_drag_result = None
     funding_drag_metric = _not_computed_metric("funding_drag_not_bound")
@@ -525,6 +543,37 @@ def build_economic_viability_evidence_v1(
             reason_codes.append(f"funding_drag_compute_failed:{exc}")
             funding_bound = False
             reason_codes.append("funding_model_not_bound")
+
+    if sensitivity_requested:
+        try:
+            sensitivity_result = run_parameter_sensitivity_v1(
+                bars=bars,
+                cfg=cfg,
+                strategy_id=strategy_id,
+                strategy_version=strategy_version,
+                data_digest=computed_data_digest,
+                instrument_id=instrument_id,
+                explicit_zero_cost_non_economic=explicit_zero_cost_non_economic,
+                policy=policy,
+            )
+            parameter_sensitivity_payload = serialize_parameter_sensitivity_results_v1(
+                sensitivity_result
+            )
+            parameter_sensitivity_bound = True
+            reason_codes = [
+                code
+                for code in reason_codes
+                if code != "parameter_sensitivity_not_bound_in_step29m_scope"
+            ]
+            reason_codes.append("parameter_sensitivity_pipeline_bound")
+            if not sensitivity_result.parameter_robustness_policy_pass:
+                reason_codes.append("parameter_robustness_policy_blocked_missing_thresholds")
+        except ParameterSensitivityError as exc:
+            reason_codes.append(f"parameter_sensitivity_failed:{exc}")
+            parameter_sensitivity_payload = {
+                "semantic": MetricSemantic.NOT_COMPUTED.value,
+                "reason_code": f"parameter_sensitivity_failed:{exc}",
+            }
 
     status = _resolve_status(
         reason_codes=reason_codes,
@@ -568,12 +617,6 @@ def build_economic_viability_evidence_v1(
         ),
         metrics_digest=_stable_digest({k: float(v) for k, v in stats.items()}),
     )
-
-    strategy_version = "unknown"
-    for entry in wiring_result.registry_snapshot.entries:
-        if entry.strategy_id == strategy_id:
-            strategy_version = entry.strategy_version
-            break
 
     semantic_payload = {
         "strategy_id": strategy_id,
@@ -659,10 +702,7 @@ def build_economic_viability_evidence_v1(
             if stress_result is not None
             else {"semantic": MetricSemantic.NOT_COMPUTED.value, "reason_code": "stress_not_run"}
         ),
-        parameter_sensitivity_results={
-            "semantic": MetricSemantic.NOT_COMPUTED.value,
-            "reason_code": "parameter_sensitivity_not_bound_in_step29m_scope",
-        },
+        parameter_sensitivity_results=parameter_sensitivity_payload,
         status=status,
         reason_codes=tuple(sorted(set(reason_codes))),
         manifest_digest=manifest_digest,
@@ -1109,6 +1149,12 @@ def persist_economic_viability_evidence_bundle_v1(
         json.dumps(evidence.parameter_sensitivity_results, indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
     )
+    grid_payload = evidence.parameter_sensitivity_results.get("grid")
+    if isinstance(grid_payload, Mapping):
+        (output_dir / "PARAMETER_GRID.json").write_text(
+            json.dumps(dict(grid_payload), indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
 
     write_manifest_sha256(output_dir)
     ok, message = verify_manifest_sha256(output_dir)

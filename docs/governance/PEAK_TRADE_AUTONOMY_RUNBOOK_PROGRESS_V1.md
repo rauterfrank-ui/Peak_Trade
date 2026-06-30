@@ -111,7 +111,7 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `RUNBOOK_STEP_29L_COMPLETE` | `true` |
 | `STEP_29M_STARTED` | `true` |
 | `RUNBOOK_STEP_29M_STARTED` | `true` |
-| `RUNBOOK_STEP_29M_IMPLEMENTED_SCOPE` | `economic_viability_evidence_v1_offline_slice,economic_viability_evidence_v1_persistence_load_reproducibility_slice,economic_validity_policy_v1_contract_slice,funding_model_binding_v1_slice` |
+| `RUNBOOK_STEP_29M_IMPLEMENTED_SCOPE` | `economic_viability_evidence_v1_offline_slice,economic_viability_evidence_v1_persistence_load_reproducibility_slice,economic_validity_policy_v1_contract_slice,funding_model_binding_v1_slice,parameter_sensitivity_evidence_binding_v1_slice` |
 | `RUNBOOK_STEP_29M_IMPLEMENTED` | `true` |
 | `RUNBOOK_STEP_29M_COMPLETE` | `false` |
 | `STEP_29N_STARTED` | `false` |
@@ -1023,7 +1023,7 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `STATUS` | `IN_PROGRESS` |
 | `CANONICAL_OWNER` | `src/backtest/economic_viability_evidence_v1.py` |
 | `DEPENDENCIES` | RUNBOOK_STEP_29L |
-| `REMAINING_GAPS` | `admissible_versioned_futures_dataset,parameter_sensitivity_binding,economic_validity_policy_threshold_values` |
+| `REMAINING_GAPS` | `admissible_versioned_futures_dataset,economic_validity_policy_threshold_values` |
 | `NEXT_REQUIRED_CONTRACT` | `RUNBOOK_STEP_29M` |
 | `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
 | `RUNTIME_EFFECT` | `false` |
@@ -1032,7 +1032,7 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `ECONOMIC_VALIDITY_PROVEN` | `false` |
 | `PROFITABILITY_CLAIM_ALLOWED` | `false` |
 | `RUNBOOK_STEP_29M_STARTED` | `true` |
-| `RUNBOOK_STEP_29M_IMPLEMENTED_SCOPE` | `economic_viability_evidence_v1_offline_slice,economic_viability_evidence_v1_persistence_load_reproducibility_slice,economic_validity_policy_v1_contract_slice,funding_model_binding_v1_slice` |
+| `RUNBOOK_STEP_29M_IMPLEMENTED_SCOPE` | `economic_viability_evidence_v1_offline_slice,economic_viability_evidence_v1_persistence_load_reproducibility_slice,economic_validity_policy_v1_contract_slice,funding_model_binding_v1_slice,parameter_sensitivity_evidence_binding_v1_slice` |
 | `RUNBOOK_STEP_29M_IMPLEMENTED` | `true` |
 | `RUNBOOK_STEP_29M_COMPLETE` | `false` |
 | `STEP_29N_STARTED` | `false` |

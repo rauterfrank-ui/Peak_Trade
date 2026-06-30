@@ -39,6 +39,27 @@ def _cfg_with_funding(**kwargs: Any) -> Mapping[str, Any]:
     return cfg
 
 
+def _cfg_with_parameter_sensitivity(**kwargs: Any) -> Mapping[str, Any]:
+    cfg = dict(_cfg(**kwargs))
+    backtest = dict(cfg["backtest"])
+    backtest["parameter_sensitivity"] = {
+        "bind": True,
+        "grid_version": "v1",
+        "grid": {
+            "grid_id": "test_evidence_grid_v1",
+            "parameter_names": ["fee_bps", "slippage_bps"],
+            "parameter_values": [[8.0, 10.0], [4.0, 6.0]],
+            "search_space_bounds": {
+                "fee_bps": {"min": 8.0, "max": 10.0},
+                "slippage_bps": {"min": 4.0, "max": 6.0},
+            },
+            "seed": 42,
+        },
+    }
+    cfg["backtest"] = backtest
+    return cfg
+
+
 def _bars(n: int = 20) -> pd.DataFrame:
     idx = pd.date_range("2026-06-01", periods=n, freq="1h", tz="UTC")
     close = [100.0 + float(i) for i in range(n)]
@@ -245,9 +266,36 @@ def test_walk_forward_insufficient_bars_reason() -> None:
     assert "walk_forward_insufficient_bars" in result.reason_codes
 
 
-def test_parameter_sensitivity_not_computed() -> None:
+def test_parameter_sensitivity_not_computed_without_binding() -> None:
     result = _build()
     assert result.parameter_sensitivity_results["semantic"] == "NOT_COMPUTED"
+
+
+def test_parameter_sensitivity_binding_full_grid() -> None:
+    result = _build(cfg=_cfg_with_parameter_sensitivity())
+    payload = result.parameter_sensitivity_results
+    assert payload["pipeline_status"] == "PIPELINE_PASS"
+    assert payload["combination_count"] == 4
+    assert len(payload["points"]) == 4
+    assert payload["parameter_robustness_policy_pass"] is False
+    assert "parameter_sensitivity_pipeline_bound" in result.reason_codes
+    assert "parameter_sensitivity_not_bound_in_step29m_scope" not in result.reason_codes
+
+
+def test_parameter_sensitivity_binding_still_research_only() -> None:
+    result = _build(cfg=_cfg_with_parameter_sensitivity())
+    assert result.status is ev.EconomicViabilityStatus.RESEARCH_ONLY
+    assert result.economic_validity_proven is False
+    assert result.profitability_claim_allowed is False
+
+
+def test_parameter_sensitivity_binding_deterministic() -> None:
+    a = _build(cfg=_cfg_with_parameter_sensitivity())
+    b = _build(cfg=_cfg_with_parameter_sensitivity())
+    assert (
+        a.parameter_sensitivity_results["result_digest"]
+        == b.parameter_sensitivity_results["result_digest"]
+    )
 
 
 def test_status_never_exceeds_step29m_allowed_set() -> None:
