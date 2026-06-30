@@ -127,9 +127,6 @@ INTEGRATED_OFFLINE_TRADING_LOGIC_REPLAY_OWNER = (
 _FORBIDDEN_INSTRUMENT_SUBSTRINGS = frozenset({"btc", "xbt", "bitcoin", "spot", "synthetic_spot"})
 
 _DEFAULT_STATIC_LIMITS = StaticHardLimits(
-    max_notional=1.0,
-    max_leverage=1.0,
-    max_switches_per_window=100,
     min_band_width=1.0,
     max_band_width=100.0,
 )
