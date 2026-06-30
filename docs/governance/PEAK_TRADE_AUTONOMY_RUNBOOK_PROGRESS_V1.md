@@ -104,8 +104,12 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `RUNBOOK_STEP_29K_STARTED` | `true` |
 | `RUNBOOK_STEP_29K_IMPLEMENTED_SCOPE` | `strategy_registry_consolidation_v1_slice` |
 | `RUNBOOK_STEP_29K_COMPLETE` | `true` |
-| `STEP_29L_STARTED` | `false` |
-| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `true` |
+| `STEP_29L_STARTED` | `true` |
+| `RUNBOOK_STEP_29L_STARTED` | `true` |
+| `RUNBOOK_STEP_29L_IMPLEMENTED_SCOPE` | `mv2_research_wiring_v1_slice` |
+| `RUNBOOK_STEP_29L_COMPLETE` | `false` |
+| `STEP_29M_STARTED` | `false` |
+| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `false` |
 | `FOLLOW_UP_DEVEX_SCOPE` | `CANONICAL_PRE_PR_RUFF_AND_DIFF_GUARD` |
 | `FOLLOW_UP_DEVEX_STATUS` | `PENDING_SEPARATE_PR` |
 | `SYSTEMWIDE_RANKING_REQUIRED` | `false` |
@@ -967,7 +971,33 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `RUNBOOK_STEP_29K_IMPLEMENTED` | `true` |
 | `RUNBOOK_STEP_29K_COMPLETE` | `true` |
 | `STRATEGY_REGISTRY_CONSOLIDATION_V1_IMPLEMENTED` | `true` |
-| `STEP_29L_STARTED` | `false` |
+| `STEP_29L_STARTED` | `true` |
+| `RUNBOOK_STEP_29L_STARTED` | `true` |
+| `RUNBOOK_STEP_29L_IMPLEMENTED_SCOPE` | `mv2_research_wiring_v1_slice` |
+| `RUNBOOK_STEP_29L_COMPLETE` | `false` |
+| `STEP_29M_STARTED` | `false` |
+| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `false` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_29L — MV2 Research Wiring v1
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 9 |
+| `RUNBOOK_STEP_ID` | `mv2_research_wiring_v1` |
+| `STATUS` | `IN_PROGRESS` |
+| `CANONICAL_OWNER` | `src/backtest/mv2_research_wiring_v1.py` |
+| `DEPENDENCIES` | RUNBOOK_STEP_29K |
+| `RUNBOOK_STEP_29L_STARTED` | `true` |
+| `RUNBOOK_STEP_29L_IMPLEMENTED_SCOPE` | `mv2_research_wiring_v1_slice` |
+| `RUNBOOK_STEP_29L_COMPLETE` | `false` |
+| `STEP_29M_STARTED` | `false` |
+| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `false` |
+| `NEXT_REQUIRED_CONTRACT` | `step_29l_contract_test_matrix_and_closeout` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
 | `SEPARATE_GO_REQUIRED` | `true` |
 
 #### RUNBOOK_STEP_29J (legacy heading) — Backtest Engine Rewire Binding
