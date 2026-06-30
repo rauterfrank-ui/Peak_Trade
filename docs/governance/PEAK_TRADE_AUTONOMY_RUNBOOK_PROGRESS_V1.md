@@ -95,8 +95,13 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `RUNBOOK_STEP_29I_IMPLEMENTED_SCOPE` | `integrated_offline_trading_logic_replay_v1_slice` |
 | `RUNBOOK_STEP_29I_IMPLEMENTED` | `true` |
 | `RUNBOOK_STEP_29I_COMPLETE` | `true` |
-| `STEP_29J_STARTED` | `false` |
-| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `true` |
+| `STEP_29J_STARTED` | `true` |
+| `RUNBOOK_STEP_29J_STARTED` | `true` |
+| `RUNBOOK_STEP_29J_IMPLEMENTED_SCOPE` | `default_backtest_economic_realism_binding_v1_slice` |
+| `RUNBOOK_STEP_29J_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_29J_COMPLETE` | `false` |
+| `STEP_29K_STARTED` | `false` |
+| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `false` |
 | `FOLLOW_UP_DEVEX_SCOPE` | `CANONICAL_PRE_PR_RUFF_AND_DIFF_GUARD` |
 | `FOLLOW_UP_DEVEX_STATUS` | `PENDING_SEPARATE_PR` |
 | `SYSTEMWIDE_RANKING_REQUIRED` | `false` |
@@ -894,17 +899,40 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `RUNBOOK_STEP_29I_COMPLETE` | `true` |
 | `CANONICAL_TRADING_DECISION_EVIDENCE_V1_IMPLEMENTED` | `true` |
 | `INTEGRATED_OFFLINE_REPLAY_EVIDENCE_WRITER_V1_IMPLEMENTED` | `true` |
-| `STEP_29J_STARTED` | `false` |
+| `STEP_29J_STARTED` | `true` |
+| `RUNBOOK_STEP_29J_STARTED` | `true` |
+| `RUNBOOK_STEP_29J_IMPLEMENTED_SCOPE` | `default_backtest_economic_realism_binding_v1_slice` |
+| `RUNBOOK_STEP_29J_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_29J_COMPLETE` | `false` |
+| `STEP_29K_STARTED` | `false` |
 | `SEPARATE_GO_REQUIRED` | `true` |
 
-#### RUNBOOK_STEP_29J — Backtest Engine Rewire Binding
+#### RUNBOOK_STEP_29J — Default Backtest Economic Realism Binding
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 9 |
+| `RUNBOOK_STEP_ID` | `default_backtest_economic_realism_binding` |
+| `CONTRACT_OR_CAPABILITY` | `default_backtest_economic_realism_binding_v1` |
+| `STATUS` | `IN_PROGRESS` |
+| `DEPENDENCIES` | RUNBOOK_STEP_29I |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `NO_IMPLICIT_ZERO_COST_BACKTEST` | `true` |
+| `ECONOMIC_VALIDITY_PROVEN` | `false` |
+| `PROFITABILITY_CLAIM_ALLOWED` | `false` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_29J (legacy heading) — Backtest Engine Rewire Binding
 
 | Feld | Wert |
 |---|---|
 | `RUNBOOK_PHASE` | 9 |
 | `RUNBOOK_STEP_ID` | `backtest_engine_rewire_binding` |
 | `CONTRACT_OR_CAPABILITY` | `backtest_engine_rewire_binding` |
-| `STATUS` | `NOT_STARTED` |
+| `STATUS` | `IN_PROGRESS` |
 | `DEPENDENCIES` | RUNBOOK_STEP_29I |
 | `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
 | `RUNTIME_EFFECT` | `false` |

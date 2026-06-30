@@ -49,6 +49,10 @@ from src.core.peak_config import PeakConfig, load_config
 from src.core.position_sizing import build_position_sizer_from_config
 from src.core.risk import build_risk_manager_from_config
 from src.backtest.engine import BacktestEngine
+from src.backtest.cost_config_v0 import (
+    resolve_effective_backtest_cost_config,
+    BacktestCostConfigError,
+)
 from src.backtest.stats import compute_backtest_stats, validate_for_live_trading
 from src.data import DataNormalizer, CsvLoader, KrakenCsvLoader
 from src.core.experiments import log_backtest_result
@@ -172,6 +176,23 @@ Beispiele:
         "--no-report",
         action="store_true",
         help="Quarto-Report-Rendering überspringen",
+    )
+    parser.add_argument(
+        "--fee-bps",
+        type=float,
+        default=None,
+        help="Fee-Override in Basispunkten (überschreibt Config)",
+    )
+    parser.add_argument(
+        "--slippage-bps",
+        type=float,
+        default=None,
+        help="Slippage-Override in Basispunkten (überschreibt Config)",
+    )
+    parser.add_argument(
+        "--explicit-zero-cost-non-economic",
+        action="store_true",
+        help="Expliziter Non-Economic-Modus mit 0 Kosten (keine Profitabilitätsbehauptung)",
     )
 
     return parser.parse_args()
@@ -538,6 +559,26 @@ def main() -> int:
     # 4. Backtest ausführen
     print("\n[4/7] Backtest ausführen...")
     try:
+        # Kostenparameter binden (STEP 29J — fail-closed, keine impliziten Nullkosten)
+        try:
+            effective_cost = resolve_effective_backtest_cost_config(
+                cfg.raw,
+                cli_fee_bps=args.fee_bps,
+                cli_slippage_bps=args.slippage_bps,
+                explicit_zero_cost_non_economic=args.explicit_zero_cost_non_economic,
+                config_source=str(config_path),
+            )
+        except BacktestCostConfigError as e:
+            print(f"\nFEHLER: Kostenkonfiguration ungültig: {e}")
+            return 1
+
+        if args.verbose:
+            print(
+                f"  Kosten: fee={effective_cost.taker_fee_bps} bps, "
+                f"slippage={effective_cost.entry_slippage_bps} bps, "
+                f"digest={effective_cost.config_digest[:12]}..."
+            )
+
         # OOP-Position-Sizer und Risk-Manager aus Config erstellen
         position_sizer = build_position_sizer_from_config(cfg)
         risk_manager = build_risk_manager_from_config(cfg, section="risk_management")
@@ -560,6 +601,7 @@ def main() -> int:
             df=df,
             strategy_signal_fn=strategy_signal_fn,
             strategy_params=strategy_params,
+            cost_config=effective_cost,
         )
         result.strategy_name = strategy_name
 
@@ -656,6 +698,10 @@ def main() -> int:
         "data_source": data_source,
         "start_date": start_date_str,
         "end_date": end_date_str,
+        "effective_cost_config": effective_cost.to_dict(),
+        "config_digest": effective_cost.config_digest,
+        "override_digest": effective_cost.override_digest,
+        "economic_interpretation_allowed": effective_cost.economic_interpretation_allowed,
     }
     params = strategy_params
     config_snapshot_path = write_config_snapshot(run_dir, meta, params)

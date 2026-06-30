@@ -290,13 +290,13 @@ class TestRunRealisticWithExecutionPipeline:
             fee_bps=20.0,  # 0.2% Fees
         )
 
-        # Ohne Fees
+        # Ohne Fees (expliziter Non-Economic-Testmodus)
         engine_no_fees = BacktestEngine(use_execution_pipeline=True)
         result_no_fees = engine_no_fees.run_realistic(
             df=df,
             strategy_signal_fn=_simple_signal_fn,
             strategy_params={"ma_period": 5},
-            fee_bps=0.0,
+            explicit_zero_cost_non_economic=True,
         )
 
         # Fees sollten in stats auftauchen
