@@ -14,6 +14,14 @@ from dataclasses import asdict, dataclass, field
 from typing import Any, Dict, List, Mapping, Optional
 
 from ..core.errors import BacktestError
+from .funding_model_v1 import (
+    FUNDING_APPLICATION_POLICY,
+    FUNDING_MODEL_VERSION as BOUND_FUNDING_MODEL_VERSION,
+    FUNDING_RATE_SOURCE_BARS_COLUMN,
+    REASON_FUNDING_BOUND,
+    funding_binding_requested,
+    load_funding_model_config_v1,
+)
 
 COST_MODEL_VERSION = "backtest_cost_v0"
 FEE_MODEL_VERSION = "backtest_fee_taker_symmetric_v0"
@@ -263,21 +271,38 @@ def resolve_effective_backtest_cost_config(
             "Zero-cost economic backtest is forbidden without explicit_zero_cost_non_economic=True"
         )
 
+    funding_bound = funding_binding_requested(cfg)
+    funding_model_version = BOUND_FUNDING_MODEL_VERSION if funding_bound else FUNDING_MODEL_VERSION
+    funding_rate_source = FUNDING_RATE_SOURCE_BARS_COLUMN if funding_bound else "NOT_BOUND"
+    funding_application_policy = (
+        FUNDING_APPLICATION_POLICY if funding_bound else "DEFERRED_TO_LATER_STEP"
+    )
+    if funding_bound:
+        funding_config = load_funding_model_config_v1(cfg)
+        if funding_config.model_version != BOUND_FUNDING_MODEL_VERSION:
+            raise BacktestCostConfigError("funding_model_version_mismatch")
+        reason_codes = [code for code in reason_codes if code != REASON_FUNDING_NOT_BOUND]
+        if REASON_FUNDING_BOUND not in reason_codes:
+            reason_codes.append(REASON_FUNDING_BOUND)
+    else:
+        if REASON_FUNDING_NOT_BOUND not in reason_codes:
+            reason_codes.append(REASON_FUNDING_NOT_BOUND)
+
     base_fields = {
         "cost_model_version": str(section.get("cost_model_version", COST_MODEL_VERSION)),
         "fee_model_version": str(section.get("fee_model_version", FEE_MODEL_VERSION)),
         "slippage_model_version": str(
             section.get("slippage_model_version", SLIPPAGE_MODEL_VERSION)
         ),
-        "funding_model_version": FUNDING_MODEL_VERSION,
+        "funding_model_version": funding_model_version,
         "spread_model_version": SPREAD_MODEL_VERSION,
         "execution_model_version": EXECUTION_MODEL_VERSION,
         "maker_fee_bps": effective_fee,
         "taker_fee_bps": effective_fee,
         "entry_slippage_bps": effective_slippage,
         "exit_slippage_bps": effective_slippage,
-        "funding_rate_source": "NOT_BOUND",
-        "funding_application_policy": "DEFERRED_TO_LATER_STEP",
+        "funding_rate_source": funding_rate_source,
+        "funding_application_policy": funding_application_policy,
         "spread_application_policy": "NOT_APPLICABLE",
         "latency_assumption": "NOT_BOUND",
         "partial_fill_assumption": "NOT_BOUND",
@@ -290,7 +315,7 @@ def resolve_effective_backtest_cost_config(
             _canonical_json([asdict(p) for p in provenance]).encode("utf-8")
         ).hexdigest()
 
-    # Futures-only path: funding not yet bound — no economic validity claim (STEP 29J boundary).
+    # Economic validity remains blocked until admissible data, policy thresholds, and sensitivity.
     economic_allowed = False
 
     return EffectiveBacktestCostConfigV0(
@@ -329,7 +354,7 @@ def append_cost_accounting_fields(
             "net_return": net_return,
             "fee_drag": fee_drag,
             "slippage_impact": slippage_impact,
-            "funding_drag_or_status": FUNDING_MODEL_VERSION,
+            "funding_drag_or_status": effective_cost.funding_model_version,
             "economic_interpretation_allowed": effective_cost.economic_interpretation_allowed,
         }
     )
@@ -350,7 +375,7 @@ def build_cost_result_metadata(
         "slippage_bps": effective_cost.entry_slippage_bps,
         "economic_interpretation_allowed": effective_cost.economic_interpretation_allowed,
         "reason_codes": list(effective_cost.reason_codes),
-        "funding_binding_status": FUNDING_MODEL_VERSION,
+        "funding_binding_status": effective_cost.funding_model_version,
     }
     if extra:
         meta.update(extra)

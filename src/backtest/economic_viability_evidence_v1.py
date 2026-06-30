@@ -25,6 +25,11 @@ from scripts.ops.primary_evidence_retention_v0 import (
 )
 from src.backtest import mv2_research_wiring_v1 as mv2_wiring
 from src.backtest.cost_config_v0 import FUNDING_MODEL_VERSION
+from src.backtest.funding_model_v1 import (
+    FundingModelError,
+    compute_funding_drag_v1,
+    load_funding_model_config_v1,
+)
 from src.backtest.economic_validity_policy_v1 import (
     ECONOMIC_VALIDITY_POLICY_VERSION,
     evaluate_economic_validity_gates_v1,
@@ -474,7 +479,7 @@ def build_economic_viability_evidence_v1(
         reason_codes.append("economic_validity_policy_thresholds_not_configured")
         for field_name in policy.unconfigured_fields():
             reason_codes.append(f"policy_threshold_required_not_configured:{field_name}")
-    if FUNDING_MODEL_VERSION == "NOT_BOUND" or cost.funding_model_version == "NOT_BOUND":
+    if cost.funding_model_version == "NOT_BOUND":
         reason_codes.append("funding_model_not_bound")
     if cost.zero_cost_explicitly_requested:
         reason_codes.append("explicit_zero_cost_non_economic_mode")
@@ -499,6 +504,27 @@ def build_economic_viability_evidence_v1(
     policy_version_bound = policy.is_version_bound()
     funding_bound = cost.funding_model_version != "NOT_BOUND"
     parameter_sensitivity_bound = False
+
+    funding_drag_result = None
+    funding_drag_metric = _not_computed_metric("funding_drag_not_bound")
+    if funding_bound:
+        try:
+            initial_equity = float(cfg.get("backtest", {}).get("initial_cash", 10_000.0))
+            funding_drag_result = compute_funding_drag_v1(
+                bars=bars,
+                position_series=wiring_result.signals,
+                initial_equity=initial_equity,
+                config=load_funding_model_config_v1(cfg),
+                data_digest=computed_data_digest,
+            )
+            funding_drag_metric = MetricFieldV1(
+                semantic=MetricSemantic.COMPUTED,
+                value=float(funding_drag_result.funding_drag),
+            )
+        except FundingModelError as exc:
+            reason_codes.append(f"funding_drag_compute_failed:{exc}")
+            funding_bound = False
+            reason_codes.append("funding_model_not_bound")
 
     status = _resolve_status(
         reason_codes=reason_codes,
@@ -598,7 +624,7 @@ def build_economic_viability_evidence_v1(
         trade_count=MetricFieldV1(semantic=MetricSemantic.COMPUTED, value=float(trade_count_value)),
         turnover=_not_computed_metric("turnover_not_bound_in_step29m_scope"),
         fee_drag=_not_computed_metric("fee_drag_decomposition_not_bound"),
-        funding_drag=_not_computed_metric("funding_drag_not_bound"),
+        funding_drag=funding_drag_metric,
         slippage_impact=_not_computed_metric("slippage_impact_decomposition_not_bound"),
         tail_loss=_not_computed_metric("tail_loss_metric_not_bound"),
         time_in_market=_not_computed_metric("time_in_market_not_bound"),
@@ -657,6 +683,15 @@ def build_economic_viability_evidence_v1(
             "latency_assumption": cost.latency_assumption,
             "partial_fill_assumption": cost.partial_fill_assumption,
             "spread_application_policy": cost.spread_application_policy,
+            "funding_model_version": cost.funding_model_version,
+            "funding_rate_source": cost.funding_rate_source,
+            "funding_application_policy": cost.funding_application_policy,
+            "funding_binding_status": (
+                "BOUND" if funding_bound and funding_drag_result is not None else "NOT_BOUND"
+            ),
+            "funding_evidence_digest": (
+                funding_drag_result.evidence_digest() if funding_drag_result is not None else ""
+            ),
         },
         policy_version=policy.policy_version,
         policy_digest=policy.config_digest(),
