@@ -16,11 +16,11 @@ SCHEDULER_RUNTIME_ALLOWED: false
 
 | Feld | Wert |
 |---|---|
-| `LAST_VERIFIED_ORIGIN_MAIN` | `36b3110090d2f9961216675550a602e411f07894` |
-| `LAST_VERIFIED_AT` | `2026-06-30T20:00:00Z` |
+| `LAST_VERIFIED_ORIGIN_MAIN` | `540b8cfdb28a82e3810fca598a7018f94f89783e` |
+| `LAST_VERIFIED_AT` | `2026-06-30T18:40:00Z` |
 | `CURRENT_MAJOR_GAP_PACKAGE` | `MAJOR_GAP_COMPARISON_PROMOTION_POLICY_INPUT_BRIDGE_V0` |
-| `NEXT_RUNBOOK_STEP` | `RUNBOOK_STEP_29I` |
-| `NEXT_CANONICAL_STEP` | `entry_exit_policy_replay_binding` |
+| `NEXT_RUNBOOK_STEP` | `RUNBOOK_STEP_29J` |
+| `NEXT_CANONICAL_STEP` | `backtest_engine_rewire_binding` |
 | `RUNBOOK_STEP_13_IMPLEMENTED` | `true` |
 | `TRADING_SESSION_SINGLE_WRITER_IMPLEMENTED` | `true` |
 | `RUNTIME_SINGLE_WRITER_ACTIVATED` | `false` |
@@ -93,9 +93,10 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `STEP_29I_STARTED` | `true` |
 | `RUNBOOK_STEP_29I_STARTED` | `true` |
 | `RUNBOOK_STEP_29I_IMPLEMENTED_SCOPE` | `integrated_offline_trading_logic_replay_v1_slice` |
-| `RUNBOOK_STEP_29I_COMPLETE` | `false` |
+| `RUNBOOK_STEP_29I_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_29I_COMPLETE` | `true` |
 | `STEP_29J_STARTED` | `false` |
-| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `false` |
+| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `true` |
 | `FOLLOW_UP_DEVEX_SCOPE` | `CANONICAL_PRE_PR_RUFF_AND_DIFF_GUARD` |
 | `FOLLOW_UP_DEVEX_STATUS` | `PENDING_SEPARATE_PR` |
 | `SYSTEMWIDE_RANKING_REQUIRED` | `false` |
@@ -864,19 +865,47 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `STEP_29I_STARTED` | `true` |
 | `RUNBOOK_STEP_29I_STARTED` | `true` |
 | `RUNBOOK_STEP_29I_IMPLEMENTED_SCOPE` | `integrated_offline_trading_logic_replay_v1_slice` |
-| `RUNBOOK_STEP_29I_COMPLETE` | `false` |
+| `RUNBOOK_STEP_29I_COMPLETE` | `true` |
 | `STEP_29J_STARTED` | `false` |
 | `SEPARATE_GO_REQUIRED` | `true` |
 
-#### RUNBOOK_STEP_29I — Entry/Exit Policy Replay Binding
+#### RUNBOOK_STEP_29I — Integrated Offline Trading Logic Replay
 
 | Feld | Wert |
 |---|---|
 | `RUNBOOK_PHASE` | 9 |
-| `RUNBOOK_STEP_ID` | `entry_exit_policy_replay_binding` |
-| `CONTRACT_OR_CAPABILITY` | `entry_exit_policy_replay_binding` |
-| `STATUS` | `IN_PROGRESS` |
+| `RUNBOOK_STEP_ID` | `integrated_offline_trading_logic_replay_v1` |
+| `CONTRACT_OR_CAPABILITY` | `integrated_offline_trading_logic_replay_v1` |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py` |
+| `MERGED_PRS` | `#4691` |
+| `MERGE_COMMITS` | `540b8cfdb28a82e3810fca598a7018f94f89783e` |
+| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/runbook_step29i_integrated_offline_replay_v1_implementation_v0_20260630T181500Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29i_integrated_offline_replay_pr4691_squash_merge_closeout_v0_20260630T183300Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29i_completion_coverage_audit_and_bounded_closeout_v0_20260630T183947Z (MANIFEST_VERIFY_RC=0); integrated_replay_pr=4691; integrated_replay_merge_commit=540b8cfdb28a82e3810fca598a7018f94f89783e; integrated_replay_squash_parent=f9efd26745cf68a3813f6b92320db515aecfd522; canonical_scope=integrated_offline_trading_logic_replay_v1_slice; INTEGRATED_OFFLINE_TRADING_LOGIC_REPLAY_V1_BOUND=true; STEP29I_IMPLEMENTATION_COMPLETE=true; STEP_29J_STARTED=false; STEP_29I_COMPLETION_DOES_NOT_AUTHORIZE_LIVE=true; STEP_29I_COMPLETION_DOES_NOT_AUTHORIZE_RUNTIME=true; STEP_29I_COMPLETION_DOES_NOT_AUTHORIZE_ORDERS=true; STEP_29I_COMPLETION_DOES_NOT_START_BACKTEST_REWIRE=true; STEP_29I_COMPLETION_DOES_NOT_CLAIM_ECONOMIC_VALIDITY=true; UNIVERSE_SELECTION_UNCHANGED=true; offline_only=true; non_authorizing=true; runtime_process_started=false; scheduler_action_performed=false; venue_access_performed=false; credential_access_performed=false; trading_action_performed=false; progress_registry_closeout_status=COMPLETE; FUTURES_ONLY=true; BITCOIN_DIRECTION_ALLOWED=false; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SCHEDULER_RUNTIME_ALLOWED=false` |
 | `DEPENDENCIES` | RUNBOOK_STEP_29H |
+| `REMAINING_GAPS` | — |
+| `NEXT_REQUIRED_CONTRACT` | `backtest_engine_rewire_binding` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `RUNBOOK_STEP_29I_STARTED` | `true` |
+| `RUNBOOK_STEP_29I_IMPLEMENTED_SCOPE` | `integrated_offline_trading_logic_replay_v1_slice` |
+| `RUNBOOK_STEP_29I_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_29I_COMPLETE` | `true` |
+| `CANONICAL_TRADING_DECISION_EVIDENCE_V1_IMPLEMENTED` | `true` |
+| `INTEGRATED_OFFLINE_REPLAY_EVIDENCE_WRITER_V1_IMPLEMENTED` | `true` |
+| `STEP_29J_STARTED` | `false` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_29J — Backtest Engine Rewire Binding
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 9 |
+| `RUNBOOK_STEP_ID` | `backtest_engine_rewire_binding` |
+| `CONTRACT_OR_CAPABILITY` | `backtest_engine_rewire_binding` |
+| `STATUS` | `NOT_STARTED` |
+| `DEPENDENCIES` | RUNBOOK_STEP_29I |
 | `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
 | `RUNTIME_EFFECT` | `false` |
 | `FUTURES_ONLY` | `true` |
