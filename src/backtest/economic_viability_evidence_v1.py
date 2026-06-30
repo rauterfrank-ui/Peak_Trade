@@ -25,6 +25,12 @@ from scripts.ops.primary_evidence_retention_v0 import (
 )
 from src.backtest import mv2_research_wiring_v1 as mv2_wiring
 from src.backtest.cost_config_v0 import FUNDING_MODEL_VERSION
+from src.backtest.economic_validity_policy_v1 import (
+    ECONOMIC_VALIDITY_POLICY_VERSION,
+    evaluate_economic_validity_gates_v1,
+    load_economic_validity_policy_v1,
+    validate_economic_validity_policy_v1,
+)
 from src.experiments.monte_carlo import MonteCarloConfig, MonteCarloSummaryResult
 from src.trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
     INTEGRATED_OFFLINE_TRADING_LOGIC_REPLAY_LAYER_VERSION,
@@ -32,7 +38,6 @@ from src.trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
 
 ECONOMIC_VIABILITY_EVIDENCE_LAYER_VERSION = "v1"
 ECONOMIC_VIABILITY_EVIDENCE_OWNER = "backtest.economic_viability_evidence_v1"
-ECONOMIC_VIABILITY_POLICY_VERSION = "NOT_BOUND"
 ARTIFACT_FILENAME = "economic_viability_evidence_v1.json"
 SCHEMA_FILENAME = "economic_viability_evidence_schema_v1.json"
 OFFLINE_DETERMINISTIC_CREATED_AT = "1970-01-01T00:00:00+00:00"
@@ -144,7 +149,9 @@ class EconomicViabilityEvidenceV1:
     randomness_seed: int
     data_admissibility: Mapping[str, Any]
     cost_binding: Mapping[str, Any]
-    policy_version: str = ECONOMIC_VIABILITY_POLICY_VERSION
+    policy_version: str = ECONOMIC_VALIDITY_POLICY_VERSION
+    policy_digest: str = ""
+    policy_threshold_status: str = ""
     economic_validity_proven: bool = False
     profitability_claim_allowed: bool = False
     authority_effect: str = "NONE"
@@ -203,6 +210,8 @@ class EconomicViabilityEvidenceV1:
             "data_admissibility": dict(self.data_admissibility),
             "cost_binding": dict(self.cost_binding),
             "policy_version": self.policy_version,
+            "policy_digest": self.policy_digest,
+            "policy_threshold_status": self.policy_threshold_status,
             "economic_validity_proven": self.economic_validity_proven,
             "profitability_claim_allowed": self.profitability_claim_allowed,
             "authority_effect": self.authority_effect,
@@ -457,8 +466,14 @@ def build_economic_viability_evidence_v1(
         reason_codes.append("admissible_versioned_futures_dataset_missing")
     if data_admissibility.source_kind is DataSourceKind.INADMISSIBLE:
         reason_codes.append("data_source_inadmissible")
-    if ECONOMIC_VIABILITY_POLICY_VERSION == "NOT_BOUND":
+    policy = load_economic_validity_policy_v1(cfg)
+    validate_economic_validity_policy_v1(policy)
+    if not policy.is_version_bound():
         reason_codes.append("economic_viability_policy_not_versioned")
+    if not policy.thresholds_configured():
+        reason_codes.append("economic_validity_policy_thresholds_not_configured")
+        for field_name in policy.unconfigured_fields():
+            reason_codes.append(f"policy_threshold_required_not_configured:{field_name}")
     if FUNDING_MODEL_VERSION == "NOT_BOUND" or cost.funding_model_version == "NOT_BOUND":
         reason_codes.append("funding_model_not_bound")
     if cost.zero_cost_explicitly_requested:
@@ -471,13 +486,17 @@ def build_economic_viability_evidence_v1(
     reason_codes.extend(robustness_failures)
 
     trade_count_value = int(stats.get("total_trades", 0))
-    gates_pass = False
-    if trade_count_value > 0 and stats.get("expectancy", 0.0) > 0.0:
-        gates_pass = True
-    else:
-        reason_codes.append("economic_gate_trade_or_expectancy_insufficient")
+    gate_eval = evaluate_economic_validity_gates_v1(
+        policy=policy,
+        net_expectancy=stats.get("expectancy"),
+        profit_factor=stats.get("profit_factor"),
+        max_drawdown=stats.get("max_drawdown"),
+        trade_count=trade_count_value,
+    )
+    gates_pass = gate_eval.gates_pass
+    reason_codes.extend(gate_eval.reason_codes)
 
-    policy_version_bound = ECONOMIC_VIABILITY_POLICY_VERSION != "NOT_BOUND"
+    policy_version_bound = policy.is_version_bound()
     funding_bound = cost.funding_model_version != "NOT_BOUND"
     parameter_sensitivity_bound = False
 
@@ -639,6 +658,9 @@ def build_economic_viability_evidence_v1(
             "partial_fill_assumption": cost.partial_fill_assumption,
             "spread_application_policy": cost.spread_application_policy,
         },
+        policy_version=policy.policy_version,
+        policy_digest=policy.config_digest(),
+        policy_threshold_status=policy.policy_threshold_status(),
         economic_validity_proven=economic_validity_proven,
         profitability_claim_allowed=False,
     )
@@ -695,7 +717,7 @@ def economic_viability_evidence_schema_v1() -> dict[str, Any]:
         ],
         "metric_semantics": [semantic.value for semantic in MetricSemantic],
         "data_source_kinds": [kind.value for kind in DataSourceKind],
-        "policy_version": ECONOMIC_VIABILITY_POLICY_VERSION,
+        "policy_version": ECONOMIC_VALIDITY_POLICY_VERSION,
         "authority_effect": "NONE",
         "runtime_effect": False,
         "order_effect": False,
@@ -846,7 +868,9 @@ def economic_viability_evidence_from_dict_v1(
             payload.get("data_admissibility", {}), field_name="data_admissibility"
         ),
         cost_binding=_mapping_from_dict(payload.get("cost_binding", {}), field_name="cost_binding"),
-        policy_version=str(payload.get("policy_version", ECONOMIC_VIABILITY_POLICY_VERSION)),
+        policy_version=str(payload.get("policy_version", ECONOMIC_VALIDITY_POLICY_VERSION)),
+        policy_digest=str(payload.get("policy_digest", "")),
+        policy_threshold_status=str(payload.get("policy_threshold_status", "")),
         economic_validity_proven=bool(payload.get("economic_validity_proven", False)),
         profitability_claim_allowed=bool(payload.get("profitability_claim_allowed", False)),
     )

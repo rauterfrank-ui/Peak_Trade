@@ -6,6 +6,7 @@ from typing import Any, Mapping
 import pandas as pd
 import pytest
 
+from src.backtest import economic_validity_policy_v1 as policy_mod
 from src.backtest import economic_viability_evidence_v1 as ev
 from src.backtest import mv2_research_wiring_v1 as wiring
 
@@ -76,8 +77,11 @@ def test_contract_layer_version() -> None:
     assert ev.ECONOMIC_VIABILITY_EVIDENCE_LAYER_VERSION == "v1"
 
 
-def test_policy_not_bound_fail_closed() -> None:
-    assert ev.ECONOMIC_VIABILITY_POLICY_VERSION == "NOT_BOUND"
+def test_policy_version_bound_fail_closed_thresholds() -> None:
+    assert ev.ECONOMIC_VALIDITY_POLICY_VERSION == policy_mod.ECONOMIC_VALIDITY_POLICY_VERSION
+    p = policy_mod.default_economic_validity_policy_v1()
+    assert p.is_version_bound() is True
+    assert p.policy_threshold_status() == policy_mod.POLICY_THRESHOLD_STATUS_BLOCKED
 
 
 def test_build_evidence_research_only_for_synthetic_fixture() -> None:
@@ -86,7 +90,10 @@ def test_build_evidence_research_only_for_synthetic_fixture() -> None:
     assert result.economic_validity_proven is False
     assert result.profitability_claim_allowed is False
     assert "admissible_versioned_futures_dataset_missing" in result.reason_codes
-    assert "economic_viability_policy_not_versioned" in result.reason_codes
+    assert "economic_validity_policy_thresholds_not_configured" in result.reason_codes
+    assert result.policy_version == policy_mod.ECONOMIC_VALIDITY_POLICY_VERSION
+    assert len(result.policy_digest) == 64
+    assert result.policy_threshold_status == policy_mod.POLICY_THRESHOLD_STATUS_BLOCKED
 
 
 def test_build_evidence_deterministic_semantics() -> None:
