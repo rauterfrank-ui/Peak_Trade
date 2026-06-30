@@ -90,8 +90,12 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `RUNBOOK_STEP_29H_IMPLEMENTED_SCOPE` | `entry_position_exit_policy_offline_slice` |
 | `RUNBOOK_STEP_29H_IMPLEMENTED` | `true` |
 | `RUNBOOK_STEP_29H_COMPLETE` | `true` |
-| `STEP_29I_STARTED` | `false` |
-| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `true` |
+| `STEP_29I_STARTED` | `true` |
+| `RUNBOOK_STEP_29I_STARTED` | `true` |
+| `RUNBOOK_STEP_29I_IMPLEMENTED_SCOPE` | `integrated_offline_trading_logic_replay_v1_slice` |
+| `RUNBOOK_STEP_29I_COMPLETE` | `false` |
+| `STEP_29J_STARTED` | `false` |
+| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `false` |
 | `FOLLOW_UP_DEVEX_SCOPE` | `CANONICAL_PRE_PR_RUFF_AND_DIFF_GUARD` |
 | `FOLLOW_UP_DEVEX_STATUS` | `PENDING_SEPARATE_PR` |
 | `SYSTEMWIDE_RANKING_REQUIRED` | `false` |
@@ -857,7 +861,11 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `RUNBOOK_STEP_29H_IMPLEMENTED_SCOPE` | `entry_position_exit_policy_offline_slice` |
 | `RUNBOOK_STEP_29H_COMPLETE` | `true` |
 | `DOUBLE_PLAY_ENTRY_EXIT_POLICY_V0_IMPLEMENTED` | `true` |
-| `STEP_29I_STARTED` | `false` |
+| `STEP_29I_STARTED` | `true` |
+| `RUNBOOK_STEP_29I_STARTED` | `true` |
+| `RUNBOOK_STEP_29I_IMPLEMENTED_SCOPE` | `integrated_offline_trading_logic_replay_v1_slice` |
+| `RUNBOOK_STEP_29I_COMPLETE` | `false` |
+| `STEP_29J_STARTED` | `false` |
 | `SEPARATE_GO_REQUIRED` | `true` |
 
 #### RUNBOOK_STEP_29I — Entry/Exit Policy Replay Binding
@@ -867,7 +875,7 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `RUNBOOK_PHASE` | 9 |
 | `RUNBOOK_STEP_ID` | `entry_exit_policy_replay_binding` |
 | `CONTRACT_OR_CAPABILITY` | `entry_exit_policy_replay_binding` |
-| `STATUS` | `NOT_STARTED` |
+| `STATUS` | `IN_PROGRESS` |
 | `DEPENDENCIES` | RUNBOOK_STEP_29H |
 | `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
 | `RUNTIME_EFFECT` | `false` |
