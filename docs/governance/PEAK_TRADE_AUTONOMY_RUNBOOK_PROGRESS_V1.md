@@ -109,7 +109,12 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `RUNBOOK_STEP_29L_IMPLEMENTED_SCOPE` | `mv2_research_wiring_v1_slice,mv2_research_wiring_v1_residual_walkforward_stress_warmup_evidence_slice` |
 | `RUNBOOK_STEP_29L_IMPLEMENTED` | `true` |
 | `RUNBOOK_STEP_29L_COMPLETE` | `true` |
-| `STEP_29M_STARTED` | `false` |
+| `STEP_29M_STARTED` | `true` |
+| `RUNBOOK_STEP_29M_STARTED` | `true` |
+| `RUNBOOK_STEP_29M_IMPLEMENTED_SCOPE` | `economic_viability_evidence_v1_offline_slice` |
+| `RUNBOOK_STEP_29M_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_29M_COMPLETE` | `false` |
+| `STEP_29N_STARTED` | `false` |
 | `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `true` |
 | `FOLLOW_UP_DEVEX_SCOPE` | `CANONICAL_PRE_PR_RUFF_AND_DIFF_GUARD` |
 | `FOLLOW_UP_DEVEX_STATUS` | `PENDING_SEPARATE_PR` |
@@ -1008,6 +1013,36 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `STEP_29M_STARTED` | `false` |
 | `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `true` |
 | `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_29M — Economic Viability Evidence v1
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 9 |
+| `RUNBOOK_STEP_ID` | `economic_viability_evidence_v1` |
+| `STATUS` | `IN_PROGRESS` |
+| `CANONICAL_OWNER` | `src/backtest/economic_viability_evidence_v1.py` |
+| `DEPENDENCIES` | RUNBOOK_STEP_29L |
+| `REMAINING_GAPS` | `versioned_economic_viability_policy_v1,admissible_versioned_futures_dataset,funding_model_binding,parameter_sensitivity_binding` |
+| `NEXT_REQUIRED_CONTRACT` | `RUNBOOK_STEP_29M` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `ECONOMIC_VALIDITY_PROVEN` | `false` |
+| `PROFITABILITY_CLAIM_ALLOWED` | `false` |
+| `RUNBOOK_STEP_29M_STARTED` | `true` |
+| `RUNBOOK_STEP_29M_IMPLEMENTED_SCOPE` | `economic_viability_evidence_v1_offline_slice` |
+| `RUNBOOK_STEP_29M_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_29M_COMPLETE` | `false` |
+| `STEP_29N_STARTED` | `false` |
+| `STEP_29M_COMPLETION_DOES_NOT_AUTHORIZE_LIVE` | `true` |
+| `STEP_29M_COMPLETION_DOES_NOT_AUTHORIZE_RUNTIME` | `true` |
+| `STEP_29M_COMPLETION_DOES_NOT_AUTHORIZE_ORDERS` | `true` |
+| `STEP_29M_COMPLETION_DOES_NOT_CLAIM_ECONOMIC_VALIDITY` | `true` |
+| `STEP_29M_COMPLETION_DOES_NOT_START_PROMOTION_GATE` | `true` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
 
 #### RUNBOOK_STEP_29J (legacy heading) — Backtest Engine Rewire Binding
 
