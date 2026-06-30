@@ -16,11 +16,11 @@ SCHEDULER_RUNTIME_ALLOWED: false
 
 | Feld | Wert |
 |---|---|
-| `LAST_VERIFIED_ORIGIN_MAIN` | `26d56e8a721688d0ee67a430b12bb5dbcd4f40c3` |
-| `LAST_VERIFIED_AT` | `2026-06-30T15:05:00Z` |
+| `LAST_VERIFIED_ORIGIN_MAIN` | `45bc596f52cab3bb5df39e47766740994e7a8ced` |
+| `LAST_VERIFIED_AT` | `2026-06-30T16:59:51Z` |
 | `CURRENT_MAJOR_GAP_PACKAGE` | `MAJOR_GAP_COMPARISON_PROMOTION_POLICY_INPUT_BRIDGE_V0` |
-| `NEXT_RUNBOOK_STEP` | `RUNBOOK_STEP_29F` |
-| `NEXT_CANONICAL_STEP` | `survival_and_suitability_binding` |
+| `NEXT_RUNBOOK_STEP` | `RUNBOOK_STEP_29G` |
+| `NEXT_CANONICAL_STEP` | `double_play_composition_matrix` |
 | `RUNBOOK_STEP_13_IMPLEMENTED` | `true` |
 | `TRADING_SESSION_SINGLE_WRITER_IMPLEMENTED` | `true` |
 | `RUNTIME_SINGLE_WRITER_ACTIVATED` | `false` |
@@ -79,6 +79,11 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `RUNBOOK_STEP_29E_IMPLEMENTED` | `true` |
 | `DIRECTIONAL_ASSESSMENT_V1_IMPLEMENTED` | `true` |
 | `BULL_BEAR_DIRECTIONAL_ASSESSMENT_COMPLETED` | `true` |
+| `RUNBOOK_STEP_29F_IMPLEMENTATION_STARTED` | `true` |
+| `RUNBOOK_STEP_29F_IMPLEMENTED_SCOPE` | `survival_assessment_v1_offline_slice,suitability_binding_offline_slice` |
+| `RUNBOOK_STEP_29F_COMPLETE` | `true` |
+| `STEP_29G_STARTED` | `false` |
+| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `true` |
 | `FOLLOW_UP_DEVEX_SCOPE` | `CANONICAL_PRE_PR_RUFF_AND_DIFF_GUARD` |
 | `FOLLOW_UP_DEVEX_STATUS` | `PENDING_SEPARATE_PR` |
 | `SYSTEMWIDE_RANKING_REQUIRED` | `false` |
@@ -777,8 +782,34 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `RUNBOOK_PHASE` | 9 |
 | `RUNBOOK_STEP_ID` | `survival_and_suitability_binding` |
 | `CONTRACT_OR_CAPABILITY` | `survival_and_suitability_binding` |
-| `STATUS` | `NOT_STARTED` |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src/trading/master_v2/survival_assessment_v1.py`, `src/trading/master_v2/suitability_binding_v1.py` |
+| `MERGED_PRS` | `#4684`, `#4685` |
+| `MERGE_COMMITS` | `42d858a4c64579d691f19a78d9dcb20efeb22c93`, `45bc596f52cab3bb5df39e47766740994e7a8ced` |
+| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/runbook_step29f_survival_assessment_v1_offline_slice_implementation_v0_20260630T160000Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29f_survival_assessment_v1_offline_slice_pr4684_squash_merge_closeout_v0_20260630T132816Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/runbook_step29f_suitability_binding_offline_slice_implementation_v0_20260630T133700Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29f_suitability_binding_offline_slice_pr4685_squash_merge_closeout_v0_20260630T134400Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29f_completion_coverage_audit_and_bounded_closeout_v0_20260630T165951Z (MANIFEST_VERIFY_RC=0); survival_pr=4684; suitability_pr=4685; survival_merge_commit=42d858a4c64579d691f19a78d9dcb20efeb22c93; suitability_merge_commit=45bc596f52cab3bb5df39e47766740994e7a8ced; survival_squash_parent=c9cf5be0fd8b44cef7f0618707cd344b37f28bd4; suitability_squash_parent=42d858a4c64579d691f19a78d9dcb20efeb22c93; canonical_scope=survival_assessment_v1_offline_slice,suitability_binding_offline_slice; SURVIVAL_ASSESSMENT_V1_BOUND=true; SUITABILITY_BINDING_V1_BOUND=true; STEP29F_IMPLEMENTATION_COMPLETE=true; STEP29G_IMPLEMENTATION_STARTED=false; STEP_29F_COMPLETION_DOES_NOT_AUTHORIZE_LIVE=true; STEP_29F_COMPLETION_DOES_NOT_AUTHORIZE_RUNTIME=true; STEP_29F_COMPLETION_DOES_NOT_AUTHORIZE_ORDERS=true; STEP_29F_COMPLETION_DOES_NOT_START_DOUBLE_PLAY_COMPOSITION=true; offline_only=true; non_authorizing=true; runtime_process_started=false; scheduler_action_performed=false; venue_access_performed=false; credential_access_performed=false; trading_action_performed=false; progress_registry_closeout_status=COMPLETE; FUTURES_ONLY=true; BITCOIN_DIRECTION_ALLOWED=false; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SCHEDULER_RUNTIME_ALLOWED=false; AUTO_PR_HELPER_FAILURE_OBSERVED=true; AUTO_PR_HELPER_FAILURE_REQUIRED=false; AUTO_PR_HELPER_FAILURE_BLOCKING=false; AUTO_PR_HELPER_REPAIR_DEFERRED=true` |
 | `DEPENDENCIES` | RUNBOOK_STEP_29E |
+| `REMAINING_GAPS` | — |
+| `NEXT_REQUIRED_CONTRACT` | `double_play_composition_matrix` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `RUNBOOK_STEP_29F_IMPLEMENTATION_STARTED` | `true` |
+| `RUNBOOK_STEP_29F_IMPLEMENTED_SCOPE` | `survival_assessment_v1_offline_slice,suitability_binding_offline_slice` |
+| `RUNBOOK_STEP_29F_COMPLETE` | `true` |
+| `SURVIVAL_ASSESSMENT_V1_IMPLEMENTED` | `true` |
+| `SUITABILITY_BINDING_V1_IMPLEMENTED` | `true` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_29G — Double Play Composition Matrix
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 9 |
+| `RUNBOOK_STEP_ID` | `double_play_composition_matrix` |
+| `CONTRACT_OR_CAPABILITY` | `double_play_composition_matrix` |
+| `STATUS` | `NOT_STARTED` |
+| `DEPENDENCIES` | RUNBOOK_STEP_29F |
 | `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
 | `RUNTIME_EFFECT` | `false` |
 | `FUTURES_ONLY` | `true` |
