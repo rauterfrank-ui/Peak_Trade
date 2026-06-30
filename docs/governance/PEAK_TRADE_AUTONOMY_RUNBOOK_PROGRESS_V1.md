@@ -16,10 +16,10 @@ SCHEDULER_RUNTIME_ALLOWED: false
 
 | Feld | Wert |
 |---|---|
-| `LAST_VERIFIED_ORIGIN_MAIN` | `540b8cfdb28a82e3810fca598a7018f94f89783e` |
-| `LAST_VERIFIED_AT` | `2026-06-30T18:40:00Z` |
+| `LAST_VERIFIED_ORIGIN_MAIN` | `274909dd684f032adb397c7e6179a18ad8b510e0` |
+| `LAST_VERIFIED_AT` | `2026-06-30T19:10:00Z` |
 | `CURRENT_MAJOR_GAP_PACKAGE` | `MAJOR_GAP_COMPARISON_PROMOTION_POLICY_INPUT_BRIDGE_V0` |
-| `NEXT_RUNBOOK_STEP` | `RUNBOOK_STEP_29J` |
+| `NEXT_RUNBOOK_STEP` | `RUNBOOK_STEP_29K` |
 | `NEXT_CANONICAL_STEP` | `backtest_engine_rewire_binding` |
 | `RUNBOOK_STEP_13_IMPLEMENTED` | `true` |
 | `TRADING_SESSION_SINGLE_WRITER_IMPLEMENTED` | `true` |
@@ -99,9 +99,9 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `RUNBOOK_STEP_29J_STARTED` | `true` |
 | `RUNBOOK_STEP_29J_IMPLEMENTED_SCOPE` | `default_backtest_economic_realism_binding_v1_slice` |
 | `RUNBOOK_STEP_29J_IMPLEMENTED` | `true` |
-| `RUNBOOK_STEP_29J_COMPLETE` | `false` |
+| `RUNBOOK_STEP_29J_COMPLETE` | `true` |
 | `STEP_29K_STARTED` | `false` |
-| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `false` |
+| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `true` |
 | `FOLLOW_UP_DEVEX_SCOPE` | `CANONICAL_PRE_PR_RUFF_AND_DIFF_GUARD` |
 | `FOLLOW_UP_DEVEX_STATUS` | `PENDING_SEPARATE_PR` |
 | `SYSTEMWIDE_RANKING_REQUIRED` | `false` |
@@ -903,7 +903,7 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `RUNBOOK_STEP_29J_STARTED` | `true` |
 | `RUNBOOK_STEP_29J_IMPLEMENTED_SCOPE` | `default_backtest_economic_realism_binding_v1_slice` |
 | `RUNBOOK_STEP_29J_IMPLEMENTED` | `true` |
-| `RUNBOOK_STEP_29J_COMPLETE` | `false` |
+| `RUNBOOK_STEP_29J_COMPLETE` | `true` |
 | `STEP_29K_STARTED` | `false` |
 | `SEPARATE_GO_REQUIRED` | `true` |
 
@@ -914,8 +914,14 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `RUNBOOK_PHASE` | 9 |
 | `RUNBOOK_STEP_ID` | `default_backtest_economic_realism_binding` |
 | `CONTRACT_OR_CAPABILITY` | `default_backtest_economic_realism_binding_v1` |
-| `STATUS` | `IN_PROGRESS` |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src/backtest/cost_config_v0.py` |
+| `MERGED_PRS` | `#4693` |
+| `MERGE_COMMITS` | `274909dd684f032adb397c7e6179a18ad8b510e0` |
+| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29j_default_backtest_economic_realism_binding_pr4693_squash_merge_closeout_v0_20260630T190300Z (MANIFEST_VERIFY_RC=0); default_backtest_cost_binding_pr=4693; default_backtest_cost_binding_merge_commit=274909dd684f032adb397c7e6179a18ad8b510e0; default_backtest_cost_binding_squash_parent=d4d539b229636db974ba5d5c5b4c17c3765067d7; canonical_scope=default_backtest_economic_realism_binding_v1_slice; DEFAULT_BACKTEST_COST_BINDING_V1_BOUND=true; STEP29J_IMPLEMENTATION_COMPLETE=true; STEP_29K_STARTED=false; STEP_29J_COMPLETION_DOES_NOT_AUTHORIZE_LIVE=true; STEP_29J_COMPLETION_DOES_NOT_AUTHORIZE_RUNTIME=true; STEP_29J_COMPLETION_DOES_NOT_AUTHORIZE_ORDERS=true; STEP_29J_COMPLETION_DOES_NOT_CLAIM_ECONOMIC_VALIDITY=true; STEP_29J_COMPLETION_DOES_NOT_START_FUNDING_BINDING=true; UNIVERSE_SELECTION_UNCHANGED=true; offline_only=true; non_authorizing=true; runtime_process_started=false; scheduler_action_performed=false; venue_access_performed=false; credential_access_performed=false; trading_action_performed=false; progress_registry_closeout_status=COMPLETE; FUTURES_ONLY=true; BITCOIN_DIRECTION_ALLOWED=false; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SCHEDULER_RUNTIME_ALLOWED=false` |
 | `DEPENDENCIES` | RUNBOOK_STEP_29I |
+| `REMAINING_GAPS` | — |
+| `NEXT_REQUIRED_CONTRACT` | `backtest_engine_rewire_binding` |
 | `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
 | `RUNTIME_EFFECT` | `false` |
 | `FUTURES_ONLY` | `true` |
@@ -923,6 +929,12 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `NO_IMPLICIT_ZERO_COST_BACKTEST` | `true` |
 | `ECONOMIC_VALIDITY_PROVEN` | `false` |
 | `PROFITABILITY_CLAIM_ALLOWED` | `false` |
+| `RUNBOOK_STEP_29J_STARTED` | `true` |
+| `RUNBOOK_STEP_29J_IMPLEMENTED_SCOPE` | `default_backtest_economic_realism_binding_v1_slice` |
+| `RUNBOOK_STEP_29J_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_29J_COMPLETE` | `true` |
+| `DEFAULT_BACKTEST_COST_BINDING_V1_IMPLEMENTED` | `true` |
+| `STEP_29K_STARTED` | `false` |
 | `SEPARATE_GO_REQUIRED` | `true` |
 
 #### RUNBOOK_STEP_29J (legacy heading) — Backtest Engine Rewire Binding
