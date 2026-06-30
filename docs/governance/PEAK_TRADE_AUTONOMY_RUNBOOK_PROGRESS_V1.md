@@ -16,11 +16,11 @@ SCHEDULER_RUNTIME_ALLOWED: false
 
 | Feld | Wert |
 |---|---|
-| `LAST_VERIFIED_ORIGIN_MAIN` | `45bc596f52cab3bb5df39e47766740994e7a8ced` |
-| `LAST_VERIFIED_AT` | `2026-06-30T16:59:51Z` |
+| `LAST_VERIFIED_ORIGIN_MAIN` | `05b3932329c6b642d770916ed28608f863086129` |
+| `LAST_VERIFIED_AT` | `2026-06-30T17:35:00Z` |
 | `CURRENT_MAJOR_GAP_PACKAGE` | `MAJOR_GAP_COMPARISON_PROMOTION_POLICY_INPUT_BRIDGE_V0` |
-| `NEXT_RUNBOOK_STEP` | `RUNBOOK_STEP_29G` |
-| `NEXT_CANONICAL_STEP` | `double_play_composition_matrix` |
+| `NEXT_RUNBOOK_STEP` | `RUNBOOK_STEP_29H` |
+| `NEXT_CANONICAL_STEP` | `position_management_reversal_boundary` |
 | `RUNBOOK_STEP_13_IMPLEMENTED` | `true` |
 | `TRADING_SESSION_SINGLE_WRITER_IMPLEMENTED` | `true` |
 | `RUNTIME_SINGLE_WRITER_ACTIVATED` | `false` |
@@ -84,8 +84,10 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `RUNBOOK_STEP_29F_COMPLETE` | `true` |
 | `STEP_29G_STARTED` | `true` |
 | `RUNBOOK_STEP_29G_IMPLEMENTED_SCOPE` | `double_play_composition_matrix_v1_offline_slice` |
-| `RUNBOOK_STEP_29G_COMPLETE` | `false` |
-| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `false` |
+| `RUNBOOK_STEP_29G_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_29G_COMPLETE` | `true` |
+| `STEP_29H_STARTED` | `false` |
+| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `true` |
 | `FOLLOW_UP_DEVEX_SCOPE` | `CANONICAL_PRE_PR_RUFF_AND_DIFF_GUARD` |
 | `FOLLOW_UP_DEVEX_STATUS` | `PENDING_SEPARATE_PR` |
 | `SYSTEMWIDE_RANKING_REQUIRED` | `false` |
@@ -810,8 +812,33 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `RUNBOOK_PHASE` | 9 |
 | `RUNBOOK_STEP_ID` | `double_play_composition_matrix` |
 | `CONTRACT_OR_CAPABILITY` | `double_play_composition_matrix` |
-| `STATUS` | `IN_PROGRESS` |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src/trading/master_v2/double_play_composition_matrix_v1.py` |
+| `MERGED_PRS` | `#4687` |
+| `MERGE_COMMITS` | `05b3932329c6b642d770916ed28608f863086129` |
+| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/runbook_step29g_double_play_composition_matrix_v1_offline_slice_implementation_v0_20260630T171541Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29g_double_play_composition_matrix_v1_pr4687_squash_merge_closeout_v0_20260630T172731Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/audit/uniqueness_strategy_path_economic_value_forensic_audit_v0_20260630T172120Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29g_completion_coverage_audit_and_bounded_closeout_v0_20260630T173500Z (MANIFEST_VERIFY_RC=0); composition_pr=4687; composition_merge_commit=05b3932329c6b642d770916ed28608f863086129; composition_squash_parent=aad03a78e7e68239afe93f509479663a9800c5c6; canonical_scope=double_play_composition_matrix_v1_offline_slice; DOUBLE_PLAY_COMPOSITION_MATRIX_V1_BOUND=true; STEP29G_IMPLEMENTATION_COMPLETE=true; STEP29H_IMPLEMENTATION_STARTED=false; STEP_29G_COMPLETION_DOES_NOT_AUTHORIZE_LIVE=true; STEP_29G_COMPLETION_DOES_NOT_AUTHORIZE_RUNTIME=true; STEP_29G_COMPLETION_DOES_NOT_AUTHORIZE_ORDERS=true; STEP_29G_COMPLETION_DOES_NOT_START_POSITION_MANAGEMENT=true; UNIVERSE_SELECTION_UNCHANGED=true; offline_only=true; non_authorizing=true; runtime_process_started=false; scheduler_action_performed=false; venue_access_performed=false; credential_access_performed=false; trading_action_performed=false; progress_registry_closeout_status=COMPLETE; FUTURES_ONLY=true; BITCOIN_DIRECTION_ALLOWED=false; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SCHEDULER_RUNTIME_ALLOWED=false` |
 | `DEPENDENCIES` | RUNBOOK_STEP_29F |
+| `REMAINING_GAPS` | — |
+| `NEXT_REQUIRED_CONTRACT` | `position_management_reversal_boundary` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `RUNBOOK_STEP_29G_IMPLEMENTATION_STARTED` | `true` |
+| `RUNBOOK_STEP_29G_IMPLEMENTED_SCOPE` | `double_play_composition_matrix_v1_offline_slice` |
+| `RUNBOOK_STEP_29G_COMPLETE` | `true` |
+| `DOUBLE_PLAY_COMPOSITION_MATRIX_V1_IMPLEMENTED` | `true` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_29H — Position Management / Reversal Boundary
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 9 |
+| `RUNBOOK_STEP_ID` | `position_management_reversal_boundary` |
+| `CONTRACT_OR_CAPABILITY` | `position_management_reversal_boundary` |
+| `STATUS` | `NOT_STARTED` |
+| `DEPENDENCIES` | RUNBOOK_STEP_29G |
 | `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
 | `RUNTIME_EFFECT` | `false` |
 | `FUTURES_ONLY` | `true` |
