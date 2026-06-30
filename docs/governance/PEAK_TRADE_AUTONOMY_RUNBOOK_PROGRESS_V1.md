@@ -1155,7 +1155,7 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `RUNBOOK_PHASE` | 9 |
 | `RUNBOOK_STEP_ID` | `intent_compatibility_firewall_v1` |
 | `STATUS` | `IN_PROGRESS` |
-| `CANONICAL_OWNER` | `src/governance/intent_compatibility_firewall_v1.py` <!-- pt:ref-target-ignore --> |
+| `CANONICAL_OWNER` | `src&#47;governance&#47;intent_compatibility_firewall_v1.py` <!-- pt:ref-target-ignore --> |
 | `CANONICAL_OWNER_STATUS` | `PROPOSED_PENDING_IMPLEMENTATION` |
 | `CANONICAL_OWNER_RATIFIED` | `false` |
 | `MERGED_PRS` | `none` |

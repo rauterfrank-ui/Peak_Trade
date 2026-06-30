@@ -14,7 +14,7 @@ PROGRESS_REGISTRY = REPO_ROOT / "docs" / "governance" / "PEAK_TRADE_AUTONOMY_RUN
 
 STEP_29O_MINIMUM_SAFE_SLICE = "intent_compatibility_firewall_v1_offline_slice"
 STEP_29O_CANONICAL_DEFINITION = "INTENT_COMPATIBILITY_FIREWALL"
-STEP_29O_CANONICAL_OWNER = "src/governance/intent_compatibility_firewall_v1.py"
+STEP_29O_CANONICAL_OWNER = "src&#47;governance&#47;intent_compatibility_firewall_v1.py"
 NEXT_REQUIRED_CONTRACT = "RUNBOOK_STEP_29O_INTENT_COMPATIBILITY_FIREWALL_V1_IMPLEMENTATION"
 
 
