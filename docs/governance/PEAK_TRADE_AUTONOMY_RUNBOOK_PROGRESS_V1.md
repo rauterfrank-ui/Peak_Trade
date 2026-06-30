@@ -16,8 +16,8 @@ SCHEDULER_RUNTIME_ALLOWED: false
 
 | Feld | Wert |
 |---|---|
-| `LAST_VERIFIED_ORIGIN_MAIN` | `05b3932329c6b642d770916ed28608f863086129` |
-| `LAST_VERIFIED_AT` | `2026-06-30T17:35:00Z` |
+| `LAST_VERIFIED_ORIGIN_MAIN` | `984bbae220754795bfb6e9ee44f540028d50fe8b` |
+| `LAST_VERIFIED_AT` | `2026-06-30T18:00:00Z` |
 | `CURRENT_MAJOR_GAP_PACKAGE` | `MAJOR_GAP_COMPARISON_PROMOTION_POLICY_INPUT_BRIDGE_V0` |
 | `NEXT_RUNBOOK_STEP` | `RUNBOOK_STEP_29H` |
 | `NEXT_CANONICAL_STEP` | `position_management_reversal_boundary` |
@@ -86,8 +86,11 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `RUNBOOK_STEP_29G_IMPLEMENTED_SCOPE` | `double_play_composition_matrix_v1_offline_slice` |
 | `RUNBOOK_STEP_29G_IMPLEMENTED` | `true` |
 | `RUNBOOK_STEP_29G_COMPLETE` | `true` |
-| `STEP_29H_STARTED` | `false` |
-| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `true` |
+| `STEP_29H_STARTED` | `true` |
+| `RUNBOOK_STEP_29H_IMPLEMENTED_SCOPE` | `entry_position_exit_policy_offline_slice` |
+| `RUNBOOK_STEP_29H_COMPLETE` | `false` |
+| `STEP_29I_STARTED` | `false` |
+| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `false` |
 | `FOLLOW_UP_DEVEX_SCOPE` | `CANONICAL_PRE_PR_RUFF_AND_DIFF_GUARD` |
 | `FOLLOW_UP_DEVEX_STATUS` | `PENDING_SEPARATE_PR` |
 | `SYSTEMWIDE_RANKING_REQUIRED` | `false` |
@@ -837,7 +840,11 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `RUNBOOK_PHASE` | 9 |
 | `RUNBOOK_STEP_ID` | `position_management_reversal_boundary` |
 | `CONTRACT_OR_CAPABILITY` | `position_management_reversal_boundary` |
-| `STATUS` | `NOT_STARTED` |
+| `STATUS` | `IN_PROGRESS` |
+| `RUNBOOK_STEP_29H_IMPLEMENTATION_STARTED` | `true` |
+| `RUNBOOK_STEP_29H_IMPLEMENTED_SCOPE` | `entry_position_exit_policy_offline_slice` |
+| `RUNBOOK_STEP_29H_COMPLETE` | `false` |
+| `STEP_29I_STARTED` | `false` |
 | `DEPENDENCIES` | RUNBOOK_STEP_29G |
 | `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
 | `RUNTIME_EFFECT` | `false` |
