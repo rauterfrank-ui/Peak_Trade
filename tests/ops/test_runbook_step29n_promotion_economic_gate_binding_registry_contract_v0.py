@@ -39,21 +39,6 @@ def test_runbook_step_29n_implemented_scope() -> None:
     assert _field_value(text, "RUNBOOK_STEP_29N_IMPLEMENTED_SCOPE") == STEP_29N_IMPLEMENTED_SCOPE
 
 
-def test_runbook_step_29n_complete_false() -> None:
-    text = _read_registry()
-    assert _field_value(text, "RUNBOOK_STEP_29N_COMPLETE") == "false"
-
-
-def test_step_29o_not_started() -> None:
-    text = _read_registry()
-    assert _field_value(text, "STEP_29O_STARTED") == "false"
-
-
-def test_next_runbook_step_is_29n() -> None:
-    text = _read_registry()
-    assert _field_value(text, "NEXT_RUNBOOK_STEP") == "RUNBOOK_STEP_29N"
-
-
 def test_promotion_gate_binding_status_pass() -> None:
     text = _read_registry()
     assert _field_value(text, "PROMOTION_ECONOMIC_GATE_BINDING_STATUS") == "PASS"
@@ -91,13 +76,6 @@ def test_profitability_claim_not_allowed() -> None:
 def test_step_29m_complete_preserved() -> None:
     text = _read_registry()
     assert _field_value(text, "RUNBOOK_STEP_29M_COMPLETE") == "true"
-
-
-def test_progress_registry_closeout_not_performed_for_step_29n() -> None:
-    text = _read_registry()
-    section = _step_29n_section(text)
-    assert _field_value(text, "PROGRESS_REGISTRY_CLOSEOUT_PERFORMED") == "false"
-    assert _field_value(section, "PROGRESS_REGISTRY_CLOSEOUT_PERFORMED") == "false"
 
 
 def test_futures_only_and_bitcoin_direction_forbidden() -> None:

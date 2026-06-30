@@ -16,10 +16,10 @@ SCHEDULER_RUNTIME_ALLOWED: false
 
 | Feld | Wert |
 |---|---|
-| `LAST_VERIFIED_ORIGIN_MAIN` | `c8a6a275918b757422aa0b910b4ec00ea011f899` |
-| `LAST_VERIFIED_AT` | `2026-07-01T00:00:00Z` |
+| `LAST_VERIFIED_ORIGIN_MAIN` | `57c70513e8f0a31a7623c11ed2ad80e93aa42997` |
+| `LAST_VERIFIED_AT` | `2026-07-01T20:30:00Z` |
 | `CURRENT_MAJOR_GAP_PACKAGE` | `MAJOR_GAP_COMPARISON_PROMOTION_POLICY_INPUT_BRIDGE_V0` |
-| `NEXT_RUNBOOK_STEP` | `RUNBOOK_STEP_29N` |
+| `NEXT_RUNBOOK_STEP` | `RUNBOOK_STEP_29O` |
 | `NEXT_CANONICAL_STEP` | `backtest_engine_rewire_binding` |
 | `RUNBOOK_STEP_13_IMPLEMENTED` | `true` |
 | `TRADING_SESSION_SINGLE_WRITER_IMPLEMENTED` | `true` |
@@ -118,9 +118,10 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `RUNBOOK_STEP_29N_STARTED` | `true` |
 | `RUNBOOK_STEP_29N_IMPLEMENTED_SCOPE` | `promotion_economic_gate_binding_v1_slice` |
 | `RUNBOOK_STEP_29N_IMPLEMENTED` | `true` |
-| `RUNBOOK_STEP_29N_COMPLETE` | `false` |
+| `RUNBOOK_STEP_29N_COMPLETE` | `true` |
 | `STEP_29O_STARTED` | `false` |
 | `PROMOTION_ECONOMIC_GATE_BINDING_STATUS` | `PASS` |
+| `PROMOTION_CANDIDATE_STATUS` | `INELIGIBLE` |
 | `PROMOTION_CANDIDATE_ELIGIBLE` | `false` |
 | `DEPLOYMENT_ELIGIBLE` | `false` |
 | `RUNTIME_ELIGIBLE` | `false` |
@@ -128,7 +129,7 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `EXECUTION_ALLOWED` | `false` |
 | `ECONOMIC_VALIDITY_PROVEN` | `false` |
 | `PROFITABILITY_CLAIM_ALLOWED` | `false` |
-| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `false` |
+| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `true` |
 | `FOLLOW_UP_DEVEX_SCOPE` | `CANONICAL_PRE_PR_RUFF_AND_DIFF_GUARD` |
 | `FOLLOW_UP_DEVEX_STATUS` | `PENDING_SEPARATE_PR` |
 | `SYSTEMWIDE_RANKING_REQUIRED` | `false` |
@@ -1078,11 +1079,14 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 |---|---|
 | `RUNBOOK_PHASE` | 9 |
 | `RUNBOOK_STEP_ID` | `promotion_economic_gate_binding_v1` |
-| `STATUS` | `IN_PROGRESS` |
+| `STATUS` | `COMPLETE` |
 | `CANONICAL_OWNER` | `src/governance/promotion_loop/promotion_economic_gate_v1.py` |
+| `MERGED_PRS` | `#4708` |
+| `MERGE_COMMITS` | `57c70513e8f0a31a7623c11ed2ad80e93aa42997` |
+| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29n_promotion_economic_gate_binding_pr4708squash_merge_closeout_v0_20260630T231725Z (MANIFEST_VERIFY_RC=0); promotion_economic_gate_binding_pr=4708; promotion_economic_gate_binding_merge_commit=57c70513e8f0a31a7623c11ed2ad80e93aa42997; promotion_economic_gate_binding_squash_parent=c8a6a275918b757422aa0b910b4ec00ea011f899; canonical_scope=promotion_economic_gate_binding_v1_slice; PROMOTION_ECONOMIC_GATE_BINDING_V1_BOUND=true; STEP29N_IMPLEMENTATION_COMPLETE=true; TECHNICAL_PROMOTION_GATE_STACK_COMPLETE=true; CURRENT_PROMOTION_EVALUATION=INELIGIBLE; REAL_ADMISSIBLE_FUTURES_EVIDENCE_REQUIRED=true; THRESHOLD_TUNING_ALLOWED=false; STEP_29O_STARTED=false; STEP_29N_COMPLETION_DOES_NOT_AUTHORIZE_LIVE=true; STEP_29N_COMPLETION_DOES_NOT_AUTHORIZE_RUNTIME=true; STEP_29N_COMPLETION_DOES_NOT_AUTHORIZE_ORDERS=true; STEP_29N_COMPLETION_DOES_NOT_START_STEP_29O=true; PROMOTION_ELIGIBILITY_GRANTED=false; PROMOTION_AUTHORITY_GRANTED=false; DEPLOYMENT_AUTHORITY_GRANTED=false; RUNTIME_AUTHORITY_GRANTED=false; EXECUTION_AUTHORITY_GRANTED=false; UNIVERSE_SELECTION_UNCHANGED=true; offline_only=true; non_authorizing=true; runtime_process_started=false; scheduler_action_performed=false; venue_access_performed=false; credential_access_performed=false; trading_action_performed=false; progress_registry_closeout_status=COMPLETE; FUTURES_ONLY=true; BITCOIN_DIRECTION_ALLOWED=false; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SCHEDULER_RUNTIME_ALLOWED=false` |
 | `DEPENDENCIES` | RUNBOOK_STEP_29M |
-| `REMAINING_GAPS` | Registry closeout; real admissible futures economic evidence; economic validity proof |
-| `NEXT_REQUIRED_CONTRACT` | `RUNBOOK_STEP_29N` |
+| `REMAINING_GAPS` | real admissible futures economic evidence; economic validity proof |
+| `NEXT_REQUIRED_CONTRACT` | `RUNBOOK_STEP_29O` |
 | `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
 | `RUNTIME_EFFECT` | `false` |
 | `ORDER_EFFECT` | `false` |
@@ -1091,6 +1095,10 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `ECONOMIC_VALIDITY_PROVEN` | `false` |
 | `PROFITABILITY_CLAIM_ALLOWED` | `false` |
 | `PROMOTION_ECONOMIC_GATE_BINDING_STATUS` | `PASS` |
+| `TECHNICAL_PROMOTION_GATE_STACK_COMPLETE` | `true` |
+| `CURRENT_PROMOTION_EVALUATION` | `INELIGIBLE` |
+| `REAL_ADMISSIBLE_FUTURES_EVIDENCE_REQUIRED` | `true` |
+| `THRESHOLD_TUNING_ALLOWED` | `false` |
 | `PROMOTION_CANDIDATE_ELIGIBLE` | `false` |
 | `PROMOTION_CANDIDATE_STATUS` | `INELIGIBLE` |
 | `DEPLOYMENT_ELIGIBLE` | `false` |
@@ -1099,13 +1107,17 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `EXECUTION_ALLOWED` | `false` |
 | `LIVE_AUTHORIZED` | `false` |
 | `PROMOTION_ELIGIBILITY_GRANTED` | `false` |
+| `PROMOTION_AUTHORITY_GRANTED` | `false` |
+| `DEPLOYMENT_AUTHORITY_GRANTED` | `false` |
 | `RUNTIME_AUTHORITY_GRANTED` | `false` |
+| `EXECUTION_AUTHORITY_GRANTED` | `false` |
 | `RUNBOOK_STEP_29N_STARTED` | `true` |
 | `RUNBOOK_STEP_29N_IMPLEMENTED_SCOPE` | `promotion_economic_gate_binding_v1_slice` |
 | `RUNBOOK_STEP_29N_IMPLEMENTED` | `true` |
-| `RUNBOOK_STEP_29N_COMPLETE` | `false` |
+| `RUNBOOK_STEP_29N_COMPLETE` | `true` |
+| `PROMOTION_ECONOMIC_GATE_BINDING_V1_IMPLEMENTED` | `true` |
 | `STEP_29O_STARTED` | `false` |
-| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `false` |
+| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `true` |
 | `PROMOTION_CANDIDATE_ELIGIBILITY_DOES_NOT_IMPLY_DEPLOYMENT` | `true` |
 | `PROMOTION_CANDIDATE_ELIGIBILITY_DOES_NOT_IMPLY_RUNTIME` | `true` |
 | `PROMOTION_CANDIDATE_ELIGIBILITY_DOES_NOT_IMPLY_ACTIVATION` | `true` |
