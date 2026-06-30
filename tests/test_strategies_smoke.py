@@ -9,8 +9,9 @@ import pandas as pd
 import numpy as np
 
 from src.strategies.registry import (
-    get_available_strategy_keys,
+    _FUNCTIONAL_ONLY_STRATEGY_IDS,
     create_strategy_from_config,
+    get_available_strategy_keys,
 )
 from src.strategies.base import BaseStrategy
 from src.core.peak_config import load_config
@@ -111,7 +112,11 @@ R_AND_D_SKIP_STRATEGIES = {
 
 def _get_testable_strategy_keys():
     """Gibt nur testbare Strategien zurück (ohne R&D-Platzhalter)."""
-    return [k for k in get_available_strategy_keys() if k not in R_AND_D_SKIP_STRATEGIES]
+    return [
+        k
+        for k in get_available_strategy_keys()
+        if k not in R_AND_D_SKIP_STRATEGIES and k not in _FUNCTIONAL_ONLY_STRATEGY_IDS
+    ]
 
 
 @pytest.mark.parametrize("strategy_key", _get_testable_strategy_keys())

@@ -19,7 +19,7 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `LAST_VERIFIED_ORIGIN_MAIN` | `274909dd684f032adb397c7e6179a18ad8b510e0` |
 | `LAST_VERIFIED_AT` | `2026-06-30T19:10:00Z` |
 | `CURRENT_MAJOR_GAP_PACKAGE` | `MAJOR_GAP_COMPARISON_PROMOTION_POLICY_INPUT_BRIDGE_V0` |
-| `NEXT_RUNBOOK_STEP` | `RUNBOOK_STEP_29K` |
+| `NEXT_RUNBOOK_STEP` | `RUNBOOK_STEP_29L` |
 | `NEXT_CANONICAL_STEP` | `backtest_engine_rewire_binding` |
 | `RUNBOOK_STEP_13_IMPLEMENTED` | `true` |
 | `TRADING_SESSION_SINGLE_WRITER_IMPLEMENTED` | `true` |
@@ -100,8 +100,12 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `RUNBOOK_STEP_29J_IMPLEMENTED_SCOPE` | `default_backtest_economic_realism_binding_v1_slice` |
 | `RUNBOOK_STEP_29J_IMPLEMENTED` | `true` |
 | `RUNBOOK_STEP_29J_COMPLETE` | `true` |
-| `STEP_29K_STARTED` | `false` |
-| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `true` |
+| `STEP_29K_STARTED` | `true` |
+| `RUNBOOK_STEP_29K_STARTED` | `true` |
+| `RUNBOOK_STEP_29K_IMPLEMENTED_SCOPE` | `strategy_registry_consolidation_v1_slice` |
+| `RUNBOOK_STEP_29K_COMPLETE` | `false` |
+| `STEP_29L_STARTED` | `false` |
+| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `false` |
 | `FOLLOW_UP_DEVEX_SCOPE` | `CANONICAL_PRE_PR_RUFF_AND_DIFF_GUARD` |
 | `FOLLOW_UP_DEVEX_STATUS` | `PENDING_SEPARATE_PR` |
 | `SYSTEMWIDE_RANKING_REQUIRED` | `false` |
@@ -935,6 +939,28 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `RUNBOOK_STEP_29J_COMPLETE` | `true` |
 | `DEFAULT_BACKTEST_COST_BINDING_V1_IMPLEMENTED` | `true` |
 | `STEP_29K_STARTED` | `false` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+
+#### RUNBOOK_STEP_29K — Strategy Registry Consolidation
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 9 |
+| `RUNBOOK_STEP_ID` | `strategy_registry_consolidation_v1` |
+| `STATUS` | `IN_PROGRESS` |
+| `CANONICAL_OWNER` | `src/strategies/registry.py` |
+| `DEPENDENCIES` | RUNBOOK_STEP_29J |
+| `REMAINING_GAPS` | completion coverage closeout pending |
+| `NEXT_REQUIRED_CONTRACT` | `backtest_engine_rewire_binding` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `RUNBOOK_STEP_29K_STARTED` | `true` |
+| `RUNBOOK_STEP_29K_IMPLEMENTED_SCOPE` | `strategy_registry_consolidation_v1_slice` |
+| `RUNBOOK_STEP_29K_COMPLETE` | `false` |
+| `STEP_29L_STARTED` | `false` |
 | `SEPARATE_GO_REQUIRED` | `true` |
 
 #### RUNBOOK_STEP_29J (legacy heading) — Backtest Engine Rewire Binding

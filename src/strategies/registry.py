@@ -7,8 +7,12 @@ Zentrale Registry aller verfügbaren Strategien mit einheitlichem Zugriff.
 
 from __future__ import annotations
 
+import hashlib
+import json
+import re
 from dataclasses import dataclass
-from typing import Any, Dict, Optional, Type
+from enum import Enum
+from typing import Any, Dict, Mapping, Optional, Tuple, Type
 
 from .base import BaseStrategy
 from .ma_crossover import MACrossoverStrategy
@@ -173,16 +177,6 @@ _STRATEGY_REGISTRY: Dict[str, StrategySpec] = {
         tier="production",
         allowed_environments=("backtest", "paper", "live"),
     ),
-    # Alias für Backwards Compatibility
-    "el_karoui_vol_v1": StrategySpec(
-        key="el_karoui_vol_v1",
-        cls=ElKarouiVolModelStrategy,
-        config_section="strategy.el_karoui_vol_model",
-        description="El Karoui Vol Model (Alias für el_karoui_vol_model, R&D-Only)",
-        is_live_ready=True,
-        tier="production",
-        allowed_environments=("backtest", "paper", "live"),
-    ),
     "ehlers_cycle_filter": StrategySpec(
         key="ehlers_cycle_filter",
         cls=EhlersCycleFilterStrategy,
@@ -222,6 +216,339 @@ _STRATEGY_REGISTRY: Dict[str, StrategySpec] = {
     ),
 }
 
+REGISTRY_SCHEMA_VERSION = "strategy_registry_v1"
+REGISTRY_POLICY_VERSION = "strategy_registry_policy_v1"
+STRATEGY_VERSION_DEFAULT = "v1"
+PARAMETER_SCHEMA_VERSION_DEFAULT = "v1"
+ALIAS_POLICY_VERSION = "strategy_alias_v1"
+ALIAS_REASON_CODE = "LEGACY_ALIAS_RESOLVED"
+
+_LOADER_MODULE_REFS: Dict[str, str] = {
+    "ma_crossover": "ma_crossover",
+    "momentum_1h": "momentum",
+    "rsi_strategy": "rsi",
+    "bollinger_bands": "bollinger",
+    "macd": "macd",
+    "ecm_cycle": "ecm",
+    "trend_following": "trend_following",
+    "mean_reversion": "mean_reversion",
+    "my_strategy": "my_strategy",
+    "vol_breakout": "vol_breakout",
+    "mean_reversion_channel": "mean_reversion_channel",
+    "rsi_reversion": "rsi_reversion",
+    "breakout": "breakout",
+    "breakout_donchian": "breakout_donchian",
+    "vol_regime_filter": "vol_regime_filter",
+    "composite": "composite",
+    "regime_aware_portfolio": "regime_aware_portfolio",
+    "armstrong_cycle": "armstrong.armstrong_cycle_strategy",
+    "el_karoui_vol_model": "el_karoui.el_karoui_vol_model_strategy",
+    "ehlers_cycle_filter": "ehlers.ehlers_cycle_filter_strategy",
+    "meta_labeling": "lopez_de_prado.meta_labeling_strategy",
+    "bouchaud_microstructure": "bouchaud.bouchaud_microstructure_strategy",
+    "vol_regime_overlay": "gatheral_cont.vol_regime_overlay_strategy",
+}
+
+_FUNCTIONAL_ONLY_STRATEGY_IDS: frozenset[str] = frozenset(
+    {"vol_breakout", "mean_reversion_channel", "ecm_cycle", "rsi_strategy"}
+)
+
+
+class DeprecationStatus(str, Enum):
+    ACTIVE = "ACTIVE"
+    DEPRECATED_ALIAS = "DEPRECATED_ALIAS"
+    DEPRECATED_STRATEGY = "DEPRECATED_STRATEGY"
+    REMOVED = "REMOVED"
+
+
+class StrategyRegistryError(ValueError):
+    """Fail-closed strategy registry resolution error."""
+
+
+@dataclass(frozen=True)
+class StrategyAliasV1:
+    legacy_key: str
+    canonical_strategy_id: str
+    alias_policy_version: str = ALIAS_POLICY_VERSION
+    deprecation_status: DeprecationStatus = DeprecationStatus.DEPRECATED_ALIAS
+    deprecation_message: str = ""
+    removal_not_before_version: str = "strategy_registry_v2"
+    source_ref: str = "src/strategies/registry.py"
+    semantic_digest: str = ""
+
+
+@dataclass(frozen=True)
+class StrategyRegistryEntryV1:
+    strategy_id: str
+    strategy_version: str
+    canonical_name: str
+    factory_or_builder_ref: str
+    capability_tags: Tuple[str, ...]
+    supported_sides: Tuple[str, ...]
+    supported_regimes: Tuple[str, ...]
+    futures_compatible: bool
+    spot_compatible: bool
+    parameter_schema_version: str
+    implementation_ref: str
+    implementation_digest: str
+    registration_source: str
+    deprecation_status: DeprecationStatus
+    replacement_strategy_id: Optional[str]
+    alias_set: Tuple[str, ...]
+    semantic_digest: str
+    loader_module_ref: str
+
+
+@dataclass(frozen=True)
+class StrategyResolutionV1:
+    original_key: str
+    canonical_strategy_id: str
+    strategy_version: str
+    alias_applied: bool
+    alias_policy_version: Optional[str]
+    reason_code: str
+    deprecation_status: DeprecationStatus
+
+
+@dataclass(frozen=True)
+class StrategyRegistrySnapshotV1:
+    registry_schema_version: str
+    registry_policy_version: str
+    entries: Tuple[StrategyRegistryEntryV1, ...]
+    aliases: Tuple[StrategyAliasV1, ...]
+    deprecated_keys: Tuple[str, ...]
+    strategy_ids_sorted: Tuple[str, ...]
+    input_digest: str
+    semantic_digest: str
+
+
+def _stable_digest(payload: Mapping[str, Any]) -> str:
+    encoded = json.dumps(payload, sort_keys=True, separators=(",", ":"))
+    return hashlib.sha256(encoded.encode("utf-8")).hexdigest()
+
+
+_LEGACY_ALIASES: Dict[str, StrategyAliasV1] = {
+    "el_karoui_vol_v1": StrategyAliasV1(
+        legacy_key="el_karoui_vol_v1",
+        canonical_strategy_id="el_karoui_vol_model",
+        deprecation_message="Use el_karoui_vol_model instead of el_karoui_vol_v1",
+        semantic_digest=_stable_digest(
+            {
+                "legacy_key": "el_karoui_vol_v1",
+                "canonical_strategy_id": "el_karoui_vol_model",
+            }
+        ),
+    ),
+}
+
+
+def _normalize_strategy_key(raw_key: Optional[str]) -> str:
+    if raw_key is None:
+        raise StrategyRegistryError("strategy id must not be None")
+    if not isinstance(raw_key, str):
+        raise StrategyRegistryError("strategy id must be a string")
+    if raw_key != raw_key.strip():
+        raise StrategyRegistryError(f"strategy id whitespace ambiguity rejected: {raw_key!r}")
+    normalized = raw_key.strip()
+    if not normalized:
+        raise StrategyRegistryError("strategy id must not be empty")
+    return normalized
+
+
+def _entry_capability_tags(spec: StrategySpec) -> Tuple[str, ...]:
+    tags = ["futures", spec.tier]
+    if spec.is_live_ready:
+        tags.append("live_ready")
+    return tuple(sorted(tags))
+
+
+def _implementation_ref_for(strategy_id: str, spec: Optional[StrategySpec]) -> str:
+    if spec is not None:
+        return f"{spec.cls.__module__}.{spec.cls.__name__}"
+    loader = _LOADER_MODULE_REFS[strategy_id]
+    return f"src.strategies.{loader}"
+
+
+def _build_canonical_entry(
+    strategy_id: str, spec: Optional[StrategySpec]
+) -> StrategyRegistryEntryV1:
+    loader_ref = _LOADER_MODULE_REFS[strategy_id]
+    if spec is not None:
+        factory_ref = f"oop:{spec.cls.__module__}.{spec.cls.__name__}"
+        capability_tags = _entry_capability_tags(spec)
+    else:
+        factory_ref = f"functional:src.strategies.{loader_ref}.generate_signals"
+        capability_tags = ("futures", "functional")
+
+    implementation_ref = _implementation_ref_for(strategy_id, spec)
+    payload = {
+        "strategy_id": strategy_id,
+        "strategy_version": STRATEGY_VERSION_DEFAULT,
+        "factory_or_builder_ref": factory_ref,
+        "implementation_ref": implementation_ref,
+        "loader_module_ref": loader_ref,
+    }
+    alias_set = tuple(
+        sorted(
+            alias.legacy_key
+            for alias in _LEGACY_ALIASES.values()
+            if alias.canonical_strategy_id == strategy_id
+        )
+    )
+    return StrategyRegistryEntryV1(
+        strategy_id=strategy_id,
+        strategy_version=STRATEGY_VERSION_DEFAULT,
+        canonical_name=strategy_id,
+        factory_or_builder_ref=factory_ref,
+        capability_tags=capability_tags,
+        supported_sides=("long", "short"),
+        supported_regimes=("*",),
+        futures_compatible=True,
+        spot_compatible=False,
+        parameter_schema_version=PARAMETER_SCHEMA_VERSION_DEFAULT,
+        implementation_ref=implementation_ref,
+        implementation_digest=_stable_digest({"implementation_ref": implementation_ref}),
+        registration_source="src/strategies/registry.py",
+        deprecation_status=DeprecationStatus.ACTIVE,
+        replacement_strategy_id=None,
+        alias_set=alias_set,
+        semantic_digest=_stable_digest(payload),
+        loader_module_ref=loader_ref,
+    )
+
+
+def _all_canonical_strategy_ids() -> Tuple[str, ...]:
+    ids = set(_STRATEGY_REGISTRY.keys()) | set(_FUNCTIONAL_ONLY_STRATEGY_IDS)
+    return tuple(sorted(ids))
+
+
+_CANONICAL_ENTRIES: Tuple[StrategyRegistryEntryV1, ...] = tuple(
+    _build_canonical_entry(strategy_id, _STRATEGY_REGISTRY.get(strategy_id))
+    for strategy_id in _all_canonical_strategy_ids()
+)
+_CANONICAL_ENTRY_BY_ID: Dict[str, StrategyRegistryEntryV1] = {
+    entry.strategy_id: entry for entry in _CANONICAL_ENTRIES
+}
+
+
+def _validate_registry_invariants() -> None:
+    if len(_CANONICAL_ENTRY_BY_ID) != len(_CANONICAL_ENTRIES):
+        raise StrategyRegistryError("duplicate strategy_id in canonical registry")
+    canonical_ids = set(_CANONICAL_ENTRY_BY_ID)
+    for alias in _LEGACY_ALIASES.values():
+        if alias.legacy_key in canonical_ids:
+            raise StrategyRegistryError(f"alias/canonical collision: {alias.legacy_key}")
+        if alias.canonical_strategy_id not in canonical_ids:
+            raise StrategyRegistryError(f"alias target unknown: {alias.canonical_strategy_id}")
+        if alias.canonical_strategy_id in _LEGACY_ALIASES:
+            raise StrategyRegistryError(f"alias chain forbidden: {alias.legacy_key}")
+
+
+_validate_registry_invariants()
+
+
+def resolve_strategy_id(raw_key: Optional[str]) -> StrategyResolutionV1:
+    normalized = _normalize_strategy_key(raw_key)
+    if normalized in _CANONICAL_ENTRY_BY_ID:
+        entry = _CANONICAL_ENTRY_BY_ID[normalized]
+        return StrategyResolutionV1(
+            original_key=raw_key if isinstance(raw_key, str) else normalized,
+            canonical_strategy_id=entry.strategy_id,
+            strategy_version=entry.strategy_version,
+            alias_applied=False,
+            alias_policy_version=None,
+            reason_code="CANONICAL_ID",
+            deprecation_status=entry.deprecation_status,
+        )
+    alias = _LEGACY_ALIASES.get(normalized)
+    if alias is None:
+        raise StrategyRegistryError(f"unknown strategy id: {normalized!r}")
+    entry = _CANONICAL_ENTRY_BY_ID[alias.canonical_strategy_id]
+    return StrategyResolutionV1(
+        original_key=raw_key if isinstance(raw_key, str) else normalized,
+        canonical_strategy_id=entry.strategy_id,
+        strategy_version=entry.strategy_version,
+        alias_applied=True,
+        alias_policy_version=alias.alias_policy_version,
+        reason_code=ALIAS_REASON_CODE,
+        deprecation_status=alias.deprecation_status,
+    )
+
+
+def get_loader_module_ref(strategy_id: str) -> str:
+    resolution = resolve_strategy_id(strategy_id)
+    return _CANONICAL_ENTRY_BY_ID[resolution.canonical_strategy_id].loader_module_ref
+
+
+def get_loader_module_map() -> Dict[str, str]:
+    return {entry.strategy_id: entry.loader_module_ref for entry in _CANONICAL_ENTRIES}
+
+
+def get_strategy_registry_entry(strategy_id: str) -> StrategyRegistryEntryV1:
+    resolution = resolve_strategy_id(strategy_id)
+    return _CANONICAL_ENTRY_BY_ID[resolution.canonical_strategy_id]
+
+
+def build_registry_snapshot() -> StrategyRegistrySnapshotV1:
+    entries = tuple(sorted(_CANONICAL_ENTRIES, key=lambda e: e.strategy_id))
+    aliases = tuple(sorted(_LEGACY_ALIASES.values(), key=lambda a: a.legacy_key))
+    deprecated_keys = tuple(sorted(a.legacy_key for a in aliases))
+    strategy_ids_sorted = tuple(e.strategy_id for e in entries)
+    input_payload = {
+        "entries": [e.semantic_digest for e in entries],
+        "aliases": [a.semantic_digest for a in aliases],
+        "registry_schema_version": REGISTRY_SCHEMA_VERSION,
+        "registry_policy_version": REGISTRY_POLICY_VERSION,
+    }
+    input_digest = _stable_digest(input_payload)
+    semantic_digest = _stable_digest(
+        {
+            "input_digest": input_digest,
+            "strategy_ids_sorted": list(strategy_ids_sorted),
+            "deprecated_keys": list(deprecated_keys),
+        }
+    )
+    return StrategyRegistrySnapshotV1(
+        registry_schema_version=REGISTRY_SCHEMA_VERSION,
+        registry_policy_version=REGISTRY_POLICY_VERSION,
+        entries=entries,
+        aliases=aliases,
+        deprecated_keys=deprecated_keys,
+        strategy_ids_sorted=strategy_ids_sorted,
+        input_digest=input_digest,
+        semantic_digest=semantic_digest,
+    )
+
+
+def serialize_registry_snapshot(snapshot: StrategyRegistrySnapshotV1) -> str:
+    return json.dumps(
+        {
+            "registry_schema_version": snapshot.registry_schema_version,
+            "registry_policy_version": snapshot.registry_policy_version,
+            "strategy_ids_sorted": list(snapshot.strategy_ids_sorted),
+            "deprecated_keys": list(snapshot.deprecated_keys),
+            "input_digest": snapshot.input_digest,
+            "semantic_digest": snapshot.semantic_digest,
+            "entries": [
+                {
+                    "strategy_id": e.strategy_id,
+                    "strategy_version": e.strategy_version,
+                    "semantic_digest": e.semantic_digest,
+                }
+                for e in snapshot.entries
+            ],
+            "aliases": [
+                {
+                    "legacy_key": a.legacy_key,
+                    "canonical_strategy_id": a.canonical_strategy_id,
+                }
+                for a in snapshot.aliases
+            ],
+        },
+        sort_keys=True,
+        separators=(",", ":"),
+    )
+
 
 def get_available_strategy_keys() -> list[str]:
     """
@@ -235,7 +562,7 @@ def get_available_strategy_keys() -> list[str]:
         >>> print(keys)
         ['ma_crossover', 'rsi_reversion', 'breakout_donchian']
     """
-    return list(_STRATEGY_REGISTRY.keys())
+    return list(_all_canonical_strategy_ids())
 
 
 def get_strategy_spec(key: str) -> StrategySpec:
@@ -256,10 +583,18 @@ def get_strategy_spec(key: str) -> StrategySpec:
         >>> print(spec.cls)
         <class 'MACrossoverStrategy'>
     """
-    if key not in _STRATEGY_REGISTRY:
+    try:
+        resolution = resolve_strategy_id(key)
+    except StrategyRegistryError as exc:
+        available = ", ".join(get_available_strategy_keys())
+        raise KeyError(
+            f"Strategie '{key}' nicht in Registry. Verfügbare Strategien: {available}"
+        ) from exc
+    canonical = resolution.canonical_strategy_id
+    if canonical not in _STRATEGY_REGISTRY:
         available = ", ".join(get_available_strategy_keys())
         raise KeyError(f"Strategie '{key}' nicht in Registry. Verfügbare Strategien: {available}")
-    return _STRATEGY_REGISTRY[key]
+    return _STRATEGY_REGISTRY[canonical]
 
 
 def create_strategy_from_config(
@@ -287,7 +622,15 @@ def create_strategy_from_config(
         >>> print(strategy)
         <MACrossoverStrategy(fast_window=20, slow_window=50, ...)>
     """
-    spec = get_strategy_spec(key)
+    try:
+        resolution = resolve_strategy_id(key)
+    except StrategyRegistryError as exc:
+        available = ", ".join(get_available_strategy_keys())
+        raise KeyError(
+            f"Strategie '{key}' nicht in Registry. Verfügbare Strategien: {available}"
+        ) from exc
+    canonical_key = resolution.canonical_strategy_id
+    spec = get_strategy_spec(canonical_key)
 
     # ==========================================================================
     # GATE-SYSTEM: 3-stufige Prüfung für R&D-Strategien
