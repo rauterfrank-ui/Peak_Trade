@@ -16,8 +16,8 @@ SCHEDULER_RUNTIME_ALLOWED: false
 
 | Feld | Wert |
 |---|---|
-| `LAST_VERIFIED_ORIGIN_MAIN` | `49a7595cb5e6885fa2d003db74f07d6acf0d61cb` |
-| `LAST_VERIFIED_AT` | `2026-07-01T12:30:00Z` |
+| `LAST_VERIFIED_ORIGIN_MAIN` | `c8a6a275918b757422aa0b910b4ec00ea011f899` |
+| `LAST_VERIFIED_AT` | `2026-07-01T00:00:00Z` |
 | `CURRENT_MAJOR_GAP_PACKAGE` | `MAJOR_GAP_COMPARISON_PROMOTION_POLICY_INPUT_BRIDGE_V0` |
 | `NEXT_RUNBOOK_STEP` | `RUNBOOK_STEP_29N` |
 | `NEXT_CANONICAL_STEP` | `backtest_engine_rewire_binding` |
@@ -114,8 +114,21 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `RUNBOOK_STEP_29M_IMPLEMENTED_SCOPE` | `economic_viability_evidence_v1_offline_slice,economic_viability_evidence_v1_persistence_load_reproducibility_slice,economic_validity_policy_v1_contract_slice,funding_model_binding_v1_slice,parameter_sensitivity_evidence_binding_v1_slice,admissible_versioned_futures_dataset_binding_v1_slice,economic_validity_policy_threshold_values_v1_slice` |
 | `RUNBOOK_STEP_29M_IMPLEMENTED` | `true` |
 | `RUNBOOK_STEP_29M_COMPLETE` | `true` |
-| `STEP_29N_STARTED` | `false` |
-| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `true` |
+| `STEP_29N_STARTED` | `true` |
+| `RUNBOOK_STEP_29N_STARTED` | `true` |
+| `RUNBOOK_STEP_29N_IMPLEMENTED_SCOPE` | `promotion_economic_gate_binding_v1_slice` |
+| `RUNBOOK_STEP_29N_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_29N_COMPLETE` | `false` |
+| `STEP_29O_STARTED` | `false` |
+| `PROMOTION_ECONOMIC_GATE_BINDING_STATUS` | `PASS` |
+| `PROMOTION_CANDIDATE_ELIGIBLE` | `false` |
+| `DEPLOYMENT_ELIGIBLE` | `false` |
+| `RUNTIME_ELIGIBLE` | `false` |
+| `ACTIVATION_ALLOWED` | `false` |
+| `EXECUTION_ALLOWED` | `false` |
+| `ECONOMIC_VALIDITY_PROVEN` | `false` |
+| `PROFITABILITY_CLAIM_ALLOWED` | `false` |
+| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `false` |
 | `FOLLOW_UP_DEVEX_SCOPE` | `CANONICAL_PRE_PR_RUFF_AND_DIFF_GUARD` |
 | `FOLLOW_UP_DEVEX_STATUS` | `PENDING_SEPARATE_PR` |
 | `SYSTEMWIDE_RANKING_REQUIRED` | `false` |
@@ -1055,6 +1068,52 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `STEP_29M_COMPLETION_DOES_NOT_AUTHORIZE_ORDERS` | `true` |
 | `STEP_29M_COMPLETION_DOES_NOT_CLAIM_ECONOMIC_VALIDITY` | `true` |
 | `STEP_29M_COMPLETION_DOES_NOT_START_PROMOTION_GATE` | `true` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_29N — Promotion Economic Gate Binding v1
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 9 |
+| `RUNBOOK_STEP_ID` | `promotion_economic_gate_binding_v1` |
+| `STATUS` | `IN_PROGRESS` |
+| `CANONICAL_OWNER` | `src/governance/promotion_loop/promotion_economic_gate_v1.py` |
+| `DEPENDENCIES` | RUNBOOK_STEP_29M |
+| `REMAINING_GAPS` | Registry closeout; real admissible futures economic evidence; economic validity proof |
+| `NEXT_REQUIRED_CONTRACT` | `RUNBOOK_STEP_29N` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `ORDER_EFFECT` | `false` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `ECONOMIC_VALIDITY_PROVEN` | `false` |
+| `PROFITABILITY_CLAIM_ALLOWED` | `false` |
+| `PROMOTION_ECONOMIC_GATE_BINDING_STATUS` | `PASS` |
+| `PROMOTION_CANDIDATE_ELIGIBLE` | `false` |
+| `PROMOTION_CANDIDATE_STATUS` | `INELIGIBLE` |
+| `DEPLOYMENT_ELIGIBLE` | `false` |
+| `RUNTIME_ELIGIBLE` | `false` |
+| `ACTIVATION_ALLOWED` | `false` |
+| `EXECUTION_ALLOWED` | `false` |
+| `LIVE_AUTHORIZED` | `false` |
+| `PROMOTION_ELIGIBILITY_GRANTED` | `false` |
+| `RUNTIME_AUTHORITY_GRANTED` | `false` |
+| `RUNBOOK_STEP_29N_STARTED` | `true` |
+| `RUNBOOK_STEP_29N_IMPLEMENTED_SCOPE` | `promotion_economic_gate_binding_v1_slice` |
+| `RUNBOOK_STEP_29N_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_29N_COMPLETE` | `false` |
+| `STEP_29O_STARTED` | `false` |
+| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `false` |
+| `PROMOTION_CANDIDATE_ELIGIBILITY_DOES_NOT_IMPLY_DEPLOYMENT` | `true` |
+| `PROMOTION_CANDIDATE_ELIGIBILITY_DOES_NOT_IMPLY_RUNTIME` | `true` |
+| `PROMOTION_CANDIDATE_ELIGIBILITY_DOES_NOT_IMPLY_ACTIVATION` | `true` |
+| `PROMOTION_CANDIDATE_ELIGIBILITY_DOES_NOT_IMPLY_EXECUTION` | `true` |
+| `STEP_29N_COMPLETION_DOES_NOT_AUTHORIZE_LIVE` | `true` |
+| `STEP_29N_COMPLETION_DOES_NOT_AUTHORIZE_RUNTIME` | `true` |
+| `STEP_29N_COMPLETION_DOES_NOT_AUTHORIZE_ORDERS` | `true` |
+| `STEP_29N_COMPLETION_DOES_NOT_START_STEP_29O` | `true` |
 | `offline_only` | `true` |
 | `non_authorizing` | `true` |
 | `SEPARATE_GO_REQUIRED` | `true` |
