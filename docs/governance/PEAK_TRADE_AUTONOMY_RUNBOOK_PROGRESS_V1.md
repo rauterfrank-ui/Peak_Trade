@@ -16,10 +16,10 @@ SCHEDULER_RUNTIME_ALLOWED: false
 
 | Feld | Wert |
 |---|---|
-| `LAST_VERIFIED_ORIGIN_MAIN` | `b1a16ee9fe6c03b7fa70c677dcac01a282a62eab` |
-| `LAST_VERIFIED_AT` | `2026-06-30T20:15:00Z` |
+| `LAST_VERIFIED_ORIGIN_MAIN` | `7c5558c4517d89721a4c5d98b1ed34ebbf704caf` |
+| `LAST_VERIFIED_AT` | `2026-06-30T20:55:00Z` |
 | `CURRENT_MAJOR_GAP_PACKAGE` | `MAJOR_GAP_COMPARISON_PROMOTION_POLICY_INPUT_BRIDGE_V0` |
-| `NEXT_RUNBOOK_STEP` | `RUNBOOK_STEP_29L` |
+| `NEXT_RUNBOOK_STEP` | `RUNBOOK_STEP_29M` |
 | `NEXT_CANONICAL_STEP` | `backtest_engine_rewire_binding` |
 | `RUNBOOK_STEP_13_IMPLEMENTED` | `true` |
 | `TRADING_SESSION_SINGLE_WRITER_IMPLEMENTED` | `true` |
@@ -107,9 +107,10 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `STEP_29L_STARTED` | `true` |
 | `RUNBOOK_STEP_29L_STARTED` | `true` |
 | `RUNBOOK_STEP_29L_IMPLEMENTED_SCOPE` | `mv2_research_wiring_v1_slice,mv2_research_wiring_v1_residual_walkforward_stress_warmup_evidence_slice` |
-| `RUNBOOK_STEP_29L_COMPLETE` | `false` |
+| `RUNBOOK_STEP_29L_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_29L_COMPLETE` | `true` |
 | `STEP_29M_STARTED` | `false` |
-| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `false` |
+| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `true` |
 | `FOLLOW_UP_DEVEX_SCOPE` | `CANONICAL_PRE_PR_RUFF_AND_DIFF_GUARD` |
 | `FOLLOW_UP_DEVEX_STATUS` | `PENDING_SEPARATE_PR` |
 | `SYSTEMWIDE_RANKING_REQUIRED` | `false` |
@@ -974,9 +975,9 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `STEP_29L_STARTED` | `true` |
 | `RUNBOOK_STEP_29L_STARTED` | `true` |
 | `RUNBOOK_STEP_29L_IMPLEMENTED_SCOPE` | `mv2_research_wiring_v1_slice,mv2_research_wiring_v1_residual_walkforward_stress_warmup_evidence_slice` |
-| `RUNBOOK_STEP_29L_COMPLETE` | `false` |
+| `RUNBOOK_STEP_29L_COMPLETE` | `true` |
 | `STEP_29M_STARTED` | `false` |
-| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `false` |
+| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `true` |
 | `SEPARATE_GO_REQUIRED` | `true` |
 
 #### RUNBOOK_STEP_29L — MV2 Research Wiring v1
@@ -985,19 +986,27 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 |---|---|
 | `RUNBOOK_PHASE` | 9 |
 | `RUNBOOK_STEP_ID` | `mv2_research_wiring_v1` |
-| `STATUS` | `IN_PROGRESS` |
+| `STATUS` | `COMPLETE` |
 | `CANONICAL_OWNER` | `src/backtest/mv2_research_wiring_v1.py` |
+| `MERGED_PRS` | `#4697`, `#4698` |
+| `MERGE_COMMITS` | `90aeeb53c4c716263f9dcdc27fdeb6fccd8e1c42`, `7c5558c4517d89721a4c5d98b1ed34ebbf704caf` |
+| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/runbook_step29l_mv2_research_wiring_v1_implementation_v0_20260630T195947Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29l_mv2_research_wiring_pr4697_squash_merge_closeout_v0_20260630T203726Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29l_residual_offline_slice_pr4698_squash_merge_closeout_v0_20260630T204850Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning_or_validation/runbook_step29l_completion_coverage_audit_and_registry_closeout_v0_20260630T205600Z (MANIFEST_VERIFY_RC=0); mv2_research_wiring_pr=4697; mv2_research_wiring_merge_commit=90aeeb53c4c716263f9dcdc27fdeb6fccd8e1c42; mv2_research_wiring_squash_parent=76e30fd99cc96d85c72a29c23e2f20dd40d7a0d0; mv2_research_wiring_residual_pr=4698; mv2_research_wiring_residual_merge_commit=7c5558c4517d89721a4c5d98b1ed34ebbf704caf; mv2_research_wiring_residual_squash_parent=90aeeb53c4c716263f9dcdc27fdeb6fccd8e1c42; canonical_scope=mv2_research_wiring_v1_slice,mv2_research_wiring_v1_residual_walkforward_stress_warmup_evidence_slice; MV2_RESEARCH_WIRING_V1_BOUND=true; STEP29L_IMPLEMENTATION_COMPLETE=true; STEP_29M_STARTED=false; STEP_29L_COMPLETION_DOES_NOT_AUTHORIZE_LIVE=true; STEP_29L_COMPLETION_DOES_NOT_AUTHORIZE_RUNTIME=true; STEP_29L_COMPLETION_DOES_NOT_AUTHORIZE_ORDERS=true; STEP_29L_COMPLETION_DOES_NOT_CLAIM_ECONOMIC_VALIDITY=true; STEP_29L_COMPLETION_DOES_NOT_START_PROMOTION_GATE=true; UNIVERSE_SELECTION_UNCHANGED=true; offline_only=true; non_authorizing=true; runtime_process_started=false; scheduler_action_performed=false; venue_access_performed=false; credential_access_performed=false; trading_action_performed=false; progress_registry_closeout_status=COMPLETE; FUTURES_ONLY=true; BITCOIN_DIRECTION_ALLOWED=false; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SCHEDULER_RUNTIME_ALLOWED=false` |
 | `DEPENDENCIES` | RUNBOOK_STEP_29K |
-| `RUNBOOK_STEP_29L_STARTED` | `true` |
-| `RUNBOOK_STEP_29L_IMPLEMENTED_SCOPE` | `mv2_research_wiring_v1_slice,mv2_research_wiring_v1_residual_walkforward_stress_warmup_evidence_slice` |
-| `RUNBOOK_STEP_29L_COMPLETE` | `false` |
-| `STEP_29M_STARTED` | `false` |
-| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `false` |
-| `NEXT_REQUIRED_CONTRACT` | `step_29l_contract_test_matrix_and_closeout` |
+| `REMAINING_GAPS` | — |
+| `NEXT_REQUIRED_CONTRACT` | `RUNBOOK_STEP_29M` |
 | `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
 | `RUNTIME_EFFECT` | `false` |
 | `FUTURES_ONLY` | `true` |
 | `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `ECONOMIC_VALIDITY_PROVEN` | `false` |
+| `PROFITABILITY_CLAIM_ALLOWED` | `false` |
+| `RUNBOOK_STEP_29L_STARTED` | `true` |
+| `RUNBOOK_STEP_29L_IMPLEMENTED_SCOPE` | `mv2_research_wiring_v1_slice,mv2_research_wiring_v1_residual_walkforward_stress_warmup_evidence_slice` |
+| `RUNBOOK_STEP_29L_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_29L_COMPLETE` | `true` |
+| `MV2_RESEARCH_WIRING_V1_IMPLEMENTED` | `true` |
+| `STEP_29M_STARTED` | `false` |
+| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `true` |
 | `SEPARATE_GO_REQUIRED` | `true` |
 
 #### RUNBOOK_STEP_29J (legacy heading) — Backtest Engine Rewire Binding
@@ -1007,7 +1016,7 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `RUNBOOK_PHASE` | 9 |
 | `RUNBOOK_STEP_ID` | `backtest_engine_rewire_binding` |
 | `CONTRACT_OR_CAPABILITY` | `backtest_engine_rewire_binding` |
-| `STATUS` | `IN_PROGRESS` |
+| `STATUS` | `COMPLETE` |
 | `DEPENDENCIES` | RUNBOOK_STEP_29I |
 | `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
 | `RUNTIME_EFFECT` | `false` |
