@@ -64,9 +64,9 @@ def test_step_29n_not_started() -> None:
     assert _field_value(section, "STEP_29N_STARTED") == "false"
 
 
-def test_next_runbook_step_is_29n() -> None:
-    text = _read_registry()
-    assert _field_value(text, "NEXT_RUNBOOK_STEP") == "RUNBOOK_STEP_29N"
+def test_next_required_contract_is_29n_in_section() -> None:
+    section = _step_29m_section(_read_registry())
+    assert _field_value(section, "NEXT_REQUIRED_CONTRACT") == "RUNBOOK_STEP_29N"
 
 
 def test_economic_validity_not_proven() -> None:
