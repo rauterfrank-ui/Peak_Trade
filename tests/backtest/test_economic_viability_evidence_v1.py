@@ -122,10 +122,10 @@ def test_build_evidence_research_only_for_synthetic_fixture() -> None:
     assert result.economic_validity_proven is False
     assert result.profitability_claim_allowed is False
     assert "admissible_versioned_futures_dataset_missing" in result.reason_codes
-    assert "economic_validity_policy_thresholds_not_configured" in result.reason_codes
+    assert "economic_validity_policy_thresholds_bound" in result.reason_codes
     assert result.policy_version == policy_mod.ECONOMIC_VALIDITY_POLICY_VERSION
     assert len(result.policy_digest) == 64
-    assert result.policy_threshold_status == policy_mod.POLICY_THRESHOLD_STATUS_BLOCKED
+    assert result.policy_threshold_status == policy_mod.POLICY_THRESHOLD_STATUS_PASS
 
 
 def test_build_evidence_deterministic_semantics() -> None:
@@ -277,7 +277,7 @@ def test_parameter_sensitivity_binding_full_grid() -> None:
     assert payload["pipeline_status"] == "PIPELINE_PASS"
     assert payload["combination_count"] == 4
     assert len(payload["points"]) == 4
-    assert payload["parameter_robustness_policy_pass"] is False
+    assert payload["parameter_robustness_policy_pass"] is True
     assert "parameter_sensitivity_pipeline_bound" in result.reason_codes
     assert "parameter_sensitivity_not_bound_in_step29m_scope" not in result.reason_codes
 

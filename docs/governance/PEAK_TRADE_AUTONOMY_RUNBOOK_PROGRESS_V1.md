@@ -16,10 +16,10 @@ SCHEDULER_RUNTIME_ALLOWED: false
 
 | Feld | Wert |
 |---|---|
-| `LAST_VERIFIED_ORIGIN_MAIN` | `7c5558c4517d89721a4c5d98b1ed34ebbf704caf` |
-| `LAST_VERIFIED_AT` | `2026-06-30T20:55:00Z` |
+| `LAST_VERIFIED_ORIGIN_MAIN` | `cf0ced2edff0a4baaf8d8fcd93d3e7476c13257e` |
+| `LAST_VERIFIED_AT` | `2026-07-01T00:00:00Z` |
 | `CURRENT_MAJOR_GAP_PACKAGE` | `MAJOR_GAP_COMPARISON_PROMOTION_POLICY_INPUT_BRIDGE_V0` |
-| `NEXT_RUNBOOK_STEP` | `RUNBOOK_STEP_29M` |
+| `NEXT_RUNBOOK_STEP` | `RUNBOOK_STEP_29N` |
 | `NEXT_CANONICAL_STEP` | `backtest_engine_rewire_binding` |
 | `RUNBOOK_STEP_13_IMPLEMENTED` | `true` |
 | `TRADING_SESSION_SINGLE_WRITER_IMPLEMENTED` | `true` |
@@ -111,9 +111,9 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `RUNBOOK_STEP_29L_COMPLETE` | `true` |
 | `STEP_29M_STARTED` | `true` |
 | `RUNBOOK_STEP_29M_STARTED` | `true` |
-| `RUNBOOK_STEP_29M_IMPLEMENTED_SCOPE` | `economic_viability_evidence_v1_offline_slice,economic_viability_evidence_v1_persistence_load_reproducibility_slice,economic_validity_policy_v1_contract_slice,funding_model_binding_v1_slice,parameter_sensitivity_evidence_binding_v1_slice,admissible_versioned_futures_dataset_binding_v1_slice` |
+| `RUNBOOK_STEP_29M_IMPLEMENTED_SCOPE` | `economic_viability_evidence_v1_offline_slice,economic_viability_evidence_v1_persistence_load_reproducibility_slice,economic_validity_policy_v1_contract_slice,funding_model_binding_v1_slice,parameter_sensitivity_evidence_binding_v1_slice,admissible_versioned_futures_dataset_binding_v1_slice,economic_validity_policy_threshold_values_v1_slice` |
 | `RUNBOOK_STEP_29M_IMPLEMENTED` | `true` |
-| `RUNBOOK_STEP_29M_COMPLETE` | `false` |
+| `RUNBOOK_STEP_29M_COMPLETE` | `true` |
 | `STEP_29N_STARTED` | `false` |
 | `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `false` |
 | `FOLLOW_UP_DEVEX_SCOPE` | `CANONICAL_PRE_PR_RUFF_AND_DIFF_GUARD` |
@@ -998,7 +998,7 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/runbook_step29l_mv2_research_wiring_v1_implementation_v0_20260630T195947Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29l_mv2_research_wiring_pr4697_squash_merge_closeout_v0_20260630T203726Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29l_residual_offline_slice_pr4698_squash_merge_closeout_v0_20260630T204850Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning_or_validation/runbook_step29l_completion_coverage_audit_and_registry_closeout_v0_20260630T205600Z (MANIFEST_VERIFY_RC=0); mv2_research_wiring_pr=4697; mv2_research_wiring_merge_commit=90aeeb53c4c716263f9dcdc27fdeb6fccd8e1c42; mv2_research_wiring_squash_parent=76e30fd99cc96d85c72a29c23e2f20dd40d7a0d0; mv2_research_wiring_residual_pr=4698; mv2_research_wiring_residual_merge_commit=7c5558c4517d89721a4c5d98b1ed34ebbf704caf; mv2_research_wiring_residual_squash_parent=90aeeb53c4c716263f9dcdc27fdeb6fccd8e1c42; canonical_scope=mv2_research_wiring_v1_slice,mv2_research_wiring_v1_residual_walkforward_stress_warmup_evidence_slice; MV2_RESEARCH_WIRING_V1_BOUND=true; STEP29L_IMPLEMENTATION_COMPLETE=true; STEP_29M_STARTED=false; STEP_29L_COMPLETION_DOES_NOT_AUTHORIZE_LIVE=true; STEP_29L_COMPLETION_DOES_NOT_AUTHORIZE_RUNTIME=true; STEP_29L_COMPLETION_DOES_NOT_AUTHORIZE_ORDERS=true; STEP_29L_COMPLETION_DOES_NOT_CLAIM_ECONOMIC_VALIDITY=true; STEP_29L_COMPLETION_DOES_NOT_START_PROMOTION_GATE=true; UNIVERSE_SELECTION_UNCHANGED=true; offline_only=true; non_authorizing=true; runtime_process_started=false; scheduler_action_performed=false; venue_access_performed=false; credential_access_performed=false; trading_action_performed=false; progress_registry_closeout_status=COMPLETE; FUTURES_ONLY=true; BITCOIN_DIRECTION_ALLOWED=false; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SCHEDULER_RUNTIME_ALLOWED=false` |
 | `DEPENDENCIES` | RUNBOOK_STEP_29K |
 | `REMAINING_GAPS` | — |
-| `NEXT_REQUIRED_CONTRACT` | `RUNBOOK_STEP_29M` |
+| `NEXT_REQUIRED_CONTRACT` | `RUNBOOK_STEP_29N` |
 | `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
 | `RUNTIME_EFFECT` | `false` |
 | `FUTURES_ONLY` | `true` |
@@ -1023,10 +1023,10 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `STATUS` | `IN_PROGRESS` |
 | `CANONICAL_OWNER` | `src/backtest/economic_viability_evidence_v1.py` |
 | `DEPENDENCIES` | RUNBOOK_STEP_29L |
-| `REMAINING_GAPS` | `economic_validity_policy_threshold_values` |
+| `REMAINING_GAPS` | `` |
 | `DATA_ADMISSIBILITY_STATUS` | `PASS` |
-| `POLICY_THRESHOLD_STATUS` | `BLOCKED_BY_MISSING_VERSIONED_VALUES` |
-| `NEXT_REQUIRED_CONTRACT` | `RUNBOOK_STEP_29M` |
+| `POLICY_THRESHOLD_STATUS` | `PASS` |
+| `NEXT_REQUIRED_CONTRACT` | `RUNBOOK_STEP_29N` |
 | `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
 | `RUNTIME_EFFECT` | `false` |
 | `FUTURES_ONLY` | `true` |
@@ -1034,9 +1034,9 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `ECONOMIC_VALIDITY_PROVEN` | `false` |
 | `PROFITABILITY_CLAIM_ALLOWED` | `false` |
 | `RUNBOOK_STEP_29M_STARTED` | `true` |
-| `RUNBOOK_STEP_29M_IMPLEMENTED_SCOPE` | `economic_viability_evidence_v1_offline_slice,economic_viability_evidence_v1_persistence_load_reproducibility_slice,economic_validity_policy_v1_contract_slice,funding_model_binding_v1_slice,parameter_sensitivity_evidence_binding_v1_slice,admissible_versioned_futures_dataset_binding_v1_slice` |
+| `RUNBOOK_STEP_29M_IMPLEMENTED_SCOPE` | `economic_viability_evidence_v1_offline_slice,economic_viability_evidence_v1_persistence_load_reproducibility_slice,economic_validity_policy_v1_contract_slice,funding_model_binding_v1_slice,parameter_sensitivity_evidence_binding_v1_slice,admissible_versioned_futures_dataset_binding_v1_slice,economic_validity_policy_threshold_values_v1_slice` |
 | `RUNBOOK_STEP_29M_IMPLEMENTED` | `true` |
-| `RUNBOOK_STEP_29M_COMPLETE` | `false` |
+| `RUNBOOK_STEP_29M_COMPLETE` | `true` |
 | `STEP_29N_STARTED` | `false` |
 | `STEP_29M_COMPLETION_DOES_NOT_AUTHORIZE_LIVE` | `true` |
 | `STEP_29M_COMPLETION_DOES_NOT_AUTHORIZE_RUNTIME` | `true` |

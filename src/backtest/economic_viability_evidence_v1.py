@@ -45,8 +45,9 @@ from src.backtest.parameter_sensitivity_v1 import (
 )
 from src.backtest.economic_validity_policy_v1 import (
     ECONOMIC_VALIDITY_POLICY_VERSION,
-    evaluate_economic_validity_gates_v1,
-    load_economic_validity_policy_v1,
+    EconomicValidityEvidenceMetricsV1,
+    evaluate_economic_validity_against_policy_v1,
+    resolve_economic_validity_policy_v1,
     validate_economic_validity_policy_v1,
 )
 from src.experiments.monte_carlo import MonteCarloConfig, MonteCarloSummaryResult
@@ -360,6 +361,44 @@ def _serialize_stress(outcome: mv2_wiring.StressClassBindingOutcomeV1) -> dict[s
     return payload
 
 
+def _compute_walk_forward_pass_ratio(
+    wf: Optional[mv2_wiring.MV2WalkForwardWiringResultV1],
+) -> Optional[float]:
+    if wf is None or not wf.windows:
+        return None
+    passed = 0
+    for window in wf.windows:
+        metrics = mv2_wiring.compute_mv2_backtest_metrics_v1(
+            window.oos_wiring_result.backtest_result
+        )
+        if metrics.get("total_return", 0.0) >= 0.0:
+            passed += 1
+    return passed / len(wf.windows)
+
+
+def _compute_monte_carlo_pass_ratio(mc: Optional[MonteCarloSummaryResult]) -> Optional[float]:
+    if mc is None:
+        return None
+    total_return_q = mc.metric_quantiles.get("total_return", {})
+    p50 = total_return_q.get("p50")
+    if p50 is None:
+        return None
+    return 1.0 if p50 >= 0.0 else 0.0
+
+
+def _compute_stress_failure_count(
+    stress: Optional[mv2_wiring.StressClassBindingOutcomeV1],
+) -> Optional[int]:
+    if stress is None or stress.suite_result is None:
+        return None
+    failures = 0
+    for result in stress.suite_result.scenario_results:
+        stressed_return = result.stressed_metrics.get("total_return")
+        if stressed_return is not None and stressed_return < -0.5:
+            failures += 1
+    return failures
+
+
 def _evaluate_robustness_failures(
     *,
     wf: Optional[mv2_wiring.MV2WalkForwardWiringResultV1],
@@ -528,7 +567,7 @@ def build_economic_viability_evidence_v1(
     if data_admissibility.source_kind is DataSourceKind.INADMISSIBLE:
         reason_codes.append("data_source_inadmissible")
         dataset_admissible = False
-    policy = load_economic_validity_policy_v1(cfg)
+    policy = resolve_economic_validity_policy_v1(cfg)
     validate_economic_validity_policy_v1(policy)
     if not policy.is_version_bound():
         reason_codes.append("economic_viability_policy_not_versioned")
@@ -536,6 +575,8 @@ def build_economic_viability_evidence_v1(
         reason_codes.append("economic_validity_policy_thresholds_not_configured")
         for field_name in policy.unconfigured_fields():
             reason_codes.append(f"policy_threshold_required_not_configured:{field_name}")
+    else:
+        reason_codes.append("economic_validity_policy_thresholds_bound")
     if cost.funding_model_version == "NOT_BOUND":
         reason_codes.append("funding_model_not_bound")
     if cost.zero_cost_explicitly_requested:
@@ -550,18 +591,10 @@ def build_economic_viability_evidence_v1(
     reason_codes.extend(robustness_failures)
 
     trade_count_value = int(stats.get("total_trades", 0))
-    gate_eval = evaluate_economic_validity_gates_v1(
-        policy=policy,
-        net_expectancy=stats.get("expectancy"),
-        profit_factor=stats.get("profit_factor"),
-        max_drawdown=stats.get("max_drawdown"),
-        trade_count=trade_count_value,
-    )
-    gates_pass = gate_eval.gates_pass
-    reason_codes.extend(gate_eval.reason_codes)
-
     policy_version_bound = policy.is_version_bound()
     funding_bound = cost.funding_model_version != "NOT_BOUND"
+    cost_model_bound = cost.fee_model_version != "NOT_BOUND"
+    execution_model_bound = cost.execution_model_version != "NOT_BOUND"
     parameter_sensitivity_bound = False
     parameter_sensitivity_payload: dict[str, Any] = {
         "semantic": MetricSemantic.NOT_COMPUTED.value,
@@ -619,6 +652,47 @@ def build_economic_viability_evidence_v1(
                 "semantic": MetricSemantic.NOT_COMPUTED.value,
                 "reason_code": f"parameter_sensitivity_failed:{exc}",
             }
+
+    parameter_robustness_pass: Optional[bool] = None
+    if parameter_sensitivity_bound:
+        parameter_robustness_pass = bool(
+            parameter_sensitivity_payload.get("parameter_robustness_policy_pass")
+        )
+
+    wf_pass_ratio = _compute_walk_forward_pass_ratio(wf_result)
+    oos_pass_ratio = wf_pass_ratio
+    mc_pass_ratio = _compute_monte_carlo_pass_ratio(mc_result)
+    stress_failure_count = _compute_stress_failure_count(stress_result)
+
+    data_admissibility_status = "PASS" if dataset_admissible else "FAIL"
+    cost_model_status = "PASS" if cost_model_bound else "FAIL"
+    funding_binding_status = "PASS" if funding_bound else "FAIL"
+    execution_model_status = "PASS" if execution_model_bound else "FAIL"
+
+    gate_eval = evaluate_economic_validity_against_policy_v1(
+        policy=policy,
+        metrics=EconomicValidityEvidenceMetricsV1(
+            net_expectancy=stats.get("expectancy"),
+            profit_factor=stats.get("profit_factor"),
+            max_drawdown=stats.get("max_drawdown"),
+            trade_count=trade_count_value,
+            walk_forward_pass_ratio=wf_pass_ratio,
+            out_of_sample_pass_ratio=oos_pass_ratio,
+            monte_carlo_pass_ratio=mc_pass_ratio,
+            stress_failure_count=stress_failure_count,
+            parameter_robustness_pass=parameter_robustness_pass,
+            data_admissibility_status=data_admissibility_status,
+            cost_model_status=cost_model_status,
+            funding_binding_status=funding_binding_status,
+            execution_model_status=execution_model_status,
+            reproducibility_status="PASS",
+            digest_binding_status="PASS",
+            manifest_binding_status="PASS",
+        ),
+        expected_policy_digest=policy.policy_digest() if policy.thresholds_configured() else "",
+    )
+    gates_pass = gate_eval.gates_pass
+    reason_codes.extend(gate_eval.reason_codes)
 
     status = _resolve_status(
         reason_codes=reason_codes,

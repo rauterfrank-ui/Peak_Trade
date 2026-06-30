@@ -23,8 +23,9 @@ from src.backtest import mv2_research_wiring_v1 as mv2_wiring
 from src.backtest.cost_config_v0 import FUNDING_MODEL_VERSION
 from src.backtest.economic_validity_policy_v1 import (
     POLICY_THRESHOLD_STATUS_BLOCKED,
+    POLICY_THRESHOLD_STATUS_PASS,
     EconomicValidityPolicyV1,
-    load_economic_validity_policy_v1,
+    resolve_economic_validity_policy_v1,
 )
 from src.trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
     INTEGRATED_OFFLINE_TRADING_LOGIC_REPLAY_LAYER_VERSION,
@@ -589,7 +590,7 @@ def _evaluate_parameter_point_v1(
 
 def resolve_parameter_robustness_policy_status_v1(policy: EconomicValidityPolicyV1) -> str:
     if policy.thresholds_configured():
-        return "CONFIGURED"
+        return POLICY_THRESHOLD_STATUS_PASS
     return POLICY_THRESHOLD_STATUS_BLOCKED
 
 
@@ -610,7 +611,7 @@ def run_parameter_sensitivity_v1(
     if not data_digest:
         raise ParameterSensitivityError("missing_data_digest")
 
-    loaded_policy = policy or load_economic_validity_policy_v1(cfg)
+    loaded_policy = policy or resolve_economic_validity_policy_v1(cfg)
     policy_status = resolve_parameter_robustness_policy_status_v1(loaded_policy)
     parameter_robustness_policy_pass = loaded_policy.thresholds_configured()
 
