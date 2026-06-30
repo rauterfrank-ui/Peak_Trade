@@ -128,6 +128,15 @@ _SUPPORTED_STRESS_CLASSES = (
     "drawdown_extension",
     "gap_down_open",
 )
+_DEFERRED_STRESS_CLASSES = (
+    "fee_multiplier_stress",
+    "slippage_multiplier_stress",
+    "funding_stress",
+    "spread_expansion_stress",
+    "fill_quality_stress",
+    "latency_stress",
+    "trade_omission_stress",
+)
 
 
 class StressClassBindingStatus(str, Enum):
@@ -162,6 +171,24 @@ class MV2ResearchWiringResultV1:
 class StressClassBindingOutcomeV1:
     statuses: Mapping[str, StressClassBindingStatus]
     suite_result: Optional[StressTestSuiteResult]
+
+
+@dataclass(frozen=True)
+class MV2WalkForwardWindowResultV1:
+    window_index: int
+    train_slice: slice
+    test_slice: slice
+    train_period_digest: str
+    test_period_digest: str
+    config_digest: str
+    oos_wiring_result: MV2ResearchWiringResultV1
+
+
+@dataclass(frozen=True)
+class MV2WalkForwardWiringResultV1:
+    split_contract_digest: str
+    windows: tuple[MV2WalkForwardWindowResultV1, ...]
+    oos_results: tuple[MV2ResearchWiringResultV1, ...]
 
 
 def _fail_closed(condition: bool, reason: str) -> None:
@@ -272,6 +299,32 @@ def _price(row: pd.Series, key: str, fallback: str = "close") -> float:
     return float(value)
 
 
+def _resolve_warmup_status(bar: pd.Series) -> WarmupStatus:
+    if "warmup_status" in bar.index:
+        raw = str(bar["warmup_status"]).lower()
+        if raw in {"warmup_required", "warmup_in_progress", "in_progress"}:
+            return WarmupStatus.WARMUP_REQUIRED
+        if raw == "warmup_invalid":
+            return WarmupStatus.WARMUP_INVALID
+        if raw == "warmup_complete":
+            return WarmupStatus.WARMUP_COMPLETE
+    if "warmup_complete" in bar.index and not bool(bar["warmup_complete"]):
+        return WarmupStatus.WARMUP_REQUIRED
+    return WarmupStatus.WARMUP_COMPLETE
+
+
+def _period_digest(bars: pd.DataFrame) -> str:
+    if bars.empty:
+        return _stable_digest({"empty": True})
+    return _stable_digest(
+        {
+            "start": str(bars.index[0]),
+            "end": str(bars.index[-1]),
+            "count": len(bars),
+        }
+    )
+
+
 def bind_historical_bar_to_canonical_market_context_v1(
     *,
     bar: pd.Series,
@@ -316,7 +369,7 @@ def bind_historical_bar_to_canonical_market_context_v1(
         market_structure_feature_set={"range_ratio": float(bar.get("range_ratio", 0.4))},
         data_integrity_status=DataIntegrityStatus.TRUSTED,
         clock_trust_status=ClockTrustStatus.TRUSTED,
-        warmup_status=WarmupStatus.WARMUP_COMPLETE,
+        warmup_status=_resolve_warmup_status(bar),
         feature_contract_version=FEATURE_CONTRACT_VERSION,
     )
     return with_computed_input_digest(context)
@@ -360,6 +413,7 @@ def bind_monte_carlo_analysis_v1(
     backtest_result: BacktestResult,
     config: MonteCarloConfig,
 ) -> MonteCarloSummaryResult:
+    _fail_closed(config.seed is None, "monte_carlo_seed_missing")
     return run_monte_carlo_from_equity(backtest_result.equity_curve, config)
 
 
@@ -384,8 +438,13 @@ def bind_stress_class_suite_v1(
         if cls in _SUPPORTED_STRESS_CLASSES:
             statuses[cls] = StressClassBindingStatus.SUPPORTED_BY_EXISTING_OWNER
             scenarios.append(StressScenarioConfig(scenario_type=cls))
+        elif cls in _DEFERRED_STRESS_CLASSES:
+            statuses[cls] = StressClassBindingStatus.DEFERRED_EXPLICIT
         else:
             statuses[cls] = StressClassBindingStatus.UNSUPPORTED_BLOCKING
+
+    for deferred in _DEFERRED_STRESS_CLASSES:
+        statuses.setdefault(deferred, StressClassBindingStatus.DEFERRED_EXPLICIT)
 
     for required in _SUPPORTED_STRESS_CLASSES:
         statuses.setdefault(required, StressClassBindingStatus.BOUND)
@@ -407,13 +466,55 @@ def compute_mv2_evidence_chain_digests_v1(
     evidence: CanonicalTradingDecisionEvidenceV1,
     registry_snapshot: StrategyRegistrySnapshotV1,
     cost_config: EffectiveBacktestCostConfigV0,
+    strategy_id: str = "",
+    strategy_version: str = "",
+    data_period: str = "",
+    train_period: str = "",
+    validation_period: str = "",
+    oos_period: str = "",
+    fee_model_version: str = "",
+    slippage_model_version: str = "",
+    funding_model_version_or_status: str = "",
+    execution_model_version: str = "",
+    config_digest: str = "",
+    implementation_digest: str = "",
+    data_digest: str = "",
+    replay_digest: str = "",
+    backtest_result_digest: str = "",
+    walk_forward_result_digest_or_status: str = "not_run",
+    monte_carlo_result_digest_or_status: str = "not_run",
+    stress_result_digest_or_status: str = "not_run",
+    metrics_digest: str = "",
+    manifest_digest: str = "",
 ) -> Mapping[str, str]:
     chain = {
+        "strategy_id": strategy_id,
+        "strategy_version": strategy_version,
+        "registry_snapshot_digest": registry_snapshot.semantic_digest,
+        "canonical_trading_logic_version": INTEGRATED_OFFLINE_TRADING_LOGIC_REPLAY_LAYER_VERSION,
+        "data_period": data_period,
+        "train_period": train_period,
+        "validation_period": validation_period,
+        "oos_period": oos_period,
+        "fee_model_version": fee_model_version or cost_config.cost_model_version,
+        "slippage_model_version": slippage_model_version or cost_config.cost_model_version,
+        "funding_model_version_or_status": funding_model_version_or_status or "deferred",
+        "execution_model_version": execution_model_version or "offline_replay_v1",
+        "config_digest": config_digest,
+        "implementation_digest": implementation_digest or _REPLAY_IMPLEMENTATION_DIGEST,
+        "data_digest": data_digest or context.input_digest,
+        "replay_digest": replay_digest or evidence.semantic_digest,
         "market_context_input_digest": context.input_digest,
         "decision_evidence_semantic_digest": evidence.semantic_digest,
         "registry_input_digest": registry_snapshot.input_digest,
         "registry_semantic_digest": registry_snapshot.semantic_digest,
         "cost_config_digest": cost_config.config_digest,
+        "backtest_result_digest": backtest_result_digest,
+        "walk_forward_result_digest_or_status": walk_forward_result_digest_or_status,
+        "monte_carlo_result_digest_or_status": monte_carlo_result_digest_or_status,
+        "stress_result_digest_or_status": stress_result_digest_or_status,
+        "metrics_digest": metrics_digest,
+        "manifest_digest": manifest_digest,
     }
     chain_digest = _stable_digest(chain)
     return {**chain, "wiring_chain_digest": chain_digest}
@@ -608,6 +709,8 @@ def run_mv2_research_backtest_wiring_v1(
         )
         replay_result = run_integrated_offline_trading_logic_replay_v1(replay_input)
         signal = map_decision_evidence_to_position_signal_v1(replay_result.evidence)
+        if context.warmup_status is not WarmupStatus.WARMUP_COMPLETE:
+            signal = 0
         outcomes.append(
             MV2ReplayBarOutcomeV1(
                 trading_epoch=i,
@@ -644,4 +747,92 @@ def run_mv2_research_backtest_wiring_v1(
         bar_outcomes=tuple(outcomes),
         signals=signal_series,
         backtest_result=backtest_result,
+    )
+
+
+def run_mv2_walk_forward_wiring_v1(
+    bars: pd.DataFrame,
+    *,
+    strategy_id: str,
+    cfg: Mapping[str, Any],
+    train_bars: int,
+    test_bars: int,
+    step_bars: int,
+    instrument_id: str = MV2_REQUIRED_INSTRUMENT_ID,
+    expected_registry_input_digest: Optional[str] = None,
+    expected_registry_semantic_digest: Optional[str] = None,
+    expected_registry_schema_version: str = REGISTRY_SCHEMA_VERSION,
+    expected_cost_model_version: str = "backtest_cost_v0",
+    expected_data_layer_version: str = CANONICAL_MARKET_CONTEXT_LAYER_VERSION,
+    expected_replay_layer_version: str = INTEGRATED_OFFLINE_TRADING_LOGIC_REPLAY_LAYER_VERSION,
+    expected_implementation_digest: Optional[str] = None,
+    explicit_zero_cost_non_economic: bool = False,
+) -> MV2WalkForwardWiringResultV1:
+    """Run MV2 replay on OOS test windows only; train windows bind split contract only."""
+    windows = bind_walk_forward_windows_v1(
+        bars,
+        train_bars=train_bars,
+        test_bars=test_bars,
+        step_bars=step_bars,
+    )
+    _fail_closed(len(windows) == 0, "walk_forward_no_windows")
+
+    split_contract_digest = _stable_digest(
+        {
+            "train_bars": train_bars,
+            "test_bars": test_bars,
+            "step_bars": step_bars,
+            "data_digest": _period_digest(bars),
+            "owner": MV2_RESEARCH_WIRING_OWNER,
+        }
+    )
+
+    wiring_kwargs = {
+        "strategy_id": strategy_id,
+        "cfg": cfg,
+        "instrument_id": instrument_id,
+        "expected_registry_input_digest": expected_registry_input_digest,
+        "expected_registry_semantic_digest": expected_registry_semantic_digest,
+        "expected_registry_schema_version": expected_registry_schema_version,
+        "expected_cost_model_version": expected_cost_model_version,
+        "expected_data_layer_version": expected_data_layer_version,
+        "expected_replay_layer_version": expected_replay_layer_version,
+        "expected_implementation_digest": expected_implementation_digest,
+        "explicit_zero_cost_non_economic": explicit_zero_cost_non_economic,
+    }
+
+    window_results: list[MV2WalkForwardWindowResultV1] = []
+    oos_results: list[MV2ResearchWiringResultV1] = []
+    for idx, (train_slice, test_slice) in enumerate(windows):
+        train_df = bars.iloc[train_slice]
+        test_df = bars.iloc[test_slice]
+        _fail_closed(train_df.empty or test_df.empty, "walk_forward_empty_window")
+        train_digest = _period_digest(train_df)
+        test_digest = _period_digest(test_df)
+        window_config_digest = _stable_digest(
+            {
+                "split_contract_digest": split_contract_digest,
+                "window_index": idx,
+                "train_period_digest": train_digest,
+                "test_period_digest": test_digest,
+            }
+        )
+        oos_result = run_mv2_research_backtest_wiring_v1(test_df, **wiring_kwargs)
+        window_results.append(
+            MV2WalkForwardWindowResultV1(
+                window_index=idx,
+                train_slice=train_slice,
+                test_slice=test_slice,
+                train_period_digest=train_digest,
+                test_period_digest=test_digest,
+                config_digest=window_config_digest,
+                oos_wiring_result=oos_result,
+            )
+        )
+        oos_results.append(oos_result)
+
+    return MV2WalkForwardWiringResultV1(
+        split_contract_digest=split_contract_digest,
+        windows=tuple(window_results),
+        oos_results=tuple(oos_results),
     )
