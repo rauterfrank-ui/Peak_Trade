@@ -72,6 +72,12 @@ def _cfg(*, bind: bool = True) -> Mapping[str, Any]:
     return payload
 
 
+def _cfg_policy_unbound(**kwargs: Any) -> Mapping[str, Any]:
+    cfg = dict(_cfg(**kwargs))
+    cfg["economic_validity_policy"] = {"explicit_unbound": True}
+    return cfg
+
+
 class TestParameterGridContract:
     def test_binding_requested(self) -> None:
         assert ps.parameter_sensitivity_binding_requested(_cfg()) is True
@@ -230,7 +236,7 @@ class TestParameterSensitivityExecution:
     def test_policy_robustness_blocked_without_thresholds(self) -> None:
         result = ps.run_parameter_sensitivity_v1(
             bars=_bars(),
-            cfg=_cfg(),
+            cfg=_cfg_policy_unbound(),
             strategy_id="ma_crossover",
             strategy_version="v1",
             data_digest="0" * 64,
@@ -243,7 +249,7 @@ class TestParameterSensitivityExecution:
     def test_pipeline_pass_not_policy_pass(self) -> None:
         result = ps.run_parameter_sensitivity_v1(
             bars=_bars(),
-            cfg=_cfg(),
+            cfg=_cfg_policy_unbound(),
             strategy_id="ma_crossover",
             strategy_version="v1",
             data_digest="0" * 64,
