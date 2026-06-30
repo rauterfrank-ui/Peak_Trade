@@ -82,8 +82,10 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `RUNBOOK_STEP_29F_IMPLEMENTATION_STARTED` | `true` |
 | `RUNBOOK_STEP_29F_IMPLEMENTED_SCOPE` | `survival_assessment_v1_offline_slice,suitability_binding_offline_slice` |
 | `RUNBOOK_STEP_29F_COMPLETE` | `true` |
-| `STEP_29G_STARTED` | `false` |
-| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `true` |
+| `STEP_29G_STARTED` | `true` |
+| `RUNBOOK_STEP_29G_IMPLEMENTED_SCOPE` | `double_play_composition_matrix_v1_offline_slice` |
+| `RUNBOOK_STEP_29G_COMPLETE` | `false` |
+| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `false` |
 | `FOLLOW_UP_DEVEX_SCOPE` | `CANONICAL_PRE_PR_RUFF_AND_DIFF_GUARD` |
 | `FOLLOW_UP_DEVEX_STATUS` | `PENDING_SEPARATE_PR` |
 | `SYSTEMWIDE_RANKING_REQUIRED` | `false` |
@@ -808,7 +810,7 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `RUNBOOK_PHASE` | 9 |
 | `RUNBOOK_STEP_ID` | `double_play_composition_matrix` |
 | `CONTRACT_OR_CAPABILITY` | `double_play_composition_matrix` |
-| `STATUS` | `NOT_STARTED` |
+| `STATUS` | `IN_PROGRESS` |
 | `DEPENDENCIES` | RUNBOOK_STEP_29F |
 | `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
 | `RUNTIME_EFFECT` | `false` |
