@@ -216,3 +216,93 @@ def test_status_never_exceeds_step29m_allowed_set() -> None:
 def test_economically_viable_offline_not_claimed_without_policy() -> None:
     result = _build()
     assert result.status is not ev.EconomicViabilityStatus.ECONOMICALLY_VIABLE_OFFLINE
+
+
+def test_deserialize_round_trip_semantic_dict() -> None:
+    original = _build()
+    loaded = ev.economic_viability_evidence_from_dict_v1(original.to_dict())
+    assert loaded.to_semantic_dict() == original.to_semantic_dict()
+
+
+def test_load_bundle_manifest_verify(tmp_path) -> None:
+    result = _build()
+    out = tmp_path / "evidence"
+    ev.persist_economic_viability_evidence_bundle_v1(
+        out,
+        result,
+        config_snapshot={"cfg": dict(_cfg())},
+        metrics={"total_return": result.gross_return.value},
+        input_provenance={"source": "synthetic_fixture"},
+    )
+    loaded = ev.load_economic_viability_evidence_bundle_v1(out)
+    assert loaded.manifest_verify_rc == 0
+    assert loaded.evidence.to_semantic_dict() == result.to_semantic_dict()
+
+
+def test_load_bundle_fail_closed_on_missing_manifest(tmp_path) -> None:
+    result = _build()
+    out = tmp_path / "evidence"
+    ev.persist_economic_viability_evidence_bundle_v1(
+        out,
+        result,
+        config_snapshot={"cfg": dict(_cfg())},
+        metrics={"total_return": result.gross_return.value},
+        input_provenance={"source": "synthetic_fixture"},
+    )
+    (out / ev.ARTIFACT_FILENAME).write_text("{}", encoding="utf-8")
+    with pytest.raises(ev.EconomicViabilityEvidenceError, match="manifest_verify_failed"):
+        ev.load_economic_viability_evidence_bundle_v1(out)
+
+
+def test_reproducibility_verification_pass() -> None:
+    a = _build()
+    b = _build()
+    repro = ev.verify_economic_viability_evidence_reproducibility_v1(persisted=a, rebuilt=b)
+    assert repro.reproducible is True
+    assert repro.manifest_digest_match is True
+    assert repro.semantic_dict_match is True
+
+
+def test_build_and_persist_canonical_entry(tmp_path) -> None:
+    bars = _bars()
+    adm = _admissibility(bars)
+    out = tmp_path / "canonical_bundle"
+    bundle, repro = ev.build_and_persist_economic_viability_evidence_bundle_v1(
+        out,
+        bars=bars,
+        data_admissibility=adm,
+        strategy_id="ma_crossover",
+        cfg=_cfg(),
+        input_provenance={"source": "synthetic_fixture", "bars_ref": "test::_bars"},
+    )
+    assert bundle.manifest_verify_rc == 0
+    assert repro.reproducible is True
+    assert (out / "REPRODUCIBILITY_RESULT.txt").is_file()
+    loaded = ev.load_economic_viability_evidence_bundle_v1(out)
+    assert loaded.evidence.status is ev.EconomicViabilityStatus.RESEARCH_ONLY
+
+
+def test_deserialize_missing_required_field_fail_closed() -> None:
+    payload = _build().to_dict()
+    del payload["manifest_digest"]
+    with pytest.raises(ev.EconomicViabilityEvidenceError, match="required_field_missing"):
+        ev.economic_viability_evidence_from_dict_v1(payload)
+
+
+def test_deserialize_non_computed_metric_with_value_fail_closed() -> None:
+    payload = _build().to_dict()
+    payload["turnover"] = {
+        "semantic": "NOT_COMPUTED",
+        "value": 1.0,
+        "reason_code": "bad",
+    }
+    with pytest.raises(ev.EconomicViabilityEvidenceError, match="non_computed_metric_has_value"):
+        ev.economic_viability_evidence_from_dict_v1(payload)
+
+
+def test_reproducibility_mismatch_detected() -> None:
+    a = _build()
+    b = _build(monte_carlo_seed=99)
+    repro = ev.verify_economic_viability_evidence_reproducibility_v1(persisted=a, rebuilt=b)
+    assert repro.reproducible is False
+    assert "manifest_digest_mismatch" in repro.reason_codes

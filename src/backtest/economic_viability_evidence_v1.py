@@ -711,6 +711,293 @@ class PersistedEconomicViabilityEvidenceBundleV1:
     manifest_verify_rc: int
 
 
+@dataclass(frozen=True)
+class LoadedEconomicViabilityEvidenceBundleV1:
+    output_dir: Path
+    evidence: EconomicViabilityEvidenceV1
+    config_snapshot: dict[str, Any]
+    metrics: dict[str, Any]
+    input_provenance: dict[str, Any]
+    manifest_verify_rc: int
+
+
+@dataclass(frozen=True)
+class ReproducibilityVerificationResultV1:
+    reproducible: bool
+    manifest_digest_match: bool
+    semantic_dict_match: bool
+    original_manifest_digest: str
+    rebuilt_manifest_digest: str
+    reason_codes: tuple[str, ...]
+
+
+def _metric_field_from_dict(payload: Mapping[str, Any], *, field_name: str) -> MetricFieldV1:
+    if not isinstance(payload, Mapping):
+        raise EconomicViabilityEvidenceError(f"metric_field_not_mapping:{field_name}")
+    semantic_raw = payload.get("semantic")
+    if semantic_raw is None:
+        raise EconomicViabilityEvidenceError(f"metric_semantic_missing:{field_name}")
+    try:
+        semantic = MetricSemantic(str(semantic_raw))
+    except ValueError as exc:
+        raise EconomicViabilityEvidenceError(f"metric_semantic_invalid:{field_name}") from exc
+    value_raw = payload.get("value")
+    value = None if value_raw is None else float(value_raw)
+    reason_code = payload.get("reason_code")
+    if reason_code is not None:
+        reason_code = str(reason_code)
+    if semantic is MetricSemantic.COMPUTED and value is None:
+        raise EconomicViabilityEvidenceError(f"computed_metric_missing_value:{field_name}")
+    if semantic is not MetricSemantic.COMPUTED and value is not None:
+        raise EconomicViabilityEvidenceError(f"non_computed_metric_has_value:{field_name}")
+    return MetricFieldV1(semantic=semantic, value=value, reason_code=reason_code)
+
+
+def _mapping_from_dict(payload: Any, *, field_name: str) -> dict[str, Any]:
+    if not isinstance(payload, Mapping):
+        raise EconomicViabilityEvidenceError(f"mapping_field_not_mapping:{field_name}")
+    return dict(payload)
+
+
+def economic_viability_evidence_from_dict_v1(
+    payload: Mapping[str, Any],
+) -> EconomicViabilityEvidenceV1:
+    schema = economic_viability_evidence_schema_v1()
+    for key in schema["required_fields"]:
+        if key not in payload:
+            raise EconomicViabilityEvidenceError(f"required_field_missing:{key}")
+    status_raw = payload.get("status")
+    try:
+        status = EconomicViabilityStatus(str(status_raw))
+    except ValueError as exc:
+        raise EconomicViabilityEvidenceError(f"status_invalid:{status_raw}") from exc
+    _fail_closed(status.value not in _STEP29M_ALLOWED_STATUSES, "status_not_allowed_for_step29m")
+    reason_codes_raw = payload.get("reason_codes")
+    if not isinstance(reason_codes_raw, list):
+        raise EconomicViabilityEvidenceError("reason_codes_not_list")
+    return EconomicViabilityEvidenceV1(
+        contract_version=str(payload["contract_version"]),
+        owner=str(payload["owner"]),
+        strategy_id=str(payload["strategy_id"]),
+        strategy_version=str(payload["strategy_version"]),
+        instrument_id_or_universe=str(payload["instrument_id_or_universe"]),
+        canonical_trading_logic_version=str(payload["canonical_trading_logic_version"]),
+        data_period=str(payload["data_period"]),
+        training_period=str(payload["training_period"]),
+        validation_period=str(payload["validation_period"]),
+        out_of_sample_period=str(payload["out_of_sample_period"]),
+        fee_model_version=str(payload["fee_model_version"]),
+        slippage_model_version=str(payload["slippage_model_version"]),
+        funding_model_version=str(payload["funding_model_version"]),
+        execution_model_version=str(payload["execution_model_version"]),
+        config_digest=str(payload["config_digest"]),
+        implementation_digest=str(payload["implementation_digest"]),
+        data_digest=str(payload["data_digest"]),
+        gross_return=_metric_field_from_dict(payload["gross_return"], field_name="gross_return"),
+        net_return=_metric_field_from_dict(payload["net_return"], field_name="net_return"),
+        net_expectancy=_metric_field_from_dict(
+            payload["net_expectancy"], field_name="net_expectancy"
+        ),
+        profit_factor=_metric_field_from_dict(payload["profit_factor"], field_name="profit_factor"),
+        sharpe=_metric_field_from_dict(payload["sharpe"], field_name="sharpe"),
+        sortino=_metric_field_from_dict(payload["sortino"], field_name="sortino"),
+        max_drawdown=_metric_field_from_dict(payload["max_drawdown"], field_name="max_drawdown"),
+        calmar=_metric_field_from_dict(payload["calmar"], field_name="calmar"),
+        trade_count=_metric_field_from_dict(payload["trade_count"], field_name="trade_count"),
+        turnover=_metric_field_from_dict(payload["turnover"], field_name="turnover"),
+        fee_drag=_metric_field_from_dict(payload["fee_drag"], field_name="fee_drag"),
+        funding_drag=_metric_field_from_dict(payload["funding_drag"], field_name="funding_drag"),
+        slippage_impact=_metric_field_from_dict(
+            payload["slippage_impact"], field_name="slippage_impact"
+        ),
+        tail_loss=_metric_field_from_dict(payload["tail_loss"], field_name="tail_loss"),
+        time_in_market=_metric_field_from_dict(
+            payload["time_in_market"], field_name="time_in_market"
+        ),
+        long_contribution=_metric_field_from_dict(
+            payload["long_contribution"], field_name="long_contribution"
+        ),
+        short_contribution=_metric_field_from_dict(
+            payload["short_contribution"], field_name="short_contribution"
+        ),
+        regime_breakdown=_mapping_from_dict(
+            payload["regime_breakdown"], field_name="regime_breakdown"
+        ),
+        portfolio_contribution=_mapping_from_dict(
+            payload["portfolio_contribution"], field_name="portfolio_contribution"
+        ),
+        walk_forward_results=_mapping_from_dict(
+            payload["walk_forward_results"], field_name="walk_forward_results"
+        ),
+        monte_carlo_results=_mapping_from_dict(
+            payload["monte_carlo_results"], field_name="monte_carlo_results"
+        ),
+        stress_results=_mapping_from_dict(payload["stress_results"], field_name="stress_results"),
+        parameter_sensitivity_results=_mapping_from_dict(
+            payload["parameter_sensitivity_results"],
+            field_name="parameter_sensitivity_results",
+        ),
+        status=status,
+        reason_codes=tuple(str(code) for code in reason_codes_raw),
+        manifest_digest=str(payload["manifest_digest"]),
+        wiring_chain_digest=str(payload.get("wiring_chain_digest", "")),
+        randomness_seed=int(payload.get("randomness_seed", 0)),
+        data_admissibility=_mapping_from_dict(
+            payload.get("data_admissibility", {}), field_name="data_admissibility"
+        ),
+        cost_binding=_mapping_from_dict(payload.get("cost_binding", {}), field_name="cost_binding"),
+        policy_version=str(payload.get("policy_version", ECONOMIC_VIABILITY_POLICY_VERSION)),
+        economic_validity_proven=bool(payload.get("economic_validity_proven", False)),
+        profitability_claim_allowed=bool(payload.get("profitability_claim_allowed", False)),
+    )
+
+
+def load_economic_viability_evidence_bundle_v1(
+    output_dir: Path,
+    *,
+    verify_manifest: bool = True,
+) -> LoadedEconomicViabilityEvidenceBundleV1:
+    if not output_dir.is_dir():
+        raise EconomicViabilityEvidenceError(f"bundle_dir_missing:{output_dir}")
+    manifest_verify_rc = 0
+    if verify_manifest:
+        ok, message = verify_manifest_sha256(output_dir)
+        manifest_verify_rc = 0 if ok else 1
+        if not ok:
+            raise EconomicViabilityEvidenceError(f"manifest_verify_failed:{message}")
+    evidence_path = output_dir / ARTIFACT_FILENAME
+    if not evidence_path.is_file():
+        raise EconomicViabilityEvidenceError(f"evidence_artifact_missing:{evidence_path}")
+    evidence_payload = json.loads(evidence_path.read_text(encoding="utf-8"))
+    evidence = economic_viability_evidence_from_dict_v1(evidence_payload)
+    config_snapshot = json.loads((output_dir / "CONFIG_SNAPSHOT.json").read_text(encoding="utf-8"))
+    metrics = json.loads((output_dir / "METRICS.json").read_text(encoding="utf-8"))
+    input_provenance = json.loads(
+        (output_dir / "INPUT_PROVENANCE.json").read_text(encoding="utf-8")
+    )
+    return LoadedEconomicViabilityEvidenceBundleV1(
+        output_dir=output_dir,
+        evidence=evidence,
+        config_snapshot=config_snapshot,
+        metrics=metrics,
+        input_provenance=input_provenance,
+        manifest_verify_rc=manifest_verify_rc,
+    )
+
+
+def verify_economic_viability_evidence_reproducibility_v1(
+    *,
+    persisted: EconomicViabilityEvidenceV1,
+    rebuilt: EconomicViabilityEvidenceV1,
+) -> ReproducibilityVerificationResultV1:
+    semantic_dict_match = persisted.to_semantic_dict() == rebuilt.to_semantic_dict()
+    manifest_digest_match = persisted.manifest_digest == rebuilt.manifest_digest
+    reason_codes: list[str] = []
+    if not semantic_dict_match:
+        reason_codes.append("semantic_dict_mismatch")
+    if not manifest_digest_match:
+        reason_codes.append("manifest_digest_mismatch")
+    return ReproducibilityVerificationResultV1(
+        reproducible=semantic_dict_match and manifest_digest_match,
+        manifest_digest_match=manifest_digest_match,
+        semantic_dict_match=semantic_dict_match,
+        original_manifest_digest=persisted.manifest_digest,
+        rebuilt_manifest_digest=rebuilt.manifest_digest,
+        reason_codes=tuple(reason_codes),
+    )
+
+
+def build_and_persist_economic_viability_evidence_bundle_v1(
+    output_dir: Path,
+    *,
+    bars: pd.DataFrame,
+    data_admissibility: DataAdmissibilityV1,
+    strategy_id: str,
+    cfg: Mapping[str, Any],
+    input_provenance: Mapping[str, Any],
+    instrument_id: str = mv2_wiring.MV2_REQUIRED_INSTRUMENT_ID,
+    walk_forward_train_bars: int = 8,
+    walk_forward_test_bars: int = 4,
+    walk_forward_step_bars: int = 4,
+    monte_carlo_runs: int = 16,
+    monte_carlo_seed: int = 42,
+    explicit_zero_cost_non_economic: bool = False,
+    verify_reproducibility: bool = True,
+) -> tuple[PersistedEconomicViabilityEvidenceBundleV1, ReproducibilityVerificationResultV1]:
+    evidence = build_economic_viability_evidence_v1(
+        bars=bars,
+        data_admissibility=data_admissibility,
+        strategy_id=strategy_id,
+        cfg=cfg,
+        instrument_id=instrument_id,
+        walk_forward_train_bars=walk_forward_train_bars,
+        walk_forward_test_bars=walk_forward_test_bars,
+        walk_forward_step_bars=walk_forward_step_bars,
+        monte_carlo_runs=monte_carlo_runs,
+        monte_carlo_seed=monte_carlo_seed,
+        explicit_zero_cost_non_economic=explicit_zero_cost_non_economic,
+    )
+    metrics = {
+        key: field.to_dict()
+        for key, field in (
+            ("gross_return", evidence.gross_return),
+            ("net_return", evidence.net_return),
+            ("net_expectancy", evidence.net_expectancy),
+            ("profit_factor", evidence.profit_factor),
+            ("sharpe", evidence.sharpe),
+            ("sortino", evidence.sortino),
+            ("max_drawdown", evidence.max_drawdown),
+            ("calmar", evidence.calmar),
+            ("trade_count", evidence.trade_count),
+        )
+    }
+    bundle = persist_economic_viability_evidence_bundle_v1(
+        output_dir,
+        evidence,
+        config_snapshot={"cfg": dict(cfg), "strategy_id": strategy_id},
+        metrics=metrics,
+        input_provenance=dict(input_provenance),
+    )
+    rebuilt = build_economic_viability_evidence_v1(
+        bars=bars,
+        data_admissibility=data_admissibility,
+        strategy_id=strategy_id,
+        cfg=cfg,
+        instrument_id=instrument_id,
+        walk_forward_train_bars=walk_forward_train_bars,
+        walk_forward_test_bars=walk_forward_test_bars,
+        walk_forward_step_bars=walk_forward_step_bars,
+        monte_carlo_runs=monte_carlo_runs,
+        monte_carlo_seed=monte_carlo_seed,
+        explicit_zero_cost_non_economic=explicit_zero_cost_non_economic,
+    )
+    repro = verify_economic_viability_evidence_reproducibility_v1(
+        persisted=evidence,
+        rebuilt=rebuilt,
+    )
+    if verify_reproducibility and not repro.reproducible:
+        raise EconomicViabilityEvidenceError(
+            f"reproducibility_verification_failed:{','.join(repro.reason_codes)}"
+        )
+    repro_payload = {
+        "reproducible": repro.reproducible,
+        "manifest_digest_match": repro.manifest_digest_match,
+        "semantic_dict_match": repro.semantic_dict_match,
+        "original_manifest_digest": repro.original_manifest_digest,
+        "rebuilt_manifest_digest": repro.rebuilt_manifest_digest,
+        "reason_codes": list(repro.reason_codes),
+    }
+    (output_dir / "REPRODUCIBILITY_RESULT.txt").write_text(
+        json.dumps(repro_payload, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    write_manifest_sha256(output_dir)
+    ok, message = verify_manifest_sha256(output_dir)
+    if not ok:
+        raise EconomicViabilityEvidenceError(f"manifest_verify_failed_after_repro:{message}")
+    return bundle, repro
+
+
 def persist_economic_viability_evidence_bundle_v1(
     output_dir: Path,
     evidence: EconomicViabilityEvidenceV1,
