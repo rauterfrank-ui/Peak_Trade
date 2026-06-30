@@ -28,6 +28,17 @@ def _cfg(*, fee_bps: float = 10.0, slippage_bps: float = 5.0) -> Mapping[str, An
     }
 
 
+def _cfg_with_funding(**kwargs: Any) -> Mapping[str, Any]:
+    cfg = dict(_cfg(**kwargs))
+    backtest = dict(cfg["backtest"])
+    backtest["funding"] = {
+        "bind": True,
+        "model_version": "backtest_funding_perpetual_interval_v1",
+    }
+    cfg["backtest"] = backtest
+    return cfg
+
+
 def _bars(n: int = 20) -> pd.DataFrame:
     idx = pd.date_range("2026-06-01", periods=n, freq="1h", tz="UTC")
     close = [100.0 + float(i) for i in range(n)]
@@ -149,6 +160,30 @@ def test_not_computed_metrics_not_zero_filled() -> None:
     assert result.turnover.semantic is ev.MetricSemantic.NOT_COMPUTED
     assert result.turnover.value is None
     assert result.funding_drag.reason_code == "funding_drag_not_bound"
+
+
+def test_funding_binding_computes_funding_drag() -> None:
+    result = _build(cfg=_cfg_with_funding())
+    assert result.funding_model_version == "backtest_funding_perpetual_interval_v1"
+    assert "funding_model_not_bound" not in result.reason_codes
+    assert result.funding_drag.semantic is ev.MetricSemantic.COMPUTED
+    assert result.funding_drag.value is not None
+    assert result.cost_binding["funding_binding_status"] == "BOUND"
+    assert len(result.cost_binding["funding_evidence_digest"]) == 64
+
+
+def test_funding_binding_still_research_only_without_admissible_data() -> None:
+    result = _build(cfg=_cfg_with_funding())
+    assert result.status is ev.EconomicViabilityStatus.RESEARCH_ONLY
+    assert result.economic_validity_proven is False
+    assert "admissible_versioned_futures_dataset_missing" in result.reason_codes
+
+
+def test_funding_binding_deterministic() -> None:
+    a = _build(cfg=_cfg_with_funding())
+    b = _build(cfg=_cfg_with_funding())
+    assert a.funding_drag.value == b.funding_drag.value
+    assert a.cost_binding["funding_evidence_digest"] == b.cost_binding["funding_evidence_digest"]
 
 
 def test_walk_forward_monte_carlo_stress_sections_present() -> None:
