@@ -16,11 +16,11 @@ SCHEDULER_RUNTIME_ALLOWED: false
 
 | Feld | Wert |
 |---|---|
-| `LAST_VERIFIED_ORIGIN_MAIN` | `984bbae220754795bfb6e9ee44f540028d50fe8b` |
-| `LAST_VERIFIED_AT` | `2026-06-30T18:00:00Z` |
+| `LAST_VERIFIED_ORIGIN_MAIN` | `36b3110090d2f9961216675550a602e411f07894` |
+| `LAST_VERIFIED_AT` | `2026-06-30T20:00:00Z` |
 | `CURRENT_MAJOR_GAP_PACKAGE` | `MAJOR_GAP_COMPARISON_PROMOTION_POLICY_INPUT_BRIDGE_V0` |
-| `NEXT_RUNBOOK_STEP` | `RUNBOOK_STEP_29H` |
-| `NEXT_CANONICAL_STEP` | `position_management_reversal_boundary` |
+| `NEXT_RUNBOOK_STEP` | `RUNBOOK_STEP_29I` |
+| `NEXT_CANONICAL_STEP` | `entry_exit_policy_replay_binding` |
 | `RUNBOOK_STEP_13_IMPLEMENTED` | `true` |
 | `TRADING_SESSION_SINGLE_WRITER_IMPLEMENTED` | `true` |
 | `RUNTIME_SINGLE_WRITER_ACTIVATED` | `false` |
@@ -88,9 +88,10 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `RUNBOOK_STEP_29G_COMPLETE` | `true` |
 | `STEP_29H_STARTED` | `true` |
 | `RUNBOOK_STEP_29H_IMPLEMENTED_SCOPE` | `entry_position_exit_policy_offline_slice` |
-| `RUNBOOK_STEP_29H_COMPLETE` | `false` |
+| `RUNBOOK_STEP_29H_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_29H_COMPLETE` | `true` |
 | `STEP_29I_STARTED` | `false` |
-| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `false` |
+| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `true` |
 | `FOLLOW_UP_DEVEX_SCOPE` | `CANONICAL_PRE_PR_RUFF_AND_DIFF_GUARD` |
 | `FOLLOW_UP_DEVEX_STATUS` | `PENDING_SEPARATE_PR` |
 | `SYSTEMWIDE_RANKING_REQUIRED` | `false` |
@@ -840,12 +841,34 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `RUNBOOK_PHASE` | 9 |
 | `RUNBOOK_STEP_ID` | `position_management_reversal_boundary` |
 | `CONTRACT_OR_CAPABILITY` | `position_management_reversal_boundary` |
-| `STATUS` | `IN_PROGRESS` |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src/trading/master_v2/double_play_entry_exit_policy_v0.py` |
+| `MERGED_PRS` | `#4689` |
+| `MERGE_COMMITS` | `36b3110090d2f9961216675550a602e411f07894` |
+| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/runbook_step29h_entry_position_exit_policy_v0_implementation_v0_20260630T180000Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29h_entry_position_exit_policy_pr4689_squash_merge_closeout_v0_20260630T175332Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29h_completion_coverage_audit_and_bounded_closeout_v0_20260630T200000Z (MANIFEST_VERIFY_RC=0); entry_exit_pr=4689; entry_exit_merge_commit=36b3110090d2f9961216675550a602e411f07894; entry_exit_squash_parent=984bbae220754795bfb6e9ee44f540028d50fe8b; canonical_scope=entry_position_exit_policy_offline_slice; DOUBLE_PLAY_ENTRY_EXIT_POLICY_V0_BOUND=true; STEP29H_IMPLEMENTATION_COMPLETE=true; STEP29I_IMPLEMENTATION_STARTED=false; STEP_29H_COMPLETION_DOES_NOT_AUTHORIZE_LIVE=true; STEP_29H_COMPLETION_DOES_NOT_AUTHORIZE_RUNTIME=true; STEP_29H_COMPLETION_DOES_NOT_AUTHORIZE_ORDERS=true; STEP_29H_COMPLETION_DOES_NOT_START_REPLAY_BINDING=true; UNIVERSE_SELECTION_UNCHANGED=true; offline_only=true; non_authorizing=true; runtime_process_started=false; scheduler_action_performed=false; venue_access_performed=false; credential_access_performed=false; trading_action_performed=false; progress_registry_closeout_status=COMPLETE; FUTURES_ONLY=true; BITCOIN_DIRECTION_ALLOWED=false; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SCHEDULER_RUNTIME_ALLOWED=false` |
+| `DEPENDENCIES` | RUNBOOK_STEP_29G |
+| `REMAINING_GAPS` | — |
+| `NEXT_REQUIRED_CONTRACT` | `entry_exit_policy_replay_binding` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `RUNTIME_EFFECT` | `false` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
 | `RUNBOOK_STEP_29H_IMPLEMENTATION_STARTED` | `true` |
 | `RUNBOOK_STEP_29H_IMPLEMENTED_SCOPE` | `entry_position_exit_policy_offline_slice` |
-| `RUNBOOK_STEP_29H_COMPLETE` | `false` |
+| `RUNBOOK_STEP_29H_COMPLETE` | `true` |
+| `DOUBLE_PLAY_ENTRY_EXIT_POLICY_V0_IMPLEMENTED` | `true` |
 | `STEP_29I_STARTED` | `false` |
-| `DEPENDENCIES` | RUNBOOK_STEP_29G |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_29I — Entry/Exit Policy Replay Binding
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 9 |
+| `RUNBOOK_STEP_ID` | `entry_exit_policy_replay_binding` |
+| `CONTRACT_OR_CAPABILITY` | `entry_exit_policy_replay_binding` |
+| `STATUS` | `NOT_STARTED` |
+| `DEPENDENCIES` | RUNBOOK_STEP_29H |
 | `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
 | `RUNTIME_EFFECT` | `false` |
 | `FUTURES_ONLY` | `true` |
