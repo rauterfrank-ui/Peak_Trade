@@ -31,7 +31,7 @@ def _field_value(text: str, field: str) -> str:
 
 def _step_29q_section(text: str) -> str:
     start = text.index("#### RUNBOOK_STEP_29Q — Canonical Order Intent v1")
-    end = text.index("\n---\n\n## PR #4629 Evidence-Drift", start)
+    end = text.index("\n#### RUNBOOK_STEP_29R — Runtime Rewire", start)
     return re.sub(r"\s<!--.*?-->", "", text[start:end])
 
 
@@ -161,11 +161,11 @@ def test_no_economic_validity_or_promotion_eligibility_claims() -> None:
     assert _field_value(section, "PROMOTION_CANDIDATE_ELIGIBLE") == "false"
 
 
-def test_no_step_29r_start_markers() -> None:
-    text = _read_registry()
-    assert "RUNBOOK_STEP_29R_STARTED" not in text
-    assert "STEP_29R_STARTED" not in text
-    assert "#### RUNBOOK_STEP_29R" not in text
+def test_step_29q_section_does_not_start_step_29r() -> None:
+    section = _step_29q_section(_read_registry())
+    assert _field_value(section, "STEP_29Q_COMPLETION_DOES_NOT_START_STEP_29R") == "true"
+    assert "RUNBOOK_STEP_29R_STARTED" not in section
+    assert "#### RUNBOOK_STEP_29R" not in section
 
 
 def test_scope_classification_implemented_offline_slice() -> None:

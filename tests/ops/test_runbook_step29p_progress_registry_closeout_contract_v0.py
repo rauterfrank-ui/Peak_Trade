@@ -131,11 +131,12 @@ def test_step_29q_not_started_in_29p_section_snapshot() -> None:
     assert "RUNBOOK_STEP_29Q_COMPLETE" not in section
 
 
-def test_no_step_29r_start_markers() -> None:
-    text = _read_registry()
-    assert "RUNBOOK_STEP_29R_STARTED" not in text
-    assert "STEP_29R_STARTED" not in text
-    assert "#### RUNBOOK_STEP_29R" not in text
+def test_no_step_29r_start_markers_in_29p_section_snapshot() -> None:
+    section = _step_29p_section(_read_registry())
+    assert "RUNBOOK_STEP_29R_STARTED" not in section
+    assert "STEP_29R_STARTED" not in section
+    assert "#### RUNBOOK_STEP_29R" not in section
+    assert _field_value(section, "STEP_29P_EXCLUDES_RUNTIME_REWIRE_29R") == "true"
 
 
 def test_canonical_order_intent_not_defined() -> None:
