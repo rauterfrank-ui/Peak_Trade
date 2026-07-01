@@ -157,6 +157,10 @@ def _evaluation_config(bars: pd.DataFrame | None = None, **overrides: Any) -> di
         },
         "economic_evaluation_v1": {
             "strategy_id": "ma_crossover",
+            "strategy_params": {
+                "fast_window": 2,
+                "slow_window": 3,
+            },
             "walk_forward": {"bind": True, "train_bars": 8, "test_bars": 4, "step_bars": 4},
             "monte_carlo": {"bind": True, "runs": 16, "seed": 42},
             "stress": {"bind": True},

@@ -31,6 +31,12 @@ def _cfg(*, fee_bps: float = 10.0, slippage_bps: float = 5.0) -> Mapping[str, An
             "min_position_value": 10.0,
             "min_stop_distance": 0.0001,
         },
+        "economic_evaluation_v1": {
+            "strategy_params": {
+                "fast_window": 2,
+                "slow_window": 3,
+            },
+        },
     }
 
 
@@ -481,6 +487,12 @@ def _research_cfg() -> Mapping[str, Any]:
             "max_position_size": 0.25,
             "min_position_value": 10.0,
             "min_stop_distance": 0.0001,
+        },
+        "economic_evaluation_v1": {
+            "strategy_params": {
+                "fast_window": 2,
+                "slow_window": 3,
+            },
         },
     }
 

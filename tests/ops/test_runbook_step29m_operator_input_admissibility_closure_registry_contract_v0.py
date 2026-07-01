@@ -59,18 +59,20 @@ def test_step_29m_complete_remains_true() -> None:
     assert _field_value(section, "RUNBOOK_STEP_29M_COMPLETE") == "true"
 
 
-def test_operator_input_contract_bound_with_real_evaluation_complete() -> None:
+def test_operator_input_contract_bound_with_invalidated_real_evaluation() -> None:
     text = _read_registry()
     section = _step_29m_section(text)
     assert _field_value(text, "OPERATOR_INPUT_CONTRACT_V1_BOUND") == "true"
     assert _field_value(section, "OPERATOR_INPUT_CONTRACT_V1_BOUND") == "true"
     assert _field_value(text, "OPERATOR_INPUT_CONTRACT_COMPLETE") == "true"
     assert _field_value(section, "OPERATOR_INPUT_CONTRACT_COMPLETE") == "true"
-    assert _field_value(text, "REAL_EVALUATION_PERFORMED") == "true"
-    assert _field_value(section, "REAL_EVALUATION_PERFORMED") == "true"
+    assert _field_value(text, "REAL_EVALUATION_ATTEMPTED") == "true"
+    assert _field_value(section, "REAL_EVALUATION_ATTEMPTED") == "true"
+    assert _field_value(text, "REAL_EVALUATION_PERFORMED") == "false"
+    assert _field_value(section, "REAL_EVALUATION_PERFORMED") == "false"
     assert _field_value(text, "REAL_ADMISSIBLE_FUTURES_EVIDENCE_PRESENT") == "true"
-    assert _field_value(text, "REAL_ADMISSIBLE_FUTURES_EVIDENCE_BOUND") == "true"
-    assert _field_value(text, "ECONOMIC_VALIDITY_RESULT") == "FAILED"
+    assert _field_value(text, "REAL_ADMISSIBLE_FUTURES_EVIDENCE_BOUND") == "false"
+    assert _field_value(text, "ECONOMIC_VALIDITY_RESULT") == "NOT_PROVEN"
     assert _field_value(text, "ECONOMIC_VALIDITY_OFFLINE_GATE_PASS") == "false"
     assert _field_value(text, "CURRENT_PROMOTION_EVALUATION") == "INELIGIBLE"
     assert _field_value(text, "RUNTIME_REWIRE_IMPLEMENTATION_ALLOWED") == "false"
@@ -79,8 +81,12 @@ def test_operator_input_contract_bound_with_real_evaluation_complete() -> None:
 def test_real_evaluation_input_status_updated() -> None:
     text = _read_registry()
     section = _step_29m_section(text)
-    assert _field_value(text, "REAL_EVALUATION_INPUT_STATUS") == "EVALUATION_COMPLETE"
-    assert _field_value(section, "REAL_EVALUATION_INPUT_STATUS") == "EVALUATION_COMPLETE"
+    assert _field_value(text, "REAL_EVALUATION_INPUT_STATUS") == (
+        "EVALUATION_INVALIDATED_RUNNER_WIRING_DEFECT"
+    )
+    assert _field_value(section, "REAL_EVALUATION_INPUT_STATUS") == (
+        "EVALUATION_INVALIDATED_RUNNER_WIRING_DEFECT"
+    )
     assert _field_value(text, "OPERATOR_INPUT_REQUIRED_FOR_REAL_EVALUATION") == "false"
 
 
