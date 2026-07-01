@@ -332,7 +332,7 @@ def test_macd_v1_evaluation_evidence_remains_immutable() -> None:
     assert summary_path.read_text(encoding="utf-8") == before
 
 
-def test_registry_invalidates_macd_v1_evaluation() -> None:
+def test_registry_v2_reevaluation_complete() -> None:
     import re
 
     text = PROGRESS_REGISTRY.read_text(encoding="utf-8")
@@ -346,20 +346,14 @@ def test_registry_invalidates_macd_v1_evaluation() -> None:
         return match.group(1)
 
     assert field("REAL_EVALUATION_ATTEMPTED") == "true"
-    assert field("REAL_EVALUATION_PERFORMED") == "false"
-    assert field("REAL_ADMISSIBLE_FUTURES_EVIDENCE_BOUND") == "false"
-    assert (
-        field("REAL_EVALUATION_INPUT_STATUS")
-        == "MACD_V1_EVALUATION_INVALIDATED_OFFLINE_SIZING_CONTRACT_DEFECT"
-    )
-    assert field("ECONOMIC_VALIDITY_RESULT") == "NOT_PROVEN"
+    assert field("REAL_EVALUATION_PERFORMED") == "true"
+    assert field("REAL_ADMISSIBLE_FUTURES_EVIDENCE_BOUND") == "true"
+    assert field("REAL_EVALUATION_INPUT_STATUS") == "MACD_V1_EVALUATION_V2_COMPLETE"
+    assert field("ECONOMIC_VALIDITY_RESULT") == "FAILED"
     assert field("PROFITABILITY_CLAIM_ALLOWED") == "false"
-    assert (
-        field("INVALIDATION_REASON")
-        == "IMPLICIT_STOP_PCT_AND_OVERSIZE_REJECTION_BLOCKED_ALL_ENTRIES"
-    )
+    assert field("LAST_EVALUATED_CONFIG_VERSION") == "v2"
     assert field("RUNBOOK_STEP_29M_COMPLETE") == "true"
-    assert str(MACD_EVIDENCE) in field("MACD_V1_REAL_EVALUATION_EVIDENCE_REF")
+    assert str(MACD_EVIDENCE) in field("INVALIDATED_EVALUATION_REF")
     assert str(ROOT_CAUSE_EVIDENCE) in field("ROOT_CAUSE_EVIDENCE_REF")
     assert (
         field("NEXT_EVALUATION_CONFIG_PATH")
