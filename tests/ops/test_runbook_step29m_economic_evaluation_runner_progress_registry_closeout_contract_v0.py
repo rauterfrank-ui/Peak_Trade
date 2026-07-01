@@ -21,7 +21,8 @@ STEP_29M_IMPLEMENTED_SCOPE = (
     "parameter_sensitivity_evidence_binding_v1_slice,"
     "admissible_versioned_futures_dataset_binding_v1_slice,"
     "economic_validity_policy_threshold_values_v1_slice,"
-    f"{RUNNER_SLICE}"
+    f"{RUNNER_SLICE},"
+    "real_admissible_futures_economic_evaluation_operator_input_and_admissibility_closure_v0_slice"
 )
 MERGE_COMMIT = "aa1a8fd9d3444e5d5f3dbe2386d4114b2e48b0c9"
 HISTORICAL_SLICES = tuple(
@@ -127,10 +128,8 @@ def test_operator_input_required_for_real_evaluation() -> None:
     section = _step_29m_section(text)
     assert _field_value(text, "OPERATOR_INPUT_REQUIRED_FOR_REAL_EVALUATION") == "true"
     assert _field_value(section, "OPERATOR_INPUT_REQUIRED_FOR_REAL_EVALUATION") == "true"
-    assert _field_value(text, "REAL_EVALUATION_INPUT_STATUS") == "AWAITING_OPERATOR_DATASET_INPUT"
-    assert (
-        _field_value(section, "REAL_EVALUATION_INPUT_STATUS") == "AWAITING_OPERATOR_DATASET_INPUT"
-    )
+    assert _field_value(text, "REAL_EVALUATION_PERFORMED") == "false"
+    assert _field_value(section, "REAL_EVALUATION_PERFORMED") == "false"
 
 
 def test_kraken_and_venue_fixtures_excluded_from_canonical_economic_path() -> None:
