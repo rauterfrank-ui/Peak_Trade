@@ -1,0 +1,683 @@
+{
+  "admissibility_verdict": "NO_REAL_ADMISSIBLE_EVIDENCE_PRESENT",
+  "authority_effect": "NONE",
+  "bitcoin_direction_allowed": false,
+  "contract_version": "real_admissible_futures_economic_evaluation_operator_input_contract_v1",
+  "economic_validity_result": "NOT_PROVEN",
+  "fields": [
+    {
+      "canonical_default": "inst-eth-usdt-perp",
+      "constraints": {
+        "forbidden_substrings": ["btc", "xbt", "bitcoin", "spot", "synthetic_spot"],
+        "must_equal_mv2_required_instrument": true
+      },
+      "data_type": "string",
+      "economic_effect": "Instrument universe for MV2 offline research wiring.",
+      "field_name": "instrument_id",
+      "rationale": "STEP 29L binds MV2 research wiring to a single canonical futures instrument.",
+      "required": true,
+      "resolution_class": "CANONICALLY_BOUND",
+      "resolved": true,
+      "safety_effect": "Blocks BTC/XBT/spot instrument leakage into canonical economic path.",
+      "source_owner": "src/backtest/mv2_research_wiring_v1.py"
+    },
+    {
+      "canonical_default": "perpetual",
+      "constraints": {
+        "allowed_values": ["futures", "perpetual", "swap"]
+      },
+      "data_type": "string",
+      "economic_effect": "Contract type must be linear USDT-margined futures semantics.",
+      "field_name": "contract_type",
+      "rationale": "Admissible dataset descriptor requires explicit futures contract typing.",
+      "required": true,
+      "resolution_class": "CANONICALLY_BOUND",
+      "resolved": true,
+      "safety_effect": "Rejects spot contract typing.",
+      "source_owner": "src/backtest/admissible_versioned_futures_dataset_v1.py"
+    },
+    {
+      "canonical_default": true,
+      "constraints": {
+        "must_be": true
+      },
+      "data_type": "boolean",
+      "economic_effect": "Economic evaluation scope is futures-only.",
+      "field_name": "futures_only",
+      "rationale": "Runbook safety invariant for STEP 29M economic evaluation.",
+      "required": true,
+      "resolution_class": "CANONICALLY_BOUND",
+      "resolved": true,
+      "safety_effect": "Fail-closed on non-futures data classes.",
+      "source_owner": "docs/governance/PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md"
+    },
+    {
+      "canonical_default": false,
+      "constraints": {
+        "must_be": false
+      },
+      "data_type": "boolean",
+      "economic_effect": "Bitcoin-direction strategies are out of scope.",
+      "field_name": "bitcoin_direction_allowed",
+      "rationale": "Runbook safety invariant forbids BTC/XBT direction in canonical path.",
+      "required": true,
+      "resolution_class": "CANONICALLY_BOUND",
+      "resolved": true,
+      "safety_effect": "Fail-closed on BTC/XBT instrument and direction leakage.",
+      "source_owner": "docs/governance/PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md"
+    },
+    {
+      "canonical_default": "v1",
+      "constraints": {
+        "allowed_values": ["v1"]
+      },
+      "data_type": "string",
+      "economic_effect": "Dataset schema version gates required bar columns and digest semantics.",
+      "field_name": "dataset_schema_version",
+      "rationale": "Admissible versioned futures dataset binding is version-locked.",
+      "required": true,
+      "resolution_class": "CANONICALLY_BOUND",
+      "resolved": true,
+      "safety_effect": "Unknown schema versions fail closed.",
+      "source_owner": "src/backtest/admissible_versioned_futures_dataset_v1.py"
+    },
+    {
+      "canonical_default": "v1",
+      "constraints": {
+        "allowed_values": ["v1"]
+      },
+      "data_type": "string",
+      "economic_effect": "Dataset identity and manifest contract version.",
+      "field_name": "dataset_version",
+      "rationale": "Runner rejects unknown dataset versions.",
+      "required": true,
+      "resolution_class": "CANONICALLY_BOUND",
+      "resolved": true,
+      "safety_effect": "Prevents unversioned dataset identity drift.",
+      "source_owner": "src/backtest/admissible_versioned_futures_dataset_v1.py"
+    },
+    {
+      "canonical_default": "admissible_versioned_futures_dataset_manifest_v1",
+      "constraints": {
+        "allowed_values": ["admissible_versioned_futures_dataset_manifest_v1"]
+      },
+      "data_type": "string",
+      "economic_effect": "Manifest digest and provenance envelope version.",
+      "field_name": "dataset_manifest_version",
+      "rationale": "Runner validates manifest_version against canonical contract.",
+      "required": true,
+      "resolution_class": "CANONICALLY_BOUND",
+      "resolved": true,
+      "safety_effect": "Unknown manifest versions fail closed.",
+      "source_owner": "scripts/ops/run_economic_viability_evidence_evaluation_v1.py"
+    },
+    {
+      "canonical_default": null,
+      "constraints": {
+        "format": "local_absolute_or_repo_relative_path",
+        "must_exist_before_evaluation": true,
+        "supported_suffixes": [".parquet", ".csv"],
+        "url_forbidden": true
+      },
+      "data_type": "path",
+      "economic_effect": "Primary bar series for offline economic evidence generation.",
+      "field_name": "dataset_path",
+      "rationale": "No real admissible futures dataset is bound in-repo; operator must stage curated export.",
+      "required": true,
+      "resolution_class": "OPERATOR_REQUIRED",
+      "resolved": false,
+      "safety_effect": "Blocks evaluation on missing or remote paths.",
+      "source_owner": "scripts/ops/run_economic_viability_evidence_evaluation_v1.py"
+    },
+    {
+      "canonical_default": null,
+      "constraints": {
+        "format": "local_absolute_or_repo_relative_path",
+        "must_exist_before_evaluation": true,
+        "requires_manifest_digest": true,
+        "url_forbidden": true
+      },
+      "data_type": "path",
+      "economic_effect": "Binds dataset identity, splits, and provenance digests.",
+      "field_name": "dataset_manifest_path",
+      "rationale": "Digest-verified manifest is mandatory for admissibility and reproducibility.",
+      "required": true,
+      "resolution_class": "OPERATOR_REQUIRED",
+      "resolved": false,
+      "safety_effect": "Missing or mismatched manifest digest fails closed.",
+      "source_owner": "src/backtest/admissible_versioned_futures_dataset_v1.py"
+    },
+    {
+      "canonical_default": null,
+      "constraints": {
+        "allowed_values": ["operator_staged_futures_v1"],
+        "forbidden_values": [
+          "spot",
+          "synthetic_spot",
+          "synthetic_contract_fixture",
+          "test_fixture",
+          "preview",
+          "preview_data",
+          "probe",
+          "probe_data",
+          "transport_fixture",
+          "transport",
+          "webui_fixture",
+          "webui"
+        ]
+      },
+      "data_type": "string",
+      "economic_effect": "Classifies dataset provenance for admissibility gating.",
+      "field_name": "provenance_source_type",
+      "rationale": "Runner rejects fixture, preview, probe, transport, and spot source types.",
+      "required": true,
+      "resolution_class": "OPERATOR_REQUIRED",
+      "resolved": false,
+      "safety_effect": "Prevents fixture and venue-transport leakage into canonical economic path.",
+      "source_owner": "scripts/ops/run_economic_viability_evidence_evaluation_v1.py"
+    },
+    {
+      "canonical_default": null,
+      "constraints": {
+        "forbidden_prefixes": ["tests/", "tests/fixtures/"],
+        "forbidden_substrings": ["kraken", "fixture", "webui", "probe", "preview"],
+        "min_length": 3,
+        "must_be_non_empty": true
+      },
+      "data_type": "string",
+      "economic_effect": "Traceable operator-curated export reference outside repo fixtures.",
+      "field_name": "provenance_ref",
+      "rationale": "Provenance must identify operator-staged real export, not in-repo test fixtures.",
+      "required": true,
+      "resolution_class": "OPERATOR_REQUIRED",
+      "resolved": false,
+      "safety_effect": "Blocks fixture and venue-specific canonicalization paths.",
+      "source_owner": "src/backtest/admissible_versioned_futures_dataset_v1.py"
+    },
+    {
+      "canonical_default": null,
+      "constraints": {
+        "forbidden_substrings": ["kraken", "btc", "xbt", "bitcoin", "spot"],
+        "must_be_non_empty": true,
+        "neutral_venue_required": true
+      },
+      "data_type": "string",
+      "economic_effect": "Venue identity for provenance only; not canonical venue logic.",
+      "field_name": "provenance_venue_id",
+      "rationale": "Venue id is recorded for traceability but must not drive venue-specific canonicalization.",
+      "required": true,
+      "resolution_class": "OPERATOR_REQUIRED",
+      "resolved": false,
+      "safety_effect": "Venue-specific canonical economic paths are forbidden.",
+      "source_owner": "src/backtest/admissible_versioned_futures_dataset_v1.py"
+    },
+    {
+      "canonical_default": null,
+      "constraints": {
+        "forbidden_substrings": ["test_fixture", "deterministic_test_fixture", "probe", "preview"],
+        "must_be_non_empty": true
+      },
+      "data_type": "string",
+      "economic_effect": "Documents how the staged dataset was produced.",
+      "field_name": "provenance_generation_method",
+      "rationale": "Generation method must not classify as synthetic or test fixture generation.",
+      "required": true,
+      "resolution_class": "OPERATOR_REQUIRED",
+      "resolved": false,
+      "safety_effect": "Rejects synthetic/test generation markers.",
+      "source_owner": "src/backtest/admissible_versioned_futures_dataset_v1.py"
+    },
+    {
+      "canonical_default": null,
+      "constraints": {
+        "format": "iso8601_utc",
+        "must_be_non_empty": true
+      },
+      "data_type": "string",
+      "economic_effect": "Ingestion timestamp for provenance audit trail.",
+      "field_name": "provenance_ingestion_timestamp",
+      "rationale": "Required provenance field for admissible dataset binding.",
+      "required": true,
+      "resolution_class": "OPERATOR_REQUIRED",
+      "resolved": false,
+      "safety_effect": "Missing provenance fails closed.",
+      "source_owner": "src/backtest/admissible_versioned_futures_dataset_v1.py"
+    },
+    {
+      "canonical_default": null,
+      "constraints": {
+        "derived_from_bars": true,
+        "must_cover_train_val_oos": true
+      },
+      "data_type": "time_range",
+      "economic_effect": "Full data coverage window for economic evidence.",
+      "field_name": "data_period",
+      "rationale": "Derived from staged bars once dataset exists; currently no bound real dataset.",
+      "required": true,
+      "resolution_class": "BLOCKED_NO_EVIDENCE",
+      "resolved": false,
+      "safety_effect": "Cannot assert coverage without staged real dataset.",
+      "source_owner": "src/backtest/admissible_versioned_futures_dataset_v1.py"
+    },
+    {
+      "canonical_default": null,
+      "constraints": {
+        "derived_from_bars": true,
+        "split_policy_version": "v1"
+      },
+      "data_type": "time_range",
+      "economic_effect": "Training split for walk-forward and leakage checks.",
+      "field_name": "training_period",
+      "rationale": "Computed by split policy once real bars are staged and admissible.",
+      "required": true,
+      "resolution_class": "BLOCKED_NO_EVIDENCE",
+      "resolved": false,
+      "safety_effect": "Temporal leakage checks require real split boundaries.",
+      "source_owner": "src/backtest/admissible_versioned_futures_dataset_v1.py"
+    },
+    {
+      "canonical_default": null,
+      "constraints": {
+        "derived_from_bars": true,
+        "split_policy_version": "v1"
+      },
+      "data_type": "time_range",
+      "economic_effect": "Validation split for robustness evidence.",
+      "field_name": "validation_period",
+      "rationale": "Computed by split policy once real bars are staged.",
+      "required": true,
+      "resolution_class": "BLOCKED_NO_EVIDENCE",
+      "resolved": false,
+      "safety_effect": "Leakage checks require real split boundaries.",
+      "source_owner": "src/backtest/admissible_versioned_futures_dataset_v1.py"
+    },
+    {
+      "canonical_default": null,
+      "constraints": {
+        "derived_from_bars": true,
+        "split_policy_version": "v1"
+      },
+      "data_type": "time_range",
+      "economic_effect": "Out-of-sample split for economic validity gate.",
+      "field_name": "out_of_sample_period",
+      "rationale": "Computed by split policy once real bars are staged.",
+      "required": true,
+      "resolution_class": "BLOCKED_NO_EVIDENCE",
+      "resolved": false,
+      "safety_effect": "OOS evidence requires real split boundaries.",
+      "source_owner": "src/backtest/admissible_versioned_futures_dataset_v1.py"
+    },
+    {
+      "canonical_default": "1h",
+      "constraints": {
+        "must_match_staged_bars": true,
+        "required_columns_include": ["bar_interval"]
+      },
+      "data_type": "string",
+      "economic_effect": "Bar granularity drives funding interval alignment and replay cadence.",
+      "field_name": "bar_granularity",
+      "rationale": "Schema requires bar_interval column; exact value comes from staged dataset.",
+      "required": true,
+      "resolution_class": "BLOCKED_NO_EVIDENCE",
+      "resolved": false,
+      "safety_effect": "Mismatched granularity breaks funding and replay alignment.",
+      "source_owner": "src/backtest/admissible_versioned_futures_dataset_v1.py"
+    },
+    {
+      "canonical_default": "backtest_cost_v0",
+      "constraints": {
+        "allowed_values": ["backtest_cost_v0"]
+      },
+      "data_type": "string",
+      "economic_effect": "Versioned cost binding envelope for fee, slippage, execution.",
+      "field_name": "cost_model_version",
+      "rationale": "Runner requires explicit versioned cost model binding.",
+      "required": true,
+      "resolution_class": "CANONICALLY_BOUND",
+      "resolved": true,
+      "safety_effect": "Missing cost model version fails closed.",
+      "source_owner": "src/backtest/cost_config_v0.py"
+    },
+    {
+      "canonical_default": "backtest_fee_taker_symmetric_v0",
+      "constraints": {
+        "allowed_values": ["backtest_fee_taker_symmetric_v0"]
+      },
+      "data_type": "string",
+      "economic_effect": "Fee model version recorded in economic evidence.",
+      "field_name": "fee_model_version",
+      "rationale": "Canonical fee model version from cost config owner.",
+      "required": true,
+      "resolution_class": "CANONICALLY_BOUND",
+      "resolved": true,
+      "safety_effect": "Unversioned fee model blocks economic claims.",
+      "source_owner": "src/backtest/cost_config_v0.py"
+    },
+    {
+      "canonical_default": "backtest_slippage_symmetric_v0",
+      "constraints": {
+        "allowed_values": ["backtest_slippage_symmetric_v0"]
+      },
+      "data_type": "string",
+      "economic_effect": "Slippage model version recorded in economic evidence.",
+      "field_name": "slippage_model_version",
+      "rationale": "Canonical slippage model version from cost config owner.",
+      "required": true,
+      "resolution_class": "CANONICALLY_BOUND",
+      "resolved": true,
+      "safety_effect": "Unversioned slippage model blocks economic claims.",
+      "source_owner": "src/backtest/cost_config_v0.py"
+    },
+    {
+      "canonical_default": null,
+      "constraints": {
+        "exclusive_min": 0.0,
+        "implicit_zero_forbidden": true,
+        "units": "basis_points"
+      },
+      "data_type": "float",
+      "economic_effect": "Explicit non-zero fee assumption for realistic economic evaluation.",
+      "field_name": "fee_bps",
+      "rationale": "Runner rejects missing or zero fee_bps; operator must supply realistic fee.",
+      "required": true,
+      "resolution_class": "OPERATOR_REQUIRED",
+      "resolved": false,
+      "safety_effect": "Implicit zero-cost evaluation is forbidden.",
+      "source_owner": "scripts/ops/run_economic_viability_evidence_evaluation_v1.py"
+    },
+    {
+      "canonical_default": null,
+      "constraints": {
+        "exclusive_min": 0.0,
+        "implicit_zero_forbidden": true,
+        "units": "basis_points"
+      },
+      "data_type": "float",
+      "economic_effect": "Explicit non-zero slippage assumption for realistic economic evaluation.",
+      "field_name": "slippage_bps",
+      "rationale": "Runner rejects missing or zero slippage_bps; operator must supply realistic slippage.",
+      "required": true,
+      "resolution_class": "OPERATOR_REQUIRED",
+      "resolved": false,
+      "safety_effect": "Implicit zero-cost evaluation is forbidden.",
+      "source_owner": "scripts/ops/run_economic_viability_evidence_evaluation_v1.py"
+    },
+    {
+      "canonical_default": "backtest_funding_perpetual_interval_v1",
+      "constraints": {
+        "allowed_values": ["backtest_funding_perpetual_interval_v1"],
+        "bind_required": true
+      },
+      "data_type": "string",
+      "economic_effect": "Funding drag model version and interval-aligned payments.",
+      "field_name": "funding_model_version",
+      "rationale": "Funding binding is canonical once bind=true in evaluation config.",
+      "required": true,
+      "resolution_class": "CANONICALLY_BOUND",
+      "resolved": true,
+      "safety_effect": "Missing funding binding fails closed.",
+      "source_owner": "src/backtest/funding_model_v1.py"
+    },
+    {
+      "canonical_default": "paper_market_context_v0",
+      "constraints": {
+        "allowed_values": ["paper_market_context_v0"]
+      },
+      "data_type": "string",
+      "economic_effect": "Offline execution model version in economic evidence.",
+      "field_name": "execution_model_version",
+      "rationale": "Canonical execution model from cost config owner.",
+      "required": true,
+      "resolution_class": "CANONICALLY_BOUND",
+      "resolved": true,
+      "safety_effect": "Unversioned execution model blocks economic claims.",
+      "source_owner": "src/backtest/cost_config_v0.py"
+    },
+    {
+      "canonical_default": "economic_validity_policy_v1",
+      "constraints": {
+        "allowed_values": ["economic_validity_policy_v1"],
+        "thresholds_must_be_configured": true
+      },
+      "data_type": "string",
+      "economic_effect": "Versioned economic validity gate thresholds and reason codes.",
+      "field_name": "economic_validity_policy_version",
+      "rationale": "Canonical policy with configured thresholds is bound in STEP 29M.",
+      "required": true,
+      "resolution_class": "CANONICALLY_BOUND",
+      "resolved": true,
+      "safety_effect": "Unconfigured thresholds block economic validity claims.",
+      "source_owner": "src/backtest/economic_validity_policy_v1.py"
+    },
+    {
+      "canonical_default": "ma_crossover",
+      "constraints": {
+        "mv2_wiring_compatible": true
+      },
+      "data_type": "string",
+      "economic_effect": "Strategy identity for MV2 offline research replay chain.",
+      "field_name": "strategy_id",
+      "rationale": "Runner defaults to ma_crossover; operator may override within MV2 wiring compatibility.",
+      "required": true,
+      "resolution_class": "DETERMINISTICALLY_DERIVABLE",
+      "resolved": true,
+      "safety_effect": "Unsupported strategy/instrument pair fails closed in MV2 wiring.",
+      "source_owner": "src/backtest/mv2_research_wiring_v1.py"
+    },
+    {
+      "canonical_default": null,
+      "constraints": {
+        "bind_required": true,
+        "grid_version": "v1",
+        "must_define_parameter_names_and_values": true
+      },
+      "data_type": "object",
+      "economic_effect": "Parameter sensitivity grid for robustness evidence.",
+      "field_name": "parameter_sensitivity_grid",
+      "rationale": "Operator must supply realistic fee/slippage sensitivity grid in evaluation config.",
+      "required": true,
+      "resolution_class": "OPERATOR_REQUIRED",
+      "resolved": false,
+      "safety_effect": "Missing sensitivity binding blocks evaluation.",
+      "source_owner": "src/backtest/parameter_sensitivity_v1.py"
+    },
+    {
+      "canonical_default": null,
+      "constraints": {
+        "bind_required": true,
+        "positive_integers": ["train_bars", "test_bars", "step_bars"]
+      },
+      "data_type": "object",
+      "economic_effect": "Walk-forward window sizing for OOS stability evidence.",
+      "field_name": "walk_forward_binding",
+      "rationale": "Operator chooses window sizes appropriate to staged dataset length.",
+      "required": true,
+      "resolution_class": "OPERATOR_REQUIRED",
+      "resolved": false,
+      "safety_effect": "Missing walk-forward binding blocks evaluation.",
+      "source_owner": "scripts/ops/run_economic_viability_evidence_evaluation_v1.py"
+    },
+    {
+      "canonical_default": null,
+      "constraints": {
+        "bind_required": true,
+        "positive_integers": ["runs"],
+        "seed_required": true
+      },
+      "data_type": "object",
+      "economic_effect": "Monte Carlo robustness sample count and deterministic seed.",
+      "field_name": "monte_carlo_binding",
+      "rationale": "Operator configures MC runs/seed for staged dataset economics.",
+      "required": true,
+      "resolution_class": "OPERATOR_REQUIRED",
+      "resolved": false,
+      "safety_effect": "Missing MC binding blocks evaluation.",
+      "source_owner": "scripts/ops/run_economic_viability_evidence_evaluation_v1.py"
+    },
+    {
+      "canonical_default": true,
+      "constraints": {
+        "bind_required": true
+      },
+      "data_type": "boolean",
+      "economic_effect": "Stress suite binding for tail-risk evidence.",
+      "field_name": "stress_binding",
+      "rationale": "Stress bind=true is required; scenario set is canonical in policy.",
+      "required": true,
+      "resolution_class": "DETERMINISTICALLY_DERIVABLE",
+      "resolved": true,
+      "safety_effect": "Missing stress binding blocks evaluation.",
+      "source_owner": "src/backtest/economic_validity_policy_v1.py"
+    },
+    {
+      "canonical_default": null,
+      "constraints": {
+        "format": "local_absolute_or_repo_relative_path",
+        "must_exist_before_evaluation": true,
+        "supported_suffixes": [".json", ".toml", ".tml"],
+        "url_forbidden": true
+      },
+      "data_type": "path",
+      "economic_effect": "Versioned evaluation config binding all cost, funding, sensitivity, and splits.",
+      "field_name": "evaluation_config_path",
+      "rationale": "Runner requires explicit config_path with all bindings.",
+      "required": true,
+      "resolution_class": "OPERATOR_REQUIRED",
+      "resolved": false,
+      "safety_effect": "Missing config blocks evaluation.",
+      "source_owner": "scripts/ops/run_economic_viability_evidence_evaluation_v1.py"
+    },
+    {
+      "canonical_default": "use_canonical_policy_overlay",
+      "constraints": {
+        "canonical_overlay_allowed": true,
+        "policy_version": "economic_validity_policy_v1"
+      },
+      "data_type": "path_or_canonical",
+      "economic_effect": "Economic validity policy overlay or canonical use_canonical=true.",
+      "field_name": "policy_path",
+      "rationale": "Canonical policy overlay is deterministically resolvable without operator file.",
+      "required": false,
+      "resolution_class": "DETERMINISTICALLY_DERIVABLE",
+      "resolved": true,
+      "safety_effect": "Policy version mismatch fails closed.",
+      "source_owner": "src/backtest/economic_validity_policy_v1.py"
+    },
+    {
+      "canonical_default": null,
+      "constraints": {
+        "format": "local_absolute_path",
+        "must_be_under_durable_archive_root": true,
+        "url_forbidden": true
+      },
+      "data_type": "path",
+      "economic_effect": "Durable evidence output location with manifest verification.",
+      "field_name": "evidence_output_dir",
+      "rationale": "Real evaluation evidence must be persisted under operator durable archive root.",
+      "required": true,
+      "resolution_class": "OPERATOR_REQUIRED",
+      "resolved": false,
+      "safety_effect": "Tmp-only evidence is invalid for economic admissibility closure.",
+      "source_owner": "scripts/ops/primary_evidence_retention_v0.py"
+    },
+    {
+      "canonical_default": null,
+      "constraints": {
+        "format": "sha256_hex",
+        "must_match_staged_dataset": true
+      },
+      "data_type": "string",
+      "economic_effect": "Dataset content digest for reproducibility and admissibility binding.",
+      "field_name": "dataset_digest",
+      "rationale": "Computed once real staged bars exist; currently no bound real dataset.",
+      "required": true,
+      "resolution_class": "BLOCKED_NO_EVIDENCE",
+      "resolved": false,
+      "safety_effect": "Digest mismatch fails closed.",
+      "source_owner": "src/backtest/admissible_versioned_futures_dataset_v1.py"
+    },
+    {
+      "canonical_default": null,
+      "constraints": {
+        "format": "sha256_hex",
+        "must_match_manifest": true
+      },
+      "data_type": "string",
+      "economic_effect": "Manifest digest for evidence bundle integrity.",
+      "field_name": "dataset_manifest_digest",
+      "rationale": "Computed once operator manifest is staged.",
+      "required": true,
+      "resolution_class": "BLOCKED_NO_EVIDENCE",
+      "resolved": false,
+      "safety_effect": "Manifest digest mismatch fails closed.",
+      "source_owner": "scripts/ops/run_economic_viability_evidence_evaluation_v1.py"
+    },
+    {
+      "canonical_default": null,
+      "constraints": {
+        "format": "sha256_hex",
+        "must_match_evaluation_config": true
+      },
+      "data_type": "string",
+      "economic_effect": "Config digest binds cost, funding, sensitivity, and evaluation parameters.",
+      "field_name": "config_digest",
+      "rationale": "Computed once operator evaluation config is staged.",
+      "required": true,
+      "resolution_class": "BLOCKED_NO_EVIDENCE",
+      "resolved": false,
+      "safety_effect": "Config digest mismatch fails closed.",
+      "source_owner": "scripts/ops/run_economic_viability_evidence_evaluation_v1.py"
+    },
+    {
+      "canonical_default": null,
+      "constraints": {
+        "minimum_trade_count_threshold": 50.0,
+        "policy_owner": "economic_validity_policy_v1"
+      },
+      "data_type": "integer",
+      "economic_effect": "Minimum trade count threshold from canonical economic validity policy.",
+      "field_name": "minimum_trade_count_policy",
+      "rationale": "Threshold is canonically bound; realized trade count requires real evaluation.",
+      "required": true,
+      "resolution_class": "CANONICALLY_BOUND",
+      "resolved": true,
+      "safety_effect": "Low trade-count regimes fail economic validity gate.",
+      "source_owner": "src/backtest/economic_validity_policy_v1.py"
+    },
+    {
+      "canonical_default": null,
+      "constraints": {
+        "minimum_net_expectancy": 0.0,
+        "minimum_profit_factor": 1.3,
+        "maximum_max_drawdown": 0.25,
+        "minimum_walk_forward_pass_ratio": 0.5
+      },
+      "data_type": "object",
+      "economic_effect": "Canonical economic validity thresholds; evaluation applies after real run only.",
+      "field_name": "economic_validity_thresholds",
+      "rationale": "Threshold values are version-bound; pass/fail requires real evaluation output.",
+      "required": true,
+      "resolution_class": "CANONICALLY_BOUND",
+      "resolved": true,
+      "safety_effect": "Threshold tuning without versioned policy change is forbidden.",
+      "source_owner": "src/backtest/economic_validity_policy_v1.py"
+    }
+  ],
+  "futures_only": true,
+  "kraken_fixture_leak_into_canonical_economic_path": false,
+  "live_authorized": false,
+  "network_effect": false,
+  "operator_input_contract_complete": true,
+  "operator_input_required_for_real_evaluation": true,
+  "order_effect": false,
+  "owner": "backtest.real_admissible_futures_economic_evaluation_operator_input_contract_v1",
+  "profitability_claim_allowed": false,
+  "real_admissible_futures_evidence_bound": false,
+  "real_admissible_futures_evidence_present": false,
+  "real_evaluation_performed": false,
+  "real_evaluation_permitted": false,
+  "runtime_effect": false,
+  "scope_classification": "RUNBOOK_STEP_29M_REAL_ADMISSIBLE_FUTURES_ECONOMIC_EVALUATION_OPERATOR_INPUT_AND_ADMISSIBILITY_CLOSURE_V0",
+  "venue_specific_canonical_economic_path_allowed": false,
+  "verdict": "OPERATOR_INPUT_CONTRACT_COMPLETE"
+}

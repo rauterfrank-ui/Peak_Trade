@@ -111,10 +111,12 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `RUNBOOK_STEP_29L_COMPLETE` | `true` |
 | `STEP_29M_STARTED` | `true` |
 | `RUNBOOK_STEP_29M_STARTED` | `true` |
-| `RUNBOOK_STEP_29M_IMPLEMENTED_SCOPE` | `economic_viability_evidence_v1_offline_slice,economic_viability_evidence_v1_persistence_load_reproducibility_slice,economic_validity_policy_v1_contract_slice,funding_model_binding_v1_slice,parameter_sensitivity_evidence_binding_v1_slice,admissible_versioned_futures_dataset_binding_v1_slice,economic_validity_policy_threshold_values_v1_slice,real_admissible_futures_economic_evidence_evaluation_v1_offline_slice` |
+| `RUNBOOK_STEP_29M_IMPLEMENTED_SCOPE` | `economic_viability_evidence_v1_offline_slice,economic_viability_evidence_v1_persistence_load_reproducibility_slice,economic_validity_policy_v1_contract_slice,funding_model_binding_v1_slice,parameter_sensitivity_evidence_binding_v1_slice,admissible_versioned_futures_dataset_binding_v1_slice,economic_validity_policy_threshold_values_v1_slice,real_admissible_futures_economic_evidence_evaluation_v1_offline_slice,real_admissible_futures_economic_evaluation_operator_input_and_admissibility_closure_v0_slice` |
 | `RUNBOOK_STEP_29M_IMPLEMENTED` | `true` |
 | `RUNBOOK_STEP_29M_COMPLETE` | `true` |
 | `ECONOMIC_GATE_EVALUATOR_BOUND` | `true` |
+| `OPERATOR_INPUT_CONTRACT_V1_BOUND` | `true` |
+| `OPERATOR_INPUT_CONTRACT_COMPLETE` | `true` |
 | `REAL_EVALUATION_PERFORMED` | `false` |
 | `REAL_ADMISSIBLE_FUTURES_EVIDENCE_PRESENT` | `false` |
 | `REAL_ADMISSIBLE_FUTURES_EVIDENCE_BOUND` | `false` |
@@ -122,7 +124,7 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `ECONOMIC_VALIDITY_RESULT` | `NOT_PROVEN` |
 | `CURRENT_PROMOTION_EVALUATION` | `INELIGIBLE` |
 | `OPERATOR_INPUT_REQUIRED_FOR_REAL_EVALUATION` | `true` |
-| `REAL_EVALUATION_INPUT_STATUS` | `AWAITING_OPERATOR_DATASET_INPUT` |
+| `REAL_EVALUATION_INPUT_STATUS` | `OPERATOR_INPUT_CONTRACT_COMPLETE_AWAITING_DATASET_STAGING` |
 | `KRAKEN_FIXTURE_LEAK_INTO_CANONICAL_ECONOMIC_PATH` | `false` |
 | `VENUE_SPECIFIC_CANONICAL_ECONOMIC_PATH_ALLOWED` | `false` |
 | `ORDER_EFFECT` | `false` |
@@ -1097,7 +1099,7 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `MERGE_COMMITS` | `5352d83f069b7d361e89c877ebe2d3d5ae161156`, `5d402a6a1fc2fb1a76af3a91223ac46ee9d80b72`, `72a33b0a85c76bc00fff482d7e88fda0db33c873`, `4ff161b3d005ff12e434982a108b22ef46165272`, `cd9474c820d500bbdbc09217b4c46f5e604f96b2`, `cf0ced2edff0a4baaf8d8fcd93d3e7476c13257e`, `49a7595cb5e6885fa2d003db74f07d6acf0d61cb`, `aa1a8fd9d3444e5d5f3dbe2386d4114b2e48b0c9` |
 | `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29m_economic_viability_evidence_pr4700_squash_merge_closeout_v0_20260630T211900Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29m_residual_slice_pr4701squash_merge_closeout_v0_20260630T213300Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29m_economic_validity_policy_v1_pr4702squash_merge_closeout_v0_20260630T214700Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29m_funding_binding_v1_pr4703_squash_merge_closeout_v0_20260630T220500Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29m_parameter_sensitivity_pr4704_squash_merge_closeout_v0_20260701T221500Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29m_admissible_versioned_futures_dataset_pr4705_squash_merge_closeout_v0_20260630T223551Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29m_economic_validity_policy_thresholds_pr4706_squash_merge_closeout_v0_20260630T225125Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29m_real_admissible_futures_economic_evaluation_runner_pr4723_squash_merge_closeout_v0_20260701T072817Z (MANIFEST_VERIFY_RC=0); economic_viability_evidence_pr=4700; economic_viability_evidence_merge_commit=5352d83f069b7d361e89c877ebe2d3d5ae161156; persistence_load_reproducibility_pr=4701; persistence_load_reproducibility_merge_commit=5d402a6a1fc2fb1a76af3a91223ac46ee9d80b72; economic_validity_policy_v1_pr=4702; economic_validity_policy_v1_merge_commit=72a33b0a85c76bc00fff482d7e88fda0db33c873; funding_model_binding_pr=4703; funding_model_binding_merge_commit=4ff161b3d005ff12e434982a108b22ef46165272; parameter_sensitivity_evidence_pr=4704; parameter_sensitivity_evidence_merge_commit=cd9474c820d500bbdbc09217b4c46f5e604f96b2; admissible_versioned_futures_dataset_pr=4705; admissible_versioned_futures_dataset_merge_commit=cf0ced2edff0a4baaf8d8fcd93d3e7476c13257e; economic_validity_policy_threshold_values_pr=4706; economic_validity_policy_threshold_values_merge_commit=49a7595cb5e6885fa2d003db74f07d6acf0d61cb; economic_evaluation_runner_pr=4723; economic_evaluation_runner_merge_commit=aa1a8fd9d3444e5d5f3dbe2386d4114b2e48b0c9; economic_evaluation_runner_squash_parent=d2c505f86ec879d4fb71c4c531349552ed3e1634; canonical_scope=economic_viability_evidence_v1_offline_slice,economic_viability_evidence_v1_persistence_load_reproducibility_slice,economic_validity_policy_v1_contract_slice,funding_model_binding_v1_slice,parameter_sensitivity_evidence_binding_v1_slice,admissible_versioned_futures_dataset_binding_v1_slice,economic_validity_policy_threshold_values_v1_slice,real_admissible_futures_economic_evidence_evaluation_v1_offline_slice; ECONOMIC_VIABILITY_EVIDENCE_V1_BOUND=true; ECONOMIC_GATE_EVALUATOR_BOUND=true; ECONOMIC_EVALUATION_RUNNER_V1_BOUND=true; REAL_EVALUATION_PERFORMED=false; OPERATOR_INPUT_REQUIRED_FOR_REAL_EVALUATION=true; STEP29M_IMPLEMENTATION_COMPLETE=true; TECHNICAL_ECONOMIC_VIABILITY_EVIDENCE_STACK_COMPLETE=true; ECONOMIC_VALIDITY_RESULT=NOT_PROVEN; REAL_ADMISSIBLE_FUTURES_EVIDENCE_REQUIRED=true; THRESHOLD_TUNING_ALLOWED=false; STEP_29N_STARTED=false; STEP_29M_COMPLETION_DOES_NOT_AUTHORIZE_LIVE=true; STEP_29M_COMPLETION_DOES_NOT_AUTHORIZE_RUNTIME=true; STEP_29M_COMPLETION_DOES_NOT_AUTHORIZE_ORDERS=true; STEP_29M_COMPLETION_DOES_NOT_CLAIM_ECONOMIC_VALIDITY=true; STEP_29M_COMPLETION_DOES_NOT_START_PROMOTION_GATE=true; PROMOTION_ELIGIBILITY_GRANTED=false; RUNTIME_AUTHORITY_GRANTED=false; UNIVERSE_SELECTION_UNCHANGED=true; offline_only=true; non_authorizing=true; runtime_process_started=false; scheduler_action_performed=false; venue_access_performed=false; credential_access_performed=false; trading_action_performed=false; progress_registry_closeout_status=COMPLETE; FUTURES_ONLY=true; BITCOIN_DIRECTION_ALLOWED=false; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SCHEDULER_RUNTIME_ALLOWED=false` |
 | `DEPENDENCIES` | RUNBOOK_STEP_29L |
-| `REMAINING_GAPS` | `real admissible futures economic evidence evaluation awaiting operator dataset input; economic validity proof` |
+| `REMAINING_GAPS` | `operator dataset staging for real admissible futures economic evaluation; economic validity proof` |
 | `DATA_ADMISSIBILITY_STATUS` | `PASS` |
 | `POLICY_THRESHOLD_STATUS` | `PASS` |
 | `ECONOMIC_VALIDITY_EVALUATION_STATUS` | `RESEARCH_ONLY` |
@@ -1111,7 +1113,9 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
 | `CURRENT_PROMOTION_EVALUATION` | `INELIGIBLE` |
 | `OPERATOR_INPUT_REQUIRED_FOR_REAL_EVALUATION` | `true` |
-| `REAL_EVALUATION_INPUT_STATUS` | `AWAITING_OPERATOR_DATASET_INPUT` |
+| `OPERATOR_INPUT_CONTRACT_V1_BOUND` | `true` |
+| `OPERATOR_INPUT_CONTRACT_COMPLETE` | `true` |
+| `REAL_EVALUATION_INPUT_STATUS` | `OPERATOR_INPUT_CONTRACT_COMPLETE_AWAITING_DATASET_STAGING` |
 | `KRAKEN_FIXTURE_LEAK_INTO_CANONICAL_ECONOMIC_PATH` | `false` |
 | `VENUE_SPECIFIC_CANONICAL_ECONOMIC_PATH_ALLOWED` | `false` |
 | `ORDER_EFFECT` | `false` |
@@ -1120,6 +1124,7 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `THRESHOLD_TUNING_ALLOWED` | `false` |
 | `PROMOTION_ELIGIBILITY_GRANTED` | `false` |
 | `RUNTIME_AUTHORITY_GRANTED` | `false` |
+| `CANONICAL_OPERATOR_INPUT_CONTRACT_OWNER` | `src/backtest/real_admissible_futures_economic_evaluation_operator_input_contract_v1.py` |
 | `NEXT_REQUIRED_CONTRACT` | `RUNBOOK_STEP_29N` |
 | `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
 | `RUNTIME_EFFECT` | `false` |
@@ -1128,7 +1133,7 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `ECONOMIC_VALIDITY_PROVEN` | `false` |
 | `PROFITABILITY_CLAIM_ALLOWED` | `false` |
 | `RUNBOOK_STEP_29M_STARTED` | `true` |
-| `RUNBOOK_STEP_29M_IMPLEMENTED_SCOPE` | `economic_viability_evidence_v1_offline_slice,economic_viability_evidence_v1_persistence_load_reproducibility_slice,economic_validity_policy_v1_contract_slice,funding_model_binding_v1_slice,parameter_sensitivity_evidence_binding_v1_slice,admissible_versioned_futures_dataset_binding_v1_slice,economic_validity_policy_threshold_values_v1_slice,real_admissible_futures_economic_evidence_evaluation_v1_offline_slice` |
+| `RUNBOOK_STEP_29M_IMPLEMENTED_SCOPE` | `economic_viability_evidence_v1_offline_slice,economic_viability_evidence_v1_persistence_load_reproducibility_slice,economic_validity_policy_v1_contract_slice,funding_model_binding_v1_slice,parameter_sensitivity_evidence_binding_v1_slice,admissible_versioned_futures_dataset_binding_v1_slice,economic_validity_policy_threshold_values_v1_slice,real_admissible_futures_economic_evidence_evaluation_v1_offline_slice,real_admissible_futures_economic_evaluation_operator_input_and_admissibility_closure_v0_slice` |
 | `RUNBOOK_STEP_29M_IMPLEMENTED` | `true` |
 | `RUNBOOK_STEP_29M_COMPLETE` | `true` |
 | `ECONOMIC_VIABILITY_EVIDENCE_V1_IMPLEMENTED` | `true` |
