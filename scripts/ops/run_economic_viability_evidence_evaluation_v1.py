@@ -300,6 +300,8 @@ def _descriptor_from_manifest(
     provenance_raw = manifest.get("provenance")
     if not isinstance(provenance_raw, Mapping):
         raise RunnerError("manifest_provenance_missing")
+    if manifest.get("dataset_profile") is None and manifest.get("profile_binding") is None:
+        raise RunnerError("manifest_dataset_profile_missing")
     cfg = {
         "backtest": {
             "dataset_admissibility": {
@@ -385,6 +387,10 @@ def _validate_evaluation_config(cfg: Mapping[str, Any]) -> None:
             raise RunnerError(f"{section_name}_binding_missing")
     if not ds.dataset_admissibility_binding_requested(cfg):
         raise RunnerError("dataset_admissibility_binding_missing")
+    try:
+        ds.load_profile_binding_from_cfg(cfg)
+    except ds.AdmissibleVersionedFuturesDatasetError as exc:
+        raise RunnerError(f"dataset_profile_binding_missing:{exc}") from exc
 
 
 def _resolve_strategy_id(cfg: Mapping[str, Any]) -> str:
@@ -611,11 +617,13 @@ def build_validation_plan(args: argparse.Namespace) -> ValidationPlanV1:
     policy = _resolve_policy(cfg)
 
     bars = _load_bars_from_dataset_path(dataset_path)
+    profile_binding = ds.load_profile_binding_from_manifest(manifest)
     admissibility = ds.evaluate_admissible_versioned_futures_dataset_v1(
         bars=bars,
         descriptor=descriptor,
         provenance=provenance,
         instrument_id=descriptor.instrument_id,
+        profile_binding=profile_binding,
     )
     if not admissibility.is_admissible():
         raise RunnerError(f"dataset_not_admissible:{admissibility.admissibility_status.value}")
@@ -687,11 +695,13 @@ def execute_evaluation(args: argparse.Namespace) -> RunOutcomeV1:
     cfg = _merge_policy_into_config(_load_config(config_path), policy_path)
     policy = _resolve_policy(cfg)
     bars = _load_bars_from_dataset_path(dataset_path)
+    profile_binding = ds.load_profile_binding_from_manifest(manifest)
     admissibility = ds.evaluate_admissible_versioned_futures_dataset_v1(
         bars=bars,
         descriptor=descriptor,
         provenance=provenance,
         instrument_id=descriptor.instrument_id,
+        profile_binding=profile_binding,
     )
     admissibility_payload = ds.serialize_dataset_admissibility_binding_v1(admissibility)
 
@@ -701,6 +711,7 @@ def execute_evaluation(args: argparse.Namespace) -> RunOutcomeV1:
     dataset_section["bind"] = True
     dataset_section["dataset"] = descriptor.to_dict()
     dataset_section["provenance"] = provenance.to_dict()
+    dataset_section["profile_binding"] = ds.load_profile_binding_from_manifest(manifest).to_dict()
     backtest["dataset_admissibility"] = dataset_section
     cfg["backtest"] = backtest
 

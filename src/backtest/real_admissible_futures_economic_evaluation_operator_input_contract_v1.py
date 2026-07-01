@@ -22,11 +22,15 @@ from src.backtest import mv2_research_wiring_v1 as mv2_wiring
 from src.backtest.admissible_versioned_futures_dataset_v1 import (
     DATASET_SCHEMA_VERSION,
     DEFAULT_DATASET_VERSION,
+    DatasetProfileV1,
+    L1ObservationStatusV1,
 )
 from src.backtest.cost_config_v0 import (
     COST_MODEL_VERSION,
     EXECUTION_MODEL_VERSION,
+    EXECUTION_PRICE_OBSERVATION_SOURCE_MODELLED,
     FEE_MODEL_VERSION,
+    RESEARCH_SPREAD_MODEL_VERSION,
     SLIPPAGE_MODEL_VERSION,
 )
 from src.backtest.economic_validity_policy_v1 import (
@@ -466,6 +470,42 @@ def validate_staged_operator_inputs_v1(
             _require_positive_cost(operator_inputs["slippage_bps"], field_name="slippage_bps")
         except OperatorInputContractError as exc:
             violations.append(str(exc))
+
+    dataset_profile = str(operator_inputs.get("dataset_profile", "")).strip()
+    if dataset_profile:
+        allowed_profiles = {profile.value for profile in DatasetProfileV1}
+        if dataset_profile not in allowed_profiles:
+            violations.append(f"dataset_profile_invalid:{dataset_profile}")
+        if dataset_profile == DatasetProfileV1.ECONOMIC_RESEARCH_V1.value:
+            l1_status = str(operator_inputs.get("l1_observation_status", "")).strip()
+            if l1_status != L1ObservationStatusV1.EXECUTION_MODEL_BOUND_NOT_OBSERVED.value:
+                violations.append("research_profile_requires_execution_model_bound_l1_status")
+            spread_model = str(operator_inputs.get("spread_model_version", "")).strip()
+            if spread_model and spread_model != RESEARCH_SPREAD_MODEL_VERSION:
+                violations.append(f"spread_model_version_invalid:{spread_model}")
+            observation_source = str(
+                operator_inputs.get("execution_price_observation_source", "")
+            ).strip()
+            if (
+                observation_source
+                and observation_source != EXECUTION_PRICE_OBSERVATION_SOURCE_MODELLED
+            ):
+                violations.append(
+                    f"execution_price_observation_source_invalid:{observation_source}"
+                )
+        elif dataset_profile == DatasetProfileV1.RUNTIME_MARKET_CONTEXT_V1.value:
+            l1_status = str(operator_inputs.get("l1_observation_status", "")).strip()
+            if l1_status and l1_status != L1ObservationStatusV1.OBSERVED_HISTORICAL_L1.value:
+                violations.append("runtime_profile_requires_observed_historical_l1")
+    elif any(
+        key in operator_inputs
+        for key in (
+            "l1_observation_status",
+            "spread_model_version",
+            "execution_price_observation_source",
+        )
+    ):
+        violations.append("dataset_profile_missing_for_profile_fields")
 
     if operator_inputs.get("profitability_claim_allowed") is True:
         violations.append("profitability_claim_forbidden")

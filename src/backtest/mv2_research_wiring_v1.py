@@ -18,8 +18,16 @@ from typing import Any, Callable, Mapping, Optional, Sequence
 
 import pandas as pd
 
+from src.backtest.admissible_versioned_futures_dataset_v1 import (
+    DatasetProfileBindingV1,
+    DatasetProfileV1,
+    L1ObservationStatusV1,
+    default_runtime_profile_binding_v1,
+)
 from src.backtest.cost_config_v0 import (
     EffectiveBacktestCostConfigV0,
+    EconomicResearchExecutionCostBindingV0,
+    resolve_economic_research_execution_cost_binding,
     resolve_effective_backtest_cost_config,
 )
 from src.backtest.engine import BacktestEngine
@@ -155,6 +163,8 @@ class MV2ReplayBarOutcomeV1:
     position_signal: int
     replay_pass: bool
     fail_reasons: tuple[str, ...]
+    l1_observation_status: L1ObservationStatusV1
+    observed_l1_used: bool
 
 
 @dataclass(frozen=True)
@@ -323,6 +333,115 @@ def _period_digest(bars: pd.DataFrame) -> str:
             "count": len(bars),
         }
     )
+
+
+def _has_observed_l1(bar: pd.Series) -> bool:
+    if "best_bid" not in bar.index or "best_ask" not in bar.index:
+        return False
+    bid = bar.get("best_bid")
+    ask = bar.get("best_ask")
+    if bid is None or ask is None:
+        return False
+    if pd.isna(bid) or pd.isna(ask):
+        return False
+    return float(bid) > 0.0 and float(ask) > 0.0 and float(ask) >= float(bid)
+
+
+def _model_bound_l1_from_mark_price(
+    mark_price: float,
+    *,
+    half_spread_bps: float,
+) -> tuple[float, float, float]:
+    half_spread_abs = mark_price * half_spread_bps / 10_000.0
+    best_bid = mark_price - half_spread_abs
+    best_ask = mark_price + half_spread_abs
+    spread = best_ask - best_bid
+    return best_bid, best_ask, spread
+
+
+def bind_bar_for_mv2_wiring_v1(
+    *,
+    bar: pd.Series,
+    instrument_id: str,
+    trading_epoch: int,
+    profile_binding: DatasetProfileBindingV1,
+    research_execution_cost: Optional[EconomicResearchExecutionCostBindingV0] = None,
+) -> tuple[CanonicalMarketContextV1, L1ObservationStatusV1, bool]:
+    profile = profile_binding.dataset_profile
+    l1_status = profile_binding.l1_observation_status
+
+    if profile is DatasetProfileV1.RUNTIME_MARKET_CONTEXT_V1:
+        if l1_status is not L1ObservationStatusV1.OBSERVED_HISTORICAL_L1:
+            raise ValueError("runtime_profile_rejects_execution_model_bound_l1")
+        context = bind_historical_bar_to_canonical_market_context_v1(
+            bar=bar,
+            instrument_id=instrument_id,
+            trading_epoch=trading_epoch,
+        )
+        return context, L1ObservationStatusV1.OBSERVED_HISTORICAL_L1, True
+
+    if profile is not DatasetProfileV1.ECONOMIC_RESEARCH_V1:
+        raise ValueError(f"dataset_profile_unsupported:{profile.value}")
+    if l1_status is not L1ObservationStatusV1.EXECUTION_MODEL_BOUND_NOT_OBSERVED:
+        raise ValueError("research_profile_requires_execution_model_bound_l1_status")
+
+    _ensure_supported_instrument(instrument_id)
+    is_final = bool(bar.get("is_final", True))
+    _fail_closed(not is_final, "bar_unfinalized")
+
+    ts = pd.Timestamp(bar.name)
+    market_event_time = ts.isoformat()
+    decision_ts = pd.Timestamp(bar.get("decision_time", ts + timedelta(seconds=1)))
+    _fail_closed(decision_ts < ts, "decision_time_before_market_event")
+
+    mark_price = _price(bar, "mark_price")
+    observed_l1_used = False
+    outcome_l1_status = L1ObservationStatusV1.EXECUTION_MODEL_BOUND_NOT_OBSERVED
+
+    if _has_observed_l1(bar):
+        best_bid = float(bar["best_bid"])
+        best_ask = float(bar["best_ask"])
+        spread = float(bar.get("spread", best_ask - best_bid))
+        observed_l1_used = True
+        outcome_l1_status = L1ObservationStatusV1.OBSERVED_HISTORICAL_L1
+    else:
+        if research_execution_cost is None:
+            raise ValueError("research_execution_cost_binding_missing")
+        best_bid, best_ask, spread = _model_bound_l1_from_mark_price(
+            mark_price,
+            half_spread_bps=research_execution_cost.conservative_half_spread_bps,
+        )
+
+    context = CanonicalMarketContextV1(
+        context_id=f"mv2-ctx-{instrument_id}-{trading_epoch}",
+        instrument_id=instrument_id,
+        market_type=FuturesMarketType.PERPETUAL,
+        trading_epoch=trading_epoch,
+        market_event_time=market_event_time,
+        decision_time=decision_ts.isoformat(),
+        bar_interval=str(bar.get("bar_interval", "1m")),
+        bar_finality_status=BarFinalityStatus.FINALIZED
+        if is_final
+        else BarFinalityStatus.UNFINALIZED,
+        mark_price=mark_price,
+        index_price=_price(bar, "index_price"),
+        best_bid=best_bid,
+        best_ask=best_ask,
+        spread=spread,
+        volume=float(bar.get("volume", 0.0)),
+        open_interest=float(bar.get("open_interest", 0.0)),
+        funding_rate=float(bar.get("funding_rate", 0.0)),
+        volatility_estimate=float(bar.get("volatility_estimate", 0.2)),
+        trend_feature_set={"trend_slope": float(bar.get("trend_slope", 0.01))},
+        momentum_feature_set={"momentum": float(bar.get("momentum", 0.01))},
+        liquidity_feature_set={"liq_score": float(bar.get("liq_score", 0.9))},
+        market_structure_feature_set={"range_ratio": float(bar.get("range_ratio", 0.4))},
+        data_integrity_status=DataIntegrityStatus.TRUSTED,
+        clock_trust_status=ClockTrustStatus.TRUSTED,
+        warmup_status=_resolve_warmup_status(bar),
+        feature_contract_version=FEATURE_CONTRACT_VERSION,
+    )
+    return with_computed_input_digest(context), outcome_l1_status, observed_l1_used
 
 
 def bind_historical_bar_to_canonical_market_context_v1(
@@ -621,10 +740,23 @@ def run_mv2_research_backtest_wiring_v1(
     expected_replay_layer_version: str = INTEGRATED_OFFLINE_TRADING_LOGIC_REPLAY_LAYER_VERSION,
     expected_implementation_digest: Optional[str] = None,
     explicit_zero_cost_non_economic: bool = False,
+    profile_binding: Optional[DatasetProfileBindingV1] = None,
 ) -> MV2ResearchWiringResultV1:
     _fail_closed(bars.empty, "bars_empty")
     _ensure_supported_instrument(instrument_id)
     _ensure_no_lookahead(bars)
+
+    effective_profile = profile_binding or default_runtime_profile_binding_v1()
+    if effective_profile.dataset_profile is DatasetProfileV1.RUNTIME_MARKET_CONTEXT_V1:
+        if (
+            effective_profile.l1_observation_status
+            is L1ObservationStatusV1.EXECUTION_MODEL_BOUND_NOT_OBSERVED
+        ):
+            raise ValueError("runtime_consumer_rejects_execution_model_bound_l1")
+
+    research_execution_cost: Optional[EconomicResearchExecutionCostBindingV0] = None
+    if effective_profile.dataset_profile is DatasetProfileV1.ECONOMIC_RESEARCH_V1:
+        research_execution_cost = resolve_economic_research_execution_cost_binding(cfg)
 
     snapshot = build_registry_snapshot()
     _fail_closed(
@@ -651,6 +783,7 @@ def run_mv2_research_backtest_wiring_v1(
     effective_cost = resolve_effective_backtest_cost_config(
         cfg,
         explicit_zero_cost_non_economic=explicit_zero_cost_non_economic,
+        research_execution_cost_binding=research_execution_cost,
     )
     _fail_closed(
         effective_cost.taker_fee_bps == 0.0
@@ -684,10 +817,12 @@ def run_mv2_research_backtest_wiring_v1(
     signals: list[int] = []
     signal_index: list[pd.Timestamp] = []
     for i, (_, row) in enumerate(bars.iterrows()):
-        context = bind_historical_bar_to_canonical_market_context_v1(
+        context, l1_status, observed_l1_used = bind_bar_for_mv2_wiring_v1(
             bar=row,
             instrument_id=instrument_id,
             trading_epoch=i,
+            profile_binding=effective_profile,
+            research_execution_cost=research_execution_cost,
         )
         input_digest = _stable_digest(
             {
@@ -695,6 +830,9 @@ def run_mv2_research_backtest_wiring_v1(
                 "epoch": i,
                 "registry_input_digest": snapshot.input_digest,
                 "cost_digest": effective_cost.config_digest,
+                "profile_binding": effective_profile.to_dict(),
+                "l1_observation_status": l1_status.value,
+                "observed_l1_used": observed_l1_used,
             }
         )
         replay_input = _build_replay_input(
@@ -719,6 +857,8 @@ def run_mv2_research_backtest_wiring_v1(
                 position_signal=signal,
                 replay_pass=replay_result.replay_pass,
                 fail_reasons=replay_result.fail_reasons,
+                l1_observation_status=l1_status,
+                observed_l1_used=observed_l1_used,
             )
         )
         signals.append(signal)
@@ -767,6 +907,7 @@ def run_mv2_walk_forward_wiring_v1(
     expected_replay_layer_version: str = INTEGRATED_OFFLINE_TRADING_LOGIC_REPLAY_LAYER_VERSION,
     expected_implementation_digest: Optional[str] = None,
     explicit_zero_cost_non_economic: bool = False,
+    profile_binding: Optional[DatasetProfileBindingV1] = None,
 ) -> MV2WalkForwardWiringResultV1:
     """Run MV2 replay on OOS test windows only; train windows bind split contract only."""
     windows = bind_walk_forward_windows_v1(
@@ -799,6 +940,7 @@ def run_mv2_walk_forward_wiring_v1(
         "expected_replay_layer_version": expected_replay_layer_version,
         "expected_implementation_digest": expected_implementation_digest,
         "explicit_zero_cost_non_economic": explicit_zero_cost_non_economic,
+        "profile_binding": profile_binding,
     }
 
     window_results: list[MV2WalkForwardWindowResultV1] = []

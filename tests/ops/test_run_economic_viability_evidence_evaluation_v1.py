@@ -108,6 +108,8 @@ def _descriptor_dict(bars: pd.DataFrame, **overrides: Any) -> dict[str, Any]:
 def _manifest_payload(bars: pd.DataFrame, **overrides: Any) -> dict[str, Any]:
     manifest = {
         "manifest_version": "admissible_versioned_futures_dataset_manifest_v1",
+        "dataset_profile": "runtime_market_context_v1",
+        "profile_binding": ds.default_runtime_profile_binding_v1().to_dict(),
         "dataset": _descriptor_dict(bars, **overrides.get("descriptor_overrides", {})),
         "provenance": _provenance(**overrides.get("provenance_overrides", {})),
     }
@@ -141,6 +143,8 @@ def _evaluation_config(bars: pd.DataFrame | None = None, **overrides: Any) -> di
             },
             "dataset_admissibility": {
                 "bind": True,
+                "dataset_profile": "runtime_market_context_v1",
+                "profile_binding": ds.default_runtime_profile_binding_v1().to_dict(),
                 "dataset": descriptor,
                 "provenance": _provenance(),
             },
@@ -620,8 +624,20 @@ def test_real_owner_graph_validate_only_integration(runner, tmp_path: Path) -> N
         descriptor=descriptor,
         provenance=provenance,
         instrument_id=descriptor.instrument_id,
+        profile_binding=ds.load_profile_binding_from_manifest(manifest),
     )
     assert result.is_admissible() is True
+
+
+def test_missing_manifest_dataset_profile_rejected(runner, tmp_path: Path) -> None:
+    paths = _stage_run_inputs(tmp_path)
+    manifest = json.loads(paths["manifest_path"].read_text(encoding="utf-8"))
+    manifest.pop("dataset_profile", None)
+    manifest.pop("profile_binding", None)
+    manifest["manifest_digest"] = runner._compute_manifest_digest(manifest)
+    paths["manifest_path"].write_text(json.dumps(manifest), encoding="utf-8")
+    rc = runner.main(_argv(paths) + ["--validate-only"])
+    assert rc != 0
 
 
 def test_fixture_classification_matrix(runner, tmp_path: Path) -> None:

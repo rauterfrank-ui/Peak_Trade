@@ -31,7 +31,9 @@ FINALITY_RULE = "ALL_ROWS_IS_FINAL_TRUE"
 _SHA256_HEX_RE = re.compile(r"^[0-9a-f]{64}$")
 _FORBIDDEN_INSTRUMENT_SUBSTRINGS = frozenset({"btc", "xbt", "bitcoin", "spot", "synthetic_spot"})
 _ALLOWED_CONTRACT_TYPES = frozenset({"futures", "perpetual", "swap"})
-_REQUIRED_BAR_COLUMNS = frozenset(
+ADMISSIBLE_FUTURES_ECONOMIC_RESEARCH_DATASET_V1 = "economic_research_v1"
+
+_RUNTIME_REQUIRED_BAR_COLUMNS = frozenset(
     {
         "open",
         "high",
@@ -46,10 +48,34 @@ _REQUIRED_BAR_COLUMNS = frozenset(
         "is_final",
     }
 )
+_RESEARCH_REQUIRED_BAR_COLUMNS = frozenset(
+    {
+        "open",
+        "high",
+        "low",
+        "close",
+        "volume",
+        "mark_price",
+        "index_price",
+        "funding_rate",
+        "is_final",
+    }
+)
+_REQUIRED_BAR_COLUMNS = _RUNTIME_REQUIRED_BAR_COLUMNS
 
 
 class AdmissibleVersionedFuturesDatasetError(ValueError):
     """Fail-closed dataset admissibility error."""
+
+
+class DatasetProfileV1(str, Enum):
+    RUNTIME_MARKET_CONTEXT_V1 = "runtime_market_context_v1"
+    ECONOMIC_RESEARCH_V1 = "economic_research_v1"
+
+
+class L1ObservationStatusV1(str, Enum):
+    OBSERVED_HISTORICAL_L1 = "OBSERVED_HISTORICAL_L1"
+    EXECUTION_MODEL_BOUND_NOT_OBSERVED = "EXECUTION_MODEL_BOUND_NOT_OBSERVED"
 
 
 class AdmissibilityStatus(str, Enum):
@@ -65,6 +91,40 @@ class AdmissibilityStatus(str, Enum):
     BLOCKED_SPLIT_OVERLAP = "BLOCKED_SPLIT_OVERLAP"
     BLOCKED_UNSORTED_OR_DUPLICATE_EVENTS = "BLOCKED_UNSORTED_OR_DUPLICATE_EVENTS"
     BLOCKED_REQUIRED_FIELD_MISSING = "BLOCKED_REQUIRED_FIELD_MISSING"
+    BLOCKED_MISSING_DATASET_PROFILE = "BLOCKED_MISSING_DATASET_PROFILE"
+    BLOCKED_PROFILE_BINDING_INVALID = "BLOCKED_PROFILE_BINDING_INVALID"
+    BLOCKED_EXECUTION_COST_BINDING_MISSING = "BLOCKED_EXECUTION_COST_BINDING_MISSING"
+    BLOCKED_L1_REQUIRED_FOR_RUNTIME = "BLOCKED_L1_REQUIRED_FOR_RUNTIME"
+
+
+@dataclass(frozen=True)
+class ExecutionCostBindingV1:
+    spread_model_version: str
+    execution_price_observation_source: str
+    conservative_half_spread_bps: float
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "spread_model_version": self.spread_model_version,
+            "execution_price_observation_source": self.execution_price_observation_source,
+            "conservative_half_spread_bps": self.conservative_half_spread_bps,
+        }
+
+
+@dataclass(frozen=True)
+class DatasetProfileBindingV1:
+    dataset_profile: DatasetProfileV1
+    l1_observation_status: L1ObservationStatusV1
+    execution_cost_binding: Optional[ExecutionCostBindingV1] = None
+
+    def to_dict(self) -> dict[str, Any]:
+        payload: dict[str, Any] = {
+            "dataset_profile": self.dataset_profile.value,
+            "l1_observation_status": self.l1_observation_status.value,
+        }
+        if self.execution_cost_binding is not None:
+            payload["execution_cost_binding"] = self.execution_cost_binding.to_dict()
+        return payload
 
 
 @dataclass(frozen=True)
@@ -173,6 +233,9 @@ class AdmissibleVersionedFuturesDatasetResultV1:
     futures_only: bool
     bitcoin_direction_allowed: bool
     event_count: int
+    dataset_profile: str = ""
+    l1_observation_status: str = ""
+    profile_binding_digest: str = ""
 
     def is_admissible(self) -> bool:
         return self.admissibility_status is AdmissibilityStatus.ADMISSIBLE
@@ -193,6 +256,9 @@ class AdmissibleVersionedFuturesDatasetResultV1:
             "futures_only": self.futures_only,
             "bitcoin_direction_allowed": self.bitcoin_direction_allowed,
             "event_count": self.event_count,
+            "dataset_profile": self.dataset_profile,
+            "l1_observation_status": self.l1_observation_status,
+            "profile_binding_digest": self.profile_binding_digest,
         }
         if self.descriptor is not None:
             payload.update(self.descriptor.to_dict())
@@ -315,6 +381,190 @@ def default_field_bindings_v1() -> DatasetFieldBindingsV1:
     )
 
 
+def research_field_bindings_v1() -> DatasetFieldBindingsV1:
+    """Research profile bindings: no L1 columns required in dataset."""
+    return DatasetFieldBindingsV1(
+        mark_price_field_binding="mark_price",
+        index_price_field_binding="index_price",
+        bid_ask_field_binding="",
+        funding_field_binding="funding_rate",
+        ohlcv_field_binding="open,high,low,close,volume",
+    )
+
+
+def required_bar_columns_for_profile(profile: DatasetProfileV1) -> frozenset[str]:
+    if profile is DatasetProfileV1.ECONOMIC_RESEARCH_V1:
+        return _RESEARCH_REQUIRED_BAR_COLUMNS
+    return _RUNTIME_REQUIRED_BAR_COLUMNS
+
+
+def field_bindings_for_profile(profile: DatasetProfileV1) -> DatasetFieldBindingsV1:
+    if profile is DatasetProfileV1.ECONOMIC_RESEARCH_V1:
+        return research_field_bindings_v1()
+    return default_field_bindings_v1()
+
+
+def default_runtime_profile_binding_v1() -> DatasetProfileBindingV1:
+    return DatasetProfileBindingV1(
+        dataset_profile=DatasetProfileV1.RUNTIME_MARKET_CONTEXT_V1,
+        l1_observation_status=L1ObservationStatusV1.OBSERVED_HISTORICAL_L1,
+        execution_cost_binding=None,
+    )
+
+
+def _parse_dataset_profile(raw: Any) -> DatasetProfileV1:
+    if raw is None or (isinstance(raw, str) and not str(raw).strip()):
+        raise AdmissibleVersionedFuturesDatasetError("dataset_profile_missing")
+    value = str(raw).strip()
+    if value == ADMISSIBLE_FUTURES_ECONOMIC_RESEARCH_DATASET_V1:
+        return DatasetProfileV1.ECONOMIC_RESEARCH_V1
+    try:
+        return DatasetProfileV1(value)
+    except ValueError as exc:
+        raise AdmissibleVersionedFuturesDatasetError(f"dataset_profile_invalid:{value}") from exc
+
+
+def _parse_l1_observation_status(raw: Any) -> L1ObservationStatusV1:
+    if raw is None or (isinstance(raw, str) and not str(raw).strip()):
+        raise AdmissibleVersionedFuturesDatasetError("l1_observation_status_missing")
+    try:
+        return L1ObservationStatusV1(str(raw).strip())
+    except ValueError as exc:
+        raise AdmissibleVersionedFuturesDatasetError(
+            f"l1_observation_status_invalid:{raw}"
+        ) from exc
+
+
+def _parse_execution_cost_binding(raw: Any) -> ExecutionCostBindingV1:
+    if not isinstance(raw, Mapping):
+        raise AdmissibleVersionedFuturesDatasetError("execution_cost_binding_missing")
+    spread_model = str(raw.get("spread_model_version", "")).strip()
+    observation_source = str(raw.get("execution_price_observation_source", "")).strip()
+    if not spread_model:
+        raise AdmissibleVersionedFuturesDatasetError("spread_model_version_missing")
+    if not observation_source:
+        raise AdmissibleVersionedFuturesDatasetError("execution_price_observation_source_missing")
+    try:
+        half_spread = float(raw["conservative_half_spread_bps"])
+    except (KeyError, TypeError, ValueError) as exc:
+        raise AdmissibleVersionedFuturesDatasetError(
+            "conservative_half_spread_bps_missing_or_invalid"
+        ) from exc
+    if half_spread <= 0.0:
+        raise AdmissibleVersionedFuturesDatasetError("conservative_half_spread_bps_non_positive")
+    return ExecutionCostBindingV1(
+        spread_model_version=spread_model,
+        execution_price_observation_source=observation_source,
+        conservative_half_spread_bps=half_spread,
+    )
+
+
+def _profile_binding_from_mapping(raw: Mapping[str, Any]) -> DatasetProfileBindingV1:
+    dataset_profile = _parse_dataset_profile(raw.get("dataset_profile"))
+    l1_status = _parse_l1_observation_status(raw.get("l1_observation_status"))
+    cost_raw = raw.get("execution_cost_binding")
+    execution_cost_binding: Optional[ExecutionCostBindingV1] = None
+    if cost_raw is not None:
+        execution_cost_binding = _parse_execution_cost_binding(cost_raw)
+    return DatasetProfileBindingV1(
+        dataset_profile=dataset_profile,
+        l1_observation_status=l1_status,
+        execution_cost_binding=execution_cost_binding,
+    )
+
+
+def compute_profile_binding_digest(profile_binding: DatasetProfileBindingV1) -> str:
+    return _stable_digest(profile_binding.to_dict())
+
+
+def validate_profile_binding_consistency(
+    profile_binding: DatasetProfileBindingV1,
+    *,
+    reason_codes: list[str],
+) -> bool:
+    ok = True
+    profile = profile_binding.dataset_profile
+    l1_status = profile_binding.l1_observation_status
+
+    if profile is DatasetProfileV1.RUNTIME_MARKET_CONTEXT_V1:
+        if l1_status is not L1ObservationStatusV1.OBSERVED_HISTORICAL_L1:
+            reason_codes.append("runtime_profile_requires_observed_historical_l1")
+            ok = False
+        if profile_binding.execution_cost_binding is not None:
+            reason_codes.append("runtime_profile_forbids_execution_cost_binding")
+            ok = False
+    elif profile is DatasetProfileV1.ECONOMIC_RESEARCH_V1:
+        if l1_status is not L1ObservationStatusV1.EXECUTION_MODEL_BOUND_NOT_OBSERVED:
+            reason_codes.append("research_profile_requires_execution_model_bound_l1_status")
+            ok = False
+        if profile_binding.execution_cost_binding is None:
+            reason_codes.append("research_profile_execution_cost_binding_missing")
+            ok = False
+    else:
+        reason_codes.append(f"dataset_profile_unsupported:{profile.value}")
+        ok = False
+    return ok
+
+
+def load_profile_binding_from_cfg(cfg: Mapping[str, Any]) -> DatasetProfileBindingV1:
+    backtest = cfg.get("backtest")
+    if not isinstance(backtest, Mapping):
+        raise AdmissibleVersionedFuturesDatasetError("backtest_section_missing")
+    section = backtest.get("dataset_admissibility")
+    if not isinstance(section, Mapping):
+        raise AdmissibleVersionedFuturesDatasetError("dataset_admissibility_missing")
+    profile_raw = section.get("profile_binding")
+    if isinstance(profile_raw, Mapping):
+        return _profile_binding_from_mapping(profile_raw)
+    if section.get("dataset_profile") is not None:
+        dataset_profile = _parse_dataset_profile(section.get("dataset_profile"))
+        if dataset_profile is DatasetProfileV1.ECONOMIC_RESEARCH_V1:
+            cost_section = section.get("execution_cost_binding")
+            if not isinstance(cost_section, Mapping):
+                cost_section = backtest.get("economic_research_execution_cost")
+            cost_binding = (
+                _parse_execution_cost_binding(cost_section)
+                if isinstance(cost_section, Mapping)
+                else None
+            )
+            return DatasetProfileBindingV1(
+                dataset_profile=dataset_profile,
+                l1_observation_status=L1ObservationStatusV1.EXECUTION_MODEL_BOUND_NOT_OBSERVED,
+                execution_cost_binding=cost_binding,
+            )
+        return DatasetProfileBindingV1(
+            dataset_profile=dataset_profile,
+            l1_observation_status=L1ObservationStatusV1.OBSERVED_HISTORICAL_L1,
+            execution_cost_binding=None,
+        )
+    raise AdmissibleVersionedFuturesDatasetError("dataset_profile_binding_missing")
+
+
+def load_profile_binding_from_manifest(manifest: Mapping[str, Any]) -> DatasetProfileBindingV1:
+    profile_raw = manifest.get("profile_binding")
+    if isinstance(profile_raw, Mapping):
+        return _profile_binding_from_mapping(profile_raw)
+    dataset_profile_raw = manifest.get("dataset_profile")
+    if dataset_profile_raw is None:
+        raise AdmissibleVersionedFuturesDatasetError("manifest_dataset_profile_missing")
+    dataset_profile = _parse_dataset_profile(dataset_profile_raw)
+    if dataset_profile is DatasetProfileV1.ECONOMIC_RESEARCH_V1:
+        cost_raw = manifest.get("execution_cost_binding")
+        cost_binding = (
+            _parse_execution_cost_binding(cost_raw) if isinstance(cost_raw, Mapping) else None
+        )
+        return DatasetProfileBindingV1(
+            dataset_profile=dataset_profile,
+            l1_observation_status=L1ObservationStatusV1.EXECUTION_MODEL_BOUND_NOT_OBSERVED,
+            execution_cost_binding=cost_binding,
+        )
+    return DatasetProfileBindingV1(
+        dataset_profile=dataset_profile,
+        l1_observation_status=L1ObservationStatusV1.OBSERVED_HISTORICAL_L1,
+        execution_cost_binding=None,
+    )
+
+
 def dataset_admissibility_binding_requested(cfg: Mapping[str, Any]) -> bool:
     backtest = cfg.get("backtest")
     if not isinstance(backtest, Mapping):
@@ -404,8 +654,6 @@ def _validate_field_bindings(
         for column in columns_csv.split(","):
             column = column.strip()
             if not column:
-                reason_codes.append(f"field_binding_empty:{binding_name}")
-                ok = False
                 continue
             if column not in bars.columns:
                 reason_codes.append(f"field_binding_column_missing:{column}")
@@ -413,9 +661,14 @@ def _validate_field_bindings(
     return ok
 
 
-def _validate_required_values(bars: pd.DataFrame, reason_codes: list[str]) -> bool:
+def _validate_required_values(
+    bars: pd.DataFrame,
+    reason_codes: list[str],
+    *,
+    required_columns: frozenset[str],
+) -> bool:
     ok = True
-    for column in sorted(_REQUIRED_BAR_COLUMNS):
+    for column in sorted(required_columns):
         if column not in bars.columns:
             reason_codes.append(f"required_column_missing:{column}")
             ok = False
@@ -428,6 +681,32 @@ def _validate_required_values(bars: pd.DataFrame, reason_codes: list[str]) -> bo
             reason_codes.append("required_is_final_not_all_true")
             ok = False
     return ok
+
+
+def _validate_runtime_l1_present(bars: pd.DataFrame, reason_codes: list[str]) -> bool:
+    ok = True
+    for column in ("best_bid", "best_ask"):
+        if column not in bars.columns:
+            reason_codes.append(f"runtime_l1_column_missing:{column}")
+            ok = False
+            continue
+        series = bars[column]
+        if series.isna().any():
+            reason_codes.append(f"runtime_l1_column_has_missing:{column}")
+            ok = False
+    return ok
+
+
+def _validate_descriptor_field_bindings_match_profile(
+    descriptor: VersionedFuturesDatasetDescriptorV1,
+    profile_binding: DatasetProfileBindingV1,
+    reason_codes: list[str],
+) -> bool:
+    expected = field_bindings_for_profile(profile_binding.dataset_profile)
+    if descriptor.field_bindings.to_dict() != expected.to_dict():
+        reason_codes.append("field_bindings_profile_mismatch")
+        return False
+    return True
 
 
 def _validate_ordering(bars: pd.DataFrame, reason_codes: list[str]) -> bool:
@@ -486,11 +765,28 @@ def evaluate_admissible_versioned_futures_dataset_v1(
     descriptor: VersionedFuturesDatasetDescriptorV1,
     provenance: DatasetProvenanceV1,
     instrument_id: str,
+    profile_binding: DatasetProfileBindingV1,
 ) -> AdmissibleVersionedFuturesDatasetResultV1:
     reason_codes: list[str] = []
     status = AdmissibilityStatus.ADMISSIBLE
     mutation_status = "NOT_RUN"
     leakage_status = "NOT_RUN"
+    profile_binding_digest = compute_profile_binding_digest(profile_binding)
+
+    if not validate_profile_binding_consistency(profile_binding, reason_codes=reason_codes):
+        if any(code.endswith("execution_cost_binding_missing") for code in reason_codes):
+            status = AdmissibilityStatus.BLOCKED_EXECUTION_COST_BINDING_MISSING
+        elif any("runtime_profile_requires" in code for code in reason_codes):
+            status = AdmissibilityStatus.BLOCKED_L1_REQUIRED_FOR_RUNTIME
+        else:
+            status = AdmissibilityStatus.BLOCKED_PROFILE_BINDING_INVALID
+
+    required_columns = required_bar_columns_for_profile(profile_binding.dataset_profile)
+    expected_bindings = field_bindings_for_profile(profile_binding.dataset_profile)
+    if not _validate_descriptor_field_bindings_match_profile(
+        descriptor, profile_binding, reason_codes
+    ):
+        status = AdmissibilityStatus.BLOCKED_PROFILE_BINDING_INVALID
 
     if not descriptor.dataset_version or not descriptor.dataset_schema_version:
         status = AdmissibilityStatus.BLOCKED_MISSING_VERSION
@@ -549,10 +845,13 @@ def evaluate_admissible_versioned_futures_dataset_v1(
     if not bars.empty:
         if not _validate_ordering(bars, reason_codes):
             status = AdmissibilityStatus.BLOCKED_UNSORTED_OR_DUPLICATE_EVENTS
-        if not _validate_field_bindings(bars, descriptor.field_bindings, reason_codes):
+        if not _validate_field_bindings(bars, expected_bindings, reason_codes):
             status = AdmissibilityStatus.BLOCKED_REQUIRED_FIELD_MISSING
-        if not _validate_required_values(bars, reason_codes):
+        if not _validate_required_values(bars, reason_codes, required_columns=required_columns):
             status = AdmissibilityStatus.BLOCKED_REQUIRED_FIELD_MISSING
+        if profile_binding.dataset_profile is DatasetProfileV1.RUNTIME_MARKET_CONTEXT_V1:
+            if not _validate_runtime_l1_present(bars, reason_codes):
+                status = AdmissibilityStatus.BLOCKED_L1_REQUIRED_FOR_RUNTIME
         split_ok, leakage_status, _ = _validate_splits(bars, descriptor, reason_codes)
         if not split_ok:
             if "split_index_overlap" in reason_codes:
@@ -566,6 +865,8 @@ def evaluate_admissible_versioned_futures_dataset_v1(
         "descriptor": descriptor.to_dict(),
         "provenance": provenance.to_dict(),
         "instrument_id": instrument_id,
+        "profile_binding": profile_binding.to_dict(),
+        "profile_binding_digest": profile_binding_digest,
     }
     config_digest = _stable_digest(config_payload)
     implementation_digest = _stable_digest(
@@ -604,6 +905,9 @@ def evaluate_admissible_versioned_futures_dataset_v1(
         futures_only=descriptor.futures_only,
         bitcoin_direction_allowed=descriptor.bitcoin_direction_allowed,
         event_count=len(bars),
+        dataset_profile=profile_binding.dataset_profile.value,
+        l1_observation_status=profile_binding.l1_observation_status.value,
+        profile_binding_digest=profile_binding_digest,
     )
 
 

@@ -104,6 +104,7 @@ def _evaluate(
         descriptor=descriptor,
         provenance=provenance,
         instrument_id=instrument_id,
+        profile_binding=overrides.pop("profile_binding", ds.default_runtime_profile_binding_v1()),
     )
 
 
@@ -118,6 +119,8 @@ def _cfg_with_dataset(bars: pd.DataFrame, **descriptor_overrides: Any) -> Mappin
             "slippage_bps": 5.0,
             "dataset_admissibility": {
                 "bind": True,
+                "dataset_profile": "runtime_market_context_v1",
+                "profile_binding": ds.default_runtime_profile_binding_v1().to_dict(),
                 "dataset": descriptor.to_dict(),
                 "provenance": provenance.to_dict(),
             },
