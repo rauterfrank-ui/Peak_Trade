@@ -1,13 +1,26 @@
-"""Registry contract for STEP 29M macd v1 real economic evaluation v2 reevaluation."""
+"""Registry contract for STEP 29M macd v1 real economic evaluation v2 reevaluation and v3 policy."""
 
 from __future__ import annotations
 
+import hashlib
 import json
 import re
 from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 PROGRESS_REGISTRY = REPO_ROOT / "docs" / "governance" / "PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md"
+V2_CONFIG = (
+    REPO_ROOT / "config/ops/step29m_okx_inst_eth_usdt_perp_macd_v1_economic_evaluation_v2.json"
+)
+V3_CONFIG = (
+    REPO_ROOT / "config/ops/step29m_okx_inst_eth_usdt_perp_macd_v1_economic_evaluation_v3.json"
+)
+POLICY_DECISION_EVIDENCE = Path(
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "planning_or_validation/step29m_read_only_policy_owner_and_sizing_contract_decision_v0_20260701T235959Z"
+)
+EXPECTED_V2_FILE_SHA256 = "fe5b3ed1ea174e242f5a821971d94b47eb544c6fe4ec3eb99a8ceef06e3e094b"
+EXPECTED_V3_CONFIG_DIGEST = "e1d923de8e5f44bc873c15008bc895b8b3542a326e9c39521e4860ba091b6b82"
 V2_EVIDENCE_DIR = Path(
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
     "implementation/step29m_macd_v1_real_admissible_futures_economic_reevaluation_v2_20260701T212345Z"
@@ -57,6 +70,44 @@ def test_macd_v1_real_evaluation_evidence_ref_bound() -> None:
     assert str(V2_EVIDENCE_DIR) in _field_value(section, "MACD_V1_REAL_EVALUATION_EVIDENCE_REF")
     assert str(INVALIDATED_EVIDENCE_DIR) in _field_value(section, "INVALIDATED_EVALUATION_REF")
     assert str(V2_EVIDENCE_DIR) in _field_value(section, "INVALIDATED_V2_EVALUATION_REF")
+
+
+def test_macd_v1_v3_policy_registry_ratified_and_awaiting_separate_run() -> None:
+    section = _step_29m_section(_read_registry())
+    assert _field_value(section, "OPERATOR_POLICY_DECISION") == "RATIFIED"
+    assert _field_value(section, "POLICY_INVARIANT") == (
+        "risk_per_trade <= max_position_pct * stop_pct"
+    )
+    assert _field_value(section, "NEXT_EVALUATION_CONFIG_VERSION") == "v3"
+    assert _field_value(section, "NEXT_EVALUATION_CONFIG_STATUS") == (
+        "POLICY_RATIFIED_CONFIG_ADMISSIBLE_AWAITING_SEPARATE_RUN"
+    )
+    assert _field_value(section, "NEXT_EVALUATION_CONFIG_PATH") == (
+        "config/ops/step29m_okx_inst_eth_usdt_perp_macd_v1_economic_evaluation_v3.json"
+    )
+    assert _field_value(section, "ECONOMIC_REEVALUATION_ALLOWED") == "false"
+    assert _field_value(section, "PROFITABILITY_CLAIM_ALLOWED") == "false"
+    assert _field_value(section, "V2_CONFIG_DISPOSITION") == (
+        "RETAIN_AS_NEGATIVE_INFEASIBILITY_FIXTURE"
+    )
+    assert _field_value(section, "V3_RISK_PER_TRADE") == "0.005"
+    assert _field_value(section, "V3_REQUESTED_NOTIONAL_PCT") == "0.20"
+    assert _field_value(section, "V3_FEASIBILITY_HEADROOM_PCT_OF_EQUITY") == "0.05"
+
+
+def test_v2_config_file_digest_unchanged_for_negative_fixture() -> None:
+    digest = hashlib.sha256(V2_CONFIG.read_bytes()).hexdigest()
+    assert digest == EXPECTED_V2_FILE_SHA256
+
+
+def test_v3_config_path_exists_with_expected_digest() -> None:
+    assert V3_CONFIG.is_file()
+    from src.backtest.step29m_macd_v1_economic_evaluation_admissibility_contract_v1 import (
+        compute_evaluation_config_digest_v1,
+    )
+
+    cfg = json.loads(V3_CONFIG.read_text(encoding="utf-8"))
+    assert compute_evaluation_config_digest_v1(cfg) == EXPECTED_V3_CONFIG_DIGEST
 
 
 def test_macd_v1_real_evaluation_evidence_manifest_immutable() -> None:

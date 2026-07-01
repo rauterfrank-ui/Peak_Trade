@@ -133,8 +133,21 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `LAST_EVALUATED_CONFIG_VERSION` | `v2` |
 | `NEXT_EVALUATION_STRATEGY_ID` | `macd` |
 | `NEXT_EVALUATION_STRATEGY_VERSION` | `v1` |
-| `NEXT_EVALUATION_CONFIG_STATUS` | `BLOCKED_POLICY_DECISION_REQUIRED` |
-| `NEXT_EVALUATION_CONFIG_PATH` | `config/ops/step29m_okx_inst_eth_usdt_perp_macd_v1_economic_evaluation_v2.json` |
+| `NEXT_EVALUATION_CONFIG_VERSION` | `v3` |
+| `NEXT_EVALUATION_CONFIG_STATUS` | `POLICY_RATIFIED_CONFIG_ADMISSIBLE_AWAITING_SEPARATE_RUN` |
+| `NEXT_EVALUATION_CONFIG_PATH` | `config/ops/step29m_okx_inst_eth_usdt_perp_macd_v1_economic_evaluation_v3.json` |
+| `POLICY_INVARIANT` | `risk_per_trade <= max_position_pct * stop_pct` |
+| `OPERATOR_POLICY_DECISION` | `RATIFIED` |
+| `OPERATOR_POLICY_DECISION_OWNER` | `Frank_Rauter` |
+| `OPERATOR_POLICY_DECISION_DATE` | `2026-07-02` |
+| `V3_RISK_PER_TRADE` | `0.005` |
+| `V3_STOP_PCT` | `0.025` |
+| `V3_MAX_POSITION_PCT` | `0.25` |
+| `V3_OVERSIZE_POLICY` | `REJECT_OVERSIZE` |
+| `V3_REQUESTED_NOTIONAL_PCT` | `0.20` |
+| `V3_FEASIBILITY_HEADROOM_PCT_OF_EQUITY` | `0.05` |
+| `V2_CONFIG_DISPOSITION` | `RETAIN_AS_NEGATIVE_INFEASIBILITY_FIXTURE` |
+| `ECONOMIC_REEVALUATION_ALLOWED` | `false` |
 | `MACD_V1_ADMISSIBILITY_CONTRACT_STATUS` | `PASS` |
 | `MACD_V1_REAL_EVALUATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/step29m_macd_v1_real_admissible_futures_economic_reevaluation_v2_20260701T212345Z` |
 | `INVALIDATED_EVALUATION_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/step29m_macd_v1_real_admissible_futures_economic_evaluation_v1_20260701T161757Z` |
@@ -1141,8 +1154,21 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `LAST_EVALUATED_CONFIG_VERSION` | `v2` |
 | `NEXT_EVALUATION_STRATEGY_ID` | `macd` |
 | `NEXT_EVALUATION_STRATEGY_VERSION` | `v1` |
-| `NEXT_EVALUATION_CONFIG_STATUS` | `BLOCKED_POLICY_DECISION_REQUIRED` |
-| `NEXT_EVALUATION_CONFIG_PATH` | `config/ops/step29m_okx_inst_eth_usdt_perp_macd_v1_economic_evaluation_v2.json` |
+| `NEXT_EVALUATION_CONFIG_VERSION` | `v3` |
+| `NEXT_EVALUATION_CONFIG_STATUS` | `POLICY_RATIFIED_CONFIG_ADMISSIBLE_AWAITING_SEPARATE_RUN` |
+| `NEXT_EVALUATION_CONFIG_PATH` | `config/ops/step29m_okx_inst_eth_usdt_perp_macd_v1_economic_evaluation_v3.json` |
+| `POLICY_INVARIANT` | `risk_per_trade <= max_position_pct * stop_pct` |
+| `OPERATOR_POLICY_DECISION` | `RATIFIED` |
+| `OPERATOR_POLICY_DECISION_OWNER` | `Frank_Rauter` |
+| `OPERATOR_POLICY_DECISION_DATE` | `2026-07-02` |
+| `V3_RISK_PER_TRADE` | `0.005` |
+| `V3_STOP_PCT` | `0.025` |
+| `V3_MAX_POSITION_PCT` | `0.25` |
+| `V3_OVERSIZE_POLICY` | `REJECT_OVERSIZE` |
+| `V3_REQUESTED_NOTIONAL_PCT` | `0.20` |
+| `V3_FEASIBILITY_HEADROOM_PCT_OF_EQUITY` | `0.05` |
+| `V2_CONFIG_DISPOSITION` | `RETAIN_AS_NEGATIVE_INFEASIBILITY_FIXTURE` |
+| `ECONOMIC_REEVALUATION_ALLOWED` | `false` |
 | `MACD_V1_ADMISSIBILITY_CONTRACT_STATUS` | `PASS` |
 | `MACD_V1_REAL_EVALUATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/step29m_macd_v1_real_admissible_futures_economic_reevaluation_v2_20260701T212345Z` |
 | `INVALIDATED_EVALUATION_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/step29m_macd_v1_real_admissible_futures_economic_evaluation_v1_20260701T161757Z` |
