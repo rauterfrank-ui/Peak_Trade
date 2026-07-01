@@ -444,3 +444,45 @@ def test_deterministic_double_run_of_full_test_module() -> None:
             )
         )
     assert payloads[0] == payloads[1]
+
+
+def test_29_canonical_order_intent_v1_registry_entry_present() -> None:
+    assert "CANONICAL_ORDER_INTENT_V1" in firewall.INTENT_TYPE_DESCRIPTOR_REGISTRY_V1
+    descriptor = firewall.INTENT_TYPE_DESCRIPTOR_REGISTRY_V1["CANONICAL_ORDER_INTENT_V1"]
+    assert descriptor.owner_module == firewall.CANONICAL_ORDER_INTENT_OWNER_MODULE
+    assert descriptor.quantity_provenance_present is True
+
+
+def test_30_explicit_canonical_to_adapter_transformation_firewall_admissible() -> None:
+    result = firewall.evaluate_explicit_canonical_to_adapter_transformation_firewall_v1(
+        source_digest="a" * 64,
+        target_digest="b" * 64,
+        transformation_id=firewall.CANONICAL_TO_ADAPTER_TRANSFORMATION_ID,
+    )
+    assert result.verdict is firewall.IntentCompatibilityVerdictV1.ADMISSIBLE
+    assert result.runtime_effect is False
+    assert result.order_effect is False
+    assert result.authority_effect is False
+    assert result.transformation_performed is False
+
+
+def test_31_unknown_transformation_id_blocks() -> None:
+    result = firewall.evaluate_explicit_canonical_to_adapter_transformation_firewall_v1(
+        source_digest="a" * 64,
+        target_digest="b" * 64,
+        transformation_id="unknown.transformation.v0",
+    )
+    assert result.verdict is firewall.IntentCompatibilityVerdictV1.BLOCKED_IMPLICIT_CONVERSION
+
+
+def test_32_transformation_descriptor_builder_fields() -> None:
+    descriptor = firewall.build_canonical_to_adapter_transformation_descriptor_v1(
+        source_digest="source",
+        target_digest="target",
+        lossless_fields=("instrument_id->symbol",),
+        rejected_unbound_fields=("client_id",),
+    )
+    assert descriptor.transformation_id == firewall.CANONICAL_TO_ADAPTER_TRANSFORMATION_ID
+    assert descriptor.runtime_effect is False
+    assert descriptor.adapter_submission_effect is False
+    assert descriptor.network_effect is False
