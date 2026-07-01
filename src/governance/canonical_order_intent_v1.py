@@ -48,6 +48,7 @@ _FORBIDDEN_MARKET_TYPES = frozenset({"spot", "synthetic_spot", "synthetic-spot"}
 _FORBIDDEN_ADAPTER_TYPE_NAMES = frozenset(
     {
         "OrderIntent",
+        "OrderIntentV1",
         "OrderRequest",
         "Order",
         "AdapterRequest",
@@ -82,6 +83,39 @@ REASON_TRANSFORMATION_REQUIRED = "TRANSFORMATION_REQUIRED"
 REASON_VENUE_FIELD_IN_CANONICAL = "VENUE_FIELD_IN_CANONICAL"
 REASON_MUTABLE_INTENT = "MUTABLE_INTENT"
 REASON_MISSING_PROVENANCE = "MISSING_PROVENANCE"
+REASON_INVALID_INPUT_TYPE = "INVALID_INPUT_TYPE"
+REASON_INVALID_CANONICAL_INTENT_VERSION = "INVALID_CANONICAL_INTENT_VERSION"
+REASON_UNSUPPORTED_SIDE = "UNSUPPORTED_SIDE"
+REASON_UNSUPPORTED_ORDER_TYPE_POLICY = "UNSUPPORTED_ORDER_TYPE_POLICY"
+REASON_UNSUPPORTED_TIME_IN_FORCE_POLICY = "UNSUPPORTED_TIME_IN_FORCE_POLICY"
+REASON_UNBOUND_PRICE_POLICY = "UNBOUND_PRICE_POLICY"
+REASON_MISSING_INSTRUMENT = "MISSING_INSTRUMENT"
+REASON_QUANTITY_PRECISION_LOSS = "QUANTITY_PRECISION_LOSS"
+REASON_QUANTITY_ROUNDING_INCREASES_RISK = "QUANTITY_ROUNDING_INCREASES_RISK"
+REASON_CONTRADICTORY_REDUCE_ONLY_SEMANTICS = "CONTRADICTORY_REDUCE_ONLY_SEMANTICS"
+REASON_UNBOUND_ADAPTER_FIELD = "UNBOUND_ADAPTER_FIELD"
+REASON_UNBOUND_TRANSFORMATION = "UNBOUND_TRANSFORMATION"
+
+TRANSFORMATION_ID = "canonical_order_intent_v1_to_adapter_order_intent_v1"
+TRANSFORMATION_VERSION = "v1"
+FIELD_MAPPING_VERSION = "canonical_to_adapter_order_intent_field_mapping_v1"
+TARGET_CONTRACT_NAME = "adapter_order_intent_v1"
+TARGET_CONTRACT_VERSION = "v1"
+TARGET_OWNER_MODULE = "src.execution.adapters.base_v1"
+TARGET_TYPE_NAME = "OrderIntentV1"
+
+_ORDER_TYPE_POLICY_BINDINGS: dict[str, str] = {
+    "MARKET_ONLY": "market",
+    "LIMIT_ONLY": "limit",
+}
+_TIME_IN_FORCE_POLICY_BINDINGS: dict[str, str] = {
+    "GTC": "gtc",
+    "IOC": "ioc",
+    "FOK": "fok",
+}
+_PRICE_POLICY_EXPLICIT_NONE = "EXPLICIT_NONE"
+_PRICE_POLICY_EXPLICIT_PREFIX = "EXPLICIT_PRICE:"
+_POST_ONLY_POLICY = "POST_ONLY"
 
 
 class IntentAction(str, Enum):
@@ -195,6 +229,62 @@ class AdapterCompatibilityFirewallResultV1:
 
 class CanonicalOrderIntentError(ValueError):
     """Fail-closed canonical order intent contract error."""
+
+
+class CanonicalOrderIntentTransformOutcome(str, Enum):
+    PASS = "PASS"
+    BLOCKED = "BLOCKED"
+
+
+@dataclass(frozen=True)
+class AdapterOrderIntentV1StructuralV1:
+    """Offline structural mirror of adapter OrderIntentV1 — no submission effect."""
+
+    symbol: str
+    side: str
+    qty: float
+    order_type: str
+    price: Optional[float]
+    tif: str
+    post_only: bool
+    reduce_only: bool
+    client_id: Optional[str]
+    meta: Optional[tuple[tuple[str, str], ...]]
+
+
+@dataclass(frozen=True)
+class CanonicalOrderIntentTransformationDescriptorV1:
+    source_contract: str
+    source_version: str
+    target_contract: str
+    target_version: str
+    transformation_id: str
+    transformation_version: str
+    field_mapping_version: str
+    source_digest: str
+    target_digest: str
+    lossless_fields: tuple[str, ...]
+    rejected_unbound_fields: tuple[str, ...]
+    runtime_effect: bool
+    order_effect: bool
+    authority_effect: bool
+    network_effect: bool
+    adapter_submission_effect: bool
+    transformation_required_acknowledged: bool
+    source_quantity_provenance: str
+
+
+@dataclass(frozen=True)
+class CanonicalOrderIntentTransformResultV1:
+    outcome: CanonicalOrderIntentTransformOutcome
+    adapter_intent: Optional[AdapterOrderIntentV1StructuralV1]
+    descriptor: Optional[CanonicalOrderIntentTransformationDescriptorV1]
+    reason_codes: tuple[str, ...]
+    runtime_effect: bool = False
+    order_effect: bool = False
+    authority_effect: bool = False
+    network_effect: bool = False
+    adapter_submission_effect: bool = False
 
 
 def _sha256_hex(payload: Mapping[str, Any]) -> str:
@@ -709,6 +799,331 @@ def reject_direct_submission_v1(intent: CanonicalOrderIntentV1) -> None:
     raise CanonicalOrderIntentError(REASON_TRANSFORMATION_REQUIRED)
 
 
+def _blocked_transform_result(
+    reason_codes: tuple[str, ...],
+) -> CanonicalOrderIntentTransformResultV1:
+    return CanonicalOrderIntentTransformResultV1(
+        outcome=CanonicalOrderIntentTransformOutcome.BLOCKED,
+        adapter_intent=None,
+        descriptor=None,
+        reason_codes=reason_codes,
+    )
+
+
+def _adapter_intent_to_semantic_dict(intent: AdapterOrderIntentV1StructuralV1) -> dict[str, Any]:
+    payload: dict[str, Any] = {
+        field.name: getattr(intent, field.name)
+        for field in fields(AdapterOrderIntentV1StructuralV1)
+    }
+    if payload["meta"] is not None:
+        payload["meta"] = list(payload["meta"])
+    return payload
+
+
+def compute_adapter_order_intent_structural_digest(
+    intent: AdapterOrderIntentV1StructuralV1,
+) -> str:
+    return _sha256_hex(_adapter_intent_to_semantic_dict(intent))
+
+
+def compute_transformation_descriptor_digest(
+    descriptor: CanonicalOrderIntentTransformationDescriptorV1,
+) -> str:
+    payload = {
+        field.name: getattr(descriptor, field.name)
+        for field in fields(CanonicalOrderIntentTransformationDescriptorV1)
+    }
+    return _sha256_hex(payload)
+
+
+def _validate_instrument_for_transform(intent: CanonicalOrderIntentV1) -> tuple[str, ...]:
+    reasons: list[str] = []
+    if not intent.instrument_id.strip():
+        reasons.append(REASON_MISSING_INSTRUMENT)
+    instrument_lower = intent.instrument_id.lower()
+    if any(marker in instrument_lower for marker in _FORBIDDEN_INSTRUMENT_MARKERS):
+        reasons.append(REASON_BITCOIN_SPECIFIC_DIRECTION)
+    metadata_lower = intent.instrument_metadata_ref.lower()
+    if any(marker in metadata_lower for marker in _FORBIDDEN_MARKET_TYPES):
+        reasons.append(REASON_NON_FUTURES_INSTRUMENT)
+    if "spot" in instrument_lower and "perp" not in instrument_lower:
+        reasons.append(REASON_NON_FUTURES_INSTRUMENT)
+    return tuple(dict.fromkeys(reasons))
+
+
+def _validate_reduce_only_semantics(intent: CanonicalOrderIntentV1) -> tuple[str, ...]:
+    reasons: list[str] = []
+    reduce_expected = intent.intent_action in {
+        IntentAction.REDUCE.value,
+        IntentAction.EXIT.value,
+    }
+    if reduce_expected and not intent.reduce_only:
+        reasons.append(REASON_CONTRADICTORY_REDUCE_ONLY_SEMANTICS)
+    if not reduce_expected and intent.reduce_only:
+        reasons.append(REASON_CONTRADICTORY_REDUCE_ONLY_SEMANTICS)
+    if intent.intent_action == IntentAction.EXIT.value:
+        if intent.position_effect != PositionEffect.CLOSE_ONLY.value:
+            reasons.append(REASON_CONTRADICTORY_REDUCE_ONLY_SEMANTICS)
+    if intent.intent_action == IntentAction.REDUCE.value:
+        if intent.position_effect != PositionEffect.REDUCE_ONLY.value:
+            reasons.append(REASON_CONTRADICTORY_REDUCE_ONLY_SEMANTICS)
+    return tuple(dict.fromkeys(reasons))
+
+
+def _adapter_side_for_intent(intent: CanonicalOrderIntentV1) -> Optional[str]:
+    action = intent.intent_action
+    if action == IntentAction.ENTER_LONG.value:
+        return "buy"
+    if action == IntentAction.ENTER_SHORT.value:
+        return "sell"
+    if action in {IntentAction.REDUCE.value, IntentAction.EXIT.value}:
+        if intent.side == IntentSide.LONG.value:
+            return "sell"
+        if intent.side == IntentSide.SHORT.value:
+            return "buy"
+    return None
+
+
+def _decimal_to_adapter_qty(quantity: Decimal) -> tuple[Optional[float], tuple[str, ...]]:
+    if quantity <= 0:
+        return None, (REASON_INVALID_QUANTITY,)
+    as_float = float(quantity)
+    roundtrip = Decimal(str(as_float))
+    if roundtrip > quantity:
+        return None, (REASON_QUANTITY_ROUNDING_INCREASES_RISK,)
+    if roundtrip != quantity:
+        return None, (REASON_QUANTITY_PRECISION_LOSS,)
+    return as_float, ()
+
+
+def _resolve_price_policy(
+    *,
+    order_type: str,
+    price_policy: str,
+) -> tuple[Optional[float], tuple[str, ...], tuple[str, ...]]:
+    rejected_unbound: list[str] = []
+    if order_type == "market":
+        if price_policy == _PRICE_POLICY_EXPLICIT_NONE:
+            return None, (), ()
+        rejected_unbound.append("price")
+        return None, (REASON_UNBOUND_PRICE_POLICY,), tuple(rejected_unbound)
+    if order_type == "limit":
+        if price_policy.startswith(_PRICE_POLICY_EXPLICIT_PREFIX):
+            raw = price_policy[len(_PRICE_POLICY_EXPLICIT_PREFIX) :]
+            try:
+                price_decimal = Decimal(raw)
+            except Exception:
+                return None, (REASON_UNBOUND_PRICE_POLICY,), ("price",)
+            if price_decimal <= 0:
+                return None, (REASON_UNBOUND_PRICE_POLICY,), ("price",)
+            price_float = float(price_decimal)
+            if Decimal(str(price_float)) != price_decimal:
+                return None, (REASON_QUANTITY_PRECISION_LOSS,), ("price",)
+            return price_float, (), ()
+        rejected_unbound.append("price")
+        return None, (REASON_UNBOUND_PRICE_POLICY,), tuple(rejected_unbound)
+    rejected_unbound.append("price")
+    return None, (REASON_UNBOUND_ADAPTER_FIELD,), tuple(rejected_unbound)
+
+
+def _build_adapter_meta(intent: CanonicalOrderIntentV1) -> tuple[tuple[str, str], ...]:
+    pairs = (
+        ("canonical_intent_id", intent.intent_id),
+        ("canonical_semantic_digest", intent.semantic_digest),
+        ("canonical_quantity_provenance", intent.quantity_provenance),
+        ("canonical_provenance_digest", intent.provenance_digest),
+        ("canonical_decision_id", intent.decision_id),
+        ("transformation_id", TRANSFORMATION_ID),
+        ("transformation_version", TRANSFORMATION_VERSION),
+        ("field_mapping_version", FIELD_MAPPING_VERSION),
+        ("transformation_required_acknowledged", "true"),
+        ("structural_adapter_compatibility_only", "true"),
+    )
+    return tuple(sorted(pairs))
+
+
+def transform_canonical_order_intent_v1_to_adapter_order_intent_v1(
+    intent: CanonicalOrderIntentV1,
+    *,
+    transformation_id: str = TRANSFORMATION_ID,
+) -> CanonicalOrderIntentTransformResultV1:
+    """Explicit offline transformation from canonical intent to adapter OrderIntentV1 shape."""
+
+    if not isinstance(intent, CanonicalOrderIntentV1):
+        return _blocked_transform_result((REASON_INVALID_INPUT_TYPE,))
+    if transformation_id != TRANSFORMATION_ID:
+        return _blocked_transform_result((REASON_UNBOUND_TRANSFORMATION,))
+    if intent.intent_version != INTENT_VERSION:
+        return _blocked_transform_result((REASON_INVALID_CANONICAL_INTENT_VERSION,))
+
+    validation = validate_canonical_order_intent_v1(intent)
+    if validation.validation_status != ValidationStatus.VALID.value:
+        return _blocked_transform_result(validation.reason_codes)
+
+    reasons: list[str] = []
+    reasons.extend(_validate_instrument_for_transform(intent))
+    reasons.extend(_validate_reduce_only_semantics(intent))
+
+    if not intent.quantity_provenance:
+        reasons.append(REASON_MISSING_QUANTITY_PROVENANCE)
+
+    adapter_side = _adapter_side_for_intent(intent)
+    if adapter_side is None:
+        reasons.append(REASON_UNSUPPORTED_SIDE)
+
+    order_type = _ORDER_TYPE_POLICY_BINDINGS.get(intent.order_type_policy)
+    if order_type is None:
+        reasons.append(REASON_UNSUPPORTED_ORDER_TYPE_POLICY)
+
+    tif = _TIME_IN_FORCE_POLICY_BINDINGS.get(intent.time_in_force_policy)
+    if tif is None:
+        reasons.append(REASON_UNSUPPORTED_TIME_IN_FORCE_POLICY)
+
+    qty: Optional[float] = None
+    qty_reasons: tuple[str, ...] = ()
+    if not reasons:
+        qty, qty_reasons = _decimal_to_adapter_qty(intent.quantity)
+        reasons.extend(qty_reasons)
+
+    price: Optional[float] = None
+    rejected_unbound_fields: list[str] = []
+    price_reasons: tuple[str, ...] = ()
+    if not reasons and order_type is not None:
+        price, price_reasons, rejected = _resolve_price_policy(
+            order_type=order_type,
+            price_policy=intent.price_policy,
+        )
+        reasons.extend(price_reasons)
+        rejected_unbound_fields.extend(rejected)
+
+    if intent.intent_action == IntentAction.NO_ACTION.value:
+        reasons.append(REASON_NO_ACTION_NOT_SUBMITTABLE)
+
+    if reasons:
+        return _blocked_transform_result(tuple(dict.fromkeys(reasons)))
+
+    assert adapter_side is not None
+    assert order_type is not None
+    assert tif is not None
+    assert qty is not None
+
+    post_only = intent.max_slippage_policy == _POST_ONLY_POLICY
+    rejected_unbound_fields.extend(
+        field_name
+        for field_name in ("client_id", "venue", "account")
+        if field_name not in {"client_id"}
+    )
+
+    adapter_intent = AdapterOrderIntentV1StructuralV1(
+        symbol=intent.instrument_id,
+        side=adapter_side,
+        qty=qty,
+        order_type=order_type,
+        price=price,
+        tif=tif,
+        post_only=post_only,
+        reduce_only=intent.reduce_only,
+        client_id=None,
+        meta=_build_adapter_meta(intent),
+    )
+    target_digest = compute_adapter_order_intent_structural_digest(adapter_intent)
+    lossless_fields = (
+        "instrument_id->symbol",
+        "side/intent_action->side",
+        "quantity->qty",
+        "order_type_policy->order_type",
+        "time_in_force_policy->tif",
+        "reduce_only",
+        "quantity_provenance->meta",
+        "semantic_digest->meta",
+        "provenance_digest->meta",
+    )
+    descriptor = CanonicalOrderIntentTransformationDescriptorV1(
+        source_contract=CONTRACT_NAME,
+        source_version=CONTRACT_VERSION,
+        target_contract=TARGET_CONTRACT_NAME,
+        target_version=TARGET_CONTRACT_VERSION,
+        transformation_id=TRANSFORMATION_ID,
+        transformation_version=TRANSFORMATION_VERSION,
+        field_mapping_version=FIELD_MAPPING_VERSION,
+        source_digest=intent.semantic_digest,
+        target_digest=target_digest,
+        lossless_fields=lossless_fields,
+        rejected_unbound_fields=tuple(
+            dict.fromkeys((*rejected_unbound_fields, "client_id", "venue", "account"))
+        ),
+        runtime_effect=False,
+        order_effect=False,
+        authority_effect=False,
+        network_effect=False,
+        adapter_submission_effect=False,
+        transformation_required_acknowledged=intent.transformation_required,
+        source_quantity_provenance=intent.quantity_provenance,
+    )
+
+    return CanonicalOrderIntentTransformResultV1(
+        outcome=CanonicalOrderIntentTransformOutcome.PASS,
+        adapter_intent=adapter_intent,
+        descriptor=descriptor,
+        reason_codes=(REASON_PASS,),
+    )
+
+
+def canonical_order_intent_transformation_schema_v1() -> dict[str, Any]:
+    return {
+        "transformation_id": TRANSFORMATION_ID,
+        "transformation_version": TRANSFORMATION_VERSION,
+        "field_mapping_version": FIELD_MAPPING_VERSION,
+        "source_contract": CONTRACT_NAME,
+        "source_version": CONTRACT_VERSION,
+        "target_contract": TARGET_CONTRACT_NAME,
+        "target_version": TARGET_CONTRACT_VERSION,
+        "target_owner_module": TARGET_OWNER_MODULE,
+        "target_type_name": TARGET_TYPE_NAME,
+        "invariants": {
+            "transformation_is_explicit": True,
+            "transformation_is_deterministic": True,
+            "transformation_is_side_effect_free": True,
+            "transformation_is_fail_closed": True,
+            "transformation_preserves_quantity_provenance": True,
+            "transformation_must_not_increase_risk": True,
+            "direct_cast_remains_forbidden": True,
+            "runtime_effect": False,
+            "order_effect": False,
+            "authority_effect": False,
+            "network_effect": False,
+            "adapter_submission_effect": False,
+            "structural_adapter_compatibility_only": True,
+            "full_adapter_compatibility_proven": False,
+        },
+        "order_type_policy_bindings": dict(_ORDER_TYPE_POLICY_BINDINGS),
+        "time_in_force_policy_bindings": dict(_TIME_IN_FORCE_POLICY_BINDINGS),
+        "reason_codes": sorted(
+            {
+                REASON_PASS,
+                REASON_INVALID_INPUT_TYPE,
+                REASON_INVALID_CANONICAL_INTENT_VERSION,
+                REASON_UNSUPPORTED_SIDE,
+                REASON_UNSUPPORTED_ORDER_TYPE_POLICY,
+                REASON_UNSUPPORTED_TIME_IN_FORCE_POLICY,
+                REASON_UNBOUND_PRICE_POLICY,
+                REASON_MISSING_INSTRUMENT,
+                REASON_QUANTITY_PRECISION_LOSS,
+                REASON_QUANTITY_ROUNDING_INCREASES_RISK,
+                REASON_CONTRADICTORY_REDUCE_ONLY_SEMANTICS,
+                REASON_UNBOUND_ADAPTER_FIELD,
+                REASON_UNBOUND_TRANSFORMATION,
+                REASON_MISSING_QUANTITY_PROVENANCE,
+                REASON_INVALID_QUANTITY,
+                REASON_ADAPTER_CAST_FORBIDDEN,
+                REASON_TRANSFORMATION_REQUIRED,
+                REASON_NON_FUTURES_INSTRUMENT,
+                REASON_BITCOIN_SPECIFIC_DIRECTION,
+            }
+        ),
+    }
+
+
 def canonical_order_intent_schema_v1() -> dict[str, Any]:
     return {
         "contract_name": CONTRACT_NAME,
@@ -774,6 +1189,19 @@ def canonical_order_intent_schema_v1() -> dict[str, Any]:
                 REASON_VENUE_FIELD_IN_CANONICAL,
                 REASON_MUTABLE_INTENT,
                 REASON_MISSING_PROVENANCE,
+                REASON_INVALID_INPUT_TYPE,
+                REASON_INVALID_CANONICAL_INTENT_VERSION,
+                REASON_UNSUPPORTED_SIDE,
+                REASON_UNSUPPORTED_ORDER_TYPE_POLICY,
+                REASON_UNSUPPORTED_TIME_IN_FORCE_POLICY,
+                REASON_UNBOUND_PRICE_POLICY,
+                REASON_MISSING_INSTRUMENT,
+                REASON_QUANTITY_PRECISION_LOSS,
+                REASON_QUANTITY_ROUNDING_INCREASES_RISK,
+                REASON_CONTRADICTORY_REDUCE_ONLY_SEMANTICS,
+                REASON_UNBOUND_ADAPTER_FIELD,
+                REASON_UNBOUND_TRANSFORMATION,
             }
         ),
+        "transformation_contract": canonical_order_intent_transformation_schema_v1(),
     }

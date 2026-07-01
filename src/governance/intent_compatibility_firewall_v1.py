@@ -18,6 +18,10 @@ CONTRACT_NAME = "intent_compatibility_firewall_v1"
 CONTRACT_VERSION = "v1"
 SCHEMA_VERSION = "intent_compatibility_firewall_schema_v1"
 
+CANONICAL_ORDER_INTENT_OWNER_MODULE = "src.governance.canonical_order_intent_v1"
+CANONICAL_TO_ADAPTER_TRANSFORMATION_ID = "canonical_order_intent_v1_to_adapter_order_intent_v1"
+CANONICAL_TO_ADAPTER_TRANSFORMATION_VERSION = "v1"
+CANONICAL_TO_ADAPTER_FIELD_MAPPING_VERSION = "canonical_to_adapter_order_intent_field_mapping_v1"
 CANONICAL_IDENTITY_OWNER_MODULE = "src.meta.learning_loop.canonical_order_lifecycle_v1"
 CANONICAL_IDENTITY_SYMBOL = "CanonicalOrderIntentIdentity"
 CANONICAL_IDENTITY_CONTRACT_VERSION = "canonical_order_intent_identity_contract_v1"
@@ -70,6 +74,26 @@ class IntentCompatibilityVerdictV1(str, Enum):
     BLOCKED_ADAPTER_SUBMISSION_EFFECT = "BLOCKED_ADAPTER_SUBMISSION_EFFECT"
     BLOCKED_NON_FUTURES_INTENT = "BLOCKED_NON_FUTURES_INTENT"
     BLOCKED_BITCOIN_SPECIFIC_DIRECTION = "BLOCKED_BITCOIN_SPECIFIC_DIRECTION"
+
+
+@dataclass(frozen=True)
+class IntentTransformationDescriptorV1:
+    source_contract: str
+    source_version: str
+    target_contract: str
+    target_version: str
+    transformation_id: str
+    transformation_version: str
+    field_mapping_version: str
+    source_digest: str
+    target_digest: str
+    lossless_fields: tuple[str, ...]
+    rejected_unbound_fields: tuple[str, ...]
+    runtime_effect: bool
+    order_effect: bool
+    authority_effect: bool
+    network_effect: bool
+    adapter_submission_effect: bool
 
 
 @dataclass(frozen=True)
@@ -609,6 +633,21 @@ INTENT_TYPE_DESCRIPTOR_REGISTRY_V1: dict[str, IntentTypeDescriptorV1] = {
         client_order_id_binding_present=True,
         order_effect=True,
     ),
+    "CANONICAL_ORDER_INTENT_V1": _descriptor(
+        intent_type_id="CANONICAL_ORDER_INTENT_V1",
+        owner_module=CANONICAL_ORDER_INTENT_OWNER_MODULE,
+        producer_domain="governance.canonical_order_intent",
+        consumer_domain="governance.offline_transformation",
+        persistence_lifecycle="durable_evidence",
+        quantity_semantics="decimal",
+        side_semantics="LONG_SHORT",
+        reduce_only_semantics="present",
+        instrument_binding_present=True,
+        trading_epoch_binding_present=True,
+        intent_id_binding_present=True,
+        quantity_provenance_present=True,
+        canonical_identity_compatible=True,
+    ),
     "CANONICAL_ORDER_INTENT_IDENTITY": _descriptor(
         intent_type_id="CANONICAL_ORDER_INTENT_IDENTITY",
         owner_module=CANONICAL_IDENTITY_OWNER_MODULE,
@@ -647,6 +686,92 @@ INTENT_TYPE_DESCRIPTOR_REGISTRY_V1: dict[str, IntentTypeDescriptorV1] = {
 }
 
 
+def build_canonical_to_adapter_transformation_descriptor_v1(
+    *,
+    source_digest: str,
+    target_digest: str,
+    lossless_fields: tuple[str, ...],
+    rejected_unbound_fields: tuple[str, ...],
+) -> IntentTransformationDescriptorV1:
+    return IntentTransformationDescriptorV1(
+        source_contract="canonical_order_intent_v1",
+        source_version="v1",
+        target_contract="adapter_order_intent_v1",
+        target_version="v1",
+        transformation_id=CANONICAL_TO_ADAPTER_TRANSFORMATION_ID,
+        transformation_version=CANONICAL_TO_ADAPTER_TRANSFORMATION_VERSION,
+        field_mapping_version=CANONICAL_TO_ADAPTER_FIELD_MAPPING_VERSION,
+        source_digest=source_digest,
+        target_digest=target_digest,
+        lossless_fields=lossless_fields,
+        rejected_unbound_fields=rejected_unbound_fields,
+        runtime_effect=False,
+        order_effect=False,
+        authority_effect=False,
+        network_effect=False,
+        adapter_submission_effect=False,
+    )
+
+
+def evaluate_explicit_canonical_to_adapter_transformation_firewall_v1(
+    *,
+    source_digest: str,
+    target_digest: str,
+    transformation_id: str,
+) -> IntentCompatibilityResultV1:
+    """Fail-closed offline guard for explicit canonical-to-adapter transformation only."""
+
+    source = INTENT_TYPE_DESCRIPTOR_REGISTRY_V1["CANONICAL_ORDER_INTENT_V1"]
+    target = INTENT_TYPE_DESCRIPTOR_REGISTRY_V1["ADAPTER_ORDER_INTENT_V1"]
+    edge = with_computed_conversion_edge_digest(
+        IntentConversionEdgeV1(
+            source_intent_type_id="CANONICAL_ORDER_INTENT_V1",
+            target_intent_type_id="ADAPTER_ORDER_INTENT_V1",
+            conversion_kind="EXPLICIT_ADAPTER",
+            explicit_adapter_id=transformation_id,
+            explicit_policy_id="",
+            preserves_quantity_semantics=False,
+            preserves_side_semantics=False,
+            preserves_reduce_only_semantics=True,
+            preserves_instrument_binding=True,
+            preserves_venue_binding=False,
+            preserves_account_binding=False,
+            preserves_identity_binding=False,
+            preserves_authority_binding=False,
+            semantic_digest="",
+        )
+    )
+    source_digest_computed = compute_intent_type_descriptor_digest(source)
+    target_digest_computed = compute_intent_type_descriptor_digest(target)
+    edge_digest = compute_intent_conversion_edge_digest(edge)
+
+    if transformation_id != CANONICAL_TO_ADAPTER_TRANSFORMATION_ID:
+        return _result(
+            verdict=IntentCompatibilityVerdictV1.BLOCKED_IMPLICIT_CONVERSION,
+            reason_codes=[IntentCompatibilityVerdictV1.BLOCKED_IMPLICIT_CONVERSION.value],
+            source_digest=source_digest_computed,
+            target_digest=target_digest_computed,
+            edge_digest=edge_digest,
+        )
+
+    if not source_digest or not target_digest:
+        return _result(
+            verdict=IntentCompatibilityVerdictV1.BLOCKED_QUANTITY_PROVENANCE,
+            reason_codes=[IntentCompatibilityVerdictV1.BLOCKED_QUANTITY_PROVENANCE.value],
+            source_digest=source_digest_computed,
+            target_digest=target_digest_computed,
+            edge_digest=edge_digest,
+        )
+
+    return _result(
+        verdict=IntentCompatibilityVerdictV1.ADMISSIBLE,
+        reason_codes=[IntentCompatibilityVerdictV1.ADMISSIBLE.value],
+        source_digest=source_digest_computed,
+        target_digest=target_digest_computed,
+        edge_digest=edge_digest,
+    )
+
+
 def intent_compatibility_firewall_schema_v1() -> dict[str, object]:
     return {
         "contract_name": CONTRACT_NAME,
@@ -654,6 +779,7 @@ def intent_compatibility_firewall_schema_v1() -> dict[str, object]:
         "schema_version": SCHEMA_VERSION,
         "canonical_identity_reference": CANONICAL_IDENTITY_REFERENCE,
         "referenced_owners": {
+            "canonical_order_intent_v1": CANONICAL_ORDER_INTENT_OWNER_MODULE,
             "canonical_order_intent_identity": CANONICAL_IDENTITY_OWNER_MODULE,
             "order_intent_idempotency_v1": ORDER_INTENT_IDEMPOTENCY_OWNER_MODULE,
             "canonical_order_lifecycle_v1": CANONICAL_ORDER_LIFECYCLE_OWNER_MODULE,

@@ -8,11 +8,13 @@ import inspect
 import json
 from decimal import Decimal
 from pathlib import Path
+from typing import Any
 
 import pytest
 
 import src.governance.canonical_order_intent_v1 as intent_mod
 import src.governance.capital_risk_sizing_v1 as sizing
+from src.execution.adapters.base_v1 import OrderIntentV1
 
 MODULE_PATH = (
     Path(__file__).resolve().parents[2] / "src" / "governance" / "canonical_order_intent_v1.py"
@@ -108,8 +110,8 @@ def _build_input(
         "canonical_trading_logic_version": "trading_logic_v1_test",
         "intent_action": intent_action,
         "policy_digest": "policy_digest_test",
-        "order_type_policy": "LIMIT_ONLY",
-        "price_policy": "REFERENCE_PRICE",
+        "order_type_policy": "MARKET_ONLY",
+        "price_policy": "EXPLICIT_NONE",
         "time_in_force_policy": "GTC",
         "max_slippage_policy": "ZERO",
         "expected_position_side": expected_side,
@@ -577,3 +579,359 @@ def test_schema_contract_complete() -> None:
 def test_import_smoke() -> None:
     mod = importlib.import_module("src.governance.canonical_order_intent_v1")
     assert inspect.isfunction(mod.build_canonical_order_intent_v1)
+    assert inspect.isfunction(mod.transform_canonical_order_intent_v1_to_adapter_order_intent_v1)
+
+
+# --- STEP 29R: canonical -> adapter transformation contract ---
+
+
+def _mutated_intent(
+    intent: intent_mod.CanonicalOrderIntentV1,
+    **kwargs: object,
+) -> intent_mod.CanonicalOrderIntentV1:
+    mutated = intent_mod.replace(intent, **kwargs)  # type: ignore[arg-type]
+    if "semantic_digest" not in kwargs:
+        mutated = intent_mod.replace(
+            mutated,
+            semantic_digest=intent_mod.compute_semantic_digest(mutated),
+        )
+    return mutated
+
+
+def _transformable_intent(**kwargs: object) -> intent_mod.CanonicalOrderIntentV1:
+    build_kwargs: dict[str, object] = {
+        "order_type_policy": "MARKET_ONLY",
+        "price_policy": "EXPLICIT_NONE",
+        "time_in_force_policy": "GTC",
+    }
+    build_kwargs.update(kwargs)
+    return _intent(**build_kwargs)
+
+
+def _transform(**kwargs: object) -> intent_mod.CanonicalOrderIntentTransformResultV1:
+    return intent_mod.transform_canonical_order_intent_v1_to_adapter_order_intent_v1(
+        _transformable_intent(**kwargs)
+    )
+
+
+def _as_order_intent_v1(
+    structural: intent_mod.AdapterOrderIntentV1StructuralV1,
+) -> OrderIntentV1:
+    meta = dict(structural.meta) if structural.meta is not None else None
+    return OrderIntentV1(
+        symbol=structural.symbol,
+        side=structural.side,  # type: ignore[arg-type]
+        qty=structural.qty,
+        order_type=structural.order_type,  # type: ignore[arg-type]
+        price=structural.price,
+        tif=structural.tif,  # type: ignore[arg-type]
+        post_only=structural.post_only,
+        reduce_only=structural.reduce_only,
+        client_id=structural.client_id,
+        meta=meta,
+    )
+
+
+def test_transform_01_long_entry_deterministic_success() -> None:
+    result = _transform(intent_action=intent_mod.IntentAction.ENTER_LONG.value)
+    assert result.outcome is intent_mod.CanonicalOrderIntentTransformOutcome.PASS
+    assert result.adapter_intent is not None
+    assert result.descriptor is not None
+    adapter = _as_order_intent_v1(result.adapter_intent)
+    assert adapter.side == "buy"
+    assert adapter.reduce_only is False
+    assert adapter.symbol == "ETH-USD-PERP"
+    assert adapter.order_type == "market"
+    assert adapter.tif == "gtc"
+    assert result.descriptor.transformation_required_acknowledged is True
+
+
+def test_transform_02_short_entry_deterministic_success() -> None:
+    result = _transform(
+        intent_action=intent_mod.IntentAction.ENTER_SHORT.value,
+        sizing_overrides={
+            "selected_side": sizing.SelectedSide.SHORT.value,
+            "protective_stop_price": Decimal("2100"),
+        },
+    )
+    assert result.outcome is intent_mod.CanonicalOrderIntentTransformOutcome.PASS
+    assert result.adapter_intent is not None
+    adapter = _as_order_intent_v1(result.adapter_intent)
+    assert adapter.side == "sell"
+    assert adapter.reduce_only is False
+
+
+def test_transform_03_reduce_only_exit_stays_reduce_only() -> None:
+    result = _transform(
+        intent_action=intent_mod.IntentAction.EXIT.value,
+        sizing_overrides={
+            "current_reconciled_exposure": Decimal("0.5"),
+            "current_open_positions_count": 1,
+            "current_open_side": sizing.SelectedSide.LONG.value,
+            "maximum_positions": 2,
+        },
+        current_reconciled_exposure=Decimal("0.5"),
+    )
+    assert result.outcome is intent_mod.CanonicalOrderIntentTransformOutcome.PASS
+    assert result.adapter_intent is not None
+    assert result.adapter_intent.reduce_only is True
+    assert result.adapter_intent.side == "sell"
+
+
+def test_transform_04_identical_input_identical_output_and_descriptor() -> None:
+    intent = _transformable_intent()
+    first = intent_mod.transform_canonical_order_intent_v1_to_adapter_order_intent_v1(intent)
+    second = intent_mod.transform_canonical_order_intent_v1_to_adapter_order_intent_v1(intent)
+    assert first == second
+    assert first.descriptor is not None
+    assert second.descriptor is not None
+    assert first.descriptor.target_digest == second.descriptor.target_digest
+    assert first.descriptor.source_digest == intent.semantic_digest
+
+
+def test_transform_05_direct_cast_remains_forbidden() -> None:
+    built = _transformable_intent()
+    with pytest.raises(intent_mod.CanonicalOrderIntentError):
+        intent_mod.reject_direct_adapter_cast_v1(built, OrderIntentV1)
+
+
+def test_transform_06_missing_quantity_provenance_rejected() -> None:
+    intent = _transformable_intent()
+    bad = _mutated_intent(intent, quantity_provenance="")
+    result = intent_mod.transform_canonical_order_intent_v1_to_adapter_order_intent_v1(bad)
+    assert result.outcome is intent_mod.CanonicalOrderIntentTransformOutcome.BLOCKED
+    assert intent_mod.REASON_MISSING_QUANTITY_PROVENANCE in result.reason_codes
+
+
+def test_transform_07_invalid_quantity_rejected() -> None:
+    intent = _transformable_intent()
+    bad = _mutated_intent(intent, quantity=Decimal("0"))
+    result = intent_mod.transform_canonical_order_intent_v1_to_adapter_order_intent_v1(bad)
+    assert result.outcome is intent_mod.CanonicalOrderIntentTransformOutcome.BLOCKED
+    assert intent_mod.REASON_INVALID_QUANTITY in result.reason_codes
+
+
+def test_transform_08_risk_increasing_rounding_rejected() -> None:
+    intent = _transformable_intent()
+    bad = _mutated_intent(intent, quantity=Decimal("0.10000000000000001"))
+    result = intent_mod.transform_canonical_order_intent_v1_to_adapter_order_intent_v1(bad)
+    assert result.outcome is intent_mod.CanonicalOrderIntentTransformOutcome.BLOCKED
+    assert (
+        intent_mod.REASON_QUANTITY_PRECISION_LOSS in result.reason_codes
+        or intent_mod.REASON_QUANTITY_ROUNDING_INCREASES_RISK in result.reason_codes
+    )
+
+
+def test_transform_09_unbound_order_type_rejected() -> None:
+    intent = _transformable_intent()
+    bad = _mutated_intent(intent, order_type_policy="UNKNOWN_ORDER_TYPE")
+    result = intent_mod.transform_canonical_order_intent_v1_to_adapter_order_intent_v1(bad)
+    assert result.outcome is intent_mod.CanonicalOrderIntentTransformOutcome.BLOCKED
+    assert intent_mod.REASON_UNSUPPORTED_ORDER_TYPE_POLICY in result.reason_codes
+
+
+def test_transform_10_unbound_time_in_force_rejected() -> None:
+    intent = _transformable_intent()
+    bad = _mutated_intent(intent, time_in_force_policy="DAY")
+    result = intent_mod.transform_canonical_order_intent_v1_to_adapter_order_intent_v1(bad)
+    assert result.outcome is intent_mod.CanonicalOrderIntentTransformOutcome.BLOCKED
+    assert intent_mod.REASON_UNSUPPORTED_TIME_IN_FORCE_POLICY in result.reason_codes
+
+
+def test_transform_11_missing_instrument_rejected() -> None:
+    intent = _transformable_intent()
+    bad = _mutated_intent(intent, instrument_id="")
+    result = intent_mod.transform_canonical_order_intent_v1_to_adapter_order_intent_v1(bad)
+    assert result.outcome is intent_mod.CanonicalOrderIntentTransformOutcome.BLOCKED
+    assert intent_mod.REASON_MISSING_INSTRUMENT in result.reason_codes
+
+
+def test_transform_12_spot_rejected() -> None:
+    intent = _mutated_intent(
+        _transformable_intent(),
+        instrument_id="ETH-USD",
+        instrument_metadata_ref="spot_metadata_v1",
+    )
+    result = intent_mod.transform_canonical_order_intent_v1_to_adapter_order_intent_v1(intent)
+    assert result.outcome is intent_mod.CanonicalOrderIntentTransformOutcome.BLOCKED
+    assert intent_mod.REASON_NON_FUTURES_INSTRUMENT in result.reason_codes
+
+
+def test_transform_13_synthetic_spot_rejected() -> None:
+    intent = _mutated_intent(
+        _transformable_intent(),
+        instrument_id="ETH-SYN-PERP",
+        instrument_metadata_ref="synthetic_spot_metadata_v1",
+    )
+    result = intent_mod.transform_canonical_order_intent_v1_to_adapter_order_intent_v1(intent)
+    assert result.outcome is intent_mod.CanonicalOrderIntentTransformOutcome.BLOCKED
+    assert intent_mod.REASON_NON_FUTURES_INSTRUMENT in result.reason_codes
+
+
+def test_transform_14_contradictory_reduce_only_rejected() -> None:
+    intent = _transformable_intent(intent_action=intent_mod.IntentAction.ENTER_LONG.value)
+    bad = _mutated_intent(intent, reduce_only=True)
+    result = intent_mod.transform_canonical_order_intent_v1_to_adapter_order_intent_v1(bad)
+    assert result.outcome is intent_mod.CanonicalOrderIntentTransformOutcome.BLOCKED
+    assert (
+        intent_mod.REASON_CONTRADICTORY_REDUCE_ONLY_SEMANTICS in result.reason_codes
+        or intent_mod.REASON_INVALID_SIDE_ACTION_COMBINATION in result.reason_codes
+    )
+
+
+def test_transform_15_unbound_adapter_fields_not_guessed() -> None:
+    intent = _transformable_intent()
+    bad = _mutated_intent(
+        intent,
+        order_type_policy="LIMIT_ONLY",
+        price_policy="REFERENCE_PRICE",
+    )
+    result = intent_mod.transform_canonical_order_intent_v1_to_adapter_order_intent_v1(bad)
+    assert result.outcome is intent_mod.CanonicalOrderIntentTransformOutcome.BLOCKED
+    assert intent_mod.REASON_UNBOUND_PRICE_POLICY in result.reason_codes
+    assert result.adapter_intent is None
+
+
+def test_transform_16_no_runtime_submission_functions_called(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    called: list[str] = []
+
+    def _boom(*_args: Any, **_kwargs: Any) -> None:
+        called.append("place_order")
+        raise AssertionError("runtime submission must not be called")
+
+    monkeypatch.setattr(
+        "src.execution.adapters.base_v1.ExecutionAdapterV1.place_order",
+        _boom,
+        raising=False,
+    )
+    result = _transform()
+    assert result.outcome is intent_mod.CanonicalOrderIntentTransformOutcome.PASS
+    assert called == []
+
+
+def test_transform_17_no_permission_or_authority_fields() -> None:
+    result = _transform()
+    assert result.authority_effect is False
+    assert result.runtime_effect is False
+    assert result.order_effect is False
+    assert result.adapter_submission_effect is False
+    assert result.descriptor is not None
+    assert result.descriptor.authority_effect is False
+
+
+def test_transform_18_descriptor_has_full_provenance() -> None:
+    intent = _transformable_intent()
+    result = intent_mod.transform_canonical_order_intent_v1_to_adapter_order_intent_v1(intent)
+    assert result.descriptor is not None
+    descriptor = result.descriptor
+    assert descriptor.source_contract == intent_mod.CONTRACT_NAME
+    assert descriptor.target_contract == intent_mod.TARGET_CONTRACT_NAME
+    assert descriptor.transformation_id == intent_mod.TRANSFORMATION_ID
+    assert descriptor.source_digest == intent.semantic_digest
+    assert descriptor.target_digest
+    assert descriptor.source_quantity_provenance == intent.quantity_provenance
+    assert descriptor.network_effect is False
+    assert descriptor.adapter_submission_effect is False
+
+
+def test_transform_19_source_intent_unchanged() -> None:
+    intent = _transformable_intent()
+    before = intent_mod.canonical_order_intent_to_json(intent)
+    result = intent_mod.transform_canonical_order_intent_v1_to_adapter_order_intent_v1(intent)
+    after = intent_mod.canonical_order_intent_to_json(intent)
+    assert before == after
+    assert result.outcome is intent_mod.CanonicalOrderIntentTransformOutcome.PASS
+
+
+@pytest.mark.parametrize(
+    "quantity",
+    [
+        Decimal("0.01"),
+        Decimal("0.50"),
+        Decimal("1.00"),
+        Decimal("12.34"),
+        Decimal("99.99"),
+    ],
+)
+def test_transform_20_output_quantity_never_exceeds_input(quantity: Decimal) -> None:
+    decision = _passing_sizing_decision()
+    assert decision.quantity_provenance is not None
+    provenance = sizing.QuantityProvenanceV1(
+        **{
+            **{
+                field.name: getattr(decision.quantity_provenance, field.name)
+                for field in sizing.QuantityProvenanceV1.__dataclass_fields__.values()
+            },
+            "final_quantity": quantity,
+            "output_digest": f"digest-{quantity}",
+        }
+    )
+    blocked = sizing.CapitalRiskSizingDecisionV1(
+        outcome=decision.outcome,
+        final_quantity=quantity,
+        selected_side=decision.selected_side,
+        capital_envelope=decision.capital_envelope,
+        pre_sizing_risk=decision.pre_sizing_risk,
+        canonical_sizing=decision.canonical_sizing,
+        post_sizing_risk=decision.post_sizing_risk,
+        quantity_provenance=provenance,
+        reason_codes=decision.reason_codes,
+    )
+    build = intent_mod.build_canonical_order_intent_v1(
+        intent_mod.CanonicalOrderIntentBuildInputV1(
+            sizing_input=_sizing_input(),
+            sizing_decision=blocked,
+            intent_id="intent-prop",
+            trading_epoch="epoch-001",
+            canonical_trading_logic_version="trading_logic_v1_test",
+            intent_action=intent_mod.IntentAction.ENTER_LONG.value,
+            policy_digest="policy_digest_test",
+            order_type_policy="MARKET_ONLY",
+            price_policy="EXPLICIT_NONE",
+            time_in_force_policy="GTC",
+            max_slippage_policy="ZERO",
+            expected_position_side=intent_mod.IntentSide.LONG.value,
+            current_reconciled_exposure=Decimal("0"),
+        )
+    )
+    if build.intent is None:
+        return
+    result = intent_mod.transform_canonical_order_intent_v1_to_adapter_order_intent_v1(build.intent)
+    if result.outcome is intent_mod.CanonicalOrderIntentTransformOutcome.PASS:
+        assert result.adapter_intent is not None
+        assert Decimal(str(result.adapter_intent.qty)) <= build.intent.quantity
+
+
+def test_transform_21_long_short_symmetry() -> None:
+    long_result = _transform(intent_action=intent_mod.IntentAction.ENTER_LONG.value)
+    short_result = _transform(
+        intent_action=intent_mod.IntentAction.ENTER_SHORT.value,
+        sizing_overrides={
+            "selected_side": sizing.SelectedSide.SHORT.value,
+            "protective_stop_price": Decimal("2100"),
+        },
+    )
+    assert long_result.outcome is intent_mod.CanonicalOrderIntentTransformOutcome.PASS
+    assert short_result.outcome is intent_mod.CanonicalOrderIntentTransformOutcome.PASS
+    assert long_result.adapter_intent is not None
+    assert short_result.adapter_intent is not None
+    assert long_result.adapter_intent.side == "buy"
+    assert short_result.adapter_intent.side == "sell"
+
+
+def test_transform_22_futures_only_and_no_bitcoin_direction() -> None:
+    schema = intent_mod.canonical_order_intent_transformation_schema_v1()
+    assert intent_mod.FUTURES_ONLY is True
+    assert intent_mod.BITCOIN_DIRECTION_ALLOWED is False
+    assert schema["invariants"]["full_adapter_compatibility_proven"] is False
+    result = intent_mod.transform_canonical_order_intent_v1_to_adapter_order_intent_v1(
+        _mutated_intent(
+            _transformable_intent(),
+            instrument_id="BTC-USD-PERP",
+            instrument_metadata_ref="btc_perp_metadata_v1",
+        )
+    )
+    assert result.outcome is intent_mod.CanonicalOrderIntentTransformOutcome.BLOCKED
+    assert intent_mod.REASON_BITCOIN_SPECIFIC_DIRECTION in result.reason_codes
