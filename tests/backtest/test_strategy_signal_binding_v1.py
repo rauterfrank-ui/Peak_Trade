@@ -169,6 +169,21 @@ def test_macd_required_warmup_rows() -> None:
     assert compute_required_warmup_rows_v1("macd", effective) == 34
 
 
+def test_breakout_donchian_required_warmup_rows_default() -> None:
+    effective, _ = resolve_effective_strategy_params_v1("breakout_donchian", {})
+    assert compute_required_warmup_rows_v1("breakout_donchian", effective) == 20
+
+
+def test_breakout_donchian_warmup_missing_lookback_fail_closed() -> None:
+    with pytest.raises(StrategySignalBindingError, match="breakout_donchian_lookback_missing"):
+        compute_required_warmup_rows_v1("breakout_donchian", {})
+
+
+def test_breakout_donchian_warmup_invalid_lookback_fail_closed() -> None:
+    with pytest.raises(StrategySignalBindingError, match="lookback_not_integer"):
+        compute_required_warmup_rows_v1("breakout_donchian", {"lookback": 2.5})
+
+
 def test_execute_macd_produces_long_and_short_signals() -> None:
     result = execute_configured_strategy_signal_series_v1(
         _bars(120),
@@ -185,6 +200,22 @@ def test_execute_macd_produces_long_and_short_signals() -> None:
     assert result.provenance.strategy_nonzero_signal_count > 0
     assert (result.signals == 1).any()
     assert (result.signals == -1).any()
+
+
+def test_execute_breakout_donchian_produces_signals() -> None:
+    result = execute_configured_strategy_signal_series_v1(
+        _bars(120),
+        strategy_id="breakout_donchian",
+        cfg={
+            "economic_evaluation_v1": {
+                "strategy_id": "breakout_donchian",
+                "strategy_params": {"lookback": 20, "price_col": "close"},
+            }
+        },
+    )
+    assert result.provenance.strategy_execution_status.value == "EXECUTED"
+    assert result.provenance.engine_signal_source == ENGINE_SIGNAL_SOURCE_CONFIGURED_STRATEGY
+    assert result.provenance.strategy_nonzero_signal_count >= 0
 
 
 def test_signal_contract_rejects_unknown_values() -> None:

@@ -21,7 +21,8 @@ STEP_29M_IMPLEMENTED_SCOPE = (
     "economic_validity_policy_threshold_values_v1_slice,"
     "real_admissible_futures_economic_evidence_evaluation_v1_offline_slice,"
     f"{OPERATOR_INPUT_SLICE},"
-    "real_okx_inst_eth_usdt_perp_economic_evaluation_v1_offline_slice"
+    "real_okx_inst_eth_usdt_perp_economic_evaluation_v1_offline_slice,"
+    "breakout_donchian_v1_operator_policy_ratification_and_config_registry_slice_v0"
 )
 
 
