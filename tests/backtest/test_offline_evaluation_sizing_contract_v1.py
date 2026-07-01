@@ -159,9 +159,9 @@ def test_v3_real_config_entry_feasibility_pass() -> None:
     cfg = json.loads(V3_CONFIG.read_text(encoding="utf-8"))
     assert compute_evaluation_config_digest_v1(cfg) == EXPECTED_CONFIG_V3_DIGEST
     contract = load_offline_evaluation_sizing_contract_v1(cfg)
-    requested = (
-        Decimal(str(contract.risk_per_trade)) / Decimal(str(contract.stop_pct))
-    ).quantize(Decimal("0.0000000001"))
+    requested = (Decimal(str(contract.risk_per_trade)) / Decimal(str(contract.stop_pct))).quantize(
+        Decimal("0.0000000001")
+    )
     assert requested == Decimal("0.20")
     assert Decimal(str(contract.max_position_pct)) == V3_RATIFIED_MAX_POSITION_PCT
     headroom = V3_RATIFIED_MAX_POSITION_PCT - requested
