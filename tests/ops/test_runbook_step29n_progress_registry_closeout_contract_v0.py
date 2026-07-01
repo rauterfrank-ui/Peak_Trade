@@ -48,11 +48,21 @@ def test_runbook_step_29n_complete_true() -> None:
     assert _field_value(text, "RUNBOOK_STEP_29N_COMPLETE") == "true"
 
 
-def test_progress_registry_closeout_performed_true() -> None:
+def test_progress_registry_closeout_performed_true_in_29n_section_snapshot() -> None:
+    """Historical 29N section closeout remains proven; global field is mutable."""
     text = _read_registry()
     section = _step_29n_section(text)
-    assert _field_value(text, "PROGRESS_REGISTRY_CLOSEOUT_PERFORMED") == "true"
     assert _field_value(section, "PROGRESS_REGISTRY_CLOSEOUT_PERFORMED") == "true"
+
+
+def test_global_closeout_not_permanently_bound_to_29n_section() -> None:
+    """Later active steps may advance the global closeout without falsifying 29N history."""
+    text = _read_registry()
+    section = _step_29n_section(text)
+    assert _field_value(section, "RUNBOOK_STEP_29N_COMPLETE") == "true"
+    assert _field_value(section, "PROGRESS_REGISTRY_CLOSEOUT_PERFORMED") == "true"
+    if _field_value(text, "RUNBOOK_STEP_29R_STARTED") == "true":
+        assert _field_value(text, "PROGRESS_REGISTRY_CLOSEOUT_PERFORMED") in {"true", "false"}
 
 
 def test_step_29o_started_preserved_in_29n_section_snapshot() -> None:

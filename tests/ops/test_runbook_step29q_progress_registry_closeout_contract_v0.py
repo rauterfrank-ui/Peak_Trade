@@ -81,15 +81,23 @@ def test_canonical_order_intent_implemented_true() -> None:
     assert _field_value(section, "CANONICAL_ORDER_INTENT_DEFINED") == "true"
 
 
-def test_adapter_compatibility_and_transformation_not_proven_or_bound() -> None:
+def test_adapter_compatibility_and_transformation_not_proven_or_bound_in_29q_section() -> None:
+    """29Q section snapshot preserves pre-29R transformation state."""
     text = _read_registry()
     section = _step_29q_section(text)
     assert _field_value(text, "CANONICAL_ORDER_INTENT_ADAPTER_COMPATIBILITY_PROVEN") == "false"
     assert _field_value(section, "CANONICAL_ORDER_INTENT_ADAPTER_COMPATIBILITY_PROVEN") == "false"
-    assert _field_value(text, "CANONICAL_ORDER_INTENT_TRANSFORMATION_BOUND") == "false"
     assert _field_value(section, "CANONICAL_ORDER_INTENT_TRANSFORMATION_BOUND") == "false"
     assert _field_value(section, "IMPLICIT_ADAPTER_COMPATIBILITY_ALLOWED") == "false"
     assert _field_value(section, "ADAPTER_TRANSFORMATION_IMPLEMENTED") == "false"
+
+
+def test_global_transformation_bound_may_advance_after_29r_slice() -> None:
+    text = _read_registry()
+    section = _step_29q_section(text)
+    assert _field_value(section, "CANONICAL_ORDER_INTENT_TRANSFORMATION_BOUND") == "false"
+    if _field_value(text, "RUNBOOK_STEP_29R_IMPLEMENTATION_STARTED") == "true":
+        assert _field_value(text, "CANONICAL_ORDER_INTENT_TRANSFORMATION_BOUND") == "true"
 
 
 def test_offline_intent_submission_boundaries_declared() -> None:
