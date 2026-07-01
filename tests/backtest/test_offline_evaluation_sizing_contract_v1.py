@@ -446,6 +446,83 @@ def test_mv2_wiring_emits_sizing_provenance_when_contract_bound() -> None:
     )
 
 
+def test_mv2_wiring_v3_near_twenty_percent_entry_executes_trade(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    """~20% notional (v3 policy) must pass sizing and bound RiskLimits via MV2 wiring."""
+    from src.backtest import strategy_signal_binding_v1 as signal_binding
+    from src.backtest.strategy_signal_binding_v1 import (
+        SignalAlignmentStatus,
+        SignalContractStatus,
+        StrategyExecutionStatus,
+        StrategySignalBindingResultV1,
+        StrategySignalProvenanceV1,
+    )
+
+    cfg = json.loads(V3_CONFIG.read_text(encoding="utf-8"))
+    cfg["economic_evaluation_v1"] = {
+        "strategy_id": "ma_crossover",
+        "strategy_params": {"fast_period": 2, "slow_period": 3},
+    }
+    bars = _minimal_bars(6)
+    bars["mark_price"] = bars["close"]
+    bars["index_price"] = bars["close"]
+    bars["best_bid"] = bars["close"] - 0.05
+    bars["best_ask"] = bars["close"] + 0.05
+    bars["spread"] = 0.1
+    bars["funding_rate"] = 0.0001
+    bars["is_final"] = True
+    impulse = pd.Series([0, 1, 0, 0, -1, 0], index=bars.index, dtype=int)
+    provenance = StrategySignalProvenanceV1(
+        configured_strategy_id="ma_crossover",
+        executed_strategy_id="ma_crossover",
+        strategy_version="v1",
+        strategy_owner="src.strategies.ma_crossover",
+        configured_strategy_params={"fast_period": 2, "slow_period": 3},
+        effective_strategy_params={"fast_period": 2, "slow_period": 3},
+        strategy_params_digest="test",
+        strategy_execution_status=StrategyExecutionStatus.EXECUTED,
+        strategy_signal_source="canonical_strategy_signal_series",
+        strategy_signal_digest="test",
+        strategy_signal_count=len(impulse),
+        strategy_nonzero_signal_count=int((impulse != 0).sum()),
+        strategy_signal_transition_count=2,
+        engine_signal_source="configured_strategy_signal",
+        engine_signal_digest="test",
+        engine_input_nonzero_signal_count=int((impulse != 0).sum()),
+        signal_alignment_status=SignalAlignmentStatus.ALIGNED,
+        signal_contract_status=SignalContractStatus.PASS,
+        all_flat_signal_reason=signal_binding.AllFlatSignalReason.NONE,
+    )
+
+    def _fake_execute(
+        bars_in: pd.DataFrame,
+        *,
+        strategy_id: str,
+        cfg: dict,
+    ) -> StrategySignalBindingResultV1:
+        return StrategySignalBindingResultV1(signals=impulse, provenance=provenance)
+
+    monkeypatch.setattr(
+        wiring,
+        "execute_configured_strategy_signal_series_v1",
+        _fake_execute,
+    )
+    result = wiring.run_mv2_research_backtest_wiring_v1(
+        bars,
+        strategy_id="ma_crossover",
+        cfg=cfg,
+        instrument_id="inst-eth-usdt-perp",
+        explicit_zero_cost_non_economic=True,
+    )
+    prov = result.sizing_provenance
+    assert prov["entry_sizing_pass_count"] == 1
+    assert result.backtest_result.stats["total_trades"] >= 1
+    assert wiring.build_mv2_research_risk_limits_v1(cfg).config.max_position_pct == pytest.approx(
+        25.0
+    )
+
+
 def test_v2_config_digest_differs_from_v1() -> None:
     v1 = json.loads(V1_CONFIG.read_text(encoding="utf-8"))
     v2 = json.loads(V2_CONFIG.read_text(encoding="utf-8"))

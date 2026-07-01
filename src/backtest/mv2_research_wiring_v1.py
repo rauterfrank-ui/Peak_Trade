@@ -11,6 +11,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 from dataclasses import dataclass, field
 from datetime import timedelta
 from enum import Enum
@@ -57,6 +58,7 @@ from src.experiments.stress_tests import (
     StressTestSuiteResult,
     run_stress_test_suite,
 )
+from src.risk.limits import RiskLimits, RiskLimitsConfig
 from src.strategies.registry import (
     REGISTRY_SCHEMA_VERSION,
     StrategyRegistrySnapshotV1,
@@ -222,6 +224,29 @@ class MV2WalkForwardWiringResultV1:
 def _fail_closed(condition: bool, reason: str) -> None:
     if condition:
         raise ValueError(reason)
+
+
+def risk_max_position_fraction_to_percent_v1(fraction: float) -> float:
+    """Convert cfg.risk.max_position_size fraction (0, 1] to RiskLimits percent scale."""
+    if not isinstance(fraction, (int, float)) or not math.isfinite(float(fraction)):
+        raise ValueError("risk_max_position_size_invalid")
+    value = float(fraction)
+    if value <= 0.0 or value > 1.0:
+        raise ValueError("risk_max_position_size_out_of_range")
+    return value * 100.0
+
+
+def build_mv2_research_risk_limits_v1(cfg: Mapping[str, Any]) -> RiskLimits:
+    """Bind BacktestEngine RiskLimits from canonical cfg.risk.max_position_size fraction."""
+    risk_section = cfg.get("risk")
+    if not isinstance(risk_section, Mapping):
+        raise ValueError("risk_section_missing")
+    if risk_section.get("max_position_size") is None:
+        raise ValueError("risk_max_position_size_missing")
+    max_position_pct = risk_max_position_fraction_to_percent_v1(
+        float(risk_section["max_position_size"])
+    )
+    return RiskLimits(RiskLimitsConfig(max_position_pct=max_position_pct))
 
 
 def _stable_digest(payload: Mapping[str, Any]) -> str:
@@ -932,7 +957,10 @@ def run_mv2_research_backtest_wiring_v1(
         strategy_params["stop_pct"] = contract.stop_pct
         engine_cfg["offline_evaluation_sizing_contract_v1"] = contract.to_dict()
 
-    engine = BacktestEngine(use_execution_pipeline=False)
+    engine = BacktestEngine(
+        use_execution_pipeline=False,
+        risk_limits=build_mv2_research_risk_limits_v1(cfg),
+    )
     engine.config = engine_cfg
     backtest_result = engine.run_realistic(
         df=bars,
