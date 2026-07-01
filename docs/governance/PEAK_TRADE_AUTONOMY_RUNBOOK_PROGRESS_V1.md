@@ -16,10 +16,10 @@ SCHEDULER_RUNTIME_ALLOWED: false
 
 | Feld | Wert |
 |---|---|
-| `LAST_VERIFIED_ORIGIN_MAIN` | `1539ba026f0874c9354482a01f483d0930d79624` |
-| `LAST_VERIFIED_AT` | `2026-07-01T12:00:00Z` |
+| `LAST_VERIFIED_ORIGIN_MAIN` | `876dfd20e3e8b61709d81d017dac5000a508185f` |
+| `LAST_VERIFIED_AT` | `2026-07-01T18:00:00Z` |
 | `CURRENT_MAJOR_GAP_PACKAGE` | `MAJOR_GAP_COMPARISON_PROMOTION_POLICY_INPUT_BRIDGE_V0` |
-| `NEXT_RUNBOOK_STEP` | `RUNBOOK_STEP_29Q` |
+| `NEXT_RUNBOOK_STEP` | `RUNBOOK_STEP_29R` |
 | `NEXT_CANONICAL_STEP` | `backtest_engine_rewire_binding` |
 | `RUNBOOK_STEP_13_IMPLEMENTED` | `true` |
 | `TRADING_SESSION_SINGLE_WRITER_IMPLEMENTED` | `true` |
@@ -138,7 +138,7 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `RUNBOOK_STEP_29Q_IMPLEMENTATION_STARTED` | `true` |
 | `RUNBOOK_STEP_29Q_IMPLEMENTED_SCOPE` | `canonical_order_intent_v1_offline_slice` |
 | `RUNBOOK_STEP_29Q_IMPLEMENTED` | `true` |
-| `RUNBOOK_STEP_29Q_COMPLETE` | `false` |
+| `RUNBOOK_STEP_29Q_COMPLETE` | `true` |
 | `STEP_29Q_STARTED` | `true` |
 | `CANONICAL_ORDER_INTENT_IMPLEMENTED` | `true` |
 | `CANONICAL_ORDER_INTENT_ADAPTER_COMPATIBILITY_PROVEN` | `false` |
@@ -152,7 +152,7 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `EXECUTION_ALLOWED` | `false` |
 | `ECONOMIC_VALIDITY_PROVEN` | `false` |
 | `PROFITABILITY_CLAIM_ALLOWED` | `false` |
-| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `false` |
+| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `true` |
 | `FOLLOW_UP_DEVEX_SCOPE` | `CANONICAL_PRE_PR_RUFF_AND_DIFF_GUARD` |
 | `FOLLOW_UP_DEVEX_STATUS` | `PENDING_SEPARATE_PR` |
 | `SYSTEMWIDE_RANKING_REQUIRED` | `false` |
@@ -1315,23 +1315,23 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 |---|---|
 | `RUNBOOK_PHASE` | 9 |
 | `RUNBOOK_STEP_ID` | `canonical_order_intent_v1` |
-| `STATUS` | `IN_PROGRESS` |
+| `STATUS` | `COMPLETE` |
 | `CANONICAL_OWNER` | `src&#47;governance&#47;canonical_order_intent_v1.py` <!-- pt:ref-target-ignore --> |
 | `CANONICAL_OWNER_STATUS` | `IMPLEMENTED` |
 | `CANONICAL_OWNER_RATIFIED` | `true` |
-| `MERGED_PRS` | `none` |
-| `MERGE_COMMITS` | `none` |
-| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29p_capital_risk_sizing_progress_registry_closeout_pr_squash_merge_closeout_v0_20260701T033637Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning_or_validation/runbook_step29o_intent_compatibility_firewall_read_only_scope_audit_v0_20260701T141500Z/STEP_BOUNDARY_29O_29P_29Q_29R.md (MANIFEST_VERIFY_RC=0); audit_verdict=RUNBOOK_STEP_29O_READ_ONLY_SCOPE_AUDIT_PASS; minimum_safe_slice=canonical_order_intent_v1_offline_slice; STEP_29Q_IMPLEMENTATION_STARTED=true; STEP_29Q_IMPLEMENTED_SCOPE=canonical_order_intent_v1_offline_slice; CANONICAL_ORDER_INTENT_IMPLEMENTED=true; STEP_29Q_COMPLETION_DOES_NOT_AUTHORIZE_LIVE=true; STEP_29Q_COMPLETION_DOES_NOT_AUTHORIZE_RUNTIME=true; STEP_29Q_COMPLETION_DOES_NOT_AUTHORIZE_ORDERS=true; STEP_29Q_COMPLETION_DOES_NOT_START_STEP_29R=true; offline_only=true; non_authorizing=true; runtime_process_started=false; scheduler_action_performed=false; venue_access_performed=false; credential_access_performed=false; trading_action_performed=false; progress_registry_closeout_status=pending_separate_closeout; FUTURES_ONLY=true; BITCOIN_DIRECTION_ALLOWED=false; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SCHEDULER_RUNTIME_ALLOWED=false` |
+| `MERGED_PRS` | `#4718` |
+| `MERGE_COMMITS` | `876dfd20e3e8b61709d81d017dac5000a508185f` |
+| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29q_canonical_order_intent_v1_implementation_pr_squash_merge_closeout_v0_20260701T061814Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning_or_validation/runbook_step29q_canonical_order_intent_progress_registry_closeout_v0_20260701T180000Z (MANIFEST_VERIFY_RC=0); canonical_order_intent_pr=4718; canonical_order_intent_merge_commit=876dfd20e3e8b61709d81d017dac5000a508185f; canonical_order_intent_squash_parent=d409697c449adc4b0bcbf4d8df4c2676427f200a; canonical_scope=canonical_order_intent_v1_offline_slice; CANONICAL_ORDER_INTENT_V1_BOUND=true; STEP29Q_IMPLEMENTATION_COMPLETE=true; OFFLINE_ORDER_INTENT_CONTRACT_IMPLEMENTED=true; ACTIVE_RUNTIME_ORDER_EFFECT=false; STEP_29Q_COMPLETION_DOES_NOT_AUTHORIZE_LIVE=true; STEP_29Q_COMPLETION_DOES_NOT_AUTHORIZE_RUNTIME=true; STEP_29Q_COMPLETION_DOES_NOT_AUTHORIZE_ORDERS=true; STEP_29Q_COMPLETION_DOES_NOT_START_STEP_29R=true; PROMOTION_ELIGIBILITY_GRANTED=false; RUNTIME_AUTHORITY_GRANTED=false; offline_only=true; non_authorizing=true; runtime_process_started=false; scheduler_action_performed=false; venue_access_performed=false; credential_access_performed=false; trading_action_performed=false; progress_registry_closeout_status=COMPLETE; FUTURES_ONLY=true; BITCOIN_DIRECTION_ALLOWED=false; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SCHEDULER_RUNTIME_ALLOWED=false` |
 | `DEPENDENCIES` | RUNBOOK_STEP_29P |
-| `REMAINING_GAPS` | `progress_registry_closeout_pending` |
-| `NEXT_REQUIRED_CONTRACT` | `RUNBOOK_STEP_29Q_PROGRESS_REGISTRY_CLOSEOUT` |
+| `REMAINING_GAPS` | `runtime_rewire_29r_pending` |
+| `NEXT_REQUIRED_CONTRACT` | `RUNBOOK_STEP_29R` |
 | `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
 | `RUNBOOK_STEP_29Q_STARTED` | `true` |
 | `RUNBOOK_STEP_29Q_IMPLEMENTATION_STARTED` | `true` |
 | `RUNBOOK_STEP_29Q_IMPLEMENTED_SCOPE` | `canonical_order_intent_v1_offline_slice` |
 | `RUNBOOK_STEP_29Q_IMPLEMENTED` | `true` |
-| `RUNBOOK_STEP_29Q_COMPLETE` | `false` |
-| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `false` |
+| `RUNBOOK_STEP_29Q_COMPLETE` | `true` |
+| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `true` |
 | `RUNBOOK_STEP_29Q_SCOPE` | `canonical_order_intent_v1` |
 | `RUNBOOK_STEP_29Q_PROCESS_CLASSIFICATION` | `ACTIVE_PROGRESS` |
 | `RUNBOOK_STEP_29Q_SCOPE_CLASSIFICATION` | `CANONICAL_ORDER_INTENT_V1_OFFLINE_SLICE` |
@@ -1344,7 +1344,7 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `CAPITAL_RISK_SIZING_MATHEMATICS_IMPLEMENTED` | `true` |
 | `CAPITAL_RISK_SIZING_MATHEMATICS_CHANGED` | `false` |
 | `RUNTIME_REWIRE_PERFORMED` | `false` |
-| `NEXT_RUNBOOK_STEP` | `RUNBOOK_STEP_29Q` |
+| `NEXT_RUNBOOK_STEP` | `RUNBOOK_STEP_29R` |
 | `SEPARATE_GO_REQUIRED_FOR_RUNTIME_OR_EXECUTION_EFFECT` | `true` |
 | `SEPARATE_GO_REQUIRED_FOR_OFFLINE_CANONICAL_IMPLEMENTATION` | `false` |
 | `RUNTIME_EFFECT` | `false` |
@@ -1378,6 +1378,14 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `STEP_29Q_DOES_NOT_GRANT_AUTHORITY` | `true` |
 | `STEP_29Q_EXCLUDES_RUNTIME_REWIRE_29R` | `true` |
 | `STEP_29Q_COMPLETION_DOES_NOT_START_STEP_29R` | `true` |
+| `STEP_29Q_QUANTITY_PROVENANCE_BOUND_TO_STEP_29P` | `true` |
+| `STEP_29Q_IMMUTABLE` | `true` |
+| `STEP_29Q_DETERMINISTIC` | `true` |
+| `STEP_29Q_NOT_DIRECTLY_SUBMITTABLE` | `true` |
+| `STEP_29Q_EXECUTION_ELIGIBLE` | `false` |
+| `STEP_29Q_ADAPTER_COMPATIBLE` | `false` |
+| `STEP_29Q_SUBMISSION_AUTHORIZED` | `false` |
+| `STEP_29Q_TRANSFORMATION_REQUIRED` | `true` |
 | `offline_only` | `true` |
 | `non_authorizing` | `true` |
 | `SEPARATE_GO_REQUIRED` | `true` |

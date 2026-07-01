@@ -53,13 +53,11 @@ def test_runbook_step_29q_implemented_scope_bound() -> None:
     assert _field_value(section, "RUNBOOK_STEP_29Q_IMPLEMENTED_SCOPE") == STEP_29Q_IMPLEMENTED_SCOPE
 
 
-def test_runbook_step_29q_implemented_true_not_complete() -> None:
+def test_runbook_step_29q_implemented_true() -> None:
     text = _read_registry()
     section = _step_29q_section(text)
     assert _field_value(text, "RUNBOOK_STEP_29Q_IMPLEMENTED") == "true"
     assert _field_value(section, "RUNBOOK_STEP_29Q_IMPLEMENTED") == "true"
-    assert _field_value(text, "RUNBOOK_STEP_29Q_COMPLETE") == "false"
-    assert _field_value(section, "RUNBOOK_STEP_29Q_COMPLETE") == "false"
 
 
 def test_canonical_order_intent_implemented_true() -> None:
@@ -98,20 +96,6 @@ def test_scope_classification_offline_slice() -> None:
         _field_value(section, "RUNBOOK_STEP_29Q_CANONICAL_DEFINITION")
         == STEP_29Q_CANONICAL_DEFINITION
     )
-
-
-def test_progress_registry_closeout_not_performed() -> None:
-    text = _read_registry()
-    section = _step_29q_section(text)
-    assert _field_value(text, "PROGRESS_REGISTRY_CLOSEOUT_PERFORMED") == "false"
-    assert _field_value(section, "PROGRESS_REGISTRY_CLOSEOUT_PERFORMED") == "false"
-
-
-def test_next_runbook_step_remains_29q() -> None:
-    text = _read_registry()
-    section = _step_29q_section(text)
-    assert _field_value(text, "NEXT_RUNBOOK_STEP") == "RUNBOOK_STEP_29Q"
-    assert _field_value(section, "NEXT_RUNBOOK_STEP") == "RUNBOOK_STEP_29Q"
 
 
 def test_no_runtime_order_or_authority_effects() -> None:
