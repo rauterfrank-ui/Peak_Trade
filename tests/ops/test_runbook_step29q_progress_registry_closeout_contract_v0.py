@@ -30,7 +30,7 @@ def _field_value(text: str, field: str) -> str:
 
 def _step_29q_section(text: str) -> str:
     start = text.index("#### RUNBOOK_STEP_29Q — Canonical Order Intent v1")
-    end = text.index("\n---\n\n## PR #4629 Evidence-Drift", start)
+    end = text.index("\n#### RUNBOOK_STEP_29R — Runtime Rewire", start)
     return re.sub(r"\s<!--.*?-->", "", text[start:end])
 
 
@@ -61,10 +61,8 @@ def test_runbook_step_29q_complete_true() -> None:
     assert _field_value(section, "RUNBOOK_STEP_29Q_COMPLETE") == "true"
 
 
-def test_progress_registry_closeout_performed_true() -> None:
-    text = _read_registry()
-    section = _step_29q_section(text)
-    assert _field_value(text, "PROGRESS_REGISTRY_CLOSEOUT_PERFORMED") == "true"
+def test_progress_registry_closeout_performed_true_in_29q_section() -> None:
+    section = _step_29q_section(_read_registry())
     assert _field_value(section, "PROGRESS_REGISTRY_CLOSEOUT_PERFORMED") == "true"
 
 
@@ -160,11 +158,11 @@ def test_step_29r_not_started_in_29q_section_snapshot() -> None:
     assert "RUNBOOK_STEP_29R_COMPLETE" not in section
 
 
-def test_no_step_29r_start_markers() -> None:
+def test_step_29q_complete_preserved_after_29r_global_start() -> None:
     text = _read_registry()
-    assert "RUNBOOK_STEP_29R_STARTED" not in text
-    assert "STEP_29R_STARTED" not in text
-    assert "#### RUNBOOK_STEP_29R" not in text
+    assert _field_value(text, "RUNBOOK_STEP_29Q_COMPLETE") == "true"
+    assert _field_value(text, "RUNBOOK_STEP_29R_STARTED") == "true"
+    assert _field_value(text, "NEXT_RUNBOOK_STEP") == "RUNBOOK_STEP_29R"
 
 
 def test_runtime_rewire_not_performed() -> None:
