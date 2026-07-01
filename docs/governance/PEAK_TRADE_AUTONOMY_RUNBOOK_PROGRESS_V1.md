@@ -135,11 +135,12 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `CAPITAL_RISK_SIZING_MATHEMATICS_IMPLEMENTED` | `true` |
 | `CAPITAL_RISK_SIZING_MATHEMATICS_CHANGED` | `false` |
 | `RUNBOOK_STEP_29Q_STARTED` | `true` |
-| `RUNBOOK_STEP_29Q_IMPLEMENTATION_STARTED` | `false` |
-| `RUNBOOK_STEP_29Q_IMPLEMENTED_SCOPE` | `none` |
+| `RUNBOOK_STEP_29Q_IMPLEMENTATION_STARTED` | `true` |
+| `RUNBOOK_STEP_29Q_IMPLEMENTED_SCOPE` | `canonical_order_intent_v1_offline_slice` |
+| `RUNBOOK_STEP_29Q_IMPLEMENTED` | `true` |
 | `RUNBOOK_STEP_29Q_COMPLETE` | `false` |
 | `STEP_29Q_STARTED` | `true` |
-| `CANONICAL_ORDER_INTENT_IMPLEMENTED` | `false` |
+| `CANONICAL_ORDER_INTENT_IMPLEMENTED` | `true` |
 | `CANONICAL_ORDER_INTENT_ADAPTER_COMPATIBILITY_PROVEN` | `false` |
 | `CANONICAL_ORDER_INTENT_TRANSFORMATION_BOUND` | `false` |
 | `PROMOTION_ECONOMIC_GATE_BINDING_STATUS` | `PASS` |
@@ -1316,27 +1317,28 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `RUNBOOK_STEP_ID` | `canonical_order_intent_v1` |
 | `STATUS` | `IN_PROGRESS` |
 | `CANONICAL_OWNER` | `src&#47;governance&#47;canonical_order_intent_v1.py` <!-- pt:ref-target-ignore --> |
-| `CANONICAL_OWNER_STATUS` | `PROPOSED_PENDING_IMPLEMENTATION` |
-| `CANONICAL_OWNER_RATIFIED` | `false` |
+| `CANONICAL_OWNER_STATUS` | `IMPLEMENTED` |
+| `CANONICAL_OWNER_RATIFIED` | `true` |
 | `MERGED_PRS` | `none` |
 | `MERGE_COMMITS` | `none` |
-| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29p_capital_risk_sizing_progress_registry_closeout_pr_squash_merge_closeout_v0_20260701T033637Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning_or_validation/runbook_step29o_intent_compatibility_firewall_read_only_scope_audit_v0_20260701T141500Z/STEP_BOUNDARY_29O_29P_29Q_29R.md (MANIFEST_VERIFY_RC=0); audit_verdict=RUNBOOK_STEP_29O_READ_ONLY_SCOPE_AUDIT_PASS; minimum_safe_slice=canonical_order_intent_v1_offline_slice; STEP_29Q_REGISTRY_START_ONLY=true; STEP_29Q_IMPLEMENTATION_STARTED=false; STEP_29Q_COMPLETION_DOES_NOT_AUTHORIZE_LIVE=true; STEP_29Q_COMPLETION_DOES_NOT_AUTHORIZE_RUNTIME=true; STEP_29Q_COMPLETION_DOES_NOT_AUTHORIZE_ORDERS=true; STEP_29Q_COMPLETION_DOES_NOT_START_STEP_29R=true; offline_only=true; non_authorizing=true; runtime_process_started=false; scheduler_action_performed=false; venue_access_performed=false; credential_access_performed=false; trading_action_performed=false; progress_registry_closeout_status=pending_separate_closeout; FUTURES_ONLY=true; BITCOIN_DIRECTION_ALLOWED=false; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SCHEDULER_RUNTIME_ALLOWED=false` |
+| `DURABLE_EVIDENCE_REFS` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/closeout/runbook_step29p_capital_risk_sizing_progress_registry_closeout_pr_squash_merge_closeout_v0_20260701T033637Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning_or_validation/runbook_step29o_intent_compatibility_firewall_read_only_scope_audit_v0_20260701T141500Z/STEP_BOUNDARY_29O_29P_29Q_29R.md (MANIFEST_VERIFY_RC=0); audit_verdict=RUNBOOK_STEP_29O_READ_ONLY_SCOPE_AUDIT_PASS; minimum_safe_slice=canonical_order_intent_v1_offline_slice; STEP_29Q_IMPLEMENTATION_STARTED=true; STEP_29Q_IMPLEMENTED_SCOPE=canonical_order_intent_v1_offline_slice; CANONICAL_ORDER_INTENT_IMPLEMENTED=true; STEP_29Q_COMPLETION_DOES_NOT_AUTHORIZE_LIVE=true; STEP_29Q_COMPLETION_DOES_NOT_AUTHORIZE_RUNTIME=true; STEP_29Q_COMPLETION_DOES_NOT_AUTHORIZE_ORDERS=true; STEP_29Q_COMPLETION_DOES_NOT_START_STEP_29R=true; offline_only=true; non_authorizing=true; runtime_process_started=false; scheduler_action_performed=false; venue_access_performed=false; credential_access_performed=false; trading_action_performed=false; progress_registry_closeout_status=pending_separate_closeout; FUTURES_ONLY=true; BITCOIN_DIRECTION_ALLOWED=false; LIVE_AUTHORIZED=false; ORDERS_ALLOWED=false; SCHEDULER_RUNTIME_ALLOWED=false` |
 | `DEPENDENCIES` | RUNBOOK_STEP_29P |
-| `REMAINING_GAPS` | `canonical_order_intent_v1_implementation_pending;progress_registry_closeout_pending` |
-| `NEXT_REQUIRED_CONTRACT` | `RUNBOOK_STEP_29Q_CANONICAL_ORDER_INTENT_V1_IMPLEMENTATION` |
+| `REMAINING_GAPS` | `progress_registry_closeout_pending` |
+| `NEXT_REQUIRED_CONTRACT` | `RUNBOOK_STEP_29Q_PROGRESS_REGISTRY_CLOSEOUT` |
 | `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
 | `RUNBOOK_STEP_29Q_STARTED` | `true` |
-| `RUNBOOK_STEP_29Q_IMPLEMENTATION_STARTED` | `false` |
-| `RUNBOOK_STEP_29Q_IMPLEMENTED_SCOPE` | `none` |
+| `RUNBOOK_STEP_29Q_IMPLEMENTATION_STARTED` | `true` |
+| `RUNBOOK_STEP_29Q_IMPLEMENTED_SCOPE` | `canonical_order_intent_v1_offline_slice` |
+| `RUNBOOK_STEP_29Q_IMPLEMENTED` | `true` |
 | `RUNBOOK_STEP_29Q_COMPLETE` | `false` |
 | `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `false` |
 | `RUNBOOK_STEP_29Q_SCOPE` | `canonical_order_intent_v1` |
 | `RUNBOOK_STEP_29Q_PROCESS_CLASSIFICATION` | `ACTIVE_PROGRESS` |
-| `RUNBOOK_STEP_29Q_SCOPE_CLASSIFICATION` | `PROGRESS_REGISTRY_START_ONLY` |
+| `RUNBOOK_STEP_29Q_SCOPE_CLASSIFICATION` | `CANONICAL_ORDER_INTENT_V1_OFFLINE_SLICE` |
 | `RUNBOOK_STEP_29Q_CANONICAL_DEFINITION` | `CANONICAL_ORDER_INTENT` |
 | `RUNBOOK_STEP_29Q_MINIMUM_SAFE_SLICE` | `canonical_order_intent_v1_offline_slice` |
-| `CANONICAL_ORDER_INTENT_IMPLEMENTED` | `false` |
-| `CANONICAL_ORDER_INTENT_DEFINED` | `false` |
+| `CANONICAL_ORDER_INTENT_IMPLEMENTED` | `true` |
+| `CANONICAL_ORDER_INTENT_DEFINED` | `true` |
 | `CANONICAL_ORDER_INTENT_ADAPTER_COMPATIBILITY_PROVEN` | `false` |
 | `CANONICAL_ORDER_INTENT_TRANSFORMATION_BOUND` | `false` |
 | `CAPITAL_RISK_SIZING_MATHEMATICS_IMPLEMENTED` | `true` |
@@ -1368,7 +1370,7 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `STEP_29Q_REFERENCES_ORDER_INTENT_IDEMPOTENCY_V1` | `true` |
 | `STEP_29Q_REFERENCES_CANONICAL_ORDER_LIFECYCLE_V1` | `true` |
 | `STEP_29Q_REFERENCES_TRADING_CORE_DECISION_ATTESTATION_V1` | `true` |
-| `STEP_29Q_DOES_NOT_IMPLEMENT_ORDER_INTENT` | `true` |
+| `STEP_29Q_DOES_NOT_IMPLEMENT_ORDER_INTENT` | `false` |
 | `STEP_29Q_DOES_NOT_IMPLEMENT_ADAPTER_TRANSFORMATION` | `true` |
 | `STEP_29Q_DOES_NOT_CLAIM_ADAPTER_COMPATIBILITY` | `true` |
 | `STEP_29Q_DOES_NOT_CHANGE_QUANTITY_RISK_SIZING_SEMANTICS` | `true` |
