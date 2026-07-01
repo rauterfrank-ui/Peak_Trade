@@ -577,3 +577,53 @@ def test_decision_parity_runtime_vs_research_with_observed_l1() -> None:
     assert [outcome.position_signal for outcome in runtime.bar_outcomes] == [
         outcome.position_signal for outcome in research.bar_outcomes
     ]
+
+
+def test_risk_max_position_fraction_to_percent_v1_converts_ratified_fractions() -> None:
+    assert wiring.risk_max_position_fraction_to_percent_v1(0.25) == pytest.approx(25.0)
+    assert wiring.risk_max_position_fraction_to_percent_v1(0.10) == pytest.approx(10.0)
+
+
+@pytest.mark.parametrize(
+    "invalid",
+    [0.0, -0.1, 1.01, float("nan"), float("inf")],
+)
+def test_risk_max_position_fraction_to_percent_v1_rejects_invalid(invalid: float) -> None:
+    with pytest.raises(ValueError, match="risk_max_position_size"):
+        wiring.risk_max_position_fraction_to_percent_v1(invalid)
+
+
+def test_build_mv2_research_risk_limits_v1_binds_cfg_fraction() -> None:
+    limits = wiring.build_mv2_research_risk_limits_v1(_cfg())
+    assert limits.config.max_position_pct == pytest.approx(25.0)
+
+
+def test_build_mv2_research_risk_limits_v1_fail_closed_missing_risk_section() -> None:
+    with pytest.raises(ValueError, match="risk_section_missing"):
+        wiring.build_mv2_research_risk_limits_v1({})
+
+
+def test_mv2_wiring_passes_explicit_risk_limits_to_engine(monkeypatch: pytest.MonkeyPatch) -> None:
+    from src.backtest.engine import BacktestEngine
+    from src.risk import RiskLimits
+
+    captured: dict[str, object] = {}
+    original_init = BacktestEngine.__init__
+
+    def _capturing_init(self, *args: object, **kwargs: object) -> None:
+        captured["risk_limits"] = kwargs.get("risk_limits")
+        original_init(self, *args, **kwargs)
+
+    monkeypatch.setattr(BacktestEngine, "__init__", _capturing_init)
+    _run()
+    risk_limits = captured.get("risk_limits")
+    assert isinstance(risk_limits, RiskLimits)
+    assert risk_limits.config.max_position_pct == pytest.approx(25.0)
+
+
+def test_backtest_engine_default_risk_limits_regression() -> None:
+    from src.backtest.engine import BacktestEngine
+    from src.risk import RiskLimitsConfig
+
+    engine = BacktestEngine(use_execution_pipeline=False)
+    assert engine.risk_limits.config.max_position_pct == RiskLimitsConfig().max_position_pct == 10.0
