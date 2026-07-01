@@ -72,13 +72,13 @@ def test_next_required_contract_is_29n_in_section() -> None:
     assert _field_value(section, "NEXT_REQUIRED_CONTRACT") == "RUNBOOK_STEP_29N"
 
 
-def test_economic_validity_not_proven_after_invalidated_real_evaluation() -> None:
+def test_economic_validity_failed_after_macd_v1_real_evaluation() -> None:
     section = _step_29m_section(_read_registry())
     assert _field_value(section, "ECONOMIC_VALIDITY_PROVEN") == "false"
-    assert _field_value(section, "ECONOMIC_VALIDITY_RESULT") == "NOT_PROVEN"
+    assert _field_value(section, "ECONOMIC_VALIDITY_RESULT") == "FAILED"
     assert _field_value(section, "REAL_EVALUATION_ATTEMPTED") == "true"
-    assert _field_value(section, "REAL_EVALUATION_PERFORMED") == "false"
-    assert _field_value(section, "REAL_ADMISSIBLE_FUTURES_EVIDENCE_BOUND") == "false"
+    assert _field_value(section, "REAL_EVALUATION_PERFORMED") == "true"
+    assert _field_value(section, "REAL_ADMISSIBLE_FUTURES_EVIDENCE_BOUND") == "true"
 
 
 def test_profitability_claim_not_allowed() -> None:
@@ -126,7 +126,7 @@ def test_technical_stack_complete_without_economic_pass() -> None:
     assert _field_value(section, "TECHNICAL_ECONOMIC_VIABILITY_EVIDENCE_STACK_COMPLETE") == "true"
     assert _field_value(section, "ECONOMIC_VALIDITY_PROVEN") == "false"
     assert _field_value(section, "REAL_ADMISSIBLE_FUTURES_EVIDENCE_REQUIRED") == "true"
-    assert _field_value(section, "REAL_ADMISSIBLE_FUTURES_EVIDENCE_BOUND") == "false"
+    assert _field_value(section, "REAL_ADMISSIBLE_FUTURES_EVIDENCE_BOUND") == "true"
     assert _field_value(section, "THRESHOLD_TUNING_ALLOWED") == "false"
 
 

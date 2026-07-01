@@ -212,19 +212,17 @@ def test_wrong_expected_dataset_digest_blocks_admissibility(cfg: dict) -> None:
         bad_path.unlink(missing_ok=True)
 
 
-def test_registry_truth_after_admissibility_slice() -> None:
+def test_registry_truth_after_macd_v1_real_evaluation() -> None:
     section = _step_29m_section(PROGRESS_REGISTRY.read_text(encoding="utf-8"))
-    assert _field_value(section, "REAL_EVALUATION_PERFORMED") == "false"
-    assert _field_value(section, "REAL_ADMISSIBLE_FUTURES_EVIDENCE_BOUND") == "false"
-    assert _field_value(section, "ECONOMIC_VALIDITY_RESULT") == "NOT_PROVEN"
+    assert _field_value(section, "REAL_EVALUATION_PERFORMED") == "true"
+    assert _field_value(section, "REAL_ADMISSIBLE_FUTURES_EVIDENCE_BOUND") == "true"
+    assert _field_value(section, "ECONOMIC_VALIDITY_RESULT") == "FAILED"
     assert _field_value(section, "PROFITABILITY_CLAIM_ALLOWED") == "false"
-    assert _field_value(section, "NEXT_EVALUATION_STRATEGY_ID") == "macd"
-    assert _field_value(section, "NEXT_EVALUATION_STRATEGY_VERSION") == "v1"
-    assert _field_value(section, "NEXT_EVALUATION_CONFIG_STATUS") == (
-        "ADMISSIBLE_AWAITING_SEPARATE_RUN"
-    )
-    assert _field_value(section, "REAL_EVALUATION_INPUT_STATUS") == (
-        "MACD_V1_ADMISSIBLE_CONFIG_STAGED_AWAITING_EVALUATION"
+    assert _field_value(section, "LAST_EVALUATED_STRATEGY_ID") == "macd"
+    assert _field_value(section, "LAST_EVALUATED_STRATEGY_VERSION") == "v1"
+    assert _field_value(section, "REAL_EVALUATION_INPUT_STATUS") == "MACD_V1_EVALUATION_COMPLETE"
+    assert "step29m_macd_v1_real_admissible_futures_economic_evaluation_v1_20260701T161757Z" in (
+        _field_value(section, "MACD_V1_REAL_EVALUATION_EVIDENCE_REF")
     )
 
 
