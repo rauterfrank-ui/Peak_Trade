@@ -313,9 +313,9 @@ def _iter_grid_combinations(
     expected_count = math.prod(len(values) for values in canonical_values)
     combos: list[dict[str, float]] = []
     for combo in itertools.product(*canonical_values):
-        combos.append(
-            {name: float(value) for name, value in zip(parameter_names, combo, strict=True)}
-        )
+        if len(parameter_names) != len(combo):
+            raise ParameterSensitivityError("parameter_name_value_length_mismatch")
+        combos.append({name: float(value) for name, value in zip(parameter_names, combo)})
     if len(combos) != expected_count:
         raise ParameterSensitivityError("combination_count_mismatch")
     return combos
