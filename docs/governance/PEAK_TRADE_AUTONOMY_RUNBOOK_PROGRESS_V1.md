@@ -164,7 +164,7 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `ECONOMIC_RESULT_USED_FOR_POLICY_SELECTION` | `false` |
 | `ECONOMIC_EVALUATION_ALLOWED` | `false` |
 | `PROMOTION_ALLOWED` | `false` |
-| `STEP29M_REGISTERED_ECONOMIC_EVALUATION_CONFIGS` | `config/ops/step29m_okx_inst_eth_usdt_perp_economic_evaluation_v1.json,config/ops/step29m_okx_inst_eth_usdt_perp_macd_v1_economic_evaluation_v1.json,config/ops/step29m_okx_inst_eth_usdt_perp_macd_v1_economic_evaluation_v2.json,config/ops/step29m_okx_inst_eth_usdt_perp_macd_v1_economic_evaluation_v3.json,config/ops/step29m_okx_inst_eth_usdt_perp_breakout_donchian_v1_economic_evaluation_v1.json` |
+| `STEP29M_REGISTERED_ECONOMIC_EVALUATION_CONFIGS` | `config&#47;ops&#47;step29m_okx_inst_eth_usdt_perp_economic_evaluation_v1.json,config&#47;ops&#47;step29m_okx_inst_eth_usdt_perp_macd_v1_economic_evaluation_v1.json,config&#47;ops&#47;step29m_okx_inst_eth_usdt_perp_macd_v1_economic_evaluation_v2.json,config&#47;ops&#47;step29m_okx_inst_eth_usdt_perp_macd_v1_economic_evaluation_v3.json,config&#47;ops&#47;step29m_okx_inst_eth_usdt_perp_breakout_donchian_v1_economic_evaluation_v1.json` <!-- pt:ref-target-ignore --> |
 | `BREAKOUT_DONCHIAN_V1_ADMISSIBILITY_CONTRACT_STATUS` | `PASS` |
 | `BREAKOUT_DONCHIAN_V1_CONFIG_SCHEMA_VERSION` | `step29m_breakout_donchian_v1_economic_evaluation_admissibility_v1` |
 | `V3_RISK_PER_TRADE` | `0.005` |
@@ -1212,7 +1212,7 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `ECONOMIC_RESULT_USED_FOR_POLICY_SELECTION` | `false` |
 | `ECONOMIC_EVALUATION_ALLOWED` | `false` |
 | `PROMOTION_ALLOWED` | `false` |
-| `STEP29M_REGISTERED_ECONOMIC_EVALUATION_CONFIGS` | `config/ops/step29m_okx_inst_eth_usdt_perp_economic_evaluation_v1.json,config/ops/step29m_okx_inst_eth_usdt_perp_macd_v1_economic_evaluation_v1.json,config/ops/step29m_okx_inst_eth_usdt_perp_macd_v1_economic_evaluation_v2.json,config/ops/step29m_okx_inst_eth_usdt_perp_macd_v1_economic_evaluation_v3.json,config/ops/step29m_okx_inst_eth_usdt_perp_breakout_donchian_v1_economic_evaluation_v1.json` |
+| `STEP29M_REGISTERED_ECONOMIC_EVALUATION_CONFIGS` | `config&#47;ops&#47;step29m_okx_inst_eth_usdt_perp_economic_evaluation_v1.json,config&#47;ops&#47;step29m_okx_inst_eth_usdt_perp_macd_v1_economic_evaluation_v1.json,config&#47;ops&#47;step29m_okx_inst_eth_usdt_perp_macd_v1_economic_evaluation_v2.json,config&#47;ops&#47;step29m_okx_inst_eth_usdt_perp_macd_v1_economic_evaluation_v3.json,config&#47;ops&#47;step29m_okx_inst_eth_usdt_perp_breakout_donchian_v1_economic_evaluation_v1.json` <!-- pt:ref-target-ignore --> |
 | `BREAKOUT_DONCHIAN_V1_ADMISSIBILITY_CONTRACT_STATUS` | `PASS` |
 | `BREAKOUT_DONCHIAN_V1_CONFIG_SCHEMA_VERSION` | `step29m_breakout_donchian_v1_economic_evaluation_admissibility_v1` |
 | `V3_RISK_PER_TRADE` | `0.005` |

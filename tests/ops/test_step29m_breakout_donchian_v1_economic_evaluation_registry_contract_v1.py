@@ -24,7 +24,10 @@ def _read_registry() -> str:
 
 
 def _field_value(text: str, field: str) -> str:
-    match = re.search(rf"\| `{re.escape(field)}` \| `([^`]*)` \|", text)
+    match = re.search(
+        rf"\| `{re.escape(field)}` \| `([^`]*)`(?: <!--.*?-->)? \|",
+        text,
+    )
     assert match, f"missing registry field: {field}"
     return match.group(1)
 
@@ -46,7 +49,9 @@ def test_breakout_config_path_bound_in_progress_registry() -> None:
     assert _field_value(section, "NEXT_EVALUATION_CONFIG_PATH") == (
         contract.DEFAULT_EVALUATION_CONFIG_PATH
     )
-    registered = _field_value(section, "STEP29M_REGISTERED_ECONOMIC_EVALUATION_CONFIGS")
+    registered = _field_value(section, "STEP29M_REGISTERED_ECONOMIC_EVALUATION_CONFIGS").replace(
+        "&#47;", "/"
+    )
     assert contract.DEFAULT_EVALUATION_CONFIG_PATH in registered.split(",")
 
 
