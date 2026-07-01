@@ -31,7 +31,7 @@ from scripts.ops import (
 from src.backtest import admissible_versioned_futures_dataset_v1 as ds
 from src.backtest import cost_config_v0 as cost
 
-CONFIRM_TOKEN = "GO_OKX_ECONOMIC_RESEARCH_DATASET_STAGING_V1"
+CONFIRM_GO = "GO_OKX_ECONOMIC_RESEARCH_DATASET_STAGING_V1"
 DATASET_PROFILE = ds.DatasetProfileV1.ECONOMIC_RESEARCH_V1.value
 L1_OBSERVATION_STATUS = ds.L1ObservationStatusV1.EXECUTION_MODEL_BOUND_NOT_OBSERVED.value
 MANIFEST_VERSION = "admissible_versioned_futures_dataset_manifest_v1"
@@ -431,7 +431,7 @@ def run_economic_research_staging_from_raw(
     ingestion_evidence_root: Optional[Path] = None,
     request_log_path: Optional[Path] = None,
 ) -> Dict[str, Any]:
-    if confirm != CONFIRM_TOKEN:
+    if confirm != CONFIRM_GO:
         _die("ERR: confirm token required")
 
     if not raw_staging_root.is_dir():
@@ -582,7 +582,7 @@ def run_economic_research_staging_from_raw(
         "leakage_free": admissibility.leakage_check_status == "PASS",
     }
     staging_config = {
-        "go_token": CONFIRM_TOKEN,
+        "go_token": CONFIRM_GO,
         "dataset_profile": DATASET_PROFILE,
         "l1_observation_status": L1_OBSERVATION_STATUS,
         "observed_l1_used": False,
@@ -758,7 +758,7 @@ def run_economic_research_staging_from_raw(
 def _emit_machine_lines(result: Mapping[str, Any]) -> None:
     lines = [
         f"VERDICT={result.get('verdict')}",
-        f"GO_TOKEN={CONFIRM_TOKEN}",
+        f"GO_TOKEN={CONFIRM_GO}",
         f"REAL_ADMISSIBLE_FUTURES_DATASET_FOUND={str(result.get('real_admissible_futures_dataset_found', False)).lower()}",
         f"REAL_ADMISSIBLE_FUTURES_EVIDENCE_PRESENT={str(result.get('real_admissible_futures_evidence_present', False)).lower()}",
         f"REAL_ADMISSIBLE_FUTURES_EVIDENCE_BOUND={str(result.get('real_admissible_futures_evidence_bound', False)).lower()}",
@@ -777,7 +777,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     parser = argparse.ArgumentParser(
         description="Stage OKX economic research dataset from verified raw cache v1."
     )
-    parser.add_argument("--confirm-go-token", required=True, choices=[CONFIRM_TOKEN])
+    parser.add_argument("--confirm-go-token", required=True, choices=[CONFIRM_GO])
     parser.add_argument("--raw-staging-root", type=Path, required=True)
     parser.add_argument("--target-dataset-root", type=Path, required=True)
     parser.add_argument("--durable-evidence-root", type=Path, required=True)

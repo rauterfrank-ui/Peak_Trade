@@ -84,7 +84,7 @@ class TestStagingIntegration:
         target = tmp_path / "datasets" / "inst-eth-usdt-perp" / "v1"
         evidence = tmp_path / "evidence"
         result = staging.run_economic_research_staging_from_raw(
-            confirm=staging.CONFIRM_TOKEN,
+            confirm=staging.CONFIRM_GO,
             raw_staging_root=raw_root,
             target_dataset_root=target,
             durable_evidence_root=evidence,
@@ -102,7 +102,7 @@ class TestStagingIntegration:
         raw_root = _minimal_raw_tree(tmp_path)
         target = tmp_path / "datasets" / "inst-eth-usdt-perp" / "v1"
         staging.run_economic_research_staging_from_raw(
-            confirm=staging.CONFIRM_TOKEN,
+            confirm=staging.CONFIRM_GO,
             raw_staging_root=raw_root,
             target_dataset_root=target,
             durable_evidence_root=tmp_path / "evidence",
@@ -161,7 +161,7 @@ class TestStagingIntegration:
         target = tmp_path / "datasets" / "inst-eth-usdt-perp" / "v1"
         evidence = tmp_path / "evidence"
         first = staging.run_economic_research_staging_from_raw(
-            confirm=staging.CONFIRM_TOKEN,
+            confirm=staging.CONFIRM_GO,
             raw_staging_root=raw_root,
             target_dataset_root=target,
             durable_evidence_root=evidence,
@@ -175,7 +175,7 @@ class TestStagingIntegration:
         second_root = tmp_path / "raw_staging_copy"
         shutil.copytree(raw_root, second_root)
         second = staging.run_economic_research_staging_from_raw(
-            confirm=staging.CONFIRM_TOKEN,
+            confirm=staging.CONFIRM_GO,
             raw_staging_root=second_root,
             target_dataset_root=target,
             durable_evidence_root=evidence,
@@ -200,7 +200,7 @@ class TestStagingIntegration:
         raw_root = _minimal_raw_tree(tmp_path)
         target = tmp_path / "datasets" / "inst-eth-usdt-perp" / "v1"
         staging.run_economic_research_staging_from_raw(
-            confirm=staging.CONFIRM_TOKEN,
+            confirm=staging.CONFIRM_GO,
             raw_staging_root=raw_root,
             target_dataset_root=target,
             durable_evidence_root=tmp_path / "evidence",
