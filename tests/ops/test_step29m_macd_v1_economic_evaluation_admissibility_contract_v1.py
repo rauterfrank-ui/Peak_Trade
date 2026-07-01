@@ -188,8 +188,6 @@ def test_negative_btc_strategy_rejected() -> None:
 
 
 def test_wrong_expected_dataset_digest_blocks_admissibility(cfg: dict) -> None:
-    result = contract.evaluate_macd_v1_admissibility_contract_v1(repo_root=ROOT)
-    assert result.admissibility_result.value == "PASS"
     bad_cfg = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
     bad_cfg["real_admissible_futures_evaluation_binding_v1"] = dict(
         bad_cfg["real_admissible_futures_evaluation_binding_v1"]
@@ -199,6 +197,8 @@ def test_wrong_expected_dataset_digest_blocks_admissibility(cfg: dict) -> None:
         status, reasons = contract.verify_cost_binding_v1(bad_cfg)
         assert status == "PASS"
         return
+    result = contract.evaluate_macd_v1_admissibility_contract_v1(repo_root=ROOT)
+    assert result.admissibility_result.value == "PASS"
     bad_path = ROOT / "config/ops/_tmp_bad_macd_config.json"
     bad_path.write_text(json.dumps(bad_cfg), encoding="utf-8")
     try:
