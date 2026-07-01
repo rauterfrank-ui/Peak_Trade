@@ -18,6 +18,11 @@ from typing import Any, Mapping, Optional
 import pandas as pd
 
 from src.backtest import admissible_versioned_futures_dataset_v1 as ds
+from src.backtest.offline_evaluation_sizing_contract_v1 import (
+    OfflineEvaluationSizingError,
+    evaluate_offline_evaluation_sizing_entry_feasibility_from_cfg_v1,
+    offline_evaluation_sizing_contract_requested,
+)
 from src.backtest.strategy_signal_binding_v1 import (
     ENGINE_SIGNAL_SOURCE_CONFIGURED_STRATEGY,
     MV2_REPLAY_SIGNAL_SOURCE,
@@ -507,6 +512,18 @@ def verify_cost_binding_v1(cfg: Mapping[str, Any]) -> tuple[str, tuple[str, ...]
     return ("PASS" if not reasons else "FAIL"), tuple(reasons)
 
 
+def verify_sizing_entry_feasibility_macd_v1(cfg: Mapping[str, Any]) -> tuple[str, tuple[str, ...]]:
+    if not offline_evaluation_sizing_contract_requested(cfg):
+        return "NOT_BOUND", ()
+    try:
+        feasibility = evaluate_offline_evaluation_sizing_entry_feasibility_from_cfg_v1(cfg)
+    except OfflineEvaluationSizingError as exc:
+        return "FAIL", (str(exc),)
+    if not feasibility.entry_feasible:
+        return "FAIL", (feasibility.reason_code.value,)
+    return "PASS", ()
+
+
 def evaluate_macd_v1_admissibility_contract_v1(
     *,
     repo_root: Path,
@@ -552,6 +569,13 @@ def evaluate_macd_v1_admissibility_contract_v1(
             blocking.append("config_strategy_version_mismatch")
         if eval_section.get("engine_signal_source") != ENGINE_SIGNAL_SOURCE_CONFIGURED_STRATEGY:
             blocking.append("engine_signal_source_not_bound")
+
+    if offline_evaluation_sizing_contract_requested(cfg):
+        sizing_status, sizing_reasons = verify_sizing_entry_feasibility_macd_v1(cfg)
+        if sizing_status == "FAIL":
+            blocking.extend(sizing_reasons)
+        elif sizing_status != "PASS":
+            blocking.append("sizing_entry_feasibility_not_evaluated")
 
     signal_diagnostic: Optional[MacdV1SignalDiagnosticV1] = None
     provenance_contract: Optional[MacdV1ProvenanceContractV1] = None

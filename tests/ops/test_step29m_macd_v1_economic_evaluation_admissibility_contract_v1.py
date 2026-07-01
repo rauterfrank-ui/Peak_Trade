@@ -21,6 +21,9 @@ from src.strategies.registry import get_strategy_registry_entry, resolve_strateg
 
 ROOT = Path(__file__).resolve().parents[2]
 CONFIG_PATH = ROOT / "config/ops/step29m_okx_inst_eth_usdt_perp_macd_v1_economic_evaluation_v1.json"
+V2_CONFIG_PATH = (
+    ROOT / "config/ops/step29m_okx_inst_eth_usdt_perp_macd_v1_economic_evaluation_v2.json"
+)
 PROGRESS_REGISTRY = ROOT / "docs/governance/PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md"
 ARCHIVE_ROOT = contract.ARCHIVE_ROOT
 DATASET_ROOT = contract.DATASET_ROOT
@@ -212,6 +215,50 @@ def test_wrong_expected_dataset_digest_blocks_admissibility(cfg: dict) -> None:
         bad_path.unlink(missing_ok=True)
 
 
+def test_v2_config_schema_valid_but_entry_infeasible_blocks_admissibility() -> None:
+    result = contract.evaluate_macd_v1_admissibility_contract_v1(
+        repo_root=ROOT,
+        config_path=str(V2_CONFIG_PATH.relative_to(ROOT)),
+    )
+    assert result.admissibility_result.value == "BLOCKED"
+    assert "TOTAL_ENTRY_REJECTION_CONFIG_INVARIANT" in result.blocking_reasons
+
+
+def test_v2_runner_validate_only_blocks_before_evaluation() -> None:
+    if not DATASET_ROOT.is_dir():
+        pytest.skip("staged OKX dataset not present locally")
+    import importlib.util
+    import sys
+
+    runner_path = ROOT / "scripts/ops/run_economic_viability_evidence_evaluation_v1.py"
+    spec = importlib.util.spec_from_file_location("runner_v2_feasibility", runner_path)
+    assert spec is not None and spec.loader is not None
+    mod = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = mod
+    spec.loader.exec_module(mod)
+    policy_path = Path("/tmp/step29m_macd_v2_policy.json")
+    policy_path.write_text(
+        json.dumps({"use_canonical": True, "policy_version": "economic_validity_policy_v1"}),
+        encoding="utf-8",
+    )
+    rc = mod.main(
+        [
+            "--dataset-path",
+            str(DATASET_ROOT / "bars.parquet"),
+            "--dataset-manifest-path",
+            str(DATASET_ROOT / "dataset_manifest.json"),
+            "--config-path",
+            str(V2_CONFIG_PATH),
+            "--policy-path",
+            str(policy_path),
+            "--output-dir",
+            str(Path("/tmp/step29m_macd_v2_validate_only_out")),
+            "--validate-only",
+        ]
+    )
+    assert rc != 0
+
+
 def test_registry_truth_after_macd_v1_real_evaluation() -> None:
     section = _step_29m_section(PROGRESS_REGISTRY.read_text(encoding="utf-8"))
     assert _field_value(section, "REAL_EVALUATION_PERFORMED") == "true"
@@ -221,7 +268,9 @@ def test_registry_truth_after_macd_v1_real_evaluation() -> None:
     assert _field_value(section, "LAST_EVALUATED_STRATEGY_ID") == "macd"
     assert _field_value(section, "LAST_EVALUATED_STRATEGY_VERSION") == "v1"
     assert _field_value(section, "LAST_EVALUATED_CONFIG_VERSION") == "v2"
-    assert _field_value(section, "REAL_EVALUATION_INPUT_STATUS") == "MACD_V1_EVALUATION_V2_COMPLETE"
+    assert _field_value(section, "REAL_EVALUATION_INPUT_STATUS") == (
+        "MACD_V1_EVALUATION_V2_INVALIDATED_SIZING_ADMISSIBILITY_DEFECT"
+    )
     assert "step29m_macd_v1_real_admissible_futures_economic_reevaluation_v2_20260701T212345Z" in (
         _field_value(section, "MACD_V1_REAL_EVALUATION_EVIDENCE_REF")
     )

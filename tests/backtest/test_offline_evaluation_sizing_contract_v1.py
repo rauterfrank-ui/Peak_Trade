@@ -16,9 +16,13 @@ from src.backtest.offline_evaluation_sizing_contract_v1 import (
     MACD_V1_CANONICAL_STOP_PCT,
     MACD_V1_CANONICAL_STOP_DERIVATION,
     OfflineEvaluationSizingError,
+    OfflineSizingFeasibilityReasonCode,
     SizingReasonCode,
+    assert_offline_evaluation_sizing_executable_for_evaluation_v1,
     bind_offline_evaluation_sizing_v1,
+    compute_requested_notional_pct_v1,
     compute_sizing_contract_digest_v1,
+    evaluate_offline_evaluation_sizing_entry_feasibility_from_cfg_v1,
     load_offline_evaluation_sizing_contract_v1,
     offline_evaluation_sizing_contract_requested,
     size_offline_evaluation_entry_v1,
@@ -43,8 +47,13 @@ MACD_EVIDENCE = Path(
 ROOT_CAUSE_EVIDENCE = Path(
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
     "planning_or_validation/"
-    "step29m_macd_zero_trade_post_signal_root_cause_and_strategy_ranking_read_only_v1_20260701T205720Z"
+    "step29m_offline_sizing_admissibility_contradiction_root_cause_read_only_v1_20260701T223512Z"
 )
+V2_EVIDENCE = Path(
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "implementation/step29m_macd_v1_real_admissible_futures_economic_reevaluation_v2_20260701T212345Z"
+)
+EXPECTED_CONFIG_V2_DIGEST = "e11bf722e381dd0debfc9cd23f058a471cbfee380539e5ba6c45f19f531176c5"
 
 
 def _base_sizing_section() -> dict:
@@ -116,6 +125,63 @@ def _constant_signal_fn(signals: list[int]):
 def test_v1_config_has_no_sizing_contract() -> None:
     cfg = json.loads(V1_CONFIG.read_text(encoding="utf-8"))
     assert not offline_evaluation_sizing_contract_requested(cfg)
+
+
+def test_v2_real_config_entry_feasibility_total_rejection_invariant() -> None:
+    cfg = json.loads(V2_CONFIG.read_text(encoding="utf-8"))
+    assert compute_evaluation_config_digest_v1(cfg) == EXPECTED_CONFIG_V2_DIGEST
+    feasibility = evaluate_offline_evaluation_sizing_entry_feasibility_from_cfg_v1(cfg)
+    assert feasibility.schema_valid is True
+    assert feasibility.entry_feasible is False
+    assert feasibility.executable_for_economic_evaluation is False
+    assert (
+        feasibility.reason_code
+        is OfflineSizingFeasibilityReasonCode.TOTAL_ENTRY_REJECTION_CONFIG_INVARIANT
+    )
+    assert feasibility.requested_notional_pct == pytest.approx(0.8)
+    assert feasibility.max_position_pct == pytest.approx(0.25)
+    assert cfg["offline_evaluation_sizing_contract_v1"]["risk_per_trade"] == 0.02
+    assert cfg["offline_evaluation_sizing_contract_v1"]["stop_pct"] == 0.025
+    assert cfg["offline_evaluation_sizing_contract_v1"]["max_position_pct"] == 0.25
+
+
+def test_reject_oversize_boundary_at_max_position_pct_is_feasible() -> None:
+    cfg = _cfg_with_sizing(stop_pct=0.08, oversize_policy="REJECT_OVERSIZE")
+    contract = load_offline_evaluation_sizing_contract_v1(cfg)
+    feasibility = evaluate_offline_evaluation_sizing_entry_feasibility_from_cfg_v1(cfg)
+    assert compute_requested_notional_pct_v1(contract) == pytest.approx(0.25)
+    assert feasibility.entry_feasible is True
+    assert feasibility.executable_for_economic_evaluation is True
+
+
+def test_assert_executable_raises_for_real_v2_config() -> None:
+    cfg = json.loads(V2_CONFIG.read_text(encoding="utf-8"))
+    with pytest.raises(
+        OfflineEvaluationSizingError,
+        match="TOTAL_ENTRY_REJECTION_CONFIG_INVARIANT",
+    ):
+        assert_offline_evaluation_sizing_executable_for_evaluation_v1(cfg)
+
+
+def test_feasibility_check_does_not_mutate_config() -> None:
+    cfg = json.loads(V2_CONFIG.read_text(encoding="utf-8"))
+    before = json.dumps(cfg, sort_keys=True)
+    with pytest.raises(OfflineEvaluationSizingError):
+        assert_offline_evaluation_sizing_executable_for_evaluation_v1(cfg)
+    assert json.dumps(cfg, sort_keys=True) == before
+
+
+def test_per_entry_sizer_unchanged_for_infeasible_v2_config() -> None:
+    cfg = json.loads(V2_CONFIG.read_text(encoding="utf-8"))
+    contract = load_offline_evaluation_sizing_contract_v1(cfg)
+    outcome = size_offline_evaluation_entry_v1(
+        contract=contract,
+        equity=10000.0,
+        entry_price=100.0,
+        cfg=cfg,
+    )
+    assert not outcome.accepted
+    assert outcome.reason_code is SizingReasonCode.REQUESTED_NOTIONAL_EXCEEDS_MAX_POSITION
 
 
 def test_v2_config_has_explicit_sizing_contract() -> None:
@@ -348,12 +414,16 @@ def test_registry_v2_reevaluation_complete() -> None:
     assert field("REAL_EVALUATION_ATTEMPTED") == "true"
     assert field("REAL_EVALUATION_PERFORMED") == "true"
     assert field("REAL_ADMISSIBLE_FUTURES_EVIDENCE_BOUND") == "true"
-    assert field("REAL_EVALUATION_INPUT_STATUS") == "MACD_V1_EVALUATION_V2_COMPLETE"
+    assert field("REAL_EVALUATION_INPUT_STATUS") == (
+        "MACD_V1_EVALUATION_V2_INVALIDATED_SIZING_ADMISSIBILITY_DEFECT"
+    )
     assert field("ECONOMIC_VALIDITY_RESULT") == "FAILED"
     assert field("PROFITABILITY_CLAIM_ALLOWED") == "false"
     assert field("LAST_EVALUATED_CONFIG_VERSION") == "v2"
+    assert field("NEXT_EVALUATION_CONFIG_STATUS") == "BLOCKED_POLICY_DECISION_REQUIRED"
     assert field("RUNBOOK_STEP_29M_COMPLETE") == "true"
     assert str(MACD_EVIDENCE) in field("INVALIDATED_EVALUATION_REF")
+    assert str(V2_EVIDENCE) in field("INVALIDATED_V2_EVALUATION_REF")
     assert str(ROOT_CAUSE_EVIDENCE) in field("ROOT_CAUSE_EVIDENCE_REF")
     assert (
         field("NEXT_EVALUATION_CONFIG_PATH")

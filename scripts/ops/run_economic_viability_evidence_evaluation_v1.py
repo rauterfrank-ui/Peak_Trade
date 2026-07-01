@@ -46,6 +46,7 @@ from src.backtest.economic_validity_policy_v1 import (  # noqa: E402
 from src.backtest.funding_model_v1 import load_funding_model_config_v1  # noqa: E402
 from src.backtest.offline_evaluation_sizing_contract_v1 import (  # noqa: E402
     OfflineEvaluationSizingError,
+    assert_offline_evaluation_sizing_executable_for_evaluation_v1,
     load_offline_evaluation_sizing_contract_v1,
     offline_evaluation_sizing_contract_requested,
 )
@@ -459,6 +460,7 @@ def _validate_evaluation_config(cfg: Mapping[str, Any]) -> None:
     if offline_evaluation_sizing_contract_requested(cfg):
         try:
             load_offline_evaluation_sizing_contract_v1(cfg)
+            assert_offline_evaluation_sizing_executable_for_evaluation_v1(cfg)
         except OfflineEvaluationSizingError as exc:
             raise RunnerError(f"offline_evaluation_sizing_contract_invalid:{exc}") from exc
 

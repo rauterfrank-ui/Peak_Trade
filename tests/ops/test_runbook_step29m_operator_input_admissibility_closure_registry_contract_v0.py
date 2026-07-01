@@ -81,8 +81,12 @@ def test_operator_input_contract_bound_with_macd_v1_real_evaluation() -> None:
 def test_real_evaluation_input_status_updated() -> None:
     text = _read_registry()
     section = _step_29m_section(text)
-    assert _field_value(text, "REAL_EVALUATION_INPUT_STATUS") == "MACD_V1_EVALUATION_COMPLETE"
-    assert _field_value(section, "REAL_EVALUATION_INPUT_STATUS") == "MACD_V1_EVALUATION_COMPLETE"
+    assert _field_value(text, "REAL_EVALUATION_INPUT_STATUS") == (
+        "MACD_V1_EVALUATION_V2_INVALIDATED_SIZING_ADMISSIBILITY_DEFECT"
+    )
+    assert _field_value(section, "REAL_EVALUATION_INPUT_STATUS") == (
+        "MACD_V1_EVALUATION_V2_INVALIDATED_SIZING_ADMISSIBILITY_DEFECT"
+    )
     assert _field_value(text, "OPERATOR_INPUT_REQUIRED_FOR_REAL_EVALUATION") == "false"
 
 
