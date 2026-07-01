@@ -223,6 +223,15 @@ def compute_required_warmup_rows_v1(
         return slow + signal - 1
     if strategy_id == "ma_crossover":
         return int(effective_params["slow_window"])
+    if strategy_id == "breakout_donchian":
+        if "lookback" not in effective_params:
+            raise StrategySignalBindingError("breakout_donchian_lookback_missing")
+        lookback_raw = effective_params["lookback"]
+        if isinstance(lookback_raw, bool) or not isinstance(lookback_raw, int):
+            raise StrategySignalBindingError("breakout_donchian_lookback_not_integer")
+        if lookback_raw < 2:
+            raise StrategySignalBindingError("breakout_donchian_lookback_below_minimum")
+        return lookback_raw
     raise StrategySignalBindingError(f"required_warmup_rows_unbound:{strategy_id}")
 
 

@@ -111,7 +111,7 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `RUNBOOK_STEP_29L_COMPLETE` | `true` |
 | `STEP_29M_STARTED` | `true` |
 | `RUNBOOK_STEP_29M_STARTED` | `true` |
-| `RUNBOOK_STEP_29M_IMPLEMENTED_SCOPE` | `economic_viability_evidence_v1_offline_slice,economic_viability_evidence_v1_persistence_load_reproducibility_slice,economic_validity_policy_v1_contract_slice,funding_model_binding_v1_slice,parameter_sensitivity_evidence_binding_v1_slice,admissible_versioned_futures_dataset_binding_v1_slice,economic_validity_policy_threshold_values_v1_slice,real_admissible_futures_economic_evidence_evaluation_v1_offline_slice,real_admissible_futures_economic_evaluation_operator_input_and_admissibility_closure_v0_slice,real_okx_inst_eth_usdt_perp_economic_evaluation_v1_offline_slice` |
+| `RUNBOOK_STEP_29M_IMPLEMENTED_SCOPE` | `economic_viability_evidence_v1_offline_slice,economic_viability_evidence_v1_persistence_load_reproducibility_slice,economic_validity_policy_v1_contract_slice,funding_model_binding_v1_slice,parameter_sensitivity_evidence_binding_v1_slice,admissible_versioned_futures_dataset_binding_v1_slice,economic_validity_policy_threshold_values_v1_slice,real_admissible_futures_economic_evidence_evaluation_v1_offline_slice,real_admissible_futures_economic_evaluation_operator_input_and_admissibility_closure_v0_slice,real_okx_inst_eth_usdt_perp_economic_evaluation_v1_offline_slice,breakout_donchian_v1_operator_policy_ratification_and_config_registry_slice_v0` |
 | `RUNBOOK_STEP_29M_IMPLEMENTED` | `true` |
 | `RUNBOOK_STEP_29M_COMPLETE` | `true` |
 | `ECONOMIC_GATE_EVALUATOR_BOUND` | `true` |
@@ -131,15 +131,42 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `LAST_EVALUATED_STRATEGY_ID` | `macd` |
 | `LAST_EVALUATED_STRATEGY_VERSION` | `v1` |
 | `LAST_EVALUATED_CONFIG_VERSION` | `v2` |
-| `NEXT_EVALUATION_STRATEGY_ID` | `macd` |
+| `NEXT_EVALUATION_STRATEGY_ID` | `breakout_donchian` |
 | `NEXT_EVALUATION_STRATEGY_VERSION` | `v1` |
-| `NEXT_EVALUATION_CONFIG_VERSION` | `v3` |
+| `NEXT_EVALUATION_INSTRUMENT_ID` | `inst-eth-usdt-perp` |
+| `NEXT_EVALUATION_VENUE` | `OKX` |
+| `NEXT_EVALUATION_CONFIG_VERSION` | `v1` |
 | `NEXT_EVALUATION_CONFIG_STATUS` | `POLICY_RATIFIED_CONFIG_ADMISSIBLE_AWAITING_SEPARATE_RUN` |
-| `NEXT_EVALUATION_CONFIG_PATH` | `config/ops/step29m_okx_inst_eth_usdt_perp_macd_v1_economic_evaluation_v3.json` |
+| `NEXT_EVALUATION_CONFIG_PATH` | `config/ops/step29m_okx_inst_eth_usdt_perp_breakout_donchian_v1_economic_evaluation_v1.json` |
 | `POLICY_INVARIANT` | `risk_per_trade <= max_position_pct * stop_pct` |
+| `POLICY_INVARIANT_RESULT` | `0.005 <= 0.25 * 0.02 = 0.005` |
 | `OPERATOR_POLICY_DECISION` | `RATIFIED` |
-| `OPERATOR_POLICY_DECISION_OWNER` | `Frank_Rauter` |
+| `OPERATOR_POLICY_DECISION_OWNER` | `Frank Rauter` |
 | `OPERATOR_POLICY_DECISION_DATE` | `2026-07-02` |
+| `OPERATOR_POLICY_DECISION_SCOPE` | `STEP29M_BREAKOUT_DONCHIAN_V1_OKX_INST_ETH_USDT_PERP` |
+| `BREAKOUT_DONCHIAN_LOOKBACK` | `20` |
+| `BREAKOUT_DONCHIAN_PRICE_COL` | `close` |
+| `BREAKOUT_DONCHIAN_RISK_PER_TRADE` | `0.005` |
+| `BREAKOUT_DONCHIAN_STOP_PCT` | `0.02` |
+| `BREAKOUT_DONCHIAN_MAX_POSITION_PCT` | `0.25` |
+| `BREAKOUT_DONCHIAN_OVERSIZE_POLICY` | `REJECT` |
+| `BREAKOUT_DONCHIAN_OFFLINE_OVERSIZE_POLICY` | `REJECT_OVERSIZE` |
+| `LOOKBACK_DERIVATION_REF` | `operator_policy_decision:STEP29M_BREAKOUT_DONCHIAN_V1` |
+| `PRICE_COL_DERIVATION_REF` | `operator_policy_decision:STEP29M_BREAKOUT_DONCHIAN_V1` |
+| `RISK_PER_TRADE_DERIVATION_REF` | `operator_policy_decision:STEP29M_BREAKOUT_DONCHIAN_V1` |
+| `STOP_PCT_DERIVATION_REF` | `operator_policy_decision:STEP29M_BREAKOUT_DONCHIAN_V1` |
+| `MAX_POSITION_PCT_DERIVATION_REF` | `operator_policy_decision:STEP29M_BREAKOUT_DONCHIAN_V1` |
+| `OVERSIZE_POLICY_DERIVATION_REF` | `operator_policy_decision:STEP29M_BREAKOUT_DONCHIAN_V1` |
+| `MACD_POLICY_REUSED` | `false` |
+| `CONFIG_TOML_AUTO_ADOPTION` | `false` |
+| `LEGACY_DEFAULT_AUTHORITY` | `false` |
+| `PARAMETER_TUNING_PERFORMED` | `false` |
+| `ECONOMIC_RESULT_USED_FOR_POLICY_SELECTION` | `false` |
+| `ECONOMIC_EVALUATION_ALLOWED` | `false` |
+| `PROMOTION_ALLOWED` | `false` |
+| `STEP29M_REGISTERED_ECONOMIC_EVALUATION_CONFIGS` | `config&#47;ops&#47;step29m_okx_inst_eth_usdt_perp_economic_evaluation_v1.json,config&#47;ops&#47;step29m_okx_inst_eth_usdt_perp_macd_v1_economic_evaluation_v1.json,config&#47;ops&#47;step29m_okx_inst_eth_usdt_perp_macd_v1_economic_evaluation_v2.json,config&#47;ops&#47;step29m_okx_inst_eth_usdt_perp_macd_v1_economic_evaluation_v3.json,config&#47;ops&#47;step29m_okx_inst_eth_usdt_perp_breakout_donchian_v1_economic_evaluation_v1.json` <!-- pt:ref-target-ignore --> |
+| `BREAKOUT_DONCHIAN_V1_ADMISSIBILITY_CONTRACT_STATUS` | `PASS` |
+| `BREAKOUT_DONCHIAN_V1_CONFIG_SCHEMA_VERSION` | `step29m_breakout_donchian_v1_economic_evaluation_admissibility_v1` |
 | `V3_RISK_PER_TRADE` | `0.005` |
 | `V3_STOP_PCT` | `0.025` |
 | `V3_MAX_POSITION_PCT` | `0.25` |
@@ -1152,15 +1179,42 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `LAST_EVALUATED_STRATEGY_ID` | `macd` |
 | `LAST_EVALUATED_STRATEGY_VERSION` | `v1` |
 | `LAST_EVALUATED_CONFIG_VERSION` | `v2` |
-| `NEXT_EVALUATION_STRATEGY_ID` | `macd` |
+| `NEXT_EVALUATION_STRATEGY_ID` | `breakout_donchian` |
 | `NEXT_EVALUATION_STRATEGY_VERSION` | `v1` |
-| `NEXT_EVALUATION_CONFIG_VERSION` | `v3` |
+| `NEXT_EVALUATION_INSTRUMENT_ID` | `inst-eth-usdt-perp` |
+| `NEXT_EVALUATION_VENUE` | `OKX` |
+| `NEXT_EVALUATION_CONFIG_VERSION` | `v1` |
 | `NEXT_EVALUATION_CONFIG_STATUS` | `POLICY_RATIFIED_CONFIG_ADMISSIBLE_AWAITING_SEPARATE_RUN` |
-| `NEXT_EVALUATION_CONFIG_PATH` | `config/ops/step29m_okx_inst_eth_usdt_perp_macd_v1_economic_evaluation_v3.json` |
+| `NEXT_EVALUATION_CONFIG_PATH` | `config/ops/step29m_okx_inst_eth_usdt_perp_breakout_donchian_v1_economic_evaluation_v1.json` |
 | `POLICY_INVARIANT` | `risk_per_trade <= max_position_pct * stop_pct` |
+| `POLICY_INVARIANT_RESULT` | `0.005 <= 0.25 * 0.02 = 0.005` |
 | `OPERATOR_POLICY_DECISION` | `RATIFIED` |
-| `OPERATOR_POLICY_DECISION_OWNER` | `Frank_Rauter` |
+| `OPERATOR_POLICY_DECISION_OWNER` | `Frank Rauter` |
 | `OPERATOR_POLICY_DECISION_DATE` | `2026-07-02` |
+| `OPERATOR_POLICY_DECISION_SCOPE` | `STEP29M_BREAKOUT_DONCHIAN_V1_OKX_INST_ETH_USDT_PERP` |
+| `BREAKOUT_DONCHIAN_LOOKBACK` | `20` |
+| `BREAKOUT_DONCHIAN_PRICE_COL` | `close` |
+| `BREAKOUT_DONCHIAN_RISK_PER_TRADE` | `0.005` |
+| `BREAKOUT_DONCHIAN_STOP_PCT` | `0.02` |
+| `BREAKOUT_DONCHIAN_MAX_POSITION_PCT` | `0.25` |
+| `BREAKOUT_DONCHIAN_OVERSIZE_POLICY` | `REJECT` |
+| `BREAKOUT_DONCHIAN_OFFLINE_OVERSIZE_POLICY` | `REJECT_OVERSIZE` |
+| `LOOKBACK_DERIVATION_REF` | `operator_policy_decision:STEP29M_BREAKOUT_DONCHIAN_V1` |
+| `PRICE_COL_DERIVATION_REF` | `operator_policy_decision:STEP29M_BREAKOUT_DONCHIAN_V1` |
+| `RISK_PER_TRADE_DERIVATION_REF` | `operator_policy_decision:STEP29M_BREAKOUT_DONCHIAN_V1` |
+| `STOP_PCT_DERIVATION_REF` | `operator_policy_decision:STEP29M_BREAKOUT_DONCHIAN_V1` |
+| `MAX_POSITION_PCT_DERIVATION_REF` | `operator_policy_decision:STEP29M_BREAKOUT_DONCHIAN_V1` |
+| `OVERSIZE_POLICY_DERIVATION_REF` | `operator_policy_decision:STEP29M_BREAKOUT_DONCHIAN_V1` |
+| `MACD_POLICY_REUSED` | `false` |
+| `CONFIG_TOML_AUTO_ADOPTION` | `false` |
+| `LEGACY_DEFAULT_AUTHORITY` | `false` |
+| `PARAMETER_TUNING_PERFORMED` | `false` |
+| `ECONOMIC_RESULT_USED_FOR_POLICY_SELECTION` | `false` |
+| `ECONOMIC_EVALUATION_ALLOWED` | `false` |
+| `PROMOTION_ALLOWED` | `false` |
+| `STEP29M_REGISTERED_ECONOMIC_EVALUATION_CONFIGS` | `config&#47;ops&#47;step29m_okx_inst_eth_usdt_perp_economic_evaluation_v1.json,config&#47;ops&#47;step29m_okx_inst_eth_usdt_perp_macd_v1_economic_evaluation_v1.json,config&#47;ops&#47;step29m_okx_inst_eth_usdt_perp_macd_v1_economic_evaluation_v2.json,config&#47;ops&#47;step29m_okx_inst_eth_usdt_perp_macd_v1_economic_evaluation_v3.json,config&#47;ops&#47;step29m_okx_inst_eth_usdt_perp_breakout_donchian_v1_economic_evaluation_v1.json` <!-- pt:ref-target-ignore --> |
+| `BREAKOUT_DONCHIAN_V1_ADMISSIBILITY_CONTRACT_STATUS` | `PASS` |
+| `BREAKOUT_DONCHIAN_V1_CONFIG_SCHEMA_VERSION` | `step29m_breakout_donchian_v1_economic_evaluation_admissibility_v1` |
 | `V3_RISK_PER_TRADE` | `0.005` |
 | `V3_STOP_PCT` | `0.025` |
 | `V3_MAX_POSITION_PCT` | `0.25` |
@@ -1194,7 +1248,7 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `ECONOMIC_VALIDITY_PROVEN` | `false` |
 | `PROFITABILITY_CLAIM_ALLOWED` | `false` |
 | `RUNBOOK_STEP_29M_STARTED` | `true` |
-| `RUNBOOK_STEP_29M_IMPLEMENTED_SCOPE` | `economic_viability_evidence_v1_offline_slice,economic_viability_evidence_v1_persistence_load_reproducibility_slice,economic_validity_policy_v1_contract_slice,funding_model_binding_v1_slice,parameter_sensitivity_evidence_binding_v1_slice,admissible_versioned_futures_dataset_binding_v1_slice,economic_validity_policy_threshold_values_v1_slice,real_admissible_futures_economic_evidence_evaluation_v1_offline_slice,real_admissible_futures_economic_evaluation_operator_input_and_admissibility_closure_v0_slice,real_okx_inst_eth_usdt_perp_economic_evaluation_v1_offline_slice` |
+| `RUNBOOK_STEP_29M_IMPLEMENTED_SCOPE` | `economic_viability_evidence_v1_offline_slice,economic_viability_evidence_v1_persistence_load_reproducibility_slice,economic_validity_policy_v1_contract_slice,funding_model_binding_v1_slice,parameter_sensitivity_evidence_binding_v1_slice,admissible_versioned_futures_dataset_binding_v1_slice,economic_validity_policy_threshold_values_v1_slice,real_admissible_futures_economic_evidence_evaluation_v1_offline_slice,real_admissible_futures_economic_evaluation_operator_input_and_admissibility_closure_v0_slice,real_okx_inst_eth_usdt_perp_economic_evaluation_v1_offline_slice,breakout_donchian_v1_operator_policy_ratification_and_config_registry_slice_v0` |
 | `RUNBOOK_STEP_29M_IMPLEMENTED` | `true` |
 | `RUNBOOK_STEP_29M_COMPLETE` | `true` |
 | `ECONOMIC_VIABILITY_EVIDENCE_V1_IMPLEMENTED` | `true` |

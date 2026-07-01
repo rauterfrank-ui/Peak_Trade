@@ -72,18 +72,19 @@ def test_macd_v1_real_evaluation_evidence_ref_bound() -> None:
     assert str(V2_EVIDENCE_DIR) in _field_value(section, "INVALIDATED_V2_EVALUATION_REF")
 
 
-def test_macd_v1_v3_policy_registry_ratified_and_awaiting_separate_run() -> None:
+def test_macd_v1_v3_policy_registry_ratified_historical_and_breakout_next() -> None:
     section = _step_29m_section(_read_registry())
     assert _field_value(section, "OPERATOR_POLICY_DECISION") == "RATIFIED"
     assert _field_value(section, "POLICY_INVARIANT") == (
         "risk_per_trade <= max_position_pct * stop_pct"
     )
-    assert _field_value(section, "NEXT_EVALUATION_CONFIG_VERSION") == "v3"
+    assert _field_value(section, "NEXT_EVALUATION_STRATEGY_ID") == "breakout_donchian"
+    assert _field_value(section, "NEXT_EVALUATION_CONFIG_VERSION") == "v1"
     assert _field_value(section, "NEXT_EVALUATION_CONFIG_STATUS") == (
         "POLICY_RATIFIED_CONFIG_ADMISSIBLE_AWAITING_SEPARATE_RUN"
     )
     assert _field_value(section, "NEXT_EVALUATION_CONFIG_PATH") == (
-        "config/ops/step29m_okx_inst_eth_usdt_perp_macd_v1_economic_evaluation_v3.json"
+        "config/ops/step29m_okx_inst_eth_usdt_perp_breakout_donchian_v1_economic_evaluation_v1.json"
     )
     assert _field_value(section, "ECONOMIC_REEVALUATION_ALLOWED") == "false"
     assert _field_value(section, "PROFITABILITY_CLAIM_ALLOWED") == "false"
