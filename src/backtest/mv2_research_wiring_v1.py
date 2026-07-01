@@ -33,6 +33,14 @@ from src.backtest.cost_config_v0 import (
 from src.backtest.engine import BacktestEngine
 from src.backtest.result import BacktestResult
 from src.backtest.stats import compute_backtest_stats
+from src.backtest.strategy_signal_binding_v1 import (
+    MV2_REPLAY_SIGNAL_SOURCE,
+    StrategySignalBindingError,
+    StrategySignalProvenanceV1,
+    assert_engine_signal_provenance_consistency_v1,
+    compute_strategy_signal_digest_v1,
+    execute_configured_strategy_signal_series_v1,
+)
 from src.experiments.monte_carlo import (
     MonteCarloConfig,
     MonteCarloSummaryResult,
@@ -175,6 +183,10 @@ class MV2ResearchWiringResultV1:
     bar_outcomes: tuple[MV2ReplayBarOutcomeV1, ...]
     signals: pd.Series
     backtest_result: BacktestResult
+    mv2_replay_signals: pd.Series
+    strategy_signal_provenance: StrategySignalProvenanceV1
+    mv2_replay_signal_digest: str
+    mv2_replay_nonzero_signal_count: int
 
 
 @dataclass(frozen=True)
@@ -813,8 +825,20 @@ def run_mv2_research_backtest_wiring_v1(
 
     replay_id = f"mv2-research-{len(bars)}"
     config_digest = _stable_digest({"cfg": dict(cfg), "owner": MV2_RESEARCH_WIRING_OWNER})
+
+    try:
+        strategy_binding = execute_configured_strategy_signal_series_v1(
+            bars,
+            strategy_id=strategy_id,
+            cfg=cfg,
+        )
+    except StrategySignalBindingError as exc:
+        raise ValueError(f"configured_strategy_signal_binding_failed:{exc}") from exc
+    assert_engine_signal_provenance_consistency_v1(strategy_binding.provenance)
+    engine_signal_series = strategy_binding.signals
+
     outcomes: list[MV2ReplayBarOutcomeV1] = []
-    signals: list[int] = []
+    replay_signals: list[int] = []
     signal_index: list[pd.Timestamp] = []
     for i, (_, row) in enumerate(bars.iterrows()):
         context, l1_status, observed_l1_used = bind_bar_for_mv2_wiring_v1(
@@ -861,20 +885,34 @@ def run_mv2_research_backtest_wiring_v1(
                 observed_l1_used=observed_l1_used,
             )
         )
-        signals.append(signal)
+        replay_signals.append(signal)
         signal_index.append(pd.Timestamp(row.name))
 
-    signal_series = pd.Series(signals, index=pd.DatetimeIndex(signal_index), dtype=int)
+    mv2_replay_series = pd.Series(replay_signals, index=pd.DatetimeIndex(signal_index), dtype=int)
+    mv2_replay_digest = compute_strategy_signal_digest_v1(
+        mv2_replay_series,
+        strategy_id=strategy_id,
+        strategy_params_digest=_stable_digest(
+            {"source": MV2_REPLAY_SIGNAL_SOURCE, "owner": MV2_RESEARCH_WIRING_OWNER}
+        ),
+    )
+    mv2_replay_nonzero = int((mv2_replay_series != 0).sum())
 
     def _signal_fn(df: pd.DataFrame, params: Mapping[str, Any]) -> pd.Series:  # noqa: ARG001
-        return signal_series.reindex(df.index).fillna(0).astype(int)
+        aligned = engine_signal_series.reindex(df.index)
+        if aligned.isna().any():
+            raise ValueError("engine_strategy_signal_index_mismatch")
+        return aligned.astype(int)
 
     engine = BacktestEngine(use_execution_pipeline=False)
     engine.config = dict(cfg)
     backtest_result = engine.run_realistic(
         df=bars,
         strategy_signal_fn=_signal_fn,
-        strategy_params={"strategy_id": strategy_id},
+        strategy_params={
+            **dict(strategy_binding.provenance.effective_strategy_params),
+            "strategy_id": strategy_id,
+        },
         symbol=instrument_id,
         cost_config=effective_cost,
         explicit_zero_cost_non_economic=explicit_zero_cost_non_economic,
@@ -885,8 +923,12 @@ def run_mv2_research_backtest_wiring_v1(
         registry_snapshot=snapshot,
         effective_cost_config=effective_cost,
         bar_outcomes=tuple(outcomes),
-        signals=signal_series,
+        signals=engine_signal_series,
         backtest_result=backtest_result,
+        mv2_replay_signals=mv2_replay_series,
+        strategy_signal_provenance=strategy_binding.provenance,
+        mv2_replay_signal_digest=mv2_replay_digest,
+        mv2_replay_nonzero_signal_count=mv2_replay_nonzero,
     )
 
 

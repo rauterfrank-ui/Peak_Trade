@@ -11,7 +11,7 @@ from __future__ import annotations
 import hashlib
 import json
 import math
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
 from pathlib import Path
 from typing import Any, Mapping, Optional, Sequence
@@ -187,6 +187,7 @@ class EconomicViabilityEvidenceV1:
     execution_price_observation_source: str = ""
     modelled_spread_cost: Optional[float] = None
     observed_l1_used: bool = False
+    strategy_signal_binding: Mapping[str, Any] = field(default_factory=dict)
 
     def to_semantic_dict(self) -> dict[str, Any]:
         payload = {
@@ -253,6 +254,7 @@ class EconomicViabilityEvidenceV1:
             "execution_price_observation_source": self.execution_price_observation_source,
             "modelled_spread_cost": self.modelled_spread_cost,
             "observed_l1_used": self.observed_l1_used,
+            "strategy_signal_binding": dict(self.strategy_signal_binding),
         }
         return payload
 
@@ -784,6 +786,15 @@ def build_economic_viability_evidence_v1(
 
     economic_validity_proven = status is EconomicViabilityStatus.ECONOMICALLY_VIABLE_OFFLINE
 
+    strategy_provenance = wiring_result.strategy_signal_provenance
+    strategy_signal_binding_payload = {
+        **strategy_provenance.to_dict(),
+        "mv2_replay_signal_source": mv2_wiring.MV2_REPLAY_SIGNAL_SOURCE,
+        "mv2_replay_signal_digest": wiring_result.mv2_replay_signal_digest,
+        "mv2_replay_nonzero_signal_count": wiring_result.mv2_replay_nonzero_signal_count,
+    }
+    reason_codes.append("configured_strategy_signal_bound")
+
     return EconomicViabilityEvidenceV1(
         contract_version=ECONOMIC_VIABILITY_EVIDENCE_LAYER_VERSION,
         owner=ECONOMIC_VIABILITY_EVIDENCE_OWNER,
@@ -894,6 +905,7 @@ def build_economic_viability_evidence_v1(
         execution_price_observation_source=execution_price_observation_source,
         modelled_spread_cost=modelled_spread_cost,
         observed_l1_used=observed_l1_used,
+        strategy_signal_binding=strategy_signal_binding_payload,
     )
 
 
@@ -1122,6 +1134,10 @@ def economic_viability_evidence_from_dict_v1(
             else float(payload.get("modelled_spread_cost"))
         ),
         observed_l1_used=bool(payload.get("observed_l1_used", False)),
+        strategy_signal_binding=_mapping_from_dict(
+            payload.get("strategy_signal_binding", {}),
+            field_name="strategy_signal_binding",
+        ),
     )
 
 

@@ -131,6 +131,12 @@ def _cfg_with_dataset(bars: pd.DataFrame, **descriptor_overrides: Any) -> Mappin
             "min_position_value": 10.0,
             "min_stop_distance": 0.0001,
         },
+        "economic_evaluation_v1": {
+            "strategy_params": {
+                "fast_window": 2,
+                "slow_window": 3,
+            },
+        },
     }
 
 
@@ -279,7 +285,15 @@ class TestEconomicViabilityDatasetIntegration:
             strategy_id="ma_crossover",
             cfg={
                 "backtest": {"initial_cash": 10_000.0, "fee_bps": 10.0, "slippage_bps": 5.0},
-                "risk": {},
+                "risk": {
+                    "risk_per_trade": 0.02,
+                    "max_position_size": 0.25,
+                    "min_position_value": 10.0,
+                    "min_stop_distance": 0.0001,
+                },
+                "economic_evaluation_v1": {
+                    "strategy_params": {"fast_window": 2, "slow_window": 3},
+                },
             },
         )
         assert result.status is ev.EconomicViabilityStatus.RESEARCH_ONLY
