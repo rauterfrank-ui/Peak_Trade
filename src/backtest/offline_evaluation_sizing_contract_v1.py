@@ -74,6 +74,11 @@ class SizingReasonCode(str, Enum):
     OK = "OK"
 
 
+class OfflineSizingFeasibilityReasonCode(str, Enum):
+    OK = "OK"
+    TOTAL_ENTRY_REJECTION_CONFIG_INVARIANT = "TOTAL_ENTRY_REJECTION_CONFIG_INVARIANT"
+
+
 @dataclass(frozen=True)
 class OfflineEvaluationSizingContractV1:
     sizing_contract_version: str
@@ -118,6 +123,30 @@ class OfflineEvaluationSizingContractV1:
         if self.stop_pct_derivation_ref:
             payload["stop_pct_derivation_ref"] = self.stop_pct_derivation_ref
         return payload
+
+
+@dataclass(frozen=True)
+class OfflineEvaluationSizingFeasibilityResultV1:
+    schema_valid: bool
+    entry_feasible: bool
+    executable_for_economic_evaluation: bool
+    reason_code: OfflineSizingFeasibilityReasonCode
+    requested_notional_pct: float
+    max_position_pct: float
+    oversize_policy: str
+    detail: str = ""
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "schema_valid": self.schema_valid,
+            "entry_feasible": self.entry_feasible,
+            "executable_for_economic_evaluation": self.executable_for_economic_evaluation,
+            "reason_code": self.reason_code.value,
+            "requested_notional_pct": self.requested_notional_pct,
+            "max_position_pct": self.max_position_pct,
+            "oversize_policy": self.oversize_policy,
+            "detail": self.detail,
+        }
 
 
 @dataclass
@@ -194,6 +223,70 @@ def _require_positive(name: str, value: float) -> None:
 def _require_fraction(name: str, value: float) -> None:
     if not math.isfinite(value) or value <= 0.0 or value > 1.0:
         raise OfflineEvaluationSizingError(f"{name}_invalid:{value}")
+
+
+def compute_requested_notional_pct_v1(contract: OfflineEvaluationSizingContractV1) -> float:
+    """Equity-invariant requested notional fraction: risk_per_trade / stop_pct."""
+    _require_fraction("risk_per_trade", contract.risk_per_trade)
+    _require_fraction("stop_pct", contract.stop_pct)
+    if contract.stop_pct <= 0.0:
+        raise OfflineEvaluationSizingError("stop_pct_invalid_for_notional_pct")
+    return contract.risk_per_trade / contract.stop_pct
+
+
+def evaluate_offline_evaluation_sizing_entry_feasibility_v1(
+    contract: OfflineEvaluationSizingContractV1,
+) -> OfflineEvaluationSizingFeasibilityResultV1:
+    """Deterministic pre-run entry feasibility for bound offline sizing contracts."""
+    validate_offline_evaluation_sizing_contract_v1(contract)
+    requested_notional_pct = compute_requested_notional_pct_v1(contract)
+    max_position_pct = contract.max_position_pct
+
+    if contract.oversize_policy == "REJECT_OVERSIZE":
+        if requested_notional_pct > max_position_pct:
+            return OfflineEvaluationSizingFeasibilityResultV1(
+                schema_valid=True,
+                entry_feasible=False,
+                executable_for_economic_evaluation=False,
+                reason_code=OfflineSizingFeasibilityReasonCode.TOTAL_ENTRY_REJECTION_CONFIG_INVARIANT,
+                requested_notional_pct=requested_notional_pct,
+                max_position_pct=max_position_pct,
+                oversize_policy=contract.oversize_policy,
+                detail=(
+                    f"requested_notional_pct={requested_notional_pct:.6f}"
+                    f">max_position_pct={max_position_pct:.6f}"
+                ),
+            )
+    elif contract.oversize_policy != "CAP_TO_MAX_POSITION_PCT":
+        raise OfflineEvaluationSizingError(SizingReasonCode.MISSING_OVERSIZE_POLICY.value)
+
+    return OfflineEvaluationSizingFeasibilityResultV1(
+        schema_valid=True,
+        entry_feasible=True,
+        executable_for_economic_evaluation=True,
+        reason_code=OfflineSizingFeasibilityReasonCode.OK,
+        requested_notional_pct=requested_notional_pct,
+        max_position_pct=max_position_pct,
+        oversize_policy=contract.oversize_policy,
+    )
+
+
+def evaluate_offline_evaluation_sizing_entry_feasibility_from_cfg_v1(
+    cfg: Mapping[str, Any],
+) -> OfflineEvaluationSizingFeasibilityResultV1:
+    contract = load_offline_evaluation_sizing_contract_v1(cfg)
+    return evaluate_offline_evaluation_sizing_entry_feasibility_v1(contract)
+
+
+def assert_offline_evaluation_sizing_executable_for_evaluation_v1(
+    cfg: Mapping[str, Any],
+) -> OfflineEvaluationSizingFeasibilityResultV1:
+    if not offline_evaluation_sizing_contract_requested(cfg):
+        raise OfflineEvaluationSizingError("offline_evaluation_sizing_contract_v1_missing")
+    result = evaluate_offline_evaluation_sizing_entry_feasibility_from_cfg_v1(cfg)
+    if not result.executable_for_economic_evaluation:
+        raise OfflineEvaluationSizingError(result.reason_code.value)
+    return result
 
 
 def validate_offline_evaluation_sizing_contract_v1(
@@ -561,6 +654,9 @@ def offline_evaluation_sizing_schema_v1() -> dict[str, Any]:
             "SIZING_PROVENANCE_REQUIRED": True,
             "ROUNDING_MUST_NOT_INCREASE_RISK": True,
             "OFFLINE_SIZING_MUST_NOT_CHANGE_RUNTIME_POLICY": True,
+            "REJECT_OVERSIZE_REQUIRES_REQUESTED_NOTIONAL_PCT_LTE_MAX_POSITION_PCT": True,
         },
         "reason_codes": [code.value for code in SizingReasonCode],
+        "feasibility_reason_codes": [code.value for code in OfflineSizingFeasibilityReasonCode],
+        "requested_notional_pct_formula": "risk_per_trade/stop_pct",
     }

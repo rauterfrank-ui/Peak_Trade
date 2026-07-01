@@ -11,11 +11,15 @@ PROGRESS_REGISTRY = REPO_ROOT / "docs" / "governance" / "PEAK_TRADE_AUTONOMY_RUN
 ROOT_CAUSE_EVIDENCE = (
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
     "planning_or_validation/"
-    "step29m_macd_zero_trade_post_signal_root_cause_and_strategy_ranking_read_only_v1_20260701T205720Z"
+    "step29m_offline_sizing_admissibility_contradiction_root_cause_read_only_v1_20260701T223512Z"
 )
 INVALIDATED_EVALUATION = (
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
     "implementation/step29m_macd_v1_real_admissible_futures_economic_evaluation_v1_20260701T161757Z"
+)
+INVALIDATED_V2_EVALUATION = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "implementation/step29m_macd_v1_real_admissible_futures_economic_reevaluation_v2_20260701T212345Z"
 )
 
 
@@ -41,7 +45,9 @@ def test_step_29m_macd_v1_evaluation_v2_complete_registry_truth() -> None:
     assert _field_value(section, "REAL_EVALUATION_ATTEMPTED") == "true"
     assert _field_value(section, "REAL_EVALUATION_PERFORMED") == "true"
     assert _field_value(section, "REAL_ADMISSIBLE_FUTURES_EVIDENCE_BOUND") == "true"
-    assert _field_value(section, "REAL_EVALUATION_INPUT_STATUS") == "MACD_V1_EVALUATION_V2_COMPLETE"
+    assert _field_value(section, "REAL_EVALUATION_INPUT_STATUS") == (
+        "MACD_V1_EVALUATION_V2_INVALIDATED_SIZING_ADMISSIBILITY_DEFECT"
+    )
     assert _field_value(section, "ECONOMIC_VALIDITY_RESULT") == "FAILED"
     assert _field_value(section, "PROFITABILITY_CLAIM_ALLOWED") == "false"
     assert _field_value(section, "LAST_EVALUATED_CONFIG_VERSION") == "v2"
@@ -52,9 +58,10 @@ def test_step_29m_invalidated_evaluation_refs_present() -> None:
     section = _step_29m_section(_read_registry())
     assert ROOT_CAUSE_EVIDENCE in _field_value(section, "ROOT_CAUSE_EVIDENCE_REF")
     assert INVALIDATED_EVALUATION in _field_value(section, "INVALIDATED_EVALUATION_REF")
+    assert INVALIDATED_V2_EVALUATION in _field_value(section, "INVALIDATED_V2_EVALUATION_REF")
     assert _field_value(section, "INVALIDATED_EVALUATION_STATUS") == (
         "TECHNICALLY_REPRODUCIBLE_ECONOMICALLY_INVALIDATED"
     )
     assert _field_value(section, "INVALIDATION_REASON") == (
-        "IMPLICIT_STOP_PCT_AND_OVERSIZE_REJECTION_BLOCKED_ALL_ENTRIES"
+        "CONFIG_DETERMINISTICALLY_REJECTS_ALL_ENTRY_CANDIDATES"
     )
