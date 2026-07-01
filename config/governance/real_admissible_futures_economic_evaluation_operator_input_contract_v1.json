@@ -645,6 +645,74 @@
       "source_owner": "src/backtest/economic_validity_policy_v1.py"
     },
     {
+      "canonical_default": "runtime_market_context_v1",
+      "constraints": {
+        "allowed_values": ["runtime_market_context_v1", "economic_research_v1"],
+        "implicit_default_forbidden": true
+      },
+      "data_type": "string",
+      "economic_effect": "Dataset profile governs L1 requirements and execution cost binding semantics.",
+      "field_name": "dataset_profile",
+      "rationale": "Explicit dataset profile is mandatory; missing profile fails closed.",
+      "required": true,
+      "resolution_class": "OPERATOR_REQUIRED",
+      "resolved": false,
+      "safety_effect": "Implicit profile selection is forbidden.",
+      "source_owner": "src/backtest/admissible_versioned_futures_dataset_v1.py"
+    },
+    {
+      "canonical_default": null,
+      "constraints": {
+        "allowed_values": [
+          "OBSERVED_HISTORICAL_L1",
+          "EXECUTION_MODEL_BOUND_NOT_OBSERVED"
+        ],
+        "runtime_requires": "OBSERVED_HISTORICAL_L1",
+        "research_requires": "EXECUTION_MODEL_BOUND_NOT_OBSERVED"
+      },
+      "data_type": "string",
+      "economic_effect": "Declares whether L1 prices are observed in dataset or model-bound for research.",
+      "field_name": "l1_observation_status",
+      "rationale": "Profile-specific L1 observation status must be explicit in manifest and staging inputs.",
+      "required": true,
+      "resolution_class": "OPERATOR_REQUIRED",
+      "resolved": false,
+      "safety_effect": "Prevents silent substitution of modelled spread for observed L1.",
+      "source_owner": "src/backtest/admissible_versioned_futures_dataset_v1.py"
+    },
+    {
+      "canonical_default": "research_conservative_bps_v1",
+      "constraints": {
+        "allowed_values": ["research_conservative_bps_v1"],
+        "required_when_profile": "economic_research_v1"
+      },
+      "data_type": "string",
+      "economic_effect": "Conservative spread model version for economic research profile.",
+      "field_name": "spread_model_version",
+      "rationale": "Research profile requires explicit spread model binding when L1 is not observed.",
+      "required": true,
+      "resolution_class": "OPERATOR_REQUIRED",
+      "resolved": false,
+      "safety_effect": "Missing spread model blocks research profile evaluation.",
+      "source_owner": "src/backtest/cost_config_v0.py"
+    },
+    {
+      "canonical_default": "MODELLED_NOT_OBSERVED",
+      "constraints": {
+        "allowed_values": ["MODELLED_NOT_OBSERVED"],
+        "required_when_profile": "economic_research_v1"
+      },
+      "data_type": "string",
+      "economic_effect": "Declares execution price observation source for research spread binding.",
+      "field_name": "execution_price_observation_source",
+      "rationale": "Research profile must not claim observed L1 when using model-bound spread.",
+      "required": true,
+      "resolution_class": "OPERATOR_REQUIRED",
+      "resolved": false,
+      "safety_effect": "Prevents mislabelled observed execution prices in research evidence.",
+      "source_owner": "src/backtest/cost_config_v0.py"
+    },
+    {
       "canonical_default": null,
       "constraints": {
         "minimum_net_expectancy": 0.0,

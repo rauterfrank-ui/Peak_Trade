@@ -28,6 +28,8 @@ FEE_MODEL_VERSION = "backtest_fee_taker_symmetric_v0"
 SLIPPAGE_MODEL_VERSION = "backtest_slippage_symmetric_v0"
 FUNDING_MODEL_VERSION = "NOT_BOUND"
 SPREAD_MODEL_VERSION = "NOT_APPLICABLE"
+RESEARCH_SPREAD_MODEL_VERSION = "research_conservative_bps_v1"
+EXECUTION_PRICE_OBSERVATION_SOURCE_MODELLED = "MODELLED_NOT_OBSERVED"
 EXECUTION_MODEL_VERSION = "paper_market_context_v0"
 
 REASON_EXPLICIT_ZERO_COST = "EXPLICIT_ZERO_COST_NON_ECONOMIC_MODE"
@@ -45,6 +47,18 @@ _OVERRIDE_PRIORITY = (
 
 class BacktestCostConfigError(BacktestError):
     """Raised when backtest cost configuration cannot be resolved fail-closed."""
+
+
+@dataclass(frozen=True)
+class EconomicResearchExecutionCostBindingV0:
+    spread_model_version: str
+    execution_price_observation_source: str
+    conservative_half_spread_bps: float
+    config_source: str
+    config_digest: str
+
+    def to_dict(self) -> Dict[str, Any]:
+        return asdict(self)
 
 
 @dataclass(frozen=True)
@@ -124,6 +138,79 @@ def _validate_bps_value(name: str, value: Any) -> float:
     return numeric
 
 
+def compute_effective_entry_cost_bps(
+    *,
+    fee_bps: float,
+    slippage_bps: float,
+    half_spread_bps: float = 0.0,
+) -> float:
+    """Entry leg: fee + slippage + half-spread (no double count)."""
+    return fee_bps + slippage_bps + half_spread_bps
+
+
+def compute_effective_exit_cost_bps(
+    *,
+    fee_bps: float,
+    slippage_bps: float,
+    half_spread_bps: float = 0.0,
+) -> float:
+    """Exit leg: fee + slippage + half-spread (no double count)."""
+    return fee_bps + slippage_bps + half_spread_bps
+
+
+def compute_effective_roundtrip_cost_bps(
+    *,
+    fee_bps: float,
+    slippage_bps: float,
+    half_spread_bps: float = 0.0,
+) -> float:
+    """Roundtrip: 2*(fee+slippage) + full spread counted once."""
+    return (2.0 * fee_bps) + (2.0 * slippage_bps) + (2.0 * half_spread_bps)
+
+
+def resolve_economic_research_execution_cost_binding(
+    cfg: Mapping[str, Any],
+) -> EconomicResearchExecutionCostBindingV0:
+    backtest = cfg.get("backtest")
+    if not isinstance(backtest, Mapping):
+        raise BacktestCostConfigError("Missing [backtest] section for research cost binding")
+    section = backtest.get("economic_research_execution_cost")
+    if not isinstance(section, Mapping):
+        admissibility = backtest.get("dataset_admissibility")
+        if isinstance(admissibility, Mapping):
+            section = admissibility.get("execution_cost_binding")
+    if not isinstance(section, Mapping):
+        raise BacktestCostConfigError("economic_research_execution_cost_missing")
+    spread_model = str(section.get("spread_model_version", RESEARCH_SPREAD_MODEL_VERSION)).strip()
+    if spread_model != RESEARCH_SPREAD_MODEL_VERSION:
+        raise BacktestCostConfigError("research_spread_model_version_mismatch")
+    observation_source = str(
+        section.get(
+            "execution_price_observation_source",
+            EXECUTION_PRICE_OBSERVATION_SOURCE_MODELLED,
+        )
+    ).strip()
+    if observation_source != EXECUTION_PRICE_OBSERVATION_SOURCE_MODELLED:
+        raise BacktestCostConfigError("execution_price_observation_source_mismatch")
+    half_spread = _validate_bps_value(
+        "economic_research_execution_cost.conservative_half_spread_bps",
+        section.get("conservative_half_spread_bps"),
+    )
+    if half_spread <= 0.0:
+        raise BacktestCostConfigError("conservative_half_spread_bps_non_positive")
+    base_fields = {
+        "spread_model_version": spread_model,
+        "execution_price_observation_source": observation_source,
+        "conservative_half_spread_bps": half_spread,
+        "config_source": "economic_research_execution_cost",
+    }
+    digest = compute_cost_config_digest(base_fields)
+    return EconomicResearchExecutionCostBindingV0(
+        **base_fields,
+        config_digest=digest,
+    )
+
+
 def _extract_backtest_cost_section(cfg: Mapping[str, Any]) -> Dict[str, Any]:
     backtest = cfg.get("backtest")
     if not isinstance(backtest, dict):
@@ -142,6 +229,7 @@ def resolve_effective_backtest_cost_config(
     run_config_slippage_bps: Optional[float] = None,
     explicit_zero_cost_non_economic: bool = False,
     config_source: str = "canonical_versioned_default_config",
+    research_execution_cost_binding: Optional[EconomicResearchExecutionCostBindingV0] = None,
 ) -> EffectiveBacktestCostConfigV0:
     """
     Resolve effective backtest cost configuration.
@@ -288,6 +376,31 @@ def resolve_effective_backtest_cost_config(
         if REASON_FUNDING_NOT_BOUND not in reason_codes:
             reason_codes.append(REASON_FUNDING_NOT_BOUND)
 
+    if research_execution_cost_binding is None:
+        backtest = cfg.get("backtest")
+        if isinstance(backtest, Mapping):
+            admissibility = backtest.get("dataset_admissibility")
+            profile_raw = None
+            if isinstance(admissibility, Mapping):
+                profile_binding = admissibility.get("profile_binding")
+                if isinstance(profile_binding, Mapping):
+                    profile_raw = profile_binding.get("dataset_profile")
+                elif admissibility.get("dataset_profile") is not None:
+                    profile_raw = admissibility.get("dataset_profile")
+            if profile_raw in {
+                "economic_research_v1",
+                "ADMISSIBLE_FUTURES_ECONOMIC_RESEARCH_DATASET_V1",
+            }:
+                research_execution_cost_binding = resolve_economic_research_execution_cost_binding(
+                    cfg
+                )
+
+    spread_model_version = SPREAD_MODEL_VERSION
+    spread_application_policy = "NOT_APPLICABLE"
+    if research_execution_cost_binding is not None:
+        spread_model_version = research_execution_cost_binding.spread_model_version
+        spread_application_policy = "RESEARCH_CONSERVATIVE_HALF_SPREAD_PER_LEG"
+
     base_fields = {
         "cost_model_version": str(section.get("cost_model_version", COST_MODEL_VERSION)),
         "fee_model_version": str(section.get("fee_model_version", FEE_MODEL_VERSION)),
@@ -295,7 +408,7 @@ def resolve_effective_backtest_cost_config(
             section.get("slippage_model_version", SLIPPAGE_MODEL_VERSION)
         ),
         "funding_model_version": funding_model_version,
-        "spread_model_version": SPREAD_MODEL_VERSION,
+        "spread_model_version": spread_model_version,
         "execution_model_version": EXECUTION_MODEL_VERSION,
         "maker_fee_bps": effective_fee,
         "taker_fee_bps": effective_fee,
@@ -303,12 +416,30 @@ def resolve_effective_backtest_cost_config(
         "exit_slippage_bps": effective_slippage,
         "funding_rate_source": funding_rate_source,
         "funding_application_policy": funding_application_policy,
-        "spread_application_policy": "NOT_APPLICABLE",
+        "spread_application_policy": spread_application_policy,
         "latency_assumption": "NOT_BOUND",
         "partial_fill_assumption": "NOT_BOUND",
         "config_source": config_source,
     }
-    config_digest = compute_cost_config_digest(base_fields)
+    digest_fields = dict(base_fields)
+    if research_execution_cost_binding is not None:
+        digest_fields["research_execution_cost_binding"] = research_execution_cost_binding.to_dict()
+        digest_fields["research_entry_cost_bps"] = compute_effective_entry_cost_bps(
+            fee_bps=effective_fee,
+            slippage_bps=effective_slippage,
+            half_spread_bps=research_execution_cost_binding.conservative_half_spread_bps,
+        )
+        digest_fields["research_exit_cost_bps"] = compute_effective_exit_cost_bps(
+            fee_bps=effective_fee,
+            slippage_bps=effective_slippage,
+            half_spread_bps=research_execution_cost_binding.conservative_half_spread_bps,
+        )
+        digest_fields["research_roundtrip_cost_bps"] = compute_effective_roundtrip_cost_bps(
+            fee_bps=effective_fee,
+            slippage_bps=effective_slippage,
+            half_spread_bps=research_execution_cost_binding.conservative_half_spread_bps,
+        )
+    config_digest = compute_cost_config_digest(digest_fields)
     override_digest = None
     if provenance:
         override_digest = hashlib.sha256(

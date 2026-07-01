@@ -32,8 +32,11 @@ from src.backtest.funding_model_v1 import (
 )
 from src.backtest.admissible_versioned_futures_dataset_v1 import (
     AdmissibleVersionedFuturesDatasetError,
+    DatasetProfileBindingV1,
+    default_runtime_profile_binding_v1,
     dataset_admissibility_binding_requested,
     load_dataset_admissibility_from_cfg,
+    load_profile_binding_from_cfg,
     serialize_dataset_admissibility_binding_v1,
     evaluate_admissible_versioned_futures_dataset_v1,
 )
@@ -178,6 +181,12 @@ class EconomicViabilityEvidenceV1:
     order_effect: bool = False
     futures_only: bool = True
     bitcoin_direction_allowed: bool = False
+    dataset_profile: str = ""
+    l1_observation_status: str = ""
+    spread_model_version: str = ""
+    execution_price_observation_source: str = ""
+    modelled_spread_cost: Optional[float] = None
+    observed_l1_used: bool = False
 
     def to_semantic_dict(self) -> dict[str, Any]:
         payload = {
@@ -238,6 +247,12 @@ class EconomicViabilityEvidenceV1:
             "order_effect": self.order_effect,
             "futures_only": self.futures_only,
             "bitcoin_direction_allowed": self.bitcoin_direction_allowed,
+            "dataset_profile": self.dataset_profile,
+            "l1_observation_status": self.l1_observation_status,
+            "spread_model_version": self.spread_model_version,
+            "execution_price_observation_source": self.execution_price_observation_source,
+            "modelled_spread_cost": self.modelled_spread_cost,
+            "observed_l1_used": self.observed_l1_used,
         }
         return payload
 
@@ -467,6 +482,7 @@ def build_economic_viability_evidence_v1(
     monte_carlo_runs: int = 16,
     monte_carlo_seed: int = 42,
     explicit_zero_cost_non_economic: bool = False,
+    profile_binding: Optional[DatasetProfileBindingV1] = None,
 ) -> EconomicViabilityEvidenceV1:
     _reject_forbidden_instrument(instrument_id)
     _fail_closed(bars.empty, "bars_empty")
@@ -476,12 +492,22 @@ def build_economic_viability_evidence_v1(
     if data_admissibility.data_digest != computed_data_digest:
         raise EconomicViabilityEvidenceError("data_digest_mismatch")
 
+    effective_profile = profile_binding
+    if effective_profile is None and dataset_admissibility_binding_requested(cfg):
+        try:
+            effective_profile = load_profile_binding_from_cfg(cfg)
+        except AdmissibleVersionedFuturesDatasetError as exc:
+            raise EconomicViabilityEvidenceError(f"dataset_profile_missing:{exc}") from exc
+    if effective_profile is None:
+        effective_profile = default_runtime_profile_binding_v1()
+
     wiring_result = mv2_wiring.run_mv2_research_backtest_wiring_v1(
         bars,
         strategy_id=strategy_id,
         cfg=cfg,
         instrument_id=instrument_id,
         explicit_zero_cost_non_economic=explicit_zero_cost_non_economic,
+        profile_binding=effective_profile,
     )
     stats = mv2_wiring.compute_mv2_backtest_metrics_v1(wiring_result.backtest_result)
     cost = wiring_result.effective_cost_config
@@ -507,6 +533,7 @@ def build_economic_viability_evidence_v1(
             step_bars=walk_forward_step_bars,
             instrument_id=instrument_id,
             explicit_zero_cost_non_economic=explicit_zero_cost_non_economic,
+            profile_binding=effective_profile,
         )
     else:
         reason_codes.append("walk_forward_insufficient_bars")
@@ -542,6 +569,7 @@ def build_economic_viability_evidence_v1(
                 descriptor=descriptor,
                 provenance=provenance,
                 instrument_id=instrument_id,
+                profile_binding=effective_profile,
             )
             dataset_admissibility_payload = serialize_dataset_admissibility_binding_v1(
                 binding_result
@@ -706,6 +734,15 @@ def build_economic_viability_evidence_v1(
     _fail_closed(status.value not in _STEP29M_ALLOWED_STATUSES, "status_not_allowed_for_step29m")
 
     first_outcome = wiring_result.bar_outcomes[0]
+    spread_model_version = cost.spread_model_version
+    execution_price_observation_source = ""
+    modelled_spread_cost: Optional[float] = None
+    if effective_profile.execution_cost_binding is not None:
+        execution_price_observation_source = (
+            effective_profile.execution_cost_binding.execution_price_observation_source
+        )
+        modelled_spread_cost = effective_profile.execution_cost_binding.conservative_half_spread_bps
+    observed_l1_used = any(outcome.observed_l1_used for outcome in wiring_result.bar_outcomes)
     chain = mv2_wiring.compute_mv2_evidence_chain_digests_v1(
         context=first_outcome.context,
         evidence=first_outcome.evidence,
@@ -851,6 +888,12 @@ def build_economic_viability_evidence_v1(
         policy_threshold_status=policy.policy_threshold_status(),
         economic_validity_proven=economic_validity_proven,
         profitability_claim_allowed=False,
+        dataset_profile=effective_profile.dataset_profile.value,
+        l1_observation_status=first_outcome.l1_observation_status.value,
+        spread_model_version=spread_model_version,
+        execution_price_observation_source=execution_price_observation_source,
+        modelled_spread_cost=modelled_spread_cost,
+        observed_l1_used=observed_l1_used,
     )
 
 
@@ -902,6 +945,12 @@ def economic_viability_evidence_schema_v1() -> dict[str, Any]:
             "status",
             "reason_codes",
             "manifest_digest",
+            "dataset_profile",
+            "l1_observation_status",
+            "spread_model_version",
+            "execution_price_observation_source",
+            "modelled_spread_cost",
+            "observed_l1_used",
         ],
         "metric_semantics": [semantic.value for semantic in MetricSemantic],
         "data_source_kinds": [kind.value for kind in DataSourceKind],
@@ -1061,6 +1110,18 @@ def economic_viability_evidence_from_dict_v1(
         policy_threshold_status=str(payload.get("policy_threshold_status", "")),
         economic_validity_proven=bool(payload.get("economic_validity_proven", False)),
         profitability_claim_allowed=bool(payload.get("profitability_claim_allowed", False)),
+        dataset_profile=str(payload.get("dataset_profile", "")),
+        l1_observation_status=str(payload.get("l1_observation_status", "")),
+        spread_model_version=str(payload.get("spread_model_version", "")),
+        execution_price_observation_source=str(
+            payload.get("execution_price_observation_source", "")
+        ),
+        modelled_spread_cost=(
+            None
+            if payload.get("modelled_spread_cost") is None
+            else float(payload.get("modelled_spread_cost"))
+        ),
+        observed_l1_used=bool(payload.get("observed_l1_used", False)),
     )
 
 

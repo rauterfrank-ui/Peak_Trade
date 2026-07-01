@@ -6,6 +6,8 @@ from typing import Any, Mapping
 import pandas as pd
 import pytest
 
+from src.backtest import admissible_versioned_futures_dataset_v1 as ds
+from src.backtest import cost_config_v0 as cost
 from src.backtest import mv2_research_wiring_v1 as wiring
 from src.experiments.stress_tests import StressScenarioResult
 from src.trading.master_v2.canonical_market_context_v1 import WarmupStatus
@@ -457,3 +459,109 @@ def test_matrix_53_evidence_chain_has_strategy_id_field() -> None:
     )
     assert chain["strategy_id"] == "ma_crossover"
     assert "walk_forward_result_digest_or_status" in chain
+
+
+def _research_cfg() -> Mapping[str, Any]:
+    return {
+        "backtest": {
+            "initial_cash": 10_000.0,
+            "cost_model_version": "backtest_cost_v0",
+            "fee_bps": 10.0,
+            "slippage_bps": 5.0,
+            "economic_research_execution_cost": {
+                "spread_model_version": cost.RESEARCH_SPREAD_MODEL_VERSION,
+                "execution_price_observation_source": (
+                    cost.EXECUTION_PRICE_OBSERVATION_SOURCE_MODELLED
+                ),
+                "conservative_half_spread_bps": 5.0,
+            },
+        },
+        "risk": {
+            "risk_per_trade": 0.02,
+            "max_position_size": 0.25,
+            "min_position_value": 10.0,
+            "min_stop_distance": 0.0001,
+        },
+    }
+
+
+def _research_bars(n: int = 12) -> pd.DataFrame:
+    return _bars(n).drop(columns=["best_bid", "best_ask", "spread"])
+
+
+def _research_profile_binding() -> ds.DatasetProfileBindingV1:
+    return ds.DatasetProfileBindingV1(
+        dataset_profile=ds.DatasetProfileV1.ECONOMIC_RESEARCH_V1,
+        l1_observation_status=ds.L1ObservationStatusV1.EXECUTION_MODEL_BOUND_NOT_OBSERVED,
+        execution_cost_binding=ds.ExecutionCostBindingV1(
+            spread_model_version=cost.RESEARCH_SPREAD_MODEL_VERSION,
+            execution_price_observation_source=cost.EXECUTION_PRICE_OBSERVATION_SOURCE_MODELLED,
+            conservative_half_spread_bps=5.0,
+        ),
+    )
+
+
+def test_research_profile_wiring_without_l1_columns() -> None:
+    result = wiring.run_mv2_research_backtest_wiring_v1(
+        bars=_research_bars(),
+        strategy_id="ma_crossover",
+        cfg=_research_cfg(),
+        profile_binding=_research_profile_binding(),
+    )
+    assert len(result.bar_outcomes) == 12
+    assert all(
+        outcome.l1_observation_status is ds.L1ObservationStatusV1.EXECUTION_MODEL_BOUND_NOT_OBSERVED
+        for outcome in result.bar_outcomes
+    )
+    assert all(not outcome.observed_l1_used for outcome in result.bar_outcomes)
+    assert result.effective_cost_config.spread_model_version == cost.RESEARCH_SPREAD_MODEL_VERSION
+
+
+def test_research_profile_uses_observed_l1_when_present() -> None:
+    bars = _bars()
+    result = wiring.run_mv2_research_backtest_wiring_v1(
+        bars=bars,
+        strategy_id="ma_crossover",
+        cfg=_research_cfg(),
+        profile_binding=_research_profile_binding(),
+    )
+    assert all(outcome.observed_l1_used for outcome in result.bar_outcomes)
+    assert all(
+        outcome.l1_observation_status is ds.L1ObservationStatusV1.OBSERVED_HISTORICAL_L1
+        for outcome in result.bar_outcomes
+    )
+
+
+def test_runtime_profile_rejects_execution_model_bound_l1() -> None:
+    binding = ds.DatasetProfileBindingV1(
+        dataset_profile=ds.DatasetProfileV1.RUNTIME_MARKET_CONTEXT_V1,
+        l1_observation_status=ds.L1ObservationStatusV1.EXECUTION_MODEL_BOUND_NOT_OBSERVED,
+        execution_cost_binding=None,
+    )
+    with pytest.raises(ValueError, match="runtime_consumer_rejects_execution_model_bound_l1"):
+        wiring.run_mv2_research_backtest_wiring_v1(
+            bars=_bars(),
+            strategy_id="ma_crossover",
+            cfg=_cfg(),
+            profile_binding=binding,
+        )
+
+
+def test_decision_parity_runtime_vs_research_with_observed_l1() -> None:
+    bars = _bars()
+    runtime = wiring.run_mv2_research_backtest_wiring_v1(
+        bars=bars,
+        strategy_id="ma_crossover",
+        cfg=_cfg(),
+        profile_binding=ds.default_runtime_profile_binding_v1(),
+    )
+    research = wiring.run_mv2_research_backtest_wiring_v1(
+        bars=bars,
+        strategy_id="ma_crossover",
+        cfg=_research_cfg(),
+        profile_binding=_research_profile_binding(),
+    )
+    assert list(runtime.signals) == list(research.signals)
+    assert [outcome.position_signal for outcome in runtime.bar_outcomes] == [
+        outcome.position_signal for outcome in research.bar_outcomes
+    ]
