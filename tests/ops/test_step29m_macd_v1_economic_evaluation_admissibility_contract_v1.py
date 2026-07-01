@@ -220,8 +220,9 @@ def test_registry_truth_after_macd_v1_real_evaluation() -> None:
     assert _field_value(section, "PROFITABILITY_CLAIM_ALLOWED") == "false"
     assert _field_value(section, "LAST_EVALUATED_STRATEGY_ID") == "macd"
     assert _field_value(section, "LAST_EVALUATED_STRATEGY_VERSION") == "v1"
-    assert _field_value(section, "REAL_EVALUATION_INPUT_STATUS") == "MACD_V1_EVALUATION_COMPLETE"
-    assert "step29m_macd_v1_real_admissible_futures_economic_evaluation_v1_20260701T161757Z" in (
+    assert _field_value(section, "LAST_EVALUATED_CONFIG_VERSION") == "v2"
+    assert _field_value(section, "REAL_EVALUATION_INPUT_STATUS") == "MACD_V1_EVALUATION_V2_COMPLETE"
+    assert "step29m_macd_v1_real_admissible_futures_economic_reevaluation_v2_20260701T212345Z" in (
         _field_value(section, "MACD_V1_REAL_EVALUATION_EVIDENCE_REF")
     )
 
