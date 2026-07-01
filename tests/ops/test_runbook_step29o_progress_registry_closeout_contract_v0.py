@@ -130,14 +130,32 @@ def test_step_29p_not_started_in_29o_section_snapshot() -> None:
     assert "RUNBOOK_STEP_29P_COMPLETE" not in section
 
 
-def test_no_step_29q_29r_start_markers() -> None:
+def test_step_29q_legitimately_started_global_transition() -> None:
     text = _read_registry()
-    assert "RUNBOOK_STEP_29Q_STARTED" not in text
+    assert _field_value(text, "RUNBOOK_STEP_29Q_STARTED") == "true"
+    assert _field_value(text, "STEP_29Q_STARTED") == "true"
+    assert _field_value(text, "RUNBOOK_STEP_29Q_IMPLEMENTATION_STARTED") == "false"
+    assert _field_value(text, "RUNBOOK_STEP_29Q_COMPLETE") == "false"
+    assert _field_value(text, "CANONICAL_ORDER_INTENT_IMPLEMENTED") == "false"
+    assert _field_value(text, "NEXT_RUNBOOK_STEP") == "RUNBOOK_STEP_29Q"
+    assert "#### RUNBOOK_STEP_29Q" in text
+
+
+def test_step_29q_not_started_in_29o_section_snapshot() -> None:
+    section = _step_29o_section(_read_registry())
+    assert _field_value(section, "STEP_29O_EXCLUDES_CANONICAL_ORDER_INTENT_29Q") == "true"
+    assert "RUNBOOK_STEP_29Q_STARTED" not in section
+    assert "RUNBOOK_STEP_29Q_COMPLETE" not in section
+
+
+def test_no_step_29r_start_markers() -> None:
+    text = _read_registry()
+    section = _step_29o_section(text)
     assert "RUNBOOK_STEP_29R_STARTED" not in text
-    assert "STEP_29Q_STARTED" not in text
     assert "STEP_29R_STARTED" not in text
-    assert "#### RUNBOOK_STEP_29Q" not in text
     assert "#### RUNBOOK_STEP_29R" not in text
+    assert _field_value(section, "RUNTIME_REWIRE_PERFORMED") == "false"
+    assert _field_value(section, "STEP_29O_EXCLUDES_RUNTIME_REWIRE_29R") == "true"
 
 
 def test_capital_risk_sizing_mathematics_unchanged() -> None:
