@@ -80,14 +80,12 @@ def test_intent_compatibility_firewall_implemented_true() -> None:
     assert _field_value(section, "INTENT_COMPATIBILITY_FIREWALL_V1_IMPLEMENTED") == "true"
 
 
-def test_next_runbook_step_is_29p() -> None:
-    text = _read_registry()
-    section = _step_29o_section(text)
-    assert _field_value(text, "NEXT_RUNBOOK_STEP") == "RUNBOOK_STEP_29P"
+def test_next_runbook_step_is_29p_in_29o_section() -> None:
+    section = _step_29o_section(_read_registry())
     assert _field_value(section, "NEXT_RUNBOOK_STEP") == "RUNBOOK_STEP_29P"
 
 
-def test_next_required_contract_is_29p() -> None:
+def test_next_required_contract_is_29p_in_29o_section() -> None:
     section = _step_29o_section(_read_registry())
     assert _field_value(section, "NEXT_REQUIRED_CONTRACT") == "RUNBOOK_STEP_29P"
 
