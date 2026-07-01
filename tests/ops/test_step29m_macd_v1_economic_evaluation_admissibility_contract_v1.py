@@ -321,14 +321,15 @@ def test_registry_truth_after_macd_v1_real_evaluation() -> None:
     assert _field_value(section, "REAL_ADMISSIBLE_FUTURES_EVIDENCE_BOUND") == "true"
     assert _field_value(section, "ECONOMIC_VALIDITY_RESULT") == "FAILED"
     assert _field_value(section, "PROFITABILITY_CLAIM_ALLOWED") == "false"
-    assert _field_value(section, "LAST_EVALUATED_STRATEGY_ID") == "macd"
+    assert _field_value(section, "LAST_EVALUATED_STRATEGY_ID") == "breakout_donchian"
     assert _field_value(section, "LAST_EVALUATED_STRATEGY_VERSION") == "v1"
-    assert _field_value(section, "LAST_EVALUATED_CONFIG_VERSION") == "v2"
+    assert _field_value(section, "LAST_EVALUATED_CONFIG_VERSION") == "v1"
     assert _field_value(section, "REAL_EVALUATION_INPUT_STATUS") == (
-        "MACD_V1_EVALUATION_V2_INVALIDATED_SIZING_ADMISSIBILITY_DEFECT"
+        "REGISTERED_POLICY_RATIFIED_STRATEGY_FLEET_EVALUATION_COMPLETE"
     )
-    assert "step29m_macd_v1_real_admissible_futures_economic_reevaluation_v2_20260701T212345Z" in (
-        _field_value(section, "MACD_V1_REAL_EVALUATION_EVIDENCE_REF")
+    assert (
+        "step29m_macd_v1_real_admissible_futures_economic_reevaluation_v3_after_risk_limits_rewire_single_rerun_v0_20260701T225645Z"
+        in (_field_value(section, "MACD_V1_CONFIG_V3_REAL_EVALUATION_EVIDENCE_REF"))
     )
 
 

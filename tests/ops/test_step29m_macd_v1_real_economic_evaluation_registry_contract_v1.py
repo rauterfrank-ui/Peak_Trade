@@ -21,6 +21,10 @@ POLICY_DECISION_EVIDENCE = Path(
 )
 EXPECTED_V2_FILE_SHA256 = "fe5b3ed1ea174e242f5a821971d94b47eb544c6fe4ec3eb99a8ceef06e3e094b"
 EXPECTED_V3_CONFIG_DIGEST = "e1d923de8e5f44bc873c15008bc895b8b3542a326e9c39521e4860ba091b6b82"
+MACD_V3_EVIDENCE_DIR = Path(
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "economic/step29m_macd_v1_real_admissible_futures_economic_reevaluation_v3_after_risk_limits_rewire_single_rerun_v0_20260701T225645Z"
+)
 V2_EVIDENCE_DIR = Path(
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
     "implementation/step29m_macd_v1_real_admissible_futures_economic_reevaluation_v2_20260701T212345Z"
@@ -48,7 +52,7 @@ def _step_29m_section(text: str) -> str:
     return text[start:end]
 
 
-def test_macd_v1_real_evaluation_registry_truth_v2_complete() -> None:
+def test_macd_v1_real_evaluation_registry_truth_v3_canonical_and_fleet_complete() -> None:
     text = _read_registry()
     section = _step_29m_section(text)
     for scope in (text, section):
@@ -58,33 +62,34 @@ def test_macd_v1_real_evaluation_registry_truth_v2_complete() -> None:
         assert _field_value(scope, "PROFITABILITY_CLAIM_ALLOWED") == "false"
         assert (
             _field_value(scope, "REAL_EVALUATION_INPUT_STATUS")
-            == "MACD_V1_EVALUATION_V2_INVALIDATED_SIZING_ADMISSIBILITY_DEFECT"
+            == "REGISTERED_POLICY_RATIFIED_STRATEGY_FLEET_EVALUATION_COMPLETE"
         )
-        assert _field_value(scope, "LAST_EVALUATED_STRATEGY_ID") == "macd"
-        assert _field_value(scope, "LAST_EVALUATED_STRATEGY_VERSION") == "v1"
-        assert _field_value(scope, "LAST_EVALUATED_CONFIG_VERSION") == "v2"
+        assert _field_value(scope, "MACD_V1_CONFIG_V3_STATUS") == (
+            "TECHNICALLY_VALID_ECONOMIC_POLICY_FAIL"
+        )
+        assert _field_value(scope, "STEP29M_REGISTERED_STRATEGY_FLEET_STATUS") == (
+            "EVALUATION_FLEET_COMPLETE_NO_ECONOMIC_VALIDITY_PASS"
+        )
 
 
 def test_macd_v1_real_evaluation_evidence_ref_bound() -> None:
     section = _step_29m_section(_read_registry())
-    assert str(V2_EVIDENCE_DIR) in _field_value(section, "MACD_V1_REAL_EVALUATION_EVIDENCE_REF")
+    assert str(MACD_V3_EVIDENCE_DIR) in _field_value(
+        section, "MACD_V1_CONFIG_V3_REAL_EVALUATION_EVIDENCE_REF"
+    )
     assert str(INVALIDATED_EVIDENCE_DIR) in _field_value(section, "INVALIDATED_EVALUATION_REF")
     assert str(V2_EVIDENCE_DIR) in _field_value(section, "INVALIDATED_V2_EVALUATION_REF")
 
 
-def test_macd_v1_v3_policy_registry_ratified_historical_and_breakout_next() -> None:
+def test_macd_v1_v3_policy_registry_ratified_and_fleet_complete() -> None:
     section = _step_29m_section(_read_registry())
     assert _field_value(section, "OPERATOR_POLICY_DECISION") == "RATIFIED"
     assert _field_value(section, "POLICY_INVARIANT") == (
         "risk_per_trade <= max_position_pct * stop_pct"
     )
-    assert _field_value(section, "NEXT_EVALUATION_STRATEGY_ID") == "breakout_donchian"
-    assert _field_value(section, "NEXT_EVALUATION_CONFIG_VERSION") == "v1"
+    assert _field_value(section, "NEXT_EVALUATION_STRATEGY_ID") == "none"
     assert _field_value(section, "NEXT_EVALUATION_CONFIG_STATUS") == (
-        "POLICY_RATIFIED_CONFIG_ADMISSIBLE_AWAITING_SEPARATE_RUN"
-    )
-    assert _field_value(section, "NEXT_EVALUATION_CONFIG_PATH") == (
-        "config/ops/step29m_okx_inst_eth_usdt_perp_breakout_donchian_v1_economic_evaluation_v1.json"
+        "EVALUATION_FLEET_COMPLETE_NO_PENDING_CANDIDATE"
     )
     assert _field_value(section, "ECONOMIC_REEVALUATION_ALLOWED") == "false"
     assert _field_value(section, "PROFITABILITY_CLAIM_ALLOWED") == "false"

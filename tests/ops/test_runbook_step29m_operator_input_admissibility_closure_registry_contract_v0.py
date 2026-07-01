@@ -22,7 +22,8 @@ STEP_29M_IMPLEMENTED_SCOPE = (
     "real_admissible_futures_economic_evidence_evaluation_v1_offline_slice,"
     f"{OPERATOR_INPUT_SLICE},"
     "real_okx_inst_eth_usdt_perp_economic_evaluation_v1_offline_slice,"
-    "breakout_donchian_v1_operator_policy_ratification_and_config_registry_slice_v0"
+    "breakout_donchian_v1_operator_policy_ratification_and_config_registry_slice_v0,"
+    "step29m_registered_strategy_evaluation_fleet_closeout_v0_slice"
 )
 
 
@@ -83,10 +84,10 @@ def test_real_evaluation_input_status_updated() -> None:
     text = _read_registry()
     section = _step_29m_section(text)
     assert _field_value(text, "REAL_EVALUATION_INPUT_STATUS") == (
-        "MACD_V1_EVALUATION_V2_INVALIDATED_SIZING_ADMISSIBILITY_DEFECT"
+        "REGISTERED_POLICY_RATIFIED_STRATEGY_FLEET_EVALUATION_COMPLETE"
     )
     assert _field_value(section, "REAL_EVALUATION_INPUT_STATUS") == (
-        "MACD_V1_EVALUATION_V2_INVALIDATED_SIZING_ADMISSIBILITY_DEFECT"
+        "REGISTERED_POLICY_RATIFIED_STRATEGY_FLEET_EVALUATION_COMPLETE"
     )
     assert _field_value(text, "OPERATOR_INPUT_REQUIRED_FOR_REAL_EVALUATION") == "false"
 

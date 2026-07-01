@@ -46,9 +46,6 @@ def test_breakout_config_registered_in_canonical_registry() -> None:
 
 def test_breakout_config_path_bound_in_progress_registry() -> None:
     section = _step_29m_section(_read_registry())
-    assert _field_value(section, "NEXT_EVALUATION_CONFIG_PATH") == (
-        contract.DEFAULT_EVALUATION_CONFIG_PATH
-    )
     registered = _field_value(section, "STEP29M_REGISTERED_ECONOMIC_EVALUATION_CONFIGS").replace(
         "&#47;", "/"
     )
@@ -76,10 +73,13 @@ def test_breakout_config_digest_stable() -> None:
     assert sizing["config_digest"] == compute_sizing_contract_digest_v1(contract)
 
 
-def test_breakout_next_evaluation_strategy_binding() -> None:
+def test_breakout_fleet_evaluation_complete_no_pending_next_candidate() -> None:
     section = _step_29m_section(_read_registry())
-    assert _field_value(section, "NEXT_EVALUATION_STRATEGY_ID") == "breakout_donchian"
-    assert _field_value(section, "NEXT_EVALUATION_CONFIG_VERSION") == "v1"
+    assert _field_value(section, "NEXT_EVALUATION_STRATEGY_ID") == "none"
+    assert _field_value(section, "NEXT_EVALUATION_CONFIG_VERSION") == "none"
     assert _field_value(section, "NEXT_EVALUATION_CONFIG_STATUS") == (
-        "POLICY_RATIFIED_CONFIG_ADMISSIBLE_AWAITING_SEPARATE_RUN"
+        "EVALUATION_FLEET_COMPLETE_NO_PENDING_CANDIDATE"
+    )
+    assert _field_value(section, "BREAKOUT_DONCHIAN_V1_STATUS") == (
+        "TECHNICALLY_VALID_ECONOMIC_POLICY_FAIL"
     )
