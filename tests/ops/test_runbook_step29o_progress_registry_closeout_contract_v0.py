@@ -28,7 +28,7 @@ def _field_value(text: str, field: str) -> str:
 
 def _step_29o_section(text: str) -> str:
     start = text.index("#### RUNBOOK_STEP_29O — Intent Compatibility Firewall v1")
-    end = text.index("\n---\n\n## PR #4629 Evidence-Drift", start)
+    end = text.index("#### RUNBOOK_STEP_29P — Capital Risk Sizing Mathematics v1", start)
     return re.sub(r"\s<!--.*?-->", "", text[start:end])
 
 
@@ -125,15 +125,19 @@ def test_no_economic_validity_or_promotion_eligibility_claims() -> None:
     assert _field_value(section, "PROMOTION_CANDIDATE_ELIGIBLE") == "false"
 
 
-def test_no_step_29p_29q_29r_start_markers() -> None:
+def test_step_29p_not_started_in_29o_section_snapshot() -> None:
+    section = _step_29o_section(_read_registry())
+    assert _field_value(section, "STEP_29O_COMPLETION_DOES_NOT_START_STEP_29P") == "true"
+    assert "RUNBOOK_STEP_29P_IMPLEMENTED" not in section
+    assert "RUNBOOK_STEP_29P_COMPLETE" not in section
+
+
+def test_no_step_29q_29r_start_markers() -> None:
     text = _read_registry()
-    assert "RUNBOOK_STEP_29P_STARTED" not in text
     assert "RUNBOOK_STEP_29Q_STARTED" not in text
     assert "RUNBOOK_STEP_29R_STARTED" not in text
-    assert "STEP_29P_STARTED" not in text
     assert "STEP_29Q_STARTED" not in text
     assert "STEP_29R_STARTED" not in text
-    assert "#### RUNBOOK_STEP_29P" not in text
     assert "#### RUNBOOK_STEP_29Q" not in text
     assert "#### RUNBOOK_STEP_29R" not in text
 
