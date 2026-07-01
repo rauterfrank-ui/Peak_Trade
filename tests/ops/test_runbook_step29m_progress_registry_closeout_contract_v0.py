@@ -19,7 +19,8 @@ STEP_29M_IMPLEMENTED_SCOPE = (
     "funding_model_binding_v1_slice,"
     "parameter_sensitivity_evidence_binding_v1_slice,"
     "admissible_versioned_futures_dataset_binding_v1_slice,"
-    "economic_validity_policy_threshold_values_v1_slice"
+    "economic_validity_policy_threshold_values_v1_slice,"
+    "real_admissible_futures_economic_evidence_evaluation_v1_offline_slice"
 )
 STEP_29M_SLICES = tuple(STEP_29M_IMPLEMENTED_SCOPE.split(","))
 
