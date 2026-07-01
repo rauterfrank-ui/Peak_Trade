@@ -134,9 +134,9 @@ def test_step_29q_legitimately_started_global_transition() -> None:
     text = _read_registry()
     assert _field_value(text, "RUNBOOK_STEP_29Q_STARTED") == "true"
     assert _field_value(text, "STEP_29Q_STARTED") == "true"
-    assert _field_value(text, "RUNBOOK_STEP_29Q_IMPLEMENTATION_STARTED") == "false"
+    assert _field_value(text, "RUNBOOK_STEP_29Q_IMPLEMENTATION_STARTED") == "true"
     assert _field_value(text, "RUNBOOK_STEP_29Q_COMPLETE") == "false"
-    assert _field_value(text, "CANONICAL_ORDER_INTENT_IMPLEMENTED") == "false"
+    assert _field_value(text, "CANONICAL_ORDER_INTENT_IMPLEMENTED") == "true"
     assert _field_value(text, "NEXT_RUNBOOK_STEP") == "RUNBOOK_STEP_29Q"
     assert "#### RUNBOOK_STEP_29Q" in text
 

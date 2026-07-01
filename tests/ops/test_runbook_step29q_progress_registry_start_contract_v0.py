@@ -54,11 +54,11 @@ def test_runbook_step_29q_started_true() -> None:
     assert _field_value(section, "RUNBOOK_STEP_29Q_STARTED") == "true"
 
 
-def test_runbook_step_29q_implementation_not_started() -> None:
+def test_runbook_step_29q_implementation_started() -> None:
     text = _read_registry()
     section = _step_29q_section(text)
-    assert _field_value(text, "RUNBOOK_STEP_29Q_IMPLEMENTATION_STARTED") == "false"
-    assert _field_value(section, "RUNBOOK_STEP_29Q_IMPLEMENTATION_STARTED") == "false"
+    assert _field_value(text, "RUNBOOK_STEP_29Q_IMPLEMENTATION_STARTED") == "true"
+    assert _field_value(section, "RUNBOOK_STEP_29Q_IMPLEMENTATION_STARTED") == "true"
 
 
 def test_runbook_step_29q_not_complete() -> None:
@@ -83,11 +83,11 @@ def test_runbook_step_29q_canonical_definition() -> None:
     )
 
 
-def test_runbook_step_29q_canonical_owner_explicit_proposed_state() -> None:
+def test_runbook_step_29q_canonical_owner_implemented() -> None:
     section = _step_29q_section(_read_registry())
     assert _field_value(section, "CANONICAL_OWNER") == STEP_29Q_CANONICAL_OWNER
-    assert _field_value(section, "CANONICAL_OWNER_STATUS") == "PROPOSED_PENDING_IMPLEMENTATION"
-    assert _field_value(section, "CANONICAL_OWNER_RATIFIED") == "false"
+    assert _field_value(section, "CANONICAL_OWNER_STATUS") == "IMPLEMENTED"
+    assert _field_value(section, "CANONICAL_OWNER_RATIFIED") == "true"
 
 
 def test_step_29q_section_has_no_tbd_placeholders() -> None:
@@ -104,16 +104,16 @@ def test_runbook_step_29q_minimum_safe_slice() -> None:
     )
 
 
-def test_canonical_order_intent_not_implemented() -> None:
+def test_canonical_order_intent_implemented() -> None:
     text = _read_registry()
     section = _step_29q_section(text)
-    assert _field_value(text, "CANONICAL_ORDER_INTENT_IMPLEMENTED") == "false"
-    assert _field_value(section, "CANONICAL_ORDER_INTENT_IMPLEMENTED") == "false"
+    assert _field_value(text, "CANONICAL_ORDER_INTENT_IMPLEMENTED") == "true"
+    assert _field_value(section, "CANONICAL_ORDER_INTENT_IMPLEMENTED") == "true"
 
 
-def test_canonical_order_intent_not_defined() -> None:
+def test_canonical_order_intent_defined() -> None:
     section = _step_29q_section(_read_registry())
-    assert _field_value(section, "CANONICAL_ORDER_INTENT_DEFINED") == "false"
+    assert _field_value(section, "CANONICAL_ORDER_INTENT_DEFINED") == "true"
 
 
 def test_adapter_compatibility_and_transformation_not_proven_or_bound() -> None:
@@ -139,10 +139,12 @@ def test_runtime_rewire_not_performed() -> None:
     assert _field_value(section, "RUNTIME_REWIRE_PERFORMED") == "false"
 
 
-def test_next_required_contract_is_implementation_slice() -> None:
-    text = _read_registry()
-    section = _step_29q_section(text)
-    assert _field_value(section, "NEXT_REQUIRED_CONTRACT") == NEXT_REQUIRED_CONTRACT
+def test_next_required_contract_is_progress_registry_closeout() -> None:
+    section = _step_29q_section(_read_registry())
+    assert (
+        _field_value(section, "NEXT_REQUIRED_CONTRACT")
+        == "RUNBOOK_STEP_29Q_PROGRESS_REGISTRY_CLOSEOUT"
+    )
 
 
 def test_next_runbook_step_remains_29q() -> None:
@@ -152,9 +154,8 @@ def test_next_runbook_step_remains_29q() -> None:
     assert _field_value(section, "NEXT_RUNBOOK_STEP") == "RUNBOOK_STEP_29Q"
 
 
-def test_registry_start_does_not_implement_order_intent_or_adapter_paths() -> None:
+def test_registry_start_does_not_implement_adapter_paths() -> None:
     section = _step_29q_section(_read_registry())
-    assert _field_value(section, "STEP_29Q_DOES_NOT_IMPLEMENT_ORDER_INTENT") == "true"
     assert _field_value(section, "STEP_29Q_DOES_NOT_IMPLEMENT_ADAPTER_TRANSFORMATION") == "true"
     assert _field_value(section, "STEP_29Q_DOES_NOT_CLAIM_ADAPTER_COMPATIBILITY") == "true"
     assert (
@@ -197,13 +198,15 @@ def test_no_step_29r_start_markers() -> None:
     assert "#### RUNBOOK_STEP_29R" not in text
 
 
-def test_scope_classification_registry_start_only() -> None:
+def test_scope_classification_implemented_offline_slice() -> None:
     section = _step_29q_section(_read_registry())
     assert (
         _field_value(section, "RUNBOOK_STEP_29Q_SCOPE_CLASSIFICATION")
-        == "PROGRESS_REGISTRY_START_ONLY"
+        == "CANONICAL_ORDER_INTENT_V1_OFFLINE_SLICE"
     )
-    assert _field_value(section, "RUNBOOK_STEP_29Q_IMPLEMENTED_SCOPE") == "none"
+    assert (
+        _field_value(section, "RUNBOOK_STEP_29Q_IMPLEMENTED_SCOPE") == STEP_29Q_MINIMUM_SAFE_SLICE
+    )
     assert _field_value(section, "STATUS") == "IN_PROGRESS"
 
 
