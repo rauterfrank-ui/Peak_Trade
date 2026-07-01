@@ -23,7 +23,9 @@ STEP_29M_IMPLEMENTED_SCOPE = (
     "economic_validity_policy_threshold_values_v1_slice,"
     f"{RUNNER_SLICE},"
     "real_admissible_futures_economic_evaluation_operator_input_and_admissibility_closure_v0_slice,"
-    "real_okx_inst_eth_usdt_perp_economic_evaluation_v1_offline_slice"
+    "real_okx_inst_eth_usdt_perp_economic_evaluation_v1_offline_slice,"
+    "breakout_donchian_v1_operator_policy_ratification_and_config_registry_slice_v0,"
+    "step29m_registered_strategy_evaluation_fleet_closeout_v0_slice"
 )
 MERGE_COMMIT = "aa1a8fd9d3444e5d5f3dbe2386d4114b2e48b0c9"
 HISTORICAL_SLICES = tuple(
@@ -136,7 +138,7 @@ def test_operator_input_not_required_after_macd_v1_v2_evaluation() -> None:
     assert _field_value(text, "REAL_EVALUATION_PERFORMED") == "true"
     assert _field_value(section, "REAL_EVALUATION_PERFORMED") == "true"
     assert _field_value(text, "REAL_EVALUATION_INPUT_STATUS") == (
-        "MACD_V1_EVALUATION_V2_INVALIDATED_SIZING_ADMISSIBILITY_DEFECT"
+        "REGISTERED_POLICY_RATIFIED_STRATEGY_FLEET_EVALUATION_COMPLETE"
     )
 
 

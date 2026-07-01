@@ -555,14 +555,14 @@ def test_registry_v2_reevaluation_complete() -> None:
     assert field("REAL_EVALUATION_PERFORMED") == "true"
     assert field("REAL_ADMISSIBLE_FUTURES_EVIDENCE_BOUND") == "true"
     assert field("REAL_EVALUATION_INPUT_STATUS") == (
-        "MACD_V1_EVALUATION_V2_INVALIDATED_SIZING_ADMISSIBILITY_DEFECT"
+        "REGISTERED_POLICY_RATIFIED_STRATEGY_FLEET_EVALUATION_COMPLETE"
     )
     assert field("ECONOMIC_VALIDITY_RESULT") == "FAILED"
     assert field("PROFITABILITY_CLAIM_ALLOWED") == "false"
-    assert field("LAST_EVALUATED_CONFIG_VERSION") == "v2"
-    assert field("NEXT_EVALUATION_CONFIG_VERSION") == "v3"
+    assert field("LAST_EVALUATED_CONFIG_VERSION") == "v1"
+    assert field("NEXT_EVALUATION_CONFIG_VERSION") == "none"
     assert field("NEXT_EVALUATION_CONFIG_STATUS") == (
-        "POLICY_RATIFIED_CONFIG_ADMISSIBLE_AWAITING_SEPARATE_RUN"
+        "EVALUATION_FLEET_COMPLETE_NO_PENDING_CANDIDATE"
     )
     assert field("POLICY_INVARIANT") == "risk_per_trade <= max_position_pct * stop_pct"
     assert field("OPERATOR_POLICY_DECISION") == "RATIFIED"
@@ -572,7 +572,7 @@ def test_registry_v2_reevaluation_complete() -> None:
     assert str(MACD_EVIDENCE) in field("INVALIDATED_EVALUATION_REF")
     assert str(V2_EVIDENCE) in field("INVALIDATED_V2_EVALUATION_REF")
     assert str(ROOT_CAUSE_EVIDENCE) in field("ROOT_CAUSE_EVIDENCE_REF")
-    assert (
-        field("NEXT_EVALUATION_CONFIG_PATH")
-        == "config/ops/step29m_okx_inst_eth_usdt_perp_macd_v1_economic_evaluation_v3.json"
+    assert field("NEXT_EVALUATION_CONFIG_PATH") == "none"
+    assert field("STEP29M_REGISTERED_STRATEGY_FLEET_STATUS") == (
+        "EVALUATION_FLEET_COMPLETE_NO_ECONOMIC_VALIDITY_PASS"
     )
