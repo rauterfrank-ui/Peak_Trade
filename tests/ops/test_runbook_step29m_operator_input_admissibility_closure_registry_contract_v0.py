@@ -20,7 +20,8 @@ STEP_29M_IMPLEMENTED_SCOPE = (
     "admissible_versioned_futures_dataset_binding_v1_slice,"
     "economic_validity_policy_threshold_values_v1_slice,"
     "real_admissible_futures_economic_evidence_evaluation_v1_offline_slice,"
-    f"{OPERATOR_INPUT_SLICE}"
+    f"{OPERATOR_INPUT_SLICE},"
+    "real_okx_inst_eth_usdt_perp_economic_evaluation_v1_offline_slice"
 )
 
 
@@ -58,18 +59,18 @@ def test_step_29m_complete_remains_true() -> None:
     assert _field_value(section, "RUNBOOK_STEP_29M_COMPLETE") == "true"
 
 
-def test_operator_input_contract_bound_without_real_evaluation() -> None:
+def test_operator_input_contract_bound_with_real_evaluation_complete() -> None:
     text = _read_registry()
     section = _step_29m_section(text)
     assert _field_value(text, "OPERATOR_INPUT_CONTRACT_V1_BOUND") == "true"
     assert _field_value(section, "OPERATOR_INPUT_CONTRACT_V1_BOUND") == "true"
     assert _field_value(text, "OPERATOR_INPUT_CONTRACT_COMPLETE") == "true"
     assert _field_value(section, "OPERATOR_INPUT_CONTRACT_COMPLETE") == "true"
-    assert _field_value(text, "REAL_EVALUATION_PERFORMED") == "false"
-    assert _field_value(section, "REAL_EVALUATION_PERFORMED") == "false"
-    assert _field_value(text, "REAL_ADMISSIBLE_FUTURES_EVIDENCE_PRESENT") == "false"
-    assert _field_value(text, "REAL_ADMISSIBLE_FUTURES_EVIDENCE_BOUND") == "false"
-    assert _field_value(text, "ECONOMIC_VALIDITY_RESULT") == "NOT_PROVEN"
+    assert _field_value(text, "REAL_EVALUATION_PERFORMED") == "true"
+    assert _field_value(section, "REAL_EVALUATION_PERFORMED") == "true"
+    assert _field_value(text, "REAL_ADMISSIBLE_FUTURES_EVIDENCE_PRESENT") == "true"
+    assert _field_value(text, "REAL_ADMISSIBLE_FUTURES_EVIDENCE_BOUND") == "true"
+    assert _field_value(text, "ECONOMIC_VALIDITY_RESULT") == "FAILED"
     assert _field_value(text, "ECONOMIC_VALIDITY_OFFLINE_GATE_PASS") == "false"
     assert _field_value(text, "CURRENT_PROMOTION_EVALUATION") == "INELIGIBLE"
     assert _field_value(text, "RUNTIME_REWIRE_IMPLEMENTATION_ALLOWED") == "false"
@@ -78,15 +79,9 @@ def test_operator_input_contract_bound_without_real_evaluation() -> None:
 def test_real_evaluation_input_status_updated() -> None:
     text = _read_registry()
     section = _step_29m_section(text)
-    assert (
-        _field_value(text, "REAL_EVALUATION_INPUT_STATUS")
-        == "OPERATOR_INPUT_CONTRACT_COMPLETE_AWAITING_DATASET_STAGING"
-    )
-    assert (
-        _field_value(section, "REAL_EVALUATION_INPUT_STATUS")
-        == "OPERATOR_INPUT_CONTRACT_COMPLETE_AWAITING_DATASET_STAGING"
-    )
-    assert _field_value(text, "OPERATOR_INPUT_REQUIRED_FOR_REAL_EVALUATION") == "true"
+    assert _field_value(text, "REAL_EVALUATION_INPUT_STATUS") == "EVALUATION_COMPLETE"
+    assert _field_value(section, "REAL_EVALUATION_INPUT_STATUS") == "EVALUATION_COMPLETE"
+    assert _field_value(text, "OPERATOR_INPUT_REQUIRED_FOR_REAL_EVALUATION") == "false"
 
 
 def test_canonical_operator_input_contract_owner_bound() -> None:

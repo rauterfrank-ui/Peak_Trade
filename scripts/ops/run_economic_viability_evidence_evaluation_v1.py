@@ -293,7 +293,21 @@ def _load_dataset_manifest(path: Path) -> dict[str, Any]:
 
 def _descriptor_from_manifest(
     manifest: Mapping[str, Any],
+    *,
+    manifest_path: str = "",
 ) -> ds.VersionedFuturesDatasetDescriptorV1:
+    if ds.is_flat_economic_research_manifest_v1(manifest):
+        descriptor, _provenance = (
+            ds.load_dataset_admissibility_from_flat_economic_research_manifest_v1(
+                manifest,
+                manifest_path=manifest_path,
+            )
+        )
+        if descriptor.dataset_version != ds.DEFAULT_DATASET_VERSION:
+            raise RunnerError(f"dataset_version_unknown:{descriptor.dataset_version}")
+        if descriptor.dataset_schema_version != ds.DATASET_SCHEMA_VERSION:
+            raise RunnerError(f"dataset_schema_version_unknown:{descriptor.dataset_schema_version}")
+        return descriptor
     dataset_raw = manifest.get("dataset")
     if not isinstance(dataset_raw, Mapping):
         raise RunnerError("manifest_dataset_missing")
@@ -319,7 +333,19 @@ def _descriptor_from_manifest(
     return descriptor
 
 
-def _provenance_from_manifest(manifest: Mapping[str, Any]) -> ds.DatasetProvenanceV1:
+def _provenance_from_manifest(
+    manifest: Mapping[str, Any],
+    *,
+    manifest_path: str = "",
+) -> ds.DatasetProvenanceV1:
+    if ds.is_flat_economic_research_manifest_v1(manifest):
+        _descriptor, provenance = (
+            ds.load_dataset_admissibility_from_flat_economic_research_manifest_v1(
+                manifest,
+                manifest_path=manifest_path,
+            )
+        )
+        return provenance
     provenance_raw = manifest.get("provenance")
     if not isinstance(provenance_raw, Mapping):
         raise RunnerError("manifest_provenance_missing")
@@ -355,6 +381,40 @@ def _load_bars_from_dataset_path(path: Path) -> pd.DataFrame:
     if frame.index.tz is None:
         frame.index = frame.index.tz_localize("UTC")
     return frame.sort_index()
+
+
+def _validate_real_evaluation_binding(
+    cfg: Mapping[str, Any],
+    *,
+    manifest: Mapping[str, Any],
+    admissibility: ds.AdmissibleVersionedFuturesDatasetResultV1,
+) -> None:
+    binding = cfg.get("real_admissible_futures_evaluation_binding_v1")
+    if not isinstance(binding, Mapping):
+        return
+    expected_dataset = str(binding.get("expected_dataset_digest", "")).strip()
+    if expected_dataset and admissibility.dataset_digest != expected_dataset:
+        raise RunnerError("expected_dataset_digest_mismatch")
+    expected_manifest = str(binding.get("expected_manifest_digest", "")).strip()
+    if expected_manifest and str(manifest.get("manifest_digest", "")) != expected_manifest:
+        raise RunnerError("expected_manifest_digest_mismatch")
+    if binding.get("require_integrity_pass") is True:
+        integrity = manifest.get("integrity_results")
+        if not isinstance(integrity, Mapping) or integrity.get("integrity_pass") is not True:
+            raise RunnerError("manifest_integrity_pass_required")
+    if binding.get("require_dataset_admissible") is True:
+        integrity = manifest.get("integrity_results")
+        if not isinstance(integrity, Mapping) or integrity.get("dataset_admissible") is not True:
+            raise RunnerError("manifest_dataset_admissible_required")
+    if (
+        binding.get("require_observed_l1_used_false") is True
+        and manifest.get("observed_l1_used") is not False
+    ):
+        raise RunnerError("observed_l1_used_must_be_false")
+    l1_status = str(manifest.get("l1_observation_status", ""))
+    expected_l1 = str(binding.get("expected_l1_observation_status", "")).strip()
+    if expected_l1 and l1_status != expected_l1:
+        raise RunnerError("l1_observation_status_mismatch")
 
 
 def _validate_evaluation_config(cfg: Mapping[str, Any]) -> None:
@@ -599,8 +659,8 @@ def build_validation_plan(args: argparse.Namespace) -> ValidationPlanV1:
     if not dataset_path.is_file():
         raise RunnerError(f"dataset_path_not_found:{dataset_path}")
     manifest = _load_dataset_manifest(manifest_path)
-    descriptor = _descriptor_from_manifest(manifest)
-    provenance = _provenance_from_manifest(manifest)
+    descriptor = _descriptor_from_manifest(manifest, manifest_path=str(manifest_path))
+    provenance = _provenance_from_manifest(manifest, manifest_path=str(manifest_path))
     fixture_class = classify_dataset_fixture_class_v1(
         descriptor=descriptor,
         provenance=provenance,
@@ -627,6 +687,7 @@ def build_validation_plan(args: argparse.Namespace) -> ValidationPlanV1:
     )
     if not admissibility.is_admissible():
         raise RunnerError(f"dataset_not_admissible:{admissibility.admissibility_status.value}")
+    _validate_real_evaluation_binding(cfg, manifest=manifest, admissibility=admissibility)
 
     config_digest = _stable_digest(cfg)
     run_id = _derive_run_id(
@@ -689,8 +750,8 @@ def execute_evaluation(args: argparse.Namespace) -> RunOutcomeV1:
     policy_path = Path(plan.policy_path) if plan.policy_path else None
 
     manifest = _load_dataset_manifest(manifest_path)
-    descriptor = _descriptor_from_manifest(manifest)
-    provenance = _provenance_from_manifest(manifest)
+    descriptor = _descriptor_from_manifest(manifest, manifest_path=str(manifest_path))
+    provenance = _provenance_from_manifest(manifest, manifest_path=str(manifest_path))
     fixture_class = DatasetFixtureClass(plan.dataset_fixture_class)
     cfg = _merge_policy_into_config(_load_config(config_path), policy_path)
     policy = _resolve_policy(cfg)

@@ -565,6 +565,117 @@ def load_profile_binding_from_manifest(manifest: Mapping[str, Any]) -> DatasetPr
     )
 
 
+def is_flat_economic_research_manifest_v1(manifest: Mapping[str, Any]) -> bool:
+    """True when manifest uses OKX/staging flat envelope (no nested ``dataset`` block)."""
+    if isinstance(manifest.get("dataset"), Mapping):
+        return False
+    profile = manifest.get("dataset_profile")
+    if profile == DatasetProfileV1.ECONOMIC_RESEARCH_V1.value:
+        return True
+    profile_binding = manifest.get("profile_binding")
+    if isinstance(profile_binding, Mapping):
+        return profile_binding.get("dataset_profile") == DatasetProfileV1.ECONOMIC_RESEARCH_V1.value
+    return False
+
+
+def load_dataset_admissibility_from_flat_economic_research_manifest_v1(
+    manifest: Mapping[str, Any],
+    *,
+    manifest_path: str = "",
+) -> tuple[VersionedFuturesDatasetDescriptorV1, DatasetProvenanceV1]:
+    """Narrow adapter: flat economic_research_v1 staging manifest -> descriptor + provenance."""
+    if not is_flat_economic_research_manifest_v1(manifest):
+        raise AdmissibleVersionedFuturesDatasetError("not_flat_economic_research_manifest_v1")
+
+    instrument_id = str(manifest.get("instrument_id", "")).strip()
+    if not instrument_id:
+        raise AdmissibleVersionedFuturesDatasetError("flat_manifest_instrument_id_missing")
+
+    dataset_version = str(manifest.get("dataset_version", DEFAULT_DATASET_VERSION))
+    dataset_digest = str(
+        manifest.get("normalized_dataset_digest", manifest.get("dataset_digest", ""))
+    ).strip()
+    if not _valid_sha256(dataset_digest):
+        raise AdmissibleVersionedFuturesDatasetError("flat_manifest_dataset_digest_invalid")
+
+    data_period = manifest.get("data_period")
+    if not isinstance(data_period, Mapping):
+        raise AdmissibleVersionedFuturesDatasetError("flat_manifest_data_period_missing")
+
+    provenance_raw = manifest.get("provenance")
+    if not isinstance(provenance_raw, Mapping):
+        raise AdmissibleVersionedFuturesDatasetError("flat_manifest_provenance_missing")
+
+    profile_binding = load_profile_binding_from_manifest(manifest)
+    field_bindings = field_bindings_for_profile(profile_binding.dataset_profile)
+
+    acquisition = manifest.get("acquisition_timestamps")
+    ingestion_ts = ""
+    if isinstance(acquisition, Mapping):
+        ingestion_ts = str(acquisition.get("ingestion_timestamp_utc", "")).strip()
+    if not ingestion_ts:
+        ingestion_ts = str(provenance_raw.get("staging_timestamp_utc", "")).strip()
+    if not ingestion_ts:
+        raise AdmissibleVersionedFuturesDatasetError("flat_manifest_ingestion_timestamp_missing")
+
+    provenance_ref = str(provenance_raw.get("provenance_ref", "")).strip()
+    if not provenance_ref:
+        ingestion_root = str(provenance_raw.get("ingestion_evidence_root", "")).strip()
+        raw_root = str(provenance_raw.get("raw_staging_root", "")).strip()
+        if ingestion_root:
+            provenance_ref = ingestion_root
+        elif raw_root:
+            provenance_ref = f"{raw_root}/reports/PROVENANCE.json"
+        elif manifest_path:
+            provenance_ref = manifest_path
+        else:
+            provenance_ref = f"datasets/admissible_futures/{instrument_id}/{dataset_version}/dataset_manifest.json"
+
+    venue_id = str(
+        provenance_raw.get("venue_id") or provenance_raw.get("source_venue") or ""
+    ).strip()
+    if not venue_id:
+        raise AdmissibleVersionedFuturesDatasetError("flat_manifest_venue_id_missing")
+
+    start_raw = str(data_period.get("start_utc", ""))
+    end_raw = str(data_period.get("end_utc", ""))
+    if not start_raw or not end_raw:
+        raise AdmissibleVersionedFuturesDatasetError("flat_manifest_data_period_bounds_missing")
+
+    provenance = DatasetProvenanceV1(
+        source_type=str(provenance_raw.get("source_type", "")),
+        venue_id=venue_id,
+        ingestion_timestamp=ingestion_ts,
+        generation_method=str(provenance_raw.get("generation_method", "")),
+        provenance_ref=provenance_ref,
+    )
+    descriptor = VersionedFuturesDatasetDescriptorV1(
+        dataset_id=f"{instrument_id}_{dataset_version}",
+        dataset_version=dataset_version,
+        dataset_schema_version=str(manifest.get("dataset_schema_version", DATASET_SCHEMA_VERSION)),
+        dataset_digest=dataset_digest,
+        instrument_id=instrument_id,
+        contract_type=str(manifest.get("contract_type", "perpetual")),
+        futures_only=bool(manifest.get("futures_only", True)),
+        bitcoin_direction_allowed=False,
+        venue_id=venue_id,
+        start_time=str(pd.Timestamp(start_raw)),
+        end_time=str(pd.Timestamp(end_raw)),
+        row_count=int(manifest.get("row_count", 0)),
+        field_bindings=field_bindings,
+        training_period=str(manifest.get("training_period", "")),
+        validation_period=str(manifest.get("validation_period", "")),
+        out_of_sample_period=str(manifest.get("out_of_sample_period", "")),
+        split_policy_version=SPLIT_POLICY_VERSION,
+        timestamp_semantics=TIMESTAMP_SEMANTICS,
+        timezone=TIMEZONE,
+        ordering_status=ORDERING_STATUS_SORTED,
+        duplicate_policy=DUPLICATE_POLICY,
+        missing_data_policy=MISSING_DATA_POLICY,
+    )
+    return descriptor, provenance
+
+
 def dataset_admissibility_binding_requested(cfg: Mapping[str, Any]) -> bool:
     backtest = cfg.get("backtest")
     if not isinstance(backtest, Mapping):
