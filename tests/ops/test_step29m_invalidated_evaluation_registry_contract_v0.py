@@ -36,13 +36,18 @@ def _step_29m_section(text: str) -> str:
     return text[start:end]
 
 
-def test_step_29m_real_evaluation_invalidated() -> None:
+def test_step_29m_real_evaluation_invalidated_then_macd_admissibility_staged() -> None:
     section = _step_29m_section(_read_registry())
     assert _field_value(section, "REAL_EVALUATION_ATTEMPTED") == "true"
     assert _field_value(section, "REAL_EVALUATION_PERFORMED") == "false"
     assert _field_value(section, "REAL_ADMISSIBLE_FUTURES_EVIDENCE_BOUND") == "false"
     assert _field_value(section, "REAL_EVALUATION_INPUT_STATUS") == (
-        "EVALUATION_INVALIDATED_RUNNER_WIRING_DEFECT"
+        "MACD_V1_ADMISSIBLE_CONFIG_STAGED_AWAITING_EVALUATION"
+    )
+    assert _field_value(section, "NEXT_EVALUATION_STRATEGY_ID") == "macd"
+    assert _field_value(section, "NEXT_EVALUATION_STRATEGY_VERSION") == "v1"
+    assert _field_value(section, "NEXT_EVALUATION_CONFIG_STATUS") == (
+        "ADMISSIBLE_AWAITING_SEPARATE_RUN"
     )
     assert _field_value(section, "ECONOMIC_VALIDITY_RESULT") == "NOT_PROVEN"
     assert _field_value(section, "PROFITABILITY_CLAIM_ALLOWED") == "false"

@@ -12,6 +12,7 @@ from src.backtest.strategy_signal_binding_v1 import (
     ENGINE_SIGNAL_SOURCE_CONFIGURED_STRATEGY,
     StrategySignalBindingError,
     collect_configured_strategy_params_v1,
+    compute_required_warmup_rows_v1,
     execute_configured_strategy_signal_series_v1,
     resolve_effective_strategy_params_v1,
 )
@@ -148,6 +149,42 @@ def test_signal_contract_rejects_duplicate_timestamps() -> None:
             strategy_id="ma_crossover",
             strategy_params_digest="abc",
         )
+
+
+def test_resolve_effective_params_defaults_for_macd() -> None:
+    effective, digest = resolve_effective_strategy_params_v1("macd", {})
+    assert effective["fast_ema"] == 12
+    assert effective["slow_ema"] == 26
+    assert effective["signal_ema"] == 9
+    assert len(digest) == 64
+
+
+def test_macd_unknown_strategy_param_fail_closed() -> None:
+    with pytest.raises(StrategySignalBindingError, match="unknown_strategy_param"):
+        resolve_effective_strategy_params_v1("macd", {"fast_window": 12})
+
+
+def test_macd_required_warmup_rows() -> None:
+    effective, _ = resolve_effective_strategy_params_v1("macd", {})
+    assert compute_required_warmup_rows_v1("macd", effective) == 34
+
+
+def test_execute_macd_produces_long_and_short_signals() -> None:
+    result = execute_configured_strategy_signal_series_v1(
+        _bars(120),
+        strategy_id="macd",
+        cfg={
+            "economic_evaluation_v1": {
+                "strategy_id": "macd",
+                "strategy_params": {"fast_ema": 12, "slow_ema": 26, "signal_ema": 9},
+            }
+        },
+    )
+    assert result.provenance.strategy_execution_status.value == "EXECUTED"
+    assert result.provenance.engine_signal_source == ENGINE_SIGNAL_SOURCE_CONFIGURED_STRATEGY
+    assert result.provenance.strategy_nonzero_signal_count > 0
+    assert (result.signals == 1).any()
+    assert (result.signals == -1).any()
 
 
 def test_signal_contract_rejects_unknown_values() -> None:

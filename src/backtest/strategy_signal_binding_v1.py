@@ -39,6 +39,15 @@ _CANONICAL_PARAM_ALIASES_V1: dict[str, dict[str, str]] = {
     },
 }
 
+# External binding schema for strategies without class-level parameter_schema (macd v1).
+_EXTERNAL_PARAMETER_SCHEMA_V1: dict[str, dict[str, Any]] = {
+    "macd": {
+        "fast_ema": 12,
+        "slow_ema": 26,
+        "signal_ema": 9,
+    },
+}
+
 
 class StrategySignalBindingError(ValueError):
     """Fail-closed strategy signal binding error."""
@@ -173,6 +182,9 @@ def collect_configured_strategy_params_v1(
 
 
 def _schema_param_names(strategy_id: str) -> tuple[str, ...]:
+    external = _EXTERNAL_PARAMETER_SCHEMA_V1.get(strategy_id)
+    if external is not None:
+        return tuple(external.keys())
     try:
         spec = get_strategy_spec(strategy_id)
     except KeyError:
@@ -184,6 +196,9 @@ def _schema_param_names(strategy_id: str) -> tuple[str, ...]:
 
 
 def _schema_defaults(strategy_id: str) -> dict[str, Any]:
+    external = _EXTERNAL_PARAMETER_SCHEMA_V1.get(strategy_id)
+    if external is not None:
+        return dict(external)
     try:
         spec = get_strategy_spec(strategy_id)
     except KeyError:
@@ -192,6 +207,33 @@ def _schema_defaults(strategy_id: str) -> dict[str, Any]:
     if not schema:
         return {}
     return {param.name: param.default for param in schema}
+
+
+def compute_required_warmup_rows_v1(
+    strategy_id: str,
+    effective_params: Mapping[str, Any],
+) -> int:
+    """Deterministic warmup row count for registered strategy parameter contracts."""
+    if strategy_id == "macd":
+        slow = int(effective_params["slow_ema"])
+        signal = int(effective_params["signal_ema"])
+        fast = int(effective_params["fast_ema"])
+        if fast <= 0 or slow <= 0 or signal <= 0 or fast >= slow:
+            raise StrategySignalBindingError("macd_warmup_param_invariant_failed")
+        return slow + signal - 1
+    if strategy_id == "ma_crossover":
+        return int(effective_params["slow_window"])
+    raise StrategySignalBindingError(f"required_warmup_rows_unbound:{strategy_id}")
+
+
+def _validate_macd_parameter_invariants_v1(effective_params: Mapping[str, Any]) -> None:
+    fast = int(effective_params["fast_ema"])
+    slow = int(effective_params["slow_ema"])
+    signal = int(effective_params["signal_ema"])
+    _fail_closed(fast <= 0, "macd_fast_ema_non_positive")
+    _fail_closed(slow <= 0, "macd_slow_ema_non_positive")
+    _fail_closed(signal <= 0, "macd_signal_ema_non_positive")
+    _fail_closed(fast >= slow, "macd_fast_ema_not_lt_slow_ema")
 
 
 def resolve_effective_strategy_params_v1(
@@ -215,6 +257,8 @@ def resolve_effective_strategy_params_v1(
 
     effective = dict(_schema_defaults(strategy_id))
     effective.update(normalized_input)
+    if strategy_id == "macd":
+        _validate_macd_parameter_invariants_v1(effective)
     digest = _stable_digest(
         {
             "strategy_id": strategy_id,
