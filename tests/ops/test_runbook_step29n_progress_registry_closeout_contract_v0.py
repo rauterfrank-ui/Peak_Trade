@@ -55,16 +55,14 @@ def test_progress_registry_closeout_performed_true() -> None:
     assert _field_value(section, "PROGRESS_REGISTRY_CLOSEOUT_PERFORMED") == "true"
 
 
-def test_step_29o_not_started() -> None:
-    text = _read_registry()
-    section = _step_29n_section(text)
-    assert _field_value(text, "STEP_29O_STARTED") == "false"
+def test_step_29o_started_preserved_in_29n_section_snapshot() -> None:
+    section = _step_29n_section(_read_registry())
     assert _field_value(section, "STEP_29O_STARTED") == "false"
 
 
-def test_next_runbook_step_is_29o() -> None:
-    text = _read_registry()
-    assert _field_value(text, "NEXT_RUNBOOK_STEP") == "RUNBOOK_STEP_29O"
+def test_next_required_contract_is_29o_in_29n_section() -> None:
+    section = _step_29n_section(_read_registry())
+    assert _field_value(section, "NEXT_REQUIRED_CONTRACT") == "RUNBOOK_STEP_29O"
 
 
 def test_promotion_gate_binding_status_pass() -> None:
@@ -120,7 +118,7 @@ def test_implemented_scope_preserved() -> None:
     assert _field_value(section, "RUNBOOK_STEP_29N_IMPLEMENTED_SCOPE") == STEP_29N_IMPLEMENTED_SCOPE
 
 
-def test_no_step_29o_implementation_markers() -> None:
+def test_no_step_29o_complete_markers_in_29n_section() -> None:
     section = _step_29n_section(_read_registry())
     assert "RUNBOOK_STEP_29O_IMPLEMENTED" not in section
     assert "RUNBOOK_STEP_29O_COMPLETE" not in section
