@@ -40,6 +40,9 @@ from src.backtest.admissible_versioned_futures_dataset_v1 import (
     serialize_dataset_admissibility_binding_v1,
     evaluate_admissible_versioned_futures_dataset_v1,
 )
+from src.backtest.offline_evaluation_sizing_contract_v1 import (
+    offline_evaluation_sizing_contract_requested,
+)
 from src.backtest.parameter_sensitivity_v1 import (
     ParameterSensitivityError,
     parameter_sensitivity_binding_requested,
@@ -188,6 +191,7 @@ class EconomicViabilityEvidenceV1:
     modelled_spread_cost: Optional[float] = None
     observed_l1_used: bool = False
     strategy_signal_binding: Mapping[str, Any] = field(default_factory=dict)
+    sizing_provenance: Mapping[str, Any] = field(default_factory=dict)
 
     def to_semantic_dict(self) -> dict[str, Any]:
         payload = {
@@ -255,6 +259,7 @@ class EconomicViabilityEvidenceV1:
             "modelled_spread_cost": self.modelled_spread_cost,
             "observed_l1_used": self.observed_l1_used,
             "strategy_signal_binding": dict(self.strategy_signal_binding),
+            "sizing_provenance": dict(self.sizing_provenance),
         }
         return payload
 
@@ -795,6 +800,19 @@ def build_economic_viability_evidence_v1(
     }
     reason_codes.append("configured_strategy_signal_bound")
 
+    sizing_provenance_payload = dict(wiring_result.sizing_provenance)
+    if offline_evaluation_sizing_contract_requested(cfg):
+        if not sizing_provenance_payload:
+            raise EconomicViabilityEvidenceError("sizing_provenance_missing")
+        if sizing_provenance_payload.get("entry_candidate_count") != (
+            sizing_provenance_payload.get("entry_sizing_pass_count", 0)
+            + sizing_provenance_payload.get("entry_sizing_reject_count", 0)
+        ):
+            raise EconomicViabilityEvidenceError("sizing_provenance_accounting_invalid")
+        reason_codes.append("offline_evaluation_sizing_provenance_bound")
+    elif sizing_provenance_payload:
+        raise EconomicViabilityEvidenceError("sizing_provenance_unexpected_without_contract")
+
     return EconomicViabilityEvidenceV1(
         contract_version=ECONOMIC_VIABILITY_EVIDENCE_LAYER_VERSION,
         owner=ECONOMIC_VIABILITY_EVIDENCE_OWNER,
@@ -906,6 +924,7 @@ def build_economic_viability_evidence_v1(
         modelled_spread_cost=modelled_spread_cost,
         observed_l1_used=observed_l1_used,
         strategy_signal_binding=strategy_signal_binding_payload,
+        sizing_provenance=sizing_provenance_payload,
     )
 
 
@@ -963,6 +982,7 @@ def economic_viability_evidence_schema_v1() -> dict[str, Any]:
             "execution_price_observation_source",
             "modelled_spread_cost",
             "observed_l1_used",
+            "sizing_provenance",
         ],
         "metric_semantics": [semantic.value for semantic in MetricSemantic],
         "data_source_kinds": [kind.value for kind in DataSourceKind],
@@ -1137,6 +1157,10 @@ def economic_viability_evidence_from_dict_v1(
         strategy_signal_binding=_mapping_from_dict(
             payload.get("strategy_signal_binding", {}),
             field_name="strategy_signal_binding",
+        ),
+        sizing_provenance=_mapping_from_dict(
+            payload.get("sizing_provenance", {}),
+            field_name="sizing_provenance",
         ),
     )
 

@@ -82,24 +82,24 @@ def test_runner_slice_registered_in_implemented_scope() -> None:
         assert historical_slice in global_scope
 
 
-def test_real_evaluation_performed_without_economic_pass() -> None:
+def test_real_evaluation_attempted_without_valid_performed_evaluation() -> None:
     text = _read_registry()
     section = _step_29m_section(text)
     assert _field_value(text, "REAL_EVALUATION_ATTEMPTED") == "true"
     assert _field_value(section, "REAL_EVALUATION_ATTEMPTED") == "true"
-    assert _field_value(text, "REAL_EVALUATION_PERFORMED") == "true"
-    assert _field_value(section, "REAL_EVALUATION_PERFORMED") == "true"
-    assert _field_value(text, "ECONOMIC_VALIDITY_RESULT") == "FAILED"
-    assert _field_value(section, "ECONOMIC_VALIDITY_RESULT") == "FAILED"
+    assert _field_value(text, "REAL_EVALUATION_PERFORMED") == "false"
+    assert _field_value(section, "REAL_EVALUATION_PERFORMED") == "false"
+    assert _field_value(text, "ECONOMIC_VALIDITY_RESULT") == "NOT_PROVEN"
+    assert _field_value(section, "ECONOMIC_VALIDITY_RESULT") == "NOT_PROVEN"
 
 
-def test_real_admissible_futures_evidence_present_and_bound() -> None:
+def test_real_admissible_futures_evidence_present_but_not_bound() -> None:
     text = _read_registry()
     section = _step_29m_section(text)
     assert _field_value(text, "REAL_ADMISSIBLE_FUTURES_EVIDENCE_PRESENT") == "true"
-    assert _field_value(text, "REAL_ADMISSIBLE_FUTURES_EVIDENCE_BOUND") == "true"
+    assert _field_value(text, "REAL_ADMISSIBLE_FUTURES_EVIDENCE_BOUND") == "false"
     assert _field_value(section, "REAL_ADMISSIBLE_FUTURES_EVIDENCE_PRESENT") == "true"
-    assert _field_value(section, "REAL_ADMISSIBLE_FUTURES_EVIDENCE_BOUND") == "true"
+    assert _field_value(section, "REAL_ADMISSIBLE_FUTURES_EVIDENCE_BOUND") == "false"
 
 
 def test_real_admissible_futures_evidence_required_true() -> None:
@@ -112,10 +112,10 @@ def test_real_admissible_futures_evidence_required_true() -> None:
 def test_economic_validity_not_proven_and_offline_gate_false() -> None:
     text = _read_registry()
     section = _step_29m_section(text)
-    assert _field_value(text, "ECONOMIC_VALIDITY_RESULT") == "FAILED"
+    assert _field_value(text, "ECONOMIC_VALIDITY_RESULT") == "NOT_PROVEN"
     assert _field_value(text, "ECONOMIC_VALIDITY_PROVEN") == "false"
     assert _field_value(text, "ECONOMIC_VALIDITY_OFFLINE_GATE_PASS") == "false"
-    assert _field_value(section, "ECONOMIC_VALIDITY_RESULT") == "FAILED"
+    assert _field_value(section, "ECONOMIC_VALIDITY_RESULT") == "NOT_PROVEN"
     assert _field_value(section, "ECONOMIC_VALIDITY_PROVEN") == "false"
     assert _field_value(section, "ECONOMIC_VALIDITY_OFFLINE_GATE_PASS") == "false"
 
@@ -128,14 +128,17 @@ def test_current_promotion_evaluation_ineligible() -> None:
     assert _field_value(text, "PROMOTION_CANDIDATE_ELIGIBLE") == "false"
 
 
-def test_operator_input_not_required_after_macd_v1_evaluation_complete() -> None:
+def test_operator_input_not_required_after_macd_v1_evaluation_invalidated() -> None:
     text = _read_registry()
     section = _step_29m_section(text)
     assert _field_value(text, "OPERATOR_INPUT_REQUIRED_FOR_REAL_EVALUATION") == "false"
     assert _field_value(section, "OPERATOR_INPUT_REQUIRED_FOR_REAL_EVALUATION") == "false"
-    assert _field_value(text, "REAL_EVALUATION_PERFORMED") == "true"
-    assert _field_value(section, "REAL_EVALUATION_PERFORMED") == "true"
-    assert _field_value(text, "REAL_EVALUATION_INPUT_STATUS") == "MACD_V1_EVALUATION_COMPLETE"
+    assert _field_value(text, "REAL_EVALUATION_PERFORMED") == "false"
+    assert _field_value(section, "REAL_EVALUATION_PERFORMED") == "false"
+    assert (
+        _field_value(text, "REAL_EVALUATION_INPUT_STATUS")
+        == "MACD_V1_EVALUATION_INVALIDATED_OFFLINE_SIZING_CONTRACT_DEFECT"
+    )
 
 
 def test_kraken_and_venue_fixtures_excluded_from_canonical_economic_path() -> None:
@@ -166,7 +169,7 @@ def test_registry_closeout_does_not_imply_economic_pass_or_promotion() -> None:
     section = _step_29m_section(text)
     assert _field_value(text, "PROGRESS_REGISTRY_CLOSEOUT_PERFORMED") == "true"
     assert _field_value(section, "PROGRESS_REGISTRY_CLOSEOUT_PERFORMED") == "true"
-    assert _field_value(text, "ECONOMIC_VALIDITY_RESULT") == "FAILED"
+    assert _field_value(text, "ECONOMIC_VALIDITY_RESULT") == "NOT_PROVEN"
     assert _field_value(text, "ECONOMIC_VALIDITY_OFFLINE_GATE_PASS") == "false"
     assert _field_value(text, "CURRENT_PROMOTION_EVALUATION") == "INELIGIBLE"
     assert _field_value(section, "PROMOTION_ELIGIBILITY_GRANTED") == "false"

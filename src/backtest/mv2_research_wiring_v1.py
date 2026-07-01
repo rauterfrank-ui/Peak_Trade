@@ -11,7 +11,7 @@ from __future__ import annotations
 
 import hashlib
 import json
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from datetime import timedelta
 from enum import Enum
 from typing import Any, Callable, Mapping, Optional, Sequence
@@ -40,6 +40,11 @@ from src.backtest.strategy_signal_binding_v1 import (
     assert_engine_signal_provenance_consistency_v1,
     compute_strategy_signal_digest_v1,
     execute_configured_strategy_signal_series_v1,
+)
+from src.backtest.offline_evaluation_sizing_contract_v1 import (
+    OfflineEvaluationSizingError,
+    bind_offline_evaluation_sizing_v1,
+    offline_evaluation_sizing_contract_requested,
 )
 from src.experiments.monte_carlo import (
     MonteCarloConfig,
@@ -187,6 +192,7 @@ class MV2ResearchWiringResultV1:
     strategy_signal_provenance: StrategySignalProvenanceV1
     mv2_replay_signal_digest: str
     mv2_replay_nonzero_signal_count: int
+    sizing_provenance: Mapping[str, Any] = field(default_factory=dict)
 
 
 @dataclass(frozen=True)
@@ -904,19 +910,51 @@ def run_mv2_research_backtest_wiring_v1(
             raise ValueError("engine_strategy_signal_index_mismatch")
         return aligned.astype(int)
 
+    engine_cfg = dict(cfg)
+    sizing_provenance: dict[str, Any] = {}
+    strategy_params = {
+        **dict(strategy_binding.provenance.effective_strategy_params),
+        "strategy_id": strategy_id,
+    }
+    if offline_evaluation_sizing_contract_requested(cfg):
+        binding = cfg.get("real_admissible_futures_evaluation_binding_v1", {})
+        dataset_digest = ""
+        if isinstance(binding, Mapping):
+            dataset_digest = str(binding.get("expected_dataset_digest", ""))
+        try:
+            contract, _accounting = bind_offline_evaluation_sizing_v1(
+                engine_cfg,
+                strategy_params_digest=strategy_binding.provenance.strategy_params_digest,
+                dataset_digest=dataset_digest,
+            )
+        except OfflineEvaluationSizingError as exc:
+            raise ValueError(f"offline_evaluation_sizing_contract_invalid:{exc}") from exc
+        strategy_params["stop_pct"] = contract.stop_pct
+        engine_cfg["offline_evaluation_sizing_contract_v1"] = contract.to_dict()
+
     engine = BacktestEngine(use_execution_pipeline=False)
-    engine.config = dict(cfg)
+    engine.config = engine_cfg
     backtest_result = engine.run_realistic(
         df=bars,
         strategy_signal_fn=_signal_fn,
-        strategy_params={
-            **dict(strategy_binding.provenance.effective_strategy_params),
-            "strategy_id": strategy_id,
-        },
+        strategy_params=strategy_params,
         symbol=instrument_id,
         cost_config=effective_cost,
         explicit_zero_cost_non_economic=explicit_zero_cost_non_economic,
     )
+
+    if offline_evaluation_sizing_contract_requested(cfg):
+        from src.backtest.offline_evaluation_sizing_contract_v1 import (
+            get_offline_sizing_accounting_v1,
+            load_offline_evaluation_sizing_contract_v1,
+            serialize_sizing_provenance_v1,
+        )
+
+        contract = load_offline_evaluation_sizing_contract_v1(engine_cfg)
+        accounting = get_offline_sizing_accounting_v1(engine_cfg)
+        if accounting is None:
+            raise ValueError("offline_sizing_accounting_missing")
+        sizing_provenance = serialize_sizing_provenance_v1(contract, accounting)
 
     return MV2ResearchWiringResultV1(
         instrument_id=instrument_id,
@@ -929,6 +967,7 @@ def run_mv2_research_backtest_wiring_v1(
         strategy_signal_provenance=strategy_binding.provenance,
         mv2_replay_signal_digest=mv2_replay_digest,
         mv2_replay_nonzero_signal_count=mv2_replay_nonzero,
+        sizing_provenance=sizing_provenance,
     )
 
 

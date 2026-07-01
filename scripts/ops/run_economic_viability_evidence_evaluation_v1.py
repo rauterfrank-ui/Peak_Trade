@@ -44,6 +44,11 @@ from src.backtest.economic_validity_policy_v1 import (  # noqa: E402
     validate_economic_validity_policy_v1,
 )
 from src.backtest.funding_model_v1 import load_funding_model_config_v1  # noqa: E402
+from src.backtest.offline_evaluation_sizing_contract_v1 import (  # noqa: E402
+    OfflineEvaluationSizingError,
+    load_offline_evaluation_sizing_contract_v1,
+    offline_evaluation_sizing_contract_requested,
+)
 from src.trading.master_v2.integrated_offline_trading_logic_replay_v1 import (  # noqa: E402
     INTEGRATED_OFFLINE_TRADING_LOGIC_REPLAY_LAYER_VERSION,
 )
@@ -451,6 +456,11 @@ def _validate_evaluation_config(cfg: Mapping[str, Any]) -> None:
         ds.load_profile_binding_from_cfg(cfg)
     except ds.AdmissibleVersionedFuturesDatasetError as exc:
         raise RunnerError(f"dataset_profile_binding_missing:{exc}") from exc
+    if offline_evaluation_sizing_contract_requested(cfg):
+        try:
+            load_offline_evaluation_sizing_contract_v1(cfg)
+        except OfflineEvaluationSizingError as exc:
+            raise RunnerError(f"offline_evaluation_sizing_contract_invalid:{exc}") from exc
 
 
 def _resolve_strategy_id(cfg: Mapping[str, Any]) -> str:
