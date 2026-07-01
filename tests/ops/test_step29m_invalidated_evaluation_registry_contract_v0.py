@@ -41,10 +41,7 @@ def test_step_29m_macd_v1_evaluation_v2_complete_registry_truth() -> None:
     assert _field_value(section, "REAL_EVALUATION_ATTEMPTED") == "true"
     assert _field_value(section, "REAL_EVALUATION_PERFORMED") == "true"
     assert _field_value(section, "REAL_ADMISSIBLE_FUTURES_EVIDENCE_BOUND") == "true"
-    assert (
-        _field_value(section, "REAL_EVALUATION_INPUT_STATUS")
-        == "MACD_V1_EVALUATION_V2_COMPLETE"
-    )
+    assert _field_value(section, "REAL_EVALUATION_INPUT_STATUS") == "MACD_V1_EVALUATION_V2_COMPLETE"
     assert _field_value(section, "ECONOMIC_VALIDITY_RESULT") == "FAILED"
     assert _field_value(section, "PROFITABILITY_CLAIM_ALLOWED") == "false"
     assert _field_value(section, "LAST_EVALUATED_CONFIG_VERSION") == "v2"

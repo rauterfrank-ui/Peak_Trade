@@ -135,10 +135,7 @@ def test_operator_input_not_required_after_macd_v1_v2_evaluation() -> None:
     assert _field_value(section, "OPERATOR_INPUT_REQUIRED_FOR_REAL_EVALUATION") == "false"
     assert _field_value(text, "REAL_EVALUATION_PERFORMED") == "true"
     assert _field_value(section, "REAL_EVALUATION_PERFORMED") == "true"
-    assert (
-        _field_value(text, "REAL_EVALUATION_INPUT_STATUS")
-        == "MACD_V1_EVALUATION_V2_COMPLETE"
-    )
+    assert _field_value(text, "REAL_EVALUATION_INPUT_STATUS") == "MACD_V1_EVALUATION_V2_COMPLETE"
 
 
 def test_kraken_and_venue_fixtures_excluded_from_canonical_economic_path() -> None:
