@@ -28,7 +28,7 @@ def _field_value(text: str, field: str) -> str:
 
 def _step_29p_section(text: str) -> str:
     start = text.index("#### RUNBOOK_STEP_29P — Capital Risk Sizing Mathematics v1")
-    end = text.index("\n---\n\n## PR #4629 Evidence-Drift", start)
+    end = text.index("#### RUNBOOK_STEP_29Q — Canonical Order Intent v1", start)
     return re.sub(r"\s<!--.*?-->", "", text[start:end])
 
 
@@ -133,13 +133,10 @@ def test_step_29q_not_started_in_29p_section_snapshot() -> None:
     assert "RUNBOOK_STEP_29Q_COMPLETE" not in section
 
 
-def test_no_step_29q_29r_start_markers() -> None:
+def test_no_step_29r_start_markers() -> None:
     text = _read_registry()
-    assert "RUNBOOK_STEP_29Q_STARTED" not in text
     assert "RUNBOOK_STEP_29R_STARTED" not in text
-    assert "STEP_29Q_STARTED" not in text
     assert "STEP_29R_STARTED" not in text
-    assert "#### RUNBOOK_STEP_29Q" not in text
     assert "#### RUNBOOK_STEP_29R" not in text
 
 
