@@ -24,6 +24,9 @@ CONFIG_PATH = ROOT / "config/ops/step29m_okx_inst_eth_usdt_perp_macd_v1_economic
 V2_CONFIG_PATH = (
     ROOT / "config/ops/step29m_okx_inst_eth_usdt_perp_macd_v1_economic_evaluation_v2.json"
 )
+V3_CONFIG_PATH = (
+    ROOT / "config/ops/step29m_okx_inst_eth_usdt_perp_macd_v1_economic_evaluation_v3.json"
+)
 PROGRESS_REGISTRY = ROOT / "docs/governance/PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md"
 ARCHIVE_ROOT = contract.ARCHIVE_ROOT
 DATASET_ROOT = contract.DATASET_ROOT
@@ -222,6 +225,59 @@ def test_v2_config_schema_valid_but_entry_infeasible_blocks_admissibility() -> N
     )
     assert result.admissibility_result.value == "BLOCKED"
     assert "TOTAL_ENTRY_REJECTION_CONFIG_INVARIANT" in result.blocking_reasons
+
+
+@pytest.mark.skipif(not DATASET_ROOT.is_dir(), reason="staged OKX dataset not present locally")
+def test_v3_config_admissibility_contract_passes() -> None:
+    result = contract.evaluate_macd_v1_admissibility_contract_v1(
+        repo_root=ROOT,
+        config_path=str(V3_CONFIG_PATH.relative_to(ROOT)),
+    )
+    assert result.admissibility_result.value == "PASS", result.blocking_reasons
+    assert result.cost_binding_status == "PASS"
+    assert result.leakage_status == "PASS"
+
+
+def test_v3_config_schema_version() -> None:
+    cfg = json.loads(V3_CONFIG_PATH.read_text(encoding="utf-8"))
+    assert cfg["config_schema_version"] == "step29m_macd_v1_economic_evaluation_admissibility_v3"
+
+
+@pytest.mark.skipif(not DATASET_ROOT.is_dir(), reason="staged OKX dataset not present locally")
+def test_v3_runner_validate_only_accepts_config_without_evaluation() -> None:
+    import importlib.util
+    import sys
+    from unittest.mock import patch
+
+    runner_path = ROOT / "scripts/ops/run_economic_viability_evidence_evaluation_v1.py"
+    spec = importlib.util.spec_from_file_location("runner_v3_feasibility", runner_path)
+    assert spec is not None and spec.loader is not None
+    mod = importlib.util.module_from_spec(spec)
+    sys.modules[spec.name] = mod
+    spec.loader.exec_module(mod)
+    policy_path = Path("/tmp/step29m_macd_v3_policy.json")
+    policy_path.write_text(
+        json.dumps({"use_canonical": True, "policy_version": "economic_validity_policy_v1"}),
+        encoding="utf-8",
+    )
+    with patch.object(mod, "execute_evaluation") as execute_mock:
+        rc = mod.main(
+            [
+                "--dataset-path",
+                str(DATASET_ROOT / "bars.parquet"),
+                "--dataset-manifest-path",
+                str(DATASET_ROOT / "dataset_manifest.json"),
+                "--config-path",
+                str(V3_CONFIG_PATH),
+                "--policy-path",
+                str(policy_path),
+                "--output-dir",
+                str(Path("/tmp/step29m_macd_v3_validate_only_out")),
+                "--validate-only",
+            ]
+        )
+    assert rc == 0
+    execute_mock.assert_not_called()
 
 
 def test_v2_runner_validate_only_blocks_before_evaluation() -> None:

@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import copy
 import json
+from decimal import Decimal
 from pathlib import Path
 
 import pandas as pd
@@ -39,6 +40,9 @@ V1_CONFIG = (
 V2_CONFIG = (
     REPO_ROOT / "config/ops/step29m_okx_inst_eth_usdt_perp_macd_v1_economic_evaluation_v2.json"
 )
+V3_CONFIG = (
+    REPO_ROOT / "config/ops/step29m_okx_inst_eth_usdt_perp_macd_v1_economic_evaluation_v3.json"
+)
 PROGRESS_REGISTRY = REPO_ROOT / "docs/governance/PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md"
 MACD_EVIDENCE = Path(
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
@@ -54,6 +58,12 @@ V2_EVIDENCE = Path(
     "implementation/step29m_macd_v1_real_admissible_futures_economic_reevaluation_v2_20260701T212345Z"
 )
 EXPECTED_CONFIG_V2_DIGEST = "e11bf722e381dd0debfc9cd23f058a471cbfee380539e5ba6c45f19f531176c5"
+EXPECTED_CONFIG_V3_DIGEST = "e1d923de8e5f44bc873c15008bc895b8b3542a326e9c39521e4860ba091b6b82"
+EXPECTED_V2_FILE_SHA256 = "fe5b3ed1ea174e242f5a821971d94b47eb544c6fe4ec3eb99a8ceef06e3e094b"
+V3_RATIFIED_RISK_PER_TRADE = Decimal("0.005")
+V3_RATIFIED_STOP_PCT = Decimal("0.025")
+V3_RATIFIED_MAX_POSITION_PCT = Decimal("0.25")
+V3_RATIFIED_OVERSIZE_POLICY = "REJECT_OVERSIZE"
 
 
 def _base_sizing_section() -> dict:
@@ -125,6 +135,59 @@ def _constant_signal_fn(signals: list[int]):
 def test_v1_config_has_no_sizing_contract() -> None:
     cfg = json.loads(V1_CONFIG.read_text(encoding="utf-8"))
     assert not offline_evaluation_sizing_contract_requested(cfg)
+
+
+def test_v2_config_file_digest_unchanged() -> None:
+    import hashlib
+
+    digest = hashlib.sha256(V2_CONFIG.read_bytes()).hexdigest()
+    assert digest == EXPECTED_V2_FILE_SHA256
+
+
+def test_v3_config_loads_with_ratified_values() -> None:
+    cfg = json.loads(V3_CONFIG.read_text(encoding="utf-8"))
+    assert cfg["config_schema_version"] == "step29m_macd_v1_economic_evaluation_admissibility_v3"
+    sizing = cfg["offline_evaluation_sizing_contract_v1"]
+    assert sizing["risk_per_trade"] == 0.005
+    assert sizing["stop_pct"] == 0.025
+    assert sizing["max_position_pct"] == 0.25
+    assert sizing["oversize_policy"] == "REJECT_OVERSIZE"
+    assert cfg["risk"]["risk_per_trade"] == 0.005
+
+
+def test_v3_real_config_entry_feasibility_pass() -> None:
+    cfg = json.loads(V3_CONFIG.read_text(encoding="utf-8"))
+    assert compute_evaluation_config_digest_v1(cfg) == EXPECTED_CONFIG_V3_DIGEST
+    contract = load_offline_evaluation_sizing_contract_v1(cfg)
+    requested = (Decimal(str(contract.risk_per_trade)) / Decimal(str(contract.stop_pct))).quantize(
+        Decimal("0.0000000001")
+    )
+    assert requested == Decimal("0.20")
+    assert Decimal(str(contract.max_position_pct)) == V3_RATIFIED_MAX_POSITION_PCT
+    headroom = V3_RATIFIED_MAX_POSITION_PCT - requested
+    assert headroom == Decimal("0.05")
+    feasibility = evaluate_offline_evaluation_sizing_entry_feasibility_from_cfg_v1(cfg)
+    assert feasibility.schema_valid is True
+    assert feasibility.entry_feasible is True
+    assert feasibility.executable_for_economic_evaluation is True
+    assert feasibility.reason_code is OfflineSizingFeasibilityReasonCode.OK
+    assert feasibility.requested_notional_pct == pytest.approx(0.20)
+    assert feasibility.max_position_pct == pytest.approx(0.25)
+
+
+def test_v3_policy_drift_guard_risk_per_trade_not_above_ratified_cap() -> None:
+    cfg = json.loads(V3_CONFIG.read_text(encoding="utf-8"))
+    risk = Decimal(str(cfg["offline_evaluation_sizing_contract_v1"]["risk_per_trade"]))
+    assert risk <= V3_RATIFIED_RISK_PER_TRADE
+    assert Decimal(str(cfg["offline_evaluation_sizing_contract_v1"]["stop_pct"])) == (
+        V3_RATIFIED_STOP_PCT
+    )
+    assert Decimal(str(cfg["offline_evaluation_sizing_contract_v1"]["max_position_pct"])) == (
+        V3_RATIFIED_MAX_POSITION_PCT
+    )
+    assert cfg["offline_evaluation_sizing_contract_v1"]["oversize_policy"] == (
+        V3_RATIFIED_OVERSIZE_POLICY
+    )
 
 
 def test_v2_real_config_entry_feasibility_total_rejection_invariant() -> None:
@@ -420,12 +483,19 @@ def test_registry_v2_reevaluation_complete() -> None:
     assert field("ECONOMIC_VALIDITY_RESULT") == "FAILED"
     assert field("PROFITABILITY_CLAIM_ALLOWED") == "false"
     assert field("LAST_EVALUATED_CONFIG_VERSION") == "v2"
-    assert field("NEXT_EVALUATION_CONFIG_STATUS") == "BLOCKED_POLICY_DECISION_REQUIRED"
+    assert field("NEXT_EVALUATION_CONFIG_VERSION") == "v3"
+    assert field("NEXT_EVALUATION_CONFIG_STATUS") == (
+        "POLICY_RATIFIED_CONFIG_ADMISSIBLE_AWAITING_SEPARATE_RUN"
+    )
+    assert field("POLICY_INVARIANT") == "risk_per_trade <= max_position_pct * stop_pct"
+    assert field("OPERATOR_POLICY_DECISION") == "RATIFIED"
+    assert field("ECONOMIC_REEVALUATION_ALLOWED") == "false"
+    assert field("V2_CONFIG_DISPOSITION") == "RETAIN_AS_NEGATIVE_INFEASIBILITY_FIXTURE"
     assert field("RUNBOOK_STEP_29M_COMPLETE") == "true"
     assert str(MACD_EVIDENCE) in field("INVALIDATED_EVALUATION_REF")
     assert str(V2_EVIDENCE) in field("INVALIDATED_V2_EVALUATION_REF")
     assert str(ROOT_CAUSE_EVIDENCE) in field("ROOT_CAUSE_EVIDENCE_REF")
     assert (
         field("NEXT_EVALUATION_CONFIG_PATH")
-        == "config/ops/step29m_okx_inst_eth_usdt_perp_macd_v1_economic_evaluation_v2.json"
+        == "config/ops/step29m_okx_inst_eth_usdt_perp_macd_v1_economic_evaluation_v3.json"
     )
