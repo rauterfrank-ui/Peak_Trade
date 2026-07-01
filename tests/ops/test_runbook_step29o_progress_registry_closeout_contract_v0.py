@@ -130,14 +130,15 @@ def test_step_29p_not_started_in_29o_section_snapshot() -> None:
     assert "RUNBOOK_STEP_29P_COMPLETE" not in section
 
 
-def test_step_29q_legitimately_started_global_transition() -> None:
+def test_step_29q_legitimately_complete_global_transition() -> None:
     text = _read_registry()
     assert _field_value(text, "RUNBOOK_STEP_29Q_STARTED") == "true"
     assert _field_value(text, "STEP_29Q_STARTED") == "true"
     assert _field_value(text, "RUNBOOK_STEP_29Q_IMPLEMENTATION_STARTED") == "true"
-    assert _field_value(text, "RUNBOOK_STEP_29Q_COMPLETE") == "false"
+    assert _field_value(text, "RUNBOOK_STEP_29Q_COMPLETE") == "true"
     assert _field_value(text, "CANONICAL_ORDER_INTENT_IMPLEMENTED") == "true"
-    assert _field_value(text, "NEXT_RUNBOOK_STEP") == "RUNBOOK_STEP_29Q"
+    assert _field_value(text, "PROGRESS_REGISTRY_CLOSEOUT_PERFORMED") == "true"
+    assert _field_value(text, "NEXT_RUNBOOK_STEP") == "RUNBOOK_STEP_29R"
     assert "#### RUNBOOK_STEP_29Q" in text
 
 

@@ -79,10 +79,8 @@ def test_capital_risk_sizing_mathematics_implemented_true() -> None:
     assert _field_value(section, "CAPITAL_RISK_SIZING_MATHEMATICS_IMPLEMENTED") == "true"
 
 
-def test_next_runbook_step_is_29q() -> None:
-    text = _read_registry()
-    section = _step_29p_section(text)
-    assert _field_value(text, "NEXT_RUNBOOK_STEP") == "RUNBOOK_STEP_29Q"
+def test_next_runbook_step_is_29q_in_29p_section() -> None:
+    section = _step_29p_section(_read_registry())
     assert _field_value(section, "NEXT_RUNBOOK_STEP") == "RUNBOOK_STEP_29Q"
 
 
