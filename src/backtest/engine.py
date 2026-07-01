@@ -485,7 +485,14 @@ class BacktestEngine:
         self.data = df
 
         current_trade: Optional[Trade] = None
-        stop_pct = strategy_params.get("stop_pct", 0.02)
+        offline_sizing_contract = self.config.get("offline_evaluation_sizing_contract_v1")
+        offline_sizing_bound = isinstance(offline_sizing_contract, Mapping)
+        if offline_sizing_bound:
+            if "stop_pct" not in strategy_params:
+                raise BacktestInvariantError("MISSING_STOP_PCT")
+            stop_pct = float(strategy_params["stop_pct"])
+        else:
+            stop_pct = strategy_params.get("stop_pct", 0.02)
 
         # Risk Manager initialisieren
         if self.risk_manager is not None:
@@ -623,6 +630,46 @@ class BacktestEngine:
                             )
                         else:
                             # Risk-Limits haben Trade blockiert
+                            blocked_trades += 1
+                elif offline_sizing_bound:
+                    from .offline_evaluation_sizing_contract_v1 import (
+                        get_offline_sizing_accounting_v1,
+                        load_offline_evaluation_sizing_contract_v1,
+                        size_offline_evaluation_entry_v1,
+                    )
+
+                    contract = load_offline_evaluation_sizing_contract_v1(self.config)
+                    accounting = get_offline_sizing_accounting_v1(self.config)
+                    sizing_outcome = size_offline_evaluation_entry_v1(
+                        contract=contract,
+                        equity=equity,
+                        entry_price=entry_price,
+                        cfg=self.config,
+                        accounting=accounting,
+                    )
+
+                    if not sizing_outcome.accepted:
+                        logger.debug(
+                            "Offline evaluation sizing blockiert Trade: "
+                            f"{sizing_outcome.reason_code.value} {sizing_outcome.detail}"
+                        )
+                        blocked_trades += 1
+                    else:
+                        proposed_position_value = sizing_outcome.effective_notional
+                        risk_ok = self._check_risk_limits(
+                            current_capital=equity,
+                            proposed_position_value=proposed_position_value,
+                            current_dt=trade_dt,
+                        )
+
+                        if risk_ok:
+                            current_trade = Trade(
+                                entry_time=trade_dt,
+                                entry_price=entry_price,
+                                size=sizing_outcome.size,
+                                stop_price=sizing_outcome.stop_price,
+                            )
+                        else:
                             blocked_trades += 1
                 else:
                     # Old API: use legacy PositionSizer from risk module
