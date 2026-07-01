@@ -1,0 +1,117 @@
+{
+  "backtest": {
+    "cost_model_version": "backtest_cost_v0",
+    "dataset_admissibility": {
+      "bind": true,
+      "dataset_profile": "economic_research_v1",
+      "execution_cost_binding": {
+        "conservative_half_spread_bps": 5.0,
+        "execution_price_observation_source": "MODELLED_NOT_OBSERVED",
+        "spread_model_version": "research_conservative_bps_v1"
+      },
+      "profile_binding": {
+        "dataset_profile": "economic_research_v1",
+        "execution_cost_binding": {
+          "conservative_half_spread_bps": 5.0,
+          "execution_price_observation_source": "MODELLED_NOT_OBSERVED",
+          "spread_model_version": "research_conservative_bps_v1"
+        },
+        "l1_observation_status": "EXECUTION_MODEL_BOUND_NOT_OBSERVED"
+      }
+    },
+    "economic_research_execution_cost": {
+      "conservative_half_spread_bps": 5.0,
+      "execution_price_observation_source": "MODELLED_NOT_OBSERVED",
+      "fee_bps": 10.0,
+      "slippage_bps": 5.0,
+      "spread_model_version": "research_conservative_bps_v1"
+    },
+    "fee_bps": 10.0,
+    "fee_model_version": "backtest_fee_taker_symmetric_v0",
+    "funding": {
+      "bind": true,
+      "model_version": "backtest_funding_perpetual_interval_v1"
+    },
+    "initial_cash": 10000.0,
+    "parameter_sensitivity": {
+      "bind": true,
+      "grid": {
+        "grid_id": "okx_eth_perp_research_cost_grid_v1",
+        "parameter_names": [
+          "fee_bps",
+          "slippage_bps"
+        ],
+        "parameter_values": [
+          [
+            8.0,
+            10.0,
+            12.0
+          ],
+          [
+            4.0,
+            5.0,
+            6.0
+          ]
+        ],
+        "search_space_bounds": {
+          "fee_bps": {
+            "max": 12.0,
+            "min": 8.0
+          },
+          "slippage_bps": {
+            "max": 6.0,
+            "min": 4.0
+          }
+        },
+        "seed": 42
+      },
+      "grid_version": "v1"
+    },
+    "slippage_bps": 5.0,
+    "slippage_model_version": "backtest_slippage_symmetric_v0"
+  },
+  "config_schema_version": "step29m_real_admissible_futures_economic_evaluation_v1",
+  "economic_evaluation_v1": {
+    "monte_carlo": {
+      "bind": true,
+      "runs": 64,
+      "seed": 42
+    },
+    "strategy_id": "ma_crossover",
+    "stress": {
+      "bind": true
+    },
+    "walk_forward": {
+      "bind": true,
+      "step_bars": 1440,
+      "test_bars": 1440,
+      "train_bars": 4320
+    }
+  },
+  "real_admissible_futures_evaluation_binding_v1": {
+    "canonical_instrument_id": "inst-eth-usdt-perp",
+    "canonical_trading_logic_version": "integrated_offline_trading_logic_replay_v1",
+    "dataset_path": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/inst-eth-usdt-perp/v1/bars.parquet",
+    "dataset_profile": "economic_research_v1",
+    "effective_entry_cost_bps": 20.0,
+    "effective_exit_cost_bps": 20.0,
+    "expected_dataset_digest": "b4cbe7fff81a137da055588231757937406d8cb30d531ee0aab41d95ee9b6c78",
+    "expected_l1_observation_status": "EXECUTION_MODEL_BOUND_NOT_OBSERVED",
+    "expected_manifest_digest": "317105798c749943074911b1e9ea91ac9b94fab3b115fb7a64b692339426651a",
+    "native_instrument_id": "ETH-USDT-SWAP",
+    "out_of_sample_period": "2026-06-27 23:36:00+00:00..2026-07-01 10:07:00+00:00",
+    "require_dataset_admissible": true,
+    "require_integrity_pass": true,
+    "require_observed_l1_used_false": true,
+    "roundtrip_cost_bps": 40.0,
+    "source_venue": "OKX",
+    "training_period": "2026-06-17 16:00:00+00:00..2026-06-24 13:03:00+00:00",
+    "validation_period": "2026-06-24 13:04:00+00:00..2026-06-27 23:35:00+00:00"
+  },
+  "risk": {
+    "max_position_size": 0.25,
+    "min_position_value": 10.0,
+    "min_stop_distance": 0.0001,
+    "risk_per_trade": 0.02
+  }
+}

@@ -20,7 +20,9 @@ STEP_29M_IMPLEMENTED_SCOPE = (
     "parameter_sensitivity_evidence_binding_v1_slice,"
     "admissible_versioned_futures_dataset_binding_v1_slice,"
     "economic_validity_policy_threshold_values_v1_slice,"
-    "real_admissible_futures_economic_evidence_evaluation_v1_offline_slice"
+    "real_admissible_futures_economic_evidence_evaluation_v1_offline_slice,"
+    "real_admissible_futures_economic_evaluation_operator_input_and_admissibility_closure_v0_slice,"
+    "real_okx_inst_eth_usdt_perp_economic_evaluation_v1_offline_slice"
 )
 STEP_29M_SLICES = tuple(STEP_29M_IMPLEMENTED_SCOPE.split(","))
 
@@ -70,10 +72,11 @@ def test_next_required_contract_is_29n_in_section() -> None:
     assert _field_value(section, "NEXT_REQUIRED_CONTRACT") == "RUNBOOK_STEP_29N"
 
 
-def test_economic_validity_not_proven() -> None:
+def test_economic_validity_failed_after_real_evaluation() -> None:
     section = _step_29m_section(_read_registry())
     assert _field_value(section, "ECONOMIC_VALIDITY_PROVEN") == "false"
-    assert _field_value(section, "ECONOMIC_VALIDITY_RESULT") == "NOT_PROVEN"
+    assert _field_value(section, "ECONOMIC_VALIDITY_RESULT") == "FAILED"
+    assert _field_value(section, "REAL_EVALUATION_PERFORMED") == "true"
 
 
 def test_profitability_claim_not_allowed() -> None:
@@ -121,6 +124,7 @@ def test_technical_stack_complete_without_economic_pass() -> None:
     assert _field_value(section, "TECHNICAL_ECONOMIC_VIABILITY_EVIDENCE_STACK_COMPLETE") == "true"
     assert _field_value(section, "ECONOMIC_VALIDITY_PROVEN") == "false"
     assert _field_value(section, "REAL_ADMISSIBLE_FUTURES_EVIDENCE_REQUIRED") == "true"
+    assert _field_value(section, "REAL_ADMISSIBLE_FUTURES_EVIDENCE_BOUND") == "true"
     assert _field_value(section, "THRESHOLD_TUNING_ALLOWED") == "false"
 
 
