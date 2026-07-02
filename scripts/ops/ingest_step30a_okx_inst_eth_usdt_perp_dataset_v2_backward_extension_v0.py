@@ -51,12 +51,12 @@ def _validate_holdout_constants_match_step29m_v1() -> None:
 
 def run_step30a_dataset_v2_backward_extension_ingestion_v0(
     *,
-    confirm_go_token: str,
+    confirm_go: str,
     skip_network: bool = False,
     raw_staging_root: Optional[Path] = None,
 ) -> Mapping[str, Any]:
-    if confirm_go_token != ADAPTER_CONFIRM_GO:
-        raise Step30aDatasetIngestionError("confirm_go_token_mismatch")
+    if confirm_go != ADAPTER_CONFIRM_GO:
+        raise Step30aDatasetIngestionError("confirm_go_mismatch")
     if not skip_network:
         raise Step30aDatasetIngestionError(
             "network_ingestion_forbidden_use_verified_raw_staging_promotion"
@@ -65,7 +65,7 @@ def run_step30a_dataset_v2_backward_extension_ingestion_v0(
     _validate_holdout_constants_match_step29m_v1()
 
     result = run_step30a_dataset_v2_promotion_v0(
-        confirm_go_token=PROMOTION_CONFIRM_GO,
+        confirm_go=PROMOTION_CONFIRM_GO,
         raw_staging_root=raw_staging_root,
         target_dataset_root=STEP30A_DATASET_V2_TARGET_ROOT,
         durable_evidence_root=STEP30A_DURABLE_EVIDENCE_ROOT,
@@ -102,7 +102,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
         description="STEP30A bounded dataset v2 backward extension ingestion adapter."
     )
     parser.add_argument(
-        "--confirm-go-token",
+        "--confirm-go",
         required=True,
         choices=[ADAPTER_CONFIRM_GO],
     )
@@ -114,7 +114,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     parser.add_argument("--raw-staging-root", type=Path, default=None)
     ns = parser.parse_args(argv)
     result = run_step30a_dataset_v2_backward_extension_ingestion_v0(
-        confirm_go_token=ns.confirm_go_token,
+        confirm_go=ns.confirm_go,
         skip_network=ns.skip_network,
         raw_staging_root=ns.raw_staging_root,
     )

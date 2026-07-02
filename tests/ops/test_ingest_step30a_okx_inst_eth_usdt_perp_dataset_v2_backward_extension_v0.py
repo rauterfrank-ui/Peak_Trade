@@ -49,9 +49,9 @@ def test_step30a_window_days_constant_is_90() -> None:
 
 def test_wrong_token_rejected() -> None:
     mod = _load_mod()
-    with pytest.raises(mod.Step30aDatasetIngestionError, match="confirm_go_token_mismatch"):
+    with pytest.raises(mod.Step30aDatasetIngestionError, match="confirm_go_mismatch"):
         mod.run_step30a_dataset_v2_backward_extension_ingestion_v0(
-            confirm_go_token="WRONG",
+            confirm_go="WRONG",
             skip_network=True,
         )
 
@@ -60,7 +60,7 @@ def test_network_ingestion_forbidden_without_skip_network() -> None:
     mod = _load_mod()
     with pytest.raises(mod.Step30aDatasetIngestionError, match="network_ingestion_forbidden"):
         mod.run_step30a_dataset_v2_backward_extension_ingestion_v0(
-            confirm_go_token=_GO_LITERAL,
+            confirm_go=_GO_LITERAL,
             skip_network=False,
         )
 
@@ -68,7 +68,7 @@ def test_network_ingestion_forbidden_without_skip_network() -> None:
 def test_cli_skip_network_path() -> None:
     proc = _run(
         [
-            "--confirm-go-token",
+            "--confirm-go",
             _GO_LITERAL,
             "--skip-network",
         ]
