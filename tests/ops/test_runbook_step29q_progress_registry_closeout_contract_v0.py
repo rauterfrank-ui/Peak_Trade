@@ -97,7 +97,11 @@ def test_global_transformation_bound_may_advance_after_29r_slice() -> None:
     section = _step_29q_section(text)
     assert _field_value(section, "CANONICAL_ORDER_INTENT_TRANSFORMATION_BOUND") == "false"
     if _field_value(text, "RUNBOOK_STEP_29R_IMPLEMENTATION_STARTED") == "true":
-        assert _field_value(text, "CANONICAL_ORDER_INTENT_TRANSFORMATION_BOUND") == "true"
+        from tests.ops.runbook_progress_registry_contract_helpers_v1 import (
+            authoritative_field_value,
+        )
+
+        assert authoritative_field_value("CANONICAL_ORDER_INTENT_TRANSFORMATION_BOUND") == "true"
 
 
 def test_offline_intent_submission_boundaries_declared() -> None:

@@ -80,7 +80,6 @@ def test_adapter_compatibility_and_transformation_not_proven_or_bound() -> None:
     section = _step_29q_section(text)
     assert _field_value(text, "CANONICAL_ORDER_INTENT_ADAPTER_COMPATIBILITY_PROVEN") == "false"
     assert _field_value(section, "CANONICAL_ORDER_INTENT_ADAPTER_COMPATIBILITY_PROVEN") == "false"
-    assert _field_value(text, "CANONICAL_ORDER_INTENT_TRANSFORMATION_BOUND") == "false"
     assert _field_value(section, "CANONICAL_ORDER_INTENT_TRANSFORMATION_BOUND") == "false"
     assert _field_value(section, "IMPLICIT_ADAPTER_COMPATIBILITY_ALLOWED") == "false"
     assert _field_value(section, "ADAPTER_TRANSFORMATION_IMPLEMENTED") == "false"
