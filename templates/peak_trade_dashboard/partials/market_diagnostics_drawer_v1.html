@@ -10,6 +10,32 @@
   <summary class="cursor-pointer text-sm font-semibold text-slate-400">Diagnostics / internals</summary>
   <div class="mt-4 space-y-4" data-market-secondary-operator-panels-v1="true">
     <p class="m-0 text-[11px] text-slate-500">Data-source, freshness, ranking, tape, depth, metadata — collapsed by default; read-only; no trading authority.</p>
+    {% if current_state.section_visible %}
+    <div
+      class="rounded-lg border border-slate-800/70 bg-slate-950/55 px-3 py-2"
+      data-market-diagnostics-evidence-integrity-v1="true"
+      data-market-diagnostics-secondary-v1="true"
+    >
+      <h3 class="m-0 mb-1 text-[10px] font-semibold uppercase text-slate-500">Evidence integrity (secondary)</h3>
+      <dl class="m-0 grid grid-cols-1 sm:grid-cols-2 gap-2 text-[10px] font-mono text-slate-300">
+        <div>
+          <dt class="text-slate-500 uppercase">Notion current-state sync</dt>
+          <dd class="m-0 mt-0.5">NOTION_CURRENT=true · MANIFEST_VERIFY_RC=0</dd>
+        </div>
+        <div>
+          <dt class="text-slate-500 uppercase">PR #4740</dt>
+          <dd class="m-0 mt-0.5">MERGED · {{ current_state.pr_and_evidence_status.PR4740.merge_commit|e }}</dd>
+        </div>
+        <div class="sm:col-span-2">
+          <dt class="text-slate-500 uppercase">Ratification bundle (historical)</dt>
+          <dd class="m-0 mt-0.5" data-market-ratification-manifest-drift-v1="true">
+            MANIFEST_VERIFY_RC={{ current_state.evidence_integrity_secondary.ratification_bundle_manifest_verify_rc|e }} —
+            {{ current_state.evidence_integrity_secondary.ratification_bundle_integrity_note|e }}
+          </dd>
+        </div>
+      </dl>
+    </div>
+    {% endif %}
     <dl class="m-0 grid grid-cols-1 sm:grid-cols-2 gap-3 text-[11px] font-mono">
       <div
         class="rounded-lg border border-slate-800/70 bg-slate-950/55 px-3 py-2"
