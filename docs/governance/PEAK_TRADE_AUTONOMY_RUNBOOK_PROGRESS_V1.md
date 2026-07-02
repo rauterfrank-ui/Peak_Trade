@@ -1828,6 +1828,38 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `non_authorizing` | `true` |
 | `SEPARATE_GO_REQUIRED` | `true` |
 
+#### CANONICAL_CORE_RUNTIME_INTEGRATION_REMEDIATION_SLICE_B_V0
+
+| Feld | Wert |
+|---|---|
+| `STATUS` | `BOUND_NOT_ACTIVATED` |
+| `SLICE_A_STATUS` | `COMPLETE` |
+| `SLICE_B_STATUS` | `BOUND_NOT_ACTIVATED` |
+| `CANONICAL_CORE_RUNTIME_INTEGRATION_SLICE_B_BOUND` | `true` |
+| `CANONICAL_CORE_RUNTIME_INTEGRATION_SLICE_B_IMPLEMENTED` | `true` |
+| `CANONICAL_CORE_RUNTIME_INTEGRATION_SLICE_B_COMPLETE` | `false` |
+| `CANONICAL_CORE_RUNTIME_INTEGRATION_INTENT_PIPELINE_BRIDGE_OWNER` | `trading.master_v2.canonical_core_runtime_integration_intent_pipeline_bridge_v0` |
+| `EXECUTION_PIPELINE_PLAN_ONLY_BOUNDARY_OWNER` | `src.execution_pipeline.plan_only_boundary_v0` |
+| `CANONICAL_ORDER_INTENT_TO_EXECUTION_PIPELINE_STATUS` | `BOUND_NOT_ACTIVATED` |
+| `INTENT_COMPATIBILITY_FIREWALL_STATUS` | `BOUND_OFFLINE` |
+| `CAPITAL_RISK_SIZING_BINDING_STATUS` | `BOUND_OFFLINE` |
+| `EXECUTION_PIPELINE_PLAN_ONLY_BOUNDARY_STATUS` | `PASS` |
+| `CANONICAL_RUNTIME_CORE_CONSUMPTION_STATUS` | `BOUND_NOT_ACTIVATED` |
+| `RUNTIME_REWIRE_STATUS` | `PARTIAL` |
+| `RUNTIME_REWIRE_IMPLEMENTED` | `false` |
+| `RUNTIME_REWIRE_PERFORMED` | `false` |
+| `ZERO_ORDER_RUNTIME_READY` | `false` |
+| `ZERO_ORDER_RUNTIME_EXECUTION_SUSPENDED` | `true` |
+| `LEGACY_INTENT_AUTHORITY_ACTIVE` | `false` |
+| `DUAL_INTENT_AUTHORITY_POSSIBLE` | `false` |
+| `EXECUTION_ELIGIBLE` | `false` |
+| `ADAPTER_COMPATIBLE` | `false` |
+| `SUBMISSION_BLOCKED` | `true` |
+| `NEXT_REMEDIATION_SLICE` | `Slice C: Registry consolidation — dual strategy registries and legacy entrypoints` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
 ---
 
 ## PR #4629 Evidence-Drift (historisch, transparent)
