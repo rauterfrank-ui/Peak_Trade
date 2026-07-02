@@ -106,10 +106,15 @@ def test_adapter_compatibility_and_transformation_not_proven_or_bound() -> None:
     section = _step_29q_section(text)
     assert _field_value(text, "CANONICAL_ORDER_INTENT_ADAPTER_COMPATIBILITY_PROVEN") == "false"
     assert _field_value(section, "CANONICAL_ORDER_INTENT_ADAPTER_COMPATIBILITY_PROVEN") == "false"
-    assert _field_value(text, "CANONICAL_ORDER_INTENT_TRANSFORMATION_BOUND") == "false"
     assert _field_value(section, "CANONICAL_ORDER_INTENT_TRANSFORMATION_BOUND") == "false"
     assert _field_value(section, "IMPLICIT_ADAPTER_COMPATIBILITY_ALLOWED") == "false"
     assert _field_value(section, "ADAPTER_TRANSFORMATION_IMPLEMENTED") == "false"
+    if _field_value(text, "RUNBOOK_STEP_29R_IMPLEMENTATION_STARTED") == "true":
+        from tests.ops.runbook_progress_registry_contract_helpers_v1 import (
+            authoritative_field_value,
+        )
+
+        assert authoritative_field_value("CANONICAL_ORDER_INTENT_TRANSFORMATION_BOUND") == "true"
 
 
 def test_capital_risk_sizing_mathematics_not_changed() -> None:
