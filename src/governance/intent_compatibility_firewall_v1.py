@@ -43,6 +43,9 @@ BITCOIN_DIRECTION_ALLOWED = False
 SPOT_ALLOWED = False
 SYNTHETIC_SPOT_ALLOWED = False
 
+AUTHORITY_EFFECT_NONE = "NONE"
+RUNTIME_EFFECT_NONE = "NONE"
+
 _AUTHORITY_EFFECT = False
 _RUNTIME_EFFECT = False
 _ORDER_EFFECT = False
@@ -53,6 +56,121 @@ _FORBIDDEN_BITCOIN_MARKERS = frozenset({"btc", "xbt", "bitcoin"})
 _EXPLICIT_CONVERSION_KINDS = frozenset(
     {"EXPLICIT_ADAPTER", "EXPLICIT_POLICY", "IDENTITY_NO_CONVERSION"}
 )
+
+
+class ContractTypeClassification(str, Enum):
+    CANONICAL_DECISION = "CANONICAL_DECISION"
+    CAPITAL_ENVELOPE = "CAPITAL_ENVELOPE"
+    PRE_SIZING_RISK = "PRE_SIZING_RISK"
+    SIZING_RESULT = "SIZING_RESULT"
+    POST_SIZING_RISK = "POST_SIZING_RISK"
+    CANONICAL_ORDER_INTENT = "CANONICAL_ORDER_INTENT"
+    EXECUTION_PERMISSION = "EXECUTION_PERMISSION"
+    ADAPTER_PAYLOAD = "ADAPTER_PAYLOAD"
+    LEGACY_OR_AMBIGUOUS = "LEGACY_OR_AMBIGUOUS"
+    BOUNDARY_FIXTURE = "BOUNDARY_FIXTURE"
+
+
+class ContractCompatibilityStatusV1(str, Enum):
+    INCOMPATIBLE = "INCOMPATIBLE"
+    TRANSFORMATION_REQUIRED = "TRANSFORMATION_REQUIRED"
+    STRUCTURALLY_COMPATIBLE_NOT_EXECUTION_ELIGIBLE = (
+        "STRUCTURALLY_COMPATIBLE_NOT_EXECUTION_ELIGIBLE"
+    )
+    CANONICAL_ORDER_INTENT_REQUIRED = "CANONICAL_ORDER_INTENT_REQUIRED"
+    PERMISSION_REQUIRED = "PERMISSION_REQUIRED"
+    ADAPTER_COMPATIBLE = "ADAPTER_COMPATIBLE"
+
+
+REASON_UNKNOWN_SOURCE_CONTRACT = "UNKNOWN_SOURCE_CONTRACT"
+REASON_UNKNOWN_SOURCE_CONTRACT_VERSION = "UNKNOWN_SOURCE_CONTRACT_VERSION"
+REASON_UNKNOWN_TARGET_CONTRACT = "UNKNOWN_TARGET_CONTRACT"
+REASON_LEGACY_ALIAS_WITHOUT_TRANSFORMATION = "LEGACY_ALIAS_WITHOUT_TRANSFORMATION"
+REASON_DUCK_TYPING_FIELD_MATCH_INSUFFICIENT = "DUCK_TYPING_FIELD_MATCH_INSUFFICIENT"
+REASON_CANONICAL_DECISION_NOT_ORDER_INTENT = "CANONICAL_DECISION_NOT_ORDER_INTENT"
+REASON_CANONICAL_ORDER_INTENT_REQUIRED = "CANONICAL_ORDER_INTENT_REQUIRED"
+REASON_RISK_OUTPUT_NOT_ADAPTER_COMPATIBLE = "RISK_OUTPUT_NOT_ADAPTER_COMPATIBLE"
+REASON_SIZING_OUTPUT_NOT_ADAPTER_COMPATIBLE = "SIZING_OUTPUT_NOT_ADAPTER_COMPATIBLE"
+REASON_MISSING_QUANTITY_BINDING = "MISSING_QUANTITY_BINDING"
+REASON_MISSING_QUANTITY_PROVENANCE_BINDING = "MISSING_QUANTITY_PROVENANCE_BINDING"
+REASON_MISSING_ORDER_TYPE_BINDING = "MISSING_ORDER_TYPE_BINDING"
+REASON_MISSING_REDUCE_ONLY_BINDING = "MISSING_REDUCE_ONLY_BINDING"
+REASON_MISSING_VENUE_BINDING = "MISSING_VENUE_BINDING"
+REASON_MISSING_ACCOUNT_BINDING = "MISSING_ACCOUNT_BINDING"
+REASON_MISSING_INSTRUMENT_BINDING = "MISSING_INSTRUMENT_BINDING"
+REASON_MISSING_POLICY_DIGEST_BINDING = "MISSING_POLICY_DIGEST_BINDING"
+REASON_MISSING_CONFIG_DIGEST_BINDING = "MISSING_CONFIG_DIGEST_BINDING"
+REASON_MISSING_IMPLEMENTATION_DIGEST_BINDING = "MISSING_IMPLEMENTATION_DIGEST_BINDING"
+REASON_MISSING_PERMISSION_BINDING = "MISSING_PERMISSION_BINDING"
+REASON_MISSING_AUTHORITY_LEASE_BINDING = "MISSING_AUTHORITY_LEASE_BINDING"
+REASON_MISSING_FENCING_TOKEN_BINDING = "MISSING_FENCING_TOKEN_BINDING"
+REASON_IMPLICIT_CONVERSION_FORBIDDEN = "IMPLICIT_CONVERSION_FORBIDDEN"
+REASON_NON_FUTURES_CONTRACT = "NON_FUTURES_CONTRACT"
+REASON_BITCOIN_DIRECTION_FORBIDDEN = "BITCOIN_DIRECTION_FORBIDDEN"
+REASON_TRANSFORMATION_REQUIRED_NO_DEFAULTS = "TRANSFORMATION_REQUIRED_NO_DEFAULTS"
+REASON_BOUNDARY_STRUCTURAL_ONLY = "BOUNDARY_STRUCTURAL_ONLY"
+REASON_STEP29O_ADAPTER_COMPATIBILITY_BLOCKED = "STEP29O_ADAPTER_COMPATIBILITY_BLOCKED"
+
+
+@dataclass(frozen=True)
+class ContractTypeRegistryEntryV1:
+    contract_type: str
+    contract_version: str
+    owner_module: str
+    classification: ContractTypeClassification
+    adapter_compatible_by_default: bool
+    transformation_required_for_adapter: bool
+
+
+@dataclass(frozen=True)
+class ContractBindingSnapshotV1:
+    quantity_bound: bool = False
+    quantity_provenance_bound: bool = False
+    order_type_bound: bool = False
+    reduce_only_bound: bool = False
+    venue_bound: bool = False
+    account_bound: bool = False
+    instrument_bound: bool = False
+    risk_provenance_bound: bool = False
+    policy_digest_bound: bool = False
+    config_digest_bound: bool = False
+    implementation_digest_bound: bool = False
+    permission_bound: bool = False
+    authority_bound: bool = False
+    fencing_token_bound: bool = False
+    futures_only: bool = True
+    bitcoin_direction: bool = False
+    spot_market: bool = False
+    synthetic_spot_market: bool = False
+    legacy_alias: bool = False
+    duck_typed_order_fields: bool = False
+
+
+@dataclass(frozen=True)
+class IntentCompatibilityAssessmentV1:
+    source_contract_type: str
+    source_contract_version: str
+    target_contract_type: str
+    target_contract_version: str
+    compatibility_status: ContractCompatibilityStatusV1
+    transformation_required: bool
+    quantity_bound: bool
+    order_type_bound: bool
+    reduce_only_bound: bool
+    venue_bound: bool
+    account_bound: bool
+    instrument_bound: bool
+    risk_provenance_bound: bool
+    policy_digest_bound: bool
+    config_digest_bound: bool
+    implementation_digest_bound: bool
+    permission_bound: bool
+    authority_bound: bool
+    adapter_compatible: bool
+    reason_codes: tuple[str, ...]
+    authority_effect: str = AUTHORITY_EFFECT_NONE
+    runtime_effect: str = RUNTIME_EFFECT_NONE
+    assessment_digest: str = ""
 
 
 class IntentCompatibilityVerdictV1(str, Enum):
@@ -683,7 +801,756 @@ INTENT_TYPE_DESCRIPTOR_REGISTRY_V1: dict[str, IntentTypeDescriptorV1] = {
         permission_binding_present=True,
         quantity_provenance_present=True,
     ),
+    "CANONICAL_TRADING_DECISION_EVIDENCE_V1": _descriptor(
+        intent_type_id="CANONICAL_TRADING_DECISION_EVIDENCE_V1",
+        owner_module="src.trading.master_v2.canonical_trading_decision_evidence_v1",
+        producer_domain="trading.master_v2.offline_replay",
+        consumer_domain="governance.capital_risk_sizing",
+        persistence_lifecycle="durable_evidence",
+        quantity_semantics="absent",
+        side_semantics="LONG_SHORT",
+        reduce_only_semantics="absent",
+        instrument_binding_present=True,
+        trading_epoch_binding_present=True,
+        quantity_provenance_present=False,
+    ),
+    "PRE_SIZING_RISK_RESULT_V1": _descriptor(
+        intent_type_id="PRE_SIZING_RISK_RESULT_V1",
+        owner_module="src.governance.capital_risk_sizing_v1",
+        producer_domain="governance.capital_risk_sizing",
+        consumer_domain="governance.capital_risk_sizing",
+        persistence_lifecycle="offline_chain",
+        quantity_semantics="absent",
+        side_semantics="none",
+        reduce_only_semantics="absent",
+        quantity_provenance_present=False,
+    ),
+    "CANONICAL_SIZING_RESULT_V1": _descriptor(
+        intent_type_id="CANONICAL_SIZING_RESULT_V1",
+        owner_module="src.governance.capital_risk_sizing_v1",
+        producer_domain="governance.capital_risk_sizing",
+        consumer_domain="governance.capital_risk_sizing",
+        persistence_lifecycle="offline_chain",
+        quantity_semantics="decimal",
+        side_semantics="none",
+        reduce_only_semantics="absent",
+        quantity_provenance_present=False,
+    ),
+    "POST_SIZING_RISK_RESULT_V1": _descriptor(
+        intent_type_id="POST_SIZING_RISK_RESULT_V1",
+        owner_module="src.governance.capital_risk_sizing_v1",
+        producer_domain="governance.capital_risk_sizing",
+        consumer_domain="governance.capital_risk_sizing",
+        persistence_lifecycle="offline_chain",
+        quantity_semantics="absent",
+        side_semantics="none",
+        reduce_only_semantics="absent",
+        quantity_provenance_present=False,
+    ),
+    "CAPITAL_RISK_SIZING_DECISION_V1": _descriptor(
+        intent_type_id="CAPITAL_RISK_SIZING_DECISION_V1",
+        owner_module="src.governance.capital_risk_sizing_v1",
+        producer_domain="governance.capital_risk_sizing",
+        consumer_domain="governance.canonical_order_intent",
+        persistence_lifecycle="offline_chain",
+        quantity_semantics="decimal",
+        side_semantics="LONG_SHORT",
+        reduce_only_semantics="absent",
+        instrument_binding_present=True,
+        quantity_provenance_present=True,
+    ),
+    "EXECUTION_RISK_RESULT": _descriptor(
+        intent_type_id="EXECUTION_RISK_RESULT",
+        owner_module="src.execution.contracts",
+        producer_domain="execution.risk_hook",
+        consumer_domain="execution.orchestrator",
+        persistence_lifecycle="ephemeral",
+        quantity_semantics="absent",
+        side_semantics="none",
+        reduce_only_semantics="absent",
+        quantity_provenance_present=False,
+    ),
 }
+
+
+CONTRACT_TYPE_REGISTRY_V1: dict[tuple[str, str], ContractTypeRegistryEntryV1] = {
+    (
+        "canonical_trading_decision_evidence_v1",
+        "v1",
+    ): ContractTypeRegistryEntryV1(
+        contract_type="canonical_trading_decision_evidence_v1",
+        contract_version="v1",
+        owner_module="src.trading.master_v2.canonical_trading_decision_evidence_v1",
+        classification=ContractTypeClassification.CANONICAL_DECISION,
+        adapter_compatible_by_default=False,
+        transformation_required_for_adapter=True,
+    ),
+    (
+        "capital_envelope_v1",
+        "v1",
+    ): ContractTypeRegistryEntryV1(
+        contract_type="capital_envelope_v1",
+        contract_version="v1",
+        owner_module="src.governance.capital_risk_sizing_v1",
+        classification=ContractTypeClassification.CAPITAL_ENVELOPE,
+        adapter_compatible_by_default=False,
+        transformation_required_for_adapter=True,
+    ),
+    (
+        "pre_sizing_risk_result_v1",
+        "v1",
+    ): ContractTypeRegistryEntryV1(
+        contract_type="pre_sizing_risk_result_v1",
+        contract_version="v1",
+        owner_module="src.governance.capital_risk_sizing_v1",
+        classification=ContractTypeClassification.PRE_SIZING_RISK,
+        adapter_compatible_by_default=False,
+        transformation_required_for_adapter=True,
+    ),
+    (
+        "canonical_sizing_result_v1",
+        "v1",
+    ): ContractTypeRegistryEntryV1(
+        contract_type="canonical_sizing_result_v1",
+        contract_version="v1",
+        owner_module="src.governance.capital_risk_sizing_v1",
+        classification=ContractTypeClassification.SIZING_RESULT,
+        adapter_compatible_by_default=False,
+        transformation_required_for_adapter=True,
+    ),
+    (
+        "post_sizing_risk_result_v1",
+        "v1",
+    ): ContractTypeRegistryEntryV1(
+        contract_type="post_sizing_risk_result_v1",
+        contract_version="v1",
+        owner_module="src.governance.capital_risk_sizing_v1",
+        classification=ContractTypeClassification.POST_SIZING_RISK,
+        adapter_compatible_by_default=False,
+        transformation_required_for_adapter=True,
+    ),
+    (
+        "capital_risk_sizing_decision_v1",
+        "v1",
+    ): ContractTypeRegistryEntryV1(
+        contract_type="capital_risk_sizing_decision_v1",
+        contract_version="v1",
+        owner_module="src.governance.capital_risk_sizing_v1",
+        classification=ContractTypeClassification.SIZING_RESULT,
+        adapter_compatible_by_default=False,
+        transformation_required_for_adapter=True,
+    ),
+    (
+        "canonical_order_intent_v1",
+        "v1",
+    ): ContractTypeRegistryEntryV1(
+        contract_type="canonical_order_intent_v1",
+        contract_version="v1",
+        owner_module=CANONICAL_ORDER_INTENT_OWNER_MODULE,
+        classification=ContractTypeClassification.CANONICAL_ORDER_INTENT,
+        adapter_compatible_by_default=False,
+        transformation_required_for_adapter=True,
+    ),
+    (
+        "execution_permission_v1",
+        "v1",
+    ): ContractTypeRegistryEntryV1(
+        contract_type="execution_permission_v1",
+        contract_version="v1",
+        owner_module="src.meta.learning_loop.canonical_order_lifecycle_v1",
+        classification=ContractTypeClassification.EXECUTION_PERMISSION,
+        adapter_compatible_by_default=False,
+        transformation_required_for_adapter=True,
+    ),
+    (
+        "adapter_order_intent_v1",
+        "v1",
+    ): ContractTypeRegistryEntryV1(
+        contract_type="adapter_order_intent_v1",
+        contract_version="v1",
+        owner_module="src.execution.adapters.base_v1",
+        classification=ContractTypeClassification.ADAPTER_PAYLOAD,
+        adapter_compatible_by_default=False,
+        transformation_required_for_adapter=True,
+    ),
+    (
+        "orchestrator_order_intent",
+        "legacy",
+    ): ContractTypeRegistryEntryV1(
+        contract_type="orchestrator_order_intent",
+        contract_version="legacy",
+        owner_module="src.execution.orchestrator",
+        classification=ContractTypeClassification.LEGACY_OR_AMBIGUOUS,
+        adapter_compatible_by_default=False,
+        transformation_required_for_adapter=True,
+    ),
+    (
+        "adapter_order_intent_v1",
+        "legacy_alias",
+    ): ContractTypeRegistryEntryV1(
+        contract_type="adapter_order_intent_v1",
+        contract_version="legacy_alias",
+        owner_module="src.execution.adapters.base_v1",
+        classification=ContractTypeClassification.LEGACY_OR_AMBIGUOUS,
+        adapter_compatible_by_default=False,
+        transformation_required_for_adapter=True,
+    ),
+    (
+        "boundary_fully_bound_canonical_order_intent_with_permission_v1",
+        "v1",
+    ): ContractTypeRegistryEntryV1(
+        contract_type="boundary_fully_bound_canonical_order_intent_with_permission_v1",
+        contract_version="v1",
+        owner_module=CANONICAL_ORDER_INTENT_OWNER_MODULE,
+        classification=ContractTypeClassification.BOUNDARY_FIXTURE,
+        adapter_compatible_by_default=False,
+        transformation_required_for_adapter=True,
+    ),
+}
+
+
+TRANSFORMATION_REGISTRY_V1: dict[str, IntentTransformationDescriptorV1] = {
+    CANONICAL_TO_ADAPTER_TRANSFORMATION_ID: IntentTransformationDescriptorV1(
+        source_contract="canonical_order_intent_v1",
+        source_version="v1",
+        target_contract="adapter_order_intent_v1",
+        target_version="v1",
+        transformation_id=CANONICAL_TO_ADAPTER_TRANSFORMATION_ID,
+        transformation_version=CANONICAL_TO_ADAPTER_TRANSFORMATION_VERSION,
+        field_mapping_version=CANONICAL_TO_ADAPTER_FIELD_MAPPING_VERSION,
+        source_digest="",
+        target_digest="",
+        lossless_fields=(),
+        rejected_unbound_fields=(
+            "quantity",
+            "order_type",
+            "reduce_only",
+            "venue_id",
+            "account_id",
+            "instrument_id",
+            "position_mode",
+            "margin_mode",
+            "policy_digest",
+            "config_digest",
+            "implementation_digest",
+            "permission_id",
+            "authority_lease",
+            "fencing_token",
+        ),
+        runtime_effect=False,
+        order_effect=False,
+        authority_effect=False,
+        network_effect=False,
+        adapter_submission_effect=False,
+    ),
+}
+
+
+def compute_intent_compatibility_assessment_digest(
+    assessment: IntentCompatibilityAssessmentV1,
+) -> str:
+    payload = {
+        field.name: getattr(assessment, field.name)
+        for field in fields(IntentCompatibilityAssessmentV1)
+        if field.name != "assessment_digest"
+    }
+    payload["compatibility_status"] = assessment.compatibility_status.value
+    return _sha256_hex(payload)
+
+
+def with_computed_assessment_digest(
+    assessment: IntentCompatibilityAssessmentV1,
+) -> IntentCompatibilityAssessmentV1:
+    digest = compute_intent_compatibility_assessment_digest(assessment)
+    if assessment.assessment_digest == digest:
+        return assessment
+    return IntentCompatibilityAssessmentV1(
+        **{
+            **{
+                field.name: getattr(assessment, field.name)
+                for field in fields(IntentCompatibilityAssessmentV1)
+            },
+            "assessment_digest": digest,
+        }
+    )
+
+
+def _assessment_result(
+    *,
+    source_type: str,
+    source_version: str,
+    target_type: str,
+    target_version: str,
+    status: ContractCompatibilityStatusV1,
+    transformation_required: bool,
+    bindings: ContractBindingSnapshotV1,
+    adapter_compatible: bool,
+    reason_codes: Sequence[str],
+) -> IntentCompatibilityAssessmentV1:
+    sorted_reasons = tuple(sorted(set(reason_codes)))
+    assessment = IntentCompatibilityAssessmentV1(
+        source_contract_type=source_type,
+        source_contract_version=source_version,
+        target_contract_type=target_type,
+        target_contract_version=target_version,
+        compatibility_status=status,
+        transformation_required=transformation_required,
+        quantity_bound=bindings.quantity_bound,
+        order_type_bound=bindings.order_type_bound,
+        reduce_only_bound=bindings.reduce_only_bound,
+        venue_bound=bindings.venue_bound,
+        account_bound=bindings.account_bound,
+        instrument_bound=bindings.instrument_bound,
+        risk_provenance_bound=bindings.risk_provenance_bound,
+        policy_digest_bound=bindings.policy_digest_bound,
+        config_digest_bound=bindings.config_digest_bound,
+        implementation_digest_bound=bindings.implementation_digest_bound,
+        permission_bound=bindings.permission_bound,
+        authority_bound=bindings.authority_bound,
+        adapter_compatible=adapter_compatible,
+        reason_codes=sorted_reasons,
+        authority_effect=AUTHORITY_EFFECT_NONE,
+        runtime_effect=RUNTIME_EFFECT_NONE,
+    )
+    return with_computed_assessment_digest(assessment)
+
+
+def _binding_failures(bindings: ContractBindingSnapshotV1) -> list[str]:
+    failures: list[str] = []
+    if not bindings.quantity_bound:
+        failures.append(REASON_MISSING_QUANTITY_BINDING)
+    if not bindings.quantity_provenance_bound:
+        failures.append(REASON_MISSING_QUANTITY_PROVENANCE_BINDING)
+    if not bindings.order_type_bound:
+        failures.append(REASON_MISSING_ORDER_TYPE_BINDING)
+    if not bindings.reduce_only_bound:
+        failures.append(REASON_MISSING_REDUCE_ONLY_BINDING)
+    if not bindings.venue_bound:
+        failures.append(REASON_MISSING_VENUE_BINDING)
+    if not bindings.account_bound:
+        failures.append(REASON_MISSING_ACCOUNT_BINDING)
+    if not bindings.instrument_bound:
+        failures.append(REASON_MISSING_INSTRUMENT_BINDING)
+    if not bindings.policy_digest_bound:
+        failures.append(REASON_MISSING_POLICY_DIGEST_BINDING)
+    if not bindings.config_digest_bound:
+        failures.append(REASON_MISSING_CONFIG_DIGEST_BINDING)
+    if not bindings.implementation_digest_bound:
+        failures.append(REASON_MISSING_IMPLEMENTATION_DIGEST_BINDING)
+    if not bindings.permission_bound:
+        failures.append(REASON_MISSING_PERMISSION_BINDING)
+    if not bindings.authority_bound:
+        failures.append(REASON_MISSING_AUTHORITY_LEASE_BINDING)
+    if not bindings.fencing_token_bound:
+        failures.append(REASON_MISSING_FENCING_TOKEN_BINDING)
+    return failures
+
+
+def evaluate_contract_compatibility_v1(
+    *,
+    source_contract_type: str,
+    source_contract_version: str,
+    bindings: ContractBindingSnapshotV1,
+    target_contract_type: str = "adapter_order_intent_v1",
+    target_contract_version: str = "v1",
+    transformation_id: str = "",
+) -> IntentCompatibilityAssessmentV1:
+    """Fail-closed contract-level compatibility assessment (STEP 29O offline slice)."""
+
+    source_key = (source_contract_type.strip().lower(), source_contract_version.strip().lower())
+    target_key = (target_contract_type.strip().lower(), target_contract_version.strip().lower())
+
+    if source_key not in CONTRACT_TYPE_REGISTRY_V1:
+        return _assessment_result(
+            source_type=source_contract_type,
+            source_version=source_contract_version,
+            target_type=target_contract_type,
+            target_version=target_contract_version,
+            status=ContractCompatibilityStatusV1.INCOMPATIBLE,
+            transformation_required=True,
+            bindings=bindings,
+            adapter_compatible=False,
+            reason_codes=[REASON_UNKNOWN_SOURCE_CONTRACT],
+        )
+
+    if target_key not in CONTRACT_TYPE_REGISTRY_V1:
+        return _assessment_result(
+            source_type=source_contract_type,
+            source_version=source_contract_version,
+            target_type=target_contract_type,
+            target_version=target_contract_version,
+            status=ContractCompatibilityStatusV1.INCOMPATIBLE,
+            transformation_required=True,
+            bindings=bindings,
+            adapter_compatible=False,
+            reason_codes=[REASON_UNKNOWN_TARGET_CONTRACT],
+        )
+
+    source_entry = CONTRACT_TYPE_REGISTRY_V1[source_key]
+    target_entry = CONTRACT_TYPE_REGISTRY_V1[target_key]
+
+    if bindings.spot_market or bindings.synthetic_spot_market or not bindings.futures_only:
+        return _assessment_result(
+            source_type=source_contract_type,
+            source_version=source_contract_version,
+            target_type=target_contract_type,
+            target_version=target_contract_version,
+            status=ContractCompatibilityStatusV1.INCOMPATIBLE,
+            transformation_required=True,
+            bindings=bindings,
+            adapter_compatible=False,
+            reason_codes=[REASON_NON_FUTURES_CONTRACT],
+        )
+
+    if bindings.bitcoin_direction:
+        return _assessment_result(
+            source_type=source_contract_type,
+            source_version=source_contract_version,
+            target_type=target_contract_type,
+            target_version=target_contract_version,
+            status=ContractCompatibilityStatusV1.INCOMPATIBLE,
+            transformation_required=True,
+            bindings=bindings,
+            adapter_compatible=False,
+            reason_codes=[REASON_BITCOIN_DIRECTION_FORBIDDEN],
+        )
+
+    if bindings.legacy_alias:
+        return _assessment_result(
+            source_type=source_contract_type,
+            source_version=source_contract_version,
+            target_type=target_contract_type,
+            target_version=target_contract_version,
+            status=ContractCompatibilityStatusV1.INCOMPATIBLE,
+            transformation_required=True,
+            bindings=bindings,
+            adapter_compatible=False,
+            reason_codes=[REASON_LEGACY_ALIAS_WITHOUT_TRANSFORMATION],
+        )
+
+    if bindings.duck_typed_order_fields and source_entry.classification in {
+        ContractTypeClassification.CANONICAL_DECISION,
+        ContractTypeClassification.LEGACY_OR_AMBIGUOUS,
+    }:
+        return _assessment_result(
+            source_type=source_contract_type,
+            source_version=source_contract_version,
+            target_type=target_contract_type,
+            target_version=target_contract_version,
+            status=ContractCompatibilityStatusV1.INCOMPATIBLE,
+            transformation_required=True,
+            bindings=bindings,
+            adapter_compatible=False,
+            reason_codes=[
+                REASON_DUCK_TYPING_FIELD_MATCH_INSUFFICIENT,
+                REASON_IMPLICIT_CONVERSION_FORBIDDEN,
+            ],
+        )
+
+    if source_entry.classification == ContractTypeClassification.CANONICAL_DECISION:
+        return _assessment_result(
+            source_type=source_contract_type,
+            source_version=source_contract_version,
+            target_type=target_contract_type,
+            target_version=target_contract_version,
+            status=ContractCompatibilityStatusV1.TRANSFORMATION_REQUIRED,
+            transformation_required=True,
+            bindings=bindings,
+            adapter_compatible=False,
+            reason_codes=[
+                REASON_CANONICAL_DECISION_NOT_ORDER_INTENT,
+                REASON_TRANSFORMATION_REQUIRED_NO_DEFAULTS,
+                REASON_STEP29O_ADAPTER_COMPATIBILITY_BLOCKED,
+            ],
+        )
+
+    if source_entry.classification in {
+        ContractTypeClassification.PRE_SIZING_RISK,
+        ContractTypeClassification.POST_SIZING_RISK,
+    }:
+        return _assessment_result(
+            source_type=source_contract_type,
+            source_version=source_contract_version,
+            target_type=target_contract_type,
+            target_version=target_contract_version,
+            status=ContractCompatibilityStatusV1.INCOMPATIBLE,
+            transformation_required=True,
+            bindings=bindings,
+            adapter_compatible=False,
+            reason_codes=[
+                REASON_RISK_OUTPUT_NOT_ADAPTER_COMPATIBLE,
+                REASON_STEP29O_ADAPTER_COMPATIBILITY_BLOCKED,
+            ],
+        )
+
+    if source_entry.classification in {
+        ContractTypeClassification.SIZING_RESULT,
+        ContractTypeClassification.CAPITAL_ENVELOPE,
+    }:
+        return _assessment_result(
+            source_type=source_contract_type,
+            source_version=source_contract_version,
+            target_type=target_contract_type,
+            target_version=target_contract_version,
+            status=ContractCompatibilityStatusV1.TRANSFORMATION_REQUIRED,
+            transformation_required=True,
+            bindings=bindings,
+            adapter_compatible=False,
+            reason_codes=[
+                REASON_SIZING_OUTPUT_NOT_ADAPTER_COMPATIBLE,
+                REASON_CANONICAL_ORDER_INTENT_REQUIRED,
+                REASON_STEP29O_ADAPTER_COMPATIBILITY_BLOCKED,
+            ],
+        )
+
+    if source_entry.classification == ContractTypeClassification.LEGACY_OR_AMBIGUOUS:
+        if not transformation_id or transformation_id not in TRANSFORMATION_REGISTRY_V1:
+            return _assessment_result(
+                source_type=source_contract_type,
+                source_version=source_contract_version,
+                target_type=target_contract_type,
+                target_version=target_contract_version,
+                status=ContractCompatibilityStatusV1.INCOMPATIBLE,
+                transformation_required=True,
+                bindings=bindings,
+                adapter_compatible=False,
+                reason_codes=[
+                    REASON_LEGACY_ALIAS_WITHOUT_TRANSFORMATION,
+                    REASON_IMPLICIT_CONVERSION_FORBIDDEN,
+                ],
+            )
+
+    if source_entry.classification == ContractTypeClassification.CANONICAL_ORDER_INTENT:
+        binding_failures = _binding_failures(bindings)
+        if binding_failures:
+            return _assessment_result(
+                source_type=source_contract_type,
+                source_version=source_contract_version,
+                target_type=target_contract_type,
+                target_version=target_contract_version,
+                status=ContractCompatibilityStatusV1.PERMISSION_REQUIRED,
+                transformation_required=True,
+                bindings=bindings,
+                adapter_compatible=False,
+                reason_codes=binding_failures + [REASON_STEP29O_ADAPTER_COMPATIBILITY_BLOCKED],
+            )
+        if not transformation_id or transformation_id not in TRANSFORMATION_REGISTRY_V1:
+            return _assessment_result(
+                source_type=source_contract_type,
+                source_version=source_contract_version,
+                target_type=target_contract_type,
+                target_version=target_contract_version,
+                status=ContractCompatibilityStatusV1.TRANSFORMATION_REQUIRED,
+                transformation_required=True,
+                bindings=bindings,
+                adapter_compatible=False,
+                reason_codes=[
+                    REASON_TRANSFORMATION_REQUIRED_NO_DEFAULTS,
+                    REASON_STEP29O_ADAPTER_COMPATIBILITY_BLOCKED,
+                ],
+            )
+        return _assessment_result(
+            source_type=source_contract_type,
+            source_version=source_contract_version,
+            target_type=target_contract_type,
+            target_version=target_contract_version,
+            status=ContractCompatibilityStatusV1.PERMISSION_REQUIRED,
+            transformation_required=True,
+            bindings=bindings,
+            adapter_compatible=False,
+            reason_codes=[REASON_STEP29O_ADAPTER_COMPATIBILITY_BLOCKED],
+        )
+
+    if source_entry.classification == ContractTypeClassification.BOUNDARY_FIXTURE:
+        binding_failures = _binding_failures(bindings)
+        if binding_failures:
+            return _assessment_result(
+                source_type=source_contract_type,
+                source_version=source_contract_version,
+                target_type=target_contract_type,
+                target_version=target_contract_version,
+                status=ContractCompatibilityStatusV1.INCOMPATIBLE,
+                transformation_required=True,
+                bindings=bindings,
+                adapter_compatible=False,
+                reason_codes=binding_failures,
+            )
+        return _assessment_result(
+            source_type=source_contract_type,
+            source_version=source_contract_version,
+            target_type=target_contract_type,
+            target_version=target_contract_version,
+            status=ContractCompatibilityStatusV1.STRUCTURALLY_COMPATIBLE_NOT_EXECUTION_ELIGIBLE,
+            transformation_required=True,
+            bindings=bindings,
+            adapter_compatible=False,
+            reason_codes=[
+                REASON_BOUNDARY_STRUCTURAL_ONLY,
+                REASON_STEP29O_ADAPTER_COMPATIBILITY_BLOCKED,
+            ],
+        )
+
+    return _assessment_result(
+        source_type=source_contract_type,
+        source_version=source_contract_version,
+        target_type=target_contract_type,
+        target_version=target_contract_version,
+        status=ContractCompatibilityStatusV1.INCOMPATIBLE,
+        transformation_required=True,
+        bindings=bindings,
+        adapter_compatible=False,
+        reason_codes=[
+            REASON_IMPLICIT_CONVERSION_FORBIDDEN,
+            REASON_STEP29O_ADAPTER_COMPATIBILITY_BLOCKED,
+        ],
+    )
+
+
+def assert_not_adapter_compatible_contract_v1(
+    *,
+    source_contract_type: str,
+    source_contract_version: str,
+    bindings: ContractBindingSnapshotV1 | None = None,
+) -> IntentCompatibilityAssessmentV1:
+    """Negative guard for execution/adapter consumers (offline contract slice)."""
+
+    assessment = evaluate_contract_compatibility_v1(
+        source_contract_type=source_contract_type,
+        source_contract_version=source_contract_version,
+        bindings=bindings or ContractBindingSnapshotV1(),
+    )
+    if assessment.adapter_compatible:
+        msg = f"adapter_compatible forbidden for {source_contract_type}::{source_contract_version}"
+        raise ValueError(msg)
+    return assessment
+
+
+def producer_consumer_authority_matrix_v1() -> list[dict[str, str]]:
+    rows: list[dict[str, str]] = []
+    for (_ctype, _cver), entry in sorted(CONTRACT_TYPE_REGISTRY_V1.items()):
+        rows.append(
+            {
+                "contract_type": entry.contract_type,
+                "contract_version": entry.contract_version,
+                "classification": entry.classification.value,
+                "owner_module": entry.owner_module,
+                "producer_authority": AUTHORITY_EFFECT_NONE,
+                "consumer_authority": AUTHORITY_EFFECT_NONE,
+                "runtime_effect": RUNTIME_EFFECT_NONE,
+                "adapter_compatible_by_default": str(entry.adapter_compatible_by_default).lower(),
+            }
+        )
+    return rows
+
+
+def bypass_scan_results_v1() -> list[dict[str, str]]:
+    return [
+        {
+            "path_id": "decision_to_adapter_direct",
+            "description": "CanonicalTradingDecisionEvidenceV1 -> adapter payload",
+            "classification": "CLOSED_IN_SCOPE",
+            "owner": "src.governance.intent_compatibility_firewall_v1",
+        },
+        {
+            "path_id": "strategy_signal_to_order_direct",
+            "description": "Strategy signal -> OrderIntent without pipeline",
+            "classification": "ALREADY_GUARDED",
+            "owner": "src.execution.orchestrator",
+        },
+        {
+            "path_id": "sizing_to_adapter_direct",
+            "description": "CapitalRiskSizingDecisionV1 -> adapter payload",
+            "classification": "CLOSED_IN_SCOPE",
+            "owner": "src.governance.intent_compatibility_firewall_v1",
+        },
+        {
+            "path_id": "dict_mapping_bypass",
+            "description": "Dict duck-typing with order-like fields",
+            "classification": "CLOSED_IN_SCOPE",
+            "owner": "src.governance.intent_compatibility_firewall_v1",
+        },
+        {
+            "path_id": "implicit_default_order_type",
+            "description": "Default order_type without explicit binding",
+            "classification": "CLOSED_IN_SCOPE",
+            "owner": "src.governance.intent_compatibility_firewall_v1",
+        },
+        {
+            "path_id": "canonical_order_intent_to_adapter",
+            "description": "Canonical order intent -> adapter with explicit transformation",
+            "classification": "DEFERRED_TO_STEP29Q",
+            "owner": "src.governance.canonical_order_intent_v1",
+        },
+        {
+            "path_id": "runtime_eligibility_generation",
+            "description": "Runtime eligibility from offline contracts",
+            "classification": "DEFERRED_TO_STEP29R",
+            "owner": "src.meta.learning_loop.canonical_order_lifecycle_v1",
+        },
+        {
+            "path_id": "authority_lease_issuance",
+            "description": "Authority lease from compatibility assessment",
+            "classification": "DEFERRED_TO_STEP29R",
+            "owner": "src.meta.learning_loop.canonical_order_lifecycle_v1",
+        },
+    ]
+
+
+def deferred_scope_mapping_v1() -> dict[str, str]:
+    return {
+        "canonical_order_intent_full_implementation": "DEFERRED_TO_STEP29Q",
+        "adapter_submission": "DEFERRED_TO_STEP29R",
+        "runtime_rewire": "DEFERRED_TO_STEP29R",
+        "runtime_eligibility": "DEFERRED_TO_STEP29R",
+        "authority_lease": "DEFERRED_TO_STEP29R",
+        "capital_risk_sizing_math": "OUT_OF_SCOPE_WITH_EXPLICIT_OWNER",
+        "capital_risk_sizing_owner": "src.governance.capital_risk_sizing_v1",
+    }
+
+
+def legacy_intent_classification_v1() -> dict[str, str]:
+    return {
+        type_id: descriptor.owner_module
+        for type_id, descriptor in INTENT_TYPE_DESCRIPTOR_REGISTRY_V1.items()
+        if type_id
+        in {
+            "ORCHESTRATOR_ORDER_INTENT",
+            "PIPELINE_ORDER_INTENT",
+            "EXECUTION_SIMPLE_ORDER_INTENT",
+            "ORDER_REQUEST",
+            "LIVE_ORDER_REQUEST",
+            "EXECUTION_CONTRACTS_ORDER",
+        }
+    }
+
+
+def compatibility_firewall_contract_v1() -> dict[str, object]:
+    return {
+        "contract_name": CONTRACT_NAME,
+        "contract_version": CONTRACT_VERSION,
+        "schema_version": SCHEMA_VERSION,
+        "compatibility_statuses": [s.value for s in ContractCompatibilityStatusV1],
+        "classifications": [c.value for c in ContractTypeClassification],
+        "invariants": {
+            "canonical_trading_decision_is_not_order_intent": True,
+            "risk_or_sizing_output_not_adapter_compatible_by_default": True,
+            "no_implicit_decision_to_order_conversion": True,
+            "no_implicit_quantity_binding": True,
+            "no_implicit_order_type_binding": True,
+            "no_implicit_reduce_only_binding": True,
+            "no_implicit_venue_binding": True,
+            "no_implicit_account_binding": True,
+            "no_implicit_authority_binding": True,
+            "no_implicit_adapter_compatibility": True,
+            "explicit_versioned_transformation_required": True,
+            "authority_effect": AUTHORITY_EFFECT_NONE,
+            "runtime_effect": RUNTIME_EFFECT_NONE,
+            "futures_only": FUTURES_ONLY,
+            "bitcoin_direction_allowed": BITCOIN_DIRECTION_ALLOWED,
+            "spot_allowed": SPOT_ALLOWED,
+            "synthetic_spot_allowed": SYNTHETIC_SPOT_ALLOWED,
+        },
+    }
 
 
 def build_canonical_to_adapter_transformation_descriptor_v1(
@@ -798,4 +1665,9 @@ def intent_compatibility_firewall_schema_v1() -> dict[str, object]:
             "transformation_performed": False,
         },
         "registry_intent_type_ids": sorted(INTENT_TYPE_DESCRIPTOR_REGISTRY_V1.keys()),
+        "contract_type_registry_keys": sorted(
+            f"{k[0]}::{k[1]}" for k in CONTRACT_TYPE_REGISTRY_V1.keys()
+        ),
+        "compatibility_statuses": [s.value for s in ContractCompatibilityStatusV1],
+        "contract_assessment_invariants": compatibility_firewall_contract_v1()["invariants"],
     }
