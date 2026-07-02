@@ -24,6 +24,9 @@ from urllib import error, request
 from urllib.parse import urlparse
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
+_SRC_ROOT = _REPO_ROOT / "src"
+if str(_SRC_ROOT) not in sys.path:
+    sys.path.insert(0, str(_SRC_ROOT))
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
@@ -69,6 +72,11 @@ from src.ops.bounded_futures_testnet_runtime_harness_contract_v0 import (
     ARCHIVE_HARNESS_SCRIPT_REL_PATH,
     RUNTIME_HARNESS_EXECUTE_ALLOWED,
     RUNTIME_HARNESS_NETWORK_ALLOWED,
+)
+from trading.master_v2.canonical_core_runtime_integration_bridge_v0 import (
+    CanonicalCoreRuntimeIntegrationInputV0,
+    build_zero_order_canonical_decision_evidence_fields_v0,
+    run_canonical_core_runtime_integration_bridge_v0,
 )
 
 PACKAGE_MARKER = "ARCHIVE_FUTURES_TESTNET_HARNESS_V0=true"
@@ -396,6 +404,23 @@ def classify_pf_xbtusd_symbol_visibility(
     return "not_visible"
 
 
+def run_zero_order_canonical_core_integration(
+    *,
+    run_id: str,
+    instrument: str,
+    market_type: str,
+) -> dict[str, Any]:
+    """Bind zero-order harness to canonical offline decision core (Slice A, no authority)."""
+    integration_input = CanonicalCoreRuntimeIntegrationInputV0(
+        run_id=run_id,
+        harness_instrument=instrument,
+        market_type=market_type,
+        plan_only=True,
+    )
+    integration_result = run_canonical_core_runtime_integration_bridge_v0(integration_input)
+    return build_zero_order_canonical_decision_evidence_fields_v0(integration_result)
+
+
 def build_zero_order_evidence_payload(
     *,
     timing: HarnessTiming,
@@ -407,6 +432,7 @@ def build_zero_order_evidence_payload(
     network_reachability_proven: bool = False,
     network_calls: Sequence[NetworkCallRecord] | None = None,
     pf_xbtusd_symbol_visibility: SymbolVisibility = "not_checked",
+    canonical_integration_fields: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Evidence fields aligned with PE-8 zero-order spec."""
     calls_payload = [
@@ -419,7 +445,7 @@ def build_zero_order_evidence_payload(
         }
         for rec in (network_calls or [])
     ]
-    return {
+    payload: dict[str, Any] = {
         "session_class": DEFAULT_SESSION_CLASS,
         "order_policy": DEFAULT_ORDER_POLICY,
         "instrument": DEFAULT_FUTURES_SYMBOL,
@@ -444,6 +470,8 @@ def build_zero_order_evidence_payload(
         "risk_killswitch_scope_active": True,
         "risk_killswitch_scope_pass": True,
         "master_v2_double_play_authority_used": False,
+        "legacy_generate_signals_invoked": False,
+        "legacy_evaluate_double_play_invoked": False,
         "endpoints_called": list(endpoints_called),
         "network_host": network_host,
         "scheduler_started": False,
@@ -469,6 +497,9 @@ def build_zero_order_evidence_payload(
         "manifest_verification_expected": True,
         "bounded_futures_testnet_pass": pe8_pass,
     }
+    if canonical_integration_fields:
+        payload.update(dict(canonical_integration_fields))
+    return payload
 
 
 def build_private_readonly_evidence_payload(
@@ -840,6 +871,11 @@ def main(
             )
     else:
         spec = default_bounded_futures_zero_order_reachability_v0_spec()
+        canonical_integration_fields = run_zero_order_canonical_core_integration(
+            run_id=args.run_id,
+            instrument=args.instrument,
+            market_type=args.market_type,
+        )
         evidence = build_zero_order_evidence_payload(
             timing=timing,
             endpoints_called=endpoints_called,
@@ -854,6 +890,7 @@ def main(
             pf_xbtusd_symbol_visibility=(
                 network_result.pf_xbtusd_symbol_visibility if network_result else "not_checked"
             ),
+            canonical_integration_fields=canonical_integration_fields,
         )
     evaluation = evaluate_bounded_futures_testnet_evidence(evidence, spec=spec)
     evidence["bounded_futures_testnet_pass"] = evaluation["bounded_futures_testnet_pass"]
