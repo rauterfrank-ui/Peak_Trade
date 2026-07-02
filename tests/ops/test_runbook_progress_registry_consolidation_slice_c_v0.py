@@ -126,7 +126,10 @@ def test_slice_semantics_unchanged() -> None:
 
 
 def test_runtime_rewire_and_zero_order_semantics_not_upgraded() -> None:
-    assert authoritative_field_value("RUNTIME_REWIRE_STATUS") == "PARTIAL"
+    assert (
+        authoritative_field_value("RUNTIME_REWIRE_STATUS")
+        == "BLOCKED_BY_ECONOMIC_VALIDITY_OFFLINE_GATE"
+    )
     assert authoritative_field_value("ZERO_ORDER_RUNTIME_READY") == "false"
     assert authoritative_field_value("ZERO_ORDER_RUNTIME_EXECUTION_SUSPENDED") == "true"
     assert authoritative_field_value("CANONICAL_CORE_SINGLE_SSOT_CONFIRMED") == "true"
