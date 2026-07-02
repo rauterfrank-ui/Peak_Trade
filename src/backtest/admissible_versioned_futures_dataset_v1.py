@@ -682,6 +682,129 @@ def load_dataset_admissibility_from_flat_economic_research_manifest_v1(
     return descriptor, provenance
 
 
+RUNNER_ECONOMIC_RESEARCH_V2_DATASET_VERSION = "v2"
+RUNNER_ECONOMIC_RESEARCH_V2_INSTRUMENT_ID = "inst-eth-usdt-perp"
+HOLDOUT_ACCESS_BLOCKED_BEFORE_EVALUATION = "BLOCKED"
+MISSING_HISTORICAL_L1_NOT_AVAILABLE_BY_PUBLIC_SOURCE = "NOT_AVAILABLE_BY_PUBLIC_SOURCE"
+
+
+def validate_flat_economic_research_v2_runner_manifest_contract_v1(
+    manifest: Mapping[str, Any],
+) -> tuple[str, ...]:
+    """Fail-closed runner contract for flat economic_research_v1 dataset v2 manifests."""
+    reasons: list[str] = []
+    if not is_flat_economic_research_manifest_v1(manifest):
+        reasons.append("v2_manifest_not_flat_economic_research_v1")
+        return tuple(reasons)
+
+    if str(manifest.get("dataset_version", "")) != RUNNER_ECONOMIC_RESEARCH_V2_DATASET_VERSION:
+        reasons.append("dataset_version_not_v2")
+    if str(manifest.get("dataset_schema_version", "")) != DATASET_SCHEMA_VERSION_V2:
+        reasons.append("dataset_schema_version_not_v2")
+    if str(manifest.get("dataset_profile", "")) != DatasetProfileV1.ECONOMIC_RESEARCH_V1.value:
+        reasons.append("dataset_profile_not_economic_research_v1")
+
+    instrument_id = str(manifest.get("instrument_id", "")).strip()
+    if instrument_id != RUNNER_ECONOMIC_RESEARCH_V2_INSTRUMENT_ID:
+        reasons.append("instrument_id_not_inst_eth_usdt_perp")
+    try:
+        _reject_forbidden_instrument(instrument_id)
+    except AdmissibleVersionedFuturesDatasetError:
+        reasons.append("instrument_forbidden")
+
+    if manifest.get("futures_only") is not True:
+        reasons.append("futures_only_not_true")
+    if manifest.get("bitcoin_direction_allowed") is True:
+        reasons.append("bitcoin_direction_allowed_true")
+
+    dataset_digest = str(
+        manifest.get("normalized_dataset_digest", manifest.get("dataset_digest", ""))
+    ).strip()
+    if not _valid_sha256(dataset_digest):
+        reasons.append("normalized_dataset_digest_invalid")
+    for digest_field in ("development_partition_digest", "frozen_holdout_digest"):
+        digest_value = str(manifest.get(digest_field, "")).strip()
+        if not _valid_sha256(digest_value):
+            reasons.append(f"{digest_field}_invalid")
+
+    holdout_binding = manifest.get("holdout_binding")
+    if not isinstance(holdout_binding, Mapping):
+        reasons.append("holdout_binding_missing")
+    else:
+        if (
+            str(holdout_binding.get("holdout_access_before_evaluation", ""))
+            != HOLDOUT_ACCESS_BLOCKED_BEFORE_EVALUATION
+        ):
+            reasons.append("holdout_access_before_evaluation_not_blocked")
+        for digest_field in ("development_partition_digest", "frozen_holdout_digest"):
+            top_level = str(manifest.get(digest_field, "")).strip()
+            nested = str(holdout_binding.get(digest_field, "")).strip()
+            if top_level and nested and top_level != nested:
+                reasons.append(f"{digest_field}_holdout_binding_mismatch")
+        if not str(holdout_binding.get("frozen_holdout_period", "")).strip():
+            reasons.append("frozen_holdout_period_missing")
+        if not str(holdout_binding.get("development_period", "")).strip():
+            reasons.append("development_period_missing")
+
+    for period_field in ("training_period", "validation_period", "out_of_sample_period"):
+        if not str(manifest.get(period_field, "")).strip():
+            reasons.append(f"{period_field}_missing")
+
+    l1_status = str(manifest.get("l1_observation_status", ""))
+    if l1_status != L1ObservationStatusV1.EXECUTION_MODEL_BOUND_NOT_OBSERVED.value:
+        reasons.append("l1_observation_status_not_execution_model_bound_not_observed")
+    if manifest.get("observed_l1_used") is not False:
+        reasons.append("observed_l1_used_not_false")
+    missing_l1_reason = str(manifest.get("missing_historical_l1_reason", "")).strip()
+    if missing_l1_reason != MISSING_HISTORICAL_L1_NOT_AVAILABLE_BY_PUBLIC_SOURCE:
+        reasons.append("missing_historical_l1_reason_not_not_available_by_public_source")
+
+    profile_binding = manifest.get("profile_binding")
+    if not isinstance(profile_binding, Mapping):
+        reasons.append("profile_binding_missing")
+    elif profile_binding.get("dataset_profile") != DatasetProfileV1.ECONOMIC_RESEARCH_V1.value:
+        reasons.append("profile_binding_not_economic_research_v1")
+
+    integrity = manifest.get("integrity_results")
+    if isinstance(integrity, Mapping):
+        if integrity.get("integrity_pass") is not True:
+            reasons.append("integrity_pass_not_true")
+        if integrity.get("dataset_admissible") is not True:
+            reasons.append("dataset_admissible_not_true")
+
+    return tuple(reasons)
+
+
+def assert_runner_manifest_dataset_version_accepted_v1(
+    descriptor: VersionedFuturesDatasetDescriptorV1,
+    *,
+    manifest: Mapping[str, Any],
+) -> None:
+    """Fail-closed runner dataset version/schema acceptance (reuse canonical adapter owner)."""
+    version = str(descriptor.dataset_version)
+    schema = str(descriptor.dataset_schema_version)
+    flat_economic_research = is_flat_economic_research_manifest_v1(manifest)
+
+    if version == DEFAULT_DATASET_VERSION:
+        if schema != DATASET_SCHEMA_VERSION:
+            raise AdmissibleVersionedFuturesDatasetError(f"dataset_schema_version_unknown:{schema}")
+        return
+
+    if version == RUNNER_ECONOMIC_RESEARCH_V2_DATASET_VERSION:
+        if not flat_economic_research:
+            raise AdmissibleVersionedFuturesDatasetError(
+                "v2_manifest_not_flat_economic_research_v1"
+            )
+        if schema != DATASET_SCHEMA_VERSION_V2:
+            raise AdmissibleVersionedFuturesDatasetError(f"dataset_schema_version_unknown:{schema}")
+        reasons = validate_flat_economic_research_v2_runner_manifest_contract_v1(manifest)
+        if reasons:
+            raise AdmissibleVersionedFuturesDatasetError(reasons[0])
+        return
+
+    raise AdmissibleVersionedFuturesDatasetError(f"dataset_version_unknown:{version}")
+
+
 def dataset_admissibility_binding_requested(cfg: Mapping[str, Any]) -> bool:
     backtest = cfg.get("backtest")
     if not isinstance(backtest, Mapping):
