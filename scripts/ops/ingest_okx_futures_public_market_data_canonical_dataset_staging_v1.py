@@ -601,12 +601,14 @@ def build_availability_matrix(
         "best_bid": {
             "available": False,
             "row_count": 0,
-            "reason": bid_ask_capability.get("capability_verdict"),
+            "reason": "NOT_AVAILABLE_BY_PUBLIC_SOURCE",
+            "reason_detail": bid_ask_capability.get("capability_verdict"),
         },
         "best_ask": {
             "available": False,
             "row_count": 0,
-            "reason": bid_ask_capability.get("capability_verdict"),
+            "reason": "NOT_AVAILABLE_BY_PUBLIC_SOURCE",
+            "reason_detail": bid_ask_capability.get("capability_verdict"),
         },
         "is_final": {
             "available": ohlcv_rows > 0,
@@ -615,16 +617,44 @@ def build_availability_matrix(
     }
 
 
-def all_required_series_available(matrix: Mapping[str, Any]) -> bool:
-    for field in REQUIRED_BAR_FIELDS:
-        key = field
-        if field in {"open", "high", "low", "close", "volume"}:
-            key = "OHLCV" if field == "open" else field
-        if field in {"open", "high", "low", "close", "volume"}:
+_RUNTIME_REQUIRED_AVAILABILITY_FIELDS = (
+    "OHLCV",
+    "mark_price",
+    "index_price",
+    "best_bid",
+    "best_ask",
+    "funding_rate",
+    "is_final",
+)
+
+_ECONOMIC_RESEARCH_REQUIRED_AVAILABILITY_FIELDS = (
+    "OHLCV",
+    "mark_price",
+    "index_price",
+    "funding_rate",
+    "is_final",
+)
+
+
+def required_availability_fields_for_profile(
+    dataset_profile: str = "runtime_market_context_v1",
+) -> Tuple[str, ...]:
+    if dataset_profile == "economic_research_v1":
+        return _ECONOMIC_RESEARCH_REQUIRED_AVAILABILITY_FIELDS
+    return _RUNTIME_REQUIRED_AVAILABILITY_FIELDS
+
+
+def all_required_series_available(
+    matrix: Mapping[str, Any],
+    *,
+    dataset_profile: str = "runtime_market_context_v1",
+) -> bool:
+    for field in required_availability_fields_for_profile(dataset_profile):
+        if field == "OHLCV":
             if not matrix.get("OHLCV", {}).get("available"):
                 return False
             continue
-        entry = matrix.get(field) or matrix.get(key)
+        entry = matrix.get(field)
         if not isinstance(entry, Mapping) or not entry.get("available"):
             return False
     return True

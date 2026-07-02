@@ -257,6 +257,26 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `STEP29M_PROMOTION_AUTHORIZED` | `false` |
 | `STEP29M_RUNTIME_AUTHORITY` | `false` |
 | `STEP29M_NEW_RESEARCH_SCOPE_REQUIRES_EXPLICIT_OPERATOR_RATIFICATION` | `true` |
+| `RUNBOOK_STEP_30A_STARTED` | `true` |
+| `RUNBOOK_STEP_30A_IMPLEMENTED_SCOPE` | `rsi_reversion_v1_extended_holdout_separated_futures_economic_research_v0,dataset_v2_backward_extension_adapter_v0,policy_ratification_and_candidate_design_contract_v0` |
+| `RUNBOOK_STEP_30A_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_30A_COMPLETE` | `true` |
+| `STEP30A_SCOPE` | `RSI_REVERSION_V1_EXTENDED_HOLDOUT_SEPARATED_FUTURES_ECONOMIC_RESEARCH_V0` |
+| `STEP30A_GO_TOKEN` | `GO_BOUNDED_STEP30A_RSI_REVERSION_V1_EXTENDED_HOLDOUT_SEPARATED_FUTURES_ECONOMIC_RESEARCH_V0` |
+| `STEP30A_OPERATOR_POLICY_RATIFIED` | `true` |
+| `STEP30A_OPERATOR_POLICY_DECISION` | `RATIFIED` |
+| `STEP30A_OPERATOR_POLICY_DECISION_REF` | `operator_policy_decision:STEP30A_RSI_REVERSION_V1` |
+| `STEP30A_RSI_WINDOW` | `14` |
+| `STEP30A_LOWER` | `30.0` |
+| `STEP30A_UPPER` | `70.0` |
+| `STEP30A_PRICE_COL` | `close` |
+| `STEP30A_HOLDOUT_FROZEN_REF` | `2026-06-17 10:07:00+00:00..2026-07-01 10:07:00+00:00` |
+| `STEP30A_DATASET_VERSION` | `v2` |
+| `STEP30A_EVALUATION_AUTHORIZED` | `false` |
+| `STEP30A_PROMOTION_AUTHORIZED` | `false` |
+| `STEP30A_RUNTIME_AUTHORIZED` | `false` |
+| `STEP30A_REGISTERED_ECONOMIC_EVALUATION_CONFIGS` | `config&#47;ops&#47;step30a_okx_inst_eth_usdt_perp_rsi_reversion_v1_economic_evaluation_v1.json` <!-- pt:ref-target-ignore --> |
+| `STEP30A_OPERATOR_POLICY_SUPERSEDES_NO_NEW_CANDIDATE_HOLD_ONLY_FOR_STEP30A` | `true` |
 | `STEP29N_ALREADY_COMPLETE` | `true` |
 | `NEGATIVE_CANDIDATE_DECISIONS_REMAIN_CANONICAL` | `true` |
 | `NEGATIVE_CANDIDATE_DECISIONS_REMAIN_EVIDENCE_ADMISSIBLE` | `true` |
@@ -1449,6 +1469,56 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `MA_CROSSOVER_V1_REAL_EVALUATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/economic_evaluation/bounded_step29m_ma_crossover_v1_post_binding_fix_economic_evaluation_recovery_single_run_v0_20260702T012057Z` |
 | `MA_CROSSOVER_V1_CANDIDATE_DECISION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/economic_evaluation/bounded_step29m_ma_crossover_v1_economic_policy_fail_closeout_and_candidate_decision_read_only_v0_20260702T012719Z` |
 | `FLEET_NO_PASS_OPERATOR_POLICY_DECISION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/bounded_step29m_no_pass_operator_policy_decision_preparation_read_only_v0_20260702T013118Z` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
+#### RUNBOOK_STEP_30A — RSI Reversion v1 Extended Holdout-Separated Futures Economic Research v0
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 9 |
+| `RUNBOOK_STEP_ID` | `rsi_reversion_v1_extended_holdout_separated_futures_economic_research_v0` |
+| `STATUS` | `COMPLETE` |
+| `CANONICAL_OWNER` | `src/backtest/step30a_rsi_reversion_v1_economic_evaluation_admissibility_contract_v1.py` |
+| `CANONICAL_INGEST_ADAPTER_OWNER` | `scripts/ops/ingest_step30a_okx_inst_eth_usdt_perp_dataset_v2_backward_extension_v0.py` |
+| `CANONICAL_CONFIG_PATH` | `config&#47;ops&#47;step30a_okx_inst_eth_usdt_perp_rsi_reversion_v1_economic_evaluation_v1.json` <!-- pt:ref-target-ignore --> |
+| `DEPENDENCIES` | RUNBOOK_STEP_29M |
+| `NEXT_REQUIRED_CONTRACT` | `RUNBOOK_STEP_29N` |
+| `NEXT_CANONICAL_STEP` | `SEPARATE_EVALUATION_GO_REQUIRED_AFTER_PRE_PR_AND_IMPLEMENTATION_CLOSEOUT` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `ORDER_EFFECT` | `false` |
+| `RUNTIME_EFFECT` | `false` |
+| `LIVE_AUTHORIZED` | `false` |
+| `RUNBOOK_STEP_30A_STARTED` | `true` |
+| `RUNBOOK_STEP_30A_IMPLEMENTED_SCOPE` | `rsi_reversion_v1_extended_holdout_separated_futures_economic_research_v0,dataset_v2_backward_extension_adapter_v0,policy_ratification_and_candidate_design_contract_v0` |
+| `RUNBOOK_STEP_30A_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_30A_COMPLETE` | `true` |
+| `STEP30A_SCOPE` | `RSI_REVERSION_V1_EXTENDED_HOLDOUT_SEPARATED_FUTURES_ECONOMIC_RESEARCH_V0` |
+| `STEP30A_GO_TOKEN` | `GO_BOUNDED_STEP30A_RSI_REVERSION_V1_EXTENDED_HOLDOUT_SEPARATED_FUTURES_ECONOMIC_RESEARCH_V0` |
+| `STEP30A_OPERATOR_POLICY_RATIFIED` | `true` |
+| `STEP30A_OPERATOR_POLICY_DECISION` | `RATIFIED` |
+| `STEP30A_OPERATOR_POLICY_DECISION_REF` | `operator_policy_decision:STEP30A_RSI_REVERSION_V1` |
+| `STEP30A_FLEET_SIZING_PRECEDENT_REF` | `fleet_precedent:macd_v3_post_risk_limits_rewire` |
+| `STEP30A_RSI_WINDOW` | `14` |
+| `STEP30A_LOWER` | `30.0` |
+| `STEP30A_UPPER` | `70.0` |
+| `STEP30A_PRICE_COL` | `close` |
+| `STEP30A_SIGNAL_SEMANTICS` | `LONG_SHORT_REVERSION_-1_0_1` |
+| `STEP30A_USE_TREND_FILTER_FORBIDDEN_IN_CONFIG` | `true` |
+| `STEP30A_TRAINING_PERIOD` | `2026-04-02 10:07:00+00:00..2026-05-18 23:59:00+00:00` |
+| `STEP30A_VALIDATION_PERIOD` | `2026-05-19 00:00:00+00:00..2026-06-16 23:59:00+00:00` |
+| `STEP30A_HOLDOUT_FROZEN_REF` | `2026-06-17 10:07:00+00:00..2026-07-01 10:07:00+00:00` |
+| `STEP30A_DATASET_VERSION` | `v2` |
+| `STEP30A_DATASET_PATH` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/inst-eth-usdt-perp/v2/bars.parquet` |
+| `STEP30A_EVALUATION_AUTHORIZED` | `false` |
+| `STEP30A_PROMOTION_AUTHORIZED` | `false` |
+| `STEP30A_RUNTIME_AUTHORIZED` | `false` |
+| `STEP30A_PARAMETER_TUNING_ALLOWED` | `false` |
+| `STEP30A_THRESHOLD_TUNING_ALLOWED` | `false` |
+| `STEP30A_DATASET_REPLACEMENT_ALLOWED` | `false` |
+| `STEP30A_REGISTERED_ECONOMIC_EVALUATION_CONFIGS` | `config&#47;ops&#47;step30a_okx_inst_eth_usdt_perp_rsi_reversion_v1_economic_evaluation_v1.json` <!-- pt:ref-target-ignore --> |
+| `STEP30A_NO_NEW_CANDIDATE_HOLD_SUPERSEDED_SCOPE` | `STEP30A_ONLY` |
 | `SEPARATE_GO_REQUIRED` | `true` |
 
 #### RUNBOOK_STEP_29N — Promotion Economic Gate Binding v1

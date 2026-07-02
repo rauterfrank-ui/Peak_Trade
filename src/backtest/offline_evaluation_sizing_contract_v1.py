@@ -31,7 +31,9 @@ ALLOWED_STOP_DISTANCE_POLICIES = frozenset({"FIXED_PCT_FROM_ENTRY_v1"})
 ALLOWED_QUANTITY_ROUNDING_POLICIES = frozenset({"NONE_v1"})
 ALLOWED_MINIMUM_QUANTITY_POLICIES = frozenset({"REJECT_BELOW_MIN_NOTIONAL_v1"})
 ALLOWED_MINIMUM_NOTIONAL_POLICIES = frozenset({"USE_RISK_MIN_POSITION_VALUE_v1"})
-ALLOWED_INSTRUMENT_METADATA_SOURCES = frozenset({"versioned_dataset_manifest_v1"})
+ALLOWED_INSTRUMENT_METADATA_SOURCES = frozenset(
+    {"versioned_dataset_manifest_v1", "versioned_dataset_manifest_v2"}
+)
 ALLOWED_PRICE_SOURCES = frozenset({"bar_close_v1"})
 ALLOWED_SIZING_MODES = frozenset({"fixed_fractional_risk_per_trade_v1"})
 

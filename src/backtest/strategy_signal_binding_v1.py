@@ -51,6 +51,7 @@ _EXTERNAL_PARAMETER_SCHEMA_V1: dict[str, dict[str, Any]] = {
 # Evaluation/config metadata allowed in configured params but not strategy logic schema.
 _EVALUATION_ONLY_STRATEGY_PARAMS_V1: dict[str, frozenset[str]] = {
     "ma_crossover": frozenset({"price_col"}),
+    "rsi_reversion": frozenset({"price_col"}),
 }
 
 
@@ -237,6 +238,8 @@ def compute_required_warmup_rows_v1(
         if lookback_raw < 2:
             raise StrategySignalBindingError("breakout_donchian_lookback_below_minimum")
         return lookback_raw
+    if strategy_id == "rsi_reversion":
+        return int(effective_params["rsi_window"])
     raise StrategySignalBindingError(f"required_warmup_rows_unbound:{strategy_id}")
 
 
