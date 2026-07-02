@@ -52,6 +52,24 @@ _EXTERNAL_PARAMETER_SCHEMA_V1: dict[str, dict[str, Any]] = {
         "slow_ema": 26,
         "signal_ema": 9,
     },
+    "trend_following": {
+        "adx_period": 14,
+        "adx_threshold": 25.0,
+        "exit_threshold": 20.0,
+        "ma_period": 50,
+        "use_ma_filter": True,
+    },
+    "bollinger_bands": {
+        "bb_period": 20,
+        "bb_std": 2.0,
+        "entry_threshold": 0.95,
+        "exit_threshold": 0.50,
+    },
+    "momentum_1h": {
+        "lookback_period": 20,
+        "entry_threshold": 0.02,
+        "exit_threshold": -0.01,
+    },
     "vol_regime_filter": {
         "vol_window": 20,
         "vol_method": "atr",
