@@ -22,7 +22,7 @@ from src.governance.capital_risk_sizing_v1 import (
     CapitalRiskSizingDecisionV1,
     CapitalRiskSizingInputV1,
     CapitalRiskSizingOutcome,
-    SelectedSide,
+    QuantityProvenanceV1,
 )
 
 CONTRACT_NAME = "canonical_order_intent_v1"
@@ -196,7 +196,9 @@ class CanonicalOrderIntentV1:
     instrument_metadata_ref: str
     execution_eligible: bool = False
     adapter_compatible: bool = False
+    permission_required: bool = True
     submission_authorized: bool = False
+    submission_effect: str = "NONE"
     runtime_effect: str = RUNTIME_EFFECT_NONE
     authority_effect: str = AUTHORITY_EFFECT_NONE
     network_effect: str = NETWORK_EFFECT_NONE
@@ -297,55 +299,90 @@ def _digest_ref(payload: Mapping[str, Any]) -> str:
 
 
 def compute_capital_envelope_ref(decision: CapitalRiskSizingDecisionV1) -> str:
-    envelope = decision.capital_envelope
+    provenance = decision.quantity_provenance
+    if provenance is not None and provenance.capital_envelope_ref:
+        return provenance.capital_envelope_ref
+    envelope = decision.scope_capital_envelope
     return _digest_ref(
         {
-            "scope_capital_limit": str(envelope.scope_capital_limit),
-            "account_equity": str(envelope.account_equity),
+            "instrument_id": envelope.instrument_id,
+            "decision_id": envelope.decision_id,
             "total_capital_limit": str(envelope.total_capital_limit),
-            "within_envelope": envelope.within_envelope,
+            "available_capital": str(envelope.available_capital),
+            "remaining_capital": str(envelope.remaining_capital),
+            "per_order_cap": str(envelope.per_order_cap),
+            "status": envelope.status.value,
+            "input_digest": envelope.input_digest,
         }
     )
 
 
 def compute_pre_sizing_risk_ref(decision: CapitalRiskSizingDecisionV1) -> str:
+    provenance = decision.quantity_provenance
+    if provenance is not None and provenance.pre_sizing_risk_ref:
+        return provenance.pre_sizing_risk_ref
     pre = decision.pre_sizing_risk
     return _digest_ref(
         {
-            "outcome": pre.outcome.value,
-            "effective_trade_risk_budget": str(pre.effective_trade_risk_budget),
-            "effective_scope_capital_limit": str(pre.effective_scope_capital_limit),
-            "effective_total_capital_limit": str(pre.effective_total_capital_limit),
+            "decision_id": pre.decision_id,
+            "side": pre.side,
+            "status": pre.status.value,
+            "candidate_quantity_upper_bound": str(pre.candidate_quantity_upper_bound),
+            "input_digest": pre.input_digest,
         }
     )
 
 
 def compute_sizing_result_ref(decision: CapitalRiskSizingDecisionV1) -> str:
     provenance = decision.quantity_provenance
-    sizing = decision.canonical_sizing
-    if provenance is None or sizing is None:
+    if provenance is not None and provenance.sizing_ref:
+        return provenance.sizing_ref
+    sizing = decision.canonical_position_sizing
+    if sizing is None:
         return ""
     return _digest_ref(
         {
-            "final_quantity": str(provenance.final_quantity),
-            "binding_cap": provenance.binding_cap,
-            "output_digest": provenance.output_digest,
-            "candidate_quantity": str(sizing.candidate_quantity),
-            "binding_cap_kind": sizing.binding_cap.value,
+            "decision_id": sizing.decision_id,
+            "instrument_id": sizing.instrument_id,
+            "rounded_quantity": str(sizing.rounded_quantity),
+            "quantity_status": sizing.quantity_status.value,
+            "policy_digest": sizing.policy_digest,
+            "input_digest": sizing.input_digest,
         }
     )
 
 
 def compute_post_sizing_risk_ref(decision: CapitalRiskSizingDecisionV1) -> str:
+    provenance = decision.quantity_provenance
+    if provenance is not None and provenance.post_sizing_risk_ref:
+        return provenance.post_sizing_risk_ref
     post = decision.post_sizing_risk
     if post is None:
         return ""
     return _digest_ref(
         {
-            "outcome": post.outcome.value,
-            "projected_stop_loss": str(post.projected_stop_loss),
-            "projected_notional": str(post.projected_notional),
-            "projected_exposure": str(post.projected_exposure),
+            "final_allowed_quantity": str(post.final_allowed_quantity),
+            "status": post.status.value,
+            "resulting_notional": str(post.resulting_notional),
+            "input_digest": post.input_digest,
+        }
+    )
+
+
+def compute_quantity_provenance_ref(provenance: QuantityProvenanceV1) -> str:
+    return _digest_ref(
+        {
+            "decision_id": provenance.decision_id,
+            "final_quantity": str(provenance.final_quantity),
+            "capital_envelope_ref": provenance.capital_envelope_ref,
+            "pre_sizing_risk_ref": provenance.pre_sizing_risk_ref,
+            "sizing_ref": provenance.sizing_ref,
+            "post_sizing_risk_ref": provenance.post_sizing_risk_ref,
+            "instrument_metadata_ref": provenance.instrument_metadata_ref,
+            "policy_version": provenance.policy_version,
+            "config_digest": provenance.config_digest,
+            "implementation_digest": provenance.implementation_digest,
+            "final_quantity_status": provenance.final_quantity_status.value,
         }
     )
 
@@ -482,7 +519,7 @@ def build_canonical_order_intent_v1(
         quantity = provenance.final_quantity
         if quantity is None or quantity <= 0:
             reasons.append(REASON_INVALID_QUANTITY)
-        if provenance.output_digest == "":
+        if not compute_quantity_provenance_ref(provenance):
             reasons.append(REASON_MISSING_QUANTITY_PROVENANCE)
 
     if not inp.decision_id:
@@ -559,7 +596,7 @@ def build_canonical_order_intent_v1(
         intent_action=intent_action,
         quantity=quantity,
         quantity_unit="CONTRACTS",
-        quantity_provenance=provenance.output_digest,
+        quantity_provenance=compute_quantity_provenance_ref(provenance),
         reduce_only=reduce_only,
         position_effect=position_effect,
         order_type_policy=build_input.order_type_policy,
@@ -717,7 +754,9 @@ def canonical_order_intent_from_dict(payload: Mapping[str, Any]) -> CanonicalOrd
         instrument_metadata_ref=str(payload["instrument_metadata_ref"]),
         execution_eligible=bool(payload.get("execution_eligible", False)),
         adapter_compatible=bool(payload.get("adapter_compatible", False)),
+        permission_required=bool(payload.get("permission_required", True)),
         submission_authorized=bool(payload.get("submission_authorized", False)),
+        submission_effect=str(payload.get("submission_effect", "NONE")),
         runtime_effect=str(payload.get("runtime_effect", RUNTIME_EFFECT_NONE)),
         authority_effect=str(payload.get("authority_effect", AUTHORITY_EFFECT_NONE)),
         network_effect=str(payload.get("network_effect", NETWORK_EFFECT_NONE)),
