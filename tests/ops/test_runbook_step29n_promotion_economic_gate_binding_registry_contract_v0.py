@@ -8,7 +8,10 @@ from pathlib import Path
 REPO_ROOT = Path(__file__).resolve().parents[2]
 PROGRESS_REGISTRY = REPO_ROOT / "docs" / "governance" / "PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md"
 
-STEP_29N_IMPLEMENTED_SCOPE = "promotion_economic_gate_binding_v1_slice"
+STEP_29N_IMPLEMENTED_SCOPE = (
+    "promotion_economic_gate_binding_v1_slice,"
+    "promotion_economic_gate_binding_fail_closed_governance_v0_slice"
+)
 
 
 def _read_registry() -> str:

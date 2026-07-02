@@ -312,6 +312,17 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `STEP30A_RUNTIME_ELIGIBLE` | `false` |
 | `NO_NEW_CANDIDATE_HOLD` | `ACTIVE` |
 | `STEP29N_PROMOTION_GATE_STATUS` | `FAIL_CLOSED_BLOCKED` |
+| `STEP29N_GOVERNANCE_FAIL_CLOSED_BINDING` | `true` |
+| `STEP29N_OPERATOR_POLICY_DECISION` | `MAINTAIN_NO_NEW_CANDIDATE_HOLD` |
+| `STEP29N_OPERATOR_POLICY_RATIFICATION_DATE` | `2026-07-02` |
+| `STEP29N_OPERATOR` | `Frank Rauter` |
+| `STEP29N_FAIL_CLOSED_BINDING_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_step29n_promotion_economic_gate_binding_fail_closed_v0_20260702T223500Z` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `PROMOTION_ELIGIBLE` | `false` |
+| `SHADOW_CANDIDATE_ELIGIBLE` | `false` |
+| `PAPER_CANDIDATE_ELIGIBLE` | `false` |
+| `TESTNET_CANDIDATE_ELIGIBLE` | `false` |
+| `AUTHORITY_EFFECT` | `NONE` |
 | `STEP29R_RUNTIME_REWIRE_ADMISSIBLE` | `false` |
 | `DOWNSTREAM_AUTHORITY_EFFECT` | `NONE` |
 | `STEP30A_ECONOMIC_POLICY_FAIL_REASON_CODES` | `METRIC_MISSING:parameter_neighbor_degradation;METRIC_MISSING:single_regime_profit_contribution;METRIC_MISSING:single_trade_profit_contribution;MONTE_CARLO_FAILED;NET_EXPECTANCY_BELOW_THRESHOLD;PROFIT_FACTOR_BELOW_THRESHOLD;STRESS_FAILED` |
@@ -336,7 +347,7 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `FLEET_NO_PASS_OPERATOR_POLICY_DECISION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/bounded_step29m_no_pass_operator_policy_decision_preparation_read_only_v0_20260702T013118Z` |
 | `STEP_29N_STARTED` | `true` |
 | `RUNBOOK_STEP_29N_STARTED` | `true` |
-| `RUNBOOK_STEP_29N_IMPLEMENTED_SCOPE` | `promotion_economic_gate_binding_v1_slice` |
+| `RUNBOOK_STEP_29N_IMPLEMENTED_SCOPE` | `promotion_economic_gate_binding_v1_slice,promotion_economic_gate_binding_fail_closed_governance_v0_slice` |
 | `RUNBOOK_STEP_29N_IMPLEMENTED` | `true` |
 | `RUNBOOK_STEP_29N_COMPLETE` | `true` |
 | `RUNBOOK_STEP_29O_STARTED` | `true` |
@@ -1703,6 +1714,13 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `PROFITABILITY_CLAIM_ALLOWED` | `false` |
 | `PROMOTION_ECONOMIC_GATE_BINDING_STATUS` | `PASS` |
 | `STEP29N_PROMOTION_GATE_STATUS` | `FAIL_CLOSED_BLOCKED` |
+| `STEP29N_GOVERNANCE_FAIL_CLOSED_BINDING` | `true` |
+| `STEP29N_OPERATOR_POLICY_DECISION` | `MAINTAIN_NO_NEW_CANDIDATE_HOLD` |
+| `PROMOTION_ELIGIBLE` | `false` |
+| `SHADOW_CANDIDATE_ELIGIBLE` | `false` |
+| `PAPER_CANDIDATE_ELIGIBLE` | `false` |
+| `TESTNET_CANDIDATE_ELIGIBLE` | `false` |
+| `AUTHORITY_EFFECT` | `NONE` |
 | `TECHNICAL_PROMOTION_GATE_STACK_COMPLETE` | `true` |
 | `CURRENT_PROMOTION_EVALUATION` | `INELIGIBLE` |
 | `REAL_ADMISSIBLE_FUTURES_EVIDENCE_REQUIRED` | `true` |
@@ -1720,7 +1738,7 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `RUNTIME_AUTHORITY_GRANTED` | `false` |
 | `EXECUTION_AUTHORITY_GRANTED` | `false` |
 | `RUNBOOK_STEP_29N_STARTED` | `true` |
-| `RUNBOOK_STEP_29N_IMPLEMENTED_SCOPE` | `promotion_economic_gate_binding_v1_slice` |
+| `RUNBOOK_STEP_29N_IMPLEMENTED_SCOPE` | `promotion_economic_gate_binding_v1_slice,promotion_economic_gate_binding_fail_closed_governance_v0_slice` |
 | `RUNBOOK_STEP_29N_IMPLEMENTED` | `true` |
 | `RUNBOOK_STEP_29N_COMPLETE` | `true` |
 | `PROMOTION_ECONOMIC_GATE_BINDING_V1_IMPLEMENTED` | `true` |
