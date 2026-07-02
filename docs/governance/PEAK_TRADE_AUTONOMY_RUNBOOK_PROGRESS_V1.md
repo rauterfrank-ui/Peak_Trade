@@ -1650,8 +1650,8 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `OOS_PASS_RATIO` | `0.20` |
 | `MONTE_CARLO_PASS_RATIO` | `0.0` |
 | `MONTE_CARLO_MEDIAN_RETURN` | `-0.0205` |
-| `STRESS_SCENARIOS_NEGATIVE` | `4/4` |
-| `COST_GRID_NEGATIVE` | `9/9` |
+| `STRESS_SCENARIOS_NEGATIVE` | `4&#47;4` |
+| `COST_GRID_NEGATIVE` | `9&#47;9` |
 | `GROSS_RETURN_EQUALS_NET_RETURN` | `true` |
 | `PROMOTION_ELIGIBLE` | `false` |
 | `SHADOW_ELIGIBLE` | `false` |

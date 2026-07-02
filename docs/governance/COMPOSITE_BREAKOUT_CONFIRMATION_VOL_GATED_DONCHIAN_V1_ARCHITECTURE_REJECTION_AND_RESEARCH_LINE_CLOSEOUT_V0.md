@@ -48,8 +48,8 @@
 | OOS pass ratio | `0.20` |
 | Monte Carlo pass ratio | `0.0` |
 | Monte Carlo median return | `-0.0205` |
-| Stress scenarios negative | `4/4` |
-| Cost grid negative | `9/9` |
+| Stress scenarios negative | `4&#47;4` |
+| Cost grid negative | `9&#47;9` |
 | Gross return equals net return | `true` (structural edge absence) |
 
 Primary failure cause: missing structural net edge, not cost drag, insufficient trade count, drawdown breach, or contract/data blocker.
