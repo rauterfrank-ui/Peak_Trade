@@ -17,16 +17,16 @@ if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
 from scripts.ops.stage_step30a_okx_inst_eth_usdt_perp_dataset_v2_from_raw_staging_v0 import (
+    CONFIRM_GO as PROMOTION_CONFIRM_GO,
     DEFAULT_DURABLE_EVIDENCE_ROOT,
     DEFAULT_TARGET_DATASET_ROOT,
-    GO_TOKEN as PROMOTION_GO_TOKEN,
     STEP30A_FROZEN_HOLDOUT_END_UTC,
     STEP30A_FROZEN_HOLDOUT_START_UTC,
     STEP30A_STAGING_WINDOW_DAYS,
     run_step30a_dataset_v2_promotion_v0,
 )
 
-GO_TOKEN = (
+ADAPTER_CONFIRM_GO = (
     "GO_BOUNDED_STEP30A_RSI_REVERSION_V1_EXTENDED_HOLDOUT_SEPARATED_FUTURES_ECONOMIC_RESEARCH_V0"
 )
 
@@ -55,7 +55,7 @@ def run_step30a_dataset_v2_backward_extension_ingestion_v0(
     skip_network: bool = False,
     raw_staging_root: Optional[Path] = None,
 ) -> Mapping[str, Any]:
-    if confirm_go_token != GO_TOKEN:
+    if confirm_go_token != ADAPTER_CONFIRM_GO:
         raise Step30aDatasetIngestionError("confirm_go_token_mismatch")
     if not skip_network:
         raise Step30aDatasetIngestionError(
@@ -65,13 +65,13 @@ def run_step30a_dataset_v2_backward_extension_ingestion_v0(
     _validate_holdout_constants_match_step29m_v1()
 
     result = run_step30a_dataset_v2_promotion_v0(
-        confirm_go_token=PROMOTION_GO_TOKEN,
+        confirm_go_token=PROMOTION_CONFIRM_GO,
         raw_staging_root=raw_staging_root,
         target_dataset_root=STEP30A_DATASET_V2_TARGET_ROOT,
         durable_evidence_root=STEP30A_DURABLE_EVIDENCE_ROOT,
     )
     result = dict(result)
-    result["step30a_go_token"] = GO_TOKEN
+    result["step30a_confirm_go"] = ADAPTER_CONFIRM_GO
     result["step30a_dataset_window_days"] = STEP30A_DATASET_V2_WINDOW_DAYS
     result["step30a_target_dataset_root"] = str(STEP30A_DATASET_V2_TARGET_ROOT)
     result["step30a_durable_evidence_root"] = str(STEP30A_DURABLE_EVIDENCE_ROOT)
@@ -85,7 +85,7 @@ def run_step30a_dataset_v2_backward_extension_ingestion_v0(
 
 def _emit_machine_lines(payload: Mapping[str, Any]) -> None:
     lines = [
-        f"STEP30A_GO_TOKEN={GO_TOKEN}",
+        f"STEP30A_CONFIRM_GO={ADAPTER_CONFIRM_GO}",
         f"STEP30A_DATASET_V2_WINDOW_DAYS={STEP30A_DATASET_V2_WINDOW_DAYS}",
         f"STEP30A_TARGET_DATASET_ROOT={STEP30A_DATASET_V2_TARGET_ROOT}",
         f"STEP30A_DURABLE_EVIDENCE_ROOT={STEP30A_DURABLE_EVIDENCE_ROOT}",
@@ -104,7 +104,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     parser.add_argument(
         "--confirm-go-token",
         required=True,
-        choices=[GO_TOKEN],
+        choices=[ADAPTER_CONFIRM_GO],
     )
     parser.add_argument(
         "--skip-network",

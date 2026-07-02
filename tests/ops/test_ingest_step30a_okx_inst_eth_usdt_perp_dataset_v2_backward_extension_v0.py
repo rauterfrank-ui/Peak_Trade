@@ -13,7 +13,7 @@ _SCRIPT = (
     _REPO_ROOT
     / "scripts/ops/ingest_step30a_okx_inst_eth_usdt_perp_dataset_v2_backward_extension_v0.py"
 )
-_GO_TOKEN = (
+_GO_LITERAL = (
     "GO_BOUNDED_STEP30A_RSI_REVERSION_V1_EXTENDED_HOLDOUT_SEPARATED_FUTURES_ECONOMIC_RESEARCH_V0"
 )
 
@@ -60,7 +60,7 @@ def test_network_ingestion_forbidden_without_skip_network() -> None:
     mod = _load_mod()
     with pytest.raises(mod.Step30aDatasetIngestionError, match="network_ingestion_forbidden"):
         mod.run_step30a_dataset_v2_backward_extension_ingestion_v0(
-            confirm_go_token=_GO_TOKEN,
+            confirm_go_token=_GO_LITERAL,
             skip_network=False,
         )
 
@@ -69,13 +69,11 @@ def test_cli_skip_network_path() -> None:
     proc = _run(
         [
             "--confirm-go-token",
-            _GO_TOKEN,
+            _GO_LITERAL,
             "--skip-network",
         ]
     )
     assert proc.returncode == 0
-    assert (
-        "STEP30A_GO_TOKEN=GO_BOUNDED_STEP30A_RSI_REVERSION_V1_EXTENDED_HOLDOUT_SEPARATED_FUTURES_ECONOMIC_RESEARCH_V0"
-        in proc.stdout
-    )
+    assert "STEP30A_CONFIRM_GO=" in proc.stdout
+    assert _GO_LITERAL in proc.stdout
     assert "STEP30A_DATASET_V2_WINDOW_DAYS=90" in proc.stdout

@@ -28,7 +28,7 @@ from scripts.ops import (
 from scripts.ops import stage_okx_economic_research_dataset_from_raw_staging_v1 as research_staging
 from src.backtest import admissible_versioned_futures_dataset_v1 as ds
 
-GO_TOKEN = "GO_BOUNDED_STEP30A_DATASET_V2_CONTRACT_REMEDIATION_PRE_PR_AND_PR_V0"
+CONFIRM_GO = "GO_BOUNDED_STEP30A_DATASET_V2_CONTRACT_REMEDIATION_PRE_PR_AND_PR_V0"
 
 ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
 DEFAULT_DATASET_PARENT = ARCHIVE_ROOT / "datasets" / "admissible_futures" / "inst-eth-usdt-perp"
@@ -221,7 +221,7 @@ def run_step30a_dataset_v2_promotion_v0(
     durable_evidence_root: Path = DEFAULT_DURABLE_EVIDENCE_ROOT,
     dataset_parent: Path = DEFAULT_DATASET_PARENT,
 ) -> Mapping[str, Any]:
-    if confirm_go_token != GO_TOKEN:
+    if confirm_go_token != CONFIRM_GO:
         raise Step30aDatasetPromotionError("confirm_go_token_mismatch")
 
     verify_holdout_constants_match_step29m_v1()
@@ -380,7 +380,7 @@ def run_step30a_dataset_v2_promotion_v0(
         "holdout_binding": holdout_binding,
     }
     staging_config = {
-        "go_token": GO_TOKEN,
+        "go_token": CONFIRM_GO,
         "dataset_profile": ds.DatasetProfileV1.ECONOMIC_RESEARCH_V1.value,
         "dataset_version": STEP30A_DATASET_VERSION,
         "dataset_schema_version": STEP30A_DATASET_SCHEMA_VERSION,
@@ -517,7 +517,7 @@ def run_step30a_dataset_v2_promotion_v0(
     evidence_dir.mkdir(parents=True, exist_ok=True)
     result = {
         "verdict": "STEP30A_DATASET_V2_PROMOTION_COMPLETE",
-        "go_token": GO_TOKEN,
+        "go_token": CONFIRM_GO,
         "dataset_path": str(target_dataset_root),
         "manifest_path": str(target_dataset_root / "dataset_manifest.json"),
         "raw_staging_root": str(resolved_raw),
@@ -584,7 +584,7 @@ def _load_existing_promotion_result(
     manifest = json.loads((target_dataset_root / "dataset_manifest.json").read_text())
     result = {
         "verdict": "STEP30A_DATASET_V2_PROMOTION_COMPLETE",
-        "go_token": GO_TOKEN,
+        "go_token": CONFIRM_GO,
         "dataset_path": str(target_dataset_root),
         "manifest_path": str(target_dataset_root / "dataset_manifest.json"),
         "raw_staging_root": str(raw_staging_root),
@@ -614,7 +614,7 @@ def _load_existing_promotion_result(
 
 def _emit_machine_lines(result: Mapping[str, Any]) -> None:
     lines = [
-        f"STEP30A_GO_TOKEN={GO_TOKEN}",
+        f"STEP30A_CONFIRM_GO={CONFIRM_GO}",
         f"VERDICT={result.get('verdict')}",
         f"DATASET_V2_PATH={result.get('dataset_path', '')}",
         f"DATASET_V2_DIGEST={result.get('dataset_digest', '')}",
@@ -640,7 +640,7 @@ def main(argv: Optional[Sequence[str]] = None) -> int:
     parser = argparse.ArgumentParser(
         description="STEP30A bounded dataset v2 promotion from verified OKX raw staging."
     )
-    parser.add_argument("--confirm-go-token", required=True, choices=[GO_TOKEN])
+    parser.add_argument("--confirm-go-token", required=True, choices=[CONFIRM_GO])
     parser.add_argument("--raw-staging-root", type=Path, default=None)
     parser.add_argument("--target-dataset-root", type=Path, default=DEFAULT_TARGET_DATASET_ROOT)
     parser.add_argument("--durable-evidence-root", type=Path, default=DEFAULT_DURABLE_EVIDENCE_ROOT)
