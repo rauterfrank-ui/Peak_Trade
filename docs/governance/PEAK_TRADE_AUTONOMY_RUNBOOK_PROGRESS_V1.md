@@ -18,8 +18,8 @@ SCHEDULER_RUNTIME_ALLOWED: false
 
 | Feld | Wert |
 |---|---|
-| `LAST_VERIFIED_ORIGIN_MAIN` | `38f5961f52dc63d4d1d866ff48891d4e6821293c` |
-| `LAST_VERIFIED_AT` | `2026-07-02T20:55:00Z` |
+| `LAST_VERIFIED_ORIGIN_MAIN` | `51923cc7b1739fd5b52f8dc43e16c228a59478a5` |
+| `LAST_VERIFIED_AT` | `2026-07-02T22:30:00Z` |
 | `CURRENT_MAJOR_GAP_PACKAGE` | `MAJOR_GAP_COMPARISON_PROMOTION_POLICY_INPUT_BRIDGE_V0` |
 | `NEXT_RUNBOOK_STEP` | `RUNBOOK_STEP_29R_RUNTIME_REWIRE_V1_IMPLEMENTATION` |
 | `NEXT_RUNBOOK_STEP_STRUCTURAL_STATUS` | `OPEN_OR_IN_PROGRESS` |
@@ -37,6 +37,22 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `ECONOMIC_VALIDITY_OFFLINE_GATE_STATUS` | `FAIL` |
 | `INTENT_COMPATIBILITY_FIREWALL_GATE_STATUS` | `PASS` |
 | `STEP29M_FLEET_STATUS` | `COMPLETE_NO_PASS` |
+| `STEP31F_STATUS` | `COMPLETE_ALL_FAIL` |
+| `STEP31F_MERGE_COMMIT` | `51923cc7b1739fd5b52f8dc43e16c228a59478a5` |
+| `PASS_COUNT` | `0` |
+| `FAIL_COUNT` | `3` |
+| `INCONCLUSIVE_COUNT` | `0` |
+| `FLEET_PROMOTION_ELIGIBLE` | `false` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `trend_following_v1_status` | `FAIL` |
+| `bollinger_bands_v1_status` | `FAIL` |
+| `momentum_1h_v1_status` | `FAIL` |
+| `RUNBOOK_STEP_29R_STATUS` | `BLOCKED` |
+| `RUNBOOK_STEP_29R_BLOCK_REASON` | `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS_FALSE` |
+| `STEP31F_FINAL_FLEET_OFFLINE_EVALUATION_PR4766_MERGE_COMMIT` | `51923cc7b1739fd5b52f8dc43e16c228a59478a5` |
+| `STEP31F_FINAL_FLEET_OFFLINE_EVALUATION_PR4766_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_step31f_final_research_fleet_offline_evaluation_pr_squash_merge_and_post_merge_closeout_v0_20260702T221830Z (MANIFEST_VERIFY_RC=0; PR #4766; squash 51923cc7)` |
+| `STEP31F_FINAL_FLEET_OFFLINE_ECONOMIC_VALIDITY_EVALUATION_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_step31f_final_research_fleet_v0_offline_economic_validity_evaluation_closeout_v0_20260703T002500Z (MANIFEST_VERIFY_RC=0)` |
+| `STEP31F_FINAL_FLEET_VERSIONED_BINDINGS_RATIFICATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/bounded_step31f_final_fleet_versioned_bindings_ratification_v0_20260703T000100Z (MANIFEST_VERIFY_RC=0)` |
 | `ECONOMICALLY_VIABLE_CANDIDATE_COUNT` | `0` |
 | `RUNTIME_REWIRE_DEFERRED` | `true` |
 | `RUNTIME_REWIRE_READMISSIBILITY_CONDITION` | `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS=true on manifest-verified EconomicViabilityEvidenceV1 under then-valid operator policy` |
@@ -1635,6 +1651,68 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `NEGATIVE_CANDIDATE_EVIDENCE_NOT_EQUAL_WHOLE_SYSTEM_UNPROFITABLE` | `true` |
 | `SEPARATE_GO_REQUIRED` | `false` |
 
+#### RUNBOOK_STEP_31F — Final Research Fleet v0 Offline Economic Validity Evaluation
+
+| Feld | Wert |
+|---|---|
+| `RUNBOOK_PHASE` | 9 |
+| `RUNBOOK_STEP_ID` | `final_research_fleet_v0_offline_economic_validity_evaluation_v0` |
+| `STATUS` | `COMPLETE_ALL_FAIL` |
+| `CANONICAL_OWNER` | `config&#47;ops&#47;step31f_okx_inst_eth_usdt_perp_trend_following_v1_economic_evaluation_v1.json,config&#47;ops&#47;step31f_okx_inst_eth_usdt_perp_bollinger_bands_v1_economic_evaluation_v1.json,config&#47;ops&#47;step31f_okx_inst_eth_usdt_perp_momentum_1h_v1_economic_evaluation_v1.json` <!-- pt:ref-target-ignore --> |
+| `DEPENDENCIES` | RUNBOOK_STEP_30A |
+| `NEXT_REQUIRED_CONTRACT` | `NONE` |
+| `NEXT_CANONICAL_STEP` | `NO_FURTHER_STEP31F_ACTION_WITHOUT_NEW_EXPLICIT_OPERATOR_RESEARCH_SCOPE` |
+| `AUTHORITY_LEVEL` | `NON_AUTHORITIZING` |
+| `FUTURES_ONLY` | `true` |
+| `BITCOIN_DIRECTION_ALLOWED` | `false` |
+| `ORDER_EFFECT` | `false` |
+| `RUNTIME_EFFECT` | `false` |
+| `LIVE_AUTHORIZED` | `false` |
+| `MERGED_PRS` | `#4766` |
+| `MERGE_COMMITS` | `51923cc7b1739fd5b52f8dc43e16c228a59478a5` |
+| `RUNBOOK_STEP_31F_STARTED` | `true` |
+| `RUNBOOK_STEP_31F_IMPLEMENTED_SCOPE` | `final_research_fleet_v0_versioned_bindings_ratification_v0,final_research_fleet_v0_offline_economic_validity_evaluation_v0` |
+| `RUNBOOK_STEP_31F_IMPLEMENTED` | `true` |
+| `RUNBOOK_STEP_31F_COMPLETE` | `true` |
+| `STEP31F_SCOPE` | `FINAL_RESEARCH_FLEET_V0_OFFLINE_ECONOMIC_VALIDITY_EVALUATION_V0` |
+| `STEP31F_GO_TOKEN` | `GO_RATIFY_VERSIONED_FINAL_FLEET_BINDINGS_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE_V0` |
+| `STEP31F_STATUS` | `COMPLETE_ALL_FAIL` |
+| `STEP31F_MERGE_COMMIT` | `51923cc7b1739fd5b52f8dc43e16c228a59478a5` |
+| `FLEET_ID` | `final_research_fleet_v0` |
+| `FLEET_SIZE` | `3` |
+| `PASS_COUNT` | `0` |
+| `FAIL_COUNT` | `3` |
+| `INCONCLUSIVE_COUNT` | `0` |
+| `FLEET_PROMOTION_ELIGIBLE` | `false` |
+| `ECONOMICALLY_VIABLE_CANDIDATE_COUNT` | `0` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `trend_following_v1_status` | `FAIL` |
+| `bollinger_bands_v1_status` | `FAIL` |
+| `momentum_1h_v1_status` | `FAIL` |
+| `STEP31F_OPERATOR_POLICY_RATIFIED` | `true` |
+| `STEP31F_OPERATOR_POLICY_DECISION` | `RATIFY_VERSIONED_FINAL_FLEET_BINDINGS_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE_V0` |
+| `STEP31F_OPERATOR_POLICY_RATIFICATION_DATE` | `2026-07-03` |
+| `STEP31F_OPERATOR` | `Frank Rauter` |
+| `STEP31F_EVALUATION_AUTHORIZED` | `false` |
+| `STEP31F_PROMOTION_AUTHORIZED` | `false` |
+| `STEP31F_RUNTIME_AUTHORIZED` | `false` |
+| `STEP31F_RETRY_ALLOWED` | `false` |
+| `STEP31F_REEVALUATION_ALLOWED` | `false` |
+| `STEP31F_REGISTERED_ECONOMIC_EVALUATION_CONFIGS` | `config&#47;ops&#47;step31f_okx_inst_eth_usdt_perp_trend_following_v1_economic_evaluation_v1.json,config&#47;ops&#47;step31f_okx_inst_eth_usdt_perp_bollinger_bands_v1_economic_evaluation_v1.json,config&#47;ops&#47;step31f_okx_inst_eth_usdt_perp_momentum_1h_v1_economic_evaluation_v1.json` <!-- pt:ref-target-ignore --> |
+| `STEP31F_FINAL_FLEET_OFFLINE_EVALUATION_PR4766_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_step31f_final_research_fleet_offline_evaluation_pr_squash_merge_and_post_merge_closeout_v0_20260702T221830Z (MANIFEST_VERIFY_RC=0; PR #4766; squash 51923cc7)` |
+| `STEP31F_FINAL_FLEET_OFFLINE_ECONOMIC_VALIDITY_EVALUATION_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_step31f_final_research_fleet_v0_offline_economic_validity_evaluation_closeout_v0_20260703T002500Z (MANIFEST_VERIFY_RC=0)` |
+| `STEP31F_FINAL_FLEET_VERSIONED_BINDINGS_RATIFICATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/bounded_step31f_final_fleet_versioned_bindings_ratification_v0_20260703T000100Z (MANIFEST_VERIFY_RC=0)` |
+| `PRIOR_NEGATIVE_EVIDENCE_PRESERVED` | `true` |
+| `STEP29M_FLEET_STATUS` | `COMPLETE_NO_PASS` |
+| `RUNBOOK_STEP_29R_STATUS` | `BLOCKED` |
+| `RUNBOOK_STEP_29R_BLOCK_REASON` | `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS_FALSE` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE` | `NONE_UNDER_CURRENT_POLICY` |
+| `NEXT_CANONICAL_ACTION` | `OPERATOR_POLICY_DECISION_REQUIRED_FOR_NEW_RESEARCH_SCOPE` |
+| `PROGRESS_REGISTRY_CLOSEOUT_PERFORMED` | `true` |
+| `TECHNICAL_CAPABILITY_PRESENT_NOT_EQUAL_ECONOMIC_VALIDITY_PROVEN` | `true` |
+| `NEGATIVE_CANDIDATE_EVIDENCE_NOT_EQUAL_WHOLE_SYSTEM_UNPROFITABLE` | `true` |
+| `SEPARATE_GO_REQUIRED` | `false` |
+
 #### RUNBOOK_RESEARCH_LINE — Composite Breakout Confirmation Vol-Gated Donchian v1
 
 | Feld | Wert |
@@ -2055,6 +2133,8 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
 | `INTENT_COMPATIBILITY_FIREWALL_PASS` | `true` |
 | `STEP29R_RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `RUNBOOK_STEP_29R_STATUS` | `BLOCKED` |
+| `RUNBOOK_STEP_29R_BLOCK_REASON` | `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS_FALSE` |
 | `RUNTIME_REWIRE_STATUS` | `BLOCKED_BY_ECONOMIC_VALIDITY_OFFLINE_GATE` |
 | `RUNTIME_REWIRE_DEFERRED` | `true` |
 | `STEP29R_PRECONDITION_ADMISSIBILITY_ASSESSMENT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/runbook_step29r_runtime_rewire_precondition_admissibility_assessment_read_only_v0_20260702T205033Z (MANIFEST_VERIFY_RC=0; VERDICT=STEP29R_RUNTIME_REWIRE_PRECONDITION_ASSESSMENT_COMPLETE_NOT_ADMISSIBLE)` |
