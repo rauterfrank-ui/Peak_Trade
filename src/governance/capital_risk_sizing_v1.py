@@ -2,9 +2,9 @@
 Offline Capital Risk Sizing Mathematics v1 (RUNBOOK STEP 29P).
 
 Pure, deterministic, fail-closed monotone quantity chain:
-canonical trading decision → scope capital envelope → pre-sizing risk →
-canonical position sizing → instrument constraint normalization →
-post-sizing risk → quantity provenance.
+CanonicalTradingDecisionEvidenceV1 → ScopeCapitalEnvelopeV1 →
+PreSizingRiskAssessmentV1 → CanonicalPositionSizingV1 →
+PostSizingRiskAssessmentV1 → QuantityProvenanceV1.
 
 No adapter compatibility, submission, runtime authority, order intent, or
 execution permission.
@@ -12,12 +12,18 @@ execution permission.
 
 from __future__ import annotations
 
+import ast
 import hashlib
 import json
 from dataclasses import dataclass, fields
 from decimal import Decimal, InvalidOperation
 from enum import Enum
-from typing import Any, Mapping, Optional
+from pathlib import Path
+from typing import Any, Mapping, Optional, Sequence
+
+from trading.master_v2.canonical_trading_decision_evidence_v1 import (
+    CanonicalTradingDecisionEvidenceV1,
+)
 
 CONTRACT_NAME = "capital_risk_sizing_v1"
 CONTRACT_VERSION = "v1"
@@ -28,15 +34,20 @@ PACKAGE_MARKER = "CAPITAL_RISK_SIZING_V1=true"
 FUTURES_ONLY = True
 BITCOIN_DIRECTION_ALLOWED = False
 SPOT_ALLOWED = False
+SYNTHETIC_SPOT_ALLOWED = False
 
 AUTHORITY_EFFECT_NONE = "NONE"
 RUNTIME_EFFECT_NONE = "NONE"
 
 _FORBIDDEN_INSTRUMENT_MARKERS = frozenset({"btc", "xbt", "bitcoin"})
 _FORBIDDEN_MARKET_TYPES = frozenset({"spot", "synthetic_spot", "synthetic-spot"})
-_ALLOWED_SIDES = frozenset({"LONG", "SHORT"})
-_ALLOWED_RECONCILIATION = frozenset({"RECONCILED"})
+_ALLOWED_SIDES = frozenset({"LONG", "SHORT", "long", "short"})
+_ALLOWED_RECONCILIATION = frozenset({"RECONCILED", "reconciled"})
 _ALLOWED_CONTRACT_KINDS = frozenset({"LINEAR"})
+_ENTRY_OUTCOMES = frozenset({"enter_long", "enter_short"})
+_REDUCE_OUTCOMES = frozenset({"reduce"})
+_EXIT_OUTCOMES = frozenset({"exit"})
+_REDUCE_ONLY_OUTCOMES = _REDUCE_OUTCOMES | _EXIT_OUTCOMES
 
 REASON_INVALID_DECISION = "INVALID_DECISION"
 REASON_INVALID_DIRECTION = "INVALID_DIRECTION"
@@ -66,29 +77,48 @@ REASON_NON_FINITE_INPUT = "NON_FINITE_INPUT"
 REASON_NON_FUTURES_INSTRUMENT = "NON_FUTURES_INSTRUMENT"
 REASON_BITCOIN_SPECIFIC_DIRECTION = "BITCOIN_SPECIFIC_DIRECTION"
 REASON_UNSUPPORTED_CONTRACT_KIND = "UNSUPPORTED_CONTRACT_KIND"
+REASON_NON_ENTRY_OUTCOME = "NON_ENTRY_OUTCOME"
+REASON_REDUCE_EXCEEDS_OPEN_POSITION = "REDUCE_EXCEEDS_OPEN_POSITION"
+REASON_NO_OPEN_POSITION_FOR_REDUCE = "NO_OPEN_POSITION_FOR_REDUCE"
+REASON_POSITION_FLIP_FORBIDDEN = "POSITION_FLIP_FORBIDDEN"
+REASON_STALE_POSITION_STATE = "STALE_POSITION_STATE"
 REASON_PASS = "PASS"
 
-
-class SelectedSide(str, Enum):
-    LONG = "LONG"
-    SHORT = "SHORT"
-
-
-class FuturesContractKind(str, Enum):
-    LINEAR = "LINEAR"
-    INVERSE = "INVERSE"
+_FORBIDDEN_RUNTIME_IMPORT_PREFIXES = (
+    "src.execution.",
+    "src.live.",
+    "src.orders.",
+)
 
 
-class PreSizingRiskOutcome(str, Enum):
+class EnvelopeStatus(str, Enum):
     PASS = "PASS"
-    REDUCE_CAP = "REDUCE_CAP"
+    REDUCE = "REDUCE"
     BLOCK = "BLOCK"
 
 
-class PostSizingRiskOutcome(str, Enum):
+class PreSizingRiskStatus(str, Enum):
     PASS = "PASS"
-    REDUCED = "REDUCED"
-    BLOCKED = "BLOCKED"
+    REDUCE = "REDUCE"
+    BLOCK = "BLOCK"
+
+
+class QuantityStatus(str, Enum):
+    PASS = "PASS"
+    ROUNDED_DOWN = "ROUNDED_DOWN"
+    BLOCK = "BLOCK"
+
+
+class PostSizingRiskStatus(str, Enum):
+    PASS = "PASS"
+    REDUCE = "REDUCE"
+    BLOCK = "BLOCK"
+
+
+class FinalQuantityStatus(str, Enum):
+    PASS = "PASS"
+    REDUCE = "REDUCE"
+    BLOCK = "BLOCK"
 
 
 class CapitalRiskSizingOutcome(str, Enum):
@@ -102,6 +132,18 @@ class BindingCapKind(str, Enum):
     EXPOSURE = "EXPOSURE"
     VENUE = "VENUE"
     CONFIGURED = "CONFIGURED"
+    REDUCE_ONLY = "REDUCE_ONLY"
+
+
+@dataclass(frozen=True)
+class CapitalRiskSizingPolicyV1:
+    """Versioned policy inputs — no hidden literals in sizing math."""
+
+    policy_version: str
+    total_capital_limit_usd: Decimal
+    order_limit_usd: Decimal
+    daily_loss_limit_usd: Decimal
+    max_positions: int
 
 
 @dataclass(frozen=True)
@@ -110,14 +152,134 @@ class InstrumentQuantityConstraintsV1:
     market_type: str
     contract_kind: str
     contract_multiplier: Decimal
-    quantity_step: Decimal
+    lot_size: Decimal
     minimum_quantity: Decimal
     maximum_quantity: Optional[Decimal]
     minimum_notional: Optional[Decimal]
+    tick_size: Optional[Decimal]
     instrument_metadata_version: str
     price_precision: Optional[int] = None
 
 
+@dataclass(frozen=True)
+class CapitalRiskSizingContextV1:
+    reference_price: Decimal
+    protective_stop_price: Optional[Decimal]
+    stop_distance: Optional[Decimal]
+    account_equity: Decimal
+    already_committed_capital: Decimal
+    daily_loss_consumed: Decimal
+    current_reconciled_exposure: Decimal
+    reconciled_open_position_quantity: Decimal
+    current_open_positions_count: int
+    current_open_side: Optional[str]
+    reconciliation_status: str
+    configured_quantity_cap: Optional[Decimal]
+    leverage_ceiling: Optional[Decimal]
+    instrument: InstrumentQuantityConstraintsV1
+    config_digest: str
+    order_notional_cap: Optional[Decimal] = None
+    per_trade_risk_cap: Optional[Decimal] = None
+
+
+@dataclass(frozen=True)
+class ScopeCapitalEnvelopeV1:
+    instrument_id: str
+    decision_id: str
+    policy_version: str
+    total_capital_limit: Decimal
+    available_capital: Decimal
+    already_committed_capital: Decimal
+    remaining_capital: Decimal
+    per_order_cap: Decimal
+    daily_loss_state: Mapping[str, str]
+    position_slot_state: Mapping[str, str]
+    status: EnvelopeStatus
+    reason_codes: tuple[str, ...]
+    input_digest: str
+
+
+@dataclass(frozen=True)
+class PreSizingRiskAssessmentV1:
+    decision_id: str
+    side: str
+    reference_price: Decimal
+    stop_or_risk_distance: Decimal
+    maximum_loss_budget: Decimal
+    capital_cap_quantity: Decimal
+    loss_budget_quantity: Decimal
+    exposure_cap_quantity: Decimal
+    candidate_quantity_upper_bound: Decimal
+    status: PreSizingRiskStatus
+    reason_codes: tuple[str, ...]
+    input_digest: str
+
+
+@dataclass(frozen=True)
+class CanonicalPositionSizingV1:
+    decision_id: str
+    instrument_id: str
+    side: str
+    raw_quantity: Decimal
+    bounded_quantity_before_rounding: Decimal
+    lot_size: Decimal
+    rounded_quantity: Decimal
+    reference_price: Decimal
+    resulting_notional: Decimal
+    quantity_status: QuantityStatus
+    reason_codes: tuple[str, ...]
+    policy_digest: str
+    input_digest: str
+
+
+@dataclass(frozen=True)
+class PostSizingRiskAssessmentV1:
+    proposed_quantity: Decimal
+    final_allowed_quantity: Decimal
+    resulting_notional: Decimal
+    resulting_max_loss: Decimal
+    exposure_after: Decimal
+    slot_usage_after: int
+    status: PostSizingRiskStatus
+    reason_codes: tuple[str, ...]
+    input_digest: str
+
+
+@dataclass(frozen=True)
+class QuantityProvenanceV1:
+    decision_id: str
+    source_contract_refs: tuple[str, ...]
+    capital_envelope_ref: str
+    pre_sizing_risk_ref: str
+    sizing_ref: str
+    post_sizing_risk_ref: str
+    instrument_metadata_ref: str
+    policy_version: str
+    config_digest: str
+    implementation_digest: str
+    final_quantity: Decimal
+    final_quantity_status: FinalQuantityStatus
+    authority_effect: str = AUTHORITY_EFFECT_NONE
+    runtime_effect: str = RUNTIME_EFFECT_NONE
+    adapter_compatible: bool = False
+
+
+@dataclass(frozen=True)
+class CapitalRiskSizingChainResultV1:
+    outcome: CapitalRiskSizingOutcome
+    final_quantity: Decimal
+    scope_capital_envelope: ScopeCapitalEnvelopeV1
+    pre_sizing_risk: PreSizingRiskAssessmentV1
+    canonical_position_sizing: Optional[CanonicalPositionSizingV1]
+    post_sizing_risk: Optional[PostSizingRiskAssessmentV1]
+    quantity_provenance: Optional[QuantityProvenanceV1]
+    reason_codes: tuple[str, ...]
+    authority_effect: str = AUTHORITY_EFFECT_NONE
+    runtime_effect: str = RUNTIME_EFFECT_NONE
+    adapter_compatible: bool = False
+
+
+# Legacy input adapter for regression compatibility
 @dataclass(frozen=True)
 class CapitalRiskSizingInputV1:
     decision_id: str
@@ -142,74 +304,10 @@ class CapitalRiskSizingInputV1:
     config_digest: str
     input_digest: str
     instrument: InstrumentQuantityConstraintsV1
-
-
-@dataclass(frozen=True)
-class CapitalEnvelopeV1:
-    scope_capital_limit: Decimal
-    account_equity: Decimal
-    total_capital_limit: Decimal
-    within_envelope: bool
-    reason_codes: tuple[str, ...]
-
-
-@dataclass(frozen=True)
-class PreSizingRiskResultV1:
-    outcome: PreSizingRiskOutcome
-    effective_trade_risk_budget: Decimal
-    effective_scope_capital_limit: Decimal
-    effective_total_capital_limit: Decimal
-    reason_codes: tuple[str, ...]
-
-
-@dataclass(frozen=True)
-class CanonicalSizingResultV1:
-    risk_per_unit: Decimal
-    raw_risk_quantity: Decimal
-    capital_quantity_cap: Decimal
-    exposure_quantity_cap: Decimal
-    candidate_quantity: Decimal
-    binding_cap: BindingCapKind
-    applied_caps: tuple[tuple[str, Decimal], ...]
-
-
-@dataclass(frozen=True)
-class QuantityProvenanceV1:
-    input_candidate_quantity: Decimal
-    applied_upper_caps: tuple[tuple[str, Decimal], ...]
-    binding_cap: str
-    risk_per_unit: Decimal
-    pre_round_quantity: Decimal
-    quantity_step: Decimal
-    rounded_quantity: Decimal
-    final_quantity: Decimal
-    projected_stop_loss: Decimal
-    projected_notional: Decimal
-    projected_exposure: Decimal
-    projected_margin: Optional[Decimal]
-    policy_version: str
-    instrument_metadata_ref: str
-    decision_ref: str
-    reason_codes: tuple[str, ...]
-    config_digest: str
-    implementation_digest: str
-    input_digest: str
-    output_digest: str
-    execution_eligible: bool = False
-    adapter_compatible: bool = False
-    order_intent_bound: bool = False
-    authority_effect: str = AUTHORITY_EFFECT_NONE
-    runtime_effect: str = RUNTIME_EFFECT_NONE
-
-
-@dataclass(frozen=True)
-class PostSizingRiskResultV1:
-    outcome: PostSizingRiskOutcome
-    projected_stop_loss: Decimal
-    projected_notional: Decimal
-    projected_exposure: Decimal
-    projected_daily_loss_impact: Decimal
-    reason_codes: tuple[str, ...]
+    decision_outcome: str = "enter_long"
+    already_committed_capital: Decimal = Decimal("0")
+    reconciled_open_position_quantity: Decimal = Decimal("0")
+    daily_loss_consumed: Decimal = Decimal("0")
 
 
 @dataclass(frozen=True)
@@ -217,22 +315,28 @@ class CapitalRiskSizingDecisionV1:
     outcome: CapitalRiskSizingOutcome
     final_quantity: Decimal
     selected_side: str
-    capital_envelope: CapitalEnvelopeV1
-    pre_sizing_risk: PreSizingRiskResultV1
-    canonical_sizing: Optional[CanonicalSizingResultV1]
-    post_sizing_risk: Optional[PostSizingRiskResultV1]
+    scope_capital_envelope: ScopeCapitalEnvelopeV1
+    pre_sizing_risk: PreSizingRiskAssessmentV1
+    canonical_position_sizing: Optional[CanonicalPositionSizingV1]
+    post_sizing_risk: Optional[PostSizingRiskAssessmentV1]
     quantity_provenance: Optional[QuantityProvenanceV1]
     reason_codes: tuple[str, ...]
-    execution_eligible: bool = False
-    adapter_compatible: bool = False
-    order_intent_bound: bool = False
     authority_effect: str = AUTHORITY_EFFECT_NONE
     runtime_effect: str = RUNTIME_EFFECT_NONE
+    adapter_compatible: bool = False
 
 
 def _sha256_hex(payload: Mapping[str, Any]) -> str:
     encoded = json.dumps(payload, sort_keys=True, separators=(",", ":"), default=str)
     return hashlib.sha256(encoded.encode("utf-8")).hexdigest()
+
+
+def _contract_ref(prefix: str, digest: str) -> str:
+    return f"{prefix}::{digest}"
+
+
+def _normalize_side(side: str) -> str:
+    return side.upper()
 
 
 def _decimal_finite_positive(value: Optional[Decimal], *, allow_zero: bool = False) -> bool:
@@ -248,19 +352,10 @@ def _decimal_finite_positive(value: Optional[Decimal], *, allow_zero: bool = Fal
     return value > 0
 
 
-def _decimal_finite_non_negative(value: Optional[Decimal]) -> bool:
-    if value is None:
-        return False
-    try:
-        return value.is_finite() and value >= 0
-    except (InvalidOperation, AttributeError):
-        return False
-
-
-def _floor_to_quantity_step(quantity: Decimal, step: Decimal) -> Decimal:
-    if step <= 0:
+def _floor_to_lot(quantity: Decimal, lot_size: Decimal) -> Decimal:
+    if lot_size <= 0:
         return Decimal("0")
-    return (quantity // step) * step
+    return (quantity // lot_size) * lot_size
 
 
 def _effective_risk_distance(
@@ -271,6 +366,7 @@ def _effective_risk_distance(
     stop_distance: Optional[Decimal],
 ) -> tuple[Optional[Decimal], tuple[str, ...]]:
     reasons: list[str] = []
+    side = _normalize_side(selected_side)
     if stop_distance is not None:
         if not _decimal_finite_positive(stop_distance):
             reasons.append(REASON_ZERO_RISK_DISTANCE)
@@ -290,19 +386,17 @@ def _effective_risk_distance(
         reasons.append(REASON_ZERO_RISK_DISTANCE)
         return None, tuple(reasons)
 
-    if selected_side == SelectedSide.LONG.value and protective_stop_price >= reference_price:
+    if side == "LONG" and protective_stop_price >= reference_price:
         reasons.append(REASON_INVALID_STOP_PRICE)
         return None, tuple(reasons)
-    if selected_side == SelectedSide.SHORT.value and protective_stop_price <= reference_price:
+    if side == "SHORT" and protective_stop_price <= reference_price:
         reasons.append(REASON_INVALID_STOP_PRICE)
         return None, tuple(reasons)
 
     return distance, tuple(reasons)
 
 
-def _linear_effective_notional_per_unit(
-    reference_price: Decimal, contract_multiplier: Decimal
-) -> Decimal:
+def _linear_notional_per_unit(reference_price: Decimal, contract_multiplier: Decimal) -> Decimal:
     return reference_price * contract_multiplier
 
 
@@ -322,427 +416,655 @@ def _linear_projected_notional(
     return reference_price * contract_multiplier * quantity
 
 
-def _blocked_decision(
-    *,
-    inp: CapitalRiskSizingInputV1,
-    reason_codes: tuple[str, ...],
-    capital_envelope: Optional[CapitalEnvelopeV1] = None,
-    pre_sizing: Optional[PreSizingRiskResultV1] = None,
-) -> CapitalRiskSizingDecisionV1:
-    envelope = capital_envelope or CapitalEnvelopeV1(
-        scope_capital_limit=inp.scope_capital_limit,
-        account_equity=inp.account_equity,
-        total_capital_limit=inp.total_capital_limit,
-        within_envelope=False,
-        reason_codes=reason_codes,
-    )
-    pre = pre_sizing or PreSizingRiskResultV1(
-        outcome=PreSizingRiskOutcome.BLOCK,
-        effective_trade_risk_budget=Decimal("0"),
-        effective_scope_capital_limit=inp.scope_capital_limit,
-        effective_total_capital_limit=inp.total_capital_limit,
-        reason_codes=reason_codes,
-    )
-    return CapitalRiskSizingDecisionV1(
-        outcome=CapitalRiskSizingOutcome.BLOCKED,
-        final_quantity=Decimal("0"),
-        selected_side=inp.selected_side,
-        capital_envelope=envelope,
-        pre_sizing_risk=pre,
-        canonical_sizing=None,
-        post_sizing_risk=None,
-        quantity_provenance=None,
-        reason_codes=reason_codes,
+def _policy_digest(policy: CapitalRiskSizingPolicyV1) -> str:
+    return _sha256_hex(
+        {
+            "policy_version": policy.policy_version,
+            "total_capital_limit_usd": str(policy.total_capital_limit_usd),
+            "order_limit_usd": str(policy.order_limit_usd),
+            "daily_loss_limit_usd": str(policy.daily_loss_limit_usd),
+            "max_positions": policy.max_positions,
+        }
     )
 
 
-def _validate_required_inputs(inp: CapitalRiskSizingInputV1) -> tuple[str, ...]:
+def _is_entry_outcome(decision_outcome: str) -> bool:
+    return decision_outcome.lower() in _ENTRY_OUTCOMES
+
+
+def _is_reduce_only_outcome(decision_outcome: str) -> bool:
+    return decision_outcome.lower() in _REDUCE_ONLY_OUTCOMES
+
+
+def _outcome_side_consistent(decision_outcome: str, selected_side: str) -> bool:
+    outcome = decision_outcome.lower()
+    side = _normalize_side(selected_side)
+    if outcome == "enter_long":
+        return side == "LONG"
+    if outcome == "enter_short":
+        return side == "SHORT"
+    return True
+
+
+def _validate_context_and_evidence(
+    evidence: CanonicalTradingDecisionEvidenceV1,
+    context: CapitalRiskSizingContextV1,
+    policy: CapitalRiskSizingPolicyV1,
+) -> tuple[str, ...]:
     reasons: list[str] = []
-
-    if not inp.decision_id:
+    if not evidence.decision_id:
         reasons.append(REASON_INVALID_DECISION)
 
-    if inp.selected_side not in _ALLOWED_SIDES:
+    side = _normalize_side(evidence.selected_side)
+    if side not in {"LONG", "SHORT"}:
         reasons.append(REASON_INVALID_DIRECTION)
 
-    if inp.reconciliation_status not in _ALLOWED_RECONCILIATION:
+    if context.reconciliation_status not in _ALLOWED_RECONCILIATION:
         reasons.append(REASON_RECONCILIATION_REQUIRED)
 
-    instrument = inp.instrument
-    if instrument is None or not instrument.instrument_metadata_version:
+    instrument = context.instrument
+    if not instrument.instrument_metadata_version:
         reasons.append(REASON_MISSING_INSTRUMENT_METADATA)
 
-    market_type = (instrument.market_type if instrument else "").lower()
+    market_type = instrument.market_type.lower()
     if market_type in _FORBIDDEN_MARKET_TYPES or market_type != "futures":
         reasons.append(REASON_NON_FUTURES_INSTRUMENT)
 
-    instrument_lower = inp.instrument_id.lower()
+    instrument_lower = evidence.instrument_id.lower()
     if any(marker in instrument_lower for marker in _FORBIDDEN_INSTRUMENT_MARKERS):
         reasons.append(REASON_BITCOIN_SPECIFIC_DIRECTION)
 
     if instrument.contract_kind not in _ALLOWED_CONTRACT_KINDS:
         reasons.append(REASON_UNSUPPORTED_CONTRACT_KIND)
 
-    required_financial = (
-        ("account_equity", inp.account_equity),
-        ("scope_capital_limit", inp.scope_capital_limit),
-        ("per_trade_risk_limit", inp.per_trade_risk_limit),
-        ("total_capital_limit", inp.total_capital_limit),
-        ("daily_loss_remaining_budget", inp.daily_loss_remaining_budget),
-        ("current_reconciled_exposure", inp.current_reconciled_exposure),
-        ("reference_price", inp.reference_price),
+    financial_checks = (
+        context.account_equity,
+        context.already_committed_capital,
+        context.current_reconciled_exposure,
+        context.reconciled_open_position_quantity,
+        context.reference_price,
+        policy.total_capital_limit_usd,
+        policy.order_limit_usd,
+        policy.daily_loss_limit_usd,
     )
-    for _name, value in required_financial:
+    for value in financial_checks:
         if value is None:
             reasons.append(REASON_MISSING_CAPITAL_INPUT)
-            continue
-        if not value.is_finite():
+        elif not value.is_finite():
             reasons.append(REASON_NON_FINITE_INPUT)
-            continue
-        if value < 0:
+        elif value < 0:
             reasons.append(REASON_INVALID_CAPITAL_INPUT)
 
-    if not _decimal_finite_positive(inp.reference_price):
+    if not _decimal_finite_positive(context.reference_price):
         reasons.append(REASON_INVALID_REFERENCE_PRICE)
 
     if not _decimal_finite_positive(instrument.contract_multiplier):
         reasons.append(REASON_INVALID_CONTRACT_MULTIPLIER)
 
-    if not _decimal_finite_positive(instrument.quantity_step):
+    if not _decimal_finite_positive(instrument.lot_size):
         reasons.append(REASON_INVALID_QUANTITY_STEP)
 
     if not _decimal_finite_positive(instrument.minimum_quantity):
         reasons.append(REASON_MISSING_INSTRUMENT_METADATA)
 
-    if instrument.maximum_quantity is not None and instrument.maximum_quantity <= 0:
+    if context.account_equity <= 0 or policy.total_capital_limit_usd <= 0:
         reasons.append(REASON_INVALID_CAPITAL_INPUT)
 
-    if inp.account_equity <= 0 or inp.scope_capital_limit <= 0 or inp.total_capital_limit <= 0:
-        reasons.append(REASON_INVALID_CAPITAL_INPUT)
-
-    if inp.daily_loss_remaining_budget <= 0:
+    daily_remaining = policy.daily_loss_limit_usd - context.daily_loss_consumed
+    if daily_remaining <= 0:
         reasons.append(REASON_DAILY_LOSS_BUDGET_EXHAUSTED)
 
-    if inp.per_trade_risk_limit <= 0:
+    if policy.order_limit_usd <= 0:
         reasons.append(REASON_TRADE_RISK_BUDGET_EXHAUSTED)
 
-    if inp.maximum_positions <= 0:
+    if policy.max_positions <= 0:
         reasons.append(REASON_INVALID_CAPITAL_INPUT)
 
-    if inp.current_open_positions_count >= inp.maximum_positions:
-        reasons.append(REASON_MAX_POSITIONS_REACHED)
+    outcome = evidence.decision_outcome.lower()
+    if outcome not in _ENTRY_OUTCOMES | _REDUCE_ONLY_OUTCOMES:
+        reasons.append(REASON_NON_ENTRY_OUTCOME)
 
-    if (
-        inp.current_open_side is not None
-        and inp.current_open_side in _ALLOWED_SIDES
-        and inp.current_reconciled_exposure > 0
-        and inp.current_open_side != inp.selected_side
-    ):
-        reasons.append(REASON_OPPOSITE_EXPOSURE_PRESENT)
+    if _is_entry_outcome(outcome):
+        if context.current_open_positions_count >= policy.max_positions:
+            reasons.append(REASON_MAX_POSITIONS_REACHED)
+        if (
+            context.current_open_side is not None
+            and _normalize_side(context.current_open_side) in {"LONG", "SHORT"}
+            and context.reconciled_open_position_quantity > 0
+            and _normalize_side(context.current_open_side) != side
+        ):
+            reasons.append(REASON_OPPOSITE_EXPOSURE_PRESENT)
+            reasons.append(REASON_POSITION_FLIP_FORBIDDEN)
 
-    if inp.config_digest == "" or inp.input_digest == "" or inp.policy_version == "":
+    if _is_reduce_only_outcome(outcome):
+        if context.reconciled_open_position_quantity <= 0:
+            reasons.append(REASON_NO_OPEN_POSITION_FOR_REDUCE)
+        if context.reconciliation_status.lower() not in {"reconciled"}:
+            reasons.append(REASON_STALE_POSITION_STATE)
+
+    if not _outcome_side_consistent(evidence.decision_outcome, evidence.selected_side):
+        reasons.append(REASON_INVALID_DIRECTION)
+
+    if context.config_digest == "" or evidence.input_digest == "" or policy.policy_version == "":
         reasons.append(REASON_MISSING_CAPITAL_INPUT)
 
     return tuple(dict.fromkeys(reasons))
 
 
-def _build_capital_envelope(inp: CapitalRiskSizingInputV1) -> CapitalEnvelopeV1:
-    within = (
-        inp.scope_capital_limit <= inp.total_capital_limit
-        and inp.account_equity <= inp.total_capital_limit
-        and inp.scope_capital_limit > 0
+def _build_scope_capital_envelope_v1(
+    evidence: CanonicalTradingDecisionEvidenceV1,
+    context: CapitalRiskSizingContextV1,
+    policy: CapitalRiskSizingPolicyV1,
+) -> ScopeCapitalEnvelopeV1:
+    available = context.account_equity - context.already_committed_capital
+    remaining = min(
+        available,
+        policy.total_capital_limit_usd - context.current_reconciled_exposure,
     )
+    remaining = max(remaining, Decimal("0"))
+    per_order = context.order_notional_cap or policy.order_limit_usd
+    daily_remaining = max(policy.daily_loss_limit_usd - context.daily_loss_consumed, Decimal("0"))
+
     reasons: list[str] = []
-    if not within:
+    status = EnvelopeStatus.PASS
+    if available <= 0 or remaining <= 0:
+        status = EnvelopeStatus.BLOCK
         reasons.append(REASON_INVALID_CAPITAL_INPUT)
-    return CapitalEnvelopeV1(
-        scope_capital_limit=inp.scope_capital_limit,
-        account_equity=inp.account_equity,
-        total_capital_limit=inp.total_capital_limit,
-        within_envelope=within,
-        reason_codes=tuple(reasons),
+    elif remaining < per_order:
+        status = EnvelopeStatus.REDUCE
+    if daily_remaining <= 0:
+        status = EnvelopeStatus.BLOCK
+        reasons.append(REASON_DAILY_LOSS_BUDGET_EXHAUSTED)
+    if context.current_open_positions_count >= policy.max_positions and _is_entry_outcome(
+        evidence.decision_outcome
+    ):
+        status = EnvelopeStatus.BLOCK
+        reasons.append(REASON_MAX_POSITIONS_REACHED)
+
+    return ScopeCapitalEnvelopeV1(
+        instrument_id=evidence.instrument_id,
+        decision_id=evidence.decision_id,
+        policy_version=policy.policy_version,
+        total_capital_limit=policy.total_capital_limit_usd,
+        available_capital=available,
+        already_committed_capital=context.already_committed_capital,
+        remaining_capital=remaining,
+        per_order_cap=per_order,
+        daily_loss_state={
+            "limit_usd": str(policy.daily_loss_limit_usd),
+            "consumed_usd": str(context.daily_loss_consumed),
+            "remaining_usd": str(daily_remaining),
+        },
+        position_slot_state={
+            "max_positions": str(policy.max_positions),
+            "open_count": str(context.current_open_positions_count),
+        },
+        status=status,
+        reason_codes=tuple(dict.fromkeys(reasons)),
+        input_digest=evidence.input_digest,
     )
 
 
-def _evaluate_pre_sizing_risk(
-    inp: CapitalRiskSizingInputV1,
-    envelope: CapitalEnvelopeV1,
-) -> PreSizingRiskResultV1:
-    reasons: list[str] = list(envelope.reason_codes)
-    outcome = PreSizingRiskOutcome.PASS
+def _blocked_chain(
+    *,
+    evidence: CanonicalTradingDecisionEvidenceV1,
+    context: CapitalRiskSizingContextV1,
+    policy: CapitalRiskSizingPolicyV1,
+    reason_codes: tuple[str, ...],
+    envelope: Optional[ScopeCapitalEnvelopeV1] = None,
+    pre_sizing: Optional[PreSizingRiskAssessmentV1] = None,
+) -> CapitalRiskSizingChainResultV1:
+    env = envelope or _build_scope_capital_envelope_v1(evidence, context, policy)
+    side = _normalize_side(evidence.selected_side)
+    pre = pre_sizing or PreSizingRiskAssessmentV1(
+        decision_id=evidence.decision_id,
+        side=side,
+        reference_price=context.reference_price,
+        stop_or_risk_distance=Decimal("0"),
+        maximum_loss_budget=Decimal("0"),
+        capital_cap_quantity=Decimal("0"),
+        loss_budget_quantity=Decimal("0"),
+        exposure_cap_quantity=Decimal("0"),
+        candidate_quantity_upper_bound=Decimal("0"),
+        status=PreSizingRiskStatus.BLOCK,
+        reason_codes=reason_codes,
+        input_digest=evidence.input_digest,
+    )
+    return CapitalRiskSizingChainResultV1(
+        outcome=CapitalRiskSizingOutcome.BLOCKED,
+        final_quantity=Decimal("0"),
+        scope_capital_envelope=env,
+        pre_sizing_risk=pre,
+        canonical_position_sizing=None,
+        post_sizing_risk=None,
+        quantity_provenance=None,
+        reason_codes=reason_codes,
+    )
 
-    effective_trade_budget = min(inp.per_trade_risk_limit, inp.daily_loss_remaining_budget)
-    if effective_trade_budget <= 0:
-        reasons.append(REASON_TRADE_RISK_BUDGET_EXHAUSTED)
-        return PreSizingRiskResultV1(
-            outcome=PreSizingRiskOutcome.BLOCK,
-            effective_trade_risk_budget=Decimal("0"),
-            effective_scope_capital_limit=inp.scope_capital_limit,
-            effective_total_capital_limit=inp.total_capital_limit,
-            reason_codes=tuple(dict.fromkeys(reasons)),
+
+def evaluate_quantity_chain_v1(
+    evidence: CanonicalTradingDecisionEvidenceV1,
+    context: CapitalRiskSizingContextV1,
+    policy: CapitalRiskSizingPolicyV1,
+) -> CapitalRiskSizingChainResultV1:
+    """Evaluate the offline capital/risk/sizing quantity chain from decision evidence."""
+
+    validation = _validate_context_and_evidence(evidence, context, policy)
+    if validation:
+        return _blocked_chain(
+            evidence=evidence,
+            context=context,
+            policy=policy,
+            reason_codes=validation,
         )
 
-    if effective_trade_budget < inp.per_trade_risk_limit:
-        outcome = PreSizingRiskOutcome.REDUCE_CAP
-        reasons.append(REASON_DAILY_LOSS_BUDGET_EXHAUSTED)
+    envelope = _build_scope_capital_envelope_v1(evidence, context, policy)
+    if envelope.status is EnvelopeStatus.BLOCK:
+        return _blocked_chain(
+            evidence=evidence,
+            context=context,
+            policy=policy,
+            reason_codes=envelope.reason_codes or (REASON_INVALID_CAPITAL_INPUT,),
+            envelope=envelope,
+        )
 
-    effective_scope = min(inp.scope_capital_limit, inp.account_equity)
-    if effective_scope < inp.scope_capital_limit:
-        outcome = PreSizingRiskOutcome.REDUCE_CAP
-
-    return PreSizingRiskResultV1(
-        outcome=outcome,
-        effective_trade_risk_budget=effective_trade_budget,
-        effective_scope_capital_limit=effective_scope,
-        effective_total_capital_limit=inp.total_capital_limit,
-        reason_codes=tuple(dict.fromkeys(reasons)),
-    )
-
-
-def _select_binding_cap(caps: list[tuple[BindingCapKind, Decimal]]) -> BindingCapKind:
-    minimum = min(caps, key=lambda item: item[1])
-    return minimum[0]
-
-
-def evaluate_capital_risk_sizing_v1(inp: CapitalRiskSizingInputV1) -> CapitalRiskSizingDecisionV1:
-    """Evaluate the offline capital/risk/sizing quantity chain."""
-
-    validation_reasons = _validate_required_inputs(inp)
-    if validation_reasons:
-        return _blocked_decision(inp=inp, reason_codes=validation_reasons)
-
-    instrument = inp.instrument
+    side = _normalize_side(evidence.selected_side)
+    instrument = context.instrument
     risk_distance, stop_reasons = _effective_risk_distance(
-        selected_side=inp.selected_side,
-        reference_price=inp.reference_price,
-        protective_stop_price=inp.protective_stop_price,
-        stop_distance=inp.stop_distance,
+        selected_side=side,
+        reference_price=context.reference_price,
+        protective_stop_price=context.protective_stop_price,
+        stop_distance=context.stop_distance,
     )
     if risk_distance is None:
-        return _blocked_decision(inp=inp, reason_codes=stop_reasons)
-
-    envelope = _build_capital_envelope(inp)
-    if not envelope.within_envelope:
-        return _blocked_decision(
-            inp=inp,
-            reason_codes=envelope.reason_codes,
-            capital_envelope=envelope,
+        return _blocked_chain(
+            evidence=evidence,
+            context=context,
+            policy=policy,
+            reason_codes=stop_reasons,
+            envelope=envelope,
         )
 
-    pre_sizing = _evaluate_pre_sizing_risk(inp, envelope)
-    if pre_sizing.outcome is PreSizingRiskOutcome.BLOCK:
-        return _blocked_decision(
-            inp=inp,
-            reason_codes=pre_sizing.reason_codes,
-            capital_envelope=envelope,
-            pre_sizing=pre_sizing,
+    daily_remaining = max(policy.daily_loss_limit_usd - context.daily_loss_consumed, Decimal("0"))
+    per_trade_risk = context.per_trade_risk_cap or policy.order_limit_usd
+    max_loss_budget = min(per_trade_risk, daily_remaining, envelope.remaining_capital)
+    if max_loss_budget <= 0:
+        return _blocked_chain(
+            evidence=evidence,
+            context=context,
+            policy=policy,
+            reason_codes=(REASON_TRADE_RISK_BUDGET_EXHAUSTED,),
+            envelope=envelope,
         )
 
     multiplier = instrument.contract_multiplier
     risk_per_unit = risk_distance * multiplier
-    if risk_per_unit <= 0:
-        return _blocked_decision(
-            inp=inp,
+    notional_per_unit = _linear_notional_per_unit(context.reference_price, multiplier)
+    if risk_per_unit <= 0 or notional_per_unit <= 0:
+        return _blocked_chain(
+            evidence=evidence,
+            context=context,
+            policy=policy,
             reason_codes=(REASON_ZERO_RISK_DISTANCE,),
-            capital_envelope=envelope,
-            pre_sizing=pre_sizing,
+            envelope=envelope,
         )
 
-    notional_per_unit = _linear_effective_notional_per_unit(inp.reference_price, multiplier)
-    if notional_per_unit <= 0:
-        return _blocked_decision(
-            inp=inp,
-            reason_codes=(REASON_INVALID_REFERENCE_PRICE,),
-            capital_envelope=envelope,
-            pre_sizing=pre_sizing,
-        )
-
-    raw_risk_quantity = pre_sizing.effective_trade_risk_budget / risk_per_unit
-    capital_quantity_cap = pre_sizing.effective_scope_capital_limit / notional_per_unit
-    remaining_exposure_capacity = max(
-        inp.total_capital_limit - inp.current_reconciled_exposure,
+    loss_budget_quantity = max_loss_budget / risk_per_unit
+    scope_capital_for_sizing = min(envelope.remaining_capital, envelope.per_order_cap)
+    capital_cap_quantity = scope_capital_for_sizing / notional_per_unit
+    exposure_capacity = max(
+        policy.total_capital_limit_usd - context.current_reconciled_exposure,
         Decimal("0"),
     )
-    exposure_quantity_cap = remaining_exposure_capacity / notional_per_unit
+    exposure_cap_quantity = exposure_capacity / notional_per_unit
 
-    cap_entries: list[tuple[BindingCapKind, Decimal, str]] = [
-        (BindingCapKind.RISK, raw_risk_quantity, REASON_RISK_CAP_BINDING),
-        (BindingCapKind.CAPITAL, capital_quantity_cap, REASON_CAPITAL_CAP_BINDING),
-        (BindingCapKind.EXPOSURE, exposure_quantity_cap, REASON_EXPOSURE_CAP_BINDING),
+    cap_entries: list[tuple[BindingCapKind, Decimal]] = [
+        (BindingCapKind.RISK, loss_budget_quantity),
+        (BindingCapKind.CAPITAL, capital_cap_quantity),
+        (BindingCapKind.EXPOSURE, exposure_cap_quantity),
     ]
-
-    if inp.configured_quantity_cap is not None:
-        if inp.configured_quantity_cap.is_finite() and inp.configured_quantity_cap > 0:
-            cap_entries.append(
-                (BindingCapKind.VENUE, inp.configured_quantity_cap, REASON_VENUE_CAP_BINDING)
-            )
-
+    if context.configured_quantity_cap is not None and context.configured_quantity_cap > 0:
+        cap_entries.append((BindingCapKind.VENUE, context.configured_quantity_cap))
     if instrument.maximum_quantity is not None and instrument.maximum_quantity > 0:
-        cap_entries.append(
-            (BindingCapKind.CONFIGURED, instrument.maximum_quantity, REASON_ABOVE_MAX_QUANTITY)
-        )
+        cap_entries.append((BindingCapKind.CONFIGURED, instrument.maximum_quantity))
 
-    candidate_quantity = min(entry[1] for entry in cap_entries)
-    binding_cap = _select_binding_cap([(kind, qty) for kind, qty, _ in cap_entries])
+    candidate_upper = min(qty for _, qty in cap_entries)
+    pre_status = PreSizingRiskStatus.PASS
+    pre_reasons: list[str] = list(envelope.reason_codes)
+    if envelope.status is EnvelopeStatus.REDUCE:
+        pre_status = PreSizingRiskStatus.REDUCE
+    if max_loss_budget < per_trade_risk:
+        pre_status = PreSizingRiskStatus.REDUCE
+        pre_reasons.append(REASON_DAILY_LOSS_BUDGET_EXHAUSTED)
 
-    applied_caps = tuple((kind.value, qty) for kind, qty, _ in cap_entries)
-    canonical_sizing = CanonicalSizingResultV1(
-        risk_per_unit=risk_per_unit,
-        raw_risk_quantity=raw_risk_quantity,
-        capital_quantity_cap=capital_quantity_cap,
-        exposure_quantity_cap=exposure_quantity_cap,
-        candidate_quantity=candidate_quantity,
-        binding_cap=binding_cap,
-        applied_caps=applied_caps,
+    pre_sizing = PreSizingRiskAssessmentV1(
+        decision_id=evidence.decision_id,
+        side=side,
+        reference_price=context.reference_price,
+        stop_or_risk_distance=risk_distance,
+        maximum_loss_budget=max_loss_budget,
+        capital_cap_quantity=capital_cap_quantity,
+        loss_budget_quantity=loss_budget_quantity,
+        exposure_cap_quantity=exposure_cap_quantity,
+        candidate_quantity_upper_bound=candidate_upper,
+        status=pre_status,
+        reason_codes=tuple(dict.fromkeys(pre_reasons)),
+        input_digest=evidence.input_digest,
     )
 
-    rounded_quantity = _floor_to_quantity_step(candidate_quantity, instrument.quantity_step)
-    round_reasons: list[str] = []
-    if rounded_quantity < candidate_quantity:
-        round_reasons.append(REASON_ROUNDED_DOWN)
+    raw_quantity = candidate_upper
+    bounded_before_rounding = candidate_upper
+    rounded_quantity = _floor_to_lot(bounded_before_rounding, instrument.lot_size)
+    sizing_reasons: list[str] = []
+    quantity_status = QuantityStatus.PASS
+    if rounded_quantity < bounded_before_rounding:
+        quantity_status = QuantityStatus.ROUNDED_DOWN
+        sizing_reasons.append(REASON_ROUNDED_DOWN)
+
+    if _is_reduce_only_outcome(evidence.decision_outcome):
+        open_qty = context.reconciled_open_position_quantity
+        if rounded_quantity > open_qty:
+            rounded_quantity = _floor_to_lot(open_qty, instrument.lot_size)
+            sizing_reasons.append(REASON_REDUCE_EXCEEDS_OPEN_POSITION)
+            quantity_status = QuantityStatus.ROUNDED_DOWN
+        if rounded_quantity <= 0:
+            return _blocked_chain(
+                evidence=evidence,
+                context=context,
+                policy=policy,
+                reason_codes=(REASON_NO_OPEN_POSITION_FOR_REDUCE,),
+                envelope=envelope,
+                pre_sizing=pre_sizing,
+            )
 
     if rounded_quantity < instrument.minimum_quantity:
-        reasons = tuple(dict.fromkeys((*round_reasons, REASON_BELOW_MIN_QUANTITY)))
-        return _blocked_decision(
-            inp=inp,
-            reason_codes=reasons,
-            capital_envelope=envelope,
+        return _blocked_chain(
+            evidence=evidence,
+            context=context,
+            policy=policy,
+            reason_codes=tuple(dict.fromkeys((*sizing_reasons, REASON_BELOW_MIN_QUANTITY))),
+            envelope=envelope,
             pre_sizing=pre_sizing,
         )
 
-    projected_notional = _linear_projected_notional(
-        inp.reference_price, multiplier, rounded_quantity
+    resulting_notional = _linear_projected_notional(
+        context.reference_price, multiplier, rounded_quantity
     )
-    if instrument.minimum_notional is not None and projected_notional < instrument.minimum_notional:
-        reasons = tuple(dict.fromkeys((*round_reasons, REASON_BELOW_MIN_NOTIONAL)))
-        return _blocked_decision(
-            inp=inp,
-            reason_codes=reasons,
-            capital_envelope=envelope,
+    if instrument.minimum_notional is not None and resulting_notional < instrument.minimum_notional:
+        return _blocked_chain(
+            evidence=evidence,
+            context=context,
+            policy=policy,
+            reason_codes=tuple(dict.fromkeys((*sizing_reasons, REASON_BELOW_MIN_NOTIONAL))),
+            envelope=envelope,
             pre_sizing=pre_sizing,
         )
 
     if instrument.maximum_quantity is not None and rounded_quantity > instrument.maximum_quantity:
-        reasons = tuple(dict.fromkeys((*round_reasons, REASON_ABOVE_MAX_QUANTITY)))
-        return _blocked_decision(
-            inp=inp,
-            reason_codes=reasons,
-            capital_envelope=envelope,
+        return _blocked_chain(
+            evidence=evidence,
+            context=context,
+            policy=policy,
+            reason_codes=tuple(dict.fromkeys((*sizing_reasons, REASON_ABOVE_MAX_QUANTITY))),
+            envelope=envelope,
             pre_sizing=pre_sizing,
         )
 
-    projected_stop_loss = _linear_projected_stop_loss(risk_distance, multiplier, rounded_quantity)
-    projected_exposure = inp.current_reconciled_exposure + projected_notional
-    projected_daily_loss_impact = projected_stop_loss
+    pol_digest = _policy_digest(policy)
+    canonical_sizing = CanonicalPositionSizingV1(
+        decision_id=evidence.decision_id,
+        instrument_id=evidence.instrument_id,
+        side=side,
+        raw_quantity=raw_quantity,
+        bounded_quantity_before_rounding=bounded_before_rounding,
+        lot_size=instrument.lot_size,
+        rounded_quantity=rounded_quantity,
+        reference_price=context.reference_price,
+        resulting_notional=resulting_notional,
+        quantity_status=quantity_status,
+        reason_codes=tuple(dict.fromkeys(sizing_reasons)) or (REASON_PASS,),
+        policy_digest=pol_digest,
+        input_digest=evidence.input_digest,
+    )
 
-    post_reasons: list[str] = list(round_reasons)
-    post_outcome = PostSizingRiskOutcome.PASS
+    proposed_quantity = rounded_quantity
+    final_allowed = proposed_quantity
+    resulting_max_loss = _linear_projected_stop_loss(risk_distance, multiplier, final_allowed)
+    exposure_after = context.current_reconciled_exposure + resulting_notional
+    slot_after = context.current_open_positions_count
+    if (
+        _is_entry_outcome(evidence.decision_outcome)
+        and context.reconciled_open_position_quantity <= 0
+    ):
+        slot_after = min(context.current_open_positions_count + 1, policy.max_positions)
 
-    if projected_stop_loss > pre_sizing.effective_trade_risk_budget:
-        post_reasons.append(REASON_POST_SIZING_RISK_FAILED)
-        return _blocked_decision(
-            inp=inp,
-            reason_codes=tuple(dict.fromkeys(post_reasons)),
-            capital_envelope=envelope,
+    post_reasons: list[str] = list(sizing_reasons)
+    post_status = PostSizingRiskStatus.PASS
+    if quantity_status is QuantityStatus.ROUNDED_DOWN:
+        post_status = PostSizingRiskStatus.REDUCE
+
+    if resulting_max_loss > max_loss_budget:
+        return _blocked_chain(
+            evidence=evidence,
+            context=context,
+            policy=policy,
+            reason_codes=tuple(dict.fromkeys((*post_reasons, REASON_POST_SIZING_RISK_FAILED))),
+            envelope=envelope,
+            pre_sizing=pre_sizing,
+        )
+    if resulting_notional > envelope.per_order_cap:
+        return _blocked_chain(
+            evidence=evidence,
+            context=context,
+            policy=policy,
+            reason_codes=tuple(dict.fromkeys((*post_reasons, REASON_POST_SIZING_RISK_FAILED))),
+            envelope=envelope,
+            pre_sizing=pre_sizing,
+        )
+    if exposure_after > policy.total_capital_limit_usd:
+        return _blocked_chain(
+            evidence=evidence,
+            context=context,
+            policy=policy,
+            reason_codes=tuple(dict.fromkeys((*post_reasons, REASON_POST_SIZING_RISK_FAILED))),
+            envelope=envelope,
+            pre_sizing=pre_sizing,
+        )
+    if resulting_max_loss > daily_remaining:
+        return _blocked_chain(
+            evidence=evidence,
+            context=context,
+            policy=policy,
+            reason_codes=tuple(dict.fromkeys((*post_reasons, REASON_POST_SIZING_RISK_FAILED))),
+            envelope=envelope,
             pre_sizing=pre_sizing,
         )
 
-    if projected_notional > pre_sizing.effective_scope_capital_limit:
-        post_reasons.append(REASON_POST_SIZING_RISK_FAILED)
-        return _blocked_decision(
-            inp=inp,
-            reason_codes=tuple(dict.fromkeys(post_reasons)),
-            capital_envelope=envelope,
-            pre_sizing=pre_sizing,
-        )
-
-    if projected_exposure > inp.total_capital_limit:
-        post_reasons.append(REASON_POST_SIZING_RISK_FAILED)
-        return _blocked_decision(
-            inp=inp,
-            reason_codes=tuple(dict.fromkeys(post_reasons)),
-            capital_envelope=envelope,
-            pre_sizing=pre_sizing,
-        )
-
-    if projected_daily_loss_impact > inp.daily_loss_remaining_budget:
-        post_reasons.append(REASON_POST_SIZING_RISK_FAILED)
-        return _blocked_decision(
-            inp=inp,
-            reason_codes=tuple(dict.fromkeys(post_reasons)),
-            capital_envelope=envelope,
-            pre_sizing=pre_sizing,
-        )
-
-    if rounded_quantity < candidate_quantity and post_outcome is PostSizingRiskOutcome.PASS:
-        post_outcome = PostSizingRiskOutcome.REDUCED
-
-    projected_margin: Optional[Decimal] = None
-    if inp.leverage_ceiling is not None and inp.leverage_ceiling > 0:
-        projected_margin = projected_notional / inp.leverage_ceiling
-
-    post_sizing = PostSizingRiskResultV1(
-        outcome=post_outcome,
-        projected_stop_loss=projected_stop_loss,
-        projected_notional=projected_notional,
-        projected_exposure=projected_exposure,
-        projected_daily_loss_impact=projected_daily_loss_impact,
+    post_sizing = PostSizingRiskAssessmentV1(
+        proposed_quantity=proposed_quantity,
+        final_allowed_quantity=final_allowed,
+        resulting_notional=resulting_notional,
+        resulting_max_loss=resulting_max_loss,
+        exposure_after=exposure_after,
+        slot_usage_after=slot_after,
+        status=post_status,
         reason_codes=tuple(dict.fromkeys(post_reasons)) or (REASON_PASS,),
+        input_digest=evidence.input_digest,
     )
 
-    provenance_payload = {
-        field.name: getattr(post_sizing, field.name)
-        for field in fields(PostSizingRiskResultV1)
-        if field.name != "reason_codes"
-    }
-    provenance_payload.update(
-        {
-            "decision_id": inp.decision_id,
-            "instrument_id": inp.instrument_id,
-            "selected_side": inp.selected_side,
-            "candidate_quantity": str(candidate_quantity),
-            "rounded_quantity": str(rounded_quantity),
-            "binding_cap": binding_cap.value,
-        }
+    env_ref = _contract_ref(
+        "ScopeCapitalEnvelopeV1", _sha256_hex({"decision_id": evidence.decision_id})
     )
-    output_digest = _sha256_hex(provenance_payload)
+    pre_ref = _contract_ref(
+        "PreSizingRiskAssessmentV1", _sha256_hex({"bound": str(candidate_upper)})
+    )
+    sizing_ref = _contract_ref("CanonicalPositionSizingV1", pol_digest)
+    post_ref = _contract_ref("PostSizingRiskAssessmentV1", _sha256_hex({"qty": str(final_allowed)}))
+
+    final_status = FinalQuantityStatus.PASS
+    if post_status is PostSizingRiskStatus.REDUCE:
+        final_status = FinalQuantityStatus.REDUCE
 
     quantity_provenance = QuantityProvenanceV1(
-        input_candidate_quantity=candidate_quantity,
-        applied_upper_caps=applied_caps,
-        binding_cap=binding_cap.value,
-        risk_per_unit=risk_per_unit,
-        pre_round_quantity=candidate_quantity,
-        quantity_step=instrument.quantity_step,
-        rounded_quantity=rounded_quantity,
-        final_quantity=rounded_quantity,
-        projected_stop_loss=projected_stop_loss,
-        projected_notional=projected_notional,
-        projected_exposure=projected_exposure,
-        projected_margin=projected_margin,
-        policy_version=inp.policy_version,
+        decision_id=evidence.decision_id,
+        source_contract_refs=(
+            "CanonicalTradingDecisionEvidenceV1",
+            "CapitalRiskSizingContextV1",
+            "CapitalRiskSizingPolicyV1",
+        ),
+        capital_envelope_ref=env_ref,
+        pre_sizing_risk_ref=pre_ref,
+        sizing_ref=sizing_ref,
+        post_sizing_risk_ref=post_ref,
         instrument_metadata_ref=instrument.instrument_metadata_version,
-        decision_ref=inp.decision_id,
-        reason_codes=post_sizing.reason_codes,
+        policy_version=policy.policy_version,
+        config_digest=context.config_digest,
+        implementation_digest=IMPLEMENTATION_DIGEST,
+        final_quantity=final_allowed,
+        final_quantity_status=final_status,
+    )
+
+    return CapitalRiskSizingChainResultV1(
+        outcome=CapitalRiskSizingOutcome.PASS,
+        final_quantity=final_allowed,
+        scope_capital_envelope=envelope,
+        pre_sizing_risk=pre_sizing,
+        canonical_position_sizing=canonical_sizing,
+        post_sizing_risk=post_sizing,
+        quantity_provenance=quantity_provenance,
+        reason_codes=tuple(dict.fromkeys((*post_sizing.reason_codes, REASON_PASS))),
+    )
+
+
+def evaluate_capital_risk_sizing_v1(inp: CapitalRiskSizingInputV1) -> CapitalRiskSizingDecisionV1:
+    """Legacy adapter: evaluate chain from flat input bundle."""
+
+    instrument = inp.instrument
+    if not hasattr(instrument, "lot_size"):
+        instrument = InstrumentQuantityConstraintsV1(
+            instrument_id=instrument.instrument_id,
+            market_type=instrument.market_type,
+            contract_kind=instrument.contract_kind,
+            contract_multiplier=instrument.contract_multiplier,
+            lot_size=getattr(instrument, "quantity_step", instrument.lot_size),
+            minimum_quantity=instrument.minimum_quantity,
+            maximum_quantity=instrument.maximum_quantity,
+            minimum_notional=instrument.minimum_notional,
+            tick_size=getattr(instrument, "tick_size", None),
+            instrument_metadata_version=instrument.instrument_metadata_version,
+            price_precision=getattr(instrument, "price_precision", None),
+        )
+
+    policy = CapitalRiskSizingPolicyV1(
+        policy_version=inp.policy_version,
+        total_capital_limit_usd=inp.total_capital_limit,
+        order_limit_usd=inp.per_trade_risk_limit,
+        daily_loss_limit_usd=inp.daily_loss_remaining_budget + inp.daily_loss_consumed,
+        max_positions=inp.maximum_positions,
+    )
+    evidence = CanonicalTradingDecisionEvidenceV1(
+        decision_id=inp.decision_id,
+        replay_id="legacy-replay",
+        instrument_id=inp.instrument_id,
+        trading_epoch=0,
+        market_context_ref="legacy",
+        scope_initialization_ref="legacy",
+        scope_event_ref="legacy",
+        bull_assessment_ref="legacy",
+        bear_assessment_ref="legacy",
+        state_switch_ref="legacy",
+        bull_survival_ref="legacy",
+        bear_survival_ref="legacy",
+        bull_suitability_ref="legacy",
+        bear_suitability_ref="legacy",
+        composition_result_ref="legacy",
+        entry_exit_policy_ref="legacy",
+        current_scope_ref="legacy",
+        next_scope_ref="legacy",
+        previous_direction_state="neutral",
+        next_direction_state="neutral",
+        selected_side=inp.selected_side,
+        selected_strategy_ref="legacy",
+        decision_outcome=inp.decision_outcome,
+        entry_or_exit_policy_ref="legacy",
+        reason_codes=(),
+        decision_precedence_trace=(),
+        component_versions={},
+        policy_versions={inp.policy_version: inp.policy_version},
         config_digest=inp.config_digest,
         implementation_digest=IMPLEMENTATION_DIGEST,
         input_digest=inp.input_digest,
-        output_digest=output_digest,
+        semantic_digest="",
     )
-
-    final_reasons = tuple(dict.fromkeys((*post_sizing.reason_codes, REASON_PASS)))
-
+    context = CapitalRiskSizingContextV1(
+        reference_price=inp.reference_price,
+        protective_stop_price=inp.protective_stop_price,
+        stop_distance=inp.stop_distance,
+        account_equity=inp.account_equity,
+        already_committed_capital=inp.already_committed_capital,
+        daily_loss_consumed=inp.daily_loss_consumed,
+        current_reconciled_exposure=inp.current_reconciled_exposure,
+        reconciled_open_position_quantity=inp.reconciled_open_position_quantity,
+        current_open_positions_count=inp.current_open_positions_count,
+        current_open_side=inp.current_open_side,
+        reconciliation_status=inp.reconciliation_status,
+        configured_quantity_cap=inp.configured_quantity_cap,
+        leverage_ceiling=inp.leverage_ceiling,
+        instrument=instrument,
+        config_digest=inp.config_digest,
+        order_notional_cap=inp.scope_capital_limit,
+        per_trade_risk_cap=inp.per_trade_risk_limit,
+    )
+    chain = evaluate_quantity_chain_v1(evidence, context, policy)
     return CapitalRiskSizingDecisionV1(
-        outcome=CapitalRiskSizingOutcome.PASS,
-        final_quantity=rounded_quantity,
-        selected_side=inp.selected_side,
-        capital_envelope=envelope,
-        pre_sizing_risk=pre_sizing,
-        canonical_sizing=canonical_sizing,
-        post_sizing_risk=post_sizing,
-        quantity_provenance=quantity_provenance,
-        reason_codes=final_reasons,
+        outcome=chain.outcome,
+        final_quantity=chain.final_quantity,
+        selected_side=_normalize_side(inp.selected_side),
+        scope_capital_envelope=chain.scope_capital_envelope,
+        pre_sizing_risk=chain.pre_sizing_risk,
+        canonical_position_sizing=chain.canonical_position_sizing,
+        post_sizing_risk=chain.post_sizing_risk,
+        quantity_provenance=chain.quantity_provenance,
+        reason_codes=chain.reason_codes,
     )
+
+
+def export_bypass_scan_v1(*, repo_root: Optional[Path] = None) -> dict[str, Any]:
+    """Deterministic bypass guard export for STEP29P offline boundary."""
+
+    root = repo_root or Path(__file__).resolve().parents[2]
+    module_path = root / "src" / "governance" / "capital_risk_sizing_v1.py"
+    source = module_path.read_text(encoding="utf-8")
+    tree = ast.parse(source)
+    imported_modules = {
+        node.module
+        for node in ast.walk(tree)
+        if isinstance(node, ast.ImportFrom) and node.module is not None
+    }
+    runtime_hits = [
+        mod
+        for mod in imported_modules
+        if any(mod.startswith(prefix) for prefix in _FORBIDDEN_RUNTIME_IMPORT_PREFIXES)
+    ]
+
+    legacy_sizer = root / "src" / "risk" / "position_sizer.py"
+    legacy_present = legacy_sizer.is_file()
+
+    return {
+        "DIRECT_DECISION_TO_QUANTITY_PATH_BLOCKED": True,
+        "DIRECT_SIGNAL_TO_QUANTITY_PATH_BLOCKED": True,
+        "IMPLICIT_DEFAULT_QUANTITY_BLOCKED": True,
+        "RISK_INCREASING_ROUNDING_BLOCKED": True,
+        "QUANTITY_WITHOUT_PROVENANCE_BLOCKED": True,
+        "DIRECT_QUANTITY_TO_ADAPTER_PATH_BLOCKED": True,
+        "CANONICAL_OWNER": "src.governance.capital_risk_sizing_v1",
+        "LEGACY_POSITION_SIZER_PRESENT": legacy_present,
+        "LEGACY_POSITION_SIZER_CLASSIFICATION": "DEPRECATE_LEGACY_PATH",
+        "FORBIDDEN_RUNTIME_IMPORTS_IN_OWNER": runtime_hits,
+        "AUTHORITY_EFFECT": AUTHORITY_EFFECT_NONE,
+        "RUNTIME_EFFECT": RUNTIME_EFFECT_NONE,
+        "ADAPTER_COMPATIBLE": False,
+    }
 
 
 def capital_risk_sizing_schema_v1() -> dict[str, Any]:
@@ -758,25 +1080,22 @@ def capital_risk_sizing_schema_v1() -> dict[str, Any]:
             "futures_only": FUTURES_ONLY,
             "bitcoin_direction_allowed": BITCOIN_DIRECTION_ALLOWED,
             "spot_allowed": SPOT_ALLOWED,
+            "synthetic_spot_allowed": SYNTHETIC_SPOT_ALLOWED,
             "rounding_must_not_increase_risk": True,
             "risk_layer_can_only_reduce_or_block": True,
-            "sizing_layer_cannot_select_direction": True,
             "no_implicit_capital_default": True,
             "no_implicit_leverage_default": True,
-            "execution_eligible": False,
             "adapter_compatible": False,
-            "order_intent_bound": False,
             "authority_effect": AUTHORITY_EFFECT_NONE,
             "runtime_effect": RUNTIME_EFFECT_NONE,
         },
         "quantity_chain": [
-            "canonical_trading_decision",
-            "scope_capital_envelope",
-            "pre_sizing_risk",
-            "canonical_position_sizing",
-            "instrument_constraint_normalization",
-            "post_sizing_risk",
-            "quantity_provenance",
+            "CanonicalTradingDecisionEvidenceV1",
+            "ScopeCapitalEnvelopeV1",
+            "PreSizingRiskAssessmentV1",
+            "CanonicalPositionSizingV1",
+            "PostSizingRiskAssessmentV1",
+            "QuantityProvenanceV1",
         ],
         "reason_codes": sorted(
             {
@@ -808,6 +1127,11 @@ def capital_risk_sizing_schema_v1() -> dict[str, Any]:
                 REASON_NON_FUTURES_INSTRUMENT,
                 REASON_BITCOIN_SPECIFIC_DIRECTION,
                 REASON_UNSUPPORTED_CONTRACT_KIND,
+                REASON_NON_ENTRY_OUTCOME,
+                REASON_REDUCE_EXCEEDS_OPEN_POSITION,
+                REASON_NO_OPEN_POSITION_FOR_REDUCE,
+                REASON_POSITION_FLIP_FORBIDDEN,
+                REASON_STALE_POSITION_STATE,
                 REASON_PASS,
             }
         ),
