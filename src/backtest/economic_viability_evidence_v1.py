@@ -167,6 +167,9 @@ class EconomicViabilityEvidenceV1:
     monte_carlo_results: Mapping[str, Any]
     stress_results: Mapping[str, Any]
     parameter_sensitivity_results: Mapping[str, Any]
+    parameter_neighbor_degradation: MetricFieldV1
+    single_trade_profit_contribution: MetricFieldV1
+    single_regime_profit_contribution: MetricFieldV1
     status: EconomicViabilityStatus
     reason_codes: tuple[str, ...]
     manifest_digest: str
@@ -235,6 +238,9 @@ class EconomicViabilityEvidenceV1:
             "monte_carlo_results": dict(self.monte_carlo_results),
             "stress_results": dict(self.stress_results),
             "parameter_sensitivity_results": dict(self.parameter_sensitivity_results),
+            "parameter_neighbor_degradation": self.parameter_neighbor_degradation.to_dict(),
+            "single_trade_profit_contribution": self.single_trade_profit_contribution.to_dict(),
+            "single_regime_profit_contribution": self.single_regime_profit_contribution.to_dict(),
             "status": self.status.value,
             "reason_codes": list(self.reason_codes),
             "manifest_digest": self.manifest_digest,
@@ -324,6 +330,121 @@ def _metric_from_stats(key: str, stats: Mapping[str, float]) -> MetricFieldV1:
 
 def _not_computed_metric(reason_code: str) -> MetricFieldV1:
     return MetricFieldV1(semantic=MetricSemantic.NOT_COMPUTED, reason_code=reason_code)
+
+
+def _computed_metric(value: float) -> MetricFieldV1:
+    if not math.isfinite(value):
+        return MetricFieldV1(
+            semantic=MetricSemantic.NOT_COMPUTED,
+            reason_code="robustness_metric_non_finite",
+        )
+    return MetricFieldV1(semantic=MetricSemantic.COMPUTED, value=float(value))
+
+
+def compute_single_trade_profit_contribution_v1(
+    trades: Optional[pd.DataFrame],
+) -> MetricFieldV1:
+    if trades is None or trades.empty or "pnl" not in trades.columns:
+        return _not_computed_metric("single_trade_contribution_trades_unavailable")
+    positive_pnls = [
+        float(value)
+        for value in trades["pnl"].tolist()
+        if value is not None and not pd.isna(value) and float(value) > 0.0
+    ]
+    if not positive_pnls:
+        return _not_computed_metric("single_trade_contribution_no_positive_trades")
+    gross_profit = sum(positive_pnls)
+    if gross_profit <= 0.0:
+        return _not_computed_metric("single_trade_contribution_non_positive_gross_profit")
+    contribution = max(positive_pnls) / gross_profit
+    return _computed_metric(contribution)
+
+
+def compute_single_regime_profit_contribution_v1(
+    trades: Optional[pd.DataFrame],
+    bars: pd.DataFrame,
+) -> MetricFieldV1:
+    if trades is None or trades.empty or "pnl" not in trades.columns:
+        return _not_computed_metric("single_regime_contribution_trades_unavailable")
+    if "volatility_estimate" not in bars.columns:
+        return _not_computed_metric("single_regime_contribution_volatility_unavailable")
+    regime_pnls: dict[str, float] = {}
+    for record in trades.to_dict(orient="records"):
+        pnl_raw = record.get("pnl")
+        if pnl_raw is None or pd.isna(pnl_raw):
+            continue
+        pnl = float(pnl_raw)
+        timestamp = record.get("timestamp", record.get("entry_time"))
+        if timestamp is None:
+            continue
+        ts = pd.Timestamp(timestamp)
+        if ts not in bars.index:
+            continue
+        vol = float(bars.at[ts, "volatility_estimate"])
+        if not math.isfinite(vol):
+            continue
+        if vol < 0.15:
+            bucket = "low_vol"
+        elif vol < 0.25:
+            bucket = "mid_vol"
+        else:
+            bucket = "high_vol"
+        regime_pnls[bucket] = regime_pnls.get(bucket, 0.0) + pnl
+    gross_profit = sum(value for value in regime_pnls.values() if value > 0.0)
+    if gross_profit <= 0.0:
+        return _not_computed_metric("single_regime_contribution_non_positive_gross_profit")
+    max_regime_profit = max(value for value in regime_pnls.values() if value > 0.0)
+    return _computed_metric(max_regime_profit / gross_profit)
+
+
+def bind_robustness_gate_metric_value_v1(
+    raw: Any,
+    *,
+    field_name: str,
+) -> Optional[float]:
+    if raw is None:
+        return None
+    if isinstance(raw, bool) or not isinstance(raw, (int, float)):
+        raise EconomicViabilityEvidenceError(f"robustness_metric_invalid_type:{field_name}")
+    value = float(raw)
+    if not math.isfinite(value):
+        raise EconomicViabilityEvidenceError(f"robustness_metric_non_finite:{field_name}")
+    return value
+
+
+def extract_robustness_gate_metrics_from_evidence_v1(
+    evidence: EconomicViabilityEvidenceV1,
+) -> tuple[Optional[float], Optional[float], Optional[float]]:
+    neighbor_raw = evidence.parameter_neighbor_degradation
+    if neighbor_raw.semantic is MetricSemantic.COMPUTED:
+        neighbor = bind_robustness_gate_metric_value_v1(
+            neighbor_raw.value,
+            field_name="parameter_neighbor_degradation",
+        )
+    else:
+        ps_payload = evidence.parameter_sensitivity_results
+        neighbor = None
+        if isinstance(ps_payload, Mapping) and "parameter_neighbor_degradation" in ps_payload:
+            neighbor = bind_robustness_gate_metric_value_v1(
+                ps_payload.get("parameter_neighbor_degradation"),
+                field_name="parameter_neighbor_degradation",
+            )
+
+    trade_contrib = None
+    if evidence.single_trade_profit_contribution.semantic is MetricSemantic.COMPUTED:
+        trade_contrib = bind_robustness_gate_metric_value_v1(
+            evidence.single_trade_profit_contribution.value,
+            field_name="single_trade_profit_contribution",
+        )
+
+    regime_contrib = None
+    if evidence.single_regime_profit_contribution.semantic is MetricSemantic.COMPUTED:
+        regime_contrib = bind_robustness_gate_metric_value_v1(
+            evidence.single_regime_profit_contribution.value,
+            field_name="single_regime_profit_contribution",
+        )
+
+    return neighbor, trade_contrib, regime_contrib
 
 
 def _serialize_monte_carlo(summary: MonteCarloSummaryResult) -> dict[str, Any]:
@@ -689,10 +810,24 @@ def build_economic_viability_evidence_v1(
             }
 
     parameter_robustness_pass: Optional[bool] = None
+    parameter_neighbor_degradation_metric = _not_computed_metric(
+        "parameter_neighbor_degradation_not_bound"
+    )
     if parameter_sensitivity_bound:
         parameter_robustness_pass = bool(
             parameter_sensitivity_payload.get("parameter_robustness_policy_pass")
         )
+        raw_neighbor = parameter_sensitivity_payload.get("parameter_neighbor_degradation")
+        if raw_neighbor is not None:
+            parameter_neighbor_degradation_metric = _computed_metric(float(raw_neighbor))
+
+    single_trade_profit_contribution_metric = compute_single_trade_profit_contribution_v1(
+        wiring_result.backtest_result.trades
+    )
+    single_regime_profit_contribution_metric = compute_single_regime_profit_contribution_v1(
+        wiring_result.backtest_result.trades,
+        bars,
+    )
 
     wf_pass_ratio = _compute_walk_forward_pass_ratio(wf_result)
     oos_pass_ratio = wf_pass_ratio
@@ -716,6 +851,21 @@ def build_economic_viability_evidence_v1(
             monte_carlo_pass_ratio=mc_pass_ratio,
             stress_failure_count=stress_failure_count,
             parameter_robustness_pass=parameter_robustness_pass,
+            parameter_neighbor_degradation=(
+                parameter_neighbor_degradation_metric.value
+                if parameter_neighbor_degradation_metric.semantic is MetricSemantic.COMPUTED
+                else None
+            ),
+            single_trade_profit_contribution=(
+                single_trade_profit_contribution_metric.value
+                if single_trade_profit_contribution_metric.semantic is MetricSemantic.COMPUTED
+                else None
+            ),
+            single_regime_profit_contribution=(
+                single_regime_profit_contribution_metric.value
+                if single_regime_profit_contribution_metric.semantic is MetricSemantic.COMPUTED
+                else None
+            ),
             data_admissibility_status=data_admissibility_status,
             cost_model_status=cost_model_status,
             funding_binding_status=funding_binding_status,
@@ -888,6 +1038,9 @@ def build_economic_viability_evidence_v1(
             else {"semantic": MetricSemantic.NOT_COMPUTED.value, "reason_code": "stress_not_run"}
         ),
         parameter_sensitivity_results=parameter_sensitivity_payload,
+        parameter_neighbor_degradation=parameter_neighbor_degradation_metric,
+        single_trade_profit_contribution=single_trade_profit_contribution_metric,
+        single_regime_profit_contribution=single_regime_profit_contribution_metric,
         status=status,
         reason_codes=tuple(sorted(set(reason_codes))),
         manifest_digest=manifest_digest,
@@ -1127,6 +1280,27 @@ def economic_viability_evidence_from_dict_v1(
         parameter_sensitivity_results=_mapping_from_dict(
             payload["parameter_sensitivity_results"],
             field_name="parameter_sensitivity_results",
+        ),
+        parameter_neighbor_degradation=_metric_field_from_dict(
+            payload.get(
+                "parameter_neighbor_degradation",
+                {"semantic": MetricSemantic.NOT_COMPUTED.value, "reason_code": "legacy_missing"},
+            ),
+            field_name="parameter_neighbor_degradation",
+        ),
+        single_trade_profit_contribution=_metric_field_from_dict(
+            payload.get(
+                "single_trade_profit_contribution",
+                {"semantic": MetricSemantic.NOT_COMPUTED.value, "reason_code": "legacy_missing"},
+            ),
+            field_name="single_trade_profit_contribution",
+        ),
+        single_regime_profit_contribution=_metric_field_from_dict(
+            payload.get(
+                "single_regime_profit_contribution",
+                {"semantic": MetricSemantic.NOT_COMPUTED.value, "reason_code": "legacy_missing"},
+            ),
+            field_name="single_regime_profit_contribution",
         ),
         status=status,
         reason_codes=tuple(str(code) for code in reason_codes_raw),

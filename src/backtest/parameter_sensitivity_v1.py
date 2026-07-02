@@ -45,6 +45,20 @@ _CFG_PARAM_PATHS: dict[str, tuple[str, ...]] = {
     "slippage_bps": ("backtest", "slippage_bps"),
     "risk_per_trade": ("risk", "risk_per_trade"),
 }
+_STRATEGY_PARAM_PREFIX = "strategy."
+_PARAMETER_KIND_CFG = "cost_cfg"
+_PARAMETER_KIND_STRATEGY = "strategy_param"
+_DEFAULT_MAX_COMBINATION_COUNT = 9
+
+
+def _is_strategy_parameter_name(name: str) -> bool:
+    return name.startswith(_STRATEGY_PARAM_PREFIX) and len(name) > len(_STRATEGY_PARAM_PREFIX)
+
+
+def _strategy_param_key(name: str) -> str:
+    if not _is_strategy_parameter_name(name):
+        raise ParameterSensitivityError(f"parameter_not_strategy_axis:{name}")
+    return name[len(_STRATEGY_PARAM_PREFIX) :]
 
 
 class ParameterSensitivityError(ValueError):
@@ -185,11 +199,12 @@ class ParameterSensitivityResultV1:
     blocked_point_count: int
     seed: int
     reason_codes: tuple[str, ...]
+    parameter_neighbor_degradation: Optional[float] = None
     oos_tuning_forbidden: bool = True
     full_grid_persisted: bool = True
 
     def to_dict(self) -> dict[str, Any]:
-        return {
+        payload = {
             "contract_version": self.contract_version,
             "owner": self.owner,
             "pipeline_status": self.pipeline_status.value,
@@ -207,6 +222,9 @@ class ParameterSensitivityResultV1:
             "oos_tuning_forbidden": self.oos_tuning_forbidden,
             "full_grid_persisted": self.full_grid_persisted,
         }
+        if self.parameter_neighbor_degradation is not None:
+            payload["parameter_neighbor_degradation"] = self.parameter_neighbor_degradation
+        return payload
 
     def evidence_digest(self) -> str:
         payload = self.to_dict()
@@ -249,11 +267,37 @@ def _deep_copy_cfg(cfg: Mapping[str, Any]) -> dict[str, Any]:
     return copy.deepcopy(dict(cfg))
 
 
+def _parameter_kind(name: str) -> str:
+    if name in _CFG_PARAM_PATHS:
+        return _PARAMETER_KIND_CFG
+    if _is_strategy_parameter_name(name):
+        return _PARAMETER_KIND_STRATEGY
+    raise ParameterSensitivityError(f"parameter_not_allowed:{name}")
+
+
+def _parameter_allowed(name: str) -> bool:
+    return name in _CFG_PARAM_PATHS or _is_strategy_parameter_name(name)
+
+
 def _apply_cfg_param(cfg: dict[str, Any], param_name: str, value: float) -> None:
+    kind = _parameter_kind(param_name)
+    if kind == _PARAMETER_KIND_STRATEGY:
+        strategy_key = _strategy_param_key(param_name)
+        eval_section = cfg.setdefault("economic_evaluation_v1", {})
+        if not isinstance(eval_section, dict):
+            raise ParameterSensitivityError("economic_evaluation_v1_not_mapping")
+        strategy_params = eval_section.setdefault("strategy_params", {})
+        if not isinstance(strategy_params, dict):
+            raise ParameterSensitivityError("strategy_params_not_mapping")
+        if isinstance(value, float) and value.is_integer():
+            strategy_params[strategy_key] = int(value)
+        else:
+            strategy_params[strategy_key] = float(value)
+        return
     if param_name not in _CFG_PARAM_PATHS:
         raise ParameterSensitivityError(f"parameter_not_cfg_bound:{param_name}")
     path = _CFG_PARAM_PATHS[param_name]
-    node: dict[str, Any] = cfg
+    node = cfg
     for key in path[:-1]:
         child = node.get(key)
         if not isinstance(child, dict):
@@ -289,7 +333,7 @@ def _validate_bounds(
     if len(parameter_names) != len(parameter_values):
         raise ParameterSensitivityError("parameter_names_values_length_mismatch")
     for name in parameter_names:
-        if name not in _CFG_PARAM_PATHS:
+        if not _parameter_allowed(name):
             raise ParameterSensitivityError(f"parameter_not_allowed:{name}")
         bounds = search_space_bounds.get(name)
         if bounds is None:
@@ -303,6 +347,81 @@ def _validate_bounds(
         for value in parameter_values[list(parameter_names).index(name)]:
             if value < lower or value > upper:
                 raise ParameterSensitivityError(f"parameter_value_out_of_bounds:{name}:{value}")
+
+
+def _validate_grid_contract_extensions(spec: Mapping[str, Any], *, combination_count: int) -> None:
+    if spec.get("adaptive_expansion") is True:
+        raise ParameterSensitivityError("adaptive_grid_expansion_forbidden")
+    if spec.get("allow_post_hoc_center_shift") is True:
+        raise ParameterSensitivityError("post_hoc_center_shift_forbidden")
+    if spec.get("use_holdout") is True:
+        raise ParameterSensitivityError("holdout_usage_forbidden")
+    max_count_raw = spec.get("max_combination_count", _DEFAULT_MAX_COMBINATION_COUNT)
+    max_count = int(max_count_raw)
+    if max_count <= 0:
+        raise ParameterSensitivityError("max_combination_count_invalid")
+    if combination_count > max_count:
+        raise ParameterSensitivityError("max_combination_count_exceeded")
+    centers = spec.get("parameter_centers")
+    if centers is not None:
+        if not isinstance(centers, Mapping):
+            raise ParameterSensitivityError("parameter_centers_not_mapping")
+        for name in spec.get("parameter_names", ()):
+            if str(name) not in centers:
+                raise ParameterSensitivityError(f"parameter_center_missing:{name}")
+
+
+def compute_parameter_neighbor_degradation_v1(
+    *,
+    parameter_names: Sequence[str],
+    parameter_centers: Mapping[str, float],
+    points: Sequence[ParameterSensitivityPointV1],
+) -> Optional[float]:
+    """Relative degradation of worst neighbor vs declared center on net_return."""
+    if not points:
+        return None
+    center_values = {name: float(parameter_centers[name]) for name in parameter_names}
+    center_point: ParameterSensitivityPointV1 | None = None
+    for point in points:
+        if all(
+            float(point.parameter_values.get(name)) == center_values[name]
+            for name in parameter_names
+        ):
+            center_point = point
+            break
+    if center_point is None:
+        return None
+    if center_point.net_return is not MetricValueStatus.COMPUTED:
+        return None
+    center_metric = center_point.net_return_value
+    if center_metric is None or not math.isfinite(center_metric) or center_metric == 0.0:
+        return None
+
+    worst_degradation = 0.0
+    found_neighbor = False
+    for point in points:
+        if point.parameter_set_id == center_point.parameter_set_id:
+            continue
+        neighbor_delta = sum(
+            1
+            for name in parameter_names
+            if float(point.parameter_values.get(name)) != center_values[name]
+        )
+        if neighbor_delta == 0:
+            continue
+        if point.net_return is not MetricValueStatus.COMPUTED:
+            return None
+        neighbor_metric = point.net_return_value
+        if neighbor_metric is None or not math.isfinite(neighbor_metric):
+            return None
+        found_neighbor = True
+        degradation = abs((center_metric - neighbor_metric) / center_metric)
+        if not math.isfinite(degradation):
+            return None
+        worst_degradation = max(worst_degradation, degradation)
+    if not found_neighbor:
+        return None
+    return worst_degradation
 
 
 def _iter_grid_combinations(
@@ -377,6 +496,7 @@ def build_parameter_grid_v1(
     seed = int(spec.get("seed", 42))
     _validate_bounds(parameter_names, parameter_values, search_space_bounds)
     combinations = _iter_grid_combinations(parameter_names, parameter_values)
+    _validate_grid_contract_extensions(spec, combination_count=len(combinations))
     train, validation, oos = split_bars_train_validation_oos_v1(bars)
     config_digest = _stable_digest({"cfg": dict(cfg), "owner": PARAMETER_SENSITIVITY_OWNER})
     implementation_digest = _stable_digest(
@@ -669,6 +789,15 @@ def run_parameter_sensitivity_v1(
     result_digest = _stable_digest(
         {**result_payload, "points": [point.to_dict() for point in points]}
     )
+    grid_spec = dict((cfg.get("backtest") or {}).get("parameter_sensitivity", {}).get("grid") or {})
+    parameter_centers = grid_spec.get("parameter_centers")
+    neighbor_degradation: Optional[float] = None
+    if isinstance(parameter_centers, Mapping):
+        neighbor_degradation = compute_parameter_neighbor_degradation_v1(
+            parameter_names=grid.parameter_names,
+            parameter_centers={k: float(v) for k, v in parameter_centers.items()},
+            points=tuple(points),
+        )
     return ParameterSensitivityResultV1(
         contract_version=PARAMETER_SENSITIVITY_VERSION,
         owner=PARAMETER_SENSITIVITY_OWNER,
@@ -684,6 +813,7 @@ def run_parameter_sensitivity_v1(
         blocked_point_count=blocked_count,
         seed=grid.seed,
         reason_codes=tuple(sorted(set(reason_codes))),
+        parameter_neighbor_degradation=neighbor_degradation,
     )
 
 
@@ -700,8 +830,13 @@ def parameter_sensitivity_schema_v1() -> dict[str, Any]:
         "owner": PARAMETER_SENSITIVITY_OWNER,
         "allowed_pipeline_statuses": [status.value for status in PipelineStatus],
         "allowed_evaluation_statuses": [status.value for status in EvaluationStatus],
+        "allowed_parameter_names_prefixes": {
+            "cost_cfg": sorted(_CFG_PARAM_PATHS),
+            "strategy_param": _STRATEGY_PARAM_PREFIX,
+        },
         "oos_tuning_forbidden": True,
         "full_grid_persistence_required": True,
+        "adaptive_grid_expansion_forbidden": True,
         "authority_effect": "NONE",
         "runtime_effect": False,
         "order_effect": False,

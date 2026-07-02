@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import math
 from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Mapping, Optional, Sequence
@@ -17,6 +18,7 @@ from typing import Any, Mapping, Optional, Sequence
 import pandas as pd
 
 from src.strategies import load_strategy
+from src.strategies.composite import CompositeStrategy
 from src.strategies.registry import (
     get_strategy_registry_entry,
     get_strategy_spec,
@@ -46,7 +48,53 @@ _EXTERNAL_PARAMETER_SCHEMA_V1: dict[str, dict[str, Any]] = {
         "slow_ema": 26,
         "signal_ema": 9,
     },
+    "vol_regime_filter": {
+        "vol_window": 20,
+        "vol_method": "atr",
+        "min_bars": 30,
+        "lookback_percentile": 100,
+        "regime_mode": False,
+        "invert": False,
+        "vol_percentile_low": None,
+        "vol_percentile_high": None,
+        "min_vol": None,
+        "max_vol": None,
+        "low_vol_threshold": None,
+        "high_vol_threshold": None,
+        "atr_threshold": None,
+    },
 }
+
+COMPOSITE_STRATEGY_ID = "composite"
+COMPOSITE_BINDING_TYPE_FILTER_GATED_SIGNAL_V1 = "filter_gated_signal_v1"
+COMPOSITION_RULE_SIGNAL_TIMES_FILTER_MASK = "signal_times_filter_mask"
+_ALLOWED_COMPOSITE_BINDING_TYPES = frozenset({COMPOSITE_BINDING_TYPE_FILTER_GATED_SIGNAL_V1})
+_ALLOWED_COMPOSITION_RULES = frozenset({COMPOSITION_RULE_SIGNAL_TIMES_FILTER_MASK})
+_ALLOWED_COMPOSITE_SIGNAL_OWNERS = frozenset(
+    {"breakout_donchian", "macd", "ma_crossover", "rsi_reversion"}
+)
+_ALLOWED_COMPOSITE_FILTER_OWNERS = frozenset({"vol_regime_filter"})
+_LONG_ONLY_ASYMMETRIC_SIGNAL_OWNERS = frozenset({"trend_following"})
+_FORBIDDEN_BINDING_IDENTITY_SUBSTRINGS = frozenset(
+    {"btc", "xbt", "bitcoin", "spot", "synthetic_spot"}
+)
+_COMPOSITE_BINDING_TOP_LEVEL_KEYS = frozenset(
+    {
+        "composite_type",
+        "composition_rule",
+        "signal_strategy_id",
+        "filter_strategy_id",
+        "signal_strategy_params",
+        "filter_strategy_params",
+        "aggregation",
+        "signal_threshold",
+        "binding_semantic_digest",
+        "required_warmup_rows",
+    }
+)
+_COMPOSITE_IMPLICIT_SELECTION_KEYS = frozenset(
+    {"signal_strategy_candidates", "filter_strategy_candidates", "components", "strategies"}
+)
 
 # Evaluation/config metadata allowed in configured params but not strategy logic schema.
 _EVALUATION_ONLY_STRATEGY_PARAMS_V1: dict[str, frozenset[str]] = {
@@ -215,6 +263,298 @@ def _schema_defaults(strategy_id: str) -> dict[str, Any]:
     return {param.name: param.default for param in schema}
 
 
+@dataclass(frozen=True)
+class CompositeStrategyBindingV1:
+    composite_type: str
+    composition_rule: str
+    signal_strategy_id: str
+    filter_strategy_id: str
+    signal_strategy_params: Mapping[str, Any]
+    filter_strategy_params: Mapping[str, Any]
+    aggregation: str
+    signal_threshold: float
+    binding_semantic_digest: str
+    required_warmup_rows: int
+    signal_effective_params: Mapping[str, Any]
+    filter_effective_params: Mapping[str, Any]
+    signal_params_digest: str
+    filter_params_digest: str
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "composite_type": self.composite_type,
+            "composition_rule": self.composition_rule,
+            "signal_strategy_id": self.signal_strategy_id,
+            "filter_strategy_id": self.filter_strategy_id,
+            "signal_strategy_params": dict(self.signal_strategy_params),
+            "filter_strategy_params": dict(self.filter_strategy_params),
+            "aggregation": self.aggregation,
+            "signal_threshold": self.signal_threshold,
+            "binding_semantic_digest": self.binding_semantic_digest,
+            "required_warmup_rows": self.required_warmup_rows,
+            "signal_effective_params": dict(self.signal_effective_params),
+            "filter_effective_params": dict(self.filter_effective_params),
+            "signal_params_digest": self.signal_params_digest,
+            "filter_params_digest": self.filter_params_digest,
+        }
+
+
+def _reject_forbidden_binding_identity(value: str, *, field_name: str) -> None:
+    lowered = value.lower()
+    for token in _FORBIDDEN_BINDING_IDENTITY_SUBSTRINGS:
+        if token in lowered:
+            raise StrategySignalBindingError(f"binding_identity_forbidden:{field_name}:{value}")
+
+
+def _require_mapping(value: Any, *, field_name: str) -> Mapping[str, Any]:
+    if not isinstance(value, Mapping):
+        raise StrategySignalBindingError(f"composite_binding_field_not_mapping:{field_name}")
+    return value
+
+
+def _validate_composite_binding_params_deterministic(
+    params: Mapping[str, Any], *, owner: str
+) -> None:
+    for key, value in params.items():
+        if isinstance(value, (dict, list, set)):
+            raise StrategySignalBindingError(f"composite_binding_param_non_scalar:{owner}:{key}")
+        if isinstance(value, float) and not math.isfinite(value):
+            raise StrategySignalBindingError(f"composite_binding_param_non_finite:{owner}:{key}")
+
+
+def compute_composite_binding_semantic_digest_v1(binding_payload: Mapping[str, Any]) -> str:
+    return _stable_digest(
+        {
+            "owner": STRATEGY_SIGNAL_BINDING_OWNER,
+            "binding_version": STRATEGY_SIGNAL_BINDING_LAYER_VERSION,
+            "binding_payload": binding_payload,
+        }
+    )
+
+
+def parse_composite_strategy_binding_v1(
+    configured_params: Mapping[str, Any],
+) -> CompositeStrategyBindingV1:
+    """Parse and validate declarative composite binding config (fail-closed)."""
+    for key in configured_params:
+        if key in _COMPOSITE_IMPLICIT_SELECTION_KEYS:
+            raise StrategySignalBindingError(f"composite_implicit_selection_forbidden:{key}")
+        if key not in _COMPOSITE_BINDING_TOP_LEVEL_KEYS:
+            raise StrategySignalBindingError(f"unknown_composite_binding_param:{key}")
+
+    composite_type = str(configured_params.get("composite_type", "")).strip()
+    _fail_closed(
+        composite_type not in _ALLOWED_COMPOSITE_BINDING_TYPES,
+        f"unknown_composite_type:{composite_type or 'missing'}",
+    )
+
+    composition_rule = str(configured_params.get("composition_rule", "")).strip()
+    _fail_closed(
+        composition_rule not in _ALLOWED_COMPOSITION_RULES,
+        f"unknown_composition_rule:{composition_rule or 'missing'}",
+    )
+
+    signal_strategy_id = str(configured_params.get("signal_strategy_id", "")).strip()
+    filter_strategy_id = str(configured_params.get("filter_strategy_id", "")).strip()
+    _fail_closed(not signal_strategy_id, "composite_signal_strategy_id_missing")
+    _fail_closed(not filter_strategy_id, "composite_filter_strategy_id_missing")
+    _reject_forbidden_binding_identity(signal_strategy_id, field_name="signal_strategy_id")
+    _reject_forbidden_binding_identity(filter_strategy_id, field_name="filter_strategy_id")
+
+    signal_resolution = resolve_strategy_id(signal_strategy_id)
+    filter_resolution = resolve_strategy_id(filter_strategy_id)
+    canonical_signal_id = signal_resolution.canonical_strategy_id
+    canonical_filter_id = filter_resolution.canonical_strategy_id
+
+    _fail_closed(
+        canonical_signal_id not in _ALLOWED_COMPOSITE_SIGNAL_OWNERS,
+        f"composite_signal_owner_not_allowed:{canonical_signal_id}",
+    )
+    _fail_closed(
+        canonical_filter_id not in _ALLOWED_COMPOSITE_FILTER_OWNERS,
+        f"composite_filter_owner_not_allowed:{canonical_filter_id}",
+    )
+    _fail_closed(
+        canonical_signal_id in _LONG_ONLY_ASYMMETRIC_SIGNAL_OWNERS,
+        f"composite_signal_owner_long_only_asymmetric:{canonical_signal_id}",
+    )
+
+    signal_params = _require_mapping(
+        configured_params.get("signal_strategy_params"),
+        field_name="signal_strategy_params",
+    )
+    filter_params = _require_mapping(
+        configured_params.get("filter_strategy_params"),
+        field_name="filter_strategy_params",
+    )
+    _validate_composite_binding_params_deterministic(
+        signal_params,
+        owner="signal_strategy_params",
+    )
+    _validate_composite_binding_params_deterministic(
+        filter_params,
+        owner="filter_strategy_params",
+    )
+
+    signal_binding_params = project_strategy_params_for_binding_v1(
+        canonical_signal_id,
+        signal_params,
+    )
+    filter_binding_params = project_strategy_params_for_binding_v1(
+        canonical_filter_id,
+        filter_params,
+    )
+    signal_effective, signal_digest = resolve_effective_strategy_params_v1(
+        canonical_signal_id,
+        signal_binding_params,
+    )
+    filter_effective, filter_digest = resolve_effective_strategy_params_v1(
+        canonical_filter_id,
+        filter_binding_params,
+    )
+
+    if canonical_filter_id == "vol_regime_filter":
+        if filter_effective.get("regime_mode") is True:
+            raise StrategySignalBindingError(
+                "vol_regime_filter_regime_mode_not_allowed_in_filter_binding"
+            )
+        for required in ("vol_percentile_low", "vol_percentile_high"):
+            if required not in filter_params:
+                raise StrategySignalBindingError(f"filter_strategy_param_missing:{required}")
+
+    aggregation = str(configured_params.get("aggregation", "")).strip().lower()
+    _fail_closed(not aggregation, "composite_aggregation_missing")
+    if "signal_threshold" not in configured_params:
+        raise StrategySignalBindingError("composite_signal_threshold_missing")
+    signal_threshold = float(configured_params["signal_threshold"])
+    if not math.isfinite(signal_threshold):
+        raise StrategySignalBindingError("composite_signal_threshold_non_finite")
+
+    signal_warmup = compute_required_warmup_rows_v1(canonical_signal_id, signal_effective)
+    filter_warmup = compute_required_warmup_rows_v1(canonical_filter_id, filter_effective)
+    required_warmup_rows = max(signal_warmup, filter_warmup)
+
+    if "required_warmup_rows" in configured_params:
+        declared_warmup = configured_params["required_warmup_rows"]
+        if isinstance(declared_warmup, bool) or not isinstance(declared_warmup, int):
+            raise StrategySignalBindingError("composite_required_warmup_not_integer")
+        if declared_warmup != required_warmup_rows:
+            raise StrategySignalBindingError("composite_required_warmup_mismatch")
+
+    semantic_payload = {
+        "composite_type": composite_type,
+        "composition_rule": composition_rule,
+        "signal_strategy_id": canonical_signal_id,
+        "filter_strategy_id": canonical_filter_id,
+        "signal_strategy_params": dict(signal_params),
+        "filter_strategy_params": dict(filter_params),
+        "signal_effective_params": signal_effective,
+        "filter_effective_params": filter_effective,
+        "aggregation": aggregation,
+        "signal_threshold": signal_threshold,
+        "required_warmup_rows": required_warmup_rows,
+    }
+    binding_semantic_digest = compute_composite_binding_semantic_digest_v1(semantic_payload)
+
+    expected_digest = configured_params.get("binding_semantic_digest")
+    if expected_digest is not None:
+        if str(expected_digest) != binding_semantic_digest:
+            raise StrategySignalBindingError("composite_binding_semantic_digest_mismatch")
+
+    return CompositeStrategyBindingV1(
+        composite_type=composite_type,
+        composition_rule=composition_rule,
+        signal_strategy_id=canonical_signal_id,
+        filter_strategy_id=canonical_filter_id,
+        signal_strategy_params=dict(signal_params),
+        filter_strategy_params=dict(filter_params),
+        aggregation=aggregation,
+        signal_threshold=signal_threshold,
+        binding_semantic_digest=binding_semantic_digest,
+        required_warmup_rows=required_warmup_rows,
+        signal_effective_params=signal_effective,
+        filter_effective_params=filter_effective,
+        signal_params_digest=signal_digest,
+        filter_params_digest=filter_digest,
+    )
+
+
+def _instantiate_bound_strategy_v1(
+    strategy_id: str,
+    effective_params: Mapping[str, Any],
+):
+    spec = get_strategy_spec(strategy_id)
+    return spec.cls(config=dict(effective_params))
+
+
+def execute_composite_strategy_signal_series_v1(
+    bars: pd.DataFrame,
+    *,
+    configured_params: Mapping[str, Any],
+    configured_strategy_id: str = COMPOSITE_STRATEGY_ID,
+) -> StrategySignalBindingResultV1:
+    """Execute filter-gated composite binding via canonical CompositeStrategy owner."""
+    binding = parse_composite_strategy_binding_v1(configured_params)
+    signal_strategy = _instantiate_bound_strategy_v1(
+        binding.signal_strategy_id,
+        binding.signal_effective_params,
+    )
+    filter_strategy = _instantiate_bound_strategy_v1(
+        binding.filter_strategy_id,
+        binding.filter_effective_params,
+    )
+    composite = CompositeStrategy(
+        strategies=[(signal_strategy, 1.0)],
+        aggregation=binding.aggregation,
+        signal_threshold=binding.signal_threshold,
+        filter_strategy=filter_strategy,
+    )
+    raw_signals = composite.generate_signals(bars)
+    if not isinstance(raw_signals, pd.Series):
+        raise StrategySignalBindingError("composite_signal_not_series")
+
+    composite_params_digest = _stable_digest(
+        {
+            "strategy_id": COMPOSITE_STRATEGY_ID,
+            "binding_semantic_digest": binding.binding_semantic_digest,
+            "owner": STRATEGY_SIGNAL_BINDING_OWNER,
+        }
+    )
+    validated_signals, provenance = validate_strategy_signal_contract_v1(
+        raw_signals,
+        bars_index=bars.index,
+        strategy_id=COMPOSITE_STRATEGY_ID,
+        strategy_params_digest=composite_params_digest,
+    )
+    entry = get_strategy_registry_entry(COMPOSITE_STRATEGY_ID)
+    provenance = StrategySignalProvenanceV1(
+        configured_strategy_id=configured_strategy_id,
+        executed_strategy_id=COMPOSITE_STRATEGY_ID,
+        strategy_version=entry.strategy_version,
+        strategy_owner=entry.implementation_ref,
+        configured_strategy_params=dict(configured_params),
+        effective_strategy_params={
+            "composite_binding": binding.to_dict(),
+            "binding_semantic_digest": binding.binding_semantic_digest,
+            "required_warmup_rows": binding.required_warmup_rows,
+        },
+        strategy_params_digest=composite_params_digest,
+        strategy_execution_status=StrategyExecutionStatus.EXECUTED,
+        strategy_signal_source=STRATEGY_SIGNAL_SOURCE_CANONICAL,
+        strategy_signal_digest=provenance.strategy_signal_digest,
+        strategy_signal_count=provenance.strategy_signal_count,
+        strategy_nonzero_signal_count=provenance.strategy_nonzero_signal_count,
+        strategy_signal_transition_count=provenance.strategy_signal_transition_count,
+        engine_signal_source=ENGINE_SIGNAL_SOURCE_CONFIGURED_STRATEGY,
+        engine_signal_digest=provenance.strategy_signal_digest,
+        engine_input_nonzero_signal_count=provenance.engine_input_nonzero_signal_count,
+        signal_alignment_status=provenance.signal_alignment_status,
+        signal_contract_status=provenance.signal_contract_status,
+        all_flat_signal_reason=provenance.all_flat_signal_reason,
+    )
+    return StrategySignalBindingResultV1(signals=validated_signals, provenance=provenance)
+
+
 def compute_required_warmup_rows_v1(
     strategy_id: str,
     effective_params: Mapping[str, Any],
@@ -240,7 +580,22 @@ def compute_required_warmup_rows_v1(
         return lookback_raw
     if strategy_id == "rsi_reversion":
         return int(effective_params["rsi_window"])
+    if strategy_id == "vol_regime_filter":
+        return max(
+            int(effective_params["vol_window"]),
+            int(effective_params["min_bars"]),
+            int(effective_params["lookback_percentile"]),
+        )
+    if strategy_id == COMPOSITE_STRATEGY_ID:
+        raise StrategySignalBindingError("composite_warmup_requires_binding_context")
     raise StrategySignalBindingError(f"required_warmup_rows_unbound:{strategy_id}")
+
+
+def compute_composite_required_warmup_rows_v1(
+    configured_params: Mapping[str, Any],
+) -> int:
+    binding = parse_composite_strategy_binding_v1(configured_params)
+    return binding.required_warmup_rows
 
 
 def project_strategy_params_for_binding_v1(
@@ -376,6 +731,18 @@ def execute_configured_strategy_signal_series_v1(
     resolution = resolve_strategy_id(strategy_id)
     canonical_id = resolution.canonical_strategy_id
     configured_params = collect_configured_strategy_params_v1(cfg, canonical_id)
+
+    if canonical_id == COMPOSITE_STRATEGY_ID:
+        if not configured_params:
+            composite_cfg = collect_configured_strategy_params_v1(cfg, strategy_id)
+            if composite_cfg:
+                configured_params = composite_cfg
+        return execute_composite_strategy_signal_series_v1(
+            bars,
+            configured_params=configured_params,
+            configured_strategy_id=strategy_id,
+        )
+
     binding_params = project_strategy_params_for_binding_v1(
         canonical_id,
         configured_params,

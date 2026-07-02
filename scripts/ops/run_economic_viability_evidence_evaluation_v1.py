@@ -635,6 +635,11 @@ def _build_gate_metrics_from_evidence(
     stress = evidence.stress_results
     ps_payload = evidence.parameter_sensitivity_results
     funding_bound = evidence.cost_binding.get("funding_binding_status") == "BOUND"
+    (
+        parameter_neighbor_degradation,
+        single_trade_profit_contribution,
+        single_regime_profit_contribution,
+    ) = ev.extract_robustness_gate_metrics_from_evidence_v1(evidence)
     return EconomicValidityEvidenceMetricsV1(
         net_expectancy=evidence.net_expectancy.value,
         profit_factor=evidence.profit_factor.value,
@@ -649,6 +654,9 @@ def _build_gate_metrics_from_evidence(
             if isinstance(ps_payload, Mapping)
             else None
         ),
+        parameter_neighbor_degradation=parameter_neighbor_degradation,
+        single_trade_profit_contribution=single_trade_profit_contribution,
+        single_regime_profit_contribution=single_regime_profit_contribution,
         data_admissibility_status=(
             "PASS" if evidence.data_admissibility.get("binding_status") == "PASS" else "FAIL"
         ),
