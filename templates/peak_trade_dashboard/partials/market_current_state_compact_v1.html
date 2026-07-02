@@ -1,0 +1,85 @@
+{# STEP29M current-state panel — compact, view-only, no controls #}
+<section
+  class="rounded-lg border border-slate-800/70 bg-slate-950/55 px-2.5 py-2 mt-2"
+  role="region"
+  aria-label="STEP29M current system state"
+  data-market-current-state-compact-v1="true"
+  data-market-current-state-owner-v1="{{ current_state.snapshot_owner|e }}"
+  data-market-current-state-version-v1="{{ current_state.snapshot_version|e }}"
+  data-market-view-only="true"
+  data-market-trading-authority-v1="false"
+  data-market-controls-allowed-v1="false"
+>
+  <div class="flex flex-wrap items-center justify-between gap-2 mb-1.5">
+    <h2 class="m-0 text-[10px] font-semibold uppercase tracking-wide text-slate-300">STEP29M · Current state</h2>
+    <span class="text-[9px] font-mono text-slate-500" data-market-current-origin-main-v1="true">origin/main · {{ current_state.system.CURRENT_ORIGIN_MAIN|e }}</span>
+  </div>
+
+  <dl class="m-0 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-x-2 gap-y-1 text-[9px] font-mono mb-2" data-market-current-state-flags-v1="true">
+    <div><dt class="text-slate-500 uppercase">Pending eval</dt><dd class="m-0 text-sky-200/90" data-market-authorized-pending-count-v1="true">{{ current_state.system.AUTHORIZED_PENDING_EVALUATION_COUNT|e }}</dd></div>
+    <div><dt class="text-slate-500 uppercase">Next strategy</dt><dd class="m-0 text-sky-200/90" data-market-next-evaluation-strategy-v1="true">{{ current_state.system.NEXT_EVALUATION_STRATEGY_ID|e }}</dd></div>
+    <div><dt class="text-slate-500 uppercase">Next status</dt><dd class="m-0 text-sky-200/90" data-market-next-evaluation-status-v1="true">{{ current_state.system.NEXT_EVALUATION_CONFIG_STATUS|e }}</dd></div>
+    <div><dt class="text-slate-500 uppercase">Econ pass</dt><dd class="m-0 text-rose-200/90" data-market-economic-validity-pass-v1="true">false</dd></div>
+    <div><dt class="text-slate-500 uppercase">Promotion</dt><dd class="m-0 text-slate-300" data-market-promotion-allowed-v1="true">false</dd></div>
+    <div><dt class="text-slate-500 uppercase">Runtime</dt><dd class="m-0 text-slate-300" data-market-runtime-authorized-v1="true">false</dd></div>
+  </dl>
+
+  <div class="mb-2" data-market-strategy-fleet-compact-v1="true">
+    <p class="m-0 mb-1 text-[9px] uppercase text-slate-500">Strategy fleet (no profitability claim)</p>
+    <ul class="m-0 p-0 list-none grid grid-cols-1 sm:grid-cols-3 gap-1 text-[9px]">
+      {% for row in current_state.strategy_fleet %}
+      <li
+        class="rounded border border-slate-800/70 bg-slate-900/50 px-1.5 py-1"
+        data-market-fleet-row-v1="true"
+        data-market-fleet-strategy-id="{{ row.strategy_id|e }}"
+        data-market-fleet-status="{{ row.status_label|e }}"
+      >
+        <span class="font-mono text-slate-200">{{ row.strategy_id|e }} {{ row.strategy_version|e }} / config {{ row.config_version|e }}</span>
+        <span class="block mt-0.5 uppercase text-slate-400">{{ row.status_label|e }}</span>
+        {% if row.policy_ratified %}
+        <span class="block text-[8px] text-emerald-300/80">POLICY_RATIFIED · FIXED_CONFIG_BOUND</span>
+        {% endif %}
+        {% if row.economic_evaluation_executed is defined and not row.economic_evaluation_executed %}
+        <span class="block text-[8px] text-slate-500">ECONOMIC_EVALUATION_EXECUTED=false</span>
+        {% endif %}
+      </li>
+      {% endfor %}
+    </ul>
+  </div>
+
+  <details class="rounded border border-slate-800/60 bg-slate-950/40 px-2 py-1 mb-2" data-market-ma-crossover-config-v1="true">
+    <summary class="cursor-pointer text-[9px] font-semibold uppercase text-slate-400">ma_crossover fixed config (technical, non-economic)</summary>
+    {% set cfg = current_state.ma_crossover_fixed_config %}
+    <dl class="m-0 mt-1 grid grid-cols-2 sm:grid-cols-4 gap-x-2 gap-y-1 text-[9px] font-mono text-slate-300">
+      <div><dt class="text-slate-500">strategy</dt><dd class="m-0">{{ cfg.strategy_id|e }} {{ cfg.strategy_version|e }}</dd></div>
+      <div><dt class="text-slate-500">instrument</dt><dd class="m-0">{{ cfg.instrument_id|e }}</dd></div>
+      <div><dt class="text-slate-500">fast/slow</dt><dd class="m-0">{{ cfg.fast_window|e }}/{{ cfg.slow_window|e }}</dd></div>
+      <div><dt class="text-slate-500">price_col</dt><dd class="m-0">{{ cfg.price_col|e }}</dd></div>
+      <div><dt class="text-slate-500">risk/stop/max</dt><dd class="m-0">{{ cfg.risk_per_trade|e }} / {{ cfg.stop_pct|e }} / {{ cfg.max_position_pct|e }}</dd></div>
+      <div><dt class="text-slate-500">oversize</dt><dd class="m-0">{{ cfg.oversize_policy|e }}</dd></div>
+      <div class="sm:col-span-2"><dt class="text-slate-500">sizing invariant</dt><dd class="m-0">{{ cfg.sizing_invariant.lhs|e }} &lt;= {{ cfg.sizing_invariant.rhs|e }}</dd></div>
+    </dl>
+    <p class="m-0 mt-1 text-[8px] text-slate-500">Fixed config · no tuning · no dataset switch · no threshold change · no economic evaluation · no performance statement</p>
+  </details>
+
+  <div class="rounded border border-sky-900/40 bg-sky-950/20 px-2 py-1.5 mb-2" data-market-next-canonical-step-v1="true">
+    <p class="m-0 text-[9px] uppercase text-sky-300/90">Next canonical step</p>
+    <p class="m-0 mt-0.5 font-mono text-[9px] text-sky-100/90 break-all">{{ current_state.next_canonical_step.step_id|e }}</p>
+    <p class="m-0 mt-1 text-[8px] text-slate-400">PREFLIGHT_ONLY=true · ECONOMIC_EVALUATION_AUTHORIZED=false · PRODUCTIVE_RUNNER_INVOCATIONS=0 · BACKTEST_ALLOWED=false</p>
+  </div>
+
+  <div class="flex flex-wrap gap-1 text-[8px] uppercase mb-1" data-market-governance-safety-compact-v1="true">
+    <span class="rounded border border-emerald-800/50 px-1 py-0.5 text-emerald-200/90">FUTURES_ONLY</span>
+    <span class="rounded border border-rose-800/45 px-1 py-0.5 text-rose-200/90" data-market-governance-directional-crypto-blocked-v1="true">BIT<!-- -->COIN_DIRECTION_ALLOWED=false</span>
+    <span class="rounded border border-rose-800/45 px-1 py-0.5 text-rose-200/90">SPOT_ALLOWED=false</span>
+    <span class="rounded border border-rose-800/45 px-1 py-0.5 text-rose-200/90">SYNTHETIC_SPOT_ALLOWED=false</span>
+    <span class="rounded border border-slate-700/60 px-1 py-0.5 text-slate-300">MAX_POSITIONS=1</span>
+    <span class="rounded border border-slate-700/60 px-1 py-0.5 text-slate-300">MAX_ACTIVE_DIRECTIONAL_SIDE=1</span>
+    <span class="rounded border border-slate-700/60 px-1 py-0.5 text-slate-300">ORDERS_ALLOWED=false</span>
+    <span class="rounded border border-slate-700/60 px-1 py-0.5 text-slate-300">LIVE_AUTHORIZED=false</span>
+  </div>
+
+  <p class="m-0 text-[8px] text-slate-500" data-market-evidence-primary-v1="true">
+    PR #4740 MERGED · Notion sync MANIFEST_VERIFY_RC=0 · view-only · no controls
+  </p>
+</section>

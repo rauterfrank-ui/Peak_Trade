@@ -57,6 +57,9 @@ from .market_instrument_eligibility_v0 import (
     is_bitcoin_underlying,
     is_eligible_market_dashboard_instrument,
 )
+from .market_dashboard_current_state_runtime_v0 import (
+    build_market_dashboard_current_state_display_context,
+)
 from .workflow_dashboard_runtime_v1 import build_workflow_dashboard_display_context
 
 logger = logging.getLogger(__name__)
@@ -115,6 +118,11 @@ CANONICAL_SAFETY_TEMPLATE_OWNER = (
 )
 CANONICAL_DP_DATA_OWNER = "src/webui/double_play_dashboard_display_json_route_v0.py"
 CANONICAL_SAFETY_DATA_OWNER = "src/webui/futures_read_only_market_dashboard_runtime_v0.py"
+CANONICAL_CURRENT_STATE_SNAPSHOT_OWNER = "src/webui/market_dashboard_current_state_snapshot_v0.py"
+CANONICAL_CURRENT_STATE_RUNTIME_OWNER = "src/webui/market_dashboard_current_state_runtime_v0.py"
+CANONICAL_CURRENT_STATE_TEMPLATE_OWNER = (
+    "templates/peak_trade_dashboard/partials/market_current_state_compact_v1.html"
+)
 
 _MATRIX_DISPLAY_STATUS_ALLOWLIST: dict[str, tuple[str, str]] = {
     "active": ("active", "Active"),
@@ -2981,6 +2989,7 @@ def build_market_v0_page_template_context(
         dp_display=dp_display,
         f5_dashboard=f5_dashboard,
     )
+    current_state = build_market_dashboard_current_state_display_context()
     encoded_symbol = quote(symbol, safe="")
     legacy_demo_href = (
         f"/market?source=dummy&symbol={quote('ETHUSDT', safe='')}"
@@ -3008,6 +3017,7 @@ def build_market_v0_page_template_context(
         "selected_instrument_workspace": selected_instrument_workspace,
         "double_play_matrix": double_play_matrix,
         "safety_matrix": safety_matrix,
+        "current_state": current_state,
         "top_n": top_n,
         "top_n_toggle_hrefs": {
             20: build_market_top_n_toggle_href(

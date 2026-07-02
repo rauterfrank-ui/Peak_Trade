@@ -212,6 +212,10 @@
     <p class="m-0 mt-1 text-[9px] text-slate-500" data-market-remodel-operator-readiness-v2="true">Readiness · display · System OK · no orders · no live · no execution</p>
   </section>
 
+  {% if current_state.section_visible %}
+  {% include "partials/market_current_state_compact_v1.html" %}
+  {% endif %}
+
   {% include "partials/market_primary_operator_hero_v1.html" %}
 
   {% if futures_first %}
