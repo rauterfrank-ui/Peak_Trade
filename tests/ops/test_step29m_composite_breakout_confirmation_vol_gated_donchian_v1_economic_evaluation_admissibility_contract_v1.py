@@ -129,6 +129,14 @@ def test_full_admissibility_contract_passes() -> None:
     assert result.policy_invariant_result == contract.POLICY_INVARIANT_RESULT
 
 
+def test_ratified_research_disposition_constants() -> None:
+    assert contract.RESEARCH_LINE_STATUS == "CLOSED_REJECTED"
+    assert contract.ARCHITECTURE_REJECTED is True
+    assert contract.ECONOMIC_EVALUATION_VERDICT == "ECONOMIC_VALIDITY_OFFLINE_GATE_FAIL"
+    assert contract.PROMOTION_ELIGIBLE is False
+    assert contract.RETRY_ALLOWED is False
+
+
 def test_non_one_confirmation_epochs_fail_closed() -> None:
     bad_params = dict(contract.COMPOSITE_V1_CANONICAL_PARAMS)
     bad_params["confirmation_epochs"] = 2
