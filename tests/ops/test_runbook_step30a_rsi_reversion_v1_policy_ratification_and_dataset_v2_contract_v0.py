@@ -43,9 +43,12 @@ def test_step30a_section_binds_dataset_v2_and_frozen_holdout() -> None:
     assert _field_value(section, "STEP30A_HOLDOUT_FROZEN_REF") == (
         "2026-06-17 10:07:00+00:00..2026-07-01 10:07:00+00:00"
     )
-    assert _field_value(section, "STEP30A_REGISTERED_ECONOMIC_EVALUATION_CONFIGS").replace(
-        "&#47;", "/"
-    ) == "config/ops/step30a_okx_inst_eth_usdt_perp_rsi_reversion_v1_economic_evaluation_v1.json"
+    assert (
+        _field_value(section, "STEP30A_REGISTERED_ECONOMIC_EVALUATION_CONFIGS").replace(
+            "&#47;", "/"
+        )
+        == "config/ops/step30a_okx_inst_eth_usdt_perp_rsi_reversion_v1_economic_evaluation_v1.json"
+    )
     assert _field_value(section, "NEXT_CANONICAL_STEP") == (
         "SEPARATE_EVALUATION_GO_REQUIRED_AFTER_PRE_PR_AND_IMPLEMENTATION_CLOSEOUT"
     )
