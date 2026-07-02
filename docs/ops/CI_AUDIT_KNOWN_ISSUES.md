@@ -3913,6 +3913,19 @@ ruff format --check .
 bash scripts/ops/check_no_black_enforcement.sh
 ```
 
+## Canonical pre-PR diff-scoped Ruff + diff-check guard v0
+
+**Scope:** `PREFLIGHT_PRE_PR_RUFF_AND_DIFF_GUARD_V0=true` · **Owner:** `scripts/ops/preflight_pre_pr_ruff_and_diff_guard_v0.py`
+
+Diff-scoped local pre-PR entrypoint (offline DevEx only). Complements — does **not** replace — blocking CI `lint_gate.yml` or `verify_pre_pr_validation_result_v0.py` envelope verification.
+
+```bash
+python3 scripts/ops/preflight_pre_pr_ruff_and_diff_guard_v0.py --base-ref origin/main
+python3 scripts/ops/preflight_pre_pr_ruff_and_diff_guard_v0.py --include-staged --include-unstaged
+```
+
+**Non-authorizing:** local lint/format/diff-check helper only; no workflow mutation, no runtime/trading/strategy/economic scope.
+
 ## Blocking model
 - Technically enforced:
   - `pip-audit` in `.github/workflows/audit.yml` when dependency-relevant files changed.
