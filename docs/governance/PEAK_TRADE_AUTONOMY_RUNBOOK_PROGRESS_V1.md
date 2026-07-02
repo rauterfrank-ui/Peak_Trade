@@ -14,7 +14,7 @@ SCHEDULER_RUNTIME_ALLOWED: false
 
 ## Registry-Metadaten
 
-> **Feldklarstellung:** `LAST_VERIFIED_ORIGIN_MAIN` = zuletzt separat post-merge gegen diese Registry verifizierter `origin/main`-Stand. PR-Basis-SHA und Squash-Merge-Commit werden in `_MERGE_COMMIT`- bzw. `_CLOSEOUT_EVIDENCE_REF`-Feldern getrennt geführt; kein erneuter rein selbstreferenzieller SHA-Refresh ist kanonischer Folgeschritt.
+> **Feldklarstellung:** `LAST_VERIFIED_ORIGIN_MAIN` = zuletzt separat post-merge gegen diese Registry verifizierter `origin&#47;main`-Stand. PR-Basis-SHA und Squash-Merge-Commit werden in `_MERGE_COMMIT`- bzw. `_CLOSEOUT_EVIDENCE_REF`-Feldern getrennt geführt; kein erneuter rein selbstreferenzieller SHA-Refresh ist kanonischer Folgeschritt.
 
 | Feld | Wert |
 |---|---|
