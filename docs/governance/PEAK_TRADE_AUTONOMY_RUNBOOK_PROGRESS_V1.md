@@ -1806,6 +1806,28 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `non_authorizing` | `true` |
 | `SEPARATE_GO_REQUIRED` | `true` |
 
+#### CANONICAL_CORE_RUNTIME_INTEGRATION_REMEDIATION_SLICE_A_V0
+
+| Feld | Wert |
+|---|---|
+| `STATUS` | `BOUND_NOT_ACTIVATED` |
+| `CANONICAL_CORE_RUNTIME_INTEGRATION_SLICE_A_BOUND` | `true` |
+| `CANONICAL_CORE_RUNTIME_INTEGRATION_SLICE_A_IMPLEMENTED` | `true` |
+| `CANONICAL_CORE_RUNTIME_INTEGRATION_SLICE_A_COMPLETE` | `true` |
+| `CANONICAL_CORE_RUNTIME_INTEGRATION_BRIDGE_OWNER` | `trading.master_v2.canonical_core_runtime_integration_bridge_v0` |
+| `ZERO_ORDER_HARNESS_CANONICAL_CORE_CONSUMPTION_BOUND` | `true` |
+| `RUNTIME_REWIRE_STATUS` | `FAIL` |
+| `RUNTIME_REWIRE_IMPLEMENTED` | `false` |
+| `RUNTIME_REWIRE_PERFORMED` | `false` |
+| `ZERO_ORDER_RUNTIME_READY` | `false` |
+| `ZERO_ORDER_RUNTIME_EXECUTION_SUSPENDED` | `true` |
+| `LEGACY_DECISION_AUTHORITY_ACTIVE` | `false` |
+| `DUAL_DECISION_AUTHORITY_POSSIBLE` | `false` |
+| `NEXT_REMEDIATION_SLICE` | `Slice B: Runtime rewire v1 — canonical_order_intent → execution pipeline adapter boundary` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `SEPARATE_GO_REQUIRED` | `true` |
+
 ---
 
 ## PR #4629 Evidence-Drift (historisch, transparent)
