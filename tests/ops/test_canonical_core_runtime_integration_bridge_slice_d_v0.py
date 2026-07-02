@@ -111,12 +111,28 @@ def test_registry_slice_d_authoritative_fields() -> None:
     )
     assert authoritative_field_value("CANONICAL_RUNTIME_ENTRYPOINT_STATUS") == "BOUND_NOT_ACTIVATED"
     assert (
-        authoritative_field_value("NEXT_REMEDIATION_SLICE")
-        == "Slice E: evaluate_double_play authority removal or canonicalization"
-    )
-    assert (
         section_field_value(SLICE_D_HEADING, "REGISTRY_ENTRY_CLASS")
-        == RegistryEntryClass.CANONICAL_CURRENT_OWNER_ONLY.value
+        == RegistryEntryClass.HISTORICAL_REMEDIATION_SNAPSHOT.value
+    )
+
+
+def test_slice_d_is_historical_snapshot_not_current_owner() -> None:
+    registry = load_registry()
+    slice_d = [
+        occ
+        for occ in registry.all_occurrences("SLICE_D_STATUS")
+        if "SLICE_D_V0" in occ.section_heading
+    ]
+    assert slice_d
+    assert all(
+        occ.entry_class is RegistryEntryClass.HISTORICAL_REMEDIATION_SNAPSHOT for occ in slice_d
+    )
+
+
+def test_slice_d_historical_section_preserves_next_remediation_snapshot() -> None:
+    assert (
+        section_field_value(SLICE_D_HEADING, "NEXT_REMEDIATION_SLICE")
+        == "Slice E: evaluate_double_play authority removal or canonicalization"
     )
 
 

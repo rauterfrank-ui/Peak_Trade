@@ -20,6 +20,10 @@ def evaluate_double_play(*, context: Dict[str, Any]) -> DoublePlayDecision:
     SAFE DEFAULT OFF.
     When enabled: update switch-gate state and return active specialist.
     This module does not execute trades; it only selects/annotates.
+
+    Authority (Slice E): ``LEGACY_NON_AUTHORITATIVE``. Canonical offline Double-Play
+    decision authority is ``trading.master_v2.double_play_composition_matrix_v1``.
+    live_gates uses this callable for non-authorizing annotation only.
     """
     reasons = []
     details: Dict[str, Any] = {}

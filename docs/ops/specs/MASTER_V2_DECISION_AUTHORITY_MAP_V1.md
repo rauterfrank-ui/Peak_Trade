@@ -100,6 +100,17 @@ The ops/live double-play evaluator may produce runtime observations such as sele
 
 Do not silently add runtime double-play fields such as `active_specialist`, `switch_state`, switch score, or trend labels to the Master V2 decision packet as a bugfix. Any synchronization between packet doubleplay and ops/live double-play evaluation is an `Adapt to Master V2` design change and must be reviewed as such.
 
+## Slice E authority boundary (Canonical Core Runtime Integration)
+
+Remediation Slice E consolidates Double-Play authority semantics without runtime activation:
+
+- **Canonical offline authority owner:** `trading.master_v2.double_play_composition_matrix_v1` (integrated replay chain: `trading.master_v2.integrated_offline_trading_logic_replay_v1`)
+- **Boundary contract owner:** `trading.master_v2.evaluate_double_play_authority_boundary_v0`
+- **Ops legacy evaluator:** `src.ops.double_play.specialists.evaluate_double_play` is **`LEGACY_NON_AUTHORITATIVE`**
+- **live_gates role:** legacy annotation only in `details["double_play"]`; must not affect `is_eligible`
+
+Crosslink: `tests/ops/test_canonical_core_runtime_integration_bridge_slice_e_v0.py` · Runbook section `CANONICAL_CORE_RUNTIME_INTEGRATION_REMEDIATION_SLICE_E_V0`.
+
 ## 8) Non-Authorizing Constraint
 
 This spec authorizes nothing.
