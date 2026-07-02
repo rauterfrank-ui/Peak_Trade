@@ -35,16 +35,21 @@ ORDER_LIMIT_USD = Decimal("25")
 DAILY_LOSS_LIMIT_USD = Decimal("25")
 
 
+SIDE_LONG = "LONG"
+SIDE_SHORT = "SHORT"
+
+
 def _instrument(**overrides: object) -> sizing.InstrumentQuantityConstraintsV1:
     base: dict[str, object] = {
         "instrument_id": "ETH-USD-PERP",
         "market_type": "futures",
         "contract_kind": "LINEAR",
         "contract_multiplier": Decimal("1"),
-        "quantity_step": Decimal("0.01"),
+        "lot_size": Decimal("0.01"),
         "minimum_quantity": Decimal("0.01"),
         "maximum_quantity": Decimal("100"),
         "minimum_notional": Decimal("5"),
+        "tick_size": Decimal("0.01"),
         "instrument_metadata_version": "futures_metadata_v1_test",
     }
     base.update(overrides)
@@ -56,7 +61,7 @@ def _sizing_input(**overrides: object) -> sizing.CapitalRiskSizingInputV1:
     base: dict[str, object] = {
         "decision_id": "decision-001",
         "instrument_id": instrument.instrument_id,
-        "selected_side": sizing.SelectedSide.LONG.value,
+        "selected_side": SIDE_LONG,
         "reference_price": Decimal("2000"),
         "protective_stop_price": Decimal("1900"),
         "stop_distance": None,
@@ -73,8 +78,8 @@ def _sizing_input(**overrides: object) -> sizing.CapitalRiskSizingInputV1:
         "leverage_ceiling": Decimal("5"),
         "reconciliation_status": "RECONCILED",
         "policy_version": "capital_risk_sizing_policy_v1",
-        "config_digest": "cfg_digest_test",
-        "input_digest": "input_digest_test",
+        "config_digest": "b" * 64,
+        "input_digest": "a" * 64,
         "instrument": instrument,
     }
     base.update(overrides)
@@ -91,10 +96,15 @@ def _build_input(
     sizing_overrides: dict[str, object] | None = None,
     **overrides: object,
 ) -> intent_mod.CanonicalOrderIntentBuildInputV1:
-    sizing_overrides = sizing_overrides or {}
+    sizing_overrides = dict(sizing_overrides or {})
+    if intent_action == intent_mod.IntentAction.ENTER_SHORT.value:
+        sizing_overrides.setdefault("selected_side", SIDE_SHORT)
+        sizing_overrides.setdefault("decision_outcome", "enter_short")
+    elif intent_action == intent_mod.IntentAction.ENTER_LONG.value:
+        sizing_overrides.setdefault("decision_outcome", "enter_long")
     sizing_input = _sizing_input(**sizing_overrides)
     sizing_decision = sizing.evaluate_capital_risk_sizing_v1(sizing_input)
-    side = sizing_overrides.get("selected_side", sizing.SelectedSide.LONG.value)
+    side = sizing_overrides.get("selected_side", SIDE_LONG)
     expected_side = (
         intent_mod.IntentSide.LONG.value
         if intent_action == intent_mod.IntentAction.ENTER_LONG.value
@@ -182,7 +192,7 @@ def test_positive_enter_short_semantics() -> None:
     built = _intent(
         intent_action=intent_mod.IntentAction.ENTER_SHORT.value,
         sizing_overrides={
-            "selected_side": sizing.SelectedSide.SHORT.value,
+            "selected_side": SIDE_SHORT,
             "protective_stop_price": Decimal("2100"),
         },
     )
@@ -198,7 +208,7 @@ def test_positive_reduce_semantics() -> None:
         sizing_overrides={
             "current_reconciled_exposure": Decimal("1.0"),
             "current_open_positions_count": 1,
-            "current_open_side": sizing.SelectedSide.LONG.value,
+            "current_open_side": SIDE_LONG,
             "maximum_positions": 2,
         },
         current_reconciled_exposure=Decimal("1.0"),
@@ -214,7 +224,7 @@ def test_positive_exit_semantics() -> None:
         sizing_overrides={
             "current_reconciled_exposure": Decimal("0.5"),
             "current_open_positions_count": 1,
-            "current_open_side": sizing.SelectedSide.LONG.value,
+            "current_open_side": SIDE_LONG,
             "maximum_positions": 2,
         },
         current_reconciled_exposure=Decimal("0.5"),
@@ -230,7 +240,9 @@ def test_positive_quantity_positive_and_sizing_bound() -> None:
     decision = _passing_sizing_decision()
     assert decision.quantity_provenance is not None
     assert built.quantity == decision.quantity_provenance.final_quantity
-    assert built.quantity_provenance == decision.quantity_provenance.output_digest
+    assert built.quantity_provenance == intent_mod.compute_quantity_provenance_ref(
+        decision.quantity_provenance
+    )
 
 
 def test_positive_futures_instrument_accepted() -> None:
@@ -267,6 +279,8 @@ def test_positive_adapter_compatible_false() -> None:
 def test_positive_submission_authorized_false() -> None:
     built = _intent()
     assert built.submission_authorized is False
+    assert built.permission_required is True
+    assert built.submission_effect == "NONE"
 
 
 def test_positive_no_runtime_or_authority_effect() -> None:
@@ -288,9 +302,9 @@ def test_negative_missing_quantity_provenance() -> None:
         outcome=decision.outcome,
         final_quantity=decision.final_quantity,
         selected_side=decision.selected_side,
-        capital_envelope=decision.capital_envelope,
+        scope_capital_envelope=decision.scope_capital_envelope,
         pre_sizing_risk=decision.pre_sizing_risk,
-        canonical_sizing=decision.canonical_sizing,
+        canonical_position_sizing=decision.canonical_position_sizing,
         post_sizing_risk=decision.post_sizing_risk,
         quantity_provenance=None,
         reason_codes=decision.reason_codes,
@@ -326,16 +340,15 @@ def test_negative_quantity_zero_or_negative() -> None:
                 for field in sizing.QuantityProvenanceV1.__dataclass_fields__.values()
             },
             "final_quantity": Decimal("0"),
-            "output_digest": "",
         }
     )
     blocked = sizing.CapitalRiskSizingDecisionV1(
         outcome=decision.outcome,
         final_quantity=Decimal("0"),
         selected_side=decision.selected_side,
-        capital_envelope=decision.capital_envelope,
+        scope_capital_envelope=decision.scope_capital_envelope,
         pre_sizing_risk=decision.pre_sizing_risk,
-        canonical_sizing=decision.canonical_sizing,
+        canonical_position_sizing=decision.canonical_position_sizing,
         post_sizing_risk=decision.post_sizing_risk,
         quantity_provenance=bad_provenance,
         reason_codes=decision.reason_codes,
@@ -379,7 +392,7 @@ def test_negative_reduce_exposure_increase() -> None:
             sizing_overrides={
                 "current_reconciled_exposure": Decimal("0.05"),
                 "current_open_positions_count": 1,
-                "current_open_side": sizing.SelectedSide.LONG.value,
+                "current_open_side": SIDE_LONG,
                 "maximum_positions": 2,
             },
             current_reconciled_exposure=Decimal("0.005"),
@@ -407,7 +420,7 @@ def test_negative_enter_short_wrong_position_effect() -> None:
         _build_input(
             intent_action=intent_mod.IntentAction.ENTER_SHORT.value,
             sizing_overrides={
-                "selected_side": sizing.SelectedSide.SHORT.value,
+                "selected_side": SIDE_SHORT,
                 "protective_stop_price": Decimal("2100"),
             },
         )
@@ -428,13 +441,13 @@ def test_negative_implicit_reversal() -> None:
         _build_input(
             intent_action=intent_mod.IntentAction.ENTER_SHORT.value,
             sizing_overrides={
-                "selected_side": sizing.SelectedSide.SHORT.value,
+                "selected_side": SIDE_SHORT,
                 "protective_stop_price": Decimal("2100"),
                 "current_reconciled_exposure": Decimal("1"),
                 "current_open_positions_count": 1,
-                "current_open_side": sizing.SelectedSide.LONG.value,
+                "current_open_side": SIDE_LONG,
             },
-            current_open_side=sizing.SelectedSide.LONG.value,
+            current_open_side=SIDE_LONG,
             current_reconciled_exposure=Decimal("1"),
         )
     )
@@ -523,13 +536,15 @@ def test_negative_no_action_not_submittable() -> None:
 
 
 def test_negative_sizing_not_pass() -> None:
-    blocked_decision = sizing.evaluate_capital_risk_sizing_v1(
-        _sizing_input(scope_capital_limit=Decimal("0"))
+    blocked_input = _sizing_input(
+        scope_capital_limit=Decimal("0.01"),
+        instrument=_instrument(minimum_quantity=Decimal("1")),
     )
+    blocked_decision = sizing.evaluate_capital_risk_sizing_v1(blocked_input)
     assert blocked_decision.outcome is sizing.CapitalRiskSizingOutcome.BLOCKED
     result = intent_mod.build_canonical_order_intent_v1(
         intent_mod.CanonicalOrderIntentBuildInputV1(
-            sizing_input=_sizing_input(scope_capital_limit=Decimal("0")),
+            sizing_input=blocked_input,
             sizing_decision=blocked_decision,
             intent_id="intent-001",
             trading_epoch="epoch-001",
@@ -650,7 +665,7 @@ def test_transform_02_short_entry_deterministic_success() -> None:
     result = _transform(
         intent_action=intent_mod.IntentAction.ENTER_SHORT.value,
         sizing_overrides={
-            "selected_side": sizing.SelectedSide.SHORT.value,
+            "selected_side": SIDE_SHORT,
             "protective_stop_price": Decimal("2100"),
         },
     )
@@ -667,7 +682,7 @@ def test_transform_03_reduce_only_exit_stays_reduce_only() -> None:
         sizing_overrides={
             "current_reconciled_exposure": Decimal("0.5"),
             "current_open_positions_count": 1,
-            "current_open_side": sizing.SelectedSide.LONG.value,
+            "current_open_side": SIDE_LONG,
             "maximum_positions": 2,
         },
         current_reconciled_exposure=Decimal("0.5"),
@@ -865,16 +880,15 @@ def test_transform_20_output_quantity_never_exceeds_input(quantity: Decimal) -> 
                 for field in sizing.QuantityProvenanceV1.__dataclass_fields__.values()
             },
             "final_quantity": quantity,
-            "output_digest": f"digest-{quantity}",
         }
     )
     blocked = sizing.CapitalRiskSizingDecisionV1(
         outcome=decision.outcome,
         final_quantity=quantity,
         selected_side=decision.selected_side,
-        capital_envelope=decision.capital_envelope,
+        scope_capital_envelope=decision.scope_capital_envelope,
         pre_sizing_risk=decision.pre_sizing_risk,
-        canonical_sizing=decision.canonical_sizing,
+        canonical_position_sizing=decision.canonical_position_sizing,
         post_sizing_risk=decision.post_sizing_risk,
         quantity_provenance=provenance,
         reason_codes=decision.reason_codes,
@@ -909,7 +923,7 @@ def test_transform_21_long_short_symmetry() -> None:
     short_result = _transform(
         intent_action=intent_mod.IntentAction.ENTER_SHORT.value,
         sizing_overrides={
-            "selected_side": sizing.SelectedSide.SHORT.value,
+            "selected_side": SIDE_SHORT,
             "protective_stop_price": Decimal("2100"),
         },
     )
