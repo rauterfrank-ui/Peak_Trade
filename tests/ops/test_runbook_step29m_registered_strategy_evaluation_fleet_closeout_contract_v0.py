@@ -59,7 +59,6 @@ def test_registered_strategy_fleet_complete_no_economic_validity_pass() -> None:
         _field_value(section, "STEP29M_REGISTERED_STRATEGY_FLEET_STATUS")
         == "EVALUATION_FLEET_COMPLETE_NO_ECONOMIC_VALIDITY_PASS"
     )
-    assert _field_value(section, "REGISTERED_POLICY_RATIFIED_STRATEGY_COUNT") == "2"
     assert _field_value(section, "COMPLETED_TECHNICALLY_VALID_EVALUATION_COUNT") == "2"
     assert _field_value(section, "ECONOMIC_POLICY_PASS_COUNT") == "0"
     assert _field_value(section, "ECONOMIC_POLICY_FAIL_COUNT") == "2"
@@ -90,15 +89,37 @@ def test_evaluation_execution_complete_without_economic_validity_objective() -> 
     assert _field_value(section, "ECONOMIC_VALIDITY_PROVEN") == "false"
 
 
-def test_no_pending_next_evaluation_candidate() -> None:
+def test_post_ratification_authorized_pending_candidate_exists() -> None:
     section = _step_29m_section(_read_registry())
-    assert _field_value(section, "NEXT_EVALUATION_STRATEGY_ID") == "none"
-    assert _field_value(section, "NEXT_EVALUATION_CONFIG_STATUS") == (
-        "EVALUATION_FLEET_COMPLETE_NO_PENDING_CANDIDATE"
-    )
-    assert _field_value(section, "NEXT_EVALUATION_CONFIG_PATH") == "none"
+    assert _field_value(section, "PRE_RATIFICATION_FLEET_EXHAUSTED") == "true"
+    assert _field_value(section, "POST_RATIFICATION_AUTHORIZED_PENDING_CANDIDATE_EXISTS") == "true"
+    assert _field_value(section, "HISTORICAL_FLEET_RESULTS_UNCHANGED") == "true"
+    assert _field_value(section, "NEXT_EVALUATION_STRATEGY_ID") == "ma_crossover"
+    assert _field_value(section, "NEXT_EVALUATION_STRATEGY_VERSION") == "v1"
+    assert _field_value(section, "NEXT_EVALUATION_CONFIG_STATUS") == "AUTHORIZED_PENDING_EVALUATION"
+    assert _field_value(section, "AUTHORIZED_PENDING_EVALUATION_COUNT") == "1"
     assert _field_value(section, "LAST_EVALUATED_STRATEGY_ID") == "breakout_donchian"
     assert _field_value(section, "LAST_EVALUATED_CONFIG_VERSION") == "v1"
+
+
+def test_historical_fleet_results_unchanged_after_ratification() -> None:
+    section = _step_29m_section(_read_registry())
+    assert (
+        _field_value(section, "STEP29M_REGISTERED_STRATEGY_FLEET_STATUS")
+        == "EVALUATION_FLEET_COMPLETE_NO_ECONOMIC_VALIDITY_PASS"
+    )
+    assert _field_value(section, "REGISTERED_POLICY_RATIFIED_STRATEGY_COUNT") == "3"
+    assert _field_value(section, "COMPLETED_TECHNICALLY_VALID_EVALUATION_COUNT") == "2"
+    assert _field_value(section, "ECONOMIC_POLICY_PASS_COUNT") == "0"
+    assert _field_value(section, "ECONOMIC_POLICY_FAIL_COUNT") == "2"
+    assert _field_value(section, "PROMOTION_ELIGIBLE_COUNT") == "0"
+
+
+def test_post_ratification_next_canonical_step_preflight_read_only() -> None:
+    section = _step_29m_section(_read_registry())
+    assert _field_value(section, "NEXT_CANONICAL_STEP") == (
+        "BOUNDED_STEP29M_MA_CROSSOVER_V1_REAL_ADMISSIBLE_FUTURES_ECONOMIC_EVALUATION_PREFLIGHT_READ_ONLY_V0"
+    )
 
 
 def test_fleet_evidence_refs_bound() -> None:
@@ -111,13 +132,6 @@ def test_fleet_evidence_refs_bound() -> None:
     )
     assert str(FLEET_ANALYSIS_EVIDENCE) in _field_value(
         section, "FLEET_ROOT_CAUSE_AND_RANKING_EVIDENCE_REF"
-    )
-
-
-def test_post_fleet_next_canonical_step_read_only_decision() -> None:
-    section = _step_29m_section(_read_registry())
-    assert _field_value(section, "NEXT_CANONICAL_STEP") == (
-        "BOUNDED_STEP29M_POST_FLEET_NO_PASS_CANONICAL_DECISION_READ_ONLY_V0"
     )
 
 
