@@ -84,6 +84,56 @@ CONFIG_SCHEMA_VERSION = (
     "economic_evaluation_admissibility_v1"
 )
 
+ARCHITECTURE_BINDING_MERGE_COMMIT = "5eb28206fb49062049c89f43d77da2899f22c93d"
+ECONOMIC_EVALUATION_MERGE_COMMIT = "ec0842428b8420fb4d8193d69c307809bcabee75"
+ARCHITECTURE_BINDING_CONFIG_PATH = (
+    "config/ops/composite_breakout_confirmation_vol_gated_donchian_v1_architecture_binding_v1.json"
+)
+
+ARCHITECTURE_HYPOTHESIS_FALSIFIED = True
+ARCHITECTURE_REJECTED = True
+RESEARCH_LINE_STATUS = "CLOSED_REJECTED"
+ECONOMIC_VALIDITY_STATUS = "FAILED"
+ECONOMIC_EVALUATION_VERDICT = "ECONOMIC_VALIDITY_OFFLINE_GATE_FAIL"
+FAILURE_DECOMPOSITION_VERDICT = "ECONOMIC_VALIDITY_FAILURE_DECOMPOSITION_COMPLETE"
+ARCHITECTURE_DISPOSITION = "ARCHITECTURE_HYPOTHESIS_FALSIFIED"
+FINAL_RESEARCH_DISPOSITION = "REJECTED_CLOSED"
+REJECTION_REASON = "STRUCTURALLY_NEGATIVE_NET_EDGE_ACROSS_WALK_FORWARD_MONTE_CARLO_AND_STRESS"
+
+PROMOTION_ELIGIBLE = False
+SHADOW_ELIGIBLE = False
+PAPER_ELIGIBLE = False
+TESTNET_ELIGIBLE = False
+RUNTIME_ELIGIBLE = False
+RETRY_ALLOWED = False
+HOLDOUT_ALLOWED = False
+PARAMETER_TUNING_ALLOWED = False
+THRESHOLD_RELAXATION_ALLOWED = False
+DATASET_SUBSTITUTION_ALLOWED = False
+PERIOD_SUBSTITUTION_ALLOWED = False
+
+ARCHITECTURE_RATIFICATION_EVIDENCE_REF = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "implementation/bounded_composite_breakout_confirmation_vol_gated_donchian_v1_"
+    "architecture_ratification_and_binding_v0_20260702T183549Z"
+)
+OFFLINE_EVALUATION_EVIDENCE_REF = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "implementation/bounded_composite_breakout_confirmation_vol_gated_donchian_v1_"
+    "offline_economic_validity_evaluation_v0_20260702T185926Z"
+)
+ECONOMIC_EVALUATION_MERGE_CLOSEOUT_EVIDENCE_REF = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "implementation/bounded_composite_breakout_confirmation_vol_gated_donchian_v1_"
+    "economic_evaluation_pr_squash_merge_and_post_merge_closeout_v0_20260702T191014Z"
+)
+FAILURE_DECOMPOSITION_EVIDENCE_REF = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "analysis/bounded_composite_breakout_confirmation_vol_gated_donchian_v1_"
+    "economic_validity_failure_decomposition_and_research_disposition_read_only_v0_"
+    "20260702T211530Z"
+)
+
 STEP29M_REGISTERED_ECONOMIC_EVALUATION_CONFIGS_V1: tuple[str, ...] = (
     "config/ops/step29m_okx_inst_eth_usdt_perp_economic_evaluation_v1.json",
     "config/ops/step29m_okx_inst_eth_usdt_perp_macd_v1_economic_evaluation_v1.json",
