@@ -23,6 +23,7 @@ from src.backtest.strategy_signal_binding_v1 import (
     StrategySignalBindingError,
     collect_configured_strategy_params_v1,
     compute_required_warmup_rows_v1,
+    project_strategy_params_for_binding_v1,
     resolve_effective_strategy_params_v1,
 )
 from src.strategies.registry import get_strategy_registry_entry, resolve_strategy_id
@@ -188,10 +189,6 @@ def _validate_price_col_v1(value: Any) -> tuple[str, ...]:
     if value not in ALLOWED_PRICE_COLS:
         return ("price_col_not_allowed",)
     return ()
-
-
-def _window_params_for_binding_v1(configured: Mapping[str, Any]) -> dict[str, Any]:
-    return {key: configured[key] for key in ("fast_window", "slow_window") if key in configured}
 
 
 def verify_ma_crossover_v1_strategy_params_v1(
@@ -366,7 +363,10 @@ def verify_ma_crossover_v1_signal_binding_v1(cfg: Mapping[str, Any]) -> tuple[st
     try:
         effective, _ = resolve_effective_strategy_params_v1(
             MA_CROSSOVER_V1_STRATEGY_ID,
-            _window_params_for_binding_v1(configured),
+            project_strategy_params_for_binding_v1(
+                MA_CROSSOVER_V1_STRATEGY_ID,
+                configured,
+            ),
         )
         warmup = compute_required_warmup_rows_v1(MA_CROSSOVER_V1_STRATEGY_ID, effective)
         if warmup != int(effective["slow_window"]):
@@ -400,7 +400,10 @@ def evaluate_ma_crossover_v1_admissibility_contract_v1(
     try:
         effective, params_digest = resolve_effective_strategy_params_v1(
             MA_CROSSOVER_V1_STRATEGY_ID,
-            _window_params_for_binding_v1(configured),
+            project_strategy_params_for_binding_v1(
+                MA_CROSSOVER_V1_STRATEGY_ID,
+                configured,
+            ),
         )
     except StrategySignalBindingError as exc:
         blocking.append(str(exc))

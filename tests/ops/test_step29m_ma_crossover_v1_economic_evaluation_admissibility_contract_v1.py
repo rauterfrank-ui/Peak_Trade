@@ -16,6 +16,7 @@ from src.backtest.strategy_signal_binding_v1 import (
     StrategySignalBindingError,
     collect_configured_strategy_params_v1,
     compute_required_warmup_rows_v1,
+    project_strategy_params_for_binding_v1,
     resolve_effective_strategy_params_v1,
 )
 from src.strategies.registry import get_strategy_registry_entry, resolve_strategy_id
@@ -205,7 +206,7 @@ def test_config_params_from_evaluation_section(cfg: dict) -> None:
     configured = collect_configured_strategy_params_v1(cfg, "ma_crossover")
     effective, _ = resolve_effective_strategy_params_v1(
         "ma_crossover",
-        contract._window_params_for_binding_v1(configured),
+        project_strategy_params_for_binding_v1("ma_crossover", configured),
     )
     assert effective == {"fast_window": 20, "slow_window": 50}
     assert configured["price_col"] == "close"
