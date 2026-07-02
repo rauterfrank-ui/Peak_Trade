@@ -24,7 +24,9 @@ STEP_29M_IMPLEMENTED_SCOPE = (
     "real_admissible_futures_economic_evaluation_operator_input_and_admissibility_closure_v0_slice,"
     "real_okx_inst_eth_usdt_perp_economic_evaluation_v1_offline_slice,"
     "breakout_donchian_v1_operator_policy_ratification_and_config_registry_slice_v0,"
-    "step29m_registered_strategy_evaluation_fleet_closeout_v0_slice"
+    "step29m_registered_strategy_evaluation_fleet_closeout_v0_slice,"
+    "ma_crossover_v1_operator_policy_ratification_and_config_registry_slice_v0,"
+    "step29m_fleet_no_pass_operator_policy_ratification_and_progress_registry_closeout_v0_slice"
 )
 STEP_29M_SLICES = tuple(STEP_29M_IMPLEMENTED_SCOPE.split(","))
 
