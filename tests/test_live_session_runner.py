@@ -753,6 +753,7 @@ class TestExecutionSessionCLI:
         child_env = os.environ.copy()
         child_env.pop(PT_BOUNDED_PILOT_INVOKED_FROM_GATE, None)
         child_env.pop(PT_LIVE_CONFIRM_TOKEN_ENV, None)
+        child_env.pop("PT_LEGACY_RUNTIME_ENTRYPOINT_TEST_ONLY", None)
         result = subprocess.run(
             [
                 sys.executable,
@@ -771,7 +772,7 @@ class TestExecutionSessionCLI:
             env=child_env,
         )
         assert result.returncode == 1
-        assert PT_BOUNDED_PILOT_INVOKED_FROM_GATE in (result.stderr or "")
+        assert "Legacy runtime entrypoint" in (result.stderr or "")
 
 
 # =============================================================================

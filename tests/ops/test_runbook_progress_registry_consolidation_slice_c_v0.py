@@ -149,7 +149,7 @@ def test_duplicate_conflicting_authoritative_values_fail_closed() -> None:
     mutated = dict(registry.occurrences_by_field)
     conflicted: list = []
     flipped = False
-    for occ in mutated["CANONICAL_ORDER_INTENT_TRANSFORMATION_BOUND"]:
+    for occ in mutated["RUNTIME_REWIRE_STATUS"]:
         if occ.entry_class is RegistryEntryClass.CANONICAL_CURRENT_OWNER_ONLY and not flipped:
             conflicted.append(
                 type(occ)(
@@ -162,10 +162,10 @@ def test_duplicate_conflicting_authoritative_values_fail_closed() -> None:
             flipped = True
         else:
             conflicted.append(occ)
-    mutated["CANONICAL_ORDER_INTENT_TRANSFORMATION_BOUND"] = tuple(conflicted)
+    mutated["RUNTIME_REWIRE_STATUS"] = tuple(conflicted)
     conflict_registry = RunbookProgressRegistryV1(text=registry.text, occurrences_by_field=mutated)
     with pytest.raises(RunbookProgressRegistryError, match="ambiguous authoritative"):
-        conflict_registry.authoritative_value("CANONICAL_ORDER_INTENT_TRANSFORMATION_BOUND")
+        conflict_registry.authoritative_value("RUNTIME_REWIRE_STATUS")
 
 
 def test_document_order_does_not_change_authoritative_resolution() -> None:

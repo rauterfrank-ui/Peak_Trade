@@ -395,7 +395,18 @@ class LiveSessionRunner:
 
         Raises:
             LiveModeNotAllowedError: Wenn mode="live" (Phase 80)
+            LegacyRuntimeEntrypointBlockedError: Legacy runtime authority deauthorized (Slice D)
         """
+        from trading.master_v2.legacy_runtime_entrypoint_guard_v0 import (
+            ENTRYPOINT_LIVE_SESSION_RUNNER,
+            require_legacy_runtime_entrypoint_deauthorized,
+        )
+
+        require_legacy_runtime_entrypoint_deauthorized(
+            ENTRYPOINT_LIVE_SESSION_RUNNER,
+            operation="construct",
+        )
+
         # LIVE-Mode hart blockieren
         if session_config.mode == "live":
             raise LiveModeNotAllowedError(
@@ -512,6 +523,16 @@ class LiveSessionRunner:
             >>> config = LiveSessionConfig(mode="shadow", strategy_key="ma_crossover")
             >>> runner = LiveSessionRunner.from_config(config)
         """
+        from trading.master_v2.legacy_runtime_entrypoint_guard_v0 import (
+            ENTRYPOINT_LIVE_SESSION_RUNNER_FROM_CONFIG,
+            require_legacy_runtime_entrypoint_deauthorized,
+        )
+
+        require_legacy_runtime_entrypoint_deauthorized(
+            ENTRYPOINT_LIVE_SESSION_RUNNER_FROM_CONFIG,
+            operation="from_config",
+        )
+
         # LIVE-Mode hart blockieren (redundant, aber explizit)
         if session_config.mode == "live":
             raise LiveModeNotAllowedError("LIVE-Mode ist in Phase 80 NICHT erlaubt!")
@@ -743,6 +764,16 @@ class LiveSessionRunner:
         Returns:
             Liste von OrderExecutionResults oder None wenn keine Orders
         """
+        from trading.master_v2.legacy_runtime_entrypoint_guard_v0 import (
+            ENTRYPOINT_LIVE_SESSION_RUNNER,
+            require_legacy_runtime_entrypoint_deauthorized,
+        )
+
+        require_legacy_runtime_entrypoint_deauthorized(
+            ENTRYPOINT_LIVE_SESSION_RUNNER,
+            operation="step_once",
+        )
+
         self._metrics.steps += 1
         step_num = self._metrics.steps
 

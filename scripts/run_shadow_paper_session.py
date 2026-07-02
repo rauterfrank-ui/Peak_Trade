@@ -49,6 +49,9 @@ from typing import Optional
 # Projekt-Root zum Path hinzufügen
 PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
+_SRC_ROOT = PROJECT_ROOT / "src"
+if str(_SRC_ROOT) not in sys.path:
+    sys.path.insert(0, str(_SRC_ROOT))
 
 from src.core.peak_config import load_config, PeakConfig
 from src.core.environment import (
@@ -438,6 +441,20 @@ WICHTIG: Es werden KEINE echten Orders gesendet!
 
     args = parser.parse_args()
 
+    if not args.dry_run:
+        from trading.master_v2.legacy_runtime_entrypoint_guard_v0 import (
+            ENTRYPOINT_RUN_SHADOW_PAPER_SESSION_CLI,
+            cli_legacy_runtime_entrypoint_blocked_exit_message,
+            legacy_runtime_cli_start_exit_code,
+        )
+
+        if legacy_runtime_cli_start_exit_code(ENTRYPOINT_RUN_SHADOW_PAPER_SESSION_CLI) == 1:
+            print(
+                f"ERR: {cli_legacy_runtime_entrypoint_blocked_exit_message(ENTRYPOINT_RUN_SHADOW_PAPER_SESSION_CLI)}",
+                file=sys.stderr,
+            )
+            return 1
+
     # Logging setup
     logger = setup_logging(args.log_level)
 
@@ -460,6 +477,13 @@ WICHTIG: Es werden KEINE echten Orders gesendet!
         logger.info(f"Lade Config: {config_path}")
         cfg = load_config(config_path)
 
+        if args.dry_run:
+            logger.info(
+                "Dry-Run: Config geladen und validiert; Legacy-Runtime-Session nicht gestartet "
+                "(Slice D deauthorization)."
+            )
+            return 0
+
         # Session bauen
         session = build_session(
             cfg=cfg,
@@ -471,10 +495,6 @@ WICHTIG: Es werden KEINE echten Orders gesendet!
             log_dir_override=args.log_dir,
             logger=logger,
         )
-
-        if args.dry_run:
-            logger.info("Dry-Run: Session erfolgreich konfiguriert, keine Ausführung.")
-            return 0
 
         # Warmup
         logger.info("Starte Warmup...")

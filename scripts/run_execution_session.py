@@ -62,6 +62,9 @@ from typing import Any, Dict, List, Optional
 # Projekt-Root zum Path hinzufügen
 PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
+_SRC_ROOT = PROJECT_ROOT / "src"
+if str(_SRC_ROOT) not in sys.path:
+    sys.path.insert(0, str(_SRC_ROOT))
 
 
 # =============================================================================
@@ -101,8 +104,11 @@ def list_available_strategies() -> None:
     keys = sorted(get_available_strategy_keys())
 
     for key in keys:
-        spec = get_strategy_spec(key)
-        desc = spec.description or "(keine Beschreibung)"
+        try:
+            spec = get_strategy_spec(key)
+            desc = spec.description or "(keine Beschreibung)"
+        except KeyError:
+            desc = "(registry listing only — resolution drift)"
         print(f"  {key:25s} - {desc}")
 
     print(f"\n  Total: {len(keys)} Strategien verfügbar")
@@ -343,6 +349,25 @@ WICHTIG: Shadow/Testnet senden keine echten Orders. Modus bounded_pilot kann nac
     args = parser.parse_args()
     _ensure_bounded_pilot_events_enabled(args)
 
+    # Strategy-Liste?
+    if args.list_strategies:
+        list_available_strategies()
+        return 0
+
+    if not args.dry_run:
+        from trading.master_v2.legacy_runtime_entrypoint_guard_v0 import (
+            ENTRYPOINT_RUN_EXECUTION_SESSION_CLI,
+            cli_legacy_runtime_entrypoint_blocked_exit_message,
+            legacy_runtime_cli_start_exit_code,
+        )
+
+        if legacy_runtime_cli_start_exit_code(ENTRYPOINT_RUN_EXECUTION_SESSION_CLI) == 1:
+            print(
+                f"ERR: {cli_legacy_runtime_entrypoint_blocked_exit_message(ENTRYPOINT_RUN_EXECUTION_SESSION_CLI)}",
+                file=sys.stderr,
+            )
+            return 1
+
     if args.mode == "bounded_pilot" and not args.dry_run:
         from src.core.environment import PT_BOUNDED_PILOT_INVOKED_FROM_GATE
 
@@ -359,11 +384,6 @@ WICHTIG: Shadow/Testnet senden keine echten Orders. Modus bounded_pilot kann nac
         preflight_rc = _bounded_pilot_non_dry_run_preflight_packet_ok(PROJECT_ROOT, args.config)
         if preflight_rc != 0:
             return preflight_rc
-
-    # Strategy-Liste?
-    if args.list_strategies:
-        list_available_strategies()
-        return 0
 
     # Logging setup
     logger = setup_logging(args.log_level)

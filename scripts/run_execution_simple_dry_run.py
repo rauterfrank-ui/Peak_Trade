@@ -12,6 +12,9 @@ from pathlib import Path
 
 # Add src to path
 sys.path.insert(0, str(Path(__file__).parent.parent))
+_SRC_ROOT = Path(__file__).parent.parent / "src"
+if str(_SRC_ROOT) not in sys.path:
+    sys.path.insert(0, str(_SRC_ROOT))
 
 from src.core.peak_config import load_config
 from src.execution_simple import (
@@ -41,6 +44,19 @@ def main():
     )
 
     args = parser.parse_args()
+
+    from trading.master_v2.legacy_runtime_entrypoint_guard_v0 import (
+        ENTRYPOINT_RUN_EXECUTION_SIMPLE_DRY_RUN_CLI,
+        cli_legacy_runtime_entrypoint_blocked_exit_message,
+        legacy_runtime_cli_start_exit_code,
+    )
+
+    if legacy_runtime_cli_start_exit_code(ENTRYPOINT_RUN_EXECUTION_SIMPLE_DRY_RUN_CLI) == 1:
+        print(
+            f"ERR: {cli_legacy_runtime_entrypoint_blocked_exit_message(ENTRYPOINT_RUN_EXECUTION_SIMPLE_DRY_RUN_CLI)}",
+            file=sys.stderr,
+        )
+        return 1
 
     # Load config
     try:

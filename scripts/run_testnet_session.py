@@ -57,6 +57,9 @@ from typing import Any, Callable, Dict, List, Optional
 # Projekt-Root zum Path hinzufuegen
 PROJECT_ROOT = Path(__file__).parent.parent
 sys.path.insert(0, str(PROJECT_ROOT))
+_SRC_ROOT = PROJECT_ROOT / "src"
+if str(_SRC_ROOT) not in sys.path:
+    sys.path.insert(0, str(_SRC_ROOT))
 
 from src.core.peak_config import load_config, PeakConfig
 from src.core.environment import (
@@ -1071,6 +1074,20 @@ WICHTIG: Nur Testnet-Trading! Keine echten Live-Trades!
 
     args = parser.parse_args()
 
+    if not args.dry_run:
+        from trading.master_v2.legacy_runtime_entrypoint_guard_v0 import (
+            ENTRYPOINT_RUN_TESTNET_SESSION_CLI,
+            cli_legacy_runtime_entrypoint_blocked_exit_message,
+            legacy_runtime_cli_start_exit_code,
+        )
+
+        if legacy_runtime_cli_start_exit_code(ENTRYPOINT_RUN_TESTNET_SESSION_CLI) == 1:
+            print(
+                f"ERR: {cli_legacy_runtime_entrypoint_blocked_exit_message(ENTRYPOINT_RUN_TESTNET_SESSION_CLI)}",
+                file=sys.stderr,
+            )
+            return 1
+
     # Logging setup
     logger = setup_logging(args.log_level)
 
@@ -1095,6 +1112,14 @@ WICHTIG: Nur Testnet-Trading! Keine echten Live-Trades!
         logger.info(f"Lade Config: {config_path}")
         cfg = load_config(config_path)
 
+        if args.dry_run:
+            _emit_bounded_order_cap_config(args, logger)
+            logger.info(
+                "Dry-Run: Config geladen und validiert; Legacy-Runtime-Session nicht gestartet "
+                "(Slice D deauthorization)."
+            )
+            return 0
+
         # Session bauen
         session = build_testnet_session(
             cfg=cfg,
@@ -1106,11 +1131,6 @@ WICHTIG: Nur Testnet-Trading! Keine echten Live-Trades!
             log_dir_override=args.log_dir,
             logger=logger,
         )
-
-        if args.dry_run:
-            _emit_bounded_order_cap_config(args, logger)
-            logger.info("Dry-Run: Session erfolgreich konfiguriert, keine Ausfuehrung.")
-            return 0
 
         # Warmup
         logger.info("Starte Warmup...")
