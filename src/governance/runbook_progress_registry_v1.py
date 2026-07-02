@@ -30,6 +30,7 @@ SECTION_HEADING_RE = re.compile(r"^#{2,4} .+$", re.MULTILINE)
 HTML_COMMENT_RE = re.compile(r"\s<!--.*?-->", re.DOTALL)
 
 GLOBAL_SUMMARY_HEADING = "## Registry-Metadaten"
+SLICE_E_HEADING = "#### CANONICAL_CORE_RUNTIME_INTEGRATION_REMEDIATION_SLICE_E_V0"
 SLICE_D_HEADING = "#### CANONICAL_CORE_RUNTIME_INTEGRATION_REMEDIATION_SLICE_D_V0"
 SLICE_C_HEADING = "#### CANONICAL_CORE_RUNTIME_INTEGRATION_REMEDIATION_SLICE_C_V0"
 SLICE_B_HEADING = "#### CANONICAL_CORE_RUNTIME_INTEGRATION_REMEDIATION_SLICE_B_V0"
@@ -111,8 +112,10 @@ def _section_entry_class(section_heading: str, fields: Mapping[str, str]) -> Reg
 
     if section_heading == GLOBAL_SUMMARY_HEADING:
         return RegistryEntryClass.CANONICAL_CURRENT_OWNER_ONLY
-    if section_heading == SLICE_D_HEADING:
+    if section_heading == SLICE_E_HEADING:
         return RegistryEntryClass.CANONICAL_CURRENT_OWNER_ONLY
+    if section_heading == SLICE_D_HEADING:
+        return RegistryEntryClass.HISTORICAL_REMEDIATION_SNAPSHOT
     if section_heading == SLICE_C_HEADING:
         return RegistryEntryClass.HISTORICAL_REMEDIATION_SNAPSHOT
     if section_heading == SLICE_B_HEADING:

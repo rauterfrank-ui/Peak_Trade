@@ -57,6 +57,9 @@ from src.live.data_quality_gate import evaluate_data_quality
 from src.live.dynamic_leverage_live import evaluate_dynamic_leverage_for_live
 from src.live.feature_activation import evaluate_feature_activation
 from src.ops.double_play.specialists import evaluate_double_play
+from trading.master_v2.evaluate_double_play_authority_boundary_v0 import (
+    build_legacy_double_play_live_gates_annotation,
+)
 
 logger = logging.getLogger(__name__)
 
@@ -376,9 +379,10 @@ def check_strategy_live_eligibility(
     dl_decision = evaluate_dynamic_leverage_for_live(context=effective_ctx)
     details["dynamic_leverage"] = dl_decision.details
 
-    # Double-play specialist selection (SAFE DEFAULT OFF; annotate only)
+    # Double-play specialist selection (SAFE DEFAULT OFF; legacy annotation only).
+    # ``is_eligible`` is finalized above; evaluate_double_play must not affect it.
     dp_decision = evaluate_double_play(context=effective_ctx)
-    details["double_play"] = dp_decision.details
+    details["double_play"] = build_legacy_double_play_live_gates_annotation(dp_decision)
 
     return LiveGateResult(
         entity_id=strategy_id,
@@ -565,9 +569,10 @@ def check_portfolio_live_eligibility(
     dl_decision = evaluate_dynamic_leverage_for_live(context=effective_ctx)
     details["dynamic_leverage"] = dl_decision.details
 
-    # Double-play specialist selection (SAFE DEFAULT OFF; annotate only)
+    # Double-play specialist selection (SAFE DEFAULT OFF; legacy annotation only).
+    # ``is_eligible`` is finalized above; evaluate_double_play must not affect it.
     dp_decision = evaluate_double_play(context=effective_ctx)
-    details["double_play"] = dp_decision.details
+    details["double_play"] = build_legacy_double_play_live_gates_annotation(dp_decision)
 
     return LiveGateResult(
         entity_id=portfolio_id,

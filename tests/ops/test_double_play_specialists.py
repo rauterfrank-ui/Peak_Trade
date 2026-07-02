@@ -51,3 +51,6 @@ def test_live_gates_integration_details_contain_double_play():
     dp = result.details["double_play"]
     assert "enabled" in dp
     assert dp.get("active_specialist") in ("bull", "bear")
+    assert dp["authority_boundary"]["ops_evaluate_double_play_authority"] == (
+        "LEGACY_NON_AUTHORITATIVE"
+    )
