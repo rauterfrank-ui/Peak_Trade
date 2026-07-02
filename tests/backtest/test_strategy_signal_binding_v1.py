@@ -14,6 +14,7 @@ from src.backtest.strategy_signal_binding_v1 import (
     collect_configured_strategy_params_v1,
     compute_required_warmup_rows_v1,
     execute_configured_strategy_signal_series_v1,
+    project_strategy_params_for_binding_v1,
     resolve_effective_strategy_params_v1,
 )
 
@@ -87,6 +88,77 @@ def test_legacy_alias_fast_period_maps_to_fast_window() -> None:
 def test_unknown_strategy_param_fail_closed() -> None:
     with pytest.raises(StrategySignalBindingError, match="unknown_strategy_param"):
         resolve_effective_strategy_params_v1("ma_crossover", {"not_a_param": 1})
+
+
+def test_resolve_effective_params_rejects_price_col_directly() -> None:
+    with pytest.raises(StrategySignalBindingError, match="unknown_strategy_param:price_col"):
+        resolve_effective_strategy_params_v1(
+            "ma_crossover",
+            {"fast_window": 20, "slow_window": 50, "price_col": "close"},
+        )
+
+
+def test_project_ma_crossover_strips_price_col_for_binding() -> None:
+    projected = project_strategy_params_for_binding_v1(
+        "ma_crossover",
+        {"fast_window": 20, "slow_window": 50, "price_col": "close"},
+    )
+    assert projected == {"fast_window": 20, "slow_window": 50}
+
+
+def test_project_ma_crossover_rejects_unexpected_param() -> None:
+    with pytest.raises(StrategySignalBindingError, match="unknown_strategy_param:unexpected_param"):
+        project_strategy_params_for_binding_v1(
+            "ma_crossover",
+            {
+                "fast_window": 20,
+                "slow_window": 50,
+                "price_col": "close",
+                "unexpected_param": 1,
+            },
+        )
+
+
+def test_execute_ma_crossover_step29m_canonical_config_with_price_col() -> None:
+    cfg = _cfg(fast_window=20, slow_window=50)
+    cfg["economic_evaluation_v1"]["strategy_params"]["price_col"] = "close"
+    result = execute_configured_strategy_signal_series_v1(
+        _bars(120),
+        strategy_id="ma_crossover",
+        cfg=cfg,
+    )
+    assert result.provenance.strategy_execution_status.value == "EXECUTED"
+    assert result.provenance.configured_strategy_params == {
+        "fast_window": 20,
+        "slow_window": 50,
+        "price_col": "close",
+    }
+    assert result.provenance.effective_strategy_params == {
+        "fast_window": 20,
+        "slow_window": 50,
+    }
+    assert result.provenance.strategy_nonzero_signal_count >= 0
+
+
+def test_execute_ma_crossover_rejects_unexpected_param_with_price_col() -> None:
+    cfg = _cfg(fast_window=20, slow_window=50)
+    cfg["economic_evaluation_v1"]["strategy_params"]["price_col"] = "close"
+    cfg["economic_evaluation_v1"]["strategy_params"]["unexpected_param"] = 1
+    with pytest.raises(StrategySignalBindingError, match="unknown_strategy_param:unexpected_param"):
+        execute_configured_strategy_signal_series_v1(
+            _bars(),
+            strategy_id="ma_crossover",
+            cfg=cfg,
+        )
+
+
+def test_resolve_breakout_donchian_preserves_price_col_directly() -> None:
+    effective, _ = resolve_effective_strategy_params_v1(
+        "breakout_donchian",
+        {"lookback": 20, "price_col": "close"},
+    )
+    assert effective["price_col"] == "close"
+    assert effective["lookback"] == 20
 
 
 def test_execute_ma_crossover_produces_nonzero_signals_on_trending_fixture() -> None:

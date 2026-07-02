@@ -48,6 +48,11 @@ _EXTERNAL_PARAMETER_SCHEMA_V1: dict[str, dict[str, Any]] = {
     },
 }
 
+# Evaluation/config metadata allowed in configured params but not strategy logic schema.
+_EVALUATION_ONLY_STRATEGY_PARAMS_V1: dict[str, frozenset[str]] = {
+    "ma_crossover": frozenset({"price_col"}),
+}
+
 
 class StrategySignalBindingError(ValueError):
     """Fail-closed strategy signal binding error."""
@@ -235,6 +240,23 @@ def compute_required_warmup_rows_v1(
     raise StrategySignalBindingError(f"required_warmup_rows_unbound:{strategy_id}")
 
 
+def project_strategy_params_for_binding_v1(
+    strategy_id: str,
+    configured_params: Mapping[str, Any],
+) -> dict[str, Any]:
+    """Project configured evaluation params to strategy-logic params for binding."""
+    evaluation_only = _EVALUATION_ONLY_STRATEGY_PARAMS_V1.get(strategy_id, frozenset())
+    aliases = _CANONICAL_PARAM_ALIASES_V1.get(strategy_id, {})
+    allowed_input_keys = (
+        set(_schema_param_names(strategy_id)) | set(aliases.keys()) | evaluation_only
+    )
+
+    for key in configured_params:
+        _fail_closed(key not in allowed_input_keys, f"unknown_strategy_param:{key}")
+
+    return {key: value for key, value in configured_params.items() if key not in evaluation_only}
+
+
 def _validate_macd_parameter_invariants_v1(effective_params: Mapping[str, Any]) -> None:
     fast = int(effective_params["fast_ema"])
     slow = int(effective_params["slow_ema"])
@@ -351,9 +373,13 @@ def execute_configured_strategy_signal_series_v1(
     resolution = resolve_strategy_id(strategy_id)
     canonical_id = resolution.canonical_strategy_id
     configured_params = collect_configured_strategy_params_v1(cfg, canonical_id)
-    effective_params, params_digest = resolve_effective_strategy_params_v1(
+    binding_params = project_strategy_params_for_binding_v1(
         canonical_id,
         configured_params,
+    )
+    effective_params, params_digest = resolve_effective_strategy_params_v1(
+        canonical_id,
+        binding_params,
     )
 
     strategy_fn = load_strategy(canonical_id)
