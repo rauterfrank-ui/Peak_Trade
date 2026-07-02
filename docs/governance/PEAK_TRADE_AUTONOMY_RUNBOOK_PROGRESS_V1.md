@@ -16,11 +16,22 @@ SCHEDULER_RUNTIME_ALLOWED: false
 
 | Feld | Wert |
 |---|---|
-| `LAST_VERIFIED_ORIGIN_MAIN` | `79714b27c36e3e5181478dc040f794216d0bcb08` |
-| `LAST_VERIFIED_AT` | `2026-07-02T17:00:00Z` |
+| `LAST_VERIFIED_ORIGIN_MAIN` | `2952dc1ed910c1252ed3b31c1240aaaafe9b4953` |
+| `LAST_VERIFIED_AT` | `2026-07-02T17:08:07Z` |
 | `CURRENT_MAJOR_GAP_PACKAGE` | `MAJOR_GAP_COMPARISON_PROMOTION_POLICY_INPUT_BRIDGE_V0` |
-| `NEXT_RUNBOOK_STEP` | `RUNBOOK_STEP_29R` |
-| `NEXT_CANONICAL_STEP` | `backtest_engine_rewire_binding` |
+| `NEXT_RUNBOOK_STEP` | `RUNBOOK_STEP_29R_RUNTIME_REWIRE_V1_IMPLEMENTATION` |
+| `NEXT_RUNBOOK_STEP_STRUCTURAL_STATUS` | `OPEN_OR_IN_PROGRESS` |
+| `NEXT_RUNBOOK_STEP_ADMISSIBLE` | `false` |
+| `NEXT_RUNBOOK_STEP_BLOCK_REASON` | `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS_FALSE` |
+| `NEXT_CANONICAL_STEP` | `RUNBOOK_STEP_29R_RUNTIME_REWIRE_V1_IMPLEMENTATION` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE` | `BOUNDED_STEP30A_POLICY_FAIL_REGISTRY_POST_MERGE_PROGRESS_REGISTRY_EVIDENCE_CROSSLINK_AND_METADATA_RECONCILIATION_V0` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN` | `GO_BOUNDED_STEP30A_POLICY_FAIL_REGISTRY_POST_MERGE_PROGRESS_REGISTRY_EVIDENCE_CROSSLINK_AND_METADATA_RECONCILIATION_V0` |
+| `STEP30A_POLICY_FAIL_REGISTRY_MERGE_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/bounded_step30a_rsi_reversion_v1_policy_fail_registry_pr_squash_merge_and_post_merge_closeout_v0_20260702T170255Z (MANIFEST_VERIFY_RC=0; PR #4753; squash 2952dc1e)` |
+| `POST_STEP30A_CANONICAL_CURRENT_STATE_REASSESSMENT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/bounded_post_step30a_policy_fail_registry_merge_canonical_current_state_read_only_reassessment_v0_20260702T170526Z (MANIFEST_VERIFY_RC=0; VERDICT=POST_STEP30A_POLICY_FAIL_REGISTRY_MERGE_CANONICAL_CURRENT_STATE_READ_ONLY_REASSESSMENT_COMPLETE)` |
+| `RETRY_ALLOWED` | `false` |
+| `REEVALUATION_ALLOWED` | `false` |
+| `PROMOTION_ELIGIBLE` | `false` |
+| `RUNTIME_ELIGIBLE` | `false` |
 | `RUNBOOK_STEP_13_IMPLEMENTED` | `true` |
 | `TRADING_SESSION_SINGLE_WRITER_IMPLEMENTED` | `true` |
 | `RUNTIME_SINGLE_WRITER_ACTIVATED` | `false` |
@@ -297,6 +308,8 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `STEP30A_ECONOMIC_POLICY_FAIL_REASON_CODES` | `METRIC_MISSING:parameter_neighbor_degradation;METRIC_MISSING:single_regime_profit_contribution;METRIC_MISSING:single_trade_profit_contribution;MONTE_CARLO_FAILED;NET_EXPECTANCY_BELOW_THRESHOLD;PROFIT_FACTOR_BELOW_THRESHOLD;STRESS_FAILED` |
 | `STEP30A_EVALUATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/economic_evaluation/step30a_rsi_reversion_v1/econ_evidence_eval_v1_37eb167cdade6c63 (MANIFEST_VERIFY_RC=0)` |
 | `STEP30A_POLICY_FAIL_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/bounded_step30a_rsi_reversion_v1_economic_policy_fail_closeout_and_operator_policy_decision_read_only_v0_20260702T164520Z (MANIFEST_VERIFY_RC=0)` |
+| `STEP30A_POLICY_FAIL_REGISTRY_MERGE_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/bounded_step30a_rsi_reversion_v1_policy_fail_registry_pr_squash_merge_and_post_merge_closeout_v0_20260702T170255Z (MANIFEST_VERIFY_RC=0; PR #4753; squash 2952dc1e)` |
+| `POST_STEP30A_CANONICAL_CURRENT_STATE_REASSESSMENT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/bounded_post_step30a_policy_fail_registry_merge_canonical_current_state_read_only_reassessment_v0_20260702T170526Z (MANIFEST_VERIFY_RC=0; VERDICT=POST_STEP30A_POLICY_FAIL_REGISTRY_MERGE_CANONICAL_CURRENT_STATE_READ_ONLY_REASSESSMENT_COMPLETE)` |
 | `STEP30A_REGISTERED_ECONOMIC_EVALUATION_CONFIGS` | `config&#47;ops&#47;step30a_okx_inst_eth_usdt_perp_rsi_reversion_v1_economic_evaluation_v1.json` <!-- pt:ref-target-ignore --> |
 | `TECHNICAL_CAPABILITY_PRESENT_NOT_EQUAL_ECONOMIC_VALIDITY_PROVEN` | `true` |
 | `NEGATIVE_CANDIDATE_EVIDENCE_NOT_EQUAL_WHOLE_SYSTEM_UNPROFITABLE` | `true` |
@@ -1570,6 +1583,8 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `STEP30A_ECONOMIC_POLICY_FAIL_REASON_CODES` | `METRIC_MISSING:parameter_neighbor_degradation;METRIC_MISSING:single_regime_profit_contribution;METRIC_MISSING:single_trade_profit_contribution;MONTE_CARLO_FAILED;NET_EXPECTANCY_BELOW_THRESHOLD;PROFIT_FACTOR_BELOW_THRESHOLD;STRESS_FAILED` |
 | `STEP30A_EVALUATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/economic_evaluation/step30a_rsi_reversion_v1/econ_evidence_eval_v1_37eb167cdade6c63 (MANIFEST_VERIFY_RC=0)` |
 | `STEP30A_POLICY_FAIL_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/bounded_step30a_rsi_reversion_v1_economic_policy_fail_closeout_and_operator_policy_decision_read_only_v0_20260702T164520Z (MANIFEST_VERIFY_RC=0)` |
+| `STEP30A_POLICY_FAIL_REGISTRY_MERGE_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/bounded_step30a_rsi_reversion_v1_policy_fail_registry_pr_squash_merge_and_post_merge_closeout_v0_20260702T170255Z (MANIFEST_VERIFY_RC=0; PR #4753; squash 2952dc1e)` |
+| `POST_STEP30A_CANONICAL_CURRENT_STATE_REASSESSMENT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/bounded_post_step30a_policy_fail_registry_merge_canonical_current_state_read_only_reassessment_v0_20260702T170526Z (MANIFEST_VERIFY_RC=0; VERDICT=POST_STEP30A_POLICY_FAIL_REGISTRY_MERGE_CANONICAL_CURRENT_STATE_READ_ONLY_REASSESSMENT_COMPLETE)` |
 | `CONSUMED_EVALUATION_GO_TOKEN` | `GO_BOUNDED_STEP30A_SINGLE_ECONOMIC_EVALUATION_POST_RUNNER_MERGE_V1` |
 | `CONSUMED_GO_REUSABLE` | `false` |
 | `TECHNICAL_CAPABILITY_PRESENT_NOT_EQUAL_ECONOMIC_VALIDITY_PROVEN` | `true` |
