@@ -201,6 +201,51 @@ class TestDatasetProfileContract:
     def test_research_alias_constant(self) -> None:
         assert ds.ADMISSIBLE_FUTURES_ECONOMIC_RESEARCH_DATASET_V1 == "economic_research_v1"
 
+    def test_missing_historical_l1_reason_enum(self) -> None:
+        assert (
+            ds.MissingHistoricalL1ReasonV1.NOT_AVAILABLE_BY_PUBLIC_SOURCE.value
+            == "NOT_AVAILABLE_BY_PUBLIC_SOURCE"
+        )
+
+    def test_schema_v2_allowed_for_research_profile(self) -> None:
+        bars = _research_bars()
+        bindings = ds.field_bindings_for_profile(ds.DatasetProfileV1.ECONOMIC_RESEARCH_V1)
+        digest = ds.compute_versioned_dataset_digest(bars, field_bindings=bindings)
+        train, val, oos = ds.compute_split_periods_from_bars(bars)
+        idx = bars.sort_index().index
+        descriptor = ds.VersionedFuturesDatasetDescriptorV1(
+            dataset_id="fixture_v2",
+            dataset_version="v2",
+            dataset_schema_version=ds.DATASET_SCHEMA_VERSION_V2,
+            dataset_digest=digest,
+            instrument_id=wiring.MV2_REQUIRED_INSTRUMENT_ID,
+            contract_type="perpetual",
+            futures_only=True,
+            bitcoin_direction_allowed=False,
+            venue_id="offline_fixture_venue_v1",
+            start_time=str(idx[0]),
+            end_time=str(idx[-1]),
+            row_count=len(bars),
+            field_bindings=bindings,
+            training_period=train,
+            validation_period=val,
+            out_of_sample_period=oos,
+            split_policy_version=ds.SPLIT_POLICY_VERSION,
+            timestamp_semantics=ds.TIMESTAMP_SEMANTICS,
+            timezone=ds.TIMEZONE,
+            ordering_status=ds.ORDERING_STATUS_SORTED,
+            duplicate_policy=ds.DUPLICATE_POLICY,
+            missing_data_policy=ds.MISSING_DATA_POLICY,
+        )
+        result = ds.evaluate_admissible_versioned_futures_dataset_v1(
+            bars=bars,
+            descriptor=descriptor,
+            provenance=_provenance(),
+            instrument_id=wiring.MV2_REQUIRED_INSTRUMENT_ID,
+            profile_binding=_research_profile_binding(),
+        )
+        assert result.is_admissible()
+
 
 class TestResearchExecutionCostBinding:
     def test_resolve_research_execution_cost_binding(self) -> None:

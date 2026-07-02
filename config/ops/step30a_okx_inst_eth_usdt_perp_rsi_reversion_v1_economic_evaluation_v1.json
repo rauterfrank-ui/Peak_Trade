@@ -1,0 +1,172 @@
+{
+  "backtest": {
+    "cost_model_version": "backtest_cost_v0",
+    "dataset_admissibility": {
+      "bind": true,
+      "dataset_profile": "economic_research_v1",
+      "execution_cost_binding": {
+        "conservative_half_spread_bps": 5.0,
+        "execution_price_observation_source": "MODELLED_NOT_OBSERVED",
+        "spread_model_version": "research_conservative_bps_v1"
+      },
+      "profile_binding": {
+        "dataset_profile": "economic_research_v1",
+        "execution_cost_binding": {
+          "conservative_half_spread_bps": 5.0,
+          "execution_price_observation_source": "MODELLED_NOT_OBSERVED",
+          "spread_model_version": "research_conservative_bps_v1"
+        },
+        "l1_observation_status": "EXECUTION_MODEL_BOUND_NOT_OBSERVED"
+      }
+    },
+    "economic_research_execution_cost": {
+      "conservative_half_spread_bps": 5.0,
+      "execution_price_observation_source": "MODELLED_NOT_OBSERVED",
+      "fee_bps": 10.0,
+      "slippage_bps": 5.0,
+      "spread_model_version": "research_conservative_bps_v1"
+    },
+    "fee_bps": 10.0,
+    "fee_model_version": "backtest_fee_taker_symmetric_v0",
+    "funding": {
+      "bind": true,
+      "model_version": "backtest_funding_perpetual_interval_v1"
+    },
+    "initial_cash": 10000.0,
+    "parameter_sensitivity": {
+      "bind": true,
+      "grid": {
+        "grid_id": "okx_eth_perp_research_cost_grid_v1",
+        "parameter_names": [
+          "fee_bps",
+          "slippage_bps"
+        ],
+        "parameter_values": [
+          [
+            8.0,
+            10.0,
+            12.0
+          ],
+          [
+            4.0,
+            5.0,
+            6.0
+          ]
+        ],
+        "search_space_bounds": {
+          "fee_bps": {
+            "max": 12.0,
+            "min": 8.0
+          },
+          "slippage_bps": {
+            "max": 6.0,
+            "min": 4.0
+          }
+        },
+        "seed": 42
+      },
+      "grid_version": "v1",
+      "policy_version": "parameter_sensitivity_v1"
+    },
+    "slippage_bps": 5.0,
+    "slippage_model_version": "backtest_slippage_symmetric_v0"
+  },
+  "config_schema_version": "step30a_rsi_reversion_v1_economic_evaluation_admissibility_v1",
+  "config_version": "v1",
+  "economic_evaluation_v1": {
+    "economic_validity_policy_version": "economic_validity_policy_v1",
+    "engine_signal_source": "configured_strategy_signal",
+    "monte_carlo": {
+      "bind": true,
+      "policy_version": "monte_carlo_v1",
+      "runs": 64,
+      "seed": 42
+    },
+    "parameter_sensitivity_policy_version": "parameter_sensitivity_v1",
+    "strategy_id": "rsi_reversion",
+    "strategy_params": {
+      "lower": 30.0,
+      "price_col": "close",
+      "rsi_window": 14,
+      "upper": 70.0
+    },
+    "strategy_version": "v1",
+    "stress": {
+      "bind": true,
+      "policy_version": "stress_class_suite_v1"
+    },
+    "walk_forward": {
+      "bind": true,
+      "policy_version": "walk_forward_v1",
+      "step_bars": 1440,
+      "test_bars": 1440,
+      "train_bars": 4320
+    }
+  },
+  "offline_evaluation_sizing_contract_v1": {
+    "config_digest": "2e8c41d13184b047dd045a02a6afdd587847d802080808156d267a7947013f84",
+    "dataset_digest": "76b7e30b6153a8d273c63d771dbe2a232448369cd870ef3148031edd1187bc53",
+    "initial_equity": 10000.0,
+    "instrument_metadata_source": "versioned_dataset_manifest_v2",
+    "max_position_pct": 0.25,
+    "minimum_notional_policy": "USE_RISK_MIN_POSITION_VALUE_v1",
+    "minimum_quantity_policy": "REJECT_BELOW_MIN_NOTIONAL_v1",
+    "oversize_policy": "REJECT_OVERSIZE",
+    "price_source": "bar_close_v1",
+    "quantity_rounding_policy": "NONE_v1",
+    "risk_per_trade": 0.005,
+    "sizing_contract_version": "offline_evaluation_sizing_contract_v1",
+    "sizing_mode": "fixed_fractional_risk_per_trade_v1",
+    "sizing_owner": "backtest.offline_evaluation_sizing_contract_v1",
+    "stop_distance_policy": "FIXED_PCT_FROM_ENTRY_v1",
+    "stop_pct": 0.025,
+    "stop_pct_derivation_ref": "fleet_precedent:macd_v3_post_risk_limits_rewire",
+    "strategy_params_digest": "f75332deba2b4746eccc7b477d6fe0d51f16cf7f2ed1b33c68eb82ac775fce40"
+  },
+  "real_admissible_futures_evaluation_binding_v1": {
+    "canonical_instrument_id": "inst-eth-usdt-perp",
+    "canonical_trading_logic_version": "integrated_offline_trading_logic_replay_v1",
+    "dataset_path": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/inst-eth-usdt-perp/v2/bars.parquet",
+    "dataset_profile": "economic_research_v1",
+    "dataset_schema_version": "v2",
+    "dataset_version": "v2",
+    "effective_entry_cost_bps": 20.0,
+    "effective_exit_cost_bps": 20.0,
+    "execution_model_version": "backtest_execution_v0",
+    "development_partition_digest": "544d1e10987d42a82c834c5580f6424aaf01b4d7762fb08be10dbb3094e38d22",
+    "expected_dataset_digest": "76b7e30b6153a8d273c63d771dbe2a232448369cd870ef3148031edd1187bc53",
+    "expected_l1_observation_status": "EXECUTION_MODEL_BOUND_NOT_OBSERVED",
+    "expected_manifest_digest": "c5e9039a04521272c115e83158ba415e1b85d9fcad9658446bfb947abc77b44a",
+    "frozen_holdout_digest": "8612a4cccf5cf321eeb577ed1b6df14417277738f43423cbf152c98d330aa3e4",
+    "missing_historical_l1_reason": "NOT_AVAILABLE_BY_PUBLIC_SOURCE",
+    "native_instrument_id": "ETH-USDT-SWAP",
+    "out_of_sample_period": "2026-06-17 10:07:00+00:00..2026-07-01 10:07:00+00:00",
+    "require_dataset_admissible": true,
+    "require_integrity_pass": true,
+    "require_observed_l1_used_false": true,
+    "roundtrip_cost_bps": 40.0,
+    "source_venue": "OKX",
+    "training_period": "2026-04-02 10:07:00+00:00..2026-05-18 23:59:00+00:00",
+    "validation_period": "2026-05-19 00:00:00+00:00..2026-06-16 23:59:00+00:00"
+  },
+  "risk": {
+    "max_position_size": 0.25,
+    "min_position_value": 10.0,
+    "min_stop_distance": 0.0001,
+    "risk_per_trade": 0.005
+  },
+  "step30a_policy_ratification_v1": {
+    "dataset_replacement_allowed": false,
+    "evaluation_authorized": false,
+    "instrument_id": "inst-eth-usdt-perp",
+    "operator_policy_derivation_ref": "operator_policy_decision:STEP30A_RSI_REVERSION_V1",
+    "parameter_tuning_allowed": false,
+    "promotion_authorized": false,
+    "runtime_authorized": false,
+    "sizing_precedent_ref": "fleet_precedent:macd_v3_post_risk_limits_rewire",
+    "strategy_id": "rsi_reversion",
+    "strategy_version": "v1",
+    "threshold_tuning_allowed": false,
+    "venue_id": "okx"
+  }
+}

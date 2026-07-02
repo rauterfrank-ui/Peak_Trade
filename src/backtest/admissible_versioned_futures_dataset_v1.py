@@ -20,6 +20,8 @@ ADMISSIBLE_VERSIONED_FUTURES_DATASET_VERSION = "backtest_admissible_versioned_fu
 ADMISSIBLE_VERSIONED_FUTURES_DATASET_OWNER = "backtest.admissible_versioned_futures_dataset_v1"
 DEFAULT_DATASET_VERSION = "v1"
 DATASET_SCHEMA_VERSION = "v1"
+DATASET_SCHEMA_VERSION_V2 = "v2"
+ALLOWED_DATASET_SCHEMA_VERSIONS = frozenset({DATASET_SCHEMA_VERSION, DATASET_SCHEMA_VERSION_V2})
 SPLIT_POLICY_VERSION = "v1"
 TIMESTAMP_SEMANTICS = "utc_bar_close_exclusive_end"
 TIMEZONE = "UTC"
@@ -76,6 +78,10 @@ class DatasetProfileV1(str, Enum):
 class L1ObservationStatusV1(str, Enum):
     OBSERVED_HISTORICAL_L1 = "OBSERVED_HISTORICAL_L1"
     EXECUTION_MODEL_BOUND_NOT_OBSERVED = "EXECUTION_MODEL_BOUND_NOT_OBSERVED"
+
+
+class MissingHistoricalL1ReasonV1(str, Enum):
+    NOT_AVAILABLE_BY_PUBLIC_SOURCE = "NOT_AVAILABLE_BY_PUBLIC_SOURCE"
 
 
 class AdmissibilityStatus(str, Enum):
@@ -931,7 +937,7 @@ def evaluate_admissible_versioned_futures_dataset_v1(
     if descriptor.instrument_id != instrument_id:
         reason_codes.append("instrument_id_mismatch")
 
-    if descriptor.dataset_schema_version != DATASET_SCHEMA_VERSION:
+    if descriptor.dataset_schema_version not in ALLOWED_DATASET_SCHEMA_VERSIONS:
         status = AdmissibilityStatus.BLOCKED_SCHEMA_MISMATCH
         reason_codes.append("dataset_schema_version_mismatch")
 
