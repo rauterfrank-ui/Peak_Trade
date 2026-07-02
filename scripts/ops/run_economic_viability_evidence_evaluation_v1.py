@@ -297,6 +297,10 @@ def _load_dataset_manifest(path: Path) -> dict[str, Any]:
     return manifest
 
 
+def _raise_runner_dataset_contract_error(exc: ds.AdmissibleVersionedFuturesDatasetError) -> None:
+    raise RunnerError(str(exc)) from exc
+
+
 def _descriptor_from_manifest(
     manifest: Mapping[str, Any],
     *,
@@ -309,10 +313,13 @@ def _descriptor_from_manifest(
                 manifest_path=manifest_path,
             )
         )
-        if descriptor.dataset_version != ds.DEFAULT_DATASET_VERSION:
-            raise RunnerError(f"dataset_version_unknown:{descriptor.dataset_version}")
-        if descriptor.dataset_schema_version != ds.DATASET_SCHEMA_VERSION:
-            raise RunnerError(f"dataset_schema_version_unknown:{descriptor.dataset_schema_version}")
+        try:
+            ds.assert_runner_manifest_dataset_version_accepted_v1(
+                descriptor,
+                manifest=manifest,
+            )
+        except ds.AdmissibleVersionedFuturesDatasetError as exc:
+            _raise_runner_dataset_contract_error(exc)
         return descriptor
     dataset_raw = manifest.get("dataset")
     if not isinstance(dataset_raw, Mapping):
@@ -332,10 +339,13 @@ def _descriptor_from_manifest(
         }
     }
     descriptor, _provenance = ds.load_dataset_admissibility_from_cfg(cfg)
-    if descriptor.dataset_version != ds.DEFAULT_DATASET_VERSION:
-        raise RunnerError(f"dataset_version_unknown:{descriptor.dataset_version}")
-    if descriptor.dataset_schema_version != ds.DATASET_SCHEMA_VERSION:
-        raise RunnerError(f"dataset_schema_version_unknown:{descriptor.dataset_schema_version}")
+    try:
+        ds.assert_runner_manifest_dataset_version_accepted_v1(
+            descriptor,
+            manifest=manifest,
+        )
+    except ds.AdmissibleVersionedFuturesDatasetError as exc:
+        _raise_runner_dataset_contract_error(exc)
     return descriptor
 
 
@@ -421,6 +431,52 @@ def _validate_real_evaluation_binding(
     expected_l1 = str(binding.get("expected_l1_observation_status", "")).strip()
     if expected_l1 and l1_status != expected_l1:
         raise RunnerError("l1_observation_status_mismatch")
+    expected_dev_digest = str(binding.get("development_partition_digest", "")).strip()
+    if expected_dev_digest:
+        actual_dev_digest = str(manifest.get("development_partition_digest", "")).strip()
+        if actual_dev_digest != expected_dev_digest:
+            raise RunnerError("development_partition_digest_mismatch")
+    expected_holdout_digest = str(binding.get("frozen_holdout_digest", "")).strip()
+    if expected_holdout_digest:
+        actual_holdout_digest = str(manifest.get("frozen_holdout_digest", "")).strip()
+        if actual_holdout_digest != expected_holdout_digest:
+            raise RunnerError("frozen_holdout_digest_mismatch")
+    if str(binding.get("dataset_version", "")) == ds.RUNNER_ECONOMIC_RESEARCH_V2_DATASET_VERSION:
+        holdout_binding = manifest.get("holdout_binding")
+        if not isinstance(holdout_binding, Mapping):
+            raise RunnerError("holdout_binding_missing")
+        if (
+            str(holdout_binding.get("holdout_access_before_evaluation", ""))
+            != ds.HOLDOUT_ACCESS_BLOCKED_BEFORE_EVALUATION
+        ):
+            raise RunnerError("holdout_access_before_evaluation_not_blocked")
+
+
+def _validate_v2_single_config_registry_binding_v1(
+    cfg: Mapping[str, Any],
+    *,
+    config_path: Path,
+) -> None:
+    binding = cfg.get("real_admissible_futures_evaluation_binding_v1")
+    if not isinstance(binding, Mapping):
+        return
+    if str(binding.get("dataset_version", "")) != ds.RUNNER_ECONOMIC_RESEARCH_V2_DATASET_VERSION:
+        return
+    if (
+        str(binding.get("canonical_instrument_id", ""))
+        != ds.RUNNER_ECONOMIC_RESEARCH_V2_INSTRUMENT_ID
+    ):
+        raise RunnerError("v2_canonical_instrument_binding_mismatch")
+    from src.backtest.step30a_rsi_reversion_v1_economic_evaluation_admissibility_contract_v1 import (  # noqa: PLC0415
+        list_step30a_registered_economic_evaluation_configs_v1,
+    )
+
+    registered = list_step30a_registered_economic_evaluation_configs_v1()
+    if len(registered) != 1:
+        raise RunnerError("config_count_not_one")
+    expected_path = (_REPO_ROOT / registered[0]).resolve()
+    if config_path.resolve() != expected_path:
+        raise RunnerError("v2_config_not_registered_singleton")
 
 
 def _validate_evaluation_config(cfg: Mapping[str, Any]) -> None:
@@ -686,6 +742,7 @@ def build_validation_plan(args: argparse.Namespace) -> ValidationPlanV1:
 
     cfg = _merge_policy_into_config(_load_config(config_path), policy_path)
     _validate_evaluation_config(cfg)
+    _validate_v2_single_config_registry_binding_v1(cfg, config_path=config_path)
     policy = _resolve_policy(cfg)
 
     bars = _load_bars_from_dataset_path(dataset_path)
