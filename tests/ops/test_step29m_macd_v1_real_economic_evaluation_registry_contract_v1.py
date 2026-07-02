@@ -81,16 +81,13 @@ def test_macd_v1_real_evaluation_evidence_ref_bound() -> None:
     assert str(V2_EVIDENCE_DIR) in _field_value(section, "INVALIDATED_V2_EVALUATION_REF")
 
 
-def test_macd_v1_v3_policy_registry_ratified_and_fleet_complete() -> None:
+def test_macd_v1_v3_policy_registry_ratified_and_historical_fleet_unchanged() -> None:
     section = _step_29m_section(_read_registry())
     assert _field_value(section, "OPERATOR_POLICY_DECISION") == "RATIFIED"
     assert _field_value(section, "POLICY_INVARIANT") == (
         "risk_per_trade <= max_position_pct * stop_pct"
     )
-    assert _field_value(section, "NEXT_EVALUATION_STRATEGY_ID") == "none"
-    assert _field_value(section, "NEXT_EVALUATION_CONFIG_STATUS") == (
-        "EVALUATION_FLEET_COMPLETE_NO_PENDING_CANDIDATE"
-    )
+    assert _field_value(section, "HISTORICAL_FLEET_RESULTS_UNCHANGED") == "true"
     assert _field_value(section, "ECONOMIC_REEVALUATION_ALLOWED") == "false"
     assert _field_value(section, "PROFITABILITY_CLAIM_ALLOWED") == "false"
     assert _field_value(section, "V2_CONFIG_DISPOSITION") == (

@@ -73,13 +73,10 @@ def test_breakout_config_digest_stable() -> None:
     assert sizing["config_digest"] == compute_sizing_contract_digest_v1(contract)
 
 
-def test_breakout_fleet_evaluation_complete_no_pending_next_candidate() -> None:
+def test_breakout_fleet_historical_results_unchanged() -> None:
     section = _step_29m_section(_read_registry())
-    assert _field_value(section, "NEXT_EVALUATION_STRATEGY_ID") == "none"
-    assert _field_value(section, "NEXT_EVALUATION_CONFIG_VERSION") == "none"
-    assert _field_value(section, "NEXT_EVALUATION_CONFIG_STATUS") == (
-        "EVALUATION_FLEET_COMPLETE_NO_PENDING_CANDIDATE"
-    )
     assert _field_value(section, "BREAKOUT_DONCHIAN_V1_STATUS") == (
         "TECHNICALLY_VALID_ECONOMIC_POLICY_FAIL"
     )
+    assert _field_value(section, "LAST_EVALUATED_STRATEGY_ID") == "breakout_donchian"
+    assert _field_value(section, "HISTORICAL_FLEET_RESULTS_UNCHANGED") == "true"

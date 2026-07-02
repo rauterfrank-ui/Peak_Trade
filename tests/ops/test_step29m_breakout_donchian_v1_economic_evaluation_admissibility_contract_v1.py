@@ -189,10 +189,6 @@ def test_progress_registry_ratified_policy_fields() -> None:
     section = _step_29m_section(PROGRESS_REGISTRY.read_text(encoding="utf-8"))
     assert _field_value(section, "OPERATOR_POLICY_DECISION") == "RATIFIED"
     assert _field_value(section, "OPERATOR_POLICY_DECISION_OWNER") == "Frank Rauter"
-    assert _field_value(section, "NEXT_EVALUATION_STRATEGY_ID") == "none"
-    assert _field_value(section, "NEXT_EVALUATION_CONFIG_STATUS") == (
-        "EVALUATION_FLEET_COMPLETE_NO_PENDING_CANDIDATE"
-    )
     assert _field_value(section, "BREAKOUT_DONCHIAN_LOOKBACK") == "20"
     assert _field_value(section, "BREAKOUT_DONCHIAN_PRICE_COL") == "close"
     assert _field_value(section, "BREAKOUT_DONCHIAN_RISK_PER_TRADE") == "0.005"
