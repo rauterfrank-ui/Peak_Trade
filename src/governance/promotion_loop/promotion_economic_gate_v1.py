@@ -65,6 +65,34 @@ REASON_REQUIRED_STATUS_UNKNOWN = "REQUIRED_STATUS_UNKNOWN"
 REASON_NON_FINITE_METRIC = "NON_FINITE_METRIC"
 REASON_RUNTIME_AUTHORITY_REQUEST_FORBIDDEN = "RUNTIME_AUTHORITY_REQUEST_FORBIDDEN"
 REASON_DEPLOYMENT_ACTIVATION_FORBIDDEN = "DEPLOYMENT_ACTIVATION_FORBIDDEN"
+REASON_GOVERNANCE_HOLD_ACTIVE = "GOVERNANCE_HOLD_ACTIVE"
+REASON_NO_NEW_CANDIDATE_HOLD = "NO_NEW_CANDIDATE_HOLD_ACTIVE"
+REASON_STEP29M_FLEET_COMPLETE_NO_PASS = "STEP29M_FLEET_COMPLETE_NO_PASS"
+REASON_TERMINAL_CANDIDATE_DISPOSITION = "TERMINAL_CANDIDATE_DISPOSITION"
+REASON_CONFIDENCE_SCORE_ONLY = "CONFIDENCE_SCORE_ONLY_PROMOTION_BLOCKED"
+REASON_IN_SAMPLE_PROFIT_ONLY = "IN_SAMPLE_PROFIT_ONLY_PROMOTION_BLOCKED"
+REASON_ZERO_COST_EVIDENCE = "ZERO_COST_EVIDENCE_PROMOTION_BLOCKED"
+
+STEP29M_FLEET_STATUS_COMPLETE_NO_PASS = "COMPLETE_NO_PASS"
+NO_NEW_CANDIDATE_HOLD_ACTIVE = "ACTIVE"
+OPERATOR_POLICY_MAINTAIN_NO_NEW_CANDIDATE_HOLD = "MAINTAIN_NO_NEW_CANDIDATE_HOLD"
+
+_TERMINAL_CANDIDATE_DISPOSITIONS = frozenset(
+    {
+        "REJECTED_CLOSED",
+        "CLOSED_REJECTED",
+        "TERMINAL_NEGATIVE_EVIDENCE",
+        "COMPLETE_POLICY_FAIL",
+        "ECONOMIC_FAIL",
+        "ECONOMIC_POLICY_FAIL",
+        "TECHNICALLY_VALID_ECONOMIC_POLICY_FAIL",
+        "DEVELOPMENT_ECONOMIC_VALIDITY_FAIL",
+        "DEV_FAIL",
+        "RESEARCH_NO_PASS",
+        "ARCHITECTURE_HYPOTHESIS_FALSIFIED",
+        "ROBUSTNESS_FAILED",
+    }
+)
 
 _BLOCKED_REASON_CODES = frozenset(
     {
@@ -206,6 +234,13 @@ class PromotionEconomicGateInputV1:
     evidence_admissible: Optional[bool] = None
     request_runtime_authority: bool = False
     request_deployment_activation: bool = False
+    no_new_candidate_hold_active: bool = False
+    step29m_fleet_status: str = ""
+    candidate_terminal_disposition: str = ""
+    economic_validity_offline_gate_pass: Optional[bool] = None
+    promotion_basis_confidence_only: bool = False
+    promotion_basis_in_sample_profit_only: bool = False
+    zero_cost_evidence: bool = False
 
     def to_evaluation_dict(self) -> dict[str, Any]:
         return {
@@ -242,6 +277,13 @@ class PromotionEconomicGateInputV1:
             "evidence_admissible": self.evidence_admissible,
             "request_runtime_authority": self.request_runtime_authority,
             "request_deployment_activation": self.request_deployment_activation,
+            "no_new_candidate_hold_active": self.no_new_candidate_hold_active,
+            "step29m_fleet_status": self.step29m_fleet_status,
+            "candidate_terminal_disposition": self.candidate_terminal_disposition,
+            "economic_validity_offline_gate_pass": self.economic_validity_offline_gate_pass,
+            "promotion_basis_confidence_only": self.promotion_basis_confidence_only,
+            "promotion_basis_in_sample_profit_only": self.promotion_basis_in_sample_profit_only,
+            "zero_cost_evidence": self.zero_cost_evidence,
         }
 
 
@@ -266,6 +308,19 @@ class PromotionEconomicGateResultV1:
     activation_allowed: bool = False
     execution_allowed: bool = False
     gate_policy_digest: str = ""
+    promotion_eligible: bool = False
+    economic_validity_pass: bool = False
+    robustness_pass: bool = False
+    evidence_admissible: bool = False
+    safety_policy_pass: bool = False
+    governance_hold_active: bool = False
+    candidate_terminal_disposition: str = ""
+    config_digest: str = ""
+    implementation_digest: str = ""
+    evidence_refs: tuple[str, ...] = ()
+    shadow_candidate_eligible: bool = False
+    paper_candidate_eligible: bool = False
+    testnet_candidate_eligible: bool = False
 
     def to_dict(self) -> dict[str, Any]:
         return {
@@ -275,11 +330,21 @@ class PromotionEconomicGateResultV1:
             "gate_policy_digest": self.gate_policy_digest,
             "promotion_candidate_status": self.promotion_candidate_status.value,
             "eligible_for_promotion_candidate": self.eligible_for_promotion_candidate,
+            "promotion_eligible": self.promotion_eligible,
+            "economic_validity_pass": self.economic_validity_pass,
+            "robustness_pass": self.robustness_pass,
+            "evidence_admissible": self.evidence_admissible,
+            "safety_policy_pass": self.safety_policy_pass,
+            "governance_hold_active": self.governance_hold_active,
+            "candidate_terminal_disposition": self.candidate_terminal_disposition,
             "blocking_reasons": list(self.blocking_reasons),
             "reason_codes": list(self.reason_codes),
             "evaluated_evidence_refs": list(self.evaluated_evidence_refs),
+            "evidence_refs": list(self.evidence_refs),
             "evaluation_timestamp": self.evaluation_timestamp,
             "evaluation_digest": self.evaluation_digest,
+            "config_digest": self.config_digest,
+            "implementation_digest": self.implementation_digest,
             "authority_effect": self.authority_effect,
             "runtime_effect": self.runtime_effect,
             "deployment_effect": self.deployment_effect,
@@ -288,6 +353,9 @@ class PromotionEconomicGateResultV1:
             "runtime_eligible": self.runtime_eligible,
             "activation_allowed": self.activation_allowed,
             "execution_allowed": self.execution_allowed,
+            "shadow_candidate_eligible": self.shadow_candidate_eligible,
+            "paper_candidate_eligible": self.paper_candidate_eligible,
+            "testnet_candidate_eligible": self.testnet_candidate_eligible,
         }
 
 
@@ -390,6 +458,67 @@ def _derive_robustness_pass(input_data: PromotionEconomicGateInputV1) -> Optiona
     if aggregate is None:
         return components_pass
     return aggregate and components_pass
+
+
+def _derive_economic_validity_pass(input_data: PromotionEconomicGateInputV1) -> Optional[bool]:
+    if input_data.economic_validity_offline_gate_pass is not None:
+        return input_data.economic_validity_offline_gate_pass
+    status_pass = _status_is_pass(input_data.economic_validity_status)
+    if status_pass is None:
+        return None
+    if not status_pass:
+        return False
+    if input_data.economic_validity_proven is False:
+        return False
+    if input_data.economic_validity_proven is None:
+        return None
+    return True
+
+
+def _derive_evidence_admissible(input_data: PromotionEconomicGateInputV1) -> Optional[bool]:
+    if input_data.evidence_admissible is not None:
+        return input_data.evidence_admissible
+    return _status_is_pass(input_data.evidence_admissibility_status)
+
+
+def _derive_safety_policy_pass(input_data: PromotionEconomicGateInputV1) -> Optional[bool]:
+    return _status_is_pass(input_data.safety_policy_status)
+
+
+def _is_terminal_disposition(disposition: str) -> bool:
+    normalized = str(disposition).strip().upper()
+    if not normalized:
+        return False
+    return normalized in _TERMINAL_CANDIDATE_DISPOSITIONS
+
+
+def _apply_governance_fail_closed_checks(
+    input_data: PromotionEconomicGateInputV1,
+    reason_codes: list[str],
+) -> None:
+    governance_hold = False
+    if input_data.no_new_candidate_hold_active:
+        reason_codes.append(REASON_NO_NEW_CANDIDATE_HOLD)
+        governance_hold = True
+    if input_data.step29m_fleet_status.strip().upper() == STEP29M_FLEET_STATUS_COMPLETE_NO_PASS:
+        reason_codes.append(REASON_STEP29M_FLEET_COMPLETE_NO_PASS)
+        governance_hold = True
+    if governance_hold:
+        reason_codes.append(REASON_GOVERNANCE_HOLD_ACTIVE)
+    if _is_terminal_disposition(input_data.candidate_terminal_disposition):
+        reason_codes.append(REASON_TERMINAL_CANDIDATE_DISPOSITION)
+    if input_data.promotion_basis_confidence_only:
+        reason_codes.append(REASON_CONFIDENCE_SCORE_ONLY)
+    if input_data.promotion_basis_in_sample_profit_only:
+        reason_codes.append(REASON_IN_SAMPLE_PROFIT_ONLY)
+    if input_data.zero_cost_evidence:
+        reason_codes.append(REASON_ZERO_COST_EVIDENCE)
+    if input_data.economic_validity_offline_gate_pass is False:
+        reason_codes.append(REASON_ECONOMIC_VALIDITY_NOT_PROVEN)
+    elif input_data.economic_validity_offline_gate_pass is None and (
+        input_data.no_new_candidate_hold_active or input_data.step29m_fleet_status
+    ):
+        _append_unknown("economic_validity_offline_gate_pass", reason_codes)
 
 
 def compute_promotion_economic_gate_evaluation_digest(
@@ -517,6 +646,13 @@ def evaluate_promotion_economic_gate_v1(
 
     _check_required_metrics(input_data.required_metrics, reason_codes)
 
+    _apply_governance_fail_closed_checks(input_data, reason_codes)
+
+    economic_validity_pass = _derive_economic_validity_pass(input_data)
+    robustness_pass = _derive_robustness_pass(input_data)
+    evidence_admissible = _derive_evidence_admissible(input_data)
+    safety_policy_pass = _derive_safety_policy_pass(input_data)
+
     unique_reasons = tuple(sorted(set(reason_codes)))
     blocked = any(
         code == blocked_code or code.startswith(f"{blocked_code}:")
@@ -541,6 +677,17 @@ def evaluate_promotion_economic_gate_v1(
     if input_data.economic_viability_evidence_ref.strip():
         evidence_refs.append(input_data.economic_viability_evidence_ref.strip())
 
+    governance_hold_active = any(
+        code
+        in {
+            REASON_GOVERNANCE_HOLD_ACTIVE,
+            REASON_NO_NEW_CANDIDATE_HOLD,
+            REASON_STEP29M_FLEET_COMPLETE_NO_PASS,
+        }
+        for code in unique_reasons
+    )
+    downstream_eligible = False
+
     return PromotionEconomicGateResultV1(
         gate_result_id=gate_result_id,
         gate_policy_id=policy.policy_id,
@@ -561,6 +708,19 @@ def evaluate_promotion_economic_gate_v1(
         runtime_eligible=False,
         activation_allowed=False,
         execution_allowed=False,
+        promotion_eligible=eligible,
+        economic_validity_pass=economic_validity_pass is True,
+        robustness_pass=robustness_pass is True,
+        evidence_admissible=evidence_admissible is True,
+        safety_policy_pass=safety_policy_pass is True,
+        governance_hold_active=governance_hold_active,
+        candidate_terminal_disposition=input_data.candidate_terminal_disposition,
+        config_digest=input_data.config_digest,
+        implementation_digest=input_data.implementation_digest,
+        evidence_refs=tuple(evidence_refs),
+        shadow_candidate_eligible=downstream_eligible,
+        paper_candidate_eligible=downstream_eligible,
+        testnet_candidate_eligible=downstream_eligible,
     )
 
 
@@ -569,25 +729,35 @@ def evaluate_current_repo_promotion_gate_v1(
     evaluation_timestamp: str = "2026-07-01T00:00:00Z",
 ) -> PromotionEconomicGateResultV1:
     """Fail-closed evaluation for the current repo posture (STEP 29N slice)."""
+    return evaluate_post_pr4760_governance_bound_promotion_gate_v1(
+        evaluation_timestamp=evaluation_timestamp,
+    )
+
+
+def evaluate_post_pr4760_governance_bound_promotion_gate_v1(
+    *,
+    evaluation_timestamp: str = "2026-07-02T22:30:00Z",
+) -> PromotionEconomicGateResultV1:
+    """Fail-closed repo posture after PR #4760 with active governance holds."""
     economic_policy = canonical_economic_validity_policy_v1()
     gate_policy = canonical_promotion_economic_gate_policy_v1()
     input_data = PromotionEconomicGateInputV1(
         strategy_id="mv2_offline_research",
         strategy_version="v1",
-        candidate_id="repo_current_state",
+        candidate_id="repo_current_state_post_pr4760",
         economic_viability_evidence_ref="",
         economic_validity_status=FAIL_STATUS,
         economic_validity_proven=False,
         profitability_claim_allowed=False,
-        robustness_status=PASS_STATUS,
+        robustness_status=FAIL_STATUS,
         data_admissibility_status=PASS_STATUS,
-        evidence_admissibility_status=PASS_STATUS,
-        policy_threshold_status=PASS_STATUS,
-        walk_forward_status=PASS_STATUS,
-        out_of_sample_status=PASS_STATUS,
-        monte_carlo_status=PASS_STATUS,
-        stress_status=PASS_STATUS,
-        parameter_sensitivity_status=PASS_STATUS,
+        evidence_admissibility_status=FAIL_STATUS,
+        policy_threshold_status=FAIL_STATUS,
+        walk_forward_status=FAIL_STATUS,
+        out_of_sample_status=FAIL_STATUS,
+        monte_carlo_status=FAIL_STATUS,
+        stress_status=FAIL_STATUS,
+        parameter_sensitivity_status=FAIL_STATUS,
         reproducibility_status=PASS_STATUS,
         digest_binding_status=PASS_STATUS,
         manifest_binding_status=PASS_STATUS,
@@ -599,7 +769,111 @@ def evaluate_current_repo_promotion_gate_v1(
         policy_digest=economic_policy.policy_digest(),
         evidence_manifest_digest="2" * 64,
         evidence_admissible=False,
+        no_new_candidate_hold_active=True,
+        step29m_fleet_status=STEP29M_FLEET_STATUS_COMPLETE_NO_PASS,
+        candidate_terminal_disposition="",
+        economic_validity_offline_gate_pass=False,
     )
+    return evaluate_promotion_economic_gate_v1(
+        policy=gate_policy,
+        input_data=input_data,
+        evaluation_timestamp=evaluation_timestamp,
+        expected_policy_digest=economic_policy.policy_digest(),
+    )
+
+
+def canonical_negative_research_candidate_bindings_v0() -> tuple[dict[str, Any], ...]:
+    """Immutable negative-case bindings for verified terminal research lines."""
+    shared = {
+        "strategy_version": "v1",
+        "futures_only": True,
+        "bitcoin_direction_allowed": False,
+        "no_new_candidate_hold_active": True,
+        "step29m_fleet_status": STEP29M_FLEET_STATUS_COMPLETE_NO_PASS,
+        "economic_validity_offline_gate_pass": False,
+        "economic_validity_status": FAIL_STATUS,
+        "economic_validity_proven": False,
+        "profitability_claim_allowed": False,
+        "robustness_status": FAIL_STATUS,
+        "walk_forward_status": FAIL_STATUS,
+        "monte_carlo_status": FAIL_STATUS,
+        "stress_status": FAIL_STATUS,
+        "parameter_sensitivity_status": FAIL_STATUS,
+        "data_admissibility_status": PASS_STATUS,
+        "evidence_admissibility_status": PASS_STATUS,
+        "policy_threshold_status": FAIL_STATUS,
+        "out_of_sample_status": FAIL_STATUS,
+        "reproducibility_status": PASS_STATUS,
+        "digest_binding_status": PASS_STATUS,
+        "manifest_binding_status": PASS_STATUS,
+        "safety_policy_status": PASS_STATUS,
+        "config_digest": "a" * 64,
+        "implementation_digest": "b" * 64,
+        "evidence_manifest_digest": "c" * 64,
+    }
+    return (
+        {
+            **shared,
+            "candidate_id": "macd_v1",
+            "strategy_id": "macd",
+            "candidate_terminal_disposition": "TECHNICALLY_VALID_ECONOMIC_POLICY_FAIL",
+            "economic_viability_evidence_ref": "economic/step29m_macd_v1_real_admissible_futures_economic_reevaluation_v3_after_risk_limits_rewire_single_rerun_v0_20260701T225645Z",
+        },
+        {
+            **shared,
+            "candidate_id": "breakout_donchian_v1",
+            "strategy_id": "breakout_donchian",
+            "candidate_terminal_disposition": "TECHNICALLY_VALID_ECONOMIC_POLICY_FAIL",
+            "economic_viability_evidence_ref": "economic/step29m_breakout_donchian_v1_real_admissible_futures_economic_evaluation_v1_20260701T233425Z",
+        },
+        {
+            **shared,
+            "candidate_id": "ma_crossover_v1",
+            "strategy_id": "ma_crossover",
+            "candidate_terminal_disposition": "TECHNICALLY_VALID_ECONOMIC_POLICY_FAIL",
+            "economic_viability_evidence_ref": "economic_evaluation/bounded_step29m_ma_crossover_v1_post_binding_fix_economic_evaluation_recovery_single_run_v0_20260702T012057Z",
+        },
+        {
+            **shared,
+            "candidate_id": "rsi_reversion_v1",
+            "strategy_id": "rsi_reversion",
+            "candidate_terminal_disposition": "TERMINAL_NEGATIVE_EVIDENCE",
+            "economic_viability_evidence_ref": "economic_evaluation/step30a_rsi_reversion_v1/econ_evidence_eval_v1_37eb167cdade6c63",
+        },
+        {
+            **shared,
+            "candidate_id": "breakout_donchian_v1_lookback_55",
+            "strategy_id": "breakout_donchian",
+            "candidate_terminal_disposition": "RESEARCH_NO_PASS",
+            "economic_viability_evidence_ref": "research/bounded_new_economic_research_scope_after_step30a_policy_fail_v0_20260702T191500Z",
+        },
+        {
+            **shared,
+            "candidate_id": "composite_vol_gated_breakout_donchian_v1",
+            "strategy_id": "composite",
+            "candidate_terminal_disposition": "DEVELOPMENT_ECONOMIC_VALIDITY_FAIL",
+            "economic_viability_evidence_ref": "research/bounded_composite_vol_gated_breakout_donchian_v1_development_only_research_evaluation_v0_20260702T181302Z",
+        },
+        {
+            **shared,
+            "candidate_id": "composite_breakout_confirmation_vol_gated_donchian_v1",
+            "strategy_id": "composite",
+            "candidate_terminal_disposition": "REJECTED_CLOSED",
+            "economic_viability_evidence_ref": "implementation/bounded_composite_breakout_confirmation_vol_gated_donchian_v1_offline_economic_validity_evaluation_v0_20260702T185926Z",
+        },
+    )
+
+
+def evaluate_negative_research_candidate_promotion_gate_v1(
+    binding: Mapping[str, Any],
+    *,
+    evaluation_timestamp: str = "2026-07-02T22:30:00Z",
+) -> PromotionEconomicGateResultV1:
+    economic_policy = canonical_economic_validity_policy_v1()
+    gate_policy = canonical_promotion_economic_gate_policy_v1()
+    payload = dict(binding)
+    payload.setdefault("policy_digest", economic_policy.policy_digest())
+    input_data = PromotionEconomicGateInputV1(**payload)
     return evaluate_promotion_economic_gate_v1(
         policy=gate_policy,
         input_data=input_data,
@@ -616,6 +890,15 @@ def promotion_economic_gate_schema_v1() -> dict[str, Any]:
         "owner": PROMOTION_ECONOMIC_GATE_POLICY_OWNER,
         "candidate_statuses": [status.value for status in PromotionCandidateStatus],
         "required_input_fields": list(_REQUIRED_INPUT_FIELDS),
+        "governance_input_fields": [
+            "no_new_candidate_hold_active",
+            "step29m_fleet_status",
+            "candidate_terminal_disposition",
+            "economic_validity_offline_gate_pass",
+            "promotion_basis_confidence_only",
+            "promotion_basis_in_sample_profit_only",
+            "zero_cost_evidence",
+        ],
         "reason_codes": sorted(
             {
                 REASON_ECONOMIC_VALIDITY_NOT_PROVEN,
@@ -644,6 +927,13 @@ def promotion_economic_gate_schema_v1() -> dict[str, Any]:
                 REASON_NON_FINITE_METRIC,
                 REASON_RUNTIME_AUTHORITY_REQUEST_FORBIDDEN,
                 REASON_DEPLOYMENT_ACTIVATION_FORBIDDEN,
+                REASON_GOVERNANCE_HOLD_ACTIVE,
+                REASON_NO_NEW_CANDIDATE_HOLD,
+                REASON_STEP29M_FLEET_COMPLETE_NO_PASS,
+                REASON_TERMINAL_CANDIDATE_DISPOSITION,
+                REASON_CONFIDENCE_SCORE_ONLY,
+                REASON_IN_SAMPLE_PROFIT_ONLY,
+                REASON_ZERO_COST_EVIDENCE,
             }
         ),
         "authority_effect": AUTHORITY_EFFECT_NONE,
