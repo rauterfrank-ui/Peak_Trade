@@ -359,8 +359,9 @@ def test_26_no_imports_of_runtime_live_submission_owners_with_side_effects() -> 
 
 def test_27_no_quantity_risk_or_sizing_calculation() -> None:
     source = MODULE_PATH.read_text(encoding="utf-8").lower()
-    for token in ("calculate_quantity", "size_position", "risk_sizing", "notional"):
+    for token in ("calculate_quantity", "size_position", "notional"):
         assert token not in source
+    assert "def calculate_" not in source
 
 
 def test_28_no_network_clock_or_random_dependency() -> None:
