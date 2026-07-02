@@ -18,6 +18,10 @@ from typing import Any, Mapping, Optional, Sequence
 import pandas as pd
 
 from src.strategies import load_strategy
+from src.strategies.breakout_confirmation_v1 import (
+    CONFIRMATION_EPOCHS_V1,
+    generate_confirmed_breakout_signals_v1,
+)
 from src.strategies.composite import CompositeStrategy
 from src.strategies.registry import (
     get_strategy_registry_entry,
@@ -67,9 +71,27 @@ _EXTERNAL_PARAMETER_SCHEMA_V1: dict[str, dict[str, Any]] = {
 
 COMPOSITE_STRATEGY_ID = "composite"
 COMPOSITE_BINDING_TYPE_FILTER_GATED_SIGNAL_V1 = "filter_gated_signal_v1"
+COMPOSITE_BINDING_TYPE_CONFIRMED_FILTER_GATED_SIGNAL_V1 = "confirmed_filter_gated_signal_v1"
 COMPOSITION_RULE_SIGNAL_TIMES_FILTER_MASK = "signal_times_filter_mask"
-_ALLOWED_COMPOSITE_BINDING_TYPES = frozenset({COMPOSITE_BINDING_TYPE_FILTER_GATED_SIGNAL_V1})
-_ALLOWED_COMPOSITION_RULES = frozenset({COMPOSITION_RULE_SIGNAL_TIMES_FILTER_MASK})
+COMPOSITION_RULE_CONFIRMED_SIGNAL_TIMES_FILTER_MASK = "confirmed_signal_times_filter_mask"
+_ALLOWED_COMPOSITE_BINDING_TYPES = frozenset(
+    {
+        COMPOSITE_BINDING_TYPE_FILTER_GATED_SIGNAL_V1,
+        COMPOSITE_BINDING_TYPE_CONFIRMED_FILTER_GATED_SIGNAL_V1,
+    }
+)
+_ALLOWED_COMPOSITION_RULES = frozenset(
+    {
+        COMPOSITION_RULE_SIGNAL_TIMES_FILTER_MASK,
+        COMPOSITION_RULE_CONFIRMED_SIGNAL_TIMES_FILTER_MASK,
+    }
+)
+_COMPOSITE_TYPE_TO_COMPOSITION_RULE = {
+    COMPOSITE_BINDING_TYPE_FILTER_GATED_SIGNAL_V1: COMPOSITION_RULE_SIGNAL_TIMES_FILTER_MASK,
+    COMPOSITE_BINDING_TYPE_CONFIRMED_FILTER_GATED_SIGNAL_V1: (
+        COMPOSITION_RULE_CONFIRMED_SIGNAL_TIMES_FILTER_MASK
+    ),
+}
 _ALLOWED_COMPOSITE_SIGNAL_OWNERS = frozenset(
     {"breakout_donchian", "macd", "ma_crossover", "rsi_reversion"}
 )
@@ -88,6 +110,7 @@ _COMPOSITE_BINDING_TOP_LEVEL_KEYS = frozenset(
         "filter_strategy_params",
         "aggregation",
         "signal_threshold",
+        "confirmation_epochs",
         "binding_semantic_digest",
         "required_warmup_rows",
     }
@@ -279,9 +302,10 @@ class CompositeStrategyBindingV1:
     filter_effective_params: Mapping[str, Any]
     signal_params_digest: str
     filter_params_digest: str
+    confirmation_epochs: Optional[int] = None
 
     def to_dict(self) -> dict[str, Any]:
-        return {
+        payload = {
             "composite_type": self.composite_type,
             "composition_rule": self.composition_rule,
             "signal_strategy_id": self.signal_strategy_id,
@@ -297,6 +321,9 @@ class CompositeStrategyBindingV1:
             "signal_params_digest": self.signal_params_digest,
             "filter_params_digest": self.filter_params_digest,
         }
+        if self.confirmation_epochs is not None:
+            payload["confirmation_epochs"] = self.confirmation_epochs
+        return payload
 
 
 def _reject_forbidden_binding_identity(value: str, *, field_name: str) -> None:
@@ -353,6 +380,24 @@ def parse_composite_strategy_binding_v1(
         composition_rule not in _ALLOWED_COMPOSITION_RULES,
         f"unknown_composition_rule:{composition_rule or 'missing'}",
     )
+    expected_rule = _COMPOSITE_TYPE_TO_COMPOSITION_RULE.get(composite_type)
+    _fail_closed(
+        expected_rule is None or composition_rule != expected_rule,
+        f"composite_type_composition_rule_mismatch:{composite_type}:{composition_rule}",
+    )
+
+    confirmation_epochs: Optional[int] = None
+    if composite_type == COMPOSITE_BINDING_TYPE_CONFIRMED_FILTER_GATED_SIGNAL_V1:
+        if "confirmation_epochs" not in configured_params:
+            raise StrategySignalBindingError("composite_confirmation_epochs_missing")
+        raw_epochs = configured_params["confirmation_epochs"]
+        if isinstance(raw_epochs, bool) or not isinstance(raw_epochs, int):
+            raise StrategySignalBindingError("composite_confirmation_epochs_not_integer")
+        if raw_epochs != CONFIRMATION_EPOCHS_V1:
+            raise StrategySignalBindingError("composite_confirmation_epochs_not_allowed")
+        confirmation_epochs = CONFIRMATION_EPOCHS_V1
+    elif "confirmation_epochs" in configured_params:
+        raise StrategySignalBindingError("composite_confirmation_epochs_not_allowed_for_type")
 
     signal_strategy_id = str(configured_params.get("signal_strategy_id", "")).strip()
     filter_strategy_id = str(configured_params.get("filter_strategy_id", "")).strip()
@@ -366,10 +411,16 @@ def parse_composite_strategy_binding_v1(
     canonical_signal_id = signal_resolution.canonical_strategy_id
     canonical_filter_id = filter_resolution.canonical_strategy_id
 
-    _fail_closed(
-        canonical_signal_id not in _ALLOWED_COMPOSITE_SIGNAL_OWNERS,
-        f"composite_signal_owner_not_allowed:{canonical_signal_id}",
-    )
+    if composite_type == COMPOSITE_BINDING_TYPE_CONFIRMED_FILTER_GATED_SIGNAL_V1:
+        _fail_closed(
+            canonical_signal_id != "breakout_donchian",
+            f"confirmed_composite_signal_owner_not_allowed:{canonical_signal_id}",
+        )
+    else:
+        _fail_closed(
+            canonical_signal_id not in _ALLOWED_COMPOSITE_SIGNAL_OWNERS,
+            f"composite_signal_owner_not_allowed:{canonical_signal_id}",
+        )
     _fail_closed(
         canonical_filter_id not in _ALLOWED_COMPOSITE_FILTER_OWNERS,
         f"composite_filter_owner_not_allowed:{canonical_filter_id}",
@@ -433,6 +484,8 @@ def parse_composite_strategy_binding_v1(
     signal_warmup = compute_required_warmup_rows_v1(canonical_signal_id, signal_effective)
     filter_warmup = compute_required_warmup_rows_v1(canonical_filter_id, filter_effective)
     required_warmup_rows = max(signal_warmup, filter_warmup)
+    if confirmation_epochs is not None:
+        required_warmup_rows = max(required_warmup_rows, signal_warmup + confirmation_epochs)
 
     if "required_warmup_rows" in configured_params:
         declared_warmup = configured_params["required_warmup_rows"]
@@ -454,6 +507,8 @@ def parse_composite_strategy_binding_v1(
         "signal_threshold": signal_threshold,
         "required_warmup_rows": required_warmup_rows,
     }
+    if confirmation_epochs is not None:
+        semantic_payload["confirmation_epochs"] = confirmation_epochs
     binding_semantic_digest = compute_composite_binding_semantic_digest_v1(semantic_payload)
 
     expected_digest = configured_params.get("binding_semantic_digest")
@@ -476,6 +531,7 @@ def parse_composite_strategy_binding_v1(
         filter_effective_params=filter_effective,
         signal_params_digest=signal_digest,
         filter_params_digest=filter_digest,
+        confirmation_epochs=confirmation_epochs,
     )
 
 
@@ -487,29 +543,58 @@ def _instantiate_bound_strategy_v1(
     return spec.cls(config=dict(effective_params))
 
 
+def _apply_composite_threshold_and_filter_v1(
+    *,
+    signal_values: pd.Series,
+    signal_threshold: float,
+    filter_strategy,
+    bars: pd.DataFrame,
+) -> pd.Series:
+    aggregated = signal_values.astype(float)
+    final_signals = pd.Series(0, index=bars.index, dtype=int)
+    final_signals = final_signals.where(~(aggregated > signal_threshold), 1)
+    final_signals = final_signals.where(~(aggregated < -signal_threshold), -1)
+    filter_mask = filter_strategy.generate_signals(bars)
+    return (final_signals * filter_mask).astype(int)
+
+
 def execute_composite_strategy_signal_series_v1(
     bars: pd.DataFrame,
     *,
     configured_params: Mapping[str, Any],
     configured_strategy_id: str = COMPOSITE_STRATEGY_ID,
 ) -> StrategySignalBindingResultV1:
-    """Execute filter-gated composite binding via canonical CompositeStrategy owner."""
+    """Execute filter-gated composite binding via canonical strategy owners."""
     binding = parse_composite_strategy_binding_v1(configured_params)
-    signal_strategy = _instantiate_bound_strategy_v1(
-        binding.signal_strategy_id,
-        binding.signal_effective_params,
-    )
     filter_strategy = _instantiate_bound_strategy_v1(
         binding.filter_strategy_id,
         binding.filter_effective_params,
     )
-    composite = CompositeStrategy(
-        strategies=[(signal_strategy, 1.0)],
-        aggregation=binding.aggregation,
-        signal_threshold=binding.signal_threshold,
-        filter_strategy=filter_strategy,
-    )
-    raw_signals = composite.generate_signals(bars)
+    if binding.composite_type == COMPOSITE_BINDING_TYPE_CONFIRMED_FILTER_GATED_SIGNAL_V1:
+        confirmed_signals = generate_confirmed_breakout_signals_v1(
+            bars,
+            lookback=int(binding.signal_effective_params["lookback"]),
+            price_col=str(binding.signal_effective_params["price_col"]),
+            confirmation_epochs=CONFIRMATION_EPOCHS_V1,
+        )
+        raw_signals = _apply_composite_threshold_and_filter_v1(
+            signal_values=confirmed_signals,
+            signal_threshold=binding.signal_threshold,
+            filter_strategy=filter_strategy,
+            bars=bars,
+        )
+    else:
+        signal_strategy = _instantiate_bound_strategy_v1(
+            binding.signal_strategy_id,
+            binding.signal_effective_params,
+        )
+        composite = CompositeStrategy(
+            strategies=[(signal_strategy, 1.0)],
+            aggregation=binding.aggregation,
+            signal_threshold=binding.signal_threshold,
+            filter_strategy=filter_strategy,
+        )
+        raw_signals = composite.generate_signals(bars)
     if not isinstance(raw_signals, pd.Series):
         raise StrategySignalBindingError("composite_signal_not_series")
 

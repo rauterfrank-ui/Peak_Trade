@@ -1,0 +1,115 @@
+{
+  "backtest": {
+    "cost_model_version": "backtest_cost_v0",
+    "dataset_admissibility": {
+      "bind": true,
+      "dataset_profile": "economic_research_v1",
+      "execution_cost_binding": {
+        "conservative_half_spread_bps": 5.0,
+        "execution_price_observation_source": "MODELLED_NOT_OBSERVED",
+        "spread_model_version": "research_conservative_bps_v1"
+      },
+      "profile_binding": {
+        "dataset_profile": "economic_research_v1",
+        "execution_cost_binding": {
+          "conservative_half_spread_bps": 5.0,
+          "execution_price_observation_source": "MODELLED_NOT_OBSERVED",
+          "spread_model_version": "research_conservative_bps_v1"
+        },
+        "l1_observation_status": "EXECUTION_MODEL_BOUND_NOT_OBSERVED"
+      }
+    },
+    "economic_research_execution_cost": {
+      "conservative_half_spread_bps": 5.0,
+      "execution_price_observation_source": "MODELLED_NOT_OBSERVED",
+      "fee_bps": 10.0,
+      "slippage_bps": 5.0,
+      "spread_model_version": "research_conservative_bps_v1"
+    },
+    "fee_bps": 10.0,
+    "fee_model_version": "backtest_fee_taker_symmetric_v0",
+    "funding": {
+      "bind": true,
+      "model_version": "backtest_funding_perpetual_interval_v1"
+    },
+    "initial_cash": 10000.0,
+    "slippage_bps": 5.0,
+    "slippage_model_version": "backtest_slippage_symmetric_v0"
+  },
+  "config_schema_version": "composite_breakout_confirmation_vol_gated_donchian_v1_architecture_binding_v1",
+  "economic_evaluation_v1": {
+    "economic_validity_policy_version": "economic_validity_policy_v1",
+    "engine_signal_source": "configured_strategy_signal",
+    "strategy_id": "composite",
+    "strategy_params": {
+      "composite_type": "confirmed_filter_gated_signal_v1",
+      "composition_rule": "confirmed_signal_times_filter_mask",
+      "signal_strategy_id": "breakout_donchian",
+      "filter_strategy_id": "vol_regime_filter",
+      "signal_strategy_params": {
+        "lookback": 20,
+        "price_col": "close"
+      },
+      "filter_strategy_params": {
+        "vol_window": 20,
+        "vol_method": "atr",
+        "vol_percentile_low": 25,
+        "vol_percentile_high": 75,
+        "min_bars": 30,
+        "lookback_percentile": 100,
+        "regime_mode": false
+      },
+      "aggregation": "weighted",
+      "signal_threshold": 0.3,
+      "confirmation_epochs": 1
+    },
+    "strategy_version": "v1"
+  },
+  "offline_evaluation_sizing_contract_v1": {
+    "dataset_digest": "b4cbe7fff81a137da055588231757937406d8cb30d531ee0aab41d95ee9b6c78",
+    "initial_equity": 10000.0,
+    "instrument_metadata_source": "versioned_dataset_manifest_v1",
+    "max_position_pct": 0.25,
+    "minimum_notional_policy": "USE_RISK_MIN_POSITION_VALUE_v1",
+    "minimum_quantity_policy": "REJECT_BELOW_MIN_NOTIONAL_v1",
+    "oversize_policy": "REJECT_OVERSIZE",
+    "price_source": "bar_close_v1",
+    "quantity_rounding_policy": "NONE_v1",
+    "risk_per_trade": 0.005,
+    "sizing_contract_version": "offline_evaluation_sizing_contract_v1",
+    "sizing_mode": "fixed_fractional_risk_per_trade_v1",
+    "sizing_owner": "backtest.offline_evaluation_sizing_contract_v1",
+    "stop_distance_policy": "FIXED_PCT_FROM_ENTRY_v1",
+    "stop_pct": 0.02,
+    "stop_pct_derivation_ref": "operator_policy_decision:COMPOSITE_BREAKOUT_CONFIRMATION_VOL_GATED_DONCHIAN_V1",
+    "strategy_params_digest": "6aac9760c6d35fdc45494c862acce6f4488a4e71612d3c7bffa3889bc371610e"
+  },
+  "real_admissible_futures_evaluation_binding_v1": {
+    "canonical_instrument_id": "inst-eth-usdt-perp",
+    "canonical_trading_logic_version": "integrated_offline_trading_logic_replay_v1",
+    "dataset_path": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/inst-eth-usdt-perp/v1/bars.parquet",
+    "dataset_profile": "economic_research_v1",
+    "effective_entry_cost_bps": 20.0,
+    "effective_exit_cost_bps": 20.0,
+    "execution_model_version": "backtest_execution_v0",
+    "expected_dataset_digest": "b4cbe7fff81a137da055588231757937406d8cb30d531ee0aab41d95ee9b6c78",
+    "expected_l1_observation_status": "EXECUTION_MODEL_BOUND_NOT_OBSERVED",
+    "expected_manifest_digest": "317105798c749943074911b1e9ea91ac9b94fab3b115fb7a64b692339426651a",
+    "native_instrument_id": "ETH-USDT-SWAP",
+    "out_of_sample_period": "2026-06-27 23:36:00+00:00..2026-07-01 10:07:00+00:00",
+    "require_dataset_admissible": true,
+    "require_integrity_pass": true,
+    "require_observed_l1_used_false": true,
+    "roundtrip_cost_bps": 40.0,
+    "source_venue": "OKX",
+    "training_period": "2026-06-17 16:00:00+00:00..2026-06-24 13:03:00+00:00",
+    "validation_period": "2026-06-24 13:04:00+00:00..2026-06-27 23:35:00+00:00"
+  },
+  "risk": {
+    "max_position_size": 0.25,
+    "min_position_value": 10.0,
+    "min_stop_distance": 0.0001,
+    "risk_per_trade": 0.005
+  },
+  "candidate_binding_id": "composite_breakout_confirmation_vol_gated_donchian_v1"
+}
