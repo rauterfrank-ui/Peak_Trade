@@ -214,7 +214,18 @@ class ShadowPaperSession:
 
         Raises:
             EnvironmentNotAllowedError: Wenn Environment-Modus nicht erlaubt
+            LegacyRuntimeEntrypointBlockedError: Legacy runtime authority deauthorized (Slice D)
         """
+        from trading.master_v2.legacy_runtime_entrypoint_guard_v0 import (
+            ENTRYPOINT_SHADOW_PAPER_SESSION,
+            require_legacy_runtime_entrypoint_deauthorized,
+        )
+
+        require_legacy_runtime_entrypoint_deauthorized(
+            ENTRYPOINT_SHADOW_PAPER_SESSION,
+            operation="construct",
+        )
+
         # Safety-Check: Nur erlaubte Environment-Modi
         if env_config.environment not in ALLOWED_ENVIRONMENT_MODES:
             raise EnvironmentNotAllowedError(
@@ -338,6 +349,16 @@ class ShadowPaperSession:
         Returns:
             Liste von OrderExecutionResults oder None wenn keine Orders
         """
+        from trading.master_v2.legacy_runtime_entrypoint_guard_v0 import (
+            ENTRYPOINT_SHADOW_PAPER_SESSION,
+            require_legacy_runtime_entrypoint_deauthorized,
+        )
+
+        require_legacy_runtime_entrypoint_deauthorized(
+            ENTRYPOINT_SHADOW_PAPER_SESSION,
+            operation="step_once",
+        )
+
         self._metrics.steps += 1
         step_num = self._metrics.steps
         ts_event = datetime.now(timezone.utc)
@@ -795,7 +816,18 @@ def create_shadow_paper_session(
 
     Raises:
         EnvironmentNotAllowedError: Bei nicht erlaubtem Environment-Modus
+        LegacyRuntimeEntrypointBlockedError: Legacy runtime authority deauthorized (Slice D)
     """
+    from trading.master_v2.legacy_runtime_entrypoint_guard_v0 import (
+        ENTRYPOINT_CREATE_SHADOW_PAPER_SESSION,
+        require_legacy_runtime_entrypoint_deauthorized,
+    )
+
+    require_legacy_runtime_entrypoint_deauthorized(
+        ENTRYPOINT_CREATE_SHADOW_PAPER_SESSION,
+        operation="factory",
+    )
+
     from ..data.kraken_live import (
         load_shadow_paper_config,
         load_live_exchange_config,

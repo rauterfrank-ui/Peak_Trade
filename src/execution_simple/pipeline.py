@@ -73,6 +73,16 @@ class ExecutionPipeline:
         Returns:
             ExecutionResult with orders, fills, and gate decisions
         """
+        from trading.master_v2.legacy_runtime_entrypoint_guard_v0 import (
+            ENTRYPOINT_EXECUTION_SIMPLE_PIPELINE,
+            require_legacy_runtime_entrypoint_deauthorized,
+        )
+
+        require_legacy_runtime_entrypoint_deauthorized(
+            ENTRYPOINT_EXECUTION_SIMPLE_PIPELINE,
+            operation="execute",
+        )
+
         # 1. Compute desired delta
         desired_delta = target_position - current_position
 

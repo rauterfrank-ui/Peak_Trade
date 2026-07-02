@@ -105,6 +105,27 @@ def test_preflight_packet_build_raises_returns_2(monkeypatch: pytest.MonkeyPatch
     assert mod._bounded_pilot_non_dry_run_preflight_packet_ok(ROOT, "config/config.toml") == 2
 
 
+def test_main_non_dry_run_returns_1_when_legacy_runtime_deauthorized(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    mod = _load_mod()
+    monkeypatch.delenv("PT_LEGACY_RUNTIME_ENTRYPOINT_TEST_ONLY", raising=False)
+    monkeypatch.setattr(
+        sys,
+        "argv",
+        [
+            "run_execution_session",
+            "--mode",
+            "bounded_pilot",
+            "--strategy",
+            "ma_crossover",
+            "--steps",
+            "1",
+        ],
+    )
+    assert mod.main() == 1
+
+
 def test_main_non_dry_run_returns_1_when_preflight_packet_blocked(
     monkeypatch: pytest.MonkeyPatch,
 ) -> None:
@@ -115,6 +136,7 @@ def test_main_non_dry_run_returns_1_when_preflight_packet_blocked(
     )
 
     mod = _load_mod()
+    monkeypatch.setenv("PT_LEGACY_RUNTIME_ENTRYPOINT_TEST_ONLY", "1")
     monkeypatch.setenv(PT_BOUNDED_PILOT_INVOKED_FROM_GATE, "1")
     monkeypatch.setenv(PT_LIVE_CONFIRM_TOKEN_ENV, LIVE_CONFIRM_TOKEN)
 
@@ -161,6 +183,7 @@ def test_main_non_dry_run_reaches_downstream_after_preflight_ok(
     )
 
     mod = _load_mod()
+    monkeypatch.setenv("PT_LEGACY_RUNTIME_ENTRYPOINT_TEST_ONLY", "1")
     monkeypatch.setenv(PT_BOUNDED_PILOT_INVOKED_FROM_GATE, "1")
     monkeypatch.setenv(PT_LIVE_CONFIRM_TOKEN_ENV, LIVE_CONFIRM_TOKEN)
     monkeypatch.setattr(
@@ -198,6 +221,7 @@ def test_main_non_dry_run_returns_2_when_preflight_orchestrator_error(
     )
 
     mod = _load_mod()
+    monkeypatch.setenv("PT_LEGACY_RUNTIME_ENTRYPOINT_TEST_ONLY", "1")
     monkeypatch.setenv(PT_BOUNDED_PILOT_INVOKED_FROM_GATE, "1")
     monkeypatch.setenv(PT_LIVE_CONFIRM_TOKEN_ENV, LIVE_CONFIRM_TOKEN)
 

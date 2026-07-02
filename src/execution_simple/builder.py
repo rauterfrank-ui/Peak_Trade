@@ -40,7 +40,18 @@ def build_execution_pipeline_from_config(cfg: Any) -> ExecutionPipeline:
 
     Raises:
         ValueError: If config is invalid
+        LegacyRuntimeEntrypointBlockedError: Legacy runtime authority deauthorized (Slice D)
     """
+    from trading.master_v2.legacy_runtime_entrypoint_guard_v0 import (
+        ENTRYPOINT_EXECUTION_SIMPLE_BUILDER,
+        require_legacy_runtime_entrypoint_deauthorized,
+    )
+
+    require_legacy_runtime_entrypoint_deauthorized(
+        ENTRYPOINT_EXECUTION_SIMPLE_BUILDER,
+        operation="build",
+    )
+
     # Get execution config with defaults
     mode_str = cfg.get("execution.mode", "paper")
     slippage_bps = float(cfg.get("execution.slippage_bps", 2.0))
