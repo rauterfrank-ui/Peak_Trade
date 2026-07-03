@@ -76,6 +76,8 @@ INSTRUMENT_SELECTION_OWNER = "production_pit_universe_manifest_v1"
 
 NOT_YET_MATERIALIZED = {"status": "NOT_YET_MATERIALIZED"}
 BINDING_STATUS_NOT_READY = "NOT_READY"
+BINDING_STATUS_READY = "READY"
+BINDING_STATUS_BLOCKED = "BLOCKED"
 
 FORBIDDEN_INSTRUMENT_TOKENS = frozenset(
     {"btc", "xbt", "bitcoin", "spot", "synthetic_spot", "synthetic-spot"}
@@ -117,6 +119,10 @@ REASON_ZERO_FEE = "ZERO_FEE_REJECTED"
 REASON_ZERO_SLIPPAGE = "ZERO_SLIPPAGE_REJECTED"
 REASON_DATA_DIGEST_NOT_MATERIALIZED = "DATA_DIGEST_NOT_YET_MATERIALIZED"
 REASON_PERIOD_SPLIT_NOT_MATERIALIZED = "PERIOD_SPLIT_NOT_YET_MATERIALIZED"
+REASON_BINDING_BLOCKED = "BINDING_BLOCKED"
+REASON_WRONG_DATA_DIGEST = "WRONG_DATA_DIGEST"
+REASON_WRONG_PERIOD_DIGEST = "WRONG_PERIOD_DIGEST"
+REASON_BINDING_NOT_READY = "BINDING_NOT_READY"
 
 CANDIDATE_REQUIRED_FIELDS = (
     "strategy_id",
@@ -476,6 +482,197 @@ def _build_candidate_binding_v0(
     }
 
 
+def _build_materialized_data_digest(data_digest_value: str) -> dict[str, Any]:
+    return {
+        "status": "MATERIALIZED",
+        "value": data_digest_value.strip().lower(),
+    }
+
+
+def _build_materialized_period_field(*, start: str, end: str) -> dict[str, Any]:
+    return {
+        "status": "MATERIALIZED",
+        "start": start,
+        "end": end,
+    }
+
+
+def _build_materialized_period_binding(
+    envelope: ProductionManifestMaterializationEnvelopeV1,
+    *,
+    period_split: Mapping[str, Any],
+) -> dict[str, Any]:
+    base = _build_period_binding(envelope)
+    base["period_binding_id"] = str(period_split["period_binding_id"])
+    base["split_policy_id"] = str(period_split["split_policy_id"])
+    base["split_policy_version"] = str(period_split["split_policy_version"])
+    base["period_digest"] = str(period_split["period_digest"])
+    base["embargo_duration"] = str(period_split["embargo_duration"])
+    base["purge_duration"] = str(period_split["purge_duration"])
+    return base
+
+
+def _build_materialized_dataset_binding(
+    envelope: ProductionManifestMaterializationEnvelopeV1,
+    *,
+    dataset_envelope: Mapping[str, Any],
+) -> dict[str, Any]:
+    base = _build_dataset_binding(envelope)
+    base["dataset_id"] = str(dataset_envelope["dataset_id"])
+    base["dataset_schema_version"] = str(dataset_envelope["dataset_schema_version"])
+    base["data_digest"] = str(dataset_envelope["data_digest"])
+    return base
+
+
+def materialize_pit_futures_universe_manifest_dataset_period_binding_with_research_materialization_v0(
+    *,
+    repo_root: Path,
+    production_manifest: PointInTimeFuturesUniverseManifestV1,
+    production_envelope: ProductionManifestMaterializationEnvelopeV1,
+    research_materialization_result: Any,
+) -> dict[str, Any]:
+    """Materialize binding contract with research data digest and period split results."""
+    from src.research.pit_futures_cross_sectional_research_data_digest_period_split_materialization_v0 import (
+        MaterializationStatus,
+        dataset_envelope_to_dict,
+        period_split_to_dict,
+    )
+
+    result = research_materialization_result
+    dataset_env = result.dataset_envelope
+    period_split = result.period_split
+
+    if (
+        dataset_env is None
+        or dataset_env.materialization_status != MaterializationStatus.MATERIALIZED.value
+        or period_split is None
+        or period_split.status != MaterializationStatus.MATERIALIZED.value
+    ):
+        base = materialize_pit_futures_universe_manifest_dataset_period_binding_v0(
+            repo_root=repo_root,
+            production_manifest=production_manifest,
+            production_envelope=production_envelope,
+        )
+        blocked_reasons = sorted(
+            set(
+                list(base["candidates"][0]["reason_codes"])
+                + list(dataset_env.reason_codes if dataset_env else ())
+            )
+        )
+        for candidate in base["candidates"]:
+            candidate["binding_status"] = BINDING_STATUS_BLOCKED
+            candidate["reason_codes"] = blocked_reasons + [REASON_BINDING_BLOCKED]
+        base["binding_materialization_status"] = BINDING_STATUS_BLOCKED
+        base["research_materialization_reason_codes"] = blocked_reasons
+        base["contract_digest"] = compute_contract_digest_v0(base)
+        return base
+
+    dataset_dict = dataset_envelope_to_dict(dataset_env)
+    period_dict = period_split_to_dict(period_split)
+
+    manifest_validation = validate_pit_futures_universe_manifest_v1(production_manifest)
+    if manifest_validation.verdict != ManifestValidationVerdict.ACCEPTED:
+        raise ValueError(
+            f"{REASON_MANIFEST_VALIDATION_FAILED}:{','.join(manifest_validation.reason_codes)}"
+        )
+    if production_manifest.manifest_digest != compute_manifest_digest(production_manifest):
+        raise ValueError(REASON_MANIFEST_TAMPERED)
+    if production_envelope.manifest_digest != production_manifest.manifest_digest:
+        raise ValueError(REASON_ENVELOPE_MANIFEST_DIGEST_MISMATCH)
+
+    dataset_binding = _build_materialized_dataset_binding(
+        production_envelope,
+        dataset_envelope=dataset_dict,
+    )
+    period_binding = _build_materialized_period_binding(
+        production_envelope,
+        period_split=period_dict,
+    )
+    instrument_binding = _build_instrument_binding(
+        production_manifest=production_manifest,
+        envelope=production_envelope,
+    )
+    data_digest = _build_materialized_data_digest(dataset_env.data_digest)
+
+    training_period = _build_materialized_period_field(
+        start=period_split.training_start,
+        end=period_split.training_end,
+    )
+    validation_period = _build_materialized_period_field(
+        start=period_split.validation_start,
+        end=period_split.validation_end,
+    )
+    out_of_sample_period = _build_materialized_period_field(
+        start=period_split.out_of_sample_start,
+        end=period_split.out_of_sample_end,
+    )
+
+    candidates = [
+        {
+            **_build_candidate_binding_v0(
+                repo_root=repo_root,
+                strategy_id=strategy_id,
+                strategy_version=strategy_version,
+                shared_dataset_binding=dataset_binding,
+                shared_period_binding=period_binding,
+                shared_instrument_binding=instrument_binding,
+                data_digest=data_digest,
+                envelope=production_envelope,
+                production_manifest=production_manifest,
+            ),
+            "training_period": training_period,
+            "validation_period": validation_period,
+            "out_of_sample_period": out_of_sample_period,
+            "period_digest": period_split.period_digest,
+            "binding_status": BINDING_STATUS_READY,
+            "reason_codes": [],
+        }
+        for strategy_id, strategy_version in FLEET_CANDIDATES
+    ]
+    candidates.sort(key=lambda item: item["strategy_id"])
+
+    contract_body: dict[str, Any] = {
+        "schema_version": SCHEMA_VERSION,
+        "contract_id": CONTRACT_ID,
+        "fleet_id": FLEET_ID,
+        "fleet_version": FLEET_VERSION,
+        "candidate_binding_version": CANDIDATE_BINDING_VERSION,
+        "dataset_binding_version": DATASET_BINDING_VERSION,
+        "period_binding_version": PERIOD_BINDING_VERSION,
+        "instrument_binding_version": INSTRUMENT_BINDING_VERSION,
+        "production_universe_manifest_ref": production_envelope.manifest_reference or "",
+        "production_universe_manifest_digest": production_manifest.manifest_digest,
+        "shared_bindings": {
+            "dataset_binding": dataset_binding,
+            "period_binding": period_binding,
+            "instrument_binding": instrument_binding,
+            "dataset_envelope": dataset_dict,
+            "period_split": period_dict,
+        },
+        "candidates": candidates,
+        "canonical_serialization_version": CANONICAL_SERIALIZATION_VERSION,
+        "authority_effect": AUTHORITY_EFFECT,
+        "runtime_effect": RUNTIME_EFFECT,
+        "order_effect": ORDER_EFFECT,
+        "config_digest": compute_policy_config_digest_v0(repo_root),
+        "implementation_digest": compute_implementation_digest_v0(),
+        "evaluation_period_binding": EVALUATION_PERIOD_BINDING,
+        "futures_only": FUTURES_ONLY,
+        "bitcoin_direction_allowed": False,
+        "spot_allowed": False,
+        "synthetic_spot_allowed": False,
+        "non_authorizing": True,
+        "no_runtime_effect": True,
+        "no_economic_evaluation_execution": True,
+        "binding_materialization_status": BINDING_STATUS_READY,
+        "research_materialization_version": (
+            "pit_futures_cross_sectional_research_data_digest_period_split_materialization.v0"
+        ),
+    }
+    contract_body["contract_digest"] = compute_contract_digest_v0(contract_body)
+    return contract_body
+
+
 def materialize_pit_futures_universe_manifest_dataset_period_binding_v0(
     *,
     repo_root: Path,
@@ -602,6 +799,31 @@ def _validate_dataset_binding(binding: Mapping[str, Any], reasons: list[str]) ->
         reasons.append(REASON_MISSING_REQUIRED_FIELD + ":panel_dataset_ref")
     if not isinstance(digest, str) or not is_valid_digest(digest.strip().lower()):
         reasons.append(REASON_MISSING_PANEL_DATASET_DIGEST)
+
+
+def _validate_materialized_period_field(field: Any, *, name: str, reasons: list[str]) -> None:
+    if not isinstance(field, Mapping):
+        reasons.append(f"{REASON_MISSING_REQUIRED_FIELD}:{name}")
+        return
+    if field.get("status") != "MATERIALIZED":
+        reasons.append(f"{REASON_PERIOD_SPLIT_NOT_MATERIALIZED}:{name}")
+        return
+    for key in ("start", "end"):
+        raw = field.get(key)
+        if not isinstance(raw, str) or not is_valid_rfc3339_utc(raw):
+            reasons.append(f"{REASON_INVALID_PERIOD_COVERAGE}:{name}.{key}")
+
+
+def _validate_materialized_data_digest(field: Any, reasons: list[str]) -> None:
+    if not isinstance(field, Mapping):
+        reasons.append(REASON_MISSING_REQUIRED_FIELD + ":data_digest")
+        return
+    if field.get("status") != "MATERIALIZED":
+        reasons.append(REASON_DATA_DIGEST_NOT_MATERIALIZED)
+        return
+    value = field.get("value")
+    if not isinstance(value, str) or not is_valid_digest(value.strip().lower()):
+        reasons.append(REASON_WRONG_DATA_DIGEST)
 
 
 def _validate_deferred_period_field(field: Any, *, name: str, reasons: list[str]) -> None:
@@ -749,19 +971,42 @@ def validate_pit_futures_universe_manifest_dataset_period_binding_v0(
             if field not in candidate:
                 reasons.append(f"{REASON_MISSING_REQUIRED_FIELD}:{path}.{field}")
 
-        if candidate.get("binding_status") != BINDING_STATUS_NOT_READY:
+        binding_status = candidate.get("binding_status")
+        if binding_status not in (
+            BINDING_STATUS_NOT_READY,
+            BINDING_STATUS_READY,
+            BINDING_STATUS_BLOCKED,
+        ):
             reasons.append(f"{REASON_MISSING_REQUIRED_FIELD}:{path}.binding_status")
 
-        _validate_deferred_period_field(
-            candidate.get("training_period"), name="training_period", reasons=reasons
-        )
-        _validate_deferred_period_field(
-            candidate.get("validation_period"), name="validation_period", reasons=reasons
-        )
-        _validate_deferred_period_field(
-            candidate.get("out_of_sample_period"), name="out_of_sample_period", reasons=reasons
-        )
-        _validate_data_digest(candidate.get("data_digest"), reasons)
+        if binding_status == BINDING_STATUS_READY:
+            _validate_materialized_period_field(
+                candidate.get("training_period"), name="training_period", reasons=reasons
+            )
+            _validate_materialized_period_field(
+                candidate.get("validation_period"), name="validation_period", reasons=reasons
+            )
+            _validate_materialized_period_field(
+                candidate.get("out_of_sample_period"), name="out_of_sample_period", reasons=reasons
+            )
+            _validate_materialized_data_digest(candidate.get("data_digest"), reasons)
+            period_digest = candidate.get("period_digest")
+            if not isinstance(period_digest, str) or not is_valid_digest(period_digest):
+                reasons.append(f"{REASON_WRONG_PERIOD_DIGEST}:{strategy_id}")
+        elif binding_status == BINDING_STATUS_BLOCKED:
+            if not candidate.get("reason_codes"):
+                reasons.append(f"{REASON_BINDING_BLOCKED}:{strategy_id}")
+        else:
+            _validate_deferred_period_field(
+                candidate.get("training_period"), name="training_period", reasons=reasons
+            )
+            _validate_deferred_period_field(
+                candidate.get("validation_period"), name="validation_period", reasons=reasons
+            )
+            _validate_deferred_period_field(
+                candidate.get("out_of_sample_period"), name="out_of_sample_period", reasons=reasons
+            )
+            _validate_data_digest(candidate.get("data_digest"), reasons)
 
         if isinstance(candidate.get("dataset_binding"), Mapping):
             _validate_dataset_binding(candidate["dataset_binding"], reasons)
@@ -837,7 +1082,9 @@ def clone_contract(contract: Mapping[str, Any]) -> dict[str, Any]:
 
 __all__ = [
     "AUTHORITY_EFFECT",
+    "BINDING_STATUS_BLOCKED",
     "BINDING_STATUS_NOT_READY",
+    "BINDING_STATUS_READY",
     "CANDIDATE_BINDING_VERSION",
     "CONTRACT_ID",
     "DATASET_BINDING_VERSION",
@@ -861,6 +1108,7 @@ __all__ = [
     "envelope_from_dict",
     "manifest_from_dict",
     "materialize_pit_futures_universe_manifest_dataset_period_binding_v0",
+    "materialize_pit_futures_universe_manifest_dataset_period_binding_with_research_materialization_v0",
     "serialize_contract_canonical_v0",
     "validate_pit_futures_universe_manifest_dataset_period_binding_v0",
 ]
