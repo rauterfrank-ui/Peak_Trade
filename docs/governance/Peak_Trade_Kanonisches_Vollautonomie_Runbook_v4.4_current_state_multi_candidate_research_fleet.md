@@ -884,14 +884,14 @@ Manifest-verifizierte abgeschlossene Bindings:
 
 | Binding | Net Return | Profit Factor | Trades | Primäre Failure-Klasse |
 |---|---:|---:|---:|---|
-| `macd/v1-v3` | -2,33 % | 0,817 | 717 | `NEGATIVE_RAW_STRATEGY_EDGE` |
-| `breakout_donchian/v1` | -1,60 % | 0,845 | 328 | `NEGATIVE_RAW_STRATEGY_EDGE` |
-| `ma_crossover/v1` | -2,48 % | 0,161 | 6 | `NEGATIVE_RAW_STRATEGY_EDGE` |
-| `rsi_reversion/step30a` | -4,82 % | 0,836 | 465 | `SIGNAL_EDGE_PLUS_TURNOVER_PLUS_ROBUSTNESS` |
+| `macd&#47;v1-v3` | -2,33 % | 0,817 | 717 | `NEGATIVE_RAW_STRATEGY_EDGE` |
+| `breakout_donchian&#47;v1` | -1,60 % | 0,845 | 328 | `NEGATIVE_RAW_STRATEGY_EDGE` |
+| `ma_crossover&#47;v1` | -2,48 % | 0,161 | 6 | `NEGATIVE_RAW_STRATEGY_EDGE` |
+| `rsi_reversion&#47;step30a` | -4,82 % | 0,836 | 465 | `SIGNAL_EDGE_PLUS_TURNOVER_PLUS_ROBUSTNESS` |
 | `composite_breakout_confirmation_vol_gated_donchian_v1` | -2,34 % | 0,739 | 217 | `FEHLENDE_NETTO_EDGE_NEGATIVE_GROSS_EDGE` |
-| `trend_following/v1` | -0,24 % | 0,95 | 219 | `ROBUSTNESS_FAILED` (`MONTE_CARLO_FAILED`, `NET_EXPECTANCY_BELOW_THRESHOLD`, `PROFIT_FACTOR_BELOW_THRESHOLD`, `STRESS_FAILED`) |
-| `bollinger_bands/v1` | 0 % | 0,0 | 0 | `PROMISING_NOT_PASS` (`TRADE_COUNT_BELOW_THRESHOLD`, `PROFIT_FACTOR_BELOW_THRESHOLD`, `STRESS_FAILED`; 1307 Nonzero-Signals, 0 Trades) |
-| `momentum_1h/v1` | -0,19 % | 0,28 | 2 | `ROBUSTNESS_FAILED` (`TRADE_COUNT_BELOW_THRESHOLD`, `SINGLE_TRADE_DOMINANCE_EXCEEDED`, `MONTE_CARLO_FAILED`, `NET_EXPECTANCY_BELOW_THRESHOLD`, `PROFIT_FACTOR_BELOW_THRESHOLD`, `STRESS_FAILED`) |
+| `trend_following&#47;v1` | -0,24 % | 0,95 | 219 | `ROBUSTNESS_FAILED` (`MONTE_CARLO_FAILED`, `NET_EXPECTANCY_BELOW_THRESHOLD`, `PROFIT_FACTOR_BELOW_THRESHOLD`, `STRESS_FAILED`) |
+| `bollinger_bands&#47;v1` | 0 % | 0,0 | 0 | `PROMISING_NOT_PASS` (`TRADE_COUNT_BELOW_THRESHOLD`, `PROFIT_FACTOR_BELOW_THRESHOLD`, `STRESS_FAILED`; 1307 Nonzero-Signals, 0 Trades) |
+| `momentum_1h&#47;v1` | -0,19 % | 0,28 | 2 | `ROBUSTNESS_FAILED` (`TRADE_COUNT_BELOW_THRESHOLD`, `SINGLE_TRADE_DOMINANCE_EXCEEDED`, `MONTE_CARLO_FAILED`, `NET_EXPECTANCY_BELOW_THRESHOLD`, `PROFIT_FACTOR_BELOW_THRESHOLD`, `STRESS_FAILED`) |
 
 ```text
 FAILED_BINDINGS_ARE_NEGATIVE_EVIDENCE=true
@@ -2066,9 +2066,9 @@ Ergänzt oder aktualisiert wurden:
 12. erfolgreiche versionierte Final-Research-Fleet-Bindung (`FINAL_RESEARCH_FLEET_BINDING_READY=true`),
 13. abgeschlossene Offline-Economic-Evaluation aller drei Fleet-Kandidaten,
 14. drei neue terminal negative Economic-Evidence-Ergebnisse:
-    - `trend_following/v1` FAIL (`ROBUSTNESS_FAILED`),
-    - `bollinger_bands/v1` FAIL (`PROMISING`; explizit kein PASS und kein Promotion Candidate),
-    - `momentum_1h/v1` FAIL (`ROBUSTNESS_FAILED`),
+    - `trend_following&#47;v1` FAIL (`ROBUSTNESS_FAILED`),
+    - `bollinger_bands&#47;v1` FAIL (`PROMISING`; explizit kein PASS und kein Promotion Candidate),
+    - `momentum_1h&#47;v1` FAIL (`ROBUSTNESS_FAILED`),
 15. terminale Entscheidung `DECISION=NO_ADMISSIBLE_NEXT_RESEARCH_SCOPE`,
 16. Operator-Input-Grenze: jede neue Research-Hypothese erfordert separates Operator-GO und versionierte Binding-Ratifikation,
 17. Klarstellung `PROMISING != PASS`, `PROMISING != ECONOMICALLY_VIABLE_OFFLINE`, `PROMISING != PROMOTION_CANDIDATE`,
