@@ -145,9 +145,8 @@ def test_binding_config_loads_canonical_owners() -> None:
 
 
 def test_missing_canonical_staging_fails_closed(complete_binding: dict) -> None:
-    assessment = assess_staging_readiness_v0(
-        DEFAULT_STAGING_ROOT, versioned_binding=complete_binding
-    )
+    missing_root = DEFAULT_STAGING_ROOT.parent / "extended_chronological_v1_missing_fixture_probe"
+    assessment = assess_staging_readiness_v0(missing_root, versioned_binding=complete_binding)
     assert assessment.status is StagingReadinessStatus.FAIL_CLOSED_MISSING_PRECONDITION
     assert not assessment.staging_root_exists
     assert REASON_STAGING_MISSING in assessment.reason_codes

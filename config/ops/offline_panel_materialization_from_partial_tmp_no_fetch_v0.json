@@ -1,0 +1,12 @@
+{
+  "binding_origin_main_sha": "8c269dc07229257447584e68b4a08570857b5b9c",
+  "funding_owner": "scripts/ops/materialize_cross_sectional_funding_rate_delta_momentum_v0_bound_panel_funding_dataset_v0.py",
+  "output_staging_rel": "datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1",
+  "panel_calendar_end_utc": "2024-09-01T00:00:00Z",
+  "panel_calendar_start_utc": "2024-05-01T00:00:00Z",
+  "partial_tmp_rel": "datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/.tmp_historical_20260703T181515Z",
+  "partial_tmp_slug": ".tmp_historical_20260703T181515Z",
+  "preflight_owner": "scripts/ops/run_csf_rdm_v0_dataset_funding_binding_materialization_preflight_v0.py",
+  "schema_version": "offline_panel_materialization_from_partial_tmp_no_fetch.v0",
+  "source_owner": "src/research/cross_sectional_bound_period_panel_source_materialization_v1.py"
+}
