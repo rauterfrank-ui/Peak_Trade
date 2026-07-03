@@ -27,9 +27,8 @@ from src.research.cross_sectional_relative_strength_v0_versioned_research_bindin
     PANEL_DATASET_ID,
     build_period_binding_v0,
 )
-from src.research.instrument_id_canonicalization_v1 import (
-    InstrumentIdCanonicalizationInputV1,
-    canonicalize_instrument_id_v1,
+from src.research.okx_production_instrument_lifecycle_source_v1 import (
+    evaluate_okx_instrument_eligibility_v1,
 )
 from src.research.pit_okx_pt1h_panel_ohlcv_dataset_v1 import (
     BAR_GRANULARITY,
@@ -53,6 +52,7 @@ REASON_NO_ELIGIBLE_RAW_SERIES = "NO_ELIGIBLE_RAW_SERIES"
 REASON_BOUND_PERIOD_SOURCE_DATA_UNAVAILABLE = "BOUND_PERIOD_SOURCE_DATA_UNAVAILABLE"
 REASON_PANEL_VALIDATION_FAILED = "PANEL_VALIDATION_FAILED"
 REASON_OUTPUT_EXISTS = "OUTPUT_STAGING_EXISTS"
+REASON_CONFLICTING_DUPLICATE_CANDLES = "CONFLICTING_DUPLICATE_CANDLES"
 
 _RAW_FILENAME_RE = re.compile(r"^ohlcv_(.+)_swap_p\d{4}_[0-9a-f]+\.json$")
 
@@ -138,25 +138,52 @@ def _load_instruments_snapshot(raw_dir: Path) -> list[dict[str, Any]]:
 
 
 def _canonicalize_swap_instrument(inst: Mapping[str, Any]) -> tuple[str, str] | None:
-    inst_id = str(inst.get("instId", ""))
-    base = str(inst.get("baseCcy", ""))
-    if not inst_id or not base:
+    """Canonicalize one OKX SWAP record using lifecycle eligibility semantics."""
+    result = evaluate_okx_instrument_eligibility_v1(inst)
+    if not result.eligible or result.instrument_id is None or result.metadata is None:
         return None
-    result = canonicalize_instrument_id_v1(
-        InstrumentIdCanonicalizationInputV1(
-            venue_id="okx",
-            market_type="futures",
-            contract_type="linear_perpetual",
-            base_asset=base,
-            quote_asset="USDT",
-            settlement_asset="USDT",
-            venue_symbol=inst_id,
-            native_instrument_id=inst_id,
-        )
-    )
-    if not result.success or result.instrument_id is None:
-        return None
-    return result.instrument_id, inst_id
+    return result.instrument_id, result.metadata.inst_id
+
+
+def group_raw_paths_by_native_instrument_v1(raw_dir: Path) -> dict[str, tuple[Path, ...]]:
+    grouped: dict[str, list[Path]] = {}
+    for raw_path in sorted(raw_dir.glob("ohlcv_*_swap_p*.json")):
+        native_id = parse_native_instrument_id_from_raw_filename(raw_path.name)
+        if native_id is None:
+            continue
+        grouped.setdefault(native_id, []).append(raw_path)
+    return {native_id: tuple(paths) for native_id, paths in sorted(grouped.items())}
+
+
+def merge_okx_candle_rows_with_dedup_v1(
+    rows: Sequence[Sequence[Any]],
+) -> tuple[tuple[list[Any], ...], str | None]:
+    """Merge candle rows by timestamp; idempotent on identical duplicates, fail-closed on conflict."""
+    by_ts: dict[int, list[Any]] = {}
+    for row in rows:
+        if not row:
+            continue
+        ts = int(str(row[0]))
+        normalized = list(row)
+        existing = by_ts.get(ts)
+        if existing is None:
+            by_ts[ts] = normalized
+            continue
+        if existing != normalized:
+            return (), REASON_CONFLICTING_DUPLICATE_CANDLES
+    return tuple(by_ts[ts] for ts in sorted(by_ts)), None
+
+
+def _load_merged_rows_for_instrument(
+    raw_paths: Sequence[Path],
+) -> tuple[tuple[list[Any], ...], str | None]:
+    combined_rows: list[list[Any]] = []
+    for raw_path in raw_paths:
+        payload = json.loads(raw_path.read_text(encoding="utf-8"))
+        rows = payload.get("data") or []
+        if isinstance(rows, list):
+            combined_rows.extend(list(row) for row in rows if row)
+    return merge_okx_candle_rows_with_dedup_v1(combined_rows)
 
 
 def _filter_bars_to_period(
@@ -254,19 +281,30 @@ def materialize_bound_period_panel_from_raw_sources_v1(
 
     provenance_entries: list[SourceProvenanceEntryV1] = []
     series_by_instrument: dict[str, InstrumentPanelSeriesV1] = {}
+    grouped_raw_paths = group_raw_paths_by_native_instrument_v1(raw_dir)
 
-    for raw_path in sorted(raw_dir.glob("ohlcv_*_swap_p*.json")):
-        native_id = parse_native_instrument_id_from_raw_filename(raw_path.name)
-        if native_id is None:
-            continue
+    for native_id, raw_paths in grouped_raw_paths.items():
         instrument_id = native_to_canonical.get(native_id)
         if instrument_id is None:
             continue
-        payload = json.loads(raw_path.read_text(encoding="utf-8"))
-        rows = payload.get("data") or []
-        if not isinstance(rows, list) or not rows:
+        merged_rows, merge_error = _load_merged_rows_for_instrument(raw_paths)
+        if merge_error is not None:
+            return BoundPeriodPanelSourceMaterializationResultV1(
+                status=BoundPeriodSourceMaterializationStatus.BOUND_DATA_UNAVAILABLE_FAIL_CLOSED,
+                output_staging_root=str(output_staging_root),
+                source_staging_root=str(source_staging_root),
+                period_start_utc=period_start,
+                period_end_utc=period_end,
+                instrument_count=0,
+                row_count_total=0,
+                data_start_time="",
+                data_end_time="",
+                source_provenance=(),
+                reason_codes=(merge_error,),
+            )
+        if not merged_rows:
             continue
-        all_bars = normalize_okx_candles_to_panel_bars(instrument_id, rows)
+        all_bars = normalize_okx_candles_to_panel_bars(instrument_id, merged_rows)
         bound_bars = _filter_bars_to_period(
             all_bars, period_start_utc=period_start, period_end_utc=period_end
         )
@@ -286,9 +324,12 @@ def materialize_bound_period_panel_from_raw_sources_v1(
                 source_provenance=(),
                 reason_codes=(REASON_FOREIGN_DATASET_REJECTED,),
             )
+        source_files = ",".join(
+            path.relative_to(source_staging_root).as_posix() for path in raw_paths
+        )
         provenance_entries.append(
             SourceProvenanceEntryV1(
-                source_file=raw_path.relative_to(source_staging_root).as_posix(),
+                source_file=source_files,
                 native_instrument_id=native_id,
                 instrument_id=instrument_id,
                 row_count_raw=len(all_bars),

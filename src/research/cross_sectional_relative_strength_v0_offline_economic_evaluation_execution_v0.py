@@ -80,7 +80,11 @@ INFRASTRUCTURE_GO_TOKEN_V0 = (
     "GO_BOUNDED_CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_OFFLINE_ECONOMIC_EVALUATION_"
     "EXECUTION_INFRASTRUCTURE_COMPLETION_V0"
 )
-EXPECTED_ORIGIN_MAIN_SHA = "5aceb416c02815cb6082b88e60e9a0df320d968f"
+EXECUTION_V2_GO_TOKEN = (
+    "GO_BOUNDED_CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V2"
+)
+ALLOWED_EXECUTION_GO_TOKENS: frozenset[str] = frozenset({GO_TOKEN, EXECUTION_V2_GO_TOKEN})
+EXPECTED_ORIGIN_MAIN_SHA = "84fbdc4e46f6aedafcdf6a445fb16bd5eb0c7f1c"
 CONFIG_REL_PATH_OPS = "config/ops/cross_sectional_relative_strength_v0_economic_evaluation_v1.json"
 
 ALLOWED_EVALUATION_STAGES: tuple[str, ...] = (
@@ -380,10 +384,15 @@ def verify_full_evaluation_precheck_v1(
         reasons.append(REASON_PARAMETER_SEARCH_FORBIDDEN_VIOLATION)
 
     if require_execution_go:
-        if go_token != GO_TOKEN:
+        if go_token not in ALLOWED_EXECUTION_GO_TOKENS:
             reasons.append(REASON_GO_TOKEN_INVALID)
     else:
-        if go_token not in {INFRASTRUCTURE_GO_TOKEN, INFRASTRUCTURE_GO_TOKEN_V0, GO_TOKEN}:
+        if go_token not in {
+            INFRASTRUCTURE_GO_TOKEN,
+            INFRASTRUCTURE_GO_TOKEN_V0,
+            GO_TOKEN,
+            EXECUTION_V2_GO_TOKEN,
+        }:
             reasons.append(REASON_GO_TOKEN_INVALID)
 
     manifest_ok, manifest_rc, manifest_reasons = verify_panel_staging_source_manifests_v1(
