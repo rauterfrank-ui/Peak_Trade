@@ -8,7 +8,7 @@ digest computation, and LifecycleRegistryErrorCode taxonomy (28 codes).
 from __future__ import annotations
 
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from enum import Enum
 from typing import Any, Mapping, Sequence
 
@@ -31,6 +31,8 @@ REGISTRY_VERSION = "pit_futures_instrument_lifecycle_registry.v1"
 SOURCE_PRIORITY_POLICY_VERSION = "source_priority_policy.v1"
 CONFLICT_RESOLUTION_POLICY_VERSION = "conflict_resolution_policy.v1"
 REFERENCE_PREFIX = "pit_futures_lifecycle_registry_v1"
+
+_OPEN_INTERVAL_END = (99991231, 235959)
 
 _PERPETUAL_TYPES = frozenset(
     {ContractType.LINEAR_PERPETUAL.value, ContractType.INVERSE_PERPETUAL.value}
@@ -254,6 +256,22 @@ class CorrectionVersionResultV1:
     success: bool
     snapshot: RegistrySnapshotV1 | None
     error_codes: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class AssemblyIssueV1:
+    error_code: str
+    instrument_id: str | None = None
+    record_ref: str | None = None
+    field_path: str | None = None
+
+
+@dataclass(frozen=True)
+class RegistryAssemblyResultV1:
+    success: bool
+    snapshot: RegistrySnapshotV1 | None
+    error_codes: tuple[str, ...]
+    issues: tuple[AssemblyIssueV1, ...] = ()
 
 
 def _add(errors: list[str], code: LifecycleRegistryErrorCode) -> None:
@@ -1032,9 +1050,476 @@ def intervals_overlap_v1(
     if a.instrument_id != b.instrument_id or a.interval_sequence != b.interval_sequence:
         return False
     a_start = parse_utc_instant(a.eligible_from)
-    a_end = _exclusive_end_instant(a) or (9999, 999999)
+    a_end = _exclusive_end_instant(a) or _OPEN_INTERVAL_END
     b_start = parse_utc_instant(b.eligible_from)
-    b_end = _exclusive_end_instant(b) or (9999, 999999)
+    b_end = _exclusive_end_instant(b) or _OPEN_INTERVAL_END
     if a_start is None or b_start is None:
         return False
     return a_start < b_end and b_start < a_end
+
+
+def _cross_sequence_intervals_overlap_v1(
+    a: InstrumentLifecycleIntervalV1, b: InstrumentLifecycleIntervalV1
+) -> bool:
+    if a.instrument_id != b.instrument_id:
+        return False
+    if a.interval_sequence == b.interval_sequence:
+        return False
+    a_start = parse_utc_instant(a.eligible_from)
+    a_end = _exclusive_end_instant(a) or _OPEN_INTERVAL_END
+    b_start = parse_utc_instant(b.eligible_from)
+    b_end = _exclusive_end_instant(b) or _OPEN_INTERVAL_END
+    if a_start is None or b_start is None:
+        return False
+    return a_start < b_end and b_start < a_end
+
+
+def _issue_sort_key(issue: AssemblyIssueV1) -> tuple[str, str, str, str]:
+    return (
+        issue.error_code,
+        issue.instrument_id or "",
+        issue.field_path or "",
+        issue.record_ref or "",
+    )
+
+
+def _make_issue(
+    code: LifecycleRegistryErrorCode,
+    *,
+    instrument_id: str | None = None,
+    record_ref: str | None = None,
+    field_path: str | None = None,
+) -> AssemblyIssueV1:
+    return AssemblyIssueV1(
+        error_code=code.value,
+        instrument_id=instrument_id,
+        record_ref=record_ref,
+        field_path=field_path,
+    )
+
+
+@dataclass
+class _IntervalBuilderState:
+    instrument_id: str
+    venue_id: str
+    contract_type: str
+    base_asset: str
+    quote_asset: str
+    settlement_asset: str
+    venue_symbol: str | None
+    native_instrument_id: str | None
+    contract_expiry: str | None
+    listing_time: str | None = None
+    eligible_from: str | None = None
+    delisting_time: str | None = None
+    eligible_until: str | None = None
+    expiry_time: str | None = None
+    interval_sequence: int = 0
+    registry_record_version: int = 1
+    suspension_sub_intervals: list[SuspensionSubIntervalV1] = field(default_factory=list)
+    source_snapshot_refs: set[str] = field(default_factory=set)
+    source_digests: set[str] = field(default_factory=set)
+    correction_provenance_ref: str | None = None
+    pending_suspension_start: str | None = None
+    prior_kind: str | None = None
+    finalized_intervals: list[InstrumentLifecycleIntervalV1] = field(default_factory=list)
+
+    def absorb_source(self, obs: NormalizedLifecycleObservationV1) -> None:
+        self.source_snapshot_refs.add(obs.source_snapshot_ref)
+        self.source_digests.add(obs.source_snapshot_digest)
+
+    def to_interval(self) -> InstrumentLifecycleIntervalV1 | None:
+        if self.listing_time is None or self.eligible_from is None:
+            return None
+        interval = InstrumentLifecycleIntervalV1(
+            instrument_id=self.instrument_id,
+            venue_id=self.venue_id,
+            contract_type=self.contract_type,
+            base_asset=self.base_asset,
+            quote_asset=self.quote_asset,
+            settlement_asset=self.settlement_asset,
+            listing_time=self.listing_time,
+            eligible_from=self.eligible_from,
+            interval_sequence=self.interval_sequence,
+            registry_record_version=self.registry_record_version,
+            record_digest="0" * 64,
+            venue_symbol=self.venue_symbol,
+            native_instrument_id=self.native_instrument_id,
+            contract_expiry=self.contract_expiry,
+            delisting_time=self.delisting_time,
+            eligible_until=self.eligible_until,
+            expiry_time=self.expiry_time,
+            suspension_sub_intervals=tuple(self.suspension_sub_intervals),
+            source_snapshot_refs=tuple(sorted(self.source_snapshot_refs)),
+            source_digests=tuple(sorted(self.source_digests)),
+            correction_provenance_ref=self.correction_provenance_ref,
+        )
+        return _attach_interval_digest(interval)
+
+    def reset_for_relisting(self) -> None:
+        interval = self.to_interval()
+        if interval is not None:
+            self.finalized_intervals.append(interval)
+        self.interval_sequence += 1
+        self.registry_record_version = 1
+        self.listing_time = None
+        self.eligible_from = None
+        self.delisting_time = None
+        self.eligible_until = None
+        self.expiry_time = None
+        self.suspension_sub_intervals = []
+        self.pending_suspension_start = None
+        self.correction_provenance_ref = None
+        self.prior_kind = None
+
+
+def _state_from_observation(obs: NormalizedLifecycleObservationV1) -> _IntervalBuilderState:
+    return _IntervalBuilderState(
+        instrument_id=obs.instrument_id,
+        venue_id=obs.venue_id,
+        contract_type=obs.contract_type,
+        base_asset=obs.base_asset,
+        quote_asset=obs.quote_asset,
+        settlement_asset=obs.settlement_asset,
+        venue_symbol=obs.venue_symbol,
+        native_instrument_id=obs.native_instrument_id,
+        contract_expiry=obs.contract_expiry,
+    )
+
+
+def _apply_observation_to_builder(
+    state: _IntervalBuilderState,
+    obs: NormalizedLifecycleObservationV1,
+    issues: list[AssemblyIssueV1],
+) -> bool:
+    kind = obs.observation_kind.strip().upper()
+    transition = validate_observation_transition_v1(state.prior_kind, kind)
+    if not transition.valid:
+        for code in transition.error_codes:
+            issues.append(
+                _make_issue(
+                    LifecycleRegistryErrorCode(code),
+                    instrument_id=obs.instrument_id,
+                    record_ref=obs.observation_digest,
+                    field_path="observation_kind",
+                )
+            )
+        return False
+
+    state.absorb_source(obs)
+
+    if kind in {ObservationKind.LISTING.value, ObservationKind.RELISTING.value}:
+        if kind == ObservationKind.RELISTING.value:
+            state.reset_for_relisting()
+        state.listing_time = obs.listing_time or obs.source_effective_at
+        state.eligible_from = obs.eligible_from or state.listing_time
+        state.venue_id = obs.venue_id
+        state.contract_type = obs.contract_type
+        state.base_asset = obs.base_asset
+        state.quote_asset = obs.quote_asset
+        state.settlement_asset = obs.settlement_asset
+        state.venue_symbol = obs.venue_symbol
+        state.native_instrument_id = obs.native_instrument_id
+        state.contract_expiry = obs.contract_expiry
+    elif kind == ObservationKind.ELIGIBILITY.value:
+        if obs.eligible_from is not None:
+            state.eligible_from = obs.eligible_from
+        if obs.eligible_until is not None:
+            state.eligible_until = obs.eligible_until
+    elif kind == ObservationKind.DELISTING.value:
+        state.delisting_time = obs.delisting_time or obs.source_effective_at
+    elif kind == ObservationKind.EXPIRY.value:
+        state.expiry_time = obs.expiry_time or obs.source_effective_at
+    elif kind == ObservationKind.SUSPENSION_START.value:
+        state.pending_suspension_start = obs.source_effective_at
+    elif kind == ObservationKind.SUSPENSION_END.value:
+        if state.pending_suspension_start is None:
+            issues.append(
+                _make_issue(
+                    LifecycleRegistryErrorCode.INVALID_TRANSITION,
+                    instrument_id=obs.instrument_id,
+                    record_ref=obs.observation_digest,
+                    field_path="observation_kind",
+                )
+            )
+            return False
+        state.suspension_sub_intervals.append(
+            SuspensionSubIntervalV1(
+                suspension_start=state.pending_suspension_start,
+                suspension_end=obs.source_effective_at,
+            )
+        )
+        state.pending_suspension_start = None
+    elif kind == ObservationKind.CORRECTION.value:
+        if obs.listing_time is not None:
+            state.listing_time = obs.listing_time
+        if obs.eligible_from is not None:
+            state.eligible_from = obs.eligible_from
+        if obs.delisting_time is not None:
+            state.delisting_time = obs.delisting_time
+        if obs.eligible_until is not None:
+            state.eligible_until = obs.eligible_until
+        if obs.expiry_time is not None:
+            state.expiry_time = obs.expiry_time
+        state.correction_provenance_ref = obs.correction_provenance_ref
+        state.registry_record_version += 1
+
+    state.prior_kind = kind
+    return True
+
+
+def _detect_correction_cycle(
+    observations: Sequence[NormalizedLifecycleObservationV1],
+) -> bool:
+    provenance_to_digest: dict[str, str] = {}
+    digest_to_provenance: dict[str, str | None] = {}
+    for obs in observations:
+        digest_to_provenance[obs.observation_digest] = obs.correction_provenance_ref
+        if obs.correction_provenance_ref:
+            provenance_to_digest[obs.correction_provenance_ref.strip()] = obs.observation_digest
+
+    visiting: set[str] = set()
+    visited: set[str] = set()
+
+    def visit(ref: str) -> bool:
+        if ref in visiting:
+            return True
+        if ref in visited:
+            return False
+        visiting.add(ref)
+        next_digest = provenance_to_digest.get(ref)
+        if next_digest is not None:
+            next_ref = digest_to_provenance.get(next_digest)
+            if next_ref and visit(next_ref.strip()):
+                return True
+        visiting.remove(ref)
+        visited.add(ref)
+        return False
+
+    for obs in observations:
+        if obs.correction_provenance_ref and visit(obs.correction_provenance_ref.strip()):
+            return True
+    return False
+
+
+def _validate_correction_references(
+    observations: Sequence[NormalizedLifecycleObservationV1],
+    known_refs: frozenset[str],
+    issues: list[AssemblyIssueV1],
+) -> bool:
+    ok = True
+    for obs in observations:
+        if not obs.correction_provenance_ref:
+            continue
+        ref = obs.correction_provenance_ref.strip()
+        if ref not in known_refs and ref not in {item.source_snapshot_ref for item in observations}:
+            issues.append(
+                _make_issue(
+                    LifecycleRegistryErrorCode.INVALID_SOURCE_REFERENCE,
+                    instrument_id=obs.instrument_id,
+                    record_ref=obs.observation_digest,
+                    field_path="correction_provenance_ref",
+                )
+            )
+            ok = False
+    if _detect_correction_cycle(observations):
+        for obs in observations:
+            if obs.correction_provenance_ref:
+                issues.append(
+                    _make_issue(
+                        LifecycleRegistryErrorCode.OUT_OF_ORDER_EVENT,
+                        instrument_id=obs.instrument_id,
+                        record_ref=obs.observation_digest,
+                        field_path="correction_provenance_ref",
+                    )
+                )
+        ok = False
+    return ok
+
+
+def _assemble_instrument_intervals(
+    observations: Sequence[NormalizedLifecycleObservationV1],
+    issues: list[AssemblyIssueV1],
+) -> tuple[InstrumentLifecycleIntervalV1, ...]:
+    if not observations:
+        return ()
+
+    conflict = resolve_observation_conflicts_v1(observations)
+    if conflict.has_conflict:
+        for code in conflict.error_codes:
+            issues.append(
+                _make_issue(
+                    LifecycleRegistryErrorCode(code),
+                    instrument_id=observations[0].instrument_id,
+                )
+            )
+        return ()
+
+    sorted_obs = sort_normalized_observations(conflict.deduplicated)
+    known_refs = frozenset(item.observation_digest for item in sorted_obs) | frozenset(
+        item.source_snapshot_ref for item in sorted_obs
+    )
+    if not _validate_correction_references(sorted_obs, known_refs, issues):
+        return ()
+
+    state: _IntervalBuilderState | None = None
+    for obs in sorted_obs:
+        if state is None or obs.instrument_id != state.instrument_id:
+            state = _state_from_observation(obs)
+        if not _apply_observation_to_builder(state, obs, issues):
+            return ()
+
+    if state is None:
+        return ()
+
+    if state.pending_suspension_start is not None:
+        issues.append(
+            _make_issue(
+                LifecycleRegistryErrorCode.INVALID_TRANSITION,
+                instrument_id=state.instrument_id,
+                field_path="suspension_sub_intervals",
+            )
+        )
+        return ()
+
+    final_interval = state.to_interval()
+    if final_interval is None and state.finalized_intervals:
+        return tuple(state.finalized_intervals)
+    if final_interval is None:
+        issues.append(
+            _make_issue(
+                LifecycleRegistryErrorCode.MISSING_REQUIRED_FIELD,
+                instrument_id=state.instrument_id,
+                field_path="listing_time",
+            )
+        )
+        return ()
+
+    all_intervals = list(state.finalized_intervals)
+    all_intervals.append(final_interval)
+
+    seen_sequences: set[int] = set()
+    for interval in all_intervals:
+        if interval.interval_sequence in seen_sequences:
+            issues.append(
+                _make_issue(
+                    LifecycleRegistryErrorCode.DUPLICATE_CANONICAL_INSTRUMENT_ID,
+                    instrument_id=interval.instrument_id,
+                    field_path="interval_sequence",
+                )
+            )
+            return ()
+        seen_sequences.add(interval.interval_sequence)
+
+    for i, left in enumerate(all_intervals):
+        for right in all_intervals[i + 1 :]:
+            if _cross_sequence_intervals_overlap_v1(left, right):
+                issues.append(
+                    _make_issue(
+                        LifecycleRegistryErrorCode.OVERLAPPING_LIFECYCLE_INTERVALS,
+                        instrument_id=left.instrument_id,
+                        field_path="eligible_from",
+                    )
+                )
+                return ()
+
+    return tuple(all_intervals)
+
+
+def assemble_registry_snapshot_v1(
+    records: Sequence[SourceObservationRecordV1],
+    *,
+    generated_at: str,
+    venue_scope: Sequence[str],
+    config_digest: str,
+    implementation_digest: str,
+    policy_version: str = REGISTRY_VERSION,
+    registry_snapshot_version: int = 1,
+    registered_sources: frozenset[str] | None = None,
+    approved_snapshot_digests: frozenset[str] | None = None,
+) -> RegistryAssemblyResultV1:
+    """Deterministic multi-source assembler — pure, no I/O."""
+    issues: list[AssemblyIssueV1] = []
+
+    if not is_valid_rfc3339_utc(generated_at):
+        issues.append(
+            _make_issue(LifecycleRegistryErrorCode.INVALID_TIMESTAMP, field_path="generated_at")
+        )
+    if not is_valid_digest(config_digest.strip().lower()):
+        issues.append(
+            _make_issue(LifecycleRegistryErrorCode.DIGEST_MISMATCH, field_path="config_digest")
+        )
+    if not is_valid_digest(implementation_digest.strip().lower()):
+        issues.append(
+            _make_issue(
+                LifecycleRegistryErrorCode.DIGEST_MISMATCH, field_path="implementation_digest"
+            )
+        )
+    if policy_version != REGISTRY_VERSION:
+        issues.append(
+            _make_issue(LifecycleRegistryErrorCode.POLICY_MISMATCH, field_path="policy_version")
+        )
+    if registry_snapshot_version < 1:
+        issues.append(
+            _make_issue(
+                LifecycleRegistryErrorCode.POLICY_MISMATCH, field_path="registry_snapshot_version"
+            )
+        )
+
+    if issues:
+        error_codes = tuple(sorted({item.error_code for item in issues}))
+        sorted_issues = tuple(sorted(issues, key=_issue_sort_key))
+        return RegistryAssemblyResultV1(False, None, error_codes, sorted_issues)
+
+    normalized: list[NormalizedLifecycleObservationV1] = []
+    for record in records:
+        result = normalize_source_observation_record_v1(
+            record,
+            registered_sources=registered_sources,
+            approved_snapshot_digests=approved_snapshot_digests,
+        )
+        if not result.success or result.observation is None:
+            for code in result.error_codes:
+                issues.append(
+                    _make_issue(
+                        LifecycleRegistryErrorCode(code),
+                        record_ref=record.observation_digest,
+                        field_path="source_observation_record",
+                    )
+                )
+            error_codes = tuple(sorted({item.error_code for item in issues}))
+            sorted_issues = tuple(sorted(issues, key=_issue_sort_key))
+            return RegistryAssemblyResultV1(False, None, error_codes, sorted_issues)
+        normalized.append(result.observation)
+
+    by_instrument: dict[str, list[NormalizedLifecycleObservationV1]] = {}
+    for obs in normalized:
+        by_instrument.setdefault(obs.instrument_id, []).append(obs)
+
+    all_intervals: list[InstrumentLifecycleIntervalV1] = []
+    for instrument_id in sorted(by_instrument.keys()):
+        instrument_intervals = _assemble_instrument_intervals(by_instrument[instrument_id], issues)
+        if issues:
+            error_codes = tuple(sorted({item.error_code for item in issues}))
+            sorted_issues = tuple(sorted(issues, key=_issue_sort_key))
+            return RegistryAssemblyResultV1(False, None, error_codes, sorted_issues)
+        all_intervals.extend(instrument_intervals)
+
+    snapshot = RegistrySnapshotV1(
+        schema_name=SCHEMA_NAME,
+        schema_version=SCHEMA_VERSION,
+        registry_snapshot_version=registry_snapshot_version,
+        policy_version=policy_version,
+        source_priority_policy_version=SOURCE_PRIORITY_POLICY_VERSION,
+        conflict_resolution_policy_version=CONFLICT_RESOLUTION_POLICY_VERSION,
+        venue_scope=tuple(sorted({v.strip().lower() for v in venue_scope})),
+        generated_at=generated_at,
+        intervals=tuple(
+            sorted(all_intervals, key=lambda item: (item.instrument_id, item.interval_sequence))
+        ),
+        config_digest=config_digest.strip().lower(),
+        implementation_digest=implementation_digest.strip().lower(),
+        registry_snapshot_digest="0" * 64,
+    )
+    final_snapshot = attach_snapshot_digest(snapshot)
+    return RegistryAssemblyResultV1(True, final_snapshot, (), ())
