@@ -114,7 +114,7 @@ class TestFundingCarryBindingReconciliation:
 class TestFundingCarryProgressRegistryReconciliation:
     def test_global_metadata_terminal_fail(self) -> None:
         assert authoritative_field_value("LAST_VERIFIED_ORIGIN_MAIN") == (
-            "9945a3e3d5f382bf46bf0c5fcfac2b1bcbf782e1"
+            "1a6dac20003b1e9e84aed0f015a1cbb37601d467"
         )
         assert authoritative_field_value("CROSS_SECTIONAL_FUNDING_RATE_CARRY_V0_STATUS") == (
             "COMPLETE_FAIL"
@@ -180,11 +180,11 @@ class TestFundingCarryProgressRegistryReconciliation:
     def test_research_line_progress_registry_closeout_performed(self) -> None:
         section = _funding_carry_section(read_registry())
         assert _field_value(section, "PROGRESS_REGISTRY_CLOSEOUT_PERFORMED") == "true"
-        assert _field_value(section, "NO_NEW_CANDIDATE_HOLD") == "ACTIVE"
+        assert _field_value(section, "NO_NEW_CANDIDATE_HOLD") == "REVOKED"
 
-    def test_global_no_new_candidate_hold_and_operator_gate_unchanged(self) -> None:
-        assert authoritative_field_value("NO_NEW_CANDIDATE_HOLD") == "ACTIVE"
+    def test_global_no_new_candidate_hold_revoked_and_next_step_reconciled(self) -> None:
+        assert authoritative_field_value("NO_NEW_CANDIDATE_HOLD") == "REVOKED"
         assert (
             authoritative_field_value("NEXT_CANONICAL_ACTION")
-            == "OPERATOR_POLICY_DECISION_REQUIRED_FOR_NEW_RESEARCH_SCOPE"
+            == "RATIFY_VERSIONED_FINAL_FLEET_BINDINGS_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE"
         )

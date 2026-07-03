@@ -67,13 +67,13 @@ class TestTerminalBlockerAuthoritativeBinding:
         assert authoritative_field_value("STEP29M_FLEET_STATUS") == "COMPLETE_NO_PASS"
         assert authoritative_field_value("ECONOMICALLY_VIABLE_CANDIDATE_COUNT") == "0"
 
-    def test_no_new_candidate_hold_active(self) -> None:
-        assert authoritative_field_value("NO_NEW_CANDIDATE_HOLD") == "ACTIVE"
+    def test_no_new_candidate_hold_revoked(self) -> None:
+        assert authoritative_field_value("NO_NEW_CANDIDATE_HOLD") == "REVOKED"
 
-    def test_next_canonical_action_operator_policy_required(self) -> None:
+    def test_next_canonical_action_fleet_binding_ratification(self) -> None:
         assert (
             authoritative_field_value("NEXT_CANONICAL_ACTION")
-            == "OPERATOR_POLICY_DECISION_REQUIRED_FOR_NEW_RESEARCH_SCOPE"
+            == "RATIFY_VERSIONED_FINAL_FLEET_BINDINGS_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE"
         )
 
     def test_next_runbook_step_remains_blocked(self) -> None:
@@ -83,7 +83,7 @@ class TestTerminalBlockerAuthoritativeBinding:
             == "ECONOMIC_VALIDITY_OFFLINE_GATE_PASS_FALSE"
         )
         assert authoritative_field_value("CURRENT_ADMISSIBLE_IMPLEMENTATION_SCOPE") == (
-            "NONE_UNDER_CURRENT_POLICY"
+            "NONE_UNTIL_VERSIONED_FLEET_BINDING_RATIFICATION"
         )
 
     def test_complete_no_pass_not_reinterpreted(self) -> None:
@@ -173,5 +173,5 @@ class TestGlobalSummaryBinding:
     def test_last_verified_origin_main_updated(self) -> None:
         summary = global_summary_section()
         assert _field_value(summary, "LAST_VERIFIED_ORIGIN_MAIN") == (
-            "4884eb45ae2795cf6e2a4bad948354b380b78389"
+            "1a6dac20003b1e9e84aed0f015a1cbb37601d467"
         )
