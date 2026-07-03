@@ -21,6 +21,7 @@ from src.research.pit_futures_instrument_lifecycle_registry_v1 import (
     SourceTrustLevel,
     SuspensionSubIntervalV1,
     attach_snapshot_digest,
+    assemble_registry_snapshot_v1,
     build_interval_from_observation_v1,
     compute_interval_digest,
     compute_observation_digest,
@@ -491,3 +492,152 @@ def test_overlapping_intervals_detected() -> None:
 def test_all_error_codes_are_unique_strings() -> None:
     values = [item.value for item in LifecycleRegistryErrorCode]
     assert len(values) == len(set(values))
+
+
+_CONFIG_DIGEST = "b" * 64
+_IMPL_DIGEST = "c" * 64
+
+
+def _event_record(**overrides: object) -> SourceObservationRecordV1:
+    """Build a source record with a correctly computed observation digest."""
+    base = _source_record(**overrides)
+    digest = compute_observation_digest(base)
+    return dataclasses.replace(base, observation_digest=digest)
+
+
+def _assemble(*records: SourceObservationRecordV1) -> RegistrySnapshotV1:
+    result = assemble_registry_snapshot_v1(
+        records,
+        generated_at=_GENERATED_AT,
+        venue_scope=("okx",),
+        config_digest=_CONFIG_DIGEST,
+        implementation_digest=_IMPL_DIGEST,
+    )
+    assert result.success, result.error_codes
+    assert result.snapshot is not None
+    return result.snapshot
+
+
+def test_assembler_empty_input_produces_valid_empty_snapshot() -> None:
+    result = assemble_registry_snapshot_v1(
+        (),
+        generated_at=_GENERATED_AT,
+        venue_scope=("okx",),
+        config_digest=_CONFIG_DIGEST,
+        implementation_digest=_IMPL_DIGEST,
+    )
+    assert result.success
+    assert result.snapshot is not None
+    assert result.snapshot.intervals == ()
+
+
+def test_assembler_single_instrument_listing() -> None:
+    snap = _assemble(_source_record())
+    assert len(snap.intervals) == 1
+    assert snap.intervals[0].instrument_id.startswith("okx:")
+
+
+def test_assembler_multiple_instruments() -> None:
+    eth = _source_record()
+    sol = _source_record(base_asset="SOL", venue_symbol="SOL-USDT-SWAP")
+    snap = _assemble(eth, sol)
+    assert len(snap.intervals) == 2
+    ids = {item.instrument_id for item in snap.intervals}
+    assert len(ids) == 2
+
+
+def test_assembler_identical_duplicates_deduplicated() -> None:
+    record = _source_record()
+    snap = _assemble(record, record)
+    assert len(snap.intervals) == 1
+
+
+def test_assembler_conflicting_equal_priority_fail_closed() -> None:
+    first = _source_record(source_priority=1)
+    second = _source_record(source_priority=1, eligible_from="2024-01-05T00:00:00Z")
+    result = assemble_registry_snapshot_v1(
+        (first, second),
+        generated_at=_GENERATED_AT,
+        venue_scope=("okx",),
+        config_digest=_CONFIG_DIGEST,
+        implementation_digest=_IMPL_DIGEST,
+    )
+    assert not result.success
+    assert LifecycleRegistryErrorCode.CONFLICTING_SOURCE_RECORDS.value in result.error_codes
+
+
+def test_assembler_different_source_priority_lower_wins() -> None:
+    low = _source_record(source_priority=1, eligible_from="2024-01-02T00:00:00Z")
+    high = _source_record(source_priority=2, eligible_from="2024-01-05T00:00:00Z")
+    snap = _assemble(high, low)
+    assert snap.intervals[0].eligible_from == "2024-01-02T00:00:00Z"
+
+
+def test_assembler_permutation_invariant_snapshot_digest() -> None:
+    eth = _source_record()
+    sol = _source_record(base_asset="SOL", venue_symbol="SOL-USDT-SWAP")
+    snap_a = _assemble(eth, sol)
+    snap_b = _assemble(sol, eth)
+    assert snap_a.registry_snapshot_digest == snap_b.registry_snapshot_digest
+
+
+def test_assembler_listing_to_delisting_lifecycle() -> None:
+    listing = _event_record(observation_kind=ObservationKind.LISTING.value)
+    eligibility = _event_record(
+        observation_kind=ObservationKind.ELIGIBILITY.value,
+        source_effective_at="2024-01-02T00:00:00Z",
+    )
+    delist = _event_record(
+        observation_kind=ObservationKind.DELISTING.value,
+        source_effective_at="2024-12-01T00:00:00Z",
+        delisting_time="2024-12-01T00:00:00Z",
+    )
+    snap = _assemble(listing, eligibility, delist)
+    assert snap.intervals[0].delisting_time == "2024-12-01T00:00:00Z"
+
+
+def test_assembler_suspension_start_end_pair() -> None:
+    listing = _event_record()
+    eligibility = _event_record(
+        observation_kind=ObservationKind.ELIGIBILITY.value,
+        source_effective_at="2024-01-02T00:00:00Z",
+    )
+    suspend_start = _event_record(
+        observation_kind=ObservationKind.SUSPENSION_START.value,
+        source_effective_at="2024-05-01T00:00:00Z",
+    )
+    suspend_end = _event_record(
+        observation_kind=ObservationKind.SUSPENSION_END.value,
+        source_effective_at="2024-07-01T00:00:00Z",
+    )
+    snap = _assemble(listing, eligibility, suspend_start, suspend_end)
+    assert len(snap.intervals[0].suspension_sub_intervals) == 1
+
+
+def test_assembler_invalid_transition_fail_closed() -> None:
+    listing = _event_record()
+    bad_end = _event_record(
+        observation_kind=ObservationKind.SUSPENSION_END.value,
+        source_effective_at="2024-05-01T00:00:00Z",
+    )
+    result = assemble_registry_snapshot_v1(
+        (listing, bad_end),
+        generated_at=_GENERATED_AT,
+        venue_scope=("okx",),
+        config_digest=_CONFIG_DIGEST,
+        implementation_digest=_IMPL_DIGEST,
+    )
+    assert not result.success
+    assert LifecycleRegistryErrorCode.INVALID_TRANSITION.value in result.error_codes
+
+
+def test_assembler_unknown_normalization_fail_closed() -> None:
+    result = assemble_registry_snapshot_v1(
+        (_source_record(source_id="unknown:source:v0"),),
+        generated_at=_GENERATED_AT,
+        venue_scope=("okx",),
+        config_digest=_CONFIG_DIGEST,
+        implementation_digest=_IMPL_DIGEST,
+    )
+    assert not result.success
+    assert LifecycleRegistryErrorCode.UNKNOWN_SOURCE.value in result.error_codes
