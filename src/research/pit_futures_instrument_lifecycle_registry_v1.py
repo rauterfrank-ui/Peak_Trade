@@ -1523,3 +1523,28 @@ def assemble_registry_snapshot_v1(
     )
     final_snapshot = attach_snapshot_digest(snapshot)
     return RegistryAssemblyResultV1(True, final_snapshot, (), ())
+
+
+def registry_snapshot_to_dict(
+    snapshot: RegistrySnapshotV1,
+    *,
+    include_digest: bool = True,
+) -> dict[str, Any]:
+    """Deterministic snapshot dict for canonical persistence (Slice C)."""
+    return {
+        "config_digest": snapshot.config_digest,
+        "conflict_resolution_policy_version": snapshot.conflict_resolution_policy_version,
+        "generated_at": snapshot.generated_at,
+        "implementation_digest": snapshot.implementation_digest,
+        "intervals": [
+            _interval_to_dict(interval, include_digest=include_digest)
+            for interval in snapshot.intervals
+        ],
+        "policy_version": snapshot.policy_version,
+        "registry_snapshot_digest": snapshot.registry_snapshot_digest,
+        "registry_snapshot_version": snapshot.registry_snapshot_version,
+        "schema_name": snapshot.schema_name,
+        "schema_version": snapshot.schema_version,
+        "source_priority_policy_version": snapshot.source_priority_policy_version,
+        "venue_scope": list(snapshot.venue_scope),
+    }
