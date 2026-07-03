@@ -1,0 +1,13 @@
+{
+  "binding_contract_version": "pit_futures_universe_manifest_dataset_period_binding.v0",
+  "candidate_binding_version": "v0",
+  "dataset_binding_version": "v0",
+  "dataset_profile": "cross_sectional_research_staging_v1",
+  "fleet_id": "final_research_fleet_v0",
+  "fleet_version": "v0",
+  "instrument_binding_version": "v0",
+  "period_binding_version": "v0",
+  "policy_version": "pit_futures_universe_manifest_dataset_period_binding_policy.v1",
+  "universe_policy_id": "pit_okx_linear_usdt_non_bitcoin_perpetual_cross_sectional_universe",
+  "universe_policy_version": "v1"
+}
