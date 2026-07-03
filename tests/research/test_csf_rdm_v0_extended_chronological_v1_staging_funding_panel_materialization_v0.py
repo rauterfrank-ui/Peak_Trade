@@ -19,8 +19,13 @@ from src.research.csf_rdm_v0_extended_chronological_v1_staging_funding_panel_mat
     DEFAULT_STAGING_ROOT,
     CONFIRM_GO,
     MaterializationScopeVerdict,
+    REASON_FULL_UNIVERSE_FETCH_NOT_AUTHORIZED,
+    REASON_FULL_UNIVERSE_FETCH_REQUIRES_EXPLICIT_OPERATOR_GO,
+    REASON_FUNDING_MISSING,
+    REASON_STAGING_MISSING,
     StagingReadinessStatus,
     assess_staging_readiness_v0,
+    attempt_staging_and_funding_materialization_v0,
     load_materialization_binding_config_v0,
     run_materialization_scope_v0,
 )
@@ -145,7 +150,80 @@ def test_missing_canonical_staging_fails_closed(complete_binding: dict) -> None:
     )
     assert assessment.status is StagingReadinessStatus.FAIL_CLOSED_MISSING_PRECONDITION
     assert not assessment.staging_root_exists
+    assert REASON_STAGING_MISSING in assessment.reason_codes
     assert "MISSING_CANONICAL_EXTENDED_CHRONOLOGICAL_V1_STAGING_ROOT" in assessment.reason_codes
+
+
+def test_missing_staging_does_not_invoke_full_universe_fetch(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    called = {"fetch": False}
+
+    def _fail_if_called(*args: object, **kwargs: object) -> None:
+        called["fetch"] = True
+        raise AssertionError("run_historical_fetch must not be called")
+
+    monkeypatch.setattr(
+        "scripts.ops.fetch_cross_sectional_bound_period_historical_pt1h_sources_v0.run_historical_fetch",
+        _fail_if_called,
+    )
+    missing_root = (
+        Path(tempfile.mkdtemp(prefix="csf_rdm_missing_staging_")) / "extended_chronological_v1"
+    )
+    fetch_result, funding_result, reasons = attempt_staging_and_funding_materialization_v0(
+        staging_root=missing_root,
+        durable_evidence_root=Path(tempfile.mkdtemp(prefix="csf_rdm_durable_")),
+        attempt_fetch=False,
+    )
+    assert called["fetch"] is False
+    assert fetch_result is None
+    assert funding_result is None
+    assert REASON_STAGING_MISSING in reasons
+
+
+def test_authorize_full_universe_fetch_fails_closed_without_network(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    called = {"fetch": False}
+
+    def _fail_if_called(*args: object, **kwargs: object) -> None:
+        called["fetch"] = True
+        raise AssertionError("run_historical_fetch must not be called")
+
+    monkeypatch.setattr(
+        "scripts.ops.fetch_cross_sectional_bound_period_historical_pt1h_sources_v0.run_historical_fetch",
+        _fail_if_called,
+    )
+    missing_root = (
+        Path(tempfile.mkdtemp(prefix="csf_rdm_fetch_gate_")) / "extended_chronological_v1"
+    )
+    fetch_result, funding_result, reasons = attempt_staging_and_funding_materialization_v0(
+        staging_root=missing_root,
+        durable_evidence_root=Path(tempfile.mkdtemp(prefix="csf_rdm_durable_")),
+        attempt_fetch=True,
+    )
+    assert called["fetch"] is False
+    assert fetch_result is None
+    assert funding_result is None
+    assert REASON_FULL_UNIVERSE_FETCH_REQUIRES_EXPLICIT_OPERATOR_GO in reasons
+    assert REASON_FULL_UNIVERSE_FETCH_NOT_AUTHORIZED in reasons
+
+
+def test_staging_present_funding_missing_readiness_reasons(bound_staging: Path) -> None:
+    funding_manifest = bound_staging / "panel" / "panel_funding_dataset_manifest.json"
+    funding_bars = bound_staging / "panel" / "normalized_panel_bars_with_funding.json"
+    funding_manifest.unlink()
+    funding_bars.unlink()
+
+    fetch_result, funding_result, reasons = attempt_staging_and_funding_materialization_v0(
+        staging_root=bound_staging,
+        durable_evidence_root=Path(tempfile.mkdtemp(prefix="csf_rdm_durable_")),
+        attempt_fetch=False,
+    )
+    assert fetch_result is None
+    assert funding_result is None
+    assert REASON_FUNDING_MISSING in reasons
+    assert "STAGING_PRESENT_BUT_FUNDING_NOT_READY" in reasons
 
 
 def test_missing_staging_preflight_still_fails_closed(complete_binding: dict) -> None:
