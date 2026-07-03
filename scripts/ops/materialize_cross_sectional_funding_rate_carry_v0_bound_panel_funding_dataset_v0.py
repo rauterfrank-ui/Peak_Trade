@@ -32,7 +32,7 @@ from src.research.pit_futures_cross_sectional_research_data_digest_period_split_
     load_panel_series_from_staging,
 )
 
-GO_TOKEN = INFRASTRUCTURE_GO_TOKEN
+CONFIRM_GO = INFRASTRUCTURE_GO_TOKEN
 DEFAULT_STAGING_ROOT = Path(
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
     "datasets/admissible_futures/"
@@ -131,8 +131,8 @@ def materialize_bound_panel_funding_dataset_v0(
     staging_root: Path,
     skip_fetch: bool = False,
 ) -> dict[str, Any]:
-    if confirm != GO_TOKEN:
-        _die(f"ERR: confirm_go_token_required:{GO_TOKEN}")
+    if confirm != CONFIRM_GO:
+        _die(f"ERR: confirm_go_token_required:{CONFIRM_GO}")
     staging_root = staging_root.resolve()
     if not staging_root.is_dir():
         _die(f"ERR: missing_staging_root:{staging_root}")

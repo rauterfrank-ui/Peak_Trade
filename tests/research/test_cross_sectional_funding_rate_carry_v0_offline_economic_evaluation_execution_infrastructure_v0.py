@@ -41,6 +41,7 @@ from tests.research.fixtures.cross_sectional_funding_rate_carry_v0.fixture_build
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
+_INFRA_GO = INFRASTRUCTURE_GO_TOKEN
 
 
 def _write_staging_with_funding(
@@ -265,7 +266,7 @@ def test_precheck_rejects_data_digest_mismatch(
             ratification=scope_ratification,
             staging_root=bound_staging,
             versioned_binding=complete_binding,
-            go_token=INFRASTRUCTURE_GO_TOKEN,
+            go_token=_INFRA_GO,
         )
         assert ok is False
         assert "DATA_DIGEST_MISMATCH" in reasons
@@ -298,7 +299,7 @@ def test_dry_run_entrypoint_stops_before_economic_execution(
         staging_root=bound_staging,
         panel_series=build_synthetic_ohlcv_panel_v0(),
         versioned_binding=complete_binding,
-        go_token=INFRASTRUCTURE_GO_TOKEN,
+        go_token=_INFRA_GO,
     )
     assert result.dry_run_stopped_before_execution is True
     assert result.economic_evaluation_executed is False
@@ -317,7 +318,7 @@ def test_entrypoint_to_dict_carries_no_eval_flag(
         staging_root=bound_staging,
         panel_series=build_synthetic_ohlcv_panel_v0(),
         versioned_binding=complete_binding,
-        go_token=INFRASTRUCTURE_GO_TOKEN,
+        go_token=_INFRA_GO,
     )
     payload = entrypoint_result_to_dict(result)
     assert payload["economic_evaluation_executed"] is False
@@ -354,7 +355,7 @@ def test_precheck_fails_without_manifests(
             ratification=scope_ratification,
             staging_root=staging,
             versioned_binding=complete_binding,
-            go_token=INFRASTRUCTURE_GO_TOKEN,
+            go_token=_INFRA_GO,
         )
         assert ok is False
         assert any("SOURCE_MANIFEST" in reason for reason in reasons)

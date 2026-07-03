@@ -9,7 +9,7 @@ from pathlib import Path
 import pytest
 
 from scripts.ops.materialize_cross_sectional_funding_rate_carry_v0_bound_panel_funding_dataset_v0 import (
-    GO_TOKEN as MATERIALIZE_GO_TOKEN,
+    CONFIRM_GO as MATERIALIZE_CONFIRM_GO,
     materialize_bound_panel_funding_dataset_v0,
 )
 from scripts.ops.run_cross_sectional_funding_rate_carry_v0_offline_economic_evaluation_execution_v0 import (
@@ -41,6 +41,7 @@ from tests.research.test_cross_sectional_funding_rate_carry_v0_offline_economic_
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
+_INFRA_GO = INFRASTRUCTURE_GO_TOKEN
 
 
 @pytest.fixture(name="complete_binding")
@@ -64,7 +65,7 @@ def fixture_bound_staging() -> Path:
 
 def test_infrastructure_go_token_constant() -> None:
     assert INFRASTRUCTURE_GO_TOKEN == CONFIRM_GO
-    assert MATERIALIZE_GO_TOKEN == INFRASTRUCTURE_GO_TOKEN
+    assert MATERIALIZE_CONFIRM_GO == CONFIRM_GO
 
 
 def test_runner_script_exists() -> None:
@@ -106,7 +107,7 @@ def test_full_precheck_passes_with_bound_staging(
         ratification=scope_ratification,
         staging_root=bound_staging,
         versioned_binding=complete_binding,
-        go_token=INFRASTRUCTURE_GO_TOKEN,
+        go_token=_INFRA_GO,
     )
     assert ok is True, reasons
     assert materialization.data_digest_match is True
@@ -121,7 +122,7 @@ def test_precheck_fails_without_manifests(scope_ratification: dict, complete_bin
             ratification=scope_ratification,
             staging_root=staging,
             versioned_binding=complete_binding,
-            go_token=INFRASTRUCTURE_GO_TOKEN,
+            go_token=_INFRA_GO,
         )
         assert ok is False
         assert any("SOURCE_MANIFEST" in reason for reason in reasons)
@@ -142,7 +143,7 @@ def test_full_entrypoint_dry_run_stops_before_execution(
         staging_root=bound_staging,
         panel_series=panel_series,
         versioned_binding=complete_binding,
-        go_token=INFRASTRUCTURE_GO_TOKEN,
+        go_token=_INFRA_GO,
     )
     assert result.status is EvaluationEntrypointTerminalStatus.ENTRYPOINT_READY_DRY_RUN_STOPPED
     assert result.economic_evaluation_executed is False

@@ -81,6 +81,7 @@ INFRASTRUCTURE_GO_TOKEN = (
     "GO_BOUNDED_CROSS_SECTIONAL_FUNDING_RATE_CARRY_V0_ECONOMIC_EVALUATION_EXECUTION_"
     "INFRASTRUCTURE_AND_BOUND_FUNDING_PANEL_RECOVERY_V0"
 )
+_DEFAULT_INFRASTRUCTURE_GO = INFRASTRUCTURE_GO_TOKEN
 ALLOWED_EXECUTION_GO_TOKENS: frozenset[str] = frozenset({GO_TOKEN})
 EXPECTED_ORIGIN_MAIN_SHA = "84fbdc4e46f6aedafcdf6a445fb16bd5eb0c7f1c"
 CONFIG_REL_PATH_OPS = "config/ops/cross_sectional_funding_rate_carry_v0_economic_evaluation_v1.json"
@@ -450,7 +451,7 @@ def run_full_evaluation_entrypoint_dry_run_v1(
     staging_root: Path,
     panel_series: Sequence[InstrumentPanelSeriesV1],
     versioned_binding: Mapping[str, Any] | None = None,
-    go_token: str = INFRASTRUCTURE_GO_TOKEN,
+    go_token: str = _DEFAULT_INFRASTRUCTURE_GO,
 ) -> FullEvaluationEntrypointResultV1:
     """Validate full evaluation entrypoint wiring; stop before economic classification."""
     envelope = dict(versioned_binding or load_versioned_research_binding_v0(repo_root))
