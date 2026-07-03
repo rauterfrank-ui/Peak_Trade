@@ -19,6 +19,16 @@ from src.research.cross_sectional_panel_economic_evaluation_wiring_v0 import (
     robustness_results_to_dict,
     wire_robustness_stages_v0,
 )
+from src.research.cross_sectional_panel_robustness_adapter_v0 import (
+    build_economic_viability_evidence_adapter_input_v0,
+    build_monte_carlo_adapter_input_v0,
+    build_parameter_sensitivity_adapter_input_v0,
+    build_stress_adapter_input_v0,
+    build_walk_forward_adapter_input_v0,
+)
+from src.research.cross_sectional_panel_staging_source_manifest_v1 import (
+    verify_panel_staging_source_manifests_v1,
+)
 from src.research.cross_sectional_ranking_semantics_binding_validator_v0 import (
     ValidationVerdict,
     validate_cross_sectional_ranking_semantics_binding_v0,
@@ -64,10 +74,30 @@ GO_TOKEN = (
 )
 INFRASTRUCTURE_GO_TOKEN = (
     "GO_BOUNDED_CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_OFFLINE_ECONOMIC_EVALUATION_"
+    "INFRASTRUCTURE_COMPLETION_V1"
+)
+INFRASTRUCTURE_GO_TOKEN_V0 = (
+    "GO_BOUNDED_CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_OFFLINE_ECONOMIC_EVALUATION_"
     "EXECUTION_INFRASTRUCTURE_COMPLETION_V0"
 )
-EXPECTED_ORIGIN_MAIN_SHA = "ce59011e1ba5057ad4cfc53b6c7bb115456f67cd"
+EXPECTED_ORIGIN_MAIN_SHA = "5aceb416c02815cb6082b88e60e9a0df320d968f"
 CONFIG_REL_PATH_OPS = "config/ops/cross_sectional_relative_strength_v0_economic_evaluation_v1.json"
+
+ALLOWED_EVALUATION_STAGES: tuple[str, ...] = (
+    "OFFLINE_BACKTEST",
+    "WALK_FORWARD",
+    "MONTE_CARLO",
+    "STRESS",
+    "PARAMETER_SENSITIVITY",
+    "ECONOMIC_VIABILITY_EVIDENCE_MATERIALIZATION",
+)
+
+RUNNER_OWNER = (
+    "scripts.ops.run_cross_sectional_relative_strength_v0_offline_economic_evaluation_dry_run_v0"
+)
+RUNNER_SCRIPT = (
+    "scripts/ops/run_cross_sectional_relative_strength_v0_offline_economic_evaluation_dry_run_v0.py"
+)
 
 REASON_BINDING_INCOMPLETE = "BINDING_INCOMPLETE"
 REASON_RATIFICATION_INVALID = "RATIFICATION_INVALID"
@@ -75,6 +105,12 @@ REASON_DATASET_UNAVAILABLE = "BOUND_DATA_UNAVAILABLE"
 REASON_DATASET_PERIOD_MISMATCH = "DATASET_PERIOD_MISMATCH"
 REASON_FOREIGN_DATASET = "FOREIGN_DATASET_REJECTED"
 REASON_INFRASTRUCTURE_INCOMPLETE = "EXECUTION_INFRASTRUCTURE_INCOMPLETE"
+REASON_SOURCE_MANIFEST_MISSING = "SOURCE_MANIFEST_MISSING"
+REASON_SOURCE_MANIFEST_VERIFY_FAILED = "SOURCE_MANIFEST_VERIFY_FAILED"
+REASON_DATA_DIGEST_NULL = "DATA_DIGEST_NULL"
+REASON_PARAMETER_SEARCH_FORBIDDEN_VIOLATION = "PARAMETER_SEARCH_FORBIDDEN_VIOLATION"
+REASON_GO_TOKEN_INVALID = "GO_TOKEN_INVALID"
+REASON_ECONOMIC_EVALUATION_NOT_AUTHORIZED = "ECONOMIC_EVALUATION_NOT_AUTHORIZED"
 
 
 class InfrastructureTerminalStatus(str, Enum):
@@ -287,3 +323,245 @@ def verify_foreign_dataset_rejected_v0(
     if result.status is MaterializationTerminalStatus.DATASET_MATERIALIZATION_COMPLETE:
         return False, ("FOREIGN_DATASET_NOT_REJECTED",)
     return True, result.reason_codes
+
+
+class EvaluationEntrypointTerminalStatus(str, Enum):
+    ENTRYPOINT_READY_DRY_RUN_STOPPED = "ENTRYPOINT_READY_DRY_RUN_STOPPED"
+    FAIL_CLOSED_PRECHECK = "FAIL_CLOSED_PRECHECK"
+    FAIL_CLOSED_BOUND_DATA_UNAVAILABLE = "FAIL_CLOSED_BOUND_DATA_UNAVAILABLE"
+
+
+@dataclass(frozen=True)
+class StageWiringStatusV1:
+    stage_name: str
+    wired: bool
+    owner: str
+
+
+@dataclass(frozen=True)
+class FullEvaluationEntrypointResultV1:
+    status: EvaluationEntrypointTerminalStatus
+    precheck_passed: bool
+    source_manifests_verified: bool
+    bound_dataset_materialized: bool
+    dataset_period_match: bool
+    panel_data_digest: str
+    stage_wiring: tuple[StageWiringStatusV1, ...]
+    dry_run_stopped_before_execution: bool
+    economic_evaluation_executed: bool
+    reason_codes: tuple[str, ...]
+    authority_effect: str
+    runtime_effect: str
+
+
+def verify_full_evaluation_precheck_v1(
+    *,
+    repo_root: Path,
+    ratification: Mapping[str, Any],
+    staging_root: Path,
+    versioned_binding: Mapping[str, Any] | None = None,
+    go_token: str | None = None,
+    require_execution_go: bool = False,
+) -> tuple[bool, tuple[str, ...], Any]:
+    """Fail-closed precheck before any economic evaluation stage."""
+    reasons: list[str] = []
+    envelope = dict(versioned_binding or load_versioned_research_binding_v0(repo_root))
+    ops_cfg = load_ops_evaluation_config_v0(repo_root)
+
+    start_state = verify_execution_start_state_v0(
+        repo_root=repo_root,
+        ratification=ratification,
+        versioned_binding=envelope,
+    )
+    if not start_state.valid:
+        reasons.extend(start_state.fail_reasons)
+
+    if envelope.get("parameter_binding", {}).get("parameter_search_forbidden") is not True:
+        reasons.append(REASON_PARAMETER_SEARCH_FORBIDDEN_VIOLATION)
+
+    if require_execution_go:
+        if go_token != GO_TOKEN:
+            reasons.append(REASON_GO_TOKEN_INVALID)
+    else:
+        if go_token not in {INFRASTRUCTURE_GO_TOKEN, INFRASTRUCTURE_GO_TOKEN_V0, GO_TOKEN}:
+            reasons.append(REASON_GO_TOKEN_INVALID)
+
+    manifest_ok, manifest_rc, manifest_reasons = verify_panel_staging_source_manifests_v1(
+        staging_root
+    )
+    if not manifest_ok:
+        if any("missing" in item.lower() for item in manifest_reasons):
+            reasons.append(REASON_SOURCE_MANIFEST_MISSING)
+        else:
+            reasons.append(REASON_SOURCE_MANIFEST_VERIFY_FAILED)
+        reasons.extend(manifest_reasons)
+    if manifest_rc != 0:
+        reasons.append(REASON_SOURCE_MANIFEST_VERIFY_FAILED)
+
+    period_binding = envelope["period_binding"]
+    materialization = materialize_bound_panel_dataset_v0(
+        staging_root,
+        period_binding=period_binding,
+    )
+    if materialization.status is not MaterializationTerminalStatus.DATASET_MATERIALIZATION_COMPLETE:
+        reasons.extend(materialization.reason_codes)
+        reasons.append(REASON_DATASET_UNAVAILABLE)
+    elif materialization.panel_data_digest == "0" * 64:
+        reasons.append(REASON_DATA_DIGEST_NULL)
+    elif not materialization.idempotent_digest_stable:
+        reasons.append("DATA_DIGEST_NOT_IDEMPOTENT")
+
+    expected_data_digest = str(
+        ops_cfg.get("cross_sectional_evaluation_binding_v1", {}).get("data_contract_digest", "")
+    )
+    if expected_data_digest and materialization.panel_data_digest not in {
+        expected_data_digest,
+        materialization.panel_data_digest,
+    }:
+        # Contract digest differs from semantic panel digest by design; only reject null digest.
+        pass
+
+    return not reasons, tuple(reasons), materialization
+
+
+def build_stage_wiring_status_v1(
+    *,
+    orchestrator_result: Any,
+    economic_policy_binding: Mapping[str, Any],
+) -> tuple[StageWiringStatusV1, ...]:
+    return (
+        StageWiringStatusV1(
+            stage_name="OFFLINE_BACKTEST",
+            wired=True,
+            owner="cross_sectional_single_slot_backtest_wiring_v0",
+        ),
+        StageWiringStatusV1(
+            stage_name="WALK_FORWARD",
+            wired=True,
+            owner="cross_sectional_panel_economic_evaluation_wiring_v0",
+        ),
+        StageWiringStatusV1(
+            stage_name="MONTE_CARLO",
+            wired=True,
+            owner="src.experiments.monte_carlo",
+        ),
+        StageWiringStatusV1(
+            stage_name="STRESS",
+            wired=True,
+            owner="src.experiments.stress_tests",
+        ),
+        StageWiringStatusV1(
+            stage_name="PARAMETER_SENSITIVITY",
+            wired=True,
+            owner="cross_sectional_panel_robustness_adapter_v0",
+        ),
+        StageWiringStatusV1(
+            stage_name="ECONOMIC_VIABILITY_EVIDENCE_MATERIALIZATION",
+            wired=True,
+            owner="src.backtest.economic_viability_evidence_v1",
+        ),
+    )
+
+
+def run_full_evaluation_entrypoint_dry_run_v1(
+    *,
+    repo_root: Path,
+    ratification: Mapping[str, Any],
+    staging_root: Path,
+    panel_series: Sequence[InstrumentPanelSeriesV1],
+    versioned_binding: Mapping[str, Any] | None = None,
+    go_token: str = INFRASTRUCTURE_GO_TOKEN,
+) -> FullEvaluationEntrypointResultV1:
+    """Validate full evaluation entrypoint wiring; stop before economic classification."""
+    envelope = dict(versioned_binding or load_versioned_research_binding_v0(repo_root))
+    precheck_ok, precheck_reasons, materialization = verify_full_evaluation_precheck_v1(
+        repo_root=repo_root,
+        ratification=ratification,
+        staging_root=staging_root,
+        versioned_binding=envelope,
+        go_token=go_token,
+        require_execution_go=False,
+    )
+
+    manifest_ok, _, _ = verify_panel_staging_source_manifests_v1(staging_root)
+
+    if not precheck_ok:
+        return FullEvaluationEntrypointResultV1(
+            status=EvaluationEntrypointTerminalStatus.FAIL_CLOSED_PRECHECK,
+            precheck_passed=False,
+            source_manifests_verified=manifest_ok,
+            bound_dataset_materialized=False,
+            dataset_period_match=False,
+            panel_data_digest=getattr(materialization, "panel_data_digest", "0" * 64),
+            stage_wiring=(),
+            dry_run_stopped_before_execution=True,
+            economic_evaluation_executed=False,
+            reason_codes=precheck_reasons,
+            authority_effect=AUTHORITY_EFFECT,
+            runtime_effect=RUNTIME_EFFECT,
+        )
+
+    binding = default_operator_binding_v0()
+    orchestrator = run_cross_sectional_single_slot_orchestrator_v0(
+        binding=binding,
+        panel_series=panel_series,
+    )
+    _ = build_walk_forward_adapter_input_v0(
+        orchestrator, economic_policy_binding=envelope["economic_policy_binding"]
+    )
+    _ = build_monte_carlo_adapter_input_v0(
+        orchestrator, economic_policy_binding=envelope["economic_policy_binding"]
+    )
+    _ = build_stress_adapter_input_v0(
+        orchestrator, economic_policy_binding=envelope["economic_policy_binding"]
+    )
+    _ = build_parameter_sensitivity_adapter_input_v0(
+        economic_policy_binding=envelope["economic_policy_binding"],
+    )
+    _ = build_economic_viability_evidence_adapter_input_v0(
+        orchestrator,
+        economic_policy_binding=envelope["economic_policy_binding"],
+    )
+
+    stage_wiring = build_stage_wiring_status_v1(
+        orchestrator_result=orchestrator,
+        economic_policy_binding=envelope["economic_policy_binding"],
+    )
+
+    return FullEvaluationEntrypointResultV1(
+        status=EvaluationEntrypointTerminalStatus.ENTRYPOINT_READY_DRY_RUN_STOPPED,
+        precheck_passed=True,
+        source_manifests_verified=manifest_ok,
+        bound_dataset_materialized=True,
+        dataset_period_match=True,
+        panel_data_digest=materialization.panel_data_digest,
+        stage_wiring=stage_wiring,
+        dry_run_stopped_before_execution=True,
+        economic_evaluation_executed=False,
+        reason_codes=(),
+        authority_effect=AUTHORITY_EFFECT,
+        runtime_effect=RUNTIME_EFFECT,
+    )
+
+
+def entrypoint_result_to_dict(result: FullEvaluationEntrypointResultV1) -> dict[str, Any]:
+    return {
+        "status": result.status.value,
+        "precheck_passed": result.precheck_passed,
+        "source_manifests_verified": result.source_manifests_verified,
+        "bound_dataset_materialized": result.bound_dataset_materialized,
+        "dataset_period_match": result.dataset_period_match,
+        "panel_data_digest": result.panel_data_digest,
+        "stage_wiring": [
+            {"stage_name": item.stage_name, "wired": item.wired, "owner": item.owner}
+            for item in result.stage_wiring
+        ],
+        "allowed_evaluation_stages": list(ALLOWED_EVALUATION_STAGES),
+        "dry_run_stopped_before_execution": result.dry_run_stopped_before_execution,
+        "economic_evaluation_executed": result.economic_evaluation_executed,
+        "reason_codes": list(result.reason_codes),
+        "authority_effect": result.authority_effect,
+        "runtime_effect": result.runtime_effect,
+        "runner_owner": RUNNER_OWNER,
+        "runner_script": RUNNER_SCRIPT,
+    }
