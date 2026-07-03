@@ -17,6 +17,7 @@ import sys
 from pathlib import Path
 
 CANONICAL_RESULT_PATH = Path(".cursor/PRE_PR_VALIDATION_RESULT.env")
+PRE_PR_RESULT_REL_PATH = ".cursor/PRE_PR_VALIDATION_RESULT.env"
 
 ALLOWED_VERDICTS = frozenset(
     {
@@ -38,6 +39,13 @@ REQUIRED_TRUE_FIELDS = (
 REQUIRED_PASS_FIELDS = ("LOCAL_GATE_BATCH_RESULT",)
 
 REQUIRED_FALSE_FIELDS = ("UNVALIDATED_FILES_REMAIN",)
+
+REQUIRED_BINDING_FIELDS = (
+    "FEATURE_BRANCH",
+    "FEATURE_HEAD",
+    "ORIGIN_MAIN_HEAD",
+    "FINAL_INTENDED_FILES",
+)
 
 TARGET_MAX_SECONDS = 840
 HARD_STOP_SECONDS = 900
@@ -75,12 +83,61 @@ def _parse_int_field(data: dict[str, str], key: str) -> int | None:
     return int(data[key])
 
 
-def _diff_sha256(base_ref: str) -> str:
-    proc = subprocess.run(
-        ["git", "diff", f"{base_ref}...HEAD"],
+def _parse_csv_paths(value: str) -> frozenset[str]:
+    if not value.strip():
+        return frozenset()
+    return frozenset(part.strip() for part in value.split(",") if part.strip())
+
+
+def _exclude_pre_pr_result_path(paths: frozenset[str]) -> frozenset[str]:
+    return frozenset(path for path in paths if path != PRE_PR_RESULT_REL_PATH)
+
+
+def _run_git(args: list[str], *, repo_root: Path) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        ["git", *args],
+        cwd=str(repo_root),
         check=False,
         capture_output=True,
         text=True,
+    )
+
+
+def _git_rev_parse(ref: str, *, repo_root: Path) -> str:
+    proc = _run_git(["rev-parse", ref], repo_root=repo_root)
+    if proc.returncode != 0:
+        raise RuntimeError(proc.stderr.strip() or f"git rev-parse {ref} failed")
+    return proc.stdout.strip()
+
+
+def _git_branch_name(*, repo_root: Path) -> str:
+    proc = _run_git(["rev-parse", "--abbrev-ref", "HEAD"], repo_root=repo_root)
+    if proc.returncode != 0:
+        raise RuntimeError(proc.stderr.strip() or "git rev-parse --abbrev-ref HEAD failed")
+    branch = proc.stdout.strip()
+    if branch == "HEAD":
+        raise RuntimeError("detached HEAD; branch-bound PRE_PR evidence requires a named branch")
+    return branch
+
+
+def _changed_files(base_ref: str, *, repo_root: Path) -> frozenset[str]:
+    proc = _run_git(["diff", "--name-only", f"{base_ref}...HEAD"], repo_root=repo_root)
+    if proc.returncode not in {0, 1}:
+        raise RuntimeError(proc.stderr.strip() or "git diff --name-only failed")
+    paths = frozenset(line.strip() for line in proc.stdout.splitlines() if line.strip())
+    return _exclude_pre_pr_result_path(paths)
+
+
+def _diff_sha256(base_ref: str, *, repo_root: Path) -> str:
+    proc = _run_git(
+        [
+            "diff",
+            f"{base_ref}...HEAD",
+            "--",
+            ".",
+            f":(exclude){PRE_PR_RESULT_REL_PATH}",
+        ],
+        repo_root=repo_root,
     )
     if proc.returncode not in {0, 1}:
         raise RuntimeError(proc.stderr.strip() or "git diff failed")
@@ -92,8 +149,11 @@ def verify_pre_pr_validation_result(
     data: dict[str, str],
     *,
     check_diff_sha: bool = False,
+    check_binding: bool = False,
     base_ref: str = "origin/main",
     repo_root: Path | None = None,
+    current_branch: str | None = None,
+    current_head: str | None = None,
 ) -> list[str]:
     """Return a list of blocking error messages. Empty list means PASS."""
     errors: list[str] = []
@@ -181,7 +241,6 @@ def verify_pre_pr_validation_result(
                 "TIMING_PROOF_REQUIRED=false requires TIMING_PROOF_STATUS="
                 "TIMING_PROOF_NOT_REQUIRED_JUSTIFIED or TIMING_PROOF_NOT_REQUIRED_JUSTIFICATION"
             )
-        # Hard-stop / fail timing must never coexist with timing-not-required pass.
         if data.get("TIMING_PROOF_STATUS") == "FAIL":
             errors.append("TIMING_PROOF_STATUS=FAIL cannot pass when timing proof was required")
         wallclock = _parse_int_field(data, "TIMING_WALLCLOCK_SECONDS")
@@ -190,6 +249,64 @@ def verify_pre_pr_validation_result(
                 f"TIMING_WALLCLOCK_SECONDS={wallclock} reached hard stop; cannot claim timing not required"
             )
 
+    if check_binding:
+        for key in REQUIRED_BINDING_FIELDS:
+            if not data.get(key, "").strip():
+                errors.append(f"missing {key} for branch-bound PRE_PR evidence")
+
+        root = repo_root or Path.cwd()
+        try:
+            resolved_branch = current_branch or _git_branch_name(repo_root=root)
+            resolved_head = current_head or _git_rev_parse("HEAD", repo_root=root)
+            resolved_base = _git_rev_parse(base_ref, repo_root=root)
+        except (RuntimeError, subprocess.SubprocessError) as exc:
+            errors.append(f"could not resolve git binding context: {exc}")
+        else:
+            feature_branch = data.get("FEATURE_BRANCH", "").strip()
+            if feature_branch and feature_branch != resolved_branch:
+                errors.append(
+                    f"FEATURE_BRANCH mismatch: expected {feature_branch!r}, actual {resolved_branch!r}"
+                )
+
+            feature_head = data.get("FEATURE_HEAD", "").strip()
+            if feature_head and feature_head != resolved_head:
+                errors.append(
+                    f"FEATURE_HEAD mismatch: expected {feature_head!r}, actual {resolved_head!r}"
+                )
+
+            origin_main_head = data.get("ORIGIN_MAIN_HEAD", "").strip()
+            if origin_main_head and origin_main_head != resolved_base:
+                errors.append(
+                    f"ORIGIN_MAIN_HEAD mismatch: expected {origin_main_head!r}, actual {resolved_base!r}"
+                )
+
+            intended_raw = _parse_csv_paths(data.get("FINAL_INTENDED_FILES", ""))
+            if PRE_PR_RESULT_REL_PATH in intended_raw:
+                errors.append(
+                    f"FINAL_INTENDED_FILES must not include {PRE_PR_RESULT_REL_PATH!r} "
+                    "(self-referential diff binding excluded)"
+                )
+            intended = _exclude_pre_pr_result_path(intended_raw)
+            if intended:
+                try:
+                    actual = _changed_files(base_ref, repo_root=root)
+                except (RuntimeError, subprocess.SubprocessError) as exc:
+                    errors.append(f"could not list changed files: {exc}")
+                else:
+                    if intended != actual:
+                        missing = sorted(intended - actual)
+                        extra = sorted(actual - intended)
+                        if missing:
+                            errors.append(
+                                "FINAL_INTENDED_FILES missing from actual diff: "
+                                + ", ".join(missing)
+                            )
+                        if extra:
+                            errors.append(
+                                "FINAL_INTENDED_FILES stale/extra vs actual diff: "
+                                + ", ".join(extra)
+                            )
+
     if check_diff_sha:
         expected = data.get("FINAL_DIFF_SHA256", "").strip()
         if not expected:
@@ -197,7 +314,7 @@ def verify_pre_pr_validation_result(
         else:
             root = repo_root or Path.cwd()
             try:
-                actual = _diff_sha256(base_ref)
+                actual = _diff_sha256(base_ref, repo_root=root)
             except (RuntimeError, subprocess.SubprocessError) as exc:
                 errors.append(f"could not compute diff sha256: {exc}")
             else:
@@ -228,12 +345,29 @@ def main(argv: list[str] | None = None) -> int:
         help="Verify FINAL_DIFF_SHA256 matches git diff against base-ref",
     )
     parser.add_argument(
+        "--check-binding",
+        action="store_true",
+        help="Verify FEATURE_BRANCH/HEAD/ORIGIN_MAIN_HEAD and FINAL_INTENDED_FILES binding",
+    )
+    parser.add_argument(
         "--repo-root",
         type=Path,
         default=None,
         help="Repository root for git operations (default: cwd)",
     )
+    parser.add_argument(
+        "--current-branch",
+        default=None,
+        help="Override detected current branch for binding checks",
+    )
+    parser.add_argument(
+        "--current-head",
+        default=None,
+        help="Override detected HEAD SHA for binding checks",
+    )
     args = parser.parse_args(argv)
+
+    repo_root = args.repo_root or Path.cwd()
 
     if not args.result_file.is_file():
         print(
@@ -248,11 +382,16 @@ def main(argv: list[str] | None = None) -> int:
         print(f"PRE_PR_VALIDATION_FAIL_CLOSED: {exc}", file=sys.stderr)
         return 1
 
+    check_binding = args.check_binding or args.check_diff_sha
+
     errors = verify_pre_pr_validation_result(
         data,
         check_diff_sha=args.check_diff_sha,
+        check_binding=check_binding,
         base_ref=args.base_ref,
-        repo_root=args.repo_root,
+        repo_root=repo_root,
+        current_branch=args.current_branch,
+        current_head=args.current_head,
     )
     if errors:
         print("PRE_PR_VALIDATION_FAIL_CLOSED:", file=sys.stderr)
