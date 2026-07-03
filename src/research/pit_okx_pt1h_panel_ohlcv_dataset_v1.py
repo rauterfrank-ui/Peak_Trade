@@ -6,6 +6,7 @@ Research-only, non-authorizing. No network, no I/O, no runtime authority.
 from __future__ import annotations
 
 from dataclasses import dataclass
+from datetime import datetime, timedelta, timezone
 from enum import Enum
 from typing import Any, Mapping, Sequence
 
@@ -75,6 +76,13 @@ class PanelValidationResultV1:
 
 
 @dataclass(frozen=True)
+class BoundCalendarPanelFilterResultV1:
+    selected: tuple[InstrumentPanelSeriesV1, ...]
+    excluded_empty_count: int
+    excluded_partial_count: int
+
+
+@dataclass(frozen=True)
 class PanelDatasetManifestV1:
     manifest_version: str
     panel_id: str
@@ -114,6 +122,63 @@ def _parse_float(value: str) -> float | None:
         return None
 
 
+def build_bound_panel_calendar_timestamps_v1(
+    period_start_utc: str,
+    period_end_utc: str,
+) -> tuple[str, ...]:
+    """Build inclusive bound-panel UTC hourly timestamps for fetch/validation parity."""
+    start = datetime.strptime(period_start_utc, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
+    end = datetime.strptime(period_end_utc, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
+    timestamps: list[str] = []
+    cur = start
+    while cur <= end:
+        timestamps.append(cur.strftime("%Y-%m-%dT%H:%M:%SZ"))
+        cur += timedelta(hours=1)
+    return tuple(timestamps)
+
+
+def has_full_bound_panel_calendar_coverage_v1(
+    bars: Sequence[PanelBarV1],
+    *,
+    period_start_utc: str,
+    period_end_utc: str,
+) -> bool:
+    expected = build_bound_panel_calendar_timestamps_v1(period_start_utc, period_end_utc)
+    if len(bars) != len(expected):
+        return False
+    actual = [bar.timestamp_utc for bar in bars]
+    return actual == list(expected)
+
+
+def filter_panel_series_to_full_bound_calendar_coverage_v1(
+    candidates: Sequence[InstrumentPanelSeriesV1],
+    *,
+    period_start_utc: str,
+    period_end_utc: str,
+) -> BoundCalendarPanelFilterResultV1:
+    """Keep only instruments whose bound bars exactly cover the panel calendar."""
+    selected: list[InstrumentPanelSeriesV1] = []
+    excluded_empty = 0
+    excluded_partial = 0
+    for series in candidates:
+        if not series.bars:
+            excluded_empty += 1
+            continue
+        if not has_full_bound_panel_calendar_coverage_v1(
+            series.bars,
+            period_start_utc=period_start_utc,
+            period_end_utc=period_end_utc,
+        ):
+            excluded_partial += 1
+            continue
+        selected.append(series)
+    return BoundCalendarPanelFilterResultV1(
+        selected=tuple(selected),
+        excluded_empty_count=excluded_empty,
+        excluded_partial_count=excluded_partial,
+    )
+
+
 def _validate_single_series(
     series: InstrumentPanelSeriesV1,
     *,
@@ -146,8 +211,6 @@ def _validate_single_series(
             out_of_order_check = "FAIL"
             errors.append(PanelValidationErrorCode.OUT_OF_ORDER_TIMESTAMP.value)
         if prev_ts is not None:
-            from datetime import datetime, timezone
-
             prev_dt = datetime.strptime(prev_ts, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
             cur_dt = datetime.strptime(bar.timestamp_utc, "%Y-%m-%dT%H:%M:%SZ").replace(
                 tzinfo=timezone.utc
