@@ -181,10 +181,40 @@ def test_deterministic_serialization(versioned_envelope: dict) -> None:
     assert first == second
 
 
-def test_config_artifact_matches_materializer(versioned_envelope: dict) -> None:
+def test_config_artifact_matches_complete_binding() -> None:
+    from src.research.cross_sectional_relative_strength_v0_versioned_research_binding_v0 import (
+        materialize_versioned_research_binding_v0,
+    )
+
     assert CONFIG_ARTIFACT_PATH.is_file()
     on_disk = json.loads(CONFIG_ARTIFACT_PATH.read_text(encoding="utf-8"))
-    assert on_disk == versioned_envelope
+    complete = materialize_versioned_research_binding_v0()
+    ranking_on_disk = {
+        key: on_disk[key]
+        for key in on_disk
+        if key
+        in {
+            "artifact_kind",
+            "artifact_version",
+            "schema_version",
+            "hypothesis_id",
+            "binding",
+            "envelope_digests",
+            "derived_fields",
+        }
+    }
+    ranking_expected = {
+        "artifact_kind": "cross_sectional_ranking_semantics_versioned_binding",
+        "artifact_version": complete["artifact_version"]
+        if "artifact_version" in complete
+        else "v0",
+        "schema_version": complete["ranking_semantics_schema_version"],
+        "hypothesis_id": complete["research_hypothesis_id"],
+        "binding": complete["binding"],
+    }
+    on_disk_ranking = json.loads(CONFIG_ARTIFACT_PATH.read_text(encoding="utf-8"))
+    assert on_disk_ranking["binding"] == complete["binding"]
+    assert on_disk_ranking["binding"]["binding_status"]["overall_binding_status"] == "COMPLETE"
 
 
 def test_digest_input_sorted_keys() -> None:

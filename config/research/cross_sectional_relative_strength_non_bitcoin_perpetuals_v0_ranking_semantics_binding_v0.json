@@ -3,24 +3,27 @@
   "artifact_version": "v0",
   "binding": {
     "binding_status": {
-      "cost_model_binding_status": "REQUIRED_UNBOUND",
-      "dataset_binding_status": "REQUIRED_UNBOUND",
-      "digest_binding_status": "REQUIRED_UNBOUND",
+      "cost_model_binding_status": "BOUND",
+      "dataset_binding_status": "BOUND",
+      "digest_binding_status": "BOUND",
       "numeric_bindings_status": "BOUND",
-      "overall_binding_status": "INCOMPLETE_FAIL_CLOSED",
-      "period_binding_status": "REQUIRED_UNBOUND",
+      "overall_binding_status": "COMPLETE",
+      "period_binding_status": "BOUND",
       "policy_classes_status": "BOUND",
-      "universe_binding_status": "REQUIRED_UNBOUND"
+      "universe_binding_status": "BOUND"
     },
     "digest_bindings": {
       "config_digest": {
-        "status": "REQUIRED_UNBOUND"
+        "status": "BOUND",
+        "value": "c479e952e93b1c1ad2e8de7cd7a17e342f490cef059db13e05f3ab656ac35771"
       },
       "data_digest": {
-        "status": "REQUIRED_UNBOUND"
+        "status": "BOUND",
+        "value": "7e856baff0ad7bf4d1b8662d4d92cfe4abe0e76561637db0212d6debe0b42d37"
       },
       "implementation_digest": {
-        "status": "REQUIRED_UNBOUND"
+        "status": "BOUND",
+        "value": "f9f9a6d59410ee42bff8b9125a6a7696f6e0119834e3294ba571e7c51795d0ea"
       }
     },
     "direction_semantics": {
@@ -37,34 +40,44 @@
     },
     "external_bindings": {
       "admissibility_manifest_ref": {
-        "status": "REQUIRED_UNBOUND"
+        "ref": "pit_cross_sectional_research_dataset_envelope.v0:pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1:v1",
+        "status": "BOUND"
       },
       "evaluation_period_binding": {
-        "status": "REQUIRED_UNBOUND"
+        "ref": "pit_cross_sectional_research_chronological_holdout_v1:v1",
+        "status": "BOUND"
       },
       "execution_model_version": {
-        "status": "REQUIRED_UNBOUND"
+        "status": "BOUND",
+        "value": "backtest_execution_v0"
       },
       "fee_model_version": {
-        "status": "REQUIRED_UNBOUND"
+        "status": "BOUND",
+        "value": "backtest_fee_taker_symmetric_v0"
       },
       "funding_model_version": {
-        "status": "REQUIRED_UNBOUND"
+        "status": "BOUND",
+        "value": "backtest_funding_perpetual_interval_v1"
       },
       "instrument_id_canonicalization_version": {
-        "status": "REQUIRED_UNBOUND"
+        "status": "BOUND",
+        "value": "instrument_id_canonicalization.v1"
       },
       "panel_ohlcv_dataset_manifest_ref": {
-        "status": "REQUIRED_UNBOUND"
+        "ref": "pit_okx_pt1h_panel_ohlcv_dataset_v1:pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1:v1",
+        "status": "BOUND"
       },
       "pit_universe_manifest_ref": {
-        "status": "REQUIRED_UNBOUND"
+        "ref": "pit_futures_universe_manifest_v1:pit_okx_linear_usdt_non_bitcoin_perpetual_universe_manifest_v1",
+        "status": "BOUND"
       },
       "slippage_model_version": {
-        "status": "REQUIRED_UNBOUND"
+        "status": "BOUND",
+        "value": "backtest_slippage_symmetric_v0"
       },
       "spread_model_version": {
-        "status": "REQUIRED_UNBOUND"
+        "status": "BOUND",
+        "value": "research_conservative_bps_v1"
       }
     },
     "hypothesis_id": "CROSS_SECTIONAL_RELATIVE_STRENGTH_NON_BITCOIN_PERPETUALS_V0",
@@ -195,7 +208,7 @@
     }
   },
   "hypothesis_id": "CROSS_SECTIONAL_RELATIVE_STRENGTH_NON_BITCOIN_PERPETUALS_V0",
-  "materialization_scope": "NUMERIC_ENUM_RATIFICATION_ONLY",
+  "materialization_scope": "FULL_VERSIONED_BINDING_RATIFIED",
   "non_authorizing": true,
   "ratification_payload_version": "cross_sectional_ranking_semantics_operator_ratification_payload.v0",
   "research_binding_only": true,
@@ -205,6 +218,6 @@
     "economic_policy_effect": "NONE",
     "fleet_binding_effect": "NONE",
     "runtime_effect": "NONE",
-    "universe_binding_effect": "DEFERRED_UPSTREAM"
+    "universe_binding_effect": "BOUND"
   }
 }
