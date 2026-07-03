@@ -56,6 +56,7 @@ PACKAGE_MARKER = "FINAL_RESEARCH_FLEET_VERSIONED_BINDING_COMPLETION_V0=true"
 
 SCHEMA_VERSION = "final_research_fleet_versioned_binding_completion.v0"
 COMPLETION_ID = "final_research_fleet_versioned_binding_completion_v0"
+CONFIG_REL_PATH = "config/research/final_research_fleet_versioned_binding_completion_v0.json"
 CANONICAL_SERIALIZATION_VERSION = "research_binding_completion_canonical_json_v1"
 CANONICAL_TRADING_LOGIC_BINDING_VERSION = "strategy_signal_binding_v1"
 
@@ -820,6 +821,28 @@ def clone_completion(completion: Mapping[str, Any]) -> dict[str, Any]:
     return deepcopy(dict(completion))
 
 
+def serialize_completion_artifact_json_v0(completion: Mapping[str, Any]) -> str:
+    return json.dumps(dict(completion), indent=2, sort_keys=True, ensure_ascii=False) + "\n"
+
+
+def write_binding_completion_artifact_v0(
+    repo_root: Path,
+    *,
+    completion: Mapping[str, Any],
+) -> Path:
+    validation = validate_final_research_fleet_versioned_binding_completion_v0(
+        completion,
+        repo_root=repo_root,
+        require_ready_for_eval=True,
+    )
+    if validation.verdict != ValidationVerdict.ACCEPTED:
+        raise ValueError(f"binding_completion_validation_failed:{validation.fail_reasons}")
+    config_path = repo_root / CONFIG_REL_PATH
+    config_path.parent.mkdir(parents=True, exist_ok=True)
+    config_path.write_text(serialize_completion_artifact_json_v0(completion), encoding="utf-8")
+    return config_path
+
+
 __all__ = [
     "AUTHORITY_EFFECT",
     "BINDING_STATUS_INCOMPLETE",
@@ -828,6 +851,7 @@ __all__ = [
     "BindingCompletionValidationResultV0",
     "CANONICAL_SERIALIZATION_VERSION",
     "COMPLETION_ID",
+    "CONFIG_REL_PATH",
     "ECONOMIC_EVALUATION_AUTHORIZED",
     "FAILED_HISTORICAL_CANDIDATES",
     "FLEET_CANDIDATES",
@@ -842,6 +866,8 @@ __all__ = [
     "compute_binding_semantic_digest_v0",
     "compute_completion_digest_v0",
     "materialize_final_research_fleet_versioned_binding_completion_v0",
+    "serialize_completion_artifact_json_v0",
     "serialize_completion_canonical_v0",
     "validate_final_research_fleet_versioned_binding_completion_v0",
+    "write_binding_completion_artifact_v0",
 ]
