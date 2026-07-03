@@ -43,7 +43,16 @@ _DATED_TYPES = frozenset(
 _FUTURES_MARKET_TYPES = frozenset({"futures", "futures_panel", "future", "perpetual"})
 _VENUE_ID_PATTERN = re.compile(r"^[a-z][a-z0-9_]{0,63}$")
 _ABSOLUTE_PATH_PATTERN = re.compile(r"(^/|^\\\\|^[A-Za-z]:[/\\\\])")
-_REGISTERED_SOURCES_V0 = frozenset({"synthetic:test:fixture:v0", "synthetic:test:record:v0"})
+OKX_PRODUCTION_INSTRUMENT_LIFECYCLE_HISTORICAL_AS_OF_FAIL_CLOSED_V1 = (
+    "okx_production_instrument_lifecycle_historical_as_of_fail_closed.v1"
+)
+_REGISTERED_SOURCES_V0 = frozenset(
+    {
+        "synthetic:test:fixture:v0",
+        "synthetic:test:record:v0",
+        OKX_PRODUCTION_INSTRUMENT_LIFECYCLE_HISTORICAL_AS_OF_FAIL_CLOSED_V1,
+    }
+)
 
 
 class ObservationKind(str, Enum):
