@@ -116,6 +116,7 @@ def run_historical_fetch(
     from src.research.pit_okx_pt1h_panel_ohlcv_dataset_v1 import (
         InstrumentPanelSeriesV1,
         compute_series_digest,
+        filter_panel_series_to_full_bound_calendar_coverage_v1,
         validate_panel_series_v1,
     )
     from src.research.instrument_id_canonicalization_v1 import (
@@ -257,8 +258,37 @@ def run_historical_fetch(
             }
         )
 
+    membership_filter = filter_panel_series_to_full_bound_calendar_coverage_v1(
+        tuple(panel_series),
+        period_start_utc=period_start_utc,
+        period_end_utc=period_end_utc,
+    )
+    panel_series = list(membership_filter.selected)
+    (reports_dir / "PANEL_MEMBERSHIP_FILTER.json").write_text(
+        json.dumps(
+            {
+                "period_start_utc": period_start_utc,
+                "period_end_utc": period_end_utc,
+                "candidate_count": len(provenance_entries),
+                "selected_count": len(panel_series),
+                "excluded_empty_count": membership_filter.excluded_empty_count,
+                "excluded_partial_count": membership_filter.excluded_partial_count,
+                "filter_policy": "full_bound_panel_calendar_coverage_exact_timestamps",
+            },
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
     if len(panel_series) < MIN_ELIGIBLE_INSTRUMENT_COUNT:
-        _die(f"ERR: FAIL_CLOSED_INSUFFICIENT_PANEL_MEMBERS:{len(panel_series)}")
+        _die(
+            "ERR: FAIL_CLOSED_INSUFFICIENT_COMMON_HISTORY:"
+            f"{len(panel_series)}:"
+            f"excluded_partial={membership_filter.excluded_partial_count}:"
+            f"excluded_empty={membership_filter.excluded_empty_count}"
+        )
 
     panel_validation = validate_panel_series_v1(
         tuple(panel_series),

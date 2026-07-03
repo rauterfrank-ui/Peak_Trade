@@ -6,17 +6,23 @@ from datetime import datetime, timedelta, timezone
 
 from src.research.pit_okx_pt1h_panel_ohlcv_dataset_v1 import InstrumentPanelSeriesV1, PanelBarV1
 
+PANEL_CALENDAR_START_UTC = datetime(2024, 5, 1, 0, 0, tzinfo=timezone.utc)
+PANEL_CALENDAR_END_UTC = datetime(2024, 9, 1, 0, 0, tzinfo=timezone.utc)
+
 
 def _bars(
     instrument_id: str,
     *,
     base_close: float,
-    count: int = 30,
+    start: datetime | None = None,
+    end: datetime | None = None,
 ) -> tuple[PanelBarV1, ...]:
     bars: list[PanelBarV1] = []
-    start = datetime(2024, 5, 30, 20, 0, tzinfo=timezone.utc)
-    for idx in range(count):
-        ts = (start + timedelta(hours=idx)).strftime("%Y-%m-%dT%H:%M:%SZ")
+    cursor = start or PANEL_CALENDAR_START_UTC
+    stop = end or PANEL_CALENDAR_END_UTC
+    idx = 0
+    while cursor < stop:
+        ts = cursor.strftime("%Y-%m-%dT%H:%M:%SZ")
         close = base_close + idx * 0.01
         bars.append(
             PanelBarV1(
@@ -30,6 +36,8 @@ def _bars(
                 is_final=True,
             )
         )
+        cursor += timedelta(hours=1)
+        idx += 1
     return tuple(bars)
 
 
