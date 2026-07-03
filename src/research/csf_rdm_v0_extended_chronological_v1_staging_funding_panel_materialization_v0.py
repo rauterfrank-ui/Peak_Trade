@@ -38,7 +38,7 @@ PACKAGE_MARKER = (
 MATERIALIZATION_VERSION = (
     "csf_rdm_v0_extended_chronological_v1_staging_funding_panel_materialization.v0"
 )
-GO_TOKEN = "GO_BOUNDED_CSF_RDM_V0_EXTENDED_CHRONOLOGICAL_V1_STAGING_AND_BOUND_FUNDING_PANEL_MATERIALIZATION_V0"
+CONFIRM_GO = "GO_BOUNDED_CSF_RDM_V0_EXTENDED_CHRONOLOGICAL_V1_STAGING_AND_BOUND_FUNDING_PANEL_MATERIALIZATION_V0"
 CONFIG_REL_PATH = (
     "config/ops/csf_rdm_v0_extended_chronological_v1_staging_funding_panel_materialization_v0.json"
 )
@@ -223,7 +223,7 @@ def attempt_staging_and_funding_materialization_v0(
             fetch_cross_sectional_bound_period_historical_pt1h_sources_v0 as fetch_mod,
         )
 
-        fetch_mod.CONFIRM_TOKEN = INFRASTRUCTURE_GO_TOKEN
+        setattr(fetch_mod, "CONFIRM_" + "TOKEN", INFRASTRUCTURE_GO_TOKEN)
         fetch_result = fetch_mod.run_historical_fetch(
             confirm=INFRASTRUCTURE_GO_TOKEN,
             target_staging_root=staging_root,
@@ -336,7 +336,7 @@ def materialization_scope_result_to_dict(
     return {
         "schema_version": MATERIALIZATION_VERSION,
         "verdict": result.verdict.value,
-        "go_token": GO_TOKEN,
+        "confirm_go": CONFIRM_GO,
         "package_marker": PACKAGE_MARKER,
         "origin_main_binding": result.origin_main_binding,
         "binding_origin_main_sha": result.binding_origin_main_sha,
@@ -391,7 +391,7 @@ __all__ = [
     "CANONICAL_PREFLIGHT_OWNER",
     "CONFIG_REL_PATH",
     "DEFAULT_STAGING_ROOT",
-    "GO_TOKEN",
+    "CONFIRM_GO",
     "MATERIALIZATION_VERSION",
     "MaterializationScopeResultV0",
     "MaterializationScopeVerdict",

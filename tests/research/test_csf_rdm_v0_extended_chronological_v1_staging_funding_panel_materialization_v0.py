@@ -17,7 +17,7 @@ from src.research.csf_rdm_v0_extended_chronological_v1_staging_funding_panel_mat
     CANONICAL_FUNDING_OWNER,
     CANONICAL_PREFLIGHT_OWNER,
     DEFAULT_STAGING_ROOT,
-    GO_TOKEN,
+    CONFIRM_GO,
     MaterializationScopeVerdict,
     StagingReadinessStatus,
     assess_staging_readiness_v0,
@@ -125,8 +125,8 @@ def fixture_bound_staging() -> Path:
     return _write_staging_with_funding(tmp)
 
 
-def test_go_token_constant() -> None:
-    assert GO_TOKEN == (
+def test_confirm_go_constant() -> None:
+    assert CONFIRM_GO == (
         "GO_BOUNDED_CSF_RDM_V0_EXTENDED_CHRONOLOGICAL_V1_STAGING_AND_BOUND_FUNDING_PANEL_MATERIALIZATION_V0"
     )
 

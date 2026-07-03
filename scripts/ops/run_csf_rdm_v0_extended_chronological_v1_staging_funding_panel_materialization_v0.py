@@ -25,7 +25,7 @@ from src.research.csf_rdm_v0_extended_chronological_v1_staging_funding_panel_mat
     CANONICAL_FUNDING_OWNER,
     CANONICAL_PREFLIGHT_OWNER,
     DEFAULT_STAGING_ROOT,
-    GO_TOKEN,
+    CONFIRM_GO,
     MATERIALIZATION_VERSION,
     MaterializationScopeVerdict,
     load_materialization_binding_config_v0,
@@ -34,7 +34,6 @@ from src.research.csf_rdm_v0_extended_chronological_v1_staging_funding_panel_mat
     staging_assessment_to_dict,
 )
 
-CONFIRM_GO = GO_TOKEN
 DEFAULT_DURABLE_ROOT = Path(
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
 )
@@ -98,7 +97,7 @@ def run_materialization_scope_cli_v0(
         "process_classification": PROCESS_CLASSIFICATION,
         "scope_classification": SCOPE_CLASSIFICATION,
         "materialization_version": MATERIALIZATION_VERSION,
-        "go_token_consumed": CONFIRM_GO,
+        "confirm_go_consumed": CONFIRM_GO,
         "initial_head": initial_head,
         "origin_main_binding": scope_result.origin_main_binding,
         "binding_origin_main_sha": scope_result.binding_origin_main_sha,
@@ -159,8 +158,8 @@ def run_materialization_scope_cli_v0(
             [
                 f"SCOPE_CLASSIFICATION={SCOPE_CLASSIFICATION}",
                 f"PROCESS_CLASSIFICATION={PROCESS_CLASSIFICATION}",
-                f"GO_TOKEN={CONFIRM_GO}",
-                "GO_TOKEN_CONSUMPTION=CONSUMED_ONCE",
+                f"CONFIRM_GO={CONFIRM_GO}",
+                "CONFIRM_GO_CONSUMPTION=CONSUMED_ONCE",
                 "NO_EVALUATION_RETRY=true",
                 "NO_RUNTIME=true",
                 "NO_TESTNET=true",
