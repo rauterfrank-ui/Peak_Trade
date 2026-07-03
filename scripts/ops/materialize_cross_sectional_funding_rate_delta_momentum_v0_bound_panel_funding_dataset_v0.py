@@ -21,6 +21,12 @@ from src.research.cross_sectional_funding_rate_delta_momentum_v0_offline_economi
 
 CONFIRM_GO = INFRASTRUCTURE_GO_TOKEN
 funding_mod.CONFIRM_GO = CONFIRM_GO
+materialize_bound_panel_funding_dataset_v0 = funding_mod.materialize_bound_panel_funding_dataset_v0
+__all__ = [
+    "CONFIRM_GO",
+    "DEFAULT_STAGING_ROOT",
+    "materialize_bound_panel_funding_dataset_v0",
+]
 DEFAULT_STAGING_ROOT = Path(
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
     "datasets/admissible_futures/"
