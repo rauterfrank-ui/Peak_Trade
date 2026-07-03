@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
 """Run CSF/RDM v0 extended_chronological_v1 staging and bound funding panel materialization.
 
-Bounded dataset/funding readiness scope only. Materializes or assesses canonical staging,
-runs PR #4812 preflight gate, and persists durable evidence. No economic evaluation.
+Bounded dataset/funding readiness scope only. Assesses canonical staging readiness,
+runs PR #4812 preflight gate, and persists durable evidence. Does not execute
+economic evaluation and does not auto-start Full-Universe OKX fetch.
 """
 
 from __future__ import annotations
@@ -65,7 +66,7 @@ def run_materialization_scope_cli_v0(
     primary_worktree: Path,
     staging_root: Path,
     binding_origin_main_sha: str | None = None,
-    attempt_fetch: bool = True,
+    attempt_fetch: bool = False,
 ) -> dict[str, Any]:
     if confirm != CONFIRM_GO:
         _die(f"ERR:confirm_go_token_required:{CONFIRM_GO}")
@@ -124,6 +125,9 @@ def run_materialization_scope_cli_v0(
         "no_shadow": True,
         "no_paper": True,
         "no_orders": True,
+        "fetch_auto_start_disabled": True,
+        "full_universe_fetch_requires_explicit_go": True,
+        "attempt_fetch_requested": attempt_fetch,
         "materialization_scope": scope_payload,
         "staging_assessment": staging_assessment_to_dict(scope_result.staging_assessment),
         "durable_evidence_path": str(bundle_dir),
@@ -240,16 +244,28 @@ def main() -> None:
     parser.add_argument(
         "--no-fetch",
         action="store_true",
-        help="Assess only; do not attempt OHLCV/funding fetch/materialization",
+        help="Readiness-only assessment (default when --authorize-full-universe-fetch is omitted).",
+    )
+    parser.add_argument(
+        "--authorize-full-universe-fetch",
+        action="store_true",
+        help=(
+            "Explicitly request Full-Universe fetch authorization check. "
+            "Not authorized in this scope; fails closed with "
+            "FULL_UNIVERSE_FETCH_REQUIRES_EXPLICIT_OPERATOR_GO."
+        ),
     )
     args = parser.parse_args()
+    if args.no_fetch and args.authorize_full_universe_fetch:
+        _die("ERR:conflicting_fetch_flags:--no-fetch and --authorize-full-universe-fetch")
+    attempt_fetch = args.authorize_full_universe_fetch
     result = run_materialization_scope_cli_v0(
         confirm=args.confirm,
         durable_evidence_root=args.durable_evidence_root,
         primary_worktree=args.primary_worktree,
         staging_root=args.staging_root,
         binding_origin_main_sha=args.binding_origin_main_sha,
-        attempt_fetch=not args.no_fetch,
+        attempt_fetch=attempt_fetch,
     )
     print(json.dumps(result, indent=2, sort_keys=True))
 

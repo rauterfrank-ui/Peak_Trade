@@ -1,8 +1,8 @@
 """CSF/RDM v0 extended_chronological_v1 staging and bound funding panel materialization v0.
 
-Bounded offline dataset/funding readiness scope only. Reuses canonical fetch,
-funding materialization, and preflight owners. Does not execute economic
-evaluation, runtime, credentials, or order effects.
+Bounded offline dataset/funding readiness scope only. Reuses canonical preflight
+owners and assesses staging readiness. Does not auto-start Full-Universe OKX fetch,
+economic evaluation, runtime, credentials, or order effects.
 """
 
 from __future__ import annotations
@@ -19,7 +19,6 @@ from src.research.cross_sectional_funding_rate_delta_momentum_v0_bound_panel_dat
     materialize_bound_funding_panel_dataset_v0,
 )
 from src.research.cross_sectional_funding_rate_delta_momentum_v0_offline_economic_evaluation_execution_v0 import (
-    INFRASTRUCTURE_GO_TOKEN,
     resolve_actual_repo_shas_v0,
 )
 from src.research.cross_sectional_funding_rate_delta_momentum_v0_versioned_research_binding_v0 import (
@@ -56,9 +55,21 @@ CANONICAL_PREFLIGHT_OWNER = (
 )
 
 REASON_MISSING_CANONICAL_STAGING_ROOT = "MISSING_CANONICAL_EXTENDED_CHRONOLOGICAL_V1_STAGING_ROOT"
+REASON_STAGING_MISSING = "STAGING_MISSING"
 REASON_MISSING_FUNDING_MANIFEST = "MISSING_BOUND_FUNDING_PANEL_MANIFEST"
 REASON_MISSING_FUNDING_BARS = "MISSING_BOUND_FUNDING_PANEL_BARS"
+REASON_FUNDING_MISSING = "FUNDING_MISSING"
 REASON_MATERIALIZATION_INCOMPLETE = "BOUND_FUNDING_PANEL_MATERIALIZATION_INCOMPLETE"
+REASON_FULL_UNIVERSE_FETCH_NOT_AUTHORIZED = "FULL_UNIVERSE_FETCH_NOT_AUTHORIZED"
+REASON_FULL_UNIVERSE_FETCH_REQUIRES_EXPLICIT_OPERATOR_GO = (
+    "FULL_UNIVERSE_FETCH_REQUIRES_EXPLICIT_OPERATOR_GO"
+)
+REASON_SEPARATE_BOUNDED_MATERIALIZATION_SCOPE_REQUIRED = (
+    "SEPARATE_BOUNDED_OFFLINE_PANEL_MATERIALIZATION_SCOPE_REQUIRED"
+)
+SAFE_NEXT_ACTION_BOUNDED_OFFLINE_MATERIALIZATION = (
+    "RUN_SEPARATE_BOUNDED_OFFLINE_PANEL_MATERIALIZATION_FROM_RAW_SOURCE_THEN_FUNDING_PANEL"
+)
 
 
 class StagingReadinessStatus(str, Enum):
@@ -138,10 +149,14 @@ def assess_staging_readiness_v0(
 
     if not staging_exists:
         reasons.append(REASON_MISSING_CANONICAL_STAGING_ROOT)
+        reasons.append(REASON_STAGING_MISSING)
     if staging_exists and not manifest_exists:
         reasons.append(REASON_MISSING_FUNDING_MANIFEST)
+        reasons.append(REASON_FUNDING_MISSING)
     if staging_exists and not bars_exists:
         reasons.append(REASON_MISSING_FUNDING_BARS)
+        if REASON_FUNDING_MISSING not in reasons:
+            reasons.append(REASON_FUNDING_MISSING)
 
     materialization_status: str | None = None
     materialization_ready = False
@@ -166,7 +181,7 @@ def assess_staging_readiness_v0(
         safe_next = "RUN_PREFLIGHT_AND_VERIFY_DIGEST_BINDINGS"
     else:
         status = StagingReadinessStatus.FAIL_CLOSED_MISSING_PRECONDITION
-        safe_next = "MATERIALIZE_EXTENDED_CHRONOLOGICAL_V1_OHLCV_STAGING_THEN_BOUND_FUNDING_PANEL"
+        safe_next = SAFE_NEXT_ACTION_BOUNDED_OFFLINE_MATERIALIZATION
 
     return StagingReadinessAssessmentV0(
         status=status,
@@ -200,59 +215,39 @@ def attempt_staging_and_funding_materialization_v0(
     durable_evidence_root: Path,
     attempt_fetch: bool,
 ) -> tuple[dict[str, Any] | None, dict[str, Any] | None, tuple[str, ...]]:
-    """Attempt canonical OHLCV fetch and bound funding materialization when admissible."""
+    """Assess staging/funding readiness without implicit Full-Universe network fetch.
+
+    ``attempt_fetch=True`` does not authorize network I/O in this scope. It fails
+    closed with ``FULL_UNIVERSE_FETCH_REQUIRES_EXPLICIT_OPERATOR_GO`` and directs
+    operators to a separate bounded offline panel materialization scope.
+    """
+    _ = durable_evidence_root
     reasons: list[str] = []
-    fetch_result: dict[str, Any] | None = None
-    funding_result: dict[str, Any] | None = None
     staging_root = staging_root.resolve()
 
     if staging_root.is_dir():
         assessment = assess_staging_readiness_v0(staging_root)
         if assessment.materialization_ready:
             return None, {"verdict": "BOUND_FUNDING_PANEL_READY_REUSED"}, ()
+        reasons.extend(assessment.reason_codes)
         if not attempt_fetch:
             reasons.append("STAGING_PRESENT_BUT_FUNDING_NOT_READY")
-            return None, None, tuple(reasons)
-
-    if not attempt_fetch:
-        reasons.append(REASON_MISSING_CANONICAL_STAGING_ROOT)
-        return None, None, tuple(reasons)
+            return None, None, tuple(dict.fromkeys(reasons))
 
     if not staging_root.is_dir():
-        from scripts.ops import (
-            fetch_cross_sectional_bound_period_historical_pt1h_sources_v0 as fetch_mod,
+        reasons.append(REASON_MISSING_CANONICAL_STAGING_ROOT)
+        reasons.append(REASON_STAGING_MISSING)
+
+    if attempt_fetch:
+        reasons.extend(
+            (
+                REASON_FULL_UNIVERSE_FETCH_REQUIRES_EXPLICIT_OPERATOR_GO,
+                REASON_FULL_UNIVERSE_FETCH_NOT_AUTHORIZED,
+                REASON_SEPARATE_BOUNDED_MATERIALIZATION_SCOPE_REQUIRED,
+            )
         )
 
-        setattr(fetch_mod, "CONFIRM_" + "TOKEN", INFRASTRUCTURE_GO_TOKEN)
-        fetch_result = fetch_mod.run_historical_fetch(
-            confirm=INFRASTRUCTURE_GO_TOKEN,
-            target_staging_root=staging_root,
-            durable_evidence_root=durable_evidence_root,
-            period_start_utc=PANEL_CALENDAR_START_UTC,
-            period_end_utc=PANEL_CALENDAR_END_UTC,
-        )
-
-    from scripts.ops import (
-        materialize_cross_sectional_funding_rate_delta_momentum_v0_bound_panel_funding_dataset_v0 as funding_script,
-    )
-
-    funding_result = funding_script.materialize_bound_panel_funding_dataset_v0(
-        confirm=INFRASTRUCTURE_GO_TOKEN,
-        staging_root=staging_root,
-        skip_fetch=False,
-    )
-    _patch_funding_manifest_extension(staging_root)
-
-    from src.research.cross_sectional_panel_staging_source_manifest_v1 import (
-        SourceManifestStatus,
-        materialize_panel_staging_source_manifests_v1,
-    )
-
-    manifest_result = materialize_panel_staging_source_manifests_v1(staging_root)
-    if manifest_result.status is not SourceManifestStatus.VERIFIED:
-        reasons.extend(manifest_result.reason_codes)
-
-    return fetch_result, funding_result, tuple(reasons)
+    return None, None, tuple(dict.fromkeys(reasons))
 
 
 def run_materialization_scope_v0(
@@ -261,10 +256,10 @@ def run_materialization_scope_v0(
     staging_root: Path,
     durable_evidence_root: Path,
     binding_origin_main_sha: str | None = None,
-    attempt_fetch: bool = True,
+    attempt_fetch: bool = False,
     versioned_binding: Mapping[str, Any] | None = None,
 ) -> MaterializationScopeResultV0:
-    """Assess or materialize staging/funding, then run preflight without evaluation."""
+    """Assess staging/funding readiness and run preflight without evaluation."""
     _, actual_origin_main = resolve_actual_repo_shas_v0(repo_root)
     resolved_binding_sha = (binding_origin_main_sha or actual_origin_main).strip()
     binding = dict(versioned_binding or materialize_versioned_research_binding_v0())
@@ -395,6 +390,11 @@ __all__ = [
     "MATERIALIZATION_VERSION",
     "MaterializationScopeResultV0",
     "MaterializationScopeVerdict",
+    "REASON_FULL_UNIVERSE_FETCH_NOT_AUTHORIZED",
+    "REASON_FULL_UNIVERSE_FETCH_REQUIRES_EXPLICIT_OPERATOR_GO",
+    "REASON_FUNDING_MISSING",
+    "REASON_STAGING_MISSING",
+    "SAFE_NEXT_ACTION_BOUNDED_OFFLINE_MATERIALIZATION",
     "StagingReadinessAssessmentV0",
     "StagingReadinessStatus",
     "assess_staging_readiness_v0",
