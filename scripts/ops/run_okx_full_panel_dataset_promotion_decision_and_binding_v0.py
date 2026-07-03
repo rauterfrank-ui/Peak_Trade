@@ -19,7 +19,7 @@ if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
 from src.research.okx_full_panel_dataset_promotion_decision_and_binding_v0 import (  # noqa: E402
-    GO_TOKEN,
+    CONFIRM_GO,
     PromotionDecisionStatus,
     run_okx_full_panel_dataset_promotion_decision_and_binding_v0,
 )
@@ -32,7 +32,7 @@ def _die(msg: str, code: int = 2) -> None:
 
 def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--confirm", required=True, help=f"Required GO token: {GO_TOKEN}")
+    parser.add_argument("--confirm", required=True, help=f"Required GO token: {CONFIRM_GO}")
     parser.add_argument(
         "--candidate-root",
         type=Path,
@@ -56,8 +56,8 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    if args.confirm != GO_TOKEN:
-        _die(f"ERR: confirm_go_token_required:{GO_TOKEN}")
+    if args.confirm != CONFIRM_GO:
+        _die(f"ERR: confirm_go_token_required:{CONFIRM_GO}")
 
     result = run_okx_full_panel_dataset_promotion_decision_and_binding_v0(
         confirm=args.confirm,
@@ -79,7 +79,7 @@ def main() -> None:
     evidence_root.mkdir(parents=True, exist_ok=True)
 
     summary = {
-        "go_token": GO_TOKEN,
+        "go_token": CONFIRM_GO,
         "decision": result.decision.value,
         "reason_codes": list(result.reason_codes),
         "dataset_promoted": result.dataset_promoted,

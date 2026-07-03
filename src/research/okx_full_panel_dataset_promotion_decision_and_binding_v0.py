@@ -39,7 +39,7 @@ from src.research.pit_futures_instrument_lifecycle_registry_v1 import (
 
 PACKAGE_MARKER = "OKX_FULL_PANEL_DATASET_PROMOTION_DECISION_AND_BINDING_V0=true"
 ORCHESTRATOR_VERSION = "okx_full_panel_dataset_promotion_decision_and_binding.v0"
-GO_TOKEN = "GO_BOUNDED_DATASET_PROMOTION_DECISION_AND_BINDING_V0"
+CONFIRM_GO = "GO_BOUNDED_DATASET_PROMOTION_DECISION_AND_BINDING_V0"
 PROMOTION_SCOPE_ID = "bounded_dataset_promotion_decision_and_binding_v0"
 PROMOTION_DECISION_VERSION = "v0"
 DATASET_ID = "okx_full_panel_historical_funding_archive_v0"
@@ -901,8 +901,8 @@ def run_okx_full_panel_dataset_promotion_decision_and_binding_v0(
     lifecycle_registry_path: Path | None = None,
     write_registry: bool = True,
 ) -> PromotionDecisionResultV0:
-    if confirm != GO_TOKEN:
-        raise ValueError(f"GO_TOKEN_REQUIRED:{GO_TOKEN}")
+    if confirm != CONFIRM_GO:
+        raise ValueError(f"CONFIRM_GO_REQUIRED:{CONFIRM_GO}")
 
     archive_root = durable_archive_root or DEFAULT_DURABLE_ARCHIVE_ROOT
     root = repo_root or Path(__file__).resolve().parents[2]

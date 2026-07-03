@@ -10,7 +10,7 @@ from pathlib import Path
 import pytest
 
 from src.research.okx_full_panel_dataset_promotion_decision_and_binding_v0 import (
-    GO_TOKEN,
+    CONFIRM_GO,
     DATASET_ID,
     DATASET_VERSION,
     IdempotentRepromotionStatus,
@@ -160,7 +160,7 @@ def test_complete_admissible_universe_passes_promotion_evaluation() -> None:
 @pytest.mark.skipif(not CANDIDATE_ROOT.is_dir(), reason="candidate fixture unavailable")
 def test_promotion_does_not_authorize_economic_evaluation_or_runtime() -> None:
     result = run_okx_full_panel_dataset_promotion_decision_and_binding_v0(
-        confirm=GO_TOKEN,
+        confirm=CONFIRM_GO,
         candidate_root=CANDIDATE_ROOT,
         durable_archive_root=Path("/tmp/unused_for_eval"),
         repo_root=Path("/tmp/unused_repo"),
@@ -181,7 +181,7 @@ def test_promotion_does_not_authorize_economic_evaluation_or_runtime() -> None:
 @pytest.mark.skipif(not CANDIDATE_ROOT.is_dir(), reason="candidate fixture unavailable")
 def test_duplicate_identical_promotion_is_idempotent_no_op(tmp_path: Path) -> None:
     result = run_okx_full_panel_dataset_promotion_decision_and_binding_v0(
-        confirm=GO_TOKEN,
+        confirm=CONFIRM_GO,
         candidate_root=CANDIDATE_ROOT,
         durable_archive_root=tmp_path,
         repo_root=tmp_path / "repo",
@@ -193,7 +193,7 @@ def test_duplicate_identical_promotion_is_idempotent_no_op(tmp_path: Path) -> No
     assert result.idempotent_status == IdempotentRepromotionStatus.NEW_PROMOTION
 
     second = run_okx_full_panel_dataset_promotion_decision_and_binding_v0(
-        confirm=GO_TOKEN,
+        confirm=CONFIRM_GO,
         candidate_root=CANDIDATE_ROOT,
         durable_archive_root=tmp_path,
         repo_root=tmp_path / "repo",
@@ -208,7 +208,7 @@ def test_duplicate_identical_promotion_is_idempotent_no_op(tmp_path: Path) -> No
 @pytest.mark.skipif(not CANDIDATE_ROOT.is_dir(), reason="candidate fixture unavailable")
 def test_same_version_different_digest_blocks(tmp_path: Path) -> None:
     result = run_okx_full_panel_dataset_promotion_decision_and_binding_v0(
-        confirm=GO_TOKEN,
+        confirm=CONFIRM_GO,
         candidate_root=CANDIDATE_ROOT,
         durable_archive_root=tmp_path,
         repo_root=tmp_path / "repo",
@@ -226,7 +226,7 @@ def test_same_version_different_digest_blocks(tmp_path: Path) -> None:
     )
 
     second = run_okx_full_panel_dataset_promotion_decision_and_binding_v0(
-        confirm=GO_TOKEN,
+        confirm=CONFIRM_GO,
         candidate_root=CANDIDATE_ROOT,
         durable_archive_root=tmp_path,
         repo_root=tmp_path / "repo2",
@@ -240,7 +240,7 @@ def test_same_version_different_digest_blocks(tmp_path: Path) -> None:
 @pytest.mark.skipif(not CANDIDATE_ROOT.is_dir(), reason="candidate fixture unavailable")
 def test_immutable_versioned_binding_created_with_alias_not_sole_binding(tmp_path: Path) -> None:
     result = run_okx_full_panel_dataset_promotion_decision_and_binding_v0(
-        confirm=GO_TOKEN,
+        confirm=CONFIRM_GO,
         candidate_root=CANDIDATE_ROOT,
         durable_archive_root=tmp_path,
         repo_root=tmp_path / "repo",
