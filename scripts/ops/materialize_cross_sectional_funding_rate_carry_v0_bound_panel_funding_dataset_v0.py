@@ -28,6 +28,14 @@ from scripts.ops.ingest_okx_futures_public_market_data_canonical_dataset_staging
 from src.research.cross_sectional_funding_rate_carry_v0_offline_economic_evaluation_execution_v0 import (  # noqa: E402
     INFRASTRUCTURE_GO_TOKEN,
 )
+from src.research.cross_sectional_bounded_panel_fetch_v0 import (  # noqa: E402
+    backward_asof_funding_lookup_v0,
+)
+from src.research.missing_funding_policy_v0 import (  # noqa: E402
+    MISSING_REASON_NO_PRIOR_FUNDING,
+    is_missing_funding_value_v0,
+    resolve_funding_rate_or_missing_v0,
+)
 from src.research.pit_futures_cross_sectional_research_data_digest_period_split_materialization_v0 import (  # noqa: E402
     load_panel_series_from_staging,
 )
@@ -86,17 +94,12 @@ def _funding_asof_lookup(
     *,
     funding_rows: list[dict[str, Any]],
     bar_timestamp_ms: int,
-) -> str:
-    chosen: dict[str, Any] | None = None
-    for row in funding_rows:
-        ts = int(str(row.get("fundingTime", "0")))
-        if ts <= bar_timestamp_ms:
-            chosen = row
-        else:
-            break
-    if chosen is None:
-        return "0.0"
-    return str(chosen.get("fundingRate", "0.0"))
+) -> tuple[str | None, str | None]:
+    """PIT backward-asof join; missing stays None (no synthetic zero fallback)."""
+    rate = backward_asof_funding_lookup_v0(funding_rows, bar_timestamp_ms)
+    if is_missing_funding_value_v0(rate):
+        return resolve_funding_rate_or_missing_v0(raw_value=None), MISSING_REASON_NO_PRIOR_FUNDING
+    return resolve_funding_rate_or_missing_v0(raw_value=rate), None
 
 
 def _fetch_funding_for_instrument(
@@ -172,11 +175,19 @@ def materialize_bound_panel_funding_dataset_v0(
             )
 
     funding_rows_out: list[dict[str, Any]] = []
+    missing_reasons: list[str] = []
     for series in panel_series:
         source_rows = funding_by_native.get(series.native_instrument_id, [])
         for bar in series.bars:
             ts_ms = _utc_ts_to_ms(bar.timestamp_utc)
-            funding_rate = _funding_asof_lookup(funding_rows=source_rows, bar_timestamp_ms=ts_ms)
+            funding_rate, missing_reason = _funding_asof_lookup(
+                funding_rows=source_rows,
+                bar_timestamp_ms=ts_ms,
+            )
+            if missing_reason is not None:
+                missing_reasons.append(
+                    f"{series.instrument_id}@{bar.timestamp_utc}:{missing_reason}"
+                )
             funding_rows_out.append(
                 {
                     "instrument_id": series.instrument_id,
@@ -188,6 +199,7 @@ def materialize_bound_panel_funding_dataset_v0(
                     "close": bar.close,
                     "volume": bar.volume,
                     "funding_rate": funding_rate,
+                    "missing_funding_reason": missing_reason,
                     "is_final": bar.is_final,
                 }
             )
@@ -210,6 +222,8 @@ def materialize_bound_panel_funding_dataset_v0(
         "row_count_total": len(funding_rows_out),
         "funding_panel_digest": funding_digest,
         "backward_asof_policy": "funding_time_lte_bar_timestamp_no_lookahead",
+        "missing_funding_policy": "fail_closed_none_no_zero_fallback",
+        "missing_funding_count": len(missing_reasons),
         "source_ohlcv_staging": str(staging_root),
         "fetched_from_okx_public": not skip_fetch,
     }

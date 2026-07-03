@@ -24,6 +24,13 @@ FUNDING_DELTA_LOOKBACK_K = 4
 FUNDING_SIGNAL_LAG = 1
 
 
+class FundingDeltaScoreStatusV0(str, Enum):
+    COMPUTE_OK = "COMPUTE_OK"
+    WARMUP_INCOMPLETE = "WARMUP_INCOMPLETE"
+    MISSING_REQUIRED_FUNDING_HISTORY = "MISSING_REQUIRED_FUNDING_HISTORY"
+    NON_FINITE_INPUT = "NON_FINITE_INPUT"
+
+
 class FundingDeltaLeg(str, Enum):
     FLAT = "FLAT"
     LONG_MIN_DELTA = "LONG_MIN_DELTA"
@@ -37,6 +44,8 @@ class FundingDeltaScoreResultV0:
     funding_rate_lookback: float
     funding_delta: float
     warmup_complete: bool
+    score_status: FundingDeltaScoreStatusV0 = FundingDeltaScoreStatusV0.COMPUTE_OK
+    signal_eligible: bool = True
 
 
 @dataclass(frozen=True)
@@ -56,7 +65,7 @@ def _is_bitcoin_instrument(instrument_id: str) -> bool:
 
 def compute_instrument_funding_delta_score_v0(
     instrument_id: str,
-    funding_rates: Sequence[float],
+    funding_rates: Sequence[float | None],
     *,
     funding_delta_lookback_k: int = FUNDING_DELTA_LOOKBACK_K,
     signal_lag_bars: int = FUNDING_SIGNAL_LAG,
@@ -70,17 +79,45 @@ def compute_instrument_funding_delta_score_v0(
         return None
     raw_lag = funding_rates[lag_idx]
     raw_lookback = funding_rates[lookback_idx]
+    if raw_lag is None or raw_lookback is None:
+        return FundingDeltaScoreResultV0(
+            instrument_id=instrument_id,
+            funding_rate_lag=float("nan"),
+            funding_rate_lookback=float("nan"),
+            funding_delta=float("nan"),
+            warmup_complete=False,
+            score_status=FundingDeltaScoreStatusV0.MISSING_REQUIRED_FUNDING_HISTORY,
+            signal_eligible=False,
+        )
     if not math.isfinite(raw_lag) or not math.isfinite(raw_lookback):
-        return None
+        return FundingDeltaScoreResultV0(
+            instrument_id=instrument_id,
+            funding_rate_lag=raw_lag,
+            funding_rate_lookback=raw_lookback,
+            funding_delta=float("nan"),
+            warmup_complete=False,
+            score_status=FundingDeltaScoreStatusV0.NON_FINITE_INPUT,
+            signal_eligible=False,
+        )
     delta = raw_lag - raw_lookback
     if not math.isfinite(delta):
-        return None
+        return FundingDeltaScoreResultV0(
+            instrument_id=instrument_id,
+            funding_rate_lag=raw_lag,
+            funding_rate_lookback=raw_lookback,
+            funding_delta=delta,
+            warmup_complete=False,
+            score_status=FundingDeltaScoreStatusV0.NON_FINITE_INPUT,
+            signal_eligible=False,
+        )
     return FundingDeltaScoreResultV0(
         instrument_id=instrument_id,
         funding_rate_lag=raw_lag,
         funding_rate_lookback=raw_lookback,
         funding_delta=delta,
         warmup_complete=True,
+        score_status=FundingDeltaScoreStatusV0.COMPUTE_OK,
+        signal_eligible=True,
     )
 
 

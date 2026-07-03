@@ -141,8 +141,10 @@ def run_cross_sectional_funding_rate_delta_momentum_orchestrator_v0(
                 signal_lag_bars=signal_lag_bars,
                 epoch_index=epoch_index,
             )
-            if score_result is not None:
+            if score_result is not None and score_result.signal_eligible:
                 epoch_scores.append(score_result)
+            elif score_result is not None:
+                error_codes.append(FundingDeltaOrchestratorErrorCode.MISSING_FUNDING_RATE.value)
 
         selection_extreme = select_funding_delta_extreme_single_leg_v0(epoch_scores)
         ranked_ids = tuple(
