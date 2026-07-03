@@ -17,9 +17,12 @@ from src.research.final_research_fleet_offline_economic_evaluation_scope_ratific
     AUTHORITY_EFFECT,
     ECONOMIC_EVALUATION_AUTHORIZED,
     ECONOMIC_EVALUATION_EXECUTED,
+    ECONOMIC_EVALUATION_SCOPE_RATIFIED,
     ECONOMIC_VALIDITY_OFFLINE_GATE_PASS,
     FINAL_RESEARCH_FLEET_BINDING_READY,
+    NEW_CANDIDATES_RATIFIED,
     OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFIED,
+    ALLOWED_AFTER_THIS_RATIFICATION,
     ORDER_EFFECT,
     PROHIBITED_ACTIONS,
     RATIFICATION_ID,
@@ -308,13 +311,23 @@ def test_ratification_status_fields(canonical_ratification: dict) -> None:
         canonical_ratification["final_research_fleet_binding_ready"]
         is FINAL_RESEARCH_FLEET_BINDING_READY
     )
+    assert canonical_ratification["new_candidates_ratified"] is NEW_CANDIDATES_RATIFIED
     assert (
         canonical_ratification["offline_economic_evaluation_scope_ratified"]
         is OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFIED
     )
     assert (
+        canonical_ratification["economic_evaluation_scope_ratified"]
+        is ECONOMIC_EVALUATION_SCOPE_RATIFIED
+    )
+    assert (
         canonical_ratification["economic_evaluation_authorized"] is ECONOMIC_EVALUATION_AUTHORIZED
     )
+    assert ECONOMIC_EVALUATION_AUTHORIZED is False
+    assert (
+        canonical_ratification["allowed_after_this_ratification"] is ALLOWED_AFTER_THIS_RATIFICATION
+    )
+    assert ALLOWED_AFTER_THIS_RATIFICATION is False
     assert canonical_ratification["economic_evaluation_executed"] is ECONOMIC_EVALUATION_EXECUTED
     assert (
         canonical_ratification["economic_validity_offline_gate_pass"]

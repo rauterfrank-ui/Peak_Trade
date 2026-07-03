@@ -7,8 +7,9 @@ Ratifies evaluation contract, shared policies, admissible evaluation stages, and
 fail-closed execution boundaries only. Does not execute economic evaluation,
 backtest, walk-forward, Monte Carlo, stress, or parameter sensitivity.
 
-ECONOMIC_EVALUATION_AUTHORIZED=true at scope level authorizes a later separate
-offline execution GO only. ECONOMIC_EVALUATION_EXECUTED remains false.
+ECONOMIC_EVALUATION_SCOPE_RATIFIED=true records the bounded offline evaluation
+contract only. ECONOMIC_EVALUATION_AUTHORIZED remains false until a separate
+offline execution GO. ECONOMIC_EVALUATION_EXECUTED remains false.
 """
 
 from __future__ import annotations
@@ -48,8 +49,11 @@ RATIFICATION_VERSION = "v0"
 CANONICAL_SERIALIZATION_VERSION = "research_scope_ratification_canonical_json_v1"
 
 OPERATOR_SCOPE_RATIFICATION_REF = (
-    "bounded_final_research_fleet_offline_economic_evaluation_scope_ratification_v0_"
-    "20260703T050000Z"
+    "bounded_final_research_fleet_versioned_bindings_and_offline_evaluation_scope_"
+    "ratification_v0_20260703T123000Z"
+)
+CONFIG_REL_PATH = (
+    "config/research/final_research_fleet_offline_economic_evaluation_scope_ratification_v0.json"
 )
 
 AUTHORITY_EFFECT = "NONE"
@@ -57,14 +61,16 @@ RUNTIME_EFFECT = "NONE"
 ORDER_EFFECT = "NONE"
 
 FINAL_RESEARCH_FLEET_BINDING_READY = True
+NEW_CANDIDATES_RATIFIED = True
 OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFIED = True
-ECONOMIC_EVALUATION_AUTHORIZED = True
+ECONOMIC_EVALUATION_SCOPE_RATIFIED = True
+ECONOMIC_EVALUATION_AUTHORIZED = False
 ECONOMIC_EVALUATION_EXECUTED = False
 ECONOMIC_VALIDITY_OFFLINE_GATE_PASS = False
 RUNTIME_REWIRE_ADMISSIBLE = False
-ALLOWED_AFTER_THIS_RATIFICATION = True
+ALLOWED_AFTER_THIS_RATIFICATION = False
 
-EVALUATION_AUTHORIZATION_STATUS = "AUTHORIZED_PENDING_SEPARATE_OFFLINE_EXECUTION_GO"
+EVALUATION_AUTHORIZATION_STATUS = "NOT_AUTHORIZED_PENDING_SEPARATE_OFFLINE_EXECUTION_GO"
 ECONOMIC_VALIDITY_STATUS = "NOT_EVALUATED"
 
 EVIDENCE_SCHEMA_REF = "economic_viability_evidence_schema_v1.json"
@@ -154,6 +160,7 @@ REASON_ZERO_SLIPPAGE = "ZERO_SLIPPAGE_REJECTED"
 REASON_INCOMPLETE_PERIOD_SPLIT = "INCOMPLETE_PERIOD_SPLIT"
 REASON_EVALUATION_ALREADY_EXECUTED = "ECONOMIC_EVALUATION_ALREADY_EXECUTED"
 REASON_EVALUATION_NOT_AUTHORIZED = "ECONOMIC_EVALUATION_NOT_AUTHORIZED"
+REASON_EVALUATION_AUTHORIZED_MUST_BE_FALSE = "ECONOMIC_EVALUATION_AUTHORIZED_MUST_BE_FALSE"
 REASON_SCOPE_NOT_RATIFIED = "OFFLINE_ECONOMIC_EVALUATION_SCOPE_NOT_RATIFIED"
 REASON_WRONG_RATIFICATION_DIGEST = "WRONG_RATIFICATION_DIGEST"
 REASON_WRONG_SEMANTIC_DIGEST = "WRONG_SEMANTIC_DIGEST"
@@ -198,6 +205,8 @@ RATIFICATION_REQUIRED_FIELDS = (
     "reason_codes",
     "final_research_fleet_binding_ready",
     "offline_economic_evaluation_scope_ratified",
+    "economic_evaluation_scope_ratified",
+    "new_candidates_ratified",
     "economic_evaluation_authorized",
     "economic_evaluation_executed",
     "economic_validity_offline_gate_pass",
@@ -502,7 +511,9 @@ def materialize_final_research_fleet_offline_economic_evaluation_scope_ratificat
         "authority_effect": AUTHORITY_EFFECT,
         "order_effect": ORDER_EFFECT,
         "final_research_fleet_binding_ready": FINAL_RESEARCH_FLEET_BINDING_READY,
+        "new_candidates_ratified": NEW_CANDIDATES_RATIFIED,
         "offline_economic_evaluation_scope_ratified": OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFIED,
+        "economic_evaluation_scope_ratified": ECONOMIC_EVALUATION_SCOPE_RATIFIED,
         "economic_evaluation_authorized": ECONOMIC_EVALUATION_AUTHORIZED,
         "economic_evaluation_executed": ECONOMIC_EVALUATION_EXECUTED,
         "economic_validity_offline_gate_pass": ECONOMIC_VALIDITY_OFFLINE_GATE_PASS,
@@ -567,7 +578,9 @@ def validate_final_research_fleet_offline_economic_evaluation_scope_ratification
 
     status_checks = (
         ("final_research_fleet_binding_ready", FINAL_RESEARCH_FLEET_BINDING_READY),
+        ("new_candidates_ratified", NEW_CANDIDATES_RATIFIED),
         ("offline_economic_evaluation_scope_ratified", OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFIED),
+        ("economic_evaluation_scope_ratified", ECONOMIC_EVALUATION_SCOPE_RATIFIED),
         ("economic_evaluation_authorized", ECONOMIC_EVALUATION_AUTHORIZED),
         ("economic_evaluation_executed", ECONOMIC_EVALUATION_EXECUTED),
         ("economic_validity_offline_gate_pass", ECONOMIC_VALIDITY_OFFLINE_GATE_PASS),
@@ -580,7 +593,9 @@ def validate_final_research_fleet_offline_economic_evaluation_scope_ratification
     )
     for field, expected in status_checks:
         if ratification.get(field) is not expected:
-            if field == "economic_evaluation_authorized" and ratification.get(field) is not True:
+            if field == "economic_evaluation_authorized" and ratification.get(field) is True:
+                reasons.append(REASON_EVALUATION_AUTHORIZED_MUST_BE_FALSE)
+            elif field == "economic_evaluation_authorized" and expected is True:
                 reasons.append(REASON_EVALUATION_NOT_AUTHORIZED)
             elif field == "economic_evaluation_executed" and ratification.get(field) is not False:
                 reasons.append(REASON_EVALUATION_ALREADY_EXECUTED)
@@ -732,15 +747,46 @@ def clone_ratification(ratification: Mapping[str, Any]) -> dict[str, Any]:
     return deepcopy(dict(ratification))
 
 
+def serialize_ratification_artifact_json_v0(ratification: Mapping[str, Any]) -> str:
+    return json.dumps(dict(ratification), indent=2, sort_keys=True, ensure_ascii=False) + "\n"
+
+
+def write_scope_ratification_artifact_v0(
+    repo_root: Path,
+    *,
+    fleet_binding_completion: Mapping[str, Any],
+) -> Path:
+    ratification = (
+        materialize_final_research_fleet_offline_economic_evaluation_scope_ratification_v0(
+            repo_root=repo_root,
+            fleet_binding_completion=fleet_binding_completion,
+        )
+    )
+    validation = validate_final_research_fleet_offline_economic_evaluation_scope_ratification_v0(
+        ratification,
+        repo_root=repo_root,
+        expected_fleet_binding_completion=fleet_binding_completion,
+    )
+    if validation.verdict != ValidationVerdict.ACCEPTED:
+        raise ValueError(f"scope_ratification_validation_failed:{validation.fail_reasons}")
+    config_path = repo_root / CONFIG_REL_PATH
+    config_path.parent.mkdir(parents=True, exist_ok=True)
+    config_path.write_text(serialize_ratification_artifact_json_v0(ratification), encoding="utf-8")
+    return config_path
+
+
 __all__ = [
     "ALLOWED_AFTER_THIS_RATIFICATION",
     "ALLOWED_EVALUATION_STAGES",
     "AUTHORITY_EFFECT",
     "CANONICAL_SERIALIZATION_VERSION",
+    "CONFIG_REL_PATH",
     "ECONOMIC_EVALUATION_AUTHORIZED",
     "ECONOMIC_EVALUATION_EXECUTED",
+    "ECONOMIC_EVALUATION_SCOPE_RATIFIED",
     "ECONOMIC_VALIDITY_OFFLINE_GATE_PASS",
     "FINAL_RESEARCH_FLEET_BINDING_READY",
+    "NEW_CANDIDATES_RATIFIED",
     "OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFIED",
     "ORDER_EFFECT",
     "PROHIBITED_ACTIONS",
@@ -755,6 +801,8 @@ __all__ = [
     "compute_ratification_digest_v0",
     "compute_semantic_digest_v0",
     "materialize_final_research_fleet_offline_economic_evaluation_scope_ratification_v0",
+    "serialize_ratification_artifact_json_v0",
     "serialize_ratification_canonical_v0",
     "validate_final_research_fleet_offline_economic_evaluation_scope_ratification_v0",
+    "write_scope_ratification_artifact_v0",
 ]

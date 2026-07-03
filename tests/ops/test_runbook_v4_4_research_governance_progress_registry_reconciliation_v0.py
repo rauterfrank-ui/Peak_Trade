@@ -29,7 +29,7 @@ RUNBOOK_V4_4 = (
 RECONCILIATION_SECTION_PREFIX = (
     "#### RUNBOOK_V4_4_RESEARCH_GOVERNANCE_PROGRESS_REGISTRY_RECONCILIATION_V0"
 )
-NEXT_CANONICAL_STEP = "RATIFY_VERSIONED_FINAL_FLEET_BINDINGS_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE"
+NEXT_CANONICAL_STEP = "EXECUTE_BOUNDED_FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_EVALUATION_V0"
 OPERATOR_POLICY_DECISION = "AUTHORIZE_BOUNDED_MULTI_CANDIDATE_FUTURES_RESEARCH_FLEET_V0"
 FINAL_RESEARCH_FLEET = "trend_following,bollinger_bands,momentum_1h"
 
@@ -61,9 +61,10 @@ class TestRunbookV44AuthoritativeGovernanceReconciliation:
         assert authoritative_field_value("EXACTLY_ONE_CANDIDATE_LIMIT") == "false"
         assert authoritative_field_value("FINAL_RESEARCH_FLEET") == FINAL_RESEARCH_FLEET
 
-    def test_binding_and_ratification_flags_remain_false(self) -> None:
-        assert authoritative_field_value("FINAL_RESEARCH_FLEET_BINDING_READY") == "false"
-        assert authoritative_field_value("NEW_CANDIDATES_RATIFIED") == "false"
+    def test_binding_and_ratification_flags_pass_in_authoritative_metadata(self) -> None:
+        assert authoritative_field_value("FINAL_RESEARCH_FLEET_BINDING_READY") == "true"
+        assert authoritative_field_value("NEW_CANDIDATES_RATIFIED") == "true"
+        assert authoritative_field_value("ECONOMIC_EVALUATION_SCOPE_RATIFIED") == "true"
         assert authoritative_field_value("ECONOMIC_EVALUATION_AUTHORIZED") == "false"
 
     def test_terminal_gates_and_promotion_remain_blocked(self) -> None:
@@ -75,7 +76,7 @@ class TestRunbookV44AuthoritativeGovernanceReconciliation:
             == "ECONOMIC_VALIDITY_OFFLINE_GATE_FAIL"
         )
 
-    def test_next_canonical_step_fleet_binding_ratification(self) -> None:
+    def test_next_canonical_step_offline_evaluation(self) -> None:
         assert authoritative_field_value("NEXT_CANONICAL_STEP") == NEXT_CANONICAL_STEP
         assert authoritative_field_value("NEXT_CANONICAL_ACTION") == NEXT_CANONICAL_STEP
         assert authoritative_field_value("GLOBAL_RUNBOOK_NEXT_STEP") == NEXT_CANONICAL_STEP
@@ -118,10 +119,10 @@ class TestRegistryResolverIntegrity:
         )
         assert ambiguous == {}
 
-    def test_global_summary_contains_reconciled_governance_fields(self) -> None:
+    def test_global_summary_reflects_fleet_binding_ratification_pass(self) -> None:
         summary = global_summary_section()
         assert _field_value(summary, "NO_NEW_CANDIDATE_HOLD") == "REVOKED"
-        assert _field_value(summary, "FINAL_RESEARCH_FLEET_BINDING_READY") == "false"
+        assert _field_value(summary, "FINAL_RESEARCH_FLEET_BINDING_READY") == "true"
 
     def test_registry_resolver_loads_without_error(self) -> None:
         registry = load_runbook_progress_registry_v1()
