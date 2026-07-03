@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import subprocess
 import sys
 import time
@@ -33,7 +34,8 @@ from src.research.cross_sectional_funding_rate_delta_momentum_v0_bound_panel_dat
 from src.research.cross_sectional_funding_rate_delta_momentum_v0_offline_economic_evaluation_execution_v0 import (  # noqa: E402
     AUTHORITY_EFFECT,
     EXECUTION_VERSION,
-    EXPECTED_ORIGIN_MAIN_SHA,
+    FAIL_CLOSED_EXPECTED_ORIGIN_MAIN_SHA_BINDING_MISSING,
+    FAIL_CLOSED_ORIGIN_MAIN_SHA_MISMATCH,
     FIXTURE_DATA_DIGEST,
     INFRASTRUCTURE_GO_TOKEN,
     GO_TOKEN,
@@ -41,8 +43,10 @@ from src.research.cross_sectional_funding_rate_delta_momentum_v0_offline_economi
     execution_result_to_dict,
     load_ohlcv_panel_series_for_backtest,
     load_versioned_research_binding_v0,
+    origin_main_sha_guard_to_dict,
     run_full_offline_economic_evaluation_v0,
     verify_execution_start_state_v0,
+    verify_origin_main_sha_guard_v0,
 )
 from src.research.cross_sectional_funding_rate_delta_momentum_v0_offline_economic_evaluation_scope_ratification_v0 import (  # noqa: E402
     materialize_funding_delta_momentum_offline_economic_evaluation_scope_ratification_v0,
@@ -72,16 +76,6 @@ SCOPE_CLASSIFICATION = (
 def _die(msg: str, code: int = 2) -> None:
     print(msg, file=sys.stderr)
     raise SystemExit(code)
-
-
-def _resolve_origin_main(repo_root: Path) -> str:
-    result = subprocess.run(
-        ["git", "-C", str(repo_root), "rev-parse", "origin/main"],
-        capture_output=True,
-        text=True,
-        check=False,
-    )
-    return result.stdout.strip() if result.returncode == 0 else ""
 
 
 def _primary_worktree_snapshot(primary_worktree: Path) -> dict[str, Any]:
@@ -117,12 +111,18 @@ def run_offline_economic_evaluation_scope_v0(
     primary_worktree: Path,
     staging_root: Path,
     skip_fetch: bool = False,
+    expected_origin_main_sha: str | None = None,
 ) -> dict[str, Any]:
     start_monotonic = time.monotonic()
     if confirm != CONFIRM_GO:
         _die(f"ERR: confirm_go_token_required:{CONFIRM_GO}")
 
-    origin_main = _resolve_origin_main(_REPO_ROOT)
+    sha_guard = verify_origin_main_sha_guard_v0(
+        repo_root=_REPO_ROOT,
+        expected_origin_main_sha=expected_origin_main_sha,
+        env=os.environ,
+    )
+    origin_main = sha_guard.actual_origin_main_sha
     primary_before = _primary_worktree_snapshot(primary_worktree)
     ts_slug = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
     bundle_dir = (
@@ -134,8 +134,13 @@ def run_offline_economic_evaluation_scope_v0(
 
     prechecks = {
         "origin_main": origin_main,
-        "expected_origin_main": EXPECTED_ORIGIN_MAIN_SHA,
-        "origin_main_match": origin_main == EXPECTED_ORIGIN_MAIN_SHA,
+        "origin_main_sha_guard": origin_main_sha_guard_to_dict(sha_guard),
+        "expected_origin_main_sha": sha_guard.expected_origin_main_sha,
+        "actual_head_sha": sha_guard.actual_head_sha,
+        "actual_origin_main_sha": sha_guard.actual_origin_main_sha,
+        "binding_source": sha_guard.binding_source,
+        "sha_guard_status": sha_guard.sha_guard_status,
+        "origin_main_match": sha_guard.passed,
         "primary_worktree_head": primary_before["head"],
         "primary_worktree_dirty_count": primary_before["dirty_count"],
         "primary_worktree_dirty_files": primary_before["dirty_files"],
@@ -148,8 +153,12 @@ def run_offline_economic_evaluation_scope_v0(
         json.dumps(prechecks, indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
     )
-    if not prechecks["origin_main_match"]:
-        _die("ERR: origin_main_mismatch_fail_closed")
+    if not sha_guard.passed:
+        if sha_guard.sha_guard_status == FAIL_CLOSED_EXPECTED_ORIGIN_MAIN_SHA_BINDING_MISSING:
+            _die(f"ERR:{FAIL_CLOSED_EXPECTED_ORIGIN_MAIN_SHA_BINDING_MISSING}")
+        if sha_guard.sha_guard_status == FAIL_CLOSED_ORIGIN_MAIN_SHA_MISMATCH:
+            _die(f"ERR:{FAIL_CLOSED_ORIGIN_MAIN_SHA_MISMATCH}")
+        _die(f"ERR:origin_main_sha_guard_failed:{sha_guard.fail_reasons}")
 
     versioned_binding = load_versioned_research_binding_v0(_REPO_ROOT)
     ratification = (
@@ -382,6 +391,7 @@ def main() -> None:
     parser.add_argument("--primary-worktree", type=Path, required=True)
     parser.add_argument("--staging-root", type=Path, default=DEFAULT_STAGING_ROOT)
     parser.add_argument("--skip-fetch", action="store_true")
+    parser.add_argument("--expected-origin-main-sha", default=None)
     args = parser.parse_args()
     result = run_offline_economic_evaluation_scope_v0(
         confirm=args.confirm,
@@ -389,6 +399,7 @@ def main() -> None:
         primary_worktree=args.primary_worktree,
         staging_root=args.staging_root,
         skip_fetch=args.skip_fetch,
+        expected_origin_main_sha=args.expected_origin_main_sha,
     )
     print(json.dumps(result, indent=2, sort_keys=True))
 

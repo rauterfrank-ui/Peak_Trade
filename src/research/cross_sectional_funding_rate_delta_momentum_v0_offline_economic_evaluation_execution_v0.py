@@ -10,6 +10,8 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
+import subprocess
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
@@ -95,7 +97,12 @@ INFRASTRUCTURE_GO_TOKEN = (
 )
 _DEFAULT_INFRASTRUCTURE_GO = INFRASTRUCTURE_GO_TOKEN
 ALLOWED_EXECUTION_GO_TOKENS: frozenset[str] = frozenset({GO_TOKEN})
-EXPECTED_ORIGIN_MAIN_SHA = "525cd82535cd7c65f4cdbca282094e4fc174b0fe"
+ORIGIN_MAIN_SHA_BINDING_ENV_VAR = "EXPECTED_ORIGIN_MAIN_SHA"
+FAIL_CLOSED_EXPECTED_ORIGIN_MAIN_SHA_BINDING_MISSING = (
+    "FAIL_CLOSED_EXPECTED_ORIGIN_MAIN_SHA_BINDING_MISSING"
+)
+FAIL_CLOSED_ORIGIN_MAIN_SHA_MISMATCH = "FAIL_CLOSED_ORIGIN_MAIN_SHA_MISMATCH"
+SHA_GUARD_STATUS_PASS = "PASS"
 FIXTURE_DATA_DIGEST = "0000000000000000000000000000000000000000000000000000000000000000"
 REASON_FIXTURE_LEAKAGE = "FIXTURE_DATA_DIGEST_IN_ECONOMIC_EVALUATION"
 CONFIG_REL_PATH_OPS = (
@@ -144,6 +151,17 @@ class StartStateVerificationResultV0:
 
 
 @dataclass(frozen=True)
+class OriginMainShaGuardResultV0:
+    passed: bool
+    sha_guard_status: str
+    expected_origin_main_sha: str
+    actual_head_sha: str
+    actual_origin_main_sha: str
+    binding_source: str
+    fail_reasons: tuple[str, ...]
+
+
+@dataclass(frozen=True)
 class InfrastructureReadinessResultV0:
     status: InfrastructureTerminalStatus
     execution_infrastructure_complete: bool
@@ -182,12 +200,110 @@ def load_ops_evaluation_config_v0(repo_root: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def resolve_expected_origin_main_sha_binding_v0(
+    *,
+    explicit_sha: str | None = None,
+    env: Mapping[str, str] | None = None,
+) -> tuple[str, str]:
+    """Resolve expected origin/main SHA from explicit CLI binding or environment."""
+    if explicit_sha and explicit_sha.strip():
+        return explicit_sha.strip(), "cli_argument"
+    env_map = env if env is not None else os.environ
+    env_sha = str(env_map.get(ORIGIN_MAIN_SHA_BINDING_ENV_VAR, "")).strip()
+    if env_sha:
+        return env_sha, "environment_variable"
+    return "", ""
+
+
+def resolve_actual_repo_shas_v0(repo_root: Path) -> tuple[str, str]:
+    head_result = subprocess.run(
+        ["git", "-C", str(repo_root), "rev-parse", "HEAD"],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    origin_result = subprocess.run(
+        ["git", "-C", str(repo_root), "rev-parse", "origin/main"],
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    actual_head = head_result.stdout.strip() if head_result.returncode == 0 else ""
+    actual_origin_main = origin_result.stdout.strip() if origin_result.returncode == 0 else ""
+    return actual_head, actual_origin_main
+
+
+def verify_origin_main_sha_guard_v0(
+    *,
+    repo_root: Path,
+    expected_origin_main_sha: str | None = None,
+    binding_source: str | None = None,
+    env: Mapping[str, str] | None = None,
+) -> OriginMainShaGuardResultV0:
+    """Fail-closed guard: runtime binding must match actual origin/main."""
+    resolved_expected, resolved_binding_source = resolve_expected_origin_main_sha_binding_v0(
+        explicit_sha=expected_origin_main_sha,
+        env=env,
+    )
+    if binding_source:
+        resolved_binding_source = binding_source
+    actual_head, actual_origin_main = resolve_actual_repo_shas_v0(repo_root)
+
+    if not resolved_expected:
+        return OriginMainShaGuardResultV0(
+            passed=False,
+            sha_guard_status=FAIL_CLOSED_EXPECTED_ORIGIN_MAIN_SHA_BINDING_MISSING,
+            expected_origin_main_sha="",
+            actual_head_sha=actual_head,
+            actual_origin_main_sha=actual_origin_main,
+            binding_source=resolved_binding_source,
+            fail_reasons=(FAIL_CLOSED_EXPECTED_ORIGIN_MAIN_SHA_BINDING_MISSING,),
+        )
+
+    if resolved_expected != actual_origin_main:
+        return OriginMainShaGuardResultV0(
+            passed=False,
+            sha_guard_status=FAIL_CLOSED_ORIGIN_MAIN_SHA_MISMATCH,
+            expected_origin_main_sha=resolved_expected,
+            actual_head_sha=actual_head,
+            actual_origin_main_sha=actual_origin_main,
+            binding_source=resolved_binding_source,
+            fail_reasons=(
+                FAIL_CLOSED_ORIGIN_MAIN_SHA_MISMATCH,
+                f"expected={resolved_expected}",
+                f"actual_origin_main={actual_origin_main}",
+            ),
+        )
+
+    return OriginMainShaGuardResultV0(
+        passed=True,
+        sha_guard_status=SHA_GUARD_STATUS_PASS,
+        expected_origin_main_sha=resolved_expected,
+        actual_head_sha=actual_head,
+        actual_origin_main_sha=actual_origin_main,
+        binding_source=resolved_binding_source,
+        fail_reasons=(),
+    )
+
+
+def origin_main_sha_guard_to_dict(guard: OriginMainShaGuardResultV0) -> dict[str, Any]:
+    return {
+        "sha_guard_status": guard.sha_guard_status,
+        "expected_origin_main_sha": guard.expected_origin_main_sha,
+        "actual_head_sha": guard.actual_head_sha,
+        "actual_origin_main_sha": guard.actual_origin_main_sha,
+        "binding_source": guard.binding_source,
+        "passed": guard.passed,
+        "fail_reasons": list(guard.fail_reasons),
+    }
+
+
 def verify_execution_start_state_v0(
     *,
     repo_root: Path,
     ratification: Mapping[str, Any],
     versioned_binding: Mapping[str, Any] | None = None,
-    origin_main_sha: str = EXPECTED_ORIGIN_MAIN_SHA,
+    origin_main_sha: str = "",
 ) -> StartStateVerificationResultV0:
     reasons: list[str] = []
     envelope = dict(versioned_binding or load_versioned_research_binding_v0(repo_root))
@@ -1082,6 +1198,8 @@ __all__ = [
     "CrossSectionalRobustnessMetricsV0",
     "EconomicClassification",
     "ExecutionTerminalStatus",
+    "FAIL_CLOSED_EXPECTED_ORIGIN_MAIN_SHA_BINDING_MISSING",
+    "FAIL_CLOSED_ORIGIN_MAIN_SHA_MISMATCH",
     "FIXTURE_DATA_DIGEST",
     "FullEconomicEvaluationResultV0",
     "GO_TOKEN",
@@ -1089,8 +1207,11 @@ __all__ = [
     "InfrastructureReadinessResultV0",
     "InfrastructureTerminalStatus",
     "MaterializationTerminalStatus",
+    "ORIGIN_MAIN_SHA_BINDING_ENV_VAR",
+    "OriginMainShaGuardResultV0",
     "RUNTIME_EFFECT",
     "RUNNER_SCRIPT",
+    "SHA_GUARD_STATUS_PASS",
     "entrypoint_result_to_dict",
     "execution_result_to_dict",
     "load_ops_evaluation_config_v0",
@@ -1098,9 +1219,13 @@ __all__ = [
     "materialization_result_to_dict",
     "materialize_economic_viability_evidence",
     "materialize_infrastructure_summary_v0",
+    "origin_main_sha_guard_to_dict",
+    "resolve_actual_repo_shas_v0",
+    "resolve_expected_origin_main_sha_binding_v0",
     "run_contract_smoke_evaluation_v0",
     "run_full_evaluation_entrypoint_dry_run_v1",
     "run_full_offline_economic_evaluation_v0",
     "verify_execution_start_state_v0",
     "verify_full_evaluation_precheck_v1",
+    "verify_origin_main_sha_guard_v0",
 ]
