@@ -4,7 +4,7 @@
 Fail-closed offline execution of ratified fleet economic evaluation for
 trend_following/v1, bollinger_bands/v1, and momentum_1h/v1. No runtime or
 order effect.
-Operator GO: GO_BOUNDED_FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0
+Operator GO: GO_EXECUTE_BOUNDED_FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_EVALUATION_V0
 """
 
 from __future__ import annotations
@@ -121,14 +121,14 @@ def run_execution(
     evidence_dir = (
         durable_evidence_root
         / "implementation"
-        / f"bounded_final_research_fleet_offline_economic_evaluation_execution_v0_{ts_slug}"
+        / f"bounded_final_research_fleet_offline_economic_evaluation_v0_{ts_slug}"
     )
     evidence_dir.mkdir(parents=True, exist_ok=True)
 
     start_state_payload = {
         "origin_main_head": start_state.origin_main_sha,
         "expected_origin_main_head": EXPECTED_ORIGIN_MAIN_SHA,
-        "pr_4787_merged": True,
+        "pr_4800_merged": True,
         "offline_economic_evaluation_scope_ratified": True,
         "economic_evaluation_executed": False,
         "economic_validity_offline_gate_pass": False,

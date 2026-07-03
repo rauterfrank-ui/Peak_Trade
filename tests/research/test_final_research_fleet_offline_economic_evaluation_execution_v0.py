@@ -52,7 +52,7 @@ def fixture_scope_ratification(ratified_binding_completion: dict) -> dict:
 
 
 def test_go_token_constant() -> None:
-    assert GO_TOKEN == "GO_BOUNDED_FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0"
+    assert GO_TOKEN == "GO_EXECUTE_BOUNDED_FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_EVALUATION_V0"
 
 
 def test_no_runtime_authority_order_effect_constants() -> None:
@@ -208,7 +208,7 @@ def test_fleet_summary_preserves_individual_failures(
         ratification=scope_ratification,
         candidate_results=results,
         execution_bundle_dir="/tmp/fleet",
-        origin_main_sha="ae390a0da4b7837dccbf45a4e60583bfc3fd3dac",
+        origin_main_sha="e0d2fd5d47c3a4d95c654329e25001a61c14602e",
     )
     assert summary["individual_failure_preservation"] is True
     assert summary["fail_count"] == 3
@@ -226,7 +226,7 @@ def test_start_state_verification_accepts_archived_ratified_bindings(
         repo_root=REPO_ROOT,
         ratification=scope_ratification,
         fleet_binding_completion=ratified_binding_completion,
-        origin_main_sha="ae390a0da4b7837dccbf45a4e60583bfc3fd3dac",
+        origin_main_sha="e0d2fd5d47c3a4d95c654329e25001a61c14602e",
     )
     assert result.valid is True
     assert result.fail_reasons == ()
