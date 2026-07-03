@@ -173,11 +173,12 @@ def run_execution_v2(
         bound_output,
         period_binding=period_binding,
     )
-    active_staging = (
-        bound_output
-        if source_materialization.status is BoundPeriodSourceMaterializationStatus.MATERIALIZED
-        else historical_root
-    )
+    if skip_fetch and bound_output.is_dir():
+        active_staging = bound_output
+    elif source_materialization.status is BoundPeriodSourceMaterializationStatus.MATERIALIZED:
+        active_staging = bound_output
+    else:
+        active_staging = historical_root
 
     manifest_result = materialize_panel_staging_source_manifests_v1(active_staging)
     manifest_ok, manifest_rc, manifest_reasons = verify_panel_staging_source_manifests_v1(
