@@ -277,9 +277,8 @@ class TestFuturesOnlyPolicy:
 
 
 class TestProgressRegistryBinding:
-    def test_operator_policy_maintain_hold(self) -> None:
+    def test_operator_policy_maintain_hold_historical_step29m_snapshot(self) -> None:
         text = PROGRESS_REGISTRY.read_text(encoding="utf-8")
-        assert _field_value(text, "NO_NEW_CANDIDATE_HOLD") == "ACTIVE"
         assert _field_value(text, "STEP29M_OPERATOR_POLICY_DECISION") == "NO_NEW_CANDIDATE_HOLD"
         assert _field_value(text, "STEP29M_FLEET_STATUS") == "COMPLETE_NO_PASS"
 

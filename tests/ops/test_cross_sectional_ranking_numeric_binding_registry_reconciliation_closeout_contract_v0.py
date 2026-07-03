@@ -104,12 +104,14 @@ class TestAuthoritativeNumericBindingReconciliation:
         assert authoritative_field_value("RUNTIME_REWIRE_ADMISSIBLE") == "false"
         assert (
             authoritative_field_value("CURRENT_BLOCKING_POLICY")
-            == "NO_NEW_CANDIDATE_HOLD_AND_ECONOMIC_VALIDITY_OFFLINE_GATE_FAIL"
+            == "ECONOMIC_VALIDITY_OFFLINE_GATE_FAIL"
         )
 
-    def test_next_canonical_step_universe_manifest_reassessment(self) -> None:
-        assert authoritative_field_value("GLOBAL_RUNBOOK_NEXT_STEP") == NEXT_STEP
-        assert authoritative_field_value("HYPOTHESIS_SUBSTRAND_NEXT_STEP") == NEXT_STEP
+    def test_next_canonical_step_fleet_binding_ratification(self) -> None:
+        assert (
+            authoritative_field_value("GLOBAL_RUNBOOK_NEXT_STEP")
+            == "RATIFY_VERSIONED_FINAL_FLEET_BINDINGS_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE"
+        )
         assert authoritative_field_value("HYPOTHESIS_SUBSTRAND_NEXT_STEP_READ_ONLY") == "true"
 
 
@@ -170,5 +172,5 @@ class TestGlobalSummaryBinding:
     def test_last_verified_origin_main_updated(self) -> None:
         summary = global_summary_section()
         assert _field_value(summary, "LAST_VERIFIED_ORIGIN_MAIN") == (
-            "4884eb45ae2795cf6e2a4bad948354b380b78389"
+            "1a6dac20003b1e9e84aed0f015a1cbb37601d467"
         )
