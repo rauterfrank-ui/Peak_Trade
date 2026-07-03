@@ -369,11 +369,11 @@ def test_archive_access_guards_fail_closed() -> None:
     assert reason == ArchiveAccessGuardReason.MAX_TOTAL_BYTES.value
 
 
-def test_lifecycle_blocker_prevents_full_panel_promotion() -> None:
-    assert HISTORICAL_UNIVERSE_LIFECYCLE_PASS is False
+def test_lifecycle_pass_enables_full_panel_promotion_gate() -> None:
+    assert HISTORICAL_UNIVERSE_LIFECYCLE_PASS is True
     allowed, blocker = check_full_panel_promotion_allowed_v0()
-    assert allowed is False
-    assert blocker == FULL_PANEL_PROMOTION_REQUIRES_HISTORICAL_UNIVERSE_LIFECYCLE_PASS
+    assert allowed is True
+    assert blocker == ""
 
 
 def test_cdn_url_contract() -> None:
