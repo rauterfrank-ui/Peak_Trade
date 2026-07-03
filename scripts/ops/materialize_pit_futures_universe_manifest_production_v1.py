@@ -20,7 +20,7 @@ _REPO_ROOT = Path(__file__).resolve().parents[2]
 if str(_REPO_ROOT) not in sys.path:
     sys.path.insert(0, str(_REPO_ROOT))
 
-CONFIRM_TOKEN = "GO_BOUNDED_PIT_FUTURES_UNIVERSE_MANIFEST_PRODUCTION_MATERIALIZATION_V0"
+CONFIRM_GO = "GO_BOUNDED_PIT_FUTURES_UNIVERSE_MANIFEST_PRODUCTION_MATERIALIZATION_V0"
 
 from src.research.pit_futures_instrument_lifecycle_registry_persistence_v1 import (  # noqa: E402
     read_registry_snapshot_v1,
@@ -163,7 +163,7 @@ def run_materialization(
     generated_at: str | None = None,
     finalized_bar_close: str | None = None,
 ) -> dict[str, Any]:
-    if confirm != CONFIRM_TOKEN:
+    if confirm != CONFIRM_GO:
         _die("ERR: confirm token required")
     if not staging_root.is_dir():
         _die(f"ERR: staging_root_missing:{staging_root}")
@@ -298,14 +298,14 @@ def main() -> None:
     parser = argparse.ArgumentParser(
         description="Materialize production PIT futures universe manifest v1 from staging artifacts."
     )
-    parser.add_argument("--confirm", required=True)
+    parser.add_argument("--confirm-go-token", required=True, choices=[CONFIRM_GO])
     parser.add_argument("--staging-root", type=Path, required=True)
     parser.add_argument("--durable-evidence-root", type=Path, required=True)
     parser.add_argument("--generated-at", default=None)
     parser.add_argument("--finalized-bar-close", default=None)
     args = parser.parse_args()
     run_materialization(
-        confirm=args.confirm,
+        confirm=args.confirm_go_token,
         staging_root=args.staging_root,
         durable_evidence_root=args.durable_evidence_root,
         generated_at=args.generated_at,
