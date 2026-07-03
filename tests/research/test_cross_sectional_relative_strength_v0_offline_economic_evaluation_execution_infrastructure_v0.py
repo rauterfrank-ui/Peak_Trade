@@ -77,13 +77,22 @@ def fixture_scope_ratification(complete_binding: dict) -> dict:
 @pytest.fixture(name="bound_staging")
 def fixture_bound_staging() -> Path:
     tmp = Path(tempfile.mkdtemp(prefix="cs_rs_bound_staging_"))
-    return write_bound_period_staging_v0(tmp)
+    staging = write_bound_period_staging_v0(tmp)
+    lifecycle = staging / "lifecycle"
+    lifecycle.mkdir(parents=True, exist_ok=True)
+    lifecycle.joinpath("SOURCE_REGISTRATION.json").write_text(
+        '{"source_snapshot_ref":"test:fixture","source_snapshot_digest":"'
+        + "a" * 64
+        + '","registered":true}\n',
+        encoding="utf-8",
+    )
+    return staging
 
 
 def test_infrastructure_go_token_constant() -> None:
     assert (
         INFRASTRUCTURE_GO_TOKEN
-        == "GO_BOUNDED_CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_INFRASTRUCTURE_COMPLETION_V0"
+        == "GO_BOUNDED_CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_OFFLINE_ECONOMIC_EVALUATION_INFRASTRUCTURE_COMPLETION_V1"
     )
 
 
@@ -281,7 +290,7 @@ def test_infrastructure_summary_flags_no_economic_evaluation(
     summary = materialize_infrastructure_summary_v0(
         ratification=scope_ratification,
         readiness=readiness,
-        origin_main_sha="ce59011e1ba5057ad4cfc53b6c7bb115456f67cd",
+        origin_main_sha="5aceb416c02815cb6082b88e60e9a0df320d968f",
         execution_bundle_dir="/tmp/cs_rs_infra",
     )
     assert summary["economic_evaluation_executed"] is False
