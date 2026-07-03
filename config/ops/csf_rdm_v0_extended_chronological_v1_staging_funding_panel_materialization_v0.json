@@ -1,0 +1,14 @@
+{
+  "binding_origin_main_sha": "23602bcd713a4247f119bb64255745656e866f93",
+  "dataset_extension": "extended_chronological_with_funding_v1",
+  "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1",
+  "dataset_owner": "scripts/ops/fetch_cross_sectional_funding_rate_delta_momentum_v0_extended_chronological_panel_v0.py",
+  "funding_owner": "scripts/ops/materialize_cross_sectional_funding_rate_delta_momentum_v0_bound_panel_funding_dataset_v0.py",
+  "materialize_bound_funding_panel_dataset_owner": "src/research/cross_sectional_funding_rate_delta_momentum_v0_bound_panel_dataset_materialization_v0.py",
+  "panel_calendar_end_utc": "2024-09-01T00:00:00Z",
+  "panel_calendar_start_utc": "2024-05-01T00:00:00Z",
+  "preflight_owner": "scripts/ops/run_csf_rdm_v0_dataset_funding_binding_materialization_preflight_v0.py",
+  "schema_version": "csf_rdm_v0_extended_chronological_v1_staging_funding_panel_materialization.v0",
+  "staging_root": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1",
+  "versioned_research_binding_ref": "config/research/cross_sectional_funding_rate_delta_momentum_v0_versioned_research_binding_v0.json"
+}
