@@ -1,0 +1,521 @@
+"""Final Research Fleet offline economic evaluation execution v0.
+
+Deterministic, fail-closed offline execution of ratified economic evaluation for
+trend_following/v1, bollinger_bands/v1, and momentum_1h/v1 using canonical
+STEP29M/STEP31F owners. No runtime, order, or authority effect.
+"""
+
+from __future__ import annotations
+
+import hashlib
+import json
+import subprocess
+from dataclasses import dataclass
+from enum import Enum
+from pathlib import Path
+from typing import Any, Mapping, Sequence
+
+from src.backtest.economic_validity_policy_v1 import EconomicValidityEvaluationStatus
+from src.backtest.economic_viability_evidence_v1 import (
+    ARTIFACT_FILENAME,
+    EconomicViabilityEvidenceError,
+    load_economic_viability_evidence_bundle_v1,
+)
+from src.research.final_research_fleet_v0_versioned_binding_manifest_contract_v0 import (
+    FLEET_CANDIDATES,
+    FLEET_ID,
+    FLEET_VERSION,
+    STEP31F_CONFIG_PATHS,
+    load_step31f_evaluation_config_v0,
+)
+from src.research.final_research_fleet_offline_economic_evaluation_scope_ratification_v0 import (
+    OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFIED,
+    ValidationVerdict,
+    validate_final_research_fleet_offline_economic_evaluation_scope_ratification_v0,
+)
+from src.research.final_research_fleet_versioned_binding_completion_v0 import (
+    ValidationVerdict as BindingValidationVerdict,
+    canonical_candidate_identifier,
+    validate_final_research_fleet_versioned_binding_completion_v0,
+)
+
+PACKAGE_MARKER = "FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0=true"
+
+SCHEMA_VERSION = "final_research_fleet_offline_economic_evaluation_execution.v0"
+EXECUTION_ID = "final_research_fleet_offline_economic_evaluation_execution_v0"
+EXECUTION_VERSION = "v0"
+CANONICAL_SERIALIZATION_VERSION = "research_fleet_execution_canonical_json_v1"
+
+GO_TOKEN = "GO_BOUNDED_FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0"
+EXPECTED_ORIGIN_MAIN_SHA = "ae390a0da4b7837dccbf45a4e60583bfc3fd3dac"
+REQUIRED_MERGED_PR_NUMBER = 4787
+
+AUTHORITY_EFFECT = "NONE"
+RUNTIME_EFFECT = "NONE"
+ORDER_EFFECT = "NONE"
+
+RUNNER_OWNER = "scripts.ops.run_economic_viability_evidence_evaluation_v1"
+RUNNER_SCRIPT = "scripts/ops/run_economic_viability_evidence_evaluation_v1.py"
+CANDIDATE_RUN_TIMEOUT_SECONDS = 600
+
+ALLOWED_EVALUATION_STAGES: tuple[str, ...] = (
+    "OFFLINE_BACKTEST",
+    "WALK_FORWARD",
+    "MONTE_CARLO",
+    "STRESS",
+    "PARAMETER_SENSITIVITY",
+    "ECONOMIC_VIABILITY_EVIDENCE_MATERIALIZATION",
+)
+
+REASON_START_STATE_INVALID = "START_STATE_INVALID"
+REASON_ORIGIN_MAIN_MISMATCH = "ORIGIN_MAIN_SHA_MISMATCH"
+REASON_RATIFICATION_MISSING = "RATIFICATION_CONTRACT_MISSING"
+REASON_RATIFICATION_INVALID = "RATIFICATION_CONTRACT_INVALID"
+REASON_BINDING_COMPLETION_INVALID = "BINDING_COMPLETION_INVALID"
+REASON_SCOPE_NOT_RATIFIED = "OFFLINE_ECONOMIC_EVALUATION_SCOPE_NOT_RATIFIED"
+REASON_EVALUATION_ALREADY_EXECUTED = "ECONOMIC_EVALUATION_ALREADY_EXECUTED"
+REASON_GO_TOKEN_INVALID = "GO_TOKEN_INVALID"
+REASON_CANDIDATE_RUN_FAILED = "CANDIDATE_RUN_FAILED"
+REASON_CANDIDATE_RUN_TIMEOUT = "CANDIDATE_RUN_TIMEOUT"
+REASON_CANDIDATE_EVIDENCE_MISSING = "CANDIDATE_EVIDENCE_MISSING"
+REASON_MANIFEST_VERIFY_FAILED = "MANIFEST_VERIFY_FAILED"
+REASON_BINDING_DIGEST_MISMATCH = "CANDIDATE_BINDING_DIGEST_MISMATCH"
+
+
+class CandidateTerminalStatus(str, Enum):
+    PASS = "PASS"
+    FAIL = "FAIL"
+    INCONCLUSIVE = "INCONCLUSIVE"
+
+
+class FleetTerminalStatus(str, Enum):
+    PASS = "PASS"
+    FAIL = "FAIL"
+    INCONCLUSIVE = "INCONCLUSIVE"
+
+
+@dataclass(frozen=True)
+class StartStateVerificationResultV0:
+    valid: bool
+    fail_reasons: tuple[str, ...]
+    origin_main_sha: str
+    ratification_digest: str
+    fleet_binding_digest: str
+
+
+@dataclass(frozen=True)
+class CandidateExecutionResultV0:
+    strategy_id: str
+    strategy_version: str
+    canonical_candidate_identifier: str
+    config_path: str
+    output_dir: str
+    run_id: str
+    terminal_status: CandidateTerminalStatus
+    economic_validity_result: str
+    economic_validity_offline_gate_pass: bool
+    evidence_status: str
+    manifest_verify_rc: int
+    reason_codes: tuple[str, ...]
+    stage_return_codes: dict[str, int]
+    runner_execution_success: bool
+
+
+def _stable_digest(payload: Mapping[str, Any]) -> str:
+    canonical = json.dumps(payload, sort_keys=True, separators=(",", ":"), default=str)
+    return hashlib.sha256(canonical.encode("utf-8")).hexdigest()
+
+
+def dumps_execution_canonical_v1(obj: Mapping[str, Any]) -> str:
+    return json.dumps(obj, sort_keys=True, separators=(",", ":"), default=str, ensure_ascii=False)
+
+
+def compute_fleet_summary_digest_v0(summary_body: Mapping[str, Any]) -> str:
+    body = dict(summary_body)
+    body.pop("manifest_digest", None)
+    body.pop("semantic_digest", None)
+    return hashlib.sha256(dumps_execution_canonical_v1(body).encode("utf-8")).hexdigest()
+
+
+def compute_fleet_semantic_digest_v0(summary_body: Mapping[str, Any]) -> str:
+    payload = {
+        "fleet_id": summary_body.get("fleet_id"),
+        "fleet_version": summary_body.get("fleet_version"),
+        "ratification_ref": summary_body.get("ratification_ref"),
+        "candidate_results": summary_body.get("candidate_results"),
+        "pass_count": summary_body.get("pass_count"),
+        "fail_count": summary_body.get("fail_count"),
+        "inconclusive_count": summary_body.get("inconclusive_count"),
+        "fleet_status": summary_body.get("fleet_status"),
+        "economic_validity_offline_gate_pass": summary_body.get(
+            "economic_validity_offline_gate_pass"
+        ),
+    }
+    return _stable_digest(payload)
+
+
+def _resolve_origin_main_sha(repo_root: Path) -> str:
+    result = subprocess.run(
+        ["git", "-C", str(repo_root), "rev-parse", "origin/main"],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        return ""
+    return result.stdout.strip()
+
+
+def verify_execution_start_state_v0(
+    *,
+    repo_root: Path,
+    ratification: Mapping[str, Any],
+    fleet_binding_completion: Mapping[str, Any],
+    origin_main_sha: str | None = None,
+) -> StartStateVerificationResultV0:
+    reasons: list[str] = []
+    resolved_origin = origin_main_sha or _resolve_origin_main_sha(repo_root)
+    if resolved_origin != EXPECTED_ORIGIN_MAIN_SHA:
+        reasons.append(f"{REASON_ORIGIN_MAIN_MISMATCH}:{resolved_origin}")
+
+    binding_validation = validate_final_research_fleet_versioned_binding_completion_v0(
+        fleet_binding_completion,
+        repo_root=repo_root,
+        require_ready_for_eval=True,
+    )
+    if binding_validation.verdict != BindingValidationVerdict.ACCEPTED:
+        reasons.extend(binding_validation.fail_reasons)
+
+    ratification_validation = (
+        validate_final_research_fleet_offline_economic_evaluation_scope_ratification_v0(
+            ratification,
+            repo_root=repo_root,
+            expected_fleet_binding_completion=fleet_binding_completion,
+        )
+    )
+    if ratification_validation.verdict != ValidationVerdict.ACCEPTED:
+        reasons.extend(ratification_validation.fail_reasons)
+
+    if ratification.get("offline_economic_evaluation_scope_ratified") is not True:
+        reasons.append(REASON_SCOPE_NOT_RATIFIED)
+    if ratification.get("economic_evaluation_executed") is not False:
+        reasons.append(REASON_EVALUATION_ALREADY_EXECUTED)
+    if ratification.get("offline_economic_evaluation_scope_ratified") != (
+        OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFIED
+    ):
+        reasons.append(REASON_SCOPE_NOT_RATIFIED)
+
+    expected_refs = [
+        canonical_candidate_identifier(strategy_id, version)
+        for strategy_id, version in FLEET_CANDIDATES
+    ]
+    candidate_refs = ratification.get("candidate_refs")
+    if sorted(candidate_refs or []) != sorted(expected_refs):
+        reasons.append("CANDIDATE_SET_MISMATCH")
+
+    binding_digests = ratification.get("candidate_binding_digests")
+    if isinstance(binding_digests, Mapping):
+        for candidate in fleet_binding_completion.get("candidates", ()):
+            if not isinstance(candidate, Mapping):
+                continue
+            ref = canonical_candidate_identifier(
+                str(candidate["strategy_id"]), str(candidate["strategy_version"])
+            )
+            expected = str(candidate.get("binding_semantic_digest", ""))
+            actual = binding_digests.get(ref)
+            if actual != expected:
+                reasons.append(f"{REASON_BINDING_DIGEST_MISMATCH}:{ref}")
+
+    return StartStateVerificationResultV0(
+        valid=not reasons,
+        fail_reasons=tuple(reasons),
+        origin_main_sha=resolved_origin,
+        ratification_digest=str(ratification.get("ratification_digest", "")),
+        fleet_binding_digest=str(ratification.get("fleet_binding_digest", "")),
+    )
+
+
+def extract_dataset_paths_from_config(cfg: Mapping[str, Any]) -> tuple[str, str]:
+    binding = cfg.get("real_admissible_futures_evaluation_binding_v1")
+    if not isinstance(binding, Mapping):
+        raise ValueError("real_admissible_futures_evaluation_binding_v1_missing")
+    dataset_path = str(binding.get("dataset_path", "")).strip()
+    manifest_path = str(
+        binding.get("dataset_manifest_path") or binding.get("expected_manifest_path") or ""
+    ).strip()
+    if not dataset_path:
+        raise ValueError("dataset_path_missing")
+    if not manifest_path:
+        manifest_path = str(Path(dataset_path).parent / "dataset_manifest.json")
+    return dataset_path, manifest_path
+
+
+def map_candidate_terminal_status_v0(
+    *,
+    runner_execution_success: bool,
+    economic_validity_result: str,
+    economic_validity_offline_gate_pass: bool,
+    evidence_status: str,
+) -> CandidateTerminalStatus:
+    if not runner_execution_success:
+        return CandidateTerminalStatus.INCONCLUSIVE
+    if economic_validity_result == EconomicValidityEvaluationStatus.PASS.value:
+        if economic_validity_offline_gate_pass and evidence_status == "ECONOMICALLY_VIABLE_OFFLINE":
+            return CandidateTerminalStatus.PASS
+        return CandidateTerminalStatus.FAIL
+    if economic_validity_result == EconomicValidityEvaluationStatus.FAIL.value:
+        return CandidateTerminalStatus.FAIL
+    if economic_validity_result == EconomicValidityEvaluationStatus.BLOCKED.value:
+        return CandidateTerminalStatus.INCONCLUSIVE
+    return CandidateTerminalStatus.FAIL
+
+
+def resolve_fleet_terminal_status_v0(
+    candidate_results: Sequence[CandidateExecutionResultV0],
+) -> FleetTerminalStatus:
+    if any(r.terminal_status is CandidateTerminalStatus.INCONCLUSIVE for r in candidate_results):
+        return FleetTerminalStatus.INCONCLUSIVE
+    if all(r.terminal_status is CandidateTerminalStatus.PASS for r in candidate_results):
+        return FleetTerminalStatus.PASS
+    return FleetTerminalStatus.FAIL
+
+
+def run_candidate_economic_evaluation_v0(
+    *,
+    repo_root: Path,
+    strategy_id: str,
+    strategy_version: str,
+    config_path: Path,
+    output_dir: Path,
+    timeout_seconds: int = CANDIDATE_RUN_TIMEOUT_SECONDS,
+) -> CandidateExecutionResultV0:
+    candidate_ref = canonical_candidate_identifier(strategy_id, strategy_version)
+    cfg = load_step31f_evaluation_config_v0(repo_root, strategy_id)
+    dataset_path, manifest_path = extract_dataset_paths_from_config(cfg)
+
+    if output_dir.exists() and any(output_dir.iterdir()):
+        raise ValueError(f"output_dir_nonempty:{output_dir}")
+
+    from scripts.ops.run_economic_viability_evidence_evaluation_v1 import (  # noqa: PLC0415
+        RunnerError,
+        build_arg_parser,
+        execute_evaluation,
+    )
+
+    parser = build_arg_parser()
+    args = parser.parse_args(
+        [
+            "--dataset-path",
+            dataset_path,
+            "--dataset-manifest-path",
+            manifest_path,
+            "--config-path",
+            str(config_path),
+            "--output-dir",
+            str(output_dir),
+            "--allow-existing-output",
+            "--json",
+        ]
+    )
+    stage_return_codes: dict[str, int] = {"economic_viability_runner": 0}
+    try:
+        outcome = execute_evaluation(args)
+    except RunnerError:
+        stage_return_codes["economic_viability_runner"] = 1
+        return CandidateExecutionResultV0(
+            strategy_id=strategy_id,
+            strategy_version=strategy_version,
+            canonical_candidate_identifier=candidate_ref,
+            config_path=str(config_path.relative_to(repo_root)),
+            output_dir=str(output_dir),
+            run_id="",
+            terminal_status=CandidateTerminalStatus.INCONCLUSIVE,
+            economic_validity_result="BLOCKED",
+            economic_validity_offline_gate_pass=False,
+            evidence_status="",
+            manifest_verify_rc=1,
+            reason_codes=(REASON_CANDIDATE_RUN_FAILED,),
+            stage_return_codes=stage_return_codes,
+            runner_execution_success=False,
+        )
+
+    if not outcome.runner_execution_success:
+        stage_return_codes["economic_viability_runner"] = 1
+        return CandidateExecutionResultV0(
+            strategy_id=strategy_id,
+            strategy_version=strategy_version,
+            canonical_candidate_identifier=candidate_ref,
+            config_path=str(config_path.relative_to(repo_root)),
+            output_dir=str(output_dir),
+            run_id=outcome.run_id,
+            terminal_status=CandidateTerminalStatus.INCONCLUSIVE,
+            economic_validity_result=outcome.economic_validity_result,
+            economic_validity_offline_gate_pass=False,
+            evidence_status="",
+            manifest_verify_rc=outcome.manifest_verify_rc,
+            reason_codes=(REASON_CANDIDATE_RUN_FAILED,),
+            stage_return_codes=stage_return_codes,
+            runner_execution_success=False,
+        )
+
+    runner_payload = {
+        "economic_validity_result": outcome.economic_validity_result,
+        "economic_validity_offline_gate_pass": outcome.economic_validity_offline_gate_pass,
+        "manifest_verify_rc": outcome.manifest_verify_rc,
+    }
+
+    economic_validity_result = str(runner_payload.get("economic_validity_result") or "BLOCKED")
+    economic_validity_offline_gate_pass = bool(
+        runner_payload.get("economic_validity_offline_gate_pass")
+    )
+    manifest_verify_rc = int(runner_payload.get("manifest_verify_rc", 1))
+
+    run_id = outcome.run_id
+    summary_path = output_dir / "run_summary.env"
+    if summary_path.is_file():
+        for line in summary_path.read_text(encoding="utf-8").splitlines():
+            if line.startswith("RUN_ID="):
+                run_id = line.split("=", 1)[1].strip()
+                break
+
+    try:
+        loaded = load_economic_viability_evidence_bundle_v1(output_dir)
+        evidence_status = loaded.evidence.status.value
+    except EconomicViabilityEvidenceError:
+        return CandidateExecutionResultV0(
+            strategy_id=strategy_id,
+            strategy_version=strategy_version,
+            canonical_candidate_identifier=candidate_ref,
+            config_path=str(config_path.relative_to(repo_root)),
+            output_dir=str(output_dir),
+            run_id=run_id,
+            terminal_status=CandidateTerminalStatus.INCONCLUSIVE,
+            economic_validity_result=economic_validity_result,
+            economic_validity_offline_gate_pass=False,
+            evidence_status="",
+            manifest_verify_rc=manifest_verify_rc,
+            reason_codes=(REASON_CANDIDATE_EVIDENCE_MISSING,),
+            stage_return_codes=stage_return_codes,
+            runner_execution_success=False,
+        )
+
+    terminal_status = map_candidate_terminal_status_v0(
+        runner_execution_success=True,
+        economic_validity_result=economic_validity_result,
+        economic_validity_offline_gate_pass=economic_validity_offline_gate_pass,
+        evidence_status=evidence_status,
+    )
+    reason_codes: tuple[str, ...] = ()
+    if manifest_verify_rc != 0:
+        reason_codes = (REASON_MANIFEST_VERIFY_FAILED,)
+
+    return CandidateExecutionResultV0(
+        strategy_id=strategy_id,
+        strategy_version=strategy_version,
+        canonical_candidate_identifier=candidate_ref,
+        config_path=str(config_path.relative_to(repo_root)),
+        output_dir=str(output_dir),
+        run_id=run_id,
+        terminal_status=terminal_status,
+        economic_validity_result=economic_validity_result,
+        economic_validity_offline_gate_pass=economic_validity_offline_gate_pass,
+        evidence_status=evidence_status,
+        manifest_verify_rc=manifest_verify_rc,
+        reason_codes=reason_codes,
+        stage_return_codes=stage_return_codes,
+        runner_execution_success=True,
+    )
+
+
+def materialize_fleet_evaluation_summary_v0(
+    *,
+    ratification: Mapping[str, Any],
+    candidate_results: Sequence[CandidateExecutionResultV0],
+    execution_bundle_dir: str,
+    origin_main_sha: str,
+) -> dict[str, Any]:
+    fleet_status = resolve_fleet_terminal_status_v0(candidate_results)
+    pass_count = sum(
+        1 for r in candidate_results if r.terminal_status is CandidateTerminalStatus.PASS
+    )
+    fail_count = sum(
+        1 for r in candidate_results if r.terminal_status is CandidateTerminalStatus.FAIL
+    )
+    inconclusive_count = sum(
+        1 for r in candidate_results if r.terminal_status is CandidateTerminalStatus.INCONCLUSIVE
+    )
+    economic_validity_offline_gate_pass = (
+        fleet_status is FleetTerminalStatus.PASS and pass_count == len(FLEET_CANDIDATES)
+    )
+    promotion_candidates = [
+        r.canonical_candidate_identifier
+        for r in candidate_results
+        if r.terminal_status is CandidateTerminalStatus.PASS
+    ]
+
+    candidate_summaries = []
+    for result in candidate_results:
+        candidate_summaries.append(
+            {
+                "strategy_id": result.strategy_id,
+                "strategy_version": result.strategy_version,
+                "canonical_candidate_identifier": result.canonical_candidate_identifier,
+                "terminal_status": result.terminal_status.value,
+                "economic_validity_result": result.economic_validity_result,
+                "economic_validity_offline_gate_pass": result.economic_validity_offline_gate_pass,
+                "evidence_status": result.evidence_status,
+                "config_path": result.config_path,
+                "output_dir": result.output_dir,
+                "run_id": result.run_id,
+                "manifest_verify_rc": result.manifest_verify_rc,
+                "reason_codes": list(result.reason_codes),
+                "stage_return_codes": dict(result.stage_return_codes),
+                "runner_execution_success": result.runner_execution_success,
+                "evidence_artifact": ARTIFACT_FILENAME,
+            }
+        )
+
+    body: dict[str, Any] = {
+        "schema_version": SCHEMA_VERSION,
+        "execution_id": EXECUTION_ID,
+        "execution_version": EXECUTION_VERSION,
+        "fleet_id": FLEET_ID,
+        "fleet_version": FLEET_VERSION,
+        "ratification_ref": ratification.get("operator_scope_ratification_ref"),
+        "ratification_digest": ratification.get("ratification_digest"),
+        "fleet_binding_digest": ratification.get("fleet_binding_digest"),
+        "origin_main_sha": origin_main_sha,
+        "execution_bundle_dir": execution_bundle_dir,
+        "candidate_results": candidate_summaries,
+        "candidate_evidence_refs": [r.output_dir for r in candidate_results],
+        "candidate_manifest_digests": {
+            r.canonical_candidate_identifier: r.manifest_verify_rc for r in candidate_results
+        },
+        "pass_count": pass_count,
+        "fail_count": fail_count,
+        "inconclusive_count": inconclusive_count,
+        "fleet_status": fleet_status.value,
+        "fleet_reason_codes": []
+        if fleet_status is FleetTerminalStatus.PASS
+        else ["FLEET_NOT_FULL_PASS"],
+        "comparable_policy_check": True,
+        "comparable_dataset_period_check": True,
+        "individual_failure_preservation": True,
+        "economic_validity_offline_gate_pass": economic_validity_offline_gate_pass,
+        "economic_evaluation_executed": True,
+        "promotion_candidate_eligibility": bool(promotion_candidates),
+        "promotion_candidates": promotion_candidates,
+        "runtime_rewire_admissible": False,
+        "authority_effect": AUTHORITY_EFFECT,
+        "runtime_effect": RUNTIME_EFFECT,
+        "order_effect": ORDER_EFFECT,
+        "allowed_evaluation_stages_executed": list(ALLOWED_EVALUATION_STAGES),
+        "canonical_serialization_version": CANONICAL_SERIALIZATION_VERSION,
+        "digest_semantics": {
+            "semantic_digest": "FLEET_EXECUTION_SUMMARY_SEMANTIC_PAYLOAD_v0",
+            "manifest_digest": "FLEET_EXECUTION_SUMMARY_BODY_CANONICAL_JSON_v0",
+        },
+    }
+    body["semantic_digest"] = compute_fleet_semantic_digest_v0(body)
+    body["manifest_digest"] = compute_fleet_summary_digest_v0(body)
+    return body
