@@ -173,5 +173,5 @@ class TestGlobalSummaryBinding:
     def test_last_verified_origin_main_updated(self) -> None:
         summary = global_summary_section()
         assert _field_value(summary, "LAST_VERIFIED_ORIGIN_MAIN") == (
-            "71bb9ccdcfe8771ac7fc027ecda9fd710d06ab01"
+            "83cbef619f442be60d12ecf1efd991dfed3928af"
         )
