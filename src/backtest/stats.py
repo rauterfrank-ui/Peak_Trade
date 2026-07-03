@@ -17,6 +17,10 @@ from typing import Dict, Tuple, List
 from dataclasses import dataclass
 
 
+class TradeRecordContractError(KeyError):
+    """Raised when a trade dict lacks the canonical ``pnl`` field."""
+
+
 @dataclass
 class TradeStats:
     """Trade-Statistiken."""
@@ -252,7 +256,17 @@ def compute_trade_stats(trades: List[Dict]) -> TradeStats:
             profit_factor=0.0,
         )
 
-    pnls = [t["pnl"] for t in trades]
+    pnls: list[float] = []
+    for index, trade in enumerate(trades):
+        if "pnl" not in trade:
+            keys = sorted(str(key) for key in trade.keys())
+            raise TradeRecordContractError(
+                f"trade_record_missing_canonical_pnl_field index={index} keys={keys}"
+            )
+        pnl_value = trade["pnl"]
+        if pnl_value is None:
+            raise TradeRecordContractError(f"trade_record_null_canonical_pnl_field index={index}")
+        pnls.append(float(pnl_value))
     wins = [p for p in pnls if p > 0]
     losses = [p for p in pnls if p < 0]
 
@@ -358,7 +372,7 @@ def compute_backtest_stats(
 
     # 7. Expectancy (durchschnittlicher Gewinn pro Trade)
     if trade_stats.total_trades > 0:
-        total_pnl = sum(t.get("pnl", 0) for t in trades)
+        total_pnl = sum(float(t["pnl"]) for t in trades)
         expectancy = total_pnl / trade_stats.total_trades
     else:
         expectancy = 0.0

@@ -13,6 +13,12 @@ from typing import Any, Mapping, Sequence
 import pandas as pd
 
 from src.backtest.stats import compute_backtest_stats
+from src.research.cross_sectional_trade_record_schema_v0 import (
+    CANONICAL_PNL_FIELD,
+    PNL_UNIT,
+    compute_roundtrip_net_pnl_v0,
+    normalize_trades_for_stats_v0,
+)
 from src.research.cross_sectional_relative_strength_v0_versioned_research_binding_v0 import (
     EFFECTIVE_ENTRY_COST_BPS,
     EFFECTIVE_EXIT_COST_BPS,
@@ -96,6 +102,8 @@ def run_single_slot_panel_backtest_v0(
     prev_instrument: str | None = None
     entry_price: float | None = None
     entry_ts: str | None = None
+    equity_at_entry: float | None = None
+    entry_cost_recorded = 0.0
     total_fee_drag = 0.0
     total_slippage = 0.0
     rotation_count = 0
@@ -110,11 +118,19 @@ def run_single_slot_panel_backtest_v0(
                 panel_series, prev_instrument or "", epoch.epoch_index
             )
             if exit_price is not None and entry_price is not None and prev_side != SlotSide.FLAT:
+                if equity_at_entry is None:
+                    raise ValueError("trade_close_without_equity_at_entry")
                 direction = 1.0 if prev_side == SlotSide.LONG else -1.0
                 gross_pnl_frac = direction * ((exit_price / entry_price) - 1.0)
-                exit_cost = equity * _cost_fraction(exit_bps)
-                equity *= 1.0 + gross_pnl_frac
-                equity -= exit_cost
+                equity_before_exit = equity
+                exit_cost = equity_before_exit * _cost_fraction(exit_bps)
+                gross_pnl_abs, net_pnl = compute_roundtrip_net_pnl_v0(
+                    equity_at_entry=equity_at_entry,
+                    equity_before_exit=equity_before_exit,
+                    gross_pnl_frac=gross_pnl_frac,
+                    exit_cost=exit_cost,
+                )
+                equity = equity_before_exit * (1.0 + gross_pnl_frac) - exit_cost
                 total_fee_drag += exit_cost * (fee_bps / entry_bps if entry_bps else 0.5)
                 total_slippage += exit_cost * (slip_bps / entry_bps if entry_bps else 0.5)
                 trades.append(
@@ -126,11 +142,17 @@ def run_single_slot_panel_backtest_v0(
                         "entry_price": entry_price,
                         "exit_price": exit_price,
                         "gross_pnl_frac": gross_pnl_frac,
+                        "gross_pnl": gross_pnl_abs,
+                        "entry_cost": entry_cost_recorded,
                         "exit_cost": exit_cost,
+                        CANONICAL_PNL_FIELD: net_pnl,
+                        "pnl_unit": PNL_UNIT,
                     }
                 )
             entry_price = None
             entry_ts = None
+            equity_at_entry = None
+            entry_cost_recorded = 0.0
             rotation_count += 1
 
         if side != SlotSide.FLAT and instrument is not None:
@@ -143,6 +165,8 @@ def run_single_slot_panel_backtest_v0(
                     total_slippage += entry_cost * (slip_bps / entry_bps if entry_bps else 0.5)
                     entry_price = px
                     entry_ts = ts
+                    equity_at_entry = equity
+                    entry_cost_recorded = entry_cost
 
         prev_side = side
         prev_instrument = instrument
@@ -155,8 +179,13 @@ def run_single_slot_panel_backtest_v0(
         equity_curve = pd.Series([val for _, val in equity_points], index=index)
 
     trades_df = pd.DataFrame(trades)
+    trade_records = (
+        normalize_trades_for_stats_v0(trades_df.to_dict(orient="records"))
+        if not trades_df.empty
+        else []
+    )
     stats = compute_backtest_stats(
-        trades=trades_df.to_dict(orient="records") if not trades_df.empty else [],
+        trades=trade_records,
         equity_curve=equity_curve,
     )
     gross_return = float(stats.get("total_return", 0.0))
