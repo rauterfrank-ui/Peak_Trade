@@ -1,0 +1,19 @@
+{
+  "alias_is_not_sole_binding": true,
+  "alias_ref": "datasets/admissible_futures/okx_full_panel_historical_funding_archive_v0/v0/alias/current.json",
+  "artifact_kind": "okx_full_panel_dataset_promotion_registry",
+  "artifact_version": "v0",
+  "authority_effect": "NONE",
+  "dataset_content_digest": "0bfa4df4221a2ec27625c50e3675302ffa51e4b54cddcf81ca5ad13cc15cf8b7",
+  "dataset_id": "okx_full_panel_historical_funding_archive_v0",
+  "dataset_schema_version": "okx_full_panel_dataset.v0",
+  "dataset_version": "v0",
+  "economic_evaluation_authorized": false,
+  "immutable_versioned_binding": true,
+  "promoted_dataset_root": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/okx_full_panel_historical_funding_archive_v0/v0",
+  "promotion_binding_ref": "datasets/admissible_futures/okx_full_panel_historical_funding_archive_v0/v0/promotion_binding.json",
+  "registry_entry_ref": "datasets/admissible_futures/okx_full_panel_historical_funding_archive_v0/v0/registry_entry.json",
+  "runtime_effect": "NONE",
+  "source_candidate_id": "okx_full_panel_fetch_completeness_v0_20260703T170453Z",
+  "source_candidate_root": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/candidates/okx_full_panel_fetch_completeness_v0_20260703T170453Z"
+}
