@@ -35,6 +35,11 @@ FULL_RUNNER_CLOSEOUT_REF = (
     "bounded_cross_sectional_funding_rate_carry_v0_full_offline_economic_evaluation_runner_"
     "mainline_integration_squash_merge_closeout_v0_20260703T140100Z"
 )
+EVIDENCE_REGISTRY_RECONCILIATION_CLOSEOUT_REF = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/"
+    "bounded_cross_sectional_funding_rate_carry_v0_evidence_and_registry_reconciliation_"
+    "squash_merge_closeout_v0_20260703T141600Z"
+)
 
 
 def _field_value(text: str, field: str) -> str:
@@ -158,4 +163,28 @@ class TestFundingCarryProgressRegistryReconciliation:
         registry = load_registry()
         assert registry.authoritative_value("CROSS_SECTIONAL_FUNDING_RATE_CARRY_V0_STATUS") == (
             "COMPLETE_FAIL"
+        )
+
+    def test_evidence_registry_reconciliation_ref_bound(self) -> None:
+        ref = authoritative_field_value(
+            "CROSS_SECTIONAL_FUNDING_RATE_CARRY_V0_EVIDENCE_REGISTRY_RECONCILIATION_EVIDENCE_REF"
+        )
+        assert ref != "PENDING_POST_MERGE"
+        assert EVIDENCE_REGISTRY_RECONCILIATION_CLOSEOUT_REF in ref
+        assert "MANIFEST_VERIFY_RC=0" in ref
+        assert "PR #4797" in ref
+        assert "PR_HEAD=5e25c8115d3da8fea1b9b0479a93198c05ef03cc" in ref
+        assert "squash d1eea783" in ref
+        assert "ORIGIN_MAIN_AFTER=d1eea783e21ad3c968a5cde75abbf2ff865413f8" in ref
+
+    def test_research_line_progress_registry_closeout_performed(self) -> None:
+        section = _funding_carry_section(read_registry())
+        assert _field_value(section, "PROGRESS_REGISTRY_CLOSEOUT_PERFORMED") == "true"
+        assert _field_value(section, "NO_NEW_CANDIDATE_HOLD") == "ACTIVE"
+
+    def test_global_no_new_candidate_hold_and_operator_gate_unchanged(self) -> None:
+        assert authoritative_field_value("NO_NEW_CANDIDATE_HOLD") == "ACTIVE"
+        assert (
+            authoritative_field_value("NEXT_CANONICAL_ACTION")
+            == "OPERATOR_POLICY_DECISION_REQUIRED_FOR_NEW_RESEARCH_SCOPE"
         )
