@@ -377,7 +377,9 @@ def test_materialize_rejects_tampered_manifest() -> None:
         production.manifest,
         manifest_digest="f" * 64,
     )
-    with pytest.raises(ValueError, match="PRODUCTION_MANIFEST_VALIDATION_FAILED|PRODUCTION_MANIFEST_TAMPERED"):
+    with pytest.raises(
+        ValueError, match="PRODUCTION_MANIFEST_VALIDATION_FAILED|PRODUCTION_MANIFEST_TAMPERED"
+    ):
         materialize_pit_futures_universe_manifest_dataset_period_binding_v0(
             repo_root=REPO_ROOT,
             production_manifest=tampered,
