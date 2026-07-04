@@ -20,6 +20,7 @@ from src.research.final_research_fleet_offline_economic_evaluation_execution_v0 
     REASON_NEW_EVIDENCE_CLASS_REQUIRED,
     REASON_UNMODIFIED_BINDING_RETRY_BLOCKED,
     is_accepted_go_token,
+    is_accepted_origin_main_sha,
     verify_unmodified_retry_admissibility_v0,
 )
 from tests.ops.runbook_progress_registry_contract_helpers_v1 import (
@@ -122,8 +123,13 @@ class TestPostPr4827ExecutionOwnerAdmissibility:
         assert is_accepted_go_token(GO_TOKEN_OPERATOR_ALIAS)
         assert is_accepted_go_token(GO_TOKEN)
 
-    def test_sha_rebind_to_pr4826_does_not_create_new_evidence_class(self) -> None:
-        assert EXPECTED_ORIGIN_MAIN_SHA == PR4826_MERGE_COMMIT
+    def test_sha_rebind_accepts_class_d_materialized_main_without_new_evidence_class(self) -> None:
+        from src.research.final_research_fleet_offline_economic_evaluation_execution_v0 import (
+            MATERIALIZED_CLASS_D_ORIGIN_MAIN_SHA,
+        )
+
+        assert EXPECTED_ORIGIN_MAIN_SHA == MATERIALIZED_CLASS_D_ORIGIN_MAIN_SHA
+        assert is_accepted_origin_main_sha(PR4826_MERGE_COMMIT)
         assert PR4826_CREATES_NEW_EXECUTION_EVIDENCE_CLASS is False
 
     def test_unmodified_step31f_retry_blocked_despite_go_alias_and_sha_rebind(self) -> None:

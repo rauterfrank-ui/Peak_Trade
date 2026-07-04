@@ -2,7 +2,8 @@
 """Run final research fleet offline economic evaluation v0.
 
 Deterministic offline economic evaluation for trend_following/v1,
-bollinger_bands/v1, and momentum_1h/v1 against ratified PR #4826 bindings.
+bollinger_bands/v1, and momentum_1h/v1 against ratified Class-D bindings
+from PR #4832 (or legacy PR #4826 bindings when explicitly supplied).
 No runtime, order, or authority effect.
 Operator GO (canonical): GO_EXECUTE_BOUNDED_FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_EVALUATION_V0
 Operator GO (alias): GO_BOUNDED_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_FOR_VERSIONED_FINAL_RESEARCH_FLEET_V0
@@ -36,28 +37,33 @@ from src.research.final_research_fleet_offline_economic_evaluation_execution_v0 
     AUTHORITY_EFFECT,
     EXPECTED_ORIGIN_MAIN_SHA,
     GO_TOKEN,
+    LEGACY_DURABLE_EVIDENCE_BUNDLE_PREFIX,
+    LEGACY_DURABLE_EVIDENCE_SUBDIR,
+    MATERIALIZED_CLASS_D_ORIGIN_MAIN_SHA,
     ORDER_EFFECT,
     PR4826_MERGE_COMMIT,
+    PR4832_MERGE_COMMIT,
     REQUIRED_MERGED_PR_NUMBER,
     RUNTIME_EFFECT,
     CandidateTerminalStatus,
     dumps_execution_canonical_v1,
     is_accepted_go_token,
+    load_scope_ratification_for_execution_v0,
     materialize_fleet_evaluation_summary_v0,
+    resolve_durable_evidence_bundle_dir_v0,
+    resolve_legacy_durable_evidence_bundle_dir_v0,
     run_candidate_economic_evaluation_v0,
+    validate_binding_completion_for_execution_v0,
+    validate_scope_ratification_for_execution_v0,
     verify_execution_start_state_v0,
+    verify_origin_main_sha_for_binding_v0,
 )
 from src.research.final_research_fleet_offline_economic_evaluation_scope_ratification_v0 import (  # noqa: E402
-    materialize_final_research_fleet_offline_economic_evaluation_scope_ratification_v0,
     serialize_ratification_canonical_v0,
-    validate_final_research_fleet_offline_economic_evaluation_scope_ratification_v0,
 )
 from src.research.final_research_fleet_v0_versioned_binding_manifest_contract_v0 import (  # noqa: E402
     FLEET_CANDIDATES,
     STEP31F_CONFIG_PATHS,
-)
-from src.research.final_research_fleet_versioned_binding_completion_v0 import (  # noqa: E402
-    validate_final_research_fleet_versioned_binding_completion_v0,
 )
 
 CONFIRM_GO = GO_TOKEN
@@ -65,7 +71,9 @@ DEFAULT_DURABLE_ROOT = Path(
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
 )
 DEFAULT_PRIMARY_WORKTREE = Path("/Users/frnkhrz/Peak_Trade")
-BINDING_COMPLETION_REL = "config/research/final_research_fleet_versioned_binding_completion_v0.json"
+BINDING_COMPLETION_REL = (
+    "config/research/final_research_fleet_class_d_versioned_binding_completion_v0.json"
+)
 
 _GATE_FAIL_CODES = {
     "walk_forward": "WALK_FORWARD_FAILED",
@@ -190,27 +198,22 @@ def _build_binding_digest_verification(
     fleet_binding_completion: Mapping[str, Any],
     ratification: Mapping[str, Any],
 ) -> dict[str, Any]:
-    binding_validation = validate_final_research_fleet_versioned_binding_completion_v0(
+    binding_ok, binding_fail_reasons = validate_binding_completion_for_execution_v0(
         fleet_binding_completion,
         repo_root=repo_root,
         require_ready_for_eval=True,
     )
-    ratification_validation = (
-        validate_final_research_fleet_offline_economic_evaluation_scope_ratification_v0(
-            ratification,
-            repo_root=repo_root,
-            expected_fleet_binding_completion=fleet_binding_completion,
-        )
+    scope_ok, scope_fail_reasons = validate_scope_ratification_for_execution_v0(
+        ratification,
+        repo_root=repo_root,
+        fleet_binding_completion=fleet_binding_completion,
     )
     return {
-        "binding_digest_verification_pass": (
-            binding_validation.verdict.value == "ACCEPTED"
-            and ratification_validation.verdict.value == "ACCEPTED"
-        ),
-        "binding_validation_verdict": binding_validation.verdict.value,
-        "binding_validation_fail_reasons": list(binding_validation.fail_reasons),
-        "ratification_validation_verdict": ratification_validation.verdict.value,
-        "ratification_validation_fail_reasons": list(ratification_validation.fail_reasons),
+        "binding_digest_verification_pass": binding_ok and scope_ok,
+        "binding_validation_verdict": "ACCEPTED" if binding_ok else "REJECTED",
+        "binding_validation_fail_reasons": list(binding_fail_reasons),
+        "ratification_validation_verdict": "ACCEPTED" if scope_ok else "REJECTED",
+        "ratification_validation_fail_reasons": list(scope_fail_reasons),
         "fleet_binding_digest": ratification.get("fleet_binding_digest"),
         "ratification_digest": ratification.get("ratification_digest"),
         "candidate_binding_digests": ratification.get("candidate_binding_digests"),
@@ -275,19 +278,22 @@ def run_evaluation(
 
     primary_before = _primary_worktree_snapshot(primary_worktree)
     origin_main = _resolve_origin_main(_REPO_ROOT)
-    if origin_main != EXPECTED_ORIGIN_MAIN_SHA:
-        _die(f"ERR: origin_main_mismatch:{origin_main}!={EXPECTED_ORIGIN_MAIN_SHA}")
 
     binding_path = binding_completion_path or (_REPO_ROOT / BINDING_COMPLETION_REL)
     if not binding_path.is_file():
         _die(f"ERR: missing_binding_completion:{binding_path}")
 
     fleet_binding_completion = _load_json(binding_path)
-    ratification = (
-        materialize_final_research_fleet_offline_economic_evaluation_scope_ratification_v0(
-            repo_root=_REPO_ROOT,
-            fleet_binding_completion=fleet_binding_completion,
-        )
+    origin_ok, origin_reasons = verify_origin_main_sha_for_binding_v0(
+        origin_main_sha=origin_main,
+        fleet_binding_completion=fleet_binding_completion,
+    )
+    if not origin_ok:
+        _die(f"ERR: origin_main_mismatch:{origin_reasons}")
+
+    ratification = load_scope_ratification_for_execution_v0(
+        repo_root=_REPO_ROOT,
+        fleet_binding_completion=fleet_binding_completion,
     )
     start_state = verify_execution_start_state_v0(
         repo_root=_REPO_ROOT,
@@ -311,18 +317,26 @@ def run_evaluation(
         _die("ERR: common_policy_comparability_failed")
 
     ts_slug = _utc_slug()
-    evidence_dir = (
-        durable_evidence_root
-        / "implementation"
-        / f"bounded_final_research_fleet_offline_economic_evaluation_v0_{ts_slug}"
+    evidence_dir = resolve_durable_evidence_bundle_dir_v0(
+        durable_evidence_root=durable_evidence_root,
+        timestamp_slug=ts_slug,
     )
     evidence_dir.mkdir(parents=True, exist_ok=False)
+    legacy_evidence_dir = resolve_legacy_durable_evidence_bundle_dir_v0(
+        durable_evidence_root=durable_evidence_root,
+        timestamp_slug=ts_slug,
+    )
 
     preflight_lines = [
         f"ORIGIN_MAIN={origin_main}",
         f"PR4826_MERGE_COMMIT={PR4826_MERGE_COMMIT}",
+        f"PR4832_MERGE_COMMIT={PR4832_MERGE_COMMIT}",
         f"EXPECTED_ORIGIN_MAIN={EXPECTED_ORIGIN_MAIN_SHA}",
+        f"MATERIALIZED_CLASS_D_ORIGIN_MAIN={MATERIALIZED_CLASS_D_ORIGIN_MAIN_SHA}",
         f"REQUIRED_MERGED_PR_NUMBER={REQUIRED_MERGED_PR_NUMBER}",
+        f"DURABLE_EVIDENCE_SUBDIR={evidence_dir.parent.name}",
+        f"DURABLE_EVIDENCE_BUNDLE={evidence_dir.name}",
+        f"LEGACY_DURABLE_EVIDENCE_ALIAS={legacy_evidence_dir.parent.name}/{legacy_evidence_dir.name}",
         "FINAL_RESEARCH_FLEET_BINDING_READY=true",
         "NEW_CANDIDATES_RATIFIED=true",
         "ECONOMIC_EVALUATION_SCOPE_RATIFIED=true",
@@ -359,6 +373,20 @@ def run_evaluation(
     )
     (evidence_dir / "common_policy_comparability_matrix.json").write_text(
         json.dumps(comparability, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    (evidence_dir / "durable_evidence_path_alias.json").write_text(
+        json.dumps(
+            {
+                "canonical_path": str(evidence_dir),
+                "legacy_alias_path": str(legacy_evidence_dir),
+                "legacy_subdir": LEGACY_DURABLE_EVIDENCE_SUBDIR,
+                "legacy_prefix": LEGACY_DURABLE_EVIDENCE_BUNDLE_PREFIX,
+            },
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n",
         encoding="utf-8",
     )
     (
