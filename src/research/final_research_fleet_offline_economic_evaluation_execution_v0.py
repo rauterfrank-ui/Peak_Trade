@@ -47,8 +47,21 @@ EXECUTION_VERSION = "v0"
 CANONICAL_SERIALIZATION_VERSION = "research_fleet_execution_canonical_json_v1"
 
 GO_TOKEN = "GO_EXECUTE_BOUNDED_FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_EVALUATION_V0"
-EXPECTED_ORIGIN_MAIN_SHA = "e0d2fd5d47c3a4d95c654329e25001a61c14602e"
-REQUIRED_MERGED_PR_NUMBER = 4800
+GO_TOKEN_OPERATOR_ALIAS = (
+    "GO_BOUNDED_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_FOR_VERSIONED_FINAL_RESEARCH_FLEET_V0"
+)
+ACCEPTED_GO_TOKENS: frozenset[str] = frozenset({GO_TOKEN, GO_TOKEN_OPERATOR_ALIAS})
+EXPECTED_ORIGIN_MAIN_SHA = "208ab96562f7750fb4dff43936b345a040d1cea4"
+REQUIRED_MERGED_PR_NUMBER = 4826
+PR4826_MERGE_COMMIT = "208ab96562f7750fb4dff43936b345a040d1cea4"
+HISTORICAL_STEP31F_BINDING_COMPLETION_DIGEST = (
+    "161d834e5153df78a0013b6e55c4c8bd4788c775811e3678f025104a307d78f1"
+)
+HISTORICAL_STEP31F_EXECUTION_EVIDENCE_CLASS = (
+    "step31f_final_research_fleet_v0_offline_economic_validity_evaluation_v0"
+)
+PR4826_SCOPE_EVIDENCE_CLASS = "VERSIONED_FINAL_FLEET_BINDINGS_AND_OFFLINE_EVALUATION_SCOPE_V0"
+PR4826_CREATES_NEW_EXECUTION_EVIDENCE_CLASS = False
 
 AUTHORITY_EFFECT = "NONE"
 RUNTIME_EFFECT = "NONE"
@@ -80,6 +93,8 @@ REASON_CANDIDATE_RUN_TIMEOUT = "CANDIDATE_RUN_TIMEOUT"
 REASON_CANDIDATE_EVIDENCE_MISSING = "CANDIDATE_EVIDENCE_MISSING"
 REASON_MANIFEST_VERIFY_FAILED = "MANIFEST_VERIFY_FAILED"
 REASON_BINDING_DIGEST_MISMATCH = "CANDIDATE_BINDING_DIGEST_MISMATCH"
+REASON_UNMODIFIED_BINDING_RETRY_BLOCKED = "UNMODIFIED_BINDING_RETRY_BLOCKED"
+REASON_NEW_EVIDENCE_CLASS_REQUIRED = "NEW_EVIDENCE_CLASS_REQUIRED_FOR_REEXECUTION"
 
 
 class CandidateTerminalStatus(str, Enum):
@@ -166,6 +181,34 @@ def _resolve_origin_main_sha(repo_root: Path) -> str:
     return result.stdout.strip()
 
 
+def is_accepted_go_token(token: str) -> bool:
+    return token in ACCEPTED_GO_TOKENS
+
+
+def canonical_go_token(token: str) -> str:
+    if is_accepted_go_token(token):
+        return GO_TOKEN
+    raise ValueError(REASON_GO_TOKEN_INVALID)
+
+
+def verify_unmodified_retry_admissibility_v0(
+    *,
+    fleet_binding_completion: Mapping[str, Any],
+    requested_execution_evidence_class: str | None = None,
+) -> tuple[bool, tuple[str, ...]]:
+    """Fail closed when bindings match historical STEP31F terminal FAIL digest."""
+    completion_digest = str(fleet_binding_completion.get("completion_digest", ""))
+    if completion_digest != HISTORICAL_STEP31F_BINDING_COMPLETION_DIGEST:
+        return True, ()
+    if PR4826_CREATES_NEW_EXECUTION_EVIDENCE_CLASS and requested_execution_evidence_class:
+        if requested_execution_evidence_class != HISTORICAL_STEP31F_EXECUTION_EVIDENCE_CLASS:
+            return True, ()
+    reasons = [REASON_UNMODIFIED_BINDING_RETRY_BLOCKED]
+    if not PR4826_CREATES_NEW_EXECUTION_EVIDENCE_CLASS:
+        reasons.append(REASON_NEW_EVIDENCE_CLASS_REQUIRED)
+    return False, tuple(reasons)
+
+
 def verify_execution_start_state_v0(
     *,
     repo_root: Path,
@@ -225,6 +268,12 @@ def verify_execution_start_state_v0(
             actual = binding_digests.get(ref)
             if actual != expected:
                 reasons.append(f"{REASON_BINDING_DIGEST_MISMATCH}:{ref}")
+
+    retry_ok, retry_reasons = verify_unmodified_retry_admissibility_v0(
+        fleet_binding_completion=fleet_binding_completion,
+    )
+    if not retry_ok:
+        reasons.extend(retry_reasons)
 
     return StartStateVerificationResultV0(
         valid=not reasons,
