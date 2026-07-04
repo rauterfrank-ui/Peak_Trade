@@ -123,12 +123,12 @@ class TestPostPr4827ExecutionOwnerAdmissibility:
         assert is_accepted_go_token(GO_TOKEN_OPERATOR_ALIAS)
         assert is_accepted_go_token(GO_TOKEN)
 
-    def test_sha_rebind_accepts_class_d_materialized_main_without_new_evidence_class(self) -> None:
+    def test_sha_rebind_accepts_current_execution_main_without_new_evidence_class(self) -> None:
         from src.research.final_research_fleet_offline_economic_evaluation_execution_v0 import (
-            MATERIALIZED_CLASS_D_ORIGIN_MAIN_SHA,
+            CURRENT_EXECUTION_ORIGIN_MAIN_SHA,
         )
 
-        assert EXPECTED_ORIGIN_MAIN_SHA == MATERIALIZED_CLASS_D_ORIGIN_MAIN_SHA
+        assert EXPECTED_ORIGIN_MAIN_SHA == CURRENT_EXECUTION_ORIGIN_MAIN_SHA
         assert is_accepted_origin_main_sha(PR4826_MERGE_COMMIT)
         assert PR4826_CREATES_NEW_EXECUTION_EVIDENCE_CLASS is False
 

@@ -10,6 +10,7 @@ import pytest
 from src.research.final_research_fleet_offline_economic_evaluation_execution_v0 import (
     AUTHORITY_EFFECT,
     CLASS_D_BINDING_COMPLETION_DIGEST,
+    CURRENT_EXECUTION_ORIGIN_MAIN_SHA,
     DURABLE_EVIDENCE_BUNDLE_PREFIX,
     DURABLE_EVIDENCE_SUBDIR,
     EXPECTED_ORIGIN_MAIN_SHA,
@@ -19,6 +20,7 @@ from src.research.final_research_fleet_offline_economic_evaluation_execution_v0 
     MATERIALIZED_CLASS_D_ORIGIN_MAIN_SHA,
     ORDER_EFFECT,
     PR4826_MERGE_COMMIT,
+    PR4832_MERGE_COMMIT,
     RUNTIME_EFFECT,
     is_accepted_go_token,
     is_accepted_origin_main_sha,
@@ -28,6 +30,7 @@ from src.research.final_research_fleet_offline_economic_evaluation_execution_v0 
     resolve_legacy_durable_evidence_bundle_dir_v0,
     validate_binding_completion_for_execution_v0,
     verify_execution_start_state_v0,
+    verify_origin_main_sha_for_binding_v0,
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -43,14 +46,21 @@ def fixture_class_d_binding_completion() -> dict:
     return json.loads(CLASS_D_BINDING_PATH.read_text(encoding="utf-8"))
 
 
-def test_expected_origin_main_sha_points_to_class_d_materialized_main() -> None:
-    assert EXPECTED_ORIGIN_MAIN_SHA == MATERIALIZED_CLASS_D_ORIGIN_MAIN_SHA
-    assert EXPECTED_ORIGIN_MAIN_SHA == "ddce9c508158b89fa225c381436e2d1efced7328"
+def test_expected_origin_main_sha_points_to_current_execution_main() -> None:
+    assert EXPECTED_ORIGIN_MAIN_SHA == CURRENT_EXECUTION_ORIGIN_MAIN_SHA
+    assert EXPECTED_ORIGIN_MAIN_SHA == "4828168cd91c57aa72dcb3b40b47188eeb82fd32"
+
+
+def test_materialization_sha_retained_but_not_current_execution_pin() -> None:
+    assert MATERIALIZED_CLASS_D_ORIGIN_MAIN_SHA == PR4832_MERGE_COMMIT
+    assert MATERIALIZED_CLASS_D_ORIGIN_MAIN_SHA == "ddce9c508158b89fa225c381436e2d1efced7328"
+    assert is_accepted_origin_main_sha(MATERIALIZED_CLASS_D_ORIGIN_MAIN_SHA)
+    assert EXPECTED_ORIGIN_MAIN_SHA != MATERIALIZED_CLASS_D_ORIGIN_MAIN_SHA
 
 
 def test_legacy_pr4826_sha_still_accepted_but_not_exclusive() -> None:
     assert is_accepted_origin_main_sha(PR4826_MERGE_COMMIT)
-    assert is_accepted_origin_main_sha(MATERIALIZED_CLASS_D_ORIGIN_MAIN_SHA)
+    assert is_accepted_origin_main_sha(CURRENT_EXECUTION_ORIGIN_MAIN_SHA)
     assert EXPECTED_ORIGIN_MAIN_SHA != PR4826_MERGE_COMMIT
 
 
@@ -66,7 +76,7 @@ def test_class_d_completion_digest_accepted(class_d_binding_completion: dict) ->
     assert reasons == ()
 
 
-def test_class_d_start_state_accepts_materialized_origin_main(
+def test_class_d_start_state_accepts_current_execution_origin_main(
     class_d_binding_completion: dict,
 ) -> None:
     ratification = load_scope_ratification_for_execution_v0(
@@ -77,10 +87,32 @@ def test_class_d_start_state_accepts_materialized_origin_main(
         repo_root=REPO_ROOT,
         ratification=ratification,
         fleet_binding_completion=class_d_binding_completion,
-        origin_main_sha=MATERIALIZED_CLASS_D_ORIGIN_MAIN_SHA,
+        origin_main_sha=CURRENT_EXECUTION_ORIGIN_MAIN_SHA,
     )
     assert result.valid is True
     assert result.fail_reasons == ()
+
+
+def test_class_d_start_state_rejects_materialization_sha_as_current_execution_origin(
+    class_d_binding_completion: dict,
+) -> None:
+    ratification = load_scope_ratification_for_execution_v0(
+        repo_root=REPO_ROOT,
+        fleet_binding_completion=class_d_binding_completion,
+    )
+    ok, reasons = verify_origin_main_sha_for_binding_v0(
+        origin_main_sha=MATERIALIZED_CLASS_D_ORIGIN_MAIN_SHA,
+        fleet_binding_completion=class_d_binding_completion,
+    )
+    assert ok is False
+    assert any("ORIGIN_MAIN_SHA_MISMATCH" in reason for reason in reasons)
+    result = verify_execution_start_state_v0(
+        repo_root=REPO_ROOT,
+        ratification=ratification,
+        fleet_binding_completion=class_d_binding_completion,
+        origin_main_sha=MATERIALIZED_CLASS_D_ORIGIN_MAIN_SHA,
+    )
+    assert result.valid is False
 
 
 def test_class_d_start_state_rejects_stale_pr4826_origin_only(

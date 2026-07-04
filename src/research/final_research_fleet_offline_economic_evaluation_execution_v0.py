@@ -54,10 +54,16 @@ GO_TOKEN_OPERATOR_ALIAS = (
 ACCEPTED_GO_TOKENS: frozenset[str] = frozenset({GO_TOKEN, GO_TOKEN_OPERATOR_ALIAS})
 PR4826_MERGE_COMMIT = "208ab96562f7750fb4dff43936b345a040d1cea4"
 PR4832_MERGE_COMMIT = "ddce9c508158b89fa225c381436e2d1efced7328"
+PR4833_MERGE_COMMIT = "4828168cd91c57aa72dcb3b40b47188eeb82fd32"
 MATERIALIZED_CLASS_D_ORIGIN_MAIN_SHA = PR4832_MERGE_COMMIT
-EXPECTED_ORIGIN_MAIN_SHA = MATERIALIZED_CLASS_D_ORIGIN_MAIN_SHA
+CURRENT_EXECUTION_ORIGIN_MAIN_SHA = PR4833_MERGE_COMMIT
+EXPECTED_ORIGIN_MAIN_SHA = CURRENT_EXECUTION_ORIGIN_MAIN_SHA
 ACCEPTED_ORIGIN_MAIN_SHAS: frozenset[str] = frozenset(
-    {PR4826_MERGE_COMMIT, MATERIALIZED_CLASS_D_ORIGIN_MAIN_SHA}
+    {
+        PR4826_MERGE_COMMIT,
+        MATERIALIZED_CLASS_D_ORIGIN_MAIN_SHA,
+        CURRENT_EXECUTION_ORIGIN_MAIN_SHA,
+    }
 )
 REQUIRED_MERGED_PR_NUMBER = 4826
 CLASS_D_BINDING_COMPLETION_ID = "final_research_fleet_class_d_versioned_binding_completion_v0"
@@ -250,9 +256,9 @@ def verify_origin_main_sha_for_binding_v0(
     fleet_binding_completion: Mapping[str, Any],
 ) -> tuple[bool, tuple[str, ...]]:
     if is_class_d_binding_completion_v0(fleet_binding_completion):
-        if origin_main_sha != MATERIALIZED_CLASS_D_ORIGIN_MAIN_SHA:
+        if origin_main_sha != CURRENT_EXECUTION_ORIGIN_MAIN_SHA:
             return False, (
-                f"{REASON_ORIGIN_MAIN_MISMATCH}:{origin_main_sha}!={MATERIALIZED_CLASS_D_ORIGIN_MAIN_SHA}",
+                f"{REASON_ORIGIN_MAIN_MISMATCH}:{origin_main_sha}!={CURRENT_EXECUTION_ORIGIN_MAIN_SHA}",
             )
         return True, ()
     if not is_accepted_origin_main_sha(origin_main_sha):
