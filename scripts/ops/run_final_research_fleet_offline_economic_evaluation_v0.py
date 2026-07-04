@@ -2,9 +2,10 @@
 """Run final research fleet offline economic evaluation v0.
 
 Deterministic offline economic evaluation for trend_following/v1,
-bollinger_bands/v1, and momentum_1h/v1 against ratified PR #4800 bindings.
+bollinger_bands/v1, and momentum_1h/v1 against ratified PR #4826 bindings.
 No runtime, order, or authority effect.
-Operator GO: GO_EXECUTE_BOUNDED_FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_EVALUATION_V0
+Operator GO (canonical): GO_EXECUTE_BOUNDED_FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_EVALUATION_V0
+Operator GO (alias): GO_BOUNDED_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_FOR_VERSIONED_FINAL_RESEARCH_FLEET_V0
 """
 
 from __future__ import annotations
@@ -31,14 +32,17 @@ from src.backtest.economic_viability_evidence_v1 import (  # noqa: E402
     load_economic_viability_evidence_bundle_v1,
 )
 from src.research.final_research_fleet_offline_economic_evaluation_execution_v0 import (  # noqa: E402
+    ACCEPTED_GO_TOKENS,
     AUTHORITY_EFFECT,
     EXPECTED_ORIGIN_MAIN_SHA,
     GO_TOKEN,
     ORDER_EFFECT,
+    PR4826_MERGE_COMMIT,
     REQUIRED_MERGED_PR_NUMBER,
     RUNTIME_EFFECT,
     CandidateTerminalStatus,
     dumps_execution_canonical_v1,
+    is_accepted_go_token,
     materialize_fleet_evaluation_summary_v0,
     run_candidate_economic_evaluation_v0,
     verify_execution_start_state_v0,
@@ -266,8 +270,8 @@ def run_evaluation(
     primary_worktree: Path,
     binding_completion_path: Path | None = None,
 ) -> dict[str, Any]:
-    if confirm != CONFIRM_GO:
-        _die(f"ERR: confirm_go_token_required:{CONFIRM_GO}")
+    if not is_accepted_go_token(confirm):
+        _die(f"ERR: confirm_go_token_required:one_of:{sorted(ACCEPTED_GO_TOKENS)}")
 
     primary_before = _primary_worktree_snapshot(primary_worktree)
     origin_main = _resolve_origin_main(_REPO_ROOT)
@@ -316,6 +320,7 @@ def run_evaluation(
 
     preflight_lines = [
         f"ORIGIN_MAIN={origin_main}",
+        f"PR4826_MERGE_COMMIT={PR4826_MERGE_COMMIT}",
         f"EXPECTED_ORIGIN_MAIN={EXPECTED_ORIGIN_MAIN_SHA}",
         f"REQUIRED_MERGED_PR_NUMBER={REQUIRED_MERGED_PR_NUMBER}",
         "FINAL_RESEARCH_FLEET_BINDING_READY=true",
@@ -527,7 +532,11 @@ def main() -> None:
     parser = argparse.ArgumentParser(
         description="Run final research fleet offline economic evaluation v0."
     )
-    parser.add_argument("--confirm-go-token", required=True, choices=[CONFIRM_GO])
+    parser.add_argument(
+        "--confirm-go-token",
+        required=True,
+        choices=sorted(ACCEPTED_GO_TOKENS),
+    )
     parser.add_argument("--durable-evidence-root", type=Path, default=DEFAULT_DURABLE_ROOT)
     parser.add_argument("--primary-worktree", type=Path, default=DEFAULT_PRIMARY_WORKTREE)
     parser.add_argument("--binding-completion-path", type=Path, default=None)
