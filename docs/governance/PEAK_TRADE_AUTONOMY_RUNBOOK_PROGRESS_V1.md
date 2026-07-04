@@ -36,6 +36,9 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `RUNBOOK_V4_4_CANONICAL_SOURCE` | `docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4_current_state_multi_candidate_research_fleet.md` |
 | `RUNBOOK_V4_4_STALE_GOVERNANCE_SUPERSESSION_STATUS` | `DOCS_HYGIENE_APPLIED_V0` |
 | `RUNBOOK_V4_4_STALE_GOVERNANCE_SUPERSESSION_NOTE` | Runbook-v4.4 enthält historische Pre-Fail-Snapshots (`NO_NEW_CANDIDATE_HOLD=REVOKED`, `MULTI_CANDIDATE_RESEARCH_FLEET_ALLOWED=true`); operative Authority = diese Registry-Metadaten, nicht stale v4.4-Abschnitte 19.2/45. |
+| `RUNBOOK_V4_4_1_MULTI_FUTURE_TARGET_MODEL_CLARIFICATION_SOURCE` | `docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.1_multi_future_target_model_clarification.md` |
+| `RUNBOOK_V4_4_1_GOVERNANCE_CLARIFICATION_STATUS` | `INTEGRATED_V0` |
+| `RUNBOOK_V4_4_1_GOVERNANCE_CLARIFICATION_NOTE` | Multi-future target model clarification; PHASE_1 remains `SINGLE_SELECTED_FUTURE` / `MAX_POSITIONS=1`; `MULTI_FUTURE_RUNTIME_AUTHORIZED=false`; no runtime authority. |
 | `PR4840_MERGE_COMMIT` | `220cce942aada36e621c3dd572c1ac818463e051` |
 | `PR4840_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_class_d_v1_stale_runbook_supersession_docs_hygiene_pr_closeout_v0_20260704T225316Z (MANIFEST_VERIFY_RC=0; PR #4840; squash 220cce94; VERDICT=CLASS_D_V1_STALE_RUNBOOK_SUPERSESSION_DOCS_HYGIENE_SQUASH_MERGE_CLOSEOUT_COMPLETE)` |
 | `PR4840_LAST_VERIFIED_SYNC_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_progress_registry_last_verified_origin_main_sync_pr_closeout_v0_20260704T230130Z` |
