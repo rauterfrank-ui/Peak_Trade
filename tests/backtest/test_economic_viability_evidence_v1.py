@@ -402,3 +402,79 @@ def test_reproducibility_mismatch_detected() -> None:
     repro = ev.verify_economic_viability_evidence_reproducibility_v1(persisted=a, rebuilt=b)
     assert repro.reproducible is False
     assert "manifest_digest_mismatch" in repro.reason_codes
+
+
+def _promising_eligible_bindings() -> dict[str, bool]:
+    return {
+        "data_admissible": True,
+        "policy_version_bound": True,
+        "funding_bound": True,
+        "parameter_sensitivity_bound": True,
+    }
+
+
+def test_resolve_status_zero_trade_gate_fail_never_promising() -> None:
+    status = ev._resolve_status(
+        reason_codes=["TRADE_COUNT_BELOW_THRESHOLD", "ZERO_TRADE_DEGENERATION"],
+        robustness_failures=[],
+        gates_pass=False,
+        trade_count=0,
+        minimum_trade_count=50,
+        **_promising_eligible_bindings(),
+    )
+    assert status is not ev.EconomicViabilityStatus.PROMISING
+    assert status is ev.EconomicViabilityStatus.RESEARCH_ONLY
+
+
+def test_resolve_status_zero_trade_trivial_mc_wf_pass_never_promising() -> None:
+    status = ev._resolve_status(
+        reason_codes=["ZERO_TRADE_DEGENERATION"],
+        robustness_failures=[],
+        gates_pass=True,
+        trade_count=0,
+        minimum_trade_count=50,
+        **_promising_eligible_bindings(),
+    )
+    assert status is not ev.EconomicViabilityStatus.PROMISING
+    assert status is ev.EconomicViabilityStatus.RESEARCH_ONLY
+
+
+def test_resolve_status_below_min_trade_count_never_promising() -> None:
+    status = ev._resolve_status(
+        reason_codes=["TRADE_COUNT_BELOW_THRESHOLD"],
+        robustness_failures=[],
+        gates_pass=False,
+        trade_count=2,
+        minimum_trade_count=50,
+        **_promising_eligible_bindings(),
+    )
+    assert status is not ev.EconomicViabilityStatus.PROMISING
+    assert status is ev.EconomicViabilityStatus.ROBUSTNESS_FAILED
+
+
+def test_resolve_status_terminal_gate_fail_dominates_promising_fallback() -> None:
+    status = ev._resolve_status(
+        reason_codes=["MONTE_CARLO_FAILED", "STRESS_FAILED", "PROFIT_FACTOR_BELOW_THRESHOLD"],
+        robustness_failures=[],
+        gates_pass=False,
+        trade_count=219,
+        minimum_trade_count=50,
+        **_promising_eligible_bindings(),
+    )
+    assert status is not ev.EconomicViabilityStatus.PROMISING
+    assert status is ev.EconomicViabilityStatus.ROBUSTNESS_FAILED
+
+
+def test_resolve_status_promising_fallback_unchanged_when_eligible() -> None:
+    status = ev._resolve_status(
+        reason_codes=[],
+        robustness_failures=[],
+        gates_pass=True,
+        trade_count=100,
+        minimum_trade_count=50,
+        data_admissible=True,
+        policy_version_bound=True,
+        funding_bound=True,
+        parameter_sensitivity_bound=False,
+    )
+    assert status is ev.EconomicViabilityStatus.PROMISING
