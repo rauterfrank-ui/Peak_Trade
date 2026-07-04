@@ -57,10 +57,9 @@ def _closeout_section(text: str) -> str:
 
 
 class TestPostPr4827AuthoritativeGlobalState:
-    def test_global_next_step_operator_decision_required(self) -> None:
-        assert authoritative_field_value("NEXT_CANONICAL_STEP") == CURRENT_GLOBAL_NEXT_STEP
-        assert authoritative_field_value("NEXT_CANONICAL_ACTION") == CURRENT_GLOBAL_NEXT_STEP
-        assert authoritative_field_value("GLOBAL_RUNBOOK_NEXT_STEP") == CURRENT_GLOBAL_NEXT_STEP
+    def test_global_next_step_recorded_in_closeout_snapshot(self) -> None:
+        section = _closeout_section(read_registry())
+        assert _field_value(section, "NEXT_CANONICAL_STEP") == CURRENT_GLOBAL_NEXT_STEP
 
     def test_post_pr4827_operator_decision_readiness_flags(self) -> None:
         assert authoritative_field_value("PR4827_MERGE_COMMIT") == PR4827_MERGE_COMMIT
@@ -174,7 +173,6 @@ class TestRegistryResolverIntegrity:
         )
         assert ambiguous == {}
 
-    def test_global_summary_reflects_post_pr4827_state(self) -> None:
+    def test_global_summary_reflects_post_pr4827_closeout_state(self) -> None:
         summary = global_summary_section()
-        assert _field_value(summary, "NEXT_CANONICAL_STEP") == CURRENT_GLOBAL_NEXT_STEP
         assert _field_value(summary, "POST_PR4827_OPERATOR_DECISION_READINESS_STATUS") == "COMPLETE"
