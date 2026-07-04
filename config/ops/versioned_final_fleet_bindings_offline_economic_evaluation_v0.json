@@ -1,0 +1,21 @@
+{
+  "schema_version": "versioned_final_fleet_bindings_offline_economic_evaluation.v0",
+  "go_token": "GO_BOUNDED_VERSIONED_FINAL_FLEET_BINDINGS_AND_OFFLINE_ECONOMIC_EVALUATION_V0",
+  "expected_origin_main_sha": "d7e03de515a7349b01cc4058379fcbb65c4548d8",
+  "staging_root": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1",
+  "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1",
+  "dataset_extension_ohlcv": "extended_chronological_v1",
+  "dataset_extension_funding": "extended_chronological_with_funding_v1",
+  "panel_calendar_start_utc": "2024-05-01T00:00:00Z",
+  "panel_calendar_end_utc": "2024-09-01T00:00:00Z",
+  "prior_panel_materialization_evidence_bundle": "research/offline_panel_materialization_from_partial_tmp_no_fetch_v0_20260703T221342Z",
+  "prior_funding_fetch_evidence_bundle": "research/bounded_offline_funding_fetch_for_materialized_panel_v0_20260704T165402Z",
+  "prior_funding_ingest_evidence_bundle": "research/okx_historical_funding_archive_ingest_v0_20260704T171836Z",
+  "period_policy_ref": "config/research/pit_cross_sectional_research_data_digest_period_split_policy_v1.json",
+  "evaluation_instrument_id": "okx:linear_perpetual:ETH:USDT:USDT:perp",
+  "evaluation_native_instrument_id": "ETH-USDT-SWAP",
+  "evaluation_price_adapter_kind": "NARROW_ADAPTER_INST_ETH_USDT_PERP_FROM_EXTENDED_CHRONOLOGICAL_V1_PANEL_v0",
+  "network_fetch_run": false,
+  "full_universe_fetch_run": false,
+  "runtime_run": false
+}
