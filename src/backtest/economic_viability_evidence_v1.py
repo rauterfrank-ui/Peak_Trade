@@ -572,6 +572,30 @@ def _evaluate_robustness_failures(
     return failures
 
 
+_PROMISING_BLOCKING_GATE_REASON_CODES = frozenset(
+    {
+        "MONTE_CARLO_FAILED",
+        "STRESS_FAILED",
+        "WALK_FORWARD_FAILED",
+        "OUT_OF_SAMPLE_FAILED",
+        "PARAMETER_ROBUSTNESS_FAILED",
+        "NET_EXPECTANCY_BELOW_THRESHOLD",
+        "PROFIT_FACTOR_BELOW_THRESHOLD",
+        "TRADE_COUNT_BELOW_THRESHOLD",
+    }
+)
+
+
+def _reason_codes_block_promising_status(reason_codes: Sequence[str]) -> bool:
+    reason_code_set = frozenset(reason_codes)
+    if reason_code_set & _PROMISING_BLOCKING_GATE_REASON_CODES:
+        return True
+    return any(
+        code.startswith(("monte_carlo_", "stress_severe_loss:", "walk_forward_all_oos"))
+        for code in reason_codes
+    )
+
+
 def _resolve_status(
     *,
     reason_codes: Sequence[str],
@@ -581,9 +605,19 @@ def _resolve_status(
     funding_bound: bool,
     parameter_sensitivity_bound: bool,
     gates_pass: bool,
+    trade_count: int,
+    minimum_trade_count: int,
 ) -> EconomicViabilityStatus:
     if robustness_failures:
         return EconomicViabilityStatus.ROBUSTNESS_FAILED
+
+    if trade_count == 0:
+        return EconomicViabilityStatus.RESEARCH_ONLY
+    if trade_count < minimum_trade_count:
+        if not gates_pass or _reason_codes_block_promising_status(reason_codes):
+            return EconomicViabilityStatus.ROBUSTNESS_FAILED
+        return EconomicViabilityStatus.RESEARCH_ONLY
+
     if (
         gates_pass
         and data_admissible
@@ -594,6 +628,10 @@ def _resolve_status(
         return EconomicViabilityStatus.ECONOMICALLY_VIABLE_OFFLINE
     if not data_admissible or not policy_version_bound or not funding_bound:
         return EconomicViabilityStatus.RESEARCH_ONLY
+
+    if not gates_pass or _reason_codes_block_promising_status(reason_codes):
+        return EconomicViabilityStatus.ROBUSTNESS_FAILED
+
     return EconomicViabilityStatus.PROMISING
 
 
@@ -878,6 +916,14 @@ def build_economic_viability_evidence_v1(
     )
     gates_pass = gate_eval.gates_pass
     reason_codes.extend(gate_eval.reason_codes)
+    if trade_count_value == 0:
+        reason_codes.append("ZERO_TRADE_DEGENERATION")
+
+    minimum_trade_count = (
+        int(policy.minimum_trade_count.value)
+        if policy.thresholds_configured() and policy.minimum_trade_count.value is not None
+        else 0
+    )
 
     status = _resolve_status(
         reason_codes=reason_codes,
@@ -887,6 +933,8 @@ def build_economic_viability_evidence_v1(
         funding_bound=funding_bound,
         parameter_sensitivity_bound=parameter_sensitivity_bound,
         gates_pass=gates_pass,
+        trade_count=trade_count_value,
+        minimum_trade_count=minimum_trade_count,
     )
     _fail_closed(status.value not in _STEP29M_ALLOWED_STATUSES, "status_not_allowed_for_step29m")
 
