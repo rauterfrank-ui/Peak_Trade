@@ -8,6 +8,28 @@
 **Systemziel:** Vollautonomes, futures-only Peak-Trade-System mit deterministischer, konsistenter und auditierbarer Handelslogik; realistischer Profitabilitätsvalidierung; unabhängiger Safety Authority; gefenceter Single-Writer-Runtime; vollständiger Reconciliation; sicherer Restart-/Recovery-Semantik und einer durchgängigen Research→Validation→Promotion→Runtime→Feedback-Kette.
 **Keine Anlageberatung.**
 
+> **STALE GOVERNANCE SUPERSESSION NOTICE (2026-07-04)**
+>
+> Abschnitte mit `NO_NEW_CANDIDATE_HOLD=REVOKED`, `MULTI_CANDIDATE_RESEARCH_FLEET_ALLOWED=true` und frühen `NEXT_STEP=RATIFY_VERSIONED_FINAL_FLEET_BINDINGS…`-Werten sind **historische Pre-Fail-Snapshots** (Stand vor PR4819 Hold-Reinstatement, Fleet-FAIL 0/3, Terminal Park).
+>
+> **Operative Authority:** [`PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md`](PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md) → `## Registry-Metadaten` (aufgelöst via `src/governance/runbook_progress_registry_v1.py`).
+>
+> **Authoritativer Current State:**
+>
+> ```text
+> NO_NEW_CANDIDATE_HOLD=ACTIVE
+> MULTI_CANDIDATE_RESEARCH_FLEET_ALLOWED=false
+> CLASS_D_V1_FLEET=TERMINAL_PARKED
+> CURRENT_ADMISSIBLE_NEXT_SCOPE=NONE
+> PASS_COUNT=0 / FAIL_COUNT=3
+> ECONOMIC_EVALUATION_AUTHORIZED=false
+> v2 successor research=BLOCKED
+> ```
+>
+> **Evidence Bundles (MANIFEST_VERIFY_RC=0):** `bounded_class_d_v1_fleet_operator_decision_dossier_and_governance_disposition_read_only_v0_20260704T224019Z`, `bounded_class_d_v1_fleet_terminal_park_ratification_v0_20260704T224245Z`, `bounded_class_d_v1_fleet_architecture_review_read_only_v0_20260704T224444Z` unter `$DURABLE_ARCHIVE_ROOT/implementation/`.
+>
+> Stale Governance-Werte in diesem Dokument sind **nicht** für operative Entscheidungen zu verwenden.
+
 ---
 
 # 0. Zweck dieser Version
@@ -906,6 +928,8 @@ PROMISING != PROMOTION_CANDIDATE
 ```
 
 ## 19.2 Aktive Research-Governance
+
+> **HISTORISCH — STALE PRE-FAIL SNAPSHOT.** Die folgenden Werte (`NO_NEW_CANDIDATE_HOLD=REVOKED`, `MULTI_CANDIDATE_RESEARCH_FLEET_ALLOWED=true`) sind **nicht** operative Authority. Siehe Supersession Notice am Dokumentanfang und `PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md` → `## Registry-Metadaten`.
 
 ```text
 OPERATOR_POLICY_DECISION=AUTHORIZE_BOUNDED_MULTI_CANDIDATE_FUTURES_RESEARCH_FLEET_V0
@@ -2078,6 +2102,8 @@ Ergänzt oder aktualisiert wurden:
 ---
 
 # 45. Kanonische Gesamtentscheidung
+
+> **HISTORISCH — STALE PRE-FAIL SNAPSHOT.** Die folgenden Governance-Werte (`NO_NEW_CANDIDATE_HOLD=REVOKED`, `MULTI_CANDIDATE_RESEARCH_FLEET_ALLOWED=true`) spiegeln den Stand vor Hold-Reinstatement und Terminal Park wider. Operative Authority: `NO_NEW_CANDIDATE_HOLD=ACTIVE`, `MULTI_CANDIDATE_RESEARCH_FLEET_ALLOWED=false`, `CLASS_D_V1_FLEET=TERMINAL_PARKED` — siehe Registry-Metadaten.
 
 ```text
 V4_4_IS_CANONICAL_TARGET=true
