@@ -13,7 +13,7 @@ CLOSEOUT_SECTION_PREFIX = "#### CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_RESEARCH_SC
 RESEARCH_LINE_PREFIX = (
     "#### RUNBOOK_RESEARCH_LINE — Cross-Sectional Relative Strength Non-Bitcoin Perpetuals v0"
 )
-NEXT_CANONICAL_STEP = "AWAIT_OPERATOR_OFFLINE_EVALUATION_GO_CROSS_SECTIONAL_RELATIVE_STRENGTH_V0"
+TERMINAL_NEXT_STEP = "NO_FURTHER_CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_ACTION_TERMINAL_FAIL"
 OPERATOR_GO = "GO_NEW_RESEARCH_SCOPE_CROSS_SECTIONAL_RELATIVE_STRENGTH_NON_BITCOIN_PERPETUALS_V0"
 STRATEGY_TARGET = "cross_sectional_relative_strength&#47;v0"
 HYPOTHESIS_ID = "CROSS_SECTIONAL_RELATIVE_STRENGTH_NON_BITCOIN_PERPETUALS_V0"
@@ -93,7 +93,13 @@ class TestAuthoritativeScopeBindingRatification:
             authoritative_field_value(
                 "CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_ECONOMIC_EVALUATION_EXECUTED"
             )
-            == "false"
+            == "true"
+        )
+        assert (
+            authoritative_field_value(
+                "CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_OFFLINE_ECONOMIC_EVALUATION_STATUS"
+            )
+            == "COMPLETE_FAIL"
         )
 
     def test_terminal_gates_and_runtime_remain_blocked(self) -> None:
@@ -108,11 +114,11 @@ class TestAuthoritativeScopeBindingRatification:
         )
 
     def test_scoped_admissible_next_scope_without_global_candidate_ratification(self) -> None:
-        assert authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE") == STRATEGY_TARGET
-        assert authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN") == OPERATOR_GO
-        assert authoritative_field_value("NEXT_CANONICAL_STEP") == NEXT_CANONICAL_STEP
-        assert authoritative_field_value("NEXT_CANONICAL_ACTION") == NEXT_CANONICAL_STEP
-        assert authoritative_field_value("GLOBAL_RUNBOOK_NEXT_STEP") == NEXT_CANONICAL_STEP
+        assert authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE") == "NONE"
+        assert authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN") == "NONE"
+        assert authoritative_field_value("NEXT_CANONICAL_STEP") == TERMINAL_NEXT_STEP
+        assert authoritative_field_value("NEXT_CANONICAL_ACTION") == TERMINAL_NEXT_STEP
+        assert authoritative_field_value("GLOBAL_RUNBOOK_NEXT_STEP") == TERMINAL_NEXT_STEP
 
     def test_futures_only_and_exclusions(self) -> None:
         assert (
@@ -153,7 +159,9 @@ class TestCloseoutSection:
         assert _field_value(section, "NO_NEW_CANDIDATE_HOLD") == "ACTIVE"
         assert _field_value(section, "NO_NEW_CANDIDATE_HOLD_EXCEPTION") == "true"
         assert _field_value(section, "HISTORICAL_NEGATIVE_EVIDENCE_MUTATED") == "false"
-        assert _field_value(section, "NEXT_CANONICAL_STEP") == NEXT_CANONICAL_STEP
+        assert _field_value(section, "NEXT_CANONICAL_STEP") == (
+            "AWAIT_OPERATOR_OFFLINE_EVALUATION_GO_CROSS_SECTIONAL_RELATIVE_STRENGTH_V0"
+        )
         assert _field_value(section, "RUNTIME_EFFECT") == "NONE"
         assert _field_value(section, "AUTHORITY_EFFECT") == "NONE"
 
@@ -161,8 +169,9 @@ class TestCloseoutSection:
 class TestResearchLineConsistency:
     def test_research_line_matches_authoritative_state(self) -> None:
         section = _research_line_section(read_registry())
-        assert _field_value(section, "STATUS") == "SCOPE_DEFINITION_AND_BINDING_RATIFIED"
-        assert _field_value(section, "NEXT_CANONICAL_STEP") == NEXT_CANONICAL_STEP
+        assert _field_value(section, "STATUS") == "COMPLETE_FAIL"
+        assert _field_value(section, "ECONOMIC_EVALUATION_STATUS") == "COMPLETE_FAIL"
+        assert _field_value(section, "NEXT_CANONICAL_STEP") == TERMINAL_NEXT_STEP
         assert _field_value(section, "PIT_UNIVERSE_MANIFEST_REF_STATUS") == "BOUND"
         assert _field_value(section, "UNIVERSE_BINDING_STATUS") == "BOUND"
         assert _field_value(section, "DATASET_BINDING_STATUS") == "BOUND"
@@ -175,5 +184,6 @@ class TestResearchLineConsistency:
         )
         assert _field_value(section, "CONCRETE_CANDIDATE_RATIFIED") == "true"
         assert _field_value(section, "ECONOMIC_EVALUATION_AUTHORIZED") == "false"
+        assert _field_value(section, "ECONOMIC_EVALUATION_EXECUTED") == "true"
         assert _field_value(section, "BACKTEST_EXECUTION_ALLOWED") == "false"
         assert _field_value(section, "RUNTIME_REWIRE_ADMISSIBLE") == "false"

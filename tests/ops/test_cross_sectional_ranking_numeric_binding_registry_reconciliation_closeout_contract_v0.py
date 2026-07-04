@@ -111,12 +111,11 @@ class TestAuthoritativeNumericBindingReconciliation:
             == "ECONOMIC_VALIDITY_OFFLINE_GATE_FAIL"
         )
 
-    def test_next_canonical_step_await_operator_evaluation_go(self) -> None:
-        assert (
-            authoritative_field_value("GLOBAL_RUNBOOK_NEXT_STEP")
-            == "AWAIT_OPERATOR_OFFLINE_EVALUATION_GO_CROSS_SECTIONAL_RELATIVE_STRENGTH_V0"
+    def test_next_canonical_step_terminal_fail_no_auto_evaluation(self) -> None:
+        assert authoritative_field_value("GLOBAL_RUNBOOK_NEXT_STEP") == (
+            "NO_FURTHER_CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_ACTION_TERMINAL_FAIL"
         )
-        assert authoritative_field_value("HYPOTHESIS_SUBSTRAND_NEXT_STEP_READ_ONLY") == "false"
+        assert authoritative_field_value("HYPOTHESIS_SUBSTRAND_NEXT_STEP_READ_ONLY") == "true"
 
 
 class TestEvidenceCrosslinks:
@@ -141,10 +140,10 @@ class TestCrossSectionalResearchLineConsistency:
     def test_research_line_matches_authoritative_numeric_state(self) -> None:
         text = read_registry()
         section = _cross_sectional_section(text)
-        assert _field_value(section, "STATUS") == "SCOPE_DEFINITION_AND_BINDING_RATIFIED"
+        assert _field_value(section, "STATUS") == "COMPLETE_FAIL"
         assert (
             _field_value(section, "NEXT_CANONICAL_STEP")
-            == "AWAIT_OPERATOR_OFFLINE_EVALUATION_GO_CROSS_SECTIONAL_RELATIVE_STRENGTH_V0"
+            == "NO_FURTHER_CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_ACTION_TERMINAL_FAIL"
         )
         assert _field_value(section, "NUMERIC_VALUES_BOUND") == "true"
         assert _field_value(section, "PIT_UNIVERSE_MANIFEST_REF_STATUS") == "BOUND"
