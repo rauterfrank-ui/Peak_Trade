@@ -18,8 +18,8 @@ SCHEDULER_RUNTIME_ALLOWED: false
 
 | Feld | Wert |
 |---|---|
-| `LAST_VERIFIED_ORIGIN_MAIN` | `de50ed0e745df4f1984e8c1037560d9e3535d466` |
-| `LAST_VERIFIED_AT` | `2026-07-03T13:16:00Z` |
+| `LAST_VERIFIED_ORIGIN_MAIN` | `bd03912a9659b2efbb7cbaf7638922c651abc32b` |
+| `LAST_VERIFIED_AT` | `2026-07-04T18:00:33Z` |
 | `CURRENT_MAJOR_GAP_PACKAGE` | `MAJOR_GAP_COMPARISON_PROMOTION_POLICY_INPUT_BRIDGE_V0` |
 | `NEXT_RUNBOOK_STEP` | `RUNBOOK_STEP_29R_RUNTIME_REWIRE_V1_IMPLEMENTATION` |
 | `NEXT_RUNBOOK_STEP_STRUCTURAL_STATUS` | `OPEN_OR_IN_PROGRESS` |
@@ -37,7 +37,10 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `NO_NEW_CANDIDATE_HOLD` | `REVOKED` |
 | `NO_NEW_CANDIDATE_HOLD_REGISTRY_DRIFT_CORRECTED` | `true` |
 | `NO_NEW_CANDIDATE_HOLD_PRIOR_REGISTRY_DRIFT_VALUE` | `ACTIVE` |
+| `NO_NEW_CANDIDATE_HOLD_REINSTATE_RECOMMENDED` | `true` |
 | `MULTI_CANDIDATE_RESEARCH_FLEET_ALLOWED` | `true` |
+| `MULTI_CANDIDATE_RESEARCH_FLEET_AUTHORIZATION_CONSUMED` | `true` |
+| `MULTI_CANDIDATE_RESEARCH_FLEET_NEW_AUTHORIZATION_REQUIRED` | `true` |
 | `EXACTLY_ONE_CANDIDATE_LIMIT` | `false` |
 | `FINAL_RESEARCH_FLEET` | `trend_following,bollinger_bands,momentum_1h` |
 | `FINAL_RESEARCH_FLEET_BINDING_READY` | `true` |
@@ -51,6 +54,11 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
 | `RETRY_UNCHANGED_BINDING_ALLOWED` | `false` |
 | `RESEARCH_GOVERNANCE_RECONCILIATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_runbook_v4_4_research_governance_progress_registry_reconciliation_v0_20260703T143000Z (MANIFEST_VERIFY_RC=0)` |
+| `RESEARCH_GOVERNANCE_DECISION_AFTER_FINAL_FLEET_FAIL_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/research_governance_decision_after_final_fleet_fail_v0_20260704T180033Z (MANIFEST_VERIFY_RC=0)` |
+| `GOVERNANCE_DECISION` | `NO_NEW_CANDIDATE_HOLD_REINSTATE_RECOMMENDED` |
+| `RANK_1_NEXT_SCOPE` | `NO_NEW_CANDIDATE_HOLD_REINSTATE` |
+| `PR4818_MERGE_COMMIT` | `bd03912a9659b2efbb7cbaf7638922c651abc32b` |
+| `PR4818_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/versioned_final_fleet_bindings_offline_economic_evaluation_pr_merge_closeout_v0_20260704T175726Z (MANIFEST_VERIFY_RC=0)` |
 | `STEP29R_PRECONDITION_ADMISSIBILITY_ASSESSMENT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/runbook_step29r_runtime_rewire_precondition_admissibility_assessment_read_only_v0_20260702T205033Z (MANIFEST_VERIFY_RC=0; VERDICT=STEP29R_RUNTIME_REWIRE_PRECONDITION_ASSESSMENT_COMPLETE_NOT_ADMISSIBLE)` |
 | `STEP29R_ECONOMIC_VALIDITY_TERMINAL_BLOCKER_REGISTRY_BINDING_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/bounded_step29r_economic_validity_terminal_blocker_registry_binding_v0_20260702T210306Z (MANIFEST_VERIFY_RC=0)` |
 | `TRADING_LOGIC_COMPLETION_GATE_STATUS` | `PASS` |
@@ -2753,6 +2761,49 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `AUTHORITY_EFFECT` | `NONE` |
 | `offline_only` | `true` |
 | `non_authorizing` | `true` |
+
+#### RESEARCH_GOVERNANCE_DECISION_AFTER_FINAL_FLEET_FAIL_V0
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `COMPLETE` |
+| `SCOPE_CLASSIFICATION` | `BOUNDED_RESEARCH_GOVERNANCE_DECISION_AFTER_FINAL_FLEET_FAIL_V0` |
+| `GO_TOKEN` | `GO_BOUNDED_RESEARCH_GOVERNANCE_DECISION_AFTER_FINAL_FLEET_FAIL_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `ORIGIN_MAIN` | `bd03912a9659b2efbb7cbaf7638922c651abc32b` |
+| `PR4815_PANEL_MATERIALIZATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/offline_panel_materialization_from_partial_tmp_no_fetch_v0_20260703T221342Z (MANIFEST_VERIFY_RC=0)` |
+| `PR4816_OKX_PUBLIC_FUNDING_HORIZON_FAIL_CLOSEOUT_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/bounded_offline_funding_fetch_for_materialized_panel_pr_merge_closeout_v0_20260704T170602Z (MANIFEST_VERIFY_RC=0)` |
+| `PR4817_OKX_HISTORICAL_FUNDING_ARCHIVE_INGEST_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/okx_historical_funding_archive_ingest_v0_20260704T171836Z (MANIFEST_VERIFY_RC=0)` |
+| `PR4818_VERSIONED_FINAL_FLEET_EVALUATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/versioned_final_fleet_bindings_offline_economic_evaluation_v0_20260704T174159Z (MANIFEST_VERIFY_RC=0)` |
+| `PR4818_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/versioned_final_fleet_bindings_offline_economic_evaluation_pr_merge_closeout_v0_20260704T175726Z (MANIFEST_VERIFY_RC=0)` |
+| `FINAL_RESEARCH_FLEET_STATUS` | `COMPLETE_NO_PASS` |
+| `PASS_COUNT` | `0` |
+| `FAIL_COUNT` | `3` |
+| `trend_following_v1_status` | `FAIL` |
+| `bollinger_bands_v1_status` | `FAIL` |
+| `momentum_1h_v1_status` | `FAIL` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `PROMOTION_CANDIDATE_CREATED` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `RESEARCH_GOVERNANCE_DECISION_RUN` | `true` |
+| `NEW_EVALUATION_RUN` | `false` |
+| `GOVERNANCE_DECISION` | `NO_NEW_CANDIDATE_HOLD_REINSTATE_RECOMMENDED` |
+| `RANK_1_NEXT_SCOPE` | `NO_NEW_CANDIDATE_HOLD_REINSTATE` |
+| `NO_NEW_CANDIDATE_HOLD` | `REVOKED` |
+| `NO_NEW_CANDIDATE_HOLD_REINSTATE_RECOMMENDED` | `true` |
+| `MULTI_CANDIDATE_RESEARCH_FLEET_AUTHORIZATION_CONSUMED` | `true` |
+| `MULTI_CANDIDATE_RESEARCH_FLEET_NEW_AUTHORIZATION_REQUIRED` | `true` |
+| `OPERATOR_INPUT_REQUIRED_FOR_NEW_RESEARCH_SCOPE` | `true` |
+| `HISTORICAL_NEGATIVE_EVIDENCE_MUTATED` | `false` |
+| `POLICY_OR_THRESHOLD_CHANGED` | `false` |
+| `PARAMETER_OPTIMIZATION_PERFORMED` | `false` |
+| `NEXT_CANONICAL_STEP` | `OPERATOR_INPUT_REQUIRED_FOR_NEW_RESEARCH_SCOPE_DEFINITION_V0` |
+| `DURABLE_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/research_governance_decision_after_final_fleet_fail_v0_20260704T180033Z (MANIFEST_VERIFY_RC=0)` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
 
 ---
 
