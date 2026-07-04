@@ -24,7 +24,7 @@ RATIFICATION_TEMPLATE = (
 )
 CLOSEOUT_SECTION_PREFIX = "#### FINAL_FLEET_NEW_VERSIONED_RESEARCH_SCOPE_RATIFICATION_TEMPLATE_V0"
 CURRENT_HEAD = "5d79b85800e39d345f185f224d68dab2d38d2066"
-CURRENT_STATE = "NEW_VERSIONED_RESEARCH_SCOPE_RATIFICATION_TEMPLATE_READY_V0"
+TEMPLATE_STATUS = "READY"
 NEXT_CANONICAL_STEP = "OPERATOR_RATIFICATION_REQUIRED_FOR_NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_VERSIONED_EVIDENCE_CLASS_V0"
 ADMISSIBILITY_MATRIX = {
     "A_UNMODIFIED_STEP31F_REEXECUTION": "BLOCKED",
@@ -146,15 +146,14 @@ class TestFinalFleetNewVersionedResearchScopeRatificationTemplateDoc:
 
 
 class TestFinalFleetNewVersionedResearchScopeRatificationTemplateRegistry:
-    def test_authoritative_current_state_and_next_step(self) -> None:
-        assert authoritative_field_value("CURRENT_STATE") == CURRENT_STATE
+    def test_authoritative_template_status_and_next_step(self) -> None:
         assert authoritative_field_value("NEXT_CANONICAL_STEP") == NEXT_CANONICAL_STEP
         assert authoritative_field_value("GLOBAL_RUNBOOK_NEXT_STEP") == NEXT_CANONICAL_STEP
         assert (
             authoritative_field_value(
                 "FINAL_FLEET_NEW_VERSIONED_RESEARCH_SCOPE_RATIFICATION_TEMPLATE_STATUS"
             )
-            == "READY"
+            == TEMPLATE_STATUS
         )
         assert authoritative_field_value("UNMODIFIED_BINDING_REEXECUTION_BLOCKED") == "true"
         assert authoritative_field_value("OFFLINE_ECONOMIC_EVALUATION_EXECUTION_ALLOWED") == "false"
@@ -189,7 +188,6 @@ class TestRegistryResolverIntegrity:
         ambiguous = duplicate_current_owner_fields(
             registry,
             fields=(
-                "CURRENT_STATE",
                 "NEXT_CANONICAL_STEP",
                 "GLOBAL_RUNBOOK_NEXT_STEP",
                 "FINAL_FLEET_NEW_VERSIONED_RESEARCH_SCOPE_RATIFICATION_TEMPLATE_STATUS",
@@ -198,14 +196,13 @@ class TestRegistryResolverIntegrity:
         )
         assert ambiguous == {}
 
-    def test_global_summary_reflects_template_state(self) -> None:
+    def test_global_summary_reflects_template_ready_state(self) -> None:
         summary = global_summary_section()
-        assert _field_value(summary, "CURRENT_STATE") == CURRENT_STATE
         assert _field_value(summary, "NEXT_CANONICAL_STEP") == NEXT_CANONICAL_STEP
         assert (
             _field_value(
                 summary,
                 "FINAL_FLEET_NEW_VERSIONED_RESEARCH_SCOPE_RATIFICATION_TEMPLATE_STATUS",
             )
-            == "READY"
+            == TEMPLATE_STATUS
         )
