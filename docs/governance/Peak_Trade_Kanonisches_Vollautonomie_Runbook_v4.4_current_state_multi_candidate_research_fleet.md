@@ -26,7 +26,7 @@
 > v2 successor research=BLOCKED
 > ```
 >
-> **Evidence Bundles (MANIFEST_VERIFY_RC=0):** `bounded_class_d_v1_fleet_operator_decision_dossier_and_governance_disposition_read_only_v0_20260704T224019Z`, `bounded_class_d_v1_fleet_terminal_park_ratification_v0_20260704T224245Z`, `bounded_class_d_v1_fleet_architecture_review_read_only_v0_20260704T224444Z` unter `$DURABLE_ARCHIVE_ROOT/implementation/`.
+> **Evidence Bundles (MANIFEST_VERIFY_RC=0):** `bounded_class_d_v1_fleet_operator_decision_dossier_and_governance_disposition_read_only_v0_20260704T224019Z`, `bounded_class_d_v1_fleet_terminal_park_ratification_v0_20260704T224245Z`, `bounded_class_d_v1_fleet_architecture_review_read_only_v0_20260704T224444Z` unter `$DURABLE_ARCHIVE_ROOT&#47;implementation&#47;`.
 >
 > Stale Governance-Werte in diesem Dokument sind **nicht** für operative Entscheidungen zu verwenden.
 
