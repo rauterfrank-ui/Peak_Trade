@@ -7,6 +7,7 @@ from PR #4832 (or legacy PR #4826 bindings when explicitly supplied).
 No runtime, order, or authority effect.
 Operator GO (canonical): GO_EXECUTE_BOUNDED_FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_EVALUATION_V0
 Operator GO (alias): GO_BOUNDED_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_FOR_VERSIONED_FINAL_RESEARCH_FLEET_V0
+Operator GO (Class-D final): GO_BOUNDED_CLASS_D_FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_EVALUATION_V0
 """
 
 from __future__ import annotations
@@ -19,7 +20,7 @@ import subprocess
 import sys
 from datetime import datetime, timezone
 from pathlib import Path
-from typing import Any, Mapping
+from typing import Any, Mapping, Sequence
 
 _REPO_ROOT = Path(__file__).resolve().parents[2]
 _SRC_ROOT = _REPO_ROOT / "src"
@@ -35,19 +36,25 @@ from src.backtest.economic_viability_evidence_v1 import (  # noqa: E402
 from src.research.final_research_fleet_offline_economic_evaluation_execution_v0 import (  # noqa: E402
     ACCEPTED_GO_TOKENS,
     AUTHORITY_EFFECT,
+    CLASS_D_FINAL_DURABLE_EVIDENCE_BUNDLE_PREFIX,
     GO_TOKEN,
+    GO_TOKEN_CLASS_D_FINAL,
     LEGACY_DURABLE_EVIDENCE_BUNDLE_PREFIX,
     LEGACY_DURABLE_EVIDENCE_SUBDIR,
     MATERIALIZED_CLASS_D_ORIGIN_MAIN_SHA,
     ORDER_EFFECT,
+    PR4826_MERGE_COMMIT,
     PR4832_MERGE_COMMIT,
     PR4833_MERGE_COMMIT,
     PR4834_MERGE_COMMIT,
     REQUIRED_MERGED_PR_NUMBER,
     RUNTIME_EFFECT,
     CandidateTerminalStatus,
+    is_class_d_binding_completion_v0,
     resolve_current_execution_origin_main_sha,
+    resolve_durable_evidence_bundle_dir_for_binding_v0,
     resolve_expected_origin_main_sha,
+    resolve_authorized_fleet_candidates_for_execution_v0,
     dumps_execution_canonical_v1,
     is_accepted_go_token,
     load_scope_ratification_for_execution_v0,
@@ -223,6 +230,275 @@ def _build_binding_digest_verification(
     }
 
 
+def _write_evaluation_plan_md(
+    *,
+    evidence_dir: Path,
+    origin_main: str,
+    fleet_binding_completion: Mapping[str, Any],
+    ratification: Mapping[str, Any],
+    go_token: str,
+    authorized_candidates: Sequence[tuple[str, str]],
+) -> None:
+    candidates = fleet_binding_completion.get("candidates", [])
+    lines = [
+        "# EVALUATION_PLAN",
+        "",
+        "## Scope",
+        "",
+        "- Classification: `BOUNDED_CLASS_D_FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_EVALUATION_V0`",
+        "- Mode: offline-only, non-authorizing",
+        f"- GO token consumed: `{go_token}`",
+        f"- Origin/main: `{origin_main}`",
+        f"- Fleet binding digest: `{fleet_binding_completion.get('completion_digest', '')}`",
+        f"- Ratification digest: `{ratification.get('ratification_digest', '')}`",
+        "",
+        "## Final Fleet",
+        "",
+        "| strategy_id | strategy_version |",
+        "|---|---|",
+    ]
+    for strategy_id, strategy_version in authorized_candidates:
+        lines.append(f"| `{strategy_id}` | `{strategy_version}` |")
+    lines.extend(
+        [
+            "",
+            "## Stages (all candidates, identical economic policy)",
+            "",
+            "- OFFLINE_BACKTEST",
+            "- WALK_FORWARD",
+            "- MONTE_CARLO",
+            "- STRESS",
+            "- PARAMETER_SENSITIVITY",
+            "- ECONOMIC_VIABILITY_EVIDENCE_MATERIALIZATION",
+            "",
+            "## Safety",
+            "",
+            "- NO_LIVE / NO_PAPER / NO_TESTNET / NO_SHADOW",
+            "- NO_RUNTIME_REWIRE / NO_ORDERS / NO_CREDENTIALS",
+            "- RUNTIME_REWIRE_ADMISSIBLE=false",
+            "- LIVE_AUTHORIZED=false",
+            "",
+            "## Binding owners (reuse-first)",
+            "",
+            "- `scripts/run_backtest.py`",
+            "- `src/backtest/engine.py`",
+            "- `src/backtest/walkforward.py`",
+            "- `src/experiments/monte_carlo.py`",
+            "- `src/experiments/stress_tests.py`",
+            "- `src/backtest/stats.py`",
+            "- `src/backtest/economic_viability_evidence_v1.py`",
+            "- `scripts/ops/run_economic_viability_evidence_evaluation_v1.py`",
+            "",
+            "## Candidate bindings",
+            "",
+        ]
+    )
+    for candidate in candidates:
+        if not isinstance(candidate, Mapping):
+            continue
+        sid = str(candidate.get("strategy_id", ""))
+        lines.append(f"### {sid}/v1")
+        for key in (
+            "parameter_binding",
+            "dataset_binding",
+            "period_binding",
+            "instrument_binding",
+            "fee_model_binding",
+            "slippage_model_binding",
+            "funding_model_binding",
+            "execution_model_binding",
+            "economic_policy_binding",
+            "implementation_digest",
+            "config_digest",
+            "data_digest",
+        ):
+            value = candidate.get(key)
+            if value is not None:
+                lines.append(f"- `{key}`: present")
+            else:
+                lines.append(f"- `{key}`: **MISSING**")
+        lines.append("")
+    evidence_dir.joinpath("EVALUATION_PLAN.md").write_text(
+        "\n".join(lines) + "\n", encoding="utf-8"
+    )
+
+
+def _write_binding_admissibility_matrix_md(
+    *,
+    evidence_dir: Path,
+    fleet_binding_completion: Mapping[str, Any],
+    binding_digest_verification: Mapping[str, Any],
+    comparability: Mapping[str, Any],
+) -> None:
+    lines = [
+        "# BINDING_ADMISSIBILITY_MATRIX",
+        "",
+        f"- binding_digest_verification_pass: `{binding_digest_verification.get('binding_digest_verification_pass')}`",
+        f"- common_economic_policy_pass: `{comparability.get('common_economic_policy_pass')}`",
+        "",
+        "## Per-candidate binding fields",
+        "",
+    ]
+    for candidate in fleet_binding_completion.get("candidates", ()):
+        if not isinstance(candidate, Mapping):
+            continue
+        sid = str(candidate.get("strategy_id", ""))
+        lines.append(f"### {sid}/v1")
+        required = (
+            "strategy_id",
+            "strategy_version",
+            "parameter_binding",
+            "dataset_binding",
+            "period_binding",
+            "instrument_binding",
+            "fee_model_binding",
+            "slippage_model_binding",
+            "funding_model_binding",
+            "execution_model_binding",
+            "economic_policy_binding",
+            "implementation_digest",
+            "config_digest",
+            "data_digest",
+        )
+        for key in required:
+            present = candidate.get(key) is not None
+            lines.append(f"- `{key}`: {'PRESENT' if present else 'MISSING'}")
+        lines.append("")
+    evidence_dir.joinpath("BINDING_ADMISSIBILITY_MATRIX.md").write_text(
+        "\n".join(lines) + "\n",
+        encoding="utf-8",
+    )
+
+
+def _write_candidate_results_summary_md(
+    *,
+    evidence_dir: Path,
+    candidate_reports: Mapping[str, Mapping[str, Any]],
+    fleet_summary: Mapping[str, Any],
+) -> None:
+    lines = [
+        "# CANDIDATE_RESULTS_SUMMARY",
+        "",
+        f"- fleet_status: `{fleet_summary.get('fleet_status')}`",
+        f"- economic_validity_offline_gate_pass: `{fleet_summary.get('economic_validity_offline_gate_pass')}`",
+        f"- pass_count: `{fleet_summary.get('pass_count')}`",
+        f"- fail_count: `{fleet_summary.get('fail_count')}`",
+        f"- inconclusive_count: `{fleet_summary.get('inconclusive_count')}`",
+        "- runtime_rewire_admissible: `false`",
+        "- live_authorized: `false`",
+        "",
+        "| candidate | terminal_verdict | net_return | sharpe | max_drawdown | trade_count |",
+        "|---|---|---:|---:|---:|---:|",
+    ]
+    for strategy_id, report in sorted(candidate_reports.items()):
+        lines.append(
+            "| `{sid}` | `{verdict}` | `{net}` | `{sharpe}` | `{mdd}` | `{tc}` |".format(
+                sid=strategy_id,
+                verdict=report.get("terminal_verdict"),
+                net=report.get("net_return"),
+                sharpe=report.get("sharpe"),
+                mdd=report.get("max_drawdown"),
+                tc=report.get("trade_count"),
+            )
+        )
+    evidence_dir.joinpath("CANDIDATE_RESULTS_SUMMARY.md").write_text(
+        "\n".join(lines) + "\n",
+        encoding="utf-8",
+    )
+
+
+def _write_failure_or_inconclusive_reason_codes_md(
+    *,
+    evidence_dir: Path,
+    candidate_reports: Mapping[str, Mapping[str, Any]],
+    fleet_summary: Mapping[str, Any],
+) -> None:
+    lines = [
+        "# FAILURE_OR_INCONCLUSIVE_REASON_CODES",
+        "",
+        f"- fleet_status: `{fleet_summary.get('fleet_status')}`",
+        "",
+    ]
+    any_codes = False
+    for strategy_id, report in sorted(candidate_reports.items()):
+        verdict = report.get("terminal_verdict")
+        codes = report.get("reason_codes") or []
+        if verdict in {"FAIL", "INCONCLUSIVE"} or codes:
+            any_codes = True
+            lines.append(f"## {strategy_id}")
+            lines.append(f"- terminal_verdict: `{verdict}`")
+            lines.append(f"- reason_codes: `{codes}`")
+            lines.append("")
+    if not any_codes:
+        lines.append("No FAIL/INCONCLUSIVE reason codes recorded.")
+        lines.append("")
+    evidence_dir.joinpath("FAILURE_OR_INCONCLUSIVE_REASON_CODES.md").write_text(
+        "\n".join(lines) + "\n",
+        encoding="utf-8",
+    )
+
+
+def _write_blocking_evidence_bundle(
+    *,
+    evidence_dir: Path,
+    origin_main: str,
+    fleet_binding_completion: Mapping[str, Any],
+    ratification: Mapping[str, Any],
+    fail_reasons: tuple[str, ...],
+    go_token: str,
+) -> dict[str, Any]:
+    evidence_dir.mkdir(parents=True, exist_ok=False)
+    _write_evaluation_plan_md(
+        evidence_dir=evidence_dir,
+        origin_main=origin_main,
+        fleet_binding_completion=fleet_binding_completion,
+        ratification=ratification,
+        go_token=go_token,
+        authorized_candidates=resolve_authorized_fleet_candidates_for_execution_v0(
+            fleet_binding_completion=fleet_binding_completion,
+            ratification=ratification,
+        ),
+    )
+    blocking = {
+        "status": "CLASS_D_EVALUATION_BLOCKED_MISSING_VERSIONED_BINDING",
+        "fail_reasons": list(fail_reasons),
+        "evaluation_executed": False,
+        "origin_main_sha": origin_main,
+        "generated_at_utc": _utc_now_z(),
+    }
+    (evidence_dir / "BLOCKING_EVIDENCE.json").write_text(
+        json.dumps(blocking, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    (evidence_dir / "BINDING_ADMISSIBILITY_MATRIX.md").write_text(
+        "# BINDING_ADMISSIBILITY_MATRIX\n\n"
+        f"- verdict: `CLASS_D_EVALUATION_BLOCKED_MISSING_VERSIONED_BINDING`\n"
+        f"- fail_reasons: `{list(fail_reasons)}`\n",
+        encoding="utf-8",
+    )
+    (evidence_dir / "CANDIDATE_RESULTS_SUMMARY.md").write_text(
+        "# CANDIDATE_RESULTS_SUMMARY\n\n"
+        "- evaluation_executed: `false`\n"
+        "- fleet_status: `INCONCLUSIVE`\n",
+        encoding="utf-8",
+    )
+    (evidence_dir / "FAILURE_OR_INCONCLUSIVE_REASON_CODES.md").write_text(
+        "# FAILURE_OR_INCONCLUSIVE_REASON_CODES\n\n"
+        + "\n".join(f"- `{reason}`" for reason in fail_reasons)
+        + "\n",
+        encoding="utf-8",
+    )
+    manifest_rc, manifest_msg = retention.finalize_durable_bundle_manifest(evidence_dir)
+    return {
+        "verdict": "CLASS_D_EVALUATION_BLOCKED_MISSING_VERSIONED_BINDING",
+        "evaluation_executed": False,
+        "durable_evidence_path": str(evidence_dir),
+        "manifest_verify_rc": manifest_rc,
+        "manifest_verify_msg": manifest_msg,
+        "fail_reasons": list(fail_reasons),
+    }
+
+
 def _build_common_policy_comparability_matrix(
     fleet_binding_completion: Mapping[str, Any],
 ) -> dict[str, Any]:
@@ -308,6 +584,14 @@ def run_evaluation(
     if not start_state.valid:
         _die(f"ERR: start_state_verification_failed:{start_state.fail_reasons}")
 
+    try:
+        authorized_candidates = resolve_authorized_fleet_candidates_for_execution_v0(
+            fleet_binding_completion=fleet_binding_completion,
+            ratification=ratification,
+        )
+    except ValueError as exc:
+        _die(f"ERR: {exc}")
+
     binding_digest_verification = _build_binding_digest_verification(
         repo_root=_REPO_ROOT,
         fleet_binding_completion=fleet_binding_completion,
@@ -321,14 +605,29 @@ def run_evaluation(
         _die("ERR: common_policy_comparability_failed")
 
     ts_slug = _utc_slug()
-    evidence_dir = resolve_durable_evidence_bundle_dir_v0(
+    evidence_dir = resolve_durable_evidence_bundle_dir_for_binding_v0(
         durable_evidence_root=durable_evidence_root,
         timestamp_slug=ts_slug,
+        fleet_binding_completion=fleet_binding_completion,
     )
     evidence_dir.mkdir(parents=True, exist_ok=False)
     legacy_evidence_dir = resolve_legacy_durable_evidence_bundle_dir_v0(
         durable_evidence_root=durable_evidence_root,
         timestamp_slug=ts_slug,
+    )
+    _write_evaluation_plan_md(
+        evidence_dir=evidence_dir,
+        origin_main=origin_main,
+        fleet_binding_completion=fleet_binding_completion,
+        ratification=ratification,
+        go_token=confirm,
+        authorized_candidates=authorized_candidates,
+    )
+    _write_binding_admissibility_matrix_md(
+        evidence_dir=evidence_dir,
+        fleet_binding_completion=fleet_binding_completion,
+        binding_digest_verification=binding_digest_verification,
+        comparability=comparability,
     )
 
     expected_origin_main = resolve_expected_origin_main_sha(_REPO_ROOT)
@@ -349,7 +648,8 @@ def run_evaluation(
         "FINAL_RESEARCH_FLEET_BINDING_READY=true",
         "NEW_CANDIDATES_RATIFIED=true",
         "ECONOMIC_EVALUATION_SCOPE_RATIFIED=true",
-        f"GO_TOKEN={GO_TOKEN}",
+        f"AUTHORIZED_CANDIDATES={','.join(f'{sid}/{ver}' for sid, ver in authorized_candidates)}",
+        f"GO_TOKEN={confirm}",
         f"VERIFIED_AT_UTC={_utc_now_z()}",
     ]
     (evidence_dir / "preflight.txt").write_text("\n".join(preflight_lines) + "\n", encoding="utf-8")
@@ -391,6 +691,8 @@ def run_evaluation(
                 "legacy_alias_path": str(legacy_evidence_dir),
                 "legacy_subdir": LEGACY_DURABLE_EVIDENCE_SUBDIR,
                 "legacy_prefix": LEGACY_DURABLE_EVIDENCE_BUNDLE_PREFIX,
+                "class_d_final_prefix": CLASS_D_FINAL_DURABLE_EVIDENCE_BUNDLE_PREFIX,
+                "class_d_binding": is_class_d_binding_completion_v0(fleet_binding_completion),
             },
             indent=2,
             sort_keys=True,
@@ -405,7 +707,7 @@ def run_evaluation(
     candidate_results = []
     candidate_reports: dict[str, dict[str, Any]] = {}
     execution_plan = {"candidates": []}
-    for strategy_id, strategy_version in FLEET_CANDIDATES:
+    for strategy_id, strategy_version in authorized_candidates:
         candidate_dir = evidence_dir / f"candidate_{strategy_id}"
         config_path = _REPO_ROOT / STEP31F_CONFIG_PATHS[strategy_id]
         execution_plan["candidates"].append(
@@ -428,6 +730,10 @@ def run_evaluation(
             strategy_id=strategy_id,
             candidate_dir=candidate_dir,
             terminal_status=result.terminal_status,
+        )
+        shutil.copy2(
+            candidate_dir / ARTIFACT_FILENAME,
+            evidence_dir / f"ECONOMIC_VIABILITY_EVIDENCE_{strategy_id}.json",
         )
         shutil.copy2(
             candidate_dir / ARTIFACT_FILENAME,
@@ -490,6 +796,17 @@ def run_evaluation(
         encoding="utf-8",
     )
 
+    _write_candidate_results_summary_md(
+        evidence_dir=evidence_dir,
+        candidate_reports=candidate_reports,
+        fleet_summary=fleet_summary,
+    )
+    _write_failure_or_inconclusive_reason_codes_md(
+        evidence_dir=evidence_dir,
+        candidate_reports=candidate_reports,
+        fleet_summary=fleet_summary,
+    )
+
     env_snapshot = [
         f"PYTHON={sys.executable}",
         f"PLATFORM={platform.platform()}",
@@ -520,8 +837,9 @@ def run_evaluation(
 
     payload = {
         "verdict": "FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_EVALUATION_COMPLETE",
-        "go_token": GO_TOKEN,
+        "go_token": confirm,
         "go_token_consumed": True,
+        "evaluation_executed": True,
         "origin_main_sha": origin_main,
         "fleet_status": fleet_summary["fleet_status"],
         "economic_validity_offline_gate_pass": fleet_summary["economic_validity_offline_gate_pass"],

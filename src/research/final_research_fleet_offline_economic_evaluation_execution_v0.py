@@ -51,7 +51,10 @@ GO_TOKEN = "GO_EXECUTE_BOUNDED_FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_EVALUATION_
 GO_TOKEN_OPERATOR_ALIAS = (
     "GO_BOUNDED_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_FOR_VERSIONED_FINAL_RESEARCH_FLEET_V0"
 )
-ACCEPTED_GO_TOKENS: frozenset[str] = frozenset({GO_TOKEN, GO_TOKEN_OPERATOR_ALIAS})
+GO_TOKEN_CLASS_D_FINAL = "GO_BOUNDED_CLASS_D_FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_EVALUATION_V0"
+ACCEPTED_GO_TOKENS: frozenset[str] = frozenset(
+    {GO_TOKEN, GO_TOKEN_OPERATOR_ALIAS, GO_TOKEN_CLASS_D_FINAL}
+)
 PR4826_MERGE_COMMIT = "208ab96562f7750fb4dff43936b345a040d1cea4"
 PR4832_MERGE_COMMIT = "ddce9c508158b89fa225c381436e2d1efced7328"
 PR4833_MERGE_COMMIT = "4828168cd91c57aa72dcb3b40b47188eeb82fd32"
@@ -88,6 +91,9 @@ DURABLE_EVIDENCE_BUNDLE_PREFIX = "bounded_offline_economic_evaluation_final_rese
 LEGACY_DURABLE_EVIDENCE_SUBDIR = "implementation"
 LEGACY_DURABLE_EVIDENCE_BUNDLE_PREFIX = (
     "bounded_final_research_fleet_offline_economic_evaluation_v0"
+)
+CLASS_D_FINAL_DURABLE_EVIDENCE_BUNDLE_PREFIX = (
+    "bounded_class_d_final_research_fleet_offline_economic_evaluation_v0"
 )
 HISTORICAL_STEP31F_BINDING_COMPLETION_DIGEST = (
     "161d834e5153df78a0013b6e55c4c8bd4788c775811e3678f025104a307d78f1"
@@ -133,6 +139,19 @@ REASON_CURRENT_MAIN_SHA_DRIFT_AFTER_SQUASH_MERGE = "CURRENT_MAIN_SHA_DRIFT_AFTER
 REASON_ORIGIN_MAIN_RESOLVE_FAILED = "ORIGIN_MAIN_RESOLVE_FAILED"
 REASON_UNMODIFIED_BINDING_RETRY_BLOCKED = "UNMODIFIED_BINDING_RETRY_BLOCKED"
 REASON_NEW_EVIDENCE_CLASS_REQUIRED = "NEW_EVIDENCE_CLASS_REQUIRED_FOR_REEXECUTION"
+REASON_UNAUTHORIZED_CANDIDATE = "UNAUTHORIZED_CANDIDATE_NOT_IN_CLASS_D_FINAL_FLEET"
+REASON_BITCOIN_LABELLED_CANDIDATE = "BITCOIN_LABELLED_CANDIDATE_REJECTED_FOR_CLASS_D_FINAL_FLEET"
+REASON_CLASS_D_FINAL_FLEET_CANDIDATE_SET_MISMATCH = "CLASS_D_FINAL_FLEET_CANDIDATE_SET_MISMATCH"
+
+AUTHORIZED_CLASS_D_FINAL_FLEET_STRATEGY_IDS: frozenset[str] = frozenset(
+    {"trend_following", "bollinger_bands", "momentum_1h"}
+)
+AUTHORIZED_CLASS_D_FINAL_FLEET_CANDIDATES: tuple[tuple[str, str], ...] = (
+    ("trend_following", "v1"),
+    ("bollinger_bands", "v1"),
+    ("momentum_1h", "v1"),
+)
+_BITCOIN_CANDIDATE_SUBSTRINGS: frozenset[str] = frozenset({"btc", "xbt", "bitcoin"})
 
 
 class CandidateTerminalStatus(str, Enum):
@@ -273,6 +292,88 @@ def is_class_d_binding_completion_v0(fleet_binding_completion: Mapping[str, Any]
     )
 
 
+def _candidate_identifier_contains_bitcoin_label(strategy_id: str) -> bool:
+    lowered = strategy_id.lower()
+    return any(token in lowered for token in _BITCOIN_CANDIDATE_SUBSTRINGS)
+
+
+def resolve_class_d_final_fleet_candidates_v0(
+    *,
+    fleet_binding_completion: Mapping[str, Any] | None = None,
+    ratification: Mapping[str, Any] | None = None,
+) -> tuple[tuple[str, str], ...]:
+    """Resolve the exact authorized Class-D final fleet candidate list (fail-closed source)."""
+    if fleet_binding_completion is not None:
+        resolved: list[tuple[str, str]] = []
+        for candidate in fleet_binding_completion.get("candidates", ()):
+            if not isinstance(candidate, Mapping):
+                continue
+            resolved.append((str(candidate["strategy_id"]), str(candidate["strategy_version"])))
+        if resolved:
+            return tuple(resolved)
+    if ratification is not None:
+        refs = ratification.get("candidate_refs")
+        if isinstance(refs, list):
+            parsed: list[tuple[str, str]] = []
+            for ref in refs:
+                if not isinstance(ref, str) or "/" not in ref:
+                    continue
+                strategy_id, strategy_version = ref.split("/", 1)
+                parsed.append((strategy_id, strategy_version))
+            if parsed:
+                return tuple(parsed)
+    return AUTHORIZED_CLASS_D_FINAL_FLEET_CANDIDATES
+
+
+def validate_class_d_final_fleet_candidate_scope_v0(
+    *,
+    candidates: Sequence[tuple[str, str]] | None = None,
+    fleet_binding_completion: Mapping[str, Any] | None = None,
+    ratification: Mapping[str, Any] | None = None,
+) -> tuple[bool, tuple[str, ...], tuple[tuple[str, str], ...]]:
+    """Fail closed unless candidates match the authorized Class-D final fleet exactly."""
+    resolved = candidates or resolve_class_d_final_fleet_candidates_v0(
+        fleet_binding_completion=fleet_binding_completion,
+        ratification=ratification,
+    )
+    reasons: list[str] = []
+    resolved_ids = {strategy_id for strategy_id, _ in resolved}
+    authorized_ids = set(AUTHORIZED_CLASS_D_FINAL_FLEET_STRATEGY_IDS)
+    if resolved_ids != authorized_ids:
+        extra = sorted(resolved_ids - authorized_ids)
+        missing = sorted(authorized_ids - resolved_ids)
+        if extra:
+            reasons.append(f"{REASON_UNAUTHORIZED_CANDIDATE}:{','.join(extra)}")
+        if missing:
+            reasons.append(
+                f"{REASON_CLASS_D_FINAL_FLEET_CANDIDATE_SET_MISMATCH}:missing={','.join(missing)}"
+            )
+    if tuple(resolved) != AUTHORIZED_CLASS_D_FINAL_FLEET_CANDIDATES:
+        reasons.append(
+            f"{REASON_CLASS_D_FINAL_FLEET_CANDIDATE_SET_MISMATCH}:resolved={tuple(resolved)}"
+        )
+    for strategy_id, _ in resolved:
+        if _candidate_identifier_contains_bitcoin_label(strategy_id):
+            reasons.append(f"{REASON_BITCOIN_LABELLED_CANDIDATE}:{strategy_id}")
+    return not reasons, tuple(reasons), tuple(resolved)
+
+
+def resolve_authorized_fleet_candidates_for_execution_v0(
+    *,
+    fleet_binding_completion: Mapping[str, Any],
+    ratification: Mapping[str, Any] | None = None,
+) -> tuple[tuple[str, str], ...]:
+    if is_class_d_binding_completion_v0(fleet_binding_completion):
+        ok, reasons, resolved = validate_class_d_final_fleet_candidate_scope_v0(
+            fleet_binding_completion=fleet_binding_completion,
+            ratification=ratification,
+        )
+        if not ok:
+            raise ValueError(f"class_d_final_fleet_candidate_scope_invalid:{reasons}")
+        return resolved
+    return FLEET_CANDIDATES
+
+
 def resolve_durable_evidence_bundle_dir_v0(
     *,
     durable_evidence_root: Path,
@@ -294,6 +395,35 @@ def resolve_legacy_durable_evidence_bundle_dir_v0(
         durable_evidence_root
         / LEGACY_DURABLE_EVIDENCE_SUBDIR
         / f"{LEGACY_DURABLE_EVIDENCE_BUNDLE_PREFIX}_{timestamp_slug}"
+    )
+
+
+def resolve_class_d_final_durable_evidence_bundle_dir_v0(
+    *,
+    durable_evidence_root: Path,
+    timestamp_slug: str,
+) -> Path:
+    return (
+        durable_evidence_root
+        / LEGACY_DURABLE_EVIDENCE_SUBDIR
+        / f"{CLASS_D_FINAL_DURABLE_EVIDENCE_BUNDLE_PREFIX}_{timestamp_slug}"
+    )
+
+
+def resolve_durable_evidence_bundle_dir_for_binding_v0(
+    *,
+    durable_evidence_root: Path,
+    timestamp_slug: str,
+    fleet_binding_completion: Mapping[str, Any],
+) -> Path:
+    if is_class_d_binding_completion_v0(fleet_binding_completion):
+        return resolve_class_d_final_durable_evidence_bundle_dir_v0(
+            durable_evidence_root=durable_evidence_root,
+            timestamp_slug=timestamp_slug,
+        )
+    return resolve_durable_evidence_bundle_dir_v0(
+        durable_evidence_root=durable_evidence_root,
+        timestamp_slug=timestamp_slug,
     )
 
 
@@ -539,6 +669,14 @@ def verify_execution_start_state_v0(
     )
     if not retry_ok:
         reasons.extend(retry_reasons)
+
+    if is_class_d_binding_completion_v0(fleet_binding_completion):
+        scope_ok, scope_reasons, _ = validate_class_d_final_fleet_candidate_scope_v0(
+            fleet_binding_completion=fleet_binding_completion,
+            ratification=ratification,
+        )
+        if not scope_ok:
+            reasons.extend(scope_reasons)
 
     return StartStateVerificationResultV0(
         valid=not reasons,
