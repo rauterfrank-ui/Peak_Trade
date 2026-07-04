@@ -128,6 +128,102 @@ def _fetch_funding_for_instrument(
         ingest.NATIVE_INSTRUMENT_ID = original_inst
 
 
+def materialize_bound_panel_funding_from_provided_rows_v0(
+    *,
+    confirm: str,
+    staging_root: Path,
+    funding_by_native: Mapping[str, list[dict[str, Any]]],
+    funding_source: str,
+) -> dict[str, Any]:
+    """Materialize bound funding panel from pre-fetched rows (e.g. historical archive ingest)."""
+    if confirm != CONFIRM_GO:
+        _die(f"ERR: confirm_go_token_required:{CONFIRM_GO}")
+    staging_root = staging_root.resolve()
+    if not staging_root.is_dir():
+        _die(f"ERR: missing_staging_root:{staging_root}")
+
+    panel_series, panel_ref = load_panel_series_from_staging(staging_root)
+    if not panel_series:
+        _die("ERR: empty_panel_series")
+
+    funding_rows_out: list[dict[str, Any]] = []
+    missing_reasons: list[str] = []
+    for series in panel_series:
+        source_rows = sorted(
+            funding_by_native.get(series.native_instrument_id, []),
+            key=lambda item: int(str(item.get("fundingTime", "0"))),
+        )
+        for bar in series.bars:
+            ts_ms = _utc_ts_to_ms(bar.timestamp_utc)
+            funding_rate, missing_reason = _funding_asof_lookup(
+                funding_rows=source_rows,
+                bar_timestamp_ms=ts_ms,
+            )
+            if missing_reason is not None:
+                missing_reasons.append(
+                    f"{series.instrument_id}@{bar.timestamp_utc}:{missing_reason}"
+                )
+            funding_rows_out.append(
+                {
+                    "instrument_id": series.instrument_id,
+                    "native_instrument_id": series.native_instrument_id,
+                    "timestamp_utc": bar.timestamp_utc,
+                    "open": bar.open,
+                    "high": bar.high,
+                    "low": bar.low,
+                    "close": bar.close,
+                    "volume": bar.volume,
+                    "funding_rate": funding_rate,
+                    "missing_funding_reason": missing_reason,
+                    "is_final": bar.is_final,
+                }
+            )
+
+    funding_rows_out.sort(key=lambda row: (row["instrument_id"], row["timestamp_utc"]))
+    funding_digest = _stable_digest(funding_rows_out)
+    bars_path = staging_root / FUNDING_BARS_REL
+    bars_path.write_text(
+        json.dumps({"bars": funding_rows_out}, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+
+    from_okx_public = funding_source == "OKX_PUBLIC_LIVE_API"
+    from_historical_archive = funding_source == "OKX_HISTORICAL_FUNDING_ARCHIVE"
+    manifest = {
+        "schema_version": "pit_okx_pt1h_panel_funding_dataset_manifest_v1",
+        "panel_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1",
+        "dataset_extension": "extended_chronological_with_funding_v1",
+        "panel_ref": panel_ref,
+        "instrument_ids": [s.instrument_id for s in panel_series],
+        "native_instrument_ids": [s.native_instrument_id for s in panel_series],
+        "row_count_total": len(funding_rows_out),
+        "funding_panel_digest": funding_digest,
+        "backward_asof_policy": "funding_time_lte_bar_timestamp_no_lookahead",
+        "missing_funding_policy": "fail_closed_none_no_zero_fallback",
+        "missing_funding_count": len(missing_reasons),
+        "source_ohlcv_staging": str(staging_root),
+        "funding_source": funding_source,
+        "fetched_from_okx_public": from_okx_public,
+        "fetched_from_okx_historical_archive": from_historical_archive,
+    }
+    manifest_path = staging_root / FUNDING_MANIFEST_REL
+    manifest_path.write_text(
+        json.dumps(manifest, indent=2, sort_keys=True) + "\n", encoding="utf-8"
+    )
+
+    return {
+        "verdict": "BOUND_FUNDING_PANEL_READY",
+        "staging_root": str(staging_root),
+        "manifest_path": str(manifest_path),
+        "bars_path": str(bars_path),
+        "manifest_verified": _verify_existing_manifest(staging_root),
+        "row_count_total": len(funding_rows_out),
+        "funding_panel_digest": funding_digest,
+        "skip_fetch": False,
+        "funding_source": funding_source,
+    }
+
+
 def materialize_bound_panel_funding_dataset_v0(
     *,
     confirm: str,
