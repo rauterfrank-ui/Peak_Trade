@@ -17,7 +17,6 @@ from src.research.final_research_fleet_offline_economic_evaluation_execution_v0 
     GO_TOKEN_OPERATOR_ALIAS,
     HISTORICAL_STEP31F_BINDING_COMPLETION_DIGEST,
     ORDER_EFFECT,
-    PR4834_MERGE_COMMIT,
     PR4826_CREATES_NEW_EXECUTION_EVIDENCE_CLASS,
     REASON_NEW_EVIDENCE_CLASS_REQUIRED,
     REASON_UNMODIFIED_BINDING_RETRY_BLOCKED,
@@ -73,8 +72,17 @@ def test_go_token_operator_alias_is_accepted_without_second_authority() -> None:
 
 
 def test_expected_origin_main_sha_resolves_from_live_origin_main() -> None:
+    import subprocess
+
     live = resolve_current_execution_origin_main_sha(REPO_ROOT)
-    assert live == PR4834_MERGE_COMMIT
+    expected = subprocess.run(
+        ["git", "-C", str(REPO_ROOT), "rev-parse", "origin/main"],
+        capture_output=True,
+        text=True,
+        check=True,
+    ).stdout.strip()
+    assert live == expected
+    assert live
 
 
 def test_pr4826_scope_does_not_create_new_execution_evidence_class() -> None:
