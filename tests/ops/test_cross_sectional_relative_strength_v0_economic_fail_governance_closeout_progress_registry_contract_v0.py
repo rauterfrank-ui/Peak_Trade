@@ -14,6 +14,7 @@ RESEARCH_LINE_PREFIX = (
     "#### RUNBOOK_RESEARCH_LINE — Cross-Sectional Relative Strength Non-Bitcoin Perpetuals v0"
 )
 TERMINAL_NEXT_STEP = "NO_FURTHER_CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_ACTION_TERMINAL_FAIL"
+GLOBAL_NEXT_STEP = "OPERATOR_INPUT_REQUIRED_FOR_NEW_RESEARCH_SCOPE_DEFINITION_V0"
 OPERATOR_GO = "GO_OFFLINE_ECONOMIC_EVALUATION_CROSS_SECTIONAL_RELATIVE_STRENGTH_V0"
 HYPOTHESIS_ID = "CROSS_SECTIONAL_RELATIVE_STRENGTH_NON_BITCOIN_PERPETUALS_V0"
 EVALUATION_EVIDENCE_REF = (
@@ -99,9 +100,16 @@ class TestAuthoritativeEconomicFailCloseout:
         assert authoritative_field_value("RUNTIME_REWIRE_ADMISSIBLE") == "false"
 
     def test_no_automatic_next_evaluation_or_runtime(self) -> None:
-        assert authoritative_field_value("NEXT_CANONICAL_STEP") == TERMINAL_NEXT_STEP
-        assert authoritative_field_value("NEXT_CANONICAL_ACTION") == TERMINAL_NEXT_STEP
-        assert authoritative_field_value("GLOBAL_RUNBOOK_NEXT_STEP") == TERMINAL_NEXT_STEP
+        assert authoritative_field_value("NEXT_CANONICAL_STEP") == GLOBAL_NEXT_STEP
+        assert authoritative_field_value("NEXT_CANONICAL_ACTION") == GLOBAL_NEXT_STEP
+        assert authoritative_field_value("GLOBAL_RUNBOOK_NEXT_STEP") == GLOBAL_NEXT_STEP
+        assert (
+            authoritative_field_value("HYPOTHESIS_SUBSTRAND_NEXT_STEP") == TERMINAL_NEXT_STEP
+        )
+        assert (
+            authoritative_field_value("NO_FURTHER_CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_ACTION_TERMINAL_FAIL")
+            == "true"
+        )
         assert authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE") == "NONE"
         assert authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN") == "NONE"
         assert (

@@ -30,6 +30,7 @@ RECONCILIATION_SECTION_PREFIX = (
     "#### RUNBOOK_V4_4_RESEARCH_GOVERNANCE_PROGRESS_REGISTRY_RECONCILIATION_V0"
 )
 TERMINAL_NEXT_STEP = "NO_FURTHER_CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_ACTION_TERMINAL_FAIL"
+GLOBAL_NEXT_STEP = "OPERATOR_INPUT_REQUIRED_FOR_NEW_RESEARCH_SCOPE_DEFINITION_V0"
 OPERATOR_POLICY_DECISION = "NO_NEW_CANDIDATE_HOLD_REINSTATE"
 FINAL_RESEARCH_FLEET = "trend_following,bollinger_bands,momentum_1h"
 
@@ -78,9 +79,16 @@ class TestRunbookV44AuthoritativeGovernanceReconciliation:
         )
 
     def test_next_canonical_step_terminal_fail_no_auto_evaluation(self) -> None:
-        assert authoritative_field_value("NEXT_CANONICAL_STEP") == TERMINAL_NEXT_STEP
-        assert authoritative_field_value("NEXT_CANONICAL_ACTION") == TERMINAL_NEXT_STEP
-        assert authoritative_field_value("GLOBAL_RUNBOOK_NEXT_STEP") == TERMINAL_NEXT_STEP
+        assert authoritative_field_value("NEXT_CANONICAL_STEP") == GLOBAL_NEXT_STEP
+        assert authoritative_field_value("NEXT_CANONICAL_ACTION") == GLOBAL_NEXT_STEP
+        assert authoritative_field_value("GLOBAL_RUNBOOK_NEXT_STEP") == GLOBAL_NEXT_STEP
+        assert (
+            authoritative_field_value("HYPOTHESIS_SUBSTRAND_NEXT_STEP") == TERMINAL_NEXT_STEP
+        )
+        assert (
+            authoritative_field_value("NO_FURTHER_CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_ACTION_TERMINAL_FAIL")
+            == "true"
+        )
         assert authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE") == "NONE"
         assert authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN") == "NONE"
         assert (
