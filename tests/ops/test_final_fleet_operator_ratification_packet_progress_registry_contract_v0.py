@@ -24,9 +24,13 @@ OPERATOR_RATIFICATION_PACKET = (
 )
 CLOSEOUT_SECTION_PREFIX = "#### FINAL_FLEET_OPERATOR_RATIFICATION_PACKET_FOR_NEW_VERSIONED_RESEARCH_SCOPE_OR_EVIDENCE_CLASS_V0"
 FINAL_RESEARCH_FLEET = ("trend_following", "bollinger_bands", "momentum_1h")
-NEXT_CANONICAL_STEP = "OPERATOR_RATIFICATION_REQUIRED_FOR_NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_VERSIONED_EVIDENCE_CLASS_V0"
-ADMISSIBLE_CLASSES = {
+NEXT_CANONICAL_STEP = "REQUEST_OPERATOR_GO_FOR_BOUNDED_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0"
+ADMISSIBLE_CLASSES_DOC = {
     "D_NEW_VERSIONED_RESEARCH_SCOPE_WITH_FULL_BINDINGS": "OPERATOR_RATIFICATION_REQUIRED",
+    "E_NEW_VERSIONED_EVIDENCE_CLASS_WITH_FULL_CONTRACT": "OPERATOR_RATIFICATION_REQUIRED",
+}
+ADMISSIBLE_CLASSES_REGISTRY = {
+    "D_NEW_VERSIONED_RESEARCH_SCOPE_WITH_FULL_BINDINGS": "RATIFIED",
     "E_NEW_VERSIONED_EVIDENCE_CLASS_WITH_FULL_CONTRACT": "OPERATOR_RATIFICATION_REQUIRED",
 }
 BLOCKED_CLASSES = {
@@ -107,7 +111,7 @@ class TestFinalFleetOperatorRatificationPacketDoc:
         body = _read_packet()
         assert "`D` | `NEW_VERSIONED_RESEARCH_SCOPE` | `OPERATOR_RATIFICATION_REQUIRED`" in body
         assert "`E` | `NEW_VERSIONED_EVIDENCE_CLASS` | `OPERATOR_RATIFICATION_REQUIRED`" in body
-        for decision_class, status in ADMISSIBLE_CLASSES.items():
+        for decision_class, status in ADMISSIBLE_CLASSES_DOC.items():
             assert f"| `{decision_class}` | `{status}` |" in body
         for decision_class, status in BLOCKED_CLASSES.items():
             assert f"| `{decision_class}` | `{status}` |" in body
@@ -122,18 +126,14 @@ class TestFinalFleetOperatorRatificationPacketRegistry:
     def test_registry_points_to_prepared_packet(self) -> None:
         assert (
             authoritative_field_value("FINAL_FLEET_OPERATOR_RATIFICATION_PACKET_STATUS")
-            == "PREPARED_NOT_RATIFIED"
+            == "RATIFIED_CLASS_D"
         )
         assert authoritative_field_value("CURRENT_STATE") == (
-            "FINAL_FLEET_OPERATOR_RATIFICATION_PACKET_PREPARED_V0"
-        )
-        assert (
-            authoritative_field_value("FINAL_FLEET_OPERATOR_RATIFICATION_PACKET_REF")
-            == "docs/governance/FINAL_FLEET_OPERATOR_RATIFICATION_PACKET_FOR_NEW_VERSIONED_RESEARCH_SCOPE_OR_EVIDENCE_CLASS_V0.md"
+            "FINAL_RESEARCH_FLEET_CLASS_D_VERSIONED_BINDINGS_AND_OFFLINE_EVALUATION_SCOPE_MATERIALIZED_V0"
         )
         assert (
             authoritative_field_value("FINAL_FLEET_OPERATOR_RATIFICATION_PACKET_GO_TOKEN_CONSUMED")
-            == "false"
+            == "true"
         )
 
     def test_economic_evaluation_and_runtime_remain_blocked(self) -> None:
@@ -144,14 +144,15 @@ class TestFinalFleetOperatorRatificationPacketRegistry:
 
     def test_closeout_section_records_packet_state(self) -> None:
         section = _closeout_section(read_registry())
-        assert _field_value(section, "STATUS") == "PREPARED_NOT_RATIFIED"
-        assert _field_value(section, "VERDICT") == "OPERATOR_RATIFICATION_REQUIRED"
-        assert _field_value(section, "RATIFICATION_STATUS") == "NOT_RATIFIED"
+        assert _field_value(section, "STATUS") == "RATIFIED_CLASS_D"
+        assert _field_value(section, "VERDICT") == "OPERATOR_RATIFICATION_RECORDED_CLASS_D"
+        assert _field_value(section, "RATIFICATION_STATUS") == "RATIFIED_BY_OPERATOR"
+        assert _field_value(section, "RATIFICATION_CLASS") == "D"
         assert _field_value(section, "ECONOMIC_EVALUATION_AUTHORIZED") == "false"
         assert _field_value(section, "FINAL_RESEARCH_FLEET") == (
             "trend_following,bollinger_bands,momentum_1h"
         )
-        for decision_class, status in ADMISSIBLE_CLASSES.items():
+        for decision_class, status in ADMISSIBLE_CLASSES_REGISTRY.items():
             assert _field_value(section, decision_class) == status
         for decision_class, status in BLOCKED_CLASSES.items():
             assert _field_value(section, decision_class) == status
@@ -176,10 +177,10 @@ class TestRegistryResolverIntegrity:
     def test_global_summary_reflects_packet_prepared_state(self) -> None:
         summary = global_summary_section()
         assert _field_value(summary, "CURRENT_STATE") == (
-            "FINAL_FLEET_OPERATOR_RATIFICATION_PACKET_PREPARED_V0"
+            "FINAL_RESEARCH_FLEET_CLASS_D_VERSIONED_BINDINGS_AND_OFFLINE_EVALUATION_SCOPE_MATERIALIZED_V0"
         )
         assert (
             _field_value(summary, "FINAL_FLEET_OPERATOR_RATIFICATION_PACKET_STATUS")
-            == "PREPARED_NOT_RATIFIED"
+            == "RATIFIED_CLASS_D"
         )
         assert _field_value(summary, "ECONOMIC_EVALUATION_AUTHORIZED") == "false"
