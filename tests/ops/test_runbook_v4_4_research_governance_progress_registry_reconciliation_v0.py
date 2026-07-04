@@ -65,7 +65,8 @@ class TestRunbookV44AuthoritativeGovernanceReconciliation:
 
     def test_binding_and_ratification_flags_pass_in_authoritative_metadata(self) -> None:
         assert authoritative_field_value("FINAL_RESEARCH_FLEET_BINDING_READY") == "true"
-        assert authoritative_field_value("NEW_CANDIDATES_RATIFIED") == "false"
+        assert authoritative_field_value("NEW_CANDIDATES_RATIFIED") == "true"
+        assert authoritative_field_value("OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFIED") == "true"
         assert authoritative_field_value("ECONOMIC_EVALUATION_SCOPE_RATIFIED") == "true"
         assert authoritative_field_value("ECONOMIC_EVALUATION_AUTHORIZED") == "false"
 

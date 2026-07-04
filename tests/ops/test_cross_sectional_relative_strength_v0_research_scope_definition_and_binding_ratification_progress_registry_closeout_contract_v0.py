@@ -81,7 +81,7 @@ class TestAuthoritativeScopeBindingRatification:
             )
             == "true"
         )
-        assert authoritative_field_value("NEW_CANDIDATES_RATIFIED") == "false"
+        assert authoritative_field_value("NEW_CANDIDATES_RATIFIED") == "true"
         assert authoritative_field_value("ECONOMIC_EVALUATION_AUTHORIZED") == "false"
         assert (
             authoritative_field_value(
@@ -116,9 +116,15 @@ class TestAuthoritativeScopeBindingRatification:
     def test_scoped_admissible_next_scope_without_global_candidate_ratification(self) -> None:
         assert authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE") == "NONE"
         assert authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN") == "NONE"
-        assert authoritative_field_value("NEXT_CANONICAL_STEP") == TERMINAL_NEXT_STEP
-        assert authoritative_field_value("NEXT_CANONICAL_ACTION") == TERMINAL_NEXT_STEP
-        assert authoritative_field_value("GLOBAL_RUNBOOK_NEXT_STEP") == TERMINAL_NEXT_STEP
+        section = _closeout_section(read_registry())
+        assert (
+            _field_value(section, "NEXT_CANONICAL_STEP")
+            == "AWAIT_OPERATOR_OFFLINE_EVALUATION_GO_CROSS_SECTIONAL_RELATIVE_STRENGTH_V0"
+        )
+        assert _field_value(section, "NEW_CANDIDATES_RATIFIED") == "false"
+        assert authoritative_field_value("GLOBAL_RUNBOOK_NEXT_STEP") == (
+            "OPERATOR_INPUT_REQUIRED_FOR_NEW_RESEARCH_SCOPE_DEFINITION_V0"
+        )
 
     def test_futures_only_and_exclusions(self) -> None:
         assert (

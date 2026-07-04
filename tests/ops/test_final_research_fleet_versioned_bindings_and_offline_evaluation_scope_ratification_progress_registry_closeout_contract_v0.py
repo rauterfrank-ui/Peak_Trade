@@ -1,13 +1,10 @@
-"""Contract tests for final research fleet binding and scope ratification progress registry closeout v0."""
+"""Contract tests for historical final research fleet binding closeout snapshot v0."""
 
 from __future__ import annotations
 
 import re
 
-from tests.ops.runbook_progress_registry_contract_helpers_v1 import (
-    authoritative_field_value,
-    read_registry,
-)
+from tests.ops.runbook_progress_registry_contract_helpers_v1 import read_registry
 
 CLOSEOUT_SECTION_PREFIX = (
     "#### FINAL_RESEARCH_FLEET_VERSIONED_BINDINGS_AND_OFFLINE_EVALUATION_SCOPE_RATIFICATION_V0"
@@ -30,31 +27,10 @@ def _closeout_section(text: str) -> str:
     return text[start:end]
 
 
-def test_authoritative_binding_and_scope_flags_pass() -> None:
-    assert authoritative_field_value("FINAL_RESEARCH_FLEET_BINDING_READY") == "true"
-    assert authoritative_field_value("NEW_CANDIDATES_RATIFIED") == "true"
-    assert authoritative_field_value("ECONOMIC_EVALUATION_SCOPE_RATIFIED") == "true"
-    assert authoritative_field_value("ECONOMIC_EVALUATION_AUTHORIZED") == "false"
-    assert authoritative_field_value("ECONOMIC_VALIDITY_OFFLINE_GATE_PASS") == "false"
-    assert authoritative_field_value("PROMOTION_ELIGIBLE") == "false"
-    assert authoritative_field_value("RUNTIME_REWIRE_ADMISSIBLE") == "false"
-
-
-def test_authoritative_next_step_offline_evaluation() -> None:
-    assert authoritative_field_value("NEXT_CANONICAL_STEP") == NEXT_CANONICAL_STEP
-    assert authoritative_field_value("NEXT_CANONICAL_ACTION") == NEXT_CANONICAL_STEP
-    assert authoritative_field_value("GLOBAL_RUNBOOK_NEXT_STEP") == NEXT_CANONICAL_STEP
-
-
-def test_fleet_selection_unchanged() -> None:
-    assert authoritative_field_value("FINAL_RESEARCH_FLEET") == FINAL_RESEARCH_FLEET
-    assert authoritative_field_value("NO_NEW_CANDIDATE_HOLD") == "REVOKED"
-    assert authoritative_field_value("MULTI_CANDIDATE_RESEARCH_FLEET_ALLOWED") == "true"
-
-
-def test_closeout_section_records_pass_without_authority_effect() -> None:
+def test_historical_closeout_section_records_pass_without_authority_effect() -> None:
     section = _closeout_section(read_registry())
     assert _field_value(section, "STATUS") == "COMPLETE"
+    assert _field_value(section, "FINAL_RESEARCH_FLEET") == FINAL_RESEARCH_FLEET
     assert _field_value(section, "FINAL_RESEARCH_FLEET_BINDING_READY") == "true"
     assert _field_value(section, "NEW_CANDIDATES_RATIFIED") == "true"
     assert _field_value(section, "ECONOMIC_EVALUATION_SCOPE_RATIFIED") == "true"
