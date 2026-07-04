@@ -18,8 +18,9 @@ SCHEDULER_RUNTIME_ALLOWED: false
 
 | Feld | Wert |
 |---|---|
-| `LAST_VERIFIED_ORIGIN_MAIN` | `7a6933fd3078ef4453d74c6088fc592b4ab40115` |
-| `LAST_VERIFIED_AT` | `2026-07-04T20:56:20Z` |
+| `LAST_VERIFIED_ORIGIN_MAIN` | `220cce942aada36e621c3dd572c1ac818463e051` |
+| `LAST_VERIFIED_AT` | `2026-07-04T22:53:16Z` |
+| `LAST_VERIFIED_SOURCE` | `PR_4840_CLASS_D_V1_STALE_RUNBOOK_SUPERSESSION_DOCS_HYGIENE_CLOSEOUT` |
 | `CURRENT_STATE` | `FINAL_RESEARCH_FLEET_CLASS_D_VERSIONED_BINDINGS_AND_OFFLINE_EVALUATION_SCOPE_MATERIALIZED_V0` |
 | `CURRENT_MAJOR_GAP_PACKAGE` | `MAJOR_GAP_COMPARISON_PROMOTION_POLICY_INPUT_BRIDGE_V0` |
 | `NEXT_RUNBOOK_STEP` | `RUNBOOK_STEP_29R_RUNTIME_REWIRE_V1_IMPLEMENTATION` |
@@ -35,6 +36,9 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `RUNBOOK_V4_4_CANONICAL_SOURCE` | `docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4_current_state_multi_candidate_research_fleet.md` |
 | `RUNBOOK_V4_4_STALE_GOVERNANCE_SUPERSESSION_STATUS` | `DOCS_HYGIENE_APPLIED_V0` |
 | `RUNBOOK_V4_4_STALE_GOVERNANCE_SUPERSESSION_NOTE` | Runbook-v4.4 enthält historische Pre-Fail-Snapshots (`NO_NEW_CANDIDATE_HOLD=REVOKED`, `MULTI_CANDIDATE_RESEARCH_FLEET_ALLOWED=true`); operative Authority = diese Registry-Metadaten, nicht stale v4.4-Abschnitte 19.2/45. |
+| `PR4840_MERGE_COMMIT` | `220cce942aada36e621c3dd572c1ac818463e051` |
+| `PR4840_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_class_d_v1_stale_runbook_supersession_docs_hygiene_pr_closeout_v0_20260704T225316Z (MANIFEST_VERIFY_RC=0; PR #4840; squash 220cce94; VERDICT=CLASS_D_V1_STALE_RUNBOOK_SUPERSESSION_DOCS_HYGIENE_SQUASH_MERGE_CLOSEOUT_COMPLETE)` |
+| `PR4840_LAST_VERIFIED_SYNC_EVIDENCE_REF` | `PENDING_POST_MERGE` |
 | `CLASS_D_V1_FLEET` | `TERMINAL_PARKED` |
 | `CLASS_D_V1_FLEET_TERMINAL_PARK_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_class_d_v1_fleet_terminal_park_ratification_v0_20260704T224245Z (MANIFEST_VERIFY_RC=0)` |
 | `CLASS_D_V1_FLEET_OPERATOR_DECISION_DOSSIER_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_class_d_v1_fleet_operator_decision_dossier_and_governance_disposition_read_only_v0_20260704T224019Z (MANIFEST_VERIFY_RC=0)` |
@@ -3368,6 +3372,33 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `non_authorizing` | `true` |
 | `RUNTIME_EFFECT` | `NONE` |
 | `AUTHORITY_EFFECT` | `NONE` |
+
+---
+
+## Post-PR-4840 Verification Binding
+
+Docs-only closeout binding nach Squash-Merge von PR #4840 (`docs(governance): supersede stale Class-D v1 fleet runbook snapshot`). Keine Authority-Wirkung; Hold, Terminal Park und `CURRENT_ADMISSIBLE_NEXT_SCOPE=NONE` bleiben unverändert aktiv.
+
+| Feld | Wert |
+|---|---|
+| `PR4840_MERGED` | `true` |
+| `PR4840_MERGE_COMMIT` | `220cce942aada36e621c3dd572c1ac818463e051` |
+| `LAST_VERIFIED_ORIGIN_MAIN` | `220cce942aada36e621c3dd572c1ac818463e051` |
+| `LAST_VERIFIED_SOURCE` | `PR_4840_CLASS_D_V1_STALE_RUNBOOK_SUPERSESSION_DOCS_HYGIENE_CLOSEOUT` |
+| `LAST_VERIFIED_AT` | `2026-07-04T22:53:16Z` |
+| `WORKTREE_CLEAN_AT_VERIFICATION` | `true` |
+| `ORIGIN_MAIN_VERIFIED` | `true` |
+| `CLASS_D_V1_FLEET` | `TERMINAL_PARKED` |
+| `NO_NEW_CANDIDATE_HOLD` | `ACTIVE` |
+| `MULTI_CANDIDATE_RESEARCH_FLEET_ALLOWED` | `false` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `RESEARCH_AUTHORIZATION` | `NONE` |
+| `EVALUATION_AUTHORIZATION` | `NONE` |
+| `SHADOW_PAPER_TESTNET_LIVE_AUTHORIZATION` | `NONE` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
 
 ---
 
