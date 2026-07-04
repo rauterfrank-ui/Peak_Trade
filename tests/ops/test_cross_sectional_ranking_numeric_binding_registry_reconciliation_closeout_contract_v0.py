@@ -113,6 +113,9 @@ class TestAuthoritativeNumericBindingReconciliation:
 
     def test_next_canonical_step_terminal_fail_no_auto_evaluation(self) -> None:
         assert authoritative_field_value("GLOBAL_RUNBOOK_NEXT_STEP") == (
+            "OPERATOR_INPUT_REQUIRED_FOR_NEW_RESEARCH_SCOPE_DEFINITION_V0"
+        )
+        assert authoritative_field_value("HYPOTHESIS_SUBSTRAND_NEXT_STEP") == (
             "NO_FURTHER_CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_ACTION_TERMINAL_FAIL"
         )
         assert authoritative_field_value("HYPOTHESIS_SUBSTRAND_NEXT_STEP_READ_ONLY") == "true"
@@ -178,5 +181,5 @@ class TestGlobalSummaryBinding:
     def test_last_verified_origin_main_updated(self) -> None:
         summary = global_summary_section()
         assert _field_value(summary, "LAST_VERIFIED_ORIGIN_MAIN") == (
-            "bd03912a9659b2efbb7cbaf7638922c651abc32b"
+            "498263a376dac33dead91cfdb2278d23066c8dc5"
         )
