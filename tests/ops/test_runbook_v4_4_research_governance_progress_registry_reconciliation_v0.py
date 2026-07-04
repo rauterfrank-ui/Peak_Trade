@@ -29,7 +29,7 @@ RUNBOOK_V4_4 = (
 RECONCILIATION_SECTION_PREFIX = (
     "#### RUNBOOK_V4_4_RESEARCH_GOVERNANCE_PROGRESS_REGISTRY_RECONCILIATION_V0"
 )
-NEXT_CANONICAL_STEP = "OPERATOR_INPUT_REQUIRED_FOR_NEW_RESEARCH_SCOPE_DEFINITION_V0"
+NEXT_CANONICAL_STEP = "AWAIT_OPERATOR_OFFLINE_EVALUATION_GO_CROSS_SECTIONAL_RELATIVE_STRENGTH_V0"
 OPERATOR_POLICY_DECISION = "NO_NEW_CANDIDATE_HOLD_REINSTATE"
 FINAL_RESEARCH_FLEET = "trend_following,bollinger_bands,momentum_1h"
 
@@ -77,13 +77,17 @@ class TestRunbookV44AuthoritativeGovernanceReconciliation:
             == "ECONOMIC_VALIDITY_OFFLINE_GATE_FAIL"
         )
 
-    def test_next_canonical_step_operator_input_required(self) -> None:
+    def test_next_canonical_step_await_operator_evaluation_go(self) -> None:
         assert (
             authoritative_field_value("NEXT_CANONICAL_STEP")
-            == "OPERATOR_INPUT_REQUIRED_FOR_NEW_RESEARCH_SCOPE_DEFINITION_V0"
+            == "AWAIT_OPERATOR_OFFLINE_EVALUATION_GO_CROSS_SECTIONAL_RELATIVE_STRENGTH_V0"
         )
         assert authoritative_field_value("NEXT_CANONICAL_ACTION") == NEXT_CANONICAL_STEP
         assert authoritative_field_value("GLOBAL_RUNBOOK_NEXT_STEP") == NEXT_CANONICAL_STEP
+        assert (
+            authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE")
+            == "cross_sectional_relative_strength/v0"
+        )
 
     def test_runbook_v4_4_source_bound(self) -> None:
         assert RUNBOOK_V4_4.is_file(), f"missing runbook v4.4 owner: {RUNBOOK_V4_4}"

@@ -86,17 +86,21 @@ class TestAuthoritativeNumericBindingReconciliation:
             == MATERIALIZATION_MERGE_COMMIT
         )
 
-    def test_binding_ratified_numeric_layer_only(self) -> None:
+    def test_binding_ratified_complete(self) -> None:
         assert authoritative_field_value("CROSS_SECTIONAL_RANKING_SEMANTICS_BINDING_RATIFIED") == (
             "true"
         )
         assert (
             authoritative_field_value("CROSS_SECTIONAL_RANKING_SEMANTICS_OVERALL_BINDING_STATUS")
-            == "INCOMPLETE_FAIL_CLOSED"
+            == "COMPLETE"
         )
 
-    def test_pit_universe_manifest_ref_remains_required_unbound(self) -> None:
-        assert authoritative_field_value("PIT_UNIVERSE_MANIFEST_REF_STATUS") == "REQUIRED_UNBOUND"
+    def test_pit_universe_manifest_ref_bound_after_scope_ratification(self) -> None:
+        assert authoritative_field_value("PIT_UNIVERSE_MANIFEST_REF_STATUS") == "BOUND"
+        assert (
+            authoritative_field_value("CROSS_SECTIONAL_RANKING_SEMANTICS_OVERALL_BINDING_STATUS")
+            == "COMPLETE"
+        )
 
     def test_economic_and_runtime_remain_blocked(self) -> None:
         assert authoritative_field_value("ECONOMIC_EVALUATION_AUTHORIZED") == "false"
@@ -107,12 +111,12 @@ class TestAuthoritativeNumericBindingReconciliation:
             == "ECONOMIC_VALIDITY_OFFLINE_GATE_FAIL"
         )
 
-    def test_next_canonical_step_fleet_binding_ratification(self) -> None:
+    def test_next_canonical_step_await_operator_evaluation_go(self) -> None:
         assert (
             authoritative_field_value("GLOBAL_RUNBOOK_NEXT_STEP")
-            == "RATIFY_VERSIONED_FINAL_FLEET_BINDINGS_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE"
+            == "AWAIT_OPERATOR_OFFLINE_EVALUATION_GO_CROSS_SECTIONAL_RELATIVE_STRENGTH_V0"
         )
-        assert authoritative_field_value("HYPOTHESIS_SUBSTRAND_NEXT_STEP_READ_ONLY") == "true"
+        assert authoritative_field_value("HYPOTHESIS_SUBSTRAND_NEXT_STEP_READ_ONLY") == "false"
 
 
 class TestEvidenceCrosslinks:
@@ -137,10 +141,13 @@ class TestCrossSectionalResearchLineConsistency:
     def test_research_line_matches_authoritative_numeric_state(self) -> None:
         text = read_registry()
         section = _cross_sectional_section(text)
-        assert _field_value(section, "STATUS") == "NUMERIC_BOUND_BINDING_INCOMPLETE"
-        assert _field_value(section, "NEXT_CANONICAL_STEP") == NEXT_STEP
+        assert _field_value(section, "STATUS") == "SCOPE_DEFINITION_AND_BINDING_RATIFIED"
+        assert (
+            _field_value(section, "NEXT_CANONICAL_STEP")
+            == "AWAIT_OPERATOR_OFFLINE_EVALUATION_GO_CROSS_SECTIONAL_RELATIVE_STRENGTH_V0"
+        )
         assert _field_value(section, "NUMERIC_VALUES_BOUND") == "true"
-        assert _field_value(section, "PIT_UNIVERSE_MANIFEST_REF_STATUS") == "REQUIRED_UNBOUND"
+        assert _field_value(section, "PIT_UNIVERSE_MANIFEST_REF_STATUS") == "BOUND"
         assert _field_value(section, "NUMERIC_MATERIALIZATION_SOURCE_PR") == MATERIALIZATION_PR
         assert _field_value(section, "NUMERIC_POLICY_DECISION_CLASS") == POLICY_DECISION_CLASS
         assert _field_value(section, "ECONOMIC_EVALUATION_AUTHORIZED") == "false"
@@ -172,5 +179,5 @@ class TestGlobalSummaryBinding:
     def test_last_verified_origin_main_updated(self) -> None:
         summary = global_summary_section()
         assert _field_value(summary, "LAST_VERIFIED_ORIGIN_MAIN") == (
-            "1a6dac20003b1e9e84aed0f015a1cbb37601d467"
+            "bd03912a9659b2efbb7cbaf7638922c651abc32b"
         )
