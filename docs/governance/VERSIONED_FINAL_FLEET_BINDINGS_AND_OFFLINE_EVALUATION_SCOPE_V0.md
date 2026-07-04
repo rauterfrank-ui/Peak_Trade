@@ -68,7 +68,7 @@ SCHEDULER_RUNTIME_ALLOWED: false
 |---|---|---|---|
 | Strategy registry | `src/strategies/registry.py` → `TrendFollowingStrategy` | `src/strategies/registry.py` → `BollingerBandsStrategy` | `src/strategies/registry.py` → `MomentumStrategy` |
 | STEP31F evaluation config | `config/ops/step31f_okx_inst_eth_usdt_perp_trend_following_v1_economic_evaluation_v1.json` | `config/ops/step31f_okx_inst_eth_usdt_perp_bollinger_bands_v1_economic_evaluation_v1.json` | `config/ops/step31f_okx_inst_eth_usdt_perp_momentum_1h_v1_economic_evaluation_v1.json` |
-| Binding completion record | `final_research_fleet_versioned_binding_completion_v0.json` candidate `trend_following/v1` | same owner, candidate `bollinger_bands/v1` | same owner, candidate `momentum_1h/v1` |
+| Binding completion record | `final_research_fleet_versioned_binding_completion_v0.json` candidate `trend_following&#47;v1` | same owner, candidate `bollinger_bands&#47;v1` | same owner, candidate `momentum_1h&#47;v1` |
 | Manifest contract | `final_research_fleet_v0_versioned_binding_manifest_contract_v0.py` | same | same |
 | Shared dataset envelope | `pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1` / `cross_sectional_research_staging_v1` | same | same |
 | Shared instrument policy | `production_pit_universe_manifest_v1` (6 non-Bitcoin OKX linear perpetuals) | same | same |
@@ -77,7 +77,7 @@ SCHEDULER_RUNTIME_ALLOWED: false
 
 **Reuse-first binding artifacts:** Alle Pflicht-Bindings pro Kandidat sind repo-evident über `config/research/final_research_fleet_versioned_binding_completion_v0.json` (completion_digest `161d834e5153df78a0013b6e55c4c8bd4788c775811e3678f025104a307d78f1`) und die referenzierten STEP31F-Configs. Keine neuen Strategy-Implementierungen, keine Parameterfindung, keine Evaluation in diesem Scope.
 
-**Excluded failed historical candidates (retry forbidden):** `macd/v1`, `macd/v2`, `macd/v3`, `breakout_donchian/v1`, `ma_crossover/v1`, `rsi_reversion/step30a`, `composite_breakout_confirmation_vol_gated_donchian_v1/v1`.
+**Excluded failed historical candidates (retry forbidden):** `macd&#47;v1`, `macd&#47;v2`, `macd&#47;v3`, `breakout_donchian&#47;v1`, `ma_crossover&#47;v1`, `rsi_reversion&#47;step30a`, `composite_breakout_confirmation_vol_gated_donchian_v1&#47;v1`.
 
 ## C. Candidate Binding Tables
 
