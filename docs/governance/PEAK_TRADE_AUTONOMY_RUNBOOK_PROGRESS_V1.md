@@ -38,7 +38,7 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `RUNBOOK_V4_4_STALE_GOVERNANCE_SUPERSESSION_NOTE` | Runbook-v4.4 enthält historische Pre-Fail-Snapshots (`NO_NEW_CANDIDATE_HOLD=REVOKED`, `MULTI_CANDIDATE_RESEARCH_FLEET_ALLOWED=true`); operative Authority = diese Registry-Metadaten, nicht stale v4.4-Abschnitte 19.2/45. |
 | `PR4840_MERGE_COMMIT` | `220cce942aada36e621c3dd572c1ac818463e051` |
 | `PR4840_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_class_d_v1_stale_runbook_supersession_docs_hygiene_pr_closeout_v0_20260704T225316Z (MANIFEST_VERIFY_RC=0; PR #4840; squash 220cce94; VERDICT=CLASS_D_V1_STALE_RUNBOOK_SUPERSESSION_DOCS_HYGIENE_SQUASH_MERGE_CLOSEOUT_COMPLETE)` |
-| `PR4840_LAST_VERIFIED_SYNC_EVIDENCE_REF` | `PENDING_POST_MERGE` |
+| `PR4840_LAST_VERIFIED_SYNC_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_progress_registry_last_verified_origin_main_sync_pr_closeout_v0_20260704T230130Z` |
 | `CLASS_D_V1_FLEET` | `TERMINAL_PARKED` |
 | `CLASS_D_V1_FLEET_TERMINAL_PARK_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_class_d_v1_fleet_terminal_park_ratification_v0_20260704T224245Z (MANIFEST_VERIFY_RC=0)` |
 | `CLASS_D_V1_FLEET_OPERATOR_DECISION_DOSSIER_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_class_d_v1_fleet_operator_decision_dossier_and_governance_disposition_read_only_v0_20260704T224019Z (MANIFEST_VERIFY_RC=0)` |
