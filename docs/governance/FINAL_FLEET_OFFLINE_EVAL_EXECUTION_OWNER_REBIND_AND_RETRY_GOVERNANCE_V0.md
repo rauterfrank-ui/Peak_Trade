@@ -50,7 +50,7 @@ Historische negative Evidence bleibt unverändert (`POLICY_CHANGE_DOES_NOT_CHANG
 
 ## D. Preflight Fail-Closed Reference
 
-Fail-closed Evidence: `governance/bounded_offline_economic_evaluation_execution_v0_20260704T200900Z`
+Fail-closed Evidence: `governance&#47;bounded_offline_economic_evaluation_execution_v0_20260704T200900Z`
 
 Blocker behoben in diesem Slice:
 1. `ORIGIN_MAIN_SHA_MISMATCH` → rebind auf `208ab965…`
