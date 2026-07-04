@@ -33,6 +33,12 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `CURRENT_ADMISSIBLE_IMPLEMENTATION_SCOPE` | `NONE` |
 | `CURRENT_BLOCKING_POLICY` | `ECONOMIC_VALIDITY_OFFLINE_GATE_FAIL` |
 | `RUNBOOK_V4_4_CANONICAL_SOURCE` | `docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4_current_state_multi_candidate_research_fleet.md` |
+| `RUNBOOK_V4_4_STALE_GOVERNANCE_SUPERSESSION_STATUS` | `DOCS_HYGIENE_APPLIED_V0` |
+| `RUNBOOK_V4_4_STALE_GOVERNANCE_SUPERSESSION_NOTE` | Runbook-v4.4 enthält historische Pre-Fail-Snapshots (`NO_NEW_CANDIDATE_HOLD=REVOKED`, `MULTI_CANDIDATE_RESEARCH_FLEET_ALLOWED=true`); operative Authority = diese Registry-Metadaten, nicht stale v4.4-Abschnitte 19.2/45. |
+| `CLASS_D_V1_FLEET` | `TERMINAL_PARKED` |
+| `CLASS_D_V1_FLEET_TERMINAL_PARK_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_class_d_v1_fleet_terminal_park_ratification_v0_20260704T224245Z (MANIFEST_VERIFY_RC=0)` |
+| `CLASS_D_V1_FLEET_OPERATOR_DECISION_DOSSIER_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_class_d_v1_fleet_operator_decision_dossier_and_governance_disposition_read_only_v0_20260704T224019Z (MANIFEST_VERIFY_RC=0)` |
+| `CLASS_D_V1_FLEET_ARCHITECTURE_REVIEW_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_class_d_v1_fleet_architecture_review_read_only_v0_20260704T224444Z (MANIFEST_VERIFY_RC=0)` |
 | `RUNBOOK_V4_4_RESEARCH_GOVERNANCE_RECONCILIATION_STATUS` | `COMPLETE` |
 | `OPERATOR_POLICY_DECISION` | `NO_NEW_CANDIDATE_HOLD_REINSTATE` |
 | `NO_NEW_CANDIDATE_HOLD` | `ACTIVE` |
