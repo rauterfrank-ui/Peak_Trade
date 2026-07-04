@@ -12,7 +12,7 @@ from src.research.cross_sectional_relative_strength_v0_offline_economic_evaluati
     ECONOMIC_EVALUATION_EXECUTED,
     ECONOMIC_VALIDITY_OFFLINE_GATE_PASS,
     HYPOTHESIS_ID,
-    OPERATOR_GO_TOKEN,
+    OPERATOR_GO,
     PROHIBITED_ACTIONS,
     REQUIRED_BINDINGS_BEFORE_ANY_EVALUATION,
     RUNTIME_EFFECT,
@@ -50,7 +50,7 @@ def test_module_constants_fail_closed(ratification: dict) -> None:
     assert ECONOMIC_EVALUATION_EXECUTED is False
     assert ECONOMIC_VALIDITY_OFFLINE_GATE_PASS is False
     assert RUNTIME_REWIRE_ADMISSIBLE is False
-    assert OPERATOR_GO_TOKEN.startswith("GO_NEW_RESEARCH_SCOPE_")
+    assert OPERATOR_GO.startswith("GO_NEW_RESEARCH_SCOPE_")
     assert SCOPE_CLASSIFICATION.endswith("_V0")
     assert ratification["economic_evaluation_authorized"] is False
     assert ratification["no_evaluation_until_scope_ratified"] is True

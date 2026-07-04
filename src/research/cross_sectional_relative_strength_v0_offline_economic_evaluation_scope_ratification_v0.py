@@ -52,9 +52,7 @@ RATIFICATION_VERSION = "v0"
 CANONICAL_SERIALIZATION_VERSION = "research_scope_ratification_canonical_json_v1"
 SCOPE_CLASSIFICATION = "BOUNDED_FUTURES_ONLY_RESEARCH_SCOPE_DEFINITION_AND_BINDING_RATIFICATION_V0"
 
-OPERATOR_GO_TOKEN = (
-    "GO_NEW_RESEARCH_SCOPE_CROSS_SECTIONAL_RELATIVE_STRENGTH_NON_BITCOIN_PERPETUALS_V0"
-)
+OPERATOR_GO = "GO_NEW_RESEARCH_SCOPE_CROSS_SECTIONAL_RELATIVE_STRENGTH_NON_BITCOIN_PERPETUALS_V0"
 OPERATOR_SCOPE_RATIFICATION_REF = "bounded_cs_relative_strength_scope_binding_ratification_v0"
 CONFIG_REL_PATH = (
     "config/research/"
@@ -259,7 +257,7 @@ def materialize_cross_sectional_offline_economic_evaluation_scope_ratification_v
         "ratification_id": RATIFICATION_ID,
         "ratification_version": RATIFICATION_VERSION,
         "scope_classification": SCOPE_CLASSIFICATION,
-        "operator_go_token": OPERATOR_GO_TOKEN,
+        "operator_go_token": OPERATOR_GO,
         "operator_scope_ratification_ref": OPERATOR_SCOPE_RATIFICATION_REF,
         "strategy_id": STRATEGY_ID,
         "strategy_version": STRATEGY_VERSION,
