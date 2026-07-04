@@ -71,8 +71,8 @@ def test_go_token_operator_alias_is_accepted_without_second_authority() -> None:
     assert not is_accepted_go_token("GO_UNKNOWN_TOKEN")
 
 
-def test_expected_origin_main_sha_rebound_to_pr4826_merge() -> None:
-    assert EXPECTED_ORIGIN_MAIN_SHA == "208ab96562f7750fb4dff43936b345a040d1cea4"
+def test_expected_origin_main_sha_rebound_to_class_d_materialized_main() -> None:
+    assert EXPECTED_ORIGIN_MAIN_SHA == "ddce9c508158b89fa225c381436e2d1efced7328"
 
 
 def test_pr4826_scope_does_not_create_new_execution_evidence_class() -> None:

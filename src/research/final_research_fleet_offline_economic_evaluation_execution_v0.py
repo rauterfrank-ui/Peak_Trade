@@ -31,6 +31,7 @@ from src.research.final_research_fleet_v0_versioned_binding_manifest_contract_v0
 from src.research.final_research_fleet_offline_economic_evaluation_scope_ratification_v0 import (
     OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFIED,
     ValidationVerdict,
+    materialize_final_research_fleet_offline_economic_evaluation_scope_ratification_v0,
     validate_final_research_fleet_offline_economic_evaluation_scope_ratification_v0,
 )
 from src.research.final_research_fleet_versioned_binding_completion_v0 import (
@@ -51,9 +52,31 @@ GO_TOKEN_OPERATOR_ALIAS = (
     "GO_BOUNDED_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_FOR_VERSIONED_FINAL_RESEARCH_FLEET_V0"
 )
 ACCEPTED_GO_TOKENS: frozenset[str] = frozenset({GO_TOKEN, GO_TOKEN_OPERATOR_ALIAS})
-EXPECTED_ORIGIN_MAIN_SHA = "208ab96562f7750fb4dff43936b345a040d1cea4"
-REQUIRED_MERGED_PR_NUMBER = 4826
 PR4826_MERGE_COMMIT = "208ab96562f7750fb4dff43936b345a040d1cea4"
+PR4832_MERGE_COMMIT = "ddce9c508158b89fa225c381436e2d1efced7328"
+MATERIALIZED_CLASS_D_ORIGIN_MAIN_SHA = PR4832_MERGE_COMMIT
+EXPECTED_ORIGIN_MAIN_SHA = MATERIALIZED_CLASS_D_ORIGIN_MAIN_SHA
+ACCEPTED_ORIGIN_MAIN_SHAS: frozenset[str] = frozenset(
+    {PR4826_MERGE_COMMIT, MATERIALIZED_CLASS_D_ORIGIN_MAIN_SHA}
+)
+REQUIRED_MERGED_PR_NUMBER = 4826
+CLASS_D_BINDING_COMPLETION_ID = "final_research_fleet_class_d_versioned_binding_completion_v0"
+CLASS_D_BINDING_COMPLETION_SCHEMA_VERSION = (
+    "final_research_fleet_class_d_versioned_bindings_and_offline_economic_evaluation_scope.v0"
+)
+CLASS_D_BINDING_COMPLETION_DIGEST = (
+    "0610afa34b347abde08768fb2fbfb30fd4bb19ae010f3b2042c67155fb6c0fc4"
+)
+CLASS_D_SCOPE_RATIFICATION_CONFIG_REL = "config/research/final_research_fleet_class_d_offline_economic_evaluation_scope_ratification_v0.json"
+CLASS_D_RATIFIED_SCOPE_ID = (
+    "FINAL_RESEARCH_FLEET_VERSIONED_BINDINGS_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE_V0"
+)
+DURABLE_EVIDENCE_SUBDIR = "research"
+DURABLE_EVIDENCE_BUNDLE_PREFIX = "bounded_offline_economic_evaluation_final_research_fleet_v0"
+LEGACY_DURABLE_EVIDENCE_SUBDIR = "implementation"
+LEGACY_DURABLE_EVIDENCE_BUNDLE_PREFIX = (
+    "bounded_final_research_fleet_offline_economic_evaluation_v0"
+)
 HISTORICAL_STEP31F_BINDING_COMPLETION_DIGEST = (
     "161d834e5153df78a0013b6e55c4c8bd4788c775811e3678f025104a307d78f1"
 )
@@ -185,6 +208,182 @@ def is_accepted_go_token(token: str) -> bool:
     return token in ACCEPTED_GO_TOKENS
 
 
+def is_accepted_origin_main_sha(origin_main_sha: str) -> bool:
+    return origin_main_sha in ACCEPTED_ORIGIN_MAIN_SHAS
+
+
+def is_class_d_binding_completion_v0(fleet_binding_completion: Mapping[str, Any]) -> bool:
+    return (
+        fleet_binding_completion.get("schema_version") == CLASS_D_BINDING_COMPLETION_SCHEMA_VERSION
+        or fleet_binding_completion.get("completion_id") == CLASS_D_BINDING_COMPLETION_ID
+        or fleet_binding_completion.get("ratification_class") == "D"
+    )
+
+
+def resolve_durable_evidence_bundle_dir_v0(
+    *,
+    durable_evidence_root: Path,
+    timestamp_slug: str,
+) -> Path:
+    return (
+        durable_evidence_root
+        / DURABLE_EVIDENCE_SUBDIR
+        / f"{DURABLE_EVIDENCE_BUNDLE_PREFIX}_{timestamp_slug}"
+    )
+
+
+def resolve_legacy_durable_evidence_bundle_dir_v0(
+    *,
+    durable_evidence_root: Path,
+    timestamp_slug: str,
+) -> Path:
+    return (
+        durable_evidence_root
+        / LEGACY_DURABLE_EVIDENCE_SUBDIR
+        / f"{LEGACY_DURABLE_EVIDENCE_BUNDLE_PREFIX}_{timestamp_slug}"
+    )
+
+
+def verify_origin_main_sha_for_binding_v0(
+    *,
+    origin_main_sha: str,
+    fleet_binding_completion: Mapping[str, Any],
+) -> tuple[bool, tuple[str, ...]]:
+    if is_class_d_binding_completion_v0(fleet_binding_completion):
+        if origin_main_sha != MATERIALIZED_CLASS_D_ORIGIN_MAIN_SHA:
+            return False, (
+                f"{REASON_ORIGIN_MAIN_MISMATCH}:{origin_main_sha}!={MATERIALIZED_CLASS_D_ORIGIN_MAIN_SHA}",
+            )
+        return True, ()
+    if not is_accepted_origin_main_sha(origin_main_sha):
+        return False, (f"{REASON_ORIGIN_MAIN_MISMATCH}:{origin_main_sha}",)
+    return True, ()
+
+
+def load_scope_ratification_for_execution_v0(
+    *,
+    repo_root: Path,
+    fleet_binding_completion: Mapping[str, Any],
+) -> dict[str, Any]:
+    if is_class_d_binding_completion_v0(fleet_binding_completion):
+        scope_path = repo_root / CLASS_D_SCOPE_RATIFICATION_CONFIG_REL
+        if not scope_path.is_file():
+            raise ValueError(f"missing_class_d_scope_ratification:{scope_path}")
+        payload = json.loads(scope_path.read_text(encoding="utf-8"))
+        if not isinstance(payload, dict):
+            raise ValueError("class_d_scope_ratification_not_object")
+        return payload
+    return materialize_final_research_fleet_offline_economic_evaluation_scope_ratification_v0(
+        repo_root=repo_root,
+        fleet_binding_completion=fleet_binding_completion,
+    )
+
+
+def validate_binding_completion_for_execution_v0(
+    fleet_binding_completion: Mapping[str, Any],
+    *,
+    repo_root: Path,
+    require_ready_for_eval: bool = True,
+) -> tuple[bool, tuple[str, ...]]:
+    if is_class_d_binding_completion_v0(fleet_binding_completion):
+        from src.research.final_research_fleet_class_d_versioned_bindings_and_offline_economic_evaluation_scope_v0 import (  # noqa: PLC0415,E501
+            validate_class_d_binding_completion_v0,
+        )
+
+        verdict, fail_reasons = validate_class_d_binding_completion_v0(
+            fleet_binding_completion,
+            repo_root=repo_root,
+        )
+        if verdict.value != "ACCEPTED":
+            return False, fail_reasons
+        return True, ()
+    binding_validation = validate_final_research_fleet_versioned_binding_completion_v0(
+        fleet_binding_completion,
+        repo_root=repo_root,
+        require_ready_for_eval=require_ready_for_eval,
+    )
+    if binding_validation.verdict != BindingValidationVerdict.ACCEPTED:
+        return False, binding_validation.fail_reasons
+    return True, ()
+
+
+def validate_class_d_scope_ratification_for_execution_v0(
+    ratification: Mapping[str, Any],
+    *,
+    fleet_binding_completion: Mapping[str, Any],
+) -> tuple[bool, tuple[str, ...]]:
+    reasons: list[str] = []
+    if ratification.get("schema_version") != CLASS_D_BINDING_COMPLETION_SCHEMA_VERSION:
+        reasons.append("UNKNOWN_SCHEMA_VERSION")
+    if ratification.get("ratified_scope_id") != CLASS_D_RATIFIED_SCOPE_ID:
+        reasons.append("RATIFIED_SCOPE_ID_MISMATCH")
+    if ratification.get("fleet_binding_digest") != fleet_binding_completion.get(
+        "completion_digest"
+    ):
+        reasons.append(REASON_BINDING_DIGEST_MISMATCH)
+    if ratification.get("offline_economic_evaluation_scope_ratified") is not True:
+        reasons.append(REASON_SCOPE_NOT_RATIFIED)
+    if ratification.get("economic_evaluation_executed") is not False:
+        reasons.append(REASON_EVALUATION_ALREADY_EXECUTED)
+    if ratification.get("economic_evaluation_authorized") is not False:
+        reasons.append("ECONOMIC_EVALUATION_AUTHORIZED_MUST_BE_FALSE")
+    for effect_field, expected in (
+        ("authority_effect", AUTHORITY_EFFECT),
+        ("runtime_effect", RUNTIME_EFFECT),
+        ("order_effect", ORDER_EFFECT),
+    ):
+        if ratification.get(effect_field) != expected:
+            reasons.append(f"EFFECT_NOT_NONE:{effect_field}")
+    if ratification.get("runtime_rewire_admissible") is not False:
+        reasons.append("RUNTIME_REWIRE_MUST_BE_FALSE")
+    if ratification.get("futures_only") is not True:
+        reasons.append("FUTURES_ONLY_VIOLATION")
+    if ratification.get("bitcoin_direction_allowed") is not False:
+        reasons.append("BITCOIN_DIRECTION_BINDING_REJECTED")
+    expected_refs = [
+        canonical_candidate_identifier(strategy_id, version)
+        for strategy_id, version in FLEET_CANDIDATES
+    ]
+    if sorted(ratification.get("candidate_refs") or []) != sorted(expected_refs):
+        reasons.append("CANDIDATE_SET_MISMATCH")
+    binding_digests = ratification.get("candidate_binding_digests")
+    if isinstance(binding_digests, Mapping):
+        for candidate in fleet_binding_completion.get("candidates", ()):
+            if not isinstance(candidate, Mapping):
+                continue
+            ref = canonical_candidate_identifier(
+                str(candidate["strategy_id"]), str(candidate["strategy_version"])
+            )
+            expected = str(candidate.get("binding_semantic_digest", ""))
+            actual = binding_digests.get(ref)
+            if actual != expected:
+                reasons.append(f"{REASON_BINDING_DIGEST_MISMATCH}:{ref}")
+    return not reasons, tuple(reasons)
+
+
+def validate_scope_ratification_for_execution_v0(
+    ratification: Mapping[str, Any],
+    *,
+    repo_root: Path,
+    fleet_binding_completion: Mapping[str, Any],
+) -> tuple[bool, tuple[str, ...]]:
+    if is_class_d_binding_completion_v0(fleet_binding_completion):
+        return validate_class_d_scope_ratification_for_execution_v0(
+            ratification,
+            fleet_binding_completion=fleet_binding_completion,
+        )
+    ratification_validation = (
+        validate_final_research_fleet_offline_economic_evaluation_scope_ratification_v0(
+            ratification,
+            repo_root=repo_root,
+            expected_fleet_binding_completion=fleet_binding_completion,
+        )
+    )
+    if ratification_validation.verdict != ValidationVerdict.ACCEPTED:
+        return False, ratification_validation.fail_reasons
+    return True, ()
+
+
 def canonical_go_token(token: str) -> str:
     if is_accepted_go_token(token):
         return GO_TOKEN
@@ -218,35 +417,38 @@ def verify_execution_start_state_v0(
 ) -> StartStateVerificationResultV0:
     reasons: list[str] = []
     resolved_origin = origin_main_sha or _resolve_origin_main_sha(repo_root)
-    if resolved_origin != EXPECTED_ORIGIN_MAIN_SHA:
-        reasons.append(f"{REASON_ORIGIN_MAIN_MISMATCH}:{resolved_origin}")
+    origin_ok, origin_reasons = verify_origin_main_sha_for_binding_v0(
+        origin_main_sha=resolved_origin,
+        fleet_binding_completion=fleet_binding_completion,
+    )
+    if not origin_ok:
+        reasons.extend(origin_reasons)
 
-    binding_validation = validate_final_research_fleet_versioned_binding_completion_v0(
+    binding_ok, binding_reasons = validate_binding_completion_for_execution_v0(
         fleet_binding_completion,
         repo_root=repo_root,
         require_ready_for_eval=True,
     )
-    if binding_validation.verdict != BindingValidationVerdict.ACCEPTED:
-        reasons.extend(binding_validation.fail_reasons)
+    if not binding_ok:
+        reasons.extend(binding_reasons)
 
-    ratification_validation = (
-        validate_final_research_fleet_offline_economic_evaluation_scope_ratification_v0(
-            ratification,
-            repo_root=repo_root,
-            expected_fleet_binding_completion=fleet_binding_completion,
-        )
+    scope_ok, scope_reasons = validate_scope_ratification_for_execution_v0(
+        ratification,
+        repo_root=repo_root,
+        fleet_binding_completion=fleet_binding_completion,
     )
-    if ratification_validation.verdict != ValidationVerdict.ACCEPTED:
-        reasons.extend(ratification_validation.fail_reasons)
+    if not scope_ok:
+        reasons.extend(scope_reasons)
 
     if ratification.get("offline_economic_evaluation_scope_ratified") is not True:
         reasons.append(REASON_SCOPE_NOT_RATIFIED)
     if ratification.get("economic_evaluation_executed") is not False:
         reasons.append(REASON_EVALUATION_ALREADY_EXECUTED)
-    if ratification.get("offline_economic_evaluation_scope_ratified") != (
-        OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFIED
-    ):
-        reasons.append(REASON_SCOPE_NOT_RATIFIED)
+    if not is_class_d_binding_completion_v0(fleet_binding_completion):
+        if ratification.get("offline_economic_evaluation_scope_ratified") != (
+            OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFIED
+        ):
+            reasons.append(REASON_SCOPE_NOT_RATIFIED)
 
     expected_refs = [
         canonical_candidate_identifier(strategy_id, version)
