@@ -892,10 +892,10 @@ Manifest-verifizierte abgeschlossene Bindings:
 
 | Binding | Net Return | Profit Factor | Trades | Primäre Failure-Klasse |
 |---|---:|---:|---:|---|
-| `macd/v1-v3` | -2,33 % | 0,817 | 717 | `NEGATIVE_RAW_STRATEGY_EDGE` |
-| `breakout_donchian/v1` | -1,60 % | 0,845 | 328 | `NEGATIVE_RAW_STRATEGY_EDGE` |
-| `ma_crossover/v1` | -2,48 % | 0,161 | 6 | `NEGATIVE_RAW_STRATEGY_EDGE` |
-| `rsi_reversion/step30a` | -4,82 % | 0,836 | 465 | `SIGNAL_EDGE_PLUS_TURNOVER_PLUS_ROBUSTNESS` |
+| `macd&#47;v1-v3` | -2,33 % | 0,817 | 717 | `NEGATIVE_RAW_STRATEGY_EDGE` |
+| `breakout_donchian&#47;v1` | -1,60 % | 0,845 | 328 | `NEGATIVE_RAW_STRATEGY_EDGE` |
+| `ma_crossover&#47;v1` | -2,48 % | 0,161 | 6 | `NEGATIVE_RAW_STRATEGY_EDGE` |
+| `rsi_reversion&#47;step30a` | -4,82 % | 0,836 | 465 | `SIGNAL_EDGE_PLUS_TURNOVER_PLUS_ROBUSTNESS` |
 | `composite_breakout_confirmation_vol_gated_donchian_v1` | -2,34 % | 0,739 | 217 | `FEHLENDE_NETTO_EDGE_NEGATIVE_GROSS_EDGE` |
 
 ```text
