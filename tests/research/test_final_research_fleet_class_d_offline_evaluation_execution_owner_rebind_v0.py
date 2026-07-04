@@ -21,7 +21,6 @@ from src.research.final_research_fleet_offline_economic_evaluation_execution_v0 
     ORDER_EFFECT,
     PR4826_MERGE_COMMIT,
     PR4832_MERGE_COMMIT,
-    PR4834_MERGE_COMMIT,
     RUNTIME_EFFECT,
     is_accepted_go_token,
     is_accepted_origin_main_sha,
@@ -51,8 +50,14 @@ def fixture_class_d_binding_completion() -> dict:
 
 def test_execution_origin_resolves_from_live_origin_main() -> None:
     live = resolve_current_execution_origin_main_sha(REPO_ROOT)
+    expected = subprocess.run(
+        ["git", "-C", str(REPO_ROOT), "rev-parse", "origin/main"],
+        capture_output=True,
+        text=True,
+        check=True,
+    ).stdout.strip()
     assert live == resolve_expected_origin_main_sha(REPO_ROOT)
-    assert live == PR4834_MERGE_COMMIT
+    assert live == expected
     assert live != LEGACY_STATIC_EXECUTION_ORIGIN_MAIN_SHA
 
 

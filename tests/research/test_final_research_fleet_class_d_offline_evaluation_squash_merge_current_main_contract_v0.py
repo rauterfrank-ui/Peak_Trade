@@ -16,7 +16,6 @@ from src.research.final_research_fleet_offline_economic_evaluation_execution_v0 
     LEGACY_STATIC_EXECUTION_ORIGIN_MAIN_SHA,
     MATERIALIZED_CLASS_D_ORIGIN_MAIN_SHA,
     ORDER_EFFECT,
-    PR4834_MERGE_COMMIT,
     REASON_BINDING_IDENTITY_MISMATCH,
     REASON_CURRENT_MAIN_SHA_DRIFT_AFTER_SQUASH_MERGE,
     REASON_EVALUATION_ALREADY_EXECUTED,
@@ -53,7 +52,7 @@ def test_live_origin_main_resolves_to_current_execution_candidate() -> None:
         check=True,
     ).stdout.strip()
     assert live == expected
-    assert live == PR4834_MERGE_COMMIT
+    assert live != STALE_PR4833_SHA
 
 
 def test_new_squash_merge_sha_accepted_when_binding_identity_unchanged(
@@ -71,25 +70,28 @@ def test_new_squash_merge_sha_accepted_when_binding_identity_unchanged(
 def test_stale_pinned_pr4833_sha_rejected_when_live_main_advanced(
     class_d_binding_completion: dict,
 ) -> None:
+    live = resolve_current_execution_origin_main_sha(REPO_ROOT)
     ok, reasons = validate_current_main_against_immutable_binding_identity(
         origin_main_sha=STALE_PR4833_SHA,
         fleet_binding_completion=class_d_binding_completion,
-        live_origin_main_sha=PR4834_MERGE_COMMIT,
+        live_origin_main_sha=live,
     )
     assert ok is False
+    assert STALE_PR4833_SHA != live
     assert any(REASON_CURRENT_MAIN_SHA_DRIFT_AFTER_SQUASH_MERGE in reason for reason in reasons)
 
 
 def test_exclusive_static_pin_regression_no_longer_accepts_stale_main(
     class_d_binding_completion: dict,
 ) -> None:
+    live = resolve_current_execution_origin_main_sha(REPO_ROOT)
     ok, reasons = verify_origin_main_sha_for_binding_v0(
         origin_main_sha=STALE_PR4833_SHA,
         fleet_binding_completion=class_d_binding_completion,
-        live_origin_main_sha=PR4834_MERGE_COMMIT,
+        live_origin_main_sha=live,
     )
     assert ok is False
-    assert STALE_PR4833_SHA != PR4834_MERGE_COMMIT
+    assert STALE_PR4833_SHA != live
     assert any(REASON_CURRENT_MAIN_SHA_DRIFT_AFTER_SQUASH_MERGE in reason for reason in reasons)
 
 
@@ -108,12 +110,13 @@ def test_materialization_sha_rejected_as_execution_origin(
 def test_changed_completion_digest_rejected(
     class_d_binding_completion: dict,
 ) -> None:
+    live = resolve_current_execution_origin_main_sha(REPO_ROOT)
     tampered = copy.deepcopy(class_d_binding_completion)
     tampered["completion_digest"] = "0" * 64
     ok, reasons = validate_current_main_against_immutable_binding_identity(
-        origin_main_sha=PR4834_MERGE_COMMIT,
+        origin_main_sha=live,
         fleet_binding_completion=tampered,
-        live_origin_main_sha=PR4834_MERGE_COMMIT,
+        live_origin_main_sha=live,
     )
     assert ok is False
     assert any(REASON_BINDING_IDENTITY_MISMATCH in reason for reason in reasons)
@@ -122,6 +125,7 @@ def test_changed_completion_digest_rejected(
 def test_live_origin_main_accepted_for_class_d_start_state(
     class_d_binding_completion: dict,
 ) -> None:
+    live = resolve_current_execution_origin_main_sha(REPO_ROOT)
     ratification = load_scope_ratification_for_execution_v0(
         repo_root=REPO_ROOT,
         fleet_binding_completion=class_d_binding_completion,
@@ -132,7 +136,7 @@ def test_live_origin_main_accepted_for_class_d_start_state(
         fleet_binding_completion=class_d_binding_completion,
     )
     assert result.valid is True
-    assert result.origin_main_sha == PR4834_MERGE_COMMIT
+    assert result.origin_main_sha == live
     assert class_d_binding_completion["completion_digest"] == CLASS_D_BINDING_COMPLETION_DIGEST
 
 
@@ -144,6 +148,7 @@ def test_evaluation_authorization_still_blocked_without_go_token() -> None:
 def test_changed_scope_ratification_rejects_execution_without_go(
     class_d_binding_completion: dict,
 ) -> None:
+    live = resolve_current_execution_origin_main_sha(REPO_ROOT)
     ratification = load_scope_ratification_for_execution_v0(
         repo_root=REPO_ROOT,
         fleet_binding_completion=class_d_binding_completion,
@@ -154,10 +159,26 @@ def test_changed_scope_ratification_rejects_execution_without_go(
         repo_root=REPO_ROOT,
         ratification=tampered,
         fleet_binding_completion=class_d_binding_completion,
-        origin_main_sha=PR4834_MERGE_COMMIT,
+        origin_main_sha=live,
     )
     assert result.valid is False
     assert any(REASON_EVALUATION_ALREADY_EXECUTED in reason for reason in result.fail_reasons)
+
+
+def test_post_squash_merge_live_main_not_pinned_to_pr4834(
+    class_d_binding_completion: dict,
+) -> None:
+    """Regression: new squash-merge main SHA is accepted without manual rebind to PR4834."""
+    live = resolve_current_execution_origin_main_sha(REPO_ROOT)
+    assert live
+    assert live != STALE_PR4833_SHA
+    ok, reasons = validate_current_main_against_immutable_binding_identity(
+        origin_main_sha=live,
+        fleet_binding_completion=class_d_binding_completion,
+        live_origin_main_sha=live,
+    )
+    assert ok is True
+    assert reasons == ()
 
 
 def test_runtime_authority_flags_remain_false() -> None:
