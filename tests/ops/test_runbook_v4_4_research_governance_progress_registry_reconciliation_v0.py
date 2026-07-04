@@ -30,7 +30,7 @@ RECONCILIATION_SECTION_PREFIX = (
     "#### RUNBOOK_V4_4_RESEARCH_GOVERNANCE_PROGRESS_REGISTRY_RECONCILIATION_V0"
 )
 NEXT_CANONICAL_STEP = "OPERATOR_INPUT_REQUIRED_FOR_NEW_RESEARCH_SCOPE_DEFINITION_V0"
-OPERATOR_POLICY_DECISION = "AUTHORIZE_BOUNDED_MULTI_CANDIDATE_FUTURES_RESEARCH_FLEET_V0"
+OPERATOR_POLICY_DECISION = "NO_NEW_CANDIDATE_HOLD_REINSTATE"
 FINAL_RESEARCH_FLEET = "trend_following,bollinger_bands,momentum_1h"
 
 
@@ -47,23 +47,24 @@ def _reconciliation_section(text: str) -> str:
 
 
 class TestRunbookV44AuthoritativeGovernanceReconciliation:
-    def test_no_new_candidate_hold_revoked_not_active(self) -> None:
-        assert authoritative_field_value("NO_NEW_CANDIDATE_HOLD") == "REVOKED"
+    def test_no_new_candidate_hold_active_after_ratification(self) -> None:
+        assert authoritative_field_value("NO_NEW_CANDIDATE_HOLD") == "ACTIVE"
+        assert authoritative_field_value("NO_NEW_CANDIDATE_HOLD_REINSTATE_RATIFIED") == "true"
         assert authoritative_field_value("NO_NEW_CANDIDATE_HOLD_REGISTRY_DRIFT_CORRECTED") == "true"
         assert (
             authoritative_field_value("NO_NEW_CANDIDATE_HOLD_PRIOR_REGISTRY_DRIFT_VALUE")
-            == "ACTIVE"
+            == "REVOKED"
         )
 
-    def test_operator_policy_decision_multi_candidate_fleet(self) -> None:
+    def test_operator_policy_decision_hold_reinstate(self) -> None:
         assert authoritative_field_value("OPERATOR_POLICY_DECISION") == OPERATOR_POLICY_DECISION
-        assert authoritative_field_value("MULTI_CANDIDATE_RESEARCH_FLEET_ALLOWED") == "true"
+        assert authoritative_field_value("MULTI_CANDIDATE_RESEARCH_FLEET_ALLOWED") == "false"
         assert authoritative_field_value("EXACTLY_ONE_CANDIDATE_LIMIT") == "false"
         assert authoritative_field_value("FINAL_RESEARCH_FLEET") == FINAL_RESEARCH_FLEET
 
     def test_binding_and_ratification_flags_pass_in_authoritative_metadata(self) -> None:
         assert authoritative_field_value("FINAL_RESEARCH_FLEET_BINDING_READY") == "true"
-        assert authoritative_field_value("NEW_CANDIDATES_RATIFIED") == "true"
+        assert authoritative_field_value("NEW_CANDIDATES_RATIFIED") == "false"
         assert authoritative_field_value("ECONOMIC_EVALUATION_SCOPE_RATIFIED") == "true"
         assert authoritative_field_value("ECONOMIC_EVALUATION_AUTHORIZED") == "false"
 
@@ -91,8 +92,7 @@ class TestRunbookV44AuthoritativeGovernanceReconciliation:
             "Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4_current_state_multi_candidate_research_fleet.md"
         )
         body = RUNBOOK_V4_4.read_text(encoding="utf-8")
-        assert "NO_NEW_CANDIDATE_HOLD=REVOKED" in body
-        assert OPERATOR_POLICY_DECISION in body
+        assert "FINAL_RESEARCH_FLEET_STATUS=COMPLETE_NO_PASS" in body
         assert FINAL_RESEARCH_FLEET in body
 
 
@@ -122,11 +122,11 @@ class TestRegistryResolverIntegrity:
         )
         assert ambiguous == {}
 
-    def test_global_summary_reflects_fleet_binding_ratification_pass(self) -> None:
+    def test_global_summary_reflects_hold_reinstatement(self) -> None:
         summary = global_summary_section()
-        assert _field_value(summary, "NO_NEW_CANDIDATE_HOLD") == "REVOKED"
+        assert _field_value(summary, "NO_NEW_CANDIDATE_HOLD") == "ACTIVE"
         assert _field_value(summary, "FINAL_RESEARCH_FLEET_BINDING_READY") == "true"
 
     def test_registry_resolver_loads_without_error(self) -> None:
         registry = load_runbook_progress_registry_v1()
-        assert registry.authoritative_value("NO_NEW_CANDIDATE_HOLD") == "REVOKED"
+        assert registry.authoritative_value("NO_NEW_CANDIDATE_HOLD") == "ACTIVE"
