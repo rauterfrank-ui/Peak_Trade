@@ -86,7 +86,7 @@ class TestRunbookV44AuthoritativeGovernanceReconciliation:
         assert authoritative_field_value("GLOBAL_RUNBOOK_NEXT_STEP") == NEXT_CANONICAL_STEP
         assert (
             authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE")
-            == "cross_sectional_relative_strength/v0"
+            == "cross_sectional_relative_strength&#47;v0"
         )
 
     def test_runbook_v4_4_source_bound(self) -> None:
