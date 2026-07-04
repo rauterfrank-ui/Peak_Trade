@@ -9,7 +9,7 @@ ORDERS_ALLOWED: false
 SCHEDULER_RUNTIME_ALLOWED: false
 ---
 
-> **Non-authorizing:** Bindet den Post-PR4827-Zustand auf `origin/main=4fc405ca`. Keine Offline-Evaluation-Execution, keine Runtime-Authority, keine neue Evidence-Klasse.
+> **Non-authorizing:** Bindet den Post-PR4827-Zustand auf `origin&#47;main=4fc405ca`. Keine Offline-Evaluation-Execution, keine Runtime-Authority, keine neue Evidence-Klasse.
 
 ## A. Verdict
 
