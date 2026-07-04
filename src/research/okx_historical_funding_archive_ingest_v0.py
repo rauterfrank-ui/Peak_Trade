@@ -387,6 +387,7 @@ def parse_archive_csv_text_v0(
     source_file_digest: str,
     expected_instrument_id: str | None = None,
     retrieval_time: str | None = None,
+    enforce_settlement_interval: bool = True,
 ) -> ArchiveParseResultV0:
     retrieval = retrieval_time or _utc_now_iso()
     reader = csv.DictReader(io.StringIO(csv_text))
@@ -459,7 +460,7 @@ def parse_archive_csv_text_v0(
         )
 
     deduped, dup_count = deduplicate_archive_events_v0(raw_events)
-    interval_errors = validate_funding_intervals_v0(deduped)
+    interval_errors = validate_funding_intervals_v0(deduped) if enforce_settlement_interval else []
     if interval_errors:
         return ArchiveParseResultV0(
             events=(),
@@ -489,6 +490,7 @@ def parse_archive_zip_bytes_v0(
     *,
     expected_instrument_id: str | None = None,
     retrieval_time: str | None = None,
+    enforce_settlement_interval: bool = True,
 ) -> ArchiveParseResultV0:
     digest = _sha256_bytes(zip_bytes)
     try:
@@ -527,6 +529,7 @@ def parse_archive_zip_bytes_v0(
         source_file_digest=digest,
         expected_instrument_id=expected_instrument_id,
         retrieval_time=retrieval_time,
+        enforce_settlement_interval=enforce_settlement_interval,
     )
 
 
