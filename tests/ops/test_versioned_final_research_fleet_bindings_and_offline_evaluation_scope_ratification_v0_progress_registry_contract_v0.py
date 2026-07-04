@@ -18,6 +18,9 @@ CLOSEOUT_SECTION_PREFIX = (
     "#### VERSIONED_FINAL_RESEARCH_FLEET_BINDINGS_AND_OFFLINE_EVALUATION_SCOPE_RATIFICATION_V0"
 )
 GLOBAL_NEXT_STEP = "OPERATOR_INPUT_REQUIRED_FOR_NEW_RESEARCH_SCOPE_DEFINITION_V0"
+CURRENT_GLOBAL_NEXT_STEP = (
+    "REQUEST_OPERATOR_GO_FOR_BOUNDED_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0"
+)
 CS_TERMINAL_NEXT_STEP = "NO_FURTHER_CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_ACTION_TERMINAL_FAIL"
 FINAL_RESEARCH_FLEET = "trend_following,bollinger_bands,momentum_1h"
 
@@ -47,8 +50,8 @@ class TestVersionedFinalResearchFleetBindingsAuthoritativeState:
 
     def test_pr4822_governance_invariants_preserved(self) -> None:
         assert authoritative_field_value("NO_NEW_CANDIDATE_HOLD") == "ACTIVE"
-        assert authoritative_field_value("NEXT_CANONICAL_STEP") == GLOBAL_NEXT_STEP
-        assert authoritative_field_value("GLOBAL_RUNBOOK_NEXT_STEP") == GLOBAL_NEXT_STEP
+        assert authoritative_field_value("NEXT_CANONICAL_STEP") == CURRENT_GLOBAL_NEXT_STEP
+        assert authoritative_field_value("GLOBAL_RUNBOOK_NEXT_STEP") == CURRENT_GLOBAL_NEXT_STEP
         assert authoritative_field_value("HYPOTHESIS_SUBSTRAND_NEXT_STEP") == CS_TERMINAL_NEXT_STEP
         assert (
             authoritative_field_value(
