@@ -35,7 +35,6 @@ from src.backtest.economic_viability_evidence_v1 import (  # noqa: E402
 from src.research.final_research_fleet_offline_economic_evaluation_execution_v0 import (  # noqa: E402
     ACCEPTED_GO_TOKENS,
     AUTHORITY_EFFECT,
-    EXPECTED_ORIGIN_MAIN_SHA,
     GO_TOKEN,
     LEGACY_DURABLE_EVIDENCE_BUNDLE_PREFIX,
     LEGACY_DURABLE_EVIDENCE_SUBDIR,
@@ -43,10 +42,12 @@ from src.research.final_research_fleet_offline_economic_evaluation_execution_v0 
     ORDER_EFFECT,
     PR4832_MERGE_COMMIT,
     PR4833_MERGE_COMMIT,
+    PR4834_MERGE_COMMIT,
     REQUIRED_MERGED_PR_NUMBER,
     RUNTIME_EFFECT,
     CandidateTerminalStatus,
-    CURRENT_EXECUTION_ORIGIN_MAIN_SHA,
+    resolve_current_execution_origin_main_sha,
+    resolve_expected_origin_main_sha,
     dumps_execution_canonical_v1,
     is_accepted_go_token,
     load_scope_ratification_for_execution_v0,
@@ -288,6 +289,8 @@ def run_evaluation(
     origin_ok, origin_reasons = verify_origin_main_sha_for_binding_v0(
         origin_main_sha=origin_main,
         fleet_binding_completion=fleet_binding_completion,
+        repo_root=_REPO_ROOT,
+        live_origin_main_sha=origin_main,
     )
     if not origin_ok:
         _die(f"ERR: origin_main_mismatch:{origin_reasons}")
@@ -328,14 +331,17 @@ def run_evaluation(
         timestamp_slug=ts_slug,
     )
 
+    expected_origin_main = resolve_expected_origin_main_sha(_REPO_ROOT)
+    current_execution_origin_main = resolve_current_execution_origin_main_sha(_REPO_ROOT)
     preflight_lines = [
         f"ORIGIN_MAIN={origin_main}",
         f"PR4826_MERGE_COMMIT={PR4826_MERGE_COMMIT}",
         f"PR4832_MERGE_COMMIT={PR4832_MERGE_COMMIT}",
         f"PR4833_MERGE_COMMIT={PR4833_MERGE_COMMIT}",
-        f"EXPECTED_ORIGIN_MAIN={EXPECTED_ORIGIN_MAIN_SHA}",
+        f"PR4834_MERGE_COMMIT={PR4834_MERGE_COMMIT}",
+        f"EXPECTED_ORIGIN_MAIN={expected_origin_main}",
         f"MATERIALIZED_CLASS_D_ORIGIN_MAIN={MATERIALIZED_CLASS_D_ORIGIN_MAIN_SHA}",
-        f"CURRENT_EXECUTION_ORIGIN_MAIN={CURRENT_EXECUTION_ORIGIN_MAIN_SHA}",
+        f"CURRENT_EXECUTION_ORIGIN_MAIN={current_execution_origin_main}",
         f"REQUIRED_MERGED_PR_NUMBER={REQUIRED_MERGED_PR_NUMBER}",
         f"DURABLE_EVIDENCE_SUBDIR={evidence_dir.parent.name}",
         f"DURABLE_EVIDENCE_BUNDLE={evidence_dir.name}",

@@ -55,14 +55,20 @@ ACCEPTED_GO_TOKENS: frozenset[str] = frozenset({GO_TOKEN, GO_TOKEN_OPERATOR_ALIA
 PR4826_MERGE_COMMIT = "208ab96562f7750fb4dff43936b345a040d1cea4"
 PR4832_MERGE_COMMIT = "ddce9c508158b89fa225c381436e2d1efced7328"
 PR4833_MERGE_COMMIT = "4828168cd91c57aa72dcb3b40b47188eeb82fd32"
+PR4834_MERGE_COMMIT = "0d23e662c4a0b8e0638a919ac879490e82e2ef41"
+SQUASH_MERGE_IDENTITY_CONTRACT_INTRODUCED_AT = PR4834_MERGE_COMMIT
 MATERIALIZED_CLASS_D_ORIGIN_MAIN_SHA = PR4832_MERGE_COMMIT
-CURRENT_EXECUTION_ORIGIN_MAIN_SHA = PR4833_MERGE_COMMIT
-EXPECTED_ORIGIN_MAIN_SHA = CURRENT_EXECUTION_ORIGIN_MAIN_SHA
+# Class-D execution origin is resolved live from origin/main (identity-gated, not statically pinned).
+LEGACY_STATIC_EXECUTION_ORIGIN_MAIN_SHA = PR4833_MERGE_COMMIT
+# Deprecated static exports for import compatibility; Class-D verification uses live resolution.
+CURRENT_EXECUTION_ORIGIN_MAIN_SHA = LEGACY_STATIC_EXECUTION_ORIGIN_MAIN_SHA
+EXPECTED_ORIGIN_MAIN_SHA = LEGACY_STATIC_EXECUTION_ORIGIN_MAIN_SHA
 ACCEPTED_ORIGIN_MAIN_SHAS: frozenset[str] = frozenset(
     {
         PR4826_MERGE_COMMIT,
         MATERIALIZED_CLASS_D_ORIGIN_MAIN_SHA,
-        CURRENT_EXECUTION_ORIGIN_MAIN_SHA,
+        PR4833_MERGE_COMMIT,
+        PR4834_MERGE_COMMIT,
     }
 )
 REQUIRED_MERGED_PR_NUMBER = 4826
@@ -122,6 +128,9 @@ REASON_CANDIDATE_RUN_TIMEOUT = "CANDIDATE_RUN_TIMEOUT"
 REASON_CANDIDATE_EVIDENCE_MISSING = "CANDIDATE_EVIDENCE_MISSING"
 REASON_MANIFEST_VERIFY_FAILED = "MANIFEST_VERIFY_FAILED"
 REASON_BINDING_DIGEST_MISMATCH = "CANDIDATE_BINDING_DIGEST_MISMATCH"
+REASON_BINDING_IDENTITY_MISMATCH = "BINDING_IDENTITY_MISMATCH"
+REASON_CURRENT_MAIN_SHA_DRIFT_AFTER_SQUASH_MERGE = "CURRENT_MAIN_SHA_DRIFT_AFTER_SQUASH_MERGE"
+REASON_ORIGIN_MAIN_RESOLVE_FAILED = "ORIGIN_MAIN_RESOLVE_FAILED"
 REASON_UNMODIFIED_BINDING_RETRY_BLOCKED = "UNMODIFIED_BINDING_RETRY_BLOCKED"
 REASON_NEW_EVIDENCE_CLASS_REQUIRED = "NEW_EVIDENCE_CLASS_REQUIRED_FOR_REEXECUTION"
 
@@ -210,6 +219,44 @@ def _resolve_origin_main_sha(repo_root: Path) -> str:
     return result.stdout.strip()
 
 
+def resolve_current_execution_origin_main_sha(repo_root: Path) -> str:
+    """Resolve live origin/main as the Class-D execution origin candidate."""
+    return _resolve_origin_main_sha(repo_root)
+
+
+def resolve_expected_origin_main_sha(repo_root: Path) -> str:
+    """Legacy alias for resolve_current_execution_origin_main_sha."""
+    return resolve_current_execution_origin_main_sha(repo_root)
+
+
+def validate_current_main_against_immutable_binding_identity(
+    *,
+    origin_main_sha: str,
+    fleet_binding_completion: Mapping[str, Any],
+    live_origin_main_sha: str,
+) -> tuple[bool, tuple[str, ...]]:
+    """Accept live origin/main only when immutable Class-D binding anchors are unchanged."""
+    if not origin_main_sha or not live_origin_main_sha:
+        return False, (REASON_ORIGIN_MAIN_RESOLVE_FAILED,)
+    if origin_main_sha != live_origin_main_sha:
+        return False, (
+            f"{REASON_CURRENT_MAIN_SHA_DRIFT_AFTER_SQUASH_MERGE}:"
+            f"{origin_main_sha}!={live_origin_main_sha}",
+        )
+    if origin_main_sha == MATERIALIZED_CLASS_D_ORIGIN_MAIN_SHA:
+        return False, (
+            f"{REASON_ORIGIN_MAIN_MISMATCH}:{origin_main_sha}==MATERIALIZED_CLASS_D_ORIGIN_MAIN_SHA",
+        )
+    if (
+        str(fleet_binding_completion.get("completion_digest", ""))
+        != CLASS_D_BINDING_COMPLETION_DIGEST
+    ):
+        return False, (f"{REASON_BINDING_IDENTITY_MISMATCH}:completion_digest",)
+    if fleet_binding_completion.get("schema_version") != CLASS_D_BINDING_COMPLETION_SCHEMA_VERSION:
+        return False, (f"{REASON_BINDING_IDENTITY_MISMATCH}:schema_version",)
+    return True, ()
+
+
 def is_accepted_go_token(token: str) -> bool:
     return token in ACCEPTED_GO_TOKENS
 
@@ -254,13 +301,20 @@ def verify_origin_main_sha_for_binding_v0(
     *,
     origin_main_sha: str,
     fleet_binding_completion: Mapping[str, Any],
+    repo_root: Path | None = None,
+    live_origin_main_sha: str | None = None,
 ) -> tuple[bool, tuple[str, ...]]:
     if is_class_d_binding_completion_v0(fleet_binding_completion):
-        if origin_main_sha != CURRENT_EXECUTION_ORIGIN_MAIN_SHA:
-            return False, (
-                f"{REASON_ORIGIN_MAIN_MISMATCH}:{origin_main_sha}!={CURRENT_EXECUTION_ORIGIN_MAIN_SHA}",
-            )
-        return True, ()
+        live = live_origin_main_sha
+        if live is None and repo_root is not None:
+            live = resolve_current_execution_origin_main_sha(repo_root)
+        if live is None:
+            return False, (REASON_ORIGIN_MAIN_RESOLVE_FAILED,)
+        return validate_current_main_against_immutable_binding_identity(
+            origin_main_sha=origin_main_sha,
+            fleet_binding_completion=fleet_binding_completion,
+            live_origin_main_sha=live,
+        )
     if not is_accepted_origin_main_sha(origin_main_sha):
         return False, (f"{REASON_ORIGIN_MAIN_MISMATCH}:{origin_main_sha}",)
     return True, ()
@@ -423,9 +477,12 @@ def verify_execution_start_state_v0(
 ) -> StartStateVerificationResultV0:
     reasons: list[str] = []
     resolved_origin = origin_main_sha or _resolve_origin_main_sha(repo_root)
+    live_origin = _resolve_origin_main_sha(repo_root)
     origin_ok, origin_reasons = verify_origin_main_sha_for_binding_v0(
         origin_main_sha=resolved_origin,
         fleet_binding_completion=fleet_binding_completion,
+        repo_root=repo_root,
+        live_origin_main_sha=live_origin,
     )
     if not origin_ok:
         reasons.extend(origin_reasons)

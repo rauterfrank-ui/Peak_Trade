@@ -12,12 +12,12 @@ from src.research.final_research_fleet_offline_economic_evaluation_execution_v0 
     AUTHORITY_EFFECT,
     CandidateExecutionResultV0,
     CandidateTerminalStatus,
-    EXPECTED_ORIGIN_MAIN_SHA,
     FleetTerminalStatus,
     GO_TOKEN,
     GO_TOKEN_OPERATOR_ALIAS,
     HISTORICAL_STEP31F_BINDING_COMPLETION_DIGEST,
     ORDER_EFFECT,
+    PR4834_MERGE_COMMIT,
     PR4826_CREATES_NEW_EXECUTION_EVIDENCE_CLASS,
     REASON_NEW_EVIDENCE_CLASS_REQUIRED,
     REASON_UNMODIFIED_BINDING_RETRY_BLOCKED,
@@ -25,6 +25,7 @@ from src.research.final_research_fleet_offline_economic_evaluation_execution_v0 
     is_accepted_go_token,
     map_candidate_terminal_status_v0,
     materialize_fleet_evaluation_summary_v0,
+    resolve_current_execution_origin_main_sha,
     resolve_fleet_terminal_status_v0,
     verify_execution_start_state_v0,
     verify_unmodified_retry_admissibility_v0,
@@ -71,8 +72,9 @@ def test_go_token_operator_alias_is_accepted_without_second_authority() -> None:
     assert not is_accepted_go_token("GO_UNKNOWN_TOKEN")
 
 
-def test_expected_origin_main_sha_rebound_to_current_execution_main() -> None:
-    assert EXPECTED_ORIGIN_MAIN_SHA == "4828168cd91c57aa72dcb3b40b47188eeb82fd32"
+def test_expected_origin_main_sha_resolves_from_live_origin_main() -> None:
+    live = resolve_current_execution_origin_main_sha(REPO_ROOT)
+    assert live == PR4834_MERGE_COMMIT
 
 
 def test_pr4826_scope_does_not_create_new_execution_evidence_class() -> None:
@@ -232,7 +234,7 @@ def test_fleet_summary_preserves_individual_failures(
         ratification=scope_ratification,
         candidate_results=results,
         execution_bundle_dir="/tmp/fleet",
-        origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
+        origin_main_sha=resolve_current_execution_origin_main_sha(REPO_ROOT),
     )
     assert summary["individual_failure_preservation"] is True
     assert summary["fail_count"] == 3
@@ -266,7 +268,7 @@ def test_start_state_verification_blocks_unmodified_step31f_retry() -> None:
         repo_root=REPO_ROOT,
         ratification=scope_ratification,
         fleet_binding_completion=fleet_binding_completion,
-        origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
+        origin_main_sha=resolve_current_execution_origin_main_sha(REPO_ROOT),
     )
     assert result.valid is False
     assert REASON_UNMODIFIED_BINDING_RETRY_BLOCKED in result.fail_reasons

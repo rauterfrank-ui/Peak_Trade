@@ -25,13 +25,13 @@ for _path in (_SRC_ROOT, _REPO_ROOT):
 
 from src.research.final_research_fleet_offline_economic_evaluation_execution_v0 import (  # noqa: E402
     AUTHORITY_EFFECT,
-    EXPECTED_ORIGIN_MAIN_SHA,
     GO_TOKEN,
     ORDER_EFFECT,
     RUNTIME_EFFECT,
     SCHEMA_VERSION,
     dumps_execution_canonical_v1,
     materialize_fleet_evaluation_summary_v0,
+    resolve_expected_origin_main_sha,
     run_candidate_economic_evaluation_v0,
     verify_execution_start_state_v0,
 )
@@ -127,7 +127,7 @@ def run_execution(
 
     start_state_payload = {
         "origin_main_head": start_state.origin_main_sha,
-        "expected_origin_main_head": EXPECTED_ORIGIN_MAIN_SHA,
+        "expected_origin_main_head": resolve_expected_origin_main_sha(_REPO_ROOT),
         "pr_4800_merged": True,
         "offline_economic_evaluation_scope_ratified": True,
         "economic_evaluation_executed": False,

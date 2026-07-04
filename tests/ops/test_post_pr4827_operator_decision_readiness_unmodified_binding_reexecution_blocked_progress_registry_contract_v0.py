@@ -125,10 +125,13 @@ class TestPostPr4827ExecutionOwnerAdmissibility:
 
     def test_sha_rebind_accepts_current_execution_main_without_new_evidence_class(self) -> None:
         from src.research.final_research_fleet_offline_economic_evaluation_execution_v0 import (
-            CURRENT_EXECUTION_ORIGIN_MAIN_SHA,
+            resolve_current_execution_origin_main_sha,
+            resolve_expected_origin_main_sha,
         )
 
-        assert EXPECTED_ORIGIN_MAIN_SHA == CURRENT_EXECUTION_ORIGIN_MAIN_SHA
+        assert resolve_expected_origin_main_sha(
+            REPO_ROOT
+        ) == resolve_current_execution_origin_main_sha(REPO_ROOT)
         assert is_accepted_origin_main_sha(PR4826_MERGE_COMMIT)
         assert PR4826_CREATES_NEW_EXECUTION_EVIDENCE_CLASS is False
 
