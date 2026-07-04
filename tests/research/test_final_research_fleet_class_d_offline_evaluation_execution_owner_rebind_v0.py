@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import subprocess
 from pathlib import Path
 
 import pytest
@@ -21,6 +22,8 @@ from src.research.final_research_fleet_offline_economic_evaluation_execution_v0 
     ORDER_EFFECT,
     PR4826_MERGE_COMMIT,
     PR4832_MERGE_COMMIT,
+    PR4833_MERGE_COMMIT,
+    PR4834_MERGE_COMMIT,
     RUNTIME_EFFECT,
     is_accepted_go_token,
     is_accepted_origin_main_sha,
@@ -48,7 +51,8 @@ def fixture_class_d_binding_completion() -> dict:
 
 def test_expected_origin_main_sha_points_to_current_execution_main() -> None:
     assert EXPECTED_ORIGIN_MAIN_SHA == CURRENT_EXECUTION_ORIGIN_MAIN_SHA
-    assert EXPECTED_ORIGIN_MAIN_SHA == "4828168cd91c57aa72dcb3b40b47188eeb82fd32"
+    assert EXPECTED_ORIGIN_MAIN_SHA == PR4834_MERGE_COMMIT
+    assert EXPECTED_ORIGIN_MAIN_SHA == "0d23e662c4a0b8e0638a919ac879490e82e2ef41"
 
 
 def test_materialization_sha_retained_but_not_current_execution_pin() -> None:
@@ -62,6 +66,12 @@ def test_legacy_pr4826_sha_still_accepted_but_not_exclusive() -> None:
     assert is_accepted_origin_main_sha(PR4826_MERGE_COMMIT)
     assert is_accepted_origin_main_sha(CURRENT_EXECUTION_ORIGIN_MAIN_SHA)
     assert EXPECTED_ORIGIN_MAIN_SHA != PR4826_MERGE_COMMIT
+
+
+def test_pr4833_sha_still_accepted_but_not_current_execution_pin() -> None:
+    assert is_accepted_origin_main_sha(PR4833_MERGE_COMMIT)
+    assert EXPECTED_ORIGIN_MAIN_SHA != PR4833_MERGE_COMMIT
+    assert CURRENT_EXECUTION_ORIGIN_MAIN_SHA == PR4834_MERGE_COMMIT
 
 
 def test_class_d_completion_digest_accepted(class_d_binding_completion: dict) -> None:
@@ -130,6 +140,47 @@ def test_class_d_start_state_rejects_stale_pr4826_origin_only(
     )
     assert result.valid is False
     assert any("ORIGIN_MAIN_SHA_MISMATCH" in reason for reason in result.fail_reasons)
+
+
+def test_class_d_start_state_rejects_stale_pr4833_origin_only(
+    class_d_binding_completion: dict,
+) -> None:
+    ratification = load_scope_ratification_for_execution_v0(
+        repo_root=REPO_ROOT,
+        fleet_binding_completion=class_d_binding_completion,
+    )
+    result = verify_execution_start_state_v0(
+        repo_root=REPO_ROOT,
+        ratification=ratification,
+        fleet_binding_completion=class_d_binding_completion,
+        origin_main_sha=PR4833_MERGE_COMMIT,
+    )
+    assert result.valid is False
+    assert any("ORIGIN_MAIN_SHA_MISMATCH" in reason for reason in result.fail_reasons)
+
+
+def test_live_origin_main_sha_accepted_for_class_d_execution(
+    class_d_binding_completion: dict,
+) -> None:
+    live_origin_main = subprocess.run(
+        ["git", "-C", str(REPO_ROOT), "rev-parse", "origin/main"],
+        capture_output=True,
+        text=True,
+        check=True,
+    ).stdout.strip()
+    assert live_origin_main == CURRENT_EXECUTION_ORIGIN_MAIN_SHA
+    ratification = load_scope_ratification_for_execution_v0(
+        repo_root=REPO_ROOT,
+        fleet_binding_completion=class_d_binding_completion,
+    )
+    result = verify_execution_start_state_v0(
+        repo_root=REPO_ROOT,
+        ratification=ratification,
+        fleet_binding_completion=class_d_binding_completion,
+        origin_main_sha=live_origin_main,
+    )
+    assert result.valid is True
+    assert result.fail_reasons == ()
 
 
 def test_durable_evidence_path_owner_contract() -> None:

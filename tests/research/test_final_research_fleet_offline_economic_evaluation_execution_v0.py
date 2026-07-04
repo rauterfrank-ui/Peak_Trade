@@ -72,7 +72,7 @@ def test_go_token_operator_alias_is_accepted_without_second_authority() -> None:
 
 
 def test_expected_origin_main_sha_rebound_to_current_execution_main() -> None:
-    assert EXPECTED_ORIGIN_MAIN_SHA == "4828168cd91c57aa72dcb3b40b47188eeb82fd32"
+    assert EXPECTED_ORIGIN_MAIN_SHA == "0d23e662c4a0b8e0638a919ac879490e82e2ef41"
 
 
 def test_pr4826_scope_does_not_create_new_execution_evidence_class() -> None:
