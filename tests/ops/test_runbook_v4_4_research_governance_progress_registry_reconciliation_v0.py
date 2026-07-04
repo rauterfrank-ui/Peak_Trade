@@ -82,11 +82,11 @@ class TestRunbookV44AuthoritativeGovernanceReconciliation:
         assert authoritative_field_value("NEXT_CANONICAL_STEP") == GLOBAL_NEXT_STEP
         assert authoritative_field_value("NEXT_CANONICAL_ACTION") == GLOBAL_NEXT_STEP
         assert authoritative_field_value("GLOBAL_RUNBOOK_NEXT_STEP") == GLOBAL_NEXT_STEP
+        assert authoritative_field_value("HYPOTHESIS_SUBSTRAND_NEXT_STEP") == TERMINAL_NEXT_STEP
         assert (
-            authoritative_field_value("HYPOTHESIS_SUBSTRAND_NEXT_STEP") == TERMINAL_NEXT_STEP
-        )
-        assert (
-            authoritative_field_value("NO_FURTHER_CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_ACTION_TERMINAL_FAIL")
+            authoritative_field_value(
+                "NO_FURTHER_CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_ACTION_TERMINAL_FAIL"
+            )
             == "true"
         )
         assert authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE") == "NONE"

@@ -39,11 +39,11 @@ class TestPostPr4821AuthoritativeGlobalState:
         assert authoritative_field_value("GLOBAL_RUNBOOK_NEXT_STEP") == GLOBAL_NEXT_STEP
 
     def test_cs_v0_terminal_fail_remains_local_not_global(self) -> None:
+        assert authoritative_field_value("HYPOTHESIS_SUBSTRAND_NEXT_STEP") == CS_TERMINAL_NEXT_STEP
         assert (
-            authoritative_field_value("HYPOTHESIS_SUBSTRAND_NEXT_STEP") == CS_TERMINAL_NEXT_STEP
-        )
-        assert (
-            authoritative_field_value("NO_FURTHER_CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_ACTION_TERMINAL_FAIL")
+            authoritative_field_value(
+                "NO_FURTHER_CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_ACTION_TERMINAL_FAIL"
+            )
             == "true"
         )
         assert (
@@ -91,7 +91,9 @@ class TestPostPr4821AuthoritativeGlobalState:
             authoritative_field_value("CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_FUTURES_ONLY") == "true"
         )
         assert (
-            authoritative_field_value("CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_BITCOIN_DIRECTION_ALLOWED")
+            authoritative_field_value(
+                "CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_BITCOIN_DIRECTION_ALLOWED"
+            )
             == "false"
         )
 
