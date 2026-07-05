@@ -15,7 +15,7 @@ It does not merge, push, delete branches, or touch runtime systems.
 ## Canonical usage
 
 ```bash
-python3 scripts/ops/pr_closure_canonical_checklist_v1.py
+python3 scripts&#47;ops/pr_closure_canonical_checklist_v1.py <!-- pt:ref-target-ignore -->
 ```
 
 ## Exit codes
@@ -32,9 +32,9 @@ Single JSON object on stdout with sorted keys.
 | `verdict` | `PASS` or `FAIL` |
 | `branch` | Current branch name |
 | `head` | Current `HEAD` SHA |
-| `origin_main` | `origin/main` SHA |
-| `ahead_origin_main` | Commits ahead of `origin/main` |
-| `behind_origin_main` | Commits behind `origin/main` |
+| `origin_main` | `origin&#47;main` SHA |
+| `ahead_origin_main` | Commits ahead of `origin&#47;main` |
+| `behind_origin_main` | Commits behind `origin&#47;main` |
 | `worktree_clean` | Whether `git status --short` is empty |
 | `stash_entries` | Count of stash entries |
 | `findings` | List of finding codes |
@@ -49,4 +49,4 @@ Single JSON object on stdout with sorted keys.
 
 ## Related documentation
 
-- `docs/ops/GIT_STATE_VALIDATION.md`
+- `docs&#47;ops/GIT_STATE_VALIDATION.md` <!-- pt:ref-target-ignore -->
