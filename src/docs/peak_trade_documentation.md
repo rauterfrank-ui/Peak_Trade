@@ -48,7 +48,7 @@ STRATEGY_REGISTRY = {
     "rsi_strategy": "rsi",  # Strategie-Name != Modul-Name
     "bollinger_bands": "bollinger",  # Strategie-Name != Modul-Name
     "macd": "macd",
-    "ecm_cycle": "ecm",  # Strategie-Name != Modul-Name
+    "ecm_cycle": "ecm",  # Strategie-Name != Modul-Name; Registry-StrategySpec: armstrong_cycle (siehe STRATEGY_ECM_ARMSTRONG_WIRING_INVENTORY_READ_MODEL_V0)
     # Phase 18: Research Playground Baselines
     "trend_following": "trend_following",
     "mean_reversion": "mean_reversion",

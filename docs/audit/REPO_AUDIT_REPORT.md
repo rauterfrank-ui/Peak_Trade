@@ -1,6 +1,7 @@
-> **Historisch / Referenz** — Nicht kanonisch. Snapshot aus Read-only Repo-Audit.  
+> **Historisch / Referenz** — Nicht kanonisch. Snapshot aus Read-only Repo-Audit (Wave 16, Stand 2026-03-10).  
 > **Origin:** Wave 16 Integration, ursprünglich `docs&#47;REPO_AUDIT_REPORT.md`.   <!-- pt:ref-target-ignore -->
-> **Canonical:** [docs/INDEX.md](../INDEX.md), [docs/audit/README.md](README.md)
+> **Canonical:** [docs/INDEX.md](../INDEX.md), [docs/audit/README.md](README.md)  
+> **Aktuelle Feature-Wahrheit:** [feature_state_map_v1.md](../governance/feature_state_map_v1.md), [feature_drift_reconciliation_report_v1.md](feature_drift_reconciliation_report_v1.md)
 
 ---
 
@@ -98,10 +99,12 @@
 
 ### 4.1 Exists in Docs Only (dokumentiert, Code fehlt oder ist Placeholder)
 
+Note: ECM implementation has been consolidated under `src/strategies/ecm.py` (legacy feature path removed).
+
 | Feature | Docs-Referenz | Code-Status |
 |---------|---------------|-------------|
-| **Feature-Engine / ECM** | FEHLENDE_FEATURES, trading_bot_notes | `src&#47;features&#47;` nur Placeholder |
-| **ECM-Fenster / ECM-Features** | FEHLENDE_FEATURES | Nicht implementiert |
+| **Feature-Engine / ECM** | FEHLENDE_FEATURES, trading_bot_notes | `src&#47;features&#47;` nur Placeholder; ECM strategy module unter `src&#47;strategies&#47;ecm.py` + `src&#47;strategies&#47;armstrong&#47;` |
+| **ECM-Fenster / ECM-Features** | FEHLENDE_FEATURES | Implementiert (strategy layer): `src&#47;strategies&#47;ecm.py`, `src&#47;strategies&#47;armstrong&#47;` |
 | **Theory (GBM, Heston, Option Pricing)** | FEHLENDE_FEATURES | `src&#47;theory&#47;` nur Placeholder |
 | **Sentiment (News/Makro/Onchain)** | trading_bot_notes | Nicht implementiert |
 | **Orderbuch-/Tickdaten** | trading_bot_notes | Nicht implementiert |

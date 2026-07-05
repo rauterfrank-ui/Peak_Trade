@@ -34,6 +34,9 @@
 - [PEAK_TRADE_OVERVIEW.md](PEAK_TRADE_OVERVIEW.md) — Architektur
 - [KNOWLEDGE_BASE_INDEX.md](KNOWLEDGE_BASE_INDEX.md) — Hub
 - [features/FEHLENDE_FEATURES_PEAK_TRADE.md](features/FEHLENDE_FEATURES_PEAK_TRADE.md) — Fehlende/geplante Features (canonical)
+- [governance/feature_state_map_v1.md](governance/feature_state_map_v1.md) — Kanonische Feature-State-Map (A–D, non-operational rule)
+- [governance/drift_cleanup_plan_v1.md](governance/drift_cleanup_plan_v1.md) — Drift Cleanup Plan (safe docs fixes)
+- [audit/feature_drift_reconciliation_report_v1.md](audit/feature_drift_reconciliation_report_v1.md) — Feature Drift Reconciliation (read-only evidence)
 - [ai/CLAUDE_GUIDE.md](ai/CLAUDE_GUIDE.md) — Technische AI-Referenz
 - [governance/README.md](governance/README.md) — Governance
 
@@ -50,7 +53,8 @@
 
 ### Historical (Referenz)
 - [audit/GOVERNANCE_DATAFLOW_REPORT.md](audit/GOVERNANCE_DATAFLOW_REPORT.md) — Historisch: Dataflow & Governance
-- [audit/REPO_AUDIT_REPORT.md](audit/REPO_AUDIT_REPORT.md) — Historisch: Repo-Inventory & Feature-Matrix
+- [audit/REPO_AUDIT_REPORT.md](audit/REPO_AUDIT_REPORT.md) — Historisch: Repo-Inventory & Feature-Matrix (Wave 16)
+- [audit/feature_drift_reconciliation_report_v1.md](audit/feature_drift_reconciliation_report_v1.md) — Feature Drift Reconciliation v1
 - [ops/PR_*_MERGE_LOG.md](ops/) — Merge-Logs
 - [ops/_archive/](ops/_archive/) — Archivierte Docs
 ## Cursor Rules / Agent Context

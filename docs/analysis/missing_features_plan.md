@@ -4,14 +4,16 @@
 **Input:** `docs&#47;analysis&#47;FEHLENDE_FEATURES_PEAK_TRADE.md`, `out&#47;ops&#47;missing_features_prioritized.md`  
 **Constraints:** Kein Live-Trading freischalten; bestehende Gates unverändert. Bevorzugt deterministischer Kern + reproduzierbare Experimente.
 
+Note: ECM implementation has been consolidated under `src/strategies/ecm.py` (legacy feature path removed).
+
 ---
 
 ## 1. Mapping: Fehlende Features → bestehende Module / Owners
 
 | Bereich | Fehlendes Feature | Bestehendes Modul/Owner | Vorgeschlagene Skelette / nächster Schritt |
 |--------|--------------------|--------------------------|--------------------------------------------|
-| **Feature-Engine** | Zentrale Feature-Schicht | `src&#47;features&#47;` (Placeholder), `src&#47;regime&#47;`, `src&#47;analytics&#47;regimes.py`, `src&#47;strategies&#47;` | `src&#47;features&#47;pipeline.py` (Registry + run over OHLCV), `src&#47;features&#47;ta.py` (TA-Indikatoren aus Strategien extrahieren), `src&#47;features&#47;ecm.py` (ECM-Fenster-Stub mit Tests) |
-| **ECM / Meta-Labeling** | ECM-Fenster, Fractional Diff, Vol-adjusted Returns | `src&#47;features&#47;__init__.py`, Research-Stubs in `src&#47;strategies&#47;` | `src&#47;features&#47;ecm.py`, `src&#47;features&#47;meta_labeling.py` (Triple-Barrier-Labels implementieren, `compute_triple_barrier_labels` ersetzen) |
+| **Feature-Engine** | Zentrale Feature-Schicht | `src&#47;features&#47;` (Placeholder), `src&#47;regime&#47;`, `src&#47;analytics&#47;regimes.py`, `src&#47;strategies&#47;` | `src&#47;features&#47;pipeline.py` (Registry + run over OHLCV), `src&#47;features&#47;ta.py` (TA-Indikatoren aus Strategien extrahieren), `src&#47;strategies&#47;ecm.py` + `src&#47;strategies&#47;armstrong&#47;` (konsolidierte strategy-layer ECM) |
+| **ECM / Meta-Labeling** | ECM-Fenster, Fractional Diff, Vol-adjusted Returns | `src&#47;strategies&#47;ecm.py`, `src&#47;strategies&#47;armstrong&#47;`, Research-Stubs in `src&#47;strategies&#47;` | `src&#47;features&#47;meta_labeling.py` (Triple-Barrier-Labels implementieren, `compute_triple_barrier_labels` ersetzen) |
 | **Indikatoren (TA)** | Einheitliche Feature-Pipeline | MA/RSI/ATR in `src&#47;strategies&#47;`, `src&#47;regime&#47;`, `src&#47;analytics&#47;` | `src&#47;features&#47;ta.py`: gemeinsame TA-Pipeline, Input/Output-Contract dokumentieren in `docs&#47;features&#47;FEATURE_PIPELINE.md` |
 | **Streaming / WebSocket** | Real-Time-Streams, SSE | `src&#47;data&#47;feeds&#47;`, `src&#47;data&#47;kraken_live.py`, REST/Polling | `src&#47;data&#47;feeds&#47;websocket_feed.py` (Interface), `docs&#47;infostream&#47;WEBSOCKET_DESIGN.md`; keine Live-Order-Freischaltung |
 | **Execution (nur Vorbereitung)** | Multi-Exchange, Routing, Fill-Tracking | `src&#47;execution&#47;`, `src&#47;orders&#47;`, `src&#47;data&#47;providers&#47;ccxt_*`, Governance-Gates | Nur Design/Stubs: `docs&#47;execution&#47;MULTI_EXCHANGE_DESIGN.md`, `src&#47;execution&#47;venue_adapters&#47;` erweitern (kein Gate-Bypass) |
@@ -88,7 +90,7 @@
 | Ziel | Konkrete Schritte | Akzeptanzkriterien | Tests |
 |------|-------------------|--------------------|-------|
 | Feature-Pipeline-Skelett | `src&#47;features&#47;pipeline.py` mit Registry, `src&#47;features&#47;ta.py` mit MA, RSI, ATR aus bestehendem Code (keine neuen externen Abhängigkeiten) | Pipeline läuft im Backtest-Kontext; gleiche Ergebnisse bei gleichen Seeds | `tests&#47;features&#47;test_pipeline.py`, `tests&#47;features&#47;test_ta.py` |
-| ECM-Stub mit Vertrag | `src&#47;features&#47;ecm.py` mit klar definiertem Ein-/Ausgabe-Contract (DataFrame in/out) | Unit-Test mit Mock-OHLCV; Dokumentation in `docs&#47;features&#47;ECM_CONTRACT.md` | `tests&#47;features&#47;test_ecm.py` |
+| ECM strategy module (konsolidiert) | `src&#47;strategies&#47;ecm.py` + `src&#47;strategies&#47;armstrong&#47;` mit klar definiertem Strategie-Contract (DataFrame in/out) | Unit-Test mit Mock-OHLCV; siehe `tests&#47;test_new_strategies.py`, `tests&#47;strategies&#47;armstrong&#47;` | `tests&#47;test_new_strategies.py`, `tests&#47;strategies&#47;armstrong&#47;` |
 | Meta-Labeling Triple-Barrier | `compute_triple_barrier_labels` implementieren (ohne Live-Daten), `_extract_features` mit mind. einem echten Feature (numerische Spalte, dokumentierte Semantik, Unit-Test mit festem Seed) | Backtest-tauglich; keine Live-/Exchange-Calls | Bestehende Strategy-Tests + `tests&#47;features&#47;test_meta_labeling.py` |
 | Research: Heatmap-Template | Ein Standard-Heatmap-Template (2 Parameter × 2 Metriken) in `src&#47;sweeps&#47;` oder `src&#47;analytics&#47;` | Reproduzierbarer Sweep → Heatmap-Output (z. B. CSV/HTML) | `tests&#47;sweeps&#47;test_heatmap.py` oder in experiments |
 

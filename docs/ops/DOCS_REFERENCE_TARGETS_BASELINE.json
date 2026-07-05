@@ -8,7 +8,7 @@
     "scanned_files": 1226,
     "total_references": 7293
   },
-  "missing_count": 231,
+  "missing_count": 230,
   "missing_items": [
     {
       "source_file": "docs/AUTO_PORTFOLIOS.md",
@@ -101,13 +101,7 @@
       "link_text": null
     },
     {
-      "source_file": "docs/FEHLENDE_FEATURES_PEAK_TRADE.md",
-      "line_number": 144,
-      "target": "src/features",
-      "link_text": null
-    },
-    {
-      "source_file": "docs/KNOWLEDGE_SOURCES_REGISTRY.md",
+      "source_file": "docs/DOCS_AUDIT_TRACKER.md",
       "line_number": 25,
       "target": "scripts/ingest_backtest_reports.py",
       "link_text": null
@@ -1396,5 +1390,16 @@
       "target": "src/ai_orchestration/model_policy.py",
       "link_text": null
     }
-  ]
+  ],
+  "drift_safe_docs_alignment_v1": {
+    "applied_at": "2026-07-05",
+    "plan": "docs/governance/drift_cleanup_plan_v1.md Section A",
+    "deferred_targets": {
+      "src/features": "Feature-Engine placeholder deferred; not operational. ECM strategy code: src/strategies/ecm.py, src/strategies/armstrong/"
+    },
+    "canonical_ecm_strategy_targets": [
+      "src/strategies/ecm.py",
+      "src/strategies/armstrong"
+    ]
+  }
 }
