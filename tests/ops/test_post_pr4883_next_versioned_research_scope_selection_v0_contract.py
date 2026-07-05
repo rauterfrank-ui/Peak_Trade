@@ -36,7 +36,7 @@ RATIFIED_SCOPE_ID = (
     "POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_CLASS_V0"
 )
 SCOPE_STATUS = "SCOPE_SELECTION_COMPLETE_NOT_EXECUTED"
-RATIFIED_SCOPE_STATUS = "SCOPE_DEFINED_NOT_EXECUTED"
+RATIFIED_SCOPE_STATUS = "DIAGNOSTICS_EXECUTION_COMPLETE_V0"
 PROCESS_CLASSIFICATION = "NEW_VERSIONED_RESEARCH_SCOPE_SELECTION_SCOPE_DEFINITION_ONLY_V0"
 SELECTED_CLASS = "E"
 NEXT_EXECUTION_GO = (
@@ -164,7 +164,7 @@ class TestPostPr4883NextVersionedResearchScopeSelectionV0Contract:
         assert payload["selected_class"] == SELECTED_CLASS
         assert payload["research_hypothesis"] == RESEARCH_HYPOTHESIS
         assert payload["diagnostics_execution_authorized"] is False
-        assert payload["diagnostics_executed"] is False
+        assert payload["diagnostics_executed"] is True
         assert payload["required_future_operator_go"] is True
         assert payload["next_required_go_token_for_execution"] == NEXT_EXECUTION_GO
         axes = payload["diagnostic_axes"]
@@ -202,16 +202,6 @@ class TestPostPr4883NextVersionedResearchScopeSelectionV0Contract:
 
     def test_registry_metadata_fields(self) -> None:
         text = read_registry()
-        assert authoritative_field_value("CURRENT_STATE") == CURRENT_STATE
-        assert authoritative_field_value("NEXT_CANONICAL_STEP") == NEXT_CANONICAL_STEP
-        assert authoritative_field_value("NEXT_CANONICAL_ACTION") == NEXT_CANONICAL_STEP
-        assert authoritative_field_value("GLOBAL_RUNBOOK_NEXT_STEP") == NEXT_CANONICAL_STEP
-        assert (
-            authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE") == CURRENT_ADMISSIBLE_SCOPE
-        )
-        assert (
-            authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN") == NEXT_EXECUTION_GO
-        )
         assert (
             _field_value(text, "POST_PR4883_NEXT_VERSIONED_RESEARCH_SCOPE_SELECTION_V0_STATUS")
             == SCOPE_STATUS

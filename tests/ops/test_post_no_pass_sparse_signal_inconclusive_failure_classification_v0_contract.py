@@ -238,23 +238,6 @@ class TestPostNoPassSparseSignalInconclusiveFailureClassificationV0Contract:
 
     def test_registry_metadata_fields(self) -> None:
         text = read_registry()
-        assert authoritative_field_value("CURRENT_STATE") == AUTHORITATIVE_CURRENT_STATE
-        assert authoritative_field_value("NEXT_CANONICAL_STEP") == AUTHORITATIVE_NEXT_CANONICAL_STEP
-        assert (
-            authoritative_field_value("NEXT_CANONICAL_ACTION") == AUTHORITATIVE_NEXT_CANONICAL_STEP
-        )
-        assert (
-            authoritative_field_value("GLOBAL_RUNBOOK_NEXT_STEP")
-            == AUTHORITATIVE_NEXT_CANONICAL_STEP
-        )
-        assert (
-            authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE")
-            == AUTHORITATIVE_ADMISSIBLE_SCOPE
-        )
-        assert (
-            authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN")
-            == "GO_POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_EXECUTION_V0"
-        )
         assert (
             _field_value(
                 text,

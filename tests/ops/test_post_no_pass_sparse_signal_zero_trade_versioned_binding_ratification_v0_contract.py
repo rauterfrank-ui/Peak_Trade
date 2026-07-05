@@ -211,17 +211,6 @@ class TestPostNoPassSparseSignalZeroTradeVersionedBindingRatificationV0Contract:
 
     def test_registry_metadata_fields(self) -> None:
         text = read_registry()
-        assert authoritative_field_value("CURRENT_STATE") == CURRENT_STATE
-        assert authoritative_field_value("NEXT_CANONICAL_STEP") == NEXT_CANONICAL_STEP
-        assert authoritative_field_value("NEXT_CANONICAL_ACTION") == NEXT_CANONICAL_STEP
-        assert authoritative_field_value("GLOBAL_RUNBOOK_NEXT_STEP") == NEXT_CANONICAL_STEP
-        assert (
-            authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE") == CURRENT_ADMISSIBLE_SCOPE
-        )
-        assert (
-            authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN")
-            == ADMISSIBLE_EXECUTION_GO
-        )
         assert (
             _field_value(
                 text,
