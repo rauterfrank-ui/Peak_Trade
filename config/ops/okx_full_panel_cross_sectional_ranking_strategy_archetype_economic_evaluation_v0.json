@@ -1,0 +1,83 @@
+{
+  "backtest": {
+    "cost_model_version": "backtest_cost_v0",
+    "economic_research_execution_cost": {
+      "conservative_half_spread_bps": 5.0,
+      "execution_price_observation_source": "MODELLED_NOT_OBSERVED",
+      "fee_bps": 10.0,
+      "slippage_bps": 5.0,
+      "spread_model_version": "research_conservative_bps_v1"
+    },
+    "fee_bps": 10.0,
+    "fee_model_version": "backtest_fee_taker_symmetric_v0",
+    "funding": {
+      "bind": true,
+      "model_version": "backtest_funding_perpetual_interval_v1"
+    },
+    "initial_cash": 10000.0,
+    "parameter_sensitivity": {
+      "bind": true,
+      "grid_version": "v1",
+      "policy_version": "parameter_sensitivity_v1",
+      "primary_binding_only": true,
+      "parameter_search_forbidden": true
+    },
+    "slippage_bps": 5.0,
+    "slippage_model_version": "backtest_slippage_symmetric_v0"
+  },
+  "config_digest": "54be6ad697dfcf25d0e913152f23565a17f1a3c42cdd79fe32b94ee28b07bd3d",
+  "config_schema_version": "okx_full_panel_csr_archetype_economic_evaluation_admissibility_v0",
+  "config_version": "v0",
+  "cross_sectional_evaluation_binding_v0": {
+    "archetype_bindings_ref": "config/research/okx_full_panel_cross_sectional_ranking_strategy_archetype_bindings_v0.json",
+    "dataset_binding": {
+      "dataset_id": "okx_full_panel_historical_funding_archive_v0",
+      "dataset_version": "v0",
+      "promoted_dataset_content_digest": "0bfa4df4221a2ec27625c50e3675302ffa51e4b54cddcf81ca5ad13cc15cf8b7"
+    },
+    "execution_scope_ref": "config/research/okx_full_panel_cross_sectional_ranking_strategy_archetype_evaluation_execution_scope_v0.json",
+    "instrument_universe_binding": {
+      "binding_mode": "lifecycle_admissible_complete_panel_v0",
+      "eligible_instrument_count": 118,
+      "futures_only": true,
+      "narrow_adapter_disallowed": true
+    },
+    "panel_staging_profile": "extended_chronological_v1",
+    "parameter_binding": {
+      "parameter_search_forbidden": true,
+      "score_formula_version": "cross_sectional_relative_strength_v0_score.v0"
+    },
+    "period_binding_id": "okx_full_panel_cross_sectional_research_chronological_holdout_v0"
+  },
+  "economic_evaluation_v0": {
+    "economic_validity_policy_version": "economic_validity_policy_v1",
+    "engine_signal_source": "cross_sectional_single_slot_research_orchestrator_v0",
+    "monte_carlo": {
+      "bind": true,
+      "policy_version": "monte_carlo_v1",
+      "runs": 64,
+      "seed": 42
+    },
+    "parameter_sensitivity_policy_version": "parameter_sensitivity_v1",
+    "strategy_archetype_id": "cross_sectional_ranking_selection",
+    "strategy_archetype_version": "v0",
+    "stress": {
+      "bind": true,
+      "policy_version": "stress_class_suite_v1"
+    },
+    "walk_forward": {
+      "bind": true,
+      "policy_version": "walk_forward_v1"
+    }
+  },
+  "evidence_class_id": "OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_V0",
+  "evidence_schema_version": "economic_viability_evidence_schema_v1.json",
+  "offline_evaluation_sizing_contract_v1": {
+    "initial_equity": 10000.0,
+    "max_position_pct": 1.0,
+    "sizing_contract_version": "offline_evaluation_sizing_contract_v1",
+    "sizing_mode": "single_slot_full_notional_v0"
+  },
+  "strategy_archetype_id": "cross_sectional_ranking_selection",
+  "strategy_archetype_version": "v0"
+}
