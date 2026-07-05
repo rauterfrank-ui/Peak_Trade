@@ -21,7 +21,7 @@ Stale documentation references to deferred theory modules, legacy ECM paths, and
 | `src&#47;theory&#47;pricing.py` | **DEFERRED_MODULE** | `src&#47;docs&#47;architecture.md`, `src&#47;docs&#47;nicole_el_karoui_notes.md` | <!-- pt:ref-target-ignore -->
 | `src&#47;theory&#47;credit.py` | **DEFERRED_MODULE** | `src&#47;docs&#47;nicole_el_karoui_notes.md` | <!-- pt:ref-target-ignore -->
 | `src&#47;features&#47;ecm.py` | Already `src&#47;strategies&#47;ecm.py` in most docs; token encoding fixed in `docs&#47;features&#47;FEHLENDE_FEATURES_PEAK_TRADE.md` | `docs&#47;features&#47;FEHLENDE_FEATURES_PEAK_TRADE.md` | <!-- pt:ref-target-ignore -->
-| `src&#47;data&#47;data_loader.py` | `src&#47;data&#47;loader.py` / `src&#47;data&#47;kraken.fetch_ohlcv_df` | `docs&#47;PEAK_TRADE_OVERVIEW.md` | <!-- pt:ref-target-ignore -->
+| `src&#47;data&#47;data_loader.py` | `src&#47;data&#47;loader.py` / `src&#47;data&#47;kraken.py` (`fetch_ohlcv_df`) | `docs&#47;PEAK_TRADE_OVERVIEW.md` | <!-- pt:ref-target-ignore -->
 | `load_ohlcv_data` (non-existent) | `fetch_ohlcv_df` | `docs&#47;PEAK_TRADE_OVERVIEW.md` |
 | `docs&#47;armstrong_notes.md` | `src&#47;docs&#47;armstrong_notes.md` | `src&#47;docs&#47;PEAK_TRADE_PROJECT_SUMMARY.md` (tree + list) | <!-- pt:ref-target-ignore -->
 | `docs&#47;trading_bot_notes.md` | `src&#47;docs&#47;trading_bot_notes.md` | `src&#47;docs&#47;PEAK_TRADE_PROJECT_SUMMARY.md` | <!-- pt:ref-target-ignore -->
@@ -34,7 +34,7 @@ Stale documentation references to deferred theory modules, legacy ECM paths, and
 
 | File | Before | After |
 |------|--------|-------|
-| `scripts/run_risk_stress_report.py` | `from src.data.loader import load_market_data` (missing) | `from src.data.kraken import fetch_ohlcv_df` (exists) |
+| `scripts&#47;run_risk_stress_report.py` | `from src.data.loader import load_market_data` (missing) | `from src.data.kraken import fetch_ohlcv_df` (exists) |
 
 ---
 
@@ -45,13 +45,13 @@ Stale documentation references to deferred theory modules, legacy ECM paths, and
 | `src&#47;theory&#47;stochastics.py` | **DEFERRED_MODULE** — placeholder only (`src&#47;theory&#47;__init__.py`) | <!-- pt:ref-target-ignore -->
 | `src&#47;theory&#47;pricing.py` | **DEFERRED_MODULE** | <!-- pt:ref-target-ignore -->
 | `src&#47;theory&#47;credit.py` | **DEFERRED_MODULE** | <!-- pt:ref-target-ignore -->
-| `src&#47;features&#47;` (Feature-Engine pipeline) | **Deferred placeholder** — ECM math lives in `src&#47;strategies&#47;ecm.py` + `src&#47;strategies&#47;armstrong&#47;` |
+| `src&#47;features&#47;` (Feature-Engine pipeline) | **Deferred placeholder** — ECM math lives in `src&#47;strategies&#47;ecm.py` + `src&#47;strategies&#47;armstrong&#47;` | <!-- pt:ref-target-ignore -->
 | `docs&#47;llm_workflows.md` | **DEFERRED_DOC** — file does not exist | <!-- pt:ref-target-ignore -->
 
 **Partial overlap (existing, not theory modules):**
 
-- `src/risk/monte_carlo.py`
-- `src/experiments/monte_carlo.py`
+- `src&#47;risk&#47;monte_carlo.py`
+- `src&#47;experiments&#47;monte_carlo.py`
 
 ---
 
@@ -59,7 +59,7 @@ Stale documentation references to deferred theory modules, legacy ECM paths, and
 
 | Location | Reason |
 |----------|--------|
-| `tests/integration/test_kill_switch_e2_safety_guard.py` → `src.live.kill_switch` | Test is wired to `src.live.safety.SafetyGuard` + `KillSwitchBlocked`; kill-switch runtime lives under `src/risk_layer/kill_switch/` with different exception types (`TradingBlockedError`). Changing imports would alter test semantics — **skipped per “if uncertain → leave unchanged”**. |
+| `tests&#47;integration&#47;test_kill_switch_e2_safety_guard.py` → `src.live.kill_switch` | Test is wired to `src.live.safety.SafetyGuard` + `KillSwitchBlocked`; kill-switch runtime lives under `src&#47;risk_layer&#47;kill_switch&#47;` with different exception types (`TradingBlockedError`). Changing imports would alter test semantics — **skipped per “if uncertain → leave unchanged”**. |
 | Historical ops/merge-log docs referencing `data_contracts.py`, `parquet_cache.py`, `data_loader.py` | Point-in-time records; excluded from full-scan via `DOCS_REFERENCE_TARGETS_IGNORE.txt` patterns. **Not edited** (runbook/historical scope). |
 
 ---
@@ -79,13 +79,13 @@ Stale documentation references to deferred theory modules, legacy ECM paths, and
 
 ## 5. Files Modified
 
-- `src/docs/architecture.md`
-- `src/docs/nicole_el_karoui_notes.md`
-- `src/docs/PEAK_TRADE_PROJECT_SUMMARY.md`
-- `docs/PEAK_TRADE_OVERVIEW.md`
-- `docs/features/FEHLENDE_FEATURES_PEAK_TRADE.md`
-- `scripts/run_risk_stress_report.py`
-- `docs/audit/ci_docs_fix_report_v1.md` *(this report)*
+- `src&#47;docs&#47;architecture.md`
+- `src&#47;docs&#47;nicole_el_karoui_notes.md`
+- `src&#47;docs&#47;PEAK_TRADE_PROJECT_SUMMARY.md`
+- `docs&#47;PEAK_TRADE_OVERVIEW.md`
+- `docs&#47;features&#47;FEHLENDE_FEATURES_PEAK_TRADE.md`
+- `scripts&#47;run_risk_stress_report.py`
+- `docs&#47;audit&#47;ci_docs_fix_report_v1.md` *(this report)*
 
 ---
 
