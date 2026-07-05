@@ -187,7 +187,10 @@ class TestPostNoPassSparseSignalInconclusiveFailureClassificationV0Contract:
         assert "`MANIFEST_VERIFY_RC` | `0`" in body
         assert PARENT_EVIDENCE_SUFFIX in body
         assert NEW_EVIDENCE_SUFFIX in body
-        assert "scripts/research/post_no_pass_sparse_signal_inconclusive_failure_classification_execution_v0.py" in body
+        assert (
+            "scripts/research/post_no_pass_sparse_signal_inconclusive_failure_classification_execution_v0.py"
+            in body
+        )
         for phrase in BOUNDARY_PHRASES:
             assert phrase in body, f"missing boundary phrase: {phrase}"
 
