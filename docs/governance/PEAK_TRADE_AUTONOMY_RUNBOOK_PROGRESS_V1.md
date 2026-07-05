@@ -3657,7 +3657,7 @@ Docs-only scope definition for admissible new Evidence Class `OKX_FULL_PANEL_CRO
 | `REQUIRES_SEPARATE_OPERATOR_GO_FOR_EVALUATION` | `true` |
 | `REQUIRES_FULL_PANEL_BINDING` | `true` |
 | `NARROW_ADAPTER_ETH_ONLY_BINDING_DISALLOWED_FOR_THIS_SCOPE` | `true` |
-| `EXCLUDED_FAILED_CANDIDATES` | `trend_following/v1,bollinger_bands/v1,momentum_1h/v1` |
+| `EXCLUDED_FAILED_CANDIDATES` | `trend_following&#47;v1,bollinger_bands&#47;v1,momentum_1h&#47;v1` |
 | `EXCLUDED_FAILED_DIGESTS` | `161d834e…,c5e3b5fe…,64da0eae…` |
 | `SCOPE_CONFIG_REF` | `config/research/okx_full_panel_cross_sectional_ranking_strategy_archetype_evidence_class_scope_v0.json` |
 | `SCOPE_DIGEST` | `77487ec87c1a1ea8fc6ad5fa168faf4c405dfa6c51f57b4d36cc2785f76deed7` |

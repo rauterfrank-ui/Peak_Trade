@@ -53,7 +53,7 @@ SCHEDULER_RUNTIME_ALLOWED: false
 
 ## B. Zentrale Hypothese
 
-Ein cross-sectional Ranking-/Selection-Archetype über das echte OKX-Full-Panel kann andere Evidence liefern als die terminal failed Single-Instrument-/Narrow-Adapter-Fleet (`trend_following/v1`, `bollinger_bands/v1`, `momentum_1h/v1`). Die neue Evidence Class ist nur zulässig, weil sie **Archetyp**, **Instrument-/Universe-Binding** und **Period-/Panel-Binding** ändert — nicht dieselbe failed Final-Fleet-Bindung wiederholt.
+Ein cross-sectional Ranking-/Selection-Archetype über das echte OKX-Full-Panel kann andere Evidence liefern als die terminal failed Single-Instrument-/Narrow-Adapter-Fleet (`trend_following&#47;v1`, `bollinger_bands&#47;v1`, `momentum_1h&#47;v1`). Die neue Evidence Class ist nur zulässig, weil sie **Archetyp**, **Instrument-/Universe-Binding** und **Period-/Panel-Binding** ändert — nicht dieselbe failed Final-Fleet-Bindung wiederholt.
 
 PR #4846 deklarierte OKX-Full-Panel-Metadaten (118 Instrumente, Mai–Sep 2024), führte aber alle drei Kandidaten über `NARROW_ADAPTER_INST_ETH_USDT_PERP` auf `ETH-USDT-SWAP` mit einem 7-Tage-Fenster (`2024-05-25..2024-06-01`) aus. Diese Scope-Definition schließt diesen Evaluationspfad explizit aus.
 
@@ -61,9 +61,9 @@ PR #4846 deklarierte OKX-Full-Panel-Metadaten (118 Instrumente, Mai–Sep 2024),
 
 | Exclusion | Status |
 |---|---|
-| Retry `trend_following/v1` | `BLOCKED` |
-| Retry `bollinger_bands/v1` | `BLOCKED` |
-| Retry `momentum_1h/v1` | `BLOCKED` |
+| Retry `trend_following&#47;v1` | `BLOCKED` |
+| Retry `bollinger_bands&#47;v1` | `BLOCKED` |
+| Retry `momentum_1h&#47;v1` | `BLOCKED` |
 | Retry digest `161d834e5153df78a0013b6e55c4c8bd4788c775811e3678f025104a307d78f1` (STEP31F) | `BLOCKED` |
 | Retry digest `c5e3b5fe6b688b49dbd2b210fd63bdea79201d64820591f87091b4e20689a9dd` (failed fleet binding completion) | `BLOCKED` |
 | Retry digest `64da0eae56a70ad0661398db14d712f6d58d6ea9f6ad0dbb73f3de2b01d11d67` (failed fleet scope) | `BLOCKED` |
