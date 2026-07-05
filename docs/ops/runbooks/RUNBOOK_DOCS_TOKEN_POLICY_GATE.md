@@ -96,7 +96,7 @@ The gate scans changed Markdown files (`.md`) for inline-code tokens (single bac
 | `bash python3 scripts/ops/validate_docs_token_policy.py --help` | COMMAND | ✅ Compliant | Command prefix detected |
 | `https://example.com/path` | URL | ✅ Compliant | URL detected |
 | `/usr/local/bin` | LOCAL_PATH | ✅ Compliant | Local path prefix |
-| `some/path` | ALLOWLISTED | ✅ Compliant | In allowlist |
+| `some&#47;path` | ALLOWLISTED | ✅ Compliant | In allowlist |
 
 **Example of ILLUSTRATIVE violation (shown in fenced block to avoid triggering gate):**
 
@@ -407,7 +407,7 @@ If you need to adjust how tokens are classified:
 | Real repo file | No encoding | `scripts/ops/validate_docs_token_policy.py` |
 | URL | No encoding | `https://github.com/...` |
 | Command | No encoding | `bash python3 scripts/run_sweep.py --help` |
-| Generic placeholder | Add to allowlist | `some/path` |
+| Generic placeholder | Add to allowlist | `some&#47;path` |
 | Fenced code block | No action needed | (automatically ignored) |
 
 ---

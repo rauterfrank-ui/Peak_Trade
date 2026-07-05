@@ -25,12 +25,12 @@ Wichtige Dateien & Ordner:
   - `trading_bot_notes.md`
   - `nicole_el_karoui_notes.md`
 - `src/`
-  - `core/` – Config-System
+  - `core&#47;` – Config-System
   - `data/` – Marktdaten (z.B. Kraken)
-  - `risk/` – Position Sizing
-  - `strategies/` – Strategien (MA-Crossover)
-  - `backtest/` – Engine + Stats
-  - `features/`, `theory/` – für ECM/El-Karoui etc. reserviert
+  - `risk&#47;` – Position Sizing
+  - `strategies&#47;` – Strategien (MA-Crossover)
+  - `backtest&#47;` – Engine + Stats
+  - `features&#47;`, `theory&#47;` – für ECM/El-Karoui etc. reserviert
 - `scripts/`
   - `run_ma_realistic.py` – Script für realistischen Backtest
 - `tests/`
@@ -106,7 +106,7 @@ Alle relevanten Verzeichnisse haben `__init__.py` → saubere Python-Packages.
       - `stats` (Dict aus `compute_all_stats`)
   - **Vectorized Mode**:
     - schnell, ohne Risk-Management (All-In), eher für Experimente
-  - Ergebnisse werden in `results/` als CSV/JSON gespeichert
+  - Ergebnisse werden in `results&#47;` als CSV/JSON gespeichert
 
 ### 4.6 Backtest-Runner
 

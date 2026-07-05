@@ -216,7 +216,7 @@ git revert <phase3_commit_hash>
 4. CI Verification (alle contexts müssen grün sein)
 5. Human Review (optional, but recommended)
 6. Merge to `main`
-7. Create Merge Log: `docs/ops/PR_<NUM>_MERGE_LOG.md`
+7. Create Merge Log: `docs&#47;ops&#47;PR_<NUM>_MERGE_LOG.md`
 8. Update Evidence Index
 
 ### ⏭️ Phase 4 (Next)

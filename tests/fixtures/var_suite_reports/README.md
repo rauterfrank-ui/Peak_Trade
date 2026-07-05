@@ -8,9 +8,9 @@ This directory contains test fixtures for the VaR backtesting suite report compa
 
 These fixtures contain **clean, passing** VaR backtest results with no regressions:
 
-- **`run_baseline/`** - Reference baseline run (PASS, no regressions)
-- **`run_candidate/`** - Candidate run for comparison (PASS, no regressions)
-- **`run_pass_all/`** - Golden "all tests pass" dataset
+- **`run_baseline&#47;`** - Reference baseline run (PASS, no regressions)
+- **`run_candidate&#47;`** - Candidate run for comparison (PASS, no regressions)
+- **`run_pass_all&#47;`** - Golden "all tests pass" dataset
 
 **Purpose:** CI regression gates compare `run_baseline` vs `run_candidate` and expect **exit code 0** (no regressions detected).
 
@@ -20,8 +20,8 @@ These fixtures contain **clean, passing** VaR backtest results with no regressio
 
 These fixtures contain **intentional regressions** to verify that the regression detection system works correctly:
 
-- **`run_known_regressions_baseline/`** - Clean baseline (PASS)
-- **`run_known_regressions_candidate/`** - Degraded candidate (FAIL, 4 regressions)
+- **`run_known_regressions_baseline&#47;`** - Clean baseline (PASS)
+- **`run_known_regressions_candidate&#47;`** - Degraded candidate (FAIL, 4 regressions)
 
 **Purpose:** Test that `var_suite_compare_runs.py` correctly detects and reports regressions with **exit code 1**.
 

@@ -74,7 +74,7 @@
 - [x] Enforcement Policy status: ⚠️ NOT ACTIVE (correct)
 - [x] Settings Guide status: ❌ No (not in required list) (correct)
 - [x] Evidence Note status: ⚠️ ENFORCEMENT PENDING (correct)
-- [x] Expected check context documented: `CI / Workflow Dispatch Guard / dispatch-guard`
+- [x] Expected check context documented: `CI &#47; Workflow Dispatch Guard &#47; dispatch-guard`
 - [x] Evidence note linked in all relevant docs
 
 ### ✅ Quality Gates
@@ -155,7 +155,7 @@
 
 **Guard Status:** ✅ FUNCTIONAL  
 **Enforcement Status:** ⚠️ **NOT ACTIVE** (operator action pending)  
-**Expected Check Context:** `CI / Workflow Dispatch Guard / dispatch-guard`  
+**Expected Check Context:** `CI &#47; Workflow Dispatch Guard &#47; dispatch-guard`
 **Evidence:** `docs/ops/ci/evidence/PHASE5C_DISPATCH_GUARD_ENFORCEMENT_VERIFICATION_2026-01-12.md`
 
 ### Policy Decision
@@ -173,7 +173,7 @@
 ### Activation Procedure
 
 1. GitHub → Settings → Branches → Branch protection rules → `main` → Edit
-2. Search for: `CI / Workflow Dispatch Guard / dispatch-guard`
+2. Search for: `CI &#47; Workflow Dispatch Guard &#47; dispatch-guard`
 3. Add to required checks list
 4. Save changes
 5. Verify with `gh api` (see Settings Guide)

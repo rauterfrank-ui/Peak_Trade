@@ -26,13 +26,13 @@ Prevent Phase 5B-class bugs (PR #663) where `workflow_dispatch` input contexts a
 
 ## Enforcement Status (Important)
 **Current:** ⚠️ **NOT ACTIVE** as required check  
-**Expected Check Context:** `CI / Workflow Dispatch Guard / dispatch-guard`  
+**Expected Check Context:** `CI &#47; Workflow Dispatch Guard &#47; dispatch-guard`
 **Policy Decision:** ✅ ENFORCE (same-day based on effectiveness)  
 **Activation:** Operator action required (~2 min, post-merge)
 
 **Activation Steps:**
 1. GitHub → Settings → Branches → Edit `main` protection
-2. Add: `CI / Workflow Dispatch Guard / dispatch-guard`
+2. Add: `CI &#47; Workflow Dispatch Guard &#47; dispatch-guard`
 3. Save changes
 
 **Post-Activation:**

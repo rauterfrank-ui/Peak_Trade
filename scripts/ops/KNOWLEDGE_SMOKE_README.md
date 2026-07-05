@@ -142,13 +142,13 @@ BASE_URL: http://127.0.0.1:8000
 
 ### GET Endpoints (immer 200)
 
-1. `GET /api/knowledge/snippets?limit=1`
-2. `GET /api/knowledge/strategies?limit=1`
-3. `GET /api/knowledge/search?q=test&k=3` (200 oder 501 ok, nie 500)
+1. `GET &#47;api&#47;knowledge&#47;snippets?limit=1`
+2. `GET &#47;api&#47;knowledge&#47;strategies?limit=1`
+3. `GET &#47;api&#47;knowledge&#47;search?q=test&k=3` (200 oder 501 ok, nie 500)
 
 ### POST Endpoints (gated)
 
-1. `POST /api/knowledge/snippets`
+1. `POST &#47;api&#47;knowledge&#47;snippets`
    ```json
    {
      "category": "insight",
@@ -158,7 +158,7 @@ BASE_URL: http://127.0.0.1:8000
    }
    ```
 
-2. `POST /api/knowledge/strategies`
+2. `POST &#47;api&#47;knowledge&#47;strategies`
    ```json
    {
      "name": "smoke_strat",
@@ -402,12 +402,12 @@ Wenn ChromaDB-Backend nicht verfügbar ist:
 
 ### Getestete Checks (5)
 
-1. **Stats Endpoint** — `GET /api/knowledge/stats` → 200 (oder 501)
-2. **Snippets List** — `GET /api/knowledge/snippets?limit=1` → 200 (oder 501)
-3. **Strategies List** — `GET /api/knowledge/strategies?limit=1` → 200 (oder 501)
-4. **Search Probe** — `GET /api/knowledge/search?q=smoke&limit=1` → 200 (oder 501)
+1. **Stats Endpoint** — `GET &#47;api&#47;knowledge&#47;stats` → 200 (oder 501)
+2. **Snippets List** — `GET &#47;api&#47;knowledge&#47;snippets?limit=1` → 200 (oder 501)
+3. **Strategies List** — `GET &#47;api&#47;knowledge&#47;strategies?limit=1` → 200 (oder 501)
+4. **Search Probe** — `GET &#47;api&#47;knowledge&#47;search?q=smoke&limit=1` → 200 (oder 501)
    - Falls 404/405: versucht POST-Variante
-5. **Write Gating Probe** — `POST /api/knowledge/snippets` → 403 (erwartet!)
+5. **Write Gating Probe** — `POST &#47;api&#47;knowledge&#47;snippets` → 403 (erwartet!)
    - 401 = auth missing (degraded ok)
    - 200/201 = **CRITICAL** (writes nicht geblockt!)
 

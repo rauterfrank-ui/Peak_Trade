@@ -249,7 +249,7 @@ Found missing target in docs
 | URL | `https://github.com/...` | Ignored | Keep as-is |
 | Markdown link | `[text](target.md)` | Validates target | Update if broken |
 | Inline code | `` `path&#47;to&#47;file` `` | Validates if path-like | Encode if illustrative |
-| Fenced code block | ` ```path/to/file``` ` | Ignored | Keep as-is |
+| Fenced code block | ` ```path&#47;to&#47;file``` ` | Ignored | Keep as-is |
 
 ## Decision Tree: `--changed` vs Full Scan
 

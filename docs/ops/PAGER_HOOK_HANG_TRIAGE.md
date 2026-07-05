@@ -252,7 +252,7 @@ cat large_file.log
 ## Git Hooks Status (Stand 2026-01-03)
 
 **Aktive Hooks:**
-- `.git/hooks/pre-commit` (pre-commit framework wrapper, ~20 Zeilen)
+- `.git&#47;hooks&#47;pre-commit` (pre-commit framework wrapper, ~20 Zeilen)
   - Ruft: `.venv&#47;bin&#47;python3 -m pre_commit`
   - Config: `.pre-commit-config.yaml`
   - Hooks: end-of-file-fixer, trailing-whitespace, ruff-check, etc.
@@ -283,7 +283,7 @@ cat large_file.log
 
 - **Diagnose Tool:** `scripts/ops/diag_terminal_hang.sh`
 - **Pre-commit Config:** `.pre-commit-config.yaml`
-- **Git Hook Wrapper:** `.git/hooks/pre-commit`
+- **Git Hook Wrapper:** `.git&#47;hooks&#47;pre-commit`
 
 ---
 

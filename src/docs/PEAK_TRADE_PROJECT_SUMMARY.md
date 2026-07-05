@@ -643,11 +643,11 @@ Lies bitte die Zusammenfassung in dieser Datei für Details.
 ## 📚 Wichtige Dateien
 
 ### Existierende Docs
-- `docs/architecture.md` – Detaillierte Architektur
-- `docs/llm_workflows.md` – LLM-Prompts für verschiedene Tasks
-- `docs/armstrong_notes.md` – Economic Confidence Model
-- `docs/trading_bot_notes.md` – Trading-Konzepte
-- `docs/Peak_Trade_setup_notes.md` – Setup-Notizen
+- `src/docs/architecture.md` – Detaillierte Architektur
+- `docs&#47;llm_workflows.md` – LLM-Prompts für verschiedene Tasks <!-- pt:ref-target-ignore -->
+- `src/docs/armstrong_notes.md` – Economic Confidence Model
+- `src/docs/trading_bot_notes.md` – Trading-Konzepte
+- `src/docs/Peak_Trade_setup_notes.md` – Setup-Notizen
 
 ### Code-Hauptdateien
 - `src/core/config.py` – Config-System
@@ -712,9 +712,9 @@ Lies bitte die Zusammenfassung in dieser Datei für Details.
 ## 📞 Support
 
 Bei Problemen:
-1. Prüfe `docs/architecture.md`
-2. Verwende `docs/llm_workflows.md` für LLM-Prompts
-3. Führe Tests aus: `pytest tests/ -v`
+1. Prüfe `src/docs/architecture.md`
+2. Verwende `docs&#47;llm_workflows.md` für LLM-Prompts <!-- pt:ref-target-ignore -->
+3. Führe Tests aus: `pytest tests&#47; -v`
 
 ---
 

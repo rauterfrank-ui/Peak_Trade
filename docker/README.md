@@ -6,7 +6,7 @@ Local MLflow tracking server for development and experimentation.
 
 ### Prerequisites
 - Docker & Docker Compose installed
-- Port 5001 available (or customize via `docker/.env`)
+- Port 5001 available (or customize via `docker&#47;.env`)
 
 ### Start MLflow
 ```bash
@@ -34,7 +34,7 @@ make mlflow-reset
 
 ## Configuration
 
-Edit `docker/.env` to customize (auto-created from `.env.example`):
+Edit `docker&#47;.env` to customize (auto-created from `.env.example`):
 
 ```bash
 # Port for MLflow UI (default: 5001)
@@ -52,9 +52,9 @@ MLFLOW_DEFAULT_ARTIFACT_ROOT=
 ## Persistence
 
 ### What Persists Between Restarts
-- **Experiments & Runs:** Stored in `mlruns/` volume
-- **Artifacts:** Stored in `mlartifacts/` volume
-- **Configuration:** `docker/.env` (gitignored, safe to customize locally)
+- **Experiments & Runs:** Stored in `mlruns&#47;` volume
+- **Artifacts:** Stored in `mlartifacts&#47;` volume
+- **Configuration:** `docker&#47;.env` (gitignored, safe to customize locally)
 
 ### What Gets Deleted
 - `make mlflow-down`: Stops container, **keeps data**
@@ -90,7 +90,7 @@ Error: bind: address already in use
    lsof -i :5001
    ```
 
-2. Kill conflicting process or change port in `docker/.env`:
+2. Kill conflicting process or change port in `docker&#47;.env`:
    ```bash
    MLFLOW_PORT=5002
    ```
@@ -103,7 +103,7 @@ Error: bind: address already in use
 **Checklist:**
 - [ ] Container running? `docker ps | grep mlflow`
 - [ ] Logs show errors? `make mlflow-logs`
-- [ ] Port correct? Check `docker/.env` for `MLFLOW_PORT`
+- [ ] Port correct? Check `docker&#47;.env` for `MLFLOW_PORT`
 - [ ] Firewall blocking? Temporarily disable or allow port 5001
 
 ### Docker Not Found

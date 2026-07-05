@@ -52,9 +52,9 @@ Expanded from minimal quickstart to comprehensive documentation:
    - Clear distinction: `mlflow-down` (keeps data) vs `mlflow-reset` (destroys data)
 
 2. **Configuration**
-   - How to customize `docker/.env`
+   - How to customize `docker&#47;.env`
    - **Port 5001 default** - explicitly documented to avoid macOS AirPlay Receiver conflict on port 5000
-   - Instructions to change port if needed (edit `docker/.env`)
+   - Instructions to change port if needed (edit `docker&#47;.env`)
 
 3. **Persistence**
    - What persists between restarts: `mlruns&#47;`, `mlartifacts&#47;` volumes, `.env`
@@ -67,7 +67,7 @@ Expanded from minimal quickstart to comprehensive documentation:
    - Users can safely ignore these warnings
 
 5. **Troubleshooting**
-   - **Port conflicts:** Check `lsof -i :5001`, change port in `docker/.env`, disable macOS AirPlay
+   - **Port conflicts:** Check `lsof -i :5001`, change port in `docker&#47;.env`, disable macOS AirPlay
    - **UI not reachable:** Checklist (container status, logs, port, firewall)
    - **Docker not found:** Installation links for macOS/Linux
    - **Container crashes:** Diagnostic steps (logs, reset, disk space)
@@ -102,7 +102,7 @@ MLFLOW_PORT=5002
    lsof -i :5001
    ```
 
-2. Change port in `docker/.env` or disable AirPlay:
+2. Change port in `docker&#47;.env` or disable AirPlay:
    - System Preferences → Sharing → AirPlay Receiver (turn off)
 
 ## MLflow Warnings Explained
@@ -128,7 +128,7 @@ The README clarifies data persistence:
 **What persists:**
 - Experiments & runs (`mlruns&#47;` volume)
 - Artifacts (`mlartifacts&#47;` volume)
-- Configuration (`docker/.env` - gitignored)
+- Configuration (`docker&#47;.env` - gitignored)
 
 **Use `mlflow-reset` when:**
 - You want a clean slate

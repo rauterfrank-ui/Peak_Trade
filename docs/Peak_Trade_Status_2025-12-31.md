@@ -30,7 +30,7 @@ Ende 2025 ist der Status: **voll funktionsfähiges MVP**, mit sauberer Architekt
   - `BacktestEngine.run_realistic(...)` für Bar-für-Bar-Simulation
   - `BacktestResult` mit Equity, Drawdown, Trades, Stats
   - `compute_backtest_stats(...)` für Standard-Kennzahlen
-- **Live-/Paper-Layer (`src/live/` + `scripts/*`)**
+- **Live-/Paper-Layer (`src/live/` + `scripts&#47;*`)**
   - `LiveRiskLimits` mit konfigurierbaren Limits
   - zentraler Helper `run_live_risk_check(...)`
   - Scripts für Preview, Paper-Trade, Risk-Checks
@@ -100,7 +100,7 @@ Ende 2025 ist der Status: **voll funktionsfähiges MVP**, mit sauberer Architekt
   - Optionale PnL-Aggregation über Registry (`use_experiments_for_daily_pnl`)
 - Zentraler Risk-Helper:
   - `run_live_risk_check(orders, ctx, ...)`
-  - Berücksichtigt `skip/enforce`
+  - Berücksichtigt `skip&#47;enforce`
   - Loggt Live-Risk-Checks in Registry
   - wirft `LiveRiskViolationError` bei Verletzung + `enforce=True`
 - Scripts (vereinheitlichte CLI):

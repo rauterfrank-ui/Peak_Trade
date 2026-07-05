@@ -38,11 +38,11 @@ Phase 77 vertieft den in Phase 76 eingeführten R&D-Hub und ermöglicht eine det
   * Equity-Charts (`*_equity.png`)
   * Drawdown-Charts (`*_drawdown.png`)
 * Direkte Links aus dem Dashboard zu den Report-Dateien
-* Suche in mehreren Report-Verzeichnissen (`reports/`, `reports/r_and_d_experiments/`, `reports/portfolio/`, `reports/ideas/`)
+* Suche in mehreren Report-Verzeichnissen (`reports&#47;`, `reports&#47;r_and_d_experiments&#47;`, `reports&#47;portfolio&#47;`, `reports&#47;ideas&#47;`)
 
 ### API-Erweiterung (v1.2)
 
-* Erweiterter Detail-Endpoint `GET /api/r_and_d/experiments/{run_id}`:
+* Erweiterter Detail-Endpoint `GET &#47;api&#47;r_and_d&#47;experiments&#47;{run_id}`:
   * `report_links`: Liste erkannter Report-Dateien
   * `status`: Experiment-Status (success, running, failed, no_trades)
   * `run_type`: Typ des Runs (backtest, sweep, monte_carlo, walkforward)
@@ -112,7 +112,7 @@ Phase 77 vertieft den in Phase 76 eingeführten R&D-Hub und ermöglicht eine det
 ### App-Integration
 
 * Datei: `src/webui/app.py` (v1.3)
-* Neue Route: `GET /r_and_d/experiment/{run_id}`
+* Neue Route: `GET &#47;r_and_d&#47;experiment&#47;{run_id}`
 * 404-Handling mit `error.html` Template
 
 ### Frontend / Templates

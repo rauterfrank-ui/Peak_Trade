@@ -65,11 +65,11 @@ Relevante Module/Klassen für Phase 81:
   * Verknüpft Risk-/Severity-Daten mit dem Web-Dashboard,
   * Bereitet Daten für Templates auf (Severity-Badges, Panels).
 
-* `templates/.../index.html`
+* `templates&#47;...&#47;index.html`
 
   * Live-Track-Übersicht mit Severity-/Status-Anzeigen.
 
-* `templates/.../session_detail.html`
+* `templates&#47;...&#47;session_detail.html`
 
   * Detail-View pro Live-Session, inkl. Severity-Panel und Runbook-Hinweisen.
 

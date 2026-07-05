@@ -102,9 +102,9 @@ nicht das Pydantic-Model selbst.
 | Übersprungen | 4 | 4 |
 
 ### Behobene Tests
-1. `tests/test_new_strategies.py::test_ecm_config` ✅
-2. `tests/test_portfolio.py::test_portfolio_backtest` ✅
-3. `tests/test_strategy_config.py::test_get_strategy_cfg_success` ✅
+1. `tests&#47;test_new_strategies.py::test_ecm_config` ✅
+2. `tests&#47;test_portfolio.py::test_portfolio_backtest` ✅
+3. `tests&#47;test_strategy_config.py::test_get_strategy_cfg_success` ✅
 
 ---
 

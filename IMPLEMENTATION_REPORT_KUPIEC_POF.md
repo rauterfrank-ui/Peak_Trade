@@ -434,7 +434,7 @@ def _generate_synthetic_data(...):
 - [x] Unit Tests: ≥95% Coverage für `kupiec_pof.py`
 - [x] Type Hints vollständig
 - [x] Docstrings (Deutsch) für alle public Functions
-- [x] `pytest tests/risk_layer/var_backtest/` grün
+- [x] `pytest tests&#47;risk_layer&#47;var_backtest&#47;` grün
 
 ### Phase 2: Integration ✅
 

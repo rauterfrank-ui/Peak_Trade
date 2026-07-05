@@ -242,7 +242,7 @@ def evaluate_portfolio(self, snapshot: LivePortfolioSnapshot) -> LiveRiskCheckRe
 
 ### 4. Tests
 
-**In `tests/test_live_risk_limits_*.py` oder neue Datei:**
+**In `tests&#47;test_live_risk_limits_*.py` oder neue Datei:**
 
 ```python
 """

@@ -22,7 +22,7 @@ Ziel: Das Peak_Trade-Framework von einem Set einzelner Bausteine zu einem runden
 2. **Zentrales Backtest-Script erstellen**
    - Neues Script, z. B. `scripts/run_backtest.py`, das:
      - `config.toml` lädt.
-     - Die Data-Pipeline (`src/data/*`) nutzt.
+     - Die Data-Pipeline (`src&#47;data&#47;*`) nutzt.
      - Eine Strategie aus dem Strategy-Layer lädt.
      - Die Backtest-Engine aufruft.
      - Stats in der Konsole ausgibt.

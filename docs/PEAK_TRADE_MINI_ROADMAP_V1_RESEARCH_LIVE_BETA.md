@@ -72,9 +72,9 @@ Schärft die R&D-Experimente-Übersicht im Web-Dashboard zu einem zentralen **R&
 - **R&D Hub UI:** Daily Summary Kacheln, Quick-Actions, kompaktes Tabellenlayout mit Status-/Run-Type-Badges
 - **R&D-API v1.1:** Neue Felder (`run_type`, `tier`, `experiment_category`, `date_str`), erweiterte Status-Werte (`success`, `running`, `failed`, `no_trades`)
 - **Neue Endpoints:**
-  - `GET /api/r_and_d/today` – heute fertiggestellte Experimente
-  - `GET /api/r_and_d/running` – aktuell laufende Experimente
-  - `GET /api/r_and_d/categories` – verfügbare Kategorien & Run-Types
+  - `GET &#47;api&#47;r_and_d&#47;today` – heute fertiggestellte Experimente
+  - `GET &#47;api&#47;r_and_d&#47;running` – aktuell laufende Experimente
+  - `GET &#47;api&#47;r_and_d&#47;categories` – verfügbare Kategorien & Run-Types
 - **Dokumentation:** [`PHASE_76_R_AND_D_EXPERIMENTS_OVERVIEW_V1_1.md`](PHASE_76_R_AND_D_EXPERIMENTS_OVERVIEW_V1_1.md)
 
 **Operator-Nutzen:**
@@ -101,7 +101,7 @@ Die Informationen aus `StrategyProfile` und `config/strategy_tiering.toml` werde
 
 **Kern-Deliverables:**
 
-- Portfolio-Preset-Configs (z.B. `config/portfolio_presets/*.toml`) mit:
+- Portfolio-Preset-Configs (z.B. `config&#47;portfolio_presets&#47;*.toml`) mit:
   - „Core Balanced"-Preset,
   - „Core Trend+MeanReversion"-Preset,
   - „Core+Aux Aggro"-Preset.

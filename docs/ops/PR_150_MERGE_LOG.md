@@ -51,7 +51,7 @@ Total: **6 files changed, 81 insertions(+)**
 ### Modified Files
 
 5. **`.gitignore`** (+1 line)
-   - Added `docker/.env` to prevent committing local config
+   - Added `docker&#47;.env` to prevent committing local config
 
 6. **`Makefile`** (+22 lines)
    - `mlflow-up`: Build and start MLflow container
@@ -106,7 +106,7 @@ make mlflow-reset
 Verified on 2025-12-19T00:54 UTC (immediately after merge):
 
 ### Environment Setup
-- ✅ `docker/.env` created from template
+- ✅ `docker&#47;.env` created from template
 - ✅ Port configured: 5001 (macOS AirPlay conflict on 5000 avoided)
 
 ### MLflow Container Lifecycle
@@ -146,7 +146,7 @@ The "MLFLOW_DEFAULT_ARTIFACT_ROOT" variable is not set. Defaulting to a blank st
 
 ### Requirements
 - **Docker dependency:** Users must have Docker installed and running
-- **Port availability:** Default 5001 must be free (customizable via `docker/.env`)
+- **Port availability:** Default 5001 must be free (customizable via `docker&#47;.env`)
 
 ### Data Persistence
 - **Volumes:** `mlruns&#47;` and `mlartifacts&#47;` persist between container restarts
