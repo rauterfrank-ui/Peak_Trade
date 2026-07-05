@@ -74,17 +74,17 @@ python3 scripts/run_strategy_from_config.py --config config&#47;my_backtest.toml
 from src.core.peak_config import load_config
 from src.strategies.registry import create_strategy_from_config
 from src.backtest.engine import BacktestEngine
-from src.data.data_loader import load_ohlcv_data
+from src.data.kraken import fetch_ohlcv_df
 
 # 1. Load Config
 cfg = load_config("config/backtest_ma_crossover.toml")
 
 # 2. Load Data
-df = load_ohlcv_data(
+df = fetch_ohlcv_df(
     symbol=cfg.get("data.symbol", "BTC/USDT"),
     timeframe=cfg.get("data.timeframe", "1h"),
-    start_date=cfg.get("data.start_date"),
-    end_date=cfg.get("data.end_date")
+    limit=720,
+    use_cache=True,
 )
 
 # 3. Create Strategy from Registry
@@ -407,11 +407,11 @@ def load_data_from_my_provider(symbol, start, end):
     return df  # Must return OHLCV DataFrame
 ```
 
-**Integration in `src&#47;data&#47;data_loader.py`:** <!-- pt:ref-target-ignore -->
+**Integration in `src/data/loader.py` (CsvLoader / KrakenCsvLoader):**
 ```python
-def load_ohlcv_data(..., provider="my_provider"):
-    if provider == "my_provider":
-        return load_data_from_my_provider(...)
+# Example: load via CsvLoader in src/data/loader.py
+loader = CsvLoader()
+df = loader.load("path/to/export.csv")
 ```
 
 ---
