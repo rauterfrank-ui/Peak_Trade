@@ -64,19 +64,19 @@ Scope- und Binding-Materialisierung ≠ Evaluation-Autorisierung ≠ Promotion-E
 | `strategy_id` | `momentum_1h` |
 | `strategy_version` | `v1` |
 | `PARAMETER_BINDING_REF` | `config/ops/step31f_okx_inst_eth_usdt_perp_momentum_1h_v1_economic_evaluation_v1.json` |
-| `DATASET_BINDING_REF` | `config/research/final_research_fleet_versioned_binding_completion_v0.json#momentum_1h/v1.dataset_binding` |
-| `PERIOD_BINDING_REF` | `config/research/final_research_fleet_versioned_binding_completion_v0.json#momentum_1h/v1.period_binding` |
-| `INSTRUMENT_BINDING_REF` | `config/research/final_research_fleet_versioned_binding_completion_v0.json#momentum_1h/v1.instrument_binding` |
-| `FEE_MODEL_BINDING_REF` | `config/research/final_research_fleet_versioned_binding_completion_v0.json#momentum_1h/v1.fee_model_binding` |
-| `SLIPPAGE_MODEL_BINDING_REF` | `config/research/final_research_fleet_versioned_binding_completion_v0.json#momentum_1h/v1.slippage_model_binding` |
-| `FUNDING_MODEL_BINDING_REF` | `config/research/final_research_fleet_versioned_binding_completion_v0.json#momentum_1h/v1.funding_model_binding` |
-| `EXECUTION_MODEL_BINDING_REF` | `config/research/final_research_fleet_versioned_binding_completion_v0.json#momentum_1h/v1.execution_model_binding` |
-| `ECONOMIC_POLICY_BINDING_REF` | `config/research/final_research_fleet_versioned_binding_completion_v0.json#momentum_1h/v1.economic_policy_binding` |
+| `DATASET_BINDING_REF` | `config&#47;research&#47;final_research_fleet_versioned_binding_completion_v0.json#momentum_1h&#47;v1.dataset_binding` |
+| `PERIOD_BINDING_REF` | `config&#47;research&#47;final_research_fleet_versioned_binding_completion_v0.json#momentum_1h&#47;v1.period_binding` |
+| `INSTRUMENT_BINDING_REF` | `config&#47;research&#47;final_research_fleet_versioned_binding_completion_v0.json#momentum_1h&#47;v1.instrument_binding` |
+| `FEE_MODEL_BINDING_REF` | `config&#47;research&#47;final_research_fleet_versioned_binding_completion_v0.json#momentum_1h&#47;v1.fee_model_binding` |
+| `SLIPPAGE_MODEL_BINDING_REF` | `config&#47;research&#47;final_research_fleet_versioned_binding_completion_v0.json#momentum_1h&#47;v1.slippage_model_binding` |
+| `FUNDING_MODEL_BINDING_REF` | `config&#47;research&#47;final_research_fleet_versioned_binding_completion_v0.json#momentum_1h&#47;v1.funding_model_binding` |
+| `EXECUTION_MODEL_BINDING_REF` | `config&#47;research&#47;final_research_fleet_versioned_binding_completion_v0.json#momentum_1h&#47;v1.execution_model_binding` |
+| `ECONOMIC_POLICY_BINDING_REF` | `config&#47;research&#47;final_research_fleet_versioned_binding_completion_v0.json#momentum_1h&#47;v1.economic_policy_binding` |
 | `config_digest` | `d92f0542eb680df599cfac4cc7b3dadc2a7d17ffa0ebe963ea75a30d2714c244` |
 | `data_digest` | `815b33162adaa2ffd0834f129621f1942b8cb61bc19a6d6220b81b15b65578cc` |
 | `implementation_digest` | `a31f196354e1fac7f7d5f56e1d02c5b2d466c7dde935b0d8fb26985f40cd4c38` |
 | `FUTURES_ONLY` | `true` |
-| `STRATEGY_REGISTRY_VERIFIED` | `true` (`src/strategies/registry.py#momentum_1h`) |
+| `STRATEGY_REGISTRY_VERIFIED` | `true` (`src&#47;strategies&#47;registry.py#momentum_1h`) |
 | `FLEET_BINDING_COMPLETION_REF` | `config/research/final_research_fleet_versioned_binding_completion_v0.json` |
 | `FLEET_BINDING_COMPLETION_DIGEST` | `161d834e5153df78a0013b6e55c4c8bd4788c775811e3678f025104a307d78f1` |
 
