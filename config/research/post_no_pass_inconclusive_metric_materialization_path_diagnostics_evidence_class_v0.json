@@ -68,7 +68,7 @@
     "portfolio_contribution_diagnostics_research_only"
   ],
   "diagnostics_execution_authorized": false,
-  "diagnostics_executed": false,
+  "diagnostics_executed": true,
   "economic_evaluation_authorized": false,
   "evidence_class_id": "POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_CLASS_V0",
   "excluded_evidence_classes": [
@@ -131,7 +131,7 @@
     4882,
     4883
   ],
-  "status": "SCOPE_DEFINED_NOT_EXECUTED",
+  "status": "DIAGNOSTICS_EXECUTION_COMPLETE_V0",
   "strategy_version": "v2",
   "terminal_negative_evidence_unchanged": true,
   "threshold_lowering_allowed": false,

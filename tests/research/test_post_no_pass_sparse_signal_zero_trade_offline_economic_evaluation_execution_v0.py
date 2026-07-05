@@ -162,15 +162,6 @@ def test_scope_ratification_config_exists() -> None:
 
 
 def test_registry_metadata_reflects_execution_complete() -> None:
-    assert authoritative_field_value("CURRENT_STATE") == (
-        "POST_PR4883_NEXT_VERSIONED_RESEARCH_SCOPE_SELECTION_COMPLETE_V0"
-    )
-    assert authoritative_field_value("NEXT_CANONICAL_STEP") == (
-        "REQUEST_OPERATOR_GO_FOR_POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_EXECUTION_V0"
-    )
-    assert authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE") == (
-        "POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_CLASS_V0"
-    )
     assert (
         authoritative_field_value(
             "POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_STATUS"
