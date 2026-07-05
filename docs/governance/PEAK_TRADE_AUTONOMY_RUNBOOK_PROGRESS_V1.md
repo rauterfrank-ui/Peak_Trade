@@ -18,9 +18,9 @@ SCHEDULER_RUNTIME_ALLOWED: false
 
 | Feld | Wert |
 |---|---|
-| `LAST_VERIFIED_ORIGIN_MAIN` | `9b377727cfcb33b03fa545aaf6b48c20c31451e7` |
-| `LAST_VERIFIED_AT` | `2026-07-05T00:52:00Z` |
-| `LAST_VERIFIED_SOURCE` | `FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_FAILURE_PROGRESS_REGISTRY_CLOSEOUT_V0` |
+| `LAST_VERIFIED_ORIGIN_MAIN` | `7385dc0900f258840a4ce09008188bac6d576bd9` |
+| `LAST_VERIFIED_AT` | `2026-07-05T01:10:00Z` |
+| `LAST_VERIFIED_SOURCE` | `FINAL_RESEARCH_FLEET_POST_FAILURE_RUNBOOK_CURRENT_STATE_SYNC_V0` |
 | `CURRENT_STATE` | `FINAL_RESEARCH_FLEET_NEW_EVIDENCE_CLASS_OFFLINE_EVALUATION_COMPLETE_ROBUSTNESS_FAILED_V0` |
 | `CURRENT_MAJOR_GAP_PACKAGE` | `MAJOR_GAP_COMPARISON_PROMOTION_POLICY_INPUT_BRIDGE_V0` |
 | `NEXT_RUNBOOK_STEP` | `RUNBOOK_STEP_29R_RUNTIME_REWIRE_V1_IMPLEMENTATION` |
@@ -69,6 +69,17 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `NEW_EVIDENCE_CLASS_FLEET_VERDICT` | `ROBUSTNESS_FAILED` |
 | `PR4846_MERGE_COMMIT` | `9b377727cfcb33b03fa545aaf6b48c20c31451e7` |
 | `PR4846_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_new_evidence_class_offline_economic_evaluation_pr_squash_merge_closeout_v0_20260705T004825Z (MANIFEST_VERIFY_RC=0; PR #4846; squash 9b377727; VERDICT=PR4846_SQUASH_MERGE_AND_POST_MERGE_CLOSEOUT_COMPLETE)` |
+| `PR4847_MERGE_COMMIT` | `7385dc0900f258840a4ce09008188bac6d576bd9` |
+| `PR4847_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/final_research_fleet_offline_failure_progress_registry_closeout_pr_squash_merge_closeout_v0_20260705T005943Z (MANIFEST_VERIFY_RC=0; PR #4847; squash 7385dc09; VERDICT=PR4847_SQUASH_MERGE_AND_POST_MERGE_CLOSEOUT_COMPLETE)` |
+| `FINAL_RESEARCH_FLEET_OFFLINE_FAILURE_PROGRESS_REGISTRY_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/final_research_fleet_offline_failure_progress_registry_closeout_v0_20260705T005147Z (MANIFEST_VERIFY_RC=0; PR #4847 pre-merge closeout)` |
+| `FINAL_RESEARCH_FLEET_POST_FAILURE_RUNBOOK_SYNC_STATUS` | `COMPLETE` |
+| `FINAL_RESEARCH_FLEET_POST_FAILURE_RUNBOOK_SYNC_GO_TOKEN` | `GO_FINAL_RESEARCH_FLEET_POST_FAILURE_RUNBOOK_CURRENT_STATE_SYNC_V0` |
+| `FINAL_RESEARCH_FLEET_POST_FAILURE_RUNBOOK_SYNC_GO_TOKEN_CONSUMED` | `true` |
+| `FINAL_RESEARCH_FLEET_POST_FAILURE_RUNBOOK_SYNC_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/final_research_fleet_post_failure_runbook_current_state_sync_v0_20260705T010439Z (MANIFEST_VERIFY_RC=0)` |
+| `SUPERSEDED_NEXT_CANONICAL_STEP` | `RATIFY_VERSIONED_FINAL_FLEET_BINDINGS_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE` |
+| `SUPERSEDED_NEXT_CANONICAL_STEP_STATUS` | `COMPLETE_SUPERSEDED_BY_PR4846_PR4847_OFFLINE_EVALUATION` |
+| `FURTHER_SAME_BINDING_RETRY_ALLOWED` | `false` |
+| `FURTHER_ECONOMIC_EVALUATION_REQUIRES_NEW_EVIDENCE_CLASS_SCOPE_AND_EXPLICIT_OPERATOR_GO` | `true` |
 | `FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_FAILURE_CLOSEOUT_GOVERNANCE_REF` | `docs/governance/FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_FAILURE_CLOSEOUT_V0.md` |
 | `EVIDENCE_CLASS` | `NEW_VERSIONED_RESEARCH_SCOPE_NOT_UNCHANGED_RETRY` |
 | `EVIDENCE_CLASS_ID` | `FINAL_RESEARCH_FLEET_OKX_FULL_PANEL_NEW_EVIDENCE_CLASS_V0` |
@@ -111,6 +122,9 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `PROMOTION_ELIGIBLE` | `false` |
 | `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
 | `RETRY_UNCHANGED_BINDING_ALLOWED` | `false` |
+| `RE_EVALUATION_SAME_BINDING_ALLOWED` | `false` |
+| `FURTHER_SAME_BINDING_RETRY_ALLOWED` | `false` |
+| `FURTHER_ECONOMIC_EVALUATION_REQUIRES_NEW_EVIDENCE_CLASS_SCOPE_AND_EXPLICIT_OPERATOR_GO` | `true` |
 | `RESEARCH_GOVERNANCE_RECONCILIATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_runbook_v4_4_research_governance_progress_registry_reconciliation_v0_20260703T143000Z (MANIFEST_VERIFY_RC=0)` |
 | `RESEARCH_GOVERNANCE_DECISION_AFTER_FINAL_FLEET_FAIL_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/research_governance_decision_after_final_fleet_fail_v0_20260704T180033Z (MANIFEST_VERIFY_RC=0)` |
 | `GOVERNANCE_DECISION` | `NO_NEW_CANDIDATE_HOLD_REINSTATE_RATIFIED` |
@@ -3551,6 +3565,75 @@ Docs-only progress registry closeout binding the completed PR #4846 offline econ
 
 ---
 
+#### FINAL_RESEARCH_FLEET_POST_FAILURE_RUNBOOK_CURRENT_STATE_SYNC_V0
+
+Docs-only post-PR-#4847 runbook current-state sync. Binds `COMPLETE_ROBUSTNESS_FAILED` / `ROBUSTNESS_FAILED` as operative current state; supersedes stale `RATIFY_VERSIONED_FINAL_FLEET_BINDINGS_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE` next-step guidance in Runbook v4.4.1. No runtime, promotion, shadow, paper, testnet, orders, scheduler, credentials, or live authority.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `COMPLETE` |
+| `SCOPE_CLASSIFICATION` | `FINAL_RESEARCH_FLEET_POST_FAILURE_RUNBOOK_CURRENT_STATE_SYNC_V0` |
+| `GO_TOKEN` | `GO_FINAL_RESEARCH_FLEET_POST_FAILURE_RUNBOOK_CURRENT_STATE_SYNC_V0` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `PR4847_MERGE_COMMIT` | `7385dc0900f258840a4ce09008188bac6d576bd9` |
+| `ORIGIN_MAIN` | `7385dc0900f258840a4ce09008188bac6d576bd9` |
+| `FINAL_RESEARCH_FLEET` | `trend_following,bollinger_bands,momentum_1h` |
+| `FINAL_RESEARCH_FLEET_EVALUATION_STATUS` | `COMPLETE_ROBUSTNESS_FAILED` |
+| `FINAL_RESEARCH_FLEET_FLEET_VERDICT` | `ROBUSTNESS_FAILED` |
+| `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
+| `PROMOTION_AUTHORIZED` | `false` |
+| `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
+| `RUNTIME_AUTHORITY` | `false` |
+| `SHADOW_AUTHORIZED` | `false` |
+| `PAPER_AUTHORIZED` | `false` |
+| `TESTNET_AUTHORIZED` | `false` |
+| `ORDERS_ALLOWED` | `false` |
+| `SCHEDULER_RUNTIME_ALLOWED` | `false` |
+| `LIVE_AUTHORIZED` | `false` |
+| `FURTHER_SAME_BINDING_RETRY_ALLOWED` | `false` |
+| `FURTHER_ECONOMIC_EVALUATION_REQUIRES_NEW_EVIDENCE_CLASS_SCOPE_AND_EXPLICIT_OPERATOR_GO` | `true` |
+| `SUPERSEDED_NEXT_CANONICAL_STEP` | `RATIFY_VERSIONED_FINAL_FLEET_BINDINGS_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE` |
+| `NEXT_CANONICAL_STEP` | `NO_RUNTIME_OR_PROMOTION_ACTION` |
+| `RUNBOOK_V4_4_1_GOVERNANCE_CLARIFICATION_NOTE` | `MAX_POSITIONS=1 initial safety phase; MULTI_FUTURE_RUNTIME_AUTHORIZED=false` |
+| `GOVERNANCE_REF` | `docs/governance/FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_FAILURE_CLOSEOUT_V0.md` |
+| `RUNBOOK_V4_4_1_REF` | `docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.1_multi_future_target_model_clarification.md` |
+| `OFFLINE_ECONOMIC_EVALUATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_new_evidence_class_offline_economic_evaluation_execution_v0_20260705T003528Z (MANIFEST_VERIFY_RC=0)` |
+| `PR4846_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_new_evidence_class_offline_economic_evaluation_pr_squash_merge_closeout_v0_20260705T004825Z (MANIFEST_VERIFY_RC=0)` |
+| `PR4847_PROGRESS_REGISTRY_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/final_research_fleet_offline_failure_progress_registry_closeout_v0_20260705T005147Z (MANIFEST_VERIFY_RC=0)` |
+| `PR4847_POST_MERGE_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/final_research_fleet_offline_failure_progress_registry_closeout_pr_squash_merge_closeout_v0_20260705T005943Z (MANIFEST_VERIFY_RC=0)` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+
+---
+
+## Post-PR-4847 Verification Binding
+
+Docs-only verification binding nach Squash-Merge von PR #4847 (`Final research fleet offline failure progress registry closeout v0`). Keine Authority-Wirkung; `NO_RUNTIME_OR_PROMOTION_ACTION` und Fleet-Fail-Terminalstate bleiben aktiv.
+
+| Feld | Wert |
+|---|---|
+| `PR4847_MERGED` | `true` |
+| `PR4847_MERGE_COMMIT` | `7385dc0900f258840a4ce09008188bac6d576bd9` |
+| `LAST_VERIFIED_ORIGIN_MAIN` | `7385dc0900f258840a4ce09008188bac6d576bd9` |
+| `LAST_VERIFIED_SOURCE` | `FINAL_RESEARCH_FLEET_POST_FAILURE_RUNBOOK_CURRENT_STATE_SYNC_V0` |
+| `LAST_VERIFIED_AT` | `2026-07-05T01:10:00Z` |
+| `WORKTREE_CLEAN_AT_VERIFICATION` | `true` |
+| `ORIGIN_MAIN_VERIFIED` | `true` |
+| `FINAL_RESEARCH_FLEET_EVALUATION_STATUS` | `COMPLETE_ROBUSTNESS_FAILED` |
+| `FINAL_RESEARCH_FLEET_FLEET_VERDICT` | `ROBUSTNESS_FAILED` |
+| `NEXT_CANONICAL_STEP` | `NO_RUNTIME_OR_PROMOTION_ACTION` |
+| `SUPERSEDED_NEXT_CANONICAL_STEP` | `RATIFY_VERSIONED_FINAL_FLEET_BINDINGS_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE` |
+| `FURTHER_SAME_BINDING_RETRY_ALLOWED` | `false` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+
+---
+
 ## Post-PR-4840 Verification Binding
 
 Docs-only closeout binding nach Squash-Merge von PR #4840 (`docs(governance): supersede stale Class-D v1 fleet runbook snapshot`). Keine Authority-Wirkung; Hold, Terminal Park und `CURRENT_ADMISSIBLE_NEXT_SCOPE=NONE` bleiben unverändert aktiv.
@@ -3591,3 +3674,5 @@ Diese Befunde blockieren nicht die strategische Runbook-Sequenz.
 ## Historisch überholte Next-Step-Angaben
 
 Runbook-Next-Step-Hinweise, die durch gemergte PRs #4623–#4629 überholt wurden, gelten als `COMPLETE` bzw. `IN_PROGRESS` gemäß obiger Registry — **ohne** Änderung der strategischen Reihenfolge.
+
+`NEXT_STEP=RATIFY_VERSIONED_FINAL_FLEET_BINDINGS_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE` ist durch PR #4846/#4847 offline economic evaluation und PR #4847 progress registry closeout **superseded/complete**; authoritativer Next Step = `NO_RUNTIME_OR_PROMOTION_ACTION`.

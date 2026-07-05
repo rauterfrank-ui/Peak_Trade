@@ -8,6 +8,32 @@
 **Systemziel:** Vollautonomes, futures-only Peak-Trade-System mit deterministischer, konsistenter und auditierbarer Handelslogik; realistischer Profitabilitätsvalidierung; unabhängiger Safety Authority; gefenceter Single-Writer-Runtime; vollständiger Reconciliation; sicherer Restart-/Recovery-Semantik; einer durchgängigen Research→Validation→Promotion→Runtime→Feedback-Kette; und einem klar getrennten Pfad von initialer Single-Future-Safety-Phase zu späterer Multi-Future-Portfolio-Runtime nach separaten Gates.  
 **Keine Anlageberatung.**
 
+> **STALE GOVERNANCE SUPERSESSION NOTICE (2026-07-05)**
+>
+> Abschnitte mit `NO_NEW_CANDIDATE_HOLD=REVOKED`, `MULTI_CANDIDATE_RESEARCH_FLEET_ALLOWED=true`, `FINAL_RESEARCH_FLEET_BINDING_READY=false` und `NEXT_STEP=RATIFY_VERSIONED_FINAL_FLEET_BINDINGS…` sind **historische Pre-Fail-/Pre-Evaluation-Snapshots** (Stand vor PR #4846/#4847 Offline-Economic-Evaluation und Progress-Registry-Closeout).
+>
+> **Operative Authority:** [`PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md`](PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md) → `## Registry-Metadaten` (aufgelöst via `src/governance/runbook_progress_registry_v1.py`).
+>
+> **Authoritativer Current State (post PR #4847):**
+>
+> ```text
+> FINAL_RESEARCH_FLEET_EVALUATION_STATUS=COMPLETE_ROBUSTNESS_FAILED
+> FINAL_RESEARCH_FLEET_FLEET_VERDICT=ROBUSTNESS_FAILED
+> ECONOMIC_VALIDITY_OFFLINE_GATE_PASS=false
+> NEXT_STEP=NO_RUNTIME_OR_PROMOTION_ACTION
+> FURTHER_SAME_BINDING_RETRY_ALLOWED=false
+> FURTHER_ECONOMIC_EVALUATION_REQUIRES_NEW_EVIDENCE_CLASS_SCOPE_AND_EXPLICIT_OPERATOR_GO=true
+> NO_NEW_CANDIDATE_HOLD=ACTIVE
+> MULTI_CANDIDATE_RESEARCH_FLEET_ALLOWED=false
+> CURRENT_ADMISSIBLE_NEXT_SCOPE=NONE
+> PHASE_1_MAX_POSITIONS=1
+> MULTI_FUTURE_RUNTIME_AUTHORIZED=false
+> ```
+>
+> **Evidence Bundles (MANIFEST_VERIFY_RC=0):** `bounded_new_evidence_class_offline_economic_evaluation_execution_v0_20260705T003528Z`, `bounded_new_evidence_class_offline_economic_evaluation_pr_squash_merge_closeout_v0_20260705T004825Z`, `final_research_fleet_offline_failure_progress_registry_closeout_v0_20260705T005147Z`, `final_research_fleet_offline_failure_progress_registry_closeout_pr_squash_merge_closeout_v0_20260705T005943Z` unter `$DURABLE_ARCHIVE_ROOT&#47;implementation&#47;`.
+>
+> Stale Governance-Werte in diesem Dokument sind **nicht** für operative Entscheidungen zu verwenden.
+
 ---
 
 # 0. Zweck dieser Version
@@ -1688,42 +1714,19 @@ INTENT_COMPATIBILITY_FIREWALL_PASS
 
 Der bisherige STEP29A–29R-Implementierungs- und Revalidierungspfad ist bis zur Economic-Validity-Grenze abgearbeitet.
 
+Die Final Research Fleet `trend_following`, `bollinger_bands`, `momentum_1h` ist unter neuer Evidence Class `FINAL_RESEARCH_FLEET_OKX_FULL_PANEL_NEW_EVIDENCE_CLASS_V0` versioniert gebunden, offline economic evaluiert und mit `ROBUSTNESS_FAILED` abgeschlossen (PR #4846/#4847). Der frühere Next-Step `RATIFY_VERSIONED_FINAL_FLEET_BINDINGS_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE` ist **superseded/complete** und darf nicht mehr als aktueller nächster Schritt gelesen werden.
+
 Der nächste kanonische Schritt ist:
 
 ```text
-NEXT_STEP=RATIFY_VERSIONED_FINAL_FLEET_BINDINGS_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE
+NEXT_STEP=NO_RUNTIME_OR_PROMOTION_ACTION
+DECISION=NO_ADMISSIBLE_NEXT_RESEARCH_SCOPE
+NEXT_SCOPE_NAME=NONE
+FURTHER_SAME_BINDING_RETRY_ALLOWED=false
+FURTHER_ECONOMIC_EVALUATION_REQUIRES_NEW_EVIDENCE_CLASS_SCOPE_AND_EXPLICIT_OPERATOR_GO=true
 ```
 
-Final konvergierte Research Fleet:
-
-```text
-trend_following
-bollinger_bands
-momentum_1h
-```
-
-Diese Auswahl ist noch keine Evaluationsfreigabe.
-
-Vor jeder Evaluation müssen pro Kandidat versioniert und dauerhaft gebunden werden:
-
-```text
-strategy_id
-strategy_version
-parameter_binding
-dataset_binding
-period_binding
-instrument_binding
-fee_model_binding
-slippage_model_binding
-funding_model_binding
-execution_model_binding
-economic_policy_binding
-implementation_digest
-config_digest
-data_digest
-```
-
-Danach darf ausschließlich ein begrenzter Offline-Evaluation-Scope ratifiziert werden.
+Weitere Economic Evaluation nur nach neuer Evidence-Class-Scope-Definition und explizitem Operator-GO. Dieselbe Final-Fleet-Bindung (`161d834e…`, `c5e3b5fe…`) darf nicht erneut evaluiert werden.
 
 Verbindlich ausgeschlossen:
 
@@ -1745,20 +1748,13 @@ NO_CREDENTIALS
 NO_ARMING
 NO_CANARY
 NO_LIVE
+NO_PROMOTION
+NO_RUNTIME_AUTHORITY
+NO_UNCHANGED_BINDING_RETRY
+NO_UNCHANGED_EVIDENCE_CLASS_REEVALUATION
 ```
 
-Zulässig nach separater Ratifikation:
-
-```text
-OFFLINE_BACKTEST
-WALK_FORWARD
-MONTE_CARLO
-STRESS
-PARAMETER_SENSITIVITY
-ECONOMIC_VIABILITY_EVIDENCE
-```
-
-Es gelten für alle Fleet-Kandidaten dieselben Economic Policies sowie vergleichbare Kosten-, Execution-, Dataset- und Periodenbindungen. Kandidatenspezifische Policy-Absenkungen oder nachträgliche Ergebnisrettung sind verboten.
+`MAX_POSITIONS=1` und `PHASE_1_RUNTIME_MODEL=SINGLE_SELECTED_FUTURE` bleiben initiale Safety-/Stability-Phase, nicht finales Produktlimit. Multi-Future-Runtime bleibt separat gegated und nicht autorisiert (`MULTI_FUTURE_RUNTIME_AUTHORIZED=false`).
 
 ---
 
@@ -2097,6 +2093,7 @@ Dieser Current-State-Anhang ist Fortschritts- und Governance-Evidence. Er ersetz
 
 Gegenüber v4.4 wurde zusätzlich eine Governance-Klarstellung ergänzt:
 
+0. Post-PR-#4847 Current-State-Sync: Final Research Fleet offline economic evaluation `COMPLETE_ROBUSTNESS_FAILED`; `NEXT_STEP=NO_RUNTIME_OR_PROMOTION_ACTION`; früherer Next-Step `RATIFY_VERSIONED_FINAL_FLEET_BINDINGS_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE` superseded; keine Retry-/Reevaluation derselben Bindung ohne neue Evidence Class und explizites Operator-GO.
 1. `MAX_POSITIONS=1` und `SINGLE_SELECTED_FUTURE=true` sind ausdrücklich als initiale Safety-/Stability-Phase definiert, nicht als finale Produktgrenze.
 2. Das langfristige Zielmodell bleibt ein futures-only Multi-Instrument-Portfolio-System aus einem Top20-Futures-Universum.
 3. Multi-Future-Runtime bleibt bis zu separater Governance-Ratifikation, Portfolio-Risk-Binding, Multi-Instrument-Reconciliation, Unknown-Outcome-Recovery und Zero-Order-/Shadow-/Paper-/Testnet-Evidence ausdrücklich nicht autorisiert.
@@ -2154,9 +2151,9 @@ DOUBLE_PLAY_MUTATION_ALLOWED=false
 RISK_SIZING_MUTATION_ALLOWED=false
 SAFETY_RUNTIME_MUTATION_ALLOWED=false
 
-OPERATOR_POLICY_DECISION=AUTHORIZE_BOUNDED_MULTI_CANDIDATE_FUTURES_RESEARCH_FLEET_V0
-NO_NEW_CANDIDATE_HOLD=REVOKED
-MULTI_CANDIDATE_RESEARCH_FLEET_ALLOWED=true
+NO_NEW_CANDIDATE_HOLD=ACTIVE
+MULTI_CANDIDATE_RESEARCH_FLEET_ALLOWED=false
+CURRENT_ADMISSIBLE_NEXT_SCOPE=NONE
 
 PHASE_1_RUNTIME_MODEL=SINGLE_SELECTED_FUTURE
 PHASE_1_MAX_POSITIONS=1
@@ -2167,16 +2164,31 @@ MULTI_FUTURE_RUNTIME_AUTHORIZED=false
 MULTI_FUTURE_RUNTIME_REQUIRES_SEPARATE_GOVERNANCE_AND_SAFETY_GATES=true
 
 FINAL_RESEARCH_FLEET=trend_following,bollinger_bands,momentum_1h
-FINAL_RESEARCH_FLEET_BINDING_READY=false
-NEW_CANDIDATES_RATIFIED=false
-ECONOMIC_EVALUATION_AUTHORIZED=false
+FINAL_RESEARCH_FLEET_BINDING_READY=true
+FINAL_RESEARCH_FLEET_EVALUATION_STATUS=COMPLETE_ROBUSTNESS_FAILED
+FINAL_RESEARCH_FLEET_FLEET_VERDICT=ROBUSTNESS_FAILED
+FINAL_RESEARCH_FLEET_OFFLINE_EVALUATION_COMPLETE=true
+ECONOMIC_EVALUATION_EXECUTED=true
+ECONOMIC_EVALUATION_AUTHORIZED=consumed_for_completed_offline_scope_only
+ECONOMICALLY_VIABLE_CANDIDATE_COUNT=0
 
 ECONOMIC_VALIDITY_OFFLINE_GATE_PASS=false
+PROMOTION_AUTHORIZED=false
 RUNTIME_REWIRE_DEFERRED=true
 RUNTIME_REWIRE_ADMISSIBLE=false
+RUNTIME_AUTHORITY=false
+SHADOW_AUTHORIZED=false
+PAPER_AUTHORIZED=false
+TESTNET_AUTHORIZED=false
+ORDERS_ALLOWED=false
+SCHEDULER_RUNTIME_ALLOWED=false
 LIVE_AUTHORIZED=false
 
-NEXT_STEP=RATIFY_VERSIONED_FINAL_FLEET_BINDINGS_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE
+FURTHER_SAME_BINDING_RETRY_ALLOWED=false
+FURTHER_ECONOMIC_EVALUATION_REQUIRES_NEW_EVIDENCE_CLASS_SCOPE_AND_EXPLICIT_OPERATOR_GO=true
+
+NEXT_STEP=NO_RUNTIME_OR_PROMOTION_ACTION
+SUPERSEDED_NEXT_STEP=RATIFY_VERSIONED_FINAL_FLEET_BINDINGS_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE
 ```
 
 Der kanonische Fortschrittspfad lautet ab jetzt:
