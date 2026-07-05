@@ -301,7 +301,7 @@
     "split_policy_version": "v1"
   },
   "economic_evaluation_authorized": false,
-  "economic_evaluation_executed": false,
+  "economic_evaluation_executed": true,
   "economic_policy_binding": {
     "policy_version": "economic_validity_policy_v1"
   },

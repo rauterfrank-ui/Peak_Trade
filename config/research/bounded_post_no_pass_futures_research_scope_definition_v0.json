@@ -9,7 +9,7 @@
   "candidate_ratified": false,
   "economic_evaluation_authorized": false,
   "economic_evaluation_effect": "NONE",
-  "economic_evaluation_executed": false,
+  "economic_evaluation_executed": true,
   "evaluation_execution_authorized": false,
   "evidence_class_id": "BOUNDED_POST_NO_PASS_FUTURES_RESEARCH_SCOPE_DEFINITION_V0",
   "fail_closed_baseline": {
@@ -84,7 +84,7 @@
   "scope_version": "v0",
   "shadow_authorized": false,
   "spot_allowed": false,
-  "status": "SCOPE_DEFINED_NOT_EXECUTED",
+  "status": "SCOPE_EXECUTED_COMPLETE_ROBUSTNESS_FAILED",
   "testnet_authorized": false,
   "threshold_lowering_allowed": false,
   "trading_effect": "NONE",
