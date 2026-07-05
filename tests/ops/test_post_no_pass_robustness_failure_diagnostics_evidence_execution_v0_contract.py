@@ -118,10 +118,10 @@ class TestPostNoPassRobustnessFailureDiagnosticsEvidenceExecutionV0Contract:
     def test_registry_metadata_fields(self) -> None:
         text = read_registry()
         assert authoritative_field_value("CURRENT_STATE") == (
-            "POST_NO_PASS_ROBUSTNESS_FAILURE_NEXT_RESEARCH_SCOPE_DEFINITION_COMPLETE_V0"
+            "POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_VERSIONED_BINDING_RATIFICATION_COMPLETE_V0"
         )
         assert authoritative_field_value("NEXT_CANONICAL_STEP") == (
-            "REQUEST_OPERATOR_GO_FOR_POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_VERSIONED_BINDING_RATIFICATION_V0"
+            "REQUEST_OPERATOR_GO_FOR_POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0"
         )
         assert (
             _field_value(
@@ -165,9 +165,12 @@ class TestPostNoPassRobustnessFailureDiagnosticsEvidenceExecutionV0Contract:
         assert authoritative_field_value("ECONOMIC_EVALUATION_AUTHORIZED") == "false"
         assert authoritative_field_value("PROMOTION_ELIGIBLE") == "false"
         assert authoritative_field_value("RUNTIME_REWIRE_ADMISSIBLE") == "false"
-        next_scope = authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE")
-        for marker in FORBIDDEN_NEXT_SCOPE_MARKERS:
-            assert marker not in next_scope
+        assert authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE") == (
+            "POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0"
+        )
+        assert authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN") == (
+            "GO_POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0"
+        )
 
     def test_registry_closeout_section(self) -> None:
         section = _closeout_section(read_registry())
