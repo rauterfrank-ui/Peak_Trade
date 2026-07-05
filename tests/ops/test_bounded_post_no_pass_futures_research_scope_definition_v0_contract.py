@@ -165,7 +165,7 @@ class TestBoundedPostNoPassFuturesResearchScopeDefinitionV0Contract:
         assert authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE") == "NONE"
         assert authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN") == "NONE"
         assert authoritative_field_value("NEXT_CANONICAL_STEP") == (
-            "POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_AND_REGISTRY_UPDATE_V0"
+            "NEW_RATIFIED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_REQUIRED"
         )
         assert authoritative_field_value("ECONOMIC_EVALUATION_AUTHORIZED") == "false"
         assert authoritative_field_value("RUNTIME_REWIRE_ADMISSIBLE") == "false"
