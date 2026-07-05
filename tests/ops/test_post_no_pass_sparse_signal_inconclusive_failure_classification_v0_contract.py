@@ -23,25 +23,34 @@ GOVERNANCE_DOC = (
 CLOSEOUT_SECTION_PREFIX = "#### POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0"
 EVIDENCE_CLASS_ID = "POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0"
 SELECTED_CLASS = "E"
-SCOPE_STATUS = "SCOPE_DEFINED_NOT_EXECUTED"
-PROCESS_CLASSIFICATION = (
-    "POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_SCOPE_DEFINITION_ONLY_V0"
+EXECUTION_STATUS = "CLASSIFICATION_EXECUTION_COMPLETE_INCONCLUSIVE"
+CURRENT_STATE = (
+    "POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_EXECUTION_COMPLETE_V0"
 )
-SCOPE_CLASSIFICATION = (
-    "POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_SCOPE_DEFINITION_ONLY_V0"
+PROCESS_CLASSIFICATION = (
+    "POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_EXECUTION_V0"
 )
 SCOPE_DEFINITION_GO = (
     "GO_POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_SCOPE_DEFINITION_ONLY_V0"
 )
 EXECUTION_GO = "GO_POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0"
-NEXT_CANONICAL_STEP = "POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_EXECUTION_REQUIRES_SEPARATE_OPERATOR_GO_V0"
-CURRENT_ADMISSIBLE_SCOPE = "POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0"
-CURRENT_STATE = (
-    "POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_COMPLETE_V0"
-)
-BASELINE_HEAD = "6b48857ab9fc9e3d2637286038d2ae6ce6f3c9a3"
+NEXT_CANONICAL_STEP = "NEW_VERSIONED_RESEARCH_SCOPE_SELECTION_REQUIRES_OPERATOR_RATIFICATION_V0"
+CURRENT_ADMISSIBLE_SCOPE = "NEW_VERSIONED_RESEARCH_SCOPE_SELECTION_V0"
+RATIFICATION_GO = "GO_OPERATOR_RATIFY_NEXT_NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_SCOPE_DEFINITION_ONLY_V0"
+PRIMARY_CLASSIFICATION = "INCONCLUSIVE_SPARSE_SIGNAL_ZERO_TRADE"
 PARENT_EVIDENCE_SUFFIX = "post_no_pass_sparse_signal_zero_trade_offline_economic_evaluation_execution_v0_20260705T213529Z"
+NEW_EVIDENCE_SUFFIX = (
+    "post_no_pass_sparse_signal_inconclusive_failure_classification_execution_v0_20260705T222507Z"
+)
 FAILED_CANDIDATES = ("trend_following", "bollinger_bands", "momentum_1h")
+FORBIDDEN_NEXT_SCOPE_MARKERS = (
+    "RUNTIME",
+    "SHADOW",
+    "PAPER",
+    "TESTNET",
+    "LIVE",
+    "CANARY",
+)
 CLASSIFICATION_AXES = (
     "sparse_signal_vs_zero_trade_separation",
     "signal_trade_coverage_per_candidate",
@@ -56,42 +65,14 @@ CLASSIFICATION_AXES = (
     "dataset_period_coverage_adequacy",
     "portfolio_contribution_diagnostics_research_only",
 )
-REQUIRED_FUTURE_ARTIFACTS = (
-    "classification_manifest",
-    "source_evidence_refs",
-    "candidate_binding_refs",
-    "immutable_failure_refs",
-    "classification_schema_version",
-    "failure_axis_results",
-    "admissibility_summary",
-    "no_promotion_claim",
-)
-FORBIDDEN_ACTIONS_MINIMUM = (
-    "SAME_BINDING_RETRY",
-    "PARAMETER_RESCUE",
-    "THRESHOLD_LOWERING",
-    "PROMOTION",
-    "RUNTIME",
-    "SHADOW",
-    "PAPER",
-    "TESTNET",
-    "SCHEDULER",
-    "ORDERS",
-    "CREDENTIALS",
-    "ARMING",
-    "LIVE",
-    "CLASSIFICATION_EXECUTION_IN_THIS_SCOPE",
-)
 BOUNDARY_PHRASES = (
     "NO_EVALUATION_IN_THIS_SCOPE",
     "NO_SAME_BINDING_RETRY",
     "NO_PROMOTION",
     "NO_RUNTIME",
     "NO_PARAMETER_RESCUE",
-    "Scope-Definition ≠ Classification-Execution-Autorisierung",
     "TERMINAL_NEGATIVE_EVIDENCE_UNCHANGED",
-    "NOT_CONSUMED",
-    "REQUIRES_SEPARATE_OPERATOR_GO",
+    "NO_ECONOMIC_EVALUATION_EXECUTION_SCOPE=true",
 )
 AUTHORITY_TRUE_FLAGS = (
     "economic_evaluation_authorized",
@@ -109,6 +90,26 @@ AUTHORITY_TRUE_FLAGS = (
     "live_authorized",
     "orders_allowed",
     "scheduler_runtime_allowed",
+)
+RESULT_REQUIRED_KEYS = (
+    "evidence_class",
+    "process_classification",
+    "consumed_go_token",
+    "source_state",
+    "primary_classification",
+    "economic_evaluation_authorized",
+    "economic_evaluation_executed",
+    "backtests_executed",
+    "runtime_rewire_admissible",
+    "live_authorized",
+    "shadow_authorized",
+    "paper_authorized",
+    "testnet_authorized",
+    "orders_allowed",
+    "scheduler_runtime_allowed",
+    "reason_codes",
+    "source_evidence_refs",
+    "manifest_digest",
 )
 
 
@@ -132,70 +133,41 @@ def _closeout_section(text: str) -> str:
 
 
 class TestPostNoPassSparseSignalInconclusiveFailureClassificationV0Contract:
-    def test_scope_config_exists_and_governance_gates(self) -> None:
+    def test_scope_config_exists_and_execution_gates(self) -> None:
         assert SCOPE_CONFIG.is_file()
         payload = json.loads(SCOPE_CONFIG.read_text(encoding="utf-8"))
         assert payload["evidence_class_id"] == EVIDENCE_CLASS_ID
         assert payload["selected_class"] == SELECTED_CLASS
-        assert payload["status"] == SCOPE_STATUS
+        assert payload["status"] == EXECUTION_STATUS
         assert payload["process_classification"] == PROCESS_CLASSIFICATION
-        assert payload["scope_classification"] == SCOPE_CLASSIFICATION
+        assert payload["primary_classification"] == PRIMARY_CLASSIFICATION
         assert payload["offline_only"] is True
         assert payload["non_authorizing"] is True
-        assert payload["economic_evaluation_authorized"] is False
-        assert payload["promotion_eligible"] is False
-        assert payload["runtime_rewire_admissible"] is False
-        assert payload["same_binding_retry_allowed"] is False
-        assert payload["parameter_rescue_allowed"] is False
-        assert payload["threshold_lowering_allowed"] is False
-        assert payload["failed_candidates"] == list(FAILED_CANDIDATES)
-        assert payload["failed_candidate_verdict"] == "EXECUTION_FAILED_FAIL_CLOSED"
-        assert payload["fleet_status"] == "INCONCLUSIVE"
-        assert payload["fleet_verdict"] == "EXECUTION_FAILED_FAIL_CLOSED"
-        assert payload["inconclusive_count"] == 3
-        assert payload["pass_count"] == 0
-        assert payload["fail_count"] == 0
-        assert payload["panel_zero_trade_refuted"] is True
-        assert payload["source_prs"] == [4881]
-        assert payload["futures_only"] is True
-        assert payload["bitcoin_direction_allowed"] is False
-        assert payload["spot_allowed"] is False
-        assert payload["authority_effect"] == "NONE"
-        assert payload["runtime_effect"] == "NONE"
-        assert payload["trading_effect"] == "NONE"
-        assert payload["terminal_negative_evidence_for_unchanged_binding"] is True
-        assert payload["historical_negative_evidence_mutated"] is False
-        assert payload["next_required_go_token_for_execution"] == EXECUTION_GO
-        assert payload["next_required_go_token_for_execution_consumption"] == "NOT_CONSUMED"
-        assert (
-            payload["next_required_go_token_for_execution_status"]
-            == "REQUIRES_SEPARATE_OPERATOR_GO"
-        )
+        assert payload["classification_executed"] is True
+        assert payload["execution_go_token"] == EXECUTION_GO
+        assert payload["execution_go_token_consumed"] is True
         assert payload["scope_definition_go_token"] == SCOPE_DEFINITION_GO
         assert payload["scope_definition_go_token_consumed"] is True
-        assert payload["baseline_head"] == BASELINE_HEAD
-        assert payload["baseline_pr"] == "4881"
-        assert PARENT_EVIDENCE_SUFFIX in payload["source_evidence_ref"]
-        assert payload["parent_execution_manifest_verify_rc"] == 0
+        assert payload["go_token"] == EXECUTION_GO
+        assert payload["go_token_consumed"] is True
+        assert payload["next_required_go_token_for_execution_consumption"] == "CONSUMED"
+        assert payload["next_canonical_step"] == NEXT_CANONICAL_STEP
+        assert payload["current_admissible_next_scope"] == CURRENT_ADMISSIBLE_SCOPE
+        assert payload["current_admissible_next_scope_go_token"] == RATIFICATION_GO
+        assert payload["classification_execution_manifest_verify_rc"] == 0
+        assert NEW_EVIDENCE_SUFFIX in payload["classification_execution_evidence_ref"]
+        assert payload["failed_candidates"] == list(FAILED_CANDIDATES)
+        assert payload["panel_zero_trade_refuted"] is True
         for flag in AUTHORITY_TRUE_FLAGS:
             assert payload.get(flag) is not True, f"authority flag must not be true: {flag}"
 
-    def test_scope_config_classification_axes_and_forbidden_actions(self) -> None:
+    def test_scope_config_classification_axes_present(self) -> None:
         payload = json.loads(SCOPE_CONFIG.read_text(encoding="utf-8"))
         axes = payload["classification_axes"]
-        forbidden = payload["forbidden_actions"]
-        artifacts = payload["required_future_execution_artifacts"]
         for axis in CLASSIFICATION_AXES:
             assert axis in axes, f"missing classification axis: {axis}"
-        for action in FORBIDDEN_ACTIONS_MINIMUM:
-            assert action in forbidden, f"missing forbidden action: {action}"
-        for artifact in REQUIRED_FUTURE_ARTIFACTS:
-            assert artifact in artifacts, f"missing future artifact: {artifact}"
-        assert "THRESHOLD_LOWERING" in forbidden
-        assert "PARAMETER_RESCUE" in forbidden
-        assert "INCONCLUSIVE_REINTERPRETATION_AS_PASS" in forbidden
 
-    def test_governance_doc_has_docs_token_and_boundary_phrases(self) -> None:
+    def test_governance_doc_has_docs_token_and_execution_verdict(self) -> None:
         assert GOVERNANCE_DOC.is_file()
         body = GOVERNANCE_DOC.read_text(encoding="utf-8")
         assert (
@@ -204,27 +176,58 @@ class TestPostNoPassSparseSignalInconclusiveFailureClassificationV0Contract:
             )
             in body
         )
-        assert f"`VERDICT` | `{SCOPE_STATUS}`" in body
+        assert f"`VERDICT` | `{CURRENT_STATE}`" in body
         assert f"`EVIDENCE_CLASS_ID` | `{EVIDENCE_CLASS_ID}`" in body
-        assert f"`SELECTED_CLASS` | `{SELECTED_CLASS}`" in body
+        assert f"`EXECUTION_GO_TOKEN` | `{EXECUTION_GO}`" in body
+        assert "`EXECUTION_GO_TOKEN_CONSUMED` | `true`" in body
         assert f"`SCOPE_DEFINITION_GO_TOKEN` | `{SCOPE_DEFINITION_GO}`" in body
-        assert "`SCOPE_DEFINITION_GO_TOKEN_CONSUMED` | `true`" in body
-        assert f"`REQUIRED_NEXT_GO_FOR_EXECUTION` | `{EXECUTION_GO}`" in body
-        assert "`REQUIRED_NEXT_GO_FOR_EXECUTION_CONSUMPTION` | `NOT_CONSUMED`" in body
-        assert "`REQUIRED_NEXT_GO_FOR_EXECUTION_STATUS` | `REQUIRES_SEPARATE_OPERATOR_GO`" in body
-        assert "`ECONOMIC_EVALUATION_AUTHORIZED` | `false`" in body
-        assert "`SHADOW_AUTHORIZED` | `false`" in body
-        assert "`PAPER_AUTHORIZED` | `false`" in body
-        assert "`TESTNET_AUTHORIZED` | `false`" in body
-        assert "`ORDERS_ALLOWED` | `false`" in body
-        assert "`SCHEDULER_RUNTIME_ALLOWED` | `false`" in body
-        assert "`authority_effect` | `NONE`" in body
-        assert "PR #4881" in body
+        assert f"`PRIMARY_CLASSIFICATION` | `{PRIMARY_CLASSIFICATION}`" in body
+        assert "`economic_evaluation_executed` | `false`" in body
+        assert "`backtests_executed` | `false`" in body
+        assert "`MANIFEST_VERIFY_RC` | `0`" in body
         assert PARENT_EVIDENCE_SUFFIX in body
-        for candidate in FAILED_CANDIDATES:
-            assert f"`{candidate}" in body
+        assert NEW_EVIDENCE_SUFFIX in body
+        assert (
+            "scripts/research/post_no_pass_sparse_signal_inconclusive_failure_classification_execution_v0.py"
+            in body
+        )
         for phrase in BOUNDARY_PHRASES:
             assert phrase in body, f"missing boundary phrase: {phrase}"
+
+    def test_classification_result_shape_in_durable_evidence(self) -> None:
+        result_path = Path(
+            "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z"
+            f"/implementation/{NEW_EVIDENCE_SUFFIX}/CLASSIFICATION_EXECUTION_RESULT.json"
+        )
+        assert result_path.is_file()
+        payload = json.loads(result_path.read_text(encoding="utf-8"))
+        assert payload["evidence_class"] == EVIDENCE_CLASS_ID
+        assert payload["process_classification"] == PROCESS_CLASSIFICATION
+        assert payload["consumed_go_token"] == EXECUTION_GO
+        assert payload["primary_classification"] == PRIMARY_CLASSIFICATION
+        admissibility = payload["admissibility_summary"]
+        for key in RESULT_REQUIRED_KEYS:
+            if key in admissibility:
+                continue
+            assert key in payload, f"missing result key: {key}"
+        assert admissibility["economic_evaluation_executed"] is False
+        assert admissibility["backtests_executed"] is False
+        assert admissibility["walk_forward_executed"] is False
+        assert admissibility["monte_carlo_executed"] is False
+        assert admissibility["stress_executed"] is False
+        assert admissibility["runtime_rewire_admissible"] is False
+        assert payload["no_promotion_claim"] is True
+
+    def test_classification_execution_does_not_authorize_runtime_or_trading(self) -> None:
+        payload = json.loads(SCOPE_CONFIG.read_text(encoding="utf-8"))
+        assert payload["economic_evaluation_authorized"] is False
+        assert payload["runtime_rewire_admissible"] is False
+        assert payload["live_authorized"] is False
+        assert payload["shadow_authorized"] is False
+        assert payload["paper_authorized"] is False
+        assert payload["testnet_authorized"] is False
+        assert payload["orders_allowed"] is False
+        assert payload["scheduler_runtime_allowed"] is False
 
     def test_registry_metadata_fields(self) -> None:
         text = read_registry()
@@ -235,105 +238,76 @@ class TestPostNoPassSparseSignalInconclusiveFailureClassificationV0Contract:
         assert (
             authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE") == CURRENT_ADMISSIBLE_SCOPE
         )
-        assert authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN") == EXECUTION_GO
+        assert (
+            authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN") == RATIFICATION_GO
+        )
         assert (
             _field_value(
                 text,
                 "POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0_STATUS",
             )
-            == SCOPE_STATUS
+            == EXECUTION_STATUS
         )
         assert (
             _field_value(
                 text,
-                "POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0_CONFIG_REF",
-            )
-            == "config/research/post_no_pass_sparse_signal_inconclusive_failure_classification_v0.json"
-        )
-        assert (
-            _field_value(
-                text,
-                "POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0_GOVERNANCE_REF",
-            )
-            == "docs/governance/POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0.md"
-        )
-        assert (
-            _field_value(
-                text,
-                "POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0_EVIDENCE_CLASS_ID",
-            )
-            == EVIDENCE_CLASS_ID
-        )
-        assert (
-            _field_value(
-                text,
-                "POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0_SCOPE_DEFINITION_GO_TOKEN",
-            )
-            == SCOPE_DEFINITION_GO
-        )
-        assert (
-            _field_value(
-                text,
-                "POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0_SCOPE_DEFINITION_GO_TOKEN_CONSUMED",
-            )
-            == "true"
-        )
-        assert (
-            _field_value(
-                text,
-                "POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0_REQUIRED_NEXT_GO_FOR_EXECUTION",
+                "POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0_GO_TOKEN",
             )
             == EXECUTION_GO
         )
         assert (
             _field_value(
                 text,
-                "POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0_REQUIRED_NEXT_GO_FOR_EXECUTION_CONSUMPTION",
+                "POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0_GO_TOKEN_CONSUMED",
             )
-            == "NOT_CONSUMED"
+            == "true"
         )
         assert (
             _field_value(
                 text,
-                "POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0_REQUIRED_NEXT_GO_FOR_EXECUTION_STATUS",
+                "POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0_REQUIRED_NEXT_GO_FOR_EXECUTION_CONSUMPTION",
             )
-            == "REQUIRES_SEPARATE_OPERATOR_GO"
+            == "CONSUMED"
+        )
+        assert (
+            _field_value(
+                text,
+                "POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0_CLASSIFICATION_EXECUTED",
+            )
+            == "true"
+        )
+        assert NEW_EVIDENCE_SUFFIX in _field_value(
+            text,
+            "POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0_EVIDENCE_REF",
         )
         assert authoritative_field_value("ECONOMIC_EVALUATION_AUTHORIZED") == "false"
         assert authoritative_field_value("RUNTIME_REWIRE_ADMISSIBLE") == "false"
         assert authoritative_field_value("PROMOTION_ELIGIBLE") == "false"
+        for marker in FORBIDDEN_NEXT_SCOPE_MARKERS:
+            assert marker not in authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE")
 
     def test_registry_closeout_section(self) -> None:
         section = _closeout_section(read_registry())
-        assert _field_value(section, "STATUS") == SCOPE_STATUS
+        assert _field_value(section, "STATUS") == EXECUTION_STATUS
+        assert _field_value(section, "VERDICT") == CURRENT_STATE
         assert _field_value(section, "EVIDENCE_CLASS_ID") == EVIDENCE_CLASS_ID
-        assert _field_value(section, "SELECTED_CLASS") == SELECTED_CLASS
-        assert _field_value(section, "PROCESS_CLASSIFICATION") == PROCESS_CLASSIFICATION
-        assert _field_value(section, "SCOPE_CLASSIFICATION") == SCOPE_CLASSIFICATION
+        assert _field_value(section, "GO_TOKEN") == EXECUTION_GO
+        assert _field_value(section, "GO_TOKEN_CONSUMED") == "true"
         assert _field_value(section, "SCOPE_DEFINITION_GO_TOKEN") == SCOPE_DEFINITION_GO
         assert _field_value(section, "SCOPE_DEFINITION_GO_TOKEN_CONSUMED") == "true"
-        assert _field_value(section, "CLASSIFICATION_EXECUTION_AUTHORIZED") == "false"
-        assert _field_value(section, "ECONOMIC_EVALUATION_AUTHORIZED") == "false"
-        assert _field_value(section, "SHADOW_AUTHORIZED") == "false"
-        assert _field_value(section, "PAPER_AUTHORIZED") == "false"
-        assert _field_value(section, "TESTNET_AUTHORIZED") == "false"
-        assert _field_value(section, "ORDERS_ALLOWED") == "false"
-        assert _field_value(section, "SCHEDULER_RUNTIME_ALLOWED") == "false"
-        assert _field_value(section, "SAME_BINDING_RETRY_ALLOWED") == "false"
-        assert _field_value(section, "PARAMETER_RESCUE_ALLOWED") == "false"
-        assert _field_value(section, "THRESHOLD_LOWERING_ALLOWED") == "false"
-        assert _field_value(section, "REQUIRED_NEXT_GO_FOR_EXECUTION") == EXECUTION_GO
-        assert _field_value(section, "REQUIRED_NEXT_GO_FOR_EXECUTION_CONSUMPTION") == "NOT_CONSUMED"
-        assert (
-            _field_value(section, "REQUIRED_NEXT_GO_FOR_EXECUTION_STATUS")
-            == "REQUIRES_SEPARATE_OPERATOR_GO"
-        )
+        assert _field_value(section, "CLASSIFICATION_EXECUTED") == "true"
+        assert _field_value(section, "economic_evaluation_executed") == "false"
+        assert _field_value(section, "backtests_executed") == "false"
+        assert _field_value(section, "RUNTIME_REWIRE_ADMISSIBLE") == "false"
         assert _field_value(section, "NEXT_CANONICAL_STEP") == NEXT_CANONICAL_STEP
         assert _field_value(section, "CURRENT_ADMISSIBLE_NEXT_SCOPE") == CURRENT_ADMISSIBLE_SCOPE
-        assert _field_value(section, "CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN") == EXECUTION_GO
-        assert _field_value(section, "FUTURES_ONLY") == "true"
-        assert _field_value(section, "BITCOIN_DIRECTION_ALLOWED") == "false"
-        assert _field_value(section, "AUTHORITY_EFFECT") == "NONE"
-        assert _field_value(section, "RUNTIME_EFFECT") == "NONE"
-        assert _field_value(section, "TRADING_EFFECT") == "NONE"
-        assert PARENT_EVIDENCE_SUFFIX in _field_value(section, "PARENT_EXECUTION_EVIDENCE_REF")
+        assert _field_value(section, "CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN") == RATIFICATION_GO
+        assert NEW_EVIDENCE_SUFFIX in _field_value(section, "NEW_EVIDENCE_DIR")
+
+    def test_scope_definition_go_not_reconsumed_as_execution_go(self) -> None:
+        payload = json.loads(SCOPE_CONFIG.read_text(encoding="utf-8"))
+        assert payload["scope_definition_go_token"] == SCOPE_DEFINITION_GO
+        assert payload["execution_go_token"] == EXECUTION_GO
+        assert payload["scope_definition_go_token"] != payload["execution_go_token"]
+        assert payload["scope_definition_go_token_consumed"] is True
+        assert payload["execution_go_token_consumed"] is True
