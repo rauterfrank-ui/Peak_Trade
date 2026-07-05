@@ -53,7 +53,7 @@ EXECUTION_ID = "bounded_post_no_pass_futures_offline_economic_evaluation_executi
 EXECUTION_VERSION = "v0"
 CANONICAL_SERIALIZATION_VERSION = "research_post_no_pass_futures_execution_canonical_json_v1"
 
-GO_TOKEN = "GO_BOUNDED_POST_NO_PASS_FUTURES_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0"
+CONFIRM_GO = "GO_BOUNDED_POST_NO_PASS_FUTURES_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0"
 SCOPE_CLASSIFICATION = "BOUNDED_POST_NO_PASS_FUTURES_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0"
 EXPECTED_ORIGIN_MAIN_SHA = "17d70364e27ec12d9f648a043ae08eed4eb87cb5"
 
@@ -208,7 +208,7 @@ def verify_preconditions_v0(
     require_clean_worktree: bool = True,
 ) -> tuple[bool, tuple[str, ...]]:
     reasons: list[str] = []
-    if confirm != GO_TOKEN:
+    if confirm != CONFIRM_GO:
         reasons.append(REASON_GO_TOKEN_INVALID)
     resolved = origin_main_sha or _resolve_origin_main_sha(repo_root)
     if resolved != EXPECTED_ORIGIN_MAIN_SHA:
@@ -222,7 +222,7 @@ def verify_scope_definition_v0(scope_definition: Mapping[str, Any]) -> tuple[boo
     reasons: list[str] = []
     if scope_definition.get("status") != "SCOPE_DEFINED_NOT_EXECUTED":
         reasons.append(REASON_SCOPE_DEFINITION_STATUS_INVALID)
-    if str(scope_definition.get("required_next_go_for_execution", "")) != GO_TOKEN:
+    if str(scope_definition.get("required_next_go_for_execution", "")) != CONFIRM_GO:
         reasons.append(REASON_SCOPE_DEFINITION_NEXT_GO_MISMATCH)
     if (
         str(scope_definition.get("scope_id", ""))
@@ -248,8 +248,8 @@ def verify_execution_scope_v0(
         reasons.append(REASON_COMPLETION_DIGEST_MISMATCH)
     if str(scope.get("evidence_class_id", "")) != EVIDENCE_CLASS_ID:
         reasons.append(REASON_EVIDENCE_CLASS_MISMATCH)
-    if str(scope.get("execution_go_token", "")) != GO_TOKEN:
-        reasons.append("EXECUTION_GO_TOKEN_MISMATCH")
+    if str(scope.get("execution_go_token", "")) != CONFIRM_GO:
+        reasons.append("EXECUTION_CONFIRM_GO_MISMATCH")
     if scope.get("retry_unchanged_binding_allowed") is not False:
         reasons.append("RETRY_UNCHANGED_BINDING_MUST_BE_FALSE")
     if (
@@ -282,7 +282,7 @@ def verify_execution_start_state_v0(
     origin_main = _resolve_origin_main_sha(repo_root)
     pre_ok, pre_reasons = verify_preconditions_v0(
         repo_root=repo_root,
-        confirm=GO_TOKEN,
+        confirm=CONFIRM_GO,
         origin_main_sha=origin_main,
         require_clean_worktree=require_clean_worktree,
     )
@@ -498,7 +498,7 @@ def run_bounded_scope_v0(
                 "binding_completion_digest": CLASS_D_BINDING_COMPLETION_DIGEST,
                 "evidence_class_id": EVIDENCE_CLASS_ID,
                 "origin_main_sha": start_state.origin_main_sha,
-                "go_token_consumed": GO_TOKEN,
+                "go_token_consumed": CONFIRM_GO,
             },
             indent=2,
             sort_keys=True,
@@ -559,7 +559,7 @@ def run_bounded_scope_v0(
         origin_main_sha=start_state.origin_main_sha,
     )
     fleet_summary["scope_classification"] = SCOPE_CLASSIFICATION
-    fleet_summary["go_token_consumed"] = GO_TOKEN
+    fleet_summary["go_token_consumed"] = CONFIRM_GO
     fleet_summary["evidence_class_id"] = EVIDENCE_CLASS_ID
     fleet_summary["execution_scope_digest"] = execution_scope.get("scope_digest")
     fleet_summary["fleet_verdict"] = fleet_verdict.value
@@ -640,7 +640,7 @@ def run_bounded_scope_v0(
 
 
 __all__ = [
-    "GO_TOKEN",
+    "CONFIRM_GO",
     "SCOPE_CLASSIFICATION",
     "EXPECTED_ORIGIN_MAIN_SHA",
     "CLASS_D_BINDING_COMPLETION_DIGEST",

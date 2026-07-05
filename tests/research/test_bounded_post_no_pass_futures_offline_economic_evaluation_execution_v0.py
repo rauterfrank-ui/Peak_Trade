@@ -14,7 +14,7 @@ from src.research.bounded_post_no_pass_futures_offline_economic_evaluation_execu
     EXECUTION_SCOPE_DIGEST,
     EXECUTION_SEMANTIC_DIGEST,
     EXPECTED_ORIGIN_MAIN_SHA,
-    GO_TOKEN,
+    CONFIRM_GO,
     ORDER_EFFECT,
     RUNTIME_EFFECT,
     SCOPE_CLASSIFICATION,
@@ -61,7 +61,7 @@ def fixture_binding_completion() -> dict:
 
 
 def test_go_token_and_scope_classification() -> None:
-    assert GO_TOKEN == "GO_BOUNDED_POST_NO_PASS_FUTURES_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0"
+    assert CONFIRM_GO == "GO_BOUNDED_POST_NO_PASS_FUTURES_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0"
     assert (
         SCOPE_CLASSIFICATION
         == "BOUNDED_POST_NO_PASS_FUTURES_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0"
@@ -83,7 +83,7 @@ def test_execution_scope_digests(execution_scope_config: dict) -> None:
     assert execution_scope_config["semantic_digest"] == EXECUTION_SEMANTIC_DIGEST
     assert execution_scope_config["binding_completion_digest"] == CLASS_D_BINDING_COMPLETION_DIGEST
     assert execution_scope_config["evidence_class_id"] == EVIDENCE_CLASS_ID
-    assert execution_scope_config["execution_go_token"] == GO_TOKEN
+    assert execution_scope_config["execution_go_token"] == CONFIRM_GO
     assert (
         execution_scope_config["previous_completion_digest"]
         == HISTORICAL_STEP31F_BINDING_COMPLETION_DIGEST
@@ -117,7 +117,7 @@ def test_verify_scope_definition_rejects_after_execution(scope_definition_config
     assert ok is False
     assert any("SCOPE_DEFINITION_STATUS_INVALID" in reason for reason in reasons)
     assert scope_definition_config["status"] == "SCOPE_EXECUTED_COMPLETE_ROBUSTNESS_FAILED"
-    assert scope_definition_config["required_next_go_for_execution"] == GO_TOKEN
+    assert scope_definition_config["required_next_go_for_execution"] == CONFIRM_GO
 
 
 def test_verify_execution_start_state_rejects_after_execution() -> None:

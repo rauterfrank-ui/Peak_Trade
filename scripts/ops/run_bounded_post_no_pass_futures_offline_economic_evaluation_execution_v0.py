@@ -26,7 +26,7 @@ from src.research.bounded_post_no_pass_futures_offline_economic_evaluation_execu
     DEFAULT_DURABLE_ARCHIVE_ROOT,
     EVIDENCE_CLASS_ID,
     EXPECTED_ORIGIN_MAIN_SHA,
-    GO_TOKEN,
+    CONFIRM_GO,
     ORDER_EFFECT,
     RUNTIME_EFFECT,
     SCOPE_CLASSIFICATION,
@@ -52,7 +52,7 @@ def main() -> None:
             "for Class-D final research fleet bindings."
         )
     )
-    parser.add_argument("--confirm-go-token", required=True, choices=[GO_TOKEN])
+    parser.add_argument("--confirm-go-token", required=True, choices=[CONFIRM_GO])
     parser.add_argument("--durable-evidence-root", type=Path, default=DEFAULT_DURABLE_ROOT)
     parser.add_argument(
         "--allow-dirty-worktree",
@@ -74,7 +74,7 @@ def main() -> None:
     payload = {
         "verdict": "BOUNDED_POST_NO_PASS_FUTURES_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_COMPLETE",
         "scope_classification": SCOPE_CLASSIFICATION,
-        "go_token_consumed": GO_TOKEN,
+        "go_token_consumed": CONFIRM_GO,
         "expected_origin_main_sha": EXPECTED_ORIGIN_MAIN_SHA,
         "binding_completion_digest": CLASS_D_BINDING_COMPLETION_DIGEST,
         "evidence_class_id": EVIDENCE_CLASS_ID,
