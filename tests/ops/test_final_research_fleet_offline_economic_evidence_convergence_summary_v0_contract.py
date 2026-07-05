@@ -21,7 +21,7 @@ CLOSEOUT_SECTION_PREFIX = (
     "#### FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_EVIDENCE_CONVERGENCE_SUMMARY_V0"
 )
 FLEET_STATUS = "FINAL_RESEARCH_FLEET_ECONOMIC_EVIDENCE_COMPLETE_NO_PASS"
-GO_TOKEN = "GO_FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_EVIDENCE_CONVERGENCE_SUMMARY_V0"
+OPERATOR_GO = "GO_FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_EVIDENCE_CONVERGENCE_SUMMARY_V0"
 EXPECTED_CANDIDATES = (
     ("trend_following", "v1"),
     ("bollinger_bands", "v1"),
@@ -66,7 +66,7 @@ class TestFinalResearchFleetOfflineEconomicEvidenceConvergenceSummaryV0Contract:
         assert payload["authority_effect"] == "NONE"
         assert payload["new_candidates_ratified"] is False
         assert payload["unchanged_retry_allowed"] is False
-        assert payload["go_token"] == GO_TOKEN
+        assert payload["go_token"] == OPERATOR_GO
         for flag in (
             "no_runtime",
             "no_orders",
@@ -108,7 +108,7 @@ class TestFinalResearchFleetOfflineEconomicEvidenceConvergenceSummaryV0Contract:
             in body
         )
         assert f"`FLEET_STATUS` | `{FLEET_STATUS}`" in body
-        assert f"`GO_TOKEN` | `{GO_TOKEN}`" in body
+        assert f"`GO_TOKEN` | `{OPERATOR_GO}`" in body
         assert "`ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false`" in body
         assert "`UNCHANGED_RETRY_ALLOWED` | `false`" in body
         assert "`NEW_CANDIDATES_RATIFIED` | `false`" in body
@@ -146,7 +146,7 @@ class TestFinalResearchFleetOfflineEconomicEvidenceConvergenceSummaryV0Contract:
             _field_value(section, "STATUS")
             == "FINAL_RESEARCH_FLEET_ECONOMIC_EVIDENCE_COMPLETE_NO_PASS"
         )
-        assert _field_value(section, "GO_TOKEN") == GO_TOKEN
+        assert _field_value(section, "GO_TOKEN") == OPERATOR_GO
         assert _field_value(section, "AUTHORITY_EFFECT") == "NONE"
         assert _field_value(section, "MANIFEST_VERIFY_RC") == "0"
         assert _field_value(section, "NO_OUTPUT_JSONL_MATERIALIZED_IN_REPO") == "true"
