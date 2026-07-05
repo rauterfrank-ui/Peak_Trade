@@ -35,12 +35,13 @@ CLOSEOUT_SECTION_PREFIX = (
 )
 EVIDENCE_CLASS_ID = "POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_VERSIONED_BINDING_RATIFICATION_V0"
 SCOPE_STATUS = "BINDING_RATIFICATION_COMPLETE_NOT_EXECUTED"
+BINDING_RATIFICATION_STATUS = "BINDING_RATIFICATION_COMPLETE_NOT_EXECUTED"
 PROCESS_CLASSIFICATION = "VERSIONED_BINDING_RATIFICATION_ONLY_V0"
-CURRENT_STATE = "POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_VERSIONED_BINDING_RATIFICATION_COMPLETE_V0"
-NEXT_CANONICAL_STEP = "REQUEST_OPERATOR_GO_FOR_POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0"
-CURRENT_ADMISSIBLE_SCOPE = (
-    "POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0"
+CURRENT_STATE = (
+    "POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_COMPLETE_V0"
 )
+NEXT_CANONICAL_STEP = "NEW_RATIFIED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_REQUIRED"
+CURRENT_ADMISSIBLE_SCOPE = "NONE"
 BASELINE_HEAD = "a113c6bb667fc38da160637e47f018a5411365a3"
 EVIDENCE_SUFFIX = (
     "post_no_pass_sparse_signal_zero_trade_versioned_binding_ratification_v0_20260705T210521Z"
@@ -196,7 +197,7 @@ class TestPostNoPassSparseSignalZeroTradeVersionedBindingRatificationV0Contract:
             )
             in body
         )
-        assert f"`VERDICT` | `{SCOPE_STATUS}`" in body
+        assert f"`VERDICT` | `{BINDING_RATIFICATION_STATUS}`" in body
         assert f"`EVIDENCE_CLASS_ID` | `{EVIDENCE_CLASS_ID}`" in body
         assert f"`OPERATOR_GO` | `{CONFIRM_GO}`" in body
         assert "`GO_TOKEN_CONSUMED` | `true`" in body
@@ -214,9 +215,7 @@ class TestPostNoPassSparseSignalZeroTradeVersionedBindingRatificationV0Contract:
         assert (
             authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE") == CURRENT_ADMISSIBLE_SCOPE
         )
-        assert (
-            authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN") == NEXT_EXECUTION_GO
-        )
+        assert authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN") == "NONE"
         assert (
             _field_value(
                 text,
@@ -254,8 +253,8 @@ class TestPostNoPassSparseSignalZeroTradeVersionedBindingRatificationV0Contract:
 
     def test_registry_closeout_section(self) -> None:
         section = _closeout_section(read_registry())
-        assert _field_value(section, "STATUS") == SCOPE_STATUS
-        assert _field_value(section, "VERDICT") == SCOPE_STATUS
+        assert _field_value(section, "STATUS") == BINDING_RATIFICATION_STATUS
+        assert _field_value(section, "VERDICT") == BINDING_RATIFICATION_STATUS
         assert _field_value(section, "PROCESS_CLASSIFICATION") == PROCESS_CLASSIFICATION
         assert _field_value(section, "EVIDENCE_CLASS_ID") == EVIDENCE_CLASS_ID
         assert _field_value(section, "GO_TOKEN") == CONFIRM_GO
@@ -265,8 +264,12 @@ class TestPostNoPassSparseSignalZeroTradeVersionedBindingRatificationV0Contract:
         assert _field_value(section, "PARAMETER_RESCUE_ALLOWED") == "false"
         assert _field_value(section, "THRESHOLD_LOWERING_ALLOWED") == "false"
         assert _field_value(section, "REQUIRED_NEXT_GO_FOR_EXECUTION") == NEXT_EXECUTION_GO
-        assert _field_value(section, "NEXT_CANONICAL_STEP") == NEXT_CANONICAL_STEP
-        assert _field_value(section, "CURRENT_ADMISSIBLE_NEXT_SCOPE") == CURRENT_ADMISSIBLE_SCOPE
+        assert _field_value(section, "NEXT_CANONICAL_STEP") == (
+            "REQUEST_OPERATOR_GO_FOR_POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0"
+        )
+        assert _field_value(section, "CURRENT_ADMISSIBLE_NEXT_SCOPE") == (
+            "POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0"
+        )
         assert _field_value(section, "CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN") == NEXT_EXECUTION_GO
         assert _field_value(section, "AUTHORITY_EFFECT") == "NONE"
         assert _field_value(section, "RUNTIME_EFFECT") == "NONE"
