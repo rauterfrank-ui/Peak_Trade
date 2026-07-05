@@ -1,0 +1,191 @@
+{
+  "allowed_future_execution_commands": [
+    {
+      "command_id": "OKX_FULL_PANEL_CSR_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0",
+      "execution_authorized_in_this_scope": false,
+      "execution_status": "NOT_EXECUTED",
+      "note": "Future bounded offline evaluation runner; not materialized in this scope",
+      "requires_go_token": "TBD_SEPARATE_OPERATOR_GO_AT_EVALUATION_EXECUTION",
+      "runner_ref": "scripts/ops/run_okx_full_panel_cross_sectional_ranking_strategy_archetype_offline_economic_evaluation_execution_v0.py",
+      "runner_status": "PLANNED_NOT_MATERIALIZED"
+    },
+    {
+      "command_id": "OKX_FULL_PANEL_CSR_EVALUATION_INFRASTRUCTURE_DRY_RUN_V0",
+      "execution_authorized_in_this_scope": false,
+      "execution_status": "NOT_EXECUTED",
+      "note": "Future infrastructure dry-run only; not materialized in this scope",
+      "requires_go_token": "TBD_SEPARATE_OPERATOR_GO_AT_EVALUATION_EXECUTION",
+      "runner_ref": "scripts/ops/materialize_okx_full_panel_cross_sectional_ranking_strategy_archetype_offline_economic_evaluation_execution_infrastructure_v0.py",
+      "runner_status": "PLANNED_NOT_MATERIALIZED"
+    }
+  ],
+  "artifact_kind": "okx_full_panel_cross_sectional_ranking_strategy_archetype_evaluation_execution_scope",
+  "artifact_version": "v0",
+  "authority_effect": "NONE",
+  "binding_config_digest": "54be6ad697dfcf25d0e913152f23565a17f1a3c42cdd79fe32b94ee28b07bd3d",
+  "binding_config_ref": "config/research/okx_full_panel_cross_sectional_ranking_strategy_archetype_bindings_v0.json",
+  "bitcoin_direction_allowed": false,
+  "candidate_ratified": false,
+  "canonical_serialization_version": "okx_full_panel_cross_sectional_ranking_strategy_archetype_evaluation_execution_scope_canonical_json_v0",
+  "config_digests": {
+    "okx_full_panel_cross_sectional_ranking_strategy_archetype_bindings_v0.json": "54be6ad697dfcf25d0e913152f23565a17f1a3c42cdd79fe32b94ee28b07bd3d",
+    "okx_full_panel_cross_sectional_ranking_strategy_archetype_evidence_class_scope_v0.json": "00e0b654ee1e766cf86cf330685194664205a24cfabf92bc17162f8fa01484cc",
+    "cross_sectional_relative_strength_non_bitcoin_perpetuals_v0_ranking_semantics_binding_v0.json": "86dd9539faa43289ef2d6aa42360002c9f8f9d76d1eff78c76ce73094e56d981",
+    "okx_full_panel_dataset_promotion_registry_v0.json": "a7620fe1c0fb4ad6c0973a01e2dfaebe34c71d202469338586fb601efc93cc35"
+  },
+  "config_refs": {
+    "okx_full_panel_cross_sectional_ranking_strategy_archetype_bindings_v0.json": "config/research/okx_full_panel_cross_sectional_ranking_strategy_archetype_bindings_v0.json",
+    "okx_full_panel_cross_sectional_ranking_strategy_archetype_evidence_class_scope_v0.json": "config/research/okx_full_panel_cross_sectional_ranking_strategy_archetype_evidence_class_scope_v0.json",
+    "cross_sectional_relative_strength_non_bitcoin_perpetuals_v0_ranking_semantics_binding_v0.json": "config/research/cross_sectional_relative_strength_non_bitcoin_perpetuals_v0_ranking_semantics_binding_v0.json",
+    "okx_full_panel_dataset_promotion_registry_v0.json": "config/research/okx_full_panel_dataset_promotion_registry_v0.json"
+  },
+  "data_digest_policy": {
+    "final_materialization_required_before_execution": true,
+    "materialization_rule": "OKX_FULL_PANEL_PROMOTED_DATASET_CONTENT_DIGEST_v0",
+    "policy_version": "OKX_FULL_PANEL_DATASET_CONTENT_DIGEST_v0",
+    "status": "BOUND"
+  },
+  "data_digests": {
+    "dataset_content_digest": "0bfa4df4221a2ec27625c50e3675302ffa51e4b54cddcf81ca5ad13cc15cf8b7",
+    "dataset_promotion_registry_digest": "a7620fe1c0fb4ad6c0973a01e2dfaebe34c71d202469338586fb601efc93cc35"
+  },
+  "data_refs": {
+    "dataset_id": "okx_full_panel_historical_funding_archive_v0",
+    "dataset_version": "v0",
+    "promoted_dataset_ref": "datasets/admissible_futures/okx_full_panel_historical_funding_archive_v0/v0",
+    "promotion_binding_ref": "datasets/admissible_futures/okx_full_panel_historical_funding_archive_v0/v0/promotion_binding.json",
+    "registry_entry_ref": "datasets/admissible_futures/okx_full_panel_historical_funding_archive_v0/v0/registry_entry.json"
+  },
+  "dataset_binding_ref": "binding_config.dataset_binding",
+  "digest_semantics": {
+    "binding_config_digest": "BINDING_CONFIG_FILE_SHA256_v0",
+    "config_digest": "CONFIG_FILE_SHA256_v0",
+    "data_digest": "OKX_FULL_PANEL_DATASET_CONTENT_DIGEST_v0",
+    "implementation_digest": "IMPLEMENTATION_REFS_STABLE_JSON_v0",
+    "scope_ratification_digest": "SCOPE_BODY_CANONICAL_JSON_EXCLUDING_RATIFICATION_DIGEST_v0"
+  },
+  "economic_evaluation_authorized": false,
+  "economic_evaluation_executed": false,
+  "economic_policy_binding_ref": "binding_config.economic_policy_binding",
+  "evaluation_authorization_status": "SCOPE_RATIFIED_AWAITING_SEPARATE_OPERATOR_GO_FOR_EXECUTION",
+  "evaluation_execution_authorized": false,
+  "evaluation_execution_executed": false,
+  "evaluation_execution_scope_ratified": true,
+  "evaluation_execution_scope_status": "EVALUATION_EXECUTION_SCOPE_RATIFICATION_COMPLETE",
+  "evidence_class_id": "OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_V0",
+  "execution_model_binding_ref": "binding_config.execution_model_binding",
+  "expected_output_bundle_contract": {
+    "bundle_prefix": "okx_full_panel_cross_sectional_ranking_strategy_archetype_offline_economic_evaluation_v0",
+    "durable_archive_root_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z",
+    "manifest_policy_ref": "primary_evidence_retention_v0",
+    "manifest_verify_rc_required": 0,
+    "required_artifacts": [
+      "evaluation_summary.json",
+      "binding_verification.json",
+      "economic_validity_evidence.json",
+      "MANIFEST.sha256",
+      "MANIFEST_VERIFY.log"
+    ],
+    "subdirectory": "economic_evaluation"
+  },
+  "fail_closed_conditions": [
+    "BINDING_CONFIG_DIGEST_MISMATCH",
+    "CONFIG_DIGEST_MISMATCH",
+    "DATA_DIGEST_MISMATCH",
+    "IMPLEMENTATION_DIGEST_MISMATCH",
+    "UNIVERSE_BINDING_MISMATCH",
+    "INSTRUMENT_PANEL_BINDING_MISMATCH",
+    "DATASET_BINDING_MISMATCH",
+    "PERIOD_BINDING_MISMATCH",
+    "RANKING_POLICY_BINDING_MISMATCH",
+    "SELECTION_POLICY_BINDING_MISMATCH",
+    "NARROW_ADAPTER_SUBSTITUTION",
+    "SEVEN_DAY_HOLDOUT_NARROWING",
+    "FAILED_LEGACY_BINDING_RETRY",
+    "EVALUATION_EXECUTION_WITHOUT_OPERATOR_GO",
+    "EVALUATION_EXECUTION_IN_THIS_SCOPE",
+    "POLICY_THRESHOLD_LOWERING",
+    "PARAMETER_OPTIMIZATION"
+  ],
+  "fee_model_binding_ref": "binding_config.fee_model_binding",
+  "forbidden_execution_commands": [
+    "BACKTEST_EXECUTION_IN_THIS_SCOPE",
+    "WALK_FORWARD_EXECUTION_IN_THIS_SCOPE",
+    "MONTE_CARLO_EXECUTION_IN_THIS_SCOPE",
+    "STRESS_EXECUTION_IN_THIS_SCOPE",
+    "PARAMETER_SENSITIVITY_EXECUTION_IN_THIS_SCOPE",
+    "ECONOMIC_EVALUATION_EXECUTION_IN_THIS_SCOPE",
+    "RUNTIME_REWIRE",
+    "RUNTIME",
+    "SHADOW",
+    "PAPER",
+    "TESTNET",
+    "ORDERS",
+    "SCHEDULER",
+    "CREDENTIALS",
+    "LIVE",
+    "CANDIDATE_RATIFICATION",
+    "PROMOTION"
+  ],
+  "further_economic_evaluation_requires_separate_operator_go": true,
+  "futures_only": true,
+  "funding_model_binding_ref": "binding_config.funding_model_binding",
+  "go_token": "GO_OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_DIGEST_AND_EVALUATION_EXECUTION_SCOPE_RATIFICATION_V0",
+  "go_token_consumed": false,
+  "implementation_digests": {
+    "composite_implementation_digest": "630399ddb14667010be01502f3a5a64199a62c8c9813d5442ffb398f086eef8d",
+    "module_file_digests": {
+      "cross_sectional_single_slot_backtest_wiring_v0.py": "7992aed935e37a4aef3ffb30daa3658cc6a81161b1b44ee9cfc10b8a58d616c9",
+      "okx_full_panel_dataset_promotion_decision_and_binding_v0.py": "f614352b929a07d9f78875f8c7edf19ccbd32b31f1bf503129fbae2bd04fefef",
+      "economic_validity_policy_v1.py": "12d65c8dbaade339e97f3fc2bbbdcf8607a8a926b8a72d4129f76254e2df4562",
+      "cross_sectional_single_slot_research_orchestrator_v0.py": "571b85d2f8f81854372dab316c1c0031a5768229d4ab788b9206fc5ee5fbe428",
+      "cross_sectional_panel_economic_evaluation_wiring_v0.py": "4e1ab644ec3c2be908ad5e656b064f1e70bd8873cf89c3a6c26330df666016bd",
+      "cross_sectional_ranking_semantics_binding_v0.py": "4436b174c9b5d296ccec1ee9c506f3f8a1119883d79a134191ad5210fbd47f2e"
+    }
+  },
+  "implementation_refs": {
+    "backtest_wiring_module": "src/research/cross_sectional_single_slot_backtest_wiring_v0.py",
+    "dataset_promotion_module": "src/research/okx_full_panel_dataset_promotion_decision_and_binding_v0.py",
+    "economic_policy_module": "src/backtest/economic_validity_policy_v1.py",
+    "future_execution_module": "TBD_okx_full_panel_cross_sectional_ranking_strategy_archetype_offline_economic_evaluation_execution_v0",
+    "orchestrator_module": "src/research/cross_sectional_single_slot_research_orchestrator_v0.py",
+    "panel_robustness_module": "src/research/cross_sectional_panel_economic_evaluation_wiring_v0.py",
+    "ranking_semantics_module": "src/research/cross_sectional_ranking_semantics_binding_v0.py",
+    "schema_version": "okx_full_panel_cross_sectional_ranking_strategy_archetype_evaluation_execution.v0"
+  },
+  "instrument_panel_binding_ref": "binding_config.instrument_panel_binding",
+  "live_authorized": false,
+  "manifest_policy": {
+    "manifest_filename": "MANIFEST.sha256",
+    "manifest_verify_log_filename": "MANIFEST_VERIFY.log",
+    "manifest_verify_rc_required": 0,
+    "owner_module": "scripts/ops/primary_evidence_retention_v0.py",
+    "policy_version": "primary_evidence_retention_v0"
+  },
+  "non_authorizing": true,
+  "offline_only": true,
+  "order_effect": "NONE",
+  "orders_allowed": false,
+  "period_binding_ref": "binding_config.period_binding",
+  "promotion_authorized": false,
+  "ranking_policy_binding_ref": "binding_config.ranking_policy_binding",
+  "requires_separate_operator_go_for_evaluation_execution": true,
+  "runtime_authority": false,
+  "runtime_effect": "NONE",
+  "runtime_rewire_admissible": false,
+  "schema_version": "okx_full_panel_cross_sectional_ranking_strategy_archetype_evaluation_execution_scope.v0",
+  "scope_classification": "OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_DIGEST_AND_EVALUATION_EXECUTION_SCOPE_RATIFICATION_V0",
+  "scope_config_ref": "config/research/okx_full_panel_cross_sectional_ranking_strategy_archetype_evidence_class_scope_v0.json",
+  "scope_id": "OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_EVALUATION_EXECUTION_SCOPE_V0",
+  "scope_version": "v0",
+  "selection_policy_binding_ref": "binding_config.selection_policy_binding",
+  "shadow_authorized": false,
+  "slippage_model_binding_ref": "binding_config.slippage_model_binding",
+  "spot_allowed": false,
+  "strategy_archetype_id": "cross_sectional_ranking_selection",
+  "strategy_archetype_version": "v0",
+  "synthetic_spot_allowed": false,
+  "testnet_authorized": false,
+  "universe_binding_ref": "binding_config.universe_binding",
+  "scope_ratification_digest": "c899a936bec41e0225d1f34862879377309f34964039695f1c1f20d97c7c9ce2"
+}
