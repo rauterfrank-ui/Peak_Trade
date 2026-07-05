@@ -1,6 +1,9 @@
 # Peak Trade – Fehlende / geplante Features (Übersicht)
 
-**Stand:** 2026-02-03  
+> **Kanonischer Feature Catalog** — einzige gepflegte Quelle für fehlende/geplante Features.  
+> **Feature-State-Map:** [feature_state_map_v1.md](../governance/feature_state_map_v1.md) · **Drift-Report:** [feature_drift_reconciliation_report_v1.md](../audit/feature_drift_reconciliation_report_v1.md)
+
+**Stand:** 2026-07-05 (Drift Safe Docs A-08)  
 **Zweck:** Vollständige Liste der Features, die in der Architektur/Vision genannt sind oder in Roadmaps/TODOs/Limitations dokumentiert wurden, aber **noch nicht implementiert** sind oder bewusst aus v1.0 ausgenommen wurden.
 
 ---
@@ -24,15 +27,17 @@ Datenquellen → Research & Feature-Engine → Strategie / Signale → Risk Laye
 
 | Feature (Vision) | Status | Anmerkung |
 |------------------|--------|-----------|
-| **Feature-Engine als zentrale Schicht** | ❌ Fehlt | ``src&#47;features&#47;`` ist nur Placeholder („wird später mit ECM-Features gefüllt“). Kein dediziertes Modul „Research & Feature-Engine“. | <!-- pt:ref-target-ignore -->
+| **Feature-Engine als zentrale Schicht** | ❌ Deferred (Placeholder) | ``src&#47;features&#47;`` ist nur Placeholder — **keine** operative Feature-Pipeline. ECM-Math liegt in der Strategy-Schicht (``src&#47;strategies&#47;ecm.py``, ``src&#47;strategies&#47;armstrong/``). Siehe [feature_state_map_v1.md](../governance/feature_state_map_v1.md) Class C. | <!-- pt:ref-target-ignore -->
 | **Indikatoren (TA)** | ✅ Teilweise | In Strategien/Regime verteilt (MA, RSI, ATR, Vol-Score etc.), nicht als einheitliche Feature-Pipeline. |
 | **Regime-Labels** | ✅ Vorhanden | ``src&#47;regime&#47;``, ``src&#47;core&#47;regime.py``, ``src&#47;analytics&#47;regimes.py``. |
 | **Volatilitäts-Cluster** | ✅ Teilweise | Vol-Regime/Labels vorhanden; „Cluster“-Pipeline nicht als eigenes Feature-Modul. |
-| **ECM-Fenster / ECM-Features** | ⚠️ Differenziert | **Armstrong ECM** (``src&#47;strategies&#47;ecm.py``, ``src&#47;strategies&#47;armstrong&#47;``) ist implementiert. **Feature-Engine ECM-Fenster** (``src&#47;features&#47;``) ist Placeholder, nicht implementiert. | <!-- pt:ref-target-ignore -->
+| **ECM-Fenster / ECM-Features** | ✅ Implementiert (strategy layer) | **Armstrong ECM** in ``src&#47;strategies&#47;ecm.py`` und ``src&#47;strategies&#47;armstrong/``. Zentrale Feature-Engine-Schicht (``src&#47;features&#47;``) bleibt Placeholder. | <!-- pt:ref-target-ignore -->
 | **Sentiment (News/Makro/Krypto-Onchain)** | ❌ Fehlt | In trading_bot_notes als „optional, später“ genannt. |
 | **Orderbuch-/Tickdaten** | ❌ Fehlt | In trading_bot_notes als „später“ genannt. |
 
-**ECM-Differenzierung (Code vs. Docs):** Armstrong ECM ist als Strategie implementiert; Feature-Engine ECM-Fenster als zentrale Schicht fehlt. Siehe Code-Drift in CANONICAL_DOC_SET.
+Note: ECM implementation has been consolidated under `src/strategies/ecm.py` (legacy feature path removed).
+
+**ECM-Differenzierung (Code vs. Docs):** Armstrong ECM ist als Strategie unter ``src&#47;strategies&#47;ecm.py`` und ``src&#47;strategies&#47;armstrong/`` implementiert; die frühere Feature-Engine-ECM-Dokumentationsreferenz ist entfernt.
 
 ---
 
@@ -118,7 +123,7 @@ Geplante Phasen mit **noch nicht umgesetzten** Features:
 
 ## 6. Feature-Engine & López de Prado (konkret im Code)
 
-- **``src&#47;features&#47;``:** Nur Placeholder; keine ECM- oder allgemeine Feature-Pipeline. <!-- pt:ref-target-ignore -->
+- Feature-Engine-Schicht (deferred, nur Placeholder): keine ECM- oder allgemeine Feature-Pipeline. ECM liegt in der Strategy-Schicht ([ecm.py](../../src/strategies/ecm.py), [armstrong/](../../src/strategies/armstrong/)). <!-- pt:ref-target-ignore -->
 - **Meta-Labeling-Strategie:**  
   - `compute_triple_barrier_labels`: TODO, Placeholder (gibt Nullen zurück).  
   - `_extract_features`: TODO (Fractional Differentiation, Volatility-adjusted Returns, Regime-Indikatoren); gibt leeres DataFrame zurück.
@@ -129,7 +134,7 @@ Geplante Phasen mit **noch nicht umgesetzten** Features:
 
 | Kategorie | Bedeutung |
 |-----------|-----------|
-| **Architektur-Vision** | Feature-Engine, Sentiment, Orderbuch/Tick, ECM – in Vision/Docs genannt, nicht als durchgängige Schicht umgesetzt. |
+| **Architektur-Vision** | Feature-Engine (deferred), Sentiment, Orderbuch/Tick — in Vision/Docs genannt. ECM implementiert in Strategy layer, nicht in ``src/features/``. |
 | **v1.0 bewusst ausgenommen** | Live-Execution, Multi-Exchange, Web-Auth, WebSocket, ML-Strategien, Auto-Liquidation, 100 % Coverage, API-Doku, Skalierung. |
 | **Roadmap 2026** | Phasen 11–17 (Optimization, Streaming, Live, ML, Cloud, Risk-Parity, Community). |
 | **Research-Track** | Sweeps, Metriken, Heatmaps, Vol-Regime-Wrapper, Regime-adaptive Strategien, Auto-Portfolio, Nightly-Sweeps, Feature-Importance. |

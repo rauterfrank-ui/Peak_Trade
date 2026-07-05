@@ -1,5 +1,6 @@
 # 🧠 Psychologie-Heuristik-System – Quick Start
 
+> **Schicht:** Reporting layer (nicht Feature-Engine). Code: `src/reporting/psychology_heuristics.py`
 
 ## Authority and epoch note
 

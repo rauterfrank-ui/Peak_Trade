@@ -54,7 +54,7 @@
 - `get_strategy_info()` → Strategy-Metadaten inkl. Tier
 
 **Klassen-Flags:**
-- `KEY = "el_karoui_vol_v1"`
+- `KEY = "el_karoui_vol_v1"` (Legacy-Klassenkonstante; kanonische Registry-ID: `el_karoui_vol_model` — deprecated Alias `el_karoui_vol_v1` in `registry.py`)
 - `IS_LIVE_READY = False`
 - `ALLOWED_ENVIRONMENTS = ["offline_backtest", "research"]`
 - `TIER = "r_and_d"`

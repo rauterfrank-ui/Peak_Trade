@@ -14,6 +14,8 @@ Governance-Dokumentation für AI-Autonomie, Policy Enforcement und Compliance im
 
 ## 📋 Core Governance
 
+- **[Feature State Map v1](feature_state_map_v1.md)** — Kanonische Feature-Klassifikation A–D und NON-OPERATIONAL-Regel (read-only map)
+- **[Drift Cleanup Plan v1](drift_cleanup_plan_v1.md)** — Safe documentation fixes und flagged structural/authority items
 - **[Runbook Execution Governance v1](PEAK_TRADE_RUNBOOK_EXECUTION_GOVERNANCE_V1.md)** — Verbindliche strategische SSOT-Steuerung, Package-Sequenzierung und Ranking-Ausnahmeregel (non-authorizing)
 - **[Autonomy Runbook Progress Registry v1](PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md)** — Kanonische Progress-Registry: Runbook-Soll ↔ Repo-Ist (non-authorizing)
 - **[Runbook v4.4.1 Multi-Future Target Model Clarification](Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.1_multi_future_target_model_clarification.md)** — Governance-Clarification: Phase-1 Single-Future bleibt; Multi-Future nur Zielmodell nach separaten Gates (non-authorizing)
@@ -43,6 +45,7 @@ Governance-Dokumentation für AI-Autonomie, Policy Enforcement und Compliance im
 
 ## 🔗 Related Documentation
 
+- **Feature Drift & State:** [audit/feature_drift_reconciliation_report_v1.md](../audit/feature_drift_reconciliation_report_v1.md), [audit/drift_safe_docs_patch_v1.md](../audit/drift_safe_docs_patch_v1.md)
 - **Audit Runbooks**: `docs/audit/`
 - **Ops Runbooks**: `docs/ops/`
 - **Risk Governance**: `docs/risk/`

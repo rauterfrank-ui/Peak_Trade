@@ -1,5 +1,6 @@
 # Psychologie-Heatmap Integration – Zusammenfassung
 
+> **Schicht:** Reporting layer (nicht Feature-Engine). Code: `src/reporting/psychology_heatmap.py`, `src/reporting/psychology_heuristics.py`
 
 ## Einstiegseinordnung
 
