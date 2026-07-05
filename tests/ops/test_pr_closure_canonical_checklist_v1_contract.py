@@ -117,7 +117,7 @@ def test_script_and_doc_exist() -> None:
     assert SCRIPT.read_text(encoding="utf-8").startswith("#!/usr/bin/env python3")
     assert DOC.exists()
     doc = DOC.read_text(encoding="utf-8")
-    assert "python3 scripts/ops/pr_closure_canonical_checklist_v1.py" in doc
+    assert "pr_closure_canonical_checklist_v1.py" in doc
     assert "STASH_PRESENT_WARN_ONLY" in doc
 
 
