@@ -81,8 +81,8 @@ PR #4858 dokumentierte den Partial-Binding-Satz und fehlende Owner/Runner-Artefa
 
 | Artefakt | Output-Contract-Ref | In diesem PR materialisiert |
 |---|---|---|
-| `TRADE_LEDGER_V1.jsonl` | `config/research/trade_ledger_equity_curve_evidence_class_scope_v0.json#trade_ledger_required_fields` | nein |
-| `EQUITY_CURVE_V1.jsonl` | `config/research/trade_ledger_equity_curve_evidence_class_scope_v0.json#equity_curve_required_fields` | nein |
+| `TRADE_LEDGER_V1.jsonl` | `config&#47;research&#47;trade_ledger_equity_curve_evidence_class_scope_v0.json#trade_ledger_required_fields` | nein |
+| `EQUITY_CURVE_V1.jsonl` | `config&#47;research&#47;trade_ledger_equity_curve_evidence_class_scope_v0.json#equity_curve_required_fields` | nein |
 
 `allowed_bundle_only=true`, `repo_evidence_files_allowed=false`, `no_output_jsonl_materialized_in_repo=true`
 
