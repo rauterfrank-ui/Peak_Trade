@@ -66,7 +66,7 @@ Jede Abweichung von Digests, Configs, Daten, Zeitraum, Universum oder Policy blo
 | `allowed_future_execution_commands` | Dokumentiert, **nicht autorisiert**, **nicht ausgeführt** |
 | `forbidden_execution_commands` | Backtest/WF/MC/Stress/Parameter-Sensitivity/Runtime/Orders/Live in diesem Scope blockiert |
 | `evaluation_authorization_status` | `SCOPE_RATIFIED_AWAITING_SEPARATE_OPERATOR_GO_FOR_EXECUTION` |
-| `expected_output_bundle_contract` | Durable evidence bundle unter `economic_evaluation/` mit `MANIFEST_VERIFY_RC=0` |
+| `expected_output_bundle_contract` | Durable evidence bundle unter `economic_evaluation&#47;` mit `MANIFEST_VERIFY_RC=0` |
 
 ## D. Fail-Closed Bedingungen
 
