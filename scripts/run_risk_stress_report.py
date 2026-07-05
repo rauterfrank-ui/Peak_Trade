@@ -39,14 +39,19 @@ def load_ohlcv_sample(symbol: str = "BTC/EUR", days: int = 365) -> pd.DataFrame:
         Nutzt vorhandenen Data-Loader falls vorhanden, sonst synthetische Daten.
     """
     try:
-        # Versuche, echten Data-Loader zu nutzen
-        from src.data.loader import load_market_data
+        # Versuche, echten Data-Loader zu nutzen (kanonisch: src/data/kraken.py)
+        from src.data.kraken import fetch_ohlcv_df
 
         end_date = datetime.now()
         start_date = end_date - timedelta(days=days)
+        since_ms = int(start_date.timestamp() * 1000)
 
-        df = load_market_data(
-            symbol=symbol, start_date=start_date, end_date=end_date, timeframe="1d"
+        df = fetch_ohlcv_df(
+            symbol=symbol,
+            timeframe="1d",
+            limit=min(days, 720),
+            since_ms=since_ms,
+            use_cache=True,
         )
 
         if df is not None and not df.empty:

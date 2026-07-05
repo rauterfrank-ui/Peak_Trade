@@ -153,13 +153,13 @@ Derzeit hat Peak Trade primär:
 
 ### 4.2 Mögliche Module mit starkem El-Karoui-Bezug
 
-1. **Stochastik-Toolkit** (`src&#47;theory&#47;stochastics.py`) <!-- pt:ref-target-ignore -->
-   - GBM-/Heston-Simulationen
-   - Monte-Carlo-Pfade für Underlyings
-   - numerische Tests von Strategien in idealisierten Märkten
+1. **Stochastik-Toolkit** — DEFERRED_MODULE (not implemented in current runtime). Related MC tooling: `src/risk/monte_carlo.py`, `src/experiments/monte_carlo.py`.
+   - GBM-/Heston-Simulationen (geplant)
+   - Monte-Carlo-Pfade für Underlyings (geplant)
+   - numerische Tests von Strategien in idealisierten Märkten (geplant)
 
-2. **Pricing- und Hedging-Toolkit** (`src&#47;theory&#47;pricing.py`) <!-- pt:ref-target-ignore -->
-   - einfache BS-Formeln (als Start)
+2. **Pricing- und Hedging-Toolkit** — DEFERRED_MODULE (not implemented in current runtime).
+   - einfache BS-Formeln (als Start, geplant)
    - später Erweiterung um lokale/stochastische Vol
    - Hedging-Statistiken (Hedge-Error etc.)
 
@@ -174,10 +174,10 @@ Derzeit hat Peak Trade primär:
 
 Kurzfristig (einfach & machbar):
 
-- [ ] **Theorie-Modul beginnen:**
-  - `src&#47;theory&#47;stochastics.py` mit: <!-- pt:ref-target-ignore -->
-    - GBM-Simulation
-    - einfache Pfad-Monte-Carlo-Funktion
+- [ ] **Theorie-Modul beginnen (DEFERRED_MODULE):**
+  - Stochastik-Modul noch nicht implementiert; bis dahin partielle MC-Hilfen in `src/risk/monte_carlo.py` / `src/experiments/monte_carlo.py`
+    - GBM-Simulation (geplant)
+    - einfache Pfad-Monte-Carlo-Funktion (geplant)
 - [ ] **BS-Preisfunktionen implementieren:**
   - `call_price_bs(S, K, r, sigma, T)`
   - `put_price_bs(...)`
@@ -195,7 +195,7 @@ Mittelfristig:
 Langfristig:
 
 - [ ] BSDE-basierte Pricing-Ansätze untersuchen (z. B. für exotische Produkte)
-- [ ] Zins- und Kreditrisiko-Modelle in ein separates Modul (`src&#47;theory&#47;credit.py`) auslagern. <!-- pt:ref-target-ignore -->
+- [ ] Zins- und Kreditrisiko-Modelle — DEFERRED_MODULE (not implemented in current runtime; kein `credit.py` im Repo).
 - [ ] Mögliche Nutzung von LLMs:
   - zur Erklärung der Modelle in natürlicher Sprache
   - zur Generierung von Code-Skizzen für Simulationen

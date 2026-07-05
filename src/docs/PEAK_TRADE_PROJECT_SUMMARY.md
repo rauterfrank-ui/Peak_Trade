@@ -36,12 +36,12 @@ Peak_Trade/
 ├─ requirements.txt
 ├─ .gitignore
 │
-├─ docs/
+├─ src/docs/
 │  ├─ architecture.md                  # Architektur-Details
-│  ├─ llm_workflows.md                 # LLM-Prompts für neue Chats
 │  ├─ armstrong_notes.md               # Economic Confidence Model
 │  ├─ trading_bot_notes.md
 │  └─ Peak_Trade_setup_notes.md
+│  # DEFERRED_DOC: llm_workflows.md (not in repo; not required by CI)
 │
 ├─ data/                               # Nicht ins Repo!
 │  └─ raw/
@@ -72,10 +72,10 @@ Peak_Trade/
 │  │  ├─ engine.py                     # Backtest-Engine (2 Modi)
 │  │  └─ stats.py                      # Sharpe, MaxDD, Trade-Stats
 │  │
-│  ├─ features/                        # Future: ECM-Indikatoren
+│  ├─ features/                        # Placeholder (deferred Feature-Engine)
 │  │  └─ __init__.py
 │  │
-│  └─ theory/                          # Future: GBM, Heston, etc.
+│  └─ theory/                          # Placeholder (stochastics/pricing/credit DEFERRED)
 │     └─ __init__.py
 │
 ├─ scripts/
@@ -644,7 +644,7 @@ Lies bitte die Zusammenfassung in dieser Datei für Details.
 
 ### Existierende Docs
 - `src/docs/architecture.md` – Detaillierte Architektur
-- `docs&#47;llm_workflows.md` – LLM-Prompts für verschiedene Tasks <!-- pt:ref-target-ignore -->
+- DEFERRED_DOC: `llm_workflows.md` (not in repo; not required by CI)
 - `src/docs/armstrong_notes.md` – Economic Confidence Model
 - `src/docs/trading_bot_notes.md` – Trading-Konzepte
 - `src/docs/Peak_Trade_setup_notes.md` – Setup-Notizen
@@ -713,7 +713,7 @@ Lies bitte die Zusammenfassung in dieser Datei für Details.
 
 Bei Problemen:
 1. Prüfe `src/docs/architecture.md`
-2. Verwende `docs&#47;llm_workflows.md` für LLM-Prompts <!-- pt:ref-target-ignore -->
+2. DEFERRED_DOC: `llm_workflows.md` (not in repo; not required by CI)
 3. Führe Tests aus: `pytest tests&#47; -v`
 
 ---

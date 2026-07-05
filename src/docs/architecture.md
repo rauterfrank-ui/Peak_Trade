@@ -43,7 +43,9 @@ Peak_Trade/
 │  │
 │  ├─ strategies/
 │  │  ├─ __init__.py
-│  │  └─ ma_crossover.py            (erste Beispiel-Strategie)
+│  │  ├─ ma_crossover.py            (erste Beispiel-Strategie)
+│  │  ├─ ecm.py                     (ECM strategy module)
+│  │  └─ armstrong/                 (Armstrong cycle strategy)
 │  │
 │  ├─ risk/
 │  │  ├─ __init__.py
@@ -55,11 +57,10 @@ Peak_Trade/
 │  │  └─ stats.py                   (Sharpe, MaxDD, Trade-Stats, Reports)
 │  │
 │  ├─ features/
-│  │  └─ ecm.py                     (Armstrong/ECM-Eventfenster & Flags)
+│  │  └─ __init__.py                (Placeholder)
 │  │
 │  └─ theory/
-│     ├─ stochastics.py             (SDE-/Pfad-Simulationen, GBM/Heston)
-│     └─ pricing.py                 (Black–Scholes & Erweiterungen)
+│     └─ __init__.py                (Placeholder; stochastics/pricing/credit DEFERRED)
 │
 ├─ scripts/
 │  ├─ run_ma_realistic.py           (Realistic-Backtest für MA-Strategie)
@@ -162,30 +163,26 @@ Dieses Modul ist die Grundlage für alle realistischen Backtests und später fü
 
 ---
 
-### 3.6 `src&#47;features&#47;ecm.py` – Armstrong/ECM-Overlay <!-- pt:ref-target-ignore -->
+### 3.6 `src/strategies/ecm.py` – ECM strategy module (Armstrong/ECM overlay)
 
-- Definiert eine Struktur für ECM-Turning-Points (Datum, Label, Fenstergröße).  
-- Fügt einem OHLCV-DataFrame Flag-Spalten hinzu, z. B.:
-  - `ecm_window` (True/False innerhalb des Event-Fensters)
-  - `ecm_label` (z. B. `major_high`, `minor_low`)
+Note: ECM implementation has been consolidated under `src/strategies/ecm.py` (legacy feature path removed).
 
-So können Strategien oder Auswertungen später konditional auf ECM-Regime reagieren.
+- ECM strategy module mit Armstrong/ECM-Zykluslogik (`calculate_ecm_phase`, `generate_signals`).
+- Ergänzend: `src/strategies/armstrong/` für die registrierte Armstrong-Cycle-Strategie.
+- Strategien oder Auswertungen können konditional auf ECM-Regime reagieren.
 
 ---
 
-### 3.7 `src/theory/` – El-Karoui-/Quant-Theorie
+### 3.7 `src/theory/` – El-Karoui-/Quant-Theorie (Placeholder)
 
-**`stochastics.py`**
+**Status:** DEFERRED_MODULE — `stochastics.py`, `pricing.py`, and `credit.py` are **not implemented** in the current runtime (`src/theory/` contains only `__init__.py`).
 
-- SDE-/Prozess-Simulationen (z. B. GBM, später Heston)  
-- Monte-Carlo-Pfade für Underlyings → theoretische Risikostudien für Strategien
+**Related tooling today (partial overlap only):**
 
-**`pricing.py`**
+- `src/risk/monte_carlo.py` — Monte-Carlo / simulation helpers in the risk layer
+- `src/experiments/monte_carlo.py` — experiment/backtest MC utilities
 
-- Pricing-Funktionen (z. B. Black–Scholes für Calls/Puts)  
-- später Erweiterungen Richtung lokaler/stochastischer Volatilität, BSDE-Ansätze, Zins-/Credit-Modelle
-
-Diese Module sind die Brücke zur Theorie-Schiene (Nicole El Karoui) und erlauben langfristig ein Zusammenspiel von Modellwelt und empirischer Backtest-Welt.
+Planned theory modules remain deferred; no import surface exists yet.
 
 ---
 
@@ -227,7 +224,7 @@ Ziel: früh Bugs finden, bevor echte Exchange-Daten und Geld im Spiel sind.
    - reale OHLCV-Daten via `fetch_ohlcv_df()`
 
 3. **Features & Regime** (optional)  
-   - ECM-Flags über `features&#47;ecm.py`
+   - Strategy-layer ECM über `src/strategies/ecm.py` und `src/strategies/armstrong/`
    - spätere Makro-/Sentiment-Features
 
 4. **Strategie-Signale erzeugen**  
