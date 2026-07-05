@@ -45,7 +45,9 @@ SCHEDULER_RUNTIME_ALLOWED: false
 ## C. Safe Next Action
 
 ```text
-NEXT_ACTION=POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_AND_REGISTRY_UPDATE_V0
+NEXT_ACTION=NO_RUNTIME_OR_PROMOTION_ACTION
+NEXT_CANONICAL_STEP=NEW_RATIFIED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_REQUIRED
+CLOSEOUT_REF=docs/governance/POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_AND_REGISTRY_UPDATE_V0.md
 ```
 
-No promotion. No runtime rewire. No same-binding retry.
+No promotion. No runtime rewire. No same-binding retry. Negative evidence terminal for unchanged binding.

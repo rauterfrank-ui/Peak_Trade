@@ -16,12 +16,12 @@ from tests.ops.runbook_progress_registry_contract_helpers_v1 import (
 )
 
 CLOSEOUT_SECTION_PREFIX = "#### POST_PR_4865_4872_PROGRESS_REGISTRY_CLOSEOUT_V0"
-GLOBAL_NEXT_STEP = "POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_AND_REGISTRY_UPDATE_V0"
+GLOBAL_NEXT_STEP = "NEW_RATIFIED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_REQUIRED"
 HISTORICAL_CLOSEOUT_NEXT_STEP = "NEW_RATIFIED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_REQUIRED"
 HISTORICAL_CLOSEOUT_CURRENT_STATE = "POST_PR_4865_4872_PROGRESS_REGISTRY_CLOSEOUT_COMPLETE_V0"
 CURRENT_ADMISSIBLE_SCOPE = "NONE"
-CURRENT_STATE = "BOUNDED_POST_NO_PASS_FUTURES_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_COMPLETE_V0"
-ORIGIN_MAIN = "fe2c334d943da30e097645e178abb970b253fae5"
+CURRENT_STATE = "POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_COMPLETE_V0"
+ORIGIN_MAIN = "a394c7debe41c3ca07773aa97425422d008e714f"
 MERGED_PRS = (
     ("4865", "31053b8364e444474687fa1df66cf1fc0de45662"),
     ("4866", "7224fa126dde8baabe8d74848fcc150e4b15aef9"),
@@ -51,7 +51,7 @@ def _closeout_section(text: str) -> str:
 class TestPostPr4865To4872AuthoritativeGlobalState:
     def test_last_verified_origin_main_matches_current_main(self) -> None:
         assert authoritative_field_value("LAST_VERIFIED_ORIGIN_MAIN") == ORIGIN_MAIN
-        assert authoritative_field_value("LAST_VERIFIED_PR") == "4872"
+        assert authoritative_field_value("LAST_VERIFIED_PR") == "4875"
         assert authoritative_field_value("CURRENT_STATE") == CURRENT_STATE
 
     def test_strategic_blockers_remain_active(self) -> None:
