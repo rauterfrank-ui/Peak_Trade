@@ -24,9 +24,10 @@ CLOSEOUT_SECTION_PREFIX = "#### POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_
 EVIDENCE_CLASS_ID = "POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0"
 SELECTED_CLASS = "E"
 EXECUTION_STATUS = "CLASSIFICATION_EXECUTION_COMPLETE_INCONCLUSIVE"
-CURRENT_STATE = (
+CLASSIFICATION_CURRENT_STATE = (
     "POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_EXECUTION_COMPLETE_V0"
 )
+AUTHORITATIVE_CURRENT_STATE = "POST_PR4883_NEXT_VERSIONED_RESEARCH_SCOPE_SELECTION_COMPLETE_V0"
 PROCESS_CLASSIFICATION = (
     "POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_EXECUTION_V0"
 )
@@ -34,8 +35,16 @@ SCOPE_DEFINITION_GO = (
     "GO_POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_SCOPE_DEFINITION_ONLY_V0"
 )
 EXECUTION_GO = "GO_POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0"
-NEXT_CANONICAL_STEP = "NEW_VERSIONED_RESEARCH_SCOPE_SELECTION_REQUIRES_OPERATOR_RATIFICATION_V0"
-CURRENT_ADMISSIBLE_SCOPE = "NEW_VERSIONED_RESEARCH_SCOPE_SELECTION_V0"
+HISTORICAL_NEXT_CANONICAL_STEP = (
+    "NEW_VERSIONED_RESEARCH_SCOPE_SELECTION_REQUIRES_OPERATOR_RATIFICATION_V0"
+)
+HISTORICAL_ADMISSIBLE_SCOPE = "NEW_VERSIONED_RESEARCH_SCOPE_SELECTION_V0"
+AUTHORITATIVE_NEXT_CANONICAL_STEP = (
+    "REQUEST_OPERATOR_GO_FOR_POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_EXECUTION_V0"
+)
+AUTHORITATIVE_ADMISSIBLE_SCOPE = (
+    "POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_CLASS_V0"
+)
 RATIFICATION_GO = "GO_OPERATOR_RATIFY_NEXT_NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_SCOPE_DEFINITION_ONLY_V0"
 PRIMARY_CLASSIFICATION = "INCONCLUSIVE_SPARSE_SIGNAL_ZERO_TRADE"
 PARENT_EVIDENCE_SUFFIX = "post_no_pass_sparse_signal_zero_trade_offline_economic_evaluation_execution_v0_20260705T213529Z"
@@ -151,8 +160,8 @@ class TestPostNoPassSparseSignalInconclusiveFailureClassificationV0Contract:
         assert payload["go_token"] == EXECUTION_GO
         assert payload["go_token_consumed"] is True
         assert payload["next_required_go_token_for_execution_consumption"] == "CONSUMED"
-        assert payload["next_canonical_step"] == NEXT_CANONICAL_STEP
-        assert payload["current_admissible_next_scope"] == CURRENT_ADMISSIBLE_SCOPE
+        assert payload["next_canonical_step"] == HISTORICAL_NEXT_CANONICAL_STEP
+        assert payload["current_admissible_next_scope"] == HISTORICAL_ADMISSIBLE_SCOPE
         assert payload["current_admissible_next_scope_go_token"] == RATIFICATION_GO
         assert payload["classification_execution_manifest_verify_rc"] == 0
         assert NEW_EVIDENCE_SUFFIX in payload["classification_execution_evidence_ref"]
@@ -176,7 +185,7 @@ class TestPostNoPassSparseSignalInconclusiveFailureClassificationV0Contract:
             )
             in body
         )
-        assert f"`VERDICT` | `{CURRENT_STATE}`" in body
+        assert f"`VERDICT` | `{CLASSIFICATION_CURRENT_STATE}`" in body
         assert f"`EVIDENCE_CLASS_ID` | `{EVIDENCE_CLASS_ID}`" in body
         assert f"`EXECUTION_GO_TOKEN` | `{EXECUTION_GO}`" in body
         assert "`EXECUTION_GO_TOKEN_CONSUMED` | `true`" in body
@@ -231,15 +240,17 @@ class TestPostNoPassSparseSignalInconclusiveFailureClassificationV0Contract:
 
     def test_registry_metadata_fields(self) -> None:
         text = read_registry()
-        assert authoritative_field_value("CURRENT_STATE") == CURRENT_STATE
-        assert authoritative_field_value("NEXT_CANONICAL_STEP") == NEXT_CANONICAL_STEP
-        assert authoritative_field_value("NEXT_CANONICAL_ACTION") == NEXT_CANONICAL_STEP
-        assert authoritative_field_value("GLOBAL_RUNBOOK_NEXT_STEP") == NEXT_CANONICAL_STEP
+        assert authoritative_field_value("CURRENT_STATE") == AUTHORITATIVE_CURRENT_STATE
+        assert authoritative_field_value("NEXT_CANONICAL_STEP") == AUTHORITATIVE_NEXT_CANONICAL_STEP
+        assert authoritative_field_value("NEXT_CANONICAL_ACTION") == AUTHORITATIVE_NEXT_CANONICAL_STEP
+        assert authoritative_field_value("GLOBAL_RUNBOOK_NEXT_STEP") == AUTHORITATIVE_NEXT_CANONICAL_STEP
         assert (
-            authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE") == CURRENT_ADMISSIBLE_SCOPE
+            authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE")
+            == AUTHORITATIVE_ADMISSIBLE_SCOPE
         )
         assert (
-            authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN") == RATIFICATION_GO
+            authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN")
+            == "GO_POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_EXECUTION_V0"
         )
         assert (
             _field_value(
@@ -289,7 +300,7 @@ class TestPostNoPassSparseSignalInconclusiveFailureClassificationV0Contract:
     def test_registry_closeout_section(self) -> None:
         section = _closeout_section(read_registry())
         assert _field_value(section, "STATUS") == EXECUTION_STATUS
-        assert _field_value(section, "VERDICT") == CURRENT_STATE
+        assert _field_value(section, "VERDICT") == CLASSIFICATION_CURRENT_STATE
         assert _field_value(section, "EVIDENCE_CLASS_ID") == EVIDENCE_CLASS_ID
         assert _field_value(section, "GO_TOKEN") == EXECUTION_GO
         assert _field_value(section, "GO_TOKEN_CONSUMED") == "true"
@@ -299,8 +310,8 @@ class TestPostNoPassSparseSignalInconclusiveFailureClassificationV0Contract:
         assert _field_value(section, "economic_evaluation_executed") == "false"
         assert _field_value(section, "backtests_executed") == "false"
         assert _field_value(section, "RUNTIME_REWIRE_ADMISSIBLE") == "false"
-        assert _field_value(section, "NEXT_CANONICAL_STEP") == NEXT_CANONICAL_STEP
-        assert _field_value(section, "CURRENT_ADMISSIBLE_NEXT_SCOPE") == CURRENT_ADMISSIBLE_SCOPE
+        assert _field_value(section, "NEXT_CANONICAL_STEP") == HISTORICAL_NEXT_CANONICAL_STEP
+        assert _field_value(section, "CURRENT_ADMISSIBLE_NEXT_SCOPE") == HISTORICAL_ADMISSIBLE_SCOPE
         assert _field_value(section, "CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN") == RATIFICATION_GO
         assert NEW_EVIDENCE_SUFFIX in _field_value(section, "NEW_EVIDENCE_DIR")
 

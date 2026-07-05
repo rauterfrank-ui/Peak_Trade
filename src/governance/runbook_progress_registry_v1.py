@@ -7,7 +7,7 @@ authority.
 
 Post-no-pass sparse-signal / zero-trade offline economic evaluation execution (v0) authoritative fields live in
 Registry-Metadaten only (``CURRENT_STATE`` =
-``POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_EXECUTION_COMPLETE_V0``).
+``POST_PR4883_NEXT_VERSIONED_RESEARCH_SCOPE_SELECTION_COMPLETE_V0``).
 Historical ``####`` sections do not override global ``NEXT_CANONICAL_STEP``.
 """
 
