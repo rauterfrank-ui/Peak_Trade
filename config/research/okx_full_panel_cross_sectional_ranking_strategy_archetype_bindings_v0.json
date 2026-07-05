@@ -1,0 +1,369 @@
+{
+  "artifact_kind": "okx_full_panel_cross_sectional_ranking_strategy_archetype_versioned_binding",
+  "artifact_version": "v0",
+  "authority_effect": false,
+  "binding_id": "OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_V0_BINDINGS_V0",
+  "binding_materialization_status": "VERSIONED_BINDINGS_MATERIALIZATION_COMPLETE",
+  "binding_ready": true,
+  "binding_spec_status": "VERSIONED_BINDINGS_MATERIALIZED",
+  "bitcoin_direction_allowed": false,
+  "blocked_shortcuts": {
+    "blocked_adapter_kinds": [
+      "NARROW_ADAPTER_INST_ETH_USDT_PERP",
+      "NARROW_ADAPTER_INST_ETH_USDT_PERP_ECONOMIC_RESEARCH_v1"
+    ],
+    "blocked_coverage_windows": [
+      {
+        "coverage_period_end_utc": "2024-06-01T01:00:00Z",
+        "coverage_period_start_utc": "2024-05-25T00:00:00Z",
+        "reason": "SEVEN_DAY_HOLDOUT_NARROWING_WHEN_FULL_PANEL_CLAIMED"
+      }
+    ],
+    "blocked_evaluation_instrument_ids": [
+      "inst-eth-usdt-perp"
+    ],
+    "blocked_native_instrument_ids": [
+      "ETH-USDT-SWAP"
+    ],
+    "blocked_period_digests": [
+      "950ac7f41d2eb3422cdbbd28a3ee5658a7a0a0ce5d6d55b9ddd3d387129fe5c5"
+    ],
+    "eth_only_narrow_adapter_forbidden": true,
+    "full_panel_claim_requires_multi_instrument_execution": true,
+    "seven_day_holdout_narrowing_forbidden": true,
+    "single_instrument_evaluation_forbidden": true
+  },
+  "canonical_serialization_version": "okx_full_panel_cross_sectional_ranking_strategy_archetype_bindings_canonical_json_v0",
+  "candidate_ratified": false,
+  "config_digest_policy": {
+    "note": "Canonical JSON digest of ratified evaluation config at execution materialization",
+    "policy_version": "BINDING_CONFIG_CANONICAL_JSON_v0",
+    "status": "REQUIRED_BEFORE_EVALUATION_EXECUTION"
+  },
+  "data_digest_policy": {
+    "expected_dataset_content_digest": "0bfa4df4221a2ec27625c50e3675302ffa51e4b54cddcf81ca5ad13cc15cf8b7",
+    "materialization_rule": "OKX_FULL_PANEL_PROMOTED_DATASET_CONTENT_DIGEST_v0",
+    "policy_version": "OKX_FULL_PANEL_DATASET_CONTENT_DIGEST_v0",
+    "status": "BOUND"
+  },
+  "dataset_binding": {
+    "alias_is_not_sole_binding": true,
+    "alias_ref": "datasets/admissible_futures/okx_full_panel_historical_funding_archive_v0/v0/alias/current.json",
+    "coverage_period_end_utc": "2024-09-01T00:00:00Z",
+    "coverage_period_start_utc": "2024-05-01T00:00:00Z",
+    "dataset_binding_active": true,
+    "dataset_binding_version": "v0",
+    "dataset_content_digest": "0bfa4df4221a2ec27625c50e3675302ffa51e4b54cddcf81ca5ad13cc15cf8b7",
+    "dataset_id": "okx_full_panel_historical_funding_archive_v0",
+    "dataset_schema_version": "okx_full_panel_dataset.v0",
+    "dataset_version": "v0",
+    "evaluation_price_data_adapter": {
+      "adapter_kind": "FORBIDDEN_NARROW_ADAPTER_NOT_ADMISSIBLE",
+      "status": "BLOCKED"
+    },
+    "execution_path": "true_multi_instrument_cross_sectional_panel",
+    "narrow_adapter_disallowed": true,
+    "promoted_dataset_ref": "datasets/admissible_futures/okx_full_panel_historical_funding_archive_v0/v0",
+    "promotion_binding_ref": "datasets/admissible_futures/okx_full_panel_historical_funding_archive_v0/v0/promotion_binding.json",
+    "registry_entry_ref": "datasets/admissible_futures/okx_full_panel_historical_funding_archive_v0/v0/registry_entry.json",
+    "status": "BOUND"
+  },
+  "digest_semantics": {
+    "binding_semantic_digest": "BINDING_SEMANTIC_PAYLOAD_v0",
+    "config_digest": "BINDING_CONFIG_CANONICAL_JSON_v0",
+    "data_digest": "OKX_FULL_PANEL_DATASET_CONTENT_DIGEST_v0",
+    "implementation_digest": "MODULE_IMPLEMENTATION_REF_v0"
+  },
+  "economic_evaluation_authorized": false,
+  "economic_evaluation_executed": false,
+  "economic_policy_binding": {
+    "binding_version": "v1",
+    "economic_validity_policy_version": "economic_validity_policy_v1",
+    "note": "unchanged default unless separately ratified",
+    "policy_lowering_forbidden": true,
+    "status": "BOUND"
+  },
+  "evidence_class_id": "OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_V0",
+  "excluded_legacy_bindings": {
+    "blocked_candidate_identifiers": [
+      "trend_following/v1",
+      "bollinger_bands/v1",
+      "momentum_1h/v1"
+    ],
+    "blocked_completion_digests": [
+      "161d834e5153df78a0013b6e55c4c8bd4788c775811e3678f025104a307d78f1",
+      "c5e3b5fe6b688b49dbd2b210fd63bdea79201d64820591f87091b4e20689a9dd"
+    ],
+    "blocked_evidence_class_ids": [
+      "FINAL_RESEARCH_FLEET_OKX_FULL_PANEL_NEW_EVIDENCE_CLASS_V0",
+      "step31f_pit_cross_sectional_v0"
+    ],
+    "blocked_execution_adapter_ids": [
+      "NARROW_ADAPTER_INST_ETH_USDT_PERP",
+      "NARROW_ADAPTER_INST_ETH_USDT_PERP_ECONOMIC_RESEARCH_v1"
+    ],
+    "blocked_scope_digests": [
+      "64da0eae56a70ad0661398db14d712f6d58d6ea9f6ad0dbb73f3de2b01d11d67"
+    ],
+    "blocked_strategy_archetypes": [
+      "single_instrument_trend_following",
+      "single_instrument_bollinger_mean_reversion",
+      "single_instrument_momentum_1h"
+    ]
+  },
+  "execution_model_binding": {
+    "execution_model_version": "backtest_execution_v0",
+    "note": "unchanged default unless separately ratified",
+    "roundtrip_cost_bps": 40.0,
+    "status": "BOUND"
+  },
+  "fee_model_binding": {
+    "fee_bps": 10.0,
+    "fee_model_version": "backtest_fee_taker_symmetric_v0",
+    "note": "unchanged default unless separately ratified",
+    "status": "BOUND"
+  },
+  "funding_model_binding": {
+    "bind": true,
+    "model_version": "backtest_funding_perpetual_interval_v1",
+    "note": "unchanged default unless separately ratified",
+    "status": "BOUND"
+  },
+  "further_economic_evaluation_requires_separate_operator_go": true,
+  "futures_only": true,
+  "go_token": "GO_OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_VERSIONED_BINDINGS_MATERIALIZATION_V0",
+  "go_token_consumed": false,
+  "implementation_digest_policy": {
+    "note": "Implementation digest bound at evaluation execution materialization",
+    "policy_version": "MODULE_IMPLEMENTATION_REF_v0",
+    "status": "REQUIRED_BEFORE_EVALUATION_EXECUTION"
+  },
+  "instrument_panel_binding": {
+    "binding_mode": "lifecycle_admissible_complete_panel_v0",
+    "bitcoin_direction_allowed": false,
+    "eligible_instrument_count": 118,
+    "eligible_instrument_ids": [
+      "okx:linear_perpetual:1INCH:USDT:USDT:perp",
+      "okx:linear_perpetual:AAVE:USDT:USDT:perp",
+      "okx:linear_perpetual:ACH:USDT:USDT:perp",
+      "okx:linear_perpetual:ADA:USDT:USDT:perp",
+      "okx:linear_perpetual:AEVO:USDT:USDT:perp",
+      "okx:linear_perpetual:AGLD:USDT:USDT:perp",
+      "okx:linear_perpetual:ALGO:USDT:USDT:perp",
+      "okx:linear_perpetual:APE:USDT:USDT:perp",
+      "okx:linear_perpetual:API3:USDT:USDT:perp",
+      "okx:linear_perpetual:APT:USDT:USDT:perp",
+      "okx:linear_perpetual:AR:USDT:USDT:perp",
+      "okx:linear_perpetual:ARB:USDT:USDT:perp",
+      "okx:linear_perpetual:ATOM:USDT:USDT:perp",
+      "okx:linear_perpetual:AUCTION:USDT:USDT:perp",
+      "okx:linear_perpetual:AVAX:USDT:USDT:perp",
+      "okx:linear_perpetual:AXS:USDT:USDT:perp",
+      "okx:linear_perpetual:BAND:USDT:USDT:perp",
+      "okx:linear_perpetual:BAT:USDT:USDT:perp",
+      "okx:linear_perpetual:BCH:USDT:USDT:perp",
+      "okx:linear_perpetual:BICO:USDT:USDT:perp",
+      "okx:linear_perpetual:BIGTIME:USDT:USDT:perp",
+      "okx:linear_perpetual:BLUR:USDT:USDT:perp",
+      "okx:linear_perpetual:BNB:USDT:USDT:perp",
+      "okx:linear_perpetual:BONK:USDT:USDT:perp",
+      "okx:linear_perpetual:CELO:USDT:USDT:perp",
+      "okx:linear_perpetual:CFX:USDT:USDT:perp",
+      "okx:linear_perpetual:CHZ:USDT:USDT:perp",
+      "okx:linear_perpetual:COMP:USDT:USDT:perp",
+      "okx:linear_perpetual:CORE:USDT:USDT:perp",
+      "okx:linear_perpetual:CRO:USDT:USDT:perp",
+      "okx:linear_perpetual:CRV:USDT:USDT:perp",
+      "okx:linear_perpetual:DOGE:USDT:USDT:perp",
+      "okx:linear_perpetual:DOT:USDT:USDT:perp",
+      "okx:linear_perpetual:DYDX:USDT:USDT:perp",
+      "okx:linear_perpetual:EGLD:USDT:USDT:perp",
+      "okx:linear_perpetual:ENJ:USDT:USDT:perp",
+      "okx:linear_perpetual:ENS:USDT:USDT:perp",
+      "okx:linear_perpetual:ETC:USDT:USDT:perp",
+      "okx:linear_perpetual:ETH:USDT:USDT:perp",
+      "okx:linear_perpetual:ETHFI:USDT:USDT:perp",
+      "okx:linear_perpetual:ETHW:USDT:USDT:perp",
+      "okx:linear_perpetual:FIL:USDT:USDT:perp",
+      "okx:linear_perpetual:FLOKI:USDT:USDT:perp",
+      "okx:linear_perpetual:FLOW:USDT:USDT:perp",
+      "okx:linear_perpetual:GALA:USDT:USDT:perp",
+      "okx:linear_perpetual:GAS:USDT:USDT:perp",
+      "okx:linear_perpetual:GMT:USDT:USDT:perp",
+      "okx:linear_perpetual:GMX:USDT:USDT:perp",
+      "okx:linear_perpetual:GRT:USDT:USDT:perp",
+      "okx:linear_perpetual:HBAR:USDT:USDT:perp",
+      "okx:linear_perpetual:ICP:USDT:USDT:perp",
+      "okx:linear_perpetual:ICX:USDT:USDT:perp",
+      "okx:linear_perpetual:IMX:USDT:USDT:perp",
+      "okx:linear_perpetual:INJ:USDT:USDT:perp",
+      "okx:linear_perpetual:IOST:USDT:USDT:perp",
+      "okx:linear_perpetual:IOTA:USDT:USDT:perp",
+      "okx:linear_perpetual:JTO:USDT:USDT:perp",
+      "okx:linear_perpetual:JUP:USDT:USDT:perp",
+      "okx:linear_perpetual:KSM:USDT:USDT:perp",
+      "okx:linear_perpetual:LDO:USDT:USDT:perp",
+      "okx:linear_perpetual:LINK:USDT:USDT:perp",
+      "okx:linear_perpetual:LPT:USDT:USDT:perp",
+      "okx:linear_perpetual:LQTY:USDT:USDT:perp",
+      "okx:linear_perpetual:LRC:USDT:USDT:perp",
+      "okx:linear_perpetual:LTC:USDT:USDT:perp",
+      "okx:linear_perpetual:LUNA:USDT:USDT:perp",
+      "okx:linear_perpetual:MAGIC:USDT:USDT:perp",
+      "okx:linear_perpetual:MANA:USDT:USDT:perp",
+      "okx:linear_perpetual:MASK:USDT:USDT:perp",
+      "okx:linear_perpetual:MEME:USDT:USDT:perp",
+      "okx:linear_perpetual:MERL:USDT:USDT:perp",
+      "okx:linear_perpetual:METIS:USDT:USDT:perp",
+      "okx:linear_perpetual:MEW:USDT:USDT:perp",
+      "okx:linear_perpetual:MINA:USDT:USDT:perp",
+      "okx:linear_perpetual:NEAR:USDT:USDT:perp",
+      "okx:linear_perpetual:NEO:USDT:USDT:perp",
+      "okx:linear_perpetual:NMR:USDT:USDT:perp",
+      "okx:linear_perpetual:ONE:USDT:USDT:perp",
+      "okx:linear_perpetual:ONT:USDT:USDT:perp",
+      "okx:linear_perpetual:OP:USDT:USDT:perp",
+      "okx:linear_perpetual:ORDI:USDT:USDT:perp",
+      "okx:linear_perpetual:PEOPLE:USDT:USDT:perp",
+      "okx:linear_perpetual:PEPE:USDT:USDT:perp",
+      "okx:linear_perpetual:PYTH:USDT:USDT:perp",
+      "okx:linear_perpetual:QTUM:USDT:USDT:perp",
+      "okx:linear_perpetual:RAY:USDT:USDT:perp",
+      "okx:linear_perpetual:RSR:USDT:USDT:perp",
+      "okx:linear_perpetual:RVN:USDT:USDT:perp",
+      "okx:linear_perpetual:SAND:USDT:USDT:perp",
+      "okx:linear_perpetual:SATS:USDT:USDT:perp",
+      "okx:linear_perpetual:SHIB:USDT:USDT:perp",
+      "okx:linear_perpetual:SNX:USDT:USDT:perp",
+      "okx:linear_perpetual:SOL:USDT:USDT:perp",
+      "okx:linear_perpetual:SSV:USDT:USDT:perp",
+      "okx:linear_perpetual:STRK:USDT:USDT:perp",
+      "okx:linear_perpetual:STX:USDT:USDT:perp",
+      "okx:linear_perpetual:SUI:USDT:USDT:perp",
+      "okx:linear_perpetual:SUSHI:USDT:USDT:perp",
+      "okx:linear_perpetual:THETA:USDT:USDT:perp",
+      "okx:linear_perpetual:TIA:USDT:USDT:perp",
+      "okx:linear_perpetual:TRB:USDT:USDT:perp",
+      "okx:linear_perpetual:TRX:USDT:USDT:perp",
+      "okx:linear_perpetual:TURBO:USDT:USDT:perp",
+      "okx:linear_perpetual:UMA:USDT:USDT:perp",
+      "okx:linear_perpetual:UNI:USDT:USDT:perp",
+      "okx:linear_perpetual:USDC:USDT:USDT:perp",
+      "okx:linear_perpetual:W:USDT:USDT:perp",
+      "okx:linear_perpetual:WIF:USDT:USDT:perp",
+      "okx:linear_perpetual:WLD:USDT:USDT:perp",
+      "okx:linear_perpetual:WOO:USDT:USDT:perp",
+      "okx:linear_perpetual:XLM:USDT:USDT:perp",
+      "okx:linear_perpetual:XRP:USDT:USDT:perp",
+      "okx:linear_perpetual:XTZ:USDT:USDT:perp",
+      "okx:linear_perpetual:YFI:USDT:USDT:perp",
+      "okx:linear_perpetual:YGG:USDT:USDT:perp",
+      "okx:linear_perpetual:ZETA:USDT:USDT:perp",
+      "okx:linear_perpetual:ZIL:USDT:USDT:perp",
+      "okx:linear_perpetual:ZRX:USDT:USDT:perp"
+    ],
+    "evaluation_execution_path": "true_multi_instrument_cross_sectional_panel",
+    "futures_only": true,
+    "instrument_binding_version": "v0",
+    "instrument_selection_owner": "okx_full_panel_dataset_promotion_decision_and_binding_v0",
+    "narrow_adapter_disallowed": true,
+    "no_parallel_universe_ssot": true,
+    "single_instrument_evaluation_forbidden": true,
+    "spot_allowed": false,
+    "status": "BOUND",
+    "synthetic_spot_allowed": false,
+    "venue_id": "okx"
+  },
+  "live_authorized": false,
+  "non_authorizing": true,
+  "offline_only": true,
+  "order_effect": "NONE",
+  "orders_allowed": false,
+  "out_of_sample_period": {
+    "end": "2024-09-01T00:00:00Z",
+    "start": "2024-08-01T00:00:00Z",
+    "status": "BOUND"
+  },
+  "paper_authorized": false,
+  "period_binding": {
+    "binding_version": "v0",
+    "boundary_semantics": "utc_bar_close_inclusive_end",
+    "coverage_period_end_utc": "2024-09-01T00:00:00Z",
+    "coverage_period_start_utc": "2024-05-01T00:00:00Z",
+    "embargo_duration": "PT2H",
+    "full_panel_coverage_required": true,
+    "note": "Full Mai-Sep 2024 archived coverage; no 7-day holdout narrowing",
+    "period_binding_id": "okx_full_panel_cross_sectional_research_chronological_holdout_v0",
+    "period_binding_version": "v0",
+    "purge_duration": "PT2H",
+    "seven_day_holdout_narrowing_forbidden": true,
+    "split_policy_id": "okx_full_panel_cross_sectional_research_chronological_holdout_v0",
+    "split_policy_version": "v0",
+    "split_timezone": "UTC",
+    "status": "BOUND",
+    "warmup_end": "2024-05-21T00:00:00Z",
+    "warmup_start": "2024-05-01T00:00:00Z"
+  },
+  "promotion_authorized": false,
+  "ranking_policy_binding": {
+    "binding_version": "v0",
+    "reference": "config/research/cross_sectional_relative_strength_non_bitcoin_perpetuals_v0_ranking_semantics_binding_v0.json",
+    "schema_version": "cross_sectional_ranking_semantics_binding.v0",
+    "selection_mode": "single_top1_by_score_desc",
+    "status": "BOUND"
+  },
+  "requires_full_panel_binding": true,
+  "requires_separate_operator_go_for_evaluation": true,
+  "runtime_authority": false,
+  "runtime_effect": "NONE",
+  "runtime_rewire_admissible": false,
+  "schema_version": "okx_full_panel_cross_sectional_ranking_strategy_archetype_bindings.v0",
+  "scope_classification": "OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_VERSIONED_BINDINGS_MATERIALIZATION_V0",
+  "scope_config_ref": "config/research/okx_full_panel_cross_sectional_ranking_strategy_archetype_evidence_class_scope_v0.json",
+  "selection_policy_binding": {
+    "binding_version": "v0",
+    "minimum_eligible_members_for_rank": 5,
+    "reference": "config/research/cross_sectional_relative_strength_non_bitcoin_perpetuals_v0_ranking_semantics_binding_v0.json",
+    "selection_mode": "single_top1_by_score_desc",
+    "status": "BOUND",
+    "switch_policy": "flat_then_wait_one_epoch_then_enter"
+  },
+  "shadow_authorized": false,
+  "slippage_model_binding": {
+    "note": "unchanged default unless separately ratified",
+    "slippage_bps": 5.0,
+    "slippage_model_version": "backtest_slippage_symmetric_v0",
+    "status": "BOUND"
+  },
+  "spot_allowed": false,
+  "strategy_archetype_id": "cross_sectional_ranking_selection",
+  "strategy_archetype_version": "v0",
+  "synthetic_spot_allowed": false,
+  "testnet_authorized": false,
+  "timeframe_binding": {
+    "bar_interval": "PT1H",
+    "status": "BOUND"
+  },
+  "training_period": {
+    "end": "2024-07-01T00:00:00Z",
+    "start": "2024-05-21T00:00:00Z",
+    "status": "BOUND"
+  },
+  "universe_binding": {
+    "binding_mode": "lifecycle_admissible_complete_panel_v0",
+    "bitcoin_direction_allowed": false,
+    "eligible_instrument_count_target": 118,
+    "futures_only": true,
+    "instrument_inclusion_exclusion_rules_ref": "config/research/okx_full_panel_dataset_promotion_registry_v0.json",
+    "narrow_adapter_disallowed": true,
+    "spot_allowed": false,
+    "status": "BOUND",
+    "synthetic_spot_allowed": false,
+    "venue_id": "okx"
+  },
+  "validation_period": {
+    "end": "2024-08-01T00:00:00Z",
+    "start": "2024-07-01T00:00:00Z",
+    "status": "BOUND"
+  }
+}
