@@ -19,6 +19,7 @@ SCOPE_STATUS = "NEW_EVIDENCE_CLASS_SCOPE_DEFINED"
 NEXT_CANONICAL_STEP = (
     "REQUEST_OPERATOR_GO_FOR_BOUNDED_NEW_EVIDENCE_CLASS_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0"
 )
+HISTORICAL_SCOPE_NEXT_CANONICAL_STEP = NEXT_CANONICAL_STEP
 PREVIOUS_DIGEST = "161d834e5153df78a0013b6e55c4c8bd4788c775811e3678f025104a307d78f1"
 NEW_DIGEST = "c5e3b5fe6b688b49dbd2b210fd63bdea79201d64820591f87091b4e20689a9dd"
 
@@ -79,13 +80,15 @@ class TestFinalResearchFleetNewEvidenceClassScopeV0ProgressRegistryContract:
         assert _field_value(text, "NEW_EVIDENCE_CLASS_BINDING_COMPLETION_DIGEST") == NEW_DIGEST
         assert _field_value(text, "HISTORICAL_STEP31F_BLOCKED_COMPLETION_DIGEST") == PREVIOUS_DIGEST
         assert _field_value(text, "NEW_EVIDENCE_CLASS_SCOPE_BINDING_READY") == "true"
-        assert _field_value(text, "NEXT_CANONICAL_STEP") == NEXT_CANONICAL_STEP
+        assert _field_value(text, "NEXT_CANONICAL_STEP") == "NO_RUNTIME_OR_PROMOTION_ACTION"
         assert authoritative_field_value("RETRY_UNCHANGED_BINDING_ALLOWED") == "false"
         assert (
             authoritative_field_value("EXIT_COMPANION_DRAFT_CANDIDATE_STATE")
             == "PARKED_COUNTS_ONLY_FAILED"
         )
-        assert authoritative_field_value("ECONOMIC_EVALUATION_AUTHORIZED") == "false"
+        assert authoritative_field_value("ECONOMIC_EVALUATION_AUTHORIZED") == (
+            "consumed_for_completed_offline_scope_only"
+        )
         assert authoritative_field_value("RUNTIME_AUTHORITY") == "false"
 
     def test_registry_closeout_section(self) -> None:
@@ -100,4 +103,4 @@ class TestFinalResearchFleetNewEvidenceClassScopeV0ProgressRegistryContract:
         assert _field_value(section, "NEW_BINDING_COMPLETION_DIGEST") == NEW_DIGEST
         assert _field_value(section, "RETRY_UNCHANGED_BINDING_ALLOWED") == "false"
         assert _field_value(section, "EVALUATION_EXECUTED") == "false"
-        assert _field_value(section, "NEXT_CANONICAL_STEP") == NEXT_CANONICAL_STEP
+        assert _field_value(section, "NEXT_CANONICAL_STEP") == HISTORICAL_SCOPE_NEXT_CANONICAL_STEP
