@@ -2094,6 +2094,7 @@ Dieser Current-State-Anhang ist Fortschritts- und Governance-Evidence. Er ersetz
 Gegenüber v4.4 wurde zusätzlich eine Governance-Klarstellung ergänzt:
 
 0. Post-PR-#4847 Current-State-Sync: Final Research Fleet offline economic evaluation `COMPLETE_ROBUSTNESS_FAILED`; `NEXT_STEP=NO_RUNTIME_OR_PROMOTION_ACTION`; früherer Next-Step `RATIFY_VERSIONED_FINAL_FLEET_BINDINGS_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE` superseded; keine Retry-/Reevaluation derselben Bindung ohne neue Evidence Class und explizites Operator-GO.
+0a. Post-Forensics Scope-Definition: Evidence Class `OKX_FULL_PANEL_CROSS_SECTIONAL_RANKING_STRATEGY_ARCHETYPE_V0` scope-defined only (`NEW_EVIDENCE_CLASS_SCOPE_DEFINED`); keine Offline-Evaluation autorisiert; kein Runtime/Promotion; narrow-adapter ETH-only evaluation explizit ausgeschlossen; separate Operator-GO vor jeder Evaluation erforderlich.
 1. `MAX_POSITIONS=1` und `SINGLE_SELECTED_FUTURE=true` sind ausdrücklich als initiale Safety-/Stability-Phase definiert, nicht als finale Produktgrenze.
 2. Das langfristige Zielmodell bleibt ein futures-only Multi-Instrument-Portfolio-System aus einem Top20-Futures-Universum.
 3. Multi-Future-Runtime bleibt bis zu separater Governance-Ratifikation, Portfolio-Risk-Binding, Multi-Instrument-Reconciliation, Unknown-Outcome-Recovery und Zero-Order-/Shadow-/Paper-/Testnet-Evidence ausdrücklich nicht autorisiert.
