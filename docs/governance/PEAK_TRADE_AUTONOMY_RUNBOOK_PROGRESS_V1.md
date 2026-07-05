@@ -46,6 +46,19 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `CLASS_D_V1_FLEET_TERMINAL_PARK_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_class_d_v1_fleet_terminal_park_ratification_v0_20260704T224245Z (MANIFEST_VERIFY_RC=0)` |
 | `CLASS_D_V1_FLEET_OPERATOR_DECISION_DOSSIER_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_class_d_v1_fleet_operator_decision_dossier_and_governance_disposition_read_only_v0_20260704T224019Z (MANIFEST_VERIFY_RC=0)` |
 | `CLASS_D_V1_FLEET_ARCHITECTURE_REVIEW_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_class_d_v1_fleet_architecture_review_read_only_v0_20260704T224444Z (MANIFEST_VERIFY_RC=0)` |
+| `EXIT_COMPANION_CANDIDATE_ID` | `class_d_v2_eth_v2_1h_sdfa_exit_companion_redesign` |
+| `EXIT_COMPANION_COUNTS_ONLY_REVALIDATION_STATUS` | `FAILED_INSUFFICIENT_TRADES` |
+| `EXIT_COMPANION_DRAFT_CANDIDATE_STATE` | `PARKED_COUNTS_ONLY_FAILED` |
+| `EXIT_COMPANION_CANDIDATE_RATIFIED` | `false` |
+| `EXIT_COMPANION_EVALUATION_AUTHORIZED` | `false` |
+| `EXIT_COMPANION_RUNTIME_AUTHORITY` | `false` |
+| `EXIT_COMPANION_TOTAL_CLOSED_TRADES` | `40` |
+| `EXIT_COMPANION_TRADE_COUNT_THRESHOLD` | `50` |
+| `EXIT_COMPANION_PREP_BUNDLE_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/class_d_v2_eth_v2_1h_exit_companion_candidate_ratification_prep_read_only_v0_20260704T234256Z (MANIFEST_VERIFY_RC=0)` |
+| `EXIT_COMPANION_COUNTS_ONLY_OUTPUT_BUNDLE` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_exit_companion_counts_only_revalidation_read_only_or_offline_only_v0_20260705T001007Z` |
+| `EXIT_COMPANION_COUNTS_ONLY_MANIFEST_VERIFY_RC` | `0` |
+| `EXIT_COMPANION_COUNTS_ONLY_FAIL_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/exit_companion_counts_only_fail_closeout_and_progress_registry_sync_v0_20260705T001150Z (MANIFEST_VERIFY_RC=0)` |
+| `EXIT_COMPANION_NEXT_ACTION` | `PARK_EXIT_COMPANION_DRAFT_OR_RESEARCH_REDESIGN_REQUIRED` |
 | `RUNBOOK_V4_4_RESEARCH_GOVERNANCE_RECONCILIATION_STATUS` | `COMPLETE` |
 | `OPERATOR_POLICY_DECISION` | `NO_NEW_CANDIDATE_HOLD_REINSTATE` |
 | `NO_NEW_CANDIDATE_HOLD` | `ACTIVE` |
@@ -3375,6 +3388,34 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `non_authorizing` | `true` |
 | `RUNTIME_EFFECT` | `NONE` |
 | `AUTHORITY_EFFECT` | `NONE` |
+
+---
+
+## Exit-Companion Counts-Only Fail Closeout (Class-D v2 ETH 1h)
+
+Docs-only closeout binding nach Counts-only-Revalidation-Fail für Draft-Kandidat `class_d_v2_eth_v2_1h_sdfa_exit_companion_redesign`. Keine Ratifikation, keine Economic Evaluation, keine Runtime-Authority.
+
+| Feld | Wert |
+|---|---|
+| `SCOPE_CLASSIFICATION` | `EXIT_COMPANION_COUNTS_ONLY_FAIL_CLOSEOUT_AND_PROGRESS_REGISTRY_SYNC_V0` |
+| `GO_TOKEN` | `GO_EXIT_COMPANION_COUNTS_ONLY_FAIL_CLOSEOUT_AND_PROGRESS_REGISTRY_SYNC_V0` |
+| `VERDICT` | `EXIT_COMPANION_COUNTS_ONLY_REVALIDATION_FAIL_INSUFFICIENT_TRADES` |
+| `EXIT_COMPANION_COUNTS_ONLY_REVALIDATION_STATUS` | `FAILED_INSUFFICIENT_TRADES` |
+| `EXIT_COMPANION_DRAFT_CANDIDATE_STATE` | `PARKED_COUNTS_ONLY_FAILED` |
+| `EXIT_COMPANION_CANDIDATE_RATIFIED` | `false` |
+| `EXIT_COMPANION_EVALUATION_AUTHORIZED` | `false` |
+| `EXIT_COMPANION_RUNTIME_AUTHORITY` | `false` |
+| `EXIT_COMPANION_TOTAL_ENTRY_EVENTS` | `54` |
+| `EXIT_COMPANION_TOTAL_CLOSED_TRADES` | `40` |
+| `EXIT_COMPANION_TRADE_COUNT_THRESHOLD` | `50` |
+| `EXIT_COMPANION_TRADE_COUNT_THRESHOLD_PASS` | `false` |
+| `EXIT_COMPANION_PREP_BUNDLE_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/class_d_v2_eth_v2_1h_exit_companion_candidate_ratification_prep_read_only_v0_20260704T234256Z (MANIFEST_VERIFY_RC=0)` |
+| `EXIT_COMPANION_COUNTS_ONLY_OUTPUT_BUNDLE` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/bounded_exit_companion_counts_only_revalidation_read_only_or_offline_only_v0_20260705T001007Z (MANIFEST_VERIFY_RC=0)` |
+| `NEXT_ACTION` | `PARK_EXIT_COMPANION_DRAFT_OR_RESEARCH_REDESIGN_REQUIRED` |
+| `AUTHORITY_EFFECT` | `DOCS_EVIDENCE_POINTER_ONLY` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
 
 ---
 
