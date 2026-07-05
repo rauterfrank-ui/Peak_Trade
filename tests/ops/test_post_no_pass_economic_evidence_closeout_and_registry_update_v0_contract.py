@@ -20,7 +20,7 @@ GOVERNANCE_DOC = (
     REPO_ROOT / "docs/governance/POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_AND_REGISTRY_UPDATE_V0.md"
 )
 CLOSEOUT_SECTION_PREFIX = "#### POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_AND_REGISTRY_UPDATE_V0"
-GO_TOKEN = "GO_POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_AND_REGISTRY_UPDATE_V0"
+CLOSEOUT_GO = "GO_POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_AND_REGISTRY_UPDATE_V0"
 PROCESS_CLASSIFICATION = "BOUNDED_POST_NO_PASS_FUTURES_OFFLINE_ECONOMIC_EVALUATION_EVIDENCE_CLOSEOUT_AND_REGISTRY_UPDATE_V0"
 SCOPE_CLASSIFICATION = "POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_AND_REGISTRY_UPDATE_V0"
 CURRENT_STATE = "POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_COMPLETE_V0"
@@ -80,7 +80,7 @@ class TestPostNoPassEconomicEvidenceCloseoutAndRegistryUpdateV0Contract:
         assert payload["status"] == "POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_COMPLETE"
         assert payload["process_classification"] == PROCESS_CLASSIFICATION
         assert payload["scope_classification"] == SCOPE_CLASSIFICATION
-        assert payload["go_token"] == GO_TOKEN
+        assert payload["go_token"] == CLOSEOUT_GO
         assert payload["fleet_verdict"] == FLEET_VERDICT
         assert payload["pass_count"] == 0
         assert payload["fail_count"] == 3
@@ -155,7 +155,7 @@ class TestPostNoPassEconomicEvidenceCloseoutAndRegistryUpdateV0Contract:
                 text,
                 "POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_AND_REGISTRY_UPDATE_V0_GO_TOKEN",
             )
-            == GO_TOKEN
+            == CLOSEOUT_GO
         )
         assert (
             _field_value(
@@ -190,7 +190,7 @@ class TestPostNoPassEconomicEvidenceCloseoutAndRegistryUpdateV0Contract:
         assert _field_value(section, "VERDICT") == CURRENT_STATE
         assert _field_value(section, "PROCESS_CLASSIFICATION") == PROCESS_CLASSIFICATION
         assert _field_value(section, "SCOPE_CLASSIFICATION") == SCOPE_CLASSIFICATION
-        assert _field_value(section, "GO_TOKEN") == GO_TOKEN
+        assert _field_value(section, "GO_TOKEN") == CLOSEOUT_GO
         assert _field_value(section, "FLEET_VERDICT") == FLEET_VERDICT
         assert _field_value(section, "PASS_COUNT") == "0"
         assert _field_value(section, "FAIL_COUNT") == "3"
