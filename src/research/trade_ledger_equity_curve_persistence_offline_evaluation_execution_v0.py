@@ -107,6 +107,39 @@ class PersistenceExecutionVerdict(str, Enum):
 
 
 @dataclass(frozen=True)
+class PersistenceExecutionScopeV0:
+    operator_go: str
+    scope_classification: str
+    expected_origin_main_sha: str
+    strategy_binding_ref: str
+    strategy_binding_digest: str
+    strategy_id: str
+    strategy_version: str
+    primary_failure_class: str
+    binding_materialization_config_rel: str
+    parameter_binding_rel: str
+    execution_id: str
+    durable_evidence_bundle_prefix: str
+    schema_version: str = SCHEMA_VERSION
+
+
+DEFAULT_PERSISTENCE_EXECUTION_SCOPE_V0 = PersistenceExecutionScopeV0(
+    operator_go=OPERATOR_GO,
+    scope_classification=SCOPE_CLASSIFICATION,
+    expected_origin_main_sha=EXPECTED_ORIGIN_MAIN_SHA,
+    strategy_binding_ref=STRATEGY_BINDING_REF,
+    strategy_binding_digest=STRATEGY_BINDING_DIGEST,
+    strategy_id=STRATEGY_ID,
+    strategy_version=STRATEGY_VERSION,
+    primary_failure_class=PRIMARY_FAILURE_CLASS,
+    binding_materialization_config_rel=BINDING_MATERIALIZATION_CONFIG_REL,
+    parameter_binding_rel=PARAMETER_BINDING_REL,
+    execution_id=EXECUTION_ID,
+    durable_evidence_bundle_prefix=DURABLE_EVIDENCE_BUNDLE_PREFIX,
+)
+
+
+@dataclass(frozen=True)
 class ExecutionResultV0:
     verdict: PersistenceExecutionVerdict
     evidence_root: Path
@@ -184,12 +217,14 @@ def verify_preconditions_v0(
     confirm: str,
     origin_main_sha: str | None = None,
     require_clean_worktree: bool = True,
+    scope: PersistenceExecutionScopeV0 | None = None,
 ) -> tuple[bool, tuple[str, ...]]:
+    active_scope = scope or DEFAULT_PERSISTENCE_EXECUTION_SCOPE_V0
     reasons: list[str] = []
-    if confirm != OPERATOR_GO:
+    if confirm != active_scope.operator_go:
         reasons.append(REASON_GO_TOKEN_INVALID)
     resolved = origin_main_sha or _resolve_origin_main_sha(repo_root)
-    if resolved != EXPECTED_ORIGIN_MAIN_SHA:
+    if resolved != active_scope.expected_origin_main_sha:
         reasons.append(f"{REASON_ORIGIN_MAIN_MISMATCH}:{resolved}")
     if require_clean_worktree and _worktree_dirty_count(repo_root) > 0:
         reasons.append(REASON_WORKTREE_DIRTY)
@@ -200,7 +235,9 @@ def verify_binding_materialization_preflight_v0(
     *,
     repo_root: Path,
     binding_config_path: Path,
+    scope: PersistenceExecutionScopeV0 | None = None,
 ) -> tuple[bool, tuple[str, ...], dict[str, Any]]:
+    active_scope = scope or DEFAULT_PERSISTENCE_EXECUTION_SCOPE_V0
     reasons: list[str] = []
     if not binding_config_path.is_file():
         return False, (REASON_BINDING_CONFIG_MISSING,), {}
@@ -214,9 +251,9 @@ def verify_binding_materialization_preflight_v0(
         reasons.append("ORDERS_ALLOWED_MUST_BE_FALSE")
     if binding.get("credentials_required") is not False:
         reasons.append("CREDENTIALS_REQUIRED_MUST_BE_FALSE")
-    if str(binding.get("strategy_binding_digest", "")) != STRATEGY_BINDING_DIGEST:
+    if str(binding.get("strategy_binding_digest", "")) != active_scope.strategy_binding_digest:
         reasons.append(REASON_BINDING_DIGEST_MISMATCH)
-    if str(binding.get("strategy_binding_ref", "")) != STRATEGY_BINDING_REF:
+    if str(binding.get("strategy_binding_ref", "")) != active_scope.strategy_binding_ref:
         reasons.append("STRATEGY_BINDING_REF_MISMATCH")
 
     materialized_refs = (
@@ -484,6 +521,7 @@ def _build_metric_summary(
     candidate_result_manifest_rc: int,
     trade_count: int,
     equity_point_count: int,
+    primary_failure_class: str,
 ) -> dict[str, Any]:
     return {
         "schema_version": "trade_ledger_equity_curve_metric_summary.v0",
@@ -502,7 +540,7 @@ def _build_metric_summary(
         "funding_drag": _metric_value(evidence_payload, "funding_drag"),
         "slippage_impact": _metric_value(evidence_payload, "slippage_impact"),
         "evidence_status": evidence_payload.get("status"),
-        "primary_failure_class": PRIMARY_FAILURE_CLASS,
+        "primary_failure_class": primary_failure_class,
         "primary_failure_class_unchanged": True,
         "economic_validity_offline_gate_pass": evidence_payload.get("gates_pass"),
         "candidate_manifest_verify_rc": candidate_result_manifest_rc,
@@ -516,21 +554,27 @@ def run_execution_v0(
     durable_evidence_root: Path,
     binding_config_path: Path | None = None,
     require_clean_worktree: bool = True,
+    scope: PersistenceExecutionScopeV0 | None = None,
 ) -> ExecutionResultV0:
+    active_scope = scope or DEFAULT_PERSISTENCE_EXECUTION_SCOPE_V0
     origin_main = _resolve_origin_main_sha(repo_root)
     pre_ok, pre_reasons = verify_preconditions_v0(
         repo_root=repo_root,
         confirm=confirm,
         origin_main_sha=origin_main,
         require_clean_worktree=require_clean_worktree,
+        scope=active_scope,
     )
     if not pre_ok:
         raise ValueError(f"PRECONDITION_FAILED:{pre_reasons}")
 
-    binding_path = binding_config_path or (repo_root / BINDING_MATERIALIZATION_CONFIG_REL)
+    binding_path = binding_config_path or (
+        repo_root / active_scope.binding_materialization_config_rel
+    )
     bind_ok, bind_reasons, binding = verify_binding_materialization_preflight_v0(
         repo_root=repo_root,
         binding_config_path=binding_path,
+        scope=active_scope,
     )
     if not bind_ok:
         raise ValueError(f"BINDING_PREFLIGHT_FAILED:{bind_reasons}")
@@ -542,18 +586,20 @@ def run_execution_v0(
     trade_ledger_fields = list(evidence_class_scope.get("trade_ledger_required_fields", []))
     equity_curve_fields = list(evidence_class_scope.get("equity_curve_required_fields", []))
 
-    evidence_root = durable_evidence_root / f"{DURABLE_EVIDENCE_BUNDLE_PREFIX}_{_utc_slug()}"
+    evidence_root = (
+        durable_evidence_root / f"{active_scope.durable_evidence_bundle_prefix}_{_utc_slug()}"
+    )
     evidence_root.mkdir(parents=True, exist_ok=False)
 
-    evaluation_id = f"{EXECUTION_ID}-{uuid.uuid4().hex[:12]}"
+    evaluation_id = f"{active_scope.execution_id}-{uuid.uuid4().hex[:12]}"
     binding_set = binding.get("binding_set", {})
-    config_path = repo_root / PARAMETER_BINDING_REL
+    config_path = repo_root / active_scope.parameter_binding_rel
     candidate_dir = evidence_root / "candidate_economic_evaluation"
 
     candidate_result = run_candidate_economic_evaluation_v0(
         repo_root=repo_root,
-        strategy_id=STRATEGY_ID,
-        strategy_version=STRATEGY_VERSION,
+        strategy_id=active_scope.strategy_id,
+        strategy_version=active_scope.strategy_version,
         config_path=config_path,
         output_dir=candidate_dir,
     )
@@ -564,7 +610,7 @@ def run_execution_v0(
     except EconomicViabilityEvidenceError as exc:
         raise ValueError(f"EVIDENCE_BUNDLE_LOAD_FAILED:{exc}") from exc
 
-    cfg = load_step31f_evaluation_config_v0(repo_root, STRATEGY_ID)
+    cfg = load_step31f_evaluation_config_v0(repo_root, active_scope.strategy_id)
     dataset_path, _manifest_path = extract_dataset_paths_from_config(cfg)
     bars = _load_bars(Path(dataset_path))
     real_binding = cfg.get("real_admissible_futures_evaluation_binding_v1", {})
@@ -573,7 +619,7 @@ def run_execution_v0(
 
     wiring_result = mv2_wiring.run_mv2_research_backtest_wiring_v1(
         bars,
-        strategy_id=STRATEGY_ID,
+        strategy_id=active_scope.strategy_id,
         cfg=cfg,
         instrument_id=instrument_id,
     )
@@ -588,9 +634,9 @@ def run_execution_v0(
     trade_records = materialize_trade_ledger_v1_records_v0(
         trades_df=trades_df,
         evaluation_id=evaluation_id,
-        candidate_id=STRATEGY_BINDING_REF,
-        strategy_id=STRATEGY_ID,
-        strategy_version=STRATEGY_VERSION,
+        candidate_id=active_scope.strategy_binding_ref,
+        strategy_id=active_scope.strategy_id,
+        strategy_version=active_scope.strategy_version,
         instrument_id=instrument_id,
         venue=venue,
         equity_curve=equity_curve,
@@ -603,7 +649,7 @@ def run_execution_v0(
     equity_records = materialize_equity_curve_v1_records_v0(
         equity_curve=equity_curve,
         evaluation_id=evaluation_id,
-        candidate_id=STRATEGY_BINDING_REF,
+        candidate_id=active_scope.strategy_binding_ref,
         instrument_id=instrument_id,
         input_digest=input_digest,
         required_fields=equity_curve_fields,
@@ -627,24 +673,28 @@ def run_execution_v0(
     _write_jsonl(trade_ledger_path, trade_records)
     _write_jsonl(equity_curve_path, equity_records)
 
+    resolved_primary_failure_class = str(
+        evidence_payload.get("primary_failure_class") or active_scope.primary_failure_class
+    )
     metric_summary = _build_metric_summary(
         evidence_payload=evidence_payload,
         candidate_result_manifest_rc=candidate_result.manifest_verify_rc,
         trade_count=len(trade_records),
         equity_point_count=len(equity_records),
+        primary_failure_class=resolved_primary_failure_class,
     )
 
     evaluation_summary = {
-        "schema_version": SCHEMA_VERSION,
-        "execution_id": EXECUTION_ID,
+        "schema_version": active_scope.schema_version,
+        "execution_id": active_scope.execution_id,
         "evaluation_id": evaluation_id,
-        "scope_classification": SCOPE_CLASSIFICATION,
-        "go_token_consumed": OPERATOR_GO,
+        "scope_classification": active_scope.scope_classification,
+        "go_token_consumed": active_scope.operator_go,
         "origin_main_sha": origin_main,
-        "strategy_binding_ref": STRATEGY_BINDING_REF,
-        "strategy_binding_digest": STRATEGY_BINDING_DIGEST,
+        "strategy_binding_ref": active_scope.strategy_binding_ref,
+        "strategy_binding_digest": active_scope.strategy_binding_digest,
         "evidence_class_id": EVIDENCE_CLASS_ID,
-        "primary_failure_class": PRIMARY_FAILURE_CLASS,
+        "primary_failure_class": resolved_primary_failure_class,
         "primary_failure_class_unchanged": True,
         "authority_effect": AUTHORITY_EFFECT,
         "runtime_effect": RUNTIME_EFFECT,
@@ -676,10 +726,10 @@ def run_execution_v0(
     (evidence_root / "selected_binding_snapshot.json").write_text(
         json.dumps(
             {
-                "strategy_binding_ref": STRATEGY_BINDING_REF,
-                "strategy_binding_digest": STRATEGY_BINDING_DIGEST,
+                "strategy_binding_ref": active_scope.strategy_binding_ref,
+                "strategy_binding_digest": active_scope.strategy_binding_digest,
                 "binding_set": binding_set,
-                "parameter_binding_ref": PARAMETER_BINDING_REL,
+                "parameter_binding_ref": active_scope.parameter_binding_rel,
             },
             indent=2,
             sort_keys=True,
@@ -705,7 +755,7 @@ def run_execution_v0(
                 "promotion_authorized=false",
                 "offline_only=true",
                 "no_output_jsonl_materialized_in_repo=true",
-                f"primary_failure_class={PRIMARY_FAILURE_CLASS}",
+                f"primary_failure_class={resolved_primary_failure_class}",
                 "primary_failure_class_unchanged=true",
             ]
         )
@@ -760,6 +810,8 @@ __all__ = [
     "ORDER_EFFECT",
     "EVIDENCE_CLASS_ID",
     "STRATEGY_BINDING_DIGEST",
+    "PersistenceExecutionScopeV0",
+    "DEFAULT_PERSISTENCE_EXECUTION_SCOPE_V0",
     "PersistenceExecutionVerdict",
     "verify_preconditions_v0",
     "verify_binding_materialization_preflight_v0",
