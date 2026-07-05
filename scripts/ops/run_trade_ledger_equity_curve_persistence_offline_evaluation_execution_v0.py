@@ -22,7 +22,7 @@ from src.research.trade_ledger_equity_curve_persistence_offline_evaluation_execu
     AUTHORITY_EFFECT,
     EXECUTION_AUTHORIZED,
     FAIL_CLOSED_REASON,
-    GO_TOKEN,
+    OPERATOR_GO,
     RUNTIME_EFFECT,
 )
 
@@ -35,7 +35,7 @@ def _die(msg: str, code: int = 2) -> None:
 def main() -> None:
     _die(
         f"{FAIL_CLOSED_REASON}: execution_authorized={EXECUTION_AUTHORIZED} "
-        f"go_token={GO_TOKEN} authority_effect={AUTHORITY_EFFECT} runtime_effect={RUNTIME_EFFECT}. "
+        f"operator_go={OPERATOR_GO} authority_effect={AUTHORITY_EFFECT} runtime_effect={RUNTIME_EFFECT}. "
         "Binding materialization defines owner/runner refs only; separate operator GO required "
         "after merge and green checks.",
         code=2,
