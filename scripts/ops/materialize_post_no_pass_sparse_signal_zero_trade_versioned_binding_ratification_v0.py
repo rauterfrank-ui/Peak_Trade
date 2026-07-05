@@ -27,7 +27,7 @@ DEFAULT_DURABLE_ARCHIVE_ROOT = Path(
 
 from src.research.post_no_pass_sparse_signal_zero_trade_versioned_binding_completion_v0 import (  # noqa: E402
     CONFIG_REL_PATH,
-    GO_TOKEN,
+    CONFIRM_GO,
     NEXT_EXECUTION_GO,
     ValidationVerdict,
     materialize_post_no_pass_sparse_signal_zero_trade_versioned_binding_completion_v0,
@@ -103,7 +103,7 @@ def run_materialization(
         ],
         "completion_digest": completion["completion_digest"],
         "failed_class_d_strategy_version": "v1",
-        "go_token_consumed": GO_TOKEN,
+        "go_token_consumed": CONFIRM_GO,
     }
     matrix_path.write_text(
         json.dumps(matrix_payload, indent=2, sort_keys=True) + "\n", encoding="utf-8"
@@ -118,7 +118,7 @@ def run_materialization(
                 f"- evidence_class_id: `{completion['evidence_class_id']}`",
                 f"- status: `{completion['status']}`",
                 f"- binding_class: `{completion['binding_class']}`",
-                f"- go_token_consumed: `{GO_TOKEN}`",
+                f"- go_token_consumed: `{CONFIRM_GO}`",
                 f"- next_execution_go: `{NEXT_EXECUTION_GO}`",
                 f"- completion_digest: `{completion['completion_digest']}`",
                 "",
@@ -151,7 +151,7 @@ def run_materialization(
         json.dumps(
             {
                 "consumed_at_utc": _utc_now_z(),
-                "go_token": GO_TOKEN,
+                "go_token": CONFIRM_GO,
                 "next_required_go": NEXT_EXECUTION_GO,
             },
             indent=2,

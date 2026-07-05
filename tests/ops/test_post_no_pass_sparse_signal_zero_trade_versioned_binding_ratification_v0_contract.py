@@ -10,7 +10,7 @@ from src.research.post_no_pass_sparse_signal_zero_trade_versioned_binding_comple
     BINDING_CLASS,
     CLASS_D_COMPLETION_REL_PATH,
     CONFIG_REL_PATH,
-    GO_TOKEN,
+    CONFIRM_GO,
     NEXT_EXECUTION_GO,
     REQUIRED_BINDING_FIELDS,
     STRATEGY_VERSION,
@@ -111,7 +111,7 @@ class TestPostNoPassSparseSignalZeroTradeVersionedBindingRatificationV0Contract:
         assert payload["bitcoin_direction_allowed"] is False
         assert payload["baseline_head"] == BASELINE_HEAD
         assert payload["baseline_pr"] == "4879"
-        assert payload["go_token"] == GO_TOKEN
+        assert payload["go_token"] == CONFIRM_GO
         assert payload["go_token_consumed"] is True
         assert payload["strategy_version"] == STRATEGY_VERSION
         assert payload["terminal_negative_evidence_unchanged"] is True
@@ -198,7 +198,7 @@ class TestPostNoPassSparseSignalZeroTradeVersionedBindingRatificationV0Contract:
         )
         assert f"`VERDICT` | `{SCOPE_STATUS}`" in body
         assert f"`EVIDENCE_CLASS_ID` | `{EVIDENCE_CLASS_ID}`" in body
-        assert f"`OPERATOR_GO` | `{GO_TOKEN}`" in body
+        assert f"`OPERATOR_GO` | `{CONFIRM_GO}`" in body
         assert "`GO_TOKEN_CONSUMED` | `true`" in body
         assert "`ECONOMIC_EVALUATION_AUTHORIZED` | `false`" in body
         assert f"`REQUIRED_NEXT_GO_FOR_EXECUTION` | `{NEXT_EXECUTION_GO}`" in body
@@ -236,7 +236,7 @@ class TestPostNoPassSparseSignalZeroTradeVersionedBindingRatificationV0Contract:
                 text,
                 "POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_VERSIONED_BINDING_RATIFICATION_V0_GO_TOKEN",
             )
-            == GO_TOKEN
+            == CONFIRM_GO
         )
         assert (
             _field_value(
@@ -258,7 +258,7 @@ class TestPostNoPassSparseSignalZeroTradeVersionedBindingRatificationV0Contract:
         assert _field_value(section, "VERDICT") == SCOPE_STATUS
         assert _field_value(section, "PROCESS_CLASSIFICATION") == PROCESS_CLASSIFICATION
         assert _field_value(section, "EVIDENCE_CLASS_ID") == EVIDENCE_CLASS_ID
-        assert _field_value(section, "GO_TOKEN") == GO_TOKEN
+        assert _field_value(section, "GO_TOKEN") == CONFIRM_GO
         assert _field_value(section, "GO_TOKEN_CONSUMED") == "true"
         assert _field_value(section, "ECONOMIC_EVALUATION_AUTHORIZED") == "false"
         assert _field_value(section, "SAME_BINDING_RETRY_ALLOWED") == "false"

@@ -51,7 +51,7 @@ CLASS_D_COMPLETION_REL_PATH = (
 )
 CANONICAL_SERIALIZATION_VERSION = "research_binding_completion_canonical_json_v1"
 
-GO_TOKEN = "GO_POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_VERSIONED_BINDING_RATIFICATION_V0"
+CONFIRM_GO = "GO_POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_VERSIONED_BINDING_RATIFICATION_V0"
 NEXT_EXECUTION_GO = (
     "GO_POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0"
 )
@@ -452,7 +452,7 @@ def materialize_post_no_pass_sparse_signal_zero_trade_versioned_binding_completi
         "fleet_id": FLEET_ID,
         "fleet_version": FLEET_VERSION,
         "futures_only": FUTURES_ONLY,
-        "go_token": GO_TOKEN,
+        "go_token": CONFIRM_GO,
         "go_token_consumed": True,
         "governance_ref": GOVERNANCE_REL_PATH,
         "implementation_digest": implementation_digest,
@@ -515,7 +515,7 @@ def validate_post_no_pass_sparse_signal_zero_trade_versioned_binding_completion_
 
     if completion.get("schema_version") != SCHEMA_VERSION:
         reasons.append("SCHEMA_VERSION_MISMATCH")
-    if completion.get("go_token") != GO_TOKEN:
+    if completion.get("go_token") != CONFIRM_GO:
         reasons.append("GO_TOKEN_MISMATCH")
     if completion.get("economic_evaluation_authorized") is not False:
         reasons.append("ECONOMIC_EVALUATION_MUST_BE_FALSE")
