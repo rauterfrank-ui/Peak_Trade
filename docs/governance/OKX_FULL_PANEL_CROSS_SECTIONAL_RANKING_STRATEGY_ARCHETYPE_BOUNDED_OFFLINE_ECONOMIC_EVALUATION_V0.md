@@ -49,7 +49,7 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | 1. Stammt 2024 aus ratifizierten Bindings? | `true` — PR #4850 `okx_full_panel_cross_sectional_ranking_strategy_archetype_bindings_v0.json` |
 | 2. Periodenrollen eindeutig? | `true` — DATA=2024-05-01..2024-09-01; TRAINING=2024-05-21..2024-07-01; VALIDATION=2024-07-01..2024-08-01; OOS=2024-08-01..2024-09-01 |
 | 3. Abdeckung manifest-/digest-verifizierbar? | `true` — panel manifest + promoted dataset digest `0bfa4df4…` |
-| 4. Konsistent für alle Sektoren? | `true` — single archetype `cross_sectional_ranking_selection/v0`; keine Multi-Kandidaten-Periodendivergenz |
+| 4. Konsistent für alle Sektoren? | `true` — single archetype `cross_sectional_ranking_selection&#47;v0`; keine Multi-Kandidaten-Periodendivergenz |
 | 5. Kein ad-hoc Override / kein 2025/2026-Shift? | `true` — `PERIOD_BINDING_VERIFICATION.json` bestätigt |
 
 | Periodenrolle | Start (UTC) | Ende (UTC) | Binding-Feld |
