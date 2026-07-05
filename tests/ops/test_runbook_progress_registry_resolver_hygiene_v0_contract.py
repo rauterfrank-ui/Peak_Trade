@@ -22,6 +22,7 @@ from tests.ops.runbook_progress_registry_contract_helpers_v1 import (
 ROW_RE = re.compile(r"^\| `([^`]+)` \| `([^`]*)` \|$")
 VALID_ENTRY_CLASSES = frozenset(item.value for item in RegistryEntryClass)
 AUTHORITATIVE_NEXT_STEP = "NEW_RATIFIED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_REQUIRED"
+CURRENT_ADMISSIBLE_SCOPE = "BOUNDED_POST_NO_PASS_FUTURES_RESEARCH_SCOPE_DEFINITION_V0"
 CURRENT_STATE = "POST_PR_4865_4872_PROGRESS_REGISTRY_CLOSEOUT_COMPLETE_V0"
 ORIGIN_MAIN = "fe2c334d943da30e097645e178abb970b253fae5"
 
@@ -73,7 +74,9 @@ class TestRunbookProgressRegistryResolverHygieneV0:
     def test_safety_blockers_remain_active(self) -> None:
         assert authoritative_field_value("ECONOMIC_VALIDITY_OFFLINE_GATE_PASS") == "false"
         assert authoritative_field_value("RUNTIME_REWIRE_ADMISSIBLE") == "false"
-        assert authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE") == "NONE"
+        assert (
+            authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE") == CURRENT_ADMISSIBLE_SCOPE
+        )
         assert authoritative_field_value("NO_NEW_CANDIDATE_HOLD") == "ACTIVE"
         assert authoritative_field_value("ECONOMIC_EVALUATION_AUTHORIZED") == "false"
 

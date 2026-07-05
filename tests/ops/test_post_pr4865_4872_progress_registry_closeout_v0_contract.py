@@ -17,6 +17,8 @@ from tests.ops.runbook_progress_registry_contract_helpers_v1 import (
 
 CLOSEOUT_SECTION_PREFIX = "#### POST_PR_4865_4872_PROGRESS_REGISTRY_CLOSEOUT_V0"
 GLOBAL_NEXT_STEP = "NEW_RATIFIED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_REQUIRED"
+HISTORICAL_CLOSEOUT_NEXT_STEP = GLOBAL_NEXT_STEP
+CURRENT_ADMISSIBLE_SCOPE = "BOUNDED_POST_NO_PASS_FUTURES_RESEARCH_SCOPE_DEFINITION_V0"
 CURRENT_STATE = "POST_PR_4865_4872_PROGRESS_REGISTRY_CLOSEOUT_COMPLETE_V0"
 ORIGIN_MAIN = "fe2c334d943da30e097645e178abb970b253fae5"
 MERGED_PRS = (
@@ -55,7 +57,9 @@ class TestPostPr4865To4872AuthoritativeGlobalState:
         assert authoritative_field_value("NEXT_CANONICAL_STEP") == GLOBAL_NEXT_STEP
         assert authoritative_field_value("NEXT_CANONICAL_ACTION") == GLOBAL_NEXT_STEP
         assert authoritative_field_value("GLOBAL_RUNBOOK_NEXT_STEP") == GLOBAL_NEXT_STEP
-        assert authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE") == "NONE"
+        assert (
+            authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE") == CURRENT_ADMISSIBLE_SCOPE
+        )
         assert authoritative_field_value("ECONOMIC_VALIDITY_OFFLINE_GATE_PASS") == "false"
         assert authoritative_field_value("RUNTIME_REWIRE_ADMISSIBLE") == "false"
         assert authoritative_field_value("LIVE_AUTHORIZED") == "false"
@@ -95,8 +99,8 @@ class TestPostPr4865To4872CloseoutSection:
         assert _field_value(section, "RUNTIME_REWIRE_ADMISSIBLE") == "false"
         assert _field_value(section, "ECONOMIC_VALIDITY_OFFLINE_GATE_PASS") == "false"
         assert _field_value(section, "CURRENT_ADMISSIBLE_NEXT_SCOPE") == "NONE"
-        assert _field_value(section, "NEXT_CANONICAL_STEP") == GLOBAL_NEXT_STEP
-        assert _field_value(section, "STRATEGIC_BLOCKER") == GLOBAL_NEXT_STEP
+        assert _field_value(section, "NEXT_CANONICAL_STEP") == HISTORICAL_CLOSEOUT_NEXT_STEP
+        assert _field_value(section, "STRATEGIC_BLOCKER") == HISTORICAL_CLOSEOUT_NEXT_STEP
         assert _field_value(section, "PR4872_CLOSEOUT_ROLE") == (
             "RESOLVER_REGISTRY_HYGIENE_PREREQUISITE"
         )
