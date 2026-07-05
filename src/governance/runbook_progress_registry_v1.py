@@ -5,9 +5,9 @@ Authoritative current status is resolved only from explicitly classified current
 owner sections. Historical step snapshots and legacy aliases never produce global
 authority.
 
-Post-no-pass inconclusive metric materialization path diagnostics evidence execution (v0) authoritative fields live in
+Post-no-pass metric materialization diagnostics derived next research scope definition (v0) authoritative fields live in
 Registry-Metadaten only (``CURRENT_STATE`` =
-``POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_EXECUTION_COMPLETE_V0``).
+``POST_NO_PASS_METRIC_MATERIALIZATION_DIAGNOSTICS_DERIVED_NEXT_RESEARCH_SCOPE_DEFINITION_COMPLETE_V0``).
 Historical ``####`` sections do not override global ``NEXT_CANONICAL_STEP``.
 """
 
