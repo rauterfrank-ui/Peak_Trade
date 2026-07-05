@@ -42,7 +42,7 @@ Peak_Trade/
 
 Optional (falls noch nicht angelegt, aber geplant):
 
-- `src&#47;data&#47;examples.py` – reine Doku-Beispiele (NotImplementedError).
+- `src&#47;data&#47;examples.py` – reine Doku-Beispiele (NotImplementedError). <!-- pt:ref-target-ignore -->
 
 ---
 

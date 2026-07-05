@@ -162,7 +162,7 @@ Dieses Modul ist die Grundlage für alle realistischen Backtests und später fü
 
 ---
 
-### 3.6 `src&#47;features&#47;ecm.py` – Armstrong/ECM-Overlay
+### 3.6 `src&#47;features&#47;ecm.py` – Armstrong/ECM-Overlay <!-- pt:ref-target-ignore -->
 
 - Definiert eine Struktur für ECM-Turning-Points (Datum, Label, Fenstergröße).  
 - Fügt einem OHLCV-DataFrame Flag-Spalten hinzu, z. B.:

@@ -310,7 +310,7 @@ Die folgende Liste dient als Fahrplan, wenn du später am Projekt weiterarbeites
    - Diese als „Referenzläufe“ etablieren.
 
 2. **Backtest‑Ergebnisse versionieren**
-   - Standard‑Output‑Ordner z. B. `reports/`.
+   - Standard‑Output‑Ordner z. B. `reports&#47;`.
    - Pro Lauf:
      - Datum + Commit‑Hash + Portfolio‑Name im Pfad/Dateinamen.
      - Summary als JSON/CSV ablegen.

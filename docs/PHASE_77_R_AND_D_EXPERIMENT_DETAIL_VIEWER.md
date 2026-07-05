@@ -38,7 +38,7 @@ Phase 77 vertieft den in Phase 76 eingeführten R&D-Hub und ermöglicht eine det
   * Equity-Charts (`*_equity.png`)
   * Drawdown-Charts (`*_drawdown.png`)
 * Direkte Links aus dem Dashboard zu den Report-Dateien
-* Suche in mehreren Report-Verzeichnissen (`reports/`, `reports&#47;r_and_d_experiments&#47;`, `reports&#47;portfolio&#47;`, `reports&#47;ideas&#47;`)
+* Suche in mehreren Report-Verzeichnissen (`reports&#47;`, `reports&#47;r_and_d_experiments&#47;`, `reports&#47;portfolio&#47;`, `reports&#47;ideas&#47;`)
 
 ### API-Erweiterung (v1.2)
 
