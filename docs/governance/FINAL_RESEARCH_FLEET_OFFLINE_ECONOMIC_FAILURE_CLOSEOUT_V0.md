@@ -62,8 +62,8 @@ Keine Runtime, keine Orders, keine Credentials, kein Scheduler.
 
 | Feld | Wert |
 |---|---|
-| Source evaluation bundle | `implementation/bounded_new_evidence_class_offline_economic_evaluation_execution_v0_20260705T003528Z/` |
-| PR4846 closeout bundle | `implementation/bounded_new_evidence_class_offline_economic_evaluation_pr_squash_merge_closeout_v0_20260705T004825Z/` |
-| Progress registry closeout bundle | `implementation/final_research_fleet_offline_failure_progress_registry_closeout_v0_<timestamp>/` |
+| Source evaluation bundle | `implementation&#47;bounded_new_evidence_class_offline_economic_evaluation_execution_v0_20260705T003528Z&#47;` |
+| PR4846 closeout bundle | `implementation&#47;bounded_new_evidence_class_offline_economic_evaluation_pr_squash_merge_closeout_v0_20260705T004825Z&#47;` |
+| Progress registry closeout bundle | `implementation&#47;final_research_fleet_offline_failure_progress_registry_closeout_v0_<timestamp>&#47;` |
 
 Weitere Economic Evaluation nur mit neuer Evidence-Class-Scope und explizitem Operator-GO. Unveränderte Retry-/Reevaluation desselben Bindings (`161d834e…`, `c5e3b5fe…`) bleibt blockiert.
