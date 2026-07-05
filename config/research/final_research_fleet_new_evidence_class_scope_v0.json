@@ -1,0 +1,217 @@
+{
+  "authority_effect": "NONE",
+  "binding_ready": true,
+  "binding_spec_status": "NEW_EVIDENCE_CLASS_SCOPE_DEFINED",
+  "bitcoin_direction_allowed": false,
+  "candidate_ratified": false,
+  "candidates": [
+    {
+      "binding_semantic_digest": "c6ba71f16b654113d33f3fe504987347465d281f03299c4c46ca746eee675175",
+      "canonical_candidate_identifier": "trend_following/v1",
+      "new_config_digest": "e227f62e2c29c892f6cd05659a110f6d98b385a3e1824865fb07cea04171027b",
+      "new_data_digest": "0bfa4df4221a2ec27625c50e3675302ffa51e4b54cddcf81ca5ad13cc15cf8b7",
+      "previous_binding_semantic_digest": "ea3bde558a2ffd903ed7b7f678cb0cf0a8a4b1f1bb7f5978f7b5bc8f69ab8478",
+      "previous_config_digest": "dbb246f649709e370c69a63cf3e741878a29bb053374134e702d2c344cbe71d0",
+      "previous_data_digest": "815b33162adaa2ffd0834f129621f1942b8cb61bc19a6d6220b81b15b65578cc",
+      "strategy_id": "trend_following",
+      "strategy_version": "v1"
+    },
+    {
+      "binding_semantic_digest": "e8f903b575d737c7fafb3bebbf4784a9b9b77fc33f819da8c98a0538200ae2c2",
+      "canonical_candidate_identifier": "bollinger_bands/v1",
+      "new_config_digest": "3c2cf1944af192420facba57d864fdfd29257c3fd8c51c15f82ebecd4345e7f2",
+      "new_data_digest": "0bfa4df4221a2ec27625c50e3675302ffa51e4b54cddcf81ca5ad13cc15cf8b7",
+      "previous_binding_semantic_digest": "b7d5e1d7bbdd23134285aea337ae645a8cd8b0af17286e317ae60f1860f71451",
+      "previous_config_digest": "cb9873d09e762ae9d3155b64be444cd7d317865645a1c3c14028ba2e0cf44b5a",
+      "previous_data_digest": "815b33162adaa2ffd0834f129621f1942b8cb61bc19a6d6220b81b15b65578cc",
+      "strategy_id": "bollinger_bands",
+      "strategy_version": "v1"
+    },
+    {
+      "binding_semantic_digest": "d8bb5bc003076f0e1cbe6d8f2b862bbe183a9fc53a3a0a628b5d7438514dc505",
+      "canonical_candidate_identifier": "momentum_1h/v1",
+      "new_config_digest": "cca343dbb7aa0405a8ffac3c67f44724434f8598cdc175333d5cfa405390d94a",
+      "new_data_digest": "0bfa4df4221a2ec27625c50e3675302ffa51e4b54cddcf81ca5ad13cc15cf8b7",
+      "previous_binding_semantic_digest": "a8b7d87100d7167205258056144690273cda54769c9c29fcf8e91d4477318730",
+      "previous_config_digest": "d92f0542eb680df599cfac4cc7b3dadc2a7d17ffa0ebe963ea75a30d2714c244",
+      "previous_data_digest": "815b33162adaa2ffd0834f129621f1942b8cb61bc19a6d6220b81b15b65578cc",
+      "strategy_id": "momentum_1h",
+      "strategy_version": "v1"
+    }
+  ],
+  "canonical_serialization_version": "research_new_evidence_class_scope_canonical_json_v1",
+  "class_d_owner_mixing_allowed": false,
+  "digest_semantics": {
+    "scope_digest": "SCOPE_BODY_CANONICAL_JSON_v0",
+    "semantic_digest": "SCOPE_SEMANTIC_PAYLOAD_v0"
+  },
+  "economic_evaluation_authorized": false,
+  "economic_evaluation_executed": false,
+  "evidence_class": "NEW_VERSIONED_RESEARCH_SCOPE_NOT_UNCHANGED_RETRY",
+  "evidence_class_binding": {
+    "evidence_class_id": "FINAL_RESEARCH_FLEET_OKX_FULL_PANEL_NEW_EVIDENCE_CLASS_V0",
+    "evidence_class_version": "v0",
+    "execution_evidence_bundle_prefix": "bounded_final_research_fleet_okx_full_panel_offline_economic_evaluation_v0",
+    "historical_step31f_evidence_class": "step31f_final_research_fleet_v0_offline_economic_validity_evaluation_v0",
+    "is_unchanged_step31f_retry": false,
+    "new_evidence_class_required_for_reexecution": true
+  },
+  "evidence_class_id": "FINAL_RESEARCH_FLEET_OKX_FULL_PANEL_NEW_EVIDENCE_CLASS_V0",
+  "excluded_paths": {
+    "class_d_binding_completion_ref": "config/research/final_research_fleet_class_d_versioned_binding_completion_v0.json",
+    "class_d_owner_mixing": false,
+    "exit_companion_candidate_id": "class_d_v2_eth_v2_1h_sdfa_exit_companion_redesign",
+    "policy_exception_allowed": false,
+    "unchanged_step31f_retry": false
+  },
+  "final_research_fleet": [
+    "trend_following",
+    "bollinger_bands",
+    "momentum_1h"
+  ],
+  "fleet_id": "final_research_fleet_v0",
+  "fleet_version": "v0",
+  "future_execution_authority": {
+    "candidate_ratified": false,
+    "evaluation_authorized": false,
+    "execution_go_token_documented_only": "GO_BOUNDED_VERSIONED_FINAL_RESEARCH_FLEET_BINDINGS_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE_V0",
+    "execution_not_authorized_by_this_scope": true,
+    "execution_runner_ref": "scripts/ops/run_final_research_fleet_okx_full_panel_versioned_binding_and_offline_economic_evaluation_v0.py",
+    "materialization_owner_ref": "src/research/final_research_fleet_okx_full_panel_versioned_binding_and_offline_economic_evaluation_v0.py",
+    "runtime_authority": false,
+    "scope_definition_go_token": "GO_BOUNDED_FINAL_RESEARCH_FLEET_NEW_EVIDENCE_CLASS_SCOPE_DEFINITION_PR_V0"
+  },
+  "futures_only": true,
+  "new_binding_completion_digest": "c5e3b5fe6b688b49dbd2b210fd63bdea79201d64820591f87091b4e20689a9dd",
+  "new_binding_completion_ref": "config/research/final_research_fleet_okx_full_panel_versioned_binding_completion_v0.json",
+  "new_binding_delta_dimensions": [
+    "dataset_binding",
+    "period_binding",
+    "instrument_binding",
+    "evidence_class_binding",
+    "implementation_digest"
+  ],
+  "new_offline_evaluation_scope_ref": "config/research/final_research_fleet_okx_full_panel_offline_economic_evaluation_scope_ratification_v0.json",
+  "non_authorizing": true,
+  "offline_only": true,
+  "order_effect": "NONE",
+  "parameter_binding_unchanged": true,
+  "policy_threshold_lowering_allowed": false,
+  "previous_completion_config_ref": "config/research/final_research_fleet_versioned_binding_completion_v0.json",
+  "previous_completion_digest": "161d834e5153df78a0013b6e55c4c8bd4788c775811e3678f025104a307d78f1",
+  "previous_completion_status": "TERMINAL_FAILED_OR_ROBUSTNESS_FAILED",
+  "prohibited_actions": [
+    "UNMODIFIED_STEP31F_BINDING_RETRY",
+    "FAILED_BINDING_RETRY",
+    "POLICY_EXCEPTION",
+    "CLASS_D_OWNER_MIXING",
+    "POLICY_THRESHOLD_LOWERING",
+    "PARAMETER_OPTIMIZATION",
+    "ECONOMIC_EVALUATION_EXECUTION_IN_THIS_SCOPE",
+    "RUNTIME_REWIRE",
+    "RUNTIME",
+    "SHADOW",
+    "PAPER",
+    "TESTNET",
+    "ORDERS"
+  ],
+  "promotion_authorized": false,
+  "retry_unchanged_binding_allowed": false,
+  "reuse_decision": {
+    "binding_completion_owner": "REUSE:config/research/final_research_fleet_okx_full_panel_versioned_binding_completion_v0.json",
+    "execution_owner": "REUSE:src/research/final_research_fleet_okx_full_panel_versioned_binding_and_offline_economic_evaluation_v0.py",
+    "new_parallel_ssot_created": false,
+    "offline_scope_owner": "REUSE:config/research/final_research_fleet_okx_full_panel_offline_economic_evaluation_scope_ratification_v0.json",
+    "step31f_runner_rebind_for_unchanged_retry": false
+  },
+  "runtime_authority": false,
+  "runtime_effect": "NONE",
+  "schema_version": "final_research_fleet_new_evidence_class_scope.v0",
+  "scope_classification": "BOUNDED_FINAL_RESEARCH_FLEET_NEW_EVIDENCE_CLASS_SCOPE_DEFINITION_V0",
+  "scope_digest": "64da0eae56a70ad0661398db14d712f6d58d6ea9f6ad0dbb73f3de2b01d11d67",
+  "scope_id": "final_research_fleet_new_evidence_class_scope_v0",
+  "scope_version": "v0",
+  "semantic_digest": "00dd4140c3302f6703203c5c02e46ff9351345d8c8a83ba1d9ca03e173656e96",
+  "shared_binding_delta": {
+    "dataset_binding": {
+      "changed": true,
+      "new": {
+        "dataset_content_digest": "0bfa4df4221a2ec27625c50e3675302ffa51e4b54cddcf81ca5ad13cc15cf8b7",
+        "dataset_id": "okx_full_panel_historical_funding_archive_v0",
+        "dataset_version": "v0"
+      },
+      "previous": {
+        "data_digest": "815b33162adaa2ffd0834f129621f1942b8cb61bc19a6d6220b81b15b65578cc",
+        "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1",
+        "dataset_version": "v1"
+      }
+    },
+    "economic_policy_binding": {
+      "changed": false,
+      "note": "economic_validity_policy_v1 unchanged fleet-wide"
+    },
+    "evidence_class_binding": {
+      "changed": true,
+      "new": "FINAL_RESEARCH_FLEET_OKX_FULL_PANEL_NEW_EVIDENCE_CLASS_V0",
+      "previous": "step31f_pit_cross_sectional_v0"
+    },
+    "execution_model_binding": {
+      "changed": false,
+      "note": "backtest_execution_v0 roundtrip_cost_bps=40.0 unchanged"
+    },
+    "fee_model_binding": {
+      "changed": false,
+      "note": "backtest_fee_taker_symmetric_v0 fee_bps=10.0 unchanged"
+    },
+    "funding_model_binding": {
+      "changed": false,
+      "note": "backtest_funding_perpetual_interval_v1 bind=true unchanged"
+    },
+    "implementation_digest": {
+      "changed": true,
+      "new": "7c8dc31d1e5c1745334fb9d32ae27c363c9b85c6c57ce8db293c331d4c2272e7",
+      "previous": "0c6a4ec7c588e9d64a184b44c086b53f3b2ed9b6a680af85124696b21ace8129"
+    },
+    "instrument_binding": {
+      "changed": true,
+      "new": {
+        "binding_mode": "lifecycle_admissible_complete_panel_v0",
+        "eligible_instrument_count": 118
+      },
+      "previous": {
+        "binding_mode": "production_universe_manifest_cross_sectional",
+        "eligible_instrument_count": 6
+      }
+    },
+    "parameter_binding": {
+      "changed": false,
+      "note": "strategy parameters unchanged per candidate; not admissible as sole novelty"
+    },
+    "period_binding": {
+      "changed": true,
+      "new": {
+        "coverage_period_end_utc": "2024-09-01T00:00:00Z",
+        "coverage_period_start_utc": "2024-05-01T00:00:00Z"
+      },
+      "previous": {
+        "coverage_period_end_utc": "2024-06-01T01:00:00Z",
+        "coverage_period_start_utc": "2024-05-25T00:00:00Z",
+        "period_digest": "7f12bc0a9590b19f6fa8a6f01705ac661e6095c6d7502c8a770ecf12e430137c"
+      }
+    },
+    "slippage_model_binding": {
+      "changed": false,
+      "note": "backtest_slippage_symmetric_v0 slippage_bps=5.0 unchanged"
+    }
+  },
+  "spot_allowed": false,
+  "synthetic_spot_allowed": false,
+  "unchanged_dimensions_not_admissible_as_novelty": [
+    "parameter_binding",
+    "fee_model_binding",
+    "slippage_model_binding",
+    "funding_model_binding",
+    "execution_model_binding",
+    "economic_policy_binding"
+  ]
+}
