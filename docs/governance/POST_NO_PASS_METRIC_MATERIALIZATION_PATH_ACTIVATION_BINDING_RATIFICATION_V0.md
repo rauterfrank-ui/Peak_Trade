@@ -101,7 +101,7 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `config_digest` | `BOUND` |
 | `data_digest` | `BOUND` |
 | `metric_materialization_path_ref` | `BOUND` (`scripts/ops/run_economic_viability_evidence_evaluation_v1.py`) |
-| `metric_materialization_contract_ref` | `BOUND` (`src/backtest/economic_viability_evidence_v1.py#economic_viability_evidence_v1`) |
+| `metric_materialization_contract_ref` | `BOUND` (`src&#47;backtest&#47;economic_viability_evidence_v1.py#economic_viability_evidence_v1`) |
 | `materialized_metric_schema_ref` | `BOUND` (`economic_viability_evidence_v1.json#v1`) |
 
 ## E. Blocked Actions
