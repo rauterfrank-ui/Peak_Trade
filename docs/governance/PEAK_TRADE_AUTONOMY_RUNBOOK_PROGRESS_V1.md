@@ -195,7 +195,7 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_MATERIALIZATION_REQUIRED_SCOPE_V0_CONFIG_REF` | `config/research/trade_ledger_equity_curve_execution_binding_materialization_required_scope_v0.json` |
 | `TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_MATERIALIZATION_REQUIRED_SCOPE_V0_GOVERNANCE_REF` | `docs/governance/TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_MATERIALIZATION_REQUIRED_SCOPE_V0.md` |
 | `TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_MATERIALIZATION_REQUIRED_SCOPE_V0_GO_TOKEN` | `GO_TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_SELECTION_SCOPE_PR_V0` |
-| `TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_MATERIALIZATION_REQUIRED_SCOPE_V0_PARTIAL_CANDIDATE` | `trend_following/v1` |
+| `TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_MATERIALIZATION_REQUIRED_SCOPE_V0_PARTIAL_CANDIDATE` | `trend_following&#47;v1` |
 | `TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_MATERIALIZATION_REQUIRED_SCOPE_V0_PARTIAL_BINDING_DIGEST` | `ea3bde558a2ffd903ed7b7f678cb0cf0a8a4b1f1bb7f5978f7b5bc8f69ab8478` |
 | `TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_MATERIALIZATION_REQUIRED_SCOPE_V0_MISSING_ARTIFACTS` | `execution_owner_ref,execution_runner_ref,trade_ledger_v1_jsonl_export_owner_ref,equity_curve_v1_jsonl_export_owner_ref` |
 | `TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_MATERIALIZATION_REQUIRED_SCOPE_V0_NEXT_REQUIRED_SCOPE` | `TRADE_LEDGER_EQUITY_CURVE_OFFLINE_EVALUATION_EXECUTION_OWNER_AND_RUNNER_MATERIALIZATION_V0` |
@@ -4143,7 +4143,7 @@ Docs-only governance ratification of bounded offline evaluation scope for future
 
 #### TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_MATERIALIZATION_REQUIRED_SCOPE_V0
 
-Fail-closed governance gap definition after trade ledger equity curve offline evaluation execution preflight (20260705T075246Z). Documents deterministically prioritized partial binding trend_following/v1 from final_research_fleet_versioned_binding_completion_v0 and missing execution owner/runner/ledger-export artifacts. No evaluation, no persistence, no promotion, no runtime. Primary Failure Class NEGATIVE_RAW_EDGE unchanged.
+Fail-closed governance gap definition after trade ledger equity curve offline evaluation execution preflight (20260705T075246Z). Documents deterministically prioritized partial binding trend_following&#47;v1 from final_research_fleet_versioned_binding_completion_v0 and missing execution owner/runner/ledger-export artifacts. No evaluation, no persistence, no promotion, no runtime. Primary Failure Class NEGATIVE_RAW_EDGE unchanged.
 
 | Feld | Wert |
 |---|---|
@@ -4156,7 +4156,7 @@ Fail-closed governance gap definition after trade ledger equity curve offline ev
 | `EVIDENCE_CLASS_ID` | `TRADE_LEDGER_AND_EQUITY_CURVE_PERSISTENCE_V0` |
 | `PARENT_OFFLINE_EVALUATION_SCOPE_PR` | `4857` |
 | `PREFLIGHT_FAIL_CLOSED_BUNDLE` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/trade_ledger_equity_curve_persistence_offline_evaluation_execution_v0_20260705T075246Z` |
-| `PARTIAL_CANDIDATE_ID` | `trend_following/v1` |
+| `PARTIAL_CANDIDATE_ID` | `trend_following&#47;v1` |
 | `PARTIAL_BINDING_SOURCE` | `config/research/final_research_fleet_versioned_binding_completion_v0.json` |
 | `PARTIAL_BINDING_DIGEST` | `ea3bde558a2ffd903ed7b7f678cb0cf0a8a4b1f1bb7f5978f7b5bc8f69ab8478` |
 | `MISSING_ARTIFACTS` | `execution_owner_ref,execution_runner_ref,trade_ledger_v1_jsonl_export_owner_ref,equity_curve_v1_jsonl_export_owner_ref` |

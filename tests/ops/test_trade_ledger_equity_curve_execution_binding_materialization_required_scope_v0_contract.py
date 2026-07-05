@@ -26,6 +26,7 @@ SCOPE_STATUS = "BINDING_MATERIALIZATION_REQUIRED"
 SCOPE_VERDICT = "EXECUTION_BINDING_SELECTION_SCOPE_FAIL_CLOSED_BINDING_MATERIALIZATION_REQUIRED"
 ALLOWED_ARTIFACTS = ("TRADE_LEDGER_V1.jsonl", "EQUITY_CURVE_V1.jsonl")
 PARTIAL_CANDIDATE = "trend_following/v1"
+PARTIAL_CANDIDATE_DOCS = "trend_following&#47;v1"
 PARTIAL_BINDING_DIGEST = "ea3bde558a2ffd903ed7b7f678cb0cf0a8a4b1f1bb7f5978f7b5bc8f69ab8478"
 PREFLIGHT_BUNDLE_SUFFIX = (
     "trade_ledger_equity_curve_persistence_offline_evaluation_execution_v0_20260705T075246Z"
@@ -139,7 +140,7 @@ class TestTradeLedgerEquityCurveExecutionBindingMaterializationRequiredScopeV0Co
             in body
         )
         assert f"`VERDICT` | `{SCOPE_VERDICT}`" in body
-        assert f"`candidate_id` | `{PARTIAL_CANDIDATE}`" in body
+        assert f"`candidate_id` | `{PARTIAL_CANDIDATE_DOCS}`" in body
         assert PREFLIGHT_BUNDLE_SUFFIX in body
         for artifact in ALLOWED_ARTIFACTS:
             assert f"`{artifact}`" in body
@@ -174,14 +175,14 @@ class TestTradeLedgerEquityCurveExecutionBindingMaterializationRequiredScopeV0Co
                 text,
                 "TRADE_LEDGER_EQUITY_CURVE_EXECUTION_BINDING_MATERIALIZATION_REQUIRED_SCOPE_V0_PARTIAL_CANDIDATE",
             )
-            == PARTIAL_CANDIDATE
+            == PARTIAL_CANDIDATE_DOCS
         )
 
     def test_registry_closeout_section(self) -> None:
         section = _closeout_section(read_registry())
         assert _field_value(section, "STATUS") == SCOPE_STATUS
         assert _field_value(section, "VERDICT") == SCOPE_VERDICT
-        assert _field_value(section, "PARTIAL_CANDIDATE_ID") == PARTIAL_CANDIDATE
+        assert _field_value(section, "PARTIAL_CANDIDATE_ID") == PARTIAL_CANDIDATE_DOCS
         assert _field_value(section, "EVALUATION_EXECUTION") == "false"
         assert _field_value(section, "LEDGER_PERSISTENCE_EXECUTION") == "false"
         assert _field_value(section, "EQUITY_CURVE_PERSISTENCE_EXECUTION") == "false"

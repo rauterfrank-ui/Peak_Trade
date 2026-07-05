@@ -9,7 +9,7 @@ ORDERS_ALLOWED: false
 SCHEDULER_RUNTIME_ALLOWED: false
 ---
 
-> **Non-authorizing:** Fail-closed Governance-Scope nach Preflight `TRADE_LEDGER_EQUITY_CURVE_PERSISTENCE_OFFLINE_EVALUATION_EXECUTION_FAIL_CLOSED_BINDING_SELECTION_REQUIRED`. Dokumentiert den deterministisch priorisierten Partial-Binding-Satz (`trend_following/v1`) und die fehlenden Execution-Owner-/Runner-Artefakte für Trade-Ledger-/Equity-Curve-Persistenz. Keine Evaluation, keine Persistierung, keine Runtime.
+> **Non-authorizing:** Fail-closed Governance-Scope nach Preflight `TRADE_LEDGER_EQUITY_CURVE_PERSISTENCE_OFFLINE_EVALUATION_EXECUTION_FAIL_CLOSED_BINDING_SELECTION_REQUIRED`. Dokumentiert den deterministisch priorisierten Partial-Binding-Satz (`trend_following&#47;v1`) und die fehlenden Execution-Owner-/Runner-Artefakte für Trade-Ledger-/Equity-Curve-Persistenz. Keine Evaluation, keine Persistierung, keine Runtime.
 
 ## A. Verdict
 
@@ -51,17 +51,17 @@ Deterministische Fleet-Priorität (Runbook v4.4.1 Final Research Fleet):
 2. `bollinger_bands`
 3. `momentum_1h`
 
-**Partial binding herleitbar aus:** `config/research/final_research_fleet_versioned_binding_completion_v0.json` → `trend_following/v1`
+**Partial binding herleitbar aus:** `config/research/final_research_fleet_versioned_binding_completion_v0.json` → `trend_following&#47;v1`
 
 | Feld | Wert |
 |---|---|
-| `candidate_id` | `trend_following/v1` |
+| `candidate_id` | `trend_following&#47;v1` |
 | `strategy_id` | `trend_following` |
 | `strategy_version` | `v1` |
 | `parameter_binding_ref` | `config/ops/step31f_okx_inst_eth_usdt_perp_trend_following_v1_economic_evaluation_v1.json` |
-| `dataset_binding_ref` | `final_research_fleet_versioned_binding_completion_v0.json#trend_following/v1.dataset_binding` |
-| `period_binding_ref` | `final_research_fleet_versioned_binding_completion_v0.json#trend_following/v1.period_binding` |
-| `instrument_binding_ref` | `final_research_fleet_versioned_binding_completion_v0.json#trend_following/v1.instrument_binding` |
+| `dataset_binding_ref` | `final_research_fleet_versioned_binding_completion_v0.json#trend_following&#47;v1.dataset_binding` |
+| `period_binding_ref` | `final_research_fleet_versioned_binding_completion_v0.json#trend_following&#47;v1.period_binding` |
+| `instrument_binding_ref` | `final_research_fleet_versioned_binding_completion_v0.json#trend_following&#47;v1.instrument_binding` |
 | `fee_model_binding_ref` | embedded in completion record |
 | `slippage_model_binding_ref` | embedded in completion record |
 | `funding_model_binding_ref` | embedded in completion record |
