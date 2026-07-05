@@ -22,9 +22,14 @@ CLOSEOUT_SECTION_PREFIX = "#### POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVID
 EVIDENCE_CLASS_ID = "POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_CLASS_V0"
 SELECTED_CLASS = "E"
 SCOPE_STATUS = "SCOPE_DEFINED_NOT_EXECUTED"
-CURRENT_STATE = "POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_CLASS_DEFINED_V0"
-NEXT_CANONICAL_STEP = "POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_EXECUTION_REQUIRES_SEPARATE_OPERATOR_GO_V0"
-CURRENT_ADMISSIBLE_SCOPE = "POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_EXECUTION_V0"
+CLASS_REGISTRY_STATUS = "DIAGNOSTICS_EXECUTION_COMPLETE_V0"
+HISTORICAL_CLOSEOUT_NEXT_STEP = "POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_EXECUTION_REQUIRES_SEPARATE_OPERATOR_GO_V0"
+HISTORICAL_CLOSEOUT_ADMISSIBLE_SCOPE = (
+    "POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_EXECUTION_V0"
+)
+CURRENT_STATE = "POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_EXECUTION_COMPLETE_V0"
+NEXT_CANONICAL_STEP = "NEW_VERSIONED_RESEARCH_SCOPE_SELECTION_REQUIRES_OPERATOR_RATIFICATION_V0"
+CURRENT_ADMISSIBLE_SCOPE = "NEW_VERSIONED_RESEARCH_SCOPE_SELECTION_V0"
 EXECUTION_GO = "GO_POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_EXECUTION_V0"
 OPERATOR_RATIFICATION_GO = "GO_OPERATOR_RATIFY_NEXT_NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_SCOPE_DEFINITION_ONLY_V0"
 SOURCE_EVIDENCE_SUFFIX = (
@@ -193,23 +198,11 @@ class TestPostNoPassRobustnessFailureDiagnosticsEvidenceClassV0Contract:
 
     def test_registry_metadata_fields(self) -> None:
         text = read_registry()
-        assert authoritative_field_value("CURRENT_STATE") == CURRENT_STATE
-        assert authoritative_field_value("NEXT_CANONICAL_STEP") == NEXT_CANONICAL_STEP
-        assert authoritative_field_value("NEXT_CANONICAL_ACTION") == NEXT_CANONICAL_STEP
-        assert authoritative_field_value("GLOBAL_RUNBOOK_NEXT_STEP") == NEXT_CANONICAL_STEP
-        assert (
-            authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE") == CURRENT_ADMISSIBLE_SCOPE
-        )
-        assert authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN") == EXECUTION_GO
-        assert authoritative_field_value("LAST_VERIFIED_ORIGIN_MAIN") == (
-            "a394c7debe41c3ca07773aa97425422d008e714f"
-        )
-        assert authoritative_field_value("LAST_VERIFIED_PR") == "4875"
         assert (
             _field_value(
                 text, "POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_CLASS_V0_STATUS"
             )
-            == SCOPE_STATUS
+            == CLASS_REGISTRY_STATUS
         )
         assert (
             _field_value(
@@ -228,9 +221,9 @@ class TestPostNoPassRobustnessFailureDiagnosticsEvidenceClassV0Contract:
         assert (
             _field_value(
                 text,
-                "POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_CLASS_V0_DIAGNOSTICS_EXECUTION_AUTHORIZED",
+                "POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_CLASS_V0_DIAGNOSTICS_EXECUTED",
             )
-            == "false"
+            == "true"
         )
         assert (
             _field_value(
@@ -262,8 +255,11 @@ class TestPostNoPassRobustnessFailureDiagnosticsEvidenceClassV0Contract:
         assert _field_value(section, "PARAMETER_RESCUE_ALLOWED") == "false"
         assert _field_value(section, "THRESHOLD_LOWERING_ALLOWED") == "false"
         assert _field_value(section, "REQUIRED_NEXT_GO_FOR_EXECUTION") == EXECUTION_GO
-        assert _field_value(section, "NEXT_CANONICAL_STEP") == NEXT_CANONICAL_STEP
-        assert _field_value(section, "CURRENT_ADMISSIBLE_NEXT_SCOPE") == CURRENT_ADMISSIBLE_SCOPE
+        assert _field_value(section, "NEXT_CANONICAL_STEP") == HISTORICAL_CLOSEOUT_NEXT_STEP
+        assert (
+            _field_value(section, "CURRENT_ADMISSIBLE_NEXT_SCOPE")
+            == HISTORICAL_CLOSEOUT_ADMISSIBLE_SCOPE
+        )
         assert _field_value(section, "CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN") == EXECUTION_GO
         assert _field_value(section, "FUTURES_ONLY") == "true"
         assert _field_value(section, "BITCOIN_DIRECTION_ALLOWED") == "false"
