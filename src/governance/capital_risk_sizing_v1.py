@@ -121,6 +121,18 @@ class FinalQuantityStatus(str, Enum):
     BLOCK = "BLOCK"
 
 
+class SelectedSide(str, Enum):
+    """Canonical selected-side contract for governance/runtime boundary binding.
+
+    Offline-only compatibility enum for capital risk sizing and runtime integration
+    bridge contracts. No execution, scheduling, order submission, arming, live
+    trading, shadow, paper, or testnet behavior.
+    """
+
+    LONG = "LONG"
+    SHORT = "SHORT"
+
+
 class CapitalRiskSizingOutcome(str, Enum):
     PASS = "PASS"
     BLOCKED = "BLOCKED"
