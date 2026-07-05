@@ -4638,7 +4638,7 @@ Docs-only bounded progress registry closeout anchoring merged PRs #4865–#4871 
 | `PR4868_TITLE` | `ci: fix docs path drift + import consistency + token policy alignment` |
 | `PR4868_CLOSEOUT_ROLE` | `CI_DOCS_PATH_DRIFT_TOKEN_POLICY_ALIGNMENT` |
 | `PR4869_MERGE_COMMIT` | `e8cbb06beeb6bdd240a523ef31990672b812cdb8` |
-| `PR4869_TITLE` | `recovery/governance stash` |
+| `PR4869_TITLE` | `recovery&#47;governance stash` |
 | `PR4869_CLOSEOUT_ROLE` | `GOVERNANCE_RECOVERY_STASH_CLOSEOUT_DOCS_CONTEXT_NO_NEW_AUTHORITY` |
 | `PR4870_MERGE_COMMIT` | `8c452cb4237325eb81ec7b5bd5c1f0fbe21bd80c` |
 | `PR4870_TITLE` | `ops: add PR closure canonical checklist hook v1` |
