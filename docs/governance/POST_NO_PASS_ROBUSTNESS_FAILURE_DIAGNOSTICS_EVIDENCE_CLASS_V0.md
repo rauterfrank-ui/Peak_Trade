@@ -94,7 +94,7 @@ Die Evidence-Klasse `POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_CLASS_
 
 **Explizit nicht zulässig:**
 
-- Same-Binding-Retry von `trend_following/v1`, `bollinger_bands/v1`, `momentum_1h/v1`
+- Same-Binding-Retry von `trend_following&#47;v1`, `bollinger_bands&#47;v1`, `momentum_1h&#47;v1`
 - Parameteroptimierung oder Schwellenwertabsenkung
 - Ergebnisrettung oder Reinterpretation von `ROBUSTNESS_FAILED` als Pass
 - Promotion, Runtime-Rewire, Shadow, Paper, Testnet, Canary, Live
