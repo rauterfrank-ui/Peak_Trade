@@ -22,8 +22,8 @@ NOT in Runtime Decision Core → NON-OPERATIONAL (even if implemented)
 
 | Surface | Owner |
 |---------|-------|
-| Integrated Replay (Slice A) | `src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py` |
-| Intent Pipeline Bridge (Slice B) | `src/trading/master_v2/canonical_core_runtime_integration_intent_pipeline_bridge_v0.py` |
+| Integrated Replay (Slice A) | `src&#47;trading/master_v2&#47;integrated_offline_trading_logic_replay_v1.py` | <!-- pt:ref-target-ignore -->
+| Intent Pipeline Bridge (Slice B) | `src&#47;trading/master_v2&#47;canonical_core_runtime_integration_intent_pipeline_bridge_v0.py` | <!-- pt:ref-target-ignore -->
 | Integrationsstatus | `BOUND_NOT_ACTIVATED` / `BOUND_OFFLINE` — **0 live operational features** |
 
 **Legende — Konflikttyp:**
@@ -53,12 +53,12 @@ NOT in Runtime Decision Core → NON-OPERATIONAL (even if implemented)
 |------|--------|
 | **Affected Layers** | Strategy Layer · Registry/Config · Documentation |
 | **Type** | **C** (Registry Ownership Conflict) |
-| **Current Ownership (per layer)** | **Runtime:** weder ID im Decision Core · **Strategy:** `ecm_cycle` = functional-only (`_FUNCTIONAL_ONLY_STRATEGY_IDS` → `src/strategies/ecm.py`); `armstrong_cycle` = `StrategySpec` in `_STRATEGY_REGISTRY` · **Registry/Config:** Loader-Map enthält beide Keys; Config hat `[strategy.ecm_cycle]` und `[strategy.armstrong_cycle]` · **Docs:** post-A-Patch kanonisch auf Strategy-Layer; Identity-Split weiter offen (DOC-06 BLOCKED) |
+| **Current Ownership (per layer)** | **Runtime:** weder ID im Decision Core · **Strategy:** `ecm_cycle` = functional-only (`_FUNCTIONAL_ONLY_STRATEGY_IDS` → `src&#47;strategies&#47;ecm.py`); `armstrong_cycle` = `StrategySpec` in `_STRATEGY_REGISTRY` · **Registry/Config:** Loader-Map enthält beide Keys; Config hat `[strategy.ecm_cycle]` und `[strategy.armstrong_cycle]` · **Docs:** post-A-Patch kanonisch auf Strategy-Layer; Identity-Split weiter offen (DOC-06 BLOCKED) | <!-- pt:ref-target-ignore -->
 | **Expected Canonical Ownership (NOT ENFORCED YET)** | Ein kanonischer `strategy_id` mit dokumentierter Alias- oder Dual-Path-Matrix (Optionen in drift_cleanup_plan §C.1 AUTH-ECM-01) |
 | **Risk Level** | **HIGH** |
 | **Resolution Dependency** | Governance Decision Record „ECM Identity“ (R-02); Operator-Ratifikation; ggf. Registry-Alias **oder** Config-Migration — **nicht** docs-only |
 
-**Evidence:** `registry.py` L162–170 (`armstrong_cycle` StrategySpec), L232/L252–254 (`ecm_cycle` functional-only); `config/config.toml` L492–502 vs L1370–1380; `STRATEGY_ECM_ARMSTRONG_WIRING_INVENTORY_READ_MODEL_V0.md` §4.
+**Evidence:** `registry.py` L162–170 (`armstrong_cycle` StrategySpec), L232/L252–254 (`ecm_cycle` functional-only); `config&#47;config.toml` L492–502 vs L1370–1380; `STRATEGY_ECM_ARMSTRONG_WIRING_INVENTORY_READ_MODEL_V0.md` §4. <!-- pt:ref-target-ignore -->
 
 ---
 
@@ -68,27 +68,27 @@ NOT in Runtime Decision Core → NON-OPERATIONAL (even if implemented)
 |------|--------|
 | **Affected Layers** | Registry/Config · Strategy Layer |
 | **Type** | **C** |
-| **Current Ownership (per layer)** | **Runtime:** — · **Strategy:** kein `StrategySpec` für `ecm_cycle` · **Registry/Config:** `[strategy.ecm_cycle]` in `config/config.toml` aktiv; kein `[strategy.ecm_cycle]` in `config/strategy_tiering.toml` · **Docs:** als BLOCKED (DOC-06) markiert |
+| **Current Ownership (per layer)** | **Runtime:** — · **Strategy:** kein `StrategySpec` für `ecm_cycle` · **Registry/Config:** `[strategy.ecm_cycle]` in `config&#47;config.toml` aktiv; kein `[strategy.ecm_cycle]` in `config&#47;strategy_tiering.toml` · **Docs:** als BLOCKED (DOC-06) markiert | <!-- pt:ref-target-ignore -->
 | **Expected Canonical Ownership (NOT ENFORCED YET)** | Config-Section aligned to canonical `strategy_id` (`armstrong_cycle`) **oder** explizite „legacy config section“-Semantik mit load-path matrix |
 | **Risk Level** | **HIGH** |
 | **Resolution Dependency** | AUTH-001 Closure; Config-Governance-Entscheid (out of scope für Safe-Docs-Patch) |
 
-**Evidence:** `config/config.toml` L492; `strategy_tiering.toml` — kein `ecm_cycle`-Block; drift_cleanup_plan §2.1 DOC-06 = BLOCKED.
+**Evidence:** `config&#47;config.toml` L492; `strategy_tiering.toml` — kein `ecm_cycle`-Block; drift_cleanup_plan §2.1 DOC-06 = BLOCKED. <!-- pt:ref-target-ignore -->
 
 ---
 
-### AUTH-003 — Feature-Engine path `src/features/` vs Strategy-layer ECM
+### AUTH-003 — Feature-Engine path `src&#47;features/` vs Strategy-layer ECM <!-- pt:ref-target-ignore -->
 
 | Feld | Inhalt |
 |------|--------|
 | **Affected Layers** | Documentation · Strategy Layer · Registry/Config |
 | **Type** | **A** (teilweise behoben) + **D** (Schicht-Ambiguität bleibt) |
-| **Current Ownership (per layer)** | **Runtime:** — · **Strategy:** ECM-Math in `src/strategies/ecm.py`, OOP in `src/strategies/armstrong/` · **Registry/Config:** — · **Docs:** kanonischer Catalog (`FEHLENDE_FEATURES`) markiert `src/features/` als deferred; `missing_features_plan.md` (DOC-03/B-01) noch structural offen |
+| **Current Ownership (per layer)** | **Runtime:** — · **Strategy:** ECM-Math in `src&#47;strategies&#47;ecm.py`, OOP in `src&#47;strategies&#47;armstrong&#47;` · **Registry/Config:** — · **Docs:** kanonischer Catalog (`FEHLENDE_FEATURES`) markiert `src&#47;features/` als deferred; `missing_features_plan.md` (DOC-03/B-01) noch structural offen | <!-- pt:ref-target-ignore -->
 | **Expected Canonical Ownership (NOT ENFORCED YET)** | Feature-Engine = Class C deferred; ECM = Strategy layer only — einheitlich in **allen** Plan-/Architektur-Docs |
 | **Risk Level** | **MEDIUM** |
 | **Resolution Dependency** | B-01 Operator-GO (`missing_features_plan.md` deferred header); keine Code-Umzüge ohne Product-Entscheid |
 
-**Evidence:** `src/features/__init__.py` (Placeholder); `feature_state_map_v1.md` Class C/D; drift_safe_docs_patch_v1 §3 (DOC-03 nicht angewendet).
+**Evidence:** `src&#47;features/__init__.py` (Placeholder); `feature_state_map_v1.md` Class C/D; drift_safe_docs_patch_v1 §3 (DOC-03 nicht angewendet). <!-- pt:ref-target-ignore -->
 
 ---
 
@@ -103,7 +103,7 @@ NOT in Runtime Decision Core → NON-OPERATIONAL (even if implemented)
 | **Risk Level** | **MEDIUM** |
 | **Resolution Dependency** | AUTH-001; Operator-Semantik-Entscheid (AUTH-ECM-02 in drift_cleanup_plan) |
 
-**Evidence:** `src/strategies/ecm.py`; `registry.py` L232/L244; `STRATEGY_ECM_ARMSTRONG_WIRING_INVENTORY_READ_MODEL_V0.md` §4–5.
+**Evidence:** `src&#47;strategies&#47;ecm.py`; `registry.py` L232/L244; `STRATEGY_ECM_ARMSTRONG_WIRING_INVENTORY_READ_MODEL_V0.md` §4–5. <!-- pt:ref-target-ignore -->
 
 ---
 
@@ -113,12 +113,12 @@ NOT in Runtime Decision Core → NON-OPERATIONAL (even if implemented)
 |------|--------|
 | **Affected Layers** | Strategy Layer · Registry/Config · Documentation |
 | **Type** | **C** + **B** |
-| **Current Ownership (per layer)** | **Runtime:** NON-OPERATIONAL (nicht im Core) · **Strategy:** `registry.py` — `armstrong_cycle`: `tier="production"`, `is_live_ready=True`, `allowed_environments` inkl. `live` · **Registry/Config:** `config/config.toml` `[strategy.armstrong_cycle]`: `tier="r_and_d"`, `is_live_ready=false`; `strategy_tiering.toml`: `allow_live=false`, `tier="r_and_d"` · **Docs:** Wiring Inventory § „Live-readiness metadata tension note“ |
+| **Current Ownership (per layer)** | **Runtime:** NON-OPERATIONAL (nicht im Core) · **Strategy:** `registry.py` — `armstrong_cycle`: `tier="production"`, `is_live_ready=True`, `allowed_environments` inkl. `live` · **Registry/Config:** `config&#47;config.toml` `[strategy.armstrong_cycle]`: `tier="r_and_d"`, `is_live_ready=false`; `strategy_tiering.toml`: `allow_live=false`, `tier="r_and_d"` · **Docs:** Wiring Inventory § „Live-readiness metadata tension note“ | <!-- pt:ref-target-ignore -->
 | **Expected Canonical Ownership (NOT ENFORCED YET)** | Dual-Source-Contract-konforme Leseregel; **eine** ratifizierte Live-Readiness-Wahrheit pro `strategy_id` |
 | **Risk Level** | **HIGH** |
 | **Resolution Dependency** | `STRATEGY_REGISTRY_TIERING_DUAL_SOURCE_CONTRACT_V1`; separates governed alignment slice (nicht aus Read-Model inferieren) |
 
-**Evidence:** `registry.py` L162–169; `config/config.toml` L1370–1376; `config/strategy_tiering.toml` L130–138; Wiring Inventory § „Live-readiness metadata tension note“.
+**Evidence:** `registry.py` L162–169; `config&#47;config.toml` L1370–1376; `config&#47;strategy_tiering.toml` L130–138; Wiring Inventory § „Live-readiness metadata tension note“. <!-- pt:ref-target-ignore -->
 
 ---
 
@@ -135,7 +135,7 @@ NOT in Runtime Decision Core → NON-OPERATIONAL (even if implemented)
 | **Risk Level** | **HIGH** |
 | **Resolution Dependency** | B-03 (Docs-Marker verstärken) — **keine** Runtime-Umverdrahtung ohne separates Design; Slice E Evidence frozen |
 
-**Evidence:** `src/ops/double_play/specialists.py` L18–27; `integrated_offline_trading_logic_replay_v1.py` imports L64–73; `MASTER_V2_DECISION_AUTHORITY_MAP_V1.md` L103–110.
+**Evidence:** `src&#47;ops/double_play/specialists.py` L18–27; `integrated_offline_trading_logic_replay_v1.py` imports L64–73; `MASTER_V2_DECISION_AUTHORITY_MAP_V1.md` L103–110. <!-- pt:ref-target-ignore -->
 
 ---
 
@@ -177,7 +177,7 @@ NOT in Runtime Decision Core → NON-OPERATIONAL (even if implemented)
 |------|--------|
 | **Affected Layers** | Strategy Layer · Registry/Config |
 | **Type** | **C** |
-| **Current Ownership (per layer)** | **Runtime:** — · **Strategy:** Modul `src/strategies/breakout_confirmation_v1.py` existiert (`CONFIRMATION_OWNER` self-declared) · **Registry/Config:** kein `StrategySpec`, nicht in `_STRATEGY_REGISTRY` oder functional set · **Docs:** AUTH-REG-01 / DEF-05 flagged |
+| **Current Ownership (per layer)** | **Runtime:** — · **Strategy:** Modul `src&#47;strategies&#47;breakout_confirmation_v1.py` existiert (`CONFIRMATION_OWNER` self-declared) · **Registry/Config:** kein `StrategySpec`, nicht in `_STRATEGY_REGISTRY` oder functional set · **Docs:** AUTH-REG-01 / DEF-05 flagged | <!-- pt:ref-target-ignore -->
 | **Expected Canonical Ownership (NOT ENFORCED YET)** | Registry-Eintrag **oder** explizite experimental/deprecated Disposition **oder** Remove |
 | **Risk Level** | **MEDIUM** |
 | **Resolution Dependency** | Code+Registry slice (DEF-05); Operator-Entscheid disposition |
@@ -304,7 +304,7 @@ NOT in Runtime Decision Core → NON-OPERATIONAL (even if implemented)
 | **Risk Level** | **HIGH** |
 | **Resolution Dependency** | B-06 authority map supplement; DEF-01 activation stack |
 
-**Evidence:** `master_v2/__init__.py` exports both paths; drift report B-05/WG-07; `MASTER_V2_DECISION_AUTHORITY_MAP_V1.md` §4 stage table.
+**Evidence:** `master_v2&#47;__init__.py` exports both paths; drift report B-05/WG-07; `MASTER_V2_DECISION_AUTHORITY_MAP_V1.md` §4 stage table. <!-- pt:ref-target-ignore -->
 
 ---
 
@@ -336,7 +336,7 @@ NOT in Runtime Decision Core → NON-OPERATIONAL (even if implemented)
 | **Risk Level** | **HIGH** |
 | **Resolution Dependency** | B-04 Read Model spec; DEF-02; WG-01 |
 
-**Evidence:** `suitability_binding_v1.py` L116–128; `src/backtest/mv2_research_wiring_v1.py`; drift report WG-01.
+**Evidence:** `suitability_binding_v1.py` L116–128; `src&#47;backtest/mv2_research_wiring_v1.py`; drift report WG-01. <!-- pt:ref-target-ignore -->
 
 ---
 
@@ -363,7 +363,7 @@ NOT in Runtime Decision Core → NON-OPERATIONAL (even if implemented)
 |------|--------|
 | **Affected Layers** | Documentation |
 | **Type** | **A** |
-| **Current Ownership (per layer)** | **Runtime:** — · **Strategy:** — · **Registry/Config:** — · **Docs:** `docs/analysis/missing_features_plan.md` — STRUCTURAL (B-01), nicht in Safe Patch |
+| **Current Ownership (per layer)** | **Runtime:** — · **Strategy:** — · **Registry/Config:** — · **Docs:** `docs&#47;analysis/missing_features_plan.md` — STRUCTURAL (B-01), nicht in Safe Patch | <!-- pt:ref-target-ignore -->
 | **Expected Canonical Ownership (NOT ENFORCED YET)** | Deferred header + link `feature_state_map_v1` Class C |
 | **Risk Level** | **LOW** |
 | **Resolution Dependency** | B-01 Operator-GO |
@@ -393,8 +393,8 @@ NOT in Runtime Decision Core → NON-OPERATIONAL (even if implemented)
 |------|--------|
 | **Affected Layers** | Documentation · Strategy-adjacent code |
 | **Type** | **A** (partially fixed) |
-| **Current Ownership (per layer)** | **Runtime:** — · **Strategy:** — · **Registry/Config:** — · **Docs:** A-06 applied reporting banners; `docs/features/psychology/` path bleibt · **Code:** `src/reporting/psychology_*.py` |
-| **Expected Canonical Ownership (NOT ENFORCED YET)** | Reporting layer in docs; optional path move `docs/reporting/psychology/` (Operator GO) |
+| **Current Ownership (per layer)** | **Runtime:** — · **Strategy:** — · **Registry/Config:** — · **Docs:** A-06 applied reporting banners; `docs&#47;features/psychology/` path bleibt · **Code:** `src&#47;reporting/psychology_*.py` | <!-- pt:ref-target-ignore -->
+| **Expected Canonical Ownership (NOT ENFORCED YET)** | Reporting layer in docs; optional path move `docs&#47;reporting/psychology/` (Operator GO) | <!-- pt:ref-target-ignore -->
 | **Risk Level** | **LOW** |
 | **Resolution Dependency** | A-06 follow-up optional; DOC-07 closed for content, path optional |
 
@@ -408,7 +408,7 @@ NOT in Runtime Decision Core → NON-OPERATIONAL (even if implemented)
 |-------------|-----------------|------|------|-------------------------|
 | AUTH-001 | `ecm_cycle` vs `armstrong_cycle` identity | C | HIGH | Strategy ↔ Registry/Config |
 | AUTH-002 | Config `[strategy.ecm_cycle]` ohne Spec | C | HIGH | Registry/Config |
-| AUTH-003 | `src/features/` vs Strategy ECM | A+D | MEDIUM | Docs ↔ Strategy |
+| AUTH-003 | `src&#47;features/` vs Strategy ECM | A+D | MEDIUM | Docs ↔ Strategy | <!-- pt:ref-target-ignore -->
 | AUTH-004 | `ecm.py` vs `ArmstrongCycleStrategy` | D | MEDIUM | Strategy |
 | AUTH-005 | Armstrong live-readiness triangle | C+B | HIGH | Strategy ↔ Registry/Config |
 | AUTH-006 | Ops DP evaluator vs composition matrix | B | HIGH | Runtime ↔ Ops |

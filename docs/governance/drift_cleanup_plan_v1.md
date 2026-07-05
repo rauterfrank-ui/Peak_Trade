@@ -5,8 +5,8 @@
 **Branch:** `main` @ `2f1672bee8761f8d50def3f6ef31cc803824b2e9`  
 **Inputs:**
 
-- [`docs/audit/feature_drift_reconciliation_report_v1.md`](../audit/feature_drift_reconciliation_report_v1.md)
-- [`docs/governance/feature_state_map_v1.md`](feature_state_map_v1.md)
+- [`docs&#47;audit/feature_drift_reconciliation_report_v1.md`](../audit/feature_drift_reconciliation_report_v1.md) <!-- pt:ref-target-ignore -->
+- [`docs&#47;governance/feature_state_map_v1.md`](feature_state_map_v1.md) <!-- pt:ref-target-ignore -->
 
 **Scope:** READ-ONLY Analyse + Plan-Generierung. Keine Code-, Runtime-, CI- oder Wiring-Mutation.
 
@@ -39,27 +39,27 @@ Dieser Plan transformiert die Feature State Map und den Drift-Report in eine **g
 
 | ID | Stale / Duplicate | Canonical | Klasse | Begründung |
 |----|-------------------|-----------|--------|------------|
-| DOC-01 | `docs/FEHLENDE_FEATURES_PEAK_TRADE.md` | `docs/features/FEHLENDE_FEATURES_PEAK_TRADE.md` | **SAFE DOC FIX** | Root-Duplikat; Redirect-only ausreichend |
-| DOC-02 | `docs/analysis/FEHLENDE_FEATURES_PEAK_TRADE.md` | `docs/features/FEHLENDE_FEATURES_PEAK_TRADE.md` | **SAFE DOC FIX** | Analysis-Duplikat; Redirect-only |
+| DOC-01 | `docs&#47;FEHLENDE_FEATURES_PEAK_TRADE.md` | `docs&#47;features/FEHLENDE_FEATURES_PEAK_TRADE.md` | **SAFE DOC FIX** | Root-Duplikat; Redirect-only ausreichend | <!-- pt:ref-target-ignore -->
+| DOC-02 | `docs&#47;analysis/FEHLENDE_FEATURES_PEAK_TRADE.md` | `docs&#47;features/FEHLENDE_FEATURES_PEAK_TRADE.md` | **SAFE DOC FIX** | Analysis-Duplikat; Redirect-only | <!-- pt:ref-target-ignore -->
 | DOC-09 | `el_karoui_vol_v1` in Legacy-Docs | `el_karoui_vol_model` | **SAFE DOC FIX** | Deprecation bereits in `registry.py`; nur Docs bereinigen |
-| DOC-06 | `ecm_cycle` in `config/config.toml` | `armstrong_cycle` in `registry.py` | **BLOCKED** | Config-Name vs Registry-ID — erfordert Governance-Entscheid (nicht nur Link) |
+| DOC-06 | `ecm_cycle` in `config&#47;config.toml` | `armstrong_cycle` in `registry.py` | **BLOCKED** | Config-Name vs Registry-ID — erfordert Governance-Entscheid (nicht nur Link) | <!-- pt:ref-target-ignore -->
 
 ### 2.2 Typ b) Stale references
 
 | ID | Stale Reference | Canonical Truth | Klasse | Begründung |
 |----|-----------------|-----------------|--------|------------|
-| DOC-03 | `missing_features_plan.md` → `src/features/pipeline.py` | ECM in `src/strategies/`; Feature-Engine deferred | **STRUCTURAL DOC DRIFT** | Plan beschreibt Zielarchitektur; Update braucht explizite „deferred“-Semantik |
+| DOC-03 | `missing_features_plan.md` → `src&#47;features/pipeline.py` | ECM in `src&#47;strategies&#47;`; Feature-Engine deferred | **STRUCTURAL DOC DRIFT** | Plan beschreibt Zielarchitektur; Update braucht explizite „deferred“-Semantik | <!-- pt:ref-target-ignore -->
 | DOC-04 | `REPO_AUDIT_REPORT.md` Feature-Matrix (Wave 16) | `feature_state_map_v1` + drift report v1 | **SAFE DOC FIX** | Historischer Snapshot; Banner + Crosslink |
-| DOC-08 | `src/docs/peak_trade_documentation.md` → `ecm_cycle` | `registry.py` canonical IDs | **SAFE DOC FIX** | Einzelne Doku-Zeile; kein Registry-Urteil nötig |
+| DOC-08 | `src&#47;docs&#47;peak_trade_documentation.md` → `ecm_cycle` | `registry.py` canonical IDs | **SAFE DOC FIX** | Einzelne Doku-Zeile; kein Registry-Urteil nötig | <!-- pt:ref-target-ignore -->
 | DOC-10 | Feature-Engine ECM in älteren FEHLENDE-Kopien | Strategy-layer ECM konsolidiert | **SAFE DOC FIX** | Folgt aus DOC-01/02 Redirect + kanonischer Catalog-Pflege |
-| DOC-12 | R&D „nicht implementiert“ in FEHLENDE-Kopien | Stubs in `src/strategies/` (ehlers, meta_labeling, bouchaud) | **STRUCTURAL DOC DRIFT** | Status-Gitter (stub vs missing) braucht einheitliche Docs-Grammatik |
+| DOC-12 | R&D „nicht implementiert“ in FEHLENDE-Kopien | Stubs in `src&#47;strategies&#47;` (ehlers, meta_labeling, bouchaud) | **STRUCTURAL DOC DRIFT** | Status-Gitter (stub vs missing) braucht einheitliche Docs-Grammatik | <!-- pt:ref-target-ignore -->
 
-### 2.3 Typ c) Path drift (`src/features/*` vs `strategies/*`)
+### 2.3 Typ c) Path drift (`src&#47;features/*` vs `strategies&#47;*`) <!-- pt:ref-target-ignore -->
 
 | ID | Drift | Canonical | Klasse | Begründung |
 |----|-------|-----------|--------|------------|
-| DOC-05 | `DOCS_REFERENCE_TARGETS` → `src/features` | `src/strategies/ecm.py` + deferred Feature-Engine | **SAFE DOC FIX** | JSON-Baseline-Target + Kommentar; kein Modul-Umzug |
-| DOC-07 | `docs/features/psychology/` | `src/reporting/psychology_*.py` | **SAFE DOC FIX** | Schicht-Umbenennung in Docs (Reporting, nicht Feature-Engine) |
+| DOC-05 | `DOCS_REFERENCE_TARGETS` → `src&#47;features` | `src&#47;strategies&#47;ecm.py` + deferred Feature-Engine | **SAFE DOC FIX** | JSON-Baseline-Target + Kommentar; kein Modul-Umzug | <!-- pt:ref-target-ignore -->
+| DOC-07 | `docs&#47;features/psychology/` | `src&#47;reporting/psychology_*.py` | **SAFE DOC FIX** | Schicht-Umbenennung in Docs (Reporting, nicht Feature-Engine) | <!-- pt:ref-target-ignore -->
 | DOC-10 | (siehe oben) | Strategy-layer ECM | **SAFE DOC FIX** | Path-Drift-Kernfall; mit DOC-01/02/05 gebündelt |
 
 ### 2.4 Typ d) Authority drift (ECM / cycle / registry / Double Play)
@@ -78,15 +78,15 @@ Ausführungsreihenfolge: **niedrigstes Risiko zuerst**, jede Stufe unabhängig r
 
 | Step | ID | Aktion | Datei(en) | Minimale Änderung | Abhängigkeit |
 |------|-----|--------|-----------|-------------------|--------------|
-| **A-01** | DOC-04 | Historischer Banner + Crosslink | `docs/audit/REPO_AUDIT_REPORT.md` | Banner „Historisch / Wave 16“; Link zu `feature_state_map_v1.md` und `feature_drift_reconciliation_report_v1.md` | Keine |
-| **A-02** | DOC-01 | Redirect-only | `docs/FEHLENDE_FEATURES_PEAK_TRADE.md` | Inhalt auf ≤10 Zeilen: SUPERSEDED + Link zu `docs/features/FEHLENDE_FEATURES_PEAK_TRADE.md` | Keine |
-| **A-03** | DOC-02 | Redirect-only | `docs/analysis/FEHLENDE_FEATURES_PEAK_TRADE.md` | Gleiches Muster wie A-02 | A-02 (optional parallel) |
-| **A-04** | DOC-09 | Alias-Bereinigung in Docs | Alle Treffer `el_karoui_vol_v1` in `docs/` (grep-gestützt) | Ersetzen durch `el_karoui_vol_model`; Deprecation-Hinweis wo Kontext es braucht | Keine |
-| **A-05** | DOC-08 | Stale loader map | `src/docs/peak_trade_documentation.md` | `ecm_cycle` → Hinweis auf `armstrong_cycle` + Link zu ECM wiring inventory | Keine Code-Änderung an Loader |
-| **A-06** | DOC-07 | Schicht-Relabel | `docs/features/psychology/*.md` | Titel/Intro: „Reporting layer“; Crosslink `src/reporting/psychology_*.py`; optional später `docs/reporting/psychology/` (nur wenn Operator GO für Pfad-Move) | Keine |
-| **A-07** | DOC-05 | Reference target update | `docs/ops/DOCS_REFERENCE_TARGETS_BASELINE.json` | `src/features` Target: Kommentar „deferred“; zusätzlicher Target-Eintrag `src/strategies/ecm.py` (additiv, nicht ersetzend ohne Review) | Docs-token Policy Guard beachten |
-| **A-08** | DOC-10 | Kanonischer Catalog sync | `docs/features/FEHLENDE_FEATURES_PEAK_TRADE.md` | §2/§6: ECM ✅ strategy layer; `src/features/` explizit „placeholder / deferred“; kein Widerspruch zu A-02/A-03 | A-02, A-03 |
-| **A-09** | — | Index-Verankerung | `docs/INDEX.md`, `docs/governance/` README falls vorhanden | Links zu `feature_state_map_v1.md`, `drift_cleanup_plan_v1.md` | A-01–A-08 |
+| **A-01** | DOC-04 | Historischer Banner + Crosslink | `docs&#47;audit/REPO_AUDIT_REPORT.md` | Banner „Historisch / Wave 16“; Link zu `feature_state_map_v1.md` und `feature_drift_reconciliation_report_v1.md` | Keine | <!-- pt:ref-target-ignore -->
+| **A-02** | DOC-01 | Redirect-only | `docs&#47;FEHLENDE_FEATURES_PEAK_TRADE.md` | Inhalt auf ≤10 Zeilen: SUPERSEDED + Link zu `docs&#47;features/FEHLENDE_FEATURES_PEAK_TRADE.md` | Keine | <!-- pt:ref-target-ignore -->
+| **A-03** | DOC-02 | Redirect-only | `docs&#47;analysis/FEHLENDE_FEATURES_PEAK_TRADE.md` | Gleiches Muster wie A-02 | A-02 (optional parallel) | <!-- pt:ref-target-ignore -->
+| **A-04** | DOC-09 | Alias-Bereinigung in Docs | Alle Treffer `el_karoui_vol_v1` in `docs&#47;` (grep-gestützt) | Ersetzen durch `el_karoui_vol_model`; Deprecation-Hinweis wo Kontext es braucht | Keine | <!-- pt:ref-target-ignore -->
+| **A-05** | DOC-08 | Stale loader map | `src&#47;docs&#47;peak_trade_documentation.md` | `ecm_cycle` → Hinweis auf `armstrong_cycle` + Link zu ECM wiring inventory | Keine Code-Änderung an Loader | <!-- pt:ref-target-ignore -->
+| **A-06** | DOC-07 | Schicht-Relabel | `docs&#47;features/psychology/*.md` | Titel/Intro: „Reporting layer“; Crosslink `src&#47;reporting/psychology_*.py`; optional später `docs&#47;reporting/psychology/` (nur wenn Operator GO für Pfad-Move) | Keine | <!-- pt:ref-target-ignore -->
+| **A-07** | DOC-05 | Reference target update | `docs&#47;ops/DOCS_REFERENCE_TARGETS_BASELINE.json` | `src&#47;features` Target: Kommentar „deferred“; zusätzlicher Target-Eintrag `src&#47;strategies&#47;ecm.py` (additiv, nicht ersetzend ohne Review) | Docs-token Policy Guard beachten | <!-- pt:ref-target-ignore -->
+| **A-08** | DOC-10 | Kanonischer Catalog sync | `docs&#47;features/FEHLENDE_FEATURES_PEAK_TRADE.md` | §2/§6: ECM ✅ strategy layer; `src&#47;features/` explizit „placeholder / deferred“; kein Widerspruch zu A-02/A-03 | A-02, A-03 | <!-- pt:ref-target-ignore -->
+| **A-09** | — | Index-Verankerung | `docs&#47;INDEX.md`, `docs&#47;governance/` README falls vorhanden | Links zu `feature_state_map_v1.md`, `drift_cleanup_plan_v1.md` | A-01–A-08 | <!-- pt:ref-target-ignore -->
 
 **Section A Erfolgskriterium:** Ein Reviewer findet für FEHLENDE_FEATURES, ECM-Pfad, Psychology und El-Karoui-Naming **einen** kanonischen Einstieg ohne widersprüchliche „fehlt/implementiert“-Aussagen in den redirecteten Duplikaten.
 
@@ -98,12 +98,12 @@ Diese Punkte erfordern **Architektur- oder Status-Grammatik-Entscheid**, nicht n
 
 | Flag | Quelle | Thema | Warum structural | Minimaler Docs-Ansatz (wenn GO) |
 |------|--------|-------|------------------|--------------------------------|
-| **B-01** | DOC-03, R-04 | Feature-Engine / `missing_features_plan.md` | Plan referenziert zukünftige `src/features/pipeline.py` | Plan-Header „deferred“; Verweis auf `feature_state_map_v1` Class C |
+| **B-01** | DOC-03, R-04 | Feature-Engine / `missing_features_plan.md` | Plan referenziert zukünftige `src&#47;features/pipeline.py` | Plan-Header „deferred“; Verweis auf `feature_state_map_v1` Class C | <!-- pt:ref-target-ignore -->
 | **B-02** | DOC-12, CR-P2-03 | R&D Strategy Status (stub vs missing) | EHlers, Meta-Labeling, Bouchaud teils implementiert, teils TODO | Einheitliche Status-Tabelle in kanonischem FEHLENDE_FEATURES (stub/research-only/missing) |
 | **B-03** | DOC-11, WG-07 | Double Play authority visibility | Ops evaluator vs MV2 matrix vs Decision Packet | Ops-Runbook-Abschnitt: `LEGACY_NON_AUTHORITATIVE` + Link `MASTER_V2_DECISION_AUTHORITY_MAP_V1` Slice E |
 | **B-04** | WG-01 | Registry → Suitability → Replay sequence | Kein Default-Runtime-Wiring dokumentiert | Neues read-only Spec (analog ECM inventory): „Registry-Suitability-Replay Read Model v0“ |
 | **B-05** | WG-02, WG-03, R-06 | Scope Capital / Risk / Sizing owner split | Runbook v2.6: 3 Owner; Code: merged in `capital_risk_sizing_v1` | Architecture design note: „merged by intent“ vs „gap“ — **kein** Owner-Urteil in Safe-Fixes |
-| **B-06** | WG-07 | Decision Packet vs Integrated Replay | Zwei parallele MV2-Pfade in `master_v2/__init__.py` exports | Decision-authority map Ergänzung: welcher Pfad canonical replay owner ist |
+| **B-06** | WG-07 | Decision Packet vs Integrated Replay | Zwei parallele MV2-Pfade in `master_v2&#47;__init__.py` exports | Decision-authority map Ergänzung: welcher Pfad canonical replay owner ist | <!-- pt:ref-target-ignore -->
 | **B-07** | DOC-03 | `missing_features_plan.md` DAG | Veraltete Abhängigkeitskante Feature-Engine → alles downstream | DAG-Fußnote: Validation Rule NON-OPERATIONAL für nicht-Core-Features |
 
 **Section B Regel:** Kein Schritt in Section B ohne explizites Operator-GO und ggf. separates Architecture-Review-Packet.
@@ -118,17 +118,17 @@ Diese Punkte erfordern **Architektur- oder Status-Grammatik-Entscheid**, nicht n
 
 | Konflikt-ID | Beobachtung | Betroffene Surfaces | Mögliche Resolution (nur als Optionen, nicht empfohlen) | Blocker |
 |-------------|-------------|---------------------|--------------------------------------------------------|---------|
-| **AUTH-ECM-01** | `armstrong_cycle` = StrategySpec; `ecm_cycle` = functional loader ID | `registry.py`, `config/config.toml`, `ecm.py` | (a) Registry-Alias `ecm_cycle` → `armstrong_cycle` **oder** (b) Config-Migration zu `armstrong_cycle` **oder** (c) dokumentierte Dual-ID mit load-path matrix | Erfordert Code und/oder Config — **out of scope** |
-| **AUTH-ECM-02** | ECM math in `src/strategies/ecm.py` vs Armstrong class in `armstrong/` | Docs, Backtest callers | Klären ob `ecm.py` = shared lib vs separate strategy | Semantik-Entscheid Operator |
-| **AUTH-ECM-03** | `DOCS_REFERENCE_TARGETS` verankert `src/features` | CI docs gate | A-07 docs-only Teilantwort; volle Closure = AUTH-ECM-01 | Registry/Config truth |
+| **AUTH-ECM-01** | `armstrong_cycle` = StrategySpec; `ecm_cycle` = functional loader ID | `registry.py`, `config&#47;config.toml`, `ecm.py` | (a) Registry-Alias `ecm_cycle` → `armstrong_cycle` **oder** (b) Config-Migration zu `armstrong_cycle` **oder** (c) dokumentierte Dual-ID mit load-path matrix | Erfordert Code und/oder Config — **out of scope** | <!-- pt:ref-target-ignore -->
+| **AUTH-ECM-02** | ECM math in `src&#47;strategies&#47;ecm.py` vs Armstrong class in `armstrong&#47;` | Docs, Backtest callers | Klären ob `ecm.py` = shared lib vs separate strategy | Semantik-Entscheid Operator | <!-- pt:ref-target-ignore -->
+| **AUTH-ECM-03** | `DOCS_REFERENCE_TARGETS` verankert `src&#47;features` | CI docs gate | A-07 docs-only Teilantwort; volle Closure = AUTH-ECM-01 | Registry/Config truth | <!-- pt:ref-target-ignore -->
 
-**Read-model (bereits vorhanden, nicht ersetzen):** `docs/ops/specs/STRATEGY_ECM_ARMSTRONG_WIRING_INVENTORY_READ_MODEL_V0.md`
+**Read-model (bereits vorhanden, nicht ersetzen):** `docs&#47;ops/specs/STRATEGY_ECM_ARMSTRONG_WIRING_INVENTORY_READ_MODEL_V0.md` <!-- pt:ref-target-ignore -->
 
 ### C.2 Double Play authority
 
 | Konflikt-ID | Beobachtung | Canonical (frozen) | Blocker |
 |-------------|-------------|-------------------|---------|
-| **AUTH-DP-01** | `src/ops/double_play/specialists.evaluate_double_play` | `double_play_composition_matrix_v1` + `integrated_offline_trading_logic_replay_v1` | Ops-Code bleibt; Docs dürfen nicht implizit Ops als authoritative darstellen |
+| **AUTH-DP-01** | `src&#47;ops/double_play/specialists.evaluate_double_play` | `double_play_composition_matrix_v1` + `integrated_offline_trading_logic_replay_v1` | Ops-Code bleibt; Docs dürfen nicht implizit Ops als authoritative darstellen | <!-- pt:ref-target-ignore -->
 | **AUTH-DP-02** | `DoubleplayResolutionHandoffV1` (packet) vs runtime observations | Declarative handoff ≠ runtime mirror (`MASTER_V2_DECISION_AUTHORITY_MAP_V1` §95–101) | Packet/runtime sync = design change, nicht cleanup |
 
 ### C.3 Registry ownership / orphan modules
@@ -191,7 +191,7 @@ Phase 3 (Authority, GO required):   AUTH-ECM-01 decision record (governance doc 
 Phase 4 (Deferred):                 DEF-* — track only, no cleanup claim
 ```
 
-**Geschätzter Phase-1-Umfang:** 1 bounded Docs-PR, keine Python-Dateien außer optional `src/docs/peak_trade_documentation.md` (A-05 — immer noch Docs-only Inhalt).
+**Geschätzter Phase-1-Umfang:** 1 bounded Docs-PR, keine Python-Dateien außer optional `src&#47;docs&#47;peak_trade_documentation.md` (A-05 — immer noch Docs-only Inhalt). <!-- pt:ref-target-ignore -->
 
 ---
 
@@ -200,7 +200,7 @@ Phase 4 (Deferred):                 DEF-* — track only, no cleanup claim
 | Explizit ausgeschlossen | Grund |
 |-------------------------|-------|
 | Registry-Alias für `ecm_cycle` | AUTH-ECM-01 BLOCKED |
-| `config/config.toml` Migration | Code/Config surface |
+| `config&#47;config.toml` Migration | Code/Config surface | <!-- pt:ref-target-ignore -->
 | `breakout_confirmation_v1` Registry-Eintrag | AUTH-REG-01 / DEF-05 |
 | Runtime bridge activation | DEF-01 |
 | CI-Workflow-Änderung | Out of scope (A-07 nur Baseline-JSON) |

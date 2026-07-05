@@ -22,7 +22,7 @@ Stale documentation references to deferred theory modules, legacy ECM paths, and
 | `src&#47;theory&#47;credit.py` | **DEFERRED_MODULE** | `src&#47;docs&#47;nicole_el_karoui_notes.md` | <!-- pt:ref-target-ignore -->
 | `src&#47;features&#47;ecm.py` | Already `src&#47;strategies&#47;ecm.py` in most docs; token encoding fixed in `docs&#47;features&#47;FEHLENDE_FEATURES_PEAK_TRADE.md` | `docs&#47;features&#47;FEHLENDE_FEATURES_PEAK_TRADE.md` | <!-- pt:ref-target-ignore -->
 | `src&#47;data&#47;data_loader.py` | `src&#47;data&#47;loader.py` / `src&#47;data&#47;kraken.py` (`fetch_ohlcv_df`) | `docs&#47;PEAK_TRADE_OVERVIEW.md` | <!-- pt:ref-target-ignore -->
-| `load_ohlcv_data` (non-existent) | `fetch_ohlcv_df` | `docs&#47;PEAK_TRADE_OVERVIEW.md` |
+| `load_ohlcv_data` (non-existent) | `fetch_ohlcv_df` | `docs&#47;PEAK_TRADE_OVERVIEW.md` | <!-- pt:ref-target-ignore -->
 | `docs&#47;armstrong_notes.md` | `src&#47;docs&#47;armstrong_notes.md` | `src&#47;docs&#47;PEAK_TRADE_PROJECT_SUMMARY.md` (tree + list) | <!-- pt:ref-target-ignore -->
 | `docs&#47;trading_bot_notes.md` | `src&#47;docs&#47;trading_bot_notes.md` | `src&#47;docs&#47;PEAK_TRADE_PROJECT_SUMMARY.md` | <!-- pt:ref-target-ignore -->
 | `docs&#47;Peak_Trade_setup_notes.md` | `src&#47;docs&#47;Peak_Trade_setup_notes.md` | `src&#47;docs&#47;PEAK_TRADE_PROJECT_SUMMARY.md` | <!-- pt:ref-target-ignore -->
@@ -34,7 +34,7 @@ Stale documentation references to deferred theory modules, legacy ECM paths, and
 
 | File | Before | After |
 |------|--------|-------|
-| `scripts&#47;run_risk_stress_report.py` | `from src.data.loader import load_market_data` (missing) | `from src.data.kraken import fetch_ohlcv_df` (exists) |
+| `scripts&#47;run_risk_stress_report.py` | `from src.data.loader import load_market_data` (missing) | `from src.data.kraken import fetch_ohlcv_df` (exists) | <!-- pt:ref-target-ignore -->
 
 ---
 
@@ -50,8 +50,8 @@ Stale documentation references to deferred theory modules, legacy ECM paths, and
 
 **Partial overlap (existing, not theory modules):**
 
-- `src&#47;risk&#47;monte_carlo.py`
-- `src&#47;experiments&#47;monte_carlo.py`
+- `src&#47;risk&#47;monte_carlo.py` <!-- pt:ref-target-ignore -->
+- `src&#47;experiments&#47;monte_carlo.py` <!-- pt:ref-target-ignore -->
 
 ---
 
@@ -59,7 +59,7 @@ Stale documentation references to deferred theory modules, legacy ECM paths, and
 
 | Location | Reason |
 |----------|--------|
-| `tests&#47;integration&#47;test_kill_switch_e2_safety_guard.py` → `src.live.kill_switch` | Test is wired to `src.live.safety.SafetyGuard` + `KillSwitchBlocked`; kill-switch runtime lives under `src&#47;risk_layer&#47;kill_switch&#47;` with different exception types (`TradingBlockedError`). Changing imports would alter test semantics — **skipped per “if uncertain → leave unchanged”**. |
+| `tests&#47;integration&#47;test_kill_switch_e2_safety_guard.py` → `src.live.kill_switch` | Test is wired to `src.live.safety.SafetyGuard` + `KillSwitchBlocked`; kill-switch runtime lives under `src&#47;risk_layer&#47;kill_switch&#47;` with different exception types (`TradingBlockedError`). Changing imports would alter test semantics — **skipped per “if uncertain → leave unchanged”**. | <!-- pt:ref-target-ignore -->
 | Historical ops/merge-log docs referencing `data_contracts.py`, `parquet_cache.py`, `data_loader.py` | Point-in-time records; excluded from full-scan via `DOCS_REFERENCE_TARGETS_IGNORE.txt` patterns. **Not edited** (runbook/historical scope). |
 
 ---
@@ -68,9 +68,9 @@ Stale documentation references to deferred theory modules, legacy ECM paths, and
 
 | Gate | Command | Result |
 |------|---------|--------|
-| Docs reference targets (full scan) | `bash scripts&#47;ops&#47;verify_docs_reference_targets.sh` | ✅ PASS — 0 missing targets |
-| Docs reference targets trend | `bash scripts&#47;ops&#47;verify_docs_reference_targets_trend.sh --verbose` | ✅ PASS |
-| Docs token policy (all files) | `python3 scripts&#47;ops&#47;validate_docs_token_policy.py --all` | ✅ PASS — 2217 files |
+| Docs reference targets (full scan) | `bash scripts&#47;ops&#47;verify_docs_reference_targets.sh` | ✅ PASS — 0 missing targets | <!-- pt:ref-target-ignore -->
+| Docs reference targets trend | `bash scripts&#47;ops&#47;verify_docs_reference_targets_trend.sh --verbose` | ✅ PASS | <!-- pt:ref-target-ignore -->
+| Docs token policy (all files) | `python3 scripts&#47;ops&#47;validate_docs_token_policy.py --all` | ✅ PASS — 2217 files | <!-- pt:ref-target-ignore -->
 | Python import AST scan (prior audit) | No hard broken imports to deferred theory/feature ECM paths | ✅ unchanged |
 
 **Note:** PR gates (`docs-token-policy-gate`, `docs-reference-targets-gate`) run on **committed** diffs vs. base; this report reflects working-tree fixes ready for commit.
@@ -79,13 +79,13 @@ Stale documentation references to deferred theory modules, legacy ECM paths, and
 
 ## 5. Files Modified
 
-- `src&#47;docs&#47;architecture.md`
-- `src&#47;docs&#47;nicole_el_karoui_notes.md`
-- `src&#47;docs&#47;PEAK_TRADE_PROJECT_SUMMARY.md`
-- `docs&#47;PEAK_TRADE_OVERVIEW.md`
-- `docs&#47;features&#47;FEHLENDE_FEATURES_PEAK_TRADE.md`
-- `scripts&#47;run_risk_stress_report.py`
-- `docs&#47;audit&#47;ci_docs_fix_report_v1.md` *(this report)*
+- `src&#47;docs&#47;architecture.md` <!-- pt:ref-target-ignore -->
+- `src&#47;docs&#47;nicole_el_karoui_notes.md` <!-- pt:ref-target-ignore -->
+- `src&#47;docs&#47;PEAK_TRADE_PROJECT_SUMMARY.md` <!-- pt:ref-target-ignore -->
+- `docs&#47;PEAK_TRADE_OVERVIEW.md` <!-- pt:ref-target-ignore -->
+- `docs&#47;features&#47;FEHLENDE_FEATURES_PEAK_TRADE.md` <!-- pt:ref-target-ignore -->
+- `scripts&#47;run_risk_stress_report.py` <!-- pt:ref-target-ignore -->
+- `docs&#47;audit&#47;ci_docs_fix_report_v1.md` *(this report)* <!-- pt:ref-target-ignore -->
 
 ---
 
@@ -93,7 +93,7 @@ Stale documentation references to deferred theory modules, legacy ECM paths, and
 
 - No new theory modules created
 - No `src&#47;features&#47;ecm.py` reintroduced <!-- pt:ref-target-ignore -->
-- No changes under `docs&#47;governance&#47;**`
+- No changes under `docs&#47;governance&#47;**` <!-- pt:ref-target-ignore -->
 - No runbook edits
 - No SSOT / governance system changes
 - No kill-switch test refactor

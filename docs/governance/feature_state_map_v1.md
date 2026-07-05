@@ -3,7 +3,7 @@
 **Status:** ACTIVE (read-only governance map)  
 **Erzeugt:** 2026-07-05  
 **Branch:** `main` @ `2f1672bee8761f8d50def3f6ef31cc803824b2e9`  
-**Quelle:** [`docs/audit/feature_drift_reconciliation_report_v1.md`](../audit/feature_drift_reconciliation_report_v1.md)  
+**Quelle:** [`docs&#47;audit/feature_drift_reconciliation_report_v1.md`](../audit/feature_drift_reconciliation_report_v1.md) <!-- pt:ref-target-ignore -->
 **Scope:** Dokumentations-Alignment only — keine Code-, Runtime- oder CI-Mutation
 
 ---
@@ -20,8 +20,8 @@ NOT in Runtime Decision Core → NON-OPERATIONAL (even if implemented)
 
 **Runtime Decision Core (Code-Owner):**
 
-- `src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py` (Replay-Kette)
-- `src/trading/master_v2/canonical_core_runtime_integration_intent_pipeline_bridge_v0.py` (Slice B)
+- `src&#47;trading/master_v2&#47;integrated_offline_trading_logic_replay_v1.py` (Replay-Kette) <!-- pt:ref-target-ignore -->
+- `src&#47;trading/master_v2&#47;canonical_core_runtime_integration_intent_pipeline_bridge_v0.py` (Slice B) <!-- pt:ref-target-ignore -->
 
 **Integrationsstatus (frozen):** `BOUND_NOT_ACTIVATED` / `BOUND_OFFLINE` — **0 live operational features** zum Evidence-Stand.
 
@@ -89,13 +89,13 @@ NOT in Runtime Decision Core → NON-OPERATIONAL (even if implemented)
 | Strategy (functional): `rsi_strategy` | B | Non-operational | Strategy · alias → `rsi` | Unwired | Rename |
 | Strategy (functional): `vol_breakout` | B | Non-operational | Strategy · loader ref only | Unwired | Wire |
 | Strategy: `breakout_confirmation_v1` | B | Non-operational | Strategy · `breakout_confirmation_v1.py` | Orphaned | Wire / Remove |
-| Psychology Heatmap / Heuristics | B | Non-operational | Strategy-adjacent · `src/reporting/psychology_*.py` | Orphaned | Rename (Docs) |
+| Psychology Heatmap / Heuristics | B | Non-operational | Strategy-adjacent · `src&#47;reporting/psychology_*.py` | Orphaned | Rename (Docs) | <!-- pt:ref-target-ignore -->
 
 ### 2.3 CLASS C — Documentation only (no operational runtime path)
 
 | Feature Name | Class | Runtime Status | Source of Truth | Wiring Status | Action Required |
 |--------------|-------|----------------|-----------------|---------------|-----------------|
-| Feature-Engine (central layer) | C | Non-operational | Docs · `FEHLENDE_FEATURES` §2; placeholder `src/features/` | Unwired | Defer |
+| Feature-Engine (central layer) | C | Non-operational | Docs · `FEHLENDE_FEATURES` §2; placeholder `src&#47;features/` | Unwired | Defer | <!-- pt:ref-target-ignore -->
 | Sentiment (News / Makro / Onchain) | C | Non-operational | Docs · Roadmap Phase 14 | Unwired | Defer |
 | Orderbuch / Tickdaten | C | Non-operational | Docs · `trading_bot_notes` | Unwired | Defer |
 | Meta-Labeling Feature Pipeline | C | Non-operational | Docs · `FEHLENDE_FEATURES` §6; stub in code | Unwired | Defer |
@@ -108,12 +108,12 @@ NOT in Runtime Decision Core → NON-OPERATIONAL (even if implemented)
 
 | Feature Name | Class | Runtime Status | Source of Truth | Wiring Status | Action Required |
 |--------------|-------|----------------|-----------------|---------------|-----------------|
-| ECM Features (consolidated) | D | Non-operational | Strategy · `src/strategies/ecm.py`, `armstrong/` (was `src/features/`) | Unwired | Rename |
+| ECM Features (consolidated) | D | Non-operational | Strategy · `src&#47;strategies&#47;ecm.py`, `armstrong&#47;` (was `src&#47;features/`) | Unwired | Rename | <!-- pt:ref-target-ignore -->
 | `ecm_cycle` naming surface | D | Non-operational | Docs/Config · `[strategy.ecm_cycle]` vs `armstrong_cycle` | Unwired | Rename |
 | `el_karoui_vol_v1` alias | D | Non-operational | Strategy · alias → `el_karoui_vol_model` | Unwired | Remove (Docs) |
-| Legacy Ops Double Play evaluator | D | Non-operational | Runtime (legacy) · `src/ops/double_play/` | Unwired | Remove (Docs marker) |
+| Legacy Ops Double Play evaluator | D | Non-operational | Runtime (legacy) · `src&#47;ops/double_play/` | Unwired | Remove (Docs marker) | <!-- pt:ref-target-ignore -->
 | Legacy LiveSessionRunner | D | Non-operational | Runtime (guarded) · `legacy_runtime_entrypoint_guard_v0` | Unwired | None |
-| FEHLENDE_FEATURES duplicates | D | N/A | Docs · 4 paths → canonical `docs/features/` | N/A | Remove (redirect-only) |
+| FEHLENDE_FEATURES duplicates | D | N/A | Docs · 4 paths → canonical `docs&#47;features/` | N/A | Remove (redirect-only) | <!-- pt:ref-target-ignore -->
 | Strategy loader map | D | Non-operational | Strategy · derived from `registry.get_loader_module_map()` | Wired | None |
 | Double Play authority (canonical) | D | Non-operational | Runtime · `double_play_composition_matrix_v1` (replaces ops evaluator) | Wired | Rename (Docs) |
 
@@ -122,9 +122,9 @@ NOT in Runtime Decision Core → NON-OPERATIONAL (even if implemented)
 | Feature Name | Class | Runtime Status | Source of Truth | Wiring Status | Action Required |
 |--------------|-------|----------------|-----------------|---------------|-----------------|
 | Independent Pre-Trade Safety Kernel | — | Non-operational | Runtime (Safety Core) · offline slice | Unwired (post-decision) | None |
-| KillSwitch | — | Non-operational | Runtime · `src/risk_layer/kill_switch/` | Unwired (veto layer) | None |
-| Execution Permission / Adapter | — | Non-operational | Runtime · `src/execution/` | Unwired (post-decision) | None |
-| Reconciliation | — | Non-operational | Runtime · `src/ops/recon/`, `execution/live/reconcile.py` | Unwired (post-execution) | None |
+| KillSwitch | — | Non-operational | Runtime · `src&#47;risk_layer/kill_switch/` | Unwired (veto layer) | None | <!-- pt:ref-target-ignore -->
+| Execution Permission / Adapter | — | Non-operational | Runtime · `src&#47;execution&#47;` | Unwired (post-decision) | None | <!-- pt:ref-target-ignore -->
+| Reconciliation | — | Non-operational | Runtime · `src&#47;ops/recon/`, `execution&#47;live/reconcile.py` | Unwired (post-execution) | None | <!-- pt:ref-target-ignore -->
 
 ---
 
@@ -134,18 +134,18 @@ Nur dokumentarische Abweichungen — **keine Code-Änderung in diesem Pass**.
 
 | ID | Typ | Stale / Duplicate Reference | Canonical Truth | Action Required |
 |----|-----|----------------------------|-----------------|-----------------|
-| DOC-01 | Duplicate naming | `docs/FEHLENDE_FEATURES_PEAK_TRADE.md` (root) | `docs/features/FEHLENDE_FEATURES_PEAK_TRADE.md` | Remove (redirect-only) |
-| DOC-02 | Duplicate naming | `docs/analysis/FEHLENDE_FEATURES_PEAK_TRADE.md` | `docs/features/FEHLENDE_FEATURES_PEAK_TRADE.md` | Remove (redirect-only) |
-| DOC-03 | Stale reference | `docs/analysis/missing_features_plan.md` → `src/features/pipeline.py` | ECM in `src/strategies/`; Feature-Engine deferred | Defer |
-| DOC-04 | Stale reference | `docs/audit/REPO_AUDIT_REPORT.md` Feature-Matrix (Wave 16) | This map + drift report v1 | Rename (historical banner) |
-| DOC-05 | Mismatched module path | `DOCS_REFERENCE_TARGETS` → `src/features` | `src/strategies/ecm.py` + placeholder banner | Rename |
-| DOC-06 | Duplicate naming | ECM: `ecm_cycle` in `config/config.toml` | `armstrong_cycle` in `registry.py` | Rename |
-| DOC-07 | Mismatched module path | Psychology under `docs/features/psychology/` | Code: `src/reporting/psychology_*.py` | Rename |
-| DOC-08 | Stale reference | `src/docs/peak_trade_documentation.md` maps `ecm_cycle` | `registry.py` canonical IDs | Rename |
-| DOC-09 | Duplicate naming | `el_karoui_vol_v1` in legacy docs/examples | `el_karoui_vol_model` | Remove |
+| DOC-01 | Duplicate naming | `docs&#47;FEHLENDE_FEATURES_PEAK_TRADE.md` (root) | `docs&#47;features/FEHLENDE_FEATURES_PEAK_TRADE.md` | Remove (redirect-only) | <!-- pt:ref-target-ignore -->
+| DOC-02 | Duplicate naming | `docs&#47;analysis/FEHLENDE_FEATURES_PEAK_TRADE.md` | `docs&#47;features/FEHLENDE_FEATURES_PEAK_TRADE.md` | Remove (redirect-only) | <!-- pt:ref-target-ignore -->
+| DOC-03 | Stale reference | `docs&#47;analysis/missing_features_plan.md` → `src&#47;features/pipeline.py` | ECM in `src&#47;strategies&#47;`; Feature-Engine deferred | Defer | <!-- pt:ref-target-ignore -->
+| DOC-04 | Stale reference | `docs&#47;audit/REPO_AUDIT_REPORT.md` Feature-Matrix (Wave 16) | This map + drift report v1 | Rename (historical banner) | <!-- pt:ref-target-ignore -->
+| DOC-05 | Mismatched module path | `DOCS_REFERENCE_TARGETS` → `src&#47;features` | `src&#47;strategies&#47;ecm.py` + placeholder banner | Rename | <!-- pt:ref-target-ignore -->
+| DOC-06 | Duplicate naming | ECM: `ecm_cycle` in `config&#47;config.toml` | `armstrong_cycle` in `registry.py` | Rename | <!-- pt:ref-target-ignore -->
+| DOC-07 | Mismatched module path | Psychology under `docs&#47;features/psychology/` | Code: `src&#47;reporting/psychology_*.py` | Rename | <!-- pt:ref-target-ignore -->
+| DOC-08 | Stale reference | `src&#47;docs&#47;peak_trade_documentation.md` maps `ecm_cycle` | `registry.py` canonical IDs | Rename | <!-- pt:ref-target-ignore -->
+| DOC-09 | Duplicate naming | `el_karoui_vol_v1` in legacy docs&#47;examples | `el_karoui_vol_model` | Remove | <!-- pt:ref-target-ignore -->
 | DOC-10 | Stale reference | Feature-Engine ECM in older FEHLENDE_FEATURES copies | Strategy-layer ECM (consolidated) | Rename |
 | DOC-11 | Authority drift | Ops `evaluate_double_play` implied authoritative | `double_play_composition_matrix_v1` canonical | Rename |
-| DOC-12 | Stale reference | R&D strategies „not implemented“ in some FEHLENDE copies | Partial stubs exist in `src/strategies/` | Defer |
+| DOC-12 | Stale reference | R&D strategies „not implemented“ in some FEHLENDE copies | Partial stubs exist in `src&#47;strategies&#47;` | Defer | <!-- pt:ref-target-ignore -->
 
 ---
 

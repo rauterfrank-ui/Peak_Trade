@@ -2,7 +2,7 @@
 
 **Modus:** READ-ONLY — keine Codeänderungen, kein Runtime-Start, kein CI-Trigger  
 **Erzeugt:** 2026-07-05  
-**Branch:** `main` @ `2f1672bee8761f8d50def3f6ef31cc803824b2e9` (aligned with `origin/main`)  
+**Branch:** `main` @ `2f1672bee8761f8d50def3f6ef31cc803824b2e9` (aligned with `origin&#47;main`) <!-- pt:ref-target-ignore -->
 **Worktree:** modified docs only (6 files unstaged; kein Python-Code geändert)
 
 ---
@@ -13,13 +13,13 @@
 
 | Surface | Owner-Pfad |
 |---------|------------|
-| Trading Decision Core (Zielbild) | `docs/architecture/PEAK_TRADE_CANONICAL_UNIFIED_TRADING_SYSTEM_RUNBOOK_V2_6.md` |
-| Runtime Decision Core (Code-Orchestrator) | `src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py` |
-| Intent-Pipeline-Erweiterung (Slice B) | `src/trading/master_v2/canonical_core_runtime_integration_intent_pipeline_bridge_v0.py` |
-| Strategy Registry | `src/strategies/registry.py` |
-| MV2-Suitability-Wiring | `src/strategies/suitability_registry_adapter_v1.py`, `src/backtest/mv2_research_wiring_v1.py` |
-| Feature Catalog / Gaps | `docs/features/FEHLENDE_FEATURES_PEAK_TRADE.md` (kanonisch), Duplikate unter `docs/FEHLENDE_FEATURES_*` |
-| Drift-/Audit-Baseline | `docs/audit/REPO_AUDIT_REPORT.md`, `docs/ops/specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md` |
+| Trading Decision Core (Zielbild) | `docs&#47;architecture/PEAK_TRADE_CANONICAL_UNIFIED_TRADING_SYSTEM_RUNBOOK_V2_6.md` | <!-- pt:ref-target-ignore -->
+| Runtime Decision Core (Code-Orchestrator) | `src&#47;trading/master_v2&#47;integrated_offline_trading_logic_replay_v1.py` | <!-- pt:ref-target-ignore -->
+| Intent-Pipeline-Erweiterung (Slice B) | `src&#47;trading/master_v2&#47;canonical_core_runtime_integration_intent_pipeline_bridge_v0.py` | <!-- pt:ref-target-ignore -->
+| Strategy Registry | `src&#47;strategies&#47;registry.py` | <!-- pt:ref-target-ignore -->
+| MV2-Suitability-Wiring | `src&#47;strategies&#47;suitability_registry_adapter_v1.py`, `src&#47;backtest/mv2_research_wiring_v1.py` | <!-- pt:ref-target-ignore -->
+| Feature Catalog / Gaps | `docs&#47;features/FEHLENDE_FEATURES_PEAK_TRADE.md` (kanonisch), Duplikate unter `docs&#47;FEHLENDE_FEATURES_*` | <!-- pt:ref-target-ignore -->
+| Drift-/Audit-Baseline | `docs&#47;audit/REPO_AUDIT_REPORT.md`, `docs&#47;ops/specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md` | <!-- pt:ref-target-ignore -->
 
 **Validation Rule (verbindlich):** Feature **nicht** im Runtime Decision Core referenziert → **NOT operational**.
 
@@ -54,7 +54,7 @@ Market Context → Master V2 Composition → Bull → Bear → Double Play → D
 | 8 | Strategy Suitability | `suitability_binding_v1` | ✅ | — | Offline only |
 | 9 | Entry/Exit Policy | `double_play_entry_exit_policy_v0` | ✅ | — | Offline only |
 | 10 | Decision Evidence | `canonical_trading_decision_evidence_v1` | ✅ | ✅ | Offline only |
-| 11 | Risk Decision | `src/governance/capital_risk_sizing_v1` | ❌ | ✅ (`evaluate_capital_risk_sizing_v1`) | Offline only |
+| 11 | Risk Decision | `src&#47;governance/capital_risk_sizing_v1` | ❌ | ✅ (`evaluate_capital_risk_sizing_v1`) | Offline only | <!-- pt:ref-target-ignore -->
 | 12 | Sizing Decision | (combined in `capital_risk_sizing_v1`) | ❌ | ✅ | Offline only |
 | 13 | Scope Capital | `ScopeCapitalEnvelopeHandoffV1` (decision packet only) | ❌ | partial via sizing input | **NOT operational** |
 | 14 | Canonical Order Intent | `canonical_order_intent_v1` | ❌ | ✅ | Offline only |
@@ -69,16 +69,16 @@ Diese Features sind im kanonischen System, aber **nicht** Teil des Trading Decis
 | Feature | Owner | Operational im Trading-Pfad |
 |---------|-------|----------------------------|
 | Independent Pre-Trade Safety Kernel | `independent_pre_trade_safety_kernel_v1` (offline slice) | Nein (Safety Core) |
-| KillSwitch | `src/risk_layer/kill_switch/` | Veto-Layer, nicht Decision Core |
-| Execution Permission / Adapter | `src/execution/`, `adapter_submission_contract_v1` | Post-Decision |
-| Reconciliation | `src/ops/recon/`, `src/execution/live/reconcile.py` | Post-Execution |
+| KillSwitch | `src&#47;risk_layer/kill_switch/` | Veto-Layer, nicht Decision Core | <!-- pt:ref-target-ignore -->
+| Execution Permission / Adapter | `src&#47;execution&#47;`, `adapter_submission_contract_v1` | Post-Decision | <!-- pt:ref-target-ignore -->
+| Reconciliation | `src&#47;ops/recon/`, `src&#47;execution&#47;live/reconcile.py` | Post-Execution | <!-- pt:ref-target-ignore -->
 | Legacy Ops Double Play | `src.ops.double_play.specialists.evaluate_double_play` | **LEGACY_NON_AUTHORITATIVE** |
 
 ---
 
 ## 3. Strategy Layer Scan
 
-### 3.1 Registry-Inventar (`src/strategies/registry.py`)
+### 3.1 Registry-Inventar (`src&#47;strategies&#47;registry.py`) <!-- pt:ref-target-ignore -->
 
 **23 kanonische Strategy-IDs** (19 OOP `StrategySpec` + 4 functional-only):
 
@@ -114,9 +114,9 @@ Diese Features sind im kanonischen System, aber **nicht** Teil des Trading Decis
 
 | Modul | Pfad | Wiring-Status |
 |-------|------|---------------|
-| Breakout Confirmation v1 | `src/strategies/breakout_confirmation_v1.py` | ❌ nicht in `registry.py` |
-| ECM (funktional) | `src/strategies/ecm.py` | functional ID `ecm_cycle`; parallel `armstrong_cycle` |
-| Psychology Heatmap/Heuristics | `src/reporting/psychology_*.py` | Reporting-only, kein Strategy-Registry-Eintrag |
+| Breakout Confirmation v1 | `src&#47;strategies&#47;breakout_confirmation_v1.py` | ❌ nicht in `registry.py` | <!-- pt:ref-target-ignore -->
+| ECM (funktional) | `src&#47;strategies&#47;ecm.py` | functional ID `ecm_cycle`; parallel `armstrong_cycle` | <!-- pt:ref-target-ignore -->
+| Psychology Heatmap/Heuristics | `src&#47;reporting/psychology_*.py` | Reporting-only, kein Strategy-Registry-Eintrag | <!-- pt:ref-target-ignore -->
 
 ### 3.3 Export / Wiring zum Decision Core
 
@@ -125,7 +125,7 @@ Diese Features sind im kanonischen System, aber **nicht** Teil des Trading Decis
 | `build_suitability_registry_from_snapshot()` → `SuitabilityStrategyRegistryV1` | ✅ Adapter vorhanden |
 | `mv2_research_wiring_v1.py` nutzt Adapter | ✅ Research/Backtest-Pfad |
 | `integrated_offline_trading_logic_replay_v1` | Akzeptiert **Offline-Snapshot**, nicht Live-Registry |
-| `src/strategies/__init__.py` `load_strategy()` | Deprecated view; leitet auf `registry.py` |
+| `src&#47;strategies&#47;__init__.py` `load_strategy()` | Deprecated view; leitet auf `registry.py` | <!-- pt:ref-target-ignore -->
 | Runtime Live Session | `legacy_runtime_entrypoint_guard_v0` — **deauthorized** |
 
 **Fazit Strategy Layer:** Strategien sind implementiert und registry-konsolidiert, aber **keine** einzelne Strategie ist per se im Runtime Decision Core operational — nur der generische Suitability-Slot mit explizitem Snapshot.
@@ -138,21 +138,21 @@ Diese Features sind im kanonischen System, aber **nicht** Teil des Trading Decis
 
 | Name | Canonical | Deprecated / Alias | Modulpfad(e) |
 |------|-----------|---------------------|--------------|
-| ECM / Armstrong | `armstrong_cycle` | `ecm_cycle` (functional), Config `[strategy.ecm_cycle]` | `src/strategies/armstrong/`, `src/strategies/ecm.py` |
-| El Karoui | `el_karoui_vol_model` | `el_karoui_vol_v1` | `src/strategies/el_karoui/` |
-| RSI | `rsi_reversion` | `rsi_strategy` | `src/strategies/rsi_reversion.py`, `rsi.py` |
-| Feature-Engine | (nicht operational) | Docs referenzieren `src/features/` | Placeholder only |
-| Double Play (Ops) | `double_play_composition_matrix_v1` | `evaluate_double_play` (ops) | MV2 vs `src/ops/double_play/` |
+| ECM / Armstrong | `armstrong_cycle` | `ecm_cycle` (functional), Config `[strategy.ecm_cycle]` | `src&#47;strategies&#47;armstrong&#47;`, `src&#47;strategies&#47;ecm.py` | <!-- pt:ref-target-ignore -->
+| El Karoui | `el_karoui_vol_model` | `el_karoui_vol_v1` | `src&#47;strategies&#47;el_karoui/` | <!-- pt:ref-target-ignore -->
+| RSI | `rsi_reversion` | `rsi_strategy` | `src&#47;strategies&#47;rsi_reversion.py`, `rsi.py` | <!-- pt:ref-target-ignore -->
+| Feature-Engine | (nicht operational) | Docs referenzieren `src&#47;features/` | Placeholder only | <!-- pt:ref-target-ignore -->
+| Double Play (Ops) | `double_play_composition_matrix_v1` | `evaluate_double_play` (ops) | MV2 vs `src&#47;ops/double_play/` | <!-- pt:ref-target-ignore -->
 
 ### 4.2 Deprecated References (aktiv im Repo)
 
 | Referenz | Status | Risiko |
 |----------|--------|--------|
-| `src/features/` in FEHLENDE_FEATURES*, DOCS_REFERENCE_TARGETS | Placeholder; Docs sagen „fehlt“ | Doc/Code drift (ECM jetzt in strategies) |
-| `docs/FEHLENDE_FEATURES_PEAK_TRADE.md` (Root) | SUPERSEDED-Banner → `docs/features/` | Duplikat-Pflege |
-| `config/config.toml` `[strategy.ecm_cycle]` | Config ohne StrategySpec-Key | Config/Registry split |
-| `src/docs/peak_trade_documentation.md` | Mappt `"ecm_cycle": "ecm"` | Legacy-Doku |
-| Psychology Features | Docs unter `docs/features/psychology/` | Code in `src/reporting/`, nicht Feature-Engine |
+| `src&#47;features/` in FEHLENDE_FEATURES*, DOCS_REFERENCE_TARGETS | Placeholder; Docs sagen „fehlt“ | Doc/Code drift (ECM jetzt in strategies) | <!-- pt:ref-target-ignore -->
+| `docs&#47;FEHLENDE_FEATURES_PEAK_TRADE.md` (Root) | SUPERSEDED-Banner → `docs&#47;features/` | Duplikat-Pflege | <!-- pt:ref-target-ignore -->
+| `config&#47;config.toml` `[strategy.ecm_cycle]` | Config ohne StrategySpec-Key | Config/Registry split | <!-- pt:ref-target-ignore -->
+| `src&#47;docs&#47;peak_trade_documentation.md` | Mappt `"ecm_cycle": "ecm"` | Legacy-Doku | <!-- pt:ref-target-ignore -->
+| Psychology Features | Docs unter `docs&#47;features/psychology/` | Code in `src&#47;reporting/`, nicht Feature-Engine | <!-- pt:ref-target-ignore -->
 
 ---
 
@@ -160,14 +160,14 @@ Diese Features sind im kanonischen System, aber **nicht** Teil des Trading Decis
 
 | Dokument | Rolle | Drift vs. Code |
 |----------|-------|----------------|
-| `docs/features/FEHLENDE_FEATURES_PEAK_TRADE.md` | **Kanonischer Feature Catalog** | ECM als „strategy layer ✅“; Feature-Engine ❌ — konsistent |
-| `docs/FEHLENDE_FEATURES_PEAK_TRADE.md` | Superseded duplicate | Banner vorhanden; Inhalt teils älter (2026-02-10) |
-| `docs/analysis/FEHLENDE_FEATURES_PEAK_TRADE.md` | Analysis duplicate | Parallel gepflegt |
-| `docs/analysis/missing_features_plan.md` | Implementation plan | Referenziert noch `src/features/pipeline.py` als Ziel |
-| `docs/audit/REPO_AUDIT_REPORT.md` | Wave-16 Snapshot | Feature-Matrix veraltet (pre-ECM-consolidation teils) |
-| `docs/ops/specs/STRATEGY_ECM_ARMSTRONG_WIRING_INVENTORY_READ_MODEL_V0.md` | Wiring read-model | Dual-map `ecm_cycle` vs `armstrong_cycle` dokumentiert |
-| `docs/ops/specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md` | Authority gaps | Scope/Capital/Risk partial-unclear |
-| `docs/architecture/PEAK_TRADE_CANONICAL_UNIFIED_TRADING_SYSTEM_RUNBOOK_V2_6.md` | Zielbild Decision Core | Explizit „nicht voll implementiert“ |
+| `docs&#47;features/FEHLENDE_FEATURES_PEAK_TRADE.md` | **Kanonischer Feature Catalog** | ECM als „strategy layer ✅“; Feature-Engine ❌ — konsistent | <!-- pt:ref-target-ignore -->
+| `docs&#47;FEHLENDE_FEATURES_PEAK_TRADE.md` | Superseded duplicate | Banner vorhanden; Inhalt teils älter (2026-02-10) | <!-- pt:ref-target-ignore -->
+| `docs&#47;analysis/FEHLENDE_FEATURES_PEAK_TRADE.md` | Analysis duplicate | Parallel gepflegt | <!-- pt:ref-target-ignore -->
+| `docs&#47;analysis/missing_features_plan.md` | Implementation plan | Referenziert noch `src&#47;features/pipeline.py` als Ziel | <!-- pt:ref-target-ignore -->
+| `docs&#47;audit/REPO_AUDIT_REPORT.md` | Wave-16 Snapshot | Feature-Matrix veraltet (pre-ECM-consolidation teils) | <!-- pt:ref-target-ignore -->
+| `docs&#47;ops/specs/STRATEGY_ECM_ARMSTRONG_WIRING_INVENTORY_READ_MODEL_V0.md` | Wiring read-model | Dual-map `ecm_cycle` vs `armstrong_cycle` dokumentiert | <!-- pt:ref-target-ignore -->
+| `docs&#47;ops/specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md` | Authority gaps | Scope/Capital/Risk partial-unclear | <!-- pt:ref-target-ignore -->
+| `docs&#47;architecture/PEAK_TRADE_CANONICAL_UNIFIED_TRADING_SYSTEM_RUNBOOK_V2_6.md` | Zielbild Decision Core | Explizit „nicht voll implementiert“ | <!-- pt:ref-target-ignore -->
 
 ---
 
@@ -192,16 +192,16 @@ Diese Features sind im kanonischen System, aber **nicht** Teil des Trading Decis
 | ST-R01..04 | R&D Strategies | ✅/stub | via Suitability only | ✅ | B | **NOT operational** |
 | ST-F01..04 | Functional-only IDs (ecm_cycle, etc.) | ✅ | indirect | partial | B | **NOT operational** |
 | ST-X01 | breakout_confirmation_v1 | ✅ | ❌ | ❌ | B | **NOT operational** |
-| FE-01 | Feature-Engine (`src/features/`) | placeholder | ❌ | ❌ fehlt | C | **NOT operational** |
+| FE-01 | Feature-Engine (`src&#47;features/`) | placeholder | ❌ | ❌ fehlt | C | **NOT operational** | <!-- pt:ref-target-ignore -->
 | FE-02 | Sentiment (News/Makro/Onchain) | ❌ | ❌ | ❌ fehlt | C | **NOT operational** |
 | FE-03 | Orderbuch/Tickdaten | ❌ | ❌ | ❌ fehlt | C | **NOT operational** |
 | FE-04 | Meta-Labeling Feature Pipeline | stub/TODO | ❌ | partial | C | **NOT operational** |
 | FE-05 | WebSocket Real-Time Streams | ❌ | ❌ | ❌ fehlt | C | **NOT operational** |
 | FE-06 | Multi-Exchange Live | ❌/blocked | ❌ | ❌ fehlt | C | **NOT operational** |
 | FE-07 | Web-Dashboard Auth/Write | ❌ | ❌ | ❌ fehlt | C | **NOT operational** |
-| FE-08 | Psychology Heatmap/Heuristics | ✅ reporting | ❌ | ✅ docs/features | C | **NOT operational** |
+| FE-08 | Psychology Heatmap/Heuristics | ✅ reporting | ❌ | ✅ docs&#47;features | C | **NOT operational** | <!-- pt:ref-target-ignore -->
 | MV-01 | ECM Features | ✅ strategies | ❌ (nicht Feature-Engine) | drift | D | **NOT operational** |
-| MV-02 | ecm_cycle naming | functional loader | ❌ | config/docs | D | **NOT operational** |
+| MV-02 | ecm_cycle naming | functional loader | ❌ | config&#47;docs | D | **NOT operational** | <!-- pt:ref-target-ignore -->
 | MV-03 | Legacy Ops Double Play evaluator | ✅ ops | ❌ (non-auth) | ✅ marked legacy | D | **NOT operational** |
 | MV-04 | Legacy LiveSessionRunner | guarded | ❌ | ✅ Slice D | D | **NOT operational** |
 | MV-05 | FEHLENDE_FEATURES root duplicate | — | — | superseded | D | N/A |
@@ -234,10 +234,10 @@ FE-01 bis FE-08 (siehe Inventory). Zentrale Feature-Engine, Sentiment, Streaming
 
 | Item | From → To |
 |------|-----------|
-| ECM Feature-Engine path | `src/features/` (vision) → `src/strategies/ecm.py` + `armstrong/` |
+| ECM Feature-Engine path | `src&#47;features/` (vision) → `src&#47;strategies&#47;ecm.py` + `armstrong&#47;` | <!-- pt:ref-target-ignore -->
 | Strategy loader map | Legacy dict → derived from `registry.get_loader_module_map()` |
-| FEHLENDE_FEATURES canonical | `docs/FEHLENDE_FEATURES_*` → `docs/features/FEHLENDE_FEATURES_PEAK_TRADE.md` |
-| Double Play authority | `src/ops/double_play/` → `double_play_composition_matrix_v1` (offline canonical) |
+| FEHLENDE_FEATURES canonical | `docs&#47;FEHLENDE_FEATURES_*` → `docs&#47;features/FEHLENDE_FEATURES_PEAK_TRADE.md` | <!-- pt:ref-target-ignore -->
+| Double Play authority | `src&#47;ops/double_play/` → `double_play_composition_matrix_v1` (offline canonical) | <!-- pt:ref-target-ignore -->
 | Live runtime entry | `LiveSessionRunner` → guarded; canonical bridge `BOUND_NOT_ACTIVATED` |
 | El Karoui naming | `el_karoui_vol_v1` → `el_karoui_vol_model` |
 
@@ -249,7 +249,7 @@ FE-01 bis FE-08 (siehe Inventory). Zentrale Feature-Engine, Sentiment, Streaming
 
 | Priority | Feature | Doc-Quelle | Code-Realität |
 |----------|---------|------------|---------------|
-| P2 | Zentrale Feature-Engine | FEHLENDE_FEATURES §2, trading_bot_notes | `src/features/__init__.py` Placeholder |
+| P2 | Zentrale Feature-Engine | FEHLENDE_FEATURES §2, trading_bot_notes | `src&#47;features/__init__.py` Placeholder | <!-- pt:ref-target-ignore -->
 | P2 | Sentiment-Daten | FEHLENDE_FEATURES, Roadmap Phase 14 | Kein Modul |
 | P2 | Orderbuch/Tick | FEHLENDE_FEATURES | Kein Modul |
 | P3 | WebSocket Streaming | KNOWN_LIMITATIONS, Roadmap 12 | REST/Polling only |
@@ -262,11 +262,11 @@ FE-01 bis FE-08 (siehe Inventory). Zentrale Feature-Engine, Sentiment, Streaming
 
 | Priority | Drift | Alt | Neu / Kanonisch | Aktion (Empfehlung) |
 |----------|-------|-----|-----------------|---------------------|
-| **P1** | ECM identity split | `ecm_cycle`, `src/features/` | `armstrong_cycle`, `src/strategies/ecm.py` | Registry-Alias oder Config-Migration dokumentieren |
-| **P1** | FEHLENDE_FEATURES duplicates | 4 Pfade | `docs/features/FEHLENDE_FEATURES_PEAK_TRADE.md` | Duplikate synchronisieren oder archivieren |
-| P2 | Double Play evaluator | `src/ops/double_play/` | MV2 composition matrix | Legacy-Marker in Ops-Docs verstärken |
-| P2 | Feature-Engine ECM refs | DOCS_REFERENCE_TARGETS → `src/features` | strategies layer | Reference targets aktualisieren |
-| P3 | Psychology „Features“ | `docs/features/psychology/` | `src/reporting/psychology_*` | Umbenennung in Docs (Reporting, nicht Feature-Engine) |
+| **P1** | ECM identity split | `ecm_cycle`, `src&#47;features/` | `armstrong_cycle`, `src&#47;strategies&#47;ecm.py` | Registry-Alias oder Config-Migration dokumentieren | <!-- pt:ref-target-ignore -->
+| **P1** | FEHLENDE_FEATURES duplicates | 4 Pfade | `docs&#47;features/FEHLENDE_FEATURES_PEAK_TRADE.md` | Duplikate synchronisieren oder archivieren | <!-- pt:ref-target-ignore -->
+| P2 | Double Play evaluator | `src&#47;ops/double_play/` | MV2 composition matrix | Legacy-Marker in Ops-Docs verstärken | <!-- pt:ref-target-ignore -->
+| P2 | Feature-Engine ECM refs | DOCS_REFERENCE_TARGETS → `src&#47;features` | strategies layer | Reference targets aktualisieren | <!-- pt:ref-target-ignore -->
+| P3 | Psychology „Features“ | `docs&#47;features/psychology/` | `src&#47;reporting/psychology_*` | Umbenennung in Docs (Reporting, nicht Feature-Engine) | <!-- pt:ref-target-ignore -->
 | P3 | REPO_AUDIT_REPORT Matrix | Wave-16 Snapshot | Aktueller Stand | Audit-Report als historisch markieren (teilweise done) |
 
 ---
@@ -279,7 +279,7 @@ FE-01 bis FE-08 (siehe Inventory). Zentrale Feature-Engine, Sentiment, Streaming
 | WG-02 | Scope Capital nicht in Replay-Kette | Runbook-Owner `SCOPE_CAPITAL_ROLE` ohne dedizierten Replay-Step | `ScopeCapitalEnvelopeHandoffV1` nur Decision Packet |
 | WG-03 | Risk/Sizing semantisch merged | Runbook trennt Risk, Sizing, Scope Capital; Code merged in Slice B | `capital_risk_sizing_v1` |
 | WG-04 | `breakout_confirmation_v1` orphan module | Implementierung ohne Registry | Datei existiert, kein `StrategySpec` |
-| WG-05 | `ecm_cycle` vs `armstrong_cycle` | Config/TOML vs Registry mismatch | `config/config.toml`, `registry.py` |
+| WG-05 | `ecm_cycle` vs `armstrong_cycle` | Config/TOML vs Registry mismatch | `config&#47;config.toml`, `registry.py` | <!-- pt:ref-target-ignore -->
 | WG-06 | Canonical bridge nicht aktiviert | Core existiert offline, kein Live-Einstieg | `BOUND_NOT_ACTIVATED` across Slices A–D |
 | WG-07 | Decision Packet vs Integrated Replay | Zwei parallele MV2-Pfade | `__init__.py` exports packet flow; replay owner separat |
 
@@ -301,9 +301,9 @@ FE-01 bis FE-08 (siehe Inventory). Zentrale Feature-Engine, Sentiment, Streaming
 | Risk | Beschreibung |
 |------|--------------|
 | **CR-P2-01** | FEHLENDE_FEATURES an 4 Pfaden — widersprüchliche „implementiert/fehlt“-Aussagen (Root vs features/) |
-| **CR-P2-02** | Feature-Engine Placeholder (`src/features/`) weiterhin in CI Docs-Reference-Targets verankert |
+| **CR-P2-02** | Feature-Engine Placeholder (`src&#47;features/`) weiterhin in CI Docs-Reference-Targets verankert | <!-- pt:ref-target-ignore -->
 | **CR-P2-03** | R&D Strategien (meta_labeling, bouchaud, ehlers) mit TODO/Stubs — Docs teils „nicht implementiert“, Code teils vorhanden |
-| **CR-P2-04** | Psychology-Features dokumentiert unter `docs/features/`, implementiert unter `src/reporting/` — falsche Schicht-Zuordnung |
+| **CR-P2-04** | Psychology-Features dokumentiert unter `docs&#47;features/`, implementiert unter `src&#47;reporting/` — falsche Schicht-Zuordnung | <!-- pt:ref-target-ignore -->
 | **CR-P2-05** | `BOUND_NOT_ACTIVATED` über gesamten Canonical Core — jede Demo/Script-Nutzung von Legacy-Entrypoints trotz Slice-D-Guard |
 
 ---
@@ -312,13 +312,13 @@ FE-01 bis FE-08 (siehe Inventory). Zentrale Feature-Engine, Sentiment, Streaming
 
 | # | Empfehlung | Scope | Aufwand |
 |---|------------|-------|---------|
-| R-01 | **Single FEHLENDE_FEATURES owner:** Root/analysis-Duplikate auf Redirect-only reduzieren; nur `docs/features/` pflegen | Docs | S |
+| R-01 | **Single FEHLENDE_FEATURES owner:** Root/analysis-Duplikate auf Redirect-only reduzieren; nur `docs&#47;features/` pflegen | Docs | S | <!-- pt:ref-target-ignore -->
 | R-02 | **ECM identity decision record:** Entweder `ecm_cycle` → Alias von `armstrong_cycle` in Registry **oder** Config-Migration zu `armstrong_cycle` — eine Zeile in `STRATEGY_REGISTRY_TIERING_MV2_RECONCILIATION_TABLE` | Docs/Governance | S |
 | R-03 | **`breakout_confirmation_v1`:** Registry-Eintrag hinzufügen **oder** Modul als experimental markieren/entfernen | Code+Registry | S |
-| R-04 | **Wiring-Gap-Dokument:** Explizite „Registry → Suitability → Replay“-Sequenz in `docs/ops/specs/` (read-only), analog ECM inventory | Docs | S |
-| R-05 | **DOCS_REFERENCE_TARGETS:** `src/features` Target auf `src/strategies/ecm.py` + Banner „Feature-Engine deferred“ | Docs/CI config | S |
+| R-04 | **Wiring-Gap-Dokument:** Explizite „Registry → Suitability → Replay“-Sequenz in `docs&#47;ops/specs/` (read-only), analog ECM inventory | Docs | S | <!-- pt:ref-target-ignore -->
+| R-05 | **DOCS_REFERENCE_TARGETS:** `src&#47;features` Target auf `src&#47;strategies&#47;ecm.py` + Banner „Feature-Engine deferred“ | Docs/CI config | S | <!-- pt:ref-target-ignore -->
 | R-06 | **Scope Capital Replay-Step:** Design-Notiz ob `ScopeCapitalEnvelopeHandoffV1` in Replay integriert oder bewusst in Sizing merged bleibt | Architecture | M |
-| R-07 | **Psychology relabel:** Docs von `docs/features/psychology/` nach `docs/reporting/` oder Crosslink | Docs | S |
+| R-07 | **Psychology relabel:** Docs von `docs&#47;features/psychology/` nach `docs&#47;reporting/` oder Crosslink | Docs | S | <!-- pt:ref-target-ignore -->
 | R-08 | **REPO_AUDIT_REPORT:** Historisch-Banner + Verweis auf diesen Report v1 | Docs | S |
 
 **Explizit nicht empfohlen in diesem Slice:** Runtime-Aktivierung, Live-Gate-Änderungen, CI-Workflow-Mutation, Feature-Engine-Neubau.

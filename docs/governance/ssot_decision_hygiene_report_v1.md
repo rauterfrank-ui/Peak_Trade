@@ -19,7 +19,7 @@
 
 | Artefakt | Pfad | Scan-Status |
 |----------|------|-------------|
-| SSOT Decision Surface v1 | `docs/governance/ssot_decision_surface_v1.md` | ❌ **nicht im Repository** — Bias-Scan gegen dieses Artefakt entfällt; Abschnitt 5 vermerkt die Lücke |
+| SSOT Decision Surface v1 | `docs&#47;governance/ssot_decision_surface_v1.md` | ❌ **nicht im Repository** — Bias-Scan gegen dieses Artefakt entfällt; Abschnitt 5 vermerkt die Lücke | <!-- pt:ref-target-ignore -->
 
 **Explizite Nicht-Ziele dieses Reports:**
 
