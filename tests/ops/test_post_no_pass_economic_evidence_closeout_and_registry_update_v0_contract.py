@@ -13,17 +13,15 @@ from tests.ops.runbook_progress_registry_contract_helpers_v1 import (
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 CLOSEOUT_CONFIG = (
-    REPO_ROOT / "config/research/post_no_pass_economic_evidence_closeout_and_registry_update_v0.json"
+    REPO_ROOT
+    / "config/research/post_no_pass_economic_evidence_closeout_and_registry_update_v0.json"
 )
 GOVERNANCE_DOC = (
-    REPO_ROOT
-    / "docs/governance/POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_AND_REGISTRY_UPDATE_V0.md"
+    REPO_ROOT / "docs/governance/POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_AND_REGISTRY_UPDATE_V0.md"
 )
 CLOSEOUT_SECTION_PREFIX = "#### POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_AND_REGISTRY_UPDATE_V0"
 GO_TOKEN = "GO_POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_AND_REGISTRY_UPDATE_V0"
-PROCESS_CLASSIFICATION = (
-    "BOUNDED_POST_NO_PASS_FUTURES_OFFLINE_ECONOMIC_EVALUATION_EVIDENCE_CLOSEOUT_AND_REGISTRY_UPDATE_V0"
-)
+PROCESS_CLASSIFICATION = "BOUNDED_POST_NO_PASS_FUTURES_OFFLINE_ECONOMIC_EVALUATION_EVIDENCE_CLOSEOUT_AND_REGISTRY_UPDATE_V0"
 SCOPE_CLASSIFICATION = "POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_AND_REGISTRY_UPDATE_V0"
 CURRENT_STATE = "POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_COMPLETE_V0"
 NEXT_CANONICAL_STEP = "NEW_RATIFIED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_REQUIRED"
@@ -111,7 +109,9 @@ class TestPostNoPassEconomicEvidenceCloseoutAndRegistryUpdateV0Contract:
         assert GOVERNANCE_DOC.is_file()
         body = GOVERNANCE_DOC.read_text(encoding="utf-8")
         assert (
-            _docs_token_marker("DOCS_TOKEN_POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_AND_REGISTRY_UPDATE_V0")
+            _docs_token_marker(
+                "DOCS_TOKEN_POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_AND_REGISTRY_UPDATE_V0"
+            )
             in body
         )
         assert f"`VERDICT` | `{CURRENT_STATE}`" in body
