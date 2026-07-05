@@ -118,10 +118,10 @@ class TestPostNoPassRobustnessFailureDiagnosticsEvidenceExecutionV0Contract:
     def test_registry_metadata_fields(self) -> None:
         text = read_registry()
         assert authoritative_field_value("CURRENT_STATE") == (
-            "POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_EXECUTION_COMPLETE_V0"
+            "POST_PR4883_NEXT_VERSIONED_RESEARCH_SCOPE_SELECTION_COMPLETE_V0"
         )
         assert authoritative_field_value("NEXT_CANONICAL_STEP") == (
-            "NEW_VERSIONED_RESEARCH_SCOPE_SELECTION_REQUIRES_OPERATOR_RATIFICATION_V0"
+            "REQUEST_OPERATOR_GO_FOR_POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_EXECUTION_V0"
         )
         assert (
             _field_value(
@@ -167,11 +167,11 @@ class TestPostNoPassRobustnessFailureDiagnosticsEvidenceExecutionV0Contract:
         assert authoritative_field_value("RUNTIME_REWIRE_ADMISSIBLE") == "false"
         assert (
             authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE")
-            == "NEW_VERSIONED_RESEARCH_SCOPE_SELECTION_V0"
+            == "POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_CLASS_V0"
         )
         assert (
             authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN")
-            == "GO_OPERATOR_RATIFY_NEXT_NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_SCOPE_DEFINITION_ONLY_V0"
+            == "GO_POST_NO_PASS_INCONCLUSIVE_METRIC_MATERIALIZATION_PATH_DIAGNOSTICS_EVIDENCE_EXECUTION_V0"
         )
 
     def test_registry_closeout_section(self) -> None:
