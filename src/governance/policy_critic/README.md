@@ -124,12 +124,12 @@ promotion_report = merge_policy_result_into_report(report, policy_result)
 ## GitHub Actions Integration
 
 The `.github/workflows/policy_critic.yml` workflow automatically runs on PRs that touch critical paths:
-- `src/live/**`
-- `src/execution/**`
-- `src/exchange/**`
-- `src/risk/**`
-- `config/**`
-- `docs/governance/**`
+- `src&#47;live&#47;**`
+- `src&#47;execution&#47;**`
+- `src&#47;exchange&#47;**`
+- `src&#47;risk&#47;**`
+- `config&#47;**`
+- `docs&#47;governance&#47;**`
 
 Workflow fails (exit 2) on blocking violations.
 

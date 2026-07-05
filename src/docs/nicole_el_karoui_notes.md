@@ -153,12 +153,12 @@ Derzeit hat Peak Trade primär:
 
 ### 4.2 Mögliche Module mit starkem El-Karoui-Bezug
 
-1. **Stochastik-Toolkit** (`src/theory/stochastics.py`)
+1. **Stochastik-Toolkit** (`src&#47;theory&#47;stochastics.py`)
    - GBM-/Heston-Simulationen
    - Monte-Carlo-Pfade für Underlyings
    - numerische Tests von Strategien in idealisierten Märkten
 
-2. **Pricing- und Hedging-Toolkit** (`src/theory/pricing.py`)
+2. **Pricing- und Hedging-Toolkit** (`src&#47;theory&#47;pricing.py`)
    - einfache BS-Formeln (als Start)
    - später Erweiterung um lokale/stochastische Vol
    - Hedging-Statistiken (Hedge-Error etc.)
@@ -175,7 +175,7 @@ Derzeit hat Peak Trade primär:
 Kurzfristig (einfach & machbar):
 
 - [ ] **Theorie-Modul beginnen:**
-  - `src/theory/stochastics.py` mit:
+  - `src&#47;theory&#47;stochastics.py` mit:
     - GBM-Simulation
     - einfache Pfad-Monte-Carlo-Funktion
 - [ ] **BS-Preisfunktionen implementieren:**
@@ -195,7 +195,7 @@ Mittelfristig:
 Langfristig:
 
 - [ ] BSDE-basierte Pricing-Ansätze untersuchen (z. B. für exotische Produkte)
-- [ ] Zins- und Kreditrisiko-Modelle in ein separates Modul (`src/theory/credit.py`) auslagern.
+- [ ] Zins- und Kreditrisiko-Modelle in ein separates Modul (`src&#47;theory&#47;credit.py`) auslagern.
 - [ ] Mögliche Nutzung von LLMs:
   - zur Erklärung der Modelle in natürlicher Sprache
   - zur Generierung von Code-Skizzen für Simulationen

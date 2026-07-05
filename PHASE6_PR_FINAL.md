@@ -149,9 +149,9 @@ print(result.to_markdown())
 - **Phase 2 (VaR Validation):** PR #413 (merged 2025-12-28)
 - **Roadmap:** `docs/risk/roadmaps/KUPIEC_POF_BACKTEST_ROADMAP.md` (Phase 6 Integration / Integration Tests gate)
 - **Related:**
-  - `src/risk/validation/*` (Phase 2 VaR Backtesting & Validation deliverables)
-  - `tests/risk/validation/*` (81 unit tests)
-  - `tests/risk/integration/*` (12 integration tests, **NEW**)
+  - `src&#47;risk&#47;validation&#47;*` (Phase 2 VaR Backtesting & Validation deliverables)
+  - `tests&#47;risk&#47;validation&#47;*` (81 unit tests)
+  - `tests&#47;risk&#47;integration&#47;*` (12 integration tests, **NEW**)
 
 ## Files Changed
 

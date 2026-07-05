@@ -35,9 +35,9 @@ PR #528 beinhaltete wichtige Fixes für die Docs-Reference-Targets-Validierung u
    - **Lösung:** Listen zusammengeführt in absteigender Reihenfolge (PRs #509-486, dann #485, dann Rest)
 
 3. **`.gitignore`**
-   - HEAD hatte `.tmp/` Zeile
+   - HEAD hatte `.tmp&#47;` Zeile
    - Incoming hatte die Zeile entfernt
-   - **Lösung:** HEAD behalten (`.tmp/` ist wichtig für temporäre Dateien)
+   - **Lösung:** HEAD behalten (`.tmp&#47;` ist wichtig für temporäre Dateien)
 
 4. **`scripts/ops/bg_job.sh`**
    - HEAD: `caffeinate -dimsu ${shell_bin}...` (ohne `exec`)

@@ -162,7 +162,7 @@ Dieses Modul ist die Grundlage für alle realistischen Backtests und später fü
 
 ---
 
-### 3.6 `src/features/ecm.py` – Armstrong/ECM-Overlay
+### 3.6 `src&#47;features&#47;ecm.py` – Armstrong/ECM-Overlay
 
 - Definiert eine Struktur für ECM-Turning-Points (Datum, Label, Fenstergröße).  
 - Fügt einem OHLCV-DataFrame Flag-Spalten hinzu, z. B.:
@@ -199,7 +199,7 @@ Typische Beispiele:
   - Lädt Settings
   - holt OHLCV-Daten (Dummy oder von Kraken)
   - startet einen Realistic-Backtest der MA-Strategie
-  - gibt den Stats-Report aus und speichert Ergebnisse in `results/backtests/`
+  - gibt den Stats-Report aus und speichert Ergebnisse in `results&#47;backtests&#47;`
 
 - `run_ma_vectorized.py` (optional)  
   - einfacher, vektorisierter Backtest ohne detailliertes Risk-Management
@@ -227,7 +227,7 @@ Ziel: früh Bugs finden, bevor echte Exchange-Daten und Geld im Spiel sind.
    - reale OHLCV-Daten via `fetch_ohlcv_df()`
 
 3. **Features & Regime** (optional)  
-   - ECM-Flags über `features/ecm.py`  
+   - ECM-Flags über `features&#47;ecm.py`
    - spätere Makro-/Sentiment-Features
 
 4. **Strategie-Signale erzeugen**  
@@ -239,7 +239,7 @@ Ziel: früh Bugs finden, bevor echte Exchange-Daten und Geld im Spiel sind.
 
 6. **Stats & Reports**  
    - `compute_all_stats()` + `print_stats_report()`  
-   - Speicherung in `results/backtests/` und `results/reports/`
+   - Speicherung in `results&#47;backtests&#47;` und `results&#47;reports&#47;`
 
 ---
 

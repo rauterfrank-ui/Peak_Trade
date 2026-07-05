@@ -143,7 +143,7 @@ Options:
 2. Wähle **"Settings"**
 3. Scrolle zu **"Manage access"** oder **"Workflows"**
 4. Gehe zurück zum Board
-5. Nutze die Suchfunktion: `repo:rauterfrank-ui/Peak_Trade is:issue 95..103`
+5. Nutze die Suchfunktion: `repo:rauterfrank-ui&#47;Peak_Trade is:issue 95..103`
 6. Markiere alle Issues (Shift + Click)
 7. Rechtsklick → **"Add to project"** → Wähle dein Board
 
@@ -196,7 +196,7 @@ Action: Add to project → Set status to "Backlog"
 
 **Einrichten:**
 - Toggle **"Auto-add to project"** aktivieren
-- Repository: `rauterfrank-ui/Peak_Trade`
+- Repository: `rauterfrank-ui&#47;Peak_Trade`
 - Default status: `Backlog`
 
 ---

@@ -28,7 +28,7 @@ Phase 8D implementierte die VaR Report Tools (`report_compare` und `report_index
 3. **Kein Regression Tracking** — Keine systematische CI-Integration
 
 ### Solution
-- **CI Workflow:** Automatische Regression Gates bei Änderungen an `src/risk/validation/**`, `tests/risk/validation/**`, etc.
+- **CI Workflow:** Automatische Regression Gates bei Änderungen an `src&#47;risk&#47;validation&#47;**`, `tests&#47;risk&#47;validation&#47;**`, etc.
 - **Operator Runbook:** Umfassende Dokumentation für DevOps (Use Cases, Troubleshooting, CI Integration)
 - **Deterministisch:** Stabile Tests mit Fixtures, deterministische Sortierung, Exit-Code Validation
 
@@ -233,7 +233,7 @@ python3 scripts/risk/var_suite_build_index.py \
 ### What Could Go Wrong?
 
 1. **CI Flakiness:** Path filters could miss relevant changes
-   - **Mitigation:** Path filters are conservative (include `src/risk/validation/**`, `tests/**`, etc.)
+   - **Mitigation:** Path filters are conservative (include `src&#47;risk&#47;validation&#47;**`, `tests&#47;**`, etc.)
 
 2. **Fixture Changes:** If fixtures change, tests might fail
    - **Mitigation:** Fixtures are stable (Phase 8D), tests verify determinism
@@ -296,7 +296,7 @@ open "$REPORT_ROOT/index.html"
 See `.github/workflows/var_report_regression_gate.yml` for full implementation.
 
 **Key Points:**
-- ✅ Triggered on changes to `src/risk/validation/**`, `tests/risk/validation/**`, etc.
+- ✅ Triggered on changes to `src&#47;risk&#47;validation&#47;**`, `tests&#47;risk&#47;validation&#47;**`, etc.
 - ✅ Runs tests + deterministic gates
 - ✅ Uploads comparison artifacts
 - ✅ Fails if tests fail or outputs invalid
@@ -376,7 +376,7 @@ See `.github/workflows/var_report_regression_gate.yml` for full implementation.
 ### Risk Validation
 - **report_compare module:** `src/risk/validation/report_compare.py`
 - **report_index module:** `src/risk/validation/report_index.py`
-- **Tests:** `tests/risk/validation/test_report_*.py`
+- **Tests:** `tests&#47;risk&#47;validation&#47;test_report_*.py`
 
 ---
 

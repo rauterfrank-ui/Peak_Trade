@@ -192,7 +192,7 @@ Zielbild (textuelles „Diagramm"):
    * globale Flags:
 
      * `enable_live_trading`,
-     * `allow_symbol("BTC/USDT")`,
+     * `allow_symbol("BTC&#47;USDT")`,
      * `max_notional_per_order`.
    * ggf. manuelle Bestätigungspflichten.
 
@@ -319,7 +319,7 @@ Phase 23 definiert, welche Schalter später existieren sollen (zum Teil sind ein
 
    * Liste erlaubter Symbole:
 
-     * `live_allowed_symbols = ["BTC/USDT", "ETH/USDT", ...]`
+     * `live_allowed_symbols = ["BTC&#47;USDT", "ETH&#47;USDT", ...]`
    * Orders auf nicht-whitelistete Symbole werden geblockt.
 
 4. **Two-Man-Rule / Manual Confirm**

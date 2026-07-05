@@ -27,7 +27,7 @@ Die Automation-Scripts führen regelmäßig verschiedene Tests und Drills durch,
 
 **Laufzeit**: ~5-10 Minuten (je nach Hardware)
 
-**Logging**: JSON-Log unter `reports/automation/daily/automation_daily_<TIMESTAMP>.json`
+**Logging**: JSON-Log unter `reports&#47;automation&#47;daily&#47;automation_daily_<TIMESTAMP>.json`
 
 **Usage**:
 ```bash
@@ -65,8 +65,8 @@ python scripts/automation/run_offline_daily_suite.py --only-trigger
 **Laufzeit**: ~30-60 Minuten (je nach Hardware)
 
 **Logging**:
-- JSON-Log: `reports/automation/weekly/automation_weekly_<TIMESTAMP>.json`
-- Markdown-Summary: `reports/automation/weekly/automation_weekly_<TIMESTAMP>.md`
+- JSON-Log: `reports&#47;automation&#47;weekly&#47;automation_weekly_<TIMESTAMP>.json`
+- Markdown-Summary: `reports&#47;automation&#47;weekly&#47;automation_weekly_<TIMESTAMP>.md`
 
 **Usage**:
 ```bash
@@ -95,7 +95,7 @@ python scripts/automation/run_offline_weekly_suite.py --output-dir reports/custo
 - ✅ Keine Verbindung zu Live-Exchanges
 - ✅ Keine realen Order-Submissions
 - ✅ Nur Paper-/Synthetic-/Demo-Modus
-- ✅ Alle Daten werden lokal unter `reports/automation/` gespeichert
+- ✅ Alle Daten werden lokal unter `reports&#47;automation&#47;` gespeichert
 
 ## 📊 Output-Struktur
 
@@ -195,7 +195,7 @@ find reports/automation -name "*.md" -mtime +30 -delete
 ```
 
 **Fehlersuche**:
-- Logs in `reports/automation/` prüfen
+- Logs in `reports&#47;automation&#47;` prüfen
 - Einzelne Jobs manuell laufen lassen (z.B. `run_offline_realtime_ma_crossover.py`)
 - Mit `--dry-run` testen, ohne Jobs auszuführen
 

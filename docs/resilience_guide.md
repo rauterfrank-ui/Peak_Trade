@@ -259,8 +259,8 @@ metrics.record_operation_failure("backtest", "ValueError")
 
 ### Accessing Metrics
 
-1. **Prometheus Endpoint**: `GET /health/prometheus`
-2. **JSON Format**: `GET /health/metrics`
+1. **Prometheus Endpoint**: `GET &#47;health&#47;prometheus`
+2. **JSON Format**: `GET &#47;health&#47;metrics`
 3. **In-Memory Snapshots**:
 
 ```python
@@ -281,10 +281,10 @@ summary = metrics.get_summary()
 
 Peak_Trade provides REST endpoints for health monitoring:
 
-- `GET /health`: Basic health status (200 OK if healthy)
-- `GET /health/detailed`: Detailed diagnostics
-- `GET /health/metrics`: Current metrics in JSON
-- `GET /health/prometheus`: Prometheus metrics export
+- `GET &#47;health`: Basic health status (200 OK if healthy)
+- `GET &#47;health&#47;detailed`: Detailed diagnostics
+- `GET &#47;health&#47;metrics`: Current metrics in JSON
+- `GET &#47;health&#47;prometheus`: Prometheus metrics export
 
 ### Registering Health Checks
 
@@ -415,8 +415,8 @@ health_check.register("your_module", check_your_module)
 #### 4. Monitor Metrics
 
 Access metrics via:
-- Prometheus: `GET /health/prometheus`
-- JSON: `GET /health/metrics`
+- Prometheus: `GET &#47;health&#47;prometheus`
+- JSON: `GET &#47;health&#47;metrics`
 - Logs: Check application logs for resilience events
 
 ---
@@ -526,7 +526,7 @@ Access metrics via:
 **Symptoms**: `/health` returns 503
 
 **Solutions**:
-1. Check individual checks: `GET /health/detailed`
+1. Check individual checks: `GET &#47;health&#47;detailed`
 2. Review logs for specific failures
 3. Verify external dependencies are available
 4. Check network connectivity

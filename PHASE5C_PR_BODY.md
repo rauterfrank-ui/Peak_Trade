@@ -8,7 +8,7 @@ Implements **Phase 5C Workflow Dispatch Regression Guard** to prevent `workflow_
 
 **Current State:** Guard is **operational** but **NOT ACTIVE** as a required check on `main`.
 
-**Expected Check Context:** `CI / Workflow Dispatch Guard / dispatch-guard`
+**Expected Check Context:** `CI &#47; Workflow Dispatch Guard &#47; dispatch-guard`
 
 **Why Not Active Yet:**
 - Requires operator action to add check to GitHub Branch Protection Rules
@@ -40,7 +40,7 @@ Implements **Phase 5C Workflow Dispatch Regression Guard** to prevent `workflow_
 **Path:** `.github/workflows/ci-workflow-dispatch-guard.yml`
 
 **Triggers:**
-- PRs modifying `.github/workflows/*.yml`
+- PRs modifying `.github&#47;workflows&#47;*.yml`
 - PRs modifying guard script or tests
 - Pushes to `main` (workflow changes only)
 
@@ -171,7 +171,7 @@ uv run pytest -q tests/ops/test_validate_workflow_dispatch_guards.py
 
 1. **Activate Enforcement:**
    - GitHub → Settings → Branches → Branch protection rules → `main` → Edit
-   - Add required check: `CI / Workflow Dispatch Guard / dispatch-guard`
+   - Add required check: `CI &#47; Workflow Dispatch Guard &#47; dispatch-guard`
    - Save changes
 
 2. **Verify Activation:**
@@ -179,7 +179,7 @@ uv run pytest -q tests/ops/test_validate_workflow_dispatch_guards.py
    gh api repos/rauterfrank-ui/Peak_Trade/branches/main/protection \
      --jq '.required_status_checks.contexts | .[] | select(. | contains("Workflow Dispatch Guard"))'
    ```
-   Expected: `CI / Workflow Dispatch Guard / dispatch-guard`
+   Expected: `CI &#47; Workflow Dispatch Guard &#47; dispatch-guard`
 
 ### Follow-up (After Activation)
 

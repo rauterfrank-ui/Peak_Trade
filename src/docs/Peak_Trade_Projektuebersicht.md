@@ -72,7 +72,7 @@ Peak_Trade/
 **Wichtig:**  
 - Alles Produktive ist in `src/`, `scripts/`, `config/`, `tests/`.  
 - Dokumentation ist zentral in `docs/` organisiert.  
-- Historische Stände / Altmaterial liegen in `archive/`.
+- Historische Stände / Altmaterial liegen in `archive&#47;`.
 
 ---
 
@@ -102,7 +102,7 @@ Peak_Trade/
   - globale Portfolio-Limits & Safeguards:
     - Kill-Switch, Trading-Pause, Circuit-Breaker
   - Konfiguration über `[risk]` in `config/config.toml`
-  - Demos (`demo_risk_limits.py`, `demo_complete_pipeline.py`) und Tests (`tests/test_risk.py`, falls vorhanden)
+  - Demos (`demo_risk_limits.py`, `demo_complete_pipeline.py`) und Tests (`tests&#47;test_risk.py`, falls vorhanden)
 - Dokument ist als **produktive Referenz** ausgelegt – „Production-Ready“.
 
 ### 3.3. `docs/project_docs/CLAUDE_NOTES.md`
@@ -159,7 +159,7 @@ python scripts/demo_complete_pipeline.py
 
 - Git-Repo ist initialisiert, `main`-Branch aktiv.
 - **Lokale KI-/Tool-Settings werden ignoriert**:
-  - `.claude/` in `.gitignore` eingetragen
+  - `.claude&#47;` in `.gitignore` eingetragen
   - `git rm --cached -r .claude` ausgeführt und committet
 - Kontrollbefehle (für zukünftige Checks):
 
@@ -201,7 +201,7 @@ Grober Status nach Bereichen (Ampel-Logik):
 
 - **Tooling / Dev-Setup** ✅  
   - VS Code, venv, pytest, Git-Setup  
-  - Lokale KI-Einstellungen (`.claude/`) sauber ignoriert
+  - Lokale KI-Einstellungen (`.claude&#47;`) sauber ignoriert
 
 ---
 

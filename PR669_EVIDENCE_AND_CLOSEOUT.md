@@ -45,7 +45,7 @@
 
 **Evidence:**
 - ✅ `dispatch-guard` executed (not skipped/absent)
-- ✅ Internal change detection via `dorny/paths-filter@v3` detected workflow changes
+- ✅ Internal change detection via `dorny&#47;paths-filter@v3` detected workflow changes
 - ✅ Validator script ran and passed all 33 workflows
 - ✅ Fast execution (~6s total job duration)
 

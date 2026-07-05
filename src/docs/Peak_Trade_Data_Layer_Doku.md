@@ -42,7 +42,7 @@ Peak_Trade/
 
 Optional (falls noch nicht angelegt, aber geplant):
 
-- `src/data/examples.py` – reine Doku-Beispiele (NotImplementedError).
+- `src&#47;data&#47;examples.py` – reine Doku-Beispiele (NotImplementedError).
 
 ---
 
@@ -216,19 +216,19 @@ cache = ParquetCache(cache_dir="./data_cache")
 
 ## 7. `demo_data_pipeline.py` – End-to-End-Demo
 
-Diese Datei liegt im **Projekt-Root** (`Peak_Trade/demo_data_pipeline.py`).  
+Diese Datei liegt im **Projekt-Root** (`Peak_Trade&#47;demo_data_pipeline.py`).
 Sie zeigt die komplette Pipeline von Fake-Daten bis Backtest.
 
 ### 7.1 Schritte im Script (High Level)
 
 1. **Künstliche OHLCV-Daten erzeugen**
    - Random-Walk für `close`,
-   - konsistente `open/high/low`,
+   - konsistente `open&#47;high&#47;low`,
    - zufällige Volumenwerte,
    - 1-Minuten-Timestamps (`freq="1T"`).
 
 2. **CSV schreiben**
-   - Output nach `data_temp/test_ohlcv.csv`.
+   - Output nach `data_temp&#47;test_ohlcv.csv`.
 
 3. **CSV laden**
    - Mit `CsvLoader`,
@@ -294,7 +294,7 @@ Erwartetes Verhalten:
 
 Wenn Python die Datei nicht findet, prüfen:
 
-- `pwd` muss `.../Peak_Trade` sein,
+- `pwd` muss `...&#47;Peak_Trade` sein,
 - `demo_data_pipeline.py` muss **direkt** in diesem Ordner liegen, nicht unter `src/` oder `src/data/`.
 
 ---

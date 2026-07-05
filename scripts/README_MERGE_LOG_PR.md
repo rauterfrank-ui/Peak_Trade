@@ -20,7 +20,7 @@
 
 **Options:**
 - `--base BRANCH` - Base branch (default: `main`)
-- `--branch BRANCH` - Target branch name (default: `docs/merge-log-pr-<NUM>`)
+- `--branch BRANCH` - Target branch name (default: `docs&#47;merge-log-pr-<NUM>`)
 
 ### Examples
 
@@ -47,13 +47,13 @@
    - **Idempotent:** Running twice has no negative effects
 
 3. **Generates Merge Log**
-   - Creates `docs/ops/PR_<NUM>_MERGE_LOG.md`
+   - Creates `docs&#47;ops&#47;PR_<NUM>_MERGE_LOG.md`
    - Includes PR metadata, commits, files changed
    - If file exists with content, keeps it
 
 4. **Updates README**
    - Patches `docs/ops/README.md` under "## Verified Merge Logs"
-   - Adds entry: `- **PR #<NUM>** → docs/ops/PR_<NUM>_MERGE_LOG.md`
+   - Adds entry: `- **PR #<NUM>** → docs&#47;ops&#47;PR_<NUM>_MERGE_LOG.md`
    - Skips if entry already exists
 
 5. **Creates PR**
@@ -277,7 +277,7 @@ git branch -D docs/merge-log-pr-420
 ## See Also
 
 - `docs/ops/README.md` - Index of all verified merge logs
-- `docs/ops/PR_*_MERGE_LOG.md` - Individual merge log documents
+- `docs&#47;ops&#47;PR_*_MERGE_LOG.md` - Individual merge log documents
 
 ---
 

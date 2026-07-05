@@ -49,7 +49,7 @@ Das Script hat bereits **vollständig** den Suite-Contract implementiert:
 
 **Verifikation:**
 - ✅ Script liegt in: `/mnt/project/scripts/ops/ops_doctor.sh`
-- ✅ `PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"` → korrekt für scripts/ops/
+- ✅ `PROJECT_ROOT="$(cd "$SCRIPT_DIR&#47;..&#47;.." && pwd)"` → korrekt für scripts/ops/
 - ✅ Alle Docs referenzieren: `scripts/ops/ops_doctor.sh`
 - ✅ Alle Beispiele nutzen: `scripts/ops/ops_doctor.sh`
 
@@ -350,7 +350,7 @@ git commit -m "feat(ops)!: verify suite-contract implementation"
 ```
 
 ### Short-term (Phase 82B)
-1. Create pytest test suite (`tests/ops/test_ops_inspector.py`)
+1. Create pytest test suite (`tests&#47;ops&#47;test_ops_inspector.py`)
 2. Add integration tests that actually run full checks
 3. Fix hanging issue in `test_ops_inspector_smoke.sh`
 4. Add to CI pipeline (GitHub Actions)

@@ -58,7 +58,7 @@ Dieser Ordner enthält alle Konfigurationsdateien und Templates für Peak_Trade.
 ### Regimes
 
 - `regimes.toml` — Regime-Definitionen
-- `macro_regimes/` — Macro-Regime-Konfiguration
+- `macro_regimes&#47;` — Macro-Regime-Konfiguration
   - `current.toml` — Aktuelles Regime
   - `schema.toml` — Regime-Schema
 
@@ -89,13 +89,13 @@ Dieser Ordner enthält alle Konfigurationsdateien und Templates für Peak_Trade.
 
 ## 📁 Unterordner
 
-### `portfolios/`
+### `portfolios&#47;`
 
 **Zweck:** Portfolio-Konfigurationen  
 **Enthält:** 6 Portfolio-TOMLs  
 **Verwendung:** Definiert Portfolio-Zusammenstellungen
 
-### `portfolio_presets/`
+### `portfolio_presets&#47;`
 
 **Zweck:** Portfolio-Presets  
 **Enthält:** 3 Preset-TOMLs  
@@ -106,31 +106,31 @@ Dieser Ordner enthält alle Konfigurationsdateien und Templates für Peak_Trade.
 **Zweck:** Portfolio-Rezepte  
 **Verwendung:** Kombinationen von Strategien
 
-### `sweeps/`
+### `sweeps&#47;`
 
 **Zweck:** Parameter-Sweep-Konfigurationen  
 **Enthält:** 15 Sweep-TOMLs  
 **Verwendung:** Hyperparameter-Optimierung mit Optuna
 
-### `scenarios/`
+### `scenarios&#47;`
 
 **Zweck:** Test-Szenarien  
 **Enthält:** 3 Szenario-TOMLs  
 **Verwendung:** Vordefinierte Test-Szenarien
 
-### `scheduler/`
+### `scheduler&#47;`
 
 **Zweck:** Scheduler-Konfiguration  
 **Enthält:** 1 Scheduler-TOML  
 **Verwendung:** Scheduling von Tasks
 
-### `markets/`
+### `markets&#47;`
 
 **Zweck:** Market-Konfigurationen  
 **Enthält:** 2 Market-YAMLs  
 **Verwendung:** Market-spezifische Parameter
 
-### `market_outlook/`
+### `market_outlook&#47;`
 
 **Zweck:** Market-Outlook-Konfiguration  
 **Enthält:** 1 Outlook-YAML  

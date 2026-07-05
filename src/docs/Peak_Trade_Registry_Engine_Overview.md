@@ -340,7 +340,7 @@ Die folgende Liste dient als Fahrplan, wenn du später am Projekt weiterarbeites
   - Commit für Registry & Engine‑Integration.
   - Separater Commit für Projektübersicht/Dokumentation.
 - Working Directory:
-  - war zuletzt nur mit `.claude/settings.local.json` als lokale Änderung belegt (Editor‑/AI‑Einstellungen, nicht kritisch).
+  - war zuletzt nur mit `.claude&#47;settings.local.json` als lokale Änderung belegt (Editor‑/AI‑Einstellungen, nicht kritisch).
 
 > Wenn du später wieder einsteigst, ist dieser Markdown‑Stand ein guter Startpunkt, um:
 > - den Überblick zu bekommen,  

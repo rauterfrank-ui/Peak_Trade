@@ -176,7 +176,7 @@ See [RUNBOOK_DOCS_REFERENCE_TARGETS_FALSE_POSITIVES.md](RUNBOOK_DOCS_REFERENCE_T
 | URL | `https://example.com/path` | NO encoding | URL detected |
 | COMMAND | `bash python3 scripts/ops/validate_docs_token_policy.py --help` | NO encoding | Command prefix |
 | LOCAL_PATH | `/usr/local/bin`, `~/config` | NO encoding | Local prefix |
-| ALLOWLISTED | `some/path` | NO encoding | In allowlist |
+| ALLOWLISTED | `some&#47;path` | NO encoding | In allowlist |
 
 ## Decision Tree: `--changed` vs `--all`
 

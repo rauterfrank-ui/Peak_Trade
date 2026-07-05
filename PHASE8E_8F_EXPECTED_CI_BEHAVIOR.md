@@ -12,8 +12,8 @@
 
 | Command | Success | Failure | Notes |
 |---------|---------|---------|-------|
-| `pytest tests/risk/validation/test_report_compare.py` | 0 | ≠0 | 12 tests must pass |
-| `pytest tests/risk/validation/test_report_index.py` | 0 | ≠0 | 10 tests must pass |
+| `pytest tests&#47;risk&#47;validation&#47;test_report_compare.py` | 0 | ≠0 | 12 tests must pass |
+| `pytest tests&#47;risk&#47;validation&#47;test_report_index.py` | 0 | ≠0 | 10 tests must pass |
 | `python3 scripts/risk/var_suite_compare_runs.py ...` | 0 | ≠0 | Script execution (warns if regressions found) |
 | `python3 scripts/risk/var_suite_build_index.py ...` | 0 | ≠0 | Script execution |
 | Verify compare outputs exist | 0 | 1 | Check for `compare.{json,md,html}` |
@@ -309,7 +309,7 @@ tests/fixtures/var_suite_reports/
 - **Workflow:** `.github/workflows/var_report_regression_gate.yml`
 - **Runbook:** `docs/ops/runbooks/var_report_compare.md`
 - **PR:** `PHASE8E_8F_CI_INTEGRATION_PR.md`
-- **Tests:** `tests/risk/validation/test_report_*.py`
+- **Tests:** `tests&#47;risk&#47;validation&#47;test_report_*.py`
 
 ---
 

@@ -70,7 +70,7 @@ If using Rulesets instead of classic Branch Protection Rules:
 
 1. **Ruleset Name:** `main-branch-protection`
 2. **Enforcement status:** Active
-3. **Target branches:** `main` (or use `refs/heads/main`)
+3. **Target branches:** `main` (or use `refs&#47;heads&#47;main`)
 4. **Rules:**
    - ✅ Require a pull request before merging
    - ✅ Require status checks to pass
@@ -438,7 +438,7 @@ Siehe auch: `docs/ENFORCEMENT_DRILL_REPORT.md` für ein vollständiges Validieru
 - Most settings require repository **admin** permissions
 - Some security features (Secret scanning push protection, Code scanning) require **GitHub Advanced Security** for private repositories
 - The `.github/CODEOWNERS` file and workflow updates have been committed to support these guardrails
-- Team handles in CODEOWNERS should be replaced with actual GitHub usernames or team names (format: `@org/team-name` or `@username`)
+- Team handles in CODEOWNERS should be replaced with actual GitHub usernames or team names (format: `@org&#47;team-name` or `@username`)
 
 ---
 

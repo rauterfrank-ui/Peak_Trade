@@ -17,7 +17,7 @@ Diese Datei registriert zentrale README-Einstiegspunkte für das Peak_Trade Repo
 
 - `config/README.md` — Configuration guide & templates
 - `docker/README.md` — Docker setup & container configs
-- `archive/README.md` — Archived code & historical snapshots
+- `archive&#47;README.md` — Archived code & historical snapshots
 
 ## Topic-Specific READMEs
 

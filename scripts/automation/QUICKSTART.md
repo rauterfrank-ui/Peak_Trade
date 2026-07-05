@@ -24,7 +24,7 @@ python3 scripts/automation/run_offline_daily_suite.py --dry-run
 
 **Erwartete Laufzeit**: ~5-10 Minuten
 
-**Output**: `reports/automation/daily/automation_daily_<TIMESTAMP>.json`
+**Output**: `reports&#47;automation&#47;daily&#47;automation_daily_<TIMESTAMP>.json`
 
 ---
 
@@ -46,8 +46,8 @@ python3 scripts/automation/run_offline_weekly_suite.py --dry-run
 - Quick-Mode: ~10-15 Minuten
 
 **Output**:
-- JSON: `reports/automation/weekly/automation_weekly_<TIMESTAMP>.json`
-- Markdown: `reports/automation/weekly/automation_weekly_<TIMESTAMP>.md`
+- JSON: `reports&#47;automation&#47;weekly&#47;automation_weekly_<TIMESTAMP>.json`
+- Markdown: `reports&#47;automation&#47;weekly&#47;automation_weekly_<TIMESTAMP>.md`
 
 ---
 

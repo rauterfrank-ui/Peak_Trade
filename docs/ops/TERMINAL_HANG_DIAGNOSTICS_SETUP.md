@@ -25,7 +25,7 @@ export LESS='-FRX'
 ## Investigation Results
 
 ### Git Hooks Audit
-✅ **Nur ein aktiver Hook:** `.git/hooks/pre-commit`
+✅ **Nur ein aktiver Hook:** `.git&#47;hooks&#47;pre-commit`
 - Wrapper für pre-commit framework (20 Zeilen)
 - Ruft: `.venv&#47;bin&#47;python3 -m pre_commit`
 - Config: `.pre-commit-config.yaml`
@@ -170,7 +170,7 @@ LESS=-FRX
 - **Diagnose Tool:** `scripts/ops/diag_terminal_hang.sh`
 - **Runbook:** `docs/ops/PAGER_HOOK_HANG_TRIAGE.md`
 - **Pre-commit Config:** `.pre-commit-config.yaml`
-- **Git Hook Wrapper:** `.git/hooks/pre-commit`
+- **Git Hook Wrapper:** `.git&#47;hooks&#47;pre-commit`
 
 ---
 

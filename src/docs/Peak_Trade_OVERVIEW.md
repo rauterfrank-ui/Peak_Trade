@@ -55,7 +55,7 @@ Die exakten Dateinamen können leicht abweichen – wichtig ist das **Konzept**:
 Aufgaben:
 
 - Verbindung zur **Kraken-API** (meistens REST über `requests` oder `ccxt`)
-- Laden von **OHLCV-Daten** für ein Symbol (z. B. `BTC/EUR`) und Timeframe (z. B. `1h`)
+- Laden von **OHLCV-Daten** für ein Symbol (z. B. `BTC&#47;EUR`) und Timeframe (z. B. `1h`)
 - Optionales **Caching** der Daten (z. B. lokal als CSV oder Parquet), um:
   - API-Limits zu schonen
   - Backtests schneller zu machen
@@ -196,7 +196,7 @@ Hier ein Vorschlag, wie du sinnvoll weitermachen kannst:
 
 Wenn du einen neuen Chat startest, kannst du zum schnellen Kontext einfach folgendes schreiben:
 
-> „Das ist für mein **Peak_Trade**-Projekt. Wir haben ein Python-Backtesting-Framework mit Modulen `kraken.py`, `ma_crossover.py`, `backtest/engine.py`, `backtest/stats.py` und einem Runner-Skript `run_ma_realistic.py`. Bitte berücksichtige, dass es um Krypto-Backtests (v. a. Kraken) geht.“
+> „Das ist für mein **Peak_Trade**-Projekt. Wir haben ein Python-Backtesting-Framework mit Modulen `kraken.py`, `ma_crossover.py`, `backtest&#47;engine.py`, `backtest&#47;stats.py` und einem Runner-Skript `run_ma_realistic.py`. Bitte berücksichtige, dass es um Krypto-Backtests (v. a. Kraken) geht.“
 
 Du kannst außerdem dieses `.md` hochladen oder reinkopieren, dann kann ich exakt auf diesem Stand weitermachen.
 
