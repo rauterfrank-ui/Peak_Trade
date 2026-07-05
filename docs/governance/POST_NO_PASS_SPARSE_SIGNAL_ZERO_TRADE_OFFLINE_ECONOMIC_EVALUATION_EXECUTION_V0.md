@@ -41,9 +41,9 @@ SCHEDULER_RUNTIME_ALLOWED: false
 
 | Kandidat | Economic Verdict | Sparse-Signal Density | Economic Metrics |
 |---|---|---|---|
-| `trend_following/v2` | `INCONCLUSIVE` (`EXECUTION_FAILED_FAIL_CLOSED`) | `NOT ZERO_TRADE` — 118/118 instruments with trades, max 53 | none (`CANDIDATE_RUN_FAILED`) |
-| `bollinger_bands/v2` | `INCONCLUSIVE` (`EXECUTION_FAILED_FAIL_CLOSED`) | `NOT ZERO_TRADE` — 93/118 instruments with trades, max 4 | none (`CANDIDATE_RUN_FAILED`) |
-| `momentum_1h/v2` | `INCONCLUSIVE` (`EXECUTION_FAILED_FAIL_CLOSED`) | `NOT ZERO_TRADE` — 117/118 instruments with trades, max 94 | none (`CANDIDATE_RUN_FAILED`) |
+| `trend_following&#47;v2` | `INCONCLUSIVE` (`EXECUTION_FAILED_FAIL_CLOSED`) | `NOT ZERO_TRADE` — 118&#47;118 instruments with trades, max 53 | none (`CANDIDATE_RUN_FAILED`) |
+| `bollinger_bands&#47;v2` | `INCONCLUSIVE` (`EXECUTION_FAILED_FAIL_CLOSED`) | `NOT ZERO_TRADE` — 93&#47;118 instruments with trades, max 4 | none (`CANDIDATE_RUN_FAILED`) |
+| `momentum_1h&#47;v2` | `INCONCLUSIVE` (`EXECUTION_FAILED_FAIL_CLOSED`) | `NOT ZERO_TRADE` — 117&#47;118 instruments with trades, max 94 | none (`CANDIDATE_RUN_FAILED`) |
 
 Panel-sequential signal-density scan refutes fleet-level `ZERO_TRADE` for all v2 bindings. Full STEP31F economic evaluation did not complete for any candidate; no economic viability metrics were materialized.
 

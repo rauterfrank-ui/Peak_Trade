@@ -5044,9 +5044,9 @@ Bounded offline-only economic evaluation execution for sparse-signal/zero-trade 
 | `INCONCLUSIVE_COUNT` | `3` |
 | `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
 | `SPARSE_SIGNAL_CLASS` | `EXECUTION_FAILED_FAIL_CLOSED` |
-| `TREND_FOLLOWING_SPARSE_SIGNAL_DENSITY` | `118/118 nonzero trades, max 53` |
-| `BOLLINGER_BANDS_SPARSE_SIGNAL_DENSITY` | `93/118 nonzero trades, max 4` |
-| `MOMENTUM_1H_SPARSE_SIGNAL_DENSITY` | `117/118 nonzero trades, max 94` |
+| `TREND_FOLLOWING_SPARSE_SIGNAL_DENSITY` | `118&#47;118 nonzero trades, max 53` |
+| `BOLLINGER_BANDS_SPARSE_SIGNAL_DENSITY` | `93&#47;118 nonzero trades, max 4` |
+| `MOMENTUM_1H_SPARSE_SIGNAL_DENSITY` | `117&#47;118 nonzero trades, max 94` |
 | `PANEL_ZERO_TRADE_REFUTED` | `true` |
 | `PROMOTION_ELIGIBLE` | `false` |
 | `RUNTIME_REWIRE_ADMISSIBLE` | `false` |
