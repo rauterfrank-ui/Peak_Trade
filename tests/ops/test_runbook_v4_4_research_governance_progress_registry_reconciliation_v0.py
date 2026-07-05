@@ -30,7 +30,7 @@ RECONCILIATION_SECTION_PREFIX = (
     "#### RUNBOOK_V4_4_RESEARCH_GOVERNANCE_PROGRESS_REGISTRY_RECONCILIATION_V0"
 )
 TERMINAL_NEXT_STEP = "NO_FURTHER_CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_ACTION_TERMINAL_FAIL"
-GLOBAL_NEXT_STEP = "OPERATOR_INPUT_REQUIRED_FOR_NEW_RESEARCH_SCOPE_DEFINITION_V0"
+GLOBAL_NEXT_STEP = "NEW_RATIFIED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_REQUIRED"
 OPERATOR_POLICY_DECISION = "NO_NEW_CANDIDATE_HOLD_REINSTATE"
 FINAL_RESEARCH_FLEET = "trend_following,bollinger_bands,momentum_1h"
 
@@ -65,7 +65,9 @@ class TestRunbookV44AuthoritativeGovernanceReconciliation:
 
     def test_binding_and_ratification_flags_pass_in_authoritative_metadata(self) -> None:
         assert authoritative_field_value("FINAL_RESEARCH_FLEET_BINDING_READY") == "true"
-        assert authoritative_field_value("NEW_CANDIDATES_RATIFIED") == "true"
+        # Post-fleet-convergence (PR #4865): fleet bindings ratified historically, but no
+        # new promotion candidates remain ratified under NO_NEW_CANDIDATE_HOLD=ACTIVE.
+        assert authoritative_field_value("NEW_CANDIDATES_RATIFIED") == "false"
         assert authoritative_field_value("OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFIED") == "true"
         assert authoritative_field_value("ECONOMIC_EVALUATION_SCOPE_RATIFIED") == "true"
         assert authoritative_field_value("ECONOMIC_EVALUATION_AUTHORIZED") == "false"

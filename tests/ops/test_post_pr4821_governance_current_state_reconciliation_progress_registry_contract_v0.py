@@ -15,7 +15,11 @@ from tests.ops.runbook_progress_registry_contract_helpers_v1 import (
 )
 
 CLOSEOUT_SECTION_PREFIX = "#### POST_PR4821_GOVERNANCE_CURRENT_STATE_RECONCILIATION_V0"
-GLOBAL_NEXT_STEP = "OPERATOR_INPUT_REQUIRED_FOR_NEW_RESEARCH_SCOPE_DEFINITION_V0"
+GLOBAL_NEXT_STEP = "NEW_RATIFIED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_REQUIRED"
+# Historical PR #4821 closeout recorded this token; authoritative metadata superseded it post-PR-#4865.
+HISTORICAL_PR4821_CLOSEOUT_CORRECTED_NEXT_STEP = (
+    "OPERATOR_INPUT_REQUIRED_FOR_NEW_RESEARCH_SCOPE_DEFINITION_V0"
+)
 CS_TERMINAL_NEXT_STEP = "NO_FURTHER_CROSS_SECTIONAL_RELATIVE_STRENGTH_V0_ACTION_TERMINAL_FAIL"
 FINAL_RESEARCH_FLEET = "trend_following,bollinger_bands,momentum_1h"
 
@@ -104,7 +108,9 @@ class TestPostPr4821CloseoutSection:
         assert _field_value(section, "DRIFT_CLASS") == (
             "PR4821_GLOBAL_NEXT_STEP_OVERWRITE_BY_CS_V0_TERMINAL_FAIL"
         )
-        assert _field_value(section, "CORRECTED_GLOBAL_NEXT_CANONICAL_STEP") == GLOBAL_NEXT_STEP
+        assert _field_value(section, "CORRECTED_GLOBAL_NEXT_CANONICAL_STEP") == (
+            HISTORICAL_PR4821_CLOSEOUT_CORRECTED_NEXT_STEP
+        )
         assert (
             _field_value(section, "PRIOR_GLOBAL_NEXT_CANONICAL_STEP_DRIFT_VALUE")
             == CS_TERMINAL_NEXT_STEP
