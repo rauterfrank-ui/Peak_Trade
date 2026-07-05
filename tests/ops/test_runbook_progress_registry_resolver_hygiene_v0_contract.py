@@ -21,10 +21,10 @@ from tests.ops.runbook_progress_registry_contract_helpers_v1 import (
 
 ROW_RE = re.compile(r"^\| `([^`]+)` \| `([^`]*)` \|$")
 VALID_ENTRY_CLASSES = frozenset(item.value for item in RegistryEntryClass)
-AUTHORITATIVE_NEXT_STEP = "REQUEST_OPERATOR_GO_FOR_POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_VERSIONED_BINDING_RATIFICATION_V0"
-CURRENT_ADMISSIBLE_SCOPE = "POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_VERSIONED_BINDING_RATIFICATION_V0"
-CURRENT_STATE = "POST_NO_PASS_ROBUSTNESS_FAILURE_NEXT_RESEARCH_SCOPE_DEFINITION_COMPLETE_V0"
-ORIGIN_MAIN = "77de907bbf7808ed4cbf8604c7994f7078932b85"
+AUTHORITATIVE_NEXT_STEP = "REQUEST_OPERATOR_GO_FOR_POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0"
+CURRENT_ADMISSIBLE_SCOPE = "POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0"
+CURRENT_STATE = "POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_VERSIONED_BINDING_RATIFICATION_COMPLETE_V0"
+ORIGIN_MAIN = "a113c6bb667fc38da160637e47f018a5411365a3"
 
 
 def _metadata_field_rows(text: str) -> list[tuple[str, str]]:
@@ -82,7 +82,7 @@ class TestRunbookProgressRegistryResolverHygieneV0:
 
     def test_post_pr4865_4872_closeout_metadata(self) -> None:
         assert authoritative_field_value("LAST_VERIFIED_ORIGIN_MAIN") == ORIGIN_MAIN
-        assert authoritative_field_value("LAST_VERIFIED_PR") == "4878"
+        assert authoritative_field_value("LAST_VERIFIED_PR") == "4879"
         assert authoritative_field_value("CURRENT_STATE") == CURRENT_STATE
         assert (
             authoritative_field_value("POST_PR_4865_4872_PROGRESS_REGISTRY_CLOSEOUT_STATUS")
