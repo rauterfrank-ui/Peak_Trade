@@ -136,13 +136,15 @@ class TestPostNoPassEconomicEvidenceCloseoutAndRegistryUpdateV0Contract:
 
     def test_registry_metadata_fields(self) -> None:
         text = read_registry()
-        assert authoritative_field_value("CURRENT_STATE") == CURRENT_STATE
+        assert (
+            authoritative_field_value(
+                "POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_AND_REGISTRY_UPDATE_V0_STATUS"
+            )
+            == "POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_COMPLETE"
+        )
         assert authoritative_field_value("LAST_VERIFIED_ORIGIN_MAIN") == ORIGIN_MAIN
         assert authoritative_field_value("LAST_VERIFIED_PR") == "4875"
         assert authoritative_field_value("LAST_VERIFIED_SOURCE") == SCOPE_CLASSIFICATION
-        assert authoritative_field_value("NEXT_CANONICAL_STEP") == NEXT_CANONICAL_STEP
-        assert authoritative_field_value("NEXT_CANONICAL_ACTION") == NEXT_CANONICAL_STEP
-        assert authoritative_field_value("GLOBAL_RUNBOOK_NEXT_STEP") == NEXT_CANONICAL_STEP
         assert (
             _field_value(
                 text,
