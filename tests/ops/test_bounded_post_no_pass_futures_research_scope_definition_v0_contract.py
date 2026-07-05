@@ -22,7 +22,8 @@ CLOSEOUT_SECTION_PREFIX = "#### BOUNDED_POST_NO_PASS_FUTURES_RESEARCH_SCOPE_DEFI
 OPERATOR_GO = "GO_NEW_RATIFIED_RESEARCH_SCOPE_OR_EVIDENCE_CLASS_SCOPE_DEFINITION_ONLY_V0"
 EVIDENCE_CLASS_ID = "BOUNDED_POST_NO_PASS_FUTURES_RESEARCH_SCOPE_DEFINITION_V0"
 SCOPE_ID = "BOUNDED_POST_NO_PASS_FUTURES_RESEARCH_SCOPE_DEFINITION_V0"
-SCOPE_STATUS = "SCOPE_DEFINED_NOT_EXECUTED"
+SCOPE_STATUS = "SCOPE_EXECUTED_COMPLETE_ROBUSTNESS_FAILED"
+HISTORICAL_CLOSEOUT_SCOPE_STATUS = "SCOPE_DEFINED_NOT_EXECUTED"
 PROCESS_CLASSIFICATION = "NEW_RATIFIED_RESEARCH_SCOPE_OR_EVIDENCE_CLASS_SCOPE_DEFINITION_ONLY_V0"
 NEXT_REQUIRED_GO = "GO_BOUNDED_POST_NO_PASS_FUTURES_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0"
 NEXT_CANONICAL_STEP = (
@@ -121,7 +122,7 @@ class TestBoundedPostNoPassFuturesResearchScopeDefinitionV0Contract:
             )
             in body
         )
-        assert f"`VERDICT` | `{SCOPE_STATUS}`" in body
+        assert f"`VERDICT` | `{HISTORICAL_CLOSEOUT_SCOPE_STATUS}`" in body
         assert f"`EVIDENCE_CLASS_ID` | `{EVIDENCE_CLASS_ID}`" in body
         assert f"`OPERATOR_GO` | `{OPERATOR_GO}`" in body
         assert "`ECONOMIC_EVALUATION_AUTHORIZED` | `false`" in body
@@ -161,10 +162,10 @@ class TestBoundedPostNoPassFuturesResearchScopeDefinitionV0Contract:
             )
             == NEXT_REQUIRED_GO
         )
-        assert authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE") == SCOPE_ID
-        assert authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN") == OPERATOR_GO
+        assert authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE") == "NONE"
+        assert authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN") == "NONE"
         assert authoritative_field_value("NEXT_CANONICAL_STEP") == (
-            "NEW_RATIFIED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_REQUIRED"
+            "POST_NO_PASS_ECONOMIC_EVIDENCE_CLOSEOUT_AND_REGISTRY_UPDATE_V0"
         )
         assert authoritative_field_value("ECONOMIC_EVALUATION_AUTHORIZED") == "false"
         assert authoritative_field_value("RUNTIME_REWIRE_ADMISSIBLE") == "false"
@@ -172,8 +173,8 @@ class TestBoundedPostNoPassFuturesResearchScopeDefinitionV0Contract:
 
     def test_registry_closeout_section(self) -> None:
         section = _closeout_section(read_registry())
-        assert _field_value(section, "STATUS") == SCOPE_STATUS
-        assert _field_value(section, "VERDICT") == SCOPE_STATUS
+        assert _field_value(section, "STATUS") == HISTORICAL_CLOSEOUT_SCOPE_STATUS
+        assert _field_value(section, "VERDICT") == HISTORICAL_CLOSEOUT_SCOPE_STATUS
         assert _field_value(section, "PROCESS_CLASSIFICATION") == PROCESS_CLASSIFICATION
         assert _field_value(section, "EVIDENCE_CLASS_ID") == EVIDENCE_CLASS_ID
         assert _field_value(section, "ECONOMIC_EVALUATION_AUTHORIZED") == "false"
