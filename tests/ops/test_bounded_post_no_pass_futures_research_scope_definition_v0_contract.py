@@ -162,10 +162,14 @@ class TestBoundedPostNoPassFuturesResearchScopeDefinitionV0Contract:
             )
             == NEXT_REQUIRED_GO
         )
-        assert authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE") == "NONE"
-        assert authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN") == "NONE"
+        assert authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE") == (
+            "POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_EXECUTION_V0"
+        )
+        assert authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN") == (
+            "GO_POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_EXECUTION_V0"
+        )
         assert authoritative_field_value("NEXT_CANONICAL_STEP") == (
-            "NEW_RATIFIED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_REQUIRED"
+            "POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_EXECUTION_REQUIRES_SEPARATE_OPERATOR_GO_V0"
         )
         assert authoritative_field_value("ECONOMIC_EVALUATION_AUTHORIZED") == "false"
         assert authoritative_field_value("RUNTIME_REWIRE_ADMISSIBLE") == "false"

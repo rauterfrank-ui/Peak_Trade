@@ -4,6 +4,11 @@ Offline, deterministic resolution for ``PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.
 Authoritative current status is resolved only from explicitly classified current
 owner sections. Historical step snapshots and legacy aliases never produce global
 authority.
+
+Post-no-pass Class-E diagnostics evidence scope (v0) authoritative fields live in
+Registry-Metadaten only (``CURRENT_STATE`` =
+``POST_NO_PASS_ROBUSTNESS_FAILURE_DIAGNOSTICS_EVIDENCE_CLASS_DEFINED_V0``).
+Historical ``####`` sections do not override global ``NEXT_CANONICAL_STEP``.
 """
 
 from __future__ import annotations
