@@ -39,7 +39,7 @@ Ausgeschlossen: Evaluation-Reexecution, Backtest-Retry, Walk-Forward-Retry, Mont
 | #4851 | Digest + Evaluation Execution Scope Ratification | (ratifiziert vor #4852) |
 | #4852 | Bounded Offline Economic Evaluation | `1a04805112a26986f3a659262b30f80005952850` |
 
-PR #4852 Squash-Merge: `2026-07-05T01:56:53Z`. `origin/main` vor Merge: `4dd3e0155e7bbd6d5265b2b0dc334f7f7d71efda`.
+PR #4852 Squash-Merge: `2026-07-05T01:56:53Z`. `origin&#47;main` vor Merge: `4dd3e0155e7bbd6d5265b2b0dc334f7f7d71efda`.
 
 ## D. Evidence Bundle Referenzen
 
