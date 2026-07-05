@@ -5085,7 +5085,7 @@ Bounded offline-only economic evaluation execution for sparse-signal/zero-trade 
 
 #### POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0
 
-Docs-only governance scope definition for Class E evidence class `POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0` after PR #4881 sparse-signal/zero-trade v2 offline economic evaluation execution (`0 PASS / 0 FAIL / 3 INCONCLUSIVE`). Defines read-only/offline inconclusive-failure classification taxonomy for EXECUTION_FAILED_FAIL_CLOSED fleet evidence. No economic evaluation, no promotion, no runtime, no same-binding retry, no parameter rescue, no threshold lowering, no authority effect.
+Docs-only governance scope definition for Class E evidence class `POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0` after PR #4881 sparse-signal/zero-trade v2 offline economic evaluation execution (`0 PASS &#47; 0 FAIL &#47; 3 INCONCLUSIVE`). Defines read-only/offline inconclusive-failure classification taxonomy for EXECUTION_FAILED_FAIL_CLOSED fleet evidence. No economic evaluation, no promotion, no runtime, no same-binding retry, no parameter rescue, no threshold lowering, no authority effect.
 
 | Feld | Wert |
 |---|---|
