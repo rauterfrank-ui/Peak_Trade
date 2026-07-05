@@ -1,4 +1,4 @@
-.PHONY: clean clean-all audit audit-tools gc report-smoke report-smoke-open ops-validate-pr-reports
+.PHONY: clean clean-all audit audit-tools gc report-smoke report-smoke-open ops-validate-pr-reports drift-report
 
 # ============================================================================
 # Cleanup Targets
@@ -157,6 +157,10 @@ deps-sync-check:
 # Validate PR final report formatting
 ops-validate-pr-reports:
 	bash scripts/validate_pr_report_format.sh
+
+# Non-blocking global docs/reference drift visibility report
+drift-report:
+	python3 scripts/ops/reference_drift_report_v1.py
 
 # ============================================================================
 # Governance Gate (AI matrix vs registry)
