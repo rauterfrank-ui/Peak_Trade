@@ -38,9 +38,15 @@ NEXT_BINDING_GO = "GO_POST_NO_PASS_METRIC_MATERIALIZATION_PATH_ACTIVATION_BINDIN
 NEXT_EXECUTION_GO = (
     "GO_POST_NO_PASS_METRIC_MATERIALIZATION_PATH_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0"
 )
-NEXT_CANONICAL_STEP = "REQUEST_OPERATOR_GO_FOR_POST_NO_PASS_METRIC_MATERIALIZATION_PATH_ACTIVATION_BINDING_RATIFICATION_V0"
-CURRENT_STATE = "POST_NO_PASS_METRIC_MATERIALIZATION_DIAGNOSTICS_DERIVED_NEXT_RESEARCH_SCOPE_DEFINITION_COMPLETE_V0"
-CURRENT_ADMISSIBLE_SCOPE = (
+AUTHORITATIVE_NEXT_CANONICAL_STEP = "REQUEST_OPERATOR_GO_FOR_POST_NO_PASS_METRIC_MATERIALIZATION_PATH_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0"
+HISTORICAL_CLOSEOUT_NEXT_CANONICAL_STEP = "REQUEST_OPERATOR_GO_FOR_POST_NO_PASS_METRIC_MATERIALIZATION_PATH_ACTIVATION_BINDING_RATIFICATION_V0"
+AUTHORITATIVE_CURRENT_STATE = (
+    "POST_NO_PASS_METRIC_MATERIALIZATION_PATH_ACTIVATION_BINDING_RATIFICATION_COMPLETE_V0"
+)
+AUTHORITATIVE_ADMISSIBLE_SCOPE = (
+    "POST_NO_PASS_METRIC_MATERIALIZATION_PATH_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0"
+)
+HISTORICAL_CLOSEOUT_ADMISSIBLE_SCOPE = (
     "POST_NO_PASS_METRIC_MATERIALIZATION_PATH_ACTIVATION_BINDING_RATIFICATION_V0"
 )
 BASELINE_HEAD = "f4709c51044a05c6dcc1c640d28c7567e33d71a7"
@@ -194,8 +200,8 @@ class TestPostNoPassMetricMaterializationDiagnosticsDerivedNextResearchScopeDefi
 
     def test_registry_metadata_fields(self) -> None:
         text = read_registry()
-        assert authoritative_field_value("CURRENT_STATE") == CURRENT_STATE
-        assert authoritative_field_value("NEXT_CANONICAL_STEP") == NEXT_CANONICAL_STEP
+        assert authoritative_field_value("CURRENT_STATE") == AUTHORITATIVE_CURRENT_STATE
+        assert authoritative_field_value("NEXT_CANONICAL_STEP") == AUTHORITATIVE_NEXT_CANONICAL_STEP
         assert (
             _field_value(
                 text,
@@ -241,10 +247,11 @@ class TestPostNoPassMetricMaterializationDiagnosticsDerivedNextResearchScopeDefi
         assert authoritative_field_value("RUNTIME_REWIRE_ADMISSIBLE") == "false"
         assert authoritative_field_value("NEW_CANDIDATES_RATIFIED") == "false"
         assert (
-            authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE") == CURRENT_ADMISSIBLE_SCOPE
+            authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE")
+            == AUTHORITATIVE_ADMISSIBLE_SCOPE
         )
         assert (
-            authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN") == NEXT_BINDING_GO
+            authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN") == NEXT_EXECUTION_GO
         )
 
     def test_registry_closeout_section(self) -> None:
@@ -263,8 +270,13 @@ class TestPostNoPassMetricMaterializationDiagnosticsDerivedNextResearchScopeDefi
         assert _field_value(section, "THRESHOLD_LOWERING_ALLOWED") == "false"
         assert _field_value(section, "REQUIRED_NEXT_GO_FOR_BINDING_RATIFICATION") == NEXT_BINDING_GO
         assert _field_value(section, "REQUIRED_NEXT_GO_FOR_EXECUTION") == NEXT_EXECUTION_GO
-        assert _field_value(section, "NEXT_CANONICAL_STEP") == NEXT_CANONICAL_STEP
-        assert _field_value(section, "CURRENT_ADMISSIBLE_NEXT_SCOPE") == CURRENT_ADMISSIBLE_SCOPE
+        assert (
+            _field_value(section, "NEXT_CANONICAL_STEP") == HISTORICAL_CLOSEOUT_NEXT_CANONICAL_STEP
+        )
+        assert (
+            _field_value(section, "CURRENT_ADMISSIBLE_NEXT_SCOPE")
+            == HISTORICAL_CLOSEOUT_ADMISSIBLE_SCOPE
+        )
         assert _field_value(section, "CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN") == NEXT_BINDING_GO
         assert _field_value(section, "AUTHORITY_EFFECT") == "NONE"
         assert _field_value(section, "RUNTIME_EFFECT") == "NONE"
