@@ -163,13 +163,13 @@ def test_scope_ratification_config_exists() -> None:
 
 def test_registry_metadata_reflects_execution_complete() -> None:
     assert authoritative_field_value("CURRENT_STATE") == (
-        "POST_NO_PASS_SPARSE_SIGNAL_ZERO_TRADE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_COMPLETE_V0"
+        "POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_EXECUTION_COMPLETE_V0"
     )
     assert authoritative_field_value("NEXT_CANONICAL_STEP") == (
-        "POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_EXECUTION_REQUIRES_SEPARATE_OPERATOR_GO_V0"
+        "NEW_VERSIONED_RESEARCH_SCOPE_SELECTION_REQUIRES_OPERATOR_RATIFICATION_V0"
     )
     assert authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE") == (
-        "POST_NO_PASS_SPARSE_SIGNAL_INCONCLUSIVE_FAILURE_CLASSIFICATION_V0"
+        "NEW_VERSIONED_RESEARCH_SCOPE_SELECTION_V0"
     )
     assert (
         authoritative_field_value(
