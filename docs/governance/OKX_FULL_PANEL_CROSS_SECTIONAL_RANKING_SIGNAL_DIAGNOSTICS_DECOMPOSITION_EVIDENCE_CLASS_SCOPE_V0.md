@@ -51,7 +51,7 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | PR #4852 (negative Economic Evidence) | Merge-Commit `1a04805112a26986f3a659262b30f80005952850`; VERDICT `ROBUSTNESS_FAILED` |
 | PR #4853 (Governance-Closeout) | Merge-Commit `c9291a2f2d2c7e262793046bd2eee29bcca2d443`; terminal negative evidence for unchanged binding |
 | Failure Attribution Autopsy Bundle | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/okx_full_panel_cross_sectional_ranking_strategy_archetype_failure_attribution_economic_autopsy_read_only_v0_20260705T020905Z` (MANIFEST_VERIFY_RC=0) |
-| PR #4852 Evaluation Bundle | `.../implementation/okx_full_panel_cross_sectional_ranking_strategy_archetype_bounded_offline_economic_evaluation_v0_20260705T014731Z` |
+| PR #4852 Evaluation Bundle | `...&#47;implementation&#47;okx_full_panel_cross_sectional_ranking_strategy_archetype_bounded_offline_economic_evaluation_v0_20260705T014731Z` |
 
 Die Failure Attribution Autopsy klassifizierte:
 
