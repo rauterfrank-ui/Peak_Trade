@@ -114,8 +114,12 @@ class TestPostNoPassInconclusiveMetricMaterializationPathDiagnosticsEvidenceExec
 
     def test_registry_metadata_fields(self) -> None:
         text = read_registry()
-        assert authoritative_field_value("CURRENT_STATE") == CURRENT_STATE
-        assert authoritative_field_value("NEXT_CANONICAL_STEP") == NEXT_CANONICAL_STEP
+        assert authoritative_field_value("CURRENT_STATE") == (
+            "POST_NO_PASS_METRIC_MATERIALIZATION_DIAGNOSTICS_DERIVED_NEXT_RESEARCH_SCOPE_DEFINITION_COMPLETE_V0"
+        )
+        assert authoritative_field_value("NEXT_CANONICAL_STEP") == (
+            "REQUEST_OPERATOR_GO_FOR_POST_NO_PASS_METRIC_MATERIALIZATION_PATH_ACTIVATION_BINDING_RATIFICATION_V0"
+        )
         assert (
             _field_value(
                 text,
@@ -158,11 +162,12 @@ class TestPostNoPassInconclusiveMetricMaterializationPathDiagnosticsEvidenceExec
         assert authoritative_field_value("ECONOMIC_EVALUATION_AUTHORIZED") == "false"
         assert authoritative_field_value("PROMOTION_ELIGIBLE") == "false"
         assert authoritative_field_value("RUNTIME_REWIRE_ADMISSIBLE") == "false"
-        assert (
-            authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE") == CURRENT_ADMISSIBLE_SCOPE
+        assert authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE") == (
+            "POST_NO_PASS_METRIC_MATERIALIZATION_PATH_ACTIVATION_BINDING_RATIFICATION_V0"
         )
         assert (
-            authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN") == RATIFICATION_GO
+            authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN")
+            == "GO_POST_NO_PASS_METRIC_MATERIALIZATION_PATH_ACTIVATION_BINDING_RATIFICATION_V0"
         )
 
     def test_registry_closeout_section(self) -> None:
