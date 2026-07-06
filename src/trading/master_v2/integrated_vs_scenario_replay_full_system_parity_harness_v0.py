@@ -43,6 +43,13 @@ from trading.master_v2.reconciliation_unknown_outcome_offline_replay_binding_ada
     ReconciliationUnknownOutcomeOfflineReplayBindingResultV0,
     reconciliation_unknown_outcome_binding_non_authority_boundary_ok_v0,
 )
+from trading.master_v2.killswitch_boundary_offline_replay_binding_adapter_v0 import (
+    KILLSWITCH_BOUNDARY_EFFECT_BOUND_OFFLINE,
+    KILLSWITCH_BOUNDARY_EFFECT_NONE,
+    KILLSWITCH_BOUNDARY_OFFLINE_REPLAY_BINDING_ADAPTER_OWNER,
+    KillSwitchBoundaryOfflineReplayBindingResultV0,
+    killswitch_boundary_binding_non_authority_boundary_ok_v0,
+)
 from trading.master_v2.capital_risk_sizing_offline_replay_binding_adapter_v0 import (
     CANONICAL_CAPITAL_RISK_SIZING_OWNER,
     CAPITAL_RISK_SIZING_OFFLINE_REPLAY_BINDING_ADAPTER_OWNER,
@@ -123,6 +130,8 @@ class ParityDecisionEnvelopeV0:
     safety_boundary_effect: str = SAFETY_BOUNDARY_EFFECT_NONE
     reconciliation_unknown_outcome_ref: str = ""
     reconciliation_unknown_outcome_effect: str = RECONCILIATION_UNKNOWN_OUTCOME_EFFECT_NONE
+    killswitch_boundary_ref: str = ""
+    killswitch_boundary_effect: str = KILLSWITCH_BOUNDARY_EFFECT_NONE
     conflict_status: Optional[str] = None
     selected_side: Optional[str] = None
 
@@ -213,6 +222,8 @@ def extract_integrated_parity_envelope_v0(
         safety_boundary_effect=evidence.safety_boundary_effect,
         reconciliation_unknown_outcome_ref=evidence.reconciliation_unknown_outcome_ref,
         reconciliation_unknown_outcome_effect=evidence.reconciliation_unknown_outcome_effect,
+        killswitch_boundary_ref=evidence.killswitch_boundary_ref,
+        killswitch_boundary_effect=evidence.killswitch_boundary_effect,
         authority_effect=evidence.authority_effect,
         runtime_effect=evidence.runtime_effect,
         conflict_status=conflict_status,
@@ -435,6 +446,21 @@ def assert_reconciliation_unknown_outcome_non_authority_boundary_v0(
     }
 
 
+def assert_killswitch_boundary_non_authority_boundary_v0(
+    envelope: ParityDecisionEnvelopeV0,
+) -> None:
+    assert not envelope.execution_eligible
+    assert not envelope.adapter_compatible
+    assert envelope.authority_effect == "NONE"
+    assert envelope.runtime_effect == "NONE"
+    if envelope.killswitch_boundary_effect == KILLSWITCH_BOUNDARY_EFFECT_BOUND_OFFLINE:
+        assert envelope.killswitch_boundary_ref
+    assert envelope.killswitch_boundary_effect in {
+        KILLSWITCH_BOUNDARY_EFFECT_NONE,
+        KILLSWITCH_BOUNDARY_EFFECT_BOUND_OFFLINE,
+    }
+
+
 def extract_canonical_order_intent_parity_envelope_v0(
     binding: CanonicalOrderIntentOfflineReplayBindingResultV0,
     *,
@@ -546,6 +572,74 @@ def extract_scenario_replay_tick_safety_kernel_envelope_v0(
         safety_boundary_effect=tick.safety_boundary_effect,
         reconciliation_unknown_outcome_ref=tick.reconciliation_unknown_outcome_ref,
         reconciliation_unknown_outcome_effect=tick.reconciliation_unknown_outcome_effect,
+        killswitch_boundary_ref=tick.killswitch_boundary_ref,
+        killswitch_boundary_effect=tick.killswitch_boundary_effect,
+        authority_effect="NONE",
+        runtime_effect="NONE",
+    )
+
+
+def extract_killswitch_boundary_parity_envelope_v0(
+    binding: KillSwitchBoundaryOfflineReplayBindingResultV0,
+    *,
+    decision_outcome: str = "",
+    composition_result_id: str = "",
+) -> ParityDecisionEnvelopeV0:
+    ev = binding.evidence
+    return ParityDecisionEnvelopeV0(
+        decision_outcome=decision_outcome or ev.decision_outcome,
+        previous_side_state=None,
+        next_side_state=None,
+        composition_status="",
+        composition_result_id=composition_result_id,
+        entry_or_exit_policy_ref=ev.entry_or_exit_policy_ref,
+        reason_codes=tuple(ev.reason_codes),
+        decision_precedence_trace=tuple(ev.decision_precedence_trace),
+        execution_eligible=ev.execution_eligible,
+        adapter_compatible=ev.adapter_compatible,
+        quantity_status=ev.quantity_status,
+        quantity_provenance_ref=ev.quantity_provenance_ref,
+        risk_sizing_ref=ev.risk_sizing_ref,
+        risk_sizing_effect=ev.risk_sizing_effect,
+        order_intent_ref=ev.order_intent_ref,
+        order_intent_effect=ev.order_intent_effect,
+        safety_boundary_ref=ev.safety_boundary_ref,
+        safety_boundary_effect=ev.safety_boundary_effect,
+        reconciliation_unknown_outcome_ref=ev.reconciliation_unknown_outcome_ref,
+        reconciliation_unknown_outcome_effect=ev.reconciliation_unknown_outcome_effect,
+        killswitch_boundary_ref=binding.killswitch_boundary_ref,
+        killswitch_boundary_effect=binding.killswitch_boundary_effect,
+        authority_effect=ev.authority_effect,
+        runtime_effect=ev.runtime_effect,
+    )
+
+
+def extract_scenario_replay_tick_killswitch_boundary_envelope_v0(
+    tick: OfflineDoublePlayScenarioReplayTickRecordV0,
+) -> ParityDecisionEnvelopeV0:
+    return ParityDecisionEnvelopeV0(
+        decision_outcome=tick.entry_exit_decision_outcome,
+        previous_side_state=tick.prior_side_state.value,
+        next_side_state=tick.side_state.value,
+        composition_status=tick.composition_status,
+        composition_result_id=tick.composition_result_id,
+        entry_or_exit_policy_ref=tick.entry_exit_policy_ref,
+        reason_codes=tuple(tick.entry_exit_reason_codes),
+        decision_precedence_trace=tuple(tick.entry_exit_decision_precedence_trace),
+        execution_eligible=False,
+        adapter_compatible=False,
+        quantity_status=tick.quantity_status,
+        quantity_provenance_ref=tick.quantity_provenance_ref,
+        risk_sizing_ref=tick.capital_risk_sizing_ref,
+        risk_sizing_effect=tick.risk_sizing_effect,
+        order_intent_ref=tick.canonical_order_intent_ref,
+        order_intent_effect=tick.order_intent_effect,
+        safety_boundary_ref=tick.safety_boundary_ref,
+        safety_boundary_effect=tick.safety_boundary_effect,
+        reconciliation_unknown_outcome_ref=tick.reconciliation_unknown_outcome_ref,
+        reconciliation_unknown_outcome_effect=tick.reconciliation_unknown_outcome_effect,
+        killswitch_boundary_ref=tick.killswitch_boundary_ref,
+        killswitch_boundary_effect=tick.killswitch_boundary_effect,
         authority_effect="NONE",
         runtime_effect="NONE",
     )
@@ -707,6 +801,9 @@ def canonical_owner_refs_v0() -> Mapping[str, str]:
         ),
         "reconciliation_unknown_outcome_offline_replay_binding_adapter": (
             RECONCILIATION_UNKNOWN_OUTCOME_OFFLINE_REPLAY_BINDING_ADAPTER_OWNER
+        ),
+        "killswitch_boundary_offline_replay_binding_adapter": (
+            KILLSWITCH_BOUNDARY_OFFLINE_REPLAY_BINDING_ADAPTER_OWNER
         ),
         "runtime_state_reconciliation": RUNTIME_STATE_RECONCILIATION_OWNER,
         "reconciliation_entry_exit_policy": RECONCILIATION_ENTRY_EXIT_POLICY_OWNER,

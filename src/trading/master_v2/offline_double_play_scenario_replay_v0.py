@@ -71,6 +71,11 @@ from trading.master_v2.reconciliation_unknown_outcome_offline_replay_binding_ada
     ReconciliationUnknownOutcomeOfflineReplayContextV0,
     evaluate_scenario_reconciliation_unknown_outcome_v0,
 )
+from trading.master_v2.killswitch_boundary_offline_replay_binding_adapter_v0 import (
+    KillSwitchBoundaryOfflineReplayContextV0,
+    derive_killswitch_boundary_mode_v0,
+    evaluate_scenario_killswitch_boundary_v0,
+)
 from trading.master_v2.double_play_composition_scenario_matrix_adapter_v0 import (
     build_scenario_matrix_composition_input_v0,
     compose_double_play_scenario_via_canonical_matrix_v0,
@@ -243,6 +248,8 @@ class OfflineDoublePlayScenarioReplayTickRecordV0:
     safety_boundary_effect: str
     reconciliation_unknown_outcome_ref: str
     reconciliation_unknown_outcome_effect: str
+    killswitch_boundary_ref: str
+    killswitch_boundary_effect: str
     sizing_outcome: str
     sizing_reason_codes: tuple[str, ...]
     decision_id: str
@@ -969,6 +976,31 @@ def run_offline_double_play_scenario_replay_v0(
             ),
         )
         bound_evidence = reconciliation_binding.evidence
+        ks_mode = derive_killswitch_boundary_mode_v0(
+            safety_mode=(SafetyMode.BLOCKED if not safety_allowed else SafetyMode.NORMAL),
+            side_state=side,
+            trading_gate=policy_ctx.trading_gate,
+            safety_exit_signal=policy_ctx.safety_exit_signal,
+            hard_risk_reduction_signal=policy_ctx.hard_risk_reduction_signal,
+            safety_decision_allowed=safety_allowed,
+        )
+        killswitch_binding = evaluate_scenario_killswitch_boundary_v0(
+            bound_evidence,
+            context=KillSwitchBoundaryOfflineReplayContextV0(
+                boundary_mode=ks_mode,
+                killswitch_active=ks_mode.value != "normal",
+                prior_killswitch_active=not safety_allowed and side == SideState.KILL_ALL,
+                safety_mode=(SafetyMode.BLOCKED if not safety_allowed else SafetyMode.NORMAL),
+                side_state=side,
+                trading_gate=policy_ctx.trading_gate,
+                reconciliation_state=policy_ctx.reconciliation_state,
+                position_state=policy_ctx.position_state,
+                safety_exit_signal=policy_ctx.safety_exit_signal,
+                hard_risk_reduction_signal=policy_ctx.hard_risk_reduction_signal,
+                safety_decision_allowed=safety_allowed,
+            ),
+        )
+        bound_evidence = killswitch_binding.evidence
         sizing_outcome = (
             sizing_decision.outcome.value if sizing_decision is not None else "NOT_APPLICABLE"
         )
@@ -1010,6 +1042,8 @@ def run_offline_double_play_scenario_replay_v0(
             reconciliation_unknown_outcome_effect=(
                 reconciliation_binding.reconciliation_unknown_outcome_effect
             ),
+            killswitch_boundary_ref=killswitch_binding.killswitch_boundary_ref,
+            killswitch_boundary_effect=killswitch_binding.killswitch_boundary_effect,
             sizing_outcome=sizing_outcome,
             sizing_reason_codes=sizing_reason_codes,
             decision_id=decision_id,

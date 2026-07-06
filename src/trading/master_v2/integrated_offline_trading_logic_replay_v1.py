@@ -883,6 +883,36 @@ def run_integrated_offline_trading_logic_replay_v1(
     )
     evidence = reconciliation_binding.evidence
 
+    _ks_binding = importlib.import_module(
+        "trading.master_v2.killswitch_boundary_offline_replay_binding_adapter_v0"
+    )
+    KillSwitchBoundaryOfflineReplayContextV0 = _ks_binding.KillSwitchBoundaryOfflineReplayContextV0
+    derive_killswitch_boundary_mode_v0 = _ks_binding.derive_killswitch_boundary_mode_v0
+    ks_mode = derive_killswitch_boundary_mode_v0(
+        safety_mode=inp.safety_mode,
+        side_state=inp.side_state,
+        trading_gate=inp.trading_gate,
+        safety_exit_signal=inp.safety_exit_signal,
+        hard_risk_reduction_signal=inp.hard_risk_reduction_signal,
+        safety_decision_allowed=inp.safety_mode is not SafetyMode.BLOCKED,
+    )
+    killswitch_binding = _ks_binding.bind_killswitch_boundary_offline_replay_evidence_v0(
+        evidence,
+        context=KillSwitchBoundaryOfflineReplayContextV0(
+            boundary_mode=ks_mode,
+            killswitch_active=ks_mode.value != "normal",
+            safety_mode=inp.safety_mode,
+            side_state=inp.side_state,
+            trading_gate=inp.trading_gate,
+            reconciliation_state=inp.reconciliation_state,
+            position_state=inp.position_state,
+            safety_exit_signal=inp.safety_exit_signal,
+            hard_risk_reduction_signal=inp.hard_risk_reduction_signal,
+            safety_decision_allowed=inp.safety_mode is not SafetyMode.BLOCKED,
+        ),
+    )
+    evidence = killswitch_binding.evidence
+
     intermediate = IntegratedOfflineReplayIntermediateV1(
         market_context=bound_context,
         scope_initialization=scope_init,
