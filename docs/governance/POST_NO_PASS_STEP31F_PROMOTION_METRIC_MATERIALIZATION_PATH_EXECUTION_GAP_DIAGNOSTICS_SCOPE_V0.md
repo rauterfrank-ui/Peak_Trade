@@ -89,9 +89,9 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `PASS_COUNT` | `0` |
 | `FAIL_COUNT` | `0` |
 | `INCONCLUSIVE_COUNT` | `3` |
-| `trend_following/v3` | `EXECUTION_FAILED_FAIL_CLOSED`; sparse signal 118/118, max 53 |
-| `bollinger_bands/v3` | `EXECUTION_FAILED_FAIL_CLOSED`; sparse signal 93/118, max 4 |
-| `momentum_1h/v3` | `EXECUTION_FAILED_FAIL_CLOSED`; sparse signal 117/118, max 94 |
+| `trend_following&#47;v3` | `EXECUTION_FAILED_FAIL_CLOSED`; sparse signal 118/118, max 53 |
+| `bollinger_bands&#47;v3` | `EXECUTION_FAILED_FAIL_CLOSED`; sparse signal 93/118, max 4 |
+| `momentum_1h&#47;v3` | `EXECUTION_FAILED_FAIL_CLOSED`; sparse signal 117/118, max 94 |
 | `PANEL_ZERO_TRADE_REFUTED` | `true` |
 | `STEP31F_PROMOTION_METRICS_NOT_MATERIALIZED` | `true` |
 | `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
