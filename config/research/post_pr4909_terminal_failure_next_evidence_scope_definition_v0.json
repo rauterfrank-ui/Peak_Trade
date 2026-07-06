@@ -1,0 +1,77 @@
+{
+  "scope_id": "POST_PR4909_TERMINAL_FAILURE_NEXT_EVIDENCE_SCOPE_DEFINITION_V0",
+  "process_classification": "POST_PR4909_TERMINAL_FAILURE_NEXT_EVIDENCE_SCOPE_DEFINITION_ONLY_V0",
+  "scope_classification": "NEW_VERSIONED_RESEARCH_SCOPE_OR_EVIDENCE_CLASS_DEFINITION_ONLY_AFTER_OFFLINE_TERMINAL_FAILURE_ARTIFACT_MATERIALIZATION_V0",
+  "go_token_consumption": {
+    "token": "GO_OPERATOR_RATIFY_NEXT_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_DEFINITION_ONLY_AFTER_OFFLINE_TERMINAL_FAILURE_ARTIFACT_MATERIALIZATION_V0",
+    "status": "CONSUMED_ONCE_FOR_SCOPE_DEFINITION_ONLY"
+  },
+  "base_head": "0ea6f857e7e16b7c96e6ffdfe2f2517e4eb11642",
+  "parent_evidence": {
+    "pr4909_closeout_dir": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/pr4909_squash_merge_closeout_20260706T051959Z",
+    "offline_terminal_failure_artifact_materialization_bundle": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_pr4908_offline_terminal_failure_artifact_materialization_v0_20260706T051227Z",
+    "ignored_incomplete_closeout_dirs": [
+      "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/pr4909_squash_merge_closeout_20260706T051831Z",
+      "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/pr4909_squash_merge_closeout_20260706T051858Z"
+    ]
+  },
+  "terminal_failure_materialization_summary": {
+    "materialized_artifact_classes": [
+      "TRADE_LEDGER_LONG_SHORT_DECOMPOSITION_OFFLINE_ARTIFACT_V0",
+      "TURNOVER_COST_DRAG_DECOMPOSITION_OFFLINE_ARTIFACT_V0",
+      "INSTRUMENT_CONCENTRATION_DECOMPOSITION_OFFLINE_ARTIFACT_V0"
+    ],
+    "materialization_status": "PARTIAL_BOUND_FROM_PARENT_EVIDENCE",
+    "failed_evidence_is_terminal": true,
+    "missing_source_evidence": [
+      "trade_ledger_per_trade_decomposition",
+      "long_short_attribution_ledger",
+      "short_contribution_ledger_values",
+      "turnover_timeseries_decomposition",
+      "fee_drag_decomposition_detail",
+      "slippage_impact_decomposition_detail",
+      "instrument_concentration_beyond_rotation_metadata"
+    ]
+  },
+  "next_scope_definition": {
+    "recommended_scope_class": "OFFLINE_ONLY_SOURCE_EVIDENCE_INSTRUMENTATION_OR_ADMISSIBILITY_GAP_DEFINITION_V0",
+    "purpose": "Define the next versioned offline-only evidence class needed to close source-evidence gaps exposed by PR4909 without changing failed historical economic evidence.",
+    "allowed_actions_after_separate_execution_go": [
+      "define versioned source-evidence contracts",
+      "define manifest-verifiable collectors for missing ledger, turnover, fee, slippage and concentration details",
+      "define admissibility criteria for future offline economic evaluations"
+    ],
+    "explicitly_not_authorized_in_this_scope": [
+      "economic_evaluation_execution",
+      "binding_retry",
+      "parameter_optimization",
+      "threshold_lowering",
+      "historical_failure_reclassification",
+      "runtime_rewire",
+      "shadow",
+      "paper",
+      "testnet",
+      "scheduler",
+      "adapter_submission",
+      "orders",
+      "credentials",
+      "arming",
+      "canary",
+      "live"
+    ]
+  },
+  "authority_flags": {
+    "core_system_mutation_allowed": false,
+    "canonical_trading_logic_mutation_allowed": false,
+    "master_v2_mutation_allowed": false,
+    "double_play_mutation_allowed": false,
+    "risk_sizing_mutation_allowed": false,
+    "safety_runtime_mutation_allowed": false,
+    "economic_evaluation_authorized": false,
+    "runtime_authority": false,
+    "orders_allowed": false,
+    "scheduler_runtime_allowed": false,
+    "live_authorized": false
+  },
+  "next_step": "GO_OPERATOR_RATIFY_NEXT_OFFLINE_ONLY_SOURCE_EVIDENCE_INSTRUMENTATION_OR_ADMISSIBILITY_GAP_DEFINITION_EXECUTION_SCOPE_V0"
+}
