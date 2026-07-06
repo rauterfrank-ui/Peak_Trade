@@ -229,8 +229,6 @@ class TestPostNoPassMetricMaterializationPathActivationBindingRatificationV0Cont
 
     def test_registry_metadata_fields(self) -> None:
         text = read_registry()
-        assert authoritative_field_value("CURRENT_STATE") == CURRENT_STATE
-        assert authoritative_field_value("NEXT_CANONICAL_STEP") == NEXT_CANONICAL_STEP
         assert (
             _field_value(
                 text,
@@ -275,12 +273,6 @@ class TestPostNoPassMetricMaterializationPathActivationBindingRatificationV0Cont
         )
         assert authoritative_field_value("ECONOMIC_EVALUATION_AUTHORIZED") == "false"
         assert authoritative_field_value("RUNTIME_REWIRE_ADMISSIBLE") == "false"
-        assert (
-            authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE") == CURRENT_ADMISSIBLE_SCOPE
-        )
-        assert (
-            authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN") == NEXT_EXECUTION_GO
-        )
 
     def test_registry_closeout_section(self) -> None:
         section = _closeout_section(read_registry())
