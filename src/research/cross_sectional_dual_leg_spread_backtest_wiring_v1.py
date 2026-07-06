@@ -91,7 +91,7 @@ def _close_leg(
     total_fee_drag: list[float],
     total_slippage: list[float],
 ) -> float:
-    direction = 1.0 if side == "LONG" else "SHORT"
+    direction = 1.0 if side == "LONG" else -1.0
     gross_pnl_frac = direction * ((exit_price / entry_price) - 1.0)
     equity_before_exit = equity
     exit_cost = equity_before_exit * _cost_fraction(exit_bps)
