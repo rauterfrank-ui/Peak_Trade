@@ -25,7 +25,7 @@ MatrixStatus = Literal[
     "UNKNOWN",
 ]
 
-NEXT_RECOMMENDED_SLICE = "BACKTEST_RECONCILIATION_STATE_FILE_WIRING_V0"
+NEXT_RECOMMENDED_SLICE = "BACKTEST_CAPITAL_RISK_SIZING_WIRING_V0"
 
 ALLOWED_SLICE_CHANGED_PATH_PREFIXES: Tuple[str, ...] = (
     "src/trading/master_v2/full_canonical_system_backtest_parity_gap_assessment_v0.py",
@@ -40,9 +40,12 @@ ALLOWED_SLICE_CHANGED_PATH_PREFIXES: Tuple[str, ...] = (
     "src/trading/master_v2/reconciliation_unknown_outcome_offline_replay_binding_adapter_v0.py",
     "src/trading/master_v2/killswitch_boundary_offline_replay_binding_adapter_v0.py",
     "src/trading/master_v2/killswitch_boundary_backtest_state_file_binding_adapter_v0.py",
+    "src/trading/master_v2/reconciliation_boundary_backtest_state_file_binding_adapter_v0.py",
     "src/backtest/mv2_research_wiring_v1.py",
     "scripts/ops/run_backtest_killswitch_state_file_wiring_v0.py",
+    "scripts/ops/run_backtest_reconciliation_state_file_wiring_v0.py",
     "tests/trading/master_v2/test_killswitch_boundary_backtest_state_file_binding_contract_v0.py",
+    "tests/trading/master_v2/test_reconciliation_boundary_backtest_state_file_binding_contract_v0.py",
     "docs/research/FULL_CANONICAL_SYSTEM_BACKTEST_PARITY_GAP_ASSESSMENT_V0.md",
 )
 
@@ -434,18 +437,18 @@ def parity_surface_assessments_v0() -> Tuple[ParitySurfaceAssessmentV0, ...]:
                 " evaluate_scenario_reconciliation_unknown_outcome_v0() per tick"
             ),
             current_backtest_binding=(
-                "Default ReconciliationState.RECONCILED via integrated input;"
-                " reconciliation boundary bound offline"
+                "backtest/mv2_research_wiring_v1.run_mv2_research_backtest_wiring_v1"
+                " -> bind_reconciliation_boundary_backtest_state_file_evidence_v0()"
+                " via reconciliation_boundary_backtest_state_file_binding_adapter_v0"
             ),
             current_runtime_semantics_reference="src/ops/recon/reconcile.py",
             parity_status="PASS",
             evidence_refs=(
                 "tests/trading/master_v2/test_double_play_entry_exit_policy_v0.py",
                 "tests/trading/master_v2/test_reconciliation_unknown_outcome_offline_replay_binding_parity_rewire_contract_v0.py",
+                "tests/trading/master_v2/test_reconciliation_boundary_backtest_state_file_binding_contract_v0.py",
             ),
-            missing_binding_if_any=(
-                "Backtest wiring explicit reconciliation fixtures (out of offline scope)"
-            ),
+            missing_binding_if_any="",
             recommended_next_slice=NEXT_RECOMMENDED_SLICE,
         ),
         ParitySurfaceAssessmentV0(
