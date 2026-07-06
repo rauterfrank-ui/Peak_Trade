@@ -37,13 +37,17 @@ FLEET_CANDIDATES = ("trend_following", "bollinger_bands", "momentum_1h")
 NEXT_GO = (
     "GO_OPERATOR_RATIFY_POST_V4_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_SCOPE_V0"
 )
-CURRENT_STATE = (
-    "POST_V4_VERSIONED_FLEET_BINDING_MATERIALIZATION_ONLY_BINDINGS_MATERIALIZED_NOT_EVALUATED_V0"
-)
+CURRENT_STATE = "POST_V4_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_COMPLETE_FAIL_V0"
 NEXT_CANONICAL_STEP = (
+    "REQUEST_OPERATOR_GO_FOR_POST_V4_FLEET_FAILURE_DECOMPOSITION_OR_NEXT_RESEARCH_SCOPE_V0"
+)
+CURRENT_ADMISSIBLE_SCOPE = "NONE"
+MATERIALIZATION_CLOSEOUT_NEXT = (
     "REQUEST_OPERATOR_GO_FOR_POST_V4_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_SCOPE_V0"
 )
-CURRENT_ADMISSIBLE_SCOPE = "POST_V4_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_SCOPE_V0"
+MATERIALIZATION_CLOSEOUT_ADMISSIBLE = (
+    "POST_V4_VERSIONED_FLEET_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_SCOPE_V0"
+)
 
 
 def _docs_token_marker(token_name: str) -> str:
@@ -142,8 +146,11 @@ class TestPostV4VersionedFleetBindingMaterializationOnlyV0Contract:
         assert _field_value(text, "CURRENT_STATE") == CURRENT_STATE
         assert _field_value(text, "NEXT_CANONICAL_STEP") == NEXT_CANONICAL_STEP
         assert _field_value(text, "CURRENT_ADMISSIBLE_NEXT_SCOPE") == CURRENT_ADMISSIBLE_SCOPE
-        assert _field_value(text, "CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN") == NEXT_GO
-        assert _field_value(text, "LAST_VERIFIED_ORIGIN_MAIN") == BASE_HEAD
+        assert _field_value(text, "CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN") == "NONE"
+        assert (
+            _field_value(text, "LAST_VERIFIED_ORIGIN_MAIN")
+            == "acf7dec82b070bf42d953f0b542e882fa5920603"
+        )
         assert (
             _field_value(text, "POST_V4_VERSIONED_FLEET_BINDING_MATERIALIZATION_ONLY_V0_STATUS")
             == VERDICT
@@ -174,8 +181,11 @@ class TestPostV4VersionedFleetBindingMaterializationOnlyV0Contract:
         assert _field_value(section, "ECONOMIC_EVALUATION_EXECUTED") == "false"
         assert _field_value(section, "RUNTIME_AUTHORITY") == "NONE"
         assert _field_value(section, "REQUIRED_NEXT_GO_FOR_OFFLINE_EVALUATION") == NEXT_GO
-        assert _field_value(section, "NEXT_CANONICAL_STEP") == NEXT_CANONICAL_STEP
-        assert _field_value(section, "CURRENT_ADMISSIBLE_NEXT_SCOPE") == CURRENT_ADMISSIBLE_SCOPE
+        assert _field_value(section, "NEXT_CANONICAL_STEP") == MATERIALIZATION_CLOSEOUT_NEXT
+        assert (
+            _field_value(section, "CURRENT_ADMISSIBLE_NEXT_SCOPE")
+            == MATERIALIZATION_CLOSEOUT_ADMISSIBLE
+        )
         assert _field_value(section, "CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN") == NEXT_GO
         assert _field_value(section, "offline_only") == "true"
         assert _field_value(section, "non_authorizing") == "true"
