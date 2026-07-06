@@ -160,10 +160,11 @@ def materialize_bound_funding_panel_dataset_v0(
     *,
     period_binding: Mapping[str, Any] | None = None,
     expected_data_digest: str | None = None,
+    bound_data_digest: str | None = None,
 ) -> BoundFundingPanelMaterializationResultV0:
     period = dict(period_binding or build_period_binding_v0())
     staging_root = staging_root.resolve()
-    bound_digest = compute_bound_funding_data_digest_v0()
+    bound_digest = bound_data_digest or compute_bound_funding_data_digest_v0()
     expected = expected_data_digest or bound_digest
 
     if not staging_root.is_dir():
@@ -307,7 +308,7 @@ def materialize_bound_funding_panel_dataset_v0(
         )
 
     digest_a = bound_digest
-    digest_b = compute_bound_funding_data_digest_v0()
+    digest_b = bound_data_digest or compute_bound_funding_data_digest_v0()
 
     return BoundFundingPanelMaterializationResultV0(
         status=MaterializationTerminalStatus.DATASET_MATERIALIZATION_COMPLETE,
