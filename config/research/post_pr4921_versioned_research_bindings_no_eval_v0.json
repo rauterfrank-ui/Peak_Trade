@@ -1,0 +1,302 @@
+{
+  "artifact_kind": "post_pr4921_versioned_research_bindings_no_eval",
+  "artifact_version": "v0",
+  "authority_effect": "NONE",
+  "backtest_execution_authorized": false,
+  "base_head": "dc6229ed32a57af4b9f3cd1f3d969cf499b6ebc5",
+  "baseline_pr": 4921,
+  "binding_materialization_only": true,
+  "binding_materialization_status": "BINDINGS_MATERIALIZED_NOT_EVALUATED",
+  "blocked_execution_classes": [
+    "ADAPTER_SUBMISSION",
+    "ARMING",
+    "BACKTEST",
+    "CANARY",
+    "CREDENTIALS",
+    "ECONOMIC_EVALUATION",
+    "LIVE",
+    "MONTE_CARLO",
+    "ORDERS",
+    "PAPER",
+    "PARAMETER_OPTIMIZATION",
+    "PARAMETER_SENSITIVITY",
+    "PROMOTION",
+    "RUNTIME_REWIRE",
+    "SCHEDULER",
+    "SHADOW",
+    "STRESS",
+    "TESTNET",
+    "THRESHOLD_LOWERING",
+    "WALK_FORWARD"
+  ],
+  "canonical_trading_logic_mutation_allowed": false,
+  "core_system_mutation_allowed": false,
+  "double_play_mutation_allowed": false,
+  "economic_evaluation_authorized": false,
+  "evidence_class_id": "POST_PR4921_VERSIONED_RESEARCH_BINDINGS_NO_EVAL_V0",
+  "excluded_failed_v1_bindings": [
+    "trend_following/v1",
+    "bollinger_bands/v1",
+    "momentum_1h/v1"
+  ],
+  "failed_v1_bindings_excluded": true,
+  "fleet_verdict_context": "FLEET_ECONOMIC_VALIDITY_FAIL",
+  "go_token": "GO_MATERIALIZE_POST_PR4921_VERSIONED_RESEARCH_BINDINGS_NO_EVAL_V0",
+  "go_token_consumed": true,
+  "go_token_consumption": "CONSUMED_ONCE_FOR_BINDING_MATERIALIZATION_ONLY",
+  "governance_ref": "docs/governance/POST_PR4921_VERSIONED_RESEARCH_BINDINGS_NO_EVAL_V0.md",
+  "live_authorized": false,
+  "master_v2_mutation_allowed": false,
+  "monte_carlo_execution_authorized": false,
+  "next_step": "SEPARATE_OPERATOR_GO_REQUIRED_FOR_OFFLINE_ECONOMIC_EVALUATION_EXECUTION",
+  "offline_only": true,
+  "orders_allowed": false,
+  "parameter_optimization_authorized": false,
+  "parent_closeout_dir": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_pr4920_new_versioned_research_scope_definition_merge_closeout_20260706T081927Z",
+  "parent_closeout_manifest_verify_rc": 0,
+  "parent_scope_config": "config/research/post_pr4920_new_versioned_research_scope_definition_v0.json",
+  "parent_scope_doc": "docs/governance/POST_PR4920_NEW_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0.md",
+  "parent_scope_id": "POST_PR4920_NEW_VERSIONED_RESEARCH_SCOPE_DEFINITION_V0",
+  "process_classification": "POST_PR4921_VERSIONED_RESEARCH_BINDINGS_MATERIALIZATION_NO_EVAL_V0",
+  "promotion_admissible": false,
+  "repo_mutation_scope": "GOVERNANCE_ONLY",
+  "retry_authorized": false,
+  "risk_sizing_mutation_allowed": false,
+  "runtime_authority": "NONE",
+  "runtime_effect": "NONE",
+  "runtime_rewire_admissible": false,
+  "safety_runtime_mutation_allowed": false,
+  "schema_version": "post_pr4921_versioned_research_bindings_no_eval.v0",
+  "scope_classification": "BINDING_MATERIALIZATION_ONLY_NO_EVAL_NO_RUNTIME_AUTHORITY_V0",
+  "scope_id": "POST_PR4921_VERSIONED_RESEARCH_BINDINGS_NO_EVAL_V0",
+  "shared_model_bindings": {
+    "canonical_trading_logic_version": "canonical_mv2_decision_path_reuse_first",
+    "dataset_binding": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1_extended_chronological_v1",
+    "economic_policy_binding": "economic_validity_policy_v1_unchanged_no_threshold_lowering",
+    "execution_model_binding": "backtest_execution_v0_offline_simulation_only",
+    "fee_model_binding": "backtest_fee_taker_symmetric_v0_realistic_costs",
+    "funding_model_binding": "backtest_funding_perpetual_interval_v1",
+    "instrument_binding": "futures_only_okx_linear_usdt_non_bitcoin_panel_v1",
+    "period_binding": "panel_calendar_2024-05-01_to_2024-09-01_utc_pt1h",
+    "slippage_model_binding": "backtest_slippage_conservative_half_spread_v0"
+  },
+  "source_evidence_refs": [
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_pr4920_new_versioned_research_scope_definition_merge_closeout_20260706T081927Z",
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_pr4920_failure_decomposition_followup_execution_offline_only_20260706T080836Z"
+  ],
+  "status": "BINDINGS_MATERIALIZED_NOT_EVALUATED",
+  "stress_execution_authorized": false,
+  "threshold_lowering_authorized": false,
+  "trading_effect": "NONE",
+  "verdict": "BINDINGS_MATERIALIZED_NOT_EVALUATED",
+  "versioned_bindings": [
+    {
+      "candidate_id": "trend_following",
+      "candidate_version": "v2",
+      "strategy_archetype": "TREND_CONTINUATION_V2",
+      "replaces_failed_binding": "trend_following/v1",
+      "parameter_binding": {
+        "binding_id": "trend_following_v2_post_pr4921_parameters_bound_no_optimization",
+        "source": "config/config.toml:[strategies.trend_following.defaults]",
+        "values": {
+          "adx_period": 14,
+          "adx_threshold": 25.0,
+          "exit_threshold": 20.0,
+          "ma_period": 50,
+          "use_ma_filter": true
+        }
+      },
+      "dataset_binding": {
+        "binding_id": "trend_following_v2_futures_dataset_bound",
+        "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1",
+        "dataset_extension": "extended_chronological_v1",
+        "panel_staging_root": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1"
+      },
+      "period_binding": {
+        "binding_id": "trend_following_v2_periods_bound",
+        "panel_calendar_start_utc": "2024-05-01T00:00:00Z",
+        "panel_calendar_end_utc": "2024-09-01T00:00:00Z",
+        "timeframe": "1h"
+      },
+      "instrument_binding": {
+        "binding_id": "trend_following_v2_futures_instruments_bound",
+        "binding_mode": "extended_chronological_v1_panel_member_binding",
+        "bitcoin_direction_allowed": false,
+        "futures_only": true
+      },
+      "fee_model_binding": {
+        "binding_id": "trend_following_v2_fee_model_bound",
+        "fee_bps": 10.0,
+        "fee_model_version": "backtest_fee_taker_symmetric_v0"
+      },
+      "slippage_model_binding": {
+        "binding_id": "trend_following_v2_slippage_model_bound",
+        "conservative_half_spread_bps": 5.0,
+        "roundtrip_cost_bps": 40.0,
+        "slippage_model_version": "backtest_slippage_conservative_half_spread_v0"
+      },
+      "funding_model_binding": {
+        "binding_id": "trend_following_v2_funding_model_bound",
+        "bind": true,
+        "model_version": "backtest_funding_perpetual_interval_v1"
+      },
+      "execution_model_binding": {
+        "binding_id": "trend_following_v2_execution_model_bound",
+        "execution_model_version": "backtest_execution_v0",
+        "offline_simulation_only": true
+      },
+      "economic_policy_binding": {
+        "binding_id": "trend_following_v2_economic_policy_bound",
+        "policy_version": "economic_validity_policy_v1",
+        "threshold_lowering_allowed": false
+      },
+      "implementation_digest_source": "src/strategies/trend_following.py",
+      "config_digest_source": "config/config.toml:[strategies.trend_following]",
+      "data_digest_source": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1/panel/panel_dataset_manifest.json",
+      "excluded_failed_v1_binding": "trend_following/v1",
+      "evaluation_authorized": false,
+      "retry_authorized": false,
+      "promotion_admissible": false,
+      "runtime_rewire_admissible": false,
+      "binding_status": "MATERIALIZED_NOT_EVALUATED"
+    },
+    {
+      "candidate_id": "bollinger_bands",
+      "candidate_version": "v2",
+      "strategy_archetype": "MEAN_REVERSION_BANDS_V2",
+      "replaces_failed_binding": "bollinger_bands/v1",
+      "parameter_binding": {
+        "binding_id": "bollinger_bands_v2_post_pr4921_parameters_bound_no_optimization",
+        "source": "config/config.toml:[strategy.bollinger_bands]",
+        "values": {
+          "bb_period": 20,
+          "bb_std": 2.0,
+          "stop_pct": 0.02
+        }
+      },
+      "dataset_binding": {
+        "binding_id": "bollinger_bands_v2_futures_dataset_bound",
+        "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1",
+        "dataset_extension": "extended_chronological_v1",
+        "panel_staging_root": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1"
+      },
+      "period_binding": {
+        "binding_id": "bollinger_bands_v2_periods_bound",
+        "panel_calendar_start_utc": "2024-05-01T00:00:00Z",
+        "panel_calendar_end_utc": "2024-09-01T00:00:00Z",
+        "timeframe": "1h"
+      },
+      "instrument_binding": {
+        "binding_id": "bollinger_bands_v2_futures_instruments_bound",
+        "binding_mode": "extended_chronological_v1_panel_member_binding",
+        "bitcoin_direction_allowed": false,
+        "futures_only": true
+      },
+      "fee_model_binding": {
+        "binding_id": "bollinger_bands_v2_fee_model_bound",
+        "fee_bps": 10.0,
+        "fee_model_version": "backtest_fee_taker_symmetric_v0"
+      },
+      "slippage_model_binding": {
+        "binding_id": "bollinger_bands_v2_slippage_model_bound",
+        "conservative_half_spread_bps": 5.0,
+        "roundtrip_cost_bps": 40.0,
+        "slippage_model_version": "backtest_slippage_conservative_half_spread_v0"
+      },
+      "funding_model_binding": {
+        "binding_id": "bollinger_bands_v2_funding_model_bound",
+        "bind": true,
+        "model_version": "backtest_funding_perpetual_interval_v1"
+      },
+      "execution_model_binding": {
+        "binding_id": "bollinger_bands_v2_execution_model_bound",
+        "execution_model_version": "backtest_execution_v0",
+        "offline_simulation_only": true
+      },
+      "economic_policy_binding": {
+        "binding_id": "bollinger_bands_v2_economic_policy_bound",
+        "policy_version": "economic_validity_policy_v1",
+        "threshold_lowering_allowed": false
+      },
+      "implementation_digest_source": "src/strategies/bollinger.py",
+      "config_digest_source": "config/config.toml:[strategy.bollinger_bands]",
+      "data_digest_source": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1/panel/panel_dataset_manifest.json",
+      "excluded_failed_v1_binding": "bollinger_bands/v1",
+      "evaluation_authorized": false,
+      "retry_authorized": false,
+      "promotion_admissible": false,
+      "runtime_rewire_admissible": false,
+      "binding_status": "MATERIALIZED_NOT_EVALUATED"
+    },
+    {
+      "candidate_id": "momentum_1h",
+      "candidate_version": "v2",
+      "strategy_archetype": "MOMENTUM_HORIZON_V2",
+      "replaces_failed_binding": "momentum_1h/v1",
+      "parameter_binding": {
+        "binding_id": "momentum_1h_v2_post_pr4921_parameters_bound_no_optimization",
+        "source": "config/config.toml:[strategy.momentum_1h]",
+        "values": {
+          "lookback_period": 20,
+          "entry_threshold": 0.02,
+          "exit_threshold": -0.01,
+          "stop_pct": 0.025
+        }
+      },
+      "dataset_binding": {
+        "binding_id": "momentum_1h_v2_futures_dataset_bound",
+        "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1",
+        "dataset_extension": "extended_chronological_v1",
+        "panel_staging_root": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1"
+      },
+      "period_binding": {
+        "binding_id": "momentum_1h_v2_periods_bound",
+        "panel_calendar_start_utc": "2024-05-01T00:00:00Z",
+        "panel_calendar_end_utc": "2024-09-01T00:00:00Z",
+        "timeframe": "1h"
+      },
+      "instrument_binding": {
+        "binding_id": "momentum_1h_v2_futures_instruments_bound",
+        "binding_mode": "extended_chronological_v1_panel_member_binding",
+        "bitcoin_direction_allowed": false,
+        "futures_only": true
+      },
+      "fee_model_binding": {
+        "binding_id": "momentum_1h_v2_fee_model_bound",
+        "fee_bps": 10.0,
+        "fee_model_version": "backtest_fee_taker_symmetric_v0"
+      },
+      "slippage_model_binding": {
+        "binding_id": "momentum_1h_v2_slippage_model_bound",
+        "conservative_half_spread_bps": 5.0,
+        "roundtrip_cost_bps": 40.0,
+        "slippage_model_version": "backtest_slippage_conservative_half_spread_v0"
+      },
+      "funding_model_binding": {
+        "binding_id": "momentum_1h_v2_funding_model_bound",
+        "bind": true,
+        "model_version": "backtest_funding_perpetual_interval_v1"
+      },
+      "execution_model_binding": {
+        "binding_id": "momentum_1h_v2_execution_model_bound",
+        "execution_model_version": "backtest_execution_v0",
+        "offline_simulation_only": true
+      },
+      "economic_policy_binding": {
+        "binding_id": "momentum_1h_v2_economic_policy_bound",
+        "policy_version": "economic_validity_policy_v1",
+        "threshold_lowering_allowed": false
+      },
+      "implementation_digest_source": "src/strategies/momentum.py",
+      "config_digest_source": "config/config.toml:[strategy.momentum_1h]",
+      "data_digest_source": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1/extended_chronological_v1/panel/panel_dataset_manifest.json",
+      "excluded_failed_v1_binding": "momentum_1h/v1",
+      "evaluation_authorized": false,
+      "retry_authorized": false,
+      "promotion_admissible": false,
+      "runtime_rewire_admissible": false,
+      "binding_status": "MATERIALIZED_NOT_EVALUATED"
+    }
+  ],
+  "walk_forward_execution_authorized": false
+}
