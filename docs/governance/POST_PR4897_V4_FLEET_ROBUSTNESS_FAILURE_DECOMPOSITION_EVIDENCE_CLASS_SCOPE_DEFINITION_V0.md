@@ -85,9 +85,9 @@ SCHEDULER_RUNTIME_ALLOWED: false
 
 | Kandidat | Verdict | Trades | Net Return | Sharpe | Profit Factor | Sparse Signal | WF OOS Pattern |
 |---|---|---:|---:|---:|---:|---|---|
-| `trend_following/v4` | `ROBUSTNESS_FAILED` | 53 | -0.000899 | -3.91 | 0.375 | 118/118 nonzero, max 53 | 4/5 negative OOS |
-| `bollinger_bands/v4` | `ROBUSTNESS_FAILED` | 4 | -0.019850 | -3.45 | 0.0 | 93/118 nonzero, max 4 | 4/5 zero OOS trades |
-| `momentum_1h/v4` | `ROBUSTNESS_FAILED` | 94 | -0.085178 | -2.01 | 0.715 | 117/118 nonzero, max 94 | 4/5 negative OOS |
+| `trend_following&#47;v4` | `ROBUSTNESS_FAILED` | 53 | -0.000899 | -3.91 | 0.375 | 118/118 nonzero, max 53 | 4/5 negative OOS |
+| `bollinger_bands&#47;v4` | `ROBUSTNESS_FAILED` | 4 | -0.019850 | -3.45 | 0.0 | 93/118 nonzero, max 4 | 4/5 zero OOS trades |
+| `momentum_1h&#47;v4` | `ROBUSTNESS_FAILED` | 94 | -0.085178 | -2.01 | 0.715 | 117/118 nonzero, max 94 | 4/5 negative OOS |
 
 **Primäre Robustness-Dimensionen (bestätigt aus v4-Evidence):**
 
@@ -126,9 +126,9 @@ Durch v4-Evidence terminal ausgeschlossen (ohne neue Bindings):
 
 | Familie | Ausschlussgrund |
 |---|---|
-| `trend_following/v4` + `SPARSE_SIGNAL_ZERO_TRADE_RESEARCH_V0` | Terminale `ROBUSTNESS_FAILED` Evidence |
-| `bollinger_bands/v4` + `SPARSE_SIGNAL_ZERO_TRADE_RESEARCH_V0` | Terminale `ROBUSTNESS_FAILED` Evidence |
-| `momentum_1h/v4` + `SPARSE_SIGNAL_ZERO_TRADE_RESEARCH_V0` | Terminale `ROBUSTNESS_FAILED` Evidence |
+| `trend_following&#47;v4` + `SPARSE_SIGNAL_ZERO_TRADE_RESEARCH_V0` | Terminale `ROBUSTNESS_FAILED` Evidence |
+| `bollinger_bands&#47;v4` + `SPARSE_SIGNAL_ZERO_TRADE_RESEARCH_V0` | Terminale `ROBUSTNESS_FAILED` Evidence |
+| `momentum_1h&#47;v4` + `SPARSE_SIGNAL_ZERO_TRADE_RESEARCH_V0` | Terminale `ROBUSTNESS_FAILED` Evidence |
 | Near-duplicate Breakout/Mean-Reversion archetype | `NEAR_DUPLICATE_BREAKOUT_MEAN_REVERSION_RETRY_ALLOWED=false` |
 | Unchanged v4 panel sequential binding retry | Identische Metriken wie v3 trotz Binding-Delta → kein unveränderter Retry zulässig |
 
@@ -158,7 +158,7 @@ Durch v4-Evidence terminal ausgeschlossen (ohne neue Bindings):
 | `ADMISSIBLE_CANDIDATE_FAMILIE` | Read-only Decomposition über bestehende final research fleet; keine neuen Kandidaten |
 | `REUSE_OWNER` | `scripts/ops/primary_evidence_retention_v0.py`, PR4892 decomposition runner pattern |
 | `EVIDENCE_ARTEFAKTE` | `FAILURE_DECOMPOSITION_REPORT.md`, Achsen-Mapping JSON, Admissibility-Matrix, Manifest |
-| `PASS/FAIL/INCONCLUSIVE` | PASS = alle required axes mapped; FAIL = unmapped axis; INCONCLUSIVE = insufficient source only |
+| `PASS&#47;FAIL&#47;INCONCLUSIVE` | PASS = alle required axes mapped; FAIL = unmapped axis; INCONCLUSIVE = insufficient source only |
 | `AUTHORITY_GRENZEN` | Keine Runtime/Promotion/Evaluation-Authority |
 | `SEPARATES_EXECUTION_GO` | `GO_POST_PR4897_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_EXECUTION_V0` |
 
