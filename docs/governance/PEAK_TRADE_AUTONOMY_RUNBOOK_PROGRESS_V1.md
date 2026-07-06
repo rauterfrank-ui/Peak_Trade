@@ -6533,6 +6533,38 @@ Post-PR4904 read-only offline failure decomposition over terminal post-v4 fleet 
 | `AUTHORITY_EFFECT` | `NONE` |
 | `TRADING_EFFECT` | `NONE` |
 
+#### POST_PR4936_CROSS_SECTIONAL_FUNDING_RATE_RESEARCH_FLEET_COMPLETE_NO_PASS_SCOPE_DEFINITION_V0
+
+Post-PR4936 offline-only scope definition after terminal negative evidence for `cross_sectional_funding_rate_dispersion_zscore_reversion&#47;v0`. No evaluation, no binding ratification, no runtime authority. Fleet terminalization: cross-sectional funding research fleet `COMPLETE_NO_PASS`; return path `FINAL_RESEARCH_FLEET_BINDINGS`.
+
+| Feld | Wert |
+|---|---|
+| `STATUS` | `SCOPE_DEFINED_NOT_EXECUTED` |
+| `VERDICT` | `SCOPE_DEFINED_NOT_EXECUTED` |
+| `PROCESS_CLASSIFICATION` | `NEW_VERSIONED_MATERIAL_RESEARCH_SCOPE_DEFINITION_AFTER_TERMINAL_NEGATIVE_EVIDENCE_NO_EVAL_V0` |
+| `SCOPE_CLASSIFICATION` | `POST_PR4936_NEXT_MATERIAL_RESEARCH_SCOPE_DEFINITION_OR_FLEET_TERMINALIZATION_NO_EVAL_NO_RUNTIME_AUTHORITY_V0` |
+| `SCOPE_DECISION` | `FLEET_TERMINALIZATION_COMPLETE_NO_PASS` |
+| `GO_TOKEN` | `GO_DEFINE_NEW_VERSIONED_MATERIAL_RESEARCH_SCOPE_AFTER_PR4936_TERMINAL_NEGATIVE_EVIDENCE_NO_EVAL_NO_RUNTIME_AUTHORITY_V0` |
+| `GO_TOKEN_CONSUMPTION` | `CONSUMED_ONCE_FOR_SCOPE_DEFINITION_ONLY` |
+| `BASELINE_HEAD` | `0407bfd4df8c94b797c36f5e3a796a03989e9b56` |
+| `PARENT_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/pr4936_dispersion_zscore_reversion_v0_negative_evidence_terminalization_merge_closeout_20260706T172134Z` |
+| `PARENT_CLOSEOUT_MANIFEST_VERIFY_RC` | `0` |
+| `CROSS_SECTIONAL_FUNDING_RESEARCH_FLEET_STATUS` | `COMPLETE_NO_PASS` |
+| `SELECTED_NEXT_SCOPE` | `none` |
+| `MATERIAL_DIFFERENCE_CONFIRMED_FOR_NEW_FUNDING_SCOPE` | `false` |
+| `CANONICAL_RUNBOOK_RETURN_PATH` | `FINAL_RESEARCH_FLEET_BINDINGS` |
+| `EVALUATION_EXECUTED` | `false` |
+| `RUNTIME_AUTHORITY_TOUCHED` | `false` |
+| `PROMOTION_GRANTED` | `false` |
+| `UNCHANGED_RETRY_ALLOWED` | `false` |
+| `GOVERNANCE_REF` | `docs/governance/POST_PR4936_CROSS_SECTIONAL_FUNDING_RATE_RESEARCH_FLEET_COMPLETE_NO_PASS_SCOPE_DEFINITION_V0.md` |
+| `CONFIG_REF` | `config/research/post_pr4936_cross_sectional_funding_rate_research_fleet_complete_no_pass_scope_definition_v0.json` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `TRADING_EFFECT` | `NONE` |
+
 ---
 
 ## PR #4629 Evidence-Drift (historisch, transparent)
