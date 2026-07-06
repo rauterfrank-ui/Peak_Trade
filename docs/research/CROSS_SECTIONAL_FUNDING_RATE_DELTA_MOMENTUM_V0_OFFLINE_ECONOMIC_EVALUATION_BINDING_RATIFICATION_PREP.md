@@ -7,7 +7,7 @@ ORDERS_ALLOWED: false
 SCHEDULER_RUNTIME_ALLOWED: false
 ---
 
-> **Non-authorizing:** Ratifiziert ausschließlich versionierte offline-only Research-Bindings für `cross_sectional_funding_rate_delta_momentum/v0` nach v2-Fleet-Terminalisierung und Discovery-Bundle. Keine Economic Evaluation. Keine Runtime-Authority.
+> **Non-authorizing:** Ratifiziert ausschließlich versionierte offline-only Research-Bindings für `cross_sectional_funding_rate_delta_momentum&#47;v0` nach v2-Fleet-Terminalisierung und Discovery-Bundle. Keine Economic Evaluation. Keine Runtime-Authority.
 
 ## A. Verdict
 
@@ -31,7 +31,7 @@ SCHEDULER_RUNTIME_ALLOWED: false
 
 ## B. Material Difference Basis
 
-Nach terminaler v2-Fleet (`trend_following/v2`, `bollinger_bands/v2`, `momentum_1h/v2` = ROBUSTNESS_FAILED) ist dieser Scope der einzige admissible Discovery-Kandidat mit:
+Nach terminaler v2-Fleet (`trend_following&#47;v2`, `bollinger_bands&#47;v2`, `momentum_1h&#47;v2` = ROBUSTNESS_FAILED) ist dieser Scope der einzige admissible Discovery-Kandidat mit:
 
 - **Anderer Signal-Semantik:** Funding-Rate-**Delta**-Ranking über Panel, nicht Single-Instrument-Preis-Signal
 - **Anderem Universe-Modell:** Cross-sectional Panel-Rotation (118 Members), nicht narrow ETH-PERP Fleet-Binding
@@ -53,7 +53,7 @@ Nach terminaler v2-Fleet (`trend_following/v2`, `bollinger_bands/v2`, `momentum_
 
 ## D. Terminal Exclusions
 
-Unchanged retry forbidden for: v2 fleet, v1 fleet, `cross_sectional_relative_strength/v0`, `cross_sectional_funding_rate_carry/v0`, STEP29M/30A surfaces, composite breakout line.
+Unchanged retry forbidden for: v2 fleet, v1 fleet, `cross_sectional_relative_strength&#47;v0`, `cross_sectional_funding_rate_carry&#47;v0`, STEP29M/30A surfaces, composite breakout line.
 
 ## E. Allowed After Separate Execution GO
 
