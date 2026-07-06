@@ -25,7 +25,7 @@ MatrixStatus = Literal[
     "UNKNOWN",
 ]
 
-NEXT_RECOMMENDED_SLICE = "CANONICAL_ORDER_INTENT_OFFLINE_REPLAY_BINDING_PARITY_REWIRE_V0"
+NEXT_RECOMMENDED_SLICE = "SAFETY_KERNEL_OFFLINE_REPLAY_BINDING_PARITY_REWIRE_V0"
 
 ALLOWED_SLICE_CHANGED_PATH_PREFIXES: Tuple[str, ...] = (
     "src/trading/master_v2/full_canonical_system_backtest_parity_gap_assessment_v0.py",
@@ -317,19 +317,24 @@ def parity_surface_assessments_v0() -> Tuple[ParitySurfaceAssessmentV0, ...]:
                 "src/governance/canonical_order_intent_v1.py",
                 "src/governance/runbook_progress_registry_v1.py",
             ),
-            current_integrated_offline_replay_binding="NOT_BOUND (explicit no order effects)",
+            current_integrated_offline_replay_binding=(
+                "integrated_offline_trading_logic_replay_v1 ->"
+                " bind_canonical_order_intent_offline_replay_evidence_v0()"
+            ),
             current_scenario_replay_binding=(
-                "NOT_BOUND (execution_intent_digest, zero-order boundary)"
+                "offline_double_play_scenario_replay_v0 ->"
+                " evaluate_scenario_canonical_order_intent_v0() per tick"
             ),
             current_backtest_binding="NOT_BOUND",
             current_runtime_semantics_reference=(
                 "canonical_core_runtime_integration_intent_pipeline_bridge_v0"
                 " build_canonical_order_intent_v1 BOUND_NOT_ACTIVATED"
             ),
-            parity_status="NOT_APPLICABLE",
+            parity_status="PARTIAL",
             evidence_refs=(
                 "tests/governance/test_canonical_order_intent_v1.py",
                 "tests/governance/test_intent_compatibility_firewall_v1.py",
+                "tests/trading/master_v2/test_canonical_order_intent_offline_replay_binding_parity_rewire_contract_v0.py",
             ),
             missing_binding_if_any=(
                 "Runtime bridge Slice B activation (out of offline assessment scope)"

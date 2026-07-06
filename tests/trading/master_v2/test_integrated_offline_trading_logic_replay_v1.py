@@ -335,6 +335,8 @@ def test_contract_schema_complete() -> None:
         "runtime_effect",
         "order_effect",
         "risk_sizing_effect",
+        "order_intent_ref",
+        "order_intent_effect",
     }
     assert required.issubset({f.name for f in fields(type(result.evidence))})
 

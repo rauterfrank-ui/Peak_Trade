@@ -61,7 +61,7 @@ def test_gap_assessment_status_distribution_v0() -> None:
     assert counts["PASS"] == 2
     assert counts["PARTIAL"] >= 8
     assert counts["GAP"] == 0
-    assert counts["NOT_APPLICABLE"] >= 3
+    assert counts["NOT_APPLICABLE"] >= 2
     assert sum(counts.values()) == 16
 
 
@@ -74,10 +74,16 @@ def test_composition_surface_pass_v0() -> None:
 def test_capital_risk_sizing_surface_partial_v0() -> None:
     sizing = next(item for item in parity_surface_assessments_v0() if item.surface_id == "H")
     assert sizing.parity_status == "PARTIAL"
-    assert (
-        NEXT_RECOMMENDED_SLICE == "CANONICAL_ORDER_INTENT_OFFLINE_REPLAY_BINDING_PARITY_REWIRE_V0"
-    )
     assert sizing.recommended_next_slice == NEXT_RECOMMENDED_SLICE
+
+
+def test_canonical_order_intent_surface_partial_v0() -> None:
+    order_intent = next(item for item in parity_surface_assessments_v0() if item.surface_id == "I")
+    assert order_intent.parity_status == "PARTIAL"
+    assert "bind_canonical_order_intent_offline_replay_evidence_v0" in (
+        order_intent.current_integrated_offline_replay_binding
+    )
+    assert order_intent.recommended_next_slice == NEXT_RECOMMENDED_SLICE
 
 
 def test_entry_exit_surface_pass_after_pr4948_v0() -> None:

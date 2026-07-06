@@ -60,6 +60,9 @@ from trading.master_v2.capital_risk_sizing_offline_replay_binding_adapter_v0 imp
     build_scenario_tick_decision_evidence_v0,
     evaluate_scenario_capital_risk_sizing_v0,
 )
+from trading.master_v2.canonical_order_intent_offline_replay_binding_adapter_v0 import (
+    evaluate_scenario_canonical_order_intent_v0,
+)
 from trading.master_v2.double_play_composition_scenario_matrix_adapter_v0 import (
     build_scenario_matrix_composition_input_v0,
     compose_double_play_scenario_via_canonical_matrix_v0,
@@ -224,6 +227,9 @@ class OfflineDoublePlayScenarioReplayTickRecordV0:
     quantity_status: str
     quantity_provenance_ref: str
     risk_sizing_effect: str
+    canonical_order_intent_ref: str
+    order_intent_effect: str
+    order_intent_outcome: str
     sizing_outcome: str
     sizing_reason_codes: tuple[str, ...]
     decision_id: str
@@ -922,7 +928,13 @@ def run_offline_double_play_scenario_replay_v0(
             tick_evidence,
             reference_price=Decimal(str(tick.price)),
         )
+        bound_evidence = sizing_binding.evidence
         sizing_decision = sizing_binding.sizing_decision
+        intent_binding = evaluate_scenario_canonical_order_intent_v0(
+            bound_evidence,
+            sizing_decision=sizing_decision,
+            reference_price=Decimal(str(tick.price)),
+        )
         sizing_outcome = (
             sizing_decision.outcome.value if sizing_decision is not None else "NOT_APPLICABLE"
         )
@@ -953,6 +965,9 @@ def run_offline_double_play_scenario_replay_v0(
             quantity_status=sizing_binding.quantity_status,
             quantity_provenance_ref=sizing_binding.quantity_provenance_ref,
             risk_sizing_effect=sizing_binding.risk_sizing_effect,
+            canonical_order_intent_ref=intent_binding.order_intent_ref,
+            order_intent_effect=intent_binding.order_intent_effect,
+            order_intent_outcome=intent_binding.intent_outcome,
             sizing_outcome=sizing_outcome,
             sizing_reason_codes=sizing_reason_codes,
             decision_id=decision_id,
