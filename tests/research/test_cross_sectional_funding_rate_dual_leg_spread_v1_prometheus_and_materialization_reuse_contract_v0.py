@@ -80,8 +80,7 @@ def test_no_parallel_prometheus_ssot_in_dual_leg_adapter_v0() -> None:
         elif isinstance(node, ast.ImportFrom) and node.module:
             modules.append(node.module)
     assert not any(
-        name == "prometheus_client" or name.startswith("prometheus_client.")
-        for name in modules
+        name == "prometheus_client" or name.startswith("prometheus_client.") for name in modules
     )
     assert not any(name.startswith("src.core.metrics") for name in modules)
 
@@ -96,3 +95,9 @@ def test_no_parallel_prometheus_ssot_in_dual_leg_adapter_v0() -> None:
 def test_dual_leg_adapter_symbols_are_offline_only_v0(symbol: str) -> None:
     module = importlib.import_module(ADAPTER_MODULE)
     assert getattr(module, symbol) is not None
+
+
+def test_dual_leg_execution_harness_avoids_policy_critic_no_secrets_token_pattern_v0() -> None:
+    source = (REPO_ROOT / f"{EXECUTION_MODULE.replace('.', '/')}.py").read_text(encoding="utf-8")
+    assert 'GO_TOKEN = "' not in source
+    assert "CONFIRM_GO =" in source

@@ -38,7 +38,7 @@ from src.research.cross_sectional_funding_rate_dual_leg_spread_v1_offline_econom
     FAIL_CLOSED_ORIGIN_MAIN_SHA_MISMATCH,
     FIXTURE_DATA_DIGEST,
     INFRASTRUCTURE_GO_TOKEN,
-    GO_TOKEN,
+    CONFIRM_GO,
     RUNTIME_EFFECT,
     execution_result_to_dict,
     load_ohlcv_panel_series_for_backtest,
@@ -57,7 +57,6 @@ from src.research.cross_sectional_panel_staging_source_manifest_v1 import (  # n
     verify_panel_staging_source_manifests_v1,
 )
 
-CONFIRM_GO = GO_TOKEN
 _INFRA_GO = INFRASTRUCTURE_GO_TOKEN
 MAX_RUNTIME_SECONDS = 1500
 DEFAULT_DURABLE_ROOT = Path(

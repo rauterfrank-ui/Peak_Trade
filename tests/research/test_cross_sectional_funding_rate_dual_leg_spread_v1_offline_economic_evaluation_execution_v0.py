@@ -14,7 +14,7 @@ from src.research.cross_sectional_funding_rate_dual_leg_spread_v1_offline_econom
     EconomicClassification,
     ExecutionTerminalStatus,
     FIXTURE_DATA_DIGEST,
-    GO_TOKEN,
+    CONFIRM_GO,
     RUNTIME_EFFECT,
     execution_result_to_dict,
     run_full_offline_economic_evaluation_v0,
@@ -55,7 +55,7 @@ def fixture_bound_staging() -> Path:
 
 
 def test_full_runner_go_token_constants() -> None:
-    assert GO_TOKEN == (
+    assert CONFIRM_GO == (
         "GO_CROSS_SECTIONAL_FUNDING_RATE_DUAL_LEG_SPREAD_V1_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_NO_RUNTIME_AUTHORITY_V0"
     )
 
@@ -87,7 +87,7 @@ def test_full_runner_executes_six_stages_with_scope_go_token(
         staging_root=bound_staging,
         panel_series=panel,
         versioned_binding=complete_binding,
-        go_token=GO_TOKEN,
+        go_token=CONFIRM_GO,
     )
     assert result.economic_evaluation_executed is True
     assert result.status is ExecutionTerminalStatus.ECONOMIC_EVALUATION_COMPLETE
@@ -129,7 +129,7 @@ def test_full_runner_fail_closed_on_fixture_digest(
         staging_root=bound_staging,
         panel_series=panel,
         versioned_binding=complete_binding,
-        go_token=GO_TOKEN,
+        go_token=CONFIRM_GO,
     )
     assert result.status is ExecutionTerminalStatus.FAIL_CLOSED_FIXTURE_LEAKAGE
     assert result.economic_evaluation_executed is False
@@ -165,7 +165,7 @@ def test_execution_result_to_dict_preserves_stage_wiring_and_no_runtime_effect(
         staging_root=bound_staging,
         panel_series=panel,
         versioned_binding=complete_binding,
-        go_token=GO_TOKEN,
+        go_token=CONFIRM_GO,
     )
     payload = execution_result_to_dict(result)
     assert payload["authority_effect"] == "NONE"

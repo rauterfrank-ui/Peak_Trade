@@ -14,7 +14,7 @@ from src.research.cross_sectional_funding_rate_dual_leg_spread_v1_bound_panel_da
 )
 from src.research.cross_sectional_funding_rate_dual_leg_spread_v1_offline_economic_evaluation_execution_v0 import (
     AUTHORITY_EFFECT,
-    GO_TOKEN,
+    CONFIRM_GO,
     INFRASTRUCTURE_GO_TOKEN,
     RUNTIME_EFFECT,
     entrypoint_result_to_dict,
@@ -142,7 +142,7 @@ def fixture_bound_staging() -> Path:
 
 
 def test_go_token_constants() -> None:
-    assert GO_TOKEN == (
+    assert CONFIRM_GO == (
         "GO_CROSS_SECTIONAL_FUNDING_RATE_DUAL_LEG_SPREAD_V1_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_NO_RUNTIME_AUTHORITY_V0"
     )
     assert INFRASTRUCTURE_GO_TOKEN == (
