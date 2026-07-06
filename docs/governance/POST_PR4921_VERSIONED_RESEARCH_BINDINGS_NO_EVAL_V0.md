@@ -105,3 +105,16 @@ Binding-Materialisierung ≠ Evaluation-Autorisierung. Keine Economic Evaluation
 `SEPARATE_OPERATOR_GO_REQUIRED_FOR_OFFLINE_ECONOMIC_EVALUATION_EXECUTION`
 
 Separater Operator GO erforderlich für offline Economic Evaluation Execution nach Binding-Materialisierung. Dieser Scope autorisiert weder Evaluation noch Runtime noch Promotion.
+
+## F. Binding Surface Correction (stop_pct)
+
+Bounded correction scope `BINDING_PARAMETER_SURFACE_CORRECTION_BOLLINGER_MOMENTUM_V2_STOP_PCT_V0`:
+
+- `stop_pct` entfernt aus `parameter_binding.values` für `bollinger_bands&#47;v2` und `momentum_1h&#47;v2`
+- `stop_pct` verbleibt ausschließlich in `offline_evaluation_sizing_contract_v1` bei `0.025`
+- Zulässige Strategy-Params unverändert: `bollinger_bands` → `bb_period`, `bb_std`, `entry_threshold`, `exit_threshold`; `momentum_1h` → `lookback_period`, `entry_threshold`, `exit_threshold`
+- `trend_following&#47;v2` unverändert; `retry_authorized=false` bleibt bindend
+- Parent review: `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/offline_economic_validity_evidence_and_binding_parameter_gap_decomposition_bollinger_momentum_v2_20260706T125607Z`
+- Corrected `BINDING_CONFIG_DIGEST`: `52e9df9521cd06dbe523fb3681565c602a97af9ddd85275993280849e0b01bae`
+- Previous digest (pre-correction): `cfdb5d550eea4a8311981227750909c21ab1339692500bb968a92953468dcdd5`
+

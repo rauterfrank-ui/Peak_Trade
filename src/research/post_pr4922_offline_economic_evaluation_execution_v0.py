@@ -67,9 +67,10 @@ BINDING_CONFIG_REL = "config/research/post_pr4921_versioned_research_bindings_no
 EXECUTION_CONFIG_REL = "config/research/post_pr4922_offline_economic_evaluation_execution_v0.json"
 GOVERNANCE_REL_PATH = "docs/governance/POST_PR4922_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0.md"
 
-BINDING_CONFIG_DIGEST = "cfdb5d550eea4a8311981227750909c21ab1339692500bb968a92953468dcdd5"
-EXECUTION_SCOPE_DIGEST = "478267f4ae19f8f0e98aabf6d3e409b57a4773a044690b4fd915370a311b8d1a"
-EXECUTION_SEMANTIC_DIGEST = "066d766bfa96fbf2134fd60d37b05920200ebd6570df0350d008b19029006a56"
+PREVIOUS_BINDING_CONFIG_DIGEST = "cfdb5d550eea4a8311981227750909c21ab1339692500bb968a92953468dcdd5"
+BINDING_CONFIG_DIGEST = "52e9df9521cd06dbe523fb3681565c602a97af9ddd85275993280849e0b01bae"
+EXECUTION_SCOPE_DIGEST = "639bf384d546edbb04149e991c5e420ad774e1d1b1a887dc01ff19f425d3b208"
+EXECUTION_SEMANTIC_DIGEST = "3afd15455769e6327c29d038ed8095c73604dc91290a47bdc3cb6ccd2ec16ff0"
 
 PARENT_CLOSEOUT_SUFFIX = (
     "post_pr4921_versioned_research_bindings_no_eval_merge_closeout_20260706T083055Z"
@@ -86,6 +87,8 @@ FLEET_CANDIDATES: tuple[str, ...] = ("trend_following", "bollinger_bands", "mome
 EXCLUDED_V1_BINDINGS: frozenset[str] = frozenset(
     {"trend_following/v1", "bollinger_bands/v1", "momentum_1h/v1"}
 )
+
+STRATEGY_PARAM_EXCLUDED_FROM_SIGNAL_BINDING_V0: frozenset[str] = frozenset({"stop_pct"})
 
 STEP31F_TEMPLATE_CONFIG_PATHS: dict[str, str] = {
     "trend_following": (
@@ -470,6 +473,15 @@ def verify_execution_start_state_v0(
     )
 
 
+def strategy_params_for_signal_binding_v0(param_values: Mapping[str, Any]) -> dict[str, Any]:
+    """Drop sizing-only params before binding strategy signal params."""
+    return {
+        key: value
+        for key, value in param_values.items()
+        if key not in STRATEGY_PARAM_EXCLUDED_FROM_SIGNAL_BINDING_V0
+    }
+
+
 def build_post_pr4922_runtime_step31f_config_v0(
     *,
     repo_root: Path,
@@ -519,7 +531,7 @@ def build_post_pr4922_runtime_step31f_config_v0(
         eval_block["strategy_id"] = strategy_id
         eval_block["strategy_version"] = STRATEGY_VERSION
         if isinstance(param_values, Mapping) and param_values:
-            eval_block["strategy_params"] = dict(param_values)
+            eval_block["strategy_params"] = strategy_params_for_signal_binding_v0(param_values)
         wf = eval_block.setdefault("walk_forward", {})
         if isinstance(wf, dict):
             wf["train_bars"] = 1200

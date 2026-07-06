@@ -170,8 +170,7 @@
         "source": "config/config.toml:[strategy.bollinger_bands]",
         "values": {
           "bb_period": 20,
-          "bb_std": 2.0,
-          "stop_pct": 0.02
+          "bb_std": 2.0
         }
       },
       "dataset_binding": {
@@ -239,8 +238,7 @@
         "values": {
           "lookback_period": 20,
           "entry_threshold": 0.02,
-          "exit_threshold": -0.01,
-          "stop_pct": 0.025
+          "exit_threshold": -0.01
         }
       },
       "dataset_binding": {
