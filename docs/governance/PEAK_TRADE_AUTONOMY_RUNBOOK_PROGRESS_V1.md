@@ -6535,7 +6535,7 @@ Post-PR4904 read-only offline failure decomposition over terminal post-v4 fleet 
 
 #### POST_PR4936_CROSS_SECTIONAL_FUNDING_RATE_RESEARCH_FLEET_COMPLETE_NO_PASS_SCOPE_DEFINITION_V0
 
-Post-PR4936 offline-only scope definition after terminal negative evidence for `cross_sectional_funding_rate_dispersion_zscore_reversion/v0`. No evaluation, no binding ratification, no runtime authority. Fleet terminalization: cross-sectional funding research fleet `COMPLETE_NO_PASS`; return path `FINAL_RESEARCH_FLEET_BINDINGS`.
+Post-PR4936 offline-only scope definition after terminal negative evidence for `cross_sectional_funding_rate_dispersion_zscore_reversion&#47;v0`. No evaluation, no binding ratification, no runtime authority. Fleet terminalization: cross-sectional funding research fleet `COMPLETE_NO_PASS`; return path `FINAL_RESEARCH_FLEET_BINDINGS`.
 
 | Feld | Wert |
 |---|---|
