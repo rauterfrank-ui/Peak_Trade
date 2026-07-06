@@ -25,7 +25,7 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `PARENT_BINDING_SCOPE_ID` | `POST_PR4921_VERSIONED_RESEARCH_BINDINGS_NO_EVAL_V0` |
 | `PARENT_CLOSEOUT_DIR` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_pr4921_versioned_research_bindings_no_eval_merge_closeout_20260706T083055Z` |
 | `BINDING_CONFIG_REF` | `config/research/post_pr4921_versioned_research_bindings_no_eval_v0.json` |
-| `BINDING_CONFIG_DIGEST` | `cfdb5d550eea4a8311981227750909c21ab1339692500bb968a92953468dcdd5` |
+| `BINDING_CONFIG_DIGEST` | `52e9df9521cd06dbe523fb3681565c602a97af9ddd85275993280849e0b01bae` |
 | `STRATEGY_VERSION` | `v2` |
 | `FAILED_V1_BINDINGS_EXCLUDED` | `true` |
 | `EXCLUDED_FAILED_V1_BINDINGS` | `trend_following&#47;v1,bollinger_bands&#47;v1,momentum_1h&#47;v1` |
@@ -106,7 +106,7 @@ Binding-Materialisierung ≠ Evaluation-Autorisierung. Dieser Scope autorisiert 
 | `bollinger_bands` | `v2` | `BLOCKED_BINDING_OR_EVIDENCE_GAP` |
 | `momentum_1h` | `v2` | `BLOCKED_BINDING_OR_EVIDENCE_GAP` |
 
-`bollinger_bands` und `momentum_1h`: Parameter-Binding-Gap (`unknown_strategy_param:stop_pct`) — kein Evidence-Emission, fail-closed.
+`bollinger_bands` und `momentum_1h`: Parameter-Binding-Gap (`unknown_strategy_param:stop_pct`) — kein Evidence-Emission, fail-closed. Binding-Surface-Correction angewendet in separatem Scope (`BINDING_PARAMETER_SURFACE_CORRECTION_BOLLINGER_MOMENTUM_V2_STOP_PCT_V0`); Re-Evaluation erfordert separaten Operator GO.
 
 ## H. Next Step
 
