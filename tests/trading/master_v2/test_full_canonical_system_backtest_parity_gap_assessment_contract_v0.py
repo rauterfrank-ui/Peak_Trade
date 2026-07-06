@@ -52,8 +52,9 @@ def test_gap_assessment_owner_and_surface_count_v0() -> None:
 
 def test_gap_assessment_status_distribution_v0() -> None:
     counts = parity_status_counts_v0()
-    assert counts["PASS"] == 1
-    assert counts["GAP"] >= 2
+    assert counts["PASS"] == 2
+    assert counts["PARTIAL"] >= 8
+    assert counts["GAP"] == 0
     assert counts["NOT_APPLICABLE"] >= 3
     assert sum(counts.values()) == 16
 
@@ -64,13 +65,19 @@ def test_composition_surface_pass_v0() -> None:
     assert composition.missing_binding_if_any == ""
 
 
-def test_entry_exit_is_earliest_gap_recommended_slice_v0() -> None:
-    entry_exit = next(item for item in parity_surface_assessments_v0() if item.surface_id == "G")
-    assert entry_exit.parity_status == "GAP"
-    assert NEXT_RECOMMENDED_SLICE == (
-        "SCENARIO_REPLAY_DOUBLE_PLAY_ENTRY_EXIT_POLICY_BINDING_PARITY_REWIRE_V0"
+def test_capital_risk_sizing_surface_partial_v0() -> None:
+    sizing = next(item for item in parity_surface_assessments_v0() if item.surface_id == "H")
+    assert sizing.parity_status == "PARTIAL"
+    assert (
+        NEXT_RECOMMENDED_SLICE == "CANONICAL_ORDER_INTENT_OFFLINE_REPLAY_BINDING_PARITY_REWIRE_V0"
     )
-    assert entry_exit.recommended_next_slice == NEXT_RECOMMENDED_SLICE
+    assert sizing.recommended_next_slice == NEXT_RECOMMENDED_SLICE
+
+
+def test_entry_exit_surface_pass_after_pr4948_v0() -> None:
+    entry_exit = next(item for item in parity_surface_assessments_v0() if item.surface_id == "G")
+    assert entry_exit.parity_status == "PASS"
+    assert entry_exit.missing_binding_if_any == ""
 
 
 def test_gap_matrix_markdown_renders_v0() -> None:

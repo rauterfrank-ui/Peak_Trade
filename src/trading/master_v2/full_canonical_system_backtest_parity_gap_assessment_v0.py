@@ -17,7 +17,7 @@ FULL_CANONICAL_SYSTEM_BACKTEST_PARITY_GAP_ASSESSMENT_OWNER = (
 
 ParityStatus = Literal["PASS", "PARTIAL", "GAP", "NOT_APPLICABLE"]
 
-NEXT_RECOMMENDED_SLICE = "SCENARIO_REPLAY_DOUBLE_PLAY_ENTRY_EXIT_POLICY_BINDING_PARITY_REWIRE_V0"
+NEXT_RECOMMENDED_SLICE = "CANONICAL_ORDER_INTENT_OFFLINE_REPLAY_BINDING_PARITY_REWIRE_V0"
 
 ALLOWED_SLICE_CHANGED_PATH_PREFIXES: Tuple[str, ...] = (
     "src/trading/master_v2/full_canonical_system_backtest_parity_gap_assessment_v0.py",
@@ -255,23 +255,20 @@ def parity_surface_assessments_v0() -> Tuple[ParitySurfaceAssessmentV0, ...]:
                 " evaluate_double_play_entry_exit_policy_v0()"
             ),
             current_scenario_replay_binding=(
-                "offline_double_play_scenario_replay_v0: composition +"
-                " evaluate_master_v2_local_flow_v1() packet handoff only;"
-                " no entry-exit policy evaluation"
+                "offline_double_play_scenario_replay_v0 ->"
+                " evaluate_scenario_entry_exit_policy_v0() per tick"
             ),
             current_backtest_binding="Integrated replay",
             current_runtime_semantics_reference=(
                 "canonical_core_runtime_integration_bridge_v0 -> integrated replay evidence"
             ),
-            parity_status="GAP",
+            parity_status="PASS",
             evidence_refs=(
                 "tests/trading/master_v2/test_double_play_entry_exit_policy_v0.py",
                 "tests/trading/master_v2/test_integrated_offline_trading_logic_replay_v1.py",
+                "tests/trading/master_v2/test_scenario_replay_double_play_entry_exit_policy_binding_parity_rewire_contract_v0.py",
             ),
-            missing_binding_if_any=(
-                "offline_double_play_scenario_replay_v0 ->"
-                " evaluate_double_play_entry_exit_policy_v0() per tick"
-            ),
+            missing_binding_if_any="",
             recommended_next_slice=NEXT_RECOMMENDED_SLICE,
         ),
         ParitySurfaceAssessmentV0(
@@ -282,11 +279,12 @@ def parity_surface_assessments_v0() -> Tuple[ParitySurfaceAssessmentV0, ...]:
                 "src/trading/master_v2/double_play_capital_slot.py",
             ),
             current_integrated_offline_replay_binding=(
-                "NOT_BOUND: quantity_status=NOT_BOUND, risk_sizing_effect=NONE"
+                "integrated_offline_trading_logic_replay_v1 ->"
+                " bind_capital_risk_sizing_offline_replay_evidence_v0()"
             ),
             current_scenario_replay_binding=(
-                "offline_double_play_scenario_replay_v0 -> evaluate_capital_slot_ratchet/release;"
-                " not capital_risk_sizing_v1"
+                "offline_double_play_scenario_replay_v0 ->"
+                " evaluate_scenario_capital_risk_sizing_v0() per tick"
             ),
             current_backtest_binding=(
                 "No evaluate_capital_risk_sizing_v1 wiring in mv2_research_wiring_v1"
@@ -295,16 +293,14 @@ def parity_surface_assessments_v0() -> Tuple[ParitySurfaceAssessmentV0, ...]:
                 "canonical_core_runtime_integration_intent_pipeline_bridge_v0"
                 " Slice B BOUND_NOT_ACTIVATED"
             ),
-            parity_status="GAP",
+            parity_status="PARTIAL",
             evidence_refs=(
                 "tests/governance/test_capital_risk_sizing_v1.py",
                 "tests/trading/master_v2/test_offline_master_v2_double_play_scenario_replay_binding_contract_v0.py",
+                "tests/trading/master_v2/test_capital_risk_sizing_offline_replay_binding_parity_rewire_contract_v0.py",
             ),
-            missing_binding_if_any=(
-                "Unified evaluate_capital_risk_sizing_v1 chain across"
-                " Integrated / Backtest / Scenario replay surfaces"
-            ),
-            recommended_next_slice=("CAPITAL_RISK_SIZING_OFFLINE_REPLAY_BINDING_PARITY_REWIRE_V0"),
+            missing_binding_if_any=("Backtest mv2_research_wiring_v1 unified sizing chain parity"),
+            recommended_next_slice=NEXT_RECOMMENDED_SLICE,
         ),
         ParitySurfaceAssessmentV0(
             surface_id="I",

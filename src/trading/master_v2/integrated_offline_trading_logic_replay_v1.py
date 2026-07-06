@@ -9,9 +9,11 @@ No I/O, runtime, orders, adapter, quantity, or authority effects.
 from __future__ import annotations
 
 import hashlib
+import importlib
 import json
 import re
 from dataclasses import dataclass, replace
+from decimal import Decimal
 from typing import Mapping, Optional, Tuple
 
 from trading.master_v2.canonical_market_context_v1 import (
@@ -31,6 +33,7 @@ from trading.master_v2.canonical_scope_initialization_v1 import (
     ScopeReinitializationGuardV1,
     initialize_canonical_scope,
 )
+from src.governance.capital_risk_sizing_v1 import CapitalRiskSizingDecisionV1
 from trading.master_v2.canonical_trading_decision_evidence_v1 import (
     CANONICAL_TRADING_DECISION_EVIDENCE_LAYER_VERSION,
     CanonicalTradingDecisionEvidenceV1,
@@ -240,6 +243,7 @@ class IntegratedOfflineReplayIntermediateV1:
     bear_suitability: SuitabilityResultV1
     composition_result: DoublePlayCompositionResultV1
     entry_exit_decision: EntryExitPolicyDecisionV0
+    capital_risk_sizing_decision: Optional[CapitalRiskSizingDecisionV1]
     state_switch: StateSwitchEvidenceV1
     current_scope: CanonicalScopeSnapshotV1
     next_scope_ref: str
@@ -810,7 +814,19 @@ def run_integrated_offline_trading_logic_replay_v1(
         input_digest=input_digest,
         semantic_digest="",
     )
-    evidence = with_computed_evidence_semantic_digest(evidence)
+    _crs_binding = importlib.import_module(
+        "trading.master_v2.capital_risk_sizing_offline_replay_binding_adapter_v0"
+    )
+    capital_context = _crs_binding.default_offline_replay_capital_context_v0(
+        instrument_id=inp.instrument_id,
+        reference_price=Decimal(str(bound_context.mark_price)),
+    )
+    sizing_binding = _crs_binding.bind_capital_risk_sizing_offline_replay_evidence_v0(
+        evidence,
+        capital_context=capital_context,
+    )
+    evidence = sizing_binding.evidence
+    capital_risk_sizing_decision = sizing_binding.sizing_decision
 
     intermediate = IntegratedOfflineReplayIntermediateV1(
         market_context=bound_context,
@@ -824,6 +840,7 @@ def run_integrated_offline_trading_logic_replay_v1(
         bear_suitability=bear_suitability,
         composition_result=composition_result,
         entry_exit_decision=entry_exit_decision,
+        capital_risk_sizing_decision=capital_risk_sizing_decision,
         state_switch=state_switch,
         current_scope=current_scope,
         next_scope_ref=next_scope_ref,
@@ -839,6 +856,9 @@ def run_integrated_offline_trading_logic_replay_v1(
         and entry_exit_decision.risk_sizing_effect == "NONE"
         and not evidence.execution_eligible
         and not evidence.adapter_compatible
+        and evidence.authority_effect == "NONE"
+        and evidence.runtime_effect == "NONE"
+        and evidence.order_effect == "NONE"
     )
     replay_pass = boundary_ok
     if not boundary_ok:
