@@ -5,9 +5,9 @@ Authoritative current status is resolved only from explicitly classified current
 owner sections. Historical step snapshots and legacy aliases never produce global
 authority.
 
-Post-no-pass STEP31F promotion metric materialization path execution gap diagnostics scope (v0) authoritative fields live in
+Post-no-pass STEP31F promotion metric materialization path execution gap diagnostics evidence execution (v0) authoritative fields live in
 Registry-Metadaten only (``CURRENT_STATE`` =
-``POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_SCOPE_DEFINED_V0``).
+``POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_EVIDENCE_EXECUTION_COMPLETE_V0``).
 Historical ``####`` sections do not override global ``NEXT_CANONICAL_STEP``.
 """
 
