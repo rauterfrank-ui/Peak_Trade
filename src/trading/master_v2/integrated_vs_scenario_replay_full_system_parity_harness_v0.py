@@ -24,6 +24,13 @@ from trading.master_v2.double_play_composition_scenario_matrix_adapter_v0 import
     build_scenario_matrix_composition_input_v0,
     evaluate_scenario_matrix_composition_v0,
 )
+from trading.master_v2.double_play_entry_exit_policy_v0 import EntryExitPolicyDecisionV0
+from trading.master_v2.double_play_entry_exit_scenario_binding_adapter_v0 import (
+    CANONICAL_ENTRY_EXIT_POLICY_OWNER,
+    DOUBLE_PLAY_ENTRY_EXIT_SCENARIO_BINDING_ADAPTER_OWNER,
+    ScenarioEntryExitPolicyContextV0,
+    evaluate_scenario_entry_exit_policy_v0,
+)
 from trading.master_v2.double_play_state import SideState
 from trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
     INTEGRATED_OFFLINE_TRADING_LOGIC_REPLAY_OWNER,
@@ -65,6 +72,7 @@ class ParityDecisionEnvelopeV0:
     next_side_state: Optional[str]
     composition_status: str
     composition_result_id: str
+    entry_or_exit_policy_ref: str
     reason_codes: Tuple[str, ...]
     decision_precedence_trace: Tuple[str, ...]
     execution_eligible: bool
@@ -147,6 +155,7 @@ def extract_integrated_parity_envelope_v0(
         next_side_state=next_side_state,
         composition_status=composition_status,
         composition_result_id=composition_result_id,
+        entry_or_exit_policy_ref=evidence.entry_or_exit_policy_ref,
         reason_codes=reason_codes,
         decision_precedence_trace=tuple(evidence.decision_precedence_trace),
         execution_eligible=evidence.execution_eligible,
@@ -168,6 +177,7 @@ def extract_scenario_matrix_parity_envelope_v0(
         next_side_state=None,
         composition_status=matrix_result.composition_status.value,
         composition_result_id=matrix_result.composition_id,
+        entry_or_exit_policy_ref="",
         reason_codes=tuple(matrix_result.reason_codes),
         decision_precedence_trace=(),
         execution_eligible=False,
@@ -180,17 +190,43 @@ def extract_scenario_matrix_parity_envelope_v0(
     )
 
 
+def extract_entry_exit_policy_parity_envelope_v0(
+    decision: EntryExitPolicyDecisionV0,
+    *,
+    previous_side_state: Optional[str] = None,
+    next_side_state: Optional[str] = None,
+    composition_status: str = "",
+) -> ParityDecisionEnvelopeV0:
+    return ParityDecisionEnvelopeV0(
+        decision_outcome=decision.decision_outcome.value,
+        previous_side_state=previous_side_state,
+        next_side_state=next_side_state,
+        composition_status=composition_status,
+        composition_result_id=decision.composition_result_ref,
+        entry_or_exit_policy_ref=decision.policy_decision_id,
+        reason_codes=tuple(decision.reason_codes),
+        decision_precedence_trace=tuple(decision.decision_precedence_trace),
+        execution_eligible=decision.execution_eligible,
+        adapter_compatible=decision.adapter_compatible,
+        quantity_status=decision.quantity_status,
+        authority_effect=decision.authority_effect,
+        runtime_effect=decision.runtime_effect,
+        selected_side=decision.selected_side.value,
+    )
+
+
 def extract_scenario_replay_tick_parity_envelope_v0(
     tick: OfflineDoublePlayScenarioReplayTickRecordV0,
 ) -> ParityDecisionEnvelopeV0:
     return ParityDecisionEnvelopeV0(
-        decision_outcome="scenario_replay_tick",
-        previous_side_state=None,
+        decision_outcome=tick.entry_exit_decision_outcome,
+        previous_side_state=tick.prior_side_state.value,
         next_side_state=tick.side_state.value,
         composition_status=tick.composition_status,
-        composition_result_id=tick.decision_id,
-        reason_codes=(),
-        decision_precedence_trace=(),
+        composition_result_id=tick.composition_result_id,
+        entry_or_exit_policy_ref=tick.entry_exit_policy_ref,
+        reason_codes=tuple(tick.entry_exit_reason_codes),
+        decision_precedence_trace=tuple(tick.entry_exit_decision_precedence_trace),
         execution_eligible=False,
         adapter_compatible=False,
         quantity_status="NOT_BOUND",
@@ -256,12 +292,58 @@ def legacy_composition_status_for_matrix_v0(status: CompositionStatus) -> str:
     return mapping.get(status, status.value)
 
 
+def entry_exit_parity_envelopes_aligned_v0(
+    integrated: ParityDecisionEnvelopeV0,
+    scenario: ParityDecisionEnvelopeV0,
+) -> bool:
+    if integrated.decision_outcome != scenario.decision_outcome:
+        return False
+    if integrated.decision_precedence_trace != scenario.decision_precedence_trace:
+        return False
+    if set(integrated.reason_codes) != set(scenario.reason_codes):
+        return False
+    if integrated.previous_side_state != scenario.previous_side_state:
+        return False
+    if integrated.next_side_state != scenario.next_side_state:
+        return False
+    return True
+
+
+def evaluate_scenario_entry_exit_for_fixture_v0(
+    *,
+    side_state: SideState,
+    instrument_id: str,
+    trading_epoch: int,
+    context_reference: str,
+    policy_context: ScenarioEntryExitPolicyContextV0 | None = None,
+    matrix_result: DoublePlayCompositionResultV1 | None = None,
+) -> EntryExitPolicyDecisionV0:
+    matrix = matrix_result or evaluate_scenario_matrix_for_side_state_v0(
+        side_state=side_state,
+        instrument_id=instrument_id,
+        trading_epoch=trading_epoch,
+        context_reference=context_reference,
+    )
+    return evaluate_scenario_entry_exit_policy_v0(
+        instrument_id=instrument_id,
+        trading_epoch=trading_epoch,
+        context_reference=context_reference,
+        composition_result=matrix,
+        side_state=side_state,
+        policy_context=policy_context,
+    )
+
+
 def canonical_owner_refs_v0() -> Mapping[str, str]:
     return {
         "integrated_offline_replay": INTEGRATED_OFFLINE_TRADING_LOGIC_REPLAY_OWNER,
         "scenario_replay": OFFLINE_DOUBLE_PLAY_SCENARIO_REPLAY_OWNER,
         "scenario_matrix_adapter": DOUBLE_PLAY_COMPOSITION_SCENARIO_MATRIX_ADAPTER_OWNER,
         "double_play_composition_matrix": CANONICAL_DOUBLE_PLAY_COMPOSITION_OWNER,
+        "entry_exit_policy": CANONICAL_ENTRY_EXIT_POLICY_OWNER,
+        "entry_exit_scenario_binding_adapter": (
+            DOUBLE_PLAY_ENTRY_EXIT_SCENARIO_BINDING_ADAPTER_OWNER
+        ),
         "parity_harness": INTEGRATED_VS_SCENARIO_REPLAY_FULL_SYSTEM_PARITY_HARNESS_OWNER,
     }
 

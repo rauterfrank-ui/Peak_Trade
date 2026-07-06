@@ -54,7 +54,13 @@ from trading.master_v2.double_play_composition import (
     RequestedSide,
 )
 from trading.master_v2.double_play_composition_scenario_matrix_adapter_v0 import (
+    build_scenario_matrix_composition_input_v0,
     compose_double_play_scenario_via_canonical_matrix_v0,
+    evaluate_scenario_matrix_composition_v0,
+)
+from trading.master_v2.double_play_entry_exit_scenario_binding_adapter_v0 import (
+    default_scenario_entry_exit_policy_context_v0,
+    evaluate_scenario_entry_exit_policy_v0,
 )
 from trading.master_v2.double_play_dashboard_display import (
     DoublePlayDashboardDisplaySnapshot,
@@ -193,6 +199,7 @@ class OfflineDoublePlayScenarioReplayTickRecordV0:
     selected_future_id: str
     scope_event: ScopeEvent
     side_state: SideState
+    prior_side_state: SideState
     bull_layer_state: SideState
     bear_layer_state: SideState
     active_side: ActiveSide
@@ -201,6 +208,11 @@ class OfflineDoublePlayScenarioReplayTickRecordV0:
     transition_allowed: bool
     transition_reason_code: str
     composition_status: str
+    composition_result_id: str
+    entry_exit_policy_ref: str
+    entry_exit_decision_outcome: str
+    entry_exit_reason_codes: tuple[str, ...]
+    entry_exit_decision_precedence_trace: tuple[str, ...]
     decision_id: str
     decision_snapshot: dict[str, Any] | None
     master_v2_decision_digest: str | None
@@ -767,6 +779,7 @@ def run_offline_double_play_scenario_replay_v0(
         if ratchet.can_ratchet and ratchet.new_active_slot_base is not None:
             capital_state = replace(capital_state, active_slot_base=ratchet.new_active_slot_base)
         release = evaluate_capital_slot_release(_capital_config(), capital_state)
+        safety_allowed = tick.safety_decision_allowed and side != SideState.KILL_ALL
 
         composition = compose_double_play_scenario_via_canonical_matrix_v0(
             DoublePlayCompositionInput(
@@ -782,6 +795,25 @@ def run_offline_double_play_scenario_replay_v0(
             trading_epoch=tick.tick_index,
             context_reference=f"{inp.correlation_id_prefix}-tick-{tick.tick_index}",
         )
+        matrix_input = build_scenario_matrix_composition_input_v0(
+            instrument_id=inp.selected_future_id,
+            trading_epoch=tick.tick_index,
+            context_reference=f"{inp.correlation_id_prefix}-tick-{tick.tick_index}",
+            side_st=side,
+            survival=survival,
+            suitability=suitability,
+        )
+        composition_result = evaluate_scenario_matrix_composition_v0(matrix_input)
+        entry_exit_decision = evaluate_scenario_entry_exit_policy_v0(
+            instrument_id=inp.selected_future_id,
+            trading_epoch=tick.tick_index,
+            context_reference=f"{inp.correlation_id_prefix}-tick-{tick.tick_index}",
+            composition_result=composition_result,
+            side_state=side,
+            policy_context=default_scenario_entry_exit_policy_context_v0(
+                safety_decision_allowed=safety_allowed,
+            ),
+        )
 
         final_dashboard_display_snapshot = build_dashboard_display_snapshot(
             futures_input=futures_input_decision,
@@ -793,7 +825,6 @@ def run_offline_double_play_scenario_replay_v0(
             composition=composition,
         )
 
-        safety_allowed = tick.safety_decision_allowed and side != SideState.KILL_ALL
         staged = StagedExecutionEnablementInputV1(
             current_stage=ExecutionStageV1.RESEARCH,
             requested_stage=ExecutionStageV1.BACKTEST,
@@ -867,6 +898,7 @@ def run_offline_double_play_scenario_replay_v0(
             selected_future_id=inp.selected_future_id,
             scope_event=event,
             side_state=side,
+            prior_side_state=prior_side,
             bull_layer_state=bull_state,
             bear_layer_state=bear_state,
             active_side=active_side,
@@ -875,6 +907,11 @@ def run_offline_double_play_scenario_replay_v0(
             transition_allowed=transition.allowed,
             transition_reason_code=transition.reason_code,
             composition_status=composition.status.value,
+            composition_result_id=composition_result.composition_id,
+            entry_exit_policy_ref=entry_exit_decision.policy_decision_id,
+            entry_exit_decision_outcome=entry_exit_decision.decision_outcome.value,
+            entry_exit_reason_codes=entry_exit_decision.reason_codes,
+            entry_exit_decision_precedence_trace=entry_exit_decision.decision_precedence_trace,
             decision_id=decision_id,
             decision_snapshot=snapshot,
             master_v2_decision_digest=decision_digest,
