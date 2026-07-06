@@ -15,6 +15,7 @@ import math
 from dataclasses import dataclass, field
 from datetime import timedelta
 from enum import Enum
+from pathlib import Path
 from typing import Any, Callable, Mapping, Optional, Sequence
 
 import pandas as pd
@@ -137,6 +138,13 @@ from src.trading.master_v2.survival_assessment_v1 import (
     SURVIVAL_ASSESSMENT_POLICY_VERSION,
     SurvivalAssessmentPolicyV1,
 )
+from src.trading.master_v2.killswitch_boundary_backtest_state_file_binding_adapter_v0 import (
+    KillSwitchBacktestStateFileRecordV0,
+    KillSwitchBoundaryBacktestStateFileEvidenceV0,
+    apply_backtest_killswitch_exposure_gate_v0,
+    bind_killswitch_boundary_backtest_state_file_evidence_v0,
+    load_killswitch_backtest_state_file_record_v0,
+)
 
 MV2_RESEARCH_WIRING_LAYER_VERSION = "v1"
 MV2_RESEARCH_WIRING_OWNER = "backtest.mv2_research_wiring_v1"
@@ -171,6 +179,17 @@ class StressClassBindingStatus(str, Enum):
 
 
 @dataclass(frozen=True)
+class KillSwitchBacktestStateFileBindingConfigV1:
+    """Optional backtest KillSwitch state-file binding — offline evidence only."""
+
+    state_file_path: Path | None = None
+    state_file_record: KillSwitchBacktestStateFileRecordV0 | None = None
+    expected_state_file_digest_ref: str = ""
+    require_state_file: bool = False
+    has_existing_position: bool = False
+
+
+@dataclass(frozen=True)
 class MV2ReplayBarOutcomeV1:
     trading_epoch: int
     context: CanonicalMarketContextV1
@@ -180,6 +199,9 @@ class MV2ReplayBarOutcomeV1:
     fail_reasons: tuple[str, ...]
     l1_observation_status: L1ObservationStatusV1
     observed_l1_used: bool
+    killswitch_backtest_state_file_evidence: (
+        KillSwitchBoundaryBacktestStateFileEvidenceV0 | None
+    ) = None
 
 
 @dataclass(frozen=True)
@@ -769,6 +791,33 @@ def _build_replay_input(
     )
 
 
+def _resolve_killswitch_backtest_state_file_record_v1(
+    binding: KillSwitchBacktestStateFileBindingConfigV1 | None,
+) -> KillSwitchBacktestStateFileRecordV0 | None:
+    if binding is None:
+        return None
+    if binding.state_file_record is not None:
+        record = binding.state_file_record
+        if binding.expected_state_file_digest_ref:
+            from src.trading.master_v2.killswitch_boundary_backtest_state_file_binding_adapter_v0 import (
+                verify_killswitch_backtest_state_file_digest_v0,
+            )
+
+            verify_killswitch_backtest_state_file_digest_v0(
+                record,
+                expected_digest_ref=binding.expected_state_file_digest_ref,
+            )
+        return record
+    if binding.state_file_path is not None:
+        return load_killswitch_backtest_state_file_record_v0(
+            binding.state_file_path,
+            expected_digest_ref=binding.expected_state_file_digest_ref,
+        )
+    if binding.require_state_file:
+        raise ValueError("killswitch_backtest_state_file_missing")
+    return None
+
+
 def run_mv2_research_backtest_wiring_v1(
     bars: pd.DataFrame,
     *,
@@ -784,6 +833,7 @@ def run_mv2_research_backtest_wiring_v1(
     expected_implementation_digest: Optional[str] = None,
     explicit_zero_cost_non_economic: bool = False,
     profile_binding: Optional[DatasetProfileBindingV1] = None,
+    killswitch_state_file_binding: KillSwitchBacktestStateFileBindingConfigV1 | None = None,
 ) -> MV2ResearchWiringResultV1:
     _fail_closed(bars.empty, "bars_empty")
     _ensure_supported_instrument(instrument_id)
@@ -856,6 +906,14 @@ def run_mv2_research_backtest_wiring_v1(
 
     replay_id = f"mv2-research-{len(bars)}"
     config_digest = _stable_digest({"cfg": dict(cfg), "owner": MV2_RESEARCH_WIRING_OWNER})
+    killswitch_state_file_record = _resolve_killswitch_backtest_state_file_record_v1(
+        killswitch_state_file_binding
+    )
+    killswitch_has_existing_position = (
+        killswitch_state_file_binding.has_existing_position
+        if killswitch_state_file_binding is not None
+        else False
+    )
 
     try:
         strategy_binding = execute_configured_strategy_signal_series_v1(
@@ -902,6 +960,17 @@ def run_mv2_research_backtest_wiring_v1(
         )
         replay_result = run_integrated_offline_trading_logic_replay_v1(replay_input)
         signal = map_decision_evidence_to_position_signal_v1(replay_result.evidence)
+        killswitch_evidence: KillSwitchBoundaryBacktestStateFileEvidenceV0 | None = None
+        if killswitch_state_file_record is not None:
+            killswitch_evidence = bind_killswitch_boundary_backtest_state_file_evidence_v0(
+                replay_result.evidence,
+                state_file=killswitch_state_file_record,
+            )
+            signal = apply_backtest_killswitch_exposure_gate_v0(
+                signal,
+                evidence=killswitch_evidence,
+                has_existing_position=killswitch_has_existing_position,
+            )
         if context.warmup_status is not WarmupStatus.WARMUP_COMPLETE:
             signal = 0
         outcomes.append(
@@ -914,6 +983,7 @@ def run_mv2_research_backtest_wiring_v1(
                 fail_reasons=replay_result.fail_reasons,
                 l1_observation_status=l1_status,
                 observed_l1_used=observed_l1_used,
+                killswitch_backtest_state_file_evidence=killswitch_evidence,
             )
         )
         replay_signals.append(signal)
