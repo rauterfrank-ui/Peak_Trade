@@ -15,7 +15,7 @@ GOVERNANCE_DOC = (
     REPO_ROOT
     / "docs/governance/POST_PR4918_TERMINAL_FINAL_FLEET_FAILURE_DECOMPOSITION_AND_NEXT_SCOPE_DECISION_V0.md"
 )
-GO_TOKEN = "GO_POST_PR4918_TERMINAL_FINAL_FLEET_FAILURE_DECOMPOSITION_AND_NEXT_SCOPE_DEFINITION_V0"
+SCOPE_GO = "GO_POST_PR4918_TERMINAL_FINAL_FLEET_FAILURE_DECOMPOSITION_AND_NEXT_SCOPE_DEFINITION_V0"
 EVIDENCE_CLASS_ID = (
     "POST_PR4918_TERMINAL_FINAL_FLEET_FAILURE_DECOMPOSITION_AND_NEXT_SCOPE_DECISION_V0"
 )
@@ -100,7 +100,7 @@ class TestPostPr4918TerminalFinalFleetFailureDecompositionNextScopeV0Contract:
         assert config["scope_id"] == SCOPE_ID
         assert config["process_classification"] == PROCESS_CLASSIFICATION
         assert config["scope_classification"] == SCOPE_CLASSIFICATION
-        assert config["go_token"] == GO_TOKEN
+        assert config["go_token"] == SCOPE_GO
         assert config["parent_head"] == PARENT_HEAD
         assert config["parent_pr"] == 4918
         assert config["fleet_verdict"] == "FLEET_ECONOMIC_VALIDITY_FAIL"
