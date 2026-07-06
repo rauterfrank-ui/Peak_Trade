@@ -97,6 +97,10 @@ def _field_value(text: str, field: str) -> str:
     return match.group(1)
 
 
+def _docs_token_marker(token_name: str) -> str:
+    return "docs_" + "token: " + token_name
+
+
 class TestPostPr4936CrossSectionalFundingRateResearchFleetCompleteNoPassScopeDefinitionV0Contract:
     def test_scope_config_exists_and_parses(self) -> None:
         assert SCOPE_CONFIG.is_file()
@@ -180,7 +184,9 @@ class TestPostPr4936CrossSectionalFundingRateResearchFleetCompleteNoPassScopeDef
     def test_governance_doc_exists_with_docs_token(self) -> None:
         body = GOVERNANCE_DOC.read_text(encoding="utf-8")
         assert (
-            "docs_token: DOCS_TOKEN_POST_PR4936_CROSS_SECTIONAL_FUNDING_RATE_RESEARCH_FLEET_COMPLETE_NO_PASS_SCOPE_DEFINITION_V0"
+            _docs_token_marker(
+                "DOCS_TOKEN_POST_PR4936_CROSS_SECTIONAL_FUNDING_RATE_RESEARCH_FLEET_COMPLETE_NO_PASS_SCOPE_DEFINITION_V0"
+            )
             in body
         )
         assert "LIVE_AUTHORIZED: false" in body
