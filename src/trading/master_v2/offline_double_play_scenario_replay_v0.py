@@ -67,6 +67,10 @@ from trading.master_v2.safety_kernel_offline_replay_binding_adapter_v0 import (
     SafetyKernelOfflineReplayContextV0,
     evaluate_scenario_safety_kernel_v0,
 )
+from trading.master_v2.reconciliation_unknown_outcome_offline_replay_binding_adapter_v0 import (
+    ReconciliationUnknownOutcomeOfflineReplayContextV0,
+    evaluate_scenario_reconciliation_unknown_outcome_v0,
+)
 from trading.master_v2.double_play_composition_scenario_matrix_adapter_v0 import (
     build_scenario_matrix_composition_input_v0,
     compose_double_play_scenario_via_canonical_matrix_v0,
@@ -237,6 +241,8 @@ class OfflineDoublePlayScenarioReplayTickRecordV0:
     order_intent_outcome: str
     safety_boundary_ref: str
     safety_boundary_effect: str
+    reconciliation_unknown_outcome_ref: str
+    reconciliation_unknown_outcome_effect: str
     sizing_outcome: str
     sizing_reason_codes: tuple[str, ...]
     decision_id: str
@@ -830,15 +836,16 @@ def run_offline_double_play_scenario_replay_v0(
             suitability=suitability,
         )
         composition_result = evaluate_scenario_matrix_composition_v0(matrix_input)
+        policy_ctx = default_scenario_entry_exit_policy_context_v0(
+            safety_decision_allowed=safety_allowed,
+        )
         entry_exit_decision = evaluate_scenario_entry_exit_policy_v0(
             instrument_id=inp.selected_future_id,
             trading_epoch=tick.tick_index,
             context_reference=f"{inp.correlation_id_prefix}-tick-{tick.tick_index}",
             composition_result=composition_result,
             side_state=side,
-            policy_context=default_scenario_entry_exit_policy_context_v0(
-                safety_decision_allowed=safety_allowed,
-            ),
+            policy_context=policy_ctx,
         )
 
         final_dashboard_display_snapshot = build_dashboard_display_snapshot(
@@ -948,9 +955,20 @@ def run_offline_double_play_scenario_replay_v0(
                 safety_mode=(SafetyMode.BLOCKED if not safety_allowed else SafetyMode.NORMAL),
                 killswitch_blocked=not safety_allowed,
                 safety_decision_allowed=safety_allowed,
+                reconciliation_state=policy_ctx.reconciliation_state,
+                position_state=policy_ctx.position_state,
             ),
         )
-        bound_evidence = safety_binding.evidence
+        reconciliation_binding = evaluate_scenario_reconciliation_unknown_outcome_v0(
+            safety_binding.evidence,
+            context=ReconciliationUnknownOutcomeOfflineReplayContextV0(
+                position_state=policy_ctx.position_state,
+                reconciliation_state=policy_ctx.reconciliation_state,
+                venue_flat=policy_ctx.venue_flat,
+                existing_position_side=policy_ctx.existing_position_side,
+            ),
+        )
+        bound_evidence = reconciliation_binding.evidence
         sizing_outcome = (
             sizing_decision.outcome.value if sizing_decision is not None else "NOT_APPLICABLE"
         )
@@ -986,6 +1004,12 @@ def run_offline_double_play_scenario_replay_v0(
             order_intent_outcome=intent_binding.intent_outcome,
             safety_boundary_ref=safety_binding.safety_boundary_ref,
             safety_boundary_effect=safety_binding.safety_boundary_effect,
+            reconciliation_unknown_outcome_ref=(
+                reconciliation_binding.reconciliation_unknown_outcome_ref
+            ),
+            reconciliation_unknown_outcome_effect=(
+                reconciliation_binding.reconciliation_unknown_outcome_effect
+            ),
             sizing_outcome=sizing_outcome,
             sizing_reason_codes=sizing_reason_codes,
             decision_id=decision_id,

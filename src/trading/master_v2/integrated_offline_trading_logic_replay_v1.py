@@ -864,6 +864,25 @@ def run_integrated_offline_trading_logic_replay_v1(
     )
     evidence = safety_binding.evidence
 
+    _ruo_binding = importlib.import_module(
+        "trading.master_v2.reconciliation_unknown_outcome_offline_replay_binding_adapter_v0"
+    )
+    ReconciliationUnknownOutcomeOfflineReplayContextV0 = (
+        _ruo_binding.ReconciliationUnknownOutcomeOfflineReplayContextV0
+    )
+    reconciliation_binding = (
+        _ruo_binding.bind_reconciliation_unknown_outcome_offline_replay_evidence_v0(
+            evidence,
+            context=ReconciliationUnknownOutcomeOfflineReplayContextV0(
+                position_state=inp.position_state,
+                reconciliation_state=inp.reconciliation_state,
+                venue_flat=inp.venue_flat,
+                existing_position_side=inp.existing_position_side,
+            ),
+        )
+    )
+    evidence = reconciliation_binding.evidence
+
     intermediate = IntegratedOfflineReplayIntermediateV1(
         market_context=bound_context,
         scope_initialization=scope_init,
