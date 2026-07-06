@@ -1,0 +1,135 @@
+"""Contract: full canonical system backtest parity gap assessment v0 (offline only)."""
+
+from __future__ import annotations
+
+import ast
+import importlib.util
+import subprocess
+import sys
+from pathlib import Path
+
+from trading.master_v2.full_canonical_system_backtest_parity_gap_assessment_v0 import (
+    ALLOWED_SLICE_CHANGED_PATH_PREFIXES,
+    FULL_CANONICAL_SYSTEM_BACKTEST_PARITY_GAP_ASSESSMENT_OWNER,
+    NEXT_RECOMMENDED_SLICE,
+    parity_status_counts_v0,
+    parity_surface_assessments_v0,
+    render_parity_gap_matrix_markdown_v0,
+    scan_changed_paths_for_forbidden_runtime_v0,
+)
+
+REPO_ROOT = Path(__file__).resolve().parents[3]
+
+_SLICE_SOURCE_PATHS = tuple(
+    REPO_ROOT / p for p in ALLOWED_SLICE_CHANGED_PATH_PREFIXES if p.endswith(".py")
+)
+
+
+def _scan_forbidden_imports(path: Path, forbidden_tokens: frozenset[str]) -> list[str]:
+    tree = ast.parse(path.read_text(encoding="utf-8"))
+    hits: list[str] = []
+    for node in ast.walk(tree):
+        if isinstance(node, ast.Import):
+            for alias in node.names:
+                if any(token in alias.name for token in forbidden_tokens):
+                    hits.append(alias.name)
+        if isinstance(node, ast.ImportFrom) and node.module:
+            if any(token in node.module for token in forbidden_tokens):
+                hits.append(node.module)
+    return hits
+
+
+def test_gap_assessment_owner_and_surface_count_v0() -> None:
+    assessments = parity_surface_assessments_v0()
+    assert len(assessments) == 16
+    ids = [item.surface_id for item in assessments]
+    assert ids == [chr(ord("A") + i) for i in range(16)]
+    assert all(item.forbidden_runtime_authority_confirmed for item in assessments)
+    assert FULL_CANONICAL_SYSTEM_BACKTEST_PARITY_GAP_ASSESSMENT_OWNER.endswith(
+        "full_canonical_system_backtest_parity_gap_assessment_v0"
+    )
+
+
+def test_gap_assessment_status_distribution_v0() -> None:
+    counts = parity_status_counts_v0()
+    assert counts["PASS"] == 1
+    assert counts["GAP"] >= 2
+    assert counts["NOT_APPLICABLE"] >= 3
+    assert sum(counts.values()) == 16
+
+
+def test_composition_surface_pass_v0() -> None:
+    composition = next(item for item in parity_surface_assessments_v0() if item.surface_id == "F")
+    assert composition.parity_status == "PASS"
+    assert composition.missing_binding_if_any == ""
+
+
+def test_entry_exit_is_earliest_gap_recommended_slice_v0() -> None:
+    entry_exit = next(item for item in parity_surface_assessments_v0() if item.surface_id == "G")
+    assert entry_exit.parity_status == "GAP"
+    assert NEXT_RECOMMENDED_SLICE == (
+        "SCENARIO_REPLAY_DOUBLE_PLAY_ENTRY_EXIT_POLICY_BINDING_PARITY_REWIRE_V0"
+    )
+    assert entry_exit.recommended_next_slice == NEXT_RECOMMENDED_SLICE
+
+
+def test_gap_matrix_markdown_renders_v0() -> None:
+    md = render_parity_gap_matrix_markdown_v0()
+    assert "FULL_CANONICAL_CHAIN_WIRED=false" in md
+    assert "Double Play composition" in md
+    assert NEXT_RECOMMENDED_SLICE in md
+
+
+def test_forbidden_runtime_paths_guard_v0() -> None:
+    ok, violations = scan_changed_paths_for_forbidden_runtime_v0(
+        ALLOWED_SLICE_CHANGED_PATH_PREFIXES
+    )
+    assert ok is True
+    assert violations == ()
+
+
+def test_slice_sources_exclude_runtime_imports_v0() -> None:
+    forbidden = frozenset(
+        {
+            "execution",
+            "scheduler",
+            "credentials",
+            "live_runtime",
+            "testnet",
+            "shadow",
+            "paper_lane",
+        }
+    )
+    for path in _SLICE_SOURCE_PATHS:
+        assert path.is_file(), f"missing slice source: {path}"
+        hits = _scan_forbidden_imports(path, forbidden)
+        assert hits == [], f"forbidden imports in {path}: {hits}"
+
+
+def test_pr4946_parity_suite_still_passes_v0() -> None:
+    from tests.trading.master_v2 import (
+        test_integrated_vs_scenario_replay_full_system_parity_contract_suite_v0 as pr4946,
+    )
+
+    pr4946.test_harness_and_replay_owner_constants_v0()
+    pr4946.test_1_long_bull_path_parity_v0()
+    pr4946.test_3_both_confirmed_chop_guard_parity_v0()
+    pr4946.test_5_reversal_preparation_boundary_parity_v0()
+    pr4946.test_scenario_replay_e2e_composition_and_zero_order_boundary_v0()
+
+
+def test_prometheus_client_importable_v0() -> None:
+    assert importlib.util.find_spec("prometheus_client") is not None
+    proc = subprocess.run(
+        [
+            sys.executable,
+            "-c",
+            "import prometheus_client; print('PROMETHEUS_CLIENT_IMPORTABLE=true')",
+        ],
+        cwd=str(REPO_ROOT),
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    assert proc.returncode == 0
+    assert "PROMETHEUS_CLIENT_IMPORTABLE=true" in proc.stdout
