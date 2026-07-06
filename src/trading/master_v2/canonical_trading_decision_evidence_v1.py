@@ -21,6 +21,7 @@ _AUTHORITY_EFFECT_NONE = "NONE"
 _RUNTIME_EFFECT_NONE = "NONE"
 _ORDER_EFFECT_NONE = "NONE"
 _RISK_EFFECT_NONE = "NONE"
+_ORDER_INTENT_EFFECT_NONE = "NONE"
 _QUANTITY_STATUS_NOT_BOUND = "NOT_BOUND"
 
 
@@ -80,10 +81,12 @@ class CanonicalTradingDecisionEvidenceV1:
     quantity_status: str = _QUANTITY_STATUS_NOT_BOUND
     quantity_provenance_ref: str = ""
     risk_sizing_ref: str = ""
+    order_intent_ref: str = ""
     authority_effect: str = _AUTHORITY_EFFECT_NONE
     runtime_effect: str = _RUNTIME_EFFECT_NONE
     order_effect: str = _ORDER_EFFECT_NONE
     risk_sizing_effect: str = _RISK_EFFECT_NONE
+    order_intent_effect: str = _ORDER_INTENT_EFFECT_NONE
 
     def __post_init__(self) -> None:
         if self.semantic_digest and not _valid_sha256_hex(self.semantic_digest):
@@ -129,6 +132,8 @@ def serialize_canonical_trading_decision_evidence_canonical(
         "next_direction_state": evidence.next_direction_state,
         "next_scope_ref": evidence.next_scope_ref,
         "order_effect": evidence.order_effect,
+        "order_intent_effect": evidence.order_intent_effect,
+        "order_intent_ref": evidence.order_intent_ref,
         "policy_versions": _sorted_mapping(evidence.policy_versions),
         "previous_direction_state": evidence.previous_direction_state,
         "quantity_provenance_ref": evidence.quantity_provenance_ref,
@@ -199,10 +204,12 @@ def finalize_offline_replay_decision_evidence_v1(
         quantity_status=evidence.quantity_status,
         quantity_provenance_ref=evidence.quantity_provenance_ref,
         risk_sizing_ref=evidence.risk_sizing_ref,
+        order_intent_ref=evidence.order_intent_ref,
         authority_effect=_AUTHORITY_EFFECT_NONE,
         runtime_effect=_RUNTIME_EFFECT_NONE,
         order_effect=_ORDER_EFFECT_NONE,
         risk_sizing_effect=evidence.risk_sizing_effect,
+        order_intent_effect=evidence.order_intent_effect,
     )
 
 
@@ -249,10 +256,12 @@ def with_computed_evidence_semantic_digest(
             quantity_status=_QUANTITY_STATUS_NOT_BOUND,
             quantity_provenance_ref="",
             risk_sizing_ref="",
+            order_intent_ref="",
             authority_effect=_AUTHORITY_EFFECT_NONE,
             runtime_effect=_RUNTIME_EFFECT_NONE,
             order_effect=_ORDER_EFFECT_NONE,
             risk_sizing_effect=_RISK_EFFECT_NONE,
+            order_intent_effect=_ORDER_INTENT_EFFECT_NONE,
         )
     )
 

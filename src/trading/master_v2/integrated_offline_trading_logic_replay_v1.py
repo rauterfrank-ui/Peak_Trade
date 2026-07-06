@@ -34,6 +34,7 @@ from trading.master_v2.canonical_scope_initialization_v1 import (
     initialize_canonical_scope,
 )
 from src.governance.capital_risk_sizing_v1 import CapitalRiskSizingDecisionV1
+from src.governance.canonical_order_intent_v1 import CanonicalOrderIntentV1
 from trading.master_v2.canonical_trading_decision_evidence_v1 import (
     CANONICAL_TRADING_DECISION_EVIDENCE_LAYER_VERSION,
     CanonicalTradingDecisionEvidenceV1,
@@ -244,6 +245,7 @@ class IntegratedOfflineReplayIntermediateV1:
     composition_result: DoublePlayCompositionResultV1
     entry_exit_decision: EntryExitPolicyDecisionV0
     capital_risk_sizing_decision: Optional[CapitalRiskSizingDecisionV1]
+    canonical_order_intent: Optional[CanonicalOrderIntentV1]
     state_switch: StateSwitchEvidenceV1
     current_scope: CanonicalScopeSnapshotV1
     next_scope_ref: str
@@ -828,6 +830,17 @@ def run_integrated_offline_trading_logic_replay_v1(
     evidence = sizing_binding.evidence
     capital_risk_sizing_decision = sizing_binding.sizing_decision
 
+    _coi_binding = importlib.import_module(
+        "trading.master_v2.canonical_order_intent_offline_replay_binding_adapter_v0"
+    )
+    intent_binding = _coi_binding.bind_canonical_order_intent_offline_replay_evidence_v0(
+        evidence,
+        sizing_decision=capital_risk_sizing_decision,
+        capital_context=capital_context,
+    )
+    evidence = intent_binding.evidence
+    canonical_order_intent = intent_binding.canonical_intent
+
     intermediate = IntegratedOfflineReplayIntermediateV1(
         market_context=bound_context,
         scope_initialization=scope_init,
@@ -841,6 +854,7 @@ def run_integrated_offline_trading_logic_replay_v1(
         composition_result=composition_result,
         entry_exit_decision=entry_exit_decision,
         capital_risk_sizing_decision=capital_risk_sizing_decision,
+        canonical_order_intent=canonical_order_intent,
         state_switch=state_switch,
         current_scope=current_scope,
         next_scope_ref=next_scope_ref,
