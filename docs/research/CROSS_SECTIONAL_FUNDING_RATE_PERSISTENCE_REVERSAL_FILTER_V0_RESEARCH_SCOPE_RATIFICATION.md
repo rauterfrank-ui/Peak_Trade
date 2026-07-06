@@ -19,7 +19,7 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `STRATEGY_VERSION` | `v0` |
 | `GO_TOKEN` | `GO_RATIFY_CROSS_SECTIONAL_FUNDING_RATE_PERSISTENCE_REVERSAL_FILTER_V0_SCOPE_ONLY_NO_EVAL_NO_RUNTIME_AUTHORITY_V0` |
 | `PARENT_TERMINAL_SCOPE_BUNDLE` | `rank_delta_v0_terminal_negative_evidence_and_next_scope_boundary_20260706T154311Z` |
-| `TERMINALIZED_PARENT_STRATEGY` | `cross_sectional_funding_rate_rank_delta/v0` |
+| `TERMINALIZED_PARENT_STRATEGY` | `cross_sectional_funding_rate_rank_delta&#47;v0` |
 | `MATERIAL_DIFFERENCE_PASS` | `true` |
 | `FUTURES_ONLY_PASS` | `true` |
 | `REUSE_FIRST_PASS` | `true` |
