@@ -71,9 +71,9 @@ SCHEDULER_RUNTIME_ALLOWED: false
 
 | Kandidat | Verdict | Trades | Net Return | Sharpe | Profit Factor | Max Drawdown |
 |---|---|---:|---:|---:|---:|---:|
-| `trend_following/post_v4_hypothesis_v0` | `ROBUSTNESS_FAILED` | 219 | -0.002398 | -0.132 | 0.951 | -0.009945 |
-| `bollinger_bands/post_v4_hypothesis_v0` | `ROBUSTNESS_FAILED` | 0 | 0.0 | 0.0 | 0.0 | 0.0 |
-| `momentum_1h/post_v4_hypothesis_v0` | `ROBUSTNESS_FAILED` | 2 | -0.001889 | -0.457 | 0.285 | -0.002638 |
+| `trend_following&#47;post_v4_hypothesis_v0` | `ROBUSTNESS_FAILED` | 219 | -0.002398 | -0.132 | 0.951 | -0.009945 |
+| `bollinger_bands&#47;post_v4_hypothesis_v0` | `ROBUSTNESS_FAILED` | 0 | 0.0 | 0.0 | 0.0 | 0.0 |
+| `momentum_1h&#47;post_v4_hypothesis_v0` | `ROBUSTNESS_FAILED` | 2 | -0.001889 | -0.457 | 0.285 | -0.002638 |
 
 **Per-candidate failure classification:**
 
