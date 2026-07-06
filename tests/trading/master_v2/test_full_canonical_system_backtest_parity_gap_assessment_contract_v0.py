@@ -58,8 +58,8 @@ def test_gap_assessment_owner_and_surface_count_v0() -> None:
 
 def test_gap_assessment_status_distribution_v0() -> None:
     counts = parity_status_counts_v0()
-    assert counts["PASS"] == 3
-    assert counts["PARTIAL"] >= 7
+    assert counts["PASS"] == 4
+    assert counts["PARTIAL"] >= 6
     assert counts["GAP"] == 0
     assert counts["NOT_APPLICABLE"] >= 2
     assert sum(counts.values()) == 16
@@ -105,6 +105,16 @@ def test_reconciliation_unknown_outcome_surface_pass_v0() -> None:
         "evaluate_scenario_reconciliation_unknown_outcome_v0"
         in reconciliation.current_scenario_replay_binding
     )
+
+
+def test_killswitch_boundary_surface_pass_v0() -> None:
+    killswitch = next(item for item in parity_surface_assessments_v0() if item.surface_id == "K")
+    assert killswitch.parity_status == "PASS"
+    assert (
+        "bind_killswitch_boundary_offline_replay_evidence_v0"
+        in killswitch.current_integrated_offline_replay_binding
+    )
+    assert "evaluate_scenario_killswitch_boundary_v0" in killswitch.current_scenario_replay_binding
 
 
 def test_gap_matrix_markdown_renders_v0() -> None:

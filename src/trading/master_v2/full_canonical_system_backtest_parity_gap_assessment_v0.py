@@ -25,17 +25,20 @@ MatrixStatus = Literal[
     "UNKNOWN",
 ]
 
-NEXT_RECOMMENDED_SLICE = "KILLSWITCH_BOUNDARY_OFFLINE_REPLAY_BINDING_PARITY_REWIRE_V0"
+NEXT_RECOMMENDED_SLICE = "BACKTEST_KILLSWITCH_STATE_FILE_WIRING_V0"
 
 ALLOWED_SLICE_CHANGED_PATH_PREFIXES: Tuple[str, ...] = (
     "src/trading/master_v2/full_canonical_system_backtest_parity_gap_assessment_v0.py",
     "scripts/ops/run_full_canonical_system_backtest_parity_gap_assessment_v0.py",
     "scripts/ops/run_safety_kernel_offline_replay_binding_parity_rewire_v0.py",
     "scripts/ops/run_reconciliation_unknown_outcome_offline_replay_binding_parity_rewire_v0.py",
+    "scripts/ops/run_killswitch_boundary_offline_replay_binding_parity_rewire_v0.py",
     "tests/trading/master_v2/test_full_canonical_system_backtest_parity_gap_assessment_contract_v0.py",
     "tests/trading/master_v2/test_safety_kernel_offline_replay_binding_parity_rewire_contract_v0.py",
     "tests/trading/master_v2/test_reconciliation_unknown_outcome_offline_replay_binding_parity_rewire_contract_v0.py",
+    "tests/trading/master_v2/test_killswitch_boundary_offline_replay_binding_parity_rewire_contract_v0.py",
     "src/trading/master_v2/reconciliation_unknown_outcome_offline_replay_binding_adapter_v0.py",
+    "src/trading/master_v2/killswitch_boundary_offline_replay_binding_adapter_v0.py",
     "docs/research/FULL_CANONICAL_SYSTEM_BACKTEST_PARITY_GAP_ASSESSMENT_V0.md",
 )
 
@@ -383,24 +386,29 @@ def parity_surface_assessments_v0() -> Tuple[ParitySurfaceAssessmentV0, ...]:
             canonical_owner_files=(
                 "src/meta/learning_loop/killswitch_writer_fencing_and_independent_read_paths_v1.py",
                 "src/risk_layer/kill_switch/core.py",
+                "src/trading/master_v2/killswitch_boundary_offline_replay_binding_adapter_v0.py",
             ),
             current_integrated_offline_replay_binding=(
-                "safety_exit_signal + SafetyMode in entry-exit (no KillSwitch state machine)"
+                "integrated_offline_trading_logic_replay_v1 ->"
+                " bind_killswitch_boundary_offline_replay_evidence_v0()"
             ),
             current_scenario_replay_binding=(
-                "ScopeEvent.KILL_ALL_REQUIRED, SideState.KILL_ALL, SafetyKillSwitchHandoffV1"
+                "offline_double_play_scenario_replay_v0 ->"
+                " evaluate_scenario_killswitch_boundary_v0() per tick"
             ),
-            current_backtest_binding="No KillSwitch state file",
+            current_backtest_binding=(
+                "Default SafetyMode.NORMAL via integrated input; killswitch boundary bound offline"
+            ),
             current_runtime_semantics_reference=(
                 "src/ops/gates/risk_gate.py; FUTURES_RISK_SAFETY_KILLSWITCH_CONTRACT_V0"
             ),
-            parity_status="PARTIAL",
+            parity_status="PASS",
             evidence_refs=(
                 "tests/trading/master_v2/test_offline_master_v2_double_play_scenario_replay_binding_contract_v0.py::test_killswitch_blocks_activation",
-                "tests/ops/test_bounded_futures_testnet_risk_killswitch_lifecycle_integration_contract_v0.py",
+                "tests/trading/master_v2/test_killswitch_boundary_offline_replay_binding_parity_rewire_contract_v0.py",
             ),
             missing_binding_if_any=(
-                "Integrated replay explicit KillSwitch state-machine or kernel-read binding"
+                "Backtest wiring explicit KillSwitch state file (out of offline scope)"
             ),
             recommended_next_slice=NEXT_RECOMMENDED_SLICE,
         ),
