@@ -26,7 +26,7 @@ Consumed once for this narrow corrective provenance/materialization scope.
 | `FAILURE_CLASS` | `CLOSEOUT_MD_MODIFIED_AFTER_MANIFEST_WRITE` |
 | `INVALID_PARENT_CLOSEOUT_DIR` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/offline_source_evidence_admissibility_review_scope_merge_closeout_20260706T060519Z` |
 
-PR #4913 merge closeout wrote `MANIFEST.sha256` before appending `MANIFEST_VERIFY_RC=0` to `CLOSEOUT.md`. The historical bundle therefore fails manifest verification with checksum mismatch on `./CLOSEOUT.md`.
+PR #4913 merge closeout wrote `MANIFEST.sha256` before appending `MANIFEST_VERIFY_RC=0` to `CLOSEOUT.md`. The historical bundle therefore fails manifest verification with checksum mismatch on the bundle-relative `CLOSEOUT.md` manifest entry.
 
 ## PR #4914 Linkage
 
@@ -61,7 +61,7 @@ The corrective durable evidence bundle includes at minimum:
 - `PRECONDITION_FIX_FINDINGS.md`
 - `INVALID_PARENT_MANIFEST_PROVENANCE.json`
 - `SUPERSEDING_PARENT_CLOSEOUT_MANIFEST.sha256`
-- `superseding_parent_closeout/` (manifest-verifiable parent closeout snapshot)
+- `superseding_parent_closeout&#47;` (manifest-verifiable parent closeout snapshot)
 - `SAFETY_BOUNDARIES.json`
 - `MANIFEST.sha256`
 - `MANIFEST_VERIFY.log`
