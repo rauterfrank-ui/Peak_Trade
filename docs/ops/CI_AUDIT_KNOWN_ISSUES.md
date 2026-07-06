@@ -3926,6 +3926,22 @@ python3 scripts/ops/preflight_pre_pr_ruff_and_diff_guard_v0.py --include-staged 
 
 **Non-authorizing:** local lint/format/diff-check helper only; no workflow mutation, no runtime/trading/strategy/economic scope.
 
+## Canonical squash-merge post-merge closeout guard v0
+
+**Scope:** `SQUASH_MERGE_POST_MERGE_CLOSEOUT_GUARD_V0=true` · **Owner:** `scripts/ops/squash_merge_post_merge_closeout_guard_v0.sh`
+
+Post-merge closeout validation for squash-merged PRs. **Fail-closed:** targeted `pytest`, `ruff`, source-manifest verify, and closeout `MANIFEST.sha256` verify must propagate nonzero exit codes even when stdout/stderr is teed to durable logs (`set -o pipefail` + `PIPESTATUS[0]`).
+
+```bash
+scripts/ops/squash_merge_post_merge_closeout_guard_v0.sh post-merge-validate \
+  --evidence-dir "$EVIDENCE_DIR" \
+  --verify-source-manifest
+```
+
+Contract owner: `tests/ops/test_squash_merge_post_merge_closeout_guard_v0_contract.py`. Related tee-safe pytest evidence pattern: `docs/ops/TASK_PACKET_EVIDENCE_PYTEST.md`.
+
+**Non-authorizing:** merge-closeout evidence guard only; no runtime/trading/strategy/economic scope.
+
 ## Blocking model
 - Technically enforced:
   - `pip-audit` in `.github/workflows/audit.yml` when dependency-relevant files changed.

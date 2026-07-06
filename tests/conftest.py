@@ -6,6 +6,9 @@ Historical runtime/session tests may construct legacy entrypoints only when
 
 from __future__ import annotations
 
+# Pytest 9+ requires pytest_plugins at the tests-package conftest, not nested conftests.
+pytest_plugins = ["tests.meta.comparison_metric_input_v1_fixtures"]
+
 import sys
 from pathlib import Path
 
