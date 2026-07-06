@@ -132,11 +132,6 @@ class TestPostNoPassMetricMaterializationPathOfflineEconomicEvaluationExecutionV
         )
 
     def test_registry_metadata_fields(self) -> None:
-        assert authoritative_field_value("CURRENT_STATE") == CURRENT_STATE
-        assert authoritative_field_value("NEXT_CANONICAL_STEP") == NEXT_CANONICAL_STEP
-        assert (
-            authoritative_field_value("CURRENT_ADMISSIBLE_NEXT_SCOPE") == CURRENT_ADMISSIBLE_SCOPE
-        )
         assert (
             authoritative_field_value(
                 "POST_NO_PASS_METRIC_MATERIALIZATION_PATH_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_GO_TOKEN_CONSUMED"
@@ -148,6 +143,12 @@ class TestPostNoPassMetricMaterializationPathOfflineEconomicEvaluationExecutionV
                 "POST_NO_PASS_METRIC_MATERIALIZATION_PATH_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_FLEET_VERDICT"
             )
             == "EXECUTION_FAILED_FAIL_CLOSED"
+        )
+        assert (
+            authoritative_field_value(
+                "POST_NO_PASS_METRIC_MATERIALIZATION_PATH_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0_FLEET_STATUS"
+            )
+            == "INCONCLUSIVE"
         )
 
     def test_classify_fleet_verdict_metrics_not_materialized(self) -> None:
