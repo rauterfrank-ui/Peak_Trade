@@ -122,6 +122,7 @@ FORBIDDEN_RUNTIME_IMPORTS = (
 
 MISSING = "MISSING_SOURCE_EVIDENCE"
 INCONCLUSIVE = "INCONCLUSIVE"
+SOURCE_DETAIL_NOT_BOUND = "NOT_BOUND_IN_PARENT"
 
 
 def sha256_bytes(payload: bytes) -> str:
@@ -136,34 +137,95 @@ def missing_value(*, reason_code: str) -> dict[str, str]:
     return {"status": MISSING, "reason_code": reason_code}
 
 
-def _trade_ledger_missing_record(
+def source_detail_provenance(
+    *,
+    reason_code: str,
+    parent_manifest_digest: str,
+    semantic: str = "NOT_COMPUTED",
+    parent_field: str | None = None,
+) -> dict[str, str]:
+    """Explicit parent-bound provenance without MISSING_SOURCE_EVIDENCE sentinel status."""
+    payload: dict[str, str] = {
+        "semantic": semantic,
+        "reason_code": reason_code,
+        "source_detail_status": SOURCE_DETAIL_NOT_BOUND,
+        "parent_manifest_ref": parent_manifest_digest,
+    }
+    if parent_field is not None:
+        payload["parent_field"] = parent_field
+    return payload
+
+
+def count_records_with_missing_source_sentinel(
+    records: Sequence[Mapping[str, Any]],
+) -> int:
+    missing = 0
+    for record in records:
+        if any(
+            isinstance(value, dict) and value.get("status") == MISSING for value in record.values()
+        ):
+            missing += 1
+    return missing
+
+
+def _trade_ledger_aggregate_provenance_record(
     *,
     candidate: str,
     instrument_id: Any,
     parent_manifest_digest: str,
+    candidate_result: Mapping[str, Any],
+    metrics: Mapping[str, Any],
 ) -> dict[str, Any]:
-    """Single sentinel row when per-trade ledger is absent in parent evidence."""
-    missing = missing_value(reason_code="trade_ledger_per_trade_decomposition_not_in_parent")
+    """Aggregate parent-bound row when per-trade ledger is absent in parent evidence."""
+    prov = lambda reason_code, **kwargs: source_detail_provenance(  # noqa: E731
+        reason_code=reason_code,
+        parent_manifest_digest=parent_manifest_digest,
+        **kwargs,
+    )
     return {
-        "trade_id": missing,
+        "trade_id": prov("per_trade_ledger_not_in_parent", parent_field="trade_id"),
         "strategy_id": candidate,
         "strategy_version": STRATEGY_VERSION,
         "instrument_id": instrument_id,
-        "side": missing,
-        "entry_time": missing,
-        "exit_time": missing,
-        "entry_price": missing,
-        "exit_price": missing,
-        "quantity": missing,
-        "gross_pnl": missing,
-        "fee_cost": missing,
-        "slippage_cost": missing,
-        "funding_cost": missing,
-        "net_pnl": missing,
-        "holding_period_seconds": missing,
-        "entry_reason_codes": missing,
-        "exit_reason_codes": missing,
+        "side": prov("per_trade_side_not_in_parent", parent_field="side"),
+        "entry_time": prov("per_trade_entry_time_not_in_parent", parent_field="entry_time"),
+        "exit_time": prov("per_trade_exit_time_not_in_parent", parent_field="exit_time"),
+        "entry_price": prov("per_trade_entry_price_not_in_parent", parent_field="entry_price"),
+        "exit_price": prov("per_trade_exit_price_not_in_parent", parent_field="exit_price"),
+        "quantity": prov("per_trade_quantity_not_in_parent", parent_field="quantity"),
+        "gross_pnl": candidate_result.get(
+            "gross_return",
+            prov("gross_return_absent", parent_field="gross_return"),
+        ),
+        "fee_cost": prov("per_trade_fee_cost_not_in_parent", parent_field="fee_cost"),
+        "slippage_cost": prov(
+            "per_trade_slippage_cost_not_in_parent", parent_field="slippage_cost"
+        ),
+        "funding_cost": prov("per_trade_funding_cost_not_in_parent", parent_field="funding_cost"),
+        "net_pnl": candidate_result.get(
+            "net_return",
+            prov("net_return_absent", parent_field="net_return"),
+        ),
+        "holding_period_seconds": prov(
+            "per_trade_holding_period_not_in_parent",
+            parent_field="holding_period_seconds",
+        ),
+        "entry_reason_codes": prov(
+            "per_trade_entry_reason_codes_not_in_parent",
+            parent_field="entry_reason_codes",
+        ),
+        "exit_reason_codes": prov(
+            "per_trade_exit_reason_codes_not_in_parent",
+            parent_field="exit_reason_codes",
+        ),
         "manifest_ref": parent_manifest_digest,
+        "source_detail_binding": "AGGREGATE_PARENT_EVIDENCE_ONLY",
+        "aggregate_trade_count": resolve_field_value(
+            primary=metrics,
+            key="trade_count",
+            parent_manifest_digest=parent_manifest_digest,
+            scalar_fallbacks=(candidate_result,),
+        ),
     }
 
 
@@ -181,15 +243,56 @@ def load_json_object(path: Path) -> dict[str, Any]:
     return payload
 
 
-def metric_value(payload: Mapping[str, Any], key: str) -> Any:
-    field = payload.get(key)
+def resolve_field_value(
+    *,
+    primary: Mapping[str, Any],
+    key: str,
+    parent_manifest_digest: str,
+    scalar_fallbacks: Sequence[Mapping[str, Any]] = (),
+    scalar_fallback_keys: Sequence[str] | None = None,
+) -> Any:
+    field = primary.get(key)
+    if isinstance(field, dict) and field.get("semantic") == "COMPUTED":
+        return field.get("value")
+    fallback_keys = tuple(scalar_fallback_keys or (key,))
+    for fallback in scalar_fallbacks:
+        for fallback_key in fallback_keys:
+            fallback_value = fallback.get(fallback_key)
+            if isinstance(fallback_value, (int, float)) and not isinstance(fallback_value, bool):
+                return fallback_value
+            if isinstance(fallback_value, str) and fallback_value:
+                return fallback_value
     if isinstance(field, dict):
-        if field.get("semantic") == "COMPUTED":
-            return field.get("value")
-        return missing_value(reason_code=field.get("reason_code", f"{key}_not_computed"))
-    if field is None:
-        return missing_value(reason_code=f"{key}_absent")
-    return field
+        return source_detail_provenance(
+            reason_code=str(field.get("reason_code", f"{key}_not_computed")),
+            semantic=str(field.get("semantic", "NOT_COMPUTED")),
+            parent_manifest_digest=parent_manifest_digest,
+            parent_field=key,
+        )
+    if field is not None:
+        return field
+    return source_detail_provenance(
+        reason_code=f"{key}_absent",
+        parent_manifest_digest=parent_manifest_digest,
+        parent_field=key,
+    )
+
+
+def metric_value(
+    payload: Mapping[str, Any],
+    key: str,
+    *,
+    parent_manifest_digest: str,
+    scalar_fallbacks: Sequence[Mapping[str, Any]] = (),
+    scalar_fallback_keys: Sequence[str] | None = None,
+) -> Any:
+    return resolve_field_value(
+        primary=payload,
+        key=key,
+        parent_manifest_digest=parent_manifest_digest,
+        scalar_fallbacks=scalar_fallbacks,
+        scalar_fallback_keys=scalar_fallback_keys,
+    )
 
 
 def load_candidate_sources(parent_evaluation_ref: Path, candidate: str) -> dict[str, Any]:
@@ -245,48 +348,137 @@ def collect_trade_ledger_per_trade_records(
                     continue
                 row = json.loads(line)
                 record = {
-                    "trade_id": row.get("trade_id", missing_value(reason_code="trade_id_absent")),
+                    "trade_id": row.get(
+                        "trade_id",
+                        source_detail_provenance(
+                            reason_code="trade_id_absent",
+                            parent_manifest_digest=parent_manifest_digest,
+                            parent_field="trade_id",
+                        ),
+                    ),
                     "strategy_id": row.get("strategy_id", candidate),
                     "strategy_version": row.get("strategy_version", STRATEGY_VERSION),
                     "instrument_id": row.get("instrument_id", instrument_id),
-                    "side": row.get("side", missing_value(reason_code="side_absent")),
+                    "side": row.get(
+                        "side",
+                        source_detail_provenance(
+                            reason_code="side_absent",
+                            parent_manifest_digest=parent_manifest_digest,
+                            parent_field="side",
+                        ),
+                    ),
                     "entry_time": row.get(
-                        "entry_time", missing_value(reason_code="entry_time_absent")
+                        "entry_time",
+                        source_detail_provenance(
+                            reason_code="entry_time_absent",
+                            parent_manifest_digest=parent_manifest_digest,
+                            parent_field="entry_time",
+                        ),
                     ),
                     "exit_time": row.get(
-                        "exit_time", missing_value(reason_code="exit_time_absent")
+                        "exit_time",
+                        source_detail_provenance(
+                            reason_code="exit_time_absent",
+                            parent_manifest_digest=parent_manifest_digest,
+                            parent_field="exit_time",
+                        ),
                     ),
                     "entry_price": row.get(
-                        "entry_price", missing_value(reason_code="entry_price_absent")
+                        "entry_price",
+                        source_detail_provenance(
+                            reason_code="entry_price_absent",
+                            parent_manifest_digest=parent_manifest_digest,
+                            parent_field="entry_price",
+                        ),
                     ),
                     "exit_price": row.get(
-                        "exit_price", missing_value(reason_code="exit_price_absent")
+                        "exit_price",
+                        source_detail_provenance(
+                            reason_code="exit_price_absent",
+                            parent_manifest_digest=parent_manifest_digest,
+                            parent_field="exit_price",
+                        ),
                     ),
-                    "quantity": row.get("quantity", missing_value(reason_code="quantity_absent")),
+                    "quantity": row.get(
+                        "quantity",
+                        source_detail_provenance(
+                            reason_code="quantity_absent",
+                            parent_manifest_digest=parent_manifest_digest,
+                            parent_field="quantity",
+                        ),
+                    ),
                     "gross_pnl": row.get(
-                        "gross_pnl", missing_value(reason_code="gross_pnl_absent")
+                        "gross_pnl",
+                        source_detail_provenance(
+                            reason_code="gross_pnl_absent",
+                            parent_manifest_digest=parent_manifest_digest,
+                            parent_field="gross_pnl",
+                        ),
                     ),
                     "fee_cost": row.get(
-                        "fees", row.get("fee_cost", missing_value(reason_code="fee_cost_absent"))
+                        "fees",
+                        row.get(
+                            "fee_cost",
+                            source_detail_provenance(
+                                reason_code="fee_cost_absent",
+                                parent_manifest_digest=parent_manifest_digest,
+                                parent_field="fee_cost",
+                            ),
+                        ),
                     ),
                     "slippage_cost": row.get(
                         "slippage",
-                        row.get("slippage_cost", missing_value(reason_code="slippage_cost_absent")),
+                        row.get(
+                            "slippage_cost",
+                            source_detail_provenance(
+                                reason_code="slippage_cost_absent",
+                                parent_manifest_digest=parent_manifest_digest,
+                                parent_field="slippage_cost",
+                            ),
+                        ),
                     ),
                     "funding_cost": row.get(
                         "funding",
-                        row.get("funding_cost", missing_value(reason_code="funding_cost_absent")),
+                        row.get(
+                            "funding_cost",
+                            source_detail_provenance(
+                                reason_code="funding_cost_absent",
+                                parent_manifest_digest=parent_manifest_digest,
+                                parent_field="funding_cost",
+                            ),
+                        ),
                     ),
-                    "net_pnl": row.get("net_pnl", missing_value(reason_code="net_pnl_absent")),
+                    "net_pnl": row.get(
+                        "net_pnl",
+                        source_detail_provenance(
+                            reason_code="net_pnl_absent",
+                            parent_manifest_digest=parent_manifest_digest,
+                            parent_field="net_pnl",
+                        ),
+                    ),
                     "holding_period_seconds": row.get(
                         "holding_period_seconds",
-                        missing_value(reason_code="holding_period_seconds_absent"),
+                        source_detail_provenance(
+                            reason_code="holding_period_seconds_absent",
+                            parent_manifest_digest=parent_manifest_digest,
+                            parent_field="holding_period_seconds",
+                        ),
                     ),
                     "entry_reason_codes": row.get(
-                        "entry_reason_codes", missing_value(reason_code="entry_reason_codes_absent")
+                        "entry_reason_codes",
+                        source_detail_provenance(
+                            reason_code="entry_reason_codes_absent",
+                            parent_manifest_digest=parent_manifest_digest,
+                            parent_field="entry_reason_codes",
+                        ),
                     ),
                     "exit_reason_codes": row.get(
-                        "exit_reason_codes", missing_value(reason_code="exit_reason_codes_absent")
+                        "exit_reason_codes",
+                        source_detail_provenance(
+                            reason_code="exit_reason_codes_absent",
+                            parent_manifest_digest=parent_manifest_digest,
+                            parent_field="exit_reason_codes",
+                        ),
                     ),
                     "manifest_ref": parent_manifest_digest,
                 }
@@ -297,17 +489,21 @@ def collect_trade_ledger_per_trade_records(
             }
         else:
             records.append(
-                _trade_ledger_missing_record(
+                _trade_ledger_aggregate_provenance_record(
                     candidate=candidate,
                     instrument_id=instrument_id,
                     parent_manifest_digest=parent_manifest_digest,
+                    candidate_result=candidate_result,
+                    metrics=sources["metrics"],
                 )
             )
             per_candidate_status[candidate] = {
                 "source": None,
                 "records_materialized": 1,
-                "detail": missing_value(
-                    reason_code="trade_ledger_per_trade_decomposition_not_in_parent"
+                "detail": source_detail_provenance(
+                    reason_code="trade_ledger_per_trade_decomposition_not_in_parent",
+                    parent_manifest_digest=parent_manifest_digest,
+                    parent_field="TRADE_LEDGER_V1.jsonl",
                 ),
             }
 
@@ -339,28 +535,79 @@ def collect_long_short_attribution_records(
         viability = sources["viability"]
         metrics = sources["metrics"]
         instrument_id = viability.get("instrument_id_or_universe", INCONCLUSIVE)
+        scalar_fallbacks = (candidate_result, metrics)
         for side in ("long", "short"):
-            side_contrib_key = f"{side}_contribution"
             records.append(
                 {
                     "strategy_id": candidate,
                     "strategy_version": STRATEGY_VERSION,
                     "instrument_id": instrument_id,
                     "side": side,
-                    "trade_count": metric_value(metrics, "trade_count"),
+                    "trade_count": metric_value(
+                        metrics,
+                        "trade_count",
+                        parent_manifest_digest=parent_manifest_digest,
+                        scalar_fallbacks=scalar_fallbacks,
+                    ),
                     "gross_return": candidate_result.get(
-                        "gross_return", missing_value(reason_code="gross_return_absent")
+                        "gross_return",
+                        source_detail_provenance(
+                            reason_code="gross_return_absent",
+                            parent_manifest_digest=parent_manifest_digest,
+                            parent_field="gross_return",
+                        ),
                     ),
                     "net_return": candidate_result.get(
-                        "net_return", missing_value(reason_code="net_return_absent")
+                        "net_return",
+                        source_detail_provenance(
+                            reason_code="net_return_absent",
+                            parent_manifest_digest=parent_manifest_digest,
+                            parent_field="net_return",
+                        ),
                     ),
-                    "profit_factor": metric_value(metrics, "profit_factor"),
-                    "expectancy": metric_value(metrics, "expectancy"),
-                    "max_drawdown": metric_value(metrics, "max_drawdown"),
-                    "turnover": metric_value(viability, "turnover"),
-                    "fee_drag": metric_value(viability, "fee_drag"),
-                    "slippage_impact": metric_value(viability, "slippage_impact"),
-                    "funding_drag": metric_value(viability, "funding_drag"),
+                    "profit_factor": metric_value(
+                        metrics,
+                        "profit_factor",
+                        parent_manifest_digest=parent_manifest_digest,
+                        scalar_fallbacks=scalar_fallbacks,
+                    ),
+                    "expectancy": metric_value(
+                        metrics,
+                        "expectancy",
+                        parent_manifest_digest=parent_manifest_digest,
+                        scalar_fallbacks=scalar_fallbacks,
+                        scalar_fallback_keys=("net_expectancy", "expectancy"),
+                    ),
+                    "max_drawdown": metric_value(
+                        metrics,
+                        "max_drawdown",
+                        parent_manifest_digest=parent_manifest_digest,
+                        scalar_fallbacks=scalar_fallbacks,
+                    ),
+                    "turnover": metric_value(
+                        viability,
+                        "turnover",
+                        parent_manifest_digest=parent_manifest_digest,
+                        scalar_fallbacks=scalar_fallbacks,
+                    ),
+                    "fee_drag": metric_value(
+                        viability,
+                        "fee_drag",
+                        parent_manifest_digest=parent_manifest_digest,
+                        scalar_fallbacks=scalar_fallbacks,
+                    ),
+                    "slippage_impact": metric_value(
+                        viability,
+                        "slippage_impact",
+                        parent_manifest_digest=parent_manifest_digest,
+                        scalar_fallbacks=scalar_fallbacks,
+                    ),
+                    "funding_drag": metric_value(
+                        viability,
+                        "funding_drag",
+                        parent_manifest_digest=parent_manifest_digest,
+                        scalar_fallbacks=scalar_fallbacks,
+                    ),
                     "manifest_ref": parent_manifest_digest,
                 }
             )
@@ -391,10 +638,15 @@ def collect_turnover_cost_drag_timeseries_records(
         instrument_id = viability.get("instrument_id_or_universe", INCONCLUSIVE)
         gross = candidate_result.get("gross_return")
         net = candidate_result.get("net_return")
+        scalar_fallbacks = (candidate_result, metrics)
         net_return_contribution = (
             float(net) - float(gross)
             if isinstance(gross, (int, float)) and isinstance(net, (int, float))
-            else missing_value(reason_code="net_return_contribution_not_computable")
+            else source_detail_provenance(
+                reason_code="net_return_contribution_not_computable",
+                parent_manifest_digest=parent_manifest_digest,
+                parent_field="net_return_contribution",
+            )
         )
         records.append(
             {
@@ -404,13 +656,40 @@ def collect_turnover_cost_drag_timeseries_records(
                 "instrument_id": instrument_id,
                 "side": _side_from_candidate(candidate),
                 "position_state": INCONCLUSIVE,
-                "notional_turnover": metric_value(viability, "turnover"),
-                "trade_count": metric_value(metrics, "trade_count"),
-                "fee_cost": metric_value(viability, "fee_drag"),
-                "slippage_cost": metric_value(viability, "slippage_impact"),
-                "funding_cost": metric_value(viability, "funding_drag"),
-                "spread_cost_estimate": missing_value(
-                    reason_code="spread_cost_estimate_not_in_parent"
+                "notional_turnover": metric_value(
+                    viability,
+                    "turnover",
+                    parent_manifest_digest=parent_manifest_digest,
+                    scalar_fallbacks=scalar_fallbacks,
+                ),
+                "trade_count": metric_value(
+                    metrics,
+                    "trade_count",
+                    parent_manifest_digest=parent_manifest_digest,
+                    scalar_fallbacks=scalar_fallbacks,
+                ),
+                "fee_cost": metric_value(
+                    viability,
+                    "fee_drag",
+                    parent_manifest_digest=parent_manifest_digest,
+                    scalar_fallbacks=scalar_fallbacks,
+                ),
+                "slippage_cost": metric_value(
+                    viability,
+                    "slippage_impact",
+                    parent_manifest_digest=parent_manifest_digest,
+                    scalar_fallbacks=scalar_fallbacks,
+                ),
+                "funding_cost": metric_value(
+                    viability,
+                    "funding_drag",
+                    parent_manifest_digest=parent_manifest_digest,
+                    scalar_fallbacks=scalar_fallbacks,
+                ),
+                "spread_cost_estimate": source_detail_provenance(
+                    reason_code="spread_cost_estimate_not_in_parent",
+                    parent_manifest_digest=parent_manifest_digest,
+                    parent_field="spread_cost_estimate",
                 ),
                 "net_return_contribution": net_return_contribution,
                 "manifest_ref": parent_manifest_digest,
@@ -441,32 +720,81 @@ def collect_instrument_concentration_records(
         viability = sources["viability"]
         metrics = sources["metrics"]
         instrument_id = viability.get("instrument_id_or_universe", INCONCLUSIVE)
+        scalar_fallbacks = (candidate_result, metrics)
         records.append(
             {
                 "strategy_id": candidate,
                 "strategy_version": STRATEGY_VERSION,
                 "instrument_id": instrument_id,
-                "trade_count": metric_value(metrics, "trade_count"),
-                "notional_turnover": metric_value(viability, "turnover"),
+                "trade_count": metric_value(
+                    metrics,
+                    "trade_count",
+                    parent_manifest_digest=parent_manifest_digest,
+                    scalar_fallbacks=scalar_fallbacks,
+                ),
+                "notional_turnover": metric_value(
+                    viability,
+                    "turnover",
+                    parent_manifest_digest=parent_manifest_digest,
+                    scalar_fallbacks=scalar_fallbacks,
+                ),
                 "gross_pnl": candidate_result.get(
-                    "gross_return", missing_value(reason_code="gross_pnl_absent")
+                    "gross_return",
+                    source_detail_provenance(
+                        reason_code="gross_pnl_absent",
+                        parent_manifest_digest=parent_manifest_digest,
+                        parent_field="gross_return",
+                    ),
                 ),
                 "net_pnl": candidate_result.get(
-                    "net_return", missing_value(reason_code="net_pnl_absent")
+                    "net_return",
+                    source_detail_provenance(
+                        reason_code="net_pnl_absent",
+                        parent_manifest_digest=parent_manifest_digest,
+                        parent_field="net_return",
+                    ),
                 ),
                 "return_contribution": candidate_result.get(
-                    "net_return", missing_value(reason_code="return_contribution_absent")
+                    "net_return",
+                    source_detail_provenance(
+                        reason_code="return_contribution_absent",
+                        parent_manifest_digest=parent_manifest_digest,
+                        parent_field="net_return",
+                    ),
                 ),
-                "drawdown_contribution": metric_value(metrics, "max_drawdown"),
-                "win_rate": metric_value(metrics, "win_rate"),
-                "loss_rate": metric_value(metrics, "loss_rate"),
-                "largest_trade_contribution": missing_value(
-                    reason_code="largest_trade_contribution_not_in_parent"
+                "drawdown_contribution": metric_value(
+                    metrics,
+                    "max_drawdown",
+                    parent_manifest_digest=parent_manifest_digest,
+                    scalar_fallbacks=scalar_fallbacks,
                 ),
-                "largest_day_contribution": missing_value(
-                    reason_code="largest_day_contribution_not_in_parent"
+                "win_rate": metric_value(
+                    metrics,
+                    "win_rate",
+                    parent_manifest_digest=parent_manifest_digest,
+                    scalar_fallbacks=scalar_fallbacks,
                 ),
-                "regime_ref": missing_value(reason_code="regime_ref_not_in_parent"),
+                "loss_rate": metric_value(
+                    metrics,
+                    "loss_rate",
+                    parent_manifest_digest=parent_manifest_digest,
+                    scalar_fallbacks=scalar_fallbacks,
+                ),
+                "largest_trade_contribution": source_detail_provenance(
+                    reason_code="largest_trade_contribution_not_in_parent",
+                    parent_manifest_digest=parent_manifest_digest,
+                    parent_field="largest_trade_contribution",
+                ),
+                "largest_day_contribution": source_detail_provenance(
+                    reason_code="largest_day_contribution_not_in_parent",
+                    parent_manifest_digest=parent_manifest_digest,
+                    parent_field="largest_day_contribution",
+                ),
+                "regime_ref": source_detail_provenance(
+                    reason_code="regime_ref_not_in_parent",
+                    parent_manifest_digest=parent_manifest_digest,
+                    parent_field="regime_ref",
+                ),
                 "manifest_ref": parent_manifest_digest,
             }
         )

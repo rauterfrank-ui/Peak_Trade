@@ -25,9 +25,12 @@ from src.research.offline_source_evidence_contract_collector_materialization_v0 
     REQUIRED_FIELDS_BY_CONTRACT,
     SCOPE_CLASSIFICATION,
     SCOPE_ID,
+    SOURCE_DETAIL_NOT_BOUND,
     collect_all_contracts,
+    count_records_with_missing_source_sentinel,
     deterministic_collection_digest,
     missing_value,
+    source_detail_provenance,
     validate_record_fields,
 )
 
@@ -278,7 +281,7 @@ class TestOfflineSourceEvidenceContractCollectorMaterializationV0Contract:
                 durable_archive_root=tmp_path / "out_root2",
             )
 
-    def test_long_short_records_include_missing_source_sentinel(
+    def test_long_short_records_use_source_detail_provenance_for_unbound_fields(
         self, synthetic_parent_bundle: Path
     ) -> None:
         result = collect_all_contracts(
@@ -286,7 +289,45 @@ class TestOfflineSourceEvidenceContractCollectorMaterializationV0Contract:
             parent_manifest_digest="digest",
         )
         record = result["contracts"]["LONG_SHORT_ATTRIBUTION_LEDGER_V0"]["records"][0]
-        assert record["turnover"]["status"] == "MISSING_SOURCE_EVIDENCE"
+        turnover = record["turnover"]
+        assert turnover["source_detail_status"] == SOURCE_DETAIL_NOT_BOUND
+        assert turnover["semantic"] == "NOT_COMPUTED"
+        assert "status" not in turnover or turnover.get("status") != "MISSING_SOURCE_EVIDENCE"
+
+    def test_collect_all_contracts_emit_no_missing_source_sentinel_records(
+        self, synthetic_parent_bundle: Path
+    ) -> None:
+        result = collect_all_contracts(
+            parent_evaluation_ref=synthetic_parent_bundle,
+            parent_manifest_digest="digest",
+        )
+        for contract_id in CONTRACT_IDS:
+            records = result["contracts"][contract_id]["records"]
+            assert count_records_with_missing_source_sentinel(records) == 0, contract_id
+
+    @pytest.mark.skipif(
+        not PARENT_EVALUATION_BUNDLE.is_dir(),
+        reason="durable archive parent bundle unavailable",
+    )
+    def test_archive_parent_collector_output_has_no_missing_source_sentinel_records(self) -> None:
+        result = collect_all_contracts(
+            parent_evaluation_ref=PARENT_EVALUATION_BUNDLE,
+            parent_manifest_digest="archive-digest",
+        )
+        for contract_id in CONTRACT_IDS:
+            records = result["contracts"][contract_id]["records"]
+            assert count_records_with_missing_source_sentinel(records) == 0, contract_id
+
+    def test_source_detail_provenance_helper(self) -> None:
+        value = source_detail_provenance(
+            reason_code="example",
+            parent_manifest_digest="abc123",
+            parent_field="turnover",
+        )
+        assert value["source_detail_status"] == SOURCE_DETAIL_NOT_BOUND
+        assert value["parent_manifest_ref"] == "abc123"
+        assert value["parent_field"] == "turnover"
+        assert "status" not in value
 
     def test_missing_value_helper(self) -> None:
         value = missing_value(reason_code="example")
