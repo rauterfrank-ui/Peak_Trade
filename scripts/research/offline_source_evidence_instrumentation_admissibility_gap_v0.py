@@ -4,7 +4,9 @@ import hashlib
 import json
 from pathlib import Path
 
-CONFIG_PATH = Path("config/research/offline_source_evidence_instrumentation_admissibility_gap_v0.json")
+CONFIG_PATH = Path(
+    "config/research/offline_source_evidence_instrumentation_admissibility_gap_v0.json"
+)
 DOC_PATH = Path("docs/governance/OFFLINE_SOURCE_EVIDENCE_INSTRUMENTATION_ADMISSIBILITY_GAP_V0.md")
 
 
@@ -46,7 +48,10 @@ def load_config() -> dict:
 def validate_config(config: dict) -> list[str]:
     errors: list[str] = []
 
-    if config.get("scope_id") != "OFFLINE_SOURCE_EVIDENCE_INSTRUMENTATION_ADMISSIBILITY_GAP_DEFINITION_EXECUTION_V0":
+    if (
+        config.get("scope_id")
+        != "OFFLINE_SOURCE_EVIDENCE_INSTRUMENTATION_ADMISSIBILITY_GAP_DEFINITION_EXECUTION_V0"
+    ):
         errors.append("unexpected scope_id")
 
     contracts = {item.get("contract_id") for item in config.get("source_evidence_contracts", [])}
@@ -96,7 +101,9 @@ def main() -> int:
             print(f"ERROR: {error}")
         return 1
 
-    print("VERDICT=OFFLINE_SOURCE_EVIDENCE_INSTRUMENTATION_ADMISSIBILITY_GAP_DEFINITION_EXECUTED_V0")
+    print(
+        "VERDICT=OFFLINE_SOURCE_EVIDENCE_INSTRUMENTATION_ADMISSIBILITY_GAP_DEFINITION_EXECUTED_V0"
+    )
     print(f"CONFIG_SHA256={sha256_path(CONFIG_PATH)}")
     print(f"DOC_SHA256={sha256_path(DOC_PATH)}")
     print(f"NEXT_STEP={config['next_step']}")

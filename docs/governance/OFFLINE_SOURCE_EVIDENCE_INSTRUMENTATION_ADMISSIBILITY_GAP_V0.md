@@ -43,7 +43,7 @@ This scope defines four admissibility contracts for future source evidence:
 3. `TURNOVER_COST_DRAG_TIMESERIES_V0`
 4. `INSTRUMENT_CONCENTRATION_DETAIL_V0`
 
-These contracts are future evidence requirements. They do not execute a new economic evaluation.
+These contracts are future evidence requirements. This scope does not execute a new economic evaluation.
 
 ## Admissibility Rule
 
