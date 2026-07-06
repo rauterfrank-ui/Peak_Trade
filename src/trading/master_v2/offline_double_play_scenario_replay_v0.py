@@ -52,7 +52,9 @@ from trading.master_v2.double_play_capital_slot import (
 from trading.master_v2.double_play_composition import (
     DoublePlayCompositionInput,
     RequestedSide,
-    compose_double_play_decision,
+)
+from trading.master_v2.double_play_composition_scenario_matrix_adapter_v0 import (
+    compose_double_play_scenario_via_canonical_matrix_v0,
 )
 from trading.master_v2.double_play_dashboard_display import (
     DoublePlayDashboardDisplaySnapshot,
@@ -766,7 +768,7 @@ def run_offline_double_play_scenario_replay_v0(
             capital_state = replace(capital_state, active_slot_base=ratchet.new_active_slot_base)
         release = evaluate_capital_slot_release(_capital_config(), capital_state)
 
-        composition = compose_double_play_decision(
+        composition = compose_double_play_scenario_via_canonical_matrix_v0(
             DoublePlayCompositionInput(
                 transition=transition,
                 resulting_side_state=side,
@@ -775,7 +777,10 @@ def run_offline_double_play_scenario_replay_v0(
                 requested_side=_requested_side(side),
                 capital_slot_ratchet_decision=ratchet,
                 capital_slot_release_decision=release,
-            )
+            ),
+            instrument_id=inp.selected_future_id,
+            trading_epoch=tick.tick_index,
+            context_reference=f"{inp.correlation_id_prefix}-tick-{tick.tick_index}",
         )
 
         final_dashboard_display_snapshot = build_dashboard_display_snapshot(
