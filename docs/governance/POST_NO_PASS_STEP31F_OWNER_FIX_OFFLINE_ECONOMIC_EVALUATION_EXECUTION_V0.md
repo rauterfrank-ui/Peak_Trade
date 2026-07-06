@@ -45,9 +45,9 @@ SCHEDULER_RUNTIME_ALLOWED: false
 
 | Kandidat | Economic Verdict | Sparse-Signal Density | Economic Metrics |
 |---|---|---|---|
-| `trend_following/v3` | `ROBUSTNESS_FAILED` | `NOT ZERO_TRADE` — 118/118 instruments with trades, max 53 | materialized (`net_return`, `sharpe`, `walk_forward_results`, …) |
-| `bollinger_bands/v3` | `ROBUSTNESS_FAILED` | `NOT ZERO_TRADE` — 93/118 instruments with trades, max 4 | materialized |
-| `momentum_1h/v3` | `ROBUSTNESS_FAILED` | `NOT ZERO_TRADE` — 117/118 instruments with trades, max 94 | materialized |
+| `trend_following&#47;v3` | `ROBUSTNESS_FAILED` | `NOT ZERO_TRADE` — 118/118 instruments with trades, max 53 | materialized (`net_return`, `sharpe`, `walk_forward_results`, …) |
+| `bollinger_bands&#47;v3` | `ROBUSTNESS_FAILED` | `NOT ZERO_TRADE` — 93/118 instruments with trades, max 4 | materialized |
+| `momentum_1h&#47;v3` | `ROBUSTNESS_FAILED` | `NOT ZERO_TRADE` — 117/118 instruments with trades, max 94 | materialized |
 
 STEP31F owner fix unblocked evaluator invocation. Full offline economic evaluation completed for all v3 path-activation bindings. Promotion metrics materialized through the fixed execution owner path. Fleet-level economic validity gate remains fail-closed (`ROBUSTNESS_FAILED`).
 
