@@ -121,9 +121,9 @@ Fleet-level axis outcomes aus manifest-verifiziertem PR4907-Evidence-Bundle (`MA
 
 | Kandidat | Verdict | Trades | Net Return | Profit Factor |
 |---|---|---:|---:|---:|
-| `trend_following/post_v4_hypothesis_v0` | `ROBUSTNESS_FAILED` | 219 | -0.002398 | 0.951 |
-| `bollinger_bands/post_v4_hypothesis_v0` | `ROBUSTNESS_FAILED` | 0 | 0.0 | 0.0 |
-| `momentum_1h/post_v4_hypothesis_v0` | `ROBUSTNESS_FAILED` | 2 | -0.001889 | 0.285 |
+| `trend_following&#47;post_v4_hypothesis_v0` | `ROBUSTNESS_FAILED` | 219 | -0.002398 | 0.951 |
+| `bollinger_bands&#47;post_v4_hypothesis_v0` | `ROBUSTNESS_FAILED` | 0 | 0.0 | 0.0 |
+| `momentum_1h&#47;post_v4_hypothesis_v0` | `ROBUSTNESS_FAILED` | 2 | -0.001889 | 0.285 |
 
 **Refutierte Failure-Hypothesen (kein Retry-Pfad):**
 
@@ -155,7 +155,7 @@ Fleet-level axis outcomes aus manifest-verifiziertem PR4907-Evidence-Bundle (`MA
 | `ADMISSIBLE_EVIDENCE_CLASSES` | `TRADE_LEDGER_LONG_SHORT_DECOMPOSITION_OFFLINE_ARTIFACT_V0`, `TURNOVER_COST_DRAG_DECOMPOSITION_OFFLINE_ARTIFACT_V0`, `INSTRUMENT_CONCENTRATION_DECOMPOSITION_OFFLINE_ARTIFACT_V0` |
 | `REUSE_OWNER` | `scripts/ops/primary_evidence_retention_v0.py`, PR4906 evidence execution runner pattern |
 | `EVIDENCE_ARTEFAKTE` | Missing-artifact decomposition reports, Admissibility-Matrix, Manifest |
-| `PASS/FAIL/INCONCLUSIVE` | PASS = artifact materialized; FAIL = unmapped axis; INCONCLUSIVE = insufficient source only |
+| `PASS&#47;FAIL&#47;INCONCLUSIVE` | PASS = artifact materialized; FAIL = unmapped axis; INCONCLUSIVE = insufficient source only |
 | `AUTHORITY_GRENZEN` | Keine Runtime/Promotion/Evaluation-Authority |
 | `SEPARATES_EXECUTION_GO` | `GO_OPERATOR_RATIFY_NEXT_OFFLINE_ONLY_ARTIFACT_MATERIALIZATION_OR_EVIDENCE_CLASS_EXECUTION_SCOPE_AFTER_POST_PR4907_TERMINAL_FAILURE_SCOPE_DEFINITION_V0` |
 
@@ -222,9 +222,9 @@ Fleet-level axis outcomes aus manifest-verifiziertem PR4907-Evidence-Bundle (`MA
 
 | Familie | Ausschlussgrund |
 |---|---|
-| `trend_following/post_v4_hypothesis_v0` | Terminale `ROBUSTNESS_FAILED` Evidence |
-| `bollinger_bands/post_v4_hypothesis_v0` | Terminale `ROBUSTNESS_FAILED` Evidence |
-| `momentum_1h/post_v4_hypothesis_v0` | Terminale `ROBUSTNESS_FAILED` Evidence |
+| `trend_following&#47;post_v4_hypothesis_v0` | Terminale `ROBUSTNESS_FAILED` Evidence |
+| `bollinger_bands&#47;post_v4_hypothesis_v0` | Terminale `ROBUSTNESS_FAILED` Evidence |
+| `momentum_1h&#47;post_v4_hypothesis_v0` | Terminale `ROBUSTNESS_FAILED` Evidence |
 | Near-duplicate Breakout/Mean-Reversion archetype | `NEAR_DUPLICATE_BREAKOUT_MEAN_REVERSION_RETRY_ALLOWED=false` |
 | Unveränderte post_v4_hypothesis_v0 binding retry | PR4907 bestätigt terminal fail; kein unveränderter Retry zulässig |
 
