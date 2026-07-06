@@ -25,14 +25,17 @@ MatrixStatus = Literal[
     "UNKNOWN",
 ]
 
-NEXT_RECOMMENDED_SLICE = "RECONCILIATION_UNKNOWN_OUTCOME_OFFLINE_REPLAY_BINDING_PARITY_REWIRE_V0"
+NEXT_RECOMMENDED_SLICE = "KILLSWITCH_BOUNDARY_OFFLINE_REPLAY_BINDING_PARITY_REWIRE_V0"
 
 ALLOWED_SLICE_CHANGED_PATH_PREFIXES: Tuple[str, ...] = (
     "src/trading/master_v2/full_canonical_system_backtest_parity_gap_assessment_v0.py",
     "scripts/ops/run_full_canonical_system_backtest_parity_gap_assessment_v0.py",
     "scripts/ops/run_safety_kernel_offline_replay_binding_parity_rewire_v0.py",
+    "scripts/ops/run_reconciliation_unknown_outcome_offline_replay_binding_parity_rewire_v0.py",
     "tests/trading/master_v2/test_full_canonical_system_backtest_parity_gap_assessment_contract_v0.py",
     "tests/trading/master_v2/test_safety_kernel_offline_replay_binding_parity_rewire_contract_v0.py",
+    "tests/trading/master_v2/test_reconciliation_unknown_outcome_offline_replay_binding_parity_rewire_contract_v0.py",
+    "src/trading/master_v2/reconciliation_unknown_outcome_offline_replay_binding_adapter_v0.py",
     "docs/research/FULL_CANONICAL_SYSTEM_BACKTEST_PARITY_GAP_ASSESSMENT_V0.md",
 )
 
@@ -406,22 +409,29 @@ def parity_surface_assessments_v0() -> Tuple[ParitySurfaceAssessmentV0, ...]:
             surface_name="Reconciliation and Unknown Outcome semantics",
             canonical_owner_files=(
                 "src/trading/master_v2/double_play_entry_exit_policy_v0.py",
-                "src/governance/capital_risk_sizing_v1.py",
+                "src/trading/master_v2/reconciliation_unknown_outcome_offline_replay_binding_adapter_v0.py",
                 "src/meta/learning_loop/runtime_state_reconciliation_v1.py",
             ),
             current_integrated_offline_replay_binding=(
-                "reconciliation_state + PositionState.SUBMISSION_UNKNOWN in entry-exit input"
+                "integrated_offline_trading_logic_replay_v1 ->"
+                " bind_reconciliation_unknown_outcome_offline_replay_evidence_v0()"
             ),
-            current_scenario_replay_binding="NOT bound per tick",
-            current_backtest_binding="Default ReconciliationState.RECONCILED",
+            current_scenario_replay_binding=(
+                "offline_double_play_scenario_replay_v0 ->"
+                " evaluate_scenario_reconciliation_unknown_outcome_v0() per tick"
+            ),
+            current_backtest_binding=(
+                "Default ReconciliationState.RECONCILED via integrated input;"
+                " reconciliation boundary bound offline"
+            ),
             current_runtime_semantics_reference="src/ops/recon/reconcile.py",
-            parity_status="PARTIAL",
+            parity_status="PASS",
             evidence_refs=(
                 "tests/trading/master_v2/test_double_play_entry_exit_policy_v0.py",
-                "tests/governance/test_canonical_order_intent_v1.py",
+                "tests/trading/master_v2/test_reconciliation_unknown_outcome_offline_replay_binding_parity_rewire_contract_v0.py",
             ),
             missing_binding_if_any=(
-                "Scenario replay reconciliation/unknown-outcome fixtures + parity tests"
+                "Backtest wiring explicit reconciliation fixtures (out of offline scope)"
             ),
             recommended_next_slice=NEXT_RECOMMENDED_SLICE,
         ),

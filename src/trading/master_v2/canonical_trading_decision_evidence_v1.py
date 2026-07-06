@@ -23,6 +23,7 @@ _ORDER_EFFECT_NONE = "NONE"
 _RISK_EFFECT_NONE = "NONE"
 _ORDER_INTENT_EFFECT_NONE = "NONE"
 _SAFETY_BOUNDARY_EFFECT_NONE = "NONE"
+_RECONCILIATION_UNKNOWN_OUTCOME_EFFECT_NONE = "NONE"
 _QUANTITY_STATUS_NOT_BOUND = "NOT_BOUND"
 
 
@@ -90,6 +91,8 @@ class CanonicalTradingDecisionEvidenceV1:
     order_intent_effect: str = _ORDER_INTENT_EFFECT_NONE
     safety_boundary_ref: str = ""
     safety_boundary_effect: str = _SAFETY_BOUNDARY_EFFECT_NONE
+    reconciliation_unknown_outcome_ref: str = ""
+    reconciliation_unknown_outcome_effect: str = _RECONCILIATION_UNKNOWN_OUTCOME_EFFECT_NONE
 
     def __post_init__(self) -> None:
         if self.semantic_digest and not _valid_sha256_hex(self.semantic_digest):
@@ -146,6 +149,8 @@ def serialize_canonical_trading_decision_evidence_canonical(
         "risk_sizing_effect": evidence.risk_sizing_effect,
         "risk_sizing_ref": evidence.risk_sizing_ref,
         "runtime_effect": evidence.runtime_effect,
+        "reconciliation_unknown_outcome_effect": evidence.reconciliation_unknown_outcome_effect,
+        "reconciliation_unknown_outcome_ref": evidence.reconciliation_unknown_outcome_ref,
         "safety_boundary_effect": evidence.safety_boundary_effect,
         "safety_boundary_ref": evidence.safety_boundary_ref,
         "scope_event_ref": evidence.scope_event_ref,
@@ -217,6 +222,8 @@ def finalize_offline_replay_decision_evidence_v1(
         order_intent_effect=evidence.order_intent_effect,
         safety_boundary_ref=evidence.safety_boundary_ref,
         safety_boundary_effect=evidence.safety_boundary_effect,
+        reconciliation_unknown_outcome_ref=evidence.reconciliation_unknown_outcome_ref,
+        reconciliation_unknown_outcome_effect=evidence.reconciliation_unknown_outcome_effect,
     )
 
 
@@ -271,6 +278,8 @@ def with_computed_evidence_semantic_digest(
             order_intent_effect=_ORDER_INTENT_EFFECT_NONE,
             safety_boundary_ref="",
             safety_boundary_effect=_SAFETY_BOUNDARY_EFFECT_NONE,
+            reconciliation_unknown_outcome_ref="",
+            reconciliation_unknown_outcome_effect=_RECONCILIATION_UNKNOWN_OUTCOME_EFFECT_NONE,
         )
     )
 
