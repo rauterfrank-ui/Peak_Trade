@@ -10,6 +10,8 @@ from pathlib import Path
 
 import pytest
 
+pytest_plugins = ["tests.meta.comparison_metric_input_v1_fixtures"]
+
 from scripts.run_comparison_metric_input_v1 import build_parser, main
 from src.meta.learning_loop.comparison_metric_input_v1.constants import ARTIFACT_FILENAME
 from tests.meta.comparison_metric_input_v1_fixtures import (

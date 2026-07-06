@@ -6,6 +6,8 @@ import json
 
 import pytest
 
+pytest_plugins = ["tests.meta.comparison_metric_input_v1_fixtures"]
+
 from src.meta.learning_loop.comparison_metric_input_v1.adapters.backtest import (
     adapt_backtest_domain,
 )

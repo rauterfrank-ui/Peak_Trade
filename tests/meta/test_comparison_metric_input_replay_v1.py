@@ -2,6 +2,8 @@
 
 from __future__ import annotations
 
+pytest_plugins = ["tests.meta.comparison_metric_input_v1_fixtures"]
+
 import json
 
 from src.meta.learning_loop.comparison_metric_input_v1.io import read_manifest, serialize_manifest
