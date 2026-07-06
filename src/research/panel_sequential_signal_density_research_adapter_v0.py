@@ -37,6 +37,9 @@ from src.research.final_research_fleet_v0_versioned_binding_manifest_contract_v0
 from src.research.post_no_pass_sparse_signal_zero_trade_versioned_binding_completion_v0 import (
     PANEL_STAGING_ROOT,
 )
+from src.research.step31f_promotion_metric_materialization_path_execution_owner_v0 import (
+    bind_step31f_promotion_metric_materialization_dataset_manifest_v0,
+)
 from src.research.versioned_final_fleet_bindings_offline_economic_evaluation_v0 import (
     CONSERVATIVE_HALF_SPREAD_BPS,
     NarrowDatasetMaterializationV0,
@@ -201,52 +204,54 @@ def materialize_panel_member_evaluation_dataset_v0(
         instrument_id=CANONICAL_INSTRUMENT_ID,
         profile_binding=profile_binding,
     )
-    manifest_body: dict[str, Any] = {
-        "acquisition_timestamps": {
-            "ingestion_timestamp_utc": _utc_now_z(),
-            "staging_timestamp_utc": _utc_now_z(),
-        },
-        "adapter_kind": ADAPTER_KIND,
-        "bar_granularity": "1h",
-        "bitcoin_direction_allowed": False,
-        "canonical_instrument_id": CANONICAL_INSTRUMENT_ID,
-        "contract_type": "perpetual",
-        "data_period": {"end_utc": str(frame.index[-1]), "start_utc": str(frame.index[0])},
-        "dataset_profile": ds.DatasetProfileV1.ECONOMIC_RESEARCH_V1.value,
-        "dataset_schema_version": ds.DATASET_SCHEMA_VERSION,
-        "dataset_version": ds.DEFAULT_DATASET_VERSION,
-        "execution_cost_binding": {
-            "conservative_half_spread_bps": CONSERVATIVE_HALF_SPREAD_BPS,
-            "execution_price_observation_source": "MODELLED_NOT_OBSERVED",
-            "spread_model_version": "research_conservative_bps_v1",
-        },
-        "fee_model_version": "backtest_fee_taker_symmetric_v0",
-        "funding_model_version": "backtest_funding_perpetual_interval_v1",
-        "futures_only": True,
-        "instrument_id": CANONICAL_INSTRUMENT_ID,
-        "integrity_results": {
-            "dataset_admissible": admissibility.is_admissible(),
-            "integrity_pass": admissibility.is_admissible(),
-            "leakage_check_status": admissibility.leakage_check_status,
-        },
-        "native_instrument_id": NATIVE_INSTRUMENT_ID,
-        "normalized_dataset_digest": dataset_digest,
-        "out_of_sample_period": oos,
-        "panel_source_binding": {
+    manifest_body = bind_step31f_promotion_metric_materialization_dataset_manifest_v0(
+        {
+            "acquisition_timestamps": {
+                "ingestion_timestamp_utc": _utc_now_z(),
+                "staging_timestamp_utc": _utc_now_z(),
+            },
             "adapter_kind": ADAPTER_KIND,
-            "panel_member_instrument_id": instrument_id,
-            "rotation_policy": ROTATION_POLICY,
-            "sequential_rotation": True,
-            "staging_root": str(staging_root),
-        },
-        "profile_binding": profile_binding.to_dict(),
-        "provenance": provenance.to_dict(),
-        "row_count": len(frame),
-        "slippage_model_version": "backtest_slippage_symmetric_v0",
-        "source_venue": SOURCE_VENUE,
-        "training_period": training,
-        "validation_period": validation,
-    }
+            "bar_granularity": "1h",
+            "bitcoin_direction_allowed": False,
+            "canonical_instrument_id": CANONICAL_INSTRUMENT_ID,
+            "contract_type": "perpetual",
+            "data_period": {"end_utc": str(frame.index[-1]), "start_utc": str(frame.index[0])},
+            "dataset_profile": ds.DatasetProfileV1.ECONOMIC_RESEARCH_V1.value,
+            "dataset_schema_version": ds.DATASET_SCHEMA_VERSION,
+            "dataset_version": ds.DEFAULT_DATASET_VERSION,
+            "execution_cost_binding": {
+                "conservative_half_spread_bps": CONSERVATIVE_HALF_SPREAD_BPS,
+                "execution_price_observation_source": "MODELLED_NOT_OBSERVED",
+                "spread_model_version": "research_conservative_bps_v1",
+            },
+            "fee_model_version": "backtest_fee_taker_symmetric_v0",
+            "funding_model_version": "backtest_funding_perpetual_interval_v1",
+            "futures_only": True,
+            "instrument_id": CANONICAL_INSTRUMENT_ID,
+            "integrity_results": {
+                "dataset_admissible": admissibility.is_admissible(),
+                "integrity_pass": admissibility.is_admissible(),
+                "leakage_check_status": admissibility.leakage_check_status,
+            },
+            "native_instrument_id": NATIVE_INSTRUMENT_ID,
+            "normalized_dataset_digest": dataset_digest,
+            "out_of_sample_period": oos,
+            "panel_source_binding": {
+                "adapter_kind": ADAPTER_KIND,
+                "panel_member_instrument_id": instrument_id,
+                "rotation_policy": ROTATION_POLICY,
+                "sequential_rotation": True,
+                "staging_root": str(staging_root),
+            },
+            "profile_binding": profile_binding.to_dict(),
+            "provenance": provenance.to_dict(),
+            "row_count": len(frame),
+            "slippage_model_version": "backtest_slippage_symmetric_v0",
+            "source_venue": SOURCE_VENUE,
+            "training_period": training,
+            "validation_period": validation,
+        }
+    )
     manifest_body["manifest_digest"] = _stable_digest(
         {key: value for key, value in manifest_body.items() if key != "manifest_digest"}
     )
