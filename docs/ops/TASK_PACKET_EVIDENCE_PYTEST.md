@@ -30,7 +30,7 @@ git status
 
 ### B) pytest Evidence-Stamp ausführen (tee-sicherer Exitcode)
 
-**Canonical post-merge owner:** `scripts/ops/squash_merge_post_merge_closeout_guard_v0.sh post-merge-validate` (fail-closed `pipefail` + `PIPESTATUS`).
+**Canonical post-merge owner:** `scripts&#47;ops&#47;squash_merge_post_merge_closeout_guard_v0.sh post-merge-validate` (fail-closed `pipefail` + `PIPESTATUS`).
 
 ```bash
 mkdir -p .tmp/evidence

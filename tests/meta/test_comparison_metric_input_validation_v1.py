@@ -6,6 +6,8 @@ import copy
 
 import pytest
 
+pytest_plugins = ["tests.meta.comparison_metric_input_v1_fixtures"]
+
 from src.meta.learning_loop.comparison_metric_input_v1.constants import METRIC_KEYS
 from src.meta.learning_loop.comparison_metric_input_v1.models import ComparisonMetricInputError
 from src.meta.learning_loop.comparison_metric_input_v1.producer import (

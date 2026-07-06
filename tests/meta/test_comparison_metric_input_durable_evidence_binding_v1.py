@@ -9,6 +9,8 @@ from unittest.mock import patch
 
 import pytest
 
+pytest_plugins = ["tests.meta.comparison_metric_input_v1_fixtures"]
+
 from scripts.ops.primary_evidence_retention_v0 import verify_manifest_sha256
 from src.meta.learning_loop.comparison_metric_input_v1.constants import ARTIFACT_FILENAME
 from src.meta.learning_loop.comparison_metric_input_v1.producer import (

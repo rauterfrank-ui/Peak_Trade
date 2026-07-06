@@ -8,6 +8,8 @@ import numpy as np
 import pandas as pd
 import pytest
 
+pytest_plugins = ["tests.meta.comparison_metric_input_v1_fixtures"]
+
 from src.meta.learning_loop.comparison_metric_input_v1.constants import (
     METRIC_KEYS,
     TIE_TOLERANCE_CATALOG,

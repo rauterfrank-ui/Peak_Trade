@@ -7,6 +7,8 @@ import json
 import pandas as pd
 import pytest
 
+pytest_plugins = ["tests.meta.comparison_metric_input_v1_fixtures"]
+
 from src.meta.learning_loop.comparison_metric_input_v1.models import ComparisonMetricInputError
 from src.meta.learning_loop.comparison_metric_input_v1.source_binding import (
     binding_records_to_mapping,

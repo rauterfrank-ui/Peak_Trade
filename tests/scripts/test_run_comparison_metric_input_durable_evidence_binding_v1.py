@@ -7,6 +7,8 @@ from unittest.mock import patch
 
 import pytest
 
+pytest_plugins = ["tests.meta.comparison_metric_input_v1_fixtures"]
+
 from scripts.run_comparison_metric_input_durable_evidence_binding_v1 import (
     EXIT_BINDING_ERROR,
     EXIT_OK,
