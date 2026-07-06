@@ -1,0 +1,147 @@
+{
+  "scope_id": "OFFLINE_SOURCE_EVIDENCE_INSTRUMENTATION_ADMISSIBILITY_GAP_DEFINITION_EXECUTION_V0",
+  "verdict": "OFFLINE_SOURCE_EVIDENCE_INSTRUMENTATION_ADMISSIBILITY_GAP_DEFINITION_EXECUTED_V0",
+  "process_classification": "OFFLINE_ONLY_SOURCE_EVIDENCE_INSTRUMENTATION_OR_ADMISSIBILITY_GAP_DEFINITION_EXECUTION_SCOPE_V0",
+  "scope_classification": "SOURCE_EVIDENCE_CONTRACT_AND_ADMISSIBILITY_DEFINITION_ONLY_NO_ECONOMIC_EVALUATION_NO_RUNTIME_AUTHORITY",
+  "go_token_consumption": {
+    "token": "GO_OPERATOR_RATIFY_NEXT_OFFLINE_ONLY_SOURCE_EVIDENCE_INSTRUMENTATION_OR_ADMISSIBILITY_GAP_DEFINITION_EXECUTION_SCOPE_V0",
+    "status": "CONSUMED_ONCE_FOR_THIS_OFFLINE_ONLY_DEFINITION_EXECUTION_SCOPE"
+  },
+  "base_head": "6e756333fc0705d46598a2d77ea646f95232ff48",
+  "parent_evidence": {
+    "pr4910_scope_definition_merge_closeout_dir": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_pr4909_terminal_failure_next_evidence_scope_definition_merge_closeout_20260706T052749Z",
+    "pr4909_artifact_materialization_merge_closeout_dir": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/pr4909_squash_merge_closeout_20260706T051959Z",
+    "pr4909_materialization_bundle": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/post_pr4908_offline_terminal_failure_artifact_materialization_v0_20260706T051227Z"
+  },
+  "source_evidence_contracts": [
+    {
+      "contract_id": "TRADE_LEDGER_PER_TRADE_DECOMPOSITION_V0",
+      "required_fields": [
+        "trade_id",
+        "strategy_id",
+        "strategy_version",
+        "instrument_id",
+        "side",
+        "entry_time",
+        "exit_time",
+        "entry_price",
+        "exit_price",
+        "quantity",
+        "gross_pnl",
+        "fee_cost",
+        "slippage_cost",
+        "funding_cost",
+        "net_pnl",
+        "holding_period_seconds",
+        "entry_reason_codes",
+        "exit_reason_codes",
+        "manifest_ref"
+      ],
+      "admissibility_status": "REQUIRED_FOR_FUTURE_TERMINAL_FAILURE_DECOMPOSITION"
+    },
+    {
+      "contract_id": "LONG_SHORT_ATTRIBUTION_LEDGER_V0",
+      "required_fields": [
+        "strategy_id",
+        "strategy_version",
+        "instrument_id",
+        "side",
+        "trade_count",
+        "gross_return",
+        "net_return",
+        "profit_factor",
+        "expectancy",
+        "max_drawdown",
+        "turnover",
+        "fee_drag",
+        "slippage_impact",
+        "funding_drag",
+        "manifest_ref"
+      ],
+      "admissibility_status": "REQUIRED_FOR_FUTURE_LONG_SHORT_FAILURE_ATTRIBUTION"
+    },
+    {
+      "contract_id": "TURNOVER_COST_DRAG_TIMESERIES_V0",
+      "required_fields": [
+        "timestamp",
+        "strategy_id",
+        "strategy_version",
+        "instrument_id",
+        "side",
+        "position_state",
+        "notional_turnover",
+        "trade_count",
+        "fee_cost",
+        "slippage_cost",
+        "funding_cost",
+        "spread_cost_estimate",
+        "net_return_contribution",
+        "manifest_ref"
+      ],
+      "admissibility_status": "REQUIRED_FOR_FUTURE_COST_DRAG_DECOMPOSITION"
+    },
+    {
+      "contract_id": "INSTRUMENT_CONCENTRATION_DETAIL_V0",
+      "required_fields": [
+        "strategy_id",
+        "strategy_version",
+        "instrument_id",
+        "trade_count",
+        "notional_turnover",
+        "gross_pnl",
+        "net_pnl",
+        "return_contribution",
+        "drawdown_contribution",
+        "win_rate",
+        "loss_rate",
+        "largest_trade_contribution",
+        "largest_day_contribution",
+        "regime_ref",
+        "manifest_ref"
+      ],
+      "admissibility_status": "REQUIRED_FOR_FUTURE_CONCENTRATION_DECOMPOSITION"
+    }
+  ],
+  "future_evaluation_admissibility_requirements": {
+    "economic_claim_requires_all_contracts_present": true,
+    "missing_contract_blocks_promotion_claim": true,
+    "missing_contract_does_not_reclassify_historical_terminal_failure": true,
+    "failed_evidence_is_terminal": true,
+    "manifest_sha256_required": true,
+    "config_digest_required": true,
+    "implementation_digest_required": true,
+    "data_digest_required": true
+  },
+  "explicitly_not_authorized": [
+    "economic_evaluation_execution",
+    "binding_retry",
+    "parameter_optimization",
+    "threshold_lowering",
+    "historical_failure_reclassification",
+    "runtime_rewire",
+    "shadow",
+    "paper",
+    "testnet",
+    "scheduler",
+    "adapter_submission",
+    "orders",
+    "credentials",
+    "arming",
+    "canary",
+    "live"
+  ],
+  "authority_flags": {
+    "core_system_mutation_allowed": false,
+    "canonical_trading_logic_mutation_allowed": false,
+    "master_v2_mutation_allowed": false,
+    "double_play_mutation_allowed": false,
+    "risk_sizing_mutation_allowed": false,
+    "safety_runtime_mutation_allowed": false,
+    "economic_evaluation_authorized": false,
+    "runtime_authority": false,
+    "orders_allowed": false,
+    "scheduler_runtime_allowed": false,
+    "live_authorized": false
+  },
+  "next_step": "GO_OPERATOR_RATIFY_NEXT_OFFLINE_ONLY_SOURCE_EVIDENCE_CONTRACT_IMPLEMENTATION_OR_COLLECTOR_MATERIALIZATION_SCOPE_V0"
+}
