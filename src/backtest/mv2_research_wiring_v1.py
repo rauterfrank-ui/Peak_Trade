@@ -152,6 +152,13 @@ from src.trading.master_v2.reconciliation_boundary_backtest_state_file_binding_a
     bind_reconciliation_boundary_backtest_state_file_evidence_v0,
     load_reconciliation_backtest_state_file_record_v0,
 )
+from src.trading.master_v2.capital_risk_sizing_boundary_backtest_state_file_binding_adapter_v0 import (
+    CapitalRiskSizingBacktestStateFileRecordV0,
+    CapitalRiskSizingBoundaryBacktestStateFileEvidenceV0,
+    apply_backtest_capital_risk_sizing_exposure_gate_v0,
+    bind_capital_risk_sizing_boundary_backtest_state_file_evidence_v0,
+    load_capital_risk_sizing_backtest_state_file_record_v0,
+)
 
 MV2_RESEARCH_WIRING_LAYER_VERSION = "v1"
 MV2_RESEARCH_WIRING_OWNER = "backtest.mv2_research_wiring_v1"
@@ -207,6 +214,16 @@ class ReconciliationBacktestStateFileBindingConfigV1:
 
 
 @dataclass(frozen=True)
+class CapitalRiskSizingBacktestStateFileBindingConfigV1:
+    """Optional backtest capital/risk/sizing state-file binding — offline evidence only."""
+
+    state_file_path: Path | None = None
+    state_file_record: CapitalRiskSizingBacktestStateFileRecordV0 | None = None
+    expected_state_file_digest_ref: str = ""
+    require_state_file: bool = False
+
+
+@dataclass(frozen=True)
 class MV2ReplayBarOutcomeV1:
     trading_epoch: int
     context: CanonicalMarketContextV1
@@ -221,6 +238,9 @@ class MV2ReplayBarOutcomeV1:
     ) = None
     reconciliation_backtest_state_file_evidence: (
         ReconciliationBoundaryBacktestStateFileEvidenceV0 | None
+    ) = None
+    capital_risk_sizing_backtest_state_file_evidence: (
+        CapitalRiskSizingBoundaryBacktestStateFileEvidenceV0 | None
     ) = None
 
 
@@ -838,6 +858,33 @@ def _resolve_reconciliation_backtest_state_file_record_v1(
     return None
 
 
+def _resolve_capital_risk_sizing_backtest_state_file_record_v1(
+    binding: CapitalRiskSizingBacktestStateFileBindingConfigV1 | None,
+) -> CapitalRiskSizingBacktestStateFileRecordV0 | None:
+    if binding is None:
+        return None
+    if binding.state_file_record is not None:
+        record = binding.state_file_record
+        if binding.expected_state_file_digest_ref:
+            from src.trading.master_v2.capital_risk_sizing_boundary_backtest_state_file_binding_adapter_v0 import (
+                verify_capital_risk_sizing_backtest_state_file_digest_v0,
+            )
+
+            verify_capital_risk_sizing_backtest_state_file_digest_v0(
+                record,
+                expected_digest_ref=binding.expected_state_file_digest_ref,
+            )
+        return record
+    if binding.state_file_path is not None:
+        return load_capital_risk_sizing_backtest_state_file_record_v0(
+            binding.state_file_path,
+            expected_digest_ref=binding.expected_state_file_digest_ref,
+        )
+    if binding.require_state_file:
+        raise ValueError("capital_risk_sizing_backtest_state_file_missing")
+    return None
+
+
 def _resolve_killswitch_backtest_state_file_record_v1(
     binding: KillSwitchBacktestStateFileBindingConfigV1 | None,
 ) -> KillSwitchBacktestStateFileRecordV0 | None:
@@ -882,6 +929,9 @@ def run_mv2_research_backtest_wiring_v1(
     profile_binding: Optional[DatasetProfileBindingV1] = None,
     killswitch_state_file_binding: KillSwitchBacktestStateFileBindingConfigV1 | None = None,
     reconciliation_state_file_binding: ReconciliationBacktestStateFileBindingConfigV1 | None = None,
+    capital_risk_sizing_state_file_binding: (
+        CapitalRiskSizingBacktestStateFileBindingConfigV1 | None
+    ) = None,
 ) -> MV2ResearchWiringResultV1:
     _fail_closed(bars.empty, "bars_empty")
     _ensure_supported_instrument(instrument_id)
@@ -960,6 +1010,11 @@ def run_mv2_research_backtest_wiring_v1(
     reconciliation_state_file_record = _resolve_reconciliation_backtest_state_file_record_v1(
         reconciliation_state_file_binding
     )
+    capital_risk_sizing_state_file_record = (
+        _resolve_capital_risk_sizing_backtest_state_file_record_v1(
+            capital_risk_sizing_state_file_binding
+        )
+    )
     killswitch_has_existing_position = (
         killswitch_state_file_binding.has_existing_position
         if killswitch_state_file_binding is not None
@@ -1032,6 +1087,20 @@ def run_mv2_research_backtest_wiring_v1(
                 signal,
                 evidence=reconciliation_evidence,
             )
+        capital_risk_sizing_evidence: (
+            CapitalRiskSizingBoundaryBacktestStateFileEvidenceV0 | None
+        ) = None
+        if capital_risk_sizing_state_file_record is not None:
+            capital_risk_sizing_evidence = (
+                bind_capital_risk_sizing_boundary_backtest_state_file_evidence_v0(
+                    replay_result.evidence,
+                    state_file=capital_risk_sizing_state_file_record,
+                )
+            )
+            signal = apply_backtest_capital_risk_sizing_exposure_gate_v0(
+                signal,
+                evidence=capital_risk_sizing_evidence,
+            )
         if context.warmup_status is not WarmupStatus.WARMUP_COMPLETE:
             signal = 0
         outcomes.append(
@@ -1046,6 +1115,7 @@ def run_mv2_research_backtest_wiring_v1(
                 observed_l1_used=observed_l1_used,
                 killswitch_backtest_state_file_evidence=killswitch_evidence,
                 reconciliation_backtest_state_file_evidence=reconciliation_evidence,
+                capital_risk_sizing_backtest_state_file_evidence=capital_risk_sizing_evidence,
             )
         )
         replay_signals.append(signal)

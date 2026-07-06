@@ -58,8 +58,8 @@ def test_gap_assessment_owner_and_surface_count_v0() -> None:
 
 def test_gap_assessment_status_distribution_v0() -> None:
     counts = parity_status_counts_v0()
-    assert counts["PASS"] == 4
-    assert counts["PARTIAL"] >= 6
+    assert counts["PASS"] == 5
+    assert counts["PARTIAL"] >= 5
     assert counts["GAP"] == 0
     assert counts["NOT_APPLICABLE"] >= 2
     assert sum(counts.values()) == 16
@@ -71,10 +71,13 @@ def test_composition_surface_pass_v0() -> None:
     assert composition.missing_binding_if_any == ""
 
 
-def test_capital_risk_sizing_surface_partial_v0() -> None:
+def test_capital_risk_sizing_surface_pass_v0() -> None:
     sizing = next(item for item in parity_surface_assessments_v0() if item.surface_id == "H")
-    assert sizing.parity_status == "PARTIAL"
-    assert sizing.recommended_next_slice == NEXT_RECOMMENDED_SLICE
+    assert sizing.parity_status == "PASS"
+    assert sizing.missing_binding_if_any == ""
+    assert "bind_capital_risk_sizing_boundary_backtest_state_file_evidence_v0" in (
+        sizing.current_backtest_binding
+    )
 
 
 def test_canonical_order_intent_surface_partial_v0() -> None:
