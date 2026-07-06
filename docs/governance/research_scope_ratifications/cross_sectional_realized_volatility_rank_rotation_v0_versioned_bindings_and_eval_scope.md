@@ -1,0 +1,34 @@
+# Realized Volatility Rank Rotation v0 — Versioned Bindings and Offline Evaluation Scope Ratification
+
+VERDICT=CROSS_SECTIONAL_REALIZED_VOLATILITY_RANK_ROTATION_V0_VERSIONED_BINDINGS_AND_OFFLINE_EVAL_SCOPE_RATIFICATION_PASS
+PROCESS_CLASSIFICATION=VERSIONED_BINDINGS_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFICATION_NO_EXECUTION
+SCOPE_CLASSIFICATION=CROSS_SECTIONAL_REALIZED_VOLATILITY_RANK_ROTATION_V0_VERSIONED_BINDINGS_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFICATION_NO_RUNTIME_AUTHORITY_V0
+GO_TOKEN_CONSUMPTION=CONSUMED_ONCE
+
+BASE_HEAD=a099fea8bc49da945cb6a883d8242ec0e0c3139e
+ORIGIN_MAIN=a099fea8bc49da945cb6a883d8242ec0e0c3139e
+WORKTREE_STATUS=?? .python-version
+
+STRATEGY_ID=cross_sectional_realized_volatility_rank_rotation
+STRATEGY_VERSION=v0
+BINDING_STATUS=RATIFIED_FOR_OFFLINE_EVALUATION_SCOPE_ONLY
+
+EVALUATION_EXECUTION_AUTHORIZED=false
+RUNTIME_AUTHORITY_TOUCHED=false
+PROMOTION_GRANTED=false
+
+RATIFIED_BINDINGS:
+- strategy_binding
+- parameter_binding
+- dataset_binding boundary
+- period_binding boundary
+- fee/slippage/funding/execution binding requirements
+- economic_policy_binding requirements
+
+EXCLUDED_FAILED_BINDINGS:
+- trend_following/v1
+- bollinger_bands/v1
+- momentum_1h/v1
+
+NEXT_STEP:
+Separate Operator-GO for bounded offline economic evaluation execution only.

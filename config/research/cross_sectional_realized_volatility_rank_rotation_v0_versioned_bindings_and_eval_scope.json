@@ -1,0 +1,110 @@
+{
+  "allowed_next_execution_after_separate_go": [
+    "OFFLINE_BACKTEST",
+    "WALK_FORWARD",
+    "MONTE_CARLO",
+    "STRESS",
+    "PARAMETER_SENSITIVITY",
+    "ECONOMIC_VIABILITY_EVIDENCE"
+  ],
+  "base_head": "a099fea8bc49da945cb6a883d8242ec0e0c3139e",
+  "binding_status": "RATIFIED_FOR_OFFLINE_EVALUATION_SCOPE_ONLY",
+  "cost_execution_bindings": {
+    "execution_model_binding_required": true,
+    "fee_model_binding_required": true,
+    "funding_model_binding_required": true,
+    "no_implicit_zero_cost_backtest": true,
+    "slippage_model_binding_required": true
+  },
+  "dataset_binding": {
+    "data_digest_required_before_execution": true,
+    "dataset_family": "pit_cross_sectional_non_bitcoin_perpetual_ohlcv_panel",
+    "feature_adapter": "narrow_realized_volatility_feature_adapter",
+    "pit_required": true,
+    "required_fields": [
+      "timestamp",
+      "symbol",
+      "open",
+      "high",
+      "low",
+      "close",
+      "volume"
+    ],
+    "status": "RATIFIED_SCOPE_ONLY_PENDING_EXECUTION_MATERIALIZATION"
+  },
+  "economic_policy_binding": {
+    "max_drawdown_policy_required": true,
+    "monte_carlo_required": true,
+    "net_expectancy_after_costs_required": true,
+    "no_policy_lowering_after_result": true,
+    "profit_factor_threshold_required": true,
+    "stress_required": true,
+    "sufficient_trade_count_required": true,
+    "walk_forward_stability_required": true
+  },
+  "evaluation_execution_authorized": false,
+  "excluded_failed_bindings": [
+    "trend_following/v1",
+    "bollinger_bands/v1",
+    "momentum_1h/v1"
+  ],
+  "forbidden": [
+    "CORE_SYSTEM_CHANGE",
+    "CANONICAL_TRADING_LOGIC_CHANGE",
+    "MASTER_V2_CHANGE",
+    "DOUBLE_PLAY_CHANGE",
+    "RISK_SIZING_CHANGE",
+    "SAFETY_RUNTIME_CHANGE",
+    "RUNTIME_REWIRE",
+    "SHADOW",
+    "PAPER",
+    "TESTNET",
+    "SCHEDULER",
+    "ADAPTER_SUBMISSION",
+    "ORDERS",
+    "CREDENTIALS",
+    "ARMING",
+    "CANARY",
+    "LIVE"
+  ],
+  "go_token_consumption": "CONSUMED_ONCE",
+  "operator": "Frank Rauter",
+  "origin_main": "a099fea8bc49da945cb6a883d8242ec0e0c3139e",
+  "parameter_binding": {
+    "max_active_positions": 1,
+    "min_panel_members": 5,
+    "rank_rebalance_interval_bars": 1,
+    "realized_vol_window_bars": 24,
+    "selection_mode": "single_slot_cross_sectional_extreme_rank",
+    "simultaneous_long_short_exposure_allowed": false,
+    "status": "VERSIONED_DEFAULT_RESEARCH_BINDING",
+    "unchanged_retry_or_threshold_rescue_allowed": false
+  },
+  "period_binding": {
+    "monte_carlo_required": true,
+    "status": "RATIFIED_SCOPE_ONLY_PENDING_EXECUTION_BINDING",
+    "stress_required": true,
+    "train_validation_oos_split_required": true,
+    "walk_forward_required": true
+  },
+  "process_classification": "VERSIONED_BINDINGS_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFICATION_NO_EXECUTION",
+  "promotion_granted": false,
+  "runtime_authority_touched": false,
+  "scope_classification": "CROSS_SECTIONAL_REALIZED_VOLATILITY_RANK_ROTATION_V0_VERSIONED_BINDINGS_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFICATION_NO_RUNTIME_AUTHORITY_V0",
+  "source_scope_merge_head": "a099fea8bc49da945cb6a883d8242ec0e0c3139e",
+  "source_scope_pr": 4942,
+  "strategy_binding": {
+    "bitcoin_direction_allowed": false,
+    "futures_only": true,
+    "long_leg": "lowest_realized_volatility_rank_non_bitcoin_perpetual",
+    "rotation_semantics": "cross_sectional_rank_single_slot_rotation",
+    "short_leg": "highest_realized_volatility_rank_non_bitcoin_perpetual",
+    "signal_family": "realized_volatility_rank",
+    "strategy_id": "cross_sectional_realized_volatility_rank_rotation",
+    "strategy_version": "v0"
+  },
+  "strategy_id": "cross_sectional_realized_volatility_rank_rotation",
+  "strategy_version": "v0",
+  "verdict": "CROSS_SECTIONAL_REALIZED_VOLATILITY_RANK_ROTATION_V0_VERSIONED_BINDINGS_AND_OFFLINE_EVAL_SCOPE_RATIFICATION_PASS",
+  "worktree_status": "?? .python-version"
+}
