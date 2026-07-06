@@ -1,0 +1,52 @@
+{
+  "base_head": "f64ef5eabc30cb39fcd7811c5e22ee8a51df4050",
+  "evaluation_executed": false,
+  "excluded_failed_bindings": [
+    "trend_following/v1",
+    "bollinger_bands/v1",
+    "momentum_1h/v1"
+  ],
+  "go_token_consumption": "CONSUMED_ONCE",
+  "material_difference_axes": [
+    "realized_volatility_rank_signal_family",
+    "volatility_dispersion_rotation",
+    "panel_ohlcv_realized_vol",
+    "cross_sectional_rank_single_slot_rotation",
+    "low_vol_long_high_vol_short",
+    "non_bitcoin_perpetual_panel_vol_rank"
+  ],
+  "next_step": "SEPARATE_OPERATOR_GO_FOR_VERSIONED_BINDINGS_AND_OFFLINE_ECONOMIC_EVALUATION_ONLY_AFTER_SCOPE_RATIFICATION",
+  "no_eval_no_runtime_invariants": {
+    "NO_ADAPTER_SUBMISSION": true,
+    "NO_ARMING": true,
+    "NO_CANARY": true,
+    "NO_CANONICAL_TRADING_LOGIC_CHANGE": true,
+    "NO_CORE_SYSTEM_CHANGE": true,
+    "NO_CREDENTIALS": true,
+    "NO_DOUBLE_PLAY_CHANGE": true,
+    "NO_LIVE": true,
+    "NO_MASTER_V2_CHANGE": true,
+    "NO_ORDERS": true,
+    "NO_PAPER": true,
+    "NO_RISK_SIZING_CHANGE": true,
+    "NO_RUNTIME_REWIRE": true,
+    "NO_SAFETY_RUNTIME_CHANGE": true,
+    "NO_SCHEDULER": true,
+    "NO_SHADOW": true,
+    "NO_TESTNET": true
+  },
+  "operator": "Frank Rauter",
+  "origin_main": "f64ef5eabc30cb39fcd7811c5e22ee8a51df4050",
+  "process_classification": "VERSIONED_OFFLINE_ONLY_RESEARCH_SCOPE_RATIFICATION_NO_EVAL",
+  "promotion_granted": false,
+  "reuse_first_decision": "REUSE_PIT_CROSS_SECTIONAL_PANEL_DATASET_AND_RELATIVE_STRENGTH_RANKING_SEMANTICS_PATTERN_WITH_NARROW_REALIZED_VOL_FEATURE_ADAPTER_ONLY",
+  "runtime_authority_touched": false,
+  "scope_classification": "CROSS_SECTIONAL_REALIZED_VOLATILITY_RANK_ROTATION_V0_RESEARCH_SCOPE_RATIFICATION_NO_EVAL_NO_RUNTIME_AUTHORITY_V0",
+  "selected_next_scope_boundary": "cross_sectional_realized_volatility_rank_rotation/v0",
+  "source_pr": 4941,
+  "source_pr_merge_head": "f64ef5eabc30cb39fcd7811c5e22ee8a51df4050",
+  "strategy_id": "cross_sectional_realized_volatility_rank_rotation",
+  "strategy_version": "v0",
+  "verdict": "CROSS_SECTIONAL_REALIZED_VOLATILITY_RANK_ROTATION_V0_RESEARCH_SCOPE_RATIFICATION_PASS",
+  "worktree_status": "?? .python-version"
+}
