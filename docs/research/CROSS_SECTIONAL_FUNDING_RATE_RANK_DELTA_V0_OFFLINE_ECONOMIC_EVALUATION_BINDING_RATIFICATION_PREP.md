@@ -7,7 +7,7 @@ ORDERS_ALLOWED: false
 SCHEDULER_RUNTIME_ALLOWED: false
 ---
 
-> **Non-authorizing:** Ratifiziert ausschließlich versionierte offline-only Research-Bindings für `cross_sectional_funding_rate_rank_delta/v0` nach terminaler dual_leg_spread/v1-Negative-Evidence und Material-Scope-Definition. Keine Economic Evaluation. Keine Runtime-Authority.
+> **Non-authorizing:** Ratifiziert ausschließlich versionierte offline-only Research-Bindings für `cross_sectional_funding_rate_rank_delta&#47;v0` nach terminaler dual_leg_spread/v1-Negative-Evidence und Material-Scope-Definition. Keine Economic Evaluation. Keine Runtime-Authority.
 
 ## A. Verdict
 
@@ -52,7 +52,7 @@ SCHEDULER_RUNTIME_ALLOWED: false
 
 ## D. Terminal Exclusions
 
-Unchanged retry forbidden for: `cross_sectional_funding_rate_dual_leg_spread/v1`, `cross_sectional_funding_rate_delta_momentum/v0`, `cross_sectional_funding_rate_carry/v0`, `cross_sectional_relative_strength/v0`, v1/v2 fleet, STEP29M/30A surfaces.
+Unchanged retry forbidden for: `cross_sectional_funding_rate_dual_leg_spread&#47;v1`, `cross_sectional_funding_rate_delta_momentum&#47;v0`, `cross_sectional_funding_rate_carry&#47;v0`, `cross_sectional_relative_strength&#47;v0`, v1/v2 fleet, STEP29M/30A surfaces.
 
 ## E. Allowed After Separate Execution GO
 
