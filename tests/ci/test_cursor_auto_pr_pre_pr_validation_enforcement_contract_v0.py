@@ -80,17 +80,30 @@ def test_cursor_auto_pr_workflow_detects_existing_pr_before_pre_pr_enforcement()
     text = _workflow_text()
     detect_idx = text.index("Detect existing open PR for head branch")
     checkout_idx = text.index("Checkout for PRE_PR enforcement")
+    redetect_idx = text.index("Re-detect open PR before PRE_PR enforcement")
     enforce_idx = text.index("Enforce PRE_PR validation (fail-closed)")
     create_idx = text.index("Create PR if missing")
     dispatch_idx = text.index("Dispatch required checks (workflow_dispatch)")
-    assert detect_idx < checkout_idx < enforce_idx < create_idx < dispatch_idx
+    assert detect_idx < checkout_idx < redetect_idx < enforce_idx < create_idx < dispatch_idx
 
 
 def test_cursor_auto_pr_workflow_pre_pr_skipped_when_open_pr_exists() -> None:
     text = _workflow_text()
     assert "id: detect" in text
-    assert "if: steps.detect.outputs.open_pr_exists != 'true'" in text
+    assert "id: redetect" in text
+    assert (
+        "steps.detect.outputs.open_pr_exists != 'true' && steps.redetect.outputs.open_pr_exists != 'true'"
+        in text
+    )
     assert "Skipping PRE_PR enforcement; existing open PR is idempotent no-op." in text
+    assert "push/manual PR create race guard" in text
+    assert "IDEMPOTENT_NOOP: open PR exists before PRE_PR enforcement" in text
+
+
+def test_cursor_auto_pr_workflow_retries_open_pr_lookup_for_push_race() -> None:
+    text = _workflow_text()
+    assert "NO_OPEN_PR attempt" in text
+    assert "maxAttempts = 6" in text
 
 
 def test_cursor_auto_pr_workflow_fail_closed_on_ambiguous_open_pr_lookup() -> None:
