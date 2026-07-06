@@ -6565,6 +6565,42 @@ Post-PR4936 offline-only scope definition after terminal negative evidence for `
 | `AUTHORITY_EFFECT` | `NONE` |
 | `TRADING_EFFECT` | `NONE` |
 
+#### POST_PR4937_FINAL_RESEARCH_FLEET_BINDINGS_AND_OFFLINE_EVALUATION_SCOPE_RATIFICATION_V0
+
+Post-PR4937 offline-only ratification of versioned final research fleet bindings and bounded offline economic evaluation scope for `trend_following`, `bollinger_bands`, `momentum_1h`. No evaluation execution, no runtime authority, no promotion. Prerequisite: PR4937 fleet terminalization `COMPLETE_NO_PASS`.
+
+| Feld | Wert |
+|---|---|
+| `STATUS` | `BINDINGS_AND_SCOPE_RATIFIED_NOT_EVALUATED` |
+| `VERDICT` | `BINDINGS_AND_SCOPE_RATIFIED_NOT_EVALUATED` |
+| `PROCESS_CLASSIFICATION` | `VERSIONED_FINAL_RESEARCH_FLEET_BINDINGS_AND_OFFLINE_EVALUATION_SCOPE_RATIFICATION_NO_EVAL_V0` |
+| `SCOPE_CLASSIFICATION` | `FINAL_RESEARCH_FLEET_BINDINGS_AND_OFFLINE_EVAL_SCOPE_RATIFICATION_NO_EVAL_NO_RUNTIME_AUTHORITY_V0` |
+| `GO_TOKEN` | `GO_RATIFY_VERSIONED_FINAL_RESEARCH_FLEET_BINDINGS_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE_NO_EVAL_NO_RUNTIME_AUTHORITY_V0` |
+| `GO_TOKEN_CONSUMPTION` | `CONSUMED_ONCE_FOR_BINDING_AND_SCOPE_RATIFICATION_ONLY` |
+| `BASE_HEAD` | `720fc100e590fd7ac40edb0fcba0bb63026ae838` |
+| `PR4937_MERGE_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr4937_cross_sectional_funding_research_fleet_complete_no_pass_merge_closeout_20260706T175340Z` |
+| `PR4937_MERGE_CLOSEOUT_MANIFEST_VERIFY_RC` | `0` |
+| `PR4937_FLEET_TERMINALIZATION` | `COMPLETE_NO_PASS` |
+| `FINAL_RESEARCH_FLEET` | `trend_following,bollinger_bands,momentum_1h` |
+| `BINDINGS_RATIFIED` | `true` |
+| `OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFIED` | `true` |
+| `EVALUATION_AUTHORIZED` | `false` |
+| `EVALUATION_EXECUTED` | `false` |
+| `RUNTIME_AUTHORITY_TOUCHED` | `false` |
+| `PROMOTION_GRANTED` | `false` |
+| `THRESHOLD_LOWERING_AUTHORIZED` | `false` |
+| `RESULT_RESCUE_AUTHORIZED` | `false` |
+| `BINDING_COMPLETION_OWNER_REF` | `config/research/final_research_fleet_class_d_versioned_binding_completion_v0.json` |
+| `OFFLINE_EVALUATION_SCOPE_OWNER_REF` | `config/research/final_research_fleet_class_d_offline_economic_evaluation_scope_ratification_v0.json` |
+| `GOVERNANCE_REF` | `docs/governance/FINAL_RESEARCH_FLEET_BINDINGS_AND_OFFLINE_EVALUATION_SCOPE_RATIFICATION_POST_PR4937_V0.md` |
+| `CONFIG_REF` | `config/research/post_pr4937_final_research_fleet_bindings_and_offline_eval_scope_ratification_v0.json` |
+| `NEXT_STEP` | `merge_closeout_after_checks_green_or_separate_offline_evaluation_execution_GO` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `TRADING_EFFECT` | `NONE` |
+
 ---
 
 ## PR #4629 Evidence-Drift (historisch, transparent)
