@@ -231,7 +231,7 @@ def test_parity_gap_assessment_surface_k_backtest_state_file_pass_v0() -> None:
     assert "bind_killswitch_boundary_backtest_state_file_evidence_v0" in (
         killswitch.current_backtest_binding
     )
-    assert NEXT_RECOMMENDED_SLICE == "BACKTEST_CAPITAL_RISK_SIZING_WIRING_V0"
+    assert NEXT_RECOMMENDED_SLICE == "BACKTEST_CANONICAL_ORDER_INTENT_WIRING_V0"
 
 
 def test_mv2_research_wiring_binds_state_file_and_blocks_new_exposure_v0(tmp_path: Path) -> None:

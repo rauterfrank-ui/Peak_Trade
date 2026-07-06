@@ -25,7 +25,7 @@ MatrixStatus = Literal[
     "UNKNOWN",
 ]
 
-NEXT_RECOMMENDED_SLICE = "BACKTEST_CAPITAL_RISK_SIZING_WIRING_V0"
+NEXT_RECOMMENDED_SLICE = "BACKTEST_CANONICAL_ORDER_INTENT_WIRING_V0"
 
 ALLOWED_SLICE_CHANGED_PATH_PREFIXES: Tuple[str, ...] = (
     "src/trading/master_v2/full_canonical_system_backtest_parity_gap_assessment_v0.py",
@@ -46,6 +46,9 @@ ALLOWED_SLICE_CHANGED_PATH_PREFIXES: Tuple[str, ...] = (
     "scripts/ops/run_backtest_reconciliation_state_file_wiring_v0.py",
     "tests/trading/master_v2/test_killswitch_boundary_backtest_state_file_binding_contract_v0.py",
     "tests/trading/master_v2/test_reconciliation_boundary_backtest_state_file_binding_contract_v0.py",
+    "src/trading/master_v2/capital_risk_sizing_boundary_backtest_state_file_binding_adapter_v0.py",
+    "scripts/ops/run_backtest_capital_risk_sizing_wiring_v0.py",
+    "tests/trading/master_v2/test_capital_risk_sizing_boundary_backtest_state_file_binding_contract_v0.py",
     "docs/research/FULL_CANONICAL_SYSTEM_BACKTEST_PARITY_GAP_ASSESSMENT_V0.md",
 )
 
@@ -310,19 +313,22 @@ def parity_surface_assessments_v0() -> Tuple[ParitySurfaceAssessmentV0, ...]:
                 " evaluate_scenario_capital_risk_sizing_v0() per tick"
             ),
             current_backtest_binding=(
-                "No evaluate_capital_risk_sizing_v1 wiring in mv2_research_wiring_v1"
+                "backtest/mv2_research_wiring_v1.run_mv2_research_backtest_wiring_v1"
+                " -> bind_capital_risk_sizing_boundary_backtest_state_file_evidence_v0()"
+                " via capital_risk_sizing_boundary_backtest_state_file_binding_adapter_v0"
             ),
             current_runtime_semantics_reference=(
                 "canonical_core_runtime_integration_intent_pipeline_bridge_v0"
                 " Slice B BOUND_NOT_ACTIVATED"
             ),
-            parity_status="PARTIAL",
+            parity_status="PASS",
             evidence_refs=(
                 "tests/governance/test_capital_risk_sizing_v1.py",
                 "tests/trading/master_v2/test_offline_master_v2_double_play_scenario_replay_binding_contract_v0.py",
                 "tests/trading/master_v2/test_capital_risk_sizing_offline_replay_binding_parity_rewire_contract_v0.py",
+                "tests/trading/master_v2/test_capital_risk_sizing_boundary_backtest_state_file_binding_contract_v0.py",
             ),
-            missing_binding_if_any=("Backtest mv2_research_wiring_v1 unified sizing chain parity"),
+            missing_binding_if_any="",
             recommended_next_slice=NEXT_RECOMMENDED_SLICE,
         ),
         ParitySurfaceAssessmentV0(
