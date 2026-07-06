@@ -22,6 +22,7 @@ _RUNTIME_EFFECT_NONE = "NONE"
 _ORDER_EFFECT_NONE = "NONE"
 _RISK_EFFECT_NONE = "NONE"
 _ORDER_INTENT_EFFECT_NONE = "NONE"
+_SAFETY_BOUNDARY_EFFECT_NONE = "NONE"
 _QUANTITY_STATUS_NOT_BOUND = "NOT_BOUND"
 
 
@@ -87,6 +88,8 @@ class CanonicalTradingDecisionEvidenceV1:
     order_effect: str = _ORDER_EFFECT_NONE
     risk_sizing_effect: str = _RISK_EFFECT_NONE
     order_intent_effect: str = _ORDER_INTENT_EFFECT_NONE
+    safety_boundary_ref: str = ""
+    safety_boundary_effect: str = _SAFETY_BOUNDARY_EFFECT_NONE
 
     def __post_init__(self) -> None:
         if self.semantic_digest and not _valid_sha256_hex(self.semantic_digest):
@@ -143,6 +146,8 @@ def serialize_canonical_trading_decision_evidence_canonical(
         "risk_sizing_effect": evidence.risk_sizing_effect,
         "risk_sizing_ref": evidence.risk_sizing_ref,
         "runtime_effect": evidence.runtime_effect,
+        "safety_boundary_effect": evidence.safety_boundary_effect,
+        "safety_boundary_ref": evidence.safety_boundary_ref,
         "scope_event_ref": evidence.scope_event_ref,
         "scope_initialization_ref": evidence.scope_initialization_ref,
         "selected_side": evidence.selected_side,
@@ -210,6 +215,8 @@ def finalize_offline_replay_decision_evidence_v1(
         order_effect=_ORDER_EFFECT_NONE,
         risk_sizing_effect=evidence.risk_sizing_effect,
         order_intent_effect=evidence.order_intent_effect,
+        safety_boundary_ref=evidence.safety_boundary_ref,
+        safety_boundary_effect=evidence.safety_boundary_effect,
     )
 
 
@@ -262,6 +269,8 @@ def with_computed_evidence_semantic_digest(
             order_effect=_ORDER_EFFECT_NONE,
             risk_sizing_effect=_RISK_EFFECT_NONE,
             order_intent_effect=_ORDER_INTENT_EFFECT_NONE,
+            safety_boundary_ref="",
+            safety_boundary_effect=_SAFETY_BOUNDARY_EFFECT_NONE,
         )
     )
 
