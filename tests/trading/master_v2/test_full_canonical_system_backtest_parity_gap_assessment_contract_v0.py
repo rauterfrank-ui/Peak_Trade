@@ -8,17 +8,23 @@ import subprocess
 import sys
 from pathlib import Path
 
+import json
+
 from trading.master_v2.full_canonical_system_backtest_parity_gap_assessment_v0 import (
     ALLOWED_SLICE_CHANGED_PATH_PREFIXES,
     FULL_CANONICAL_SYSTEM_BACKTEST_PARITY_GAP_ASSESSMENT_OWNER,
     NEXT_RECOMMENDED_SLICE,
+    normalize_matrix_status_v0,
+    parity_gap_records_v0,
     parity_status_counts_v0,
     parity_surface_assessments_v0,
+    render_parity_gap_matrix_json_v0,
     render_parity_gap_matrix_markdown_v0,
     scan_changed_paths_for_forbidden_runtime_v0,
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
+POST_MERGE_GUARD = REPO_ROOT / "scripts/ops/squash_merge_post_merge_closeout_guard_v0.sh"
 
 _SLICE_SOURCE_PATHS = tuple(
     REPO_ROOT / p for p in ALLOWED_SLICE_CHANGED_PATH_PREFIXES if p.endswith(".py")
@@ -85,6 +91,48 @@ def test_gap_matrix_markdown_renders_v0() -> None:
     assert "FULL_CANONICAL_CHAIN_WIRED=false" in md
     assert "Double Play composition" in md
     assert NEXT_RECOMMENDED_SLICE in md
+
+
+def test_gap_matrix_json_machine_readable_v0() -> None:
+    payload = json.loads(render_parity_gap_matrix_json_v0())
+    assert payload["assessment_owner"] == FULL_CANONICAL_SYSTEM_BACKTEST_PARITY_GAP_ASSESSMENT_OWNER
+    assert payload["next_recommended_slice"] == NEXT_RECOMMENDED_SLICE
+    assert len(payload["surfaces"]) == 16
+    assert payload["summary"]["full_canonical_chain_wired"] is False
+    matrix_statuses = {item["matrix_status"] for item in payload["surfaces"]}
+    assert matrix_statuses <= {
+        "PASS",
+        "GAP",
+        "NOT_APPLICABLE_BOUNDARY_ONLY",
+        "BLOCKED",
+        "UNKNOWN",
+    }
+    for record in payload["gap_records"]:
+        assert record["matrix_status"] == "GAP"
+        assert record["missing_binding"]
+        assert record["owner"]
+        assert record["narrow_reuse_first_remediation"] == NEXT_RECOMMENDED_SLICE
+
+
+def test_parity_gap_records_align_with_partial_surfaces_v0() -> None:
+    partial_ids = {
+        item.surface_id
+        for item in parity_surface_assessments_v0()
+        if item.parity_status == "PARTIAL"
+    }
+    gap_record_ids = {record["surface_id"] for record in parity_gap_records_v0()}
+    assert partial_ids == gap_record_ids
+    assert normalize_matrix_status_v0("NOT_APPLICABLE") == "NOT_APPLICABLE_BOUNDARY_ONLY"
+    assert normalize_matrix_status_v0("PASS") == "PASS"
+
+
+def test_pr4951_post_merge_guard_preflight_v0() -> None:
+    assert POST_MERGE_GUARD.is_file()
+    text = POST_MERGE_GUARD.read_text(encoding="utf-8")
+    assert "set -euo pipefail" in text
+    assert "set -o pipefail" in text
+    assert 'return "${PIPESTATUS[0]}"' in text
+    assert "SQUASH_MERGE_POST_MERGE_CLOSEOUT_GUARD_V0=true" in text
 
 
 def test_forbidden_runtime_paths_guard_v0() -> None:

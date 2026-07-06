@@ -7,8 +7,9 @@ Assessment-only. No runtime authority, no economic evaluation, no trading semant
 
 from __future__ import annotations
 
+import json
 from dataclasses import dataclass
-from typing import Literal, Mapping, Sequence, Tuple
+from typing import Any, Literal, Mapping, Sequence, Tuple
 
 FULL_CANONICAL_SYSTEM_BACKTEST_PARITY_GAP_ASSESSMENT_LAYER_VERSION = "v0"
 FULL_CANONICAL_SYSTEM_BACKTEST_PARITY_GAP_ASSESSMENT_OWNER = (
@@ -16,6 +17,13 @@ FULL_CANONICAL_SYSTEM_BACKTEST_PARITY_GAP_ASSESSMENT_OWNER = (
 )
 
 ParityStatus = Literal["PASS", "PARTIAL", "GAP", "NOT_APPLICABLE"]
+MatrixStatus = Literal[
+    "PASS",
+    "GAP",
+    "NOT_APPLICABLE_BOUNDARY_ONLY",
+    "BLOCKED",
+    "UNKNOWN",
+]
 
 NEXT_RECOMMENDED_SLICE = "CANONICAL_ORDER_INTENT_OFFLINE_REPLAY_BINDING_PARITY_REWIRE_V0"
 
@@ -509,6 +517,89 @@ def parity_surface_assessments_v0() -> Tuple[ParitySurfaceAssessmentV0, ...]:
             recommended_next_slice=NEXT_RECOMMENDED_SLICE,
         ),
     )
+
+
+def normalize_matrix_status_v0(parity_status: ParityStatus) -> MatrixStatus:
+    if parity_status == "PASS":
+        return "PASS"
+    if parity_status in ("PARTIAL", "GAP"):
+        return "GAP"
+    if parity_status == "NOT_APPLICABLE":
+        return "NOT_APPLICABLE_BOUNDARY_ONLY"
+    return "UNKNOWN"
+
+
+def parity_gap_records_v0() -> Tuple[Mapping[str, Any], ...]:
+    records: list[Mapping[str, Any]] = []
+    for item in parity_surface_assessments_v0():
+        matrix_status = normalize_matrix_status_v0(item.parity_status)
+        if matrix_status != "GAP":
+            continue
+        records.append(
+            {
+                "surface_id": item.surface_id,
+                "surface_name": item.surface_name,
+                "matrix_status": matrix_status,
+                "parity_status": item.parity_status,
+                "owner": list(item.canonical_owner_files),
+                "current_path": {
+                    "integrated_offline_replay": item.current_integrated_offline_replay_binding,
+                    "scenario_replay": item.current_scenario_replay_binding,
+                    "backtest": item.current_backtest_binding,
+                    "runtime_reference": item.current_runtime_semantics_reference,
+                },
+                "canonical_expected_path": (
+                    "Unified canonical decision-chain binding across Integrated Offline Replay,"
+                    " Scenario Replay, Backtest wiring, and documented Runtime reference"
+                ),
+                "missing_binding": item.missing_binding_if_any,
+                "forbidden_mutation_risk": (
+                    "Trading logic, Master V2 semantics, Double Play semantics,"
+                    " risk/sizing math, Safety Kernel/runtime authority, execution behavior"
+                ),
+                "narrow_reuse_first_remediation": item.recommended_next_slice,
+                "evidence_refs": list(item.evidence_refs),
+            }
+        )
+    return tuple(records)
+
+
+def render_parity_gap_matrix_json_v0() -> str:
+    surfaces = []
+    for item in parity_surface_assessments_v0():
+        surfaces.append(
+            {
+                "surface_id": item.surface_id,
+                "surface_name": item.surface_name,
+                "parity_status": item.parity_status,
+                "matrix_status": normalize_matrix_status_v0(item.parity_status),
+                "canonical_owner_files": list(item.canonical_owner_files),
+                "missing_binding": item.missing_binding_if_any or None,
+                "recommended_next_slice": item.recommended_next_slice,
+                "forbidden_runtime_authority_confirmed": item.forbidden_runtime_authority_confirmed,
+            }
+        )
+    counts = parity_status_counts_v0()
+    gap_records = parity_gap_records_v0()
+    payload = {
+        "assessment_version": FULL_CANONICAL_SYSTEM_BACKTEST_PARITY_GAP_ASSESSMENT_LAYER_VERSION,
+        "assessment_owner": FULL_CANONICAL_SYSTEM_BACKTEST_PARITY_GAP_ASSESSMENT_OWNER,
+        "next_recommended_slice": NEXT_RECOMMENDED_SLICE,
+        "summary": {
+            "parity_surfaces_assessed": len(surfaces),
+            "pass_surfaces": counts["PASS"],
+            "partial_surfaces": counts["PARTIAL"],
+            "gap_surfaces": counts["GAP"],
+            "not_applicable_surfaces": counts["NOT_APPLICABLE"],
+            "matrix_gap_count": len(gap_records),
+            "full_canonical_chain_wired": False,
+            "backtest_runtime_decision_parity_pass": False,
+            "system_economic_evidence_admissible": False,
+        },
+        "surfaces": surfaces,
+        "gap_records": list(gap_records),
+    }
+    return json.dumps(payload, indent=2, sort_keys=True) + "\n"
 
 
 def parity_status_counts_v0() -> Mapping[str, int]:
