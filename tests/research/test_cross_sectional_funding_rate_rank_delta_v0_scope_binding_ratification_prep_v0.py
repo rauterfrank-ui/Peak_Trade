@@ -55,7 +55,8 @@ class TestCrossSectionalFundingRateRankDeltaV0ScopeBindingRatificationPrep:
             "cross_sectional_funding_rate_dual_leg_spread/v1"
             in ratification["terminal_failed_binding_exclusions"]
         )
-        assert ratification["evaluation_infrastructure_ready"] is False
+        assert ratification["evaluation_infrastructure_ready"] is True
+        assert ratification["evaluation_infrastructure_blockers"] == []
 
     def test_governance_doc_exists_and_states_no_eval(self) -> None:
         text = GOVERNANCE_DOC.read_text(encoding="utf-8")

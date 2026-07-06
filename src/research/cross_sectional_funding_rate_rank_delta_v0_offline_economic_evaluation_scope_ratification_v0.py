@@ -18,6 +18,9 @@ from src.research.cross_sectional_funding_rate_rank_delta_ranking_semantics_bind
     ValidationVerdict,
     validate_funding_rate_rank_delta_ranking_semantics_binding_v0,
 )
+from src.research.cross_sectional_funding_rate_rank_delta_v0_offline_economic_evaluation_infrastructure_readiness_v0 import (
+    evaluate_rank_delta_offline_evaluation_infrastructure_readiness_v0,
+)
 from src.research.cross_sectional_funding_rate_rank_delta_v0_versioned_research_binding_v0 import (
     AUTHORITY_EFFECT,
     CONFIG_REL_PATH as VERSIONED_BINDING_CONFIG_REL_PATH,
@@ -66,6 +69,12 @@ FUTURE_HARNESS_BINDING_REF = (
     "src/research/"
     "cross_sectional_funding_rate_rank_delta_v0_offline_economic_evaluation_execution_v0.py"
 )
+RUNNER_BINDING_REF = FUTURE_RUNNER_BINDING_REF
+HARNESS_BINDING_REF = FUTURE_HARNESS_BINDING_REF
+READINESS_BINDING_REF = (
+    "src/research/"
+    "cross_sectional_funding_rate_rank_delta_v0_offline_economic_evaluation_infrastructure_readiness_v0.py"
+)
 PARENT_TERMINAL_SCOPE_BUNDLE = (
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/"
     "dual_leg_spread_v1_terminal_negative_evidence_and_next_material_scope_20260706T145350Z"
@@ -78,7 +87,6 @@ PARENT_DUAL_LEG_SPREAD_V1_EVALUATION_BUNDLE = (
 OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFIED = True
 ECONOMIC_EVALUATION_AUTHORIZED = False
 ECONOMIC_EVALUATION_EXECUTED = False
-EVALUATION_INFRASTRUCTURE_READY = False
 FUTURES_ONLY = True
 BITCOIN_DIRECTION_ALLOWED = False
 
@@ -259,7 +267,7 @@ def materialize_rank_delta_offline_economic_evaluation_scope_ratification_v0(
     required_bindings_matrix = _required_bindings_matrix_v0(envelope)
     all_required_bindings_ratified = _all_required_bindings_ratified_v0(required_bindings_matrix)
 
-    body: dict[str, Any] = {
+    body_without_readiness: dict[str, Any] = {
         "schema_version": SCHEMA_VERSION,
         "ratification_id": RATIFICATION_ID,
         "ratification_version": RATIFICATION_VERSION,
@@ -292,7 +300,9 @@ def materialize_rank_delta_offline_economic_evaluation_scope_ratification_v0(
         "execution_model_binding": envelope["cost_execution_binding"]["execution_model_binding"],
         "future_runner_binding": FUTURE_RUNNER_BINDING_REF,
         "future_harness_binding": FUTURE_HARNESS_BINDING_REF,
-        "evaluation_infrastructure_ready": EVALUATION_INFRASTRUCTURE_READY,
+        "runner_binding": RUNNER_BINDING_REF,
+        "harness_binding": HARNESS_BINDING_REF,
+        "readiness_binding": READINESS_BINDING_REF,
         "material_difference_basis": (
             "cross_sectional_rank_migration_not_level_spread_or_absolute_funding_delta"
         ),
@@ -339,9 +349,20 @@ def materialize_rank_delta_offline_economic_evaluation_scope_ratification_v0(
         "reason_codes": [],
         "canonical_serialization_version": CANONICAL_SERIALIZATION_VERSION,
     }
-    body["ratification_digest"] = _stable_digest(
-        {k: v for k, v in body.items() if k != "ratification_digest"}
+    body_without_readiness["ratification_digest"] = _stable_digest(
+        {k: v for k, v in body_without_readiness.items() if k != "ratification_digest"}
     )
+
+    readiness = evaluate_rank_delta_offline_evaluation_infrastructure_readiness_v0(
+        repo_root=repo_root or Path("."),
+        versioned_binding=envelope,
+        ratification=body_without_readiness,
+    )
+    body = dict(body_without_readiness)
+    body["evaluation_infrastructure_ready"] = readiness.evaluation_infrastructure_ready
+    body["evaluation_infrastructure_blockers"] = list(readiness.blockers)
+    body["runtime_authority"] = readiness.runtime_authority
+    body["evaluation_execution_authorized"] = readiness.evaluation_execution_authorized
     return body
 
 
