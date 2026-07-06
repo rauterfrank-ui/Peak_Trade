@@ -351,7 +351,8 @@ def test_pr4947_gap_assessment_suite_still_passes_v0() -> None:
         test_full_canonical_system_backtest_parity_gap_assessment_contract_v0 as pr4947,
     )
 
-    pr4947.test_entry_exit_is_earliest_gap_recommended_slice_v0()
+    pr4947.test_capital_risk_sizing_surface_partial_v0()
+    pr4947.test_entry_exit_surface_pass_after_pr4948_v0()
     pr4947.test_pr4946_parity_suite_still_passes_v0()
 
 

@@ -53,6 +53,13 @@ from trading.master_v2.double_play_composition import (
     DoublePlayCompositionInput,
     RequestedSide,
 )
+from decimal import Decimal
+
+from trading.master_v2.capital_risk_sizing_offline_replay_binding_adapter_v0 import (
+    DEFAULT_OFFLINE_BINDING_CONFIG_DIGEST,
+    build_scenario_tick_decision_evidence_v0,
+    evaluate_scenario_capital_risk_sizing_v0,
+)
 from trading.master_v2.double_play_composition_scenario_matrix_adapter_v0 import (
     build_scenario_matrix_composition_input_v0,
     compose_double_play_scenario_via_canonical_matrix_v0,
@@ -213,6 +220,12 @@ class OfflineDoublePlayScenarioReplayTickRecordV0:
     entry_exit_decision_outcome: str
     entry_exit_reason_codes: tuple[str, ...]
     entry_exit_decision_precedence_trace: tuple[str, ...]
+    capital_risk_sizing_ref: str
+    quantity_status: str
+    quantity_provenance_ref: str
+    risk_sizing_effect: str
+    sizing_outcome: str
+    sizing_reason_codes: tuple[str, ...]
     decision_id: str
     decision_snapshot: dict[str, Any] | None
     master_v2_decision_digest: str | None
@@ -891,6 +904,30 @@ def run_offline_double_play_scenario_replay_v0(
         )
         all_proof.extend(tick_proof)
 
+        tick_evidence = build_scenario_tick_decision_evidence_v0(
+            decision_id=decision_id,
+            replay_id=f"{inp.correlation_id_prefix}-replay",
+            instrument_id=inp.selected_future_id,
+            trading_epoch=tick.tick_index,
+            composition_result_id=composition_result.composition_id,
+            entry_exit_policy_ref=entry_exit_decision.policy_decision_id,
+            selected_side=composition_result.selected_side.value,
+            decision_outcome=entry_exit_decision.decision_outcome.value,
+            reason_codes=entry_exit_decision.reason_codes,
+            decision_precedence_trace=entry_exit_decision.decision_precedence_trace,
+            config_digest=DEFAULT_OFFLINE_BINDING_CONFIG_DIGEST,
+            implementation_digest="offline-double-play-scenario-replay-v0",
+        )
+        sizing_binding = evaluate_scenario_capital_risk_sizing_v0(
+            tick_evidence,
+            reference_price=Decimal(str(tick.price)),
+        )
+        sizing_decision = sizing_binding.sizing_decision
+        sizing_outcome = (
+            sizing_decision.outcome.value if sizing_decision is not None else "NOT_APPLICABLE"
+        )
+        sizing_reason_codes = sizing_decision.reason_codes if sizing_decision is not None else ()
+
         record = OfflineDoublePlayScenarioReplayTickRecordV0(
             tick_index=tick.tick_index,
             timestamp_ms=tick.timestamp_ms,
@@ -912,6 +949,12 @@ def run_offline_double_play_scenario_replay_v0(
             entry_exit_decision_outcome=entry_exit_decision.decision_outcome.value,
             entry_exit_reason_codes=entry_exit_decision.reason_codes,
             entry_exit_decision_precedence_trace=entry_exit_decision.decision_precedence_trace,
+            capital_risk_sizing_ref=sizing_binding.risk_sizing_ref,
+            quantity_status=sizing_binding.quantity_status,
+            quantity_provenance_ref=sizing_binding.quantity_provenance_ref,
+            risk_sizing_effect=sizing_binding.risk_sizing_effect,
+            sizing_outcome=sizing_outcome,
+            sizing_reason_codes=sizing_reason_codes,
             decision_id=decision_id,
             decision_snapshot=snapshot,
             master_v2_decision_digest=decision_digest,

@@ -605,15 +605,15 @@ def test_boundary_fields_always_negative() -> None:
     dec = result.intermediate.entry_exit_decision if result.intermediate else None
     assert not ev.execution_eligible
     assert not ev.adapter_compatible
-    assert ev.quantity_status == "NOT_BOUND"
     assert ev.authority_effect == "NONE"
     assert ev.runtime_effect == "NONE"
     assert ev.order_effect == "NONE"
-    assert ev.risk_sizing_effect == "NONE"
+    assert ev.risk_sizing_effect in {"NONE", "BOUND_OFFLINE"}
     if dec:
         assert not dec.execution_eligible
         assert not dec.adapter_compatible
         assert dec.quantity_status == "NOT_BOUND"
+        assert dec.risk_sizing_effect == "NONE"
 
 
 def test_provenance_chain_refs_populated() -> None:
