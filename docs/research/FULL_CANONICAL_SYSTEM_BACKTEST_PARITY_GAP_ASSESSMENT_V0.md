@@ -2,7 +2,7 @@
 
 Assessment-only. No runtime authority. No economic evaluation.
 
-NEXT_RECOMMENDED_SLICE=SCENARIO_REPLAY_DOUBLE_PLAY_ENTRY_EXIT_POLICY_BINDING_PARITY_REWIRE_V0
+NEXT_RECOMMENDED_SLICE=CANONICAL_ORDER_INTENT_OFFLINE_REPLAY_BINDING_PARITY_REWIRE_V0
 
 | ID | Surface | Status | Canonical Owner(s) | Missing Binding |
 |----|---------|--------|------------------|-----------------|
@@ -12,8 +12,8 @@ NEXT_RECOMMENDED_SLICE=SCENARIO_REPLAY_DOUBLE_PLAY_ENTRY_EXIT_POLICY_BINDING_PAR
 | D | Flat-before-opposite-side invariant | PARTIAL | `src/trading/master_v2/double_play_state.py`, `src/trading/master_v2/double_play_entry_exit_policy_v0.py` | Scenario replay -> evaluate_double_play_entry_exit_policy_v0() for flat-before-opposite-side invariant |
 | E | Survival and Suitability | PARTIAL | `src/trading/master_v2/survival_assessment_v1.py`, `src/trading/master_v2/suitability_binding_v1.py`, ... | Scenario direct binding to survival_assessment_v1 / suitability_binding_v1 instead of legacy envelope projection |
 | F | Double Play composition | PASS | `src/trading/master_v2/double_play_composition_matrix_v1.py`, `src/trading/master_v2/double_play_composition_scenario_matrix_adapter_v0.py` | — |
-| G | Entry / Position / Exit Policy | GAP | `src/trading/master_v2/double_play_entry_exit_policy_v0.py` | offline_double_play_scenario_replay_v0 -> evaluate_double_play_entry_exit_policy_v0() per tick |
-| H | Capital / Risk / Sizing | GAP | `src/governance/capital_risk_sizing_v1.py`, `src/trading/master_v2/double_play_capital_slot.py` | Unified evaluate_capital_risk_sizing_v1 chain across Integrated / Backtest / Scenario replay surfaces |
+| G | Entry / Position / Exit Policy | PASS | `src/trading/master_v2/double_play_entry_exit_policy_v0.py` | — |
+| H | Capital / Risk / Sizing | PARTIAL | `src/governance/capital_risk_sizing_v1.py`, `src/trading/master_v2/double_play_capital_slot.py` | Backtest mv2_research_wiring_v1 unified sizing chain parity |
 | I | Canonical Order Intent boundary | NOT_APPLICABLE | `src/governance/canonical_order_intent_v1.py`, `src/governance/runbook_progress_registry_v1.py` | Runtime bridge Slice B activation (out of offline assessment scope) |
 | J | Safety Kernel semantics | PARTIAL | `src/meta/learning_loop/runtime_eligibility_v1.py`, `src/meta/learning_loop/killswitch_writer_fencing_and_independent_read_paths_v1.py` | Unified safety-kernel semantics across Integrated / Scenario / Runtime |
 | K | KillSwitch boundary semantics | PARTIAL | `src/meta/learning_loop/killswitch_writer_fencing_and_independent_read_paths_v1.py`, `src/risk_layer/kill_switch/core.py` | Integrated replay explicit KillSwitch state-machine or kernel-read binding |
@@ -26,9 +26,9 @@ NEXT_RECOMMENDED_SLICE=SCENARIO_REPLAY_DOUBLE_PLAY_ENTRY_EXIT_POLICY_BINDING_PAR
 ## Summary
 
 PARITY_SURFACES_ASSESSED=16
-PASS_SURFACES=1
-PARTIAL_SURFACES=10
-GAP_SURFACES=2
+PASS_SURFACES=2
+PARTIAL_SURFACES=11
+GAP_SURFACES=0
 NOT_APPLICABLE_SURFACES=3
 
 FULL_CANONICAL_CHAIN_WIRED=false
