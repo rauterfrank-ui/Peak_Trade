@@ -6724,7 +6724,7 @@ Post-PR4941 offline-only discovery and ratification prep after PR4939/PR4940 ter
 
 #### CROSS_SECTIONAL_REALIZED_VOLATILITY_RANK_ROTATION_V0_NEGATIVE_ECONOMIC_EVIDENCE_TERMINALIZATION_V0
 
-Docs-only governance terminalization for manifest-verified negative economic evidence from bounded offline evaluation (`VERDICT=FAIL`) for `cross_sectional_realized_volatility_rank_rotation/v0`. Binds terminal negative evidence for unchanged v0 binding. No promotion, no runtime, no unchanged retry without new evidence class or separate Operator-GO.
+Docs-only governance terminalization for manifest-verified negative economic evidence from bounded offline evaluation (`VERDICT=FAIL`) for `cross_sectional_realized_volatility_rank_rotation&#47;v0`. Binds terminal negative evidence for unchanged v0 binding. No promotion, no runtime, no unchanged retry without new evidence class or separate Operator-GO.
 
 | Feld | Wert |
 |---|---|

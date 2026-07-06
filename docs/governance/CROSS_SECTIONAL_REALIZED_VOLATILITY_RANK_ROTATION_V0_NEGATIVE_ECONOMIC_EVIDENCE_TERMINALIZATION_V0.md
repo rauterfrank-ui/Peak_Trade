@@ -9,7 +9,7 @@ ORDERS_ALLOWED: false
 SCHEDULER_RUNTIME_ALLOWED: false
 ---
 
-> **Non-authorizing:** Terminale Governance-Bindung der manifest-verifizierten negativen Offline-Economic-Evidence für `cross_sectional_realized_volatility_rank_rotation/v0` unter unverändertem v0-Binding. Keine Evaluation-Reexecution, keine Promotion, kein Runtime-Rewire, kein Same-Binding-Retry ohne neue Evidence-Klasse oder separaten Operator-GO.
+> **Non-authorizing:** Terminale Governance-Bindung der manifest-verifizierten negativen Offline-Economic-Evidence für `cross_sectional_realized_volatility_rank_rotation&#47;v0` unter unverändertem v0-Binding. Keine Evaluation-Reexecution, keine Promotion, kein Runtime-Rewire, kein Same-Binding-Retry ohne neue Evidence-Klasse oder separaten Operator-GO.
 
 ## A. Zweck
 
@@ -83,9 +83,9 @@ Offline evaluation execution: Operator-GO bounded execution only (no repo merge)
 
 | Binding | Retry Allowed |
 |---|---|
-| `trend_following/v1` | `false` |
-| `bollinger_bands/v1` | `false` |
-| `momentum_1h/v1` | `false` |
+| `trend_following&#47;v1` | `false` |
+| `bollinger_bands&#47;v1` | `false` |
+| `momentum_1h&#47;v1` | `false` |
 
 ## G. Authority Boundary
 
@@ -105,7 +105,7 @@ Offline evaluation execution: Operator-GO bounded execution only (no repo merge)
 
 ## H. Terminalität und Same-Binding-Retry-Verbot
 
-Die negative Economic Evidence ist **terminal für das unveränderte Binding** `cross_sectional_realized_volatility_rank_rotation/v0`:
+Die negative Economic Evidence ist **terminal für das unveränderte Binding** `cross_sectional_realized_volatility_rank_rotation&#47;v0`:
 
 - `immutable_binding_retry_allowed=false`
 - `unchanged_retry_allowed=false`
