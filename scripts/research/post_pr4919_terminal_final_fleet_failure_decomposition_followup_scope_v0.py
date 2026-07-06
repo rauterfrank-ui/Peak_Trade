@@ -30,7 +30,9 @@ PROCESS_CLASSIFICATION = (
 SCOPE_CLASSIFICATION = (
     "POST_PR4919_TERMINAL_FINAL_FLEET_FAILURE_DECOMPOSITION_FOLLOWUP_SCOPE_DEFINITION_ONLY_V0"
 )
-GO_TOKEN = "GO_POST_PR4919_TERMINAL_FINAL_FLEET_FAILURE_DECOMPOSITION_FOLLOWUP_SCOPE_DEFINITION_V0"
+CONFIRM_GO = (
+    "GO_POST_PR4919_TERMINAL_FINAL_FLEET_FAILURE_DECOMPOSITION_FOLLOWUP_SCOPE_DEFINITION_V0"
+)
 NEXT_STEP = (
     "OPERATOR_RATIFIED_NEW_VERSIONED_RESEARCH_SCOPE_OR_FAILURE_DECOMPOSITION_FOLLOWUP_REQUIRED"
 )
@@ -128,7 +130,7 @@ def validate_config(config: dict[str, Any]) -> list[str]:
         errors.append("unexpected process_classification")
     if config.get("scope_classification") != SCOPE_CLASSIFICATION:
         errors.append("unexpected scope_classification")
-    if config.get("go_token") != GO_TOKEN:
+    if config.get("go_token") != CONFIRM_GO:
         errors.append("unexpected go_token")
     if config.get("parent_pr") != 4919:
         errors.append("unexpected parent_pr")
@@ -173,7 +175,7 @@ def _build_followup_scope_summary(config: dict[str, Any], doc_sha256: str) -> di
         "economic_validity_offline_gate_pass": False,
         "fleet_verdict": config["fleet_verdict"],
         "followup_class_count": len(config["followup_taxonomy"]),
-        "go_token": GO_TOKEN,
+        "go_token": CONFIRM_GO,
         "go_token_consumption": "CONSUMED_ONCE_FOR_SCOPE_DEFINITION_ONLY",
         "next_step": config["next_step"],
         "non_authorizing": True,

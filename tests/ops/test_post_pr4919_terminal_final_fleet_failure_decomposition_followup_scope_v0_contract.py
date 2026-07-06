@@ -13,7 +13,7 @@ import pytest
 from scripts.ops.primary_evidence_retention_v0 import verify_manifest_sha256
 from scripts.ops.validate_docs_token_policy import DocsTokenPolicyValidator
 from scripts.research.post_pr4919_terminal_final_fleet_failure_decomposition_followup_scope_v0 import (
-    GO_TOKEN,
+    CONFIRM_GO,
     NEXT_STEP,
     PROCESS_CLASSIFICATION,
     SCOPE_CLASSIFICATION,
@@ -116,7 +116,7 @@ class TestPostPr4919TerminalFinalFleetFailureDecompositionFollowupScopeV0Contrac
         assert config["scope_version"] == "v0"
         assert config["process_classification"] == PROCESS_CLASSIFICATION
         assert config["scope_classification"] == SCOPE_CLASSIFICATION
-        assert config["go_token"] == GO_TOKEN
+        assert config["go_token"] == CONFIRM_GO
         assert config["base_head"] == BASE_HEAD
         assert config["parent_pr"] == 4919
         assert config["pre_merge_head"] == PRE_MERGE_HEAD
