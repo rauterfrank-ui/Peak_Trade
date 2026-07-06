@@ -21,6 +21,10 @@ class TradeRecordContractError(KeyError):
     """Raised when a trade dict lacks the canonical ``pnl`` field."""
 
 
+# Fail-closed finite sentinel when annualization base is non-positive (e.g. total_return <= -1.0).
+_CALMAR_CATASTROPHIC_NEGATIVE_RETURN_SENTINEL = -1.0e9
+
+
 @dataclass
 class TradeStats:
     """Trade-Statistiken."""
@@ -170,9 +174,19 @@ def compute_calmar_ratio(equity: pd.Series, periods_per_year: int = 252) -> floa
     if years <= 0:
         return 0.0
 
-    annual_return = (1 + total_return) ** (1 / years) - 1
+    annualization_base = 1.0 + total_return
+    if annualization_base <= 0.0:
+        return float(_CALMAR_CATASTROPHIC_NEGATIVE_RETURN_SENTINEL)
 
-    return float(annual_return / max_dd)
+    annual_return = annualization_base ** (1 / years) - 1
+    if not np.isfinite(annual_return):
+        return float(_CALMAR_CATASTROPHIC_NEGATIVE_RETURN_SENTINEL)
+
+    calmar = annual_return / max_dd
+    if not np.isfinite(calmar):
+        return float(_CALMAR_CATASTROPHIC_NEGATIVE_RETURN_SENTINEL)
+
+    return float(calmar)
 
 
 def compute_ulcer_index(equity: pd.Series) -> float:
