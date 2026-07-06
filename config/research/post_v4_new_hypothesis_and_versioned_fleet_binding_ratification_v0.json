@@ -1,0 +1,90 @@
+{
+  "verdict": "SCOPE_DEFINED_NOT_EVALUATED",
+  "process_classification": "POST_V4_NEW_HYPOTHESIS_AND_VERSIONED_FLEET_BINDING_RATIFICATION_V0",
+  "scope_classification": "NEW_HYPOTHESIS_AND_VERSIONED_FLEET_BINDING_RATIFICATION_ONLY_AFTER_PR4901_FAIL_CLOSED_BINDING_PRECONDITION_INCOMPLETE_V0",
+  "base_head": "27826eca324e88560f93d1b5993bab4b0acd0b62",
+  "go_token": "GO_OPERATOR_RATIFY_POST_V4_NEW_HYPOTHESIS_AND_VERSIONED_FLEET_BINDING_RATIFICATION_V0",
+  "go_token_consumption": "CONSUME_ONCE_FOR_THIS_SCOPE_DEFINITION_AND_BINDING_RATIFICATION_ONLY",
+  "parent_closeout_dir": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/implementation/pr4901_squash_merge_closeout_20260706T032655Z",
+  "research_hypothesis_binding": {
+    "hypothesis_id": "post_v4_sparse_signal_failure_recovery_futures_fleet_hypothesis_v0",
+    "hypothesis_version": "v0",
+    "hypothesis_statement": "After terminal v4 fleet robustness failure and blocked sparse-signal-zero-trade binding class, a new futures-only research hypothesis is required: evaluate whether bounded, non-v4, non-terminal, explicitly versioned trend-following, Bollinger-band, and momentum_1h candidate bindings with complete parameter, dataset, period, instrument, fee, slippage, funding, execution, config, implementation, and data digests can produce admissible offline economic evidence under unchanged canonical safety, economic, and promotion gates.",
+    "ratification_status": "RATIFIED_FOR_BINDING_DEFINITION_ONLY"
+  },
+  "final_research_fleet": [
+    {
+      "strategy_id": "trend_following",
+      "strategy_version": "post_v4_hypothesis_v0",
+      "binding_status": "RATIFIED_BINDING_DEFINITION_ONLY",
+      "blocked_versions": ["v4"],
+      "blocked_binding_classes": ["SPARSE_SIGNAL_ZERO_TRADE_RESEARCH_V0"],
+      "evaluation_authorized": false
+    },
+    {
+      "strategy_id": "bollinger_bands",
+      "strategy_version": "post_v4_hypothesis_v0",
+      "binding_status": "RATIFIED_BINDING_DEFINITION_ONLY",
+      "blocked_versions": ["v4"],
+      "blocked_binding_classes": ["SPARSE_SIGNAL_ZERO_TRADE_RESEARCH_V0"],
+      "evaluation_authorized": false
+    },
+    {
+      "strategy_id": "momentum_1h",
+      "strategy_version": "post_v4_hypothesis_v0",
+      "binding_status": "RATIFIED_BINDING_DEFINITION_ONLY",
+      "blocked_versions": ["v4"],
+      "blocked_binding_classes": ["SPARSE_SIGNAL_ZERO_TRADE_RESEARCH_V0"],
+      "evaluation_authorized": false
+    }
+  ],
+  "required_binding_fields_before_evaluation": [
+    "strategy_id",
+    "strategy_version",
+    "parameter_binding",
+    "dataset_binding",
+    "period_binding",
+    "instrument_binding",
+    "fee_model_binding",
+    "slippage_model_binding",
+    "funding_model_binding",
+    "execution_model_binding",
+    "economic_policy_binding",
+    "implementation_digest",
+    "config_digest",
+    "data_digest"
+  ],
+  "authority": {
+    "economic_evaluation_authorized": false,
+    "backtest_authorized": false,
+    "walk_forward_authorized": false,
+    "monte_carlo_authorized": false,
+    "stress_authorized": false,
+    "runtime_authority": "NONE",
+    "promotion_authority": false,
+    "shadow_authorized": false,
+    "paper_authorized": false,
+    "testnet_authorized": false,
+    "live_authorized": false
+  },
+  "hard_boundaries": [
+    "NO_CORE_SYSTEM_CHANGE",
+    "NO_CANONICAL_TRADING_LOGIC_CHANGE",
+    "NO_MASTER_V2_CHANGE",
+    "NO_DOUBLE_PLAY_CHANGE",
+    "NO_RISK_SIZING_CHANGE",
+    "NO_SAFETY_RUNTIME_CHANGE",
+    "NO_RUNTIME_REWIRE",
+    "NO_SHADOW",
+    "NO_PAPER",
+    "NO_TESTNET",
+    "NO_SCHEDULER",
+    "NO_ADAPTER_SUBMISSION",
+    "NO_ORDERS",
+    "NO_CREDENTIALS",
+    "NO_ARMING",
+    "NO_CANARY",
+    "NO_LIVE"
+  ],
+  "next_admissible_step": "GO_OPERATOR_RATIFY_POST_V4_VERSIONED_FLEET_BINDING_MATERIALIZATION_ONLY_V0"
+}
