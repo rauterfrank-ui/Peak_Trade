@@ -25,12 +25,14 @@ MatrixStatus = Literal[
     "UNKNOWN",
 ]
 
-NEXT_RECOMMENDED_SLICE = "SAFETY_KERNEL_OFFLINE_REPLAY_BINDING_PARITY_REWIRE_V0"
+NEXT_RECOMMENDED_SLICE = "RECONCILIATION_UNKNOWN_OUTCOME_OFFLINE_REPLAY_BINDING_PARITY_REWIRE_V0"
 
 ALLOWED_SLICE_CHANGED_PATH_PREFIXES: Tuple[str, ...] = (
     "src/trading/master_v2/full_canonical_system_backtest_parity_gap_assessment_v0.py",
     "scripts/ops/run_full_canonical_system_backtest_parity_gap_assessment_v0.py",
+    "scripts/ops/run_safety_kernel_offline_replay_binding_parity_rewire_v0.py",
     "tests/trading/master_v2/test_full_canonical_system_backtest_parity_gap_assessment_contract_v0.py",
+    "tests/trading/master_v2/test_safety_kernel_offline_replay_binding_parity_rewire_contract_v0.py",
     "docs/research/FULL_CANONICAL_SYSTEM_BACKTEST_PARITY_GAP_ASSESSMENT_V0.md",
 )
 
@@ -347,13 +349,15 @@ def parity_surface_assessments_v0() -> Tuple[ParitySurfaceAssessmentV0, ...]:
             canonical_owner_files=(
                 "src/meta/learning_loop/runtime_eligibility_v1.py",
                 "src/meta/learning_loop/killswitch_writer_fencing_and_independent_read_paths_v1.py",
+                "src/trading/master_v2/safety_kernel_offline_replay_binding_adapter_v0.py",
             ),
             current_integrated_offline_replay_binding=(
-                "SafetyMode + safety_exit_signal in entry-exit input (no kernel read)"
+                "integrated_offline_trading_logic_replay_v1 ->"
+                " bind_safety_kernel_offline_replay_evidence_v0()"
             ),
             current_scenario_replay_binding=(
-                "evaluate_master_v2_local_flow_v1 SafetyKillSwitchHandoffV1;"
-                " tick.safety_decision_allowed"
+                "offline_double_play_scenario_replay_v0 ->"
+                " evaluate_scenario_safety_kernel_v0() per tick"
             ),
             current_backtest_binding="Default SafetyMode.NORMAL in integrated input",
             current_runtime_semantics_reference=(
@@ -363,9 +367,10 @@ def parity_surface_assessments_v0() -> Tuple[ParitySurfaceAssessmentV0, ...]:
             evidence_refs=(
                 "tests/meta/test_killswitch_writer_fencing_and_independent_read_paths_v1.py",
                 "tests/meta/test_runtime_eligibility_v1.py",
+                "tests/trading/master_v2/test_safety_kernel_offline_replay_binding_parity_rewire_contract_v0.py",
             ),
             missing_binding_if_any=(
-                "Unified safety-kernel semantics across Integrated / Scenario / Runtime"
+                "Backtest wiring and runtime kernel read-path activation (out of offline scope)"
             ),
             recommended_next_slice=NEXT_RECOMMENDED_SLICE,
         ),

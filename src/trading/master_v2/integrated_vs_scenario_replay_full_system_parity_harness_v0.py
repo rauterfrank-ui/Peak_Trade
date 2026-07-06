@@ -25,6 +25,15 @@ from trading.master_v2.canonical_order_intent_offline_replay_binding_adapter_v0 
     CanonicalOrderIntentOfflineReplayBindingResultV0,
     canonical_order_intent_binding_non_authority_boundary_ok_v0,
 )
+from trading.master_v2.safety_kernel_offline_replay_binding_adapter_v0 import (
+    KILLSWITCH_FENCING_OWNER,
+    RUNTIME_ELIGIBILITY_OWNER,
+    SAFETY_BOUNDARY_EFFECT_BOUND_OFFLINE,
+    SAFETY_BOUNDARY_EFFECT_NONE,
+    SAFETY_KERNEL_OFFLINE_REPLAY_BINDING_ADAPTER_OWNER,
+    SafetyKernelOfflineReplayBindingResultV0,
+    safety_kernel_binding_non_authority_boundary_ok_v0,
+)
 from trading.master_v2.capital_risk_sizing_offline_replay_binding_adapter_v0 import (
     CANONICAL_CAPITAL_RISK_SIZING_OWNER,
     CAPITAL_RISK_SIZING_OFFLINE_REPLAY_BINDING_ADAPTER_OWNER,
@@ -101,6 +110,8 @@ class ParityDecisionEnvelopeV0:
     risk_sizing_effect: str = RISK_SIZING_EFFECT_NONE
     order_intent_ref: str = ""
     order_intent_effect: str = ORDER_INTENT_EFFECT_NONE
+    safety_boundary_ref: str = ""
+    safety_boundary_effect: str = SAFETY_BOUNDARY_EFFECT_NONE
     conflict_status: Optional[str] = None
     selected_side: Optional[str] = None
 
@@ -187,6 +198,8 @@ def extract_integrated_parity_envelope_v0(
         risk_sizing_effect=evidence.risk_sizing_effect,
         order_intent_ref=evidence.order_intent_ref,
         order_intent_effect=evidence.order_intent_effect,
+        safety_boundary_ref=evidence.safety_boundary_ref,
+        safety_boundary_effect=evidence.safety_boundary_effect,
         authority_effect=evidence.authority_effect,
         runtime_effect=evidence.runtime_effect,
         conflict_status=conflict_status,
@@ -376,6 +389,21 @@ def assert_canonical_order_intent_non_authority_boundary_v0(
     }
 
 
+def assert_safety_kernel_non_authority_boundary_v0(
+    envelope: ParityDecisionEnvelopeV0,
+) -> None:
+    assert not envelope.execution_eligible
+    assert not envelope.adapter_compatible
+    assert envelope.authority_effect == "NONE"
+    assert envelope.runtime_effect == "NONE"
+    if envelope.safety_boundary_effect == SAFETY_BOUNDARY_EFFECT_BOUND_OFFLINE:
+        assert envelope.safety_boundary_ref
+    assert envelope.safety_boundary_effect in {
+        SAFETY_BOUNDARY_EFFECT_NONE,
+        SAFETY_BOUNDARY_EFFECT_BOUND_OFFLINE,
+    }
+
+
 def extract_canonical_order_intent_parity_envelope_v0(
     binding: CanonicalOrderIntentOfflineReplayBindingResultV0,
     *,
@@ -425,6 +453,66 @@ def extract_scenario_replay_tick_canonical_order_intent_envelope_v0(
         risk_sizing_effect=tick.risk_sizing_effect,
         order_intent_ref=tick.canonical_order_intent_ref,
         order_intent_effect=tick.order_intent_effect,
+        safety_boundary_ref=tick.safety_boundary_ref,
+        safety_boundary_effect=tick.safety_boundary_effect,
+        authority_effect="NONE",
+        runtime_effect="NONE",
+    )
+
+
+def extract_safety_kernel_parity_envelope_v0(
+    binding: SafetyKernelOfflineReplayBindingResultV0,
+    *,
+    decision_outcome: str = "",
+    composition_result_id: str = "",
+) -> ParityDecisionEnvelopeV0:
+    ev = binding.evidence
+    return ParityDecisionEnvelopeV0(
+        decision_outcome=decision_outcome or ev.decision_outcome,
+        previous_side_state=None,
+        next_side_state=None,
+        composition_status="",
+        composition_result_id=composition_result_id,
+        entry_or_exit_policy_ref=ev.entry_or_exit_policy_ref,
+        reason_codes=tuple(ev.reason_codes),
+        decision_precedence_trace=tuple(ev.decision_precedence_trace),
+        execution_eligible=ev.execution_eligible,
+        adapter_compatible=ev.adapter_compatible,
+        quantity_status=ev.quantity_status,
+        quantity_provenance_ref=ev.quantity_provenance_ref,
+        risk_sizing_ref=ev.risk_sizing_ref,
+        risk_sizing_effect=ev.risk_sizing_effect,
+        order_intent_ref=ev.order_intent_ref,
+        order_intent_effect=ev.order_intent_effect,
+        safety_boundary_ref=binding.safety_boundary_ref,
+        safety_boundary_effect=binding.safety_boundary_effect,
+        authority_effect=ev.authority_effect,
+        runtime_effect=ev.runtime_effect,
+    )
+
+
+def extract_scenario_replay_tick_safety_kernel_envelope_v0(
+    tick: OfflineDoublePlayScenarioReplayTickRecordV0,
+) -> ParityDecisionEnvelopeV0:
+    return ParityDecisionEnvelopeV0(
+        decision_outcome=tick.entry_exit_decision_outcome,
+        previous_side_state=tick.prior_side_state.value,
+        next_side_state=tick.side_state.value,
+        composition_status=tick.composition_status,
+        composition_result_id=tick.composition_result_id,
+        entry_or_exit_policy_ref=tick.entry_exit_policy_ref,
+        reason_codes=tuple(tick.entry_exit_reason_codes),
+        decision_precedence_trace=tuple(tick.entry_exit_decision_precedence_trace),
+        execution_eligible=False,
+        adapter_compatible=False,
+        quantity_status=tick.quantity_status,
+        quantity_provenance_ref=tick.quantity_provenance_ref,
+        risk_sizing_ref=tick.capital_risk_sizing_ref,
+        risk_sizing_effect=tick.risk_sizing_effect,
+        order_intent_ref=tick.canonical_order_intent_ref,
+        order_intent_effect=tick.order_intent_effect,
+        safety_boundary_ref=tick.safety_boundary_ref,
+        safety_boundary_effect=tick.safety_boundary_effect,
         authority_effect="NONE",
         runtime_effect="NONE",
     )
@@ -516,6 +604,11 @@ def canonical_owner_refs_v0() -> Mapping[str, str]:
         "canonical_order_intent": CANONICAL_ORDER_INTENT_OWNER,
         "canonical_order_intent_offline_replay_binding_adapter": (
             CANONICAL_ORDER_INTENT_OFFLINE_REPLAY_BINDING_ADAPTER_OWNER
+        ),
+        "runtime_eligibility": RUNTIME_ELIGIBILITY_OWNER,
+        "killswitch_fencing": KILLSWITCH_FENCING_OWNER,
+        "safety_kernel_offline_replay_binding_adapter": (
+            SAFETY_KERNEL_OFFLINE_REPLAY_BINDING_ADAPTER_OWNER
         ),
         "parity_harness": INTEGRATED_VS_SCENARIO_REPLAY_FULL_SYSTEM_PARITY_HARNESS_OWNER,
     }

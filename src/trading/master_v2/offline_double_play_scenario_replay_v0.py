@@ -63,6 +63,10 @@ from trading.master_v2.capital_risk_sizing_offline_replay_binding_adapter_v0 imp
 from trading.master_v2.canonical_order_intent_offline_replay_binding_adapter_v0 import (
     evaluate_scenario_canonical_order_intent_v0,
 )
+from trading.master_v2.safety_kernel_offline_replay_binding_adapter_v0 import (
+    SafetyKernelOfflineReplayContextV0,
+    evaluate_scenario_safety_kernel_v0,
+)
 from trading.master_v2.double_play_composition_scenario_matrix_adapter_v0 import (
     build_scenario_matrix_composition_input_v0,
     compose_double_play_scenario_via_canonical_matrix_v0,
@@ -72,6 +76,7 @@ from trading.master_v2.double_play_entry_exit_scenario_binding_adapter_v0 import
     default_scenario_entry_exit_policy_context_v0,
     evaluate_scenario_entry_exit_policy_v0,
 )
+from trading.master_v2.double_play_entry_exit_policy_v0 import SafetyMode
 from trading.master_v2.double_play_dashboard_display import (
     DoublePlayDashboardDisplaySnapshot,
     build_dashboard_display_snapshot,
@@ -230,6 +235,8 @@ class OfflineDoublePlayScenarioReplayTickRecordV0:
     canonical_order_intent_ref: str
     order_intent_effect: str
     order_intent_outcome: str
+    safety_boundary_ref: str
+    safety_boundary_effect: str
     sizing_outcome: str
     sizing_reason_codes: tuple[str, ...]
     decision_id: str
@@ -935,6 +942,15 @@ def run_offline_double_play_scenario_replay_v0(
             sizing_decision=sizing_decision,
             reference_price=Decimal(str(tick.price)),
         )
+        safety_binding = evaluate_scenario_safety_kernel_v0(
+            intent_binding.evidence,
+            context=SafetyKernelOfflineReplayContextV0(
+                safety_mode=(SafetyMode.BLOCKED if not safety_allowed else SafetyMode.NORMAL),
+                killswitch_blocked=not safety_allowed,
+                safety_decision_allowed=safety_allowed,
+            ),
+        )
+        bound_evidence = safety_binding.evidence
         sizing_outcome = (
             sizing_decision.outcome.value if sizing_decision is not None else "NOT_APPLICABLE"
         )
@@ -968,6 +984,8 @@ def run_offline_double_play_scenario_replay_v0(
             canonical_order_intent_ref=intent_binding.order_intent_ref,
             order_intent_effect=intent_binding.order_intent_effect,
             order_intent_outcome=intent_binding.intent_outcome,
+            safety_boundary_ref=safety_binding.safety_boundary_ref,
+            safety_boundary_effect=safety_binding.safety_boundary_effect,
             sizing_outcome=sizing_outcome,
             sizing_reason_codes=sizing_reason_codes,
             decision_id=decision_id,

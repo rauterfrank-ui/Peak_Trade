@@ -841,6 +841,29 @@ def run_integrated_offline_trading_logic_replay_v1(
     evidence = intent_binding.evidence
     canonical_order_intent = intent_binding.canonical_intent
 
+    _sk_binding = importlib.import_module(
+        "trading.master_v2.safety_kernel_offline_replay_binding_adapter_v0"
+    )
+    SafetyKernelOfflineReplayContextV0 = _sk_binding.SafetyKernelOfflineReplayContextV0
+    killswitch_blocked = (
+        inp.safety_mode is SafetyMode.BLOCKED
+        or inp.safety_exit_signal.triggered
+        or inp.side_state is SideState.KILL_ALL
+    )
+    safety_binding = _sk_binding.bind_safety_kernel_offline_replay_evidence_v0(
+        evidence,
+        context=SafetyKernelOfflineReplayContextV0(
+            safety_mode=inp.safety_mode,
+            safety_exit_signal=inp.safety_exit_signal,
+            reconciliation_state=inp.reconciliation_state,
+            position_state=inp.position_state,
+            trading_gate=inp.trading_gate,
+            killswitch_blocked=killswitch_blocked,
+            safety_decision_allowed=inp.safety_mode is not SafetyMode.BLOCKED,
+        ),
+    )
+    evidence = safety_binding.evidence
+
     intermediate = IntegratedOfflineReplayIntermediateV1(
         market_context=bound_context,
         scope_initialization=scope_init,
