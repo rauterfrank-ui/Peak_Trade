@@ -6674,7 +6674,7 @@ Post-PR4939 offline-only current-state binding after manifest-verified final res
 
 #### POST_PR4941_MATERIAL_DIFFERENT_OFFLINE_ONLY_RESEARCH_SCOPE_DISCOVERY_AND_RATIFICATION_PREP_V0
 
-Post-PR4941 offline-only discovery and ratification prep after PR4939/PR4940 terminal negative evidence. Selects exactly one material-different next scope boundary: `cross_sectional_realized_volatility_rank_rotation/v0`. No evaluation, no binding ratification, no runtime authority. Market-Airport excluded.
+Post-PR4941 offline-only discovery and ratification prep after PR4939/PR4940 terminal negative evidence. Selects exactly one material-different next scope boundary: `cross_sectional_realized_volatility_rank_rotation&#47;v0`. No evaluation, no binding ratification, no runtime authority. Market-Airport excluded.
 
 | Feld | Wert |
 |---|---|
@@ -6688,10 +6688,10 @@ Post-PR4941 offline-only discovery and ratification prep after PR4939/PR4940 ter
 | `PARENT_PR4939_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr4939_final_research_fleet_negative_evidence_terminalization_merge_closeout_20260706T181802Z` |
 | `PARENT_PR4940_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr4940_final_fleet_terminalization_and_next_material_research_boundary_merge_closeout_20260706T182841Z` |
 | `PARENT_CLOSEOUT_MANIFEST_VERIFY_RC` | `0` |
-| `SELECTED_NEXT_SCOPE_BOUNDARY` | `cross_sectional_realized_volatility_rank_rotation/v0` |
+| `SELECTED_NEXT_SCOPE_BOUNDARY` | `cross_sectional_realized_volatility_rank_rotation&#47;v0` |
 | `MATERIAL_DIFFERENCE_AXES` | `signal_family,target_phenomenon,data_feature_class,portfolio_aggregation,entry_exit_hypothesis,universe_ranking` |
 | `REUSE_FIRST_DECISION` | `REUSE_PIT_CROSS_SECTIONAL_PANEL_DATASET_AND_RELATIVE_STRENGTH_RANKING_SEMANTICS_PATTERN_WITH_NARROW_REALIZED_VOL_FEATURE_ADAPTER_ONLY` |
-| `EXCLUDED_FAILED_BINDINGS` | `trend_following/v1,bollinger_bands/v1,momentum_1h/v1` |
+| `EXCLUDED_FAILED_BINDINGS` | `trend_following&#47;v1,bollinger_bands&#47;v1,momentum_1h&#47;v1` |
 | `NEGATIVE_EVIDENCE_TERMINAL_FOR_UNCHANGED_BINDINGS` | `true` |
 | `MARKET_AIRPORT_EXCLUDED` | `true` |
 | `FUTURES_ONLY` | `true` |
@@ -6701,7 +6701,7 @@ Post-PR4941 offline-only discovery and ratification prep after PR4939/PR4940 ter
 | `PROMOTION_GRANTED` | `false` |
 | `UNCHANGED_RETRY_ALLOWED` | `false` |
 | `NEXT_CANONICAL_STEP` | `OPERATOR_INPUT_REQUIRED_FOR_CROSS_SECTIONAL_REALIZED_VOLATILITY_RANK_ROTATION_V0_SCOPE_RATIFICATION_V0` |
-| `CURRENT_ADMISSIBLE_NEXT_SCOPE` | `cross_sectional_realized_volatility_rank_rotation/v0` |
+| `CURRENT_ADMISSIBLE_NEXT_SCOPE` | `cross_sectional_realized_volatility_rank_rotation&#47;v0` |
 | `CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN` | `GO_RATIFY_CROSS_SECTIONAL_REALIZED_VOLATILITY_RANK_ROTATION_V0_RESEARCH_SCOPE_NO_EVAL_NO_RUNTIME_AUTHORITY_V0` |
 | `GOVERNANCE_REF` | `docs/governance/POST_PR4941_MATERIAL_DIFFERENT_OFFLINE_ONLY_RESEARCH_SCOPE_DISCOVERY_AND_RATIFICATION_PREP_V0.md` |
 | `CONFIG_REF` | `config/research/post_pr4941_material_different_offline_only_research_scope_discovery_and_ratification_prep_v0.json` |
