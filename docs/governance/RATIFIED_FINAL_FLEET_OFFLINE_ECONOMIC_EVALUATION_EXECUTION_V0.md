@@ -27,9 +27,9 @@ SCHEDULER_RUNTIME_ALLOWED: false
 
 PR #4917 ratified fleet:
 
-- `trend_following/v1`
-- `bollinger_bands/v1`
-- `momentum_1h/v1`
+- `trend_following&#47;v1`
+- `bollinger_bands&#47;v1`
+- `momentum_1h&#47;v1`
 
 Bindings source: `config/research/final_research_fleet_class_d_versioned_binding_completion_v0.json`
 
