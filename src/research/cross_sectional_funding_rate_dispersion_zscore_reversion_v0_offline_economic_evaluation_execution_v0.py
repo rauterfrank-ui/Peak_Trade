@@ -85,7 +85,7 @@ BOUNDED_EXECUTION_GO_TOKEN = (
     "GO_BOUNDED_CROSS_SECTIONAL_FUNDING_RATE_DISPERSION_ZSCORE_REVERSION_V0_OFFLINE_ECONOMIC_EVALUATION_"
     "EXECUTION_NO_RUNTIME_AUTHORITY_V0"
 )
-LEGACY_EXECUTION_GO_TOKEN = "GO_BOUNDED_CROSS_SECTIONAL_FUNDING_RATE_DISPERSION_ZSCORE_REVERSION_V0_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0"
+LEGACY_EXECUTION_CONFIRM_GO = "GO_BOUNDED_CROSS_SECTIONAL_FUNDING_RATE_DISPERSION_ZSCORE_REVERSION_V0_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0"
 INFRASTRUCTURE_GO_TOKEN = (
     "GO_BOUNDED_CROSS_SECTIONAL_FUNDING_RATE_DISPERSION_ZSCORE_REVERSION_V0_OFFLINE_ECONOMIC_EVALUATION_"
     "INFRASTRUCTURE_COMPLETION_V0"
@@ -102,7 +102,7 @@ ALLOWED_EXECUTION_GO_TOKENS: frozenset[str] = frozenset(
     {
         GO_TOKEN,
         BOUNDED_EXECUTION_GO_TOKEN,
-        LEGACY_EXECUTION_GO_TOKEN,
+        LEGACY_EXECUTION_CONFIRM_GO,
         COMBINED_RATIFY_AND_EXECUTE_GO_TOKEN,
     }
 )
@@ -407,7 +407,7 @@ def verify_full_evaluation_precheck_v1(
     ratification: Mapping[str, Any],
     staging_root: Path,
     versioned_binding: Mapping[str, Any] | None = None,
-    go_token: str | None = None,
+    confirm_go: str | None = None,
     require_execution_go: bool = False,
 ) -> tuple[bool, tuple[str, ...], BoundFundingPanelMaterializationResultV0]:
     """Fail-closed precheck before any economic evaluation stage."""
@@ -427,9 +427,9 @@ def verify_full_evaluation_precheck_v1(
         reasons.append(REASON_PARAMETER_SEARCH_FORBIDDEN_VIOLATION)
 
     if require_execution_go:
-        if go_token not in ALLOWED_EXECUTION_GO_TOKENS:
+        if confirm_go not in ALLOWED_EXECUTION_GO_TOKENS:
             reasons.append(REASON_GO_TOKEN_INVALID)
-    elif go_token not in ALLOWED_INFRASTRUCTURE_GO_TOKENS:
+    elif confirm_go not in ALLOWED_INFRASTRUCTURE_GO_TOKENS:
         reasons.append(REASON_GO_TOKEN_INVALID)
 
     manifest_ok, manifest_rc, manifest_reasons = verify_panel_staging_source_manifests_v1(
@@ -507,7 +507,7 @@ def run_full_evaluation_entrypoint_dry_run_v1(
     staging_root: Path,
     panel_series: Sequence[InstrumentPanelSeriesV1],
     versioned_binding: Mapping[str, Any] | None = None,
-    go_token: str = _DEFAULT_INFRASTRUCTURE_GO,
+    confirm_go: str = _DEFAULT_INFRASTRUCTURE_GO,
 ) -> FullEvaluationEntrypointResultV1:
     """Validate full evaluation entrypoint wiring; stop before economic classification."""
     envelope = dict(versioned_binding or load_versioned_research_binding_v0(repo_root))
@@ -516,7 +516,7 @@ def run_full_evaluation_entrypoint_dry_run_v1(
         ratification=ratification,
         staging_root=staging_root,
         versioned_binding=envelope,
-        go_token=go_token,
+        confirm_go=confirm_go,
         require_execution_go=False,
     )
 
@@ -885,7 +885,7 @@ def run_full_offline_economic_evaluation_v0(
     staging_root: Path,
     panel_series: Sequence[InstrumentPanelSeriesV1],
     versioned_binding: Mapping[str, Any] | None = None,
-    go_token: str,
+    confirm_go: str,
 ) -> FullEconomicEvaluationResultV0:
     """Execute full offline economic evaluation with fail-closed dataset gate."""
     envelope = dict(versioned_binding or load_versioned_research_binding_v0(repo_root))
@@ -897,7 +897,7 @@ def run_full_offline_economic_evaluation_v0(
         ratification=ratification,
         staging_root=staging_root,
         versioned_binding=envelope,
-        go_token=go_token,
+        confirm_go=confirm_go,
         require_execution_go=True,
     )
     if not precheck_ok:

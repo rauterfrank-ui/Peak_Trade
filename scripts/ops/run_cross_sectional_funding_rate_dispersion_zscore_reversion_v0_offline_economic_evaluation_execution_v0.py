@@ -131,7 +131,7 @@ def run_infrastructure_dry_run_v0(
         ratification=ratification,
         staging_root=staging_root,
         panel_series=panel_series,
-        go_token=INFRASTRUCTURE_GO_TOKEN,
+        confirm_go=INFRASTRUCTURE_GO_TOKEN,
     )
     payload = {
         "execution_mode": "INFRASTRUCTURE_DRY_RUN",
@@ -201,7 +201,7 @@ def run_offline_economic_evaluation_execution_v0(
             staging_root=staging_root,
             panel_series=panel_series,
             versioned_binding=versioned_binding,
-            go_token=confirm,
+            confirm_go=confirm,
         )
         evaluation_payload = execution_result_to_dict(evaluation)
         if evaluation.economic_viability_evidence:

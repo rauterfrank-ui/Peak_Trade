@@ -256,7 +256,7 @@ def test_precheck_rejects_invalid_go_token(
         ratification=scope_ratification,
         staging_root=bound_staging,
         versioned_binding=complete_binding,
-        go_token="INVALID_TOKEN",
+        confirm_go="INVALID_TOKEN",
     )
     assert ok is False
     assert "GO_TOKEN_INVALID" in reasons
@@ -289,7 +289,7 @@ def test_dry_run_entrypoint_stops_before_economic_execution(
         staging_root=bound_staging,
         panel_series=build_synthetic_ohlcv_panel_v0(),
         versioned_binding=complete_binding,
-        go_token=_INFRA_GO,
+        confirm_go=_INFRA_GO,
     )
     assert result.dry_run_stopped_before_execution is True
     assert result.economic_evaluation_executed is False
