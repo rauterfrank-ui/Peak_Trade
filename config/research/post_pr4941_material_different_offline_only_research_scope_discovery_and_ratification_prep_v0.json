@@ -1,0 +1,183 @@
+{
+  "admissible_next_go_tokens": [
+    "GO_RATIFY_CROSS_SECTIONAL_REALIZED_VOLATILITY_RANK_ROTATION_V0_RESEARCH_SCOPE_NO_EVAL_NO_RUNTIME_AUTHORITY_V0"
+  ],
+  "artifact_kind": "post_pr4941_material_different_offline_only_research_scope_discovery_and_ratification_prep",
+  "artifact_version": "v0",
+  "authority_effect": "NONE",
+  "backtest_executed": false,
+  "baseline_head": "f75e32a19f6708c8be1ab313636a1f0047e6cab1",
+  "baseline_pr": 4941,
+  "bitcoin_direction_allowed": false,
+  "blocked_actions": [
+    "ECONOMIC_EVALUATION_EXECUTION",
+    "BACKTEST_EXECUTION",
+    "BACKTEST_RERUN",
+    "WALK_FORWARD_EXECUTION",
+    "MONTE_CARLO_EXECUTION",
+    "STRESS_EXECUTION",
+    "PARAMETER_SENSITIVITY_EXECUTION",
+    "PARAMETER_SEARCH",
+    "SAME_BINDING_RETRY",
+    "UNCHANGED_BINDING_RETRY",
+    "FAILED_BINDING_RETRY",
+    "TERMINAL_FAILED_BINDING_UNCHANGED_RETRY",
+    "PARAMETER_OPTIMIZATION",
+    "PARAMETER_RESCUE",
+    "THRESHOLD_LOWERING",
+    "THRESHOLD_RELAXATION",
+    "RESULT_RESCUE",
+    "NEAR_DUPLICATE_FINAL_FLEET_ARCHETYPE_RETRY",
+    "NEAR_DUPLICATE_PRICE_RETURN_RANK_RETRY",
+    "NEAR_DUPLICATE_FUNDING_SCORE_FAMILY_RETRY",
+    "CANDIDATE_PROMOTION",
+    "PROMOTION",
+    "VERSIONED_BINDING_RATIFICATION_IN_THIS_SCOPE",
+    "RUNTIME",
+    "RUNTIME_REWIRE",
+    "SHADOW",
+    "PAPER",
+    "TESTNET",
+    "SCHEDULER",
+    "ADAPTER_SUBMISSION",
+    "ORDERS",
+    "CREDENTIALS",
+    "ARMING",
+    "CANARY",
+    "LIVE",
+    "MARKET_AIRPORT",
+    "CORE_SYSTEM_CHANGE",
+    "CANONICAL_TRADING_LOGIC_CHANGE",
+    "MASTER_V2_CHANGE",
+    "DOUBLE_PLAY_CHANGE",
+    "RISK_SIZING_CHANGE",
+    "SAFETY_RUNTIME_CHANGE",
+    "HISTORICAL_NEGATIVE_EVIDENCE_MUTATION",
+    "PROFITABILITY_CLAIM",
+    "EVALUATION_EXECUTION_IN_THIS_SCOPE",
+    "BINDING_RATIFICATION_IN_THIS_SCOPE"
+  ],
+  "blocked_scope_classes": [
+    "A_UNMODIFIED_TERMINAL_FINAL_FLEET_BINDING_REEXECUTION",
+    "B_NEAR_DUPLICATE_TREND_MEAN_REVERSION_MOMENTUM_ARCHETYPE_RETRY",
+    "C_GOVERNANCE_REWORDING_ONLY",
+    "D_EVALUATION_WITHOUT_SCOPE_RATIFICATION",
+    "E_THRESHOLD_LOWER_OR_RESULT_RESCUE",
+    "F_RUNTIME_REWIRE",
+    "G_MARKET_AIRPORT_OR_PARALLEL_DASHBOARD_SURFACE"
+  ],
+  "candidate_family_inventory": [
+    {
+      "candidate_family": "trend_following/v1",
+      "disposition": "EXCLUDED_TERMINAL",
+      "exclusion_reason": "unchanged_final_fleet_binding_terminal_FAIL"
+    },
+    {
+      "candidate_family": "bollinger_bands/v1",
+      "disposition": "EXCLUDED_TERMINAL",
+      "exclusion_reason": "unchanged_final_fleet_binding_terminal_FAIL"
+    },
+    {
+      "candidate_family": "momentum_1h/v1",
+      "disposition": "EXCLUDED_TERMINAL",
+      "exclusion_reason": "unchanged_final_fleet_binding_terminal_FAIL"
+    },
+    {
+      "candidate_family": "cross_sectional_funding_rate_score_family",
+      "disposition": "EXCLUDED_TERMINAL",
+      "exclusion_reason": "cross_sectional_funding_research_fleet_COMPLETE_NO_PASS"
+    },
+    {
+      "candidate_family": "cross_sectional_relative_strength/v0",
+      "disposition": "EXCLUDED_TERMINAL",
+      "exclusion_reason": "price_return_rank_axis_terminal_COMPLETE_FAIL"
+    },
+    {
+      "candidate_family": "okx_full_panel_cross_sectional_ranking_archetype",
+      "disposition": "EXCLUDED_TERMINAL",
+      "exclusion_reason": "ranking_archetype_terminal_negative_evidence"
+    },
+    {
+      "candidate_family": "v2_fleet_archetype_retries",
+      "disposition": "EXCLUDED_NEAR_DUPLICATE",
+      "exclusion_reason": "near_duplicate_of_failed_v1_trend_mean_reversion_momentum"
+    },
+    {
+      "candidate_family": "panel_skewness_reversion",
+      "disposition": "EXCLUDED_NEAR_DUPLICATE",
+      "exclusion_reason": "same_panel_mean_reversion_higher_moment_family"
+    },
+    {
+      "candidate_family": "cross_sectional_funding_rate_regime_transition_filter",
+      "disposition": "EXCLUDED_NEAR_DUPLICATE",
+      "exclusion_reason": "near_duplicate_persistence_reversal_filter_terminal_FAIL"
+    },
+    {
+      "candidate_family": "cross_sectional_realized_volatility_rank_rotation/v0",
+      "disposition": "SELECTED_RECOMMENDED",
+      "exclusion_reason": null
+    }
+  ],
+  "core_system_mutation_allowed": false,
+  "discovery_and_ratification_prep_only": true,
+  "economic_evaluation_authorized": false,
+  "economic_evaluation_executed": false,
+  "economic_validity_offline_gate_pass": false,
+  "evaluation_executed": false,
+  "evidence_class_id": "POST_PR4941_MATERIAL_DIFFERENT_OFFLINE_ONLY_RESEARCH_SCOPE_DISCOVERY_AND_RATIFICATION_PREP_V0",
+  "excluded_failed_bindings": [
+    "trend_following/v1",
+    "bollinger_bands/v1",
+    "momentum_1h/v1"
+  ],
+  "final_research_fleet": [
+    "trend_following",
+    "bollinger_bands",
+    "momentum_1h"
+  ],
+  "final_research_fleet_status": "NEGATIVE_EVIDENCE_TERMINAL_FOR_UNCHANGED_BINDINGS",
+  "futures_only": true,
+  "go_token": "GO_PR4941_MATERIAL_DIFFERENT_OFFLINE_ONLY_RESEARCH_SCOPE_DISCOVERY_AND_RATIFICATION_PREP_NO_EVAL_NO_RUNTIME_AUTHORITY_V0",
+  "go_token_consumption": "CONSUMED_ONCE_FOR_DISCOVERY_AND_RATIFICATION_PREP_ONLY",
+  "governance_ref": "docs/governance/POST_PR4941_MATERIAL_DIFFERENT_OFFLINE_ONLY_RESEARCH_SCOPE_DISCOVERY_AND_RATIFICATION_PREP_V0.md",
+  "live_authorized": false,
+  "market_airport_excluded": true,
+  "material_difference_axes": [
+    "signal_family:realized_volatility_rank_vs_price_return_rank_funding_score_single_slot_trend_mr_momentum",
+    "target_phenomenon:volatility_dispersion_rotation_hypothesis",
+    "data_feature_class:panel_ohlcv_derived_realized_volatility",
+    "portfolio_aggregation:cross_sectional_rank_single_slot_rotation",
+    "entry_exit_hypothesis:low_realized_vol_long_high_realized_vol_short",
+    "universe_ranking:non_bitcoin_perpetual_panel_volatility_rank"
+  ],
+  "negative_evidence_terminal_for_unchanged_bindings": true,
+  "no_runtime_authority": true,
+  "non_authorizing": true,
+  "offline_only": true,
+  "orders_allowed": false,
+  "parent_pr4939_closeout_dir": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr4939_final_research_fleet_negative_evidence_terminalization_merge_closeout_20260706T181802Z",
+  "parent_pr4939_closeout_manifest_verify_rc": 0,
+  "parent_pr4940_closeout_dir": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr4940_final_fleet_terminalization_and_next_material_research_boundary_merge_closeout_20260706T182841Z",
+  "parent_pr4940_closeout_manifest_verify_rc": 0,
+  "parent_pr4940_governance_ref": "docs/governance/POST_PR4939_FINAL_RESEARCH_FLEET_NEGATIVE_EVIDENCE_TERMINALIZATION_AND_NEXT_MATERIAL_RESEARCH_BOUNDARY_V0.md",
+  "process_classification": "MATERIAL_DIFFERENT_OFFLINE_ONLY_RESEARCH_SCOPE_DISCOVERY_AND_RATIFICATION_PREP",
+  "promotion_granted": false,
+  "ratification_prep_only": true,
+  "required_next_go_for_scope_ratification": "GO_RATIFY_CROSS_SECTIONAL_REALIZED_VOLATILITY_RANK_ROTATION_V0_RESEARCH_SCOPE_NO_EVAL_NO_RUNTIME_AUTHORITY_V0",
+  "reuse_first_decision": "REUSE_PIT_CROSS_SECTIONAL_PANEL_DATASET_AND_RELATIVE_STRENGTH_RANKING_SEMANTICS_PATTERN_WITH_NARROW_REALIZED_VOL_FEATURE_ADAPTER_ONLY",
+  "runtime_authority_touched": false,
+  "runtime_effect": "NONE",
+  "runtime_rewire_admissible": false,
+  "schema_version": "post_pr4941_material_different_offline_only_research_scope_discovery_and_ratification_prep.v0",
+  "scope_classification": "PR4941_MATERIAL_DIFFERENT_OFFLINE_ONLY_RESEARCH_SCOPE_DISCOVERY_AND_RATIFICATION_PREP_NO_EVAL_NO_RUNTIME_AUTHORITY_V0",
+  "scope_discovery_and_ratification_prep_only": true,
+  "scope_id": "POST_PR4941_MATERIAL_DIFFERENT_OFFLINE_ONLY_RESEARCH_SCOPE_DISCOVERY_AND_RATIFICATION_PREP_V0",
+  "scope_version": "v0",
+  "selected_next_scope_boundary": "cross_sectional_realized_volatility_rank_rotation/v0",
+  "selected_strategy_id": "cross_sectional_realized_volatility_rank_rotation",
+  "selected_strategy_version": "v0",
+  "status": "SCOPE_DISCOVERY_AND_RATIFICATION_PREP_COMPLETE",
+  "trading_effect": "NONE",
+  "unchanged_retry_allowed": false,
+  "verdict": "SCOPE_DISCOVERY_AND_RATIFICATION_PREP_COMPLETE"
+}
