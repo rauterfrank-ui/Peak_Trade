@@ -7,7 +7,7 @@ ORDERS_ALLOWED: false
 SCHEDULER_RUNTIME_ALLOWED: false
 ---
 
-> **Non-authorizing:** Ratifiziert ausschließlich die versionierte offline-only Research-Scope-Definition für `cross_sectional_funding_rate_dispersion_zscore_reversion/v0` nach terminaler persistence_reversal_filter/v0-Negative-Evidence. Keine Versioned-Binding-Ratifikation. Keine Economic Evaluation. Keine Runtime-Authority.
+> **Non-authorizing:** Ratifiziert ausschließlich die versionierte offline-only Research-Scope-Definition für `cross_sectional_funding_rate_dispersion_zscore_reversion&#47;v0` nach terminaler persistence_reversal_filter/v0-Negative-Evidence. Keine Versioned-Binding-Ratifikation. Keine Economic Evaluation. Keine Runtime-Authority.
 
 ## A. Verdict
 
@@ -19,7 +19,7 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `STRATEGY_VERSION` | `v0` |
 | `GO_TOKEN` | `GO_DEFINE_NEXT_MATERIAL_FUNDING_RATE_RESEARCH_HYPOTHESIS_SCOPE_AFTER_PERSISTENCE_REVERSAL_FILTER_V0_FAIL_NO_EVAL_NO_RUNTIME_AUTHORITY_V0` |
 | `PARENT_TERMINAL_SCOPE_BUNDLE` | `pr4934_persistence_reversal_filter_v0_negative_evidence_merge_closeout_20260706T164420Z` |
-| `TERMINALIZED_PARENT_STRATEGY` | `cross_sectional_funding_rate_persistence_reversal_filter/v0` |
+| `TERMINALIZED_PARENT_STRATEGY` | `cross_sectional_funding_rate_persistence_reversal_filter&#47;v0` |
 | `TERMINALIZED_PARENT_BINDING_DIGEST` | `4355f213e0325c7e5ec87013693c91ea693b1bee5325959c1380888b7a31a533` |
 | `MATERIAL_DIFFERENCE_PASS` | `true` |
 | `FUTURES_ONLY_PASS` | `true` |
@@ -59,7 +59,7 @@ When cross-sectional funding-rate **dispersion** across the panel exceeds a mini
 
 ## E. Terminal Exclusions
 
-Unchanged retry forbidden for: `cross_sectional_funding_rate_persistence_reversal_filter/v0` (terminal FAIL, binding digest `4355f213…`), `cross_sectional_funding_rate_rank_delta/v0`, `cross_sectional_funding_rate_dual_leg_spread/v1`, `cross_sectional_funding_rate_delta_momentum/v0`, `cross_sectional_funding_rate_carry/v0`, `cross_sectional_relative_strength/v0`, v1/v2 fleet, STEP29M/30A surfaces.
+Unchanged retry forbidden for: `cross_sectional_funding_rate_persistence_reversal_filter&#47;v0` (terminal FAIL, binding digest `4355f213…`), `cross_sectional_funding_rate_rank_delta&#47;v0`, `cross_sectional_funding_rate_dual_leg_spread&#47;v1`, `cross_sectional_funding_rate_delta_momentum&#47;v0`, `cross_sectional_funding_rate_carry&#47;v0`, `cross_sectional_relative_strength&#47;v0`, v1/v2 fleet, STEP29M/30A surfaces.
 
 ## F. Contract Flags
 
