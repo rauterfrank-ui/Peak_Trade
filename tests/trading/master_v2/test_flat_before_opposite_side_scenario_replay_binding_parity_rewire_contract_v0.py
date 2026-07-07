@@ -287,22 +287,24 @@ def test_gap_assessment_surface_c_still_pass_v0() -> None:
     assert surface_c.parity_status == "PASS"
 
 
-def test_gap_assessment_e_p_unchanged_partial_v0() -> None:
+def test_gap_assessment_e_p_residual_partial_v0() -> None:
     surface_e = next(item for item in parity_surface_assessments_v0() if item.surface_id == "E")
     surface_p = next(item for item in parity_surface_assessments_v0() if item.surface_id == "P")
-    assert surface_e.parity_status == "PARTIAL"
+    assert surface_e.parity_status == "PASS"
     assert surface_p.parity_status == "PARTIAL"
 
 
 def test_gap_assessment_status_distribution_v0() -> None:
     counts = parity_status_counts_v0()
-    assert counts["PASS"] == 14
-    assert counts["PARTIAL"] == 2
+    assert counts["PASS"] == 15
+    assert counts["PARTIAL"] == 1
     assert counts["GAP"] == 0
 
 
-def test_next_recommended_slice_points_to_surface_e_v0() -> None:
-    assert NEXT_RECOMMENDED_SLICE == "SURVIVAL_SUITABILITY_SCENARIO_REPLAY_BINDING_PARITY_REWIRE_V0"
+def test_next_recommended_slice_points_to_surface_p_v0() -> None:
+    assert (
+        NEXT_RECOMMENDED_SLICE == "INTEGRATED_VS_SCENARIO_REPLAY_FULL_SYSTEM_4_WAY_PARITY_REWIRE_V0"
+    )
 
 
 def test_reversal_preparation_contracts_still_pass_v0() -> None:

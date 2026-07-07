@@ -58,8 +58,8 @@ def test_gap_assessment_owner_and_surface_count_v0() -> None:
 
 def test_gap_assessment_status_distribution_v0() -> None:
     counts = parity_status_counts_v0()
-    assert counts["PASS"] == 14
-    assert counts["PARTIAL"] >= 2
+    assert counts["PASS"] == 15
+    assert counts["PARTIAL"] >= 1
     assert counts["GAP"] == 0
     assert counts["NOT_APPLICABLE"] == 0
     assert sum(counts.values()) == 16
@@ -97,6 +97,15 @@ def test_flat_before_opposite_side_surface_pass_v0() -> None:
     assert flat_invariant.missing_binding_if_any == ""
     assert "evaluate_scenario_flat_before_opposite_side_entry_exit_v0" in (
         flat_invariant.current_scenario_replay_binding
+    )
+
+
+def test_survival_suitability_surface_pass_v0() -> None:
+    survival_suit = next(item for item in parity_surface_assessments_v0() if item.surface_id == "E")
+    assert survival_suit.parity_status == "PASS"
+    assert survival_suit.missing_binding_if_any == ""
+    assert "evaluate_scenario_survival_suitability_v0" in (
+        survival_suit.current_scenario_replay_binding
     )
 
 
