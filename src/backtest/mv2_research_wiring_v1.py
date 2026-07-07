@@ -12,7 +12,7 @@ from __future__ import annotations
 import hashlib
 import json
 import math
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from datetime import timedelta
 from enum import Enum
 from pathlib import Path
@@ -1239,6 +1239,14 @@ def run_mv2_research_backtest_wiring_v1(
             signal = apply_backtest_safety_kernel_exposure_gate_v0(
                 signal,
                 evidence=safety_kernel_evidence,
+            )
+        if killswitch_evidence is not None and safety_kernel_evidence is not None:
+            killswitch_evidence = replace(
+                killswitch_evidence,
+                no_order_without_safety_and_killswitch_pass_represented_in_backtest=(
+                    killswitch_evidence.no_order_without_safety_and_killswitch_pass_represented_in_backtest
+                    and safety_kernel_evidence.no_order_without_safety_pass_represented
+                ),
             )
         if context.warmup_status is not WarmupStatus.WARMUP_COMPLETE:
             signal = 0

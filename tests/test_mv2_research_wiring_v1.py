@@ -8,6 +8,7 @@ from pathlib import Path
 from src.backtest.mv2_research_wiring_v1 import (
     CanonicalOrderIntentBacktestStateFileBindingConfigV1,
     CapitalRiskSizingBacktestStateFileBindingConfigV1,
+    KillSwitchBacktestStateFileBindingConfigV1,
     SafetyKernelBacktestStateFileBindingConfigV1,
     run_mv2_research_backtest_wiring_v1,
 )
@@ -36,6 +37,13 @@ from trading.master_v2.double_play_entry_exit_policy_v0 import (
     ReconciliationState,
     SafetyMode,
     TradingGate,
+)
+from trading.master_v2.killswitch_boundary_backtest_state_file_binding_adapter_v0 import (
+    KILLSWITCH_BOUNDARY_BACKTEST_STATE_FILE_SCHEMA_VERSION,
+    compute_backtest_state_file_digest_from_payload_v0 as killswitch_digest,
+)
+from trading.master_v2.killswitch_boundary_offline_replay_binding_adapter_v0 import (
+    KillSwitchBoundaryMode,
 )
 from trading.master_v2.safety_kernel_boundary_backtest_state_file_binding_adapter_v0 import (
     SAFETY_KERNEL_BOUNDARY_BACKTEST_STATE_FILE_SCHEMA_VERSION,
@@ -163,3 +171,34 @@ def test_mv2_wiring_safety_kernel_chain_v0(tmp_path: Path) -> None:
     assert all(
         o.safety_kernel_backtest_state_file_evidence is not None for o in result.bar_outcomes
     )
+
+
+def _killswitch_payload() -> dict[str, object]:
+    base = {
+        "schema_version": KILLSWITCH_BOUNDARY_BACKTEST_STATE_FILE_SCHEMA_VERSION,
+        "killswitch_boundary_mode": KillSwitchBoundaryMode.BLOCK_NEW.value,
+        "fencing_digest_ref": KILL_SWITCH_CONTRACT_DIGEST,
+        "prior_killswitch_active": False,
+    }
+    return {**base, "state_file_digest_ref": killswitch_digest(base)}
+
+
+def test_mv2_wiring_killswitch_boundary_chain_v0(tmp_path: Path) -> None:
+    payload = _killswitch_payload()
+    state_path = tmp_path / "killswitch_backtest_state.json"
+    state_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+    result = run_mv2_research_backtest_wiring_v1(
+        _bars(n=6),
+        strategy_id="ma_crossover",
+        cfg=_cfg(),
+        explicit_zero_cost_non_economic=True,
+        killswitch_state_file_binding=KillSwitchBacktestStateFileBindingConfigV1(
+            state_file_path=state_path,
+            expected_state_file_digest_ref=str(payload["state_file_digest_ref"]),
+        ),
+    )
+    assert all(o.killswitch_backtest_state_file_evidence is not None for o in result.bar_outcomes)
+    sample = result.bar_outcomes[0].killswitch_backtest_state_file_evidence
+    assert sample is not None
+    assert sample.killswitch_boundary_represented_in_backtest is True
+    assert sample.block_new_represented_in_backtest is True
