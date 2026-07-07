@@ -180,6 +180,20 @@ from src.trading.master_v2.promotion_gate_boundary_backtest_state_file_binding_a
     bind_promotion_gate_boundary_backtest_state_file_evidence_v0,
     load_promotion_gate_backtest_state_file_record_v0,
 )
+from src.trading.master_v2.ai_observability_boundary_backtest_state_file_binding_adapter_v0 import (
+    AiObservabilityBacktestStateFileRecordV0,
+    AiObservabilityBoundaryBacktestStateFileEvidenceV0,
+    apply_backtest_ai_observability_exposure_gate_v0,
+    bind_ai_observability_boundary_backtest_state_file_evidence_v0,
+    load_ai_observability_backtest_state_file_record_v0,
+)
+from src.trading.master_v2.feedback_learning_boundary_backtest_state_file_binding_adapter_v0 import (
+    FeedbackLearningBacktestStateFileRecordV0,
+    FeedbackLearningBoundaryBacktestStateFileEvidenceV0,
+    apply_backtest_feedback_learning_exposure_gate_v0,
+    bind_feedback_learning_boundary_backtest_state_file_evidence_v0,
+    load_feedback_learning_backtest_state_file_record_v0,
+)
 
 MV2_RESEARCH_WIRING_LAYER_VERSION = "v1"
 MV2_RESEARCH_WIRING_OWNER = "backtest.mv2_research_wiring_v1"
@@ -275,6 +289,26 @@ class PromotionGateBacktestStateFileBindingConfigV1:
 
 
 @dataclass(frozen=True)
+class AiObservabilityBacktestStateFileBindingConfigV1:
+    """Optional backtest AI / Observability state-file binding — offline evidence only."""
+
+    state_file_path: Path | None = None
+    state_file_record: AiObservabilityBacktestStateFileRecordV0 | None = None
+    expected_state_file_digest_ref: str = ""
+    require_state_file: bool = False
+
+
+@dataclass(frozen=True)
+class FeedbackLearningBacktestStateFileBindingConfigV1:
+    """Optional backtest Feedback / Learning state-file binding — offline evidence only."""
+
+    state_file_path: Path | None = None
+    state_file_record: FeedbackLearningBacktestStateFileRecordV0 | None = None
+    expected_state_file_digest_ref: str = ""
+    require_state_file: bool = False
+
+
+@dataclass(frozen=True)
 class MV2ReplayBarOutcomeV1:
     trading_epoch: int
     context: CanonicalMarketContextV1
@@ -301,6 +335,12 @@ class MV2ReplayBarOutcomeV1:
     ) = None
     promotion_gate_backtest_state_file_evidence: (
         PromotionGateBoundaryBacktestStateFileEvidenceV0 | None
+    ) = None
+    ai_observability_backtest_state_file_evidence: (
+        AiObservabilityBoundaryBacktestStateFileEvidenceV0 | None
+    ) = None
+    feedback_learning_backtest_state_file_evidence: (
+        FeedbackLearningBoundaryBacktestStateFileEvidenceV0 | None
     ) = None
 
 
@@ -1026,6 +1066,60 @@ def _resolve_promotion_gate_backtest_state_file_record_v1(
     return None
 
 
+def _resolve_ai_observability_backtest_state_file_record_v1(
+    binding: AiObservabilityBacktestStateFileBindingConfigV1 | None,
+) -> AiObservabilityBacktestStateFileRecordV0 | None:
+    if binding is None:
+        return None
+    if binding.state_file_record is not None:
+        record = binding.state_file_record
+        if binding.expected_state_file_digest_ref:
+            from src.trading.master_v2.ai_observability_boundary_backtest_state_file_binding_adapter_v0 import (
+                verify_ai_observability_backtest_state_file_digest_v0,
+            )
+
+            verify_ai_observability_backtest_state_file_digest_v0(
+                record,
+                expected_digest_ref=binding.expected_state_file_digest_ref,
+            )
+        return record
+    if binding.state_file_path is not None:
+        return load_ai_observability_backtest_state_file_record_v0(
+            binding.state_file_path,
+            expected_digest_ref=binding.expected_state_file_digest_ref,
+        )
+    if binding.require_state_file:
+        raise ValueError("ai_observability_backtest_state_file_missing")
+    return None
+
+
+def _resolve_feedback_learning_backtest_state_file_record_v1(
+    binding: FeedbackLearningBacktestStateFileBindingConfigV1 | None,
+) -> FeedbackLearningBacktestStateFileRecordV0 | None:
+    if binding is None:
+        return None
+    if binding.state_file_record is not None:
+        record = binding.state_file_record
+        if binding.expected_state_file_digest_ref:
+            from src.trading.master_v2.feedback_learning_boundary_backtest_state_file_binding_adapter_v0 import (
+                verify_feedback_learning_backtest_state_file_digest_v0,
+            )
+
+            verify_feedback_learning_backtest_state_file_digest_v0(
+                record,
+                expected_digest_ref=binding.expected_state_file_digest_ref,
+            )
+        return record
+    if binding.state_file_path is not None:
+        return load_feedback_learning_backtest_state_file_record_v0(
+            binding.state_file_path,
+            expected_digest_ref=binding.expected_state_file_digest_ref,
+        )
+    if binding.require_state_file:
+        raise ValueError("feedback_learning_backtest_state_file_missing")
+    return None
+
+
 def _resolve_killswitch_backtest_state_file_record_v1(
     binding: KillSwitchBacktestStateFileBindingConfigV1 | None,
 ) -> KillSwitchBacktestStateFileRecordV0 | None:
@@ -1078,6 +1172,10 @@ def run_mv2_research_backtest_wiring_v1(
     ) = None,
     safety_kernel_state_file_binding: SafetyKernelBacktestStateFileBindingConfigV1 | None = None,
     promotion_gate_state_file_binding: PromotionGateBacktestStateFileBindingConfigV1 | None = None,
+    ai_observability_state_file_binding: AiObservabilityBacktestStateFileBindingConfigV1
+    | None = None,
+    feedback_learning_state_file_binding: FeedbackLearningBacktestStateFileBindingConfigV1
+    | None = None,
 ) -> MV2ResearchWiringResultV1:
     _fail_closed(bars.empty, "bars_empty")
     _ensure_supported_instrument(instrument_id)
@@ -1171,6 +1269,12 @@ def run_mv2_research_backtest_wiring_v1(
     )
     promotion_gate_state_file_record = _resolve_promotion_gate_backtest_state_file_record_v1(
         promotion_gate_state_file_binding
+    )
+    ai_observability_state_file_record = _resolve_ai_observability_backtest_state_file_record_v1(
+        ai_observability_state_file_binding
+    )
+    feedback_learning_state_file_record = _resolve_feedback_learning_backtest_state_file_record_v1(
+        feedback_learning_state_file_binding
     )
     if canonical_order_intent_state_file_record is not None and (
         capital_risk_sizing_state_file_record is None
@@ -1309,6 +1413,32 @@ def run_mv2_research_backtest_wiring_v1(
                 signal,
                 evidence=promotion_gate_evidence,
             )
+        ai_observability_evidence: AiObservabilityBoundaryBacktestStateFileEvidenceV0 | None = None
+        if ai_observability_state_file_record is not None:
+            ai_observability_evidence = (
+                bind_ai_observability_boundary_backtest_state_file_evidence_v0(
+                    replay_result.evidence,
+                    state_file=ai_observability_state_file_record,
+                )
+            )
+            signal = apply_backtest_ai_observability_exposure_gate_v0(
+                signal,
+                evidence=ai_observability_evidence,
+            )
+        feedback_learning_evidence: FeedbackLearningBoundaryBacktestStateFileEvidenceV0 | None = (
+            None
+        )
+        if feedback_learning_state_file_record is not None:
+            feedback_learning_evidence = (
+                bind_feedback_learning_boundary_backtest_state_file_evidence_v0(
+                    replay_result.evidence,
+                    state_file=feedback_learning_state_file_record,
+                )
+            )
+            signal = apply_backtest_feedback_learning_exposure_gate_v0(
+                signal,
+                evidence=feedback_learning_evidence,
+            )
         if context.warmup_status is not WarmupStatus.WARMUP_COMPLETE:
             signal = 0
         outcomes.append(
@@ -1327,6 +1457,8 @@ def run_mv2_research_backtest_wiring_v1(
                 canonical_order_intent_backtest_state_file_evidence=canonical_order_intent_evidence,
                 safety_kernel_backtest_state_file_evidence=safety_kernel_evidence,
                 promotion_gate_backtest_state_file_evidence=promotion_gate_evidence,
+                ai_observability_backtest_state_file_evidence=ai_observability_evidence,
+                feedback_learning_backtest_state_file_evidence=feedback_learning_evidence,
             )
         )
         replay_signals.append(signal)

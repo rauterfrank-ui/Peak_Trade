@@ -27,10 +27,10 @@ def test_gap_assessment_owner_and_surface_count_v0() -> None:
 
 def test_gap_assessment_status_distribution_v0() -> None:
     counts = parity_status_counts_v0()
-    assert counts["PASS"] == 8
+    assert counts["PASS"] == 10
     assert counts["PARTIAL"] >= 3
     assert counts["GAP"] == 0
-    assert counts["NOT_APPLICABLE"] >= 1
+    assert counts["NOT_APPLICABLE"] == 0
     assert sum(counts.values()) == 16
 
 
