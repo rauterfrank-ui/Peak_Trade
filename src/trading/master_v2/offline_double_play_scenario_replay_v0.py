@@ -90,8 +90,8 @@ from trading.master_v2.scope_event_generator_scenario_binding_adapter_v0 import 
     ScenarioScopeEventContextV0,
     evaluate_scenario_scope_event_v0,
 )
-from trading.master_v2.reversal_preparation_scenario_binding_adapter_v0 import (
-    evaluate_scenario_reversal_preparation_entry_exit_v0,
+from trading.master_v2.flat_before_opposite_side_scenario_binding_adapter_v0 import (
+    evaluate_scenario_flat_before_opposite_side_entry_exit_v0,
 )
 from trading.master_v2.double_play_entry_exit_scenario_binding_adapter_v0 import (
     default_scenario_entry_exit_policy_context_v0,
@@ -863,7 +863,7 @@ def run_offline_double_play_scenario_replay_v0(
             ),
             scope_adverse_exit_signal=scope_event_binding.scope_adverse_exit_signal,
         )
-        entry_exit_decision = evaluate_scenario_reversal_preparation_entry_exit_v0(
+        entry_exit_decision = evaluate_scenario_flat_before_opposite_side_entry_exit_v0(
             instrument_id=inp.selected_future_id,
             trading_epoch=tick.tick_index,
             context_reference=f"{inp.correlation_id_prefix}-tick-{tick.tick_index}",
