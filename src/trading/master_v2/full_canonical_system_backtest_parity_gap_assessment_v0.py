@@ -59,6 +59,12 @@ ALLOWED_SLICE_CHANGED_PATH_PREFIXES: Tuple[str, ...] = (
     "src/trading/master_v2/safety_kernel_boundary_backtest_state_file_binding_adapter_v0.py",
     "scripts/ops/run_backtest_safety_kernel_wiring_v0.py",
     "tests/test_backtest_safety_kernel_wiring_v0.py",
+    "src/trading/master_v2/promotion_gate_boundary_offline_replay_binding_adapter_v0.py",
+    "src/trading/master_v2/promotion_gate_boundary_backtest_state_file_binding_adapter_v0.py",
+    "scripts/ops/run_backtest_promotion_gate_boundary_wiring_v0.py",
+    "tests/trading/master_v2/test_promotion_gate_boundary_backtest_state_file_binding_contract_v0.py",
+    "tests/trading/master_v2/test_promotion_gate_boundary_offline_replay_binding_parity_rewire_contract_v0.py",
+    "tests/test_backtest_promotion_gate_boundary_wiring_v0.py",
     "docs/research/FULL_CANONICAL_SYSTEM_BACKTEST_PARITY_GAP_ASSESSMENT_V0.md",
 )
 
@@ -480,20 +486,33 @@ def parity_surface_assessments_v0() -> Tuple[ParitySurfaceAssessmentV0, ...]:
             surface_name="Promotion Gate boundary",
             canonical_owner_files=(
                 "src/governance/promotion_loop/promotion_economic_gate_v1.py",
+                "src/trading/master_v2/promotion_gate_boundary_offline_replay_binding_adapter_v0.py",
                 "docs/ops/specs/MASTER_V2_PROMOTION_STATE_MACHINE_V1.md",
             ),
-            current_integrated_offline_replay_binding="NOT_APPLICABLE (non-authorizing offline)",
-            current_scenario_replay_binding="NOT_APPLICABLE",
+            current_integrated_offline_replay_binding=(
+                "bind_promotion_gate_boundary_offline_replay_evidence_v0()"
+                " via promotion_gate_boundary_offline_replay_binding_adapter_v0"
+            ),
+            current_scenario_replay_binding=(
+                "bind_promotion_gate_boundary_offline_replay_evidence_v0()"
+                " (offline candidate eligibility representation only)"
+            ),
             current_backtest_binding=(
-                "Indirect research-fleet bindings; not promotion gate itself"
+                "backtest/mv2_research_wiring_v1.run_mv2_research_backtest_wiring_v1"
+                " -> bind_promotion_gate_boundary_backtest_state_file_evidence_v0()"
+                " via promotion_gate_boundary_backtest_state_file_binding_adapter_v0"
             ),
             current_runtime_semantics_reference=(
-                "governance/promotion_loop/safety.py global_promotion_lock"
+                "governance/promotion_loop/safety.py global_promotion_lock;"
+                " promotion_economic_gate_v1 (non-authorizing candidate eligibility only)"
             ),
-            parity_status="NOT_APPLICABLE",
+            parity_status="PASS",
             evidence_refs=(
-                "tests/trading/master_v2/test_offline_governance_tick_harness_v0.py",
-                "docs/governance/authority_conflict_matrix_v1.md",
+                "tests/governance/test_promotion_economic_gate_v1.py",
+                "tests/ops/test_step29n_promotion_economic_gate_binding_fail_closed_contract_v0.py",
+                "tests/trading/master_v2/test_promotion_gate_boundary_offline_replay_binding_parity_rewire_contract_v0.py",
+                "tests/trading/master_v2/test_promotion_gate_boundary_backtest_state_file_binding_contract_v0.py",
+                "tests/test_backtest_promotion_gate_boundary_wiring_v0.py",
             ),
             missing_binding_if_any="",
             recommended_next_slice=NEXT_RECOMMENDED_SLICE,
