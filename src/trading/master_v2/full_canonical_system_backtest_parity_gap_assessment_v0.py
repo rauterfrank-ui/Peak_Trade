@@ -65,6 +65,16 @@ ALLOWED_SLICE_CHANGED_PATH_PREFIXES: Tuple[str, ...] = (
     "tests/trading/master_v2/test_promotion_gate_boundary_backtest_state_file_binding_contract_v0.py",
     "tests/trading/master_v2/test_promotion_gate_boundary_offline_replay_binding_parity_rewire_contract_v0.py",
     "tests/test_backtest_promotion_gate_boundary_wiring_v0.py",
+    "src/trading/master_v2/ai_observability_boundary_offline_replay_binding_adapter_v0.py",
+    "src/trading/master_v2/ai_observability_boundary_backtest_state_file_binding_adapter_v0.py",
+    "src/trading/master_v2/feedback_learning_boundary_offline_replay_binding_adapter_v0.py",
+    "src/trading/master_v2/feedback_learning_boundary_backtest_state_file_binding_adapter_v0.py",
+    "scripts/ops/run_backtest_ai_observability_feedback_boundary_wiring_v0.py",
+    "tests/trading/master_v2/test_ai_observability_boundary_backtest_state_file_binding_contract_v0.py",
+    "tests/trading/master_v2/test_ai_observability_boundary_offline_replay_binding_parity_rewire_contract_v0.py",
+    "tests/trading/master_v2/test_feedback_learning_boundary_backtest_state_file_binding_contract_v0.py",
+    "tests/trading/master_v2/test_feedback_learning_boundary_offline_replay_binding_parity_rewire_contract_v0.py",
+    "tests/test_backtest_ai_observability_feedback_boundary_wiring_v0.py",
     "docs/research/FULL_CANONICAL_SYSTEM_BACKTEST_PARITY_GAP_ASSESSMENT_V0.md",
 )
 
@@ -526,24 +536,31 @@ def parity_surface_assessments_v0() -> Tuple[ParitySurfaceAssessmentV0, ...]:
                 "src/trading/master_v2/decision_packet_v1.py",
             ),
             current_integrated_offline_replay_binding=(
-                "CanonicalTradingDecisionEvidenceV1 with decision_precedence_trace, reason_codes"
+                "bind_ai_observability_boundary_offline_replay_evidence_v0()"
+                " via ai_observability_boundary_offline_replay_binding_adapter_v0"
             ),
             current_scenario_replay_binding=(
-                "build_dashboard_display_snapshot() + evaluate_master_v2_local_flow_v1 snapshot/digest"
+                "bind_ai_observability_boundary_offline_replay_evidence_v0()"
+                " (read-only explainability envelope from decision evidence)"
             ),
-            current_backtest_binding="Evidence digest in mv2_research_wiring chain",
+            current_backtest_binding=(
+                "backtest/mv2_research_wiring_v1.run_mv2_research_backtest_wiring_v1"
+                " -> bind_ai_observability_boundary_backtest_state_file_evidence_v0()"
+                " via ai_observability_boundary_backtest_state_file_binding_adapter_v0"
+            ),
             current_runtime_semantics_reference=(
-                "docs/ops/specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md"
+                "docs/ops/specs/MASTER_V2_DECISION_AUTHORITY_MAP_V1.md;"
+                " docs/governance/ai/AI_LAYER_CANONICAL_SPEC_V1.md (advisory only)"
             ),
-            parity_status="PARTIAL",
+            parity_status="PASS",
             evidence_refs=(
                 "tests/trading/master_v2/test_offline_master_v2_double_play_scenario_replay_binding_contract_v0.py",
                 "tests/trading/master_v2/test_integrated_offline_trading_logic_replay_v1.py",
+                "tests/trading/master_v2/test_ai_observability_boundary_backtest_state_file_binding_contract_v0.py",
+                "tests/trading/master_v2/test_ai_observability_boundary_offline_replay_binding_parity_rewire_contract_v0.py",
+                "tests/test_backtest_ai_observability_feedback_boundary_wiring_v0.py",
             ),
-            missing_binding_if_any=(
-                "Common explainability envelope across Integrated vs Scenario"
-                " (harness extracts different field sets)"
-            ),
+            missing_binding_if_any="",
             recommended_next_slice=NEXT_RECOMMENDED_SLICE,
         ),
         ParitySurfaceAssessmentV0(
@@ -553,14 +570,31 @@ def parity_surface_assessments_v0() -> Tuple[ParitySurfaceAssessmentV0, ...]:
                 "src/meta/learning_loop/runtime_observation_feedback_v1.py",
                 "src/meta/learning_loop/deploy_inactive_v1.py",
             ),
-            current_integrated_offline_replay_binding="NONE (explicit no learning effects)",
-            current_scenario_replay_binding="NONE",
-            current_backtest_binding="Research metrics in mv2_research_wiring; not feedback loop",
+            current_integrated_offline_replay_binding=(
+                "bind_feedback_learning_boundary_offline_replay_evidence_v0()"
+                " via feedback_learning_boundary_offline_replay_binding_adapter_v0"
+                " (observe-only; no learning effects)"
+            ),
+            current_scenario_replay_binding=(
+                "bind_feedback_learning_boundary_offline_replay_evidence_v0()"
+                " (observe-only; no learning effects)"
+            ),
+            current_backtest_binding=(
+                "backtest/mv2_research_wiring_v1.run_mv2_research_backtest_wiring_v1"
+                " -> bind_feedback_learning_boundary_backtest_state_file_evidence_v0()"
+                " via feedback_learning_boundary_backtest_state_file_binding_adapter_v0"
+            ),
             current_runtime_semantics_reference=(
                 "docs/ops/specs/MASTER_V2_LEARNING_AI_AUTONOMY_INVENTORY_V1.md"
+                " (deploy-inactive; no strategy mutation)"
             ),
-            parity_status="NOT_APPLICABLE",
-            evidence_refs=("docs/governance/authority_conflict_matrix_v1.md",),
+            parity_status="PASS",
+            evidence_refs=(
+                "docs/governance/authority_conflict_matrix_v1.md",
+                "tests/trading/master_v2/test_feedback_learning_boundary_backtest_state_file_binding_contract_v0.py",
+                "tests/trading/master_v2/test_feedback_learning_boundary_offline_replay_binding_parity_rewire_contract_v0.py",
+                "tests/test_backtest_ai_observability_feedback_boundary_wiring_v0.py",
+            ),
             missing_binding_if_any="",
             recommended_next_slice=NEXT_RECOMMENDED_SLICE,
         ),
