@@ -58,8 +58,8 @@ def test_gap_assessment_owner_and_surface_count_v0() -> None:
 
 def test_gap_assessment_status_distribution_v0() -> None:
     counts = parity_status_counts_v0()
-    assert counts["PASS"] == 6
-    assert counts["PARTIAL"] >= 4
+    assert counts["PASS"] == 7
+    assert counts["PARTIAL"] >= 3
     assert counts["GAP"] == 0
     assert counts["NOT_APPLICABLE"] >= 2
     assert sum(counts.values()) == 16
@@ -88,6 +88,16 @@ def test_canonical_order_intent_surface_pass_v0() -> None:
         order_intent.current_backtest_binding
     )
     assert order_intent.recommended_next_slice == NEXT_RECOMMENDED_SLICE
+
+
+def test_safety_kernel_surface_pass_v0() -> None:
+    safety = next(item for item in parity_surface_assessments_v0() if item.surface_id == "J")
+    assert safety.parity_status == "PASS"
+    assert safety.missing_binding_if_any == ""
+    assert "bind_safety_kernel_boundary_backtest_state_file_evidence_v0" in (
+        safety.current_backtest_binding
+    )
+    assert safety.recommended_next_slice == NEXT_RECOMMENDED_SLICE
 
 
 def test_entry_exit_surface_pass_after_pr4948_v0() -> None:
