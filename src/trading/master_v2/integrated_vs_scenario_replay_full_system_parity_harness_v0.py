@@ -66,13 +66,30 @@ from trading.master_v2.double_play_composition_scenario_matrix_adapter_v0 import
     evaluate_scenario_matrix_composition_v0,
 )
 from trading.master_v2.double_play_entry_exit_policy_v0 import EntryExitPolicyDecisionV0
+from trading.master_v2.bull_bear_state_switch_scenario_binding_adapter_v0 import (
+    BULL_BEAR_STATE_SWITCH_SCENARIO_BINDING_ADAPTER_OWNER,
+    CANONICAL_STATE_SWITCH_OWNER,
+    STATE_SWITCH_EFFECT_BOUND_OFFLINE,
+    STATE_SWITCH_EFFECT_NONE,
+    ScenarioStateSwitchBindingResultV0,
+    ScenarioStateSwitchContextV0,
+    evaluate_scenario_state_switch_v0,
+    state_switch_binding_non_authority_boundary_ok_v0,
+)
 from trading.master_v2.double_play_entry_exit_scenario_binding_adapter_v0 import (
     CANONICAL_ENTRY_EXIT_POLICY_OWNER,
     DOUBLE_PLAY_ENTRY_EXIT_SCENARIO_BINDING_ADAPTER_OWNER,
     ScenarioEntryExitPolicyContextV0,
     evaluate_scenario_entry_exit_policy_v0,
 )
-from trading.master_v2.double_play_state import SideState
+from trading.master_v2.double_play_state import (
+    DynamicScopeRules,
+    RuntimeEnvelope,
+    RuntimeScopeState,
+    ScopeEvent,
+    SideState,
+    StaticHardLimits,
+)
 from trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
     INTEGRATED_OFFLINE_TRADING_LOGIC_REPLAY_OWNER,
     IntegratedOfflineReplayResultV1,
@@ -132,6 +149,9 @@ class ParityDecisionEnvelopeV0:
     reconciliation_unknown_outcome_effect: str = RECONCILIATION_UNKNOWN_OUTCOME_EFFECT_NONE
     killswitch_boundary_ref: str = ""
     killswitch_boundary_effect: str = KILLSWITCH_BOUNDARY_EFFECT_NONE
+    state_switch_ref: str = ""
+    state_switch_effect: str = STATE_SWITCH_EFFECT_NONE
+    transition_reason_code: str = ""
     conflict_status: Optional[str] = None
     selected_side: Optional[str] = None
 
@@ -224,6 +244,17 @@ def extract_integrated_parity_envelope_v0(
         reconciliation_unknown_outcome_effect=evidence.reconciliation_unknown_outcome_effect,
         killswitch_boundary_ref=evidence.killswitch_boundary_ref,
         killswitch_boundary_effect=evidence.killswitch_boundary_effect,
+        state_switch_ref=(
+            intermediate.state_switch.state_switch_id if intermediate is not None else ""
+        ),
+        state_switch_effect=(
+            STATE_SWITCH_EFFECT_BOUND_OFFLINE
+            if intermediate is not None
+            else STATE_SWITCH_EFFECT_NONE
+        ),
+        transition_reason_code=(
+            intermediate.state_switch.transition_reason_code if intermediate is not None else ""
+        ),
         authority_effect=evidence.authority_effect,
         runtime_effect=evidence.runtime_effect,
         conflict_status=conflict_status,
@@ -349,6 +380,113 @@ def extract_scenario_replay_tick_parity_envelope_v0(
         quantity_status="NOT_BOUND",
         authority_effect="NONE",
         runtime_effect="NONE",
+    )
+
+
+def extract_state_switch_parity_envelope_v0(
+    binding: ScenarioStateSwitchBindingResultV0,
+) -> ParityDecisionEnvelopeV0:
+    return ParityDecisionEnvelopeV0(
+        decision_outcome="not_bound_offline_state_switch_only",
+        previous_side_state=binding.side_state_before.value,
+        next_side_state=binding.side_state_after.value,
+        composition_status="not_bound_offline_state_switch_only",
+        composition_result_id="",
+        entry_or_exit_policy_ref="",
+        reason_codes=(binding.transition.reason_code,),
+        decision_precedence_trace=(),
+        execution_eligible=False,
+        adapter_compatible=False,
+        quantity_status="NOT_BOUND",
+        state_switch_ref=binding.state_switch_ref,
+        state_switch_effect=binding.state_switch_effect,
+        transition_reason_code=binding.transition.reason_code,
+        authority_effect="NONE",
+        runtime_effect="NONE",
+    )
+
+
+def extract_scenario_replay_tick_state_switch_envelope_v0(
+    tick: OfflineDoublePlayScenarioReplayTickRecordV0,
+) -> ParityDecisionEnvelopeV0:
+    return ParityDecisionEnvelopeV0(
+        decision_outcome="not_bound_offline_state_switch_only",
+        previous_side_state=tick.prior_side_state.value,
+        next_side_state=tick.side_state.value,
+        composition_status=tick.composition_status,
+        composition_result_id=tick.composition_result_id,
+        entry_or_exit_policy_ref=tick.entry_exit_policy_ref,
+        reason_codes=(tick.transition_reason_code,),
+        decision_precedence_trace=(),
+        execution_eligible=False,
+        adapter_compatible=False,
+        quantity_status="NOT_BOUND",
+        state_switch_ref=tick.state_switch_ref,
+        state_switch_effect=tick.state_switch_effect,
+        transition_reason_code=tick.transition_reason_code,
+        authority_effect="NONE",
+        runtime_effect="NONE",
+    )
+
+
+def assert_state_switch_non_authority_boundary_v0(envelope: ParityDecisionEnvelopeV0) -> None:
+    assert not envelope.execution_eligible
+    assert not envelope.adapter_compatible
+    assert envelope.authority_effect == "NONE"
+    assert envelope.runtime_effect == "NONE"
+    if envelope.state_switch_effect == STATE_SWITCH_EFFECT_BOUND_OFFLINE:
+        assert envelope.state_switch_ref
+
+
+_DEFAULT_SCENARIO_STATE_SWITCH_ENVELOPE = RuntimeEnvelope(
+    static=StaticHardLimits(min_band_width=1.0, max_band_width=100.0),
+    live_authorization=False,
+)
+_DEFAULT_SCENARIO_STATE_SWITCH_RULES = DynamicScopeRules(
+    min_band_width=1.0,
+    max_band_width=50.0,
+    min_switch_cooldown_ticks=0,
+    max_switches_per_window=1_000_000,
+    volatility_estimate=0.02,
+)
+_EMPTY_SCENARIO_SCOPE_STATE = RuntimeScopeState(
+    anchor_price=0.0,
+    current_downscope_boundary=0.0,
+    current_upscope_boundary=0.0,
+    current_hysteresis_band=0.0,
+    last_switch_tick=-1,
+    switches_in_window=0,
+    window_start_tick=0,
+    chop_latched=False,
+    now_tick=0,
+)
+
+
+def evaluate_scenario_state_switch_for_fixture_v0(
+    *,
+    side_state: SideState,
+    scope_event: ScopeEvent,
+    instrument_id: str,
+    trading_epoch: int,
+    context_reference: str,
+    scope_state: RuntimeScopeState | None = None,
+    rules: DynamicScopeRules | None = None,
+    now_tick: int | None = None,
+) -> ScenarioStateSwitchBindingResultV0:
+    tick = now_tick if now_tick is not None else trading_epoch
+    return evaluate_scenario_state_switch_v0(
+        ScenarioStateSwitchContextV0(
+            instrument_id=instrument_id,
+            trading_epoch=trading_epoch,
+            context_reference=context_reference,
+            side_state=side_state,
+            scope_event=scope_event,
+            scope_state=scope_state or _EMPTY_SCENARIO_SCOPE_STATE,
+            rules=rules or _DEFAULT_SCENARIO_STATE_SWITCH_RULES,
+            envelope=_DEFAULT_SCENARIO_STATE_SWITCH_ENVELOPE,
+            now_tick=tick,
+            scope_event_id=f"{context_reference}-scope-{scope_event.value}",
+        )
     )
 
 
@@ -804,6 +942,10 @@ def canonical_owner_refs_v0() -> Mapping[str, str]:
         ),
         "killswitch_boundary_offline_replay_binding_adapter": (
             KILLSWITCH_BOUNDARY_OFFLINE_REPLAY_BINDING_ADAPTER_OWNER
+        ),
+        "state_switch": CANONICAL_STATE_SWITCH_OWNER,
+        "bull_bear_state_switch_scenario_binding_adapter": (
+            BULL_BEAR_STATE_SWITCH_SCENARIO_BINDING_ADAPTER_OWNER
         ),
         "runtime_state_reconciliation": RUNTIME_STATE_RECONCILIATION_OWNER,
         "reconciliation_entry_exit_policy": RECONCILIATION_ENTRY_EXIT_POLICY_OWNER,

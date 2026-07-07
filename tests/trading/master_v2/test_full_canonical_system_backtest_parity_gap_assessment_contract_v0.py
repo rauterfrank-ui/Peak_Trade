@@ -58,11 +58,18 @@ def test_gap_assessment_owner_and_surface_count_v0() -> None:
 
 def test_gap_assessment_status_distribution_v0() -> None:
     counts = parity_status_counts_v0()
-    assert counts["PASS"] == 10
+    assert counts["PASS"] == 11
     assert counts["PARTIAL"] >= 3
     assert counts["GAP"] == 0
     assert counts["NOT_APPLICABLE"] == 0
     assert sum(counts.values()) == 16
+
+
+def test_bull_bear_state_switch_surface_pass_v0() -> None:
+    state_switch = next(item for item in parity_surface_assessments_v0() if item.surface_id == "A")
+    assert state_switch.parity_status == "PASS"
+    assert state_switch.missing_binding_if_any == ""
+    assert "evaluate_scenario_state_switch_v0" in state_switch.current_scenario_replay_binding
 
 
 def test_composition_surface_pass_v0() -> None:

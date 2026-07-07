@@ -81,6 +81,10 @@ from trading.master_v2.double_play_composition_scenario_matrix_adapter_v0 import
     compose_double_play_scenario_via_canonical_matrix_v0,
     evaluate_scenario_matrix_composition_v0,
 )
+from trading.master_v2.bull_bear_state_switch_scenario_binding_adapter_v0 import (
+    ScenarioStateSwitchContextV0,
+    evaluate_scenario_state_switch_v0,
+)
 from trading.master_v2.double_play_entry_exit_scenario_binding_adapter_v0 import (
     default_scenario_entry_exit_policy_context_v0,
     evaluate_scenario_entry_exit_policy_v0,
@@ -231,6 +235,8 @@ class OfflineDoublePlayScenarioReplayTickRecordV0:
     dynamic_scope_rules: DynamicScopeRules
     transition_allowed: bool
     transition_reason_code: str
+    state_switch_ref: str
+    state_switch_effect: str
     composition_status: str
     composition_result_id: str
     entry_exit_policy_ref: str
@@ -367,32 +373,6 @@ def _default_capital_state(
         opportunity_score=0.80,
         survival_allows_slot=True,
     )
-
-
-def _bull_layer_state(side: SideState) -> SideState:
-    if side in (
-        SideState.LONG_ACTIVE,
-        SideState.LONG_ARMED,
-        SideState.LONG_BLOCKED,
-        SideState.SWITCH_LONG_TO_SHORT_PENDING,
-    ):
-        return side
-    if side in (SideState.SHORT_ACTIVE, SideState.SHORT_ARMED, SideState.SHORT_BLOCKED):
-        return SideState.LONG_BLOCKED
-    return SideState.NEUTRAL_OBSERVE
-
-
-def _bear_layer_state(side: SideState) -> SideState:
-    if side in (
-        SideState.SHORT_ACTIVE,
-        SideState.SHORT_ARMED,
-        SideState.SHORT_BLOCKED,
-        SideState.SWITCH_SHORT_TO_LONG_PENDING,
-    ):
-        return side
-    if side in (SideState.LONG_ACTIVE, SideState.LONG_ARMED, SideState.LONG_BLOCKED):
-        return SideState.SHORT_BLOCKED
-    return SideState.NEUTRAL_OBSERVE
 
 
 def _requested_side(side: SideState) -> RequestedSide:
@@ -779,17 +759,24 @@ def run_offline_double_play_scenario_replay_v0(
         if not tick.safety_decision_allowed and event != ScopeEvent.KILL_ALL_REQUIRED:
             event = ScopeEvent.NOOP
 
-        side_after, scope_after, transition = transition_state(
-            side_state=side,
-            event=event,
-            scope_state=scope_state,
-            rules=rules,
-            envelope=_RUNTIME_ENVELOPE,
-            now_tick=tick.tick_index,
+        state_switch_binding = evaluate_scenario_state_switch_v0(
+            ScenarioStateSwitchContextV0(
+                instrument_id=inp.selected_future_id,
+                trading_epoch=tick.tick_index,
+                context_reference=f"{inp.correlation_id_prefix}-tick-{tick.tick_index}",
+                side_state=side,
+                scope_event=event,
+                scope_state=scope_state,
+                rules=rules,
+                envelope=_RUNTIME_ENVELOPE,
+                now_tick=tick.tick_index,
+                scope_event_id=f"{inp.correlation_id_prefix}-scope-{tick.tick_index}",
+            )
         )
-        side = side_after
-        scope_state = scope_after
-        active = derive_active_side(side)
+        side = state_switch_binding.side_state_after
+        scope_state = state_switch_binding.scope_state_after
+        transition = state_switch_binding.transition
+        active = state_switch_binding.active_side
         scope_state = update_dynamic_boundaries(
             mark_price=tick.price,
             side=active,
@@ -903,9 +890,9 @@ def run_offline_double_play_scenario_replay_v0(
             if snapshot is not None
             else None
         )
-        bull_state = _bull_layer_state(side)
-        bear_state = _bear_layer_state(side)
-        active_side = derive_active_side(side)
+        bull_state = state_switch_binding.bull_layer_state
+        bear_state = state_switch_binding.bear_layer_state
+        active_side = state_switch_binding.active_side
         release_reason = (
             release.release_reason.value if release.release_reason is not None else "none"
         )
@@ -1021,6 +1008,8 @@ def run_offline_double_play_scenario_replay_v0(
             dynamic_scope_rules=rules,
             transition_allowed=transition.allowed,
             transition_reason_code=transition.reason_code,
+            state_switch_ref=state_switch_binding.state_switch_ref,
+            state_switch_effect=state_switch_binding.state_switch_effect,
             composition_status=composition.status.value,
             composition_result_id=composition_result.composition_id,
             entry_exit_policy_ref=entry_exit_decision.policy_decision_id,

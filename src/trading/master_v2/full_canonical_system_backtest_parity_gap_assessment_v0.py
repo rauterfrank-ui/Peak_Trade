@@ -75,6 +75,9 @@ ALLOWED_SLICE_CHANGED_PATH_PREFIXES: Tuple[str, ...] = (
     "tests/trading/master_v2/test_feedback_learning_boundary_backtest_state_file_binding_contract_v0.py",
     "tests/trading/master_v2/test_feedback_learning_boundary_offline_replay_binding_parity_rewire_contract_v0.py",
     "tests/test_backtest_ai_observability_feedback_boundary_wiring_v0.py",
+    "src/trading/master_v2/bull_bear_state_switch_scenario_binding_adapter_v0.py",
+    "scripts/ops/run_bull_bear_state_switch_scenario_replay_binding_parity_rewire_v0.py",
+    "tests/trading/master_v2/test_bull_bear_state_switch_scenario_replay_binding_parity_rewire_contract_v0.py",
     "docs/research/FULL_CANONICAL_SYSTEM_BACKTEST_PARITY_GAP_ASSESSMENT_V0.md",
 )
 
@@ -121,7 +124,7 @@ def parity_surface_assessments_v0() -> Tuple[ParitySurfaceAssessmentV0, ...]:
             ),
             current_scenario_replay_binding=(
                 "offline_double_play_scenario_replay_v0.run_offline_double_play_scenario_replay_v0"
-                " -> injected ScopeEvent ticks -> transition_state()"
+                " -> evaluate_scenario_state_switch_v0() per tick"
             ),
             current_backtest_binding=(
                 "backtest/mv2_research_wiring_v1.run_mv2_research_backtest_wiring_v1"
@@ -131,16 +134,14 @@ def parity_surface_assessments_v0() -> Tuple[ParitySurfaceAssessmentV0, ...]:
                 "canonical_core_runtime_integration_bridge_v0 (BOUND_NOT_ACTIVATED);"
                 " legacy_runtime_entrypoint_guard_v0"
             ),
-            parity_status="PARTIAL",
+            parity_status="PASS",
             evidence_refs=(
                 "tests/trading/master_v2/test_offline_master_v2_double_play_scenario_replay_binding_contract_v0.py",
                 "tests/trading/master_v2/test_integrated_offline_trading_logic_replay_v1.py",
                 "tests/trading/master_v2/test_integrated_vs_scenario_replay_full_system_parity_contract_suite_v0.py",
+                "tests/trading/master_v2/test_bull_bear_state_switch_scenario_replay_binding_parity_rewire_contract_v0.py",
             ),
-            missing_binding_if_any=(
-                "End-to-end state-switch parity Integrated tick vs Scenario tick"
-                " (not only composition matrix alignment)"
-            ),
+            missing_binding_if_any="",
             recommended_next_slice=NEXT_RECOMMENDED_SLICE,
         ),
         ParitySurfaceAssessmentV0(
