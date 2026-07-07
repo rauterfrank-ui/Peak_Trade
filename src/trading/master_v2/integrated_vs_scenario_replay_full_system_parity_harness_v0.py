@@ -85,6 +85,12 @@ from trading.master_v2.scope_event_generator_scenario_binding_adapter_v0 import 
     evaluate_scenario_scope_event_v0,
     scope_event_binding_non_authority_boundary_ok_v0,
 )
+from trading.master_v2.reversal_preparation_scenario_binding_adapter_v0 import (
+    REVERSAL_PREPARATION_SCENARIO_BINDING_ADAPTER_OWNER,
+    REVERSAL_PREPARATION_EFFECT_BOUND_OFFLINE,
+    evaluate_scenario_reversal_preparation_entry_exit_v0,
+    reversal_preparation_binding_non_authority_boundary_ok_v0,
+)
 from trading.master_v2.double_play_entry_exit_scenario_binding_adapter_v0 import (
     CANONICAL_ENTRY_EXIT_POLICY_OWNER,
     DOUBLE_PLAY_ENTRY_EXIT_SCENARIO_BINDING_ADAPTER_OWNER,
@@ -959,6 +965,9 @@ def canonical_owner_refs_v0() -> Mapping[str, str]:
         "scope_event_generator": CANONICAL_SCOPE_EVENT_GENERATOR_OWNER,
         "scope_event_generator_scenario_binding_adapter": (
             SCOPE_EVENT_GENERATOR_SCENARIO_BINDING_ADAPTER_OWNER
+        ),
+        "reversal_preparation_scenario_binding_adapter": (
+            REVERSAL_PREPARATION_SCENARIO_BINDING_ADAPTER_OWNER
         ),
         "runtime_state_reconciliation": RUNTIME_STATE_RECONCILIATION_OWNER,
         "reconciliation_entry_exit_policy": RECONCILIATION_ENTRY_EXIT_POLICY_OWNER,

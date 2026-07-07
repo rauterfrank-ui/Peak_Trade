@@ -25,7 +25,7 @@ MatrixStatus = Literal[
     "UNKNOWN",
 ]
 
-NEXT_RECOMMENDED_SLICE = "REVERSAL_PREPARATION_SCENARIO_REPLAY_BINDING_PARITY_REWIRE_V0"
+NEXT_RECOMMENDED_SLICE = "FLAT_BEFORE_OPPOSITE_SIDE_SCENARIO_REPLAY_BINDING_PARITY_REWIRE_V0"
 
 ALLOWED_SLICE_CHANGED_PATH_PREFIXES: Tuple[str, ...] = (
     "src/trading/master_v2/full_canonical_system_backtest_parity_gap_assessment_v0.py",
@@ -77,10 +77,13 @@ ALLOWED_SLICE_CHANGED_PATH_PREFIXES: Tuple[str, ...] = (
     "tests/test_backtest_ai_observability_feedback_boundary_wiring_v0.py",
     "src/trading/master_v2/bull_bear_state_switch_scenario_binding_adapter_v0.py",
     "src/trading/master_v2/scope_event_generator_scenario_binding_adapter_v0.py",
+    "src/trading/master_v2/reversal_preparation_scenario_binding_adapter_v0.py",
     "scripts/ops/run_bull_bear_state_switch_scenario_replay_binding_parity_rewire_v0.py",
     "scripts/ops/run_scope_event_generator_scenario_replay_binding_parity_rewire_v0.py",
+    "scripts/ops/run_reversal_preparation_scenario_replay_binding_parity_rewire_v0.py",
     "tests/trading/master_v2/test_bull_bear_state_switch_scenario_replay_binding_parity_rewire_contract_v0.py",
     "tests/trading/master_v2/test_scope_event_generator_scenario_replay_binding_parity_rewire_contract_v0.py",
+    "tests/trading/master_v2/test_reversal_preparation_scenario_replay_binding_parity_rewire_contract_v0.py",
     "docs/research/FULL_CANONICAL_SYSTEM_BACKTEST_PARITY_GAP_ASSESSMENT_V0.md",
 )
 
@@ -190,22 +193,23 @@ def parity_surface_assessments_v0() -> Tuple[ParitySurfaceAssessmentV0, ...]:
                 " + evaluate_double_play_entry_exit_policy_v0()"
             ),
             current_scenario_replay_binding=(
-                "double_play_composition_scenario_matrix_adapter_v0"
-                " -> evaluate_scenario_matrix_composition_v0()"
+                "offline_double_play_scenario_replay_v0"
+                " -> evaluate_scenario_reversal_preparation_entry_exit_v0()"
+                " -> evaluate_double_play_entry_exit_policy_v0()"
+                " (REVERSAL_PREPARATION_EXIT)"
             ),
             current_backtest_binding="Integrated replay (default PositionManagementContext.FLAT)",
             current_runtime_semantics_reference=(
                 "canonical_core_runtime_integration_bridge_v0 -> integrated replay"
             ),
-            parity_status="PARTIAL",
+            parity_status="PASS",
             evidence_refs=(
                 "tests/trading/master_v2/test_integrated_vs_scenario_replay_full_system_parity_contract_suite_v0.py::test_5_reversal_preparation_boundary_parity_v0",
                 "tests/trading/master_v2/test_double_play_composition_matrix_v1.py",
                 "tests/trading/master_v2/test_double_play_entry_exit_policy_v0.py",
+                "tests/trading/master_v2/test_reversal_preparation_scenario_replay_binding_parity_rewire_contract_v0.py",
             ),
-            missing_binding_if_any=(
-                "Scenario tick -> entry-exit REVERSAL_PREPARATION_EXIT policy evaluation"
-            ),
+            missing_binding_if_any="",
             recommended_next_slice=NEXT_RECOMMENDED_SLICE,
         ),
         ParitySurfaceAssessmentV0(
