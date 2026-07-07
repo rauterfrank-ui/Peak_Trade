@@ -215,7 +215,9 @@ def test_gap_matrix_json_machine_readable_v0() -> None:
         "NOT_APPLICABLE_BOUNDARY_ONLY",
         "BLOCKED",
         "UNKNOWN",
+        "PARTIAL_RUNTIME_ACTIVATION_PENDING",
     }
+    assert payload["surface_p_semantic"]["surface_p_offline_parity_status"] == "COMPLETE"
     for record in payload["gap_records"]:
         assert record["matrix_status"] == "GAP"
         assert record["missing_binding"]
@@ -230,7 +232,9 @@ def test_parity_gap_records_align_with_partial_surfaces_v0() -> None:
         if item.parity_status == "PARTIAL"
     }
     gap_record_ids = {record["surface_id"] for record in parity_gap_records_v0()}
-    assert partial_ids == gap_record_ids
+    assert "P" in partial_ids
+    assert "P" not in gap_record_ids
+    assert gap_record_ids <= partial_ids
     assert normalize_matrix_status_v0("NOT_APPLICABLE") == "NOT_APPLICABLE_BOUNDARY_ONLY"
     assert normalize_matrix_status_v0("PASS") == "PASS"
 
