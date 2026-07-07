@@ -6785,6 +6785,123 @@ Docs-only governance terminalization for manifest-verified negative economic evi
 
 ---
 
+## Post-PR-4979 Surface P Current-State Verification Binding
+
+Docs-only verification binding nach Squash-Merge von PR #4979 (`feat: extend surface p boundary path 4-way parity`) und read-only next-step selector. Surface P offline bar-sequence und boundary-path 4-way parity COMPLETE; Surface P bleibt PARTIAL ausschließlich wegen `RUNTIME_BRIDGE_BOUND_NOT_ACTIVATED`. Keine Authority-Wirkung; Runtime-Bridge-Aktivierung, Promotion und Economic Evaluation bleiben blockiert.
+
+| Feld | Wert |
+|---|---|
+| `PR4979_MERGED` | `true` |
+| `PR4979_MERGE_COMMIT` | `9e249a5592be435ae9ff0d3d044def0b622a9947` |
+| `PR4978_SELECTOR_SLICE` | `SURFACE_P_BOUNDARY_PATH_BAR_SEQUENCE_4_WAY_PARITY_EXTENSION_V0` |
+| `LAST_VERIFIED_ORIGIN_MAIN` | `9e249a5592be435ae9ff0d3d044def0b622a9947` |
+| `LAST_VERIFIED_SOURCE` | `PR4979_DOCS_ONLY_CURRENT_STATE_SYNC_V0` |
+| `LAST_VERIFIED_AT` | `2026-07-07T21:44:00Z` |
+| `LAST_VERIFIED_PR` | `4979` |
+| `SURFACE_P_OFFLINE_PARITY_COMPLETE` | `true` |
+| `BAR_SEQUENCE_FIXTURES_TOTAL` | `13` |
+| `CORE_BAR_SEQUENCE_FIXTURES` | `8` |
+| `BOUNDARY_FIXTURES_TOTAL` | `5` |
+| `BOUNDARY_4_WAY_PARITY_COMPLETE` | `true` |
+| `SURFACE_P_STATUS` | `PARTIAL` |
+| `SURFACE_P_PARTIAL_REASON` | `RUNTIME_BRIDGE_BOUND_NOT_ACTIVATED` |
+| `FULL_CANONICAL_CHAIN_WIRED` | `false` |
+| `BACKTEST_RUNTIME_DECISION_PARITY_PASS` | `false` |
+| `SYSTEM_ECONOMIC_EVIDENCE_ADMISSIBLE` | `false` |
+| `RUNTIME_BRIDGE_ACTIVATION_ADMISSIBLE` | `false` |
+| `PRE_ACTIVATION_GATE_STATUS` | `FAIL` |
+| `PRE_ACTIVATION_BLOCKER_COUNT` | `9` |
+| `PRE_ACTIVATION_BLOCKERS_REF` | `operator_go_token_status,full_canonical_chain_wired_status,backtest_runtime_decision_parity_status,system_economic_evidence_admissible_status,economic_validity_offline_gate_status,surface_p_status,canonical_order_intent_adapter_compatibility_status,runtime_rewire_eligibility_status,zero_order_pre_activation_evidence_status` |
+| `PROMOTION_ADMISSIBLE` | `false` |
+| `ECONOMIC_EVALUATION_ADMISSIBLE` | `false` |
+| `NEXT_CANONICAL_STEP` | `NO_RUNTIME_OR_PROMOTION_ACTION` |
+| `SELECTOR_VERDICT` | `NEXT_STEP_AFTER_PR4979_READ_ONLY_SELECTOR_V0_PASS` |
+| `SELECTED_NEXT_STEP` | `OPERATOR_DECISION_REQUIRED_NO_ADMISSIBLE_NON_RUNTIME_WORK_REMAINING` |
+| `PR4979_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr_surface_p_boundary_path_bar_sequence_4_way_parity_extension_v0_merge_closeout_20260707T213123Z (MANIFEST_VERIFY_RC=0)` |
+| `POST_PR4979_REASSESSMENT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/full_canonical_backtest_boundary_chain_reassessment_after_surface_p_boundary_extension_v0_20260707T213352Z (MANIFEST_VERIFY_RC=0)` |
+| `SURFACE_P_DECISION_BUNDLE_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/surface_p_offline_parity_complete_runtime_bridge_blocked_decision_v0_rerun_after_manifest_repair_20260707T213734Z (MANIFEST_VERIFY_RC=0)` |
+| `SELECTOR_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/next_step_after_pr4979_read_only_selector_v0_20260707T214235Z (MANIFEST_VERIFY_RC=0)` |
+| `PR4978_SELECTOR_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/bounded_next_canonical_non_runtime_slice_selector_after_pr4978_v0_20260707T211730Z (MANIFEST_VERIFY_RC=0)` |
+| `AUTHORITY_EFFECT` | `NONE` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+
+#### PR4979_SURFACE_P_BOUNDARY_PATH_BAR_SEQUENCE_4_WAY_PARITY_EXTENSION_V0
+
+Offline-only Surface P boundary-path bar-sequence 4-way parity extension merged in PR #4979. Completes bar-sequence fixture coverage (13 total: 8 core + 5 boundary). Surface P offline parity COMPLETE; runtime bridge remains BOUND_NOT_ACTIVATED by policy.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `OFFLINE_PARITY_EXTENSION_COMPLETE` |
+| `SCOPE_CLASSIFICATION` | `SURFACE_P_BOUNDARY_PATH_BAR_SEQUENCE_4_WAY_PARITY_EXTENSION_V0` |
+| `PR4979_MERGE_COMMIT` | `9e249a5592be435ae9ff0d3d044def0b622a9947` |
+| `BAR_SEQUENCE_FIXTURES_TOTAL` | `13` |
+| `BOUNDARY_4_WAY_PARITY_COMPLETE` | `true` |
+| `SURFACE_P_OFFLINE_PARITY_COMPLETE` | `true` |
+| `SURFACE_P_STATUS` | `PARTIAL` |
+| `SURFACE_P_PARTIAL_REASON` | `RUNTIME_BRIDGE_BOUND_NOT_ACTIVATED` |
+| `RUNTIME_BRIDGE_ACTIVATION_ADMISSIBLE` | `false` |
+| `CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr_surface_p_boundary_path_bar_sequence_4_way_parity_extension_v0_merge_closeout_20260707T213123Z (MANIFEST_VERIFY_RC=0)` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+
+#### NEXT_STEP_AFTER_PR4979_READ_ONLY_SELECTOR_V0
+
+Read-only next-step selector after PR4979. Confirms no admissible bounded non-runtime work remains without new operator governance decision.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `SELECTOR_COMPLETE` |
+| `SCOPE_CLASSIFICATION` | `NEXT_STEP_AFTER_SURFACE_P_OFFLINE_PARITY_COMPLETE_READ_ONLY_SELECTOR_V0` |
+| `VERDICT` | `NEXT_STEP_AFTER_PR4979_READ_ONLY_SELECTOR_V0_PASS` |
+| `SELECTED_NEXT_STEP` | `OPERATOR_DECISION_REQUIRED_NO_ADMISSIBLE_NON_RUNTIME_WORK_REMAINING` |
+| `NEXT_CANONICAL_STEP` | `NO_RUNTIME_OR_PROMOTION_ACTION` |
+| `SURFACE_P_OFFLINE_PARITY_COMPLETE` | `true` |
+| `RUNTIME_BRIDGE_ACTIVATION_ADMISSIBLE` | `false` |
+| `PROMOTION_ADMISSIBLE` | `false` |
+| `ECONOMIC_EVALUATION_ADMISSIBLE` | `false` |
+| `EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/next_step_after_pr4979_read_only_selector_v0_20260707T214235Z (MANIFEST_VERIFY_RC=0)` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+
+#### PR4979_DOCS_ONLY_CURRENT_STATE_SYNC_V0
+
+Docs-only current-state sync authorized by operator (`AUTHORIZE_DOCS_ONLY_CURRENT_STATE_SYNC_AFTER_PR4979=true`). Binds post-PR4979 Surface P offline parity completion and runtime-bridge-blocked decision state into progress registry without authority effect.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `HISTORICAL_STEP_SNAPSHOT` |
+| `STATUS` | `DOCS_CURRENT_STATE_SYNC_COMPLETE` |
+| `SCOPE_CLASSIFICATION` | `PR4979_DOCS_ONLY_CURRENT_STATE_SYNC_V0` |
+| `GO_TOKEN` | `AUTHORIZE_DOCS_ONLY_CURRENT_STATE_SYNC_AFTER_PR4979` |
+| `GO_TOKEN_CONSUMED` | `true` |
+| `BASE_HEAD` | `9e249a5592be435ae9ff0d3d044def0b622a9947` |
+| `SURFACE_P_OFFLINE_PARITY_COMPLETE` | `true` |
+| `SURFACE_P_STATUS` | `PARTIAL` |
+| `SURFACE_P_PARTIAL_REASON` | `RUNTIME_BRIDGE_BOUND_NOT_ACTIVATED` |
+| `RUNTIME_BRIDGE_ACTIVATION_ADMISSIBLE` | `false` |
+| `PROMOTION_ADMISSIBLE` | `false` |
+| `ECONOMIC_EVALUATION_ADMISSIBLE` | `false` |
+| `NEXT_CANONICAL_STEP` | `NO_RUNTIME_OR_PROMOTION_ACTION` |
+| `SELECTOR_VERDICT` | `NEXT_STEP_AFTER_PR4979_READ_ONLY_SELECTOR_V0_PASS` |
+| `SELECTED_NEXT_STEP` | `OPERATOR_DECISION_REQUIRED_NO_ADMISSIBLE_NON_RUNTIME_WORK_REMAINING` |
+| `DOCS_ONLY` | `true` |
+| `CODE_CHANGED` | `false` |
+| `TESTS_CHANGED` | `false` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+
+---
+
 ## PR #4629 Evidence-Drift (historisch, transparent)
 
 | Bundle | MANIFEST_VERIFY_RC | Hinweis |
