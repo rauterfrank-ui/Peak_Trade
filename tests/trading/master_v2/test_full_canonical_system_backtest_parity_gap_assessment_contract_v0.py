@@ -175,6 +175,19 @@ def test_killswitch_boundary_surface_pass_v0() -> None:
     assert "evaluate_scenario_killswitch_boundary_v0" in killswitch.current_scenario_replay_binding
 
 
+def test_surface_p_four_way_parity_binding_partial_v0() -> None:
+    surface_p = next(item for item in parity_surface_assessments_v0() if item.surface_id == "P")
+    assert surface_p.parity_status == "PARTIAL"
+    assert "bind_backtest_bar_four_way_parity_lane_v0" in surface_p.current_backtest_binding
+    assert "runtime reference lane bound offline" in surface_p.current_runtime_semantics_reference
+    assert "BOUND_NOT_ACTIVATED by policy" in surface_p.missing_binding_if_any
+    assert (
+        "scripts/ops/run_integrated_vs_scenario_replay_full_system_4_way_parity_rewire_v0.py"
+        in surface_p.evidence_refs
+    )
+    assert surface_p.recommended_next_slice == NEXT_RECOMMENDED_SLICE
+
+
 def test_gap_matrix_markdown_renders_v0() -> None:
     md = render_parity_gap_matrix_markdown_v0()
     assert "FULL_CANONICAL_CHAIN_WIRED=false" in md

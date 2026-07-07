@@ -127,10 +127,18 @@ INTEGRATED_VS_SCENARIO_REPLAY_FULL_SYSTEM_PARITY_HARNESS_OWNER = (
     "trading.master_v2.integrated_vs_scenario_replay_full_system_parity_harness_v0"
 )
 
+FOUR_WAY_PARITY_REWIRE_SLICE_ID = "INTEGRATED_VS_SCENARIO_REPLAY_FULL_SYSTEM_4_WAY_PARITY_REWIRE_V0"
+RUNTIME_REFERENCE_INTEGRATION_STATUS_V0 = "BOUND_NOT_ACTIVATED"
+BACKTEST_PARITY_WIRING_OWNER = "backtest.mv2_research_wiring_v1"
+RUNTIME_BRIDGE_REFERENCE_OWNER = "trading.master_v2.canonical_core_runtime_integration_bridge_v0"
+
 ALLOWED_SLICE_CHANGED_PATH_PREFIXES: Tuple[str, ...] = (
     "src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py",
     "scripts/ops/run_integrated_vs_scenario_replay_full_system_parity_contract_suite_v0.py",
+    "scripts/ops/run_integrated_vs_scenario_replay_full_system_4_way_parity_rewire_v0.py",
+    "src/trading/master_v2/full_canonical_system_backtest_parity_gap_assessment_v0.py",
     "tests/trading/master_v2/test_integrated_vs_scenario_replay_full_system_parity_contract_suite_v0.py",
+    "tests/trading/master_v2/test_full_canonical_system_backtest_parity_gap_assessment_contract_v0.py",
 )
 
 FORBIDDEN_CHANGED_PATH_PREFIXES: Tuple[str, ...] = (
@@ -184,6 +192,19 @@ class ParityCaseV0:
     side_state: SideState
     expected_composition_status: CompositionStatus
     requested_side: RequestedSide = RequestedSide.NEUTRAL_OBSERVE
+
+
+@dataclass(frozen=True)
+class FullSystemFourWayParityAssessmentV0:
+    integrated_lane_bound: bool
+    scenario_lane_bound: bool
+    backtest_lane_bound: bool
+    runtime_reference_lane_bound: bool
+    integrated_scenario_composition_aligned: bool
+    backtest_non_authority_confirmed: bool
+    runtime_reference_non_authority_confirmed: bool
+    four_way_parity_rewire_bound: bool
+    fail_closed_reasons: Tuple[str, ...] = ()
 
 
 def evaluate_scenario_matrix_for_side_state_v0(
@@ -970,6 +991,8 @@ def canonical_owner_refs_v0() -> Mapping[str, str]:
         ),
         "runtime_state_reconciliation": RUNTIME_STATE_RECONCILIATION_OWNER,
         "reconciliation_entry_exit_policy": RECONCILIATION_ENTRY_EXIT_POLICY_OWNER,
+        "backtest_parity_wiring": BACKTEST_PARITY_WIRING_OWNER,
+        "runtime_bridge_reference": RUNTIME_BRIDGE_REFERENCE_OWNER,
         "parity_harness": INTEGRATED_VS_SCENARIO_REPLAY_FULL_SYSTEM_PARITY_HARNESS_OWNER,
     }
 
@@ -1036,6 +1059,226 @@ def evaluate_reversal_preparation_matrix_v0(
         input_digest=compute_composition_input_digest(matrix_input),
     )
     return evaluate_scenario_matrix_composition_v0(matrix_input)
+
+
+def extract_backtest_evidence_parity_envelope_v0(
+    evidence: "CanonicalTradingDecisionEvidenceV1",
+) -> ParityDecisionEnvelopeV0:
+    from trading.master_v2.canonical_trading_decision_evidence_v1 import (
+        CanonicalTradingDecisionEvidenceV1,
+    )
+
+    if not isinstance(evidence, CanonicalTradingDecisionEvidenceV1):
+        raise TypeError("evidence must be CanonicalTradingDecisionEvidenceV1")
+    return ParityDecisionEnvelopeV0(
+        decision_outcome=evidence.decision_outcome,
+        previous_side_state=evidence.previous_direction_state or None,
+        next_side_state=evidence.next_direction_state or None,
+        composition_status="",
+        composition_result_id=evidence.composition_result_ref,
+        entry_or_exit_policy_ref=evidence.entry_or_exit_policy_ref,
+        reason_codes=tuple(evidence.reason_codes),
+        decision_precedence_trace=tuple(evidence.decision_precedence_trace),
+        execution_eligible=evidence.execution_eligible,
+        adapter_compatible=evidence.adapter_compatible,
+        quantity_status=evidence.quantity_status,
+        quantity_provenance_ref=evidence.quantity_provenance_ref,
+        risk_sizing_ref=evidence.risk_sizing_ref,
+        risk_sizing_effect=evidence.risk_sizing_effect,
+        order_intent_ref=evidence.order_intent_ref,
+        order_intent_effect=evidence.order_intent_effect,
+        safety_boundary_ref=evidence.safety_boundary_ref,
+        safety_boundary_effect=evidence.safety_boundary_effect,
+        reconciliation_unknown_outcome_ref=evidence.reconciliation_unknown_outcome_ref,
+        reconciliation_unknown_outcome_effect=evidence.reconciliation_unknown_outcome_effect,
+        killswitch_boundary_ref=evidence.killswitch_boundary_ref,
+        killswitch_boundary_effect=evidence.killswitch_boundary_effect,
+        authority_effect=evidence.authority_effect,
+        runtime_effect=evidence.runtime_effect,
+        selected_side=evidence.selected_side or None,
+    )
+
+
+def extract_runtime_reference_parity_envelope_v0() -> ParityDecisionEnvelopeV0:
+    return ParityDecisionEnvelopeV0(
+        decision_outcome="runtime_reference_not_activated",
+        previous_side_state=None,
+        next_side_state=None,
+        composition_status="runtime_reference_only",
+        composition_result_id="runtime_bridge_reference_v0",
+        entry_or_exit_policy_ref=RUNTIME_BRIDGE_REFERENCE_OWNER,
+        reason_codes=("BOUND_NOT_ACTIVATED", "NO_RUNTIME_AUTHORITY"),
+        decision_precedence_trace=("runtime_reference_lane_v0",),
+        execution_eligible=False,
+        adapter_compatible=False,
+        quantity_status="NOT_BOUND",
+        authority_effect="NONE",
+        runtime_effect="NONE",
+        transition_reason_code=RUNTIME_REFERENCE_INTEGRATION_STATUS_V0,
+    )
+
+
+def assert_runtime_reference_lane_v0(envelope: ParityDecisionEnvelopeV0) -> None:
+    assert envelope.transition_reason_code == RUNTIME_REFERENCE_INTEGRATION_STATUS_V0
+    assert envelope.decision_outcome == "runtime_reference_not_activated"
+    assert not envelope.execution_eligible
+    assert not envelope.adapter_compatible
+    assert envelope.authority_effect == "NONE"
+    assert envelope.runtime_effect == "NONE"
+
+
+def assert_backtest_lane_non_authority_boundary_v0(envelope: ParityDecisionEnvelopeV0) -> None:
+    assert not envelope.execution_eligible
+    assert not envelope.adapter_compatible
+    assert envelope.authority_effect == "NONE"
+    assert envelope.runtime_effect == "NONE"
+
+
+def _default_mv2_research_cfg_v0() -> Mapping[str, object]:
+    return {
+        "backtest": {
+            "initial_cash": 10_000.0,
+            "cost_model_version": "backtest_cost_v0",
+            "fee_bps": 10.0,
+            "slippage_bps": 5.0,
+        },
+        "risk": {
+            "risk_per_trade": 0.02,
+            "max_position_size": 0.25,
+            "min_position_value": 10.0,
+            "min_stop_distance": 0.0001,
+        },
+        "economic_evaluation_v1": {
+            "strategy_params": {
+                "fast_window": 2,
+                "slow_window": 3,
+            },
+        },
+    }
+
+
+def _synthetic_mv2_research_bars_v0(*, bar_count: int = 12) -> "pd.DataFrame":
+    import pandas as pd
+
+    idx = pd.date_range("2026-06-01", periods=bar_count, freq="1h", tz="UTC")
+    close = [100.0 + float(i) for i in range(bar_count)]
+    return pd.DataFrame(
+        {
+            "open": close,
+            "high": [v + 0.5 for v in close],
+            "low": [v - 0.5 for v in close],
+            "close": close,
+            "mark_price": close,
+            "index_price": [v - 0.1 for v in close],
+            "best_bid": [v - 0.05 for v in close],
+            "best_ask": [v + 0.05 for v in close],
+            "spread": [0.1 for _ in close],
+            "volume": [1000.0 for _ in close],
+            "open_interest": [10000.0 for _ in close],
+            "funding_rate": [0.0001 for _ in close],
+            "volatility_estimate": [0.2 for _ in close],
+            "is_final": [True for _ in close],
+            "bar_interval": ["1m" for _ in close],
+        },
+        index=idx,
+    )
+
+
+def bind_backtest_bar_four_way_parity_lane_v0() -> ParityDecisionEnvelopeV0 | None:
+    from src.backtest.mv2_research_wiring_v1 import (
+        MV2_REQUIRED_INSTRUMENT_ID,
+        run_mv2_research_backtest_wiring_v1,
+    )
+
+    result = run_mv2_research_backtest_wiring_v1(
+        bars=_synthetic_mv2_research_bars_v0(),
+        strategy_id="ma_crossover",
+        cfg=_default_mv2_research_cfg_v0(),
+        instrument_id=MV2_REQUIRED_INSTRUMENT_ID,
+    )
+    if not result.bar_outcomes:
+        return None
+    for bar_outcome in result.bar_outcomes:
+        envelope = extract_backtest_evidence_parity_envelope_v0(bar_outcome.evidence)
+        assert_backtest_lane_non_authority_boundary_v0(envelope)
+        return envelope
+    return None
+
+
+def evaluate_surface_p_four_way_parity_v0(
+    *,
+    instrument_id: str,
+    trading_epoch: int,
+    context_reference: str,
+    integrated_envelope: ParityDecisionEnvelopeV0 | None = None,
+) -> FullSystemFourWayParityAssessmentV0:
+    fail_reasons: list[str] = []
+
+    matrix = evaluate_scenario_matrix_for_side_state_v0(
+        side_state=SideState.CHOP_GUARD_BLOCK,
+        instrument_id=instrument_id,
+        trading_epoch=trading_epoch,
+        context_reference=context_reference,
+    )
+    scenario_env = extract_scenario_matrix_parity_envelope_v0(matrix)
+    scenario_lane_bound = matrix.composition_status is CompositionStatus.CHOP_GUARD_BLOCK
+    if scenario_lane_bound:
+        assert_non_authority_boundary_v0(scenario_env)
+    else:
+        fail_reasons.append("scenario_lane_unbound")
+
+    integrated_lane_bound = integrated_envelope is not None
+    integrated_scenario_aligned = False
+    if integrated_envelope is not None:
+        try:
+            assert_non_authority_boundary_v0(integrated_envelope)
+            integrated_scenario_aligned = (
+                integrated_envelope.composition_status == scenario_env.composition_status
+            )
+        except AssertionError:
+            integrated_lane_bound = False
+            fail_reasons.append("integrated_lane_invalid")
+    else:
+        fail_reasons.append("integrated_lane_unbound")
+    if integrated_lane_bound and not integrated_scenario_aligned:
+        fail_reasons.append("integrated_scenario_composition_not_aligned")
+
+    backtest_env = bind_backtest_bar_four_way_parity_lane_v0()
+    backtest_lane_bound = backtest_env is not None
+    backtest_non_authority = backtest_lane_bound
+    if not backtest_lane_bound:
+        fail_reasons.append("backtest_lane_unbound")
+
+    runtime_env = extract_runtime_reference_parity_envelope_v0()
+    runtime_reference_lane_bound = True
+    runtime_reference_non_authority = True
+    try:
+        assert_runtime_reference_lane_v0(runtime_env)
+    except AssertionError:
+        runtime_reference_lane_bound = False
+        runtime_reference_non_authority = False
+        fail_reasons.append("runtime_reference_lane_invalid")
+
+    four_way_bound = (
+        integrated_lane_bound
+        and scenario_lane_bound
+        and backtest_lane_bound
+        and runtime_reference_lane_bound
+        and integrated_scenario_aligned
+        and backtest_non_authority
+        and runtime_reference_non_authority
+    )
+    return FullSystemFourWayParityAssessmentV0(
+        integrated_lane_bound=integrated_lane_bound,
+        scenario_lane_bound=scenario_lane_bound,
+        backtest_lane_bound=backtest_lane_bound,
+        runtime_reference_lane_bound=runtime_reference_lane_bound,
+        integrated_scenario_composition_aligned=integrated_scenario_aligned,
+        backtest_non_authority_confirmed=backtest_non_authority,
+        runtime_reference_non_authority_confirmed=runtime_reference_non_authority,
+        four_way_parity_rewire_bound=four_way_bound,
+        fail_closed_reasons=tuple(fail_reasons),
+    )
 
 
 def scan_changed_paths_for_forbidden_runtime_v0(

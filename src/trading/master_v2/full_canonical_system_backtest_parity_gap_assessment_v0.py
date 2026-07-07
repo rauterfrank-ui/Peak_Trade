@@ -25,7 +25,7 @@ MatrixStatus = Literal[
     "UNKNOWN",
 ]
 
-NEXT_RECOMMENDED_SLICE = "INTEGRATED_VS_SCENARIO_REPLAY_FULL_SYSTEM_4_WAY_PARITY_REWIRE_V0"
+NEXT_RECOMMENDED_SLICE = "FULL_CANONICAL_BACKTEST_BOUNDARY_CHAIN_REASSESSMENT_V0"
 
 ALLOWED_SLICE_CHANGED_PATH_PREFIXES: Tuple[str, ...] = (
     "src/trading/master_v2/full_canonical_system_backtest_parity_gap_assessment_v0.py",
@@ -88,6 +88,9 @@ ALLOWED_SLICE_CHANGED_PATH_PREFIXES: Tuple[str, ...] = (
     "scripts/ops/run_flat_before_opposite_side_scenario_replay_binding_parity_rewire_v0.py",
     "tests/trading/master_v2/test_flat_before_opposite_side_scenario_replay_binding_parity_rewire_contract_v0.py",
     "docs/research/FULL_CANONICAL_SYSTEM_BACKTEST_PARITY_GAP_ASSESSMENT_V0.md",
+    "scripts/ops/run_integrated_vs_scenario_replay_full_system_4_way_parity_rewire_v0.py",
+    "src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py",
+    "tests/trading/master_v2/test_integrated_vs_scenario_replay_full_system_parity_contract_suite_v0.py",
 )
 
 FORBIDDEN_CHANGED_PATH_PREFIXES: Tuple[str, ...] = (
@@ -625,21 +628,27 @@ def parity_surface_assessments_v0() -> Tuple[ParitySurfaceAssessmentV0, ...]:
             current_scenario_replay_binding=(
                 "run_offline_double_play_scenario_replay_v0() + matrix adapter"
             ),
-            current_backtest_binding=("run_mv2_research_backtest_wiring_v1() -> integrated only"),
+            current_backtest_binding=(
+                "evaluate_surface_p_four_way_parity_v0() ->"
+                " bind_backtest_bar_four_way_parity_lane_v0() via"
+                " integrated_vs_scenario_replay_full_system_parity_harness_v0"
+            ),
             current_runtime_semantics_reference=(
                 "canonical_core_runtime_integration_bridge_v0 +"
                 " canonical_core_runtime_integration_intent_pipeline_bridge_v0"
-                " both BOUND_NOT_ACTIVATED"
+                " both BOUND_NOT_ACTIVATED; runtime reference lane bound offline"
             ),
             parity_status="PARTIAL",
             evidence_refs=(
                 "tests/trading/master_v2/test_integrated_vs_scenario_replay_full_system_parity_contract_suite_v0.py",
                 "scripts/ops/run_integrated_vs_scenario_replay_full_system_parity_contract_suite_v0.py",
+                "scripts/ops/run_integrated_vs_scenario_replay_full_system_4_way_parity_rewire_v0.py",
                 "docs/governance/authority_conflict_matrix_v1.md",
             ),
             missing_binding_if_any=(
-                "Full 4-way parity suite including backtest bar wiring,"
-                " runtime bridge activation, entry-exit/capital/intent surfaces"
+                "Runtime bridge activation remains BOUND_NOT_ACTIVATED by policy;"
+                " full bar-sequence 4-way parity across all entry-exit/capital/intent"
+                " fixture cases not yet complete"
             ),
             recommended_next_slice=NEXT_RECOMMENDED_SLICE,
         ),

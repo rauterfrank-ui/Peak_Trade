@@ -39,14 +39,22 @@ from trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
 )
 from trading.master_v2.integrated_vs_scenario_replay_full_system_parity_harness_v0 import (
     ALLOWED_SLICE_CHANGED_PATH_PREFIXES,
+    BACKTEST_PARITY_WIRING_OWNER,
+    FOUR_WAY_PARITY_REWIRE_SLICE_ID,
     INTEGRATED_VS_SCENARIO_REPLAY_FULL_SYSTEM_PARITY_HARNESS_OWNER,
+    RUNTIME_BRIDGE_REFERENCE_OWNER,
+    RUNTIME_REFERENCE_INTEGRATION_STATUS_V0,
     assert_non_authority_boundary_v0,
+    assert_runtime_reference_lane_v0,
     assert_scenario_replay_zero_order_boundary_v0,
+    bind_backtest_bar_four_way_parity_lane_v0,
     canonical_owner_refs_v0,
     composition_matrix_results_aligned_v0,
     evaluate_reversal_preparation_matrix_v0,
     evaluate_scenario_matrix_for_side_state_v0,
+    evaluate_surface_p_four_way_parity_v0,
     extract_integrated_parity_envelope_v0,
+    extract_runtime_reference_parity_envelope_v0,
     extract_scenario_matrix_parity_envelope_v0,
     extract_scenario_replay_tick_parity_envelope_v0,
     integrated_assessments_match_scenario_side_state_v0,
@@ -74,6 +82,8 @@ _SLICE_SOURCE_PATHS = (
     / "src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py",
     REPO_ROOT
     / "scripts/ops/run_integrated_vs_scenario_replay_full_system_parity_contract_suite_v0.py",
+    REPO_ROOT
+    / "scripts/ops/run_integrated_vs_scenario_replay_full_system_4_way_parity_rewire_v0.py",
     REPO_ROOT
     / "tests/trading/master_v2/test_integrated_vs_scenario_replay_full_system_parity_contract_suite_v0.py",
 )
@@ -137,6 +147,48 @@ def test_harness_and_replay_owner_constants_v0() -> None:
     assert refs["scenario_matrix_adapter"] == DOUBLE_PLAY_COMPOSITION_SCENARIO_MATRIX_ADAPTER_OWNER
     assert refs["double_play_composition_matrix"] == CANONICAL_DOUBLE_PLAY_COMPOSITION_OWNER
     assert refs["parity_harness"] == INTEGRATED_VS_SCENARIO_REPLAY_FULL_SYSTEM_PARITY_HARNESS_OWNER
+    assert refs["backtest_parity_wiring"] == BACKTEST_PARITY_WIRING_OWNER
+    assert refs["runtime_bridge_reference"] == RUNTIME_BRIDGE_REFERENCE_OWNER
+
+
+def test_four_way_parity_slice_constants_v0() -> None:
+    assert (
+        FOUR_WAY_PARITY_REWIRE_SLICE_ID
+        == "INTEGRATED_VS_SCENARIO_REPLAY_FULL_SYSTEM_4_WAY_PARITY_REWIRE_V0"
+    )
+    assert RUNTIME_REFERENCE_INTEGRATION_STATUS_V0 == "BOUND_NOT_ACTIVATED"
+
+
+def test_runtime_reference_lane_bound_not_activated_v0() -> None:
+    envelope = extract_runtime_reference_parity_envelope_v0()
+    assert_runtime_reference_lane_v0(envelope)
+
+
+def test_backtest_bar_lane_bound_offline_v0() -> None:
+    envelope = bind_backtest_bar_four_way_parity_lane_v0()
+    assert envelope is not None
+    assert envelope.decision_outcome
+    assert envelope.authority_effect == "NONE"
+    assert envelope.runtime_effect == "NONE"
+
+
+def test_surface_p_four_way_parity_smoke_assessment_v0() -> None:
+    integrated = _run(price_path=(3500.0, 3600.0))
+    integrated_env = extract_integrated_parity_envelope_v0(integrated)
+    assessment = evaluate_surface_p_four_way_parity_v0(
+        instrument_id=_INSTRUMENT,
+        trading_epoch=_EPOCH,
+        context_reference=_CONTEXT,
+        integrated_envelope=integrated_env,
+    )
+    assert assessment.scenario_lane_bound is True
+    assert assessment.backtest_lane_bound is True
+    assert assessment.runtime_reference_lane_bound is True
+    assert assessment.integrated_lane_bound is True
+    assert assessment.integrated_scenario_composition_aligned is True
+    assert assessment.backtest_non_authority_confirmed is True
+    assert assessment.runtime_reference_non_authority_confirmed is True
+    assert assessment.four_way_parity_rewire_bound is True
 
 
 def test_forbidden_runtime_paths_guard_v0() -> None:
