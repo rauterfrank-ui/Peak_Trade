@@ -9,9 +9,11 @@ from src.backtest.mv2_research_wiring_v1 import (
     CanonicalOrderIntentBacktestStateFileBindingConfigV1,
     CapitalRiskSizingBacktestStateFileBindingConfigV1,
     KillSwitchBacktestStateFileBindingConfigV1,
+    ReconciliationBacktestStateFileBindingConfigV1,
     SafetyKernelBacktestStateFileBindingConfigV1,
     run_mv2_research_backtest_wiring_v1,
 )
+from meta.learning_loop.runtime_state_reconciliation_v1 import RECONCILIATION_CONTRACT_VERSION
 from src.governance.canonical_order_intent_v1 import (
     CONTRACT_VERSION as CANONICAL_ORDER_INTENT_CONTRACT_VERSION,
 )
@@ -44,6 +46,10 @@ from trading.master_v2.killswitch_boundary_backtest_state_file_binding_adapter_v
 )
 from trading.master_v2.killswitch_boundary_offline_replay_binding_adapter_v0 import (
     KillSwitchBoundaryMode,
+)
+from trading.master_v2.reconciliation_boundary_backtest_state_file_binding_adapter_v0 import (
+    RECONCILIATION_BOUNDARY_BACKTEST_STATE_FILE_SCHEMA_VERSION,
+    compute_backtest_state_file_digest_from_payload_v0 as reconciliation_digest,
 )
 from trading.master_v2.safety_kernel_boundary_backtest_state_file_binding_adapter_v0 import (
     SAFETY_KERNEL_BOUNDARY_BACKTEST_STATE_FILE_SCHEMA_VERSION,
@@ -202,3 +208,41 @@ def test_mv2_wiring_killswitch_boundary_chain_v0(tmp_path: Path) -> None:
     assert sample is not None
     assert sample.killswitch_boundary_represented_in_backtest is True
     assert sample.block_new_represented_in_backtest is True
+
+
+def _reconciliation_payload() -> dict[str, object]:
+    base = {
+        "schema_version": RECONCILIATION_BOUNDARY_BACKTEST_STATE_FILE_SCHEMA_VERSION,
+        "reconciliation_state": ReconciliationState.RECONCILIATION_REQUIRED.value,
+        "position_state": PositionState.FLAT_RECONCILED.value,
+        "venue_flat": True,
+        "existing_position_side": "none",
+        "intent_snapshot_unresolved": False,
+        "order_snapshot_unresolved": False,
+        "fill_snapshot_unresolved": False,
+        "reconciliation_owner_digest_ref": RECONCILIATION_CONTRACT_VERSION,
+    }
+    return {**base, "state_file_digest_ref": reconciliation_digest(base)}
+
+
+def test_mv2_wiring_reconciliation_unknown_outcome_chain_v0(tmp_path: Path) -> None:
+    payload = _reconciliation_payload()
+    state_path = tmp_path / "reconciliation_backtest_state.json"
+    state_path.write_text(json.dumps(payload, indent=2), encoding="utf-8")
+    result = run_mv2_research_backtest_wiring_v1(
+        _bars(n=6),
+        strategy_id="ma_crossover",
+        cfg=_cfg(),
+        explicit_zero_cost_non_economic=True,
+        reconciliation_state_file_binding=ReconciliationBacktestStateFileBindingConfigV1(
+            state_file_path=state_path,
+            expected_state_file_digest_ref=str(payload["state_file_digest_ref"]),
+        ),
+    )
+    assert all(
+        o.reconciliation_backtest_state_file_evidence is not None for o in result.bar_outcomes
+    )
+    sample = result.bar_outcomes[0].reconciliation_backtest_state_file_evidence
+    assert sample is not None
+    assert sample.reconciliation_semantics_represented_in_backtest is True
+    assert sample.reconciliation_failure_blocks_new_exposure_represented_in_backtest is True
