@@ -58,7 +58,7 @@ def test_gap_assessment_owner_and_surface_count_v0() -> None:
 
 def test_gap_assessment_status_distribution_v0() -> None:
     counts = parity_status_counts_v0()
-    assert counts["PASS"] == 12
+    assert counts["PASS"] == 13
     assert counts["PARTIAL"] >= 3
     assert counts["GAP"] == 0
     assert counts["NOT_APPLICABLE"] == 0
@@ -78,6 +78,15 @@ def test_scope_adverse_exit_surface_pass_v0() -> None:
     assert scope_adverse.missing_binding_if_any == ""
     assert "evaluate_scenario_scope_event_v0" in scope_adverse.current_scenario_replay_binding
     assert "generate_deterministic_scope_event" in scope_adverse.current_scenario_replay_binding
+
+
+def test_reversal_preparation_surface_pass_v0() -> None:
+    reversal = next(item for item in parity_surface_assessments_v0() if item.surface_id == "C")
+    assert reversal.parity_status == "PASS"
+    assert reversal.missing_binding_if_any == ""
+    assert "evaluate_scenario_reversal_preparation_entry_exit_v0" in (
+        reversal.current_scenario_replay_binding
+    )
 
 
 def test_composition_surface_pass_v0() -> None:
