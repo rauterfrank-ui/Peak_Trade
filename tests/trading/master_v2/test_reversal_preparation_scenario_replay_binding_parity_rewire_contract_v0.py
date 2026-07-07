@@ -227,18 +227,17 @@ def test_project_composition_sets_opposite_selected_side_v0() -> None:
 
 def test_surface_c_pass_dep_unchanged_partial_v0() -> None:
     counts = parity_status_counts_v0()
-    assert counts["PASS"] == 13
-    assert counts["PARTIAL"] == 3
+    assert counts["PASS"] == 14
+    assert counts["PARTIAL"] == 2
     surface_c = next(item for item in parity_surface_assessments_v0() if item.surface_id == "C")
     assert surface_c.parity_status == "PASS"
     assert surface_c.missing_binding_if_any == ""
-    for surface_id in ("D", "E", "P"):
+    surface_d = next(item for item in parity_surface_assessments_v0() if item.surface_id == "D")
+    assert surface_d.parity_status == "PASS"
+    for surface_id in ("E", "P"):
         item = next(s for s in parity_surface_assessments_v0() if s.surface_id == surface_id)
         assert item.parity_status == "PARTIAL"
-    assert (
-        NEXT_RECOMMENDED_SLICE
-        == "FLAT_BEFORE_OPPOSITE_SIDE_SCENARIO_REPLAY_BINDING_PARITY_REWIRE_V0"
-    )
+    assert NEXT_RECOMMENDED_SLICE == "SURVIVAL_SUITABILITY_SCENARIO_REPLAY_BINDING_PARITY_REWIRE_V0"
 
 
 def test_default_scenario_replay_still_passes_v0() -> None:

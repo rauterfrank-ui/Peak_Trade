@@ -25,7 +25,7 @@ MatrixStatus = Literal[
     "UNKNOWN",
 ]
 
-NEXT_RECOMMENDED_SLICE = "FLAT_BEFORE_OPPOSITE_SIDE_SCENARIO_REPLAY_BINDING_PARITY_REWIRE_V0"
+NEXT_RECOMMENDED_SLICE = "SURVIVAL_SUITABILITY_SCENARIO_REPLAY_BINDING_PARITY_REWIRE_V0"
 
 ALLOWED_SLICE_CHANGED_PATH_PREFIXES: Tuple[str, ...] = (
     "src/trading/master_v2/full_canonical_system_backtest_parity_gap_assessment_v0.py",
@@ -84,6 +84,9 @@ ALLOWED_SLICE_CHANGED_PATH_PREFIXES: Tuple[str, ...] = (
     "tests/trading/master_v2/test_bull_bear_state_switch_scenario_replay_binding_parity_rewire_contract_v0.py",
     "tests/trading/master_v2/test_scope_event_generator_scenario_replay_binding_parity_rewire_contract_v0.py",
     "tests/trading/master_v2/test_reversal_preparation_scenario_replay_binding_parity_rewire_contract_v0.py",
+    "src/trading/master_v2/flat_before_opposite_side_scenario_binding_adapter_v0.py",
+    "scripts/ops/run_flat_before_opposite_side_scenario_replay_binding_parity_rewire_v0.py",
+    "tests/trading/master_v2/test_flat_before_opposite_side_scenario_replay_binding_parity_rewire_contract_v0.py",
     "docs/research/FULL_CANONICAL_SYSTEM_BACKTEST_PARITY_GAP_ASSESSMENT_V0.md",
 )
 
@@ -224,8 +227,10 @@ def parity_surface_assessments_v0() -> Tuple[ParitySurfaceAssessmentV0, ...]:
                 " + evaluate_double_play_entry_exit_policy_v0() flat/flip gates"
             ),
             current_scenario_replay_binding=(
-                "offline_double_play_scenario_replay_v0 -> transition_state() only;"
-                " entry-exit policy not per tick"
+                "offline_double_play_scenario_replay_v0"
+                " -> evaluate_scenario_flat_before_opposite_side_entry_exit_v0()"
+                " -> evaluate_double_play_entry_exit_policy_v0()"
+                " flat/flip gates per tick"
             ),
             current_backtest_binding=(
                 "Integrated replay defaults venue_flat=True, ExistingPositionSide.NONE"
@@ -233,15 +238,13 @@ def parity_surface_assessments_v0() -> Tuple[ParitySurfaceAssessmentV0, ...]:
             current_runtime_semantics_reference=(
                 "double_play_state.transition_state (DOUBLE_PLAY_BULL_BEAR_REFERENCE_V0)"
             ),
-            parity_status="PARTIAL",
+            parity_status="PASS",
             evidence_refs=(
                 "tests/trading/master_v2/test_double_play_entry_exit_policy_v0.py",
                 "tests/trading/master_v2/test_offline_master_v2_double_play_scenario_replay_binding_contract_v0.py",
+                "tests/trading/master_v2/test_flat_before_opposite_side_scenario_replay_binding_parity_rewire_contract_v0.py",
             ),
-            missing_binding_if_any=(
-                "Scenario replay -> evaluate_double_play_entry_exit_policy_v0()"
-                " for flat-before-opposite-side invariant"
-            ),
+            missing_binding_if_any="",
             recommended_next_slice=NEXT_RECOMMENDED_SLICE,
         ),
         ParitySurfaceAssessmentV0(

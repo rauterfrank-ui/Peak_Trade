@@ -91,6 +91,9 @@ from trading.master_v2.reversal_preparation_scenario_binding_adapter_v0 import (
     evaluate_scenario_reversal_preparation_entry_exit_v0,
     reversal_preparation_binding_non_authority_boundary_ok_v0,
 )
+from trading.master_v2.flat_before_opposite_side_scenario_binding_adapter_v0 import (
+    FLAT_BEFORE_OPPOSITE_SIDE_SCENARIO_BINDING_ADAPTER_OWNER,
+)
 from trading.master_v2.double_play_entry_exit_scenario_binding_adapter_v0 import (
     CANONICAL_ENTRY_EXIT_POLICY_OWNER,
     DOUBLE_PLAY_ENTRY_EXIT_SCENARIO_BINDING_ADAPTER_OWNER,
@@ -968,6 +971,9 @@ def canonical_owner_refs_v0() -> Mapping[str, str]:
         ),
         "reversal_preparation_scenario_binding_adapter": (
             REVERSAL_PREPARATION_SCENARIO_BINDING_ADAPTER_OWNER
+        ),
+        "flat_before_opposite_side_scenario_binding_adapter": (
+            FLAT_BEFORE_OPPOSITE_SIDE_SCENARIO_BINDING_ADAPTER_OWNER
         ),
         "runtime_state_reconciliation": RUNTIME_STATE_RECONCILIATION_OWNER,
         "reconciliation_entry_exit_policy": RECONCILIATION_ENTRY_EXIT_POLICY_OWNER,
