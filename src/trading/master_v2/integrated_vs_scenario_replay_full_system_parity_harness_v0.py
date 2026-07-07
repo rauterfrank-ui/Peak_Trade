@@ -8,8 +8,9 @@ No runtime authority, no economic evaluation, no trading semantic extension.
 
 from __future__ import annotations
 
+import hashlib
 from dataclasses import dataclass
-from typing import Mapping, Optional, Sequence, Tuple
+from typing import Literal, Mapping, Optional, Sequence, Tuple
 
 from trading.master_v2.directional_assessment_v1 import DirectionalAssessmentStatus
 from trading.master_v2.double_play_composition import RequestedSide
@@ -69,7 +70,18 @@ from trading.master_v2.survival_suitability_scenario_binding_adapter_v0 import (
     SURVIVAL_SUITABILITY_SCENARIO_BINDING_ADAPTER_OWNER,
     legacy_side_to_assessment_statuses_v0,
 )
-from trading.master_v2.double_play_entry_exit_policy_v0 import EntryExitPolicyDecisionV0
+from trading.master_v2.double_play_entry_exit_policy_v0 import (
+    DecisionOutcome,
+    EntryExitDirectionState,
+    EntryExitPolicyDecisionV0,
+    ExistingPositionSide,
+    PolicySignalV0,
+    PositionState,
+)
+from trading.master_v2.double_play_entry_exit_scenario_binding_adapter_v0 import (
+    ScenarioEntryExitPolicyContextV0,
+    default_scenario_entry_exit_policy_context_v0,
+)
 from trading.master_v2.bull_bear_state_switch_scenario_binding_adapter_v0 import (
     BULL_BEAR_STATE_SWITCH_SCENARIO_BINDING_ADAPTER_OWNER,
     CANONICAL_STATE_SWITCH_OWNER,
@@ -115,11 +127,16 @@ from trading.master_v2.double_play_state import (
 from trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
     INTEGRATED_OFFLINE_TRADING_LOGIC_REPLAY_OWNER,
     IntegratedOfflineReplayResultV1,
+    run_integrated_offline_trading_logic_replay_v1,
 )
 from trading.master_v2.offline_double_play_scenario_replay_v0 import (
     OFFLINE_DOUBLE_PLAY_SCENARIO_REPLAY_OWNER,
+    OfflineDoublePlayScenarioReplayInputV0,
     OfflineDoublePlayScenarioReplayResultV0,
     OfflineDoublePlayScenarioReplayTickRecordV0,
+    SYNTHETIC_FUTURES_INSTRUMENT,
+    build_default_bull_bear_bull_scenario_ticks,
+    run_offline_double_play_scenario_replay_v0,
 )
 
 INTEGRATED_VS_SCENARIO_REPLAY_FULL_SYSTEM_PARITY_HARNESS_LAYER_VERSION = "v0"
@@ -128,7 +145,20 @@ INTEGRATED_VS_SCENARIO_REPLAY_FULL_SYSTEM_PARITY_HARNESS_OWNER = (
 )
 
 FOUR_WAY_PARITY_REWIRE_SLICE_ID = "INTEGRATED_VS_SCENARIO_REPLAY_FULL_SYSTEM_4_WAY_PARITY_REWIRE_V0"
+SURFACE_P_FULL_BAR_SEQUENCE_4_WAY_PARITY_COMPLETION_SLICE_ID = (
+    "SURFACE_P_FULL_BAR_SEQUENCE_4_WAY_PARITY_COMPLETION_V0"
+)
 RUNTIME_REFERENCE_INTEGRATION_STATUS_V0 = "BOUND_NOT_ACTIVATED"
+SurfacePBarSequencePathKind = Literal[
+    "entry_path",
+    "hold_position_management_path",
+    "adverse_exit_path",
+    "reversal_preparation_exit_path",
+    "flat_before_opposite_side_path",
+    "capital_risk_sizing_path",
+    "canonical_order_intent_path",
+    "blocked_no_action_path",
+]
 BACKTEST_PARITY_WIRING_OWNER = "backtest.mv2_research_wiring_v1"
 RUNTIME_BRIDGE_REFERENCE_OWNER = "trading.master_v2.canonical_core_runtime_integration_bridge_v0"
 
@@ -136,8 +166,10 @@ ALLOWED_SLICE_CHANGED_PATH_PREFIXES: Tuple[str, ...] = (
     "src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py",
     "scripts/ops/run_integrated_vs_scenario_replay_full_system_parity_contract_suite_v0.py",
     "scripts/ops/run_integrated_vs_scenario_replay_full_system_4_way_parity_rewire_v0.py",
+    "scripts/ops/run_surface_p_full_bar_sequence_4_way_parity_completion_v0.py",
     "src/trading/master_v2/full_canonical_system_backtest_parity_gap_assessment_v0.py",
     "tests/trading/master_v2/test_integrated_vs_scenario_replay_full_system_parity_contract_suite_v0.py",
+    "tests/trading/master_v2/test_surface_p_full_bar_sequence_4_way_parity_completion_contract_v0.py",
     "tests/trading/master_v2/test_full_canonical_system_backtest_parity_gap_assessment_contract_v0.py",
 )
 
@@ -204,6 +236,40 @@ class FullSystemFourWayParityAssessmentV0:
     backtest_non_authority_confirmed: bool
     runtime_reference_non_authority_confirmed: bool
     four_way_parity_rewire_bound: bool
+    fail_closed_reasons: Tuple[str, ...] = ()
+
+
+@dataclass(frozen=True)
+class SurfacePBarSequenceFixtureV0:
+    fixture_id: str
+    path_kind: SurfacePBarSequencePathKind
+    backtest_bar_index: int
+    scenario_side_state: SideState
+    instrument_id: str
+    trading_epoch: int
+    context_reference: str
+
+
+@dataclass(frozen=True)
+class SurfacePBarSequenceFixtureAssessmentV0:
+    fixture_id: str
+    path_kind: SurfacePBarSequencePathKind
+    integrated_lane_bound: bool
+    scenario_lane_bound: bool
+    backtest_lane_bound: bool
+    runtime_reference_lane_bound: bool
+    integrated_scenario_evidence_aligned: bool
+    backtest_non_authority_confirmed: bool
+    runtime_reference_non_authority_confirmed: bool
+    four_way_fixture_parity_bound: bool
+    fail_closed_reasons: Tuple[str, ...] = ()
+
+
+@dataclass(frozen=True)
+class SurfacePFullBarSequenceParityAssessmentV0:
+    fixture_assessments: Tuple[SurfacePBarSequenceFixtureAssessmentV0, ...]
+    fixtures_complete: bool
+    runtime_bridge_status: str
     fail_closed_reasons: Tuple[str, ...] = ()
 
 
@@ -1277,6 +1343,892 @@ def evaluate_surface_p_four_way_parity_v0(
         backtest_non_authority_confirmed=backtest_non_authority,
         runtime_reference_non_authority_confirmed=runtime_reference_non_authority,
         four_way_parity_rewire_bound=four_way_bound,
+        fail_closed_reasons=tuple(fail_reasons),
+    )
+
+
+_SURFACE_P_INTEGRATED_INSTRUMENT = "inst-eth-usdt-perp"
+_SURFACE_P_REPLAY_ID = "surface-p-bar-sequence-integrated-replay-v0"
+_SURFACE_P_CONFIG_DIGEST = "c" * 64
+_SURFACE_P_IMPL_DIGEST = "d" * 64
+
+
+def surface_p_bar_sequence_fixtures_v0(
+    *,
+    instrument_id: str = SYNTHETIC_FUTURES_INSTRUMENT,
+    trading_epoch: int = 44,
+    context_reference: str = "surface-p-bar-sequence-4way-parity-v0",
+) -> Tuple[SurfacePBarSequenceFixtureV0, ...]:
+    return (
+        SurfacePBarSequenceFixtureV0(
+            "entry_long_path",
+            "entry_path",
+            0,
+            SideState.LONG_ARMED,
+            instrument_id,
+            trading_epoch,
+            context_reference,
+        ),
+        SurfacePBarSequenceFixtureV0(
+            "hold_position_management",
+            "hold_position_management_path",
+            1,
+            SideState.LONG_ACTIVE,
+            instrument_id,
+            trading_epoch,
+            context_reference,
+        ),
+        SurfacePBarSequenceFixtureV0(
+            "adverse_scope_exit",
+            "adverse_exit_path",
+            2,
+            SideState.LONG_ACTIVE,
+            instrument_id,
+            trading_epoch,
+            context_reference,
+        ),
+        SurfacePBarSequenceFixtureV0(
+            "reversal_preparation_exit",
+            "reversal_preparation_exit_path",
+            3,
+            SideState.LONG_ACTIVE,
+            instrument_id,
+            trading_epoch,
+            context_reference,
+        ),
+        SurfacePBarSequenceFixtureV0(
+            "flat_before_opposite_side",
+            "flat_before_opposite_side_path",
+            4,
+            SideState.SHORT_ARMED,
+            instrument_id,
+            trading_epoch,
+            context_reference,
+        ),
+        SurfacePBarSequenceFixtureV0(
+            "capital_risk_sizing",
+            "capital_risk_sizing_path",
+            5,
+            SideState.LONG_ARMED,
+            instrument_id,
+            trading_epoch,
+            context_reference,
+        ),
+        SurfacePBarSequenceFixtureV0(
+            "canonical_order_intent",
+            "canonical_order_intent_path",
+            6,
+            SideState.LONG_ARMED,
+            instrument_id,
+            trading_epoch,
+            context_reference,
+        ),
+        SurfacePBarSequenceFixtureV0(
+            "blocked_no_action",
+            "blocked_no_action_path",
+            7,
+            SideState.CHOP_GUARD_BLOCK,
+            instrument_id,
+            trading_epoch,
+            context_reference,
+        ),
+    )
+
+
+def parity_decision_evidence_core_fields_aligned_v0(
+    left: ParityDecisionEnvelopeV0,
+    right: ParityDecisionEnvelopeV0,
+    *,
+    require_risk_sizing: bool = False,
+    require_order_intent: bool = False,
+) -> bool:
+    if left.decision_outcome != right.decision_outcome:
+        return False
+    if left.decision_precedence_trace != right.decision_precedence_trace:
+        return False
+    if set(left.reason_codes) != set(right.reason_codes):
+        return False
+    if left.authority_effect != right.authority_effect:
+        return False
+    if left.runtime_effect != right.runtime_effect:
+        return False
+    if require_risk_sizing and left.risk_sizing_effect != right.risk_sizing_effect:
+        return False
+    if require_order_intent and left.order_intent_effect != right.order_intent_effect:
+        return False
+    return True
+
+
+def run_backtest_bar_sequence_envelopes_v0() -> Tuple[ParityDecisionEnvelopeV0, ...]:
+    from src.backtest.mv2_research_wiring_v1 import (
+        MV2_REQUIRED_INSTRUMENT_ID,
+        run_mv2_research_backtest_wiring_v1,
+    )
+
+    result = run_mv2_research_backtest_wiring_v1(
+        bars=_synthetic_mv2_research_bars_v0(),
+        strategy_id="ma_crossover",
+        cfg=_default_mv2_research_cfg_v0(),
+        instrument_id=MV2_REQUIRED_INSTRUMENT_ID,
+    )
+    envelopes: list[ParityDecisionEnvelopeV0] = []
+    for bar_outcome in result.bar_outcomes:
+        envelope = extract_backtest_evidence_parity_envelope_v0(bar_outcome.evidence)
+        assert_backtest_lane_non_authority_boundary_v0(envelope)
+        envelopes.append(envelope)
+    return tuple(envelopes)
+
+
+def bind_backtest_bar_parity_lane_at_index_v0(
+    bar_index: int,
+) -> ParityDecisionEnvelopeV0 | None:
+    envelopes = run_backtest_bar_sequence_envelopes_v0()
+    if bar_index < 0 or bar_index >= len(envelopes):
+        return None
+    return envelopes[bar_index]
+
+
+def _surface_p_integrated_replay_overrides_v0(
+    fixture: SurfacePBarSequenceFixtureV0,
+) -> Mapping[str, object]:
+    from trading.master_v2.deterministic_scope_event_generator_v1 import ScopeDirectionState
+    from trading.master_v2.double_play_composition_matrix_v1 import PositionManagementContext
+
+    base: dict[str, object] = {
+        "price_path": (3500.0, 3570.0),
+        "side_state": fixture.scenario_side_state,
+        "direction_state": EntryExitDirectionState.LONG_ARMED,
+    }
+    if fixture.path_kind == "entry_path":
+        base.update(
+            {
+                "side_state": SideState.LONG_ARMED,
+                "direction_state": EntryExitDirectionState.LONG_ARMED,
+                "price_path": (3500.0, 3570.0),
+            }
+        )
+    elif fixture.path_kind == "hold_position_management_path":
+        base.update(
+            {
+                "side_state": SideState.LONG_ACTIVE,
+                "direction_state": EntryExitDirectionState.LONG_ACTIVE,
+                "position_state": PositionState.OPEN_FULL,
+                "existing_position_side": ExistingPositionSide.LONG,
+                "venue_flat": False,
+                "position_management_context": PositionManagementContext.LONG_POSITION,
+            }
+        )
+    elif fixture.path_kind == "adverse_exit_path":
+        base.update(
+            {
+                "side_state": SideState.LONG_ACTIVE,
+                "direction_state": EntryExitDirectionState.LONG_ACTIVE,
+                "position_state": PositionState.OPEN_FULL,
+                "existing_position_side": ExistingPositionSide.LONG,
+                "venue_flat": False,
+                "scope_adverse_exit_signal": PolicySignalV0(
+                    triggered=True,
+                    reason_code="adverse_scope",
+                ),
+            }
+        )
+    elif fixture.path_kind == "reversal_preparation_exit_path":
+        base.update(
+            {
+                "side_state": SideState.LONG_ACTIVE,
+                "direction_state": EntryExitDirectionState.LONG_ACTIVE,
+                "position_state": PositionState.OPEN_FULL,
+                "existing_position_side": ExistingPositionSide.LONG,
+                "venue_flat": False,
+                "price_path": (3500.0, 3400.0),
+                "scope_direction_state": ScopeDirectionState.SHORT,
+            }
+        )
+    elif fixture.path_kind == "flat_before_opposite_side_path":
+        base.update(
+            {
+                "side_state": SideState.SHORT_ARMED,
+                "direction_state": EntryExitDirectionState.SHORT_ARMED,
+                "position_state": PositionState.OPEN_FULL,
+                "existing_position_side": ExistingPositionSide.LONG,
+                "venue_flat": False,
+                "scope_direction_state": ScopeDirectionState.SHORT,
+                "price_path": (3500.0, 3400.0),
+            }
+        )
+    elif fixture.path_kind in ("capital_risk_sizing_path", "canonical_order_intent_path"):
+        base.update(
+            {
+                "side_state": SideState.LONG_ARMED,
+                "direction_state": EntryExitDirectionState.LONG_ARMED,
+                "price_path": (3500.0, 3570.0),
+            }
+        )
+    elif fixture.path_kind == "blocked_no_action_path":
+        base.update(
+            {
+                "side_state": SideState.CHOP_GUARD_BLOCK,
+                "direction_state": EntryExitDirectionState.NEUTRAL,
+                "price_path": (3500.0, 3600.0),
+            }
+        )
+    return base
+
+
+def build_surface_p_integrated_replay_result_v0(
+    fixture: SurfacePBarSequenceFixtureV0,
+) -> IntegratedOfflineReplayResultV1 | None:
+    from trading.master_v2.canonical_market_context_v1 import (
+        BarFinalityStatus,
+        CanonicalMarketContextBindingStateV1,
+        CanonicalMarketContextV1,
+        ClockTrustStatus,
+        DataIntegrityStatus,
+        FEATURE_CONTRACT_VERSION,
+        WarmupStatus,
+        with_computed_input_digest,
+    )
+    from trading.master_v2.canonical_scope_initialization_v1 import (
+        CanonicalScopeInitializationPolicyV1,
+        ScopeInitializationPrerequisitesV1,
+        ScopeReinitializationGuardV1,
+        SCOPE_INITIALIZATION_POLICY_VERSION,
+    )
+    from trading.master_v2.deterministic_scope_event_generator_v1 import (
+        SCOPE_EVENT_GENERATOR_POLICY_VERSION,
+        ScopeConfirmationStateV1,
+        ScopeCooldownStateV1,
+        ScopeDirectionState,
+        ScopeEventGeneratorPolicyV1,
+    )
+    from trading.master_v2.directional_assessment_v1 import (
+        DIRECTIONAL_ASSESSMENT_POLICY_VERSION,
+        DirectionalAssessmentPolicyV1,
+        DirectionalAssessmentSide,
+        DirectionalConfirmationStateV1,
+    )
+    from trading.master_v2.double_play_composition_matrix_v1 import (
+        DOUBLE_PLAY_COMPOSITION_MATRIX_POLICY_VERSION,
+        BothCandidateOutcome,
+        BothInvalidOutcome,
+        CompositionDirectionState,
+        DoublePlayCompositionPolicyV1,
+        PositionManagementContext,
+    )
+    from trading.master_v2.double_play_entry_exit_policy_v0 import (
+        ENTRY_EXIT_POLICY_VERSION,
+        DoublePlayEntryExitPolicyV0,
+        ReconciliationState,
+        SafetyMode,
+        TradingGate,
+    )
+    from trading.master_v2.double_play_futures_input import FuturesMarketType
+    from trading.master_v2.integrated_offline_trading_logic_replay_v1 import (
+        INTEGRATED_OFFLINE_TRADING_LOGIC_REPLAY_LAYER_VERSION,
+        IntegratedOfflineReplayInputV1,
+        IntegratedOfflineReplayPoliciesV1,
+    )
+    from trading.master_v2.suitability_binding_v1 import (
+        SUITABILITY_RANKING_POLICY_VERSION,
+        SuitabilityBindingStatus,
+        SuitabilityRankingPolicyV1,
+        SuitabilityRegimeStatus,
+        SuitabilityStrategyEntryV1,
+        SuitabilityStrategyRegistryV1,
+    )
+    from trading.master_v2.survival_assessment_v1 import (
+        SURVIVAL_ASSESSMENT_POLICY_VERSION,
+        SurvivalAssessmentPolicyV1,
+    )
+
+    overrides = dict(_surface_p_integrated_replay_overrides_v0(fixture))
+    price_path = tuple(overrides.pop("price_path", (3500.0, 3570.0)))  # type: ignore[arg-type]
+    ctx = with_computed_input_digest(
+        CanonicalMarketContextV1(
+            context_id=f"ctx-surface-p-{fixture.fixture_id}",
+            instrument_id=_SURFACE_P_INTEGRATED_INSTRUMENT,
+            market_type=FuturesMarketType.PERPETUAL,
+            trading_epoch=fixture.trading_epoch,
+            market_event_time="2026-06-30T12:00:00+00:00",
+            decision_time="2026-06-30T12:00:01+00:00",
+            bar_interval="1m",
+            bar_finality_status=BarFinalityStatus.FINALIZED,
+            mark_price=float(price_path[-1]),
+            index_price=float(price_path[-1]) - 0.5,
+            best_bid=float(price_path[-1]) - 0.2,
+            best_ask=float(price_path[-1]) + 0.2,
+            spread=0.4,
+            volume=1_250_000.0,
+            open_interest=85_000_000.0,
+            funding_rate=0.00012,
+            volatility_estimate=0.38,
+            trend_feature_set={"slope": 0.02, "strength": 0.71},
+            momentum_feature_set={"rsi": 55.0, "roc": 0.015},
+            liquidity_feature_set={"depth_score": 0.88},
+            market_structure_feature_set={"range_ratio": 0.42},
+            data_integrity_status=DataIntegrityStatus.TRUSTED,
+            clock_trust_status=ClockTrustStatus.TRUSTED,
+            warmup_status=WarmupStatus.WARMUP_COMPLETE,
+            feature_contract_version=FEATURE_CONTRACT_VERSION,
+            input_digest="",
+        )
+    )
+    replay_input = IntegratedOfflineReplayInputV1(
+        replay_id=_SURFACE_P_REPLAY_ID,
+        instrument_id=_SURFACE_P_INTEGRATED_INSTRUMENT,
+        trading_epoch=fixture.trading_epoch,
+        canonical_market_context=ctx,
+        market_context_binding_state=CanonicalMarketContextBindingStateV1(),
+        scope_prerequisites=ScopeInitializationPrerequisitesV1(
+            required_window_complete=True,
+            instrument_metadata_valid=True,
+            finalized_market_context=True,
+        ),
+        scope_reinitialization_guard=ScopeReinitializationGuardV1(),
+        existing_scope=None,
+        scope_direction_state=overrides.get("scope_direction_state", ScopeDirectionState.LONG),
+        scope_confirmation_state=ScopeConfirmationStateV1(
+            candidate_kind=None,
+            candidate_count=1,
+            last_evaluated_trading_epoch=fixture.trading_epoch - 1,
+        ),
+        scope_cooldown_state=ScopeCooldownStateV1(
+            active=False,
+            remaining_epochs=0,
+            policy_version=SCOPE_EVENT_GENERATOR_POLICY_VERSION,
+        ),
+        up_distance=200.0,
+        adverse_exit_distance=80.0,
+        reversal_distance=120.0,
+        confirmation_epochs=2,
+        current_price=float(price_path[-1]),
+        price_path=price_path,
+        directional_confirmation_state=DirectionalConfirmationStateV1(
+            candidate_count=1,
+            last_evaluated_trading_epoch=fixture.trading_epoch - 1,
+            last_signal_strength=0.02,
+        ),
+        strategy_registry=SuitabilityStrategyRegistryV1(
+            entries=(
+                SuitabilityStrategyEntryV1(
+                    strategy_id="strat-momentum-v1",
+                    supported_regime_ids=("trending",),
+                    supported_sides=(
+                        DirectionalAssessmentSide.LONG,
+                        DirectionalAssessmentSide.SHORT,
+                    ),
+                    priority_rank=10,
+                    disabled=False,
+                    confidence_score=0.75,
+                ),
+            )
+        ),
+        regime_id="trending",
+        regime_status=SuitabilityRegimeStatus.KNOWN,
+        previous_composition_direction_state=CompositionDirectionState.NEUTRAL,
+        position_management_context=overrides.get(
+            "position_management_context",
+            PositionManagementContext.FLAT,
+        ),
+        last_evaluated_trading_epoch=fixture.trading_epoch - 1,
+        side_state=overrides.get("side_state", SideState.LONG_ARMED),
+        direction_state=overrides.get("direction_state", EntryExitDirectionState.LONG_ARMED),
+        position_state=overrides.get("position_state", PositionState.FLAT_RECONCILED),
+        reconciliation_state=ReconciliationState.RECONCILED,
+        trading_gate=TradingGate.ENTRY_ALLOWED,
+        safety_mode=SafetyMode.NORMAL,
+        existing_position_side=overrides.get(
+            "existing_position_side",
+            ExistingPositionSide.NONE,
+        ),
+        venue_flat=overrides.get("venue_flat", True),
+        cooldown_pass=True,
+        scope_adverse_exit_signal=overrides.get(
+            "scope_adverse_exit_signal",
+            PolicySignalV0(triggered=False),
+        ),
+        profit_protection_signal=PolicySignalV0(triggered=False),
+        time_exit_signal=PolicySignalV0(triggered=False),
+        strategy_invalidation_signal=PolicySignalV0(triggered=False),
+        hard_risk_reduction_signal=PolicySignalV0(triggered=False),
+        safety_exit_signal=PolicySignalV0(triggered=False),
+        policies=IntegratedOfflineReplayPoliciesV1(
+            scope_initialization=CanonicalScopeInitializationPolicyV1(
+                min_scope_band=50.0,
+                max_scope_band=500.0,
+                policy_version=SCOPE_INITIALIZATION_POLICY_VERSION,
+            ),
+            scope_event_generator=ScopeEventGeneratorPolicyV1(
+                hard_max_scope_distance=1000.0,
+                hard_max_adverse_distance=500.0,
+                hard_max_reversal_distance=800.0,
+                policy_version=SCOPE_EVENT_GENERATOR_POLICY_VERSION,
+            ),
+            directional=DirectionalAssessmentPolicyV1(
+                observe_signal_threshold=0.001,
+                candidate_signal_threshold=0.005,
+                confirmation_signal_threshold=0.01,
+                confirmation_epochs=2,
+                validity_epochs=3,
+                policy_version=DIRECTIONAL_ASSESSMENT_POLICY_VERSION,
+            ),
+            survival=SurvivalAssessmentPolicyV1(
+                min_net_edge=0.001,
+                min_volatility_survival_ratio=0.5,
+                min_sequence_survival_ratio=0.5,
+                min_drawdown_survival_ratio=0.5,
+                min_liquidation_buffer_ratio=0.1,
+                validity_epochs=3,
+                policy_version=SURVIVAL_ASSESSMENT_POLICY_VERSION,
+            ),
+            suitability=SuitabilityRankingPolicyV1(
+                validity_epochs=3,
+                no_match_status=SuitabilityBindingStatus.FAIL,
+                policy_version=SUITABILITY_RANKING_POLICY_VERSION,
+            ),
+            composition=DoublePlayCompositionPolicyV1(
+                validity_epochs=3,
+                both_candidate_outcome=BothCandidateOutcome.OBSERVE,
+                both_invalid_outcome=BothInvalidOutcome.BLOCKED,
+                policy_version=DOUBLE_PLAY_COMPOSITION_MATRIX_POLICY_VERSION,
+            ),
+            entry_exit=DoublePlayEntryExitPolicyV0(policy_version=ENTRY_EXIT_POLICY_VERSION),
+        ),
+        component_versions={
+            "integrated_offline_trading_logic_replay": (
+                INTEGRATED_OFFLINE_TRADING_LOGIC_REPLAY_LAYER_VERSION
+            ),
+        },
+        policy_versions={
+            "scope_initialization": SCOPE_INITIALIZATION_POLICY_VERSION,
+            "scope_event_generator": SCOPE_EVENT_GENERATOR_POLICY_VERSION,
+            "directional": DIRECTIONAL_ASSESSMENT_POLICY_VERSION,
+            "survival": SURVIVAL_ASSESSMENT_POLICY_VERSION,
+            "suitability": SUITABILITY_RANKING_POLICY_VERSION,
+            "composition": DOUBLE_PLAY_COMPOSITION_MATRIX_POLICY_VERSION,
+            "entry_exit": ENTRY_EXIT_POLICY_VERSION,
+        },
+        config_digest=_SURFACE_P_CONFIG_DIGEST,
+        implementation_digest=_SURFACE_P_IMPL_DIGEST,
+        input_digest=hashlib.sha256(f"surface-p-fixture-{fixture.fixture_id}".encode()).hexdigest(),
+        expected_component_contracts={
+            "integrated_offline_trading_logic_replay": (
+                INTEGRATED_OFFLINE_TRADING_LOGIC_REPLAY_LAYER_VERSION
+            ),
+        },
+        context_reference=fixture.context_reference,
+        now_tick=0,
+    )
+    result = run_integrated_offline_trading_logic_replay_v1(replay_input)
+    if not result.replay_pass:
+        return None
+    return result
+
+
+def build_surface_p_fixture_scenario_envelope_v0(
+    fixture: SurfacePBarSequenceFixtureV0,
+) -> ParityDecisionEnvelopeV0 | None:
+    if fixture.path_kind == "reversal_preparation_exit_path":
+        matrix = evaluate_reversal_preparation_matrix_v0(
+            instrument_id=fixture.instrument_id,
+            trading_epoch=fixture.trading_epoch,
+            context_reference=fixture.context_reference,
+        )
+        decision = evaluate_scenario_entry_exit_for_fixture_v0(
+            side_state=SideState.SHORT_ARMED,
+            instrument_id=fixture.instrument_id,
+            trading_epoch=fixture.trading_epoch,
+            context_reference=fixture.context_reference,
+            policy_context=ScenarioEntryExitPolicyContextV0(
+                position_state=PositionState.OPEN_FULL,
+                existing_position_side=ExistingPositionSide.LONG,
+                venue_flat=False,
+            ),
+            matrix_result=matrix,
+        )
+        return extract_entry_exit_policy_parity_envelope_v0(
+            decision,
+            composition_status=matrix.composition_status.value,
+        )
+    if fixture.path_kind == "flat_before_opposite_side_path":
+        matrix = evaluate_scenario_matrix_for_side_state_v0(
+            side_state=SideState.SHORT_ACTIVE,
+            instrument_id=fixture.instrument_id,
+            trading_epoch=fixture.trading_epoch,
+            context_reference=fixture.context_reference,
+        )
+        decision = evaluate_scenario_entry_exit_for_fixture_v0(
+            side_state=SideState.SHORT_ARMED,
+            instrument_id=fixture.instrument_id,
+            trading_epoch=fixture.trading_epoch,
+            context_reference=fixture.context_reference,
+            policy_context=ScenarioEntryExitPolicyContextV0(
+                position_state=PositionState.OPEN_FULL,
+                existing_position_side=ExistingPositionSide.LONG,
+                venue_flat=False,
+            ),
+            matrix_result=matrix,
+        )
+        return extract_entry_exit_policy_parity_envelope_v0(
+            decision,
+            composition_status=matrix.composition_status.value,
+        )
+    if fixture.path_kind in ("capital_risk_sizing_path", "canonical_order_intent_path"):
+        replay = run_offline_double_play_scenario_replay_v0(
+            OfflineDoublePlayScenarioReplayInputV0(
+                selected_future_id=fixture.instrument_id,
+                ticks=build_default_bull_bear_bull_scenario_ticks(),
+                source_revision=f"surface-p-{fixture.fixture_id}",
+            )
+        )
+        if not replay.replay_pass:
+            return None
+        tick = _surface_p_scenario_replay_tick_for_fixture_v0(fixture)
+        if tick is None:
+            return None
+        if fixture.path_kind == "capital_risk_sizing_path":
+            return extract_scenario_replay_tick_capital_risk_sizing_envelope_v0(tick)
+        from trading.master_v2.canonical_order_intent_offline_replay_binding_adapter_v0 import (
+            evaluate_scenario_canonical_order_intent_v0,
+        )
+        from trading.master_v2.capital_risk_sizing_offline_replay_binding_adapter_v0 import (
+            build_scenario_tick_decision_evidence_v0,
+            evaluate_scenario_capital_risk_sizing_v0,
+        )
+
+        evidence = build_scenario_tick_decision_evidence_v0(
+            decision_id=tick.entry_exit_policy_ref,
+            replay_id=f"{fixture.context_reference}-replay",
+            instrument_id=fixture.instrument_id,
+            trading_epoch=fixture.trading_epoch,
+            composition_result_id=tick.composition_result_id,
+            entry_exit_policy_ref=tick.entry_exit_policy_ref,
+            selected_side="long",
+            decision_outcome=tick.entry_exit_decision_outcome,
+            reason_codes=tick.entry_exit_reason_codes,
+            decision_precedence_trace=tick.entry_exit_decision_precedence_trace,
+            config_digest=_SURFACE_P_CONFIG_DIGEST,
+            implementation_digest=_SURFACE_P_IMPL_DIGEST,
+        )
+        sizing_binding = evaluate_scenario_capital_risk_sizing_v0(evidence)
+        intent_binding = evaluate_scenario_canonical_order_intent_v0(
+            sizing_binding.evidence,
+            sizing_decision=sizing_binding.sizing_decision,
+        )
+        return extract_canonical_order_intent_parity_envelope_v0(intent_binding)
+    matrix = evaluate_scenario_matrix_for_side_state_v0(
+        side_state=fixture.scenario_side_state,
+        instrument_id=fixture.instrument_id,
+        trading_epoch=fixture.trading_epoch,
+        context_reference=fixture.context_reference,
+    )
+    policy_context = default_scenario_entry_exit_policy_context_v0()
+    if fixture.path_kind == "adverse_exit_path":
+        policy_context = ScenarioEntryExitPolicyContextV0(
+            position_state=PositionState.OPEN_FULL,
+            existing_position_side=ExistingPositionSide.LONG,
+            venue_flat=False,
+            scope_adverse_exit_signal=PolicySignalV0(
+                triggered=True,
+                reason_code="adverse_scope",
+            ),
+        )
+    elif fixture.path_kind == "hold_position_management_path":
+        policy_context = ScenarioEntryExitPolicyContextV0(
+            position_state=PositionState.OPEN_FULL,
+            existing_position_side=ExistingPositionSide.LONG,
+            venue_flat=False,
+        )
+    decision = evaluate_scenario_entry_exit_for_fixture_v0(
+        side_state=fixture.scenario_side_state,
+        instrument_id=fixture.instrument_id,
+        trading_epoch=fixture.trading_epoch,
+        context_reference=fixture.context_reference,
+        policy_context=policy_context,
+        matrix_result=matrix,
+    )
+    return extract_entry_exit_policy_parity_envelope_v0(
+        decision,
+        composition_status=matrix.composition_status.value,
+    )
+
+
+def _surface_p_scenario_replay_tick_for_fixture_v0(
+    fixture: SurfacePBarSequenceFixtureV0,
+) -> OfflineDoublePlayScenarioReplayTickRecordV0 | None:
+    replay = run_offline_double_play_scenario_replay_v0(
+        OfflineDoublePlayScenarioReplayInputV0(
+            selected_future_id=fixture.instrument_id,
+            ticks=build_default_bull_bear_bull_scenario_ticks(),
+            source_revision=f"surface-p-{fixture.fixture_id}",
+        )
+    )
+    if not replay.replay_pass:
+        return None
+    if fixture.path_kind == "capital_risk_sizing_path":
+        for tick in replay.tick_records:
+            if tick.risk_sizing_effect == RISK_SIZING_EFFECT_BOUND_OFFLINE:
+                return tick
+        return None
+    if fixture.path_kind == "canonical_order_intent_path":
+        for tick in replay.tick_records:
+            if tick.risk_sizing_effect == RISK_SIZING_EFFECT_BOUND_OFFLINE:
+                return tick
+        return None
+    if fixture.path_kind == "entry_path":
+        for tick in replay.tick_records:
+            if tick.entry_exit_decision_outcome == DecisionOutcome.ENTER_LONG.value:
+                return tick
+        return None
+    if fixture.path_kind == "hold_position_management_path":
+        for tick in replay.tick_records:
+            if tick.entry_exit_decision_outcome == DecisionOutcome.HOLD.value:
+                return tick
+        return None
+    if fixture.path_kind == "adverse_exit_path":
+        for tick in replay.tick_records:
+            if tick.entry_exit_decision_outcome in (
+                DecisionOutcome.EXIT.value,
+                DecisionOutcome.REDUCE.value,
+            ):
+                return tick
+        return None
+    if fixture.path_kind == "blocked_no_action_path":
+        for tick in replay.tick_records:
+            if tick.entry_exit_decision_outcome in (
+                DecisionOutcome.OBSERVE.value,
+                DecisionOutcome.BLOCKED.value,
+                DecisionOutcome.NO_ACTION.value,
+            ):
+                return tick
+        return None
+    return replay.tick_records[0] if replay.tick_records else None
+
+
+def surface_p_fixture_lane_semantics_ok_v0(
+    fixture: SurfacePBarSequenceFixtureV0,
+    envelope: ParityDecisionEnvelopeV0 | None,
+    *,
+    lane: Literal["integrated", "scenario", "backtest", "runtime_reference"],
+) -> bool:
+    if envelope is None:
+        return False
+    if lane == "runtime_reference":
+        return (
+            envelope.transition_reason_code == RUNTIME_REFERENCE_INTEGRATION_STATUS_V0
+            and envelope.authority_effect == "NONE"
+            and not envelope.execution_eligible
+        )
+    if lane == "backtest":
+        return (
+            envelope.authority_effect == "NONE"
+            and envelope.runtime_effect == "NONE"
+            and not envelope.execution_eligible
+        )
+    path_kind = fixture.path_kind
+    if path_kind == "entry_path":
+        if lane == "scenario":
+            return envelope.decision_outcome in (
+                DecisionOutcome.ENTER_LONG.value,
+                DecisionOutcome.ENTER_SHORT.value,
+            )
+        return bool(envelope.entry_or_exit_policy_ref) and envelope.authority_effect == "NONE"
+    if path_kind == "hold_position_management_path":
+        if lane == "scenario":
+            return envelope.decision_outcome == DecisionOutcome.HOLD.value
+        return bool(envelope.entry_or_exit_policy_ref) and envelope.authority_effect == "NONE"
+    if path_kind == "adverse_exit_path":
+        return envelope.decision_outcome in (
+            DecisionOutcome.EXIT.value,
+            DecisionOutcome.REDUCE.value,
+        )
+    if path_kind == "reversal_preparation_exit_path":
+        return envelope.decision_outcome != DecisionOutcome.ENTER_SHORT.value
+    if path_kind == "flat_before_opposite_side_path":
+        return envelope.decision_outcome != DecisionOutcome.ENTER_SHORT.value
+    if path_kind == "capital_risk_sizing_path":
+        return envelope.risk_sizing_effect == RISK_SIZING_EFFECT_BOUND_OFFLINE
+    if path_kind == "canonical_order_intent_path":
+        return envelope.order_intent_effect == ORDER_INTENT_EFFECT_BOUND_OFFLINE
+    if path_kind == "blocked_no_action_path":
+        return envelope.decision_outcome in (
+            DecisionOutcome.OBSERVE.value,
+            DecisionOutcome.BLOCKED.value,
+            DecisionOutcome.NO_ACTION.value,
+        ) and envelope.decision_outcome not in (
+            DecisionOutcome.ENTER_LONG.value,
+            DecisionOutcome.ENTER_SHORT.value,
+        )
+    return False
+
+
+def _build_surface_p_adapter_integrated_envelope_v0(
+    fixture: SurfacePBarSequenceFixtureV0,
+) -> ParityDecisionEnvelopeV0 | None:
+    from trading.master_v2.canonical_order_intent_offline_replay_binding_adapter_v0 import (
+        evaluate_scenario_canonical_order_intent_v0,
+    )
+    from trading.master_v2.capital_risk_sizing_offline_replay_binding_adapter_v0 import (
+        bind_capital_risk_sizing_offline_replay_evidence_v0,
+        build_scenario_tick_decision_evidence_v0,
+        evaluate_scenario_capital_risk_sizing_v0,
+    )
+
+    tick = _surface_p_scenario_replay_tick_for_fixture_v0(fixture)
+    if tick is None:
+        return None
+    evidence = build_scenario_tick_decision_evidence_v0(
+        decision_id=tick.entry_exit_policy_ref,
+        replay_id=f"{fixture.context_reference}-replay",
+        instrument_id=fixture.instrument_id,
+        trading_epoch=fixture.trading_epoch,
+        composition_result_id=tick.composition_result_id,
+        entry_exit_policy_ref=tick.entry_exit_policy_ref,
+        selected_side=tick.side_state.value.replace("_active", "").replace("_armed", ""),
+        decision_outcome=tick.entry_exit_decision_outcome,
+        reason_codes=tick.entry_exit_reason_codes,
+        decision_precedence_trace=tick.entry_exit_decision_precedence_trace,
+        config_digest=_SURFACE_P_CONFIG_DIGEST,
+        implementation_digest=_SURFACE_P_IMPL_DIGEST,
+    )
+    if fixture.path_kind == "capital_risk_sizing_path":
+        binding = bind_capital_risk_sizing_offline_replay_evidence_v0(evidence)
+        return extract_capital_risk_sizing_parity_envelope_v0(binding)
+    if fixture.path_kind == "canonical_order_intent_path":
+        sizing_binding = evaluate_scenario_capital_risk_sizing_v0(evidence)
+        intent_binding = evaluate_scenario_canonical_order_intent_v0(
+            sizing_binding.evidence,
+            sizing_decision=sizing_binding.sizing_decision,
+        )
+        return extract_canonical_order_intent_parity_envelope_v0(intent_binding)
+    return None
+
+
+def build_surface_p_fixture_integrated_envelope_v0(
+    fixture: SurfacePBarSequenceFixtureV0,
+) -> ParityDecisionEnvelopeV0 | None:
+    if fixture.path_kind in ("capital_risk_sizing_path", "canonical_order_intent_path"):
+        envelope = _build_surface_p_adapter_integrated_envelope_v0(fixture)
+        if envelope is None:
+            return None
+        if fixture.path_kind == "capital_risk_sizing_path":
+            assert_capital_risk_sizing_non_authority_boundary_v0(envelope)
+        else:
+            assert_canonical_order_intent_non_authority_boundary_v0(envelope)
+        return envelope
+    result = build_surface_p_integrated_replay_result_v0(fixture)
+    if result is None:
+        return None
+    envelope = extract_integrated_parity_envelope_v0(result)
+    assert_non_authority_boundary_v0(envelope)
+    return envelope
+
+
+def evaluate_surface_p_bar_sequence_fixture_four_way_parity_v0(
+    fixture: SurfacePBarSequenceFixtureV0,
+) -> SurfacePBarSequenceFixtureAssessmentV0:
+    fail_reasons: list[str] = []
+
+    integrated_env = build_surface_p_fixture_integrated_envelope_v0(fixture)
+    integrated_lane_bound = integrated_env is not None
+    if not integrated_lane_bound:
+        fail_reasons.append("integrated_lane_unbound")
+
+    scenario_env = build_surface_p_fixture_scenario_envelope_v0(fixture)
+    scenario_lane_bound = scenario_env is not None
+    if not scenario_lane_bound:
+        fail_reasons.append("scenario_lane_unbound")
+
+    integrated_scenario_aligned = False
+    if integrated_env is not None and scenario_env is not None:
+        integrated_sem = surface_p_fixture_lane_semantics_ok_v0(
+            fixture,
+            integrated_env,
+            lane="integrated",
+        )
+        scenario_sem = surface_p_fixture_lane_semantics_ok_v0(
+            fixture,
+            scenario_env,
+            lane="scenario",
+        )
+        if fixture.path_kind in ("capital_risk_sizing_path", "canonical_order_intent_path"):
+            integrated_scenario_aligned = (
+                integrated_sem
+                and scenario_sem
+                and integrated_env.risk_sizing_effect == scenario_env.risk_sizing_effect
+                and integrated_env.order_intent_effect == scenario_env.order_intent_effect
+            )
+        else:
+            integrated_scenario_aligned = integrated_sem and scenario_sem
+    if integrated_lane_bound and scenario_lane_bound and not integrated_scenario_aligned:
+        fail_reasons.append("integrated_scenario_evidence_not_aligned")
+
+    backtest_env = bind_backtest_bar_parity_lane_at_index_v0(fixture.backtest_bar_index)
+    backtest_lane_bound = backtest_env is not None
+    backtest_non_authority = backtest_lane_bound
+    if not backtest_lane_bound:
+        fail_reasons.append("backtest_lane_unbound")
+
+    runtime_env = extract_runtime_reference_parity_envelope_v0()
+    runtime_reference_lane_bound = True
+    runtime_reference_non_authority = True
+    try:
+        assert_runtime_reference_lane_v0(runtime_env)
+    except AssertionError:
+        runtime_reference_lane_bound = False
+        runtime_reference_non_authority = False
+        fail_reasons.append("runtime_reference_lane_invalid")
+
+    four_way_bound = (
+        integrated_lane_bound
+        and scenario_lane_bound
+        and backtest_lane_bound
+        and runtime_reference_lane_bound
+        and integrated_scenario_aligned
+        and backtest_non_authority
+        and runtime_reference_non_authority
+    )
+    return SurfacePBarSequenceFixtureAssessmentV0(
+        fixture_id=fixture.fixture_id,
+        path_kind=fixture.path_kind,
+        integrated_lane_bound=integrated_lane_bound,
+        scenario_lane_bound=scenario_lane_bound,
+        backtest_lane_bound=backtest_lane_bound,
+        runtime_reference_lane_bound=runtime_reference_lane_bound,
+        integrated_scenario_evidence_aligned=integrated_scenario_aligned,
+        backtest_non_authority_confirmed=backtest_non_authority,
+        runtime_reference_non_authority_confirmed=runtime_reference_non_authority,
+        four_way_fixture_parity_bound=four_way_bound,
+        fail_closed_reasons=tuple(fail_reasons),
+    )
+
+
+def evaluate_surface_p_full_bar_sequence_four_way_parity_v0(
+    *,
+    instrument_id: str = SYNTHETIC_FUTURES_INSTRUMENT,
+    trading_epoch: int = 44,
+    context_reference: str = "surface-p-bar-sequence-4way-parity-v0",
+) -> SurfacePFullBarSequenceParityAssessmentV0:
+    assessments = tuple(
+        evaluate_surface_p_bar_sequence_fixture_four_way_parity_v0(fixture)
+        for fixture in surface_p_bar_sequence_fixtures_v0(
+            instrument_id=instrument_id,
+            trading_epoch=trading_epoch,
+            context_reference=context_reference,
+        )
+    )
+    fail_reasons: list[str] = []
+    fixtures_complete = all(item.four_way_fixture_parity_bound for item in assessments)
+    if not fixtures_complete:
+        for item in assessments:
+            if not item.four_way_fixture_parity_bound:
+                fail_reasons.append(
+                    f"{item.fixture_id}:{'|'.join(item.fail_closed_reasons) or 'unbound'}"
+                )
+    return SurfacePFullBarSequenceParityAssessmentV0(
+        fixture_assessments=assessments,
+        fixtures_complete=fixtures_complete,
+        runtime_bridge_status=RUNTIME_REFERENCE_INTEGRATION_STATUS_V0,
         fail_closed_reasons=tuple(fail_reasons),
     )
 

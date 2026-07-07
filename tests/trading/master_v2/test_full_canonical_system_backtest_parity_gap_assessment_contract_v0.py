@@ -181,8 +181,15 @@ def test_surface_p_four_way_parity_binding_partial_v0() -> None:
     assert "bind_backtest_bar_four_way_parity_lane_v0" in surface_p.current_backtest_binding
     assert "runtime reference lane bound offline" in surface_p.current_runtime_semantics_reference
     assert "BOUND_NOT_ACTIVATED by policy" in surface_p.missing_binding_if_any
+    assert "full bar-sequence 4-way parity fixture coverage complete offline" in (
+        surface_p.missing_binding_if_any
+    )
     assert (
-        "scripts/ops/run_integrated_vs_scenario_replay_full_system_4_way_parity_rewire_v0.py"
+        "scripts/ops/run_surface_p_full_bar_sequence_4_way_parity_completion_v0.py"
+        in surface_p.evidence_refs
+    )
+    assert (
+        "tests/trading/master_v2/test_surface_p_full_bar_sequence_4_way_parity_completion_contract_v0.py"
         in surface_p.evidence_refs
     )
     assert surface_p.recommended_next_slice == NEXT_RECOMMENDED_SLICE
