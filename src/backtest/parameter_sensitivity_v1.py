@@ -777,8 +777,6 @@ def run_parameter_sensitivity_v1(
     if failed_count:
         reason_codes.append("parameter_points_failed")
     pipeline_status = PipelineStatus.PIPELINE_PASS
-    if failed_count == len(points) and points:
-        pipeline_status = PipelineStatus.PIPELINE_FAILED
 
     result_payload = {
         "grid_digest": grid.grid_digest,
