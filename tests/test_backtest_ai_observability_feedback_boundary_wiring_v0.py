@@ -258,7 +258,9 @@ def test_parity_gap_assessment_surfaces_n_o_backtest_wiring_pass_v0() -> None:
     assert "bind_feedback_learning_boundary_backtest_state_file_evidence_v0" in (
         feedback_surface.current_backtest_binding
     )
-    assert NEXT_RECOMMENDED_SLICE == "FULL_CANONICAL_BACKTEST_BOUNDARY_CHAIN_REASSESSMENT_V0"
+    assert (
+        NEXT_RECOMMENDED_SLICE == "INTEGRATED_VS_SCENARIO_REPLAY_FULL_SYSTEM_4_WAY_PARITY_REWIRE_V0"
+    )
 
 
 def test_mv2_research_wiring_binds_state_files_and_represents_boundaries_v0(
