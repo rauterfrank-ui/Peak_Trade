@@ -76,6 +76,15 @@ from trading.master_v2.bull_bear_state_switch_scenario_binding_adapter_v0 import
     evaluate_scenario_state_switch_v0,
     state_switch_binding_non_authority_boundary_ok_v0,
 )
+from trading.master_v2.scope_event_generator_scenario_binding_adapter_v0 import (
+    CANONICAL_SCOPE_EVENT_GENERATOR_OWNER,
+    SCOPE_EVENT_GENERATOR_SCENARIO_BINDING_ADAPTER_OWNER,
+    SCOPE_EVENT_EFFECT_BOUND_OFFLINE,
+    ScenarioScopeEventBindingResultV0,
+    ScenarioScopeEventContextV0,
+    evaluate_scenario_scope_event_v0,
+    scope_event_binding_non_authority_boundary_ok_v0,
+)
 from trading.master_v2.double_play_entry_exit_scenario_binding_adapter_v0 import (
     CANONICAL_ENTRY_EXIT_POLICY_OWNER,
     DOUBLE_PLAY_ENTRY_EXIT_SCENARIO_BINDING_ADAPTER_OWNER,
@@ -946,6 +955,10 @@ def canonical_owner_refs_v0() -> Mapping[str, str]:
         "state_switch": CANONICAL_STATE_SWITCH_OWNER,
         "bull_bear_state_switch_scenario_binding_adapter": (
             BULL_BEAR_STATE_SWITCH_SCENARIO_BINDING_ADAPTER_OWNER
+        ),
+        "scope_event_generator": CANONICAL_SCOPE_EVENT_GENERATOR_OWNER,
+        "scope_event_generator_scenario_binding_adapter": (
+            SCOPE_EVENT_GENERATOR_SCENARIO_BINDING_ADAPTER_OWNER
         ),
         "runtime_state_reconciliation": RUNTIME_STATE_RECONCILIATION_OWNER,
         "reconciliation_entry_exit_policy": RECONCILIATION_ENTRY_EXIT_POLICY_OWNER,
