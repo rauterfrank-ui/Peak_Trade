@@ -33,6 +33,8 @@ from trading.master_v2.safety_kernel_offline_replay_binding_adapter_v0 import (
     SAFETY_BOUNDARY_EFFECT_NONE,
     SAFETY_KERNEL_OFFLINE_REPLAY_BINDING_ADAPTER_OWNER,
     SafetyKernelOfflineReplayBindingResultV0,
+    SafetyKernelOfflineReplayContextV0,
+    bind_safety_kernel_offline_replay_evidence_v0,
     safety_kernel_binding_non_authority_boundary_ok_v0,
 )
 from trading.master_v2.reconciliation_unknown_outcome_offline_replay_binding_adapter_v0 import (
@@ -42,14 +44,37 @@ from trading.master_v2.reconciliation_unknown_outcome_offline_replay_binding_ada
     RECONCILIATION_UNKNOWN_OUTCOME_OFFLINE_REPLAY_BINDING_ADAPTER_OWNER,
     RUNTIME_STATE_RECONCILIATION_OWNER,
     ReconciliationUnknownOutcomeOfflineReplayBindingResultV0,
+    ReconciliationUnknownOutcomeOfflineReplayContextV0,
+    bind_reconciliation_unknown_outcome_offline_replay_evidence_v0,
     reconciliation_unknown_outcome_binding_non_authority_boundary_ok_v0,
 )
 from trading.master_v2.killswitch_boundary_offline_replay_binding_adapter_v0 import (
     KILLSWITCH_BOUNDARY_EFFECT_BOUND_OFFLINE,
     KILLSWITCH_BOUNDARY_EFFECT_NONE,
     KILLSWITCH_BOUNDARY_OFFLINE_REPLAY_BINDING_ADAPTER_OWNER,
+    KillSwitchBoundaryMode,
     KillSwitchBoundaryOfflineReplayBindingResultV0,
+    KillSwitchBoundaryOfflineReplayContextV0,
+    bind_killswitch_boundary_offline_replay_evidence_v0,
     killswitch_boundary_binding_non_authority_boundary_ok_v0,
+)
+from trading.master_v2.promotion_gate_boundary_offline_replay_binding_adapter_v0 import (
+    PROMOTION_GATE_BOUNDARY_EFFECT_BOUND_OFFLINE,
+    PROMOTION_GATE_BOUNDARY_EFFECT_NONE,
+    PROMOTION_GATE_BOUNDARY_OFFLINE_REPLAY_BINDING_ADAPTER_OWNER,
+    PromotionGateBoundaryOfflineReplayBindingResultV0,
+    PromotionGateBoundaryOfflineReplayContextV0,
+    bind_promotion_gate_boundary_offline_replay_evidence_v0,
+    promotion_gate_boundary_binding_non_authority_boundary_ok_v0,
+)
+from trading.master_v2.ai_observability_boundary_offline_replay_binding_adapter_v0 import (
+    AI_OBSERVABILITY_BOUNDARY_EFFECT_BOUND_OFFLINE,
+    AI_OBSERVABILITY_BOUNDARY_EFFECT_NONE,
+    AI_OBSERVABILITY_BOUNDARY_OFFLINE_REPLAY_BINDING_ADAPTER_OWNER,
+    AiObservabilityBoundaryOfflineReplayBindingResultV0,
+    AiObservabilityBoundaryOfflineReplayContextV0,
+    ai_observability_boundary_binding_non_authority_boundary_ok_v0,
+    bind_ai_observability_boundary_offline_replay_evidence_v0,
 )
 from trading.master_v2.capital_risk_sizing_offline_replay_binding_adapter_v0 import (
     CANONICAL_CAPITAL_RISK_SIZING_OWNER,
@@ -148,6 +173,14 @@ FOUR_WAY_PARITY_REWIRE_SLICE_ID = "INTEGRATED_VS_SCENARIO_REPLAY_FULL_SYSTEM_4_W
 SURFACE_P_FULL_BAR_SEQUENCE_4_WAY_PARITY_COMPLETION_SLICE_ID = (
     "SURFACE_P_FULL_BAR_SEQUENCE_4_WAY_PARITY_COMPLETION_V0"
 )
+SURFACE_P_BOUNDARY_PATH_BAR_SEQUENCE_4_WAY_PARITY_EXTENSION_SLICE_ID = (
+    "SURFACE_P_BOUNDARY_PATH_BAR_SEQUENCE_4_WAY_PARITY_EXTENSION_V0"
+)
+SURFACE_P_CORE_BAR_SEQUENCE_FIXTURE_COUNT = 8
+SURFACE_P_BOUNDARY_PATH_FIXTURE_COUNT = 5
+SURFACE_P_BAR_SEQUENCE_FIXTURE_COUNT = (
+    SURFACE_P_CORE_BAR_SEQUENCE_FIXTURE_COUNT + SURFACE_P_BOUNDARY_PATH_FIXTURE_COUNT
+)
 RUNTIME_REFERENCE_INTEGRATION_STATUS_V0 = "BOUND_NOT_ACTIVATED"
 SurfacePBarSequencePathKind = Literal[
     "entry_path",
@@ -158,7 +191,19 @@ SurfacePBarSequencePathKind = Literal[
     "capital_risk_sizing_path",
     "canonical_order_intent_path",
     "blocked_no_action_path",
+    "safety_kernel_boundary_path",
+    "killswitch_boundary_path",
+    "reconciliation_unknown_outcome_boundary_path",
+    "promotion_gate_boundary_path",
+    "ai_observability_boundary_path",
 ]
+SURFACE_P_BOUNDARY_PATH_KINDS: Tuple[SurfacePBarSequencePathKind, ...] = (
+    "safety_kernel_boundary_path",
+    "killswitch_boundary_path",
+    "reconciliation_unknown_outcome_boundary_path",
+    "promotion_gate_boundary_path",
+    "ai_observability_boundary_path",
+)
 BACKTEST_PARITY_WIRING_OWNER = "backtest.mv2_research_wiring_v1"
 RUNTIME_BRIDGE_REFERENCE_OWNER = "trading.master_v2.canonical_core_runtime_integration_bridge_v0"
 
@@ -167,9 +212,11 @@ ALLOWED_SLICE_CHANGED_PATH_PREFIXES: Tuple[str, ...] = (
     "scripts/ops/run_integrated_vs_scenario_replay_full_system_parity_contract_suite_v0.py",
     "scripts/ops/run_integrated_vs_scenario_replay_full_system_4_way_parity_rewire_v0.py",
     "scripts/ops/run_surface_p_full_bar_sequence_4_way_parity_completion_v0.py",
+    "scripts/ops/run_surface_p_boundary_path_bar_sequence_4_way_parity_extension_v0.py",
     "src/trading/master_v2/full_canonical_system_backtest_parity_gap_assessment_v0.py",
     "tests/trading/master_v2/test_integrated_vs_scenario_replay_full_system_parity_contract_suite_v0.py",
     "tests/trading/master_v2/test_surface_p_full_bar_sequence_4_way_parity_completion_contract_v0.py",
+    "tests/trading/master_v2/test_surface_p_boundary_path_bar_sequence_4_way_parity_extension_contract_v0.py",
     "tests/trading/master_v2/test_full_canonical_system_backtest_parity_gap_assessment_contract_v0.py",
 )
 
@@ -211,6 +258,10 @@ class ParityDecisionEnvelopeV0:
     reconciliation_unknown_outcome_effect: str = RECONCILIATION_UNKNOWN_OUTCOME_EFFECT_NONE
     killswitch_boundary_ref: str = ""
     killswitch_boundary_effect: str = KILLSWITCH_BOUNDARY_EFFECT_NONE
+    promotion_gate_boundary_ref: str = ""
+    promotion_gate_boundary_effect: str = PROMOTION_GATE_BOUNDARY_EFFECT_NONE
+    ai_observability_boundary_ref: str = ""
+    ai_observability_boundary_effect: str = AI_OBSERVABILITY_BOUNDARY_EFFECT_NONE
     state_switch_ref: str = ""
     state_switch_effect: str = STATE_SWITCH_EFFECT_NONE
     transition_reason_code: str = ""
@@ -270,6 +321,9 @@ class SurfacePFullBarSequenceParityAssessmentV0:
     fixture_assessments: Tuple[SurfacePBarSequenceFixtureAssessmentV0, ...]
     fixtures_complete: bool
     runtime_bridge_status: str
+    core_fixtures_complete: bool = False
+    boundary_path_fixtures_complete: bool = False
+    boundary_fixtures_added: Tuple[str, ...] = ()
     fail_closed_reasons: Tuple[str, ...] = ()
 
 
@@ -940,6 +994,82 @@ def extract_scenario_replay_tick_reconciliation_unknown_outcome_envelope_v0(
     )
 
 
+def extract_promotion_gate_boundary_parity_envelope_v0(
+    binding: PromotionGateBoundaryOfflineReplayBindingResultV0,
+    *,
+    decision_outcome: str = "",
+    composition_result_id: str = "",
+) -> ParityDecisionEnvelopeV0:
+    ev = binding.evidence
+    return ParityDecisionEnvelopeV0(
+        decision_outcome=decision_outcome or ev.decision_outcome,
+        previous_side_state=None,
+        next_side_state=None,
+        composition_status="",
+        composition_result_id=composition_result_id,
+        entry_or_exit_policy_ref=ev.entry_or_exit_policy_ref,
+        reason_codes=tuple(ev.reason_codes),
+        decision_precedence_trace=tuple(ev.decision_precedence_trace),
+        execution_eligible=ev.execution_eligible,
+        adapter_compatible=ev.adapter_compatible,
+        quantity_status=ev.quantity_status,
+        quantity_provenance_ref=ev.quantity_provenance_ref,
+        risk_sizing_ref=ev.risk_sizing_ref,
+        risk_sizing_effect=ev.risk_sizing_effect,
+        order_intent_ref=ev.order_intent_ref,
+        order_intent_effect=ev.order_intent_effect,
+        safety_boundary_ref=ev.safety_boundary_ref,
+        safety_boundary_effect=ev.safety_boundary_effect,
+        reconciliation_unknown_outcome_ref=ev.reconciliation_unknown_outcome_ref,
+        reconciliation_unknown_outcome_effect=ev.reconciliation_unknown_outcome_effect,
+        killswitch_boundary_ref=ev.killswitch_boundary_ref,
+        killswitch_boundary_effect=ev.killswitch_boundary_effect,
+        promotion_gate_boundary_ref=binding.promotion_gate_boundary_ref,
+        promotion_gate_boundary_effect=binding.promotion_gate_boundary_effect,
+        authority_effect=ev.authority_effect,
+        runtime_effect=ev.runtime_effect,
+    )
+
+
+def extract_ai_observability_boundary_parity_envelope_v0(
+    binding: AiObservabilityBoundaryOfflineReplayBindingResultV0,
+    *,
+    decision_outcome: str = "",
+    composition_result_id: str = "",
+) -> ParityDecisionEnvelopeV0:
+    ev = binding.evidence
+    return ParityDecisionEnvelopeV0(
+        decision_outcome=decision_outcome or ev.decision_outcome,
+        previous_side_state=None,
+        next_side_state=None,
+        composition_status="",
+        composition_result_id=composition_result_id,
+        entry_or_exit_policy_ref=ev.entry_or_exit_policy_ref,
+        reason_codes=tuple(ev.reason_codes),
+        decision_precedence_trace=tuple(ev.decision_precedence_trace),
+        execution_eligible=ev.execution_eligible,
+        adapter_compatible=ev.adapter_compatible,
+        quantity_status=ev.quantity_status,
+        quantity_provenance_ref=ev.quantity_provenance_ref,
+        risk_sizing_ref=ev.risk_sizing_ref,
+        risk_sizing_effect=ev.risk_sizing_effect,
+        order_intent_ref=ev.order_intent_ref,
+        order_intent_effect=ev.order_intent_effect,
+        safety_boundary_ref=ev.safety_boundary_ref,
+        safety_boundary_effect=ev.safety_boundary_effect,
+        reconciliation_unknown_outcome_ref=ev.reconciliation_unknown_outcome_ref,
+        reconciliation_unknown_outcome_effect=ev.reconciliation_unknown_outcome_effect,
+        killswitch_boundary_ref=ev.killswitch_boundary_ref,
+        killswitch_boundary_effect=ev.killswitch_boundary_effect,
+        promotion_gate_boundary_ref="",
+        promotion_gate_boundary_effect=PROMOTION_GATE_BOUNDARY_EFFECT_NONE,
+        ai_observability_boundary_ref=binding.ai_observability_boundary_ref,
+        ai_observability_boundary_effect=binding.ai_observability_boundary_effect,
+        authority_effect=ev.authority_effect,
+        runtime_effect=ev.runtime_effect,
+    )
+
+
 def assert_scenario_replay_zero_order_boundary_v0(
     result: OfflineDoublePlayScenarioReplayResultV0,
 ) -> None:
@@ -1223,7 +1353,7 @@ def _default_mv2_research_cfg_v0() -> Mapping[str, object]:
     }
 
 
-def _synthetic_mv2_research_bars_v0(*, bar_count: int = 12) -> "pd.DataFrame":
+def _synthetic_mv2_research_bars_v0(*, bar_count: int = 13) -> "pd.DataFrame":
     import pandas as pd
 
     idx = pd.date_range("2026-06-01", periods=bar_count, freq="1h", tz="UTC")
@@ -1353,7 +1483,7 @@ _SURFACE_P_CONFIG_DIGEST = "c" * 64
 _SURFACE_P_IMPL_DIGEST = "d" * 64
 
 
-def surface_p_bar_sequence_fixtures_v0(
+def surface_p_core_bar_sequence_fixtures_v0(
     *,
     instrument_id: str = SYNTHETIC_FUTURES_INSTRUMENT,
     trading_epoch: int = 44,
@@ -1432,6 +1562,78 @@ def surface_p_bar_sequence_fixtures_v0(
             trading_epoch,
             context_reference,
         ),
+    )
+
+
+def surface_p_boundary_path_fixtures_v0(
+    *,
+    instrument_id: str = SYNTHETIC_FUTURES_INSTRUMENT,
+    trading_epoch: int = 44,
+    context_reference: str = "surface-p-boundary-path-4way-parity-v0",
+) -> Tuple[SurfacePBarSequenceFixtureV0, ...]:
+    return (
+        SurfacePBarSequenceFixtureV0(
+            "safety_kernel_boundary",
+            "safety_kernel_boundary_path",
+            8,
+            SideState.LONG_ACTIVE,
+            instrument_id,
+            trading_epoch,
+            context_reference,
+        ),
+        SurfacePBarSequenceFixtureV0(
+            "killswitch_boundary",
+            "killswitch_boundary_path",
+            9,
+            SideState.KILL_ALL,
+            instrument_id,
+            trading_epoch,
+            context_reference,
+        ),
+        SurfacePBarSequenceFixtureV0(
+            "reconciliation_unknown_outcome_boundary",
+            "reconciliation_unknown_outcome_boundary_path",
+            10,
+            SideState.LONG_ACTIVE,
+            instrument_id,
+            trading_epoch,
+            context_reference,
+        ),
+        SurfacePBarSequenceFixtureV0(
+            "promotion_gate_boundary",
+            "promotion_gate_boundary_path",
+            11,
+            SideState.LONG_ARMED,
+            instrument_id,
+            trading_epoch,
+            context_reference,
+        ),
+        SurfacePBarSequenceFixtureV0(
+            "ai_observability_boundary",
+            "ai_observability_boundary_path",
+            12,
+            SideState.LONG_ACTIVE,
+            instrument_id,
+            trading_epoch,
+            context_reference,
+        ),
+    )
+
+
+def surface_p_bar_sequence_fixtures_v0(
+    *,
+    instrument_id: str = SYNTHETIC_FUTURES_INSTRUMENT,
+    trading_epoch: int = 44,
+    context_reference: str = "surface-p-bar-sequence-4way-parity-v0",
+) -> Tuple[SurfacePBarSequenceFixtureV0, ...]:
+    return surface_p_core_bar_sequence_fixtures_v0(
+        instrument_id=instrument_id,
+        trading_epoch=trading_epoch,
+        context_reference=context_reference,
+    ) + surface_p_boundary_path_fixtures_v0(
+        instrument_id=instrument_id,
+        trading_epoch=trading_epoch,
+        context_reference="surface-p-boundary-path-4way-parity-v0",
     )
 
 
@@ -1828,6 +2030,8 @@ def build_surface_p_integrated_replay_result_v0(
 def build_surface_p_fixture_scenario_envelope_v0(
     fixture: SurfacePBarSequenceFixtureV0,
 ) -> ParityDecisionEnvelopeV0 | None:
+    if fixture.path_kind in SURFACE_P_BOUNDARY_PATH_KINDS:
+        return _build_surface_p_boundary_path_envelope_v0(fixture)
     if fixture.path_kind == "reversal_preparation_exit_path":
         matrix = evaluate_reversal_preparation_matrix_v0(
             instrument_id=fixture.instrument_id,
@@ -2005,6 +2209,266 @@ def _surface_p_scenario_replay_tick_for_fixture_v0(
     return replay.tick_records[0] if replay.tick_records else None
 
 
+def _surface_p_boundary_base_evidence_v0(
+    fixture: SurfacePBarSequenceFixtureV0,
+) -> "CanonicalTradingDecisionEvidenceV1 | None":
+    from trading.master_v2.canonical_trading_decision_evidence_v1 import (
+        CanonicalTradingDecisionEvidenceV1,
+    )
+    from trading.master_v2.capital_risk_sizing_offline_replay_binding_adapter_v0 import (
+        build_scenario_tick_decision_evidence_v0,
+    )
+
+    hold_fixture = SurfacePBarSequenceFixtureV0(
+        f"{fixture.fixture_id}-hold-base",
+        "hold_position_management_path",
+        min(fixture.backtest_bar_index, 1),
+        SideState.LONG_ACTIVE,
+        fixture.instrument_id,
+        fixture.trading_epoch,
+        fixture.context_reference,
+    )
+    tick = _surface_p_scenario_replay_tick_for_fixture_v0(hold_fixture)
+    if tick is None:
+        return None
+    return build_scenario_tick_decision_evidence_v0(
+        decision_id=tick.entry_exit_policy_ref,
+        replay_id=f"{fixture.context_reference}-replay",
+        instrument_id=fixture.instrument_id,
+        trading_epoch=fixture.trading_epoch,
+        composition_result_id=tick.composition_result_id,
+        entry_exit_policy_ref=tick.entry_exit_policy_ref,
+        selected_side="long",
+        decision_outcome=tick.entry_exit_decision_outcome,
+        reason_codes=tick.entry_exit_reason_codes,
+        decision_precedence_trace=tick.entry_exit_decision_precedence_trace,
+        config_digest=_SURFACE_P_CONFIG_DIGEST,
+        implementation_digest=_SURFACE_P_IMPL_DIGEST,
+    )
+
+
+def _backtest_bar_evidence_at_index_v0(
+    bar_index: int,
+) -> "CanonicalTradingDecisionEvidenceV1 | None":
+    from src.backtest.mv2_research_wiring_v1 import (
+        MV2_REQUIRED_INSTRUMENT_ID,
+        run_mv2_research_backtest_wiring_v1,
+    )
+
+    result = run_mv2_research_backtest_wiring_v1(
+        bars=_synthetic_mv2_research_bars_v0(bar_count=SURFACE_P_BAR_SEQUENCE_FIXTURE_COUNT),
+        strategy_id="ma_crossover",
+        cfg=_default_mv2_research_cfg_v0(),
+        instrument_id=MV2_REQUIRED_INSTRUMENT_ID,
+    )
+    if bar_index < 0 or bar_index >= len(result.bar_outcomes):
+        return None
+    return result.bar_outcomes[bar_index].evidence
+
+
+def _surface_p_promotion_gate_context_v0() -> PromotionGateBoundaryOfflineReplayContextV0:
+    from src.backtest.economic_validity_policy_v1 import canonical_economic_validity_policy_v1
+    from src.governance.promotion_loop import promotion_economic_gate_v1 as gate
+
+    return PromotionGateBoundaryOfflineReplayContextV0(
+        strategy_id="mv2_offline_research",
+        strategy_version="v1",
+        candidate_id="surface-p-boundary-promotion-blocked",
+        economic_viability_evidence_ref="evidence://surface-p/boundary/promotion-blocked",
+        economic_validity_status=gate.FAIL_STATUS,
+        robustness_status=gate.FAIL_STATUS,
+        data_admissibility_status=gate.PASS_STATUS,
+        evidence_admissibility_status=gate.PASS_STATUS,
+        policy_threshold_status=gate.PASS_STATUS,
+        walk_forward_status=gate.FAIL_STATUS,
+        out_of_sample_status=gate.FAIL_STATUS,
+        monte_carlo_status=gate.FAIL_STATUS,
+        stress_status=gate.FAIL_STATUS,
+        parameter_sensitivity_status=gate.PASS_STATUS,
+        reproducibility_status=gate.PASS_STATUS,
+        digest_binding_status=gate.PASS_STATUS,
+        manifest_binding_status=gate.PASS_STATUS,
+        safety_policy_status=gate.PASS_STATUS,
+        futures_only=True,
+        bitcoin_direction_allowed=False,
+        config_digest=_SURFACE_P_CONFIG_DIGEST,
+        implementation_digest=_SURFACE_P_IMPL_DIGEST,
+        policy_digest=canonical_economic_validity_policy_v1().policy_digest(),
+        evidence_manifest_digest="e" * 64,
+        economic_validity_proven=False,
+        profitability_claim_allowed=False,
+        promotion_basis_confidence_only=True,
+        manifest_verify_only=True,
+    )
+
+
+def _apply_surface_p_boundary_binding_v0(
+    fixture: SurfacePBarSequenceFixtureV0,
+    evidence: "CanonicalTradingDecisionEvidenceV1",
+) -> ParityDecisionEnvelopeV0 | None:
+    path_kind = fixture.path_kind
+    if path_kind == "safety_kernel_boundary_path":
+        from trading.master_v2.double_play_entry_exit_policy_v0 import (
+            ReconciliationState,
+            SafetyMode,
+            TradingGate,
+        )
+
+        binding = bind_safety_kernel_offline_replay_evidence_v0(
+            evidence,
+            context=SafetyKernelOfflineReplayContextV0(
+                safety_exit_signal=PolicySignalV0(
+                    triggered=True,
+                    reason_code="hard_risk_exit",
+                ),
+                safety_mode=SafetyMode.EXIT_ONLY,
+                position_state=PositionState.OPEN_FULL,
+                trading_gate=TradingGate.EXIT_ONLY,
+                reconciliation_state=ReconciliationState.RECONCILED,
+            ),
+        )
+        if not safety_kernel_binding_non_authority_boundary_ok_v0(binding):
+            return None
+        envelope = extract_safety_kernel_parity_envelope_v0(
+            binding,
+            decision_outcome=DecisionOutcome.REDUCE.value,
+        )
+        assert_safety_kernel_non_authority_boundary_v0(envelope)
+        return envelope
+    if path_kind == "killswitch_boundary_path":
+        from trading.master_v2.double_play_entry_exit_policy_v0 import (
+            ReconciliationState,
+            SafetyMode,
+            TradingGate,
+        )
+
+        binding = bind_killswitch_boundary_offline_replay_evidence_v0(
+            evidence,
+            context=KillSwitchBoundaryOfflineReplayContextV0(
+                boundary_mode=KillSwitchBoundaryMode.BLOCK_NEW,
+                killswitch_active=True,
+                side_state=SideState.KILL_ALL,
+                safety_mode=SafetyMode.BLOCKED,
+                trading_gate=TradingGate.BLOCKED,
+                reconciliation_state=ReconciliationState.RECONCILED,
+            ),
+        )
+        if not killswitch_boundary_binding_non_authority_boundary_ok_v0(binding):
+            return None
+        envelope = extract_killswitch_boundary_parity_envelope_v0(
+            binding,
+            decision_outcome=DecisionOutcome.BLOCKED.value,
+        )
+        assert_killswitch_boundary_non_authority_boundary_v0(envelope)
+        return envelope
+    if path_kind == "reconciliation_unknown_outcome_boundary_path":
+        from trading.master_v2.double_play_entry_exit_policy_v0 import (
+            ReconciliationState,
+        )
+
+        binding = bind_reconciliation_unknown_outcome_offline_replay_evidence_v0(
+            evidence,
+            context=ReconciliationUnknownOutcomeOfflineReplayContextV0(
+                position_state=PositionState.OPEN_FULL,
+                reconciliation_state=ReconciliationState.RECONCILIATION_REQUIRED,
+                venue_flat=False,
+                existing_position_side=ExistingPositionSide.LONG,
+                order_snapshot_unresolved=True,
+            ),
+        )
+        if not reconciliation_unknown_outcome_binding_non_authority_boundary_ok_v0(binding):
+            return None
+        envelope = extract_reconciliation_unknown_outcome_parity_envelope_v0(
+            binding,
+            decision_outcome=DecisionOutcome.OBSERVE.value,
+        )
+        assert_reconciliation_unknown_outcome_non_authority_boundary_v0(envelope)
+        return envelope
+    if path_kind == "promotion_gate_boundary_path":
+        binding = bind_promotion_gate_boundary_offline_replay_evidence_v0(
+            evidence,
+            context=_surface_p_promotion_gate_context_v0(),
+        )
+        if not promotion_gate_boundary_binding_non_authority_boundary_ok_v0(binding):
+            return None
+        envelope = extract_promotion_gate_boundary_parity_envelope_v0(
+            binding,
+            decision_outcome=DecisionOutcome.OBSERVE.value,
+        )
+        assert not envelope.execution_eligible
+        assert envelope.authority_effect == "NONE"
+        return envelope
+    if path_kind == "ai_observability_boundary_path":
+        binding = bind_ai_observability_boundary_offline_replay_evidence_v0(evidence)
+        if not ai_observability_boundary_binding_non_authority_boundary_ok_v0(binding):
+            return None
+        envelope = extract_ai_observability_boundary_parity_envelope_v0(
+            binding,
+            decision_outcome=evidence.decision_outcome,
+        )
+        assert envelope.authority_effect == "NONE"
+        assert envelope.runtime_effect == "NONE"
+        return envelope
+    return None
+
+
+def _build_surface_p_boundary_path_envelope_v0(
+    fixture: SurfacePBarSequenceFixtureV0,
+) -> ParityDecisionEnvelopeV0 | None:
+    evidence = _surface_p_boundary_base_evidence_v0(fixture)
+    if evidence is None:
+        return None
+    return _apply_surface_p_boundary_binding_v0(fixture, evidence)
+
+
+def _build_surface_p_boundary_backtest_envelope_v0(
+    fixture: SurfacePBarSequenceFixtureV0,
+) -> ParityDecisionEnvelopeV0 | None:
+    evidence = _backtest_bar_evidence_at_index_v0(fixture.backtest_bar_index)
+    if evidence is None:
+        return None
+    return _apply_surface_p_boundary_binding_v0(fixture, evidence)
+
+
+def _surface_p_boundary_effects_aligned_v0(
+    left: ParityDecisionEnvelopeV0,
+    right: ParityDecisionEnvelopeV0,
+    *,
+    path_kind: SurfacePBarSequencePathKind,
+) -> bool:
+    if path_kind == "safety_kernel_boundary_path":
+        return (
+            left.safety_boundary_effect
+            == right.safety_boundary_effect
+            == (SAFETY_BOUNDARY_EFFECT_BOUND_OFFLINE)
+        )
+    if path_kind == "killswitch_boundary_path":
+        return (
+            left.killswitch_boundary_effect
+            == right.killswitch_boundary_effect
+            == (KILLSWITCH_BOUNDARY_EFFECT_BOUND_OFFLINE)
+        )
+    if path_kind == "reconciliation_unknown_outcome_boundary_path":
+        return (
+            left.reconciliation_unknown_outcome_effect
+            == right.reconciliation_unknown_outcome_effect
+            == RECONCILIATION_UNKNOWN_OUTCOME_EFFECT_BOUND_OFFLINE
+        )
+    if path_kind == "promotion_gate_boundary_path":
+        return (
+            left.promotion_gate_boundary_effect
+            == right.promotion_gate_boundary_effect
+            == (PROMOTION_GATE_BOUNDARY_EFFECT_BOUND_OFFLINE)
+        )
+    if path_kind == "ai_observability_boundary_path":
+        return (
+            left.ai_observability_boundary_effect
+            == right.ai_observability_boundary_effect
+            == AI_OBSERVABILITY_BOUNDARY_EFFECT_BOUND_OFFLINE
+        )
+    return False
+
+
 def surface_p_fixture_lane_semantics_ok_v0(
     fixture: SurfacePBarSequenceFixtureV0,
     envelope: ParityDecisionEnvelopeV0 | None,
@@ -2059,6 +2523,55 @@ def surface_p_fixture_lane_semantics_ok_v0(
             DecisionOutcome.ENTER_LONG.value,
             DecisionOutcome.ENTER_SHORT.value,
         )
+    if path_kind == "safety_kernel_boundary_path":
+        return (
+            envelope.safety_boundary_effect == SAFETY_BOUNDARY_EFFECT_BOUND_OFFLINE
+            and envelope.authority_effect == "NONE"
+            and not envelope.execution_eligible
+            and envelope.decision_outcome
+            in (
+                DecisionOutcome.REDUCE.value,
+                DecisionOutcome.EXIT.value,
+                DecisionOutcome.BLOCKED.value,
+            )
+        )
+    if path_kind == "killswitch_boundary_path":
+        return (
+            envelope.killswitch_boundary_effect == KILLSWITCH_BOUNDARY_EFFECT_BOUND_OFFLINE
+            and envelope.authority_effect == "NONE"
+            and not envelope.execution_eligible
+            and envelope.decision_outcome
+            in (
+                DecisionOutcome.BLOCKED.value,
+                DecisionOutcome.REDUCE.value,
+                DecisionOutcome.EXIT.value,
+                DecisionOutcome.CANCEL_PENDING.value,
+            )
+        )
+    if path_kind == "reconciliation_unknown_outcome_boundary_path":
+        return (
+            envelope.reconciliation_unknown_outcome_effect
+            == RECONCILIATION_UNKNOWN_OUTCOME_EFFECT_BOUND_OFFLINE
+            and envelope.authority_effect == "NONE"
+            and not envelope.execution_eligible
+        )
+    if path_kind == "promotion_gate_boundary_path":
+        return (
+            envelope.promotion_gate_boundary_effect == PROMOTION_GATE_BOUNDARY_EFFECT_BOUND_OFFLINE
+            and envelope.authority_effect == "NONE"
+            and not envelope.execution_eligible
+            and not envelope.adapter_compatible
+        )
+    if path_kind == "ai_observability_boundary_path":
+        return (
+            envelope.ai_observability_boundary_effect
+            == AI_OBSERVABILITY_BOUNDARY_EFFECT_BOUND_OFFLINE
+            and envelope.authority_effect == "NONE"
+            and envelope.runtime_effect == "NONE"
+            and not envelope.execution_eligible
+            and bool(envelope.reason_codes)
+            and bool(envelope.decision_precedence_trace)
+        )
     return False
 
 
@@ -2107,6 +2620,8 @@ def _build_surface_p_adapter_integrated_envelope_v0(
 def build_surface_p_fixture_integrated_envelope_v0(
     fixture: SurfacePBarSequenceFixtureV0,
 ) -> ParityDecisionEnvelopeV0 | None:
+    if fixture.path_kind in SURFACE_P_BOUNDARY_PATH_KINDS:
+        return _build_surface_p_boundary_path_envelope_v0(fixture)
     if fixture.path_kind in ("capital_risk_sizing_path", "canonical_order_intent_path"):
         envelope = _build_surface_p_adapter_integrated_envelope_v0(fixture)
         if envelope is None:
@@ -2158,16 +2673,37 @@ def evaluate_surface_p_bar_sequence_fixture_four_way_parity_v0(
                 and integrated_env.risk_sizing_effect == scenario_env.risk_sizing_effect
                 and integrated_env.order_intent_effect == scenario_env.order_intent_effect
             )
+        elif fixture.path_kind in SURFACE_P_BOUNDARY_PATH_KINDS:
+            integrated_scenario_aligned = (
+                integrated_sem
+                and scenario_sem
+                and _surface_p_boundary_effects_aligned_v0(
+                    integrated_env,
+                    scenario_env,
+                    path_kind=fixture.path_kind,
+                )
+            )
         else:
             integrated_scenario_aligned = integrated_sem and scenario_sem
     if integrated_lane_bound and scenario_lane_bound and not integrated_scenario_aligned:
         fail_reasons.append("integrated_scenario_evidence_not_aligned")
 
-    backtest_env = bind_backtest_bar_parity_lane_at_index_v0(fixture.backtest_bar_index)
+    if fixture.path_kind in SURFACE_P_BOUNDARY_PATH_KINDS:
+        backtest_env = _build_surface_p_boundary_backtest_envelope_v0(fixture)
+    else:
+        backtest_env = bind_backtest_bar_parity_lane_at_index_v0(fixture.backtest_bar_index)
     backtest_lane_bound = backtest_env is not None
-    backtest_non_authority = backtest_lane_bound
+    backtest_non_authority = False
+    if backtest_lane_bound and backtest_env is not None:
+        backtest_non_authority = surface_p_fixture_lane_semantics_ok_v0(
+            fixture,
+            backtest_env,
+            lane="backtest",
+        )
     if not backtest_lane_bound:
         fail_reasons.append("backtest_lane_unbound")
+    elif not backtest_non_authority:
+        fail_reasons.append("backtest_lane_semantics_invalid")
 
     runtime_env = extract_runtime_reference_parity_envelope_v0()
     runtime_reference_lane_bound = True
@@ -2217,8 +2753,14 @@ def evaluate_surface_p_full_bar_sequence_four_way_parity_v0(
             context_reference=context_reference,
         )
     )
+    core_assessments = assessments[:SURFACE_P_CORE_BAR_SEQUENCE_FIXTURE_COUNT]
+    boundary_assessments = assessments[SURFACE_P_CORE_BAR_SEQUENCE_FIXTURE_COUNT:]
     fail_reasons: list[str] = []
     fixtures_complete = all(item.four_way_fixture_parity_bound for item in assessments)
+    core_fixtures_complete = all(item.four_way_fixture_parity_bound for item in core_assessments)
+    boundary_path_fixtures_complete = all(
+        item.four_way_fixture_parity_bound for item in boundary_assessments
+    )
     if not fixtures_complete:
         for item in assessments:
             if not item.four_way_fixture_parity_bound:
@@ -2229,6 +2771,9 @@ def evaluate_surface_p_full_bar_sequence_four_way_parity_v0(
         fixture_assessments=assessments,
         fixtures_complete=fixtures_complete,
         runtime_bridge_status=RUNTIME_REFERENCE_INTEGRATION_STATUS_V0,
+        core_fixtures_complete=core_fixtures_complete,
+        boundary_path_fixtures_complete=boundary_path_fixtures_complete,
+        boundary_fixtures_added=tuple(item.fixture_id for item in boundary_assessments),
         fail_closed_reasons=tuple(fail_reasons),
     )
 
