@@ -58,8 +58,8 @@ def test_gap_assessment_owner_and_surface_count_v0() -> None:
 
 def test_gap_assessment_status_distribution_v0() -> None:
     counts = parity_status_counts_v0()
-    assert counts["PASS"] == 5
-    assert counts["PARTIAL"] >= 5
+    assert counts["PASS"] == 6
+    assert counts["PARTIAL"] >= 4
     assert counts["GAP"] == 0
     assert counts["NOT_APPLICABLE"] >= 2
     assert sum(counts.values()) == 16
@@ -80,11 +80,12 @@ def test_capital_risk_sizing_surface_pass_v0() -> None:
     )
 
 
-def test_canonical_order_intent_surface_partial_v0() -> None:
+def test_canonical_order_intent_surface_pass_v0() -> None:
     order_intent = next(item for item in parity_surface_assessments_v0() if item.surface_id == "I")
-    assert order_intent.parity_status == "PARTIAL"
-    assert "bind_canonical_order_intent_offline_replay_evidence_v0" in (
-        order_intent.current_integrated_offline_replay_binding
+    assert order_intent.parity_status == "PASS"
+    assert order_intent.missing_binding_if_any == ""
+    assert "bind_canonical_order_intent_boundary_backtest_state_file_evidence_v0" in (
+        order_intent.current_backtest_binding
     )
     assert order_intent.recommended_next_slice == NEXT_RECOMMENDED_SLICE
 
