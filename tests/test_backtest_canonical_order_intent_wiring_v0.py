@@ -272,7 +272,7 @@ def test_parity_gap_assessment_surface_i_backtest_state_file_pass_v0() -> None:
     assert "bind_canonical_order_intent_boundary_backtest_state_file_evidence_v0" in (
         order_intent.current_backtest_binding
     )
-    assert NEXT_RECOMMENDED_SLICE == "BACKTEST_SAFETY_KERNEL_WIRING_V0"
+    assert NEXT_RECOMMENDED_SLICE == "FULL_CANONICAL_BACKTEST_BOUNDARY_CHAIN_REASSESSMENT_V0"
 
 
 def test_mv2_research_wiring_binds_state_file_and_represents_order_intent_v0(

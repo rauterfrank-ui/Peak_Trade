@@ -25,7 +25,7 @@ MatrixStatus = Literal[
     "UNKNOWN",
 ]
 
-NEXT_RECOMMENDED_SLICE = "BACKTEST_SAFETY_KERNEL_WIRING_V0"
+NEXT_RECOMMENDED_SLICE = "FULL_CANONICAL_BACKTEST_BOUNDARY_CHAIN_REASSESSMENT_V0"
 
 ALLOWED_SLICE_CHANGED_PATH_PREFIXES: Tuple[str, ...] = (
     "src/trading/master_v2/full_canonical_system_backtest_parity_gap_assessment_v0.py",
@@ -52,6 +52,9 @@ ALLOWED_SLICE_CHANGED_PATH_PREFIXES: Tuple[str, ...] = (
     "src/trading/master_v2/canonical_order_intent_boundary_backtest_state_file_binding_adapter_v0.py",
     "scripts/ops/run_backtest_canonical_order_intent_wiring_v0.py",
     "tests/test_backtest_canonical_order_intent_wiring_v0.py",
+    "src/trading/master_v2/safety_kernel_boundary_backtest_state_file_binding_adapter_v0.py",
+    "scripts/ops/run_backtest_safety_kernel_wiring_v0.py",
+    "tests/test_backtest_safety_kernel_wiring_v0.py",
     "docs/research/FULL_CANONICAL_SYSTEM_BACKTEST_PARITY_GAP_ASSESSMENT_V0.md",
 )
 
@@ -384,19 +387,22 @@ def parity_surface_assessments_v0() -> Tuple[ParitySurfaceAssessmentV0, ...]:
                 "offline_double_play_scenario_replay_v0 ->"
                 " evaluate_scenario_safety_kernel_v0() per tick"
             ),
-            current_backtest_binding="Default SafetyMode.NORMAL in integrated input",
+            current_backtest_binding=(
+                "backtest/mv2_research_wiring_v1.run_mv2_research_backtest_wiring_v1 ->"
+                " bind_safety_kernel_boundary_backtest_state_file_evidence_v0()"
+                " via safety_kernel_boundary_backtest_state_file_binding_adapter_v0"
+            ),
             current_runtime_semantics_reference=(
                 "docs/ops/specs/FUTURES_MASTER_V2_RUNTIME_GOVERNANCE_BOUNDARY_CONTRACT_V0.md"
             ),
-            parity_status="PARTIAL",
+            parity_status="PASS",
             evidence_refs=(
                 "tests/meta/test_killswitch_writer_fencing_and_independent_read_paths_v1.py",
                 "tests/meta/test_runtime_eligibility_v1.py",
                 "tests/trading/master_v2/test_safety_kernel_offline_replay_binding_parity_rewire_contract_v0.py",
+                "tests/test_backtest_safety_kernel_wiring_v0.py",
             ),
-            missing_binding_if_any=(
-                "Backtest wiring and runtime kernel read-path activation (out of offline scope)"
-            ),
+            missing_binding_if_any="",
             recommended_next_slice=NEXT_RECOMMENDED_SLICE,
         ),
         ParitySurfaceAssessmentV0(

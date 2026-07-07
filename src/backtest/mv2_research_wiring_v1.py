@@ -166,6 +166,13 @@ from src.trading.master_v2.canonical_order_intent_boundary_backtest_state_file_b
     bind_canonical_order_intent_boundary_backtest_state_file_evidence_v0,
     load_canonical_order_intent_backtest_state_file_record_v0,
 )
+from src.trading.master_v2.safety_kernel_boundary_backtest_state_file_binding_adapter_v0 import (
+    SafetyKernelBacktestStateFileRecordV0,
+    SafetyKernelBoundaryBacktestStateFileEvidenceV0,
+    apply_backtest_safety_kernel_exposure_gate_v0,
+    bind_safety_kernel_boundary_backtest_state_file_evidence_v0,
+    load_safety_kernel_backtest_state_file_record_v0,
+)
 
 MV2_RESEARCH_WIRING_LAYER_VERSION = "v1"
 MV2_RESEARCH_WIRING_OWNER = "backtest.mv2_research_wiring_v1"
@@ -241,6 +248,16 @@ class CanonicalOrderIntentBacktestStateFileBindingConfigV1:
 
 
 @dataclass(frozen=True)
+class SafetyKernelBacktestStateFileBindingConfigV1:
+    """Optional backtest Safety Kernel state-file binding — offline evidence only."""
+
+    state_file_path: Path | None = None
+    state_file_record: SafetyKernelBacktestStateFileRecordV0 | None = None
+    expected_state_file_digest_ref: str = ""
+    require_state_file: bool = False
+
+
+@dataclass(frozen=True)
 class MV2ReplayBarOutcomeV1:
     trading_epoch: int
     context: CanonicalMarketContextV1
@@ -261,6 +278,9 @@ class MV2ReplayBarOutcomeV1:
     ) = None
     canonical_order_intent_backtest_state_file_evidence: (
         CanonicalOrderIntentBoundaryBacktestStateFileEvidenceV0 | None
+    ) = None
+    safety_kernel_backtest_state_file_evidence: (
+        SafetyKernelBoundaryBacktestStateFileEvidenceV0 | None
     ) = None
 
 
@@ -932,6 +952,33 @@ def _resolve_canonical_order_intent_backtest_state_file_record_v1(
     return None
 
 
+def _resolve_safety_kernel_backtest_state_file_record_v1(
+    binding: SafetyKernelBacktestStateFileBindingConfigV1 | None,
+) -> SafetyKernelBacktestStateFileRecordV0 | None:
+    if binding is None:
+        return None
+    if binding.state_file_record is not None:
+        record = binding.state_file_record
+        if binding.expected_state_file_digest_ref:
+            from src.trading.master_v2.safety_kernel_boundary_backtest_state_file_binding_adapter_v0 import (
+                verify_safety_kernel_backtest_state_file_digest_v0,
+            )
+
+            verify_safety_kernel_backtest_state_file_digest_v0(
+                record,
+                expected_digest_ref=binding.expected_state_file_digest_ref,
+            )
+        return record
+    if binding.state_file_path is not None:
+        return load_safety_kernel_backtest_state_file_record_v0(
+            binding.state_file_path,
+            expected_digest_ref=binding.expected_state_file_digest_ref,
+        )
+    if binding.require_state_file:
+        raise ValueError("safety_kernel_backtest_state_file_missing")
+    return None
+
+
 def _resolve_killswitch_backtest_state_file_record_v1(
     binding: KillSwitchBacktestStateFileBindingConfigV1 | None,
 ) -> KillSwitchBacktestStateFileRecordV0 | None:
@@ -982,6 +1029,7 @@ def run_mv2_research_backtest_wiring_v1(
     canonical_order_intent_state_file_binding: (
         CanonicalOrderIntentBacktestStateFileBindingConfigV1 | None
     ) = None,
+    safety_kernel_state_file_binding: SafetyKernelBacktestStateFileBindingConfigV1 | None = None,
 ) -> MV2ResearchWiringResultV1:
     _fail_closed(bars.empty, "bars_empty")
     _ensure_supported_instrument(instrument_id)
@@ -1069,6 +1117,9 @@ def run_mv2_research_backtest_wiring_v1(
         _resolve_canonical_order_intent_backtest_state_file_record_v1(
             canonical_order_intent_state_file_binding
         )
+    )
+    safety_kernel_state_file_record = _resolve_safety_kernel_backtest_state_file_record_v1(
+        safety_kernel_state_file_binding
     )
     if canonical_order_intent_state_file_record is not None and (
         capital_risk_sizing_state_file_record is None
@@ -1179,6 +1230,16 @@ def run_mv2_research_backtest_wiring_v1(
                 signal,
                 evidence=canonical_order_intent_evidence,
             )
+        safety_kernel_evidence: SafetyKernelBoundaryBacktestStateFileEvidenceV0 | None = None
+        if safety_kernel_state_file_record is not None:
+            safety_kernel_evidence = bind_safety_kernel_boundary_backtest_state_file_evidence_v0(
+                replay_result.evidence,
+                state_file=safety_kernel_state_file_record,
+            )
+            signal = apply_backtest_safety_kernel_exposure_gate_v0(
+                signal,
+                evidence=safety_kernel_evidence,
+            )
         if context.warmup_status is not WarmupStatus.WARMUP_COMPLETE:
             signal = 0
         outcomes.append(
@@ -1195,6 +1256,7 @@ def run_mv2_research_backtest_wiring_v1(
                 reconciliation_backtest_state_file_evidence=reconciliation_evidence,
                 capital_risk_sizing_backtest_state_file_evidence=capital_risk_sizing_evidence,
                 canonical_order_intent_backtest_state_file_evidence=canonical_order_intent_evidence,
+                safety_kernel_backtest_state_file_evidence=safety_kernel_evidence,
             )
         )
         replay_signals.append(signal)
