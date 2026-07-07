@@ -252,8 +252,8 @@ def test_adapter_output_decision_bound_no_runtime_order_authority_v0() -> None:
 
 def test_surface_b_pass_cde_remain_partial_v0() -> None:
     counts = parity_status_counts_v0()
-    assert counts["PASS"] == 14
-    assert counts["PARTIAL"] == 2
+    assert counts["PASS"] == 15
+    assert counts["PARTIAL"] == 1
     surface_b = next(item for item in parity_surface_assessments_v0() if item.surface_id == "B")
     assert surface_b.parity_status == "PASS"
     assert surface_b.missing_binding_if_any == ""
@@ -262,10 +262,13 @@ def test_surface_b_pass_cde_remain_partial_v0() -> None:
     assert surface_c.missing_binding_if_any == ""
     surface_d = next(item for item in parity_surface_assessments_v0() if item.surface_id == "D")
     assert surface_d.parity_status == "PASS"
-    for surface_id in ("E", "P"):
-        item = next(s for s in parity_surface_assessments_v0() if s.surface_id == surface_id)
-        assert item.parity_status == "PARTIAL"
-    assert NEXT_RECOMMENDED_SLICE == "SURVIVAL_SUITABILITY_SCENARIO_REPLAY_BINDING_PARITY_REWIRE_V0"
+    surface_e = next(item for item in parity_surface_assessments_v0() if item.surface_id == "E")
+    assert surface_e.parity_status == "PASS"
+    surface_p = next(item for item in parity_surface_assessments_v0() if item.surface_id == "P")
+    assert surface_p.parity_status == "PARTIAL"
+    assert (
+        NEXT_RECOMMENDED_SLICE == "INTEGRATED_VS_SCENARIO_REPLAY_FULL_SYSTEM_4_WAY_PARITY_REWIRE_V0"
+    )
 
 
 def test_scenario_replay_e2e_wires_generator_per_tick_v0() -> None:

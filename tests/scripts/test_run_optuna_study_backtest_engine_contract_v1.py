@@ -168,7 +168,10 @@ def _optuna_schema_strategy_keys() -> tuple[str, ...]:
 
     keys: list[str] = []
     for key in sorted(get_available_strategy_keys()):
-        schema = getattr(get_strategy_spec(key).cls, "parameter_schema", None)
+        try:
+            schema = getattr(get_strategy_spec(key).cls, "parameter_schema", None)
+        except KeyError:
+            continue
         if schema:
             keys.append(key)
     return tuple(keys)

@@ -560,19 +560,19 @@ def test_registry_v2_reevaluation_complete() -> None:
     assert field("ECONOMIC_VALIDITY_RESULT") == "FAILED"
     assert field("PROFITABILITY_CLAIM_ALLOWED") == "false"
     assert field("LAST_EVALUATED_CONFIG_VERSION") == "v1"
-    assert field("NEXT_EVALUATION_CONFIG_VERSION") == "none"
-    assert field("NEXT_EVALUATION_CONFIG_STATUS") == (
-        "EVALUATION_FLEET_COMPLETE_NO_PENDING_CANDIDATE"
-    )
+    assert field("NEXT_EVALUATION_CONFIG_VERSION") == "NONE"
+    assert field("NEXT_EVALUATION_CONFIG_STATUS") == "CLOSED_NO_PENDING_CANDIDATE"
     assert field("POLICY_INVARIANT") == "risk_per_trade <= max_position_pct * stop_pct"
-    assert field("OPERATOR_POLICY_DECISION") == "RATIFIED"
+    assert field("OPERATOR_POLICY_DECISION") == (
+        "AUTHORIZE_BOUNDED_MULTI_CANDIDATE_FUTURES_RESEARCH_FLEET_V0"
+    )
     assert field("ECONOMIC_REEVALUATION_ALLOWED") == "false"
     assert field("V2_CONFIG_DISPOSITION") == "RETAIN_AS_NEGATIVE_INFEASIBILITY_FIXTURE"
     assert field("RUNBOOK_STEP_29M_COMPLETE") == "true"
     assert str(MACD_EVIDENCE) in field("INVALIDATED_EVALUATION_REF")
     assert str(V2_EVIDENCE) in field("INVALIDATED_V2_EVALUATION_REF")
     assert str(ROOT_CAUSE_EVIDENCE) in field("ROOT_CAUSE_EVIDENCE_REF")
-    assert field("NEXT_EVALUATION_CONFIG_PATH") == "none"
+    assert field("NEXT_EVALUATION_CONFIG_PATH") == "NONE"
     assert field("STEP29M_REGISTERED_STRATEGY_FLEET_STATUS") == (
         "EVALUATION_FLEET_COMPLETE_NO_ECONOMIC_VALIDITY_PASS"
     )

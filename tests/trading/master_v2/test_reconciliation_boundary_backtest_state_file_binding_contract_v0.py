@@ -228,7 +228,9 @@ def test_non_authority_invariants_v0() -> None:
     assert evidence.economic_evaluation is False
     assert backtest_reconciliation_state_file_binding_non_authority_ok_v0(evidence)
 
-    assert NEXT_RECOMMENDED_SLICE == "FULL_CANONICAL_BACKTEST_BOUNDARY_CHAIN_REASSESSMENT_V0"
+    assert (
+        NEXT_RECOMMENDED_SLICE == "INTEGRATED_VS_SCENARIO_REPLAY_FULL_SYSTEM_4_WAY_PARITY_REWIRE_V0"
+    )
 
 
 def test_semantic_flags_represented_for_reconciliation_states_v0() -> None:
@@ -248,7 +250,9 @@ def test_parity_gap_assessment_surface_l_backtest_state_file_pass_v0() -> None:
     assert "bind_reconciliation_boundary_backtest_state_file_evidence_v0" in (
         reconciliation.current_backtest_binding
     )
-    assert NEXT_RECOMMENDED_SLICE == "FULL_CANONICAL_BACKTEST_BOUNDARY_CHAIN_REASSESSMENT_V0"
+    assert (
+        NEXT_RECOMMENDED_SLICE == "INTEGRATED_VS_SCENARIO_REPLAY_FULL_SYSTEM_4_WAY_PARITY_REWIRE_V0"
+    )
 
 
 def test_mv2_research_wiring_binds_state_file_and_blocks_unresolved_v0(tmp_path: Path) -> None:

@@ -168,7 +168,9 @@ def test_backtest_binding_uses_surface_m_adapter_v0() -> None:
 def test_parity_gap_assessment_surface_m_pass_v0() -> None:
     promotion = next(item for item in parity_surface_assessments_v0() if item.surface_id == "M")
     assert promotion.parity_status == "PASS"
-    assert NEXT_RECOMMENDED_SLICE == "FULL_CANONICAL_BACKTEST_BOUNDARY_CHAIN_REASSESSMENT_V0"
+    assert (
+        NEXT_RECOMMENDED_SLICE == "INTEGRATED_VS_SCENARIO_REPLAY_FULL_SYSTEM_4_WAY_PARITY_REWIRE_V0"
+    )
 
 
 def test_mv2_research_wiring_binds_state_file_v0(tmp_path: Path) -> None:
