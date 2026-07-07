@@ -61,9 +61,13 @@ from trading.master_v2.capital_risk_sizing_offline_replay_binding_adapter_v0 imp
 from trading.master_v2.double_play_composition_scenario_matrix_adapter_v0 import (
     CANONICAL_DOUBLE_PLAY_COMPOSITION_OWNER,
     DOUBLE_PLAY_COMPOSITION_SCENARIO_MATRIX_ADAPTER_OWNER,
-    _legacy_side_to_assessment_statuses,
     build_scenario_matrix_composition_input_v0,
     evaluate_scenario_matrix_composition_v0,
+)
+from trading.master_v2.survival_suitability_scenario_binding_adapter_v0 import (
+    ScenarioSurvivalSuitabilityOverridesV0,
+    SURVIVAL_SUITABILITY_SCENARIO_BINDING_ADAPTER_OWNER,
+    legacy_side_to_assessment_statuses_v0,
 )
 from trading.master_v2.double_play_entry_exit_policy_v0 import EntryExitPolicyDecisionV0
 from trading.master_v2.bull_bear_state_switch_scenario_binding_adapter_v0 import (
@@ -189,29 +193,15 @@ def evaluate_scenario_matrix_for_side_state_v0(
     trading_epoch: int,
     context_reference: str,
     suitability_neutral_observe: bool = False,
+    survival_suitability_overrides: ScenarioSurvivalSuitabilityOverridesV0 | None = None,
 ) -> DoublePlayCompositionResultV1:
-    from dataclasses import replace
-
-    from trading.master_v2.double_play_suitability import project_strategy_suitability
-    from trading.master_v2.double_play_survival import evaluate_survival_envelope
-    from trading.master_v2.offline_double_play_scenario_replay_v0 import (
-        _suitability_input,
-        _survival_envelope,
-    )
-
-    survival = evaluate_survival_envelope(_survival_envelope())
-    suitability = project_strategy_suitability(_suitability_input())
-    if suitability_neutral_observe:
-        proj = replace(suitability.projection, eligible_for_neutral_pool=True)
-        suitability = replace(suitability, projection=proj, can_enter_neutral_pool=True)
-
+    del suitability_neutral_observe  # canonical path; legacy neutral pool not authority
     matrix_input = build_scenario_matrix_composition_input_v0(
         instrument_id=instrument_id,
         trading_epoch=trading_epoch,
         context_reference=context_reference,
         side_st=side_state,
-        survival=survival,
-        suitability=suitability,
+        survival_suitability_overrides=survival_suitability_overrides,
     )
     return evaluate_scenario_matrix_composition_v0(matrix_input)
 
@@ -514,7 +504,7 @@ def integrated_assessments_match_scenario_side_state_v0(
     bull_status: DirectionalAssessmentStatus,
     bear_status: DirectionalAssessmentStatus,
 ) -> bool:
-    expected_bull, expected_bear = _legacy_side_to_assessment_statuses(side_state)
+    expected_bull, expected_bear = legacy_side_to_assessment_statuses_v0(side_state)
     return bull_status is expected_bull and bear_status is expected_bear
 
 
@@ -975,6 +965,9 @@ def canonical_owner_refs_v0() -> Mapping[str, str]:
         "flat_before_opposite_side_scenario_binding_adapter": (
             FLAT_BEFORE_OPPOSITE_SIDE_SCENARIO_BINDING_ADAPTER_OWNER
         ),
+        "survival_suitability_scenario_binding_adapter": (
+            SURVIVAL_SUITABILITY_SCENARIO_BINDING_ADAPTER_OWNER
+        ),
         "runtime_state_reconciliation": RUNTIME_STATE_RECONCILIATION_OWNER,
         "reconciliation_entry_exit_policy": RECONCILIATION_ENTRY_EXIT_POLICY_OWNER,
         "parity_harness": INTEGRATED_VS_SCENARIO_REPLAY_FULL_SYSTEM_PARITY_HARNESS_OWNER,
@@ -1016,22 +1009,12 @@ def evaluate_reversal_preparation_matrix_v0(
         PositionManagementContext,
         compute_composition_input_digest,
     )
-    from trading.master_v2.double_play_suitability import project_strategy_suitability
-    from trading.master_v2.double_play_survival import evaluate_survival_envelope
-    from trading.master_v2.offline_double_play_scenario_replay_v0 import (
-        _suitability_input,
-        _survival_envelope,
-    )
 
-    survival = evaluate_survival_envelope(_survival_envelope())
-    suitability = project_strategy_suitability(_suitability_input())
     matrix_input = build_scenario_matrix_composition_input_v0(
         instrument_id=instrument_id,
         trading_epoch=trading_epoch,
         context_reference=context_reference,
         side_st=SideState.LONG_ACTIVE,
-        survival=survival,
-        suitability=suitability,
     )
     bull_observe = replace(
         matrix_input.bull_directional_assessment,

@@ -853,8 +853,6 @@ def run_offline_double_play_scenario_replay_v0(
             trading_epoch=tick.tick_index,
             context_reference=f"{inp.correlation_id_prefix}-tick-{tick.tick_index}",
             side_st=side,
-            survival=survival,
-            suitability=suitability,
         )
         composition_result = evaluate_scenario_matrix_composition_v0(matrix_input)
         policy_ctx = replace(

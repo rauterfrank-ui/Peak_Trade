@@ -25,7 +25,7 @@ MatrixStatus = Literal[
     "UNKNOWN",
 ]
 
-NEXT_RECOMMENDED_SLICE = "SURVIVAL_SUITABILITY_SCENARIO_REPLAY_BINDING_PARITY_REWIRE_V0"
+NEXT_RECOMMENDED_SLICE = "INTEGRATED_VS_SCENARIO_REPLAY_FULL_SYSTEM_4_WAY_PARITY_REWIRE_V0"
 
 ALLOWED_SLICE_CHANGED_PATH_PREFIXES: Tuple[str, ...] = (
     "src/trading/master_v2/full_canonical_system_backtest_parity_gap_assessment_v0.py",
@@ -243,6 +243,11 @@ def parity_surface_assessments_v0() -> Tuple[ParitySurfaceAssessmentV0, ...]:
                 "tests/trading/master_v2/test_double_play_entry_exit_policy_v0.py",
                 "tests/trading/master_v2/test_offline_master_v2_double_play_scenario_replay_binding_contract_v0.py",
                 "tests/trading/master_v2/test_flat_before_opposite_side_scenario_replay_binding_parity_rewire_contract_v0.py",
+                "src/trading/master_v2/survival_suitability_scenario_binding_adapter_v0.py",
+                "src/trading/master_v2/double_play_composition_scenario_matrix_adapter_v0.py",
+                "src/trading/master_v2/offline_double_play_scenario_replay_v0.py",
+                "scripts/ops/run_survival_suitability_scenario_replay_binding_parity_rewire_v0.py",
+                "tests/trading/master_v2/test_survival_suitability_scenario_replay_binding_parity_rewire_contract_v0.py",
             ),
             missing_binding_if_any="",
             recommended_next_slice=NEXT_RECOMMENDED_SLICE,
@@ -261,22 +266,21 @@ def parity_surface_assessments_v0() -> Tuple[ParitySurfaceAssessmentV0, ...]:
                 " evaluate_survival_assessment_v1() + evaluate_suitability_binding_v1()"
             ),
             current_scenario_replay_binding=(
-                "offline_double_play_scenario_replay_v0 -> evaluate_survival_envelope()"
-                " + project_strategy_suitability() -> matrix adapter stubs"
+                "offline_double_play_scenario_replay_v0 ->"
+                " evaluate_scenario_survival_suitability_v0()"
+                " -> evaluate_survival_assessment_v1() + evaluate_suitability_binding_v1()"
             ),
             current_backtest_binding="Integrated v1 path via mv2_research_wiring_v1",
             current_runtime_semantics_reference=(
                 "canonical_core_runtime_integration_bridge_v0 v1 policies"
             ),
-            parity_status="PARTIAL",
+            parity_status="PASS",
             evidence_refs=(
                 "tests/trading/master_v2/test_double_play_composition_scenario_matrix_parity_contract_v0.py",
                 "tests/trading/master_v2/test_directional_assessment_v1.py",
+                "tests/trading/master_v2/test_survival_suitability_scenario_replay_binding_parity_rewire_contract_v0.py",
             ),
-            missing_binding_if_any=(
-                "Scenario direct binding to survival_assessment_v1 / suitability_binding_v1"
-                " instead of legacy envelope projection"
-            ),
+            missing_binding_if_any="",
             recommended_next_slice=NEXT_RECOMMENDED_SLICE,
         ),
         ParitySurfaceAssessmentV0(
