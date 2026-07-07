@@ -89,8 +89,10 @@ ALLOWED_SLICE_CHANGED_PATH_PREFIXES: Tuple[str, ...] = (
     "tests/trading/master_v2/test_flat_before_opposite_side_scenario_replay_binding_parity_rewire_contract_v0.py",
     "docs/research/FULL_CANONICAL_SYSTEM_BACKTEST_PARITY_GAP_ASSESSMENT_V0.md",
     "scripts/ops/run_integrated_vs_scenario_replay_full_system_4_way_parity_rewire_v0.py",
+    "scripts/ops/run_surface_p_full_bar_sequence_4_way_parity_completion_v0.py",
     "src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py",
     "tests/trading/master_v2/test_integrated_vs_scenario_replay_full_system_parity_contract_suite_v0.py",
+    "tests/trading/master_v2/test_surface_p_full_bar_sequence_4_way_parity_completion_contract_v0.py",
 )
 
 FORBIDDEN_CHANGED_PATH_PREFIXES: Tuple[str, ...] = (
@@ -641,14 +643,17 @@ def parity_surface_assessments_v0() -> Tuple[ParitySurfaceAssessmentV0, ...]:
             parity_status="PARTIAL",
             evidence_refs=(
                 "tests/trading/master_v2/test_integrated_vs_scenario_replay_full_system_parity_contract_suite_v0.py",
+                "tests/trading/master_v2/test_surface_p_full_bar_sequence_4_way_parity_completion_contract_v0.py",
                 "scripts/ops/run_integrated_vs_scenario_replay_full_system_parity_contract_suite_v0.py",
                 "scripts/ops/run_integrated_vs_scenario_replay_full_system_4_way_parity_rewire_v0.py",
+                "scripts/ops/run_surface_p_full_bar_sequence_4_way_parity_completion_v0.py",
                 "docs/governance/authority_conflict_matrix_v1.md",
             ),
             missing_binding_if_any=(
                 "Runtime bridge activation remains BOUND_NOT_ACTIVATED by policy;"
-                " full bar-sequence 4-way parity across all entry-exit/capital/intent"
-                " fixture cases not yet complete"
+                " full bar-sequence 4-way parity fixture coverage complete offline"
+                " (entry/exit, capital/intent, blocked paths); runtime bridge activation"
+                " still policy-blocked"
             ),
             recommended_next_slice=NEXT_RECOMMENDED_SLICE,
         ),
