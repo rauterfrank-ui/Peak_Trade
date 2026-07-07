@@ -25,7 +25,7 @@ MatrixStatus = Literal[
     "UNKNOWN",
 ]
 
-NEXT_RECOMMENDED_SLICE = "FULL_CANONICAL_BACKTEST_BOUNDARY_CHAIN_REASSESSMENT_V0"
+NEXT_RECOMMENDED_SLICE = "REVERSAL_PREPARATION_SCENARIO_REPLAY_BINDING_PARITY_REWIRE_V0"
 
 ALLOWED_SLICE_CHANGED_PATH_PREFIXES: Tuple[str, ...] = (
     "src/trading/master_v2/full_canonical_system_backtest_parity_gap_assessment_v0.py",
@@ -76,8 +76,11 @@ ALLOWED_SLICE_CHANGED_PATH_PREFIXES: Tuple[str, ...] = (
     "tests/trading/master_v2/test_feedback_learning_boundary_offline_replay_binding_parity_rewire_contract_v0.py",
     "tests/test_backtest_ai_observability_feedback_boundary_wiring_v0.py",
     "src/trading/master_v2/bull_bear_state_switch_scenario_binding_adapter_v0.py",
+    "src/trading/master_v2/scope_event_generator_scenario_binding_adapter_v0.py",
     "scripts/ops/run_bull_bear_state_switch_scenario_replay_binding_parity_rewire_v0.py",
+    "scripts/ops/run_scope_event_generator_scenario_replay_binding_parity_rewire_v0.py",
     "tests/trading/master_v2/test_bull_bear_state_switch_scenario_replay_binding_parity_rewire_contract_v0.py",
+    "tests/trading/master_v2/test_scope_event_generator_scenario_replay_binding_parity_rewire_contract_v0.py",
     "docs/research/FULL_CANONICAL_SYSTEM_BACKTEST_PARITY_GAP_ASSESSMENT_V0.md",
 )
 
@@ -156,8 +159,9 @@ def parity_surface_assessments_v0() -> Tuple[ParitySurfaceAssessmentV0, ...]:
                 " + scope_adverse_exit_signal -> evaluate_double_play_entry_exit_policy_v0()"
             ),
             current_scenario_replay_binding=(
-                "offline_double_play_scenario_replay_v0: ScopeEvent on ticks only;"
-                " no full generator + entry-exit chain per tick"
+                "offline_double_play_scenario_replay_v0 -> evaluate_scenario_scope_event_v0()"
+                " -> generate_deterministic_scope_event()"
+                " + scope_adverse_exit_signal -> evaluate_scenario_entry_exit_policy_v0()"
             ),
             current_backtest_binding=(
                 "mv2_research_wiring_v1 adverse_exit_distance=60.0 -> integrated replay"
@@ -165,15 +169,13 @@ def parity_surface_assessments_v0() -> Tuple[ParitySurfaceAssessmentV0, ...]:
             current_runtime_semantics_reference=(
                 "canonical_core_runtime_integration_bridge_v0 passes scope params to integrated replay"
             ),
-            parity_status="PARTIAL",
+            parity_status="PASS",
             evidence_refs=(
                 "tests/trading/master_v2/test_deterministic_scope_event_generator_v1.py",
                 "tests/trading/master_v2/test_double_play_entry_exit_policy_v0.py",
+                "tests/trading/master_v2/test_scope_event_generator_scenario_replay_binding_parity_rewire_contract_v0.py",
             ),
-            missing_binding_if_any=(
-                "Scenario replay binding to deterministic_scope_event_generator_v1"
-                " + entry-exit adverse-exit path"
-            ),
+            missing_binding_if_any="",
             recommended_next_slice=NEXT_RECOMMENDED_SLICE,
         ),
         ParitySurfaceAssessmentV0(

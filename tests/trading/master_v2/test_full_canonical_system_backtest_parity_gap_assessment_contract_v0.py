@@ -58,7 +58,7 @@ def test_gap_assessment_owner_and_surface_count_v0() -> None:
 
 def test_gap_assessment_status_distribution_v0() -> None:
     counts = parity_status_counts_v0()
-    assert counts["PASS"] == 11
+    assert counts["PASS"] == 12
     assert counts["PARTIAL"] >= 3
     assert counts["GAP"] == 0
     assert counts["NOT_APPLICABLE"] == 0
@@ -70,6 +70,14 @@ def test_bull_bear_state_switch_surface_pass_v0() -> None:
     assert state_switch.parity_status == "PASS"
     assert state_switch.missing_binding_if_any == ""
     assert "evaluate_scenario_state_switch_v0" in state_switch.current_scenario_replay_binding
+
+
+def test_scope_adverse_exit_surface_pass_v0() -> None:
+    scope_adverse = next(item for item in parity_surface_assessments_v0() if item.surface_id == "B")
+    assert scope_adverse.parity_status == "PASS"
+    assert scope_adverse.missing_binding_if_any == ""
+    assert "evaluate_scenario_scope_event_v0" in scope_adverse.current_scenario_replay_binding
+    assert "generate_deterministic_scope_event" in scope_adverse.current_scenario_replay_binding
 
 
 def test_composition_surface_pass_v0() -> None:

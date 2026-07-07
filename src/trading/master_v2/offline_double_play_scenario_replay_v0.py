@@ -85,6 +85,11 @@ from trading.master_v2.bull_bear_state_switch_scenario_binding_adapter_v0 import
     ScenarioStateSwitchContextV0,
     evaluate_scenario_state_switch_v0,
 )
+from trading.master_v2.deterministic_scope_event_generator_v1 import ScopeConfirmationStateV1
+from trading.master_v2.scope_event_generator_scenario_binding_adapter_v0 import (
+    ScenarioScopeEventContextV0,
+    evaluate_scenario_scope_event_v0,
+)
 from trading.master_v2.double_play_entry_exit_scenario_binding_adapter_v0 import (
     default_scenario_entry_exit_policy_context_v0,
     evaluate_scenario_entry_exit_policy_v0,
@@ -739,6 +744,11 @@ def run_offline_double_play_scenario_replay_v0(
     fail_reasons: list[str] = []
     prior_volatility_estimate = rules.volatility_estimate
     final_dashboard_display_snapshot: DoublePlayDashboardDisplaySnapshot | None = None
+    scope_confirmation_state = ScopeConfirmationStateV1(
+        candidate_kind=None,
+        candidate_count=0,
+        last_evaluated_trading_epoch=-1,
+    )
 
     sorted_ticks = tuple(sorted(inp.ticks, key=lambda t: t.tick_index))
 
@@ -754,6 +764,21 @@ def run_offline_double_play_scenario_replay_v0(
             rules=rules,
             env=_RUNTIME_ENVELOPE,
         )
+
+        scope_event_binding = evaluate_scenario_scope_event_v0(
+            ScenarioScopeEventContextV0(
+                instrument_id=inp.selected_future_id,
+                trading_epoch=tick.tick_index,
+                context_reference=f"{inp.correlation_id_prefix}-tick-{tick.tick_index}",
+                current_price=tick.price,
+                scope_state=scope_state,
+                rules=rules,
+                active_side=active,
+                confirmation_state=scope_confirmation_state,
+                safety_decision_allowed=tick.safety_decision_allowed,
+            )
+        )
+        scope_confirmation_state = scope_event_binding.next_confirmation_state
 
         event = tick.scope_event
         if not tick.safety_decision_allowed and event != ScopeEvent.KILL_ALL_REQUIRED:
@@ -830,8 +855,11 @@ def run_offline_double_play_scenario_replay_v0(
             suitability=suitability,
         )
         composition_result = evaluate_scenario_matrix_composition_v0(matrix_input)
-        policy_ctx = default_scenario_entry_exit_policy_context_v0(
-            safety_decision_allowed=safety_allowed,
+        policy_ctx = replace(
+            default_scenario_entry_exit_policy_context_v0(
+                safety_decision_allowed=safety_allowed,
+            ),
+            scope_adverse_exit_signal=scope_event_binding.scope_adverse_exit_signal,
         )
         entry_exit_decision = evaluate_scenario_entry_exit_policy_v0(
             instrument_id=inp.selected_future_id,
