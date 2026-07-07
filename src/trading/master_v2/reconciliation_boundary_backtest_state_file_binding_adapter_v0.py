@@ -70,6 +70,14 @@ class ReconciliationBoundaryBacktestStateFileEvidenceV0:
     unresolved_reduce_blocks_opposite_side: bool
     venue_flat_alone_insufficient: bool
     no_auto_resubmit: bool
+    reconciliation_semantics_represented_in_backtest: bool
+    unknown_outcome_semantics_represented_in_backtest: bool
+    no_auto_resubmit_after_unknown_outcome_represented_in_backtest: bool
+    query_by_client_order_id_represented_in_backtest: bool
+    open_orders_recent_orders_fills_position_reconciliation_represented_in_backtest: bool
+    reconciliation_failure_blocks_new_exposure_represented_in_backtest: bool
+    opposite_side_requires_reconciled_flat_represented_in_backtest: bool
+    no_position_increase_during_unresolved_reconciliation_represented_in_backtest: bool
     reconciliation_owner_digest_ref: str
     state_file_digest_ref: str
     runtime_authority: bool
@@ -221,6 +229,46 @@ def _context_from_state_file(
     )
 
 
+def _derive_query_by_client_order_id_represented(
+    state_file: ReconciliationBacktestStateFileRecordV0,
+    boundary: ReconciliationUnknownOutcomeOfflineReplayBindingResultV0,
+) -> bool:
+    b = boundary.boundary
+    return (
+        state_file.position_state == PositionState.SUBMISSION_UNKNOWN.value
+        or state_file.order_snapshot_unresolved
+        or b.submission_unknown_blocks_new_exposure
+    )
+
+
+def _derive_open_orders_reconciliation_represented(
+    state_file: ReconciliationBacktestStateFileRecordV0,
+    boundary: ReconciliationUnknownOutcomeOfflineReplayBindingResultV0,
+) -> bool:
+    b = boundary.boundary
+    return (
+        state_file.intent_snapshot_unresolved
+        or state_file.order_snapshot_unresolved
+        or state_file.fill_snapshot_unresolved
+        or state_file.reconciliation_state != ReconciliationState.RECONCILED.value
+        or state_file.position_state != PositionState.FLAT_RECONCILED.value
+        or b.venue_flat_alone_insufficient
+    )
+
+
+def _derive_no_position_increase_during_unresolved(
+    boundary: ReconciliationUnknownOutcomeOfflineReplayBindingResultV0,
+) -> bool:
+    b = boundary.boundary
+    return (
+        b.submission_unknown_blocks_new_exposure
+        or b.reconciliation_required_maps_to_reconcile_only
+        or b.unresolved_reduce_blocks_opposite_side
+        or b.reconciled_flat_required_before_opposite_side
+        or bool(b.hard_block_reasons)
+    )
+
+
 def bind_reconciliation_boundary_backtest_state_file_evidence_v0(
     evidence: "CanonicalTradingDecisionEvidenceV1",
     *,
@@ -235,6 +283,7 @@ def bind_reconciliation_boundary_backtest_state_file_evidence_v0(
         raise ValueError("reconciliation_backtest_state_file_non_authority_boundary_failed")
 
     boundary = offline_binding.boundary
+    reconciliation_represented = bool(boundary.reconciliation_unknown_outcome_bound)
     return ReconciliationBoundaryBacktestStateFileEvidenceV0(
         reconciliation_boundary_backtest_state_file_bound=True,
         reconciliation_state=state_file.reconciliation_state,
@@ -250,6 +299,31 @@ def bind_reconciliation_boundary_backtest_state_file_evidence_v0(
         unresolved_reduce_blocks_opposite_side=boundary.unresolved_reduce_blocks_opposite_side,
         venue_flat_alone_insufficient=boundary.venue_flat_alone_insufficient,
         no_auto_resubmit=boundary.no_auto_resubmit,
+        reconciliation_semantics_represented_in_backtest=reconciliation_represented,
+        unknown_outcome_semantics_represented_in_backtest=(
+            boundary.submission_unknown_blocks_new_exposure
+            or boundary.unknown_outcome_never_auto_resubmits
+            or boundary.no_auto_resubmit
+        ),
+        no_auto_resubmit_after_unknown_outcome_represented_in_backtest=boundary.no_auto_resubmit,
+        query_by_client_order_id_represented_in_backtest=_derive_query_by_client_order_id_represented(
+            state_file,
+            offline_binding,
+        ),
+        open_orders_recent_orders_fills_position_reconciliation_represented_in_backtest=(
+            _derive_open_orders_reconciliation_represented(state_file, offline_binding)
+        ),
+        reconciliation_failure_blocks_new_exposure_represented_in_backtest=(
+            boundary.reconciliation_required_maps_to_reconcile_only
+            or boundary.submission_unknown_blocks_new_exposure
+            or bool(boundary.hard_block_reasons)
+        ),
+        opposite_side_requires_reconciled_flat_represented_in_backtest=(
+            boundary.reconciled_flat_required_before_opposite_side
+        ),
+        no_position_increase_during_unresolved_reconciliation_represented_in_backtest=(
+            _derive_no_position_increase_during_unresolved(offline_binding)
+        ),
         reconciliation_owner_digest_ref=state_file.reconciliation_owner_digest_ref,
         state_file_digest_ref=state_file.state_file_digest_ref,
         runtime_authority=False,
@@ -297,6 +371,8 @@ def apply_backtest_reconciliation_exposure_gate_v0(
     """Fail-closed backtest exposure representation — no runtime orders."""
     if position_signal == 0:
         return 0
+    if not evidence.reconciliation_semantics_represented_in_backtest:
+        return 0
     boundary = evidence.offline_binding.boundary
     if boundary.submission_unknown_blocks_new_exposure:
         return 0
@@ -311,6 +387,16 @@ def apply_backtest_reconciliation_exposure_gate_v0(
     if boundary.hard_block_reasons:
         return 0
     return position_signal
+
+
+def reconciliation_boundary_semantics_represented_in_backtest_v0(
+    evidence: ReconciliationBoundaryBacktestStateFileEvidenceV0,
+) -> bool:
+    return (
+        evidence.reconciliation_semantics_represented_in_backtest
+        and evidence.unknown_outcome_semantics_represented_in_backtest
+        and evidence.no_auto_resubmit_after_unknown_outcome_represented_in_backtest
+    )
 
 
 def backtest_reconciliation_state_file_binding_non_authority_ok_v0(
