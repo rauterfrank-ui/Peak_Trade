@@ -93,6 +93,9 @@ ALLOWED_SLICE_CHANGED_PATH_PREFIXES: Tuple[str, ...] = (
     "src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py",
     "tests/trading/master_v2/test_integrated_vs_scenario_replay_full_system_parity_contract_suite_v0.py",
     "tests/trading/master_v2/test_surface_p_full_bar_sequence_4_way_parity_completion_contract_v0.py",
+    "src/trading/master_v2/surface_p_offline_complete_runtime_bridge_bound_not_activated_contract_v0.py",
+    "scripts/ops/run_surface_p_offline_complete_runtime_bridge_bound_not_activated_contract_v0.py",
+    "tests/trading/master_v2/test_surface_p_offline_complete_runtime_bridge_bound_not_activated_contract_v0.py",
 )
 
 FORBIDDEN_CHANGED_PATH_PREFIXES: Tuple[str, ...] = (
@@ -671,8 +674,17 @@ def normalize_matrix_status_v0(parity_status: ParityStatus) -> MatrixStatus:
 
 
 def parity_gap_records_v0() -> Tuple[Mapping[str, Any], ...]:
+    from trading.master_v2.surface_p_offline_complete_runtime_bridge_bound_not_activated_contract_v0 import (
+        surface_p_offline_parity_complete_runtime_activation_pending_v0,
+    )
+
     records: list[Mapping[str, Any]] = []
     for item in parity_surface_assessments_v0():
+        if (
+            item.surface_id == "P"
+            and surface_p_offline_parity_complete_runtime_activation_pending_v0()
+        ):
+            continue
         matrix_status = normalize_matrix_status_v0(item.parity_status)
         if matrix_status != "GAP":
             continue
@@ -706,20 +718,33 @@ def parity_gap_records_v0() -> Tuple[Mapping[str, Any], ...]:
 
 
 def render_parity_gap_matrix_json_v0() -> str:
+    from trading.master_v2.surface_p_offline_complete_runtime_bridge_bound_not_activated_contract_v0 import (
+        evaluate_surface_p_offline_complete_runtime_bridge_bound_not_activated_contract_v0,
+        surface_p_semantic_status_to_dict_v0,
+    )
+
+    surface_p_semantic = (
+        evaluate_surface_p_offline_complete_runtime_bridge_bound_not_activated_contract_v0()
+    )
     surfaces = []
     for item in parity_surface_assessments_v0():
-        surfaces.append(
-            {
-                "surface_id": item.surface_id,
-                "surface_name": item.surface_name,
-                "parity_status": item.parity_status,
-                "matrix_status": normalize_matrix_status_v0(item.parity_status),
-                "canonical_owner_files": list(item.canonical_owner_files),
-                "missing_binding": item.missing_binding_if_any or None,
-                "recommended_next_slice": item.recommended_next_slice,
-                "forbidden_runtime_authority_confirmed": item.forbidden_runtime_authority_confirmed,
-            }
-        )
+        surface_entry: dict[str, Any] = {
+            "surface_id": item.surface_id,
+            "surface_name": item.surface_name,
+            "parity_status": item.parity_status,
+            "matrix_status": normalize_matrix_status_v0(item.parity_status),
+            "canonical_owner_files": list(item.canonical_owner_files),
+            "missing_binding": item.missing_binding_if_any or None,
+            "recommended_next_slice": item.recommended_next_slice,
+            "forbidden_runtime_authority_confirmed": item.forbidden_runtime_authority_confirmed,
+        }
+        if item.surface_id == "P":
+            surface_entry["surface_p_semantic"] = dict(
+                surface_p_semantic_status_to_dict_v0(surface_p_semantic)
+            )
+            if surface_p_semantic.surface_p_overall_status == "PARTIAL_RUNTIME_ACTIVATION_PENDING":
+                surface_entry["matrix_status"] = "PARTIAL_RUNTIME_ACTIVATION_PENDING"
+        surfaces.append(surface_entry)
     counts = parity_status_counts_v0()
     gap_records = parity_gap_records_v0()
     payload = {
@@ -739,6 +764,7 @@ def render_parity_gap_matrix_json_v0() -> str:
         },
         "surfaces": surfaces,
         "gap_records": list(gap_records),
+        "surface_p_semantic": dict(surface_p_semantic_status_to_dict_v0(surface_p_semantic)),
     }
     return json.dumps(payload, indent=2, sort_keys=True) + "\n"
 
