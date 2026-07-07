@@ -238,7 +238,9 @@ def test_surface_c_pass_dep_unchanged_partial_v0() -> None:
     assert surface_e.parity_status == "PASS"
     surface_p = next(item for item in parity_surface_assessments_v0() if item.surface_id == "P")
     assert surface_p.parity_status == "PARTIAL"
-    assert NEXT_RECOMMENDED_SLICE == "INTEGRATED_VS_SCENARIO_REPLAY_FULL_SYSTEM_4_WAY_PARITY_REWIRE_V0"
+    assert (
+        NEXT_RECOMMENDED_SLICE == "INTEGRATED_VS_SCENARIO_REPLAY_FULL_SYSTEM_4_WAY_PARITY_REWIRE_V0"
+    )
 
 
 def test_default_scenario_replay_still_passes_v0() -> None:
