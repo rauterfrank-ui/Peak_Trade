@@ -173,6 +173,13 @@ from src.trading.master_v2.safety_kernel_boundary_backtest_state_file_binding_ad
     bind_safety_kernel_boundary_backtest_state_file_evidence_v0,
     load_safety_kernel_backtest_state_file_record_v0,
 )
+from src.trading.master_v2.promotion_gate_boundary_backtest_state_file_binding_adapter_v0 import (
+    PromotionGateBacktestStateFileRecordV0,
+    PromotionGateBoundaryBacktestStateFileEvidenceV0,
+    apply_backtest_promotion_gate_exposure_gate_v0,
+    bind_promotion_gate_boundary_backtest_state_file_evidence_v0,
+    load_promotion_gate_backtest_state_file_record_v0,
+)
 
 MV2_RESEARCH_WIRING_LAYER_VERSION = "v1"
 MV2_RESEARCH_WIRING_OWNER = "backtest.mv2_research_wiring_v1"
@@ -258,6 +265,16 @@ class SafetyKernelBacktestStateFileBindingConfigV1:
 
 
 @dataclass(frozen=True)
+class PromotionGateBacktestStateFileBindingConfigV1:
+    """Optional backtest Promotion Gate state-file binding — offline evidence only."""
+
+    state_file_path: Path | None = None
+    state_file_record: PromotionGateBacktestStateFileRecordV0 | None = None
+    expected_state_file_digest_ref: str = ""
+    require_state_file: bool = False
+
+
+@dataclass(frozen=True)
 class MV2ReplayBarOutcomeV1:
     trading_epoch: int
     context: CanonicalMarketContextV1
@@ -281,6 +298,9 @@ class MV2ReplayBarOutcomeV1:
     ) = None
     safety_kernel_backtest_state_file_evidence: (
         SafetyKernelBoundaryBacktestStateFileEvidenceV0 | None
+    ) = None
+    promotion_gate_backtest_state_file_evidence: (
+        PromotionGateBoundaryBacktestStateFileEvidenceV0 | None
     ) = None
 
 
@@ -979,6 +999,33 @@ def _resolve_safety_kernel_backtest_state_file_record_v1(
     return None
 
 
+def _resolve_promotion_gate_backtest_state_file_record_v1(
+    binding: PromotionGateBacktestStateFileBindingConfigV1 | None,
+) -> PromotionGateBacktestStateFileRecordV0 | None:
+    if binding is None:
+        return None
+    if binding.state_file_record is not None:
+        record = binding.state_file_record
+        if binding.expected_state_file_digest_ref:
+            from src.trading.master_v2.promotion_gate_boundary_backtest_state_file_binding_adapter_v0 import (
+                verify_promotion_gate_backtest_state_file_digest_v0,
+            )
+
+            verify_promotion_gate_backtest_state_file_digest_v0(
+                record,
+                expected_digest_ref=binding.expected_state_file_digest_ref,
+            )
+        return record
+    if binding.state_file_path is not None:
+        return load_promotion_gate_backtest_state_file_record_v0(
+            binding.state_file_path,
+            expected_digest_ref=binding.expected_state_file_digest_ref,
+        )
+    if binding.require_state_file:
+        raise ValueError("promotion_gate_backtest_state_file_missing")
+    return None
+
+
 def _resolve_killswitch_backtest_state_file_record_v1(
     binding: KillSwitchBacktestStateFileBindingConfigV1 | None,
 ) -> KillSwitchBacktestStateFileRecordV0 | None:
@@ -1030,6 +1077,7 @@ def run_mv2_research_backtest_wiring_v1(
         CanonicalOrderIntentBacktestStateFileBindingConfigV1 | None
     ) = None,
     safety_kernel_state_file_binding: SafetyKernelBacktestStateFileBindingConfigV1 | None = None,
+    promotion_gate_state_file_binding: PromotionGateBacktestStateFileBindingConfigV1 | None = None,
 ) -> MV2ResearchWiringResultV1:
     _fail_closed(bars.empty, "bars_empty")
     _ensure_supported_instrument(instrument_id)
@@ -1120,6 +1168,9 @@ def run_mv2_research_backtest_wiring_v1(
     )
     safety_kernel_state_file_record = _resolve_safety_kernel_backtest_state_file_record_v1(
         safety_kernel_state_file_binding
+    )
+    promotion_gate_state_file_record = _resolve_promotion_gate_backtest_state_file_record_v1(
+        promotion_gate_state_file_binding
     )
     if canonical_order_intent_state_file_record is not None and (
         capital_risk_sizing_state_file_record is None
@@ -1248,6 +1299,16 @@ def run_mv2_research_backtest_wiring_v1(
                     and safety_kernel_evidence.no_order_without_safety_pass_represented
                 ),
             )
+        promotion_gate_evidence: PromotionGateBoundaryBacktestStateFileEvidenceV0 | None = None
+        if promotion_gate_state_file_record is not None:
+            promotion_gate_evidence = bind_promotion_gate_boundary_backtest_state_file_evidence_v0(
+                replay_result.evidence,
+                state_file=promotion_gate_state_file_record,
+            )
+            signal = apply_backtest_promotion_gate_exposure_gate_v0(
+                signal,
+                evidence=promotion_gate_evidence,
+            )
         if context.warmup_status is not WarmupStatus.WARMUP_COMPLETE:
             signal = 0
         outcomes.append(
@@ -1265,6 +1326,7 @@ def run_mv2_research_backtest_wiring_v1(
                 capital_risk_sizing_backtest_state_file_evidence=capital_risk_sizing_evidence,
                 canonical_order_intent_backtest_state_file_evidence=canonical_order_intent_evidence,
                 safety_kernel_backtest_state_file_evidence=safety_kernel_evidence,
+                promotion_gate_backtest_state_file_evidence=promotion_gate_evidence,
             )
         )
         replay_signals.append(signal)
