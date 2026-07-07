@@ -10,9 +10,9 @@ from __future__ import annotations
 
 import hashlib
 import json
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from pathlib import Path
-from typing import Any, Mapping
+from typing import TYPE_CHECKING, Any, Mapping
 
 from trading.master_v2.double_play_entry_exit_policy_v0 import (
     PositionState,
@@ -60,6 +60,12 @@ class KillSwitchBoundaryBacktestStateFileEvidenceV0:
     reduce_to_flat_required: bool
     emergency_flatten_required: bool
     reconciliation_required: bool
+    killswitch_boundary_represented_in_backtest: bool
+    block_new_represented_in_backtest: bool
+    cancel_pending_represented_in_backtest: bool
+    reduce_to_flat_represented_in_backtest: bool
+    no_automatic_resume_represented_in_backtest: bool
+    no_order_without_safety_and_killswitch_pass_represented_in_backtest: bool
     fencing_digest_ref: str
     state_file_digest_ref: str
     runtime_authority: bool
@@ -203,6 +209,7 @@ def bind_killswitch_boundary_backtest_state_file_evidence_v0(
         raise ValueError("killswitch_backtest_state_file_non_authority_boundary_failed")
 
     boundary = offline_binding.boundary
+    killswitch_pass_represented = bool(boundary.killswitch_boundary_bound)
     return KillSwitchBoundaryBacktestStateFileEvidenceV0(
         killswitch_boundary_backtest_state_file_bound=True,
         killswitch_boundary_mode=mode.value,
@@ -212,6 +219,14 @@ def bind_killswitch_boundary_backtest_state_file_evidence_v0(
         reduce_to_flat_required=boundary.reduce_to_flat_boundary_only,
         emergency_flatten_required=boundary.emergency_flatten_boundary_only,
         reconciliation_required=_derive_reconciliation_required(offline_binding),
+        killswitch_boundary_represented_in_backtest=killswitch_pass_represented,
+        block_new_represented_in_backtest=boundary.block_new_entry,
+        cancel_pending_represented_in_backtest=boundary.cancel_pending_boundary_only,
+        reduce_to_flat_represented_in_backtest=boundary.reduce_to_flat_boundary_only,
+        no_automatic_resume_represented_in_backtest=boundary.no_auto_resume,
+        no_order_without_safety_and_killswitch_pass_represented_in_backtest=(
+            killswitch_pass_represented
+        ),
         fencing_digest_ref=state_file.fencing_digest_ref,
         state_file_digest_ref=state_file.state_file_digest_ref,
         runtime_authority=False,
@@ -261,11 +276,20 @@ def apply_backtest_killswitch_exposure_gate_v0(
     """Fail-closed backtest exposure representation — no runtime orders."""
     if position_signal == 0:
         return 0
+    if not evidence.killswitch_boundary_represented_in_backtest:
+        return 0
     mode = KillSwitchBoundaryMode(evidence.killswitch_boundary_mode)
     if mode is KillSwitchBoundaryMode.BLOCK_NEW:
         return 0
     if mode is KillSwitchBoundaryMode.NO_NEW_POSITIONS:
         return position_signal if has_existing_position else 0
+    if evidence.no_automatic_resume_represented_in_backtest and mode in (
+        KillSwitchBoundaryMode.BLOCK_NEW,
+        KillSwitchBoundaryMode.NO_NEW_POSITIONS,
+        KillSwitchBoundaryMode.NO_POSITION_INCREASE,
+        KillSwitchBoundaryMode.EMERGENCY_FLATTEN,
+    ):
+        return 0
     if evidence.no_position_increase and position_signal != 0:
         return 0
     if evidence.emergency_flatten_required and position_signal != 0:
@@ -275,6 +299,42 @@ def apply_backtest_killswitch_exposure_gate_v0(
     if evidence.no_new_positions and position_signal != 0:
         return 0
     return position_signal
+
+
+def apply_backtest_combined_safety_and_killswitch_exposure_gate_v0(
+    position_signal: int,
+    *,
+    killswitch_evidence: KillSwitchBoundaryBacktestStateFileEvidenceV0 | None,
+    safety_kernel_evidence: "SafetyKernelBoundaryBacktestStateFileEvidenceV0 | None",
+    has_existing_position: bool = False,
+) -> int:
+    """Sequential fail-closed gate: KillSwitch boundary then Safety Kernel (offline only)."""
+    signal = position_signal
+    if killswitch_evidence is not None:
+        signal = apply_backtest_killswitch_exposure_gate_v0(
+            signal,
+            evidence=killswitch_evidence,
+            has_existing_position=has_existing_position,
+        )
+    if safety_kernel_evidence is not None:
+        from trading.master_v2.safety_kernel_boundary_backtest_state_file_binding_adapter_v0 import (
+            apply_backtest_safety_kernel_exposure_gate_v0,
+        )
+
+        signal = apply_backtest_safety_kernel_exposure_gate_v0(
+            signal,
+            evidence=safety_kernel_evidence,
+        )
+    return signal
+
+
+def killswitch_boundary_semantics_represented_in_backtest_v0(
+    evidence: KillSwitchBoundaryBacktestStateFileEvidenceV0,
+) -> bool:
+    return (
+        evidence.killswitch_boundary_represented_in_backtest
+        and evidence.no_order_without_safety_and_killswitch_pass_represented_in_backtest
+    )
 
 
 def backtest_state_file_binding_non_authority_ok_v0(
@@ -306,3 +366,8 @@ def load_killswitch_backtest_state_file_record_v0(
 from trading.master_v2.canonical_trading_decision_evidence_v1 import (  # noqa: E402
     CanonicalTradingDecisionEvidenceV1,
 )
+
+if TYPE_CHECKING:
+    from trading.master_v2.safety_kernel_boundary_backtest_state_file_binding_adapter_v0 import (
+        SafetyKernelBoundaryBacktestStateFileEvidenceV0,
+    )
