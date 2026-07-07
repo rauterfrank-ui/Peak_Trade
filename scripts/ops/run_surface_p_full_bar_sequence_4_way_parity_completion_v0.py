@@ -13,10 +13,10 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
-BASE_HEAD = "75b2d98b2619e3e8f8fc1f30678c926d825ae4cd"
+BASE_HEAD = "ed5adb7ad5042c531d52a77f99c99996aaa61e72"
 PREVIOUS_REASSESSMENT_EVIDENCE = (
     ARCHIVE_ROOT
-    / "research/full_canonical_backtest_boundary_chain_reassessment_v0_20260707T202911Z"
+    / "research/full_canonical_backtest_boundary_chain_reassessment_after_pr4977_v0_20260707T210247Z"
 )
 VERDICT = "SURFACE_P_FULL_BAR_SEQUENCE_4_WAY_PARITY_COMPLETION_V0_PASS"
 PROCESS_CLASSIFICATION = "NARROW_REUSE_FIRST_BAR_SEQUENCE_4_WAY_PARITY_COMPLETION_OFFLINE_ONLY"
@@ -280,7 +280,7 @@ def collect_evidence(out_dir: Path | None = None) -> dict[str, object]:
                 f"HEAD={head}",
                 f"ORIGIN_MAIN={origin_main}",
                 f"HEAD_EQUALS_ORIGIN_MAIN={str(head == origin_main).lower()}",
-                "BRANCH=feat/surface-p-full-bar-sequence-4way-parity-completion-v0",
+                "BRANCH=feat/surface-p-full-bar-sequence-4-way-parity-completion-v0",
                 f"PREVIOUS_REASSESSMENT_MANIFEST_VERIFY_RC={prev_rc}",
                 "SOURCE_EVIDENCE_REFERENCED=false",
                 "SOURCE_MANIFEST_VERIFY_RC=NOT_APPLICABLE_NO_SOURCE_EVIDENCE_REFERENCED",
