@@ -11,7 +11,18 @@ import sys
 from datetime import datetime, timezone
 from pathlib import Path
 
-REPO_ROOT = Path(__file__).resolve().parents[2]
+_SCRIPT_ROOT = Path(__file__).resolve()
+REPO_ROOT = _SCRIPT_ROOT.parents[2]
+for parent in [_SCRIPT_ROOT, *_SCRIPT_ROOT.parents]:
+    if (parent / "src").is_dir() and (parent / ".git").exists():
+        REPO_ROOT = parent
+        repo_s = str(parent)
+        src_s = str(parent / "src")
+        if repo_s not in sys.path:
+            sys.path.insert(0, repo_s)
+        if src_s not in sys.path:
+            sys.path.insert(0, src_s)
+        break
 ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
 SOURCE_EVIDENCE = (
     ARCHIVE_ROOT
@@ -74,7 +85,6 @@ def collect_evidence(out_dir: Path | None = None) -> dict[str, object]:
         encoding="utf-8",
     )
 
-    sys.path.insert(0, str(REPO_ROOT / "src"))
     from trading.master_v2.full_canonical_system_backtest_parity_gap_assessment_v0 import (
         render_parity_gap_matrix_json_v0,
     )
@@ -93,7 +103,10 @@ def collect_evidence(out_dir: Path | None = None) -> dict[str, object]:
         encoding="utf-8",
     )
 
-    env = {**dict(__import__("os").environ), "PYTHONPATH": str(REPO_ROOT / "src")}
+    env = {
+        **dict(__import__("os").environ),
+        "PYTHONPATH": f"{REPO_ROOT / 'src'}:{REPO_ROOT}",
+    }
     pytest_proc = subprocess.run(
         [sys.executable, "-m", "pytest", "-q", *TARGETED_TESTS],
         cwd=str(REPO_ROOT),
