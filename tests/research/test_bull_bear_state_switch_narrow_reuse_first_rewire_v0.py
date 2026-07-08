@@ -60,10 +60,10 @@ def test_rewire_makes_no_forbidden_claims() -> None:
     assert all(value is False for value in forbidden.values())
 
 
-def test_trace_matrix_still_selects_bull_bear_after_inventory_pin() -> None:
+def test_trace_matrix_bull_bear_marked_rewire_bound_after_inventory_pin() -> None:
     inventory = build_inventory(Path.cwd())
     matrix = build_trace_matrix(inventory)
-    assert matrix["selected_next_rewire_plan"]["selected_surface_id"] == SURFACE_ID
     edge = matrix["trace_edges"][0]
-    assert edge["surface_id"] == SURFACE_ID
+    assert edge["surface_id"] == "bull_bear_state_switch"
+    assert edge["trace_state"] == "TRACE_REWIRE_BOUND_OFFLINE_PARITY_PATH"
     assert edge["backtest_candidate"] == CONTRACT_TEST_PATH

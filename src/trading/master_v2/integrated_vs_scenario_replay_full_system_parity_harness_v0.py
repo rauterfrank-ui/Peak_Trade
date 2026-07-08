@@ -130,7 +130,9 @@ from trading.master_v2.reversal_preparation_scenario_binding_adapter_v0 import (
     REVERSAL_PREPARATION_SCENARIO_BINDING_ADAPTER_OWNER,
     REVERSAL_PREPARATION_EFFECT_BOUND_OFFLINE,
     evaluate_scenario_reversal_preparation_entry_exit_v0,
+    is_reversal_preparation_composition_v0,
     reversal_preparation_binding_non_authority_boundary_ok_v0,
+    reversal_preparation_decision_is_reduce_only_preparation_v0,
 )
 from trading.master_v2.flat_before_opposite_side_scenario_binding_adapter_v0 import (
     FLAT_BEFORE_OPPOSITE_SIDE_SCENARIO_BINDING_ADAPTER_OWNER,
@@ -142,6 +144,7 @@ from trading.master_v2.double_play_entry_exit_scenario_binding_adapter_v0 import
     evaluate_scenario_entry_exit_policy_v0,
 )
 from trading.master_v2.double_play_state import (
+    ActiveSide,
     DynamicScopeRules,
     RuntimeEnvelope,
     RuntimeScopeState,
@@ -264,6 +267,8 @@ class ParityDecisionEnvelopeV0:
     ai_observability_boundary_effect: str = AI_OBSERVABILITY_BOUNDARY_EFFECT_NONE
     state_switch_ref: str = ""
     state_switch_effect: str = STATE_SWITCH_EFFECT_NONE
+    scope_event_ref: str = ""
+    scope_event_effect: str = ""
     transition_reason_code: str = ""
     conflict_status: Optional[str] = None
     selected_side: Optional[str] = None
@@ -636,6 +641,142 @@ def evaluate_scenario_state_switch_for_fixture_v0(
             now_tick=tick,
             scope_event_id=f"{context_reference}-scope-{scope_event.value}",
         )
+    )
+
+
+_DEFAULT_SCENARIO_SCOPE_EVENT_RULES = DynamicScopeRules(
+    min_band_width=1.0,
+    max_band_width=50.0,
+    min_switch_cooldown_ticks=0,
+    max_switches_per_window=1_000_000,
+    volatility_estimate=0.02,
+)
+_DEFAULT_SCENARIO_SCOPE_RUNTIME = RuntimeScopeState(
+    anchor_price=100.0,
+    current_hysteresis_band=4.0,
+)
+
+
+def _default_scenario_scope_confirmation_state_v0():
+    from trading.master_v2.deterministic_scope_event_generator_v1 import ScopeConfirmationStateV1
+
+    return ScopeConfirmationStateV1(
+        candidate_kind=None,
+        candidate_count=0,
+        last_evaluated_trading_epoch=0,
+    )
+
+
+def extract_scope_event_parity_envelope_v0(
+    binding: ScenarioScopeEventBindingResultV0,
+) -> ParityDecisionEnvelopeV0:
+    evidence = binding.scope_event_evidence
+    adverse = binding.scope_adverse_exit_signal
+    return ParityDecisionEnvelopeV0(
+        decision_outcome="not_bound_offline_scope_event_only",
+        previous_side_state=None,
+        next_side_state=None,
+        composition_status="not_bound_offline_scope_event_only",
+        composition_result_id="",
+        entry_or_exit_policy_ref="",
+        reason_codes=(evidence.event_type.value, adverse.reason_code),
+        decision_precedence_trace=(),
+        execution_eligible=False,
+        adapter_compatible=False,
+        quantity_status="NOT_BOUND",
+        scope_event_ref=binding.scope_event_ref,
+        scope_event_effect=binding.scope_event_effect,
+        authority_effect="NONE",
+        runtime_effect="NONE",
+    )
+
+
+def assert_scope_event_non_authority_boundary_v0(envelope: ParityDecisionEnvelopeV0) -> None:
+    assert not envelope.execution_eligible
+    assert not envelope.adapter_compatible
+    assert envelope.authority_effect == "NONE"
+    assert envelope.runtime_effect == "NONE"
+    if envelope.scope_event_effect == SCOPE_EVENT_EFFECT_BOUND_OFFLINE:
+        assert envelope.scope_event_ref
+
+
+def evaluate_scenario_scope_event_for_fixture_v0(
+    *,
+    instrument_id: str = SYNTHETIC_FUTURES_INSTRUMENT,
+    trading_epoch: int = 48,
+    context_reference: str = "scope-adverse-narrow-rewire-v0",
+    current_price: float = 96.0,
+    adverse_exit_distance: float = 2.0,
+) -> ScenarioScopeEventBindingResultV0:
+    return evaluate_scenario_scope_event_v0(
+        ScenarioScopeEventContextV0(
+            instrument_id=instrument_id,
+            trading_epoch=trading_epoch,
+            context_reference=context_reference,
+            current_price=current_price,
+            scope_state=_DEFAULT_SCENARIO_SCOPE_RUNTIME,
+            rules=_DEFAULT_SCENARIO_SCOPE_EVENT_RULES,
+            active_side=ActiveSide.LONG,
+            confirmation_state=_default_scenario_scope_confirmation_state_v0(),
+            up_distance=2.0,
+            adverse_exit_distance=adverse_exit_distance,
+            reversal_distance=4.0,
+        )
+    )
+
+
+def extract_reversal_preparation_parity_envelope_v0(
+    decision: EntryExitPolicyDecisionV0,
+    *,
+    reversal_preparation_ref: str = "",
+) -> ParityDecisionEnvelopeV0:
+    return ParityDecisionEnvelopeV0(
+        decision_outcome=decision.decision_outcome.value,
+        previous_side_state=None,
+        next_side_state=None,
+        composition_status=CompositionStatus.REVERSAL_PREPARATION.value,
+        composition_result_id=reversal_preparation_ref,
+        entry_or_exit_policy_ref=decision.policy_decision_id or "",
+        reason_codes=tuple(decision.reason_codes),
+        decision_precedence_trace=tuple(decision.decision_precedence_trace),
+        execution_eligible=False,
+        adapter_compatible=False,
+        quantity_status="NOT_BOUND",
+        authority_effect="NONE",
+        runtime_effect="NONE",
+    )
+
+
+def assert_reversal_preparation_non_authority_boundary_v0(
+    envelope: ParityDecisionEnvelopeV0,
+) -> None:
+    assert not envelope.execution_eligible
+    assert not envelope.adapter_compatible
+    assert envelope.authority_effect == "NONE"
+    assert envelope.runtime_effect == "NONE"
+    assert envelope.composition_status == CompositionStatus.REVERSAL_PREPARATION.value
+
+
+def evaluate_scenario_reversal_preparation_for_fixture_v0(
+    *,
+    instrument_id: str = SYNTHETIC_FUTURES_INSTRUMENT,
+    trading_epoch: int = 48,
+    context_reference: str = "reversal-prep-narrow-rewire-v0",
+) -> EntryExitPolicyDecisionV0:
+    matrix = evaluate_reversal_preparation_matrix_v0(
+        instrument_id=instrument_id,
+        trading_epoch=trading_epoch,
+        context_reference=context_reference,
+    )
+    if not is_reversal_preparation_composition_v0(matrix):
+        raise ValueError("fixture matrix must be reversal preparation composition")
+    return evaluate_scenario_reversal_preparation_entry_exit_v0(
+        instrument_id=instrument_id,
+        trading_epoch=trading_epoch,
+        context_reference=context_reference,
+        composition_result=matrix,
+        side_state=SideState.LONG_ACTIVE,
+        policy_context=default_scenario_entry_exit_policy_context_v0(),
     )
 
 
