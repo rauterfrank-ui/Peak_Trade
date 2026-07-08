@@ -45,6 +45,8 @@ def test_trace_matrix_has_12_edges_and_selects_trace_assertion_plan() -> None:
     assert matrix["schema"] == "BacktestRuntimeDecisionParityTraceMatrixV1"
     assert matrix["trace_edge_count"] == 12
     assert len(matrix["trace_edges"]) == 12
+    assert matrix["next_unbound_node"] == "bull_bear_state_switch"
+    assert matrix["chain_surface_binding_complete"] is False
     assert matrix["selected_next_rewire_plan"]["plan_type"] == "NARROW_TRACE_ASSERTION_FIRST"
     assert matrix["selected_next_rewire_plan"]["selected_surface_id"] == "bull_bear_state_switch"
 

@@ -40,6 +40,8 @@ REWIRE_SELECTION_RULE = (
     "then plan a narrow trace assertion before any functional rewire. The plan may not claim parity pass."
 )
 
+TRACE_REWIRE_BOUND_STATE = "TRACE_REWIRE_BOUND_OFFLINE_PARITY_PATH"
+
 
 @dataclass(frozen=True)
 class TraceEdge:
@@ -71,6 +73,25 @@ def _first_path(surface: dict[str, Any], key: str) -> str:
     if not hits:
         return "NONE_DISCOVERED"
     return hits[0]["path"]
+
+
+def compute_next_unbound_node(edges: list[dict[str, Any]]) -> str:
+    by_surface = {edge["surface_id"]: edge for edge in edges}
+    for surface_id in TRACE_PRIORITY:
+        edge = by_surface[surface_id]
+        if edge["trace_state"] != TRACE_REWIRE_BOUND_STATE:
+            return surface_id
+    return "NONE"
+
+
+def compute_chain_surface_binding_complete(edges: list[dict[str, Any]]) -> bool:
+    if len(edges) != len(TRACE_PRIORITY):
+        return False
+    by_surface = {edge["surface_id"]: edge for edge in edges}
+    return all(
+        by_surface[surface_id]["trace_state"] == TRACE_REWIRE_BOUND_STATE
+        for surface_id in TRACE_PRIORITY
+    )
 
 
 def _is_rewire_bound_surface(surface: dict[str, Any]) -> bool:
@@ -108,7 +129,7 @@ def build_trace_matrix(inventory: dict[str, Any]) -> dict[str, Any]:
         backtest = _first_path(surface, "backtest_binding_candidates")
         runtime = _first_path(surface, "runtime_boundary_candidates")
         if _is_rewire_bound_surface(surface):
-            trace_state = "TRACE_REWIRE_BOUND_OFFLINE_PARITY_PATH"
+            trace_state = TRACE_REWIRE_BOUND_STATE
             next_action = "rewire_complete_advance_to_next_surface"
         elif "NONE_DISCOVERED" in {canonical, backtest, runtime}:
             trace_state = "TRACE_INCOMPLETE"
@@ -172,12 +193,19 @@ def build_trace_matrix(inventory: dict[str, Any]) -> dict[str, Any]:
             "source inventory manifest is referenced externally in evidence",
         ],
     )
+    trace_edge_dicts = [asdict(edge) for edge in edges]
+    next_unbound_node = compute_next_unbound_node(trace_edge_dicts)
+    chain_surface_binding_complete = compute_chain_surface_binding_complete(trace_edge_dicts)
     return {
         "schema": "BacktestRuntimeDecisionParityTraceMatrixV1",
         "source_inventory_schema": inventory["schema"],
         "source_inventory_surface_count": inventory["inventory_surface_count"],
         "trace_edge_count": len(edges),
-        "trace_edges": [asdict(edge) for edge in edges],
+        "trace_edges": trace_edge_dicts,
+        "next_unbound_node": next_unbound_node,
+        "known_unbound_parity_node": next_unbound_node,
+        "chain_surface_binding_complete": chain_surface_binding_complete,
+        "parity_pass_claim_deferred": True,
         "selected_next_rewire_plan": asdict(plan),
         "selection_rule": REWIRE_SELECTION_RULE,
         "runtime_authority": False,
