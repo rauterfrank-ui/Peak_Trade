@@ -9,7 +9,7 @@ RUNNER = Path(
     "execute_bounded_offline_economic_evaluation_from_ratified_scope_no_retry_v0.py"
 )
 PREFERRED_OWNER = Path(
-    "src/research/final_research_fleet_offline_economic_evaluation_execution_v0.py"
+    "scripts/ops/materialize_final_research_fleet_offline_economic_evaluation_execution_v0.py"
 )
 
 
