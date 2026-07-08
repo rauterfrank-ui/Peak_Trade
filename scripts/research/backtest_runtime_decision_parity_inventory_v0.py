@@ -42,6 +42,11 @@ SURFACES = [
         "canonical_roots": ("src/trading", "src/strategies", "src/core"),
         "backtest_roots": ("src/backtest", "scripts", "tests"),
         "runtime_roots": ("src/live", "src/execution", "src/runtime", "src/ops"),
+        "backtest_binding_pins": (
+            "tests/trading/master_v2/test_bull_bear_state_switch_scenario_replay_binding_parity_rewire_contract_v0.py",
+            "src/trading/master_v2/offline_double_play_scenario_replay_v0.py",
+            "src/trading/master_v2/bull_bear_state_switch_scenario_binding_adapter_v0.py",
+        ),
     },
     {
         "surface_id": "scope_adverse_exit_and_reversal_preparation",
@@ -184,6 +189,28 @@ def in_any_root(rel: str, roots: Iterable[str]) -> bool:
     return any(rel == root or rel.startswith(root.rstrip("/") + "/") for root in roots)
 
 
+def merge_backtest_binding_pins(
+    repo_root: Path,
+    backtest_hits: list[PathHit],
+    pins: Iterable[str],
+) -> list[PathHit]:
+    pinned_hits: list[PathHit] = []
+    for rel in pins:
+        path = repo_root / rel
+        if not path.is_file():
+            continue
+        text = read_text(path)
+        pinned_hits.append(
+            PathHit(
+                path=rel,
+                digest=digest_text(text),
+                matched_terms=["rewire_binding_pin"],
+            )
+        )
+    seen = {hit.path for hit in pinned_hits}
+    return pinned_hits + [hit for hit in backtest_hits if hit.path not in seen]
+
+
 def collect_hits(
     files: list[Path], repo_root: Path, roots: Iterable[str], keywords: Iterable[str]
 ) -> list[PathHit]:
@@ -275,6 +302,11 @@ def build_inventory(repo_root: Path) -> dict[str, object]:
             repo_root,
             surface["backtest_roots"],
             surface["keywords"],
+        )
+        backtest_hits = merge_backtest_binding_pins(
+            repo_root,
+            backtest_hits,
+            surface.get("backtest_binding_pins", ()),
         )
         runtime_hits = collect_hits(
             files,
