@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import os
+import subprocess
 from pathlib import Path
 
 from scripts.research.backtest_runtime_decision_parity_trace_matrix_v0 import (
@@ -17,13 +18,71 @@ from scripts.research.full_canonical_parity_proof_bundle_assembler_v0 import (
     DEFAULT_PR5021_CLOSEOUT_EVIDENCE,
     DEFAULT_PR5021_ELIGIBILITY_EVIDENCE,
     REASON_SEMANTIC_PARITY_NOT_PROVEN,
+    REASON_SOURCE_EVIDENCE_MISSING,
     SLICE_CHANGED_FILES,
     build_surface_coverage_matrix,
     collect_source_evidence_refs,
     evaluate_proof_bundle,
     scan_assembler_forbidden_positive_claims,
     verify_manifest,
+    write_manifest,
 )
+
+
+def _repo_head(repo_root: Path) -> str:
+    return (
+        subprocess.check_output(["git", "rev-parse", "HEAD"], cwd=str(repo_root)).decode().strip()
+    )
+
+
+def _write_verified_evidence_dir(
+    evidence_dir: Path,
+    *,
+    post_merge_head: str,
+    extra_files: dict[str, str] | None = None,
+) -> None:
+    evidence_dir.mkdir(parents=True, exist_ok=True)
+    (evidence_dir / "final_report.txt").write_text(
+        "\n".join(
+            [
+                f"POST_MERGE_HEAD={post_merge_head}",
+                f"POST_MERGE_ORIGIN_MAIN={post_merge_head}",
+            ]
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    (evidence_dir / "git_context.txt").write_text(
+        f"HEAD={post_merge_head}\nORIGIN_MAIN={post_merge_head}\n",
+        encoding="utf-8",
+    )
+    if extra_files:
+        for name, content in extra_files.items():
+            (evidence_dir / name).write_text(content, encoding="utf-8")
+    assert write_manifest(evidence_dir) == 0
+
+
+def _build_verified_source_evidence_fixture(
+    tmp_path: Path,
+    repo_root: Path,
+) -> tuple[Path, Path, Path, str]:
+    origin_main = _repo_head(repo_root)
+    pr5020 = tmp_path / "pr5020_closeout"
+    pr5021 = tmp_path / "pr5021_closeout"
+    eligibility = tmp_path / "pr5021_eligibility"
+    _write_verified_evidence_dir(pr5020, post_merge_head=origin_main)
+    _write_verified_evidence_dir(
+        pr5021,
+        post_merge_head=origin_main,
+        extra_files={
+            "eligibility_gate_ref.txt": (
+                f"ELIGIBILITY_EVIDENCE_DIR={eligibility}\nELIGIBILITY_GATE_RC=0\n"
+            ),
+            "eligibility_gate_final_report.txt": "VERDICT=PASS\n",
+        },
+    )
+    _write_verified_evidence_dir(eligibility, post_merge_head=origin_main)
+    return pr5020, pr5021, eligibility, origin_main
 
 
 def test_proof_bundle_schema_and_fail_closed_status() -> None:
@@ -47,12 +106,36 @@ def test_proof_bundle_schema_and_fail_closed_status() -> None:
     assert bundle["no_economic_claim_confirmed"] is True
 
 
-def test_proof_bundle_reports_gap_assessment_as_next_blocker() -> None:
-    bundle = evaluate_proof_bundle(Path.cwd())
+def test_proof_bundle_reports_gap_assessment_as_next_blocker(tmp_path: Path) -> None:
+    repo_root = Path.cwd()
+    pr5020, pr5021, eligibility, origin_main = _build_verified_source_evidence_fixture(
+        tmp_path, repo_root
+    )
+    bundle = evaluate_proof_bundle(
+        repo_root,
+        pr5020_closeout_dir=pr5020,
+        pr5021_closeout_dir=pr5021,
+        pr5021_eligibility_dir=eligibility,
+        current_origin_main=origin_main,
+    )
     assert bundle["next_blocker"] == REASON_GAP_ASSESSMENT_NOT_ALL_PASS
     assert REASON_GAP_ASSESSMENT_NOT_ALL_PASS in bundle["reason_codes"]
     assert REASON_SEMANTIC_PARITY_NOT_PROVEN in bundle["reason_codes"]
     assert bundle["gap_assessment_all_pass"] is False
+    assert bundle["source_evidence_all_manifests_verified"] is True
+    assert bundle["source_evidence_missing"] == []
+
+
+def test_proof_bundle_reports_missing_source_evidence_without_local_archive() -> None:
+    closeout_5020 = Path(
+        os.environ.get("PEAK_TRADE_PR5020_CLOSEOUT_EVIDENCE", DEFAULT_PR5020_CLOSEOUT_EVIDENCE)
+    )
+    if closeout_5020.is_dir():
+        return
+    bundle = evaluate_proof_bundle(Path.cwd())
+    assert bundle["next_blocker"] == REASON_SOURCE_EVIDENCE_MISSING
+    assert REASON_SOURCE_EVIDENCE_MISSING in bundle["reason_codes"]
+    assert bundle["source_evidence_missing"]
 
 
 def test_proof_bundle_verifies_source_evidence_manifests_when_available() -> None:
