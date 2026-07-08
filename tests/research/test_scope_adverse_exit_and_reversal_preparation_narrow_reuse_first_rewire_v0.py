@@ -68,9 +68,7 @@ def test_rewire_makes_no_forbidden_claims() -> None:
     assert all(value is False for value in forbidden.values())
 
 
-def test_trace_matrix_selects_capital_risk_sizing_after_entry_position_exit_rewire_bound() -> (
-    None
-):
+def test_trace_matrix_selects_capital_risk_sizing_after_entry_position_exit_rewire_bound() -> None:
     inventory = build_inventory(Path.cwd())
     matrix = build_trace_matrix(inventory)
     assert matrix["selected_next_rewire_plan"]["selected_surface_id"] == "capital_risk_sizing"
