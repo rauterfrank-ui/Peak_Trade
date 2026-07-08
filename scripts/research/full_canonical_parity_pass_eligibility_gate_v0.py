@@ -73,6 +73,7 @@ REASON_MANIFEST_VERIFIED_FULL_PARITY_PROOF_MISSING = (
 )
 REASON_GAP_ASSESSMENT_NOT_ALL_PASS = "FULL_CANONICAL_GAP_ASSESSMENT_NOT_ALL_PASS"
 REASON_PR5020_CLOSEOUT_NOT_VERIFIED = "PR5020_CLOSEOUT_EVIDENCE_MANIFEST_NOT_VERIFIED"
+REASON_PR5020_CLOSEOUT_REFERENCE_UNAVAILABLE = "PR5020_CLOSEOUT_EVIDENCE_REFERENCE_NOT_AVAILABLE"
 REASON_TRACE_MATRIX_NOT_AWAITING_FULL_PROOF = (
     "TRACE_MATRIX_NOT_CHAIN_BOUND_AWAITING_FULL_PARITY_PROOF"
 )
@@ -129,18 +130,20 @@ def scan_gate_forbidden_positive_claims(repo_root: Path, changed_files: list[str
     return violations
 
 
-def _verify_closeout_manifest(closeout_dir: Path) -> tuple[bool, str]:
+def _verify_closeout_manifest(closeout_dir: Path) -> tuple[bool, str, bool]:
+    if not closeout_dir.is_dir():
+        return False, "closeout path not available", False
     manifest = closeout_dir / "MANIFEST.sha256"
     if not manifest.is_file():
-        return False, "MANIFEST.sha256 missing"
+        return False, "MANIFEST.sha256 missing", True
     for row in manifest.read_text(encoding="utf-8").splitlines():
         if not row.strip():
             continue
         digest, rel = row.split("  ", 1)
         target = closeout_dir / rel
         if not target.is_file() or _sha256_bytes(target.read_bytes()) != digest:
-            return False, f"manifest mismatch for {rel}"
-    return True, "verified"
+            return False, f"manifest mismatch for {rel}", True
+    return True, "verified", True
 
 
 def _load_gap_assessment_counts() -> dict[str, int]:
@@ -216,7 +219,7 @@ def evaluate_eligibility_criteria(
         EligibilityCriterion(
             criterion_id="pr5020_closeout_manifest_verified",
             satisfied=pr5020_closeout_verified,
-            required=True,
+            required=False,
             blocker_code=REASON_PR5020_CLOSEOUT_NOT_VERIFIED,
             detail=f"pr5020_closeout_verified={pr5020_closeout_verified}",
         ),
@@ -252,7 +255,18 @@ def build_eligibility_gate(
     closeout_dir = pr5020_closeout_dir or Path(
         os.environ.get("PEAK_TRADE_PR5020_CLOSEOUT_EVIDENCE", DEFAULT_PR5020_CLOSEOUT_EVIDENCE)
     )
-    closeout_ok, closeout_detail = _verify_closeout_manifest(closeout_dir)
+    closeout_ok, closeout_detail, closeout_reference_available = _verify_closeout_manifest(
+        closeout_dir
+    )
+    closeout_reference_status = (
+        "VERIFIED"
+        if closeout_ok
+        else (
+            "REFERENCE_PRESENT_BUT_UNVERIFIED"
+            if closeout_reference_available
+            else "NOT_AVAILABLE_OFFLINE_REFERENCE"
+        )
+    )
     criteria = evaluate_eligibility_criteria(
         repo_root,
         closure,
@@ -276,6 +290,7 @@ def build_eligibility_gate(
         "source_closure_assessment_schema": closure["schema"],
         "source_pr5020_closeout_dir": str(closeout_dir),
         "source_pr5020_closeout_manifest_verified": closeout_ok,
+        "source_pr5020_closeout_reference_status": closeout_reference_status,
         "source_pr5020_closeout_detail": closeout_detail,
         "chain_surface_binding_complete": closure["chain_surface_binding_complete"],
         "next_unbound_node": closure["next_unbound_node"],

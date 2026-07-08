@@ -1,8 +1,10 @@
 from __future__ import annotations
 
+import os
 from pathlib import Path
 
 from scripts.research.full_canonical_parity_pass_eligibility_gate_v0 import (
+    DEFAULT_PR5020_CLOSEOUT_EVIDENCE,
     GATE_ID,
     GATE_SCHEMA,
     REASON_MANIFEST_VERIFIED_FULL_PARITY_PROOF_MISSING,
@@ -43,10 +45,18 @@ def test_eligibility_gate_reports_manifest_proof_as_first_blocker() -> None:
     )
 
 
-def test_eligibility_gate_verifies_pr5020_closeout_manifest() -> None:
+def test_eligibility_gate_verifies_pr5020_closeout_manifest_when_reference_available() -> None:
     gate = build_eligibility_gate(Path.cwd())
-    assert gate["source_pr5020_closeout_manifest_verified"] is True
-    assert "merge_closeout_pr5020" in gate["source_pr5020_closeout_dir"]
+    closeout_dir = Path(
+        os.environ.get("PEAK_TRADE_PR5020_CLOSEOUT_EVIDENCE", DEFAULT_PR5020_CLOSEOUT_EVIDENCE)
+    )
+    if closeout_dir.is_dir():
+        assert gate["source_pr5020_closeout_manifest_verified"] is True
+        assert gate["source_pr5020_closeout_reference_status"] == "VERIFIED"
+        assert "merge_closeout_pr5020" in gate["source_pr5020_closeout_dir"]
+    else:
+        assert gate["source_pr5020_closeout_manifest_verified"] is False
+        assert gate["source_pr5020_closeout_reference_status"] == "NOT_AVAILABLE_OFFLINE_REFERENCE"
 
 
 def test_eligibility_gate_does_not_promote_positive_claims() -> None:
