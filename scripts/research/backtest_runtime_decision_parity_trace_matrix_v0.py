@@ -130,11 +130,7 @@ def build_trace_matrix(inventory: dict[str, Any]) -> dict[str, Any]:
     selected = next(
         edge for edge in edges if edge.trace_state == "TRACE_CANDIDATE_READY_NOT_ASSERTED"
     )
-    plan_type = (
-        "NARROW_REUSE_FIRST_REWIRE"
-        if selected.surface_id == "capital_risk_sizing"
-        else "NARROW_TRACE_ASSERTION_FIRST"
-    )
+    plan_type = "NARROW_TRACE_ASSERTION_FIRST"
     plan = RewirePlan(
         selected_surface_id=selected.surface_id,
         plan_type=plan_type,
