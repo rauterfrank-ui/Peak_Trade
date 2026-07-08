@@ -199,6 +199,18 @@ SURFACES = [
         "canonical_roots": ("src/webui", "src/experiments", "docs", "src/core"),
         "backtest_roots": ("src/backtest", "src/experiments", "scripts", "tests"),
         "runtime_roots": ("src/live", "src/execution", "src/runtime", "src/ops", "src/webui"),
+        "backtest_binding_pins": (
+            "tests/trading/master_v2/test_ai_observability_boundary_offline_replay_binding_parity_rewire_contract_v0.py",
+            "tests/trading/master_v2/test_ai_observability_boundary_backtest_state_file_binding_contract_v0.py",
+            "tests/trading/master_v2/test_feedback_learning_boundary_offline_replay_binding_parity_rewire_contract_v0.py",
+            "tests/trading/master_v2/test_feedback_learning_boundary_backtest_state_file_binding_contract_v0.py",
+            "tests/research/test_ai_observability_feedback_boundary_narrow_reuse_first_rewire_v0.py",
+            "src/trading/master_v2/ai_observability_boundary_offline_replay_binding_adapter_v0.py",
+            "src/trading/master_v2/ai_observability_boundary_backtest_state_file_binding_adapter_v0.py",
+            "src/trading/master_v2/feedback_learning_boundary_offline_replay_binding_adapter_v0.py",
+            "src/trading/master_v2/feedback_learning_boundary_backtest_state_file_binding_adapter_v0.py",
+        ),
+        "trace_rewire_bound": True,
     },
 ]
 

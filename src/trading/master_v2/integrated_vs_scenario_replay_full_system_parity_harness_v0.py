@@ -71,14 +71,33 @@ from trading.master_v2.promotion_gate_boundary_offline_replay_binding_adapter_v0
     bind_promotion_gate_boundary_offline_replay_evidence_v0,
     promotion_gate_boundary_binding_non_authority_boundary_ok_v0,
 )
+from trading.master_v2.ai_observability_boundary_backtest_state_file_binding_adapter_v0 import (
+    AI_OBSERVABILITY_BOUNDARY_BACKTEST_STATE_FILE_BINDING_ADAPTER_OWNER,
+)
 from trading.master_v2.ai_observability_boundary_offline_replay_binding_adapter_v0 import (
+    AI_LAYER_OBSERVABILITY_BOUNDARY_DOCUMENTED,
     AI_OBSERVABILITY_BOUNDARY_EFFECT_BOUND_OFFLINE,
     AI_OBSERVABILITY_BOUNDARY_EFFECT_NONE,
     AI_OBSERVABILITY_BOUNDARY_OFFLINE_REPLAY_BINDING_ADAPTER_OWNER,
+    AI_OBSERVABILITY_CANONICAL_OWNER,
     AiObservabilityBoundaryOfflineReplayBindingResultV0,
     AiObservabilityBoundaryOfflineReplayContextV0,
     ai_observability_boundary_binding_non_authority_boundary_ok_v0,
     bind_ai_observability_boundary_offline_replay_evidence_v0,
+)
+from trading.master_v2.feedback_learning_boundary_backtest_state_file_binding_adapter_v0 import (
+    FEEDBACK_LEARNING_BOUNDARY_BACKTEST_STATE_FILE_BINDING_ADAPTER_OWNER,
+)
+from trading.master_v2.feedback_learning_boundary_offline_replay_binding_adapter_v0 import (
+    FEEDBACK_LEARNING_BOUNDARY_DOCUMENTED,
+    FEEDBACK_LEARNING_BOUNDARY_EFFECT_BOUND_OFFLINE,
+    FEEDBACK_LEARNING_BOUNDARY_EFFECT_NONE,
+    FEEDBACK_LEARNING_BOUNDARY_OFFLINE_REPLAY_BINDING_ADAPTER_OWNER,
+    FEEDBACK_LEARNING_CANONICAL_OWNER,
+    FeedbackLearningBoundaryOfflineReplayBindingResultV0,
+    FeedbackLearningBoundaryOfflineReplayContextV0,
+    bind_feedback_learning_boundary_offline_replay_evidence_v0,
+    feedback_learning_boundary_binding_non_authority_boundary_ok_v0,
 )
 from trading.master_v2.capital_risk_sizing_offline_replay_binding_adapter_v0 import (
     CANONICAL_CAPITAL_RISK_SIZING_OWNER,
@@ -189,7 +208,7 @@ SURFACE_P_BOUNDARY_PATH_BAR_SEQUENCE_4_WAY_PARITY_EXTENSION_SLICE_ID = (
     "SURFACE_P_BOUNDARY_PATH_BAR_SEQUENCE_4_WAY_PARITY_EXTENSION_V0"
 )
 SURFACE_P_CORE_BAR_SEQUENCE_FIXTURE_COUNT = 8
-SURFACE_P_BOUNDARY_PATH_FIXTURE_COUNT = 5
+SURFACE_P_BOUNDARY_PATH_FIXTURE_COUNT = 6
 SURFACE_P_BAR_SEQUENCE_FIXTURE_COUNT = (
     SURFACE_P_CORE_BAR_SEQUENCE_FIXTURE_COUNT + SURFACE_P_BOUNDARY_PATH_FIXTURE_COUNT
 )
@@ -208,6 +227,7 @@ SurfacePBarSequencePathKind = Literal[
     "reconciliation_unknown_outcome_boundary_path",
     "promotion_gate_boundary_path",
     "ai_observability_boundary_path",
+    "feedback_learning_boundary_path",
 ]
 SURFACE_P_BOUNDARY_PATH_KINDS: Tuple[SurfacePBarSequencePathKind, ...] = (
     "safety_kernel_boundary_path",
@@ -215,6 +235,7 @@ SURFACE_P_BOUNDARY_PATH_KINDS: Tuple[SurfacePBarSequencePathKind, ...] = (
     "reconciliation_unknown_outcome_boundary_path",
     "promotion_gate_boundary_path",
     "ai_observability_boundary_path",
+    "feedback_learning_boundary_path",
 )
 BACKTEST_PARITY_WIRING_OWNER = "backtest.mv2_research_wiring_v1"
 RUNTIME_BRIDGE_REFERENCE_OWNER = "trading.master_v2.canonical_core_runtime_integration_bridge_v0"
@@ -274,6 +295,8 @@ class ParityDecisionEnvelopeV0:
     promotion_gate_boundary_effect: str = PROMOTION_GATE_BOUNDARY_EFFECT_NONE
     ai_observability_boundary_ref: str = ""
     ai_observability_boundary_effect: str = AI_OBSERVABILITY_BOUNDARY_EFFECT_NONE
+    feedback_learning_boundary_ref: str = ""
+    feedback_learning_boundary_effect: str = FEEDBACK_LEARNING_BOUNDARY_EFFECT_NONE
     state_switch_ref: str = ""
     state_switch_effect: str = STATE_SWITCH_EFFECT_NONE
     scope_event_ref: str = ""
@@ -1103,6 +1126,39 @@ def assert_promotion_gate_boundary_non_authority_boundary_v0(
     }
 
 
+def assert_ai_observability_boundary_non_authority_boundary_v0(
+    envelope: ParityDecisionEnvelopeV0,
+) -> None:
+    assert not envelope.execution_eligible
+    assert not envelope.adapter_compatible
+    assert envelope.authority_effect == "NONE"
+    assert envelope.runtime_effect == "NONE"
+    if envelope.ai_observability_boundary_effect == AI_OBSERVABILITY_BOUNDARY_EFFECT_BOUND_OFFLINE:
+        assert envelope.ai_observability_boundary_ref
+    assert envelope.ai_observability_boundary_effect in {
+        AI_OBSERVABILITY_BOUNDARY_EFFECT_NONE,
+        AI_OBSERVABILITY_BOUNDARY_EFFECT_BOUND_OFFLINE,
+    }
+
+
+def assert_feedback_learning_boundary_non_authority_boundary_v0(
+    envelope: ParityDecisionEnvelopeV0,
+) -> None:
+    assert not envelope.execution_eligible
+    assert not envelope.adapter_compatible
+    assert envelope.authority_effect == "NONE"
+    assert envelope.runtime_effect == "NONE"
+    if (
+        envelope.feedback_learning_boundary_effect
+        == FEEDBACK_LEARNING_BOUNDARY_EFFECT_BOUND_OFFLINE
+    ):
+        assert envelope.feedback_learning_boundary_ref
+    assert envelope.feedback_learning_boundary_effect in {
+        FEEDBACK_LEARNING_BOUNDARY_EFFECT_NONE,
+        FEEDBACK_LEARNING_BOUNDARY_EFFECT_BOUND_OFFLINE,
+    }
+
+
 def assert_killswitch_boundary_non_authority_boundary_v0(
     envelope: ParityDecisionEnvelopeV0,
 ) -> None:
@@ -1440,6 +1496,47 @@ def extract_ai_observability_boundary_parity_envelope_v0(
     )
 
 
+def extract_feedback_learning_boundary_parity_envelope_v0(
+    binding: FeedbackLearningBoundaryOfflineReplayBindingResultV0,
+    *,
+    decision_outcome: str = "",
+    composition_result_id: str = "",
+) -> ParityDecisionEnvelopeV0:
+    ev = binding.evidence
+    return ParityDecisionEnvelopeV0(
+        decision_outcome=decision_outcome or ev.decision_outcome,
+        previous_side_state=None,
+        next_side_state=None,
+        composition_status="",
+        composition_result_id=composition_result_id,
+        entry_or_exit_policy_ref=ev.entry_or_exit_policy_ref,
+        reason_codes=tuple(ev.reason_codes),
+        decision_precedence_trace=tuple(ev.decision_precedence_trace),
+        execution_eligible=ev.execution_eligible,
+        adapter_compatible=ev.adapter_compatible,
+        quantity_status=ev.quantity_status,
+        quantity_provenance_ref=ev.quantity_provenance_ref,
+        risk_sizing_ref=ev.risk_sizing_ref,
+        risk_sizing_effect=ev.risk_sizing_effect,
+        order_intent_ref=ev.order_intent_ref,
+        order_intent_effect=ev.order_intent_effect,
+        safety_boundary_ref=ev.safety_boundary_ref,
+        safety_boundary_effect=ev.safety_boundary_effect,
+        reconciliation_unknown_outcome_ref=ev.reconciliation_unknown_outcome_ref,
+        reconciliation_unknown_outcome_effect=ev.reconciliation_unknown_outcome_effect,
+        killswitch_boundary_ref=ev.killswitch_boundary_ref,
+        killswitch_boundary_effect=ev.killswitch_boundary_effect,
+        promotion_gate_boundary_ref="",
+        promotion_gate_boundary_effect=PROMOTION_GATE_BOUNDARY_EFFECT_NONE,
+        ai_observability_boundary_ref="",
+        ai_observability_boundary_effect=AI_OBSERVABILITY_BOUNDARY_EFFECT_NONE,
+        feedback_learning_boundary_ref=binding.feedback_learning_boundary_ref,
+        feedback_learning_boundary_effect=binding.feedback_learning_boundary_effect,
+        authority_effect=ev.authority_effect,
+        runtime_effect=ev.runtime_effect,
+    )
+
+
 def assert_scenario_replay_zero_order_boundary_v0(
     result: OfflineDoublePlayScenarioReplayResultV0,
 ) -> None:
@@ -1563,6 +1660,20 @@ def canonical_owner_refs_v0() -> Mapping[str, str]:
         ),
         "promotion_gate_boundary_backtest_state_file_binding_adapter": (
             PROMOTION_GATE_BOUNDARY_BACKTEST_STATE_FILE_BINDING_ADAPTER_OWNER
+        ),
+        "ai_observability_canonical_owner": AI_OBSERVABILITY_CANONICAL_OWNER,
+        "ai_observability_boundary_offline_replay_binding_adapter": (
+            AI_OBSERVABILITY_BOUNDARY_OFFLINE_REPLAY_BINDING_ADAPTER_OWNER
+        ),
+        "ai_observability_boundary_backtest_state_file_binding_adapter": (
+            AI_OBSERVABILITY_BOUNDARY_BACKTEST_STATE_FILE_BINDING_ADAPTER_OWNER
+        ),
+        "feedback_learning_canonical_owner": FEEDBACK_LEARNING_CANONICAL_OWNER,
+        "feedback_learning_boundary_offline_replay_binding_adapter": (
+            FEEDBACK_LEARNING_BOUNDARY_OFFLINE_REPLAY_BINDING_ADAPTER_OWNER
+        ),
+        "feedback_learning_boundary_backtest_state_file_binding_adapter": (
+            FEEDBACK_LEARNING_BOUNDARY_BACKTEST_STATE_FILE_BINDING_ADAPTER_OWNER
         ),
         "backtest_parity_wiring": BACKTEST_PARITY_WIRING_OWNER,
         "runtime_bridge_reference": RUNTIME_BRIDGE_REFERENCE_OWNER,
@@ -1990,6 +2101,15 @@ def surface_p_boundary_path_fixtures_v0(
             "ai_observability_boundary_path",
             12,
             SideState.LONG_ACTIVE,
+            instrument_id,
+            trading_epoch,
+            context_reference,
+        ),
+        SurfacePBarSequenceFixtureV0(
+            "feedback_learning_boundary",
+            "feedback_learning_boundary_path",
+            13,
+            SideState.NEUTRAL_OBSERVE,
             instrument_id,
             trading_epoch,
             context_reference,
@@ -2783,8 +2903,17 @@ def _apply_surface_p_boundary_binding_v0(
             binding,
             decision_outcome=evidence.decision_outcome,
         )
-        assert envelope.authority_effect == "NONE"
-        assert envelope.runtime_effect == "NONE"
+        assert_ai_observability_boundary_non_authority_boundary_v0(envelope)
+        return envelope
+    if path_kind == "feedback_learning_boundary_path":
+        binding = bind_feedback_learning_boundary_offline_replay_evidence_v0(evidence)
+        if not feedback_learning_boundary_binding_non_authority_boundary_ok_v0(binding):
+            return None
+        envelope = extract_feedback_learning_boundary_parity_envelope_v0(
+            binding,
+            decision_outcome=evidence.decision_outcome,
+        )
+        assert_feedback_learning_boundary_non_authority_boundary_v0(envelope)
         return envelope
     return None
 
@@ -2842,6 +2971,12 @@ def _surface_p_boundary_effects_aligned_v0(
             left.ai_observability_boundary_effect
             == right.ai_observability_boundary_effect
             == AI_OBSERVABILITY_BOUNDARY_EFFECT_BOUND_OFFLINE
+        )
+    if path_kind == "feedback_learning_boundary_path":
+        return (
+            left.feedback_learning_boundary_effect
+            == right.feedback_learning_boundary_effect
+            == FEEDBACK_LEARNING_BOUNDARY_EFFECT_BOUND_OFFLINE
         )
     return False
 
@@ -2948,6 +3083,14 @@ def surface_p_fixture_lane_semantics_ok_v0(
             and not envelope.execution_eligible
             and bool(envelope.reason_codes)
             and bool(envelope.decision_precedence_trace)
+        )
+    if path_kind == "feedback_learning_boundary_path":
+        return (
+            envelope.feedback_learning_boundary_effect
+            == FEEDBACK_LEARNING_BOUNDARY_EFFECT_BOUND_OFFLINE
+            and envelope.authority_effect == "NONE"
+            and envelope.runtime_effect == "NONE"
+            and not envelope.execution_eligible
         )
     return False
 
