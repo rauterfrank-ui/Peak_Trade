@@ -4,8 +4,9 @@ Pure offline, fixture-evaluable contracts for auth capabilities, order/cancel/fi
 normalization, client-order-id semantics, reconciliation FSM, and durable evidence.
 
 Does not authorize network, credentials, private API, orders, runtime, or promotion.
-PE-12 and PE-9 remain Kraken-scoped — this module is the OKX-Europe Success-SSOT for
-adapter lifecycle semantics only.
+Kraken is not the current canonical target venue; historical PE-12/PE-9 Kraken scope notes
+are legacy only. This module is the OKX-Europe Success-SSOT for adapter lifecycle semantics
+only unless separately ratified.
 """
 
 from __future__ import annotations

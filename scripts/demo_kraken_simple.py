@@ -1,8 +1,13 @@
 #!/usr/bin/env python3
 """
-Peak_Trade Kraken Integration Demo
-====================================
+Peak_Trade Kraken Integration Demo (legacy, non-canonical)
+==========================================================
 Einfaches Demo für Kraken → Normalizer → Cache → Backtest Pipeline.
+
+Legacy note: Kraken is not the current canonical target venue (production default:
+okx_europe_eea). This standalone demo uses historical/guarded Kraken public-data paths
+only. No venue reference grants runtime, order, credential, scheduler, shadow, paper,
+testnet, canary, or live authority.
 
 Usage:
     python scripts/demo_kraken_simple.py

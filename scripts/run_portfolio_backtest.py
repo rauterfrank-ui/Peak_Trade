@@ -117,7 +117,8 @@ def load_data_for_symbol(
     Lädt Daten für ein bestimmtes Symbol.
 
     Aktuell: Dummy-Daten mit symbol-spezifischem Seed.
-    NOTE: Siehe docs/TECH_DEBT_BACKLOG.md (Eintrag "Echte Kraken-Daten: run_portfolio_backtest.py")
+    NOTE: Legacy Kraken OHLCV ist nicht der kanonische Ziel-Venue-Pfad (default_exchange=okx_europe_eea).
+    Siehe docs/TECH_DEBT_BACKLOG.md (Eintrag "Echte Kraken-Daten: run_portfolio_backtest.py")
 
     Args:
         symbol: Trading-Pair (z.B. "BTC/EUR")

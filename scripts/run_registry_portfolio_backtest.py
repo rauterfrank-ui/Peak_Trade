@@ -1,11 +1,15 @@
 #!/usr/bin/env python3
 """
-Peak_Trade - End-to-End Registry Portfolio Backtest
-=====================================================
+Peak_Trade - End-to-End Registry Portfolio Backtest (legacy script)
+====================================================================
 Vollständiger Backtest mit echten Marktdaten über Registry + Portfolio + Engine.
 
+Legacy note: Kraken is not the current canonical target venue (production default:
+okx_europe_eea). Optional Kraken OHLCV below is historical/legacy data infrastructure
+only unless separately ratified. No venue reference grants runtime authority.
+
 Features:
-- Lädt echte Kraken-Daten über Data-Layer (mit Caching)
+- Optional legacy Kraken public OHLCV über Data-Layer (mit Caching; nicht kanonisch)
 - Nutzt Portfolio-Config aus config.toml
 - Multi-Strategie-Backtest mit Registry-Integration
 - Export von Ergebnissen (CSV/JSON)

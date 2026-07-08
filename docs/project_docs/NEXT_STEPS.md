@@ -1,10 +1,12 @@
 # Peak_Trade - Nächste Schritte
 
+> **Venue clarification (2026-07-08):** Kraken is **not** the current canonical target venue (`default_exchange=okx_europe_eea`). Kraken references below are **historical/legacy** infrastructure only unless separately ratified.
+
 ## ✅ Fertig Implementiert
 
 1. ✅ Risk-Layer (Position Sizing + Limits)
 2. ✅ Config-System mit TOML
-3. ✅ Kraken Data Pipeline
+3. ✅ Kraken Data Pipeline (legacy / guarded infrastructure)
 4. ✅ Demo-Scripts
 5. ✅ Dokumentation
 

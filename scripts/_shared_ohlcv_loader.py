@@ -2,8 +2,11 @@
 """
 Gemeinsamer OHLCV-Loader für Forward-/Paper-Skripte (J1).
 
+Legacy note: Kraken is not the current canonical target venue. ``source="kraken"`` below is
+historical/guarded public OHLCV infrastructure only unless separately ratified.
+
 Gleicher DataFrame-Vertrag für ``generate_forward_signals``, ``evaluate_forward_signals``,
-``run_portfolio_backtest_v2`` (Slice 1–3: Dummy; Slice 4: optional Kraken über ``load_ohlcv``).
+``run_portfolio_backtest_v2`` (Slice 1–3: Dummy; Slice 4: optional legacy Kraken über ``load_ohlcv``).
 
 - ``DatetimeIndex`` (1h, **UTC**), Spalten open/high/low/close/volume (vgl. ``src.data.REQUIRED_OHLCV_COLUMNS``).
 - Dummy: OHLC-Nachkorrektur zentral; vor Rückgabe ``validate_ohlcv(..., strict=True, require_tz=True)``.

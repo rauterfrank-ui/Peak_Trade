@@ -482,7 +482,9 @@ python scripts/live_web_server.py \
 
 #### Aktueller technischer Stand:
 
-**Data-Layer:** ✅ Loader, Normalizer, Cache, Kraken-Integration  
+> **Venue clarification:** Kraken is not the current canonical target venue (`default_exchange=okx_europe_eea`).
+
+**Data-Layer:** ✅ Loader, Normalizer, Cache, legacy Kraken public-OHLCV (nicht kanonischer Ziel-Venue; default_exchange=okx_europe_eea)  
 **Strategy-Layer:** ✅ BaseStrategy, MACrossover, RsiReversion, DonchianBreakout  
 **Core-Layer:** ✅ Config, PositionSizing, RiskManagement  
 **Backtest-Layer:** ✅ BacktestEngine, Stats  

@@ -35,7 +35,9 @@ Vertiefung Registry: [CONFIG_REGISTRY_USAGE.md](../CONFIG_REGISTRY_USAGE.md).
 
 ## 3. Empfohlene Imports nach Anwendungsfall
 
-### 3.1 Live-Session, Kraken, bounded Live-Limits
+### 3.1 Live-Session, legacy Kraken profiles, bounded Live-Limits
+
+> **Venue clarification:** Kraken is not the current canonical target venue (`default_exchange=okx_europe_eea`). Kraken config profiles are dormant/decommissioned legacy unless separately ratified.
 
 ```python
 from src.core.peak_config import (

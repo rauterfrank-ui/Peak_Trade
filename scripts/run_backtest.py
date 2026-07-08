@@ -10,7 +10,7 @@ Execution-Scope. Das Handelssymbol für Metadaten kommt aus der Config über
 
 Workflow:
 1. Config laden (TOML)
-2. Daten-Pipeline aufbauen (CSV oder Kraken API)
+2. Daten-Pipeline aufbauen (CSV oder optional legacy Kraken public OHLCV — nicht kanonisch)
 3. Strategie instanziieren
 4. Backtest ausführen (run_realistic)
 5. Stats berechnen
