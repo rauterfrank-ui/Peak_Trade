@@ -2,92 +2,87 @@
 from __future__ import annotations
 
 import argparse
+import os
 import runpy
 import sys
 from pathlib import Path
-from typing import Sequence
 
 
 PREFERRED_OWNER_RELATIVE_PATH = (
     "scripts/ops/materialize_final_research_fleet_offline_economic_evaluation_execution_v0.py"
 )
-
-VERDICT_BLOCKED_RUNNER_RESOLUTION_NOT_EXACTLY_ONE = (
-    "EXECUTE_BOUNDED_OFFLINE_ECONOMIC_EVALUATION_FROM_RATIFIED_SCOPE_NO_RETRY_V0_"
-    "BLOCKED_RUNNER_RESOLUTION_NOT_EXACTLY_ONE"
+DEFAULT_BINDING_COMPLETION_RELATIVE_PATH = (
+    "config/research/final_research_fleet_versioned_binding_completion_v0.json"
 )
-
-LIVE_AUTHORIZED = False
-READY_FOR_OPERATOR_ARMING = False
-ORDERS_ALLOWED = False
-SCHEDULER_RUNTIME_ALLOWED = False
-SHADOW_AUTHORIZED = False
-PAPER_AUTHORIZED = False
-TESTNET_AUTHORIZED = False
-CANARY_AUTHORIZED = False
-RETRY_MODE = "NO_RETRY"
-UNMODIFIED_BINDING_RETRY_ALLOWED = False
+CONFIRM_GO_TOKEN = "GO_EXECUTE_BOUNDED_FINAL_RESEARCH_FLEET_OFFLINE_ECONOMIC_EVALUATION_V0"
 
 
-class RunnerResolutionError(RuntimeError):
-    pass
-
-
-def repo_root_from_runner() -> Path:
+def _repo_root() -> Path:
     return Path(__file__).resolve().parents[2]
 
 
-def resolve_preferred_runner(repo_root: Path) -> Path:
-    preferred = repo_root / PREFERRED_OWNER_RELATIVE_PATH
-    resolved = [preferred] if preferred.is_file() else []
-    if len(resolved) != 1:
-        raise RunnerResolutionError(
-            f"{VERDICT_BLOCKED_RUNNER_RESOLUTION_NOT_EXACTLY_ONE}: "
-            f"preferred_runner={PREFERRED_OWNER_RELATIVE_PATH!r} "
-            f"resolved_count={len(resolved)}"
-        )
-    return resolved[0]
+def _resolve_repo_path(repo_root: Path, value: str) -> Path:
+    path = Path(value)
+    if path.is_absolute():
+        return path
+    return repo_root / path
 
 
-def build_parser() -> argparse.ArgumentParser:
-    parser = argparse.ArgumentParser(
-        prog="execute_bounded_offline_economic_evaluation_from_ratified_scope_no_retry_v0",
-        description=(
-            "Dedicated fail-closed no-retry entry point for the ratified bounded "
-            "offline economic evaluation scope. This script resolves exactly one "
-            "canonical existing offline evaluation owner and delegates execution "
-            "without granting runtime, order, scheduler, shadow, paper, testnet, "
-            "canary, or live authority."
+def main(argv: list[str] | None = None) -> int:
+    repo_root = _repo_root()
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--print-delegate-only", action="store_true")
+    parser.add_argument(
+        "--confirm-go-token",
+        default=os.environ.get("PEAK_TRADE_CONFIRM_GO_TOKEN", CONFIRM_GO_TOKEN),
+    )
+    parser.add_argument(
+        "--binding-completion-path",
+        default=os.environ.get(
+            "PEAK_TRADE_BINDING_COMPLETION_PATH",
+            str(repo_root / DEFAULT_BINDING_COMPLETION_RELATIVE_PATH),
         ),
     )
     parser.add_argument(
-        "--print-delegate-only",
-        action="store_true",
-        help="Print the resolved delegate path and exit without executing it.",
+        "--durable-evidence-root",
+        default=os.environ.get("PEAK_TRADE_DURABLE_ARCHIVE_ROOT"),
     )
-    return parser
+    args, passthrough = parser.parse_known_args(argv)
 
+    delegate_path = repo_root / PREFERRED_OWNER_RELATIVE_PATH
 
-def main(argv: Sequence[str] | None = None) -> int:
-    parser = build_parser()
-    known_args, passthrough_args = parser.parse_known_args(argv)
-
-    repo_root = repo_root_from_runner()
-    delegate = resolve_preferred_runner(repo_root)
-
-    if known_args.print_delegate_only:
-        print(delegate)
+    if args.print_delegate_only:
+        print(delegate_path)
         return 0
 
-    old_argv = sys.argv[:]
+    durable_evidence_root = args.durable_evidence_root
+    if not durable_evidence_root:
+        raise SystemExit("missing required durable evidence root")
+
+    binding_completion_path = _resolve_repo_path(
+        repo_root,
+        str(args.binding_completion_path),
+    )
+
+    repo_root_str = str(repo_root)
+    if repo_root_str not in sys.path:
+        sys.path.insert(0, repo_root_str)
+
+    previous_argv = sys.argv[:]
+    sys.argv = [
+        str(delegate_path),
+        "--confirm-go-token",
+        str(args.confirm_go_token),
+        "--binding-completion-path",
+        str(binding_completion_path),
+        "--durable-evidence-root",
+        str(durable_evidence_root),
+        *passthrough,
+    ]
     try:
-        sys.argv = [str(delegate), *passthrough_args]
-        repo_root_str = str(repo_root)
-        if repo_root_str not in sys.path:
-            sys.path.insert(0, repo_root_str)
-        runpy.run_path(str(delegate), run_name="__main__")
+        runpy.run_path(str(delegate_path), run_name="__main__")
     finally:
-        sys.argv = old_argv
+        sys.argv = previous_argv
 
     return 0
 

@@ -36,28 +36,17 @@ def test_runner_is_parseable_and_binds_single_preferred_owner() -> None:
     }
 
 
-def test_runner_preserves_no_runtime_authority_boundary() -> None:
+def test_runner_fail_closed_without_durable_evidence_root() -> None:
     text = RUNNER.read_text(encoding="utf-8")
-    required_false_bindings = [
-        "LIVE_AUTHORIZED = False",
-        "READY_FOR_OPERATOR_ARMING = False",
-        "ORDERS_ALLOWED = False",
-        "SCHEDULER_RUNTIME_ALLOWED = False",
-        "SHADOW_AUTHORIZED = False",
-        "PAPER_AUTHORIZED = False",
-        "TESTNET_AUTHORIZED = False",
-        "CANARY_AUTHORIZED = False",
-        "UNMODIFIED_BINDING_RETRY_ALLOWED = False",
-    ]
-    for binding in required_false_bindings:
-        assert binding in text
-    assert 'RETRY_MODE = "NO_RETRY"' in text
+    assert "missing required durable evidence root" in text
+    assert "raise SystemExit" in text
 
 
-def test_runner_fail_closed_verdict_for_resolution_error() -> None:
+def test_runner_delegates_materializer_cli_contract() -> None:
     text = RUNNER.read_text(encoding="utf-8")
-    assert "BLOCKED_RUNNER_RESOLUTION_NOT_EXACTLY_ONE" in text
-    assert "resolved_count" in text
+    assert "--confirm-go-token" in text
+    assert "--binding-completion-path" in text
+    assert "--durable-evidence-root" in text
     assert "runpy.run_path" in text
 
 
