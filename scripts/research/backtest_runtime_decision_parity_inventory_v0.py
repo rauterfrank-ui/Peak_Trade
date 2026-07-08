@@ -167,6 +167,14 @@ SURFACES = [
         "canonical_roots": ("src/execution", "src/live", "src/ops"),
         "backtest_roots": ("src/backtest", "scripts", "tests"),
         "runtime_roots": ("src/live", "src/execution", "src/runtime", "src/ops"),
+        "backtest_binding_pins": (
+            "tests/trading/master_v2/test_reconciliation_unknown_outcome_offline_replay_binding_parity_rewire_contract_v0.py",
+            "tests/trading/master_v2/test_reconciliation_boundary_backtest_state_file_binding_contract_v0.py",
+            "tests/research/test_reconciliation_unknown_outcome_narrow_reuse_first_rewire_v0.py",
+            "src/trading/master_v2/reconciliation_unknown_outcome_offline_replay_binding_adapter_v0.py",
+            "src/trading/master_v2/reconciliation_boundary_backtest_state_file_binding_adapter_v0.py",
+        ),
+        "trace_rewire_bound": True,
     },
     {
         "surface_id": "promotion_gate_boundary",
