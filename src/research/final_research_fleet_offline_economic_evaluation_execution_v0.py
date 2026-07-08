@@ -681,6 +681,7 @@ def verify_unmodified_retry_admissibility_v0(
     *,
     fleet_binding_completion: Mapping[str, Any],
     requested_execution_evidence_class: str | None = None,
+    owner_policy: Mapping[str, Any] | None = None,
 ) -> tuple[bool, tuple[str, ...]]:
     """Fail closed when bindings match historical STEP31F terminal FAIL digest."""
     completion_digest = str(fleet_binding_completion.get("completion_digest", ""))
@@ -689,6 +690,17 @@ def verify_unmodified_retry_admissibility_v0(
     if PR4826_CREATES_NEW_EXECUTION_EVIDENCE_CLASS and requested_execution_evidence_class:
         if requested_execution_evidence_class != HISTORICAL_STEP31F_EXECUTION_EVIDENCE_CLASS:
             return True, ()
+    if requested_execution_evidence_class and owner_policy is not None:
+        from src.research.full_canonical_core_completion_plausibility_evaluation_v0 import (
+            EVIDENCE_CLASS_ID as CORE_COMPLETION_DIAGNOSTIC_EVIDENCE_CLASS_ID,
+            verify_unmodified_retry_for_diagnostic_evidence_class_v0,
+        )
+
+        if requested_execution_evidence_class == CORE_COMPLETION_DIAGNOSTIC_EVIDENCE_CLASS_ID:
+            return verify_unmodified_retry_for_diagnostic_evidence_class_v0(
+                fleet_binding_completion=fleet_binding_completion,
+                owner_policy=owner_policy,
+            )
     reasons = [REASON_UNMODIFIED_BINDING_RETRY_BLOCKED]
     if not PR4826_CREATES_NEW_EXECUTION_EVIDENCE_CLASS:
         reasons.append(REASON_NEW_EVIDENCE_CLASS_REQUIRED)
