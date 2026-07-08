@@ -4,23 +4,22 @@ from pathlib import Path
 
 from scripts.research.backtest_runtime_decision_parity_inventory_v0 import build_inventory
 from scripts.research.backtest_runtime_decision_parity_trace_matrix_v0 import build_trace_matrix
-from scripts.research.reconciliation_unknown_outcome_narrow_reuse_first_rewire_v0 import (
+from scripts.research.promotion_gate_boundary_narrow_reuse_first_rewire_v0 import (
     BOUNDARY_BACKTEST_CONTRACT_TEST_PATH,
     CHAINED_CONTRACT_TEST_PATH,
     OFFLINE_REPLAY_CONTRACT_TEST_PATH,
     PLAN_TYPE,
-    REUSED_ENTRY_EXIT_POLICY_OWNER,
-    REUSED_RUNTIME_STATE_RECONCILIATION_OWNER,
+    REUSED_CANONICAL_OWNER,
     SURFACE_ID,
     build_rewire_binding,
-    evaluate_reconciliation_unknown_outcome_parity_fixtures_v0,
+    evaluate_promotion_gate_boundary_parity_fixtures_v0,
 )
-from trading.master_v2.reconciliation_unknown_outcome_offline_replay_binding_adapter_v0 import (
-    RECONCILIATION_UNKNOWN_OUTCOME_EFFECT_BOUND_OFFLINE,
+from trading.master_v2.promotion_gate_boundary_offline_replay_binding_adapter_v0 import (
+    PROMOTION_GATE_BOUNDARY_EFFECT_BOUND_OFFLINE,
 )
 
 
-def test_inventory_pins_chained_reconciliation_backtest_binding_to_parity_contracts() -> None:
+def test_inventory_pins_chained_promotion_gate_backtest_binding_to_parity_contracts() -> None:
     inventory = build_inventory(Path.cwd())
     surface = next(s for s in inventory["surfaces"] if s["surface_id"] == SURFACE_ID)
     pinned_paths = {hit["path"] for hit in surface["backtest_binding_candidates"][:3]}
@@ -34,32 +33,29 @@ def test_rewire_binding_reuses_canonical_owners_without_parallel_owner() -> None
     rewire = build_rewire_binding(Path.cwd())
     binding = rewire["rewire_binding"]
 
-    assert rewire["schema"] == "ReconciliationUnknownOutcomeNarrowReuseFirstRewireV1"
+    assert rewire["schema"] == "PromotionGateBoundaryNarrowReuseFirstRewireV1"
     assert rewire["surface_id"] == SURFACE_ID
     assert rewire["plan_type"] == PLAN_TYPE
-    assert rewire["trace_assertion_source_pr"] == 5013
-    assert binding["reused_runtime_state_reconciliation_owner"] == (
-        REUSED_RUNTIME_STATE_RECONCILIATION_OWNER
-    )
-    assert binding["reused_entry_exit_policy_owner"] == REUSED_ENTRY_EXIT_POLICY_OWNER
+    assert rewire["trace_assertion_source_pr"] == 5014
+    assert binding["reused_canonical_owner"] == REUSED_CANONICAL_OWNER
     assert binding["functional_rewire_performed"] is True
     assert binding["new_parallel_owner_created"] is False
-    assert binding["safety_kernel_killswitch_chain_preserved"] is True
-    assert binding["submission_unknown_semantics_represented"] is True
-    assert binding["unknown_outcome_never_auto_resubmits"] is True
+    assert binding["reconciliation_unknown_outcome_chain_preserved"] is True
+    assert binding["promotion_gate_semantics_represented"] is True
+    assert binding["no_runtime_authority_from_promotion_represented"] is True
+    assert binding["economic_validity_required_for_promotion_represented"] is True
     assert binding["rewire_state"] == "REWIRE_BOUND_OFFLINE_PARITY_PATH"
 
 
-def test_chained_reconciliation_parity_fixture_binds_offline_only() -> None:
-    binding = evaluate_reconciliation_unknown_outcome_parity_fixtures_v0()
+def test_chained_promotion_gate_parity_fixture_binds_offline_only() -> None:
+    binding = evaluate_promotion_gate_boundary_parity_fixtures_v0()
     assert binding.binding_applied is True
-    assert binding.reconciliation_unknown_outcome_effect == (
-        RECONCILIATION_UNKNOWN_OUTCOME_EFFECT_BOUND_OFFLINE
-    )
-    assert binding.reconciliation_unknown_outcome_ref
-    assert binding.boundary.submission_unknown_blocks_new_exposure is True
-    assert binding.boundary.unknown_outcome_never_auto_resubmits is True
-    assert binding.boundary.no_auto_resubmit is True
+    assert binding.promotion_gate_boundary_effect == PROMOTION_GATE_BOUNDARY_EFFECT_BOUND_OFFLINE
+    assert binding.promotion_gate_boundary_ref
+    assert binding.boundary.promotion_gate_semantics_represented is True
+    assert binding.boundary.no_runtime_authority_from_promotion_represented is True
+    assert binding.gate_result.runtime_eligible is False
+    assert binding.gate_result.execution_allowed is False
 
 
 def test_rewire_makes_no_forbidden_claims() -> None:
@@ -75,16 +71,21 @@ def test_rewire_makes_no_forbidden_claims() -> None:
     assert all(value is False for value in forbidden.values())
 
 
-def test_trace_matrix_keeps_reconciliation_rewire_bound_in_chain() -> None:
+def test_trace_matrix_selects_ai_observability_after_promotion_gate_rewire_bound() -> None:
     inventory = build_inventory(Path.cwd())
     matrix = build_trace_matrix(inventory)
-    reconciliation_edge = next(
+    assert (
+        matrix["selected_next_rewire_plan"]["selected_surface_id"]
+        == "ai_observability_feedback_boundary"
+    )
+    assert matrix["selected_next_rewire_plan"]["plan_type"] == "NARROW_TRACE_ASSERTION_FIRST"
+    promotion_edge = next(
         edge for edge in matrix["trace_edges"] if edge["surface_id"] == SURFACE_ID
     )
-    assert reconciliation_edge["trace_state"] == "TRACE_REWIRE_BOUND_OFFLINE_PARITY_PATH"
-    safety_edge = next(
+    assert promotion_edge["trace_state"] == "TRACE_REWIRE_BOUND_OFFLINE_PARITY_PATH"
+    reconciliation_edge = next(
         edge
         for edge in matrix["trace_edges"]
-        if edge["surface_id"] == "safety_kernel_and_killswitch_boundary"
+        if edge["surface_id"] == "reconciliation_unknown_outcome"
     )
-    assert safety_edge["trace_state"] == "TRACE_REWIRE_BOUND_OFFLINE_PARITY_PATH"
+    assert reconciliation_edge["trace_state"] == "TRACE_REWIRE_BOUND_OFFLINE_PARITY_PATH"
