@@ -63,10 +63,14 @@ PR4826_MERGE_COMMIT = "208ab96562f7750fb4dff43936b345a040d1cea4"
 PR4832_MERGE_COMMIT = "ddce9c508158b89fa225c381436e2d1efced7328"
 PR4833_MERGE_COMMIT = "4828168cd91c57aa72dcb3b40b47188eeb82fd32"
 PR4834_MERGE_COMMIT = "0d23e662c4a0b8e0638a919ac879490e82e2ef41"
-# Non-Class-D offline evaluation allowlist admission for current origin/main after full
+# Non-Class-D offline evaluation allowlist admission for origin/main after full
 # canonical system backtest parity closeout and final research fleet binding ratification.
 ORIGIN_MAIN_AFTER_FULL_CANONICAL_BACKTEST_PARITY_CLOSEOUT_SHA = (
     "01186e8d7657b107651ec00a6bb68a70e45a5c87"
+)
+# Post-PR4990 origin/main after the Non-Class-D offline-eval origin-main policy merge.
+ORIGIN_MAIN_AFTER_NON_CLASS_D_OFFLINE_EVAL_ORIGIN_MAIN_POLICY_PR4990_SHA = (
+    "90d9b538bf1c23580a13ffb97d1c8d016ee95581"
 )
 SQUASH_MERGE_IDENTITY_CONTRACT_INTRODUCED_AT = PR4834_MERGE_COMMIT
 MATERIALIZED_CLASS_D_ORIGIN_MAIN_SHA = PR4832_MERGE_COMMIT
@@ -82,6 +86,7 @@ ACCEPTED_ORIGIN_MAIN_SHAS: frozenset[str] = frozenset(
         PR4833_MERGE_COMMIT,
         PR4834_MERGE_COMMIT,
         ORIGIN_MAIN_AFTER_FULL_CANONICAL_BACKTEST_PARITY_CLOSEOUT_SHA,
+        ORIGIN_MAIN_AFTER_NON_CLASS_D_OFFLINE_EVAL_ORIGIN_MAIN_POLICY_PR4990_SHA,
     }
 )
 REQUIRED_MERGED_PR_NUMBER = 4826
