@@ -102,6 +102,14 @@ SURFACES = [
         "canonical_roots": ("src/trading", "src/strategies", "src/core"),
         "backtest_roots": ("src/backtest", "scripts", "tests"),
         "runtime_roots": ("src/live", "src/execution", "src/runtime", "src/ops"),
+        "backtest_binding_pins": (
+            "tests/trading/master_v2/test_scenario_replay_double_play_entry_exit_policy_binding_parity_rewire_contract_v0.py",
+            "tests/trading/master_v2/test_flat_before_opposite_side_scenario_replay_binding_parity_rewire_contract_v0.py",
+            "tests/research/test_entry_position_exit_policy_narrow_reuse_first_rewire_v0.py",
+            "src/trading/master_v2/double_play_entry_exit_scenario_binding_adapter_v0.py",
+            "src/trading/master_v2/flat_before_opposite_side_scenario_binding_adapter_v0.py",
+        ),
+        "trace_rewire_bound": True,
     },
     {
         "surface_id": "capital_risk_sizing",

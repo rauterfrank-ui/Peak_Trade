@@ -79,13 +79,11 @@ def test_rewire_makes_no_forbidden_claims() -> None:
     assert all(value is False for value in forbidden.values())
 
 
-def test_trace_matrix_selects_entry_position_exit_after_flat_before_rewire_bound() -> None:
+def test_trace_matrix_selects_capital_risk_sizing_after_entry_position_exit_rewire_bound() -> None:
     inventory = build_inventory(Path.cwd())
     matrix = build_trace_matrix(inventory)
-    assert (
-        matrix["selected_next_rewire_plan"]["selected_surface_id"] == "entry_position_exit_policy"
-    )
-    assert matrix["selected_next_rewire_plan"]["plan_type"] == PLAN_TYPE
+    assert matrix["selected_next_rewire_plan"]["selected_surface_id"] == "capital_risk_sizing"
+    assert matrix["selected_next_rewire_plan"]["plan_type"] == "NARROW_REUSE_FIRST_REWIRE"
     flat_edge = matrix["trace_edges"][2]
     assert flat_edge["surface_id"] == "flat_before_opposite_side"
     assert flat_edge["trace_state"] == "TRACE_REWIRE_BOUND_OFFLINE_PARITY_PATH"

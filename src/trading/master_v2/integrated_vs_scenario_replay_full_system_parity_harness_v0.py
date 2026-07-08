@@ -139,11 +139,13 @@ from trading.master_v2.flat_before_opposite_side_scenario_binding_adapter_v0 imp
     evaluate_scenario_flat_before_opposite_side_entry_exit_v0,
     flat_before_opposite_side_binding_non_authority_boundary_ok_v0,
     flat_before_opposite_side_blocks_opposite_entry_v0,
+    merge_flat_before_opposite_side_policy_context_v0,
 )
 from trading.master_v2.double_play_entry_exit_scenario_binding_adapter_v0 import (
     CANONICAL_ENTRY_EXIT_POLICY_OWNER,
     DOUBLE_PLAY_ENTRY_EXIT_SCENARIO_BINDING_ADAPTER_OWNER,
     ScenarioEntryExitPolicyContextV0,
+    entry_exit_decision_non_authority_boundary_ok_v0,
     evaluate_scenario_entry_exit_policy_v0,
 )
 from trading.master_v2.double_play_state import (
@@ -914,6 +916,77 @@ def evaluate_scenario_flat_before_opposite_side_for_fixture_v0(
         raise ValueError("fixture must block opposite entry while position not flat")
     if not flat_before_opposite_side_binding_non_authority_boundary_ok_v0(decision):
         raise ValueError("flat-before-opposite-side binding violated non-authority boundary")
+    return decision
+
+
+def extract_entry_position_exit_policy_parity_envelope_v0(
+    decision: EntryExitPolicyDecisionV0,
+    *,
+    composition_status: str,
+    previous_side_state: Optional[str] = None,
+    next_side_state: Optional[str] = None,
+) -> ParityDecisionEnvelopeV0:
+    return extract_entry_exit_policy_parity_envelope_v0(
+        decision,
+        previous_side_state=previous_side_state,
+        next_side_state=next_side_state,
+        composition_status=composition_status,
+    )
+
+
+def assert_entry_position_exit_policy_non_authority_boundary_v0(
+    envelope: ParityDecisionEnvelopeV0,
+) -> None:
+    assert not envelope.execution_eligible
+    assert not envelope.adapter_compatible
+    assert envelope.authority_effect == "NONE"
+    assert envelope.runtime_effect == "NONE"
+    assert envelope.entry_or_exit_policy_ref
+    assert envelope.decision_precedence_trace
+
+
+def evaluate_scenario_entry_position_exit_policy_for_fixture_v0(
+    *,
+    instrument_id: str = SYNTHETIC_FUTURES_INSTRUMENT,
+    trading_epoch: int = 55,
+    context_reference: str = "entry-position-exit-policy-narrow-rewire-v0",
+) -> EntryExitPolicyDecisionV0:
+    matrix = evaluate_scenario_matrix_for_side_state_v0(
+        side_state=SideState.SHORT_ARMED,
+        instrument_id=instrument_id,
+        trading_epoch=trading_epoch,
+        context_reference=context_reference,
+    )
+    if matrix.composition_status is not CompositionStatus.SHORT_SELECTED:
+        raise ValueError("fixture matrix must be SHORT_SELECTED for opposite-entry block")
+    scope_binding = evaluate_scenario_scope_event_for_fixture_v0(
+        instrument_id=instrument_id,
+        trading_epoch=trading_epoch,
+        context_reference=f"{context_reference}-scope",
+    )
+    merged_ctx = merge_flat_before_opposite_side_policy_context_v0(
+        side_state=SideState.LONG_ACTIVE,
+        policy_context=replace(
+            default_scenario_entry_exit_policy_context_v0(),
+            scope_adverse_exit_signal=scope_binding.scope_adverse_exit_signal,
+        ),
+    )
+    decision = evaluate_scenario_entry_exit_policy_v0(
+        instrument_id=instrument_id,
+        trading_epoch=trading_epoch,
+        context_reference=context_reference,
+        composition_result=matrix,
+        side_state=SideState.SHORT_ARMED,
+        policy_context=merged_ctx,
+    )
+    if decision.decision_outcome in (DecisionOutcome.ENTER_LONG, DecisionOutcome.ENTER_SHORT):
+        raise ValueError("entry position exit fixture must block opposite entry while long open")
+    if decision.position_flip_allowed:
+        raise ValueError("entry position exit fixture must keep position_flip_allowed false")
+    if not entry_exit_decision_non_authority_boundary_ok_v0(decision):
+        raise ValueError("entry position exit binding violated non-authority boundary")
+    if not scope_binding.scope_adverse_exit_signal.triggered:
+        raise ValueError("entry position exit fixture requires adverse scope handoff signal")
     return decision
 
 
