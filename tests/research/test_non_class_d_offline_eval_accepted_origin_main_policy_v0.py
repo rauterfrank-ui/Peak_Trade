@@ -45,8 +45,7 @@ def test_current_origin_main_accepted_for_non_class_d_policy() -> None:
     ).stdout.strip()
     assert live_origin_main == resolve_current_execution_origin_main_sha(REPO_ROOT)
     assert (
-        live_origin_main
-        == ORIGIN_MAIN_AFTER_NON_CLASS_D_OFFLINE_EVAL_ORIGIN_MAIN_POLICY_PR4990_SHA
+        live_origin_main == ORIGIN_MAIN_AFTER_NON_CLASS_D_OFFLINE_EVAL_ORIGIN_MAIN_POLICY_PR4990_SHA
     )
     assert is_accepted_origin_main_sha(live_origin_main)
 
