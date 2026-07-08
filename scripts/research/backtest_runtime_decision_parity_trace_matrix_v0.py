@@ -127,22 +127,36 @@ def build_trace_matrix(inventory: dict[str, Any]) -> dict[str, Any]:
                 next_action=next_action,
             )
         )
-    selected = next(
-        edge for edge in edges if edge.trace_state == "TRACE_CANDIDATE_READY_NOT_ASSERTED"
-    )
-    plan_type = "NARROW_TRACE_ASSERTION_FIRST"
-    plan = RewirePlan(
-        selected_surface_id=selected.surface_id,
-        plan_type=plan_type,
-        rationale=(
+    pending = [edge for edge in edges if edge.trace_state == "TRACE_CANDIDATE_READY_NOT_ASSERTED"]
+    if pending:
+        selected = pending[0]
+        plan_type = "NARROW_TRACE_ASSERTION_FIRST"
+        rationale = (
             "Inventory found candidates on all three surfaces. The next safe move is not a new status contract; "
             "it is an executable trace assertion proving whether the selected canonical owner is actually consumed "
             "by the backtest path and represented at the runtime boundary."
-        ),
-        allowed_change=(
+        )
+        allowed_change = (
             "Add tests and read-only trace extraction around existing owners. Only rewire if the trace assertion "
             "exposes a concrete missing edge."
-        ),
+        )
+        selected_surface_id = selected.surface_id
+    else:
+        plan_type = "CHAIN_BOUND_AWAITING_FULL_PARITY_PROOF"
+        rationale = (
+            "All twelve trace-priority surfaces are rewire-bound on the offline parity path. "
+            "No further narrow surface rewire is admissible until manifest-verified full parity proof."
+        )
+        allowed_change = (
+            "Read-only full-chain parity assessment and gap diagnostics only. "
+            "No new owner, no runtime rewire, no parity-pass claims."
+        )
+        selected_surface_id = "NONE"
+    plan = RewirePlan(
+        selected_surface_id=selected_surface_id,
+        plan_type=plan_type,
+        rationale=rationale,
+        allowed_change=allowed_change,
         forbidden_claims=[
             "FULL_CANONICAL_CHAIN_WIRED=true",
             "BACKTEST_RUNTIME_DECISION_PARITY_PASS=true",

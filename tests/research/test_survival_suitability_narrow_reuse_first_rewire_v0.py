@@ -81,17 +81,19 @@ def test_rewire_makes_no_forbidden_claims() -> None:
     assert all(value is False for value in forbidden.values())
 
 
-def test_trace_matrix_selects_canonical_order_intent_after_survival_suitability_rewire_bound() -> (
+def test_trace_matrix_keeps_survival_suitability_and_canonical_order_intent_bound_in_chain() -> (
     None
 ):
     inventory = build_inventory(Path.cwd())
     matrix = build_trace_matrix(inventory)
-    assert (
-        matrix["selected_next_rewire_plan"]["selected_surface_id"]
-        == "canonical_order_intent_boundary"
-    )
     survival_edge = next(edge for edge in matrix["trace_edges"] if edge["surface_id"] == SURFACE_ID)
     assert survival_edge["trace_state"] == "TRACE_REWIRE_BOUND_OFFLINE_PARITY_PATH"
+    intent_edge = next(
+        edge
+        for edge in matrix["trace_edges"]
+        if edge["surface_id"] == "canonical_order_intent_boundary"
+    )
+    assert intent_edge["trace_state"] == "TRACE_REWIRE_BOUND_OFFLINE_PARITY_PATH"
     double_play_edge = next(
         edge for edge in matrix["trace_edges"] if edge["surface_id"] == "double_play_composition"
     )
