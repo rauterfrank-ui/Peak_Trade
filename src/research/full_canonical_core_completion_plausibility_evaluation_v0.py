@@ -83,6 +83,14 @@ PROMOTION_BOUNDARY_REASON_CODES: tuple[str, ...] = (
     "RAW_RESEARCH_EVIDENCE_IS_NOT_SYSTEM_ECONOMIC_EVIDENCE",
 )
 
+FULL_CANONICAL_CHAIN_WIRED_STATUS = "DIAGNOSTIC_ONLY_NOT_FULLY_WIRED"
+FULL_CANONICAL_CHAIN_WIRED_REASON_CODES: tuple[str, ...] = (
+    "FULL_CANONICAL_CHAIN_WIRED_STATUS_NOT_YET_PROVEN",
+    "BACKTEST_RUNTIME_DECISION_PARITY_NOT_YET_PROVEN",
+    "SYSTEM_ECONOMIC_EVIDENCE_REQUIRES_FULL_CANONICAL_CHAIN_PARITY",
+    "DIAGNOSTIC_RESULT_DOES_NOT_WIRE_CANONICAL_CHAIN",
+)
+
 
 @dataclass(frozen=True)
 class StartStateVerificationResultV0:
@@ -111,6 +119,10 @@ class DiagnosticExecutionResultV0:
     credential_access_allowed: bool
     promotion_boundary_status: str
     promotion_boundary_reason_codes: tuple[str, ...]
+    full_canonical_chain_wired: bool
+    backtest_runtime_decision_parity_pass: bool
+    full_canonical_chain_wired_status: str
+    full_canonical_chain_wired_reason_codes: tuple[str, ...]
     owner_policy_decision_digest: str
     evidence_class_id: str
     parity_status_counts: dict[str, int]
@@ -333,6 +345,10 @@ def build_diagnostic_output_v0(
         "orders_allowed": False,
         "economic_validity_claim_allowed": False,
         "system_economic_evidence_admissible": False,
+        "full_canonical_chain_wired": False,
+        "backtest_runtime_decision_parity_pass": False,
+        "full_canonical_chain_wired_status": FULL_CANONICAL_CHAIN_WIRED_STATUS,
+        "full_canonical_chain_wired_reason_codes": list(FULL_CANONICAL_CHAIN_WIRED_REASON_CODES),
         "promotion_boundary_status": PROMOTION_BOUNDARY_STATUS,
         "promotion_boundary_reason_codes": list(PROMOTION_BOUNDARY_REASON_CODES),
         "evidence_class_id": EVIDENCE_CLASS_ID,
@@ -437,6 +453,10 @@ def run_diagnostic_evaluation_v0(
         credential_access_allowed=False,
         promotion_boundary_status=PROMOTION_BOUNDARY_STATUS,
         promotion_boundary_reason_codes=PROMOTION_BOUNDARY_REASON_CODES,
+        full_canonical_chain_wired=False,
+        backtest_runtime_decision_parity_pass=False,
+        full_canonical_chain_wired_status=FULL_CANONICAL_CHAIN_WIRED_STATUS,
+        full_canonical_chain_wired_reason_codes=FULL_CANONICAL_CHAIN_WIRED_REASON_CODES,
         owner_policy_decision_digest=str(
             start_state.owner_policy.get("owner_policy_decision_digest", "")
         ),
