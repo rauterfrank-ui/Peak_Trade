@@ -83,6 +83,7 @@ def test_boundary_path_four_way_parity_complete_v0() -> None:
         "reconciliation_unknown_outcome_boundary",
         "promotion_gate_boundary",
         "ai_observability_boundary",
+        "feedback_learning_boundary",
     )
     boundary_assessments = assessment.fixture_assessments[
         SURFACE_P_CORE_BAR_SEQUENCE_FIXTURE_COUNT:
