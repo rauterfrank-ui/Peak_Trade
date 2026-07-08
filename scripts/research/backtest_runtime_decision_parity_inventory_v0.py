@@ -151,6 +151,15 @@ SURFACES = [
         "canonical_roots": ("src/execution", "src/trading", "src/core"),
         "backtest_roots": ("src/backtest", "scripts", "tests"),
         "runtime_roots": ("src/live", "src/execution", "src/runtime", "src/ops"),
+        "backtest_binding_pins": (
+            "tests/trading/master_v2/test_canonical_order_intent_offline_replay_binding_parity_rewire_contract_v0.py",
+            "tests/test_backtest_canonical_order_intent_wiring_v0.py",
+            "tests/research/test_canonical_order_intent_boundary_narrow_reuse_first_rewire_v0.py",
+            "src/trading/master_v2/canonical_order_intent_offline_replay_binding_adapter_v0.py",
+            "src/trading/master_v2/canonical_order_intent_boundary_backtest_state_file_binding_adapter_v0.py",
+            "src/governance/canonical_order_intent_v1.py",
+        ),
+        "trace_rewire_bound": True,
     },
     {
         "surface_id": "safety_kernel_and_killswitch_boundary",

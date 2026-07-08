@@ -71,23 +71,22 @@ def test_rewire_makes_no_forbidden_claims() -> None:
     assert all(value is False for value in forbidden.values())
 
 
-def test_trace_matrix_selects_canonical_order_intent_after_survival_and_suitability_rewire_bound() -> (
-    None
-):
+def test_trace_matrix_keeps_promotion_gate_and_canonical_order_intent_bound_in_chain() -> None:
     inventory = build_inventory(Path.cwd())
     matrix = build_trace_matrix(inventory)
-    assert (
-        matrix["selected_next_rewire_plan"]["selected_surface_id"]
-        == "canonical_order_intent_boundary"
+    promotion_edge = next(
+        edge for edge in matrix["trace_edges"] if edge["surface_id"] == SURFACE_ID
     )
-    assert matrix["selected_next_rewire_plan"]["plan_type"] == "NARROW_TRACE_ASSERTION_FIRST"
+    assert promotion_edge["trace_state"] == "TRACE_REWIRE_BOUND_OFFLINE_PARITY_PATH"
+    intent_edge = next(
+        edge
+        for edge in matrix["trace_edges"]
+        if edge["surface_id"] == "canonical_order_intent_boundary"
+    )
+    assert intent_edge["trace_state"] == "TRACE_REWIRE_BOUND_OFFLINE_PARITY_PATH"
     ai_feedback_edge = next(
         edge
         for edge in matrix["trace_edges"]
         if edge["surface_id"] == "ai_observability_feedback_boundary"
     )
     assert ai_feedback_edge["trace_state"] == "TRACE_REWIRE_BOUND_OFFLINE_PARITY_PATH"
-    promotion_edge = next(
-        edge for edge in matrix["trace_edges"] if edge["surface_id"] == SURFACE_ID
-    )
-    assert promotion_edge["trace_state"] == "TRACE_REWIRE_BOUND_OFFLINE_PARITY_PATH"
