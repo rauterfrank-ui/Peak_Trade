@@ -47,6 +47,7 @@ SURFACES = [
             "src/trading/master_v2/offline_double_play_scenario_replay_v0.py",
             "src/trading/master_v2/bull_bear_state_switch_scenario_binding_adapter_v0.py",
         ),
+        "trace_rewire_bound": True,
     },
     {
         "surface_id": "scope_adverse_exit_and_reversal_preparation",
@@ -55,6 +56,12 @@ SURFACES = [
         "canonical_roots": ("src/trading", "src/core", "src/strategies"),
         "backtest_roots": ("src/backtest", "scripts", "tests"),
         "runtime_roots": ("src/live", "src/execution", "src/runtime", "src/ops"),
+        "backtest_binding_pins": (
+            "tests/trading/master_v2/test_scope_event_generator_scenario_replay_binding_parity_rewire_contract_v0.py",
+            "tests/trading/master_v2/test_reversal_preparation_scenario_replay_binding_parity_rewire_contract_v0.py",
+            "src/trading/master_v2/scope_event_generator_scenario_binding_adapter_v0.py",
+            "src/trading/master_v2/reversal_preparation_scenario_binding_adapter_v0.py",
+        ),
     },
     {
         "surface_id": "flat_before_opposite_side",

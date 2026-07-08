@@ -7,6 +7,8 @@ from dataclasses import asdict, dataclass
 from pathlib import Path
 from typing import Any
 
+from scripts.research.backtest_runtime_decision_parity_inventory_v0 import SURFACES
+
 INVENTORY_SCRIPT = Path("scripts/research/backtest_runtime_decision_parity_inventory_v0.py")
 
 TRACE_PRIORITY = [
@@ -71,6 +73,20 @@ def _first_path(surface: dict[str, Any], key: str) -> str:
     return hits[0]["path"]
 
 
+def _is_rewire_bound_surface(surface: dict[str, Any]) -> bool:
+    configured = next(
+        (item for item in SURFACES if item["surface_id"] == surface["surface_id"]),
+        None,
+    )
+    if configured is None or not configured.get("trace_rewire_bound"):
+        return False
+    backtest_hits = surface.get("backtest_binding_candidates", [])
+    if not backtest_hits:
+        return False
+    first = backtest_hits[0]
+    return first.get("matched_terms") == ["rewire_binding_pin"]
+
+
 def _load_inventory_from_file(path: Path) -> dict[str, Any]:
     data = json.loads(path.read_text(encoding="utf-8"))
     if data["schema"] != "BacktestRuntimeDecisionParityInventoryV1":
@@ -91,7 +107,10 @@ def build_trace_matrix(inventory: dict[str, Any]) -> dict[str, Any]:
         canonical = _first_path(surface, "canonical_owner_candidates")
         backtest = _first_path(surface, "backtest_binding_candidates")
         runtime = _first_path(surface, "runtime_boundary_candidates")
-        if "NONE_DISCOVERED" in {canonical, backtest, runtime}:
+        if _is_rewire_bound_surface(surface):
+            trace_state = "TRACE_REWIRE_BOUND_OFFLINE_PARITY_PATH"
+            next_action = "rewire_complete_advance_to_next_surface"
+        elif "NONE_DISCOVERED" in {canonical, backtest, runtime}:
             trace_state = "TRACE_INCOMPLETE"
             next_action = "owner_discovery_before_rewire"
         else:
@@ -111,9 +130,14 @@ def build_trace_matrix(inventory: dict[str, Any]) -> dict[str, Any]:
     selected = next(
         edge for edge in edges if edge.trace_state == "TRACE_CANDIDATE_READY_NOT_ASSERTED"
     )
+    plan_type = (
+        "NARROW_REUSE_FIRST_REWIRE"
+        if selected.surface_id == "scope_adverse_exit_and_reversal_preparation"
+        else "NARROW_TRACE_ASSERTION_FIRST"
+    )
     plan = RewirePlan(
         selected_surface_id=selected.surface_id,
-        plan_type="NARROW_TRACE_ASSERTION_FIRST",
+        plan_type=plan_type,
         rationale=(
             "Inventory found candidates on all three surfaces. The next safe move is not a new status contract; "
             "it is an executable trace assertion proving whether the selected canonical owner is actually consumed "
