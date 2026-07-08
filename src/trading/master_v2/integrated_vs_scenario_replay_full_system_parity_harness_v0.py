@@ -9,7 +9,7 @@ No runtime authority, no economic evaluation, no trading semantic extension.
 from __future__ import annotations
 
 import hashlib
-from dataclasses import dataclass
+from dataclasses import dataclass, replace
 from typing import Literal, Mapping, Optional, Sequence, Tuple
 
 from trading.master_v2.directional_assessment_v1 import DirectionalAssessmentStatus
@@ -781,6 +781,79 @@ def evaluate_scenario_reversal_preparation_for_fixture_v0(
         side_state=SideState.LONG_ACTIVE,
         policy_context=default_scenario_entry_exit_policy_context_v0(),
     )
+
+
+def extract_adverse_scope_exit_reversal_preparation_parity_envelope_v0(
+    scope_binding: ScenarioScopeEventBindingResultV0,
+    decision: EntryExitPolicyDecisionV0,
+) -> ParityDecisionEnvelopeV0:
+    scope_env = extract_scope_event_parity_envelope_v0(scope_binding)
+    return ParityDecisionEnvelopeV0(
+        decision_outcome=decision.decision_outcome.value,
+        previous_side_state=None,
+        next_side_state=None,
+        composition_status=CompositionStatus.REVERSAL_PREPARATION.value,
+        composition_result_id="",
+        entry_or_exit_policy_ref=decision.policy_decision_id or "",
+        reason_codes=tuple(decision.reason_codes) + scope_env.reason_codes,
+        decision_precedence_trace=tuple(decision.decision_precedence_trace),
+        execution_eligible=False,
+        adapter_compatible=False,
+        quantity_status="NOT_BOUND",
+        scope_event_ref=scope_binding.scope_event_ref,
+        scope_event_effect=scope_binding.scope_event_effect,
+        authority_effect="NONE",
+        runtime_effect="NONE",
+    )
+
+
+def assert_adverse_scope_exit_reversal_preparation_non_authority_boundary_v0(
+    envelope: ParityDecisionEnvelopeV0,
+) -> None:
+    assert not envelope.execution_eligible
+    assert not envelope.adapter_compatible
+    assert envelope.authority_effect == "NONE"
+    assert envelope.runtime_effect == "NONE"
+    assert envelope.scope_event_ref
+    assert envelope.entry_or_exit_policy_ref
+    assert envelope.composition_status == CompositionStatus.REVERSAL_PREPARATION.value
+
+
+def evaluate_scenario_adverse_scope_exit_reversal_preparation_for_fixture_v0(
+    *,
+    instrument_id: str = SYNTHETIC_FUTURES_INSTRUMENT,
+    trading_epoch: int = 48,
+    context_reference: str = "adverse-scope-exit-reversal-prep-narrow-rewire-v0",
+) -> tuple[ScenarioScopeEventBindingResultV0, EntryExitPolicyDecisionV0]:
+    scope_binding = evaluate_scenario_scope_event_for_fixture_v0(
+        instrument_id=instrument_id,
+        trading_epoch=trading_epoch,
+        context_reference=f"{context_reference}-scope",
+    )
+    matrix = evaluate_reversal_preparation_matrix_v0(
+        instrument_id=instrument_id,
+        trading_epoch=trading_epoch,
+        context_reference=f"{context_reference}-reversal",
+    )
+    if not is_reversal_preparation_composition_v0(matrix):
+        raise ValueError("fixture matrix must be reversal preparation composition")
+    policy_ctx = replace(
+        default_scenario_entry_exit_policy_context_v0(),
+        scope_adverse_exit_signal=scope_binding.scope_adverse_exit_signal,
+    )
+    decision = evaluate_scenario_reversal_preparation_entry_exit_v0(
+        instrument_id=instrument_id,
+        trading_epoch=trading_epoch,
+        context_reference=f"{context_reference}-reversal",
+        composition_result=matrix,
+        side_state=SideState.LONG_ACTIVE,
+        policy_context=policy_ctx,
+    )
+    if not scope_binding.scope_adverse_exit_signal.triggered:
+        raise ValueError("adverse scope fixture must trigger scope adverse exit signal")
+    if not reversal_preparation_binding_non_authority_boundary_ok_v0(decision):
+        raise ValueError("reversal preparation binding violated non-authority boundary")
+    return scope_binding, decision
 
 
 def extract_flat_before_opposite_side_parity_envelope_v0(
