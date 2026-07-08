@@ -49,3 +49,15 @@ def test_inventory_markdown_is_renderable_and_json_serializable() -> None:
     assert "Backtest Runtime Decision Parity Inventory V1" in markdown
     assert "NO_RUNTIME_AUTHORITY=true" in markdown
     assert "Surface inventory" in markdown
+
+
+def test_runtime_authority_guard_ignores_own_denylist_literals() -> None:
+    from scripts.research.backtest_runtime_decision_parity_inventory_v0 import (
+        assert_no_runtime_authority,
+    )
+
+    violations = assert_no_runtime_authority(
+        Path.cwd(),
+        ["scripts/research/backtest_runtime_decision_parity_inventory_v0.py"],
+    )
+    assert violations == []

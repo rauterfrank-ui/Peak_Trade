@@ -229,15 +229,33 @@ def classify(
     )
 
 
+def runtime_authority_scan_text(path: Path, text: str) -> str:
+    if path.name != "backtest_runtime_decision_parity_inventory_v0.py":
+        return text
+    kept_lines: list[str] = []
+    in_denylist_literal = False
+    for line in text.splitlines():
+        stripped = line.strip()
+        if stripped.startswith("RUNTIME_FORBIDDEN_TOKENS = ("):
+            in_denylist_literal = True
+            continue
+        if in_denylist_literal:
+            if stripped == ")":
+                in_denylist_literal = False
+            continue
+        kept_lines.append(line)
+    return "\n".join(kept_lines)
+
+
 def assert_no_runtime_authority(repo_root: Path, changed_files: Iterable[str]) -> list[str]:
     violations: list[str] = []
     for rel in changed_files:
         path = repo_root / rel
         if not path.exists() or path.suffix.lower() not in TEXT_SUFFIXES:
             continue
-        text = read_text(path)
+        scan_text = runtime_authority_scan_text(path, read_text(path))
         for token in RUNTIME_FORBIDDEN_TOKENS:
-            if token in text:
+            if token in scan_text:
                 violations.append(f"{rel}: forbidden runtime token {token}")
     return violations
 
