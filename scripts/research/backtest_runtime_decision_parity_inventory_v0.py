@@ -115,9 +115,17 @@ SURFACES = [
         "surface_id": "capital_risk_sizing",
         "required_status": "CAPITAL_RISK_SIZING_WIRED_TO_BACKTEST",
         "keywords": ("risk", "sizing", "quantity", "capital", "notional"),
-        "canonical_roots": ("src/risk", "src/trading", "src/core", "src/ops"),
+        "canonical_roots": ("src/governance", "src/risk", "src/trading", "src/core", "src/ops"),
         "backtest_roots": ("src/backtest", "scripts", "tests"),
         "runtime_roots": ("src/live", "src/execution", "src/runtime", "src/ops"),
+        "backtest_binding_pins": (
+            "tests/trading/master_v2/test_capital_risk_sizing_offline_replay_binding_parity_rewire_contract_v0.py",
+            "tests/trading/master_v2/test_capital_risk_sizing_boundary_backtest_state_file_binding_contract_v0.py",
+            "tests/research/test_capital_risk_sizing_narrow_reuse_first_rewire_v0.py",
+            "src/trading/master_v2/capital_risk_sizing_offline_replay_binding_adapter_v0.py",
+            "src/trading/master_v2/capital_risk_sizing_boundary_backtest_state_file_binding_adapter_v0.py",
+        ),
+        "trace_rewire_bound": True,
     },
     {
         "surface_id": "canonical_order_intent_boundary",
