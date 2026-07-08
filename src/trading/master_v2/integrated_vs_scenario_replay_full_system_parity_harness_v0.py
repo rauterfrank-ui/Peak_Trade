@@ -114,9 +114,13 @@ from trading.master_v2.double_play_composition_scenario_matrix_adapter_v0 import
     evaluate_scenario_matrix_composition_v0,
 )
 from trading.master_v2.survival_suitability_scenario_binding_adapter_v0 import (
+    CANONICAL_SUITABILITY_BINDING_OWNER,
+    CANONICAL_SURVIVAL_ASSESSMENT_OWNER,
+    ScenarioSurvivalSuitabilityEvaluationV0,
     ScenarioSurvivalSuitabilityOverridesV0,
     SURVIVAL_SUITABILITY_SCENARIO_BINDING_ADAPTER_OWNER,
     legacy_side_to_assessment_statuses_v0,
+    survival_suitability_binding_non_authority_boundary_ok_v0,
 )
 from trading.master_v2.double_play_entry_exit_policy_v0 import (
     DecisionOutcome,
@@ -1071,6 +1075,65 @@ def assert_double_play_composition_non_authority_boundary_v0(
         assert matrix_result.sizing_effect == "NONE"
 
 
+def extract_survival_suitability_parity_envelope_v0(
+    evaluation: ScenarioSurvivalSuitabilityEvaluationV0,
+) -> ParityDecisionEnvelopeV0:
+    bull_survival = evaluation.bull_survival.status.value
+    bear_survival = evaluation.bear_survival.status.value
+    bull_suitability = evaluation.bull_suitability.status.value
+    bear_suitability = evaluation.bear_suitability.status.value
+    return ParityDecisionEnvelopeV0(
+        decision_outcome="not_bound_offline_survival_suitability_only",
+        previous_side_state=None,
+        next_side_state=None,
+        composition_status=(
+            f"bull_survival={bull_survival};bear_survival={bear_survival};"
+            f"bull_suitability={bull_suitability};bear_suitability={bear_suitability}"
+        ),
+        composition_result_id=(
+            f"{evaluation.bull_survival.survival_id}:{evaluation.bear_survival.survival_id}"
+        ),
+        entry_or_exit_policy_ref="",
+        reason_codes=tuple(
+            evaluation.bull_survival.reason_codes + evaluation.bear_suitability.reason_codes
+        ),
+        decision_precedence_trace=(),
+        execution_eligible=False,
+        adapter_compatible=False,
+        quantity_status="NOT_BOUND",
+        authority_effect="NONE",
+        runtime_effect="NONE",
+    )
+
+
+def assert_survival_suitability_non_authority_boundary_v0(
+    envelope: ParityDecisionEnvelopeV0,
+    *,
+    evaluation: ScenarioSurvivalSuitabilityEvaluationV0 | None = None,
+) -> None:
+    assert_non_authority_boundary_v0(envelope)
+    assert envelope.order_intent_effect == ORDER_INTENT_EFFECT_NONE
+    assert envelope.safety_boundary_effect == SAFETY_BOUNDARY_EFFECT_NONE
+    assert envelope.reconciliation_unknown_outcome_effect == (
+        RECONCILIATION_UNKNOWN_OUTCOME_EFFECT_NONE
+    )
+    assert envelope.killswitch_boundary_effect == KILLSWITCH_BOUNDARY_EFFECT_NONE
+    assert envelope.promotion_gate_boundary_effect == PROMOTION_GATE_BOUNDARY_EFFECT_NONE
+    assert envelope.ai_observability_boundary_effect == AI_OBSERVABILITY_BOUNDARY_EFFECT_NONE
+    assert envelope.feedback_learning_boundary_effect == FEEDBACK_LEARNING_BOUNDARY_EFFECT_NONE
+    assert survival_suitability_binding_non_authority_boundary_ok_v0() is True
+    if evaluation is not None:
+        for survival in (evaluation.bull_survival, evaluation.bear_survival):
+            assert survival.authority_effect == "NONE"
+            assert survival.runtime_effect == "NONE"
+            assert survival.order_effect == "NONE"
+        for suitability in (evaluation.bull_suitability, evaluation.bear_suitability):
+            assert suitability.authority_effect == "NONE"
+            assert suitability.runtime_effect == "NONE"
+            assert suitability.order_effect == "NONE"
+            assert suitability.risk_effect == "NONE"
+
+
 def assert_capital_risk_sizing_non_authority_boundary_v0(
     envelope: ParityDecisionEnvelopeV0,
 ) -> None:
@@ -1675,6 +1738,8 @@ def canonical_owner_refs_v0() -> Mapping[str, str]:
         "survival_suitability_scenario_binding_adapter": (
             SURVIVAL_SUITABILITY_SCENARIO_BINDING_ADAPTER_OWNER
         ),
+        "survival_assessment": CANONICAL_SURVIVAL_ASSESSMENT_OWNER,
+        "suitability_binding": CANONICAL_SUITABILITY_BINDING_OWNER,
         "runtime_state_reconciliation": RUNTIME_STATE_RECONCILIATION_OWNER,
         "reconciliation_entry_exit_policy": RECONCILIATION_ENTRY_EXIT_POLICY_OWNER,
         "promotion_economic_gate": PROMOTION_GATE_CANONICAL_OWNER,

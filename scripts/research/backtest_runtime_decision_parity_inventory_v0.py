@@ -86,6 +86,15 @@ SURFACES = [
         "canonical_roots": ("src/trading", "src/strategies", "src/experiments", "src/core"),
         "backtest_roots": ("src/backtest", "scripts", "tests"),
         "runtime_roots": ("src/live", "src/execution", "src/runtime", "src/ops"),
+        "backtest_binding_pins": (
+            "tests/trading/master_v2/test_survival_suitability_scenario_replay_binding_parity_rewire_contract_v0.py",
+            "tests/research/test_survival_suitability_narrow_reuse_first_rewire_v0.py",
+            "src/trading/master_v2/survival_suitability_scenario_binding_adapter_v0.py",
+            "src/trading/master_v2/survival_assessment_v1.py",
+            "src/trading/master_v2/suitability_binding_v1.py",
+            "src/trading/master_v2/offline_double_play_scenario_replay_v0.py",
+        ),
+        "trace_rewire_bound": True,
     },
     {
         "surface_id": "double_play_composition",
