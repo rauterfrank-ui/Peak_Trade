@@ -125,6 +125,12 @@ def main(argv: list[str] | None = None) -> int:
     payload["live_authorized"] = False
     payload["orders_allowed"] = False
     payload["economic_validity_claim_allowed"] = False
+    payload["system_economic_evidence_admissible"] = False
+    payload.setdefault(
+        "promotion_boundary_status",
+        "DIAGNOSTIC_ONLY_NOT_PROMOTION_EVIDENCE",
+    )
+    payload.setdefault("promotion_boundary_reason_codes", [])
     payload["scheduler_runtime_allowed"] = False
     payload["shadow_authorized"] = False
     payload["paper_authorized"] = False
