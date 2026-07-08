@@ -108,12 +108,12 @@ def test_rewire_makes_no_forbidden_claims() -> None:
     assert all(value is False for value in forbidden.values())
 
 
-def test_trace_matrix_selects_double_play_composition_after_ai_observability_feedback_rewire_bound() -> (
+def test_trace_matrix_selects_survival_and_suitability_after_double_play_composition_rewire_bound() -> (
     None
 ):
     inventory = build_inventory(Path.cwd())
     matrix = build_trace_matrix(inventory)
-    assert matrix["selected_next_rewire_plan"]["selected_surface_id"] == "double_play_composition"
+    assert matrix["selected_next_rewire_plan"]["selected_surface_id"] == "survival_and_suitability"
     ai_feedback_edge = next(
         edge for edge in matrix["trace_edges"] if edge["surface_id"] == SURFACE_ID
     )
