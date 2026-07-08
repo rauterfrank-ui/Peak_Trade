@@ -9,6 +9,7 @@ from pathlib import Path
 from src.research.final_research_fleet_offline_economic_evaluation_execution_v0 import (
     ORIGIN_MAIN_AFTER_FULL_CANONICAL_BACKTEST_PARITY_CLOSEOUT_SHA,
     ORIGIN_MAIN_AFTER_NON_CLASS_D_OFFLINE_EVAL_ORIGIN_MAIN_POLICY_PR4990_SHA,
+    ORIGIN_MAIN_AFTER_PR4991_NON_CLASS_D_ORIGIN_MAIN_ALLOWLIST_FIX_SHA,
     PR4826_MERGE_COMMIT,
     PR4833_MERGE_COMMIT,
     PR4834_MERGE_COMMIT,
@@ -32,6 +33,7 @@ def test_legacy_non_class_d_origin_main_shas_remain_accepted() -> None:
         PR4833_MERGE_COMMIT,
         PR4834_MERGE_COMMIT,
         ORIGIN_MAIN_AFTER_FULL_CANONICAL_BACKTEST_PARITY_CLOSEOUT_SHA,
+        ORIGIN_MAIN_AFTER_NON_CLASS_D_OFFLINE_EVAL_ORIGIN_MAIN_POLICY_PR4990_SHA,
     ):
         assert is_accepted_origin_main_sha(sha)
 
@@ -44,9 +46,7 @@ def test_current_origin_main_accepted_for_non_class_d_policy() -> None:
         check=True,
     ).stdout.strip()
     assert live_origin_main == resolve_current_execution_origin_main_sha(REPO_ROOT)
-    assert (
-        live_origin_main == ORIGIN_MAIN_AFTER_NON_CLASS_D_OFFLINE_EVAL_ORIGIN_MAIN_POLICY_PR4990_SHA
-    )
+    assert live_origin_main == ORIGIN_MAIN_AFTER_PR4991_NON_CLASS_D_ORIGIN_MAIN_ALLOWLIST_FIX_SHA
     assert is_accepted_origin_main_sha(live_origin_main)
 
 
