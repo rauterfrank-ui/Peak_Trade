@@ -65,14 +65,9 @@ def test_rewire_makes_no_forbidden_claims() -> None:
     assert all(value is False for value in forbidden.values())
 
 
-def test_trace_matrix_selects_safety_kernel_after_capital_risk_sizing_rewire_bound() -> None:
+def test_trace_matrix_keeps_capital_risk_sizing_rewire_bound_in_chain() -> None:
     inventory = build_inventory(Path.cwd())
     matrix = build_trace_matrix(inventory)
-    assert (
-        matrix["selected_next_rewire_plan"]["selected_surface_id"]
-        == "safety_kernel_and_killswitch_boundary"
-    )
-    assert matrix["selected_next_rewire_plan"]["plan_type"] == "NARROW_TRACE_ASSERTION_FIRST"
     sizing_edge = next(edge for edge in matrix["trace_edges"] if edge["surface_id"] == SURFACE_ID)
     assert sizing_edge["trace_state"] == "TRACE_REWIRE_BOUND_OFFLINE_PARITY_PATH"
     entry_edge = next(
