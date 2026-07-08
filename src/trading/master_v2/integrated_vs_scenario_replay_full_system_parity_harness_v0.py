@@ -1048,6 +1048,29 @@ def assert_non_authority_boundary_v0(envelope: ParityDecisionEnvelopeV0) -> None
     assert envelope.runtime_effect == "NONE"
 
 
+def assert_double_play_composition_non_authority_boundary_v0(
+    envelope: ParityDecisionEnvelopeV0,
+    *,
+    matrix_result: DoublePlayCompositionResultV1 | None = None,
+) -> None:
+    assert_non_authority_boundary_v0(envelope)
+    assert envelope.order_intent_effect == ORDER_INTENT_EFFECT_NONE
+    assert envelope.safety_boundary_effect == SAFETY_BOUNDARY_EFFECT_NONE
+    assert envelope.reconciliation_unknown_outcome_effect == (
+        RECONCILIATION_UNKNOWN_OUTCOME_EFFECT_NONE
+    )
+    assert envelope.killswitch_boundary_effect == KILLSWITCH_BOUNDARY_EFFECT_NONE
+    assert envelope.promotion_gate_boundary_effect == PROMOTION_GATE_BOUNDARY_EFFECT_NONE
+    assert envelope.ai_observability_boundary_effect == AI_OBSERVABILITY_BOUNDARY_EFFECT_NONE
+    assert envelope.feedback_learning_boundary_effect == FEEDBACK_LEARNING_BOUNDARY_EFFECT_NONE
+    if matrix_result is not None:
+        assert matrix_result.authority_effect == "NONE"
+        assert matrix_result.runtime_effect == "NONE"
+        assert matrix_result.order_effect == "NONE"
+        assert matrix_result.risk_effect == "NONE"
+        assert matrix_result.sizing_effect == "NONE"
+
+
 def assert_capital_risk_sizing_non_authority_boundary_v0(
     envelope: ParityDecisionEnvelopeV0,
 ) -> None:

@@ -94,6 +94,14 @@ SURFACES = [
         "canonical_roots": ("src/trading", "src/core"),
         "backtest_roots": ("src/backtest", "scripts", "tests"),
         "runtime_roots": ("src/live", "src/execution", "src/runtime", "src/ops"),
+        "backtest_binding_pins": (
+            "tests/trading/master_v2/test_double_play_composition_scenario_matrix_parity_contract_v0.py",
+            "tests/research/test_double_play_composition_narrow_reuse_first_rewire_v0.py",
+            "src/trading/master_v2/double_play_composition_scenario_matrix_adapter_v0.py",
+            "src/trading/master_v2/double_play_composition_matrix_v1.py",
+            "src/trading/master_v2/offline_double_play_scenario_replay_v0.py",
+        ),
+        "trace_rewire_bound": True,
     },
     {
         "surface_id": "entry_position_exit_policy",
