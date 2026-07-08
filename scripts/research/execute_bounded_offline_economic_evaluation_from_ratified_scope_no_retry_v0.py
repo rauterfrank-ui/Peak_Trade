@@ -9,7 +9,7 @@ from typing import Sequence
 
 
 PREFERRED_OWNER_RELATIVE_PATH = (
-    "src/research/final_research_fleet_offline_economic_evaluation_execution_v0.py"
+    "scripts/ops/materialize_final_research_fleet_offline_economic_evaluation_execution_v0.py"
 )
 
 VERDICT_BLOCKED_RUNNER_RESOLUTION_NOT_EXACTLY_ONE = (
