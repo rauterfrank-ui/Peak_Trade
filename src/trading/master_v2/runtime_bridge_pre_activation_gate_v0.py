@@ -136,19 +136,18 @@ def _bool_to_gate_status(value: bool) -> GateStatus:
 
 def current_head_default_gate_input_v0() -> RuntimeBridgePreActivationGateInputV0:
     """Reuse-first static snapshot aligned with gap assessment @ current main."""
-    import json
-
     from trading.master_v2.full_canonical_system_backtest_parity_gap_assessment_v0 import (
         parity_surface_assessments_v0,
-        render_parity_gap_matrix_json_v0,
     )
     from trading.master_v2.legacy_runtime_entrypoint_guard_v0 import (
         CANONICAL_RUNTIME_ENTRYPOINT_STATUS,
         SLICE_D_STATUS,
     )
+    from trading.master_v2.surface_p_final_flags_fail_closed_contract_v0 import (
+        evaluate_current_head_surface_p_final_flags_fail_closed_contract_v0,
+    )
 
-    payload = json.loads(render_parity_gap_matrix_json_v0())
-    summary = payload["summary"]
+    final_flags = evaluate_current_head_surface_p_final_flags_fail_closed_contract_v0()
     surface_p = next(item for item in parity_surface_assessments_v0() if item.surface_id == "P")
 
     legacy_ok = (
@@ -159,13 +158,13 @@ def current_head_default_gate_input_v0() -> RuntimeBridgePreActivationGateInputV
     return RuntimeBridgePreActivationGateInputV0(
         operator_go_token_status="FAIL",
         full_canonical_chain_wired_status=_bool_to_gate_status(
-            summary["full_canonical_chain_wired"]
+            final_flags.full_canonical_chain_wired
         ),
         backtest_runtime_decision_parity_status=_bool_to_gate_status(
-            summary["backtest_runtime_decision_parity_pass"]
+            final_flags.backtest_runtime_decision_parity_pass
         ),
         system_economic_evidence_admissible_status=_bool_to_gate_status(
-            summary["system_economic_evidence_admissible"]
+            final_flags.system_economic_evidence_admissible
         ),
         economic_validity_offline_gate_status="FAIL",
         surface_p_status="PASS" if surface_p.parity_status == "PASS" else "FAIL",
