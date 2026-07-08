@@ -99,6 +99,12 @@ ALLOWED_SLICE_CHANGED_PATH_PREFIXES: Tuple[str, ...] = (
     "src/trading/master_v2/surface_p_final_flags_fail_closed_contract_v0.py",
     "scripts/ops/run_surface_p_final_flags_fail_closed_contract_v0.py",
     "tests/trading/master_v2/test_surface_p_final_flags_fail_closed_contract_v0.py",
+    "src/trading/master_v2/surface_p_semantic_parity_gap_assessment_v0.py",
+    "scripts/ops/run_surface_p_semantic_parity_gap_assessment_v0.py",
+    "tests/trading/master_v2/test_surface_p_semantic_parity_gap_assessment_contract_v0.py",
+    "src/trading/master_v2/next_full_canonical_parity_surface_after_surface_p_assessment_v0.py",
+    "scripts/ops/run_next_full_canonical_parity_surface_after_surface_p_assessment_v0.py",
+    "tests/trading/master_v2/test_next_full_canonical_parity_surface_after_surface_p_assessment_contract_v0.py",
 )
 
 FORBIDDEN_CHANGED_PATH_PREFIXES: Tuple[str, ...] = (
