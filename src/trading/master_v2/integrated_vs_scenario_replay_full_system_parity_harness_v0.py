@@ -58,10 +58,14 @@ from trading.master_v2.killswitch_boundary_offline_replay_binding_adapter_v0 imp
     bind_killswitch_boundary_offline_replay_evidence_v0,
     killswitch_boundary_binding_non_authority_boundary_ok_v0,
 )
+from trading.master_v2.promotion_gate_boundary_backtest_state_file_binding_adapter_v0 import (
+    PROMOTION_GATE_BOUNDARY_BACKTEST_STATE_FILE_BINDING_ADAPTER_OWNER,
+)
 from trading.master_v2.promotion_gate_boundary_offline_replay_binding_adapter_v0 import (
     PROMOTION_GATE_BOUNDARY_EFFECT_BOUND_OFFLINE,
     PROMOTION_GATE_BOUNDARY_EFFECT_NONE,
     PROMOTION_GATE_BOUNDARY_OFFLINE_REPLAY_BINDING_ADAPTER_OWNER,
+    PROMOTION_GATE_CANONICAL_OWNER,
     PromotionGateBoundaryOfflineReplayBindingResultV0,
     PromotionGateBoundaryOfflineReplayContextV0,
     bind_promotion_gate_boundary_offline_replay_evidence_v0,
@@ -1084,6 +1088,21 @@ def assert_reconciliation_unknown_outcome_non_authority_boundary_v0(
     }
 
 
+def assert_promotion_gate_boundary_non_authority_boundary_v0(
+    envelope: ParityDecisionEnvelopeV0,
+) -> None:
+    assert not envelope.execution_eligible
+    assert not envelope.adapter_compatible
+    assert envelope.authority_effect == "NONE"
+    assert envelope.runtime_effect == "NONE"
+    if envelope.promotion_gate_boundary_effect == PROMOTION_GATE_BOUNDARY_EFFECT_BOUND_OFFLINE:
+        assert envelope.promotion_gate_boundary_ref
+    assert envelope.promotion_gate_boundary_effect in {
+        PROMOTION_GATE_BOUNDARY_EFFECT_NONE,
+        PROMOTION_GATE_BOUNDARY_EFFECT_BOUND_OFFLINE,
+    }
+
+
 def assert_killswitch_boundary_non_authority_boundary_v0(
     envelope: ParityDecisionEnvelopeV0,
 ) -> None:
@@ -1538,6 +1557,13 @@ def canonical_owner_refs_v0() -> Mapping[str, str]:
         ),
         "runtime_state_reconciliation": RUNTIME_STATE_RECONCILIATION_OWNER,
         "reconciliation_entry_exit_policy": RECONCILIATION_ENTRY_EXIT_POLICY_OWNER,
+        "promotion_economic_gate": PROMOTION_GATE_CANONICAL_OWNER,
+        "promotion_gate_boundary_offline_replay_binding_adapter": (
+            PROMOTION_GATE_BOUNDARY_OFFLINE_REPLAY_BINDING_ADAPTER_OWNER
+        ),
+        "promotion_gate_boundary_backtest_state_file_binding_adapter": (
+            PROMOTION_GATE_BOUNDARY_BACKTEST_STATE_FILE_BINDING_ADAPTER_OWNER
+        ),
         "backtest_parity_wiring": BACKTEST_PARITY_WIRING_OWNER,
         "runtime_bridge_reference": RUNTIME_BRIDGE_REFERENCE_OWNER,
         "parity_harness": INTEGRATED_VS_SCENARIO_REPLAY_FULL_SYSTEM_PARITY_HARNESS_OWNER,
