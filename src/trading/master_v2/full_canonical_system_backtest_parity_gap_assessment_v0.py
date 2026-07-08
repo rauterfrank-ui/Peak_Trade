@@ -96,6 +96,9 @@ ALLOWED_SLICE_CHANGED_PATH_PREFIXES: Tuple[str, ...] = (
     "src/trading/master_v2/surface_p_offline_complete_runtime_bridge_bound_not_activated_contract_v0.py",
     "scripts/ops/run_surface_p_offline_complete_runtime_bridge_bound_not_activated_contract_v0.py",
     "tests/trading/master_v2/test_surface_p_offline_complete_runtime_bridge_bound_not_activated_contract_v0.py",
+    "src/trading/master_v2/surface_p_final_flags_fail_closed_contract_v0.py",
+    "scripts/ops/run_surface_p_final_flags_fail_closed_contract_v0.py",
+    "tests/trading/master_v2/test_surface_p_final_flags_fail_closed_contract_v0.py",
 )
 
 FORBIDDEN_CHANGED_PATH_PREFIXES: Tuple[str, ...] = (
@@ -718,6 +721,10 @@ def parity_gap_records_v0() -> Tuple[Mapping[str, Any], ...]:
 
 
 def render_parity_gap_matrix_json_v0() -> str:
+    from trading.master_v2.surface_p_final_flags_fail_closed_contract_v0 import (
+        evaluate_current_head_surface_p_final_flags_fail_closed_contract_v0,
+        surface_p_final_flags_result_to_dict_v0,
+    )
     from trading.master_v2.surface_p_offline_complete_runtime_bridge_bound_not_activated_contract_v0 import (
         evaluate_surface_p_offline_complete_runtime_bridge_bound_not_activated_contract_v0,
         surface_p_semantic_status_to_dict_v0,
@@ -726,6 +733,7 @@ def render_parity_gap_matrix_json_v0() -> str:
     surface_p_semantic = (
         evaluate_surface_p_offline_complete_runtime_bridge_bound_not_activated_contract_v0()
     )
+    final_flags = evaluate_current_head_surface_p_final_flags_fail_closed_contract_v0()
     surfaces = []
     for item in parity_surface_assessments_v0():
         surface_entry: dict[str, Any] = {
@@ -758,13 +766,18 @@ def render_parity_gap_matrix_json_v0() -> str:
             "gap_surfaces": counts["GAP"],
             "not_applicable_surfaces": counts["NOT_APPLICABLE"],
             "matrix_gap_count": len(gap_records),
-            "full_canonical_chain_wired": False,
-            "backtest_runtime_decision_parity_pass": False,
-            "system_economic_evidence_admissible": False,
+            "full_canonical_chain_wired": final_flags.full_canonical_chain_wired,
+            "backtest_runtime_decision_parity_pass": (
+                final_flags.backtest_runtime_decision_parity_pass
+            ),
+            "system_economic_evidence_admissible": (
+                final_flags.system_economic_evidence_admissible
+            ),
         },
         "surfaces": surfaces,
         "gap_records": list(gap_records),
         "surface_p_semantic": dict(surface_p_semantic_status_to_dict_v0(surface_p_semantic)),
+        "final_flags": dict(surface_p_final_flags_result_to_dict_v0(final_flags)),
     }
     return json.dumps(payload, indent=2, sort_keys=True) + "\n"
 
@@ -778,6 +791,11 @@ def parity_status_counts_v0() -> Mapping[str, int]:
 
 
 def render_parity_gap_matrix_markdown_v0() -> str:
+    from trading.master_v2.surface_p_final_flags_fail_closed_contract_v0 import (
+        evaluate_current_head_surface_p_final_flags_fail_closed_contract_v0,
+    )
+
+    final_flags = evaluate_current_head_surface_p_final_flags_fail_closed_contract_v0()
     lines = [
         "# Full Canonical System Backtest Parity Gap Matrix v0",
         "",
@@ -809,9 +827,15 @@ def render_parity_gap_matrix_markdown_v0() -> str:
             f"GAP_SURFACES={counts['GAP']}",
             f"NOT_APPLICABLE_SURFACES={counts['NOT_APPLICABLE']}",
             "",
-            "FULL_CANONICAL_CHAIN_WIRED=false",
-            "BACKTEST_RUNTIME_DECISION_PARITY_PASS=false",
-            "SYSTEM_ECONOMIC_EVIDENCE_ADMISSIBLE=false",
+            f"FULL_CANONICAL_CHAIN_WIRED={str(final_flags.full_canonical_chain_wired).lower()}",
+            (
+                "BACKTEST_RUNTIME_DECISION_PARITY_PASS="
+                f"{str(final_flags.backtest_runtime_decision_parity_pass).lower()}"
+            ),
+            (
+                "SYSTEM_ECONOMIC_EVIDENCE_ADMISSIBLE="
+                f"{str(final_flags.system_economic_evidence_admissible).lower()}"
+            ),
         ]
     )
     return "\n".join(lines) + "\n"
