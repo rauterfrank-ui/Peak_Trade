@@ -3,9 +3,14 @@
 Gemeinsame CLI-Defaults und Argument-Gruppe für Forward-/Portfolio-OHLCV (J1).
 
 Drei Skripte teilen denselben Parametervertrag für ``--n-bars``/``--bars``,
-``--ohlcv-source`` und ``--timeframe`` (Kraken; Dummy ignoriert ``timeframe`` intern 1h).
+``--ohlcv-source`` und ``--timeframe`` (optional legacy Kraken; Dummy ignoriert
+``timeframe`` intern 1h).
 
-Gemeinsame CLI-Normalisierung inkl. lokaler CSV (``--ohlcv-csv``); Kraken-Pagination für große ``n-bars`` liegt im Loader.
+Gemeinsame CLI-Normalisierung inkl. lokaler CSV (``--ohlcv-csv``); legacy Kraken-Pagination
+für große ``n-bars`` liegt im Loader.
+
+Legacy note: Kraken is not the current canonical target venue. ``--ohlcv-source=kraken`` is
+historical/guarded public OHLCV infrastructure only unless separately ratified.
 
 NO-LIVE: keine Order-Ausführung; Kraken-Pfad nur öffentliche OHLCV (Stub), siehe Epilog-Helfer unten.
 """

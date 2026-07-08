@@ -1,5 +1,7 @@
 # Peak_Trade - Finale Implementierungs-Zusammenfassung
 
+> **Venue clarification (2026-07-08):** Kraken is **not** the current canonical target venue (`default_exchange=okx_europe_eea`). Kraken references below are **historical/legacy** or **guarded infrastructure** only unless separately ratified. No venue reference grants runtime, order, credential, scheduler, shadow, paper, testnet, canary, or live authority.
+
 **Datum:** 2024-12-02
 **Status:** ✅ Vollständig implementiert und getestet
 
@@ -46,7 +48,7 @@ max_total_exposure = 0.75
 
 ---
 
-### 3. ✅ Kraken Data Pipeline
+### 3. ✅ Kraken Data Pipeline (legacy / guarded infrastructure)
 
 **Implementiert:**
 - ✅ `src/data/kraken_pipeline.py` - Vollständige Pipeline-Integration

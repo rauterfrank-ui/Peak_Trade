@@ -213,7 +213,7 @@ Dieses Dokument beschreibt:
 
 **Optional:**
 - **Docker** (für containerisierte Deployment)
-- **API-Keys** für Testnet-Exchange (Kraken Testnet)
+- **API-Keys** für legacy/decommissioned Testnet-Exchange (Kraken Testnet — nicht kanonischer Ziel-Venue)
 - **Slack Webhook** (für Alerts)
 
 **Unterstützte Betriebssysteme:**
