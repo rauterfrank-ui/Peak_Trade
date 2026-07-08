@@ -237,7 +237,7 @@ def main() -> None:
     for candidate in candidates:
         confidence = candidate.patch.confidence_score
         if confidence and confidence >= 0.75:
-            candidate.eligible_for_live = True
+            candidate.eligible_for_live = False
             print(
                 f"[promotion_loop] Marked {candidate.patch.id} as eligible_for_live (confidence: {confidence:.2f})"
             )
