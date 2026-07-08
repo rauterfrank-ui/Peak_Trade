@@ -82,6 +82,9 @@ def main(argv: Sequence[str] | None = None) -> int:
     old_argv = sys.argv[:]
     try:
         sys.argv = [str(delegate), *passthrough_args]
+        repo_root_str = str(repo_root)
+        if repo_root_str not in sys.path:
+            sys.path.insert(0, repo_root_str)
         runpy.run_path(str(delegate), run_name="__main__")
     finally:
         sys.argv = old_argv
