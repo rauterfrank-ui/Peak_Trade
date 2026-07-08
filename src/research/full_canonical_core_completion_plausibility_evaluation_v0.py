@@ -34,7 +34,7 @@ DIAGNOSTIC_STATUS = "SYSTEM_DIAGNOSTIC_ONLY"
 OWNER_POLICY_REL = (
     "config/research/full_canonical_core_completion_plausibility_evaluation_policy_v0.json"
 )
-GO_TOKEN = "GO_FULL_CANONICAL_CORE_COMPLETION_AND_PLAUSIBILITY_EVALUATION_DIAGNOSTIC_V0"
+CONFIRM_GO = "GO_FULL_CANONICAL_CORE_COMPLETION_AND_PLAUSIBILITY_EVALUATION_DIAGNOSTIC_V0"
 
 DIAGNOSTIC_TOLERATED_UNTRACKED_PATHS: frozenset[str] = frozenset(
     {".python-version", ".comparison_ssot_pytest_outputs/"}
@@ -332,8 +332,8 @@ def run_diagnostic_evaluation_v0(
     repo_root: Path,
     durable_evidence_root: Path = DEFAULT_DURABLE_ARCHIVE_ROOT,
 ) -> DiagnosticExecutionResultV0:
-    if confirm != GO_TOKEN:
-        raise ValueError(f"GO_TOKEN_INVALID:{confirm}")
+    if confirm != CONFIRM_GO:
+        raise ValueError(f"CONFIRM_GO_INVALID:{confirm}")
 
     start_state = verify_execution_start_state_v0(repo_root=repo_root)
     if not start_state.valid:
@@ -422,7 +422,7 @@ __all__ = [
     "DIAGNOSTIC_STATUS",
     "DIAGNOSTIC_TOLERATED_UNTRACKED_PATHS",
     "EVIDENCE_CLASS_ID",
-    "GO_TOKEN",
+    "CONFIRM_GO",
     "OWNER_POLICY_REL",
     "PURPOSE",
     "REASON_OWNER_POLICY_DIGEST_MISMATCH",

@@ -14,8 +14,8 @@
   "offline_only": true,
   "orders_allowed": false,
   "owner": "Frank Rauter",
-  "owner_policy_decision": "AUTHORIZE_FULL_CANONICAL_CORE_COMPLETION_AND_PLAUSIBILITY_EVALUATION_V0",
-  "owner_policy_decision_digest": "9a847c5ee7f289ea2e23bcd70d7ea29b01c57997ed457ef5b8632fc4bf7bcf2a",
+  "owner_policy_decision": "RATIFY_DIAGNOSTIC_EVIDENCE_CLASS_FULL_CANONICAL_CORE_COMPLETION_PLAUSIBILITY_EVALUATION_V0",
+  "owner_policy_decision_digest": "d3834d8b8c13351bffeb51dd06f741baf3d81138c529ed188a71821a0c04a089",
   "paper_authorized": false,
   "policy_id": "full_canonical_core_completion_plausibility_evaluation_policy_v0",
   "promotion_admissible": false,
@@ -34,5 +34,5 @@
   ],
   "unmodified_binding_retry_global_override": false,
   "unmodified_binding_retry_narrow_exception_allowed": true,
-  "verdict_target": "OWNER_POLICY_OVERRIDE_CORE_SYSTEM_COMPLETION_PLAUSIBILITY_EVALUATION_V0"
+  "verdict_target": "OWNER_POLICY_RATIFY_CORE_SYSTEM_COMPLETION_PLAUSIBILITY_EVALUATION_V0"
 }
