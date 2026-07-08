@@ -99,6 +99,10 @@ ACCEPTED_ORIGIN_MAIN_SHAS: frozenset[str] = frozenset(
         ORIGIN_MAIN_AFTER_PR4992_NON_CLASS_D_ORIGIN_MAIN_ALLOWLIST_FIX_SHA,
     }
 )
+HISTORICAL_NON_CLASS_D_ACCEPTED_ORIGIN_MAIN_SHAS = ACCEPTED_ORIGIN_MAIN_SHAS
+NON_CLASS_D_OFFLINE_EVAL_ORIGIN_MAIN_POLICY_TEST_REL = (
+    "tests/research/test_non_class_d_offline_eval_accepted_origin_main_policy_v0.py"
+)
 REQUIRED_MERGED_PR_NUMBER = 4826
 CLASS_D_BINDING_COMPLETION_ID = "final_research_fleet_class_d_versioned_binding_completion_v0"
 CLASS_D_BINDING_COMPLETION_SCHEMA_VERSION = (
@@ -161,6 +165,8 @@ REASON_MANIFEST_VERIFY_FAILED = "MANIFEST_VERIFY_FAILED"
 REASON_BINDING_DIGEST_MISMATCH = "CANDIDATE_BINDING_DIGEST_MISMATCH"
 REASON_BINDING_IDENTITY_MISMATCH = "BINDING_IDENTITY_MISMATCH"
 REASON_CURRENT_MAIN_SHA_DRIFT_AFTER_SQUASH_MERGE = "CURRENT_MAIN_SHA_DRIFT_AFTER_SQUASH_MERGE"
+REASON_LOCAL_HEAD_NOT_ORIGIN_MAIN = "LOCAL_HEAD_NOT_ORIGIN_MAIN"
+REASON_WORKTREE_NOT_CLEAN = "WORKTREE_NOT_CLEAN"
 REASON_ORIGIN_MAIN_RESOLVE_FAILED = "ORIGIN_MAIN_RESOLVE_FAILED"
 REASON_UNMODIFIED_BINDING_RETRY_BLOCKED = "UNMODIFIED_BINDING_RETRY_BLOCKED"
 REASON_NEW_EVIDENCE_CLASS_REQUIRED = "NEW_EVIDENCE_CLASS_REQUIRED_FOR_REEXECUTION"
@@ -268,6 +274,69 @@ def resolve_current_execution_origin_main_sha(repo_root: Path) -> str:
     return _resolve_origin_main_sha(repo_root)
 
 
+def resolve_local_head_sha(repo_root: Path) -> str:
+    """Resolve the local HEAD SHA for post-merge sync verification."""
+    result = subprocess.run(
+        ["git", "-C", str(repo_root), "rev-parse", "HEAD"],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        return ""
+    return result.stdout.strip()
+
+
+def is_worktree_clean(repo_root: Path) -> bool:
+    """Return True only when the worktree has no staged or unstaged changes."""
+    result = subprocess.run(
+        ["git", "-C", str(repo_root), "status", "--porcelain"],
+        check=False,
+        capture_output=True,
+        text=True,
+    )
+    if result.returncode != 0:
+        return False
+    return result.stdout.strip() == ""
+
+
+def resolve_non_class_d_offline_eval_origin_main_policy_test_path_v0(
+    repo_root: Path,
+) -> Path:
+    """Canonical Non-Class-D origin-main policy contract test path."""
+    return repo_root / NON_CLASS_D_OFFLINE_EVAL_ORIGIN_MAIN_POLICY_TEST_REL
+
+
+def is_non_class_d_offline_eval_origin_main_policy_test_present_v0(repo_root: Path) -> bool:
+    return resolve_non_class_d_offline_eval_origin_main_policy_test_path_v0(repo_root).is_file()
+
+
+def validate_non_class_d_live_post_merge_origin_main_v0(
+    *,
+    origin_main_sha: str,
+    repo_root: Path | None,
+    live_origin_main_sha: str | None = None,
+) -> tuple[bool, tuple[str, ...]]:
+    """Accept Non-Class-D live origin/main only after synced post-merge HEAD proof."""
+    if repo_root is None:
+        return False, (REASON_ORIGIN_MAIN_RESOLVE_FAILED,)
+    live = live_origin_main_sha or resolve_current_execution_origin_main_sha(repo_root)
+    if not live:
+        return False, (REASON_ORIGIN_MAIN_RESOLVE_FAILED,)
+    local_head = resolve_local_head_sha(repo_root)
+    if not local_head:
+        return False, (REASON_ORIGIN_MAIN_RESOLVE_FAILED,)
+    if origin_main_sha != live:
+        return False, (
+            f"{REASON_CURRENT_MAIN_SHA_DRIFT_AFTER_SQUASH_MERGE}:{origin_main_sha}!={live}",
+        )
+    if local_head != live:
+        return False, (f"{REASON_LOCAL_HEAD_NOT_ORIGIN_MAIN}:{local_head}!={live}",)
+    if not is_worktree_clean(repo_root):
+        return False, (REASON_WORKTREE_NOT_CLEAN,)
+    return True, ()
+
+
 def resolve_expected_origin_main_sha(repo_root: Path) -> str:
     """Legacy alias for resolve_current_execution_origin_main_sha."""
     return resolve_current_execution_origin_main_sha(repo_root)
@@ -306,7 +375,8 @@ def is_accepted_go_token(token: str) -> bool:
 
 
 def is_accepted_origin_main_sha(origin_main_sha: str) -> bool:
-    return origin_main_sha in ACCEPTED_ORIGIN_MAIN_SHAS
+    """Historical Non-Class-D allowlist membership (replay documentation only)."""
+    return origin_main_sha in HISTORICAL_NON_CLASS_D_ACCEPTED_ORIGIN_MAIN_SHAS
 
 
 def is_class_d_binding_completion_v0(fleet_binding_completion: Mapping[str, Any]) -> bool:
@@ -470,9 +540,11 @@ def verify_origin_main_sha_for_binding_v0(
             fleet_binding_completion=fleet_binding_completion,
             live_origin_main_sha=live,
         )
-    if not is_accepted_origin_main_sha(origin_main_sha):
-        return False, (f"{REASON_ORIGIN_MAIN_MISMATCH}:{origin_main_sha}",)
-    return True, ()
+    return validate_non_class_d_live_post_merge_origin_main_v0(
+        origin_main_sha=origin_main_sha,
+        repo_root=repo_root,
+        live_origin_main_sha=live_origin_main_sha,
+    )
 
 
 def load_scope_ratification_for_execution_v0(

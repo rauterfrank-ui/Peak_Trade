@@ -5,6 +5,7 @@ set -euo pipefail
 
 PACKAGE_MARKER="SQUASH_MERGE_POST_MERGE_CLOSEOUT_GUARD_V0=true"
 DEFAULT_PYTEST_K='evidence or manifest or docs or governance'
+NON_CLASS_D_ORIGIN_MAIN_POLICY_TEST_REL="tests/research/test_non_class_d_offline_eval_accepted_origin_main_policy_v0.py"
 REMOTE="${REMOTE:-origin}"
 MAIN_BRANCH="${MAIN_BRANCH:-main}"
 
@@ -21,6 +22,9 @@ Commands:
 Options:
   --evidence-dir <dir>     Required. Durable evidence output directory
   --pytest-k <expr>        Pytest -k expression (default: evidence or manifest or docs or governance)
+  --pytest-target <path>   Run pytest against an explicit test file path
+  --non-class-d-origin-main-policy-test
+                           Run canonical Non-Class-D origin-main policy contract test
   --skip-ruff              Skip ruff format/check gates
   --skip-pytest            Skip targeted pytest gate
   --verify-source-manifest Verify SOURCE_MANIFEST path when set in env
@@ -107,10 +111,27 @@ verify_source_manifest_if_referenced() {
   return 0
 }
 
+resolve_non_class_d_origin_main_policy_test_path() {
+  if [[ -f "$NON_CLASS_D_ORIGIN_MAIN_POLICY_TEST_REL" ]]; then
+    echo "$NON_CLASS_D_ORIGIN_MAIN_POLICY_TEST_REL"
+    return 0
+  fi
+  echo "BLOCKED_NON_CLASS_D_ORIGIN_MAIN_POLICY_TEST_MISSING=${NON_CLASS_D_ORIGIN_MAIN_POLICY_TEST_REL}" >&2
+  return 1
+}
+
 run_targeted_pytest() {
   local pytest_k="$1"
+  local pytest_target="${2:-}"
   local log_file="${EVIDENCE_DIR}/pytest_targeted_post_merge.log"
-  local python_cmd=(python3 -m pytest tests -q -k "$pytest_k")
+  local python_cmd
+  if [[ -n "$pytest_target" ]]; then
+    python_cmd=(python3 -m pytest "$pytest_target" -q)
+    printf '%s\n' "$pytest_target" >"${EVIDENCE_DIR}/pytest_target_path.txt"
+  else
+    python_cmd=(python3 -m pytest tests -q -k "$pytest_k")
+    printf '%s\n' "$pytest_k" >"${EVIDENCE_DIR}/pytest_target_k.txt"
+  fi
   if [[ -d src ]]; then
     PYTHONPATH="${PYTHONPATH:-src}" run_teed "$log_file" env PYTHONPATH="${PYTHONPATH:-src}" "${python_cmd[@]}"
   else
@@ -159,6 +180,8 @@ verify_closeout_manifest() {
 
 cmd_post_merge_validate() {
   local pytest_k="$DEFAULT_PYTEST_K"
+  local pytest_target=""
+  local non_class_d_origin_main_policy_test=0
   local skip_ruff=0
   local skip_pytest=0
   local verify_source=0
@@ -178,6 +201,16 @@ cmd_post_merge_validate() {
         pytest_k="$1"
         shift
         ;;
+      --pytest-target)
+        shift
+        [[ $# -gt 0 ]] || die_usage "Missing value for --pytest-target"
+        pytest_target="$1"
+        shift
+        ;;
+      --non-class-d-origin-main-policy-test)
+        non_class_d_origin_main_policy_test=1
+        shift
+        ;;
       --skip-ruff) skip_ruff=1; shift ;;
       --skip-pytest) skip_pytest=1; shift ;;
       --verify-source-manifest) verify_source=1; shift ;;
@@ -193,6 +226,12 @@ cmd_post_merge_validate() {
 
   [[ -n "$EVIDENCE_DIR" ]] || die_usage "--evidence-dir is required"
   mkdir -p "$EVIDENCE_DIR"
+
+  if [[ "$non_class_d_origin_main_policy_test" -eq 1 ]]; then
+    if ! pytest_target="$(resolve_non_class_d_origin_main_policy_test_path)"; then
+      die_usage "Canonical Non-Class-D origin-main policy test missing"
+    fi
+  fi
 
   local pytest_rc=0
   local ruff_rc=0
@@ -211,7 +250,7 @@ cmd_post_merge_validate() {
   fi
 
   if [[ "$skip_pytest" -eq 0 ]]; then
-    if ! run_targeted_pytest "$pytest_k"; then
+    if ! run_targeted_pytest "$pytest_k" "$pytest_target"; then
       pytest_rc=6
     fi
     printf '%s\n' "$pytest_rc" >"${EVIDENCE_DIR}/pytest_targeted_post_merge.rc"

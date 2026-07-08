@@ -211,6 +211,13 @@ def test_post_merge_validate_passes_when_pytest_and_manifest_ok(tmp_path: Path) 
     assert (evidence / "pytest_targeted_post_merge.log").is_file()
 
 
+def test_guard_script_resolves_non_class_d_origin_main_policy_test_path() -> None:
+    text = SCRIPT.read_text(encoding="utf-8")
+    assert "test_non_class_d_offline_eval_accepted_origin_main_policy_v0.py" in text
+    assert "resolve_non_class_d_origin_main_policy_test_path" in text
+    assert "--non-class-d-origin-main-policy-test" in text
+
+
 def test_meta_conftest_pytest_plugins_collection_no_longer_errors() -> None:
     proc = subprocess.run(
         [
