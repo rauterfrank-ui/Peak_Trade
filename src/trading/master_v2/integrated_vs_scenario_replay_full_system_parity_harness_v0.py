@@ -136,6 +136,9 @@ from trading.master_v2.reversal_preparation_scenario_binding_adapter_v0 import (
 )
 from trading.master_v2.flat_before_opposite_side_scenario_binding_adapter_v0 import (
     FLAT_BEFORE_OPPOSITE_SIDE_SCENARIO_BINDING_ADAPTER_OWNER,
+    evaluate_scenario_flat_before_opposite_side_entry_exit_v0,
+    flat_before_opposite_side_binding_non_authority_boundary_ok_v0,
+    flat_before_opposite_side_blocks_opposite_entry_v0,
 )
 from trading.master_v2.double_play_entry_exit_scenario_binding_adapter_v0 import (
     CANONICAL_ENTRY_EXIT_POLICY_OWNER,
@@ -778,6 +781,67 @@ def evaluate_scenario_reversal_preparation_for_fixture_v0(
         side_state=SideState.LONG_ACTIVE,
         policy_context=default_scenario_entry_exit_policy_context_v0(),
     )
+
+
+def extract_flat_before_opposite_side_parity_envelope_v0(
+    decision: EntryExitPolicyDecisionV0,
+    *,
+    composition_status: str,
+) -> ParityDecisionEnvelopeV0:
+    return ParityDecisionEnvelopeV0(
+        decision_outcome=decision.decision_outcome.value,
+        previous_side_state=None,
+        next_side_state=None,
+        composition_status=composition_status,
+        composition_result_id="",
+        entry_or_exit_policy_ref=decision.policy_decision_id or "",
+        reason_codes=tuple(decision.reason_codes),
+        decision_precedence_trace=tuple(decision.decision_precedence_trace),
+        execution_eligible=False,
+        adapter_compatible=False,
+        quantity_status="NOT_BOUND",
+        authority_effect="NONE",
+        runtime_effect="NONE",
+    )
+
+
+def assert_flat_before_opposite_side_non_authority_boundary_v0(
+    envelope: ParityDecisionEnvelopeV0,
+) -> None:
+    assert not envelope.execution_eligible
+    assert not envelope.adapter_compatible
+    assert envelope.authority_effect == "NONE"
+    assert envelope.runtime_effect == "NONE"
+    assert envelope.entry_or_exit_policy_ref
+
+
+def evaluate_scenario_flat_before_opposite_side_for_fixture_v0(
+    *,
+    instrument_id: str = SYNTHETIC_FUTURES_INSTRUMENT,
+    trading_epoch: int = 54,
+    context_reference: str = "flat-before-opposite-narrow-rewire-v0",
+) -> EntryExitPolicyDecisionV0:
+    matrix = evaluate_scenario_matrix_for_side_state_v0(
+        side_state=SideState.SHORT_ARMED,
+        instrument_id=instrument_id,
+        trading_epoch=trading_epoch,
+        context_reference=context_reference,
+    )
+    if matrix.composition_status is not CompositionStatus.SHORT_SELECTED:
+        raise ValueError("fixture matrix must be SHORT_SELECTED for opposite-side block")
+    decision = evaluate_scenario_flat_before_opposite_side_entry_exit_v0(
+        instrument_id=instrument_id,
+        trading_epoch=trading_epoch,
+        context_reference=context_reference,
+        composition_result=matrix,
+        side_state=SideState.LONG_ACTIVE,
+        policy_context=default_scenario_entry_exit_policy_context_v0(),
+    )
+    if not flat_before_opposite_side_blocks_opposite_entry_v0(decision):
+        raise ValueError("fixture must block opposite entry while position not flat")
+    if not flat_before_opposite_side_binding_non_authority_boundary_ok_v0(decision):
+        raise ValueError("flat-before-opposite-side binding violated non-authority boundary")
+    return decision
 
 
 def integrated_assessments_match_scenario_side_state_v0(
