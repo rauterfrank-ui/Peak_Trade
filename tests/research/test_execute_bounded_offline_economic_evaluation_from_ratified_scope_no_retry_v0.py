@@ -59,3 +59,9 @@ def test_runner_fail_closed_verdict_for_resolution_error() -> None:
     assert "BLOCKED_RUNNER_RESOLUTION_NOT_EXACTLY_ONE" in text
     assert "resolved_count" in text
     assert "runpy.run_path" in text
+
+
+def test_runner_inserts_repo_root_on_sys_path_before_delegation() -> None:
+    text = RUNNER.read_text(encoding="utf-8")
+    assert "repo_root_str = str(repo_root)" in text
+    assert "sys.path.insert(0, repo_root_str)" in text
