@@ -75,6 +75,14 @@ DEFAULT_DURABLE_ARCHIVE_ROOT = Path(
 DURABLE_EVIDENCE_SUBDIR = "research"
 DURABLE_EVIDENCE_BUNDLE_PREFIX = "full_canonical_core_completion_plausibility_evaluation_v0"
 
+PROMOTION_BOUNDARY_STATUS = "DIAGNOSTIC_ONLY_NOT_PROMOTION_EVIDENCE"
+PROMOTION_BOUNDARY_REASON_CODES: tuple[str, ...] = (
+    "FULL_CANONICAL_CHAIN_PARITY_REQUIRED_BEFORE_SYSTEM_ECONOMIC_EVIDENCE",
+    "ECONOMIC_VIABILITY_EVIDENCE_V1_PASS_REQUIRED_BEFORE_PROMOTION_ADMISSIBILITY",
+    "DIAGNOSTIC_RESULT_IS_NOT_PROMOTION_EVIDENCE",
+    "RAW_RESEARCH_EVIDENCE_IS_NOT_SYSTEM_ECONOMIC_EVIDENCE",
+)
+
 
 @dataclass(frozen=True)
 class StartStateVerificationResultV0:
@@ -94,6 +102,15 @@ class DiagnosticExecutionResultV0:
     live_authorized: bool
     orders_allowed: bool
     economic_validity_claim_allowed: bool
+    system_economic_evidence_admissible: bool
+    scheduler_runtime_allowed: bool
+    shadow_authorized: bool
+    paper_authorized: bool
+    testnet_authorized: bool
+    canary_authorized: bool
+    credential_access_allowed: bool
+    promotion_boundary_status: str
+    promotion_boundary_reason_codes: tuple[str, ...]
     owner_policy_decision_digest: str
     evidence_class_id: str
     parity_status_counts: dict[str, int]
@@ -315,6 +332,9 @@ def build_diagnostic_output_v0(
         "live_authorized": False,
         "orders_allowed": False,
         "economic_validity_claim_allowed": False,
+        "system_economic_evidence_admissible": False,
+        "promotion_boundary_status": PROMOTION_BOUNDARY_STATUS,
+        "promotion_boundary_reason_codes": list(PROMOTION_BOUNDARY_REASON_CODES),
         "evidence_class_id": EVIDENCE_CLASS_ID,
         "purpose": PURPOSE,
         "owner_policy_decision_digest": str(owner_policy.get("owner_policy_decision_digest", "")),
@@ -408,6 +428,15 @@ def run_diagnostic_evaluation_v0(
         live_authorized=False,
         orders_allowed=False,
         economic_validity_claim_allowed=False,
+        system_economic_evidence_admissible=False,
+        scheduler_runtime_allowed=False,
+        shadow_authorized=False,
+        paper_authorized=False,
+        testnet_authorized=False,
+        canary_authorized=False,
+        credential_access_allowed=False,
+        promotion_boundary_status=PROMOTION_BOUNDARY_STATUS,
+        promotion_boundary_reason_codes=PROMOTION_BOUNDARY_REASON_CODES,
         owner_policy_decision_digest=str(
             start_state.owner_policy.get("owner_policy_decision_digest", "")
         ),
