@@ -132,7 +132,7 @@ def build_trace_matrix(inventory: dict[str, Any]) -> dict[str, Any]:
     )
     plan_type = (
         "NARROW_REUSE_FIRST_REWIRE"
-        if selected.surface_id == "scope_adverse_exit_and_reversal_preparation"
+        if selected.surface_id == "flat_before_opposite_side"
         else "NARROW_TRACE_ASSERTION_FIRST"
     )
     plan = RewirePlan(

@@ -71,11 +71,12 @@ def test_rewire_makes_no_forbidden_claims() -> None:
 def test_trace_matrix_selects_scope_after_bull_bear_rewire_bound() -> None:
     inventory = build_inventory(Path.cwd())
     matrix = build_trace_matrix(inventory)
-    assert matrix["selected_next_rewire_plan"]["selected_surface_id"] == SURFACE_ID
-    assert matrix["selected_next_rewire_plan"]["plan_type"] == PLAN_TYPE
+    assert matrix["selected_next_rewire_plan"]["selected_surface_id"] == "flat_before_opposite_side"
+    assert matrix["selected_next_rewire_plan"]["plan_type"] == "NARROW_REUSE_FIRST_REWIRE"
     bull_bear_edge = matrix["trace_edges"][0]
     assert bull_bear_edge["surface_id"] == "bull_bear_state_switch"
     assert bull_bear_edge["trace_state"] == "TRACE_REWIRE_BOUND_OFFLINE_PARITY_PATH"
     scope_edge = matrix["trace_edges"][1]
     assert scope_edge["surface_id"] == SURFACE_ID
+    assert scope_edge["trace_state"] == "TRACE_REWIRE_BOUND_OFFLINE_PARITY_PATH"
     assert scope_edge["backtest_candidate"] == SCOPE_CONTRACT_TEST_PATH
