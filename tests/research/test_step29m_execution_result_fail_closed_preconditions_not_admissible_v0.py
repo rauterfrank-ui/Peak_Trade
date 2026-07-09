@@ -77,7 +77,4 @@ def test_step29m_execution_result_fail_closed_classification_doc_states_no_eval_
     assert "does not execute economic evaluation" in text.lower()
     assert "AUTHORITY_EFFECT=NONE" in text
     assert "RUNTIME_EFFECT=NONE" in text
-    assert (
-        "FULL_CANONICAL_SYSTEM_BACKTEST_PARITY_GAP_ASSESSMENT_AND_REWIRE_SCOPE"
-        in text
-    )
+    assert "FULL_CANONICAL_SYSTEM_BACKTEST_PARITY_GAP_ASSESSMENT_AND_REWIRE_SCOPE" in text
