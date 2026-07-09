@@ -61,10 +61,10 @@ def test_binding_constants_v0() -> None:
     )
 
 
-def test_surface_p_registry_parity_status_remains_partial_v0() -> None:
+def test_surface_p_resolved_registry_passes_when_proof_input_satisfied_v0() -> None:
     surface_p = next(item for item in parity_surface_assessments_v0() if item.surface_id == "P")
-    assert surface_p.parity_status == "PARTIAL"
-    assert "BOUND_NOT_ACTIVATED" in surface_p.missing_binding_if_any
+    assert surface_p.parity_status == "PASS"
+    assert surface_p.missing_binding_if_any == ""
 
 
 def test_current_head_surface_p_required_proof_input_binding_verified_v0() -> None:

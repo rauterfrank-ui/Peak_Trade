@@ -144,7 +144,7 @@ class ParitySurfaceAssessmentV0:
     forbidden_runtime_authority_confirmed: bool = True
 
 
-def parity_surface_assessments_v0() -> Tuple[ParitySurfaceAssessmentV0, ...]:
+def _parity_surface_assessments_base_v0() -> Tuple[ParitySurfaceAssessmentV0, ...]:
     return (
         ParitySurfaceAssessmentV0(
             surface_id="A",
@@ -679,6 +679,42 @@ def parity_surface_assessments_v0() -> Tuple[ParitySurfaceAssessmentV0, ...]:
             recommended_next_slice=NEXT_RECOMMENDED_SLICE,
         ),
     )
+
+
+def parity_surface_assessments_v0() -> Tuple[ParitySurfaceAssessmentV0, ...]:
+    """Return gap assessments with Surface P promoted to PASS when offline proof input is satisfied."""
+    from trading.master_v2.surface_p_required_proof_input_binding_v0 import (
+        evaluate_surface_p_required_proof_input_binding_v0,
+    )
+
+    base = _parity_surface_assessments_base_v0()
+    repo_root = Path(__file__).resolve().parents[3]
+    binding = evaluate_surface_p_required_proof_input_binding_v0(repo_root)
+    if not binding.satisfied:
+        return base
+
+    updated: list[ParitySurfaceAssessmentV0] = []
+    for item in base:
+        if item.surface_id != "P":
+            updated.append(item)
+            continue
+        updated.append(
+            ParitySurfaceAssessmentV0(
+                surface_id=item.surface_id,
+                surface_name=item.surface_name,
+                canonical_owner_files=item.canonical_owner_files,
+                current_integrated_offline_replay_binding=item.current_integrated_offline_replay_binding,
+                current_scenario_replay_binding=item.current_scenario_replay_binding,
+                current_backtest_binding=item.current_backtest_binding,
+                current_runtime_semantics_reference=item.current_runtime_semantics_reference,
+                parity_status="PASS",
+                evidence_refs=item.evidence_refs,
+                missing_binding_if_any="",
+                recommended_next_slice=item.recommended_next_slice,
+                forbidden_runtime_authority_confirmed=item.forbidden_runtime_authority_confirmed,
+            )
+        )
+    return tuple(updated)
 
 
 def normalize_matrix_status_v0(parity_status: ParityStatus) -> MatrixStatus:
