@@ -73,7 +73,10 @@ CONTEXT_PROTECTED_MARKERS = (
 )
 
 SLICE_CHANGED_FILES = (
+    "src/trading/master_v2/surface_p_required_proof_input_binding_v0.py",
     "scripts/research/full_canonical_parity_proof_bundle_assembler_v0.py",
+    "scripts/research/full_canonical_surface_p_required_proof_input_v0.py",
+    "tests/trading/master_v2/test_surface_p_required_proof_input_binding_contract_v0.py",
     "tests/research/test_full_canonical_parity_proof_bundle_assembler_v0.py",
 )
 
@@ -83,6 +86,7 @@ TARGETED_TESTS = (
     "tests/research/test_full_canonical_parity_closure_assessment_v0.py",
     "tests/research/test_full_canonical_backtest_boundary_chain_reassessment_v0.py",
     "tests/research/test_backtest_runtime_decision_parity_trace_matrix_v0.py",
+    "tests/trading/master_v2/test_surface_p_required_proof_input_binding_contract_v0.py",
 )
 
 
@@ -180,6 +184,7 @@ REASON_FORBIDDEN_POSITIVE_CLAIMS = "FORBIDDEN_POSITIVE_CLAIMS_DETECTED"
 REASON_ECONOMIC_EVIDENCE_NOT_PROVEN = "SYSTEM_ECONOMIC_EVIDENCE_NOT_PROVEN"
 REASON_RUNTIME_REWIRE_NOT_PROVEN = "RUNTIME_REWIRE_PREREQUISITES_NOT_PROVEN"
 REASON_MISSING_REQUIRED_PROOF_INPUT = "MISSING_REQUIRED_PROOF_INPUT"
+REASON_MISSING_REQUIRED_PROOF_INPUT_SURFACE_P = "MISSING_REQUIRED_PROOF_INPUT_SURFACE_P"
 
 STRONGER_TRACE_STATES = frozenset({TRACE_REWIRE_BOUND_STATE})
 
@@ -299,6 +304,39 @@ def _count_present_evidence_refs(
     return len(present), missing
 
 
+def _surface_p_proof_input_entry(
+    repo_root: Path,
+    *,
+    spec: RequiredProofInputSpec,
+    assessment: Any,
+) -> dict[str, Any]:
+    from trading.master_v2.surface_p_required_proof_input_binding_v0 import (
+        evaluate_surface_p_required_proof_input_binding_v0,
+    )
+
+    binding = evaluate_surface_p_required_proof_input_binding_v0(repo_root)
+    return {
+        "proof_input_id": spec.proof_input_id,
+        "surface_id": spec.surface_id,
+        "label": spec.label,
+        "present": True,
+        "parity_status": assessment.parity_status,
+        "registry_parity_status": binding.registry_parity_status,
+        "binding_owner": binding.owner,
+        "binding_status": binding.binding_status,
+        "offline_four_way_fixtures_complete": binding.offline_four_way_fixtures_complete,
+        "semantic_binding_confirmations_complete": binding.semantic_binding_confirmations_complete,
+        "surface_p_offline_parity_complete": binding.surface_p_offline_parity_complete,
+        "runtime_bridge_bound_not_activated": binding.runtime_bridge_bound_not_activated,
+        "evidence_ref_count": binding.evidence_ref_count,
+        "present_evidence_ref_count": binding.present_evidence_ref_count,
+        "missing_evidence_refs": list(binding.missing_evidence_refs),
+        "status": binding.binding_status,
+        "satisfied": binding.satisfied,
+        "detail": binding.detail,
+    }
+
+
 def build_required_proof_inputs_matrix(repo_root: Path) -> dict[str, Any]:
     sys.path.insert(0, str(_REPO_ROOT / "src"))
     from trading.master_v2.full_canonical_system_backtest_parity_gap_assessment_v0 import (
@@ -329,6 +367,15 @@ def build_required_proof_inputs_matrix(repo_root: Path) -> dict[str, Any]:
                 }
             )
             missing_proof_input_ids.append(spec.proof_input_id)
+            continue
+
+        if spec.surface_id == "P":
+            entry = _surface_p_proof_input_entry(repo_root, spec=spec, assessment=assessment)
+            proof_inputs.append(entry)
+            if entry["satisfied"]:
+                satisfied_count += 1
+            else:
+                missing_proof_input_ids.append(spec.proof_input_id)
             continue
 
         present_ref_count, missing_refs = _count_present_evidence_refs(
@@ -610,6 +657,10 @@ def evaluate_proof_bundle(
     if not coverage["surface_coverage_complete"]:
         reason_codes.append(REASON_SURFACE_COVERAGE_INCOMPLETE)
     if not proof_inputs["required_proof_inputs_complete"]:
+        if proof_inputs["missing_proof_input_ids"] == [
+            "backtest_offline_replay_runtime_decision_parity"
+        ]:
+            reason_codes.append(REASON_MISSING_REQUIRED_PROOF_INPUT_SURFACE_P)
         reason_codes.append(REASON_MISSING_REQUIRED_PROOF_INPUT)
     if not gap_all_pass:
         reason_codes.append(REASON_GAP_ASSESSMENT_NOT_ALL_PASS)
@@ -624,6 +675,7 @@ def evaluate_proof_bundle(
         REASON_TRACE_REWIRE_BINDING_INCOMPLETE,
         REASON_SURFACE_COVERAGE_INCOMPLETE,
         REASON_MISSING_REQUIRED_PROOF_INPUT,
+        REASON_MISSING_REQUIRED_PROOF_INPUT_SURFACE_P,
     }.intersection(reason_codes)
 
     semantic_ok = structural_ok and gap_all_pass
@@ -941,10 +993,11 @@ def collect_evidence(
         and bundle["next_unbound_node"] == "NONE"
         and bundle["surface_coverage_complete"] is True
         and bundle["required_proof_input_count"] == 16
-        and bundle["required_proof_inputs_complete"] is False
+        and bundle["required_proof_inputs_complete"] is True
+        and bundle["satisfied_proof_input_count"] == 16
         and bundle["source_evidence_all_manifests_verified"] is True
         and not bundle["stale_source_evidence_detected"]
-        and bundle["next_blocker"] == REASON_MISSING_REQUIRED_PROOF_INPUT
+        and bundle["next_blocker"] == REASON_GAP_ASSESSMENT_NOT_ALL_PASS
     )
     tests_pass = pytest_proc.returncode == 0
     ruff_pass = ruff_format.returncode == 0 and ruff_check.returncode == 0

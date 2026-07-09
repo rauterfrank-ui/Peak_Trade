@@ -21,7 +21,8 @@ from scripts.research.full_canonical_parity_proof_bundle_assembler_v0 import (
     DEFAULT_PR5027_CLOSEOUT_EVIDENCE,
     DEFAULT_PR5028_CLOSEOUT_EVIDENCE,
     DEFAULT_PR5028_ELIGIBILITY_EVIDENCE,
-    REASON_MISSING_REQUIRED_PROOF_INPUT,
+    REASON_GAP_ASSESSMENT_NOT_ALL_PASS,
+    REASON_MISSING_REQUIRED_PROOF_INPUT_SURFACE_P,
     REASON_SOURCE_EVIDENCE_MISSING,
     REQUIRED_PROOF_INPUT_SPECS,
     SLICE_CHANGED_FILES,
@@ -130,9 +131,9 @@ def test_proof_bundle_schema_and_fail_closed_status(module_proof_bundle: dict[st
     assert bundle["covered_surface_count"] == 12
     assert bundle["missing_surfaces"] == []
     assert bundle["required_proof_input_count"] == 16
-    assert bundle["satisfied_proof_input_count"] == 15
-    assert bundle["required_proof_inputs_complete"] is False
-    assert bundle["missing_proof_input_ids"] == ["backtest_offline_replay_runtime_decision_parity"]
+    assert bundle["satisfied_proof_input_count"] == 16
+    assert bundle["required_proof_inputs_complete"] is True
+    assert bundle["missing_proof_input_ids"] == []
     assert bundle["no_runtime_authority_confirmed"] is True
     assert bundle["no_economic_claim_confirmed"] is True
 
@@ -145,12 +146,16 @@ def test_required_proof_inputs_matrix_accounts_for_all_sixteen_surfaces() -> Non
         item["proof_input_id"] for item in matrix["proof_inputs"]
     ]
     surface_p = next(item for item in matrix["proof_inputs"] if item["surface_id"] == "P")
-    assert surface_p["status"] == "MISSING_REQUIRED_PROOF_INPUT"
+    assert surface_p["status"] == "VERIFIED"
+    assert surface_p["binding_status"] == "VERIFIED"
     assert surface_p["parity_status"] == "PARTIAL"
-    assert surface_p["satisfied"] is False
+    assert surface_p["registry_parity_status"] == "PARTIAL"
+    assert surface_p["satisfied"] is True
 
 
-def test_proof_bundle_reports_missing_required_proof_input_as_next_blocker(tmp_path: Path) -> None:
+def test_proof_bundle_reports_gap_assessment_blocker_when_proof_inputs_complete(
+    tmp_path: Path,
+) -> None:
     repo_root = Path.cwd()
     pr5020, pr5027, pr5028, eligibility, origin_main = _build_verified_source_evidence_fixture(
         tmp_path,
@@ -165,12 +170,72 @@ def test_proof_bundle_reports_missing_required_proof_input_as_next_blocker(tmp_p
         pr5028_eligibility_dir=eligibility,
         current_origin_main=origin_main,
     )
-    assert bundle["next_blocker"] == REASON_MISSING_REQUIRED_PROOF_INPUT
-    assert REASON_MISSING_REQUIRED_PROOF_INPUT in bundle["reason_codes"]
+    assert bundle["required_proof_inputs_complete"] is True
+    assert bundle["satisfied_proof_input_count"] == 16
+    assert bundle["next_blocker"] == REASON_GAP_ASSESSMENT_NOT_ALL_PASS
     assert REASON_GAP_ASSESSMENT_NOT_ALL_PASS in bundle["reason_codes"]
     assert bundle["gap_assessment_all_pass"] is False
     assert bundle["source_evidence_all_manifests_verified"] is True
     assert bundle["source_evidence_missing"] == []
+
+
+def test_proof_bundle_reports_missing_surface_p_proof_input_when_binding_unsatisfied(
+    tmp_path: Path, monkeypatch: pytest.MonkeyPatch
+) -> None:
+    repo_root = Path.cwd()
+    pr5020, pr5027, pr5028, eligibility, origin_main = _build_verified_source_evidence_fixture(
+        tmp_path,
+        repo_root,
+        origin_main="1fecc0566ccc5d0b9ffd7e0cc9d485f88a63729b",
+    )
+
+    def _unsatisfied_binding(_repo_root: Path):
+        from trading.master_v2.surface_p_required_proof_input_binding_v0 import (
+            SurfacePRequiredProofInputBindingResultV0,
+        )
+
+        return SurfacePRequiredProofInputBindingResultV0(
+            proof_input_id="backtest_offline_replay_runtime_decision_parity",
+            surface_id="P",
+            label="Backtest / Offline Replay / Runtime decision parity proof eligibility evidence",
+            owner="trading.master_v2.surface_p_required_proof_input_binding_v0",
+            binding_status="MISSING_REQUIRED_PROOF_INPUT_SURFACE_P",
+            satisfied=False,
+            registry_parity_status="PARTIAL",
+            offline_four_way_fixtures_complete=False,
+            semantic_binding_confirmations_complete=False,
+            surface_p_offline_parity_complete=False,
+            runtime_bridge_bound_not_activated=False,
+            owner_evidence_refs_present=False,
+            evidence_ref_count=0,
+            present_evidence_ref_count=0,
+            missing_evidence_refs=("missing/evidence.py",),
+            detail="offline_four_way_fixtures_incomplete",
+            fail_closed_reasons=(REASON_MISSING_REQUIRED_PROOF_INPUT_SURFACE_P,),
+            full_canonical_chain_wired=False,
+            backtest_runtime_decision_parity_pass=False,
+            system_economic_evidence_admissible=False,
+            runtime_rewire_admissible=False,
+            claim_promotion_allowed=False,
+            no_runtime_authority_confirmed=True,
+            no_economic_claim_confirmed=True,
+        )
+
+    monkeypatch.setattr(
+        "trading.master_v2.surface_p_required_proof_input_binding_v0.evaluate_surface_p_required_proof_input_binding_v0",
+        _unsatisfied_binding,
+    )
+    bundle = evaluate_proof_bundle(
+        repo_root,
+        pr5020_closeout_dir=pr5020,
+        pr5027_closeout_dir=pr5027,
+        pr5028_closeout_dir=pr5028,
+        pr5028_eligibility_dir=eligibility,
+        current_origin_main=origin_main,
+    )
+    assert bundle["required_proof_inputs_complete"] is False
+    assert bundle["next_blocker"] == REASON_MISSING_REQUIRED_PROOF_INPUT_SURFACE_P
+    assert REASON_MISSING_REQUIRED_PROOF_INPUT_SURFACE_P in bundle["reason_codes"]
 
 
 def test_proof_bundle_reports_missing_source_evidence_without_local_archive(
