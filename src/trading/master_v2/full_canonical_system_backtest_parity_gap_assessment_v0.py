@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import json
 from dataclasses import dataclass
+from pathlib import Path
 from typing import Any, Literal, Mapping, Sequence, Tuple
 
 FULL_CANONICAL_SYSTEM_BACKTEST_PARITY_GAP_ASSESSMENT_LAYER_VERSION = "v0"
@@ -108,6 +109,8 @@ ALLOWED_SLICE_CHANGED_PATH_PREFIXES: Tuple[str, ...] = (
     "src/trading/master_v2/runtime_bridge_pre_activation_gate_assessment_v0.py",
     "scripts/ops/run_runtime_bridge_pre_activation_gate_assessment_v0.py",
     "tests/trading/master_v2/test_runtime_bridge_pre_activation_gate_assessment_contract_v0.py",
+    "src/trading/master_v2/surface_p_required_proof_input_binding_v0.py",
+    "tests/research/test_surface_p_proof_input_gap_assessment_binding_v0.py",
     "src/trading/master_v2/runtime_bridge_boundary_gap_assessment_v0.py",
     "scripts/ops/run_runtime_bridge_boundary_gap_assessment_v0.py",
     "tests/trading/master_v2/test_runtime_bridge_boundary_gap_assessment_contract_v0.py",
@@ -688,6 +691,55 @@ def normalize_matrix_status_v0(parity_status: ParityStatus) -> MatrixStatus:
     return "UNKNOWN"
 
 
+def get_surface_p_required_proof_input_binding_v0(
+    repo_root: Path | None = None,
+) -> Mapping[str, Any]:
+    """Expose Surface P required proof-input binding in gap assessment; fail-closed only."""
+    from trading.master_v2.surface_p_required_proof_input_binding_v0 import (
+        BINDING_SLICE_ID,
+        SURFACE_P_PROOF_INPUT_ID,
+        SURFACE_P_REQUIRED_PROOF_INPUT_BINDING_OWNER,
+        SURFACE_P_SURFACE_ID,
+        evaluate_surface_p_required_proof_input_binding_v0,
+    )
+
+    root = repo_root or Path(__file__).resolve().parents[3]
+    binding = evaluate_surface_p_required_proof_input_binding_v0(root)
+    binding_status = (
+        "BOUND_FROM_REPAIRED_SOURCE_EVIDENCE"
+        if binding.satisfied and binding.binding_status == "VERIFIED"
+        else "MISSING_REQUIRED_PROOF_INPUT_SURFACE_P"
+    )
+    return {
+        "surface_id": SURFACE_P_SURFACE_ID,
+        "required_proof_input_id": SURFACE_P_PROOF_INPUT_ID,
+        "required_proof_input_binding_status": binding_status,
+        "binding_owner": SURFACE_P_REQUIRED_PROOF_INPUT_BINDING_OWNER,
+        "binding_slice_id": BINDING_SLICE_ID,
+        "accepted_source_status": binding.registry_parity_status,
+        "partial_reason_required": "RUNTIME_BRIDGE_BOUND_NOT_ACTIVATED",
+        "proof_input_satisfied": binding.satisfied,
+        "owner_evidence_refs_present": binding.owner_evidence_refs_present,
+        "offline_four_way_fixtures_complete": binding.offline_four_way_fixtures_complete,
+        "semantic_binding_confirmations_complete": binding.semantic_binding_confirmations_complete,
+        "surface_p_offline_parity_complete": binding.surface_p_offline_parity_complete,
+        "runtime_bridge_bound_not_activated": binding.runtime_bridge_bound_not_activated,
+        "full_canonical_chain_wired": False,
+        "backtest_runtime_decision_parity_pass": False,
+        "system_economic_evidence_admissible": False,
+        "runtime_rewire_admissible": False,
+        "claim_promotion_allowed": False,
+        "runtime_authority_effect": "NONE",
+        "order_authority_effect": "NONE",
+        "safety_semantics_changed": False,
+        "economic_claim_changed": False,
+        "no_runtime_authority_confirmed": True,
+        "no_economic_claim_confirmed": True,
+        "detail": binding.detail,
+        "fail_closed_reasons": list(binding.fail_closed_reasons),
+    }
+
+
 def parity_gap_records_v0() -> Tuple[Mapping[str, Any], ...]:
     from trading.master_v2.surface_p_offline_complete_runtime_bridge_bound_not_activated_contract_v0 import (
         surface_p_offline_parity_complete_runtime_activation_pending_v0,
@@ -745,6 +797,7 @@ def render_parity_gap_matrix_json_v0() -> str:
     surface_p_semantic = (
         evaluate_surface_p_offline_complete_runtime_bridge_bound_not_activated_contract_v0()
     )
+    surface_p_proof_input_binding = get_surface_p_required_proof_input_binding_v0()
     final_flags = evaluate_current_head_surface_p_final_flags_fail_closed_contract_v0()
     surfaces = []
     for item in parity_surface_assessments_v0():
@@ -761,6 +814,9 @@ def render_parity_gap_matrix_json_v0() -> str:
         if item.surface_id == "P":
             surface_entry["surface_p_semantic"] = dict(
                 surface_p_semantic_status_to_dict_v0(surface_p_semantic)
+            )
+            surface_entry["surface_p_required_proof_input_binding"] = dict(
+                surface_p_proof_input_binding
             )
             if surface_p_semantic.surface_p_overall_status == "PARTIAL_RUNTIME_ACTIVATION_PENDING":
                 surface_entry["matrix_status"] = "PARTIAL_RUNTIME_ACTIVATION_PENDING"
@@ -789,6 +845,7 @@ def render_parity_gap_matrix_json_v0() -> str:
         "surfaces": surfaces,
         "gap_records": list(gap_records),
         "surface_p_semantic": dict(surface_p_semantic_status_to_dict_v0(surface_p_semantic)),
+        "surface_p_required_proof_input_binding": dict(surface_p_proof_input_binding),
         "final_flags": dict(surface_p_final_flags_result_to_dict_v0(final_flags)),
     }
     return json.dumps(payload, indent=2, sort_keys=True) + "\n"
