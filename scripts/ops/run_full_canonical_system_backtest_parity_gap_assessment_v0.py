@@ -307,9 +307,7 @@ def collect_evidence(out_dir: Path | None = None) -> dict[str, object]:
     counts = parity_status_counts_v0()
     gap_count = len(gap_records)
     tests_pass = pytest_proc.returncode == 0
-    ruff_combined = (
-        ruff_format.stdout + ruff_format.stderr + ruff_check.stdout + ruff_check.stderr
-    )
+    ruff_combined = ruff_format.stdout + ruff_format.stderr + ruff_check.stdout + ruff_check.stderr
     ruff_pass = ruff_format.returncode == 0 and ruff_check.returncode == 0
     if not ruff_pass and (
         ruff_format.returncode == 127
@@ -317,7 +315,9 @@ def collect_evidence(out_dir: Path | None = None) -> dict[str, object]:
         or "command not found" in ruff_combined.lower()
         or "pyenv: ruff: command not found" in ruff_combined
     ):
-        ruff_pass = _resolve_tool("ruff") == "ruff" or "pyenv: ruff: command not found" in ruff_combined
+        ruff_pass = (
+            _resolve_tool("ruff") == "ruff" or "pyenv: ruff: command not found" in ruff_combined
+        )
     pr4951_ok = pr4951_manifest.returncode == 0
     guard_ok = guard_rc == 0
 
