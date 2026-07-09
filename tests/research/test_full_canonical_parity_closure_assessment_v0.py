@@ -93,3 +93,21 @@ def test_forbidden_positive_claim_literals_are_documented_not_claimed() -> None:
     )
     assert assessment["full_canonical_chain_wired_claimed"] is False
     assert assessment["backtest_runtime_decision_parity_pass_claimed"] is False
+
+
+def test_closure_assessment_binds_required_proof_inputs_from_gap_assessment() -> None:
+    assessment = build_closure_assessment(Path.cwd())
+    assert assessment["required_proof_input_count"] == 16
+    assert assessment["satisfied_proof_input_count"] == 16
+    assert assessment["required_proof_inputs_complete"] is True
+    assert assessment["missing_proof_input_ids"] == []
+    assert assessment["required_proof_inputs_binding_owner"].endswith(
+        "full_canonical_parity_proof_bundle_assembler_v0.py"
+    )
+    assert assessment["gap_assessment_binding_owner"].endswith(
+        "full_canonical_system_backtest_parity_gap_assessment_v0.py"
+    )
+    surface_p = next(
+        item for item in assessment["required_proof_inputs"] if item["surface_id"] == "P"
+    )
+    assert surface_p["satisfied"] is True

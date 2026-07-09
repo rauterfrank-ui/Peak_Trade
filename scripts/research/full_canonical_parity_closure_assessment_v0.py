@@ -75,8 +75,11 @@ CONTEXT_PROTECTED_MARKERS = (
 SLICE_CHANGED_FILES = (
     "scripts/research/backtest_runtime_decision_parity_trace_matrix_v0.py",
     "scripts/research/full_canonical_parity_closure_assessment_v0.py",
+    "scripts/research/full_canonical_parity_pass_eligibility_gate_v0.py",
+    "scripts/research/full_canonical_parity_proof_bundle_assembler_v0.py",
     "tests/research/test_backtest_runtime_decision_parity_trace_matrix_v0.py",
     "tests/research/test_full_canonical_parity_closure_assessment_v0.py",
+    "tests/research/test_full_canonical_parity_pass_eligibility_gate_v0.py",
     "tests/research/test_scope_adverse_exit_and_reversal_preparation_narrow_reuse_first_rewire_v0.py",
     "tests/research/test_adverse_scope_exit_reversal_preparation_narrow_reuse_first_rewire_v0.py",
     "tests/research/test_flat_before_opposite_side_narrow_reuse_first_rewire_v0.py",
@@ -212,6 +215,23 @@ def build_closure_assessment(repo_root: Path) -> dict[str, Any]:
         "Trace-rewire binding on all known parity surfaces does not authorize full-chain, "
         "parity-pass, economic-evidence, or runtime-rewire claims."
     )
+    from scripts.research.full_canonical_parity_proof_bundle_assembler_v0 import (
+        build_required_proof_inputs_matrix,
+    )
+
+    proof_inputs = build_required_proof_inputs_matrix(repo_root)
+    payload["required_proof_inputs_matrix_schema"] = proof_inputs["schema"]
+    payload["required_proof_input_count"] = proof_inputs["required_proof_input_count"]
+    payload["satisfied_proof_input_count"] = proof_inputs["satisfied_proof_input_count"]
+    payload["required_proof_inputs_complete"] = proof_inputs["required_proof_inputs_complete"]
+    payload["missing_proof_input_ids"] = list(proof_inputs["missing_proof_input_ids"])
+    payload["required_proof_inputs_binding_owner"] = (
+        "scripts/research/full_canonical_parity_proof_bundle_assembler_v0.py"
+    )
+    payload["gap_assessment_binding_owner"] = (
+        "src/trading/master_v2/full_canonical_system_backtest_parity_gap_assessment_v0.py"
+    )
+    payload["required_proof_inputs"] = proof_inputs["proof_inputs"]
     return payload
 
 

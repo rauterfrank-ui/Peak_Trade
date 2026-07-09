@@ -135,6 +135,9 @@ def test_proof_bundle_schema_and_fail_closed_status(module_proof_bundle: dict[st
     assert bundle["satisfied_proof_input_count"] == 16
     assert bundle["required_proof_inputs_complete"] is True
     assert bundle["missing_proof_input_ids"] == []
+    assert bundle["closure_required_proof_inputs_complete"] is True
+    assert bundle["eligibility_required_proof_inputs_complete"] is True
+    assert bundle["required_proof_inputs_binding_consistent"] is True
     assert bundle["no_runtime_authority_confirmed"] is True
     assert bundle["no_economic_claim_confirmed"] is True
 

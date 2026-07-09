@@ -63,7 +63,10 @@ CONTEXT_PROTECTED_MARKERS = (
 )
 
 SLICE_CHANGED_FILES = (
+    "scripts/research/full_canonical_parity_closure_assessment_v0.py",
     "scripts/research/full_canonical_parity_pass_eligibility_gate_v0.py",
+    "scripts/research/full_canonical_parity_proof_bundle_assembler_v0.py",
+    "tests/research/test_full_canonical_parity_closure_assessment_v0.py",
     "tests/research/test_full_canonical_parity_pass_eligibility_gate_v0.py",
 )
 
@@ -89,6 +92,7 @@ REASON_PARITY_PASS_CLAIM_NOT_DEFERRED = "PARITY_PASS_CLAIM_NOT_IN_DEFERRED_STATE
 REASON_PR5027_CLOSEOUT_NOT_VERIFIED = "PR5027_CLOSEOUT_EVIDENCE_MANIFEST_NOT_VERIFIED"
 REASON_PR5027_CLOSEOUT_REFERENCE_UNAVAILABLE = "PR5027_CLOSEOUT_EVIDENCE_REFERENCE_NOT_AVAILABLE"
 REASON_BOUNDARY_CHAIN_NOT_DOCUMENTED = "BOUNDARY_CHAIN_STATUS_NOT_FAIL_CLOSED_DOCUMENTED"
+REASON_MISSING_REQUIRED_PROOF_INPUT = "MISSING_REQUIRED_PROOF_INPUT"
 
 
 @dataclass(frozen=True)
@@ -255,6 +259,19 @@ def evaluate_eligibility_criteria(
             detail=f"pr5020_closeout_verified={pr5020_closeout_verified}",
         ),
         EligibilityCriterion(
+            criterion_id="required_proof_inputs_complete",
+            satisfied=bool(closure.get("required_proof_inputs_complete", False)),
+            required=True,
+            blocker_code=REASON_MISSING_REQUIRED_PROOF_INPUT,
+            detail=(
+                "required_proof_inputs_complete="
+                f"{closure.get('required_proof_inputs_complete', False)} "
+                f"satisfied={closure.get('satisfied_proof_input_count', 0)}/"
+                f"{closure.get('required_proof_input_count', 0)} "
+                f"missing={closure.get('missing_proof_input_ids', [])}"
+            ),
+        ),
+        EligibilityCriterion(
             criterion_id="manifest_verified_full_parity_proof_bundle",
             satisfied=False,
             required=True,
@@ -380,6 +397,15 @@ def build_eligibility_gate(
         "evidence_admissibility_reason_codes": reason_codes,
         "no_runtime_authority_confirmed": True,
         "no_economic_claim_confirmed": True,
+        "required_proof_inputs_matrix_schema": closure.get("required_proof_inputs_matrix_schema"),
+        "required_proof_input_count": closure.get("required_proof_input_count", 0),
+        "satisfied_proof_input_count": closure.get("satisfied_proof_input_count", 0),
+        "required_proof_inputs_complete": bool(
+            closure.get("required_proof_inputs_complete", False)
+        ),
+        "missing_proof_input_ids": list(closure.get("missing_proof_input_ids", [])),
+        "required_proof_inputs_binding_owner": closure.get("required_proof_inputs_binding_owner"),
+        "gap_assessment_binding_owner": closure.get("gap_assessment_binding_owner"),
         "eligibility_criteria": [asdict(item) for item in criteria],
         "gate_rule": (
             "Post-PR5027 boundary chain reassessment with FAIL_CLOSED_DOCUMENTED status is "

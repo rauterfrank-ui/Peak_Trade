@@ -74,6 +74,20 @@ def test_eligibility_gate_does_not_promote_positive_claims() -> None:
     assert gate["claim_promotion_allowed"] is False
 
 
+def test_eligibility_gate_binds_required_proof_inputs_from_closure_assessment() -> None:
+    gate = build_eligibility_gate(Path.cwd())
+    assert gate["required_proof_input_count"] == 16
+    assert gate["satisfied_proof_input_count"] == 16
+    assert gate["required_proof_inputs_complete"] is True
+    assert gate["missing_proof_input_ids"] == []
+    criterion = next(
+        item
+        for item in gate["eligibility_criteria"]
+        if item["criterion_id"] == "required_proof_inputs_complete"
+    )
+    assert criterion["satisfied"] is True
+
+
 def test_forbidden_positive_claims_scan_allows_context_protected_literals() -> None:
     violations = scan_gate_forbidden_positive_claims(Path.cwd(), list(SLICE_CHANGED_FILES))
     assert violations == []
