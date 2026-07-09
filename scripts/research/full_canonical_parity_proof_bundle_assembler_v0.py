@@ -33,18 +33,23 @@ from scripts.research.full_canonical_parity_pass_eligibility_gate_v0 import (
 
 ASSEMBLER_SCHEMA = "FullCanonicalParityProofBundleAssemblerV0"
 ASSEMBLER_ID = "FULL_CANONICAL_PARITY_PROOF_BUNDLE_ASSEMBLER_V0"
+REQUIRED_PROOF_INPUTS_SCHEMA = "FullCanonicalParityRequiredProofInputsMatrixV0"
 
 DEFAULT_PR5020_CLOSEOUT_EVIDENCE = (
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
     "research/merge_closeout_pr5020_full_canonical_parity_closure_assessment_v0_20260708T213101Z"
 )
-DEFAULT_PR5021_CLOSEOUT_EVIDENCE = (
+DEFAULT_PR5027_CLOSEOUT_EVIDENCE = (
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "research/merge_closeout_pr5021_full_canonical_parity_pass_eligibility_gate_v0_20260708T215908Z"
+    "research/merge_closeout_pr5027_full_canonical_backtest_boundary_chain_reassessment_v0_20260709T004143Z"
 )
-DEFAULT_PR5021_ELIGIBILITY_EVIDENCE = (
+DEFAULT_PR5028_CLOSEOUT_EVIDENCE = (
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "research/full_canonical_parity_pass_eligibility_gate_v0_20260708T215727Z"
+    "research/merge_closeout_pr5028_full_canonical_parity_pass_eligibility_gate_fixture_cache_repair_v0_20260709T012954Z"
+)
+DEFAULT_PR5028_ELIGIBILITY_EVIDENCE = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "research/full_canonical_parity_pass_eligibility_gate_v0_20260709T004654Z"
 )
 
 CONTEXT_PROTECTED_MARKERS = (
@@ -76,7 +81,91 @@ TARGETED_TESTS = (
     "tests/research/test_full_canonical_parity_proof_bundle_assembler_v0.py",
     "tests/research/test_full_canonical_parity_pass_eligibility_gate_v0.py",
     "tests/research/test_full_canonical_parity_closure_assessment_v0.py",
+    "tests/research/test_full_canonical_backtest_boundary_chain_reassessment_v0.py",
     "tests/research/test_backtest_runtime_decision_parity_trace_matrix_v0.py",
+)
+
+
+@dataclass(frozen=True)
+class RequiredProofInputSpec:
+    proof_input_id: str
+    surface_id: str
+    label: str
+
+
+REQUIRED_PROOF_INPUT_SPECS: tuple[RequiredProofInputSpec, ...] = (
+    RequiredProofInputSpec(
+        "bull_bear_state_switch_boundary",
+        "A",
+        "Bull/Bear State Switch boundary/parity evidence",
+    ),
+    RequiredProofInputSpec("scope_adverse_exit_boundary", "B", "Scope adverse exit evidence"),
+    RequiredProofInputSpec(
+        "reversal_preparation_boundary",
+        "C",
+        "Reversal preparation evidence",
+    ),
+    RequiredProofInputSpec(
+        "flat_before_opposite_side_boundary",
+        "D",
+        "Flat-before-opposite-side evidence",
+    ),
+    RequiredProofInputSpec(
+        "survival_suitability_binding_boundary",
+        "E",
+        "Survival/Suitability binding evidence",
+    ),
+    RequiredProofInputSpec(
+        "double_play_composition_boundary",
+        "F",
+        "Double Play composition evidence",
+    ),
+    RequiredProofInputSpec(
+        "entry_position_exit_policy_boundary",
+        "G",
+        "Entry/Position/Exit policy evidence",
+    ),
+    RequiredProofInputSpec(
+        "capital_risk_sizing_boundary",
+        "H",
+        "Capital/Risk/Sizing evidence",
+    ),
+    RequiredProofInputSpec(
+        "canonical_order_intent_boundary",
+        "I",
+        "Canonical Order Intent boundary evidence",
+    ),
+    RequiredProofInputSpec(
+        "safety_kernel_boundary",
+        "J",
+        "Safety Kernel boundary evidence",
+    ),
+    RequiredProofInputSpec("killswitch_boundary", "K", "KillSwitch boundary evidence"),
+    RequiredProofInputSpec(
+        "reconciliation_unknown_outcome_boundary",
+        "L",
+        "Reconciliation / Unknown Outcome evidence",
+    ),
+    RequiredProofInputSpec(
+        "promotion_gate_boundary",
+        "M",
+        "Promotion Gate boundary evidence",
+    ),
+    RequiredProofInputSpec(
+        "ai_observability_explainability_boundary",
+        "N",
+        "AI / Observability / Explainability boundary evidence",
+    ),
+    RequiredProofInputSpec(
+        "feedback_learning_boundary",
+        "O",
+        "Feedback / Learning boundary evidence",
+    ),
+    RequiredProofInputSpec(
+        "backtest_offline_replay_runtime_decision_parity",
+        "P",
+        "Backtest / Offline Replay / Runtime decision parity proof eligibility evidence",
+    ),
 )
 
 REASON_CHAIN_BINDING_INCOMPLETE = "CHAIN_SURFACE_BINDING_INCOMPLETE"
@@ -90,6 +179,7 @@ REASON_SEMANTIC_PARITY_NOT_PROVEN = "SEMANTIC_PARITY_NOT_PROVEN_BEYOND_TRACE_BIN
 REASON_FORBIDDEN_POSITIVE_CLAIMS = "FORBIDDEN_POSITIVE_CLAIMS_DETECTED"
 REASON_ECONOMIC_EVIDENCE_NOT_PROVEN = "SYSTEM_ECONOMIC_EVIDENCE_NOT_PROVEN"
 REASON_RUNTIME_REWIRE_NOT_PROVEN = "RUNTIME_REWIRE_PREREQUISITES_NOT_PROVEN"
+REASON_MISSING_REQUIRED_PROOF_INPUT = "MISSING_REQUIRED_PROOF_INPUT"
 
 STRONGER_TRACE_STATES = frozenset({TRACE_REWIRE_BOUND_STATE})
 
@@ -191,6 +281,100 @@ def _load_gap_assessment_counts() -> dict[str, int]:
     return counts
 
 
+def _evidence_ref_path(ref: str) -> str:
+    return ref.split("::", 1)[0]
+
+
+def _count_present_evidence_refs(
+    repo_root: Path, evidence_refs: tuple[str, ...]
+) -> tuple[int, list[str]]:
+    present: list[str] = []
+    missing: list[str] = []
+    for ref in evidence_refs:
+        rel = _evidence_ref_path(ref)
+        if (repo_root / rel).is_file():
+            present.append(ref)
+        else:
+            missing.append(ref)
+    return len(present), missing
+
+
+def build_required_proof_inputs_matrix(repo_root: Path) -> dict[str, Any]:
+    sys.path.insert(0, str(_REPO_ROOT / "src"))
+    from trading.master_v2.full_canonical_system_backtest_parity_gap_assessment_v0 import (
+        parity_surface_assessments_v0,
+    )
+
+    assessments_by_id = {item.surface_id: item for item in parity_surface_assessments_v0()}
+    proof_inputs: list[dict[str, Any]] = []
+    missing_proof_input_ids: list[str] = []
+    satisfied_count = 0
+
+    for spec in REQUIRED_PROOF_INPUT_SPECS:
+        assessment = assessments_by_id.get(spec.surface_id)
+        if assessment is None:
+            proof_inputs.append(
+                {
+                    "proof_input_id": spec.proof_input_id,
+                    "surface_id": spec.surface_id,
+                    "label": spec.label,
+                    "present": False,
+                    "parity_status": "MISSING",
+                    "evidence_ref_count": 0,
+                    "present_evidence_ref_count": 0,
+                    "missing_evidence_refs": [],
+                    "status": "MISSING_REQUIRED_PROOF_INPUT",
+                    "satisfied": False,
+                    "detail": "surface assessment missing from gap registry",
+                }
+            )
+            missing_proof_input_ids.append(spec.proof_input_id)
+            continue
+
+        present_ref_count, missing_refs = _count_present_evidence_refs(
+            repo_root, assessment.evidence_refs
+        )
+        parity_pass = assessment.parity_status == "PASS"
+        refs_present = present_ref_count > 0
+        satisfied = parity_pass and refs_present
+        status = "VERIFIED" if satisfied else "MISSING_REQUIRED_PROOF_INPUT"
+        if satisfied:
+            satisfied_count += 1
+        else:
+            missing_proof_input_ids.append(spec.proof_input_id)
+
+        detail_parts: list[str] = []
+        if not parity_pass:
+            detail_parts.append(f"parity_status={assessment.parity_status}")
+        if not refs_present:
+            detail_parts.append("no_present_evidence_refs")
+
+        proof_inputs.append(
+            {
+                "proof_input_id": spec.proof_input_id,
+                "surface_id": spec.surface_id,
+                "label": spec.label,
+                "present": True,
+                "parity_status": assessment.parity_status,
+                "evidence_ref_count": len(assessment.evidence_refs),
+                "present_evidence_ref_count": present_ref_count,
+                "missing_evidence_refs": missing_refs,
+                "status": status,
+                "satisfied": satisfied,
+                "detail": "; ".join(detail_parts) if detail_parts else "verified",
+            }
+        )
+
+    return {
+        "schema": REQUIRED_PROOF_INPUTS_SCHEMA,
+        "required_proof_input_count": len(REQUIRED_PROOF_INPUT_SPECS),
+        "satisfied_proof_input_count": satisfied_count,
+        "required_proof_inputs_complete": not missing_proof_input_ids,
+        "missing_proof_input_ids": missing_proof_input_ids,
+        "proof_inputs": proof_inputs,
+    }
+
+
 def _verify_eligibility_with_closeout_attestation(
     eligibility_dir: Path,
     closeout_dir: Path,
@@ -205,12 +389,26 @@ def _verify_eligibility_with_closeout_attestation(
         return False, f"{detail}; closeout_unverified={closeout_detail}"
     ref_file = closeout_dir / "eligibility_gate_ref.txt"
     final_report = closeout_dir / "eligibility_gate_final_report.txt"
-    if not ref_file.is_file() or not final_report.is_file():
-        return False, detail
-    ref_text = ref_file.read_text(encoding="utf-8")
-    if str(eligibility_dir) not in ref_text or "ELIGIBILITY_GATE_RC=0" not in ref_text:
-        return False, detail
-    return True, f"{detail}; closeout_attested_eligibility_gate_rc=0"
+    if ref_file.is_file() and final_report.is_file():
+        ref_text = ref_file.read_text(encoding="utf-8")
+        if str(eligibility_dir) in ref_text and "ELIGIBILITY_GATE_RC=0" in ref_text:
+            return True, f"{detail}; closeout_attested_eligibility_gate_rc=0"
+    closeout_final = closeout_dir / "final_report.txt"
+    if closeout_final.is_file():
+        source_dir: str | None = None
+        source_manifest_rc: str | None = None
+        for line in closeout_final.read_text(encoding="utf-8").splitlines():
+            if line.startswith("SOURCE_EVIDENCE_DIR="):
+                source_dir = line.split("=", 1)[1].strip()
+            elif line.startswith("SOURCE_MANIFEST_VERIFY_RC="):
+                source_manifest_rc = line.split("=", 1)[1].strip()
+        if (
+            source_dir == str(eligibility_dir)
+            and source_manifest_rc == "0"
+            and "SOURCE_EVIDENCE_REFERENCED=true" in closeout_final.read_text(encoding="utf-8")
+        ):
+            return True, f"{detail}; closeout_attested_source_manifest_verify_rc=0"
+    return False, detail
 
 
 def _is_stale_evidence_head(
@@ -231,16 +429,18 @@ def _is_stale_evidence_head(
 def collect_source_evidence_refs(
     *,
     pr5020_closeout_dir: Path,
-    pr5021_closeout_dir: Path,
-    pr5021_eligibility_dir: Path,
+    pr5027_closeout_dir: Path,
+    pr5028_closeout_dir: Path,
+    pr5028_eligibility_dir: Path,
     current_origin_main: str,
     repo_root: Path,
 ) -> list[SourceEvidenceRef]:
     refs: list[SourceEvidenceRef] = []
-    for evidence_id, path in (
-        ("pr5020_closeout", pr5020_closeout_dir),
-        ("pr5021_closeout", pr5021_closeout_dir),
-        ("pr5021_eligibility_gate", pr5021_eligibility_dir),
+    for evidence_id, path, closeout_for_attestation in (
+        ("pr5020_closeout", pr5020_closeout_dir, None),
+        ("pr5027_closeout", pr5027_closeout_dir, None),
+        ("pr5028_closeout", pr5028_closeout_dir, None),
+        ("pr5028_eligibility_gate", pr5028_eligibility_dir, pr5028_closeout_dir),
     ):
         present = path.is_dir()
         manifest_present = (path / "MANIFEST.sha256").is_file() if present else False
@@ -256,9 +456,9 @@ def collect_source_evidence_refs(
                 )
             )
             continue
-        if evidence_id == "pr5021_eligibility_gate":
+        if closeout_for_attestation is not None:
             verified, detail = _verify_eligibility_with_closeout_attestation(
-                path, pr5021_closeout_dir
+                path, closeout_for_attestation
             )
         else:
             verified, detail = verify_manifest(path)
@@ -332,16 +532,36 @@ def evaluate_proof_bundle(
     repo_root: Path,
     *,
     pr5020_closeout_dir: Path | None = None,
-    pr5021_closeout_dir: Path | None = None,
-    pr5021_eligibility_dir: Path | None = None,
+    pr5027_closeout_dir: Path | None = None,
+    pr5028_closeout_dir: Path | None = None,
+    pr5028_eligibility_dir: Path | None = None,
     current_origin_main: str | None = None,
     forbidden_violations: list[str] | None = None,
 ) -> dict[str, Any]:
     closure = build_closure_assessment(repo_root)
-    gate = build_eligibility_gate(repo_root, pr5020_closeout_dir=pr5020_closeout_dir)
+    closeout_5020 = pr5020_closeout_dir or Path(
+        os.environ.get("PEAK_TRADE_PR5020_CLOSEOUT_EVIDENCE", DEFAULT_PR5020_CLOSEOUT_EVIDENCE)
+    )
+    closeout_5027 = pr5027_closeout_dir or Path(
+        os.environ.get("PEAK_TRADE_PR5027_CLOSEOUT_EVIDENCE", DEFAULT_PR5027_CLOSEOUT_EVIDENCE)
+    )
+    closeout_5028 = pr5028_closeout_dir or Path(
+        os.environ.get("PEAK_TRADE_PR5028_CLOSEOUT_EVIDENCE", DEFAULT_PR5028_CLOSEOUT_EVIDENCE)
+    )
+    eligibility_5028 = pr5028_eligibility_dir or Path(
+        os.environ.get(
+            "PEAK_TRADE_PR5028_ELIGIBILITY_EVIDENCE", DEFAULT_PR5028_ELIGIBILITY_EVIDENCE
+        )
+    )
+    gate = build_eligibility_gate(
+        repo_root,
+        pr5020_closeout_dir=closeout_5020,
+        pr5027_closeout_dir=closeout_5027,
+    )
     inventory = build_inventory(repo_root)
     matrix = build_trace_matrix(inventory)
     gap_counts = _load_gap_assessment_counts()
+    proof_inputs = build_required_proof_inputs_matrix(repo_root)
     gap_all_pass = (
         gap_counts.get("PARTIAL", 0) == 0
         and gap_counts.get("GAP", 0) == 0
@@ -359,22 +579,11 @@ def evaluate_proof_bundle(
         )
         origin_main = proc.stdout.strip()
 
-    closeout_5020 = pr5020_closeout_dir or Path(
-        os.environ.get("PEAK_TRADE_PR5020_CLOSEOUT_EVIDENCE", DEFAULT_PR5020_CLOSEOUT_EVIDENCE)
-    )
-    closeout_5021 = pr5021_closeout_dir or Path(
-        os.environ.get("PEAK_TRADE_PR5021_CLOSEOUT_EVIDENCE", DEFAULT_PR5021_CLOSEOUT_EVIDENCE)
-    )
-    eligibility_5021 = pr5021_eligibility_dir or Path(
-        os.environ.get(
-            "PEAK_TRADE_PR5021_ELIGIBILITY_EVIDENCE", DEFAULT_PR5021_ELIGIBILITY_EVIDENCE
-        )
-    )
-
     source_refs = collect_source_evidence_refs(
         pr5020_closeout_dir=closeout_5020,
-        pr5021_closeout_dir=closeout_5021,
-        pr5021_eligibility_dir=eligibility_5021,
+        pr5027_closeout_dir=closeout_5027,
+        pr5028_closeout_dir=closeout_5028,
+        pr5028_eligibility_dir=eligibility_5028,
         current_origin_main=origin_main,
         repo_root=repo_root,
     )
@@ -400,6 +609,8 @@ def evaluate_proof_bundle(
         reason_codes.append(REASON_TRACE_REWIRE_BINDING_INCOMPLETE)
     if not coverage["surface_coverage_complete"]:
         reason_codes.append(REASON_SURFACE_COVERAGE_INCOMPLETE)
+    if not proof_inputs["required_proof_inputs_complete"]:
+        reason_codes.append(REASON_MISSING_REQUIRED_PROOF_INPUT)
     if not gap_all_pass:
         reason_codes.append(REASON_GAP_ASSESSMENT_NOT_ALL_PASS)
 
@@ -412,6 +623,7 @@ def evaluate_proof_bundle(
         REASON_UNBOUND_NODE_REMAINS,
         REASON_TRACE_REWIRE_BINDING_INCOMPLETE,
         REASON_SURFACE_COVERAGE_INCOMPLETE,
+        REASON_MISSING_REQUIRED_PROOF_INPUT,
     }.intersection(reason_codes)
 
     semantic_ok = structural_ok and gap_all_pass
@@ -437,6 +649,9 @@ def evaluate_proof_bundle(
         "assembler_id": ASSEMBLER_ID,
         "source_closure_assessment_schema": closure["schema"],
         "source_eligibility_gate_schema": gate["schema"],
+        "source_boundary_chain_reassessment_schema": gate[
+            "source_boundary_chain_reassessment_schema"
+        ],
         "source_trace_matrix_schema": matrix["schema"],
         "source_evidence_refs": [asdict(ref) for ref in source_refs],
         "source_evidence_count": len(source_refs),
@@ -446,6 +661,11 @@ def evaluate_proof_bundle(
         and not missing_sources,
         "source_evidence_missing": [ref.evidence_id for ref in missing_sources],
         "stale_source_evidence_detected": any(ref.stale_detected for ref in source_refs),
+        "required_proof_inputs_matrix": proof_inputs,
+        "required_proof_input_count": proof_inputs["required_proof_input_count"],
+        "satisfied_proof_input_count": proof_inputs["satisfied_proof_input_count"],
+        "required_proof_inputs_complete": proof_inputs["required_proof_inputs_complete"],
+        "missing_proof_input_ids": proof_inputs["missing_proof_input_ids"],
         "surface_coverage_matrix": coverage,
         "surface_coverage_complete": coverage["surface_coverage_complete"],
         "required_surface_count": coverage["required_surface_count"],
@@ -453,6 +673,9 @@ def evaluate_proof_bundle(
         "missing_surfaces": coverage["missing_surfaces"],
         "chain_surface_binding_complete": closure["chain_surface_binding_complete"],
         "next_unbound_node": closure["next_unbound_node"],
+        "boundary_chain_status": gate["boundary_chain_status"],
+        "pass_eligibility_primary_blocker": gate["primary_blocker"],
+        "pass_eligibility_next_step": gate["next_gap_or_next_step"],
         "parity_pass_claim_deferred": True,
         "gap_assessment_counts": gap_counts,
         "gap_assessment_all_pass": gap_all_pass,
@@ -467,11 +690,11 @@ def evaluate_proof_bundle(
         "no_runtime_authority_confirmed": True,
         "no_economic_claim_confirmed": True,
         "assembler_rule": (
-            "Manifest-verified source evidence and complete trace-rewire surface binding are "
-            "necessary but not sufficient for full parity proof. Gap-assessment PASS across all "
-            "surfaces is required before FULL_CANONICAL_CHAIN_WIRED and "
-            "BACKTEST_RUNTIME_DECISION_PARITY_PASS may become true. Economic and runtime-rewire "
-            "claims remain deferred unless separately proven."
+            "Manifest-verified source evidence, complete required proof-input coverage, and "
+            "complete trace-rewire surface binding are necessary but not sufficient for full "
+            "parity proof. Gap-assessment PASS across all surfaces is required before "
+            "FULL_CANONICAL_CHAIN_WIRED and BACKTEST_RUNTIME_DECISION_PARITY_PASS may become "
+            "true. Economic and runtime-rewire claims remain deferred unless separately proven."
         ),
     }
 
@@ -489,6 +712,13 @@ def render_final_report(bundle: dict[str, Any], *, verdict: str, manifest_verify
         ),
         f"SOURCE_EVIDENCE_MISSING={','.join(bundle['source_evidence_missing']) or 'NONE'}",
         (f"STALE_SOURCE_EVIDENCE_DETECTED={str(bundle['stale_source_evidence_detected']).lower()}"),
+        f"REQUIRED_PROOF_INPUT_COUNT={bundle['required_proof_input_count']}",
+        f"SATISFIED_PROOF_INPUT_COUNT={bundle['satisfied_proof_input_count']}",
+        (f"REQUIRED_PROOF_INPUTS_COMPLETE={str(bundle['required_proof_inputs_complete']).lower()}"),
+        f"MISSING_PROOF_INPUT_IDS={','.join(bundle['missing_proof_input_ids']) or 'NONE'}",
+        f"BOUNDARY_CHAIN_STATUS={bundle['boundary_chain_status']}",
+        f"PASS_ELIGIBILITY_PRIMARY_BLOCKER={bundle['pass_eligibility_primary_blocker']}",
+        f"PASS_ELIGIBILITY_NEXT_STEP={bundle['pass_eligibility_next_step']}",
         f"SURFACE_COVERAGE_COMPLETE={str(bundle['surface_coverage_complete']).lower()}",
         f"REQUIRED_SURFACE_COUNT={bundle['required_surface_count']}",
         f"COVERED_SURFACE_COUNT={bundle['covered_surface_count']}",
@@ -538,14 +768,38 @@ def _run(
     return subprocess.run(cmd, cwd=str(cwd), capture_output=True, text=True, check=False, env=env)
 
 
+REASON_RUFF_MODULE_UNAVAILABLE = "RUFF_MODULE_UNAVAILABLE"
+
+
+def _ruff_module_available() -> tuple[bool, str]:
+    probe = _run([sys.executable, "-m", "ruff", "--version"], cwd=_REPO_ROOT)
+    if probe.returncode == 0:
+        return True, (probe.stdout + probe.stderr).strip() or "ruff available"
+    detail = (probe.stdout + probe.stderr).strip() or "ruff module probe failed"
+    return False, detail
+
+
+def _run_ruff(args: list[str], *, cwd: Path) -> subprocess.CompletedProcess[str]:
+    available, detail = _ruff_module_available()
+    if not available:
+        return subprocess.CompletedProcess(
+            args=[sys.executable, "-m", "ruff", *args],
+            returncode=1,
+            stdout="",
+            stderr=f"{REASON_RUFF_MODULE_UNAVAILABLE}: {detail}\n",
+        )
+    return _run([sys.executable, "-m", "ruff", *args], cwd=cwd)
+
+
 def collect_evidence(
     repo_root: Path,
     *,
     output_dir: Path | None = None,
     durable_archive_root: Path | None = None,
     pr5020_closeout_dir: Path | None = None,
-    pr5021_closeout_dir: Path | None = None,
-    pr5021_eligibility_dir: Path | None = None,
+    pr5027_closeout_dir: Path | None = None,
+    pr5028_closeout_dir: Path | None = None,
+    pr5028_eligibility_dir: Path | None = None,
 ) -> dict[str, Any]:
     repo_root = repo_root.resolve()
     archive_root = Path(
@@ -571,8 +825,9 @@ def collect_evidence(
     bundle = evaluate_proof_bundle(
         repo_root,
         pr5020_closeout_dir=pr5020_closeout_dir,
-        pr5021_closeout_dir=pr5021_closeout_dir,
-        pr5021_eligibility_dir=pr5021_eligibility_dir,
+        pr5027_closeout_dir=pr5027_closeout_dir,
+        pr5028_closeout_dir=pr5028_closeout_dir,
+        pr5028_eligibility_dir=pr5028_eligibility_dir,
         current_origin_main=origin_main,
         forbidden_violations=forbidden_violations,
     )
@@ -600,6 +855,10 @@ def collect_evidence(
     )
     (evidence_dir / "surface_coverage_matrix.json").write_text(
         json.dumps(bundle["surface_coverage_matrix"], indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    (evidence_dir / "required_proof_inputs_matrix.json").write_text(
+        json.dumps(bundle["required_proof_inputs_matrix"], indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
     )
     (evidence_dir / "reason_codes.json").write_text(
@@ -631,8 +890,8 @@ def collect_evidence(
 
     changed_py = [repo_root / rel for rel in SLICE_CHANGED_FILES if rel.endswith(".py")]
     ruff_targets = [str(path) for path in changed_py if path.is_file()]
-    ruff_format = _run(["ruff", "format", "--check", *ruff_targets], cwd=repo_root)
-    ruff_check = _run(["ruff", "check", *ruff_targets], cwd=repo_root)
+    ruff_format = _run_ruff(["format", "--check", *ruff_targets], cwd=repo_root)
+    ruff_check = _run_ruff(["check", *ruff_targets], cwd=repo_root)
     (evidence_dir / "ruff_format_check.txt").write_text(
         (ruff_format.stdout + ruff_format.stderr) or f"RC={ruff_format.returncode}\n",
         encoding="utf-8",
@@ -677,17 +936,20 @@ def collect_evidence(
         and bundle["claim_promotion_allowed"] is False
         and bundle["system_economic_evidence_admissible"] is False
         and bundle["runtime_rewire_admissible"] is False
+        and bundle["boundary_chain_status"] == "FAIL_CLOSED_DOCUMENTED"
         and bundle["chain_surface_binding_complete"] is True
         and bundle["next_unbound_node"] == "NONE"
         and bundle["surface_coverage_complete"] is True
+        and bundle["required_proof_input_count"] == 16
+        and bundle["required_proof_inputs_complete"] is False
         and bundle["source_evidence_all_manifests_verified"] is True
         and not bundle["stale_source_evidence_detected"]
-        and bundle["next_blocker"] == REASON_GAP_ASSESSMENT_NOT_ALL_PASS
+        and bundle["next_blocker"] == REASON_MISSING_REQUIRED_PROOF_INPUT
     )
     tests_pass = pytest_proc.returncode == 0
     ruff_pass = ruff_format.returncode == 0 and ruff_check.returncode == 0
     verdict = (
-        "PASS"
+        "PROOF_BUNDLE_ASSEMBLER_PASS_FAIL_CLOSED"
         if bundle_pass and tests_pass and ruff_pass and py_compile_rc == 0 and forbidden_ok
         else "BLOCKED"
     )
@@ -720,24 +982,27 @@ def main() -> int:
     parser.add_argument("--output-dir", default=None)
     parser.add_argument("--durable-archive-root", default=None)
     parser.add_argument("--pr5020-closeout-dir", default=None)
-    parser.add_argument("--pr5021-closeout-dir", default=None)
-    parser.add_argument("--pr5021-eligibility-dir", default=None)
+    parser.add_argument("--pr5027-closeout-dir", default=None)
+    parser.add_argument("--pr5028-closeout-dir", default=None)
+    parser.add_argument("--pr5028-eligibility-dir", default=None)
     args = parser.parse_args()
     repo_root = Path(args.repo_root).resolve()
     output_dir = Path(args.output_dir).resolve() if args.output_dir else None
     archive_root = Path(args.durable_archive_root).resolve() if args.durable_archive_root else None
     closeout_5020 = Path(args.pr5020_closeout_dir).resolve() if args.pr5020_closeout_dir else None
-    closeout_5021 = Path(args.pr5021_closeout_dir).resolve() if args.pr5021_closeout_dir else None
-    eligibility_5021 = (
-        Path(args.pr5021_eligibility_dir).resolve() if args.pr5021_eligibility_dir else None
+    closeout_5027 = Path(args.pr5027_closeout_dir).resolve() if args.pr5027_closeout_dir else None
+    closeout_5028 = Path(args.pr5028_closeout_dir).resolve() if args.pr5028_closeout_dir else None
+    eligibility_5028 = (
+        Path(args.pr5028_eligibility_dir).resolve() if args.pr5028_eligibility_dir else None
     )
     result = collect_evidence(
         repo_root,
         output_dir=output_dir,
         durable_archive_root=archive_root,
         pr5020_closeout_dir=closeout_5020,
-        pr5021_closeout_dir=closeout_5021,
-        pr5021_eligibility_dir=eligibility_5021,
+        pr5027_closeout_dir=closeout_5027,
+        pr5028_closeout_dir=closeout_5028,
+        pr5028_eligibility_dir=eligibility_5028,
     )
     bundle = result["bundle"]
     print(f"VERDICT={result['verdict']}")
@@ -746,7 +1011,7 @@ def main() -> int:
     print(f"CLAIM_PROMOTION_ALLOWED={str(bundle['claim_promotion_allowed']).lower()}")
     print(f"DURABLE_EVIDENCE_DIR={result['evidence_dir']}")
     print(f"MANIFEST_VERIFY_RC={result['manifest_verify_rc']}")
-    return 0 if result["verdict"] == "PASS" else 1
+    return 0 if result["verdict"] == "PROOF_BUNDLE_ASSEMBLER_PASS_FAIL_CLOSED" else 1
 
 
 if __name__ == "__main__":

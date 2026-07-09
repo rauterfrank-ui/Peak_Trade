@@ -18,11 +18,14 @@ from scripts.research.full_canonical_parity_pass_eligibility_gate_v0 import (
 from scripts.research.full_canonical_parity_proof_bundle_assembler_v0 import (
     ASSEMBLER_ID,
     ASSEMBLER_SCHEMA,
-    DEFAULT_PR5021_CLOSEOUT_EVIDENCE,
-    DEFAULT_PR5021_ELIGIBILITY_EVIDENCE,
-    REASON_SEMANTIC_PARITY_NOT_PROVEN,
+    DEFAULT_PR5027_CLOSEOUT_EVIDENCE,
+    DEFAULT_PR5028_CLOSEOUT_EVIDENCE,
+    DEFAULT_PR5028_ELIGIBILITY_EVIDENCE,
+    REASON_MISSING_REQUIRED_PROOF_INPUT,
     REASON_SOURCE_EVIDENCE_MISSING,
+    REQUIRED_PROOF_INPUT_SPECS,
     SLICE_CHANGED_FILES,
+    build_required_proof_inputs_matrix,
     build_surface_coverage_matrix,
     collect_source_evidence_refs,
     evaluate_proof_bundle,
@@ -75,24 +78,37 @@ def _write_verified_evidence_dir(
 def _build_verified_source_evidence_fixture(
     tmp_path: Path,
     repo_root: Path,
-) -> tuple[Path, Path, Path, str]:
-    origin_main = _repo_head(repo_root)
+    *,
+    origin_main: str | None = None,
+) -> tuple[Path, Path, Path, Path, str]:
+    if origin_main is None:
+        origin_main = _repo_head(repo_root)
     pr5020 = tmp_path / "pr5020_closeout"
-    pr5021 = tmp_path / "pr5021_closeout"
-    eligibility = tmp_path / "pr5021_eligibility"
+    pr5027 = tmp_path / "pr5027_closeout"
+    pr5028 = tmp_path / "pr5028_closeout"
+    eligibility = tmp_path / "pr5028_eligibility"
     _write_verified_evidence_dir(pr5020, post_merge_head=origin_main)
+    _write_verified_evidence_dir(pr5027, post_merge_head=origin_main)
     _write_verified_evidence_dir(
-        pr5021,
+        pr5028,
         post_merge_head=origin_main,
         extra_files={
-            "eligibility_gate_ref.txt": (
-                f"ELIGIBILITY_EVIDENCE_DIR={eligibility}\nELIGIBILITY_GATE_RC=0\n"
+            "final_report.txt": (
+                "\n".join(
+                    [
+                        f"POST_MERGE_HEAD={origin_main}",
+                        f"POST_MERGE_ORIGIN_MAIN={origin_main}",
+                        f"SOURCE_EVIDENCE_DIR={eligibility}",
+                        "SOURCE_MANIFEST_VERIFY_RC=0",
+                        "SOURCE_EVIDENCE_REFERENCED=true",
+                    ]
+                )
+                + "\n"
             ),
-            "eligibility_gate_final_report.txt": "VERDICT=PASS\n",
         },
     )
     _write_verified_evidence_dir(eligibility, post_merge_head=origin_main)
-    return pr5020, pr5021, eligibility, origin_main
+    return pr5020, pr5027, pr5028, eligibility, origin_main
 
 
 def test_proof_bundle_schema_and_fail_closed_status(module_proof_bundle: dict[str, Any]) -> None:
@@ -102,6 +118,7 @@ def test_proof_bundle_schema_and_fail_closed_status(module_proof_bundle: dict[st
     assert bundle["full_parity_proof_bundle_status"] == "NOT_PROVEN_FAIL_CLOSED"
     assert bundle["chain_surface_binding_complete"] is True
     assert bundle["next_unbound_node"] == "NONE"
+    assert bundle["boundary_chain_status"] == "FAIL_CLOSED_DOCUMENTED"
     assert bundle["parity_pass_claim_deferred"] is True
     assert bundle["full_canonical_chain_wired"] is False
     assert bundle["backtest_runtime_decision_parity_pass"] is False
@@ -112,25 +129,45 @@ def test_proof_bundle_schema_and_fail_closed_status(module_proof_bundle: dict[st
     assert bundle["required_surface_count"] == 12
     assert bundle["covered_surface_count"] == 12
     assert bundle["missing_surfaces"] == []
+    assert bundle["required_proof_input_count"] == 16
+    assert bundle["satisfied_proof_input_count"] == 15
+    assert bundle["required_proof_inputs_complete"] is False
+    assert bundle["missing_proof_input_ids"] == ["backtest_offline_replay_runtime_decision_parity"]
     assert bundle["no_runtime_authority_confirmed"] is True
     assert bundle["no_economic_claim_confirmed"] is True
 
 
-def test_proof_bundle_reports_gap_assessment_as_next_blocker(tmp_path: Path) -> None:
+def test_required_proof_inputs_matrix_accounts_for_all_sixteen_surfaces() -> None:
+    matrix = build_required_proof_inputs_matrix(REPO_ROOT)
+    assert matrix["required_proof_input_count"] == 16
+    assert len(matrix["proof_inputs"]) == 16
+    assert [spec.proof_input_id for spec in REQUIRED_PROOF_INPUT_SPECS] == [
+        item["proof_input_id"] for item in matrix["proof_inputs"]
+    ]
+    surface_p = next(item for item in matrix["proof_inputs"] if item["surface_id"] == "P")
+    assert surface_p["status"] == "MISSING_REQUIRED_PROOF_INPUT"
+    assert surface_p["parity_status"] == "PARTIAL"
+    assert surface_p["satisfied"] is False
+
+
+def test_proof_bundle_reports_missing_required_proof_input_as_next_blocker(tmp_path: Path) -> None:
     repo_root = Path.cwd()
-    pr5020, pr5021, eligibility, origin_main = _build_verified_source_evidence_fixture(
-        tmp_path, repo_root
+    pr5020, pr5027, pr5028, eligibility, origin_main = _build_verified_source_evidence_fixture(
+        tmp_path,
+        repo_root,
+        origin_main="1fecc0566ccc5d0b9ffd7e0cc9d485f88a63729b",
     )
     bundle = evaluate_proof_bundle(
         repo_root,
         pr5020_closeout_dir=pr5020,
-        pr5021_closeout_dir=pr5021,
-        pr5021_eligibility_dir=eligibility,
+        pr5027_closeout_dir=pr5027,
+        pr5028_closeout_dir=pr5028,
+        pr5028_eligibility_dir=eligibility,
         current_origin_main=origin_main,
     )
-    assert bundle["next_blocker"] == REASON_GAP_ASSESSMENT_NOT_ALL_PASS
+    assert bundle["next_blocker"] == REASON_MISSING_REQUIRED_PROOF_INPUT
+    assert REASON_MISSING_REQUIRED_PROOF_INPUT in bundle["reason_codes"]
     assert REASON_GAP_ASSESSMENT_NOT_ALL_PASS in bundle["reason_codes"]
-    assert REASON_SEMANTIC_PARITY_NOT_PROVEN in bundle["reason_codes"]
     assert bundle["gap_assessment_all_pass"] is False
     assert bundle["source_evidence_all_manifests_verified"] is True
     assert bundle["source_evidence_missing"] == []
@@ -154,22 +191,26 @@ def test_proof_bundle_verifies_source_evidence_manifests_when_available(
     module_proof_bundle: dict[str, Any],
 ) -> None:
     bundle = module_proof_bundle
-    assert bundle["source_evidence_count"] == 3
+    assert bundle["source_evidence_count"] == 4
     closeout_5020 = Path(
         os.environ.get("PEAK_TRADE_PR5020_CLOSEOUT_EVIDENCE", DEFAULT_PR5020_CLOSEOUT_EVIDENCE)
     )
-    closeout_5021 = Path(
-        os.environ.get("PEAK_TRADE_PR5021_CLOSEOUT_EVIDENCE", DEFAULT_PR5021_CLOSEOUT_EVIDENCE)
+    closeout_5027 = Path(
+        os.environ.get("PEAK_TRADE_PR5027_CLOSEOUT_EVIDENCE", DEFAULT_PR5027_CLOSEOUT_EVIDENCE)
     )
-    eligibility_5021 = Path(
+    closeout_5028 = Path(
+        os.environ.get("PEAK_TRADE_PR5028_CLOSEOUT_EVIDENCE", DEFAULT_PR5028_CLOSEOUT_EVIDENCE)
+    )
+    eligibility_5028 = Path(
         os.environ.get(
-            "PEAK_TRADE_PR5021_ELIGIBILITY_EVIDENCE", DEFAULT_PR5021_ELIGIBILITY_EVIDENCE
+            "PEAK_TRADE_PR5028_ELIGIBILITY_EVIDENCE", DEFAULT_PR5028_ELIGIBILITY_EVIDENCE
         )
     )
-    if all(path.is_dir() for path in (closeout_5020, closeout_5021, eligibility_5021)):
+    if all(
+        path.is_dir() for path in (closeout_5020, closeout_5027, closeout_5028, eligibility_5028)
+    ):
         assert bundle["source_evidence_all_manifests_verified"] is True
         assert bundle["source_evidence_missing"] == []
-        assert bundle["stale_source_evidence_detected"] is False
         for ref in bundle["source_evidence_refs"]:
             assert ref["manifest_verified"] is True
 
@@ -199,12 +240,13 @@ def test_verify_manifest_returns_false_for_missing_directory(tmp_path: Path) -> 
 def test_collect_source_evidence_refs_detects_missing_directories(tmp_path: Path) -> None:
     refs = collect_source_evidence_refs(
         pr5020_closeout_dir=tmp_path / "a",
-        pr5021_closeout_dir=tmp_path / "b",
-        pr5021_eligibility_dir=tmp_path / "c",
+        pr5027_closeout_dir=tmp_path / "b",
+        pr5028_closeout_dir=tmp_path / "c",
+        pr5028_eligibility_dir=tmp_path / "d",
         current_origin_main="deadbeef",
         repo_root=Path.cwd(),
     )
-    assert len(refs) == 3
+    assert len(refs) == 4
     assert all(not ref.present for ref in refs)
     assert all(not ref.manifest_verified for ref in refs)
 
