@@ -10,6 +10,8 @@ from pathlib import Path
 
 import json
 
+import pytest
+
 from trading.master_v2.full_canonical_system_backtest_parity_gap_assessment_v0 import (
     ALLOWED_SLICE_CHANGED_PATH_PREFIXES,
     FULL_CANONICAL_SYSTEM_BACKTEST_PARITY_GAP_ASSESSMENT_OWNER,
@@ -58,8 +60,8 @@ def test_gap_assessment_owner_and_surface_count_v0() -> None:
 
 def test_gap_assessment_status_distribution_v0() -> None:
     counts = parity_status_counts_v0()
-    assert counts["PASS"] == 15
-    assert counts["PARTIAL"] >= 1
+    assert counts["PASS"] == 16
+    assert counts["PARTIAL"] == 0
     assert counts["GAP"] == 0
     assert counts["NOT_APPLICABLE"] == 0
     assert sum(counts.values()) == 16
@@ -175,15 +177,12 @@ def test_killswitch_boundary_surface_pass_v0() -> None:
     assert "evaluate_scenario_killswitch_boundary_v0" in killswitch.current_scenario_replay_binding
 
 
-def test_surface_p_four_way_parity_binding_partial_v0() -> None:
+def test_surface_p_four_way_parity_binding_pass_v0() -> None:
     surface_p = next(item for item in parity_surface_assessments_v0() if item.surface_id == "P")
-    assert surface_p.parity_status == "PARTIAL"
+    assert surface_p.parity_status == "PASS"
     assert "bind_backtest_bar_four_way_parity_lane_v0" in surface_p.current_backtest_binding
     assert "runtime reference lane bound offline" in surface_p.current_runtime_semantics_reference
-    assert "BOUND_NOT_ACTIVATED by policy" in surface_p.missing_binding_if_any
-    assert "full bar-sequence 4-way parity fixture coverage complete offline" in (
-        surface_p.missing_binding_if_any
-    )
+    assert surface_p.missing_binding_if_any == ""
     assert (
         "scripts/ops/run_surface_p_full_bar_sequence_4_way_parity_completion_v0.py"
         in surface_p.evidence_refs
@@ -232,7 +231,7 @@ def test_parity_gap_records_align_with_partial_surfaces_v0() -> None:
         if item.parity_status == "PARTIAL"
     }
     gap_record_ids = {record["surface_id"] for record in parity_gap_records_v0()}
-    assert "P" in partial_ids
+    assert "P" not in partial_ids
     assert "P" not in gap_record_ids
     assert gap_record_ids <= partial_ids
     assert normalize_matrix_status_v0("NOT_APPLICABLE") == "NOT_APPLICABLE_BOUNDARY_ONLY"
@@ -287,7 +286,7 @@ def test_pr4946_parity_suite_still_passes_v0() -> None:
 
 
 def test_prometheus_client_importable_v0() -> None:
-    assert importlib.util.find_spec("prometheus_client") is not None
+    pytest.importorskip("prometheus_client")
     proc = subprocess.run(
         [
             sys.executable,
