@@ -108,6 +108,9 @@ ALLOWED_SLICE_CHANGED_PATH_PREFIXES: Tuple[str, ...] = (
     "src/trading/master_v2/runtime_bridge_pre_activation_gate_assessment_v0.py",
     "scripts/ops/run_runtime_bridge_pre_activation_gate_assessment_v0.py",
     "tests/trading/master_v2/test_runtime_bridge_pre_activation_gate_assessment_contract_v0.py",
+    "src/trading/master_v2/runtime_bridge_boundary_gap_assessment_v0.py",
+    "scripts/ops/run_runtime_bridge_boundary_gap_assessment_v0.py",
+    "tests/trading/master_v2/test_runtime_bridge_boundary_gap_assessment_contract_v0.py",
 )
 
 FORBIDDEN_CHANGED_PATH_PREFIXES: Tuple[str, ...] = (
