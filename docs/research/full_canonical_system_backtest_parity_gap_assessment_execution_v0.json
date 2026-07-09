@@ -1,37 +1,37 @@
 {
   "artifact": "full_canonical_system_backtest_parity_gap_assessment_execution_v0",
-  "assessment_mode": "READ_ONLY_REPO_INVENTORY_AND_REUSE_FIRST_REWIRE_SCOPE",
+  "assessment_mode": "READ_ONLY_REPO_INVENTORY_AND_REUSE_FIRST_INTEGRATION_SCOPE",
   "authority_effect": "NONE",
-  "backtest_runtime_decision_parity_status": "ASSESSED_NOT_ASSERTED",
+  "backtest_execution_decision_parity_status": "ASSESSED_NOT_ASSERTED",
   "blocked_steps": [
-    "RUNTIME_REWIRE",
-    "RUNTIME_EVIDENCE",
-    "ZERO_ORDER_RUNTIME_EVIDENCE",
-    "SHADOW",
-    "PAPER",
-    "TESTNET",
-    "CANARY",
-    "LIVE",
-    "ORDER_SUBMISSION",
-    "CREDENTIAL_USE",
-    "ARMING",
+    "EXECUTION_PATH_CHANGE",
+    "EXECUTION_PATH_EVIDENCE",
+    "ZERO_EFFECT_EXECUTION_EVIDENCE",
+    "SIMULATION_STAGE_SHADOW_EQUIVALENT",
+    "SIMULATION_STAGE_PAPER_EQUIVALENT",
+    "SIMULATION_STAGE_TEST_ENVIRONMENT",
+    "LIMITED_PRODUCTION_PROBE",
+    "PRODUCTION_EXECUTION",
+    "ADAPTER_ACTION_DISPATCH",
+    "SECRET_MATERIAL_USE",
+    "OPERATOR_ENABLEMENT",
     "SYSTEM_ECONOMIC_EVIDENCE_CLAIM"
   ],
   "created_at_utc": "2026-07-09T23:44:02+00:00",
-  "credentials_allowed": false,
+  "secret_material_allowed": false,
   "full_canonical_chain_wired_status": "ASSESSED_NOT_ASSERTED",
-  "live_authorized": false,
-  "next_allowed_step": "CREATE_OWNER_BOUND_NARROW_REUSE_FIRST_REWIRE_SLICE_FOR_HIGHEST_PRIORITY_CONFIRMED_GAP",
-  "orders_allowed": false,
+  "production_execution_authorized": false,
+  "next_allowed_step": "CREATE_OWNER_BOUND_NARROW_REUSE_FIRST_INTEGRATION_SLICE_FOR_HIGHEST_PRIORITY_CONFIRMED_GAP",
+  "adapter_actions_allowed": false,
   "origin_main_head": "788b929eb3af3fa22aa1a9d2478c481700e18f34",
   "repo_head": "788b929eb3af3fa22aa1a9d2478c481700e18f34",
-  "runtime_effect": "NONE",
-  "runtime_rewire_admissible": false,
+  "execution_effect": "NONE",
+  "execution_path_change_admissible": false,
   "schema_version": "v0",
   "scope_source": "PR5053_FULL_CANONICAL_SYSTEM_BACKTEST_PARITY_GAP_ASSESSMENT_SCOPE_V0",
   "summary": {
     "evidence_found_review_required": 14,
-    "gap_open_rewire_scope_required": 0,
+    "gap_open_integration_scope_required": 0,
     "partial_or_ambiguous_review_required": 0,
     "total_surfaces": 14
   },
@@ -74,7 +74,7 @@
         "docs/analysis/p52/README.md"
       ],
       "required_status": "ASSESSED",
-      "reuse_first_rewire_scope": "OWNER_BOUND_NARROW_SLICE_REQUIRED_IF_CLASSIFICATION_NOT_EVIDENCE_FOUND",
+      "reuse_first_integration_scope": "OWNER_BOUND_NARROW_INTEGRATION_SLICE_REQUIRED_IF_CLASSIFICATION_NOT_EVIDENCE_FOUND",
       "surface_id": "BULL_BEAR_STATE_SWITCH_OWNER"
     },
     {
@@ -114,7 +114,7 @@
         ".github/workflows/mcp_smoke_preflight.yml"
       ],
       "required_status": "ASSESSED",
-      "reuse_first_rewire_scope": "OWNER_BOUND_NARROW_SLICE_REQUIRED_IF_CLASSIFICATION_NOT_EVIDENCE_FOUND",
+      "reuse_first_integration_scope": "OWNER_BOUND_NARROW_INTEGRATION_SLICE_REQUIRED_IF_CLASSIFICATION_NOT_EVIDENCE_FOUND",
       "surface_id": "SCOPE_ADVERSE_EXIT_REVERSAL_PREPARATION"
     },
     {
@@ -154,7 +154,7 @@
         "config/ops/cross_sectional_funding_rate_extreme_carry_reversion_v0_economic_evaluation_v1.json"
       ],
       "required_status": "ASSESSED",
-      "reuse_first_rewire_scope": "OWNER_BOUND_NARROW_SLICE_REQUIRED_IF_CLASSIFICATION_NOT_EVIDENCE_FOUND",
+      "reuse_first_integration_scope": "OWNER_BOUND_NARROW_INTEGRATION_SLICE_REQUIRED_IF_CLASSIFICATION_NOT_EVIDENCE_FOUND",
       "surface_id": "FLAT_BEFORE_OPPOSITE_SIDE_INVARIANT"
     },
     {
@@ -194,7 +194,7 @@
         "IMPLEMENTATION_REPORT_KUPIEC_POF.md"
       ],
       "required_status": "ASSESSED",
-      "reuse_first_rewire_scope": "OWNER_BOUND_NARROW_SLICE_REQUIRED_IF_CLASSIFICATION_NOT_EVIDENCE_FOUND",
+      "reuse_first_integration_scope": "OWNER_BOUND_NARROW_INTEGRATION_SLICE_REQUIRED_IF_CLASSIFICATION_NOT_EVIDENCE_FOUND",
       "surface_id": "SURVIVAL_SUITABILITY_BINDING"
     },
     {
@@ -235,7 +235,7 @@
         "config/ops/cross_sectional_funding_rate_dual_leg_spread_v1_economic_evaluation_v1.json"
       ],
       "required_status": "ASSESSED",
-      "reuse_first_rewire_scope": "OWNER_BOUND_NARROW_SLICE_REQUIRED_IF_CLASSIFICATION_NOT_EVIDENCE_FOUND",
+      "reuse_first_integration_scope": "OWNER_BOUND_NARROW_INTEGRATION_SLICE_REQUIRED_IF_CLASSIFICATION_NOT_EVIDENCE_FOUND",
       "surface_id": "DOUBLE_PLAY_COMPOSITION"
     },
     {
@@ -275,7 +275,7 @@
         ".github/workflows/policy_critic_gate.yml"
       ],
       "required_status": "ASSESSED",
-      "reuse_first_rewire_scope": "OWNER_BOUND_NARROW_SLICE_REQUIRED_IF_CLASSIFICATION_NOT_EVIDENCE_FOUND",
+      "reuse_first_integration_scope": "OWNER_BOUND_NARROW_INTEGRATION_SLICE_REQUIRED_IF_CLASSIFICATION_NOT_EVIDENCE_FOUND",
       "surface_id": "ENTRY_POSITION_EXIT_POLICY"
     },
     {
@@ -315,7 +315,7 @@
         "PHASE4E_PR_BODY.md"
       ],
       "required_status": "ASSESSED",
-      "reuse_first_rewire_scope": "OWNER_BOUND_NARROW_SLICE_REQUIRED_IF_CLASSIFICATION_NOT_EVIDENCE_FOUND",
+      "reuse_first_integration_scope": "OWNER_BOUND_NARROW_INTEGRATION_SLICE_REQUIRED_IF_CLASSIFICATION_NOT_EVIDENCE_FOUND",
       "surface_id": "CAPITAL_RISK_SIZING"
     },
     {
@@ -324,7 +324,7 @@
         "adapter_compatible",
         "authority_effect",
         "intent",
-        "order intent",
+        "adapter_effect_intent",
         "quantity_status"
       ],
       "matched_paths_sample": [
@@ -355,7 +355,7 @@
         "config/research/cross_sectional_funding_rate_extreme_carry_reversion_v0_offline_economic_evaluation_scope_ratification_v0.json"
       ],
       "required_status": "ASSESSED",
-      "reuse_first_rewire_scope": "OWNER_BOUND_NARROW_SLICE_REQUIRED_IF_CLASSIFICATION_NOT_EVIDENCE_FOUND",
+      "reuse_first_integration_scope": "OWNER_BOUND_NARROW_INTEGRATION_SLICE_REQUIRED_IF_CLASSIFICATION_NOT_EVIDENCE_FOUND",
       "surface_id": "CANONICAL_ORDER_INTENT_BOUNDARY"
     },
     {
@@ -395,16 +395,16 @@
         ".github/workflows/ops_doctor_dashboard.yml"
       ],
       "required_status": "ASSESSED",
-      "reuse_first_rewire_scope": "OWNER_BOUND_NARROW_SLICE_REQUIRED_IF_CLASSIFICATION_NOT_EVIDENCE_FOUND",
+      "reuse_first_integration_scope": "OWNER_BOUND_NARROW_INTEGRATION_SLICE_REQUIRED_IF_CLASSIFICATION_NOT_EVIDENCE_FOUND",
       "surface_id": "SAFETY_KERNEL_KILLSWITCH_BOUNDARY"
     },
     {
       "classification": "EVIDENCE_FOUND_REVIEW_REQUIRED",
       "keyword_hits": [
-        "client_order_id",
+        "client_effect_id",
         "outcome",
         "reconciliation",
-        "resubmit",
+        "client_effect_replay",
         "unknown"
       ],
       "matched_paths_sample": [
@@ -435,7 +435,7 @@
         "config/research/cross_sectional_funding_rate_extreme_carry_reversion_v0_binding_readiness_v0.json"
       ],
       "required_status": "ASSESSED",
-      "reuse_first_rewire_scope": "OWNER_BOUND_NARROW_SLICE_REQUIRED_IF_CLASSIFICATION_NOT_EVIDENCE_FOUND",
+      "reuse_first_integration_scope": "OWNER_BOUND_NARROW_INTEGRATION_SLICE_REQUIRED_IF_CLASSIFICATION_NOT_EVIDENCE_FOUND",
       "surface_id": "RECONCILIATION_UNKNOWN_OUTCOME_SEMANTICS"
     },
     {
@@ -475,7 +475,7 @@
         ".github/workflows/l4_critic_replay_determinism_v2.yml"
       ],
       "required_status": "ASSESSED",
-      "reuse_first_rewire_scope": "OWNER_BOUND_NARROW_SLICE_REQUIRED_IF_CLASSIFICATION_NOT_EVIDENCE_FOUND",
+      "reuse_first_integration_scope": "OWNER_BOUND_NARROW_INTEGRATION_SLICE_REQUIRED_IF_CLASSIFICATION_NOT_EVIDENCE_FOUND",
       "surface_id": "PROMOTION_GATE_BOUNDARY"
     },
     {
@@ -515,7 +515,7 @@
         ".github/workflows/cursor_auto_automerge.yml"
       ],
       "required_status": "ASSESSED",
-      "reuse_first_rewire_scope": "OWNER_BOUND_NARROW_SLICE_REQUIRED_IF_CLASSIFICATION_NOT_EVIDENCE_FOUND",
+      "reuse_first_integration_scope": "OWNER_BOUND_NARROW_INTEGRATION_SLICE_REQUIRED_IF_CLASSIFICATION_NOT_EVIDENCE_FOUND",
       "surface_id": "AI_OBSERVABILITY_EXPLAINABILITY_BOUNDARY"
     },
     {
@@ -555,7 +555,7 @@
         "README.md"
       ],
       "required_status": "ASSESSED",
-      "reuse_first_rewire_scope": "OWNER_BOUND_NARROW_SLICE_REQUIRED_IF_CLASSIFICATION_NOT_EVIDENCE_FOUND",
+      "reuse_first_integration_scope": "OWNER_BOUND_NARROW_INTEGRATION_SLICE_REQUIRED_IF_CLASSIFICATION_NOT_EVIDENCE_FOUND",
       "surface_id": "FEEDBACK_LEARNING_BOUNDARY"
     },
     {
@@ -595,7 +595,7 @@
         "PHASE4E_PR_BODY.md"
       ],
       "required_status": "ASSESSED",
-      "reuse_first_rewire_scope": "OWNER_BOUND_NARROW_SLICE_REQUIRED_IF_CLASSIFICATION_NOT_EVIDENCE_FOUND",
+      "reuse_first_integration_scope": "OWNER_BOUND_NARROW_INTEGRATION_SLICE_REQUIRED_IF_CLASSIFICATION_NOT_EVIDENCE_FOUND",
       "surface_id": "BACKTEST_OFFLINE_REPLAY_RUNTIME_DECISION_PARITY"
     }
   ],
