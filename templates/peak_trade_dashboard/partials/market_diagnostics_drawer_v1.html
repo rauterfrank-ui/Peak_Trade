@@ -20,11 +20,11 @@
       <dl class="m-0 grid grid-cols-1 sm:grid-cols-2 gap-2 text-[10px] font-mono text-slate-300">
         <div>
           <dt class="text-slate-500 uppercase">Notion current-state sync</dt>
-          <dd class="m-0 mt-0.5">NOTION_CURRENT=true · MANIFEST_VERIFY_RC=0</dd>
+          <dd class="m-0 mt-0.5">NOTION_CURRENT={{ current_state.pr_and_evidence_status.notion_current_state_sync.NOTION_CURRENT|lower }} · last verified MANIFEST_VERIFY_RC={{ current_state.pr_and_evidence_status.notion_current_state_sync.MANIFEST_VERIFY_RC|e }}</dd>
         </div>
         <div>
-          <dt class="text-slate-500 uppercase">PR #4740</dt>
-          <dd class="m-0 mt-0.5">MERGED · {{ current_state.pr_and_evidence_status.PR4740.merge_commit|e }}</dd>
+          <dt class="text-slate-500 uppercase">PR #5033</dt>
+          <dd class="m-0 mt-0.5">MERGED · {{ current_state.pr_and_evidence_status.PR5033.merge_commit|e }}</dd>
         </div>
         <div class="sm:col-span-2">
           <dt class="text-slate-500 uppercase">Ratification bundle (historical)</dt>

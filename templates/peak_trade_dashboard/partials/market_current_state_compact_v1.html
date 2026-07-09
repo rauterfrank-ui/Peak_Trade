@@ -1,8 +1,8 @@
-{# STEP29M current-state panel — compact, view-only, no controls #}
+{# Full-parity current-state panel — compact, view-only, no controls #}
 <section
   class="rounded-lg border border-slate-800/70 bg-slate-950/55 px-2.5 py-2 mt-2"
   role="region"
-  aria-label="STEP29M current system state"
+  aria-label="Full parity current system state"
   data-market-current-state-compact-v1="true"
   data-market-current-state-owner-v1="{{ current_state.snapshot_owner|e }}"
   data-market-current-state-version-v1="{{ current_state.snapshot_version|e }}"
@@ -11,17 +11,26 @@
   data-market-controls-allowed-v1="false"
 >
   <div class="flex flex-wrap items-center justify-between gap-2 mb-1.5">
-    <h2 class="m-0 text-[10px] font-semibold uppercase tracking-wide text-slate-300">STEP29M · Current state</h2>
+    <h2 class="m-0 text-[10px] font-semibold uppercase tracking-wide text-slate-300">Full parity · Current state</h2>
     <span class="text-[9px] font-mono text-slate-500" data-market-current-origin-main-v1="true">origin/main · {{ current_state.system.CURRENT_ORIGIN_MAIN|e }}</span>
   </div>
 
   <dl class="m-0 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-x-2 gap-y-1 text-[9px] font-mono mb-2" data-market-current-state-flags-v1="true">
+    <div><dt class="text-slate-500 uppercase">Chain wired</dt><dd class="m-0 text-emerald-200/90" data-market-full-canonical-chain-wired-v1="true">true</dd></div>
+    <div><dt class="text-slate-500 uppercase">Parity pass</dt><dd class="m-0 text-emerald-200/90" data-market-backtest-runtime-parity-pass-v1="true">true</dd></div>
+    <div><dt class="text-slate-500 uppercase">Econ evidence</dt><dd class="m-0 text-rose-200/90" data-market-economic-evidence-admissible-v1="true">false</dd></div>
+    <div><dt class="text-slate-500 uppercase">Runtime rewire</dt><dd class="m-0 text-rose-200/90" data-market-runtime-rewire-admissible-v1="true">false</dd></div>
+    <div><dt class="text-slate-500 uppercase">Next blocker</dt><dd class="m-0 text-amber-200/90" data-market-next-blocker-v1="true">{{ current_state.system.NEXT_BLOCKER|e }}</dd></div>
+    <div><dt class="text-slate-500 uppercase">Runtime</dt><dd class="m-0 text-slate-300" data-market-runtime-authorized-v1="true">false</dd></div>
+  </dl>
+
+  <dl class="m-0 grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-6 gap-x-2 gap-y-1 text-[9px] font-mono mb-2" data-market-current-state-fleet-flags-v1="true">
     <div><dt class="text-slate-500 uppercase">Pending eval</dt><dd class="m-0 text-sky-200/90" data-market-authorized-pending-count-v1="true">{{ current_state.system.AUTHORIZED_PENDING_EVALUATION_COUNT|e }}</dd></div>
     <div><dt class="text-slate-500 uppercase">Next strategy</dt><dd class="m-0 text-sky-200/90" data-market-next-evaluation-strategy-v1="true">{{ current_state.system.NEXT_EVALUATION_STRATEGY_ID|e }}</dd></div>
     <div><dt class="text-slate-500 uppercase">Next status</dt><dd class="m-0 text-sky-200/90" data-market-next-evaluation-status-v1="true">{{ current_state.system.NEXT_EVALUATION_CONFIG_STATUS|e }}</dd></div>
     <div><dt class="text-slate-500 uppercase">Econ pass</dt><dd class="m-0 text-rose-200/90" data-market-economic-validity-pass-v1="true">false</dd></div>
     <div><dt class="text-slate-500 uppercase">Promotion</dt><dd class="m-0 text-slate-300" data-market-promotion-allowed-v1="true">false</dd></div>
-    <div><dt class="text-slate-500 uppercase">Runtime</dt><dd class="m-0 text-slate-300" data-market-runtime-authorized-v1="true">false</dd></div>
+    <div><dt class="text-slate-500 uppercase">Live</dt><dd class="m-0 text-slate-300" data-market-live-authorized-v1="true">false</dd></div>
   </dl>
 
   <div class="mb-2" data-market-strategy-fleet-compact-v1="true">
@@ -65,7 +74,7 @@
   <div class="rounded border border-sky-900/40 bg-sky-950/20 px-2 py-1.5 mb-2" data-market-next-canonical-step-v1="true">
     <p class="m-0 text-[9px] uppercase text-sky-300/90">Next canonical step</p>
     <p class="m-0 mt-0.5 font-mono text-[9px] text-sky-100/90 break-all">{{ current_state.next_canonical_step.step_id|e }}</p>
-    <p class="m-0 mt-1 text-[8px] text-slate-400">PREFLIGHT_ONLY=true · ECONOMIC_EVALUATION_AUTHORIZED=false · PRODUCTIVE_RUNNER_INVOCATIONS=0 · BACKTEST_ALLOWED=false</p>
+    <p class="m-0 mt-1 text-[8px] text-slate-400">PREFLIGHT_ONLY=true · ECONOMIC_EVALUATION_AUTHORIZED=false · PRODUCTIVE_RUNNER_INVOCATIONS=0 · BACKTEST_ALLOWED=false · RUNTIME_REWIRE_ADMISSIBLE=false</p>
   </div>
 
   <div class="flex flex-wrap gap-1 text-[8px] uppercase mb-1" data-market-governance-safety-compact-v1="true">
@@ -80,6 +89,6 @@
   </div>
 
   <p class="m-0 text-[8px] text-slate-500" data-market-evidence-primary-v1="true">
-    PR #4740 MERGED · Notion sync MANIFEST_VERIFY_RC=0 · view-only · no controls
+    PR #5033 MERGED · FULL_CANONICAL_CHAIN_WIRED=true · RUNTIME_REWIRE_ADMISSIBLE=false · view-only · no controls
   </p>
 </section>
