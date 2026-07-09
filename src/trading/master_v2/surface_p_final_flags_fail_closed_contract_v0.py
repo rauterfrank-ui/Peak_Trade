@@ -149,11 +149,12 @@ def evaluate_surface_p_final_flags_fail_closed_contract_v0(
 
 def derive_targeted_semantic_binding_confirmations_from_gap_assessment_v0() -> dict[str, bool]:
     from trading.master_v2.full_canonical_system_backtest_parity_gap_assessment_v0 import (
-        parity_surface_assessments_v0,
+        _parity_surface_assessments_base_v0,
     )
 
     status_by_surface = {
-        item.surface_id: item.parity_status == "PASS" for item in parity_surface_assessments_v0()
+        item.surface_id: item.parity_status == "PASS"
+        for item in _parity_surface_assessments_base_v0()
     }
     return {
         binding: all(status_by_surface.get(surface_id, False) for surface_id in surface_ids)

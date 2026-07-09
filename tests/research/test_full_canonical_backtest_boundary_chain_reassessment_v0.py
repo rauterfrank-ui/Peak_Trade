@@ -146,7 +146,7 @@ def test_fail_closed_reassessment_after_pr5026(module_assessment: dict | None) -
     for surface_id in TRACE_PRIORITY:
         assert by_id[surface_id]["trace_state"] == "TRACE_REWIRE_BOUND_OFFLINE_PARITY_PATH"
     assert by_id["runtime_bridge_boundary"]["offline_parity_gap"] is False
-    assert by_id["runtime_bridge_boundary"]["parity_status"] == "PARTIAL"
+    assert by_id["runtime_bridge_boundary"]["parity_status"] == "PASS"
 
 
 def test_closeout_reference_missing_fails_closed(tmp_path: Path) -> None:

@@ -90,7 +90,7 @@ def evaluate_surface_p_required_proof_input_binding_v0(
 ) -> SurfacePRequiredProofInputBindingResultV0:
     """Evaluate Surface P required proof-input binding; never grants runtime authority."""
     from trading.master_v2.full_canonical_system_backtest_parity_gap_assessment_v0 import (
-        parity_surface_assessments_v0,
+        _parity_surface_assessments_base_v0,
     )
     from trading.master_v2.integrated_vs_scenario_replay_full_system_parity_harness_v0 import (
         evaluate_surface_p_full_bar_sequence_four_way_parity_v0,
@@ -105,7 +105,9 @@ def evaluate_surface_p_required_proof_input_binding_v0(
     )
 
     fail_reasons: list[str] = []
-    surface_p = next(item for item in parity_surface_assessments_v0() if item.surface_id == "P")
+    surface_p = next(
+        item for item in _parity_surface_assessments_base_v0() if item.surface_id == "P"
+    )
     bar_assessment = evaluate_surface_p_full_bar_sequence_four_way_parity_v0()
     semantic = evaluate_surface_p_offline_complete_runtime_bridge_bound_not_activated_contract_v0(
         offline_four_way_fixtures_complete=bar_assessment.fixtures_complete,

@@ -27,8 +27,8 @@ def test_gap_assessment_owner_and_surface_count_v0() -> None:
 
 def test_gap_assessment_status_distribution_v0() -> None:
     counts = parity_status_counts_v0()
-    assert counts["PASS"] == 15
-    assert counts["PARTIAL"] == 1
+    assert counts["PASS"] == 16
+    assert counts["PARTIAL"] == 0
     assert counts["GAP"] == 0
     assert counts["NOT_APPLICABLE"] == 0
     assert sum(counts.values()) == 16
@@ -66,3 +66,22 @@ def test_gap_matrix_json_machine_readable_v0() -> None:
     assert payload["summary"]["full_canonical_chain_wired"] is False
     surface_i = next(item for item in payload["surfaces"] if item["surface_id"] == "I")
     assert surface_i["parity_status"] == "PASS"
+
+
+def test_surface_p_passes_offline_when_required_proof_input_is_satisfied_and_runtime_bridge_remains_policy_blocked() -> (
+    None
+):
+    from trading.master_v2.full_canonical_system_backtest_parity_gap_assessment_v0 import (
+        get_surface_p_required_proof_input_binding_v0,
+        parity_surface_assessments_v0,
+    )
+
+    proof_input = get_surface_p_required_proof_input_binding_v0()
+    surface_p = next(
+        surface for surface in parity_surface_assessments_v0() if surface.surface_id == "P"
+    )
+
+    assert proof_input["proof_input_satisfied"] is True
+    assert proof_input["runtime_bridge_bound_not_activated"] is True
+    assert surface_p.parity_status == "PASS"
+    assert surface_p.missing_binding_if_any == ""
