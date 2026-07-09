@@ -1,4 +1,4 @@
-"""Market dashboard STEP29M current-state sync contract (view-only, SSR)."""
+"""Market dashboard full-parity current-state sync contract (view-only, SSR)."""
 
 from __future__ import annotations
 
@@ -20,6 +20,8 @@ pytestmark = pytest.mark.web
 
 from src.webui.app import create_app
 from src.webui.market_dashboard_current_state_snapshot_v0 import (
+    CURRENT_ORIGIN_MAIN,
+    NEXT_BLOCKER,
     NEXT_CANONICAL_STEP,
     SNAPSHOT_OWNER,
     market_dashboard_current_state_snapshot_v0,
@@ -92,7 +94,12 @@ def test_single_current_state_ssot_owner() -> None:
 
 def test_current_system_state_snapshot_values() -> None:
     system = market_dashboard_current_state_snapshot_v0()["current_system_state"]
-    assert system["CURRENT_ORIGIN_MAIN"] == "f37f20008bfaee613f8d7e5005acd80da62db78e"
+    assert system["CURRENT_ORIGIN_MAIN"] == CURRENT_ORIGIN_MAIN
+    assert system["FULL_CANONICAL_CHAIN_WIRED"] is True
+    assert system["BACKTEST_RUNTIME_DECISION_PARITY_PASS"] is True
+    assert system["SYSTEM_ECONOMIC_EVIDENCE_ADMISSIBLE"] is False
+    assert system["RUNTIME_REWIRE_ADMISSIBLE"] is False
+    assert system["NEXT_BLOCKER"] == NEXT_BLOCKER
     assert system["STEP29M_EXECUTION_COMPLETE"] is True
     assert system["ECONOMIC_VALIDITY_OBJECTIVE_ACHIEVED"] is False
     assert system["CURRENT_FLEET_ECONOMIC_VALIDITY_PASS"] is False
@@ -105,6 +112,16 @@ def test_current_system_state_snapshot_values() -> None:
     assert system["RUNTIME_AUTHORIZED"] is False
     assert system["PROFITABILITY_CLAIM_ALLOWED"] is False
     assert system["NEXT_CANONICAL_STEP"] == NEXT_CANONICAL_STEP
+
+
+def test_full_parity_flags_visible(client: TestClient) -> None:
+    html = _html(client)
+    assert 'data-market-full-canonical-chain-wired-v1="true">true' in html
+    assert 'data-market-backtest-runtime-parity-pass-v1="true">true' in html
+    assert 'data-market-economic-evidence-admissible-v1="true">false' in html
+    assert 'data-market-runtime-rewire-admissible-v1="true">false' in html
+    assert f'data-market-next-blocker-v1="true">{NEXT_BLOCKER}' in html
+    assert CURRENT_ORIGIN_MAIN in html
 
 
 def test_strategy_fleet_snapshot(client: TestClient) -> None:
@@ -140,6 +157,7 @@ def test_next_canonical_step_exact(client: TestClient) -> None:
     assert "PREFLIGHT_ONLY=true" in html
     assert "ECONOMIC_EVALUATION_AUTHORIZED=false" in html
     assert "PRODUCTIVE_RUNNER_INVOCATIONS=0" in html
+    assert "RUNTIME_REWIRE_ADMISSIBLE=false" in html
 
 
 def test_governance_safety_flags_visible(client: TestClient) -> None:
@@ -177,7 +195,9 @@ def test_no_post_or_order_controls(client: TestClient) -> None:
 def test_evidence_integrity_secondary_not_dominant_alarm(client: TestClient) -> None:
     html = _html(client)
     assert 'data-market-evidence-primary-v1="true"' in html
-    assert "Notion sync MANIFEST_VERIFY_RC=0" in html
+    assert "PR #5033 MERGED" in html
+    assert "FULL_CANONICAL_CHAIN_WIRED=true" in html
+    assert "RUNTIME_REWIRE_ADMISSIBLE=false" in html
     assert 'data-market-diagnostics-evidence-integrity-v1="true"' in html
     assert 'data-market-ratification-manifest-drift-v1="true"' in html
     assert "REPORT.md hash drift" in html
