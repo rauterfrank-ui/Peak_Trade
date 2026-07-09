@@ -151,3 +151,7 @@ def main() -> int:
 
 if __name__ == "__main__":
     raise SystemExit(main())
+
+
+AUTHORITY_EFFECT = "NONE"
+RUNTIME_EFFECT = "NONE"

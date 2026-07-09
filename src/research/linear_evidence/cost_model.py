@@ -38,3 +38,14 @@ def build_cost_model_calibration_evidence(
         status=status,
         reason_codes=reason_codes,
     )
+
+
+AUTHORITY_EFFECT = "NONE"
+RUNTIME_EFFECT = "NONE"
+
+
+def with_authority_neutral_effects(payload):
+    enriched = dict(payload)
+    enriched["authority_effect"] = AUTHORITY_EFFECT
+    enriched["runtime_effect"] = RUNTIME_EFFECT
+    return enriched
