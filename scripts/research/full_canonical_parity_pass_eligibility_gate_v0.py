@@ -20,6 +20,9 @@ from scripts.research.backtest_runtime_decision_parity_trace_matrix_v0 import (
     TRACE_REWIRE_BOUND_STATE,
     build_trace_matrix,
 )
+from scripts.research.full_canonical_backtest_boundary_chain_reassessment_v0 import (
+    build_boundary_chain_reassessment,
+)
 from scripts.research.full_canonical_parity_closure_assessment_v0 import (
     FORBIDDEN_POSITIVE_ASSIGNMENT_RES,
     FORBIDDEN_POSITIVE_CLAIM_LITERALS,
@@ -29,9 +32,14 @@ from scripts.research.full_canonical_parity_closure_assessment_v0 import (
 
 GATE_SCHEMA = "FullCanonicalParityPassEligibilityGateV0"
 GATE_ID = "FULL_CANONICAL_PARITY_PASS_ELIGIBILITY_GATE_V0"
+NEXT_STEP_AFTER_NOT_ELIGIBLE = "FULL_CANONICAL_PARITY_PROOF_BUNDLE_ASSEMBLER_V0"
 DEFAULT_PR5020_CLOSEOUT_EVIDENCE = (
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
     "research/merge_closeout_pr5020_full_canonical_parity_closure_assessment_v0_20260708T213101Z"
+)
+DEFAULT_PR5027_CLOSEOUT_EVIDENCE = (
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "research/merge_closeout_pr5027_full_canonical_backtest_boundary_chain_reassessment_v0_20260709T004143Z"
 )
 
 CONTEXT_PROTECTED_MARKERS = (
@@ -78,6 +86,9 @@ REASON_TRACE_MATRIX_NOT_AWAITING_FULL_PROOF = (
     "TRACE_MATRIX_NOT_CHAIN_BOUND_AWAITING_FULL_PARITY_PROOF"
 )
 REASON_PARITY_PASS_CLAIM_NOT_DEFERRED = "PARITY_PASS_CLAIM_NOT_IN_DEFERRED_STATE"
+REASON_PR5027_CLOSEOUT_NOT_VERIFIED = "PR5027_CLOSEOUT_EVIDENCE_MANIFEST_NOT_VERIFIED"
+REASON_PR5027_CLOSEOUT_REFERENCE_UNAVAILABLE = "PR5027_CLOSEOUT_EVIDENCE_REFERENCE_NOT_AVAILABLE"
+REASON_BOUNDARY_CHAIN_NOT_DOCUMENTED = "BOUNDARY_CHAIN_STATUS_NOT_FAIL_CLOSED_DOCUMENTED"
 
 
 @dataclass(frozen=True)
@@ -161,8 +172,11 @@ def _load_gap_assessment_counts() -> dict[str, int]:
 def evaluate_eligibility_criteria(
     repo_root: Path,
     closure: dict[str, Any],
+    boundary: dict[str, Any],
     *,
     pr5020_closeout_verified: bool,
+    pr5027_closeout_verified: bool,
+    pr5027_closeout_reference_available: bool,
 ) -> list[EligibilityCriterion]:
     edges = closure["trace_edges"]
     all_trace_rewire_bound = all(edge["trace_state"] == TRACE_REWIRE_BOUND_STATE for edge in edges)
@@ -178,6 +192,23 @@ def evaluate_eligibility_criteria(
     matrix_plan_type = matrix["selected_next_rewire_plan"]["plan_type"]
 
     return [
+        EligibilityCriterion(
+            criterion_id="pr5027_closeout_manifest_verified",
+            satisfied=pr5027_closeout_verified,
+            required=pr5027_closeout_reference_available,
+            blocker_code=REASON_PR5027_CLOSEOUT_NOT_VERIFIED,
+            detail=(
+                f"pr5027_closeout_verified={pr5027_closeout_verified} "
+                f"reference_available={pr5027_closeout_reference_available}"
+            ),
+        ),
+        EligibilityCriterion(
+            criterion_id="boundary_chain_fail_closed_documented",
+            satisfied=boundary["boundary_chain_status"] == "FAIL_CLOSED_DOCUMENTED",
+            required=True,
+            blocker_code=REASON_BOUNDARY_CHAIN_NOT_DOCUMENTED,
+            detail=f"boundary_chain_status={boundary['boundary_chain_status']}",
+        ),
         EligibilityCriterion(
             criterion_id="chain_surface_binding_complete",
             satisfied=bool(closure["chain_surface_binding_complete"]),
@@ -250,10 +281,15 @@ def build_eligibility_gate(
     repo_root: Path,
     *,
     pr5020_closeout_dir: Path | None = None,
+    pr5027_closeout_dir: Path | None = None,
 ) -> dict[str, Any]:
     closure = build_closure_assessment(repo_root)
+    boundary = build_boundary_chain_reassessment(repo_root)
     closeout_dir = pr5020_closeout_dir or Path(
         os.environ.get("PEAK_TRADE_PR5020_CLOSEOUT_EVIDENCE", DEFAULT_PR5020_CLOSEOUT_EVIDENCE)
+    )
+    pr5027_dir = pr5027_closeout_dir or Path(
+        os.environ.get("PEAK_TRADE_PR5027_CLOSEOUT_EVIDENCE", DEFAULT_PR5027_CLOSEOUT_EVIDENCE)
     )
     closeout_ok, closeout_detail, closeout_reference_available = _verify_closeout_manifest(
         closeout_dir
@@ -267,10 +303,23 @@ def build_eligibility_gate(
             else "NOT_AVAILABLE_OFFLINE_REFERENCE"
         )
     )
+    pr5027_ok, pr5027_detail, pr5027_reference_available = _verify_closeout_manifest(pr5027_dir)
+    pr5027_reference_status = (
+        "VERIFIED"
+        if pr5027_ok
+        else (
+            "REFERENCE_PRESENT_BUT_UNVERIFIED"
+            if pr5027_reference_available
+            else "NOT_AVAILABLE_OFFLINE_REFERENCE"
+        )
+    )
     criteria = evaluate_eligibility_criteria(
         repo_root,
         closure,
+        boundary,
         pr5020_closeout_verified=closeout_ok,
+        pr5027_closeout_verified=pr5027_ok,
+        pr5027_closeout_reference_available=pr5027_reference_available,
     )
     failed = [item for item in criteria if item.required and not item.satisfied]
     claim_promotion_allowed = not failed
@@ -278,22 +327,48 @@ def build_eligibility_gate(
     if claim_promotion_allowed:
         parity_pass_eligibility_status = "ELIGIBLE_FOR_SEPARATE_PARITY_PASS_EVIDENCE"
         next_blocker = "NONE"
+        primary_blocker = "NONE"
+        next_gap_or_next_step = NEXT_STEP_AFTER_NOT_ELIGIBLE
         reason_codes = ["ALL_REQUIRED_ELIGIBILITY_CRITERIA_SATISFIED"]
     else:
         parity_pass_eligibility_status = "NOT_ELIGIBLE_FAIL_CLOSED"
         next_blocker = failed[0].blocker_code
+        primary_blocker = next_blocker
+        next_gap_or_next_step = NEXT_STEP_AFTER_NOT_ELIGIBLE
         reason_codes = [item.blocker_code for item in failed]
+
+    assessment_verdict = (
+        "PASS_ASSESSMENT_FAIL_CLOSED"
+        if (
+            parity_pass_eligibility_status == "NOT_ELIGIBLE_FAIL_CLOSED"
+            and not claim_promotion_allowed
+            and boundary["boundary_chain_status"] == "FAIL_CLOSED_DOCUMENTED"
+        )
+        else "FAIL_CLOSED"
+    )
 
     return {
         "schema": GATE_SCHEMA,
         "gate_id": GATE_ID,
         "source_closure_assessment_schema": closure["schema"],
+        "source_boundary_chain_reassessment_schema": boundary["schema"],
         "source_pr5020_closeout_dir": str(closeout_dir),
         "source_pr5020_closeout_manifest_verified": closeout_ok,
         "source_pr5020_closeout_reference_status": closeout_reference_status,
         "source_pr5020_closeout_detail": closeout_detail,
+        "source_pr5027_closeout_dir": str(pr5027_dir),
+        "source_pr5027_closeout_manifest_verified": pr5027_ok,
+        "source_pr5027_closeout_reference_status": pr5027_reference_status,
+        "source_pr5027_closeout_detail": pr5027_detail,
+        "assessment_verdict": assessment_verdict,
+        "boundary_chain_status": boundary["boundary_chain_status"],
+        "trace_next_unbound_node": boundary["trace_next_unbound_node"],
         "chain_surface_binding_complete": closure["chain_surface_binding_complete"],
         "next_unbound_node": closure["next_unbound_node"],
+        "gap_records_count": boundary["gap_records_count"],
+        "runtime_bridge_boundary_status": boundary["runtime_bridge_boundary_status"],
+        "primary_blocker": primary_blocker,
+        "next_gap_or_next_step": next_gap_or_next_step,
         "parity_pass_claim_deferred": True,
         "full_canonical_chain_wired": False,
         "backtest_runtime_decision_parity_pass": False,
@@ -307,9 +382,10 @@ def build_eligibility_gate(
         "no_economic_claim_confirmed": True,
         "eligibility_criteria": [asdict(item) for item in criteria],
         "gate_rule": (
-            "Trace-rewire chain binding complete is necessary but not sufficient for parity-pass "
-            "claim promotion. Manifest-verified full parity proof and gap-assessment PASS across "
-            "all surfaces are required before CLAIM_PROMOTION_ALLOWED may become true."
+            "Post-PR5027 boundary chain reassessment with FAIL_CLOSED_DOCUMENTED status is "
+            "necessary but not sufficient for parity-pass claim promotion. Manifest-verified "
+            "full parity proof and gap-assessment PASS across all surfaces are required before "
+            "CLAIM_PROMOTION_ALLOWED may become true."
         ),
     }
 
@@ -318,14 +394,21 @@ def render_final_report(gate: dict[str, Any], *, verdict: str, manifest_verify_r
     lines = [
         f"VERDICT={verdict}",
         f"GATE_ID={gate['gate_id']}",
+        f"ASSESSMENT_VERDICT={gate['assessment_verdict']}",
         f"PARITY_PASS_ELIGIBILITY_STATUS={gate['parity_pass_eligibility_status']}",
+        f"BOUNDARY_CHAIN_STATUS={gate['boundary_chain_status']}",
+        f"TRACE_NEXT_UNBOUND_NODE={gate['trace_next_unbound_node']}",
+        f"CHAIN_SURFACE_BINDING_COMPLETE={str(gate['chain_surface_binding_complete']).lower()}",
+        f"GAP_RECORDS_COUNT={gate['gap_records_count']}",
+        f"RUNTIME_BRIDGE_BOUNDARY_STATUS={gate['runtime_bridge_boundary_status']}",
+        f"PRIMARY_BLOCKER={gate['primary_blocker']}",
+        f"NEXT_GAP_OR_NEXT_STEP={gate['next_gap_or_next_step']}",
         f"NEXT_BLOCKER={gate['next_blocker']}",
         f"CLAIM_PROMOTION_ALLOWED={str(gate['claim_promotion_allowed']).lower()}",
         (
             "EVIDENCE_ADMISSIBILITY_REASON_CODES="
             + ",".join(gate["evidence_admissibility_reason_codes"])
         ),
-        f"CHAIN_SURFACE_BINDING_COMPLETE={str(gate['chain_surface_binding_complete']).lower()}",
         f"NEXT_UNBOUND_NODE={gate['next_unbound_node']}",
         f"PARITY_PASS_CLAIM_DEFERRED={str(gate['parity_pass_claim_deferred']).lower()}",
         "FULL_CANONICAL_CHAIN_WIRED=false",
@@ -334,6 +417,11 @@ def render_final_report(gate: dict[str, Any], *, verdict: str, manifest_verify_r
         "RUNTIME_REWIRE_ADMISSIBLE=false",
         "NO_RUNTIME_AUTHORITY_CONFIRMED=true",
         "NO_ECONOMIC_CLAIM_CONFIRMED=true",
+        f"SOURCE_PR5027_CLOSEOUT_DIR={gate['source_pr5027_closeout_dir']}",
+        (
+            "SOURCE_PR5027_CLOSEOUT_MANIFEST_VERIFIED="
+            f"{str(gate['source_pr5027_closeout_manifest_verified']).lower()}"
+        ),
         f"SOURCE_PR5020_CLOSEOUT_DIR={gate['source_pr5020_closeout_dir']}",
         (
             "SOURCE_PR5020_CLOSEOUT_MANIFEST_VERIFIED="
@@ -372,6 +460,7 @@ def collect_evidence(
     output_dir: Path | None = None,
     durable_archive_root: Path | None = None,
     pr5020_closeout_dir: Path | None = None,
+    pr5027_closeout_dir: Path | None = None,
 ) -> dict[str, Any]:
     repo_root = repo_root.resolve()
     archive_root = Path(
@@ -391,7 +480,11 @@ def collect_evidence(
     branch = _run(["git", "branch", "--show-current"], cwd=repo_root).stdout.strip()
     status = _run(["git", "status", "--short"], cwd=repo_root).stdout.strip()
 
-    gate = build_eligibility_gate(repo_root, pr5020_closeout_dir=pr5020_closeout_dir)
+    gate = build_eligibility_gate(
+        repo_root,
+        pr5020_closeout_dir=pr5020_closeout_dir,
+        pr5027_closeout_dir=pr5027_closeout_dir,
+    )
     (evidence_dir / "git_context.txt").write_text(
         "\n".join(
             [
@@ -400,6 +493,7 @@ def collect_evidence(
                 f"ORIGIN_MAIN={origin_main}",
                 f"BRANCH={branch}",
                 f"WORKTREE_STATUS={status or 'clean'}",
+                f"SOURCE_PR5027_CLOSEOUT_DIR={gate['source_pr5027_closeout_dir']}",
                 f"SOURCE_PR5020_CLOSEOUT_DIR={gate['source_pr5020_closeout_dir']}",
             ]
         )
@@ -468,6 +562,8 @@ def collect_evidence(
 
     gate_pass = (
         gate["parity_pass_eligibility_status"] == "NOT_ELIGIBLE_FAIL_CLOSED"
+        and gate["assessment_verdict"] == "PASS_ASSESSMENT_FAIL_CLOSED"
+        and gate["boundary_chain_status"] == "FAIL_CLOSED_DOCUMENTED"
         and gate["claim_promotion_allowed"] is False
         and gate["full_canonical_chain_wired"] is False
         and gate["backtest_runtime_decision_parity_pass"] is False
@@ -476,7 +572,7 @@ def collect_evidence(
     tests_pass = pytest_proc.returncode == 0
     ruff_pass = ruff_format.returncode == 0 and ruff_check.returncode == 0
     verdict = (
-        "PASS"
+        "PASS_ASSESSMENT_FAIL_CLOSED"
         if gate_pass and tests_pass and ruff_pass and py_compile_rc == 0 and forbidden_ok
         else "BLOCKED"
     )
@@ -506,25 +602,32 @@ def main() -> int:
     parser.add_argument("--output-dir", default=None)
     parser.add_argument("--durable-archive-root", default=None)
     parser.add_argument("--pr5020-closeout-dir", default=None)
+    parser.add_argument("--pr5027-closeout-dir", default=None)
     args = parser.parse_args()
     repo_root = Path(args.repo_root).resolve()
     output_dir = Path(args.output_dir).resolve() if args.output_dir else None
     archive_root = Path(args.durable_archive_root).resolve() if args.durable_archive_root else None
     closeout_dir = Path(args.pr5020_closeout_dir).resolve() if args.pr5020_closeout_dir else None
+    pr5027_dir = Path(args.pr5027_closeout_dir).resolve() if args.pr5027_closeout_dir else None
     result = collect_evidence(
         repo_root,
         output_dir=output_dir,
         durable_archive_root=archive_root,
         pr5020_closeout_dir=closeout_dir,
+        pr5027_closeout_dir=pr5027_dir,
     )
     gate = result["gate"]
     print(f"VERDICT={result['verdict']}")
+    print(f"ASSESSMENT_VERDICT={gate['assessment_verdict']}")
     print(f"PARITY_PASS_ELIGIBILITY_STATUS={gate['parity_pass_eligibility_status']}")
+    print(f"BOUNDARY_CHAIN_STATUS={gate['boundary_chain_status']}")
+    print(f"PRIMARY_BLOCKER={gate['primary_blocker']}")
+    print(f"NEXT_GAP_OR_NEXT_STEP={gate['next_gap_or_next_step']}")
     print(f"NEXT_BLOCKER={gate['next_blocker']}")
     print(f"CLAIM_PROMOTION_ALLOWED={str(gate['claim_promotion_allowed']).lower()}")
     print(f"DURABLE_EVIDENCE_DIR={result['evidence_dir']}")
     print(f"MANIFEST_VERIFY_RC={result['manifest_verify_rc']}")
-    return 0 if result["verdict"] == "PASS" else 1
+    return 0 if result["verdict"] == "PASS_ASSESSMENT_FAIL_CLOSED" else 1
 
 
 if __name__ == "__main__":
