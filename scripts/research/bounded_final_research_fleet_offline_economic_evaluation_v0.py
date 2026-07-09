@@ -9,6 +9,16 @@ from typing import Any
 
 
 FINAL_FLEET = ("trend_following", "bollinger_bands", "momentum_1h")
+DEFAULT_BINDING_COMPLETION_RELATIVE_PATH = (
+    "config/research/final_research_fleet_versioned_binding_completion_v0.json"
+)
+
+
+def _resolve_durable_evidence_root(output_dir: Path) -> Path:
+    for parent in output_dir.parents:
+        if parent.name == "research":
+            return parent.parent
+    return output_dir
 
 
 def _run_materializer(
@@ -28,17 +38,20 @@ def _run_materializer(
             "rc": 2,
         }
 
+    binding_completion_path = repo_root / DEFAULT_BINDING_COMPLETION_RELATIVE_PATH
+    durable_evidence_root = _resolve_durable_evidence_root(output_dir)
+
     cmd = [
         sys.executable,
         str(materializer),
-        "--repo-root",
-        str(repo_root),
-        "--output-dir",
-        str(output_dir),
-        "--operator",
-        operator,
-        "--go-token",
+        "--confirm-go-token",
         go_token,
+        "--binding-completion-path",
+        str(binding_completion_path),
+        "--durable-evidence-root",
+        str(durable_evidence_root),
+        "--primary-worktree",
+        str(repo_root),
     ]
 
     completed = subprocess.run(
