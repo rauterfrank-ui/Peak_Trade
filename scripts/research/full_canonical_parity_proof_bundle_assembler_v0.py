@@ -74,8 +74,12 @@ CONTEXT_PROTECTED_MARKERS = (
 
 SLICE_CHANGED_FILES = (
     "src/trading/master_v2/surface_p_required_proof_input_binding_v0.py",
+    "scripts/research/full_canonical_parity_closure_assessment_v0.py",
+    "scripts/research/full_canonical_parity_pass_eligibility_gate_v0.py",
     "scripts/research/full_canonical_parity_proof_bundle_assembler_v0.py",
     "scripts/research/full_canonical_surface_p_required_proof_input_v0.py",
+    "tests/research/test_full_canonical_parity_closure_assessment_v0.py",
+    "tests/research/test_full_canonical_parity_pass_eligibility_gate_v0.py",
     "tests/trading/master_v2/test_surface_p_required_proof_input_binding_contract_v0.py",
     "tests/research/test_full_canonical_parity_proof_bundle_assembler_v0.py",
 )
@@ -728,6 +732,17 @@ def evaluate_proof_bundle(
         "boundary_chain_status": gate["boundary_chain_status"],
         "pass_eligibility_primary_blocker": gate["primary_blocker"],
         "pass_eligibility_next_step": gate["next_gap_or_next_step"],
+        "closure_required_proof_inputs_complete": closure.get(
+            "required_proof_inputs_complete", False
+        ),
+        "eligibility_required_proof_inputs_complete": gate.get(
+            "required_proof_inputs_complete", False
+        ),
+        "required_proof_inputs_binding_consistent": (
+            closure.get("required_proof_inputs_complete", False)
+            == proof_inputs["required_proof_inputs_complete"]
+            == gate.get("required_proof_inputs_complete", False)
+        ),
         "parity_pass_claim_deferred": True,
         "gap_assessment_counts": gap_counts,
         "gap_assessment_all_pass": gap_all_pass,

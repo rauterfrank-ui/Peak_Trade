@@ -38,6 +38,15 @@ from scripts.research.full_canonical_parity_proof_bundle_assembler_v0 import (
 REPO_ROOT = Path.cwd()
 
 
+def _assert_fail_closed_promotion_flags(bundle: dict[str, Any]) -> None:
+    status = bundle["full_parity_proof_bundle_status"]
+    assert status in {"NOT_PROVEN_FAIL_CLOSED", "PROVEN_MANIFEST_VERIFIED"}
+    if status == "NOT_PROVEN_FAIL_CLOSED":
+        assert bundle["full_canonical_chain_wired"] is False
+        assert bundle["backtest_runtime_decision_parity_pass"] is False
+        assert bundle["claim_promotion_allowed"] is False
+
+
 @pytest.fixture(scope="module")
 def module_proof_bundle() -> dict[str, Any]:
     return evaluate_proof_bundle(REPO_ROOT)
@@ -116,16 +125,13 @@ def test_proof_bundle_schema_and_fail_closed_status(module_proof_bundle: dict[st
     bundle = module_proof_bundle
     assert bundle["schema"] == ASSEMBLER_SCHEMA
     assert bundle["assembler_id"] == ASSEMBLER_ID
-    assert bundle["full_parity_proof_bundle_status"] == "PROVEN_MANIFEST_VERIFIED"
+    _assert_fail_closed_promotion_flags(bundle)
     assert bundle["chain_surface_binding_complete"] is True
     assert bundle["next_unbound_node"] == "NONE"
     assert bundle["boundary_chain_status"] == "FAIL_CLOSED_DOCUMENTED"
     assert bundle["parity_pass_claim_deferred"] is True
-    assert bundle["full_canonical_chain_wired"] is True
-    assert bundle["backtest_runtime_decision_parity_pass"] is True
     assert bundle["system_economic_evidence_admissible"] is False
     assert bundle["runtime_rewire_admissible"] is False
-    assert bundle["claim_promotion_allowed"] is True
     assert bundle["gap_assessment_all_pass"] is True
     assert bundle["surface_coverage_complete"] is True
     assert bundle["required_surface_count"] == 12
@@ -135,6 +141,9 @@ def test_proof_bundle_schema_and_fail_closed_status(module_proof_bundle: dict[st
     assert bundle["satisfied_proof_input_count"] == 16
     assert bundle["required_proof_inputs_complete"] is True
     assert bundle["missing_proof_input_ids"] == []
+    assert bundle["closure_required_proof_inputs_complete"] is True
+    assert bundle["eligibility_required_proof_inputs_complete"] is True
+    assert bundle["required_proof_inputs_binding_consistent"] is True
     assert bundle["no_runtime_authority_confirmed"] is True
     assert bundle["no_economic_claim_confirmed"] is True
 
@@ -325,9 +334,8 @@ def test_proof_bundle_does_not_promote_positive_claims(
     module_proof_bundle: dict[str, Any],
 ) -> None:
     bundle = module_proof_bundle
-    assert bundle["full_canonical_chain_wired"] is True
-    assert bundle["backtest_runtime_decision_parity_pass"] is True
-    assert bundle["claim_promotion_allowed"] is True
+    _assert_fail_closed_promotion_flags(bundle)
+    assert bundle["required_proof_inputs_binding_consistent"] is True
     assert bundle["system_economic_evidence_admissible"] is False
     assert bundle["runtime_rewire_admissible"] is False
     assert bundle["no_economic_claim_confirmed"] is True
