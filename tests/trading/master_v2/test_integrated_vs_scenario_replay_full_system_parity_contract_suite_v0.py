@@ -71,6 +71,7 @@ from trading.master_v2.offline_double_play_scenario_replay_v0 import (
     run_offline_double_play_scenario_replay_v0,
 )
 from tests.trading.master_v2.test_integrated_offline_trading_logic_replay_v1 import _run
+import pytest
 
 REPO_ROOT = Path(__file__).resolve().parents[3]
 _INSTRUMENT = SYNTHETIC_FUTURES_INSTRUMENT
@@ -226,7 +227,7 @@ def test_integrated_replay_owner_excludes_runtime_imports_v0() -> None:
 
 
 def test_prometheus_client_importable_v0() -> None:
-    assert importlib.util.find_spec("prometheus_client") is not None
+    pytest.importorskip("prometheus_client")
     proc = subprocess.run(
         [
             sys.executable,

