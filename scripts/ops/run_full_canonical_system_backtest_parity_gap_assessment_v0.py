@@ -111,6 +111,7 @@ def _verify_post_merge_guard_preflight(evidence_dir: Path) -> tuple[int, list[st
 
 def collect_evidence(out_dir: Path | None = None) -> dict[str, object]:
     sys.path.insert(0, str(REPO_ROOT / "src"))
+    sys.path.insert(0, str(REPO_ROOT))
     from trading.master_v2.full_canonical_system_backtest_parity_gap_assessment_v0 import (
         parity_gap_records_v0,
         parity_status_counts_v0,
