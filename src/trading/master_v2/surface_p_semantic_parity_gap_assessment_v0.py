@@ -335,6 +335,19 @@ def evaluate_surface_p_semantic_parity_gap_assessment_v0(
         surface_p_post = "PARTIAL_FAIL_CLOSED"
         next_blocker = fail_reasons[0] if fail_reasons else REASON_OFFLINE_FOUR_WAY_INCOMPLETE
 
+    from trading.master_v2.surface_p_final_flags_fail_closed_contract_v0 import (
+        build_surface_p_final_flags_evidence_input_v0,
+        evaluate_surface_p_final_flags_fail_closed_contract_v0,
+    )
+
+    final_flags = evaluate_surface_p_final_flags_fail_closed_contract_v0(
+        build_surface_p_final_flags_evidence_input_v0(
+            source_manifest_verify_rc=manifest_rc,
+            surface_p_parity_suite_confirmed=offline_semantic_ok,
+            runtime_bridge_binding_status=semantic.surface_p_runtime_bridge_binding_status,
+        )
+    )
+
     return SurfacePSemanticParityGapAssessmentResultV0(
         surface_p_gap_assessment_parity_status=gap_parity_status,
         semantic_parity_beyond_trace_binding=semantic_beyond_trace,
@@ -347,9 +360,9 @@ def evaluate_surface_p_semantic_parity_gap_assessment_v0(
         pr5022_chain_surface_binding_complete=chain_binding_complete,
         source_evidence_referenced=source_evidence_referenced,
         source_manifest_verify_rc=manifest_rc,
-        full_canonical_chain_wired=False,
-        backtest_runtime_decision_parity_pass=False,
-        system_economic_evidence_admissible=False,
+        full_canonical_chain_wired=final_flags.full_canonical_chain_wired,
+        backtest_runtime_decision_parity_pass=final_flags.backtest_runtime_decision_parity_pass,
+        system_economic_evidence_admissible=final_flags.system_economic_evidence_admissible,
         runtime_rewire_admissible=False,
         claim_promotion_allowed=False,
         no_runtime_authority_confirmed=True,

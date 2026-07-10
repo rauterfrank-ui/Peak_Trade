@@ -48,6 +48,7 @@ from trading.master_v2.integrated_vs_scenario_replay_full_system_parity_harness_
     assert_runtime_reference_lane_v0,
     assert_scenario_replay_zero_order_boundary_v0,
     bind_backtest_bar_four_way_parity_lane_v0,
+    scan_forbidden_runtime_import_modules_v0,
     canonical_owner_refs_v0,
     composition_matrix_results_aligned_v0,
     evaluate_reversal_preparation_matrix_v0,
@@ -221,9 +222,8 @@ def test_slice_sources_exclude_execution_runtime_imports_v0() -> None:
 
 def test_integrated_replay_owner_excludes_runtime_imports_v0() -> None:
     src = REPO_ROOT / "src/trading/master_v2/integrated_offline_trading_logic_replay_v1.py"
-    forbidden = frozenset({"execution", "adapter", "scheduler", "credentials"})
-    hits = _scan_forbidden_imports(src, forbidden)
-    assert hits == []
+    hits = scan_forbidden_runtime_import_modules_v0(src)
+    assert hits == ()
 
 
 def test_prometheus_client_importable_v0() -> None:

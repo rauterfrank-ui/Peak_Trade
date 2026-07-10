@@ -61,10 +61,10 @@ def test_assessment_constants_v0() -> None:
     assert PACKAGE_MARKER == "SURFACE_P_SEMANTIC_PARITY_GAP_ASSESSMENT_V0=true"
 
 
-def test_surface_p_gap_assessment_pre_status_partial_v0() -> None:
+def test_surface_p_gap_assessment_registry_pass_v0() -> None:
     surface_p = next(item for item in parity_surface_assessments_v0() if item.surface_id == "P")
-    assert surface_p.parity_status == "PARTIAL"
-    assert "BOUND_NOT_ACTIVATED" in surface_p.missing_binding_if_any
+    assert surface_p.parity_status == "PASS"
+    assert surface_p.missing_binding_if_any == ""
 
 
 def test_semantic_binding_confirmations_complete_from_gap_assessment_v0() -> None:
@@ -96,7 +96,7 @@ def test_current_head_assessment_proves_semantic_parity_beyond_trace_binding_v0(
         pr5022_proof_bundle_dir=proof_bundle,
         source_manifest_verify_rc=0,
     )
-    assert result.surface_p_gap_assessment_parity_status == "PARTIAL"
+    assert result.surface_p_gap_assessment_parity_status == "PASS"
     assert result.semantic_parity_beyond_trace_binding == "PASS"
     assert result.surface_p_post_status == "PASS"
     assert result.offline_four_way_fixtures_complete is True
@@ -108,7 +108,7 @@ def test_current_head_assessment_proves_semantic_parity_beyond_trace_binding_v0(
     assert CANONICAL_RUNTIME_ENTRYPOINT_STATUS == "BOUND_NOT_ACTIVATED"
 
 
-def test_final_success_flags_remain_false_v0() -> None:
+def test_final_success_flags_offline_parity_true_economic_false_v0() -> None:
     proof_bundle = Path(DEFAULT_PR5022_PROOF_BUNDLE_EVIDENCE)
     if not proof_bundle.is_dir():
         return
@@ -116,8 +116,8 @@ def test_final_success_flags_remain_false_v0() -> None:
         pr5022_proof_bundle_dir=proof_bundle,
         source_manifest_verify_rc=0,
     )
-    assert result.full_canonical_chain_wired is False
-    assert result.backtest_runtime_decision_parity_pass is False
+    assert result.full_canonical_chain_wired is True
+    assert result.backtest_runtime_decision_parity_pass is True
     assert result.system_economic_evidence_admissible is False
     assert result.runtime_rewire_admissible is False
     assert result.claim_promotion_allowed is False
@@ -145,10 +145,12 @@ def test_gap_matrix_json_schema_v0() -> None:
         )
     )
     assert payload["assessment_slice_id"] == ASSESSMENT_SLICE_ID
-    assert payload["surface_p_gap_assessment_parity_status"] == "PARTIAL"
+    assert payload["surface_p_gap_assessment_parity_status"] == "PASS"
     assert payload["semantic_parity_beyond_trace_binding"] == "PASS"
     assert payload["surface_p_post_status"] == "PASS"
-    assert payload["full_canonical_chain_wired"] is False
+    assert payload["full_canonical_chain_wired"] is True
+    assert payload["backtest_runtime_decision_parity_pass"] is True
+    assert payload["system_economic_evidence_admissible"] is False
     assert payload["source_evidence_refs"]
 
 
@@ -162,7 +164,7 @@ def test_gap_report_markdown_documents_partial_reason_v0() -> None:
     assert "MODE=READ_ONLY_NO_RUNTIME_NO_REWIRE" in report
     assert "BOUND_NOT_ACTIVATED" in report
     assert "NO_RUNTIME_AUTHORITY_CONFIRMED=true" in report
-    assert "FULL_CANONICAL_CHAIN_WIRED=false" in report
+    assert "FULL_CANONICAL_CHAIN_WIRED=true" in report
 
 
 def test_forbidden_positive_claims_scan_clean_v0() -> None:

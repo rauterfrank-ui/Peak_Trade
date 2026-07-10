@@ -84,12 +84,12 @@ def test_current_head_assessment_documents_boundary_gap_no_rewire_v0() -> None:
     assert result.runtime_bridge_pre_activation_gate_status == "FAIL"
     assert result.runtime_bridge_activation_admissible is False
     assert result.offline_parity_complete_runtime_activation_pending is True
-    assert result.surface_p_registry_status == "PARTIAL"
+    assert result.surface_p_registry_status == "PASS"
     assert result.surface_p_semantic_post_status == "PASS"
     assert result.next_step_after_pr == NEXT_RECOMMENDED_SLICE
 
 
-def test_final_success_flags_remain_false_v0() -> None:
+def test_final_success_flags_offline_parity_true_economic_false_v0() -> None:
     source = Path(DEFAULT_PR5025_SOURCE_EVIDENCE)
     if not source.is_dir():
         return
@@ -98,8 +98,8 @@ def test_final_success_flags_remain_false_v0() -> None:
         pr5025_source_dir=source,
         source_manifest_verify_rc=0,
     )
-    assert result.full_canonical_chain_wired is False
-    assert result.backtest_runtime_decision_parity_pass is False
+    assert result.full_canonical_chain_wired is True
+    assert result.backtest_runtime_decision_parity_pass is True
     assert result.system_economic_evidence_admissible is False
     assert result.runtime_rewire_admissible is False
     assert result.claim_promotion_allowed is False
@@ -133,7 +133,9 @@ def test_matrix_json_schema_v0() -> None:
     assert payload["plan_type"] == "ASSESSMENT_ONLY"
     assert payload["narrow_rewire_justified"] is False
     assert payload["trace_next_unbound_node"] == "NONE"
-    assert payload["full_canonical_chain_wired"] is False
+    assert payload["full_canonical_chain_wired"] is True
+    assert payload["backtest_runtime_decision_parity_pass"] is True
+    assert payload["system_economic_evidence_admissible"] is False
     assert payload["source_evidence_refs"]
 
 
@@ -150,7 +152,7 @@ def test_report_markdown_documents_boundary_gap_v0() -> None:
     assert "narrow_rewire_justified: false" in report
     assert "trace_next_unbound_node: NONE" in report
     assert "NO_RUNTIME_AUTHORITY_CONFIRMED=true" in report
-    assert "FULL_CANONICAL_CHAIN_WIRED=false" in report
+    assert "FULL_CANONICAL_CHAIN_WIRED=true" in report
 
 
 def test_forbidden_positive_claims_scan_clean_v0() -> None:

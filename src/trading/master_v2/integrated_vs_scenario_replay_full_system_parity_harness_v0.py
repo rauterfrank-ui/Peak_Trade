@@ -8,8 +8,10 @@ No runtime authority, no economic evaluation, no trading semantic extension.
 
 from __future__ import annotations
 
+import ast
 import hashlib
 from dataclasses import dataclass, replace
+from pathlib import Path
 from typing import Literal, Mapping, Optional, Sequence, Tuple
 
 from trading.master_v2.directional_assessment_v1 import DirectionalAssessmentStatus
@@ -198,6 +200,40 @@ from trading.master_v2.offline_double_play_scenario_replay_v0 import (
     build_default_bull_bear_bull_scenario_ticks,
     run_offline_double_play_scenario_replay_v0,
 )
+
+FORBIDDEN_RUNTIME_IMPORT_ROOT_SEGMENTS_V0: frozenset[str] = frozenset(
+    {
+        "execution",
+        "scheduler",
+        "credentials",
+        "live",
+        "runtime",
+        "testnet",
+        "shadow",
+        "paper",
+    }
+)
+
+
+def scan_forbidden_runtime_import_modules_v0(
+    path: Path,
+    forbidden_root_segments: frozenset[str] | None = None,
+) -> Tuple[str, ...]:
+    """Match forbidden import roots by dotted path segment, not module-name substrings."""
+    forbidden = forbidden_root_segments or FORBIDDEN_RUNTIME_IMPORT_ROOT_SEGMENTS_V0
+    tree = ast.parse(path.read_text(encoding="utf-8"))
+    hits: list[str] = []
+    for node in ast.walk(tree):
+        modules: list[str] = []
+        if isinstance(node, ast.Import):
+            modules.extend(alias.name for alias in node.names)
+        elif isinstance(node, ast.ImportFrom) and node.module:
+            modules.append(node.module)
+        for module in modules:
+            if any(part in forbidden for part in module.split(".")):
+                hits.append(module)
+    return tuple(dict.fromkeys(hits))
+
 
 INTEGRATED_VS_SCENARIO_REPLAY_FULL_SYSTEM_PARITY_HARNESS_LAYER_VERSION = "v0"
 INTEGRATED_VS_SCENARIO_REPLAY_FULL_SYSTEM_PARITY_HARNESS_OWNER = (

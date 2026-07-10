@@ -196,7 +196,7 @@ def test_surface_p_four_way_parity_binding_pass_v0() -> None:
 
 def test_gap_matrix_markdown_renders_v0() -> None:
     md = render_parity_gap_matrix_markdown_v0()
-    assert "FULL_CANONICAL_CHAIN_WIRED=false" in md
+    assert "FULL_CANONICAL_CHAIN_WIRED=true" in md
     assert "Double Play composition" in md
     assert NEXT_RECOMMENDED_SLICE in md
 
@@ -206,7 +206,9 @@ def test_gap_matrix_json_machine_readable_v0() -> None:
     assert payload["assessment_owner"] == FULL_CANONICAL_SYSTEM_BACKTEST_PARITY_GAP_ASSESSMENT_OWNER
     assert payload["next_recommended_slice"] == NEXT_RECOMMENDED_SLICE
     assert len(payload["surfaces"]) == 16
-    assert payload["summary"]["full_canonical_chain_wired"] is False
+    assert payload["summary"]["full_canonical_chain_wired"] is True
+    assert payload["summary"]["backtest_runtime_decision_parity_pass"] is True
+    assert payload["summary"]["system_economic_evidence_admissible"] is False
     matrix_statuses = {item["matrix_status"] for item in payload["surfaces"]}
     assert matrix_statuses <= {
         "PASS",
