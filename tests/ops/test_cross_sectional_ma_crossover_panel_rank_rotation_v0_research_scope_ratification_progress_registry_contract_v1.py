@@ -56,7 +56,7 @@ class TestCrossSectionalMaCrossoverPanelRankRotationV0ResearchScopeRatificationR
             authoritative_field_value(
                 "CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_DATASET_MATERIALIZED"
             )
-            == "false"
+            == "true"
         )
         assert (
             authoritative_field_value(
@@ -77,10 +77,10 @@ class TestCrossSectionalMaCrossoverPanelRankRotationV0ResearchScopeRatificationR
             == "true"
         )
 
-    def test_pr5075_pr5076_closeout_registered(self) -> None:
+    def test_pr5075_pr5076_pr5077_closeout_registered(self) -> None:
         assert authoritative_field_value("PR5075_CLOSEOUT_REGISTERED") == "true"
         assert authoritative_field_value("PR5076_CLOSEOUT_REGISTERED") == "true"
-        assert authoritative_field_value("LAST_VERIFIED_PR") == "5076"
+        assert authoritative_field_value("LAST_VERIFIED_PR") == "5077"
 
     def test_current_research_scope_and_phase3_go_registered(self) -> None:
         assert authoritative_field_value("CURRENT_RESEARCH_SCOPE") == STRATEGY_TARGET
