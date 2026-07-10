@@ -33,7 +33,8 @@ from src.research.step29m_armstrong_cycle_v1_offline_economic_baseline_materiali
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-RATIFIED_BINDING_DIGEST = "d29de831f426eeca087518ab9ebe53c1e77895fc0f9f4550a0d804a69403d69c"
+STALE_RATIFIED_BINDING_DIGEST = "d29de831f426eeca087518ab9ebe53c1e77895fc0f9f4550a0d804a69403d69c"
+REPAIRED_BINDING_DIGEST = "bf0a125325692836b71ab00a775d412ecf275483769f5906e1251f68361a9896"
 DATASET_DIGEST = "b4cbe7fff81a137da055588231757937406d8cb30d531ee0aab41d95ee9b6c78"
 UNIVERSE_DIGEST = "be6ea12f6e883de596e8e7987be071bcb4ebc3d32bff15ec933643dcf74f9ee2"
 EVAL_CONFIG_PATH = (
@@ -219,7 +220,7 @@ def test_closed_trade_and_end_of_data_semantics_preserved() -> None:
 
 def test_binding_dataset_universe_digests_unchanged() -> None:
     binding_cfg = json.loads((REPO_ROOT / BINDING_CONFIG_PATH).read_text(encoding="utf-8"))
-    assert binding_cfg["binding_digest"] == RATIFIED_BINDING_DIGEST
+    assert binding_cfg["binding_digest"] == REPAIRED_BINDING_DIGEST
     assert binding_cfg["binding"]["digest_bindings"]["data_digest"]["value"] == DATASET_DIGEST
     assert binding_cfg["universe_digest"] == UNIVERSE_DIGEST
 
@@ -269,7 +270,7 @@ def test_historical_evidence_preserved() -> None:
 
 def test_versioned_binding_materialization_unchanged() -> None:
     binding_cfg = json.loads((REPO_ROOT / BINDING_CONFIG_PATH).read_text(encoding="utf-8"))
-    assert binding_cfg["binding_digest"] == RATIFIED_BINDING_DIGEST
+    assert binding_cfg["binding_digest"] == REPAIRED_BINDING_DIGEST
     versioned_binding = materialize_versioned_research_binding_v0(
         REPO_ROOT,
         material_difference=materialize_material_difference_contract_v0(),

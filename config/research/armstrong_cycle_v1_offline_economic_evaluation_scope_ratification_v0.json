@@ -1,13 +1,17 @@
 {
+  "accounting_reconciliation_pass": true,
   "all_required_bindings_ratified": true,
   "authority_effect": "NONE",
-  "binding_digest": "d29de831f426eeca087518ab9ebe53c1e77895fc0f9f4550a0d804a69403d69c",
+  "baseline_verdict": "INCONCLUSIVE",
+  "binding_digest": "bf0a125325692836b71ab00a775d412ecf275483769f5906e1251f68361a9896",
   "binding_ratified": true,
   "binding_version": "v0",
   "bitcoin_direction_allowed": false,
   "bitcoin_present": false,
   "candidate_binding_ref": "config/research/armstrong_cycle_v1_versioned_research_binding_v0.json",
   "candidate_id": "armstrong_cycle/v1",
+  "canonical_evaluation_bundle": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/armstrong_cycle_v1_repaired_same_semantic_binding_offline_baseline_reevaluation_v0_20260710T162406Z",
+  "canonical_evaluation_timestamp": "20260710T162406Z",
   "config_digest": "00fd45b4e3ca16799f4b892a367ecc7567363a12dd20dfaecfef5d9a4b920173",
   "cost_execution_binding": {
     "binding_version": "v0",
@@ -38,7 +42,8 @@
     "survivorship_bias_forbidden": true
   },
   "economic_evaluation_authorized": false,
-  "economic_evaluation_executed": false,
+  "economic_evaluation_executed": true,
+  "economic_evaluation_status": "COMPLETE_INCONCLUSIVE",
   "economic_policy_binding": {
     "baseline_adjudication_policy": "PASS_FAIL_INCONCLUSIVE",
     "binding_version": "v1",
@@ -47,13 +52,14 @@
     "promising_is_not_pass_bound": true,
     "sample_sufficiency_policy": "economic_validity_policy_v1"
   },
-  "evaluation_authorization_status": "NOT_AUTHORIZED_PENDING_SEPARATE_OFFLINE_EXECUTION_GO",
+  "economic_validity_offline_gate_pass": false,
+  "evaluation_authorization_status": "COMPLETE_INCONCLUSIVE_BINDING_BLOCKED_RETRY",
   "evaluation_execution_authorized": false,
   "evaluation_infrastructure_ready": true,
   "futures_only": true,
   "go_token": "GO_ARMSTRONG_CYCLE_V1_BOUNDED_OFFLINE_ECONOMIC_BASELINE_EVALUATION_NO_RUNTIME_AUTHORITY_V0",
   "hypothesis_id": "ARMSTRONG_ECM_MACRO_CALENDAR_CYCLE_PHASE_NON_BITCOIN_FUTURES_V1",
-  "implementation_digest": "5cef09f0c031acce49743ca94020c7d82bf56ecf0d4c1ce4abf4d45e7f0088f8",
+  "implementation_digest": "e8e572b88b5fd3eb0cec598fd9fee6de73945325b897c692da002863f1c21c66",
   "instrument_binding": {
     "binding_version": "v0",
     "bitcoin_direction_allowed": false,
@@ -68,8 +74,10 @@
   },
   "material_difference_confirmed": true,
   "material_difference_digest": "dc17557606eb6578ca97c2d90905ec0ffeeed2ef95b9ec77858615f2d1f71e85",
-  "next_go_token": "GO_ARMSTRONG_CYCLE_V1_BOUNDED_OFFLINE_ECONOMIC_BASELINE_EVALUATION_NO_RUNTIME_AUTHORITY_V0",
-  "next_step": "ARMSTRONG_CYCLE_V1_FULL_CANONICAL_OFFLINE_BASELINE_ECONOMIC_EVALUATION_V0",
+  "net_return": -0.020757522861812868,
+  "new_distinct_research_scope_or_new_evidence_class_required": true,
+  "next_go_token": "NEW_DISTINCT_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_REQUIRED",
+  "next_step": "NEW_DISTINCT_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_REQUIRED",
   "offline_economic_evaluation_scope_ratified": true,
   "order_effect": "NONE",
   "parameter_binding": {
@@ -92,6 +100,7 @@
       "reference_date": "2015-10-01"
     }
   },
+  "parameter_relaxation_authorized": false,
   "parameter_search_forbidden": true,
   "period_binding": {
     "binding_version": "v1",
@@ -101,6 +110,7 @@
     "training_period": "2026-06-17 16:00:00+00:00..2026-06-24 13:03:00+00:00",
     "validation_period": "2026-06-24 13:04:00+00:00..2026-06-27 23:35:00+00:00"
   },
+  "policy_rescue_allowed": false,
   "prior_evidence_exclusion_pass": true,
   "prohibited_actions": [
     "ECONOMIC_EVALUATION_EXECUTION",
@@ -125,6 +135,7 @@
   "ratification_id": "armstrong_cycle_v1_offline_economic_evaluation_scope_ratification_v0",
   "ratification_version": "v0",
   "runtime_effect": "NONE",
+  "sample_sufficiency_status": "INSUFFICIENT_TRADE_SAMPLE",
   "schema_version": "armstrong_cycle_v1_offline_economic_evaluation_scope_ratification.v0",
   "scope_classification": "BOUNDED_FUTURES_ONLY_RESEARCH_SCOPE_DEFINITION_AND_BINDING_RATIFICATION_V0",
   "scope_id": "ARMSTRONG_CYCLE_V1_OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFICATION_V0",
@@ -132,6 +143,10 @@
   "source_ratification_evidence_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/discover_and_rank_new_distinct_futures_research_scope_or_evidence_class_post_el_karoui_inconclusive_read_only_v0_20260710T151847Z",
   "strategy_id": "armstrong_cycle",
   "strategy_version": "v1",
+  "terminal_status": "TERMINAL_INCONCLUSIVE_INSUFFICIENT_SAMPLE",
+  "trade_count": 6,
   "trading_logic_mutated": false,
+  "unchanged_retry_allowed": false,
+  "unchanged_retry_blocked": true,
   "universe_digest": "be6ea12f6e883de596e8e7987be071bcb4ebc3d32bff15ec933643dcf74f9ee2"
 }

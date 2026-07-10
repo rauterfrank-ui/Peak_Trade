@@ -33,7 +33,8 @@ from src.research.step29m_armstrong_cycle_v1_offline_economic_baseline_materiali
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
-RATIFIED_BINDING_DIGEST = "d29de831f426eeca087518ab9ebe53c1e77895fc0f9f4550a0d804a69403d69c"
+STALE_RATIFIED_BINDING_DIGEST = "d29de831f426eeca087518ab9ebe53c1e77895fc0f9f4550a0d804a69403d69c"
+REPAIRED_BINDING_DIGEST = "bf0a125325692836b71ab00a775d412ecf275483769f5906e1251f68361a9896"
 DEFECTIVE_EVALUATION_SNAPSHOT_BINDING_DIGEST = (
     "e01256994d1835f8f5b579a51ef618da77cbc1d6a4df5ed1e92deb3ebc1a7109"
 )
@@ -125,7 +126,8 @@ def test_ratification_and_runner_binding_digest_equal() -> None:
     )
     _, runner_digest = _runner_ratified_digest()
     assert runner_digest == versioned_binding["binding_digest"]
-    assert runner_digest == RATIFIED_BINDING_DIGEST
+    assert runner_digest == REPAIRED_BINDING_DIGEST
+    assert runner_digest != STALE_RATIFIED_BINDING_DIGEST
     assert runner_digest != DEFECTIVE_EVALUATION_SNAPSHOT_BINDING_DIGEST
 
 
