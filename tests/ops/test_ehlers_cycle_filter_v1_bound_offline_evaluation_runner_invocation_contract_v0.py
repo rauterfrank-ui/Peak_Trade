@@ -4,8 +4,12 @@ from __future__ import annotations
 
 import os
 import subprocess
+import sys
+from collections.abc import Iterator
 from pathlib import Path
 from typing import Any
+
+import pytest
 
 from scripts.ops.offline_evaluation_runner_invocation_contract_v0 import (
     CONFIRM_GO_TOKEN_EMPTY,
@@ -37,6 +41,23 @@ SHELL_WRAPPER = (
     / "scripts/ops/invoke_ehlers_cycle_filter_v1_bound_offline_economic_baseline_evaluation_v0.sh"
 )
 CONFIRM_GO_VALUE = "GO_EHLERS_CYCLE_FILTER_V1_BOUND_OFFLINE_ECONOMIC_BASELINE_EVALUATION_V0"
+
+
+@pytest.fixture(scope="module", autouse=True)
+def _ensure_repo_local_venv_python() -> Iterator[None]:
+    """Provide repo-local interpreter for CI runners without a committed .venv."""
+    venv_python = REPO_ROOT / ".venv/bin/python"
+    created_symlink = False
+    if not venv_python.is_file():
+        venv_python.parent.mkdir(parents=True, exist_ok=True)
+        venv_python.symlink_to(sys.executable)
+        created_symlink = True
+    yield
+    if created_symlink and venv_python.is_symlink():
+        venv_python.unlink()
+        for parent in (venv_python.parent, venv_python.parent.parent):
+            if parent.exists() and not any(parent.iterdir()):
+                parent.rmdir()
 
 
 def test_resolve_repo_local_python_uses_repo_venv() -> None:
