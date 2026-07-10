@@ -1,14 +1,23 @@
 {
-  "dataset_materialization_authorized": false,
+  "dataset_materialization_authorized": true,
+  "dataset_materialized": true,
   "economic_evaluation_authorized": false,
-  "network_ingest_authorized": false,
-  "next_action_after_scope_ratification": "PHASE3_DATASET_MATERIALIZATION_REQUIRES_SEPARATE_GO",
+  "lifecycle_data_digest": "e394d91f64ea5a05e181d6fbb172f1090ec10fde5eb7b35be4ea857d4a955599",
+  "materialization_evidence_path": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/planning/bounded_okx_production_lifecycle_source_registration_and_pt1h_panel_ohlcv_ingest_v0_20260710T092512Z",
+  "network_ingest_authorized": true,
+  "network_ingest_executed": true,
+  "next_action_after_dataset_materialization": "VERSIONED_BINDING_RATIFICATION_REQUIRES_SEPARATE_OPERATOR_GO",
+  "panel_data_digest": "e14b0f2bb7723cacef259e1e1cb29b017cdaca060ff9dbb8c46a5204cb681dad",
+  "panel_staging_root": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/pit_okx_linear_usdt_non_bitcoin_pt1h_panel/v2",
+  "phase3_go_token_consumed": true,
   "phase3_go_token_to_register_only": "GO_BOUNDED_OKX_PRODUCTION_LIFECYCLE_SOURCE_REGISTRATION_AND_PT1H_PANEL_OHLCV_INGEST_V0",
-  "precondition_digest": "188ff2ee40ef5959ca25cc910fed104ca761b3df332ec1c3ceb1263704ebf48e",
+  "precondition_digest": "c36e573779b10dd9fe6befee65934987bb477d26af6f8a3026cb4b2610e0d95e",
   "required_preconditions": [
     "RESEARCH_SCOPE_RATIFIED=true",
+    "PHASE3_GO_TOKEN_CONSUMED=true",
+    "DATASET_MATERIALIZED=true",
     "VERSIONED_BINDING_RATIFICATION_REQUIRES_SEPARATE_GO",
-    "DATASET_MATERIALIZATION_REQUIRES_SEPARATE_GO"
+    "ECONOMIC_EVALUATION_REQUIRES_SEPARATE_GO"
   ],
   "reuse_first_owners": [
     "scripts/ops/materialize_okx_production_lifecycle_and_pt1h_panel_v1.py",

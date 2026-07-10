@@ -8,17 +8,16 @@
 **Systemziel:** Vollautonomes, futures-only Peak-Trade-System mit deterministischer, konsistenter und auditierbarer Handelslogik; realistischer Profitabilitätsvalidierung; unabhängiger Safety Authority; gefenceter Single-Writer-Runtime; vollständiger Reconciliation; sicherer Restart-/Recovery-Semantik und einer durchgängigen Research→Validation→Promotion→Runtime→Feedback-Kette.
 **Keine Anlageberatung.**
 
-> **Portable Current State (post PR #5076 merge-closeout and CS MA-crossover panel scope ratification prep, 2026-07-10)**
+> **Portable Current State (post PR #5077 merge-closeout and CS MA-crossover panel Phase 3 dataset materialization, 2026-07-10)**
 >
 > **Operative Authority:** [`PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md`](PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md) → `## Registry-Metadaten` (aufgelöst via `src/governance/runbook_progress_registry_v1.py`).
 >
 > ```text
-> HEAD=4725e6e7ad9c1bc40a3e0450a47bf9ddafa68380
-> ORIGIN_MAIN=4725e6e7ad9c1bc40a3e0450a47bf9ddafa68380
-> LATEST_MERGED_PR=5076
-> PR5075_CLOSEOUT_REGISTERED=true
-> PR5076_CLOSEOUT_REGISTERED=true
-> CURRENT_STATE=CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_RESEARCH_SCOPE_RATIFICATION_COMPLETE_V1
+> HEAD=b86d154d44ca6da189ffc1ed4ffb192e19eefeec
+> ORIGIN_MAIN=b86d154d44ca6da189ffc1ed4ffb192e19eefeec
+> LATEST_MERGED_PR=5077
+> PR5077_CLOSEOUT_REGISTERED=pending_operator_review
+> CURRENT_STATE=CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_PHASE3_DATASET_MATERIALIZATION_COMPLETE_V1
 > CURRENT_RESEARCH_SCOPE=cross_sectional_ma_crossover_panel_rank_rotation/v0
 > RESEARCH_SCOPE_RATIFIED=true
 > UNDERLYING_SIGNAL_BINDING=ma_crossover/v1@inst-eth-usdt-perp
@@ -26,21 +25,21 @@
 > UNCHANGED_SINGLE_INSTRUMENT_RETRY_BLOCKED=true
 > PANEL_ARCHETYPE_EVIDENCE=NOT_PREVIOUSLY_EXECUTED
 > MATERIAL_DIFFERENCE_CONFIRMED=true
-> DATASET_MATERIALIZED=false
+> DATASET_MATERIALIZED=true
 > ECONOMIC_EVALUATION_AUTHORIZED=false
 > ECONOMIC_EVALUATION_EXECUTED=false
 > RUNTIME_EFFECT=NONE
 > AUTHORITY_EFFECT=NONE
-> NEXT_STEP=PHASE3_DATASET_MATERIALIZATION_REQUIRES_SEPARATE_GO
+> NEXT_STEP=VERSIONED_BINDING_RATIFICATION_REQUIRES_SEPARATE_OPERATOR_GO
 > PORTABLE_CURRENT_STATE_BLOCK_REFRESHED=true
 > ```
 >
 > **Evidence Bundles (MANIFEST_VERIFY_RC=0):**
-> - Scope discovery: `planning&#47;cross_sectional_multi_instrument_futures_panel_scope_discovery_and_ratification_prep_v0_20260710T085834Z`
-> - Adjudication: `planning&#47;cross_sectional_ma_crossover_panel_scope_discovery_contradiction_adjudication_and_corrected_ratification_prep_v0_20260710T090302Z`
-> - Underlying terminal single-instrument: `economic_evaluation&#47;bounded_step29m_ma_crossover_v1_post_binding_fix_economic_evaluation_recovery_single_run_v0_20260702T012057Z`
+> - OKX materialization: `planning&#47;bounded_okx_production_lifecycle_source_registration_and_pt1h_panel_ohlcv_ingest_v0_20260710T092512Z`
+> - Phase 3 closeout: `research&#47;cross_sectional_ma_crossover_panel_rank_rotation_v0_phase3_dataset_materialization_20260710T093500Z`
+> - Panel staging: `datasets&#47;admissible_futures&#47;pit_okx_linear_usdt_non_bitcoin_pt1h_panel&#47;v2`
 >
-> **Changelog:** 2026-07-10 — PR #5075/#5076 merged; Phase 2 ratifies offline-only research scope `cross_sectional_ma_crossover_panel_rank_rotation&#47;v0` with unchanged `ma_crossover&#47;v1` signal reuse; no dataset materialization; no economic evaluation; no runtime authority.
+> **Changelog:** 2026-07-10 — PR #5077 merged; Phase 3 bounded OKX lifecycle + PT1H panel dataset materialization for `cross_sectional_ma_crossover_panel_rank_rotation&#47;v0`; no economic evaluation; no binding ratification; no runtime authority.
 >
 > **STALE GOVERNANCE SUPERSESSION NOTICE (2026-07-04):** Abschnitte mit `NO_NEW_CANDIDATE_HOLD=REVOKED`, `MULTI_CANDIDATE_RESEARCH_FLEET_ALLOWED=true` und frühen `NEXT_STEP=RATIFY_VERSIONED_FINAL_FLEET_BINDINGS…`-Werten sind **historische Pre-Fail-Snapshots**. Stale Governance-Werte in diesem Dokument sind **nicht** für operative Entscheidungen zu verwenden.
 

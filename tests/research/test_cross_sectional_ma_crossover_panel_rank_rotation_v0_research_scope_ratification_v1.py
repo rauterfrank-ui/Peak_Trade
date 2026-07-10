@@ -101,13 +101,12 @@ class TestCrossSectionalMaCrossoverPanelRankRotationV0ResearchScopeRatificationV
         assert "DATASET_MATERIALIZATION" in ratification["prohibited_actions"]
         assert "NETWORK_INGEST" in ratification["prohibited_actions"]
 
-    def test_scope_config_matches_materialized_ratification(self) -> None:
-        ratification = materialize_ma_crossover_panel_rank_rotation_research_scope_ratification_v1(
-            repo_root=REPO_ROOT,
-        )
+    def test_scope_config_reflects_post_phase3_dataset_materialization(self) -> None:
         config = json.loads(SCOPE_CONFIG.read_text(encoding="utf-8"))
-        assert config["ratification_digest"] == ratification["ratification_digest"]
         assert config["strategy_id"] == STRATEGY_ID
+        assert config["dataset_materialized"] is True
+        assert config["panel_staging_root"].endswith("pit_okx_linear_usdt_non_bitcoin_pt1h_panel/v2")
+        assert config["phase3_precondition_contract"]["dataset_materialized"] is True
 
     def test_panel_binding_contract_futures_only_and_bitcoin_block(self) -> None:
         panel = json.loads(PANEL_BINDING_CONFIG.read_text(encoding="utf-8"))
@@ -125,11 +124,13 @@ class TestCrossSectionalMaCrossoverPanelRankRotationV0ResearchScopeRatificationV
         assert unchanged["terminal_underlying_dataset_digest"] == TERMINAL_UNDERLYING_DATASET_DIGEST
         assert unchanged["unchanged_single_instrument_retry_blocked"] is True
 
-    def test_material_difference_contract_and_phase3_no_eval_boundary(self) -> None:
+    def test_material_difference_contract_and_phase3_post_materialization_boundary(self) -> None:
         material = json.loads(MATERIAL_DIFFERENCE_CONFIG.read_text(encoding="utf-8"))
         phase3 = json.loads(PHASE3_CONFIG.read_text(encoding="utf-8"))
         assert material["signal_family_material_difference"] is False
         assert material["single_instrument_evidence"] == "TERMINAL_NEGATIVE"
-        assert phase3["dataset_materialization_authorized"] is False
+        assert phase3["dataset_materialization_authorized"] is True
+        assert phase3["dataset_materialized"] is True
         assert phase3["economic_evaluation_authorized"] is False
         assert phase3["phase3_go_token_to_register_only"] == PHASE3_GO_TOKEN_TO_REGISTER_ONLY
+        assert phase3["phase3_go_token_consumed"] is True
