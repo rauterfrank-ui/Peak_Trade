@@ -365,6 +365,21 @@ def evaluate_runtime_bridge_boundary_gap_assessment_v0(
         else "FAIL_CLOSED"
     )
 
+    from trading.master_v2.surface_p_final_flags_fail_closed_contract_v0 import (
+        build_surface_p_final_flags_evidence_input_v0,
+        evaluate_surface_p_final_flags_fail_closed_contract_v0,
+    )
+
+    final_flags = evaluate_surface_p_final_flags_fail_closed_contract_v0(
+        build_surface_p_final_flags_evidence_input_v0(
+            source_manifest_verify_rc=manifest_rc,
+            surface_p_parity_suite_confirmed=(
+                offline_pending and surface_p_semantic_post_status == "PASS"
+            ),
+            runtime_bridge_binding_status=runtime_bridge_boundary_status,  # type: ignore[arg-type]
+        )
+    )
+
     return RuntimeBridgeBoundaryGapAssessmentResultV0(
         assessment_verdict=assessment_verdict,
         boundary_gap_status=boundary_gap_status,
@@ -388,9 +403,9 @@ def evaluate_runtime_bridge_boundary_gap_assessment_v0(
         next_step_after_pr=next_step_after_pr,
         source_evidence_referenced=source_evidence_referenced,
         source_manifest_verify_rc=manifest_rc,
-        full_canonical_chain_wired=False,
-        backtest_runtime_decision_parity_pass=False,
-        system_economic_evidence_admissible=False,
+        full_canonical_chain_wired=final_flags.full_canonical_chain_wired,
+        backtest_runtime_decision_parity_pass=final_flags.backtest_runtime_decision_parity_pass,
+        system_economic_evidence_admissible=final_flags.system_economic_evidence_admissible,
         runtime_rewire_admissible=False,
         claim_promotion_allowed=False,
         no_runtime_authority_confirmed=True,

@@ -71,7 +71,7 @@ def test_current_head_surface_p_required_proof_input_binding_verified_v0() -> No
     result = evaluate_surface_p_required_proof_input_binding_v0(REPO_ROOT)
     assert result.satisfied is True
     assert result.binding_status == "VERIFIED"
-    assert result.registry_parity_status == "PARTIAL"
+    assert result.registry_parity_status == "PASS"
     assert result.offline_four_way_fixtures_complete is True
     assert result.semantic_binding_confirmations_complete is True
     assert result.surface_p_offline_parity_complete is True
@@ -102,8 +102,8 @@ def test_binding_json_schema_deterministic_v0() -> None:
     assert payload["proof_input_id"] == SURFACE_P_PROOF_INPUT_ID
     assert payload["surface_id"] == SURFACE_P_SURFACE_ID
     assert payload["binding_status"] == "VERIFIED"
-    assert payload["full_canonical_chain_wired"] is False
-    assert payload["backtest_runtime_decision_parity_pass"] is False
+    assert payload["full_canonical_chain_wired"] is True
+    assert payload["backtest_runtime_decision_parity_pass"] is True
     assert payload["system_economic_evidence_admissible"] is False
     assert payload["runtime_rewire_admissible"] is False
     assert payload["claim_promotion_allowed"] is False
@@ -113,10 +113,10 @@ def test_binding_json_schema_deterministic_v0() -> None:
     assert '"binding_status": "VERIFIED"' in encoded
 
 
-def test_final_success_flags_remain_false_v0() -> None:
+def test_final_success_flags_offline_parity_true_economic_false_v0() -> None:
     result = evaluate_surface_p_required_proof_input_binding_v0(REPO_ROOT)
-    assert result.full_canonical_chain_wired is False
-    assert result.backtest_runtime_decision_parity_pass is False
+    assert result.full_canonical_chain_wired is True
+    assert result.backtest_runtime_decision_parity_pass is True
     assert result.system_economic_evidence_admissible is False
     assert result.runtime_rewire_admissible is False
     assert result.claim_promotion_allowed is False

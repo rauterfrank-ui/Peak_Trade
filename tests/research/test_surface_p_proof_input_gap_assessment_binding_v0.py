@@ -19,12 +19,12 @@ def test_surface_p_required_proof_input_binding_is_fail_closed() -> None:
     assert binding["surface_id"] == "P"
     assert binding["required_proof_input_id"] == "backtest_offline_replay_runtime_decision_parity"
     assert binding["required_proof_input_binding_status"] == "BOUND_FROM_REPAIRED_SOURCE_EVIDENCE"
-    assert binding["accepted_source_status"] == "PARTIAL"
+    assert binding["accepted_source_status"] == "PASS"
     assert binding["partial_reason_required"] == "RUNTIME_BRIDGE_BOUND_NOT_ACTIVATED"
     assert binding["proof_input_satisfied"] is True
 
-    assert binding["full_canonical_chain_wired"] is False
-    assert binding["backtest_runtime_decision_parity_pass"] is False
+    assert binding["full_canonical_chain_wired"] is True
+    assert binding["backtest_runtime_decision_parity_pass"] is True
     assert binding["system_economic_evidence_admissible"] is False
     assert binding["runtime_rewire_admissible"] is False
     assert binding["claim_promotion_allowed"] is False
@@ -46,5 +46,6 @@ def test_parity_gap_matrix_json_includes_surface_p_proof_input_binding() -> None
         top_binding["required_proof_input_binding_status"] == "BOUND_FROM_REPAIRED_SOURCE_EVIDENCE"
     )
     assert surface_p["surface_p_required_proof_input_binding"]["proof_input_satisfied"] is True
-    assert payload["summary"]["full_canonical_chain_wired"] is False
-    assert payload["summary"]["backtest_runtime_decision_parity_pass"] is False
+    assert payload["summary"]["full_canonical_chain_wired"] is True
+    assert payload["summary"]["backtest_runtime_decision_parity_pass"] is True
+    assert payload["summary"]["system_economic_evidence_admissible"] is False

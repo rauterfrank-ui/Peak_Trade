@@ -314,6 +314,27 @@ def evaluate_next_full_canonical_parity_surface_after_surface_p_assessment_v0(
         else "FAIL_CLOSED"
     )
 
+    from trading.master_v2.surface_p_final_flags_fail_closed_contract_v0 import (
+        build_surface_p_final_flags_evidence_input_v0,
+        evaluate_surface_p_final_flags_fail_closed_contract_v0,
+    )
+    from trading.master_v2.surface_p_offline_complete_runtime_bridge_bound_not_activated_contract_v0 import (
+        evaluate_surface_p_offline_complete_runtime_bridge_bound_not_activated_contract_v0,
+    )
+
+    offline_semantic = (
+        evaluate_surface_p_offline_complete_runtime_bridge_bound_not_activated_contract_v0()
+    )
+    final_flags = evaluate_surface_p_final_flags_fail_closed_contract_v0(
+        build_surface_p_final_flags_evidence_input_v0(
+            source_manifest_verify_rc=manifest_rc,
+            surface_p_parity_suite_confirmed=(
+                surface_p_semantic_post_status == "PASS" and chain_binding_complete
+            ),
+            runtime_bridge_binding_status=offline_semantic.surface_p_runtime_bridge_binding_status,
+        )
+    )
+
     return NextFullCanonicalParitySurfaceAssessmentResultV0(
         assessment_verdict=assessment_verdict,
         trace_next_unbound_node_before=trace_next_unbound,
@@ -328,9 +349,9 @@ def evaluate_next_full_canonical_parity_surface_after_surface_p_assessment_v0(
         next_step_after_pr=next_step_after_pr,
         source_evidence_referenced=source_evidence_referenced,
         source_manifest_verify_rc=manifest_rc,
-        full_canonical_chain_wired=False,
-        backtest_runtime_decision_parity_pass=False,
-        system_economic_evidence_admissible=False,
+        full_canonical_chain_wired=final_flags.full_canonical_chain_wired,
+        backtest_runtime_decision_parity_pass=final_flags.backtest_runtime_decision_parity_pass,
+        system_economic_evidence_admissible=final_flags.system_economic_evidence_admissible,
         runtime_rewire_admissible=False,
         claim_promotion_allowed=False,
         no_runtime_authority_confirmed=True,

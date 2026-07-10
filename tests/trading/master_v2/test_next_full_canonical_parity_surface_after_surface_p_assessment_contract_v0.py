@@ -61,9 +61,9 @@ def test_assessment_constants_v0() -> None:
     assert NEXT_RECOMMENDED_SLICE == SELECTED_SURFACE
 
 
-def test_surface_p_registry_partial_semantic_pass_v0() -> None:
+def test_surface_p_registry_pass_semantic_pass_v0() -> None:
     surface_p = next(item for item in parity_surface_assessments_v0() if item.surface_id == "P")
-    assert surface_p.parity_status == "PARTIAL"
+    assert surface_p.parity_status == "PASS"
 
 
 def test_resolve_next_unbound_node_when_trace_none_v0() -> None:
@@ -107,14 +107,14 @@ def test_current_head_assessment_selects_boundary_chain_reassessment_v0() -> Non
     assert result.next_unbound_node == SELECTED_SURFACE
     assert result.selected_surface == SELECTED_SURFACE
     assert result.plan_type == PLAN_TYPE
-    assert result.surface_p_registry_status == "PARTIAL"
+    assert result.surface_p_registry_status == "PASS"
     assert result.surface_p_semantic_post_status == "PASS"
     assert result.chain_surface_binding_complete is True
     assert result.blocked_reason == REASON_RUNTIME_BRIDGE_BOUND_NOT_ACTIVATED
     assert result.next_step_after_pr == "RUNTIME_BRIDGE_PRE_ACTIVATION_GATE_ASSESSMENT_V0"
 
 
-def test_final_success_flags_remain_false_v0() -> None:
+def test_final_success_flags_offline_parity_true_economic_false_v0() -> None:
     closeout = Path(DEFAULT_PR5023_CLOSEOUT_EVIDENCE)
     if not closeout.is_dir():
         return
@@ -123,8 +123,8 @@ def test_final_success_flags_remain_false_v0() -> None:
         pr5023_closeout_dir=closeout,
         source_manifest_verify_rc=0,
     )
-    assert result.full_canonical_chain_wired is False
-    assert result.backtest_runtime_decision_parity_pass is False
+    assert result.full_canonical_chain_wired is True
+    assert result.backtest_runtime_decision_parity_pass is True
     assert result.system_economic_evidence_admissible is False
     assert result.runtime_rewire_admissible is False
     assert result.claim_promotion_allowed is False
@@ -156,7 +156,9 @@ def test_matrix_json_schema_v0() -> None:
     assert payload["next_unbound_node"] == SELECTED_SURFACE
     assert payload["selected_surface"] == SELECTED_SURFACE
     assert payload["plan_type"] == PLAN_TYPE
-    assert payload["full_canonical_chain_wired"] is False
+    assert payload["full_canonical_chain_wired"] is True
+    assert payload["backtest_runtime_decision_parity_pass"] is True
+    assert payload["system_economic_evidence_admissible"] is False
     assert payload["source_evidence_refs"]
 
 
@@ -171,7 +173,7 @@ def test_report_markdown_documents_selection_v0() -> None:
     assert "MODE=READ_ONLY_NO_RUNTIME_NO_REWIRE" in report
     assert SELECTED_SURFACE in report
     assert "NO_RUNTIME_AUTHORITY_CONFIRMED=true" in report
-    assert "FULL_CANONICAL_CHAIN_WIRED=false" in report
+    assert "FULL_CANONICAL_CHAIN_WIRED=true" in report
 
 
 def test_forbidden_positive_claims_scan_clean_v0() -> None:

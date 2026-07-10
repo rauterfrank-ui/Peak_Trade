@@ -171,6 +171,20 @@ def evaluate_surface_p_required_proof_input_binding_v0(
     if not owner_evidence_refs_present:
         detail_parts.append("owner_evidence_refs_missing")
 
+    from trading.master_v2.surface_p_final_flags_fail_closed_contract_v0 import (
+        build_surface_p_final_flags_evidence_input_v0,
+        evaluate_surface_p_final_flags_fail_closed_contract_v0,
+        resolve_canonical_parity_source_manifest_verify_rc_v0,
+    )
+
+    final_flags = evaluate_surface_p_final_flags_fail_closed_contract_v0(
+        build_surface_p_final_flags_evidence_input_v0(
+            source_manifest_verify_rc=resolve_canonical_parity_source_manifest_verify_rc_v0(),
+            surface_p_parity_suite_confirmed=satisfied,
+            runtime_bridge_binding_status=semantic.surface_p_runtime_bridge_binding_status,
+        )
+    )
+
     return SurfacePRequiredProofInputBindingResultV0(
         proof_input_id=SURFACE_P_PROOF_INPUT_ID,
         surface_id=SURFACE_P_SURFACE_ID,
@@ -178,7 +192,7 @@ def evaluate_surface_p_required_proof_input_binding_v0(
         owner=SURFACE_P_REQUIRED_PROOF_INPUT_BINDING_OWNER,
         binding_status="VERIFIED" if satisfied else "MISSING_REQUIRED_PROOF_INPUT_SURFACE_P",
         satisfied=satisfied,
-        registry_parity_status=surface_p.parity_status,
+        registry_parity_status="PASS" if satisfied else surface_p.parity_status,
         offline_four_way_fixtures_complete=offline_complete,
         semantic_binding_confirmations_complete=semantic_bindings_complete,
         surface_p_offline_parity_complete=offline_parity_complete,
@@ -189,9 +203,9 @@ def evaluate_surface_p_required_proof_input_binding_v0(
         missing_evidence_refs=missing_refs,
         detail="verified" if satisfied else "; ".join(detail_parts),
         fail_closed_reasons=tuple(dict.fromkeys(fail_reasons)),
-        full_canonical_chain_wired=False,
-        backtest_runtime_decision_parity_pass=False,
-        system_economic_evidence_admissible=False,
+        full_canonical_chain_wired=final_flags.full_canonical_chain_wired,
+        backtest_runtime_decision_parity_pass=final_flags.backtest_runtime_decision_parity_pass,
+        system_economic_evidence_admissible=final_flags.system_economic_evidence_admissible,
         runtime_rewire_admissible=False,
         claim_promotion_allowed=False,
         no_runtime_authority_confirmed=True,

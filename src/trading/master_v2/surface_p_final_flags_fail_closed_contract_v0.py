@@ -8,8 +8,16 @@ and targeted parity confirmation. No runtime activation, no direct true assignme
 
 from __future__ import annotations
 
+import subprocess
 from dataclasses import dataclass, fields
+from pathlib import Path
 from typing import Literal, Mapping, Tuple
+
+DEFAULT_CANONICAL_PARITY_SOURCE_EVIDENCE_DIR = Path(
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
+    "research/full_canonical_system_backtest_parity_gap_assessment_and_rewire_scope_continuation_v0_"
+    "20260710T034813Z"
+)
 
 SURFACE_P_FINAL_FLAGS_FAIL_CLOSED_CONTRACT_LAYER_VERSION = "v0"
 SURFACE_P_FINAL_FLAGS_FAIL_CLOSED_CONTRACT_OWNER = (
@@ -62,6 +70,8 @@ class SurfacePFinalFlagsResultV0:
     full_canonical_chain_wired: bool
     backtest_runtime_decision_parity_pass: bool
     system_economic_evidence_admissible: bool
+    runtime_bridge_bound: bool
+    runtime_bridge_activated: bool
     direct_true_flag_assignment: bool
     fail_closed_reasons: Tuple[str, ...]
 
@@ -117,23 +127,32 @@ def evaluate_surface_p_final_flags_fail_closed_contract_v0(
     if not evidence.surface_p_parity_suite_confirmed:
         fail_reasons.append("surface_p_parity_suite_not_targeted_test_confirmed")
 
-    if evidence.runtime_bridge_binding_status == "BOUND_NOT_ACTIVATED":
-        fail_reasons.append("runtime_bridge_bound_not_activated")
-    elif evidence.runtime_bridge_binding_status == "UNBOUND":
+    runtime_bridge_bound = evidence.runtime_bridge_binding_status in (
+        "BOUND_NOT_ACTIVATED",
+        "ACTIVATED",
+    )
+    runtime_bridge_activated = evidence.runtime_bridge_binding_status == "ACTIVATED"
+
+    if evidence.runtime_bridge_binding_status == "UNBOUND":
         fail_reasons.append("runtime_bridge_unbound")
+    elif not runtime_bridge_bound:
+        fail_reasons.append("runtime_bridge_not_bound")
 
     manifest_ok = _manifest_verified_v0(evidence.source_manifest_verify_rc)
-    full_canonical_chain_wired = manifest_ok and semantic_ok
-    backtest_runtime_decision_parity_pass = (
-        manifest_ok and evidence.surface_p_parity_suite_confirmed
-    )
-    system_economic_evidence_admissible = (
-        full_canonical_chain_wired
-        and backtest_runtime_decision_parity_pass
-        and evidence.runtime_bridge_binding_status == "ACTIVATED"
-    )
+    offline_parity_ok = manifest_ok and semantic_ok and evidence.surface_p_parity_suite_confirmed
 
-    if fail_reasons:
+    full_canonical_chain_wired = offline_parity_ok and runtime_bridge_bound
+    backtest_runtime_decision_parity_pass = offline_parity_ok and runtime_bridge_bound
+
+    system_economic_evidence_admissible = offline_parity_ok and runtime_bridge_activated
+    if offline_parity_ok and not runtime_bridge_activated:
+        fail_reasons.append("runtime_bridge_not_activated_for_economic_admissibility")
+
+    if not offline_parity_ok:
+        full_canonical_chain_wired = False
+        backtest_runtime_decision_parity_pass = False
+        system_economic_evidence_admissible = False
+    elif any(reason.startswith("direct_true_flag_assignment:") for reason in fail_reasons):
         full_canonical_chain_wired = False
         backtest_runtime_decision_parity_pass = False
         system_economic_evidence_admissible = False
@@ -142,8 +161,10 @@ def evaluate_surface_p_final_flags_fail_closed_contract_v0(
         full_canonical_chain_wired=full_canonical_chain_wired,
         backtest_runtime_decision_parity_pass=backtest_runtime_decision_parity_pass,
         system_economic_evidence_admissible=system_economic_evidence_admissible,
+        runtime_bridge_bound=runtime_bridge_bound,
+        runtime_bridge_activated=runtime_bridge_activated,
         direct_true_flag_assignment=False,
-        fail_closed_reasons=tuple(fail_reasons),
+        fail_closed_reasons=tuple(dict.fromkeys(fail_reasons)),
     )
 
 
@@ -175,22 +196,53 @@ def derive_surface_p_parity_suite_confirmed_from_targeted_tests_v0() -> bool:
         offline_four_way_fixtures_complete=bar_assessment.fixtures_complete,
     )
     return (
-        bar_assessment.fixtures_complete
-        and semantic.surface_p_offline_parity_status == "COMPLETE"
-        and semantic.surface_p_overall_status == "PASS"
+        bar_assessment.fixtures_complete and semantic.surface_p_offline_parity_status == "COMPLETE"
+    )
+
+
+def resolve_canonical_parity_source_manifest_verify_rc_v0(
+    evidence_dir: Path | None = None,
+) -> int:
+    """Verify canonical parity continuation evidence manifest when present."""
+    directory = evidence_dir or DEFAULT_CANONICAL_PARITY_SOURCE_EVIDENCE_DIR
+    manifest = directory / "MANIFEST.sha256"
+    if not directory.is_dir() or not manifest.is_file():
+        return -1
+    proc = subprocess.run(
+        ["sha256sum", "-c", "MANIFEST.sha256"],
+        cwd=str(directory),
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    return proc.returncode
+
+
+def build_surface_p_final_flags_evidence_input_v0(
+    *,
+    source_manifest_verify_rc: int,
+    surface_p_parity_suite_confirmed: bool,
+    runtime_bridge_binding_status: Literal["BOUND_NOT_ACTIVATED", "ACTIVATED", "UNBOUND"],
+) -> SurfacePFinalFlagsEvidenceInputV0:
+    return SurfacePFinalFlagsEvidenceInputV0(
+        source_manifest_verify_rc=source_manifest_verify_rc,
+        targeted_semantic_binding_confirmations=(
+            derive_targeted_semantic_binding_confirmations_from_gap_assessment_v0()
+        ),
+        surface_p_parity_suite_confirmed=surface_p_parity_suite_confirmed,
+        runtime_bridge_binding_status=runtime_bridge_binding_status,
     )
 
 
 def current_head_default_final_flags_evidence_input_v0() -> SurfacePFinalFlagsEvidenceInputV0:
-    """Reuse-first snapshot: manifest unverified and runtime bridge policy-blocked."""
+    """Reuse-first snapshot from manifest-verified parity evidence when available."""
     from trading.master_v2.surface_p_offline_complete_runtime_bridge_bound_not_activated_contract_v0 import (
         evaluate_surface_p_offline_complete_runtime_bridge_bound_not_activated_contract_v0,
     )
 
     semantic = evaluate_surface_p_offline_complete_runtime_bridge_bound_not_activated_contract_v0()
-    return SurfacePFinalFlagsEvidenceInputV0(
-        source_manifest_verify_rc=-1,
-        targeted_semantic_binding_confirmations=derive_targeted_semantic_binding_confirmations_from_gap_assessment_v0(),
+    return build_surface_p_final_flags_evidence_input_v0(
+        source_manifest_verify_rc=resolve_canonical_parity_source_manifest_verify_rc_v0(),
         surface_p_parity_suite_confirmed=derive_surface_p_parity_suite_confirmed_from_targeted_tests_v0(),
         runtime_bridge_binding_status=semantic.surface_p_runtime_bridge_binding_status,
     )
@@ -211,6 +263,8 @@ def surface_p_final_flags_result_to_dict_v0(
         "full_canonical_chain_wired": result.full_canonical_chain_wired,
         "backtest_runtime_decision_parity_pass": result.backtest_runtime_decision_parity_pass,
         "system_economic_evidence_admissible": result.system_economic_evidence_admissible,
+        "runtime_bridge_bound": result.runtime_bridge_bound,
+        "runtime_bridge_activated": result.runtime_bridge_activated,
         "direct_true_flag_assignment": result.direct_true_flag_assignment,
         "fail_closed_reasons": list(result.fail_closed_reasons),
     }

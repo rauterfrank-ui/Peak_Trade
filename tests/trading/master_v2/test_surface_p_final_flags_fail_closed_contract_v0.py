@@ -145,12 +145,16 @@ def test_missing_surface_p_parity_confirmation_backtest_parity_false_v0() -> Non
     assert "surface_p_parity_suite_not_targeted_test_confirmed" in result.fail_closed_reasons
 
 
-def test_runtime_bridge_bound_not_activated_system_economic_false_v0() -> None:
+def test_runtime_bridge_bound_not_activated_offline_parity_true_economic_false_v0() -> None:
     result = evaluate_surface_p_final_flags_fail_closed_contract_v0(
         _all_confirmed_evidence(runtime_bridge_binding_status="BOUND_NOT_ACTIVATED")
     )
+    assert result.full_canonical_chain_wired is True
+    assert result.backtest_runtime_decision_parity_pass is True
     assert result.system_economic_evidence_admissible is False
-    assert "runtime_bridge_bound_not_activated" in result.fail_closed_reasons
+    assert result.runtime_bridge_bound is True
+    assert result.runtime_bridge_activated is False
+    assert "runtime_bridge_not_activated_for_economic_admissibility" in result.fail_closed_reasons
 
 
 def test_direct_true_flag_assignment_rejected_fail_closed_v0() -> None:
@@ -179,18 +183,23 @@ def test_only_complete_manifest_verified_evidence_can_derive_true_flags_v0() -> 
     assert result.fail_closed_reasons == ()
 
 
-def test_current_head_default_all_final_flags_false_v0() -> None:
+def test_current_head_derives_offline_parity_flags_without_runtime_activation_v0() -> None:
     result = evaluate_current_head_surface_p_final_flags_fail_closed_contract_v0()
-    assert result.full_canonical_chain_wired is False
-    assert result.backtest_runtime_decision_parity_pass is False
+    evidence = current_head_default_final_flags_evidence_input_v0()
+    assert evidence.source_manifest_verify_rc == 0
+    assert evidence.runtime_bridge_binding_status == "BOUND_NOT_ACTIVATED"
+    assert result.full_canonical_chain_wired is True
+    assert result.backtest_runtime_decision_parity_pass is True
     assert result.system_economic_evidence_admissible is False
+    assert result.runtime_bridge_bound is True
+    assert result.runtime_bridge_activated is False
     assert result.direct_true_flag_assignment is False
     assert CANONICAL_RUNTIME_ENTRYPOINT_STATUS == "BOUND_NOT_ACTIVATED"
 
 
-def test_current_head_default_manifest_unverified_v0() -> None:
+def test_current_head_default_manifest_verified_v0() -> None:
     evidence = current_head_default_final_flags_evidence_input_v0()
-    assert evidence.source_manifest_verify_rc != 0
+    assert evidence.source_manifest_verify_rc == 0
     assert evidence.runtime_bridge_binding_status == "BOUND_NOT_ACTIVATED"
 
 
@@ -215,7 +224,9 @@ def test_parity_gap_matrix_json_uses_derived_final_flags_v0() -> None:
         == final_flags["system_economic_evidence_admissible"]
     )
     assert final_flags["direct_true_flag_assignment"] is False
-    assert summary["full_canonical_chain_wired"] is False
+    assert summary["full_canonical_chain_wired"] is True
+    assert summary["backtest_runtime_decision_parity_pass"] is True
+    assert summary["system_economic_evidence_admissible"] is False
 
 
 def test_slice_sources_have_no_forbidden_runtime_imports_v0() -> None:
