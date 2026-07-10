@@ -26,6 +26,10 @@ from src.backtest.step29m_el_karoui_vol_model_v1_economic_evaluation_admissibili
     EXCLUDED_BINDING_PARAMS,
     evaluate_el_karoui_vol_model_v1_admissibility_contract_v1,
 )
+from src.backtest.offline_evaluation_sizing_contract_v1 import (
+    compute_sizing_contract_digest_v1,
+    load_offline_evaluation_sizing_contract_v1,
+)
 from src.backtest.step29m_macd_v1_economic_evaluation_admissibility_contract_v1 import (
     compute_evaluation_config_digest_v1,
 )
@@ -338,10 +342,15 @@ def materialize_evaluation_config_v1(repo_root: Path) -> dict[str, Any]:
         strategy_params_digest=strategy_params_digest,
         config_digest="",
     )
-    config_digest = compute_evaluation_config_digest_v1(draft)
+    sizing_contract = load_offline_evaluation_sizing_contract_v1(
+        draft,
+        strategy_params_digest=strategy_params_digest,
+        dataset_digest=DATASET_DIGEST,
+    )
+    sizing_config_digest = compute_sizing_contract_digest_v1(sizing_contract)
     return build_evaluation_config_template_v1(
         strategy_params_digest=strategy_params_digest,
-        config_digest=config_digest,
+        config_digest=sizing_config_digest,
     )
 
 

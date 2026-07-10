@@ -1,14 +1,14 @@
 {
   "all_required_bindings_ratified": true,
   "authority_effect": "NONE",
-  "binding_digest": "223845f2047779218390fc245c3f2ebb04631bb068139e3d40731781906d099b",
+  "binding_digest": "2ba82dd901c940a5d41d2aabd3ddeb693dbbf7cdd1f0308275d11b6df4d988b3",
   "binding_ratified": true,
   "binding_version": "v0",
   "bitcoin_direction_allowed": false,
   "bitcoin_present": false,
   "candidate_binding_ref": "config/research/el_karoui_vol_model_v1_versioned_research_binding_v0.json",
   "candidate_id": "el_karoui_vol_model/v1",
-  "config_digest": "1b45ed11abdc5310f14a160200a63bb488c55d9677cd6caec0aa4bb202969d61",
+  "config_digest": "5d0afaed79c84a34bc0e92fc04c150dca1c0b828af4ee44b37384d0cd5943afc",
   "cost_execution_binding": {
     "binding_version": "v0",
     "execution_model_version": "backtest_execution_v0",
@@ -40,8 +40,8 @@
   "economic_evaluation_authorized": false,
   "economic_evaluation_executed": false,
   "economic_policy_binding": {
-    "baseline_adjudication_policy": "PASS_FAIL_INCONCLUSIVE",
     "binding_version": "v1",
+    "baseline_adjudication_policy": "PASS_FAIL_INCONCLUSIVE",
     "economic_validity_policy_version": "economic_validity_policy_v1",
     "minimum_trade_count_policy_bound": true,
     "promising_is_not_pass_bound": true,
@@ -89,10 +89,10 @@
     ],
     "parameter_search_forbidden": true,
     "parameters": {
-      "high_threshold": 0.7,
+      "vol_window": 20,
       "lookback_window": 252,
       "low_threshold": 0.3,
-      "vol_window": 20
+      "high_threshold": 0.7
     }
   },
   "parameter_search_forbidden": true,
