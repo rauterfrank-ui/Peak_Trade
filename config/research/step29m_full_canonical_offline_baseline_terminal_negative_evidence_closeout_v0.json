@@ -1,0 +1,197 @@
+{
+  "artifact_kind": "step29m_full_canonical_offline_baseline_terminal_negative_evidence_closeout",
+  "artifact_version": "v0",
+  "authority_effect": "NONE",
+  "baseline_head": "71532a60a399e6394fee317abc1b3a8ab361215a",
+  "baseline_pr": 5071,
+  "binding_completion_config_ref": "config/research/final_research_fleet_versioned_binding_completion_v0.json",
+  "binding_completion_digest": "4971431613646b70ff1ad2a875956ff9a62372e6dd27f7477611a1121a9d5072",
+  "bitcoin_direction_allowed": false,
+  "candidate_results": {
+    "bollinger_bands": "FAIL",
+    "momentum_1h": "FAIL",
+    "trend_following": "FAIL"
+  },
+  "candidate_zero_trade_classification": {
+    "bollinger_bands": "SPARSE_SIGNAL_ENTRY_THRESHOLD_NOT_MET"
+  },
+  "current_research_generation_closed": true,
+  "economic_evaluation_executed": true,
+  "economic_validity_offline_gate_pass": false,
+  "evidence_class_id": "STEP29M_FULL_CANONICAL_SYSTEM_OFFLINE_BASELINE_ECONOMIC_EVALUATION_V0",
+  "fail_count": 3,
+  "failed_bindings_are_negative_evidence": true,
+  "failed_bindings_may_not_be_retried_unchanged": true,
+  "fleet_adjudication_evidence_path": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/step29m_full_canonical_system_offline_baseline_economic_evaluation_v0_20260710T060508Z",
+  "fleet_execution_evidence_path": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/bounded_offline_economic_evaluation_final_research_fleet_v0_20260710T055955Z",
+  "fleet_id": "final_research_fleet_v0",
+  "fleet_status": "FAIL",
+  "fleet_verdict": "FAIL_TERMINAL_NEGATIVE_BASELINE_EVIDENCE",
+  "final_research_fleet": "trend_following,bollinger_bands,momentum_1h",
+  "futures_only": true,
+  "go_token": "GO_STEP29M_FULL_CANONICAL_OFFLINE_BASELINE_TERMINAL_NEGATIVE_EVIDENCE_CLOSEOUT_V0",
+  "governance_ref": "docs/governance/STEP29M_FULL_CANONICAL_OFFLINE_BASELINE_TERMINAL_NEGATIVE_EVIDENCE_CLOSEOUT_V0.md",
+  "historical_negative_evidence_mutated": false,
+  "immutable_binding_retry_allowed": false,
+  "inconclusive_count": 0,
+  "live_authorized": false,
+  "manifest_verify_rc": 0,
+  "new_evidence_class_required_for_further_evaluation": true,
+  "no_runtime_or_promotion_action": true,
+  "offline_only": true,
+  "orders_allowed": false,
+  "paper_authorized": false,
+  "pass_count": 0,
+  "policy_rescue_allowed": false,
+  "process_classification": "PERSIST_TERMINAL_NEGATIVE_EVIDENCE_NO_POLICY_RESCUE_AND_CLOSE_RESEARCH_GENERATION_V0",
+  "promotion_eligible": false,
+  "required_future_operator_go_for_new_evaluation": true,
+  "runtime_authority": false,
+  "runtime_effect": "NONE",
+  "runtime_rewire_admissible": false,
+  "same_binding_retry_allowed": false,
+  "scheduler_runtime_allowed": false,
+  "schema_version": "step29m_full_canonical_offline_baseline_terminal_negative_evidence_closeout.v0",
+  "scope_classification": "STEP29M_FULL_CANONICAL_OFFLINE_BASELINE_TERMINAL_NEGATIVE_EVIDENCE_CLOSEOUT_V0",
+  "shadow_authorized": false,
+  "spot_allowed": false,
+  "status": "TERMINAL_NEGATIVE_EVIDENCE_CLOSEOUT_COMPLETE",
+  "synthetic_spot_allowed": false,
+  "terminal_negative_binding_registry": {
+    "bollinger_bands/v1": {
+      "backtest_runtime_parity_digest": "07ca35e19004dba3e8a3cee4bb7458b92dc31f2253f3c9e6094ced0e03a66686",
+      "binding_semantic_digest": "3a71a0a47b80faa48db88fa55bc6c2926a6257f11e0f7fb34ed5a72ddeb0cb32",
+      "canonical_decision_chain_digest": "07ca35e19004dba3e8a3cee4bb7458b92dc31f2253f3c9e6094ced0e03a66686",
+      "canonical_trading_logic_version": "1dd564182d17d4c5764c390e3fde89377925c68d895078e85bf5509a657ce9d5",
+      "config_digest": "cb9873d09e762ae9d3155b64be444cd7d317865645a1c3c14028ba2e0cf44b5a",
+      "data_digest": "815b33162adaa2ffd0834f129621f1942b8cb61bc19a6d6220b81b15b65578cc",
+      "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1",
+      "economic_policy_binding": "economic_validity_policy_v1",
+      "execution_model_binding": {
+        "execution_model_version": "backtest_execution_v0",
+        "roundtrip_cost_bps": 40.0
+      },
+      "failure_taxonomy": [
+        "INSUFFICIENT_TRADE_SAMPLE",
+        "ECONOMIC_METRIC_BELOW_THRESHOLD",
+        "ROBUSTNESS_STRESS_FAIL",
+        "ZERO_TRADE_SPARSE_SIGNAL"
+      ],
+      "fee_model_binding": {
+        "fee_bps": 10.0,
+        "fee_model_version": "backtest_fee_taker_symmetric_v0"
+      },
+      "funding_model_binding": {
+        "bind": true,
+        "model_version": "backtest_funding_perpetual_interval_v1"
+      },
+      "gross_pnl": 0.0,
+      "implementation_digest": "2bc0f51f29587670878d7bfae66c3aac1e8c8ae48865f083c3d98611aa0dcb38",
+      "instrument_binding_digest": "9c81ca3b0d69dfe610f511ce50ff19b127bc91165b81d82eb7385422bf39a298",
+      "net_pnl": 0.0,
+      "panel_dataset_digest": "9f52527ac07bade7e115e698b3951a7b85cab020c1359dafe6c213c1888906dc",
+      "period_digest": "7f12bc0a9590b19f6fa8a6f01705ac661e6095c6d7502c8a770ecf12e430137c",
+      "slippage_model_binding": {
+        "slippage_bps": 5.0,
+        "slippage_model_version": "backtest_slippage_symmetric_v0"
+      },
+      "strategy_id": "bollinger_bands",
+      "strategy_params_digest": "1939cb09be984ac35e8d2051f6706acd9d10eab7647d9c901c90382b2edb249f",
+      "strategy_version": "v1",
+      "terminal_verdict": "FAIL",
+      "trade_count": 0,
+      "zero_trade_classification": "SPARSE_SIGNAL_ENTRY_THRESHOLD_NOT_MET"
+    },
+    "momentum_1h/v1": {
+      "backtest_runtime_parity_digest": "07ca35e19004dba3e8a3cee4bb7458b92dc31f2253f3c9e6094ced0e03a66686",
+      "binding_semantic_digest": "a753c177b24fc32ab7bf2e7bb1eeed7fd70cfe39fa422ab11a49ac6666baba8e",
+      "canonical_decision_chain_digest": "07ca35e19004dba3e8a3cee4bb7458b92dc31f2253f3c9e6094ced0e03a66686",
+      "canonical_trading_logic_version": "be2a32f9b19ee50da9dc497b866963764773dff6aefeec0f9ae7bb3de35a9098",
+      "config_digest": "d92f0542eb680df599cfac4cc7b3dadc2a7d17ffa0ebe963ea75a30d2714c244",
+      "data_digest": "815b33162adaa2ffd0834f129621f1942b8cb61bc19a6d6220b81b15b65578cc",
+      "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1",
+      "economic_policy_binding": "economic_validity_policy_v1",
+      "execution_model_binding": {
+        "execution_model_version": "backtest_execution_v0",
+        "roundtrip_cost_bps": 40.0
+      },
+      "failure_taxonomy": [
+        "INSUFFICIENT_TRADE_SAMPLE",
+        "ECONOMIC_METRIC_BELOW_THRESHOLD",
+        "NEGATIVE_NET_EXPECTANCY",
+        "ROBUSTNESS_MONTE_CARLO_FAIL",
+        "ROBUSTNESS_STRESS_FAIL"
+      ],
+      "fee_model_binding": {
+        "fee_bps": 10.0,
+        "fee_model_version": "backtest_fee_taker_symmetric_v0"
+      },
+      "funding_model_binding": {
+        "bind": true,
+        "model_version": "backtest_funding_perpetual_interval_v1"
+      },
+      "gross_pnl": -18.886714054011463,
+      "implementation_digest": "a31f196354e1fac7f7d5f56e1d02c5b2d466c7dde935b0d8fb26985f40cd4c38",
+      "instrument_binding_digest": "9c81ca3b0d69dfe610f511ce50ff19b127bc91165b81d82eb7385422bf39a298",
+      "net_pnl": -18.886714054011463,
+      "panel_dataset_digest": "9f52527ac07bade7e115e698b3951a7b85cab020c1359dafe6c213c1888906dc",
+      "period_digest": "7f12bc0a9590b19f6fa8a6f01705ac661e6095c6d7502c8a770ecf12e430137c",
+      "slippage_model_binding": {
+        "slippage_bps": 5.0,
+        "slippage_model_version": "backtest_slippage_symmetric_v0"
+      },
+      "strategy_id": "momentum_1h",
+      "strategy_params_digest": "cb928f7152d8aed4c44ba4300fa43bd9f9e584db59993d279d878fc170921039",
+      "strategy_version": "v1",
+      "terminal_verdict": "FAIL",
+      "trade_count": 2
+    },
+    "trend_following/v1": {
+      "backtest_runtime_parity_digest": "07ca35e19004dba3e8a3cee4bb7458b92dc31f2253f3c9e6094ced0e03a66686",
+      "binding_semantic_digest": "958b81e64022577b82ae6b78745d4afd7e8012ad58ce52694793ffa655ae2611",
+      "canonical_decision_chain_digest": "07ca35e19004dba3e8a3cee4bb7458b92dc31f2253f3c9e6094ced0e03a66686",
+      "canonical_trading_logic_version": "466cb33d1792025b3151959773db04cc6077ba09d2735c1dfd69d971081d3940",
+      "config_digest": "dbb246f649709e370c69a63cf3e741878a29bb053374134e702d2c344cbe71d0",
+      "data_digest": "815b33162adaa2ffd0834f129621f1942b8cb61bc19a6d6220b81b15b65578cc",
+      "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1",
+      "economic_policy_binding": "economic_validity_policy_v1",
+      "execution_model_binding": {
+        "execution_model_version": "backtest_execution_v0",
+        "roundtrip_cost_bps": 40.0
+      },
+      "failure_taxonomy": [
+        "ECONOMIC_METRIC_BELOW_THRESHOLD",
+        "NEGATIVE_NET_EXPECTANCY",
+        "ROBUSTNESS_MONTE_CARLO_FAIL",
+        "ROBUSTNESS_STRESS_FAIL"
+      ],
+      "fee_model_binding": {
+        "fee_bps": 10.0,
+        "fee_model_version": "backtest_fee_taker_symmetric_v0"
+      },
+      "funding_model_binding": {
+        "bind": true,
+        "model_version": "backtest_funding_perpetual_interval_v1"
+      },
+      "gross_pnl": -23.977484971645026,
+      "implementation_digest": "8bc31d6d5c8bce8fbcf9eb1ff5f9e679695e4538af46f542db91aedcccc8588b",
+      "instrument_binding_digest": "9c81ca3b0d69dfe610f511ce50ff19b127bc91165b81d82eb7385422bf39a298",
+      "net_pnl": -23.977484971645026,
+      "panel_dataset_digest": "9f52527ac07bade7e115e698b3951a7b85cab020c1359dafe6c213c1888906dc",
+      "period_digest": "7f12bc0a9590b19f6fa8a6f01705ac661e6095c6d7502c8a770ecf12e430137c",
+      "slippage_model_binding": {
+        "slippage_bps": 5.0,
+        "slippage_model_version": "backtest_slippage_symmetric_v0"
+      },
+      "strategy_id": "trend_following",
+      "strategy_params_digest": "a20b57589435b796e3d6d4b8161d2b84587b22241cbe04c29fb77a3b8e0bd082",
+      "strategy_version": "v1",
+      "terminal_verdict": "FAIL",
+      "trade_count": 219
+    }
+  },
+  "terminal_negative_evidence_for_unchanged_binding": true,
+  "testnet_authorized": false,
+  "trading_effect": "NONE",
+  "verdict": "STEP29M_FULL_CANONICAL_OFFLINE_BASELINE_TERMINAL_NEGATIVE_EVIDENCE_CLOSEOUT_COMPLETE_V0"
+}
