@@ -23,42 +23,86 @@ Usage:
         fetch_data()
 """
 
+from __future__ import annotations
+
+import importlib.util
 import logging
 import time
-from typing import Dict, Optional, Any
 from contextlib import contextmanager
 from dataclasses import dataclass, field
-from threading import Lock
 from datetime import datetime
+from threading import Lock
+from typing import Any, Dict, Optional
 
 logger = logging.getLogger(__name__)
 
-# Try to import prometheus_client, but make it optional
-try:
-    from prometheus_client import (
-        Counter,
-        Gauge,
-        Histogram,
-        CollectorRegistry,
-        generate_latest,
-        CONTENT_TYPE_LATEST,
-    )
-
-    PROMETHEUS_AVAILABLE = True
-except ImportError:
-    PROMETHEUS_AVAILABLE = False
-    logger.warning(
-        "prometheus_client not installed. Metrics will be collected in-memory only. "
-        "Install with: pip install prometheus-client"
-    )
+_PROMETHEUS_INIT_LOCK = Lock()
+_PROMETHEUS_IMPORT_CACHE: Optional[Dict[str, Any]] = None
+_PROMETHEUS_IMPORT_FAILED = object()
 
 
 def get_utc_now() -> datetime:
     """Get current UTC time."""
     if hasattr(datetime, "UTC"):
         return datetime.now(datetime.UTC)
-    else:
-        return datetime.utcnow()
+    return datetime.utcnow()
+
+
+def _prometheus_spec_available() -> bool:
+    """Check install surface without importing prometheus_client."""
+    return importlib.util.find_spec("prometheus_client") is not None
+
+
+def _load_prometheus_client_module() -> Optional[Dict[str, Any]]:
+    """Import prometheus_client at most once per process; ImportError activates fallback."""
+    global _PROMETHEUS_IMPORT_CACHE
+
+    if _PROMETHEUS_IMPORT_CACHE is _PROMETHEUS_IMPORT_FAILED:
+        return None
+    if _PROMETHEUS_IMPORT_CACHE is not None:
+        return _PROMETHEUS_IMPORT_CACHE
+
+    with _PROMETHEUS_INIT_LOCK:
+        if _PROMETHEUS_IMPORT_CACHE is _PROMETHEUS_IMPORT_FAILED:
+            return None
+        if _PROMETHEUS_IMPORT_CACHE is not None:
+            return _PROMETHEUS_IMPORT_CACHE
+
+        try:
+            from prometheus_client import (
+                CONTENT_TYPE_LATEST,
+                CollectorRegistry,
+                Counter,
+                Gauge,
+                Histogram,
+                generate_latest,
+            )
+        except ImportError:
+            _PROMETHEUS_IMPORT_CACHE = _PROMETHEUS_IMPORT_FAILED
+            return None
+
+        _PROMETHEUS_IMPORT_CACHE = {
+            "Counter": Counter,
+            "Gauge": Gauge,
+            "Histogram": Histogram,
+            "CollectorRegistry": CollectorRegistry,
+            "generate_latest": generate_latest,
+            "CONTENT_TYPE_LATEST": CONTENT_TYPE_LATEST,
+        }
+        return _PROMETHEUS_IMPORT_CACHE
+
+
+def is_prometheus_available() -> bool:
+    """Return True when prometheus_client is installed and importable."""
+    if not _prometheus_spec_available():
+        return False
+    return _load_prometheus_client_module() is not None
+
+
+def __getattr__(name: str) -> Any:
+    if name == "PROMETHEUS_AVAILABLE":
+        return is_prometheus_available()
+    raise AttributeError(f"module {__name__!r} has no attribute {name!r}")
 
 
 @dataclass
@@ -90,8 +134,8 @@ class MetricsCollector:
     - Request latencies
     - Failure rates
 
-    If prometheus_client is available, exposes metrics for Prometheus scraping.
-    Otherwise, stores metrics in-memory for manual inspection.
+    Prometheus initialization is deferred until a Prometheus-backed operation
+    is requested on this collector instance. In-memory collection always works.
     """
 
     def __init__(self, namespace: str = "peak_trade"):
@@ -103,24 +147,45 @@ class MetricsCollector:
         """
         self.namespace = namespace
         self.lock = Lock()
+        self._prometheus_init_lock = Lock()
+        self._prometheus_initialized = False
+        self.registry = None
 
         # In-memory storage for metrics (fallback when Prometheus not available)
         self.snapshots: Dict[str, list] = {}
 
-        if PROMETHEUS_AVAILABLE:
-            self.registry = CollectorRegistry()
-            self._init_prometheus_metrics()
-            logger.info(
-                f"MetricsCollector initialized with Prometheus support (namespace: {namespace})"
-            )
-        else:
-            self.registry = None
-            logger.info(f"MetricsCollector initialized in-memory mode (namespace: {namespace})")
+    def _ensure_prometheus_backend(self) -> bool:
+        """Initialize Prometheus metrics once per collector when client is available."""
+        if self._prometheus_initialized:
+            return self.registry is not None
 
-    def _init_prometheus_metrics(self) -> None:
-        """Initialize Prometheus metrics."""
-        if not PROMETHEUS_AVAILABLE:
-            return
+        if not _prometheus_spec_available():
+            self._prometheus_initialized = True
+            return False
+
+        with self._prometheus_init_lock:
+            if self._prometheus_initialized:
+                return self.registry is not None
+
+            prom = _load_prometheus_client_module()
+            if prom is None:
+                self._prometheus_initialized = True
+                return False
+
+            self.registry = prom["CollectorRegistry"]()
+            self._init_prometheus_metrics(prom)
+            self._prometheus_initialized = True
+            logger.info(
+                "MetricsCollector initialized Prometheus backend (namespace: %s)",
+                self.namespace,
+            )
+            return True
+
+    def _init_prometheus_metrics(self, prom: Dict[str, Any]) -> None:
+        """Initialize Prometheus metrics using a loaded prometheus_client module."""
+        Counter = prom["Counter"]
+        Gauge = prom["Gauge"]
+        Histogram = prom["Histogram"]
 
         # Circuit Breaker Metrics
         self.circuit_breaker_state = Gauge(
@@ -209,7 +274,7 @@ class MetricsCollector:
             from_state: Previous state
             to_state: New state
         """
-        if PROMETHEUS_AVAILABLE:
+        if self._ensure_prometheus_backend():
             self.circuit_breaker_state_changes.labels(
                 name=name, from_state=from_state, to_state=to_state
             ).inc()
@@ -233,7 +298,7 @@ class MetricsCollector:
         Args:
             name: Circuit breaker name
         """
-        if PROMETHEUS_AVAILABLE:
+        if self._ensure_prometheus_backend():
             self.circuit_breaker_failures.labels(name=name).inc()
 
         self._store_snapshot("circuit_breaker_failure", 1.0, {"name": name})
@@ -246,7 +311,7 @@ class MetricsCollector:
             limiter: Rate limiter name
             endpoint: Optional endpoint name
         """
-        if PROMETHEUS_AVAILABLE:
+        if self._ensure_prometheus_backend():
             self.rate_limit_hits.labels(limiter=limiter, endpoint=endpoint).inc()
 
         self._store_snapshot("rate_limit_hit", 1.0, {"limiter": limiter, "endpoint": endpoint})
@@ -259,7 +324,7 @@ class MetricsCollector:
             limiter: Rate limiter name
             endpoint: Optional endpoint name
         """
-        if PROMETHEUS_AVAILABLE:
+        if self._ensure_prometheus_backend():
             self.rate_limit_rejections.labels(limiter=limiter, endpoint=endpoint).inc()
 
         self._store_snapshot(
@@ -276,7 +341,7 @@ class MetricsCollector:
             limiter: Rate limiter name
             tokens: Current token count
         """
-        if PROMETHEUS_AVAILABLE:
+        if self._ensure_prometheus_backend():
             self.rate_limit_tokens.labels(limiter=limiter).set(tokens)
 
         self._store_snapshot("rate_limit_tokens", tokens, {"limiter": limiter})
@@ -299,7 +364,7 @@ class MetricsCollector:
         finally:
             duration = time.time() - start
 
-            if PROMETHEUS_AVAILABLE:
+            if self._ensure_prometheus_backend():
                 self.request_latency.labels(operation=operation).observe(duration)
 
             self._store_snapshot("request_latency", duration, {"operation": operation})
@@ -312,7 +377,7 @@ class MetricsCollector:
             operation: Operation name
             error_type: Type of error
         """
-        if PROMETHEUS_AVAILABLE:
+        if self._ensure_prometheus_backend():
             self.operation_failures.labels(operation=operation, error_type=error_type).inc()
 
         self._store_snapshot(
@@ -326,7 +391,7 @@ class MetricsCollector:
         Args:
             operation: Operation name
         """
-        if PROMETHEUS_AVAILABLE:
+        if self._ensure_prometheus_backend():
             self.operation_successes.labels(operation=operation).inc()
 
         self._store_snapshot("operation_success", 1.0, {"operation": operation})
@@ -339,7 +404,7 @@ class MetricsCollector:
             check_name: Health check name
             healthy: Whether check passed
         """
-        if PROMETHEUS_AVAILABLE:
+        if self._ensure_prometheus_backend():
             self.health_check_status.labels(check_name=check_name).set(1.0 if healthy else 0.0)
 
         self._store_snapshot("health_check", 1.0 if healthy else 0.0, {"check_name": check_name})
@@ -388,10 +453,12 @@ class MetricsCollector:
         Returns:
             Tuple of (content, content_type) for HTTP response
         """
-        if not PROMETHEUS_AVAILABLE:
+        if not self._ensure_prometheus_backend():
             return ("# Prometheus client not installed\n", "text/plain; charset=utf-8")
 
-        return generate_latest(self.registry), CONTENT_TYPE_LATEST
+        prom = _load_prometheus_client_module()
+        assert prom is not None
+        return prom["generate_latest"](self.registry), prom["CONTENT_TYPE_LATEST"]
 
     def get_summary(self) -> Dict[str, Any]:
         """
@@ -402,7 +469,7 @@ class MetricsCollector:
         """
         summary = {
             "namespace": self.namespace,
-            "prometheus_available": PROMETHEUS_AVAILABLE,
+            "prometheus_available": is_prometheus_available(),
             "timestamp": get_utc_now().isoformat(),
             "metrics": {},
         }
@@ -426,5 +493,6 @@ __all__ = [
     "MetricsCollector",
     "MetricSnapshot",
     "metrics",
-    "PROMETHEUS_AVAILABLE",
+    "is_prometheus_available",
 ]
+# PROMETHEUS_AVAILABLE is exported lazily via __getattr__ for deferred probing.
