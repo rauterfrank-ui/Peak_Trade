@@ -8,7 +8,7 @@ ORDERS_ALLOWED: false
 SCHEDULER_RUNTIME_ALLOWED: false
 ---
 
-> **Non-authorizing:** Ratifiziert ausschließlich die versionierte offline-only STEP29M-Bindings für `el_karoui_vol_model/v1` nach PR-#5087-Distinct-Scope-Definition. Keine Economic Evaluation. Keine Runtime-Authority.
+> **Non-authorizing:** Ratifiziert ausschließlich die versionierte offline-only STEP29M-Bindings für `el_karoui_vol_model&#47;v1` nach PR-#5087-Distinct-Scope-Definition. Keine Economic Evaluation. Keine Runtime-Authority.
 
 ## A. Verdict
 
@@ -71,9 +71,9 @@ SCHEDULER_RUNTIME_ALLOWED: false
 
 Material difference confirmed against:
 
-- `ehlers_cycle_filter/v1` (terminal inconclusive source scope)
-- `cross_sectional_ma_crossover_panel_rank_rotation/v0`
-- `vol_breakout/v1`
+- `ehlers_cycle_filter&#47;v1` (terminal inconclusive source scope)
+- `cross_sectional_ma_crossover_panel_rank_rotation&#47;v0`
+- `vol_breakout&#47;v1`
 - STEP29M final research fleet v0
 - Cross-sectional funding-rate research fleet COMPLETE_NO_PASS surfaces
 

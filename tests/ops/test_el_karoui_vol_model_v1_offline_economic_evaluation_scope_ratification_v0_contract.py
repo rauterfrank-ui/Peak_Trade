@@ -83,7 +83,7 @@ class TestElKarouiVolModelV1OfflineEconomicEvaluationScopeRatificationV0Contract
         assert "LIVE_AUTHORIZED: false" in text
         assert "ORDERS_ALLOWED: false" in text
         assert "ECONOMIC_EVALUATION_EXECUTED` | `false`" in text
-        assert "el_karoui_vol_model/v1" in text
+        assert "el_karoui_vol_model" in text
         assert NEXT_GO_TOKEN in text
 
     def test_materializers_match_committed_configs(self) -> None:

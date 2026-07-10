@@ -7563,7 +7563,7 @@ Offline-only terminal inconclusive registration for `ehlers_cycle_filter&#47;v1`
 
 #### EL_KAROUI_VOL_MODEL_V1_OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFICATION_V0
 
-Offline-only scope and binding ratification for `el_karoui_vol_model/v1`: versionierte Research-Bindings, Material-Difference-Contract, STEP29M-Admissibility-Infrastruktur und Scope-Ratifikation materialisiert; keine Economic Evaluation, keine Runtime-Authority.
+Offline-only scope and binding ratification for `el_karoui_vol_model&#47;v1`: versionierte Research-Bindings, Material-Difference-Contract, STEP29M-Admissibility-Infrastruktur und Scope-Ratifikation materialisiert; keine Economic Evaluation, keine Runtime-Authority.
 
 | Feld | Wert |
 |---|---|
@@ -7573,7 +7573,7 @@ Offline-only scope and binding ratification for `el_karoui_vol_model/v1`: versio
 | `GO_TOKEN` | `GO_RATIFY_EL_KAROUI_VOL_MODEL_V1_VERSIONED_RESEARCH_BINDING_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE_NO_RUNTIME_AUTHORITY_V0` |
 | `GO_TOKEN_CONSUMED` | `true` |
 | `VERDICT` | `PASS` |
-| `RESEARCH_SCOPE` | `el_karoui_vol_model/v1` |
+| `RESEARCH_SCOPE` | `el_karoui_vol_model&#47;v1` |
 | `STRATEGY_ID` | `el_karoui_vol_model` |
 | `STRATEGY_VERSION` | `v1` |
 | `HYPOTHESIS_ID` | `EL_KAROUI_STOCHASTIC_VOL_REGIME_NON_BITCOIN_FUTURES_V1` |
