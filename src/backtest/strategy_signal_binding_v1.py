@@ -101,6 +101,12 @@ _EXTERNAL_PARAMETER_SCHEMA_V1: dict[str, dict[str, Any]] = {
         "low_threshold": 0.30,
         "high_threshold": 0.70,
     },
+    "armstrong_cycle": {
+        "cycle_length_days": 3141,
+        "event_window_days": 90,
+        "reference_date": "2015-10-01",
+        "phase_position_map": "default",
+    },
 }
 
 COMPOSITE_STRATEGY_ID = "composite"
@@ -747,6 +753,28 @@ def compute_required_warmup_rows_v1(
         if lookback_raw < vol_window_raw or vol_window_raw < 2:
             raise StrategySignalBindingError("el_karoui_vol_model_warmup_param_invariant_failed")
         return lookback_raw
+    if strategy_id == "armstrong_cycle":
+        cycle_length_raw = effective_params.get("cycle_length_days")
+        event_window_raw = effective_params.get("event_window_days")
+        reference_date_raw = effective_params.get("reference_date")
+        phase_map_raw = effective_params.get("phase_position_map")
+        if cycle_length_raw is None:
+            raise StrategySignalBindingError("armstrong_cycle_cycle_length_days_missing")
+        if event_window_raw is None:
+            raise StrategySignalBindingError("armstrong_cycle_event_window_days_missing")
+        if reference_date_raw is None:
+            raise StrategySignalBindingError("armstrong_cycle_reference_date_missing")
+        if phase_map_raw is None:
+            raise StrategySignalBindingError("armstrong_cycle_phase_position_map_missing")
+        if isinstance(cycle_length_raw, bool) or not isinstance(cycle_length_raw, int):
+            raise StrategySignalBindingError("armstrong_cycle_cycle_length_days_not_integer")
+        if isinstance(event_window_raw, bool) or not isinstance(event_window_raw, int):
+            raise StrategySignalBindingError("armstrong_cycle_event_window_days_not_integer")
+        if cycle_length_raw < 30:
+            raise StrategySignalBindingError("armstrong_cycle_warmup_param_invariant_failed")
+        if event_window_raw < 1 or event_window_raw >= cycle_length_raw // 2:
+            raise StrategySignalBindingError("armstrong_cycle_warmup_param_invariant_failed")
+        return 0
     if strategy_id == COMPOSITE_STRATEGY_ID:
         raise StrategySignalBindingError("composite_warmup_requires_binding_context")
     raise StrategySignalBindingError(f"required_warmup_rows_unbound:{strategy_id}")

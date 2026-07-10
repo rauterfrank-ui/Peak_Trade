@@ -1,0 +1,311 @@
+{
+  "accounting_reconciliation_pass": true,
+  "artifact_kind": "armstrong_cycle_v1_versioned_research_binding",
+  "artifact_version": "v0",
+  "authority_effect": "NONE",
+  "binding": {
+    "baseline_evaluation_contract": {
+      "baseline_count": 1,
+      "baseline_type": "FULL_CANONICAL_OFFLINE_BASELINE_SINGLE_INSTRUMENT",
+      "conditional_monte_carlo": "only_after_positive_baseline_and_separate_admissibility_check",
+      "conditional_stress": "only_after_positive_baseline_and_separate_admissibility_check",
+      "conditional_walk_forward": "only_after_positive_baseline_and_separate_admissibility_check",
+      "economic_evaluation_executed_in_this_slice": false,
+      "evidence_class_id": "ARMSTRONG_CYCLE_V1_FULL_CANONICAL_OFFLINE_BASELINE_ECONOMIC_EVALUATION_V0",
+      "parameter_tuning_after_baseline_forbidden": true,
+      "parameter_tuning_during_baseline_forbidden": true
+    },
+    "binding_status": {
+      "baseline_binding_status": "BOUND",
+      "calendar_binding_status": "BOUND",
+      "candidate_binding_status": "BOUND",
+      "cost_model_binding_status": "BOUND",
+      "dataset_binding_status": "BOUND",
+      "digest_binding_status": "BOUND",
+      "instrument_binding_status": "BOUND",
+      "numeric_bindings_status": "BOUND",
+      "overall_binding_status": "COMPLETE",
+      "parameter_binding_status": "BOUND",
+      "period_binding_status": "BOUND",
+      "policy_classes_status": "BOUND",
+      "warmup_binding_status": "BOUND"
+    },
+    "calendar_binding": {
+      "binding_version": "v0",
+      "calendar_origin": "2015-10-01",
+      "cycle_length_days": 3141,
+      "epoch_rules": "ECM_REFERENCE_PEAK_DATE_CALENDAR_DAY_COUNT_MOD_CYCLE_LENGTH_UTC_MIDNIGHT",
+      "event_window_days": 90,
+      "finalized_bar_semantics": "point_in_time_bar_close_v1",
+      "no_lookahead": true,
+      "no_lookahead_semantics": "point_in_time_bar_close_v1",
+      "phase_position_map": "default",
+      "phase_state_machine": "ECM_PHASE_STATE_MACHINE_V1",
+      "phases": [
+        "CRISIS",
+        "EXPANSION",
+        "CONTRACTION",
+        "PRE_CRISIS",
+        "POST_CRISIS"
+      ],
+      "required_warmup_rows": 0,
+      "time_order_guard": "bar_timestamp_monotonic_non_decreasing",
+      "timezone": "UTC",
+      "warmup_derivation": "calendar_domain_no_bar_warmup"
+    },
+    "candidate_binding": {
+      "canonical_candidate_identifier": "armstrong_cycle/v1",
+      "canonical_owner": "src/strategies/armstrong/armstrong_cycle_strategy.py",
+      "engine_signal_source": "configured_strategy_signal",
+      "hypothesis_id": "ARMSTRONG_ECM_MACRO_CALENDAR_CYCLE_PHASE_NON_BITCOIN_FUTURES_V1",
+      "implementation_ref": "src.strategies.armstrong.armstrong_cycle_strategy.ArmstrongCycleStrategy",
+      "registry_class": "oop_strategy_spec",
+      "registry_key": "armstrong_cycle",
+      "signal_family": "MACRO_CALENDAR_ECM_CYCLE_PHASE",
+      "strategy_id": "armstrong_cycle",
+      "strategy_version": "v1"
+    },
+    "cost_execution_binding": {
+      "binding_version": "v0",
+      "execution_model_version": "backtest_execution_v0",
+      "execution_price_observation_source": "MODELLED_NOT_OBSERVED",
+      "fee_model_version": "backtest_fee_taker_symmetric_v0",
+      "funding_bind": true,
+      "funding_model_version": "backtest_funding_perpetual_interval_v1",
+      "implicit_zero_cost_forbidden": true,
+      "roundtrip_cost_bps": 40.0,
+      "slippage_model_version": "backtest_slippage_symmetric_v0",
+      "spread_model_version": "research_conservative_bps_v1"
+    },
+    "dataset_binding": {
+      "binding_version": "v1",
+      "canonical_instrument_id": "inst-eth-usdt-perp",
+      "dataset_digest": "b4cbe7fff81a137da055588231757937406d8cb30d531ee0aab41d95ee9b6c78",
+      "dataset_id": "inst-eth-usdt-perp_v1",
+      "dataset_path": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/inst-eth-usdt-perp/v1/bars.parquet",
+      "dataset_profile": "economic_research_v1",
+      "dataset_version": "v1",
+      "expected_manifest_digest": "317105798c749943074911b1e9ea91ac9b94fab3b115fb7a64b692339426651a",
+      "native_instrument_id": "ETH-USDT-SWAP",
+      "no_lookahead_semantics": "point_in_time_bar_close_v1",
+      "point_in_time_binding": true,
+      "source_venue": "OKX",
+      "survivorship_bias_forbidden": true
+    },
+    "digest_bindings": {
+      "config_digest": {
+        "status": "BOUND",
+        "value": "00fd45b4e3ca16799f4b892a367ecc7567363a12dd20dfaecfef5d9a4b920173"
+      },
+      "data_digest": {
+        "status": "BOUND",
+        "value": "b4cbe7fff81a137da055588231757937406d8cb30d531ee0aab41d95ee9b6c78"
+      },
+      "implementation_digest": {
+        "status": "BOUND",
+        "value": "5cef09f0c031acce49743ca94020c7d82bf56ecf0d4c1ce4abf4d45e7f0088f8"
+      },
+      "material_difference_digest": {
+        "status": "BOUND",
+        "value": "dc17557606eb6578ca97c2d90905ec0ffeeed2ef95b9ec77858615f2d1f71e85"
+      },
+      "strategy_params_digest": {
+        "status": "BOUND",
+        "value": "e13973325ae605f55927973055d2a836967ab2844c0bcc22fd366877dafa2ef1"
+      },
+      "strategy_semantic_digest": {
+        "status": "BOUND",
+        "value": "8e2c849d13a479752c9be4762b9bb284d7d115825ef336694c7f6f8ef050af3e"
+      },
+      "universe_digest": {
+        "status": "BOUND",
+        "value": "be6ea12f6e883de596e8e7987be071bcb4ebc3d32bff15ec933643dcf74f9ee2"
+      }
+    },
+    "economic_policy_binding": {
+      "baseline_adjudication_policy": "PASS_FAIL_INCONCLUSIVE",
+      "binding_version": "v1",
+      "economic_validity_policy_version": "economic_validity_policy_v1",
+      "minimum_trade_count_policy_bound": true,
+      "promising_is_not_pass_bound": true,
+      "sample_sufficiency_policy": "economic_validity_policy_v1"
+    },
+    "external_bindings": {
+      "admissibility_contract_ref": {
+        "ref": "src/backtest/step29m_armstrong_cycle_v1_economic_evaluation_admissibility_contract_v1.py",
+        "status": "BOUND"
+      },
+      "evaluation_config_ref": {
+        "ref": "config/ops/step29m_okx_inst_eth_usdt_perp_armstrong_cycle_v1_economic_evaluation_v1.json",
+        "status": "BOUND"
+      },
+      "execution_model_version": {
+        "status": "BOUND",
+        "value": "backtest_execution_v0"
+      },
+      "fee_model_version": {
+        "status": "BOUND",
+        "value": "backtest_fee_taker_symmetric_v0"
+      },
+      "funding_model_version": {
+        "status": "BOUND",
+        "value": "backtest_funding_perpetual_interval_v1"
+      },
+      "instrument_id_canonicalization_version": {
+        "status": "BOUND",
+        "value": "instrument_id_canonicalization.v1"
+      },
+      "material_difference_contract_ref": {
+        "ref": "config/research/armstrong_cycle_v1_material_difference_and_non_claim_contract_v0.json",
+        "status": "BOUND"
+      },
+      "slippage_model_version": {
+        "status": "BOUND",
+        "value": "backtest_slippage_symmetric_v0"
+      },
+      "spread_model_version": {
+        "status": "BOUND",
+        "value": "research_conservative_bps_v1"
+      },
+      "strategy_signal_binding_owner": {
+        "status": "BOUND",
+        "value": "backtest.strategy_signal_binding_v1"
+      }
+    },
+    "instrument_binding": {
+      "binding_version": "v0",
+      "bitcoin_direction_allowed": false,
+      "bitcoin_present": false,
+      "canonical_instrument_id": "inst-eth-usdt-perp",
+      "futures_only": true,
+      "native_instrument_id": "ETH-USDT-SWAP",
+      "selection_mode": "single_instrument_prebound",
+      "source_venue": "OKX",
+      "spot_allowed": false,
+      "synthetic_spot_allowed": false
+    },
+    "numeric_bindings": {
+      "conservative_half_spread_bps": 5.0,
+      "cycle_length_days": 3141,
+      "effective_entry_cost_bps": 20.0,
+      "effective_exit_cost_bps": 20.0,
+      "event_window_days": 90,
+      "fee_bps_per_side": 10.0,
+      "phase_position_map": "default",
+      "reference_date": "2015-10-01",
+      "required_warmup_rows": 0,
+      "risk_per_trade": 0.005,
+      "roundtrip_cost_bps": 40.0,
+      "slippage_bps_per_side": 5.0,
+      "stop_pct": 0.025
+    },
+    "parameter_binding": {
+      "binding_version": "v0",
+      "consumed_parameters": [
+        "cycle_length_days",
+        "event_window_days",
+        "reference_date",
+        "phase_position_map"
+      ],
+      "excluded_parameters": [
+        "underlying",
+        "use_risk_scaling"
+      ],
+      "parameter_search_forbidden": true,
+      "parameters": {
+        "cycle_length_days": 3141,
+        "event_window_days": 90,
+        "phase_position_map": "default",
+        "reference_date": "2015-10-01"
+      }
+    },
+    "period_binding": {
+      "binding_version": "v1",
+      "out_of_sample_period": "2026-06-27 23:36:00+00:00..2026-07-01 10:07:00+00:00",
+      "periods_frozen_before_execution": true,
+      "random_split_forbidden": true,
+      "training_period": "2026-06-17 16:00:00+00:00..2026-06-24 13:03:00+00:00",
+      "validation_period": "2026-06-24 13:04:00+00:00..2026-06-27 23:35:00+00:00"
+    },
+    "prior_evidence_exclusion": {
+      "excluded_terminal_inconclusive_bindings": [
+        "ehlers_cycle_filter/v1",
+        "el_karoui_vol_model/v1"
+      ],
+      "excluded_terminal_negative_bindings": [
+        "cross_sectional_ma_crossover_panel_rank_rotation/v0",
+        "vol_breakout/v1",
+        "trend_following/v1",
+        "bollinger_bands/v1",
+        "momentum_1h/v1",
+        "cross_sectional_funding_rate_rank_delta/v0",
+        "cross_sectional_funding_rate_persistence_reversal_filter/v0",
+        "cross_sectional_funding_rate_dispersion_zscore_reversion/v0",
+        "cross_sectional_funding_rate_dual_leg_spread/v1",
+        "cross_sectional_funding_rate_delta_momentum/v0",
+        "cross_sectional_funding_rate_carry/v0",
+        "cross_sectional_funding_rate_extreme_carry_reversion/v0",
+        "cross_sectional_relative_strength/v0",
+        "cross_sectional_realized_volatility_rank_rotation/v0"
+      ],
+      "near_duplicate_retry_blocked": true,
+      "no_rescue_rules": [
+        "NO_POLICY_RESCUE",
+        "NO_THRESHOLD_LOWERING",
+        "NO_UNCHANGED_RETRY",
+        "NO_RENAME_ONLY_SUCCESSOR"
+      ],
+      "prior_evidence_exclusion_pass": true,
+      "unchanged_retry_blocked": true
+    },
+    "sample_sufficiency_contract": {
+      "minimum_trade_count_policy": "economic_validity_policy_v1",
+      "trade_count_target_inflation_forbidden": true
+    },
+    "signal_semantics_binding": {
+      "entry_semantics": "ecm_phase_position_mapping",
+      "exit_semantics": "ecm_phase_position_mapping",
+      "hold_semantics": "calendar_day_point_in_time",
+      "regime_position_map": "default",
+      "signal_semantics": "LONG_FLAT_0_1",
+      "state_semantics": "ECM_MACRO_CALENDAR_CYCLE_PHASE",
+      "underlying_fixed": null,
+      "use_risk_scaling_fixed": false
+    },
+    "warmup_binding": {
+      "derivation": "calendar_domain",
+      "required_warmup_rows": 0,
+      "warmup_bars_before_train_start_required": false
+    }
+  },
+  "binding_changed": false,
+  "binding_digest": "d29de831f426eeca087518ab9ebe53c1e77895fc0f9f4550a0d804a69403d69c",
+  "binding_ratified": true,
+  "binding_version": "v0",
+  "bitcoin_direction_allowed": false,
+  "bitcoin_present": false,
+  "candidate_id": "armstrong_cycle/v1",
+  "distinct_from_ehlers_cycle_filter_v1": true,
+  "distinct_from_el_karoui_vol_model_v1": true,
+  "durable_evidence_refs": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/discover_and_rank_new_distinct_futures_research_scope_or_evidence_class_post_el_karoui_inconclusive_read_only_v0_20260710T151847Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/register_terminal_inconclusive_ehlers_cycle_filter_v1_same_binding_and_authorize_distinct_futures_research_scope_definition_read_only_v0_20260710T124034Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/el_karoui_vol_model_v1_bound_offline_economic_baseline_evaluation_v0_20260710T135114Z (MANIFEST_VERIFY_RC=0)",
+  "economic_evaluation_authorized": false,
+  "economic_evaluation_executed": false,
+  "futures_only": true,
+  "go_token": "GO_RATIFY_ARMSTRONG_CYCLE_V1_VERSIONED_RESEARCH_BINDING_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE_NO_RUNTIME_AUTHORITY_V0",
+  "governance_ref": "docs/governance/ARMSTRONG_CYCLE_V1_OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFICATION_V0.md",
+  "hypothesis_id": "ARMSTRONG_ECM_MACRO_CALENDAR_CYCLE_PHASE_NON_BITCOIN_FUTURES_V1",
+  "material_difference_proven": true,
+  "next_go_token": "GO_ARMSTRONG_CYCLE_V1_BOUNDED_OFFLINE_ECONOMIC_BASELINE_EVALUATION_NO_RUNTIME_AUTHORITY_V0",
+  "next_step": "ARMSTRONG_CYCLE_V1_FULL_CANONICAL_OFFLINE_BASELINE_ECONOMIC_EVALUATION_V0",
+  "offline_only": true,
+  "order_effect": "NONE",
+  "parameter_search_forbidden": true,
+  "runtime_effect": "NONE",
+  "schema_version": "armstrong_cycle_v1_versioned_research_binding.v0",
+  "source_ratification_evidence_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/discover_and_rank_new_distinct_futures_research_scope_or_evidence_class_post_el_karoui_inconclusive_read_only_v0_20260710T151847Z",
+  "strategy_id": "armstrong_cycle",
+  "strategy_version": "v1",
+  "trading_logic_mutated": false,
+  "unchanged_retry_blocked": true,
+  "universe_digest": "be6ea12f6e883de596e8e7987be071bcb4ebc3d32bff15ec933643dcf74f9ee2"
+}
