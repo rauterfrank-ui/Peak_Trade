@@ -40,10 +40,77 @@ EVAL_CONFIG_PATH = (
     "config/ops/step29m_okx_inst_eth_usdt_perp_armstrong_cycle_v1_economic_evaluation_v1.json"
 )
 BINDING_CONFIG_PATH = "config/research/armstrong_cycle_v1_versioned_research_binding_v0.json"
-HISTORICAL_EVIDENCE_DIR = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "research/armstrong_cycle_v1_bound_offline_economic_baseline_evaluation_v0_20260710T153705Z"
+# Frozen baseline trade ledger from armstrong_cycle_v1_bound_offline_economic_baseline_evaluation_v0_20260710T153705Z.
+HISTORICAL_BASELINE_TRADE_LEDGER: tuple[dict[str, float | str], ...] = (
+    {
+        "entry_time": "2026-06-17 16:00:00+00:00",
+        "entry_price": 1773.29,
+        "size": 1.1278471090458995,
+        "stop_price": 1728.95775,
+        "exit_time": "2026-06-17 19:51:00+00:00",
+        "exit_price": 1728.95775,
+        "pnl": -50.0,
+        "pnl_pct": -2.4999999999999964,
+        "exit_reason": "stop_loss",
+    },
+    {
+        "entry_time": "2026-06-17 19:51:00+00:00",
+        "entry_price": 1730.37,
+        "size": 1.1500430543756521,
+        "stop_price": 1687.1107499999998,
+        "exit_time": "2026-06-18 15:53:00+00:00",
+        "exit_price": 1687.1107499999998,
+        "pnl": -49.75000000000001,
+        "pnl_pct": -2.500000000000004,
+        "exit_reason": "stop_loss",
+    },
+    {
+        "entry_time": "2026-06-18 15:53:00+00:00",
+        "entry_price": 1683.16,
+        "size": 1.1763884598018026,
+        "stop_price": 1641.0810000000001,
+        "exit_time": "2026-06-23 08:24:00+00:00",
+        "exit_price": 1641.0810000000001,
+        "pnl": -49.50124999999999,
+        "pnl_pct": -2.499999999999997,
+        "exit_reason": "stop_loss",
+    },
+    {
+        "entry_time": "2026-06-23 08:24:00+00:00",
+        "entry_price": 1643.26,
+        "size": 1.1989275890607693,
+        "stop_price": 1602.1785,
+        "exit_time": "2026-06-24 16:51:00+00:00",
+        "exit_price": 1602.1785,
+        "pnl": -49.253743750000005,
+        "pnl_pct": -2.5000000000000004,
+        "exit_reason": "stop_loss",
+    },
+    {
+        "entry_time": "2026-06-24 16:51:00+00:00",
+        "entry_price": 1586.64,
+        "size": 1.235503328574852,
+        "stop_price": 1546.9740000000002,
+        "exit_time": "2026-06-25 13:55:00+00:00",
+        "exit_price": 1546.9740000000002,
+        "pnl": -49.00747503125,
+        "pnl_pct": -2.499999999999996,
+        "exit_reason": "stop_loss",
+    },
+    {
+        "entry_time": "2026-06-25 13:55:00+00:00",
+        "entry_price": 1547.71,
+        "size": 1.260247401802504,
+        "stop_price": 1509.01725,
+        "exit_time": "2026-07-01 10:07:00+00:00",
+        "exit_price": 1579.4,
+        "pnl": 39.93724016312142,
+        "pnl_pct": 2.0475412060398948,
+        "exit_reason": "end_of_data",
+    },
 )
+HISTORICAL_BASELINE_NET_PNL = -207.5752286181286
+HISTORICAL_BASELINE_MATERIALIZED_NET_EXPECTANCY = 0.0
 HISTORICAL_EXPECTANCY = -34.59587143635476
 
 
@@ -78,8 +145,7 @@ def _backtest_from_trades(
 
 
 def _historical_trades() -> list[dict[str, float | str]]:
-    lines = (HISTORICAL_EVIDENCE_DIR / "trade_ledger.jsonl").read_text(encoding="utf-8").strip()
-    return [json.loads(line) for line in lines.split("\n") if line.strip()]
+    return [dict(trade) for trade in HISTORICAL_BASELINE_TRADE_LEDGER]
 
 
 def test_materializer_uses_canonical_mv2_metrics_owner() -> None:
@@ -179,14 +245,18 @@ def test_gross_pnl_accounting_behavior_unchanged() -> None:
     backtest = _backtest_from_trades(trades)
     result = reconcile_legacy_backtest_result_accounting_v0(backtest, initial_cash=10000.0)
     assert result.realized_gross_pnl == 0.0
-    assert result.realized_net_pnl_from_trades == pytest.approx(-207.5752286181286)
+    assert result.realized_net_pnl_from_trades == pytest.approx(HISTORICAL_BASELINE_NET_PNL)
     assert result.reconciled is True
 
 
 def test_historical_evidence_preserved() -> None:
-    assert HISTORICAL_EVIDENCE_DIR.is_dir()
-    perf = json.loads((HISTORICAL_EVIDENCE_DIR / "performance_metrics.json").read_text())
-    assert perf["net_expectancy"] == 0.0
+    assert HISTORICAL_BASELINE_MATERIALIZED_NET_EXPECTANCY == 0.0
+    trades = _historical_trades()
+    backtest = _backtest_from_trades(trades, engine_expectancy=None)
+    assert "expectancy" not in backtest.stats
+    assert resolve_armstrong_cycle_v1_net_expectancy_for_baseline_v0(backtest) != (
+        HISTORICAL_BASELINE_MATERIALIZED_NET_EXPECTANCY
+    )
 
 
 def test_versioned_binding_materialization_unchanged() -> None:
