@@ -16,7 +16,7 @@ from src.research.cross_sectional_open_interest_delta_rank_v0_pit_semantics_cont
     pit_semantics_contract_to_dict,
 )
 from src.research.okx_historical_open_interest_public_fetch_v0 import (
-    GO_TOKEN,
+    CONFIRM_GO,
     START_INCLUSIVE_UTC,
     END_EXCLUSIVE_UTC,
     OpenInterestFetchTerminalStatus,
@@ -342,5 +342,5 @@ def materializer_roundtrip_contract_v0() -> dict[str, Any]:
         "panel_manifest_ref": PANEL_OI_MANIFEST_REF,
         "bound_data_digest": compute_bound_open_interest_data_digest_v0(),
         "implementation_digest": compute_implementation_digest_v1(),
-        "go_token": GO_TOKEN,
+        "confirm_go": CONFIRM_GO,
     }

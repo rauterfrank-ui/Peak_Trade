@@ -28,14 +28,13 @@ from src.research.cross_sectional_open_interest_delta_rank_v0_bound_panel_datase
     materialize_open_interest_panel_from_observations_v0,
 )
 from src.research.okx_historical_open_interest_public_fetch_v0 import (  # noqa: E402
-    GO_TOKEN,
+    CONFIRM_GO,
     OpenInterestFetchBudgetGuardV0,
     assess_open_interest_horizon_v0,
     compute_open_interest_bounded_window_v0,
     paginate_bounded_open_interest_v0,
 )
 
-CONFIRM_GO = GO_TOKEN
 DEFAULT_OHLCV_STAGING_ROOT = Path(
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
     "datasets/admissible_futures/"
