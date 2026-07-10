@@ -14,6 +14,11 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Mapping, Optional
 
+from src.backtest.offline_evaluation_sizing_contract_v1 import (
+    OfflineEvaluationSizingError,
+    compute_sizing_contract_digest_v1,
+    load_offline_evaluation_sizing_contract_v1,
+)
 from src.backtest.step29m_macd_v1_economic_evaluation_admissibility_contract_v1 import (
     compute_evaluation_config_digest_v1,
     verify_cost_binding_v1,
@@ -346,6 +351,113 @@ def verify_bouchaud_microstructure_ohlcv_proxy_v1_sizing_policy_v1(
     return tuple(reasons)
 
 
+def verify_bouchaud_microstructure_ohlcv_proxy_v1_sizing_config_digest_v1(
+    cfg: Mapping[str, Any],
+    *,
+    strategy_params_digest: str,
+) -> tuple[str, ...]:
+    sizing = cfg.get("offline_evaluation_sizing_contract_v1")
+    if not isinstance(sizing, Mapping):
+        return ("offline_evaluation_sizing_contract_v1_missing",)
+
+    bound_digest = str(sizing.get("config_digest", "")).strip()
+    if not bound_digest:
+        return ("sizing_config_digest_missing",)
+
+    dataset_digest = str(sizing.get("dataset_digest", "")).strip()
+    try:
+        contract = load_offline_evaluation_sizing_contract_v1(
+            cfg,
+            strategy_params_digest=strategy_params_digest,
+            dataset_digest=dataset_digest,
+        )
+        expected_digest = compute_sizing_contract_digest_v1(contract)
+    except OfflineEvaluationSizingError as exc:
+        return (f"offline_evaluation_sizing_contract_invalid:{exc}",)
+
+    if bound_digest != expected_digest:
+        return ("sizing_config_digest_mismatch",)
+    return ()
+
+
+@dataclass(frozen=True)
+class BouchaudMicrostructureOhlcvProxyV1SizingDigestAdmissibilityGuardResultV1:
+    admissible: bool
+    reason_code: str
+    bound_sizing_config_digest: str
+    computed_sizing_config_digest: str
+    economic_evaluation_executed: bool
+
+    def to_dict(self) -> dict[str, Any]:
+        return {
+            "admissible": self.admissible,
+            "reason_code": self.reason_code,
+            "bound_sizing_config_digest": self.bound_sizing_config_digest,
+            "computed_sizing_config_digest": self.computed_sizing_config_digest,
+            "economic_evaluation_executed": self.economic_evaluation_executed,
+        }
+
+
+def evaluate_bouchaud_microstructure_ohlcv_proxy_v1_sizing_digest_admissibility_guard_v1(
+    *,
+    repo_root: Path,
+    config_path: Optional[str] = None,
+) -> BouchaudMicrostructureOhlcvProxyV1SizingDigestAdmissibilityGuardResultV1:
+    rel_path = config_path or DEFAULT_EVALUATION_CONFIG_PATH
+    cfg = load_bouchaud_microstructure_ohlcv_proxy_v1_evaluation_config_v1(repo_root, rel_path)
+    sizing = cfg.get("offline_evaluation_sizing_contract_v1")
+    if not isinstance(sizing, Mapping):
+        return BouchaudMicrostructureOhlcvProxyV1SizingDigestAdmissibilityGuardResultV1(
+            admissible=False,
+            reason_code="offline_evaluation_sizing_contract_v1_missing",
+            bound_sizing_config_digest="",
+            computed_sizing_config_digest="",
+            economic_evaluation_executed=False,
+        )
+
+    bound_digest = str(sizing.get("config_digest", "")).strip()
+    configured = collect_configured_strategy_params_v1(cfg, REGISTRY_STRATEGY_ID)
+    try:
+        _, strategy_params_digest = resolve_effective_strategy_params_v1(
+            REGISTRY_STRATEGY_ID,
+            project_strategy_params_for_binding_v1(
+                REGISTRY_STRATEGY_ID,
+                configured,
+            ),
+        )
+        contract = load_offline_evaluation_sizing_contract_v1(
+            cfg,
+            strategy_params_digest=strategy_params_digest,
+            dataset_digest=str(sizing.get("dataset_digest", "")),
+        )
+        computed_digest = compute_sizing_contract_digest_v1(contract)
+    except (StrategySignalBindingError, OfflineEvaluationSizingError) as exc:
+        return BouchaudMicrostructureOhlcvProxyV1SizingDigestAdmissibilityGuardResultV1(
+            admissible=False,
+            reason_code=str(exc),
+            bound_sizing_config_digest=bound_digest,
+            computed_sizing_config_digest="",
+            economic_evaluation_executed=False,
+        )
+
+    if bound_digest != computed_digest:
+        return BouchaudMicrostructureOhlcvProxyV1SizingDigestAdmissibilityGuardResultV1(
+            admissible=False,
+            reason_code="sizing_config_digest_mismatch",
+            bound_sizing_config_digest=bound_digest,
+            computed_sizing_config_digest=computed_digest,
+            economic_evaluation_executed=False,
+        )
+
+    return BouchaudMicrostructureOhlcvProxyV1SizingDigestAdmissibilityGuardResultV1(
+        admissible=True,
+        reason_code="OK",
+        bound_sizing_config_digest=bound_digest,
+        computed_sizing_config_digest=computed_digest,
+        economic_evaluation_executed=False,
+    )
+
+
 def verify_bouchaud_microstructure_ohlcv_proxy_v1_instrument_binding_v1(
     cfg: Mapping[str, Any],
 ) -> tuple[str, ...]:
@@ -491,6 +603,23 @@ def evaluate_bouchaud_microstructure_ohlcv_proxy_v1_admissibility_contract_v1(
     blocking.extend(verify_bouchaud_microstructure_ohlcv_proxy_v1_scope_binding_v1(cfg))
     blocking.extend(verify_bouchaud_microstructure_ohlcv_proxy_v1_config_schema_v1(cfg))
     blocking.extend(verify_bouchaud_microstructure_ohlcv_proxy_v1_sizing_policy_v1(cfg))
+    configured_for_sizing = collect_configured_strategy_params_v1(cfg, REGISTRY_STRATEGY_ID)
+    try:
+        _, sizing_params_digest = resolve_effective_strategy_params_v1(
+            REGISTRY_STRATEGY_ID,
+            project_strategy_params_for_binding_v1(
+                REGISTRY_STRATEGY_ID,
+                configured_for_sizing,
+            ),
+        )
+        blocking.extend(
+            verify_bouchaud_microstructure_ohlcv_proxy_v1_sizing_config_digest_v1(
+                cfg,
+                strategy_params_digest=sizing_params_digest,
+            )
+        )
+    except StrategySignalBindingError as exc:
+        blocking.append(str(exc))
     blocking.extend(verify_bouchaud_microstructure_ohlcv_proxy_v1_instrument_binding_v1(cfg))
     blocking.extend(verify_bouchaud_microstructure_ohlcv_proxy_v1_ratification_authority_v1(cfg))
     blocking.extend(verify_bouchaud_microstructure_ohlcv_proxy_v1_signal_binding_v1(cfg))

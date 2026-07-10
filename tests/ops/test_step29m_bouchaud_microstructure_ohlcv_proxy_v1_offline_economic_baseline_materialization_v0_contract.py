@@ -37,6 +37,7 @@ def test_config_digest_matches_binding() -> None:
     digest = compute_evaluation_config_digest_v1(cfg)
     binding = json.loads(BINDING_CONFIG.read_text(encoding="utf-8"))
     assert digest == binding["binding"]["digest_bindings"]["config_digest"]["value"]
+    assert digest == "a3af95053e4a60d302c47465d40b82d2002b75d51a2822a01d756b167bfafd95"
 
 
 def test_binding_digest_roundtrip_deterministic() -> None:
@@ -63,6 +64,8 @@ def test_binding_digest_roundtrip_deterministic() -> None:
         data_period=binding["binding"]["period_binding"]["data_period"],
     )
     assert first == second
+    assert first == binding["binding_digest"]
+    assert first == "99d6153cfc25e550a429cde04a2d684c56e0e84369cc3e1196cae9f91ac26422"
 
 
 def test_implementation_surface_paths_exist() -> None:

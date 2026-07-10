@@ -1,14 +1,14 @@
 {
   "all_required_bindings_ratified": true,
   "authority_effect": "NONE",
-  "binding_digest": "39a783904714eb988e9a5fee34e6474e0bb65821ddf525af8df53268906f6e7c",
+  "binding_digest": "99d6153cfc25e550a429cde04a2d684c56e0e84369cc3e1196cae9f91ac26422",
   "binding_ratified": true,
   "binding_version": "v0",
   "candidate_binding_ref": "config/research/bouchaud_microstructure_ohlcv_proxy_v1_versioned_research_binding_v0.json",
   "candidate_id": "bouchaud_microstructure_ohlcv_proxy/v1",
   "canonical_evaluation_runner": "scripts/ops/run_bouchaud_microstructure_ohlcv_proxy_v1_bound_offline_economic_baseline_evaluation_v0.py",
   "canonical_invocation_wrapper": "scripts/ops/invoke_bouchaud_microstructure_ohlcv_proxy_v1_bound_offline_economic_baseline_evaluation_v0.py",
-  "config_digest": "a9c0f1d859855ef406e3f7cdc31e4f71ddf86e18d7e97a0bea2b2d0d1fdd1472",
+  "config_digest": "a3af95053e4a60d302c47465d40b82d2002b75d51a2822a01d756b167bfafd95",
   "cost_execution_binding": {
     "binding_version": "v0",
     "execution_model_version": "backtest_execution_v0",
@@ -59,7 +59,7 @@
   "futures_only": true,
   "go_token": "GO_BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_BOUND_OFFLINE_ECONOMIC_BASELINE_EVALUATION_V0",
   "hypothesis_id": "BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1",
-  "implementation_digest": "5ca371146454321a89b4dd802a7bddcdd80257a9dffd417f2266bb0563299655",
+  "implementation_digest": "e76f7d06e9e8e92e2ea3db436e404894e66f218ee78e4f1e0962a37d4a8b2e35",
   "instrument_binding": {
     "binding_version": "v0",
     "bitcoin_direction_allowed": false,

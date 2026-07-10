@@ -9,6 +9,7 @@ from __future__ import annotations
 import hashlib
 import json
 import subprocess
+from copy import deepcopy
 from dataclasses import dataclass
 from enum import Enum
 from pathlib import Path
@@ -26,6 +27,10 @@ from src.backtest.step29m_bouchaud_microstructure_ohlcv_proxy_v1_economic_evalua
     REGISTRY_STRATEGY_ID,
     RESEARCH_SCOPE,
     evaluate_bouchaud_microstructure_ohlcv_proxy_v1_admissibility_contract_v1,
+)
+from src.backtest.offline_evaluation_sizing_contract_v1 import (
+    compute_sizing_contract_digest_v1,
+    load_offline_evaluation_sizing_contract_v1,
 )
 from src.backtest.step29m_macd_v1_economic_evaluation_admissibility_contract_v1 import (
     compute_evaluation_config_digest_v1,
@@ -78,6 +83,11 @@ BLOCKED_EVALUATION_DIR = (
     DURABLE_ARCHIVE_ROOT
     / "research/bouchaud_microstructure_ohlcv_proxy_v1_bound_offline_economic_baseline_evaluation_v0_"
     "20260710T172515Z"
+)
+FAILED_EXECUTION_CONTRACT_EVALUATION_DIR = (
+    DURABLE_ARCHIVE_ROOT
+    / "research/bouchaud_microstructure_ohlcv_proxy_v1_bound_offline_economic_baseline_evaluation_v0_"
+    "20260710T174747Z"
 )
 IMPLEMENTATION_EVIDENCE_DIR = (
     DURABLE_ARCHIVE_ROOT
@@ -195,6 +205,38 @@ def load_committed_scope_separation_v0(repo_root: Path) -> dict[str, Any]:
 def load_committed_evaluation_config_v1(repo_root: Path) -> dict[str, Any]:
     path = repo_root / DEFAULT_EVALUATION_CONFIG_PATH
     return json.loads(path.read_text(encoding="utf-8"))
+
+
+def materialize_evaluation_config_v1(repo_root: Path) -> dict[str, Any]:
+    from src.backtest.strategy_signal_binding_v1 import (
+        project_strategy_params_for_binding_v1,
+        resolve_effective_strategy_params_v1,
+    )
+
+    cfg = load_committed_evaluation_config_v1(repo_root)
+    _, strategy_params_digest = resolve_effective_strategy_params_v1(
+        STRATEGY_ID,
+        project_strategy_params_for_binding_v1(
+            STRATEGY_ID, BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_CANONICAL_PARAMS
+        ),
+    )
+    draft = deepcopy(cfg)
+    draft["offline_evaluation_sizing_contract_v1"] = dict(
+        draft["offline_evaluation_sizing_contract_v1"]
+    )
+    draft["offline_evaluation_sizing_contract_v1"]["config_digest"] = ""
+    sizing_contract = load_offline_evaluation_sizing_contract_v1(
+        draft,
+        strategy_params_digest=strategy_params_digest,
+        dataset_digest=DATASET_DIGEST,
+    )
+    sizing_config_digest = compute_sizing_contract_digest_v1(sizing_contract)
+    materialized = deepcopy(cfg)
+    materialized["offline_evaluation_sizing_contract_v1"] = dict(
+        materialized["offline_evaluation_sizing_contract_v1"]
+    )
+    materialized["offline_evaluation_sizing_contract_v1"]["config_digest"] = sizing_config_digest
+    return materialized
 
 
 def materialize_versioned_research_binding_v0(
