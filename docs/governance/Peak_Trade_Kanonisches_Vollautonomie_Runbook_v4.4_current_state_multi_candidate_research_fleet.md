@@ -8,27 +8,54 @@
 **Systemziel:** Vollautonomes, futures-only Peak-Trade-System mit deterministischer, konsistenter und auditierbarer Handelslogik; realistischer Profitabilitätsvalidierung; unabhängiger Safety Authority; gefenceter Single-Writer-Runtime; vollständiger Reconciliation; sicherer Restart-/Recovery-Semantik und einer durchgängigen Research→Validation→Promotion→Runtime→Feedback-Kette.
 **Keine Anlageberatung.**
 
-> **STALE GOVERNANCE SUPERSESSION NOTICE (2026-07-04)**
->
-> Abschnitte mit `NO_NEW_CANDIDATE_HOLD=REVOKED`, `MULTI_CANDIDATE_RESEARCH_FLEET_ALLOWED=true` und frühen `NEXT_STEP=RATIFY_VERSIONED_FINAL_FLEET_BINDINGS…`-Werten sind **historische Pre-Fail-Snapshots** (Stand vor PR4819 Hold-Reinstatement, Fleet-FAIL 0/3, Terminal Park).
+> **Portable Current State (post PR #5075 merge-closeout, 2026-07-10)**
 >
 > **Operative Authority:** [`PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md`](PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md) → `## Registry-Metadaten` (aufgelöst via `src/governance/runbook_progress_registry_v1.py`).
 >
-> **Authoritativer Current State:**
->
 > ```text
+> HEAD=3744dbd1f0a3b6fe1518acb3da983259ae6c696d
+> ORIGIN_MAIN=3744dbd1f0a3b6fe1518acb3da983259ae6c696d
+> LATEST_MERGED_PR=5075
+> PR5075_MERGED=true
+> CURRENT_STATE=VOL_BREAKOUT_V1_TERMINAL_NEGATIVE_ECONOMIC_EVIDENCE_CLOSEOUT_COMPLETE_V0
+> FAILED_BINDING=vol_breakout/v1
+> FAILED_INSTRUMENT=inst-eth-usdt-perp
+> BASELINE_VERDICT=FAIL
+> FAILURE_CLASS=NEGATIVE_ECONOMIC_BASELINE_AND_ROBUSTNESS_FAIL
+> TRADE_COUNT=151
+> SAMPLE_SUFFICIENCY_STATUS=SUFFICIENT_TRADE_SAMPLE
+> NET_RETURN=-0.0323
+> NET_EXPECTANCY=-2.139
+> PROFIT_FACTOR=0.586
+> SHARPE=-1.417
+> MAX_DRAWDOWN=-0.0341
+> WALK_FORWARD_STATUS=EXECUTED_FAIL
+> MONTE_CARLO_STATUS=EXECUTED_FAIL
+> STRESS_STATUS=EXECUTED_FAIL
+> FAILED_BINDING_REGISTERED=true
+> CURRENT_RESEARCH_GENERATION_CLOSED=true
+> UNCHANGED_RETRY_BLOCKED=true
+> POLICY_RESCUE_ALLOWED=false
+> ECONOMIC_VALIDITY_OFFLINE_GATE_PASS=false
+> RUNTIME_REWIRE_ADMISSIBLE=false
+> TRADING_LOGIC_CHANGED=false
+> RISK_SIZING_SEMANTICS_CHANGED=false
 > NO_NEW_CANDIDATE_HOLD=ACTIVE
 > MULTI_CANDIDATE_RESEARCH_FLEET_ALLOWED=false
-> CLASS_D_V1_FLEET=TERMINAL_PARKED
 > CURRENT_ADMISSIBLE_NEXT_SCOPE=NONE
-> PASS_COUNT=0 / FAIL_COUNT=3
 > ECONOMIC_EVALUATION_AUTHORIZED=false
-> v2 successor research=BLOCKED
+> NEXT_STEP=NEW_RATIFIED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_REQUIRED
+> PORTABLE_CURRENT_STATE_BLOCK_REFRESHED=true
 > ```
 >
-> **Evidence Bundles (MANIFEST_VERIFY_RC=0):** `bounded_class_d_v1_fleet_operator_decision_dossier_and_governance_disposition_read_only_v0_20260704T224019Z`, `bounded_class_d_v1_fleet_terminal_park_ratification_v0_20260704T224245Z`, `bounded_class_d_v1_fleet_architecture_review_read_only_v0_20260704T224444Z` unter `$DURABLE_ARCHIVE_ROOT&#47;implementation&#47;`.
+> **Evidence Bundles (MANIFEST_VERIFY_RC=0):**
+> - Economic evaluation: `economic/vol_breakout_v1_full_canonical_offline_baseline_economic_evaluation_v0_20260710T080040Z`
+> - PR5074 merge closeout: `research/pr5074_merge_closeout_vol_breakout_v1_sizing_config_digest_binding_fix_v0_20260710T075844Z`
+> - Terminal-negative closeout source: `implementation/vol_breakout_v1_terminal_negative_economic_evidence_closeout_v0_20260710T081257Z`
 >
-> Stale Governance-Werte in diesem Dokument sind **nicht** für operative Entscheidungen zu verwenden.
+> **Changelog:** 2026-07-10 — PR #5075 merged: terminal-negative governance closeout for `vol_breakout/v1` on `inst-eth-usdt-perp`; research generation closed; unchanged retry blocked; no policy rescue; no runtime rewire.
+>
+> **STALE GOVERNANCE SUPERSESSION NOTICE (2026-07-04):** Abschnitte mit `NO_NEW_CANDIDATE_HOLD=REVOKED`, `MULTI_CANDIDATE_RESEARCH_FLEET_ALLOWED=true` und frühen `NEXT_STEP=RATIFY_VERSIONED_FINAL_FLEET_BINDINGS…`-Werten sind **historische Pre-Fail-Snapshots**. Stale Governance-Werte in diesem Dokument sind **nicht** für operative Entscheidungen zu verwenden.
 
 ---
 
