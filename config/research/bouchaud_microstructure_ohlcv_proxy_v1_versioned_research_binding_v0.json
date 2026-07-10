@@ -13,14 +13,14 @@
       "parameter_tuning_during_baseline_forbidden": true
     },
     "binding_status": {
-      "baseline_binding_status": "STAGED",
+      "baseline_binding_status": "BOUND",
       "candidate_binding_status": "BOUND",
       "cost_model_binding_status": "BOUND",
       "dataset_binding_status": "BOUND",
-      "digest_binding_status": "STAGED",
+      "digest_binding_status": "BOUND",
       "instrument_binding_status": "BOUND",
       "numeric_bindings_status": "BOUND",
-      "overall_binding_status": "ADAPTER_IMPLEMENTATION_STAGED",
+      "overall_binding_status": "COMPLETE",
       "parameter_binding_status": "BOUND",
       "period_binding_status": "BOUND",
       "policy_classes_status": "BOUND",
@@ -29,6 +29,7 @@
     "candidate_binding": {
       "canonical_candidate_identifier": "bouchaud_microstructure_ohlcv_proxy/v1",
       "canonical_owner": "src/strategies/bouchaud/bouchaud_microstructure_strategy.py",
+      "data_class": "FINALIZED_OHLCV_BARS",
       "engine_signal_source": "configured_strategy_signal",
       "hypothesis_id": "BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1",
       "implementation_ref": "src.strategies.bouchaud.bouchaud_microstructure_strategy.BouchaudMicrostructureStrategy",
@@ -81,7 +82,7 @@
       },
       "implementation_digest": {
         "status": "BOUND",
-        "value": "c36c717694d66e7a147fdccd2a8a7ffeb62c948be47746b335fc8ad5cb4467a9"
+        "value": "5ca371146454321a89b4dd802a7bddcdd80257a9dffd417f2266bb0563299655"
       },
       "material_difference_digest": {
         "status": "BOUND",
@@ -90,13 +91,19 @@
       "strategy_params_digest": {
         "status": "BOUND",
         "value": "bda8f9eb343ce818a1c56e69377c3c10c0c014bcb1f16053b0c897bd0a304b3f"
+      },
+      "strategy_semantic_digest": {
+        "status": "BOUND",
+        "value": "966694ca981356c1ecda04688edb5b2134dc6347fc2445fecf43bd07a8091941"
       }
     },
     "economic_policy_binding": {
+      "baseline_adjudication_policy": "PASS_FAIL_INCONCLUSIVE",
       "binding_version": "v1",
       "economic_validity_policy_version": "economic_validity_policy_v1",
       "minimum_trade_count_policy_bound": true,
-      "promising_is_not_pass_bound": true
+      "promising_is_not_pass_bound": true,
+      "sample_sufficiency_policy": "economic_validity_policy_v1"
     },
     "external_bindings": {
       "adapter_owner_ref": {
@@ -111,8 +118,20 @@
         "ref": "config/ops/step29m_okx_inst_eth_usdt_perp_bouchaud_microstructure_ohlcv_proxy_v1_economic_evaluation_v1.json",
         "status": "BOUND"
       },
+      "evaluation_runner_ref": {
+        "ref": "scripts/ops/run_bouchaud_microstructure_ohlcv_proxy_v1_bound_offline_economic_baseline_evaluation_v0.py",
+        "status": "BOUND"
+      },
+      "invocation_wrapper_ref": {
+        "ref": "scripts/ops/invoke_bouchaud_microstructure_ohlcv_proxy_v1_bound_offline_economic_baseline_evaluation_v0.py",
+        "status": "BOUND"
+      },
       "material_difference_contract_ref": {
         "ref": "config/research/bouchaud_microstructure_ohlcv_proxy_v1_material_difference_and_non_claim_contract_v0.json",
+        "status": "BOUND"
+      },
+      "scope_ratification_config_ref": {
+        "ref": "config/research/bouchaud_microstructure_ohlcv_proxy_v1_offline_economic_evaluation_scope_ratification_v0.json",
         "status": "BOUND"
       },
       "scope_separation_contract_ref": {
@@ -134,31 +153,90 @@
       "spot_allowed": false,
       "synthetic_spot_allowed": false
     },
+    "numeric_bindings": {
+      "effective_entry_cost_bps": 20.0,
+      "effective_exit_cost_bps": 20.0,
+      "fee_bps_per_side": 10.0,
+      "imbalance_threshold": 0.3,
+      "lookback_ticks": 100,
+      "min_liquidity_filter": 1000.0,
+      "propagator_decay": 0.5,
+      "required_warmup_rows": 100,
+      "risk_per_trade": 0.005,
+      "roundtrip_cost_bps": 40.0,
+      "slippage_bps_per_side": 5.0,
+      "stop_pct": 0.025
+    },
+    "parameter_binding": {
+      "binding_version": "v0",
+      "consumed_parameters": [
+        "imbalance_threshold",
+        "lookback_ticks",
+        "min_liquidity_filter",
+        "propagator_decay",
+        "use_orderbook_imbalance",
+        "use_trade_signs"
+      ],
+      "excluded_parameters": [],
+      "parameter_search_forbidden": true,
+      "parameters": {
+        "imbalance_threshold": 0.3,
+        "lookback_ticks": 100,
+        "min_liquidity_filter": 1000.0,
+        "propagator_decay": 0.5,
+        "use_orderbook_imbalance": true,
+        "use_trade_signs": true
+      }
+    },
     "period_binding": {
       "binding_version": "v0",
       "data_period": "2026-06-17 16:00:00+00:00..2026-07-01 10:07:00+00:00",
       "out_of_sample_period": "2026-06-27 23:36:00+00:00..2026-07-01 10:07:00+00:00",
+      "periods_frozen_before_execution": true,
+      "random_split_forbidden": true,
       "training_period": "2026-06-17 16:00:00+00:00..2026-06-24 13:03:00+00:00",
       "validation_period": "2026-06-24 13:04:00+00:00..2026-06-27 23:35:00+00:00"
+    },
+    "sample_sufficiency_contract": {
+      "minimum_trade_count_policy": "economic_validity_policy_v1",
+      "trade_count_target_inflation_forbidden": true
+    },
+    "signal_semantics_binding": {
+      "entry_semantics": "bar_level_pressure_proxy_threshold",
+      "exit_semantics": "bar_level_pressure_proxy_threshold",
+      "hold_semantics": "bar_close_point_in_time",
+      "proxy_semantics": true,
+      "signal_semantics": "LONG_FLAT_0_1",
+      "state_semantics": "BAR_LEVEL_MICROSTRUCTURE_PRESSURE_PROXY",
+      "true_tick_l2_microstructure": false
     },
     "warmup_binding": {
       "binding_version": "v0",
       "required_warmup_rows": 100
     }
   },
+  "binding_digest": "39a783904714eb988e9a5fee34e6474e0bb65821ddf525af8df53268906f6e7c",
+  "binding_ratified": true,
   "candidate_id": "bouchaud_microstructure_ohlcv_proxy/v1",
+  "data_class": "FINALIZED_OHLCV_BARS",
+  "durable_evidence_refs": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr5097_merge_closeout_bouchaud_microstructure_ohlcv_proxy_v1_step29m_single_instrument_offline_evaluation_adapter_implementation_v0_20260710T172226Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/bouchaud_microstructure_ohlcv_proxy_v1_bound_offline_economic_baseline_evaluation_v0_20260710T172515Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/bouchaud_microstructure_ohlcv_proxy_v1_step29m_single_instrument_offline_evaluation_adapter_implementation_v0_20260710T170832Z (MANIFEST_VERIFY_RC=0)",
   "economic_evaluation_authorized": false,
   "economic_evaluation_executed": false,
   "evaluation_authorized": false,
-  "operator_go_literal": "GO_BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_STEP29M_SINGLE_INSTRUMENT_OFFLINE_EVALUATION_ADAPTER_IMPLEMENTATION_V0",
+  "evaluation_infrastructure_ready": true,
+  "go_token": "GO_RATIFY_BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_VERSIONED_RESEARCH_BINDING_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE_NO_RUNTIME_AUTHORITY_V0",
   "hypothesis_id": "BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1",
-  "implementation_operator_go": "GO_BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_STEP29M_SINGLE_INSTRUMENT_OFFLINE_EVALUATION_ADAPTER_IMPLEMENTATION_V0",
+  "material_difference_proven": true,
   "next_evaluation_operator_go": "GO_BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_BOUND_OFFLINE_ECONOMIC_BASELINE_EVALUATION_V0",
+  "offline_only": true,
+  "order_effect": "NONE",
   "proxy_semantics": true,
   "research_scope": "bouchaud_microstructure_ohlcv_proxy/v1",
   "runtime_effect": "NONE",
   "schema_version": "bouchaud_microstructure_ohlcv_proxy_v1_versioned_research_binding.v0",
   "selection_mode": "single_instrument_prebound",
   "source_discovery_evidence_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/post_armstrong_registry_primary_signal_exhaustion_new_hypothesis_generation_and_capability_gap_classification_read_only_v0_20260710T170020Z",
+  "source_ratification_evidence_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr5097_merge_closeout_bouchaud_microstructure_ohlcv_proxy_v1_step29m_single_instrument_offline_evaluation_adapter_implementation_v0_20260710T172226Z",
+  "trading_logic_mutated": false,
   "true_tick_l2_microstructure": false
 }

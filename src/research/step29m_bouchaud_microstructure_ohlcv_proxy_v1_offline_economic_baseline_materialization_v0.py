@@ -1,15 +1,22 @@
 """STEP29M bouchaud_microstructure_ohlcv_proxy/v1 offline economic baseline materialization v0.
 
-Research-only helpers for implementation digest binding. No runtime, order,
-or authority effect. No economic evaluation execution.
+Research-only helpers for implementation digest binding and accounting reconciliation.
+No runtime, order, or authority effect. No economic evaluation execution.
 """
 
 from __future__ import annotations
 
 import hashlib
 import json
+import os
+import tempfile
 from pathlib import Path
 from typing import Any, Mapping
+
+from src.research.cross_sectional_single_slot_accounting_reconciliation_v0 import (
+    accounting_reconciliation_to_dict,
+    reconcile_legacy_backtest_result_accounting_v0,
+)
 
 MATERIALIZATION_OWNER = "research.step29m_bouchaud_microstructure_ohlcv_proxy_v1_offline_economic_baseline_materialization_v0"
 MATERIALIZATION_VERSION = "v0"
@@ -19,13 +26,77 @@ SCHEMA_VERSION = (
 RESEARCH_SCOPE = "bouchaud_microstructure_ohlcv_proxy/v1"
 
 IMPLEMENTATION_SURFACE_PATHS: tuple[str, ...] = (
+    "scripts/ops/invoke_bouchaud_microstructure_ohlcv_proxy_v1_bound_offline_economic_baseline_evaluation_v0.py",
+    "scripts/ops/run_bouchaud_microstructure_ohlcv_proxy_v1_bound_offline_economic_baseline_evaluation_v0.py",
     "src/backtest/engine.py",
     "src/backtest/mv2_research_wiring_v1.py",
     "src/backtest/strategy_signal_binding_v1.py",
+    "src/research/bouchaud_microstructure_ohlcv_proxy_v1_offline_economic_evaluation_scope_ratification_v0.py",
     "src/research/bouchaud_microstructure_ohlcv_proxy_v1_step29m_single_instrument_offline_evaluation_adapter_v0.py",
     "src/research/step29m_bouchaud_microstructure_ohlcv_proxy_v1_offline_economic_baseline_materialization_v0.py",
     "src/strategies/bouchaud/bouchaud_microstructure_strategy.py",
 )
+
+METRICS_SUMMARY_FILENAME = "metrics_summary.json"
+
+
+def _atomic_write_json(path: Path, payload: Mapping[str, Any]) -> None:
+    content = (json.dumps(payload, indent=2, sort_keys=True) + "\n").encode("utf-8")
+    fd, temp_path = tempfile.mkstemp(
+        dir=path.parent,
+        prefix=f".tmp_{path.stem}_",
+        suffix=path.suffix or ".json",
+    )
+    closed = False
+    try:
+        with os.fdopen(fd, "wb") as handle:
+            closed = True
+            handle.write(content)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temp_path, path)
+    except Exception as exc:
+        if os.path.exists(temp_path):
+            os.unlink(temp_path)
+        raise OSError(str(exc)) from exc
+    finally:
+        if not closed:
+            os.close(fd)
+
+
+def materialize_resilience_metrics_summary_json_v0(
+    evidence_dir: Path,
+    collector: Any,
+) -> dict[str, Any]:
+    summary = collector.get_summary()
+    target = evidence_dir / METRICS_SUMMARY_FILENAME
+    _atomic_write_json(target, summary)
+    return summary
+
+
+def materialize_legacy_backtest_accounting_reconciliation_v0(
+    backtest_result: Any,
+    *,
+    initial_cash: float,
+    funding_drag: float = 0.0,
+    spread_drag: float = 0.0,
+    slippage_impact: float = 0.0,
+) -> dict[str, Any]:
+    result = reconcile_legacy_backtest_result_accounting_v0(
+        backtest_result,
+        initial_cash=initial_cash,
+        funding_drag=funding_drag,
+        spread_drag=spread_drag,
+        slippage_impact=slippage_impact,
+    )
+    payload = accounting_reconciliation_to_dict(result)
+    payload["accounting_reconciliation_pass"] = result.reconciled
+    payload["failure_class"] = (
+        None
+        if result.reconciled
+        else (result.failure_class or "ACCOUNTING_RECONCILIATION_MISMATCH")
+    )
+    return payload
 
 
 def _stable_digest(payload: Mapping[str, Any]) -> str:
