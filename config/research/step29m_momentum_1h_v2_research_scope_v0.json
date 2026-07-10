@@ -1,0 +1,94 @@
+{
+  "artifact_kind": "step29m_momentum_1h_v2_research_scope",
+  "artifact_version": "v0",
+  "authority_effect": "NONE",
+  "bitcoin_direction_allowed": false,
+  "config_schema_version": "step29m_momentum_1h_v2_research_scope.v0",
+  "dataset_binding": {
+    "binding_id": "step29m_momentum_1h_v2_dataset_bound",
+    "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1",
+    "dataset_extension": "extended_chronological_v1",
+    "reuse_v1_envelope": true
+  },
+  "dominance_guard_binding": {
+    "binding_id": "step29m_momentum_1h_v2_dominance_guard_bound",
+    "correlated_trade_duplication_allowed": false,
+    "max_single_trade_profit_contribution": 0.35,
+    "min_trade_count": 30
+  },
+  "economic_evaluation_authorized": false,
+  "economic_policy_binding": {
+    "binding_id": "step29m_momentum_1h_v2_economic_policy_bound",
+    "policy_version": "economic_validity_policy_v1",
+    "threshold_lowering_allowed": false
+  },
+  "execution_model_binding": {
+    "binding_id": "step29m_momentum_1h_v2_execution_model_bound",
+    "execution_model_version": "backtest_execution_v0",
+    "offline_simulation_only": true
+  },
+  "fee_model_binding": {
+    "binding_id": "step29m_momentum_1h_v2_fee_model_bound",
+    "fee_bps": 10.0,
+    "fee_model_version": "backtest_fee_taker_symmetric_v0"
+  },
+  "funding_model_binding": {
+    "binding_id": "step29m_momentum_1h_v2_funding_model_bound",
+    "bind": true,
+    "model_version": "backtest_funding_perpetual_interval_v1"
+  },
+  "futures_only": true,
+  "go_token": "GO_STEP29M_CANDIDATE_SPECIFIC_RESEARCH_SCOPE_IMPLEMENTATION_OPERATOR_GO_BOUNDED_V0",
+  "immutable_negative_baseline": {
+    "parent_strategy_id": "momentum_1h",
+    "parent_strategy_version": "v1",
+    "parent_owner": "src.strategies.momentum.MomentumStrategy",
+    "terminal_failure_class": "SPARSE_SAMPLE_SINGLE_TRADE_DOMINANCE",
+    "v1_trade_count": 2
+  },
+  "instrument_binding": {
+    "binding_id": "step29m_momentum_1h_v2_instruments_bound",
+    "bitcoin_direction_allowed": false,
+    "futures_only": true
+  },
+  "minimum_activity_guard_binding": {
+    "binding_id": "step29m_momentum_1h_v2_minimum_activity_guard_bound",
+    "min_trade_count": 30
+  },
+  "offline_only": true,
+  "parameter_binding": {
+    "binding_id": "step29m_momentum_1h_v2_parameters_bound",
+    "research_hypothesis": "Versioned entry threshold with signal spacing and momentum-rise filter; fixed dominance guards",
+    "source": "src/strategies/step29m_momentum_1h_v2.py",
+    "values": {
+      "entry_threshold": 0.015,
+      "exit_threshold": -0.01,
+      "lookback_period": 20,
+      "min_bars_between_entries": 12,
+      "require_momentum_rise": true
+    }
+  },
+  "period_binding": {
+    "binding_id": "step29m_momentum_1h_v2_periods_bound",
+    "panel_calendar_end_utc": "2024-09-01T00:00:00Z",
+    "panel_calendar_start_utc": "2024-05-01T00:00:00Z",
+    "reuse_v1_envelope": true,
+    "timeframe": "1h"
+  },
+  "promotion_admissible": false,
+  "research_hypothesis_id": "MOMENTUM_1H_V2_SAMPLE_SUFFICIENCY_ANTI_DOMINANCE_V0",
+  "runtime_effect": "NONE",
+  "runtime_rewire_admissible": false,
+  "scope_id": "STEP29M_MOMENTUM_1H_V2_RESEARCH_SCOPE_V0",
+  "slippage_model_binding": {
+    "binding_id": "step29m_momentum_1h_v2_slippage_model_bound",
+    "conservative_half_spread_bps": 5.0,
+    "roundtrip_cost_bps": 40.0,
+    "slippage_model_version": "backtest_slippage_conservative_half_spread_v0"
+  },
+  "spot_allowed": false,
+  "strategy_id": "momentum_1h",
+  "strategy_owner": "src/strategies/step29m_momentum_1h_v2.Momentum1hV2Strategy",
+  "strategy_version": "v2",
+  "synthetic_spot_allowed": false
+}

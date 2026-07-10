@@ -1,0 +1,86 @@
+{
+  "artifact_kind": "step29m_trend_following_v2_research_scope",
+  "artifact_version": "v0",
+  "authority_effect": "NONE",
+  "bitcoin_direction_allowed": false,
+  "config_schema_version": "step29m_trend_following_v2_research_scope.v0",
+  "dataset_binding": {
+    "binding_id": "step29m_trend_following_v2_dataset_bound",
+    "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1",
+    "dataset_extension": "extended_chronological_v1",
+    "reuse_v1_envelope": true
+  },
+  "economic_evaluation_authorized": false,
+  "economic_policy_binding": {
+    "binding_id": "step29m_trend_following_v2_economic_policy_bound",
+    "policy_version": "economic_validity_policy_v1",
+    "threshold_lowering_allowed": false
+  },
+  "execution_model_binding": {
+    "binding_id": "step29m_trend_following_v2_execution_model_bound",
+    "execution_model_version": "backtest_execution_v0",
+    "offline_simulation_only": true
+  },
+  "fee_model_binding": {
+    "binding_id": "step29m_trend_following_v2_fee_model_bound",
+    "fee_bps": 10.0,
+    "fee_model_version": "backtest_fee_taker_symmetric_v0"
+  },
+  "funding_model_binding": {
+    "binding_id": "step29m_trend_following_v2_funding_model_bound",
+    "bind": true,
+    "model_version": "backtest_funding_perpetual_interval_v1"
+  },
+  "futures_only": true,
+  "go_token": "GO_STEP29M_CANDIDATE_SPECIFIC_RESEARCH_SCOPE_IMPLEMENTATION_OPERATOR_GO_BOUNDED_V0",
+  "immutable_negative_baseline": {
+    "parent_strategy_id": "trend_following",
+    "parent_strategy_version": "v1",
+    "parent_owner": "src.strategies.trend_following.TrendFollowingStrategy",
+    "terminal_failure_class": "NEGATIVE_NET_EDGE_WITH_ADEQUATE_TRADE_ACTIVITY",
+    "v1_trade_count_floor": 219
+  },
+  "instrument_binding": {
+    "binding_id": "step29m_trend_following_v2_instruments_bound",
+    "bitcoin_direction_allowed": false,
+    "futures_only": true
+  },
+  "offline_only": true,
+  "parameter_binding": {
+    "binding_id": "step29m_trend_following_v2_parameters_bound",
+    "research_hypothesis": "DI-spread-confirmed exit timing with turnover cooldown; v1 entry semantics unchanged",
+    "source": "src/strategies/step29m_trend_following_v2.py",
+    "values": {
+      "adx_period": 14,
+      "adx_threshold": 25.0,
+      "exit_di_spread_min": 5.0,
+      "exit_threshold": 20.0,
+      "ma_period": 50,
+      "min_bars_between_entries": 4,
+      "use_ma_filter": true
+    }
+  },
+  "period_binding": {
+    "binding_id": "step29m_trend_following_v2_periods_bound",
+    "panel_calendar_end_utc": "2024-09-01T00:00:00Z",
+    "panel_calendar_start_utc": "2024-05-01T00:00:00Z",
+    "reuse_v1_envelope": true,
+    "timeframe": "1h"
+  },
+  "promotion_admissible": false,
+  "research_hypothesis_id": "TREND_FOLLOWING_V2_DI_SPREAD_EXIT_TIMING_V0",
+  "runtime_effect": "NONE",
+  "runtime_rewire_admissible": false,
+  "scope_id": "STEP29M_TREND_FOLLOWING_V2_RESEARCH_SCOPE_V0",
+  "slippage_model_binding": {
+    "binding_id": "step29m_trend_following_v2_slippage_model_bound",
+    "conservative_half_spread_bps": 5.0,
+    "roundtrip_cost_bps": 40.0,
+    "slippage_model_version": "backtest_slippage_conservative_half_spread_v0"
+  },
+  "spot_allowed": false,
+  "strategy_id": "trend_following",
+  "strategy_owner": "src/strategies/step29m_trend_following_v2.TrendFollowingV2Strategy",
+  "strategy_version": "v2",
+  "synthetic_spot_allowed": false
+}
