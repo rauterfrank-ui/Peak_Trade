@@ -52,6 +52,8 @@ from .cost_config_v0 import (
     BacktestCostConfigError,
     append_cost_accounting_fields,
     build_cost_result_metadata,
+    compute_effective_entry_cost_bps,
+    compute_effective_exit_cost_bps,
     resolve_effective_backtest_cost_config,
 )
 
@@ -61,6 +63,110 @@ from ..orders.paper import PaperMarketContext, PaperOrderExecutor
 from ..execution.pipeline import ExecutionPipeline, ExecutionPipelineConfig, SignalEvent
 
 logger = logging.getLogger(__name__)
+
+LEGACY_PATH_COST_APPLICATION = False
+
+
+def _compute_directional_gross_pnl_v0(
+    *,
+    size: float,
+    entry_price: float,
+    exit_price: float,
+    side: str = "long",
+) -> float:
+    """Price-movement gross PnL before fees/slippage/funding (long/short symmetric)."""
+    quantity = abs(size)
+    if side == "short":
+        return quantity * (entry_price - exit_price)
+    return quantity * (exit_price - entry_price)
+
+
+def _compute_roundtrip_cost_components_v0(
+    *,
+    size: float,
+    entry_price: float,
+    exit_price: float,
+    effective_cost: EffectiveBacktestCostConfigV0,
+) -> tuple[float, float]:
+    """Return (entry_cost, exit_cost) from bound effective cost config."""
+    quantity = abs(size)
+    entry_notional = quantity * entry_price
+    exit_notional = quantity * exit_price
+    entry_bps = compute_effective_entry_cost_bps(
+        fee_bps=effective_cost.taker_fee_bps,
+        slippage_bps=effective_cost.entry_slippage_bps,
+    )
+    exit_bps = compute_effective_exit_cost_bps(
+        fee_bps=effective_cost.taker_fee_bps,
+        slippage_bps=effective_cost.exit_slippage_bps,
+    )
+    entry_cost = entry_notional * entry_bps / 10000.0
+    exit_cost = exit_notional * exit_bps / 10000.0
+    return entry_cost, exit_cost
+
+
+def _emit_legacy_trade_accounting_fields_v0(
+    trade: "Trade",
+    *,
+    side: str = "long",
+    effective_cost: Optional[EffectiveBacktestCostConfigV0] = None,
+    legacy_path_cost_application: bool = LEGACY_PATH_COST_APPLICATION,
+) -> None:
+    """Materialize gross_pnl and cost fields on legacy Trade records (net pnl unchanged)."""
+    if trade.exit_price is None or trade.pnl is None:
+        return
+    gross_pnl = _compute_directional_gross_pnl_v0(
+        size=trade.size,
+        entry_price=trade.entry_price,
+        exit_price=trade.exit_price,
+        side=side,
+    )
+    trade.gross_pnl = gross_pnl
+    if legacy_path_cost_application and effective_cost is not None:
+        entry_cost, exit_cost = _compute_roundtrip_cost_components_v0(
+            size=trade.size,
+            entry_price=trade.entry_price,
+            exit_price=trade.exit_price,
+            effective_cost=effective_cost,
+        )
+        trade.entry_cost = entry_cost
+        trade.exit_cost = exit_cost
+        trade.pnl = gross_pnl - entry_cost - exit_cost
+    else:
+        trade.entry_cost = 0.0
+        trade.exit_cost = 0.0
+
+
+def _emit_pipeline_trade_accounting_fields_v0(
+    trade: Dict[str, Any],
+    *,
+    effective_cost: Optional[EffectiveBacktestCostConfigV0] = None,
+) -> None:
+    """Materialize gross_pnl and cost fields on execution-pipeline trade dicts."""
+    side = str(trade.get("side", "long"))
+    size = float(trade["size"])
+    entry_price = float(trade["entry_price"])
+    exit_price = float(trade["exit_price"])
+    gross_pnl = _compute_directional_gross_pnl_v0(
+        size=size,
+        entry_price=entry_price,
+        exit_price=exit_price,
+        side=side,
+    )
+    exit_cost = float(trade.get("fee", 0.0) or 0.0)
+    entry_cost = 0.0
+    if effective_cost is not None and exit_cost <= 0.0:
+        entry_cost, exit_cost = _compute_roundtrip_cost_components_v0(
+            size=size,
+            entry_price=entry_price,
+            exit_price=exit_price,
+            effective_cost=effective_cost,
+        )
+    trade["gross_pnl"] = gross_pnl
+    trade["entry_cost"] = entry_cost
+    trade["exit_cost"] = exit_cost
+    if "pnl" not in trade or trade["pnl"] is None:
+        trade["pnl"] = gross_pnl - entry_cost - exit_cost
 
 
 @dataclass
@@ -76,6 +182,9 @@ class Trade:
     pnl: Optional[float] = None
     pnl_pct: Optional[float] = None
     exit_reason: str = ""
+    gross_pnl: Optional[float] = None
+    entry_cost: Optional[float] = None
+    exit_cost: Optional[float] = None
 
 
 class BacktestEngine:
@@ -523,6 +632,12 @@ class BacktestEngine:
                     )
                     current_trade.exit_reason = "stop_loss"
 
+                    _emit_legacy_trade_accounting_fields_v0(
+                        current_trade,
+                        side="long",
+                        effective_cost=effective_cost,
+                    )
+
                     equity += current_trade.pnl
                     trades.append(current_trade)
 
@@ -727,6 +842,12 @@ class BacktestEngine:
                 )
                 current_trade.exit_reason = "signal"
 
+                _emit_legacy_trade_accounting_fields_v0(
+                    current_trade,
+                    side="long",
+                    effective_cost=effective_cost,
+                )
+
                 equity += current_trade.pnl
                 trades.append(current_trade)
 
@@ -752,6 +873,12 @@ class BacktestEngine:
                 * 100.0
             )
             current_trade.exit_reason = "end_of_data"
+
+            _emit_legacy_trade_accounting_fields_v0(
+                current_trade,
+                side="long",
+                effective_cost=effective_cost,
+            )
 
             equity += current_trade.pnl
             trades.append(current_trade)
@@ -1091,6 +1218,10 @@ class BacktestEngine:
                                         "exit_reason": "signal",
                                     }
                                 )
+                                _emit_pipeline_trade_accounting_fields_v0(
+                                    trades_data[-1],
+                                    effective_cost=effective_cost,
+                                )
                                 equity += pnl
                                 current_position = 0.0
 
@@ -1118,6 +1249,10 @@ class BacktestEngine:
                                         "fee": fee,
                                         "exit_reason": "signal",
                                     }
+                                )
+                                _emit_pipeline_trade_accounting_fields_v0(
+                                    trades_data[-1],
+                                    effective_cost=effective_cost,
                                 )
                                 equity += pnl
                                 current_position = 0.0
@@ -1166,6 +1301,10 @@ class BacktestEngine:
                         "exit_reason": "end_of_data",
                     }
                 )
+                _emit_pipeline_trade_accounting_fields_v0(
+                    trades_data[-1],
+                    effective_cost=effective_cost,
+                )
                 equity += pnl
             else:
                 # Short schliessen
@@ -1187,6 +1326,10 @@ class BacktestEngine:
                         "fee": 0.0,
                         "exit_reason": "end_of_data",
                     }
+                )
+                _emit_pipeline_trade_accounting_fields_v0(
+                    trades_data[-1],
+                    effective_cost=effective_cost,
                 )
                 equity += pnl
 

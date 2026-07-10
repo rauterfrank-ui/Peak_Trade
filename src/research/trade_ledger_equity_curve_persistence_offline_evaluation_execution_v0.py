@@ -348,6 +348,7 @@ def materialize_trade_ledger_v1_records_v0(
         entry_price = row.get("entry_price")
         exit_price = row.get("exit_price")
         pnl = row.get("pnl")
+        gross_pnl = row.get("gross_pnl", pnl)
         pnl_pct = row.get("pnl_pct")
         entry_time = row.get("entry_time")
         exit_time = row.get("exit_time")
@@ -400,8 +401,10 @@ def materialize_trade_ledger_v1_records_v0(
             "exit_price": _safe_float(exit_price),
             "quantity": quantity,
             "notional": notional,
-            "gross_pnl": _safe_float(pnl),
-            "fees": INCONCLUSIVE_SENTINEL,
+            "gross_pnl": _safe_float(gross_pnl),
+            "fees": _safe_float(row.get("exit_cost", 0.0))
+            if row.get("exit_cost") not in (None, 0, 0.0)
+            else INCONCLUSIVE_SENTINEL,
             "slippage": INCONCLUSIVE_SENTINEL,
             "funding": INCONCLUSIVE_SENTINEL,
             "net_pnl": _safe_float(pnl),

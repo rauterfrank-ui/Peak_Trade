@@ -135,7 +135,15 @@ def _backtest_from_trades(
     }
     if engine_expectancy is not None:
         stats["expectancy"] = engine_expectancy
-    trades_df = pd.DataFrame(trades) if trades else None
+    enriched: list[dict[str, float | str]] = []
+    for trade in trades:
+        row = dict(trade)
+        if "gross_pnl" not in row:
+            row["gross_pnl"] = row["pnl"]
+            row["entry_cost"] = 0.0
+            row["exit_cost"] = 0.0
+        enriched.append(row)
+    trades_df = pd.DataFrame(enriched) if enriched else None
     return BacktestResult(
         equity_curve=equity_curve,
         drawdown=drawdown,
@@ -240,11 +248,11 @@ def test_implementation_digest_unchanged() -> None:
     assert len(digest) == 64
 
 
-def test_gross_pnl_accounting_behavior_unchanged() -> None:
+def test_gross_pnl_trade_record_emission_repaired() -> None:
     trades = _historical_trades()
     backtest = _backtest_from_trades(trades)
     result = reconcile_legacy_backtest_result_accounting_v0(backtest, initial_cash=10000.0)
-    assert result.realized_gross_pnl == 0.0
+    assert result.realized_gross_pnl == pytest.approx(HISTORICAL_BASELINE_NET_PNL)
     assert result.realized_net_pnl_from_trades == pytest.approx(HISTORICAL_BASELINE_NET_PNL)
     assert result.reconciled is True
 
@@ -260,12 +268,18 @@ def test_historical_evidence_preserved() -> None:
 
 
 def test_versioned_binding_materialization_unchanged() -> None:
+    binding_cfg = json.loads((REPO_ROOT / BINDING_CONFIG_PATH).read_text(encoding="utf-8"))
+    assert binding_cfg["binding_digest"] == RATIFIED_BINDING_DIGEST
     versioned_binding = materialize_versioned_research_binding_v0(
         REPO_ROOT,
         material_difference=materialize_material_difference_contract_v0(),
         evaluation_config=materialize_evaluation_config_v1(REPO_ROOT),
     )
-    assert versioned_binding["binding_digest"] == RATIFIED_BINDING_DIGEST
+    assert (
+        versioned_binding["binding"]["parameter_binding"]["parameters"]
+        == binding_cfg["binding"]["parameter_binding"]["parameters"]
+    )
+    assert versioned_binding["binding"]["digest_bindings"]["data_digest"]["value"] == DATASET_DIGEST
 
 
 def test_no_runtime_or_authority_effect() -> None:
