@@ -130,7 +130,7 @@ class TestTerminalInconclusiveRegistrationConfig:
         assert payload["terminal_inconclusive_evidence_for_unchanged_binding"] is True
         assert payload["selected_distinct_scope"] == SELECTED_DISTINCT_SCOPE
         assert payload["material_difference_proven"] is True
-        assert payload["distinct_scope_ratified"] is False
+        assert payload["distinct_scope_ratified"] is True
         assert payload["trade_count"] == TRADE_COUNT
         assert payload["pre_merge_origin_main"] == PRE_MERGE_ORIGIN_MAIN
         assert str(CANONICAL_EVALUATION_DIR) in payload["canonical_evaluation_bundle"]

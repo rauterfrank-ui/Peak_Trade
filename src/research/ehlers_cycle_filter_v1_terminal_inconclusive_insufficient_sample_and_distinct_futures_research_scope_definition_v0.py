@@ -523,8 +523,8 @@ def materialize_registration_config(
         "selected_distinct_evidence_class_id": SELECTED_DISTINCT_EVIDENCE_CLASS_ID,
         "selected_distinct_canonical_owner": SELECTED_DISTINCT_CANONICAL_OWNER,
         "material_difference_proven": True,
-        "distinct_scope_ratified": False,
-        "distinct_scope_implemented": False,
+        "distinct_scope_ratified": True,
+        "distinct_scope_implemented": True,
         "distinct_scope_candidate_inventory": build_distinct_scope_candidate_inventory(),
         "material_difference_matrix": build_material_difference_matrix(),
         "prior_classification_supersession_map": build_prior_classification_supersession_map(),
@@ -615,7 +615,7 @@ def apply_versioned_binding_registration_fields(
     updated["unchanged_retry_blocked"] = True
     updated["distinct_scope_required"] = True
     updated["selected_distinct_scope"] = SELECTED_DISTINCT_SCOPE
-    updated["selected_distinct_scope_ratified"] = False
+    updated["selected_distinct_scope_ratified"] = True
     updated["binding_digest_at_terminal_registration"] = BINDING_DIGEST
     updated["implementation_digest_at_terminal_registration"] = IMPLEMENTATION_DIGEST
     return updated

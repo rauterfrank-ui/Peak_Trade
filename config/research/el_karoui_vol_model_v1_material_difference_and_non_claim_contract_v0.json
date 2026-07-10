@@ -1,0 +1,39 @@
+{
+  "artifact_kind": "el_karoui_vol_model_v1_material_difference_and_non_claim_contract",
+  "artifact_version": "v0",
+  "baseline_scope": "ehlers_cycle_filter/v1",
+  "contract_digest": "db8090f93f84d842b053b3cc21fbaa8a6281d25e06ed2528477715980e43bcc2",
+  "explicit_non_claims": [
+    "SIGNAL_UNTESTED=false",
+    "NO_PRIOR_SINGLE_INSTRUMENT_EVALUATION=true",
+    "NEW_SIGNAL_FAMILY=true",
+    "TERMINAL_SINGLE_INSTRUMENT_EVIDENCE_SUPERSEDED=false",
+    "DATASET_CHANGE_ALONE_SUFFICIENT=false",
+    "THRESHOLD_VARIATION_ONLY=false",
+    "POLICY_RESCUE=false",
+    "UNCHANGED_RETRY_OF_EHLERS_BINDING=false"
+  ],
+  "material_difference_axes": [
+    "SIGNAL_FAMILY=STOCHASTIC_VOL_REGIME_NOT_DSP_CYCLE_BANDPASS",
+    "DATA_SOURCE=OHLCV_SINGLE_INSTRUMENT_NOT_PANEL_OR_FUNDING_SCORE",
+    "RANKING_GEOMETRY=NONE_SINGLE_INSTRUMENT_NOT_CROSS_SECTIONAL_TOP1_ROTATION",
+    "EVALUATION_WIRING=STEP29M_SINGLE_INSTRUMENT_NOT_PANEL_ORCHESTRATOR",
+    "PORTFOLIO_AGGREGATION=DIRECT_SINGLE_SLOT_VOL_REGIME_EXPOSURE"
+  ],
+  "material_difference_basis": "STOCHASTIC_VOL_REGIME_SINGLE_INSTRUMENT_EXPOSURE_NOT_DSP_CYCLE_BANDPASS",
+  "material_difference_confirmed": true,
+  "material_difference_digest": "db8090f93f84d842b053b3cc21fbaa8a6281d25e06ed2528477715980e43bcc2",
+  "material_difference_vs_cross_sectional_funding_fleet_confirmed": true,
+  "material_difference_vs_cross_sectional_ma_crossover_panel_rank_rotation_v0_confirmed": true,
+  "material_difference_vs_ehlers_cycle_filter_v1_confirmed": true,
+  "material_difference_vs_step29m_final_research_fleet_v0_confirmed": true,
+  "material_difference_vs_vol_breakout_v1_confirmed": true,
+  "near_duplicate_risk": "LOW",
+  "prior_evidence_exclusion_pass": true,
+  "schema_version": "el_karoui_vol_model_v1_material_difference_and_non_claim_contract.v0",
+  "signal_family": "STOCHASTIC_VOL_REGIME",
+  "signal_family_material_difference": true,
+  "source_classification_evidence_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/classify_ehlers_cycle_filter_v1_inconclusive_baseline_cause_and_decide_distinct_research_scope_read_only_v0_20260710T123447Z",
+  "source_discovery_evidence_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/discover_and_rank_new_distinct_futures_research_scope_or_evidence_class_read_only_v0_20260710T104236Z",
+  "source_terminal_scope_definition_ref": "config/research/ehlers_cycle_filter_v1_terminal_inconclusive_insufficient_sample_and_distinct_futures_research_scope_definition_v0.json"
+}

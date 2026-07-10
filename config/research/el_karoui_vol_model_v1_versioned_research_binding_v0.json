@@ -1,9 +1,8 @@
 {
   "accounting_reconciliation_pass": true,
-  "artifact_kind": "ehlers_cycle_filter_v1_versioned_research_binding",
+  "artifact_kind": "el_karoui_vol_model_v1_versioned_research_binding",
   "artifact_version": "v0",
   "authority_effect": "NONE",
-  "baseline_verdict": "INCONCLUSIVE",
   "binding": {
     "baseline_evaluation_contract": {
       "baseline_count": 1,
@@ -12,7 +11,7 @@
       "conditional_stress": "only_after_positive_baseline_and_separate_admissibility_check",
       "conditional_walk_forward": "only_after_positive_baseline_and_separate_admissibility_check",
       "economic_evaluation_executed_in_this_slice": false,
-      "evidence_class_id": "EHLERS_CYCLE_FILTER_V1_FULL_CANONICAL_OFFLINE_BASELINE_ECONOMIC_EVALUATION_V0",
+      "evidence_class_id": "EL_KAROUI_VOL_MODEL_V1_FULL_CANONICAL_OFFLINE_BASELINE_ECONOMIC_EVALUATION_V0",
       "parameter_tuning_after_baseline_forbidden": true,
       "parameter_tuning_during_baseline_forbidden": true
     },
@@ -31,15 +30,15 @@
       "warmup_binding_status": "BOUND"
     },
     "candidate_binding": {
-      "canonical_candidate_identifier": "ehlers_cycle_filter/v1",
-      "canonical_owner": "src/strategies/ehlers/ehlers_cycle_filter_strategy.py",
+      "canonical_candidate_identifier": "el_karoui_vol_model/v1",
+      "canonical_owner": "src/strategies/el_karoui/el_karoui_vol_model_strategy.py",
       "engine_signal_source": "configured_strategy_signal",
-      "hypothesis_id": "EHLERS_DSP_CYCLE_BANDPASS_NON_BITCOIN_FUTURES_V1",
-      "implementation_ref": "src.strategies.ehlers.ehlers_cycle_filter_strategy.EhlersCycleFilterStrategy",
+      "hypothesis_id": "EL_KAROUI_STOCHASTIC_VOL_REGIME_NON_BITCOIN_FUTURES_V1",
+      "implementation_ref": "src.strategies.el_karoui.el_karoui_vol_model_strategy.ElKarouiVolatilityStrategy",
       "registry_class": "oop_strategy_spec",
-      "registry_key": "ehlers_cycle_filter",
-      "signal_family": "DSP_CYCLE_BANDPASS",
-      "strategy_id": "ehlers_cycle_filter",
+      "registry_key": "el_karoui_vol_model",
+      "signal_family": "STOCHASTIC_VOL_REGIME",
+      "strategy_id": "el_karoui_vol_model",
       "strategy_version": "v1"
     },
     "cost_execution_binding": {
@@ -72,7 +71,7 @@
     "digest_bindings": {
       "config_digest": {
         "status": "BOUND",
-        "value": "c4db0a42b95156192d8c1fcf486aa3d616ae2f0b5dafa26b9e0d7d9a29c204a6"
+        "value": "1b45ed11abdc5310f14a160200a63bb488c55d9677cd6caec0aa4bb202969d61"
       },
       "data_digest": {
         "status": "BOUND",
@@ -80,34 +79,40 @@
       },
       "implementation_digest": {
         "status": "BOUND",
-        "value": "a153ea4fc624ed3e00fbcd38006c361b05ddeab473344c5181efa79372962702"
+        "value": "11a8e1e3bef9bbe3a74edc329c4539d9438649c52dbdfe1034c4bd904f2a0c35"
       },
       "material_difference_digest": {
         "status": "BOUND",
-        "value": "d96140d32c9eee87e35f6f97aaba357d1d6495395a43671960c77ad8f1ceaf1f"
+        "value": "db8090f93f84d842b053b3cc21fbaa8a6281d25e06ed2528477715980e43bcc2"
       },
       "strategy_params_digest": {
         "status": "BOUND",
-        "value": "49f8b07e7de872e66f74dd27b5e97a3ae3aaee414e25d3b08cba2674c40cc5b9"
+        "value": "6c4a1fb8fba62cc91d5be84bdcac4b090896697f740c02afa73ec4a1376db508"
       },
       "strategy_semantic_digest": {
         "status": "BOUND",
-        "value": "8dc30018a74cdfc2469f865299a6810004b007f6ecf9b24445612b06517c027e"
+        "value": "a73b6dec758c23455d8f0d748f146d6fc1e23eaa018cd87b1a759608e39664ca"
+      },
+      "universe_digest": {
+        "status": "BOUND",
+        "value": "be6ea12f6e883de596e8e7987be071bcb4ebc3d32bff15ec933643dcf74f9ee2"
       }
     },
     "economic_policy_binding": {
+      "baseline_adjudication_policy": "PASS_FAIL_INCONCLUSIVE",
       "binding_version": "v1",
       "economic_validity_policy_version": "economic_validity_policy_v1",
       "minimum_trade_count_policy_bound": true,
-      "promising_is_not_pass_bound": true
+      "promising_is_not_pass_bound": true,
+      "sample_sufficiency_policy": "economic_validity_policy_v1"
     },
     "external_bindings": {
       "admissibility_contract_ref": {
-        "ref": "src/backtest/step29m_ehlers_cycle_filter_v1_economic_evaluation_admissibility_contract_v1.py",
+        "ref": "src/backtest/step29m_el_karoui_vol_model_v1_economic_evaluation_admissibility_contract_v1.py",
         "status": "BOUND"
       },
       "evaluation_config_ref": {
-        "ref": "config/ops/step29m_okx_inst_eth_usdt_perp_ehlers_cycle_filter_v1_economic_evaluation_v1.json",
+        "ref": "config/ops/step29m_okx_inst_eth_usdt_perp_el_karoui_vol_model_v1_economic_evaluation_v1.json",
         "status": "BOUND"
       },
       "execution_model_version": {
@@ -127,7 +132,7 @@
         "value": "instrument_id_canonicalization.v1"
       },
       "material_difference_contract_ref": {
-        "ref": "config/research/ehlers_cycle_filter_v1_material_difference_and_non_claim_contract_v0.json",
+        "ref": "config/research/el_karoui_vol_model_v1_material_difference_and_non_claim_contract_v0.json",
         "status": "BOUND"
       },
       "slippage_model_version": {
@@ -146,6 +151,7 @@
     "instrument_binding": {
       "binding_version": "v0",
       "bitcoin_direction_allowed": false,
+      "bitcoin_present": false,
       "canonical_instrument_id": "inst-eth-usdt-perp",
       "futures_only": true,
       "native_instrument_id": "ETH-USDT-SWAP",
@@ -159,32 +165,37 @@
       "effective_entry_cost_bps": 20.0,
       "effective_exit_cost_bps": 20.0,
       "fee_bps_per_side": 10.0,
-      "lookback": 100,
-      "max_position_pct": 0.25,
-      "min_cycle_length": 6,
-      "required_warmup_rows": 100,
+      "high_threshold": 0.7,
+      "lookback_window": 252,
+      "low_threshold": 0.3,
+      "required_warmup_rows": 252,
       "risk_per_trade": 0.005,
       "roundtrip_cost_bps": 40.0,
       "slippage_bps_per_side": 5.0,
-      "stop_pct": 0.025
+      "stop_pct": 0.025,
+      "vol_window": 20
     },
     "parameter_binding": {
       "binding_version": "v0",
       "consumed_parameters": [
-        "min_cycle_length",
-        "lookback"
+        "vol_window",
+        "lookback_window",
+        "low_threshold",
+        "high_threshold"
       ],
       "excluded_parameters": [
-        "bandpass_bandwidth",
-        "cycle_threshold",
-        "max_cycle_length",
-        "smoother_type",
-        "use_hilbert_transform"
+        "annualization_factor",
+        "regime_position_map",
+        "use_ewm",
+        "use_vol_scaling",
+        "vol_target"
       ],
       "parameter_search_forbidden": true,
       "parameters": {
-        "lookback": 100,
-        "min_cycle_length": 6
+        "high_threshold": 0.7,
+        "lookback_window": 252,
+        "low_threshold": 0.3,
+        "vol_window": 20
       }
     },
     "period_binding": {
@@ -196,6 +207,9 @@
       "validation_period": "2026-06-24 13:04:00+00:00..2026-06-27 23:35:00+00:00"
     },
     "prior_evidence_exclusion": {
+      "excluded_terminal_inconclusive_bindings": [
+        "ehlers_cycle_filter/v1"
+      ],
       "excluded_terminal_negative_bindings": [
         "cross_sectional_ma_crossover_panel_rank_rotation/v0",
         "vol_breakout/v1",
@@ -213,6 +227,12 @@
         "cross_sectional_realized_volatility_rank_rotation/v0"
       ],
       "near_duplicate_retry_blocked": true,
+      "no_rescue_rules": [
+        "NO_POLICY_RESCUE",
+        "NO_THRESHOLD_LOWERING",
+        "NO_UNCHANGED_RETRY",
+        "NO_RENAME_ONLY_SUCCESSOR"
+      ],
       "prior_evidence_exclusion_pass": true,
       "unchanged_retry_blocked": true
     },
@@ -220,60 +240,49 @@
       "minimum_trade_count_policy": "economic_validity_policy_v1",
       "trade_count_target_inflation_forbidden": true
     },
+    "signal_semantics_binding": {
+      "entry_semantics": "regime_threshold_exposure_mapping",
+      "exit_semantics": "regime_threshold_exposure_mapping",
+      "hold_semantics": "bar_close_point_in_time",
+      "regime_position_map": "default",
+      "signal_semantics": "LONG_FLAT_0_1",
+      "state_semantics": "LOW_MEDIUM_HIGH_VOL_REGIME",
+      "use_ewm_fixed": true,
+      "use_vol_scaling_fixed": false
+    },
     "warmup_binding": {
-      "derivation": "lookback",
-      "required_warmup_rows": 100,
+      "derivation": "lookback_window",
+      "required_warmup_rows": 252,
       "warmup_bars_before_train_start_required": true
     }
   },
   "binding_changed": false,
-  "binding_digest_at_terminal_registration": "dc8704495c3bf08b14afd9f50890369973c7c785e0d1655ba0b5b351f06b6599",
+  "binding_digest": "223845f2047779218390fc245c3f2ebb04631bb068139e3d40731781906d099b",
+  "binding_ratified": true,
+  "binding_version": "v0",
   "bitcoin_direction_allowed": false,
-  "candidate_id": "ehlers_cycle_filter/v1",
-  "canonical_evaluation_bundle": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/ehlers_cycle_filter_v1_bound_offline_economic_baseline_evaluation_v0_20260710T115835Z",
-  "canonical_evaluation_timestamp": "20260710T115835Z",
-  "classification_evidence_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/classify_ehlers_cycle_filter_v1_inconclusive_baseline_cause_and_decide_distinct_research_scope_read_only_v0_20260710T123447Z (MANIFEST_VERIFY_RC=0)",
-  "distinct_scope_required": true,
-  "durable_evidence_refs": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/ehlers_cycle_filter_v1_bound_offline_economic_baseline_evaluation_v0_20260710T115835Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/classify_ehlers_cycle_filter_v1_inconclusive_baseline_cause_and_decide_distinct_research_scope_read_only_v0_20260710T123447Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr5086_merge_closeout_ehlers_cycle_filter_v1_bound_offline_evaluation_runner_invocation_contract_repair_v0_20260710T123119Z (MANIFEST_VERIFY_RC=0)",
+  "bitcoin_present": false,
+  "candidate_id": "el_karoui_vol_model/v1",
+  "distinct_from_ehlers_cycle_filter_v1": true,
+  "durable_evidence_refs": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr5087_merge_closeout_ehlers_cycle_filter_v1_terminal_inconclusive_registration_and_distinct_scope_decision_v0_20260710T124722Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/register_terminal_inconclusive_ehlers_cycle_filter_v1_same_binding_and_authorize_distinct_futures_research_scope_definition_read_only_v0_20260710T124034Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/classify_ehlers_cycle_filter_v1_inconclusive_baseline_cause_and_decide_distinct_research_scope_read_only_v0_20260710T123447Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/discover_and_rank_new_distinct_futures_research_scope_or_evidence_class_read_only_v0_20260710T104236Z (MANIFEST_VERIFY_RC=0)",
   "economic_evaluation_authorized": false,
-  "economic_evaluation_executed": true,
-  "economic_evaluation_status": "COMPLETE_INCONCLUSIVE",
-  "economic_validity_offline_gate_pass": false,
-  "economic_viability_evidence_manifest_digest": "acd5a8a16e096904a1610ef3e45067488164a4c5b41a80f93de6416bb398e2b4",
-  "economic_viability_evidence_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/ehlers_cycle_filter_v1_bound_offline_economic_baseline_evaluation_v0_20260710T115835Z (MANIFEST_VERIFY_RC=0)",
-  "evaluation_authorized": false,
+  "economic_evaluation_executed": false,
   "futures_only": true,
-  "go_token": "GO_EHLERS_CYCLE_FILTER_V1_VERSIONED_RESEARCH_BINDING_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFICATION_NO_RUNTIME_AUTHORITY_V0",
-  "governance_ref": "docs/governance/EHLERS_CYCLE_FILTER_V1_OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFICATION_V0.md",
-  "historical_economic_result": "INCONCLUSIVE",
-  "hypothesis_id": "EHLERS_DSP_CYCLE_BANDPASS_NON_BITCOIN_FUTURES_V1",
-  "implementation_digest_at_terminal_registration": "4ec22ab14c7fa0923de83bfe89a6606514246d02b0045af28ff2d6cbe874fb34",
-  "monte_carlo_status": "NOT_EXECUTED_BASELINE_INCONCLUSIVE",
-  "net_return": -0.020939974776106464,
+  "go_token": "GO_RATIFY_EL_KAROUI_VOL_MODEL_V1_VERSIONED_RESEARCH_BINDING_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE_NO_RUNTIME_AUTHORITY_V0",
+  "governance_ref": "docs/governance/EL_KAROUI_VOL_MODEL_V1_OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFICATION_V0.md",
+  "hypothesis_id": "EL_KAROUI_STOCHASTIC_VOL_REGIME_NON_BITCOIN_FUTURES_V1",
+  "material_difference_proven": true,
+  "next_go_token": "GO_EL_KAROUI_VOL_MODEL_V1_BOUNDED_OFFLINE_ECONOMIC_BASELINE_EVALUATION_NO_RUNTIME_AUTHORITY_V0",
+  "next_step": "EL_KAROUI_VOL_MODEL_V1_FULL_CANONICAL_OFFLINE_BASELINE_ECONOMIC_EVALUATION_V0",
   "offline_only": true,
   "order_effect": "NONE",
   "parameter_search_forbidden": true,
-  "policy_or_threshold_changed": false,
-  "primary_cause_class": "SIGNAL_STARVATION_BY_CANONICAL_LOGIC_WITH_INSUFFICIENT_TRADE_SAMPLE",
-  "promotion_eligible": false,
-  "re_evaluation_allowed": false,
-  "retry_unchanged_binding_allowed": false,
   "runtime_effect": "NONE",
-  "runtime_rewire_admissible": false,
-  "sample_sufficiency_status": "INSUFFICIENT_TRADE_SAMPLE",
-  "schema_version": "ehlers_cycle_filter_v1_versioned_research_binding.v0",
-  "selected_distinct_scope": "el_karoui_vol_model/v1",
-  "selected_distinct_scope_ratified": true,
-  "source_ratification_evidence_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/discover_and_rank_new_distinct_futures_research_scope_or_evidence_class_read_only_v0_20260710T104236Z",
-  "strategy_id": "ehlers_cycle_filter",
+  "schema_version": "el_karoui_vol_model_v1_versioned_research_binding.v0",
+  "source_ratification_evidence_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr5087_merge_closeout_ehlers_cycle_filter_v1_terminal_inconclusive_registration_and_distinct_scope_decision_v0_20260710T124722Z",
+  "strategy_id": "el_karoui_vol_model",
   "strategy_version": "v1",
-  "stress_status": "NOT_EXECUTED_BASELINE_INCONCLUSIVE",
-  "terminal_failure_class": "INCONCLUSIVE_BASELINE_INSUFFICIENT_TRADE_SAMPLE",
-  "terminal_inconclusive_evidence_for_unchanged_binding": true,
-  "terminal_negative_evidence_for_unchanged_binding": false,
-  "terminal_status": "TERMINAL_INCONCLUSIVE_INSUFFICIENT_SAMPLE",
-  "trade_count": 6,
   "trading_logic_mutated": false,
   "unchanged_retry_blocked": true,
-  "walk_forward_status": "NOT_EXECUTED_BASELINE_INCONCLUSIVE"
+  "universe_digest": "be6ea12f6e883de596e8e7987be071bcb4ebc3d32bff15ec933643dcf74f9ee2"
 }
