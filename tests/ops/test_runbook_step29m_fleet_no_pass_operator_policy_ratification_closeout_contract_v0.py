@@ -79,7 +79,7 @@ def test_ratified_no_new_candidate_hold() -> None:
     assert _field_value(section, "STEP29M_OPERATOR") == "Frank Rauter"
     assert (
         _field_value(section, "NEXT_CANONICAL_STEP")
-        == "VOL_BREAKOUT_V1_FULL_CANONICAL_OFFLINE_BASELINE_ECONOMIC_EVALUATION_V0"
+        == "MERGE_CLOSEOUT_THEN_RERUN_VOL_BREAKOUT_V1_FULL_CANONICAL_OFFLINE_BASELINE_ECONOMIC_EVALUATION_ONCE"
     )
 
 
@@ -88,7 +88,7 @@ def test_no_pending_candidates_or_automatic_continuation() -> None:
     assert _field_value(section, "POST_RATIFICATION_AUTHORIZED_PENDING_CANDIDATE_EXISTS") == "true"
     assert _field_value(section, "AUTHORIZED_PENDING_EVALUATION_COUNT") == "1"
     assert _field_value(section, "NEXT_EVALUATION_STRATEGY_ID") == "vol_breakout"
-    assert _field_value(section, "NEXT_EVALUATION_CONFIG_STATUS") == "AUTHORIZED_PENDING_EVALUATION"
+    assert _field_value(section, "NEXT_EVALUATION_CONFIG_STATUS") == "BINDING_DEFECT_FIX_PENDING"
     assert _field_value(section, "STEP29M_NEW_CANDIDATE_AUTHORIZED") == "true"
     assert (
         _field_value(section, "STEP29M_NEW_RESEARCH_SCOPE_REQUIRES_EXPLICIT_OPERATOR_RATIFICATION")

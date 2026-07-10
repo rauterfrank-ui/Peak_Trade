@@ -18,17 +18,17 @@ SCHEDULER_RUNTIME_ALLOWED: false
 
 | Feld | Wert |
 |---|---|
-| `LAST_VERIFIED_ORIGIN_MAIN` | `442c05688cfd1dcc28ebfcfdb13fd853dc16f8aa` |
-| `LAST_VERIFIED_AT` | `2026-07-06T04:25:00Z` |
-| `LAST_VERIFIED_SOURCE` | `POST_PR4904_V4_FLEET_ROBUSTNESS_FAILURE_DECOMPOSITION_EVIDENCE_EXECUTION_V0` |
-| `LAST_VERIFIED_PR` | `4904` |
-| `CURRENT_STATE` | `POST_NO_PASS_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_GAP_DIAGNOSTICS_EVIDENCE_EXECUTION_COMPLETE_V0` |
-| `CURRENT_MAJOR_GAP_PACKAGE` | `MAJOR_GAP_COMPARISON_PROMOTION_POLICY_INPUT_BRIDGE_V0` |
-| `NEXT_RUNBOOK_STEP` | `RUNBOOK_STEP_29R_RUNTIME_REWIRE_V1_IMPLEMENTATION` |
+| `LAST_VERIFIED_ORIGIN_MAIN` | `0948484700a16e71a09d7805d39619f6e79a474e` |
+| `LAST_VERIFIED_AT` | `2026-07-10T07:17:12Z` |
+| `LAST_VERIFIED_SOURCE` | `VOL_BREAKOUT_V1_FULL_CANONICAL_OFFLINE_BASELINE_ECONOMIC_EVALUATION_V0` |
+| `LAST_VERIFIED_PR` | `5073` |
+| `CURRENT_STATE` | `VOL_BREAKOUT_V1_BASELINE_INCONCLUSIVE_IMPLEMENTATION_BINDING_DEFECT_SIZING_CONFIG_DIGEST_MISMATCH_FIX_PENDING_V0` |
+| `CURRENT_MAJOR_GAP_PACKAGE` | `VOL_BREAKOUT_V1_SIZING_CONFIG_DIGEST_BINDING_FIX_V0` |
+| `NEXT_RUNBOOK_STEP` | `RUNBOOK_STEP_29M` |
 | `NEXT_RUNBOOK_STEP_STRUCTURAL_STATUS` | `OPEN_OR_IN_PROGRESS` |
 | `NEXT_RUNBOOK_STEP_ADMISSIBLE` | `false` |
-| `NEXT_RUNBOOK_STEP_BLOCK_REASON` | `ECONOMIC_VALIDITY_OFFLINE_GATE_PASS_FALSE` |
-| `NEXT_CANONICAL_STEP` | `REQUEST_OPERATOR_RATIFY_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_OWNER_NARROW_IMPLEMENTATION_FIX_SCOPE_V0` |
+| `NEXT_RUNBOOK_STEP_BLOCK_REASON` | `VOL_BREAKOUT_V1_BASELINE_INCONCLUSIVE_IMPLEMENTATION_BINDING_DEFECT` |
+| `NEXT_CANONICAL_STEP` | `VOL_BREAKOUT_V1_SIZING_CONFIG_DIGEST_BINDING_FIX_V0` |
 | `NEXT_CANONICAL_ACTION` | `GO_OPERATOR_RATIFY_NEXT_NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_DEFINITION_ONLY_V0` |
 | `CURRENT_ADMISSIBLE_NEXT_SCOPE` | `STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_OWNER_NARROW_IMPLEMENTATION_FIX_SCOPE_V0` |
 | `CURRENT_ADMISSIBLE_NEXT_SCOPE_GO_TOKEN` | `GO_OPERATOR_RATIFY_NEXT_NEW_VERSIONED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_SCOPE_DEFINITION_ONLY_V0` |
@@ -1149,7 +1149,7 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `RUNBOOK_STEP_29L_COMPLETE` | `true` |
 | `STEP_29M_STARTED` | `true` |
 | `RUNBOOK_STEP_29M_STARTED` | `true` |
-| `RUNBOOK_STEP_29M_IMPLEMENTED_SCOPE` | `economic_viability_evidence_v1_offline_slice,economic_viability_evidence_v1_persistence_load_reproducibility_slice,economic_validity_policy_v1_contract_slice,funding_model_binding_v1_slice,parameter_sensitivity_evidence_binding_v1_slice,admissible_versioned_futures_dataset_binding_v1_slice,economic_validity_policy_threshold_values_v1_slice,real_admissible_futures_economic_evidence_evaluation_v1_offline_slice,real_admissible_futures_economic_evaluation_operator_input_and_admissibility_closure_v0_slice,real_okx_inst_eth_usdt_perp_economic_evaluation_v1_offline_slice,breakout_donchian_v1_operator_policy_ratification_and_config_registry_slice_v0,step29m_registered_strategy_evaluation_fleet_closeout_v0_slice,ma_crossover_v1_operator_policy_ratification_and_config_registry_slice_v0,step29m_fleet_no_pass_operator_policy_ratification_and_progress_registry_closeout_v0_slice,vol_breakout_v1_narrow_neutral_rewire_and_binding_implementation_v0_slice` |
+| `RUNBOOK_STEP_29M_IMPLEMENTED_SCOPE` | `economic_viability_evidence_v1_offline_slice,economic_viability_evidence_v1_persistence_load_reproducibility_slice,economic_validity_policy_v1_contract_slice,funding_model_binding_v1_slice,parameter_sensitivity_evidence_binding_v1_slice,admissible_versioned_futures_dataset_binding_v1_slice,economic_validity_policy_threshold_values_v1_slice,real_admissible_futures_economic_evidence_evaluation_v1_offline_slice,real_admissible_futures_economic_evaluation_operator_input_and_admissibility_closure_v0_slice,real_okx_inst_eth_usdt_perp_economic_evaluation_v1_offline_slice,breakout_donchian_v1_operator_policy_ratification_and_config_registry_slice_v0,step29m_registered_strategy_evaluation_fleet_closeout_v0_slice,ma_crossover_v1_operator_policy_ratification_and_config_registry_slice_v0,step29m_fleet_no_pass_operator_policy_ratification_and_progress_registry_closeout_v0_slice,vol_breakout_v1_narrow_neutral_rewire_and_binding_implementation_v0_slice,vol_breakout_v1_sizing_config_digest_binding_fix_v0_slice,current_state_reconciliation_and_runbook_refresh_read_only_v0_slice` |
 | `RUNBOOK_STEP_29M_IMPLEMENTED` | `true` |
 | `RUNBOOK_STEP_29M_COMPLETE` | `true` |
 | `ECONOMIC_GATE_EVALUATOR_BOUND` | `true` |
@@ -1173,7 +1173,7 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `NEXT_EVALUATION_INSTRUMENT_ID` | `inst-eth-usdt-perp` |
 | `NEXT_EVALUATION_VENUE` | `okx` |
 | `NEXT_EVALUATION_CONFIG_VERSION` | `v1` |
-| `NEXT_EVALUATION_CONFIG_STATUS` | `AUTHORIZED_PENDING_EVALUATION` |
+| `NEXT_EVALUATION_CONFIG_STATUS` | `BINDING_DEFECT_FIX_PENDING` |
 | `NEXT_EVALUATION_CONFIG_PATH` | `config&#47;ops&#47;step29m_okx_inst_eth_usdt_perp_vol_breakout_v1_economic_evaluation_v1.json` <!-- pt:ref-target-ignore --> |
 | `AUTHORIZED_PENDING_EVALUATION_COUNT` | `1` |
 | `STEP29M_REGISTERED_STRATEGY_FLEET_STATUS` | `EVALUATION_FLEET_COMPLETE_NO_ECONOMIC_VALIDITY_PASS` |
@@ -1218,9 +1218,16 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `VOL_BREAKOUT_V1_ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
 | `VOL_BREAKOUT_V1_PROMOTION_ELIGIBLE` | `false` |
 | `VOL_BREAKOUT_V1_RUNTIME_AUTHORIZED` | `false` |
-| `VOL_BREAKOUT_V1_STATUS` | `AUTHORIZED_PENDING_EVALUATION` |
+| `VOL_BREAKOUT_V1_STATUS` | `BINDING_DEFECT_FIX_PENDING` |
 | `VOL_BREAKOUT_V1_ADMISSIBILITY_CONTRACT_STATUS` | `PASS` |
 | `VOL_BREAKOUT_V1_CONFIG_SCHEMA_VERSION` | `step29m_vol_breakout_v1_economic_evaluation_admissibility_v1` |
+| `VOL_BREAKOUT_V1_BASELINE_VERDICT` | `INCONCLUSIVE` |
+| `VOL_BREAKOUT_V1_BASELINE_FAILURE_CLASS` | `implementation_binding_defect` |
+| `VOL_BREAKOUT_V1_BASELINE_BLOCKER` | `offline_evaluation_sizing_contract_invalid:sizing_config_digest_mismatch` |
+| `VOL_BREAKOUT_V1_BASELINE_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/economic/vol_breakout_v1_full_canonical_offline_baseline_economic_evaluation_v0_20260710T071712Z (MANIFEST_VERIFY_RC=0)` |
+| `VOL_BREAKOUT_V1_SIZING_CONFIG_DIGEST_BOUND` | `8fcd7484cdc768869fad5b914a35764f09cf42b41b78330417402272c550844a` |
+| `VOL_BREAKOUT_V1_EVAL_CONFIG_DIGEST` | `db7bf773de987afbb2643ff9b761760af6b286e5e864c39d3c8d908a59082b88` |
+| `VOL_BREAKOUT_V1_OLD_WRONG_SIZING_CONFIG_DIGEST` | `fdb0e3819330b72b836c1070a6f3f500f69a22a277e4cb84d22939870a7f56cc` |
 | `VOL_BREAKOUT_LOOKBACK_BREAKOUT` | `20` |
 | `VOL_BREAKOUT_VOL_WINDOW` | `14` |
 | `VOL_BREAKOUT_VOL_PERCENTILE` | `50.0` |
@@ -2409,7 +2416,7 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `NEXT_EVALUATION_INSTRUMENT_ID` | `inst-eth-usdt-perp` |
 | `NEXT_EVALUATION_VENUE` | `okx` |
 | `NEXT_EVALUATION_CONFIG_VERSION` | `v1` |
-| `NEXT_EVALUATION_CONFIG_STATUS` | `AUTHORIZED_PENDING_EVALUATION` |
+| `NEXT_EVALUATION_CONFIG_STATUS` | `BINDING_DEFECT_FIX_PENDING` |
 | `NEXT_EVALUATION_CONFIG_PATH` | `config&#47;ops&#47;step29m_okx_inst_eth_usdt_perp_vol_breakout_v1_economic_evaluation_v1.json` <!-- pt:ref-target-ignore --> |
 | `AUTHORIZED_PENDING_EVALUATION_COUNT` | `1` |
 | `STEP29M_REGISTERED_STRATEGY_FLEET_STATUS` | `EVALUATION_FLEET_COMPLETE_NO_ECONOMIC_VALIDITY_PASS` |
@@ -2454,9 +2461,16 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `VOL_BREAKOUT_V1_ECONOMIC_VALIDITY_OFFLINE_GATE_PASS` | `false` |
 | `VOL_BREAKOUT_V1_PROMOTION_ELIGIBLE` | `false` |
 | `VOL_BREAKOUT_V1_RUNTIME_AUTHORIZED` | `false` |
-| `VOL_BREAKOUT_V1_STATUS` | `AUTHORIZED_PENDING_EVALUATION` |
+| `VOL_BREAKOUT_V1_STATUS` | `BINDING_DEFECT_FIX_PENDING` |
 | `VOL_BREAKOUT_V1_ADMISSIBILITY_CONTRACT_STATUS` | `PASS` |
 | `VOL_BREAKOUT_V1_CONFIG_SCHEMA_VERSION` | `step29m_vol_breakout_v1_economic_evaluation_admissibility_v1` |
+| `VOL_BREAKOUT_V1_BASELINE_VERDICT` | `INCONCLUSIVE` |
+| `VOL_BREAKOUT_V1_BASELINE_FAILURE_CLASS` | `implementation_binding_defect` |
+| `VOL_BREAKOUT_V1_BASELINE_BLOCKER` | `offline_evaluation_sizing_contract_invalid:sizing_config_digest_mismatch` |
+| `VOL_BREAKOUT_V1_BASELINE_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/economic/vol_breakout_v1_full_canonical_offline_baseline_economic_evaluation_v0_20260710T071712Z (MANIFEST_VERIFY_RC=0)` |
+| `VOL_BREAKOUT_V1_SIZING_CONFIG_DIGEST_BOUND` | `8fcd7484cdc768869fad5b914a35764f09cf42b41b78330417402272c550844a` |
+| `VOL_BREAKOUT_V1_EVAL_CONFIG_DIGEST` | `db7bf773de987afbb2643ff9b761760af6b286e5e864c39d3c8d908a59082b88` |
+| `VOL_BREAKOUT_V1_OLD_WRONG_SIZING_CONFIG_DIGEST` | `fdb0e3819330b72b836c1070a6f3f500f69a22a277e4cb84d22939870a7f56cc` |
 | `VOL_BREAKOUT_LOOKBACK_BREAKOUT` | `20` |
 | `VOL_BREAKOUT_VOL_WINDOW` | `14` |
 | `VOL_BREAKOUT_VOL_PERCENTILE` | `50.0` |
@@ -2482,7 +2496,7 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `PRIMARY_FLEET_FINDING` | `NO_ADMISSIBLE_REGISTERED_STRATEGY_ECONOMICALLY_VIABLE_OFFLINE` |
 | `EVALUATION_EXECUTION_COMPLETE` | `true` |
 | `ECONOMIC_VALIDITY_OBJECTIVE_ACHIEVED` | `false` |
-| `NEXT_CANONICAL_STEP` | `VOL_BREAKOUT_V1_FULL_CANONICAL_OFFLINE_BASELINE_ECONOMIC_EVALUATION_V0` |
+| `NEXT_CANONICAL_STEP` | `MERGE_CLOSEOUT_THEN_RERUN_VOL_BREAKOUT_V1_FULL_CANONICAL_OFFLINE_BASELINE_ECONOMIC_EVALUATION_ONCE` |
 | `STEP29N_AUTHORIZED` | `false` |
 | `STEP29R_AUTHORIZED` | `false` |
 | `RUNTIME_REWIRE_ALLOWED` | `false` |
@@ -2551,7 +2565,7 @@ Technische Zerlegung des Runbook-Übergangs: Promotion Eligibility → vollstän
 | `ECONOMIC_VALIDITY_PROVEN` | `false` |
 | `PROFITABILITY_CLAIM_ALLOWED` | `false` |
 | `RUNBOOK_STEP_29M_STARTED` | `true` |
-| `RUNBOOK_STEP_29M_IMPLEMENTED_SCOPE` | `economic_viability_evidence_v1_offline_slice,economic_viability_evidence_v1_persistence_load_reproducibility_slice,economic_validity_policy_v1_contract_slice,funding_model_binding_v1_slice,parameter_sensitivity_evidence_binding_v1_slice,admissible_versioned_futures_dataset_binding_v1_slice,economic_validity_policy_threshold_values_v1_slice,real_admissible_futures_economic_evidence_evaluation_v1_offline_slice,real_admissible_futures_economic_evaluation_operator_input_and_admissibility_closure_v0_slice,real_okx_inst_eth_usdt_perp_economic_evaluation_v1_offline_slice,breakout_donchian_v1_operator_policy_ratification_and_config_registry_slice_v0,step29m_registered_strategy_evaluation_fleet_closeout_v0_slice,ma_crossover_v1_operator_policy_ratification_and_config_registry_slice_v0,step29m_fleet_no_pass_operator_policy_ratification_and_progress_registry_closeout_v0_slice,vol_breakout_v1_narrow_neutral_rewire_and_binding_implementation_v0_slice` |
+| `RUNBOOK_STEP_29M_IMPLEMENTED_SCOPE` | `economic_viability_evidence_v1_offline_slice,economic_viability_evidence_v1_persistence_load_reproducibility_slice,economic_validity_policy_v1_contract_slice,funding_model_binding_v1_slice,parameter_sensitivity_evidence_binding_v1_slice,admissible_versioned_futures_dataset_binding_v1_slice,economic_validity_policy_threshold_values_v1_slice,real_admissible_futures_economic_evidence_evaluation_v1_offline_slice,real_admissible_futures_economic_evaluation_operator_input_and_admissibility_closure_v0_slice,real_okx_inst_eth_usdt_perp_economic_evaluation_v1_offline_slice,breakout_donchian_v1_operator_policy_ratification_and_config_registry_slice_v0,step29m_registered_strategy_evaluation_fleet_closeout_v0_slice,ma_crossover_v1_operator_policy_ratification_and_config_registry_slice_v0,step29m_fleet_no_pass_operator_policy_ratification_and_progress_registry_closeout_v0_slice,vol_breakout_v1_narrow_neutral_rewire_and_binding_implementation_v0_slice,vol_breakout_v1_sizing_config_digest_binding_fix_v0_slice,current_state_reconciliation_and_runbook_refresh_read_only_v0_slice` |
 | `RUNBOOK_STEP_29M_IMPLEMENTED` | `true` |
 | `RUNBOOK_STEP_29M_COMPLETE` | `true` |
 | `ECONOMIC_VIABILITY_EVIDENCE_V1_IMPLEMENTED` | `true` |
@@ -7030,6 +7044,58 @@ Docs-only current-state sync authorized by operator (`AUTHORIZE_DOCS_ONLY_CURREN
 | `DOCS_ONLY` | `true` |
 | `CODE_CHANGED` | `false` |
 | `TESTS_CHANGED` | `false` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+
+#### CURRENT_STATE_RECONCILIATION_AND_RUNBOOK_REFRESH_READ_ONLY_V0
+
+Read-only reconciliation after PR #5073 merge and vol_breakout v1 baseline INCONCLUSIVE implementation-binding-defect evidence. Updates current-state, evidence, progress, and next-step fields only.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `CURRENT_STATE_RECONCILIATION_SNAPSHOT` |
+| `STATUS` | `CURRENT_STATE_RECONCILIATION_COMPLETE` |
+| `SCOPE_CLASSIFICATION` | `CURRENT_STATE_RECONCILIATION_AND_RUNBOOK_REFRESH_READ_ONLY_V0` |
+| `RECONCILED_ORIGIN_MAIN` | `0948484700a16e71a09d7805d39619f6e79a474e` |
+| `PR5073_CLOSEOUT_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr5073_merge_closeout_vol_breakout_v1_narrow_neutral_rewire_binding_v0_20260710T071020Z (MANIFEST_VERIFY_RC=0)` |
+| `SOURCE_RATIFICATION_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/rank1_vol_breakout_binding_and_evaluation_ratification_read_only_v0_20260710T063915Z (MANIFEST_VERIFY_RC=0)` |
+| `VOL_BREAKOUT_V1_BASELINE_EVIDENCE_REF` | `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/economic/vol_breakout_v1_full_canonical_offline_baseline_economic_evaluation_v0_20260710T071712Z (MANIFEST_VERIFY_RC=0)` |
+| `VOL_BREAKOUT_V1_BASELINE_VERDICT` | `INCONCLUSIVE` |
+| `VOL_BREAKOUT_V1_BASELINE_FAILURE_CLASS` | `implementation_binding_defect` |
+| `VOL_BREAKOUT_V1_BASELINE_BLOCKER` | `offline_evaluation_sizing_contract_invalid:sizing_config_digest_mismatch` |
+| `BASELINE_EXECUTED` | `false` |
+| `PR_REQUIRED` | `true` |
+| `NEXT_CANONICAL_STEP` | `VOL_BREAKOUT_V1_SIZING_CONFIG_DIGEST_BINDING_FIX_V0` |
+| `DOCS_ONLY` | `false` |
+| `CODE_CHANGED` | `false` |
+| `offline_only` | `true` |
+| `non_authorizing` | `true` |
+| `RUNTIME_EFFECT` | `NONE` |
+| `AUTHORITY_EFFECT` | `NONE` |
+
+#### VOL_BREAKOUT_V1_SIZING_CONFIG_DIGEST_BINDING_FIX_V0
+
+Narrow neutral binding fix for vol_breakout/v1 offline evaluation sizing-contract digest mismatch discovered during full-canonical baseline attempt. No trading-logic, parameter-value, cost-model, dataset, period, instrument, risk/sizing-semantics, or policy mutation.
+
+| Feld | Wert |
+|---|---|
+| `REGISTRY_ENTRY_CLASS` | `NARROW_BINDING_FIX_SNAPSHOT` |
+| `STATUS` | `SIZING_CONFIG_DIGEST_BINDING_FIX_COMPLETE_PENDING_MERGE` |
+| `SCOPE_CLASSIFICATION` | `VOL_BREAKOUT_V1_SIZING_CONFIG_DIGEST_BINDING_FIX_V0` |
+| `BASE_HEAD` | `0948484700a16e71a09d7805d39619f6e79a474e` |
+| `OLD_WRONG_SIZING_CONFIG_DIGEST` | `fdb0e3819330b72b836c1070a6f3f500f69a22a277e4cb84d22939870a7f56cc` |
+| `EXPECTED_SIZING_CONTRACT_DIGEST` | `8fcd7484cdc768869fad5b914a35764f09cf42b41b78330417402272c550844a` |
+| `VOL_BREAKOUT_V1_EVAL_CONFIG_DIGEST` | `db7bf773de987afbb2643ff9b761760af6b286e5e864c39d3c8d908a59082b88` |
+| `CONFIG_BINDING_FIXED` | `true` |
+| `RESEARCH_BINDING_FIXED` | `true` |
+| `DIGEST_CONTRACT_TEST_ADDED` | `true` |
+| `TRADING_LOGIC_CHANGED` | `false` |
+| `RISK_SIZING_SEMANTICS_CHANGED` | `false` |
+| `POLICY_RESCUE_ALLOWED` | `false` |
+| `ECONOMIC_EVALUATION_EXECUTED` | `false` |
+| `NEXT_CANONICAL_STEP` | `MERGE_CLOSEOUT_THEN_RERUN_VOL_BREAKOUT_V1_FULL_CANONICAL_OFFLINE_BASELINE_ECONOMIC_EVALUATION_ONCE` |
 | `offline_only` | `true` |
 | `non_authorizing` | `true` |
 | `RUNTIME_EFFECT` | `NONE` |

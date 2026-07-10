@@ -5,7 +5,7 @@
   "bitcoin_direction_allowed": false,
   "candidate_binding_ref": "config/research/vol_breakout_v1_versioned_research_binding_v0.json",
   "candidate_id": "vol_breakout/v1",
-  "config_digest": "fdb0e3819330b72b836c1070a6f3f500f69a22a277e4cb84d22939870a7f56cc",
+  "config_digest": "db7bf773de987afbb2643ff9b761760af6b286e5e864c39d3c8d908a59082b88",
   "cost_execution_binding": {
     "binding_version": "v0",
     "effective_entry_cost_bps": 20.0,
