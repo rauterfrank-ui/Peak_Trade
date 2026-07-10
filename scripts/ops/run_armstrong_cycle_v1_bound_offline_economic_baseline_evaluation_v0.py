@@ -39,6 +39,10 @@ from src.backtest.step29m_armstrong_cycle_v1_economic_evaluation_admissibility_c
     load_armstrong_cycle_v1_evaluation_config_v1,
 )
 from src.core.metrics import metrics as resilience_metrics  # noqa: E402
+from src.research.armstrong_cycle_v1_offline_economic_evaluation_scope_ratification_v0 import (  # noqa: E402
+    build_armstrong_cycle_v1_period_binding_data_period_v0,
+    reject_stale_runner_descriptor_range_data_period_v0,
+)
 from src.research.step29m_armstrong_cycle_v1_offline_economic_baseline_materialization_v0 import (  # noqa: E402
     METRICS_SUMMARY_FILENAME,
     compute_step29m_armstrong_binding_digest_v0,
@@ -60,6 +64,50 @@ BINDING_CONFIG_PATH = "config/research/armstrong_cycle_v1_versioned_research_bin
 MATERIAL_DIFFERENCE_PATH = (
     "config/research/armstrong_cycle_v1_material_difference_and_non_claim_contract_v0.json"
 )
+
+STALE_RUNNER_DESCRIPTOR_RANGE_DATA_PERIOD = "2026-06-17 10:07:00+00:00..2026-07-01 10:07:00+00:00"
+
+
+def resolve_armstrong_cycle_v1_binding_data_period_for_baseline_v0(
+    binding_cfg: Mapping[str, Any],
+) -> str:
+    """Resolve canonical ratified period_binding pipe payload for baseline binding digest."""
+    period_binding = binding_cfg["binding"]["period_binding"]
+    data_period = build_armstrong_cycle_v1_period_binding_data_period_v0(period_binding)
+    reject_stale_runner_descriptor_range_data_period_v0(data_period)
+    return data_period
+
+
+def compute_armstrong_cycle_v1_ratified_binding_digest_for_baseline_v0(
+    *,
+    binding_cfg: Mapping[str, Any],
+    material_diff: Mapping[str, Any],
+    config_digest: str,
+    strategy_params_digest: str,
+    data_digest: str,
+    implementation_digest: str,
+    instrument_id: str,
+) -> tuple[str, str]:
+    """Compute baseline binding digest using ratified period_binding canonicalization owner."""
+    data_period = resolve_armstrong_cycle_v1_binding_data_period_for_baseline_v0(binding_cfg)
+    universe_digest = str(binding_cfg.get("universe_digest", ""))
+    binding_digest = compute_step29m_armstrong_binding_digest_v0(
+        config_digest=config_digest,
+        data_digest=data_digest,
+        implementation_digest=implementation_digest,
+        strategy_params_digest=strategy_params_digest,
+        material_difference_digest=str(material_diff["material_difference_digest"]),
+        hypothesis_id=str(binding_cfg["hypothesis_id"]),
+        instrument_id=instrument_id,
+        data_period=data_period,
+        universe_digest=universe_digest,
+    )
+    ratified_binding_digest = str(binding_cfg.get("binding_digest", ""))
+    if ratified_binding_digest and binding_digest != ratified_binding_digest:
+        raise SystemExit(
+            f"ERR: binding_digest_mismatch:computed={binding_digest}:ratified={ratified_binding_digest}"
+        )
+    return data_period, binding_digest
 
 
 class EconomicClassification(str, Enum):
@@ -206,18 +254,16 @@ def run_baseline_evaluation(
 
     config_digest = admissibility.config_digest
     strategy_params_digest = admissibility.strategy_params_digest
-    data_period = f"{descriptor.start_time}..{descriptor.end_time}"
-    universe_digest = str(binding_cfg.get("universe_digest", ""))
-    binding_digest = compute_step29m_armstrong_binding_digest_v0(
-        config_digest=config_digest,
-        data_digest=descriptor.dataset_digest,
-        implementation_digest=implementation_digest,
-        strategy_params_digest=strategy_params_digest,
-        material_difference_digest=str(material_diff["material_difference_digest"]),
-        hypothesis_id=str(binding_cfg["hypothesis_id"]),
-        instrument_id=str(eval_binding["canonical_instrument_id"]),
-        data_period=data_period,
-        universe_digest=universe_digest,
+    data_period, binding_digest = (
+        compute_armstrong_cycle_v1_ratified_binding_digest_for_baseline_v0(
+            binding_cfg=binding_cfg,
+            material_diff=material_diff,
+            config_digest=config_digest,
+            strategy_params_digest=strategy_params_digest,
+            data_digest=descriptor.dataset_digest,
+            implementation_digest=implementation_digest,
+            instrument_id=str(eval_binding["canonical_instrument_id"]),
+        )
     )
 
     ts = _utc_slug()
