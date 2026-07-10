@@ -7,7 +7,7 @@ ORDERS_ALLOWED: false
 SCHEDULER_RUNTIME_ALLOWED: false
 ---
 
-> **Non-authorizing:** Ratifiziert ausschließlich die immutable versionierte Offline-Research-Binding für `cross_sectional_ma_crossover_panel_rank_rotation/v0` unter Wiederverwendung der unveränderten kanonischen `ma_crossover/v1`-Signalgeometrie in der Cross-Sectional-Top-1-Rank-Rotation. Keine Economic Evaluation. Keine Runtime-Authority.
+> **Non-authorizing:** Ratifiziert ausschließlich die immutable versionierte Offline-Research-Binding für `cross_sectional_ma_crossover_panel_rank_rotation&#47;v0` unter Wiederverwendung der unveränderten kanonischen `ma_crossover&#47;v1`-Signalgeometrie in der Cross-Sectional-Top-1-Rank-Rotation. Keine Economic Evaluation. Keine Runtime-Authority.
 
 ## A. Verdict
 
@@ -17,7 +17,7 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | `GO_TOKEN` | `GO_VERSIONED_CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_BINDING_RATIFICATION` |
 | `STRATEGY_ID` | `cross_sectional_ma_crossover_panel_rank_rotation` |
 | `STRATEGY_VERSION` | `v0` |
-| `UNDERLYING_SIGNAL_BINDING` | `ma_crossover/v1@inst-eth-usdt-perp` |
+| `UNDERLYING_SIGNAL_BINDING` | `ma_crossover&#47;v1@inst-eth-usdt-perp` |
 | `BINDING_RATIFIED` | `true` |
 | `ALL_REQUIRED_BINDINGS_RATIFIED` | `true` |
 | `DATASET_MATERIALIZED` | `true` |
