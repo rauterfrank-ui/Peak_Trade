@@ -49,11 +49,11 @@
 > ```
 >
 > **Evidence Bundles (MANIFEST_VERIFY_RC=0):**
-> - Economic evaluation: `economic/vol_breakout_v1_full_canonical_offline_baseline_economic_evaluation_v0_20260710T080040Z`
-> - PR5074 merge closeout: `research/pr5074_merge_closeout_vol_breakout_v1_sizing_config_digest_binding_fix_v0_20260710T075844Z`
-> - Terminal-negative closeout source: `implementation/vol_breakout_v1_terminal_negative_economic_evidence_closeout_v0_20260710T081257Z`
+> - Economic evaluation: `economic&#47;vol_breakout_v1_full_canonical_offline_baseline_economic_evaluation_v0_20260710T080040Z`
+> - PR5074 merge closeout: `research&#47;pr5074_merge_closeout_vol_breakout_v1_sizing_config_digest_binding_fix_v0_20260710T075844Z`
+> - Terminal-negative closeout source: `implementation&#47;vol_breakout_v1_terminal_negative_economic_evidence_closeout_v0_20260710T081257Z`
 >
-> **Changelog:** 2026-07-10 — PR #5075 merged: terminal-negative governance closeout for `vol_breakout/v1` on `inst-eth-usdt-perp`; research generation closed; unchanged retry blocked; no policy rescue; no runtime rewire.
+> **Changelog:** 2026-07-10 — PR #5075 merged: terminal-negative governance closeout for `vol_breakout&#47;v1` on `inst-eth-usdt-perp`; research generation closed; unchanged retry blocked; no policy rescue; no runtime rewire.
 >
 > **STALE GOVERNANCE SUPERSESSION NOTICE (2026-07-04):** Abschnitte mit `NO_NEW_CANDIDATE_HOLD=REVOKED`, `MULTI_CANDIDATE_RESEARCH_FLEET_ALLOWED=true` und frühen `NEXT_STEP=RATIFY_VERSIONED_FINAL_FLEET_BINDINGS…`-Werten sind **historische Pre-Fail-Snapshots**. Stale Governance-Werte in diesem Dokument sind **nicht** für operative Entscheidungen zu verwenden.
 
