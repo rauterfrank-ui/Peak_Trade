@@ -54,7 +54,9 @@ class TestElKarouiVolModelV1OfflineEconomicEvaluationScopeRatificationV0Contract
         assert payload["prior_evidence_exclusion_pass"] is True
         assert payload["runtime_effect"] == "NONE"
         assert payload["authority_effect"] == "NONE"
-        assert payload["next_go_token"] == "NEW_DISTINCT_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_REQUIRED"
+        assert (
+            payload["next_go_token"] == "NEW_DISTINCT_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_REQUIRED"
+        )
         assert PR5087_CLOSEOUT_SUFFIX in payload["source_ratification_evidence_ref"]
 
     def test_versioned_binding_complete(self) -> None:
