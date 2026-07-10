@@ -33,6 +33,8 @@ from src.research.pit_okx_pt1h_panel_ohlcv_dataset_v1 import InstrumentPanelSeri
 PACKAGE_MARKER = "CROSS_SECTIONAL_SINGLE_SLOT_BACKTEST_WIRING_V0=true"
 WIRING_VERSION = "cross_sectional_single_slot_backtest_wiring.v0"
 MAX_POSITIONS = 1
+END_OF_WINDOW_CLOSE_REASON = "end_of_window_force_close"
+END_OF_WINDOW_POLICY = "force_close_at_window_end_inclusive_v0"
 
 
 @dataclass(frozen=True)
@@ -171,6 +173,53 @@ def run_single_slot_panel_backtest_v0(
         prev_side = side
         prev_instrument = instrument
         equity_points.append((ts, equity))
+
+    if (
+        prev_side != SlotSide.FLAT
+        and prev_instrument is not None
+        and entry_price is not None
+        and orchestrator_result.epochs
+    ):
+        last_epoch = orchestrator_result.epochs[-1]
+        exit_price = _close_price_at_epoch(
+            panel_series,
+            prev_instrument,
+            last_epoch.epoch_index,
+        )
+        if exit_price is not None and equity_at_entry is not None:
+            direction = 1.0 if prev_side == SlotSide.LONG else -1.0
+            gross_pnl_frac = direction * ((exit_price / entry_price) - 1.0)
+            equity_before_exit = equity
+            exit_cost = equity_before_exit * _cost_fraction(exit_bps)
+            gross_pnl_abs, net_pnl = compute_roundtrip_net_pnl_v0(
+                equity_at_entry=equity_at_entry,
+                equity_before_exit=equity_before_exit,
+                gross_pnl_frac=gross_pnl_frac,
+                exit_cost=exit_cost,
+            )
+            equity = equity_before_exit * (1.0 + gross_pnl_frac) - exit_cost
+            total_fee_drag += exit_cost * (fee_bps / entry_bps if entry_bps else 0.5)
+            total_slippage += exit_cost * (slip_bps / entry_bps if entry_bps else 0.5)
+            trades.append(
+                {
+                    "entry_time": entry_ts,
+                    "exit_time": last_epoch.timestamp_utc,
+                    "instrument_id": prev_instrument,
+                    "side": prev_side.value,
+                    "entry_price": entry_price,
+                    "exit_price": exit_price,
+                    "gross_pnl_frac": gross_pnl_frac,
+                    "gross_pnl": gross_pnl_abs,
+                    "entry_cost": entry_cost_recorded,
+                    "exit_cost": exit_cost,
+                    CANONICAL_PNL_FIELD: net_pnl,
+                    "pnl_unit": PNL_UNIT,
+                    "close_reason": END_OF_WINDOW_CLOSE_REASON,
+                }
+            )
+            rotation_count += 1
+            if equity_points:
+                equity_points[-1] = (last_epoch.timestamp_utc, equity)
 
     if not equity_points:
         equity_curve = pd.Series([initial_cash], index=pd.DatetimeIndex(["1970-01-01T00:00:00Z"]))
