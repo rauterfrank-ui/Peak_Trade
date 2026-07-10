@@ -1,0 +1,78 @@
+{
+  "assertion_id": "BACKTEST_RUNTIME_DECISION_PARITY_PASS_ASSERTION_BULL_BEAR_STATE_SWITCH_SURFACE_ONLY_V0",
+  "assertion_scope": "BULL_BEAR_STATE_SWITCH_SURFACE_ONLY",
+  "surface_name": "Bull/Bear State Switch Backtest Decision Parity",
+  "canonical_owner": "src/trading/master_v2",
+  "canonical_owner_module": "trading.master_v2.double_play_state",
+  "canonical_owner_symbol": "transition_state",
+  "canonical_adapter_path": "src/trading/master_v2/bull_bear_state_switch_scenario_binding_adapter_v0.py",
+  "backtest_consumer_paths": [
+    "src/trading/master_v2/offline_double_play_scenario_replay_v0.py",
+    "src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py"
+  ],
+  "direct_reference_count": 20,
+  "owner_binding_contract_ref": "docs/research/bull_bear_state_switch_owner_binding_implementation_v0.json",
+  "assessment_contract_ref": "docs/research/bull_bear_state_switch_backtest_parity_wiring_assessment_or_narrow_rewire_v0.json",
+  "no_rewire_review_contract_ref": "docs/research/bull_bear_state_switch_backtest_parity_narrow_rewire_v0.json",
+  "assessment_source_pr": 5057,
+  "no_rewire_review_source_pr": 5058,
+  "source_evidence_contract_refs": [
+    "docs/research/bull_bear_state_switch_backtest_parity_wiring_assessment_or_narrow_rewire_v0.json",
+    "docs/research/bull_bear_state_switch_backtest_parity_narrow_rewire_v0.json"
+  ],
+  "source_evidence_provenance_mode": "OPERATOR_DURABLE_ARCHIVE_REVIEW_TIME_ONLY",
+  "source_evidence_dirs": [
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/bull_bear_state_switch_backtest_parity_wiring_assessment_or_narrow_rewire_v0_20260710T002041Z",
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/bull_bear_state_switch_backtest_parity_narrow_rewire_v0_20260710T003824Z"
+  ],
+  "source_manifest_digests": {
+    "bull_bear_state_switch_backtest_parity_wiring_assessment_or_narrow_rewire_v0_20260710T002041Z": "c01a6b3ace496dfa73a07ab134fdddd1b1d368578cfe518baf3ef08035a788b7",
+    "bull_bear_state_switch_backtest_parity_narrow_rewire_v0_20260710T003824Z": "adf240d20eb2982a5ddd0a8639897953becc9a5e20122b2b3229b16ea81dbcd6"
+  },
+  "source_manifest_verify_rc": 0,
+  "implementation_digests": {
+    "src/research/owner_bindings/bull_bear_state_switch_owner_binding_v0.py": "5a8c0dbd5ea6743142cd63041f3b229f2751030e6b8b33de3ecb44279fd06f65",
+    "src/trading/master_v2/bull_bear_state_switch_scenario_binding_adapter_v0.py": "5d6254bd9a0d4d717b672ea99875eee1a3894b16ce3cdbe62ebb503464667e17",
+    "src/trading/master_v2/offline_double_play_scenario_replay_v0.py": "6dbb42a17bad653ede336a4b63cdfcb8ff339baa1756ac65a5a18059a10f4598",
+    "src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py": "5bac44c97353d4bb2d394fca80119a2cc3567b86f590434104a5633a257a5cee",
+    "src/trading/master_v2/double_play_state.py": "878c35b18b3a99f9f401e01f4fea44e7379fdf29958ec1b95b1422c90e16314a"
+  },
+  "deterministic_test_refs": [
+    "tests/research/test_bull_bear_state_switch_backtest_parity_narrow_rewire_v0.py",
+    "tests/research/test_bull_bear_state_switch_backtest_parity_wiring_assessment_or_narrow_rewire_v0.py",
+    "tests/research/test_bull_bear_state_switch_owner_binding_implementation_v0.py",
+    "tests/research/test_bull_bear_state_switch_narrow_reuse_first_rewire_v0.py",
+    "tests/research/test_bull_bear_state_switch_narrow_trace_assertion_v0.py",
+    "tests/trading/master_v2/test_bull_bear_state_switch_scenario_replay_binding_parity_rewire_contract_v0.py"
+  ],
+  "mirrored_behavior_verified": true,
+  "bypass_authority_excluded": true,
+  "BULL_BEAR_STATE_SWITCH_BACKTEST_PARITY_PASS": true,
+  "BACKTEST_RUNTIME_DECISION_PARITY_PASS_ASSERTION_SCOPE": "BULL_BEAR_STATE_SWITCH_SURFACE_ONLY",
+  "BACKTEST_RUNTIME_DECISION_PARITY_PASS": false,
+  "FULL_CANONICAL_CHAIN_WIRED": false,
+  "SYSTEM_ECONOMIC_EVIDENCE_ADMISSIBLE": false,
+  "RUNTIME_REWIRE_ADMISSIBLE": false,
+  "authority_effect": "NONE",
+  "runtime_effect": "NONE",
+  "futures_only": true,
+  "bitcoin_direction_allowed": false,
+  "no_rewire_classification": "REVIEW_NO_REWIRE_REQUIRED",
+  "limitations_and_non_claims": [
+    "Surface-only assertion; does not imply whole-system BACKTEST_RUNTIME_DECISION_PARITY_PASS.",
+    "Does not claim FULL_CANONICAL_CHAIN_WIRED.",
+    "Does not claim SYSTEM_ECONOMIC_EVIDENCE_ADMISSIBLE.",
+    "Does not authorize RUNTIME_REWIRE_ADMISSIBLE.",
+    "Does not assert parity from direct reference count alone.",
+    "Does not authorize runtime, scheduler, order, credential, shadow, paper, testnet, canary, or live authority.",
+    "Does not mutate canonical trading logic or backtest execution semantics.",
+    "Assertion is invalidated if canonical owner or backtest consumer paths change materially from PR #5058 review baseline."
+  ],
+  "next_parity_surface": "SCOPE_ADVERSE_EXIT_AND_REVERSAL_PREPARATION_BACKTEST_PARITY_WIRING_ASSESSMENT_OR_NARROW_REWIRE_V0",
+  "origin_main": "1ac4fb8ee579216f97cc4e57807740e33dd4127d",
+  "repo_head": "1ac4fb8ee579216f97cc4e57807740e33dd4127d",
+  "schema_version": 1,
+  "slice": "backtest_runtime_decision_parity_pass_assertion_bull_bear_state_switch_surface_only_v0",
+  "created_at_utc": "2026-07-10T00:49:00.000000+00:00",
+  "verdict": "PASS_BACKTEST_RUNTIME_DECISION_PARITY_PASS_ASSERTION_BULL_BEAR_STATE_SWITCH_SURFACE_ONLY_V0"
+}
