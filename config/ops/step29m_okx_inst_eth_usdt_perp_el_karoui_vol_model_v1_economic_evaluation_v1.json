@@ -85,10 +85,10 @@
     "parameter_sensitivity_policy_version": "parameter_sensitivity_v1",
     "strategy_id": "el_karoui_vol_model",
     "strategy_params": {
-      "high_threshold": 0.7,
+      "vol_window": 20,
       "lookback_window": 252,
       "low_threshold": 0.3,
-      "vol_window": 20
+      "high_threshold": 0.7
     },
     "strategy_version": "v1",
     "stress": {
@@ -104,7 +104,7 @@
     }
   },
   "offline_evaluation_sizing_contract_v1": {
-    "config_digest": "d49d85ede512dda6d3200dbf9a50d306a423de4279767d228d20d28d88975dd8",
+    "config_digest": "dd9152621c58c1ed283c7b42601d66cf4fdcd1bb009f439d8583ebef64dc4516",
     "dataset_digest": "b4cbe7fff81a137da055588231757937406d8cb30d531ee0aab41d95ee9b6c78",
     "initial_equity": 10000.0,
     "instrument_metadata_source": "versioned_dataset_manifest_v1",
