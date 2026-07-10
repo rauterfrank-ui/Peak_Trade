@@ -38,16 +38,20 @@ from src.backtest.step29m_ehlers_cycle_filter_v1_economic_evaluation_admissibili
     evaluate_ehlers_cycle_filter_v1_admissibility_contract_v1,
     load_ehlers_cycle_filter_v1_evaluation_config_v1,
 )
+from src.core.metrics import metrics as resilience_metrics  # noqa: E402
 from src.research.step29m_ehlers_cycle_filter_v1_offline_economic_baseline_materialization_v0 import (  # noqa: E402
+    METRICS_SUMMARY_FILENAME,
     compute_step29m_ehlers_binding_digest_v0,
     compute_step29m_ehlers_implementation_digest_v0,
     materialize_legacy_backtest_accounting_reconciliation_v0,
+    materialize_resilience_metrics_summary_json_v0,
 )
 
 ALLOWED_GO_TOKENS = frozenset(
     {
         "GO_EHLERS_CYCLE_FILTER_V1_BOUND_OFFLINE_ECONOMIC_BASELINE_EVALUATION_V0",
         "GO_EHLERS_CYCLE_FILTER_V1_DEFECT_REPAIR_SAME_BINDING_REEVALUATION_V0",
+        "GO_OFFLINE_EVALUATION_RESILIENCE_METRICS_SUMMARY_IN_DURABLE_EVIDENCE_V0",
     }
 )
 STRATEGY_ID = "ehlers_cycle_filter"
@@ -299,12 +303,14 @@ def run_baseline_evaluation(
                 "materialization_owner": (
                     "src/research/step29m_ehlers_cycle_filter_v1_offline_economic_baseline_materialization_v0.py"
                 ),
+                "metrics_summary_file": METRICS_SUMMARY_FILENAME,
                 "origin_main": origin_main,
                 "reevaluation_class": (
                     "DEFECT_REPAIR_REEVALUATION"
                     if confirm_go_token.endswith("REEVALUATION_V0")
                     else "INITIAL_BASELINE"
                 ),
+                "resilience_metrics_owner": "src/core/metrics.py",
                 "source_closeout_bundle": str(source_closeout_bundle or ""),
                 "worktree_clean": worktree_clean,
             },
@@ -314,6 +320,8 @@ def run_baseline_evaluation(
         + "\n",
         encoding="utf-8",
     )
+
+    materialize_resilience_metrics_summary_json_v0(evidence_dir, resilience_metrics)
 
     final_report = "\n".join(
         [

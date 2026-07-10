@@ -14,8 +14,10 @@ from src.backtest.step29m_macd_v1_economic_evaluation_admissibility_contract_v1 
 )
 from src.research.step29m_ehlers_cycle_filter_v1_offline_economic_baseline_materialization_v0 import (
     IMPLEMENTATION_SURFACE_PATHS,
+    METRICS_SUMMARY_FILENAME,
     compute_step29m_ehlers_implementation_digest_v0,
     materialize_legacy_backtest_accounting_reconciliation_v0,
+    materialize_resilience_metrics_summary_json_v0,
 )
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
@@ -92,3 +94,19 @@ def test_materializer_uses_canonical_accounting_owner_fields() -> None:
 def test_implementation_surface_paths_exist() -> None:
     for rel in IMPLEMENTATION_SURFACE_PATHS:
         assert (REPO_ROOT / rel).is_file()
+
+
+def test_materialize_resilience_metrics_summary_json_writes_expected_filename(
+    tmp_path: Path,
+) -> None:
+    from src.core.metrics import MetricsCollector
+
+    collector = MetricsCollector(namespace="ehlers_materialization_contract_v0")
+    collector.record_operation_success("offline.eval")
+
+    payload = materialize_resilience_metrics_summary_json_v0(tmp_path, collector)
+    target = tmp_path / METRICS_SUMMARY_FILENAME
+
+    assert target.is_file()
+    assert payload["empty"] is False
+    assert payload["operations"]["successes"] == [{"count": 1, "operation": "offline.eval"}]

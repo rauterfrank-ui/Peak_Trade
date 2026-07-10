@@ -8,6 +8,8 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
+import tempfile
 from pathlib import Path
 from typing import Any, Mapping
 
@@ -25,9 +27,13 @@ SCHEMA_VERSION = "step29m_ehlers_cycle_filter_v1_offline_economic_baseline_mater
 IMPLEMENTATION_SURFACE_PATHS: tuple[str, ...] = (
     "src/backtest/engine.py",
     "src/backtest/mv2_research_wiring_v1.py",
+    "src/core/metrics.py",
     "src/research/cross_sectional_single_slot_accounting_reconciliation_v0.py",
     "src/research/step29m_ehlers_cycle_filter_v1_offline_economic_baseline_materialization_v0.py",
 )
+
+METRICS_SUMMARY_FILENAME = "metrics_summary.json"
+RESILIENCE_SUMMARY_SCHEMA_VERSION = "metrics_collector_resilience_summary.v0"
 
 
 def _stable_digest(payload: Mapping[str, Any]) -> str:
@@ -86,6 +92,42 @@ def compute_step29m_ehlers_binding_digest_v0(
             "material_difference_digest": material_difference_digest,
         }
     )
+
+
+def _atomic_write_json(path: Path, payload: Mapping[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    content = (json.dumps(payload, indent=2, sort_keys=True) + "\n").encode("utf-8")
+    fd, temp_path = tempfile.mkstemp(
+        dir=path.parent,
+        prefix=f".tmp_{path.stem}_",
+        suffix=path.suffix or ".json",
+    )
+    closed = False
+    try:
+        with os.fdopen(fd, "wb") as handle:
+            closed = True
+            handle.write(content)
+            handle.flush()
+            os.fsync(handle.fileno())
+        os.replace(temp_path, path)
+    except Exception as exc:
+        if os.path.exists(temp_path):
+            os.unlink(temp_path)
+        raise OSError(str(exc)) from exc
+    finally:
+        if not closed:
+            os.close(fd)
+
+
+def materialize_resilience_metrics_summary_json_v0(
+    evidence_dir: Path,
+    collector: Any,
+) -> dict[str, Any]:
+    """Persist deterministic resilience metrics summary into durable evidence bundle."""
+    summary = collector.get_summary()
+    target = evidence_dir / METRICS_SUMMARY_FILENAME
+    _atomic_write_json(target, summary)
+    return summary
 
 
 def materialize_legacy_backtest_accounting_reconciliation_v0(
