@@ -15,7 +15,6 @@ def build_market_dashboard_current_state_display_context() -> dict[str, Any]:
 
     snapshot = market_dashboard_current_state_snapshot_v0()
     system = snapshot["current_system_state"]
-    next_step = snapshot["next_canonical_step"]
     governance = snapshot["governance_and_safety"]
     evidence = snapshot["pr_and_evidence_status"]
 
@@ -28,9 +27,12 @@ def build_market_dashboard_current_state_display_context() -> dict[str, Any]:
         "snapshot_version": snapshot["snapshot_version"],
         "provenance": snapshot["provenance"],
         "system": system,
+        "parity_surfaces_completed": snapshot["parity_surfaces_completed"],
+        "blocked_main_gates": snapshot["blocked_main_gates"],
         "strategy_fleet": snapshot["strategy_fleet"],
         "ma_crossover_fixed_config": snapshot["ma_crossover_fixed_config"],
-        "next_canonical_step": next_step,
+        "next_parity_slice": snapshot["next_parity_slice"],
+        "documented_only_later_path": snapshot["documented_only_later_path"],
         "governance_and_safety": governance,
         "pr_and_evidence_status": evidence,
         "evidence_integrity_secondary": {
@@ -46,5 +48,5 @@ def build_market_dashboard_current_state_display_context() -> dict[str, Any]:
         "historical_semantics_suppressed": snapshot["historical_semantics_suppressed"],
         "runtime_effect": False,
         "order_effect": False,
-        "productive_runner_invocations_allowed": next_step["PRODUCTIVE_RUNNER_INVOCATIONS_ALLOWED"],
+        "productive_runner_invocations_allowed": 0,
     }

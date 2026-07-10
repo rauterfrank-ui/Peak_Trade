@@ -2,6 +2,7 @@
 
 Provenance:
 - docs/governance/PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md
+- docs/research/entry_position_exit_policy_backtest_parity_wiring_assessment_or_narrow_rewire_v0.json
 - research/merge_closeout_pr5033_surface_p_semantic_parity_status_binding_fix_v0_20260709T135256Z
 - research/system_economic_evidence_admissibility_gap_scan_after_full_parity_v0_20260709T141726Z
 
@@ -35,14 +36,20 @@ RATIFICATION_EVIDENCE_REF: Final[str] = (
     "implementation/bounded_step29m_ma_crossover_fixed_config_policy_ratification_v0_20260702T001219Z"
 )
 
-NEXT_CANONICAL_STEP: Final[str] = (
-    "OFFLINE_ONLY_ECONOMIC_VIABILITY_EVIDENCE_GAP_ASSESSMENT_AND_REUSE_FIRST_BINDING"
+NEXT_PARITY_SLICE: Final[str] = "CANONICAL_ORDER_INTENT_OFFLINE_REPLAY_BINDING_PARITY_REWIRE_V0"
+DOCUMENTED_ONLY_LATER_PATH: Final[str] = (
+    "REQUEST_OPERATOR_RATIFY_STEP31F_PROMOTION_METRIC_MATERIALIZATION_PATH_EXECUTION_OWNER_NARROW_IMPLEMENTATION_FIX_SCOPE_V0"
 )
 NEXT_BLOCKER: Final[str] = "SYSTEM_ECONOMIC_EVIDENCE_NOT_PROVEN"
 
-CURRENT_ORIGIN_MAIN: Final[str] = "720b59bed1c012e873c8e1207b057ebd5fa8f21a"
+CURRENT_ORIGIN_MAIN: Final[str] = "99325f8fee0ddbb4dfb041974b9a55270b4e56c4"
 
-PR5033_MERGE_COMMIT: Final[str] = CURRENT_ORIGIN_MAIN
+LATEST_MERGED_PR_NUMBER: Final[int] = 5066
+LATEST_MERGED_PR_TITLE: Final[str] = (
+    "Entry position exit policy backtest parity wiring assessment v0"
+)
+
+PR5033_MERGE_COMMIT: Final[str] = "720b59bed1c012e873c8e1207b057ebd5fa8f21a"
 PR5033_HEAD: Final[str] = "bf6778ef9815b197a8d0e7a649c96dda8cb61546"
 PR5033_BASE: Final[str] = "50c714baee959e0bbea8c1f79cf1ebdfdadb46d4"
 
@@ -50,6 +57,51 @@ RATIFICATION_BUNDLE_MANIFEST_VERIFY_RC: Final[int] = 1
 RATIFICATION_BUNDLE_MANIFEST_DRIFT_NOTE: Final[str] = (
     "Historical implementation bundle MANIFEST_VERIFY_RC=1 due to REPORT.md hash drift only; "
     "not a current system fault."
+)
+
+PARITY_SURFACES_COMPLETED: Final[tuple[dict[str, Any], ...]] = (
+    {
+        "surface_id": "bull_bear_state_switch",
+        "label": "Bull/Bear State Switch",
+        "assessment_status": "CLOSED_ASSESSMENT",
+        "pr_refs": "5056-5059",
+        "surface_class": "closed_assessment",
+    },
+    {
+        "surface_id": "scope_adverse_exit_reversal",
+        "label": "Scope Adverse Exit / Reversal",
+        "assessment_status": "CLOSED_ASSESSMENT",
+        "pr_refs": "5060-5062",
+        "surface_class": "closed_assessment",
+    },
+    {
+        "surface_id": "flat_before_opposite_side",
+        "label": "Flat Before Opposite Side",
+        "assessment_status": "WIRED_EXISTING_BACKTEST_PARITY_CHAIN_COMPLETE",
+        "pr_refs": "5063",
+        "surface_class": "wired_complete",
+    },
+    {
+        "surface_id": "survival_suitability",
+        "label": "Survival / Suitability",
+        "assessment_status": "WIRED_EXISTING_BACKTEST_PARITY_CHAIN_COMPLETE",
+        "pr_refs": "5064",
+        "surface_class": "wired_complete",
+    },
+    {
+        "surface_id": "double_play_composition",
+        "label": "Double Play Composition",
+        "assessment_status": "WIRED_EXISTING_BACKTEST_PARITY_CHAIN_COMPLETE",
+        "pr_refs": "5065",
+        "surface_class": "wired_complete",
+    },
+    {
+        "surface_id": "entry_position_exit_policy",
+        "label": "Entry / Position Management / Exit Policy",
+        "assessment_status": "WIRED_EXISTING_BACKTEST_PARITY_CHAIN_COMPLETE",
+        "pr_refs": "5066",
+        "surface_class": "wired_complete",
+    },
 )
 
 
@@ -74,8 +126,10 @@ def market_dashboard_current_state_snapshot_v0() -> dict[str, Any]:
         },
         "current_system_state": {
             "CURRENT_ORIGIN_MAIN": CURRENT_ORIGIN_MAIN,
-            "FULL_CANONICAL_CHAIN_WIRED": True,
-            "BACKTEST_RUNTIME_DECISION_PARITY_PASS": True,
+            "LATEST_MERGED_PR_NUMBER": LATEST_MERGED_PR_NUMBER,
+            "LATEST_MERGED_PR_TITLE": LATEST_MERGED_PR_TITLE,
+            "FULL_CANONICAL_CHAIN_WIRED": False,
+            "BACKTEST_RUNTIME_DECISION_PARITY_PASS": False,
             "SYSTEM_ECONOMIC_EVIDENCE_ADMISSIBLE": False,
             "RUNTIME_REWIRE_ADMISSIBLE": False,
             "NEXT_BLOCKER": NEXT_BLOCKER,
@@ -91,8 +145,22 @@ def market_dashboard_current_state_snapshot_v0() -> dict[str, Any]:
             "PROMOTION_ALLOWED": False,
             "RUNTIME_AUTHORIZED": False,
             "LIVE_AUTHORIZED": False,
+            "SCHEDULER_RUNTIME_ALLOWED": False,
+            "ORDERS_ALLOWED": False,
+            "AUTHORITY_EFFECT": "NONE",
+            "RUNTIME_EFFECT": "NONE",
             "PROFITABILITY_CLAIM_ALLOWED": False,
-            "NEXT_CANONICAL_STEP": NEXT_CANONICAL_STEP,
+            "NOTION_CURRENT": True,
+            "NOTION_UPDATED": True,
+            "NEXT_PARITY_SLICE": NEXT_PARITY_SLICE,
+            "DOCUMENTED_ONLY_LATER_PATH": DOCUMENTED_ONLY_LATER_PATH,
+        },
+        "parity_surfaces_completed": list(PARITY_SURFACES_COMPLETED),
+        "blocked_main_gates": {
+            "FULL_CANONICAL_CHAIN_WIRED": False,
+            "BACKTEST_RUNTIME_DECISION_PARITY_PASS": False,
+            "SYSTEM_ECONOMIC_EVIDENCE_ADMISSIBLE": False,
+            "RUNTIME_REWIRE_ADMISSIBLE": False,
         },
         "strategy_fleet": [
             {
@@ -152,17 +220,21 @@ def market_dashboard_current_state_snapshot_v0() -> dict[str, Any]:
                 "passes": risk_per_trade <= sizing_ceiling,
             },
         },
-        "next_canonical_step": {
-            "step_id": NEXT_CANONICAL_STEP,
+        "next_parity_slice": {
+            "slice_id": NEXT_PARITY_SLICE,
+            "execution_class": "NEXT_EXECUTABLE_PARITY_SLICE",
             "PREFLIGHT_ONLY": True,
-            "ECONOMIC_EVALUATION_AUTHORIZED": False,
-            "PRODUCTIVE_RUNNER_INVOCATIONS_ALLOWED": 0,
-            "BACKTEST_ALLOWED": False,
-            "PERFORMANCE_COMPUTATION_ALLOWED": False,
-            "STEP29N_AUTHORIZED": False,
-            "STEP29R_AUTHORIZED": False,
             "RUNTIME_AUTHORIZED": False,
             "RUNTIME_REWIRE_ADMISSIBLE": False,
+            "ORDERS_ALLOWED": False,
+            "LIVE_AUTHORIZED": False,
+        },
+        "documented_only_later_path": {
+            "path_id": DOCUMENTED_ONLY_LATER_PATH,
+            "execution_class": "DOCUMENTED_ONLY_NOT_EXECUTABLE",
+            "operator_ratification_required": True,
+            "RUNTIME_AUTHORIZED": False,
+            "PROMOTION_ALLOWED": False,
         },
         "governance_and_safety": {
             "FUTURES_ONLY": True,
@@ -175,9 +247,18 @@ def market_dashboard_current_state_snapshot_v0() -> dict[str, Any]:
             "RUNTIME_AUTHORIZED": False,
             "ORDERS_ALLOWED": False,
             "LIVE_AUTHORIZED": False,
+            "SCHEDULER_RUNTIME_ALLOWED": False,
             "RUNTIME_REWIRE_ADMISSIBLE": False,
+            "AUTHORITY_EFFECT": "NONE",
+            "RUNTIME_EFFECT": "NONE",
         },
         "pr_and_evidence_status": {
+            "latest_merged_pr": {
+                "pr_number": LATEST_MERGED_PR_NUMBER,
+                "title": LATEST_MERGED_PR_TITLE,
+                "state": "MERGED",
+                "merge_commit": CURRENT_ORIGIN_MAIN,
+            },
             "PR5033": {
                 "pr_number": 5033,
                 "state": "MERGED",
@@ -186,10 +267,11 @@ def market_dashboard_current_state_snapshot_v0() -> dict[str, Any]:
                 "base": PR5033_BASE,
             },
             "full_parity_proof": {
-                "FULL_CANONICAL_CHAIN_WIRED": True,
-                "BACKTEST_RUNTIME_DECISION_PARITY_PASS": True,
+                "FULL_CANONICAL_CHAIN_WIRED": False,
+                "BACKTEST_RUNTIME_DECISION_PARITY_PASS": False,
                 "MANIFEST_VERIFY_RC": 0,
                 "evidence_ref": FULL_PARITY_CLOSEOUT_EVIDENCE_REF,
+                "historical_note": "PR5033 surface-P closeout; post-PR5066 slice chain assessed but system gates remain blocked.",
             },
             "economic_evidence_gap": {
                 "SYSTEM_ECONOMIC_EVIDENCE_ADMISSIBLE": False,
@@ -198,8 +280,9 @@ def market_dashboard_current_state_snapshot_v0() -> dict[str, Any]:
                 "evidence_ref": ECONOMIC_GAP_SCAN_EVIDENCE_REF,
             },
             "notion_current_state_sync": {
-                "NOTION_CURRENT": False,
-                "stale_reason": "Last verified Notion mirror is STEP29M/PR4740 (20260702); post-PR5033 full-parity mirror pending operator write GO.",
+                "NOTION_CURRENT": True,
+                "NOTION_UPDATED": True,
+                "stale_reason": None,
                 "last_verified_evidence_ref": NOTION_SYNC_EVIDENCE_REF,
                 "MANIFEST_VERIFY_RC": 0,
             },
@@ -220,7 +303,9 @@ def market_dashboard_current_state_snapshot_v0() -> dict[str, Any]:
             "step29n_or_runtime_authorized",
             "runtime_rewire_admissible",
             "system_economic_evidence_admissible",
-            "notion_current_after_pr5033",
+            "full_canonical_chain_wired_true",
+            "backtest_runtime_decision_parity_pass_true",
+            "notion_stale_after_pr5033",
         ],
         "view_only": True,
         "controls_allowed": False,
