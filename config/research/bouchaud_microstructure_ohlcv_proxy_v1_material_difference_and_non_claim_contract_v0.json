@@ -1,0 +1,32 @@
+{
+  "artifact_kind": "bouchaud_microstructure_ohlcv_proxy_v1_material_difference_and_non_claim_contract",
+  "artifact_version": "v0",
+  "explicit_non_claims": [
+    "TRUE_TICK_L2_MICROSTRUCTURE=false",
+    "ORDERBOOK_IMBALANCE=false",
+    "DEPTH_IMBALANCE=false",
+    "TICK_LEVEL_IMPACT=false",
+    "ORDER_FLOW_RECONSTRUCTION=false",
+    "REALIZED_EXECUTION_IMPACT_FROM_VENUE_FILLS=false",
+    "PROXY_SEMANTICS=true",
+    "NEW_SIGNAL_FAMILY=true",
+    "TERMINAL_SINGLE_INSTRUMENT_EVIDENCE_SUPERSEDED=false"
+  ],
+  "material_difference_axes": [
+    "SIGNAL_FAMILY=BAR_LEVEL_MICROSTRUCTURE_PRESSURE_PROXY_NOT_DSP_CYCLE_STOCH_VOL_OR_CALENDAR",
+    "DATA_SOURCE=FINALIZED_OHLCV_BARS_SINGLE_INSTRUMENT_NOT_TICK_L2_ORDERBOOK",
+    "RANKING_GEOMETRY=NONE_SINGLE_INSTRUMENT_NOT_CROSS_SECTIONAL_TOP1_ROTATION",
+    "EVALUATION_WIRING=STEP29M_SINGLE_INSTRUMENT_NOT_PANEL_ORCHESTRATOR",
+    "PORTFOLIO_AGGREGATION=DIRECT_SINGLE_SLOT_NOT_MULTI_INSTRUMENT_ROTATION"
+  ],
+  "material_difference_basis": "BAR_LEVEL_OHLCV_MICROSTRUCTURE_PRESSURE_PROXY_SINGLE_INSTRUMENT_NOT_CYCLE_VOL_CALENDAR_OR_TICK_L2",
+  "material_difference_confirmed": true,
+  "material_difference_digest": "34599aa261c9ce32ced00e8000e09e152031ba59d5402d89558488c177a378a2",
+  "near_duplicate_risk": "LOW_WITH_EXPLICIT_PROXY_VERSIONING",
+  "prior_evidence_exclusion_pass": true,
+  "proxy_semantics": true,
+  "schema_version": "bouchaud_microstructure_ohlcv_proxy_v1_material_difference_and_non_claim_contract.v0",
+  "signal_family": "BAR_LEVEL_MICROSTRUCTURE_PRESSURE_PROXY",
+  "signal_family_material_difference": true,
+  "source_discovery_evidence_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/post_armstrong_registry_primary_signal_exhaustion_new_hypothesis_generation_and_capability_gap_classification_read_only_v0_20260710T170020Z"
+}

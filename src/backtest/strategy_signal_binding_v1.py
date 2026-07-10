@@ -107,6 +107,14 @@ _EXTERNAL_PARAMETER_SCHEMA_V1: dict[str, dict[str, Any]] = {
         "reference_date": "2015-10-01",
         "phase_position_map": "default",
     },
+    "bouchaud_microstructure": {
+        "lookback_ticks": 100,
+        "imbalance_threshold": 0.3,
+        "use_orderbook_imbalance": True,
+        "use_trade_signs": True,
+        "min_liquidity_filter": 1000.0,
+        "propagator_decay": 0.5,
+    },
 }
 
 COMPOSITE_STRATEGY_ID = "composite"
@@ -775,6 +783,17 @@ def compute_required_warmup_rows_v1(
         if event_window_raw < 1 or event_window_raw >= cycle_length_raw // 2:
             raise StrategySignalBindingError("armstrong_cycle_warmup_param_invariant_failed")
         return 0
+    if strategy_id == "bouchaud_microstructure":
+        lookback_raw = effective_params.get("lookback_ticks")
+        if lookback_raw is None:
+            raise StrategySignalBindingError("bouchaud_microstructure_lookback_ticks_missing")
+        if isinstance(lookback_raw, bool) or not isinstance(lookback_raw, int):
+            raise StrategySignalBindingError("bouchaud_microstructure_lookback_ticks_not_integer")
+        if lookback_raw < 1:
+            raise StrategySignalBindingError(
+                "bouchaud_microstructure_warmup_param_invariant_failed"
+            )
+        return lookback_raw
     if strategy_id == COMPOSITE_STRATEGY_ID:
         raise StrategySignalBindingError("composite_warmup_requires_binding_context")
     raise StrategySignalBindingError(f"required_warmup_rows_unbound:{strategy_id}")
