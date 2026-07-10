@@ -8,52 +8,39 @@
 **Systemziel:** Vollautonomes, futures-only Peak-Trade-System mit deterministischer, konsistenter und auditierbarer Handelslogik; realistischer Profitabilitätsvalidierung; unabhängiger Safety Authority; gefenceter Single-Writer-Runtime; vollständiger Reconciliation; sicherer Restart-/Recovery-Semantik und einer durchgängigen Research→Validation→Promotion→Runtime→Feedback-Kette.
 **Keine Anlageberatung.**
 
-> **Portable Current State (post PR #5075 merge-closeout, 2026-07-10)**
+> **Portable Current State (post PR #5076 merge-closeout and CS MA-crossover panel scope ratification prep, 2026-07-10)**
 >
 > **Operative Authority:** [`PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md`](PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md) → `## Registry-Metadaten` (aufgelöst via `src/governance/runbook_progress_registry_v1.py`).
 >
 > ```text
-> HEAD=3744dbd1f0a3b6fe1518acb3da983259ae6c696d
-> ORIGIN_MAIN=3744dbd1f0a3b6fe1518acb3da983259ae6c696d
-> LATEST_MERGED_PR=5075
-> PR5075_MERGED=true
-> CURRENT_STATE=VOL_BREAKOUT_V1_TERMINAL_NEGATIVE_ECONOMIC_EVIDENCE_CLOSEOUT_COMPLETE_V0
-> FAILED_BINDING=vol_breakout/v1
-> FAILED_INSTRUMENT=inst-eth-usdt-perp
-> BASELINE_VERDICT=FAIL
-> FAILURE_CLASS=NEGATIVE_ECONOMIC_BASELINE_AND_ROBUSTNESS_FAIL
-> TRADE_COUNT=151
-> SAMPLE_SUFFICIENCY_STATUS=SUFFICIENT_TRADE_SAMPLE
-> NET_RETURN=-0.0323
-> NET_EXPECTANCY=-2.139
-> PROFIT_FACTOR=0.586
-> SHARPE=-1.417
-> MAX_DRAWDOWN=-0.0341
-> WALK_FORWARD_STATUS=EXECUTED_FAIL
-> MONTE_CARLO_STATUS=EXECUTED_FAIL
-> STRESS_STATUS=EXECUTED_FAIL
-> FAILED_BINDING_REGISTERED=true
-> CURRENT_RESEARCH_GENERATION_CLOSED=true
-> UNCHANGED_RETRY_BLOCKED=true
-> POLICY_RESCUE_ALLOWED=false
-> ECONOMIC_VALIDITY_OFFLINE_GATE_PASS=false
-> RUNTIME_REWIRE_ADMISSIBLE=false
-> TRADING_LOGIC_CHANGED=false
-> RISK_SIZING_SEMANTICS_CHANGED=false
-> NO_NEW_CANDIDATE_HOLD=ACTIVE
-> MULTI_CANDIDATE_RESEARCH_FLEET_ALLOWED=false
-> CURRENT_ADMISSIBLE_NEXT_SCOPE=NONE
+> HEAD=4725e6e7ad9c1bc40a3e0450a47bf9ddafa68380
+> ORIGIN_MAIN=4725e6e7ad9c1bc40a3e0450a47bf9ddafa68380
+> LATEST_MERGED_PR=5076
+> PR5075_CLOSEOUT_REGISTERED=true
+> PR5076_CLOSEOUT_REGISTERED=true
+> CURRENT_STATE=CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_RESEARCH_SCOPE_RATIFICATION_COMPLETE_V1
+> CURRENT_RESEARCH_SCOPE=cross_sectional_ma_crossover_panel_rank_rotation/v0
+> RESEARCH_SCOPE_RATIFIED=true
+> UNDERLYING_SIGNAL_BINDING=ma_crossover/v1@inst-eth-usdt-perp
+> SINGLE_INSTRUMENT_EVIDENCE=TERMINAL_NEGATIVE
+> UNCHANGED_SINGLE_INSTRUMENT_RETRY_BLOCKED=true
+> PANEL_ARCHETYPE_EVIDENCE=NOT_PREVIOUSLY_EXECUTED
+> MATERIAL_DIFFERENCE_CONFIRMED=true
+> DATASET_MATERIALIZED=false
 > ECONOMIC_EVALUATION_AUTHORIZED=false
-> NEXT_STEP=NEW_RATIFIED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_REQUIRED
+> ECONOMIC_EVALUATION_EXECUTED=false
+> RUNTIME_EFFECT=NONE
+> AUTHORITY_EFFECT=NONE
+> NEXT_STEP=PHASE3_DATASET_MATERIALIZATION_REQUIRES_SEPARATE_GO
 > PORTABLE_CURRENT_STATE_BLOCK_REFRESHED=true
 > ```
 >
 > **Evidence Bundles (MANIFEST_VERIFY_RC=0):**
-> - Economic evaluation: `economic&#47;vol_breakout_v1_full_canonical_offline_baseline_economic_evaluation_v0_20260710T080040Z`
-> - PR5074 merge closeout: `research&#47;pr5074_merge_closeout_vol_breakout_v1_sizing_config_digest_binding_fix_v0_20260710T075844Z`
-> - Terminal-negative closeout source: `implementation&#47;vol_breakout_v1_terminal_negative_economic_evidence_closeout_v0_20260710T081257Z`
+> - Scope discovery: `planning&#47;cross_sectional_multi_instrument_futures_panel_scope_discovery_and_ratification_prep_v0_20260710T085834Z`
+> - Adjudication: `planning&#47;cross_sectional_ma_crossover_panel_scope_discovery_contradiction_adjudication_and_corrected_ratification_prep_v0_20260710T090302Z`
+> - Underlying terminal single-instrument: `economic_evaluation&#47;bounded_step29m_ma_crossover_v1_post_binding_fix_economic_evaluation_recovery_single_run_v0_20260702T012057Z`
 >
-> **Changelog:** 2026-07-10 — PR #5075 merged: terminal-negative governance closeout for `vol_breakout&#47;v1` on `inst-eth-usdt-perp`; research generation closed; unchanged retry blocked; no policy rescue; no runtime rewire.
+> **Changelog:** 2026-07-10 — PR #5075/#5076 merged; Phase 2 ratifies offline-only research scope `cross_sectional_ma_crossover_panel_rank_rotation&#47;v0` with unchanged `ma_crossover&#47;v1` signal reuse; no dataset materialization; no economic evaluation; no runtime authority.
 >
 > **STALE GOVERNANCE SUPERSESSION NOTICE (2026-07-04):** Abschnitte mit `NO_NEW_CANDIDATE_HOLD=REVOKED`, `MULTI_CANDIDATE_RESEARCH_FLEET_ALLOWED=true` und frühen `NEXT_STEP=RATIFY_VERSIONED_FINAL_FLEET_BINDINGS…`-Werten sind **historische Pre-Fail-Snapshots**. Stale Governance-Werte in diesem Dokument sind **nicht** für operative Entscheidungen zu verwenden.
 

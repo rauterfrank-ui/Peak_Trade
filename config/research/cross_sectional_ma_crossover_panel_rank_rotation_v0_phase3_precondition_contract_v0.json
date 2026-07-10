@@ -1,0 +1,20 @@
+{
+  "dataset_materialization_authorized": false,
+  "economic_evaluation_authorized": false,
+  "network_ingest_authorized": false,
+  "next_action_after_scope_ratification": "PHASE3_DATASET_MATERIALIZATION_REQUIRES_SEPARATE_GO",
+  "phase3_go_token_to_register_only": "GO_BOUNDED_OKX_PRODUCTION_LIFECYCLE_SOURCE_REGISTRATION_AND_PT1H_PANEL_OHLCV_INGEST_V0",
+  "precondition_digest": "188ff2ee40ef5959ca25cc910fed104ca761b3df332ec1c3ceb1263704ebf48e",
+  "required_preconditions": [
+    "RESEARCH_SCOPE_RATIFIED=true",
+    "VERSIONED_BINDING_RATIFICATION_REQUIRES_SEPARATE_GO",
+    "DATASET_MATERIALIZATION_REQUIRES_SEPARATE_GO"
+  ],
+  "reuse_first_owners": [
+    "scripts/ops/materialize_okx_production_lifecycle_and_pt1h_panel_v1.py",
+    "src/research/pit_okx_pt1h_panel_ohlcv_dataset_v1",
+    "src/research/cross_sectional_panel_economic_evaluation_wiring_v0",
+    "src/research/cross_sectional_single_slot_backtest_wiring_v0"
+  ],
+  "schema_version": "cross_sectional_ma_crossover_panel_rank_rotation_phase3_precondition.v0"
+}
