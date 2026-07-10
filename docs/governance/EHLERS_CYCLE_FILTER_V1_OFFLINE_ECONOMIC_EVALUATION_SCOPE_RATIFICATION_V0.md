@@ -76,6 +76,25 @@ Source discovery evidence:
 
 `/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/discover_and_rank_new_distinct_futures_research_scope_or_evidence_class_read_only_v0_20260710T104236Z`
 
-## F. Next Step
+## F. Canonical Operator Invocation (Baseline Evaluation)
+
+Separate operator GO required. Do not call bare `python` on PATH; use the repo-local adapter:
+
+```bash
+export GO_TOKEN="<ALLOWED_CONFIRM_GO_TOKEN>"
+scripts/ops/invoke_ehlers_cycle_filter_v1_bound_offline_economic_baseline_evaluation_v0.sh
+```
+
+Equivalent explicit form:
+
+```bash
+export GO_TOKEN="<ALLOWED_CONFIRM_GO_TOKEN>"
+/Users/frnkhrz/Peak_Trade/.venv/bin/python \
+  scripts/ops/invoke_ehlers_cycle_filter_v1_bound_offline_economic_baseline_evaluation_v0.py
+```
+
+The adapter resolves `${REPO}&#47;.venv&#47;bin&#47;python`, fail-closes when the interpreter or `GO_TOKEN` is missing, and forwards `--confirm-go-token "$GO_TOKEN"` exactly once to `scripts&#47;ops&#47;run_ehlers_cycle_filter_v1_bound_offline_economic_baseline_evaluation_v0.py`.
+
+## G. Next Step
 
 `EHLERS_CYCLE_FILTER_V1_FULL_CANONICAL_OFFLINE_BASELINE_ECONOMIC_EVALUATION_V0` — separate operator GO required; not authorized in this slice.
