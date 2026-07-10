@@ -185,7 +185,9 @@ def test_full_admissibility_contract_passes() -> None:
 
 def test_progress_registry_ratified_pending_evaluation_fields() -> None:
     section = _step_29m_section(PROGRESS_REGISTRY.read_text(encoding="utf-8"))
-    assert _field_value(section, "MA_CROSSOVER_V1_STATUS") == "TECHNICALLY_VALID_ECONOMIC_POLICY_FAIL"
+    assert (
+        _field_value(section, "MA_CROSSOVER_V1_STATUS") == "TECHNICALLY_VALID_ECONOMIC_POLICY_FAIL"
+    )
     assert _field_value(section, "MA_CROSSOVER_V1_ECONOMIC_EVALUATION_EXECUTED") == "true"
 
 

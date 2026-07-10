@@ -7,7 +7,7 @@ ORDERS_ALLOWED: false
 SCHEDULER_RUNTIME_ALLOWED: false
 ---
 
-> **Non-authorizing:** Ratifiziert ausschließlich die versionierte offline-only STEP29M-Bindings für `vol_breakout/v1` nach rank-1-Research-Ratifikation. Keine Economic Evaluation. Keine Runtime-Authority.
+> **Non-authorizing:** Ratifiziert ausschließlich die versionierte offline-only STEP29M-Bindings für `vol_breakout&#47;v1` nach rank-1-Research-Ratifikation. Keine Economic Evaluation. Keine Runtime-Authority.
 
 ## A. Verdict
 
