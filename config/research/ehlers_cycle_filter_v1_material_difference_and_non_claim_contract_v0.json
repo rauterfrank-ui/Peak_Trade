@@ -1,0 +1,33 @@
+{
+  "artifact_kind": "ehlers_cycle_filter_v1_material_difference_and_non_claim_contract",
+  "artifact_version": "v0",
+  "contract_digest": "d96140d32c9eee87e35f6f97aaba357d1d6495395a43671960c77ad8f1ceaf1f",
+  "explicit_non_claims": [
+    "SIGNAL_UNTESTED=false",
+    "NO_PRIOR_SINGLE_INSTRUMENT_EVALUATION=false",
+    "NEW_SIGNAL_FAMILY=true",
+    "TERMINAL_SINGLE_INSTRUMENT_EVIDENCE_SUPERSEDED=false",
+    "DATASET_CHANGE_ALONE_SUFFICIENT=false",
+    "BANDPASS_HILBERT_FULLY_IMPLEMENTED=false"
+  ],
+  "material_difference_axes": [
+    "SIGNAL_FAMILY=DSP_CYCLE_BANDPASS_TIMING_NOT_MA_CROSSOVER_PANEL_RANK_OR_VOL_BREAKOUT",
+    "DATA_SOURCE=OHLCV_SINGLE_INSTRUMENT_NOT_PANEL_OR_FUNDING_SCORE",
+    "RANKING_GEOMETRY=NONE_SINGLE_INSTRUMENT_NOT_CROSS_SECTIONAL_TOP1_ROTATION",
+    "EVALUATION_WIRING=STEP29M_SINGLE_INSTRUMENT_NOT_PANEL_ORCHESTRATOR",
+    "PORTFOLIO_AGGREGATION=DIRECT_SINGLE_SLOT_NOT_MULTI_INSTRUMENT_ROTATION"
+  ],
+  "material_difference_basis": "DSP_CYCLE_BANDPASS_SINGLE_INSTRUMENT_TIMING_NOT_PANEL_RANK_OR_VOL_COIL_BREAKOUT",
+  "material_difference_confirmed": true,
+  "material_difference_digest": "d96140d32c9eee87e35f6f97aaba357d1d6495395a43671960c77ad8f1ceaf1f",
+  "material_difference_vs_cross_sectional_ma_crossover_panel_rank_rotation_v0_confirmed": true,
+  "material_difference_vs_cross_sectional_funding_fleet_confirmed": true,
+  "material_difference_vs_step29m_final_research_fleet_v0_confirmed": true,
+  "material_difference_vs_vol_breakout_v1_confirmed": true,
+  "near_duplicate_risk": "LOW",
+  "prior_evidence_exclusion_pass": true,
+  "schema_version": "ehlers_cycle_filter_v1_material_difference_and_non_claim_contract.v0",
+  "signal_family": "DSP_CYCLE_BANDPASS",
+  "signal_family_material_difference": true,
+  "source_discovery_evidence_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/discover_and_rank_new_distinct_futures_research_scope_or_evidence_class_read_only_v0_20260710T104236Z"
+}

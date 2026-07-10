@@ -1,0 +1,244 @@
+{
+  "artifact_kind": "ehlers_cycle_filter_v1_versioned_research_binding",
+  "artifact_version": "v0",
+  "authority_effect": "NONE",
+  "binding": {
+    "binding_status": {
+      "baseline_binding_status": "BOUND",
+      "candidate_binding_status": "BOUND",
+      "cost_model_binding_status": "BOUND",
+      "dataset_binding_status": "BOUND",
+      "digest_binding_status": "BOUND",
+      "instrument_binding_status": "BOUND",
+      "numeric_bindings_status": "BOUND",
+      "overall_binding_status": "COMPLETE",
+      "parameter_binding_status": "BOUND",
+      "period_binding_status": "BOUND",
+      "policy_classes_status": "BOUND",
+      "warmup_binding_status": "BOUND"
+    },
+    "candidate_binding": {
+      "canonical_candidate_identifier": "ehlers_cycle_filter/v1",
+      "canonical_owner": "src/strategies/ehlers/ehlers_cycle_filter_strategy.py",
+      "engine_signal_source": "configured_strategy_signal",
+      "hypothesis_id": "EHLERS_DSP_CYCLE_BANDPASS_NON_BITCOIN_FUTURES_V1",
+      "implementation_ref": "src.strategies.ehlers.ehlers_cycle_filter_strategy.EhlersCycleFilterStrategy",
+      "registry_class": "oop_strategy_spec",
+      "registry_key": "ehlers_cycle_filter",
+      "signal_family": "DSP_CYCLE_BANDPASS",
+      "strategy_id": "ehlers_cycle_filter",
+      "strategy_version": "v1"
+    },
+    "digest_bindings": {
+      "config_digest": {
+        "status": "BOUND",
+        "value": "c4db0a42b95156192d8c1fcf486aa3d616ae2f0b5dafa26b9e0d7d9a29c204a6"
+      },
+      "data_digest": {
+        "status": "BOUND",
+        "value": "b4cbe7fff81a137da055588231757937406d8cb30d531ee0aab41d95ee9b6c78"
+      },
+      "implementation_digest": {
+        "status": "BOUND",
+        "value": "a153ea4fc624ed3e00fbcd38006c361b05ddeab473344c5181efa79372962702"
+      },
+      "material_difference_digest": {
+        "status": "BOUND",
+        "value": "d96140d32c9eee87e35f6f97aaba357d1d6495395a43671960c77ad8f1ceaf1f"
+      },
+      "strategy_params_digest": {
+        "status": "BOUND",
+        "value": "49f8b07e7de872e66f74dd27b5e97a3ae3aaee414e25d3b08cba2674c40cc5b9"
+      },
+      "strategy_semantic_digest": {
+        "status": "BOUND",
+        "value": "8dc30018a74cdfc2469f865299a6810004b007f6ecf9b24445612b06517c027e"
+      }
+    },
+    "external_bindings": {
+      "admissibility_contract_ref": {
+        "ref": "src/backtest/step29m_ehlers_cycle_filter_v1_economic_evaluation_admissibility_contract_v1.py",
+        "status": "BOUND"
+      },
+      "evaluation_config_ref": {
+        "ref": "config/ops/step29m_okx_inst_eth_usdt_perp_ehlers_cycle_filter_v1_economic_evaluation_v1.json",
+        "status": "BOUND"
+      },
+      "execution_model_version": {
+        "status": "BOUND",
+        "value": "backtest_execution_v0"
+      },
+      "fee_model_version": {
+        "status": "BOUND",
+        "value": "backtest_fee_taker_symmetric_v0"
+      },
+      "funding_model_version": {
+        "status": "BOUND",
+        "value": "backtest_funding_perpetual_interval_v1"
+      },
+      "instrument_id_canonicalization_version": {
+        "status": "BOUND",
+        "value": "instrument_id_canonicalization.v1"
+      },
+      "material_difference_contract_ref": {
+        "ref": "config/research/ehlers_cycle_filter_v1_material_difference_and_non_claim_contract_v0.json",
+        "status": "BOUND"
+      },
+      "slippage_model_version": {
+        "status": "BOUND",
+        "value": "backtest_slippage_symmetric_v0"
+      },
+      "spread_model_version": {
+        "status": "BOUND",
+        "value": "research_conservative_bps_v1"
+      },
+      "strategy_signal_binding_owner": {
+        "status": "BOUND",
+        "value": "backtest.strategy_signal_binding_v1"
+      }
+    },
+    "numeric_bindings": {
+      "conservative_half_spread_bps": 5.0,
+      "effective_entry_cost_bps": 20.0,
+      "effective_exit_cost_bps": 20.0,
+      "fee_bps_per_side": 10.0,
+      "lookback": 100,
+      "max_position_pct": 0.25,
+      "min_cycle_length": 6,
+      "required_warmup_rows": 100,
+      "risk_per_trade": 0.005,
+      "roundtrip_cost_bps": 40.0,
+      "slippage_bps_per_side": 5.0,
+      "stop_pct": 0.025
+    },
+    "parameter_binding": {
+      "binding_version": "v0",
+      "consumed_parameters": [
+        "min_cycle_length",
+        "lookback"
+      ],
+      "excluded_parameters": [
+        "bandpass_bandwidth",
+        "cycle_threshold",
+        "max_cycle_length",
+        "smoother_type",
+        "use_hilbert_transform"
+      ],
+      "parameter_search_forbidden": true,
+      "parameters": {
+        "lookback": 100,
+        "min_cycle_length": 6
+      }
+    },
+    "dataset_binding": {
+      "binding_version": "v1",
+      "canonical_instrument_id": "inst-eth-usdt-perp",
+      "dataset_digest": "b4cbe7fff81a137da055588231757937406d8cb30d531ee0aab41d95ee9b6c78",
+      "dataset_id": "inst-eth-usdt-perp_v1",
+      "dataset_path": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/inst-eth-usdt-perp/v1/bars.parquet",
+      "dataset_profile": "economic_research_v1",
+      "dataset_version": "v1",
+      "expected_manifest_digest": "317105798c749943074911b1e9ea91ac9b94fab3b115fb7a64b692339426651a",
+      "native_instrument_id": "ETH-USDT-SWAP",
+      "no_lookahead_semantics": "point_in_time_bar_close_v1",
+      "point_in_time_binding": true,
+      "source_venue": "OKX",
+      "survivorship_bias_forbidden": true
+    },
+    "period_binding": {
+      "binding_version": "v1",
+      "out_of_sample_period": "2026-06-27 23:36:00+00:00..2026-07-01 10:07:00+00:00",
+      "periods_frozen_before_execution": true,
+      "random_split_forbidden": true,
+      "training_period": "2026-06-17 16:00:00+00:00..2026-06-24 13:03:00+00:00",
+      "validation_period": "2026-06-24 13:04:00+00:00..2026-06-27 23:35:00+00:00"
+    },
+    "instrument_binding": {
+      "binding_version": "v0",
+      "bitcoin_direction_allowed": false,
+      "canonical_instrument_id": "inst-eth-usdt-perp",
+      "futures_only": true,
+      "native_instrument_id": "ETH-USDT-SWAP",
+      "selection_mode": "single_instrument_prebound",
+      "source_venue": "OKX",
+      "spot_allowed": false,
+      "synthetic_spot_allowed": false
+    },
+    "cost_execution_binding": {
+      "binding_version": "v0",
+      "execution_model_version": "backtest_execution_v0",
+      "execution_price_observation_source": "MODELLED_NOT_OBSERVED",
+      "fee_model_version": "backtest_fee_taker_symmetric_v0",
+      "funding_bind": true,
+      "funding_model_version": "backtest_funding_perpetual_interval_v1",
+      "implicit_zero_cost_forbidden": true,
+      "roundtrip_cost_bps": 40.0,
+      "slippage_model_version": "backtest_slippage_symmetric_v0",
+      "spread_model_version": "research_conservative_bps_v1"
+    },
+    "economic_policy_binding": {
+      "binding_version": "v1",
+      "economic_validity_policy_version": "economic_validity_policy_v1",
+      "minimum_trade_count_policy_bound": true,
+      "promising_is_not_pass_bound": true
+    },
+    "sample_sufficiency_contract": {
+      "minimum_trade_count_policy": "economic_validity_policy_v1",
+      "trade_count_target_inflation_forbidden": true
+    },
+    "baseline_evaluation_contract": {
+      "baseline_count": 1,
+      "baseline_type": "FULL_CANONICAL_OFFLINE_BASELINE_SINGLE_INSTRUMENT",
+      "conditional_monte_carlo": "only_after_positive_baseline_and_separate_admissibility_check",
+      "conditional_stress": "only_after_positive_baseline_and_separate_admissibility_check",
+      "conditional_walk_forward": "only_after_positive_baseline_and_separate_admissibility_check",
+      "economic_evaluation_executed_in_this_slice": false,
+      "evidence_class_id": "EHLERS_CYCLE_FILTER_V1_FULL_CANONICAL_OFFLINE_BASELINE_ECONOMIC_EVALUATION_V0",
+      "parameter_tuning_after_baseline_forbidden": true,
+      "parameter_tuning_during_baseline_forbidden": true
+    },
+    "warmup_binding": {
+      "derivation": "lookback",
+      "required_warmup_rows": 100,
+      "warmup_bars_before_train_start_required": true
+    },
+    "prior_evidence_exclusion": {
+      "near_duplicate_retry_blocked": true,
+      "prior_evidence_exclusion_pass": true,
+      "unchanged_retry_blocked": true,
+      "excluded_terminal_negative_bindings": [
+        "cross_sectional_ma_crossover_panel_rank_rotation/v0",
+        "vol_breakout/v1",
+        "trend_following/v1",
+        "bollinger_bands/v1",
+        "momentum_1h/v1",
+        "cross_sectional_funding_rate_rank_delta/v0",
+        "cross_sectional_funding_rate_persistence_reversal_filter/v0",
+        "cross_sectional_funding_rate_dispersion_zscore_reversion/v0",
+        "cross_sectional_funding_rate_dual_leg_spread/v1",
+        "cross_sectional_funding_rate_delta_momentum/v0",
+        "cross_sectional_funding_rate_carry/v0",
+        "cross_sectional_funding_rate_extreme_carry_reversion/v0",
+        "cross_sectional_relative_strength/v0",
+        "cross_sectional_realized_volatility_rank_rotation/v0"
+      ]
+    }
+  },
+  "bitcoin_direction_allowed": false,
+  "candidate_id": "ehlers_cycle_filter/v1",
+  "economic_evaluation_authorized": false,
+  "economic_evaluation_executed": false,
+  "futures_only": true,
+  "go_token": "GO_EHLERS_CYCLE_FILTER_V1_VERSIONED_RESEARCH_BINDING_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFICATION_NO_RUNTIME_AUTHORITY_V0",
+  "governance_ref": "docs/governance/EHLERS_CYCLE_FILTER_V1_OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFICATION_V0.md",
+  "hypothesis_id": "EHLERS_DSP_CYCLE_BANDPASS_NON_BITCOIN_FUTURES_V1",
+  "offline_only": true,
+  "order_effect": "NONE",
+  "parameter_search_forbidden": true,
+  "runtime_effect": "NONE",
+  "schema_version": "ehlers_cycle_filter_v1_versioned_research_binding.v0",
+  "source_ratification_evidence_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/discover_and_rank_new_distinct_futures_research_scope_or_evidence_class_read_only_v0_20260710T104236Z",
+  "strategy_id": "ehlers_cycle_filter",
+  "strategy_version": "v1",
+  "trading_logic_mutated": false
+}
