@@ -19,6 +19,9 @@ RUNBOOK_PROGRESS_OWNER: Final[str] = "docs/governance/PEAK_TRADE_AUTONOMY_RUNBOO
 MA_CROSSOVER_CONFIG_OWNER: Final[str] = (
     "config/ops/step29m_okx_inst_eth_usdt_perp_ma_crossover_v1_economic_evaluation_v1.json"
 )
+VOL_BREAKOUT_CONFIG_OWNER: Final[str] = (
+    "config/ops/step29m_okx_inst_eth_usdt_perp_vol_breakout_v1_economic_evaluation_v1.json"
+)
 FULL_PARITY_CLOSEOUT_EVIDENCE_REF: Final[str] = (
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
     "research/merge_closeout_pr5033_surface_p_semantic_parity_status_binding_fix_v0_20260709T135256Z"
@@ -33,7 +36,7 @@ NOTION_SYNC_EVIDENCE_REF: Final[str] = (
 )
 RATIFICATION_EVIDENCE_REF: Final[str] = (
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "implementation/bounded_step29m_ma_crossover_fixed_config_policy_ratification_v0_20260702T001219Z"
+    "research/rank1_vol_breakout_binding_and_evaluation_ratification_read_only_v0_20260710T063915Z"
 )
 
 NEXT_PARITY_SLICE: Final[str] = "CANONICAL_ORDER_INTENT_OFFLINE_REPLAY_BINDING_PARITY_REWIRE_V0"
@@ -119,6 +122,7 @@ def market_dashboard_current_state_snapshot_v0() -> dict[str, Any]:
         "provenance": {
             "runbook_progress_owner": RUNBOOK_PROGRESS_OWNER,
             "ma_crossover_config_owner": MA_CROSSOVER_CONFIG_OWNER,
+            "vol_breakout_config_owner": VOL_BREAKOUT_CONFIG_OWNER,
             "full_parity_closeout_evidence_ref": FULL_PARITY_CLOSEOUT_EVIDENCE_REF,
             "economic_gap_scan_evidence_ref": ECONOMIC_GAP_SCAN_EVIDENCE_REF,
             "notion_sync_evidence_ref": NOTION_SYNC_EVIDENCE_REF,
@@ -138,7 +142,7 @@ def market_dashboard_current_state_snapshot_v0() -> dict[str, Any]:
             "CURRENT_FLEET_ECONOMIC_VALIDITY_PASS": False,
             "WHOLE_SYSTEM_UNPROFITABLE_NOT_PROVEN": True,
             "AUTHORIZED_PENDING_EVALUATION_COUNT": 1,
-            "NEXT_EVALUATION_STRATEGY_ID": "ma_crossover",
+            "NEXT_EVALUATION_STRATEGY_ID": "vol_breakout",
             "NEXT_EVALUATION_CONFIG_STATUS": "AUTHORIZED_PENDING_EVALUATION",
             "STEP29N_AUTHORIZED": False,
             "STEP29R_AUTHORIZED": False,
@@ -187,6 +191,16 @@ def market_dashboard_current_state_snapshot_v0() -> dict[str, Any]:
                 "strategy_id": "ma_crossover",
                 "strategy_version": "v1",
                 "config_version": "v1",
+                "status_label": "TECHNICALLY_VALID_ECONOMIC_POLICY_FAIL",
+                "evaluation_complete": True,
+                "economic_validity_pass": False,
+                "promotion_eligible": False,
+                "runtime_authority": False,
+            },
+            {
+                "strategy_id": "vol_breakout",
+                "strategy_version": "v1",
+                "config_version": "v1",
                 "status_label": "AUTHORIZED_PENDING_EVALUATION",
                 "policy_ratified": True,
                 "fixed_config_bound": True,
@@ -196,6 +210,33 @@ def market_dashboard_current_state_snapshot_v0() -> dict[str, Any]:
                 "runtime_authority": False,
             },
         ],
+        "vol_breakout_fixed_config": {
+            "strategy_id": "vol_breakout",
+            "strategy_version": "v1",
+            "instrument_id": "inst-eth-usdt-perp",
+            "lookback_breakout": 20,
+            "vol_window": 14,
+            "vol_percentile": 50.0,
+            "side": "both",
+            "required_warmup_rows": 40,
+            "risk_per_trade": risk_per_trade,
+            "stop_pct": stop_pct,
+            "max_position_pct": max_position_pct,
+            "oversize_policy": "REJECT_OVERSIZE",
+            "fixed_config": True,
+            "parameter_tuning_allowed": False,
+            "dataset_replacement_allowed": False,
+            "threshold_tuning_allowed": False,
+            "economic_evaluation_executed": False,
+            "performance_claim_allowed": False,
+            "atr_multiple_bound": False,
+            "sizing_invariant": {
+                "expression": "risk_per_trade <= max_position_pct * stop_pct",
+                "lhs": risk_per_trade,
+                "rhs": sizing_ceiling,
+                "passes": risk_per_trade <= sizing_ceiling,
+            },
+        },
         "ma_crossover_fixed_config": {
             "strategy_id": "ma_crossover",
             "strategy_version": "v1",
@@ -211,7 +252,7 @@ def market_dashboard_current_state_snapshot_v0() -> dict[str, Any]:
             "parameter_tuning_allowed": False,
             "dataset_replacement_allowed": False,
             "threshold_tuning_allowed": False,
-            "economic_evaluation_executed": False,
+            "economic_evaluation_executed": True,
             "performance_claim_allowed": False,
             "sizing_invariant": {
                 "expression": "risk_per_trade <= max_position_pct * stop_pct",

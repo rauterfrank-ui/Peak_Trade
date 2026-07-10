@@ -129,7 +129,7 @@ def test_current_system_state_snapshot_values() -> None:
     assert system["ECONOMIC_VALIDITY_OBJECTIVE_ACHIEVED"] is False
     assert system["CURRENT_FLEET_ECONOMIC_VALIDITY_PASS"] is False
     assert system["AUTHORIZED_PENDING_EVALUATION_COUNT"] == 1
-    assert system["NEXT_EVALUATION_STRATEGY_ID"] == "ma_crossover"
+    assert system["NEXT_EVALUATION_STRATEGY_ID"] == "vol_breakout"
     assert system["NEXT_EVALUATION_CONFIG_STATUS"] == "AUTHORIZED_PENDING_EVALUATION"
     assert system["STEP29N_AUTHORIZED"] is False
     assert system["STEP29R_AUTHORIZED"] is False
@@ -189,7 +189,7 @@ def test_strategy_fleet_snapshot(client: TestClient) -> None:
     assert 'data-market-fleet-strategy-id="macd"' in html
     assert 'data-market-fleet-status="TECHNICALLY_VALID_ECONOMIC_POLICY_FAIL"' in html
     assert 'data-market-fleet-strategy-id="breakout_donchian"' in html
-    assert 'data-market-fleet-strategy-id="ma_crossover"' in html
+    assert 'data-market-fleet-strategy-id="vol_breakout"' in html
     assert 'data-market-fleet-status="AUTHORIZED_PENDING_EVALUATION"' in html
     assert "POLICY_RATIFIED" in html
     assert "ECONOMIC_EVALUATION_EXECUTED=false" in html

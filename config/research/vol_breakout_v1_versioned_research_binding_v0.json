@@ -1,0 +1,201 @@
+{
+  "artifact_kind": "vol_breakout_v1_versioned_research_binding",
+  "artifact_version": "v0",
+  "authority_effect": "NONE",
+  "binding": {
+    "binding_status": {
+      "baseline_binding_status": "BOUND",
+      "candidate_binding_status": "BOUND",
+      "cost_model_binding_status": "BOUND",
+      "dataset_binding_status": "BOUND",
+      "digest_binding_status": "BOUND",
+      "instrument_binding_status": "BOUND",
+      "numeric_bindings_status": "BOUND",
+      "overall_binding_status": "COMPLETE",
+      "parameter_binding_status": "BOUND",
+      "period_binding_status": "BOUND",
+      "policy_classes_status": "BOUND",
+      "warmup_binding_status": "BOUND"
+    },
+    "candidate_binding": {
+      "canonical_candidate_identifier": "vol_breakout/v1",
+      "canonical_owner": "src/strategies/vol_breakout.py",
+      "engine_signal_source": "configured_strategy_signal",
+      "hypothesis_id": "VOL_BREAKOUT_COILED_SPRING_NON_BITCOIN_FUTURES_V1",
+      "implementation_ref": "src.strategies.vol_breakout",
+      "registry_class": "functional_only",
+      "registry_key": "vol_breakout",
+      "strategy_id": "vol_breakout",
+      "strategy_version": "v1"
+    },
+    "digest_bindings": {
+      "config_digest": {
+        "status": "BOUND",
+        "value": "fdb0e3819330b72b836c1070a6f3f500f69a22a277e4cb84d22939870a7f56cc"
+      },
+      "data_digest": {
+        "status": "BOUND",
+        "value": "b4cbe7fff81a137da055588231757937406d8cb30d531ee0aab41d95ee9b6c78"
+      },
+      "implementation_digest": {
+        "status": "BOUND",
+        "value": "b27ccf4fd039c75f254f883482e8da8a43a747fab1803dbb8c6a355d115d3c7d"
+      },
+      "strategy_params_digest": {
+        "status": "BOUND",
+        "value": "380754fb851ab0c678c02e77738a8a7f880a9eae58de4e7f7d7d88f9a110690b"
+      },
+      "strategy_semantic_digest": {
+        "status": "BOUND",
+        "value": "1e307564aac982eade268413cad8f3d319b865e0b769b6bb2036c8a04cab735a"
+      }
+    },
+    "external_bindings": {
+      "admissibility_contract_ref": {
+        "ref": "src/backtest/step29m_vol_breakout_v1_economic_evaluation_admissibility_contract_v1.py",
+        "status": "BOUND"
+      },
+      "evaluation_config_ref": {
+        "ref": "config/ops/step29m_okx_inst_eth_usdt_perp_vol_breakout_v1_economic_evaluation_v1.json",
+        "status": "BOUND"
+      },
+      "execution_model_version": {
+        "status": "BOUND",
+        "value": "backtest_execution_v0"
+      },
+      "fee_model_version": {
+        "status": "BOUND",
+        "value": "backtest_fee_taker_symmetric_v0"
+      },
+      "funding_model_version": {
+        "status": "BOUND",
+        "value": "backtest_funding_perpetual_interval_v1"
+      },
+      "instrument_id_canonicalization_version": {
+        "status": "BOUND",
+        "value": "instrument_id_canonicalization.v1"
+      },
+      "slippage_model_version": {
+        "status": "BOUND",
+        "value": "backtest_slippage_symmetric_v0"
+      },
+      "spread_model_version": {
+        "status": "BOUND",
+        "value": "research_conservative_bps_v1"
+      },
+      "strategy_signal_binding_owner": {
+        "status": "BOUND",
+        "value": "backtest.strategy_signal_binding_v1"
+      }
+    },
+    "numeric_bindings": {
+      "conservative_half_spread_bps": 5.0,
+      "effective_entry_cost_bps": 20.0,
+      "effective_exit_cost_bps": 20.0,
+      "fee_bps_per_side": 10.0,
+      "lookback_breakout": 20,
+      "max_position_pct": 0.25,
+      "required_warmup_rows": 40,
+      "risk_per_trade": 0.005,
+      "roundtrip_cost_bps": 40.0,
+      "side": "both",
+      "slippage_bps_per_side": 5.0,
+      "stop_pct": 0.025,
+      "vol_percentile": 50.0,
+      "vol_window": 14
+    },
+    "parameter_binding": {
+      "atr_multiple_bound": false,
+      "atr_multiple_excluded_class": "D",
+      "binding_version": "v0",
+      "consumed_parameters": [
+        "lookback_breakout",
+        "vol_window",
+        "vol_percentile",
+        "side"
+      ],
+      "excluded_parameters": [
+        "atr_multiple"
+      ],
+      "parameter_search_forbidden": true,
+      "parameters": {
+        "lookback_breakout": 20,
+        "side": "both",
+        "vol_percentile": 50.0,
+        "vol_window": 14
+      }
+    },
+    "dataset_binding": {
+      "binding_version": "v1",
+      "canonical_instrument_id": "inst-eth-usdt-perp",
+      "dataset_digest": "b4cbe7fff81a137da055588231757937406d8cb30d531ee0aab41d95ee9b6c78",
+      "dataset_id": "inst-eth-usdt-perp_v1",
+      "dataset_path": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/inst-eth-usdt-perp/v1/bars.parquet",
+      "dataset_profile": "economic_research_v1",
+      "dataset_version": "v1",
+      "expected_manifest_digest": "317105798c749943074911b1e9ea91ac9b94fab3b115fb7a64b692339426651a",
+      "native_instrument_id": "ETH-USDT-SWAP",
+      "source_venue": "OKX"
+    },
+    "period_binding": {
+      "binding_version": "v1",
+      "out_of_sample_period": "2026-06-27 23:36:00+00:00..2026-07-01 10:07:00+00:00",
+      "periods_frozen_before_execution": true,
+      "random_split_forbidden": true,
+      "training_period": "2026-06-17 16:00:00+00:00..2026-06-24 13:03:00+00:00",
+      "validation_period": "2026-06-24 13:04:00+00:00..2026-06-27 23:35:00+00:00"
+    },
+    "instrument_binding": {
+      "binding_version": "v0",
+      "bitcoin_direction_allowed": false,
+      "canonical_instrument_id": "inst-eth-usdt-perp",
+      "futures_only": true,
+      "native_instrument_id": "ETH-USDT-SWAP",
+      "selection_mode": "single_instrument_prebound",
+      "source_venue": "OKX",
+      "spot_allowed": false,
+      "synthetic_spot_allowed": false
+    },
+    "cost_execution_binding": {
+      "binding_version": "v0",
+      "execution_model_version": "backtest_execution_v0",
+      "execution_price_observation_source": "MODELLED_NOT_OBSERVED",
+      "fee_model_version": "backtest_fee_taker_symmetric_v0",
+      "funding_bind": true,
+      "funding_model_version": "backtest_funding_perpetual_interval_v1",
+      "implicit_zero_cost_forbidden": true,
+      "roundtrip_cost_bps": 40.0,
+      "slippage_model_version": "backtest_slippage_symmetric_v0",
+      "spread_model_version": "research_conservative_bps_v1"
+    },
+    "baseline_evaluation_contract": {
+      "baseline_count": 1,
+      "baseline_type": "FULL_CANONICAL_OFFLINE_BASELINE_SINGLE_INSTRUMENT",
+      "economic_evaluation_executed_in_this_slice": false,
+      "evidence_class_id": "VOL_BREAKOUT_V1_FULL_CANONICAL_OFFLINE_BASELINE_ECONOMIC_EVALUATION_V0",
+      "parameter_tuning_during_baseline_forbidden": true,
+      "parameter_tuning_after_baseline_forbidden": true
+    },
+    "warmup_binding": {
+      "derivation": "max(lookback_breakout, vol_window, lookback_breakout*2)",
+      "required_warmup_rows": 40,
+      "warmup_bars_before_train_start_required": true
+    }
+  },
+  "bitcoin_direction_allowed": false,
+  "candidate_id": "vol_breakout/v1",
+  "economic_evaluation_authorized": false,
+  "economic_evaluation_executed": false,
+  "futures_only": true,
+  "governance_ref": "docs/governance/VOL_BREAKOUT_V1_OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFICATION_V0.md",
+  "hypothesis_id": "VOL_BREAKOUT_COILED_SPRING_NON_BITCOIN_FUTURES_V1",
+  "offline_only": true,
+  "order_effect": "NONE",
+  "parameter_search_forbidden": true,
+  "runtime_effect": "NONE",
+  "schema_version": "vol_breakout_v1_versioned_research_binding.v0",
+  "source_ratification_evidence_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/rank1_vol_breakout_binding_and_evaluation_ratification_read_only_v0_20260710T063915Z",
+  "strategy_id": "vol_breakout",
+  "strategy_version": "v1",
+  "trading_logic_mutated": false
+}

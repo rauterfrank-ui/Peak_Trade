@@ -85,6 +85,12 @@ _EXTERNAL_PARAMETER_SCHEMA_V1: dict[str, dict[str, Any]] = {
         "high_vol_threshold": None,
         "atr_threshold": None,
     },
+    "vol_breakout": {
+        "lookback_breakout": 20,
+        "vol_window": 14,
+        "vol_percentile": 50.0,
+        "side": "both",
+    },
 }
 
 COMPOSITE_STRATEGY_ID = "composite"
@@ -689,6 +695,20 @@ def compute_required_warmup_rows_v1(
             int(effective_params["min_bars"]),
             int(effective_params["lookback_percentile"]),
         )
+    if strategy_id == "vol_breakout":
+        lookback_raw = effective_params.get("lookback_breakout")
+        vol_window_raw = effective_params.get("vol_window")
+        if lookback_raw is None:
+            raise StrategySignalBindingError("vol_breakout_lookback_breakout_missing")
+        if vol_window_raw is None:
+            raise StrategySignalBindingError("vol_breakout_vol_window_missing")
+        if isinstance(lookback_raw, bool) or not isinstance(lookback_raw, int):
+            raise StrategySignalBindingError("vol_breakout_lookback_breakout_not_integer")
+        if isinstance(vol_window_raw, bool) or not isinstance(vol_window_raw, int):
+            raise StrategySignalBindingError("vol_breakout_vol_window_not_integer")
+        if lookback_raw < 2 or vol_window_raw < 2:
+            raise StrategySignalBindingError("vol_breakout_warmup_param_invariant_failed")
+        return max(lookback_raw, vol_window_raw, lookback_raw * 2)
     if strategy_id == COMPOSITE_STRATEGY_ID:
         raise StrategySignalBindingError("composite_warmup_requires_binding_context")
     raise StrategySignalBindingError(f"required_warmup_rows_unbound:{strategy_id}")

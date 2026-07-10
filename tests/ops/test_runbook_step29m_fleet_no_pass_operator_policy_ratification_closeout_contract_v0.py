@@ -65,7 +65,7 @@ def test_fleet_complete_no_pass_three_of_three_failed() -> None:
     assert _field_value(section, "STEP29M_RATIFIED_CANDIDATES_TOTAL") == "3"
     assert _field_value(section, "STEP29M_RATIFIED_CANDIDATES_PASSED") == "0"
     assert _field_value(section, "STEP29M_RATIFIED_CANDIDATES_FAILED") == "3"
-    assert _field_value(section, "STEP29M_PENDING_CANDIDATES") == "0"
+    assert _field_value(section, "STEP29M_PENDING_CANDIDATES") == "1"
     assert _field_value(section, "STEP29M_PROMOTION_ELIGIBLE_CANDIDATES") == "0"
     assert _field_value(section, "COMPLETED_TECHNICALLY_VALID_EVALUATION_COUNT") == "3"
     assert _field_value(section, "ECONOMIC_POLICY_FAIL_COUNT") == "3"
@@ -79,17 +79,17 @@ def test_ratified_no_new_candidate_hold() -> None:
     assert _field_value(section, "STEP29M_OPERATOR") == "Frank Rauter"
     assert (
         _field_value(section, "NEXT_CANONICAL_STEP")
-        == "OPERATOR_POLICY_DECISION_REQUIRED_FOR_NEW_RESEARCH_SCOPE"
+        == "VOL_BREAKOUT_V1_FULL_CANONICAL_OFFLINE_BASELINE_ECONOMIC_EVALUATION_V0"
     )
 
 
 def test_no_pending_candidates_or_automatic_continuation() -> None:
     section = _step_29m_section(_read_registry())
-    assert _field_value(section, "POST_RATIFICATION_AUTHORIZED_PENDING_CANDIDATE_EXISTS") == "false"
-    assert _field_value(section, "AUTHORIZED_PENDING_EVALUATION_COUNT") == "0"
-    assert _field_value(section, "NEXT_EVALUATION_STRATEGY_ID") == "NONE"
-    assert _field_value(section, "NEXT_EVALUATION_CONFIG_STATUS") == "CLOSED_NO_PENDING_CANDIDATE"
-    assert _field_value(section, "STEP29M_NEW_CANDIDATE_AUTHORIZED") == "false"
+    assert _field_value(section, "POST_RATIFICATION_AUTHORIZED_PENDING_CANDIDATE_EXISTS") == "true"
+    assert _field_value(section, "AUTHORIZED_PENDING_EVALUATION_COUNT") == "1"
+    assert _field_value(section, "NEXT_EVALUATION_STRATEGY_ID") == "vol_breakout"
+    assert _field_value(section, "NEXT_EVALUATION_CONFIG_STATUS") == "AUTHORIZED_PENDING_EVALUATION"
+    assert _field_value(section, "STEP29M_NEW_CANDIDATE_AUTHORIZED") == "true"
     assert (
         _field_value(section, "STEP29M_NEW_RESEARCH_SCOPE_REQUIRES_EXPLICIT_OPERATOR_RATIFICATION")
         == "true"

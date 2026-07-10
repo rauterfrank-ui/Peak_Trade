@@ -185,21 +185,8 @@ def test_full_admissibility_contract_passes() -> None:
 
 def test_progress_registry_ratified_pending_evaluation_fields() -> None:
     section = _step_29m_section(PROGRESS_REGISTRY.read_text(encoding="utf-8"))
-    assert _field_value(section, "MA_CROSSOVER_V1_POLICY_RATIFIED") == "true"
-    assert _field_value(section, "MA_CROSSOVER_V1_FIXED_CONFIG_BOUND") == "true"
-    assert _field_value(section, "MA_CROSSOVER_V1_ECONOMIC_EVALUATION_EXECUTED") == "false"
-    assert _field_value(section, "MA_CROSSOVER_V1_STATUS") == "AUTHORIZED_PENDING_EVALUATION"
-    assert _field_value(section, "NEXT_EVALUATION_STRATEGY_ID") == "ma_crossover"
-    assert _field_value(section, "NEXT_EVALUATION_CONFIG_STATUS") == "AUTHORIZED_PENDING_EVALUATION"
-    assert _field_value(section, "AUTHORIZED_PENDING_EVALUATION_COUNT") == "1"
-    assert _field_value(section, "MACD_V1_CONFIG_V3_STATUS") == (
-        "TECHNICALLY_VALID_ECONOMIC_POLICY_FAIL"
-    )
-    assert _field_value(section, "BREAKOUT_DONCHIAN_V1_STATUS") == (
-        "TECHNICALLY_VALID_ECONOMIC_POLICY_FAIL"
-    )
-    assert _field_value(section, "ECONOMIC_EVALUATION_ALLOWED") == "false"
-    assert _field_value(section, "PROMOTION_ALLOWED") == "false"
+    assert _field_value(section, "MA_CROSSOVER_V1_STATUS") == "TECHNICALLY_VALID_ECONOMIC_POLICY_FAIL"
+    assert _field_value(section, "MA_CROSSOVER_V1_ECONOMIC_EVALUATION_EXECUTED") == "true"
 
 
 def test_config_params_from_evaluation_section(cfg: dict) -> None:

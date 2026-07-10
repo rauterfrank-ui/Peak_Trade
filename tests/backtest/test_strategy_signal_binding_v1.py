@@ -256,6 +256,21 @@ def test_breakout_donchian_warmup_invalid_lookback_fail_closed() -> None:
         compute_required_warmup_rows_v1("breakout_donchian", {"lookback": 2.5})
 
 
+def test_vol_breakout_required_warmup_rows_default() -> None:
+    effective, _ = resolve_effective_strategy_params_v1("vol_breakout", {})
+    assert compute_required_warmup_rows_v1("vol_breakout", effective) == 40
+
+
+def test_vol_breakout_warmup_missing_lookback_fail_closed() -> None:
+    with pytest.raises(StrategySignalBindingError, match="vol_breakout_lookback_breakout_missing"):
+        compute_required_warmup_rows_v1("vol_breakout", {"vol_window": 14})
+
+
+def test_vol_breakout_unknown_param_fail_closed() -> None:
+    with pytest.raises(StrategySignalBindingError, match="unknown_strategy_param"):
+        resolve_effective_strategy_params_v1("vol_breakout", {"atr_multiple": 1.5})
+
+
 def test_execute_macd_produces_long_and_short_signals() -> None:
     result = execute_configured_strategy_signal_series_v1(
         _bars(120),
