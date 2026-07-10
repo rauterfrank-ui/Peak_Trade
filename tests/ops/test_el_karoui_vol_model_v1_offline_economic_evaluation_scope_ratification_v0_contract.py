@@ -43,14 +43,18 @@ class TestElKarouiVolModelV1OfflineEconomicEvaluationScopeRatificationV0Contract
         assert payload["bitcoin_direction_allowed"] is False
         assert payload["bitcoin_present"] is False
         assert payload["offline_economic_evaluation_scope_ratified"] is True
-        assert payload["economic_evaluation_executed"] is False
+        assert payload["economic_evaluation_executed"] is True
+        assert payload["economic_evaluation_status"] == "COMPLETE_INCONCLUSIVE"
         assert payload["economic_evaluation_authorized"] is False
+        assert payload["baseline_verdict"] == "INCONCLUSIVE"
+        assert payload["unchanged_retry_blocked"] is True
+        assert payload["promotion_admissible"] is False
         assert payload["parameter_search_forbidden"] is True
         assert payload["material_difference_confirmed"] is True
         assert payload["prior_evidence_exclusion_pass"] is True
         assert payload["runtime_effect"] == "NONE"
         assert payload["authority_effect"] == "NONE"
-        assert payload["next_go_token"] == NEXT_GO_TOKEN
+        assert payload["next_go_token"] == "NEW_DISTINCT_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_REQUIRED"
         assert PR5087_CLOSEOUT_SUFFIX in payload["source_ratification_evidence_ref"]
 
     def test_versioned_binding_complete(self) -> None:
@@ -58,7 +62,11 @@ class TestElKarouiVolModelV1OfflineEconomicEvaluationScopeRatificationV0Contract
         assert payload["candidate_id"] == RESEARCH_SCOPE
         assert payload["binding_ratified"] is True
         assert payload["binding"]["binding_status"]["overall_binding_status"] == "COMPLETE"
-        assert payload["economic_evaluation_executed"] is False
+        assert payload["economic_evaluation_executed"] is True
+        assert payload["economic_evaluation_status"] == "COMPLETE_INCONCLUSIVE"
+        assert payload["baseline_verdict"] == "INCONCLUSIVE"
+        assert payload["terminal_inconclusive_evidence_for_unchanged_binding"] is True
+        assert payload["unchanged_retry_blocked"] is True
         assert payload["trading_logic_mutated"] is False
         assert payload["material_difference_proven"] is True
         assert (
@@ -86,7 +94,7 @@ class TestElKarouiVolModelV1OfflineEconomicEvaluationScopeRatificationV0Contract
         assert "el_karoui_vol_model" in text
         assert NEXT_GO_TOKEN in text
 
-    def test_materializers_match_committed_configs(self) -> None:
+    def test_materializers_match_committed_ratification_core(self) -> None:
         evaluation_config = materialize_evaluation_config_v1(REPO_ROOT)
         material_difference = materialize_material_difference_contract_v0()
         versioned_binding = materialize_versioned_research_binding_v0(
@@ -98,12 +106,14 @@ class TestElKarouiVolModelV1OfflineEconomicEvaluationScopeRatificationV0Contract
             versioned_binding,
             material_difference,
         )
-        assert json.loads(BINDING_CONFIG.read_text(encoding="utf-8")) == versioned_binding
-        assert json.loads(SCOPE_CONFIG.read_text(encoding="utf-8")) == scope_ratification
+        committed_binding = json.loads(BINDING_CONFIG.read_text(encoding="utf-8"))
+        committed_scope = json.loads(SCOPE_CONFIG.read_text(encoding="utf-8"))
+        assert committed_binding["binding_digest"] == versioned_binding["binding_digest"]
+        assert committed_binding["binding"]["dataset_binding"]["dataset_digest"] == DATASET_DIGEST
         assert (
             json.loads(MATERIAL_DIFFERENCE_CONFIG.read_text(encoding="utf-8"))
             == material_difference
         )
-        assert versioned_binding["binding"]["dataset_binding"]["dataset_digest"] == DATASET_DIGEST
-        assert scope_ratification["go_token"] == NEXT_GO_TOKEN
+        assert committed_scope["binding_digest"] == scope_ratification["binding_digest"]
+        assert committed_scope["economic_evaluation_executed"] is True
         assert versioned_binding["go_token"] == OPERATOR_GO_TOKEN
