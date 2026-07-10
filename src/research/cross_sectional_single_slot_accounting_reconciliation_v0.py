@@ -9,6 +9,8 @@ from __future__ import annotations
 from dataclasses import dataclass
 from typing import Any, Mapping, Sequence
 
+import pandas as pd
+
 from src.research.cross_sectional_single_slot_backtest_wiring_v0 import (
     END_OF_WINDOW_POLICY,
 )
@@ -34,6 +36,16 @@ class OpenPositionStateV0:
     entry_time: str | None
     entry_price: float | None
     entry_cost: float | None
+
+
+@dataclass(frozen=True)
+class LegacyBacktestAccountingViewV0:
+    """Adapter view for legacy BacktestEngine results (single-slot, closed-trade ledger)."""
+
+    initial_cash: float
+    final_equity: float
+    trades: pd.DataFrame
+    slippage_impact: float = 0.0
 
 
 @dataclass(frozen=True)
@@ -76,6 +88,52 @@ def detect_open_position_at_window_end(
         entry_time=None,
         entry_price=None,
         entry_cost=None,
+    )
+
+
+def legacy_backtest_result_accounting_view_v0(
+    backtest_result: Any,
+    *,
+    initial_cash: float,
+    slippage_impact: float = 0.0,
+) -> LegacyBacktestAccountingViewV0:
+    """Project BacktestResult equity curve and trade ledger for canonical reconciliation."""
+    equity_curve = getattr(backtest_result, "equity_curve", None)
+    if equity_curve is None or len(equity_curve) == 0:
+        raise ValueError("backtest_result_missing_equity_curve")
+    trades = getattr(backtest_result, "trades", None)
+    if trades is None:
+        trades_df = pd.DataFrame()
+    elif isinstance(trades, pd.DataFrame):
+        trades_df = trades
+    else:
+        trades_df = pd.DataFrame(trades)
+    return LegacyBacktestAccountingViewV0(
+        initial_cash=float(initial_cash),
+        final_equity=float(equity_curve.iloc[-1]),
+        trades=trades_df,
+        slippage_impact=float(slippage_impact),
+    )
+
+
+def reconcile_legacy_backtest_result_accounting_v0(
+    backtest_result: Any,
+    *,
+    initial_cash: float,
+    funding_drag: float = 0.0,
+    spread_drag: float = 0.0,
+    slippage_impact: float = 0.0,
+) -> AccountingReconciliationResultV0:
+    """Reconcile legacy BacktestEngine output via the canonical single-slot owner."""
+    view = legacy_backtest_result_accounting_view_v0(
+        backtest_result,
+        initial_cash=initial_cash,
+        slippage_impact=slippage_impact,
+    )
+    return reconcile_single_slot_backtest_accounting_v0(
+        view,
+        funding_drag=funding_drag,
+        spread_drag=spread_drag,
     )
 
 
