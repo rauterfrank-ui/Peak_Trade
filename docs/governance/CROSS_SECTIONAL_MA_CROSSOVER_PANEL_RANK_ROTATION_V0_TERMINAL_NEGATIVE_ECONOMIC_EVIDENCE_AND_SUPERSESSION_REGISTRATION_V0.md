@@ -9,7 +9,7 @@ ORDERS_ALLOWED: false
 SCHEDULER_RUNTIME_ALLOWED: false
 ---
 
-> **Non-authorizing:** Registriert die korrigierte manifest-verifizierte Offline-Economic-Evidence (`20260710T101815Z`) als kanonisches Ergebnis für `cross_sectional_ma_crossover_panel_rank_rotation/v0`, superseded die accounting-incomplete Original-Evaluation (`20260710T101306Z`), und blockiert Same-Binding-Retry. Keine Economic-Reevaluation, keine Promotion, kein Runtime-Rewire.
+> **Non-authorizing:** Registriert die korrigierte manifest-verifizierte Offline-Economic-Evidence (`20260710T101815Z`) als kanonisches Ergebnis für `cross_sectional_ma_crossover_panel_rank_rotation&#47;v0`, superseded die accounting-incomplete Original-Evaluation (`20260710T101306Z`), und blockiert Same-Binding-Retry. Keine Economic-Reevaluation, keine Promotion, kein Runtime-Rewire.
 
 ## A. Zweck
 
@@ -23,7 +23,7 @@ PR #5080 korrigierte die End-of-Window-Accounting-Reconciliation (force-close po
 | `GO_TOKEN` | `GO_RATIFY_CORRECTED_TERMINAL_NEGATIVE_EVIDENCE_AND_SUPERSESSION_REGISTRATION_V0` |
 | `STRATEGY_ID` | `cross_sectional_ma_crossover_panel_rank_rotation` |
 | `STRATEGY_VERSION` | `v0` |
-| `RESEARCH_SCOPE` | `cross_sectional_ma_crossover_panel_rank_rotation/v0` |
+| `RESEARCH_SCOPE` | `cross_sectional_ma_crossover_panel_rank_rotation&#47;v0` |
 | `PRE_MERGE_ORIGIN_MAIN` | `8ea5670cda60f9eb3656ef1aa483ed6f823457b5` |
 | `SOURCE_PR` | `5080` |
 | `SOURCE_MERGE_COMMIT` | `48dd6e367f9e61361861b6d8a0d250def424f222` |

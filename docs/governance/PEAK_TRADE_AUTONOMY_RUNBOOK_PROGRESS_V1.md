@@ -7397,7 +7397,7 @@ Bounded versioned binding ratification for `cross_sectional_ma_crossover_panel_r
 
 #### CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_TERMINAL_NEGATIVE_ECONOMIC_EVIDENCE_AND_SUPERSESSION_REGISTRATION_V0
 
-Offline-only terminal-negative evidence and supersession registration for `cross_sectional_ma_crossover_panel_rank_rotation/v0`: canonical corrected evaluation `20260710T101815Z` registered; original evaluation `20260710T101306Z` superseded due to accounting incompleteness; PR5080 provenance recorded; unchanged-binding retry blocked. No economic reevaluation, no runtime authority.
+Offline-only terminal-negative evidence and supersession registration for `cross_sectional_ma_crossover_panel_rank_rotation&#47;v0`: canonical corrected evaluation `20260710T101815Z` registered; original evaluation `20260710T101306Z` superseded due to accounting incompleteness; PR5080 provenance recorded; unchanged-binding retry blocked. No economic reevaluation, no runtime authority.
 
 | Feld | Wert |
 |---|---|
