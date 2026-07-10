@@ -23,7 +23,7 @@ This slice reviews whether a narrow backtest-parity rewire is required after PR 
 - Assessment contract: `docs/research/bull_bear_state_switch_backtest_parity_wiring_assessment_or_narrow_rewire_v0.json`
 - Source evidence MANIFEST.sha256 verified with RC=0
 - Owner binding: `src/research/owner_bindings/bull_bear_state_switch_owner_binding_v0.py`
-- Canonical owner: `src/trading/master_v2` / `trading.master_v2.double_play_state.transition_state`
+- Canonical owner: `src/trading/master_v2/double_play_state.py` (`trading.master_v2.double_play_state.transition_state`)
 - Backtest consumer: `src/trading/master_v2/offline_double_play_scenario_replay_v0.py`
 - Adapter: `src/trading/master_v2/bull_bear_state_switch_scenario_binding_adapter_v0.py`
 - Parity contract: `tests/trading/master_v2/test_bull_bear_state_switch_scenario_replay_binding_parity_rewire_contract_v0.py`
