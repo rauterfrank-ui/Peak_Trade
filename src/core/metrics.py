@@ -462,27 +462,170 @@ class MetricsCollector:
 
     def get_summary(self) -> Dict[str, Any]:
         """
-        Get summary of all metrics.
+        Get deterministic in-memory resilience metrics summary.
 
-        Returns:
-            Dictionary with metric summaries
+        Side-effect free: does not initialize Prometheus or mutate collected metrics.
         """
-        summary = {
-            "namespace": self.namespace,
-            "prometheus_available": is_prometheus_available(),
-            "timestamp": get_utc_now().isoformat(),
-            "metrics": {},
-        }
-
         with self.lock:
-            for name, snapshots_list in self.snapshots.items():
-                if snapshots_list:
-                    summary["metrics"][name] = {
-                        "count": len(snapshots_list),
-                        "latest": snapshots_list[-1].to_dict(),
-                    }
+            snapshot_data = {
+                name: list(snapshots_list) for name, snapshots_list in self.snapshots.items()
+            }
+        return _build_resilience_summary_from_snapshots(self.namespace, snapshot_data)
 
-        return summary
+
+def _aggregate_counter_rows(
+    snapshots: list[MetricSnapshot],
+    label_fields: tuple[str, ...],
+) -> list[Dict[str, Any]]:
+    counts: Dict[tuple[str, ...], int] = {}
+    for snapshot in snapshots:
+        key = tuple(snapshot.labels.get(field, "") for field in label_fields)
+        counts[key] = counts.get(key, 0) + 1
+
+    rows: list[Dict[str, Any]] = []
+    for key in sorted(counts):
+        row = {field: key[index] for index, field in enumerate(label_fields)}
+        row["count"] = counts[key]
+        rows.append(row)
+    return rows
+
+
+def _aggregate_gauge_latest_rows(
+    snapshots: list[MetricSnapshot],
+    label_fields: tuple[str, ...],
+    *,
+    value_field: str,
+) -> list[Dict[str, Any]]:
+    latest: Dict[tuple[str, ...], float] = {}
+    for snapshot in snapshots:
+        key = tuple(snapshot.labels.get(field, "") for field in label_fields)
+        latest[key] = snapshot.value
+
+    rows: list[Dict[str, Any]] = []
+    for key in sorted(latest):
+        row = {field: key[index] for index, field in enumerate(label_fields)}
+        row[value_field] = latest[key]
+        rows.append(row)
+    return rows
+
+
+def _aggregate_latency_rows(snapshots: list[MetricSnapshot]) -> list[Dict[str, Any]]:
+    by_operation: Dict[str, list[float]] = {}
+    for snapshot in snapshots:
+        operation = snapshot.labels.get("operation", "")
+        by_operation.setdefault(operation, []).append(snapshot.value)
+
+    rows: list[Dict[str, Any]] = []
+    for operation in sorted(by_operation):
+        values = by_operation[operation]
+        total = sum(values)
+        rows.append(
+            {
+                "count": len(values),
+                "max_seconds": max(values),
+                "mean_seconds": total / len(values),
+                "min_seconds": min(values),
+                "operation": operation,
+                "sum_seconds": total,
+            }
+        )
+    return rows
+
+
+def _aggregate_health_check_rows(snapshots: list[MetricSnapshot]) -> list[Dict[str, Any]]:
+    by_name: Dict[str, list[float]] = {}
+    for snapshot in snapshots:
+        check_name = snapshot.labels.get("check_name", "")
+        by_name.setdefault(check_name, []).append(snapshot.value)
+
+    rows: list[Dict[str, Any]] = []
+    for check_name in sorted(by_name):
+        values = by_name[check_name]
+        healthy_count = sum(1 for value in values if value >= 1.0)
+        rows.append(
+            {
+                "check_name": check_name,
+                "count": len(values),
+                "healthy_count": healthy_count,
+                "latest_status": int(values[-1] >= 1.0),
+                "unhealthy_count": len(values) - healthy_count,
+            }
+        )
+    return rows
+
+
+def _build_resilience_summary_from_snapshots(
+    namespace: str,
+    snapshot_data: Dict[str, list[MetricSnapshot]],
+) -> Dict[str, Any]:
+    circuit_breaker_state_changes = _aggregate_counter_rows(
+        snapshot_data.get("circuit_breaker_state_change", []),
+        ("name", "from_state", "to_state"),
+    )
+    circuit_breaker_failures = _aggregate_counter_rows(
+        snapshot_data.get("circuit_breaker_failure", []),
+        ("name",),
+    )
+    rate_limit_hits = _aggregate_counter_rows(
+        snapshot_data.get("rate_limit_hit", []),
+        ("endpoint", "limiter"),
+    )
+    rate_limit_rejections = _aggregate_counter_rows(
+        snapshot_data.get("rate_limit_rejection", []),
+        ("endpoint", "limiter"),
+    )
+    rate_limit_tokens = _aggregate_gauge_latest_rows(
+        snapshot_data.get("rate_limit_tokens", []),
+        ("limiter",),
+        value_field="tokens",
+    )
+    operation_successes = _aggregate_counter_rows(
+        snapshot_data.get("operation_success", []),
+        ("operation",),
+    )
+    operation_failures = _aggregate_counter_rows(
+        snapshot_data.get("operation_failure", []),
+        ("error_type", "operation"),
+    )
+    latency_operations = _aggregate_latency_rows(snapshot_data.get("request_latency", []))
+    health_checks = _aggregate_health_check_rows(snapshot_data.get("health_check", []))
+
+    empty = not any(
+        (
+            circuit_breaker_state_changes,
+            circuit_breaker_failures,
+            rate_limit_hits,
+            rate_limit_rejections,
+            rate_limit_tokens,
+            operation_successes,
+            operation_failures,
+            latency_operations,
+            health_checks,
+        )
+    )
+
+    return {
+        "schema_version": "metrics_collector_resilience_summary.v0",
+        "namespace": namespace,
+        "empty": empty,
+        "circuit_breaker": {
+            "failures": circuit_breaker_failures,
+            "state_changes": circuit_breaker_state_changes,
+        },
+        "rate_limit": {
+            "hits": rate_limit_hits,
+            "rejections": rate_limit_rejections,
+            "tokens": rate_limit_tokens,
+        },
+        "operations": {
+            "failures": operation_failures,
+            "successes": operation_successes,
+        },
+        "latency": {
+            "operations": latency_operations,
+        },
+        "health_checks": health_checks,
+    }
 
 
 # Global metrics instance
