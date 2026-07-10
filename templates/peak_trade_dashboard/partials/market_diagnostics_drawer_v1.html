@@ -20,10 +20,14 @@
       <dl class="m-0 grid grid-cols-1 sm:grid-cols-2 gap-2 text-[10px] font-mono text-slate-300">
         <div>
           <dt class="text-slate-500 uppercase">Notion current-state sync</dt>
-          <dd class="m-0 mt-0.5">NOTION_CURRENT={{ current_state.pr_and_evidence_status.notion_current_state_sync.NOTION_CURRENT|lower }} · last verified MANIFEST_VERIFY_RC={{ current_state.pr_and_evidence_status.notion_current_state_sync.MANIFEST_VERIFY_RC|e }}</dd>
+          <dd class="m-0 mt-0.5">NOTION_CURRENT={{ current_state.pr_and_evidence_status.notion_current_state_sync.NOTION_CURRENT|lower }} · NOTION_UPDATED={{ current_state.pr_and_evidence_status.notion_current_state_sync.NOTION_UPDATED|lower }} · MANIFEST_VERIFY_RC={{ current_state.pr_and_evidence_status.notion_current_state_sync.MANIFEST_VERIFY_RC|e }}</dd>
         </div>
         <div>
-          <dt class="text-slate-500 uppercase">PR #5033</dt>
+          <dt class="text-slate-500 uppercase">Latest merged PR</dt>
+          <dd class="m-0 mt-0.5">#{{ current_state.pr_and_evidence_status.latest_merged_pr.pr_number|e }} MERGED · {{ current_state.pr_and_evidence_status.latest_merged_pr.merge_commit|e }}</dd>
+        </div>
+        <div>
+          <dt class="text-slate-500 uppercase">PR #5033 (historical)</dt>
           <dd class="m-0 mt-0.5">MERGED · {{ current_state.pr_and_evidence_status.PR5033.merge_commit|e }}</dd>
         </div>
         <div class="sm:col-span-2">
