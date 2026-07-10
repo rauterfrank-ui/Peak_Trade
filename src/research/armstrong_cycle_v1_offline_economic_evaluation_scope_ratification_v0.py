@@ -97,7 +97,58 @@ DATASET_PATH = (
 TRAINING_PERIOD = "2026-06-17 16:00:00+00:00..2026-06-24 13:03:00+00:00"
 VALIDATION_PERIOD = "2026-06-24 13:04:00+00:00..2026-06-27 23:35:00+00:00"
 OUT_OF_SAMPLE_PERIOD = "2026-06-27 23:36:00+00:00..2026-07-01 10:07:00+00:00"
-DATA_PERIOD = f"{TRAINING_PERIOD}|{VALIDATION_PERIOD}|{OUT_OF_SAMPLE_PERIOD}"
+
+PERIOD_BINDING_DATA_PERIOD_KEYS = (
+    "training_period",
+    "validation_period",
+    "out_of_sample_period",
+)
+
+
+class ArmstrongCycleV1BindingDataPeriodError(ValueError):
+    """Fail-closed when binding data_period payload is not ratified period_binding pipe format."""
+
+
+def build_armstrong_cycle_v1_period_binding_data_period_v0(
+    period_binding: Mapping[str, Any],
+) -> str:
+    """Canonical pipe-serialization owner for ratified period_binding → binding digest data_period."""
+    missing = [key for key in PERIOD_BINDING_DATA_PERIOD_KEYS if key not in period_binding]
+    if missing:
+        raise ArmstrongCycleV1BindingDataPeriodError(
+            f"period_binding_missing_keys:{','.join(missing)}"
+        )
+    return (
+        f"{period_binding['training_period']}|"
+        f"{period_binding['validation_period']}|"
+        f"{period_binding['out_of_sample_period']}"
+    )
+
+
+def is_stale_runner_descriptor_range_data_period_v0(data_period: str) -> bool:
+    """True when payload uses single dataset-descriptor range instead of ratified pipe format."""
+    return ".." in data_period and "|" not in data_period
+
+
+def reject_stale_runner_descriptor_range_data_period_v0(data_period: str) -> None:
+    if is_stale_runner_descriptor_range_data_period_v0(data_period):
+        raise ArmstrongCycleV1BindingDataPeriodError(
+            "stale_runner_descriptor_range_data_period_rejected"
+        )
+
+
+def build_period_binding_v0() -> dict[str, Any]:
+    return {
+        "binding_version": "v1",
+        "out_of_sample_period": OUT_OF_SAMPLE_PERIOD,
+        "periods_frozen_before_execution": True,
+        "random_split_forbidden": True,
+        "training_period": TRAINING_PERIOD,
+        "validation_period": VALIDATION_PERIOD,
+    }
+
+
+DATA_PERIOD = build_armstrong_cycle_v1_period_binding_data_period_v0(build_period_binding_v0())
 
 NEXT_GO_TOKEN = (
     "GO_ARMSTRONG_CYCLE_V1_BOUNDED_OFFLINE_ECONOMIC_BASELINE_EVALUATION_NO_RUNTIME_AUTHORITY_V0"
@@ -641,14 +692,7 @@ def materialize_versioned_research_binding_v0(
                 "parameter_search_forbidden": True,
                 "parameters": dict(ARMSTRONG_CYCLE_V1_CANONICAL_PARAMS),
             },
-            "period_binding": {
-                "binding_version": "v1",
-                "out_of_sample_period": OUT_OF_SAMPLE_PERIOD,
-                "periods_frozen_before_execution": True,
-                "random_split_forbidden": True,
-                "training_period": TRAINING_PERIOD,
-                "validation_period": VALIDATION_PERIOD,
-            },
+            "period_binding": build_period_binding_v0(),
             "prior_evidence_exclusion": {
                 "excluded_terminal_inconclusive_bindings": [
                     "ehlers_cycle_filter/v1",

@@ -6,6 +6,7 @@ import json
 from pathlib import Path
 
 from src.research.armstrong_cycle_v1_offline_economic_evaluation_scope_ratification_v0 import (
+    build_armstrong_cycle_v1_period_binding_data_period_v0,
     materialize_evaluation_config_v1,
     materialize_material_difference_contract_v0,
     materialize_versioned_research_binding_v0,
@@ -43,10 +44,8 @@ def test_binding_digest_roundtrip() -> None:
         material_difference_digest=digest_bindings["material_difference_digest"]["value"],
         hypothesis_id=versioned_binding["hypothesis_id"],
         instrument_id="inst-eth-usdt-perp",
-        data_period=(
-            f"{binding['period_binding']['training_period']}|"
-            f"{binding['period_binding']['validation_period']}|"
-            f"{binding['period_binding']['out_of_sample_period']}"
+        data_period=build_armstrong_cycle_v1_period_binding_data_period_v0(
+            binding["period_binding"]
         ),
         universe_digest=digest_bindings["universe_digest"]["value"],
     )
