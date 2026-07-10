@@ -95,7 +95,7 @@ def test_fleet_fully_evaluated_with_new_pending_candidate() -> None:
     assert _field_value(section, "POST_RATIFICATION_AUTHORIZED_PENDING_CANDIDATE_EXISTS") == "true"
     assert _field_value(section, "HISTORICAL_FLEET_RESULTS_UNCHANGED") == "true"
     assert _field_value(section, "NEXT_EVALUATION_STRATEGY_ID") == "vol_breakout"
-    assert _field_value(section, "NEXT_EVALUATION_CONFIG_STATUS") == "AUTHORIZED_PENDING_EVALUATION"
+    assert _field_value(section, "NEXT_EVALUATION_CONFIG_STATUS") == "BINDING_DEFECT_FIX_PENDING"
     assert _field_value(section, "AUTHORIZED_PENDING_EVALUATION_COUNT") == "1"
     assert _field_value(section, "LAST_EVALUATED_STRATEGY_ID") == "ma_crossover"
     assert _field_value(section, "LAST_EVALUATED_CONFIG_VERSION") == "v1"
@@ -114,10 +114,10 @@ def test_historical_fleet_results_unchanged_after_ratification() -> None:
     assert _field_value(section, "PROMOTION_ELIGIBLE_COUNT") == "0"
 
 
-def test_fleet_no_pass_next_canonical_step_points_to_vol_breakout_evaluation() -> None:
+def test_fleet_no_pass_next_canonical_step_points_to_vol_breakout_rerun_after_fix() -> None:
     section = _step_29m_section(_read_registry())
     assert _field_value(section, "NEXT_CANONICAL_STEP") == (
-        "VOL_BREAKOUT_V1_FULL_CANONICAL_OFFLINE_BASELINE_ECONOMIC_EVALUATION_V0"
+        "MERGE_CLOSEOUT_THEN_RERUN_VOL_BREAKOUT_V1_FULL_CANONICAL_OFFLINE_BASELINE_ECONOMIC_EVALUATION_ONCE"
     )
 
 

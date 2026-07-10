@@ -27,7 +27,9 @@ STEP_29M_IMPLEMENTED_SCOPE = (
     "step29m_registered_strategy_evaluation_fleet_closeout_v0_slice,"
     "ma_crossover_v1_operator_policy_ratification_and_config_registry_slice_v0,"
     "step29m_fleet_no_pass_operator_policy_ratification_and_progress_registry_closeout_v0_slice,"
-    "vol_breakout_v1_narrow_neutral_rewire_and_binding_implementation_v0_slice"
+    "vol_breakout_v1_narrow_neutral_rewire_and_binding_implementation_v0_slice,"
+    "vol_breakout_v1_sizing_config_digest_binding_fix_v0_slice,"
+    "current_state_reconciliation_and_runbook_refresh_read_only_v0_slice"
 )
 STEP_29M_SLICES = tuple(STEP_29M_IMPLEMENTED_SCOPE.split(","))
 

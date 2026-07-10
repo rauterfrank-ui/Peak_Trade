@@ -31,7 +31,7 @@
     "digest_bindings": {
       "config_digest": {
         "status": "BOUND",
-        "value": "fdb0e3819330b72b836c1070a6f3f500f69a22a277e4cb84d22939870a7f56cc"
+        "value": "db7bf773de987afbb2643ff9b761760af6b286e5e864c39d3c8d908a59082b88"
       },
       "data_digest": {
         "status": "BOUND",

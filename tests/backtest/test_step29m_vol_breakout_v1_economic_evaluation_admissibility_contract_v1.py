@@ -183,7 +183,11 @@ def test_versioned_bindings_materialized() -> None:
     scope = json.loads(SCOPE_RATIFICATION_PATH.read_text(encoding="utf-8"))
     assert binding["candidate_id"] == "vol_breakout/v1"
     assert binding["binding"]["binding_status"]["overall_binding_status"] == "COMPLETE"
+    assert binding["binding"]["digest_bindings"]["config_digest"][
+        "value"
+    ] == contract.compute_evaluation_config_digest_v1(_load_config())
     assert scope["candidate_id"] == "vol_breakout/v1"
+    assert scope["config_digest"] == contract.compute_evaluation_config_digest_v1(_load_config())
     assert scope["economic_evaluation_executed"] is False
     assert scope["parameter_search_forbidden"] is True
     assert "atr_multiple" not in scope["parameter_binding"]["parameters"]
@@ -194,9 +198,9 @@ def test_progress_registry_ratified_pending_evaluation_fields() -> None:
     assert _field_value(section, "VOL_BREAKOUT_V1_POLICY_RATIFIED") == "true"
     assert _field_value(section, "VOL_BREAKOUT_V1_FIXED_CONFIG_BOUND") == "true"
     assert _field_value(section, "VOL_BREAKOUT_V1_ECONOMIC_EVALUATION_EXECUTED") == "false"
-    assert _field_value(section, "VOL_BREAKOUT_V1_STATUS") == "AUTHORIZED_PENDING_EVALUATION"
+    assert _field_value(section, "VOL_BREAKOUT_V1_STATUS") == "BINDING_DEFECT_FIX_PENDING"
     assert _field_value(section, "NEXT_EVALUATION_STRATEGY_ID") == "vol_breakout"
-    assert _field_value(section, "NEXT_EVALUATION_CONFIG_STATUS") == "AUTHORIZED_PENDING_EVALUATION"
+    assert _field_value(section, "NEXT_EVALUATION_CONFIG_STATUS") == "BINDING_DEFECT_FIX_PENDING"
     assert _field_value(section, "AUTHORIZED_PENDING_EVALUATION_COUNT") == "1"
     assert _field_value(section, "ATR_MULTIPLE_BOUND") == "false"
     assert _field_value(section, "PARAMETER_SEARCH_ALLOWED") == "false"
