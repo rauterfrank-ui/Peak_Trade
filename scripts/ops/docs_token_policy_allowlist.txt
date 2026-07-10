@@ -29,3 +29,11 @@ your/path/here
 # Git conventional paths (when used generically)
 .github/workflows
 .git/config
+origin/main
+
+# Peak Trade Vollautonomie-Runbook v4.4.10 (byte-identical SSOT copy — illustrative strategy/git tokens)
+macd/v1-v3
+breakout_donchian/v1
+ma_crossover/v1
+rsi_reversion/step30a
+same semantic binding, corrected/new cryptographic binding identity
