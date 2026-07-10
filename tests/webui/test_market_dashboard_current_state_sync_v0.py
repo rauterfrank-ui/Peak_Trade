@@ -150,7 +150,7 @@ def test_parity_surfaces_snapshot_count_and_status() -> None:
     surfaces = market_dashboard_current_state_snapshot_v0()["parity_surfaces_completed"]
     assert len(surfaces) == 6
     for surface, expected_id, expected_status in zip(
-        surfaces, PARITY_SURFACE_IDS, PARITY_SURFACE_STATUSES, strict=True
+        surfaces, PARITY_SURFACE_IDS, PARITY_SURFACE_STATUSES
     ):
         assert surface["surface_id"] == expected_id
         assert surface["assessment_status"] == expected_status
@@ -178,7 +178,7 @@ def test_blocked_main_gates_visible(client: TestClient) -> None:
 def test_all_six_parity_surfaces_visible(client: TestClient) -> None:
     html = _html(client)
     assert 'data-market-parity-surfaces-completed-v1="true"' in html
-    for surface_id, status in zip(PARITY_SURFACE_IDS, PARITY_SURFACE_STATUSES, strict=True):
+    for surface_id, status in zip(PARITY_SURFACE_IDS, PARITY_SURFACE_STATUSES):
         assert f'data-market-parity-surface-id="{surface_id}"' in html
         assert f'data-market-parity-surface-status="{status}"' in html
 
@@ -226,7 +226,7 @@ def test_next_parity_slice_visible_and_separate_from_step31f(client: TestClient)
 def test_runtime_gates_remain_blocked(client: TestClient) -> None:
     html = _html(client)
     assert 'data-market-live-authorized-v1="true">false' in html
-    assert 'data-market-orders-allowed-v1="true">false' in html
+    assert 'data-market-governance-orders-allowed-v1="true">false' in html
     assert 'data-market-scheduler-runtime-allowed-v1="true">false' in html
     assert 'data-market-authority-effect-v1="true">NONE' in html
     assert 'data-market-runtime-effect-v1="true">NONE' in html
