@@ -7261,7 +7261,7 @@ Docs-only offline research scope ratification for `cross_sectional_ma_crossover_
 
 #### CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_PHASE3_DATASET_MATERIALIZATION_V1
 
-Bounded Phase-3 dataset materialization for `cross_sectional_ma_crossover_panel_rank_rotation/v0`: OKX production lifecycle source registration and PIT-capable PT1H panel OHLCV ingest via public GET only. No economic evaluation, no binding ratification, no runtime authority.
+Bounded Phase-3 dataset materialization for `cross_sectional_ma_crossover_panel_rank_rotation&#47;v0`: OKX production lifecycle source registration and PIT-capable PT1H panel OHLCV ingest via public GET only. No economic evaluation, no binding ratification, no runtime authority.
 
 | Feld | Wert |
 |---|---|

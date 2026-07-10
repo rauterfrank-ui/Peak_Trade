@@ -9,7 +9,7 @@ ORDERS_ALLOWED: false
 SCHEDULER_RUNTIME_ALLOWED: false
 ---
 
-> **Non-authorizing:** Bounded Phase-3-Dataset-Materialization für `cross_sectional_ma_crossover_panel_rank_rotation/v0`. Registriert OKX Production Lifecycle Source und PIT-fähiges PT1H-Panel-OHLCV. Keine Versioned-Binding-Ratifikation. Keine Economic Evaluation. Keine Runtime-Authority.
+> **Non-authorizing:** Bounded Phase-3-Dataset-Materialization für `cross_sectional_ma_crossover_panel_rank_rotation&#47;v0`. Registriert OKX Production Lifecycle Source und PIT-fähiges PT1H-Panel-OHLCV. Keine Versioned-Binding-Ratifikation. Keine Economic Evaluation. Keine Runtime-Authority.
 
 ## A. Verdict
 

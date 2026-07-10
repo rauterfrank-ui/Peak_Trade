@@ -105,7 +105,9 @@ class TestCrossSectionalMaCrossoverPanelRankRotationV0ResearchScopeRatificationV
         config = json.loads(SCOPE_CONFIG.read_text(encoding="utf-8"))
         assert config["strategy_id"] == STRATEGY_ID
         assert config["dataset_materialized"] is True
-        assert config["panel_staging_root"].endswith("pit_okx_linear_usdt_non_bitcoin_pt1h_panel/v2")
+        assert config["panel_staging_root"].endswith(
+            "pit_okx_linear_usdt_non_bitcoin_pt1h_panel/v2"
+        )
         assert config["phase3_precondition_contract"]["dataset_materialized"] is True
 
     def test_panel_binding_contract_futures_only_and_bitcoin_block(self) -> None:
