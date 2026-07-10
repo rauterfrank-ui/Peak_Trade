@@ -18,7 +18,9 @@ Governance-Dokumentation für AI-Autonomie, Policy Enforcement und Compliance im
 - **[Drift Cleanup Plan v1](drift_cleanup_plan_v1.md)** — Safe documentation fixes und flagged structural/authority items
 - **[Runbook Execution Governance v1](PEAK_TRADE_RUNBOOK_EXECUTION_GOVERNANCE_V1.md)** — Verbindliche strategische SSOT-Steuerung, Package-Sequenzierung und Ranking-Ausnahmeregel (non-authorizing)
 - **[Autonomy Runbook Progress Registry v1](PEAK_TRADE_AUTONOMY_RUNBOOK_PROGRESS_V1.md)** — Kanonische Progress-Registry: Runbook-Soll ↔ Repo-Ist (non-authorizing)
-- **[Runbook v4.4.1 Multi-Future Target Model Clarification](Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.1_multi_future_target_model_clarification.md)** — Governance-Clarification: Phase-1 Single-Future bleibt; Multi-Future nur Zielmodell nach separaten Gates (non-authorizing)
+- **[Vollautonomie-Runbook v4.4.10 (Vollfassung)](Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.10_IMPLEMENTATION_CONTRACT.md)** — Kanonische Governance- und Implementierungs-SSOT (non-authorizing; Cursor muss diese Vollfassung zuerst lesen)
+- **[Implementation Contract (Kurzfassung)](PEAK_TRADE_IMPLEMENTATION_CONTRACT.md)** — Navigations- und Ausführungsleitfaden ohne eigene SSOT-Authority (`THIS_DOCUMENT_IS_NOT_A_SECOND_SSOT=true`)
+- **[Runbook v4.4.1 Multi-Future Target Model Clarification](Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.1_multi_future_target_model_clarification.md)** — Governance-Clarification: Phase-1 Single-Future bleibt; Multi-Future nur Zielmodell nach separaten Gates (non-authorizing; historische Clarification — maßgeblich bleibt v4.4.10 Vollfassung)
 - **[AI Autonomy Go/No-Go Overview](AI_AUTONOMY_GO_NO_GO_OVERVIEW.md)** — Governance-first guardrails für Cursor Agent (keine Live-Autonomie)
 - **[AI Autonomy Evidence Pack Template](templates/AI_AUTONOMY_EVIDENCE_PACK_TEMPLATE.md)** — Strukturiertes Template für Autonomie-Evidenz
 - **[Untracked Local Reports Policy](UNTRACKED_LOCAL_REPORTS_POLICY.md)** — Umgang mit lokalen unversionierten Analyse-/Audit-Reports

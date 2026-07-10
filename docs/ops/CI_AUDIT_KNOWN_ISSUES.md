@@ -48,6 +48,33 @@ PARALLEL_SSOT_CREATED=false
 PREFLIGHT_REMAINS_BLOCKED=true
 ```
 
+## Vollautonomie-Runbook v4.4.10 + Implementation Contract — docs/tests-only reciprocal crosslink guard v0
+
+**Purpose:** Anchor Vollautonomie-Runbook v4.4.10 as **canonical governance and implementation SSOT** with a short navigation-only implementation contract — static reciprocal crosslink **without** trading/runtime/promotion semantic change, live authorization, orders, or scheduler runtime.
+
+**Canonical repo owners (reuse — do not duplicate):**
+
+| Concern | Owner |
+|---------|-------|
+| Vollautonomie-Runbook v4.4.10 (full SSOT) | `docs/governance/Peak_Trade_Kanonisches_Vollautonomie_Runbook_v4.4.10_IMPLEMENTATION_CONTRACT.md` |
+| Implementation Contract (navigation only) | `docs/governance/PEAK_TRADE_IMPLEMENTATION_CONTRACT.md` |
+| Governance index | `docs/governance/README.md` |
+| DOCS_TRUTH_MAP chronicle | `docs/ops/registry/DOCS_TRUTH_MAP.md` |
+| Static crosslink contract test | `tests/ops/test_canonical_vollautonomie_runbook_v4_4_10_and_implementation_contract_static_crosslink_contract_v0.py` |
+
+```text
+CANONICAL_VOLLAUTONOMIE_RUNBOOK_V4_4_10_REPO_ADOPTED=true
+THIS_DOCUMENT_IS_NOT_A_SECOND_SSOT=true
+CURSOR_MUST_READ_CANONICAL_RUNBOOK_FIRST=true
+LIVE_AUTHORIZED=false
+ORDERS_ALLOWED=false
+SCHEDULER_RUNTIME_ALLOWED=false
+TRADING_LOGIC_CHANGED=false
+RUNTIME_CHANGED=false
+PARALLEL_SSOT_CREATED=false
+PREFLIGHT_REMAINS_BLOCKED=true
+```
+
 ## Runbook Execution Governance + Progress Registry v1 — docs/tests-only reciprocal crosslink guard v0
 
 **Operator-GO:** `GO_CANONICAL_RUNBOOK_EXECUTION_GOVERNANCE_AND_PROGRESS_CONTROL_V0`
