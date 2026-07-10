@@ -67,6 +67,23 @@ MATERIAL_DIFFERENCE_PATH = (
 
 STALE_RUNNER_DESCRIPTOR_RANGE_DATA_PERIOD = "2026-06-17 10:07:00+00:00..2026-07-01 10:07:00+00:00"
 
+ARMSTRONG_CYCLE_V1_BASELINE_NET_EXPECTANCY_OWNER = (
+    "src/backtest/mv2_research_wiring_v1.py::compute_mv2_backtest_metrics_v1"
+)
+ARMSTRONG_CYCLE_V1_BASELINE_NET_EXPECTANCY_UNIT = "absolute_quote_currency_per_trade"
+ARMSTRONG_CYCLE_V1_BASELINE_NET_EXPECTANCY_NET_OR_GROSS = "net"
+CANONICAL_EXPECTANCY_FIELD = "expectancy"
+
+
+def resolve_armstrong_cycle_v1_net_expectancy_for_baseline_v0(
+    backtest_result: Any,
+) -> float:
+    """Return net expectancy from the canonical MV2 metrics owner (no local formula)."""
+    canonical_metrics = mv2_wiring.compute_mv2_backtest_metrics_v1(backtest_result)
+    if CANONICAL_EXPECTANCY_FIELD not in canonical_metrics:
+        raise ValueError("canonical_metrics_missing_expectancy")
+    return float(canonical_metrics[CANONICAL_EXPECTANCY_FIELD])
+
 
 def resolve_armstrong_cycle_v1_binding_data_period_for_baseline_v0(
     binding_cfg: Mapping[str, Any],
@@ -220,6 +237,7 @@ def run_baseline_evaluation(
     stats = backtest.stats
     trade_count = int(stats.get("total_trades", 0))
     net_return = float(stats.get("total_return", 0.0))
+    net_expectancy = resolve_armstrong_cycle_v1_net_expectancy_for_baseline_v0(backtest)
 
     accounting = materialize_legacy_backtest_accounting_reconciliation_v0(
         backtest,
@@ -231,7 +249,7 @@ def run_baseline_evaluation(
     gate = evaluate_economic_validity_against_policy_v1(
         policy=policy,
         metrics=EconomicValidityEvidenceMetricsV1(
-            net_expectancy=float(stats.get("expectancy", 0.0)),
+            net_expectancy=net_expectancy,
             profit_factor=float(stats.get("profit_factor", 0.0)),
             trade_count=trade_count,
             max_drawdown=float(stats.get("max_drawdown", 0.0)),
@@ -325,7 +343,12 @@ def run_baseline_evaluation(
         json.dumps(
             {
                 "net_return": net_return,
-                "net_expectancy": float(stats.get("expectancy", 0.0)),
+                "net_expectancy": net_expectancy,
+                "net_expectancy_net_or_gross": (
+                    ARMSTRONG_CYCLE_V1_BASELINE_NET_EXPECTANCY_NET_OR_GROSS
+                ),
+                "net_expectancy_owner": ARMSTRONG_CYCLE_V1_BASELINE_NET_EXPECTANCY_OWNER,
+                "net_expectancy_unit": ARMSTRONG_CYCLE_V1_BASELINE_NET_EXPECTANCY_UNIT,
                 "profit_factor": float(stats.get("profit_factor", 0.0)),
                 "sharpe": float(stats.get("sharpe", 0.0)),
                 "max_drawdown": float(stats.get("max_drawdown", 0.0)),
@@ -350,6 +373,11 @@ def run_baseline_evaluation(
                 "materialization_owner": (
                     "src/research/step29m_armstrong_cycle_v1_offline_economic_baseline_materialization_v0.py"
                 ),
+                "net_expectancy_materialization_owner": (
+                    "scripts/ops/run_armstrong_cycle_v1_bound_offline_economic_baseline_evaluation_v0.py"
+                ),
+                "net_expectancy_owner": ARMSTRONG_CYCLE_V1_BASELINE_NET_EXPECTANCY_OWNER,
+                "net_expectancy_unit": ARMSTRONG_CYCLE_V1_BASELINE_NET_EXPECTANCY_UNIT,
                 "metrics_summary_file": METRICS_SUMMARY_FILENAME,
                 "origin_main": origin_main,
                 "reevaluation_class": "INITIAL_BASELINE",
