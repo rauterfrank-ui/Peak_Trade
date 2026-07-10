@@ -95,6 +95,12 @@ _EXTERNAL_PARAMETER_SCHEMA_V1: dict[str, dict[str, Any]] = {
         "min_cycle_length": 6,
         "lookback": 100,
     },
+    "el_karoui_vol_model": {
+        "vol_window": 20,
+        "lookback_window": 252,
+        "low_threshold": 0.30,
+        "high_threshold": 0.70,
+    },
 }
 
 COMPOSITE_STRATEGY_ID = "composite"
@@ -726,6 +732,20 @@ def compute_required_warmup_rows_v1(
             raise StrategySignalBindingError("ehlers_cycle_filter_min_cycle_length_not_integer")
         if lookback_raw < 2 or min_cycle_raw < 2:
             raise StrategySignalBindingError("ehlers_cycle_filter_warmup_param_invariant_failed")
+        return lookback_raw
+    if strategy_id == "el_karoui_vol_model":
+        lookback_raw = effective_params.get("lookback_window")
+        vol_window_raw = effective_params.get("vol_window")
+        if lookback_raw is None:
+            raise StrategySignalBindingError("el_karoui_vol_model_lookback_window_missing")
+        if vol_window_raw is None:
+            raise StrategySignalBindingError("el_karoui_vol_model_vol_window_missing")
+        if isinstance(lookback_raw, bool) or not isinstance(lookback_raw, int):
+            raise StrategySignalBindingError("el_karoui_vol_model_lookback_window_not_integer")
+        if isinstance(vol_window_raw, bool) or not isinstance(vol_window_raw, int):
+            raise StrategySignalBindingError("el_karoui_vol_model_vol_window_not_integer")
+        if lookback_raw < vol_window_raw or vol_window_raw < 2:
+            raise StrategySignalBindingError("el_karoui_vol_model_warmup_param_invariant_failed")
         return lookback_raw
     if strategy_id == COMPOSITE_STRATEGY_ID:
         raise StrategySignalBindingError("composite_warmup_requires_binding_context")

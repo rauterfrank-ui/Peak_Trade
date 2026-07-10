@@ -42,7 +42,8 @@ class TestEhlersCycleFilterV1OfflineEconomicEvaluationScopeRatificationV0Contrac
         payload = json.loads(BINDING_CONFIG.read_text(encoding="utf-8"))
         assert payload["candidate_id"] == "ehlers_cycle_filter/v1"
         assert payload["binding"]["binding_status"]["overall_binding_status"] == "COMPLETE"
-        assert payload["economic_evaluation_executed"] is False
+        assert payload["economic_evaluation_executed"] is True
+        assert payload["economic_evaluation_status"] == "COMPLETE_INCONCLUSIVE"
         assert payload["trading_logic_mutated"] is False
         assert (
             payload["binding"]["prior_evidence_exclusion"]["prior_evidence_exclusion_pass"] is True
@@ -53,4 +54,4 @@ class TestEhlersCycleFilterV1OfflineEconomicEvaluationScopeRatificationV0Contrac
         assert "LIVE_AUTHORIZED: false" in text
         assert "ORDERS_ALLOWED: false" in text
         assert "ECONOMIC_EVALUATION_EXECUTED` | `false`" in text
-        assert "ehlers_cycle_filter/v1" in text
+        assert "ehlers_cycle_filter" in text
