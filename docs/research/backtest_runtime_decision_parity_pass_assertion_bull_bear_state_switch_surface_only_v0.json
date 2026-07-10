@@ -16,6 +16,11 @@
   "no_rewire_review_contract_ref": "docs/research/bull_bear_state_switch_backtest_parity_narrow_rewire_v0.json",
   "assessment_source_pr": 5057,
   "no_rewire_review_source_pr": 5058,
+  "source_evidence_contract_refs": [
+    "docs/research/bull_bear_state_switch_backtest_parity_wiring_assessment_or_narrow_rewire_v0.json",
+    "docs/research/bull_bear_state_switch_backtest_parity_narrow_rewire_v0.json"
+  ],
+  "source_evidence_provenance_mode": "OPERATOR_DURABLE_ARCHIVE_REVIEW_TIME_ONLY",
   "source_evidence_dirs": [
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/bull_bear_state_switch_backtest_parity_wiring_assessment_or_narrow_rewire_v0_20260710T002041Z",
     "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/bull_bear_state_switch_backtest_parity_narrow_rewire_v0_20260710T003824Z"

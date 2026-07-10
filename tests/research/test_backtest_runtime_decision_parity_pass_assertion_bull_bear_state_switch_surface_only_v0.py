@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import hashlib
 import json
-import subprocess
 from pathlib import Path
 
 from scripts.research.bull_bear_state_switch_narrow_reuse_first_rewire_v0 import (
@@ -42,20 +41,6 @@ def load_contract() -> dict:
 
 def _sha256_file(path: Path) -> str:
     return hashlib.sha256(path.read_bytes()).hexdigest()
-
-
-def _verify_manifest_dir(evidence_dir: Path) -> int:
-    manifest = evidence_dir / "MANIFEST.sha256"
-    if not manifest.is_file():
-        return 1
-    result = subprocess.run(
-        ["shasum", "-a", "256", "-c", "MANIFEST.sha256"],
-        cwd=evidence_dir,
-        capture_output=True,
-        text=True,
-        check=False,
-    )
-    return result.returncode
 
 
 def test_contract_declares_surface_only_parity_pass() -> None:
@@ -107,11 +92,21 @@ def test_contract_binds_required_evidence_references() -> None:
     assert all((ROOT / ref).is_file() for ref in data["deterministic_test_refs"])
 
 
-def test_source_evidence_manifests_verify_rc_zero() -> None:
+def test_source_evidence_review_metadata_recorded_without_ci_archive_dependency() -> None:
     data = load_contract()
+    no_rewire = json.loads(NO_REWIRE_CONTRACT.read_text(encoding="utf-8"))
+
     assert data["source_manifest_verify_rc"] == 0
-    for evidence_dir in data["source_evidence_dirs"]:
-        assert _verify_manifest_dir(Path(evidence_dir)) == 0
+    assert no_rewire["source_evidence_manifest_verify_rc"] == 0
+    assert data["source_evidence_provenance_mode"] == "OPERATOR_DURABLE_ARCHIVE_REVIEW_TIME_ONLY"
+    assert len(data["source_evidence_dirs"]) == 2
+    assert set(data["source_manifest_digests"]) == {
+        Path(evidence_dir).name for evidence_dir in data["source_evidence_dirs"]
+    }
+    for contract_ref in data["source_evidence_contract_refs"]:
+        assert (ROOT / contract_ref).is_file()
+    assert data["assessment_contract_ref"] in data["source_evidence_contract_refs"]
+    assert data["no_rewire_review_contract_ref"] in data["source_evidence_contract_refs"]
 
 
 def test_implementation_digests_match_origin_main_baseline() -> None:
@@ -121,13 +116,18 @@ def test_implementation_digests_match_origin_main_baseline() -> None:
         assert actual == expected_digest, f"digest drift for {rel_path}"
 
 
-def test_source_manifest_digests_match_pinned_baseline() -> None:
+def test_source_manifest_digests_are_stable_review_metadata() -> None:
     data = load_contract()
-    for rel_key, expected_digest in data["source_manifest_digests"].items():
-        manifest_path = next(
-            Path(d) / "MANIFEST.sha256" for d in data["source_evidence_dirs"] if rel_key in d
+    for bundle_key, digest in data["source_manifest_digests"].items():
+        assert bundle_key.endswith("Z")
+        assert len(digest) == 64
+        assert all(char in "0123456789abcdef" for char in digest)
+        matching_dir = next(
+            evidence_dir
+            for evidence_dir in data["source_evidence_dirs"]
+            if bundle_key in evidence_dir
         )
-        assert _sha256_file(manifest_path) == expected_digest
+        assert matching_dir.endswith(bundle_key)
 
 
 def test_owner_binding_aligns_with_canonical_owner() -> None:

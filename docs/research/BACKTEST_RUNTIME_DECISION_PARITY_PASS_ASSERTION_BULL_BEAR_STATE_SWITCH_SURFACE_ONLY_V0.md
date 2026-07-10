@@ -40,7 +40,7 @@ This slice materializes a machine-readable, surface-only assertion that Bull/Bea
 
 | Evidence | Path |
 |---|---|
-| Canonical owner | `src/trading/master_v2` (`trading.master_v2.double_play_state.transition_state`) |
+| Canonical owner | `src/trading/master_v2/double_play_state.py` (`trading.master_v2.double_play_state.transition_state`) |
 | Scenario binding adapter | `src/trading/master_v2/bull_bear_state_switch_scenario_binding_adapter_v0.py` |
 | Backtest consumer | `src/trading/master_v2/offline_double_play_scenario_replay_v0.py` |
 | Parity harness | `src/trading/master_v2/integrated_vs_scenario_replay_full_system_parity_harness_v0.py` |
