@@ -1,0 +1,164 @@
+{
+  "adapter_implementation_status": "COMPLETE",
+  "artifact_kind": "bouchaud_microstructure_ohlcv_proxy_v1_versioned_research_binding",
+  "artifact_version": "v0",
+  "authority_effect": "NONE",
+  "binding": {
+    "baseline_evaluation_contract": {
+      "baseline_count": 1,
+      "baseline_type": "FULL_CANONICAL_OFFLINE_BASELINE_SINGLE_INSTRUMENT",
+      "economic_evaluation_executed_in_this_slice": false,
+      "evidence_class_id": "BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_FULL_CANONICAL_OFFLINE_BASELINE_ECONOMIC_EVALUATION_V0",
+      "parameter_tuning_after_baseline_forbidden": true,
+      "parameter_tuning_during_baseline_forbidden": true
+    },
+    "binding_status": {
+      "baseline_binding_status": "STAGED",
+      "candidate_binding_status": "BOUND",
+      "cost_model_binding_status": "BOUND",
+      "dataset_binding_status": "BOUND",
+      "digest_binding_status": "STAGED",
+      "instrument_binding_status": "BOUND",
+      "numeric_bindings_status": "BOUND",
+      "overall_binding_status": "ADAPTER_IMPLEMENTATION_STAGED",
+      "parameter_binding_status": "BOUND",
+      "period_binding_status": "BOUND",
+      "policy_classes_status": "BOUND",
+      "warmup_binding_status": "BOUND"
+    },
+    "candidate_binding": {
+      "canonical_candidate_identifier": "bouchaud_microstructure_ohlcv_proxy/v1",
+      "canonical_owner": "src/strategies/bouchaud/bouchaud_microstructure_strategy.py",
+      "engine_signal_source": "configured_strategy_signal",
+      "hypothesis_id": "BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1",
+      "implementation_ref": "src.strategies.bouchaud.bouchaud_microstructure_strategy.BouchaudMicrostructureStrategy",
+      "proxy_semantics": true,
+      "registry_class": "oop_strategy_spec",
+      "registry_key": "bouchaud_microstructure",
+      "research_scope": "bouchaud_microstructure_ohlcv_proxy/v1",
+      "signal_family": "BAR_LEVEL_MICROSTRUCTURE_PRESSURE_PROXY",
+      "strategy_id": "bouchaud_microstructure",
+      "strategy_version": "v1",
+      "true_tick_l2_microstructure": false
+    },
+    "cost_execution_binding": {
+      "binding_version": "v0",
+      "execution_model_version": "backtest_execution_v0",
+      "execution_price_observation_source": "MODELLED_NOT_OBSERVED",
+      "fee_model_version": "backtest_fee_taker_symmetric_v0",
+      "funding_bind": true,
+      "funding_model_version": "backtest_funding_perpetual_interval_v1",
+      "implicit_zero_cost_forbidden": true,
+      "roundtrip_cost_bps": 40.0,
+      "slippage_model_version": "backtest_slippage_symmetric_v0",
+      "spread_model_version": "research_conservative_bps_v1"
+    },
+    "dataset_binding": {
+      "binding_version": "v1",
+      "canonical_instrument_id": "inst-eth-usdt-perp",
+      "data_class": "FINALIZED_OHLCV_BARS",
+      "dataset_digest": "b4cbe7fff81a137da055588231757937406d8cb30d531ee0aab41d95ee9b6c78",
+      "dataset_id": "inst-eth-usdt-perp_v1",
+      "dataset_path": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/datasets/admissible_futures/inst-eth-usdt-perp/v1/bars.parquet",
+      "dataset_profile": "economic_research_v1",
+      "dataset_version": "v1",
+      "expected_manifest_digest": "317105798c749943074911b1e9ea91ac9b94fab3b115fb7a64b692339426651a",
+      "native_instrument_id": "ETH-USDT-SWAP",
+      "no_lookahead_semantics": "point_in_time_bar_close_v1",
+      "point_in_time_binding": true,
+      "source_venue": "OKX",
+      "survivorship_bias_forbidden": true,
+      "tick_data_required": false
+    },
+    "digest_bindings": {
+      "config_digest": {
+        "status": "BOUND",
+        "value": "a9c0f1d859855ef406e3f7cdc31e4f71ddf86e18d7e97a0bea2b2d0d1fdd1472"
+      },
+      "data_digest": {
+        "status": "BOUND",
+        "value": "b4cbe7fff81a137da055588231757937406d8cb30d531ee0aab41d95ee9b6c78"
+      },
+      "implementation_digest": {
+        "status": "BOUND",
+        "value": "bb4ecee4b88a715e9b8e340abb56b4a43668512bd1f060ee4eaa9996c19aeffb"
+      },
+      "material_difference_digest": {
+        "status": "BOUND",
+        "value": "34599aa261c9ce32ced00e8000e09e152031ba59d5402d89558488c177a378a2"
+      },
+      "strategy_params_digest": {
+        "status": "BOUND",
+        "value": "bda8f9eb343ce818a1c56e69377c3c10c0c014bcb1f16053b0c897bd0a304b3f"
+      }
+    },
+    "economic_policy_binding": {
+      "binding_version": "v1",
+      "economic_validity_policy_version": "economic_validity_policy_v1",
+      "minimum_trade_count_policy_bound": true,
+      "promising_is_not_pass_bound": true
+    },
+    "external_bindings": {
+      "adapter_owner_ref": {
+        "ref": "src/research/bouchaud_microstructure_ohlcv_proxy_v1_step29m_single_instrument_offline_evaluation_adapter_v0.py",
+        "status": "BOUND"
+      },
+      "admissibility_contract_ref": {
+        "ref": "src/backtest/step29m_bouchaud_microstructure_ohlcv_proxy_v1_economic_evaluation_admissibility_contract_v1.py",
+        "status": "BOUND"
+      },
+      "evaluation_config_ref": {
+        "ref": "config/ops/step29m_okx_inst_eth_usdt_perp_bouchaud_microstructure_ohlcv_proxy_v1_economic_evaluation_v1.json",
+        "status": "BOUND"
+      },
+      "material_difference_contract_ref": {
+        "ref": "config/research/bouchaud_microstructure_ohlcv_proxy_v1_material_difference_and_non_claim_contract_v0.json",
+        "status": "BOUND"
+      },
+      "scope_separation_contract_ref": {
+        "ref": "config/research/bouchaud_microstructure_ohlcv_proxy_v1_scope_separation_contract_v0.json",
+        "status": "BOUND"
+      },
+      "strategy_signal_binding_owner": {
+        "status": "BOUND",
+        "value": "backtest.strategy_signal_binding_v1"
+      }
+    },
+    "instrument_binding": {
+      "binding_version": "v0",
+      "bitcoin_direction_allowed": false,
+      "canonical_instrument_id": "inst-eth-usdt-perp",
+      "futures_only": true,
+      "native_instrument_id": "ETH-USDT-SWAP",
+      "source_venue": "OKX",
+      "spot_allowed": false,
+      "synthetic_spot_allowed": false
+    },
+    "period_binding": {
+      "binding_version": "v0",
+      "data_period": "2026-06-17 16:00:00+00:00..2026-07-01 10:07:00+00:00",
+      "out_of_sample_period": "2026-06-27 23:36:00+00:00..2026-07-01 10:07:00+00:00",
+      "training_period": "2026-06-17 16:00:00+00:00..2026-06-24 13:03:00+00:00",
+      "validation_period": "2026-06-24 13:04:00+00:00..2026-06-27 23:35:00+00:00"
+    },
+    "warmup_binding": {
+      "binding_version": "v0",
+      "required_warmup_rows": 100
+    }
+  },
+  "candidate_id": "bouchaud_microstructure_ohlcv_proxy/v1",
+  "economic_evaluation_authorized": false,
+  "economic_evaluation_executed": false,
+  "evaluation_authorized": false,
+  "go_token": "GO_BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_STEP29M_SINGLE_INSTRUMENT_OFFLINE_EVALUATION_ADAPTER_IMPLEMENTATION_V0",
+  "hypothesis_id": "BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1",
+  "implementation_go_token": "GO_BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_STEP29M_SINGLE_INSTRUMENT_OFFLINE_EVALUATION_ADAPTER_IMPLEMENTATION_V0",
+  "next_evaluation_go_token": "GO_BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_BOUND_OFFLINE_ECONOMIC_BASELINE_EVALUATION_V0",
+  "proxy_semantics": true,
+  "research_scope": "bouchaud_microstructure_ohlcv_proxy/v1",
+  "runtime_effect": "NONE",
+  "schema_version": "bouchaud_microstructure_ohlcv_proxy_v1_versioned_research_binding.v0",
+  "selection_mode": "single_instrument_prebound",
+  "source_discovery_evidence_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/post_armstrong_registry_primary_signal_exhaustion_new_hypothesis_generation_and_capability_gap_classification_read_only_v0_20260710T170020Z",
+  "true_tick_l2_microstructure": false
+}
