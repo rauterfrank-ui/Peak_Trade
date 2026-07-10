@@ -1,0 +1,24 @@
+{
+  "contract_digest": "0eedbc607d6b13c66c911b78bcb62ce80ac80d5c44ac2431ef1db4ff2216b8b0",
+  "explicit_non_claims": [
+    "SIGNAL_UNTESTED=false",
+    "NO_PRIOR_SINGLE_INSTRUMENT_EVALUATION=false",
+    "NEW_SIGNAL_FAMILY=false",
+    "TERMINAL_SINGLE_INSTRUMENT_EVIDENCE_SUPERSEDED=false",
+    "DATASET_CHANGE_ALONE_SUFFICIENT=false"
+  ],
+  "material_difference_axes": [
+    "PORTFOLIO_AGGREGATION=SINGLE_INSTRUMENT_DIRECT_TO_CROSS_SECTIONAL_SCORE_AND_TOP1_ROTATION",
+    "UNIVERSE=ETH_ONLY_TO_LIFECYCLE_ADMISSIBLE_OKX_NON_BITCOIN_PERPETUAL_PANEL",
+    "DATASET=INST_ETH_USDT_PERP_1M_TO_NEW_PIT_OKX_PT1H_LIFECYCLE_PANEL",
+    "EVALUATION_GEOMETRY=DIRECT_SINGLE_SLOT_TO_MULTI_INSTRUMENT_RANK_ROTATION"
+  ],
+  "material_difference_basis": "TRUE_MULTI_INSTRUMENT_CROSS_SECTIONAL_SCORE_COMPOSITION_TOP1_ROTATION_AND_NEW_LIFECYCLE_PANEL",
+  "material_difference_confirmed": true,
+  "material_difference_digest": "288ea899d6bf53773d3a703de6a7097f4466f10c33d8df8796f34cf707e599e7",
+  "panel_archetype_evidence": "NOT_PREVIOUSLY_EXECUTED",
+  "schema_version": "cross_sectional_ma_crossover_panel_rank_rotation_material_difference_contract.v0",
+  "signal_family_material_difference": false,
+  "single_instrument_evidence": "TERMINAL_NEGATIVE",
+  "underlying_signal_binding": "ma_crossover/v1@inst-eth-usdt-perp"
+}
