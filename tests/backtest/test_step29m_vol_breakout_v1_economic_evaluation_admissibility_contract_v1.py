@@ -193,15 +193,20 @@ def test_versioned_bindings_materialized() -> None:
     assert "atr_multiple" not in scope["parameter_binding"]["parameters"]
 
 
-def test_progress_registry_ratified_pending_evaluation_fields() -> None:
+def test_progress_registry_ratified_terminal_negative_fields() -> None:
     section = _step_29m_section(PROGRESS_REGISTRY.read_text(encoding="utf-8"))
     assert _field_value(section, "VOL_BREAKOUT_V1_POLICY_RATIFIED") == "true"
     assert _field_value(section, "VOL_BREAKOUT_V1_FIXED_CONFIG_BOUND") == "true"
-    assert _field_value(section, "VOL_BREAKOUT_V1_ECONOMIC_EVALUATION_EXECUTED") == "false"
-    assert _field_value(section, "VOL_BREAKOUT_V1_STATUS") == "BINDING_DEFECT_FIX_PENDING"
-    assert _field_value(section, "NEXT_EVALUATION_STRATEGY_ID") == "vol_breakout"
-    assert _field_value(section, "NEXT_EVALUATION_CONFIG_STATUS") == "BINDING_DEFECT_FIX_PENDING"
-    assert _field_value(section, "AUTHORIZED_PENDING_EVALUATION_COUNT") == "1"
+    assert _field_value(section, "VOL_BREAKOUT_V1_ECONOMIC_EVALUATION_EXECUTED") == "true"
+    assert (
+        _field_value(section, "VOL_BREAKOUT_V1_STATUS") == "TECHNICALLY_VALID_ECONOMIC_POLICY_FAIL"
+    )
+    assert _field_value(section, "NEXT_EVALUATION_STRATEGY_ID") == "NONE"
+    assert (
+        _field_value(section, "NEXT_EVALUATION_CONFIG_STATUS")
+        == "TERMINAL_NEGATIVE_EVIDENCE_REGISTERED"
+    )
+    assert _field_value(section, "AUTHORIZED_PENDING_EVALUATION_COUNT") == "0"
     assert _field_value(section, "ATR_MULTIPLE_BOUND") == "false"
     assert _field_value(section, "PARAMETER_SEARCH_ALLOWED") == "false"
     assert _field_value(section, "ECONOMIC_EVALUATION_ALLOWED") == "false"
