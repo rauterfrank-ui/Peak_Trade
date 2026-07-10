@@ -142,6 +142,31 @@ def test_admissibility_contract_passes_on_canonical_config() -> None:
     assert result.research_scope == "bouchaud_microstructure_ohlcv_proxy/v1"
     assert result.proxy_semantics is True
     assert result.true_tick_l2_microstructure is False
+    guard = contract.evaluate_bouchaud_microstructure_ohlcv_proxy_v1_sizing_digest_admissibility_guard_v1(
+        repo_root=ROOT,
+    )
+    assert guard.admissible is True
+    assert guard.economic_evaluation_executed is False
+
+
+def test_stale_sizing_digest_blocked_by_admissibility_contract(cfg: dict) -> None:
+    bad = deepcopy(cfg)
+    bad["offline_evaluation_sizing_contract_v1"] = dict(
+        bad["offline_evaluation_sizing_contract_v1"]
+    )
+    bad["offline_evaluation_sizing_contract_v1"]["config_digest"] = (
+        "c0b377c523ccc6ed8c69e0976c36f19ba6d1f5f01080aecd36004f9d87bcddee"
+    )
+    configured = bad["economic_evaluation_v1"]["strategy_params"]
+    effective, params_digest = resolve_effective_strategy_params_v1(
+        "bouchaud_microstructure",
+        project_strategy_params_for_binding_v1("bouchaud_microstructure", configured),
+    )
+    reasons = contract.verify_bouchaud_microstructure_ohlcv_proxy_v1_sizing_config_digest_v1(
+        bad,
+        strategy_params_digest=params_digest,
+    )
+    assert "sizing_config_digest_mismatch" in reasons
 
 
 def test_warmup_rows_match_lookback_ticks(cfg: dict) -> None:

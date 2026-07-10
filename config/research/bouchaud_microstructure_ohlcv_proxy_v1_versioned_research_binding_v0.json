@@ -74,7 +74,7 @@
     "digest_bindings": {
       "config_digest": {
         "status": "BOUND",
-        "value": "a9c0f1d859855ef406e3f7cdc31e4f71ddf86e18d7e97a0bea2b2d0d1fdd1472"
+        "value": "a3af95053e4a60d302c47465d40b82d2002b75d51a2822a01d756b167bfafd95"
       },
       "data_digest": {
         "status": "BOUND",
@@ -82,7 +82,7 @@
       },
       "implementation_digest": {
         "status": "BOUND",
-        "value": "5ca371146454321a89b4dd802a7bddcdd80257a9dffd417f2266bb0563299655"
+        "value": "e76f7d06e9e8e92e2ea3db436e404894e66f218ee78e4f1e0962a37d4a8b2e35"
       },
       "material_difference_digest": {
         "status": "BOUND",
@@ -215,21 +215,26 @@
       "required_warmup_rows": 100
     }
   },
-  "binding_digest": "39a783904714eb988e9a5fee34e6474e0bb65821ddf525af8df53268906f6e7c",
+  "binding_changed": false,
+  "binding_classification": "SAME_SEMANTIC_BINDING_NEW_CRYPTOGRAPHIC_IDENTITY",
+  "binding_digest": "99d6153cfc25e550a429cde04a2d684c56e0e84369cc3e1196cae9f91ac26422",
   "binding_ratified": true,
   "candidate_id": "bouchaud_microstructure_ohlcv_proxy/v1",
   "data_class": "FINALIZED_OHLCV_BARS",
-  "durable_evidence_refs": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr5097_merge_closeout_bouchaud_microstructure_ohlcv_proxy_v1_step29m_single_instrument_offline_evaluation_adapter_implementation_v0_20260710T172226Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/bouchaud_microstructure_ohlcv_proxy_v1_bound_offline_economic_baseline_evaluation_v0_20260710T172515Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/bouchaud_microstructure_ohlcv_proxy_v1_step29m_single_instrument_offline_evaluation_adapter_implementation_v0_20260710T170832Z (MANIFEST_VERIFY_RC=0)",
+  "durable_evidence_refs": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr5097_merge_closeout_bouchaud_microstructure_ohlcv_proxy_v1_step29m_single_instrument_offline_evaluation_adapter_implementation_v0_20260710T172226Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/bouchaud_microstructure_ohlcv_proxy_v1_bound_offline_economic_baseline_evaluation_v0_20260710T172515Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/bouchaud_microstructure_ohlcv_proxy_v1_bound_offline_economic_baseline_evaluation_v0_20260710T174747Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/bouchaud_microstructure_ohlcv_proxy_v1_step29m_single_instrument_offline_evaluation_adapter_implementation_v0_20260710T170832Z (MANIFEST_VERIFY_RC=0)",
   "economic_evaluation_authorized": false,
   "economic_evaluation_executed": false,
   "evaluation_authorized": false,
   "evaluation_infrastructure_ready": true,
+  "failed_execution_contract_evidence": true,
   "go_token": "GO_RATIFY_BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_VERSIONED_RESEARCH_BINDING_AND_OFFLINE_ECONOMIC_EVALUATION_SCOPE_NO_RUNTIME_AUTHORITY_V0",
   "hypothesis_id": "BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1",
   "material_difference_proven": true,
   "next_evaluation_operator_go": "GO_BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_BOUND_OFFLINE_ECONOMIC_BASELINE_EVALUATION_V0",
   "offline_only": true,
+  "old_binding_digest_at_prior_failed_attempt": "39a783904714eb988e9a5fee34e6474e0bb65821ddf525af8df53268906f6e7c",
   "order_effect": "NONE",
+  "prior_failed_attempt_bundle": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/bouchaud_microstructure_ohlcv_proxy_v1_bound_offline_economic_baseline_evaluation_v0_20260710T174747Z",
   "proxy_semantics": true,
   "research_scope": "bouchaud_microstructure_ohlcv_proxy/v1",
   "runtime_effect": "NONE",
@@ -238,5 +243,7 @@
   "source_discovery_evidence_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/post_armstrong_registry_primary_signal_exhaustion_new_hypothesis_generation_and_capability_gap_classification_read_only_v0_20260710T170020Z",
   "source_ratification_evidence_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr5097_merge_closeout_bouchaud_microstructure_ohlcv_proxy_v1_step29m_single_instrument_offline_evaluation_adapter_implementation_v0_20260710T172226Z",
   "trading_logic_mutated": false,
-  "true_tick_l2_microstructure": false
+  "true_tick_l2_microstructure": false,
+  "unchanged_retry_allowed": false,
+  "unchanged_retry_blocked": true
 }

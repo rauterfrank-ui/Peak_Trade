@@ -107,7 +107,7 @@
     }
   },
   "offline_evaluation_sizing_contract_v1": {
-    "config_digest": "c0b377c523ccc6ed8c69e0976c36f19ba6d1f5f01080aecd36004f9d87bcddee",
+    "config_digest": "c75b7f115c62977a4e6a089c02c3eabe660cf6bf23c295229fd25294790616f0",
     "dataset_digest": "b4cbe7fff81a137da055588231757937406d8cb30d531ee0aab41d95ee9b6c78",
     "initial_equity": 10000.0,
     "instrument_metadata_source": "versioned_dataset_manifest_v1",
