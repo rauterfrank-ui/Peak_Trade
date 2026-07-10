@@ -759,6 +759,10 @@ class BacktestEngine:
             # Daily Returns registrieren
             self._register_trade_pnl(last_bar.name, current_trade.pnl_pct)
 
+            # Materialize realized post-close equity on the final bar point.
+            if self.equity_curve:
+                self.equity_curve[-1] = equity
+
         # Stats berechnen
         equity_series = pd.Series(self.equity_curve, index=[df.index[0]] + list(df.index))
 
@@ -1185,6 +1189,9 @@ class BacktestEngine:
                     }
                 )
                 equity += pnl
+
+            if self.equity_curve:
+                self.equity_curve[-1] = equity
 
         # Stats berechnen
         equity_series = pd.Series(self.equity_curve, index=[df.index[0]] + list(df.index))

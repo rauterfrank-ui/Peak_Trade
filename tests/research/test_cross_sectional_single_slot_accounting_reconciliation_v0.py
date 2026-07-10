@@ -16,6 +16,7 @@ from src.research.cross_sectional_relative_strength_v0_versioned_research_bindin
 )
 from src.research.cross_sectional_single_slot_accounting_reconciliation_v0 import (
     FAILURE_FORCED_END_OF_WINDOW_LIQUIDATION_MISSING,
+    reconcile_legacy_backtest_result_accounting_v0,
     reconcile_single_slot_backtest_accounting_v0,
 )
 from src.research.cross_sectional_single_slot_backtest_wiring_v0 import (
