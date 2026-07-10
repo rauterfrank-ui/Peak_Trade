@@ -1,8 +1,10 @@
 {
+  "accounting_reconciliation_pass": true,
   "all_required_bindings_ratified": true,
   "artifact_kind": "cross_sectional_ma_crossover_panel_rank_rotation_v0_versioned_research_binding",
   "artifact_version": "v0",
   "authority_effect": "NONE",
+  "baseline_verdict": "FAIL",
   "binding": {
     "binding_status": {
       "cost_model_binding_status": "BOUND",
@@ -217,8 +219,11 @@
       "score_epoch": "finalized_bar_close"
     }
   },
+  "binding_changed": false,
   "binding_digest": "89f80951dd71e43168b9b37b0d6f04d57ba7ca025fcd4923c9901d0f244f43e6",
   "binding_ratified": true,
+  "canonical_evaluation_bundle": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_ma_crossover_panel_rank_rotation_v0_offline_economic_evaluation_20260710T101815Z",
+  "canonical_evaluation_timestamp": "20260710T101815Z",
   "config_digest": "eaca6226b6e040580227c8380c86a3aaa4f3e3bdad9292b37d9cbef736405141",
   "cost_execution_binding": {
     "binding_version": "v0",
@@ -249,8 +254,22 @@
     }
   },
   "data_digest": "b0eb7802c269bcab987d2025fe1e960b83079d5ac5f305799e0867661d42f2e0",
+  "durable_evidence_refs": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_ma_crossover_panel_rank_rotation_v0_offline_economic_evaluation_20260710T101815Z (MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_ma_crossover_panel_rank_rotation_v0_offline_economic_evaluation_20260710T101306Z (SUPERSEDED_MANIFEST_VERIFY_RC=0); /Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr5080_merge_closeout_cs_ma_crossover_panel_rank_rotation_v0_accounting_reconciliation_20260710T102332Z (MANIFEST_VERIFY_RC=0)",
   "economic_evaluation_authorized": false,
-  "economic_evaluation_executed": false,
+  "economic_evaluation_executed": true,
+  "economic_evaluation_reason_codes": [
+    "METRIC_MISSING:monte_carlo_pass_ratio",
+    "METRIC_MISSING:out_of_sample_pass_ratio",
+    "METRIC_MISSING:parameter_neighbor_degradation",
+    "METRIC_MISSING:single_regime_profit_contribution",
+    "METRIC_MISSING:single_trade_profit_contribution",
+    "METRIC_MISSING:stress_failure_count",
+    "METRIC_MISSING:walk_forward_pass_ratio",
+    "NET_EXPECTANCY_BELOW_THRESHOLD",
+    "PROFIT_FACTOR_BELOW_THRESHOLD",
+    "TRADE_COUNT_BELOW_THRESHOLD"
+  ],
+  "economic_evaluation_status": "COMPLETE_FAIL",
   "economic_policy_binding": {
     "binding_version": "v1",
     "economic_validity_policy_version": "economic_validity_policy_v1",
@@ -273,6 +292,11 @@
       "policy_version": "walk_forward_v1"
     }
   },
+  "economic_validity_offline_gate_pass": false,
+  "economic_viability_evidence_manifest_digest": "3a132a93e01a209c3d0c58f5573d0e04ab588ba563048d58419c03450b1b609c",
+  "economic_viability_evidence_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_ma_crossover_panel_rank_rotation_v0_offline_economic_evaluation_20260710T101815Z (MANIFEST_VERIFY_RC=0)",
+  "evaluation_authorized": false,
+  "historical_economic_result": "FAIL",
   "hypothesis_frozen": true,
   "implementation_digest": "e2ad162ad12405ca9a2378ea9b8733463c672445e8887da6665427d4de8431d8",
   "instrument_binding": {
@@ -295,6 +319,8 @@
     "EVALUATION_GEOMETRY=DIRECT_SINGLE_SLOT_TO_MULTI_INSTRUMENT_RANK_ROTATION"
   ],
   "material_difference_digest": "288ea899d6bf53773d3a703de6a7097f4466f10c33d8df8796f34cf707e599e7",
+  "monte_carlo_status": "NOT_EXECUTED_BASELINE_NEGATIVE",
+  "net_return": -0.1529057247280985,
   "non_authorizing": true,
   "operator_go_token_binding_ratification": "GO_VERSIONED_CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_BINDING_RATIFICATION",
   "operator_go_token_economic_evaluation": "GO_CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0",
@@ -390,15 +416,29 @@
     "universe_policy_id": "pit_okx_linear_usdt_non_bitcoin_perpetual_cross_sectional_universe/v1",
     "venue": "OKX"
   },
+  "policy_or_threshold_changed": false,
+  "promotion_eligible": false,
   "ranking_semantics_binding_ref": "config/research/cross_sectional_ma_crossover_panel_rank_rotation_v0_ranking_semantics_binding_v0.json",
   "ranking_semantics_schema_version": "cross_sectional_ma_crossover_panel_rank_rotation_v0_ranking_semantics_binding.v0",
+  "re_evaluation_allowed": false,
   "research_binding_only": true,
   "research_hypothesis_id": "CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_NON_BITCOIN_PERPETUALS_V0",
   "research_scope": "cross_sectional_ma_crossover_panel_rank_rotation/v0",
+  "retry_unchanged_binding_allowed": false,
   "runtime_effect": "NONE",
+  "runtime_rewire_admissible": false,
+  "sample_sufficiency_status": "INSUFFICIENT_TRADE_SAMPLE",
   "schema_version": "cross_sectional_ma_crossover_panel_rank_rotation_v0_versioned_research_binding.v0",
+  "source_merge_commit": "48dd6e367f9e61361861b6d8a0d250def424f222",
+  "source_pr": 5080,
   "strategy_id": "cross_sectional_ma_crossover_panel_rank_rotation",
   "strategy_version": "v0",
+  "stress_status": "NOT_EXECUTED_BASELINE_NEGATIVE",
+  "superseded_evaluation_bundle": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_ma_crossover_panel_rank_rotation_v0_offline_economic_evaluation_20260710T101306Z",
+  "superseded_evaluation_manifest_digest": "1366b57fb19f0b8ea90f37b1ae2111a1b7599eeefa2728fd04650c60162b36f6",
+  "superseded_evaluation_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_ma_crossover_panel_rank_rotation_v0_offline_economic_evaluation_20260710T101306Z (MANIFEST_VERIFY_RC=0)",
+  "superseded_evaluation_timestamp": "20260710T101306Z",
+  "supersession_reason": "ORIGINAL_EVALUATION_ACCOUNTING_INCOMPLETE_OPEN_END_OF_WINDOW_POSITION_AND_WRONG_RECONCILIATION_IDENTITY",
   "system_constraints": {
     "bitcoin_direction_allowed": false,
     "futures_only": true,
@@ -407,26 +447,31 @@
     "unchanged_single_instrument_retry_blocked": true
   },
   "terminal_failed_binding_exclusions": [
-    "ma_crossover/v1@inst-eth-usdt-perp",
-    "vol_breakout/v1@inst-eth-usdt-perp",
-    "cross_sectional_relative_strength/v0",
-    "cross_sectional_realized_volatility_rank_rotation/v0",
-    "cross_sectional_funding_rate_rank_delta/v0",
-    "cross_sectional_funding_rate_dual_leg_spread/v1",
-    "cross_sectional_funding_rate_delta_momentum/v0",
-    "cross_sectional_funding_rate_carry/v0",
-    "cross_sectional_funding_rate_persistence_reversal_filter/v0",
-    "cross_sectional_funding_rate_dispersion_zscore_reversion/v0",
-    "okx_full_panel_cross_sectional_ranking/v0",
-    "trend_following/v2",
-    "bollinger_bands/v2",
-    "momentum_1h/v2",
-    "trend_following/v1",
     "bollinger_bands/v1",
-    "momentum_1h/v1"
+    "bollinger_bands/v2",
+    "cross_sectional_funding_rate_carry/v0",
+    "cross_sectional_funding_rate_delta_momentum/v0",
+    "cross_sectional_funding_rate_dispersion_zscore_reversion/v0",
+    "cross_sectional_funding_rate_dual_leg_spread/v1",
+    "cross_sectional_funding_rate_persistence_reversal_filter/v0",
+    "cross_sectional_funding_rate_rank_delta/v0",
+    "cross_sectional_ma_crossover_panel_rank_rotation/v0",
+    "cross_sectional_realized_volatility_rank_rotation/v0",
+    "cross_sectional_relative_strength/v0",
+    "ma_crossover/v1@inst-eth-usdt-perp",
+    "momentum_1h/v1",
+    "momentum_1h/v2",
+    "okx_full_panel_cross_sectional_ranking/v0",
+    "trend_following/v1",
+    "trend_following/v2",
+    "vol_breakout/v1@inst-eth-usdt-perp"
   ],
+  "terminal_failure_class": "NEGATIVE_ECONOMIC_BASELINE_AND_INSUFFICIENT_TRADE_SAMPLE",
+  "terminal_negative_evidence_for_unchanged_binding": true,
   "terminal_underlying_config_digest": "301231ab06d6fa52f09dee6812104b164c79b92dee765e50ee9247701ad45ffd",
   "terminal_underlying_dataset_digest": "b4cbe7fff81a137da055588231757937406d8cb30d531ee0aab41d95ee9b6c78",
   "terminal_underlying_signal_binding": "ma_crossover/v1@inst-eth-usdt-perp",
-  "validation_verdict": "ACCEPTED_COMPLETE"
+  "trade_count": 4,
+  "validation_verdict": "ACCEPTED_COMPLETE",
+  "walk_forward_status": "NOT_EXECUTED_BASELINE_NEGATIVE"
 }
