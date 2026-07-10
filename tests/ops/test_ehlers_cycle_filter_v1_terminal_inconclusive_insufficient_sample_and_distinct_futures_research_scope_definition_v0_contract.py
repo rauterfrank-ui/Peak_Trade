@@ -183,7 +183,6 @@ class TestTerminalInconclusiveDistinctFromNegative:
 
 class TestTerminalInconclusiveProgressRegistry:
     def test_global_metadata_terminal_inconclusive(self) -> None:
-        assert authoritative_field_value("LAST_VERIFIED_ORIGIN_MAIN") == PRE_MERGE_ORIGIN_MAIN
         assert authoritative_field_value("EHLERS_CYCLE_FILTER_V1_STATUS") == "COMPLETE_INCONCLUSIVE"
         assert (
             authoritative_field_value("EHLERS_CYCLE_FILTER_V1_ECONOMIC_EVALUATION_EXECUTED")

@@ -1,12 +1,16 @@
 {
+  "accounting_reconciliation_pass": true,
   "all_required_bindings_ratified": true,
   "authority_effect": "NONE",
+  "baseline_verdict": "INCONCLUSIVE",
   "binding_digest": "99d6153cfc25e550a429cde04a2d684c56e0e84369cc3e1196cae9f91ac26422",
   "binding_ratified": true,
   "binding_version": "v0",
   "candidate_binding_ref": "config/research/bouchaud_microstructure_ohlcv_proxy_v1_versioned_research_binding_v0.json",
   "candidate_id": "bouchaud_microstructure_ohlcv_proxy/v1",
+  "canonical_evaluation_bundle": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/bouchaud_microstructure_ohlcv_proxy_v1_repaired_same_semantic_binding_offline_baseline_reevaluation_v0_20260710T180542Z",
   "canonical_evaluation_runner": "scripts/ops/run_bouchaud_microstructure_ohlcv_proxy_v1_bound_offline_economic_baseline_evaluation_v0.py",
+  "canonical_evaluation_timestamp": "20260710T180542Z",
   "canonical_invocation_wrapper": "scripts/ops/invoke_bouchaud_microstructure_ohlcv_proxy_v1_bound_offline_economic_baseline_evaluation_v0.py",
   "config_digest": "a3af95053e4a60d302c47465d40b82d2002b75d51a2822a01d756b167bfafd95",
   "cost_execution_binding": {
@@ -44,7 +48,8 @@
     "tick_data_required": false
   },
   "economic_evaluation_authorized": false,
-  "economic_evaluation_executed": false,
+  "economic_evaluation_executed": true,
+  "economic_evaluation_status": "COMPLETE_INCONCLUSIVE",
   "economic_policy_binding": {
     "baseline_adjudication_policy": "PASS_FAIL_INCONCLUSIVE",
     "binding_version": "v1",
@@ -53,7 +58,8 @@
     "promising_is_not_pass_bound": true,
     "sample_sufficiency_policy": "economic_validity_policy_v1"
   },
-  "evaluation_authorization_status": "NOT_AUTHORIZED_PENDING_SEPARATE_OFFLINE_EXECUTION_GO",
+  "economic_validity_offline_gate_pass": false,
+  "evaluation_authorization_status": "COMPLETE_INCONCLUSIVE_BINDING_BLOCKED_RETRY",
   "evaluation_execution_authorized": false,
   "evaluation_infrastructure_ready": true,
   "futures_only": true,
@@ -73,8 +79,11 @@
   "instrument_id": "inst-eth-usdt-perp",
   "material_difference_confirmed": true,
   "material_difference_digest": "34599aa261c9ce32ced00e8000e09e152031ba59d5402d89558488c177a378a2",
-  "next_go_token": "GO_BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_BOUND_OFFLINE_ECONOMIC_BASELINE_EVALUATION_V0",
-  "next_step": "BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_FULL_CANONICAL_OFFLINE_BASELINE_ECONOMIC_EVALUATION_V0",
+  "net_expectancy": -50.0,
+  "net_return": -0.005,
+  "new_distinct_research_scope_or_new_evidence_class_required": true,
+  "next_go_token": "AWAIT_SEPARATE_OPERATOR_GO_FOR_DISTINCT_ROBUSTNESS_OR_NEW_RESEARCH_SCOPE_DECISION",
+  "next_step": "AWAIT_SEPARATE_OPERATOR_GO_FOR_DISTINCT_ROBUSTNESS_OR_NEW_RESEARCH_SCOPE_DECISION",
   "offline_economic_evaluation_scope_ratified": true,
   "offline_only": true,
   "order_effect": "NONE",
@@ -99,6 +108,7 @@
       "use_trade_signs": true
     }
   },
+  "parameter_relaxation_authorized": false,
   "parameter_search_forbidden": true,
   "period_binding": {
     "binding_version": "v0",
@@ -109,6 +119,7 @@
     "training_period": "2026-06-17 16:00:00+00:00..2026-06-24 13:03:00+00:00",
     "validation_period": "2026-06-24 13:04:00+00:00..2026-06-27 23:35:00+00:00"
   },
+  "policy_rescue_allowed": false,
   "prior_binding_digest": "05b19c44ce3e477cdb6aafb0bb6b5ec19195e881243bbcb3b9eef2a24fca6eb4",
   "prior_config_digest": "a9c0f1d859855ef406e3f7cdc31e4f71ddf86e18d7e97a0bea2b2d0d1fdd1472",
   "prior_implementation_digest": "c36c717694d66e7a147fdccd2a8a7ffeb62c948be47746b335fc8ad5cb4467a9",
@@ -131,8 +142,11 @@
   "proxy_semantics": true,
   "ratification_id": "bouchaud_microstructure_ohlcv_proxy_v1_offline_economic_evaluation_scope_ratification_v0",
   "ratification_version": "v0",
+  "reevaluation_execution_count": 1,
   "research_scope": "bouchaud_microstructure_ohlcv_proxy/v1",
+  "robustness_evidence_missing": true,
   "runtime_effect": "NONE",
+  "sample_sufficiency_status": "INSUFFICIENT",
   "schema_version": "bouchaud_microstructure_ohlcv_proxy_v1_offline_economic_evaluation_scope_ratification.v0",
   "scope_classification": "BOUNDED_FUTURES_ONLY_OHLCV_PROXY_RESEARCH_SCOPE_DEFINITION_AND_BINDING_RATIFICATION_V0",
   "scope_id": "BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_OFFLINE_ECONOMIC_EVALUATION_SCOPE_RATIFICATION_V0",
@@ -142,8 +156,12 @@
   "source_ratification_evidence_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr5097_merge_closeout_bouchaud_microstructure_ohlcv_proxy_v1_step29m_single_instrument_offline_evaluation_adapter_implementation_v0_20260710T172226Z",
   "strategy_id": "bouchaud_microstructure",
   "strategy_version": "v1",
+  "terminal_status": "TERMINAL_INCONCLUSIVE_INSUFFICIENT_SAMPLE",
   "tick_l2_scope": "bouchaud_microstructure_tick_l2/v1",
   "tick_l2_status": "NOT_IMPLEMENTED_DATA_CAPABILITY_MISSING",
+  "trade_count": 1,
   "trading_logic_mutated": false,
-  "true_tick_l2_microstructure": false
+  "true_tick_l2_microstructure": false,
+  "unchanged_retry_allowed": false,
+  "unchanged_retry_blocked": true
 }
