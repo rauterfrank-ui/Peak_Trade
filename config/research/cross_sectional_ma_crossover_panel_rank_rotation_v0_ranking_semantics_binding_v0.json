@@ -1,0 +1,219 @@
+{
+  "artifact_kind": "cross_sectional_ma_crossover_panel_rank_rotation_ranking_semantics_versioned_binding",
+  "artifact_version": "v0",
+  "binding": {
+    "binding_status": {
+      "cost_model_binding_status": "BOUND",
+      "dataset_binding_status": "BOUND",
+      "digest_binding_status": "BOUND",
+      "numeric_bindings_status": "BOUND",
+      "overall_binding_status": "COMPLETE",
+      "period_binding_status": "BOUND",
+      "policy_classes_status": "BOUND",
+      "universe_binding_status": "BOUND"
+    },
+    "digest_bindings": {
+      "config_digest": {
+        "status": "BOUND",
+        "value": "eaca6226b6e040580227c8380c86a3aaa4f3e3bdad9292b37d9cbef736405141"
+      },
+      "data_digest": {
+        "status": "BOUND",
+        "value": "b0eb7802c269bcab987d2025fe1e960b83079d5ac5f305799e0867661d42f2e0"
+      },
+      "implementation_digest": {
+        "status": "BOUND",
+        "value": "e2ad162ad12405ca9a2378ea9b8733463c672445e8887da6665427d4de8431d8"
+      },
+      "material_difference_digest": {
+        "status": "BOUND",
+        "value": "288ea899d6bf53773d3a703de6a7097f4466f10c33d8df8796f34cf707e599e7"
+      },
+      "universe_instruments_digest": {
+        "status": "BOUND",
+        "value": "ccc36aa52d9df3aa2067fbc0a75aea6ae33a458583ec8a15b08d69f54b8b9a8b"
+      }
+    },
+    "direction_semantics": {
+      "negative_top1_means": "SHORT_TOP1",
+      "non_finite_score_target": "FLAT",
+      "panel_insufficient_target": "FLAT",
+      "rotation_requires_reconciled_flat": true,
+      "selection_mode": "top1_by_ma_crossover_score_desc_single_slot_rotation_v0",
+      "single_slot_rotation": true,
+      "underlying_signal_binding": "ma_crossover/v1",
+      "warmup_incomplete_target": "FLAT",
+      "zero_score_target": "FLAT"
+    },
+    "external_bindings": {
+      "admissibility_manifest_ref": {
+        "ref": "pit_cross_sectional_research_dataset_envelope.v0:pit_okx_linear_usdt_non_bitcoin_pt1h_panel:v2",
+        "status": "BOUND"
+      },
+      "evaluation_period_binding": {
+        "ref": "pit_cross_sectional_panel_common_coverage_period.v1:v1",
+        "status": "BOUND"
+      },
+      "execution_model_version": {
+        "status": "BOUND",
+        "value": "backtest_execution_v0"
+      },
+      "fee_model_version": {
+        "status": "BOUND",
+        "value": "backtest_fee_taker_symmetric_v0"
+      },
+      "funding_model_version": {
+        "status": "BOUND",
+        "value": "backtest_funding_perpetual_interval_v1"
+      },
+      "instrument_id_canonicalization_version": {
+        "status": "BOUND",
+        "value": "instrument_id_canonicalization.v1"
+      },
+      "instruments_artifact_ref": {
+        "ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr5078_merge_closeout_cross_sectional_ma_crossover_panel_rank_rotation_v0_phase3_dataset_materialization_v0_20260710T094803Z/INSTRUMENTS.json:sha256:e47a6bb1d7ac072ab4b87c2f8f149d590a7023abc3489e6d6be1a225921ec91d",
+        "status": "BOUND"
+      },
+      "panel_ohlcv_dataset_manifest_ref": {
+        "ref": "pit_okx_pt1h_panel_ohlcv_dataset_v1:pit_okx_linear_usdt_non_bitcoin_pt1h_panel:sha256:c753c5795ab40d26237a066702cb72a06065bfce0143440ec0ccadfe249cc0e0",
+        "status": "BOUND"
+      },
+      "pit_universe_manifest_ref": {
+        "ref": "pit_okx_pt1h_panel_universe_v1:pit_okx_linear_usdt_non_bitcoin_pt1h_panel:instrument_count:399",
+        "status": "BOUND"
+      },
+      "slippage_model_version": {
+        "status": "BOUND",
+        "value": "backtest_slippage_symmetric_v0"
+      },
+      "source_closeout_bundle_ref": {
+        "ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/pr5078_merge_closeout_cross_sectional_ma_crossover_panel_rank_rotation_v0_phase3_dataset_materialization_v0_20260710T094803Z",
+        "status": "BOUND"
+      },
+      "spread_model_version": {
+        "status": "BOUND",
+        "value": "research_conservative_bps_v1"
+      }
+    },
+    "hypothesis_id": "CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_NON_BITCOIN_PERPETUALS_V0",
+    "missing_bar_semantics": {
+      "carry_forward": false,
+      "missing_bar_policy": "exclude_non_selected_instrument_for_epoch",
+      "non_selected_missing": "exclude_for_epoch",
+      "selected_missing": "force_flat",
+      "stale_instrument_action": "exclude_at_score_epoch"
+    },
+    "numeric_bindings": {
+      "entry_rank_threshold": {
+        "status": "BOUND",
+        "value": 1
+      },
+      "fast_window": {
+        "status": "BOUND",
+        "value": 20
+      },
+      "hold_exit_rank_threshold": {
+        "status": "BOUND",
+        "value": 1
+      },
+      "max_active_instruments": {
+        "status": "BOUND",
+        "value": 1
+      },
+      "max_bar_staleness_bars": {
+        "status": "BOUND",
+        "value": 1
+      },
+      "min_eligible_members_for_rank": {
+        "status": "BOUND",
+        "value": 5
+      },
+      "rebalance_interval_bars": {
+        "status": "BOUND",
+        "value": 1
+      },
+      "signal_lag_bars": {
+        "status": "BOUND",
+        "value": 1
+      },
+      "slow_window": {
+        "status": "BOUND",
+        "value": 50
+      },
+      "switch_entry_delay_epochs": {
+        "status": "BOUND",
+        "value": 1
+      }
+    },
+    "orchestrator": {
+      "owner": "cross_sectional_single_slot_research_orchestrator_v0",
+      "scope": "RESEARCH_ONLY"
+    },
+    "panel_semantics": {
+      "eligibility_mode": "per_instrument_eligibility_mask",
+      "insufficient_panel_action": "flat",
+      "minimum_eligible_member_count_required": true,
+      "survivorship_handling": "pit_lifecycle_registry_bound_fail_closed"
+    },
+    "policy_classes": {
+      "cooldown_policy": "no_cooldown",
+      "direction_policy": "symmetric_top1_sign_ma_crossover_score_v0",
+      "minimum_hold_policy": "until_next_rebalance",
+      "missing_bar_policy": "exclude_non_selected_instrument_for_epoch",
+      "panel_completeness_policy": "per_instrument_eligibility_mask",
+      "rebalance_policy_class": "fixed_N_bar_cadence",
+      "score_family_policy": "canonical_ma_crossover_normalized_spread_v0",
+      "signal_timing_policy": "finalized_bar_close_epoch",
+      "switch_policy": "flat_then_wait_one_epoch_then_enter",
+      "threshold_policy": "sign_boundary_only",
+      "tie_break_policy": "score_desc_then_instrument_id_asc"
+    },
+    "portfolio_semantics": {
+      "gross_exposure_cap": 1.0,
+      "net_exposure_range": [
+        -1.0,
+        1.0
+      ],
+      "trade_count_accounting": "entry_exit_and_rotation_events",
+      "turnover_accounting": "per_rotation_event_and_side_change",
+      "weighting_policy": "single_slot_full_notional_on_selected_instrument"
+    },
+    "schema_version": "cross_sectional_ma_crossover_panel_rank_rotation_v0_ranking_semantics_binding.v0",
+    "switch_semantics": {
+      "atomic_side_switch": false,
+      "flat_then_wait_one_epoch_then_enter": true,
+      "opposite_side_requires_reconciled_flat": true,
+      "switch_policy": "flat_then_wait_one_epoch_then_enter"
+    },
+    "system_constraints": {
+      "bitcoin_direction_allowed": false,
+      "futures_only": true,
+      "parameter_optimization_allowed": false,
+      "post_result_policy_change_forbidden": true,
+      "post_result_threshold_change_forbidden": true,
+      "signal_logic_change_allowed": false,
+      "spot_allowed": false,
+      "synthetic_spot_allowed": false
+    },
+    "threshold_semantics": {
+      "entry_rank_threshold_required": true,
+      "hold_exit_rank_threshold_required": true,
+      "numeric_strength_threshold_initial": false,
+      "threshold_policy": "sign_boundary_only"
+    },
+    "tie_break_semantics": {
+      "tie_break_policy": "score_desc_then_instrument_id_asc",
+      "tie_break_score_source": "unrounded_internal_score"
+    },
+    "timing_semantics": {
+      "decision_input": "finalized_bars_only",
+      "finalized_bar_required": true,
+      "minimum_signal_lag_bars": 1,
+      "pit_universe_at_score_epoch": true,
+      "price_col": "close",
+      "same_bar_execution": false,
+      "score_epoch": "finalized_bar_close"
+    }
+  },
+  "operator_decision_digest": "719aca5ab06014ce64e1e7d4f3c2b950020c64b0b79431c80bed54eba83ed3ce"
+}

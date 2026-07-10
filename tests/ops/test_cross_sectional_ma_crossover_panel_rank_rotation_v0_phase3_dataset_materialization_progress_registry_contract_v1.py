@@ -39,7 +39,7 @@ class TestCrossSectionalMaCrossoverPanelRankRotationV0Phase3DatasetMaterializati
             authoritative_field_value(
                 "CROSS_SECTIONAL_MA_CROSSOVER_PANEL_RANK_ROTATION_V0_BINDING_RATIFIED"
             )
-            == "false"
+            == "true"
         )
         assert (
             authoritative_field_value(
