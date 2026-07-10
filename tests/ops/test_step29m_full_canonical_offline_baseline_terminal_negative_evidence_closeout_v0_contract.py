@@ -20,7 +20,7 @@ GOVERNANCE_DOC = (
 CLOSEOUT_SECTION_PREFIX = (
     "#### STEP29M_FULL_CANONICAL_OFFLINE_BASELINE_TERMINAL_NEGATIVE_EVIDENCE_CLOSEOUT_V0"
 )
-GO_TOKEN = "GO_STEP29M_FULL_CANONICAL_OFFLINE_BASELINE_TERMINAL_NEGATIVE_EVIDENCE_CLOSEOUT_V0"
+CLOSEOUT_GO = "GO_STEP29M_FULL_CANONICAL_OFFLINE_BASELINE_TERMINAL_NEGATIVE_EVIDENCE_CLOSEOUT_V0"
 CURRENT_STATE = (
     "STEP29M_FULL_CANONICAL_OFFLINE_BASELINE_TERMINAL_NEGATIVE_EVIDENCE_CLOSEOUT_COMPLETE_V0"
 )
@@ -82,7 +82,7 @@ class TestStep29mFullCanonicalOfflineBaselineTerminalNegativeEvidenceCloseoutV0C
         assert payload["status"] == "TERMINAL_NEGATIVE_EVIDENCE_CLOSEOUT_COMPLETE"
         assert payload["process_classification"] == PROCESS_CLASSIFICATION
         assert payload["scope_classification"] == SCOPE_CLASSIFICATION
-        assert payload["go_token"] == GO_TOKEN
+        assert payload["go_token"] == CLOSEOUT_GO
         assert payload["fleet_verdict"] == "FAIL_TERMINAL_NEGATIVE_BASELINE_EVIDENCE"
         assert payload["pass_count"] == 0
         assert payload["fail_count"] == 3
@@ -151,7 +151,7 @@ class TestStep29mFullCanonicalOfflineBaselineTerminalNegativeEvidenceCloseoutV0C
                 text,
                 "STEP29M_FULL_CANONICAL_OFFLINE_BASELINE_TERMINAL_NEGATIVE_EVIDENCE_CLOSEOUT_V0_GO_TOKEN",
             )
-            == GO_TOKEN
+            == CLOSEOUT_GO
         )
         assert (
             _field_value(
@@ -180,7 +180,7 @@ class TestStep29mFullCanonicalOfflineBaselineTerminalNegativeEvidenceCloseoutV0C
         assert _field_value(section, "STATUS") == "TERMINAL_NEGATIVE_EVIDENCE_CLOSEOUT_COMPLETE"
         assert _field_value(section, "VERDICT") == CURRENT_STATE
         assert _field_value(section, "PROCESS_CLASSIFICATION") == PROCESS_CLASSIFICATION
-        assert _field_value(section, "GO_TOKEN") == GO_TOKEN
+        assert _field_value(section, "GO_TOKEN") == CLOSEOUT_GO
         assert _field_value(section, "PASS_COUNT") == "0"
         assert _field_value(section, "FAIL_COUNT") == "3"
         assert _field_value(section, "FAILED_BINDINGS_ARE_NEGATIVE_EVIDENCE") == "true"

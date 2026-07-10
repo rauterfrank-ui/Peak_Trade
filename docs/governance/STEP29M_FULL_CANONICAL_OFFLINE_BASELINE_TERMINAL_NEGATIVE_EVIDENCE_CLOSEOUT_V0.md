@@ -9,7 +9,7 @@ ORDERS_ALLOWED: false
 SCHEDULER_RUNTIME_ALLOWED: false
 ---
 
-> **Non-authorizing:** Terminale Governance-Bindung der vollständig ausgeführten STEP29M Full-Canonical-Offline-Baseline-Economic-Evaluation (post PR #5071 binding repair) für `trend_following/v1`, `bollinger_bands/v1` und `momentum_1h/v1` unter unveränderten versionierten Bindings. Keine Promotion, keine Runtime, kein Same-Binding-Retry, kein Policy-Rescue.
+> **Non-authorizing:** Terminale Governance-Bindung der vollständig ausgeführten STEP29M Full-Canonical-Offline-Baseline-Economic-Evaluation (post PR #5071 binding repair) für `trend_following&#47;v1`, `bollinger_bands&#47;v1` und `momentum_1h&#47;v1` unter unveränderten versionierten Bindings. Keine Promotion, keine Runtime, kein Same-Binding-Retry, kein Policy-Rescue.
 
 ## A. Verdict
 
@@ -44,7 +44,7 @@ SCHEDULER_RUNTIME_ALLOWED: false
 | bollinger_bands/v1 | FAIL | 0 | 0.00 | 0.00 | ZERO_TRADE_SPARSE_SIGNAL, INSUFFICIENT_TRADE_SAMPLE, ECONOMIC_METRIC_BELOW_THRESHOLD, ROBUSTNESS_STRESS_FAIL |
 | momentum_1h/v1 | FAIL | 2 | -18.89 | -18.89 | INSUFFICIENT_TRADE_SAMPLE, NEGATIVE_NET_EXPECTANCY, ROBUSTNESS_MONTE_CARLO_FAIL, ROBUSTNESS_STRESS_FAIL |
 
-`bollinger_bands/v1` Zero-Trade-Klassifikation: `ZERO_TRADE_CLASSIFICATION=SPARSE_SIGNAL_ENTRY_THRESHOLD_NOT_MET` — kein Eintrags-Signal unter gebundenen Parametern; kein automatischer Execution-Defect.
+`bollinger_bands&#47;v1` Zero-Trade-Klassifikation: `ZERO_TRADE_CLASSIFICATION=SPARSE_SIGNAL_ENTRY_THRESHOLD_NOT_MET` — kein Eintrags-Signal unter gebundenen Parametern; kein automatischer Execution-Defect.
 
 ## C. Cost Accounting Limitation (truthful)
 

@@ -6013,7 +6013,7 @@ Bounded read-only/offline Class-E diagnostics execution over terminal PR4875/487
 
 #### STEP29M_FULL_CANONICAL_OFFLINE_BASELINE_TERMINAL_NEGATIVE_EVIDENCE_CLOSEOUT_V0
 
-Docs-only terminal governance closeout binding the fully executed STEP29M full canonical offline baseline economic evaluation (post PR #5071 binding repair) for `trend_following/v1`, `bollinger_bands/v1`, and `momentum_1h/v1` under unchanged versioned bindings. Closes the current research generation as terminal negative evidence. No policy rescue, no same-binding retry, no runtime authority.
+Docs-only terminal governance closeout binding the fully executed STEP29M full canonical offline baseline economic evaluation (post PR #5071 binding repair) for `trend_following&#47;v1`, `bollinger_bands&#47;v1`, and `momentum_1h&#47;v1` under unchanged versioned bindings. Closes the current research generation as terminal negative evidence. No policy rescue, no same-binding retry, no runtime authority.
 
 | Feld | Wert |
 |---|---|
