@@ -91,6 +91,10 @@ _EXTERNAL_PARAMETER_SCHEMA_V1: dict[str, dict[str, Any]] = {
         "vol_percentile": 50.0,
         "side": "both",
     },
+    "ehlers_cycle_filter": {
+        "min_cycle_length": 6,
+        "lookback": 100,
+    },
 }
 
 COMPOSITE_STRATEGY_ID = "composite"
@@ -709,6 +713,20 @@ def compute_required_warmup_rows_v1(
         if lookback_raw < 2 or vol_window_raw < 2:
             raise StrategySignalBindingError("vol_breakout_warmup_param_invariant_failed")
         return max(lookback_raw, vol_window_raw, lookback_raw * 2)
+    if strategy_id == "ehlers_cycle_filter":
+        lookback_raw = effective_params.get("lookback")
+        min_cycle_raw = effective_params.get("min_cycle_length")
+        if lookback_raw is None:
+            raise StrategySignalBindingError("ehlers_cycle_filter_lookback_missing")
+        if min_cycle_raw is None:
+            raise StrategySignalBindingError("ehlers_cycle_filter_min_cycle_length_missing")
+        if isinstance(lookback_raw, bool) or not isinstance(lookback_raw, int):
+            raise StrategySignalBindingError("ehlers_cycle_filter_lookback_not_integer")
+        if isinstance(min_cycle_raw, bool) or not isinstance(min_cycle_raw, int):
+            raise StrategySignalBindingError("ehlers_cycle_filter_min_cycle_length_not_integer")
+        if lookback_raw < 2 or min_cycle_raw < 2:
+            raise StrategySignalBindingError("ehlers_cycle_filter_warmup_param_invariant_failed")
+        return lookback_raw
     if strategy_id == COMPOSITE_STRATEGY_ID:
         raise StrategySignalBindingError("composite_warmup_requires_binding_context")
     raise StrategySignalBindingError(f"required_warmup_rows_unbound:{strategy_id}")
