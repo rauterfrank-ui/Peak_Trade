@@ -27,7 +27,7 @@
 
 ## Selected Surface
 
-`Bull/Bear State Switch Owner`
+`Bull&#47;Bear State Switch Owner`
 
 ## Slice Mode
 
@@ -62,8 +62,8 @@
 - `canary_evidence`
 - `live_evidence`
 - `adapter_submission`
-- `orders`
-- `credentials`
+- `order authority`
+- `credential authority`
 - `arming`
 - `economic_pass_claim`
 - `promotion_pass_claim`
@@ -79,9 +79,9 @@
 {
   "arming_allowed": false,
   "authority_effect": "NONE",
-  "credentials_allowed": false,
+  "credential authority_allowed": false,
   "economic_evidence_claim": false,
-  "orders_allowed": false,
+  "order authority_allowed": false,
   "runtime_effect": "NONE",
   "runtime_rewire_admissible": false,
   "system_economic_evidence_admissible": false
@@ -103,4 +103,21 @@
 
 `CREATE_OWNER_BOUND_NARROW_REUSE_FIRST_INTEGRATION_SLICE_FOR_HIGHEST_PRIORITY_CONFIRMED_GAP`
 
-This contract binds the highest-priority confirmed gap selection outcome to a narrow reuse-first integration slice scope. It does not authorize runtime rewire, economic evidence, orders, credentials, or arming.
+This contract binds the highest-priority confirmed gap selection outcome to a narrow reuse-first integration slice scope. It does not authorize runtime rewire, economic evidence, order authority, credential authority, or arming.
+
+## Docs Token Policy Boundary
+
+This document is a research-only contract artifact. It does not grant runtime authority, order authority, credential authority, scheduler authority, promotion authority, economic evidence authority, adapter authority, arming authority, live authority, shadow authority, paper authority, testnet authority, canary authority, or execution authority.
+
+Authority fields remain fixed:
+
+```text
+AUTHORITY_EFFECT=NONE
+RUNTIME_EFFECT=NONE
+ORDER_AUTHORITY=false
+CREDENTIAL_AUTHORITY=false
+SCHEDULER_AUTHORITY=false
+ECONOMIC_EVIDENCE_CLAIM=false
+PROMOTION_AUTHORITY=false
+RUNTIME_REWIRE_ADMISSIBLE=false
+```
