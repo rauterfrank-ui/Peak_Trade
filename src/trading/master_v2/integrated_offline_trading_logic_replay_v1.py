@@ -104,6 +104,14 @@ from trading.master_v2.double_play_state import (
     TransitionDecision,
     transition_state,
 )
+from trading.master_v2.reversal_preparation_scenario_binding_adapter_v0 import (
+    derive_reversal_preparation_position_context_v0,
+    is_reversal_preparation_composition_v0,
+    project_composition_for_reversal_preparation_entry_exit_v0,
+)
+from trading.master_v2.scope_event_generator_scenario_binding_adapter_v0 import (
+    derive_scope_adverse_exit_signal_v0,
+)
 from trading.master_v2.suitability_binding_v1 import (
     SUITABILITY_BINDING_LAYER_VERSION,
     SuitabilityBindingInputV1,
@@ -527,6 +535,40 @@ def _suitability_input_for_assessment(
     )
 
 
+def resolve_integrated_scope_adverse_exit_signal_v0(
+    scope_event: ScopeEventEvidenceV1,
+    passthrough_signal: PolicySignalV0,
+) -> PolicySignalV0:
+    """Derive adverse-exit signal from canonical scope evidence; passthrough only when not triggered."""
+    derived = derive_scope_adverse_exit_signal_v0(scope_event)
+    if derived.triggered:
+        return derived
+    return passthrough_signal
+
+
+def resolve_integrated_reversal_preparation_entry_exit_binding_v0(
+    composition_result: DoublePlayCompositionResultV1,
+    inp: IntegratedOfflineReplayInputV1,
+) -> Tuple[DoublePlayCompositionResultV1, ExistingPositionSide, PositionState, bool]:
+    """Reuse reversal-preparation adapter projection at integrated replay consumer boundary."""
+    composition_for_policy = composition_result
+    existing_position_side = inp.existing_position_side
+    position_state = inp.position_state
+    venue_flat = inp.venue_flat
+
+    if is_reversal_preparation_composition_v0(composition_result):
+        reversal_ctx = derive_reversal_preparation_position_context_v0(composition_result)
+        if reversal_ctx is not None:
+            composition_for_policy = project_composition_for_reversal_preparation_entry_exit_v0(
+                composition_result
+            )
+            existing_position_side = reversal_ctx.existing_position_side
+            position_state = reversal_ctx.position_state
+            venue_flat = reversal_ctx.venue_flat
+
+    return composition_for_policy, existing_position_side, position_state, venue_flat
+
+
 def run_integrated_offline_trading_logic_replay_v1(
     inp: IntegratedOfflineReplayInputV1,
 ) -> IntegratedOfflineReplayResultV1:
@@ -711,14 +753,28 @@ def run_integrated_offline_trading_logic_replay_v1(
         semantic_digest=switch_digest,
     )
 
+    scope_adverse_exit_signal = resolve_integrated_scope_adverse_exit_signal_v0(
+        scope_event,
+        inp.scope_adverse_exit_signal,
+    )
+    (
+        composition_for_policy,
+        effective_existing_position_side,
+        effective_position_state,
+        effective_venue_flat,
+    ) = resolve_integrated_reversal_preparation_entry_exit_binding_v0(
+        composition_result,
+        inp,
+    )
+
     effective_direction = _side_state_to_entry_exit_direction(next_side_state)
     entry_exit_inp = DoublePlayEntryExitPolicyInputV0(
         instrument_id=inp.instrument_id,
         trading_epoch=inp.trading_epoch,
         context_reference=inp.context_reference,
-        composition_result=composition_result,
+        composition_result=composition_for_policy,
         direction_state=effective_direction,
-        position_state=inp.position_state,
+        position_state=effective_position_state,
         reconciliation_state=inp.reconciliation_state,
         trading_gate=inp.trading_gate,
         safety_mode=inp.safety_mode,
@@ -726,9 +782,9 @@ def run_integrated_offline_trading_logic_replay_v1(
         clock_trust_status=bound_context.clock_trust_status,
         clock_trust_valid=bound_context.clock_trust_status.value == "trusted",
         cooldown_pass=inp.cooldown_pass,
-        existing_position_side=inp.existing_position_side,
-        venue_flat=inp.venue_flat,
-        scope_adverse_exit_signal=inp.scope_adverse_exit_signal,
+        existing_position_side=effective_existing_position_side,
+        venue_flat=effective_venue_flat,
+        scope_adverse_exit_signal=scope_adverse_exit_signal,
         profit_protection_signal=inp.profit_protection_signal,
         time_exit_signal=inp.time_exit_signal,
         strategy_invalidation_signal=inp.strategy_invalidation_signal,

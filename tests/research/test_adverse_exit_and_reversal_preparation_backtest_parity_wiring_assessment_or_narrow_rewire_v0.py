@@ -140,10 +140,11 @@ def test_prior_narrow_rewire_binding_reaches_canonical_owners() -> None:
     assert binding["new_parallel_owner_created"] is False
 
 
-def test_integrated_replay_does_not_yet_derive_scope_adverse_exit_signal() -> None:
-    source = INTEGRATED_REPLAY.read_text(encoding="utf-8")
-    assert "derive_scope_adverse_exit_signal_v0" not in source
-    assert "scope_adverse_exit_signal=inp.scope_adverse_exit_signal" in source.replace(" ", "")
+def test_assessment_documents_integrated_replay_scope_signal_gap_at_assessment_time() -> None:
+    data = load_contract()
+    findings = data["gap_review_findings"]
+    assert findings["integrated_replay_derives_scope_adverse_exit_signal"] is False
+    assert findings["integrated_replay_scope_signal_passthrough_gap"] is True
 
 
 def test_scenario_adapter_derives_scope_adverse_exit_signal_from_evidence() -> None:

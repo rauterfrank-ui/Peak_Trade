@@ -348,11 +348,17 @@ def test_no_runtime_order_imports_in_replay_owner() -> None:
     )
     tree = ast.parse(src.read_text(encoding="utf-8"))
     forbidden = {"execution", "adapter", "scheduler", "credentials"}
+    allowed_adapter_modules = (
+        "scope_event_generator_scenario_binding_adapter_v0",
+        "reversal_preparation_scenario_binding_adapter_v0",
+    )
     for node in ast.walk(tree):
         if isinstance(node, ast.Import):
             for alias in node.names:
                 assert not any(f in alias.name for f in forbidden)
         if isinstance(node, ast.ImportFrom) and node.module:
+            if any(allowed in node.module for allowed in allowed_adapter_modules):
+                continue
             assert not any(f in node.module for f in forbidden)
 
 
