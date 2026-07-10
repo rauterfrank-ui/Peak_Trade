@@ -36,7 +36,7 @@ SHELL_WRAPPER = (
     REPO_ROOT
     / "scripts/ops/invoke_ehlers_cycle_filter_v1_bound_offline_economic_baseline_evaluation_v0.sh"
 )
-VALID_GO_TOKEN = "GO_EHLERS_CYCLE_FILTER_V1_BOUND_OFFLINE_ECONOMIC_BASELINE_EVALUATION_V0"
+CONFIRM_GO_VALUE = "GO_EHLERS_CYCLE_FILTER_V1_BOUND_OFFLINE_ECONOMIC_BASELINE_EVALUATION_V0"
 
 
 def test_resolve_repo_local_python_uses_repo_venv() -> None:
@@ -52,13 +52,13 @@ def test_prepare_invocation_forwards_confirm_go_token_once() -> None:
     prepared = prepare_bound_offline_evaluation_runner_invocation_v0(
         repo_root=REPO_ROOT,
         runner_rel_path=RUNNER_REL_PATH,
-        confirm_go_token=VALID_GO_TOKEN,
+        confirm_go_token=CONFIRM_GO_VALUE,
     )
     assert prepared.reason_code == RUNNER_INVOCATION_CONTRACT_PASS
     assert prepared.interpreter is not None
     assert prepared.argv[0] == str(prepared.interpreter)
     assert prepared.argv[1] == str((REPO_ROOT / RUNNER_REL_PATH).resolve())
-    assert prepared.argv[2:4] == ("--confirm-go-token", VALID_GO_TOKEN)
+    assert prepared.argv[2:4] == ("--confirm-go-token", CONFIRM_GO_VALUE)
     assert prepared.argv.count("--confirm-go-token") == 1
 
 
@@ -116,7 +116,7 @@ def test_prepare_invocation_missing_venv_fail_closed(tmp_path: Path) -> None:
     prepared = prepare_bound_offline_evaluation_runner_invocation_v0(
         repo_root=tmp_path,
         runner_rel_path=RUNNER_REL_PATH,
-        confirm_go_token=VALID_GO_TOKEN,
+        confirm_go_token=CONFIRM_GO_VALUE,
     )
     assert prepared.reason_code == REPO_VENV_PYTHON_MISSING
     assert prepared.exit_code == EXIT_REPO_VENV_PYTHON_MISSING
@@ -131,7 +131,7 @@ def test_prepare_invocation_non_executable_venv_fail_closed(tmp_path: Path) -> N
     prepared = prepare_bound_offline_evaluation_runner_invocation_v0(
         repo_root=tmp_path,
         runner_rel_path=RUNNER_REL_PATH,
-        confirm_go_token=VALID_GO_TOKEN,
+        confirm_go_token=CONFIRM_GO_VALUE,
     )
     assert prepared.reason_code == REPO_VENV_PYTHON_NOT_EXECUTABLE
     assert prepared.argv == ()
@@ -171,7 +171,7 @@ def test_invoke_forwards_exact_argv_without_economic_execution() -> None:
     exit_code, reason = invoke_bound_offline_evaluation_runner_v0(
         repo_root=REPO_ROOT,
         runner_rel_path=RUNNER_REL_PATH,
-        confirm_go_token=VALID_GO_TOKEN,
+        confirm_go_token=CONFIRM_GO_VALUE,
         subprocess_runner=_capture_runner,
     )
     assert exit_code == 0
@@ -179,7 +179,7 @@ def test_invoke_forwards_exact_argv_without_economic_execution() -> None:
     assert len(captured) == 1
     assert captured[0][0].endswith("/.venv/bin/python")
     assert captured[0][1].endswith(RUNNER_REL_PATH)
-    assert captured[0][2:4] == ["--confirm-go-token", VALID_GO_TOKEN]
+    assert captured[0][2:4] == ["--confirm-go-token", CONFIRM_GO_VALUE]
 
 
 def test_invoke_script_fail_closed_without_go_token() -> None:
@@ -230,7 +230,7 @@ def test_shell_wrapper_works_without_global_python_on_path() -> None:
     exit_code, reason = invoke_bound_offline_evaluation_runner_v0(
         repo_root=REPO_ROOT,
         runner_rel_path=RUNNER_REL_PATH,
-        confirm_go_token=VALID_GO_TOKEN,
+        confirm_go_token=CONFIRM_GO_VALUE,
         subprocess_runner=_capture_runner,
     )
     assert exit_code == 0
