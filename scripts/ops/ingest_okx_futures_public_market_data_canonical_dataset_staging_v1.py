@@ -68,6 +68,7 @@ ALLOWED_PUBLIC_GET_PATHS: frozenset[str] = frozenset(
         "/api/v5/market/history-mark-price-candles",
         "/api/v5/market/history-index-candles",
         "/api/v5/public/funding-rate-history",
+        "/api/v5/rubik/stat/contracts/open-interest-history",
         "/api/v5/market/books",
         "/api/v5/public/time",
     }

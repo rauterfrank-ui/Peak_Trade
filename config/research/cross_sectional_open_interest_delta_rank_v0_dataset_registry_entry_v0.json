@@ -1,0 +1,38 @@
+{
+  "artifact_kind": "cross_sectional_open_interest_delta_rank_v0_dataset_registry_entry",
+  "artifact_version": "v0",
+  "authority_effect": "NONE",
+  "runtime_effect": "NONE",
+  "economic_evaluation_executed": false,
+  "research_scope": "cross_sectional_open_interest_delta_rank/v0",
+  "strategy_id": "cross_sectional_open_interest_delta_rank",
+  "strategy_version": "v0",
+  "dataset_registration": {
+    "dataset_id": "pit_okx_linear_usdt_non_bitcoin_open_interest_panel/v0",
+    "panel_id": "pit_okx_linear_usdt_non_bitcoin_open_interest_panel",
+    "dataset_extension": "extended_chronological_with_open_interest_v1",
+    "dataset_materialized": false,
+    "dataset_ready": false,
+    "materialization_status": "HORIZON_INSUFFICIENT_FAIL_CLOSED_PENDING_ARCHIVE_OR_EXTENDED_RETENTION",
+    "source_capability_ref": "okx_historical_open_interest_public_fetch_v0",
+    "pit_semantics_contract_ref": "cross_sectional_open_interest_delta_rank_v0_pit_semantics_contract_v0",
+    "materializer_ref": "cross_sectional_open_interest_delta_rank_v0_bound_panel_dataset_materialization_v0",
+    "pit_universe_manifest_ref": "pit_futures_universe_manifest_v1:pit_okx_linear_usdt_non_bitcoin_perpetual_universe_manifest_v1",
+    "universe_policy_id": "pit_okx_linear_usdt_non_bitcoin_perpetual_cross_sectional_universe/v1"
+  },
+  "registered_capabilities": [
+    "okx_historical_open_interest_public_fetch_v0",
+    "cross_sectional_open_interest_delta_rank_v0_pit_semantics_contract_v0",
+    "pit_okx_pt1h_panel_open_interest_dataset_v1",
+    "cross_sectional_open_interest_delta_rank_v0_bound_panel_dataset_materialization_v0"
+  ],
+  "forbidden_registrations": [
+    "economic_pass",
+    "strategy_promotion",
+    "runtime_eligibility",
+    "runtime_rewire",
+    "shadow_paper_testnet_live_readiness",
+    "order_adapter_compatibility"
+  ],
+  "schema_version": "cross_sectional_open_interest_delta_rank_v0_dataset_registry_entry.v0"
+}
