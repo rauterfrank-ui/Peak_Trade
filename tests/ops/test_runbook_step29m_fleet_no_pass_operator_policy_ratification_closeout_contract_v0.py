@@ -65,10 +65,10 @@ def test_fleet_complete_no_pass_three_of_three_failed() -> None:
     assert _field_value(section, "STEP29M_RATIFIED_CANDIDATES_TOTAL") == "3"
     assert _field_value(section, "STEP29M_RATIFIED_CANDIDATES_PASSED") == "0"
     assert _field_value(section, "STEP29M_RATIFIED_CANDIDATES_FAILED") == "3"
-    assert _field_value(section, "STEP29M_PENDING_CANDIDATES") == "1"
+    assert _field_value(section, "STEP29M_PENDING_CANDIDATES") == "0"
     assert _field_value(section, "STEP29M_PROMOTION_ELIGIBLE_CANDIDATES") == "0"
-    assert _field_value(section, "COMPLETED_TECHNICALLY_VALID_EVALUATION_COUNT") == "3"
-    assert _field_value(section, "ECONOMIC_POLICY_FAIL_COUNT") == "3"
+    assert _field_value(section, "COMPLETED_TECHNICALLY_VALID_EVALUATION_COUNT") == "4"
+    assert _field_value(section, "ECONOMIC_POLICY_FAIL_COUNT") == "4"
     assert _field_value(section, "PROMOTION_ELIGIBLE_COUNT") == "0"
 
 
@@ -79,16 +79,19 @@ def test_ratified_no_new_candidate_hold() -> None:
     assert _field_value(section, "STEP29M_OPERATOR") == "Frank Rauter"
     assert (
         _field_value(section, "NEXT_CANONICAL_STEP")
-        == "MERGE_CLOSEOUT_THEN_RERUN_VOL_BREAKOUT_V1_FULL_CANONICAL_OFFLINE_BASELINE_ECONOMIC_EVALUATION_ONCE"
+        == "NEW_RATIFIED_RESEARCH_SCOPE_OR_NEW_EVIDENCE_CLASS_REQUIRED"
     )
 
 
 def test_no_pending_candidates_or_automatic_continuation() -> None:
     section = _step_29m_section(_read_registry())
-    assert _field_value(section, "POST_RATIFICATION_AUTHORIZED_PENDING_CANDIDATE_EXISTS") == "true"
-    assert _field_value(section, "AUTHORIZED_PENDING_EVALUATION_COUNT") == "1"
-    assert _field_value(section, "NEXT_EVALUATION_STRATEGY_ID") == "vol_breakout"
-    assert _field_value(section, "NEXT_EVALUATION_CONFIG_STATUS") == "BINDING_DEFECT_FIX_PENDING"
+    assert _field_value(section, "POST_RATIFICATION_AUTHORIZED_PENDING_CANDIDATE_EXISTS") == "false"
+    assert _field_value(section, "AUTHORIZED_PENDING_EVALUATION_COUNT") == "0"
+    assert _field_value(section, "NEXT_EVALUATION_STRATEGY_ID") == "NONE"
+    assert (
+        _field_value(section, "NEXT_EVALUATION_CONFIG_STATUS")
+        == "TERMINAL_NEGATIVE_EVIDENCE_REGISTERED"
+    )
     assert _field_value(section, "STEP29M_NEW_CANDIDATE_AUTHORIZED") == "true"
     assert (
         _field_value(section, "STEP29M_NEW_RESEARCH_SCOPE_REQUIRES_EXPLICIT_OPERATOR_RATIFICATION")
@@ -109,7 +112,11 @@ def test_all_three_candidates_policy_fail_no_promotion() -> None:
     assert (
         _field_value(section, "MA_CROSSOVER_V1_STATUS") == "TECHNICALLY_VALID_ECONOMIC_POLICY_FAIL"
     )
+    assert (
+        _field_value(section, "VOL_BREAKOUT_V1_STATUS") == "TECHNICALLY_VALID_ECONOMIC_POLICY_FAIL"
+    )
     assert _field_value(section, "MA_CROSSOVER_V1_ECONOMIC_EVALUATION_EXECUTED") == "true"
+    assert _field_value(section, "VOL_BREAKOUT_V1_ECONOMIC_EVALUATION_EXECUTED") == "true"
     assert _field_value(section, "MA_CROSSOVER_V1_PROMOTION_ELIGIBLE") == "false"
 
 
