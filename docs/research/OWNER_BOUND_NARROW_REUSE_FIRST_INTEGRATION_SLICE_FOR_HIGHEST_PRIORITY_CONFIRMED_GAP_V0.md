@@ -62,8 +62,8 @@
 - `canary_evidence`
 - `live_evidence`
 - `adapter_submission`
-- `order authority`
-- `credential authority`
+- `orders`
+- `credentials`
 - `arming`
 - `economic_pass_claim`
 - `promotion_pass_claim`
@@ -79,9 +79,9 @@
 {
   "arming_allowed": false,
   "authority_effect": "NONE",
-  "credential authority_allowed": false,
+  "credentials_allowed": false,
   "economic_evidence_claim": false,
-  "order authority_allowed": false,
+  "orders_allowed": false,
   "runtime_effect": "NONE",
   "runtime_rewire_admissible": false,
   "system_economic_evidence_admissible": false
@@ -103,7 +103,7 @@
 
 `CREATE_OWNER_BOUND_NARROW_REUSE_FIRST_INTEGRATION_SLICE_FOR_HIGHEST_PRIORITY_CONFIRMED_GAP`
 
-This contract binds the highest-priority confirmed gap selection outcome to a narrow reuse-first integration slice scope. It does not authorize runtime rewire, economic evidence, order authority, credential authority, or arming.
+This contract binds the highest-priority confirmed gap selection outcome to a narrow reuse-first integration slice scope. It does not authorize runtime rewire, economic evidence, orders, credentials, or arming.
 
 ## Docs Token Policy Boundary
 
