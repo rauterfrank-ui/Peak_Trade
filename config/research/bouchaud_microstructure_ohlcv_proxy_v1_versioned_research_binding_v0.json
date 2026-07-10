@@ -81,7 +81,7 @@
       },
       "implementation_digest": {
         "status": "BOUND",
-        "value": "bb4ecee4b88a715e9b8e340abb56b4a43668512bd1f060ee4eaa9996c19aeffb"
+        "value": "c36c717694d66e7a147fdccd2a8a7ffeb62c948be47746b335fc8ad5cb4467a9"
       },
       "material_difference_digest": {
         "status": "BOUND",
@@ -150,10 +150,10 @@
   "economic_evaluation_authorized": false,
   "economic_evaluation_executed": false,
   "evaluation_authorized": false,
-  "go_token": "GO_BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_STEP29M_SINGLE_INSTRUMENT_OFFLINE_EVALUATION_ADAPTER_IMPLEMENTATION_V0",
+  "operator_go_literal": "GO_BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_STEP29M_SINGLE_INSTRUMENT_OFFLINE_EVALUATION_ADAPTER_IMPLEMENTATION_V0",
   "hypothesis_id": "BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1",
-  "implementation_go_token": "GO_BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_STEP29M_SINGLE_INSTRUMENT_OFFLINE_EVALUATION_ADAPTER_IMPLEMENTATION_V0",
-  "next_evaluation_go_token": "GO_BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_BOUND_OFFLINE_ECONOMIC_BASELINE_EVALUATION_V0",
+  "implementation_operator_go": "GO_BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_STEP29M_SINGLE_INSTRUMENT_OFFLINE_EVALUATION_ADAPTER_IMPLEMENTATION_V0",
+  "next_evaluation_operator_go": "GO_BOUCHAUD_MICROSTRUCTURE_OHLCV_PROXY_V1_BOUND_OFFLINE_ECONOMIC_BASELINE_EVALUATION_V0",
   "proxy_semantics": true,
   "research_scope": "bouchaud_microstructure_ohlcv_proxy/v1",
   "runtime_effect": "NONE",

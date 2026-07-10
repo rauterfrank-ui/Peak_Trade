@@ -141,15 +141,15 @@ class AdapterMaterializationResultV0:
         }
 
 
-def classify_go_token_v0(go_token: str) -> GoTokenValidationResultV0:
-    if go_token in ALLOWED_IMPLEMENTATION_GO_TOKENS:
+def classify_go_token_v0(operator_go: str) -> GoTokenValidationResultV0:
+    if operator_go in ALLOWED_IMPLEMENTATION_GO_TOKENS:
         return GoTokenValidationResultV0(
             classification=GoTokenClassification.IMPLEMENTATION,
             accepted_for_validation_only=True,
             execution_mode=AdapterExecutionMode.IMPLEMENTATION_ONLY,
             blocking_reasons=(),
         )
-    if go_token in ALLOWED_EVALUATION_GO_TOKENS:
+    if operator_go in ALLOWED_EVALUATION_GO_TOKENS:
         return GoTokenValidationResultV0(
             classification=GoTokenClassification.EVALUATION,
             accepted_for_validation_only=True,
@@ -160,7 +160,7 @@ def classify_go_token_v0(go_token: str) -> GoTokenValidationResultV0:
         classification=GoTokenClassification.REJECTED,
         accepted_for_validation_only=False,
         execution_mode=AdapterExecutionMode.EVALUATION_BLOCKED,
-        blocking_reasons=(f"invalid_go_token:{go_token}",),
+        blocking_reasons=(f"invalid_go_token:{operator_go}",),
     )
 
 
@@ -220,7 +220,7 @@ def verify_tick_l2_scope_rejected_v0(research_scope: str) -> tuple[str, ...]:
 def run_adapter_implementation_v0(
     *,
     repo_root: Path,
-    confirm_go_token: str,
+    confirm_operator_go: str,
 ) -> AdapterMaterializationResultV0:
     from src.backtest.step29m_bouchaud_microstructure_ohlcv_proxy_v1_economic_evaluation_admissibility_contract_v1 import (
         evaluate_bouchaud_microstructure_ohlcv_proxy_v1_admissibility_contract_v1,
@@ -229,7 +229,7 @@ def run_adapter_implementation_v0(
         compute_step29m_bouchaud_ohlcv_proxy_implementation_digest_v0,
     )
 
-    go_result = classify_go_token_v0(confirm_go_token)
+    go_result = classify_go_token_v0(confirm_operator_go)
     if go_result.classification is GoTokenClassification.REJECTED:
         raise SystemExit(f"ERR: {go_result.blocking_reasons[0]}")
 

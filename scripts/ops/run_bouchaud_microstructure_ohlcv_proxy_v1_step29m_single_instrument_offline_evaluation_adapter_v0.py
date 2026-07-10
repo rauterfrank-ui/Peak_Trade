@@ -43,19 +43,20 @@ def main() -> None:
     )
     args = parser.parse_args()
 
-    go_result = classify_go_token_v0(args.confirm_go_token)
+    operator_go = args.confirm_go_token
+    go_result = classify_go_token_v0(operator_go)
     if go_result.classification.value == "REJECTED":
         raise SystemExit(f"ERR: {go_result.blocking_reasons[0]}")
 
-    if args.confirm_go_token == EVALUATION_GO_TOKEN:
+    if operator_go == EVALUATION_GO_TOKEN:
         raise SystemExit("ERR: evaluation_go_blocked_in_implementation_slice")
 
-    if args.confirm_go_token != IMPLEMENTATION_GO_TOKEN:
-        raise SystemExit(f"ERR: invalid_go_token:{args.confirm_go_token}")
+    if operator_go != IMPLEMENTATION_GO_TOKEN:
+        raise SystemExit(f"ERR: invalid_go_token:{operator_go}")
 
     result = run_adapter_implementation_v0(
         repo_root=args.repo_root,
-        confirm_go_token=args.confirm_go_token,
+        confirm_operator_go=operator_go,
     )
     print(json.dumps(result.to_dict(), indent=2, sort_keys=True))
 

@@ -27,9 +27,10 @@ RUNNER = (
 
 
 def test_implementation_go_runs_adapter_without_evaluation() -> None:
+    implementation_operator_go = IMPLEMENTATION_GO_TOKEN
     result = run_adapter_implementation_v0(
         repo_root=REPO_ROOT,
-        confirm_go_token=IMPLEMENTATION_GO_TOKEN,
+        confirm_operator_go=implementation_operator_go,
     )
     assert "PASS_BOUCHAUD" in result.verdict
     assert result.economic_evaluation_executed is False
@@ -73,10 +74,11 @@ def test_classify_go_tokens() -> None:
 
 
 def test_admissibility_with_evaluation_go_does_not_execute_evaluation() -> None:
+    evaluation_operator_go = EVALUATION_GO_TOKEN
     result = (
         admissibility.evaluate_bouchaud_microstructure_ohlcv_proxy_v1_admissibility_contract_v1(
             repo_root=REPO_ROOT,
-            go_token=EVALUATION_GO_TOKEN,
+            operator_go=evaluation_operator_go,
         )
     )
     assert result.admissibility_result.value == "PASS"

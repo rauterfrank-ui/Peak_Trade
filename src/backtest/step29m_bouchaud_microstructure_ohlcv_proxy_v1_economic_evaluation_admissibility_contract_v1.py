@@ -231,19 +231,19 @@ def verify_bouchaud_microstructure_ohlcv_proxy_v1_scope_binding_v1(
 
 
 def verify_bouchaud_microstructure_ohlcv_proxy_v1_go_token_policy_v1(
-    go_token: Optional[str],
+    operator_go: Optional[str],
 ) -> tuple[str, ...]:
-    if go_token is None:
+    if operator_go is None:
         return ()
-    if go_token == IMPLEMENTATION_GO_TOKEN:
+    if operator_go == IMPLEMENTATION_GO_TOKEN:
         return ("implementation_go_cannot_authorize_evaluation",)
-    if go_token == EVALUATION_GO_TOKEN:
+    if operator_go == EVALUATION_GO_TOKEN:
         return ()
-    return (f"invalid_go_token:{go_token}",)
+    return (f"invalid_go_token:{operator_go}",)
 
 
-def verify_evaluation_go_token_accepted_for_validation_only_v1(go_token: str) -> bool:
-    return go_token == EVALUATION_GO_TOKEN
+def verify_evaluation_go_token_accepted_for_validation_only_v1(operator_go: str) -> bool:
+    return operator_go == EVALUATION_GO_TOKEN
 
 
 def _validate_integer_window_v1(
@@ -480,7 +480,7 @@ def evaluate_bouchaud_microstructure_ohlcv_proxy_v1_admissibility_contract_v1(
     *,
     repo_root: Path,
     config_path: Optional[str] = None,
-    go_token: Optional[str] = None,
+    operator_go: Optional[str] = None,
 ) -> BouchaudMicrostructureOhlcvProxyV1AdmissibilityContractResultV1:
     blocking: list[str] = []
     rel_path = config_path or DEFAULT_EVALUATION_CONFIG_PATH
@@ -494,7 +494,7 @@ def evaluate_bouchaud_microstructure_ohlcv_proxy_v1_admissibility_contract_v1(
     blocking.extend(verify_bouchaud_microstructure_ohlcv_proxy_v1_instrument_binding_v1(cfg))
     blocking.extend(verify_bouchaud_microstructure_ohlcv_proxy_v1_ratification_authority_v1(cfg))
     blocking.extend(verify_bouchaud_microstructure_ohlcv_proxy_v1_signal_binding_v1(cfg))
-    blocking.extend(verify_bouchaud_microstructure_ohlcv_proxy_v1_go_token_policy_v1(go_token))
+    blocking.extend(verify_bouchaud_microstructure_ohlcv_proxy_v1_go_token_policy_v1(operator_go))
 
     cost_status, cost_reasons = verify_cost_binding_v1(cfg)
     blocking.extend(cost_reasons)
