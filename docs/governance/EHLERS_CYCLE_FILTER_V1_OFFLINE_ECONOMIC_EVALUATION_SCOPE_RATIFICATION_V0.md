@@ -93,7 +93,7 @@ export GO_TOKEN="<ALLOWED_CONFIRM_GO_TOKEN>"
   scripts/ops/invoke_ehlers_cycle_filter_v1_bound_offline_economic_baseline_evaluation_v0.py
 ```
 
-The adapter resolves `${REPO}/.venv/bin/python`, fail-closes when the interpreter or `GO_TOKEN` is missing, and forwards `--confirm-go-token "$GO_TOKEN"` exactly once to `scripts/ops/run_ehlers_cycle_filter_v1_bound_offline_economic_baseline_evaluation_v0.py`.
+The adapter resolves `${REPO}&#47;.venv&#47;bin&#47;python`, fail-closes when the interpreter or `GO_TOKEN` is missing, and forwards `--confirm-go-token "$GO_TOKEN"` exactly once to `scripts&#47;ops&#47;run_ehlers_cycle_filter_v1_bound_offline_economic_baseline_evaluation_v0.py`.
 
 ## G. Next Step
 
