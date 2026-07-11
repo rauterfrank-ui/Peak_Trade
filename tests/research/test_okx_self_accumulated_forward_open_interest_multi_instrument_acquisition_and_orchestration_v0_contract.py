@@ -158,7 +158,9 @@ def _eth_only_snapshot(tmp_path: Path) -> Path:
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
         manifest["instrument_count"] = 1
         manifest["observation_count"] = len(eth_lines)
-        manifest_path.write_text(json.dumps(manifest, sort_keys=True, indent=2) + "\n", encoding="utf-8")
+        manifest_path.write_text(
+            json.dumps(manifest, sort_keys=True, indent=2) + "\n", encoding="utf-8"
+        )
     return snapshot
 
 
