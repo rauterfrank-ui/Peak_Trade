@@ -37,6 +37,10 @@ from src.research.okx_self_accumulated_forward_open_interest_coverage_freshness_
     generate_coverage_freshness_report_v0,
     report_result_to_dict_v0,
 )
+from src.research.okx_self_accumulated_forward_open_interest_historical_depth_sufficiency_and_materialization_admissibility_contract_v0 import (
+    MaterializationAdmissibilityAssessmentV0,
+    assess_materialization_admissibility_v0,
+)
 from src.research.okx_self_accumulated_forward_open_interest_overlap_validation_v0 import (
     OverlapValidationStatus,
     OverlapValidationVerdict,
@@ -74,6 +78,10 @@ ARCHIVE_CORRECTION_OWNER = (
 COVERAGE_FRESHNESS_OWNER = "okx_self_accumulated_forward_open_interest_coverage_freshness_report_v0"
 MATERIALIZER_OWNER = (
     "cross_sectional_open_interest_delta_rank_v0_bound_panel_dataset_materialization_v0"
+)
+SUFFICIENCY_CONTRACT_OWNER = (
+    "okx_self_accumulated_forward_open_interest_historical_depth_sufficiency_"
+    "and_materialization_admissibility_contract_v0"
 )
 REUSE_DECISION = "EXTEND_EXISTING_PARKING_OWNER"
 
@@ -254,6 +262,7 @@ def assess_source_admissibility_v0(
     overlap_result: Mapping[str, Any],
     correction_reexecution_report: Mapping[str, Any],
     observation_count: int,
+    materialization_assessment: MaterializationAdmissibilityAssessmentV0 | None = None,
 ) -> SourceAdmissibilityAssessment:
     overlap_pass = (
         overlap_result.get("status") == OverlapValidationStatus.PASS.value
@@ -276,9 +285,21 @@ def assess_source_admissibility_v0(
         and overlap_agreement_verified
         and observation_count >= 1
     )
-    historical_depth_sufficient = False
-    sample_sufficiency_met = observation_count >= BOUND_OBSERVATION_COUNT
-    sufficient_for_panel = False
+    historical_depth_sufficient = (
+        materialization_assessment.historical_depth_sufficient
+        if materialization_assessment is not None
+        else False
+    )
+    sample_sufficiency_met = (
+        materialization_assessment.sample_sufficiency_met
+        if materialization_assessment is not None
+        else observation_count >= BOUND_OBSERVATION_COUNT
+    )
+    sufficient_for_panel = (
+        materialization_assessment.dataset_materialization_allowed
+        if materialization_assessment is not None
+        else False
+    )
     sufficient_for_economic = False
     sufficient_for_runtime = False
 
@@ -291,7 +312,10 @@ def assess_source_admissibility_v0(
         reason_codes.append("OVERLAP_AGREEMENT_NOT_VERIFIED")
     if observation_count < BOUND_OBSERVATION_COUNT:
         reason_codes.append("BOUND_OBSERVATION_COUNT_BELOW_CONTRACT_MINIMUM")
-    reason_codes.append("INSUFFICIENT_HISTORICAL_DEPTH_FOR_PANEL_MATERIALIZATION")
+    if not historical_depth_sufficient:
+        reason_codes.append("INSUFFICIENT_HISTORICAL_DEPTH_FOR_PANEL_MATERIALIZATION")
+    if not sufficient_for_panel:
+        reason_codes.append("DATASET_MATERIALIZATION_NOT_ALLOWED")
     reason_codes.append("INSUFFICIENT_SAMPLE_FOR_ECONOMIC_EVALUATION")
     reason_codes.append("INSUFFICIENT_SAMPLE_FOR_RUNTIME_PROMOTION")
 
@@ -313,7 +337,18 @@ def assess_source_admissibility_v0(
 def build_scope_reopen_guard_report_v0(
     *,
     assessment: SourceAdmissibilityAssessment,
+    materialization_assessment: MaterializationAdmissibilityAssessmentV0 | None = None,
 ) -> dict[str, Any]:
+    dataset_materialization_allowed = (
+        materialization_assessment.dataset_materialization_allowed
+        if materialization_assessment is not None
+        else False
+    )
+    materialization_status = (
+        materialization_assessment.materialization_status
+        if materialization_assessment is not None
+        else MATERIALIZATION_STATUS_REOPENED
+    )
     return {
         "schema_version": "cross_sectional_open_interest_scope_reopen_guard_report.v0",
         "research_scope": RESEARCH_SCOPE,
@@ -328,9 +363,9 @@ def build_scope_reopen_guard_report_v0(
         "overlap_validation_status": OverlapValidationStatus.PASS.value,
         "reopen_requires": REOPEN_REQUIRES,
         "reopen_requirements_satisfied": True,
-        "dataset_materialization_allowed": False,
+        "dataset_materialization_allowed": dataset_materialization_allowed,
         "dataset_materialization_2024_allowed": False,
-        "dataset_ready": False,
+        "dataset_ready": dataset_materialization_allowed,
         "economic_evaluation_allowed": False,
         "economic_validity_offline_gate_pass": False,
         "ready_for_zero_order_runtime": False,
@@ -346,6 +381,13 @@ def build_scope_reopen_guard_report_v0(
         "observation_count_bound": assessment.observation_count,
         "historical_depth_sufficient": assessment.historical_depth_sufficient,
         "sample_sufficiency_met": assessment.sample_sufficiency_met,
+        "materialization_status": materialization_status,
+        "collection_continue_required": (
+            materialization_assessment.collection_continue_required
+            if materialization_assessment is not None
+            else True
+        ),
+        "sufficiency_contract_owner": SUFFICIENCY_CONTRACT_OWNER,
         "runtime_effect": RUNTIME_EFFECT,
         "authority_effect": AUTHORITY_EFFECT,
     }
@@ -357,9 +399,13 @@ def apply_source_ratification_and_scope_reopen_fields(
     registry: Mapping[str, Any],
     assessment: SourceAdmissibilityAssessment,
     evidence_bundles: Mapping[str, SourceEvidenceBundleValidation],
+    materialization_assessment: MaterializationAdmissibilityAssessmentV0 | None = None,
     ratification_evidence_dir: Path | None = None,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
-    guard = build_scope_reopen_guard_report_v0(assessment=assessment)
+    guard = build_scope_reopen_guard_report_v0(
+        assessment=assessment,
+        materialization_assessment=materialization_assessment,
+    )
     registration = dict(parking_registration)
     registration.update(
         {
@@ -410,15 +456,17 @@ def apply_source_ratification_and_scope_reopen_fields(
             "corrected_archive_view": str(CORRECTED_ARCHIVE_VIEW),
             "production_archive_root": str(PRODUCTION_ARCHIVE_ROOT),
             "bound_observation_count": assessment.observation_count,
-            "dataset_materialization_allowed": False,
-            "dataset_ready": False,
+            "dataset_materialization_allowed": guard["dataset_materialization_allowed"],
+            "dataset_ready": guard["dataset_ready"],
             "economic_evaluation_allowed": False,
             "economic_validity_offline_gate_pass": False,
             "ready_for_zero_order_runtime": False,
             "ready_for_shadow": False,
             "ready_for_paper": False,
             "ready_for_testnet": False,
-            "materialization_status": MATERIALIZATION_STATUS_REOPENED,
+            "materialization_status": guard["materialization_status"],
+            "sufficiency_contract_owner": SUFFICIENCY_CONTRACT_OWNER,
+            "collection_continue_required": guard["collection_continue_required"],
             "scope_reopen_guard_report": guard,
             "scope_parking_guard_report": parking_registration.get("scope_parking_guard_report"),
             "status": "SOURCE_RATIFICATION_AND_SCOPE_REOPEN_COMPLETE",
@@ -446,10 +494,10 @@ def apply_source_ratification_and_scope_reopen_fields(
         {
             "scope_status": SCOPE_STATUS_REOPENED,
             "capability_status": CAPABILITY_STATUS_REOPENED,
-            "materialization_status": MATERIALIZATION_STATUS_REOPENED,
-            "dataset_materialized": False,
-            "dataset_ready": False,
-            "dataset_materialization_allowed": False,
+            "materialization_status": guard["materialization_status"],
+            "dataset_materialized": guard["dataset_ready"],
+            "dataset_ready": guard["dataset_ready"],
+            "dataset_materialization_allowed": guard["dataset_materialization_allowed"],
             "dataset_materialization_2024_allowed": False,
             "economic_evaluation_allowed": False,
             "economic_validity_offline_gate_pass": False,
@@ -511,11 +559,16 @@ def execute_source_ratification_and_scope_reopen_v0(
     correction_report_path = CORRECTION_REEXECUTION_EVIDENCE_DIR / "final_report.txt"
     correction_report = _parse_key_value_report(correction_report_path)
     observation_count = _count_observations_in_jsonl(CORRECTED_ARCHIVE_VIEW)
+    materialization_assessment = assess_materialization_admissibility_v0(
+        archive_root=PRODUCTION_ARCHIVE_ROOT,
+        as_of_utc=as_of_utc,
+    )
 
     assessment = assess_source_admissibility_v0(
         overlap_result=overlap_result,
         correction_reexecution_report=correction_report,
         observation_count=observation_count,
+        materialization_assessment=materialization_assessment,
     )
 
     if not assessment.source_admissible_for_continued_self_accumulation:
@@ -560,6 +613,7 @@ def execute_source_ratification_and_scope_reopen_v0(
         registry=registry,
         assessment=assessment,
         evidence_bundles=evidence_bundles,
+        materialization_assessment=materialization_assessment,
         ratification_evidence_dir=ratification_evidence_dir,
     )
 
@@ -631,8 +685,8 @@ def ratification_result_to_dict_v0(result: RatificationAndReopenResult) -> dict[
             "sample_sufficiency_met": result.assessment.sample_sufficiency_met,
             "reason_codes": list(result.assessment.reason_codes),
         },
-        "dataset_materialization_allowed": False,
-        "dataset_ready": False,
+        "dataset_materialization_allowed": result.assessment.source_sufficient_for_panel_materialization,
+        "dataset_ready": result.assessment.source_sufficient_for_panel_materialization,
         "economic_evaluation_allowed": False,
         "economic_validity_offline_gate_pass": False,
         "ready_for_zero_order_runtime": False,
