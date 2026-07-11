@@ -12,6 +12,10 @@
   "overlap_validator_owner": "okx_self_accumulated_forward_open_interest_overlap_validation_v0",
   "permitted_collector_entry_point": "scripts/ops/collect_okx_self_accumulated_forward_open_interest_one_shot_v0.py",
   "permitted_overlap_entry_point": "scripts/ops/validate_okx_self_accumulated_forward_open_interest_overlap_v0.py",
+  "correction_execution_entry_point": "scripts/ops/execute_okx_self_accumulated_forward_open_interest_archive_correction_v0.py",
+  "correction_execution_go_token": "GO_OKX_SELF_ACCUMULATED_FORWARD_OPEN_INTEREST_ARCHIVE_CORRECTION_EXECUTION_V0_AGAINST_EXECUTABLE_BINDING",
+  "correction_execution_validate_only_default": true,
+  "explicit_mutation_flag_required": true,
   "append_only": true,
   "conflict_overwrite_allowed": false,
   "historical_evidence_preserved": true,
@@ -30,5 +34,5 @@
   "authority_effect": "NONE",
   "runtime_effect": "NONE",
   "reuse_decision": "NEW_IMPLEMENTATION_JUSTIFIED",
-  "status": "ARCHIVE_CORRECTION_AND_EXECUTABLE_BINDING_V0_IMPLEMENTED"
+  "status": "ARCHIVE_CORRECTION_EXECUTION_ENTRY_POINT_V0_IMPLEMENTED"
 }
