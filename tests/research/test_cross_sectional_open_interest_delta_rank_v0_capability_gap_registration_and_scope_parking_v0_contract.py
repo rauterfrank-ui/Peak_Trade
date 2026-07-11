@@ -139,17 +139,38 @@ class TestCapabilityGapParkingArtifacts:
         ):
             assert on_disk[field] == materialized[field]
 
-    def test_dataset_registry_entry_parked(self) -> None:
+    def test_parking_config_preserves_ratification_cross_ref(self) -> None:
+        on_disk = json.loads(REGISTRATION_CONFIG.read_text(encoding="utf-8"))
+        assert on_disk["scope_status"] == SCOPE_STATUS
+        assert on_disk.get("source_ratification_ref") == (
+            "cross_sectional_open_interest_delta_rank_v0_admissible_source_ratification_"
+            "and_scope_parking_reopen_v0"
+        )
+        assert on_disk.get("scope_reopen_status") == "SOURCE_RATIFIED_SELF_ACCUMULATION_CONTINUE"
+        assert on_disk.get("prior_scope_status") == SCOPE_STATUS
+
+    def test_dataset_registry_entry_reopened_after_ratification(self) -> None:
         registry = json.loads(DATASET_REGISTRY_CONFIG.read_text(encoding="utf-8"))
         assert registry["research_scope"] == RESEARCH_SCOPE
-        assert registry["scope_status"] == "PARKED"
-        assert registry["capability_status"] == CAPABILITY_STATUS
+        assert registry["scope_status"] == "SOURCE_RATIFIED_SELF_ACCUMULATION_CONTINUE"
+        assert (
+            registry["capability_status"] == "SELF_ACCUMULATED_SOURCE_RATIFIED_INSUFFICIENT_HISTORY"
+        )
         assert (
             "cross_sectional_open_interest_delta_rank_v0_capability_gap_registration_and_scope_parking_v0"
             in registry["registered_capabilities"]
         )
+        assert (
+            "cross_sectional_open_interest_delta_rank_v0_admissible_source_ratification_"
+            "and_scope_parking_reopen_v0" in registry["registered_capabilities"]
+        )
         dataset = registry["dataset_registration"]
-        assert dataset["materialization_status"] == "PARKED_EXTERNAL_DATA_CAPABILITY_GAP"
+        assert dataset["materialization_status"] == "DEFERRED_INSUFFICIENT_HISTORY"
+        assert dataset["dataset_ready"] is False
+        assert dataset["dataset_materialization_allowed"] is False
+        assert dataset["economic_evaluation_allowed"] is False
+        assert dataset["prior_parking_evidence_ref"]
+        assert dataset["source_ratification_status"] == "ADMISSIBLE"
         assert dataset["unchanged_retry_blocked"] is True
         assert dataset["live_oi_collection_blocked"] is False
         assert dataset["self_accumulated_archive_allowed"] is True
