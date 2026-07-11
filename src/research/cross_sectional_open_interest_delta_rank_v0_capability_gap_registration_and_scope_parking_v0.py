@@ -21,7 +21,7 @@ SCHEMA_VERSION = (
 REGISTRATION_ID = (
     "cross_sectional_open_interest_delta_rank_v0_capability_gap_registration_and_scope_parking_v0"
 )
-OPERATOR_GO_TOKEN = "GO_CROSS_SECTIONAL_OPEN_INTEREST_DELTA_RANK_V0_CAPABILITY_GAP_REGISTRATION_AND_SCOPE_PARKING_V0"
+CONFIRM_GO = "GO_CROSS_SECTIONAL_OPEN_INTEREST_DELTA_RANK_V0_CAPABILITY_GAP_REGISTRATION_AND_SCOPE_PARKING_V0"
 CONFIG_REL_PATH = (
     "config/research/"
     "cross_sectional_open_interest_delta_rank_v0_capability_gap_registration_and_scope_parking_v0.json"
@@ -206,7 +206,7 @@ def materialize_registration_config(
         "artifact_kind": REGISTRATION_ID,
         "artifact_version": "v0",
         "schema_version": SCHEMA_VERSION,
-        "go_token": OPERATOR_GO_TOKEN,
+        "go_token": CONFIRM_GO,
         "research_scope": RESEARCH_SCOPE,
         "strategy_id": STRATEGY_ID,
         "strategy_version": STRATEGY_VERSION,

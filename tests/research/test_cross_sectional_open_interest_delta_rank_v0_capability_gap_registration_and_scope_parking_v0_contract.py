@@ -8,7 +8,7 @@ from pathlib import Path
 from src.research.cross_sectional_open_interest_delta_rank_v0_capability_gap_registration_and_scope_parking_v0 import (
     CAPABILITY_STATUS,
     DATASET_REGISTRY_REL_PATH,
-    OPERATOR_GO_TOKEN,
+    CONFIRM_GO,
     PARK_REASON,
     REGISTRATION_ID,
     RESEARCH_SCOPE,
@@ -156,4 +156,4 @@ class TestCapabilityGapParkingArtifacts:
 
     def test_operator_go_token_present(self) -> None:
         on_disk = json.loads(REGISTRATION_CONFIG.read_text(encoding="utf-8"))
-        assert on_disk["go_token"] == OPERATOR_GO_TOKEN
+        assert on_disk["go_token"] == CONFIRM_GO
