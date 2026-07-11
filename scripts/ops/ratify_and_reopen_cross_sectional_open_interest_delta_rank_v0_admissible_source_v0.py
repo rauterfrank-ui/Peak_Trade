@@ -103,7 +103,9 @@ def main(argv: list[str] | None = None) -> int:
             encoding="utf-8",
         )
         parking_config = json.loads(parking_config_path.read_text(encoding="utf-8"))
-        parking_config["source_ratification_ref"] = result.registration_config.get("ratification_owner")
+        parking_config["source_ratification_ref"] = result.registration_config.get(
+            "ratification_owner"
+        )
         parking_config["scope_reopen_status"] = result.scope_status_after
         parking_config["prior_scope_status"] = result.scope_status_before
         parking_config_path.write_text(

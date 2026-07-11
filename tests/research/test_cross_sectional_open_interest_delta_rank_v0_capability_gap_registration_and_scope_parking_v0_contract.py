@@ -153,15 +153,16 @@ class TestCapabilityGapParkingArtifacts:
         registry = json.loads(DATASET_REGISTRY_CONFIG.read_text(encoding="utf-8"))
         assert registry["research_scope"] == RESEARCH_SCOPE
         assert registry["scope_status"] == "SOURCE_RATIFIED_SELF_ACCUMULATION_CONTINUE"
-        assert registry["capability_status"] == "SELF_ACCUMULATED_SOURCE_RATIFIED_INSUFFICIENT_HISTORY"
+        assert (
+            registry["capability_status"] == "SELF_ACCUMULATED_SOURCE_RATIFIED_INSUFFICIENT_HISTORY"
+        )
         assert (
             "cross_sectional_open_interest_delta_rank_v0_capability_gap_registration_and_scope_parking_v0"
             in registry["registered_capabilities"]
         )
         assert (
             "cross_sectional_open_interest_delta_rank_v0_admissible_source_ratification_"
-            "and_scope_parking_reopen_v0"
-            in registry["registered_capabilities"]
+            "and_scope_parking_reopen_v0" in registry["registered_capabilities"]
         )
         dataset = registry["dataset_registration"]
         assert dataset["materialization_status"] == "DEFERRED_INSUFFICIENT_HISTORY"
