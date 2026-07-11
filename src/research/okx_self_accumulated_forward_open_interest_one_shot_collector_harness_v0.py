@@ -82,7 +82,7 @@ class CollectionMode(str, Enum):
 class HarnessTerminalVerdict(str, Enum):
     VALIDATE_ONLY_PASS = "VALIDATE_ONLY_PASS"
     COLLECT_ONCE_COMPLETE = "COLLECT_ONCE_COMPLETE"
-    FAIL_CLOSED_GO_TOKEN = "FAIL_CLOSED_GO_TOKEN"
+    FAIL_CLOSED_OPERATOR_GO = "FAIL_CLOSED_OPERATOR_GO"
     FAIL_CLOSED_DEFAULT_OFF = "FAIL_CLOSED_DEFAULT_OFF"
     FAIL_CLOSED_INELIGIBLE_INSTRUMENT = "FAIL_CLOSED_INELIGIBLE_INSTRUMENT"
     FAIL_CLOSED_FETCH = "FAIL_CLOSED_FETCH"
@@ -321,7 +321,7 @@ def run_one_shot_collection_cycle_v0(
     except ValueError as exc:
         code = str(exc)
         verdict = (
-            HarnessTerminalVerdict.FAIL_CLOSED_GO_TOKEN
+            HarnessTerminalVerdict.FAIL_CLOSED_OPERATOR_GO
             if "GO" in code or "DEFAULT_OFF" in code
             else HarnessTerminalVerdict.FAIL_CLOSED_SCOPE
         )

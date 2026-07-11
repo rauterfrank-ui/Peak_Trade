@@ -152,7 +152,7 @@ class TestValidateOnly:
             instrument=ETH_INST,
             fixture_response=_fixture_payload("2026-07-11T11:00:00Z"),
         )
-        assert result.verdict == HarnessTerminalVerdict.FAIL_CLOSED_GO_TOKEN
+        assert result.verdict == HarnessTerminalVerdict.FAIL_CLOSED_OPERATOR_GO
 
 
 class TestCollectOnce:
