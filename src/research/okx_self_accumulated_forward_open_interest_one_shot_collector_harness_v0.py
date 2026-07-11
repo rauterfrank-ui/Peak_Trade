@@ -41,6 +41,7 @@ from src.research.okx_self_accumulated_forward_open_interest_archive_v0 import (
     assert_archive_preconditions_v0,
     build_overlap_validation_readiness_v0,
     compute_implementation_digest_v0 as compute_archive_implementation_digest_v0,
+    load_archive_state_from_jsonl_v0,
     normalize_forward_open_interest_observation_v0,
     persist_archive_snapshot_v0,
     serialize_canonical_json,
@@ -260,42 +261,6 @@ def parse_latest_forward_oi_row_v0(payload: Mapping[str, Any]) -> list[Any] | No
     if not isinstance(row, list) or not row:
         return None
     return row
-
-
-def load_archive_state_from_jsonl_v0(
-    *,
-    jsonl_path: Path,
-    instrument_id: str,
-    native_instrument_id: str,
-) -> InstrumentArchiveStateV0:
-    state = InstrumentArchiveStateV0(
-        instrument_id=instrument_id,
-        native_instrument_id=native_instrument_id,
-    )
-    if not jsonl_path.is_file():
-        return state
-    for line in jsonl_path.read_text(encoding="utf-8").splitlines():
-        if not line.strip():
-            continue
-        row = json.loads(line)
-        obs = ForwardOpenInterestObservationV0(
-            instrument_id=row["instrument_id"],
-            native_instrument_id=row["native_instrument_id"],
-            venue_timestamp_ms=row["venue_timestamp_ms"],
-            venue_timestamp_utc=row["venue_timestamp_utc"],
-            collected_at_ms=row["collected_at_ms"],
-            collected_at_utc=row["collected_at_utc"],
-            open_interest_raw=row["open_interest_raw"],
-            open_interest_unit=row["open_interest_unit"],
-            bar_interval=row["bar_interval"],
-            source_schema_version=row["source_schema_version"],
-            source_endpoint=row["source_endpoint"],
-            source_record_key=row["source_record_key"],
-            collection_mode=row["collection_mode"],
-            observation_digest=row["observation_digest"],
-        )
-        append_forward_observation_v0(state, obs, preconditions_checked=True)
-    return state
 
 
 def compute_run_digest_v0(result: Mapping[str, Any]) -> str:

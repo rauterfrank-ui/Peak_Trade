@@ -8,6 +8,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import subprocess
 from dataclasses import dataclass, field
 from datetime import datetime, timezone
 from enum import Enum
@@ -54,6 +55,30 @@ VENUE = "OKX"
 INSTRUMENT_TYPE = "linear_usdt_perpetual_swap"
 OPEN_INTEREST_UNIT = "okx_native_contract_count"
 OVERLAP_VALIDATION_STATUS_NOT_EXECUTED = "NOT_EXECUTED"
+OBSERVATIONS_JSONL_FILENAME = "observations.jsonl"
+ARCHIVE_MANIFEST_FILENAME = "archive_manifest.json"
+MANIFEST_SHA256_FILENAME = "MANIFEST.sha256"
+OBSERVATION_ROW_REQUIRED_FIELDS: tuple[str, ...] = (
+    "instrument_id",
+    "native_instrument_id",
+    "venue_timestamp_ms",
+    "venue_timestamp_utc",
+    "collected_at_ms",
+    "collected_at_utc",
+    "open_interest_raw",
+    "open_interest_unit",
+    "bar_interval",
+    "source_schema_version",
+    "source_endpoint",
+    "source_record_key",
+    "collection_mode",
+    "observation_digest",
+)
+BITCOIN_NATIVE_INSTRUMENT_MARKERS: tuple[str, ...] = (
+    "BTC-USDT-SWAP",
+    "BTC-USD-SWAP",
+    "BTC-USDT",
+)
 
 
 class ArchiveAppendVerdict(str, Enum):
@@ -432,6 +457,125 @@ def build_overlap_validation_readiness_v0(
         overlap_validation_executable=True,
         overlap_validation_blocked_reason=None,
     )
+
+
+def canonical_observation_key_v0(
+    instrument_id: str,
+    venue_timestamp_ms: int,
+) -> tuple[str, int]:
+    return (instrument_id, venue_timestamp_ms)
+
+
+def observation_row_semantics_reason_v0(row: Mapping[str, Any]) -> str | None:
+    """Return a reason code when row semantics violate the archive contract."""
+    instrument_id = str(row.get("instrument_id", ""))
+    native_id = str(row.get("native_instrument_id", "")).upper()
+    if any(marker in native_id for marker in BITCOIN_NATIVE_INSTRUMENT_MARKERS):
+        return "BITCOIN_INSTRUMENT_BLOCKED"
+    if "BTC" in instrument_id.upper() or "BITCOIN" in instrument_id.upper():
+        return "BITCOIN_INSTRUMENT_BLOCKED"
+    if row.get("bar_interval") != BAR_INTERVAL:
+        return "INVALID_BAR_INTERVAL"
+    if row.get("open_interest_unit") != OPEN_INTEREST_UNIT:
+        return "INVALID_OPEN_INTEREST_UNIT"
+    if row.get("source_schema_version") != SOURCE_SCHEMA_VERSION:
+        return "SCHEMA_DRIFT_SOURCE_SCHEMA_VERSION"
+    if row.get("source_endpoint") != SOURCE_ENDPOINT:
+        return "SCHEMA_DRIFT_SOURCE_ENDPOINT"
+    if row.get("collection_mode") != COLLECTION_MODE_FORWARD_ONLY:
+        return "INVALID_COLLECTION_MODE"
+    venue_ms = row.get("venue_timestamp_ms")
+    collected_ms = row.get("collected_at_ms")
+    if not isinstance(venue_ms, int) or not isinstance(collected_ms, int):
+        return "INVALID_FIELD_TYPE"
+    if collected_ms < venue_ms:
+        return "LOOKAHEAD_VIOLATION"
+    return None
+
+
+def observation_from_row_dict_v0(
+    row: Mapping[str, Any],
+) -> tuple[ForwardOpenInterestObservationV0 | None, str | None]:
+    """Strict deserialize with schema, digest, and semantics validation."""
+    if not isinstance(row, Mapping):
+        return None, "INVALID_FIELD_TYPE"
+    missing = [field for field in OBSERVATION_ROW_REQUIRED_FIELDS if field not in row]
+    if missing:
+        return None, "MISSING_REQUIRED_FIELD"
+    for field in OBSERVATION_ROW_REQUIRED_FIELDS:
+        if field in {"venue_timestamp_ms", "collected_at_ms"}:
+            if not isinstance(row[field], int):
+                return None, "INVALID_FIELD_TYPE"
+        elif not isinstance(row[field], str):
+            return None, "INVALID_FIELD_TYPE"
+    semantics_reason = observation_row_semantics_reason_v0(row)
+    if semantics_reason is not None:
+        return None, semantics_reason
+    payload = {
+        field: row[field]
+        for field in OBSERVATION_ROW_REQUIRED_FIELDS
+        if field != "observation_digest"
+    }
+    expected_digest = compute_observation_digest_v0(payload)
+    if row["observation_digest"] != expected_digest:
+        return None, "DIGEST_MISMATCH"
+    return (
+        ForwardOpenInterestObservationV0(
+            instrument_id=row["instrument_id"],
+            native_instrument_id=row["native_instrument_id"],
+            venue_timestamp_ms=row["venue_timestamp_ms"],
+            venue_timestamp_utc=row["venue_timestamp_utc"],
+            collected_at_ms=row["collected_at_ms"],
+            collected_at_utc=row["collected_at_utc"],
+            open_interest_raw=row["open_interest_raw"],
+            open_interest_unit=row["open_interest_unit"],
+            bar_interval=row["bar_interval"],
+            source_schema_version=row["source_schema_version"],
+            source_endpoint=row["source_endpoint"],
+            source_record_key=row["source_record_key"],
+            collection_mode=row["collection_mode"],
+            observation_digest=row["observation_digest"],
+        ),
+        None,
+    )
+
+
+def load_archive_state_from_jsonl_v0(
+    *,
+    jsonl_path: Path,
+    instrument_id: str,
+    native_instrument_id: str,
+) -> InstrumentArchiveStateV0:
+    """Load archive state by reusing append semantics (harness compatibility path)."""
+    state = InstrumentArchiveStateV0(
+        instrument_id=instrument_id,
+        native_instrument_id=native_instrument_id,
+    )
+    if not jsonl_path.is_file():
+        return state
+    for line in jsonl_path.read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        row = json.loads(line)
+        obs, reason = observation_from_row_dict_v0(row)
+        if obs is None:
+            continue
+        append_forward_observation_v0(state, obs, preconditions_checked=True)
+    return state
+
+
+def verify_manifest_sha256_v0(bundle_dir: Path) -> int:
+    manifest_path = bundle_dir / MANIFEST_SHA256_FILENAME
+    if not manifest_path.is_file():
+        return 1
+    result = subprocess.run(
+        ["shasum", "-a", "256", "-c", MANIFEST_SHA256_FILENAME],
+        cwd=bundle_dir,
+        capture_output=True,
+        text=True,
+        check=False,
+    )
+    return 0 if result.returncode == 0 else 1
 
 
 def serialize_observation_v0(obs: ForwardOpenInterestObservationV0) -> dict[str, Any]:
