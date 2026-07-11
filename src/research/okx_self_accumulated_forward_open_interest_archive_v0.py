@@ -56,6 +56,8 @@ INSTRUMENT_TYPE = "linear_usdt_perpetual_swap"
 OPEN_INTEREST_UNIT = "okx_native_contract_count"
 OVERLAP_VALIDATION_STATUS_NOT_EXECUTED = "NOT_EXECUTED"
 OBSERVATIONS_JSONL_FILENAME = "observations.jsonl"
+CORRECTED_OBSERVATIONS_JSONL_FILENAME = "corrected_observations.jsonl"
+SUPERSESSION_RECORDS_JSONL_FILENAME = "supersession_records.jsonl"
 ARCHIVE_MANIFEST_FILENAME = "archive_manifest.json"
 MANIFEST_SHA256_FILENAME = "MANIFEST.sha256"
 OBSERVATION_ROW_REQUIRED_FIELDS: tuple[str, ...] = (
@@ -638,6 +640,95 @@ def persist_archive_snapshot_v0(
         encoding="utf-8",
     )
     return manifest
+
+
+def _load_jsonl_rows_v0(path: Path) -> list[dict[str, Any]]:
+    if not path.is_file():
+        return []
+    rows: list[dict[str, Any]] = []
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        row = json.loads(line)
+        if isinstance(row, dict):
+            rows.append(row)
+    return rows
+
+
+def load_effective_archive_states_from_snapshot_v0(
+    snapshot_dir: Path,
+) -> list[InstrumentArchiveStateV0]:
+    """Merge observations.jsonl with gap-insert corrected rows and supersession replacements."""
+    original_rows = _load_jsonl_rows_v0(snapshot_dir / OBSERVATIONS_JSONL_FILENAME)
+    corrected_rows = _load_jsonl_rows_v0(snapshot_dir / CORRECTED_OBSERVATIONS_JSONL_FILENAME)
+    supersession_rows = _load_jsonl_rows_v0(snapshot_dir / SUPERSESSION_RECORDS_JSONL_FILENAME)
+
+    superseded_digests: set[str] = set()
+    replacement_by_superseded: dict[str, str] = {}
+    for record in supersession_rows:
+        superseded = str(record.get("superseded_observation_ref", ""))
+        replacement = str(record.get("replacement_observation_ref", ""))
+        if superseded:
+            superseded_digests.add(superseded)
+        if superseded and replacement:
+            replacement_by_superseded[superseded] = replacement
+
+    corrected_by_digest = {
+        str(row["observation_digest"]): row for row in corrected_rows if "observation_digest" in row
+    }
+
+    effective_by_key: dict[tuple[str, int], ForwardOpenInterestObservationV0] = {}
+    for row in original_rows:
+        digest = str(row.get("observation_digest", ""))
+        if digest in superseded_digests:
+            replacement_digest = replacement_by_superseded.get(digest)
+            if replacement_digest is None:
+                continue
+            replacement_row = corrected_by_digest.get(replacement_digest)
+            if replacement_row is None:
+                raise ValueError(f"MISSING_SUPERSESSION_REPLACEMENT:{replacement_digest}")
+            row = replacement_row
+        obs, reason = observation_from_row_dict_v0(row)
+        if obs is None:
+            raise ValueError(f"UNEXPECTED_INVALID_ORIGINAL_ROW:{reason}")
+        key = (obs.instrument_id, obs.venue_timestamp_ms)
+        existing = effective_by_key.get(key)
+        if existing is not None and existing.observation_digest != obs.observation_digest:
+            raise ValueError("EFFECTIVE_VIEW_CONFLICTING_ORIGINAL_RECORD")
+        effective_by_key[key] = obs
+
+    original_keys = set(effective_by_key)
+    for row in corrected_rows:
+        obs, reason = observation_from_row_dict_v0(row)
+        if obs is None:
+            raise ValueError(f"UNEXPECTED_INVALID_CORRECTED_ROW:{reason}")
+        key = (obs.instrument_id, obs.venue_timestamp_ms)
+        if key in original_keys:
+            existing = effective_by_key.get(key)
+            if existing is not None and existing.observation_digest == obs.observation_digest:
+                continue
+            if existing is not None and existing.observation_digest != obs.observation_digest:
+                raise ValueError("EFFECTIVE_VIEW_CONFLICTING_CORRECTION_RECORD")
+            continue
+        existing = effective_by_key.get(key)
+        if existing is not None and existing.observation_digest != obs.observation_digest:
+            raise ValueError("EFFECTIVE_VIEW_CONFLICTING_GAP_INSERT")
+        effective_by_key[key] = obs
+
+    states_by_id: dict[str, InstrumentArchiveStateV0] = {}
+    for obs in sorted(
+        effective_by_key.values(),
+        key=lambda item: (item.instrument_id, item.venue_timestamp_ms),
+    ):
+        state = states_by_id.get(obs.instrument_id)
+        if state is None:
+            state = InstrumentArchiveStateV0(
+                instrument_id=obs.instrument_id,
+                native_instrument_id=obs.native_instrument_id,
+            )
+            states_by_id[obs.instrument_id] = state
+        state.observations.append(obs)
+    return list(states_by_id.values())
 
 
 def write_manifest_sha256_v0(bundle_dir: Path) -> None:

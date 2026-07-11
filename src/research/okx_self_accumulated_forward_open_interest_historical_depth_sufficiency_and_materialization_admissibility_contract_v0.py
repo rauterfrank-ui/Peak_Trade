@@ -36,6 +36,7 @@ from src.research.okx_self_accumulated_forward_open_interest_archive_v0 import (
     GapStalenessStatus,
     InstrumentArchiveStateV0,
     assess_gap_and_staleness_v0,
+    load_effective_archive_states_from_snapshot_v0,
     observation_from_row_dict_v0,
     serialize_canonical_json,
 )
@@ -387,28 +388,7 @@ def compute_instrument_continuity_metrics_v0(
 
 
 def _load_archive_states_v0(snapshot_dir: Path) -> list[InstrumentArchiveStateV0]:
-    jsonl_path = snapshot_dir / "observations.jsonl"
-    if not jsonl_path.is_file():
-        return []
-    states_by_id: dict[str, InstrumentArchiveStateV0] = {}
-    for line in jsonl_path.read_text(encoding="utf-8").splitlines():
-        if not line.strip():
-            continue
-        row = json.loads(line)
-        obs, reason = observation_from_row_dict_v0(row)
-        if obs is None:
-            raise ValueError(f"UNEXPECTED_INVALID_ROW:{reason}")
-        state = states_by_id.get(obs.instrument_id)
-        if state is None:
-            state = InstrumentArchiveStateV0(
-                instrument_id=obs.instrument_id,
-                native_instrument_id=obs.native_instrument_id,
-            )
-            states_by_id[obs.instrument_id] = state
-        state.observations.append(obs)
-    for state in states_by_id.values():
-        state.observations.sort(key=lambda o: o.venue_timestamp_ms)
-    return list(states_by_id.values())
+    return load_effective_archive_states_from_snapshot_v0(snapshot_dir)
 
 
 def _aggregate_archive_metrics(
