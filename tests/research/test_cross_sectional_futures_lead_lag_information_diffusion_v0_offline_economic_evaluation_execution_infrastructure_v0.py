@@ -327,6 +327,10 @@ def test_execution_contract_materialization() -> None:
     contract = materialize_execution_contract_v0()
     assert contract["economic_evaluation_executed"] is False
     assert contract["baseline_lag_window"] == 8
+    assert (
+        contract["canonical_full_evaluation_callable"] == "run_full_offline_economic_evaluation_v0"
+    )
+    assert "reevaluation_go_token" in contract
 
 
 def test_scope_ratification_bitcoin_direction_rejected(complete_binding: dict) -> None:
