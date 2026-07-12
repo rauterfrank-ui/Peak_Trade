@@ -31,11 +31,14 @@ from src.research.cross_sectional_futures_lead_lag_information_diffusion_v0_offl
     INFRASTRUCTURE_GO_TOKEN,
     REEVALUATION_GO_TOKEN,
     RUNTIME_EFFECT,
+    SYSTEM_EVIDENCE_MV2_BINDING_GO_TOKEN,
+    SYSTEM_EVIDENCE_MV2_PATH_MODE,
     entrypoint_result_to_dict,
     execution_result_to_dict,
     load_ohlcv_panel_series_for_backtest,
     load_versioned_hypothesis_binding_v0,
     materialize_infrastructure_summary_v0,
+    materialize_system_evidence_mv2_offline_economic_evaluation_binding_v0,
     run_full_evaluation_entrypoint_dry_run_v1,
     run_full_offline_economic_evaluation_v0,
     run_mv2_system_evidence_wiring_dispatch_v0,
@@ -73,6 +76,10 @@ MV2_WIRING_ADAPTER_GO_TOKEN = (
 MV2_WIRING_ADAPTER_SCOPE_CLASSIFICATION = (
     "BOUNDED_CROSS_SECTIONAL_FUTURES_LEAD_LAG_V0_MV2_RESEARCH_BACKTEST_WIRING_"
     "BOUNDARY_ADAPTER_IMPLEMENTATION_V0"
+)
+MV2_BINDING_SCOPE_CLASSIFICATION = (
+    "BOUNDED_CROSS_SECTIONAL_FUTURES_LEAD_LAG_V0_SYSTEM_EVIDENCE_MV2_OFFLINE_"
+    "ECONOMIC_EVALUATION_BINDING_V0"
 )
 
 
@@ -435,6 +442,109 @@ def run_mv2_wiring_adapter_dispatch_v0(
     return payload
 
 
+def run_system_evidence_mv2_binding_dispatch_v0(
+    *,
+    confirm: str,
+    durable_evidence_root: Path,
+    primary_worktree: Path,
+    staging_root: Path,
+) -> dict[str, Any]:
+    start_monotonic = time.monotonic()
+    if confirm != SYSTEM_EVIDENCE_MV2_BINDING_GO_TOKEN:
+        _die(f"ERR:confirm_go_token_required:{SYSTEM_EVIDENCE_MV2_BINDING_GO_TOKEN}")
+
+    origin_main = _resolve_origin_main(_REPO_ROOT)
+    primary_before = _primary_worktree_snapshot(primary_worktree)
+    ts_slug = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    bundle_dir = (
+        durable_evidence_root
+        / "research"
+        / (
+            "cross_sectional_futures_lead_lag_v0_system_evidence_mv2_offline_economic_"
+            f"evaluation_binding_v0_{ts_slug}"
+        )
+    )
+    bundle_dir.mkdir(parents=True, exist_ok=True)
+
+    versioned_binding = load_versioned_hypothesis_binding_v0(_REPO_ROOT)
+    ratification = materialize_lead_lag_offline_economic_evaluation_scope_ratification_v0(
+        repo_root=_REPO_ROOT,
+        versioned_binding=versioned_binding,
+    )
+    start_state = verify_execution_start_state_v0(
+        repo_root=_REPO_ROOT,
+        ratification=ratification,
+        versioned_binding=versioned_binding,
+        origin_main_sha=origin_main,
+    )
+    binding_contract = materialize_system_evidence_mv2_offline_economic_evaluation_binding_v0()
+    panel_series = load_ohlcv_panel_series_for_backtest(staging_root)
+    evaluation = run_full_offline_economic_evaluation_v0(
+        repo_root=_REPO_ROOT,
+        ratification=ratification,
+        staging_root=staging_root,
+        panel_series=panel_series,
+        versioned_binding=versioned_binding,
+        go_token=confirm,
+    )
+    evaluation_payload = execution_result_to_dict(evaluation)
+    economic_executed = evaluation.economic_evaluation_executed
+
+    (bundle_dir / "PREFLIGHT.txt").write_text(
+        "\n".join(
+            [
+                f"ORIGIN_MAIN={origin_main}",
+                f"PRIMARY_HEAD_BEFORE={primary_before['head']}",
+                f"START_STATE_VALID={start_state.valid}",
+                f"GO_TOKEN={confirm}",
+                f"SCOPE_CLASSIFICATION={MV2_BINDING_SCOPE_CLASSIFICATION}",
+                f"EVALUATION_PATH_MODE={SYSTEM_EVIDENCE_MV2_PATH_MODE}",
+            ]
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    (bundle_dir / "BINDING_CONTRACT.json").write_text(
+        json.dumps(binding_contract, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    (bundle_dir / "MV2_BINDING_EVALUATION_RESULT.json").write_text(
+        json.dumps(evaluation_payload, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    (bundle_dir / "ECONOMIC_EVALUATION_EXECUTED.txt").write_text(
+        f"ECONOMIC_EVALUATION_EXECUTED={'true' if economic_executed else 'false'}\n",
+        encoding="utf-8",
+    )
+
+    manifest_rc, manifest_msg = retention.finalize_durable_bundle_manifest(bundle_dir)
+    payload: dict[str, Any] = {
+        "verdict": evaluation_payload["status"],
+        "process_classification": MV2_BINDING_SCOPE_CLASSIFICATION,
+        "execution_version": EXECUTION_VERSION,
+        "origin_main": origin_main,
+        "start_state_valid": start_state.valid,
+        "evaluation_path_mode": SYSTEM_EVIDENCE_MV2_PATH_MODE,
+        "binding_contract": binding_contract,
+        "evaluation": evaluation_payload,
+        "economic_evaluation_executed": economic_executed,
+        "authority_effect": AUTHORITY_EFFECT,
+        "runtime_effect": RUNTIME_EFFECT,
+        "primary_worktree": str(primary_worktree),
+        "staging_root": str(staging_root),
+        "durable_evidence_path": str(bundle_dir),
+        "manifest_verify_rc": manifest_rc,
+        "manifest_verify_msg": manifest_msg,
+        "elapsed_seconds": round(time.monotonic() - start_monotonic, 3),
+    }
+    (bundle_dir / "EXECUTION_RESULT.json").write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    _guard_timeout(start_monotonic)
+    return payload
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--confirm", required=True)
@@ -464,9 +574,18 @@ def main() -> None:
             primary_worktree=args.primary_worktree,
             staging_root=args.staging_root,
         )
+    elif args.confirm == SYSTEM_EVIDENCE_MV2_BINDING_GO_TOKEN:
+        result = run_system_evidence_mv2_binding_dispatch_v0(
+            confirm=args.confirm,
+            durable_evidence_root=args.durable_evidence_root,
+            primary_worktree=args.primary_worktree,
+            staging_root=args.staging_root,
+        )
     else:
         _die(
-            f"ERR:confirm_go_token_required:{INFRASTRUCTURE_GO}|{REEVALUATION_GO}|{MV2_WIRING_ADAPTER_GO_TOKEN}"
+            "ERR:confirm_go_token_required:"
+            f"{INFRASTRUCTURE_GO}|{REEVALUATION_GO}|{MV2_WIRING_ADAPTER_GO_TOKEN}|"
+            f"{SYSTEM_EVIDENCE_MV2_BINDING_GO_TOKEN}"
         )
     print(json.dumps(result, indent=2, sort_keys=True))
 
