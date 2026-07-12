@@ -130,6 +130,13 @@ RUNNER_SCRIPT = (
 CANONICAL_EVALUATION_CALLABLE = "run_contract_smoke_evaluation_v0"
 CANONICAL_FULL_EVALUATION_CALLABLE = "run_full_offline_economic_evaluation_v0"
 
+LEGACY_RESEARCH_PATH_MODE = "LEGACY_RESEARCH"
+SYSTEM_EVIDENCE_MV2_PATH_MODE = "SYSTEM_EVIDENCE_MV2"
+MV2_WIRING_ADAPTER_GO_TOKEN = (
+    "GO_CROSS_SECTIONAL_FUTURES_LEAD_LAG_V0_MV2_RESEARCH_BACKTEST_WIRING_BOUNDARY_ADAPTER_"
+    "IMPLEMENTATION_V0"
+)
+
 REASON_BINDING_INCOMPLETE = "BINDING_INCOMPLETE"
 REASON_RATIFICATION_INVALID = "RATIFICATION_INVALID"
 REASON_DATASET_UNAVAILABLE = "BOUND_DATA_UNAVAILABLE"
@@ -1161,6 +1168,40 @@ def run_full_offline_economic_evaluation_v0(
         authority_effect=AUTHORITY_EFFECT,
         runtime_effect=RUNTIME_EFFECT,
     )
+
+
+def run_mv2_system_evidence_wiring_dispatch_v0(
+    *,
+    repo_root: Path,
+    panel_series: Sequence[InstrumentPanelSeriesV1],
+    versioned_binding: Mapping[str, Any] | None = None,
+    go_token: str,
+) -> dict[str, Any]:
+    """Thin dispatch: lead-lag binding -> MV2 research wiring adapter (no economic evaluation)."""
+    from src.research.cross_sectional_futures_lead_lag_v0_mv2_research_backtest_wiring_boundary_adapter_v0 import (
+        adapter_result_to_dict,
+        run_lead_lag_mv2_research_backtest_wiring_boundary_v0,
+    )
+
+    envelope = dict(versioned_binding or load_versioned_hypothesis_binding_v0(repo_root))
+    ops_config = load_ops_evaluation_config_v0(repo_root)
+    adapter_result = run_lead_lag_mv2_research_backtest_wiring_boundary_v0(
+        repo_root=repo_root,
+        panel_series=panel_series,
+        versioned_binding=envelope,
+        ops_config=ops_config,
+        go_token=go_token,
+        evaluation_path_mode=SYSTEM_EVIDENCE_MV2_PATH_MODE,
+    )
+    return {
+        "evaluation_path_mode": SYSTEM_EVIDENCE_MV2_PATH_MODE,
+        "legacy_research_path_mode": LEGACY_RESEARCH_PATH_MODE,
+        "mv2_wiring_adapter_go_token": MV2_WIRING_ADAPTER_GO_TOKEN,
+        "adapter": adapter_result_to_dict(adapter_result),
+        "economic_evaluation_executed": False,
+        "authority_effect": AUTHORITY_EFFECT,
+        "runtime_effect": RUNTIME_EFFECT,
+    }
 
 
 def execution_result_to_dict(result: FullEconomicEvaluationResultV0) -> dict[str, Any]:
