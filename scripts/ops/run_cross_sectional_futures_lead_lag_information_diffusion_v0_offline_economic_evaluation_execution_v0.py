@@ -38,6 +38,7 @@ from src.research.cross_sectional_futures_lead_lag_information_diffusion_v0_offl
     materialize_infrastructure_summary_v0,
     run_full_evaluation_entrypoint_dry_run_v1,
     run_full_offline_economic_evaluation_v0,
+    run_mv2_system_evidence_wiring_dispatch_v0,
     verify_execution_start_state_v0,
 )
 from src.research.cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_evaluation_scope_ratification_v0 import (  # noqa: E402
@@ -64,6 +65,14 @@ INFRASTRUCTURE_SCOPE_CLASSIFICATION = (
 FULL_EVAL_SCOPE_CLASSIFICATION = (
     "BOUNDED_CROSS_SECTIONAL_FUTURES_LEAD_LAG_INFORMATION_DIFFUSION_V0_OFFLINE_"
     "ECONOMIC_EVALUATION_REEVALUATION_V0"
+)
+MV2_WIRING_ADAPTER_GO_TOKEN = (
+    "GO_CROSS_SECTIONAL_FUTURES_LEAD_LAG_V0_MV2_RESEARCH_BACKTEST_WIRING_BOUNDARY_ADAPTER_"
+    "IMPLEMENTATION_V0"
+)
+MV2_WIRING_ADAPTER_SCOPE_CLASSIFICATION = (
+    "BOUNDED_CROSS_SECTIONAL_FUTURES_LEAD_LAG_V0_MV2_RESEARCH_BACKTEST_WIRING_"
+    "BOUNDARY_ADAPTER_IMPLEMENTATION_V0"
 )
 
 
@@ -335,6 +344,97 @@ def run_full_evaluation_dispatch_v0(
     return payload
 
 
+def run_mv2_wiring_adapter_dispatch_v0(
+    *,
+    confirm: str,
+    durable_evidence_root: Path,
+    primary_worktree: Path,
+    staging_root: Path,
+) -> dict[str, Any]:
+    start_monotonic = time.monotonic()
+    if confirm != MV2_WIRING_ADAPTER_GO_TOKEN:
+        _die(f"ERR:confirm_go_token_required:{MV2_WIRING_ADAPTER_GO_TOKEN}")
+
+    origin_main = _resolve_origin_main(_REPO_ROOT)
+    primary_before = _primary_worktree_snapshot(primary_worktree)
+    ts_slug = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%SZ")
+    bundle_dir = (
+        durable_evidence_root
+        / "implementation"
+        / (
+            "cross_sectional_futures_lead_lag_v0_mv2_research_backtest_wiring_boundary_"
+            f"adapter_implementation_v0_{ts_slug}"
+        )
+    )
+    bundle_dir.mkdir(parents=True, exist_ok=True)
+
+    versioned_binding = load_versioned_hypothesis_binding_v0(_REPO_ROOT)
+    ratification = materialize_lead_lag_offline_economic_evaluation_scope_ratification_v0(
+        repo_root=_REPO_ROOT,
+        versioned_binding=versioned_binding,
+    )
+    start_state = verify_execution_start_state_v0(
+        repo_root=_REPO_ROOT,
+        ratification=ratification,
+        versioned_binding=versioned_binding,
+        origin_main_sha=origin_main,
+    )
+    panel_series = load_ohlcv_panel_series_for_backtest(staging_root)
+    dispatch = run_mv2_system_evidence_wiring_dispatch_v0(
+        repo_root=_REPO_ROOT,
+        panel_series=panel_series,
+        versioned_binding=versioned_binding,
+        go_token=confirm,
+    )
+
+    (bundle_dir / "PREFLIGHT.txt").write_text(
+        "\n".join(
+            [
+                f"ORIGIN_MAIN={origin_main}",
+                f"PRIMARY_HEAD_BEFORE={primary_before['head']}",
+                f"GO_TOKEN={confirm}",
+                f"SCOPE_CLASSIFICATION={MV2_WIRING_ADAPTER_SCOPE_CLASSIFICATION}",
+                "ECONOMIC_EVALUATION_EXECUTED=false",
+            ]
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    (bundle_dir / "MV2_WIRING_ADAPTER_DISPATCH.json").write_text(
+        json.dumps(dispatch, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    (bundle_dir / "ECONOMIC_EVALUATION_EXECUTED.txt").write_text(
+        "ECONOMIC_EVALUATION_EXECUTED=false\n",
+        encoding="utf-8",
+    )
+
+    manifest_rc, manifest_msg = retention.finalize_durable_bundle_manifest(bundle_dir)
+    payload: dict[str, Any] = {
+        "verdict": dispatch["adapter"]["status"],
+        "process_classification": MV2_WIRING_ADAPTER_SCOPE_CLASSIFICATION,
+        "execution_version": EXECUTION_VERSION,
+        "origin_main": origin_main,
+        "start_state_valid": start_state.valid,
+        "dispatch": dispatch,
+        "economic_evaluation_executed": False,
+        "authority_effect": AUTHORITY_EFFECT,
+        "runtime_effect": RUNTIME_EFFECT,
+        "primary_worktree": str(primary_worktree),
+        "staging_root": str(staging_root),
+        "durable_evidence_path": str(bundle_dir),
+        "manifest_verify_rc": manifest_rc,
+        "manifest_verify_msg": manifest_msg,
+        "elapsed_seconds": round(time.monotonic() - start_monotonic, 3),
+    }
+    (bundle_dir / "EXECUTION_RESULT.json").write_text(
+        json.dumps(payload, indent=2, sort_keys=True) + "\n",
+        encoding="utf-8",
+    )
+    _guard_timeout(start_monotonic)
+    return payload
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument("--confirm", required=True)
@@ -357,8 +457,17 @@ def main() -> None:
             primary_worktree=args.primary_worktree,
             staging_root=args.staging_root,
         )
+    elif args.confirm == MV2_WIRING_ADAPTER_GO_TOKEN:
+        result = run_mv2_wiring_adapter_dispatch_v0(
+            confirm=args.confirm,
+            durable_evidence_root=args.durable_evidence_root,
+            primary_worktree=args.primary_worktree,
+            staging_root=args.staging_root,
+        )
     else:
-        _die(f"ERR:confirm_go_token_required:{INFRASTRUCTURE_GO}|{REEVALUATION_GO}")
+        _die(
+            f"ERR:confirm_go_token_required:{INFRASTRUCTURE_GO}|{REEVALUATION_GO}|{MV2_WIRING_ADAPTER_GO_TOKEN}"
+        )
     print(json.dumps(result, indent=2, sort_keys=True))
 
 
