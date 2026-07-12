@@ -109,8 +109,9 @@ SYSTEM_EVIDENCE_MV2_BINDING_GO_TOKEN = (
     "EVALUATION_BINDING_V0"
 )
 ALLOWED_FULL_EVALUATION_GO_TOKENS: frozenset[str] = frozenset(
-    {REEVALUATION_GO_TOKEN, SYSTEM_EVIDENCE_MV2_BINDING_GO_TOKEN}
+    {GO_TOKEN, REEVALUATION_GO_TOKEN, SYSTEM_EVIDENCE_MV2_BINDING_GO_TOKEN}
 )
+BLOCK_REASON_FULL_CANONICAL_PARITY_NOT_PROVEN = "FULL_CANONICAL_PARITY_NOT_PROVEN"
 FIXTURE_DATA_DIGEST = "3b4d025422898fcbdb15390864ab17cd0d921e839b1a6bd09c42fa235024b769"
 REASON_FIXTURE_LEAKAGE = "FIXTURE_DATA_DIGEST_IN_ECONOMIC_EVALUATION"
 CONFIG_REL_PATH_OPS = (
@@ -149,6 +150,14 @@ MV2_WIRING_ADAPTER_OWNER = (
 )
 MV2_CANONICAL_BACKTEST_OWNER = "backtest.mv2_research_wiring_v1"
 
+ENTRY_POINT_DISPATCH_REGISTRY: dict[str, str] = {
+    INFRASTRUCTURE_GO_TOKEN: "INFRASTRUCTURE_V0",
+    GO_TOKEN: "EXECUTION_V0",
+    REEVALUATION_GO_TOKEN: "REEVALUATION_V0",
+    MV2_WIRING_ADAPTER_GO_TOKEN: "MV2_WIRING_ADAPTER_V0",
+    SYSTEM_EVIDENCE_MV2_BINDING_GO_TOKEN: "MV2_BINDING_V0",
+}
+
 REASON_BINDING_INCOMPLETE = "BINDING_INCOMPLETE"
 REASON_RATIFICATION_INVALID = "RATIFICATION_INVALID"
 REASON_DATASET_UNAVAILABLE = "BOUND_DATA_UNAVAILABLE"
@@ -160,12 +169,32 @@ REASON_ECONOMIC_EXECUTION_FORBIDDEN = "ECONOMIC_EXECUTION_FORBIDDEN_IN_INFRASTRU
 REASON_SOURCE_MANIFEST_MISSING = "SOURCE_MANIFEST_MISSING"
 REASON_SOURCE_MANIFEST_VERIFY_FAILED = "SOURCE_MANIFEST_VERIFY_FAILED"
 REASON_PARAMETER_SEARCH_FORBIDDEN_VIOLATION = "PARAMETER_SEARCH_FORBIDDEN_VIOLATION"
+REASON_FULL_CANONICAL_PARITY_NOT_PROVEN = "FULL_CANONICAL_PARITY_NOT_PROVEN"
+REASON_BACKTEST_RUNTIME_DECISION_PARITY_FAIL = "BACKTEST_RUNTIME_DECISION_PARITY_FAIL"
+REASON_PREEXECUTION_PARITY_GUARD_FAIL = "PREEXECUTION_PARITY_GUARD_FAIL"
+REASON_RUNNER_ENVELOPE_REQUIRED = "RUNNER_ENVELOPE_REQUIRED"
+REASON_RUNNER_ENVELOPE_INVALID = "RUNNER_ENVELOPE_INVALID"
+REASON_DISPATCH_GO_MISMATCH = "DISPATCH_GO_TOKEN_MISMATCH"
+REASON_DISPATCH_NOT_SUCCESSFUL = "DISPATCH_NOT_SUCCESSFUL"
+REASON_ENTRY_POINT_GO_TOKEN_UNKNOWN = "ENTRY_POINT_GO_TOKEN_UNKNOWN"
 
 
 class InfrastructureTerminalStatus(str, Enum):
     EXECUTION_INFRASTRUCTURE_COMPLETE = "EXECUTION_INFRASTRUCTURE_COMPLETE"
     FAIL_CLOSED_BOUND_DATA_UNAVAILABLE = "FAIL_CLOSED_BOUND_DATA_UNAVAILABLE"
     FAIL_CLOSED = "FAIL_CLOSED"
+
+
+@dataclass(frozen=True)
+class OfflineEconomicEvaluationRunnerEnvelopeV0:
+    requested_operator_go: str
+    dispatched_go_token: str
+    dispatch_rc: int
+    dispatch_successful: bool
+    preexecution_parity_guard_pass: bool
+    full_canonical_chain_wired: bool
+    backtest_runtime_decision_parity_pass: bool
+    envelope_digest: str
 
 
 @dataclass(frozen=True)
@@ -478,6 +507,92 @@ def materialize_execution_contract_v0() -> dict[str, Any]:
     }
 
 
+def load_evaluation_path_parity_status_v0(repo_root: Path) -> tuple[bool, bool]:
+    ops_cfg = load_ops_evaluation_config_v0(repo_root)
+    parity = ops_cfg.get("evaluation_path_parity_binding_v0", {})
+    if not isinstance(parity, Mapping):
+        return False, False
+    return (
+        parity.get("full_canonical_chain_wired") is True,
+        parity.get("backtest_runtime_decision_parity_pass") is True,
+    )
+
+
+def materialize_preexecution_fail_closed_block_v0(
+    *,
+    block_reason: str = BLOCK_REASON_FULL_CANONICAL_PARITY_NOT_PROVEN,
+) -> dict[str, Any]:
+    return {
+        "EVALUATION_EXECUTED": False,
+        "SYSTEM_ECONOMIC_EVIDENCE_ADMISSIBLE": False,
+        "PROMOTION_ADMISSIBLE": False,
+        "RUNTIME_REWIRE_ADMISSIBLE": False,
+        "PREEXECUTION_PARITY_GUARD_PASS": False,
+        "BLOCK_REASON": block_reason,
+    }
+
+
+def validate_entry_point_go_token_v0(go_token: str) -> tuple[bool, str | None]:
+    branch = ENTRY_POINT_DISPATCH_REGISTRY.get(go_token)
+    if branch is None:
+        return False, None
+    return True, branch
+
+
+def resolve_dispatch_go_token_v0(requested_operator_go: str) -> str:
+    return requested_operator_go
+
+
+def materialize_runner_envelope_v0(
+    *,
+    requested_operator_go: str,
+    dispatched_go_token: str,
+    dispatch_rc: int,
+    preexecution_parity_guard_pass: bool,
+    full_canonical_chain_wired: bool,
+    backtest_runtime_decision_parity_pass: bool,
+) -> OfflineEconomicEvaluationRunnerEnvelopeV0:
+    dispatch_successful = dispatch_rc == 0
+    body: dict[str, Any] = {
+        "requested_operator_go": requested_operator_go,
+        "dispatched_go_token": dispatched_go_token,
+        "dispatch_rc": dispatch_rc,
+        "dispatch_successful": dispatch_successful,
+        "preexecution_parity_guard_pass": preexecution_parity_guard_pass,
+        "full_canonical_chain_wired": full_canonical_chain_wired,
+        "backtest_runtime_decision_parity_pass": backtest_runtime_decision_parity_pass,
+    }
+    return OfflineEconomicEvaluationRunnerEnvelopeV0(
+        requested_operator_go=requested_operator_go,
+        dispatched_go_token=dispatched_go_token,
+        dispatch_rc=dispatch_rc,
+        dispatch_successful=dispatch_successful,
+        preexecution_parity_guard_pass=preexecution_parity_guard_pass,
+        full_canonical_chain_wired=full_canonical_chain_wired,
+        backtest_runtime_decision_parity_pass=backtest_runtime_decision_parity_pass,
+        envelope_digest=_stable_digest(body),
+    )
+
+
+def verify_runner_envelope_v0(
+    envelope: OfflineEconomicEvaluationRunnerEnvelopeV0 | None,
+    *,
+    expected_dispatched_go: str | None = None,
+) -> tuple[bool, tuple[str, ...]]:
+    if envelope is None:
+        return False, (REASON_RUNNER_ENVELOPE_REQUIRED,)
+    reasons: list[str] = []
+    if envelope.dispatch_rc != 0 or not envelope.dispatch_successful:
+        reasons.append(REASON_DISPATCH_NOT_SUCCESSFUL)
+    if envelope.requested_operator_go != envelope.dispatched_go_token:
+        reasons.append(REASON_DISPATCH_GO_MISMATCH)
+    if expected_dispatched_go and envelope.dispatched_go_token != expected_dispatched_go:
+        reasons.append(REASON_DISPATCH_GO_MISMATCH)
+    if not envelope.preexecution_parity_guard_pass:
+        reasons.append(REASON_PREEXECUTION_PARITY_GUARD_FAIL)
+    return not reasons, tuple(dict.fromkeys(reasons))
+
+
 def verify_full_evaluation_precheck_v1(
     *,
     repo_root: Path,
@@ -486,6 +601,8 @@ def verify_full_evaluation_precheck_v1(
     versioned_binding: Mapping[str, Any] | None = None,
     go_token: str | None = None,
     require_execution_go: bool = False,
+    runner_envelope: OfflineEconomicEvaluationRunnerEnvelopeV0 | None = None,
+    materialize_dataset: bool = True,
 ) -> tuple[bool, tuple[str, ...], Any]:
     reasons: list[str] = []
     envelope = dict(versioned_binding or load_versioned_hypothesis_binding_v0(repo_root))
@@ -505,6 +622,20 @@ def verify_full_evaluation_precheck_v1(
     if require_execution_go:
         if go_token not in ALLOWED_FULL_EVALUATION_GO_TOKENS:
             reasons.append(REASON_GO_TOKEN_INVALID)
+        entry_ok, _ = validate_entry_point_go_token_v0(str(go_token or ""))
+        if not entry_ok:
+            reasons.append(REASON_ENTRY_POINT_GO_TOKEN_UNKNOWN)
+        if runner_envelope is None:
+            reasons.append(REASON_RUNNER_ENVELOPE_REQUIRED)
+        else:
+            env_ok, env_reasons = verify_runner_envelope_v0(
+                runner_envelope,
+                expected_dispatched_go=go_token,
+            )
+            if not env_ok:
+                reasons.extend(env_reasons)
+            elif runner_envelope.requested_operator_go != go_token:
+                reasons.append(REASON_DISPATCH_GO_MISMATCH)
     elif go_token != INFRASTRUCTURE_GO_TOKEN:
         reasons.append(REASON_GO_TOKEN_INVALID)
 
@@ -522,6 +653,16 @@ def verify_full_evaluation_precheck_v1(
     if not digest_ok:
         reasons.extend(digest_reasons)
 
+    full_chain_wired, parity_pass = load_evaluation_path_parity_status_v0(repo_root)
+    if require_execution_go:
+        if not full_chain_wired:
+            reasons.append(REASON_FULL_CANONICAL_PARITY_NOT_PROVEN)
+        if not parity_pass:
+            reasons.append(REASON_BACKTEST_RUNTIME_DECISION_PARITY_FAIL)
+
+    if reasons:
+        return False, tuple(dict.fromkeys(reasons)), None
+
     manifest_ok, manifest_rc, manifest_reasons = verify_panel_staging_source_manifests_v1(
         staging_root
     )
@@ -535,8 +676,8 @@ def verify_full_evaluation_precheck_v1(
         reasons.append(REASON_SOURCE_MANIFEST_VERIFY_FAILED)
 
     period_binding = envelope["period_binding"]
-    if reasons:
-        return False, tuple(dict.fromkeys(reasons)), None
+    if reasons or not materialize_dataset:
+        return not reasons, tuple(dict.fromkeys(reasons)), None
 
     materialization = materialize_bound_panel_dataset_v0(
         staging_root,
@@ -1061,11 +1202,61 @@ def run_full_offline_economic_evaluation_v0(
     panel_series: Sequence[InstrumentPanelSeriesV1],
     versioned_binding: Mapping[str, Any] | None = None,
     go_token: str,
+    runner_envelope: OfflineEconomicEvaluationRunnerEnvelopeV0 | None = None,
 ) -> FullEconomicEvaluationResultV0:
     """Execute full offline economic evaluation with fail-closed dataset gate."""
     envelope = dict(versioned_binding or load_versioned_hypothesis_binding_v0(repo_root))
     ops_config = load_ops_evaluation_config_v0(repo_root)
     reason_codes: list[str] = []
+
+    if runner_envelope is None:
+        reason_codes.append(REASON_RUNNER_ENVELOPE_REQUIRED)
+        return FullEconomicEvaluationResultV0(
+            status=ExecutionTerminalStatus.FAIL_CLOSED_PRECHECK,
+            precheck_passed=False,
+            bound_dataset_materialized=False,
+            dataset_period_match=False,
+            panel_data_digest="0" * 64,
+            data_digest_is_fixture=False,
+            stage_wiring=(),
+            backtest=None,
+            robustness=None,
+            robustness_metrics=None,
+            economic_viability_evidence={},
+            economic_classification=EconomicClassification.FAIL_CLOSED,
+            economic_validity_offline_gate_pass=False,
+            promotion_candidate_eligible=False,
+            economic_evaluation_executed=False,
+            reason_codes=tuple(reason_codes),
+            authority_effect=AUTHORITY_EFFECT,
+            runtime_effect=RUNTIME_EFFECT,
+        )
+
+    env_ok, env_reasons = verify_runner_envelope_v0(
+        runner_envelope,
+        expected_dispatched_go=go_token,
+    )
+    if not env_ok:
+        return FullEconomicEvaluationResultV0(
+            status=ExecutionTerminalStatus.FAIL_CLOSED_PRECHECK,
+            precheck_passed=False,
+            bound_dataset_materialized=False,
+            dataset_period_match=False,
+            panel_data_digest="0" * 64,
+            data_digest_is_fixture=False,
+            stage_wiring=(),
+            backtest=None,
+            robustness=None,
+            robustness_metrics=None,
+            economic_viability_evidence={},
+            economic_classification=EconomicClassification.FAIL_CLOSED,
+            economic_validity_offline_gate_pass=False,
+            promotion_candidate_eligible=False,
+            economic_evaluation_executed=False,
+            reason_codes=env_reasons,
+            authority_effect=AUTHORITY_EFFECT,
+            runtime_effect=RUNTIME_EFFECT,
+        )
 
     precheck_ok, precheck_reasons, materialization = verify_full_evaluation_precheck_v1(
         repo_root=repo_root,
@@ -1074,6 +1265,7 @@ def run_full_offline_economic_evaluation_v0(
         versioned_binding=envelope,
         go_token=go_token,
         require_execution_go=True,
+        runner_envelope=runner_envelope,
     )
     if not precheck_ok:
         return FullEconomicEvaluationResultV0(
@@ -1365,7 +1557,7 @@ def run_mv2_system_evidence_wiring_dispatch_v0(
 def execution_result_to_dict(result: FullEconomicEvaluationResultV0) -> dict[str, Any]:
     backtest = result.backtest
     stats = backtest.stats if backtest is not None else {}
-    return {
+    payload: dict[str, Any] = {
         "status": result.status.value,
         "precheck_passed": result.precheck_passed,
         "bound_dataset_materialized": result.bound_dataset_materialized,
@@ -1415,3 +1607,10 @@ def execution_result_to_dict(result: FullEconomicEvaluationResultV0) -> dict[str
         "execution_version": EXECUTION_VERSION,
         "canonical_full_evaluation_callable": CANONICAL_FULL_EVALUATION_CALLABLE,
     }
+    if not result.precheck_passed or not result.economic_evaluation_executed:
+        block = materialize_preexecution_fail_closed_block_v0()
+        if REASON_FULL_CANONICAL_PARITY_NOT_PROVEN in result.reason_codes:
+            block["BLOCK_REASON"] = BLOCK_REASON_FULL_CANONICAL_PARITY_NOT_PROVEN
+        payload.update(block)
+        payload["EVALUATION_EXECUTED"] = result.economic_evaluation_executed
+    return payload

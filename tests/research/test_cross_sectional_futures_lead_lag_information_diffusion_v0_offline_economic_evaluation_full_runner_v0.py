@@ -29,11 +29,14 @@ from src.research.cross_sectional_futures_lead_lag_information_diffusion_v0_offl
     REASON_BINDING_DIGEST_MISMATCH,
     REASON_DATASET_DIGEST_MISMATCH,
     REASON_GO_TOKEN_INVALID,
+    REASON_RUNNER_ENVELOPE_REQUIRED,
     REASON_UNIVERSE_DIGEST_MISMATCH,
     REEVALUATION_GO_TOKEN,
     RUNTIME_EFFECT,
     execution_result_to_dict,
     materialize_execution_contract_v0,
+    materialize_runner_envelope_v0,
+    resolve_dispatch_go_token_v0,
     run_full_evaluation_entrypoint_dry_run_v1,
     run_full_offline_economic_evaluation_v0,
     verify_execution_start_state_v0,
@@ -110,6 +113,17 @@ def fixture_bound_staging() -> Path:
     return staging
 
 
+def _make_runner_envelope(*, go_token: str, parity: bool = False) -> object:
+    return materialize_runner_envelope_v0(
+        requested_operator_go=go_token,
+        dispatched_go_token=resolve_dispatch_go_token_v0(go_token),
+        dispatch_rc=0,
+        preexecution_parity_guard_pass=parity,
+        full_canonical_chain_wired=parity,
+        backtest_runtime_decision_parity_pass=parity,
+    )
+
+
 def test_full_runner_go_token_constants() -> None:
     assert REEVALUATION_GO_TOKEN.endswith("_REEVALUATION_V0")
     assert INFRASTRUCTURE_GO_TOKEN.endswith("_INFRASTRUCTURE_IMPLEMENTATION_V0")
@@ -160,7 +174,7 @@ def test_start_state_accepts_ratified_binding(
     assert result.valid is True
 
 
-def test_full_eval_rejects_execution_go_alias(
+def test_full_eval_rejects_execution_go_without_runner_envelope(
     bound_staging: Path,
     scope_ratification: dict,
     complete_binding: dict,
@@ -176,7 +190,7 @@ def test_full_eval_rejects_execution_go_alias(
     )
     assert result.status is ExecutionTerminalStatus.FAIL_CLOSED_PRECHECK
     assert result.economic_evaluation_executed is False
-    assert REASON_GO_TOKEN_INVALID in result.reason_codes
+    assert REASON_RUNNER_ENVELOPE_REQUIRED in result.reason_codes
 
 
 def test_full_eval_rejects_invalid_go_token(
@@ -204,17 +218,30 @@ def test_full_eval_rejects_stale_binding_digest(
 ) -> None:
     stale = deepcopy(complete_binding)
     stale["binding_digest"] = "f" * 64
-    panel = build_synthetic_panel_series_v0()
-    result = run_full_offline_economic_evaluation_v0(
-        repo_root=REPO_ROOT,
-        ratification=scope_ratification,
-        staging_root=bound_staging,
-        panel_series=panel,
-        versioned_binding=stale,
-        go_token=REEVALUATION_GO_TOKEN,
-    )
-    assert result.status is ExecutionTerminalStatus.FAIL_CLOSED_PRECHECK
-    assert REASON_BINDING_DIGEST_MISMATCH in result.reason_codes
+    with (
+        patch(
+            "src.research.cross_sectional_futures_lead_lag_information_diffusion_v0_offline_"
+            "economic_evaluation_execution_v0.load_evaluation_path_parity_status_v0",
+            return_value=(True, True),
+        ),
+        patch(
+            "src.research.cross_sectional_futures_lead_lag_information_diffusion_v0_offline_"
+            "economic_evaluation_execution_v0.verify_panel_staging_source_manifests_v1",
+            return_value=(True, 0, ()),
+        ),
+    ):
+        ok, reasons, _ = verify_full_evaluation_precheck_v1(
+            repo_root=REPO_ROOT,
+            ratification=scope_ratification,
+            staging_root=bound_staging,
+            versioned_binding=stale,
+            go_token=REEVALUATION_GO_TOKEN,
+            require_execution_go=True,
+            runner_envelope=_make_runner_envelope(go_token=REEVALUATION_GO_TOKEN, parity=True),
+            materialize_dataset=False,
+        )
+    assert ok is False
+    assert REASON_BINDING_DIGEST_MISMATCH in reasons
 
 
 def test_full_eval_rejects_wrong_dataset_digest(
@@ -224,17 +251,30 @@ def test_full_eval_rejects_wrong_dataset_digest(
 ) -> None:
     stale = deepcopy(complete_binding)
     stale["dataset_digest"] = "f" * 64
-    panel = build_synthetic_panel_series_v0()
-    result = run_full_offline_economic_evaluation_v0(
-        repo_root=REPO_ROOT,
-        ratification=scope_ratification,
-        staging_root=bound_staging,
-        panel_series=panel,
-        versioned_binding=stale,
-        go_token=REEVALUATION_GO_TOKEN,
-    )
-    assert result.status is ExecutionTerminalStatus.FAIL_CLOSED_PRECHECK
-    assert REASON_DATASET_DIGEST_MISMATCH in result.reason_codes
+    with (
+        patch(
+            "src.research.cross_sectional_futures_lead_lag_information_diffusion_v0_offline_"
+            "economic_evaluation_execution_v0.load_evaluation_path_parity_status_v0",
+            return_value=(True, True),
+        ),
+        patch(
+            "src.research.cross_sectional_futures_lead_lag_information_diffusion_v0_offline_"
+            "economic_evaluation_execution_v0.verify_panel_staging_source_manifests_v1",
+            return_value=(True, 0, ()),
+        ),
+    ):
+        ok, reasons, _ = verify_full_evaluation_precheck_v1(
+            repo_root=REPO_ROOT,
+            ratification=scope_ratification,
+            staging_root=bound_staging,
+            versioned_binding=stale,
+            go_token=REEVALUATION_GO_TOKEN,
+            require_execution_go=True,
+            runner_envelope=_make_runner_envelope(go_token=REEVALUATION_GO_TOKEN, parity=True),
+            materialize_dataset=False,
+        )
+    assert ok is False
+    assert REASON_DATASET_DIGEST_MISMATCH in reasons
 
 
 def test_full_eval_rejects_wrong_universe_digest(complete_binding: dict) -> None:
@@ -349,49 +389,23 @@ def test_implementation_scope_runner_infrastructure_mode_does_not_execute_evalua
         full_eval.assert_not_called()
 
 
-def test_reevaluation_go_reaches_full_callable_boundary_via_runner(
+def test_execution_go_reaches_guarded_dispatch_without_reevaluation_rewrite(
     tmp_path: Path,
     bound_staging: Path,
 ) -> None:
-    class _SentinelResult:
-        economic_evaluation_executed = False
-        economic_classification = EconomicClassification.FAIL_CLOSED
-        status = ExecutionTerminalStatus.FAIL_CLOSED_PRECHECK
-
     with patch.object(
         runner_module,
         "run_full_offline_economic_evaluation_v0",
-        return_value=_SentinelResult(),
     ) as full_eval:
-        with patch.object(
-            runner_module,
-            "load_ohlcv_panel_series_for_backtest",
-            return_value=build_synthetic_panel_series_v0(),
-        ):
-            with patch.object(
-                runner_module,
-                "execution_result_to_dict",
-                return_value={
-                    "status": "FAIL_CLOSED_PRECHECK",
-                    "economic_evaluation_executed": False,
-                },
-            ):
-                with pytest.raises(SystemExit):
-                    runner_module.run_full_evaluation_dispatch_v0(
-                        confirm=GO_TOKEN,
-                        durable_evidence_root=tmp_path,
-                        primary_worktree=REPO_ROOT,
-                        staging_root=bound_staging,
-                    )
-                runner_module.run_full_evaluation_dispatch_v0(
-                    confirm=REEVALUATION_GO_TOKEN,
-                    durable_evidence_root=tmp_path / "reeval",
-                    primary_worktree=REPO_ROOT,
-                    staging_root=bound_staging,
-                )
-        full_eval.assert_called_once()
-        _, kwargs = full_eval.call_args
-        assert kwargs["go_token"] == REEVALUATION_GO_TOKEN
+        with pytest.raises(SystemExit) as exc:
+            runner_module.run_bounded_full_evaluation_dispatch_v0(
+                confirm=GO_TOKEN,
+                durable_evidence_root=tmp_path,
+                primary_worktree=REPO_ROOT,
+                staging_root=bound_staging,
+            )
+        assert exc.value.code == 1
+        full_eval.assert_not_called()
 
 
 def test_ops_runner_rejects_wrong_go_token() -> None:
@@ -412,7 +426,7 @@ def test_ops_runner_rejects_wrong_go_token() -> None:
     assert "ERR:confirm_go_token_required" in proc.stderr
 
 
-def test_ops_runner_rejects_execution_go_in_infrastructure_mode() -> None:
+def test_ops_runner_execution_go_routes_to_guarded_dispatch_not_infrastructure_mode() -> None:
     proc = subprocess.run(
         [
             sys.executable,
@@ -421,12 +435,16 @@ def test_ops_runner_rejects_execution_go_in_infrastructure_mode() -> None:
             GO_TOKEN,
             "--primary-worktree",
             str(REPO_ROOT),
+            "--durable-evidence-root",
+            tempfile.mkdtemp(prefix="cs_lead_lag_exec_go_cli_"),
         ],
         capture_output=True,
         text=True,
         cwd=str(REPO_ROOT),
     )
-    assert proc.returncode == 2
+    assert proc.returncode == 1
+    assert "BLOCK_REASON=FULL_CANONICAL_PARITY_NOT_PROVEN" in proc.stderr
+    assert "ERR:confirm_go_token_required" not in proc.stderr
 
 
 def test_execution_result_to_dict_preserves_no_runtime_effect(

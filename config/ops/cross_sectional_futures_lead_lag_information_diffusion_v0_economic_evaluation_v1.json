@@ -77,6 +77,12 @@
       "policy_version": "walk_forward_v1"
     }
   },
+  "evaluation_path_parity_binding_v0": {
+    "backtest_runtime_decision_parity_pass": false,
+    "full_canonical_chain_wired": false,
+    "parity_proof_ref": "planning/cross_sectional_futures_lead_lag_information_diffusion_v0_full_canonical_evaluation_path_parity_proof_read_only_v0_20260712T205902Z",
+    "ratified_read_only": true
+  },
   "evidence_schema_version": "economic_viability_evidence_schema_v1.json",
   "implementation_digest": "612b431acc3833ed364b66de58b06ce15268edb30e1c5d82db50258cedd6c949",
   "offline_evaluation_sizing_contract_v1": {

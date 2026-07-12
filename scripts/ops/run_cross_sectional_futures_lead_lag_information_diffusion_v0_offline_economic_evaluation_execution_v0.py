@@ -26,23 +26,31 @@ if str(_REPO_ROOT) not in sys.path:
 from scripts.ops import primary_evidence_retention_v0 as retention  # noqa: E402
 from src.research.cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_evaluation_execution_v0 import (  # noqa: E402
     AUTHORITY_EFFECT,
+    BLOCK_REASON_FULL_CANONICAL_PARITY_NOT_PROVEN,
     EXECUTION_VERSION,
     GO_TOKEN,
     INFRASTRUCTURE_GO_TOKEN,
+    REASON_FULL_CANONICAL_PARITY_NOT_PROVEN,
     REEVALUATION_GO_TOKEN,
     RUNTIME_EFFECT,
     SYSTEM_EVIDENCE_MV2_BINDING_GO_TOKEN,
     SYSTEM_EVIDENCE_MV2_PATH_MODE,
     entrypoint_result_to_dict,
     execution_result_to_dict,
+    load_evaluation_path_parity_status_v0,
     load_ohlcv_panel_series_for_backtest,
     load_versioned_hypothesis_binding_v0,
     materialize_infrastructure_summary_v0,
+    materialize_preexecution_fail_closed_block_v0,
+    materialize_runner_envelope_v0,
     materialize_system_evidence_mv2_offline_economic_evaluation_binding_v0,
+    resolve_dispatch_go_token_v0,
     run_full_evaluation_entrypoint_dry_run_v1,
     run_full_offline_economic_evaluation_v0,
     run_mv2_system_evidence_wiring_dispatch_v0,
+    validate_entry_point_go_token_v0,
     verify_execution_start_state_v0,
+    verify_full_evaluation_precheck_v1,
 )
 from src.research.cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_evaluation_scope_ratification_v0 import (  # noqa: E402
     materialize_lead_lag_offline_economic_evaluation_scope_ratification_v0,
@@ -68,6 +76,13 @@ INFRASTRUCTURE_SCOPE_CLASSIFICATION = (
 FULL_EVAL_SCOPE_CLASSIFICATION = (
     "BOUNDED_CROSS_SECTIONAL_FUTURES_LEAD_LAG_INFORMATION_DIFFUSION_V0_OFFLINE_"
     "ECONOMIC_EVALUATION_REEVALUATION_V0"
+)
+EXECUTION_V0_SCOPE_CLASSIFICATION = (
+    "BOUNDED_CROSS_SECTIONAL_FUTURES_LEAD_LAG_INFORMATION_DIFFUSION_V0_OFFLINE_"
+    "ECONOMIC_EVALUATION_EXECUTION_V0"
+)
+FULL_EVALUATION_DISPATCH_GO_TOKENS = frozenset(
+    {GO_TOKEN, REEVALUATION_GO_TOKEN, SYSTEM_EVIDENCE_MV2_BINDING_GO_TOKEN}
 )
 MV2_WIRING_ADAPTER_GO_TOKEN = (
     "GO_CROSS_SECTIONAL_FUTURES_LEAD_LAG_V0_MV2_RESEARCH_BACKTEST_WIRING_BOUNDARY_ADAPTER_"
@@ -254,7 +269,37 @@ def run_execution_infrastructure_v0(
     return payload
 
 
-def run_full_evaluation_dispatch_v0(
+def _emit_preexecution_block(*, block: dict[str, Any]) -> None:
+    for key, value in block.items():
+        print(f"{key}={str(value).lower() if isinstance(value, bool) else value}", file=sys.stderr)
+
+
+def _write_preexecution_block_files(bundle_dir: Path, *, block: dict[str, Any]) -> None:
+    lines = [f"{key}={value}\n" for key, value in block.items()]
+    (bundle_dir / "PREEXECUTION_BLOCK.txt").write_text("".join(lines), encoding="utf-8")
+    (bundle_dir / "ECONOMIC_EVALUATION_EXECUTED.txt").write_text(
+        "ECONOMIC_EVALUATION_EXECUTED=false\n",
+        encoding="utf-8",
+    )
+
+
+def _resolve_full_evaluation_scope_classification(confirm: str) -> str:
+    if confirm == GO_TOKEN:
+        return EXECUTION_V0_SCOPE_CLASSIFICATION
+    if confirm == REEVALUATION_GO_TOKEN:
+        return FULL_EVAL_SCOPE_CLASSIFICATION
+    return MV2_BINDING_SCOPE_CLASSIFICATION
+
+
+def _resolve_full_evaluation_bundle_suffix(confirm: str) -> str:
+    if confirm == GO_TOKEN:
+        return "evaluation_execution_v0"
+    if confirm == REEVALUATION_GO_TOKEN:
+        return "evaluation_reevaluation_v0"
+    return "evaluation_mv2_binding_v0"
+
+
+def run_bounded_full_evaluation_dispatch_v0(
     *,
     confirm: str,
     durable_evidence_root: Path,
@@ -262,10 +307,26 @@ def run_full_evaluation_dispatch_v0(
     staging_root: Path,
 ) -> dict[str, Any]:
     start_monotonic = time.monotonic()
-    if confirm != REEVALUATION_GO:
-        _die(f"ERR:confirm_go_token_required:{REEVALUATION_GO}")
-    if confirm == GO_TOKEN:
-        _die("ERR:execution_go_not_authorized_for_full_evaluation_use_reevaluation_go")
+    entry_ok, _ = validate_entry_point_go_token_v0(confirm)
+    if not entry_ok or confirm not in FULL_EVALUATION_DISPATCH_GO_TOKENS:
+        _die(
+            f"ERR:confirm_go_token_required:{'|'.join(sorted(FULL_EVALUATION_DISPATCH_GO_TOKENS))}"
+        )
+
+    requested_go = confirm
+    dispatched_go = resolve_dispatch_go_token_v0(requested_go)
+    if dispatched_go != requested_go:
+        _die("ERR:dispatch_go_token_rewrite_forbidden")
+
+    full_chain_wired, parity_pass = load_evaluation_path_parity_status_v0(_REPO_ROOT)
+    runner_envelope = materialize_runner_envelope_v0(
+        requested_operator_go=requested_go,
+        dispatched_go_token=dispatched_go,
+        dispatch_rc=0,
+        preexecution_parity_guard_pass=full_chain_wired and parity_pass,
+        full_canonical_chain_wired=full_chain_wired,
+        backtest_runtime_decision_parity_pass=parity_pass,
+    )
 
     origin_main = _resolve_origin_main(_REPO_ROOT)
     primary_before = _primary_worktree_snapshot(primary_worktree)
@@ -275,10 +336,11 @@ def run_full_evaluation_dispatch_v0(
         / "research"
         / (
             "cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_"
-            f"evaluation_reevaluation_v0_{ts_slug}"
+            f"{_resolve_full_evaluation_bundle_suffix(confirm)}_{ts_slug}"
         )
     )
     bundle_dir.mkdir(parents=True, exist_ok=True)
+    scope_classification = _resolve_full_evaluation_scope_classification(confirm)
 
     versioned_binding = load_versioned_hypothesis_binding_v0(_REPO_ROOT)
     ratification = materialize_lead_lag_offline_economic_evaluation_scope_ratification_v0(
@@ -291,17 +353,17 @@ def run_full_evaluation_dispatch_v0(
         versioned_binding=versioned_binding,
         origin_main_sha=origin_main,
     )
-    panel_series = load_ohlcv_panel_series_for_backtest(staging_root)
-    evaluation = run_full_offline_economic_evaluation_v0(
+
+    precheck_ok, precheck_reasons, _ = verify_full_evaluation_precheck_v1(
         repo_root=_REPO_ROOT,
         ratification=ratification,
         staging_root=staging_root,
-        panel_series=panel_series,
         versioned_binding=versioned_binding,
-        go_token=confirm,
+        go_token=dispatched_go,
+        require_execution_go=True,
+        runner_envelope=runner_envelope,
+        materialize_dataset=False,
     )
-    evaluation_payload = execution_result_to_dict(evaluation)
-    economic_executed = evaluation.economic_evaluation_executed
 
     (bundle_dir / "PREFLIGHT.txt").write_text(
         "\n".join(
@@ -309,13 +371,101 @@ def run_full_evaluation_dispatch_v0(
                 f"ORIGIN_MAIN={origin_main}",
                 f"PRIMARY_HEAD_BEFORE={primary_before['head']}",
                 f"START_STATE_VALID={start_state.valid}",
-                f"GO_TOKEN={confirm}",
-                f"SCOPE_CLASSIFICATION={FULL_EVAL_SCOPE_CLASSIFICATION}",
+                f"REQUESTED_OPERATOR_GO={requested_go}",
+                f"DISPATCH_GO_TOKEN={dispatched_go}",
+                f"GO_TOKEN={dispatched_go}",
+                f"SCOPE_CLASSIFICATION={scope_classification}",
+                f"FULL_CANONICAL_CHAIN_WIRED={str(full_chain_wired).lower()}",
+                f"BACKTEST_RUNTIME_DECISION_PARITY_PASS={str(parity_pass).lower()}",
             ]
         )
         + "\n",
         encoding="utf-8",
     )
+    (bundle_dir / "RUNNER_ENVELOPE.json").write_text(
+        json.dumps(
+            {
+                "requested_operator_go": runner_envelope.requested_operator_go,
+                "dispatched_go_token": runner_envelope.dispatched_go_token,
+                "dispatch_rc": runner_envelope.dispatch_rc,
+                "dispatch_successful": runner_envelope.dispatch_successful,
+                "preexecution_parity_guard_pass": runner_envelope.preexecution_parity_guard_pass,
+                "full_canonical_chain_wired": runner_envelope.full_canonical_chain_wired,
+                "backtest_runtime_decision_parity_pass": (
+                    runner_envelope.backtest_runtime_decision_parity_pass
+                ),
+                "envelope_digest": runner_envelope.envelope_digest,
+            },
+            indent=2,
+            sort_keys=True,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+
+    if not precheck_ok:
+        block = materialize_preexecution_fail_closed_block_v0(
+            block_reason=BLOCK_REASON_FULL_CANONICAL_PARITY_NOT_PROVEN
+            if REASON_FULL_CANONICAL_PARITY_NOT_PROVEN in precheck_reasons
+            else "PREEXECUTION_GUARD_FAIL_CLOSED",
+        )
+        _emit_preexecution_block(block=block)
+        _write_preexecution_block_files(bundle_dir, block=block)
+        (bundle_dir / "PRECHECK_RESULT.json").write_text(
+            json.dumps(
+                {
+                    "precheck_passed": False,
+                    "reason_codes": list(precheck_reasons),
+                    **block,
+                },
+                indent=2,
+                sort_keys=True,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        manifest_rc, manifest_msg = retention.finalize_durable_bundle_manifest(bundle_dir)
+        payload: dict[str, Any] = {
+            "verdict": "FAIL_CLOSED_PRECHECK",
+            "process_classification": scope_classification,
+            "execution_version": EXECUTION_VERSION,
+            "origin_main": origin_main,
+            "start_state_valid": start_state.valid,
+            "requested_operator_go": requested_go,
+            "dispatched_go_token": dispatched_go,
+            "precheck_passed": False,
+            "precheck_reason_codes": list(precheck_reasons),
+            "economic_evaluation_executed": False,
+            "authority_effect": AUTHORITY_EFFECT,
+            "runtime_effect": RUNTIME_EFFECT,
+            "primary_worktree": str(primary_worktree),
+            "staging_root": str(staging_root),
+            "durable_evidence_path": str(bundle_dir),
+            "manifest_verify_rc": manifest_rc,
+            "manifest_verify_msg": manifest_msg,
+            "elapsed_seconds": round(time.monotonic() - start_monotonic, 3),
+            **block,
+        }
+        (bundle_dir / "EXECUTION_RESULT.json").write_text(
+            json.dumps(payload, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+        _guard_timeout(start_monotonic)
+        raise SystemExit(1)
+
+    panel_series = load_ohlcv_panel_series_for_backtest(staging_root)
+    evaluation = run_full_offline_economic_evaluation_v0(
+        repo_root=_REPO_ROOT,
+        ratification=ratification,
+        staging_root=staging_root,
+        panel_series=panel_series,
+        versioned_binding=versioned_binding,
+        go_token=dispatched_go,
+        runner_envelope=runner_envelope,
+    )
+    evaluation_payload = execution_result_to_dict(evaluation)
+    economic_executed = evaluation.economic_evaluation_executed
+
     (bundle_dir / "FULL_EVALUATION_RESULT.json").write_text(
         json.dumps(evaluation_payload, indent=2, sort_keys=True) + "\n",
         encoding="utf-8",
@@ -326,12 +476,14 @@ def run_full_evaluation_dispatch_v0(
     )
 
     manifest_rc, manifest_msg = retention.finalize_durable_bundle_manifest(bundle_dir)
-    payload: dict[str, Any] = {
+    payload = {
         "verdict": evaluation_payload["status"],
-        "process_classification": FULL_EVAL_SCOPE_CLASSIFICATION,
+        "process_classification": scope_classification,
         "execution_version": EXECUTION_VERSION,
         "origin_main": origin_main,
         "start_state_valid": start_state.valid,
+        "requested_operator_go": requested_go,
+        "dispatched_go_token": dispatched_go,
         "evaluation": evaluation_payload,
         "economic_evaluation_executed": economic_executed,
         "authority_effect": AUTHORITY_EFFECT,
@@ -349,6 +501,21 @@ def run_full_evaluation_dispatch_v0(
     )
     _guard_timeout(start_monotonic)
     return payload
+
+
+def run_full_evaluation_dispatch_v0(
+    *,
+    confirm: str,
+    durable_evidence_root: Path,
+    primary_worktree: Path,
+    staging_root: Path,
+) -> dict[str, Any]:
+    return run_bounded_full_evaluation_dispatch_v0(
+        confirm=confirm,
+        durable_evidence_root=durable_evidence_root,
+        primary_worktree=primary_worktree,
+        staging_root=staging_root,
+    )
 
 
 def run_mv2_wiring_adapter_dispatch_v0(
@@ -478,6 +645,65 @@ def run_system_evidence_mv2_binding_dispatch_v0(
         origin_main_sha=origin_main,
     )
     binding_contract = materialize_system_evidence_mv2_offline_economic_evaluation_binding_v0()
+    full_chain_wired, parity_pass = load_evaluation_path_parity_status_v0(_REPO_ROOT)
+    runner_envelope = materialize_runner_envelope_v0(
+        requested_operator_go=confirm,
+        dispatched_go_token=resolve_dispatch_go_token_v0(confirm),
+        dispatch_rc=0,
+        preexecution_parity_guard_pass=full_chain_wired and parity_pass,
+        full_canonical_chain_wired=full_chain_wired,
+        backtest_runtime_decision_parity_pass=parity_pass,
+    )
+    precheck_ok, precheck_reasons, _ = verify_full_evaluation_precheck_v1(
+        repo_root=_REPO_ROOT,
+        ratification=ratification,
+        staging_root=staging_root,
+        versioned_binding=versioned_binding,
+        go_token=confirm,
+        require_execution_go=True,
+        runner_envelope=runner_envelope,
+        materialize_dataset=False,
+    )
+    if not precheck_ok:
+        block = materialize_preexecution_fail_closed_block_v0()
+        _emit_preexecution_block(block=block)
+        _write_preexecution_block_files(bundle_dir, block=block)
+        (bundle_dir / "PRECHECK_RESULT.json").write_text(
+            json.dumps(
+                {"precheck_passed": False, "reason_codes": list(precheck_reasons), **block},
+                indent=2,
+                sort_keys=True,
+            )
+            + "\n",
+            encoding="utf-8",
+        )
+        manifest_rc, manifest_msg = retention.finalize_durable_bundle_manifest(bundle_dir)
+        payload = {
+            "verdict": "FAIL_CLOSED_PRECHECK",
+            "process_classification": MV2_BINDING_SCOPE_CLASSIFICATION,
+            "execution_version": EXECUTION_VERSION,
+            "origin_main": origin_main,
+            "start_state_valid": start_state.valid,
+            "precheck_passed": False,
+            "precheck_reason_codes": list(precheck_reasons),
+            "economic_evaluation_executed": False,
+            "authority_effect": AUTHORITY_EFFECT,
+            "runtime_effect": RUNTIME_EFFECT,
+            "primary_worktree": str(primary_worktree),
+            "staging_root": str(staging_root),
+            "durable_evidence_path": str(bundle_dir),
+            "manifest_verify_rc": manifest_rc,
+            "manifest_verify_msg": manifest_msg,
+            "elapsed_seconds": round(time.monotonic() - start_monotonic, 3),
+            **block,
+        }
+        (bundle_dir / "EXECUTION_RESULT.json").write_text(
+            json.dumps(payload, indent=2, sort_keys=True) + "\n",
+            encoding="utf-8",
+        )
+        _guard_timeout(start_monotonic)
+        raise SystemExit(1)
+
     panel_series = load_ohlcv_panel_series_for_backtest(staging_root)
     evaluation = run_full_offline_economic_evaluation_v0(
         repo_root=_REPO_ROOT,
@@ -486,6 +712,7 @@ def run_system_evidence_mv2_binding_dispatch_v0(
         panel_series=panel_series,
         versioned_binding=versioned_binding,
         go_token=confirm,
+        runner_envelope=runner_envelope,
     )
     evaluation_payload = execution_result_to_dict(evaluation)
     economic_executed = evaluation.economic_evaluation_executed
@@ -560,8 +787,8 @@ def main() -> None:
             primary_worktree=args.primary_worktree,
             staging_root=args.staging_root,
         )
-    elif args.confirm == REEVALUATION_GO:
-        result = run_full_evaluation_dispatch_v0(
+    elif args.confirm in FULL_EVALUATION_DISPATCH_GO_TOKENS:
+        result = run_bounded_full_evaluation_dispatch_v0(
             confirm=args.confirm,
             durable_evidence_root=args.durable_evidence_root,
             primary_worktree=args.primary_worktree,
@@ -584,7 +811,7 @@ def main() -> None:
     else:
         _die(
             "ERR:confirm_go_token_required:"
-            f"{INFRASTRUCTURE_GO}|{REEVALUATION_GO}|{MV2_WIRING_ADAPTER_GO_TOKEN}|"
+            f"{INFRASTRUCTURE_GO}|{GO_TOKEN}|{REEVALUATION_GO}|{MV2_WIRING_ADAPTER_GO_TOKEN}|"
             f"{SYSTEM_EVIDENCE_MV2_BINDING_GO_TOKEN}"
         )
     print(json.dumps(result, indent=2, sort_keys=True))
