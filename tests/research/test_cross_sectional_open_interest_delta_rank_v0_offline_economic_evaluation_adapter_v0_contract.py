@@ -57,9 +57,9 @@ from src.research.cross_sectional_open_interest_delta_rank_v0_pit_semantics_cont
 
 REPO_ROOT = Path(__file__).resolve().parents[2]
 LATEST_PANEL_ROOT = Path(
-    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/"
-    "research/five_instrument_self_accumulated_oi_panel_overlap_validation_and_offline_run_v0_"
-    "20260711T235603Z/panel_output/run_1"
+    "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/"
+    "cross_sectional_open_interest_delta_rank_v0_historical_panel_depth_extension_"
+    "and_rematerialization_implementation_v0_20260712T004937Z/materialization/run_a"
 )
 ADAPTER_MODULE = (
     REPO_ROOT
