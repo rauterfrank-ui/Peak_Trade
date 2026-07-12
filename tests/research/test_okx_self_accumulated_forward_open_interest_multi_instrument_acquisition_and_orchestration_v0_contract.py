@@ -150,14 +150,27 @@ def _eth_only_snapshot(tmp_path: Path) -> Path:
     """Build a one-instrument ETH-only snapshot for expansion tests."""
     snapshot = tmp_path / "archive"
     shutil.copytree(PRODUCTION_ARCHIVE, snapshot)
-    lines = (snapshot / "observations.jsonl").read_text(encoding="utf-8").splitlines()
-    eth_lines = [line for line in lines if line.strip() and "ETH-USDT-SWAP" in line]
-    (snapshot / "observations.jsonl").write_text("\n".join(eth_lines) + "\n", encoding="utf-8")
+    for jsonl_name in ("observations.jsonl", "corrected_observations.jsonl"):
+        jsonl_path = snapshot / jsonl_name
+        if not jsonl_path.is_file():
+            continue
+        lines = jsonl_path.read_text(encoding="utf-8").splitlines()
+        eth_lines = [line for line in lines if line.strip() and "ETH-USDT-SWAP" in line]
+        jsonl_path.write_text("\n".join(eth_lines) + ("\n" if eth_lines else ""), encoding="utf-8")
     manifest_path = snapshot / "archive_manifest.json"
     if manifest_path.is_file():
         manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
         manifest["instrument_count"] = 1
-        manifest["observation_count"] = len(eth_lines)
+        eth_line_count = len(
+            [
+                line
+                for line in (snapshot / "observations.jsonl")
+                .read_text(encoding="utf-8")
+                .splitlines()
+                if line.strip()
+            ]
+        )
+        manifest["observation_count"] = eth_line_count
         manifest_path.write_text(
             json.dumps(manifest, sort_keys=True, indent=2) + "\n", encoding="utf-8"
         )
