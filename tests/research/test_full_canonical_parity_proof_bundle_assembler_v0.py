@@ -159,7 +159,7 @@ def test_required_proof_inputs_matrix_accounts_for_all_sixteen_surfaces() -> Non
     assert surface_p["status"] == "VERIFIED"
     assert surface_p["binding_status"] == "VERIFIED"
     assert surface_p["parity_status"] == "PASS"
-    assert surface_p["registry_parity_status"] == "PARTIAL"
+    assert surface_p["registry_parity_status"] == "PASS"
     assert surface_p["satisfied"] is True
 
 
