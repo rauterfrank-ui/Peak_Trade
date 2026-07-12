@@ -1,0 +1,787 @@
+{
+  "artifact_kind": "cross_sectional_open_interest_zscore_reversion_v0_versioned_hypothesis_binding",
+  "artifact_version": "v0",
+  "authority_effect": "NONE",
+  "bar_interval": "PT1H",
+  "binding": {
+    "binding_status": {
+      "cost_model_binding_status": "BOUND",
+      "dataset_binding_status": "BOUND",
+      "digest_binding_status": "BOUND",
+      "numeric_bindings_status": "BOUND",
+      "overall_binding_status": "COMPLETE",
+      "period_binding_status": "BOUND",
+      "policy_classes_status": "BOUND",
+      "ranking_policy_binding_status": "BOUND",
+      "selection_hold_exit_rotation_binding_status": "BOUND",
+      "universe_binding_status": "BOUND"
+    },
+    "dataset_binding": {
+      "admissibility_manifest_ref": "pit_cross_sectional_research_dataset_envelope.v0:pit_okx_linear_usdt_non_bitcoin_self_accumulated_open_interest_panel/v0:self_accumulated_forward_accrual_v0",
+      "archive_source_digest": "cb10e99d7cd5fa158a38aec24e095dbd051f447a0665a7fce47bcc13cb44860a",
+      "bar_interval": "PT1H",
+      "binding_version": "v0",
+      "bound_data_digest": "82e8787c0cc19c15c120de4ee24821bba85b5c5a938b802cfa3f7bcd40f13a4d",
+      "dataset_extension": "self_accumulated_forward_accrual_v0",
+      "dataset_id": "pit_okx_linear_usdt_non_bitcoin_self_accumulated_open_interest_panel/v0",
+      "materializer_owner": "okx_self_accumulated_forward_open_interest_bound_panel_dataset_materialization.v0",
+      "no_fallback_to_399_instrument_dataset": true,
+      "observed_panel_history_depth": 60,
+      "observed_panel_window_end_utc": "2026-07-11T23:00:00Z",
+      "observed_panel_window_start_utc": "2026-07-09T12:00:00Z",
+      "panel_dataset_digest": "37e492d6b2ef64ab681ca96ef5f2fc873d2d4f87c119b3ee2666d8489fc650a1",
+      "panel_dataset_schema": "pit_okx_pt1h_panel_open_interest_dataset_manifest_v1",
+      "panel_id": "pit_okx_linear_usdt_non_bitcoin_self_accumulated_open_interest_panel",
+      "panel_open_interest_manifest_ref": "pit_okx_pt1h_panel_open_interest_dataset_v1:pit_okx_linear_usdt_non_bitcoin_self_accumulated_open_interest_panel:self_accumulated_forward_accrual_v0",
+      "source_mode": "SELF_ACCUMULATED_EFFECTIVE_ARCHIVE_VIEW"
+    },
+    "digest_bindings": {
+      "binding_digest": {
+        "status": "BOUND",
+        "value": "11173f7db78710e7ca9684e295185ffe4f95bfccec77ec53141139776f4bea19"
+      },
+      "bound_data_digest": {
+        "status": "BOUND",
+        "value": "82e8787c0cc19c15c120de4ee24821bba85b5c5a938b802cfa3f7bcd40f13a4d"
+      },
+      "config_digest": {
+        "status": "BOUND",
+        "value": "39358d4682cd2d247bc01c636fa3b2030719045aab027aa3fd472e71c3da67c5"
+      },
+      "data_digest": {
+        "status": "BOUND",
+        "value": "37e492d6b2ef64ab681ca96ef5f2fc873d2d4f87c119b3ee2666d8489fc650a1"
+      },
+      "dataset_digest": {
+        "status": "BOUND",
+        "value": "37e492d6b2ef64ab681ca96ef5f2fc873d2d4f87c119b3ee2666d8489fc650a1"
+      },
+      "implementation_digest": {
+        "status": "BOUND",
+        "value": "4b8e2f0ec33137ff444165b7a22a3654e610fc15e99146ae2c4e203d2a0e58ee"
+      },
+      "instrument_universe_digest": {
+        "status": "BOUND",
+        "value": "e286db0053596e771c2168e82ff61c326f7ba1d51e90d606880237576b2c4791"
+      },
+      "material_difference_digest": {
+        "status": "BOUND",
+        "value": "a93dd6a6d14bb61304243590fe2046e44a6284f19e77dbf0bac77ae2aceb1d24"
+      },
+      "universe_digest": {
+        "status": "BOUND",
+        "value": "e286db0053596e771c2168e82ff61c326f7ba1d51e90d606880237576b2c4791"
+      }
+    },
+    "direction_semantics": {
+      "long_leg_means": "LONG_MIN_ZSCORE",
+      "non_finite_open_interest_target": "FLAT",
+      "panel_insufficient_target": "FLAT",
+      "selection_mode": "open_interest_zscore_reversion_extremes_single_leg_rotation_v0",
+      "short_leg_means": "SHORT_MAX_ZSCORE",
+      "single_slot_rotation": true,
+      "warmup_incomplete_target": "FLAT",
+      "zero_panel_dispersion_target": "FLAT"
+    },
+    "external_bindings": {
+      "admissibility_manifest_ref": {
+        "ref": "pit_cross_sectional_research_dataset_envelope.v0:pit_okx_linear_usdt_non_bitcoin_self_accumulated_open_interest_panel/v0:self_accumulated_forward_accrual_v0",
+        "status": "BOUND"
+      },
+      "evaluation_period_binding": {
+        "ref": "pit_futures_cross_sectional_research_period_split_v1:pit_cross_sectional_research_chronological_holdout_v1",
+        "status": "BOUND"
+      },
+      "execution_model_version": {
+        "status": "BOUND",
+        "value": "backtest_execution_v0"
+      },
+      "fee_model_version": {
+        "status": "BOUND",
+        "value": "backtest_fee_taker_symmetric_v0"
+      },
+      "funding_model_version": {
+        "status": "BOUND",
+        "value": "backtest_funding_perpetual_interval_v1"
+      },
+      "instrument_id_canonicalization_version": {
+        "status": "BOUND",
+        "value": "instrument_id_canonicalization.v1"
+      },
+      "panel_open_interest_dataset_manifest_ref": {
+        "ref": "pit_okx_pt1h_panel_open_interest_dataset_v1:pit_okx_linear_usdt_non_bitcoin_self_accumulated_open_interest_panel:self_accumulated_forward_accrual_v0",
+        "status": "BOUND"
+      },
+      "pit_semantics_contract_version": {
+        "status": "BOUND",
+        "value": "cross_sectional_open_interest_zscore_reversion_v0_pit_semantics_contract.v0"
+      },
+      "pit_universe_manifest_ref": {
+        "ref": "pit_futures_universe_manifest_v1:pit_okx_linear_usdt_non_bitcoin_perpetual_universe_manifest_v1",
+        "status": "BOUND"
+      },
+      "prior_delta_terminal_baseline_ref": {
+        "ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_open_interest_delta_rank_v0_terminal_inconclusive_baseline_evidence_and_unchanged_retry_block_v0_20260712T011717Z",
+        "status": "BOUND"
+      },
+      "prior_level_rank_terminal_baseline_ref": {
+        "ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_open_interest_level_rank_v0_offline_economic_evaluation_execution_v0_20260712T130230Z",
+        "status": "BOUND"
+      },
+      "slippage_model_version": {
+        "status": "BOUND",
+        "value": "backtest_slippage_symmetric_v0"
+      },
+      "source_evidence_ref": {
+        "ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_open_interest_level_rank_v0_terminal_classification_bundle_read_only_v0_20260712T135127Z",
+        "status": "BOUND"
+      },
+      "spread_model_version": {
+        "status": "BOUND",
+        "value": "research_conservative_bps_v1"
+      },
+      "superseding_integrity_attestation_ref": {
+        "ref": "config/research/cross_sectional_open_interest_delta_rank_v0_terminal_baseline_bundle_superseding_integrity_attestation_v0.json",
+        "status": "BOUND"
+      }
+    },
+    "material_difference_from_prior": {
+      "distinct_hypothesis": true,
+      "new_economic_mechanism": "positioning_crowding_zscore_mean_reversion_extremes",
+      "new_feature": "cross_sectional_open_interest_zscore_at_lagged_observation",
+      "new_ranking_input": "cross_sectional_open_interest_zscore_at_signal_lag",
+      "new_selection_mode": "open_interest_zscore_reversion_extremes_single_leg_rotation_v0",
+      "prior_delta_rank_binding_digest": "49e444fddf31c2da877e2c30eb0135848a657d58febfbb1827affcb6154dfb64",
+      "prior_delta_rank_binding_not_reused_unchanged": true,
+      "prior_delta_rank_economic_mechanism": "positioning_change_extremes",
+      "prior_delta_rank_feature": "delta_or_change_in_open_interest",
+      "prior_delta_rank_hypothesis_id": "cross_sectional_open_interest_delta_rank_v0",
+      "prior_delta_rank_ranking_input": "open_interest_delta_over_lookback_k",
+      "prior_delta_rank_scope": "cross_sectional_open_interest_delta_rank/v0",
+      "prior_delta_rank_selection_mode": "open_interest_delta_rank_extremes_single_leg_rotation_v0",
+      "prior_level_rank_binding_digest": "b7099d17af888dabebf14a63797729f807f866d265aeb5095c385541222fc2f2",
+      "prior_level_rank_binding_not_reused_unchanged": true,
+      "prior_level_rank_economic_mechanism": "positioning_crowding_level_extremes",
+      "prior_level_rank_feature": "point_in_time_open_interest_level",
+      "prior_level_rank_hypothesis_id": "cross_sectional_open_interest_level_rank_v0",
+      "prior_level_rank_ranking_input": "point_in_time_open_interest_level_at_signal_lag",
+      "prior_level_rank_scope": "cross_sectional_open_interest_level_rank/v0",
+      "prior_level_rank_selection_mode": "open_interest_level_extremes_single_leg_rotation_v0",
+      "source_evidence_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_open_interest_level_rank_v0_terminal_classification_bundle_read_only_v0_20260712T135127Z",
+      "unchanged_retry": false,
+      "zero_dispersion_policy": "fail_closed_flat_no_fallback",
+      "zscore_normalization": "population_std_cross_sectional_at_epoch"
+    },
+    "parameter_binding": {
+      "binding_version": "v0",
+      "minimum_panel_bars": 6,
+      "no_instrument_substitution": true,
+      "no_universe_expansion": true,
+      "open_interest_level_definition": "point_in_time_open_interest_level_at_lagged_observation",
+      "open_interest_observation_field": "open_interest",
+      "parameter_search_forbidden": true,
+      "prior_delta_rank_binding_not_reused_unchanged": true,
+      "prior_level_rank_binding_not_reused_unchanged": true,
+      "rank_lookback_k_forbidden": true,
+      "score_formula_expression": "z_score_i(t) = (open_interest_i(t-lag) - panel_mean) / panel_std; panel_std uses population variance (divide by N); long_leg = instrument with minimum z_score; short_leg = instrument with maximum z_score; single_slot selects leg with larger absolute z_score when dispersion gate passes",
+      "score_formula_version": "cross_sectional_open_interest_zscore_reversion_v0",
+      "signal_lag_bars": 1,
+      "unchanged_retry_of_failed_bindings_forbidden": true,
+      "zero_dispersion_policy": "fail_closed_flat_no_fallback",
+      "zscore_normalization": "population_std_cross_sectional_at_epoch"
+    },
+    "period_binding": {
+      "binding_version": "v1",
+      "boundary_semantics": "utc_bar_close_inclusive_end",
+      "embargo_duration": "PT2H",
+      "holdout_isolation_enforced": true,
+      "no_overlap_enforced": true,
+      "out_of_sample_end": "2024-08-31T23:00:00Z",
+      "out_of_sample_start": "2024-07-26T07:00:00Z",
+      "period_binding_id": "pit_cross_sectional_research_chronological_holdout_v1",
+      "periods_frozen_before_evaluation": true,
+      "purge_duration": "PT2H",
+      "split_policy_id": "pit_cross_sectional_research_chronological_holdout_v1",
+      "split_timezone": "UTC",
+      "training_end": "2024-06-19T05:00:00Z",
+      "training_start": "2024-05-01T02:00:00Z",
+      "validation_end": "2024-07-26T04:00:00Z",
+      "validation_start": "2024-06-19T08:00:00Z",
+      "warmup_end": "2024-05-01T01:00:00Z",
+      "warmup_start": "2024-05-01T00:00:00Z"
+    },
+    "pit_universe_binding": {
+      "binding_version": "v0",
+      "bitcoin_direction_allowed": false,
+      "bitcoin_excluded": true,
+      "bitcoin_present": false,
+      "futures_only": true,
+      "instrument_identity_normalization": "instrument_id_canonicalization.v1",
+      "instrument_type": "LINEAR_PERPETUAL",
+      "instrument_universe_digest": "e286db0053596e771c2168e82ff61c326f7ba1d51e90d606880237576b2c4791",
+      "maximum_eligible_member_count": 5,
+      "minimum_eligible_member_count": 5,
+      "pit_universe_manifest_ref": "pit_futures_universe_manifest_v1:pit_okx_linear_usdt_non_bitcoin_perpetual_universe_manifest_v1",
+      "settlement_asset": "USDT",
+      "spot_excluded": true,
+      "synthetic_spot_excluded": true,
+      "target_instrument_bindings": [
+        {
+          "instrument_id": "okx:linear_perpetual:AVAX:USDT:USDT:perp",
+          "native_instrument_id": "AVAX-USDT-SWAP"
+        },
+        {
+          "instrument_id": "okx:linear_perpetual:ETH:USDT:USDT:perp",
+          "native_instrument_id": "ETH-USDT-SWAP"
+        },
+        {
+          "instrument_id": "okx:linear_perpetual:LINK:USDT:USDT:perp",
+          "native_instrument_id": "LINK-USDT-SWAP"
+        },
+        {
+          "instrument_id": "okx:linear_perpetual:POL:USDT:USDT:perp",
+          "native_instrument_id": "POL-USDT-SWAP"
+        },
+        {
+          "instrument_id": "okx:linear_perpetual:SOL:USDT:USDT:perp",
+          "native_instrument_id": "SOL-USDT-SWAP"
+        }
+      ],
+      "universe_lifecycle_registry_ref": "pit_futures_lifecycle_registry_v1:okx_production_lifecycle_v1",
+      "universe_policy_id": "pit_okx_linear_usdt_non_bitcoin_perpetual_cross_sectional_universe",
+      "universe_policy_version": "v1",
+      "venue": "OKX"
+    },
+    "prior_hypothesis_lineage": {
+      "historical_evidence_preserved": true,
+      "prior_delta_rank_binding_digest": "49e444fddf31c2da877e2c30eb0135848a657d58febfbb1827affcb6154dfb64",
+      "prior_delta_rank_hypothesis_id": "cross_sectional_open_interest_delta_rank_v0",
+      "prior_delta_rank_scope": "cross_sectional_open_interest_delta_rank/v0",
+      "prior_inconclusive_economic_evidence_preserved": true,
+      "prior_level_rank_binding_digest": "b7099d17af888dabebf14a63797729f807f866d265aeb5095c385541222fc2f2",
+      "prior_level_rank_hypothesis_id": "cross_sectional_open_interest_level_rank_v0",
+      "prior_level_rank_scope": "cross_sectional_open_interest_level_rank/v0",
+      "unchanged_retry_blocked": true
+    },
+    "ranking_policy_binding": {
+      "binding_version": "v0",
+      "deterministic_tie_break": "instrument_id_asc_stable_sort",
+      "finalized_bar_only": true,
+      "invalid_observation_policy": "exclude_non_finite_force_flat_at_selection",
+      "long_leg_means": "LONG_MIN_ZSCORE",
+      "minimum_rankable_instrument_count": 5,
+      "missing_instrument_policy": "explicit_none_fail_closed_no_zero_fallback",
+      "point_in_time_semantics": "point_in_time_open_interest_level_at_lagged_observation",
+      "ranking_direction": "long_min_zscore_short_max_zscore_single_slot_rotation_v0",
+      "ranking_formula": "rank_by_lagged_cross_sectional_open_interest_zscore_v0",
+      "selection_mode": "open_interest_zscore_reversion_extremes_single_leg_rotation_v0",
+      "short_leg_means": "SHORT_MAX_ZSCORE",
+      "stale_instrument_policy": "exclude_when_staleness_exceeds_threshold_bars",
+      "zero_dispersion_policy": "fail_closed_flat_no_fallback",
+      "zscore_normalization": "population_std_cross_sectional_at_epoch"
+    },
+    "selection_hold_exit_rotation_binding": {
+      "binding_version": "v0",
+      "exit_semantics": "rotation_via_switch_policy_flat_then_wait_one_epoch",
+      "gross_exposure_policy": "unit_notional_single_slot_v0",
+      "hold_semantics": "until_next_rebalance",
+      "long_selection_semantics": "single_slot_long_min_open_interest_zscore_v0",
+      "net_exposure_policy": "directional_single_slot_v0",
+      "per_instrument_cap": 1.0,
+      "portfolio_cap": 1.0,
+      "rebalance_cadence": "PT1H_every_finalized_bar_epoch",
+      "rebalance_interval_bars": 1,
+      "rotation_semantics": "single_slot_extreme_zscore_rotation_v0",
+      "selection_count": 1,
+      "short_selection_semantics": "single_slot_short_max_open_interest_zscore_v0",
+      "simultaneous_long_short_policy": "forbidden_single_slot_rotation_only",
+      "switch_entry_delay_epochs": 1,
+      "turnover_control_semantics": "switch_entry_delay_one_epoch_no_cooldown",
+      "weighting_policy": "equal_weight_single_slot_v0"
+    }
+  },
+  "binding_classification": "NEW_DISTINCT_HYPOTHESIS_MATERIAL_RANKING_INPUT_CHANGE",
+  "binding_digest": "11173f7db78710e7ca9684e295185ffe4f95bfccec77ec53141139776f4bea19",
+  "bitcoin_present": false,
+  "config_digest": "39358d4682cd2d247bc01c636fa3b2030719045aab027aa3fd472e71c3da67c5",
+  "cost_execution_binding": {
+    "binding_version": "v0",
+    "cost_model_binding": "backtest_cost_stack_v0",
+    "execution_model_binding": {
+      "effective_entry_cost_bps": 20.0,
+      "effective_exit_cost_bps": 20.0,
+      "execution_model_version": "backtest_execution_v0",
+      "execution_price_observation_source": "MODELLED_NOT_OBSERVED",
+      "roundtrip_cost_bps": 40.0
+    },
+    "fee_binding": {
+      "fee_bps_per_side": 10.0,
+      "fee_model_version": "backtest_fee_taker_symmetric_v0"
+    },
+    "funding_binding": {
+      "bind": true,
+      "funding_model_version": "backtest_funding_perpetual_interval_v1"
+    },
+    "implicit_zero_cost_forbidden": true,
+    "slippage_binding": {
+      "slippage_bps_per_side": 5.0,
+      "slippage_model_version": "backtest_slippage_symmetric_v0"
+    },
+    "spread_binding": {
+      "conservative_half_spread_bps": 5.0,
+      "spread_model_version": "research_conservative_bps_v1"
+    }
+  },
+  "cost_model_binding": "backtest_cost_stack_v0",
+  "cryptographic_binding_identity_changed": true,
+  "data_digest": "37e492d6b2ef64ab681ca96ef5f2fc873d2d4f87c119b3ee2666d8489fc650a1",
+  "dataset_digest": "37e492d6b2ef64ab681ca96ef5f2fc873d2d4f87c119b3ee2666d8489fc650a1",
+  "deterministic_tie_break": "instrument_id_asc_stable_sort",
+  "digest_dependency_graph": {
+    "component_digests": {
+      "binding_digest": "11173f7db78710e7ca9684e295185ffe4f95bfccec77ec53141139776f4bea19",
+      "config_digest": "39358d4682cd2d247bc01c636fa3b2030719045aab027aa3fd472e71c3da67c5",
+      "data_digest": "37e492d6b2ef64ab681ca96ef5f2fc873d2d4f87c119b3ee2666d8489fc650a1",
+      "dataset_digest": "37e492d6b2ef64ab681ca96ef5f2fc873d2d4f87c119b3ee2666d8489fc650a1",
+      "implementation_digest": "4b8e2f0ec33137ff444165b7a22a3654e610fc15e99146ae2c4e203d2a0e58ee",
+      "instrument_universe_digest": "e286db0053596e771c2168e82ff61c326f7ba1d51e90d606880237576b2c4791",
+      "material_difference_digest": "a93dd6a6d14bb61304243590fe2046e44a6284f19e77dbf0bac77ae2aceb1d24",
+      "universe_digest": "e286db0053596e771c2168e82ff61c326f7ba1d51e90d606880237576b2c4791"
+    },
+    "edges": [
+      {
+        "from": "semantic_source_fields",
+        "to": "component_digests"
+      },
+      {
+        "from": "pit_semantics_contract.semantic_digest",
+        "to": "implementation_digest"
+      },
+      {
+        "from": "parameter_binding",
+        "to": "config_digest"
+      },
+      {
+        "from": "pit_universe_binding",
+        "to": "config_digest"
+      },
+      {
+        "from": "dataset_binding",
+        "to": "config_digest"
+      },
+      {
+        "from": "ranking_policy_binding",
+        "to": "config_digest"
+      },
+      {
+        "from": "selection_hold_exit_rotation_binding",
+        "to": "config_digest"
+      },
+      {
+        "from": "period_binding",
+        "to": "config_digest"
+      },
+      {
+        "from": "config_digest",
+        "to": "binding_digest"
+      },
+      {
+        "from": "data_digest",
+        "to": "binding_digest"
+      },
+      {
+        "from": "implementation_digest",
+        "to": "binding_digest"
+      },
+      {
+        "from": "material_difference_digest",
+        "to": "binding_digest"
+      }
+    ],
+    "schema_version": "digest_dependency_graph.v0",
+    "self_reference_excluded": true
+  },
+  "economic_and_robustness_contract": {
+    "binding_version": "v0",
+    "economic_policy_binding": {
+      "economic_validity_policy_version": "economic_validity_policy_v1",
+      "minimum_trade_count": 50,
+      "policy_lowering_forbidden": true,
+      "promising_is_not_pass": true
+    },
+    "failure_taxonomy": {
+      "binding_incomplete": "REJECTED_INCOMPLETE",
+      "insufficient_panel": "PANEL_INSUFFICIENT_FLAT",
+      "non_finite_observation": "NON_FINITE_FORCE_FLAT",
+      "prior_delta_rank_binding_reuse": "PRIOR_DELTA_RANK_BINDING_REUSE_REJECTED",
+      "prior_level_rank_binding_reuse": "PRIOR_LEVEL_RANK_BINDING_REUSE_REJECTED",
+      "stale_digest": "STALE_DIGEST_REJECTED",
+      "zero_panel_dispersion": "INSUFFICIENT_PANEL_DISPERSION_FLAT"
+    },
+    "monte_carlo_contract": {
+      "execution_forbidden_in_binding_scope": true,
+      "policy_version": "monte_carlo_v1",
+      "runs": 64,
+      "seed": 42
+    },
+    "sample_sufficiency_contract": {
+      "minimum_panel_history_depth": 60,
+      "minimum_rankable_epoch_count": 59,
+      "minimum_trade_count": 50,
+      "sample_sufficiency_evaluated_in_binding_scope": false
+    },
+    "stress_contract": {
+      "execution_forbidden_in_binding_scope": true,
+      "policy_version": "stress_class_suite_v1"
+    },
+    "unchanged_retry_policy": {
+      "prior_binding_digest_unchanged_retry_forbidden": true,
+      "prior_inconclusive_baseline_unchanged_retry_forbidden": true,
+      "unchanged_retry_blocked": true
+    },
+    "walk_forward_contract": {
+      "execution_forbidden_in_binding_scope": true,
+      "policy_version": "walk_forward_v1"
+    }
+  },
+  "economic_evaluation_executed": false,
+  "economic_policy_binding": {
+    "economic_validity_policy_version": "economic_validity_policy_v1",
+    "minimum_trade_count": 50,
+    "policy_lowering_forbidden": true,
+    "promising_is_not_pass": true
+  },
+  "execution_model_binding": {
+    "effective_entry_cost_bps": 20.0,
+    "effective_exit_cost_bps": 20.0,
+    "execution_model_version": "backtest_execution_v0",
+    "execution_price_observation_source": "MODELLED_NOT_OBSERVED",
+    "roundtrip_cost_bps": 40.0
+  },
+  "exit_semantics": "rotation_via_switch_policy_flat_then_wait_one_epoch",
+  "failure_taxonomy": {
+    "binding_incomplete": "REJECTED_INCOMPLETE",
+    "insufficient_panel": "PANEL_INSUFFICIENT_FLAT",
+    "non_finite_observation": "NON_FINITE_FORCE_FLAT",
+    "prior_delta_rank_binding_reuse": "PRIOR_DELTA_RANK_BINDING_REUSE_REJECTED",
+    "prior_level_rank_binding_reuse": "PRIOR_LEVEL_RANK_BINDING_REUSE_REJECTED",
+    "stale_digest": "STALE_DIGEST_REJECTED",
+    "zero_panel_dispersion": "INSUFFICIENT_PANEL_DISPERSION_FLAT"
+  },
+  "fee_binding": {
+    "fee_bps_per_side": 10.0,
+    "fee_model_version": "backtest_fee_taker_symmetric_v0"
+  },
+  "finalized_bar_only": true,
+  "funding_binding": {
+    "bind": true,
+    "funding_model_version": "backtest_funding_perpetual_interval_v1"
+  },
+  "futures_only": true,
+  "gross_exposure_policy": "unit_notional_single_slot_v0",
+  "hold_semantics": "until_next_rebalance",
+  "hypothesis_class": "CROSS_SECTIONAL_OPEN_INTEREST_ZSCORE_REVERSION",
+  "hypothesis_id": "cross_sectional_open_interest_zscore_reversion_v0",
+  "hypothesis_statement": "Cross-sectional open-interest z-score mean-reversion hypothesis: normalize lagged point-in-time open-interest levels by population cross-sectional standard deviation at each epoch; rotate a single slot toward low-z (long) versus high-z (short) extremes as a crowding reversion hypothesis distinct from raw level rank and OI delta flow.",
+  "hypothesis_version": "v0",
+  "implementation_digest": "4b8e2f0ec33137ff444165b7a22a3654e610fc15e99146ae2c4e203d2a0e58ee",
+  "instrument_universe": [
+    "okx:linear_perpetual:AVAX:USDT:USDT:perp",
+    "okx:linear_perpetual:ETH:USDT:USDT:perp",
+    "okx:linear_perpetual:LINK:USDT:USDT:perp",
+    "okx:linear_perpetual:POL:USDT:USDT:perp",
+    "okx:linear_perpetual:SOL:USDT:USDT:perp"
+  ],
+  "instrument_universe_digest": "e286db0053596e771c2168e82ff61c326f7ba1d51e90d606880237576b2c4791",
+  "invalid_observation_policy": "exclude_non_finite_force_flat_at_selection",
+  "long_selection_semantics": "single_slot_long_min_open_interest_zscore_v0",
+  "material_difference_from_prior_open_interest_rank_hypotheses_v0": {
+    "distinct_hypothesis": true,
+    "new_economic_mechanism": "positioning_crowding_zscore_mean_reversion_extremes",
+    "new_feature": "cross_sectional_open_interest_zscore_at_lagged_observation",
+    "new_ranking_input": "cross_sectional_open_interest_zscore_at_signal_lag",
+    "new_selection_mode": "open_interest_zscore_reversion_extremes_single_leg_rotation_v0",
+    "prior_delta_rank_binding_digest": "49e444fddf31c2da877e2c30eb0135848a657d58febfbb1827affcb6154dfb64",
+    "prior_delta_rank_binding_not_reused_unchanged": true,
+    "prior_delta_rank_economic_mechanism": "positioning_change_extremes",
+    "prior_delta_rank_feature": "delta_or_change_in_open_interest",
+    "prior_delta_rank_hypothesis_id": "cross_sectional_open_interest_delta_rank_v0",
+    "prior_delta_rank_ranking_input": "open_interest_delta_over_lookback_k",
+    "prior_delta_rank_scope": "cross_sectional_open_interest_delta_rank/v0",
+    "prior_delta_rank_selection_mode": "open_interest_delta_rank_extremes_single_leg_rotation_v0",
+    "prior_level_rank_binding_digest": "b7099d17af888dabebf14a63797729f807f866d265aeb5095c385541222fc2f2",
+    "prior_level_rank_binding_not_reused_unchanged": true,
+    "prior_level_rank_economic_mechanism": "positioning_crowding_level_extremes",
+    "prior_level_rank_feature": "point_in_time_open_interest_level",
+    "prior_level_rank_hypothesis_id": "cross_sectional_open_interest_level_rank_v0",
+    "prior_level_rank_ranking_input": "point_in_time_open_interest_level_at_signal_lag",
+    "prior_level_rank_scope": "cross_sectional_open_interest_level_rank/v0",
+    "prior_level_rank_selection_mode": "open_interest_level_extremes_single_leg_rotation_v0",
+    "source_evidence_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_open_interest_level_rank_v0_terminal_classification_bundle_read_only_v0_20260712T135127Z",
+    "unchanged_retry": false,
+    "zero_dispersion_policy": "fail_closed_flat_no_fallback",
+    "zscore_normalization": "population_std_cross_sectional_at_epoch"
+  },
+  "minimum_rankable_instrument_count": 5,
+  "missing_instrument_policy": "explicit_none_fail_closed_no_zero_fallback",
+  "monte_carlo_contract": {
+    "execution_forbidden_in_binding_scope": true,
+    "policy_version": "monte_carlo_v1",
+    "runs": 64,
+    "seed": 42
+  },
+  "net_exposure_policy": "directional_single_slot_v0",
+  "open_interest_level_definition": "point_in_time_open_interest_level_at_lagged_observation",
+  "order_effect": "NONE",
+  "panel_dataset_binding": {
+    "admissibility_manifest_ref": "pit_cross_sectional_research_dataset_envelope.v0:pit_okx_linear_usdt_non_bitcoin_self_accumulated_open_interest_panel/v0:self_accumulated_forward_accrual_v0",
+    "archive_source_digest": "cb10e99d7cd5fa158a38aec24e095dbd051f447a0665a7fce47bcc13cb44860a",
+    "bar_interval": "PT1H",
+    "binding_version": "v0",
+    "bound_data_digest": "82e8787c0cc19c15c120de4ee24821bba85b5c5a938b802cfa3f7bcd40f13a4d",
+    "dataset_extension": "self_accumulated_forward_accrual_v0",
+    "dataset_id": "pit_okx_linear_usdt_non_bitcoin_self_accumulated_open_interest_panel/v0",
+    "materializer_owner": "okx_self_accumulated_forward_open_interest_bound_panel_dataset_materialization.v0",
+    "no_fallback_to_399_instrument_dataset": true,
+    "observed_panel_history_depth": 60,
+    "observed_panel_window_end_utc": "2026-07-11T23:00:00Z",
+    "observed_panel_window_start_utc": "2026-07-09T12:00:00Z",
+    "panel_dataset_digest": "37e492d6b2ef64ab681ca96ef5f2fc873d2d4f87c119b3ee2666d8489fc650a1",
+    "panel_dataset_schema": "pit_okx_pt1h_panel_open_interest_dataset_manifest_v1",
+    "panel_id": "pit_okx_linear_usdt_non_bitcoin_self_accumulated_open_interest_panel",
+    "panel_open_interest_manifest_ref": "pit_okx_pt1h_panel_open_interest_dataset_v1:pit_okx_linear_usdt_non_bitcoin_self_accumulated_open_interest_panel:self_accumulated_forward_accrual_v0",
+    "source_mode": "SELF_ACCUMULATED_EFFECTIVE_ARCHIVE_VIEW"
+  },
+  "parameter_binding": {
+    "binding_version": "v0",
+    "minimum_panel_bars": 6,
+    "no_instrument_substitution": true,
+    "no_universe_expansion": true,
+    "open_interest_level_definition": "point_in_time_open_interest_level_at_lagged_observation",
+    "open_interest_observation_field": "open_interest",
+    "parameter_search_forbidden": true,
+    "prior_delta_rank_binding_not_reused_unchanged": true,
+    "prior_level_rank_binding_not_reused_unchanged": true,
+    "rank_lookback_k_forbidden": true,
+    "score_formula_expression": "z_score_i(t) = (open_interest_i(t-lag) - panel_mean) / panel_std; panel_std uses population variance (divide by N); long_leg = instrument with minimum z_score; short_leg = instrument with maximum z_score; single_slot selects leg with larger absolute z_score when dispersion gate passes",
+    "score_formula_version": "cross_sectional_open_interest_zscore_reversion_v0",
+    "signal_lag_bars": 1,
+    "unchanged_retry_of_failed_bindings_forbidden": true,
+    "zero_dispersion_policy": "fail_closed_flat_no_fallback",
+    "zscore_normalization": "population_std_cross_sectional_at_epoch"
+  },
+  "per_instrument_cap": 1.0,
+  "period_binding": {
+    "binding_version": "v1",
+    "boundary_semantics": "utc_bar_close_inclusive_end",
+    "embargo_duration": "PT2H",
+    "holdout_isolation_enforced": true,
+    "no_overlap_enforced": true,
+    "out_of_sample_end": "2024-08-31T23:00:00Z",
+    "out_of_sample_start": "2024-07-26T07:00:00Z",
+    "period_binding_id": "pit_cross_sectional_research_chronological_holdout_v1",
+    "periods_frozen_before_evaluation": true,
+    "purge_duration": "PT2H",
+    "split_policy_id": "pit_cross_sectional_research_chronological_holdout_v1",
+    "split_timezone": "UTC",
+    "training_end": "2024-06-19T05:00:00Z",
+    "training_start": "2024-05-01T02:00:00Z",
+    "validation_end": "2024-07-26T04:00:00Z",
+    "validation_start": "2024-06-19T08:00:00Z",
+    "warmup_end": "2024-05-01T01:00:00Z",
+    "warmup_start": "2024-05-01T00:00:00Z"
+  },
+  "pit_semantics_contract": {
+    "availability_time_semantics": "observation_time_utc_plus_signal_lag_bars_conservative_lag_no_lookahead",
+    "bar_interval": "PT1H",
+    "contract_replacement_handling": "lifecycle_registry_fail_closed_exclude_transition",
+    "contract_version": "cross_sectional_open_interest_zscore_reversion_v0_pit_semantics_contract.v0",
+    "delisting_handling": "force_flat_via_lifecycle_mask",
+    "duplicate_resolution": "latest_observation_timestamp_wins_stable_sort",
+    "event_time_semantics": "okx_oi_snapshot_timestamp_utc_at_or_before_bar_close",
+    "feature_time_less_than_or_equal_to_allowed_decision_time": true,
+    "finalized_bar_only": true,
+    "ingestion_time_is_not_event_time": true,
+    "instrument_type": "linear_usdt_perpetual_swap",
+    "invalid_observation_policy": "exclude_non_finite_force_flat_at_selection",
+    "listing_handling": "exclude_until_first_valid_oi_post_list_time",
+    "missing_observation_handling": "explicit_none_fail_closed_no_zero_fallback",
+    "no_interpolation": true,
+    "no_lookahead": true,
+    "no_silent_forward_fill": true,
+    "no_survivorship_bias": true,
+    "oi_observation_cadence": "PT1H",
+    "open_interest_level_definition": "point_in_time_open_interest_level_at_lagged_observation",
+    "open_interest_unit": "okx_native_contract_count",
+    "research_scope": "cross_sectional_open_interest_zscore_reversion/v0",
+    "semantic_digest": "03bff8e754748ea3528ddcc4abf925da28d2a12db191a511aec989cafa660685",
+    "signal_lag_bars": 1,
+    "source_endpoint": "/api/v5/rubik/stat/contracts/open-interest-history",
+    "source_owner": "okx_historical_open_interest_public_fetch_v0",
+    "source_schema_version": "okx_rubik_open_interest_history.v0",
+    "stale_instrument_policy": "exclude_when_staleness_exceeds_threshold_bars",
+    "stale_threshold_bars": 1,
+    "venue": "OKX",
+    "zero_dispersion_policy": "fail_closed_flat_no_fallback",
+    "zscore_normalization": "population_std_cross_sectional_at_epoch"
+  },
+  "pit_universe_binding": {
+    "binding_version": "v0",
+    "bitcoin_direction_allowed": false,
+    "bitcoin_excluded": true,
+    "bitcoin_present": false,
+    "futures_only": true,
+    "instrument_identity_normalization": "instrument_id_canonicalization.v1",
+    "instrument_type": "LINEAR_PERPETUAL",
+    "instrument_universe_digest": "e286db0053596e771c2168e82ff61c326f7ba1d51e90d606880237576b2c4791",
+    "maximum_eligible_member_count": 5,
+    "minimum_eligible_member_count": 5,
+    "pit_universe_manifest_ref": "pit_futures_universe_manifest_v1:pit_okx_linear_usdt_non_bitcoin_perpetual_universe_manifest_v1",
+    "settlement_asset": "USDT",
+    "spot_excluded": true,
+    "synthetic_spot_excluded": true,
+    "target_instrument_bindings": [
+      {
+        "instrument_id": "okx:linear_perpetual:AVAX:USDT:USDT:perp",
+        "native_instrument_id": "AVAX-USDT-SWAP"
+      },
+      {
+        "instrument_id": "okx:linear_perpetual:ETH:USDT:USDT:perp",
+        "native_instrument_id": "ETH-USDT-SWAP"
+      },
+      {
+        "instrument_id": "okx:linear_perpetual:LINK:USDT:USDT:perp",
+        "native_instrument_id": "LINK-USDT-SWAP"
+      },
+      {
+        "instrument_id": "okx:linear_perpetual:POL:USDT:USDT:perp",
+        "native_instrument_id": "POL-USDT-SWAP"
+      },
+      {
+        "instrument_id": "okx:linear_perpetual:SOL:USDT:USDT:perp",
+        "native_instrument_id": "SOL-USDT-SWAP"
+      }
+    ],
+    "universe_lifecycle_registry_ref": "pit_futures_lifecycle_registry_v1:okx_production_lifecycle_v1",
+    "universe_policy_id": "pit_okx_linear_usdt_non_bitcoin_perpetual_cross_sectional_universe",
+    "universe_policy_version": "v1",
+    "venue": "OKX"
+  },
+  "point_in_time_semantics": "point_in_time_open_interest_level_at_lagged_observation",
+  "portfolio_cap": 1.0,
+  "prior_delta_terminal_baseline_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_open_interest_delta_rank_v0_terminal_inconclusive_baseline_evidence_and_unchanged_retry_block_v0_20260712T011717Z",
+  "prior_level_rank_terminal_baseline_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_open_interest_level_rank_v0_offline_economic_evaluation_execution_v0_20260712T130230Z",
+  "ranking_direction": "long_min_zscore_short_max_zscore_single_slot_rotation_v0",
+  "ranking_formula": "rank_by_lagged_cross_sectional_open_interest_zscore_v0",
+  "ranking_policy_binding": {
+    "binding_version": "v0",
+    "deterministic_tie_break": "instrument_id_asc_stable_sort",
+    "finalized_bar_only": true,
+    "invalid_observation_policy": "exclude_non_finite_force_flat_at_selection",
+    "long_leg_means": "LONG_MIN_ZSCORE",
+    "minimum_rankable_instrument_count": 5,
+    "missing_instrument_policy": "explicit_none_fail_closed_no_zero_fallback",
+    "point_in_time_semantics": "point_in_time_open_interest_level_at_lagged_observation",
+    "ranking_direction": "long_min_zscore_short_max_zscore_single_slot_rotation_v0",
+    "ranking_formula": "rank_by_lagged_cross_sectional_open_interest_zscore_v0",
+    "selection_mode": "open_interest_zscore_reversion_extremes_single_leg_rotation_v0",
+    "short_leg_means": "SHORT_MAX_ZSCORE",
+    "stale_instrument_policy": "exclude_when_staleness_exceeds_threshold_bars",
+    "zero_dispersion_policy": "fail_closed_flat_no_fallback",
+    "zscore_normalization": "population_std_cross_sectional_at_epoch"
+  },
+  "rebalance_cadence": "PT1H_every_finalized_bar_epoch",
+  "research_hypothesis_id": "cross_sectional_open_interest_zscore_reversion_v0",
+  "research_scope": "cross_sectional_open_interest_zscore_reversion/v0",
+  "rotation_semantics": "single_slot_extreme_zscore_rotation_v0",
+  "runner_decision": {
+    "canonical_entry_point": null,
+    "canonical_entry_point_status": "UNKNOWN_BLOCKER_FOR_EVALUATION_SCOPE",
+    "economic_evaluation_executed": false,
+    "evaluation_executed": false,
+    "next_operator_go": "GO_CROSS_SECTIONAL_OPEN_INTEREST_ZSCORE_REVERSION_V0_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0",
+    "next_recommended_scope": "CROSS_SECTIONAL_OPEN_INTEREST_ZSCORE_REVERSION_V0_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0",
+    "runner_action": "DEFER_TO_FUTURE_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_SCOPE",
+    "runner_required": true,
+    "schema_version": "runner_decision.v0"
+  },
+  "runtime_effect": "NONE",
+  "sample_sufficiency_contract": {
+    "minimum_panel_history_depth": 60,
+    "minimum_rankable_epoch_count": 59,
+    "minimum_trade_count": 50,
+    "sample_sufficiency_evaluated_in_binding_scope": false
+  },
+  "schema_version": "cross_sectional_open_interest_zscore_reversion_v0_versioned_hypothesis_binding.v0",
+  "selection_count": 1,
+  "selection_hold_exit_rotation_binding": {
+    "binding_version": "v0",
+    "exit_semantics": "rotation_via_switch_policy_flat_then_wait_one_epoch",
+    "gross_exposure_policy": "unit_notional_single_slot_v0",
+    "hold_semantics": "until_next_rebalance",
+    "long_selection_semantics": "single_slot_long_min_open_interest_zscore_v0",
+    "net_exposure_policy": "directional_single_slot_v0",
+    "per_instrument_cap": 1.0,
+    "portfolio_cap": 1.0,
+    "rebalance_cadence": "PT1H_every_finalized_bar_epoch",
+    "rebalance_interval_bars": 1,
+    "rotation_semantics": "single_slot_extreme_zscore_rotation_v0",
+    "selection_count": 1,
+    "short_selection_semantics": "single_slot_short_max_open_interest_zscore_v0",
+    "simultaneous_long_short_policy": "forbidden_single_slot_rotation_only",
+    "switch_entry_delay_epochs": 1,
+    "turnover_control_semantics": "switch_entry_delay_one_epoch_no_cooldown",
+    "weighting_policy": "equal_weight_single_slot_v0"
+  },
+  "semantic_binding_fields_changed": true,
+  "short_selection_semantics": "single_slot_short_max_open_interest_zscore_v0",
+  "signal_definition": "z_score_i(t) = (open_interest_i(t-lag) - panel_mean) / panel_std; panel_std uses population variance (divide by N); long_leg = instrument with minimum z_score; short_leg = instrument with maximum z_score; single_slot selects leg with larger absolute z_score when dispersion gate passes",
+  "simultaneous_long_short_policy": "forbidden_single_slot_rotation_only",
+  "slippage_binding": {
+    "slippage_bps_per_side": 5.0,
+    "slippage_model_version": "backtest_slippage_symmetric_v0"
+  },
+  "source_evidence_ref": "/Users/frnkhrz/Documents/Peak_Trade_runtime_evidence_archive_20260520T161443Z/research/cross_sectional_open_interest_level_rank_v0_terminal_classification_bundle_read_only_v0_20260712T135127Z",
+  "spread_binding": {
+    "conservative_half_spread_bps": 5.0,
+    "spread_model_version": "research_conservative_bps_v1"
+  },
+  "stale_instrument_policy": "exclude_when_staleness_exceeds_threshold_bars",
+  "strategy_id": "cross_sectional_open_interest_zscore_reversion",
+  "strategy_version": "v0",
+  "stress_contract": {
+    "execution_forbidden_in_binding_scope": true,
+    "policy_version": "stress_class_suite_v1"
+  },
+  "superseding_integrity_attestation_ref": "config/research/cross_sectional_open_interest_delta_rank_v0_terminal_baseline_bundle_superseding_integrity_attestation_v0.json",
+  "system_constraints": {
+    "bitcoin_direction_allowed": false,
+    "bitcoin_present": false,
+    "futures_only": true,
+    "no_economic_evaluation": true,
+    "no_parameter_optimization": true,
+    "no_policy_rescue": true,
+    "no_runtime": true,
+    "no_universe_change": true,
+    "offline_only": true,
+    "prior_delta_rank_binding_not_reused_unchanged": true,
+    "prior_level_rank_binding_not_reused_unchanged": true,
+    "rank_lookback_k_forbidden": true,
+    "spot_excluded": true,
+    "synthetic_spot_excluded": true
+  },
+  "turnover_control_semantics": "switch_entry_delay_one_epoch_no_cooldown",
+  "unchanged_retry_policy": {
+    "prior_binding_digest_unchanged_retry_forbidden": true,
+    "prior_inconclusive_baseline_unchanged_retry_forbidden": true,
+    "unchanged_retry_blocked": true
+  },
+  "universe_digest": "e286db0053596e771c2168e82ff61c326f7ba1d51e90d606880237576b2c4791",
+  "walk_forward_contract": {
+    "execution_forbidden_in_binding_scope": true,
+    "policy_version": "walk_forward_v1"
+  },
+  "weighting_policy": "equal_weight_single_slot_v0",
+  "zero_dispersion_policy": "fail_closed_flat_no_fallback",
+  "zscore_normalization": "population_std_cross_sectional_at_epoch"
+}
