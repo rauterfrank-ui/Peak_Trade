@@ -12,10 +12,17 @@ from __future__ import annotations
 import math
 from dataclasses import dataclass
 from enum import Enum
-from typing import Any, Mapping, Sequence
+from typing import Any, Mapping, Sequence, Union
 
 from src.research.cross_sectional_ranking_semantics_binding_v0 import (
     RATIFIED_OPERATOR_BINDING_VALUES,
+)
+from src.research.cross_sectional_futures_lead_lag_information_diffusion_v0_score_v0 import (
+    SCORE_FORMULA_VERSION as LEAD_LAG_SCORE_FORMULA_VERSION,
+    LeadLagDiffusionScoreResultV0,
+    compute_instrument_diffusion_score_v0,
+    compute_panel_median_lagged_return_v0,
+    rank_scores_deterministic_v0 as rank_lead_lag_scores_deterministic_v0,
 )
 from src.research.cross_sectional_relative_strength_v0_score_v0 import (
     SCORE_FORMULA_VERSION,
@@ -23,6 +30,10 @@ from src.research.cross_sectional_relative_strength_v0_score_v0 import (
     compute_instrument_score_v0,
     rank_scores_deterministic_v0,
 )
+
+SCORE_FAMILY_RELATIVE_STRENGTH = SCORE_FORMULA_VERSION
+SCORE_FAMILY_LEAD_LAG_DIFFUSION = LEAD_LAG_SCORE_FORMULA_VERSION
+ScoreResultV0 = Union[CrossSectionalScoreResultV0, LeadLagDiffusionScoreResultV0]
 from src.research.pit_okx_pt1h_panel_ohlcv_dataset_v1 import (
     InstrumentPanelSeriesV1,
     PanelBarV1,
@@ -50,6 +61,7 @@ class OrchestratorErrorCode(str, Enum):
     STALE_BAR_EXCLUDED = "STALE_BAR_EXCLUDED"
     MISSING_BINDING = "MISSING_BINDING"
     UNKNOWN_INSTRUMENT = "UNKNOWN_INSTRUMENT"
+    UNKNOWN_SCORE_FAMILY = "UNKNOWN_SCORE_FAMILY"
 
 
 @dataclass(frozen=True)
@@ -68,7 +80,7 @@ class SingleSlotSelectionEventV0:
 class OrchestratorEpochResultV0:
     epoch_index: int
     timestamp_utc: str
-    scores: tuple[CrossSectionalScoreResultV0, ...]
+    scores: tuple[ScoreResultV0, ...]
     selection: SingleSlotSelectionEventV0
     error_codes: tuple[str, ...]
 
@@ -132,6 +144,105 @@ def _is_stale(
     if bars[epoch_index].timestamp_utc != reference_timestamp:
         return True
     return False
+
+
+def _resolve_score_formula_version(binding: Mapping[str, Any]) -> str:
+    explicit = binding.get("score_formula_version")
+    if isinstance(explicit, str) and explicit:
+        return explicit
+    policy_classes = binding.get("policy_classes", {})
+    if isinstance(policy_classes, Mapping):
+        family = policy_classes.get("score_family_policy")
+        if isinstance(family, str) and family:
+            return family
+    return SCORE_FORMULA_VERSION
+
+
+def _compute_relative_strength_epoch_scores_v0(
+    *,
+    closes_by_id: dict[str, tuple[float, ...]],
+    series_by_id: dict[str, InstrumentPanelSeriesV1],
+    epoch_index: int,
+    timestamp_utc: str,
+    lookback_n: int,
+    vol_window_v: int,
+    vol_epsilon: float,
+    signal_lag_bars: int,
+    max_staleness: int,
+) -> tuple[list[CrossSectionalScoreResultV0], list[str]]:
+    error_codes: list[str] = []
+    epoch_scores: list[CrossSectionalScoreResultV0] = []
+    for instrument_id, closes in closes_by_id.items():
+        series = series_by_id[instrument_id]
+        if _is_stale(
+            series.bars,
+            epoch_index=epoch_index,
+            reference_timestamp=timestamp_utc,
+            max_bar_staleness_bars=max_staleness,
+        ):
+            error_codes.append(OrchestratorErrorCode.STALE_BAR_EXCLUDED.value)
+            continue
+        score_result = compute_instrument_score_v0(
+            instrument_id,
+            closes,
+            lookback_n=lookback_n,
+            vol_window_v=vol_window_v,
+            vol_epsilon=vol_epsilon,
+            signal_lag_bars=signal_lag_bars,
+            epoch_index=epoch_index,
+        )
+        if score_result is not None:
+            epoch_scores.append(score_result)
+    return epoch_scores, error_codes
+
+
+def _compute_lead_lag_epoch_scores_v0(
+    *,
+    closes_by_id: dict[str, tuple[float, ...]],
+    series_by_id: dict[str, InstrumentPanelSeriesV1],
+    epoch_index: int,
+    timestamp_utc: str,
+    lag_window_l: int,
+    signal_lag_bars: int,
+    max_staleness: int,
+) -> tuple[list[LeadLagDiffusionScoreResultV0], list[str]]:
+    error_codes: list[str] = []
+    active_closes: dict[str, tuple[float, ...]] = {}
+    for instrument_id, closes in closes_by_id.items():
+        series = series_by_id[instrument_id]
+        if _is_stale(
+            series.bars,
+            epoch_index=epoch_index,
+            reference_timestamp=timestamp_utc,
+            max_bar_staleness_bars=max_staleness,
+        ):
+            error_codes.append(OrchestratorErrorCode.STALE_BAR_EXCLUDED.value)
+            continue
+        active_closes[instrument_id] = closes
+
+    panel = compute_panel_median_lagged_return_v0(
+        active_closes,
+        lag_window_l=lag_window_l,
+        signal_lag_bars=signal_lag_bars,
+        epoch_index=epoch_index,
+    )
+    if panel is None:
+        return [], error_codes
+
+    panel_median_return, _ = panel
+    epoch_scores: list[LeadLagDiffusionScoreResultV0] = []
+    for instrument_id, closes in active_closes.items():
+        score_result = compute_instrument_diffusion_score_v0(
+            instrument_id,
+            closes,
+            lag_window_l=lag_window_l,
+            signal_lag_bars=signal_lag_bars,
+            epoch_index=epoch_index,
+            panel_median_return=panel_median_return,
+        )
+        if score_result is not None:
+            epoch_scores.append(score_result)
+    return epoch_scores, error_codes
 
 
 def _resolve_target_side(score: float | None) -> SlotSide:
@@ -213,15 +324,26 @@ def run_cross_sectional_single_slot_orchestrator_v0(
     binding: Mapping[str, Any],
     panel_series: Sequence[InstrumentPanelSeriesV1],
     eligible_instrument_ids: Sequence[str] | None = None,
+    score_formula_version: str | None = None,
 ) -> OrchestratorRunResultV0:
     """Run deterministic single-slot panel orchestration over aligned panel series."""
-    lookback_n = int(_extract_numeric_binding(binding, "lookback_N"))
-    vol_window_v = int(_extract_numeric_binding(binding, "vol_window_V"))
-    vol_epsilon = float(_extract_numeric_binding(binding, "vol_epsilon"))
-    signal_lag_bars = int(_extract_numeric_binding(binding, "signal_lag_bars"))
+    resolved_score_family = score_formula_version or _resolve_score_formula_version(binding)
     min_eligible = int(_extract_numeric_binding(binding, "min_eligible_members_for_rank"))
     switch_delay = int(_extract_numeric_binding(binding, "switch_entry_delay_epochs"))
     max_staleness = int(_extract_numeric_binding(binding, "max_bar_staleness_bars"))
+    signal_lag_bars = int(_extract_numeric_binding(binding, "signal_lag_bars"))
+    lookback_n = 0
+    vol_window_v = 0
+    vol_epsilon = 0.0
+    lag_window_l = 0
+    if resolved_score_family == SCORE_FAMILY_RELATIVE_STRENGTH:
+        lookback_n = int(_extract_numeric_binding(binding, "lookback_N"))
+        vol_window_v = int(_extract_numeric_binding(binding, "vol_window_V"))
+        vol_epsilon = float(_extract_numeric_binding(binding, "vol_epsilon"))
+    elif resolved_score_family == SCORE_FAMILY_LEAD_LAG_DIFFUSION:
+        lag_window_l = int(_extract_numeric_binding(binding, "lag_window_L"))
+    else:
+        raise ValueError(OrchestratorErrorCode.UNKNOWN_SCORE_FAMILY.value)
 
     panel_validation = validate_panel_series_v1(
         panel_series,
@@ -238,7 +360,7 @@ def run_cross_sectional_single_slot_orchestrator_v0(
     if bitcoin_present or insufficient or alignment_failed:
         return OrchestratorRunResultV0(
             orchestrator_version=ORCHESTRATOR_VERSION,
-            score_formula_version=SCORE_FORMULA_VERSION,
+            score_formula_version=resolved_score_family,
             epochs=(),
             final_slot_side=SlotSide.FLAT,
             final_instrument_id=None,
@@ -264,32 +386,30 @@ def run_cross_sectional_single_slot_orchestrator_v0(
 
     for epoch_index in range(bar_count):
         timestamp_utc = reference_series.bars[epoch_index].timestamp_utc
-        error_codes: list[str] = []
-        epoch_scores: list[CrossSectionalScoreResultV0] = []
-
-        for instrument_id, closes in closes_by_id.items():
-            series = series_by_id[instrument_id]
-            if _is_stale(
-                series.bars,
+        if resolved_score_family == SCORE_FAMILY_RELATIVE_STRENGTH:
+            epoch_scores, error_codes = _compute_relative_strength_epoch_scores_v0(
+                closes_by_id=closes_by_id,
+                series_by_id=series_by_id,
                 epoch_index=epoch_index,
-                reference_timestamp=timestamp_utc,
-                max_bar_staleness_bars=max_staleness,
-            ):
-                error_codes.append(OrchestratorErrorCode.STALE_BAR_EXCLUDED.value)
-                continue
-            score_result = compute_instrument_score_v0(
-                instrument_id,
-                closes,
+                timestamp_utc=timestamp_utc,
                 lookback_n=lookback_n,
                 vol_window_v=vol_window_v,
                 vol_epsilon=vol_epsilon,
                 signal_lag_bars=signal_lag_bars,
-                epoch_index=epoch_index,
+                max_staleness=max_staleness,
             )
-            if score_result is not None:
-                epoch_scores.append(score_result)
-
-        ranked = rank_scores_deterministic_v0(epoch_scores)
+            ranked = rank_scores_deterministic_v0(epoch_scores)
+        else:
+            epoch_scores, error_codes = _compute_lead_lag_epoch_scores_v0(
+                closes_by_id=closes_by_id,
+                series_by_id=series_by_id,
+                epoch_index=epoch_index,
+                timestamp_utc=timestamp_utc,
+                lag_window_l=lag_window_l,
+                signal_lag_bars=signal_lag_bars,
+                max_staleness=max_staleness,
+            )
+            ranked = rank_lead_lag_scores_deterministic_v0(epoch_scores)
         ranked_ids = tuple(item.instrument_id for item in ranked)
 
         if len(ranked) < min_eligible:
@@ -332,7 +452,7 @@ def run_cross_sectional_single_slot_orchestrator_v0(
 
     return OrchestratorRunResultV0(
         orchestrator_version=ORCHESTRATOR_VERSION,
-        score_formula_version=SCORE_FORMULA_VERSION,
+        score_formula_version=resolved_score_family,
         epochs=tuple(epoch_results),
         final_slot_side=state.current_side,
         final_instrument_id=state.current_instrument_id,
@@ -342,6 +462,39 @@ def run_cross_sectional_single_slot_orchestrator_v0(
     )
 
 
+def _bound_numeric(value: int | float | str) -> dict[str, Any]:
+    return {"status": "BOUND", "value": value}
+
+
+def default_lead_lag_operator_binding_v0(
+    versioned_binding: Mapping[str, Any] | None = None,
+) -> Mapping[str, Any]:
+    """Map ratified lead-lag hypothesis binding to orchestrator numeric bindings."""
+    if versioned_binding is None:
+        from src.research.cross_sectional_futures_lead_lag_information_diffusion_v0_versioned_hypothesis_binding_v0 import (
+            materialize_versioned_hypothesis_binding_v0,
+        )
+
+        versioned_binding = materialize_versioned_hypothesis_binding_v0()
+
+    parameter_binding = versioned_binding["parameter_binding"]
+    selection_binding = versioned_binding["binding"]["selection_hold_exit_rotation_binding"]
+    return {
+        "score_formula_version": versioned_binding["score_family_policy"],
+        "numeric_bindings": {
+            "lag_window_L": _bound_numeric(parameter_binding["lag_window_L"]),
+            "signal_lag_bars": _bound_numeric(parameter_binding["signal_lag_bars"]),
+            "min_eligible_members_for_rank": _bound_numeric(
+                parameter_binding["min_eligible_members_for_rank"]
+            ),
+            "switch_entry_delay_epochs": _bound_numeric(
+                selection_binding["switch_entry_delay_epochs"]
+            ),
+            "max_bar_staleness_bars": _bound_numeric(parameter_binding["max_bar_staleness_bars"]),
+        },
+    }
+
+
 def default_operator_binding_v0() -> Mapping[str, Any]:
     """Return binding dict with ratified operator numeric values for orchestrator tests."""
     from src.research.cross_sectional_ranking_semantics_binding_v0 import (
@@ -349,6 +502,10 @@ def default_operator_binding_v0() -> Mapping[str, Any]:
         materialize_cross_sectional_ranking_semantics_binding_v0,
     )
 
-    return apply_ratified_operator_bindings_v0(
+    binding = apply_ratified_operator_bindings_v0(
         materialize_cross_sectional_ranking_semantics_binding_v0()
     )
+    return {
+        **binding,
+        "score_formula_version": SCORE_FORMULA_VERSION,
+    }

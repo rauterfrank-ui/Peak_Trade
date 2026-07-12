@@ -1,0 +1,90 @@
+{
+  "backtest": {
+    "cost_model_version": "backtest_cost_v0",
+    "economic_research_execution_cost": {
+      "conservative_half_spread_bps": 5.0,
+      "execution_price_observation_source": "MODELLED_NOT_OBSERVED",
+      "fee_bps": 10.0,
+      "slippage_bps": 5.0,
+      "spread_model_version": "research_conservative_bps_v1"
+    },
+    "fee_bps": 10.0,
+    "fee_model_version": "backtest_fee_taker_symmetric_v0",
+    "funding": {
+      "bind": true,
+      "model_version": "backtest_funding_perpetual_interval_v1"
+    },
+    "initial_cash": 10000.0,
+    "parameter_sensitivity": {
+      "bind": true,
+      "grid_version": "v1",
+      "policy_version": "parameter_sensitivity_v1",
+      "primary_binding_only": true,
+      "parameter_search_forbidden": true
+    },
+    "slippage_bps": 5.0,
+    "slippage_model_version": "backtest_slippage_symmetric_v0"
+  },
+  "binding_digest": "9e9ab5676d8859d819dad1aed1eaa78163529682492fcc333ead001841e414c1",
+  "config_digest": "f939aefbaf2a88bfc77b6c47eac86e8eeabcbfa0f0ca9ef7a804ecdf87464089",
+  "config_schema_version": "cross_sectional_futures_lead_lag_information_diffusion_v0_economic_evaluation_admissibility_v1",
+  "config_version": "v1",
+  "cross_sectional_evaluation_binding_v1": {
+    "candidate_binding_ref": "config/research/cross_sectional_futures_lead_lag_information_diffusion_v0_versioned_hypothesis_binding_v0.json",
+    "candidate_binding_version": "v0",
+    "data_contract_digest": "68919bd52faee69a14140e5b50607437997f09bfec1bcb4a6ae98b69227f4c78",
+    "dataset_binding": {
+      "dataset_digest": "79b1c977960f4af7e1eb54580738d77b259b74f7f02bbf0e999afbb95f8f09f1",
+      "dataset_id": "pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1",
+      "dataset_version": "v1",
+      "panel_staging_profile": "cross_sectional_research_staging_v1"
+    },
+    "digest_materialization_semantics": "panel_semantic_data_digest_v0",
+    "instrument_universe_binding": {
+      "bitcoin_excluded": true,
+      "futures_only": true,
+      "pit_universe_manifest_ref": "pit_futures_universe_manifest_v1:pit_okx_linear_usdt_non_bitcoin_perpetual_universe_manifest_v1",
+      "universe_digest": "d57738dc7e80520c17e49c406a22f8de15216c2e48e56d91b3757359ebb552a1"
+    },
+    "panel_dataset_manifest_ref": "pit_okx_pt1h_panel_ohlcv_dataset_v1:pit_okx_linear_usdt_non_bitcoin_cross_sectional_pt1h_research_v1:v1",
+    "parameter_binding": {
+      "lag_window_L": 8,
+      "parameter_search_forbidden": true,
+      "score_formula_version": "panel_median_benchmark_lagged_return_diffusion_v0",
+      "signal_lag_bars": 1
+    },
+    "period_binding_id": "pit_cross_sectional_research_chronological_holdout_v1",
+    "period_binding_version": "v1"
+  },
+  "economic_evaluation_v1": {
+    "economic_validity_policy_version": "economic_validity_policy_v1",
+    "engine_signal_source": "cross_sectional_single_slot_research_orchestrator_v0",
+    "monte_carlo": {
+      "bind": true,
+      "policy_version": "monte_carlo_v1",
+      "runs": 64,
+      "seed": 42
+    },
+    "parameter_sensitivity_policy_version": "parameter_sensitivity_v1",
+    "strategy_id": "cross_sectional_futures_lead_lag_information_diffusion",
+    "strategy_version": "v0",
+    "stress": {
+      "bind": true,
+      "policy_version": "stress_class_suite_v1"
+    },
+    "walk_forward": {
+      "bind": true,
+      "policy_version": "walk_forward_v1"
+    }
+  },
+  "evidence_schema_version": "economic_viability_evidence_schema_v1.json",
+  "implementation_digest": "612b431acc3833ed364b66de58b06ce15268edb30e1c5d82db50258cedd6c949",
+  "offline_evaluation_sizing_contract_v1": {
+    "initial_equity": 10000.0,
+    "max_position_pct": 1.0,
+    "sizing_contract_version": "offline_evaluation_sizing_contract_v1",
+    "sizing_mode": "single_slot_full_notional_v0"
+  },
+  "strategy_id": "cross_sectional_futures_lead_lag_information_diffusion",
+  "strategy_version": "v0"
+}
