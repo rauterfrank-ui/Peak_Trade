@@ -48,6 +48,13 @@ GO_TOKEN = (
     "GO_CROSS_SECTIONAL_FUTURES_LEAD_LAG_V0_MV2_RESEARCH_BACKTEST_WIRING_BOUNDARY_ADAPTER_"
     "IMPLEMENTATION_V0"
 )
+SYSTEM_EVIDENCE_MV2_BINDING_GO_TOKEN = (
+    "GO_CROSS_SECTIONAL_FUTURES_LEAD_LAG_V0_SYSTEM_EVIDENCE_MV2_OFFLINE_ECONOMIC_"
+    "EVALUATION_BINDING_V0"
+)
+ALLOWED_ADAPTER_GO_TOKENS: frozenset[str] = frozenset(
+    {GO_TOKEN, SYSTEM_EVIDENCE_MV2_BINDING_GO_TOKEN}
+)
 
 LEGACY_RESEARCH_PATH_MODE = "LEGACY_RESEARCH"
 SYSTEM_EVIDENCE_MV2_PATH_MODE = "SYSTEM_EVIDENCE_MV2"
@@ -115,6 +122,8 @@ def materialize_adapter_contract_v0() -> dict[str, Any]:
         "adapter_owner": ADAPTER_OWNER,
         "adapter_module": ADAPTER_MODULE,
         "go_token": GO_TOKEN,
+        "system_evidence_mv2_binding_go_token": SYSTEM_EVIDENCE_MV2_BINDING_GO_TOKEN,
+        "allowed_adapter_go_tokens": sorted(ALLOWED_ADAPTER_GO_TOKENS),
         "canonical_mv2_owner": MV2_CANONICAL_OWNER,
         "canonical_mv2_callable": MV2_CANONICAL_CALLABLE,
         "legacy_research_path_mode": LEGACY_RESEARCH_PATH_MODE,
@@ -130,7 +139,7 @@ def materialize_adapter_contract_v0() -> dict[str, Any]:
 
 
 def verify_adapter_go_token_v0(go_token: str) -> tuple[bool, tuple[str, ...]]:
-    if go_token != GO_TOKEN:
+    if go_token not in ALLOWED_ADAPTER_GO_TOKENS:
         return False, (REASON_GO_TOKEN_INVALID,)
     return True, ()
 

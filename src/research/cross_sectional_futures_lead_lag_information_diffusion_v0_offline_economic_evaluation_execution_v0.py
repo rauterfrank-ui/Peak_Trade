@@ -15,6 +15,8 @@ from enum import Enum
 from pathlib import Path
 from typing import Any, Mapping, Sequence
 
+import pandas as pd
+
 from src.research.cross_sectional_futures_lead_lag_information_diffusion_v0_offline_economic_evaluation_scope_ratification_v0 import (
     ValidationVerdictEnum,
     validate_lead_lag_offline_economic_evaluation_scope_ratification_v0,
@@ -102,7 +104,13 @@ REEVALUATION_GO_TOKEN = (
     "GO_CROSS_SECTIONAL_FUTURES_LEAD_LAG_INFORMATION_DIFFUSION_V0_OFFLINE_ECONOMIC_"
     "EVALUATION_REEVALUATION_V0"
 )
-ALLOWED_FULL_EVALUATION_GO_TOKENS: frozenset[str] = frozenset({REEVALUATION_GO_TOKEN})
+SYSTEM_EVIDENCE_MV2_BINDING_GO_TOKEN = (
+    "GO_CROSS_SECTIONAL_FUTURES_LEAD_LAG_V0_SYSTEM_EVIDENCE_MV2_OFFLINE_ECONOMIC_"
+    "EVALUATION_BINDING_V0"
+)
+ALLOWED_FULL_EVALUATION_GO_TOKENS: frozenset[str] = frozenset(
+    {REEVALUATION_GO_TOKEN, SYSTEM_EVIDENCE_MV2_BINDING_GO_TOKEN}
+)
 FIXTURE_DATA_DIGEST = "3b4d025422898fcbdb15390864ab17cd0d921e839b1a6bd09c42fa235024b769"
 REASON_FIXTURE_LEAKAGE = "FIXTURE_DATA_DIGEST_IN_ECONOMIC_EVALUATION"
 CONFIG_REL_PATH_OPS = (
@@ -136,6 +144,10 @@ MV2_WIRING_ADAPTER_GO_TOKEN = (
     "GO_CROSS_SECTIONAL_FUTURES_LEAD_LAG_V0_MV2_RESEARCH_BACKTEST_WIRING_BOUNDARY_ADAPTER_"
     "IMPLEMENTATION_V0"
 )
+MV2_WIRING_ADAPTER_OWNER = (
+    "research.cross_sectional_futures_lead_lag_v0_mv2_research_backtest_wiring_boundary_adapter_v0"
+)
+MV2_CANONICAL_BACKTEST_OWNER = "backtest.mv2_research_wiring_v1"
 
 REASON_BINDING_INCOMPLETE = "BINDING_INCOMPLETE"
 REASON_RATIFICATION_INVALID = "RATIFICATION_INVALID"
@@ -451,6 +463,10 @@ def materialize_execution_contract_v0() -> dict[str, Any]:
         "infrastructure_go_token": INFRASTRUCTURE_GO_TOKEN,
         "execution_go_token": GO_TOKEN,
         "reevaluation_go_token": REEVALUATION_GO_TOKEN,
+        "system_evidence_mv2_binding_go_token": SYSTEM_EVIDENCE_MV2_BINDING_GO_TOKEN,
+        "evaluation_path_modes": [LEGACY_RESEARCH_PATH_MODE, SYSTEM_EVIDENCE_MV2_PATH_MODE],
+        "mv2_wiring_adapter_owner": MV2_WIRING_ADAPTER_OWNER,
+        "mv2_canonical_backtest_owner": MV2_CANONICAL_BACKTEST_OWNER,
         "versioned_binding_config": CONFIG_REL_PATH,
         "orchestrator_owner": "cross_sectional_single_slot_research_orchestrator_v0",
         "score_owner": ("cross_sectional_futures_lead_lag_information_diffusion_v0_score_v0"),
@@ -533,18 +549,44 @@ def verify_full_evaluation_precheck_v1(
     return not reasons, tuple(dict.fromkeys(reasons)), materialization
 
 
+def materialize_system_evidence_mv2_offline_economic_evaluation_binding_v0() -> dict[str, Any]:
+    return {
+        "binding_version": "v0",
+        "binding_owner": EXECUTION_ID,
+        "system_evidence_mv2_binding_go_token": SYSTEM_EVIDENCE_MV2_BINDING_GO_TOKEN,
+        "evaluation_path_mode": SYSTEM_EVIDENCE_MV2_PATH_MODE,
+        "legacy_research_path_mode": LEGACY_RESEARCH_PATH_MODE,
+        "mv2_wiring_adapter_owner": MV2_WIRING_ADAPTER_OWNER,
+        "mv2_canonical_backtest_owner": MV2_CANONICAL_BACKTEST_OWNER,
+        "canonical_full_evaluation_callable": CANONICAL_FULL_EVALUATION_CALLABLE,
+        "score_to_final_side_shortcut_allowed": False,
+        "binding_digest_unchanged_required": True,
+        "dataset_digest_unchanged_required": True,
+        "universe_digest_unchanged_required": True,
+        "economic_evaluation_executed": False,
+        "authority_effect": AUTHORITY_EFFECT,
+        "runtime_effect": RUNTIME_EFFECT,
+    }
+
+
 def build_stage_wiring_status_v1(
     *,
     orchestrator_result: Any,
     economic_policy_binding: Mapping[str, Any],
+    evaluation_path_mode: str = LEGACY_RESEARCH_PATH_MODE,
 ) -> tuple[StageWiringStatusV1, ...]:
     _ = orchestrator_result
     _ = economic_policy_binding
+    backtest_owner = (
+        MV2_WIRING_ADAPTER_OWNER
+        if evaluation_path_mode == SYSTEM_EVIDENCE_MV2_PATH_MODE
+        else "cross_sectional_single_slot_backtest_wiring_v0"
+    )
     return (
         StageWiringStatusV1(
             stage_name="OFFLINE_BACKTEST",
             wired=True,
-            owner="cross_sectional_single_slot_backtest_wiring_v0",
+            owner=backtest_owner,
         ),
         StageWiringStatusV1(
             stage_name="WALK_FORWARD",
@@ -971,6 +1013,46 @@ def materialize_economic_viability_evidence(
     return body
 
 
+def single_slot_backtest_from_mv2_wiring_v0(
+    *,
+    wiring_result: Any,
+    initial_cash: float,
+    roundtrip_cost_bps: float,
+) -> SingleSlotBacktestResultV0:
+    """Adapt canonical MV2 backtest output to panel economic evaluation wiring."""
+    from src.backtest.mv2_research_wiring_v1 import MV2ResearchWiringResultV1
+
+    if not isinstance(wiring_result, MV2ResearchWiringResultV1):
+        raise TypeError("mv2_wiring_result_type_invalid")
+    bt = wiring_result.backtest_result
+    equity_curve = bt.equity_curve
+    final_equity = float(equity_curve.iloc[-1]) if len(equity_curve) else initial_cash
+    stats = dict(bt.stats)
+    gross_return = float(stats.get("total_return", 0.0))
+    net_return = (final_equity / initial_cash) - 1.0 if initial_cash else 0.0
+    trades_df = bt.trades if bt.trades is not None else pd.DataFrame()
+    trade_count = int(stats.get("total_trades", len(trades_df)))
+    turnover = float(stats.get("turnover", trade_count))
+    fee_drag = float(stats.get("fee_drag", 0.0))
+    slippage_impact = float(stats.get("slippage_impact", 0.0))
+    return SingleSlotBacktestResultV0(
+        wiring_version="cross_sectional_mv2_system_evidence_backtest_adapter.v0",
+        initial_cash=initial_cash,
+        final_equity=final_equity,
+        gross_return=gross_return,
+        net_return=net_return,
+        trade_count=trade_count,
+        turnover=turnover,
+        fee_drag=fee_drag,
+        slippage_impact=slippage_impact,
+        roundtrip_cost_bps=roundtrip_cost_bps,
+        equity_curve=equity_curve,
+        trades=trades_df,
+        stats=stats,
+        authority_effect=AUTHORITY_EFFECT,
+    )
+
+
 def run_full_offline_economic_evaluation_v0(
     *,
     repo_root: Path,
@@ -1070,16 +1152,91 @@ def run_full_offline_economic_evaluation_v0(
         envelope["cost_execution_binding"]
     )
     economic_policy = _resolve_economic_policy_binding_v0(envelope)
-    orchestrator = run_cross_sectional_single_slot_orchestrator_v0(
-        binding=binding,
-        panel_series=active_panel,
-        score_formula_version=SCORE_FORMULA_VERSION,
+    initial_cash = float(ops_config.get("backtest", {}).get("initial_cash", 10_000.0))
+    roundtrip_cost_bps = float(
+        cost_binding.get("execution_model_binding", {}).get("roundtrip_cost_bps", 0.0)
     )
-    backtest = run_single_slot_panel_backtest_v0(
-        orchestrator,
-        active_panel,
-        cost_execution_binding=cost_binding,
+    evaluation_path_mode = (
+        SYSTEM_EVIDENCE_MV2_PATH_MODE
+        if go_token == SYSTEM_EVIDENCE_MV2_BINDING_GO_TOKEN
+        else LEGACY_RESEARCH_PATH_MODE
     )
+
+    if evaluation_path_mode == SYSTEM_EVIDENCE_MV2_PATH_MODE:
+        from src.research.cross_sectional_futures_lead_lag_v0_mv2_research_backtest_wiring_boundary_adapter_v0 import (
+            AdapterTerminalStatus,
+            run_lead_lag_mv2_research_backtest_wiring_boundary_v0,
+        )
+
+        adapter_result = run_lead_lag_mv2_research_backtest_wiring_boundary_v0(
+            repo_root=repo_root,
+            panel_series=active_panel,
+            versioned_binding=envelope,
+            ops_config=ops_config,
+            go_token=go_token,
+            evaluation_path_mode=evaluation_path_mode,
+        )
+        if adapter_result.status is not AdapterTerminalStatus.MV2_WIRING_BOUNDARY_COMPLETE:
+            reason_codes.extend(adapter_result.reason_codes)
+            return FullEconomicEvaluationResultV0(
+                status=ExecutionTerminalStatus.FAIL_CLOSED_PRECHECK,
+                precheck_passed=True,
+                bound_dataset_materialized=True,
+                dataset_period_match=True,
+                panel_data_digest=panel_digest,
+                data_digest_is_fixture=False,
+                stage_wiring=(),
+                backtest=None,
+                robustness=None,
+                robustness_metrics=None,
+                economic_viability_evidence={},
+                economic_classification=EconomicClassification.FAIL_CLOSED,
+                economic_validity_offline_gate_pass=False,
+                promotion_candidate_eligible=False,
+                economic_evaluation_executed=False,
+                reason_codes=tuple(reason_codes),
+                authority_effect=AUTHORITY_EFFECT,
+                runtime_effect=RUNTIME_EFFECT,
+            )
+        orchestrator = adapter_result.orchestrator_result
+        if orchestrator is None or adapter_result.wiring_result is None:
+            reason_codes.append("MV2_WIRING_RESULT_MISSING")
+            return FullEconomicEvaluationResultV0(
+                status=ExecutionTerminalStatus.FAIL_CLOSED_PRECHECK,
+                precheck_passed=True,
+                bound_dataset_materialized=True,
+                dataset_period_match=True,
+                panel_data_digest=panel_digest,
+                data_digest_is_fixture=False,
+                stage_wiring=(),
+                backtest=None,
+                robustness=None,
+                robustness_metrics=None,
+                economic_viability_evidence={},
+                economic_classification=EconomicClassification.FAIL_CLOSED,
+                economic_validity_offline_gate_pass=False,
+                promotion_candidate_eligible=False,
+                economic_evaluation_executed=False,
+                reason_codes=tuple(reason_codes),
+                authority_effect=AUTHORITY_EFFECT,
+                runtime_effect=RUNTIME_EFFECT,
+            )
+        backtest = single_slot_backtest_from_mv2_wiring_v0(
+            wiring_result=adapter_result.wiring_result,
+            initial_cash=initial_cash,
+            roundtrip_cost_bps=roundtrip_cost_bps,
+        )
+    else:
+        orchestrator = run_cross_sectional_single_slot_orchestrator_v0(
+            binding=binding,
+            panel_series=active_panel,
+            score_formula_version=SCORE_FORMULA_VERSION,
+        )
+        backtest = run_single_slot_panel_backtest_v0(
+            orchestrator,
+            active_panel,
+            cost_execution_binding=cost_binding,
+        )
     robustness = wire_robustness_stages_v0(
         backtest,
         period_binding=envelope["period_binding"],
@@ -1088,6 +1245,7 @@ def run_full_offline_economic_evaluation_v0(
     stage_wiring = build_stage_wiring_status_v1(
         orchestrator_result=orchestrator,
         economic_policy_binding=economic_policy,
+        evaluation_path_mode=evaluation_path_mode,
     )
 
     robustness_metrics = CrossSectionalRobustnessMetricsV0(
