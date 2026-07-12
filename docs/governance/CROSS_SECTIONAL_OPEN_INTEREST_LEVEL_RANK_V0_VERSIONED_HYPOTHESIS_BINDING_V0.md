@@ -4,7 +4,7 @@
 
 `BOUNDED_FUTURES_ONLY_VERSIONED_HYPOTHESIS_BINDING_V0`
 
-Research-only binding for `cross_sectional_open_interest_level_rank&#47;v0`. Binds a distinct
+Research-only binding for `cross_sectional_open_interest_level_rank/v0` (`RESEARCH_SCOPE=cross_sectional_open_interest_level_rank/v0`). Binds a distinct
 point-in-time open-interest level ranking hypothesis before any economic evaluation.
 
 ## Operator GO
@@ -38,6 +38,15 @@ point-in-time open-interest level ranking hypothesis before any economic evaluat
 | Dataset panel | `okx_self_accumulated_forward_open_interest_bound_panel_dataset_materialization.v0` |
 | Config | `config/research/cross_sectional_open_interest_level_rank_v0_versioned_hypothesis_binding_v0.json` |
 | Materializer | `scripts/research/materialize_cross_sectional_open_interest_level_rank_v0_versioned_hypothesis_binding_v0.py` |
+| Evaluation infrastructure | `src/research/cross_sectional_open_interest_level_rank_v0_offline_economic_evaluation_execution_v0.py` |
+| Ops runner | `scripts/ops/run_cross_sectional_open_interest_level_rank_v0_offline_economic_evaluation_execution_v0.py` |
+
+## Canonical entry point
+
+`run_full_offline_economic_evaluation_v0` in
+`src/research/cross_sectional_open_interest_level_rank_v0_offline_economic_evaluation_execution_v0.py`
+
+Infrastructure-only in this slice. No economic evaluation executed.
 
 ## Provenance references
 
@@ -47,6 +56,6 @@ point-in-time open-interest level ranking hypothesis before any economic evaluat
 
 ## Next recommended scope
 
-`CROSS_SECTIONAL_OPEN_INTEREST_LEVEL_RANK_V0_OFFLINE_ECONOMIC_EVALUATION_EXECUTION_V0`
+`CROSS_SECTIONAL_OPEN_INTEREST_LEVEL_RANK_V0_OFFLINE_ECONOMIC_EVALUATION_REEVALUATION_V0`
 
-Requires separate operator GO. Canonical evaluation entry point not yet bound.
+Requires separate operator GO after infrastructure merge. Economic evaluation not executed in infrastructure scope.
