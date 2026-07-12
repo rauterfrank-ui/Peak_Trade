@@ -4,9 +4,9 @@
 
 `BOUNDED_FUTURES_ONLY_VERSIONED_HYPOTHESIS_BINDING_V0`
 
-Research-only binding for `cross_sectional_open_interest_zscore_reversion/v0` (`RESEARCH_SCOPE=cross_sectional_open_interest_zscore_reversion/v0`). Binds a distinct cross-sectional open-interest z-score mean-reversion hypothesis before any economic evaluation.
+Research-only binding for `cross_sectional_open_interest_zscore_reversion&#47;v0` (`RESEARCH_SCOPE=cross_sectional_open_interest_zscore_reversion&#47;v0`). Binds a distinct cross-sectional open-interest z-score mean-reversion hypothesis before any economic evaluation.
 
-RESEARCH_SCOPE: cross_sectional_open_interest_zscore_reversion/v0
+RESEARCH_SCOPE: cross_sectional_open_interest_zscore_reversion&#47;v0
 
 ## Operator GO
 
