@@ -34,7 +34,7 @@ Ausgeschlossen: Target-Manifest-Rewrite, `final_report.txt`-Rewrite, Byte-exact-
 
 | Feld | Wert |
 |---|---|
-| `TARGET_SOURCE_EVIDENCE_DIR` | `.../cross_sectional_open_interest_delta_rank_v0_terminal_inconclusive_baseline_evidence_and_unchanged_retry_block_v0_20260712T011717Z` |
+| `TARGET_SOURCE_EVIDENCE_DIR` | `...&#47;cross_sectional_open_interest_delta_rank_v0_terminal_inconclusive_baseline_evidence_and_unchanged_retry_block_v0_20260712T011717Z` |
 | `TARGET_MANIFEST_VERIFY_RC` | `1` |
 | `DRIFTED_FILE` | `final_report.txt` |
 | `EXPECTED_FILE_DIGEST` | `460c164f5d659e53817fab7ec19216550ddf7b2f6909ec25acdf131580e5b4e6` |
@@ -71,8 +71,8 @@ Ausgeschlossen: Target-Manifest-Rewrite, `final_report.txt`-Rewrite, Byte-exact-
 
 | Feld | Wert |
 |---|---|
-| `RECONCILIATION_EVIDENCE_REF` | `.../source_evidence_manifest_reconciliation_for_terminal_baseline_bundle_read_only_v0_20260712T032521Z` |
-| `DOWNSTREAM_RANKING_EVIDENCE_REF` | `.../cross_sectional_open_interest_delta_rank_v0_post_terminal_evidence_distinct_hypothesis_ranking_read_only_v0_20260712T032121Z` |
+| `RECONCILIATION_EVIDENCE_REF` | `...&#47;source_evidence_manifest_reconciliation_for_terminal_baseline_bundle_read_only_v0_20260712T032521Z` |
+| `DOWNSTREAM_RANKING_EVIDENCE_REF` | `...&#47;cross_sectional_open_interest_delta_rank_v0_post_terminal_evidence_distinct_hypothesis_ranking_read_only_v0_20260712T032121Z` |
 | `Governance config ref` | `config/research/cross_sectional_open_interest_delta_rank_v0_terminal_baseline_bundle_superseding_integrity_attestation_v0.json` |
 
 ## G. Verdict
