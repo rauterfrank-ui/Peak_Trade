@@ -10,6 +10,7 @@ import hashlib
 import json
 from copy import deepcopy
 from dataclasses import dataclass
+from datetime import datetime, timedelta, timezone
 from enum import Enum
 from pathlib import Path
 from typing import Any, Mapping
@@ -90,6 +91,29 @@ ORDER_EFFECT = "NONE"
 MATERIAL_DIFFERENCE_BASIS = (
     "cross_sectional_open_interest_delta_rank_not_funding_carry_or_funding_rank_delta"
 )
+
+PANEL_CALENDAR_START_UTC = "2024-05-01T00:00:00Z"
+PANEL_CALENDAR_END_UTC = "2024-09-01T00:00:00Z"
+PANEL_WARMUP_BARS = LOOKBACK_K + SIGNAL_LAG_BARS
+PERIOD_BINDING_ID = "pit_cross_sectional_research_chronological_holdout_v1"
+PERIOD_BINDING_REF = f"pit_futures_cross_sectional_research_period_split_v1:{PERIOD_BINDING_ID}"
+ORCHESTRATOR_OWNER = "cross_sectional_open_interest_delta_rank_single_slot_research_orchestrator_v0"
+RUNNER_BINDING_REF = (
+    "scripts/ops/run_cross_sectional_open_interest_delta_rank_v0_offline_economic_evaluation_"
+    "execution_v0.py"
+)
+HARNESS_BINDING_REF = (
+    "src/research/cross_sectional_open_interest_delta_rank_v0_offline_economic_evaluation_"
+    "execution_v0.py"
+)
+
+
+def _parse_utc(value: str) -> datetime:
+    return datetime.strptime(value, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=timezone.utc)
+
+
+def _format_utc(value: datetime) -> str:
+    return value.strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 class BindingMaterializationVerdict(str, Enum):
@@ -231,7 +255,61 @@ def build_economic_policy_binding_v0() -> dict[str, Any]:
         "economic_validity_policy_version": ECONOMIC_VALIDITY_POLICY_VERSION,
         "policy_lowering_forbidden": True,
         "promising_is_not_pass": True,
+        "minimum_trade_count": 50,
     }
+
+
+def build_period_binding_v0() -> dict[str, Any]:
+    start = _parse_utc(PANEL_CALENDAR_START_UTC)
+    end = _parse_utc(PANEL_CALENDAR_END_UTC)
+    total_bars = int((end - start).total_seconds() // 3600)
+    warmup_end = start + timedelta(hours=PANEL_WARMUP_BARS - 1)
+    post_warmup_bars = total_bars - PANEL_WARMUP_BARS
+    training_bars = int(post_warmup_bars * 0.40)
+    validation_bars = int(post_warmup_bars * 0.30)
+    training_start = warmup_end + timedelta(hours=1)
+    training_end = training_start + timedelta(hours=training_bars - 1)
+    validation_start = training_end + timedelta(hours=3)
+    validation_end = validation_start + timedelta(hours=validation_bars - 1)
+    oos_start = validation_end + timedelta(hours=3)
+    oos_end = end - timedelta(hours=1)
+    return {
+        "binding_version": "v1",
+        "period_binding_id": PERIOD_BINDING_ID,
+        "split_policy_id": PERIOD_BINDING_ID,
+        "split_timezone": "UTC",
+        "boundary_semantics": "utc_bar_close_inclusive_end",
+        "warmup_start": _format_utc(start),
+        "warmup_end": _format_utc(warmup_end),
+        "training_start": _format_utc(training_start),
+        "training_end": _format_utc(training_end),
+        "validation_start": _format_utc(validation_start),
+        "validation_end": _format_utc(validation_end),
+        "out_of_sample_start": _format_utc(oos_start),
+        "out_of_sample_end": _format_utc(oos_end),
+        "embargo_duration": "PT2H",
+        "purge_duration": "PT2H",
+        "periods_frozen_before_evaluation": True,
+        "no_overlap_enforced": True,
+        "holdout_isolation_enforced": True,
+    }
+
+
+def build_instrument_binding_v0() -> dict[str, Any]:
+    return {
+        "binding_version": "v0",
+        "selection_mode": "open_interest_delta_rank_extremes_single_leg_rotation_v0",
+        "direction_policy": "symmetric_open_interest_delta_extremum_single_leg_rotation_v0",
+        "bitcoin_excluded": True,
+        "spot_excluded": True,
+        "synthetic_spot_excluded": True,
+        "pit_universe_manifest_ref": PIT_UNIVERSE_MANIFEST_REF,
+        "instrument_id_canonicalization_version": INSTRUMENT_ID_CANONICALIZATION_VERSION,
+    }
+
+
+def build_panel_dataset_binding_v0() -> dict[str, Any]:
+    return build_dataset_binding_v0()
 
 
 def build_dataset_binding_v0() -> dict[str, Any]:
@@ -257,6 +335,9 @@ def materialize_versioned_research_binding_v0() -> dict[str, Any]:
     parameter_binding = build_parameter_binding_v0()
     pit_universe_binding = build_pit_universe_binding_v0()
     dataset_binding = build_dataset_binding_v0()
+    panel_dataset_binding = build_panel_dataset_binding_v0()
+    period_binding = build_period_binding_v0()
+    instrument_binding = build_instrument_binding_v0()
     cost_binding = build_cost_execution_binding_v0()
     economic_policy = build_economic_policy_binding_v0()
 
@@ -265,10 +346,18 @@ def materialize_versioned_research_binding_v0() -> dict[str, Any]:
             "parameter_binding": parameter_binding,
             "pit_universe_binding": pit_universe_binding,
             "dataset_binding": dataset_binding,
+            "period_binding": period_binding,
         }
     )
     implementation_digest = compute_implementation_digest_v0()
     material_difference_digest = compute_material_difference_digest_v0()
+    binding_digest = _stable_digest(
+        {
+            "config_digest": config_digest,
+            "data_digest": RATIFIED_PANEL_DATASET_DIGEST,
+            "implementation_digest": implementation_digest,
+        }
+    )
 
     binding: dict[str, Any] = {
         "binding_status": {
@@ -311,10 +400,13 @@ def materialize_versioned_research_binding_v0() -> dict[str, Any]:
             "funding_model_version": _field_bound(value=FUNDING_MODEL_VERSION),
             "spread_model_version": _field_bound(value=SPREAD_MODEL_VERSION),
             "execution_model_version": _field_bound(value=EXECUTION_MODEL_VERSION),
+            "evaluation_period_binding": _field_bound(ref=PERIOD_BINDING_REF),
         },
         "parameter_binding": parameter_binding,
         "pit_universe_binding": pit_universe_binding,
         "dataset_binding": dataset_binding,
+        "period_binding": period_binding,
+        "instrument_binding": instrument_binding,
     }
 
     return {
@@ -327,8 +419,18 @@ def materialize_versioned_research_binding_v0() -> dict[str, Any]:
         "research_scope": RESEARCH_SCOPE,
         "binding": binding,
         "pit_semantics_contract": pit_semantics_contract_to_dict(pit_contract),
+        "parameter_binding": parameter_binding,
+        "pit_universe_binding": pit_universe_binding,
+        "panel_dataset_binding": panel_dataset_binding,
+        "period_binding": period_binding,
+        "instrument_binding": instrument_binding,
         "cost_execution_binding": cost_binding,
         "economic_policy_binding": economic_policy,
+        "binding_digest": binding_digest,
+        "config_digest": config_digest,
+        "orchestrator_owner": ORCHESTRATOR_OWNER,
+        "runner_binding": RUNNER_BINDING_REF,
+        "harness_binding": HARNESS_BINDING_REF,
         "system_constraints": {
             "futures_only": True,
             "bitcoin_direction_allowed": False,
