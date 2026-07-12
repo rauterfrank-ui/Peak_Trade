@@ -16,7 +16,7 @@ from src.research.cross_sectional_open_interest_delta_rank_v0_terminal_baseline_
     DRIFTED_FILE,
     EXPECTED_FILE_DIGEST,
     GOVERNANCE_REL_PATH,
-    OPERATOR_GO_TOKEN,
+    CONFIRM_GO,
     PROVISIONAL_RANK1,
     RESEARCH_SCOPE,
     SUPERSESSION_MODE,
@@ -78,7 +78,7 @@ class TestIntegrityAttestationContract:
         assert CONFIG_PATH.is_file()
         payload = json.loads(CONFIG_PATH.read_text(encoding="utf-8"))
         assert payload["artifact_kind"] == ATTESTATION_ID
-        assert payload["go_token"] == OPERATOR_GO_TOKEN
+        assert payload["go_token"] == CONFIRM_GO
         assert payload["research_scope"] == RESEARCH_SCOPE
         assert payload["target_manifest_verify_rc"] == 1
         assert payload["drifted_file"] == DRIFTED_FILE

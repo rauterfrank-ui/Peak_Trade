@@ -37,7 +37,7 @@ ATTESTATION_VERSION = "v0"
 SCOPE_CLASSIFICATION = (
     "BOUNDED_FUTURES_ONLY_TERMINAL_BASELINE_EXTERNAL_SUPERSEDING_INTEGRITY_ATTESTATION_V0"
 )
-OPERATOR_GO_TOKEN = "GO_SOURCE_EVIDENCE_TERMINAL_BASELINE_BUNDLE_SUPERSEDING_INTEGRITY_ATTESTATION_IMPLEMENTATION_V0"
+CONFIRM_GO = "GO_SOURCE_EVIDENCE_TERMINAL_BASELINE_BUNDLE_SUPERSEDING_INTEGRITY_ATTESTATION_IMPLEMENTATION_V0"
 CONFIG_REL_PATH = (
     "config/research/"
     "cross_sectional_open_interest_delta_rank_v0_terminal_baseline_bundle_"
@@ -345,7 +345,7 @@ def build_integrity_attestation(
         "artifact_version": ATTESTATION_VERSION,
         "schema_version": SCHEMA_VERSION,
         "scope_classification": SCOPE_CLASSIFICATION,
-        "go_token": OPERATOR_GO_TOKEN,
+        "go_token": CONFIRM_GO,
         "governance_ref": GOVERNANCE_REL_PATH,
         "config_ref": CONFIG_REL_PATH,
         "research_scope": RESEARCH_SCOPE,
@@ -729,7 +729,7 @@ def build_final_report(
             "VERDICT",
             "PASS_SOURCE_EVIDENCE_TERMINAL_BASELINE_BUNDLE_SUPERSEDING_INTEGRITY_ATTESTATION_V0",
         ),
-        ("OPERATOR_GO", OPERATOR_GO_TOKEN),
+        ("OPERATOR_GO", CONFIRM_GO),
         ("REPO", str(repo_root)),
         ("CURRENT_BRANCH", git["CURRENT_BRANCH"]),
         ("LOCAL_HEAD", git["LOCAL_HEAD"]),
@@ -807,7 +807,7 @@ def write_attestation_bundle(
 ) -> int:
     output_dir.mkdir(parents=True, exist_ok=True)
     (output_dir / "preflight.txt").write_text(
-        build_preflight_text(repo_root, operator_go=OPERATOR_GO_TOKEN),
+        build_preflight_text(repo_root, operator_go=CONFIRM_GO),
         encoding="utf-8",
     )
     (output_dir / "source_manifest_verification.txt").write_text(

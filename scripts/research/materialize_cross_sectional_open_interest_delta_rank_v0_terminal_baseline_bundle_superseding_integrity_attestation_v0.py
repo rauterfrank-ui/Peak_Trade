@@ -22,7 +22,7 @@ from src.research.cross_sectional_open_interest_delta_rank_v0_terminal_baseline_
     CONFIG_REL_PATH,
     DURABLE_ARCHIVE_ROOT,
     GOVERNANCE_REL_PATH,
-    OPERATOR_GO_TOKEN,
+    CONFIRM_GO,
     build_final_report,
     materialize_attestation_config,
     validate_attestation_bundle,
@@ -97,7 +97,7 @@ def _write_config(repo_root: Path, payload) -> Path:
     config_body = {
         "artifact_kind": ATTESTATION_ID,
         "artifact_version": "v0",
-        "go_token": OPERATOR_GO_TOKEN,
+        "go_token": CONFIRM_GO,
         "governance_ref": GOVERNANCE_REL_PATH,
         **payload["attestation"],
         "external_superseding_integrity_attestation_contract": payload[
@@ -164,13 +164,13 @@ def _deterministic_materialization_check(repo_root: Path) -> tuple[bool, bool]:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--go-token", default=OPERATOR_GO_TOKEN)
+    parser.add_argument("--go-token", default=CONFIRM_GO)
     parser.add_argument("--archive-root", type=Path, default=DURABLE_ARCHIVE_ROOT)
     parser.add_argument("--write-config", action="store_true")
     parser.add_argument("--write-evidence", action="store_true")
     parser.add_argument("--skip-determinism-check", action="store_true")
     args = parser.parse_args()
-    if args.go_token != OPERATOR_GO_TOKEN:
+    if args.go_token != CONFIRM_GO:
         _die(f"unexpected_go_token:{args.go_token}")
 
     subprocess.run(["git", "fetch", "origin", "--prune"], cwd=_REPO_ROOT, check=True)
